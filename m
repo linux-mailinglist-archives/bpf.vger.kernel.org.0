@@ -2,102 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11B802C0CE5
-	for <lists+bpf@lfdr.de>; Mon, 23 Nov 2020 15:14:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A40C12C0CFC
+	for <lists+bpf@lfdr.de>; Mon, 23 Nov 2020 15:15:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729571AbgKWOGU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Nov 2020 09:06:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42506 "EHLO
+        id S1730141AbgKWOL5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Nov 2020 09:11:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729453AbgKWOGU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 Nov 2020 09:06:20 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 999B9C061A4D
-        for <bpf@vger.kernel.org>; Mon, 23 Nov 2020 06:06:19 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id b17so18066928ljf.12
-        for <bpf@vger.kernel.org>; Mon, 23 Nov 2020 06:06:19 -0800 (PST)
+        with ESMTP id S1730039AbgKWOL4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Nov 2020 09:11:56 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4234C0613CF;
+        Mon, 23 Nov 2020 06:11:56 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id l1so655026pld.5;
+        Mon, 23 Nov 2020 06:11:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=yOJoUUi3QECcvzuYDvZQKkbQooLbVapSba7D9AdKZgE=;
-        b=g02va37MFIoFx3hvG/lPTuaAb9EGDa4OPTnhWnNErRVvR26TPzhwL/YSGl9XH06Ban
-         GLaP6rOf9Le9Hv3XUSN6kkLGJxbUBB7YpdYIJQ9kpWc0PLeYry7oa2a0EAI+izCZgYrV
-         gI8kssPprToX4CQ92C1Dnq6bNeRnBtN3HFCOg=
+        bh=NU+ZBtS2PuAoVDCaiYjSDmtYV+rq9r8k1b0Hv3NXBJs=;
+        b=LvN2cgYCtq6+Y48nqWXGL7phbvUQEqHQKhNBlq0qiVygA2NutirJ3tuFZs9eQKKAUN
+         QA/PGelSg8ywUnfxQWvfpLiMjDGk9FJb1e5nsE+w5tybK7W++5HP7UUQ67hi3u8NjIC4
+         hGJpPZmu5LJYV7nnpOA28h+SQ20FUi1pAPDrn90gu3QbsDfGvlYVsdH2BebL9hX2d/mp
+         i76p6nIV2OA/PIiKLJXcEYQmP4o8iIFqK/kWYHPaVtIQexQ+RgzAGsX6rder3PwzcyYQ
+         rwTMAuoW1a1Fv9Mxtv0jQlsvvHYgSykCQPa+7/tL2yBWyUsrh9pcwLeLlqeEzc8qOJW8
+         PD0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=yOJoUUi3QECcvzuYDvZQKkbQooLbVapSba7D9AdKZgE=;
-        b=brzv/iUmV4txs2zHgwchQiihnwIOVhARqFj8BxkqTKSr9HjiiBml2EUCreUZTUcfdg
-         9aEwd5qt+UuktcI+EFCT5hRJzBHUGn6zKYwEeDR14lk0ZI79FuQxOnS3+mJEIOgm5zcL
-         DEZS87CFO01jKxHG8dDONYTSZMxqATiLehV72LeSIFeoe+2Xf0pj85SIF9hbLQ52Hqy2
-         u0EdZ3MhBMA3ygR14JegMtpLTrk02YfZnz27O9RmABBRki86H/gy+rGUssOjx/tkJWjD
-         TCvDMxcaLobOqgCdg9yiLi8jQMmAl8jKpY8DAA3RyFxKJj8EsGv+r4tTxysWTkmvAFhu
-         z+WQ==
-X-Gm-Message-State: AOAM532FoEpEprSS0c6o27HcPMcMr8JfwQ1OpiN4/Kkzx0PCLGScx149
-        r4q7cAj5pXQXaQ/bQSFKKy9sWF/ESiCBAE3J0Ud22w==
-X-Google-Smtp-Source: ABdhPJyIM1KLcez6Q4p3jPbCCe+oj5X9cN4ct/4A+vkNM4F2hoRVX6Cjl/82rapeZbwXjZxLFpjZllAbpV+QEQGaLHg=
-X-Received: by 2002:a2e:8908:: with SMTP id d8mr1095267lji.309.1606140376535;
- Mon, 23 Nov 2020 06:06:16 -0800 (PST)
+        bh=NU+ZBtS2PuAoVDCaiYjSDmtYV+rq9r8k1b0Hv3NXBJs=;
+        b=IJXfbTNvDgcPjLQr2rY9I4fBKFhWtKlv5S/TJEAZkFq7ZPpuVaGJTz5SbB3s8nK5bs
+         Z0caerUXBIRlxMEyAazsgCKWneiA0xcsPGl+JtXawOkx6YoAwHJdhgcozkOuWwO+u2oO
+         9vEMyPqdUnuLYqpftflM9z11UtmogohsGGDPZ/RKM9i3DlRm9wLY7pXCvnZxF7WGxsNI
+         fg6Ge9B0wGvlor9QsmwfesMfCT15SWYp1jZ4lRVBWrOgnugjPTgVc2EdWa3407l0R0oD
+         5JQDssC4SvGKLWDjIJ/7wiUhOVkR2jrnmi69//PbzfKaNDVVaIjICCrQ5ZugcybDD1gA
+         9kTw==
+X-Gm-Message-State: AOAM5323fHx7dE7g2vwmIMyFDncweF6GZAORdiiTAbqdZc6jo1DQopGz
+        wkCQ7DU7wdIW/gSzAq16IgiwVwzsfNqeRbfmUPw=
+X-Google-Smtp-Source: ABdhPJyVSvyUYOybbEj86aanBvHbx+TOibpG5xGwRLKUnt31gEUAvpWn4MdO+M5sabxVJ2pu3VS1GdZefmg187NK2Q0=
+X-Received: by 2002:a17:902:be07:b029:da:c5e:81b6 with SMTP id
+ r7-20020a170902be07b02900da0c5e81b6mr3997870pls.43.1606140716201; Mon, 23 Nov
+ 2020 06:11:56 -0800 (PST)
 MIME-Version: 1.0
-References: <20201121005054.3467947-1-kpsingh@chromium.org>
- <20201121005054.3467947-3-kpsingh@chromium.org> <05776c185bdc61a8d210107e5937c31e2e47b936.camel@linux.ibm.com>
-In-Reply-To: <05776c185bdc61a8d210107e5937c31e2e47b936.camel@linux.ibm.com>
-From:   KP Singh <kpsingh@chromium.org>
-Date:   Mon, 23 Nov 2020 15:06:05 +0100
-Message-ID: <CACYkzJ4VkwRV5WKe8WZjXgd1C1erXr_NtZhgKJL3ckTmS1M5VA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 3/3] bpf: Update LSM selftests for bpf_ima_inode_hash
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     James Morris <jmorris@namei.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        Yonghong Song <yhs@fb.com>,
+References: <3306b4d8-8689-b0e7-3f6d-c3ad873b7093@intel.com>
+ <cover.1605686678.git.xuanzhuo@linux.alibaba.com> <dfa43bcf7083edd0823e276c0cf8e21f3a226da6.1605686678.git.xuanzhuo@linux.alibaba.com>
+In-Reply-To: <dfa43bcf7083edd0823e276c0cf8e21f3a226da6.1605686678.git.xuanzhuo@linux.alibaba.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Mon, 23 Nov 2020 15:11:45 +0100
+Message-ID: <CAJ8uoz3PtqzbfCD6bv1LQOtPVH3qf4mc=V=u_emTxtq3yYUeYw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] xsk: replace datagram_poll by sock_poll_wait
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 2:24 PM Mimi Zohar <zohar@linux.ibm.com> wrote:
+On Wed, Nov 18, 2020 at 9:26 AM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
 >
-> On Sat, 2020-11-21 at 00:50 +0000, KP Singh wrote:
-> > From: KP Singh <kpsingh@google.com>
-> >
-> > - Update the IMA policy before executing the test binary (this is not an
-> >   override of the policy, just an append that ensures that hashes are
-> >   calculated on executions).
+> datagram_poll will judge the current socket status (EPOLLIN, EPOLLOUT)
+> based on the traditional socket information (eg: sk_wmem_alloc), but
+> this does not apply to xsk. So this patch uses sock_poll_wait instead of
+> datagram_poll, and the mask is calculated by xsk_poll.
 >
-> Assuming the builtin policy has been replaced with a custom policy and
-> CONFIG_IMA_WRITE_POLICY is enabled, then yes the rule is appended.   If
-> a custom policy has not yet been loaded, loading this rule becomes the
-> defacto custom policy.
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> ---
+>  net/xdp/xsk.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 >
-> Even if a custom policy has been loaded, potentially additional
-> measurements unrelated to this test would be included the measurement
-> list.  One way of limiting a rule to a specific test is by loopback
-> mounting a file system and defining a policy rule based on the loopback
-> mount unique uuid.
+> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> index cfbec39..7f0353e 100644
+> --- a/net/xdp/xsk.c
+> +++ b/net/xdp/xsk.c
+> @@ -477,11 +477,13 @@ static int xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
+>  static __poll_t xsk_poll(struct file *file, struct socket *sock,
+>                              struct poll_table_struct *wait)
+>  {
+> -       __poll_t mask = datagram_poll(file, sock, wait);
+> +       __poll_t mask = 0;
 
-Thanks Mimi!
+It would indeed be nice to not execute a number of tests in
+datagram_poll that will never be triggered. It will speed up things
+for sure. But we need to make sure that removing those flags that
+datagram_poll sets do not have any bad effects in the code above this.
+But let us tentatively keep this patch for the next version of the
+patch set. Just need to figure out how to solve your problem in a nice
+way first. See discussion in patch 0/3.
 
-I wonder if we simply limit this to policy to /tmp and run an executable
-from /tmp (like test_local_storage.c does).
-
-The only side effect would be of extra hashes being calculated on
-binaries run from /tmp which is not too bad I guess?
-
-We could do the loop mount too, but I am guessing the most clean way
-would be to shell out to mount from the test? Are there some other examples
-of IMA we could look at?
-
-- KP
-
+>         struct sock *sk = sock->sk;
+>         struct xdp_sock *xs = xdp_sk(sk);
+>         struct xsk_buff_pool *pool;
 >
-> Mimi
+> +       sock_poll_wait(file, sock, wait);
+> +
+>         if (unlikely(!xsk_is_bound(xs)))
+>                 return mask;
+>
+> --
+> 1.8.3.1
 >
