@@ -2,54 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8AF12C11FD
-	for <lists+bpf@lfdr.de>; Mon, 23 Nov 2020 18:35:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6145C2C11FE
+	for <lists+bpf@lfdr.de>; Mon, 23 Nov 2020 18:35:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731739AbgKWRcS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Nov 2020 12:32:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46202 "EHLO
+        id S1732012AbgKWRcV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Nov 2020 12:32:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730667AbgKWRcR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 Nov 2020 12:32:17 -0500
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B98AC0613CF
-        for <bpf@vger.kernel.org>; Mon, 23 Nov 2020 09:32:17 -0800 (PST)
-Received: by mail-qk1-x749.google.com with SMTP id o25so15288967qkj.1
-        for <bpf@vger.kernel.org>; Mon, 23 Nov 2020 09:32:17 -0800 (PST)
+        with ESMTP id S1730667AbgKWRcV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Nov 2020 12:32:21 -0500
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C69F0C0613CF
+        for <bpf@vger.kernel.org>; Mon, 23 Nov 2020 09:32:19 -0800 (PST)
+Received: by mail-qv1-xf49.google.com with SMTP id x9so13400608qvt.16
+        for <bpf@vger.kernel.org>; Mon, 23 Nov 2020 09:32:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=oXaU5c+8k021cMT48FUBTifmZRS7IJDVtgM5yLX1W+g=;
-        b=JV+yTRpDSS45ad3z5kgLtuIs/5kGTLK0W8LAcKNp1tz/XQU0CoiHupmAYxtKHCFJ1E
-         MbEfwyauyhZvKf8CIsJMOV9+fvoDhIjBRYDvKwlWQwYAtkSbW38jOezIw9WZI+8I85Fk
-         BCIOuE3aXEyBLQ6top9DzvkkJpJHO5z43dGJzpq+dsOKgoYHtK14S0yLSdpFSqB9cCnc
-         tgy7a+vHVvy5xiKDl4n47dnmCsMNYFvIBkcuuD84LOIK+MdLIDs9xJpLCm3b16mTSa+N
-         tgq9uP0zskJNagz6Az6t0cCC8AwlZ5sdjMkbcEDzuMid27/g+VPHBqrWDqxJXgwkfdex
-         3fGw==
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=pCm5bSXPkdYGa8DRY20xR0eBkPwWiyvd1AYgQ0fdFE4=;
+        b=HhliMXauLQ0TrVwB8xd97VFOY7NCCoEm9IX+gtCpIFaPrvYlEjNCxEMYBxxUzzUWDz
+         jVIMaqHqHtKuG+R7W347P75yyjILKcuVtHgAeOtGiMzcqLogSST7J7TaemOgkwuLVI8u
+         HNW99QR6ouOn8LR7tlgkcVujDs/Y/6RVYtseGLHbgR4DO+DJF/dfG9AXCPJZD/hwJxx9
+         Lu3puQMOorfBhg+175K3C52rkOp416zDm017w0LLvIVFF6DcdwSlzrrs4tvKQxCSfU80
+         mF2vj3uOnYTt2JuP71wso3iYFwliO2jCoBN3FUwrCIW6p1SiCO3CW+K7Olh64/k/pnR4
+         urlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=oXaU5c+8k021cMT48FUBTifmZRS7IJDVtgM5yLX1W+g=;
-        b=A9gKq2m5Z34WcNykFf7jSkEtZo43URKoWSwQIBlQEAw05w4tS2rxBSjemNS8qOE8Ka
-         wNZo5fE/4A9ZnLEhclL3HnAIvFVRHyTWSQvUXve6Uh+4cwslAP9JwldaAVAqG5u40fDE
-         /Luc96nHUgr+AuzM8QvQa0GZf51Sx0O4DEJZo5YGD0xT52Wejkj5NJV+xIo8G02PCNvB
-         hqUu87q5GNJeAZKn8AAZQYwpivAGe0bLMyZhVitDErECCOTcrdAvmrCucgLnlXnErOE6
-         E1HqG8Fcstq+7446p85Y2+/zxZc5vX43d9im1xp/VqcBxu0psaneG1f4BDkEz+EC9qVo
-         Jmhg==
-X-Gm-Message-State: AOAM531F9FQxXytGboRpXGWp5AUsxOT0eyXGEvj5EhcGnDP5XhA9s+JU
-        nllSNMexyJ1hrApOEErTx/aDQlDD1RqffmaaMTU+02JAFQYoJoE+Oo8+59SZEJmp6qUDg3XN8K6
-        f3hG+qf0vIKNmdg7ooNELoK2wMVC9W6lOUiOSigoxrxTGp1AMZxyRIKQUFr3bzLk=
-X-Google-Smtp-Source: ABdhPJxU3j5WzC7Er0skl23G7rTbgw6fasqLaHoUv0VECZGdZcRH21U/h3exjMFHzZPE31zZyKqpFMYPun3GUg==
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=pCm5bSXPkdYGa8DRY20xR0eBkPwWiyvd1AYgQ0fdFE4=;
+        b=WqfKa1FM3uuhblMwYV69WtYen+eqJ6QdNv/QxHbg9RsfVwlZ25mvUDYiiaXkgv+Scp
+         kHn5O2JFvKaCXNSlk0zxGR0o2EJlI7IVI2a3CxJes2PATdJQJRPwFy0nnC4g+MF+/jEC
+         lSCiP5HeYCIRk3b20MM+V5yenOFPjlodWhJpbzUYM2w3yP9AA5VG1WL1UkDOoRpMcJEF
+         Jvm2LC2i2b04O19+Das8HEfMxS3nd/cz3XxEXs51PmI4YyFZ1WGR4R2xL/pR5OMO3PTV
+         4zWVjKleIuST/60h2h8lStpdCUycgnL+0QG2pElr1Wxy9SccttS0x1aruFb4+Np9r4Hm
+         8A/w==
+X-Gm-Message-State: AOAM531KdY7BEW8EMuwEZVD18Uj07KGa/j6zA8M7LjQMMQLbUT0tYND8
+        VQC5PnEnvHHdnABuz+iQetZJMyNBlt5nUJylSDk/D7ybXp8dK0mKEZhK+a/D1+gx8DKw9xlXsEE
+        B/tVaM5Ps8k8if96Heam83dU2bGW4mmWNbgZYB34ZASJrngTkk7h90t56KRlKU8o=
+X-Google-Smtp-Source: ABdhPJyHTtN0KCsiNSZakjt4YlqBl+CsuCdatLftJ4JPMXDQCPE4mO+0mogE+QNINuuf2fgc+QXqOLbaFoQl6w==
 Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
 X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
- (user=jackmanb job=sendgmr) by 2002:a0c:f607:: with SMTP id
- r7mr509314qvm.47.1606152736581; Mon, 23 Nov 2020 09:32:16 -0800 (PST)
-Date:   Mon, 23 Nov 2020 17:31:55 +0000
-Message-Id: <20201123173202.1335708-1-jackmanb@google.com>
+ (user=jackmanb job=sendgmr) by 2002:a05:6214:10e3:: with SMTP id
+ q3mr385976qvt.3.1606152738906; Mon, 23 Nov 2020 09:32:18 -0800 (PST)
+Date:   Mon, 23 Nov 2020 17:31:56 +0000
+In-Reply-To: <20201123173202.1335708-1-jackmanb@google.com>
+Message-Id: <20201123173202.1335708-2-jackmanb@google.com>
 Mime-Version: 1.0
+References: <20201123173202.1335708-1-jackmanb@google.com>
 X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH 0/7] Atomics for eBPF
+Subject: [PATCH 1/7] bpf: Factor out emission of ModR/M for *(reg + off)
 From:   Brendan Jackman <jackmanb@google.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
@@ -62,145 +65,92 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Status of the patches
-=====================
+The case for JITing atomics is about to get more complicated. Let's
+factor out some common code to make the review and result more
+readable.
 
-This patchset is currently incomplete: it oughtn't be released as-is,
-because that would necessitate incrementing architecture
-version number for a partial feature-set. However I've implemented
-the parts that I think are most interesting/controversial, so I'd
-like to get the review started.
+NB the atomics code doesn't yet use the new helper - a subsequent
+patch will add its use as a side-effect of other changes.
 
-The missing elements that I'm aware of are:
+Signed-off-by: Brendan Jackman <jackmanb@google.com>
+---
+ arch/x86/net/bpf_jit_comp.c | 42 +++++++++++++++++++++----------------
+ 1 file changed, 24 insertions(+), 18 deletions(-)
 
-* Atomic subtract
-* Atomic & and |
-* Documentation updates
-
-The prog_test that's added depends on Clang/LLVM features added by
-Yonghong in https://reviews.llvm.org/D72184
-
-This only includes a JIT implementation for x86_64 - I don't plan to
-implement JIT support myself for other architectures.
-
-Operations
-==========
-
-This patchset adds atomic operations to the eBPF instruction set. The
-use-case that motivated this work was a trivial and efficient way to
-generate globally-unique cookies in BPF progs, but I think it's
-obvious that these features are pretty widely applicable.  The
-instructions that are added here can be summarised with this list of
-kernel operations:
-
-* atomic[64]_[fetch_]add
-* atomic[64]_[fetch_]sub (TODO)
-* atomic[64]_[fetch_]and (TODO)
-* atomic[64]_[fetch_]or  (TODO)
-* atomic[64]_xchg
-* atomic[64]_cmpxchg
-
-The following are left out of scope for this effort:
-
-* 16 and 8 bit operations
-* Explicit memory barriers
-
-Encoding
-========
-
-I originally planned to add new values for bpf_insn.opcode. This was
-rather unpleasant: the opcode space has holes in it but no entire
-instruction classes[1]. Yonghong Song had a better idea: use the
-immediate field of the existing STX XADD instruction to encode the
-operation. This works nicely, without breaking existing programs,
-because the immediate field is currently reserved-must-be-zero, and
-extra-nicely because BPF_ADD happens to be zero.
-
-Note that this of course makes immediate-source atomic operations
-impossible. It's hard to imagine a measurable speedup from such
-instructions, and if it existed it would certainly not benefit x86,
-which has no support for them.
-
-The BPF_OP opcode fields are re-used in the immediate, and an
-additional flag BPF_FETCH is used to mark instructions that should
-fetch a pre-modification value from memory.
-
-So, BPF_XADD is now called BPF_ATOMIC (the old name is kept to avoid
-breaking userspace builds), and where we previously had .imm = 0, we
-now have .imm = BPF_ADD (which is 0).
-
-Operands
-========
-
-Reg-source eBPF instructions only have two operands, while these
-atomic operations have up to four. To avoid needing to encode
-additional operands, then:
-
-- One of the input registers is re-used as an output register
-  (e.g. atomic_fetch_add both reads from and writes to the source
-  register).
-
-- Where necessary (i.e. for cmpxchg) , R0 is "hard-coded" as one of
-  the operands.
-
-This approach also allows the new eBPF instructions to map directly
-to single x86 instructions.
-
-[1] Visualisation of eBPF opcode space:
-    https://gist.github.com/bjackman/00fdad2d5dfff601c1918bc29b16e778
-
-Brendan Jackman (7):
-  bpf: Factor out emission of ModR/M for *(reg + off)
-  bpf: x86: Factor out emission of REX byte
-  bpf: Rename BPF_XADD and prepare to encode other atomics in .imm
-  bpf: Move BPF_STX reserved field check into BPF_STX verifier code
-  bpf: Add BPF_FETCH field / create atomic_fetch_add instruction
-  bpf: Add instructions for atomic_cmpxchg and friends
-  bpf: Add tests for new BPF atomic operations
-
- Documentation/networking/filter.rst           |  27 ++--
- arch/arm/net/bpf_jit_32.c                     |   7 +-
- arch/arm64/net/bpf_jit_comp.c                 |  16 +-
- arch/mips/net/ebpf_jit.c                      |  11 +-
- arch/powerpc/net/bpf_jit_comp64.c             |  25 ++-
- arch/riscv/net/bpf_jit_comp32.c               |  20 ++-
- arch/riscv/net/bpf_jit_comp64.c               |  16 +-
- arch/s390/net/bpf_jit_comp.c                  |  26 ++--
- arch/sparc/net/bpf_jit_comp_64.c              |  14 +-
- arch/x86/net/bpf_jit_comp.c                   | 131 ++++++++++------
- arch/x86/net/bpf_jit_comp32.c                 |   6 +-
- drivers/net/ethernet/netronome/nfp/bpf/jit.c  |  14 +-
- drivers/net/ethernet/netronome/nfp/bpf/main.h |   4 +-
- .../net/ethernet/netronome/nfp/bpf/verifier.c |  13 +-
- include/linux/filter.h                        |  47 +++++-
- include/uapi/linux/bpf.h                      |   9 +-
- kernel/bpf/core.c                             |  64 ++++++--
- kernel/bpf/disasm.c                           |  25 ++-
- kernel/bpf/verifier.c                         |  72 ++++++---
- lib/test_bpf.c                                |   2 +-
- samples/bpf/bpf_insn.h                        |   4 +-
- samples/bpf/sock_example.c                    |   3 +-
- samples/bpf/test_cgrp2_attach.c               |   6 +-
- tools/include/linux/filter.h                  |  47 +++++-
- tools/include/uapi/linux/bpf.h                |   9 +-
- tools/testing/selftests/bpf/Makefile          |   2 +-
- .../selftests/bpf/prog_tests/atomics_test.c   | 145 ++++++++++++++++++
- .../bpf/prog_tests/cgroup_attach_multi.c      |   6 +-
- .../selftests/bpf/progs/atomics_test.c        |  61 ++++++++
- .../selftests/bpf/verifier/atomic_cmpxchg.c   |  96 ++++++++++++
- .../selftests/bpf/verifier/atomic_fetch_add.c | 106 +++++++++++++
- .../selftests/bpf/verifier/atomic_xchg.c      | 113 ++++++++++++++
- tools/testing/selftests/bpf/verifier/ctx.c    |   6 +-
- .../testing/selftests/bpf/verifier/leak_ptr.c |   4 +-
- tools/testing/selftests/bpf/verifier/unpriv.c |   3 +-
- tools/testing/selftests/bpf/verifier/xadd.c   |   2 +-
- 36 files changed, 1002 insertions(+), 160 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/atomics_test.c
- create mode 100644 tools/testing/selftests/bpf/progs/atomics_test.c
- create mode 100644 tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c
- create mode 100644 tools/testing/selftests/bpf/verifier/atomic_fetch_add.c
- create mode 100644 tools/testing/selftests/bpf/verifier/atomic_xchg.c
-
---
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 796506dcfc42..94b17bd30e00 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -681,6 +681,27 @@ static void emit_mov_reg(u8 **pprog, bool is64, u32 dst_reg, u32 src_reg)
+ 	*pprog = prog;
+ }
+ 
++/* Emit the ModR/M byte for addressing *(r1 + off) and r2 */
++static void emit_modrm_dstoff(u8 **pprog, u32 r1, u32 r2, int off)
++{
++	u8 *prog = *pprog;
++	int cnt = 0;
++
++	if (is_imm8(off)) {
++		/* 1-byte signed displacement.
++		 *
++		 * If off == 0 we could skip this and save one extra byte, but
++		 * special case of x86 R13 which always needs an offset is not
++		 * worth the hassle
++		 */
++		EMIT2(add_2reg(0x40, r1, r2), off);
++	} else {
++		/* 4-byte signed displacement */
++		EMIT1_off32(add_2reg(0x80, r1, r2), off);
++	}
++	*pprog = prog;
++}
++
+ /* LDX: dst_reg = *(u8*)(src_reg + off) */
+ static void emit_ldx(u8 **pprog, u32 size, u32 dst_reg, u32 src_reg, int off)
+ {
+@@ -708,15 +729,7 @@ static void emit_ldx(u8 **pprog, u32 size, u32 dst_reg, u32 src_reg, int off)
+ 		EMIT2(add_2mod(0x48, src_reg, dst_reg), 0x8B);
+ 		break;
+ 	}
+-	/*
+-	 * If insn->off == 0 we can save one extra byte, but
+-	 * special case of x86 R13 which always needs an offset
+-	 * is not worth the hassle
+-	 */
+-	if (is_imm8(off))
+-		EMIT2(add_2reg(0x40, src_reg, dst_reg), off);
+-	else
+-		EMIT1_off32(add_2reg(0x80, src_reg, dst_reg), off);
++	emit_modrm_dstoff(&prog, src_reg, dst_reg, off);
+ 	*pprog = prog;
+ }
+ 
+@@ -751,10 +764,7 @@ static void emit_stx(u8 **pprog, u32 size, u32 dst_reg, u32 src_reg, int off)
+ 		EMIT2(add_2mod(0x48, dst_reg, src_reg), 0x89);
+ 		break;
+ 	}
+-	if (is_imm8(off))
+-		EMIT2(add_2reg(0x40, dst_reg, src_reg), off);
+-	else
+-		EMIT1_off32(add_2reg(0x80, dst_reg, src_reg), off);
++	emit_modrm_dstoff(&prog, dst_reg, src_reg, off);
+ 	*pprog = prog;
+ }
+ 
+@@ -1240,11 +1250,7 @@ st:			if (is_imm8(insn->off))
+ 			goto xadd;
+ 		case BPF_STX | BPF_XADD | BPF_DW:
+ 			EMIT3(0xF0, add_2mod(0x48, dst_reg, src_reg), 0x01);
+-xadd:			if (is_imm8(insn->off))
+-				EMIT2(add_2reg(0x40, dst_reg, src_reg), insn->off);
+-			else
+-				EMIT1_off32(add_2reg(0x80, dst_reg, src_reg),
+-					    insn->off);
++xadd:			emit_modrm_dstoff(&prog, dst_reg, src_reg, insn->off);
+ 			break;
+ 
+ 			/* call */
+-- 
 2.29.2.454.gaff20da3a2-goog
 
