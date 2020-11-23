@@ -2,149 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 541742C117A
-	for <lists+bpf@lfdr.de>; Mon, 23 Nov 2020 18:08:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA892C11FB
+	for <lists+bpf@lfdr.de>; Mon, 23 Nov 2020 18:35:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733069AbgKWRGQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Nov 2020 12:06:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39698 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1733076AbgKWRGN (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 23 Nov 2020 12:06:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606151171;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ETdBmUCF01QVQJOZ+sQu9TUGQeVKu9xOEmE1E5gBvfU=;
-        b=BtEofZ03By1sp6OyH8lSI6IT4Bb/Q48OsWV2XnBXmdgQcceGh9rKSaQV86czSHO4W4CJHn
-        vUaUaH4n0l1WmtKl1NY4JjZQEtZdHR6F0okj/kLdyZp+LnqjvTzaYPmjipu9+IS6RcbTNg
-        lanzsvwsZXvmVS2IMlU/0SstZMlkjqs=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-240-cs3I0fnGO5ivoJ7Ogq8ILw-1; Mon, 23 Nov 2020 12:06:09 -0500
-X-MC-Unique: cs3I0fnGO5ivoJ7Ogq8ILw-1
-Received: by mail-qv1-f71.google.com with SMTP id m3so3789362qvw.5
-        for <bpf@vger.kernel.org>; Mon, 23 Nov 2020 09:06:09 -0800 (PST)
+        id S1730399AbgKWRbT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Nov 2020 12:31:19 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:37229 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729740AbgKWRbS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Nov 2020 12:31:18 -0500
+Received: by mail-io1-f71.google.com with SMTP id b4so13390786ioa.4
+        for <bpf@vger.kernel.org>; Mon, 23 Nov 2020 09:31:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=ETdBmUCF01QVQJOZ+sQu9TUGQeVKu9xOEmE1E5gBvfU=;
-        b=LHbEKtO9JQOiNFLdwRUA/e8XLFLZhJjLW5lDn8pjCNJbyzrQeDwFAYOd9o6Q+Y2xsB
-         joy+XSj7wAJMMtOoToS+ByU/pwev07AvXq9+aMEuo7ntwofHOD7G1NEyq2u7p/LmgmHp
-         nfhcQ3p+HKxBkzD3Qrm16TqyKOLDuA5VMOubC4AkpKfkymZsw17d0ZOb/lrmf9EWlqj2
-         ztyfAN5L/aJX7c80S1EScBR8AyDyLHTvzHClMTJIwIkUJVsy83dDw5px5+RKV+KdxD/w
-         9fOLDf3WzDGUdbZ4HiTtSvV9Z7N+vogWCWDfdP3BTclYhrEfbsIrb9eYBb/MSe2Ba5HT
-         eGlA==
-X-Gm-Message-State: AOAM533mH3U4NqLvrCLNxjpIaPHg95wFMJN/1kMtQpqdqCzIHEw8kl8L
-        NuVGW9RLPglNrg5flQdznM+oag2YU6nVCiTed2kApxfbApullwwmxgwMD2fBODZYTktjsvqCP3H
-        khoWcxiO/Zisl
-X-Received: by 2002:ac8:5d53:: with SMTP id g19mr70894qtx.354.1606151168834;
-        Mon, 23 Nov 2020 09:06:08 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwHR8oVpP3xv7xpCkK6lH4mawBfXgRI3GL2dEiLGp13/vfLrDKV7SBtsWnvpv2iFDtHltekRw==
-X-Received: by 2002:ac8:5d53:: with SMTP id g19mr70839qtx.354.1606151168572;
-        Mon, 23 Nov 2020 09:06:08 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id o187sm10226153qkb.120.2020.11.23.09.06.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Nov 2020 09:06:07 -0800 (PST)
-Subject: Re: [RFC] MAINTAINERS tag for cleanup robot
-To:     Joe Perches <joe@perches.com>, clang-built-linux@googlegroups.com
-Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        xen-devel@lists.xenproject.org, tboot-devel@lists.sourceforge.net,
-        kvm@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-acpi@vger.kernel.org, devel@acpica.org,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, netdev@vger.kernel.org,
-        linux-media@vger.kernel.org, MPT-FusionLinux.pdl@broadcom.com,
-        linux-scsi@vger.kernel.org, linux-wireless@vger.kernel.org,
-        ibm-acpi-devel@lists.sourceforge.net,
-        platform-driver-x86@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        ecryptfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        cluster-devel@redhat.com, linux-mtd@lists.infradead.org,
-        keyrings@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, alsa-devel@alsa-project.org,
-        bpf@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-nfs@vger.kernel.org, patches@opensource.cirrus.com
-References: <20201121165058.1644182-1-trix@redhat.com>
- <2105f0c05e9eae8bee8e17dcc5314474b3c0bc73.camel@perches.com>
- <6e8c1926-4209-8f10-d0f9-72c875a85a88@redhat.com>
- <859bae8ddae3238116824192f6ddf1c91a381913.camel@perches.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <88eeba27-ee36-df63-8cd9-3cccbe5e0850@redhat.com>
-Date:   Mon, 23 Nov 2020 09:06:03 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=p06mNsn62UzYbRGqsC6k1rWTPNotjmZgU3HzwqNYA9c=;
+        b=QFfkbsXcFQCb41py9sFgkZW+hm4G4s/xFAC+ArUlqeZmNr9PQyk1Hy3egP0Qjo95d8
+         +arH25F402rvWk3Wj4udQ2KQ2pQ64XUEshnAzihMW+fJteHzanLj1r5rnPbGRGYW7Xv+
+         XUZmIze9+1kJ1jsLMAX/96Uov4It+FYcwD81o9ttqdr+lAimE1xeFSkY6c4dqQgy/i0D
+         kPkfaCPDjPruypPme6+QLp/IYcA2ydGPMmoTkFgP2WceQATiEoU/sxOvQmOwe0iM4au9
+         xy8RyEB1GYBFeS4qL8YhVHPzDfEMHWPS/wInvdWI46qLR8F0zXJbsCMzMqxcswypr2MP
+         8vOg==
+X-Gm-Message-State: AOAM532nyaL+UcUdEOCBTR8F0xQ20XzKxVeQ4cBHbEXJDGXgFslhluI3
+        r/JZ5Mc1btjZIKXiN1JWWP2LVkeGIIFebplhay3wo+6nKmQi
+X-Google-Smtp-Source: ABdhPJwGHghLPmVCAsZYpQebAewIJWlH+DfzNLEnKt6Vvz1+IoacryC4wBZD/HsCCQrvc8CJj3PmuikKrR2xMi8wIjtrG9WyLe6/
 MIME-Version: 1.0
-In-Reply-To: <859bae8ddae3238116824192f6ddf1c91a381913.camel@perches.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-Received: by 2002:a05:6638:58a:: with SMTP id a10mr529969jar.51.1606152676379;
+ Mon, 23 Nov 2020 09:31:16 -0800 (PST)
+Date:   Mon, 23 Nov 2020 09:31:16 -0800
+In-Reply-To: <0000000000007bf88805a445f729@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000bb145805b4c98ff2@google.com>
+Subject: Re: memory leak in inet_create (2)
+From:   syzbot <syzbot+bb7ba8dd62c3cb6e3c78@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, andriin@fb.com, ast@kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
+        kuba@kernel.org, kuznet@ms2.inr.ac.ru,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+syzbot has found a reproducer for the following issue on:
 
-On 11/22/20 10:22 AM, Joe Perches wrote:
-> On Sun, 2020-11-22 at 08:33 -0800, Tom Rix wrote:
->> On 11/21/20 9:10 AM, Joe Perches wrote:
->>> On Sat, 2020-11-21 at 08:50 -0800, trix@redhat.com wrote:
->>>> A difficult part of automating commits is composing the subsystem
->>>> preamble in the commit log.  For the ongoing effort of a fixer producing
->>>> one or two fixes a release the use of 'treewide:' does not seem appropriate.
->>>>
->>>> It would be better if the normal prefix was used.  Unfortunately normal is
->>>> not consistent across the tree.
->>>>
->>>> So I am looking for comments for adding a new tag to the MAINTAINERS file
->>>>
->>>> 	D: Commit subsystem prefix
->>>>
->>>> ex/ for FPGA DFL DRIVERS
->>>>
->>>> 	D: fpga: dfl:
->>> I'm all for it.  Good luck with the effort.  It's not completely trivial.
->>>
->>> From a decade ago:
->>>
->>> https://lore.kernel.org/lkml/1289919077.28741.50.camel@Joe-Laptop/
->>>
->>> (and that thread started with extra semicolon patches too)
->> Reading the history, how about this.
->>
->> get_maintainer.pl outputs a single prefix, if multiple files have the
->> same prefix it works, if they don't its an error.
->>
->> Another script 'commit_one_file.sh' does the call to get_mainainter.pl
->> to get the prefix and be called by run-clang-tools.py to get the fixer
->> specific message.
-> It's not whether the script used is get_maintainer or any other script,
-> the question is really if the MAINTAINERS file is the appropriate place
-> to store per-subsystem patch specific prefixes.
->
-> It is.
->
-> Then the question should be how are the forms described and what is the
-> inheritance priority.  My preference would be to have a default of
-> inherit the parent base and add basename(subsystem dirname).
->
-> Commit history seems to have standardized on using colons as the separator
-> between the commit prefix and the subject.
->
-> A good mechanism to explore how various subsystems have uses prefixes in
-> the past might be something like:
->
-> $ git log --no-merges --pretty='%s' -<commit_count> <subsystem_path> | \
->   perl -n -e 'print substr($_, 0, rindex($_, ":") + 1) . "\n";' | \
->   sort | uniq -c | sort -rn
+HEAD commit:    418baf2c Linux 5.10-rc5
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=161c84ed500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5524c10373633a9c
+dashboard link: https://syzkaller.appspot.com/bug?extid=bb7ba8dd62c3cb6e3c78
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1514cfa3500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11a52fc1500000
 
-Thanks, I have shamelessly stolen this line and limited the commits to the maintainer.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+bb7ba8dd62c3cb6e3c78@syzkaller.appspotmail.com
 
-I will post something once the generation of the prefixes is done.
+executing program
+executing program
+executing program
+BUG: memory leak
+unreferenced object 0xffff88810e85adc0 (size 1728):
+  comm "syz-executor376", pid 8506, jiffies 4294946899 (age 13.430s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    02 00 07 40 00 00 00 00 00 00 00 00 00 00 00 00  ...@............
+  backtrace:
+    [<00000000cb2829d9>] sk_prot_alloc+0x3e/0x1c0 net/core/sock.c:1660
+    [<0000000023bd8ef8>] sk_alloc+0x30/0x3f0 net/core/sock.c:1720
+    [<00000000a4a7ed0a>] inet_create net/ipv4/af_inet.c:322 [inline]
+    [<00000000a4a7ed0a>] inet_create+0x16a/0x560 net/ipv4/af_inet.c:248
+    [<000000003b729101>] __sock_create+0x1ab/0x2b0 net/socket.c:1427
+    [<00000000ebee6fd5>] sock_create net/socket.c:1478 [inline]
+    [<00000000ebee6fd5>] __sys_socket+0x6f/0x140 net/socket.c:1520
+    [<00000000bcf20e68>] __do_sys_socket net/socket.c:1529 [inline]
+    [<00000000bcf20e68>] __se_sys_socket net/socket.c:1527 [inline]
+    [<00000000bcf20e68>] __x64_sys_socket+0x1a/0x20 net/socket.c:1527
+    [<00000000732fe45a>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<0000000091e76b15>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Tom
+BUG: memory leak
+unreferenced object 0xffff88810fec3c80 (size 768):
+  comm "syz-executor376", pid 8506, jiffies 4294946899 (age 13.430s)
+  hex dump (first 32 bytes):
+    01 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 c0 72 a0 0e 81 88 ff ff  .........r......
+  backtrace:
+    [<00000000681cd6ae>] sock_alloc_inode+0x18/0x90 net/socket.c:253
+    [<00000000fa9d2004>] alloc_inode+0x27/0x100 fs/inode.c:234
+    [<00000000f3a018c7>] new_inode_pseudo+0x13/0x70 fs/inode.c:930
+    [<00000000549f715a>] sock_alloc+0x18/0x90 net/socket.c:573
+    [<00000000a044e0d4>] __sock_create+0xb8/0x2b0 net/socket.c:1391
+    [<00000000973ca39c>] mptcp_subflow_create_socket+0x57/0x280 net/mptcp/subflow.c:1152
+    [<00000000a3724864>] __mptcp_socket_create net/mptcp/protocol.c:97 [inline]
+    [<00000000a3724864>] mptcp_init_sock net/mptcp/protocol.c:1859 [inline]
+    [<00000000a3724864>] mptcp_init_sock+0x12f/0x270 net/mptcp/protocol.c:1844
+    [<00000000c97baf32>] inet_create net/ipv4/af_inet.c:380 [inline]
+    [<00000000c97baf32>] inet_create+0x2ed/0x560 net/ipv4/af_inet.c:248
+    [<000000003b729101>] __sock_create+0x1ab/0x2b0 net/socket.c:1427
+    [<00000000ebee6fd5>] sock_create net/socket.c:1478 [inline]
+    [<00000000ebee6fd5>] __sys_socket+0x6f/0x140 net/socket.c:1520
+    [<00000000bcf20e68>] __do_sys_socket net/socket.c:1529 [inline]
+    [<00000000bcf20e68>] __se_sys_socket net/socket.c:1527 [inline]
+    [<00000000bcf20e68>] __x64_sys_socket+0x1a/0x20 net/socket.c:1527
+    [<00000000732fe45a>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<0000000091e76b15>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff88810de87bb8 (size 24):
+  comm "syz-executor376", pid 8506, jiffies 4294946899 (age 13.430s)
+  hex dump (first 24 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00                          ........
+  backtrace:
+    [<00000000bea9ec8c>] kmem_cache_zalloc include/linux/slab.h:654 [inline]
+    [<00000000bea9ec8c>] lsm_inode_alloc security/security.c:589 [inline]
+    [<00000000bea9ec8c>] security_inode_alloc+0x2a/0xb0 security/security.c:972
+    [<00000000543365c5>] inode_init_always+0x10c/0x250 fs/inode.c:171
+    [<000000004da5c777>] alloc_inode+0x44/0x100 fs/inode.c:241
+    [<00000000f3a018c7>] new_inode_pseudo+0x13/0x70 fs/inode.c:930
+    [<00000000549f715a>] sock_alloc+0x18/0x90 net/socket.c:573
+    [<00000000a044e0d4>] __sock_create+0xb8/0x2b0 net/socket.c:1391
+    [<00000000973ca39c>] mptcp_subflow_create_socket+0x57/0x280 net/mptcp/subflow.c:1152
+    [<00000000a3724864>] __mptcp_socket_create net/mptcp/protocol.c:97 [inline]
+    [<00000000a3724864>] mptcp_init_sock net/mptcp/protocol.c:1859 [inline]
+    [<00000000a3724864>] mptcp_init_sock+0x12f/0x270 net/mptcp/protocol.c:1844
+    [<00000000c97baf32>] inet_create net/ipv4/af_inet.c:380 [inline]
+    [<00000000c97baf32>] inet_create+0x2ed/0x560 net/ipv4/af_inet.c:248
+    [<000000003b729101>] __sock_create+0x1ab/0x2b0 net/socket.c:1427
+    [<00000000ebee6fd5>] sock_create net/socket.c:1478 [inline]
+    [<00000000ebee6fd5>] __sys_socket+0x6f/0x140 net/socket.c:1520
+    [<00000000bcf20e68>] __do_sys_socket net/socket.c:1529 [inline]
+    [<00000000bcf20e68>] __se_sys_socket net/socket.c:1527 [inline]
+    [<00000000bcf20e68>] __x64_sys_socket+0x1a/0x20 net/socket.c:1527
+    [<00000000732fe45a>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<0000000091e76b15>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff88810ea072c0 (size 2208):
+  comm "syz-executor376", pid 8506, jiffies 4294946899 (age 13.430s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    02 00 07 40 00 00 00 00 00 00 00 00 00 00 00 00  ...@............
+  backtrace:
+    [<00000000cb2829d9>] sk_prot_alloc+0x3e/0x1c0 net/core/sock.c:1660
+    [<0000000023bd8ef8>] sk_alloc+0x30/0x3f0 net/core/sock.c:1720
+    [<00000000a4a7ed0a>] inet_create net/ipv4/af_inet.c:322 [inline]
+    [<00000000a4a7ed0a>] inet_create+0x16a/0x560 net/ipv4/af_inet.c:248
+    [<000000003b729101>] __sock_create+0x1ab/0x2b0 net/socket.c:1427
+    [<00000000973ca39c>] mptcp_subflow_create_socket+0x57/0x280 net/mptcp/subflow.c:1152
+    [<00000000a3724864>] __mptcp_socket_create net/mptcp/protocol.c:97 [inline]
+    [<00000000a3724864>] mptcp_init_sock net/mptcp/protocol.c:1859 [inline]
+    [<00000000a3724864>] mptcp_init_sock+0x12f/0x270 net/mptcp/protocol.c:1844
+    [<00000000c97baf32>] inet_create net/ipv4/af_inet.c:380 [inline]
+    [<00000000c97baf32>] inet_create+0x2ed/0x560 net/ipv4/af_inet.c:248
+    [<000000003b729101>] __sock_create+0x1ab/0x2b0 net/socket.c:1427
+    [<00000000ebee6fd5>] sock_create net/socket.c:1478 [inline]
+    [<00000000ebee6fd5>] __sys_socket+0x6f/0x140 net/socket.c:1520
+    [<00000000bcf20e68>] __do_sys_socket net/socket.c:1529 [inline]
+    [<00000000bcf20e68>] __se_sys_socket net/socket.c:1527 [inline]
+    [<00000000bcf20e68>] __x64_sys_socket+0x1a/0x20 net/socket.c:1527
+    [<00000000732fe45a>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<0000000091e76b15>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
 
