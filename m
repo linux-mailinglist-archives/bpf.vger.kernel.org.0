@@ -2,136 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED4E92C0E7F
-	for <lists+bpf@lfdr.de>; Mon, 23 Nov 2020 16:15:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EECA2C0F58
+	for <lists+bpf@lfdr.de>; Mon, 23 Nov 2020 16:56:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389317AbgKWPKy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Nov 2020 10:10:54 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:52884 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732025AbgKWPKv (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 23 Nov 2020 10:10:51 -0500
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ANF2IL1069677;
-        Mon, 23 Nov 2020 10:10:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=UIFhmGdF1pfMFaT9mYBNCV4Q59iOT78U5d23p3L9Aps=;
- b=AswzMkIZ8sf9pvFyoFUCfNh8oEMJ6X0EaoEk/kWKUtl7YeTcgUTriD8zfi0ha+7/amXc
- /jZNlBJn2ErOkFcXi3G1chcJgSE9sJwYcMgm80fse4wov2Id9aB5xKwmSqMrTGmPDUHn
- ed7P6fDc/IX23E9Zn80d16U6gscub4Om/p7MSMSIlPHm1Y+7JYK9SP+PpW7Ss1zUKFx5
- ZniPymzSGmltghLKG6z/EduZcxQophcjf7Sb9sYCk9DzNnLmjvsFoWDOvi7aqUIuFbqb
- PCcpTKxL4X5u6byn4alF6BEgDhOVHAjKu28lWOhYEF/IG9bZiDju2EG4tOCc6bU3IKwW tQ== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34yw5wjjrr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Nov 2020 10:10:34 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0ANF96va016786;
-        Mon, 23 Nov 2020 15:10:32 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 34xt5hangx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 23 Nov 2020 15:10:32 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0ANFAUKN55771624
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 23 Nov 2020 15:10:30 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 08E74A4055;
-        Mon, 23 Nov 2020 15:10:30 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8F76CA405D;
-        Mon, 23 Nov 2020 15:10:27 +0000 (GMT)
-Received: from sig-9-65-241-175.ibm.com (unknown [9.65.241.175])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 23 Nov 2020 15:10:27 +0000 (GMT)
-Message-ID: <0f54c1636b390689031ac48e32b238a83777e09c.camel@linux.ibm.com>
-Subject: Re: [PATCH bpf-next v2 3/3] bpf: Update LSM selftests for
- bpf_ima_inode_hash
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     James Morris <jmorris@namei.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        Petr Vorel <pvorel@suse.cz>
-Date:   Mon, 23 Nov 2020 10:10:26 -0500
-In-Reply-To: <CACYkzJ4VkwRV5WKe8WZjXgd1C1erXr_NtZhgKJL3ckTmS1M5VA@mail.gmail.com>
-References: <20201121005054.3467947-1-kpsingh@chromium.org>
-         <20201121005054.3467947-3-kpsingh@chromium.org>
-         <05776c185bdc61a8d210107e5937c31e2e47b936.camel@linux.ibm.com>
-         <CACYkzJ4VkwRV5WKe8WZjXgd1C1erXr_NtZhgKJL3ckTmS1M5VA@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-23_11:2020-11-23,2020-11-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=3 adultscore=0
- clxscore=1015 spamscore=0 mlxlogscore=999 malwarescore=0
- priorityscore=1501 lowpriorityscore=0 impostorscore=0 phishscore=0
- mlxscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011230100
+        id S1732885AbgKWPwg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Nov 2020 10:52:36 -0500
+Received: from mga04.intel.com ([192.55.52.120]:3310 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732814AbgKWPwg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Nov 2020 10:52:36 -0500
+IronPort-SDR: wdIVWjG4qt3kkvZFlTfNHJ1qSha0XKAk2CxPFx4fu9uvtz0EoQNlcxjxuegxxUzv7XWLNMv6N9
+ dwo6ar0lSANA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9813"; a="169224209"
+X-IronPort-AV: E=Sophos;i="5.78,363,1599548400"; 
+   d="scan'208";a="169224209"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 07:52:35 -0800
+IronPort-SDR: o6LRPZSLFHblJ72nLIxI7QtuEJsSPQd11jVZTPC9b01xjBsR6V5ML2IOh4GsWUUm1pKbyVJ0KQ
+ V9qBxJqg/0zw==
+X-IronPort-AV: E=Sophos;i="5.78,363,1599548400"; 
+   d="scan'208";a="546463497"
+Received: from suygunge-mobl.ger.corp.intel.com (HELO localhost) ([10.249.40.108])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2020 07:52:23 -0800
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>,
+        trix@redhat.com, joe@perches.com,
+        clang-built-linux@googlegroups.com
+Cc:     linux-hyperv@vger.kernel.org, kvm@vger.kernel.org,
+        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        platform-driver-x86@vger.kernel.org,
+        ibm-acpi-devel@lists.sourceforge.net, keyrings@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-scsi@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, cluster-devel@redhat.com,
+        linux-acpi@vger.kernel.org, tboot-devel@lists.sourceforge.net,
+        coreteam@netfilter.org, xen-devel@lists.xenproject.org,
+        MPT-FusionLinux.pdl@broadcom.com, linux-media@vger.kernel.org,
+        alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org,
+        ecryptfs@vger.kernel.org, linux-omap@vger.kernel.org,
+        devel@acpica.org, linux-nfs@vger.kernel.org,
+        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, patches@opensource.cirrus.com,
+        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [RFC] MAINTAINERS tag for cleanup robot
+In-Reply-To: <5843ef910b0e86c00d9c0143dec20f93823b016b.camel@HansenPartnership.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20201121165058.1644182-1-trix@redhat.com> <5843ef910b0e86c00d9c0143dec20f93823b016b.camel@HansenPartnership.com>
+Date:   Mon, 23 Nov 2020 17:52:20 +0200
+Message-ID: <87y2ism5or.fsf@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-[Cc'ing Petr Vorel]
+On Sat, 21 Nov 2020, James Bottomley <James.Bottomley@HansenPartnership.com> wrote:
+> On Sat, 2020-11-21 at 08:50 -0800, trix@redhat.com wrote:
+>> A difficult part of automating commits is composing the subsystem
+>> preamble in the commit log.  For the ongoing effort of a fixer
+>> producing
+>> one or two fixes a release the use of 'treewide:' does not seem
+>> appropriate.
+>> 
+>> It would be better if the normal prefix was used.  Unfortunately
+>> normal is
+>> not consistent across the tree.
+>> 
+>> 
+>> 	D: Commit subsystem prefix
+>> 
+>> ex/ for FPGA DFL DRIVERS
+>> 
+>> 	D: fpga: dfl:
+>> 
+>
+> I've got to bet this is going to cause more issues than it solves.
 
-On Mon, 2020-11-23 at 15:06 +0100, KP Singh wrote:
-> On Mon, Nov 23, 2020 at 2:24 PM Mimi Zohar <zohar@linux.ibm.com> wrote:
-> >
-> > On Sat, 2020-11-21 at 00:50 +0000, KP Singh wrote:
-> > > From: KP Singh <kpsingh@google.com>
-> > >
-> > > - Update the IMA policy before executing the test binary (this is not an
-> > >   override of the policy, just an append that ensures that hashes are
-> > >   calculated on executions).
-> >
-> > Assuming the builtin policy has been replaced with a custom policy and
-> > CONFIG_IMA_WRITE_POLICY is enabled, then yes the rule is appended.   If
-> > a custom policy has not yet been loaded, loading this rule becomes the
-> > defacto custom policy.
-> >
-> > Even if a custom policy has been loaded, potentially additional
-> > measurements unrelated to this test would be included the measurement
-> > list.  One way of limiting a rule to a specific test is by loopback
-> > mounting a file system and defining a policy rule based on the loopback
-> > mount unique uuid.
-> 
-> Thanks Mimi!
-> 
-> I wonder if we simply limit this to policy to /tmp and run an executable
-> from /tmp (like test_local_storage.c does).
-> 
-> The only side effect would be of extra hashes being calculated on
-> binaries run from /tmp which is not too bad I guess?
+Agreed.
 
-The builtin measurement policy (ima_policy=tcb") explicitly defines a
-rule to not measure /tmp files.  Measuring /tmp results in a lot of
-measurements.
+> SCSI uses scsi: <driver>: for drivers but not every driver has a
+> MAINTAINERS entry.  We use either scsi: or scsi: core: for mid layer
+> things, but we're not consistent.  Block uses blk-<something>: for all
+> of it's stuff but almost no <somtehing>s have a MAINTAINERS entry.  So
+> the next thing you're going to cause is an explosion of suggested
+> MAINTAINERs entries.
 
-{.action = DONT_MEASURE, .fsmagic = TMPFS_MAGIC, .flags = IMA_FSMAGIC},
+On the one hand, adoption of new MAINTAINERS entries has been really
+slow. Look at B, C, or P, for instance. On the other hand, if this were
+to get adopted, you'll potentially get conflicting prefixes for patches
+touching multiple files. Then what?
 
-> 
-> We could do the loop mount too, but I am guessing the most clean way
-> would be to shell out to mount from the test? Are there some other examples
-> of IMA we could look at?
+I'm guessing a script looking at git log could come up with better
+suggestions for prefixes via popularity contest than manually maintained
+MAINTAINERS entries. It might not always get it right, but then human
+outsiders aren't going to always get it right either.
 
-LTP loopback mounts a filesystem, since /tmp is not being measured with
-the builtin "tcb" policy.  Defining new policy rules should be limited
-to the loopback mount.  This would pave the way for defining IMA-
-appraisal signature verification policy rules, without impacting the
-running system.
+Now you'll only need Someone(tm) to write the script. ;)
 
-Mimi
+Something quick like this:
 
+git log --since={1year} --pretty=format:%s -- <FILES> |\
+	grep -v "^\(Merge\|Revert\)" |\
+        sed 's/:[^:]*$//' |\
+        sort | uniq -c | sort -rn | head -5
+
+already gives me results that really aren't worse than some of the
+prefixes invented by drive-by contributors.
+
+> Has anyone actually complained about treewide:?
+
+As Joe said, I'd feel silly applying patches to drivers with that
+prefix. If it gets applied by someone else higher up, literally
+treewide, then no complaints.
+
+BR,
+Jani.
+
+
+-- 
+Jani Nikula, Intel Open Source Graphics Center
