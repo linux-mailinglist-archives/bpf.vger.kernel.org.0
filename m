@@ -2,245 +2,160 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A5102C0C20
-	for <lists+bpf@lfdr.de>; Mon, 23 Nov 2020 14:57:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A8502C0C6E
+	for <lists+bpf@lfdr.de>; Mon, 23 Nov 2020 14:58:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731047AbgKWNpv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 23 Nov 2020 08:45:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36720 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729709AbgKWNpu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 23 Nov 2020 08:45:50 -0500
-Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 166ED2080A;
-        Mon, 23 Nov 2020 13:45:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606139149;
-        bh=kjn7swa6fotytoiJA6cE+1G/MbbCkdW3yZcShPQ7+JE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=BQOGGqjEpozGhP/L0gmMjslxhw/D8nilD2qQ785dKQRsvT+75nmoU8IPlvZ5beS18
-         LzorvtWuWzk5MF7sNa//PQK4kMX8OeJCl03lI6CNK3Y4rr5iohgvQDwaMMvWus0vj5
-         mO/ESIDL5YTxCYAuvqQVVdncmxHQgVov+lMeqZ2U=
-Received: by mail-oo1-f51.google.com with SMTP id t142so3947922oot.7;
-        Mon, 23 Nov 2020 05:45:49 -0800 (PST)
-X-Gm-Message-State: AOAM533QXGRL6F//VWUCKSeLhs1/KQ4Mp4Y1fkVc+V9BVpOuvnfQ44yN
-        HscC6nX7mT8ZFu+eCNr1VgVpHaTrgInenUGB0/Q=
-X-Google-Smtp-Source: ABdhPJzczVmrFcxgPZdLBuXhrHnNj7F+3gH9f6U/W5Ic8vDBsgeFdFZlrQeSgsj9HFiayxfbTKufG8/qXI/z8fOWrb8=
-X-Received: by 2002:a4a:7055:: with SMTP id b21mr22335925oof.66.1606139148251;
- Mon, 23 Nov 2020 05:45:48 -0800 (PST)
+        id S2388798AbgKWNxL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 23 Nov 2020 08:53:11 -0500
+Received: from www62.your-server.de ([213.133.104.62]:60006 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388791AbgKWNxJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 23 Nov 2020 08:53:09 -0500
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1khCHB-0007wF-Ho; Mon, 23 Nov 2020 14:53:05 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1khCHB-0007fL-A7; Mon, 23 Nov 2020 14:53:05 +0100
+Subject: Re: [PATCH bpf] net, xsk: Avoid taking multiple skbuff references
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        ast@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        jonathan.lemon@gmail.com, yhs@fb.com, weqaar.janjua@gmail.com,
+        magnus.karlsson@intel.com, weqaar.a.janjua@intel.com
+References: <20201123131215.136131-1-bjorn.topel@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <12b970c5-6b44-5288-0c79-2df5178d1165@iogearbox.net>
+Date:   Mon, 23 Nov 2020 14:53:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <CA+G9fYs9sg69JgmQNZhutQnbijb4GzcO03XF66EjkQ6CTpXXxA@mail.gmail.com>
-In-Reply-To: <CA+G9fYs9sg69JgmQNZhutQnbijb4GzcO03XF66EjkQ6CTpXXxA@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 23 Nov 2020 14:45:32 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1Lx1MMQ3s1uWjevsi2wqFo2r=k1hhrxf1spUxEQX_Rag@mail.gmail.com>
-Message-ID: <CAK8P3a1Lx1MMQ3s1uWjevsi2wqFo2r=k1hhrxf1spUxEQX_Rag@mail.gmail.com>
-Subject: Re: [arm64] kernel BUG at kernel/seccomp.c:1309!
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kees Cook <keescook@chromium.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, Jann Horn <jannh@google.com>,
-        yifeifz2@illinois.edu,
-        Gabriel Krisman Bertazi <krisman@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201123131215.136131-1-bjorn.topel@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25996/Sun Nov 22 14:25:48 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 12:15 PM Naresh Kamboju
-<naresh.kamboju@linaro.org> wrote:
->
-> While booting arm64 kernel the following kernel BUG noticed on several arm64
-> devices running linux next 20201123 tag kernel.
->
->
-> $ git log --oneline next-20201120..next-20201123 -- kernel/seccomp.c
-> 5c5c5fa055ea Merge remote-tracking branch 'seccomp/for-next/seccomp'
-> bce6a8cba7bf Merge branch 'linus'
-> 7ef95e3dbcee Merge branch 'for-linus/seccomp' into for-next/seccomp
-> fab686eb0307 seccomp: Remove bogus __user annotations
-> 0d8315dddd28 seccomp/cache: Report cache data through /proc/pid/seccomp_cache
-> 8e01b51a31a1 seccomp/cache: Add "emulator" to check if filter is constant allow
-> f9d480b6ffbe seccomp/cache: Lookup syscall allowlist bitmap for fast path
-> 23d67a54857a seccomp: Migrate to use SYSCALL_WORK flag
->
->
-> Please find these easy steps to reproduce the kernel build and boot.
+On 11/23/20 2:12 PM, Björn Töpel wrote:
+> From: Björn Töpel <bjorn.topel@intel.com>
+> 
+> Commit 642e450b6b59 ("xsk: Do not discard packet when NETDEV_TX_BUSY")
+> addressed the problem that packets were discarded from the Tx AF_XDP
+> ring, when the driver returned NETDEV_TX_BUSY. Part of the fix was
+> bumping the skbuff reference count, so that the buffer would not be
+> freed by dev_direct_xmit(). A reference count larger than one means
+> that the skbuff is "shared", which is not the case.
+> 
+> If the "shared" skbuff is sent to the generic XDP receive path,
+> netif_receive_generic_xdp(), and pskb_expand_head() is entered the
+> BUG_ON(skb_shared(skb)) will trigger.
+> 
+> This patch adds a variant to dev_direct_xmit(), __dev_direct_xmit(),
+> where a user can select the skbuff free policy. This allows AF_XDP to
+> avoid bumping the reference count, but still keep the NETDEV_TX_BUSY
+> behavior.
+> 
+> Reported-by: Yonghong Song <yhs@fb.com>
+> Fixes: 642e450b6b59 ("xsk: Do not discard packet when NETDEV_TX_BUSY")
+> Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+> ---
+>   include/linux/netdevice.h | 1 +
+>   net/core/dev.c            | 9 +++++++--
+>   net/xdp/xsk.c             | 8 +-------
+>   3 files changed, 9 insertions(+), 9 deletions(-)
+> 
+> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> index 964b494b0e8d..e7402fca7752 100644
+> --- a/include/linux/netdevice.h
+> +++ b/include/linux/netdevice.h
+> @@ -2815,6 +2815,7 @@ u16 dev_pick_tx_cpu_id(struct net_device *dev, struct sk_buff *skb,
+>   		       struct net_device *sb_dev);
+>   int dev_queue_xmit(struct sk_buff *skb);
+>   int dev_queue_xmit_accel(struct sk_buff *skb, struct net_device *sb_dev);
+> +int __dev_direct_xmit(struct sk_buff *skb, u16 queue_id, bool free_on_busy);
+>   int dev_direct_xmit(struct sk_buff *skb, u16 queue_id);
+>   int register_netdevice(struct net_device *dev);
+>   void unregister_netdevice_queue(struct net_device *dev, struct list_head *head);
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index 82dc6b48e45f..2af79a4253bb 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -4180,7 +4180,7 @@ int dev_queue_xmit_accel(struct sk_buff *skb, struct net_device *sb_dev)
+>   }
+>   EXPORT_SYMBOL(dev_queue_xmit_accel);
+>   
+> -int dev_direct_xmit(struct sk_buff *skb, u16 queue_id)
+> +int __dev_direct_xmit(struct sk_buff *skb, u16 queue_id, bool free_on_busy)
+>   {
+>   	struct net_device *dev = skb->dev;
+>   	struct sk_buff *orig_skb = skb;
+> @@ -4211,7 +4211,7 @@ int dev_direct_xmit(struct sk_buff *skb, u16 queue_id)
+>   
+>   	local_bh_enable();
+>   
+> -	if (!dev_xmit_complete(ret))
+> +	if (free_on_busy && !dev_xmit_complete(ret))
+>   		kfree_skb(skb);
+>   
+>   	return ret;
 
-Adding Gabriel Krisman Bertazi to Cc, as the last patch (23d67a54857a) here
-seems suspicious: it changes
+Hm, but this way free_on_busy, even though constant, cannot be optimized away?
+Can't you just move the dev_xmit_complete() check out into dev_direct_xmit()
+instead? That way you can just drop the bool, and the below dev_direct_xmit()
+should probably just become an __always_line function in netdevice.h so you
+avoid the double call.
 
-diff --git a/include/linux/seccomp.h b/include/linux/seccomp.h
-index 02aef2844c38..47763f3999f7 100644
---- a/include/linux/seccomp.h
-+++ b/include/linux/seccomp.h
-@@ -42,7 +42,7 @@ struct seccomp {
- extern int __secure_computing(const struct seccomp_data *sd);
- static inline int secure_computing(void)
- {
--       if (unlikely(test_thread_flag(TIF_SECCOMP)))
-+       if (unlikely(test_syscall_work(SECCOMP)))
-                return  __secure_computing(NULL);
-        return 0;
- }
+> @@ -4220,6 +4220,11 @@ int dev_direct_xmit(struct sk_buff *skb, u16 queue_id)
+>   	kfree_skb_list(skb);
+>   	return NET_XMIT_DROP;
+>   }
+> +
+> +int dev_direct_xmit(struct sk_buff *skb, u16 queue_id)
+> +{
+> +	return __dev_direct_xmit(skb, queue_id, true);
+> +}
+>   EXPORT_SYMBOL(dev_direct_xmit);
+>   
+>   /*************************************************************************
+> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> index 5a6cdf7b320d..c6ad31b374b7 100644
+> --- a/net/xdp/xsk.c
+> +++ b/net/xdp/xsk.c
+> @@ -411,11 +411,7 @@ static int xsk_generic_xmit(struct sock *sk)
+>   		skb_shinfo(skb)->destructor_arg = (void *)(long)desc.addr;
+>   		skb->destructor = xsk_destruct_skb;
+>   
+> -		/* Hinder dev_direct_xmit from freeing the packet and
+> -		 * therefore completing it in the destructor
+> -		 */
+> -		refcount_inc(&skb->users);
+> -		err = dev_direct_xmit(skb, xs->queue_id);
+> +		err = __dev_direct_xmit(skb, xs->queue_id, false);
+>   		if  (err == NETDEV_TX_BUSY) {
+>   			/* Tell user-space to retry the send */
+>   			skb->destructor = sock_wfree;
+> @@ -429,12 +425,10 @@ static int xsk_generic_xmit(struct sock *sk)
+>   		/* Ignore NET_XMIT_CN as packet might have been sent */
+>   		if (err == NET_XMIT_DROP) {
+>   			/* SKB completed but not sent */
+> -			kfree_skb(skb);
+>   			err = -EBUSY;
+>   			goto out;
+>   		}
+>   
+> -		consume_skb(skb);
+>   		sent_frame = true;
+>   	}
+>   
+> 
+> base-commit: 178648916e73e00de83150eb0c90c0d3a977a46a
+> 
 
-which is in the call chain directly before
-
-int __secure_computing(const struct seccomp_data *sd)
-{
-       int mode = current->seccomp.mode;
-
-...
-        switch (mode) {
-        case SECCOMP_MODE_STRICT:
-                __secure_computing_strict(this_syscall);  /* may call do_exit */
-                return 0;
-        case SECCOMP_MODE_FILTER:
-                return __seccomp_filter(this_syscall, sd, false);
-        default:
-                BUG();
-        }
-}
-
-Clearly, current->seccomp.mode is set to something other
-than SECCOMP_MODE_STRICT or SECCOMP_MODE_FILTER
-while the test_syscall_work(SECCOMP) returns true, and this
-must have not been the case earlier.
-
-         Arnd
-
->
-> step to reproduce:
-> # please install tuxmake
-> # sudo pip3 install -U tuxmake
-> # cd linux-next
-> # tuxmake --runtime docker --target-arch arm --toolchain gcc-9
-> --kconfig defconfig --kconfig-add
-> https://builds.tuxbuild.com/1kgWN61pS5M35vjnVfDSvOOPd38/config
->
-> # Boot the arm64 on any arm64 devices.
-> # you will notice the below BUG
->
-> crash log details:
-> -----------------------
-> [    6.941012] ------------[ cut here ]------------
-> Found device  /dev/ttyAMA3.
-> [    6.947587] lima f4080000.gpu: mod rate = 500000000
-> [    6.955422] kernel BUG at kernel/seccomp.c:1309!
-> [    6.955430] Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
-> [    6.955437] Modules linked in: cec rfkill wlcore_sdio(+) kirin_drm
-> dw_drm_dsi lima(+) drm_kms_helper gpu_sched drm fuse
-> [    6.955481] CPU: 2 PID: 291 Comm: systemd-udevd Not tainted
-> 5.10.0-rc4-next-20201123 #2
-> [    6.955485] Hardware name: HiKey Development Board (DT)
-> [    6.955493] pstate: 80000005 (Nzcv daif -PAN -UAO -TCO BTYPE=--)
-> [    6.955510] pc : __secure_computing+0xe0/0xe8
-> [    6.958171] mmc_host mmc2: Bus speed (slot 0) = 24800000Hz (slot
-> req 400000Hz, actual 400000HZ div = 31)
-> [    6.965975] [drm] Initialized lima 1.1.0 20191231 for f4080000.gpu on minor 0
-> [    6.970176] lr : syscall_trace_enter+0x1cc/0x218
-> [    6.970181] sp : ffff800012d8be10
-> [    6.970185] x29: ffff800012d8be10 x28: ffff00000092cb00
-> [    6.970195] x27: 0000000000000000 x26: 0000000000000000
-> [    6.970203] x25: 0000000000000000 x24: 0000000000000000
-> [    6.970210] x23: 0000000060000000 x22: 0000000000000202
-> [    7.011614] mmc_host mmc2: Bus speed (slot 0) = 24800000Hz (slot
-> req 25000000Hz, actual 24800000HZ div = 0)
-> [    7.016457]
-> [    7.016461] x21: 0000000000000200 x20: ffff00000092cb00
-> [    7.016470] x19: ffff800012d8bec0 x18: 0000000000000000
-> [    7.016478] x17: 0000000000000000 x16: 0000000000000000
-> [    7.016485] x15: 0000000000000000 x14: 0000000000000000
-> [    7.054116] mmc_host mmc2: Bus speed (slot 0) = 24800000Hz (slot
-> req 400000Hz, actual 400000HZ div = 31)
-> [    7.056715]
-> [    7.103444] mmc_host mmc2: Bus speed (slot 0) = 24800000Hz (slot
-> req 25000000Hz, actual 24800000HZ div = 0)
-> [    7.105105] x13: 0000000000000000 x12: 0000000000000000
-> [    7.125849] x11: 0000000000000000 x10: 0000000000000000
-> [    7.125858] x9 : ffff80001001bcbc x8 : 0000000000000000
-> [    7.125865] x7 : 0000000000000000 x6 : 0000000000000000
-> [    7.125871] x5 : 0000000000000000 x4 : 0000000000000000
-> [    7.125879] x3 : 0000000000000000 x2 : ffff00000092cb00
-> [    7.125886] x1 : 0000000000000000 x0 : 0000000000000116
-> [    7.125896] Call trace:
-> ] Found device /dev/ttyAMA2.
-> [    7.125908]  __secure_computing+0xe0/0xe8
-> [    7.125918]  syscall_trace_enter+0x1cc/0x218
-> [    7.125927]  el0_svc_common.constprop.0+0x19c/0x1b8
-> [    7.125933]  do_el0_svc+0x2c/0x98
-> [    7.125940]  el0_sync_handler+0x180/0x188
-> [    7.125946]  el0_sync+0x174/0x180
-> [    7.125958] Code: d2800121 97ffd9a9 d2800120 97fbf1a9 (d4210000)
-> [    7.199584] ---[ end trace 463debbc21f0c7b5 ]---
-> [    7.204205] note: systemd-udevd[291] exited with preempt_count 1
-> [    7.210733] ------------[ cut here ]------------
-> [    7.215451] WARNING: CPU: 2 PID: #
-> 0 at kernel/rcu/tree.c:632 rcu_eqs_enter.isra.0+0x134/0x140
-> [    7.223927] Modules linked in: cec rfkill wlcore_sdio kirin_drm
-> dw_drm_dsi lima drm_kms_helper gpu_sched drm fuse
-> [    7.234295] CPU: 2 PID: 0 Comm: swapper/2 Tainted: G      D
->   5.10.0-rc4-next-20201123 #2
-> [    7.243252] Hardware name: HiKey Development Board (DT)
-> [    7.248561] pstate: 200003c5 (nzCv DAIF -PAN -UAO -TCO BTYPE=--)
-> [    7.254638] pc : rcu_eqs_enter.isra.0+0x134/0x140
-> [    7.259350] lr : rcu_idle_enter+0x18/0x28
-> [    7.263362] sp : ffff8000128e3e80
-> [    7.266678] x29: ffff8000128e3e80 x28: 0000000000000000
-> [    7.272001] x27: 0000000000000000 x26: ffff000001b79080
-> [    7.277321] x25: 0000000000000000 x24: 00000001adc9b310
-> [    7.282641] x23: 0000000000000000 x22: ffff000001b79080
-> [    7.287970] x21: ffff000077b24b00 x20: ffff000001b79098
-> [    7.287979] x19: ffff800011c7ab40 x18: 0000000000000010
-> [    7.287986] x17: 0000000000000000 x16: 0000000000000000
-> [    7.287993] x15: ffff00000092cf98 x14: 0720072007200720
-> [    7.288001] x13: 0720072007200720 x12: 00000000000003c6
-> [    7.288008] x11: 071c71c71c71c71c x10: 00000000000003c6
-> [    7.288016] x9 : ffff800010df267c x8 : 000000000000048c
-> [    7.288023] x7 : 0000000000000c6f x6 : 0000000000009c3f
-> [    7.288030] x5 : 00000000ffffffff x4 : 0000000000000015
-> [    7.288038] x3 : 000000000022b7f0 x2 : 4000000000000002
-> [    7.288046] x1 : 4000000000000000 x0 : ffff000077b26b40
-> [    7.288054] Call trace:
-> [    7.288064]  rcu_eqs_enter.isra.0+0x134/0x140
-> #
-> [    7.288069]  rcu_idle_enter+0x18/0x28
-> [    7.288078]  cpuidle_enter_state+0x34c/0x438
-> [    7.288084]  cpuidle_enter+0x40/0x58
-> [    7.288092]  call_cpuidle+0x24/0x50
-> Reached target Sockets.
-> [    7.288108]  do_idle+0x228/0x290
-> [    7.375468]  cpu_startup_entry+0x30/0x78
-> [    7.379397]  secondary_start_kernel+0x158/0x190
-> [    7.383930] ---[ end trace 463debbc21f0c7b6 ]---
-> [     OK      ] Reached target B#
->
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
->
-> full test log,
-> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20201123/testrun/3478150/suite/linux-log-parser/test/check-kernel-bug-1968549/log
-> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20201123/testrun/3478177/suite/linux-log-parser/test/check-kernel-bug-1968583/log
-> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20201123/testrun/3478197/suite/linux-log-parser/test/check-kernel-bug-147858/log
->
-> metadata:
->   git branch: master
->   git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
->   git commit: 62918e6fd7b5751c1285c7f8c6cbd27eb6600c02
->   git describe: next-20201123
->   make_kernelversion: 5.10.0-rc4
->   kernel-config: https://builds.tuxbuild.com/1kgWN61pS5M35vjnVfDSvOOPd38/config
->
->
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
