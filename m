@@ -2,138 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 314862C2357
-	for <lists+bpf@lfdr.de>; Tue, 24 Nov 2020 11:56:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85BA22C2388
+	for <lists+bpf@lfdr.de>; Tue, 24 Nov 2020 12:04:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726744AbgKXKz6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Nov 2020 05:55:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38188 "EHLO
+        id S1732468AbgKXLCQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Nov 2020 06:02:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725786AbgKXKz5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Nov 2020 05:55:57 -0500
+        with ESMTP id S1732447AbgKXLCP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Nov 2020 06:02:15 -0500
 Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D51EC0613D6
-        for <bpf@vger.kernel.org>; Tue, 24 Nov 2020 02:55:57 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id s8so21793943wrw.10
-        for <bpf@vger.kernel.org>; Tue, 24 Nov 2020 02:55:57 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66800C0613D6
+        for <bpf@vger.kernel.org>; Tue, 24 Nov 2020 03:02:15 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id u12so21920773wrt.0
+        for <bpf@vger.kernel.org>; Tue, 24 Nov 2020 03:02:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=JCQBMvTLGbn7SPzlBNdpZLU5AFVopTaXD7LVkt4Ri84=;
-        b=mlUw/ivDXH4XWWDkCEV/NCzU4KhWITVziZbB6RXassO38zX3wlfSBYpckt3hfp2H1Y
-         joHA3G7GwVRgo3sQO7+1q54RpJbFqKkfX9KYayns/eqDqtMJ3k9tl4Cc/DJeukM9O3Oh
-         kFUIQK2JJkGL0Tv5JnTMfocUh65k4gCz3UJAW/0EII0x59A0nPJn863xCFUsaTyOEebL
-         P42KEuGR7OSvqggkEGWIXduxnakChHIIcWCgh0ZPth4zdmh6Xexd9pEtjbRJEeHzfLcz
-         iCIjSTuI15YyB2owjMAHogtwARZxYZ1NGn6ABoq4LLr6VJhDd/Yei6VRas+Yyb9d92Am
-         Ay5g==
+        bh=Euc5EwjSVk1SHf+cwCR/hIXZVX6QyG47jC4qIwR40bA=;
+        b=Mn6HIggmYx9Pm8+V89VnKtm03RWPIqKE+7kdfThJ1w0GR0UN07XVEvVcik4Y6lUsO+
+         lbBNO/iqHC8Etj2vXfUD++3G64gTDQapkClnhCqhZBpFBhHWzlAGuQykt5xacI22hIA2
+         qVTrDoXHx2Drru9TZTNZGO5Ic0bxNzO0HQLleNKGtyXBX1DIduQR0QADRa7eY4ZvJGha
+         n8XiMxVZaMiM7l3Qa5Xyb30mV5AsWonFcqH98Ri184RyE5EcRogeo5LAPZJ5iiftgku+
+         WtGaVpxUkpAgX4BjSylmd0vHsd1qj3Ec6nRlZr06oNDIc7+5Jx9Uhgok/Ms9s0m4Z58L
+         cD2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=JCQBMvTLGbn7SPzlBNdpZLU5AFVopTaXD7LVkt4Ri84=;
-        b=NSs7+zHbO7Quz9q68K1DoG0CtbgRixr5PNbzG3T3fpE90MLDG+7K9VSH7etpDMRwsJ
-         muR8+IvZfsZQP7+MlLWmBC8UZB1AcB4WWNzI3Z/RWO9703EzSZhK9g5bg4IeO8eVmkYU
-         YO6Iqg/meEw4Js+Zjo4ip9cb17qah+1QGgHJ/GSNsD2nCeX9I7ZfIYYQXlnKnPu60bFS
-         im1c38FeVQkfhELE2Bto2sI9hsrH7wdjgxGOgPZIZ47VUfAZ5CuYzdo0VOJ8+XjU53mP
-         29wmUzOEt/37N9y+Z1FydB2pqiatD5gs/kVglXUP4lqzxTFk0jK9HyerABZu5yVpsn7B
-         coFQ==
-X-Gm-Message-State: AOAM532DgGridIO72etjXxtBhs6mhxcD56ij4am+mBhWW8JlRBkRthUo
-        VpG20j5fM+sUuVbVWfLFBqjyDQ==
-X-Google-Smtp-Source: ABdhPJz62LPWkFoWApBb+aoojckNOatdZWmuG4cUbIbj0wnCIOD/adrrob9q2Tqg5aLZL3lh31nTPQ==
-X-Received: by 2002:a5d:514f:: with SMTP id u15mr4452239wrt.385.1606215355965;
-        Tue, 24 Nov 2020 02:55:55 -0800 (PST)
+        bh=Euc5EwjSVk1SHf+cwCR/hIXZVX6QyG47jC4qIwR40bA=;
+        b=gLIHy81T3eXRAzzegGH0M8Rprux0T6Jbhjj+gpnI5chIEE0rL39EUJlo+sWTyY3o2p
+         yl4ZzxeBa8PrpNsE2RfjLoIS+fZZZRbBGBn/Vu/vFuXiWX5LQ06GtEn4GeucIgpVnMjQ
+         y+dWaxDsg+91xGfwkv8/v+Ues08pVZwGXT2RgZgVBuHuUq02f/8ZrdXtdug1Xihn1WwD
+         xRRGwuA5rbvGWkn90cT1+5A1OFTG7Mw8GtAhGyoBAoZGvPuMEvI1G6xmF4pvKa+qkmTW
+         kvx+R7OQzJ/r9lbo0UIdJEGGZmbZiwUK/22bpA0Wk3qryFa4ajdCn+UJobbacqrSgD0x
+         qpGg==
+X-Gm-Message-State: AOAM530BGCCklOL+pxhedrcOuAuPTntpcWqncmFZ7Vl4B3T5LMrNZZnm
+        O9G7eEkzRlsUvUeVwiSlojCn/A==
+X-Google-Smtp-Source: ABdhPJw+cIknCde/CK/8kdCDoehje8y0AwA5nVzNQxTiTuzQ0kItEFvEhlolva0WR27uVU+bT3xa5g==
+X-Received: by 2002:adf:f1cb:: with SMTP id z11mr4673881wro.363.1606215734015;
+        Tue, 24 Nov 2020 03:02:14 -0800 (PST)
 Received: from google.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
-        by smtp.gmail.com with ESMTPSA id a15sm25504570wrn.75.2020.11.24.02.55.55
+        by smtp.gmail.com with ESMTPSA id b145sm5185939wmd.0.2020.11.24.03.02.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 02:55:55 -0800 (PST)
-Date:   Tue, 24 Nov 2020 10:55:51 +0000
+        Tue, 24 Nov 2020 03:02:13 -0800 (PST)
+Date:   Tue, 24 Nov 2020 11:02:09 +0000
 From:   Brendan Jackman <jackmanb@google.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Yonghong Song <yhs@fb.com>
 Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         KP Singh <kpsingh@chromium.org>,
         Florent Revest <revest@chromium.org>
-Subject: Re: [PATCH 6/7] bpf: Add instructions for atomic_cmpxchg and friends
-Message-ID: <20201124105551.GB1883487@google.com>
+Subject: Re: [PATCH 3/7] bpf: Rename BPF_XADD and prepare to encode other
+ atomics in .imm
+Message-ID: <20201124110209.GC1883487@google.com>
 References: <20201123173202.1335708-1-jackmanb@google.com>
- <20201123173202.1335708-7-jackmanb@google.com>
- <20201124064000.5wd4ngq7ydb63chl@ast-mbp>
+ <20201123173202.1335708-4-jackmanb@google.com>
+ <e7d336ab-524f-9d60-e9ec-8c8426cae0d7@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201124064000.5wd4ngq7ydb63chl@ast-mbp>
+In-Reply-To: <e7d336ab-524f-9d60-e9ec-8c8426cae0d7@fb.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 10:40:00PM -0800, Alexei Starovoitov wrote:
-> On Mon, Nov 23, 2020 at 05:32:01PM +0000, Brendan Jackman wrote:
-> > These are the operations that implement atomic exchange and
-> > compare-exchange.
-> > 
-> > They are peculiarly named because of the presence of the separate
-> > FETCH field that tells you whether the instruction writes the value
-> > back to the src register. Neither operation is supported without
-> > BPF_FETCH:
-> > 
-> > - BPF_CMPSET without BPF_FETCH (i.e. an atomic compare-and-set
-> >   without knowing whether the write was successfully) isn't implemented
-> >   by the kernel, x86, or ARM. It would be a burden on the JIT and it's
-> >   hard to imagine a use for this operation, so it's not supported.
-> > 
-> > - BPF_SET without BPF_FETCH would be bpf_set, which has pretty
-> >   limited use: all it really lets you do is atomically set 64-bit
-> >   values on 32-bit CPUs. It doesn't imply any barriers.
+On Mon, Nov 23, 2020 at 03:54:38PM -0800, Yonghong Song wrote:
 > 
-> ...
 > 
-> > -			if (insn->imm & BPF_FETCH) {
-> > +			switch (insn->imm) {
-> > +			case BPF_SET | BPF_FETCH:
-> > +				/* src_reg = atomic_chg(*(u32/u64*)(dst_reg + off), src_reg); */
-> > +				EMIT1(0x87);
-> > +				break;
-> > +			case BPF_CMPSET | BPF_FETCH:
-> > +				/* r0 = atomic_cmpxchg(*(u32/u64*)(dst_reg + off), r0, src_reg); */
-> > +				EMIT2(0x0F, 0xB1);
-> > +				break;
-> ...
-> >  /* atomic op type fields (stored in immediate) */
-> > +#define BPF_SET		0xe0	/* atomic write */
-> > +#define BPF_CMPSET	0xf0	/* atomic compare-and-write */
+> On 11/23/20 9:31 AM, Brendan Jackman wrote:
+...
+> > diff --git a/arch/arm/net/bpf_jit_32.c b/arch/arm/net/bpf_jit_32.c
+> > index 0207b6ea6e8a..897634d0a67c 100644
+> > --- a/arch/arm/net/bpf_jit_32.c
+> > +++ b/arch/arm/net/bpf_jit_32.c
+> > @@ -1620,10 +1620,9 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx)
+> >   		}
+> >   		emit_str_r(dst_lo, tmp2, off, ctx, BPF_SIZE(code));
+> >   		break;
+> > -	/* STX XADD: lock *(u32 *)(dst + off) += src */
+> > -	case BPF_STX | BPF_XADD | BPF_W:
+> > -	/* STX XADD: lock *(u64 *)(dst + off) += src */
+> > -	case BPF_STX | BPF_XADD | BPF_DW:
+> > +	/* Atomic ops */
+> > +	case BPF_STX | BPF_ATOMIC | BPF_W:
+> > +	case BPF_STX | BPF_ATOMIC | BPF_DW:
+> >   		goto notyet;
+> >   	/* STX: *(size *)(dst + off) = src */
+> >   	case BPF_STX | BPF_MEM | BPF_W:
+> > diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+> > index ef9f1d5e989d..f7b194878a99 100644
+> > --- a/arch/arm64/net/bpf_jit_comp.c
+> > +++ b/arch/arm64/net/bpf_jit_comp.c
+> > @@ -875,10 +875,18 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
+> >   		}
+> >   		break;
+> > -	/* STX XADD: lock *(u32 *)(dst + off) += src */
+> > -	case BPF_STX | BPF_XADD | BPF_W:
+> > -	/* STX XADD: lock *(u64 *)(dst + off) += src */
+> > -	case BPF_STX | BPF_XADD | BPF_DW:
+> > +	case BPF_STX | BPF_ATOMIC | BPF_W:
+> > +	case BPF_STX | BPF_ATOMIC | BPF_DW:
+> > +		if (insn->imm != BPF_ADD) {
+> 
+> Currently BPF_ADD (although it is 0) is encoded at bit 4-7 of imm.
+> Do you think we should encode it in 0-3 to make such a comparision
+> and subsequent insn->imm = BPF_ADD making more sense?
+
+Sorry not quite sure what you mean by this... I think encoding in 4-7 is
+nice because it lets us use BPF_OP. In this patchset wherever we have
+(insn->imm == BPF_ADD) meaning "this is a traditional XADD without
+fetch" and (BPF_OP(insn->imm) == BPF_ADD) meaning "this is an atomic
+add, either with or without a fetch". 
+
+Does that answer the question...?
+
+> > diff --git a/drivers/net/ethernet/netronome/nfp/bpf/jit.c b/drivers/net/ethernet/netronome/nfp/bpf/jit.c
+> > index 0a721f6e8676..0767d7b579e9 100644
+> > --- a/drivers/net/ethernet/netronome/nfp/bpf/jit.c
+> > +++ b/drivers/net/ethernet/netronome/nfp/bpf/jit.c
+> > @@ -3109,13 +3109,19 @@ mem_xadd(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta, bool is64)
+> >   	return 0;
+> >   }
+> > -static int mem_xadd4(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta)
+> > +static int mem_atm4(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta)
+> >   {
+> > +	if (meta->insn.off != BPF_ADD)
+> > +		return -EOPNOTSUPP;
+> 
+> meta->insn.imm?
+> 
 > > +
-> >  #define BPF_FETCH	0x01	/* fetch previous value into src reg */
+> >   	return mem_xadd(nfp_prog, meta, false);
+> >   }
+> > -static int mem_xadd8(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta)
+> > +static int mem_atm(struct nfp_prog *nfp_prog, struct nfp_insn_meta *meta)
+> >   {
+> > +	if (meta->insn.off != BPF_ADD)
 > 
-> I think SET in the name looks odd.
-> I understand that you picked this name so that SET|FETCH together would form
-> more meaningful combination of words, but we're not planning to support SET
-> alone. There is no such instruction in a cpu. If we ever do test_and_set it
-> would be something different.
+> meta->insn.imm?
 
-Yeah this makes sense...
-
-> How about the following instead:
-> +#define BPF_XCHG	0xe1	/* atomic exchange */
-> +#define BPF_CMPXCHG	0xf1	/* atomic compare exchange */
-> In other words get that fetch bit right away into the encoding.
-> Then the switch statement above could be:
-> +			switch (insn->imm) {
-> +			case BPF_XCHG:
-> +				/* src_reg = atomic_chg(*(u32/u64*)(dst_reg + off), src_reg); */
-> +				EMIT1(0x87);
-> ...
-> +			case BPF_ADD | BPF_FETCH:
-> ...
-> +			case BPF_ADD:
-
-... Although I'm a little wary of this because it makes it very messy to
-do something like switch(BPF_OP(insn->imm)) since we'd have no name for
-BPF_OP(0xe1). That might be fine - I haven't needed such a construction
-so far (although I have used BPF_OP(insn->imm)) so maybe we wouldn't
-ever need it.
-
-What do you think? Maybe we add the `#define BPF_XCHG 0xe1` and then if we
-later need to do switch(BPF_OP(insn->imm)) we could bring back
-`#define BPF_SET 0xe` as needed?
+Yikes, thanks for spotting these! Apparently I wasn't even compiling
+this code.
