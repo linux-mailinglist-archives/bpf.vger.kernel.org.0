@@ -2,92 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A52302C1E86
-	for <lists+bpf@lfdr.de>; Tue, 24 Nov 2020 07:54:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA5F2C1F32
+	for <lists+bpf@lfdr.de>; Tue, 24 Nov 2020 08:57:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729734AbgKXGxC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Nov 2020 01:53:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729407AbgKXGxB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Nov 2020 01:53:01 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A4FDC0613CF
-        for <bpf@vger.kernel.org>; Mon, 23 Nov 2020 22:53:00 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id k5so3760920plt.6
-        for <bpf@vger.kernel.org>; Mon, 23 Nov 2020 22:53:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=p+l/2AKanwkBdtTXre3SxzHgL3ezUBEN38BPwN6Qxmc=;
-        b=MYT9WXzTHf927Xr6FZSWRSMP8hDOHK8IFV2JxfGhdXwsWoXTMNue4sjOl1hfanBHm+
-         R0Erl5WDdzZRrkw23oRF4k4550JJzKGryVu0Ou6zipOLpCb2RLoNAsn7xXt4Xkp9pArv
-         oqXmvp/BMOLvFXdJOIff3UVjj/C4M/xpSEs11px2tFzUGE1006zC7DAgFfyeSrCM6GUX
-         W0K9xYtGejkoWfbNTOR5wtL/A8s9kOUH7X52dipF8iTzhOEryNwyIEEjiu8iA6hSc5Kx
-         W6qWigBterrruZ+RfFNCmK3TsnCLvNAzCc/gUPBVspFphTKgS1RyZsIeKEsk5IUXqw7G
-         fmJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=p+l/2AKanwkBdtTXre3SxzHgL3ezUBEN38BPwN6Qxmc=;
-        b=dUQ2EPKILhUsPhMdTPH7/9/8KPQ18WcGm9Z0cZ2IZc/78LVLP9HGfWnPLXYQEbq01z
-         +CWR7AsBrLAeOx/IvwOuh48hnqosvct8EqUEL+6PkdjjzoQxH3oQm5ADCm1wZPH+TyOG
-         4+9lhUTj5ormm+1Oc0cKLUEgtyl1+uNGpE8RHk/kj6EBcXa35rW4m3i72+k6rAN47SwG
-         PqO7jGiSgrbdT4Ry2fZ1bvJKfM7DCqz3+5oO2EmvhAcagOwJ81wVvB1ZhIzCPffcFUkf
-         NlZfIXZY9CD6sANFvOxjWtsOeS0FISaoU7FmkBSKjFBX8xtFxZts4g+80IoXAIIQFL5u
-         UT/w==
-X-Gm-Message-State: AOAM531IKgzB1bu4OOr3PzXSdOMzT6jsldtkg3IJEIp/0Vv89JVdAp3u
-        4r3rqaL/OUE/XnjYPC/8VyY=
-X-Google-Smtp-Source: ABdhPJxCU79ZRJcSHpLgUKS+0WytGMHH3KCGNzXOuRcNWtPvAAsBya9nd3n4Kivo8LfjsnBwr7rnlA==
-X-Received: by 2002:a17:902:9689:b029:d8:e310:2fa2 with SMTP id n9-20020a1709029689b02900d8e3102fa2mr2993033plp.42.1606200779869;
-        Mon, 23 Nov 2020 22:52:59 -0800 (PST)
-Received: from ast-mbp ([2620:10d:c090:400::5:2397])
-        by smtp.gmail.com with ESMTPSA id m9sm13626703pfh.94.2020.11.23.22.52.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 22:52:59 -0800 (PST)
-Date:   Mon, 23 Nov 2020 22:52:57 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Brendan Jackman <jackmanb@google.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>
-Subject: Re: [PATCH 5/7] bpf: Add BPF_FETCH field / create atomic_fetch_add
- instruction
-Message-ID: <20201124065257.456bpoy4r5pf67xz@ast-mbp>
-References: <20201123173202.1335708-1-jackmanb@google.com>
- <20201123173202.1335708-6-jackmanb@google.com>
+        id S1730248AbgKXH5H (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Nov 2020 02:57:07 -0500
+Received: from gateway21.websitewelcome.com ([192.185.45.163]:38261 "EHLO
+        gateway21.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728206AbgKXH5H (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 24 Nov 2020 02:57:07 -0500
+X-Greylist: delayed 1501 seconds by postgrey-1.27 at vger.kernel.org; Tue, 24 Nov 2020 02:57:06 EST
+Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
+        by gateway21.websitewelcome.com (Postfix) with ESMTP id 873E5400CA71C
+        for <bpf@vger.kernel.org>; Tue, 24 Nov 2020 01:11:34 -0600 (CST)
+Received: from zastava.websitewelcome.com ([192.185.83.71])
+        by cmsmtp with SMTP
+        id hSUAk95MKnPrxhSUAkc8pU; Tue, 24 Nov 2020 01:11:34 -0600
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=liamsports.com; s=default; h=Date:Message-Id:Content-Type:MIME-Version:
+        Reply-To:From:Subject:To:Sender:Cc:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=DNctREwmdr2xzK+3LW6h9IegnQUayja9aGXYHpevsic=; b=Qoo1Nne00tgd6oLmbWSttCKrAf
+        eZ0yInS14HQKPPoQHkBsLn6/Jc9GX2a9oAvAzD4h2FTQqoiqWRFxNMue5JToktYbbZsHE2In2Odpr
+        bPJI4NY4Y/dLT0ffi2rL8J3qYKTgqgqdwtti7AhnFA206UAXmyaoXOGoAf+dbiPvYvGNNjN/vePuq
+        ReVViEZkH1Do8bWEWmrcp+Iw9MnhKMDlLcjs/TpLlUdyCo4NHG6oAN3b+43HlP3dpkA2bkXpU28jJ
+        4Xe5ilqPqZd7bq2dTO3A3YsWzwCLKOpLJ7tx+2jDeiiRZuMFGRqgXgSC9OdvjhddFqNnMDZ3dQR6g
+        R5IKwi7g==;
+Received: from liamsports by zastava.websitewelcome.com with local (Exim 4.93)
+        (envelope-from <info@liamsports.com>)
+        id 1khSU9-001TRD-Vu
+        for bpf@vger.kernel.org; Tue, 24 Nov 2020 01:11:34 -0600
+To:     bpf@vger.kernel.org
+Subject: Business Proposal
+X-PHP-Script: liamsports.com/email3/index.php for 39.52.230.13
+X-PHP-Originating-Script: 5244:index.php
+From:   Isabella George <info@liamsports.com>
+Reply-To: Isabella George <info@liamsports.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201123173202.1335708-6-jackmanb@google.com>
+Content-Type: text/plain; charset=iso-8859-1
+Message-Id: <E1khSU9-001TRD-Vu@zastava.websitewelcome.com>
+Date:   Tue, 24 Nov 2020 01:11:33 -0600
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - zastava.websitewelcome.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [5244 32008] / [47 12]
+X-AntiAbuse: Sender Address Domain - liamsports.com
+X-BWhitelist: no
+X-Source-IP: 
+X-Source-L: No
+X-Exim-ID: 1khSU9-001TRD-Vu
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: liamsports.com:/public_html/email3
+X-Source-Sender: 
+X-Source-Auth: liamsports
+X-Email-Count: 310
+X-Source-Cap: bGlhbXNwb3J0cztwYWt3ZWlvbjt6YXN0YXZhLndlYnNpdGV3ZWxjb21lLmNvbQ==
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 05:32:00PM +0000, Brendan Jackman wrote:
-> @@ -3644,8 +3649,21 @@ static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_i
->  		return err;
->  
->  	/* check whether we can write into the same memory */
-> -	return check_mem_access(env, insn_idx, insn->dst_reg, insn->off,
-> -				BPF_SIZE(insn->code), BPF_WRITE, -1, true);
-> +	err = check_mem_access(env, insn_idx, insn->dst_reg, insn->off,
-> +			       BPF_SIZE(insn->code), BPF_WRITE, -1, true);
-> +	if (err)
-> +		return err;
-> +
-> +	if (!(insn->imm & BPF_FETCH))
-> +		return 0;
-> +
-> +	/* check and record load of old value into src reg  */
-> +	err = check_reg_arg(env, insn->src_reg, DST_OP);
-> +	if (err)
-> +		return err;
-> +	regs[insn->src_reg].type = SCALAR_VALUE;
+Hello There
+Liam Sports is The Factory of custom apparels And Team Wears. we are specialist in custom apparels including Tees, Polo Shirts, Tights,  Hoodies, Tracksuits, Softshell, Club Outerwear, Training Singlets, Reversible Training Jumpers and Singlets, Compression Wears, And Club Sports Bag etc We strive to deliver the highest quality in custom sublimation and cut & sew In All Over The worldwide.
+You can ask for samples if you want to check our quality first.
 
-check_reg_arg() will call mark_reg_unknown() which will set type to SCALAR_VALUE.
-What is the point of another assignment?
+
+Regards
+
+Company: Liam Sports
+Cell: +92 3127601319
+Whatsapp: +447395606980
+Website : www.liamsports.com
+Factory Address: Small Industrial Area Sialkot 51310, Punjab Pakistan 
+Instagram:  https://www.instagram.com/liamsports_official/
