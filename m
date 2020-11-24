@@ -2,48 +2,48 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3252C2C2AEF
-	for <lists+bpf@lfdr.de>; Tue, 24 Nov 2020 16:12:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 307F12C2AF1
+	for <lists+bpf@lfdr.de>; Tue, 24 Nov 2020 16:12:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387744AbgKXPMP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Nov 2020 10:12:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49828 "EHLO
+        id S2389484AbgKXPMQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Nov 2020 10:12:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730553AbgKXPMP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S1728372AbgKXPMP (ORCPT <rfc822;bpf@vger.kernel.org>);
         Tue, 24 Nov 2020 10:12:15 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B486AC061A4E
-        for <bpf@vger.kernel.org>; Tue, 24 Nov 2020 07:12:14 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id p8so22687135wrx.5
-        for <bpf@vger.kernel.org>; Tue, 24 Nov 2020 07:12:14 -0800 (PST)
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F89C0613D6
+        for <bpf@vger.kernel.org>; Tue, 24 Nov 2020 07:12:15 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id i2so3632374wrs.4
+        for <bpf@vger.kernel.org>; Tue, 24 Nov 2020 07:12:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=4EcEA95lNa5ZZ+4yTLKOmHZRpqe2owrp9tTkgwACEiM=;
-        b=ibCi5X8Jr3TncJq/YRtxicrO73AYf22K1o+IetPSD2hZZqoLFnXj4rZ9EU7AI5GcfD
-         p1hLH3tYLKfG4l2BLazi3w4HwIoqZeSG5jYi/WeR1uV8A4j6SVqDNyS5S4L/yExAP05U
-         Z0KANTbHysLXx2RsH0ZNKTICnEWqjOVyfxb6A=
+        bh=DHReVnK5DGw5eK9squ1uNmgtFICRFlU41vCb7hFlmTM=;
+        b=c2oZekMKp7GTW7xfXhH0T5dmVgBeJKD4aw9oCeOlcCjEvejVkNvkVGHH8p6ZppFcTD
+         L2aWKw5btqyH+mN2rxqEBgcGlSwPoGKkqrShNj/VywZKGHPgYb/V4fNYGTDVR9lIIip+
+         I5cxWR/qZeM8er2E/mtFvNwkprGsWBi14/cYk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4EcEA95lNa5ZZ+4yTLKOmHZRpqe2owrp9tTkgwACEiM=;
-        b=B/gABv83mY5rcADgFv7SovOspkL/H1jgCQTjC3khhbng/usHg6TVCnajmalsfksRvv
-         fWz3RH+jJbuKVPHw0FrcI58j0FJxIUI4i0rKEyJ1WI0lLMFmAeFCs0lJGQJi7bMiNOEp
-         noxNKkzPBRZvVnXNZsAtIs4AjT+H7Yx7zNmJgizrheilrTtKlsjlHBkJnbJ+kYeo52Pf
-         AvsS1/3ymZbls59Rm3HKQ04dV/pYoIZPAnASzau0zHdGGamwJ7Z2XUAhzC0xi3fHBsZr
-         ffLrB3w+QsmXbezyZhf1hkfUZA0TWEDoCEoF9YhOqSk2lar5dlu7LJgu97nvEjW7fNte
-         8sQQ==
-X-Gm-Message-State: AOAM530x07h27KKlW+sZpsSBBq95G7Z/VNl68Grn8Cx260umWYGLVHQx
-        f794WSEVk4u5QyQCm9JajDmXww==
-X-Google-Smtp-Source: ABdhPJy02kMVLnJkpuZyn2yL397Z2qctTyaciVDRACl/mjeQe14qrgcSahQ5IJCwkiUL2A4SszOUIw==
-X-Received: by 2002:a5d:690a:: with SMTP id t10mr5955851wru.203.1606230733342;
-        Tue, 24 Nov 2020 07:12:13 -0800 (PST)
+        bh=DHReVnK5DGw5eK9squ1uNmgtFICRFlU41vCb7hFlmTM=;
+        b=eWW4LMXVevmZBu4hQzvy3YRHSwwZx3dLLiqnwOJlkv3zZJTJGXi25JUNvpx4iMRA9d
+         Mpc81Q8WlMG/+nET+2w3hC5TbKVRWaKL2OXb/AWSfvBFgYl+Xl+XN2TQkv9p0CrZiAAP
+         8o2JhAXQ/O+bSlzW8Ak3h7SzmAR9R/s+IIrqXbKZmUyzT6lo558wrh3Kg31wA4tW2Cg2
+         9aCAptzKXT/o4liT+w+R1ojluW0OEBLjgp5DDzp97xdfFauFz5sCkfNyws+TVYOq8yAn
+         cr0F+XEfRAksE8Zr8+dFTdKTqj+ZN+RLxeSSUdaW9ysC1vmBYqs4dx47+2QLQHvlcZSB
+         fYIg==
+X-Gm-Message-State: AOAM533+sJujtCf+VNSwmKgqGBEdhKPA70GT1ySSf/NNHXD2LFvngG+w
+        vTL6ayD/z2NkdhKOHPiPlv5uug==
+X-Google-Smtp-Source: ABdhPJwcLnDXSz4KvH8DEi6Yxc5ekgJgMuTggVda4M+OLl6NikSdxRlMY/lgA2LrZxWWUCiHRrSliw==
+X-Received: by 2002:adf:dd04:: with SMTP id a4mr5965770wrm.77.1606230734066;
+        Tue, 24 Nov 2020 07:12:14 -0800 (PST)
 Received: from kpsingh.c.googlers.com.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
-        by smtp.gmail.com with ESMTPSA id g131sm6353127wma.35.2020.11.24.07.12.12
+        by smtp.gmail.com with ESMTPSA id g131sm6353127wma.35.2020.11.24.07.12.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 07:12:12 -0800 (PST)
+        Tue, 24 Nov 2020 07:12:13 -0800 (PST)
 From:   KP Singh <kpsingh@chromium.org>
 To:     James Morris <jmorris@namei.org>, linux-kernel@vger.kernel.org,
         bpf@vger.kernel.org, linux-security-module@vger.kernel.org
@@ -52,9 +52,9 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Florent Revest <revest@chromium.org>,
         Brendan Jackman <jackmanb@chromium.org>,
         Mimi Zohar <zohar@linux.ibm.com>
-Subject: [PATCH bpf-next v3 1/3] ima: Implement ima_inode_hash
-Date:   Tue, 24 Nov 2020 15:12:08 +0000
-Message-Id: <20201124151210.1081188-2-kpsingh@chromium.org>
+Subject: [PATCH bpf-next v3 2/3] bpf: Add a BPF helper for getting the IMA hash of an inode
+Date:   Tue, 24 Nov 2020 15:12:09 +0000
+Message-Id: <20201124151210.1081188-3-kpsingh@chromium.org>
 X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
 In-Reply-To: <20201124151210.1081188-1-kpsingh@chromium.org>
 References: <20201124151210.1081188-1-kpsingh@chromium.org>
@@ -66,154 +66,151 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: KP Singh <kpsingh@google.com>
 
-This is in preparation to add a helper for BPF LSM programs to use
-IMA hashes when attached to LSM hooks. There are LSM hooks like
-inode_unlink which do not have a struct file * argument and cannot
-use the existing ima_file_hash API.
+Provide a wrapper function to get the IMA hash of an inode. This helper
+is useful in fingerprinting files (e.g executables on execution) and
+using these fingerprints in detections like an executable unlinking
+itself.
 
-An inode based API is, therefore, useful in LSM based detections like an
-executable trying to delete itself which rely on the inode_unlink LSM
-hook.
-
-Moreover, the ima_file_hash function does nothing with the struct file
-pointer apart from calling file_inode on it and converting it to an
-inode.
+Since the ima_inode_hash can sleep, it's only allowed for sleepable
+LSM hooks.
 
 Signed-off-by: KP Singh <kpsingh@google.com>
 ---
- include/linux/ima.h               |  6 +++
- security/integrity/ima/ima_main.c | 78 +++++++++++++++++++++----------
- 2 files changed, 60 insertions(+), 24 deletions(-)
+ include/uapi/linux/bpf.h       | 11 +++++++++++
+ kernel/bpf/bpf_lsm.c           | 26 ++++++++++++++++++++++++++
+ scripts/bpf_helpers_doc.py     |  2 ++
+ tools/include/uapi/linux/bpf.h | 11 +++++++++++
+ 4 files changed, 50 insertions(+)
 
-diff --git a/include/linux/ima.h b/include/linux/ima.h
-index 8fa7bcfb2da2..7233a2751754 100644
---- a/include/linux/ima.h
-+++ b/include/linux/ima.h
-@@ -29,6 +29,7 @@ extern int ima_post_read_file(struct file *file, void *buf, loff_t size,
- 			      enum kernel_read_file_id id);
- extern void ima_post_path_mknod(struct dentry *dentry);
- extern int ima_file_hash(struct file *file, char *buf, size_t buf_size);
-+extern int ima_inode_hash(struct inode *inode, char *buf, size_t buf_size);
- extern void ima_kexec_cmdline(int kernel_fd, const void *buf, int size);
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 3ca6146f001a..c3458ec1f30a 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -3807,6 +3807,16 @@ union bpf_attr {
+  * 		See: **clock_gettime**\ (**CLOCK_MONOTONIC_COARSE**)
+  * 	Return
+  * 		Current *ktime*.
++ *
++ * long bpf_ima_inode_hash(struct inode *inode, void *dst, u32 size)
++ *	Description
++ *		Returns the stored IMA hash of the *inode* (if it's avaialable).
++ *		If the hash is larger than *size*, then only *size*
++ *		bytes will be copied to *dst*
++ *	Return
++ *		The **hash_algo** is returned on success,
++ *		**-EOPNOTSUP** if IMA is disabled or **-EINVAL** if
++ *		invalid arguments are passed.
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -3970,6 +3980,7 @@ union bpf_attr {
+ 	FN(get_current_task_btf),	\
+ 	FN(bprm_opts_set),		\
+ 	FN(ktime_get_coarse_ns),	\
++	FN(ima_inode_hash),		\
+ 	/* */
  
- #ifdef CONFIG_IMA_KEXEC
-@@ -115,6 +116,11 @@ static inline int ima_file_hash(struct file *file, char *buf, size_t buf_size)
- 	return -EOPNOTSUPP;
- }
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
+index b4f27a874092..70e5e0b6d69d 100644
+--- a/kernel/bpf/bpf_lsm.c
++++ b/kernel/bpf/bpf_lsm.c
+@@ -15,6 +15,7 @@
+ #include <net/bpf_sk_storage.h>
+ #include <linux/bpf_local_storage.h>
+ #include <linux/btf_ids.h>
++#include <linux/ima.h>
  
-+static inline int ima_inode_hash(struct inode *inode, char *buf, size_t buf_size)
+ /* For every LSM hook that allows attachment of BPF programs, declare a nop
+  * function where a BPF program can be attached.
+@@ -75,6 +76,29 @@ const static struct bpf_func_proto bpf_bprm_opts_set_proto = {
+ 	.arg2_type	= ARG_ANYTHING,
+ };
+ 
++BPF_CALL_3(bpf_ima_inode_hash, struct inode *, inode, void *, dst, u32, size)
 +{
-+	return -EOPNOTSUPP;
++	return ima_inode_hash(inode, dst, size);
 +}
 +
- static inline void ima_kexec_cmdline(int kernel_fd, const void *buf, int size) {}
- #endif /* CONFIG_IMA */
- 
-diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-index 2d1af8899cab..cb2deaa188e7 100644
---- a/security/integrity/ima/ima_main.c
-+++ b/security/integrity/ima/ima_main.c
-@@ -501,37 +501,14 @@ int ima_file_check(struct file *file, int mask)
- }
- EXPORT_SYMBOL_GPL(ima_file_check);
- 
--/**
-- * ima_file_hash - return the stored measurement if a file has been hashed and
-- * is in the iint cache.
-- * @file: pointer to the file
-- * @buf: buffer in which to store the hash
-- * @buf_size: length of the buffer
-- *
-- * On success, return the hash algorithm (as defined in the enum hash_algo).
-- * If buf is not NULL, this function also outputs the hash into buf.
-- * If the hash is larger than buf_size, then only buf_size bytes will be copied.
-- * It generally just makes sense to pass a buffer capable of holding the largest
-- * possible hash: IMA_MAX_DIGEST_SIZE.
-- * The file hash returned is based on the entire file, including the appended
-- * signature.
-- *
-- * If IMA is disabled or if no measurement is available, return -EOPNOTSUPP.
-- * If the parameters are incorrect, return -EINVAL.
-- */
--int ima_file_hash(struct file *file, char *buf, size_t buf_size)
-+static int __ima_inode_hash(struct inode *inode, char *buf, size_t buf_size)
++static bool bpf_ima_inode_hash_allowed(const struct bpf_prog *prog)
++{
++	return bpf_lsm_is_sleepable_hook(prog->aux->attach_btf_id);
++}
++
++BTF_ID_LIST_SINGLE(bpf_ima_inode_hash_btf_ids, struct, inode)
++
++const static struct bpf_func_proto bpf_ima_inode_hash_proto = {
++	.func		= bpf_ima_inode_hash,
++	.gpl_only	= false,
++	.ret_type	= RET_INTEGER,
++	.arg1_type	= ARG_PTR_TO_BTF_ID,
++	.arg1_btf_id	= &bpf_ima_inode_hash_btf_ids[0],
++	.arg2_type	= ARG_PTR_TO_UNINIT_MEM,
++	.arg3_type	= ARG_CONST_SIZE,
++	.allowed	= bpf_ima_inode_hash_allowed,
++};
++
+ static const struct bpf_func_proto *
+ bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
  {
--	struct inode *inode;
- 	struct integrity_iint_cache *iint;
- 	int hash_algo;
- 
--	if (!file)
--		return -EINVAL;
--
- 	if (!ima_policy_flag)
- 		return -EOPNOTSUPP;
- 
--	inode = file_inode(file);
- 	iint = integrity_iint_find(inode);
- 	if (!iint)
- 		return -EOPNOTSUPP;
-@@ -558,8 +535,61 @@ int ima_file_hash(struct file *file, char *buf, size_t buf_size)
- 
- 	return hash_algo;
- }
-+
-+/**
-+ * ima_file_hash - return the stored measurement if a file has been hashed and
-+ * is in the iint cache.
-+ * @file: pointer to the file
-+ * @buf: buffer in which to store the hash
-+ * @buf_size: length of the buffer
+@@ -97,6 +121,8 @@ bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_task_storage_delete_proto;
+ 	case BPF_FUNC_bprm_opts_set:
+ 		return &bpf_bprm_opts_set_proto;
++	case BPF_FUNC_ima_inode_hash:
++		return prog->aux->sleepable ? &bpf_ima_inode_hash_proto : NULL;
+ 	default:
+ 		return tracing_prog_func_proto(func_id, prog);
+ 	}
+diff --git a/scripts/bpf_helpers_doc.py b/scripts/bpf_helpers_doc.py
+index c5bc947a70ad..8b829748d488 100755
+--- a/scripts/bpf_helpers_doc.py
++++ b/scripts/bpf_helpers_doc.py
+@@ -436,6 +436,7 @@ class PrinterHelpers(Printer):
+             'struct xdp_md',
+             'struct path',
+             'struct btf_ptr',
++            'struct inode',
+     ]
+     known_types = {
+             '...',
+@@ -480,6 +481,7 @@ class PrinterHelpers(Printer):
+             'struct task_struct',
+             'struct path',
+             'struct btf_ptr',
++            'struct inode',
+     }
+     mapped_types = {
+             'u8': '__u8',
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 3ca6146f001a..c3458ec1f30a 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -3807,6 +3807,16 @@ union bpf_attr {
+  * 		See: **clock_gettime**\ (**CLOCK_MONOTONIC_COARSE**)
+  * 	Return
+  * 		Current *ktime*.
 + *
-+ * On success, return the hash algorithm (as defined in the enum hash_algo).
-+ * If buf is not NULL, this function also outputs the hash into buf.
-+ * If the hash is larger than buf_size, then only buf_size bytes will be copied.
-+ * It generally just makes sense to pass a buffer capable of holding the largest
-+ * possible hash: IMA_MAX_DIGEST_SIZE.
-+ * The file hash returned is based on the entire file, including the appended
-+ * signature.
-+ *
-+ * If IMA is disabled or if no measurement is available, return -EOPNOTSUPP.
-+ * If the parameters are incorrect, return -EINVAL.
-+ */
-+int ima_file_hash(struct file *file, char *buf, size_t buf_size)
-+{
-+	if (!file)
-+		return -EINVAL;
-+
-+	return __ima_inode_hash(file_inode(file), buf, buf_size);
-+}
- EXPORT_SYMBOL_GPL(ima_file_hash);
++ * long bpf_ima_inode_hash(struct inode *inode, void *dst, u32 size)
++ *	Description
++ *		Returns the stored IMA hash of the *inode* (if it's avaialable).
++ *		If the hash is larger than *size*, then only *size*
++ *		bytes will be copied to *dst*
++ *	Return
++ *		The **hash_algo** is returned on success,
++ *		**-EOPNOTSUP** if IMA is disabled or **-EINVAL** if
++ *		invalid arguments are passed.
+  */
+ #define __BPF_FUNC_MAPPER(FN)		\
+ 	FN(unspec),			\
+@@ -3970,6 +3980,7 @@ union bpf_attr {
+ 	FN(get_current_task_btf),	\
+ 	FN(bprm_opts_set),		\
+ 	FN(ktime_get_coarse_ns),	\
++	FN(ima_inode_hash),		\
+ 	/* */
  
-+/**
-+ * ima_inode_hash - return the stored measurement if the inode has been hashed
-+ * and is in the iint cache.
-+ * @inode: pointer to the inode
-+ * @buf: buffer in which to store the hash
-+ * @buf_size: length of the buffer
-+ *
-+ * On success, return the hash algorithm (as defined in the enum hash_algo).
-+ * If buf is not NULL, this function also outputs the hash into buf.
-+ * If the hash is larger than buf_size, then only buf_size bytes will be copied.
-+ * It generally just makes sense to pass a buffer capable of holding the largest
-+ * possible hash: IMA_MAX_DIGEST_SIZE.
-+ * The hash returned is based on the entire contents, including the appended
-+ * signature.
-+ *
-+ * If IMA is disabled or if no measurement is available, return -EOPNOTSUPP.
-+ * If the parameters are incorrect, return -EINVAL.
-+ */
-+int ima_inode_hash(struct inode *inode, char *buf, size_t buf_size)
-+{
-+	if (!inode)
-+		return -EINVAL;
-+
-+	return __ima_inode_hash(inode, buf, buf_size);
-+}
-+EXPORT_SYMBOL_GPL(ima_inode_hash);
-+
- /**
-  * ima_post_create_tmpfile - mark newly created tmpfile as new
-  * @file : newly created tmpfile
+ /* integer value in 'imm' field of BPF_CALL instruction selects which helper
 -- 
 2.29.2.454.gaff20da3a2-goog
 
