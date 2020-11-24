@@ -2,143 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61EA82C2E18
-	for <lists+bpf@lfdr.de>; Tue, 24 Nov 2020 18:11:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBA0B2C2EAF
+	for <lists+bpf@lfdr.de>; Tue, 24 Nov 2020 18:36:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403918AbgKXRKh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Nov 2020 12:10:37 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:27024 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390714AbgKXRKg (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 24 Nov 2020 12:10:36 -0500
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AOHACco002532;
-        Tue, 24 Nov 2020 09:10:20 -0800
+        id S2390776AbgKXRf0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Nov 2020 12:35:26 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:42624 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1733250AbgKXRf0 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 24 Nov 2020 12:35:26 -0500
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0AOHKb42002216;
+        Tue, 24 Nov 2020 09:35:08 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
  references : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=jcGUK30O5Z3rUvsvfTCa41GkvuE+Q3Rdl1JUOtjQ2+c=;
- b=VJ+R1/Gx7Ou2DYqOR0KPwZBc02KEJ71CTulNTmc+W6Awr47R1Po3TqZNDQRJcR/vS9i4
- 8e5SG3XqPb0ZqMYMP7wqkfhx0nMC9mts3i1bzcOznBxnCk8QCbrTnmxL0ZPhrNFtFwQI
- ePg8Xkrdi6RdRj6V2UeBl+05Fv6uiLmqJeY= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 34yk902me1-7
+ bh=HlIuASl+LkOC44Rvj67b9KhuC8vSy9UkgRY1jWfDcWo=;
+ b=nC/NOOdyE1mOXgkYh3lm/zqHzNOD4XL6K7VzEQ9WuoZEOuYaEPnfzT0hnRQkYPmeMr59
+ tcO4qLXx3J+OnwMwOIkiBz8wLkriA1h3K5lpsa8FnPv0sMS0ZfeAQ143IMHtDTY6YjEF
+ QYIh+wjJKt5Mn3c4Y9vXF4lYbfTtdoxMdCg= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net with ESMTP id 34yksttmcf-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 24 Nov 2020 09:10:20 -0800
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
+        Tue, 24 Nov 2020 09:35:08 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 24 Nov 2020 09:10:02 -0800
+ 15.1.1979.3; Tue, 24 Nov 2020 09:35:07 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mtBi/CSeSpQCc2yqjI1LsglrwDqx+nSIPvLGeIpuxkr2u8xUKZLmwRMEglpe3xMks0XoOaV5JoEwSzzNURPXAwSOgpqJqa2ASEkUwBUOf0Pfn/+6KiQvECcnq9YoHwwElvTfOLcbiEpfN/NwFMSWGzzs7H4IXnJQZ6m0iKvkvWO21zeYksmjmFxc1gXJ9aK26JYTQoApyW7+Tmx+mY0lHhjt4eeJUcIlckGndcYJj04PlRmWgjQoTdEERSupqzicU6jztRqZKBqFaI7nusDY4ybhn6kzl7mDDcbzzqCBjP8URlkmHSr9pGScqKMGEl09sV/ksi6z+EK2lUkHSXQMqQ==
+ b=Ur89Mk1kvQTnbXZCciGFCbqvb2FlrRkP0IuKSfgWED7PO5uKNPJF0ZvIwCrpNM+zAckVp8cCD1MGXmqyHvaP37maR6gBHyNSNK+8HsKnlujd/Y2mmnkx2UejfCgwN8yjyvDUzBxXGTzZserHxfRJ/ZnvnhotVDJZa9szEDYhCdm7giUyk5F8Uidrq+mLmIqENhPMBF94XlhIeauoKNIA75WQKVTgAiEaDz7ui83xdY8llKjQ6TRTb1ZdeULZSYiOMlXo4JUSUjcPfecQ95PPukrDBOR4quIQaj9KbnCWuJ6ReV2PQt5d1GSngVYEI5fzIlDTYvLAe++fPX4ko9CnBQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jcGUK30O5Z3rUvsvfTCa41GkvuE+Q3Rdl1JUOtjQ2+c=;
- b=JnNP1n4zOvoL7lythBOoUkOpLhirSi7JdA+AxNZqV5pzw0in+u+KxG1CHVt6jD2ayNllbdiym1e0XzYHOwBuPoDj+3c+AirUWvBNMDjYeMAJ2TTA8iLBG2GCAQxMpHUfDY5A8N0B4S/lR6VhLqW3/Ocl9Qr01gCvQbcFHLcgClg2GlPve3f9nGIRFMbOAvnIBh1lLsHTbB6/ZCQNNouivZyP/ft8JHlPT+KK2dWpU2nypKSAhukKc/ogSnd5sCzWbmJPCw0q91I+sdR1NlEqP/RuDstyPg7eMkuM74cZSR4uhG9bahUC+J4O9NbnBNP0ABSLPnuorQ9WIG0l7cibjg==
+ bh=HlIuASl+LkOC44Rvj67b9KhuC8vSy9UkgRY1jWfDcWo=;
+ b=HBdmK1L4rqar2ejYagzwwQQYd4cFPN0aIWytrUKbc83tAV3IuU4cOJY4p+++xxXs5w6oB7FraID3DMvToDSyR/HE6+daUt9r+2MxFvT3XkbxlQnp/TdJRq4Iar/zg4ioTwAKNhmdCvXlkitrnRVptCFt8U5VQ0Rc7PYDJykp0deqRBfaY73K7D7uoWjPEmMpCUOa9dKx5V4d4TzxYslN/bTJTIvYLhp7bIPZbbZe+VqfUTRDHZtsm8tY3zXwC0l1pZmAzBQBOBZmxFhRNgPIMnATtvoPFUVBOhFmpL5R7tFu/6jxz2m8NWsG6TPo/wRtyhlrZ3/+dTX63LLFHXhOUA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jcGUK30O5Z3rUvsvfTCa41GkvuE+Q3Rdl1JUOtjQ2+c=;
- b=TY9bMbxmacKzHeA3jtRbursBtP2ABGpG6sqPcUObXk3iS11doAtcaR56CQHQ3T7Gk8nesqxTe36brPA8svvbVGlS/Ag05q2Sxk30BUC40yaHvR1rFaq8TKQ8aNaySjsv7JyxNKePrlwgdrLluMh0GZEBfXXIITclFgEdiotkSPA=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
+ bh=HlIuASl+LkOC44Rvj67b9KhuC8vSy9UkgRY1jWfDcWo=;
+ b=QJiEy0zAaVY+etOM8LElCXFR1SRoGtF8Y6gvdQq8J0vK86YFAWHehYby+1K9/B7OPdmGwt7X4QvoUwmD20+MkjHYp3mHqtCn+1laQ41nE3KPmjG2sH3s77Utaz49cxcLuPzNjy6OaOHmuyLAilrx25uL7nhaEhMNZzOTl3ywXXc=
+Authentication-Results: linux.ibm.com; dkim=none (message not signed)
+ header.d=none;linux.ibm.com; dmarc=none action=none header.from=fb.com;
 Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB3048.namprd15.prod.outlook.com (2603:10b6:a03:fc::25) with
+ by BYAPR15MB3365.namprd15.prod.outlook.com (2603:10b6:a03:111::24) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.22; Tue, 24 Nov
- 2020 17:10:01 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.25; Tue, 24 Nov
+ 2020 17:35:06 +0000
 Received: from BYAPR15MB4088.namprd15.prod.outlook.com
  ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
  ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3589.029; Tue, 24 Nov 2020
- 17:10:01 +0000
-Subject: Re: [PATCH bpf-next v2 5/5] selftests/bpf: xsk selftests -
- Bi-directional Sockets - SKB, DRV
-To:     Weqaar Janjua <weqaar.janjua@gmail.com>
-CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <ast@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Weqaar Janjua <weqaar.a.janjua@intel.com>, <shuah@kernel.org>,
-        <skhan@linuxfoundation.org>, <linux-kselftest@vger.kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        <jonathan.lemon@gmail.com>
-References: <20201120130026.19029-1-weqaar.a.janjua@intel.com>
- <20201120130026.19029-6-weqaar.a.janjua@intel.com>
- <86e3a9e4-a375-1281-07bf-6b04781bb02f@fb.com>
- <CAPLEeBY_p_0QsZeqvrr0P+uf1jkL_eFGgawc=KD6Rkuh_177NA@mail.gmail.com>
- <CAPLEeBYMy3N0D9XT6zO9HPrZfSua4_KpnTh4fY8JyFJ6JickZA@mail.gmail.com>
+ 17:35:06 +0000
+Subject: Re: [PATCH bpf-next v3 1/3] ima: Implement ima_inode_hash
+To:     KP Singh <kpsingh@chromium.org>, James Morris <jmorris@namei.org>,
+        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Mimi Zohar <zohar@linux.ibm.com>
+References: <20201124151210.1081188-1-kpsingh@chromium.org>
+ <20201124151210.1081188-2-kpsingh@chromium.org>
 From:   Yonghong Song <yhs@fb.com>
-Message-ID: <ebfb17fa-39e0-5810-f1a6-20c6804172c8@fb.com>
-Date:   Tue, 24 Nov 2020 09:09:58 -0800
+Message-ID: <3b6f7023-e1fe-b79b-fa06-b8edcce530de@fb.com>
+Date:   Tue, 24 Nov 2020 09:35:02 -0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.4.3
-In-Reply-To: <CAPLEeBYMy3N0D9XT6zO9HPrZfSua4_KpnTh4fY8JyFJ6JickZA@mail.gmail.com>
+In-Reply-To: <20201124151210.1081188-2-kpsingh@chromium.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [2620:10d:c090:400::5:4987]
-X-ClientProxiedBy: MW4PR03CA0140.namprd03.prod.outlook.com
- (2603:10b6:303:8c::25) To BYAPR15MB4088.namprd15.prod.outlook.com
+X-ClientProxiedBy: MW4PR03CA0357.namprd03.prod.outlook.com
+ (2603:10b6:303:dc::32) To BYAPR15MB4088.namprd15.prod.outlook.com
  (2603:10b6:a02:c3::18)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21cf::10b2] (2620:10d:c090:400::5:4987) by MW4PR03CA0140.namprd03.prod.outlook.com (2603:10b6:303:8c::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Tue, 24 Nov 2020 17:10:00 +0000
+Received: from [IPv6:2620:10d:c085:21cf::10b2] (2620:10d:c090:400::5:4987) by MW4PR03CA0357.namprd03.prod.outlook.com (2603:10b6:303:dc::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Tue, 24 Nov 2020 17:35:04 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b550a8ec-fa4c-4886-8531-08d8909bc767
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3048:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB304838A9BEEF3E16C9E39376D3FB0@BYAPR15MB3048.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 616c20e8-2918-4cf6-f6c7-08d8909f4828
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3365:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB33659CFA561A0D90DD80CF12D3FB0@BYAPR15MB3365.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mNPnYbxaQiypU7hIwb+KsvTu05WwE/z0+TxtG5uOoAwoLD7WA8Wz0lgPrnRTXfJFqp7/x8auJBzCNn7Q79SBj8L3VBeinknCsGp0d20EeoGjWFqi5DPwzGgkvd4DVCtlJYcA4BZy5pK/Xk2v4M8CWfqK0h1Ow7EFqibEx4QDQUM6ywI9JNF9z7z//hJOF3gRApXJNYIbL0R282oHxZmapLNk0Eg1a/6dFebCIYqBnA0tkq1VzUk09UfZFLwku6BNbwpa/NhzdiQ/Cw623suKkh0UCk5CfOltO4RRVDT5Y5q9UHSnSy9EzkBeDNw72UmtkSGqUMARRu/rkSTnlh7J1aaY1/gX7y+2YiPcUcqbyKDD7rom4QZqRrQAk/ZHhwXf
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(346002)(39860400002)(136003)(376002)(396003)(5660300002)(2616005)(8676002)(36756003)(186003)(2906002)(31696002)(86362001)(7416002)(52116002)(16526019)(4326008)(83380400001)(6486002)(53546011)(6916009)(316002)(66946007)(54906003)(66556008)(31686004)(66476007)(8936002)(478600001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?S1owOVVNK1lVWEFNaE8vb2ZGZ3JNK3lLTkZqY2Y0WmN5NDFwNzBEdVFlOWY5?=
- =?utf-8?B?MHNsaGdWejlnTjJva3dpTVBZQ3BySXdTb2RWZmFKZ1hWdm5DLy9iWlkxUGJE?=
- =?utf-8?B?M3N2WUFraCs1Njg2K1lwa1c5WFRPdjBabUJ2QVpISmpwbkdtRFRHdGJjdlBO?=
- =?utf-8?B?Z2JGSnRoY3lqWWtkeWVCcmhvclNGYk5nRGFVVEVzbFRDbldYeHlCWVd0eDc4?=
- =?utf-8?B?NHp0eHd6eW9qS3YvZ21QWnY4V0ZPQU13UFhNUWUrWWRWU29GNUl0YzlhT3Vo?=
- =?utf-8?B?VFBURStJL3Y0YkpmWkJHblI0MVExblNyZExCdmpsZzBDbVZuaTZSYy9pTEVh?=
- =?utf-8?B?SFZKc0hUUitYbTBEZFVEQlVCSVIxckZsMVdYbU9wOUJMUktTZFY1L2RkYXho?=
- =?utf-8?B?QzMyZ0xheXc5VVRRSlJXNEpoak1lN3laSXQrNXRuQzRaTG9CVUNJeDZVSS9S?=
- =?utf-8?B?SEQyYmsza2N6aG1aanBzaGFIZFdPS3FwbkVSWkVYaUQvU0d0amVtV3Fqbndt?=
- =?utf-8?B?blNtUEY0QjFSaXBOOElQVVhXT3lINzhybC8wdGZJODdLL2hCd2Y3MHNPMElX?=
- =?utf-8?B?TytzcGhhbDhwOVF6STVVYmdzWWMzUDhMQ00vUFRzdVRWMENiR1VsckF0YWJx?=
- =?utf-8?B?NEc4djAxenhnQjNsd1o2SVhzVDI1TUNxK3pPUFFzNEhLQ2lNbFRnVVJmZStL?=
- =?utf-8?B?TVQ1dFEvVlF0eUNkZ0Z1S0VlWUtmVEMwNGpVaE83K0dURVhMbDRQazBhZ3BL?=
- =?utf-8?B?MXdvZ0pDa0ZtWFRnVmtHVnhzVmJMWHNzUjJRek5DMzc0TUN5czM5UWFVbTla?=
- =?utf-8?B?V1Y0dStEYkhIbk9UWTZSRXBqeVBWNUJleW44WW1PTjYzRzdGanAzeVZyZjBN?=
- =?utf-8?B?aFpwV2duNklWUHJxRlhMOEgrV0JaWlAramk2eG9yQSswSU1ubzNETWhGdy9G?=
- =?utf-8?B?czZ6dWJPTXo0L2tDcXVhcTJHd3JNbnFJcjZDM25HODhuY3ZjUW94eHh2U09K?=
- =?utf-8?B?WkFjUVZXUS9BYS9qbTMxOU04RTRhTWlkQW9hRXpvakhpd05QUk55ZTFGVzJh?=
- =?utf-8?B?WThaWmR2LzQwL2k3b1ErZEVqUTg5SkdWdXJob1ZQUFJXZUdWWktBalhWNkda?=
- =?utf-8?B?NFBDSjZ6anM1dkdyVHVRSzllQjh1bVRDN2lqcUNaVHdMTzBOaUptYWRKSzJv?=
- =?utf-8?B?MzVISzlnMmQxZVBDbG5HY3JNTFhUVUlFQlRoYys0dTZQMzk5S1VjMENHNWNi?=
- =?utf-8?B?ZnRGVndMSWdoUFZiZmRoMmExMmV3WE93VkRnNFIzczlRb2U5eTZFeUlIbGhX?=
- =?utf-8?B?ZCtBTGN5Zk5vblVSbk04VUlBS1J2TTdVa1dKR1ZLMjFzL3ZWSURHcDN1N3dD?=
- =?utf-8?B?MHNpcDF2VHA4bmc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: b550a8ec-fa4c-4886-8531-08d8909bc767
+X-Microsoft-Antispam-Message-Info: ssXSxTuIiksKtlTn5YqFeGM4HnluPDEBd4mFPaXToWLjmiDGVzse22qnU+iAd/YT3yu7TzjFWDZ2v+usaqhH6x6xN5OatXriyrBpvlseXdWZmHHGJI8n7B36JDSYnkNTljYDKkSTfwhBZfBdFuS1fWHZf5Ujsu3xk7ytmesA/VOFGJt7XuqKcE7UbBgMRnsduY/j0gCUr3pAbSTEkbl4QoZLOEa2sOT+0HZoA+PxbvwD1gOKdIy9qcTy9GTCFi+Nr39u/oRKs89A7ijGpLltGBm0rrI8D5zWDRMd8otOjAwSrVHfURnJ4fX0Y5hSXH9YoChsLduNNhfataK9eDJgL4ESH2mEifwEbjYiUBRw8osHGmlvb1LEGFydraLK5wob
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(366004)(396003)(136003)(39860400002)(376002)(4326008)(36756003)(2906002)(316002)(7416002)(8936002)(4744005)(31686004)(6486002)(16526019)(186003)(86362001)(83380400001)(53546011)(8676002)(31696002)(110136005)(54906003)(66476007)(66946007)(52116002)(66556008)(2616005)(478600001)(5660300002)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?RWdkaVQweUlWVVJ5dGt0dUo3RUNKQVVZMUpTSXBzakRhV0NTMldYK0o1RXI0?=
+ =?utf-8?B?RXE1eHVwRXRkSk93WWhNSXA0VHc1NDFLTU9MaGxSS0FEL3lsWGdVN3diSGhU?=
+ =?utf-8?B?M0hvRW02UFpMNXRpVUJlY2twazh0bVJpMjk2ZklXcmdUczlHNGZ2WEpSTXVP?=
+ =?utf-8?B?UTM2VHgzd0t3M1ZiY1Z6UHV0RlZoeG56TGJHcThyMTF6RExvVktaUXZGNlVX?=
+ =?utf-8?B?S0FsQkxjajhKaXQ4ckoyMXFtc09vNmFjS0o3K2d0dXlzRFhhSGlXclJoUXMy?=
+ =?utf-8?B?RHZ4RTBBWndHcHY5Z2kvTTk3WnZUVDdmcUQyMDVRZGowWDJqSVAwcEU3NGRw?=
+ =?utf-8?B?QjhxWWtzODAzS0QweG42RlFpZ2hKcDR1UHVJS0JuOU5nYm85bWlEd3diRkgr?=
+ =?utf-8?B?aC9PMThMZ01IcUJWRnI4ekZBMWZvQXFyT1hSYXFkdC9pU0NZSnFLNjJ0UUp1?=
+ =?utf-8?B?RXl5TnJHclNLLzFCTVJ2M3dXRSt3aE8xcHlZeGVUbnEwRFQybnU5U2tnVDBT?=
+ =?utf-8?B?ZUYxTVl2aG4zWXBEUmhvcHNNSFFyTlZKS09QOVpsb0EzNEdQUERIL0tQdW5y?=
+ =?utf-8?B?MEhCVUdQOTJVSVpGbE5ObWhQbCtJdW5CV3krZkVXaHJsbStFMjJTaXVTdUJU?=
+ =?utf-8?B?MUREZ3pjS3ZrSUlwdVlheG9rMHc5WDFMMjdtSzJ6UlM4R3B1a1NDVEJtVXhE?=
+ =?utf-8?B?NUk4M1dVWk1zLzVjanZGWEhabWo0ZlhuMWY0RVVNOEp4US9ST3d1RE5xUmJu?=
+ =?utf-8?B?UXVLY0srcnlyd1N4SFlIN1dscWNRTTc2Y2NKTTFwdVVNUS92R0t0d0ZHV245?=
+ =?utf-8?B?YVBwdDBUOFA4NWwzNlVHSzhNMnQ2emM4V2U5L1RnRVk4cllPOWF5Wm9JcXhO?=
+ =?utf-8?B?MlgzYy91ZVV6clZKSDlsTTA1Y3RaQWlNNUdVOVZvbUwrclJyWFptVk5leDli?=
+ =?utf-8?B?QTNiT1c3WHFmblIvWmQ0elQ4SW1oYjhwMS9oeE5XOC9xa0E3d3lCSFpPd2Z3?=
+ =?utf-8?B?RGJhLytDT1NkOURwS0VoZm93MXBsdGwrMnd5UFJjVXc4SmxLSWluekxvZ0FQ?=
+ =?utf-8?B?OFQrdGxiSEYydHo5clhCQnk2b3lCZUoxWHZQOFdUQ3Fyc1dTQ0Z3bzB2ZldS?=
+ =?utf-8?B?UUNMTjJPclA3NTVqYXM3RlY4QWVXNVpaK2JhT3FneENNYldZYkZnQzJDa2lT?=
+ =?utf-8?B?WndsVHpzUUdzOXR0NUFwdE9zL01VQkZ5eU1zMStYL3lSazZvblF1UitHNUNo?=
+ =?utf-8?B?akVtVDBBY2ZPKzczRzloUEFGRzNnaElnOEtSVmN1Y1djaXhHV01DWWM0UkE4?=
+ =?utf-8?B?UHdKNUV0TVVRZlhVZ0VBbzRSUFNuNCtFM0xKOWZyTjNpVmZydXdxKzVaNXlw?=
+ =?utf-8?B?YThWbkFWWkRVTmc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 616c20e8-2918-4cf6-f6c7-08d8909f4828
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2020 17:10:01.4205
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Nov 2020 17:35:05.8638
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: a/1TQesSwxe0aEhhsiCXI5DOXyoO1cF9vqB9y8nrUy13ToOfHXioUWwKgpdwdZ4P
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3048
+X-MS-Exchange-CrossTenant-UserPrincipalName: kUb24Lcoxtu0h4HdDnxByIarc6LRvUThMKUPcmV3nNZ8Ty4PpLFzAOk2zIkqrU7l
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3365
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
  definitions=2020-11-24_05:2020-11-24,2020-11-24 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
- lowpriorityscore=0 impostorscore=0 phishscore=0 bulkscore=0 suspectscore=0
- malwarescore=0 mlxlogscore=999 spamscore=0 priorityscore=1501
- clxscore=1015 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011240105
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
+ mlxlogscore=806 mlxscore=0 priorityscore=1501 malwarescore=0 clxscore=1015
+ adultscore=0 phishscore=0 suspectscore=0 bulkscore=0 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011240106
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -146,124 +141,25 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 11/24/20 7:11 AM, Weqaar Janjua wrote:
-> On Sat, 21 Nov 2020 at 20:14, Weqaar Janjua <weqaar.janjua@gmail.com> wrote:
->>
->> On Fri, 20 Nov 2020 at 20:45, Yonghong Song <yhs@fb.com> wrote:
->>>
->>>
->>>
->>> On 11/20/20 5:00 AM, Weqaar Janjua wrote:
->>>> Adds following tests:
->>>>
->>>> 1. AF_XDP SKB mode
->>>>      d. Bi-directional Sockets
->>>>         Configure sockets as bi-directional tx/rx sockets, sets up fill
->>>>         and completion rings on each socket, tx/rx in both directions.
->>>>         Only nopoll mode is used
->>>>
->>>> 2. AF_XDP DRV/Native mode
->>>>      d. Bi-directional Sockets
->>>>      * Only copy mode is supported because veth does not currently support
->>>>        zero-copy mode
->>>>
->>>> Signed-off-by: Weqaar Janjua <weqaar.a.janjua@intel.com>
->>>> ---
->>>>    tools/testing/selftests/bpf/Makefile          |   4 +-
->>>>    .../bpf/test_xsk_drv_bidirectional.sh         |  23 ++++
->>>>    .../selftests/bpf/test_xsk_drv_teardown.sh    |   3 -
->>>>    .../bpf/test_xsk_skb_bidirectional.sh         |  20 ++++
->>>>    tools/testing/selftests/bpf/xdpxceiver.c      | 100 +++++++++++++-----
->>>>    tools/testing/selftests/bpf/xdpxceiver.h      |   4 +
->>>>    6 files changed, 126 insertions(+), 28 deletions(-)
->>>>    create mode 100755 tools/testing/selftests/bpf/test_xsk_drv_bidirectional.sh
->>>>    create mode 100755 tools/testing/selftests/bpf/test_xsk_skb_bidirectional.sh
->>>>
->>>> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
->>>> index 515b29d321d7..258bd72812e0 100644
->>>> --- a/tools/testing/selftests/bpf/Makefile
->>>> +++ b/tools/testing/selftests/bpf/Makefile
->>>> @@ -78,7 +78,9 @@ TEST_PROGS := test_kmod.sh \
->>>>        test_xsk_drv_nopoll.sh \
->>>>        test_xsk_drv_poll.sh \
->>>>        test_xsk_skb_teardown.sh \
->>>> -     test_xsk_drv_teardown.sh
->>>> +     test_xsk_drv_teardown.sh \
->>>> +     test_xsk_skb_bidirectional.sh \
->>>> +     test_xsk_drv_bidirectional.sh
->>>>
->>>>    TEST_PROGS_EXTENDED := with_addr.sh \
->>>>        with_tunnels.sh \
->>>> diff --git a/tools/testing/selftests/bpf/test_xsk_drv_bidirectional.sh b/tools/testing/selftests/bpf/test_xsk_drv_bidirectional.sh
->>>> new file mode 100755
->>>> index 000000000000..d3a7e2934d83
->>>> --- /dev/null
->>>> +++ b/tools/testing/selftests/bpf/test_xsk_drv_bidirectional.sh
->>>> @@ -0,0 +1,23 @@
->>>> +#!/bin/bash
->>>> +# SPDX-License-Identifier: GPL-2.0
->>>> +# Copyright(c) 2020 Intel Corporation.
->>>> +
->>>> +# See test_xsk_prerequisites.sh for detailed information on tests
->>>> +
->>>> +. xsk_prereqs.sh
->>>> +. xsk_env.sh
->>>> +
->>>> +TEST_NAME="DRV BIDIRECTIONAL SOCKETS"
->>>> +
->>>> +vethXDPnative ${VETH0} ${VETH1} ${NS1}
->>>> +
->>>> +params=("-N" "-B")
->>>> +execxdpxceiver params
->>>> +
->>>> +retval=$?
->>>> +test_status $retval "${TEST_NAME}"
->>>> +
->>>> +# Must be called in the last test to execute
->>>> +cleanup_exit ${VETH0} ${VETH1} ${NS1}
->>>
->>> This also makes hard to run tests as users will not know this unless
->>> they are familiar with the details of the tests.
->>>
->>> How about you have another scripts test_xsk.sh which includes all these
->>> individual tests and pull the above cleanup_exit into test_xsk.sh?
->>> User just need to run test_xsk.sh will be able to run all tests you
->>> implemented here.
->>>
->> This works, test_xsk_* >> test_xsk.sh, will ship out as v3.
->>
-> An issue with merging all tests in a single test_xsk.sh is reporting
-> number of test failures, with this approach a single test status is
-> printed by kselftest:
+On 11/24/20 7:12 AM, KP Singh wrote:
+> From: KP Singh <kpsingh@google.com>
 > 
-> # PREREQUISITES: [ PASS ]
-> # SKB NOPOLL: [ FAIL ]
-> # SKB POLL: [ PASS ]
-> ok 1 selftests: xsk-patch2: test_xsk.sh
+> This is in preparation to add a helper for BPF LSM programs to use
+> IMA hashes when attached to LSM hooks. There are LSM hooks like
+> inode_unlink which do not have a struct file * argument and cannot
+> use the existing ima_file_hash API.
 > 
-> This is due to the fact Makefile has one TEST_PROGS = test_xsk.sh
-> (thus kselftest considers it one test?), where in the original
-> approach all tests have separate TEST_PROGS .sh which makes reporting
-> match each test and status. This can be a problem for automation.
+> An inode based API is, therefore, useful in LSM based detections like an
+> executable trying to delete itself which rely on the inode_unlink LSM
+> hook.
 > 
-> An alternative would be to exit each test with failure status but then
-> the tests will stop execution at the failed test without executing the
-> rest of xsk tests, which we probably wouldn't want.
+> Moreover, the ima_file_hash function does nothing with the struct file
+> pointer apart from calling file_inode on it and converting it to an
+> inode.
 > 
-> Suggestions please?
+> Signed-off-by: KP Singh <kpsingh@google.com>
 
-I think it is okay to put everything xsk related to one test.
-If later on the test becomes more complex, you can have
-test_xsk_<1>.sh test_xsk_<2>.sh etc. But each .sh should be able to
-run independently without any particular order.
+There is no change for this patch compared to previous version,
+so you can carry my Ack.
 
-You can have subtests inside the .sh file. See test_offload.py as
-an example. You do not need to exit after one subtest fails, you can 
-continue to run the next one. currently test_offload.py
-may exit when some subtest failed, but I think you don't have to.
-
-> 
->>>> +
->>>> +test_exit $retval 0
->>>> diff --git a/tools/testing/selftests/bpf/test_xsk_drv_teardown.sh b/tools/testing/selftests/bpf/test_xsk_drv_teardown.sh
->>> [...]
+Acked-by: Yonghong Song <yhs@fb.com>
