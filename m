@@ -2,250 +2,180 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 271EF2C2115
-	for <lists+bpf@lfdr.de>; Tue, 24 Nov 2020 10:25:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 646742C2160
+	for <lists+bpf@lfdr.de>; Tue, 24 Nov 2020 10:29:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727131AbgKXJZE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Nov 2020 04:25:04 -0500
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:21649 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730978AbgKXJZD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Nov 2020 04:25:03 -0500
+        id S1731308AbgKXJ2s (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Nov 2020 04:28:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731024AbgKXJ2s (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Nov 2020 04:28:48 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3414C0613D6;
+        Tue, 24 Nov 2020 01:28:47 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id w202so2108896pff.10;
+        Tue, 24 Nov 2020 01:28:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1606209901; x=1637745901;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=lNZw1uUZvmxbFzlzMe0Blki4ZEHZ2wPeHOWCvjmyBDI=;
-  b=hUPOnXmrV0c4iyHmA7HHEACkwM5wlpb9Jt4SW9vXrnIJ63+LeUGTYkCX
-   cL5MjXybTvLcS5YYAoXCd6phEzjy5AnZkiYsgQVX1U24Byc2reonap0V4
-   /Vyc+EFR/Q5GB/QxFM0xZTLeFwiXLyMAvSwTGB8W4UM+fboNpJZYrDB7N
-   0=;
-X-IronPort-AV: E=Sophos;i="5.78,365,1599523200"; 
-   d="scan'208";a="66940334"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2a-1c1b5cdd.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 24 Nov 2020 09:24:59 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2a-1c1b5cdd.us-west-2.amazon.com (Postfix) with ESMTPS id 281D6A06E2;
-        Tue, 24 Nov 2020 09:24:58 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 24 Nov 2020 09:24:57 +0000
-Received: from 38f9d3582de7.ant.amazon.com (10.43.160.21) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 24 Nov 2020 09:24:53 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     <kafai@fb.com>
-CC:     <ast@kernel.org>, <benh@amazon.com>, <bpf@vger.kernel.org>,
-        <daniel@iogearbox.net>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <kuni1840@gmail.com>,
-        <kuniyu@amazon.co.jp>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-Subject: Re: [RFC PATCH bpf-next 3/8] tcp: Migrate TCP_ESTABLISHED/TCP_SYN_RECV sockets in accept queues.
-Date:   Tue, 24 Nov 2020 18:24:48 +0900
-Message-ID: <20201124092448.27711-1-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.17.2 (Apple Git-113)
-In-Reply-To: <20201123003828.xjpjdtk4ygl6tg6h@kafai-mbp.dhcp.thefacebook.com>
-References: <20201123003828.xjpjdtk4ygl6tg6h@kafai-mbp.dhcp.thefacebook.com>
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bHKb7nomqkZKADTymOqb9YebPYk5PICoUgtAna9zlJA=;
+        b=kUjmDLTzJAMIAUeMr0l6en9vgdoe6CAUWMsC1khPiePFd01zJwUlO9BM0Y0FZ9aevz
+         UuXpqW5MEhhEgxiJybCmJkUd11D1zymEkd0P6UC8fCf8h6sOGAqrsjwNOSv1mZQpq0zZ
+         fZlpvwfJTi3YHbKIyxz8zY77tpIBemrM+ONVEO20Mv+MPgkkcKOyd0r9Y9rNZkMQnjNl
+         sBhNUyOo+DOSQoz6NQYXO+sxKBvvZ+JRvCzfItY+k4r0/NDORlvz5jSKEeSoQiPTW9WC
+         /s/+PPiOgrJFNWN5PnxVPOHnizrU6pDvXAyKBNR76m5mLGKuEYucE4XUr4W5PXlC7fKE
+         Vy7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bHKb7nomqkZKADTymOqb9YebPYk5PICoUgtAna9zlJA=;
+        b=q2jktmY7o4LnmbbfPB1+nZejDj2PWU6RG/svkzuXaRno97KbPmWOC9z4VZLnsFOlFw
+         SjbSr+UEkxKxHWIx4ea+QvNgd+JW5e5uYrce2I5Hikzo1WYcNpYYPTVR0eMzePSoZUyN
+         WVFFzgQlBMfDhDXPIyv58Bd4P5RmYFT9i6RQX7z5nItn1SB+VbfGvP4KnBwShgNeHojV
+         DAFhwSHKl2J4GwMKUf2AazG3wZ3cYrg0HW8/YkZpLkkN3MlvpPP7BlTfzBW9ONtDkJCs
+         dMRzLaQPBbCumipF0O5nKvO1OnkjiKU9aljD/KN/hURiei9q3KI8IZTJ+mmVtOyNF67d
+         hfbg==
+X-Gm-Message-State: AOAM5320BOoFgDH/KqZ1AZnSnz7p383Y/5wHVpX0AVkgA17zj2pEIdto
+        wLsKpv3mhEl48DMFefbZm83pTmNaHHyDUmHIr5g=
+X-Google-Smtp-Source: ABdhPJx/5TVimn8Gf3cgvlwp5FjpuTfABlr3VrMAEiLMC1K6AxnhqJ0Qm6dcxy+ddZgRSA0ATSDhCzK7WxVTmS24PVk=
+X-Received: by 2002:a63:3e0f:: with SMTP id l15mr3103811pga.208.1606210127443;
+ Tue, 24 Nov 2020 01:28:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.21]
-X-ClientProxiedBy: EX13D39UWA003.ant.amazon.com (10.43.160.235) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
+References: <3306b4d8-8689-b0e7-3f6d-c3ad873b7093@intel.com>
+ <cover.1605686678.git.xuanzhuo@linux.alibaba.com> <b7b0432d49ab05064efb85f1858b6e6f9e1274bd.1605686678.git.xuanzhuo@linux.alibaba.com>
+In-Reply-To: <b7b0432d49ab05064efb85f1858b6e6f9e1274bd.1605686678.git.xuanzhuo@linux.alibaba.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Tue, 24 Nov 2020 10:28:36 +0100
+Message-ID: <CAJ8uoz2N_bRgJE94wqX4jSL0VfPDcVq6ppjbmgeMLgD-Qu9Oiw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] xsk: change the tx writeable condition
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From:   Martin KaFai Lau <kafai@fb.com>
-Date:   Sun, 22 Nov 2020 16:40:20 -0800
-> On Sat, Nov 21, 2020 at 07:13:22PM +0900, Kuniyuki Iwashima wrote:
-> > From:   Martin KaFai Lau <kafai@fb.com>
-> > Date:   Thu, 19 Nov 2020 17:53:46 -0800
-> > > On Fri, Nov 20, 2020 at 07:09:22AM +0900, Kuniyuki Iwashima wrote:
-> > > > From: Martin KaFai Lau <kafai@fb.com>
-> > > > Date: Wed, 18 Nov 2020 15:50:17 -0800
-> > > > > On Tue, Nov 17, 2020 at 06:40:18PM +0900, Kuniyuki Iwashima wrote:
-> > > > > > This patch lets reuseport_detach_sock() return a pointer of struct sock,
-> > > > > > which is used only by inet_unhash(). If it is not NULL,
-> > > > > > inet_csk_reqsk_queue_migrate() migrates TCP_ESTABLISHED/TCP_SYN_RECV
-> > > > > > sockets from the closing listener to the selected one.
-> > > > > > 
-> > > > > > Listening sockets hold incoming connections as a linked list of struct
-> > > > > > request_sock in the accept queue, and each request has reference to a full
-> > > > > > socket and its listener. In inet_csk_reqsk_queue_migrate(), we unlink the
-> > > > > > requests from the closing listener's queue and relink them to the head of
-> > > > > > the new listener's queue. We do not process each request, so the migration
-> > > > > > completes in O(1) time complexity. However, in the case of TCP_SYN_RECV
-> > > > > > sockets, we will take special care in the next commit.
-> > > > > > 
-> > > > > > By default, we select the last element of socks[] as the new listener.
-> > > > > > This behaviour is based on how the kernel moves sockets in socks[].
-> > > > > > 
-> > > > > > For example, we call listen() for four sockets (A, B, C, D), and close the
-> > > > > > first two by turns. The sockets move in socks[] like below. (See also [1])
-> > > > > > 
-> > > > > >   socks[0] : A <-.      socks[0] : D          socks[0] : D
-> > > > > >   socks[1] : B   |  =>  socks[1] : B <-.  =>  socks[1] : C
-> > > > > >   socks[2] : C   |      socks[2] : C --'
-> > > > > >   socks[3] : D --'
-> > > > > > 
-> > > > > > Then, if C and D have newer settings than A and B, and each socket has a
-> > > > > > request (a, b, c, d) in their accept queue, we can redistribute old
-> > > > > > requests evenly to new listeners.
-> > > > > I don't think it should emphasize/claim there is a specific way that
-> > > > > the kernel-pick here can redistribute the requests evenly.  It depends on
-> > > > > how the application close/listen.  The userspace can not expect the
-> > > > > ordering of socks[] will behave in a certain way.
-> > > > 
-> > > > I've expected replacing listeners by generations as a general use case.
-> > > > But exactly. Users should not expect the undocumented kernel internal.
-> > > > 
-> > > > 
-> > > > > The primary redistribution policy has to depend on BPF which is the
-> > > > > policy defined by the user based on its application logic (e.g. how
-> > > > > its binary restart work).  The application (and bpf) knows which one
-> > > > > is a dying process and can avoid distributing to it.
-> > > > > 
-> > > > > The kernel-pick could be an optional fallback but not a must.  If the bpf
-> > > > > prog is attached, I would even go further to call bpf to redistribute
-> > > > > regardless of the sysctl, so I think the sysctl is not necessary.
-> > > > 
-> > > > I also think it is just an optional fallback, but to pick out a different
-> > > > listener everytime, choosing the moved socket was reasonable. So the even
-> > > > redistribution for a specific use case is a side effect of such socket
-> > > > selection.
-> > > > 
-> > > > But, users should decide to use either way:
-> > > >   (1) let the kernel select a new listener randomly
-> > > >   (2) select a particular listener by eBPF
-> > > > 
-> > > > I will update the commit message like:
-> > > > The kernel selects a new listener randomly, but as the side effect, it can
-> > > > redistribute packets evenly for a specific case where an application
-> > > > replaces listeners by generations.
-> > > Since there is no feedback on sysctl, so may be something missed
-> > > in the lines.
-> > 
-> > I'm sorry, I have missed this point while thinking about each reply...
-> > 
-> > 
-> > > I don't think this migration logic should depend on a sysctl.
-> > > At least not when a bpf prog is attached that is capable of doing
-> > > migration, it is too fragile to ask user to remember to turn on
-> > > the sysctl before attaching the bpf prog.
-> > > 
-> > > Your use case is to primarily based on bpf prog to pick or only based
-> > > on kernel to do a random pick?
-> Again, what is your primarily use case?
+On Wed, Nov 18, 2020 at 9:25 AM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
+>
+> Modify the tx writeable condition from the queue is not full to the
+> number of remaining tx queues is less than the half of the total number
+> of queues. Because the tx queue not full is a very short time, this will
+> cause a large number of EPOLLOUT events, and cause a large number of
+> process wake up.
+>
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> ---
+>  net/xdp/xsk.c       | 20 +++++++++++++++++---
+>  net/xdp/xsk_queue.h |  6 ++++++
+>  2 files changed, 23 insertions(+), 3 deletions(-)
+>
+> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> index 7f0353e..bc3d4ece 100644
+> --- a/net/xdp/xsk.c
+> +++ b/net/xdp/xsk.c
+> @@ -211,6 +211,17 @@ static int __xsk_rcv(struct xdp_sock *xs, struct xdp_buff *xdp, u32 len,
+>         return 0;
+>  }
+>
+> +static bool xsk_writeable(struct xdp_sock *xs)
 
-We have so many services and components that I cannot grasp all of their
-implementations, but I have started this series because a service component
-based on the random pick by the kernel suffered from the issue.
+Not clear what this function does from the name. How about
+xsk_tx_half_free() or maybe xsk_tx_writeable()?
 
+> +{
+> +       if (!xs->tx)
+> +               return false;
 
-> > I think we have to care about both cases.
-> > 
-> > I think we can always enable the migration feature if eBPF prog is not
-> > attached. On the other hand, if BPF_PROG_TYPE_SK_REUSEPORT prog is attached
-> > to select a listener by some rules, along updating the kernel,
-> > redistributing requests without user intention can break the application.
-> > So, there is something needed to confirm user intension at least if eBPF
-> > prog is attached.
-> Right, something being able to tell if the bpf prog can do migration
-> can confirm the user intention here.  However, this will not be a
-> sysctl.
-> 
-> A new bpf_attach_type "BPF_SK_REUSEPORT_SELECT_OR_MIGRATE" can be added.
-> "prog->expected_attach_type == BPF_SK_REUSEPORT_SELECT_OR_MIGRATE"
-> can be used to decide if migration can be done by the bpf prog.
-> Although the prog->expected_attach_type has not been checked for
-> BPF_PROG_TYPE_SK_REUSEPORT, there was an earlier discussion
-> that the risk of breaking is very small and is acceptable.
-> 
-> Instead of depending on !reuse_md->data to decide if it
-> is doing migration or not, a clearer signal should be given
-> to the bpf prog.  A "u8 migration" can be added to "struct sk_reuseport_kern"
-> (and to "struct sk_reuseport_md" accordingly).  It can tell
-> the bpf prog that it is doing migration.  It should also tell if it is
-> migrating a list of established sk(s) or an individual req_sk.
-> Accessing "reuse_md->migration" should only be allowed for
-> BPF_SK_REUSEPORT_SELECT_OR_MIGRATE during is_valid_access().
-> 
-> During migration, if skb is not available, an empty skb can be used.
-> Migration is a slow path and does not happen very often, so it will
-> be fine even it has to create a temp skb (or may be a static const skb
-> can be used, not sure but this is implementation details).
+Skip this test as it will slow down the code. It is only needed in one
+place below.
 
-I greatly appreciate your detailed idea and explanation!
-I will try to implement this.
+> +       if (xskq_cons_left(xs->tx) > xs->tx->nentries / 2)
+> +               return false;
+> +
+> +       return true;
+> +}
+> +
+>  static bool xsk_is_bound(struct xdp_sock *xs)
+>  {
+>         if (READ_ONCE(xs->state) == XSK_BOUND) {
+> @@ -296,7 +307,8 @@ void xsk_tx_release(struct xsk_buff_pool *pool)
+>         rcu_read_lock();
+>         list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
+>                 __xskq_cons_release(xs->tx);
+> -               xs->sk.sk_write_space(&xs->sk);
+> +               if (xsk_writeable(xs))
+> +                       xs->sk.sk_write_space(&xs->sk);
+>         }
+>         rcu_read_unlock();
+>  }
+> @@ -442,7 +454,8 @@ static int xsk_generic_xmit(struct sock *sk)
+>
+>  out:
+>         if (sent_frame)
+> -               sk->sk_write_space(sk);
+> +               if (xsk_writeable(xs))
+> +                       sk->sk_write_space(sk);
+>
+>         mutex_unlock(&xs->mutex);
+>         return err;
+> @@ -499,7 +512,8 @@ static __poll_t xsk_poll(struct file *file, struct socket *sock,
+>
+>         if (xs->rx && !xskq_prod_is_empty(xs->rx))
+>                 mask |= EPOLLIN | EPOLLRDNORM;
+> -       if (xs->tx && !xskq_cons_is_full(xs->tx))
+> +
 
+No reason to introduce a newline here.
 
-> > But honestly, I believe such eBPF users can follow this change and
-> > implement migration eBPF prog if we introduce such a breaking change.
-> > 
-> > 
-> > > Also, IIUC, this sysctl setting sticks at "*reuse", there is no way to
-> > > change it until all the listening sockets are closed which is exactly
-> > > the service disruption problem this series is trying to solve here.
-> > 
-> > Oh, exactly...
-> > If we apply this series by live patching, we cannot enable the feature
-> > without service disruption.
-> > 
-> > To enable the migration feature dynamically, how about this logic?
-> > In this logic, we do not save the sysctl value and check it at each time.
-> > 
-> >   1. no eBPF prog attached -> ON
-> >   2. eBPF prog attached and sysctl is 0 -> OFF
-> No.  When bpf prog is attached and it clearly signals (expected_attach_type
-> here) it can do migration, it should not depend on anything else.  It is very
-> confusing to use.  When a prog is successfully loaded, verified
-> and attached, it is expected to run.
-> 
-> This sysctl essentially only disables the bpf prog with
-> type == BPF_PROG_TYPE_SK_REUSEPORT running at a particular point.
-> This is going down a path that having another sysctl in the future
-> to disable another bpf prog type.  If there would be a need to disable
-> bpf prog on a type-by-type bases, it would need a more
-> generic solution on the bpf side and do it in a consistent way
-> for all prog types.  It needs a separate and longer discussion.
-> 
-> All behaviors of the BPF_SK_REUSEPORT_SELECT_OR_MIGRATE bpf prog
-> should not depend on this sysctl at all .
-> 
-> /* Pseudo code to show the idea only.
->  * Actual implementation should try to fit
->  * better into the current code and should look
->  * quite different from here.
->  */
-> 
-> if ((prog && prog->expected_attach_type == BPF_SK_REUSEPORT_SELECT_OR_MIGRATE)) {
-> 	/* call bpf to migrate */
-> 	action = BPF_PROG_RUN(prog, &reuse_kern);
-> 
-> 	if (action == SK_PASS) {
-> 		if (!reuse_kern.selected_sk)
-> 			/* fallback to kernel random pick */
-> 		else
-> 			/* migrate to reuse_kern.selected_sk */
-> 	} else {
-> 		/* action == SK_DROP. don't do migration at all and
-> 		 * don't fallback to kernel random pick.
-> 		 */ 
-> 	}
-> }
-> 
-> Going back to the sysctl, with BPF_SK_REUSEPORT_SELECT_OR_MIGRATE,
-> do you still have a need on adding sysctl_tcp_migrate_req?
+> +       if (xsk_writeable(xs))
 
-No, now I do not think the option should be sysctl.
-It will be BPF_SK_REUSEPORT_SELECT_OR_MIGRATE in the next series.
-Thank you!
+Add an explicit "xs->tx &&" in the if statement here as we removed the
+test in xsk_writeable.
 
+>                 mask |= EPOLLOUT | EPOLLWRNORM;
+>
+>         return mask;
+> diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
+> index cdb9cf3..82a5228 100644
+> --- a/net/xdp/xsk_queue.h
+> +++ b/net/xdp/xsk_queue.h
+> @@ -264,6 +264,12 @@ static inline bool xskq_cons_is_full(struct xsk_queue *q)
+>                 q->nentries;
+>  }
+>
+> +static inline __u64 xskq_cons_left(struct xsk_queue *q)
 
-> Regardless, if there is still a need,
-> the document for sysctl_tcp_migrate_req should be something like:
-> "the kernel will do a random pick when there is no bpf prog
->  attached to the reuseport group...."
-> 
-> [ ps, my reply will be slow in this week. ]
+Let us call this xskq_cons_entries_present() or
+xskq_cons_filled_entries(). The word "left" has the connotation that I
+still have stuff left to do. While this is kind of true for this case,
+it might not be for other cases that can use your function. The
+function provides how many (filled) entries that are present in the
+ring. Can you come up with a better name as I am not super fond of my
+suggestions? It would have been nice to call it xskq_cons_nb_entries()
+but there is already such a function that is lazy in nature and that
+allows access to the entries.
+
+> +{
+> +       /* No barriers needed since data is not accessed */
+> +       return READ_ONCE(q->ring->producer) - READ_ONCE(q->ring->consumer);
+> +}
+> +
+>  /* Functions for producers */
+>
+>  static inline bool xskq_prod_is_full(struct xsk_queue *q)
+> --
+> 1.8.3.1
+>
