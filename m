@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D7132C1E70
-	for <lists+bpf@lfdr.de>; Tue, 24 Nov 2020 07:40:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D79022C1E81
+	for <lists+bpf@lfdr.de>; Tue, 24 Nov 2020 07:50:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729750AbgKXGkE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Nov 2020 01:40:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54868 "EHLO
+        id S1728951AbgKXGuI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Nov 2020 01:50:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729701AbgKXGkD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Nov 2020 01:40:03 -0500
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFAF7C0613CF
-        for <bpf@vger.kernel.org>; Mon, 23 Nov 2020 22:40:03 -0800 (PST)
-Received: by mail-pf1-x443.google.com with SMTP id b63so17475449pfg.12
-        for <bpf@vger.kernel.org>; Mon, 23 Nov 2020 22:40:03 -0800 (PST)
+        with ESMTP id S1725786AbgKXGuH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Nov 2020 01:50:07 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB49BC0613CF
+        for <bpf@vger.kernel.org>; Mon, 23 Nov 2020 22:50:07 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id bj5so9383211plb.4
+        for <bpf@vger.kernel.org>; Mon, 23 Nov 2020 22:50:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=DkuEKxOrBgHumxzBzNasPG6aS//bYurF/zUFfZbHLlg=;
-        b=n0EiF3NB/OIkU3m0MMgG006lrcRIbUjwpx6Lfy5f6uR93fFVfCh+Eri2mF4YoJTawQ
-         WdgiRf13HiSPffVVK41kZMGynLW8wXNwSD7pWu3X/nwTU1eRmDR0FMQEI/SmaUQpl9mo
-         7biRVqKLV9Ya+BdstVw3kYjysYxkc8GpmU5Y4M/HFqckyl93gvEmQCZWKN3xbOCcqSk3
-         qBDWlhIkj41lsIZcoG5gs4N+ZtAP3KX5OasVffqM8mc4fBUw9xyIPbYIJOOmOtPpChRx
-         irZEDv+VOVBhrtlDlkFpvx6P1gsdJl2eeikdF6VLvhpYFKSXjvElKhLjwz3LkO+8Dfwj
-         Dkrw==
+        bh=Rt0VZ98yTW+ib5esQryQVRz7SwQo26Hsj75YBQujSoM=;
+        b=qoDLWoJFZSBG0eoKZBFmW168qNWca+0qQMHcbBURQ+AtzliCxUYqjdzambKlBe5T88
+         fE+puIvlHjAQVA45Z1u8SUShMiilWfKb+BIeXjomrD0D6GVEBaVUvaOzfBXgnVRwCEDF
+         EfcwoX3Get19oLUG0FfufISaDudI2tqbT6ZOtJ8nFzIVBV1IyESN1ElmRxVpV+1bUcUq
+         278rjkU7F7zwDk1VXtarZAsWbynqoXUoTB1FGtDLMTqS2+1n5RsYSyYepJih+JyEUfvT
+         +AXs+oPKskKyvVY0PPgRXLBK81vTfswzAUtlkCxNFuE+fRnVBWjK1iXqauJ+ORQ/C1af
+         zOIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=DkuEKxOrBgHumxzBzNasPG6aS//bYurF/zUFfZbHLlg=;
-        b=cCC093ID66/hXkC7phSDlXobYGMhWAUmBtqh72LC1m9B2r1NiKiN5lKhu02xOomZD7
-         OPt6Usdd7yGRWy919tJ7WW996taNdegKG0ZuJumAefIlM/eNx3rkiphhDGBVjqXDO2wQ
-         dQRm71gpVh25qlJ2yc/38r6WuM128hwPAcJoUlcDp0s2K/bdIsV+idmyq1EaK3zBsUi/
-         ImUHrGRF9Ci56ytuzLpfHP1wDvvWWnDm+2wWXRmJK92Gfny+O12FG3Tnp0YvpOWeHURZ
-         m6kh05lUO2XbeVmIhANWigWztVEMI8s/29GuYW+zY1SnpkCEPVGBSHsY9eOoLah9dK5i
-         9FRw==
-X-Gm-Message-State: AOAM533h9XVl+Q8G8q8b+cRDJLs8WKfYAeOXQcrd6WDzYp1jUJ7lqTEm
-        OY2jnN8rAIUw4T53ZY9i3sE=
-X-Google-Smtp-Source: ABdhPJw1k5RcFV//9L640iksl8hrT4ORnzSbyiJOxK7kDpAwGDZN1LqD2sS+fTid8dZ2D6gQP7WNCw==
-X-Received: by 2002:a62:ddcb:0:b029:197:faf2:e8b4 with SMTP id w194-20020a62ddcb0000b0290197faf2e8b4mr2919748pff.75.1606200003226;
-        Mon, 23 Nov 2020 22:40:03 -0800 (PST)
+        bh=Rt0VZ98yTW+ib5esQryQVRz7SwQo26Hsj75YBQujSoM=;
+        b=EdT7fF/fkYiEvaBPS2+1v6JUhAGYsS1HoQGshon3ygyYF8b7R59GC+UMI75sHvT3Yj
+         PbHxMc1H5ON/2SW8jVHbKj0CGdR4Vqz0vJOlkcyfa+C1FAWz9fu9hdCLZtajZi7qMuF5
+         e69IYKtfcfyDTi7JATizLRNATMJsIYTmP453LMYVFq7/JN7qqnCxbD8r1HkOG6qbLda4
+         7NzP67BLEUoJWQMrN7MckaqNFKtHBKbZxJu78S3CI7+bf65jLNaX4qvJpEyGKnjii3va
+         HZ6x42pigdDb3x3S17xbEJaqjlJq7QvcXeFL06nBk7Fsx/jhb2Xgk4yXmFA2feb0fK6N
+         UxVw==
+X-Gm-Message-State: AOAM533TLLKeudwZhtXtH+9+Iz0CZs+EFHETz0QKDLHNPOeenIz0Gg1U
+        /DAy1VE998xsYclWSFrl9DQ=
+X-Google-Smtp-Source: ABdhPJxLavrI6a59SThdjBwIfyEH3xKApwj6M18Ed2d48bN74/KLz/KwgZhK17votf7n+WwyMUCr3Q==
+X-Received: by 2002:a17:902:8d82:b029:d8:c5e8:9785 with SMTP id v2-20020a1709028d82b02900d8c5e89785mr2888146plo.5.1606200607108;
+        Mon, 23 Nov 2020 22:50:07 -0800 (PST)
 Received: from ast-mbp ([2620:10d:c090:400::5:2397])
-        by smtp.gmail.com with ESMTPSA id s18sm14137582pfc.5.2020.11.23.22.40.01
+        by smtp.gmail.com with ESMTPSA id a12sm1583562pjh.48.2020.11.23.22.50.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2020 22:40:02 -0800 (PST)
-Date:   Mon, 23 Nov 2020 22:40:00 -0800
+        Mon, 23 Nov 2020 22:50:06 -0800 (PST)
+Date:   Mon, 23 Nov 2020 22:50:04 -0800
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     Brendan Jackman <jackmanb@google.com>
 Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
@@ -55,70 +55,216 @@ Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         KP Singh <kpsingh@chromium.org>,
         Florent Revest <revest@chromium.org>
-Subject: Re: [PATCH 6/7] bpf: Add instructions for atomic_cmpxchg and friends
-Message-ID: <20201124064000.5wd4ngq7ydb63chl@ast-mbp>
+Subject: Re: [PATCH 3/7] bpf: Rename BPF_XADD and prepare to encode other
+ atomics in .imm
+Message-ID: <20201124065004.pdgjfkqvzywb5l2c@ast-mbp>
 References: <20201123173202.1335708-1-jackmanb@google.com>
- <20201123173202.1335708-7-jackmanb@google.com>
+ <20201123173202.1335708-4-jackmanb@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201123173202.1335708-7-jackmanb@google.com>
+In-Reply-To: <20201123173202.1335708-4-jackmanb@google.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 05:32:01PM +0000, Brendan Jackman wrote:
-> These are the operations that implement atomic exchange and
-> compare-exchange.
+On Mon, Nov 23, 2020 at 05:31:58PM +0000, Brendan Jackman wrote:
+> A subsequent patch will add additional atomic operations. These new
+> operations will use the same opcode field as the existing XADD, with
+> the immediate discriminating different operations.
 > 
-> They are peculiarly named because of the presence of the separate
-> FETCH field that tells you whether the instruction writes the value
-> back to the src register. Neither operation is supported without
-> BPF_FETCH:
+> In preparation, rename the instruction mode BPF_ATOMIC and start
+> calling the zero immediate BPF_ADD.
 > 
-> - BPF_CMPSET without BPF_FETCH (i.e. an atomic compare-and-set
->   without knowing whether the write was successfully) isn't implemented
->   by the kernel, x86, or ARM. It would be a burden on the JIT and it's
->   hard to imagine a use for this operation, so it's not supported.
+> This is possible (doesn't break existing valid BPF progs) because the
+> immediate field is currently reserved MBZ and BPF_ADD is zero.
 > 
-> - BPF_SET without BPF_FETCH would be bpf_set, which has pretty
->   limited use: all it really lets you do is atomically set 64-bit
->   values on 32-bit CPUs. It doesn't imply any barriers.
+> All uses are removed from the tree but the BPF_XADD definition is
+> kept around to avoid breaking builds for people including kernel
+> headers.
+> 
+> Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> ---
+>  Documentation/networking/filter.rst           | 27 +++++++++-------
+>  arch/arm/net/bpf_jit_32.c                     |  7 ++---
+>  arch/arm64/net/bpf_jit_comp.c                 | 16 +++++++---
+>  arch/mips/net/ebpf_jit.c                      | 11 +++++--
+>  arch/powerpc/net/bpf_jit_comp64.c             | 25 ++++++++++++---
+>  arch/riscv/net/bpf_jit_comp32.c               | 20 +++++++++---
+>  arch/riscv/net/bpf_jit_comp64.c               | 16 +++++++---
+>  arch/s390/net/bpf_jit_comp.c                  | 26 +++++++++-------
+>  arch/sparc/net/bpf_jit_comp_64.c              | 14 +++++++--
+>  arch/x86/net/bpf_jit_comp.c                   | 30 +++++++++++-------
+>  arch/x86/net/bpf_jit_comp32.c                 |  6 ++--
 
-...
+I think this massive rename is not needed.
+BPF_XADD is uapi and won't be removed.
+Updating documentation, samples and tests is probably enough.
 
-> -			if (insn->imm & BPF_FETCH) {
-> +			switch (insn->imm) {
-> +			case BPF_SET | BPF_FETCH:
-> +				/* src_reg = atomic_chg(*(u32/u64*)(dst_reg + off), src_reg); */
-> +				EMIT1(0x87);
-> +				break;
-> +			case BPF_CMPSET | BPF_FETCH:
-> +				/* r0 = atomic_cmpxchg(*(u32/u64*)(dst_reg + off), r0, src_reg); */
-> +				EMIT2(0x0F, 0xB1);
-> +				break;
-...
->  /* atomic op type fields (stored in immediate) */
-> +#define BPF_SET		0xe0	/* atomic write */
-> +#define BPF_CMPSET	0xf0	/* atomic compare-and-write */
+> diff --git a/include/linux/filter.h b/include/linux/filter.h
+> index 1b62397bd124..ce19988fb312 100644
+> --- a/include/linux/filter.h
+> +++ b/include/linux/filter.h
+> @@ -261,13 +261,15 @@ static inline bool insn_is_zext(const struct bpf_insn *insn)
+>  
+>  /* Atomic memory add, *(uint *)(dst_reg + off16) += src_reg */
+>  
+> -#define BPF_STX_XADD(SIZE, DST, SRC, OFF)			\
+> +#define BPF_ATOMIC_ADD(SIZE, DST, SRC, OFF)			\
+>  	((struct bpf_insn) {					\
+> -		.code  = BPF_STX | BPF_SIZE(SIZE) | BPF_XADD,	\
+> +		.code  = BPF_STX | BPF_SIZE(SIZE) | BPF_ATOMIC,	\
+>  		.dst_reg = DST,					\
+>  		.src_reg = SRC,					\
+>  		.off   = OFF,					\
+> -		.imm   = 0 })
+> +		.imm   = BPF_ADD })
+> +#define BPF_STX_XADD BPF_ATOMIC_ADD /* alias */
+
+this is fine.
+
 > +
->  #define BPF_FETCH	0x01	/* fetch previous value into src reg */
+>  
+>  /* Memory store, *(uint *) (dst_reg + off16) = imm32 */
+>  
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 3ca6146f001a..dcd08783647d 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -19,7 +19,8 @@
+>  
+>  /* ld/ldx fields */
+>  #define BPF_DW		0x18	/* double word (64-bit) */
+> -#define BPF_XADD	0xc0	/* exclusive add */
+> +#define BPF_ATOMIC	0xc0	/* atomic memory ops - op type in immediate */
+> +#define BPF_XADD	0xc0	/* legacy name, don't add new uses */
 
-I think SET in the name looks odd.
-I understand that you picked this name so that SET|FETCH together would form
-more meaningful combination of words, but we're not planning to support SET
-alone. There is no such instruction in a cpu. If we ever do test_and_set it
-would be something different.
-How about the following instead:
-+#define BPF_XCHG	0xe1	/* atomic exchange */
-+#define BPF_CMPXCHG	0xf1	/* atomic compare exchange */
-In other words get that fetch bit right away into the encoding.
-Then the switch statement above could be:
-+			switch (insn->imm) {
-+			case BPF_XCHG:
-+				/* src_reg = atomic_chg(*(u32/u64*)(dst_reg + off), src_reg); */
-+				EMIT1(0x87);
-...
-+			case BPF_ADD | BPF_FETCH:
-...
-+			case BPF_ADD:
+I think the comment sounds too strong.
+New uses of BPF_XADD are discouraged, but they're still correct.
+
+>  
+>  /* alu/jmp fields */
+>  #define BPF_MOV		0xb0	/* mov reg to reg */
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index ff55cbcfbab4..48b192a8edce 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -1317,8 +1317,8 @@ EXPORT_SYMBOL_GPL(__bpf_call_base);
+>  	INSN_3(STX, MEM,  H),			\
+>  	INSN_3(STX, MEM,  W),			\
+>  	INSN_3(STX, MEM,  DW),			\
+> -	INSN_3(STX, XADD, W),			\
+> -	INSN_3(STX, XADD, DW),			\
+> +	INSN_3(STX, ATOMIC, W),			\
+> +	INSN_3(STX, ATOMIC, DW),		\
+>  	/*   Immediate based. */		\
+>  	INSN_3(ST, MEM, B),			\
+>  	INSN_3(ST, MEM, H),			\
+> @@ -1626,13 +1626,25 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
+>  	LDX_PROBE(DW, 8)
+>  #undef LDX_PROBE
+>  
+> -	STX_XADD_W: /* lock xadd *(u32 *)(dst_reg + off16) += src_reg */
+> -		atomic_add((u32) SRC, (atomic_t *)(unsigned long)
+> -			   (DST + insn->off));
+> +	STX_ATOMIC_W:
+> +		switch (insn->imm) {
+> +		case BPF_ADD:
+> +			/* lock xadd *(u32 *)(dst_reg + off16) += src_reg */
+> +			atomic_add((u32) SRC, (atomic_t *)(unsigned long)
+> +				   (DST + insn->off));
+> +		default:
+> +			goto default_label;
+> +		}
+>  		CONT;
+> -	STX_XADD_DW: /* lock xadd *(u64 *)(dst_reg + off16) += src_reg */
+> -		atomic64_add((u64) SRC, (atomic64_t *)(unsigned long)
+> -			     (DST + insn->off));
+> +	STX_ATOMIC_DW:
+> +		switch (insn->imm) {
+> +		case BPF_ADD:
+> +			/* lock xadd *(u64 *)(dst_reg + off16) += src_reg */
+> +			atomic64_add((u64) SRC, (atomic64_t *)(unsigned long)
+> +				     (DST + insn->off));
+> +		default:
+> +			goto default_label;
+> +		}
+
++1
+
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index fb2943ea715d..06885e2501f8 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -3598,13 +3598,17 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+>  	return err;
+>  }
+>  
+> -static int check_xadd(struct bpf_verifier_env *env, int insn_idx, struct bpf_insn *insn)
+> +static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_insn *insn)
+
++1
+
+> diff --git a/lib/test_bpf.c b/lib/test_bpf.c
+> index ca7d635bccd9..fbb13ef9207c 100644
+> --- a/lib/test_bpf.c
+> +++ b/lib/test_bpf.c
+> @@ -4295,7 +4295,7 @@ static struct bpf_test tests[] = {
+>  		{ { 0, 0xffffffff } },
+>  		.stack_depth = 40,
+>  	},
+> -	/* BPF_STX | BPF_XADD | BPF_W/DW */
+> +	/* BPF_STX | BPF_ATOMIC | BPF_W/DW */
+
+I would leave this comment as-is.
+There are several uses of BPF_STX_XADD in that file.
+So the comment is fine.
+
+>  	{
+>  		"STX_XADD_W: Test: 0x12 + 0x10 = 0x22",
+>  		.u.insns_int = {
+> diff --git a/samples/bpf/bpf_insn.h b/samples/bpf/bpf_insn.h
+> index 544237980582..db67a2847395 100644
+> --- a/samples/bpf/bpf_insn.h
+> +++ b/samples/bpf/bpf_insn.h
+> @@ -138,11 +138,11 @@ struct bpf_insn;
+>  
+>  #define BPF_STX_XADD(SIZE, DST, SRC, OFF)			\
+>  	((struct bpf_insn) {					\
+> -		.code  = BPF_STX | BPF_SIZE(SIZE) | BPF_XADD,	\
+> +		.code  = BPF_STX | BPF_SIZE(SIZE) | BPF_ATOMIC,	\
+>  		.dst_reg = DST,					\
+>  		.src_reg = SRC,					\
+>  		.off   = OFF,					\
+> -		.imm   = 0 })
+> +		.imm   = BPF_ADD })
+>  
+>  /* Memory store, *(uint *) (dst_reg + off16) = imm32 */
+>  
+> diff --git a/samples/bpf/sock_example.c b/samples/bpf/sock_example.c
+> index 00aae1d33fca..41ec3ca3bc40 100644
+> --- a/samples/bpf/sock_example.c
+> +++ b/samples/bpf/sock_example.c
+> @@ -54,7 +54,8 @@ static int test_sock(void)
+>  		BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
+>  		BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 2),
+>  		BPF_MOV64_IMM(BPF_REG_1, 1), /* r1 = 1 */
+> -		BPF_RAW_INSN(BPF_STX | BPF_XADD | BPF_DW, BPF_REG_0, BPF_REG_1, 0, 0), /* xadd r0 += r1 */
+> +		BPF_RAW_INSN(BPF_STX | BPF_ATOMIC | BPF_DW,
+> +			     BPF_REG_0, BPF_REG_1, 0, BPF_ADD), /* xadd r0 += r1 */
+
++1
+
+> diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c b/tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c
+> index b549fcfacc0b..79401a59a988 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/cgroup_attach_multi.c
+> @@ -45,13 +45,15 @@ static int prog_load_cnt(int verdict, int val)
+>  		BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
+>  		BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 2),
+>  		BPF_MOV64_IMM(BPF_REG_1, val), /* r1 = 1 */
+> -		BPF_RAW_INSN(BPF_STX | BPF_XADD | BPF_DW, BPF_REG_0, BPF_REG_1, 0, 0), /* xadd r0 += r1 */
+> +		BPF_RAW_INSN(BPF_STX | BPF_ATOMIC | BPF_DW,
+> +			     BPF_REG_0, BPF_REG_1, 0, BPF_ADD), /* xadd r0 += r1 */
+
++1
