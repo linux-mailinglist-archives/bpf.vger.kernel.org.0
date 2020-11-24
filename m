@@ -2,145 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 017352C26D7
-	for <lists+bpf@lfdr.de>; Tue, 24 Nov 2020 14:12:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D75CF2C29BA
+	for <lists+bpf@lfdr.de>; Tue, 24 Nov 2020 15:34:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387582AbgKXNKw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Nov 2020 08:10:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733262AbgKXNKu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Nov 2020 08:10:50 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F60EC0613D6
-        for <bpf@vger.kernel.org>; Tue, 24 Nov 2020 05:10:50 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id m6so22251454wrg.7
-        for <bpf@vger.kernel.org>; Tue, 24 Nov 2020 05:10:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GoJAxHLDoVqbIziLFiALs3iwDpgfId+a82Qr/9mzh6c=;
-        b=GfwTANUxL2mqjBIacvbmm1WDWKzxM8rCchvjgxbsU9GTD+y+tgH2gadOUaE7vP1sx0
-         fP2MlR+hSq8H8i1MBhbs7dHxtIORlLtOIXUKFo9JsT4k+QWLXvS8dxsrGF3tMuRfE+g6
-         oenbHXpfAqhB8rdP0rREd8wwr/wElVM8CTsDl+m9JdntghILmNsRhPFeGkqF7QFOPIDg
-         Lue3S2QuAwQTLsmY1tIzwQ/aDpBe2gQE5mVQI3r5S1B21knsA+ux7UGsugXnYkkwZ8bT
-         b0SGsHDh3Hy9eprE5d/c0X4AbuyU1v/emTK9agBaPfOGiLR5Ee+VWs8848a1865Ko9jz
-         VUSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GoJAxHLDoVqbIziLFiALs3iwDpgfId+a82Qr/9mzh6c=;
-        b=L5fpp+MSxCzCvDFD8I6DZ5kOLgETwKi3F/1tGXeGSmJqZAXZ2F7a9PjN/ucW3jTABv
-         ufSmN4pcWcSaRBbRYaMGF2fRzfG5IoNPZP1FWuNAwTE8+vWVW7KENh0IRkfv0f1br24z
-         DRQezQ1no+Yo7AA5RmBtPKr+XIwbKRB+TE7KcF8m6z+izjDD/TFwOm8CAWg//UCyN9Do
-         iYtWmQ+WpRBJjcTQcQQA1L/McFaeL8X7rVVo7I3pD739Zawy2QeJB2x8DEX9SLmF9HTd
-         fwM5wcU3VVtLJqz3yzdvK1dnD5/zPEzaH3NkqIulyFdeJxXIUv/SOtucqXikKkS3IrU+
-         Rd8Q==
-X-Gm-Message-State: AOAM533F1H3TNx8dPYqXbBUJ+VjhHvrEzIZ+brvTzl2zs/pspXNbhOKT
-        03VPxLJfZLIKuRRBHAYHg0AAPw==
-X-Google-Smtp-Source: ABdhPJyiOOz4EG0+mUr0d7+GLs+20zZ3MwZW/i+fWgK4URj5tAefLezjF5OoJvmgDG7SGM041lqohw==
-X-Received: by 2002:adf:df8e:: with SMTP id z14mr5243259wrl.406.1606223448675;
-        Tue, 24 Nov 2020 05:10:48 -0800 (PST)
-Received: from google.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
-        by smtp.gmail.com with ESMTPSA id d128sm5812719wmc.7.2020.11.24.05.10.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 05:10:47 -0800 (PST)
-Date:   Tue, 24 Nov 2020 13:10:44 +0000
-From:   Brendan Jackman <jackmanb@google.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>
-Subject: Re: [PATCH 7/7] bpf: Add tests for new BPF atomic operations
-Message-ID: <20201124131044.GA1912645@google.com>
-References: <20201123173202.1335708-1-jackmanb@google.com>
- <20201123173202.1335708-8-jackmanb@google.com>
- <c4cf639c-f499-5179-45f4-0fe374eb7444@fb.com>
+        id S2388709AbgKXOdR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Nov 2020 09:33:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28076 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388141AbgKXOdR (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 24 Nov 2020 09:33:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606228395;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6ESyS+WMCSEdJqVArdghIaq910vepY8FdPGVN96WIOo=;
+        b=idvy5nx+pqRsrLMX41EL2G4wswr1iOk7IHh2/P/0SEncs6SWifOTBd4Dr2QatCL7yEhFr4
+        kUeeD9A9h1izyXcxxgVl8T9ql3E6ZGC3mf6t4KxXCQaXIwvd0Nh0SZshXiHKhq+aO/pVud
+        gePlNVKqi4eEuu1cVWBg98rN2LtISK0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-169-zi4tAsyWOpmdWdk5wacgAA-1; Tue, 24 Nov 2020 09:33:12 -0500
+X-MC-Unique: zi4tAsyWOpmdWdk5wacgAA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8F48A805BF4;
+        Tue, 24 Nov 2020 14:33:09 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C473660C43;
+        Tue, 24 Nov 2020 14:33:02 +0000 (UTC)
+Date:   Tue, 24 Nov 2020 15:33:01 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Maciej =?UTF-8?B?xbtlbmN6eWtvd3NraQ==?= <maze@google.com>,
+        Lorenz Bauer <lmb@cloudflare.com>, shaun@tigera.io,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Marek Majkowski <marek@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
+        colrack@gmail.com, brouer@redhat.com
+Subject: Re: [PATCH bpf-next V7 8/8] bpf/selftests: activating bpf_check_mtu
+ BPF-helper
+Message-ID: <20201124153301.47abc09c@carbon>
+In-Reply-To: <CAEf4BzbfqvCiHDaZk3yQCPfzwpGJ-35XBw3qaGuPNYkfBHR2Kw@mail.gmail.com>
+References: <160588903254.2817268.4861837335793475314.stgit@firesoul>
+        <160588912738.2817268.9380466634324530673.stgit@firesoul>
+        <CAEf4BzbfqvCiHDaZk3yQCPfzwpGJ-35XBw3qaGuPNYkfBHR2Kw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c4cf639c-f499-5179-45f4-0fe374eb7444@fb.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 04:26:45PM -0800, Yonghong Song wrote:
-> On 11/23/20 9:32 AM, Brendan Jackman wrote:
-> > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> > index 3d5940cd110d..4e28640ca2d8 100644
-> > --- a/tools/testing/selftests/bpf/Makefile
-> > +++ b/tools/testing/selftests/bpf/Makefile
-> > @@ -250,7 +250,7 @@ define CLANG_BPF_BUILD_RULE
-> >   	$(call msg,CLNG-LLC,$(TRUNNER_BINARY),$2)
-> >   	$(Q)($(CLANG) $3 -O2 -target bpf -emit-llvm			\
-> >   		-c $1 -o - || echo "BPF obj compilation failed") | 	\
-> > -	$(LLC) -mattr=dwarfris -march=bpf -mcpu=v3 $4 -filetype=obj -o $2
-> > +	$(LLC) -mattr=dwarfris -march=bpf -mcpu=v4 $4 -filetype=obj -o $2
-> 
-> We have an issue here. If we change -mcpu=v4 here, we will force
-> people to use trunk llvm to run selftests which is not a good idea.
-> 
-> I am wondering whether we can single out progs/atomics_test.c, which will be
-> compiled with -mcpu=v4 and run with test_progs.
-> 
-> test_progs-no_alu32 runs tests without alu32. Since -mcpu=v4 implies
-> alu32, atomic tests should be skipped in test_progs-no-alu32.
-> 
-> In bpf_helpers.h, we already use __clang_major__ macro to compare
-> to clang version,
-> 
-> #if __clang_major__ >= 8 && defined(__bpf__)
-> static __always_inline void
-> bpf_tail_call_static(void *ctx, const void *map, const __u32 slot)
-> {
->         if (!__builtin_constant_p(slot))
->                 __bpf_unreachable();
-> ...
-> 
-> I think we could also use __clang_major__ in progs/atomics_test.c
-> to enable tested intrinsics only if __clang_major__ >= 12? This
-> way, the same code can be compiled with -mcpu=v2/v3.
-> 
-> Alternatively, you can also use a macro at clang command line like
->    clang -mcpu=v4 -DENABLE_ATOMIC ...
->    clang -mcpu=v3/v2 ...
-> 
-> progs/atomics_test.c:
->    #ifdef ENABLE_ATOMIC
->      ... atomic_intrinsics ...
->    #endif
+On Fri, 20 Nov 2020 23:41:11 -0800
+Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 
-Ah - all good points, thanks. Looks like tools/build/feature/ might
-offer a solution here, I'll investigate.
-
-> > diff --git a/tools/testing/selftests/bpf/progs/atomics_test.c b/tools/testing/selftests/bpf/progs/atomics_test.c
+> On Fri, Nov 20, 2020 at 8:21 AM Jesper Dangaard Brouer
+> <brouer@redhat.com> wrote:
+> >
+> > Adding selftest for BPF-helper bpf_check_mtu(). Making sure
+> > it can be used from both XDP and TC.
+> >
+> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> > ---
+> >  tools/testing/selftests/bpf/prog_tests/check_mtu.c |   37 ++++++++++++=
+++++++++
+> >  tools/testing/selftests/bpf/progs/test_check_mtu.c |   33 ++++++++++++=
+++++++
+> >  2 files changed, 70 insertions(+)
+> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/check_mtu.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/test_check_mtu.c
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/check_mtu.c b/tools=
+/testing/selftests/bpf/prog_tests/check_mtu.c
 > > new file mode 100644
-> > index 000000000000..d81f45eb6c45
+> > index 000000000000..09b8f986a17b
 > > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/atomics_test.c
-> > @@ -0,0 +1,61 @@
+> > +++ b/tools/testing/selftests/bpf/prog_tests/check_mtu.c
+> > @@ -0,0 +1,37 @@
 > > +// SPDX-License-Identifier: GPL-2.0
-> > +#include <linux/bpf.h>
-> > +#include <bpf/bpf_helpers.h>
-> > +#include <bpf/bpf_tracing.h>
+> > +/* Copyright (c) 2020 Red Hat */
+> > +#include <uapi/linux/bpf.h>
+> > +#include <linux/if_link.h>
+> > +#include <test_progs.h>
 > > +
-> > +__u64 add64_value = 1;
-> > +__u64 add64_result;
-> > +__u32 add32_value = 1;
-> > +__u32 add32_result;
-> > +__u64 add_stack_value_copy;
-> > +__u64 add_stack_result;
-> 
-> To please llvm10, let us initialize all unitialized globals explicitly like
->    __u64 add64_result = 0;
->    __u32 add32_result = 0;
->    ...
-> 
-> llvm11 and above are okay but llvm10 put those uninitialized globals
-> into COM section (not .bss or .data sections) which BTF did not
-> handle them.
+> > +#include "test_check_mtu.skel.h"
+> > +#define IFINDEX_LO 1
+> > +
+> > +void test_check_mtu_xdp(struct test_check_mtu *skel) =20
+>=20
+> this should be static func, otherwise it's treated as an independent self=
+test.
 
-Thanks, will initialise everything explicitly.
+Ok, fixed.
+
+> > +{
+> > +       int err =3D 0;
+> > +       int fd;
+> > +
+> > +       fd =3D bpf_program__fd(skel->progs.xdp_use_helper);
+> > +       err =3D bpf_set_link_xdp_fd(IFINDEX_LO, fd, XDP_FLAGS_SKB_MODE);
+> > +       if (CHECK_FAIL(err)) =20
+>=20
+> please use CHECK() or one of ASSERT_xxx() helpers. CHECK_FAIL() should
+> be used for high-volume unlikely to fail test (i.e., very rarely).
+
+I could not get CHECK() macro working.  I now realize that this is
+because I've not defined a global static variable named 'duration'.
+
+ static __u32 duration;
+
+I wonder, are there any best-practice documentation or blogpost on
+howto write these bpf-selftests?
+
+
+Below signature is the compile error for others to Google for, and
+solution above.
+-=20
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
+
+$ make
+  TEST-OBJ [test_progs] check_mtu.test.o
+In file included from /home/jbrouer/git/kernel/bpf-next/tools/testing/selft=
+ests/bpf/prog_tests/check_mtu.c:6:
+/home/jbrouer/git/kernel/bpf-next/tools/testing/selftests/bpf/prog_tests/ch=
+eck_mtu.c: In function =E2=80=98test_check_mtu=E2=80=99:
+./test_progs.h:129:25: error: =E2=80=98duration=E2=80=99 undeclared (first =
+use in this function)
+  129 |  _CHECK(condition, tag, duration, format)
+      |                         ^~~~~~~~
+./test_progs.h:111:25: note: in definition of macro =E2=80=98_CHECK=E2=80=99
+  111 |          __func__, tag, duration);   \
+      |                         ^~~~~~~~
+/home/jbrouer/git/kernel/bpf-next/tools/testing/selftests/bpf/prog_tests/ch=
+eck_mtu.c:33:6: note: in expansion of macro =E2=80=98CHECK=E2=80=99
+   33 |  if (CHECK(!skel, "open and load skel", "failed"))
+      |      ^~~~~
+./test_progs.h:129:25: note: each undeclared identifier is reported only on=
+ce for each function it appears in
+  129 |  _CHECK(condition, tag, duration, format)
+      |                         ^~~~~~~~
+./test_progs.h:111:25: note: in definition of macro =E2=80=98_CHECK=E2=80=99
+  111 |          __func__, tag, duration);   \
+      |                         ^~~~~~~~
+/home/jbrouer/git/kernel/bpf-next/tools/testing/selftests/bpf/prog_tests/ch=
+eck_mtu.c:33:6: note: in expansion of macro =E2=80=98CHECK=E2=80=99
+   33 |  if (CHECK(!skel, "open and load skel", "failed"))
+      |      ^~~~~
+make: *** [Makefile:396: /home/jbrouer/git/kernel/bpf-next/tools/testing/se=
+lftests/bpf/check_mtu.test.o] Error 1
+
