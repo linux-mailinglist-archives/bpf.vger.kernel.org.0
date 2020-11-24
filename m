@@ -2,269 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDE682C1DC9
-	for <lists+bpf@lfdr.de>; Tue, 24 Nov 2020 07:00:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7132C1E70
+	for <lists+bpf@lfdr.de>; Tue, 24 Nov 2020 07:40:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726702AbgKXF7T (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Nov 2020 00:59:19 -0500
-Received: from hydra.tuxags.com ([64.13.172.54]:34234 "EHLO mail.tuxags.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725786AbgKXF7T (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Nov 2020 00:59:19 -0500
-Received: by mail.tuxags.com (Postfix, from userid 1000)
-        id C14948971543; Mon, 23 Nov 2020 21:59:18 -0800 (PST)
-Date:   Mon, 23 Nov 2020 21:59:18 -0800
-From:   Matt Mullins <mmullins@mmlx.us>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Florian Weimer <fw@deneb.enyo.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Matt Mullins <mmullins@mmlx.us>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1729750AbgKXGkE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Nov 2020 01:40:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729701AbgKXGkD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Nov 2020 01:40:03 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFAF7C0613CF
+        for <bpf@vger.kernel.org>; Mon, 23 Nov 2020 22:40:03 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id b63so17475449pfg.12
+        for <bpf@vger.kernel.org>; Mon, 23 Nov 2020 22:40:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DkuEKxOrBgHumxzBzNasPG6aS//bYurF/zUFfZbHLlg=;
+        b=n0EiF3NB/OIkU3m0MMgG006lrcRIbUjwpx6Lfy5f6uR93fFVfCh+Eri2mF4YoJTawQ
+         WdgiRf13HiSPffVVK41kZMGynLW8wXNwSD7pWu3X/nwTU1eRmDR0FMQEI/SmaUQpl9mo
+         7biRVqKLV9Ya+BdstVw3kYjysYxkc8GpmU5Y4M/HFqckyl93gvEmQCZWKN3xbOCcqSk3
+         qBDWlhIkj41lsIZcoG5gs4N+ZtAP3KX5OasVffqM8mc4fBUw9xyIPbYIJOOmOtPpChRx
+         irZEDv+VOVBhrtlDlkFpvx6P1gsdJl2eeikdF6VLvhpYFKSXjvElKhLjwz3LkO+8Dfwj
+         Dkrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DkuEKxOrBgHumxzBzNasPG6aS//bYurF/zUFfZbHLlg=;
+        b=cCC093ID66/hXkC7phSDlXobYGMhWAUmBtqh72LC1m9B2r1NiKiN5lKhu02xOomZD7
+         OPt6Usdd7yGRWy919tJ7WW996taNdegKG0ZuJumAefIlM/eNx3rkiphhDGBVjqXDO2wQ
+         dQRm71gpVh25qlJ2yc/38r6WuM128hwPAcJoUlcDp0s2K/bdIsV+idmyq1EaK3zBsUi/
+         ImUHrGRF9Ci56ytuzLpfHP1wDvvWWnDm+2wWXRmJK92Gfny+O12FG3Tnp0YvpOWeHURZ
+         m6kh05lUO2XbeVmIhANWigWztVEMI8s/29GuYW+zY1SnpkCEPVGBSHsY9eOoLah9dK5i
+         9FRw==
+X-Gm-Message-State: AOAM533h9XVl+Q8G8q8b+cRDJLs8WKfYAeOXQcrd6WDzYp1jUJ7lqTEm
+        OY2jnN8rAIUw4T53ZY9i3sE=
+X-Google-Smtp-Source: ABdhPJw1k5RcFV//9L640iksl8hrT4ORnzSbyiJOxK7kDpAwGDZN1LqD2sS+fTid8dZ2D6gQP7WNCw==
+X-Received: by 2002:a62:ddcb:0:b029:197:faf2:e8b4 with SMTP id w194-20020a62ddcb0000b0290197faf2e8b4mr2919748pff.75.1606200003226;
+        Mon, 23 Nov 2020 22:40:03 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:400::5:2397])
+        by smtp.gmail.com with ESMTPSA id s18sm14137582pfc.5.2020.11.23.22.40.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Nov 2020 22:40:02 -0800 (PST)
+Date:   Mon, 23 Nov 2020 22:40:00 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Brendan Jackman <jackmanb@google.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-toolchains@vger.kernel.org
-Subject: Re: [PATCH v3] tracepoint: Do not fail unregistering a probe due to
- memory allocation
-Message-ID: <20201124055918.k5m6htif7ukhch6v@hydra.tuxags.com>
-Mail-Followup-To: Steven Rostedt <rostedt@goodmis.org>,
-        Florian Weimer <fw@deneb.enyo.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Matt Mullins <mmullins@mmlx.us>, Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, netdev <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Kees Cook <keescook@chromium.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-toolchains@vger.kernel.org
-References: <20201116175107.02db396d@gandalf.local.home>
- <47463878.48157.1605640510560.JavaMail.zimbra@efficios.com>
- <20201117142145.43194f1a@gandalf.local.home>
- <375636043.48251.1605642440621.JavaMail.zimbra@efficios.com>
- <20201117153451.3015c5c9@gandalf.local.home>
- <20201118132136.GJ3121378@hirez.programming.kicks-ass.net>
- <87h7pmwyta.fsf@mid.deneb.enyo.de>
- <20201118141226.GV3121392@hirez.programming.kicks-ass.net>
- <874klmwxxm.fsf@mid.deneb.enyo.de>
- <20201118093405.7a6d2290@gandalf.local.home>
+        Florent Revest <revest@chromium.org>
+Subject: Re: [PATCH 6/7] bpf: Add instructions for atomic_cmpxchg and friends
+Message-ID: <20201124064000.5wd4ngq7ydb63chl@ast-mbp>
+References: <20201123173202.1335708-1-jackmanb@google.com>
+ <20201123173202.1335708-7-jackmanb@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201118093405.7a6d2290@gandalf.local.home>
-User-Agent: NeoMutt/20170113 (1.7.2)
+In-Reply-To: <20201123173202.1335708-7-jackmanb@google.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 18, 2020 at 09:34:05AM -0500, Steven Rostedt wrote:
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+On Mon, Nov 23, 2020 at 05:32:01PM +0000, Brendan Jackman wrote:
+> These are the operations that implement atomic exchange and
+> compare-exchange.
 > 
-> The list of tracepoint callbacks is managed by an array that is protected
-> by RCU. To update this array, a new array is allocated, the updates are
-> copied over to the new array, and then the list of functions for the
-> tracepoint is switched over to the new array. After a completion of an RCU
-> grace period, the old array is freed.
+> They are peculiarly named because of the presence of the separate
+> FETCH field that tells you whether the instruction writes the value
+> back to the src register. Neither operation is supported without
+> BPF_FETCH:
 > 
-> This process happens for both adding a callback as well as removing one.
-> But on removing a callback, if the new array fails to be allocated, the
-> callback is not removed, and may be used after it is freed by the clients
-> of the tracepoint.
+> - BPF_CMPSET without BPF_FETCH (i.e. an atomic compare-and-set
+>   without knowing whether the write was successfully) isn't implemented
+>   by the kernel, x86, or ARM. It would be a burden on the JIT and it's
+>   hard to imagine a use for this operation, so it's not supported.
 > 
-> There's really no reason to fail if the allocation for a new array fails
-> when removing a function. Instead, the function can simply be replaced by a
-> stub function that could be cleaned up on the next modification of the
-> array. That is, instead of calling the function registered to the
-> tracepoint, it would call a stub function in its place.
-> 
-> Link: https://lore.kernel.org/r/20201115055256.65625-1-mmullins@mmlx.us
-> Link: https://lore.kernel.org/r/20201116175107.02db396d@gandalf.local.home
-> Link: https://lore.kernel.org/r/20201117211836.54acaef2@oasis.local.home
-> 
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Dmitry Vyukov <dvyukov@google.com>
-> Cc: Martin KaFai Lau <kafai@fb.com>
-> Cc: Song Liu <songliubraving@fb.com>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: Andrii Nakryiko <andriin@fb.com>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: KP Singh <kpsingh@chromium.org>
-> Cc: netdev <netdev@vger.kernel.org>
-> Cc: bpf <bpf@vger.kernel.org>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Florian Weimer <fw@deneb.enyo.de>
-> Fixes: 97e1c18e8d17b ("tracing: Kernel Tracepoints")
-> Reported-by: syzbot+83aa762ef23b6f0d1991@syzkaller.appspotmail.com
-> Reported-by: syzbot+d29e58bb557324e55e5e@syzkaller.appspotmail.com
-> Reported-by: Matt Mullins <mmullins@mmlx.us>
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> - BPF_SET without BPF_FETCH would be bpf_set, which has pretty
+>   limited use: all it really lets you do is atomically set 64-bit
+>   values on 32-bit CPUs. It doesn't imply any barriers.
 
-I'm a bit late answering your initial query, but yes indeed this fixes
-the bug I was hunting.  I just watched it live through the reproducer
-for about a half-hour, while unpatched I get an instant "BUG: unable to
-handle page fault".
+...
 
-Tested-by: Matt Mullins <mmullins@mmlx.us>
+> -			if (insn->imm & BPF_FETCH) {
+> +			switch (insn->imm) {
+> +			case BPF_SET | BPF_FETCH:
+> +				/* src_reg = atomic_chg(*(u32/u64*)(dst_reg + off), src_reg); */
+> +				EMIT1(0x87);
+> +				break;
+> +			case BPF_CMPSET | BPF_FETCH:
+> +				/* r0 = atomic_cmpxchg(*(u32/u64*)(dst_reg + off), r0, src_reg); */
+> +				EMIT2(0x0F, 0xB1);
+> +				break;
+...
+>  /* atomic op type fields (stored in immediate) */
+> +#define BPF_SET		0xe0	/* atomic write */
+> +#define BPF_CMPSET	0xf0	/* atomic compare-and-write */
+> +
+>  #define BPF_FETCH	0x01	/* fetch previous value into src reg */
 
-> ---
-> Changes since v2:
->    - Went back to using a stub function and not touching
->       the fast path.
->    - Removed adding __GFP_NOFAIL from the allocation of the removal.
-> 
->  kernel/tracepoint.c | 80 ++++++++++++++++++++++++++++++++++++---------
->  1 file changed, 64 insertions(+), 16 deletions(-)
-> 
-> diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
-> index 3f659f855074..3e261482296c 100644
-> --- a/kernel/tracepoint.c
-> +++ b/kernel/tracepoint.c
-> @@ -53,6 +53,12 @@ struct tp_probes {
->  	struct tracepoint_func probes[];
->  };
->  
-> +/* Called in removal of a func but failed to allocate a new tp_funcs */
-> +static void tp_stub_func(void)
-> +{
-> +	return;
-> +}
-> +
->  static inline void *allocate_probes(int count)
->  {
->  	struct tp_probes *p  = kmalloc(struct_size(p, probes, count),
-> @@ -131,6 +137,7 @@ func_add(struct tracepoint_func **funcs, struct tracepoint_func *tp_func,
->  {
->  	struct tracepoint_func *old, *new;
->  	int nr_probes = 0;
-> +	int stub_funcs = 0;
->  	int pos = -1;
->  
->  	if (WARN_ON(!tp_func->func))
-> @@ -147,14 +154,34 @@ func_add(struct tracepoint_func **funcs, struct tracepoint_func *tp_func,
->  			if (old[nr_probes].func == tp_func->func &&
->  			    old[nr_probes].data == tp_func->data)
->  				return ERR_PTR(-EEXIST);
-> +			if (old[nr_probes].func == tp_stub_func)
-> +				stub_funcs++;
->  		}
->  	}
-> -	/* + 2 : one for new probe, one for NULL func */
-> -	new = allocate_probes(nr_probes + 2);
-> +	/* + 2 : one for new probe, one for NULL func - stub functions */
-> +	new = allocate_probes(nr_probes + 2 - stub_funcs);
->  	if (new == NULL)
->  		return ERR_PTR(-ENOMEM);
->  	if (old) {
-> -		if (pos < 0) {
-> +		if (stub_funcs) {
-> +			/* Need to copy one at a time to remove stubs */
-> +			int probes = 0;
-> +
-> +			pos = -1;
-> +			for (nr_probes = 0; old[nr_probes].func; nr_probes++) {
-> +				if (old[nr_probes].func == tp_stub_func)
-> +					continue;
-> +				if (pos < 0 && old[nr_probes].prio < prio)
-> +					pos = probes++;
-> +				new[probes++] = old[nr_probes];
-> +			}
-> +			nr_probes = probes;
-> +			if (pos < 0)
-> +				pos = probes;
-> +			else
-> +				nr_probes--; /* Account for insertion */
-> +
-> +		} else if (pos < 0) {
->  			pos = nr_probes;
->  			memcpy(new, old, nr_probes * sizeof(struct tracepoint_func));
->  		} else {
-> @@ -188,8 +215,9 @@ static void *func_remove(struct tracepoint_func **funcs,
->  	/* (N -> M), (N > 1, M >= 0) probes */
->  	if (tp_func->func) {
->  		for (nr_probes = 0; old[nr_probes].func; nr_probes++) {
-> -			if (old[nr_probes].func == tp_func->func &&
-> -			     old[nr_probes].data == tp_func->data)
-> +			if ((old[nr_probes].func == tp_func->func &&
-> +			     old[nr_probes].data == tp_func->data) ||
-> +			    old[nr_probes].func == tp_stub_func)
->  				nr_del++;
->  		}
->  	}
-> @@ -208,14 +236,32 @@ static void *func_remove(struct tracepoint_func **funcs,
->  		/* N -> M, (N > 1, M > 0) */
->  		/* + 1 for NULL */
->  		new = allocate_probes(nr_probes - nr_del + 1);
-> -		if (new == NULL)
-> -			return ERR_PTR(-ENOMEM);
-> -		for (i = 0; old[i].func; i++)
-> -			if (old[i].func != tp_func->func
-> -					|| old[i].data != tp_func->data)
-> -				new[j++] = old[i];
-> -		new[nr_probes - nr_del].func = NULL;
-> -		*funcs = new;
-> +		if (new) {
-> +			for (i = 0; old[i].func; i++)
-> +				if ((old[i].func != tp_func->func
-> +				     || old[i].data != tp_func->data)
-> +				    && old[i].func != tp_stub_func)
-> +					new[j++] = old[i];
-> +			new[nr_probes - nr_del].func = NULL;
-> +			*funcs = new;
-> +		} else {
-> +			/*
-> +			 * Failed to allocate, replace the old function
-> +			 * with calls to tp_stub_func.
-> +			 */
-> +			for (i = 0; old[i].func; i++)
-> +				if (old[i].func == tp_func->func &&
-> +				    old[i].data == tp_func->data) {
-> +					old[i].func = tp_stub_func;
-> +					/* Set the prio to the next event. */
-> +					if (old[i + 1].func)
-> +						old[i].prio =
-> +							old[i + 1].prio;
-> +					else
-> +						old[i].prio = -1;
-> +				}
-> +			*funcs = old;
-> +		}
->  	}
->  	debug_print_probes(*funcs);
->  	return old;
-> @@ -295,10 +341,12 @@ static int tracepoint_remove_func(struct tracepoint *tp,
->  	tp_funcs = rcu_dereference_protected(tp->funcs,
->  			lockdep_is_held(&tracepoints_mutex));
->  	old = func_remove(&tp_funcs, func);
-> -	if (IS_ERR(old)) {
-> -		WARN_ON_ONCE(PTR_ERR(old) != -ENOMEM);
-> +	if (WARN_ON_ONCE(IS_ERR(old)))
->  		return PTR_ERR(old);
-> -	}
-> +
-> +	if (tp_funcs == old)
-> +		/* Failed allocating new tp_funcs, replaced func with stub */
-> +		return 0;
->  
->  	if (!tp_funcs) {
->  		/* Removed last function */
-> -- 
-> 2.25.4
-> 
+I think SET in the name looks odd.
+I understand that you picked this name so that SET|FETCH together would form
+more meaningful combination of words, but we're not planning to support SET
+alone. There is no such instruction in a cpu. If we ever do test_and_set it
+would be something different.
+How about the following instead:
++#define BPF_XCHG	0xe1	/* atomic exchange */
++#define BPF_CMPXCHG	0xf1	/* atomic compare exchange */
+In other words get that fetch bit right away into the encoding.
+Then the switch statement above could be:
++			switch (insn->imm) {
++			case BPF_XCHG:
++				/* src_reg = atomic_chg(*(u32/u64*)(dst_reg + off), src_reg); */
++				EMIT1(0x87);
+...
++			case BPF_ADD | BPF_FETCH:
+...
++			case BPF_ADD:
