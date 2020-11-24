@@ -2,69 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 756D32C338C
-	for <lists+bpf@lfdr.de>; Tue, 24 Nov 2020 22:52:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1737B2C339B
+	for <lists+bpf@lfdr.de>; Tue, 24 Nov 2020 22:59:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731568AbgKXVu0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Nov 2020 16:50:26 -0500
-Received: from www62.your-server.de ([213.133.104.62]:36268 "EHLO
+        id S1731713AbgKXV6I (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Nov 2020 16:58:08 -0500
+Received: from www62.your-server.de ([213.133.104.62]:37058 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731557AbgKXVu0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Nov 2020 16:50:26 -0500
-Received: from sslproxy02.your-server.de ([78.47.166.47])
+        with ESMTP id S1731696AbgKXV6I (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Nov 2020 16:58:08 -0500
+Received: from sslproxy06.your-server.de ([78.46.172.3])
         by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92.3)
         (envelope-from <daniel@iogearbox.net>)
-        id 1khgCd-0006kk-6H; Tue, 24 Nov 2020 22:50:23 +0100
+        id 1khgK4-0007RJ-L4; Tue, 24 Nov 2020 22:58:04 +0100
 Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1khgCc-000V64-Ub; Tue, 24 Nov 2020 22:50:22 +0100
-Subject: Re: [PATCH bpf v2] net, xsk: Avoid taking multiple skbuff references
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        ast@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        jonathan.lemon@gmail.com, yhs@fb.com, weqaar.janjua@gmail.com,
-        magnus.karlsson@intel.com, weqaar.a.janjua@intel.com
-References: <20201123175600.146255-1-bjorn.topel@gmail.com>
+        id 1khgK4-000Bqf-Fk; Tue, 24 Nov 2020 22:58:04 +0100
+Subject: Re: [PATCH][V2] libbpf: add support for canceling cached_cons advance
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Li RongQing <lirongqing@baidu.com>
+Cc:     Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+References: <1606202474-8119-1-git-send-email-lirongqing@baidu.com>
+ <CAJ8uoz0WNm6no8NRehgUH5RiGgvjJkKeD-Yyoah8xJerpLhgdg@mail.gmail.com>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <d210e074-432f-025c-1ede-4f9476f1501c@iogearbox.net>
-Date:   Tue, 24 Nov 2020 22:50:22 +0100
+Message-ID: <fe9eeaa5-d40a-9be4-a96b-cdd80095da47@iogearbox.net>
+Date:   Tue, 24 Nov 2020 22:58:03 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20201123175600.146255-1-bjorn.topel@gmail.com>
+In-Reply-To: <CAJ8uoz0WNm6no8NRehgUH5RiGgvjJkKeD-Yyoah8xJerpLhgdg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.102.4/25998/Tue Nov 24 14:16:50 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/23/20 6:56 PM, Björn Töpel wrote:
-> From: Björn Töpel <bjorn.topel@intel.com>
+On 11/24/20 9:12 AM, Magnus Karlsson wrote:
+> On Tue, Nov 24, 2020 at 8:33 AM Li RongQing <lirongqing@baidu.com> wrote:
+>>
+>> Add a new function for returning descriptors the user received
+>> after an xsk_ring_cons__peek call. After the application has
+>> gotten a number of descriptors from a ring, it might not be able
+>> to or want to process them all for various reasons. Therefore,
+>> it would be useful to have an interface for returning or
+>> cancelling a number of them so that they are returned to the ring.
+>>
+>> This patch adds a new function called xsk_ring_cons__cancel that
+>> performs this operation on nb descriptors counted from the end of
+>> the batch of descriptors that was received through the peek call.
+>>
+>> Signed-off-by: Li RongQing <lirongqing@baidu.com>
+>> [ Magnus Karlsson: rewrote changelog ]
+>> Cc: Magnus Karlsson <magnus.karlsson@intel.com>
+>> ---
+>> diff with v1: fix the building, and rewrote changelog
+>>
+>>   tools/lib/bpf/xsk.h | 6 ++++++
+>>   1 file changed, 6 insertions(+)
+>>
+>> diff --git a/tools/lib/bpf/xsk.h b/tools/lib/bpf/xsk.h
+>> index 1069c46364ff..1719a327e5f9 100644
+>> --- a/tools/lib/bpf/xsk.h
+>> +++ b/tools/lib/bpf/xsk.h
+>> @@ -153,6 +153,12 @@ static inline size_t xsk_ring_cons__peek(struct xsk_ring_cons *cons,
+>>          return entries;
+>>   }
+>>
+>> +static inline void xsk_ring_cons__cancel(struct xsk_ring_cons *cons,
+>> +                                        size_t nb)
+>> +{
+>> +       cons->cached_cons -= nb;
+>> +}
+>> +
+>>   static inline void xsk_ring_cons__release(struct xsk_ring_cons *cons, size_t nb)
+>>   {
+>>          /* Make sure data has been read before indicating we are done
+>> --
+>> 2.17.3
 > 
-> Commit 642e450b6b59 ("xsk: Do not discard packet when NETDEV_TX_BUSY")
-> addressed the problem that packets were discarded from the Tx AF_XDP
-> ring, when the driver returned NETDEV_TX_BUSY. Part of the fix was
-> bumping the skbuff reference count, so that the buffer would not be
-> freed by dev_direct_xmit(). A reference count larger than one means
-> that the skbuff is "shared", which is not the case.
+> Thank you RongQing.
 > 
-> If the "shared" skbuff is sent to the generic XDP receive path,
-> netif_receive_generic_xdp(), and pskb_expand_head() is entered the
-> BUG_ON(skb_shared(skb)) will trigger.
-> 
-> This patch adds a variant to dev_direct_xmit(), __dev_direct_xmit(),
-> where a user can select the skbuff free policy. This allows AF_XDP to
-> avoid bumping the reference count, but still keep the NETDEV_TX_BUSY
-> behavior.
-> 
-> Reported-by: Yonghong Song <yhs@fb.com>
-> Fixes: 642e450b6b59 ("xsk: Do not discard packet when NETDEV_TX_BUSY")
-> Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+> Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
 
-Yeah looks better! Applied, thanks!
+@Magnus: shouldn't the xsk_ring_cons__cancel() nb type be '__u32 nb' instead?
+
+Thanks,
+Daniel
