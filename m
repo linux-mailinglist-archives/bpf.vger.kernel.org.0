@@ -2,59 +2,65 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79C6F2C33B1
-	for <lists+bpf@lfdr.de>; Tue, 24 Nov 2020 23:10:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D8F12C33BA
+	for <lists+bpf@lfdr.de>; Tue, 24 Nov 2020 23:16:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731823AbgKXWKG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Nov 2020 17:10:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48594 "EHLO mail.kernel.org"
+        id S1729839AbgKXWO6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Nov 2020 17:14:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49626 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728523AbgKXWKG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 24 Nov 2020 17:10:06 -0500
-Content-Type: text/plain; charset="utf-8"
+        id S1727231AbgKXWO5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Nov 2020 17:14:57 -0500
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 78FE820715;
+        Tue, 24 Nov 2020 22:14:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606255805;
-        bh=AgDEfULAY6T3o4Gah+IhqNkauuIiyV0q6bhCqw5kdL4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=UgVne3uwHYJzAuA2dgJ5wvv1hJklxAjNG23HeVbqFfbV5ySouoyhsl6fFN/1HyduW
-         4KReKxT4t4E+zPgKdijVpgAkgE7xxMhNhwJpgWjGViqXJPSsEfMGdk9ECLI0+6/Da+
-         3GiYP3TKKFfVvQ+RxkrOwlUAi6yfHyvJk39MKdhg=
+        s=default; t=1606256097;
+        bh=3uqlTjHCw8D/PoGvyhR94t8Oeg5C7QCEmj39EA363x8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=oX4BllB96977rPGA3gc4lrfTcn3UzqQC4F6nZOulsSmlcsok9rpKGwuisZloqsW8m
+         8vZNyKQHwjvFBFF5JFFQK27M+L3SOvChuuC+2rZauY0F8deRV3vX+3FYA39l4frg34
+         r4p2ljnpBDmnW9DWjFLyjO3y5F4qxggj9Hdwf1ds=
+Date:   Tue, 24 Nov 2020 14:14:55 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+        kafai@fb.com, kernel-team@fb.com, edumazet@google.com,
+        brakmo@fb.com, alexanderduyck@fb.com
+Subject: Re: [net PATCH] tcp: Set ECT0 bit in tos/tclass for synack when BPF
+ needs ECN
+Message-ID: <20201124141455.432f73cc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <160593039663.2604.1374502006916871573.stgit@localhost.localdomain>
+References: <160593039663.2604.1374502006916871573.stgit@localhost.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next 1/2] selftest/bpf: fix link in readme
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160625580579.16430.4916381760822076885.git-patchwork-notify@kernel.org>
-Date:   Tue, 24 Nov 2020 22:10:05 +0000
-References: <20201122022205.57229-1-andreimatei1@gmail.com>
-In-Reply-To: <20201122022205.57229-1-andreimatei1@gmail.com>
-To:     Andrei Matei <andreimatei1@gmail.com>
-Cc:     bpf@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (refs/heads/master):
-
-On Sat, 21 Nov 2020 21:22:04 -0500 you wrote:
-> The link was bad because of invalid rst; it was pointing to itself and
-> was rendering badly.
+On Fri, 20 Nov 2020 19:47:44 -0800 Alexander Duyck wrote:
+> From: Alexander Duyck <alexanderduyck@fb.com>
 > 
-> Signed-off-by: Andrei Matei <andreimatei1@gmail.com>
-> ---
->  tools/testing/selftests/bpf/README.rst | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+> When a BPF program is used to select between a type of TCP congestion
+> control algorithm that uses either ECN or not there is a case where the
+> synack for the frame was coming up without the ECT0 bit set. A bit of
+> research found that this was due to the final socket being configured to
+> dctcp while the listener socket was staying in cubic.
+> 
+> To reproduce it all that is needed is to monitor TCP traffic while running
+> the sample bpf program "samples/bpf/tcp_cong_kern.c". What is observed,
+> assuming tcp_dctcp module is loaded or compiled in and the traffic matches
+> the rules in the sample file, is that for all frames with the exception of
+> the synack the ECT0 bit is set.
+> 
+> To address that it is necessary to make one additional call to
+> tcp_bpf_ca_needs_ecn using the request socket and then use the output of
+> that to set the ECT0 bit for the tos/tclass of the packet.
+> 
+> Fixes: 91b5b21c7c16 ("bpf: Add support for changing congestion control")
+> Signed-off-by: Alexander Duyck <alexanderduyck@fb.com>
 
-Here is the summary with links:
-  - [bpf-next,1/2] selftest/bpf: fix link in readme
-    https://git.kernel.org/bpf/bpf-next/c/05a98d767273
-  - [bpf-next,2/2] selftest/bpf: fix rst formatting in readme
-    https://git.kernel.org/bpf/bpf-next/c/1c26ac6ab3ce
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Applied, thank you!
