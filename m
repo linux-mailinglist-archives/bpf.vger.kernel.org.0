@@ -2,164 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D75CF2C29BA
-	for <lists+bpf@lfdr.de>; Tue, 24 Nov 2020 15:34:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 663B42C2A9E
+	for <lists+bpf@lfdr.de>; Tue, 24 Nov 2020 16:02:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388709AbgKXOdR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Nov 2020 09:33:17 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28076 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388141AbgKXOdR (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 24 Nov 2020 09:33:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606228395;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6ESyS+WMCSEdJqVArdghIaq910vepY8FdPGVN96WIOo=;
-        b=idvy5nx+pqRsrLMX41EL2G4wswr1iOk7IHh2/P/0SEncs6SWifOTBd4Dr2QatCL7yEhFr4
-        kUeeD9A9h1izyXcxxgVl8T9ql3E6ZGC3mf6t4KxXCQaXIwvd0Nh0SZshXiHKhq+aO/pVud
-        gePlNVKqi4eEuu1cVWBg98rN2LtISK0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-169-zi4tAsyWOpmdWdk5wacgAA-1; Tue, 24 Nov 2020 09:33:12 -0500
-X-MC-Unique: zi4tAsyWOpmdWdk5wacgAA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8F48A805BF4;
-        Tue, 24 Nov 2020 14:33:09 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C473660C43;
-        Tue, 24 Nov 2020 14:33:02 +0000 (UTC)
-Date:   Tue, 24 Nov 2020 15:33:01 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Maciej =?UTF-8?B?xbtlbmN6eWtvd3NraQ==?= <maze@google.com>,
-        Lorenz Bauer <lmb@cloudflare.com>, shaun@tigera.io,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Marek Majkowski <marek@cloudflare.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
-        colrack@gmail.com, brouer@redhat.com
-Subject: Re: [PATCH bpf-next V7 8/8] bpf/selftests: activating bpf_check_mtu
- BPF-helper
-Message-ID: <20201124153301.47abc09c@carbon>
-In-Reply-To: <CAEf4BzbfqvCiHDaZk3yQCPfzwpGJ-35XBw3qaGuPNYkfBHR2Kw@mail.gmail.com>
-References: <160588903254.2817268.4861837335793475314.stgit@firesoul>
-        <160588912738.2817268.9380466634324530673.stgit@firesoul>
-        <CAEf4BzbfqvCiHDaZk3yQCPfzwpGJ-35XBw3qaGuPNYkfBHR2Kw@mail.gmail.com>
+        id S1729256AbgKXPBW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Nov 2020 10:01:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728352AbgKXPBV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 24 Nov 2020 10:01:21 -0500
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62C0DC0617A6
+        for <bpf@vger.kernel.org>; Tue, 24 Nov 2020 07:01:21 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id f18so4398018ljg.9
+        for <bpf@vger.kernel.org>; Tue, 24 Nov 2020 07:01:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4cufC7N8nRv3SkCz2IJuYYqy8EP5LoCq+PiCIULlPW0=;
+        b=mNl/Joee3mZwk30XNCTYG5kdWOulL4KcpSFJJnGh86vK4xb4jgc7VmmrSomvrjsLff
+         ne/69Cv+zuk5lr94nZFUG8iyt/sqpOPgj1Nuj9NcXlC4eqX6IlxgB23FD2Ic4AJfB1bV
+         QX0D9GA4sqn7jOUNma4wX9HoeEG2LHXYjKKe4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4cufC7N8nRv3SkCz2IJuYYqy8EP5LoCq+PiCIULlPW0=;
+        b=uInjUfCHoD67pWZFXpeu0a6ozuXtL5papwimkfMkYIHLSj07p4tMn7bAfjqicvGHnp
+         6vKMGwEuKEV0el5FHVcNiLAgSctbyvWUVvWmQ0Gm1LIlCc/hELjEg/ARwdXT8CVAeSZP
+         GlzcJ703OveG1eJ3s5y2jrXeNyx0hSWM8rpkYHjRx0YmAcAxSMY2oOk5v4KOc+AFggOK
+         3Kwo+9kedSwDXBP5qrd3+Ga5lWAUA5nMbPUdVkOh6HcCpT7++LjCqKrLLdqiVdNHb4ei
+         N5chBOWhtzopzS3iG32nlbGXPRV8wh9yapYRvag6wa/WXH2EsYjGInPzrWsWzfrWACxM
+         0IGQ==
+X-Gm-Message-State: AOAM531v+YPU6sygY2YlmX1573TRRmIP2E/O900pFVMyJ5f5kS2erG00
+        wNUem3ykpyScMNJSuTJ43bpnN1bZv+ijib6eusBQfQ==
+X-Google-Smtp-Source: ABdhPJwIEoDcDkp7w38V6oWL+60rjnYt6TjmgnqxWK3R1hsqDpgobsUas8XwaZu6zdQQBEl+Zuzw9LtexHB9RzsHpjQ=
+X-Received: by 2002:a2e:85c6:: with SMTP id h6mr2139852ljj.110.1606230075181;
+ Tue, 24 Nov 2020 07:01:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20201120131708.3237864-1-kpsingh@chromium.org>
+ <20201120131708.3237864-2-kpsingh@chromium.org> <20201124040220.oyajc7wqn7gqgyib@ast-mbp>
+ <CACYkzJ4i9qCgBRm3_pt19Tty4eR0RTMOg66f-_Rb7N3mBvgU8w@mail.gmail.com>
+In-Reply-To: <CACYkzJ4i9qCgBRm3_pt19Tty4eR0RTMOg66f-_Rb7N3mBvgU8w@mail.gmail.com>
+From:   KP Singh <kpsingh@chromium.org>
+Date:   Tue, 24 Nov 2020 16:01:04 +0100
+Message-ID: <CACYkzJ7mhbwzDwifDuBF91MKf0u6Cw2+HGWDMLJuTXnWz-gfJw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] bpf: Add a BPF helper for getting the IMA
+ hash of an inode
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     James Morris <jmorris@namei.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Mimi Zohar <zohar@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 20 Nov 2020 23:41:11 -0800
-Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-
-> On Fri, Nov 20, 2020 at 8:21 AM Jesper Dangaard Brouer
-> <brouer@redhat.com> wrote:
+On Tue, Nov 24, 2020 at 12:04 PM KP Singh <kpsingh@chromium.org> wrote:
+>
+> On Tue, Nov 24, 2020 at 5:02 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
 > >
-> > Adding selftest for BPF-helper bpf_check_mtu(). Making sure
-> > it can be used from both XDP and TC.
+> > On Fri, Nov 20, 2020 at 01:17:07PM +0000, KP Singh wrote:
+> > > +
+> > > +static bool bpf_ima_inode_hash_allowed(const struct bpf_prog *prog)
+> > > +{
+> > > +     return bpf_lsm_is_sleepable_hook(prog->aux->attach_btf_id);
+> > > +}
+> > > +
+> > > +BTF_ID_LIST_SINGLE(bpf_ima_inode_hash_btf_ids, struct, inode)
+> > > +
+> > > +const static struct bpf_func_proto bpf_ima_inode_hash_proto = {
+> > > +     .func           = bpf_ima_inode_hash,
+> > > +     .gpl_only       = false,
+> > > +     .ret_type       = RET_INTEGER,
+> > > +     .arg1_type      = ARG_PTR_TO_BTF_ID,
+> > > +     .arg1_btf_id    = &bpf_ima_inode_hash_btf_ids[0],
+> > > +     .arg2_type      = ARG_PTR_TO_UNINIT_MEM,
+> > > +     .arg3_type      = ARG_CONST_SIZE_OR_ZERO,
+> > > +     .allowed        = bpf_ima_inode_hash_allowed,
+> > > +};
+> > > +
+> > >  static const struct bpf_func_proto *
+> > >  bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+> > >  {
+> > > @@ -97,6 +121,8 @@ bpf_lsm_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+> > >               return &bpf_task_storage_delete_proto;
+> > >       case BPF_FUNC_bprm_opts_set:
+> > >               return &bpf_bprm_opts_set_proto;
+> > > +     case BPF_FUNC_ima_inode_hash:
+> > > +             return &bpf_ima_inode_hash_proto;
 > >
-> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> > ---
-> >  tools/testing/selftests/bpf/prog_tests/check_mtu.c |   37 ++++++++++++=
-++++++++
-> >  tools/testing/selftests/bpf/progs/test_check_mtu.c |   33 ++++++++++++=
-++++++
-> >  2 files changed, 70 insertions(+)
-> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/check_mtu.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/test_check_mtu.c
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/check_mtu.c b/tools=
-/testing/selftests/bpf/prog_tests/check_mtu.c
-> > new file mode 100644
-> > index 000000000000..09b8f986a17b
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/prog_tests/check_mtu.c
-> > @@ -0,0 +1,37 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/* Copyright (c) 2020 Red Hat */
-> > +#include <uapi/linux/bpf.h>
-> > +#include <linux/if_link.h>
-> > +#include <test_progs.h>
-> > +
-> > +#include "test_check_mtu.skel.h"
-> > +#define IFINDEX_LO 1
-> > +
-> > +void test_check_mtu_xdp(struct test_check_mtu *skel) =20
->=20
-> this should be static func, otherwise it's treated as an independent self=
-test.
+> > That's not enough for correctness.
+> > Not only hook has to sleepable, but the program has to be sleepable too.
+> > The patch 3 should be causing all sort of kernel warnings
+> > for calling mutex from preempt disabled.
+> > There it calls bpf_ima_inode_hash() from SEC("lsm/file_mprotect") program.
 
-Ok, fixed.
+Okay I dug into why I did not get any warnings, I do have
+CONFIG_DEBUG_ATOMIC_SLEEP
+and friends enabled and I do look at dmesg and... I think you misread
+the diff of my patch :)
 
-> > +{
-> > +       int err =3D 0;
-> > +       int fd;
-> > +
-> > +       fd =3D bpf_program__fd(skel->progs.xdp_use_helper);
-> > +       err =3D bpf_set_link_xdp_fd(IFINDEX_LO, fd, XDP_FLAGS_SKB_MODE);
-> > +       if (CHECK_FAIL(err)) =20
->=20
-> please use CHECK() or one of ASSERT_xxx() helpers. CHECK_FAIL() should
-> be used for high-volume unlikely to fail test (i.e., very rarely).
+it's indeed attaching to "lsm.s/bprm_committed_creds":
 
-I could not get CHECK() macro working.  I now realize that this is
-because I've not defined a global static variable named 'duration'.
+[https://lore.kernel.org/bpf/CACYkzJ7Oi8wXf=9a-e=fFHJirRbD=u47z+3+M2cRTCy_1fwtgw@mail.gmail.com/T/#m8d55bf0cdda614338cecd7154476497628612f6a]
 
- static __u32 duration;
+ SEC("lsm/file_mprotect")
+ int BPF_PROG(test_int_hook, struct vm_area_struct *vma,
+@@ -65,8 +67,11 @@ int BPF_PROG(test_void_hook, struct linux_binprm *bprm)
+  __u32 key = 0;
+  __u64 *value;
 
-I wonder, are there any best-practice documentation or blogpost on
-howto write these bpf-selftests?
+- if (monitored_pid == pid)
++ if (monitored_pid == pid) {
+  bprm_count++;
++ ima_hash_ret = bpf_ima_inode_hash(bprm->file->f_inode,
++  &ima_hash, sizeof(ima_hash));
++ }
 
+  bpf_copy_from_user(args, sizeof(args), (void *)bprm->vma->vm_mm->arg_start);
+  bpf_copy_from_user(args, sizeof(args), (void *)bprm->mm->arg_start);
+-- 
 
-Below signature is the compile error for others to Google for, and
-solution above.
--=20
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+The diff makes it look like it is attaching to "lsm/file_mprotect" but
+it's actually attaching to
+"lsm.s/bprm_committed_creds".
 
+Now we can either check for prod->aux->sleepable in
+bpf_ima_inode_hash_allowed or
+just not expose the helper to non-sleepable hooks. I went with the
+latter as this is what
+we do for bpf_copy_from_user.
 
-$ make
-  TEST-OBJ [test_progs] check_mtu.test.o
-In file included from /home/jbrouer/git/kernel/bpf-next/tools/testing/selft=
-ests/bpf/prog_tests/check_mtu.c:6:
-/home/jbrouer/git/kernel/bpf-next/tools/testing/selftests/bpf/prog_tests/ch=
-eck_mtu.c: In function =E2=80=98test_check_mtu=E2=80=99:
-./test_progs.h:129:25: error: =E2=80=98duration=E2=80=99 undeclared (first =
-use in this function)
-  129 |  _CHECK(condition, tag, duration, format)
-      |                         ^~~~~~~~
-./test_progs.h:111:25: note: in definition of macro =E2=80=98_CHECK=E2=80=99
-  111 |          __func__, tag, duration);   \
-      |                         ^~~~~~~~
-/home/jbrouer/git/kernel/bpf-next/tools/testing/selftests/bpf/prog_tests/ch=
-eck_mtu.c:33:6: note: in expansion of macro =E2=80=98CHECK=E2=80=99
-   33 |  if (CHECK(!skel, "open and load skel", "failed"))
-      |      ^~~~~
-./test_progs.h:129:25: note: each undeclared identifier is reported only on=
-ce for each function it appears in
-  129 |  _CHECK(condition, tag, duration, format)
-      |                         ^~~~~~~~
-./test_progs.h:111:25: note: in definition of macro =E2=80=98_CHECK=E2=80=99
-  111 |          __func__, tag, duration);   \
-      |                         ^~~~~~~~
-/home/jbrouer/git/kernel/bpf-next/tools/testing/selftests/bpf/prog_tests/ch=
-eck_mtu.c:33:6: note: in expansion of macro =E2=80=98CHECK=E2=80=99
-   33 |  if (CHECK(!skel, "open and load skel", "failed"))
-      |      ^~~~~
-make: *** [Makefile:396: /home/jbrouer/git/kernel/bpf-next/tools/testing/se=
-lftests/bpf/check_mtu.test.o] Error 1
+- KP
 
+>
+> I did actually mean to use SEC("lsm.s/bprm_committed_creds"), my bad.
+>
+> > "lsm/" is non-sleepable. "lsm.s/" is.
+> > please enable CONFIG_DEBUG_ATOMIC_SLEEP=y in your config.
+>
+> Oops, yes I did notice that during recent work on the test cases.
+>
+> Since we need a stronger check than just warnings, I am doing
+> something similar to
+> what we do for bpf_copy_from_user i.e.
+>
+>      return prog->aux->sleepable ? &bpf_ima_inode_hash_proto : NULL;
