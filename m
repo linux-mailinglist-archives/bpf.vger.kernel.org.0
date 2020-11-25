@@ -2,79 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1FB2C3B4A
-	for <lists+bpf@lfdr.de>; Wed, 25 Nov 2020 09:46:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73E7F2C3B85
+	for <lists+bpf@lfdr.de>; Wed, 25 Nov 2020 10:03:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726158AbgKYIqB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Nov 2020 03:46:01 -0500
-Received: from gateway21.websitewelcome.com ([192.185.45.133]:34195 "EHLO
-        gateway21.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725776AbgKYIqB (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 25 Nov 2020 03:46:01 -0500
-Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
-        by gateway21.websitewelcome.com (Postfix) with ESMTP id 8BD4B400E7235
-        for <bpf@vger.kernel.org>; Wed, 25 Nov 2020 02:45:59 -0600 (CST)
-Received: from zastava.websitewelcome.com ([192.185.83.71])
-        by cmsmtp with SMTP
-        id hqR5khnVHfAtahqR5kZBfz; Wed, 25 Nov 2020 02:45:59 -0600
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=liamsports.com; s=default; h=Date:Message-Id:Content-Type:MIME-Version:
-        Reply-To:From:Subject:To:Sender:Cc:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=DNctREwmdr2xzK+3LW6h9IegnQUayja9aGXYHpevsic=; b=ECs26XUvfHNNeP5+3f0FMJ9TP3
-        q+shwwpc2nxfvBcRgrxDEgasnDj8O0bFT2mWjfG+E7A6w7JanbJrZGHXty9NO1Viy5pT73umZetRY
-        bBPDjeOF5N4W0ZuK0fr6QKAEuUFT6rcbbcxSrwGTF07L3WD10TOIr7rKrFGbxXTRaMwtrVGT+W7JH
-        kxO1UpzKSqLWEJrz21kuXD7NjkOrmnJF2XsYxHiV1VKDeTeK24rZ45uxzFQ/cYw3VqHyAC2ZY61hC
-        nd/l2/7SWU87drwcyJedfGD9Erm0uevI4gcMEYeWUMeJEHsC1fodl0k3pThJzntDsv2JDYk6pRzA6
-        YslqFwFw==;
-Received: from liamsports by zastava.websitewelcome.com with local (Exim 4.93)
-        (envelope-from <info@liamsports.com>)
-        id 1khqR4-003ECA-Ok
-        for bpf@vger.kernel.org; Wed, 25 Nov 2020 02:45:58 -0600
-To:     bpf@vger.kernel.org
-Subject: Business Proposal
-X-PHP-Script: liamsports.com/email3/index.php for 39.49.14.216
-X-PHP-Originating-Script: 5244:index.php
-From:   Isabella George <info@liamsports.com>
-Reply-To: Isabella George <info@liamsports.com>
+        id S1727109AbgKYJCp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Nov 2020 04:02:45 -0500
+Received: from www62.your-server.de ([213.133.104.62]:48552 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726103AbgKYJCl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Nov 2020 04:02:41 -0500
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1khqhB-0004Nu-0C; Wed, 25 Nov 2020 10:02:37 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1khqhA-000MzQ-RB; Wed, 25 Nov 2020 10:02:36 +0100
+Subject: Re: [PATCH][V2] libbpf: add support for canceling cached_cons advance
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc:     Li RongQing <lirongqing@baidu.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>
+References: <1606202474-8119-1-git-send-email-lirongqing@baidu.com>
+ <CAJ8uoz0WNm6no8NRehgUH5RiGgvjJkKeD-Yyoah8xJerpLhgdg@mail.gmail.com>
+ <fe9eeaa5-d40a-9be4-a96b-cdd80095da47@iogearbox.net>
+ <CAJ8uoz1JdmHc9nwa4cY20S-GN62RAJUEPGY4LcmdTM4FjuGTow@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <aa4cdc17-1e54-7782-2b64-14d7a3ac892e@iogearbox.net>
+Date:   Wed, 25 Nov 2020 10:02:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Message-Id: <E1khqR4-003ECA-Ok@zastava.websitewelcome.com>
-Date:   Wed, 25 Nov 2020 02:45:58 -0600
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - zastava.websitewelcome.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [5244 32008] / [47 12]
-X-AntiAbuse: Sender Address Domain - liamsports.com
-X-BWhitelist: no
-X-Source-IP: 
-X-Source-L: No
-X-Exim-ID: 1khqR4-003ECA-Ok
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: liamsports.com:/public_html/email3
-X-Source-Sender: 
-X-Source-Auth: liamsports
-X-Email-Count: 310
-X-Source-Cap: bGlhbXNwb3J0cztwYWt3ZWlvbjt6YXN0YXZhLndlYnNpdGV3ZWxjb21lLmNvbQ==
-X-Local-Domain: yes
+In-Reply-To: <CAJ8uoz1JdmHc9nwa4cY20S-GN62RAJUEPGY4LcmdTM4FjuGTow@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25998/Tue Nov 24 14:16:50 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello There
-Liam Sports is The Factory of custom apparels And Team Wears. we are specialist in custom apparels including Tees, Polo Shirts, Tights,  Hoodies, Tracksuits, Softshell, Club Outerwear, Training Singlets, Reversible Training Jumpers and Singlets, Compression Wears, And Club Sports Bag etc We strive to deliver the highest quality in custom sublimation and cut & sew In All Over The worldwide.
-You can ask for samples if you want to check our quality first.
+On 11/25/20 9:30 AM, Magnus Karlsson wrote:
+> On Tue, Nov 24, 2020 at 10:58 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>> On 11/24/20 9:12 AM, Magnus Karlsson wrote:
+>>> On Tue, Nov 24, 2020 at 8:33 AM Li RongQing <lirongqing@baidu.com> wrote:
+>>>>
+>>>> Add a new function for returning descriptors the user received
+>>>> after an xsk_ring_cons__peek call. After the application has
+>>>> gotten a number of descriptors from a ring, it might not be able
+>>>> to or want to process them all for various reasons. Therefore,
+>>>> it would be useful to have an interface for returning or
+>>>> cancelling a number of them so that they are returned to the ring.
+>>>>
+>>>> This patch adds a new function called xsk_ring_cons__cancel that
+>>>> performs this operation on nb descriptors counted from the end of
+>>>> the batch of descriptors that was received through the peek call.
+>>>>
+>>>> Signed-off-by: Li RongQing <lirongqing@baidu.com>
+>>>> [ Magnus Karlsson: rewrote changelog ]
+>>>> Cc: Magnus Karlsson <magnus.karlsson@intel.com>
+>>>> ---
+>>>> diff with v1: fix the building, and rewrote changelog
+>>>>
+>>>>    tools/lib/bpf/xsk.h | 6 ++++++
+>>>>    1 file changed, 6 insertions(+)
+>>>>
+>>>> diff --git a/tools/lib/bpf/xsk.h b/tools/lib/bpf/xsk.h
+>>>> index 1069c46364ff..1719a327e5f9 100644
+>>>> --- a/tools/lib/bpf/xsk.h
+>>>> +++ b/tools/lib/bpf/xsk.h
+>>>> @@ -153,6 +153,12 @@ static inline size_t xsk_ring_cons__peek(struct xsk_ring_cons *cons,
+>>>>           return entries;
+>>>>    }
+>>>>
+>>>> +static inline void xsk_ring_cons__cancel(struct xsk_ring_cons *cons,
+>>>> +                                        size_t nb)
+>>>> +{
+>>>> +       cons->cached_cons -= nb;
+>>>> +}
+>>>> +
+>>>>    static inline void xsk_ring_cons__release(struct xsk_ring_cons *cons, size_t nb)
+>>>>    {
+>>>>           /* Make sure data has been read before indicating we are done
+>>>> --
+>>>> 2.17.3
+>>>
+>>> Thank you RongQing.
+>>>
+>>> Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+>>
+>> @Magnus: shouldn't the xsk_ring_cons__cancel() nb type be '__u32 nb' instead?
+> 
+> All the other interfaces have size_t as the type for "nb". It is kind
+> of weird as a __u32 would have made more sense, but cannot actually
+> remember why I chose a size_t two years ago. But for consistency with
+> the other interfaces, let us keep it a size_t for now. I will do some
+> research around the reason.
 
+It's actually a bit of a mix currently which is what got me confused:
 
-Regards
+static inline __u32 xsk_prod_nb_free(struct xsk_ring_prod *r, __u32 nb)
+static inline __u32 xsk_cons_nb_avail(struct xsk_ring_cons *r, __u32 nb)
+static inline size_t xsk_ring_prod__reserve(struct xsk_ring_prod *prod, size_t nb, __u32 *idx)
+static inline void xsk_ring_prod__submit(struct xsk_ring_prod *prod, size_t nb)
+static inline size_t xsk_ring_cons__peek(struct xsk_ring_cons *cons, size_t nb, __u32 *idx)
+static inline void xsk_ring_cons__release(struct xsk_ring_cons *cons, size_t nb)
 
-Company: Liam Sports
-Cell: +92 3127601319
-Whatsapp: +447395606980
-Website : www.liamsports.com
-Factory Address: Small Industrial Area Sialkot 51310, Punjab Pakistan 
-Instagram:  https://www.instagram.com/liamsports_official/
+(I can take it in as-is, but would be nice to clean it up a bit to avoid confusion.)
+
+Thanks,
+Daniel
