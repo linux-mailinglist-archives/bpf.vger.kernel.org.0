@@ -2,68 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79DF52C4858
-	for <lists+bpf@lfdr.de>; Wed, 25 Nov 2020 20:29:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D5F22C48F4
+	for <lists+bpf@lfdr.de>; Wed, 25 Nov 2020 21:22:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728539AbgKYT3N (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Nov 2020 14:29:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728524AbgKYT3N (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Nov 2020 14:29:13 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A686C0617A7
-        for <bpf@vger.kernel.org>; Wed, 25 Nov 2020 11:29:13 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id 1so3202260wme.3
-        for <bpf@vger.kernel.org>; Wed, 25 Nov 2020 11:29:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:from:mime-version:content-transfer-encoding
-         :content-description:subject:to:date:reply-to;
-        bh=MT4M9SX2NqdNuOObXhIV8Gtkw+yoDX+gRyJnh+feBwM=;
-        b=iWCLHhxqU9yJUNVr8xqyg+9lsuHRS7i4bhQmj7RCydYY6tPi88antIxxs6pK6qiyh5
-         k/dCnHWNe/bL1UFvGjVRJ6NaP6acHRO8D5mznxIMLtO741BfZYKhknkAplwoB1afQ30j
-         Ntk046zVVrATpPKiWYHm7VYVdEbgfSivXuf8dhckxdq93oKHihTX5Ckp426Mtrvup394
-         qM2FhmfHqNn4UjzW4jpzZkDHlJQSnBkBhvYXoSuW0dnHUYQXc3Tkapx5VDSQdAP7fJXE
-         nG+kXNqvkvM8fsA3FJWLeExpXVSIGvgPTgoENh/YzVyfBgYiuzhAEGTYP3FBVsg1FXeA
-         TxPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:from:mime-version
-         :content-transfer-encoding:content-description:subject:to:date
-         :reply-to;
-        bh=MT4M9SX2NqdNuOObXhIV8Gtkw+yoDX+gRyJnh+feBwM=;
-        b=iwHd526XnEQ1JYsJxL/zU5Cv2D6PMrIPwrM/GjZXguYEAP4tP1yYI2JVkHwGGh/cw1
-         OdUxgGB+Z8WId+da2fp9ccH+D0o2LA6XEzShY3LqxIrkBpgFH4iT5jEvrNrFx8uQAjIE
-         rZYbwawnOEx5fJAcBW25r96zvvWT6gTcemzTFwfeqzCMHkN6J80Qr0q1BUn42rttE+q3
-         K5duhBOLr9Jzudx/GuHyEV/i35mRltE9AzesSClkvkbbAbnOFIolKkylOtJCftjFKq18
-         gOCAamHXq6gcMiKXCkOE4GKmn6/lqJYQUrgT+c4uRxslqgOqalFyRWTJ8dkhMPLinEEB
-         pZEQ==
-X-Gm-Message-State: AOAM533ewy5gCpcbuZzOZ5XB2Yggvx/2oaLMWYSmt5vYGWhvR2Mw9N/V
-        albTwm24F/lQoKUWZREgt0o=
-X-Google-Smtp-Source: ABdhPJwPGoJtmbu2GVoaFHG2lpW/bu971LUp6yQUGjFJMRT3oyha8bNSYYksnSaXFfK16SpRvos7mA==
-X-Received: by 2002:a7b:c77a:: with SMTP id x26mr5587842wmk.63.1606332551947;
-        Wed, 25 Nov 2020 11:29:11 -0800 (PST)
-Received: from [192.168.1.152] ([102.64.149.89])
-        by smtp.gmail.com with ESMTPSA id l16sm6067999wrx.5.2020.11.25.11.29.08
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Wed, 25 Nov 2020 11:29:11 -0800 (PST)
-Message-ID: <5fbeb087.1c69fb81.80257.d7f1@mx.google.com>
-From:   "Dailborh R." <ritundailb111@gmail.com>
-X-Google-Original-From: Dailborh R.
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1729040AbgKYUVv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Nov 2020 15:21:51 -0500
+Received: from mx.der-flo.net ([193.160.39.236]:60856 "EHLO mx.der-flo.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729016AbgKYUVv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Nov 2020 15:21:51 -0500
+Received: by mx.der-flo.net (Postfix, from userid 110)
+        id CE98D444D0; Wed, 25 Nov 2020 21:21:33 +0100 (CET)
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mx.der-flo.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=4.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.2
+Received: from localhost (unknown [IPv6:2a02:1203:ecb0:3930:1751:4157:4d75:a5e2])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx.der-flo.net (Postfix) with ESMTPSA id 3A57A439CF;
+        Wed, 25 Nov 2020 21:20:43 +0100 (CET)
+Date:   Wed, 25 Nov 2020 21:20:32 +0100
+From:   Florian Lehner <dev@der-flo.net>
+To:     Andrei Matei <andreimatei1@gmail.com>
+Cc:     bpf@vger.kernel.org, andrii@kernel.org
+Subject: Re: [PATCH bpf-next] selftest/bpf: fix compilation on clang 11
+Message-ID: <20201125202032.GA17524@der-flo.net>
+References: <20201125035255.17970-1-andreimatei1@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Please reply to me
-To:     Recipients <Dailborh@vger.kernel.org>
-Date:   Wed, 25 Nov 2020 19:28:58 +0000
-Reply-To: dailrrob.83@gmail.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201125035255.17970-1-andreimatei1@gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-I'm Dailborh R. from US. I picked interest in you and I would like to know
-more about you and establish relationship with you. i will wait for
-your response. thank you.
+On Tue, Nov 24, 2020 at 10:52:55PM -0500, Andrei Matei wrote:
+> Before this patch, profiler.inc.h wouldn't compile with clang-11 (before
+> the __builtin_preserve_enum_value LLVM builtin was introduced in
+> https://reviews.llvm.org/D83242).
+> Another test that uses this builtin (test_core_enumval) is conditionally
+> skipped if the compiler is too old. In that spirit, this patch inhibits
+> part of populate_cgroup_info(), which needs this CO-RE builtin. The
+> selftests build again on clang-11.  The affected test (the profiler
+> test) doesn't pass on clang-11 because it's missing
+> https://reviews.llvm.org/D85570, but at least the test suite as a whole
+> compiles. The test's expected failure is already called out in the
+> README.
+> 
+> Signed-off-by: Andrei Matei <andreimatei1@gmail.com>
 
+Tested-by: Florian Lehner <dev@der-flo.net>
+
+Thanks for the fix!
+
+> ---
+>  tools/testing/selftests/bpf/progs/profiler.inc.h | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/bpf/progs/profiler.inc.h b/tools/testing/selftests/bpf/progs/profiler.inc.h
+> index 30982a7e4d0f..b79d7f688655 100644
+> --- a/tools/testing/selftests/bpf/progs/profiler.inc.h
+> +++ b/tools/testing/selftests/bpf/progs/profiler.inc.h
+> @@ -256,6 +256,8 @@ static INLINE void* populate_cgroup_info(struct cgroup_data_t* cgroup_data,
+>  		BPF_CORE_READ(task, nsproxy, cgroup_ns, root_cset, dfl_cgrp, kn);
+>  	struct kernfs_node* proc_kernfs = BPF_CORE_READ(task, cgroups, dfl_cgrp, kn);
+>  
+> +
+> +#if __has_builtin(__builtin_preserve_enum_value)
+>  	if (ENABLE_CGROUP_V1_RESOLVER && CONFIG_CGROUP_PIDS) {
+>  		int cgrp_id = bpf_core_enum_value(enum cgroup_subsys_id___local,
+>  						  pids_cgrp_id___local);
+> @@ -275,6 +277,7 @@ static INLINE void* populate_cgroup_info(struct cgroup_data_t* cgroup_data,
+>  			}
+>  		}
+>  	}
+> +#endif
+>  
+>  	cgroup_data->cgroup_root_inode = get_inode_from_kernfs(root_kernfs);
+>  	cgroup_data->cgroup_proc_inode = get_inode_from_kernfs(proc_kernfs);
+> -- 
+> 2.27.0
+> 
