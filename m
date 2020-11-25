@@ -2,69 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1C3B2C4B55
-	for <lists+bpf@lfdr.de>; Thu, 26 Nov 2020 00:12:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1ED92C4BA9
+	for <lists+bpf@lfdr.de>; Thu, 26 Nov 2020 00:37:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729983AbgKYXKG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Nov 2020 18:10:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32920 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729957AbgKYXKG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Nov 2020 18:10:06 -0500
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606345806;
-        bh=HmVmboHLRT2akidt/sMRFZU4ZFKJPHRy8BwngDIlhaE=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=TXZCC+XbFncZEn9e3rtlcupVHAocud+59jV7KtujgInwazrWkpMy9WDosMSkGoZBr
-         DpWGtPPr6UXZaMQ3uCKs5QBTsqAo8wkSEdOavP9b32gavQlG+XSuNV8C5pFShybl84
-         LKFOkpmo1MshZnSI+ATwQgyWqZllP6KOys/6ycBw=
+        id S1726641AbgKYXh1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Nov 2020 18:37:27 -0500
+Received: from www62.your-server.de ([213.133.104.62]:52594 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726471AbgKYXh1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Nov 2020 18:37:27 -0500
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1ki4Lm-0003pP-12; Thu, 26 Nov 2020 00:37:26 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1ki4Ll-000VEX-9Z; Thu, 26 Nov 2020 00:37:25 +0100
+Subject: Re: [PATCH bpf-next] selftest/bpf: fix compilation on clang 11
+To:     Andrei Matei <andreimatei1@gmail.com>, bpf@vger.kernel.org
+Cc:     andrii@kernel.org
+References: <20201125035255.17970-1-andreimatei1@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <9213c34c-e40c-61a5-c3d1-61dcb6449c09@iogearbox.net>
+Date:   Thu, 26 Nov 2020 00:37:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v3 0/3] Implement bpf_ima_inode_hash
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160634580589.11847.11072899001096362522.git-patchwork-notify@kernel.org>
-Date:   Wed, 25 Nov 2020 23:10:05 +0000
-References: <20201124151210.1081188-1-kpsingh@chromium.org>
-In-Reply-To: <20201124151210.1081188-1-kpsingh@chromium.org>
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     jmorris@namei.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, revest@chromium.org,
-        jackmanb@chromium.org, zohar@linux.ibm.com
+In-Reply-To: <20201125035255.17970-1-andreimatei1@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/25999/Wed Nov 25 15:06:38 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (refs/heads/master):
-
-On Tue, 24 Nov 2020 15:12:07 +0000 you wrote:
-> From: KP Singh <kpsingh@google.com>
+On 11/25/20 4:52 AM, Andrei Matei wrote:
+> Before this patch, profiler.inc.h wouldn't compile with clang-11 (before
+> the __builtin_preserve_enum_value LLVM builtin was introduced in
+> https://reviews.llvm.org/D83242).
+> Another test that uses this builtin (test_core_enumval) is conditionally
+> skipped if the compiler is too old. In that spirit, this patch inhibits
+> part of populate_cgroup_info(), which needs this CO-RE builtin. The
+> selftests build again on clang-11.  The affected test (the profiler
+> test) doesn't pass on clang-11 because it's missing
+> https://reviews.llvm.org/D85570, but at least the test suite as a whole
+> compiles. The test's expected failure is already called out in the
+> README.
 > 
-> # v2 -> v3
-> 
-> - Fixed an issue pointed out by Alexei, the helper should only be
->   exposed to sleepable hooks.
-> - Update the selftests to constrain the IMA policy udpate to a loopback
->   filesystem specifically created for the test. Also, split this out
->   from the LSM test. I dropped the Ack from this last patch since this
->   is a re-write.
-> 
-> [...]
+> Signed-off-by: Andrei Matei <andreimatei1@gmail.com>
 
-Here is the summary with links:
-  - [bpf-next,v3,1/3] ima: Implement ima_inode_hash
-    https://git.kernel.org/bpf/bpf-next/c/403319be5de5
-  - [bpf-next,v3,2/3] bpf: Add a BPF helper for getting the IMA hash of an inode
-    https://git.kernel.org/bpf/bpf-next/c/27672f0d280a
-  - [bpf-next,v3,3/3] bpf: Add a selftest for bpf_ima_inode_hash
-    https://git.kernel.org/bpf/bpf-next/c/898eeb122e8a
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Looks good, applied, thanks!
