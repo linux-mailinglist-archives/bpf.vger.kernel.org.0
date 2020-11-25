@@ -2,54 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D8D62C395B
-	for <lists+bpf@lfdr.de>; Wed, 25 Nov 2020 07:56:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDA4C2C39DE
+	for <lists+bpf@lfdr.de>; Wed, 25 Nov 2020 08:17:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726060AbgKYGzr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Nov 2020 01:55:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54284 "EHLO
+        id S1726032AbgKYHQX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Nov 2020 02:16:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726027AbgKYGzr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Nov 2020 01:55:47 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7EA1C0613D4;
-        Tue, 24 Nov 2020 22:55:46 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id v21so1571361pgi.2;
-        Tue, 24 Nov 2020 22:55:46 -0800 (PST)
+        with ESMTP id S1725306AbgKYHQX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Nov 2020 02:16:23 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C76CC0613D4;
+        Tue, 24 Nov 2020 23:16:23 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id l11so674296plt.1;
+        Tue, 24 Nov 2020 23:16:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=G3RsF/ezkJmPkJ9qbTzt79hYrwBPit4uVs8jUybVwcY=;
-        b=fzP7tn3wA9xVnB/v3+2Ww/E5beISzOJk6MOhyfZgd3T4IXK+7c7FSCwh3IVbpWewSo
-         tNiQNozwWaFseAltnA+KriezIhwEK9dZIaEVbZ55dAtsZFmjTQhc8nT6lHHEQ/tucTjY
-         o4c7bvtEypJXC4WMGyx9Mw15ANI2+kCUIGdmEGM85zk/3LkwSfLnr5dOoG1vFLKgS57o
-         UdZs1tpiGLLedieSWHQz8/pwG2taa6UqPNB+AE2YNyLUsF+2eVWFrjjrRgRlOUKyqdsW
-         BsdVi7/9G07FgVmcI0yrt+BCl480ys32mWULTGs1yw6rcyo50umj8qly9avi5q/1OMp0
-         sszg==
+        bh=FLixRuYcjlzkXMCPVjeCT6ZjLrkMdMvBPO/J/NBDbU8=;
+        b=gLnBfRHV1xBig3HBBT1lWSsgDFsSM+gOfleW46aWWiNP/gciF/poiuKhif5IFzuI3F
+         Nb67ni+ZZARTqZjZzmOrZ/l0ui0Zq72kP2labj7kCC3uzdLzk0NpI+PxXl0/4yxZbi4j
+         FK34xRagedBEjB3TYdW7alXeI28y2rTYKdRtCWMMPi90h2TV75ED9O2FcEDv3ef2vMHC
+         Ie7eHuJVjud7XZ32xZVCGDNidA5m9XRKqiEOF2xGkutpS59NrfO4iCYZaIEZWVeQuurt
+         35CDhXZYIh4Iwr4w30WskUjU14r7y1t+6siJTEyzw4rJdWU3QImwjem0y/2hSJ8lD3xR
+         DHgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=G3RsF/ezkJmPkJ9qbTzt79hYrwBPit4uVs8jUybVwcY=;
-        b=CQTg7HnZZT5ibwEZ9al0seHDgLNcVAIQdqdYMnzIv881wOE7XlMy0ErDG3M1X0ul2y
-         xQK1EjPBgcIEbN7M4bcCVhoJJWGo0dVUK+LziMlpu0bfGQ8uwJoMIGYKcquKxPzClLLk
-         sbvk2hUXhm1fTG+L2E54Xn+z9UPTzxs00ZzfS+C1VQp0OgfOLOlwcNyIiLs8YMrk8Br9
-         clde3B/0m/bIz/YudPKXh0oyexbe6kX9xFFuvhtzyjjfJg7iEQUDhsoTfFmwdEuptMZh
-         Nr1513UVZ7yX+5dA/6PyB+Rxy78s6huDIK9GMvaSFsoQXZQDdSPPhoju92mN9bBnegDk
-         OhBA==
-X-Gm-Message-State: AOAM532ErpjSyp1r0TgmqTOKcnVy0uMQeebNnbPNfJ92McA6kWAaZSdy
-        Das9jqS7QL2A6l1AfI8WE5hwq9Z/nieEVLJxrHY=
-X-Google-Smtp-Source: ABdhPJzW4VGJLR86DrvFhciqr/CdbdTp/2rOTN/EInniqgQVnsS7B6Zen88VUyyHAgS6+KKANbjPNXRA308g739wOWM=
-X-Received: by 2002:a17:90a:ea05:: with SMTP id w5mr2448056pjy.204.1606287346440;
- Tue, 24 Nov 2020 22:55:46 -0800 (PST)
+        bh=FLixRuYcjlzkXMCPVjeCT6ZjLrkMdMvBPO/J/NBDbU8=;
+        b=cVpwoU6SCZTE3Cg1a3vcNAIVTL/0r6hkBG6gntX/RE/9Q7/J6ekGPZ8FMGtuo3iFFO
+         ++rhdKI6e5jADXGQVzsvH1524glWEzZ3i7SVbRWImEFH5Az4/Fo8o8K8uOURm0Li2HMJ
+         zaEIFDTp/vQMqE+3f6ArOyRs3Oiij4vTwSQmaP5PVxUaIxs8egiJ8pXrl/5VlWpq3cgn
+         6h8bLNf7v7oWdA1h+Bt1tauYPUib8SsfDSg1Aqz8lze3fUIA4+zv/dabRd491LcblhUs
+         cHw3+GAJrgJrJh3DLRsUvNFrr35Su5//q5C6BFmehAOVQgJO+1rhxQFwCfbHNGkrRwGg
+         tuzg==
+X-Gm-Message-State: AOAM531kcEtIhFveXhO0chBPfecrcSECMw6ERT/zNYSDTq2jwjYcIHN6
+        IRj3sne47WigFCmh2KlheeU9QDKHWWw1Q1NRpY0=
+X-Google-Smtp-Source: ABdhPJwdLCBRDBbCj66ayfFc7QBY8z4qpsXvWYjf4D2QIy23v5Sr691EaB1Ww8Spv4P0yGg3oCUM34NduRqm3k8mPec=
+X-Received: by 2002:a17:902:bd02:b029:da:8fd:af6b with SMTP id
+ p2-20020a170902bd02b02900da08fdaf6bmr2145917pls.7.1606288582460; Tue, 24 Nov
+ 2020 23:16:22 -0800 (PST)
 MIME-Version: 1.0
-References: <20201119083024.119566-1-bjorn.topel@gmail.com> <20201119083024.119566-4-bjorn.topel@gmail.com>
-In-Reply-To: <20201119083024.119566-4-bjorn.topel@gmail.com>
+References: <20201119083024.119566-1-bjorn.topel@gmail.com> <20201119083024.119566-5-bjorn.topel@gmail.com>
+In-Reply-To: <20201119083024.119566-5-bjorn.topel@gmail.com>
 From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Wed, 25 Nov 2020 07:55:35 +0100
-Message-ID: <CAJ8uoz38HYgHYPHCZ2fJ_GisgaT47sr+bcvHj=7s8dZdEgUDQQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 03/10] xsk: add support for recvmsg()
+Date:   Wed, 25 Nov 2020 08:16:11 +0100
+Message-ID: <CAJ8uoz31U=WprbtgGhrGqzuC5-TswsKEtOhfk1NFnBS6fz53Bg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 04/10] xsk: check need wakeup flag in sendmsg()
 To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
 Cc:     Network Development <netdev@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>,
@@ -71,64 +72,86 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Nov 19, 2020 at 9:32 AM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.co=
+On Thu, Nov 19, 2020 at 9:33 AM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.co=
 m> wrote:
 >
 > From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
 >
-> Add support for non-blocking recvmsg() to XDP sockets. Previously,
-> only sendmsg() was supported by XDP socket. Now, for symmetry and the
-> upcoming busy-polling support, recvmsg() is added.
+> Add a check for need wake up in sendmsg(), so that if a user calls
+> sendmsg() when no wakeup is needed, do not trigger a wakeup.
+>
+> To simplify the need wakeup check in the syscall, unconditionally
+> enable the need wakeup flag for Tx. This has a side-effect for poll();
+> If poll() is called for a socket without enabled need wakeup, a Tx
+> wakeup is unconditionally performed.
+>
+> The wakeup matrix for AF_XDP now looks like:
+>
+> need wakeup | poll()       | sendmsg()   | recvmsg()
+> ------------+--------------+-------------+------------
+> disabled    | wake Tx      | wake Tx     | nop
+> enabled     | check flag;  | check flag; | check flag;
+>             |   wake Tx/Rx |   wake Tx   |   wake Rx
 >
 > Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
 > ---
->  net/xdp/xsk.c | 22 +++++++++++++++++++++-
->  1 file changed, 21 insertions(+), 1 deletion(-)
+>  net/xdp/xsk.c           |  6 +++++-
+>  net/xdp/xsk_buff_pool.c | 13 ++++++-------
+>  2 files changed, 11 insertions(+), 8 deletions(-)
 
 Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
 
 > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index b0141973f23e..56a52ec75696 100644
+> index 56a52ec75696..bf0f5c34af6c 100644
 > --- a/net/xdp/xsk.c
 > +++ b/net/xdp/xsk.c
-> @@ -531,6 +531,26 @@ static int xsk_sendmsg(struct socket *sock, struct m=
-sghdr *m, size_t total_len)
->         return __xsk_sendmsg(sk);
+> @@ -522,13 +522,17 @@ static int xsk_sendmsg(struct socket *sock, struct =
+msghdr *m, size_t total_len)
+>         bool need_wait =3D !(m->msg_flags & MSG_DONTWAIT);
+>         struct sock *sk =3D sock->sk;
+>         struct xdp_sock *xs =3D xdp_sk(sk);
+> +       struct xsk_buff_pool *pool;
+>
+>         if (unlikely(!xsk_is_bound(xs)))
+>                 return -ENXIO;
+>         if (unlikely(need_wait))
+>                 return -EOPNOTSUPP;
+>
+> -       return __xsk_sendmsg(sk);
+> +       pool =3D xs->pool;
+> +       if (pool->cached_need_wakeup & XDP_WAKEUP_TX)
+> +               return __xsk_sendmsg(sk);
+> +       return 0;
 >  }
 >
-> +static int xsk_recvmsg(struct socket *sock, struct msghdr *m, size_t len=
+>  static int xsk_recvmsg(struct socket *sock, struct msghdr *m, size_t len=
 , int flags)
-> +{
-> +       bool need_wait =3D !(flags & MSG_DONTWAIT);
-> +       struct sock *sk =3D sock->sk;
-> +       struct xdp_sock *xs =3D xdp_sk(sk);
-> +
-> +       if (unlikely(!(xs->dev->flags & IFF_UP)))
-> +               return -ENETDOWN;
-> +       if (unlikely(!xs->rx))
-> +               return -ENOBUFS;
-> +       if (unlikely(!xsk_is_bound(xs)))
-> +               return -ENXIO;
-> +       if (unlikely(need_wait))
-> +               return -EOPNOTSUPP;
-> +
-> +       if (xs->pool->cached_need_wakeup & XDP_WAKEUP_RX && xs->zc)
-> +               return xsk_wakeup(xs, XDP_WAKEUP_RX);
-> +       return 0;
-> +}
-> +
->  static __poll_t xsk_poll(struct file *file, struct socket *sock,
->                              struct poll_table_struct *wait)
->  {
-> @@ -1191,7 +1211,7 @@ static const struct proto_ops xsk_proto_ops =3D {
->         .setsockopt     =3D xsk_setsockopt,
->         .getsockopt     =3D xsk_getsockopt,
->         .sendmsg        =3D xsk_sendmsg,
-> -       .recvmsg        =3D sock_no_recvmsg,
-> +       .recvmsg        =3D xsk_recvmsg,
->         .mmap           =3D xsk_mmap,
->         .sendpage       =3D sock_no_sendpage,
->  };
+> diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
+> index 8a3bf4e1318e..96bb607853ad 100644
+> --- a/net/xdp/xsk_buff_pool.c
+> +++ b/net/xdp/xsk_buff_pool.c
+> @@ -144,14 +144,13 @@ static int __xp_assign_dev(struct xsk_buff_pool *po=
+ol,
+>         if (err)
+>                 return err;
+>
+> -       if (flags & XDP_USE_NEED_WAKEUP) {
+> +       if (flags & XDP_USE_NEED_WAKEUP)
+>                 pool->uses_need_wakeup =3D true;
+> -               /* Tx needs to be explicitly woken up the first time.
+> -                * Also for supporting drivers that do not implement this
+> -                * feature. They will always have to call sendto().
+> -                */
+> -               pool->cached_need_wakeup =3D XDP_WAKEUP_TX;
+> -       }
+> +       /* Tx needs to be explicitly woken up the first time.  Also
+> +        * for supporting drivers that do not implement this
+> +        * feature. They will always have to call sendto() or poll().
+> +        */
+> +       pool->cached_need_wakeup =3D XDP_WAKEUP_TX;
+>
+>         dev_hold(netdev);
+>
 > --
 > 2.27.0
 >
