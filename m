@@ -2,139 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E40A2C3727
-	for <lists+bpf@lfdr.de>; Wed, 25 Nov 2020 04:12:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEFBD2C3707
+	for <lists+bpf@lfdr.de>; Wed, 25 Nov 2020 04:12:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727859AbgKYDBj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 24 Nov 2020 22:01:39 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:5730 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727629AbgKYDBi (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 24 Nov 2020 22:01:38 -0500
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AP2t5SP015062
-        for <bpf@vger.kernel.org>; Tue, 24 Nov 2020 19:01:37 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=i22VzsfYXFhHUbHUyBRo4SfAiYTea7Ssop+WPV0F4gA=;
- b=SJ9+4up5ecCOv80G2UxGiriFndg5Pj5mjtJpEmolL2fpELSgwLNHWG7YGP/JVbCM4m7O
- tklX06rWPI9mcCPk9iuO0LD/fg67XgcdcGh6X+z3UDgr3wbPUmMz6VJAJHhfX0MmYlED
- Rhmz8UkQsHbYolblyPqh08r6wCaE99bK9is= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 34ykkr4smw-17
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 24 Nov 2020 19:01:37 -0800
-Received: from intmgw002.41.prn1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 24 Nov 2020 19:01:28 -0800
-Received: by devvm3388.prn0.facebook.com (Postfix, from userid 111017)
-        id 3D70416A18A5; Tue, 24 Nov 2020 19:01:22 -0800 (PST)
-From:   Roman Gushchin <guro@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <netdev@vger.kernel.org>,
-        <andrii@kernel.org>, <akpm@linux-foundation.org>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <kernel-team@fb.com>
-Subject: [PATCH bpf-next v8 18/34] bpf: eliminate rlimit-based memory accounting for arraymap maps
-Date:   Tue, 24 Nov 2020 19:01:03 -0800
-Message-ID: <20201125030119.2864302-19-guro@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20201125030119.2864302-1-guro@fb.com>
-References: <20201125030119.2864302-1-guro@fb.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
+        id S1726885AbgKYDB0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 24 Nov 2020 22:01:26 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:28484 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725998AbgKYDBZ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 24 Nov 2020 22:01:25 -0500
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AP2W3R4120618;
+        Tue, 24 Nov 2020 22:01:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=6amDYJMbvv+cZ/V0BO4yE2KEA8QwnKwYTTvHtJ1k4+I=;
+ b=qQYY1QyCt5B2pvfPm8Jh94ucil9O0Ku15PCOy3KvENc92p9rYA9H5dvJWvnEDK7ffVIU
+ D5HzfYpEtDKf7AgjDXF+evO3SWwEDbY4meC68/LFb2Gq+u8XrU8//NIakAatTHA4vwde
+ wQWOd1VggxUJ4uWP89Q8UCWbehiZAQJbaFc3S6YSoyC18dC9DYOQEpiOO21v3BXfjJEW
+ bRMuFLFQ8GV466G4EY79rs1Cg18H9K0S/ivtjLVrYiZmhjCK3IRL71Ua8GRyiZ+QA2Ow
+ gT9IaYgFqKo0dKfn5wjnJBjxRf12ISBzsF8gOoZHWgUOTI0iRRBooxuXT6muY+BsZF3s Dw== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 350rna222x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 24 Nov 2020 22:01:11 -0500
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0AP2w1xL031115;
+        Wed, 25 Nov 2020 03:01:09 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 3518j8g8q6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Nov 2020 03:01:09 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0AP317EO6881928
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 25 Nov 2020 03:01:07 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 69E31AE0EC;
+        Wed, 25 Nov 2020 03:01:07 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1C9C8AE0CB;
+        Wed, 25 Nov 2020 03:01:05 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.82.212])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 25 Nov 2020 03:01:04 +0000 (GMT)
+Message-ID: <8f91820c6a79592105d4ce85ccfaeeda2aa645c3.camel@linux.ibm.com>
+Subject: Re: [PATCH bpf-next v3 3/3] bpf: Add a selftest for
+ bpf_ima_inode_hash
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     James Morris <jmorris@namei.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>
+Date:   Tue, 24 Nov 2020 22:01:04 -0500
+In-Reply-To: <CACYkzJ5ZJ_yu=dXM5-jXEO5p5WzpXDT5EdT0agL1pgdNRqGamw@mail.gmail.com>
+References: <20201124151210.1081188-1-kpsingh@chromium.org>
+         <20201124151210.1081188-4-kpsingh@chromium.org>
+         <adaa989215f4b748eb817d15bd3c2e8db2cbee3c.camel@linux.ibm.com>
+         <CACYkzJ5ZJ_yu=dXM5-jXEO5p5WzpXDT5EdT0agL1pgdNRqGamw@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
  definitions=2020-11-24_11:2020-11-24,2020-11-24 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
- mlxlogscore=848 lowpriorityscore=0 impostorscore=0 mlxscore=0
- suspectscore=38 clxscore=1015 spamscore=0 malwarescore=0
- priorityscore=1501 bulkscore=0 adultscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2011250018
-X-FB-Internal: deliver
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ phishscore=0 mlxlogscore=999 mlxscore=0 adultscore=0 suspectscore=0
+ impostorscore=0 priorityscore=1501 clxscore=1015 malwarescore=0
+ spamscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011250011
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Do not use rlimit-based memory accounting for arraymap maps.
-It has been replaced with the memcg-based memory accounting.
+On Wed, 2020-11-25 at 03:55 +0100, KP Singh wrote:
+> On Wed, Nov 25, 2020 at 3:20 AM Mimi Zohar <zohar@linux.ibm.com> wrote:
+> >
+> > On Tue, 2020-11-24 at 15:12 +0000, KP Singh wrote:
+> > > diff --git a/tools/testing/selftests/bpf/ima_setup.sh b/tools/testing/selftests/bpf/ima_setup.sh
+> > > new file mode 100644
+> > > index 000000000000..15490ccc5e55
+> > > --- /dev/null
+> > > +++ b/tools/testing/selftests/bpf/ima_setup.sh
+> > > @@ -0,0 +1,80 @@
+> > > +#!/bin/bash
+> > > +# SPDX-License-Identifier: GPL-2.0
+> > > +
+> > > +set -e
+> > > +set -u
+> > > +
+> > > +IMA_POLICY_FILE="/sys/kernel/security/ima/policy"
+> > > +TEST_BINARY="/bin/true"
+> > > +
+> > > +usage()
+> > > +{
+> > > +        echo "Usage: $0 <setup|cleanup|run> <existing_tmp_dir>"
+> > > +        exit 1
+> > > +}
+> > > +
+> > > +setup()
+> > > +{
+> > > +        local tmp_dir="$1"
+> > > +        local mount_img="${tmp_dir}/test.img"
+> > > +        local mount_dir="${tmp_dir}/mnt"
+> > > +        local copied_bin_path="${mount_dir}/$(basename ${TEST_BINARY})"
+> > > +        mkdir -p ${mount_dir}
+> > > +
+> > > +        dd if=/dev/zero of="${mount_img}" bs=1M count=10
+> > > +
+> > > +        local loop_device="$(losetup --find --show ${mount_img})"
+> > > +
+> > > +        mkfs.ext4 "${loop_device}"
+> > > +        mount "${loop_device}" "${mount_dir}"
+> > > +
+> > > +        cp "${TEST_BINARY}" "${mount_dir}"
+> > > +        local mount_uuid="$(blkid -s UUID -o value ${loop_device})"
+> > > +        echo "measure func=BPRM_CHECK fsuuid=${mount_uuid}" > ${IMA_POLICY_FILE}
+> >
+> > Anyone using IMA, normally define policy rules requiring the policy
+> > itself to be signed.   Instead of writing the policy rules, write the
+> 
+> The goal of this self test is to not fully test the IMA functionality but check
+> if the BPF helper works and returns a hash with the minimal possible IMA
+> config dependencies. And it seems like we can accomplish this by simply
+> writing the policy to securityfs directly.
+> 
+> From what I noticed, IMA_APPRAISE_REQUIRE_POLICY_SIGS
+> requires configuring a lot of other kernel options
+> (IMA_APPRAISE, ASYMMETRIC_KEYS etc.) that seem
+> like too much for bpf self tests to depend on.
+> 
+> I guess we can independently add selftests for IMA  which represent
+> a more real IMA configuration.  Hope this sounds reasonable?
 
-Signed-off-by: Roman Gushchin <guro@fb.com>
-Acked-by: Song Liu <songliubraving@fb.com>
----
- kernel/bpf/arraymap.c | 24 ++++--------------------
- 1 file changed, 4 insertions(+), 20 deletions(-)
+Sure.  My point was that writing the policy rule might fail.
 
-diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-index 92b650123c22..20f751a1d993 100644
---- a/kernel/bpf/arraymap.c
-+++ b/kernel/bpf/arraymap.c
-@@ -81,11 +81,10 @@ int array_map_alloc_check(union bpf_attr *attr)
- static struct bpf_map *array_map_alloc(union bpf_attr *attr)
- {
- 	bool percpu =3D attr->map_type =3D=3D BPF_MAP_TYPE_PERCPU_ARRAY;
--	int ret, numa_node =3D bpf_map_attr_numa_node(attr);
-+	int numa_node =3D bpf_map_attr_numa_node(attr);
- 	u32 elem_size, index_mask, max_entries;
- 	bool bypass_spec_v1 =3D bpf_bypass_spec_v1();
--	u64 cost, array_size, mask64;
--	struct bpf_map_memory mem;
-+	u64 array_size, mask64;
- 	struct bpf_array *array;
-=20
- 	elem_size =3D round_up(attr->value_size, 8);
-@@ -126,44 +125,29 @@ static struct bpf_map *array_map_alloc(union bpf_at=
-tr *attr)
- 		}
- 	}
-=20
--	/* make sure there is no u32 overflow later in round_up() */
--	cost =3D array_size;
--	if (percpu)
--		cost +=3D (u64)attr->max_entries * elem_size * num_possible_cpus();
--
--	ret =3D bpf_map_charge_init(&mem, cost);
--	if (ret < 0)
--		return ERR_PTR(ret);
--
- 	/* allocate all map elements and zero-initialize them */
- 	if (attr->map_flags & BPF_F_MMAPABLE) {
- 		void *data;
-=20
- 		/* kmalloc'ed memory can't be mmap'ed, use explicit vmalloc */
- 		data =3D bpf_map_area_mmapable_alloc(array_size, numa_node);
--		if (!data) {
--			bpf_map_charge_finish(&mem);
-+		if (!data)
- 			return ERR_PTR(-ENOMEM);
--		}
- 		array =3D data + PAGE_ALIGN(sizeof(struct bpf_array))
- 			- offsetof(struct bpf_array, value);
- 	} else {
- 		array =3D bpf_map_area_alloc(array_size, numa_node);
- 	}
--	if (!array) {
--		bpf_map_charge_finish(&mem);
-+	if (!array)
- 		return ERR_PTR(-ENOMEM);
--	}
- 	array->index_mask =3D index_mask;
- 	array->map.bypass_spec_v1 =3D bypass_spec_v1;
-=20
- 	/* copy mandatory map attributes */
- 	bpf_map_init_from_attr(&array->map, attr);
--	bpf_map_charge_move(&array->map.memory, &mem);
- 	array->elem_size =3D elem_size;
-=20
- 	if (percpu && bpf_array_alloc_percpu(array)) {
--		bpf_map_charge_finish(&array->map.memory);
- 		bpf_map_area_free(array);
- 		return ERR_PTR(-ENOMEM);
- 	}
---=20
-2.26.2
+Mimi
+> 
+> > signed policy file pathname.  Refer to dracut commit 479b5cd9
+> > ("98integrity: support validating the IMA policy file signature").
+> >
+> > Both enabling IMA_APPRAISE_REQUIRE_POLICY_SIGS and the builtin
+> > "appraise_tcb" policy require loading a signed policy.
+> 
+> Thanks for the pointers.
+
+
 
