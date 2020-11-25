@@ -2,146 +2,324 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF3D82C3FDA
-	for <lists+bpf@lfdr.de>; Wed, 25 Nov 2020 13:23:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A83A2C401A
+	for <lists+bpf@lfdr.de>; Wed, 25 Nov 2020 13:28:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727687AbgKYMW7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Nov 2020 07:22:59 -0500
-Received: from www62.your-server.de ([213.133.104.62]:56340 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726898AbgKYMW7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Nov 2020 07:22:59 -0500
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1khtoz-0001NT-Gp; Wed, 25 Nov 2020 13:22:53 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1khtoz-0009Ew-Ag; Wed, 25 Nov 2020 13:22:53 +0100
-Subject: Re: [PATCH][V2] libbpf: add support for canceling cached_cons advance
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     Li RongQing <lirongqing@baidu.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
-References: <1606202474-8119-1-git-send-email-lirongqing@baidu.com>
- <CAJ8uoz0WNm6no8NRehgUH5RiGgvjJkKeD-Yyoah8xJerpLhgdg@mail.gmail.com>
- <fe9eeaa5-d40a-9be4-a96b-cdd80095da47@iogearbox.net>
- <CAJ8uoz1JdmHc9nwa4cY20S-GN62RAJUEPGY4LcmdTM4FjuGTow@mail.gmail.com>
- <aa4cdc17-1e54-7782-2b64-14d7a3ac892e@iogearbox.net>
- <CAJ8uoz2F3F_w8o1uBzOdxqy5Z1pcg4g4kqG22FnxrQ4+pY5UKg@mail.gmail.com>
- <542d88a0-71c0-6d1f-e949-b375d0ac8369@iogearbox.net>
- <CAJ8uoz36wS+cQSXxRm_GVyH7O1vhzASmC-LUoLcS0dW7SsqcNw@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <43f92e67-b454-b297-4a1d-d61c011a3b3f@iogearbox.net>
-Date:   Wed, 25 Nov 2020 13:22:52 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <CAJ8uoz36wS+cQSXxRm_GVyH7O1vhzASmC-LUoLcS0dW7SsqcNw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        id S1729327AbgKYM2E (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Nov 2020 07:28:04 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:49574 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727114AbgKYM2E (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 25 Nov 2020 07:28:04 -0500
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0APC394w121862;
+        Wed, 25 Nov 2020 07:27:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=UbzirwkjfgdomKJA+29wtILa4mu/T1pTH0be6wGGd2I=;
+ b=fa1Qm2FJDWMjThdDGTleoY8JFuQOIAPO6KOjl/W1untBkPUl3wJ3NsMRLRT0YqFFJWoc
+ HsX571eJ4x3L2Zn7sf1KaRyjx1wRrfLALrufG6Wr9StJ23QxJCGdgy9FVB4UBA1j/FKk
+ QNdcfls8lghXeTNiCMLuxOE1iDEe5iziNVjW8MtvPJ3mE8gUqAKGbFZ7nDFes3U6VVC5
+ 8laEjE8pWMpUEhMcpqYD2GGXQpt4YbrWMmw+0Iopr84Lck6wA2H1Iwi1XwQYY+WS8/IZ
+ 06+MfNM4aU8v+UADFdr76gC3SCmjBwWHjQ0nV3FWphGghWkoW4ShqcVfFYL9tky1GPUq Sw== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 351nfg42ds-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Nov 2020 07:27:48 -0500
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0APCPY7F011658;
+        Wed, 25 Nov 2020 12:27:46 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma04ams.nl.ibm.com with ESMTP id 3518j8gnxs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 25 Nov 2020 12:27:46 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0APCRiOv15270224
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 25 Nov 2020 12:27:44 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E39B05204E;
+        Wed, 25 Nov 2020 12:27:43 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.81.213])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id E08AC52051;
+        Wed, 25 Nov 2020 12:27:41 +0000 (GMT)
+Message-ID: <38bfd8e3f4642095c88cc456e010c44697c57af9.camel@linux.ibm.com>
+Subject: Re: [PATCH bpf-next v3 3/3] bpf: Add a selftest for
+ bpf_ima_inode_hash
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     KP Singh <kpsingh@chromium.org>, James Morris <jmorris@namei.org>,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>
+Date:   Wed, 25 Nov 2020 07:27:40 -0500
+In-Reply-To: <20201124151210.1081188-4-kpsingh@chromium.org>
+References: <20201124151210.1081188-1-kpsingh@chromium.org>
+         <20201124151210.1081188-4-kpsingh@chromium.org>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/25998/Tue Nov 24 14:16:50 2020)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-25_06:2020-11-25,2020-11-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
+ phishscore=0 priorityscore=1501 mlxlogscore=999 mlxscore=0 malwarescore=0
+ lowpriorityscore=0 suspectscore=0 clxscore=1015 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011250072
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 11/25/20 11:09 AM, Magnus Karlsson wrote:
-> On Wed, Nov 25, 2020 at 11:07 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->>
->> On 11/25/20 10:13 AM, Magnus Karlsson wrote:
->>> On Wed, Nov 25, 2020 at 10:02 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->>>> On 11/25/20 9:30 AM, Magnus Karlsson wrote:
->>>>> On Tue, Nov 24, 2020 at 10:58 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->>>>>> On 11/24/20 9:12 AM, Magnus Karlsson wrote:
->>>>>>> On Tue, Nov 24, 2020 at 8:33 AM Li RongQing <lirongqing@baidu.com> wrote:
->>>>>>>>
->>>>>>>> Add a new function for returning descriptors the user received
->>>>>>>> after an xsk_ring_cons__peek call. After the application has
->>>>>>>> gotten a number of descriptors from a ring, it might not be able
->>>>>>>> to or want to process them all for various reasons. Therefore,
->>>>>>>> it would be useful to have an interface for returning or
->>>>>>>> cancelling a number of them so that they are returned to the ring.
->>>>>>>>
->>>>>>>> This patch adds a new function called xsk_ring_cons__cancel that
->>>>>>>> performs this operation on nb descriptors counted from the end of
->>>>>>>> the batch of descriptors that was received through the peek call.
->>>>>>>>
->>>>>>>> Signed-off-by: Li RongQing <lirongqing@baidu.com>
->>>>>>>> [ Magnus Karlsson: rewrote changelog ]
->>>>>>>> Cc: Magnus Karlsson <magnus.karlsson@intel.com>
->>>>>>>> ---
->>>>>>>> diff with v1: fix the building, and rewrote changelog
->>>>>>>>
->>>>>>>>      tools/lib/bpf/xsk.h | 6 ++++++
->>>>>>>>      1 file changed, 6 insertions(+)
->>>>>>>>
->>>>>>>> diff --git a/tools/lib/bpf/xsk.h b/tools/lib/bpf/xsk.h
->>>>>>>> index 1069c46364ff..1719a327e5f9 100644
->>>>>>>> --- a/tools/lib/bpf/xsk.h
->>>>>>>> +++ b/tools/lib/bpf/xsk.h
->>>>>>>> @@ -153,6 +153,12 @@ static inline size_t xsk_ring_cons__peek(struct xsk_ring_cons *cons,
->>>>>>>>             return entries;
->>>>>>>>      }
->>>>>>>>
->>>>>>>> +static inline void xsk_ring_cons__cancel(struct xsk_ring_cons *cons,
->>>>>>>> +                                        size_t nb)
->>>>>>>> +{
->>>>>>>> +       cons->cached_cons -= nb;
->>>>>>>> +}
->>>>>>>> +
->>>>>>>>      static inline void xsk_ring_cons__release(struct xsk_ring_cons *cons, size_t nb)
->>>>>>>>      {
->>>>>>>>             /* Make sure data has been read before indicating we are done
->>>>>>>> --
->>>>>>>> 2.17.3
->>>>>>>
->>>>>>> Thank you RongQing.
->>>>>>>
->>>>>>> Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
->>>>>>
->>>>>> @Magnus: shouldn't the xsk_ring_cons__cancel() nb type be '__u32 nb' instead?
->>>>>
->>>>> All the other interfaces have size_t as the type for "nb". It is kind
->>>>> of weird as a __u32 would have made more sense, but cannot actually
->>>>> remember why I chose a size_t two years ago. But for consistency with
->>>>> the other interfaces, let us keep it a size_t for now. I will do some
->>>>> research around the reason.
->>>>
->>>> It's actually a bit of a mix currently which is what got me confused:
->>>>
->>>> static inline __u32 xsk_prod_nb_free(struct xsk_ring_prod *r, __u32 nb)
->>>> static inline __u32 xsk_cons_nb_avail(struct xsk_ring_cons *r, __u32 nb)
->>>> static inline size_t xsk_ring_prod__reserve(struct xsk_ring_prod *prod, size_t nb, __u32 *idx)
->>>> static inline void xsk_ring_prod__submit(struct xsk_ring_prod *prod, size_t nb)
->>>> static inline size_t xsk_ring_cons__peek(struct xsk_ring_cons *cons, size_t nb, __u32 *idx)
->>>> static inline void xsk_ring_cons__release(struct xsk_ring_cons *cons, size_t nb)
->>>>
->>>> (I can take it in as-is, but would be nice to clean it up a bit to avoid confusion.)
->>>
->>> Hmm, that is confusing indeed. Well, the best choice would be __u32
->>> everywhere since the ring pointers themselves are __u32. But I am
->>> somewhat afraid of changing an API. Can we guarantee that a change
->>> from size_t to __u32 will not break some user's compilation? Another
->>> option would be to clean this up next year when we will very likely
->>> produce a 1.0 version of this API and at that point we can change some
->>> things. What do you think would be the best approach?
->>
->> Given they're all inlines, imho, risk should be fairly low to switch all to __u32.
->> I would probably go and verify first with DPDK as main user of the lib and/or write
->> some test cases to see if compiler spills any new warnings and the like, but if not
->> the case then we should do it for bpf-next so this has plenty of exposure in the
->> meantime. Any nb large than u32 max is a bug in any case.
+On Tue, 2020-11-24 at 15:12 +0000, KP Singh wrote:
+> From: KP Singh <kpsingh@google.com>
 > 
-> Sounds good. Will do and get back to you.
+> The test does the following:
+> 
+> - Mounts a loopback filesystem and appends the IMA policy to measure
+>   executions only on this file-system. Restricting the IMA policy to a
+>   particular filesystem prevents a system-wide IMA policy change.
+> - Executes an executable copied to this loopback filesystem.
+> - Calls the bpf_ima_inode_hash in the bprm_committed_creds hook and
+>   checks if the call succeeded and checks if a hash was calculated.
+> 
+> The test shells out to the added ima_setup.sh script as the setup is
+> better handled in a shell script and is more complicated to do in the
+> test program or even shelling out individual commands from C.
+> 
+> The list of required configs (i.e. IMA, SECURITYFS,
+> IMA_{WRITE,READ}_POLICY) for running this test are also updated.
+> 
+> Signed-off-by: KP Singh <kpsingh@google.com>
 
-Great, thanks, I took in the current patch to bpf-next in that case and the rest can
-be followed-up as discussed.
+Suggested-by: Mimi Zohar <zohar@linux.ibm.com> (limit policy rule to
+loopback mount)
 
-Thanks,
-Daniel
+> ---
+>  tools/testing/selftests/bpf/config            |  4 +
+>  tools/testing/selftests/bpf/ima_setup.sh      | 80 +++++++++++++++++++
+>  .../selftests/bpf/prog_tests/test_ima.c       | 74 +++++++++++++++++
+>  tools/testing/selftests/bpf/progs/ima.c       | 28 +++++++
+>  4 files changed, 186 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/ima_setup.sh
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/test_ima.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/ima.c
+> 
+> diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
+> index 2118e23ac07a..365bf9771b07 100644
+> --- a/tools/testing/selftests/bpf/config
+> +++ b/tools/testing/selftests/bpf/config
+> @@ -39,3 +39,7 @@ CONFIG_BPF_JIT=y
+>  CONFIG_BPF_LSM=y
+>  CONFIG_SECURITY=y
+>  CONFIG_LIRC=y
+> +CONFIG_IMA=y
+> +CONFIG_SECURITYFS=y
+> +CONFIG_IMA_WRITE_POLICY=y
+> +CONFIG_IMA_READ_POLICY=y
+> diff --git a/tools/testing/selftests/bpf/ima_setup.sh b/tools/testing/selftests/bpf/ima_setup.sh
+> new file mode 100644
+> index 000000000000..15490ccc5e55
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/ima_setup.sh
+> @@ -0,0 +1,80 @@
+> +#!/bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +
+> +set -e
+> +set -u
+> +
+> +IMA_POLICY_FILE="/sys/kernel/security/ima/policy"
+> +TEST_BINARY="/bin/true"
+> +
+> +usage()
+> +{
+> +        echo "Usage: $0 <setup|cleanup|run> <existing_tmp_dir>"
+> +        exit 1
+> +}
+> +
+> +setup()
+> +{
+> +        local tmp_dir="$1"
+> +        local mount_img="${tmp_dir}/test.img"
+> +        local mount_dir="${tmp_dir}/mnt"
+> +        local copied_bin_path="${mount_dir}/$(basename ${TEST_BINARY})"
+> +        mkdir -p ${mount_dir}
+> +
+> +        dd if=/dev/zero of="${mount_img}" bs=1M count=10
+> +
+> +        local loop_device="$(losetup --find --show ${mount_img})"
+> +
+> +        mkfs.ext4 "${loop_device}"
+> +        mount "${loop_device}" "${mount_dir}"
+> +
+> +        cp "${TEST_BINARY}" "${mount_dir}"
+> +        local mount_uuid="$(blkid -s UUID -o value ${loop_device})"
+> +        echo "measure func=BPRM_CHECK fsuuid=${mount_uuid}" > ${IMA_POLICY_FILE}
+> +}
+> +
+> +cleanup() {
+> +        local tmp_dir="$1"
+> +        local mount_img="${tmp_dir}/test.img"
+> +        local mount_dir="${tmp_dir}/mnt"
+> +
+> +        local loop_devices=$(losetup -j ${mount_img} -O NAME --noheadings)
+> +        for loop_dev in "${loop_devices}"; do
+> +                losetup -d $loop_dev
+> +        done
+> +
+> +        umount ${mount_dir}
+> +        rm -rf ${tmp_dir}
+> +}
+> +
+> +run()
+> +{
+> +        local tmp_dir="$1"
+> +        local mount_dir="${tmp_dir}/mnt"
+> +        local copied_bin_path="${mount_dir}/$(basename ${TEST_BINARY})"
+> +
+> +        exec "${copied_bin_path}"
+> +}
+> +
+> +main()
+> +{
+> +        [[ $# -ne 2 ]] && usage
+> +
+> +        local action="$1"
+> +        local tmp_dir="$2"
+> +
+> +        [[ ! -d "${tmp_dir}" ]] && echo "Directory ${tmp_dir} doesn't exist" && exit 1
+> +
+> +        if [[ "${action}" == "setup" ]]; then
+> +                setup "${tmp_dir}"
+> +        elif [[ "${action}" == "cleanup" ]]; then
+> +                cleanup "${tmp_dir}"
+> +        elif [[ "${action}" == "run" ]]; then
+> +                run "${tmp_dir}"
+> +        else
+> +                echo "Unknown action: ${action}"
+> +                exit 1
+> +        fi
+> +}
+> +
+> +main "$@"
+> diff --git a/tools/testing/selftests/bpf/prog_tests/test_ima.c b/tools/testing/selftests/bpf/prog_tests/test_ima.c
+> new file mode 100644
+> index 000000000000..61fca681d524
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/test_ima.c
+> @@ -0,0 +1,74 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +/*
+> + * Copyright (C) 2020 Google LLC.
+> + */
+> +
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <unistd.h>
+> +#include <sys/wait.h>
+> +#include <test_progs.h>
+> +
+> +#include "ima.skel.h"
+> +
+> +static int run_measured_process(const char *measured_dir, u32 *monitored_pid)
+> +{
+> +	int child_pid, child_status;
+> +
+> +	child_pid = fork();
+> +	if (child_pid == 0) {
+> +		*monitored_pid = getpid();
+> +		execlp("./ima_setup.sh", "./ima_setup.sh", "run", measured_dir,
+> +		       NULL);
+> +		exit(errno);
+> +
+> +	} else if (child_pid > 0) {
+> +		waitpid(child_pid, &child_status, 0);
+> +		return WEXITSTATUS(child_status);
+> +	}
+> +
+> +	return -EINVAL;
+> +}
+> +
+> +void test_test_ima(void)
+> +{
+> +	char measured_dir_template[] = "/tmp/ima_measuredXXXXXX";
+> +	const char *measured_dir;
+> +	char cmd[256];
+> +
+> +	int err, duration = 0;
+> +	struct ima *skel = NULL;
+> +
+> +	skel = ima__open_and_load();
+> +	if (CHECK(!skel, "skel_load", "skeleton failed\n"))
+> +		goto close_prog;
+> +
+> +	err = ima__attach(skel);
+> +	if (CHECK(err, "attach", "attach failed: %d\n", err))
+> +		goto close_prog;
+> +
+> +	measured_dir = mkdtemp(measured_dir_template);
+> +	if (CHECK(measured_dir == NULL, "mkdtemp", "err %d\n", errno))
+> +		goto close_prog;
+> +
+> +	snprintf(cmd, sizeof(cmd), "./ima_setup.sh setup %s", measured_dir);
+> +	if (CHECK_FAIL(system(cmd)))
+> +		goto close_clean;
+> +
+> +	err = run_measured_process(measured_dir, &skel->bss->monitored_pid);
+> +	if (CHECK(err, "run_measured_process", "err = %d\n", err))
+> +		goto close_clean;
+> +
+> +	CHECK(skel->data->ima_hash_ret < 0, "ima_hash_ret",
+> +	      "ima_hash_ret = %ld\n", skel->data->ima_hash_ret);
+> +
+> +	CHECK(skel->bss->ima_hash == 0, "ima_hash",
+> +	      "ima_hash = %lu\n", skel->bss->ima_hash);
+> +
+> +close_clean:
+> +	snprintf(cmd, sizeof(cmd), "./ima_setup.sh cleanup %s", measured_dir);
+> +	CHECK_FAIL(system(cmd));
+> +close_prog:
+> +	ima__destroy(skel);
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/ima.c b/tools/testing/selftests/bpf/progs/ima.c
+> new file mode 100644
+> index 000000000000..86b21aff4bc5
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/ima.c
+> @@ -0,0 +1,28 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +/*
+> + * Copyright 2020 Google LLC.
+> + */
+> +
+> +#include "vmlinux.h"
+> +#include <errno.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +
+> +long ima_hash_ret = -1;
+> +u64 ima_hash = 0;
+> +u32 monitored_pid = 0;
+> +
+> +char _license[] SEC("license") = "GPL";
+> +
+> +SEC("lsm.s/bprm_committed_creds")
+> +int BPF_PROG(ima, struct linux_binprm *bprm)
+> +{
+> +	u32 pid = bpf_get_current_pid_tgid() >> 32;
+> +
+> +	if (pid == monitored_pid)
+> +		ima_hash_ret = bpf_ima_inode_hash(bprm->file->f_inode,
+> +						  &ima_hash, sizeof(ima_hash));
+> +
+> +	return 0;
+> +}
+
+
