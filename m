@@ -2,104 +2,584 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F852C4967
-	for <lists+bpf@lfdr.de>; Wed, 25 Nov 2020 21:57:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C45432C49BF
+	for <lists+bpf@lfdr.de>; Wed, 25 Nov 2020 22:15:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730178AbgKYU51 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Nov 2020 15:57:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727281AbgKYU51 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Nov 2020 15:57:27 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40861C0613D4
-        for <bpf@vger.kernel.org>; Wed, 25 Nov 2020 12:57:27 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id s30so5056016lfc.4
-        for <bpf@vger.kernel.org>; Wed, 25 Nov 2020 12:57:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0VYYryNBAj3My0hSdQSAqcKflNrjgdtn42G8zBNZZMg=;
-        b=f2G7AdObTOTz3LGEHw6rpMDF/Vzb0yHiIYN6HSeMD23t/AB5xnqQnuU4BlOHN6ZVkb
-         d8bUmUmvYo1AnZE495oCDiEkS3f5WZnEjkScc0vLSrLtahER+T1MUKCcbBlGEXhGtQKe
-         X6hzR6PgB+vytVgK6ZDNlhdKV5d7XKR5/ERF0=
+        id S1726908AbgKYVOR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Nov 2020 16:14:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34305 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725838AbgKYVOR (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 25 Nov 2020 16:14:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606338853;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=riqPBXLsj3daIRkGe6zDFFwZ0EF5ICHex6iERZ0x1Oo=;
+        b=ftGC7ab5jvt2L+Qlw5i/EaBYfDz4k7xNNEMiEgoHNJyVP7QERYkaqzNeu8UJcqiNRiEDoc
+        x51GtVKh5tJ8ft635Gwy806tKavmcT9dDNitTvsR5L9vu/LsbJhWxoqY7xo8WvBzALLsMd
+        7xe7v0RGNAK2bbDCD5+pESfFvJx1uf4=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-263-yN3LHHMDN-yZ80igUCodGQ-1; Wed, 25 Nov 2020 16:14:11 -0500
+X-MC-Unique: yN3LHHMDN-yZ80igUCodGQ-1
+Received: by mail-wr1-f72.google.com with SMTP id w17so1223366wrp.11
+        for <bpf@vger.kernel.org>; Wed, 25 Nov 2020 13:14:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0VYYryNBAj3My0hSdQSAqcKflNrjgdtn42G8zBNZZMg=;
-        b=Xn7QyaP+TeMqbXvmw030HYgCEeIEUFzvYZYXbE5Qdg3vTJ/eSjK1hUlTaWI1LLMUo3
-         m9Wp2wtUUedL4lCdWJvV9U8sAfPsfOblTthzmSg9B+ieYl8TCkTDZ0L6AUEie9z8/rwk
-         QvV2YeEli/NRfdr5OMjLgt+nUnKSJIyMXQo0FOgp/bY0Si8GIKP2x7sAtsC4cAoxMJHt
-         rcn/lNA0OKlA3SqsDvp7XG7PrfYcALbm43zdvSV4TNRxxZ/tOtnKJ3H+S3WJVIYY1SOU
-         YpP92kYvorO8kE7BaDxOLGpbv2V9zvb59XjdEGdSzn/BMGxMnvdDRZupDSumzEYIZ72A
-         y46Q==
-X-Gm-Message-State: AOAM530cOxxJPOfKIHa5/iH0Z/jTNFqMuLoke/qMWCIxsGh0dzO3/u4o
-        k/kyG0wOwQ+Ac7MkQKny8MXu0poOuODcIAvkNo2Ahw==
-X-Google-Smtp-Source: ABdhPJy3GTxer4jKOoITfJca2q8MF0PdRE0ROkPJoB1/qOqOH2jf/3yBkd4mJKakwQm0pHOqZT8F37x2VT2x3nV6aco=
-X-Received: by 2002:a19:418d:: with SMTP id o135mr3669lfa.329.1606337845758;
- Wed, 25 Nov 2020 12:57:25 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=riqPBXLsj3daIRkGe6zDFFwZ0EF5ICHex6iERZ0x1Oo=;
+        b=BciwwhadIawIw2hQhpIawSIgJlobjYhmu0Xg/CzcN2MIIEQQkGhcOOLKD+ZYigak9J
+         Dgb10Bfty+2a1uIVKf6SBh9v/IkEDn+ktd49rORd25lDWAsVnqpk9/4zTFa7dXf51KN4
+         3CwpbFWBECDMoKPm8gE2USn5yH7ttjzVHhZ7nplr5WGtc/rC+XrE3D6wGyMHBIVhpLDa
+         oVBJCOkWasyX50wi0yR5H6bwx1EDaWE5Ypv8B91V9nbWVbLBcj9Xu+gX75AeOsm9Zr69
+         kij6cyp8XbMaw+TrIva6by1Ob6QxWZ4p05C0oBp4cmsXNkX3mFTLF4aDB7tOs5z3vIGg
+         fzhQ==
+X-Gm-Message-State: AOAM531m50KC3f0eeKrIqo2wo7zKN+KbRA00gb/NRuduOvS+Gibp0aZN
+        wbQ2xUrjtbgPjXH8X2ZnInG+DtsQIn6Q54WFqUp92lhWgozRvru9jBcRN1Y3vj+yzeTgcfN78z4
+        XLVVzFP8LucDd
+X-Received: by 2002:a1c:6382:: with SMTP id x124mr4830354wmb.46.1606338850127;
+        Wed, 25 Nov 2020 13:14:10 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzzYEthBgXky9P3qiWSEwQ7BqYz0cHN2HeOwgQh5OhpJuy0OJF+fPtIduOumRR3DtPBjMlJ6A==
+X-Received: by 2002:a1c:6382:: with SMTP id x124mr4830319wmb.46.1606338849761;
+        Wed, 25 Nov 2020 13:14:09 -0800 (PST)
+Received: from redhat.com (bzq-79-176-44-197.red.bezeqint.net. [79.176.44.197])
+        by smtp.gmail.com with ESMTPSA id s4sm6178763wro.10.2020.11.25.13.14.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Nov 2020 13:14:08 -0800 (PST)
+Date:   Wed, 25 Nov 2020 16:14:03 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        magnus.karlsson@intel.com, ast@kernel.org, daniel@iogearbox.net,
+        maciej.fijalkowski@intel.com, sridhar.samudrala@intel.com,
+        jesse.brandeburg@intel.com, qi.z.zhang@intel.com, kuba@kernel.org,
+        edumazet@google.com, jonathan.lemon@gmail.com, maximmi@nvidia.com,
+        intel-wired-lan@lists.osuosl.org, netanel@amazon.com,
+        akiyano@amazon.com, michael.chan@broadcom.com,
+        sgoutham@marvell.com, ioana.ciornei@nxp.com,
+        ruxandra.radulescu@nxp.com, thomas.petazzoni@bootlin.com,
+        mcroce@microsoft.com, saeedm@nvidia.com, tariqt@nvidia.com,
+        aelior@marvell.com, ecree@solarflare.com,
+        ilias.apalodimas@linaro.org, grygorii.strashko@ti.com,
+        sthemmin@microsoft.com, kda@linux-powerpc.org
+Subject: Re: [PATCH bpf-next v3 06/10] xsk: propagate napi_id to XDP socket
+ Rx path
+Message-ID: <20201125161355-mutt-send-email-mst@kernel.org>
+References: <20201119083024.119566-1-bjorn.topel@gmail.com>
+ <20201119083024.119566-7-bjorn.topel@gmail.com>
 MIME-Version: 1.0
-References: <20201125202404.1419509-1-kpsingh@chromium.org> <CAADnVQLrXjitW30nCq0N9+Tt_XzOkP5g0AcGp+wdQ0hyKiXCfQ@mail.gmail.com>
-In-Reply-To: <CAADnVQLrXjitW30nCq0N9+Tt_XzOkP5g0AcGp+wdQ0hyKiXCfQ@mail.gmail.com>
-From:   KP Singh <kpsingh@chromium.org>
-Date:   Wed, 25 Nov 2020 21:57:15 +0100
-Message-ID: <CACYkzJ4ZfKDQBXy7nEVHN1zT+ZC3KWLZLmR5yey1ZjtckSB4TQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Add MAINTAINERS entry for BPF LSM
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201119083024.119566-7-bjorn.topel@gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 9:53 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Wed, Nov 25, 2020 at 12:24 PM KP Singh <kpsingh@chromium.org> wrote:
-> >
-> > From: KP Singh <kpsingh@google.com>
-> >
-> > Similar to XDP and some JITs, also added Brendan and Florent who have
-> > been reviewing all my patches internally as reviewers. The patches are
-> > still expected to go via the BPF tree / list / merge workflows.
-> >
-> > Signed-off-by: KP Singh <kpsingh@google.com>
-> > ---
-> >  MAINTAINERS | 11 +++++++++++
-> >  1 file changed, 11 insertions(+)
-> >
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index af9f6a3ab100..09c902bee5d2 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -3366,6 +3366,17 @@ S:       Supported
-> >  F:     arch/x86/net/
-> >  X:     arch/x86/net/bpf_jit_comp32.c
-> >
-> > +BPF LSM (Security Audit and Enforcement using eBPF)
-> > +M:     KP Singh <kpsingh@chromium.org>
-> > +R:     Florent Revest <revest@chromium.org>
-> > +R:     Brendan Jackman <jackmanb@chromium.org>
-> > +L:     bpf@vger.kernel.org
-> > +S:     Maintained
-> > +F:     Documentation/bpf/bpf_lsm.rst
-> > +F:     include/linux/bpf_lsm.h
-> > +F:     kernel/bpf/bpf_lsm.c
-> > +F:     security/bpf/
->
-> I'm not sure what's the value of the additional entry.
+On Thu, Nov 19, 2020 at 09:30:20AM +0100, Björn Töpel wrote:
+> From: Björn Töpel <bjorn.topel@intel.com>
+> 
+> Add napi_id to the xdp_rxq_info structure, and make sure the XDP
+> socket pick up the napi_id in the Rx path. The napi_id is used to find
+> the corresponding NAPI structure for socket busy polling.
+> 
+> Acked-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+> Acked-by: Tariq Toukan <tariqt@nvidia.com>
+> Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
 
-I think it's better to add Brendan and Florent as reviewers for the LSM
-bits but not the overall BPF stuff (for now). We can also keep
-any tools/bpf stuff we add for LSM (at least initially) listed here.
+For virtio:
 
-> bpf has many different components. This is just one of them.
-> Your maintainer of bpf_lsm responsibilities stay the same
-> regardless of the entry in the file.
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
 
-I do understand this does not entail any change in responsibilities
+> ---
+>  drivers/net/ethernet/amazon/ena/ena_netdev.c  |  2 +-
+>  drivers/net/ethernet/broadcom/bnxt/bnxt.c     |  2 +-
+>  .../ethernet/cavium/thunder/nicvf_queues.c    |  2 +-
+>  .../net/ethernet/freescale/dpaa2/dpaa2-eth.c  |  2 +-
+>  drivers/net/ethernet/intel/i40e/i40e_txrx.c   |  2 +-
+>  drivers/net/ethernet/intel/ice/ice_base.c     |  4 ++--
+>  drivers/net/ethernet/intel/ice/ice_txrx.c     |  2 +-
+>  drivers/net/ethernet/intel/igb/igb_main.c     |  2 +-
+>  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c |  2 +-
+>  .../net/ethernet/intel/ixgbevf/ixgbevf_main.c |  2 +-
+>  drivers/net/ethernet/marvell/mvneta.c         |  2 +-
+>  .../net/ethernet/marvell/mvpp2/mvpp2_main.c   |  4 ++--
+>  drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  2 +-
+>  .../net/ethernet/mellanox/mlx5/core/en_main.c |  2 +-
+>  .../ethernet/netronome/nfp/nfp_net_common.c   |  2 +-
+>  drivers/net/ethernet/qlogic/qede/qede_main.c  |  2 +-
+>  drivers/net/ethernet/sfc/rx_common.c          |  2 +-
+>  drivers/net/ethernet/socionext/netsec.c       |  2 +-
+>  drivers/net/ethernet/ti/cpsw_priv.c           |  2 +-
+>  drivers/net/hyperv/netvsc.c                   |  2 +-
+>  drivers/net/tun.c                             |  2 +-
+>  drivers/net/veth.c                            | 12 ++++++++----
+>  drivers/net/virtio_net.c                      |  2 +-
+>  drivers/net/xen-netfront.c                    |  2 +-
+>  include/net/busy_poll.h                       | 19 +++++++++++++++----
+>  include/net/xdp.h                             |  3 ++-
+>  net/core/dev.c                                |  2 +-
+>  net/core/xdp.c                                |  3 ++-
+>  net/xdp/xsk.c                                 |  1 +
+>  29 files changed, 54 insertions(+), 36 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.c b/drivers/net/ethernet/amazon/ena/ena_netdev.c
+> index e8131dadc22c..6ad59f0068f6 100644
+> --- a/drivers/net/ethernet/amazon/ena/ena_netdev.c
+> +++ b/drivers/net/ethernet/amazon/ena/ena_netdev.c
+> @@ -416,7 +416,7 @@ static int ena_xdp_register_rxq_info(struct ena_ring *rx_ring)
+>  {
+>  	int rc;
+>  
+> -	rc = xdp_rxq_info_reg(&rx_ring->xdp_rxq, rx_ring->netdev, rx_ring->qid);
+> +	rc = xdp_rxq_info_reg(&rx_ring->xdp_rxq, rx_ring->netdev, rx_ring->qid, 0);
+>  
+>  	if (rc) {
+>  		netif_err(rx_ring->adapter, ifup, rx_ring->netdev,
+> diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+> index 7975f59735d6..725d929eddb1 100644
+> --- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+> +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+> @@ -2884,7 +2884,7 @@ static int bnxt_alloc_rx_rings(struct bnxt *bp)
+>  		if (rc)
+>  			return rc;
+>  
+> -		rc = xdp_rxq_info_reg(&rxr->xdp_rxq, bp->dev, i);
+> +		rc = xdp_rxq_info_reg(&rxr->xdp_rxq, bp->dev, i, 0);
+>  		if (rc < 0)
+>  			return rc;
+>  
+> diff --git a/drivers/net/ethernet/cavium/thunder/nicvf_queues.c b/drivers/net/ethernet/cavium/thunder/nicvf_queues.c
+> index 7a141ce32e86..f782e6af45e9 100644
+> --- a/drivers/net/ethernet/cavium/thunder/nicvf_queues.c
+> +++ b/drivers/net/ethernet/cavium/thunder/nicvf_queues.c
+> @@ -770,7 +770,7 @@ static void nicvf_rcv_queue_config(struct nicvf *nic, struct queue_set *qs,
+>  	rq->caching = 1;
+>  
+>  	/* Driver have no proper error path for failed XDP RX-queue info reg */
+> -	WARN_ON(xdp_rxq_info_reg(&rq->xdp_rxq, nic->netdev, qidx) < 0);
+> +	WARN_ON(xdp_rxq_info_reg(&rq->xdp_rxq, nic->netdev, qidx, 0) < 0);
+>  
+>  	/* Send a mailbox msg to PF to config RQ */
+>  	mbx.rq.msg = NIC_MBOX_MSG_RQ_CFG;
+> diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
+> index cf9400a9886d..40953980e846 100644
+> --- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
+> +++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
+> @@ -3334,7 +3334,7 @@ static int dpaa2_eth_setup_rx_flow(struct dpaa2_eth_priv *priv,
+>  		return 0;
+>  
+>  	err = xdp_rxq_info_reg(&fq->channel->xdp_rxq, priv->net_dev,
+> -			       fq->flowid);
+> +			       fq->flowid, 0);
+>  	if (err) {
+>  		dev_err(dev, "xdp_rxq_info_reg failed\n");
+>  		return err;
+> diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
+> index c21548c71bb1..9f73cd7aee09 100644
+> --- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
+> +++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
+> @@ -1447,7 +1447,7 @@ int i40e_setup_rx_descriptors(struct i40e_ring *rx_ring)
+>  	/* XDP RX-queue info only needed for RX rings exposed to XDP */
+>  	if (rx_ring->vsi->type == I40E_VSI_MAIN) {
+>  		err = xdp_rxq_info_reg(&rx_ring->xdp_rxq, rx_ring->netdev,
+> -				       rx_ring->queue_index);
+> +				       rx_ring->queue_index, rx_ring->q_vector->napi.napi_id);
+>  		if (err < 0)
+>  			return err;
+>  	}
+> diff --git a/drivers/net/ethernet/intel/ice/ice_base.c b/drivers/net/ethernet/intel/ice/ice_base.c
+> index fe4320e2d1f2..3124a3bf519a 100644
+> --- a/drivers/net/ethernet/intel/ice/ice_base.c
+> +++ b/drivers/net/ethernet/intel/ice/ice_base.c
+> @@ -306,7 +306,7 @@ int ice_setup_rx_ctx(struct ice_ring *ring)
+>  		if (!xdp_rxq_info_is_reg(&ring->xdp_rxq))
+>  			/* coverity[check_return] */
+>  			xdp_rxq_info_reg(&ring->xdp_rxq, ring->netdev,
+> -					 ring->q_index);
+> +					 ring->q_index, ring->q_vector->napi.napi_id);
+>  
+>  		ring->xsk_pool = ice_xsk_pool(ring);
+>  		if (ring->xsk_pool) {
+> @@ -333,7 +333,7 @@ int ice_setup_rx_ctx(struct ice_ring *ring)
+>  				/* coverity[check_return] */
+>  				xdp_rxq_info_reg(&ring->xdp_rxq,
+>  						 ring->netdev,
+> -						 ring->q_index);
+> +						 ring->q_index, ring->q_vector->napi.napi_id);
+>  
+>  			err = xdp_rxq_info_reg_mem_model(&ring->xdp_rxq,
+>  							 MEM_TYPE_PAGE_SHARED,
+> diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/ethernet/intel/ice/ice_txrx.c
+> index eae75260fe20..77d5eae6b4c2 100644
+> --- a/drivers/net/ethernet/intel/ice/ice_txrx.c
+> +++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
+> @@ -483,7 +483,7 @@ int ice_setup_rx_ring(struct ice_ring *rx_ring)
+>  	if (rx_ring->vsi->type == ICE_VSI_PF &&
+>  	    !xdp_rxq_info_is_reg(&rx_ring->xdp_rxq))
+>  		if (xdp_rxq_info_reg(&rx_ring->xdp_rxq, rx_ring->netdev,
+> -				     rx_ring->q_index))
+> +				     rx_ring->q_index, rx_ring->q_vector->napi.napi_id))
+>  			goto err;
+>  	return 0;
+>  
+> diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
+> index 5fc2c381da55..6a4ef4934fcf 100644
+> --- a/drivers/net/ethernet/intel/igb/igb_main.c
+> +++ b/drivers/net/ethernet/intel/igb/igb_main.c
+> @@ -4352,7 +4352,7 @@ int igb_setup_rx_resources(struct igb_ring *rx_ring)
+>  
+>  	/* XDP RX-queue info */
+>  	if (xdp_rxq_info_reg(&rx_ring->xdp_rxq, rx_ring->netdev,
+> -			     rx_ring->queue_index) < 0)
+> +			     rx_ring->queue_index, 0) < 0)
+>  		goto err;
+>  
+>  	return 0;
+> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> index 45ae33e15303..50e6b8b6ba7b 100644
+> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+> @@ -6577,7 +6577,7 @@ int ixgbe_setup_rx_resources(struct ixgbe_adapter *adapter,
+>  
+>  	/* XDP RX-queue info */
+>  	if (xdp_rxq_info_reg(&rx_ring->xdp_rxq, adapter->netdev,
+> -			     rx_ring->queue_index) < 0)
+> +			     rx_ring->queue_index, rx_ring->q_vector->napi.napi_id) < 0)
+>  		goto err;
+>  
+>  	rx_ring->xdp_prog = adapter->xdp_prog;
+> diff --git a/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c b/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c
+> index 82fce27f682b..4061cd7db5dd 100644
+> --- a/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c
+> +++ b/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c
+> @@ -3493,7 +3493,7 @@ int ixgbevf_setup_rx_resources(struct ixgbevf_adapter *adapter,
+>  
+>  	/* XDP RX-queue info */
+>  	if (xdp_rxq_info_reg(&rx_ring->xdp_rxq, adapter->netdev,
+> -			     rx_ring->queue_index) < 0)
+> +			     rx_ring->queue_index, 0) < 0)
+>  		goto err;
+>  
+>  	rx_ring->xdp_prog = adapter->xdp_prog;
+> diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
+> index 183530ed4d1d..ba6dcb19bb1d 100644
+> --- a/drivers/net/ethernet/marvell/mvneta.c
+> +++ b/drivers/net/ethernet/marvell/mvneta.c
+> @@ -3227,7 +3227,7 @@ static int mvneta_create_page_pool(struct mvneta_port *pp,
+>  		return err;
+>  	}
+>  
+> -	err = xdp_rxq_info_reg(&rxq->xdp_rxq, pp->dev, rxq->id);
+> +	err = xdp_rxq_info_reg(&rxq->xdp_rxq, pp->dev, rxq->id, 0);
+>  	if (err < 0)
+>  		goto err_free_pp;
+>  
+> diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+> index 3069e192d773..5504cbc24970 100644
+> --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+> +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+> @@ -2614,11 +2614,11 @@ static int mvpp2_rxq_init(struct mvpp2_port *port,
+>  	mvpp2_rxq_status_update(port, rxq->id, 0, rxq->size);
+>  
+>  	if (priv->percpu_pools) {
+> -		err = xdp_rxq_info_reg(&rxq->xdp_rxq_short, port->dev, rxq->id);
+> +		err = xdp_rxq_info_reg(&rxq->xdp_rxq_short, port->dev, rxq->id, 0);
+>  		if (err < 0)
+>  			goto err_free_dma;
+>  
+> -		err = xdp_rxq_info_reg(&rxq->xdp_rxq_long, port->dev, rxq->id);
+> +		err = xdp_rxq_info_reg(&rxq->xdp_rxq_long, port->dev, rxq->id, 0);
+>  		if (err < 0)
+>  			goto err_unregister_rxq_short;
+>  
+> diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+> index b0f79a5151cf..40775cb8fb2a 100644
+> --- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+> +++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+> @@ -283,7 +283,7 @@ int mlx4_en_create_rx_ring(struct mlx4_en_priv *priv,
+>  	ring->log_stride = ffs(ring->stride) - 1;
+>  	ring->buf_size = ring->size * ring->stride + TXBB_SIZE;
+>  
+> -	if (xdp_rxq_info_reg(&ring->xdp_rxq, priv->dev, queue_index) < 0)
+> +	if (xdp_rxq_info_reg(&ring->xdp_rxq, priv->dev, queue_index, 0) < 0)
+>  		goto err_ring;
+>  
+>  	tmp = size * roundup_pow_of_two(MLX4_EN_MAX_RX_FRAGS *
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> index 527c5f12c5af..427fc376fe1a 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> @@ -434,7 +434,7 @@ static int mlx5e_alloc_rq(struct mlx5e_channel *c,
+>  	rq_xdp_ix = rq->ix;
+>  	if (xsk)
+>  		rq_xdp_ix += params->num_channels * MLX5E_RQ_GROUP_XSK;
+> -	err = xdp_rxq_info_reg(&rq->xdp_rxq, rq->netdev, rq_xdp_ix);
+> +	err = xdp_rxq_info_reg(&rq->xdp_rxq, rq->netdev, rq_xdp_ix, 0);
+>  	if (err < 0)
+>  		goto err_rq_xdp_prog;
+>  
+> diff --git a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c b/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
+> index b150da43adb2..b4acf2f41e84 100644
+> --- a/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
+> +++ b/drivers/net/ethernet/netronome/nfp/nfp_net_common.c
+> @@ -2533,7 +2533,7 @@ nfp_net_rx_ring_alloc(struct nfp_net_dp *dp, struct nfp_net_rx_ring *rx_ring)
+>  
+>  	if (dp->netdev) {
+>  		err = xdp_rxq_info_reg(&rx_ring->xdp_rxq, dp->netdev,
+> -				       rx_ring->idx);
+> +				       rx_ring->idx, rx_ring->r_vec->napi.napi_id);
+>  		if (err < 0)
+>  			return err;
+>  	}
+> diff --git a/drivers/net/ethernet/qlogic/qede/qede_main.c b/drivers/net/ethernet/qlogic/qede/qede_main.c
+> index 05e3a3b60269..9cf960a6d007 100644
+> --- a/drivers/net/ethernet/qlogic/qede/qede_main.c
+> +++ b/drivers/net/ethernet/qlogic/qede/qede_main.c
+> @@ -1762,7 +1762,7 @@ static void qede_init_fp(struct qede_dev *edev)
+>  
+>  			/* Driver have no error path from here */
+>  			WARN_ON(xdp_rxq_info_reg(&fp->rxq->xdp_rxq, edev->ndev,
+> -						 fp->rxq->rxq_id) < 0);
+> +						 fp->rxq->rxq_id, 0) < 0);
+>  
+>  			if (xdp_rxq_info_reg_mem_model(&fp->rxq->xdp_rxq,
+>  						       MEM_TYPE_PAGE_ORDER0,
+> diff --git a/drivers/net/ethernet/sfc/rx_common.c b/drivers/net/ethernet/sfc/rx_common.c
+> index 19cf7cac1e6e..68fc7d317693 100644
+> --- a/drivers/net/ethernet/sfc/rx_common.c
+> +++ b/drivers/net/ethernet/sfc/rx_common.c
+> @@ -262,7 +262,7 @@ void efx_init_rx_queue(struct efx_rx_queue *rx_queue)
+>  
+>  	/* Initialise XDP queue information */
+>  	rc = xdp_rxq_info_reg(&rx_queue->xdp_rxq_info, efx->net_dev,
+> -			      rx_queue->core_index);
+> +			      rx_queue->core_index, 0);
+>  
+>  	if (rc) {
+>  		netif_err(efx, rx_err, efx->net_dev,
+> diff --git a/drivers/net/ethernet/socionext/netsec.c b/drivers/net/ethernet/socionext/netsec.c
+> index 1503cc9ec6e2..27d3c9d9210e 100644
+> --- a/drivers/net/ethernet/socionext/netsec.c
+> +++ b/drivers/net/ethernet/socionext/netsec.c
+> @@ -1304,7 +1304,7 @@ static int netsec_setup_rx_dring(struct netsec_priv *priv)
+>  		goto err_out;
+>  	}
+>  
+> -	err = xdp_rxq_info_reg(&dring->xdp_rxq, priv->ndev, 0);
+> +	err = xdp_rxq_info_reg(&dring->xdp_rxq, priv->ndev, 0, priv->napi.napi_id);
+>  	if (err)
+>  		goto err_out;
+>  
+> diff --git a/drivers/net/ethernet/ti/cpsw_priv.c b/drivers/net/ethernet/ti/cpsw_priv.c
+> index 31c5e36ff706..6dd73bd0f458 100644
+> --- a/drivers/net/ethernet/ti/cpsw_priv.c
+> +++ b/drivers/net/ethernet/ti/cpsw_priv.c
+> @@ -1186,7 +1186,7 @@ static int cpsw_ndev_create_xdp_rxq(struct cpsw_priv *priv, int ch)
+>  	pool = cpsw->page_pool[ch];
+>  	rxq = &priv->xdp_rxq[ch];
+>  
+> -	ret = xdp_rxq_info_reg(rxq, priv->ndev, ch);
+> +	ret = xdp_rxq_info_reg(rxq, priv->ndev, ch, 0);
+>  	if (ret)
+>  		return ret;
+>  
+> diff --git a/drivers/net/hyperv/netvsc.c b/drivers/net/hyperv/netvsc.c
+> index 0c3de94b5178..fa8341f8359a 100644
+> --- a/drivers/net/hyperv/netvsc.c
+> +++ b/drivers/net/hyperv/netvsc.c
+> @@ -1499,7 +1499,7 @@ struct netvsc_device *netvsc_device_add(struct hv_device *device,
+>  		u64_stats_init(&nvchan->tx_stats.syncp);
+>  		u64_stats_init(&nvchan->rx_stats.syncp);
+>  
+> -		ret = xdp_rxq_info_reg(&nvchan->xdp_rxq, ndev, i);
+> +		ret = xdp_rxq_info_reg(&nvchan->xdp_rxq, ndev, i, 0);
+>  
+>  		if (ret) {
+>  			netdev_err(ndev, "xdp_rxq_info_reg fail: %d\n", ret);
+> diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+> index 3d45d56172cb..8867d39db6ac 100644
+> --- a/drivers/net/tun.c
+> +++ b/drivers/net/tun.c
+> @@ -780,7 +780,7 @@ static int tun_attach(struct tun_struct *tun, struct file *file,
+>  	} else {
+>  		/* Setup XDP RX-queue info, for new tfile getting attached */
+>  		err = xdp_rxq_info_reg(&tfile->xdp_rxq,
+> -				       tun->dev, tfile->queue_index);
+> +				       tun->dev, tfile->queue_index, 0);
+>  		if (err < 0)
+>  			goto out;
+>  		err = xdp_rxq_info_reg_mem_model(&tfile->xdp_rxq,
+> diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+> index 8c737668008a..9bd37c7151f8 100644
+> --- a/drivers/net/veth.c
+> +++ b/drivers/net/veth.c
+> @@ -884,7 +884,6 @@ static int veth_napi_add(struct net_device *dev)
+>  	for (i = 0; i < dev->real_num_rx_queues; i++) {
+>  		struct veth_rq *rq = &priv->rq[i];
+>  
+> -		netif_napi_add(dev, &rq->xdp_napi, veth_poll, NAPI_POLL_WEIGHT);
+>  		napi_enable(&rq->xdp_napi);
+>  	}
+>  
+> @@ -926,7 +925,8 @@ static int veth_enable_xdp(struct net_device *dev)
+>  		for (i = 0; i < dev->real_num_rx_queues; i++) {
+>  			struct veth_rq *rq = &priv->rq[i];
+>  
+> -			err = xdp_rxq_info_reg(&rq->xdp_rxq, dev, i);
+> +			netif_napi_add(dev, &rq->xdp_napi, veth_poll, NAPI_POLL_WEIGHT);
+> +			err = xdp_rxq_info_reg(&rq->xdp_rxq, dev, i, rq->xdp_napi.napi_id);
+>  			if (err < 0)
+>  				goto err_rxq_reg;
+>  
+> @@ -952,8 +952,12 @@ static int veth_enable_xdp(struct net_device *dev)
+>  err_reg_mem:
+>  	xdp_rxq_info_unreg(&priv->rq[i].xdp_rxq);
+>  err_rxq_reg:
+> -	for (i--; i >= 0; i--)
+> -		xdp_rxq_info_unreg(&priv->rq[i].xdp_rxq);
+> +	for (i--; i >= 0; i--) {
+> +		struct veth_rq *rq = &priv->rq[i];
+> +
+> +		xdp_rxq_info_unreg(&rq->xdp_rxq);
+> +		netif_napi_del(&rq->xdp_napi);
+> +	}
+>  
+>  	return err;
+>  }
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 21b71148c532..052975ea0af4 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -1485,7 +1485,7 @@ static int virtnet_open(struct net_device *dev)
+>  			if (!try_fill_recv(vi, &vi->rq[i], GFP_KERNEL))
+>  				schedule_delayed_work(&vi->refill, 0);
+>  
+> -		err = xdp_rxq_info_reg(&vi->rq[i].xdp_rxq, dev, i);
+> +		err = xdp_rxq_info_reg(&vi->rq[i].xdp_rxq, dev, i, vi->rq[i].napi.napi_id);
+>  		if (err < 0)
+>  			return err;
+>  
+> diff --git a/drivers/net/xen-netfront.c b/drivers/net/xen-netfront.c
+> index 920cac4385bf..b01848ef4649 100644
+> --- a/drivers/net/xen-netfront.c
+> +++ b/drivers/net/xen-netfront.c
+> @@ -2014,7 +2014,7 @@ static int xennet_create_page_pool(struct netfront_queue *queue)
+>  	}
+>  
+>  	err = xdp_rxq_info_reg(&queue->xdp_rxq, queue->info->netdev,
+> -			       queue->id);
+> +			       queue->id, 0);
+>  	if (err) {
+>  		netdev_err(queue->info->netdev, "xdp_rxq_info_reg failed\n");
+>  		goto err_free_pp;
+> diff --git a/include/net/busy_poll.h b/include/net/busy_poll.h
+> index 2f8f51807b83..45b3e04b99d3 100644
+> --- a/include/net/busy_poll.h
+> +++ b/include/net/busy_poll.h
+> @@ -135,14 +135,25 @@ static inline void sk_mark_napi_id(struct sock *sk, const struct sk_buff *skb)
+>  	sk_rx_queue_set(sk, skb);
+>  }
+>  
+> -/* variant used for unconnected sockets */
+> -static inline void sk_mark_napi_id_once(struct sock *sk,
+> -					const struct sk_buff *skb)
+> +static inline void __sk_mark_napi_id_once_xdp(struct sock *sk, unsigned int napi_id)
+>  {
+>  #ifdef CONFIG_NET_RX_BUSY_POLL
+>  	if (!READ_ONCE(sk->sk_napi_id))
+> -		WRITE_ONCE(sk->sk_napi_id, skb->napi_id);
+> +		WRITE_ONCE(sk->sk_napi_id, napi_id);
+>  #endif
+>  }
+>  
+> +/* variant used for unconnected sockets */
+> +static inline void sk_mark_napi_id_once(struct sock *sk,
+> +					const struct sk_buff *skb)
+> +{
+> +	__sk_mark_napi_id_once_xdp(sk, skb->napi_id);
+> +}
+> +
+> +static inline void sk_mark_napi_id_once_xdp(struct sock *sk,
+> +					    const struct xdp_buff *xdp)
+> +{
+> +	__sk_mark_napi_id_once_xdp(sk, xdp->rxq->napi_id);
+> +}
+> +
+>  #endif /* _LINUX_NET_BUSY_POLL_H */
+> diff --git a/include/net/xdp.h b/include/net/xdp.h
+> index 7d48b2ae217a..700ad5db7f5d 100644
+> --- a/include/net/xdp.h
+> +++ b/include/net/xdp.h
+> @@ -59,6 +59,7 @@ struct xdp_rxq_info {
+>  	u32 queue_index;
+>  	u32 reg_state;
+>  	struct xdp_mem_info mem;
+> +	unsigned int napi_id;
+>  } ____cacheline_aligned; /* perf critical, avoid false-sharing */
+>  
+>  struct xdp_txq_info {
+> @@ -226,7 +227,7 @@ static inline void xdp_release_frame(struct xdp_frame *xdpf)
+>  }
+>  
+>  int xdp_rxq_info_reg(struct xdp_rxq_info *xdp_rxq,
+> -		     struct net_device *dev, u32 queue_index);
+> +		     struct net_device *dev, u32 queue_index, unsigned int napi_id);
+>  void xdp_rxq_info_unreg(struct xdp_rxq_info *xdp_rxq);
+>  void xdp_rxq_info_unused(struct xdp_rxq_info *xdp_rxq);
+>  bool xdp_rxq_info_is_reg(struct xdp_rxq_info *xdp_rxq);
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index 7a1e5936c67f..3b6b0e175fe7 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -9810,7 +9810,7 @@ static int netif_alloc_rx_queues(struct net_device *dev)
+>  		rx[i].dev = dev;
+>  
+>  		/* XDP RX-queue setup */
+> -		err = xdp_rxq_info_reg(&rx[i].xdp_rxq, dev, i);
+> +		err = xdp_rxq_info_reg(&rx[i].xdp_rxq, dev, i, 0);
+>  		if (err < 0)
+>  			goto err_rxq_info;
+>  	}
+> diff --git a/net/core/xdp.c b/net/core/xdp.c
+> index 3d330ebda893..17ffd33c6b18 100644
+> --- a/net/core/xdp.c
+> +++ b/net/core/xdp.c
+> @@ -158,7 +158,7 @@ static void xdp_rxq_info_init(struct xdp_rxq_info *xdp_rxq)
+>  
+>  /* Returns 0 on success, negative on failure */
+>  int xdp_rxq_info_reg(struct xdp_rxq_info *xdp_rxq,
+> -		     struct net_device *dev, u32 queue_index)
+> +		     struct net_device *dev, u32 queue_index, unsigned int napi_id)
+>  {
+>  	if (xdp_rxq->reg_state == REG_STATE_UNUSED) {
+>  		WARN(1, "Driver promised not to register this");
+> @@ -179,6 +179,7 @@ int xdp_rxq_info_reg(struct xdp_rxq_info *xdp_rxq,
+>  	xdp_rxq_info_init(xdp_rxq);
+>  	xdp_rxq->dev = dev;
+>  	xdp_rxq->queue_index = queue_index;
+> +	xdp_rxq->napi_id = napi_id;
+>  
+>  	xdp_rxq->reg_state = REG_STATE_REGISTERED;
+>  	return 0;
+> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> index ecc4579e41ee..d4cb1c5c1abf 100644
+> --- a/net/xdp/xsk.c
+> +++ b/net/xdp/xsk.c
+> @@ -233,6 +233,7 @@ static int xsk_rcv(struct xdp_sock *xs, struct xdp_buff *xdp,
+>  	if (xs->dev != xdp->rxq->dev || xs->queue_id != xdp->rxq->queue_index)
+>  		return -EINVAL;
+>  
+> +	sk_mark_napi_id_once_xdp(&xs->sk, xdp);
+>  	len = xdp->data_end - xdp->data;
+>  
+>  	return xdp->rxq->mem.type == MEM_TYPE_XSK_BUFF_POOL ?
+> -- 
+> 2.27.0
+
