@@ -2,184 +2,192 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF1732C44B3
-	for <lists+bpf@lfdr.de>; Wed, 25 Nov 2020 17:12:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B006C2C47C1
+	for <lists+bpf@lfdr.de>; Wed, 25 Nov 2020 19:40:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730739AbgKYQKK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Nov 2020 11:10:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55642 "EHLO
+        id S1730781AbgKYSiY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Nov 2020 13:38:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730443AbgKYQKJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Nov 2020 11:10:09 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3DCCC0613D4
-        for <bpf@vger.kernel.org>; Wed, 25 Nov 2020 08:10:09 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id j19so2827296pgg.5
-        for <bpf@vger.kernel.org>; Wed, 25 Nov 2020 08:10:09 -0800 (PST)
+        with ESMTP id S1729679AbgKYSiY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Nov 2020 13:38:24 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91062C0613D4;
+        Wed, 25 Nov 2020 10:38:23 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id t4so2873689wrr.12;
+        Wed, 25 Nov 2020 10:38:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=z0ix7dY6jKPcQ60mCCu4+4JPhZlqgAZ2zyr8rIjf3mg=;
-        b=AIgoI0Ev9bB3x6+Pkb66tJM8H//KlD6j6hzu58CklGYFxL4advj9Kyzms99c8pEwhb
-         rQhAs7wJBqBQCBDb7pE+jfGJudHMNQwUiUGdxpupYG91Cl2cOnBWA09tlCxK2hmqgGxk
-         FiGQhbfYPTjRnfQ/tbro43+uDuBF/3UQLSfjU9gwiBnGveA0wdyChR0dDy9gpZSap3h8
-         pN14rD5UgAlIkvimFtgyoIb6YdROjhqT3VkwJSCUkI+M4uxyOlugxNy5eHYPj6dgAEYq
-         +/Fwjs5lH6lziLJHWkziXEYIc+txV8acVzfmdFkE616sAmjMXu29nV3RAwx/grFd9VAS
-         LVNg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1ILPp3EC0bGPZc7QAejnetDCG1gvARXf7a++EJ/QnaI=;
+        b=R878PtjX4MvoBt6ZyO6OJ7jLqKgjxV2WZW14owpwkqguShHRV19ADdCIRJhOPYl6vm
+         GfxAqbbnSRmuA/IpwhuZdFfI8uh0MBnmchtn0eWon8/NHP6IIqu18ItyJ5tOAJo2XYqk
+         7rFxh40DCx4cO7uO8/gXH/SMKtkxuVGS2xrIj2hRqiTLJlfLZC0AwiEEeH5iCnPSoi/v
+         P/xQxlZUJebn/fMWcjxQFwIePhu2dwOXHx87amBomHk6fhIaGDscL+mUpghK+h1vFFos
+         qssKerebbweMOMRxn8LTPFHqbgSb4t6bUs+7m2VaQwglcwv21sxiEEDqdVJjRuRqlYVi
+         pLmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=z0ix7dY6jKPcQ60mCCu4+4JPhZlqgAZ2zyr8rIjf3mg=;
-        b=c4EtmNi8yzPLHKUnjSgW5SkzXcJZMx9wt/JxOBseGZxVMXOyEMDBCpQsFYOJFst+v8
-         H7mxcm+gGdgWOu/DZdwxD6yleKkVcORm4gFhBtKLc5IbW+YPoAEuYo3xCF1ugfpaB/ZM
-         wFSXj3subPVU70Lmi0bR2Q3f1Qx0M9bnvjaClfPaW0IMzaqe3JiGr2PZGBmRDqEKr9t4
-         /QS5kmY+VOo0kkKeq3u51pyWJgLW9OjtDgfepXBAOSty8ZzhNxYaO96feKmiIbUJ9yBj
-         xQZYkd8eIK0EvmwOdIZalDUQbK/dUa8KHndszA2fp4SVVuWsj4aCPIwFFkCQTQ6JU+S0
-         84dg==
-X-Gm-Message-State: AOAM532jXQmsVxcCvxpRKt2EKRhA8kl21fhlG33+f9JGAOeCIwshg5fW
-        5ZzCOJNtM/U/Ltk71mb8osYPhikYBTYoK3vAs5Duy3DaSSG1lznR
-X-Google-Smtp-Source: ABdhPJwt4aT1xd13p7rXHiQST78OudgSLoBkQ/Lvis96/pw/BoqyNz+hMGfsvjGAgAxsM1Pt7Qe40sVCtiYe/02+H/k=
-X-Received: by 2002:a62:768b:0:b029:197:dea6:586e with SMTP id
- r133-20020a62768b0000b0290197dea6586emr358162pfc.44.1606320608663; Wed, 25
- Nov 2020 08:10:08 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1ILPp3EC0bGPZc7QAejnetDCG1gvARXf7a++EJ/QnaI=;
+        b=UDKSI26mbUgUk3Qq1LLpDVF3JJ8Kos7u9osfuJe2qUfn8+jpWSxzX+zdqRmLKgpW8c
+         iw241FGEGH0bC5WqGtq5UvLbRxG694epzGUtqeWiLeYisVHZCuVNyTIumHUUw6dAxhR0
+         0tB3vXXqVrpGRh/VMb3SPkjRAgfne5OtHi85Nrlg8A7NmPQwBhTP+KPhME5O0TC72Q+F
+         IrwBTo1MYD4xBrSX7lzgqqUzAEf4n46HwtcXtfAgjDjH/RO211BZjEprBSuo17SndGL+
+         pmyqJHFAXl8FM+B7GmdmxjlKRLAZEG5j1A9VlVkOFeAIEJ9d1b8QgVOuN2npMZW6V+Xr
+         KC0g==
+X-Gm-Message-State: AOAM5336zWkgNyDi3QLHmK+E0A/Yp9oYr+/23oLQ448WjKPQ2L78nv4S
+        OYBr2bKWZr9wsD+sh7wa4b4r4sW5K32yHuEL
+X-Google-Smtp-Source: ABdhPJw7wmxu9KycGGcV15TkTcMTep714zKA77Xf2wtQpa9pqdRrhyoTRe5B7oJGvhOrjwq1XzY+5Q==
+X-Received: by 2002:adf:e6c8:: with SMTP id y8mr5679091wrm.414.1606329501759;
+        Wed, 25 Nov 2020 10:38:21 -0800 (PST)
+Received: from kernel-dev.chello.ie ([80.111.136.190])
+        by smtp.gmail.com with ESMTPSA id h2sm5830035wrv.76.2020.11.25.10.38.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Nov 2020 10:38:20 -0800 (PST)
+From:   Weqaar Janjua <weqaar.janjua@gmail.com>
+X-Google-Original-From: Weqaar Janjua <weqaar.a.janjua@intel.com>
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org, daniel@iogearbox.net,
+        ast@kernel.org, magnus.karlsson@gmail.com, bjorn.topel@intel.com,
+        yhs@fb.com
+Cc:     Weqaar Janjua <weqaar.a.janjua@intel.com>, shuah@kernel.org,
+        skhan@linuxfoundation.org, linux-kselftest@vger.kernel.org,
+        anders.roxell@linaro.org, jonathan.lemon@gmail.com
+Subject: [PATCH bpf-next v3 0/5] selftests/bpf: xsk selftests
+Date:   Wed, 25 Nov 2020 18:37:44 +0000
+Message-Id: <20201125183749.13797-1-weqaar.a.janjua@intel.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-From:   Srivats P <pstavirs@gmail.com>
-Date:   Wed, 25 Nov 2020 21:39:57 +0530
-Message-ID: <CANzUK58dwpX9HjfCZTyZa4oJX2iAczYEfQe5ojW1N_0NrYW7mw@mail.gmail.com>
-Subject: How to read from pkt_end?
-To:     bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+This patch set adds AF_XDP selftests based on veth to selftests/bpf.
 
-How do I read from the end of the packet in a XDP program? I tried the
-below ebpf program to read the last 4 bytes of the packet, but the
-verifier rejects it.
+# Topology:
+# ---------
+#                 -----------
+#               _ | Process | _
+#              /  -----------  \
+#             /        |        \
+#            /         |         \
+#      -----------     |     -----------
+#      | Thread1 |     |     | Thread2 |
+#      -----------     |     -----------
+#           |          |          |
+#      -----------     |     -----------
+#      |  xskX   |     |     |  xskY   |
+#      -----------     |     -----------
+#           |          |          |
+#      -----------     |     ----------
+#      |  vethX  | --------- |  vethY |
+#      -----------   peer    ----------
+#           |          |          |
+#      namespaceX      |     namespaceY
 
-Program
-=======
-__section("prog")
-int xdp_prog(struct xdp_md *ctx)
-{
-    void *data = (void *)(long)ctx->data;
-    void *data_end = (void *)(long)ctx->data_end;
+These selftests test AF_XDP SKB and Native/DRV modes using veth Virtual
+Ethernet interfaces.
 
-    __u16 len = ((long)ctx->data_end - (long)ctx->data);
-    __u16 ofs = len - 4;
-    __u32 *mgc = (__u32*)(data+ofs);
+The test program contains two threads, each thread is single socket with
+a unique UMEM. It validates in-order packet delivery and packet content
+by sending packets to each other.
 
-    if ((data + len) > data_end)
-        return XDP_ABORTED;
+Prerequisites setup by script test_xsk.sh:
 
-    if (*mgc == 0x1d10c0da)
-        return XDP_DROP;
+   Set up veth interfaces as per the topology shown ^^:
+   * setup two veth interfaces and one namespace
+   ** veth<xxxx> in root namespace
+   ** veth<yyyy> in af_xdp<xxxx> namespace
+   ** namespace af_xdp<xxxx>
+   * create a spec file veth.spec that includes this run-time configuration
+   *** xxxx and yyyy are randomly generated 4 digit numbers used to avoid
+       conflict with any existing interface
 
-    return XDP_PASS;
-}
+The following tests are provided:
 
-llvm-objdump generated disassembly
-==================================
-Disassembly of section prog:
-xdp_prog:
-; {
-       0:       r0 = 0
-; void *data = (void *)(long)ctx->data;
-       1:       r2 = *(u32 *)(r1 + 0)
-; void *data_end = (void *)(long)ctx->data_end;
-       2:       r3 = *(u32 *)(r1 + 4)
-; __u16 len = ((long)ctx->data_end - (long)ctx->data);
-       3:       r1 = r3
-       4:       r1 -= r2
-; __u16 ofs = len - 4;
-       5:       r4 = r1
-       6:       r4 &= 65535
-; if ((data + len) > data_end)
-       7:       r5 = r2
-       8:       r5 += r4
-       9:       if r5 > r3 goto +7 <LBB0_3>
-; __u16 ofs = len - 4;
-      10:       r1 += 65532
-; __u32 *mgc = (__u32*)(data+ofs);
-      11:       r1 &= 65535
-      12:       r2 += r1
-; if (*mgc == 0x1d10c0da)
-      13:       r1 = *(u32 *)(r2 + 0)
-      14:       r0 = 1
-; return XDP_DROP;
-      15:       if r1 == 487637210 goto +1 <LBB0_3>
-      16:       r0 = 2
+1. AF_XDP SKB mode
+   Generic mode XDP is driver independent, used when the driver does
+   not have support for XDP. Works on any netdevice using sockets and
+   generic XDP path. XDP hook from netif_receive_skb().
+   a. nopoll - soft-irq processing
+   b. poll - using poll() syscall
+   c. Socket Teardown
+      Create a Tx and a Rx socket, Tx from one socket, Rx on another.
+      Destroy both sockets, then repeat multiple times. Only nopoll mode
+	  is used
+   d. Bi-directional Sockets
+      Configure sockets as bi-directional tx/rx sockets, sets up fill
+	  and completion rings on each socket, tx/rx in both directions.
+	  Only nopoll mode is used
 
-LBB0_3:
-; }
-      17:       exit
+2. AF_XDP DRV/Native mode
+   Works on any netdevice with XDP_REDIRECT support, driver dependent.
+   Processes packets before SKB allocation. Provides better performance
+   than SKB. Driver hook available just after DMA of buffer descriptor.
+   a. nopoll
+   b. poll
+   c. Socket Teardown
+   d. Bi-directional Sockets
+   * Only copy mode is supported because veth does not currently support
+     zero-copy mode
 
+Total tests: 8
 
-Verifier output (via ip link)
-=============================
-Prog section 'prog' rejected: Permission denied (13)!
- - Type:         6
- - Instructions: 18 (0 over limit)
- - License:
+Flow:
+* Single process spawns two threads: Tx and Rx
+* Each of these two threads attach to a veth interface within their
+  assigned namespaces
+* Each thread creates one AF_XDP socket connected to a unique umem
+  for each veth interface
+* Tx thread transmits 10k packets from veth<xxxx> to veth<yyyy>
+* Rx thread verifies if all 10k packets were received and delivered
+  in-order, and have the right content
 
-Verifier analysis:
+v2 changes:
+* Move selftests/xsk to selftests/bpf
+* Remove Makefiles under selftests/xsk, and utilize selftests/bpf/Makefile
 
-0: (b7) r0 = 0
-1: (61) r2 = *(u32 *)(r1 +0)
-2: (61) r3 = *(u32 *)(r1 +4)
-3: (bf) r1 = r3
-4: (1f) r1 -= r2
-5: (bf) r4 = r1
-6: (57) r4 &= 65535
-7: (bf) r5 = r2
-8: (0f) r5 += r4
-last_idx 8 first_idx 0
-regs=10 stack=0 before 7: (bf) r5 = r2
-regs=10 stack=0 before 6: (57) r4 &= 65535
-regs=10 stack=0 before 5: (bf) r4 = r1
-regs=2 stack=0 before 4: (1f) r1 -= r2
-regs=6 stack=0 before 3: (bf) r1 = r3
-regs=c stack=0 before 2: (61) r3 = *(u32 *)(r1 +4)
-regs=4 stack=0 before 1: (61) r2 = *(u32 *)(r1 +0)
-9: (2d) if r5 > r3 goto pc+7
- R0_w=inv0 R1_w=inv(id=0) R2_w=pkt(id=0,off=0,r=0,imm=0)
-R3_w=pkt_end(id=0,off=0,imm=0)
-R4_w=invP(id=0,umax_value=65535,var_off=(0x0; 0xffff))
-R5_w=pkt(id=1,off=0,r=0,umax_value=65535,var_off=(0x0; 0xffff))
-R10=fp0
-10: (07) r1 += 65532
-11: (57) r1 &= 65535
-12: (0f) r2 += r1
-last_idx 12 first_idx 0
-regs=2 stack=0 before 11: (57) r1 &= 65535
-regs=2 stack=0 before 10: (07) r1 += 65532
-regs=2 stack=0 before 9: (2d) if r5 > r3 goto pc+7
-regs=2 stack=0 before 8: (0f) r5 += r4
-regs=2 stack=0 before 7: (bf) r5 = r2
-regs=2 stack=0 before 6: (57) r4 &= 65535
-regs=2 stack=0 before 5: (bf) r4 = r1
-regs=2 stack=0 before 4: (1f) r1 -= r2
-regs=6 stack=0 before 3: (bf) r1 = r3
-regs=c stack=0 before 2: (61) r3 = *(u32 *)(r1 +4)
-regs=4 stack=0 before 1: (61) r2 = *(u32 *)(r1 +0)
-13: (61) r1 = *(u32 *)(r2 +0)
-invalid access to packet, off=0 size=4, R2(id=2,off=0,r=0)
-R2 offset is outside of the packet
-processed 14 insns (limit 1000000) max_states_per_insn 0 total_states
-0 peak_states 0 mark_read 0
+v3 changes:
+* merge all test scripts test_xsk_*.sh into test_xsk.sh
 
-Error fetching program/map!
+This patch set requires applying patch from bpf stable tree:
+commit 36ccdf85829a by Björn Töpel <bjorn.topel@intel.com>
+[PATCH bpf v2] net, xsk: Avoid taking multiple skbuff references
 
-I did read the filter.txt documentation, but couldn't find anything
-pertinent to this case where instead of adding fixed (literal value)
-offsets to pkt, we want to work backwards from pkt_end - the above
-program will always read within packet boundaries, but the length of
-the packet can of course vary with each packet.
+Structure of the patch set:
 
-I also searched the list archives but couldn't find anything related.
+Patch 1: This patch adds XSK Selftests framework under selftests/bpf
+Patch 2: Adds tests: SKB poll and nopoll mode, and mac-ip-udp debug
+Patch 3: Adds tests: DRV poll and nopoll mode
+Patch 4: Adds tests: SKB and DRV Socket Teardown
+Patch 5: Adds tests: SKB and DRV Bi-directional Sockets
 
-I'm using Kernel version 5.3 (stock kernel with Ubuntu 18.04 LTS)
+Thanks: Weqaar
 
-Srivats
+Weqaar Janjua (5):
+  selftests/bpf: xsk selftests framework
+  selftests/bpf: xsk selftests - SKB POLL, NOPOLL
+  selftests/bpf: xsk selftests - DRV POLL, NOPOLL
+  selftests/bpf: xsk selftests - Socket Teardown - SKB, DRV
+  selftests/bpf: xsk selftests - Bi-directional Sockets - SKB, DRV
+
+ tools/testing/selftests/bpf/Makefile       |    7 +-
+ tools/testing/selftests/bpf/test_xsk.sh    |  238 +++++
+ tools/testing/selftests/bpf/xdpxceiver.c   | 1056 ++++++++++++++++++++
+ tools/testing/selftests/bpf/xdpxceiver.h   |  158 +++
+ tools/testing/selftests/bpf/xsk_env.sh     |   28 +
+ tools/testing/selftests/bpf/xsk_prereqs.sh |  119 +++
+ 6 files changed, 1604 insertions(+), 2 deletions(-)
+ create mode 100755 tools/testing/selftests/bpf/test_xsk.sh
+ create mode 100644 tools/testing/selftests/bpf/xdpxceiver.c
+ create mode 100644 tools/testing/selftests/bpf/xdpxceiver.h
+ create mode 100755 tools/testing/selftests/bpf/xsk_env.sh
+ create mode 100755 tools/testing/selftests/bpf/xsk_prereqs.sh
+
+-- 
+2.20.1
+
