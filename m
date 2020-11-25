@@ -2,85 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D5F22C48F4
-	for <lists+bpf@lfdr.de>; Wed, 25 Nov 2020 21:22:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E5972C48F8
+	for <lists+bpf@lfdr.de>; Wed, 25 Nov 2020 21:24:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729040AbgKYUVv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 25 Nov 2020 15:21:51 -0500
-Received: from mx.der-flo.net ([193.160.39.236]:60856 "EHLO mx.der-flo.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729016AbgKYUVv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 25 Nov 2020 15:21:51 -0500
-Received: by mx.der-flo.net (Postfix, from userid 110)
-        id CE98D444D0; Wed, 25 Nov 2020 21:21:33 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mx.der-flo.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=4.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.2
-Received: from localhost (unknown [IPv6:2a02:1203:ecb0:3930:1751:4157:4d75:a5e2])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx.der-flo.net (Postfix) with ESMTPSA id 3A57A439CF;
-        Wed, 25 Nov 2020 21:20:43 +0100 (CET)
-Date:   Wed, 25 Nov 2020 21:20:32 +0100
-From:   Florian Lehner <dev@der-flo.net>
-To:     Andrei Matei <andreimatei1@gmail.com>
-Cc:     bpf@vger.kernel.org, andrii@kernel.org
-Subject: Re: [PATCH bpf-next] selftest/bpf: fix compilation on clang 11
-Message-ID: <20201125202032.GA17524@der-flo.net>
-References: <20201125035255.17970-1-andreimatei1@gmail.com>
+        id S1726009AbgKYUYM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 25 Nov 2020 15:24:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725876AbgKYUYM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 25 Nov 2020 15:24:12 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7AA3C0613D4
+        for <bpf@vger.kernel.org>; Wed, 25 Nov 2020 12:24:11 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id k14so1200156wrn.1
+        for <bpf@vger.kernel.org>; Wed, 25 Nov 2020 12:24:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x9h88oHK+Sdh5+pR9JtijXCThpiA96Q13JfuMIH/ZMM=;
+        b=FtWW6jTtZ+2HhTd6KizC5OxxJhU9IWEbhx32xim2QmtZcwXuCe1DaXJUnurGasZmwK
+         wg5syV6hT0IVPgi6rFfRP8uhCXKXa14cPbcQtYoYWn0hLEnxbRFfR8UNkm8ZychOe5DS
+         OKfc1+4aIPu2nRLQHtvityYY8RwujQRyPp9Ds=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x9h88oHK+Sdh5+pR9JtijXCThpiA96Q13JfuMIH/ZMM=;
+        b=hj/6kWb9sNeoxvdRlCSYLR2+Qxtoah3HHdL6lA7pg7bQLh8Rj6xrv0snGsvmcRN/fQ
+         dqmeGjPZlCrExCgnOqZ/T9KpLW+lHfG9xUaA9b7WFV7I/5aYCgPZCwpdvSEaDQbEsB1q
+         Jeb07UqrxyHEmxiGdWRbKXrb37xqDsgHyhUHUQaQMnttSwxLLyPqPoexhI/RHCi2k/Az
+         aTUT0D6wBT0MO/Qid/t3tOFvHqWGhVSevEz2mnuOvgsDMX3JnWKHzUFelpD+23dkqXzN
+         PrF8S8yEacOtzJ7QxoD99SD/Ey1DE2h8bY0ms80j00y6+WWWcfTatRAZDp2N+0ln8dNG
+         d3JA==
+X-Gm-Message-State: AOAM5333QOJp0L9BFaF4a6+Fel0HGlAEznyj5L6x/mCH1oPr++DwTpq7
+        tSzBwqkXSiO+h3zczwYHKi2isxpcYq/pD03v
+X-Google-Smtp-Source: ABdhPJwoA8f/YA9g8GPOyTlQhyUqTmqK8ECO8/cOkxAxaY857Au4p8RBwYcNPjxlRbrJzN890l8HxA==
+X-Received: by 2002:adf:ed11:: with SMTP id a17mr6108696wro.197.1606335850324;
+        Wed, 25 Nov 2020 12:24:10 -0800 (PST)
+Received: from kpsingh.c.googlers.com.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
+        by smtp.gmail.com with ESMTPSA id 134sm6743955wmb.17.2020.11.25.12.24.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Nov 2020 12:24:09 -0800 (PST)
+From:   KP Singh <kpsingh@chromium.org>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>
+Subject: [PATCH bpf-next] bpf: Add MAINTAINERS entry for BPF LSM
+Date:   Wed, 25 Nov 2020 20:24:04 +0000
+Message-Id: <20201125202404.1419509-1-kpsingh@chromium.org>
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201125035255.17970-1-andreimatei1@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 10:52:55PM -0500, Andrei Matei wrote:
-> Before this patch, profiler.inc.h wouldn't compile with clang-11 (before
-> the __builtin_preserve_enum_value LLVM builtin was introduced in
-> https://reviews.llvm.org/D83242).
-> Another test that uses this builtin (test_core_enumval) is conditionally
-> skipped if the compiler is too old. In that spirit, this patch inhibits
-> part of populate_cgroup_info(), which needs this CO-RE builtin. The
-> selftests build again on clang-11.  The affected test (the profiler
-> test) doesn't pass on clang-11 because it's missing
-> https://reviews.llvm.org/D85570, but at least the test suite as a whole
-> compiles. The test's expected failure is already called out in the
-> README.
-> 
-> Signed-off-by: Andrei Matei <andreimatei1@gmail.com>
+From: KP Singh <kpsingh@google.com>
 
-Tested-by: Florian Lehner <dev@der-flo.net>
+Similar to XDP and some JITs, also added Brendan and Florent who have
+been reviewing all my patches internally as reviewers. The patches are
+still expected to go via the BPF tree / list / merge workflows.
 
-Thanks for the fix!
+Signed-off-by: KP Singh <kpsingh@google.com>
+---
+ MAINTAINERS | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-> ---
->  tools/testing/selftests/bpf/progs/profiler.inc.h | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/bpf/progs/profiler.inc.h b/tools/testing/selftests/bpf/progs/profiler.inc.h
-> index 30982a7e4d0f..b79d7f688655 100644
-> --- a/tools/testing/selftests/bpf/progs/profiler.inc.h
-> +++ b/tools/testing/selftests/bpf/progs/profiler.inc.h
-> @@ -256,6 +256,8 @@ static INLINE void* populate_cgroup_info(struct cgroup_data_t* cgroup_data,
->  		BPF_CORE_READ(task, nsproxy, cgroup_ns, root_cset, dfl_cgrp, kn);
->  	struct kernfs_node* proc_kernfs = BPF_CORE_READ(task, cgroups, dfl_cgrp, kn);
->  
-> +
-> +#if __has_builtin(__builtin_preserve_enum_value)
->  	if (ENABLE_CGROUP_V1_RESOLVER && CONFIG_CGROUP_PIDS) {
->  		int cgrp_id = bpf_core_enum_value(enum cgroup_subsys_id___local,
->  						  pids_cgrp_id___local);
-> @@ -275,6 +277,7 @@ static INLINE void* populate_cgroup_info(struct cgroup_data_t* cgroup_data,
->  			}
->  		}
->  	}
-> +#endif
->  
->  	cgroup_data->cgroup_root_inode = get_inode_from_kernfs(root_kernfs);
->  	cgroup_data->cgroup_proc_inode = get_inode_from_kernfs(proc_kernfs);
-> -- 
-> 2.27.0
-> 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index af9f6a3ab100..09c902bee5d2 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -3366,6 +3366,17 @@ S:	Supported
+ F:	arch/x86/net/
+ X:	arch/x86/net/bpf_jit_comp32.c
+ 
++BPF LSM (Security Audit and Enforcement using eBPF)
++M:	KP Singh <kpsingh@chromium.org>
++R:	Florent Revest <revest@chromium.org>
++R:	Brendan Jackman <jackmanb@chromium.org>
++L:	bpf@vger.kernel.org
++S:	Maintained
++F:	Documentation/bpf/bpf_lsm.rst
++F:	include/linux/bpf_lsm.h
++F:	kernel/bpf/bpf_lsm.c
++F:	security/bpf/
++
+ BROADCOM B44 10/100 ETHERNET DRIVER
+ M:	Michael Chan <michael.chan@broadcom.com>
+ L:	netdev@vger.kernel.org
+-- 
+2.29.2.454.gaff20da3a2-goog
+
