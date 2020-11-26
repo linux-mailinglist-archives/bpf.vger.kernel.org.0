@@ -2,95 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 863292C5C27
-	for <lists+bpf@lfdr.de>; Thu, 26 Nov 2020 19:52:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0F8C2C5D7F
+	for <lists+bpf@lfdr.de>; Thu, 26 Nov 2020 22:23:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404018AbgKZStu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Nov 2020 13:49:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49986 "EHLO
+        id S2387951AbgKZVXK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Nov 2020 16:23:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728937AbgKZStu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Nov 2020 13:49:50 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E702C0613D4
-        for <bpf@vger.kernel.org>; Thu, 26 Nov 2020 10:49:50 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id m6so3185600wrg.7
-        for <bpf@vger.kernel.org>; Thu, 26 Nov 2020 10:49:50 -0800 (PST)
+        with ESMTP id S2387950AbgKZVXJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Nov 2020 16:23:09 -0500
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65221C0613D4;
+        Thu, 26 Nov 2020 13:23:09 -0800 (PST)
+Received: by mail-yb1-xb42.google.com with SMTP id x17so2714976ybr.8;
+        Thu, 26 Nov 2020 13:23:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=F3upl2y9I1+20x7TUdWh7mb3k00BroeAnnTfPUXtSn0=;
-        b=c1YpjcCd+Ffza07cs7RIGwzc9Kf+ZBSnrBammqapxVrDYnOqkMhd7+JYt1CbGXVa9f
-         DuTU/BKExOuA9ZsPIgms44zoLS6pExqT0w0wZI3F7z/KH/7FmyOyL0yUUxwvxWe/J1fw
-         7stAdSnj0iCzVwfD5gUqMxJAQ6N9C/UmwvwM8=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=hz6mv8RV7nsFp0fyTqpx+yOQXohdxFFGiPrYz7iKxiQ=;
+        b=i/O81SQNN3ngSC9cwkTouRr0V6dQJfYD+fTCxob+UFOWcOtmtjkKWWAokvEVNPH+XZ
+         3wLeXA1Q+FWkc3AqzuZnSq5KyDhKHBzgvwSq5DsZL3UNVLABTHtphAD/EMPQecZu7q+C
+         IS1G2xANrPHWg62WZVyrjVJxshDgwgMRtMTLitRV1MouMDGC7QYai/8bvxJ5KuF8sY+/
+         5hLDstIaNJfs8y4NQB0dHkZbxGEJ8mULJvSf02IS5t/vQskmynFGmlGFbCYv+cDsPxJm
+         XzJ9yFNNdBpeBS0AdaEGuRd1Ufzg8A7M2XwJSkhp+LfvqCzSjUXLUQ9GlmKhEu2A+QCT
+         mxaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=F3upl2y9I1+20x7TUdWh7mb3k00BroeAnnTfPUXtSn0=;
-        b=k31lv5iHuPKDL8rCVdlyYvLtuCmpbVw1o8PXU7jpGjDxjG962n97KligKxhotJ/qyZ
-         5SxslDYKq/aCiL0FlvW8q84FqhP+2r0uPt8nwkY2+iObqE9diLdVHQGGEHfgmpuQ+g4O
-         GrkacuakjxQc5HG1VgEH84pr5MRMslE6RhAPDzFXXW+QU4YWmezlZXBnENSpPcGq9sBe
-         KrAifylClJjXic5KSmGAXUlf5bCq/QC1QhBIvYiobVU743AEW9mK2bLJ6L71nPcojuv0
-         BNvyCnIJnNvIawIVDb/dYrKpav9ysr971VKawHIHnTGVgdSEGYWCRXVkR/vAfMpU+4N4
-         iLMw==
-X-Gm-Message-State: AOAM531+3xOulwMUWAmfVaM5O+4aOQDMu71/2p1VKSUqo0ErmMP3HWwT
-        xDqIETt6Y+/Hl3ta3ccpNPYn2jC8rxRJS880
-X-Google-Smtp-Source: ABdhPJxEG+RVI1TX/1ziIbJ2NB42qUJVnspOSoK1fldM+Y15uRTlSEyPI5Ll3/vmUi6UfAzzLkYydQ==
-X-Received: by 2002:a5d:4f0e:: with SMTP id c14mr5365589wru.422.1606416588560;
-        Thu, 26 Nov 2020 10:49:48 -0800 (PST)
-Received: from kpsingh.c.googlers.com.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
-        by smtp.gmail.com with ESMTPSA id a14sm10093076wmj.40.2020.11.26.10.49.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 10:49:48 -0800 (PST)
-From:   KP Singh <kpsingh@chromium.org>
-To:     bpf@vger.kernel.org
-Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>
-Subject: [PATCH bpf-next] selftests/bpf: Fix flavored variants of test_ima
-Date:   Thu, 26 Nov 2020 18:49:46 +0000
-Message-Id: <20201126184946.1708213-1-kpsingh@chromium.org>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=hz6mv8RV7nsFp0fyTqpx+yOQXohdxFFGiPrYz7iKxiQ=;
+        b=mPgCCmcel7z2WcI8VV6b/+mkwcp2qklMKc8cbg04J9je0G8mrAlm4rbN+2ywy/hOOq
+         2Iu2nsH7JQLB1i1b/xrRhCKF8l+2OG0kXJyUs1Rr9vtAK9EXuKzj9czvxdAApqWsRGLD
+         0fjrI3clANwSGTs52O9VeCYsm/9JSzgtcH4ZTcp4X4/Ol5T/pQ9ZzzFMgS3ky0E4I2Ar
+         3xbRZm9MAJRqMDdAr+rC4AGp+zIYUrzrilt1ef2XFo+qDSE+J22gKESo8RGgG0YO9x/9
+         oJIUM6fqeR1NVb4PxO+OAIAnOplnH7lq2IifqCJDboNFvWybrjhBbG+1hlp4y7Ndi+/q
+         tJfQ==
+X-Gm-Message-State: AOAM530gwnICZYoMWYvdlKrYyszRFsj1LmZYUFmYvGotnR+NXk8uFlst
+        8dX1Z2Q0HePHHAwMjH5OgbYLyB39mahv03N/tGI=
+X-Google-Smtp-Source: ABdhPJzcHAGGZ3faJp/lkSCCOsVMenQdbyAZ17A8/LHktD+pWcWIwmtY3WQ7IYrKiLfdX1r/7PBSG5WuDZLVrDCzYvs=
+X-Received: by 2002:a25:7444:: with SMTP id p65mr5297714ybc.149.1606425788584;
+ Thu, 26 Nov 2020 13:23:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201125183749.13797-1-weqaar.a.janjua@intel.com>
+ <20201125183749.13797-2-weqaar.a.janjua@intel.com> <d8eedbad-7a8e-fd80-5fec-fc53b86e6038@fb.com>
+ <1bcfb208-dfbd-7b49-e505-8ec17697239d@intel.com>
+In-Reply-To: <1bcfb208-dfbd-7b49-e505-8ec17697239d@intel.com>
+From:   Weqaar Janjua <weqaar.janjua@gmail.com>
+Date:   Thu, 26 Nov 2020 21:22:42 +0000
+Message-ID: <CAPLEeBYnYcWALN_JMBtZWt3uDnpYNtCA_HVLN6Gi7VbVk022xw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/5] selftests/bpf: xsk selftests framework
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Cc:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+        ast@kernel.org, Magnus Karlsson <magnus.karlsson@gmail.com>,
+        Weqaar Janjua <weqaar.a.janjua@intel.com>, shuah@kernel.org,
+        skhan@linuxfoundation.org, linux-kselftest@vger.kernel.org,
+        Anders Roxell <anders.roxell@linaro.org>,
+        jonathan.lemon@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: KP Singh <kpsingh@google.com>
+On Thu, 26 Nov 2020 at 09:01, Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>=
+ wrote:
+>
+> On 2020-11-26 07:44, Yonghong Song wrote:
+> >
+> [...]
+> >
+> > What other configures I am missing?
+> >
+> > BTW, I cherry-picked the following pick from bpf tree in this experimen=
+t.
+> >    commit e7f4a5919bf66e530e08ff352d9b78ed89574e6b (HEAD -> xsk)
+> >    Author: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+> >    Date:   Mon Nov 23 18:56:00 2020 +0100
+> >
+> >        net, xsk: Avoid taking multiple skbuff references
+> >
+>
+> Hmm, I'm getting an oops, unless I cherry-pick:
+>
+> 36ccdf85829a ("net, xsk: Avoid taking multiple skbuff references")
+>
+> *AND*
+>
+> 537cf4e3cc2f ("xsk: Fix umem cleanup bug at socket destruct")
+>
+> from bpf/master.
+>
 
-Flavored variants of test_progs (e.g. test_progs-no_alu32) change their
-working directory to the corresponding subdirectory (e.g. no_alu32).
-Since the setup script required by test_ima (ima_setup.sh) is not
-mentioned in the dependencies, it does not get copied to these
-subdirectories and causes flavored variants of test_ima to fail.
+Same as Bjorn's findings ^^^, additionally applying the second patch
+537cf4e3cc2f [PASS] all tests for me
 
-Adding the script to TRUNNER_EXTRA_FILES ensures that the file is also
-copied to the subdirectories for the flavored variants of test_progs.
+PREREQUISITES: [ PASS ]
+SKB NOPOLL: [ PASS ]
+SKB POLL: [ PASS ]
+DRV NOPOLL: [ PASS ]
+DRV POLL: [ PASS ]
+SKB SOCKET TEARDOWN: [ PASS ]
+DRV SOCKET TEARDOWN: [ PASS ]
+SKB BIDIRECTIONAL SOCKETS: [ PASS ]
+DRV BIDIRECTIONAL SOCKETS: [ PASS ]
 
-Fixes: 34b82d3ac105 ("bpf: Add a selftest for bpf_ima_inode_hash")
-Reported-by: Yonghong Song <yhs@fb.com>
-Suggested-by: Yonghong Song <yhs@fb.com>
-Signed-off-by: KP Singh <kpsingh@google.com>
----
- tools/testing/selftests/bpf/Makefile | 1 +
- 1 file changed, 1 insertion(+)
+With the first patch alone, as soon as we enter DRV/Native NOPOLL mode
+kernel panics, whereas in your case NOPOLL tests were falling with
+packets being *lost* as per seqnum mismatch.
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 3d5940cd110d..894192c319fb 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -389,6 +389,7 @@ TRUNNER_EXTRA_SOURCES := test_progs.c cgroup_helpers.c trace_helpers.c	\
- 			 network_helpers.c testing_helpers.c		\
- 			 btf_helpers.c	flow_dissector_load.h
- TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read				\
-+		       ima_setup.sh					\
- 		       $(wildcard progs/btf_dump_test_case_*.c)
- TRUNNER_BPF_BUILD_RULE := CLANG_BPF_BUILD_RULE
- TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(CLANG_CFLAGS)
--- 
-2.29.2.454.gaff20da3a2-goog
+Can you please test this out with both patches and let us know?
 
+> Can I just run test_xsk.sh at tools/testing/selftests/bpf/ directory?
+> This will be easier than the above for bpf developers. If it does not
+> work, I would like to recommend to make it work.
+>
+yes test_xsk.shis self contained, will update the instructions in there wit=
+h v4.
+
+Thanks,
+/Weqaar
+>
+> Bj=C3=B6rn
