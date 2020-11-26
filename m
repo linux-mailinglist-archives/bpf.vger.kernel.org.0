@@ -2,126 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0F8C2C5D7F
-	for <lists+bpf@lfdr.de>; Thu, 26 Nov 2020 22:23:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE542C5E03
+	for <lists+bpf@lfdr.de>; Thu, 26 Nov 2020 23:58:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387951AbgKZVXK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Nov 2020 16:23:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45328 "EHLO
+        id S2391851AbgKZW6S (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Nov 2020 17:58:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387950AbgKZVXJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Nov 2020 16:23:09 -0500
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65221C0613D4;
-        Thu, 26 Nov 2020 13:23:09 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id x17so2714976ybr.8;
-        Thu, 26 Nov 2020 13:23:09 -0800 (PST)
+        with ESMTP id S1732801AbgKZW6R (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Nov 2020 17:58:17 -0500
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5260FC0617A7
+        for <bpf@vger.kernel.org>; Thu, 26 Nov 2020 14:58:17 -0800 (PST)
+Received: by mail-lf1-x141.google.com with SMTP id a9so4564284lfh.2
+        for <bpf@vger.kernel.org>; Thu, 26 Nov 2020 14:58:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=hz6mv8RV7nsFp0fyTqpx+yOQXohdxFFGiPrYz7iKxiQ=;
-        b=i/O81SQNN3ngSC9cwkTouRr0V6dQJfYD+fTCxob+UFOWcOtmtjkKWWAokvEVNPH+XZ
-         3wLeXA1Q+FWkc3AqzuZnSq5KyDhKHBzgvwSq5DsZL3UNVLABTHtphAD/EMPQecZu7q+C
-         IS1G2xANrPHWg62WZVyrjVJxshDgwgMRtMTLitRV1MouMDGC7QYai/8bvxJ5KuF8sY+/
-         5hLDstIaNJfs8y4NQB0dHkZbxGEJ8mULJvSf02IS5t/vQskmynFGmlGFbCYv+cDsPxJm
-         XzJ9yFNNdBpeBS0AdaEGuRd1Ufzg8A7M2XwJSkhp+LfvqCzSjUXLUQ9GlmKhEu2A+QCT
-         mxaQ==
+         :cc;
+        bh=QaDOiTzv7bYdMLTWXNj4oE28VVQBAWH2AlPKGR+E+eo=;
+        b=SaadWWvtWjDmQJF+g83I57GsOtBRiaSkSsV6m7Aw0E6ectfQcDqBDC8hUH1MK8TeNr
+         6VIWKhr0DinotXc0Dpiy9jeb1R6of6uACiO8yNRzwCtQgTqzGcuPnIkwz1RD1w7q7eVC
+         7znuCxydQzXvCSdP/cAZv44g8TfAXjMNQbHzU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=hz6mv8RV7nsFp0fyTqpx+yOQXohdxFFGiPrYz7iKxiQ=;
-        b=mPgCCmcel7z2WcI8VV6b/+mkwcp2qklMKc8cbg04J9je0G8mrAlm4rbN+2ywy/hOOq
-         2Iu2nsH7JQLB1i1b/xrRhCKF8l+2OG0kXJyUs1Rr9vtAK9EXuKzj9czvxdAApqWsRGLD
-         0fjrI3clANwSGTs52O9VeCYsm/9JSzgtcH4ZTcp4X4/Ol5T/pQ9ZzzFMgS3ky0E4I2Ar
-         3xbRZm9MAJRqMDdAr+rC4AGp+zIYUrzrilt1ef2XFo+qDSE+J22gKESo8RGgG0YO9x/9
-         oJIUM6fqeR1NVb4PxO+OAIAnOplnH7lq2IifqCJDboNFvWybrjhBbG+1hlp4y7Ndi+/q
-         tJfQ==
-X-Gm-Message-State: AOAM530gwnICZYoMWYvdlKrYyszRFsj1LmZYUFmYvGotnR+NXk8uFlst
-        8dX1Z2Q0HePHHAwMjH5OgbYLyB39mahv03N/tGI=
-X-Google-Smtp-Source: ABdhPJzcHAGGZ3faJp/lkSCCOsVMenQdbyAZ17A8/LHktD+pWcWIwmtY3WQ7IYrKiLfdX1r/7PBSG5WuDZLVrDCzYvs=
-X-Received: by 2002:a25:7444:: with SMTP id p65mr5297714ybc.149.1606425788584;
- Thu, 26 Nov 2020 13:23:08 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=QaDOiTzv7bYdMLTWXNj4oE28VVQBAWH2AlPKGR+E+eo=;
+        b=PyN3cpjEjnK/kWOaQyW0mWljcZPEowH+4Sj7qfoBJ6dkHVXm5dJdGu2lImRfoCuTwW
+         89oOCX1EbEsNun/YRpJYjg4n7vrejrZPDU0l8Sdsnp75P01FV6/duL8aNwRRShGuukE9
+         KdJ0AH+OiUBGKcpCohaCdAD/S2itr6HBubAs5A8z174/MIhrM1Lfha9gxd27HSIMniPX
+         GNsiv0xza7LLrR7eZgjZTE6RnfSb/nC9xvi7/8T+2IuGQiQtqEBeSW5c8UZtOhhPBmWz
+         UanOZDhADODWr12yFMWDxyvu41UJWtxb7Dz6lwdlBP6pF56tLA0+eG4ruQyLD+0VgA0h
+         Ek5A==
+X-Gm-Message-State: AOAM5335ZlKl6hSoAZMEk48Qjq6EiaMM4vB9zWpzQapD2CFOnkWLXrCm
+        znqTg2iNvg/Ji4dlhCXk38DyGmp/V9TymUXgQB2KzA==
+X-Google-Smtp-Source: ABdhPJzwIixXgMfP9Xlb2QJc7RM7bfwkIDUDIt/rwlFzyf7GHGqD1RyaKJhK2IYOk9lvUhuKE8yyIuMFPLZIDr2r9vc=
+X-Received: by 2002:a19:f114:: with SMTP id p20mr2216142lfh.146.1606431494290;
+ Thu, 26 Nov 2020 14:58:14 -0800 (PST)
 MIME-Version: 1.0
-References: <20201125183749.13797-1-weqaar.a.janjua@intel.com>
- <20201125183749.13797-2-weqaar.a.janjua@intel.com> <d8eedbad-7a8e-fd80-5fec-fc53b86e6038@fb.com>
- <1bcfb208-dfbd-7b49-e505-8ec17697239d@intel.com>
-In-Reply-To: <1bcfb208-dfbd-7b49-e505-8ec17697239d@intel.com>
-From:   Weqaar Janjua <weqaar.janjua@gmail.com>
-Date:   Thu, 26 Nov 2020 21:22:42 +0000
-Message-ID: <CAPLEeBYnYcWALN_JMBtZWt3uDnpYNtCA_HVLN6Gi7VbVk022xw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/5] selftests/bpf: xsk selftests framework
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
-Cc:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        ast@kernel.org, Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Weqaar Janjua <weqaar.a.janjua@intel.com>, shuah@kernel.org,
-        skhan@linuxfoundation.org, linux-kselftest@vger.kernel.org,
-        Anders Roxell <anders.roxell@linaro.org>,
-        jonathan.lemon@gmail.com
+References: <20201126164449.1745292-1-revest@google.com>
+In-Reply-To: <20201126164449.1745292-1-revest@google.com>
+From:   KP Singh <kpsingh@chromium.org>
+Date:   Thu, 26 Nov 2020 23:58:03 +0100
+Message-ID: <CACYkzJ6QEmUzNfWCFoffOy1YY_qBR+Qw74DT+FddQMkm+ZpSEw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/6] net: Remove the err argument from sock_from_file
+To:     Florent Revest <revest@chromium.org>
+Cc:     bpf <bpf@vger.kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Florent Revest <revest@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 26 Nov 2020 at 09:01, Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>=
- wrote:
+On Thu, Nov 26, 2020 at 5:45 PM Florent Revest <revest@chromium.org> wrote:
 >
-> On 2020-11-26 07:44, Yonghong Song wrote:
-> >
-> [...]
-> >
-> > What other configures I am missing?
-> >
-> > BTW, I cherry-picked the following pick from bpf tree in this experimen=
-t.
-> >    commit e7f4a5919bf66e530e08ff352d9b78ed89574e6b (HEAD -> xsk)
-> >    Author: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
-> >    Date:   Mon Nov 23 18:56:00 2020 +0100
-> >
-> >        net, xsk: Avoid taking multiple skbuff references
-> >
+> Currently, the sock_from_file prototype takes an "err" pointer that is
+> either not set or set to -ENOTSOCK IFF the returned socket is NULL. This
+> makes the error redundant and it is ignored by a few callers.
 >
-> Hmm, I'm getting an oops, unless I cherry-pick:
+> This patch simplifies the API by letting callers deduce the error based
+> on whether the returned socket is NULL or not.
 >
-> 36ccdf85829a ("net, xsk: Avoid taking multiple skbuff references")
->
-> *AND*
->
-> 537cf4e3cc2f ("xsk: Fix umem cleanup bug at socket destruct")
->
-> from bpf/master.
->
+> Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
+> Signed-off-by: Florent Revest <revest@google.com>
 
-Same as Bjorn's findings ^^^, additionally applying the second patch
-537cf4e3cc2f [PASS] all tests for me
-
-PREREQUISITES: [ PASS ]
-SKB NOPOLL: [ PASS ]
-SKB POLL: [ PASS ]
-DRV NOPOLL: [ PASS ]
-DRV POLL: [ PASS ]
-SKB SOCKET TEARDOWN: [ PASS ]
-DRV SOCKET TEARDOWN: [ PASS ]
-SKB BIDIRECTIONAL SOCKETS: [ PASS ]
-DRV BIDIRECTIONAL SOCKETS: [ PASS ]
-
-With the first patch alone, as soon as we enter DRV/Native NOPOLL mode
-kernel panics, whereas in your case NOPOLL tests were falling with
-packets being *lost* as per seqnum mismatch.
-
-Can you please test this out with both patches and let us know?
-
-> Can I just run test_xsk.sh at tools/testing/selftests/bpf/ directory?
-> This will be easier than the above for bpf developers. If it does not
-> work, I would like to recommend to make it work.
->
-yes test_xsk.shis self contained, will update the instructions in there wit=
-h v4.
-
-Thanks,
-/Weqaar
->
-> Bj=C3=B6rn
+Reviewed-by: KP Singh <kpsingh@google.com>
