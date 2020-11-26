@@ -2,202 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40C492C59FE
-	for <lists+bpf@lfdr.de>; Thu, 26 Nov 2020 18:05:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B518F2C5A52
+	for <lists+bpf@lfdr.de>; Thu, 26 Nov 2020 18:14:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404274AbgKZRCY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Nov 2020 12:02:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33448 "EHLO
+        id S2404010AbgKZRNK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Nov 2020 12:13:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403803AbgKZRCT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Nov 2020 12:02:19 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEDD1C0617A7
-        for <bpf@vger.kernel.org>; Thu, 26 Nov 2020 09:02:17 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id s8so2847926wrw.10
-        for <bpf@vger.kernel.org>; Thu, 26 Nov 2020 09:02:17 -0800 (PST)
+        with ESMTP id S2404008AbgKZRNJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Nov 2020 12:13:09 -0500
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A998C0613D4;
+        Thu, 26 Nov 2020 09:13:08 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id i17so3116523ljd.3;
+        Thu, 26 Nov 2020 09:13:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=SyZHVQfg5UasRnRBi3W8BI7EDbmbn+6eB9vLQ5Pp2HY=;
-        b=fA0RiKXkxKUleTSpu9sFswF9isRUHKBVQcc0iFHjQytBucWWbVkKm99wSwmhMaR/Mp
-         xbSzn8VCCNM0WPBgYSBY66IDgYKSeffh0eL8hG6F7EL+nVdJYqL6LPKbkee27QJjNF4I
-         skam84Z6jUkO8ERvzzxbt85mvwAGwZkudWBcM=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VpnUj0vwEBxW6p7ITczWY4IsgxvLvEJLYdLmcYXOZkU=;
+        b=bNIV9vN0a4JsfmKqZ80aejvtZg4VlBh59eCSvINKkY7gI+B3p+OINaw1WT8TbCuYEp
+         w9SieaelhASvFeb55DSGvdrvjXoa8lCwCqZCffodPp7944KO4zJpQSkdVpwDf5B6mmPd
+         MmKveMlfHhcEnUbl1FMte4aJpELc8Wtt3ENVKEEVfMGk/tTXcmS+a84sk9XirGRBFa75
+         Pz/oTnxPeCwC9u/bNg8DJCn+qRvt7/gQRVVmn2X6jxWNyoVc8ddJy4TbAs/X3poYhsn3
+         bhlzF+ZVefYRNx2Hi7+3WG1KJ5joQFxklIMgsIEX/v4JUJ+/WE7VLGCtv0ZhEzJ4cHrj
+         L04g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=SyZHVQfg5UasRnRBi3W8BI7EDbmbn+6eB9vLQ5Pp2HY=;
-        b=Xh9Vw+jziLXo3vd/4oV+VjQwDxZF+pQvdFHSbGH+91c188rE17oYJvNZJTzh1C3mwk
-         RXfPb4DZWxtC9QaPtNZm40ayA/60xzKeNmPEz/JTAQTQUPvIbdBobE90UqFFc72lyVZf
-         AgnK988qBHyk0BskXFRHEjeeq6Lzqpqb8tChh7DSGkosspl0/weg1oKo1PF6ma3+CUfE
-         kgP0/SSACAnscALNfrD/gjqCakX8b/lvxpSIxXXOhzYxwStrrtr2RwP5rjV49z1QgNDN
-         6WXiKrMb6o9clyBYdi83L+06qdnFWgV/QuzlpQ/y7Nf8UlHfFVTzsjU27fz/X2OWYlfN
-         U0Rw==
-X-Gm-Message-State: AOAM530DSjD9EFx5guyw7VYiuzZsIh+gonR2963BT4QJyLyD3NtXc47/
-        R1ljonBKV/HUUw4Exxq+d/Qh2vw/YIZ6swsX
-X-Google-Smtp-Source: ABdhPJy0yhbmTT4EP0QCtY4CaJGWo9teCucIPZrWJdlHYhJ2EnwPpFySLQRhraU7zDnUBdbWuOmGRA==
-X-Received: by 2002:adf:de12:: with SMTP id b18mr5008582wrm.187.1606410136330;
-        Thu, 26 Nov 2020 09:02:16 -0800 (PST)
-Received: from revest.zrh.corp.google.com ([2a00:79e0:42:204:f693:9fff:fef4:a569])
-        by smtp.gmail.com with ESMTPSA id d17sm9373192wro.62.2020.11.26.09.02.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 09:02:15 -0800 (PST)
-From:   Florent Revest <revest@chromium.org>
-X-Google-Original-From: Florent Revest <revest@google.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kpsingh@chromium.org, revest@google.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next 2/2] bpf: Add a selftest for the tracing bpf_get_socket_cookie
-Date:   Thu, 26 Nov 2020 18:02:12 +0100
-Message-Id: <20201126170212.1749137-2-revest@google.com>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-In-Reply-To: <20201126170212.1749137-1-revest@google.com>
-References: <20201126170212.1749137-1-revest@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VpnUj0vwEBxW6p7ITczWY4IsgxvLvEJLYdLmcYXOZkU=;
+        b=fbpdMkrCJUSaX0YDMSQKe64kZJHhjwwFPzFcOX8PpqRbPb7b9fPmAeFZ7qeFIfQmjo
+         hxbrdzx1crE4jwmyaMcVblVDhfztNcSO1evpYFWBL0rXFfY0VLk0kuMytiqUfBD8GVBP
+         cTsrXy5zZYhkE3GqFn1wZaOucc7TSYEWbiPjLztIBEtsAFshXpsRrOti+zqIpmvnWtRA
+         zsc3CSw9f+MbTkeZehEJcPz2WCWk+xZ3m22CKfqZhVSXs8selzqKq866ivxHQ8iqzpCl
+         fkmA2b9nQD+Q0IYjfUm2zZCiXGDBaRVAZHeBV2w0rXXY1OpbwTytgxem9ENuYaf1Fef8
+         bgjg==
+X-Gm-Message-State: AOAM531yaOiJ7Mnir8MfZjijtEplQtd25gzyyVmmAMSxNgW8wxT4n5Mp
+        aPssykWM6lonor6x22vXjLPk5zFj4hBcsz9pVf8=
+X-Google-Smtp-Source: ABdhPJy3urs2BeAfWjkHI6bDf9nhnilb7OzdM0ndQotzW8xx/eFGnLcSx3/i/yka1xN40aF1n6yHdaWNpOKCmlEuXMA=
+X-Received: by 2002:a2e:9648:: with SMTP id z8mr1567183ljh.91.1606410786463;
+ Thu, 26 Nov 2020 09:13:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201125030119.2864302-1-guro@fb.com> <20201125030119.2864302-7-guro@fb.com>
+ <ef140167-8d80-c581-318c-36c0430e4cfa@iogearbox.net> <20201126023000.GB840171@carbon.dhcp.thefacebook.com>
+In-Reply-To: <20201126023000.GB840171@carbon.dhcp.thefacebook.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 26 Nov 2020 09:12:55 -0800
+Message-ID: <CAADnVQ+eohA6drYFbbw4ZD-H91xESf=WjZT-oPK85dpdJJAYhQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v8 06/34] bpf: prepare for memcg-based memory
+ accounting for bpf maps
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This builds up on the existing socket cookie test which checks whether
-the bpf_get_socket_cookie helpers provide the same value in
-cgroup/connect6 and sockops programs for a socket created by the
-userspace part of the test.
+On Wed, Nov 25, 2020 at 6:30 PM Roman Gushchin <guro@fb.com> wrote:
+>
+> I did consider this option. There are pros and cons. In general we tend to charge the cgroup
+> which actually allocates the memory, and I decided to stick with this rule. I agree, it's fairly
+> easy to come with arguments why always charging the map creator is better. The opposite is
+> also true: it's not clear why bpf is different here. So I'm fine with both options, if there
+> is a wide consensus, I'm happy to switch to the other option. In general, I believe that
+> the current scheme is more flexible.
 
-Adding a tracing program to the existing objects requires a different
-attachment strategy and different headers.
+I don't understand the 'more flexible' part.
+The current_memcg or map_memcg approach makes it less predictable.
+pre-alloc vs not is somewhat orthogonal.
+I've grepped through the kernel where set_active_memcg() is used
+and couldn't find a conditional pattern of its usage.
+If memcg is known it's used. I couldn't come up with the use case where
+using current memcg is the more correct thing to do.
 
-Signed-off-by: Florent Revest <revest@google.com>
----
- .../selftests/bpf/progs/socket_cookie_prog.c  | 41 ++++++++++++++++---
- .../selftests/bpf/test_socket_cookie.c        | 18 +++++---
- 2 files changed, 49 insertions(+), 10 deletions(-)
+> In general we tend to charge the cgroup which actually allocates the memory
 
-diff --git a/tools/testing/selftests/bpf/progs/socket_cookie_prog.c b/tools/testing/selftests/bpf/progs/socket_cookie_prog.c
-index 0cb5656a22b0..a11026aeaaf1 100644
---- a/tools/testing/selftests/bpf/progs/socket_cookie_prog.c
-+++ b/tools/testing/selftests/bpf/progs/socket_cookie_prog.c
-@@ -1,11 +1,13 @@
- // SPDX-License-Identifier: GPL-2.0
- // Copyright (c) 2018 Facebook
- 
--#include <linux/bpf.h>
--#include <sys/socket.h>
-+#include "vmlinux.h"
- 
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_endian.h>
-+#include <bpf/bpf_tracing.h>
-+
-+#define AF_INET6 10
- 
- struct socket_cookie {
- 	__u64 cookie_key;
-@@ -19,6 +21,14 @@ struct {
- 	__type(value, struct socket_cookie);
- } socket_cookies SEC(".maps");
- 
-+/*
-+ * These three programs get executed in a row on connect() syscalls. The
-+ * userspace side of the test creates a client socket, issues a connect() on it
-+ * and then checks that the local storage associated with this socket has:
-+ * cookie_value == local_port << 8 | 0xFF
-+ * The different parts of this cookie_value are appended by those hooks if they
-+ * all agree on the output of bpf_get_socket_cookie().
-+ */
- SEC("cgroup/connect6")
- int set_cookie(struct bpf_sock_addr *ctx)
- {
-@@ -32,14 +42,14 @@ int set_cookie(struct bpf_sock_addr *ctx)
- 	if (!p)
- 		return 1;
- 
--	p->cookie_value = 0xFF;
-+	p->cookie_value = 0xF;
- 	p->cookie_key = bpf_get_socket_cookie(ctx);
- 
- 	return 1;
- }
- 
- SEC("sockops")
--int update_cookie(struct bpf_sock_ops *ctx)
-+int update_cookie_sockops(struct bpf_sock_ops *ctx)
- {
- 	struct bpf_sock *sk;
- 	struct socket_cookie *p;
-@@ -60,11 +70,32 @@ int update_cookie(struct bpf_sock_ops *ctx)
- 	if (p->cookie_key != bpf_get_socket_cookie(ctx))
- 		return 1;
- 
--	p->cookie_value = (ctx->local_port << 8) | p->cookie_value;
-+	p->cookie_value |= (ctx->local_port << 8);
- 
- 	return 1;
- }
- 
-+SEC("fexit/inet_stream_connect")
-+int BPF_PROG(update_cookie_tracing, struct socket *sock,
-+	     struct sockaddr *uaddr, int addr_len, int flags)
-+{
-+	struct socket_cookie *p;
-+
-+	if (uaddr->sa_family != AF_INET6)
-+		return 0;
-+
-+	p = bpf_sk_storage_get(&socket_cookies, sock->sk, 0, 0);
-+	if (!p)
-+		return 0;
-+
-+	if (p->cookie_key != bpf_get_socket_cookie(sock->sk))
-+		return 0;
-+
-+	p->cookie_value |= 0xF0;
-+
-+	return 0;
-+}
-+
- int _version SEC("version") = 1;
- 
- char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/test_socket_cookie.c b/tools/testing/selftests/bpf/test_socket_cookie.c
-index ca7ca87e91aa..0d955c65a4f8 100644
---- a/tools/testing/selftests/bpf/test_socket_cookie.c
-+++ b/tools/testing/selftests/bpf/test_socket_cookie.c
-@@ -133,6 +133,7 @@ static int run_test(int cgfd)
- 	struct bpf_prog_load_attr attr;
- 	struct bpf_program *prog;
- 	struct bpf_object *pobj;
-+	struct bpf_link *link;
- 	const char *prog_name;
- 	int server_fd = -1;
- 	int client_fd = -1;
-@@ -153,11 +154,18 @@ static int run_test(int cgfd)
- 	bpf_object__for_each_program(prog, pobj) {
- 		prog_name = bpf_program__section_name(prog);
- 
--		if (libbpf_attach_type_by_name(prog_name, &attach_type))
--			goto err;
--
--		err = bpf_prog_attach(bpf_program__fd(prog), cgfd, attach_type,
--				      BPF_F_ALLOW_OVERRIDE);
-+		if (bpf_program__is_tracing(prog)) {
-+			link = bpf_program__attach(prog);
-+			err = !link;
-+			continue;
-+		} else {
-+			if (libbpf_attach_type_by_name(prog_name, &attach_type))
-+				goto err;
-+
-+			err = bpf_prog_attach(bpf_program__fd(prog), cgfd,
-+					      attach_type,
-+					      BPF_F_ALLOW_OVERRIDE);
-+		}
- 		if (err) {
- 			log_err("Failed to attach prog %s", prog_name);
- 			goto out;
--- 
-2.29.2.454.gaff20da3a2-goog
-
+that makes sense where allocation is driven by the user process.
+Like user space doing a syscall then all kernel allocation would be
+from memcg of that process.
+But bpf tracing allocations are not something that the user process requested
+the kernel to do. It's like another user space process tapped into another.
+Arguably when bpf prog is running the two user processes are active.
+One that created the map and loaded the prog and another that is being traced.
+I think there will be cases where bpf prog will request the kernel to allocate
+memory on behalf of the process being traced, but that memory should be
+given back to the process and accessible by it in some form.
+Like bpf prog could ask the kernel to grow heap of that process or
+trigger readahead.
+In such case current_memcg would be the right thing to charge.
