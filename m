@@ -2,195 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 988702C59B8
-	for <lists+bpf@lfdr.de>; Thu, 26 Nov 2020 18:01:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 653942C59EB
+	for <lists+bpf@lfdr.de>; Thu, 26 Nov 2020 18:02:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403927AbgKZQ7H (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Nov 2020 11:59:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32920 "EHLO
+        id S2404264AbgKZRCT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Nov 2020 12:02:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403923AbgKZQ7G (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Nov 2020 11:59:06 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E074C0617A7
-        for <bpf@vger.kernel.org>; Thu, 26 Nov 2020 08:59:05 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id 3so334188wmj.4
-        for <bpf@vger.kernel.org>; Thu, 26 Nov 2020 08:59:05 -0800 (PST)
+        with ESMTP id S2404240AbgKZRCR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Nov 2020 12:02:17 -0500
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE715C0617A7
+        for <bpf@vger.kernel.org>; Thu, 26 Nov 2020 09:02:16 -0800 (PST)
+Received: by mail-wm1-x341.google.com with SMTP id p22so2749840wmg.3
+        for <bpf@vger.kernel.org>; Thu, 26 Nov 2020 09:02:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=yiihBYT29r/F8u49HtrLNtVGlhzIYUGfbvVDX4SQ4Us=;
-        b=JbwJAnnczSMj8Bkfb75JNqFiES00+ZMEGcmdQTL3NapeB7Ia86rKrZ+Mg5Uhjk4qtZ
-         vlAakh+huJ0GfKOIgxXjKgs+9c/lmlJDT875SshAPOpcyP7K9igd08TovQGfwPaiBJtd
-         NvPDNnoVnbWDAoFqVsrSdcO2wgyn+g8yvrnng=
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WF3H28fEoYL2LDdOhRT3Ab9ca5suerjl3gza57entlg=;
+        b=VVRHBAlzq5rkqrbiekPZUESvERwFucIUzv2eeGQBwSkqCFP9VEod2rsWKAMo7CpXnq
+         M4ovNfj5d9R8C7OS6Rllff0lyf7HdFCtC/Y5S/bwP0KusvH2ho2/HqKsyZQNX1D+U11B
+         KWSpNujKPhshnpbIbAriyhEIYDN7KsrFYRpG4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=yiihBYT29r/F8u49HtrLNtVGlhzIYUGfbvVDX4SQ4Us=;
-        b=nJJTuj7nuLL1Ym23iK7skyzLr6qhOXtsNUPpYfOObfiHEGOp4W8JNefJGSyAe5YHAt
-         eVUMLUrFqQTpuyMk7HcZIt74vKN0TGm62VfCmDY+DB+m8QmrsADMUvsx96bslpUWd/XR
-         yTZK+7rgcrRi2T+9lm1zsNz+Qu66j9ahD1TaP57N8Wg7+NgfuWGAhCT4k39YNzqTHY51
-         9jCoEPBBnJLRoGU2PyMIUylE5cWld4CQ2Vl2Q86bLoaADoeYenGRrglXCkijMu0Ap6jc
-         ScXk0oMzeehwj5Es28/0+lnGbTIsvg8m1yLq2Fn3QH4XqVYzFm/2F+zLAaxXY/xDhw1a
-         9ejA==
-X-Gm-Message-State: AOAM53275ZARz8PWKvBNj9JHEFobfMv89AtbUTbOOEZcPpSK8/N7/n2x
-        hazoDOjwXGXFjwdDz5nMOYjIX632eINdQ+qd
-X-Google-Smtp-Source: ABdhPJxIrqvMoXZzhTP8EI1BkupGBVYUC0Y2SeBVcJDR5a6h+t8bHPKs9RaJGjUL/5zPm4o1reLqrg==
-X-Received: by 2002:a1c:7318:: with SMTP id d24mr4453757wmb.39.1606409944007;
-        Thu, 26 Nov 2020 08:59:04 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WF3H28fEoYL2LDdOhRT3Ab9ca5suerjl3gza57entlg=;
+        b=GtwIDO1hM3wpkTc4VHX1Xe/V+7OP5krxYcc5GZoD74FKxQRT8WvOMM/oJTJzbjDme4
+         XRavNlKpaS+OWl1L3HnpZV+PGsu52WATEeVjqSZHS/MXE22qAzUR0OAxLuo2BX8gj1CE
+         Se0jfOnu75sgIGaeYcGFAnWex06h9wbbdAVizXv45aa1T7gmiG/TgoAZu/SkRDa0bJET
+         237TVOBRkoEWv0kOixUSzqVNnw1fKlmhAyYbTKAYoX1FdUhYxo02DA1pX425G9uVt/Kb
+         QNN1b7Qo+AW0aws2lJ5wA7ibZzEoJVtE1mCqiNWNljd2KC6DvCx458MeDHtPMbwFLJtY
+         4Fng==
+X-Gm-Message-State: AOAM533d1tXnJSL+ZEf3gH6cH0od1svKJfAi9jh3dqIEb3yeoW2Er3vS
+        Y1XunJwG1y5wbq0BXnv6fzSLYzhmRZwHuIr+
+X-Google-Smtp-Source: ABdhPJwh6iMKsGrUw8a4IAsQW1+EEqQOxevWJtxF7h4yHKME9ETvMrIsQZLMAjm6sCqvrDzLJvNOPA==
+X-Received: by 2002:a05:600c:58e:: with SMTP id o14mr4431504wmd.47.1606410135376;
+        Thu, 26 Nov 2020 09:02:15 -0800 (PST)
 Received: from revest.zrh.corp.google.com ([2a00:79e0:42:204:f693:9fff:fef4:a569])
-        by smtp.gmail.com with ESMTPSA id 17sm8768032wmf.48.2020.11.26.08.59.03
+        by smtp.gmail.com with ESMTPSA id d17sm9373192wro.62.2020.11.26.09.02.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 08:59:03 -0800 (PST)
+        Thu, 26 Nov 2020 09:02:14 -0800 (PST)
 From:   Florent Revest <revest@chromium.org>
 X-Google-Original-From: Florent Revest <revest@google.com>
 To:     bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         kpsingh@chromium.org, revest@google.com,
         linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Add bpf_kallsyms_lookup test
-Date:   Thu, 26 Nov 2020 17:57:48 +0100
-Message-Id: <20201126165748.1748417-2-revest@google.com>
+Subject: [PATCH bpf-next 1/2] bpf: Expose bpf_get_socket_cookie to tracing programs
+Date:   Thu, 26 Nov 2020 18:02:11 +0100
+Message-Id: <20201126170212.1749137-1-revest@google.com>
 X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-In-Reply-To: <20201126165748.1748417-1-revest@google.com>
-References: <20201126165748.1748417-1-revest@google.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This piggybacks on the existing "ksyms" test because this test also
-relies on a __ksym symbol and requires CONFIG_KALLSYMS.
+This creates a new helper proto because the existing
+bpf_get_socket_cookie_sock_proto has a ARG_PTR_TO_CTX argument and only
+works for BPF programs where the context is a sock.
+
+This helper could also be useful to other BPF program types such as LSM.
 
 Signed-off-by: Florent Revest <revest@google.com>
 ---
- tools/testing/selftests/bpf/config            |  1 +
- .../testing/selftests/bpf/prog_tests/ksyms.c  | 46 ++++++++++++++++++-
- .../bpf/progs/test_kallsyms_lookup.c          | 38 +++++++++++++++
- 3 files changed, 84 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/progs/test_kallsyms_lookup.c
+ kernel/trace/bpf_trace.c | 4 ++++
+ net/core/filter.c        | 7 +++++++
+ 2 files changed, 11 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-index 365bf9771b07..791a46e5d013 100644
---- a/tools/testing/selftests/bpf/config
-+++ b/tools/testing/selftests/bpf/config
-@@ -43,3 +43,4 @@ CONFIG_IMA=y
- CONFIG_SECURITYFS=y
- CONFIG_IMA_WRITE_POLICY=y
- CONFIG_IMA_READ_POLICY=y
-+CONFIG_KALLSYMS=y
-diff --git a/tools/testing/selftests/bpf/prog_tests/ksyms.c b/tools/testing/selftests/bpf/prog_tests/ksyms.c
-index b295969b263b..0478b67a92ae 100644
---- a/tools/testing/selftests/bpf/prog_tests/ksyms.c
-+++ b/tools/testing/selftests/bpf/prog_tests/ksyms.c
-@@ -3,11 +3,12 @@
- 
- #include <test_progs.h>
- #include "test_ksyms.skel.h"
-+#include "test_kallsyms_lookup.skel.h"
- #include <sys/stat.h>
- 
- static int duration;
- 
--void test_ksyms(void)
-+void test_ksyms_variables(void)
- {
- 	const char *btf_path = "/sys/kernel/btf/vmlinux";
- 	struct test_ksyms *skel;
-@@ -59,3 +60,46 @@ void test_ksyms(void)
- cleanup:
- 	test_ksyms__destroy(skel);
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index d255bc9b2bfa..14ad96579813 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1725,6 +1725,8 @@ raw_tp_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 	}
  }
+ 
++extern const struct bpf_func_proto bpf_get_socket_cookie_sock_tracing_proto;
 +
-+void test_kallsyms_lookup(void)
-+{
-+	struct test_kallsyms_lookup *skel;
-+	int err;
+ const struct bpf_func_proto *
+ tracing_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ {
+@@ -1748,6 +1750,8 @@ tracing_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_sk_storage_get_tracing_proto;
+ 	case BPF_FUNC_sk_storage_delete:
+ 		return &bpf_sk_storage_delete_tracing_proto;
++	case BPF_FUNC_get_socket_cookie:
++		return &bpf_get_socket_cookie_sock_tracing_proto;
+ #endif
+ 	case BPF_FUNC_seq_printf:
+ 		return prog->expected_attach_type == BPF_TRACE_ITER ?
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 2ca5eecebacf..177c4e5e529d 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -4631,6 +4631,13 @@ static const struct bpf_func_proto bpf_get_socket_cookie_sock_proto = {
+ 	.arg1_type	= ARG_PTR_TO_CTX,
+ };
+ 
++const struct bpf_func_proto bpf_get_socket_cookie_sock_tracing_proto = {
++	.func		= bpf_get_socket_cookie_sock,
++	.gpl_only	= false,
++	.ret_type	= RET_INTEGER,
++	.arg1_type      = ARG_PTR_TO_BTF_ID_SOCK_COMMON,
++};
 +
-+	skel = test_kallsyms_lookup__open_and_load();
-+	if (CHECK(!skel, "skel_open", "failed to open and load skeleton\n"))
-+		return;
-+
-+	err = test_kallsyms_lookup__attach(skel);
-+	if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
-+		goto cleanup;
-+
-+	/* trigger tracepoint */
-+	usleep(1);
-+
-+	CHECK(strcmp(skel->bss->name, "schedule"), "name",
-+	      "got \"%s\", exp \"schedule\"\n", skel->bss->name);
-+	CHECK(strcmp(skel->bss->name_truncated, "sched"), "name_truncated",
-+	      "got \"%s\", exp \"sched\"\n", skel->bss->name_truncated);
-+	CHECK(strcmp(skel->bss->name_invalid, ""), "name_invalid",
-+	      "got \"%s\", exp \"\"\n", skel->bss->name_invalid);
-+	CHECK(strcmp(skel->bss->module_name, ""), "module_name",
-+	      "got \"%s\", exp \"\"\n", skel->bss->module_name);
-+	CHECK(skel->bss->schedule_ret != 9, "schedule_ret",
-+	      "got %d, exp 0\n", skel->bss->schedule_ret);
-+	CHECK(skel->bss->sched_ret != 9, "sched_ret",
-+	      "got %d, exp 0\n", skel->bss->sched_ret);
-+	CHECK(skel->bss->invalid_ret != -EINVAL, "invalid_ret",
-+	      "got %d, exp %d\n", skel->bss->invalid_ret, -EINVAL);
-+
-+cleanup:
-+	test_kallsyms_lookup__destroy(skel);
-+}
-+
-+void test_ksyms(void)
-+{
-+	if (test__start_subtest("ksyms_variables"))
-+		test_ksyms_variables();
-+	if (test__start_subtest("kallsyms_lookup"))
-+		test_kallsyms_lookup();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_kallsyms_lookup.c b/tools/testing/selftests/bpf/progs/test_kallsyms_lookup.c
-new file mode 100644
-index 000000000000..4f15f1527ab4
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_kallsyms_lookup.c
-@@ -0,0 +1,38 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Google LLC. */
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+extern const void schedule __ksym;
-+
-+#define SYMBOL_NAME_LEN			10
-+char name[SYMBOL_NAME_LEN];
-+char name_invalid[SYMBOL_NAME_LEN];
-+
-+#define SYMBOL_TRUNCATED_NAME_LEN	6
-+char name_truncated[SYMBOL_TRUNCATED_NAME_LEN];
-+
-+#define MODULE_NAME_LEN			64
-+char module_name[MODULE_NAME_LEN];
-+
-+long schedule_ret;
-+long sched_ret;
-+long invalid_ret;
-+
-+SEC("raw_tp/sys_enter")
-+int handler(const void *ctx)
-+{
-+	schedule_ret = bpf_kallsyms_lookup((__u64)&schedule,
-+					   name, SYMBOL_NAME_LEN,
-+					   module_name, MODULE_NAME_LEN);
-+	invalid_ret = bpf_kallsyms_lookup(0,
-+					  name_invalid, SYMBOL_NAME_LEN,
-+					  module_name, MODULE_NAME_LEN);
-+	sched_ret = bpf_kallsyms_lookup((__u64)&schedule, name_truncated,
-+					SYMBOL_TRUNCATED_NAME_LEN,
-+					module_name, MODULE_NAME_LEN);
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
+ BPF_CALL_1(bpf_get_socket_cookie_sock_ops, struct bpf_sock_ops_kern *, ctx)
+ {
+ 	return __sock_gen_cookie(ctx->sk);
 -- 
 2.29.2.454.gaff20da3a2-goog
 
