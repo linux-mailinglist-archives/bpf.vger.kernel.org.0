@@ -2,100 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B518F2C5A52
-	for <lists+bpf@lfdr.de>; Thu, 26 Nov 2020 18:14:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 863292C5C27
+	for <lists+bpf@lfdr.de>; Thu, 26 Nov 2020 19:52:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404010AbgKZRNK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Nov 2020 12:13:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35102 "EHLO
+        id S2404018AbgKZStu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Nov 2020 13:49:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404008AbgKZRNJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Nov 2020 12:13:09 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A998C0613D4;
-        Thu, 26 Nov 2020 09:13:08 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id i17so3116523ljd.3;
-        Thu, 26 Nov 2020 09:13:07 -0800 (PST)
+        with ESMTP id S1728937AbgKZStu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Nov 2020 13:49:50 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E702C0613D4
+        for <bpf@vger.kernel.org>; Thu, 26 Nov 2020 10:49:50 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id m6so3185600wrg.7
+        for <bpf@vger.kernel.org>; Thu, 26 Nov 2020 10:49:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VpnUj0vwEBxW6p7ITczWY4IsgxvLvEJLYdLmcYXOZkU=;
-        b=bNIV9vN0a4JsfmKqZ80aejvtZg4VlBh59eCSvINKkY7gI+B3p+OINaw1WT8TbCuYEp
-         w9SieaelhASvFeb55DSGvdrvjXoa8lCwCqZCffodPp7944KO4zJpQSkdVpwDf5B6mmPd
-         MmKveMlfHhcEnUbl1FMte4aJpELc8Wtt3ENVKEEVfMGk/tTXcmS+a84sk9XirGRBFa75
-         Pz/oTnxPeCwC9u/bNg8DJCn+qRvt7/gQRVVmn2X6jxWNyoVc8ddJy4TbAs/X3poYhsn3
-         bhlzF+ZVefYRNx2Hi7+3WG1KJ5joQFxklIMgsIEX/v4JUJ+/WE7VLGCtv0ZhEzJ4cHrj
-         L04g==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=F3upl2y9I1+20x7TUdWh7mb3k00BroeAnnTfPUXtSn0=;
+        b=c1YpjcCd+Ffza07cs7RIGwzc9Kf+ZBSnrBammqapxVrDYnOqkMhd7+JYt1CbGXVa9f
+         DuTU/BKExOuA9ZsPIgms44zoLS6pExqT0w0wZI3F7z/KH/7FmyOyL0yUUxwvxWe/J1fw
+         7stAdSnj0iCzVwfD5gUqMxJAQ6N9C/UmwvwM8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VpnUj0vwEBxW6p7ITczWY4IsgxvLvEJLYdLmcYXOZkU=;
-        b=fbpdMkrCJUSaX0YDMSQKe64kZJHhjwwFPzFcOX8PpqRbPb7b9fPmAeFZ7qeFIfQmjo
-         hxbrdzx1crE4jwmyaMcVblVDhfztNcSO1evpYFWBL0rXFfY0VLk0kuMytiqUfBD8GVBP
-         cTsrXy5zZYhkE3GqFn1wZaOucc7TSYEWbiPjLztIBEtsAFshXpsRrOti+zqIpmvnWtRA
-         zsc3CSw9f+MbTkeZehEJcPz2WCWk+xZ3m22CKfqZhVSXs8selzqKq866ivxHQ8iqzpCl
-         fkmA2b9nQD+Q0IYjfUm2zZCiXGDBaRVAZHeBV2w0rXXY1OpbwTytgxem9ENuYaf1Fef8
-         bgjg==
-X-Gm-Message-State: AOAM531yaOiJ7Mnir8MfZjijtEplQtd25gzyyVmmAMSxNgW8wxT4n5Mp
-        aPssykWM6lonor6x22vXjLPk5zFj4hBcsz9pVf8=
-X-Google-Smtp-Source: ABdhPJy3urs2BeAfWjkHI6bDf9nhnilb7OzdM0ndQotzW8xx/eFGnLcSx3/i/yka1xN40aF1n6yHdaWNpOKCmlEuXMA=
-X-Received: by 2002:a2e:9648:: with SMTP id z8mr1567183ljh.91.1606410786463;
- Thu, 26 Nov 2020 09:13:06 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=F3upl2y9I1+20x7TUdWh7mb3k00BroeAnnTfPUXtSn0=;
+        b=k31lv5iHuPKDL8rCVdlyYvLtuCmpbVw1o8PXU7jpGjDxjG962n97KligKxhotJ/qyZ
+         5SxslDYKq/aCiL0FlvW8q84FqhP+2r0uPt8nwkY2+iObqE9diLdVHQGGEHfgmpuQ+g4O
+         GrkacuakjxQc5HG1VgEH84pr5MRMslE6RhAPDzFXXW+QU4YWmezlZXBnENSpPcGq9sBe
+         KrAifylClJjXic5KSmGAXUlf5bCq/QC1QhBIvYiobVU743AEW9mK2bLJ6L71nPcojuv0
+         BNvyCnIJnNvIawIVDb/dYrKpav9ysr971VKawHIHnTGVgdSEGYWCRXVkR/vAfMpU+4N4
+         iLMw==
+X-Gm-Message-State: AOAM531+3xOulwMUWAmfVaM5O+4aOQDMu71/2p1VKSUqo0ErmMP3HWwT
+        xDqIETt6Y+/Hl3ta3ccpNPYn2jC8rxRJS880
+X-Google-Smtp-Source: ABdhPJxEG+RVI1TX/1ziIbJ2NB42qUJVnspOSoK1fldM+Y15uRTlSEyPI5Ll3/vmUi6UfAzzLkYydQ==
+X-Received: by 2002:a5d:4f0e:: with SMTP id c14mr5365589wru.422.1606416588560;
+        Thu, 26 Nov 2020 10:49:48 -0800 (PST)
+Received: from kpsingh.c.googlers.com.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
+        by smtp.gmail.com with ESMTPSA id a14sm10093076wmj.40.2020.11.26.10.49.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Nov 2020 10:49:48 -0800 (PST)
+From:   KP Singh <kpsingh@chromium.org>
+To:     bpf@vger.kernel.org
+Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>
+Subject: [PATCH bpf-next] selftests/bpf: Fix flavored variants of test_ima
+Date:   Thu, 26 Nov 2020 18:49:46 +0000
+Message-Id: <20201126184946.1708213-1-kpsingh@chromium.org>
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
 MIME-Version: 1.0
-References: <20201125030119.2864302-1-guro@fb.com> <20201125030119.2864302-7-guro@fb.com>
- <ef140167-8d80-c581-318c-36c0430e4cfa@iogearbox.net> <20201126023000.GB840171@carbon.dhcp.thefacebook.com>
-In-Reply-To: <20201126023000.GB840171@carbon.dhcp.thefacebook.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 26 Nov 2020 09:12:55 -0800
-Message-ID: <CAADnVQ+eohA6drYFbbw4ZD-H91xESf=WjZT-oPK85dpdJJAYhQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v8 06/34] bpf: prepare for memcg-based memory
- accounting for bpf maps
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Nov 25, 2020 at 6:30 PM Roman Gushchin <guro@fb.com> wrote:
->
-> I did consider this option. There are pros and cons. In general we tend to charge the cgroup
-> which actually allocates the memory, and I decided to stick with this rule. I agree, it's fairly
-> easy to come with arguments why always charging the map creator is better. The opposite is
-> also true: it's not clear why bpf is different here. So I'm fine with both options, if there
-> is a wide consensus, I'm happy to switch to the other option. In general, I believe that
-> the current scheme is more flexible.
+From: KP Singh <kpsingh@google.com>
 
-I don't understand the 'more flexible' part.
-The current_memcg or map_memcg approach makes it less predictable.
-pre-alloc vs not is somewhat orthogonal.
-I've grepped through the kernel where set_active_memcg() is used
-and couldn't find a conditional pattern of its usage.
-If memcg is known it's used. I couldn't come up with the use case where
-using current memcg is the more correct thing to do.
+Flavored variants of test_progs (e.g. test_progs-no_alu32) change their
+working directory to the corresponding subdirectory (e.g. no_alu32).
+Since the setup script required by test_ima (ima_setup.sh) is not
+mentioned in the dependencies, it does not get copied to these
+subdirectories and causes flavored variants of test_ima to fail.
 
-> In general we tend to charge the cgroup which actually allocates the memory
+Adding the script to TRUNNER_EXTRA_FILES ensures that the file is also
+copied to the subdirectories for the flavored variants of test_progs.
 
-that makes sense where allocation is driven by the user process.
-Like user space doing a syscall then all kernel allocation would be
-from memcg of that process.
-But bpf tracing allocations are not something that the user process requested
-the kernel to do. It's like another user space process tapped into another.
-Arguably when bpf prog is running the two user processes are active.
-One that created the map and loaded the prog and another that is being traced.
-I think there will be cases where bpf prog will request the kernel to allocate
-memory on behalf of the process being traced, but that memory should be
-given back to the process and accessible by it in some form.
-Like bpf prog could ask the kernel to grow heap of that process or
-trigger readahead.
-In such case current_memcg would be the right thing to charge.
+Fixes: 34b82d3ac105 ("bpf: Add a selftest for bpf_ima_inode_hash")
+Reported-by: Yonghong Song <yhs@fb.com>
+Suggested-by: Yonghong Song <yhs@fb.com>
+Signed-off-by: KP Singh <kpsingh@google.com>
+---
+ tools/testing/selftests/bpf/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 3d5940cd110d..894192c319fb 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -389,6 +389,7 @@ TRUNNER_EXTRA_SOURCES := test_progs.c cgroup_helpers.c trace_helpers.c	\
+ 			 network_helpers.c testing_helpers.c		\
+ 			 btf_helpers.c	flow_dissector_load.h
+ TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read				\
++		       ima_setup.sh					\
+ 		       $(wildcard progs/btf_dump_test_case_*.c)
+ TRUNNER_BPF_BUILD_RULE := CLANG_BPF_BUILD_RULE
+ TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(CLANG_CFLAGS)
+-- 
+2.29.2.454.gaff20da3a2-goog
+
