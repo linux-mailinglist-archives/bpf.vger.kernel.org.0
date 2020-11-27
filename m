@@ -2,274 +2,614 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 239492C6085
-	for <lists+bpf@lfdr.de>; Fri, 27 Nov 2020 08:36:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F74B2C608B
+	for <lists+bpf@lfdr.de>; Fri, 27 Nov 2020 08:41:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389420AbgK0HgF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Nov 2020 02:36:05 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:22174 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387909AbgK0HgE (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 27 Nov 2020 02:36:04 -0500
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AR7YmFf010797;
-        Thu, 26 Nov 2020 23:35:47 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=mQvQ0rvbzqNsMzUa1i9/6+L8ietghDzy1lzpxz0vY0E=;
- b=ARp3RaUVeWRPWipCWptrIQH8Z+qSlgDzqqSLNAqZHyMivZQtDsPbQ8CHpzLpE7HnJlH+
- NvAPDSn/lfnxTbllcu43864pR4Nh0TVnVLljFov252FzEhr2Rkf9a7P4q4evs6IfK9/D
- GF9e+XQlf8udDeiTwyJbQ9kaOZioWN3OR8U= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 352q7391ar-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 26 Nov 2020 23:35:47 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 26 Nov 2020 23:35:45 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=S+IHc4DQWia1ezWZcphsOuiIm6CPg+u8hT7NDITKVQshX3lcxbutZeHroGya2lXyu9LA5RSErU6OJa69A0Cffm2fQGXa5H+/OfUI2om/pg9n9hnGRy+NyNlsMwicTkJg+4QM/vAjTyhoOn3xn/94ScppIVdb7glBdT3m9Y7blbP9l6SMmVn9Uc9Rx4HhBI7wo8bFUomPvc0A/2w2fK93PASbGCVnt10v3LMBPrtE5l4MFv5ZutoMTBTkIoe2pGF80xwBi+j/7AkrcA2sMgk95yMscYoIG2V0WbFUXvCb982ULQ0MvTMlH0ubLhXN2pVq41piyu1IqPQkl9U8Oee0/w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mQvQ0rvbzqNsMzUa1i9/6+L8ietghDzy1lzpxz0vY0E=;
- b=L39v98b6uDrt7KMyxu0pvx0aftqxY98wVIeYzeW2s4cbZLUWm3mbysjDU1WvRHka9nqyRgNkrpoQ8PVZlrWueiUObmi4lbLD7X03nQqid5MIl+bG4YBxfjixfI8LoGwwZ3PLZhfeUtYk5Ki1jf0SAOqMmHdywDuF8K3DiayyjFwFbm7m5ukDEFSDEfKO6XxxsouqOTnoanzQ796w0LiQm71DRwcR6gdXrWErMxIeuwwISTEeu+EkpMKjVR6vmALRCBtRALjRE4odNg7EcdxRjJdrxOHwJ39+FgvAKOt78+CfNnY87FekcViqcoWFNmpneGSOls0nwM0fBSKLv4o6kg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mQvQ0rvbzqNsMzUa1i9/6+L8ietghDzy1lzpxz0vY0E=;
- b=IJqMnfaqxKvrx8C/KQ5SaIrKcFjJ3vjfiMH9GWRVb3zNvfJfVZDPTHeORI8uWPyLHSsM8nY2M73zI3Vmi5Zbnj0b6AlseUlH1YJBsW4Y+ibu4b7XJ3AH+Q1QeFYoGavnae4p8kKxiudnv2pngQa6f3uzmCWzp11+qYFVcioBLhI=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB2263.namprd15.prod.outlook.com (2603:10b6:a02:87::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.23; Fri, 27 Nov
- 2020 07:35:45 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3611.025; Fri, 27 Nov 2020
- 07:35:45 +0000
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
-To:     Florent Revest <revest@chromium.org>, <bpf@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <kpsingh@chromium.org>, <revest@google.com>,
-        <linux-kernel@vger.kernel.org>
-References: <20201126165748.1748417-1-revest@google.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <50047415-cafe-abab-a6ba-e85bb6a9b651@fb.com>
-Date:   Thu, 26 Nov 2020 23:35:42 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.0
-In-Reply-To: <20201126165748.1748417-1-revest@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2620:10d:c090:400::5:7e72]
-X-ClientProxiedBy: MWHPR14CA0018.namprd14.prod.outlook.com
- (2603:10b6:300:ae::28) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+        id S2392731AbgK0Hi1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Nov 2020 02:38:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387909AbgK0HiZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Nov 2020 02:38:25 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AB58C0613D1;
+        Thu, 26 Nov 2020 23:38:25 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id b10so2377647pfo.4;
+        Thu, 26 Nov 2020 23:38:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kRy7k9QGvrfBl+tzXtTCpFEVRuy1kNqfBKe29PJRbpM=;
+        b=CQrfPeyyj5fZcUJ9y0/T2fmg3mvyz0VFerR7CtTn+ts+viASBgHxgMPEDXbVHNBY2O
+         TOjg3TNN/yae/6/xYXHn5kV1VqEDv+uJGdrrHaVj6Wc6rLI1Dglr46rZSUiqmx/IhDBm
+         doqv6ita9vQDhDjtJnm727nR78HPTWgWUfI46MnVOdo2H4KfgHqWJQfPbDpDGdnyZ26z
+         g7+XwoXthaVn8JWRHradoUcNaB40Mub9RcXeWeRUctXbYSc6C//w1Z9WGQNf9eRgBGkS
+         qpcXYsRl34YcI3r372qEzwxrHGdKATqpz3K/E94mqQFhh7IQVdK+BuFiLwuTJoKTnvrV
+         jz/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kRy7k9QGvrfBl+tzXtTCpFEVRuy1kNqfBKe29PJRbpM=;
+        b=j17e6f/YI5JEYs8Sm/uHkLLdOd8t0pHC3Rly7SezK273w/cqEcGhMgCivO//ghguD0
+         O5MuqvbtaJpRtXRFwfqQF7Quk55HPg4CRlmztEy/fFl16vcQpsK7/zBt4F04MOTWIOZQ
+         4pDMnmTAoA7o463hYYK8kz/Pprpsh0yz0CqgYmWDrr0ONjXa59cG7iiXqMd5hfDAL+hD
+         4S3pV0uko/1Hd24HB7xialhAkpPDMsgirJcVBQSJ6kHVbDRJFlK7GVIukQ4EL3BGuHUN
+         xEwSouSGIil/sEAaWl+J6+wnqoHOMMQi+EAF6TbQ9ZHBcHinjk5oTHsJAZRt9w53lNFQ
+         wQSQ==
+X-Gm-Message-State: AOAM533npdxGMLbrbUcJr3sl1bHJjrqCX5Aw20+HVfSGOoTONtggCEua
+        cZv1z6V/F+7FehvfyAvLz0yQVWvR5CHW8vDPC3o=
+X-Google-Smtp-Source: ABdhPJyI3ZZNpVNn8LLUmyd5scxEaf2WCAEB9Ojk/him6z4uimVBhMo3ohjLi9BTbvOrxdzB74sy9gPk5qSGLTo98DE=
+X-Received: by 2002:a62:445:0:b029:196:61fc:2756 with SMTP id
+ 66-20020a6204450000b029019661fc2756mr5935248pfe.12.1606462704799; Thu, 26 Nov
+ 2020 23:38:24 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21cf::1008] (2620:10d:c090:400::5:7e72) by MWHPR14CA0018.namprd14.prod.outlook.com (2603:10b6:300:ae::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.20 via Frontend Transport; Fri, 27 Nov 2020 07:35:44 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e9ee1aa1-f87c-43f1-2d44-08d892a70d1c
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2263:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB226356C52B58563EF531D149D3F80@BYAPR15MB2263.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vMJ+fwFlsb4yPejkcJ7UmWILzPoMp//iwTtJdaKaVbPRh6ajMagSx7KkXz0Q5I1bEWRiHZp/xCXBqaH/0q7mpbymm2eDezA6TZNgDRGjwFYnuYI8E2zsJxSNPhEv9MneYERrbXM6E8HRTrbzeGadlnZS70cMTOKS54Pi9BjCZz2M7KpyxYzukS2mWQo4vCONxgvXY/YP3rLAWSJQ+dsc71yvZUteiQWUgULgCzEogzOP8JMRvzuDR81CC8BMBCbGBJehE6SR5+EBrcOCn5eWj4+1dwiWg8vwW7IFuDj4QOpBmlo34cDWtbE4bJcRDfuThV6/XBVvu5ibkkyz1X/K8GiX93jd+sbGenuOLLvnZqdCqFhvcJN0G21SEvpE+tdi
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(346002)(39860400002)(136003)(396003)(316002)(16526019)(186003)(8936002)(8676002)(478600001)(31696002)(86362001)(36756003)(83380400001)(4326008)(66946007)(52116002)(53546011)(2906002)(5660300002)(31686004)(6486002)(66476007)(66556008)(2616005)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?S3JqUDU0dWwxRDRWQlZTTUptNlN1ZkZ0RmN4WU9mL0diRVNnUklxejZKWjlU?=
- =?utf-8?B?WTRPOFZMRi9pOGYxeisxSlN1UWRqSG0va3RlMU9HbTlVdXd0UFJjVlZDemJR?=
- =?utf-8?B?RDk4cW1Fa1hRT0pwaFltSVJvYm9BL0VaWEZlTnQ5TnpUV3lnWmpCUVNZcTNl?=
- =?utf-8?B?cnV5SlNwVG84bDgzNVRFNHZIWURKWlNyRU5QeVJsZ2Rjb1lNVHVXdjZsb0Uz?=
- =?utf-8?B?bTRFNkk0Vi9RaUFnNmFkb2pIb0g0WlBvWUlDRSs2Yk5vbitJSHVHcHZmOTdh?=
- =?utf-8?B?ZkUweHNmMHhFSUMzUnFUN2luejgwdndRM0JUSmNwSTI3d21uRnIzVU1hWFNj?=
- =?utf-8?B?K2pDUWdmUXFobW1ReEZ4bTlZU3pFNzZZbXJUOEsxZEFBaFk1K3FTbmpqc1Fn?=
- =?utf-8?B?SFdzRkgxSTNUNU9KVGR1STducGJiT29BVmwreFVXb0lUVjAwM0UwekdiejRP?=
- =?utf-8?B?NERnSDNvRzhDdkZYOUJORU1XUDllQ3lvNGUrcGpSUnI0a3RTaEZGZFJJbmNk?=
- =?utf-8?B?NngvMWNsTG4zZzBoSHhDc2VycnRIMm9oUWYya0ZMaTUvazhJTjBMWlNqWk5C?=
- =?utf-8?B?c0U1MThubVVzYXBNb3IyNnNQbGdIb1B3UDRyc3lVTzRYRkVCVnA0S2M3bXRH?=
- =?utf-8?B?N21uMzJuQW5OZmpMNTV5SnkxQkRxdzZ0L3pFU2dZZWg5Q3JiaTZpSkF0UGh6?=
- =?utf-8?B?MTB2SXJwNDZYWHkyNU1SSXFNZUFRSXVaM0RLZk55eXR0aUM5ZjRob2FtV212?=
- =?utf-8?B?K1NVaDlEMXhRTkgvcnF2aVB5eUpmeXhBVExoUFI3UFBGTi80Y1JodW01TlJQ?=
- =?utf-8?B?UGxMSjlLd0xRT3N5bUxaOWF4WEgwR2sxOTJzQUNrdlI1aEVIVEdUQXBLUWZO?=
- =?utf-8?B?NWV6RmZZWnNrSERzRi9JTE9ISE5KS0dqNTJOaDZ0TzNIYUd1TXhZVmx6ZEtp?=
- =?utf-8?B?R1gwR0JOSjB5b09BS2RacmtKalBtNXVLT3FBaGVtbUxIZmczeVI0THFxYWts?=
- =?utf-8?B?OHM4am1xWGxPZ0twUHNCbEhuWFpKZEIwZU8xa0ZJNitSK3NwaXg1eEhuODRB?=
- =?utf-8?B?MXlpQjl0Zk05TWZiVEFYVzljUVZQd2RHZWoyM1Jpd1dWb2NlNnFjQ1FaLzk4?=
- =?utf-8?B?Y3ZuT2V3WFVaeWZKSUZvczBJS3pvQ0xzd1VBRUp3aDlaNlFwa0c0a3Q4Y2d3?=
- =?utf-8?B?OHBDWStvVVZHVHF1dElWdk5DNkliUUtJK0ZoR2J1YzhxaEdxREs2WTVtem8v?=
- =?utf-8?B?NEZsWW9KUjlYZTkwL3JrbXJ5R1JLU0NnL1YxelczYXhJVGNWRUxtbzR0cjRX?=
- =?utf-8?B?MzBoZGkrSHRkSU0vZmNCeElmdm85OWE0SllIR0t0bnIxaDNiN1QvcEJ1M09N?=
- =?utf-8?B?b0xrVkhlWHhYR0E9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: e9ee1aa1-f87c-43f1-2d44-08d892a70d1c
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Nov 2020 07:35:45.0998
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: J9m8ad/CCA5sC3d7pmeWGbzYTZdWKugx7ei8oMqtI5H8+yvi+h2sFp3IMzBNHoUx
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2263
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-27_04:2020-11-26,2020-11-27 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0 mlxscore=0
- impostorscore=0 priorityscore=1501 phishscore=0 bulkscore=0 suspectscore=0
- lowpriorityscore=0 mlxlogscore=999 malwarescore=0 spamscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011270045
-X-FB-Internal: deliver
+References: <20201126092248.6192-1-mariuszx.dudek@intel.com> <20201126092248.6192-3-mariuszx.dudek@intel.com>
+In-Reply-To: <20201126092248.6192-3-mariuszx.dudek@intel.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Fri, 27 Nov 2020 08:38:13 +0100
+Message-ID: <CAJ8uoz02TkAKUWgDTj7JC=u05gorKBj0duPjC8x9a1aHpGPYig@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 2/2] samples/bpf: sample application for eBPF
+ load and socket creation split
+To:     Mariusz Dudek <mariusz.dudek@gmail.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        Mariusz Dudek <mariuszx.dudek@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 11/26/20 8:57 AM, Florent Revest wrote:
-> This helper exposes the kallsyms_lookup function to eBPF tracing
-> programs. This can be used to retrieve the name of the symbol at an
-> address. For example, when hooking into nf_register_net_hook, one can
-> audit the name of the registered netfilter hook and potentially also
-> the name of the module in which the symbol is located.
-> 
-> Signed-off-by: Florent Revest <revest@google.com>
+On Thu, Nov 26, 2020 at 12:10 PM <mariusz.dudek@gmail.com> wrote:
+>
+> From: Mariusz Dudek <mariuszx.dudek@intel.com>
+>
+> Introduce a sample program to demonstrate the control and data
+> plane split. For the control plane part a new program called
+> xdpsock_ctrl_proc is introduced. For the data plane part, some code
+> was added to xdpsock_user.c to act as the data plane entity.
+>
+> Application xdpsock_ctrl_proc works as control entity with sudo
+> privileges (CAP_SYS_ADMIN and CAP_NET_ADMIN are sufficient) and the
+> extended xdpsock as data plane entity with CAP_NET_RAW capability
+> only.
+>
+> Usage example:
+>
+> sudo ./samples/bpf/xdpsock_ctrl_proc -i <interface>
+>
+> sudo ./samples/bpf/xdpsock -i <interface> -q <queue_id>
+>         -n <interval> -N -l -R
+>
+> Signed-off-by: Mariusz Dudek <mariuszx.dudek@intel.com>
 > ---
->   include/uapi/linux/bpf.h       | 16 +++++++++++++
->   kernel/trace/bpf_trace.c       | 41 ++++++++++++++++++++++++++++++++++
->   tools/include/uapi/linux/bpf.h | 16 +++++++++++++
->   3 files changed, 73 insertions(+)
-> 
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index c3458ec1f30a..670998635eac 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -3817,6 +3817,21 @@ union bpf_attr {
->    *		The **hash_algo** is returned on success,
->    *		**-EOPNOTSUP** if IMA is disabled or **-EINVAL** if
->    *		invalid arguments are passed.
-> + *
-> + * long bpf_kallsyms_lookup(u64 address, char *symbol, u32 symbol_size, char *module, u32 module_size)
-> + *	Description
-> + *		Uses kallsyms to write the name of the symbol at *address*
-> + *		into *symbol* of size *symbol_sz*. This is guaranteed to be
-> + *		zero terminated.
-> + *		If the symbol is in a module, up to *module_size* bytes of
-> + *		the module name is written in *module*. This is also
-> + *		guaranteed to be zero-terminated. Note: a module name
-> + *		is always shorter than 64 bytes.
-> + *	Return
-> + *		On success, the strictly positive length of the full symbol
-> + *		name, If this is greater than *symbol_size*, the written
-> + *		symbol is truncated.
-> + *		On error, a negative value.
->    */
->   #define __BPF_FUNC_MAPPER(FN)		\
->   	FN(unspec),			\
-> @@ -3981,6 +3996,7 @@ union bpf_attr {
->   	FN(bprm_opts_set),		\
->   	FN(ktime_get_coarse_ns),	\
->   	FN(ima_inode_hash),		\
-> +	FN(kallsyms_lookup),	\
->   	/* */
->   
->   /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index d255bc9b2bfa..9d86e20c2b13 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -17,6 +17,7 @@
->   #include <linux/error-injection.h>
->   #include <linux/btf_ids.h>
->   #include <linux/bpf_lsm.h>
-> +#include <linux/kallsyms.h>
->   
->   #include <net/bpf_sk_storage.h>
->   
-> @@ -1260,6 +1261,44 @@ const struct bpf_func_proto bpf_snprintf_btf_proto = {
->   	.arg5_type	= ARG_ANYTHING,
->   };
->   
-> +BPF_CALL_5(bpf_kallsyms_lookup, u64, address, char *, symbol, u32, symbol_size,
-> +	   char *, module, u32, module_size)
-> +{
-> +	char buffer[KSYM_SYMBOL_LEN];
-> +	unsigned long offset, size;
-> +	const char *name;
-> +	char *modname;
-> +	long ret;
+>  samples/bpf/Makefile            |   4 +-
+>  samples/bpf/xdpsock.h           |   8 ++
+>  samples/bpf/xdpsock_ctrl_proc.c | 187 ++++++++++++++++++++++++++++++++
+>  samples/bpf/xdpsock_user.c      | 146 +++++++++++++++++++++++--
+>  4 files changed, 335 insertions(+), 10 deletions(-)
+>  create mode 100644 samples/bpf/xdpsock_ctrl_proc.c
+
+Thank you for this patch set Mariusz. Really appreciated!
+
+Everything looks good, but you are in a bit of a bad luck. This patch
+does not apply anymore to the Makefile, so please rebase it on latest
+and resend. I will then ack it.
+
+Thank you for all your efforts.
+
+> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+> index aeebf5d12f32..8fb8be1c0144 100644
+> --- a/samples/bpf/Makefile
+> +++ b/samples/bpf/Makefile
+> @@ -48,6 +48,7 @@ tprogs-y += syscall_tp
+>  tprogs-y += cpustat
+>  tprogs-y += xdp_adjust_tail
+>  tprogs-y += xdpsock
+> +tprogs-y += xdpsock_ctrl_proc
+>  tprogs-y += xsk_fwd
+>  tprogs-y += xdp_fwd
+>  tprogs-y += task_fd_query
+> @@ -105,6 +106,7 @@ syscall_tp-objs := syscall_tp_user.o
+>  cpustat-objs := cpustat_user.o
+>  xdp_adjust_tail-objs := xdp_adjust_tail_user.o
+>  xdpsock-objs := xdpsock_user.o
+> +xdpsock_ctrl_proc-objs := xdpsock_ctrl_proc.o
+>  xsk_fwd-objs := xsk_fwd.o
+>  xdp_fwd-objs := xdp_fwd_user.o
+>  task_fd_query-objs := bpf_load.o task_fd_query_user.o $(TRACE_HELPERS)
+> @@ -204,7 +206,7 @@ TPROGLDLIBS_tracex4         += -lrt
+>  TPROGLDLIBS_trace_output       += -lrt
+>  TPROGLDLIBS_map_perf_test      += -lrt
+>  TPROGLDLIBS_test_overhead      += -lrt
+> -TPROGLDLIBS_xdpsock            += -pthread
+> +TPROGLDLIBS_xdpsock            += -pthread -lcap
+>  TPROGLDLIBS_xsk_fwd            += -pthread
+>
+>  # Allows pointing LLC/CLANG to a LLVM backend with bpf support, redefine on cmdline:
+> diff --git a/samples/bpf/xdpsock.h b/samples/bpf/xdpsock.h
+> index b7eca15c78cc..fd70cce60712 100644
+> --- a/samples/bpf/xdpsock.h
+> +++ b/samples/bpf/xdpsock.h
+> @@ -8,4 +8,12 @@
+>
+>  #define MAX_SOCKS 4
+>
+> +#define SOCKET_NAME "sock_cal_bpf_fd"
+> +#define MAX_NUM_OF_CLIENTS 10
 > +
-> +	name = kallsyms_lookup(address, &size, &offset, &modname, buffer);
-> +	if (!name)
-> +		return -EINVAL;
+> +#define CLOSE_CONN  1
 > +
-> +	ret = strlen(name) + 1;
-> +	if (symbol_size) {
-> +		strncpy(symbol, name, symbol_size);
-> +		symbol[symbol_size - 1] = '\0';
-> +	}
+> +typedef __u64 u64;
+> +typedef __u32 u32;
 > +
-> +	if (modname && module_size) {
-> +		strncpy(module, modname, module_size);
-> +		module[module_size - 1] = '\0';
-
-In this case, module name may be truncated and user did not get any
-indication from return value. In the helper description, it is mentioned
-that module name currently is most 64 bytes. But from UAPI perspective,
-it may be still good to return something to let user know the name
-is truncated.
-
-I do not know what is the best way to do this. One suggestion is
-to break it into two helpers, one for symbol name and another
-for module name. What is the use cases people want to get both
-symbol name and module name and is it common?
-
-> +	}
+>  #endif /* XDPSOCK_H */
+> diff --git a/samples/bpf/xdpsock_ctrl_proc.c b/samples/bpf/xdpsock_ctrl_proc.c
+> new file mode 100644
+> index 000000000000..384e62e3c6d6
+> --- /dev/null
+> +++ b/samples/bpf/xdpsock_ctrl_proc.c
+> @@ -0,0 +1,187 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright(c) 2017 - 2018 Intel Corporation. */
 > +
-> +	return ret;
-> +}
+> +#include <errno.h>
+> +#include <getopt.h>
+> +#include <libgen.h>
+> +#include <net/if.h>
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <sys/socket.h>
+> +#include <sys/un.h>
+> +#include <unistd.h>
 > +
-> +const struct bpf_func_proto bpf_kallsyms_lookup_proto = {
-> +	.func		= bpf_kallsyms_lookup,
-> +	.gpl_only	= false,
-> +	.ret_type	= RET_INTEGER,
-> +	.arg1_type	= ARG_ANYTHING,
-> +	.arg2_type	= ARG_PTR_TO_MEM,
-ARG_PTR_TO_UNINIT_MEM?
-
-> +	.arg3_type	= ARG_CONST_SIZE,
-ARG_CONST_SIZE_OR_ZERO? This is especially true for current format
-which tries to return both symbol name and module name and
-user may just want to do one of them.
-
-> +	.arg4_type	= ARG_PTR_TO_MEM,
-ARG_PTR_TO_UNINIT_MEM?
-
-> +	.arg5_type	= ARG_CONST_SIZE,
-ARG_CONST_SIZE_OR_ZERO?
-
+> +#include <bpf/bpf.h>
+> +#include <bpf/xsk.h>
+> +#include "xdpsock.h"
+> +
+> +static const char *opt_if = "";
+> +
+> +static struct option long_options[] = {
+> +       {"interface", required_argument, 0, 'i'},
+> +       {0, 0, 0, 0}
 > +};
 > +
->   const struct bpf_func_proto *
->   bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->   {
-> @@ -1356,6 +1395,8 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->   		return &bpf_per_cpu_ptr_proto;
->   	case BPF_FUNC_bpf_this_cpu_ptr:
->   		return &bpf_this_cpu_ptr_proto;
-> +	case BPF_FUNC_kallsyms_lookup:
-> +		return &bpf_kallsyms_lookup_proto;
->   	default:
->   		return NULL;
->   	}
-[...]
+> +static void usage(const char *prog)
+> +{
+> +       const char *str =
+> +               "  Usage: %s [OPTIONS]\n"
+> +               "  Options:\n"
+> +               "  -i, --interface=n    Run on interface n\n"
+> +               "\n";
+> +       fprintf(stderr, "%s\n", str);
+> +
+> +       exit(0);
+> +}
+> +
+> +static void parse_command_line(int argc, char **argv)
+> +{
+> +       int option_index, c;
+> +
+> +       opterr = 0;
+> +
+> +       for (;;) {
+> +               c = getopt_long(argc, argv, "i:",
+> +                               long_options, &option_index);
+> +               if (c == -1)
+> +                       break;
+> +
+> +               switch (c) {
+> +               case 'i':
+> +                       opt_if = optarg;
+> +                       break;
+> +               default:
+> +                       usage(basename(argv[0]));
+> +               }
+> +       }
+> +}
+> +
+> +static int send_xsks_map_fd(int sock, int fd)
+> +{
+> +       char cmsgbuf[CMSG_SPACE(sizeof(int))];
+> +       struct msghdr msg;
+> +       struct iovec iov;
+> +       int value = 0;
+> +
+> +       if (fd == -1) {
+> +               fprintf(stderr, "Incorrect fd = %d\n", fd);
+> +               return -1;
+> +       }
+> +       iov.iov_base = &value;
+> +       iov.iov_len = sizeof(int);
+> +
+> +       msg.msg_name = NULL;
+> +       msg.msg_namelen = 0;
+> +       msg.msg_iov = &iov;
+> +       msg.msg_iovlen = 1;
+> +       msg.msg_flags = 0;
+> +       msg.msg_control = cmsgbuf;
+> +       msg.msg_controllen = CMSG_LEN(sizeof(int));
+> +
+> +       struct cmsghdr *cmsg = CMSG_FIRSTHDR(&msg);
+> +
+> +       cmsg->cmsg_level = SOL_SOCKET;
+> +       cmsg->cmsg_type = SCM_RIGHTS;
+> +       cmsg->cmsg_len = CMSG_LEN(sizeof(int));
+> +
+> +       *(int *)CMSG_DATA(cmsg) = fd;
+> +       int ret = sendmsg(sock, &msg, 0);
+> +
+> +       if (ret == -1) {
+> +               fprintf(stderr, "Sendmsg failed with %s", strerror(errno));
+> +               return -errno;
+> +       }
+> +
+> +       return ret;
+> +}
+> +
+> +int
+> +main(int argc, char **argv)
+> +{
+> +       struct sockaddr_un server;
+> +       int listening = 1;
+> +       int rval, msgsock;
+> +       int ifindex = 0;
+> +       int flag = 1;
+> +       int cmd = 0;
+> +       int sock;
+> +       int err;
+> +       int xsks_map_fd;
+> +
+> +       parse_command_line(argc, argv);
+> +
+> +       ifindex = if_nametoindex(opt_if);
+> +       if (ifindex == 0) {
+> +               fprintf(stderr, "Unable to get ifindex for Interface %s. Reason:%s",
+> +                       opt_if, strerror(errno));
+> +               return -errno;
+> +       }
+> +
+> +       sock = socket(AF_UNIX, SOCK_STREAM, 0);
+> +       if (sock < 0) {
+> +               fprintf(stderr, "Opening socket stream failed: %s", strerror(errno));
+> +               return -errno;
+> +       }
+> +
+> +       server.sun_family = AF_UNIX;
+> +       strcpy(server.sun_path, SOCKET_NAME);
+> +
+> +       setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(int));
+> +
+> +       if (bind(sock, (struct sockaddr *)&server, sizeof(struct sockaddr_un))) {
+> +               fprintf(stderr, "Binding to socket stream failed: %s", strerror(errno));
+> +               return -errno;
+> +       }
+> +
+> +       listen(sock, MAX_NUM_OF_CLIENTS);
+> +
+> +       err = xsk_setup_xdp_prog(ifindex, &xsks_map_fd);
+> +       if (err) {
+> +               fprintf(stderr, "Setup of xdp program failed\n");
+> +               goto close_sock;
+> +       }
+> +
+> +       while (listening) {
+> +               msgsock = accept(sock, 0, 0);
+> +               if (msgsock == -1) {
+> +                       fprintf(stderr, "Error accepting connection: %s", strerror(errno));
+> +                       err = -errno;
+> +                       goto close_sock;
+> +               }
+> +               err = send_xsks_map_fd(msgsock, xsks_map_fd);
+> +               if (err <= 0) {
+> +                       fprintf(stderr, "Error %d sending xsks_map_fd\n", err);
+> +                       goto cleanup;
+> +               }
+> +               do {
+> +                       rval = read(msgsock, &cmd, sizeof(int));
+> +                       if (rval < 0) {
+> +                               fprintf(stderr, "Error reading stream message");
+> +                       } else {
+> +                               if (cmd != CLOSE_CONN)
+> +                                       fprintf(stderr, "Recv unknown cmd = %d\n", cmd);
+> +                               listening = 0;
+> +                               break;
+> +                       }
+> +               } while (rval > 0);
+> +       }
+> +       close(msgsock);
+> +       close(sock);
+> +       unlink(SOCKET_NAME);
+> +
+> +       /* Unset fd for given ifindex */
+> +       err = bpf_set_link_xdp_fd(ifindex, -1, 0);
+> +       if (err) {
+> +               fprintf(stderr, "Error when unsetting bpf prog_fd for ifindex(%d)\n", ifindex);
+> +               return err;
+> +       }
+> +
+> +       return 0;
+> +
+> +cleanup:
+> +       close(msgsock);
+> +close_sock:
+> +       close(sock);
+> +       unlink(SOCKET_NAME);
+> +       return err;
+> +}
+> diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
+> index 2567f0db5aca..589344fd1eb5 100644
+> --- a/samples/bpf/xdpsock_user.c
+> +++ b/samples/bpf/xdpsock_user.c
+> @@ -24,10 +24,12 @@
+>  #include <stdio.h>
+>  #include <stdlib.h>
+>  #include <string.h>
+> +#include <sys/capability.h>
+>  #include <sys/mman.h>
+>  #include <sys/resource.h>
+>  #include <sys/socket.h>
+>  #include <sys/types.h>
+> +#include <sys/un.h>
+>  #include <time.h>
+>  #include <unistd.h>
+>
+> @@ -95,6 +97,7 @@ static int opt_timeout = 1000;
+>  static bool opt_need_wakeup = true;
+>  static u32 opt_num_xsks = 1;
+>  static u32 prog_id;
+> +static bool opt_reduced_cap;
+>
+>  struct xsk_ring_stats {
+>         unsigned long rx_npkts;
+> @@ -153,6 +156,7 @@ struct xsk_socket_info {
+>
+>  static int num_socks;
+>  struct xsk_socket_info *xsks[MAX_SOCKS];
+> +int sock;
+>
+>  static unsigned long get_nsecs(void)
+>  {
+> @@ -460,6 +464,7 @@ static void *poller(void *arg)
+>  static void remove_xdp_program(void)
+>  {
+>         u32 curr_prog_id = 0;
+> +       int cmd = CLOSE_CONN;
+>
+>         if (bpf_get_link_xdp_id(opt_ifindex, &curr_prog_id, opt_xdp_flags)) {
+>                 printf("bpf_get_link_xdp_id failed\n");
+> @@ -471,6 +476,13 @@ static void remove_xdp_program(void)
+>                 printf("couldn't find a prog id on a given interface\n");
+>         else
+>                 printf("program on interface changed, not removing\n");
+> +
+> +       if (opt_reduced_cap) {
+> +               if (write(sock, &cmd, sizeof(int)) < 0) {
+> +                       fprintf(stderr, "Error writing into stream socket: %s", strerror(errno));
+> +                       exit(EXIT_FAILURE);
+> +               }
+> +       }
+>  }
+>
+>  static void int_exit(int sig)
+> @@ -853,7 +865,7 @@ static struct xsk_socket_info *xsk_configure_socket(struct xsk_umem_info *umem,
+>         xsk->umem = umem;
+>         cfg.rx_size = XSK_RING_CONS__DEFAULT_NUM_DESCS;
+>         cfg.tx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS;
+> -       if (opt_num_xsks > 1)
+> +       if (opt_num_xsks > 1 || opt_reduced_cap)
+>                 cfg.libbpf_flags = XSK_LIBBPF_FLAGS__INHIBIT_PROG_LOAD;
+>         else
+>                 cfg.libbpf_flags = 0;
+> @@ -911,6 +923,7 @@ static struct option long_options[] = {
+>         {"quiet", no_argument, 0, 'Q'},
+>         {"app-stats", no_argument, 0, 'a'},
+>         {"irq-string", no_argument, 0, 'I'},
+> +       {"reduce-cap", no_argument, 0, 'R'},
+>         {0, 0, 0, 0}
+>  };
+>
+> @@ -933,7 +946,7 @@ static void usage(const char *prog)
+>                 "  -m, --no-need-wakeup Turn off use of driver need wakeup flag.\n"
+>                 "  -f, --frame-size=n   Set the frame size (must be a power of two in aligned mode, default is %d).\n"
+>                 "  -u, --unaligned      Enable unaligned chunk placement\n"
+> -               "  -M, --shared-umem    Enable XDP_SHARED_UMEM\n"
+> +               "  -M, --shared-umem    Enable XDP_SHARED_UMEM (cannot be used with -R)\n"
+>                 "  -F, --force          Force loading the XDP prog\n"
+>                 "  -d, --duration=n     Duration in secs to run command.\n"
+>                 "                       Default: forever.\n"
+> @@ -949,6 +962,7 @@ static void usage(const char *prog)
+>                 "  -Q, --quiet          Do not display any stats.\n"
+>                 "  -a, --app-stats      Display application (syscall) statistics.\n"
+>                 "  -I, --irq-string     Display driver interrupt statistics for interface associated with irq-string.\n"
+> +               "  -R, --reduce-cap     Use reduced capabilities (cannot be used with -M)\n"
+>                 "\n";
+>         fprintf(stderr, str, prog, XSK_UMEM__DEFAULT_FRAME_SIZE,
+>                 opt_batch_size, MIN_PKT_SIZE, MIN_PKT_SIZE,
+> @@ -964,7 +978,7 @@ static void parse_command_line(int argc, char **argv)
+>         opterr = 0;
+>
+>         for (;;) {
+> -               c = getopt_long(argc, argv, "Frtli:q:pSNn:czf:muMd:b:C:s:P:xQaI:",
+> +               c = getopt_long(argc, argv, "Frtli:q:pSNn:czf:muMd:b:C:s:P:xQaI:R",
+>                                 long_options, &option_index);
+>                 if (c == -1)
+>                         break;
+> @@ -1063,6 +1077,9 @@ static void parse_command_line(int argc, char **argv)
+>                                 usage(basename(argv[0]));
+>                         }
+>
+> +                       break;
+> +               case 'R':
+> +                       opt_reduced_cap = true;
+>                         break;
+>                 default:
+>                         usage(basename(argv[0]));
+> @@ -1085,6 +1102,11 @@ static void parse_command_line(int argc, char **argv)
+>                         opt_xsk_frame_size);
+>                 usage(basename(argv[0]));
+>         }
+> +
+> +       if (opt_reduced_cap && opt_num_xsks > 1) {
+> +               fprintf(stderr, "ERROR: -M and -R cannot be used together\n");
+> +               usage(basename(argv[0]));
+> +       }
+>  }
+>
+>  static void kick_tx(struct xsk_socket_info *xsk)
+> @@ -1461,26 +1483,117 @@ static void enter_xsks_into_map(struct bpf_object *obj)
+>         }
+>  }
+>
+> +static int recv_xsks_map_fd_from_ctrl_node(int sock, int *_fd)
+> +{
+> +       char cms[CMSG_SPACE(sizeof(int))];
+> +       struct cmsghdr *cmsg;
+> +       struct msghdr msg;
+> +       struct iovec iov;
+> +       int value;
+> +       int len;
+> +
+> +       iov.iov_base = &value;
+> +       iov.iov_len = sizeof(int);
+> +
+> +       msg.msg_name = 0;
+> +       msg.msg_namelen = 0;
+> +       msg.msg_iov = &iov;
+> +       msg.msg_iovlen = 1;
+> +       msg.msg_flags = 0;
+> +       msg.msg_control = (caddr_t)cms;
+> +       msg.msg_controllen = sizeof(cms);
+> +
+> +       len = recvmsg(sock, &msg, 0);
+> +
+> +       if (len < 0) {
+> +               fprintf(stderr, "Recvmsg failed length incorrect.\n");
+> +               return -EINVAL;
+> +       }
+> +
+> +       if (len == 0) {
+> +               fprintf(stderr, "Recvmsg failed no data\n");
+> +               return -EINVAL;
+> +       }
+> +
+> +       cmsg = CMSG_FIRSTHDR(&msg);
+> +       *_fd = *(int *)CMSG_DATA(cmsg);
+> +
+> +       return 0;
+> +}
+> +
+> +static int
+> +recv_xsks_map_fd(int *xsks_map_fd)
+> +{
+> +       struct sockaddr_un server;
+> +       int err;
+> +
+> +       sock = socket(AF_UNIX, SOCK_STREAM, 0);
+> +       if (sock < 0) {
+> +               fprintf(stderr, "Error opening socket stream: %s", strerror(errno));
+> +               return errno;
+> +       }
+> +
+> +       server.sun_family = AF_UNIX;
+> +       strcpy(server.sun_path, SOCKET_NAME);
+> +
+> +       if (connect(sock, (struct sockaddr *)&server, sizeof(struct sockaddr_un)) < 0) {
+> +               close(sock);
+> +               fprintf(stderr, "Error connecting stream socket: %s", strerror(errno));
+> +               return errno;
+> +       }
+> +
+> +       err = recv_xsks_map_fd_from_ctrl_node(sock, xsks_map_fd);
+> +       if (err) {
+> +               fprintf(stderr, "Error %d recieving fd\n", err);
+> +               return err;
+> +       }
+> +       return 0;
+> +}
+> +
+>  int main(int argc, char **argv)
+>  {
+> +       struct __user_cap_header_struct hdr = { _LINUX_CAPABILITY_VERSION_3, 0 };
+> +       struct __user_cap_data_struct data[2] = { { 0 } };
+>         struct rlimit r = {RLIM_INFINITY, RLIM_INFINITY};
+>         bool rx = false, tx = false;
+>         struct xsk_umem_info *umem;
+>         struct bpf_object *obj;
+> +       int xsks_map_fd = 0;
+>         pthread_t pt;
+>         int i, ret;
+>         void *bufs;
+>
+>         parse_command_line(argc, argv);
+>
+> -       if (setrlimit(RLIMIT_MEMLOCK, &r)) {
+> -               fprintf(stderr, "ERROR: setrlimit(RLIMIT_MEMLOCK) \"%s\"\n",
+> -                       strerror(errno));
+> -               exit(EXIT_FAILURE);
+> +       if (opt_reduced_cap) {
+> +               if (capget(&hdr, data)  < 0)
+> +                       fprintf(stderr, "Error getting capabilities\n");
+> +
+> +               data->effective &= CAP_TO_MASK(CAP_NET_RAW);
+> +               data->permitted &= CAP_TO_MASK(CAP_NET_RAW);
+> +
+> +               if (capset(&hdr, data) < 0)
+> +                       fprintf(stderr, "Setting capabilities failed\n");
+> +
+> +               if (capget(&hdr, data)  < 0) {
+> +                       fprintf(stderr, "Error getting capabilities\n");
+> +               } else {
+> +                       fprintf(stderr, "Capabilities EFF %x Caps INH %x Caps Per %x\n",
+> +                               data[0].effective, data[0].inheritable, data[0].permitted);
+> +                       fprintf(stderr, "Capabilities EFF %x Caps INH %x Caps Per %x\n",
+> +                               data[1].effective, data[1].inheritable, data[1].permitted);
+> +               }
+> +       } else {
+> +               if (setrlimit(RLIMIT_MEMLOCK, &r)) {
+> +                       fprintf(stderr, "ERROR: setrlimit(RLIMIT_MEMLOCK) \"%s\"\n",
+> +                               strerror(errno));
+> +                       exit(EXIT_FAILURE);
+> +               }
+> +
+> +               if (opt_num_xsks > 1)
+> +                       load_xdp_program(argv, &obj);
+>         }
+>
+> -       if (opt_num_xsks > 1)
+> -               load_xdp_program(argv, &obj);
+>
+>         /* Reserve memory for the umem. Use hugepages if unaligned chunk mode */
+>         bufs = mmap(NULL, NUM_FRAMES * opt_xsk_frame_size,
+> @@ -1512,6 +1625,21 @@ int main(int argc, char **argv)
+>         if (opt_num_xsks > 1 && opt_bench != BENCH_TXONLY)
+>                 enter_xsks_into_map(obj);
+>
+> +       if (opt_reduced_cap) {
+> +               ret = recv_xsks_map_fd(&xsks_map_fd);
+> +               if (ret) {
+> +                       fprintf(stderr, "Error %d receiving xsks_map_fd\n", ret);
+> +                       exit_with_error(ret);
+> +               }
+> +               if (xsks[0]->xsk) {
+> +                       ret = xsk_socket__update_xskmap(xsks[0]->xsk, xsks_map_fd);
+> +                       if (ret) {
+> +                               fprintf(stderr, "Update of BPF map failed(%d)\n", ret);
+> +                               exit_with_error(ret);
+> +                       }
+> +               }
+> +       }
+> +
+>         signal(SIGINT, int_exit);
+>         signal(SIGTERM, int_exit);
+>         signal(SIGABRT, int_exit);
+> --
+> 2.20.1
+>
