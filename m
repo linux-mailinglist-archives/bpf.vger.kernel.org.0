@@ -2,310 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 182832C5F32
-	for <lists+bpf@lfdr.de>; Fri, 27 Nov 2020 05:19:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD63E2C5F3B
+	for <lists+bpf@lfdr.de>; Fri, 27 Nov 2020 05:29:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729068AbgK0ETL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Nov 2020 23:19:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52368 "EHLO
+        id S2388818AbgK0E33 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Nov 2020 23:29:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727983AbgK0ETK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Nov 2020 23:19:10 -0500
+        with ESMTP id S1726471AbgK0E33 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Nov 2020 23:29:29 -0500
 Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BD77C0613D1;
-        Thu, 26 Nov 2020 20:19:10 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id 2so3365593ybc.12;
-        Thu, 26 Nov 2020 20:19:10 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA702C0613D1;
+        Thu, 26 Nov 2020 20:29:27 -0800 (PST)
+Received: by mail-yb1-xb42.google.com with SMTP id e81so3418408ybc.1;
+        Thu, 26 Nov 2020 20:29:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=v1v/7QB/73a02EkYhyrLOExQ1ofz9RfgOD57ZabaMhQ=;
-        b=OM3g8Zu6ozAGrxMvuZ8EshBs4jcvo0AICM+sSnw95O2eRlly/a2BLZaq2N76u76ag7
-         HGFr3cl5IT+fa+icqR6awt78ASsvniOe8M8XRS6Owguw3ae4dlQCUQEOO0CzNSobXl5V
-         6lQG0fLiODPLdJWDSmPCdimpZHsFf9huq1E7AU6yjvqkzqUc5hpsJYVJHpKRAqDcXlhk
-         FBoxmFfrpQLFZt+smvrhvpW3DHqQmGtHTkyeKp+xspwfqVbxLfeB7VBMCOHBAfxrc06V
-         IArNb27lCbBJxDn17GKhs0tHwNZJVwq+1wlSGVoO6w+ULePR1nYJTg++qO94L4RDfrT2
-         pQwg==
+        bh=P0sst/oLXauwchLbbWSFPIHcHhE+8Wlx7EhyzRwqTgg=;
+        b=lfV8bHfyXaSW/tBhKP+qnSwXnl3RvdmvehplmMQvlmcGtWAnsjHAtGl4Ues+xHBZXW
+         xi7OVyPms1h6srdW4Wgw3hvTmfAYWa2WQIXVZsGS+wsxzPhd+0GIdrrGBga+fqPJYu9l
+         mKrWctYPC8IMCnG5+RPc9R/yvDxIKQkd1EwMCstjPutiN/D7nX+5/PU8Q1FzcjCS1VxO
+         rPdRfgsZO/rcutFm8kEZooYTcII+wytrxbLiv23w1RZyPZdf85Q3G1xoS7vNGyOn0dp5
+         cS9aKI13C1jFE/1eEr9pYPWRRqyk1nilEPsL8s04o4pxVd4CvGXcJniwaCWN/oQPv6LW
+         3+CA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=v1v/7QB/73a02EkYhyrLOExQ1ofz9RfgOD57ZabaMhQ=;
-        b=XAEQgEv3Rzab3xabAv/b5HzXCvyHrcqls7K4ocLijOlSp3053KaYgcEHKzKXSJPs6J
-         DmLptgJB6x4HcSDs+10zMGcq6zE7mqYlg0q1k3/SyoGlia8jZabhBS0STGDN1PcCsjDb
-         zkd0FXYnDDQ3xK8TepUyJFLdpXXPyKYXZyDVRU7TXfQAHSdJWmK1KkBT7+E1z2EonBvz
-         CU/CVz4QoZidKnoX8Vn7xlrtMmM4BglLq76kJ7WsSk1X+PuutgWkxUxfB5Mq5IbwoH1z
-         2GyJd3kUl+jxWDff9Ut9q9rA944764bjKTlCHYFALCj4/V+F3ivmmTRiwMLv/pIPMi2E
-         hodA==
-X-Gm-Message-State: AOAM5300c03+GmK+1WqCzm+pEXsWGNQyATdnDf+TFwLTJydGpFlQNUJ1
-        atSDjZ2nC5pMuwR8hGesiWfV356zphfSRto4eBg=
-X-Google-Smtp-Source: ABdhPJy83oPGuxAf7PejMIFItqX98BZB73FvDOlzLzbK/auGtOzlgBQL0sukogFvran277UFqZ7jHnyWoo5gszWzotY=
-X-Received: by 2002:a25:c7c6:: with SMTP id w189mr6990578ybe.403.1606450749777;
- Thu, 26 Nov 2020 20:19:09 -0800 (PST)
+        bh=P0sst/oLXauwchLbbWSFPIHcHhE+8Wlx7EhyzRwqTgg=;
+        b=ffilBKB96gJ9xF/k2pR5cNqkGp0vlQo+sVfE5AL2uLxoDRSDbW9KOqiigPR4xEw77H
+         kwzcXp3haQRXZ/OOTuJaSJEv1KQIhSSPybhOiJrnSX64J4fh76XWF0GdJbG2znrzd7if
+         av06bzMNstaLXPVgSfIPYD+zjwSaurqJv9WamYGZFcmPdATkasS4t1jxsGzN5NvMocsX
+         FAktYCLAGyAZXUHj4TBc0ASk0c5PmOdjCvNtnbCbHGq/WBoQPtIV7qQWP4+alitl8aK3
+         6bmJmxdvCi1s1aXp7sFAokh34cdRfZYOkGV6aLcaSj3kzDdS4ZC1cimvqZq+eWsHBi8Y
+         UhhQ==
+X-Gm-Message-State: AOAM5322uA2LV1qdDV9KwffKQU2Gdrp9QXk2xB12DLeZ2kwLetIARBS+
+        azlk/VERhASYIoQ9yTAzX9yYOmTHjgPiLllr7IGnJz/ZGJoGWA==
+X-Google-Smtp-Source: ABdhPJzedDa3IOIQ9/tQ0Wlf1NyhV/rfNPfXbEWXwZYUNY8KqalVvkHoWXgyyIvYBgTHrlHaXGrCltx5MdlHjWWCb8I=
+X-Received: by 2002:a25:df82:: with SMTP id w124mr8237206ybg.347.1606451367066;
+ Thu, 26 Nov 2020 20:29:27 -0800 (PST)
 MIME-Version: 1.0
-References: <20201124161919.2152187-1-jolsa@kernel.org> <20201124161919.2152187-3-jolsa@kernel.org>
-In-Reply-To: <20201124161919.2152187-3-jolsa@kernel.org>
+References: <20201124151210.1081188-1-kpsingh@chromium.org> <20201124151210.1081188-4-kpsingh@chromium.org>
+In-Reply-To: <20201124151210.1081188-4-kpsingh@chromium.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 26 Nov 2020 20:18:58 -0800
-Message-ID: <CAEf4BzbbpLkJth5HYh=a6V1+uPAcPpUTsi=JHQrOeHF5f2xALg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] btf_encoder: Detect kernel module ftrace addresses
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+Date:   Thu, 26 Nov 2020 20:29:16 -0800
+Message-ID: <CAEf4BzbDKX8+AaueNngEeGnWQLfN0Fy+jgcxrwbeLeVfVh0E9Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/3] bpf: Add a selftest for bpf_ima_inode_hash
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     James Morris <jmorris@namei.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, linux-security-module@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Hao Luo <haoluo@google.com>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        Mimi Zohar <zohar@linux.ibm.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 8:22 AM Jiri Olsa <jolsa@kernel.org> wrote:
+On Tue, Nov 24, 2020 at 7:16 AM KP Singh <kpsingh@chromium.org> wrote:
 >
-> Add support to detect kernel module dtrace addresses and use
-> it as filter for functions.
-
-typo: dtrace -> ftrace?
-
+> From: KP Singh <kpsingh@google.com>
 >
-> For kernel modules the ftrace addresses are stored in __mcount_loc
-> section. Adding the code that detects this section and reads
-> its data into array, which is then processed as filter by
-> current code.
+> The test does the following:
 >
-> There's one tricky point with kernel modules wrt Elf object,
-> which we get from dwfl_module_getelf function. This function
-> performs all possible relocations, including __mcount_loc
-> section.
+> - Mounts a loopback filesystem and appends the IMA policy to measure
+>   executions only on this file-system. Restricting the IMA policy to a
+>   particular filesystem prevents a system-wide IMA policy change.
+> - Executes an executable copied to this loopback filesystem.
+> - Calls the bpf_ima_inode_hash in the bprm_committed_creds hook and
+>   checks if the call succeeded and checks if a hash was calculated.
 >
-> So addrs array contains relocated values, which we need take
-> into account when we compare them to functions values which
-> are relative to their sections.
+> The test shells out to the added ima_setup.sh script as the setup is
+> better handled in a shell script and is more complicated to do in the
+> test program or even shelling out individual commands from C.
 >
-> With this change for example for xfs.ko module in my kernel
-> config I'm getting slightly bigger number of functions:
+> The list of required configs (i.e. IMA, SECURITYFS,
+> IMA_{WRITE,READ}_POLICY) for running this test are also updated.
 >
->   before: 2429, after: 2615
->
-> Because of the malfunction DWARF's declaration tag, the
-> 'before' functions contain also functions that are not
-> part of the module. The 'after' functions contain only
-> functions that are traceable and part of xfs.ko.
->
-> Despite filtering out some declarations, this change
-> also adds static functions, hence the total number
-> of functions is bigger.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> Signed-off-by: KP Singh <kpsingh@google.com>
 > ---
->  btf_encoder.c | 85 +++++++++++++++++++++++++++++++++++++++++++++++++--
->  dutil.c       | 16 ++++++++++
->  dutil.h       |  2 ++
->  3 files changed, 100 insertions(+), 3 deletions(-)
+>  tools/testing/selftests/bpf/config            |  4 +
+>  tools/testing/selftests/bpf/ima_setup.sh      | 80 +++++++++++++++++++
+>  .../selftests/bpf/prog_tests/test_ima.c       | 74 +++++++++++++++++
+>  tools/testing/selftests/bpf/progs/ima.c       | 28 +++++++
+>  4 files changed, 186 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/ima_setup.sh
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/test_ima.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/ima.c
 >
-> diff --git a/btf_encoder.c b/btf_encoder.c
-> index 467c4657b2c0..e6114c10ad01 100644
-> --- a/btf_encoder.c
-> +++ b/btf_encoder.c
-> @@ -36,6 +36,7 @@ struct funcs_layout {
->  struct elf_function {
->         const char      *name;
->         unsigned long    addr;
-> +       unsigned long    sh_addr;
->         bool             generated;
->  };
->
-> @@ -65,11 +66,11 @@ static void delete_functions(void)
->  static int collect_function(struct btf_elf *btfe, GElf_Sym *sym)
->  {
->         struct elf_function *new;
-> +       static GElf_Shdr sh;
-> +       static int last_idx;
->
->         if (elf_sym__type(sym) != STT_FUNC)
->                 return 0;
-> -       if (!elf_sym__value(sym))
-> -               return 0;
->
->         if (functions_cnt == functions_alloc) {
->                 functions_alloc = max(1000, functions_alloc * 3 / 2);
-> @@ -84,8 +85,17 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym)
->                 functions = new;
->         }
->
-> +       if (elf_sym__section(sym) != last_idx) {
-> +               int idx = elf_sym__section(sym);
 
-nit: elf_sym__section() called twice, maybe have sec_idx local variable instead?
+[...]
 
+> +cleanup() {
+> +        local tmp_dir="$1"
+> +        local mount_img="${tmp_dir}/test.img"
+> +        local mount_dir="${tmp_dir}/mnt"
 > +
-> +               if (!elf_section_by_idx(btfe->elf, &sh, idx))
-> +                       return 0;
+> +        local loop_devices=$(losetup -j ${mount_img} -O NAME --noheadings)
 
-isn't this an error and shouldn't return 0?..
+libbpf and kernel-patches CIs are using BusyBox environment which has
+losetup that doesn't support -j option. Is there some way to work
+around that? What we have is this:
 
-> +               last_idx = idx;
-> +       }
+BusyBox v1.31.1 () multi-call binary.
+
+Usage: losetup [-rP] [-o OFS] {-f|LOOPDEV} FILE: associate loop devices
+
+    losetup -c LOOPDEV: reread file size
+
+    losetup -d LOOPDEV: disassociate
+
+    losetup -a: show status
+
+    losetup -f: show next free loop device
+
+    -o OFS    Start OFS bytes into FILE
+
+    -P    Scan for partitions
+
+    -r    Read-only
+
+    -f    Show/use next free loop device
+
+
+> +        for loop_dev in "${loop_devices}"; do
+> +                losetup -d $loop_dev
+> +        done
 > +
->         functions[functions_cnt].name = elf_sym__name(sym, btfe->symtab);
->         functions[functions_cnt].addr = elf_sym__value(sym);
-> +       functions[functions_cnt].sh_addr = sh.sh_addr;
->         functions[functions_cnt].generated = false;
->         functions_cnt++;
->         return 0;
-> @@ -146,10 +156,60 @@ static int get_vmlinux_addrs(struct btf_elf *btfe, struct funcs_layout *fl,
->         return 0;
->  }
->
-> +static int
-> +get_kmod_addrs(struct btf_elf *btfe, unsigned long **paddrs, unsigned long *pcount)
-> +{
-> +       unsigned long *addrs, count;
-> +       GElf_Shdr shdr_mcount;
-> +       Elf_Data *data;
-> +       Elf_Scn *sec;
-> +
-> +       /* get __mcount_loc */
-> +       sec = elf_section_by_name(btfe->elf, &btfe->ehdr, &shdr_mcount,
-> +                                 "__mcount_loc", NULL);
-> +       if (!sec) {
-> +               if (btf_elf__verbose) {
-> +                       printf("%s: '%s' doesn't have __mcount_loc section\n", __func__,
-> +                              btfe->filename);
-> +               }
-
-
-nit: unnecessary {} for single-statement if
-
-> +               return 0;
-> +       }
-> +
-> +       data = elf_getdata(sec, NULL);
-> +       if (!data) {
-> +               fprintf(stderr, "Failed to data for __mcount_loc section.\n");
-> +               return -1;
-> +       }
-> +
-> +       addrs = malloc(data->d_size);
-> +       if (!addrs) {
-> +               fprintf(stderr, "Failed to allocate memory for ftrace addresses.\n");
-> +               return -1;
-> +       }
-> +
-> +       count = data->d_size / sizeof(unsigned long);
-
-not sure this is safe to do, e.g., if we are processing ELF of
-different bitness (32 vs 64). Maybev we can get the size of an entry
-from sh_entsize?
-
-
-> +       memcpy(addrs, data->d_buf, data->d_size);
-> +
-> +       /*
-> +        * We get Elf object from dwfl_module_getelf function,
-> +        * which performs all possible relocations, including
-> +        * __mcount_loc section.
-> +        *
-> +        * So addrs array now contains relocated values, which
-> +        * we need take into account when we compare them to
-> +        * functions values, see comment in setup_functions
-> +        * function.
-> +        */
-> +       *paddrs = addrs;
-> +       *pcount = count;
-> +       return 0;
+> +        umount ${mount_dir}
+> +        rm -rf ${tmp_dir}
 > +}
 > +
->  static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
->  {
->         unsigned long *addrs = NULL, count, i;
->         int functions_valid = 0;
-> +       bool kmod = false;
->
->         /*
->          * Check if we are processing vmlinux image and
-> @@ -158,6 +218,16 @@ static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
->         if (get_vmlinux_addrs(btfe, fl, &addrs, &count))
->                 return -1;
->
-> +       /*
-> +        * Check if we are processing kernel module and
-> +        * get mcount data if it's detected.
-> +        */
-> +       if (!addrs) {
-> +               if (get_kmod_addrs(btfe, &addrs, &count))
-> +                       return -1;
-> +               kmod = true;
-> +       }
-> +
->         if (!addrs) {
->                 if (btf_elf__verbose)
->                         printf("ftrace symbols not detected, falling back to DWARF data\n");
-> @@ -174,9 +244,18 @@ static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
->          */
->         for (i = 0; i < functions_cnt; i++) {
->                 struct elf_function *func = &functions[i];
-> +               /*
-> +                * For vmlinux image both addrs[x] and functions[x]::addr
-> +                * values are final address and are comparable.
-> +                *
-> +                * For kernel module addrs[x] is final address, but
-> +                * functions[x]::addr is relative address within section
-> +                * and needs to be relocated by adding sh_addr.
-> +                */
-> +               unsigned long addr = kmod ? func->addr + func->sh_addr : func->addr;
->
->                 /* Make sure function is within ftrace addresses. */
-> -               if (bsearch(&func->addr, addrs, count, sizeof(addrs[0]), addrs_cmp)) {
-> +               if (bsearch(&addr, addrs, count, sizeof(addrs[0]), addrs_cmp)) {
->                         /*
->                          * We iterate over sorted array, so we can easily skip
->                          * not valid item and move following valid field into
-> diff --git a/dutil.c b/dutil.c
-> index f7b853f0660d..5ebbd2f9c84c 100644
-> --- a/dutil.c
-> +++ b/dutil.c
-> @@ -196,6 +196,22 @@ Elf_Scn *elf_section_by_name(Elf *elf, GElf_Ehdr *ep,
->         return sec;
->  }
->
-> +Elf_Scn *elf_section_by_idx(Elf *elf, GElf_Shdr *shp, int idx)
 
-
-there is elf_getscn(), which does the same?
-
-> +{
-> +       Elf_Scn *sec = NULL;
-> +       size_t cnt = 1;
-> +
-> +       while ((sec = elf_nextscn(elf, sec)) != NULL) {
-> +               if (cnt == idx) {
-> +                       gelf_getshdr(sec, shp);
-> +                       return sec;
-> +               }
-> +               ++cnt;
-> +       }
-> +
-> +       return NULL;
-> +}
-> +
->  char *strlwr(char *s)
->  {
->         int len = strlen(s), i;
-> diff --git a/dutil.h b/dutil.h
-> index 676770d5d5c9..0838dff2d679 100644
-> --- a/dutil.h
-> +++ b/dutil.h
-> @@ -324,6 +324,8 @@ void *zalloc(const size_t size);
->  Elf_Scn *elf_section_by_name(Elf *elf, GElf_Ehdr *ep,
->                              GElf_Shdr *shp, const char *name, size_t *index);
->
-> +Elf_Scn *elf_section_by_idx(Elf *elf, GElf_Shdr *shp, int idx);
-> +
->  #ifndef SHT_GNU_ATTRIBUTES
->  /* Just a way to check if we're using an old elfutils version */
->  static inline int elf_getshdrstrndx(Elf *elf, size_t *dst)
-> --
-> 2.26.2
->
+[...]
