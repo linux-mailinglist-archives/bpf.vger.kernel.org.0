@@ -2,135 +2,185 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B24182C5F0C
-	for <lists+bpf@lfdr.de>; Fri, 27 Nov 2020 04:40:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46B5A2C5F23
+	for <lists+bpf@lfdr.de>; Fri, 27 Nov 2020 05:05:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388695AbgK0Dkh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 26 Nov 2020 22:40:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46496 "EHLO
+        id S2389089AbgK0EFX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 26 Nov 2020 23:05:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727037AbgK0Dkh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 26 Nov 2020 22:40:37 -0500
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 856ACC0613D1;
-        Thu, 26 Nov 2020 19:40:37 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id s8so3298830yba.13;
-        Thu, 26 Nov 2020 19:40:37 -0800 (PST)
+        with ESMTP id S2389083AbgK0EFX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 26 Nov 2020 23:05:23 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDF29C0613D1;
+        Thu, 26 Nov 2020 20:05:22 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id k65so3366124ybk.5;
+        Thu, 26 Nov 2020 20:05:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=kD1Le3QJWXJqjnlpHF5DqUqQjm8CPmlbUAqsXxlecIM=;
-        b=fbDYnxgsTRbYk0E+2obbFZnlctUNUiShnxWc5rz/2XL8kO16qlKOv5Tj8kZ1LAfa7w
-         F4DRvKyE6Miclh9ELGJCqzahrndQPas5iQV3azcbP/NBWiv8ft9i0fGCNMWJHh3I55C1
-         6brJE/KKLFPk0TDLIFSg+sZco7y4X8/tTsTyYdwkPzXXhIz6iUNrRAuSVrbP8NpgtV60
-         DN3h0N35BIwZ4E6Z+6OMmnhp6oHyEHdKgI1khlP+4vKTDJQwGPIEXS5nVq93FGXEMyf8
-         lu5GtY7bdkzUMX6OVJswcwqZi5jTr50CIdYnPEkGJfennbct11xjuaSlN3a9SvaRylQc
-         EVOg==
+        bh=nk88nMCwtV2wKVRfqKB4l2mUalEozUtlPPFEGyZhWJ8=;
+        b=hWfCEjlQOI5GEvk/BvDBJjvfo1pGG1Pm/+0L/vHHUhy/rsVNF1AvPaTvxBLmt+UN8c
+         /ZHrl7MIzG1YJRi5UTVorBmKC+MruA/K4EyTM9DSCWLVWt/1FxyUSKTFbDHCC25VVvVK
+         nYw8yPR5LsRa6sdLdDKSrf7MKD/LrNeU5d5kSEN/fK0y2ghzfa7mBJHwUh0BKjvFk265
+         Q6Ev++M4pPVAAsosoY6z/ES8FpWePXOcrk2IzEikORiMEb15+g26mgGOxHCF/UTPiH81
+         F0GCXnjVeUvRJnHwOjQjovk7MCbH0So1iIk8QYR5ufn1nvgsBUWmnNO5JYVCehYG8IpV
+         GTvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=kD1Le3QJWXJqjnlpHF5DqUqQjm8CPmlbUAqsXxlecIM=;
-        b=Eab1q7Vi3WORTcgvIF/D3Q9il4F5lxpQupNZ7Ub2hPFUlnhBnoRvQYIw/v3Oq0Qrlc
-         kUWdP9t6U4xZZGdyI7I6aC0jAgXOR/9A1ltaI99Enh6KwihmKSWPdZuDn9Su+BLOVt/Z
-         +C2evPixJZbBtNPzzhBKDw1RQ4Gl15cRv9XWlv2PV38Iq/OAnUAenAG2ggGoDv7iObBs
-         Pt8tPQtISQBMB8U1Pm/LZwzw/2FLEWSqHJzOj8PraS0mKJ6dOrVQjcKREnX/L6BC5+Wv
-         nNQA29R7i0cIhNiZR+GUN4pFRNm1AgQLHTN6QbiQfxWa4Ld+o7/r/PcJhpvrwQtN54rx
-         7q2w==
-X-Gm-Message-State: AOAM530flRTacG8XB95GNHuOZlNG0DQdYitfMpaXtjM4UYOoBkgBm44V
-        V2a3HN4EavxFdmTvI5UrPkGFekHU83VWgbJrRKA=
-X-Google-Smtp-Source: ABdhPJwjbVaqxohDbkXAKrhcutlfZXzG38k6+pPHJJkky3EINVWRkk+4LP4Qa5xfgvnKSqx7nSN+397qgQIeluyMRB0=
-X-Received: by 2002:a25:2845:: with SMTP id o66mr9369163ybo.260.1606448436834;
- Thu, 26 Nov 2020 19:40:36 -0800 (PST)
+        bh=nk88nMCwtV2wKVRfqKB4l2mUalEozUtlPPFEGyZhWJ8=;
+        b=gq6zEey0LPzPlPhkfjwB3ej0vNUa9xDm6H2zHm+M6oRa191WBpxbSeXccFFb3ik5u5
+         iXrDdZkN/ruxnO99jPROh5VpiCTKcq1doDQ+xLVGft6OZB6x/n6hWHGmIyQwnYL//Vpd
+         7FBPYwxxmtPaI0vtrPCv3NY3rk51VkFtIKz/BHA66lETIdFZfPqUqFZs1PfA+p6308fs
+         hNkJRZIO9QxXJ+vTAG8djnafAr3OSMqfgAhKaocmw6uQpjIsCoCiN66hr9LzTe/4N5BC
+         bgt5nc883690yr2CcxEoMkexVyOmgNtQr9wFE4DoF3ctvzvX3CsjkZkLHEfmnO16sVAz
+         JhEg==
+X-Gm-Message-State: AOAM533ACCwoWVJldGUQ013F3bF344Fqm17xXe+Tbs2xMQrXQH6xN9Mv
+        sGrTvwKg1aCI+XrOLQoWwk3u8t+GUhCeVsQ3sMQ=
+X-Google-Smtp-Source: ABdhPJxBFKrbuYhxkwpJkVZkXrjZyfi6IJkwzfb0pdI+VGOqinblW/vWEUkRU4HWHjHacL0GwQ8ZshVl91qgFviYuLA=
+X-Received: by 2002:a25:7717:: with SMTP id s23mr9371626ybc.459.1606449922061;
+ Thu, 26 Nov 2020 20:05:22 -0800 (PST)
 MIME-Version: 1.0
-References: <20201124090310.24374-1-danieltimlee@gmail.com> <20201124090310.24374-2-danieltimlee@gmail.com>
-In-Reply-To: <20201124090310.24374-2-danieltimlee@gmail.com>
+References: <20201124161919.2152187-1-jolsa@kernel.org> <20201124161919.2152187-2-jolsa@kernel.org>
+In-Reply-To: <20201124161919.2152187-2-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 26 Nov 2020 19:40:25 -0800
-Message-ID: <CAEf4Bzby0AwzKfKwd5ZKXaEg1a1hpEfoPsqVLwPQVr89nAAxEA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/7] samples: bpf: refactor hbm program with libbpf
-To:     "Daniel T. Lee" <danieltimlee@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+Date:   Thu, 26 Nov 2020 20:05:11 -0800
+Message-ID: <CAEf4BzbjTYevuOU7L0LoT0wL2Jb4fnb5LRXEwo_V52npGgvd8Q@mail.gmail.com>
+Subject: Re: [PATCH 1/2] btf_encoder: Factor filter_functions function
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, brakmo <brakmo@fb.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        David Ahern <dsa@cumulusnetworks.com>,
-        Yonghong Song <yhs@fb.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Ira Weiny <ira.weiny@intel.com>, Thomas Graf <tgraf@suug.ch>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Xdp <xdp-newbies@vger.kernel.org>
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Hao Luo <haoluo@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 1:03 AM Daniel T. Lee <danieltimlee@gmail.com> wrote:
+On Tue, Nov 24, 2020 at 8:22 AM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> This commit refactors the existing cgroup programs with libbpf
-> bpf loader. Since bpf_program__attach doesn't support cgroup program
-> attachment, this explicitly attaches cgroup bpf program with
-> bpf_program__attach_cgroup(bpf_prog, cg1).
+> Reorder the filter_functions function so we can add
+> processing of kernel modules in following patch.
 >
-> Also, to change attach_type of bpf program, this uses libbpf's
-> bpf_program__set_expected_attach_type helper to switch EGRESS to
-> INGRESS. To keep bpf program attached to the cgroup hierarchy even
-> after the exit, this commit uses the BPF_LINK_PINNING to pin the link
-> attachment even after it is closed.
+> There's no functional change intended.
 >
-> Besides, this program was broken due to the typo of BPF MAP definition.
-> But this commit solves the problem by fixing this from 'queue_stats' map
-> struct hvm_queue_stats -> hbm_queue_stats.
->
-> Fixes: 36b5d471135c ("selftests/bpf: samples/bpf: Split off legacy stuff from bpf_helpers.h")
-> Signed-off-by: Daniel T. Lee <danieltimlee@gmail.com>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
-> Changes in v2:
->  - restore read_trace_pipe2
->  - remove unnecessary return code and cgroup fd compare
->  - add static at global variable and remove unused variable
->  - change cgroup path with unified controller (/unified/)
->  - add link pinning to prevent cleaning up on process exit
+>  btf_encoder.c | 57 +++++++++++++++++++++++++++++++++------------------
+>  1 file changed, 37 insertions(+), 20 deletions(-)
 >
-> Changes in v3:
->  - cleanup bpf_link, bpf_object and cgroup fd both on success and error
->  - remove link NULL cleanup since __destroy() can handle
->  - fix cgroup test on cgroup fd cleanup
+> diff --git a/btf_encoder.c b/btf_encoder.c
+> index c40f059580da..467c4657b2c0 100644
+> --- a/btf_encoder.c
+> +++ b/btf_encoder.c
+> @@ -101,14 +101,17 @@ static int addrs_cmp(const void *_a, const void *_b)
+>         return *a < *b ? -1 : 1;
+>  }
 >
->  samples/bpf/.gitignore     |   3 +
->  samples/bpf/Makefile       |   2 +-
->  samples/bpf/do_hbm_test.sh |  32 +++++------
->  samples/bpf/hbm.c          | 111 ++++++++++++++++++++-----------------
->  samples/bpf/hbm_kern.h     |   2 +-
->  5 files changed, 78 insertions(+), 72 deletions(-)
+> -static int filter_functions(struct btf_elf *btfe, struct funcs_layout *fl)
+> +static int get_vmlinux_addrs(struct btf_elf *btfe, struct funcs_layout *fl,
+> +                            unsigned long **paddrs, unsigned long *pcount)
+>  {
+> -       unsigned long *addrs, count, offset, i;
+> -       int functions_valid = 0;
+> +       unsigned long *addrs, count, offset;
+>         Elf_Data *data;
+>         GElf_Shdr shdr;
+>         Elf_Scn *sec;
 >
+> +       if (!fl->mcount_start || !fl->mcount_stop)
+> +               return 0;
+> +
 
-Thanks for the nice clean up! I've applied the series to bpf-next. If
-Martin finds any other problems, those can be fixed in a follow up
-patch(es). But see also below about find_program_by_title().
+probably better to explicitly assign paddrs and pcount to NULL and 0 here
 
-> -       if (ret) {
-> -               printf("ERROR: bpf_prog_load_xattr failed for: %s\n", prog);
-> -               printf("  Output from verifier:\n%s\n------\n", bpf_log_buf);
-> -               ret = -1;
-> -       } else {
-> -               ret = map_fd;
-> +       bpf_prog = bpf_object__find_program_by_title(obj, "cgroup_skb/egress");
-
-It would be good to avoid using find_program_by_title(), as it's going
-to get deprecated and eventually removed. Looking up by section name
-("title") is ambiguous now that libbpf supports many BPF programs per
-same section. There is find_program_by_name() which looks program by
-its C function name. I suggest using it.
-
-
-> +       if (!bpf_prog) {
-> +               printf("ERROR: finding a prog in obj file failed\n");
-> +               goto err;
+>         /*
+>          * Find mcount addressed marked by __start_mcount_loc
+>          * and __stop_mcount_loc symbols and load them into
+> @@ -138,7 +141,32 @@ static int filter_functions(struct btf_elf *btfe, struct funcs_layout *fl)
+>         }
+>
+>         memcpy(addrs, data->d_buf + offset, count * sizeof(addrs[0]));
+> +       *paddrs = addrs;
+> +       *pcount = count;
+> +       return 0;
+> +}
+> +
+> +static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
+> +{
+> +       unsigned long *addrs = NULL, count, i;
+> +       int functions_valid = 0;
+> +
+> +       /*
+> +        * Check if we are processing vmlinux image and
+> +        * get mcount data if it's detected.
+> +        */
+> +       if (get_vmlinux_addrs(btfe, fl, &addrs, &count))
+> +               return -1;
+> +
+> +       if (!addrs) {
+> +               if (btf_elf__verbose)
+> +                       printf("ftrace symbols not detected, falling back to DWARF data\n");
+> +               delete_functions();
+> +               return 0;
 > +       }
 > +
+>         qsort(addrs, count, sizeof(addrs[0]), addrs_cmp);
+> +       qsort(functions, functions_cnt, sizeof(functions[0]), functions_cmp);
+>
+>         /*
+>          * Let's got through all collected functions and filter
+> @@ -162,6 +190,9 @@ static int filter_functions(struct btf_elf *btfe, struct funcs_layout *fl)
+>
+>         functions_cnt = functions_valid;
+>         free(addrs);
+> +
+> +       if (btf_elf__verbose)
+> +               printf("Found %d functions!\n", functions_cnt);
+>         return 0;
+>  }
+>
+> @@ -470,11 +501,6 @@ static void collect_symbol(GElf_Sym *sym, struct funcs_layout *fl)
+>                 fl->mcount_stop = sym->st_value;
+>  }
+>
+> -static int has_all_symbols(struct funcs_layout *fl)
+> -{
+> -       return fl->mcount_start && fl->mcount_stop;
+> -}
+> -
+>  static int collect_symbols(struct btf_elf *btfe, bool collect_percpu_vars)
+>  {
+>         struct funcs_layout fl = { };
+> @@ -501,18 +527,9 @@ static int collect_symbols(struct btf_elf *btfe, bool collect_percpu_vars)
+>                         printf("Found %d per-CPU variables!\n", percpu_var_cnt);
+>         }
+>
+> -       if (functions_cnt && has_all_symbols(&fl)) {
+> -               qsort(functions, functions_cnt, sizeof(functions[0]), functions_cmp);
+> -               if (filter_functions(btfe, &fl)) {
+> -                       fprintf(stderr, "Failed to filter dwarf functions\n");
+> -                       return -1;
+> -               }
+> -               if (btf_elf__verbose)
+> -                       printf("Found %d functions!\n", functions_cnt);
+> -       } else {
+> -               if (btf_elf__verbose)
+> -                       printf("ftrace symbols not detected, falling back to DWARF data\n");
+> -               delete_functions();
+> +       if (functions_cnt && setup_functions(btfe, &fl)) {
+> +               fprintf(stderr, "Failed to filter dwarf functions\n");
+
+DWARF
+
+> +               return -1;
+>         }
+>
+>         return 0;
+> --
+> 2.26.2
+>
