@@ -2,59 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80B122C6185
-	for <lists+bpf@lfdr.de>; Fri, 27 Nov 2020 10:22:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D054A2C6195
+	for <lists+bpf@lfdr.de>; Fri, 27 Nov 2020 10:22:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727707AbgK0JVA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Nov 2020 04:21:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41996 "EHLO
+        id S1728285AbgK0JVv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Nov 2020 04:21:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726014AbgK0JU6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Nov 2020 04:20:58 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC325C0613D4
-        for <bpf@vger.kernel.org>; Fri, 27 Nov 2020 01:20:56 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id p8so4806694wrx.5
-        for <bpf@vger.kernel.org>; Fri, 27 Nov 2020 01:20:56 -0800 (PST)
+        with ESMTP id S1726602AbgK0JVu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Nov 2020 04:21:50 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A9E1C0613D4
+        for <bpf@vger.kernel.org>; Fri, 27 Nov 2020 01:21:50 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id i2so4813611wrs.4
+        for <bpf@vger.kernel.org>; Fri, 27 Nov 2020 01:21:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=message-id:subject:from:to:cc:date:in-reply-to:references
          :user-agent:mime-version:content-transfer-encoding;
-        bh=rJpaqMmbVzz+/0uX+e9OASza/Sn3/crC+q1r7cTKszU=;
-        b=SzZ4g5EZyvlo/1WuSpEOEZ+lT/uj0/nD+7fbnLbOCukSu5cPvbndOrOgQmTskZUi9i
-         L6XoTJTbI9ePX5hhNoGaCa3Fzy+xrZCqx45naO/ZTANRygTOwjjYMVPjAKIP69BQpwHE
-         I8sqEf+EkI40NHTUPiimW43keAelqcer7FevI=
+        bh=4haAtXUHa8qd3ezJgcItd1OHQbgYPxsuO+gzkuxGWzA=;
+        b=MycJzaG7hTHxWNHLHRT7gLb1N4CWd4edFBx5g/7f2oTSaPmbzk/tc1/iqIIhvyDeWO
+         MuVBINQE+vBa4ymeSmrzOACpGRntflnD1ruPWTH3gHMTljUdlCxb41AdeWXCzy3VEHc4
+         T+dx8lWWcjRnmoFI1iOhctgKBT5HI0cqaDL+A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
          :references:user-agent:mime-version:content-transfer-encoding;
-        bh=rJpaqMmbVzz+/0uX+e9OASza/Sn3/crC+q1r7cTKszU=;
-        b=PnarLT7XbgRO7oXlfac6+z7MQaJP+VZ7Shg23G3jJ6QWAlPyyGN1xl4NAqlQoh5bEv
-         VSuA1VjlXfjvB35zEfL9db2WokkycgxclBWPtS7V7Y9wiAtvSJfPoVeD8MS03ZlTYQg5
-         7lL6oVSElGrB1LgHZWh0c6BPkZWyi73UYOvGYYRucZVP0ThlHxGvQXnudrHSHgx0PlYW
-         u5PhOv14TFh81rI/PebGoOD6jxlNiURKKngmD5+2+zwF64Og/CE1/5Wng0gOV9JMREP3
-         cWSwhqtOeH1U1xcMmfZxYLp1CaNt/8pB5pQ+yQv6d31cqJ4ibuupk3YUuscFmbV7ALPx
-         bjsA==
-X-Gm-Message-State: AOAM533YKZPZ2DEVrLQWJRQLqvh+n3LXbUVj9+F2S+w6YnR1R7oarRDr
-        w/BMWxrZKEY+64/hmoDqGaE1fA==
-X-Google-Smtp-Source: ABdhPJx9AJrAO859wmrt5XgU3NFYEMmYexm61rQy05tUL65QlEC16hmuUT4HMlWjmMAaARuPripL4w==
-X-Received: by 2002:adf:ea03:: with SMTP id q3mr9098029wrm.141.1606468855682;
-        Fri, 27 Nov 2020 01:20:55 -0800 (PST)
+        bh=4haAtXUHa8qd3ezJgcItd1OHQbgYPxsuO+gzkuxGWzA=;
+        b=IFsfAw5joAFIXZaM3L1y256QuyO57AfFr2iPcmuTFUBdFbHJMFZcH7qvF/ovEUlX2M
+         cPKnOdi+2xtItbwdXvSXD/uO9YRMDLULhnLrW3Q1+cKjDbXbfTjqfypZNubF15AzuWRZ
+         FDbOoF5r6kSyTscwFZli243PBl5eP3uf1IsGkMtx1XFYxYJGYsCPPZY+zNlx6WhLkE2G
+         aM4UTTBwA1QvavPZ3b/+ess3C/C/lFG5/pVhEwRcw9TqzpSRAxIFH41zL+kptvX//hpg
+         0NQ/Nhvpqy0wPEQGnU/R6ZxxtVkNZfU9FghZt6W2QU9HIFN0mqxaVM6pwUG90T14+87I
+         GN8Q==
+X-Gm-Message-State: AOAM532yKPC83lfLHkBnHV3csIhXoSQcN2I5zTpVr2eGQPUcRgpi9ChZ
+        X4uZrP8C0SjKPj3FSTQsbfRyng==
+X-Google-Smtp-Source: ABdhPJxKn99M0WW71ImXjuufXD45kVFE54JjEEPi8DjQ8fwpuMovU1Kj5DqnCtQrCGWP+M0uR3DpEA==
+X-Received: by 2002:a5d:548b:: with SMTP id h11mr9228587wrv.306.1606468909049;
+        Fri, 27 Nov 2020 01:21:49 -0800 (PST)
 Received: from ?IPv6:2a04:ee41:4:1318:ea45:a00:4d43:48fc? ([2a04:ee41:4:1318:ea45:a00:4d43:48fc])
-        by smtp.gmail.com with ESMTPSA id g11sm14320442wrq.7.2020.11.27.01.20.54
+        by smtp.gmail.com with ESMTPSA id a144sm13266512wmd.47.2020.11.27.01.21.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 01:20:55 -0800 (PST)
-Message-ID: <b7e6aa907d62a36dc86e54691463ed699f22a4cb.camel@chromium.org>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
+        Fri, 27 Nov 2020 01:21:48 -0800 (PST)
+Message-ID: <492ad793692d03105f3ac2a2e1a3196dc01e5cef.camel@chromium.org>
+Subject: Re: [PATCH bpf-next v3 5/6] bpf: Add an iterator selftest for
+ bpf_sk_storage_get
 From:   Florent Revest <revest@chromium.org>
 To:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kpsingh@chromium.org, revest@google.com,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 27 Nov 2020 10:20:54 +0100
-In-Reply-To: <50047415-cafe-abab-a6ba-e85bb6a9b651@fb.com>
-References: <20201126165748.1748417-1-revest@google.com>
-         <50047415-cafe-abab-a6ba-e85bb6a9b651@fb.com>
+Cc:     viro@zeniv.linux.org.uk, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
+        andrii@kernel.org, kpsingh@chromium.org, revest@google.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Date:   Fri, 27 Nov 2020 10:21:44 +0100
+In-Reply-To: <2c5a814a-7b69-3a8d-e4e0-e595d009cf82@fb.com>
+References: <20201126164449.1745292-1-revest@google.com>
+         <20201126164449.1745292-5-revest@google.com>
+         <2c5a814a-7b69-3a8d-e4e0-e595d009cf82@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 User-Agent: Evolution 3.36.4-2 
 MIME-Version: 1.0
@@ -63,44 +66,21 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 2020-11-26 at 23:35 -0800, Yonghong Song wrote:
-> On 11/26/20 8:57 AM, Florent Revest wrote:
-> > +BPF_CALL_5(bpf_kallsyms_lookup, u64, address, char *, symbol, u32,
-> > symbol_size,
-> > +	   char *, module, u32, module_size)
+On Thu, 2020-11-26 at 23:00 -0800, Yonghong Song wrote:
+> On 11/26/20 8:44 AM, Florent Revest wrote:
+> > +SEC("iter/task_file")
+> > +int fill_socket_owner(struct bpf_iter__task_file *ctx)
 > > +{
-> > +	char buffer[KSYM_SYMBOL_LEN];
-> > +	unsigned long offset, size;
-> > +	const char *name;
-> > +	char *modname;
-> > +	long ret;
+> > +	struct task_struct *task = ctx->task;
+> > +	struct file *file = ctx->file;
+> > +	struct socket *sock;
+> > +	int *sock_tgid;
 > > +
-> > +	name = kallsyms_lookup(address, &size, &offset, &modname,
-> > buffer);
-> > +	if (!name)
-> > +		return -EINVAL;
-> > +
-> > +	ret = strlen(name) + 1;
-> > +	if (symbol_size) {
-> > +		strncpy(symbol, name, symbol_size);
-> > +		symbol[symbol_size - 1] = '\0';
-> > +	}
-> > +
-> > +	if (modname && module_size) {
-> > +		strncpy(module, modname, module_size);
-> > +		module[module_size - 1] = '\0';
+> > +	if (!task || !file || task->tgid != task->pid)
 > 
-> In this case, module name may be truncated and user did not get any
-> indication from return value. In the helper description, it is
-> mentioned that module name currently is most 64 bytes. But from UAPI
-> perspective, it may be still good to return something to let user
-> know the name is truncated.
-> 
-> I do not know what is the best way to do this. One suggestion is
-> to break it into two helpers, one for symbol name and another
-> for module name. What is the use cases people want to get both
-> symbol name and module name and is it common?
+> task->tgid != task->pid is not needed here.
+> The task_file iterator already tries to skip task with task->pid
+> if its file table is the same as task->tgid.
 
-Fair, I can split this into two helpers :) The lookup would be done
-twice but I don't think that's a big deal.
+Good to know!
 
