@@ -2,61 +2,59 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75C992C617D
-	for <lists+bpf@lfdr.de>; Fri, 27 Nov 2020 10:20:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B122C6185
+	for <lists+bpf@lfdr.de>; Fri, 27 Nov 2020 10:22:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726964AbgK0JRh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Nov 2020 04:17:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41478 "EHLO
+        id S1727707AbgK0JVA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Nov 2020 04:21:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725865AbgK0JRg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Nov 2020 04:17:36 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC3E0C0613D1
-        for <bpf@vger.kernel.org>; Fri, 27 Nov 2020 01:17:34 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id a3so5813334wmb.5
-        for <bpf@vger.kernel.org>; Fri, 27 Nov 2020 01:17:34 -0800 (PST)
+        with ESMTP id S1726014AbgK0JU6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Nov 2020 04:20:58 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC325C0613D4
+        for <bpf@vger.kernel.org>; Fri, 27 Nov 2020 01:20:56 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id p8so4806694wrx.5
+        for <bpf@vger.kernel.org>; Fri, 27 Nov 2020 01:20:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=message-id:subject:from:to:cc:date:in-reply-to:references
          :user-agent:mime-version:content-transfer-encoding;
-        bh=gvSmh42j+Na69d8tYP15USmlAiPkewESLNzSugoG51g=;
-        b=fz5Y/OBDWubrfIV5wC3zKsGHvULPNFb3V3LeKRP5jZ7ACpdD78UbvC+3qtNTDyGiWX
-         O0O47JNeqYIjiAOXmdTgG7hu5EtAvjkuSwhcZtZXLJ97XTsmdbA8gpdahyk78uVHCrpj
-         m7vt7HNmD3hSFr8Zq8SZ0eayoZaKeWyLbtTkA=
+        bh=rJpaqMmbVzz+/0uX+e9OASza/Sn3/crC+q1r7cTKszU=;
+        b=SzZ4g5EZyvlo/1WuSpEOEZ+lT/uj0/nD+7fbnLbOCukSu5cPvbndOrOgQmTskZUi9i
+         L6XoTJTbI9ePX5hhNoGaCa3Fzy+xrZCqx45naO/ZTANRygTOwjjYMVPjAKIP69BQpwHE
+         I8sqEf+EkI40NHTUPiimW43keAelqcer7FevI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
          :references:user-agent:mime-version:content-transfer-encoding;
-        bh=gvSmh42j+Na69d8tYP15USmlAiPkewESLNzSugoG51g=;
-        b=YgSmqQ67wKBBkUtMnuIaAKKGbgei0+Igb/yimCgBX8YCKqSuA02ULal3AqE1oLTEMd
-         MP8cYKT8xoetp+W6Ik22494cF0anM/L92Eg+YzgoXzz9hPIg2Uytr1V/AcJ6kS0z0KKo
-         FKtdc1n67IOXyBXqD3Zfi2iNF0qJE+vNva0QvXLNy0JmVHBE5A0YW6TymxeAOPC7yH3l
-         NG1slIl9iz5G/38umKy/0vfvA5o3nGs67Zj9wCW527BI/+uuC3bdQ6OKW8oYW+A85PE5
-         DHj8SpSnbFVrnzF6HgbWXWbRN/cL20Gx59pkOzt5MFF5vFyXNRT+gw/lhazR2q7erszW
-         VgKQ==
-X-Gm-Message-State: AOAM533jAz4Qq3uwLP2dnxEtjvIfgJWdmQuukQfJxadwmTtqDY9jHVpT
-        rzXrormMF1tpBPCOu+JDy00U5Q==
-X-Google-Smtp-Source: ABdhPJwS5KZGFOuX8YL+/zY/fdyGq42H90XEm3tgLHgp8cubkhwx+xPy/BmkaApl0jERo6H1UsjkJg==
-X-Received: by 2002:a05:600c:2159:: with SMTP id v25mr8009006wml.155.1606468653404;
-        Fri, 27 Nov 2020 01:17:33 -0800 (PST)
+        bh=rJpaqMmbVzz+/0uX+e9OASza/Sn3/crC+q1r7cTKszU=;
+        b=PnarLT7XbgRO7oXlfac6+z7MQaJP+VZ7Shg23G3jJ6QWAlPyyGN1xl4NAqlQoh5bEv
+         VSuA1VjlXfjvB35zEfL9db2WokkycgxclBWPtS7V7Y9wiAtvSJfPoVeD8MS03ZlTYQg5
+         7lL6oVSElGrB1LgHZWh0c6BPkZWyi73UYOvGYYRucZVP0ThlHxGvQXnudrHSHgx0PlYW
+         u5PhOv14TFh81rI/PebGoOD6jxlNiURKKngmD5+2+zwF64Og/CE1/5Wng0gOV9JMREP3
+         cWSwhqtOeH1U1xcMmfZxYLp1CaNt/8pB5pQ+yQv6d31cqJ4ibuupk3YUuscFmbV7ALPx
+         bjsA==
+X-Gm-Message-State: AOAM533YKZPZ2DEVrLQWJRQLqvh+n3LXbUVj9+F2S+w6YnR1R7oarRDr
+        w/BMWxrZKEY+64/hmoDqGaE1fA==
+X-Google-Smtp-Source: ABdhPJx9AJrAO859wmrt5XgU3NFYEMmYexm61rQy05tUL65QlEC16hmuUT4HMlWjmMAaARuPripL4w==
+X-Received: by 2002:adf:ea03:: with SMTP id q3mr9098029wrm.141.1606468855682;
+        Fri, 27 Nov 2020 01:20:55 -0800 (PST)
 Received: from ?IPv6:2a04:ee41:4:1318:ea45:a00:4d43:48fc? ([2a04:ee41:4:1318:ea45:a00:4d43:48fc])
-        by smtp.gmail.com with ESMTPSA id v25sm5456639wmj.27.2020.11.27.01.17.32
+        by smtp.gmail.com with ESMTPSA id g11sm14320442wrq.7.2020.11.27.01.20.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Nov 2020 01:17:32 -0800 (PST)
-Message-ID: <540fd8fd4542c9737224a43fa4123ceb679a7b59.camel@chromium.org>
-Subject: Re: [PATCH bpf-next 2/2] bpf: Add a selftest for the tracing
- bpf_get_socket_cookie
+        Fri, 27 Nov 2020 01:20:55 -0800 (PST)
+Message-ID: <b7e6aa907d62a36dc86e54691463ed699f22a4cb.camel@chromium.org>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
 From:   Florent Revest <revest@chromium.org>
 To:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
         kpsingh@chromium.org, revest@google.com,
         linux-kernel@vger.kernel.org
-Date:   Fri, 27 Nov 2020 10:17:31 +0100
-In-Reply-To: <8b0529f0-5f1e-b403-2772-7a56c44a3a55@fb.com>
-References: <20201126170212.1749137-1-revest@google.com>
-         <20201126170212.1749137-2-revest@google.com>
-         <8b0529f0-5f1e-b403-2772-7a56c44a3a55@fb.com>
+Date:   Fri, 27 Nov 2020 10:20:54 +0100
+In-Reply-To: <50047415-cafe-abab-a6ba-e85bb6a9b651@fb.com>
+References: <20201126165748.1748417-1-revest@google.com>
+         <50047415-cafe-abab-a6ba-e85bb6a9b651@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 User-Agent: Evolution 3.36.4-2 
 MIME-Version: 1.0
@@ -65,28 +63,44 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 2020-11-26 at 23:56 -0800, Yonghong Song wrote:
+On Thu, 2020-11-26 at 23:35 -0800, Yonghong Song wrote:
+> On 11/26/20 8:57 AM, Florent Revest wrote:
+> > +BPF_CALL_5(bpf_kallsyms_lookup, u64, address, char *, symbol, u32,
+> > symbol_size,
+> > +	   char *, module, u32, module_size)
+> > +{
+> > +	char buffer[KSYM_SYMBOL_LEN];
+> > +	unsigned long offset, size;
+> > +	const char *name;
+> > +	char *modname;
+> > +	long ret;
+> > +
+> > +	name = kallsyms_lookup(address, &size, &offset, &modname,
+> > buffer);
+> > +	if (!name)
+> > +		return -EINVAL;
+> > +
+> > +	ret = strlen(name) + 1;
+> > +	if (symbol_size) {
+> > +		strncpy(symbol, name, symbol_size);
+> > +		symbol[symbol_size - 1] = '\0';
+> > +	}
+> > +
+> > +	if (modname && module_size) {
+> > +		strncpy(module, modname, module_size);
+> > +		module[module_size - 1] = '\0';
 > 
-> On 11/26/20 9:02 AM, Florent Revest wrote:
-> > This builds up on the existing socket cookie test which checks
-> > whether
-> > the bpf_get_socket_cookie helpers provide the same value in
-> > cgroup/connect6 and sockops programs for a socket created by the
-> > userspace part of the test.
-> > 
-> > Adding a tracing program to the existing objects requires a
-> > different
-> > attachment strategy and different headers.
-> > 
-> > Signed-off-by: Florent Revest <revest@google.com>
-> > ---
-> >   .../selftests/bpf/progs/socket_cookie_prog.c  | 41
-> > ++++++++++++++++---
-> >   .../selftests/bpf/test_socket_cookie.c        | 18 +++++---
+> In this case, module name may be truncated and user did not get any
+> indication from return value. In the helper description, it is
+> mentioned that module name currently is most 64 bytes. But from UAPI
+> perspective, it may be still good to return something to let user
+> know the name is truncated.
 > 
-> Do you think it is possible to migrate test_socket_cookie.c to
-> selftests/bpf/prog_tests so it can be part of test_progs so
-> it will be regularly exercised?
+> I do not know what is the best way to do this. One suggestion is
+> to break it into two helpers, one for symbol name and another
+> for module name. What is the use cases people want to get both
+> symbol name and module name and is it common?
 
-I suppose it's possible, I can give it a try :)
+Fair, I can split this into two helpers :) The lookup would be done
+twice but I don't think that's a big deal.
 
