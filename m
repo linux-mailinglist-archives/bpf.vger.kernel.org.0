@@ -2,113 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE912C6B2D
-	for <lists+bpf@lfdr.de>; Fri, 27 Nov 2020 18:59:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D06D82C6B41
+	for <lists+bpf@lfdr.de>; Fri, 27 Nov 2020 19:07:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732797AbgK0R6S (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Nov 2020 12:58:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732919AbgK0R6S (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Nov 2020 12:58:18 -0500
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8173C0613D4
-        for <bpf@vger.kernel.org>; Fri, 27 Nov 2020 09:58:16 -0800 (PST)
-Received: by mail-qt1-x84a.google.com with SMTP id t17so3666393qtp.3
-        for <bpf@vger.kernel.org>; Fri, 27 Nov 2020 09:58:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=NXuOTf1MPK8TRE6mj0XMAIGn4tL+u51UNs4Z0qmP7TY=;
-        b=LCxzFfeyElEsmKF10zxjGXjZC+9NCkcHcJd6YRlac2ucNzBm813nhfgUEbO8tX89ls
-         uJr5UW8Z8IRDcmuGXFQ/8rJiigwxIuAKf5yT4AfIY9qJwFSvgKFliJ3NIoQZ83jdEeUq
-         tskA4y84dkkwdYQtTZDEHSU1EPauPDbzchuuBVKw0ZjiSGEoIQImlRJVAbZV3eglnt3D
-         QDmy2ThtjXPWPgev/zPS/yKySFkL6ADja18SIHDYn4IAe7hiaR6j7IWcFtGvZl9mg9JM
-         xEN0wBlt10RwJ6c/Dm+oDBwFniegP0SehwWazCNcDQvnLOQc8D/2sXRRmdlLe8omOh2r
-         tqJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=NXuOTf1MPK8TRE6mj0XMAIGn4tL+u51UNs4Z0qmP7TY=;
-        b=eTG4DY+nOY+55Cwf50x28AeULfkSjQzAhuLUdUed8O8mX0lIebihsQJERBKAjKnMy5
-         0lwKc/Wj0IXmFKOE0OABWnyjO8w2lpNl/xnuWcWAg0I+IoKxuLc24NSIOOX76zU6g8SV
-         Ibhk7Sis9UrDxttGqGoTwT4MFIax0euOc0zycuJ48ymiCDIvEEcn5h/O0ood/vufk2TR
-         jvYd0MkPOYF1YCgv7gbo80NnGGjME1FOJAeEQ1VcGXpj4vJ7BAZQAxUeR2qAX3RjoPeA
-         u5IyODGxF6JtgqUANToE9zqhozhgftuCac6hWlcG1tBegLafGg6NBCVTP8uekrXk6aMc
-         shPQ==
-X-Gm-Message-State: AOAM530epVmIYYWqMxrotL/A17q+6p8DbQ0vyt4sWq/By7HTVA4flMH0
-        maK974++q0qB375Fk+LYV541Haim+8m14OElGOLIpEigsk8GSl787BLAGRc/MG5gUb9hhQ2NoVN
-        bwXLYJzwWpMuv6D483p6obeTJgORI3FG+rFRZtlzjpet5cuC+mMpsOAxd48OhReM=
-X-Google-Smtp-Source: ABdhPJxPJl813Avj63aZPEpIBc12NcoU1YbQ5PNvAh5FhZ/HCmrzSxW3HvxObE/cCykzTQtXo1QWJ4L8I0EJ+g==
-Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
-X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
- (user=jackmanb job=sendgmr) by 2002:ad4:4725:: with SMTP id
- l5mr9499075qvz.51.1606499895963; Fri, 27 Nov 2020 09:58:15 -0800 (PST)
-Date:   Fri, 27 Nov 2020 17:57:38 +0000
-In-Reply-To: <20201127175738.1085417-1-jackmanb@google.com>
-Message-Id: <20201127175738.1085417-14-jackmanb@google.com>
-Mime-Version: 1.0
-References: <20201127175738.1085417-1-jackmanb@google.com>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH v2 bpf-next 13/13] bpf: Document new atomic instructions
-From:   Brendan Jackman <jackmanb@google.com>
+        id S1732479AbgK0SG2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Nov 2020 13:06:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23631 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732020AbgK0SG2 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 27 Nov 2020 13:06:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606500386;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=/5rl1vKmU5BfrP5W4yGSe4C/fK750/Dlz037Ebxqyw8=;
+        b=SbK+bKWowt3tBaTdLiMMsBAJcCaCx39Y/kIZACMLsvsWGDmQvjfJP4E3d5HZT1izCoGM0c
+        ERMGACwJda3XAuqQrWXGHiwv9NN9XChv+Nqr42biqrQl58K4cMk/Ai51G6JJy1zzdlmrMk
+        rNMoWH0TfroA5IbXpjsuPC4xpLgyx38=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-487-I16DNoxpP2yYrcKIjcNYsg-1; Fri, 27 Nov 2020 13:06:24 -0500
+X-MC-Unique: I16DNoxpP2yYrcKIjcNYsg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5B399100C604;
+        Fri, 27 Nov 2020 18:06:22 +0000 (UTC)
+Received: from firesoul.localdomain (unknown [10.40.208.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BDCC31001281;
+        Fri, 27 Nov 2020 18:06:18 +0000 (UTC)
+Received: from [192.168.42.3] (localhost [IPv6:::1])
+        by firesoul.localdomain (Postfix) with ESMTP id 9186132138453;
+        Fri, 27 Nov 2020 19:06:17 +0100 (CET)
+Subject: [PATCH bpf-next V8 0/8] bpf: New approach for BPF MTU handling
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
 To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>,
-        Brendan Jackman <jackmanb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
+        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
+        colrack@gmail.com
+Date:   Fri, 27 Nov 2020 19:06:17 +0100
+Message-ID: <160650034591.2890576.1092952641487480652.stgit@firesoul>
+User-Agent: StGit/0.19
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Signed-off-by: Brendan Jackman <jackmanb@google.com>
----
- Documentation/networking/filter.rst | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+This patchset drops all the MTU checks in TC BPF-helpers that limits
+growing the packet size. This is done because these BPF-helpers doesn't
+take redirect into account, which can result in their MTU check being done
+against the wrong netdev.
 
-diff --git a/Documentation/networking/filter.rst b/Documentation/networking/filter.rst
-index 1583d59d806d..c86091b8cb0e 100644
---- a/Documentation/networking/filter.rst
-+++ b/Documentation/networking/filter.rst
-@@ -1053,6 +1053,33 @@ encoding.
-    .imm = BPF_ADD, .code = BPF_ATOMIC | BPF_W  | BPF_STX: lock xadd *(u32 *)(dst_reg + off16) += src_reg
-    .imm = BPF_ADD, .code = BPF_ATOMIC | BPF_DW | BPF_STX: lock xadd *(u64 *)(dst_reg + off16) += src_reg
- 
-+The basic atomic operations supported (from architecture v4 onwards) are:
-+
-+    BPF_ADD
-+    BPF_SUB
-+    BPF_AND
-+    BPF_OR
-+    BPF_XOR
-+
-+Each having isomorphic semantics with the ``BPF_ADD`` example, that is: the
-+memory location addresed by ``dst_reg + off`` is atomically modified, with
-+``src_reg`` as the other operand. If the ``BPF_FETCH`` flag is set in the
-+immediate, then these operations also overwrite ``src_reg`` with the
-+pre-modification value from memory.
-+
-+The more special operations are:
-+
-+    BPF_XCHG
-+
-+This atomically exchanges ``src_reg`` with the value addressed by ``dst_reg +
-+off``.
-+
-+    BPF_CMPXCHG
-+
-+This atomically compares the value addressed by ``dst_reg + off`` with
-+``R0``. If they match it is replaced with ``src_reg``, The pre-modification
-+value is loaded back to ``R0``.
-+
- Note that 1 and 2 byte atomic operations are not supported.
- 
- You may encounter BPF_XADD - this is a legacy name for BPF_ATOMIC, referring to
--- 
-2.29.2.454.gaff20da3a2-goog
+The new approach is to give BPF-programs knowledge about the MTU on a
+netdev (via ifindex) and fib route lookup level. Meaning some BPF-helpers
+are added and extended to make it possible to do MTU checks in the
+BPF-code.
+
+If BPF-prog doesn't comply with the MTU then the packet will eventually
+get dropped as some other layer. In some cases the existing kernel MTU
+checks will drop the packet, but there are also cases where BPF can bypass
+these checks. Specifically doing TC-redirect from ingress step
+(sch_handle_ingress) into egress code path (basically calling
+dev_queue_xmit()). It is left up to driver code to handle these kind of
+MTU violations.
+
+One advantage of this approach is that it ingress-to-egress BPF-prog can
+send information via packet data. With the MTU checks removed in the
+helpers, and also not done in skb_do_redirect() call, this allows for an
+ingress BPF-prog to communicate with an egress BPF-prog via packet data,
+as long as egress BPF-prog remove this prior to transmitting packet.
+
+This patchset is primarily focused on TC-BPF, but I've made sure that the
+MTU BPF-helpers also works for XDP BPF-programs.
+
+V2: Change BPF-helper API from lookup to check.
+V3: Drop enforcement of MTU in net-core, leave it to drivers.
+V4: Keep sanity limit + netdev "up" checks + rename BPF-helper.
+V5: Fix uninit variable + name struct output member mtu_result.
+V6: Use bpf_check_mtu() in selftest
+V7: Fix logic using tot_len and add another selftest
+V8: Add better selftests for BPF-helper bpf_check_mtu
+
+---
+
+Jesper Dangaard Brouer (8):
+      bpf: Remove MTU check in __bpf_skb_max_len
+      bpf: fix bpf_fib_lookup helper MTU check for SKB ctx
+      bpf: bpf_fib_lookup return MTU value as output when looked up
+      bpf: add BPF-helper for MTU checking
+      bpf: drop MTU check when doing TC-BPF redirect to ingress
+      bpf: make it possible to identify BPF redirected SKBs
+      selftests/bpf: use bpf_check_mtu in selftest test_cls_redirect
+      bpf/selftests: tests using bpf_check_mtu BPF-helper
+
+
+ include/linux/netdevice.h                          |   31 +++
+ include/uapi/linux/bpf.h                           |   78 +++++++-
+ net/core/dev.c                                     |   21 --
+ net/core/filter.c                                  |  184 ++++++++++++++++--
+ net/sched/Kconfig                                  |    1 
+ tools/include/uapi/linux/bpf.h                     |   78 +++++++-
+ tools/testing/selftests/bpf/prog_tests/check_mtu.c |  204 ++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/test_check_mtu.c |  196 +++++++++++++++++++
+ .../selftests/bpf/progs/test_cls_redirect.c        |    7 +
+ 9 files changed, 757 insertions(+), 43 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/check_mtu.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_check_mtu.c
+
+--
 
