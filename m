@@ -2,66 +2,147 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C92DA2C6CD4
-	for <lists+bpf@lfdr.de>; Fri, 27 Nov 2020 22:13:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80F912C6CE6
+	for <lists+bpf@lfdr.de>; Fri, 27 Nov 2020 22:33:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731225AbgK0VK6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Nov 2020 16:10:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46550 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729845AbgK0VKG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Nov 2020 16:10:06 -0500
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606511405;
-        bh=YkYz8HQ2tvvTCXYwt+RjoeyZGuvezlwD1uZUuHlU4bw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=axwcVW14fz89dbnZI0dPPS+mbx1Q1rs5kmdWJ2/++w0DqQqJ6EKDPHECqIVh3ZZD2
-         ngEhpnvn6bz1ClRouHYTqtiDsv1oL6Y9dHMfWxRGX1UVm/0LzBvIKi1rwJA3Ls/npR
-         o6NCS0ubLlD37fFsEsF5hGOpP96VkDySYXDpC3ik=
+        id S1730248AbgK0Va2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Nov 2020 16:30:28 -0500
+Received: from www62.your-server.de ([213.133.104.62]:36840 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727468AbgK0V37 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Nov 2020 16:29:59 -0500
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kilJD-0003hM-2h; Fri, 27 Nov 2020 22:29:39 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kilJC-000JbS-Nu; Fri, 27 Nov 2020 22:29:38 +0100
+Subject: Re: [PATCH bpf v2 2/2] xsk: change the tx writeable condition
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>, magnus.karlsson@gmail.com
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        KP Singh <kpsingh@chromium.org>,
+        "open list:XDP SOCKETS (AF_XDP)" <netdev@vger.kernel.org>,
+        "open list:XDP SOCKETS (AF_XDP)" <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <cover.1605686678.git.xuanzhuo@linux.alibaba.com>
+ <cover.1606285978.git.xuanzhuo@linux.alibaba.com>
+ <4fd58d473f4548dc6e9e24ea9876c802d5d584b4.1606285978.git.xuanzhuo@linux.alibaba.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <15bae73e-e753-123a-7535-0ab5c1178b40@iogearbox.net>
+Date:   Fri, 27 Nov 2020 22:29:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] libbpf: replace size_t with __u32 in xsk interfaces
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160651140575.29562.16768492884588898558.git-patchwork-notify@kernel.org>
-Date:   Fri, 27 Nov 2020 21:10:05 +0000
-References: <1606383455-8243-1-git-send-email-magnus.karlsson@gmail.com>
-In-Reply-To: <1606383455-8243-1-git-send-email-magnus.karlsson@gmail.com>
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org,
-        jonathan.lemon@gmail.com, bpf@vger.kernel.org
+In-Reply-To: <4fd58d473f4548dc6e9e24ea9876c802d5d584b4.1606285978.git.xuanzhuo@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26001/Fri Nov 27 14:45:56 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
-
-On Thu, 26 Nov 2020 10:37:35 +0100 you wrote:
-> From: Magnus Karlsson <magnus.karlsson@intel.com>
+On 11/25/20 7:48 AM, Xuan Zhuo wrote:
+> Modify the tx writeable condition from the queue is not full to the
+> number of present tx queues is less than the half of the total number
+> of queues. Because the tx queue not full is a very short time, this will
+> cause a large number of EPOLLOUT events, and cause a large number of
+> process wake up.
 > 
-> Replace size_t with __u32 in the xsk interfaces that contain
-> this. There is no reason to have size_t since the internal variable
-> that is manipulated is a __u32. The following APIs are affected:
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+
+This one doesn't apply cleanly against bpf tree, please rebase. Small comment
+inline while looking over the patch:
+
+> ---
+>   net/xdp/xsk.c       | 16 +++++++++++++---
+>   net/xdp/xsk_queue.h |  6 ++++++
+>   2 files changed, 19 insertions(+), 3 deletions(-)
 > 
-> __u32 xsk_ring_prod__reserve(struct xsk_ring_prod *prod, __u32 nb,
->                              __u32 *idx)
-> void xsk_ring_prod__submit(struct xsk_ring_prod *prod, __u32 nb)
-> __u32 xsk_ring_cons__peek(struct xsk_ring_cons *cons, __u32 nb, __u32 *idx)
-> void xsk_ring_cons__cancel(struct xsk_ring_cons *cons, __u32 nb)
-> void xsk_ring_cons__release(struct xsk_ring_cons *cons, __u32 nb)
+> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> index 0df8651..22e35e9 100644
+> --- a/net/xdp/xsk.c
+> +++ b/net/xdp/xsk.c
+> @@ -211,6 +211,14 @@ static int __xsk_rcv(struct xdp_sock *xs, struct xdp_buff *xdp, u32 len,
+>   	return 0;
+>   }
+>   
+> +static bool xsk_tx_writeable(struct xdp_sock *xs)
+> +{
+> +	if (xskq_cons_present_entries(xs->tx) > xs->tx->nentries / 2)
+> +		return false;
+> +
+> +	return true;
+> +}
+> +
+>   static bool xsk_is_bound(struct xdp_sock *xs)
+>   {
+>   	if (READ_ONCE(xs->state) == XSK_BOUND) {
+> @@ -296,7 +304,8 @@ void xsk_tx_release(struct xsk_buff_pool *pool)
+>   	rcu_read_lock();
+>   	list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
+>   		__xskq_cons_release(xs->tx);
+> -		xs->sk.sk_write_space(&xs->sk);
+> +		if (xsk_tx_writeable(xs))
+> +			xs->sk.sk_write_space(&xs->sk);
+>   	}
+>   	rcu_read_unlock();
+>   }
+> @@ -499,7 +508,8 @@ static int xsk_generic_xmit(struct sock *sk)
+>   
+>   out:
+>   	if (sent_frame)
+> -		sk->sk_write_space(sk);
+> +		if (xsk_tx_writeable(xs))
+> +			sk->sk_write_space(sk);
+>   
+>   	mutex_unlock(&xs->mutex);
+>   	return err;
+> @@ -556,7 +566,7 @@ static __poll_t xsk_poll(struct file *file, struct socket *sock,
+>   
+>   	if (xs->rx && !xskq_prod_is_empty(xs->rx))
+>   		mask |= EPOLLIN | EPOLLRDNORM;
+> -	if (xs->tx && !xskq_cons_is_full(xs->tx))
+> +	if (xs->tx && xsk_tx_writeable(xs))
+>   		mask |= EPOLLOUT | EPOLLWRNORM;
+>   
+>   	return mask;
+> diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
+> index b936c46..b655004 100644
+> --- a/net/xdp/xsk_queue.h
+> +++ b/net/xdp/xsk_queue.h
+> @@ -307,6 +307,12 @@ static inline bool xskq_cons_is_full(struct xsk_queue *q)
+>   		q->nentries;
+>   }
+>   
+> +static inline __u64 xskq_cons_present_entries(struct xsk_queue *q)
+
+Types prefixed with __ are mainly for user-space facing things like uapi headers,
+so in-kernel should be u64. Is there a reason this is not done as u32 (and thus
+same as producer and producer)?
+
+> +{
+> +	/* No barriers needed since data is not accessed */
+> +	return READ_ONCE(q->ring->producer) - READ_ONCE(q->ring->consumer);
+> +}
+> +
+>   /* Functions for producers */
+>   
+>   static inline u32 xskq_prod_nb_free(struct xsk_queue *q, u32 max)
 > 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next] libbpf: replace size_t with __u32 in xsk interfaces
-    https://git.kernel.org/bpf/bpf-next/c/105c4e75feb4
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
 
