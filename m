@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14B022C7271
-	for <lists+bpf@lfdr.de>; Sat, 28 Nov 2020 23:09:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E57E62C7277
+	for <lists+bpf@lfdr.de>; Sat, 28 Nov 2020 23:09:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389829AbgK1VuI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S2389820AbgK1VuI (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Sat, 28 Nov 2020 16:50:08 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:57304 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726314AbgK1SUU (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 28 Nov 2020 13:20:20 -0500
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AS5crdY013476;
-        Fri, 27 Nov 2020 21:39:14 -0800
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:27602 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731449AbgK1SCj (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 28 Nov 2020 13:02:39 -0500
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AS5oZos016483;
+        Fri, 27 Nov 2020 21:53:10 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
  references : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=kI9U4sQ13PXtaHpNKI16fURLzpUfgjMR1GsiJ89irq4=;
- b=W8YtbkkMMWIOb/+RTJuxbbWCrbhMVXV5W38Bgt8YgOUNicISOqPg0OefSPa2ZbbAe4tc
- rzmWJTURxD4cL2apgwXGe1Zk71OU/Y1nLQPm2XGWBYK7+5A/PjKXbyf4EREcdWBC23N2
- //bAd4EMHRDrImas/c1fayBUfzqG3usRp8U= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 35397ah7ka-1
+ bh=R7U0eosPby3JTqhJVkY+ckfc49RGGjjUqM8zASPBHM0=;
+ b=CFtdPZkbiCQ4LAsfMAa2L05zzbCjBSw2I37yc5vYS6gqd61BzBGowTtaPLmuhfeHpiRP
+ QCwhkSdA2BjbbS5RG7n6wQUrfPPdXECmDUb4TB5S/Xm+/AHe4irCeEmePjGPqo4pRJ0B
+ b4/4zgLadZ1p8DMDBe5AsvmLK9QfhLY6f1Q= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3536c31yh9-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 27 Nov 2020 21:39:14 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
+        Fri, 27 Nov 2020 21:53:10 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.229) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 27 Nov 2020 21:39:13 -0800
+ 15.1.1979.3; Fri, 27 Nov 2020 21:53:09 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lvGyb10rl12aaiZ33lWO2RQ2DxVBkXtNg6Ukio/g+4zyiBVR77WjZZawcUWudXUXbiT61fyEvg1Rhabe3zAsNE/TzeYsk1azCNiBZe/QInZ+olB6N3m2jMzfuthHRGzO202/e5i+JwSExVhpU9OdZZj8zTP73/dIBGwca28gEPhIq5PXTkawilZ31+/5Co+c63iWTFQBUQiNCB0yfJq+AuM7uOGLBPBR1FhxnuwLfSDmpfs/z01Y+oGEqdXkpzlpXAbCyjngJFCRwYTb8UBS3pP3pDAu3ZpBifzL8yZWL8cLJrwF5LcYjmZ+CZZr+XORQRVnC6zquuEGOqchwtOruA==
+ b=W8mfGtTcac6I9ZrMfoM3O1F6P1M/elMVNsVGd3WkN1ED//o+phY0z0YfWhmVf1TPMUI+6TAcXapCm6xGtWK1X/ZLXN0kxAhr5eRaOMh6aWhDNM99eAZ0AnYtJjBuRiZnrQ0fguL02+IEEPFi3GqxQLvCHiyVJLbDaMc7/UNSRlpTd3ngs8N6AsaaLD0owj5J6CXsHZzGHIB69mYeJ9gK012Kn0iI3PuwE6s5y40sKDr9bRFllDZpNERcKsLdmUwY7PCFvTIKNbdMJlyS0Y5l7ZzmI5hFfBetTZPsHKJqlyNVHPcCVxV4Hgb8HXPe0CiDaHri65uLUkS2e2UR0Q0KkQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kI9U4sQ13PXtaHpNKI16fURLzpUfgjMR1GsiJ89irq4=;
- b=e3aFoIHmGyBXxisjPns7VJaWNOS4d43m7d40ZGMynBHaykyfiIAebAwE06zYvCc82edV+IW9h9FGjwoIaQEdi9QbMHjYuqEKH5Xl/eV5f8kWxXDDQSGrx4NniAYWYMat/ckYiio1xQZmOW++3G2B+KQsxl3p7LZawNxn7mPfUgM9I/SIMJ3+dTsC8hLtXa4oj/wy1O1abWb9VUXOHFNAvarVgi2669HEetlEE1RfcGU6TJ5iTpU9VXzOXWZJ0kiZay5s7+H+MKxcrtyiIi9ul5nMy1sD/D3mVivtnf8yGRPy9OeEk6CofV8XrGvqjJUZXd4/53CvXi8WMUwh0sBaKg==
+ bh=YtIUjV9tBRdQZy4O5rc/pRgsDUakxd8dSGoNVg13cOM=;
+ b=gAGd3CwFFFEG/PygysR1iKd6RaZEfAncrFficxgcjdL8T90FDv4981OxTF3nckAa1JyrvI5yREZRfx5dy7iBluIrlb3YlNs1mKHO+YtH4UQD2kYmd1zkugzBCm51IPlaOuxAUlFeDCQ7k/wIOxTMzoMtlF5Eq3SGvSH1wiTB/CdKfBUpCIMkVL9b2Rkn2dil+725b3naBsfKgMKssnsjhnxC8n800HAAtFgFKjgpRbm9O+5l8BhXxQJr5jVBOPtEgYtDKCU79KHh91RmF1Z2BuPIsMTETY5q2Zit35KzJoGZQ6HtQL/fiMmFaePzcI1Y329qUFUflb+fN1+t4CIA5w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kI9U4sQ13PXtaHpNKI16fURLzpUfgjMR1GsiJ89irq4=;
- b=Axa28WgwTrm+vkd8/3qIS2b7dNgnAM2qdjzMNa9OsSERyyPKofvAdARoLd+RBg3c9w7R6k8BwSehdgYhdxkBo3aM1VUr0fnQnwEEMBRbIqGdi/7llEUawGUUtw1gdCC5ciR/MNgC4yvWpNQVg0o5Y+xhg09Ues6UUQ1939xzQ98=
+ bh=YtIUjV9tBRdQZy4O5rc/pRgsDUakxd8dSGoNVg13cOM=;
+ b=FJAiLheKLRwx/Z0oqHSCzR2wY4wS3CkPbSToU69W0B3OVF5/Bq3Us23XqZWqaT/aDSzDy6EyNbQcvcXbtyo3WzhGtTVCfYXUPM1vFOIwpPpi+QISVd32U3GH+9ROfc4mdoD/yFr/nkxEvTBS1NSuwJioV0hIjZGmSj1wKzl3my4=
 Authentication-Results: google.com; dkim=none (message not signed)
  header.d=none;google.com; dmarc=none action=none header.from=fb.com;
 Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB2566.namprd15.prod.outlook.com (2603:10b6:a03:150::24) with
+ by SJ0PR15MB4203.namprd15.prod.outlook.com (2603:10b6:a03:2e8::18) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.25; Sat, 28 Nov
- 2020 05:39:12 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3564.25; Sat, 28 Nov
+ 2020 05:53:08 +0000
 Received: from BYAPR15MB4088.namprd15.prod.outlook.com
  ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
  ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3611.025; Sat, 28 Nov 2020
- 05:39:12 +0000
-Subject: Re: [PATCH v2 bpf-next 11/13] bpf: Add bitwise atomic instructions
+ 05:53:07 +0000
+Subject: Re: [PATCH v2 bpf-next 00/13] Atomics for eBPF
 To:     Brendan Jackman <jackmanb@google.com>, <bpf@vger.kernel.org>
 CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -63,75 +63,75 @@ CC:     Alexei Starovoitov <ast@kernel.org>,
         Florent Revest <revest@chromium.org>,
         <linux-kernel@vger.kernel.org>, Jann Horn <jannh@google.com>
 References: <20201127175738.1085417-1-jackmanb@google.com>
- <20201127175738.1085417-12-jackmanb@google.com>
 From:   Yonghong Song <yhs@fb.com>
-Message-ID: <d2e093c3-79bc-0a6b-8919-c5a07667926a@fb.com>
-Date:   Fri, 27 Nov 2020 21:39:10 -0800
+Message-ID: <829353e6-d90a-a91a-418b-3c2556061cda@fb.com>
+Date:   Fri, 27 Nov 2020 21:53:05 -0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.5.0
-In-Reply-To: <20201127175738.1085417-12-jackmanb@google.com>
+In-Reply-To: <20201127175738.1085417-1-jackmanb@google.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 X-Originating-IP: [2620:10d:c090:400::5:fca2]
-X-ClientProxiedBy: MW4PR03CA0071.namprd03.prod.outlook.com
- (2603:10b6:303:b6::16) To BYAPR15MB4088.namprd15.prod.outlook.com
+X-ClientProxiedBy: MWHPR22CA0070.namprd22.prod.outlook.com
+ (2603:10b6:300:12a::32) To BYAPR15MB4088.namprd15.prod.outlook.com
  (2603:10b6:a02:c3::18)
-MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21c8::102b] (2620:10d:c090:400::5:fca2) by MW4PR03CA0071.namprd03.prod.outlook.com (2603:10b6:303:b6::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.22 via Frontend Transport; Sat, 28 Nov 2020 05:39:11 +0000
+Received: from [IPv6:2620:10d:c085:21c8::102b] (2620:10d:c090:400::5:fca2) by MWHPR22CA0070.namprd22.prod.outlook.com (2603:10b6:300:12a::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.22 via Frontend Transport; Sat, 28 Nov 2020 05:53:07 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0e9a6bba-ea6c-489d-7f09-08d8935fefab
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2566:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2566080194FC06EF8E21FEFFD3F70@BYAPR15MB2566.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 6a27c699-9d82-4156-5318-08d89361e17e
+X-MS-TrafficTypeDiagnostic: SJ0PR15MB4203:
+X-Microsoft-Antispam-PRVS: <SJ0PR15MB4203842F17A8BD530EBBEDB2D3F70@SJ0PR15MB4203.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:186;
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dD1jY4x2QgWaigGVJJ7lDX/g8Fdapcc9aRbV3O0QEukBtJymUC2tWQM5sAkZq9itK/6ZLoX0AlCRlK4idhvr+vOXEFkT3uoRrXzSg8lKQ1w2CFXDqVuBDcxwa4SXb8vNQG51WxUNLNq76pxuPt45DvtTzFuE7x8yxmim5xy8JTPiJibLl9Ooq/5uJ5MifrCjBYsIgQj4Y6eupiHrJC9vlvZ6v/XoSa1L+VFgN9Yct12VvHFWfoOKZF13/eBmVT4YuSoB9gBtIFYR3nsD6W1YXCCY2y9ZRnnaTBnyRLNN6btvJzkpfVbMhYQnhWuN8sDXToQ+j8nrRhMXnWDGc/oQ54BFvR5N3frdWLBx30qTFVrYpk4+iQvjL0+lepA06vtb
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(376002)(366004)(346002)(39860400002)(52116002)(54906003)(86362001)(6486002)(5660300002)(83380400001)(316002)(66556008)(66476007)(66946007)(53546011)(4326008)(2906002)(8676002)(16526019)(31696002)(186003)(8936002)(36756003)(2616005)(31686004)(478600001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?UExaZHNjQThCSDB4UjZPaWdyMHpRS1RLTHFYVkZyUWxPdjhJWjBMazZiQ1Fj?=
- =?utf-8?B?U1RhWTVGNFErYzh5ZUF1VlhYLzdEd0pHVTNaUjYyVUpBVjZ6eW94clN5aWpp?=
- =?utf-8?B?SWprOEFXMmxKdUZ2YVphbDMrQzhXMGROdHFiRm8xUE5LSzR0MENPUDZ1cHVj?=
- =?utf-8?B?YWkrdWw3dUdMdzdydW15eGRIL1BSWDdpSzZUUXo5MGt1K0FhVVdtc0ZqeDND?=
- =?utf-8?B?RnJnNjdFOWFmdEtHY2tkeWJxWVhiZEVNc0FJK1hYeEpQY2JHdWpPYy91ZzEx?=
- =?utf-8?B?WDg3ODJPbDJsL2RGdXBuVkJjZzRUcXVIUVVkN1lDN2R0ZkRrbTlzek9zcTVu?=
- =?utf-8?B?QVA2UjMwSXBJWlRaa2hSTEIvZ3hJN1c3WjY0ODgxVWJPb0t4aDNHaG04RXNq?=
- =?utf-8?B?S1VOZGcrbytLVXA5SzBDNlh2MVU1SzJsQW1oWU4xazFTSE1ES2J0NytOcUlM?=
- =?utf-8?B?cFRtMWJnSlRCTlFYWmp4WEg4TUlYeEVyY1Z2MjNuT281M2FEYkZtT1gxV1Bm?=
- =?utf-8?B?MnhqL3NjWFhZbFBXeVU5RVFTN0N0ZXNvTWcyMGVyemlnRU85Q2lZQ25pVU9x?=
- =?utf-8?B?N0ptNk9KWkJkOXN1Y3FaK1Y2NEdobTBzVnNzeEhFRU9VSHNIYUg4eXdLdmxH?=
- =?utf-8?B?amZqRStzMklVVTJRUFdHNHpuWFlyZmlNUnhUY2lqd21sd0U0eitpczJEZURp?=
- =?utf-8?B?NTRvZXZCR1pBdkd5QzgzQS9JeS9UVkpsVkwrSmZqUVYwN2pKVldaZnlLaGs5?=
- =?utf-8?B?V2RmSDhqNW9nTUlJbXFuaHQ3VE5BNHgxMWtpaGhHbXpSNjJybVFMZitOemZC?=
- =?utf-8?B?dWNEVXZYUHNvTUJzOWJqMTZWU0FZTmIwOGQzWVpZQm84UWVrWHB0Y1A2TXJk?=
- =?utf-8?B?ZmN2cDZWN29odEdGcmp2eElXbzg3ZUV6cFlHOXovdjg0WXUxRSsxYklsd0hL?=
- =?utf-8?B?TEJhckpZblk2UWRRRHdITVh1dDgxL3EvMEhzN2VPRzRVUEVUN3I4YTFtTnRJ?=
- =?utf-8?B?UUExTEJTd01lV1FlVGJkcUdKblgvbG5uNEduTnplREI0dnRiTWZsNlRqcFZM?=
- =?utf-8?B?aGVreDhkQnRzRzVWUWNPdXY3eFNSMDNZZG9rOVlrRTc3a29jK0JkNTZyRWt6?=
- =?utf-8?B?ZDNCTm42SjZ1c2dISCtlMGNDL3BQZnFyTVozMjNPMmVTVE85aW4vTy94N0VD?=
- =?utf-8?B?Uk5KVG13T0RpNDNoS2RBQi9DQlRIdWtlZ3ZPMkdJczNYSkRzTi8wUUVYd1Fh?=
- =?utf-8?B?dVFwSjlDY3RlaVYyaFdkWmZRdFRlNWExQUVMWEVxTXI4SGkwUzV3NllIVVBk?=
- =?utf-8?B?N21wUG5HeVVBOEMrNk9TZFEvbEJkWjBvSVVLSEVOVklmblRoZFFnamRvNVd1?=
- =?utf-8?B?bHBSZnp2bnhxdGc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0e9a6bba-ea6c-489d-7f09-08d8935fefab
+X-Microsoft-Antispam-Message-Info: 9MOTL57apLhaTnhwHQTS7JLXRtOv6eTsDhn9lkTio+Yj4zVUz2QKIuvJLyGoITikRK1EQKg3EOfGsdb+g+UMYxyD2nFzMgHv9Dn3oTzuEWKLGjLLbeF+u1YQMaAYtirN81bwvcEKpQgvMQQ40u/Ams7Xzqv6PJMjasPvBAmmk2f4s57qzlMCeiOTYPN0zzzSeuONeFxqC4nKHfT3rFJ1Nm5CwCWIQCbHZ9uv7GdCVSC0Eo64lSIvpwMyMfMigVhNIWVRY9tKIivuFXvLYEhRl/CH+pb2d7WavlDu4yIsSqM7t7h67RBiomRY1M+KR4DIBpVKQv1s7+hR1/711KfQzsg1TIalbXWS2trDaqR+xOxZ6vGWfRvCpLaUPJAYfJ/qdyDu3jVc//F94vlwZ9BxMdTAWN5oiQ6LFX9Za5NHsfrAcbbXGYClDoBRGpuLOu/LmMj6YhPG6nsvBY+VPMutNg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(346002)(136003)(366004)(376002)(39860400002)(36756003)(83380400001)(5660300002)(52116002)(4326008)(6486002)(66946007)(966005)(16526019)(53546011)(66476007)(31696002)(8936002)(86362001)(31686004)(8676002)(478600001)(2906002)(54906003)(2616005)(66556008)(316002)(186003)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?czlmcms5S0hxcHJJM0NyNFR0ejNnRDQ0QWU4MERiS29lbE5Eemc5bU9WNElt?=
+ =?utf-8?B?L3JCQWlOYmw4VGdjZTlKNFZkNXVwb1hpSlZsMDdISlpUTko4cWFsOFJ4L04v?=
+ =?utf-8?B?TnlQYTl5T1RudnpiTFI3V1I1ejRCQUI0S3FtVWhKUk9vdWc2eXRSSktKZDJO?=
+ =?utf-8?B?djJabWM4dDRkSzF0QWE1RWxraS9sQXBNZWJnUktLMEtmcHVnb1cyTGdzQjAv?=
+ =?utf-8?B?Sy9odmN4WGR1bFVsaTh6VXNEYnI1dUdPakhxcEMwUmhPeW9mT1poeDNnSkN3?=
+ =?utf-8?B?cGhBZy9ZVFNFU09hR2JtR0J0TXJxa1RpTFhYQ2wybldPdTkyWnkrekQ5Sk9Q?=
+ =?utf-8?B?dnFaVlFCRElscEx2N2l5eWZtcjd0MHZtWCtmd0JSZVEzU3hyaE02Zy9QRVlT?=
+ =?utf-8?B?Uy9JYm5GUUZoU2NWRmkzNDJqUU9vaTNuY0ZsajV1T3ZiQ3F2dFdYUzQ0bFBG?=
+ =?utf-8?B?dGNVMlpyZDVPTGw3b2tZbmhhMDloRVdaeHgzRjBzbTA3Wkt0TkhrR3FzeFpJ?=
+ =?utf-8?B?aVZYcEhGWU00bXprQ05CcXFCbFZHM3o5d1pDVGlYTGRYRkpvNkN1RUQrTzFi?=
+ =?utf-8?B?ZzJIdWNJYS9OTlloY0t2NlVEVnN2Q2EwSUZxTXlLKzBmMGlSeVhDbnlqdnVv?=
+ =?utf-8?B?OFcwR2pXZWphZGNzSnFkZHFzdkU3Y29yV2tBNUR6cG80dzRlTGNCSS9JTjFU?=
+ =?utf-8?B?aWpSZTVBSkxvVWg0UFhmQ0ZZZnl6RUtjbGVJUzhSYmdkQ3gzWXNCRnAydVpl?=
+ =?utf-8?B?clV6VE9Ld1VxVTVKT2hBS0VvK3VVWitlaGRhaHo4Y2lLS1owa0Q3OG00UXd3?=
+ =?utf-8?B?cGt4OGErSWJwNVU4TFdlN29pdzdWZjlibDIwZDhkTzQwZERiZjJtUUl5SU1w?=
+ =?utf-8?B?MUFsZFAyMW8wTzFtcEo3YUpBR01sdmZPb05TL2d5Q051dklDYzE1aHhqR2Z2?=
+ =?utf-8?B?dW1NeVJTbTROUlkzZ3UxdlNvcWVuU3NDSXM3ZjlmdzFNZGdUS3BLK1NMcTRC?=
+ =?utf-8?B?Ri9LYXpld01MNzIvUmRjK09Ba3V6aXBWbTF1NzVIUWFkMjdPRFFXblNPWVRh?=
+ =?utf-8?B?OGxuRHFkY1cyOFZ1bVI1TEJFeGV5UHJoQ25rTXM5emJxL0x5Q1FIRVZUWHRI?=
+ =?utf-8?B?UFhhL2xUMElCdUovejZoK2p1NUtheGFYbmdUTGtRZkJwZlErRzBHUFBubUJM?=
+ =?utf-8?B?WmovSVppS3g4OVVBWSsrRVRmZ2hsMy9hclJQaE56MEdNRy9ERXlvNktJYVNU?=
+ =?utf-8?B?RVlBbzR4dEZPVS9PNUVSVmhYTWJiTkpBVVh1YzJndTF3cCtzSTZIZkE4WDF1?=
+ =?utf-8?B?U3V1bEUrQmxRQTlBOFQ1V1RXcjdEaUNUcDEzbE5xMVlPRGhRSHRNcHBpbnRF?=
+ =?utf-8?B?K1hnalQ0QVRlZHc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6a27c699-9d82-4156-5318-08d89361e17e
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2020 05:39:12.8073
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Nov 2020 05:53:07.9127
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8brLm1mlznMqsrFY0ctGx3+erXilzFim1+kSt7NVp3HFMusDt01sSrSihJ0OeGu/
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2566
+X-MS-Exchange-CrossTenant-UserPrincipalName: OUCvWKVdp9QiEVjD0nAEjPAJvh7weE0mYkNZ7zd34dgNUM3U4ThVtizonr7htlTQ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4203
 X-OriginatorOrg: fb.com
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 1 URL was un-rewritten
+MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
  definitions=2020-11-28_02:2020-11-26,2020-11-28 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- mlxscore=0 impostorscore=0 spamscore=0 bulkscore=0 mlxlogscore=999
- phishscore=0 suspectscore=0 lowpriorityscore=0 adultscore=0 clxscore=1015
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011280040
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0 mlxscore=0
+ phishscore=0 spamscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ lowpriorityscore=0 suspectscore=0 priorityscore=1501 bulkscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011280042
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -140,128 +140,183 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 On 11/27/20 9:57 AM, Brendan Jackman wrote:
-> This adds instructions for
+> Status of the patches
+> =====================
 > 
-> atomic[64]_[fetch_]and
-> atomic[64]_[fetch_]or
-> atomic[64]_[fetch_]xor
+> Thanks for the reviews! Differences from v1->v2 [1]:
 > 
-> All these operations are isomorphic enough to implement with the same
-> verifier, interpreter, and x86 JIT code, hence being a single commit.
+> * Fixed mistakes in the netronome driver
 > 
-> The main interesting thing here is that x86 doesn't directly support
-> the fetch_ version these operations, so we need to generate a CMPXCHG
-> loop in the JIT. This requires the use of two temporary registers,
-> IIUC it's safe to use BPF_REG_AX and x86's AUX_REG for this purpose.
+> * Addd sub, add, or, xor operations
+> 
+> * The above led to some refactors to keep things readable. (Maybe I
+>    should have just waited until I'd implemented these before starting
+>    the review...)
+> 
+> * Replaced BPF_[CMP]SET | BPF_FETCH with just BPF_[CMP]XCHG, which
+>    include the BPF_FETCH flag
+> 
+> * Added a bit of documentation. Suggestions welcome for more places
+>    to dump this info...
+> 
+> The prog_test that's added depends on Clang/LLVM features added by
+> Yonghong in https://reviews.llvm.org/D72184
+> 
+> This only includes a JIT implementation for x86_64 - I don't plan to
+> implement JIT support myself for other architectures.
+> 
+> Operations
+> ==========
+> 
+> This patchset adds atomic operations to the eBPF instruction set. The
+> use-case that motivated this work was a trivial and efficient way to
+> generate globally-unique cookies in BPF progs, but I think it's
+> obvious that these features are pretty widely applicable.  The
+> instructions that are added here can be summarised with this list of
+> kernel operations:
+> 
+> * atomic[64]_[fetch_]add
+> * atomic[64]_[fetch_]sub
+> * atomic[64]_[fetch_]and
+> * atomic[64]_[fetch_]or
 
-similar to previous xsub (atomic[64]_sub), should we implement
-xand, xor, xxor in llvm?
+* atomic[64]_[fetch_]xor
+
+> * atomic[64]_xchg
+> * atomic[64]_cmpxchg
+
+Thanks. Overall looks good to me but I did not check carefully
+on jit part as I am not an expert in x64 assembly...
+
+This patch also introduced atomic[64]_{sub,and,or,xor}, similar to
+xadd. I am not sure whether it is necessary. For one thing,
+users can just use atomic[64]_fetch_{sub,and,or,xor} to ignore
+return value and they will achieve the same result, right?
+ From llvm side, there is no ready-to-use gcc builtin matching
+atomic[64]_{sub,and,or,xor} which does not have return values.
+If we go this route, we will need to invent additional bpf
+specific builtins.
 
 > 
-> Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> ---
->   arch/x86/net/bpf_jit_comp.c  | 49 ++++++++++++++++++++++++++++-
->   include/linux/filter.h       | 60 ++++++++++++++++++++++++++++++++++++
->   kernel/bpf/core.c            |  5 ++-
->   kernel/bpf/disasm.c          |  7 +++--
->   kernel/bpf/verifier.c        |  6 ++++
->   tools/include/linux/filter.h | 60 ++++++++++++++++++++++++++++++++++++
->   6 files changed, 183 insertions(+), 4 deletions(-)
+> The following are left out of scope for this effort:
 > 
-> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index a8a9fab13fcf..46b977ee21c4 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -823,8 +823,11 @@ static int emit_atomic(u8 **pprog, u8 atomic_op,
->   
->   	/* emit opcode */
->   	switch (atomic_op) {
-> -	case BPF_SUB:
->   	case BPF_ADD:
-> +	case BPF_SUB:
-> +	case BPF_AND:
-> +	case BPF_OR:
-> +	case BPF_XOR:
->   		/* lock *(u32/u64*)(dst_reg + off) <op>= src_reg */
->   		EMIT1(simple_alu_opcodes[atomic_op]);
->   		break;
-> @@ -1307,6 +1310,50 @@ st:			if (is_imm8(insn->off))
->   
->   		case BPF_STX | BPF_ATOMIC | BPF_W:
->   		case BPF_STX | BPF_ATOMIC | BPF_DW:
-> +			if (insn->imm == (BPF_AND | BPF_FETCH) ||
-> +			    insn->imm == (BPF_OR | BPF_FETCH) ||
-> +			    insn->imm == (BPF_XOR | BPF_FETCH)) {
-> +				u8 *branch_target;
-> +				bool is64 = BPF_SIZE(insn->code) == BPF_DW;
-> +
-> +				/*
-> +				 * Can't be implemented with a single x86 insn.
-> +				 * Need to do a CMPXCHG loop.
-> +				 */
-> +
-> +				/* Will need RAX as a CMPXCHG operand so save R0 */
-> +				emit_mov_reg(&prog, true, BPF_REG_AX, BPF_REG_0);
-> +				branch_target = prog;
-> +				/* Load old value */
-> +				emit_ldx(&prog, BPF_SIZE(insn->code),
-> +					 BPF_REG_0, dst_reg, insn->off);
-> +				/*
-> +				 * Perform the (commutative) operation locally,
-> +				 * put the result in the AUX_REG.
-> +				 */
-> +				emit_mov_reg(&prog, is64, AUX_REG, BPF_REG_0);
-> +				maybe_emit_rex(&prog, AUX_REG, src_reg, is64);
-> +				EMIT2(simple_alu_opcodes[BPF_OP(insn->imm)],
-> +				      add_2reg(0xC0, AUX_REG, src_reg));
-> +				/* Attempt to swap in new value */
-> +				err = emit_atomic(&prog, BPF_CMPXCHG,
-> +						  dst_reg, AUX_REG, insn->off,
-> +						  BPF_SIZE(insn->code));
-> +				if (WARN_ON(err))
-> +					return err;
-> +				/*
-> +				 * ZF tells us whether we won the race. If it's
-> +				 * cleared we need to try again.
-> +				 */
-> +				EMIT2(X86_JNE, -(prog - branch_target) - 2);
-> +				/* Return the pre-modification value */
-> +				emit_mov_reg(&prog, is64, src_reg, BPF_REG_0);
-> +				/* Restore R0 after clobbering RAX */
-> +				emit_mov_reg(&prog, true, BPF_REG_0, BPF_REG_AX);
-> +				break;
-> +
-> +			}
-> +
->   			if (insn->imm == (BPF_SUB | BPF_FETCH)) {
->   				/*
->   				 * x86 doesn't have an XSUB insn, so we negate
-> diff --git a/include/linux/filter.h b/include/linux/filter.h
-> index a20a3a536bf5..cb5d865cce3c 100644
-> --- a/include/linux/filter.h
-> +++ b/include/linux/filter.h
-> @@ -300,6 +300,66 @@ static inline bool insn_is_zext(const struct bpf_insn *insn)
->   		.off   = OFF,					\
->   		.imm   = BPF_SUB | BPF_FETCH })
->   
-> +/* Atomic memory and, *(uint *)(dst_reg + off16) -= src_reg */
-> +
-> +#define BPF_ATOMIC_AND(SIZE, DST, SRC, OFF)			\
-> +	((struct bpf_insn) {					\
-> +		.code  = BPF_STX | BPF_SIZE(SIZE) | BPF_ATOMIC,	\
-> +		.dst_reg = DST,					\
-> +		.src_reg = SRC,					\
-> +		.off   = OFF,					\
-> +		.imm   = BPF_AND })
-> +
-> +/* Atomic memory and with fetch, src_reg = atomic_fetch_and(*(dst_reg + off), src_reg); */
-> +
-> +#define BPF_ATOMIC_FETCH_AND(SIZE, DST, SRC, OFF)		\
-> +	((struct bpf_insn) {					\
-> +		.code  = BPF_STX | BPF_SIZE(SIZE) | BPF_ATOMIC,	\
-> +		.dst_reg = DST,					\
-> +		.src_reg = SRC,					\
-> +		.off   = OFF,					\
-> +		.imm   = BPF_AND | BPF_FETCH })
-> +
-[...]
+> * 16 and 8 bit operations
+> * Explicit memory barriers
+> 
+> Encoding
+> ========
+> 
+> I originally planned to add new values for bpf_insn.opcode. This was
+> rather unpleasant: the opcode space has holes in it but no entire
+> instruction classes[2]. Yonghong Song had a better idea: use the
+> immediate field of the existing STX XADD instruction to encode the
+> operation. This works nicely, without breaking existing programs,
+> because the immediate field is currently reserved-must-be-zero, and
+> extra-nicely because BPF_ADD happens to be zero.
+> 
+> Note that this of course makes immediate-source atomic operations
+> impossible. It's hard to imagine a measurable speedup from such
+> instructions, and if it existed it would certainly not benefit x86,
+> which has no support for them.
+> 
+> The BPF_OP opcode fields are re-used in the immediate, and an
+> additional flag BPF_FETCH is used to mark instructions that should
+> fetch a pre-modification value from memory.
+> 
+> So, BPF_XADD is now called BPF_ATOMIC (the old name is kept to avoid
+> breaking userspace builds), and where we previously had .imm = 0, we
+> now have .imm = BPF_ADD (which is 0).
+> 
+> Operands
+> ========
+> 
+> Reg-source eBPF instructions only have two operands, while these
+> atomic operations have up to four. To avoid needing to encode
+> additional operands, then:
+> 
+> - One of the input registers is re-used as an output register
+>    (e.g. atomic_fetch_add both reads from and writes to the source
+>    register).
+> 
+> - Where necessary (i.e. for cmpxchg) , R0 is "hard-coded" as one of
+>    the operands.
+> 
+> This approach also allows the new eBPF instructions to map directly
+> to single x86 instructions.
+> 
+> [1] Previous patchset:
+>      https://lore.kernel.org/bpf/20201123173202.1335708-1-jackmanb@google.com/
+> 
+> [2] Visualisation of eBPF opcode space:
+>      https://gist.github.com/bjackman/00fdad2d5dfff601c1918bc29b16e778
+> 
+> 
+> Brendan Jackman (13):
+>    bpf: x86: Factor out emission of ModR/M for *(reg + off)
+>    bpf: x86: Factor out emission of REX byte
+>    bpf: x86: Factor out function to emit NEG
+>    bpf: x86: Factor out a lookup table for some ALU opcodes
+>    bpf: Rename BPF_XADD and prepare to encode other atomics in .imm
+>    bpf: Move BPF_STX reserved field check into BPF_STX verifier code
+>    bpf: Add BPF_FETCH field / create atomic_fetch_add instruction
+>    bpf: Add instructions for atomic_[cmp]xchg
+>    bpf: Pull out a macro for interpreting atomic ALU operations
+>    bpf: Add instructions for atomic[64]_[fetch_]sub
+>    bpf: Add bitwise atomic instructions
+>    bpf: Add tests for new BPF atomic operations
+>    bpf: Document new atomic instructions
+> 
+>   Documentation/networking/filter.rst           |  57 ++-
+>   arch/arm/net/bpf_jit_32.c                     |   7 +-
+>   arch/arm64/net/bpf_jit_comp.c                 |  16 +-
+>   arch/mips/net/ebpf_jit.c                      |  11 +-
+>   arch/powerpc/net/bpf_jit_comp64.c             |  25 +-
+>   arch/riscv/net/bpf_jit_comp32.c               |  20 +-
+>   arch/riscv/net/bpf_jit_comp64.c               |  16 +-
+>   arch/s390/net/bpf_jit_comp.c                  |  27 +-
+>   arch/sparc/net/bpf_jit_comp_64.c              |  17 +-
+>   arch/x86/net/bpf_jit_comp.c                   | 252 ++++++++++----
+>   arch/x86/net/bpf_jit_comp32.c                 |   6 +-
+>   drivers/net/ethernet/netronome/nfp/bpf/jit.c  |  14 +-
+>   drivers/net/ethernet/netronome/nfp/bpf/main.h |   4 +-
+>   .../net/ethernet/netronome/nfp/bpf/verifier.c |  15 +-
+>   include/linux/filter.h                        | 117 ++++++-
+>   include/uapi/linux/bpf.h                      |   8 +-
+>   kernel/bpf/core.c                             |  67 +++-
+>   kernel/bpf/disasm.c                           |  41 ++-
+>   kernel/bpf/verifier.c                         |  77 +++-
+>   lib/test_bpf.c                                |   2 +-
+>   samples/bpf/bpf_insn.h                        |   4 +-
+>   samples/bpf/sock_example.c                    |   2 +-
+>   samples/bpf/test_cgrp2_attach.c               |   4 +-
+>   tools/include/linux/filter.h                  | 117 ++++++-
+>   tools/include/uapi/linux/bpf.h                |   8 +-
+>   tools/testing/selftests/bpf/Makefile          |  12 +-
+>   .../selftests/bpf/prog_tests/atomics_test.c   | 329 ++++++++++++++++++
+>   .../bpf/prog_tests/cgroup_attach_multi.c      |   4 +-
+>   .../selftests/bpf/progs/atomics_test.c        | 124 +++++++
+>   .../selftests/bpf/verifier/atomic_and.c       |  77 ++++
+>   .../selftests/bpf/verifier/atomic_cmpxchg.c   |  96 +++++
+>   .../selftests/bpf/verifier/atomic_fetch_add.c | 106 ++++++
+>   .../selftests/bpf/verifier/atomic_or.c        |  77 ++++
+>   .../selftests/bpf/verifier/atomic_sub.c       |  44 +++
+>   .../selftests/bpf/verifier/atomic_xchg.c      |  46 +++
+>   .../selftests/bpf/verifier/atomic_xor.c       |  77 ++++
+>   tools/testing/selftests/bpf/verifier/ctx.c    |   7 +-
+>   .../testing/selftests/bpf/verifier/leak_ptr.c |   4 +-
+>   tools/testing/selftests/bpf/verifier/unpriv.c |   3 +-
+>   tools/testing/selftests/bpf/verifier/xadd.c   |   2 +-
+>   40 files changed, 1754 insertions(+), 188 deletions(-)
+>   create mode 100644 tools/testing/selftests/bpf/prog_tests/atomics_test.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/atomics_test.c
+>   create mode 100644 tools/testing/selftests/bpf/verifier/atomic_and.c
+>   create mode 100644 tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c
+>   create mode 100644 tools/testing/selftests/bpf/verifier/atomic_fetch_add.c
+>   create mode 100644 tools/testing/selftests/bpf/verifier/atomic_or.c
+>   create mode 100644 tools/testing/selftests/bpf/verifier/atomic_sub.c
+>   create mode 100644 tools/testing/selftests/bpf/verifier/atomic_xchg.c
+>   create mode 100644 tools/testing/selftests/bpf/verifier/atomic_xor.c
+> 
+> --
+> 2.29.2.454.gaff20da3a2-goog
+> 
