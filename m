@@ -2,108 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBB0F2C6E0A
-	for <lists+bpf@lfdr.de>; Sat, 28 Nov 2020 02:00:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 388232C6E03
+	for <lists+bpf@lfdr.de>; Sat, 28 Nov 2020 01:55:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732231AbgK1A5c (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 27 Nov 2020 19:57:32 -0500
-Received: from www62.your-server.de ([213.133.104.62]:53834 "EHLO
+        id S1730484AbgK1AzS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 27 Nov 2020 19:55:18 -0500
+Received: from www62.your-server.de ([213.133.104.62]:53678 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731028AbgK1A4s (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 27 Nov 2020 19:56:48 -0500
-Received: from 30.101.7.85.dynamic.wline.res.cust.swisscom.ch ([85.7.101.30] helo=localhost)
+        with ESMTP id S1732191AbgK1AzE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 27 Nov 2020 19:55:04 -0500
+Received: from sslproxy03.your-server.de ([88.198.220.132])
         by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92.3)
         (envelope-from <daniel@iogearbox.net>)
-        id 1kioS8-0004Es-OG; Sat, 28 Nov 2020 01:51:04 +0100
+        id 1kioV9-0004XD-ON; Sat, 28 Nov 2020 01:54:11 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kioV9-0006Jr-Dx; Sat, 28 Nov 2020 01:54:11 +0100
+Subject: Re: [PATCH] bpf: remove trailing semicolon in macro definition
+To:     trix@redhat.com, ast@kernel.org, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@chromium.org, rostedt@goodmis.org, mingo@redhat.com,
+        davem@davemloft.net, kuba@kernel.org, hawk@kernel.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201127192734.2865832-1-trix@redhat.com>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, daniel@iogearbox.net, ast@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: pull-request: bpf 2020-11-28
-Date:   Sat, 28 Nov 2020 01:51:04 +0100
-Message-Id: <20201128005104.1205-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+Message-ID: <d7168ec4-040c-851d-f294-709315d13a2f@iogearbox.net>
+Date:   Sat, 28 Nov 2020 01:54:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201127192734.2865832-1-trix@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.102.4/26001/Fri Nov 27 14:45:56 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David, hi Jakub,
+On 11/27/20 8:27 PM, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> The macro use will already have a semicolon.
+> 
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> ---
+>   include/trace/events/xdp.h | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/trace/events/xdp.h b/include/trace/events/xdp.h
+> index cd24e8a59529..65ffedf8386f 100644
+> --- a/include/trace/events/xdp.h
+> +++ b/include/trace/events/xdp.h
+> @@ -146,13 +146,13 @@ DEFINE_EVENT(xdp_redirect_template, xdp_redirect_err,
+>   );
+>   
+>   #define _trace_xdp_redirect(dev, xdp, to)		\
+> -	 trace_xdp_redirect(dev, xdp, NULL, 0, NULL, to);
+> +	 trace_xdp_redirect(dev, xdp, NULL, 0, NULL, to)
+>   
+>   #define _trace_xdp_redirect_err(dev, xdp, to, err)	\
+>   	 trace_xdp_redirect_err(dev, xdp, NULL, err, NULL, to);
+>   
+>   #define _trace_xdp_redirect_map(dev, xdp, to, map, index)		\
+> -	 trace_xdp_redirect(dev, xdp, to, 0, map, index);
+> +	 trace_xdp_redirect(dev, xdp, to, 0, map, index)
+>   
+>   #define _trace_xdp_redirect_map_err(dev, xdp, to, map, index, err)	\
+>   	 trace_xdp_redirect_err(dev, xdp, to, err, map, index);
+> 
 
-The following pull-request contains BPF updates for your *net* tree.
+This looks random, why those but not other locations ?
 
-We've added 6 non-merge commits during the last 6 day(s) which contain
-a total of 9 files changed, 61 insertions(+), 23 deletions(-).
-
-The main changes are:
-
-1) Do not reference the skb for xsk's generic TX side since when looped
-   back into RX it might crash in generic XDP, from Björn Töpel.
-
-2) Fix umem cleanup on a partially set up xsk socket when being destroyed,
-   from Magnus Karlsson.
-
-3) Fix an incorrect netdev reference count when failing xsk_bind() operation,
-   from Marek Majtyka.
-
-4) Fix bpftool to set an error code on failed calloc() in build_btf_type_table(),
-   from Zhen Lei.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Björn Töpel, Hulk Robot, Magnus Karlsson, Marek Majtyka, Yonghong Song
-
-----------------------------------------------------------------
-
-The following changes since commit 3383176efc0fb0c0900a191026468a58668b4214:
-
-  bnxt_en: fix error return code in bnxt_init_board() (2020-11-19 21:49:01 -0800)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
-
-for you to fetch changes up to 9a44bc9449cfe7e39dbadf537ff669fb007a9e63:
-
-  bpf: Add MAINTAINERS entry for BPF LSM (2020-11-25 21:40:27 +0100)
-
-----------------------------------------------------------------
-Björn Töpel (1):
-      net, xsk: Avoid taking multiple skbuff references
-
-Jesper Dangaard Brouer (1):
-      MAINTAINERS: Update XDP and AF_XDP entries
-
-KP Singh (1):
-      bpf: Add MAINTAINERS entry for BPF LSM
-
-Magnus Karlsson (1):
-      xsk: Fix umem cleanup bug at socket destruct
-
-Marek Majtyka (1):
-      xsk: Fix incorrect netdev reference count
-
-Zhen Lei (1):
-      bpftool: Fix error return value in build_btf_type_table
-
- MAINTAINERS               | 23 +++++++++++++++++++++--
- include/linux/netdevice.h | 14 +++++++++++++-
- include/net/xdp_sock.h    |  1 +
- net/core/dev.c            |  8 ++------
- net/xdp/xdp_umem.c        | 19 ++++++++++++++++---
- net/xdp/xdp_umem.h        |  2 +-
- net/xdp/xsk.c             | 10 ++--------
- net/xdp/xsk_buff_pool.c   |  6 ++++--
- tools/bpf/bpftool/btf.c   |  1 +
- 9 files changed, 61 insertions(+), 23 deletions(-)
+Thanks,
+Daniel
