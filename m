@@ -2,98 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 060F22C7279
-	for <lists+bpf@lfdr.de>; Sat, 28 Nov 2020 23:09:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51BB22C7291
+	for <lists+bpf@lfdr.de>; Sat, 28 Nov 2020 23:09:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389854AbgK1VuJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 28 Nov 2020 16:50:09 -0500
-Received: from mx.der-flo.net ([193.160.39.236]:34970 "EHLO mx.der-flo.net"
+        id S2389855AbgK1VuK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 28 Nov 2020 16:50:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387545AbgK1TaG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 28 Nov 2020 14:30:06 -0500
-Received: by mx.der-flo.net (Postfix, from userid 110)
-        id AD6EB444FC; Sat, 28 Nov 2020 20:28:54 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mx.der-flo.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=4.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.2
-Received: from localhost (unknown [IPv6:2a02:1203:ecb0:3930:1751:4157:4d75:a5e2])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2387773AbgK1VJ3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 28 Nov 2020 16:09:29 -0500
+Received: from kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mx.der-flo.net (Postfix) with ESMTPSA id 6FD01444F5;
-        Sat, 28 Nov 2020 20:28:01 +0100 (CET)
-From:   Florian Lehner <dev@der-flo.net>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, john.fastabend@gmail.com,
-        Florian Lehner <dev@der-flo.net>,
-        Krzesimir Nowak <krzesimir@kinvolk.io>
-Subject: [PATCH 2/2] selftests/bpf: Print reason when a tester could not run a program
-Date:   Sat, 28 Nov 2020 20:25:02 +0100
-Message-Id: <20201128192502.88195-3-dev@der-flo.net>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201128192502.88195-1-dev@der-flo.net>
-References: <20201128192502.88195-1-dev@der-flo.net>
+        by mail.kernel.org (Postfix) with ESMTPSA id 9217022240;
+        Sat, 28 Nov 2020 21:08:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606597728;
+        bh=IxBm3yJb5O+bX21JPdDuHm/EmyUrXE0dJRLgAPBi7zk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=uVFGS3Bhno46qEjzleGCbFK930F2Q1pwzZT/UWQnehWyM415oa2Ra1xHwoKr1eGPi
+         KkRs/I0GqRUkjEGlenRBZWgIpYm1iSqDe+27GIyYQ7uoluTIWFN3CIg/nc2thC4YC+
+         6Thb0AnlOwzKyZCA1MmYwOlQNUpCaerbPyq4fORg=
+Date:   Sat, 28 Nov 2020 13:08:47 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     davem@davemloft.net, ast@kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: pull-request: bpf 2020-11-28
+Message-ID: <20201128130847.01b1a600@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <20201128005104.1205-1-daniel@iogearbox.net>
+References: <20201128005104.1205-1-daniel@iogearbox.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Print a message when the returned error is about a program type being
-not supported or because of permission problems.
-These messages are expected if the program to test was actually
-executed.
+On Sat, 28 Nov 2020 01:51:04 +0100 Daniel Borkmann wrote:
+> 1) Do not reference the skb for xsk's generic TX side since when looped
+>    back into RX it might crash in generic XDP, from Bj=C3=B6rn T=C3=B6pel.
+>=20
+> 2) Fix umem cleanup on a partially set up xsk socket when being destroyed,
+>    from Magnus Karlsson.
+>=20
+> 3) Fix an incorrect netdev reference count when failing xsk_bind() operat=
+ion,
+>    from Marek Majtyka.
+>=20
+> 4) Fix bpftool to set an error code on failed calloc() in build_btf_type_=
+table(),
+>    from Zhen Lei.
 
-Cc: Krzesimir Nowak <krzesimir@kinvolk.io>
-Signed-off-by: Florian Lehner <dev@der-flo.net>
----
- tools/testing/selftests/bpf/test_verifier.c | 24 ++++++++++++++++-----
- 1 file changed, 19 insertions(+), 5 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-index ceea9409639e..bd95894b7ea0 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -875,19 +875,33 @@ static int do_prog_test_run(int fd_prog, bool unpriv, uint32_t expected_val,
- 	__u8 tmp[TEST_DATA_LEN << 2];
- 	__u32 size_tmp = sizeof(tmp);
- 	uint32_t retval;
--	int err;
-+	int err, saved_errno;
- 
- 	if (unpriv)
- 		set_admin(true);
- 	err = bpf_prog_test_run(fd_prog, 1, data, size_data,
- 				tmp, &size_tmp, &retval, NULL);
-+	saved_errno = errno;
-+
- 	if (unpriv)
- 		set_admin(false);
--	if (err && errno != 524/*ENOTSUPP*/ && errno != EPERM) {
--		printf("Unexpected bpf_prog_test_run error ");
--		return err;
-+
-+	if (err) {
-+		switch (errno) {
-+		case 524/*ENOTSUPP*/:
-+			printf("Did not run the program (not supported) ");
-+			return 0;
-+		case EPERM:
-+			printf("Did not run the program (no permission) ");
-+			return 0;
-+		default:
-+			printf("FAIL: Unexpected bpf_prog_test_run error (%s) ",
-+				strerror(saved_errno));
-+			return err;
-+		}
- 	}
--	if (!err && retval != expected_val &&
-+
-+	if (retval != expected_val &&
- 	    expected_val != POINTER_VALUE) {
- 		printf("FAIL retval %d != %d ", retval, expected_val);
- 		return 1;
--- 
-2.28.0
-
+Pulled thanks!
