@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B417D2C7720
-	for <lists+bpf@lfdr.de>; Sun, 29 Nov 2020 02:16:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E67A2C7722
+	for <lists+bpf@lfdr.de>; Sun, 29 Nov 2020 02:16:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727427AbgK2BOz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 28 Nov 2020 20:14:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44384 "EHLO
+        id S1726604AbgK2BQl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 28 Nov 2020 20:16:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbgK2BOy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 28 Nov 2020 20:14:54 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5648C0613D1;
-        Sat, 28 Nov 2020 17:14:08 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id s2so4504304plr.9;
-        Sat, 28 Nov 2020 17:14:08 -0800 (PST)
+        with ESMTP id S1726122AbgK2BQl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 28 Nov 2020 20:16:41 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B49F8C0613D1;
+        Sat, 28 Nov 2020 17:15:55 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id s21so7749832pfu.13;
+        Sat, 28 Nov 2020 17:15:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=7Vdc2IIjLuJX89GJ0THfSs30PM6I9wmP3XLI+A572XE=;
-        b=iSRE5RRozVE0f7VVMTLVYqaEiIHzerZCbN2ogjnFS39fxGsLj2JcNHlZk812i090oN
-         v5lQRCWuc/Jap3tICWNtHI+2Db5tBfGzatAtY7KVSAzdYV9K6ev9TuEKi1EHMJHiki8B
-         wh229CzCH6qGVqhpZHjJ8itTsPCRBrrnjACK6IX6Ta2r0Hzz75RxPhwpo/JSfqBZJmFu
-         JcOtzLJOZgyVhbBblP0JiIJXLoRqVA4SgokWZLUXDIY2Ept38NKiSBDrlkXVj+28j+Hl
-         3SHuyDuvHs0rrs0mQzoen4OoX8OtF28TB7ltfeAvDdt8ScB93OCJrCzgcV7l5u8f/2hj
-         G9sQ==
+        bh=nhgDak2gmcRsyajHqGgxRS9WORqPAav0kIUUw3T7Plc=;
+        b=Yb1LcmeNbu8aAtGduGSGTKy4OY7Mec/GByVl5d8Fdmx4B+2eBfGWZvyKFHZuJlokuy
+         ZFkY4yIuuAaNM3butWHC/eqraH+WxEMOuoYF8PU7sj4UBzWjzVOkW6Tkwraoitgfyxj6
+         xctePttTsq96ntG380S4cgzeUzatG5pQd5jP289DPqvLXHgbxBrIj0xHzFU0HqZgqIWE
+         OoUD3yVAATlJDlbS4GQ7B6LD+bNu+/OuWh1BuVPzwdPUg7J4TqCtsZxRweFFzcwgwDlO
+         cfnV7V8qZzbfAHdQXlgVcQiUeQhc/QySh9ZeW1gaGPFrMfZFiE0+e2ptlxnuWKPJW9RI
+         cuvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=7Vdc2IIjLuJX89GJ0THfSs30PM6I9wmP3XLI+A572XE=;
-        b=Troublc+xsy1uRaukGfOLwdT6UwOTbiTlyjwpi1tEQs4apRJH6p/xsdQRlKPKuJ9Ry
-         fD40m4c5/2fq7zutrprxT5PMMo3I6xhdbydAnZM/ZElcjo3nPZ7Daldy0Tqg/YlWEMnw
-         h3REsgJQ+AKz0/22WSjnWV8GicckcT39XL5fHH2zKcdkwJmfc/pDjzblwzZ8v8o8AzCi
-         mM903BkMtcOof+6bTtfMjTjtk1rZT9NzMECu/zFvjO9r6man9hB9QDIIzFt1arcQvmqV
-         AtHer7/Fd9QxwD8AupbAyFvyZt6nDo9VeCM0CR/TPVN806VQCLBX//WUiTk8Ryh6KPCj
-         R8fA==
-X-Gm-Message-State: AOAM533d+O/0XGdpM2IcZ/ShoqnOZ0GbCanIcHHsNHEszjMGopi89zEt
-        RYQi/yXQapF8h6izKsoSxmc=
-X-Google-Smtp-Source: ABdhPJwtmh6uQ5W/I5bhdKWJRhsVSplRyXRucPcu6ktBa/eUR6evtbouOZ51E+wlplns9EBfCmFMmA==
-X-Received: by 2002:a17:902:8f82:b029:da:23e0:17d7 with SMTP id z2-20020a1709028f82b02900da23e017d7mr13111355plo.37.1606612448067;
-        Sat, 28 Nov 2020 17:14:08 -0800 (PST)
+        bh=nhgDak2gmcRsyajHqGgxRS9WORqPAav0kIUUw3T7Plc=;
+        b=IUpChq197q4MPwTc+epqUCsUG0OHZXc18iCKJ/hcVxmhZT+T2wSdE8Nh/0tr/TMRUx
+         JsPe9nOXl+DIjv/cONBl4aQ4ZZFUAoAlt2gceHyEHDQtxbGMcGRr715NI4NLZwIGuXWe
+         3VW286dp1uK1zSB1zUSdVRzJ8K66dOp7mOR7l/j7BKDhlobJPObzWzPO/NcwkElMEYDn
+         GM8Vj/BCYO2h9TM4Oat91odghy8a/Xq8DwKmTR3hNKt7TJNWyVHgIQmh/C+NAfe7fHGV
+         1TerMZX2Dq3XjEs2SBIiHHLvriXElRmox19cC+4Mu3k9bAVDvdfPnB7NgrawLMgQmMgW
+         prHg==
+X-Gm-Message-State: AOAM530Sxf0d7AIMjx9/iAxFwkJJl7CKqMKKSduYgkWYoWBVwtFkN66l
+        cEWRaeC1xQnHXteqIEA8TfE=
+X-Google-Smtp-Source: ABdhPJxJOQZl4uOjTcEwmA7B/l9tKhiVyNfNvSApgd9an00FF1nF93foouiPG+lHgLs14CDjlwO2tw==
+X-Received: by 2002:a17:90a:384e:: with SMTP id l14mr19165408pjf.104.1606612555342;
+        Sat, 28 Nov 2020 17:15:55 -0800 (PST)
 Received: from ast-mbp ([2620:10d:c090:400::5:5925])
-        by smtp.gmail.com with ESMTPSA id r68sm12030337pfr.113.2020.11.28.17.14.06
+        by smtp.gmail.com with ESMTPSA id h16sm5100865pjt.43.2020.11.28.17.15.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Nov 2020 17:14:06 -0800 (PST)
-Date:   Sat, 28 Nov 2020 17:14:05 -0800
+        Sat, 28 Nov 2020 17:15:54 -0800 (PST)
+Date:   Sat, 28 Nov 2020 17:15:52 -0800
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     Brendan Jackman <jackmanb@google.com>
 Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
@@ -56,59 +56,22 @@ Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         KP Singh <kpsingh@chromium.org>,
         Florent Revest <revest@chromium.org>,
         linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
-Subject: Re: [PATCH v2 bpf-next 02/13] bpf: x86: Factor out emission of REX
- byte
-Message-ID: <20201129011405.vai66tyexpphpacb@ast-mbp>
+Subject: Re: [PATCH v2 bpf-next 01/13] bpf: x86: Factor out emission of
+ ModR/M for *(reg + off)
+Message-ID: <20201129011552.jbepegeeo2lqv6ke@ast-mbp>
 References: <20201127175738.1085417-1-jackmanb@google.com>
- <20201127175738.1085417-3-jackmanb@google.com>
+ <20201127175738.1085417-2-jackmanb@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201127175738.1085417-3-jackmanb@google.com>
+In-Reply-To: <20201127175738.1085417-2-jackmanb@google.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 27, 2020 at 05:57:27PM +0000, Brendan Jackman wrote:
-> The JIT case for encoding atomic ops is about to get more
-> complicated. In order to make the review & resulting code easier,
-> let's factor out some shared helpers.
-> 
-> Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> ---
->  arch/x86/net/bpf_jit_comp.c | 39 ++++++++++++++++++++++---------------
->  1 file changed, 23 insertions(+), 16 deletions(-)
-> 
-> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index 94b17bd30e00..a839c1a54276 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -702,6 +702,21 @@ static void emit_modrm_dstoff(u8 **pprog, u32 r1, u32 r2, int off)
->  	*pprog = prog;
->  }
->  
-> +/*
-> + * Emit a REX byte if it will be necessary to address these registers
+On Fri, Nov 27, 2020 at 05:57:26PM +0000, Brendan Jackman wrote:
+> +/* Emit the ModR/M byte for addressing *(r1 + off) and r2 */
+> +static void emit_modrm_dstoff(u8 **pprog, u32 r1, u32 r2, int off)
 
-What is "REX byte" ?
-May be rename it to maybe_emit_mod() ?
-
-> + */
-> +static void maybe_emit_rex(u8 **pprog, u32 reg_rm, u32 reg_reg, bool wide)
-
-could you please keep original names as dst_reg/src_reg instead of reg_rm/reg_reg ?
-reg_reg reads really odd and reg_rm is equally puzzling unless the reader studied
-intel's manual. I didn't. All these new abbreviations are challenging for me.
-> +{
-> +	u8 *prog = *pprog;
-> +	int cnt = 0;
-> +
-> +	if (wide)
-
-what is 'wide' ? Why not to call it 'bool is_alu64' ?
-
-> +		EMIT1(add_2mod(0x48, reg_rm, reg_reg));
-> +	else if (is_ereg(reg_rm) || is_ereg(reg_reg))
-> +		EMIT1(add_2mod(0x40, reg_rm, reg_reg));
-> +	*pprog = prog;
-> +}
+same concern as in the another patch. If you could avoid intel's puzzling names
+like above it will make reviewing the patch easier.
