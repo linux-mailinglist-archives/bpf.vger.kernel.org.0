@@ -2,111 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 649FF2C7A46
-	for <lists+bpf@lfdr.de>; Sun, 29 Nov 2020 18:34:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 310322C7AB4
+	for <lists+bpf@lfdr.de>; Sun, 29 Nov 2020 19:38:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726669AbgK2Rd5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 29 Nov 2020 12:33:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725830AbgK2Rd5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 29 Nov 2020 12:33:57 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3BA5C0613CF;
-        Sun, 29 Nov 2020 09:33:16 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id d8so15969069lfa.1;
-        Sun, 29 Nov 2020 09:33:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Z9Ivd228KRGNiM4oNPEXV7qZkA2p1Ts+zhGyYk+f14Q=;
-        b=u2MYvRT0eQe0r0Wowe9wkWT+K7QQR+2NqAKvauTfrEaC1xlduUKrJmlDxadn82NKm2
-         59HoTTBShi0p9cqRwuYHOewT4WDJI/o5uv6hF8e6WSDhXv9c7Qq8NPmk4C9UBLTuHuyK
-         scXPFyo98AhNixof4TiTIAGgTS6I0pl3WgyH+gkj2IiZ3ygRY3r5NScWrug9frxqj6nz
-         +xiJ+HVn7+qIz2+oo+1uhZtR7gsMO/WhHuck/WkSnY0YtdxMOi5hIvJrzyoU1r2ILMtS
-         OJVYOkL4XFGLrM7nkeQvRpmemWT+IAole/af3QncqRfCe7tJjafohpH9HvgkfK8l3Fgj
-         f3BA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z9Ivd228KRGNiM4oNPEXV7qZkA2p1Ts+zhGyYk+f14Q=;
-        b=G6TeQ6zMuzo+rn5y/vBfxMSP8gei+6UrDrdJVJoBj1yzc5I7yWL+BPbmBie7dcjc1P
-         cluaLMUG7G93VvK0LRjwy2TxUEo6gOYXh3dNFkX/V6PLbeJ+1VandF2gVLj961A18AV8
-         MqmQ9RmQENAwfeGtSH9o6p2Xg03/oRkAR38qy2wpRLjd+Hm4+jpKaw5dH/RErnc9nf1g
-         RjOecJ2aUa6jI8CtLM1L5Vj0yVQzhEVa7USOucvmZjT8Hw3pMBLSksn2FP0JB0kTx/TK
-         Uywm7ekui+jU/zhx0G8/W6Hv9gLDn7DmJt0IKg70QSIZc2EvhLmUjsJ5a5MDMyE3Yo9N
-         uJxQ==
-X-Gm-Message-State: AOAM532jCzXGRRQWBzH91ry5MqtMiq9ILVD/9Is2THD2VpBMQn124rP+
-        wEEA4663FU3STl6UjhGjbfHYCRMGcp0eVAMUJuU=
-X-Google-Smtp-Source: ABdhPJx3xjRMpnuQ78Qyi7pGaPhJWAnK7tU0l38c6yYDB/D1JMGCLLB2e63BF4sSIUjRipae8ui+mx0IZ7rTclbLcn8=
-X-Received: by 2002:a19:8048:: with SMTP id b69mr6868103lfd.263.1606671195181;
- Sun, 29 Nov 2020 09:33:15 -0800 (PST)
-MIME-Version: 1.0
-References: <20201023033855.3894509-1-haliu@redhat.com> <20201128221635.63fdcf69@hermes.local>
-In-Reply-To: <20201128221635.63fdcf69@hermes.local>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Sun, 29 Nov 2020 09:33:03 -0800
-Message-ID: <CAADnVQKgBudBhB2JSgd+5ZRFqLVrHiVRMMPyksL_Q9prouZ0ig@mail.gmail.com>
-Subject: Re: [PATCH iproute2-next 0/5] iproute2: add libbpf support
-To:     Stephen Hemminger <stephen@networkplumber.org>
-Cc:     Hangbin Liu <haliu@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        David Ahern <dsahern@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Jiri Benc <jbenc@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728487AbgK2Shi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 29 Nov 2020 13:37:38 -0500
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:51249 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728318AbgK2Shi (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 29 Nov 2020 13:37:38 -0500
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 38FFB5C0085
+        for <bpf@vger.kernel.org>; Sun, 29 Nov 2020 13:36:52 -0500 (EST)
+Received: from imap3 ([10.202.2.53])
+  by compute1.internal (MEProxy); Sun, 29 Nov 2020 13:36:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ongy.net; h=
+        mime-version:message-id:date:from:to:subject:content-type; s=
+        fm3; bh=jhjS5rNMPLiJBlYzSThVDBA66WDMqJEnowkYS1PXp7o=; b=mFHx17OC
+        DUom+0y05Avtoop84iVlBbzvl4XdrjJ9JOEIy2eDTwPIKBaY7sqif4uI2TXlfsQo
+        Uk4XrDKjL2nMKIuLBPt3Q6rtzTaJdhgyXc1Y+5NyaGuSjHd+x2pKpBJOEJLiUTNF
+        W/9Lui3mR+BqOnekY8oEiR5eMFitzaf7aYNOwn6ErV2YJmkF0AbyqbbQzodORQ/g
+        D1nnZaEt6QOo1MhJhw30MwRJE3ZD12bpi4AaoYHzLfjs0GqSleoMUYNVyUYcxUkq
+        wqtuJ/yf/h1DSPBc9O+L1zUVqhaQQfbER3kh0UJcN9FeYfvALJ4CNe1MlfuQgx4h
+        174ATmdn9npz/w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-type:date:from:message-id
+        :mime-version:subject:to:x-me-proxy:x-me-proxy:x-me-sender
+        :x-me-sender:x-sasl-enc; s=fm1; bh=jhjS5rNMPLiJBlYzSThVDBA66WDMq
+        JEnowkYS1PXp7o=; b=S9zu4hUs4+VLktKz89ABCU11rXAgGvaScYGL+8vRYP0cQ
+        R2rQDEghnUZsLTrgyL/iqcXQ0kI3Uaj80Kc/kDkeerES2fImO2BmGKwEJW8VD1y2
+        Ymyy9IjbmdH9nUWdYTE9G8Gpz0fzTvlCWDlX1j/0FQzjseDg/f3wyWQjV/rPlBOi
+        53tI+GV8QEo4mhSaW1KPjgxj8cOoZKsddohWqH7/g5bY10dHSkFl0BNUlcWSNGLz
+        lq6SSa8/z3DaU/4ThgGg5RDkM7eFOLQUyJXptzVNMqXYdJoK9al10o7mdVgXh/kT
+        rLJjtj5A5D4tLEwOBSvP5SUhV5DbmjRLiXewfo3+A==
+X-ME-Sender: <xms:ROrDX4P5xbPDN79BR_RlqFPYcfiN-FRr_Y7tzEyAbHUomPDU5gy3-Q>
+    <xme:ROrDX-8KMVCvjP47bpZMQgnl91inCcZhrbPY1MXQhQoRklwqWooGvHq-DWa-IgEaQ
+    3po0JPCQvfO61fkTmY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudehkedgudduiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecunecujfgurhepofgfggfkfffhvffutgesthdtre
+    dtreertdenucfhrhhomhepfdforghrkhhushcuqfhnghihvghrthhhfdcuoegsphhfseho
+    nhhghidrnhgvtheqnecuggftrfgrthhtvghrnheptdektddugeevvdefveejheeujeeive
+    evieeuuddvgeegvddutdetgefhkeduffdtnecuvehluhhsthgvrhfuihiivgeptdenucfr
+    rghrrghmpehmrghilhhfrhhomhepsghpfhesohhnghihrdhnvght
+X-ME-Proxy: <xmx:ROrDX_S5aIKyJjPycqGN6Mm9T46jDJi6y7Ap9KbBp4O0roLo0CHBGA>
+    <xmx:ROrDXwvRe-cXd1Tit00mx9q4NhC3YCoXP8LYRs70YBA-kfFtqk92jQ>
+    <xmx:ROrDXweo70l04xMTIEECNzgPP_psSA5KCYWSjhMeUuD745H6G5ijpQ>
+    <xmx:ROrDX6rxvBsDRtuHg3nA8x0MVFq-HrixvYv6BzUJ4288eddyX5_p2w>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 1869F4E05C5; Sun, 29 Nov 2020 13:36:52 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.3.0-622-g4a97c0b-fm-20201115.001-g4a97c0b3
+Mime-Version: 1.0
+Message-Id: <eea9673f-5ee4-4adc-bc64-fcc88f715cc8@www.fastmail.com>
+Date:   Sun, 29 Nov 2020 19:34:14 +0100
+From:   "Markus Ongyerth" <bpf@ongy.net>
+To:     bpf@vger.kernel.org
+Subject: HELP: bpf_probe_user_write for registers
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Nov 28, 2020 at 10:16 PM Stephen Hemminger
-<stephen@networkplumber.org> wrote:
->
-> On Fri, 23 Oct 2020 11:38:50 +0800
-> Hangbin Liu <haliu@redhat.com> wrote:
->
-> > This series converts iproute2 to use libbpf for loading and attaching
-> > BPF programs when it is available. This means that iproute2 will
-> > correctly process BTF information and support the new-style BTF-defined
-> > maps, while keeping compatibility with the old internal map definition
-> > syntax.
-> >
-> > This is achieved by checking for libbpf at './configure' time, and using
-> > it if available. By default the system libbpf will be used, but static
-> > linking against a custom libbpf version can be achieved by passing
-> > LIBBPF_DIR to configure. FORCE_LIBBPF can be set to force configure to
-> > abort if no suitable libbpf is found (useful for automatic packaging
-> > that wants to enforce the dependency).
-> >
-> > The old iproute2 bpf code is kept and will be used if no suitable libbpf
-> > is available. When using libbpf, wrapper code ensures that iproute2 will
-> > still understand the old map definition format, including populating
-> > map-in-map and tail call maps before load.
-> >
-> > The examples in bpf/examples are kept, and a separate set of examples
-> > are added with BTF-based map definitions for those examples where this
-> > is possible (libbpf doesn't currently support declaratively populating
-> > tail call maps).
->
->
-> Luca wants to put this in Debian 11 (good idea), but that means:
->
-> 1. It has to work with 5.10 release and kernel.
-> 2. Someone has to test it.
-> 3. The 5.10 is a LTS kernel release which means BPF developers have
->    to agree to supporting LTS releases.
+Hi,
 
-That must be a bad joke.
-You did the opposite of what we asked.
-You folks are on your own.
-5.10, 5.11 whatever release. When angry users come with questions
-about random behavior you'll be answering them. Not us.
+I've been looking into introspecting and possibly convincing an application to behave slightly different with bpf measures.
+
+I found `bpf_probe_user_write` but as far as I can tell, that only works for memory areas. 
+Is there an alternative that can be used on registers as well?
+
+Thanks,
+ongy
