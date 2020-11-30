@@ -2,109 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 454632C90F5
-	for <lists+bpf@lfdr.de>; Mon, 30 Nov 2020 23:26:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F23F2C912F
+	for <lists+bpf@lfdr.de>; Mon, 30 Nov 2020 23:34:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729615AbgK3WZg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Nov 2020 17:25:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725933AbgK3WZg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Nov 2020 17:25:36 -0500
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64FCFC0613D4;
-        Mon, 30 Nov 2020 14:24:50 -0800 (PST)
-Received: by mail-yb1-xb43.google.com with SMTP id v92so12927558ybi.4;
-        Mon, 30 Nov 2020 14:24:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=n/7o1gvlCHtRpXxjEuEu8kN/84FyQb3WcQ0KJUmzymM=;
-        b=gCDU67Mtfc9Dmokbh/2FD1bCYnKAwh4xlfjdcHl6LLXjDmiDcxtERBNk/o3p1Fg4BL
-         OVvGBJ4+aeyQhcoC0ZqnQxIVYBkyLOwY+tbL4bCJO0KcMrkwUfA1hUi9DzWvv07WfQYK
-         AgXxmdhBkFHQncP57te/FCslMlQE/AnzSBxCiuto5ZId3emXSTj83tVskruN131Vnggu
-         IJnS3SZZt4kQ4bWALwbrforl8AREDHyaFTblGxnsqez2d3X4IreyoIZMoTYlA+8hyE48
-         J1PQaRGvA39oJDuRWRD8XEw0X4fuNAZLyQcOB0jLjt3fg7nO2nFA34TvQBfPK4C1EQKy
-         bt4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=n/7o1gvlCHtRpXxjEuEu8kN/84FyQb3WcQ0KJUmzymM=;
-        b=tysJrCY0LUlRQL2jlBoGLufMBKe8SnaSKyBBYaWq3g8f+aQgQmiDjvKhKhCthBgJ/U
-         r+3F/SepvuURY7foZNTTerklwz7XYO+Zfp6sOSg9O9mVYUWGLrKwb7ijlKp9Qoj8u2Qk
-         SgNaEmy5jJVRLtl/Mt2d8F+bBpWCGkUsdgzkKtuzgfifZj7SIq2WbhJvdc7iM/h76HYg
-         8Vue/cTv/hVH6QkzTc8EmLdgDfoX/mFuls+9UshDdEd8CqJ3ZU1k6u3pSOm7dPeZ+bN8
-         C4buVrNkXZgXR7mPxGN61vzWbEtWz4FtFStx68m6RQr+wXiu9e3PVidyVJwRbMAm3zHw
-         CM7Q==
-X-Gm-Message-State: AOAM531kuOsxWbg9zdVbl75i35uJx/2zxDq0nq6lh9Z7ewYvBUvJQBPu
-        9rLvTycRxOvHQ7ANX78Wk4mBPzTOqrN8RzAqeqA=
-X-Google-Smtp-Source: ABdhPJyj/8AjEkCFwSYujjpwBCxHoYwqMxZtgpOQNMHyw6PKrsA1FbZQN+dNMJN3adGrm+sRbD1yqn2NplTTanPghoc=
-X-Received: by 2002:a25:c7c6:: with SMTP id w189mr28808201ybe.403.1606775089584;
- Mon, 30 Nov 2020 14:24:49 -0800 (PST)
+        id S1730754AbgK3WeW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Mon, 30 Nov 2020 17:34:22 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:23040 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730741AbgK3WeW (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 30 Nov 2020 17:34:22 -0500
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0AUMTMbu008214
+        for <bpf@vger.kernel.org>; Mon, 30 Nov 2020 14:33:41 -0800
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net with ESMTP id 3542bngfmm-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 30 Nov 2020 14:33:41 -0800
+Received: from intmgw002.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 30 Nov 2020 14:33:40 -0800
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 099C42ECA5EA; Mon, 30 Nov 2020 14:33:37 -0800 (PST)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH bpf 1/2] libbpf: fix ring_buffer__poll() to return number of consumed samples
+Date:   Mon, 30 Nov 2020 14:33:35 -0800
+Message-ID: <20201130223336.904192-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <20201130154143.292882-1-toke@redhat.com>
-In-Reply-To: <20201130154143.292882-1-toke@redhat.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 30 Nov 2020 14:24:38 -0800
-Message-ID: <CAEf4BzZy0Y1hAwOpY=Azod3bSqUKfGNwycGS7s=-DQvTWd8ThA@mail.gmail.com>
-Subject: Re: [PATCH bpf] libbpf: reset errno after probing kernel features
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-30_12:2020-11-30,2020-11-30 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
+ lowpriorityscore=0 priorityscore=1501 impostorscore=0 bulkscore=0
+ mlxscore=0 spamscore=0 mlxlogscore=860 malwarescore=0 suspectscore=8
+ clxscore=1015 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011300140
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 7:42 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
-at.com> wrote:
->
-> The kernel feature probing results in 'errno' being set if the probing
-> fails (as is often the case). This can stick around and leak to the calle=
-r,
-> which can lead to confusion later. So let's make sure we always reset err=
-no
-> after calling a probe function.
+Fix ring_buffer__poll() to return the number of non-discarded records
+consumed, just like its documentation states. It's also consistent with
+ring_buffer__consume() return. Fix up selftests with wrong expected results.
 
-What specifically is the problem and what sort of confusion we are
-talking about here? You are not supposed to check errno, unless the
-function returned -1 or other error result.
+Fixes: bf99c936f947 ("libbpf: Add BPF ring buffer support")
+Fixes: cb1c9ddd5525 ("selftests/bpf: Add BPF ringbuf selftests")
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ tools/lib/bpf/ringbuf.c                                | 2 +-
+ tools/testing/selftests/bpf/prog_tests/ringbuf.c       | 2 +-
+ tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-In some cases, you have to reset errno manually just to avoid
-confusion (see how strtol() is used, as an example).
+diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
+index 5c6522c89af1..98537ff2679e 100644
+--- a/tools/lib/bpf/ringbuf.c
++++ b/tools/lib/bpf/ringbuf.c
+@@ -278,7 +278,7 @@ int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms)
+ 		err = ringbuf_process_ring(ring);
+ 		if (err < 0)
+ 			return err;
+-		res += cnt;
++		res += err;
+ 	}
+ 	return cnt < 0 ? -errno : res;
+ }
+diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+index c1650548433c..1a48c6f7f54e 100644
+--- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
++++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
+@@ -217,7 +217,7 @@ void test_ringbuf(void)
+ 	if (CHECK(err, "join_bg", "err %d\n", err))
+ 		goto cleanup;
+ 
+-	if (CHECK(bg_ret != 1, "bg_ret", "epoll_wait result: %ld", bg_ret))
++	if (CHECK(bg_ret <= 0, "bg_ret", "epoll_wait result: %ld", bg_ret))
+ 		goto cleanup;
+ 
+ 	/* 3 rounds, 2 samples each */
+diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c b/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c
+index 78e450609803..d37161e59bb2 100644
+--- a/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c
++++ b/tools/testing/selftests/bpf/prog_tests/ringbuf_multi.c
+@@ -81,7 +81,7 @@ void test_ringbuf_multi(void)
+ 
+ 	/* poll for samples, should get 2 ringbufs back */
+ 	err = ring_buffer__poll(ringbuf, -1);
+-	if (CHECK(err != 4, "poll_res", "expected 4 records, got %d\n", err))
++	if (CHECK(err != 2, "poll_res", "expected 2 records, got %d\n", err))
+ 		goto cleanup;
+ 
+ 	/* expect extra polling to return nothing */
+-- 
+2.24.1
 
-I.e., I don't see the problem here, any printf() technically can set
-errno to <0, we don't reset errno after each printf call though,
-right?
-
->
-> Fixes: 47b6cb4d0add ("libbpf: Make kernel feature probing lazy")
-> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> ---
->  tools/lib/bpf/libbpf.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 28baee7ba1ca..8d05132e1945 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -4021,6 +4021,8 @@ static bool kernel_supports(enum kern_feature_id fe=
-at_id)
->                         pr_warn("Detection of kernel %s support failed: %=
-d\n", feat->desc, ret);
->                         WRITE_ONCE(feat->res, FEAT_MISSING);
->                 }
-> +               /* reset errno after probing to prevent leaking it to cal=
-ler */
-> +               errno =3D 0;
->         }
->
->         return READ_ONCE(feat->res) =3D=3D FEAT_SUPPORTED;
-> --
-> 2.29.2
->
