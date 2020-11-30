@@ -2,127 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5C5C2C811B
-	for <lists+bpf@lfdr.de>; Mon, 30 Nov 2020 10:36:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41EE42C82DA
+	for <lists+bpf@lfdr.de>; Mon, 30 Nov 2020 12:06:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726158AbgK3Jdv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Nov 2020 04:33:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33484 "EHLO
+        id S1726385AbgK3LFy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Nov 2020 06:05:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49096 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726137AbgK3Jdu (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 30 Nov 2020 04:33:50 -0500
+        by vger.kernel.org with ESMTP id S1725976AbgK3LFy (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 30 Nov 2020 06:05:54 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606728744;
+        s=mimecast20190719; t=1606734267;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=7XnOfdREIt4Lxkgjic2xKmB+sb4GzQklc68BVQDEWvs=;
-        b=A2TOzS4llJKT/v0MztmQIsvyI4kwF0ifoT2zzOHMlCSh8H1izDZHQEgzVvg/MzfmWe4Pj1
-        Ys+RAgyJDnGnU0lxSUb1RPwosuftkWzGsj8P5FIdEw+tLnxkQXbWplTDfb4h9axswQcgT0
-        wNsuRBd6NAid15mIjc5iG/k7NY+UYZw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-342-74MbqdniMdmq5_A4fpal4Q-1; Mon, 30 Nov 2020 04:32:20 -0500
-X-MC-Unique: 74MbqdniMdmq5_A4fpal4Q-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8064B8030AB;
-        Mon, 30 Nov 2020 09:32:18 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.55])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 829A25D9D2;
-        Mon, 30 Nov 2020 09:32:09 +0000 (UTC)
-Date:   Mon, 30 Nov 2020 10:32:08 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Hangbin Liu <liuhangbin@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
-        Tariq Toukan <tariqt@mellanox.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        brouer@redhat.com
-Subject: Re: [PATCHv2 bpf-next] samples/bpf: add xdp program on egress for
- xdp_redirect_map
-Message-ID: <20201130103208.6d5305e2@carbon>
-In-Reply-To: <20201130075107.GB277949@localhost.localdomain>
-References: <20201110124639.1941654-1-liuhangbin@gmail.com>
-        <20201126084325.477470-1-liuhangbin@gmail.com>
-        <54642499-57d7-5f03-f51e-c0be72fb89de@fb.com>
-        <20201130075107.GB277949@localhost.localdomain>
+        bh=6VS/5KUo43qh82flnNysNY37J2UIcY8iW6tlzsICFF4=;
+        b=WC7KceVlFrUe9rdLlB5b6/ol/eD0YZc+eSAx719H8/Xy0EX6KTTcxbFSxo7wPprKgVE0PP
+        AUW3REi7A48cmWWLS+GwKtvk78OnpwMIeJd3N7bibYU5hnQOJXL7shbOqs9vKPs/U/D7iq
+        getTiuVDEzkKY3/K0id26t83c++GtZw=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-204-wGr86LDnNMebeNBACMaF8w-1; Mon, 30 Nov 2020 06:04:25 -0500
+X-MC-Unique: wGr86LDnNMebeNBACMaF8w-1
+Received: by mail-qv1-f70.google.com with SMTP id m45so7161657qvg.16
+        for <bpf@vger.kernel.org>; Mon, 30 Nov 2020 03:04:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=6VS/5KUo43qh82flnNysNY37J2UIcY8iW6tlzsICFF4=;
+        b=KqbwEkJrHcrPaIQxssBWNNq9Sd+ch4CgF6JC4CJAUQpZViSOhUvBQZETMhfJJDcf2q
+         DRHkF2K8Y6cZOLqhU05PobUmqA/bU4izZ42hMK89DJv6JACjNY8UbrhlDO3y3WpaJ6Of
+         IrP6KVWJmdAKX3AIjwdqsy01KmSohHCUYRUJpzH/CD9Sllc6ioV4IRmLWAcaRhrejvpn
+         L1Tg6bscWVlmSnO9Ai+5TOeeZnsOY76pODq685fdWgecejsf1YxEgFMZ+pSfT39mu26W
+         QYtm4aEKpkAeQoBYE+L6vT+tmKLQeP9+HfvvFXE9WO6wV6iK73kQQ85pRuwXOqWh6Wy1
+         EPKA==
+X-Gm-Message-State: AOAM530cw7cVAa+/bgOk8eA+BwZBtL8FCgYFajYNVEw9lvvGCb0uzQi4
+        Clpb5swygoAzLOIRym4398W58C4p16NIM2hHQFEcv2H3hfnDddO4j5s/h2eS6Wn+2KeoTModb6D
+        sdL9NH3xp96TX
+X-Received: by 2002:a0c:f9c8:: with SMTP id j8mr21740784qvo.17.1606734264865;
+        Mon, 30 Nov 2020 03:04:24 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyrI+aWvYVbi4psMJoPYVI6PP1YQxo+ZhMJj+gxoeqZdQEktLdk7ENvzTCpRltsxQu3d/ag1A==
+X-Received: by 2002:a0c:f9c8:: with SMTP id j8mr21740730qvo.17.1606734264371;
+        Mon, 30 Nov 2020 03:04:24 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id p22sm14956835qtu.61.2020.11.30.03.04.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 03:04:23 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id B8755182EDC; Mon, 30 Nov 2020 12:04:11 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     David Ahern <dsahern@gmail.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Hangbin Liu <haliu@redhat.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        David Miller <davem@davemloft.net>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Jiri Benc <jbenc@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH iproute2-next 0/5] iproute2: add libbpf support
+In-Reply-To: <08071e1e-497f-f53e-916a-8b519fdd1e0f@gmail.com>
+References: <20201023033855.3894509-1-haliu@redhat.com>
+ <20201128221635.63fdcf69@hermes.local>
+ <08071e1e-497f-f53e-916a-8b519fdd1e0f@gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 30 Nov 2020 12:04:11 +0100
+Message-ID: <878saj6r84.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 30 Nov 2020 15:51:07 +0800
-Hangbin Liu <liuhangbin@gmail.com> wrote:
+David Ahern <dsahern@gmail.com> writes:
 
-> On Thu, Nov 26, 2020 at 10:31:56PM -0800, Yonghong Song wrote:
-> > > index 35e16dee613e..8bdec0865e1d 100644
-> > > --- a/samples/bpf/xdp_redirect_map_user.c
-> > > +++ b/samples/bpf/xdp_redirect_map_user.c
-> > > @@ -21,12 +21,13 @@
-> > >   static int ifindex_in;
-> > >   static int ifindex_out;
-> > > -static bool ifindex_out_xdp_dummy_attached = true;
-> > > +static bool ifindex_out_xdp_dummy_attached = false;
-> > > +static bool xdp_prog_attached = false;  
-> > 
-> > Maybe xdp_devmap_prog_attached? Feel xdp_prog_attached
-> > is too generic since actually it controls xdp_devmap program
-> > attachment.  
-> 
-> Hi Yonghong,
-> 
-> Thanks for your comments. As Jesper replied, The 2nd xdp_prog on egress
-> doesn't tell us if the redirect was successful. So the number is meaningless.
+> On 11/28/20 11:16 PM, Stephen Hemminger wrote:
+>> Luca wants to put this in Debian 11 (good idea), but that means:
+>> 
+>> 1. It has to work with 5.10 release and kernel.
+>> 2. Someone has to test it.
+>> 3. The 5.10 is a LTS kernel release which means BPF developers have
+>>    to agree to supporting LTS releases.
+>> 
+>> If someone steps up to doing this then I would be happy to merge it now
+>> for 5.10. Otherwise it won't show up until 5.11.
+>
+> It would be good for Bullseye to have the option to use libbpf with
+> iproute2. If Debian uses the 5.10 kernel then it should use the 5.10
+> version of iproute2 and 5.10 version libbpf. All the components align
+> with consistent versioning.
+>
+> I have some use cases I can move from bpftool loading to iproute2 as
+> additional testing to what Hangbin has already done. If that goes well,
+> I can re-send the patch series against iproute2-main branch by next weekend.
 
-Well, I would not say the counter is meaningless.  It true that 2nd
-devmap xdp_prog doesn't tell us if the redirect was successful, which
-means that your description/(understanding) of the counter was wrong.
+This is fine by me - there's nothing in the iproute2 patches that
+depends on any particular version of libbpf newer than 0.1.0 (that was
+the whole point), so it's just a matter of when you guys want to merge
+it.
 
-I still think it is relevant to have a counter for packets processed by
-this 2nd xdp_prog, just to make is visually clear that the 2nd xdp-prog
-attached (to devmap entry) is running.  The point is that QA is using
-these programs.
+> It would be good for others (Jesper, Toke, Jiri) to run their own
+> testing as well.
 
-The lack of good output from this specific sample have cause many
-bugzilla cases for me.  BZ cases that requires going back and forth a
-number of times, before figuring out how the prog was (mis)used.  This
-is why other samples like xdp_rxq_info and xdp_redirect_cpu have such a
-verbose output, which in-practice have helped many times on QA issues.
+I'll do some manual testing, and once we get this into RHEL it'll be
+part of automated testing there as well. The latter may take a while,
+though, so don't count on it for any initial verification...
 
-
-> I plan to write a example about vlan header modification based on egress
-> index. I will post the patch later.
-
-I did notice the internal thread you had with Toke.  I still think it
-will be more simple to modify the Ethernet mac addresses.  Adding a
-VLAN id tag is more work, and will confuse benchmarks.  You are
-increasing the packet size, which means that you NIC need to spend
-slightly more time sending this packet (3.2 nanosec at 10Gbit/s), which
-could falsely be interpreted as cost of 2nd devmap XDP-program.
-
-(Details: these 3.2 ns will not be visible for smaller packets, because
-the minimum Ethernet frame size will hide this, but I've experience this
-problem with larger frames on real switch hardware (Juniper), where
-ingress didn't have VLAN-tag and egress we added VLAN-tag with XDP, and
-then switch buffer slowly increased until overflow).
-
-As Alexei already pointed out, you assignment is to modify the packet
-in the 2nd devmap XDP-prog.  Why: because you need to realize that this
-will break your approach to multicast in your previous patchset.
-(Yes, the offlist patch I gave you, that move running 2nd devmap
-XDP-prog to a later stage, solved this packet-modify issue).
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+-Toke
 
