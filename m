@@ -2,106 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B1DA2C9153
-	for <lists+bpf@lfdr.de>; Mon, 30 Nov 2020 23:42:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58CC82C91A3
+	for <lists+bpf@lfdr.de>; Mon, 30 Nov 2020 23:53:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726213AbgK3Wm2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Nov 2020 17:42:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53662 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726304AbgK3Wm1 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 30 Nov 2020 17:42:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606776060;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=awnP1wNfpho4sGMKxjTXmUDsOu+jXjRCz1aWKT/8GIo=;
-        b=FRFw86LyZOijon+hz1Tm8chsOuRX2o78szoAIoO66FH9FixJnuF3wTYwP155D7eHERC7yw
-        U+s15Yy110McmEu0YSGJU12T/q4anZhx4m8gszzG3XceAdKeTnffuYFl2aqJ5KS0jZHRqU
-        XD1mRy3cvUtvj2ALlu4LRcYa9yLSVio=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-151-5iXa410-NUqMp2HFdJiApQ-1; Mon, 30 Nov 2020 17:40:57 -0500
-X-MC-Unique: 5iXa410-NUqMp2HFdJiApQ-1
-Received: by mail-ed1-f71.google.com with SMTP id x71so4333055ede.9
-        for <bpf@vger.kernel.org>; Mon, 30 Nov 2020 14:40:57 -0800 (PST)
+        id S1730618AbgK3Wxi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Nov 2020 17:53:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729586AbgK3Wxi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Nov 2020 17:53:38 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 775D3C061A47;
+        Mon, 30 Nov 2020 14:52:52 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id r127so11665yba.10;
+        Mon, 30 Nov 2020 14:52:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IVgiVGcuNuLwHmczlMBs6+awdTDl4qx6/4oj/Vf0ZOo=;
+        b=r2WmhiZUBU55p7jVxU+lf6rjdNCdyj4qXLtVW/ObknkmYmyRL7x05PjzevdD1p4c/O
+         ohqsuZDRbOxLioy+qwF+18DnL4WFbPD1XSiVgQ3U1tJgCB7sQnMdV2KmQ41IKNXHRgNd
+         uNP1+82a+58xWV2uWsJ4yG5G2nhWrvEtayHFzFtwghNVzTdCIK0KioOCWVfPLM+qvKbF
+         SaZsR/w6l5/v0day/LS0UkHRO7DvrJwyL6lYxgGEiWgwqHMBrp60MA4UJZW6eqOW5iKe
+         YCaR+t2RrjeNJf+MQbMygWdn0xuaA0M39HreguO7e206Orn+e/UEq7GYOmYSIkmyU6xZ
+         7r+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=awnP1wNfpho4sGMKxjTXmUDsOu+jXjRCz1aWKT/8GIo=;
-        b=eIcYYeWFJxB3YukH5lnO8AZYiUgRwe3mCUszpkdkhd9Q28QqL4L92/Kr8TDivjyI90
-         c3u7IPDr6Tb4QCPDKWOz9VJwVYMlusjEf/iTNJM0N12Xh+7cKMA47zGCfPW65Tw/F4mn
-         uJIwXK7zh3sxdMdgZ9EP0qlwVCvuNHhscw5nNHxlUpIVP6AyrQDSqLGOSdG2/ZUDhQIs
-         XxTH/wZFn3X1LKI0aqrYRcsL7T3xGmhKSJchLPdbiWZW8vjYUK8GNSnt6+TxxZ4xbPHe
-         BAqghy+KTVBhJWOHi+bieslN54CUC0V4dJ6frO3lU96/P0bzSE7+aWdpN+TckPSutSQE
-         2GEg==
-X-Gm-Message-State: AOAM530YInw7mvG3WGSaKQaJrt2hhaQjp2E+P4qHemMNcWQJ3GHCItTy
-        DPQGogah+lbcSwuho8aPa0A92SszCqAiv9du7GwxdL+TzSKOZgeZJ6UhcHLftIyRgyFHv5Ujnjr
-        bmhHbwyF8m6KA
-X-Received: by 2002:a17:906:b79a:: with SMTP id dt26mr6619148ejb.337.1606776056313;
-        Mon, 30 Nov 2020 14:40:56 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxbuLqZuOzrQHnQRdY/Gzm+Aqmv7kyYntl0031e0a43VHF2DFSM2wlAef9cdyrygcB020afTQ==
-X-Received: by 2002:a17:906:b79a:: with SMTP id dt26mr6619129ejb.337.1606776055919;
-        Mon, 30 Nov 2020 14:40:55 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id k15sm1674711ejc.79.2020.11.30.14.40.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 14:40:55 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id B6E05181AD4; Mon, 30 Nov 2020 23:40:54 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>
-Subject: Re: [PATCH bpf] libbpf: reset errno after probing kernel features
-In-Reply-To: <CAEf4BzZy0Y1hAwOpY=Azod3bSqUKfGNwycGS7s=-DQvTWd8ThA@mail.gmail.com>
-References: <20201130154143.292882-1-toke@redhat.com>
- <CAEf4BzZy0Y1hAwOpY=Azod3bSqUKfGNwycGS7s=-DQvTWd8ThA@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 30 Nov 2020 23:40:54 +0100
-Message-ID: <87pn3uwjrd.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IVgiVGcuNuLwHmczlMBs6+awdTDl4qx6/4oj/Vf0ZOo=;
+        b=avO11K8twXUtMxOH5A0pQ9ud4pwmMVLyFsnkwCiRWk9zjtDNLx3Z603/3nZ7MdR/Rc
+         6edLnU7yNOpmfP5Y8fjrF4pM+PBxuMSL6+DW64dz+o9TkxPwhME4yYeCRhv/BsL/Fkx6
+         xw+kJKHHFAP/3QfH4ouKa/1wrlNIiQNRnKBMQoo1nP3rjLHn3qp1LbTkc1zA+Ipc0Xt2
+         GM1fUXsJfM48WvPY3gB+b+aTbgppz4CYmrM/xvnKbsEwfk2C/rMdogDehyvgz94QJL2s
+         FE7nuFdrDBkQGQOsmc8xkXSlIeipTdfnDIqNLl8zsnyP/nRbOsj61JQHDHz2Qg/0x9Ge
+         dSAQ==
+X-Gm-Message-State: AOAM533jbP9+VCHRd58A4vGZKsevOcsi4Qs/2zf8xskoYe469VLGtXme
+        pvT3LsrlyjYydQHKZVvnaRjaZbaKVBYobDwJzZE=
+X-Google-Smtp-Source: ABdhPJzVGG9XFN1lNFA00oqPdrdnmZG7QpgAidDjQfn/SZdgDDb/6l3upaskp9jSWIOKjrHEw1F0KFH5n5VVwEfiE88=
+X-Received: by 2002:a25:2845:: with SMTP id o66mr37749996ybo.260.1606776771766;
+ Mon, 30 Nov 2020 14:52:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <20201121024616.1588175-1-andrii@kernel.org> <20201121024616.1588175-6-andrii@kernel.org>
+ <20201129015934.qlikfg7czp4cc7sf@ast-mbp>
+In-Reply-To: <20201129015934.qlikfg7czp4cc7sf@ast-mbp>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 30 Nov 2020 14:52:41 -0800
+Message-ID: <CAEf4BzbsN5GD62+nh7jMbdrWftATdJ57_3L_rgmG2-2=HXEV2w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 5/7] selftests/bpf: add tp_btf CO-RE reloc test
+ for modules
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
-
-> On Mon, Nov 30, 2020 at 7:42 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@re=
-dhat.com> wrote:
->>
->> The kernel feature probing results in 'errno' being set if the probing
->> fails (as is often the case). This can stick around and leak to the call=
-er,
->> which can lead to confusion later. So let's make sure we always reset er=
-rno
->> after calling a probe function.
+On Sat, Nov 28, 2020 at 5:59 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> What specifically is the problem and what sort of confusion we are
-> talking about here? You are not supposed to check errno, unless the
-> function returned -1 or other error result.
+> On Fri, Nov 20, 2020 at 06:46:14PM -0800, Andrii Nakryiko wrote:
+> >
+> >  SEC("raw_tp/bpf_sidecar_test_read")
+> > -int BPF_PROG(test_core_module,
+> > +int BPF_PROG(test_core_module_probed,
+> >            struct task_struct *task,
+> >            struct bpf_sidecar_test_read_ctx *read_ctx)
+> >  {
+> > @@ -64,3 +64,33 @@ int BPF_PROG(test_core_module,
+> >
+> >       return 0;
+> >  }
+> > +
+> > +SEC("tp_btf/bpf_sidecar_test_read")
+> > +int BPF_PROG(test_core_module_direct,
+> > +          struct task_struct *task,
+> > +          struct bpf_sidecar_test_read_ctx *read_ctx)
 >
-> In some cases, you have to reset errno manually just to avoid
-> confusion (see how strtol() is used, as an example).
->
-> I.e., I don't see the problem here, any printf() technically can set
-> errno to <0, we don't reset errno after each printf call though,
-> right?
+> "sidecar" is such an overused name.
 
-Well yeah, technically things work fine in the common case. But this
-errno thing sent me on quite the wild goose chase when trying to find
-the root cause of the pinning issue I also sent a patch for...
+How about "sidekick"? :) Its definition matches quite closely for what
+we are doing with it ("person's assistant or close associate,
+especially one who has less authority than that person.")?
 
-So since reseting errno doesn't hurt either I figured I'd save others
-ending up in similar trouble. If it's not to your taste feel free to
-just drop the patch :)
+But if you still hate it, I can call it just "bpf_selftest" or
+"bpf_test" or "bpf_testmod", however boring that is... ;)
 
--Toke
 
+> I didn't like it earlier, but seeing that it here again and again I couldn't help it.
+> Could you please pick a different name for kernel module?
+> It's just a kernel module for testing. Just call it so. No need for fancy name.
