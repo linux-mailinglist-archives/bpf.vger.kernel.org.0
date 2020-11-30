@@ -2,219 +2,308 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B22592C8AD6
-	for <lists+bpf@lfdr.de>; Mon, 30 Nov 2020 18:24:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBABA2C8D41
+	for <lists+bpf@lfdr.de>; Mon, 30 Nov 2020 19:53:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387447AbgK3RXo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Nov 2020 12:23:44 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:61426 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387405AbgK3RXo (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 30 Nov 2020 12:23:44 -0500
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0AUHFekW021181;
-        Mon, 30 Nov 2020 09:22:47 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=Mv9ZoRm2d8SmhK+vyR2tGWSF85mmdzoYy0N0dYg4zSI=;
- b=jO2t9/QFJMgac58AL90ioXNpj4Ra64JPR/xuV6oeiSH6hN36tYPb90BjtGCvKJkzTRk4
- MxHQFLv3h5i23FW0KqcmsUm10K0XE/zSq8QNHvBLhDnnhAUPknO4fiV/qlZNjOTn3RGx
- Uz9ePdpYsYNbA2VW0uLlCCO4lUY9U2C/EzU= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 354c7qd8b8-19
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 30 Nov 2020 09:22:47 -0800
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 30 Nov 2020 09:22:41 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GbYTLUwwV++LEMn5irR2D9Bj/3obgpNPrnOsrUdiba7+TBWo19gvXHT7YEXyG48SYGUIGDxg62pGKKFYywXGf4+J+HVFEhRzfQoNz3np67JrI8Wl9ycBMq6cazhwhzuO1hq0AAFIrrxvXaVVekAXDGkdyXl/LgxKex7jBQXvp3JMLo7/XOUJZPyUp9pVzB4nyedRy4KXpgBL41X41dzSd7nukABTZHxarY598sSHH3xyZAbHYymP5p5KwsTEEdqJE1k89itiMxWB1oGHJaAv2mPK1LxoZcfKG5p7XAryruqNM+iPv641BKBOdaW36E1FfXNA+rlHUsh3GlsotUqvRw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yGuPEhIaYygJuujnXxmrft24HMjZG1Dx12ido4iltKY=;
- b=MzjRluFGxBf8/+jtOe7dPKaytZ050rXlZLP2ZsjWomJQGTS1hHHJcp7urXotL18Kyu5TjW6qqOun8A8pzJ08Xt6+QZs2rtErlZ/KNnZ6wIhga0BhD/OFPnlAlcKILISY1hUakI+pnOllRBsuL5Smx3bcs7RguhhFMNHYsC5jArMeCPUGJwXp5gTxh4BkQHpVcPtfjIWgOnUV8X4PXxheSNk7RZ93Ajrq4diPPioeGPEXeLFlp1kAEw5H6fA++iTcYZ+4G3I5/1ADOwfcVlzoOCwEPEGyrrc0Cs2Yz5oFjT42iH3SAsvfoRNYvWdXGzcW//UNGpqMY+KcNiMCeC+2Jw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yGuPEhIaYygJuujnXxmrft24HMjZG1Dx12ido4iltKY=;
- b=I+E2CIohArR/gcEHqUeoRFl35izRCEAzPMKWf5HdtnhdT/MQTxfyShxxZv0RJEi9QDgWQHQAU0kVzPShWKZoGkNH5ezbriyd5DezUWOIDGEpssNFOPUNkM95GjNI7JP3lD++xknv8pKfBf5w0ZJlkDtKvWFS4HpqEExrCmXtJo4=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB3301.namprd15.prod.outlook.com (2603:10b6:a03:101::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.22; Mon, 30 Nov
- 2020 17:22:40 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3611.025; Mon, 30 Nov 2020
- 17:22:40 +0000
-Subject: Re: [PATCH v2 bpf-next 00/13] Atomics for eBPF
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-CC:     Brendan Jackman <jackmanb@google.com>, <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        <linux-kernel@vger.kernel.org>, Jann Horn <jannh@google.com>
-References: <20201127175738.1085417-1-jackmanb@google.com>
- <829353e6-d90a-a91a-418b-3c2556061cda@fb.com>
- <20201129014000.3z6eua5pcz3jxmtk@ast-mbp>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <b3903adc-59c6-816f-6512-2225c28f47f5@fb.com>
-Date:   Mon, 30 Nov 2020 09:22:36 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.0
-In-Reply-To: <20201129014000.3z6eua5pcz3jxmtk@ast-mbp>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-X-Originating-IP: [2620:10d:c090:400::5:5f96]
-X-ClientProxiedBy: MWHPR21CA0055.namprd21.prod.outlook.com
- (2603:10b6:300:db::17) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21cf::124e] (2620:10d:c090:400::5:5f96) by MWHPR21CA0055.namprd21.prod.outlook.com (2603:10b6:300:db::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.2 via Frontend Transport; Mon, 30 Nov 2020 17:22:39 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 536299a0-61c9-4202-4154-08d895548a0e
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3301:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB3301499B150921873C94221FD3F50@BYAPR15MB3301.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RY806nBkb0P6drWD6dFXHl+Rtj7NFdvk1hpXvzUQBzWLAXa6pYN3Cmdpk2e2udAPuOEC6CMFT85FplUuR7ZmVvg4ZZRnJ0q2I6RJNems++7U4ove4sH2fjfPYfjXEtPkLnVpSWQ2hF+3iWouZYVVwHzEiAN0/9uVotPy1XoAbt/cYFTOw7mL5ArOxRxOZ5LdLIZHkb/ly67F5CqhGEah18sIumMqFUmo71FcqX6yuk1rVANNlpYTeth5BkVNpopyDKcHkJYQH46GV7ICVeR9VrSQXNq+mrhlz2pdp1DX8kE3Qxxt0SFDDcqncGGMQgWIafQdDz96iMyUecw+7PosEPuen3YEFr7hPdTqsQOQm9/BpSt3qOmkSVhE6ihwvF2cYimq9pd0yLUvT2igpBAZprJQCIVzgqsHSlOJnRGwdyg8VXgne7WF+yIW8MkXkWUafBny1HRZgO1ZV5RjB/3SlQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(346002)(396003)(376002)(366004)(136003)(66476007)(6916009)(66556008)(478600001)(8676002)(2906002)(16526019)(186003)(36756003)(5660300002)(966005)(52116002)(86362001)(8936002)(4326008)(6486002)(316002)(53546011)(2616005)(54906003)(31686004)(66946007)(6666004)(31696002)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?dEtzbVBTa1ZFUjhqWEVNaGxLQXljWGlrUlpkenhnYVpBNDk3dHBVMjJxVW9i?=
- =?utf-8?B?RVhkT3lxc2NVcWFwb1VlQUREWE9BbjMzNEw1SWc0UWhESytRWDBoRFJNNmRH?=
- =?utf-8?B?NG0wWURvRTQ0azBnRDVSTzNRYUV5eUhNT0VyYlZHSS90OElGTUdWSUxpYlVI?=
- =?utf-8?B?cXV2LzAyclRBTG51SjRjZUkwa0xHV25wU3RDNDF6ZEpvTFdpNUJ4Mnpvb0NF?=
- =?utf-8?B?MWh0Z2F0alJvbHBCNlB3NnZKVXBySVU2R015SWptNThaK0piYUxJY2FCb2I4?=
- =?utf-8?B?amlIbS9uOGFTckVSK2ZEUzBUWXdFUCtHYTFaZEtOTStrSThvWUhrenYwNHVo?=
- =?utf-8?B?MGl1NTdWOTJwc3ZYVkpMNkdaSVVtOE9nN1VSM05oNVJzcjF0Q3lKcHBic2Vv?=
- =?utf-8?B?NW5ROGdiR1V3VGI1NFN1TVdyRW44NUNaS2doNFM0ZVZVR2dVYURkMVpKSFk4?=
- =?utf-8?B?d1pSY0oxMWRXOEt4QkZlTFpZZTNEcU4vT1VSc3dmdGgwUnFKTTE2RFM4eGs3?=
- =?utf-8?B?MFE5aUJqajVVejhBS2ozSXFzZUFLUmVEeWhPdnJsSEVybFhwYWlPYVowd3Uz?=
- =?utf-8?B?a3ZpaEIrQnhLZHdScjRYTDMxeDhRZUVmSkdsVTJkb3ZZZitmajh3SXF0UzNG?=
- =?utf-8?B?NFdrdmF4MEY0VlozL0FCZHV6aFdSNjRPbGV6elJFMW9WSVErcWJ4RjZ4Ungv?=
- =?utf-8?B?ZG1mVXpvQmlrZDVFQ1hSdjZDdFZ3T2luYnBWZE5xQjV1dExEYTlUd1luY1RZ?=
- =?utf-8?B?OEJxcWUwMG83OW9pUWoydENVWFkvdGNZTGhtUUxmVUNxd1JPOEIxYkNLeGlt?=
- =?utf-8?B?RFM2eGduTFJmajZNWHM0M1QwYmlCMGlUdEs0VVpudkNLcG4xSmZJRmxkWkE1?=
- =?utf-8?B?WWhRbXJFUlZXV094VkpKR2tHaHRoREQwZkFQbjRZOHp3a0ZQS2ovYWNZcXh0?=
- =?utf-8?B?NFhISTVrdWFWNDB2KzFpeit2dE8yczFYUEtSODRPTUVlbGNtMktmbkZjdlpF?=
- =?utf-8?B?WTJONWhPeTV0R2dwVXNvVjBheGhxT1k3SXlialBOeVlFMC8zVTNwUVBOYVJM?=
- =?utf-8?B?ZzNiUmxORzFvRlJNbGx5N2QzbUVCaDdjWWEyNFhXa3IrU0YrR3BVeGs0MExx?=
- =?utf-8?B?T3JIOU9SWjN3WXhGbWhhKytGNjN4RTAvd2RmZXVvWjdnV3BOLytJM0RSZktY?=
- =?utf-8?B?TGNqYlAyTWRTUFEyUU5QdlhmaHV0Wi92T015bjN1eXQrVEJaNmdVNXdONWJw?=
- =?utf-8?B?T1Ria0JSY0NXc05Eb2J3OENXdEkwVGtoZUpVclBta2h6S05aaFJtcm42VHpu?=
- =?utf-8?B?Uk9iTC8rMUpocG9qeW5ncWQyNzgxQmlKQjBoRG1mNFllWm9QeDM0OWxZUStP?=
- =?utf-8?B?alg5MDg2UGRSUlE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 536299a0-61c9-4202-4154-08d895548a0e
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2020 17:22:40.0285
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iNBkPxGSvHQlo+bgJ5/lOcua5bIxCKOsnQcEtyPwOh7KchfS0jjSRb0niET8/jr/
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3301
-X-OriginatorOrg: fb.com
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 1 URL was un-rewritten
+        id S1728308AbgK3SxK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Nov 2020 13:53:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727994AbgK3SxK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Nov 2020 13:53:10 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE314C0613CF;
+        Mon, 30 Nov 2020 10:52:29 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id b63so10991014pfg.12;
+        Mon, 30 Nov 2020 10:52:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=s+eXwasJWmo58I5ZtiztDl7lUPzWwKjhg8B6kICr6A8=;
+        b=VqRPoY28n7XHPAk/2kNK6rZIHhrv1LZ+Y5l7iHFPe7aYSrfuULad2LhPm2vCSFh9lr
+         v54ZLGVZtCnDeH0f0YPMtZbcm6aXQtoeuaOvPGHrulP9byFxIUCzQ5a+kAfAB0Gf7UAt
+         /DyAqaDiFfy15h+rMpShVT9PgVI5KXlXb9DXeGqcCL8NKpSIvUhk7pu32nXJ4Vc+PHRR
+         J4mmwWN57W7CLSxEPbRvul68s0fD1W0zSrqfJJBlkTJMT1XuJstw9kB8cDSqqwax1Nwt
+         CZCqXIFooSNJNU8xgnGolXHaZDQ5ERcjZERnt7wfMRDSY1CaLw7NrYH/nDJMycneJo+Z
+         f+7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=s+eXwasJWmo58I5ZtiztDl7lUPzWwKjhg8B6kICr6A8=;
+        b=jyXalmKs633rrtTPQ6orX3knIooYNCPIVXcjsbviUZiFWQu8fl5yoGIhh7kPOJ3X+5
+         TWqR/+jNAgmui2T8HJ9XydxbfRAZTtstIHFSw+56kow5tXXC10p5CmJaeNxnwr/fP5C1
+         kvFe5kYZGE6pFewiXTeGOqX59wBxGMptykNH50tFGbTg4JuBnJDOYX69Y+2G9CyQcj+n
+         /SPd6ueP66cAr38NSv948zTgQSiQnwpUbe7Hc7Gg/ceyaJpO/PgsNafeNvVcCDUy4Kba
+         gyG0hUCYqsX0AwkiR+pIe6f+CFwZynZzCnmYJSjceII/yDhZTrzvr3TPVoQEeD7f3ZvA
+         vDXw==
+X-Gm-Message-State: AOAM531QJ+0WeO/9iVh7TKHVI8eb+4Mjunj0UqpGfiY52jgXLDKACFZq
+        5ae6QhiO+xjYdQDhA09g+7yW/qL18vuyfsY5
+X-Google-Smtp-Source: ABdhPJzyjFyg7eskYSheLlY8QaiDaNTjhGd8MLgwwJEh3/3jG1gBKBQtpMMVpZ+TxCF0ug30Nl6gdQ==
+X-Received: by 2002:aa7:970a:0:b029:18b:5773:13e6 with SMTP id a10-20020aa7970a0000b029018b577313e6mr20162371pfg.34.1606762348745;
+        Mon, 30 Nov 2020 10:52:28 -0800 (PST)
+Received: from btopel-mobl.ger.intel.com ([192.55.55.41])
+        by smtp.gmail.com with ESMTPSA id i3sm12005978pgq.12.2020.11.30.10.52.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Nov 2020 10:52:27 -0800 (PST)
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
+        bjorn.topel@intel.com, magnus.karlsson@intel.com, ast@kernel.org,
+        daniel@iogearbox.net, maciej.fijalkowski@intel.com,
+        sridhar.samudrala@intel.com, jesse.brandeburg@intel.com,
+        qi.z.zhang@intel.com, kuba@kernel.org, edumazet@google.com,
+        jonathan.lemon@gmail.com, maximmi@nvidia.com
+Subject: [PATCH bpf-next v4 00/10] Introduce preferred busy-polling
+Date:   Mon, 30 Nov 2020 19:51:55 +0100
+Message-Id: <20201130185205.196029-1-bjorn.topel@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-30_06:2020-11-30,2020-11-30 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
- bulkscore=0 priorityscore=1501 clxscore=1015 lowpriorityscore=0
- spamscore=0 mlxscore=0 malwarescore=0 phishscore=0 adultscore=0
- suspectscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2011300112
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+This series introduces three new features:
+
+1. A new "heavy traffic" busy-polling variant that works in concert
+   with the existing napi_defer_hard_irqs and gro_flush_timeout knobs.
+
+2. A new socket option that let a user change the busy-polling NAPI
+   budget.
+
+3. Allow busy-polling to be performed on XDP sockets.
+
+The existing busy-polling mode, enabled by the SO_BUSY_POLL socket
+option or system-wide using the /proc/sys/net/core/busy_read knob, is
+an opportunistic. That means that if the NAPI context is not
+scheduled, it will poll it. If, after busy-polling, the budget is
+exceeded the busy-polling logic will schedule the NAPI onto the
+regular softirq handling.
+
+One implication of the behavior above is that a busy/heavy loaded NAPI
+context will never enter/allow for busy-polling. Some applications
+prefer that most NAPI processing would be done by busy-polling.
+
+This series adds a new socket option, SO_PREFER_BUSY_POLL, that works
+in concert with the napi_defer_hard_irqs and gro_flush_timeout
+knobs. The napi_defer_hard_irqs and gro_flush_timeout knobs were
+introduced in commit 6f8b12d661d0 ("net: napi: add hard irqs deferral
+feature"), and allows for a user to defer interrupts to be enabled and
+instead schedule the NAPI context from a watchdog timer. When a user
+enables the SO_PREFER_BUSY_POLL, again with the other knobs enabled,
+and the NAPI context is being processed by a softirq, the softirq NAPI
+processing will exit early to allow the busy-polling to be performed.
+
+If the application stops performing busy-polling via a system call,
+the watchdog timer defined by gro_flush_timeout will timeout, and
+regular softirq handling will resume.
+
+In summary; Heavy traffic applications that prefer busy-polling over
+softirq processing should use this option.
+
+Patch 6 touches a lot of drivers, so the Cc: list is grossly long.
 
 
-On 11/28/20 5:40 PM, Alexei Starovoitov wrote:
-> On Fri, Nov 27, 2020 at 09:53:05PM -0800, Yonghong Song wrote:
->>
->>
->> On 11/27/20 9:57 AM, Brendan Jackman wrote:
->>> Status of the patches
->>> =====================
->>>
->>> Thanks for the reviews! Differences from v1->v2 [1]:
->>>
->>> * Fixed mistakes in the netronome driver
->>>
->>> * Addd sub, add, or, xor operations
->>>
->>> * The above led to some refactors to keep things readable. (Maybe I
->>>     should have just waited until I'd implemented these before starting
->>>     the review...)
->>>
->>> * Replaced BPF_[CMP]SET | BPF_FETCH with just BPF_[CMP]XCHG, which
->>>     include the BPF_FETCH flag
->>>
->>> * Added a bit of documentation. Suggestions welcome for more places
->>>     to dump this info...
->>>
->>> The prog_test that's added depends on Clang/LLVM features added by
->>> Yonghong in https://reviews.llvm.org/D72184
->>>
->>> This only includes a JIT implementation for x86_64 - I don't plan to
->>> implement JIT support myself for other architectures.
->>>
->>> Operations
->>> ==========
->>>
->>> This patchset adds atomic operations to the eBPF instruction set. The
->>> use-case that motivated this work was a trivial and efficient way to
->>> generate globally-unique cookies in BPF progs, but I think it's
->>> obvious that these features are pretty widely applicable.  The
->>> instructions that are added here can be summarised with this list of
->>> kernel operations:
->>>
->>> * atomic[64]_[fetch_]add
->>> * atomic[64]_[fetch_]sub
->>> * atomic[64]_[fetch_]and
->>> * atomic[64]_[fetch_]or
->>
->> * atomic[64]_[fetch_]xor
->>
->>> * atomic[64]_xchg
->>> * atomic[64]_cmpxchg
->>
->> Thanks. Overall looks good to me but I did not check carefully
->> on jit part as I am not an expert in x64 assembly...
->>
->> This patch also introduced atomic[64]_{sub,and,or,xor}, similar to
->> xadd. I am not sure whether it is necessary. For one thing,
->> users can just use atomic[64]_fetch_{sub,and,or,xor} to ignore
->> return value and they will achieve the same result, right?
->>  From llvm side, there is no ready-to-use gcc builtin matching
->> atomic[64]_{sub,and,or,xor} which does not have return values.
->> If we go this route, we will need to invent additional bpf
->> specific builtins.
-> 
-> I think bpf specific builtins are overkill.
-> As you said the users can use atomic_fetch_xor() and ignore
-> return value. I think llvm backend should be smart enough to use
-> BPF_ATOMIC | BPF_XOR insn without BPF_FETCH bit in such case.
-> But if it's too cumbersome to do at the moment we skip this
-> optimization for now.
+Example usage:
 
-We can initially all have BPF_FETCH bit as at that point we do not
-have def-use chain. Later on we can add a
-machine ssa IR phase and check whether the result of, say 
-atomic_fetch_or(), is used or not. If not, we can change the
-instruction to atomic_or.
+  $ echo 2 | sudo tee /sys/class/net/ens785f1/napi_defer_hard_irqs
+  $ echo 200000 | sudo tee /sys/class/net/ens785f1/gro_flush_timeout
 
-> 
+Note that the timeout should be larger than the userspace processing
+window, otherwise the watchdog will timeout and fall back to regular
+softirq processing.
+
+Enable the SO_BUSY_POLL/SO_PREFER_BUSY_POLL options on your socket.
+
+
+Performance simple UDP ping-pong:
+
+A packet generator blasts UDP packets from a packet generator to a
+certain {src,dst}IP/port, so a dedicated ksoftirq will be busy
+handling the packets at a certain core.
+
+A simple UDP test program that simply does recvfrom/sendto is running
+at the host end. Throughput in pps and RTT latency is measured at the
+packet generator.
+
+/proc/sys/net/core/busy_read is set (20).
+
+Min       Max       Avg (usec)
+
+1. Blocking 2-cores:                       490Kpps
+ 1218.192  1335.427  1271.083
+
+2. Blocking, 1-core:                       155Kpps
+ 1327.195 17294.855  4761.367
+
+3. Non-blocking, 2-cores:                  475Kpps
+ 1221.197  1330.465  1270.740
+
+4. Non-blocking, 1-core:                     3Kpps
+29006.482 37260.465 33128.367
+
+5. Non-blocking, prefer busy-poll, 1-core: 420Kpps
+ 1202.535  5494.052  4885.443 
+
+Scenario 2 and 5 shows when the new option should be used. Throughput
+go from 155 to 420Kpps, average latency are similar, but the tail
+latencies are much better for the latter.
+
+
+Performance XDP sockets:
+
+Again, a packet generator blasts UDP packets from a packet generator
+to a certain {src,dst}IP/port.
+
+Today, running XDP sockets sample on the same core as the softirq
+handling, performance tanks mainly because we do not yield to
+user-space when the XDP socket Rx queue is full.
+
+  # taskset -c 5 ./xdpsock -i ens785f1 -q 5 -n 1 -r
+  Rx: 64Kpps
+  
+  # # preferred busy-polling, budget 8
+  # taskset -c 5 ./xdpsock -i ens785f1 -q 5 -n 1 -r -B -b 8
+  Rx 9.9Mpps
+  # # preferred busy-polling, budget 64
+  # taskset -c 5 ./xdpsock -i ens785f1 -q 5 -n 1 -r -B -b 64
+  Rx: 19.3Mpps
+  # # preferred busy-polling, budget 256
+  # taskset -c 5 ./xdpsock -i ens785f1 -q 5 -n 1 -r -B -b 256
+  Rx: 21.4Mpps
+  # # preferred busy-polling, budget 512
+  # taskset -c 5 ./xdpsock -i ens785f1 -q 5 -n 1 -r -B -b 512
+  Rx: 21.7Mpps
+
+Compared to the two-core case:
+  # taskset -c 4 ./xdpsock -i ens785f1 -q 20 -n 1 -r
+  Rx: 20.7Mpps
+
+We're getting better single-core performance than two, for this naïve
+drop scenario.
+
+
+Performance netperf UDP_RR:
+
+Note that netperf UDP_RR is not a heavy traffic tests, and preferred
+busy-polling is not typically something we want to use here.
+
+  $ echo 20 | sudo tee /proc/sys/net/core/busy_read
+  $ netperf -H 192.168.1.1 -l 30 -t UDP_RR -v 2 -- \
+      -o min_latency,mean_latency,max_latency,stddev_latency,transaction_rate
+
+busy-polling blocking sockets:            12,13.33,224,0.63,74731.177
+
+I hacked netperf to use non-blocking sockets and re-ran:
+
+busy-polling non-blocking sockets:        12,13.46,218,0.72,73991.172
+prefer busy-polling non-blocking sockets: 12,13.62,221,0.59,73138.448
+
+Using the preferred busy-polling mode does not impact performance.
+
+The above tests was done for the 'ice' driver.
+
+Thanks to Jakub for suggesting this busy-polling addition [1], and
+Eric for all input/review!
+
+
+Changes:
+
+rfc-v1 [2] -> rfc-v2:
+  * Changed name from bias to prefer.
+  * Base the work on Eric's/Luigi's defer irq/gro timeout work.
+  * Proper GRO flushing.
+  * Build issues for some XDP drivers.
+
+rfc-v2 [3] -> v1:
+  * Fixed broken qlogic build.
+  * Do not trigger an IPI (XDP socket wakeup) when busy-polling is
+    enabled.
+
+v1 [4] -> v2:
+  * Added napi_id to socionext driver, and added Ilias Acked-by:. (Ilias)
+  * Added a samples patch to improve busy-polling for xdpsock/l2fwd.
+  * Correctly mark atomic operations with {WRITE,READ}_ONCE, to make
+    KCSAN and the code readers happy. (Eric)
+  * Check NAPI budget not to exceed U16_MAX. (Eric)
+  * Added kdoc.
+
+v2 [5] -> v3:
+  * Collected Acked-by.
+  * Check NAPI disable prior prefer busy-polling. (Jakub)
+  * Added napi_id registration for virtio-net. (Michael)
+  * Added napi_id registration for veth.
+
+v3 [6] -> v4:
+  * Collected Acked-by/Reviewed-by.
+
+[1] https://lore.kernel.org/netdev/20200925120652.10b8d7c5@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com/
+[2] https://lore.kernel.org/bpf/20201028133437.212503-1-bjorn.topel@gmail.com/
+[3] https://lore.kernel.org/bpf/20201105102812.152836-1-bjorn.topel@gmail.com/
+[4] https://lore.kernel.org/bpf/20201112114041.131998-1-bjorn.topel@gmail.com/
+[5] https://lore.kernel.org/bpf/20201116110416.10719-1-bjorn.topel@gmail.com/
+[6] https://lore.kernel.org/bpf/20201119083024.119566-1-bjorn.topel@gmail.com/
+
+
+Björn Töpel (10):
+  net: introduce preferred busy-polling
+  net: add SO_BUSY_POLL_BUDGET socket option
+  xsk: add support for recvmsg()
+  xsk: check need wakeup flag in sendmsg()
+  xsk: add busy-poll support for {recv,send}msg()
+  xsk: propagate napi_id to XDP socket Rx path
+  samples/bpf: use recvfrom() in xdpsock/rxdrop
+  samples/bpf: use recvfrom() in xdpsock/l2fwd
+  samples/bpf: add busy-poll support to xdpsock
+  samples/bpf: add option to set the busy-poll budget
+
+ arch/alpha/include/uapi/asm/socket.h          |  3 +
+ arch/mips/include/uapi/asm/socket.h           |  3 +
+ arch/parisc/include/uapi/asm/socket.h         |  3 +
+ arch/sparc/include/uapi/asm/socket.h          |  3 +
+ drivers/net/ethernet/amazon/ena/ena_netdev.c  |  2 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c     |  2 +-
+ .../ethernet/cavium/thunder/nicvf_queues.c    |  2 +-
+ .../net/ethernet/freescale/dpaa2/dpaa2-eth.c  |  2 +-
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c   |  2 +-
+ drivers/net/ethernet/intel/ice/ice_base.c     |  4 +-
+ drivers/net/ethernet/intel/ice/ice_txrx.c     |  2 +-
+ drivers/net/ethernet/intel/igb/igb_main.c     |  2 +-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c |  2 +-
+ .../net/ethernet/intel/ixgbevf/ixgbevf_main.c |  2 +-
+ drivers/net/ethernet/marvell/mvneta.c         |  2 +-
+ .../net/ethernet/marvell/mvpp2/mvpp2_main.c   |  4 +-
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  2 +-
+ .../net/ethernet/mellanox/mlx5/core/en_main.c |  2 +-
+ .../ethernet/netronome/nfp/nfp_net_common.c   |  2 +-
+ drivers/net/ethernet/qlogic/qede/qede_main.c  |  2 +-
+ drivers/net/ethernet/sfc/rx_common.c          |  2 +-
+ drivers/net/ethernet/socionext/netsec.c       |  2 +-
+ drivers/net/ethernet/ti/cpsw_priv.c           |  2 +-
+ drivers/net/hyperv/netvsc.c                   |  2 +-
+ drivers/net/tun.c                             |  2 +-
+ drivers/net/veth.c                            | 12 ++-
+ drivers/net/virtio_net.c                      |  2 +-
+ drivers/net/xen-netfront.c                    |  2 +-
+ fs/eventpoll.c                                |  3 +-
+ include/linux/netdevice.h                     | 35 +++++---
+ include/net/busy_poll.h                       | 27 ++++--
+ include/net/sock.h                            |  6 ++
+ include/net/xdp.h                             |  3 +-
+ include/uapi/asm-generic/socket.h             |  3 +
+ net/core/dev.c                                | 89 ++++++++++++++-----
+ net/core/sock.c                               | 19 ++++
+ net/core/xdp.c                                |  3 +-
+ net/xdp/xsk.c                                 | 53 ++++++++++-
+ net/xdp/xsk_buff_pool.c                       | 13 ++-
+ samples/bpf/xdpsock_user.c                    | 79 ++++++++++------
+ 40 files changed, 300 insertions(+), 107 deletions(-)
+
+
+base-commit: bb1b25cab04324d0749f7ae22653aff58157bf83
+-- 
+2.27.0
+
