@@ -2,138 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D31A22C805D
-	for <lists+bpf@lfdr.de>; Mon, 30 Nov 2020 09:55:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5C5C2C811B
+	for <lists+bpf@lfdr.de>; Mon, 30 Nov 2020 10:36:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726634AbgK3Izp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Nov 2020 03:55:45 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:8166 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726671AbgK3Izo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Nov 2020 03:55:44 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5fc4b3630004>; Mon, 30 Nov 2020 00:54:59 -0800
-Received: from [172.27.0.216] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 30 Nov
- 2020 08:54:54 +0000
-Subject: Re: [PATCH bpf] xdp: Handle MEM_TYPE_XSK_BUFF_POOL correctly in
- xdp_return_buff()
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        <ast@kernel.org>, <daniel@iogearbox.net>
-CC:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        <jonathan.lemon@gmail.com>, <magnus.karlsson@intel.com>,
-        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
-References: <20201127171726.123627-1-bjorn.topel@gmail.com>
-From:   Maxim Mikityanskiy <maximmi@nvidia.com>
-Message-ID: <0441d9e3-3880-5eb4-ca3d-0b714d41b48e@nvidia.com>
-Date:   Mon, 30 Nov 2020 10:54:50 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1726158AbgK3Jdv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Nov 2020 04:33:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33484 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726137AbgK3Jdu (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 30 Nov 2020 04:33:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606728744;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7XnOfdREIt4Lxkgjic2xKmB+sb4GzQklc68BVQDEWvs=;
+        b=A2TOzS4llJKT/v0MztmQIsvyI4kwF0ifoT2zzOHMlCSh8H1izDZHQEgzVvg/MzfmWe4Pj1
+        Ys+RAgyJDnGnU0lxSUb1RPwosuftkWzGsj8P5FIdEw+tLnxkQXbWplTDfb4h9axswQcgT0
+        wNsuRBd6NAid15mIjc5iG/k7NY+UYZw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-342-74MbqdniMdmq5_A4fpal4Q-1; Mon, 30 Nov 2020 04:32:20 -0500
+X-MC-Unique: 74MbqdniMdmq5_A4fpal4Q-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8064B8030AB;
+        Mon, 30 Nov 2020 09:32:18 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.55])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 829A25D9D2;
+        Mon, 30 Nov 2020 09:32:09 +0000 (UTC)
+Date:   Mon, 30 Nov 2020 10:32:08 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Hangbin Liu <liuhangbin@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
+        Tariq Toukan <tariqt@mellanox.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        brouer@redhat.com
+Subject: Re: [PATCHv2 bpf-next] samples/bpf: add xdp program on egress for
+ xdp_redirect_map
+Message-ID: <20201130103208.6d5305e2@carbon>
+In-Reply-To: <20201130075107.GB277949@localhost.localdomain>
+References: <20201110124639.1941654-1-liuhangbin@gmail.com>
+        <20201126084325.477470-1-liuhangbin@gmail.com>
+        <54642499-57d7-5f03-f51e-c0be72fb89de@fb.com>
+        <20201130075107.GB277949@localhost.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <20201127171726.123627-1-bjorn.topel@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1606726499; bh=pEYGOgNKiBr/dUktdAkMcNlQfo31TGStJowyg15f4Iw=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=XQhRx1twpgySE0QCEG+/9FWnxsWxCxEyhHo3ivENJEN4bNh4ulzCihGBpPGDQQpXq
-         tWB+Sk7QqA/J+jP8lAlOE18UzB2ZJzxO5peiJ2HYZm//B7oza1UkwLK+58hKkGCFxU
-         BHk/dAu2hc6uzYBeBNnHBSIoqaRzoC69ehcMUN37N3dpDp8W0SZOhChq2ha4UlUmHA
-         bpGNgpP4vRiK7YtxlQXicnetbCgOlD4drUU42Y9iO7LmFIGD3mETdEE4q2PUft05bl
-         ds4kQfGgM9CGrCWoG9sGoHP93lOVtYFl2FikScCooixYrnGfMyC+ujDVSkUI3sU6r8
-         qqYZz09EwrVCw==
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020-11-27 19:17, Bj=C3=B6rn T=C3=B6pel wrote:
-> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
->=20
-> It turns out that it does exist a path where xdp_return_buff() is
-> being passed an XDP buffer of type MEM_TYPE_XSK_BUFF_POOL. This path
-> is when AF_XDP zero-copy mode is enabled, and a buffer is redirected
-> to a DEVMAP with an attached XDP program that drops the buffer.
->=20
-> This change simply puts the handling of MEM_TYPE_XSK_BUFF_POOL back
-> into xdp_return_buff().
->=20
-> Reported-by: Maxim Mikityanskiy <maximmi@nvidia.com>
-> Fixes: 82c41671ca4f ("xdp: Simplify xdp_return_{frame, frame_rx_napi, buf=
-f}")
-> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+On Mon, 30 Nov 2020 15:51:07 +0800
+Hangbin Liu <liuhangbin@gmail.com> wrote:
 
-Thanks for addressing this!
+> On Thu, Nov 26, 2020 at 10:31:56PM -0800, Yonghong Song wrote:
+> > > index 35e16dee613e..8bdec0865e1d 100644
+> > > --- a/samples/bpf/xdp_redirect_map_user.c
+> > > +++ b/samples/bpf/xdp_redirect_map_user.c
+> > > @@ -21,12 +21,13 @@
+> > >   static int ifindex_in;
+> > >   static int ifindex_out;
+> > > -static bool ifindex_out_xdp_dummy_attached = true;
+> > > +static bool ifindex_out_xdp_dummy_attached = false;
+> > > +static bool xdp_prog_attached = false;  
+> > 
+> > Maybe xdp_devmap_prog_attached? Feel xdp_prog_attached
+> > is too generic since actually it controls xdp_devmap program
+> > attachment.  
+> 
+> Hi Yonghong,
+> 
+> Thanks for your comments. As Jesper replied, The 2nd xdp_prog on egress
+> doesn't tell us if the redirect was successful. So the number is meaningless.
 
-Acked-by: Maxim Mikityanskiy <maximmi@nvidia.com>
+Well, I would not say the counter is meaningless.  It true that 2nd
+devmap xdp_prog doesn't tell us if the redirect was successful, which
+means that your description/(understanding) of the counter was wrong.
 
-> ---
->   net/core/xdp.c | 17 ++++++++++-------
->   1 file changed, 10 insertions(+), 7 deletions(-)
->=20
-> diff --git a/net/core/xdp.c b/net/core/xdp.c
-> index 48aba933a5a8..491ad569a79c 100644
-> --- a/net/core/xdp.c
-> +++ b/net/core/xdp.c
-> @@ -335,11 +335,10 @@ EXPORT_SYMBOL_GPL(xdp_rxq_info_reg_mem_model);
->    * scenarios (e.g. queue full), it is possible to return the xdp_frame
->    * while still leveraging this protection.  The @napi_direct boolean
->    * is used for those calls sites.  Thus, allowing for faster recycling
-> - * of xdp_frames/pages in those cases. This path is never used by the
-> - * MEM_TYPE_XSK_BUFF_POOL memory type, so it's explicitly not part of
-> - * the switch-statement.
-> + * of xdp_frames/pages in those cases.
->    */
-> -static void __xdp_return(void *data, struct xdp_mem_info *mem, bool napi=
-_direct)
-> +static void __xdp_return(void *data, struct xdp_mem_info *mem, bool napi=
-_direct,
-> +			 struct xdp_buff *xdp)
->   {
->   	struct xdp_mem_allocator *xa;
->   	struct page *page;
-> @@ -361,6 +360,10 @@ static void __xdp_return(void *data, struct xdp_mem_=
-info *mem, bool napi_direct)
->   		page =3D virt_to_page(data); /* Assumes order0 page*/
->   		put_page(page);
->   		break;
-> +	case MEM_TYPE_XSK_BUFF_POOL:
-> +		/* NB! Only valid from an xdp_buff! */
-> +		xsk_buff_free(xdp);
-> +		break;
->   	default:
->   		/* Not possible, checked in xdp_rxq_info_reg_mem_model() */
->   		WARN(1, "Incorrect XDP memory type (%d) usage", mem->type);
-> @@ -370,19 +373,19 @@ static void __xdp_return(void *data, struct xdp_mem=
-_info *mem, bool napi_direct)
->  =20
->   void xdp_return_frame(struct xdp_frame *xdpf)
->   {
-> -	__xdp_return(xdpf->data, &xdpf->mem, false);
-> +	__xdp_return(xdpf->data, &xdpf->mem, false, NULL);
->   }
->   EXPORT_SYMBOL_GPL(xdp_return_frame);
->  =20
->   void xdp_return_frame_rx_napi(struct xdp_frame *xdpf)
->   {
-> -	__xdp_return(xdpf->data, &xdpf->mem, true);
-> +	__xdp_return(xdpf->data, &xdpf->mem, true, NULL);
->   }
->   EXPORT_SYMBOL_GPL(xdp_return_frame_rx_napi);
->  =20
->   void xdp_return_buff(struct xdp_buff *xdp)
->   {
-> -	__xdp_return(xdp->data, &xdp->rxq->mem, true);
-> +	__xdp_return(xdp->data, &xdp->rxq->mem, true, xdp);
->   }
->  =20
->   /* Only called for MEM_TYPE_PAGE_POOL see xdp.h */
->=20
-> base-commit: 9a44bc9449cfe7e39dbadf537ff669fb007a9e63
->=20
+I still think it is relevant to have a counter for packets processed by
+this 2nd xdp_prog, just to make is visually clear that the 2nd xdp-prog
+attached (to devmap entry) is running.  The point is that QA is using
+these programs.
+
+The lack of good output from this specific sample have cause many
+bugzilla cases for me.  BZ cases that requires going back and forth a
+number of times, before figuring out how the prog was (mis)used.  This
+is why other samples like xdp_rxq_info and xdp_redirect_cpu have such a
+verbose output, which in-practice have helped many times on QA issues.
+
+
+> I plan to write a example about vlan header modification based on egress
+> index. I will post the patch later.
+
+I did notice the internal thread you had with Toke.  I still think it
+will be more simple to modify the Ethernet mac addresses.  Adding a
+VLAN id tag is more work, and will confuse benchmarks.  You are
+increasing the packet size, which means that you NIC need to spend
+slightly more time sending this packet (3.2 nanosec at 10Gbit/s), which
+could falsely be interpreted as cost of 2nd devmap XDP-program.
+
+(Details: these 3.2 ns will not be visible for smaller packets, because
+the minimum Ethernet frame size will hide this, but I've experience this
+problem with larger frames on real switch hardware (Juniper), where
+ingress didn't have VLAN-tag and egress we added VLAN-tag with XDP, and
+then switch buffer slowly increased until overflow).
+
+As Alexei already pointed out, you assignment is to modify the packet
+in the 2nd devmap XDP-prog.  Why: because you need to realize that this
+will break your approach to multicast in your previous patchset.
+(Yes, the offlist patch I gave you, that move running 2nd devmap
+XDP-prog to a later stage, solved this packet-modify issue).
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
