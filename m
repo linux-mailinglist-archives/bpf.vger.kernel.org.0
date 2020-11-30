@@ -2,125 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA3E42C895F
-	for <lists+bpf@lfdr.de>; Mon, 30 Nov 2020 17:24:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72B2D2C89B4
+	for <lists+bpf@lfdr.de>; Mon, 30 Nov 2020 17:39:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727726AbgK3QYG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Nov 2020 11:24:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37234 "EHLO
+        id S1727223AbgK3QjC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Nov 2020 11:39:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727195AbgK3QYG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Nov 2020 11:24:06 -0500
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD1FC0613D2
-        for <bpf@vger.kernel.org>; Mon, 30 Nov 2020 08:23:25 -0800 (PST)
-Received: by mail-ed1-x542.google.com with SMTP id d18so16904969edt.7
-        for <bpf@vger.kernel.org>; Mon, 30 Nov 2020 08:23:25 -0800 (PST)
+        with ESMTP id S1725987AbgK3QjB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Nov 2020 11:39:01 -0500
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87C2BC0613D4
+        for <bpf@vger.kernel.org>; Mon, 30 Nov 2020 08:38:15 -0800 (PST)
+Received: by mail-pg1-x549.google.com with SMTP id 1so9005218pgq.11
+        for <bpf@vger.kernel.org>; Mon, 30 Nov 2020 08:38:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=Q8duByOZefS2/jFG8Hwrvsv86yFk6gZ1iSV/8ksBpEE=;
-        b=aGQcYePTV/wvNSWnQBw6+ya55y+q5crY2e4Y8IevpRwx21mtQtQApt1FSnbE7J4/F3
-         5j3JpPOaRWlJmrf8+dPPtWBvtivavKiAI+/OByT96s1pGNhsCoWLN53hoBNDX3kBszBm
-         cdupVX2e2SE29fn8cvvi0iGle82ASmeamS5rA=
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=UX816yw8DAh1erZp5BAVsdx8QFf8rexiapeSutLKtDU=;
+        b=aWSKDPWCTob0IK1uVdpoZExn/2n8CYvY2YxJHGV7pOqCTh4+TONEsVWIUMaAUuguq2
+         dcBlye7LYlvaYBk4/yHBfa+BmQE3wZJBjzNhNEWXi4g4v2SMBKRi1T4yrZ2ffvOzi+mr
+         7nSJTU4YOQd+6xMVkTn9qrdzxKd6wNWjx7pFSnRt2RsKiw9fTCIr0JeHoguG6ifQfP3P
+         jNF7hh97DpSLS4NSF8AKpq0m00ZudomNZgURlpW8rPXmlSrjlQgSKBWlTEeOp6b5QDJ5
+         IWM7na3y74brpwholwgkLE8EAM89Z/ns7MxWq3V1W1JO19ULqNDYKVlIpTwHFm7sjdCv
+         xNjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=Q8duByOZefS2/jFG8Hwrvsv86yFk6gZ1iSV/8ksBpEE=;
-        b=pUqH6tfcX1BKMen8rXrxyJ7a1hA7kEPJqwp9Ahup6f2+TmryqtqeFbM40LTHfar39p
-         MzyqBKs3LpNXZ+B8H6SJ27Tvz7xEA77tzUZvS/LnarCRqKT0kcdench15EQRrc4J2xlt
-         8J2/CC1A6kFb3+GUaVYWLAgQSW6IP0l7Be/hJyd2vhKF0slFT61I8opSEkc5Y/WZr/l0
-         AOHu516PuVFsQlmLAYME/ICzv4Yw+PxYQCUfRrlWJ90gNB0njA4wxBQ2NR4bwHAkmdqb
-         FiXbj5immhRyTD7z6/tBZ74oSGk2X+fm3vWN0+kONjgDvEjFi9GpNdHk/Qi8x7uqsb6o
-         5wDw==
-X-Gm-Message-State: AOAM533R63hXNd8AFqHrHqPC7YSMObTEoQ4ejRJ5F+gG069wLr2mu7Vq
-        0CPiBd4vC/QVh+FcKy6180Vorg==
-X-Google-Smtp-Source: ABdhPJxCdI1Ss0iIn1vBl8ai9BuEF5tfnbRaliQ6HICmvY7HSX/0aopwWSQDPjKfYpD8cgDzLyz+pw==
-X-Received: by 2002:aa7:d545:: with SMTP id u5mr22345779edr.113.1606753404199;
-        Mon, 30 Nov 2020 08:23:24 -0800 (PST)
-Received: from ?IPv6:2a04:ee41:4:1318:ea45:a00:4d43:48fc? ([2a04:ee41:4:1318:ea45:a00:4d43:48fc])
-        by smtp.gmail.com with ESMTPSA id f13sm8667325ejf.42.2020.11.30.08.23.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 08:23:23 -0800 (PST)
-Message-ID: <7c75919c4b05cbe5952826d67b6e57a95b544a5a.camel@chromium.org>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
-From:   Florent Revest <revest@chromium.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kpsingh@chromium.org, revest@google.com,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 30 Nov 2020 17:23:22 +0100
-In-Reply-To: <20201129010705.7djnqmztkjhqlrdt@ast-mbp>
-References: <20201126165748.1748417-1-revest@google.com>
-         <20201129010705.7djnqmztkjhqlrdt@ast-mbp>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-2 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=UX816yw8DAh1erZp5BAVsdx8QFf8rexiapeSutLKtDU=;
+        b=GIZq8ulXTcy1y3T7R5SL1W++hj2ajFrx1OliFnG5MwJEtJusnTGC+MDZYVUVrvXkXG
+         BSDrGMycZtgRQHXlzPGzc6iIqPKfu++9d/BvbtTPeuwQVswY94ptB8XJ4b39JwyX1u7I
+         6iEHUVvo9jBo2lZAOXtIuT3MY5jZ2ve497EkO6yAoXqs6r2EECmb3+Cy71NFsYN+46B9
+         Ejtnub1cUE6lHopx0d5dITez5NeK1BnABnX3yZrLR8x5FV1dYUdAUTfZsWLBTLAeu729
+         nlpQ7i+Iz04wS5/N/vuS0/NuS1mQEzWDW7iBPqN6yjUZN841CpeycEcZeCXH4M8w7Tyo
+         SPTw==
+X-Gm-Message-State: AOAM530T3FeeE61Ki+tzimFQq4eH1KataNh6otwqfXiV2vm4DUC/fyPV
+        atJbr18P8FAgdJQANOA7yQZHtaQ=
+X-Google-Smtp-Source: ABdhPJxxRiSiL9TZBSG3e6fLHbVnNFg0unRsc3Mpp53zJ4Q+9PeSkn26dUkTkrBDuAqW0MgjKB3SlLo=
+Sender: "sdf via sendgmr" <sdf@sdf2.svl.corp.google.com>
+X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:7220:84ff:fe09:7732])
+ (user=sdf job=sendgmr) by 2002:a17:90a:f691:: with SMTP id
+ cl17mr27419417pjb.206.1606754294970; Mon, 30 Nov 2020 08:38:14 -0800 (PST)
+Date:   Mon, 30 Nov 2020 08:38:13 -0800
+In-Reply-To: <20201130010559.GA1991@rdna-mbp>
+Message-Id: <20201130163813.GA553169@google.com>
+Mime-Version: 1.0
+References: <20201118001742.85005-1-sdf@google.com> <20201118001742.85005-3-sdf@google.com>
+ <CAADnVQLxt11Zx8553fegoSWCtt0SQ_6uYViMtuhGxA7sv1YSxA@mail.gmail.com> <20201130010559.GA1991@rdna-mbp>
+Subject: Re: [PATCH bpf-next 2/3] bpf: allow bpf_{s,g}etsockopt from cgroup
+ bind{4,6} hooks
+From:   sdf@google.com
+To:     Andrey Ignatov <rdna@fb.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 2020-11-28 at 17:07 -0800, Alexei Starovoitov wrote:
-> On Thu, Nov 26, 2020 at 05:57:47PM +0100, Florent Revest wrote:
-> > This helper exposes the kallsyms_lookup function to eBPF tracing
-> > programs. This can be used to retrieve the name of the symbol at an
-> > address. For example, when hooking into nf_register_net_hook, one
-> > can
-> > audit the name of the registered netfilter hook and potentially
-> > also
-> > the name of the module in which the symbol is located.
-> > 
-> > Signed-off-by: Florent Revest <revest@google.com>
-> > ---
-> >  include/uapi/linux/bpf.h       | 16 +++++++++++++
-> >  kernel/trace/bpf_trace.c       | 41
-> > ++++++++++++++++++++++++++++++++++
-> >  tools/include/uapi/linux/bpf.h | 16 +++++++++++++
-> >  3 files changed, 73 insertions(+)
-> > 
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index c3458ec1f30a..670998635eac 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -3817,6 +3817,21 @@ union bpf_attr {
-> >   *		The **hash_algo** is returned on success,
-> >   *		**-EOPNOTSUP** if IMA is disabled or **-EINVAL** if
-> >   *		invalid arguments are passed.
-> > + *
-> > + * long bpf_kallsyms_lookup(u64 address, char *symbol, u32
-> > symbol_size, char *module, u32 module_size)
-> > + *	Description
-> > + *		Uses kallsyms to write the name of the symbol at
-> > *address*
-> > + *		into *symbol* of size *symbol_sz*. This is guaranteed
-> > to be
-> > + *		zero terminated.
-> > + *		If the symbol is in a module, up to *module_size* bytes
-> > of
-> > + *		the module name is written in *module*. This is also
-> > + *		guaranteed to be zero-terminated. Note: a module name
-> > + *		is always shorter than 64 bytes.
-> > + *	Return
-> > + *		On success, the strictly positive length of the full
-> > symbol
-> > + *		name, If this is greater than *symbol_size*, the
-> > written
-> > + *		symbol is truncated.
-> > + *		On error, a negative value.
-> 
-> Looks like debug-only helper.
-> I cannot think of a way to use in production code.
-> What program suppose to do with that string?
-> Do string compare? BPF side doesn't have a good way to do string
-> manipulations.
-> If you really need to print a symbolic name for a given address
-> I'd rather extend bpf_trace_printk() to support %pS
+On 11/29, Andrey Ignatov wrote:
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> [Tue, 2020-11-17 20:05  
+> -0800]:
+> > On Tue, Nov 17, 2020 at 4:17 PM Stanislav Fomichev <sdf@google.com>  
+> wrote:
+[..]
+> >
+> > I think it is ok, but I need to go through the locking paths more.
+> > Andrey,
+> > please take a look as well.
 
-We actually use this helper for auditing, not debugging.
-We don't want to parse /proc/kallsyms from userspace because we have no
-guarantee that the module will still be loaded by the time the event
-reaches userspace (this is also faster in kernelspace).
+> Sorry for delay, I was offline for the last two weeks.
+No worries, I was OOO myself last week, thanks for the feedback!
 
+>  From the correctness perspective it looks fine to me.
+
+>  From the performance perspective I can think of one relevant scenario.
+> Quite common use-case in applications is to use bind(2) not before
+> listen(2) but before connect(2) for client sockets so that connection
+> can be set up from specific source IP and, optionally, port.
+
+> Binding to both IP and port case is not interesting since it's already
+> slow due to get_port().
+
+> But some applications do care about connection setup performance and at
+> the same time need to set source IP only (no port). In this case they
+> use IP_BIND_ADDRESS_NO_PORT socket option, what makes bind(2) fast
+> (we've discussed it with Stanislav earlier in [0]).
+
+> I can imagine some pathological case when an application sets up tons of
+> connections with bind(2) before connect(2) for sockets with
+> IP_BIND_ADDRESS_NO_PORT enabled (that by itself requires setsockopt(2)
+> though, i.e. socket lock/unlock) and that another lock/unlock to run
+> bind hook may add some overhead. Though I do not know how critical that
+> overhead may be and whether it's worth to benchmark or not (maybe too
+> much paranoia).
+
+> [0] https://lore.kernel.org/bpf/20200505182010.GB55644@rdna-mbp/
+Even in case of IP_BIND_ADDRESS_NO_PORT, inet[6]_bind() does
+lock_sock down the line, so it's not like we are switching
+a lockless path to the one with the lock, right?
+
+And in this case, similar to listen, the socket is still uncontended and
+owned by the userspace. So that extra lock/unlock should be cheap
+enough to be ignored (spin_lock_bh on the warm cache line).
+
+Am I missing something?
