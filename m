@@ -2,130 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6683C2C8939
-	for <lists+bpf@lfdr.de>; Mon, 30 Nov 2020 17:19:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA3E42C895F
+	for <lists+bpf@lfdr.de>; Mon, 30 Nov 2020 17:24:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728730AbgK3QS5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Nov 2020 11:18:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53736 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727243AbgK3QS5 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 30 Nov 2020 11:18:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606753051;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=1WGnk9TNl9hRGZTaPRBMI0GW5RawwawDmOTeaOs/1fE=;
-        b=GdJcj7BA2JtxPwgLx5MWde6JWgEbSDal2F11Gziigh6qCOT4wMqJwyIP+EGpcQBqxsWctO
-        797i001sYkoF/PM5hoJT2WyHNmBc5T2lxS78zvyAYjhBqCm6t/TrDgC/O1cMUpJpcC3RU8
-        G94KBzGEt/q0luUcQJIfUr8OXR46fuA=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-8-ApNldyzbPX2enMYmiSESEg-1; Mon, 30 Nov 2020 11:17:28 -0500
-X-MC-Unique: ApNldyzbPX2enMYmiSESEg-1
-Received: by mail-qv1-f70.google.com with SMTP id i11so7831942qvo.11
-        for <bpf@vger.kernel.org>; Mon, 30 Nov 2020 08:17:28 -0800 (PST)
+        id S1727726AbgK3QYG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Nov 2020 11:24:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727195AbgK3QYG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Nov 2020 11:24:06 -0500
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD1FC0613D2
+        for <bpf@vger.kernel.org>; Mon, 30 Nov 2020 08:23:25 -0800 (PST)
+Received: by mail-ed1-x542.google.com with SMTP id d18so16904969edt.7
+        for <bpf@vger.kernel.org>; Mon, 30 Nov 2020 08:23:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=Q8duByOZefS2/jFG8Hwrvsv86yFk6gZ1iSV/8ksBpEE=;
+        b=aGQcYePTV/wvNSWnQBw6+ya55y+q5crY2e4Y8IevpRwx21mtQtQApt1FSnbE7J4/F3
+         5j3JpPOaRWlJmrf8+dPPtWBvtivavKiAI+/OByT96s1pGNhsCoWLN53hoBNDX3kBszBm
+         cdupVX2e2SE29fn8cvvi0iGle82ASmeamS5rA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1WGnk9TNl9hRGZTaPRBMI0GW5RawwawDmOTeaOs/1fE=;
-        b=c+mdbD4CmtTEXb+tDmgZhoIWbBcVDernTE8fITKo1dZZrOC+dAQ73V5J/5eevUEgHl
-         QrqcqP7s2v1i9KpNtsB+zwz7S8to1zQWEUyXYgkFJLJnLrbANnuT8ZWcGgHmB7UGjNH8
-         HXj2pcRLrFo2VlSsQ2gEkWpUP+B3E7zE2bcFtch18E5WqhzmUYs50ESSUREjGHGieAe2
-         kg3/AoHEwfH2dyqytlkDFWfQYciA03pLmJzQKx1JrUgBh39I2j4azDeRdBr1d3eXBhOO
-         4uloOgUbohzJk0WFQJTG37ekw6U1f0fRu7/P1Hnwy5brmrzTuL24aSNnomlnhWuDAIDx
-         fvrw==
-X-Gm-Message-State: AOAM5318dxvbtxwphlor2cOmoTpsTxDwxVQX6f2BG/QjNtFpI5O6Rk9X
-        qPcc7NINStw++M2fJPXMTprkDL+26C8TW2mG0S3RuR02rcCYAqPvCDjoWbGcUrzpeWVF3nNAkWn
-        dg1iv7b2svLNl
-X-Received: by 2002:a05:620a:15f7:: with SMTP id p23mr22454886qkm.98.1606753047923;
-        Mon, 30 Nov 2020 08:17:27 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwnsEcJmK+FERRj9g5fK0zGHU+Cfr4E6egU60uQNMvh2OoTO0vjyU5FpRzYgNxc7OCNct/49w==
-X-Received: by 2002:a05:620a:15f7:: with SMTP id p23mr22454818qkm.98.1606753047315;
-        Mon, 30 Nov 2020 08:17:27 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id h13sm17770477qtc.4.2020.11.30.08.17.26
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=Q8duByOZefS2/jFG8Hwrvsv86yFk6gZ1iSV/8ksBpEE=;
+        b=pUqH6tfcX1BKMen8rXrxyJ7a1hA7kEPJqwp9Ahup6f2+TmryqtqeFbM40LTHfar39p
+         MzyqBKs3LpNXZ+B8H6SJ27Tvz7xEA77tzUZvS/LnarCRqKT0kcdench15EQRrc4J2xlt
+         8J2/CC1A6kFb3+GUaVYWLAgQSW6IP0l7Be/hJyd2vhKF0slFT61I8opSEkc5Y/WZr/l0
+         AOHu516PuVFsQlmLAYME/ICzv4Yw+PxYQCUfRrlWJ90gNB0njA4wxBQ2NR4bwHAkmdqb
+         FiXbj5immhRyTD7z6/tBZ74oSGk2X+fm3vWN0+kONjgDvEjFi9GpNdHk/Qi8x7uqsb6o
+         5wDw==
+X-Gm-Message-State: AOAM533R63hXNd8AFqHrHqPC7YSMObTEoQ4ejRJ5F+gG069wLr2mu7Vq
+        0CPiBd4vC/QVh+FcKy6180Vorg==
+X-Google-Smtp-Source: ABdhPJxCdI1Ss0iIn1vBl8ai9BuEF5tfnbRaliQ6HICmvY7HSX/0aopwWSQDPjKfYpD8cgDzLyz+pw==
+X-Received: by 2002:aa7:d545:: with SMTP id u5mr22345779edr.113.1606753404199;
+        Mon, 30 Nov 2020 08:23:24 -0800 (PST)
+Received: from ?IPv6:2a04:ee41:4:1318:ea45:a00:4d43:48fc? ([2a04:ee41:4:1318:ea45:a00:4d43:48fc])
+        by smtp.gmail.com with ESMTPSA id f13sm8667325ejf.42.2020.11.30.08.23.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Nov 2020 08:17:26 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id D9570181AD4; Mon, 30 Nov 2020 17:17:24 +0100 (CET)
-From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     daniel@iogearbox.net, ast@fb.com, andrii@kernel.org
-Cc:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH bpf] libbpf: sanitise map names before pinning
-Date:   Mon, 30 Nov 2020 17:17:20 +0100
-Message-Id: <20201130161720.8688-1-toke@redhat.com>
-X-Mailer: git-send-email 2.29.2
+        Mon, 30 Nov 2020 08:23:23 -0800 (PST)
+Message-ID: <7c75919c4b05cbe5952826d67b6e57a95b544a5a.camel@chromium.org>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
+From:   Florent Revest <revest@chromium.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kpsingh@chromium.org, revest@google.com,
+        linux-kernel@vger.kernel.org
+Date:   Mon, 30 Nov 2020 17:23:22 +0100
+In-Reply-To: <20201129010705.7djnqmztkjhqlrdt@ast-mbp>
+References: <20201126165748.1748417-1-revest@google.com>
+         <20201129010705.7djnqmztkjhqlrdt@ast-mbp>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When we added sanitising of map names before loading programs to libbpf, we
-still allowed periods in the name. While the kernel will accept these for
-the map names themselves, they are not allowed in file names when pinning
-maps. This means that bpf_object__pin_maps() will fail if called on an
-object that contains internal maps (such as sections .rodata).
+On Sat, 2020-11-28 at 17:07 -0800, Alexei Starovoitov wrote:
+> On Thu, Nov 26, 2020 at 05:57:47PM +0100, Florent Revest wrote:
+> > This helper exposes the kallsyms_lookup function to eBPF tracing
+> > programs. This can be used to retrieve the name of the symbol at an
+> > address. For example, when hooking into nf_register_net_hook, one
+> > can
+> > audit the name of the registered netfilter hook and potentially
+> > also
+> > the name of the module in which the symbol is located.
+> > 
+> > Signed-off-by: Florent Revest <revest@google.com>
+> > ---
+> >  include/uapi/linux/bpf.h       | 16 +++++++++++++
+> >  kernel/trace/bpf_trace.c       | 41
+> > ++++++++++++++++++++++++++++++++++
+> >  tools/include/uapi/linux/bpf.h | 16 +++++++++++++
+> >  3 files changed, 73 insertions(+)
+> > 
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index c3458ec1f30a..670998635eac 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -3817,6 +3817,21 @@ union bpf_attr {
+> >   *		The **hash_algo** is returned on success,
+> >   *		**-EOPNOTSUP** if IMA is disabled or **-EINVAL** if
+> >   *		invalid arguments are passed.
+> > + *
+> > + * long bpf_kallsyms_lookup(u64 address, char *symbol, u32
+> > symbol_size, char *module, u32 module_size)
+> > + *	Description
+> > + *		Uses kallsyms to write the name of the symbol at
+> > *address*
+> > + *		into *symbol* of size *symbol_sz*. This is guaranteed
+> > to be
+> > + *		zero terminated.
+> > + *		If the symbol is in a module, up to *module_size* bytes
+> > of
+> > + *		the module name is written in *module*. This is also
+> > + *		guaranteed to be zero-terminated. Note: a module name
+> > + *		is always shorter than 64 bytes.
+> > + *	Return
+> > + *		On success, the strictly positive length of the full
+> > symbol
+> > + *		name, If this is greater than *symbol_size*, the
+> > written
+> > + *		symbol is truncated.
+> > + *		On error, a negative value.
+> 
+> Looks like debug-only helper.
+> I cannot think of a way to use in production code.
+> What program suppose to do with that string?
+> Do string compare? BPF side doesn't have a good way to do string
+> manipulations.
+> If you really need to print a symbolic name for a given address
+> I'd rather extend bpf_trace_printk() to support %pS
 
-Fix this by replacing periods with underscores when constructing map pin
-paths. This only affects the paths generated by libbpf when
-bpf_object__ping_maps() is called with a path argument. Any pin paths set
-by bpf_map__set_pin_path() are unaffected, and it will still be up to the
-caller to avoid invalid characters in those.
-
-Fixes: 113e6b7e15e2 ("libbpf: Sanitise internal map names so they are not rejected by the kernel")
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
----
- tools/lib/bpf/libbpf.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 8d05132e1945..8a3b4713b356 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -7665,8 +7665,8 @@ int bpf_object__pin_maps(struct bpf_object *obj, const char *path)
- 	}
- 
- 	bpf_object__for_each_map(map, obj) {
-+		char buf[PATH_MAX], *s = buf;
- 		char *pin_path = NULL;
--		char buf[PATH_MAX];
- 
- 		if (path) {
- 			int len;
-@@ -7680,6 +7680,8 @@ int bpf_object__pin_maps(struct bpf_object *obj, const char *path)
- 				err = -ENAMETOOLONG;
- 				goto err_unpin_maps;
- 			}
-+			while ((s = strstr(s, ".")))
-+			    *s = '_';
- 			pin_path = buf;
- 		} else if (!map->pin_path) {
- 			continue;
-@@ -7712,8 +7714,8 @@ int bpf_object__unpin_maps(struct bpf_object *obj, const char *path)
- 		return -ENOENT;
- 
- 	bpf_object__for_each_map(map, obj) {
-+		char buf[PATH_MAX], *s = buf;
- 		char *pin_path = NULL;
--		char buf[PATH_MAX];
- 
- 		if (path) {
- 			int len;
-@@ -7724,6 +7726,8 @@ int bpf_object__unpin_maps(struct bpf_object *obj, const char *path)
- 				return -EINVAL;
- 			else if (len >= PATH_MAX)
- 				return -ENAMETOOLONG;
-+			while ((s = strstr(s, ".")))
-+			    *s = '_';
- 			pin_path = buf;
- 		} else if (!map->pin_path) {
- 			continue;
--- 
-2.29.2
+We actually use this helper for auditing, not debugging.
+We don't want to parse /proc/kallsyms from userspace because we have no
+guarantee that the module will still be loaded by the time the event
+reaches userspace (this is also faster in kernelspace).
 
