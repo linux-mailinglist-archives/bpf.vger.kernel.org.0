@@ -2,109 +2,180 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FA002CA5EC
-	for <lists+bpf@lfdr.de>; Tue,  1 Dec 2020 15:43:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F7512CA617
+	for <lists+bpf@lfdr.de>; Tue,  1 Dec 2020 15:47:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391641AbgLAOkY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Dec 2020 09:40:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389462AbgLAOkX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Dec 2020 09:40:23 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C9C7C0613D6
-        for <bpf@vger.kernel.org>; Tue,  1 Dec 2020 06:39:38 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id h21so5552905wmb.2
-        for <bpf@vger.kernel.org>; Tue, 01 Dec 2020 06:39:38 -0800 (PST)
+        id S2391615AbgLAOpi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Dec 2020 09:45:38 -0500
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:50785 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387462AbgLAOpi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Dec 2020 09:45:38 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=y2pihj4lnPlLWrJE5+RYdsoHnnsm23fjjkLBO9yU9Fo=;
-        b=Al6iKh6uP0Pe8eNjwDhk4hryCPw1FLnBFWVuI3WUdlK3zN8V0Ogi1jlJg/IIwdkxOV
-         hnN1rjkuuU9cNfN5CYfJjiBF76j1RtBcGLOSN3bTg7CK1HJysrYnMQXCx+lkAW9/BnOc
-         3M5iqCAgTsTfrOxiaLat9gzNjgHHxYy9Hq8Cc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=y2pihj4lnPlLWrJE5+RYdsoHnnsm23fjjkLBO9yU9Fo=;
-        b=cf34ZSA0Kb75ygK436BNd7fTAk+E0QDNhkG9Aqe/yqKDKT8DNsbGGjtkEfLjaDU7JV
-         2n5+MAGxDL+nC3liyJ0VJ0ZXBZLJ6clPg143AGR4fOuV1pff8GBDUQNEp2za2b7gAPVT
-         8OdOs+KoxknpjDEKgoKGrorPun4hAhAmRSMPFEsuSTWFJQK/m0iORou54jC/OCkJQViM
-         SeX5ijFLLndF8fHZlWeUvphwDDF9iTWUq7JOlap8j0na59EE84J5Awp+MV/fNi8hPhJP
-         D7XeAvm4q8YgqaRoLlJJ0yJztRIYXGyfNpS9pyZR/fsdXSnA5XnQXdIj9Uj1jhIJ8y08
-         ab9A==
-X-Gm-Message-State: AOAM533FRSvj3wyz1W5MCzPszPIJars+KD42O4cuXwrRF8s8smwJZxX8
-        PkDlTBolyqUX+GP2xKBl9YUSOwmVXyoVWewF
-X-Google-Smtp-Source: ABdhPJzN9O0n66gPhgWlirpIKBrIKkjNBZUxj4csnV5zOjlArWgfs1FpMNMQdX0mWFLnpTFKy9ToQg==
-X-Received: by 2002:a1c:4e10:: with SMTP id g16mr3098890wmh.48.1606833576193;
-        Tue, 01 Dec 2020 06:39:36 -0800 (PST)
-Received: from kpsingh.c.googlers.com.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
-        by smtp.gmail.com with ESMTPSA id i8sm61199wma.32.2020.12.01.06.39.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 06:39:35 -0800 (PST)
-From:   KP Singh <kpsingh@chromium.org>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1606833937; x=1638369937;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=ZNe33Ka7aH3VQjyzTKNc4gbH6nne2/ZozUBDYkDr+yU=;
+  b=JrZUlqcedSBEN0v17KAFjs4dJDfUUedI3dvAn7tiODJ4K3t3Q8AyRVdQ
+   nDLge5g/PMOzKDuVzIx+0jdzMN7RnAVIc2P0xAORDi58yPqg0fNwa+svm
+   5Ka4bc4FJba1X9yjRkQweowq4AEK/pw5VVrnun2EfUaXXGbSl0/qLVFNB
+   Q=;
+X-IronPort-AV: E=Sophos;i="5.78,384,1599523200"; 
+   d="scan'208";a="92541785"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2c-c6afef2e.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 01 Dec 2020 14:44:48 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2c-c6afef2e.us-west-2.amazon.com (Postfix) with ESMTPS id CD9ADA1D7A;
+        Tue,  1 Dec 2020 14:44:47 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 1 Dec 2020 14:44:47 +0000
+Received: from 38f9d3582de7.ant.amazon.com (10.43.162.146) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 1 Dec 2020 14:44:42 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Update ima test helper's mount uuid logic
-Date:   Tue,  1 Dec 2020 14:39:24 +0000
-Message-Id: <20201201143924.2908241-2-kpsingh@chromium.org>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-In-Reply-To: <20201201143924.2908241-1-kpsingh@chromium.org>
-References: <20201201143924.2908241-1-kpsingh@chromium.org>
+        Martin KaFai Lau <kafai@fb.com>
+CC:     Benjamin Herrenschmidt <benh@amazon.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Kuniyuki Iwashima <kuni1840@gmail.com>,
+        <osa-contribution-log@amazon.com>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v1 bpf-next 00/11] Socket migration for SO_REUSEPORT.
+Date:   Tue, 1 Dec 2020 23:44:07 +0900
+Message-ID: <20201201144418.35045-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.17.2 (Apple Git-113)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.162.146]
+X-ClientProxiedBy: EX13D36UWA004.ant.amazon.com (10.43.160.175) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: KP Singh <kpsingh@google.com>
+The SO_REUSEPORT option allows sockets to listen on the same port and to
+accept connections evenly. However, there is a defect in the current
+implementation[1]. When a SYN packet is received, the connection is tied to
+a listening socket. Accordingly, when the listener is closed, in-flight
+requests during the three-way handshake and child sockets in the accept
+queue are dropped even if other listeners on the same port could accept
+such connections.
 
-The test uses blkid to determine the uuid which may not be available on
-every system. Switch the logic to a good-old for loop iterating over
-/dev/disk/by-uuid and reading the symlinks to find the correct UUID for
-a given loop device
+This situation can happen when various server management tools restart
+server (such as nginx) processes. For instance, when we change nginx
+configurations and restart it, it spins up new workers that respect the new
+configuration and closes all listeners on the old workers, resulting in the
+in-flight ACK of 3WHS is responded by RST.
 
-Fixes: 34b82d3ac105 ("bpf: Add a selftest for bpf_ima_inode_hash")
-Signed-off-by: KP Singh <kpsingh@google.com>
----
- tools/testing/selftests/bpf/ima_setup.sh | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+The SO_REUSEPORT option is excellent to improve scalability. On the other
+hand, as a trade-off, users have to know deeply how the kernel handles SYN
+packets and implement connection draining by eBPF[2]:
 
-diff --git a/tools/testing/selftests/bpf/ima_setup.sh b/tools/testing/selftests/bpf/ima_setup.sh
-index ed29bde26a12..7b8615c30c09 100755
---- a/tools/testing/selftests/bpf/ima_setup.sh
-+++ b/tools/testing/selftests/bpf/ima_setup.sh
-@@ -31,8 +31,24 @@ setup()
-         mount "${loop_device}" "${mount_dir}"
- 
-         cp "${TEST_BINARY}" "${mount_dir}"
--        local mount_uuid="$(blkid -s UUID -o value ${loop_device})"
--        echo "measure func=BPRM_CHECK fsuuid=${mount_uuid}" > ${IMA_POLICY_FILE}
-+        local mount_uuid=""
-+        # This can be done with blkid -s UUID -o value ${loop_device} but
-+        # blkid might not be available everywhere, especially in busybox
-+        # environments.
-+        for uuid in $(ls /dev/disk/by-uuid); do
-+                local link_target="$(readlink -f /dev/disk/by-uuid/${uuid})"
-+                if [[ "${loop_device}" == "${link_target}" ]]; then
-+                        mount_uuid="${uuid}"
-+                        break;
-+                fi
-+        done
-+
-+        if [[ -z "${mount_uuid}" ]]; then
-+                echo "Could not find mount_uuid for ${loop_device}"
-+                exit 1;
-+        fi
-+
-+        echo "measure func=BPRM_CHECK fsuuid=${mount_uuid:?}" > ${IMA_POLICY_FILE}
- }
- 
- cleanup() {
+  1. Stop routing SYN packets to the listener by eBPF.
+  2. Wait for all timers to expire to complete requests
+  3. Accept connections until EAGAIN, then close the listener.
+  
+or
+
+  1. Start counting SYN packets and accept syscalls using eBPF map.
+  2. Stop routing SYN packets.
+  3. Accept connections up to the count, then close the listener.
+
+In either way, we cannot close a listener immediately. However, ideally,
+the application need not drain the not yet accepted sockets because 3WHS
+and tying a connection to a listener are just the kernel behaviour. The
+root cause is within the kernel, so the issue should be addressed in kernel
+space and should not be visible to user space. This patchset fixes it so
+that users need not take care of kernel implementation and connection
+draining. With this patchset, the kernel redistributes requests and
+connections from a listener to others in the same reuseport group at/after
+close() or shutdown() syscalls.
+
+Although some software does connection draining, there are still merits in
+migration. For some security reasons such as replacing TLS certificates, we
+may want to apply new settings as soon as possible and/or we may not be
+able to wait for connection draining. The sockets in the accept queue have
+not started application sessions yet. So, if we do not drain such sockets,
+they can be handled by the newer listeners and could have a longer
+lifetime. It is difficult to drain all connections in every case, but we
+can decrease such aborted connections by migration. In that sense,
+migration is always better than draining. 
+
+Moreover, auto-migration simplifies userspace logic and also works well in
+a case where we cannot modify and build a server program to implement the
+workaround.
+
+Note that the source and destination listeners MUST have the same settings
+at the socket API level; otherwise, applications may face inconsistency and
+cause errors. In such a case, we have to use eBPF program to select a
+specific listener or to cancel migration.
+
+
+Link:
+
+ [1] The SO_REUSEPORT socket option
+ https://lwn.net/Articles/542629/
+
+ [2] Re: [PATCH 1/1] net: Add SO_REUSEPORT_LISTEN_OFF socket option as drain mode
+ https://lore.kernel.org/netdev/1458828813.10868.65.camel@edumazet-glaptop3.roam.corp.google.com/
+
+
+Changelog:
+
+ v1:
+  * Remove the sysctl option
+  * Enable migration if eBPF progam is not attached
+  * Add expected_attach_type to check if eBPF program can migrate sockets
+  * Add a field to tell migration type to eBPF program
+  * Support BPF_FUNC_get_socket_cookie to get the cookie of sk
+  * Allocate an empty skb if skb is NULL
+  * Pass req_to_sk(req)->sk_hash because listener's hash is zero
+  * Update commit messages and coverletter
+
+ RFC v0:
+ https://lore.kernel.org/netdev/20201117094023.3685-1-kuniyu@amazon.co.jp/
+
+
+Kuniyuki Iwashima (11):
+  tcp: Keep TCP_CLOSE sockets in the reuseport group.
+  bpf: Define migration types for SO_REUSEPORT.
+  tcp: Migrate TCP_ESTABLISHED/TCP_SYN_RECV sockets in accept queues.
+  tcp: Migrate TFO requests causing RST during TCP_SYN_RECV.
+  tcp: Migrate TCP_NEW_SYN_RECV requests.
+  bpf: Introduce two attach types for BPF_PROG_TYPE_SK_REUSEPORT.
+  libbpf: Set expected_attach_type for BPF_PROG_TYPE_SK_REUSEPORT.
+  bpf: Add migration to sk_reuseport_(kern|md).
+  bpf: Support bpf_get_socket_cookie_sock() for
+    BPF_PROG_TYPE_SK_REUSEPORT.
+  bpf: Call bpf_run_sk_reuseport() for socket migration.
+  bpf: Test BPF_SK_REUSEPORT_SELECT_OR_MIGRATE.
+
+ include/linux/bpf.h                           |   1 +
+ include/linux/filter.h                        |   4 +-
+ include/net/inet_connection_sock.h            |  13 ++
+ include/net/request_sock.h                    |  13 ++
+ include/net/sock_reuseport.h                  |  15 +-
+ include/uapi/linux/bpf.h                      |  25 +++
+ kernel/bpf/syscall.c                          |   8 +
+ net/core/filter.c                             |  46 ++++-
+ net/core/sock_reuseport.c                     | 128 +++++++++++---
+ net/ipv4/inet_connection_sock.c               |  85 ++++++++-
+ net/ipv4/inet_hashtables.c                    |   9 +-
+ net/ipv4/tcp_ipv4.c                           |   9 +-
+ net/ipv6/tcp_ipv6.c                           |   9 +-
+ tools/include/uapi/linux/bpf.h                |  25 +++
+ tools/lib/bpf/libbpf.c                        |   5 +-
+ .../bpf/prog_tests/migrate_reuseport.c        | 164 ++++++++++++++++++
+ .../bpf/progs/test_migrate_reuseport_kern.c   |  54 ++++++
+ 17 files changed, 565 insertions(+), 48 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/migrate_reuseport.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_migrate_reuseport_kern.c
+
 -- 
-2.29.2.454.gaff20da3a2-goog
+2.17.2 (Apple Git-113)
 
