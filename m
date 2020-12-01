@@ -2,145 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 436862CAA68
-	for <lists+bpf@lfdr.de>; Tue,  1 Dec 2020 19:02:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19EF42CAAFB
+	for <lists+bpf@lfdr.de>; Tue,  1 Dec 2020 19:44:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404225AbgLASCR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Dec 2020 13:02:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51024 "EHLO
+        id S1731226AbgLASo2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Dec 2020 13:44:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404222AbgLASCQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Dec 2020 13:02:16 -0500
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C09FC0613CF;
-        Tue,  1 Dec 2020 10:01:36 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id 10so2656713ybx.9;
-        Tue, 01 Dec 2020 10:01:36 -0800 (PST)
+        with ESMTP id S1730020AbgLASo2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Dec 2020 13:44:28 -0500
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD01C0613D4
+        for <bpf@vger.kernel.org>; Tue,  1 Dec 2020 10:43:42 -0800 (PST)
+Received: by mail-pl1-x64a.google.com with SMTP id n8so1713480plp.3
+        for <bpf@vger.kernel.org>; Tue, 01 Dec 2020 10:43:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=immCNs4xDGr/yeWS3YmZEjkNg6wKQAW5VTX5f5Tpknc=;
-        b=YKpqwZaUUhKeLfxngmK3DDiAn38uJZke2a803KK+v6vKIVSjsSVhXpi4O/tjklH9Bd
-         jSD3es5jE2Q77uppB19U2/7n+gTL3gtgdwSZkyRiLtzOFUfAYwKA0Ao7ltRHVRKeDwHl
-         v4eexAmQBEF7cmApzW0O4NMaDbgigs49wnpbK4QdUskwbToKbGoOws459yZQtuR+xS6m
-         2RYNQ72NknLe5fMJSUIm4EjHfTQCdwuF19eZ8mAZRht1u4JBFGTL4td4mIiRaTnEp+/1
-         D7jSZJeX85be+WATzHnFDCYhl6hZtPpDlnT7lNpzL8r1JGH8JmCUL3MAjTvCQaVA1Eod
-         LABQ==
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=Zqw9lpSwsR7kPDX1Jjacq09r9Ug30GS0Gl5eBLkuT2c=;
+        b=YIfAws+nj6lKhPC8KUFN1OKsgvopv9xuzbI3U5vJIPWXhkvGnExMhYA3Ntv8GkxTCX
+         GhVhddUhCP6y+WeS27lKH8t5St6NJikfi3MXGZUtxWtd2FdqpJHwzgzIERdC60qPGOjI
+         Kr3Pv9mZFhJWj0iTT/sk/5paaa/0LIwDS56x8xSltKICodfGJsus9x/2CZHCVv36Ec+Q
+         SCMeDlbpmBLH+9ZQy/MQS7xGGvQ2VrCek8lQzYV3gaHVUfhVn/dOZQJas/JjBnegB0g1
+         gpSUGZptNwibu25A2Z5DWLpoTjND0pBioI6xwSRK7jj0mQebOKwUIm/9XXuxLtldWqyA
+         i43A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=immCNs4xDGr/yeWS3YmZEjkNg6wKQAW5VTX5f5Tpknc=;
-        b=EryM84V5Fw3Js8EtlxofBEQzrZkcZdnkhzG2E0Fjc7bHzYXK4dEkDbq/dCF1gf6s6U
-         AQzbyF/wZe5tN3VcCxixzWLxABDzTYJMZRPTm2EV89aGy5QqldX2fUf+ljjT0c5Lb4nY
-         EbcMdQ9jmeMnRVRTl5zUgP/VwH2srPfRphj6jeX+fUQY/Pv2ODifiXpZpuRhZ58Q3nNo
-         mm+ahUujDQgEefo+CraMxP2AqY/fxWoFRF5IWKNk6GDusYgdpALHGRZpevss3j3jKY7d
-         sV6l5QNKXNFy/vwyieF/qvw2PafqD/coWQNKsoeB1xLmXXrPaiCY0HbKgtEMMMoDgArG
-         /7PQ==
-X-Gm-Message-State: AOAM531Z7kK5F01426EYBARTPBva5m0/k3jHhaYw5G68oqfgNsiZfr6I
-        U2/UEir/Y636eiGLDWgWToBq8uJFlTBYabjivsE=
-X-Google-Smtp-Source: ABdhPJwc45X9pd+003CCkmjMxs4UKYvW0IGxNyfMvmG2kpS7bZXC0j4ppJ6woxJmpl+P7N2EeLYLvBxYe2soF7yElgE=
-X-Received: by 2002:a25:7717:: with SMTP id s23mr6890166ybc.459.1606845694868;
- Tue, 01 Dec 2020 10:01:34 -0800 (PST)
-MIME-Version: 1.0
-References: <20201201143700.719828-1-leon@kernel.org>
-In-Reply-To: <20201201143700.719828-1-leon@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 1 Dec 2020 10:01:23 -0800
-Message-ID: <CAEf4BzaSL+rmVYNipsfczsF2v684KOhZgFPtUG9opvk7d6zruA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] kbuild: Restore ability to build out-of-tree modules
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=Zqw9lpSwsR7kPDX1Jjacq09r9Ug30GS0Gl5eBLkuT2c=;
+        b=QRrkXmEI5HR/pYZCNOdEJvkmMOE8X3Vginne/G9yM5e4Ec3lDjiWU95mcj6IXOg6IY
+         ZFlbPati5SqcqqUqbpTwG9xHNXA9duBFqWlu7P+OIeT+dKcJoSy+optvi6ZT2j1C1Xr7
+         owJcssqFBgY2saGIBSShC5P0VjmaO/3ubAEDZfRJzcvjC/nZKNIkFqU4wo0soucHaNdN
+         XHt4ichBGNFoFl3GwGbFj6ozALOPlpzT+TPq8wvQjQgZ/hn2p+SDQl5WlaPDGI/H6uA5
+         9eAj7dYXtHkfOG0KzZVwybYDv9Cep3rur5vuZT4FIDNhed3mPbKdSau07LIQtBUdwTW6
+         3Prw==
+X-Gm-Message-State: AOAM533HoNWBPQ7D9g7FRJNdNKfSDxmagz4S1kh+iTxojWPfAECeZSrM
+        erjA5Xs4p1eu1b5L/nXMMtwEOdw=
+X-Google-Smtp-Source: ABdhPJyimm007+9lR3Ncvpa8upBMIJw6nWTKfPx1g6wzADhX7DYAys9UwoicIT/EduC9/j3DGcMjN5Y=
+Sender: "sdf via sendgmr" <sdf@sdf2.svl.corp.google.com>
+X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:7220:84ff:fe09:7732])
+ (user=sdf job=sendgmr) by 2002:a17:90a:17a4:: with SMTP id
+ q33mr422155pja.0.1606848221305; Tue, 01 Dec 2020 10:43:41 -0800 (PST)
+Date:   Tue, 1 Dec 2020 10:43:39 -0800
+In-Reply-To: <20201130230242.GA73546@rdna-mbp>
+Message-Id: <20201201184339.GB553169@google.com>
+Mime-Version: 1.0
+References: <20201118001742.85005-1-sdf@google.com> <20201118001742.85005-3-sdf@google.com>
+ <CAADnVQLxt11Zx8553fegoSWCtt0SQ_6uYViMtuhGxA7sv1YSxA@mail.gmail.com>
+ <20201130010559.GA1991@rdna-mbp> <20201130163813.GA553169@google.com> <20201130230242.GA73546@rdna-mbp>
+Subject: Re: [PATCH bpf-next 2/3] bpf: allow bpf_{s,g}etsockopt from cgroup
+ bind{4,6} hooks
+From:   sdf@google.com
+To:     Andrey Ignatov <rdna@fb.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Edward Srouji <edwards@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Networking <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 6:37 AM Leon Romanovsky <leon@kernel.org> wrote:
->
-> From: Leon Romanovsky <leonro@nvidia.com>
->
-> The out-of-tree modules are built without vmlinux target and request
-> to recompile that target unconditionally causes to the following
-> compilation error.
->
-> [root@server kernel]# make
-> <..>
-> make -f ./scripts/Makefile.modpost
-> make -f ./scripts/Makefile.modfinal
-> make[3]: *** No rule to make target 'vmlinux', needed by '/my_temp/out-of-tree-module/kernel/test.ko'.  Stop.
-> make[2]: *** [scripts/Makefile.modpost:117: __modpost] Error 2
-> make[1]: *** [Makefile:1703: modules] Error 2
-> make[1]: Leaving directory '/usr/src/kernels/5.10.0-rc5_for_upstream_base_2020_11_29_11_34'
-> make: *** [Makefile:80: modules] Error 2
->
-> As a solution separate between build paths that has vmlinux target and paths without.
->
-> Fixes: 5f9ae91f7c0d ("kbuild: Build kernel module BTFs if BTF is enabled and pahole supports it")
-> Reported-by: Edward Srouji <edwards@nvidia.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
+On 11/30, Andrey Ignatov wrote:
+> sdf@google.com <sdf@google.com> [Mon, 2020-11-30 08:38 -0800]:
+> > On 11/29, Andrey Ignatov wrote:
+> > > Alexei Starovoitov <alexei.starovoitov@gmail.com> [Tue, 2020-11-17  
+> 20:05
+> > > -0800]:
+> > > > On Tue, Nov 17, 2020 at 4:17 PM Stanislav Fomichev <sdf@google.com>
+> > > wrote:
+> > [..]
+> > > >
+> > > > I think it is ok, but I need to go through the locking paths more.
+> > > > Andrey,
+> > > > please take a look as well.
+> >
+> > > Sorry for delay, I was offline for the last two weeks.
+> > No worries, I was OOO myself last week, thanks for the feedback!
+> >
+> > >  From the correctness perspective it looks fine to me.
+> >
+> > >  From the performance perspective I can think of one relevant  
+> scenario.
+> > > Quite common use-case in applications is to use bind(2) not before
+> > > listen(2) but before connect(2) for client sockets so that connection
+> > > can be set up from specific source IP and, optionally, port.
+> >
+> > > Binding to both IP and port case is not interesting since it's already
+> > > slow due to get_port().
+> >
+> > > But some applications do care about connection setup performance and  
+> at
+> > > the same time need to set source IP only (no port). In this case they
+> > > use IP_BIND_ADDRESS_NO_PORT socket option, what makes bind(2) fast
+> > > (we've discussed it with Stanislav earlier in [0]).
+> >
+> > > I can imagine some pathological case when an application sets up tons  
+> of
+> > > connections with bind(2) before connect(2) for sockets with
+> > > IP_BIND_ADDRESS_NO_PORT enabled (that by itself requires setsockopt(2)
+> > > though, i.e. socket lock/unlock) and that another lock/unlock to run
+> > > bind hook may add some overhead. Though I do not know how critical  
+> that
+> > > overhead may be and whether it's worth to benchmark or not (maybe too
+> > > much paranoia).
+> >
+> > > [0] https://lore.kernel.org/bpf/20200505182010.GB55644@rdna-mbp/
+> > Even in case of IP_BIND_ADDRESS_NO_PORT, inet[6]_bind() does
+> > lock_sock down the line, so it's not like we are switching
+> > a lockless path to the one with the lock, right?
 
-e732b538f455 ("kbuild: Skip module BTF generation for out-of-tree
-external modules") ([0]) was supposed to take care of this. Did you
-try it?
+> Right, I understand that it's going from one lock/unlock to two (not
+> from zero to one), that's what I meant by "another". My point was about
+> this one more lock.
 
-  [0] https://patchwork.kernel.org/project/netdevbpf/patch/20201121070829.2612884-1-andrii@kernel.org/
+> > And in this case, similar to listen, the socket is still uncontended and
+> > owned by the userspace. So that extra lock/unlock should be cheap
+> > enough to be ignored (spin_lock_bh on the warm cache line).
+> >
+> > Am I missing something?
 
+> As I mentioned it may come up only in "pathological case" what is
+> probably fine to ignore, i.e. I'd rather agree with "cheap enough to be
+> ignored" and benchmark would likely confirm it, I just couldn't say that
+> for sure w/o numbers so brought this point.
 
-> Not proficient enough in Makefile, but it fixes the issue.
-> ---
->  scripts/Makefile.modfinal | 5 +++++
->  scripts/Makefile.modpost  | 4 ++++
->  2 files changed, 9 insertions(+)
->
-> diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
-> index 02b892421f7a..8a7d0604e7d0 100644
-> --- a/scripts/Makefile.modfinal
-> +++ b/scripts/Makefile.modfinal
-> @@ -48,9 +48,14 @@ if_changed_except = $(if $(call newer_prereqs_except,$(2))$(cmd-check),      \
->         $(cmd);                                                              \
->         printf '%s\n' 'cmd_$@ := $(make-cmd)' > $(dot-target).cmd, @:)
->
-> +ifdef MODPOST_VMLINUX
->  # Re-generate module BTFs if either module's .ko or vmlinux changed
->  $(modules): %.ko: %.o %.mod.o scripts/module.lds vmlinux FORCE
->         +$(call if_changed_except,ld_ko_o,vmlinux)
-> +else
-> +$(modules): %.ko: %.o %.mod.o scripts/module.lds FORCE
-> +       +$(call if_changed_except,ld_ko_o)
-> +endif
->  ifdef CONFIG_DEBUG_INFO_BTF_MODULES
->         +$(if $(newer-prereqs),$(call cmd,btf_ko))
->  endif
-> diff --git a/scripts/Makefile.modpost b/scripts/Makefile.modpost
-> index f54b6ac37ac2..f5aa5b422ad7 100644
-> --- a/scripts/Makefile.modpost
-> +++ b/scripts/Makefile.modpost
-> @@ -114,8 +114,12 @@ targets += $(output-symdump)
->
->  __modpost: $(output-symdump)
->  ifneq ($(KBUILD_MODPOST_NOFINAL),1)
-> +ifdef MODPOST_VMLINUX
-> +       $(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modfinal MODPOST_VMLINUX=1
-> +else
->         $(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modfinal
->  endif
-> +endif
->
->  PHONY += FORCE
->  FORCE:
-> --
-> 2.28.0
->
+> Given that we both agree that it should be fine to ignore this +1 lock,
+> IMO it should be good to go unless someone else has objections.
+Thanks, agreed. Do you mind giving it an acked-by so it gets some
+attention in the patchwork? ;-)
