@@ -2,329 +2,234 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E3A12C960D
-	for <lists+bpf@lfdr.de>; Tue,  1 Dec 2020 04:48:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BAAE2C9614
+	for <lists+bpf@lfdr.de>; Tue,  1 Dec 2020 04:50:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387417AbgLADsP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Mon, 30 Nov 2020 22:48:15 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:46678 "EHLO
+        id S1727930AbgLADtv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Nov 2020 22:49:51 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:47812 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387431AbgLADsP (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 30 Nov 2020 22:48:15 -0500
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B13iSDC012183
-        for <bpf@vger.kernel.org>; Mon, 30 Nov 2020 19:47:34 -0800
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3547psh5q8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 30 Nov 2020 19:47:34 -0800
-Received: from intmgw003.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+        by vger.kernel.org with ESMTP id S1727746AbgLADtu (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 30 Nov 2020 22:49:50 -0500
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B13kxCU015831;
+        Mon, 30 Nov 2020 19:48:52 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : from : to : cc
+ : references : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=wiD3XVqq94sNjfjdyArJ1ChfnOUBFYzK4Id2Uhy3Y3Y=;
+ b=bRERsoqP+zxlW90cIAVWoPZGIPINZNYkL++BPFiWReRIsnw9JN+iUcJiY7tKP4CcuWgQ
+ HfPaVZfmftiBRjIuIkiQ75BJkgF4iqEoyqJfspT2k71/2e/TDlPlZk4/UZDh/BlqpGBV
+ r7Yo/F10+EhI2p7IoYcKtcN5fZEgu/b+xJk= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 354d4g8bx2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 30 Nov 2020 19:48:52 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 30 Nov 2020 19:47:32 -0800
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 30A012ECA628; Mon, 30 Nov 2020 19:47:27 -0800 (PST)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH v3 bpf-next 7/7] selftests/bpf: add CO-RE relocs selftest relying on kernel module BTF
-Date:   Mon, 30 Nov 2020 19:47:08 -0800
-Message-ID: <20201201034709.2918694-8-andrii@kernel.org>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20201201034709.2918694-1-andrii@kernel.org>
-References: <20201201034709.2918694-1-andrii@kernel.org>
+ 15.1.1979.3; Mon, 30 Nov 2020 19:48:51 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aYRKTDmp0+odZKv6ulaxVFSL0VxOWA7Mc3FA1KAz2QnozrEkPG4LpcyswXBkcpxQP5YbbWTthYYY7kU8tk6D9leAJgwrpphdWQlaE8dbbf0zBY1lylyJodPTSt1gVQWqmCXYQT6ocXcQH/6AvkeiN231KKQEBDIQ2xLwS66f74SP0aBJfBw4y4a2M37hAYFalc734LL1kb8hiW2HjjP2QvneuJyS33Ab141jFmK3X8axUgSg2wkCKh5yC5p0YMvu+1x3gJnZJ6E/R4d+kck+tkvX8Fn/C4P1RCWwjRI26w043BlqMnIJNHSQWjmYCSMtZAG6f/9XdkCySva/0GfHWg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wazCbnJD91SSxaIffDfMQw3gx1MkpB4GhoYOKxgSAKg=;
+ b=TCxwRTZIpJzczY0Mmb1VBvMp8CQZlNw/GGQkJ2gdYwIIMNWCoFQvrVGLDnCRfs2NRUZtFV49UB5U9b3rdkULt/zlNdPUdTjRecaviOLo3Roz4vAHf2tX3tRmN8rl08qkDE+k/njEBe7UpLhJboINMoAUAm+6waX2+vOlo8joS9D+L0qGjHcF1VEn9aAo2rEi3YmplAK+D4Y+yKuxJMnsGr9DVRoKbKzwndrqWcLkNevl2adV2o5mtRS7Jq1SmunbTO1xWqITwEHjuZeVTmPmVz/KB2Se2OrCb8GHNlgsVOfD/HB4u996kXgd+lc8QjwH2Y/5lRwW+CGQr1X+Nlnoug==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wazCbnJD91SSxaIffDfMQw3gx1MkpB4GhoYOKxgSAKg=;
+ b=Nm2KXrnbFInCEY90tj5U/f8EAqrOHGt74KnQ47sO2OJWzPcVSfQwVfELnCJt+P8hH3fBAaCVkgdc3URHomwRfQljYaQyGsyK3UEBBfDh4Z906MEaZrP8d2jehndbI1ohYbXiZ8xktx/KT1qYQeE1IPcf7rAiLBacDdrN9NxfEL4=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by SJ0PR15MB4236.namprd15.prod.outlook.com (2603:10b6:a03:2cb::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3589.20; Tue, 1 Dec
+ 2020 03:48:50 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3611.025; Tue, 1 Dec 2020
+ 03:48:50 +0000
+Subject: Re: [PATCH v2 bpf-next 00/13] Atomics for eBPF
+From:   Yonghong Song <yhs@fb.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+CC:     Brendan Jackman <jackmanb@google.com>, <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        <linux-kernel@vger.kernel.org>, Jann Horn <jannh@google.com>
+References: <20201127175738.1085417-1-jackmanb@google.com>
+ <829353e6-d90a-a91a-418b-3c2556061cda@fb.com>
+ <20201129014000.3z6eua5pcz3jxmtk@ast-mbp>
+ <b3903adc-59c6-816f-6512-2225c28f47f5@fb.com>
+Message-ID: <4fa9f8cf-aaf8-a63c-e0ca-7d4c83b01578@fb.com>
+Date:   Mon, 30 Nov 2020 19:48:40 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.0
+In-Reply-To: <b3903adc-59c6-816f-6512-2225c28f47f5@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+X-Originating-IP: [2620:10d:c090:400::5:d184]
+X-ClientProxiedBy: CO2PR04CA0131.namprd04.prod.outlook.com
+ (2603:10b6:104:7::33) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21e8::1841] (2620:10d:c090:400::5:d184) by CO2PR04CA0131.namprd04.prod.outlook.com (2603:10b6:104:7::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend Transport; Tue, 1 Dec 2020 03:48:49 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 63f5862b-f207-4113-ac8e-08d895ac0381
+X-MS-TrafficTypeDiagnostic: SJ0PR15MB4236:
+X-Microsoft-Antispam-PRVS: <SJ0PR15MB423672E2581B05C4F8AF46BED3F40@SJ0PR15MB4236.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: xBSyNxXzQft5Za5KAm3Ga1OgwIP9H9EgCSe5XsTc8hd4IhqSqQWmzwSkjKh5R41nz4LOiQafwmkwEYmt+vnfdJloKRw3rU1FwByL0rLYS63CKPG76UkHBcPa5LsRto9Dqsc9WzKeNDep6FY2Ko8zJJt01L3/rYNVMFjD9/OqlPIRuKRF8pu9PpuCKHsCXcQ20s6Om/g2CoDRF9jjG/nWIdfzrjyi8WYfoorTpV8N//qcZ/Qr2KvdwtbzZ2c84SnCEMO/cdYrKm1xdmsWD99JleUn+Um3DlWHJL85NAj3gQQGfOAbpsUyLbKdd79MStZoBziEtQEi7R0Zjy74D4BHt5Af+SAffzw5C6sK+LKintGDdiJHGVa+gwsutC4cnWlE6BScYOejnki+VpJLqNN/T0E2I9j3CA+eZzkzTa3qS0LrTctOLuIhnbJV7iL09KCo6CD6pQ9BZEvU4BeMbC9bJQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(376002)(39860400002)(346002)(136003)(86362001)(53546011)(16526019)(316002)(8936002)(31686004)(8676002)(66946007)(54906003)(66476007)(66556008)(4326008)(6486002)(2906002)(6916009)(966005)(52116002)(2616005)(186003)(6666004)(36756003)(478600001)(5660300002)(31696002)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?V3Y4Q29Ka3lDYUJldWJqdVFyUWhvZVViYTU2eFlydzJsd2xoTGJ1ME5KRllo?=
+ =?utf-8?B?RmxUUTVmUUVEeFdOOThXOHovblMwazZWRHdqeXM4ak1raW8rbklOSzZBZ2Ns?=
+ =?utf-8?B?QXpZdGlkUGpPdWtHYW4wK0Z2MnhSNWRKV2tWSndtMGlzUmM4MWxENXRyUWxz?=
+ =?utf-8?B?NlpkNTB3WW9NS29uVG43L2UxbzhBd25kNDRZUVBsUmNOUWhGallKR3FUczRS?=
+ =?utf-8?B?UWxoVk55RUhETFJxc0hocDhyZnpBV1ppV1Vmc0dBR3FLNGtTOHo5Um56blFt?=
+ =?utf-8?B?eUJDbFpDYTYydjJad2xueC9oUFFTQng5c21xWnhGYnpPSWdKcHNablZheEhz?=
+ =?utf-8?B?Nkh2c3VZTUl0UzhQeENTc2kzNHRYTTBBZWlPay9pZFMwMm96U0tJdTFsdHE0?=
+ =?utf-8?B?SjBvb21UUkFxcWpzOWRNVnNHbkc1cjNMK25YaTBSTFpZMWtKMVFrNDYwM2VH?=
+ =?utf-8?B?c3J2VjhITDJjQytCb3hEN0lDWUlJQjI0WG85bHVFVFpkaUw5U3pxVkdLZ1ly?=
+ =?utf-8?B?SEFtdVNQRFdJYXNVMEZ3YTNlL3RVdFByOUYyc2k1QTB5TjFUVllYbm1mS0cy?=
+ =?utf-8?B?Z0NyREMrSTNyYVZsem55aGg5NzNEM1lFdHNwQ2huODEwODExSk5aTkp3WTI3?=
+ =?utf-8?B?NjdlUE9WSmlkWnNzUTN1Wko2dGFtTUZ4UW9PNGdTU1JFVzBjeWdKd0NVNUtk?=
+ =?utf-8?B?Z3AwVWdYQ1RYNWY4d2Zoa3lRYWxOYVFWSTdNM0pwSHN5ZU4rWWg1bXhlQVRu?=
+ =?utf-8?B?RTBBM3JSU1dvL0lrcDdtR2NhbnV3N2RPRWxpblZMeEd1SUJUNWwyK2Y5VkhJ?=
+ =?utf-8?B?ZHloL1o0U0piVitrcTVSMkZvOEtua3gyNHFWS3B3Y0Vnb2tRcDZReHBXTXpn?=
+ =?utf-8?B?WU5DNUhEZm8zTVl6TkttVDJVaXozYm1EdUIxaTVzMFZwUG9tN0tTRzdBQUpH?=
+ =?utf-8?B?WFVkd0JkRTg1c2dGYmFmMEEvblN6S1hyenEwb1RwQkVRYzR3YUNiYTB6dklj?=
+ =?utf-8?B?OTNPOUtzSVRIaFBXUVhDSzBpcU01dnhGQXRiclF0Q2lYemtTTzVDTTZzRkN2?=
+ =?utf-8?B?UXZhc3NXYjJ4MFBUTUZLVVA4Z1lla0RnRnFnOEY0QmViYmZiNUtaYVgzbEJZ?=
+ =?utf-8?B?WStNM0ZvemJtTW5UNTZLbHV6bkVJTVAyY0VwMWc3bnZ5dkwzelozYUh2bDZI?=
+ =?utf-8?B?OTI5cy9OZ0NJckZUR2gzUHhpeVZIZmxJcGIzN3RSd3BQK3laMituNWMzYjIx?=
+ =?utf-8?B?eEgweDJzR2JyYkwxdG1zSWVKZ0ZTVHJaVDZ1T2VXdHhvYmNvaW5HbVNjUG0w?=
+ =?utf-8?B?R0YxMWNOTnNWVFdUYjd6YkhJV2M4T0NDQlg1WkJWQ0V3OC9pclVEZ3JMNXBI?=
+ =?utf-8?B?dytZUXhPL1lPUVE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 63f5862b-f207-4113-ac8e-08d895ac0381
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2020 03:48:50.4835
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2jXOul2bca5s/SpE/EBebJR0SVfmryIzkd3UYE62SDvx1yufs2NCdPapz2yxeC7k
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4236
+X-OriginatorOrg: fb.com
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 1 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
  definitions=2020-11-30_12:2020-11-30,2020-11-30 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- mlxscore=0 malwarescore=0 spamscore=0 priorityscore=1501 bulkscore=0
- mlxlogscore=999 adultscore=0 suspectscore=8 lowpriorityscore=0
- phishscore=0 clxscore=1034 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ malwarescore=0 mlxscore=0 bulkscore=0 adultscore=0 suspectscore=0
+ mlxlogscore=999 phishscore=0 spamscore=0 clxscore=1015 impostorscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2009150000 definitions=main-2012010025
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a self-tests validating libbpf is able to perform CO-RE relocations
-against the type defined in kernel module BTF. if bpf_testmod.o is not
-supported by the kernel (e.g., due to version mismatch), skip tests, instead
-of failing.
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- .../selftests/bpf/prog_tests/core_reloc.c     | 79 ++++++++++++++++---
- .../selftests/bpf/progs/core_reloc_types.h    | 17 ++++
- .../bpf/progs/test_core_reloc_module.c        | 66 ++++++++++++++++
- 3 files changed, 151 insertions(+), 11 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/test_core_reloc_module.c
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/core_reloc.c b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-index 30e40ff4b0d8..bb980848cd77 100644
---- a/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-+++ b/tools/testing/selftests/bpf/prog_tests/core_reloc.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <test_progs.h>
- #include "progs/core_reloc_types.h"
-+#include "bpf_testmod/bpf_testmod.h"
- #include <sys/mman.h>
- #include <sys/syscall.h>
- #include <bpf/btf.h>
-@@ -9,6 +10,30 @@ static int duration = 0;
- 
- #define STRUCT_TO_CHAR_PTR(struct_name) (const char *)&(struct struct_name)
- 
-+#define MODULES_CASE(name, sec_name, tp_name) {				\
-+	.case_name = name,						\
-+	.bpf_obj_file = "test_core_reloc_module.o",			\
-+	.btf_src_file = NULL, /* find in kernel module BTFs */		\
-+	.input = "",							\
-+	.input_len = 0,							\
-+	.output = STRUCT_TO_CHAR_PTR(core_reloc_module_output) {	\
-+		.read_ctx_sz = sizeof(struct bpf_testmod_test_read_ctx),\
-+		.read_ctx_exists = true,				\
-+		.buf_exists = true,					\
-+		.len_exists = true,					\
-+		.off_exists = true,					\
-+		.len = 123,						\
-+		.off = 0,						\
-+		.comm = "test_progs",					\
-+		.comm_len = sizeof("test_progs"),			\
-+	},								\
-+	.output_len = sizeof(struct core_reloc_module_output),		\
-+	.prog_sec_name = sec_name,					\
-+	.raw_tp_name = tp_name,						\
-+	.trigger = trigger_module_test_read,				\
-+	.needs_testmod = true,						\
-+}
-+
- #define FLAVORS_DATA(struct_name) STRUCT_TO_CHAR_PTR(struct_name) {	\
- 	.a = 42,							\
- 	.b = 0xc001,							\
-@@ -211,7 +236,7 @@ static int duration = 0;
- 	.output = STRUCT_TO_CHAR_PTR(core_reloc_bitfields_output)	\
- 		__VA_ARGS__,						\
- 	.output_len = sizeof(struct core_reloc_bitfields_output),	\
--	.direct_raw_tp = true,						\
-+	.prog_sec_name = "tp_btf/sys_enter",				\
- }
- 
- 
-@@ -222,7 +247,7 @@ static int duration = 0;
- }, {									\
- 	BITFIELDS_CASE_COMMON("test_core_reloc_bitfields_direct.o",	\
- 			      "direct:", name),				\
--	.direct_raw_tp = true,						\
-+	.prog_sec_name = "tp_btf/sys_enter",				\
- 	.fails = true,							\
- }
- 
-@@ -309,6 +334,7 @@ static int duration = 0;
- struct core_reloc_test_case;
- 
- typedef int (*setup_test_fn)(struct core_reloc_test_case *test);
-+typedef int (*trigger_test_fn)(const struct core_reloc_test_case *test);
- 
- struct core_reloc_test_case {
- 	const char *case_name;
-@@ -319,9 +345,12 @@ struct core_reloc_test_case {
- 	const char *output;
- 	int output_len;
- 	bool fails;
-+	bool needs_testmod;
- 	bool relaxed_core_relocs;
--	bool direct_raw_tp;
-+	const char *prog_sec_name;
-+	const char *raw_tp_name;
- 	setup_test_fn setup;
-+	trigger_test_fn trigger;
- };
- 
- static int find_btf_type(const struct btf *btf, const char *name, __u32 kind)
-@@ -451,6 +480,23 @@ static int setup_type_id_case_failure(struct core_reloc_test_case *test)
- 	return 0;
- }
- 
-+static int trigger_module_test_read(const struct core_reloc_test_case *test)
-+{
-+	struct core_reloc_module_output *exp = (void *)test->output;
-+	int fd, err;
-+
-+	fd = open("/sys/kernel/bpf_testmod", O_RDONLY);
-+	err = -errno;
-+	if (CHECK(fd < 0, "testmod_file_open", "failed: %d\n", err))
-+		return err;
-+
-+	read(fd, NULL, exp->len); /* request expected number of bytes */
-+	close(fd);
-+
-+	return 0;
-+}
-+
-+
- static struct core_reloc_test_case test_cases[] = {
- 	/* validate we can find kernel image and use its BTF for relocs */
- 	{
-@@ -467,6 +513,9 @@ static struct core_reloc_test_case test_cases[] = {
- 		.output_len = sizeof(struct core_reloc_kernel_output),
- 	},
- 
-+	/* validate we can find kernel module BTF types for relocs/attach */
-+	MODULES_CASE("module", "raw_tp/bpf_testmod_test_read", "bpf_testmod_test_read"),
-+
- 	/* validate BPF program can use multiple flavors to match against
- 	 * single target BTF type
- 	 */
-@@ -779,6 +828,11 @@ void test_core_reloc(void)
- 		if (!test__start_subtest(test_case->case_name))
- 			continue;
- 
-+		if (test_case->needs_testmod && !env.has_testmod) {
-+			test__skip();
-+			continue;
-+		}
-+
- 		if (test_case->setup) {
- 			err = test_case->setup(test_case);
- 			if (CHECK(err, "test_setup", "test #%d setup failed: %d\n", i, err))
-@@ -790,13 +844,11 @@ void test_core_reloc(void)
- 			  test_case->bpf_obj_file, PTR_ERR(obj)))
- 			continue;
- 
--		/* for typed raw tracepoints, NULL should be specified */
--		if (test_case->direct_raw_tp) {
--			probe_name = "tp_btf/sys_enter";
--			tp_name = NULL;
--		} else {
--			probe_name = "raw_tracepoint/sys_enter";
--			tp_name = "sys_enter";
-+		probe_name = "raw_tracepoint/sys_enter";
-+		tp_name = "sys_enter";
-+		if (test_case->prog_sec_name) {
-+			probe_name = test_case->prog_sec_name;
-+			tp_name = test_case->raw_tp_name; /* NULL for tp_btf */
- 		}
- 
- 		prog = bpf_object__find_program_by_title(obj, probe_name);
-@@ -837,7 +889,12 @@ void test_core_reloc(void)
- 			goto cleanup;
- 
- 		/* trigger test run */
--		usleep(1);
-+		if (test_case->trigger) {
-+			if (!ASSERT_OK(test_case->trigger(test_case), "test_trigger"))
-+				goto cleanup;
-+		} else {
-+			usleep(1);
-+		}
- 
- 		if (data->skip) {
- 			test__skip();
-diff --git a/tools/testing/selftests/bpf/progs/core_reloc_types.h b/tools/testing/selftests/bpf/progs/core_reloc_types.h
-index e6e616cb7bc9..9a2850850121 100644
---- a/tools/testing/selftests/bpf/progs/core_reloc_types.h
-+++ b/tools/testing/selftests/bpf/progs/core_reloc_types.h
-@@ -15,6 +15,23 @@ struct core_reloc_kernel_output {
- 	int comm_len;
- };
- 
-+/*
-+ * MODULE
-+ */
-+
-+struct core_reloc_module_output {
-+	long long len;
-+	long long off;
-+	int read_ctx_sz;
-+	bool read_ctx_exists;
-+	bool buf_exists;
-+	bool len_exists;
-+	bool off_exists;
-+	/* we have test_progs[-flavor], so cut flavor part */
-+	char comm[sizeof("test_progs")];
-+	int comm_len;
-+};
-+
- /*
-  * FLAVORS
-  */
-diff --git a/tools/testing/selftests/bpf/progs/test_core_reloc_module.c b/tools/testing/selftests/bpf/progs/test_core_reloc_module.c
-new file mode 100644
-index 000000000000..d1840c1a9d36
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_core_reloc_module.c
-@@ -0,0 +1,66 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Facebook */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_core_read.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+struct bpf_testmod_test_read_ctx {
-+	/* field order is mixed up */
-+	size_t len;
-+	char *buf;
-+	loff_t off;
-+} __attribute__((preserve_access_index));
-+
-+struct {
-+	char in[256];
-+	char out[256];
-+	bool skip;
-+	uint64_t my_pid_tgid;
-+} data = {};
-+
-+struct core_reloc_module_output {
-+	long long len;
-+	long long off;
-+	int read_ctx_sz;
-+	bool read_ctx_exists;
-+	bool buf_exists;
-+	bool len_exists;
-+	bool off_exists;
-+	/* we have test_progs[-flavor], so cut flavor part */
-+	char comm[sizeof("test_progs")];
-+	int comm_len;
-+};
-+
-+SEC("raw_tp/bpf_testmod_test_read")
-+int BPF_PROG(test_core_module,
-+	     struct task_struct *task,
-+	     struct bpf_testmod_test_read_ctx *read_ctx)
-+{
-+	struct core_reloc_module_output *out = (void *)&data.out;
-+	__u64 pid_tgid = bpf_get_current_pid_tgid();
-+	__u32 real_tgid = (__u32)(pid_tgid >> 32);
-+	__u32 real_pid = (__u32)pid_tgid;
-+
-+	if (data.my_pid_tgid != pid_tgid)
-+		return 0;
-+
-+	if (BPF_CORE_READ(task, pid) != real_pid || BPF_CORE_READ(task, tgid) != real_tgid)
-+		return 0;
-+
-+	out->len = BPF_CORE_READ(read_ctx, len);
-+	out->off = BPF_CORE_READ(read_ctx, off);
-+
-+	out->read_ctx_sz = bpf_core_type_size(struct bpf_testmod_test_read_ctx);
-+	out->read_ctx_exists = bpf_core_type_exists(struct bpf_testmod_test_read_ctx);
-+	out->buf_exists = bpf_core_field_exists(read_ctx->buf);
-+	out->off_exists = bpf_core_field_exists(read_ctx->off);
-+	out->len_exists = bpf_core_field_exists(read_ctx->len);
-+
-+	out->comm_len = BPF_CORE_READ_STR_INTO(&out->comm, task, comm);
-+
-+	return 0;
-+}
--- 
-2.24.1
+On 11/30/20 9:22 AM, Yonghong Song wrote:
+> 
+> 
+> On 11/28/20 5:40 PM, Alexei Starovoitov wrote:
+>> On Fri, Nov 27, 2020 at 09:53:05PM -0800, Yonghong Song wrote:
+>>>
+>>>
+>>> On 11/27/20 9:57 AM, Brendan Jackman wrote:
+>>>> Status of the patches
+>>>> =====================
+>>>>
+>>>> Thanks for the reviews! Differences from v1->v2 [1]:
+>>>>
+>>>> * Fixed mistakes in the netronome driver
+>>>>
+>>>> * Addd sub, add, or, xor operations
+>>>>
+>>>> * The above led to some refactors to keep things readable. (Maybe I
+>>>>     should have just waited until I'd implemented these before starting
+>>>>     the review...)
+>>>>
+>>>> * Replaced BPF_[CMP]SET | BPF_FETCH with just BPF_[CMP]XCHG, which
+>>>>     include the BPF_FETCH flag
+>>>>
+>>>> * Added a bit of documentation. Suggestions welcome for more places
+>>>>     to dump this info...
+>>>>
+>>>> The prog_test that's added depends on Clang/LLVM features added by
+>>>> Yonghong in 
+>>>> https://reviews.llvm.org/D72184 
+>>>>
+>>>> This only includes a JIT implementation for x86_64 - I don't plan to
+>>>> implement JIT support myself for other architectures.
+>>>>
+>>>> Operations
+>>>> ==========
+>>>>
+>>>> This patchset adds atomic operations to the eBPF instruction set. The
+>>>> use-case that motivated this work was a trivial and efficient way to
+>>>> generate globally-unique cookies in BPF progs, but I think it's
+>>>> obvious that these features are pretty widely applicable.  The
+>>>> instructions that are added here can be summarised with this list of
+>>>> kernel operations:
+>>>>
+>>>> * atomic[64]_[fetch_]add
+>>>> * atomic[64]_[fetch_]sub
+>>>> * atomic[64]_[fetch_]and
+>>>> * atomic[64]_[fetch_]or
+>>>
+>>> * atomic[64]_[fetch_]xor
+>>>
+>>>> * atomic[64]_xchg
+>>>> * atomic[64]_cmpxchg
+>>>
+>>> Thanks. Overall looks good to me but I did not check carefully
+>>> on jit part as I am not an expert in x64 assembly...
+>>>
+>>> This patch also introduced atomic[64]_{sub,and,or,xor}, similar to
+>>> xadd. I am not sure whether it is necessary. For one thing,
+>>> users can just use atomic[64]_fetch_{sub,and,or,xor} to ignore
+>>> return value and they will achieve the same result, right?
+>>>  From llvm side, there is no ready-to-use gcc builtin matching
+>>> atomic[64]_{sub,and,or,xor} which does not have return values.
+>>> If we go this route, we will need to invent additional bpf
+>>> specific builtins.
+>>
+>> I think bpf specific builtins are overkill.
+>> As you said the users can use atomic_fetch_xor() and ignore
+>> return value. I think llvm backend should be smart enough to use
+>> BPF_ATOMIC | BPF_XOR insn without BPF_FETCH bit in such case.
+>> But if it's too cumbersome to do at the moment we skip this
+>> optimization for now.
+> 
+> We can initially all have BPF_FETCH bit as at that point we do not
+> have def-use chain. Later on we can add a
+> machine ssa IR phase and check whether the result of, say 
+> atomic_fetch_or(), is used or not. If not, we can change the
+> instruction to atomic_or.
 
+Just implemented what we discussed above in llvm:
+   https://reviews.llvm.org/D72184
+main change:
+   1. atomic_fetch_sub (and later atomic_sub) is gone. llvm will
+      transparently transforms it to negation followed by
+      atomic_fetch_add or atomic_add (xadd). Kernel can remove
+      atomic_fetch_sub/atomic_sub insns.
+   2. added new instructions for atomic_{and, or, xor}.
+   3. for gcc builtin e.g., __sync_fetch_and_or(), if return
+      value is used, atomic_fetch_or will be generated. Otherwise,
+      atomic_or will be generated.
