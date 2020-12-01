@@ -2,462 +2,280 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE4002CA991
-	for <lists+bpf@lfdr.de>; Tue,  1 Dec 2020 18:26:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFA612CA993
+	for <lists+bpf@lfdr.de>; Tue,  1 Dec 2020 18:26:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728668AbgLARYz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Dec 2020 12:24:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726303AbgLARYz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Dec 2020 12:24:55 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2D78C0613CF;
-        Tue,  1 Dec 2020 09:24:14 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id r2so1528588pls.3;
-        Tue, 01 Dec 2020 09:24:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6S8l4sjPOYg9rXEcyAyEf6XtqYnJV0I5XG+0cw5t1rI=;
-        b=AlHZg0M3u3gJp2Ywbb8cVfayPzCJ9eh/Yc3qbjSk1vtfTnTvZJOt45xzla8kvzYDV7
-         n+LYd5eum217P1/RizSL4ssXrCDFj+M08TCnftjVXfJfykNjcNXBx5pMYq9tg99OmvYH
-         rbZ88LlzsX0sdfLx2KM4BrU8cTJ6/VaqUKfri+mc8/jdhotxKnZUBMN5yjxFQ8w3cV9x
-         cgKjCxJQZkB5PxoPcumCaWtoGTpkiLEVcoySIva9Zhn6huhVUxF9YLOEuEQDu4VLFPdS
-         1FQnnwwVnzePZcxyTxGcIwFT8FcmyRFskA8ZYx42eFgGZO4KvzRYS2OmLiCDKGq4EPxE
-         Bpnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6S8l4sjPOYg9rXEcyAyEf6XtqYnJV0I5XG+0cw5t1rI=;
-        b=n0fmvtXh7LyiLRaLUu+L71WqBy6ru0d3y9S0+v6W4OgRxNgxJCA/BATN6NaT82vpM3
-         mtgaLYzmzWQaTDOiB3AyTFa8jGNShs12HyNx0unHer/a1FaOtTUO9UQTzJFuI1w3ag1B
-         Jw8RLHLyXS2fJ45Y1TjnDppwPZXvM89AdpWeZ8PShT8BNtPuW8tXO5uKV4VRzTn2TAMq
-         E38KSfRtIOQWtVxZU9Fo4F0LuvCdh12vV33vwdE/sD/9LNPBfRo1fsowqCgm68caOunE
-         10bLYLvuvakd5uwFbR4U4NCaiVR+x30hmsq+RF/Mf04TL4tUbwBEquZq0xJijG1IjRrm
-         vfZQ==
-X-Gm-Message-State: AOAM531/0RreIPMOSF7Ub0s1ZLwBLJ6YxH27Xg4n1/+jDgGLZoXSMFSL
-        0mdmChj4TP6+MFGF2xEuQsg=
-X-Google-Smtp-Source: ABdhPJzpRdUyQIadmjlT+980Jpgg4KhPTHdFqxyzCOIOCWIkZyDUZhXeMuIM80iMYEpRPeSqcuiccQ==
-X-Received: by 2002:a17:90a:5d17:: with SMTP id s23mr3822778pji.208.1606843454219;
-        Tue, 01 Dec 2020 09:24:14 -0800 (PST)
-Received: from btopel-mobl.ger.intel.com ([192.55.54.44])
-        by smtp.gmail.com with ESMTPSA id m204sm377778pfd.118.2020.12.01.09.24.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Dec 2020 09:24:13 -0800 (PST)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andrii@kernel.org,
-        john.fastabend@gmail.com, hawk@kernel.org, kuba@kernel.org,
-        magnus.karlsson@intel.com, maciej.fijalkowski@intel.com
-Subject: [PATCH bpf-next] bpf, xdp: add bpf_redirect{,_map}() leaf node detection and optimization
-Date:   Tue,  1 Dec 2020 18:23:45 +0100
-Message-Id: <20201201172345.264053-1-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        id S1730620AbgLARZ1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Dec 2020 12:25:27 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:52544 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726303AbgLARZ0 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 1 Dec 2020 12:25:26 -0500
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B1HJbG4001152;
+        Tue, 1 Dec 2020 09:24:28 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=nbWlXMjOfEjYIyzDloeI5FfFtHxSrJtGQfRCbIpWhSs=;
+ b=hAxQ9FQCL79Zxw7r2rjtyER5AOUuitfNZMNBC5mt+IRCfpAZazCCI084/Xh5h9lr3nhw
+ kq+j8kozIxi/B+e7ruLzhLfPxGeuI7B257J7TQceo8osP7lcfKn5AxEt1f1l59sCGjHh
+ cTLrQQcW5Cdr89kpxZeoAii5MLh9+zrUunQ= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 355agsn6wy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 01 Dec 2020 09:24:28 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 1 Dec 2020 09:24:27 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=flom3ZHAaoYHwD33mHSswJCV/56h+6+u/W1EtHDxsrcERxC5lLNCCWyPC/4AyMxkXiEKD8yvB0k04JwOCXtc7d/idM9GNia9mi4uZqnG1mqlvJqmdDKyavbnxeuCCodGa9Z60JbiARXH3Bid3MrF3EKja0hrvaGJS9hXlZylQPEcK7p0gTnFaEWq+zmSEYbDNudb1Lz+vONqq3BkBqDEA5nJIZtJ3xeNSG4260vtFLxYL80+bL/wS+vrO5Bl4nI0E4zM3SmtQHUoKafB14RNGrm7JnBmRWe/60vRiAIm+QIE3+fCZLiZG2kj8CyLJQxmrlDsADVwpgiyleSQ3tcjVg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nbWlXMjOfEjYIyzDloeI5FfFtHxSrJtGQfRCbIpWhSs=;
+ b=bycjkFymABiAa77qi2+7KkHl3dq5W9Iw1lywaE23r26SC1HbU4GUChkl176Hvkhx4kRvLO7S4nH/NAjO2IleDHQQQvnxmB6zJWxEAFk5stoECdRmKqYA5h0XG+6t9Aivosv15bFYymKL7/5qECUHRBQaIml5qUq0zY/2A/vnJAzRK93SzZRnTWoo7iy6OKaGTs4gLT2XD+V1hJlfIu11ByLZ3uzy3y6Fa0MLcMG+G3fOd6vYjUXmVxCTy7Ye33YmsZ8HnVMlBcIgSnj04m1KFdp5TEZFU5uD90dHlNiy4ozZi9G5XCVOeU9DQ5SysYHe0uw9teYVr/a/dPU7vV4egQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nbWlXMjOfEjYIyzDloeI5FfFtHxSrJtGQfRCbIpWhSs=;
+ b=adw5f7TUeoCRBaKvmpZgOZza50C+A7W4mkES7/SIBUcC9odnIv+dq2Mpmv4pz2BVHVb/o8nokSSTPQAFz3fwI33W0Fo+X7LTe8xT5TEiDxhr0Agi6c2kqXgkv8XKuovgGg2oSunHM5rJL/EMlRTdBTdq36RNCfoytIuNYXRgNaQ=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by BYAPR15MB2453.namprd15.prod.outlook.com (2603:10b6:a02:8d::30) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.23; Tue, 1 Dec
+ 2020 17:24:26 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3611.025; Tue, 1 Dec 2020
+ 17:24:26 +0000
+Subject: Re: [PATCH v2 bpf-next 12/13] bpf: Add tests for new BPF atomic
+ operations
+To:     Brendan Jackman <jackmanb@google.com>
+CC:     <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        <linux-kernel@vger.kernel.org>, Jann Horn <jannh@google.com>
+References: <20201127175738.1085417-1-jackmanb@google.com>
+ <20201127175738.1085417-13-jackmanb@google.com>
+ <1e1656a9-6f0e-f17e-176c-37d996641e9a@fb.com>
+ <20201201125642.GH2114905@google.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <745df1cd-d771-9eda-eb96-3731cb5da36b@fb.com>
+Date:   Tue, 1 Dec 2020 09:24:23 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.0
+In-Reply-To: <20201201125642.GH2114905@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2620:10d:c090:400::5:40d7]
+X-ClientProxiedBy: CO2PR06CA0059.namprd06.prod.outlook.com
+ (2603:10b6:104:3::17) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21e8::1841] (2620:10d:c090:400::5:40d7) by CO2PR06CA0059.namprd06.prod.outlook.com (2603:10b6:104:3::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend Transport; Tue, 1 Dec 2020 17:24:25 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 09ef9f91-9978-49fe-400d-08d8961df3f8
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2453:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB2453B2B523D9213524EFC00AD3F40@BYAPR15MB2453.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:983;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: bbGqcofdr2CzqDlldIu9fRkn2ndQdgt20/GSGAFtpPmmWL/HZc7FXID59funwFJ4FxsHUDnFtH1EBlGrIRZ/mJNKBc7TU13ZdY4/QImkCVoXtcYBAqM9rW1ZxuWV0QqxKdO1dAiVouB1KVJeu/DY5Gtn3vuGZmXhWtv1D2G7x7E+7q9POSlMxViMhk18fjeXfxmG+G09Fqb0QlJ1JZGS3Oa0oc7xcJaDLR4bhUMVG02aYOOtT3OefiduWs4nZPliLzPRE7VbbUnbfA7wwvFRNggZUFbRrDgbjBGLPJ/+wOQJBBZYPunzqsBhMs9jKrmCxC/2dNNPVDWz5Yhe8mfaRcie7oH43JGUAm7CctWfubyzbqXD78ONTn/EdfqGqr5S
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(39860400002)(136003)(396003)(346002)(16526019)(52116002)(478600001)(36756003)(53546011)(86362001)(83380400001)(66556008)(66476007)(66946007)(316002)(31686004)(4326008)(6486002)(5660300002)(186003)(2906002)(6916009)(8676002)(31696002)(2616005)(8936002)(54906003)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?UjU0bHFzaHBIUVJxL3E3b0pVSVl5am9pWEZhZmM0N0RpVmc4VGhTTU5iS3pi?=
+ =?utf-8?B?VkZuZ2dFV2FvMHVUT3ZGSmZXWTFDdFIwOWZOc0xvQWpkTG04K0JRZW5CQUV1?=
+ =?utf-8?B?MGJpbmg5OVdia0lGZVNkcDhpZHQzNUU3eUVydkpCUGdPRWc2aTFTZkJTVHNq?=
+ =?utf-8?B?ci9UU0hmcjhMekxwd0dYZEp3RzlRSVpub0tXMmFvSWt4ZUlzSklvSEUwZTVF?=
+ =?utf-8?B?aC9GNTFDQW1YWmJya0V1WjZBalZ1eUs5Ri9ESUJpRnArVDEwNVBTaUZ4MVFB?=
+ =?utf-8?B?S1plSll2MGNyMEQyckxPNlJpS2QxcFR0cnpkSHIxWjdnS0RNRUwrR2dMRGhq?=
+ =?utf-8?B?UGJUVnpIeGovWEsrQVNlSHZwWVdXOEY3SXV1dEpWM3pmUzl3SGZ5NXF1Zlgx?=
+ =?utf-8?B?Z1BnRHlhMUtPa0hvamJCVVNnVkRjWUF3aXFzbEJnYy9pVktLRmdTOFZTMkYr?=
+ =?utf-8?B?SHp4V2ZhQ0VZbHBLbGRqblVLamt4M3JyVVU5bEVuZzVmM2tzTzJ4amJBUVE5?=
+ =?utf-8?B?a21KdS9HRU1JSGpFSWpkc0g5dGJnOFdzMjV1TjA5L0hNL1ZscEtDcVR5RzBr?=
+ =?utf-8?B?bFpzOVkyS2t3cjVUbWI3U1pXd1Nqb2hlWGx3dTFMZTJWNnhsR05zOE9wZXU3?=
+ =?utf-8?B?RXRYdWJidStDSmVFemloYTZjRXE0bmViZlpsZEF6cDcvSUJPdCtaRmIydU5Z?=
+ =?utf-8?B?ZEVTTFV2RWFCMWdJN3FlSG9pcU5ESXgxMFArUGFBMXY3dlNuWjQrcE9ETkt3?=
+ =?utf-8?B?dHdSaWFnem9ZOEl5UTlybkdDc0V0Yk1KQUxlNy9ac1Nldmt2aFMzZ255Z0FM?=
+ =?utf-8?B?ZUZUckFWbEp3SlRqdGFCLzNPTVFRSDlVMHduaXJkZno4MWVTWkxpYWRmckpG?=
+ =?utf-8?B?MjhxNnZ5Z0IyKzV6M0UwUHlxdS9aTkdseDhYY2FveTRrcDFqbGdpZHhCekZo?=
+ =?utf-8?B?UjQ1aGU0cVdWc0I0TzJBS3Vrc2Ivb01UYWxLTUhMbk1TZVJYRW51MUdpZHRo?=
+ =?utf-8?B?Zzc5dDFXRm9GbXI0dStaT2I3a25KcmlLZ1M3QXluYXhtT2xPUXBIODBuVXBz?=
+ =?utf-8?B?Q2I1bU9valFCTllIR05qTFJ0MUJnM2didCtiSFlJamNpMTZldjdTVi9jUjlP?=
+ =?utf-8?B?NnQxVkFsWmI2bk1PcmhNd1BZQzRMVnhIc2FGay9uTEMwaFhsTUoyQXRseXYr?=
+ =?utf-8?B?QTQvczVPb1huSkFLZVhOVHp2d0RCL1VXVDJjYVJkL2RmeS9NQWg1cUtLaWNh?=
+ =?utf-8?B?cm1NTjBrMlRNTXJ0NWFwVjU5OHZJZ1JyTTY2TFNiUlVKRkxHQTFHbUkyNndF?=
+ =?utf-8?B?UkVJK3lkZ29JK3o5VzNJVVBhYzBLeW1pbDJsOFFNcUMwUmJSamIrOGtYNFh2?=
+ =?utf-8?B?S1ltOFBQN0FmU0E9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 09ef9f91-9978-49fe-400d-08d8961df3f8
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Dec 2020 17:24:26.5925
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oc771iaZ1wgMQeF71TbPmOPmcA0DT+sAhPxHBeF6EvuyO0eeGxjuV3kyelJbg+07
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2453
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-01_07:2020-11-30,2020-12-01 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 malwarescore=0
+ phishscore=0 impostorscore=0 mlxlogscore=999 spamscore=0 adultscore=0
+ clxscore=1015 lowpriorityscore=0 bulkscore=0 priorityscore=1501
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012010106
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
 
-Teach the verifier to detect if all calls to bpf_redirect{,_map}() are
-leaf nodes, i.e.:
 
-  return bpf_redirect_map(...);
-or
-  ret = bpf_redirect_map(...);
-  if (ret != 0)
-     return ret;
+On 12/1/20 4:56 AM, Brendan Jackman wrote:
+> On Mon, Nov 30, 2020 at 07:55:02PM -0800, Yonghong Song wrote:
+>> On 11/27/20 9:57 AM, Brendan Jackman wrote:
+> [...]
+>>> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+>>> index 3d5940cd110d..5eadfd09037d 100644
+>>> --- a/tools/testing/selftests/bpf/Makefile
+>>> +++ b/tools/testing/selftests/bpf/Makefile
+>>> @@ -228,6 +228,12 @@ IS_LITTLE_ENDIAN = $(shell $(CC) -dM -E - </dev/null | \
+>>>    			grep 'define __BYTE_ORDER__ __ORDER_LITTLE_ENDIAN__')
+>>>    MENDIAN=$(if $(IS_LITTLE_ENDIAN),-mlittle-endian,-mbig-endian)
+>>> +# Determine if Clang supports BPF arch v4, and therefore atomics.
+>>> +CLANG_SUPPORTS_V4=$(if $(findstring v4,$(shell $(CLANG) --target=bpf -mcpu=? 2>&1)),true,)
+>>> +ifeq ($(CLANG_SUPPORTS_V4),true)
+>>> +	CFLAGS += -DENABLE_ATOMICS_TESTS
+>>> +endif
+>>> +
+>>>    CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG))
+>>>    BPF_CFLAGS = -g -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN) 			\
+>>>    	     -I$(INCLUDE_DIR) -I$(CURDIR) -I$(APIDIR)			\
+>>> @@ -250,7 +256,9 @@ define CLANG_BPF_BUILD_RULE
+>>>    	$(call msg,CLNG-LLC,$(TRUNNER_BINARY),$2)
+>>>    	$(Q)($(CLANG) $3 -O2 -target bpf -emit-llvm			\
+>>>    		-c $1 -o - || echo "BPF obj compilation failed") | 	\
+>>> -	$(LLC) -mattr=dwarfris -march=bpf -mcpu=v3 $4 -filetype=obj -o $2
+>>> +	$(LLC) -mattr=dwarfris -march=bpf				\
+>>> +		-mcpu=$(if $(CLANG_SUPPORTS_V4),v4,v3)			\
+>>> +		$4 -filetype=obj -o $2
+>>>    endef
+>>>    # Similar to CLANG_BPF_BUILD_RULE, but with disabled alu32
+>>>    define CLANG_NOALU32_BPF_BUILD_RULE
+>>> @@ -391,7 +399,7 @@ TRUNNER_EXTRA_SOURCES := test_progs.c cgroup_helpers.c trace_helpers.c	\
+>>>    TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read				\
+>>>    		       $(wildcard progs/btf_dump_test_case_*.c)
+>>>    TRUNNER_BPF_BUILD_RULE := CLANG_BPF_BUILD_RULE
+>>> -TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(CLANG_CFLAGS)
+>>> +TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(CLANG_CFLAGS) $(if $(CLANG_SUPPORTS_V4),-DENABLE_ATOMICS_TESTS,)
+>>
+>> If the compiler indeed supports cpu v4 (i.e., atomic insns),
+>> -DENABLE_ATOMICS_TESTS will be added to TRUNNER_BPF_FLAGS and
+>> eventually -DENABLE_ATOMICS_TESTS is also available for
+>> no-alu32 test and this will cause compilation error.
+>>
+>> I did the following hack to workaround the issue, i.e., only adds
+>> the definition to default (alu32) test run.
+>>
+>> index 5eadfd09037d..3d1320fd93eb 100644
+>> --- a/tools/testing/selftests/bpf/Makefile
+>> +++ b/tools/testing/selftests/bpf/Makefile
+>> @@ -230,9 +230,6 @@ MENDIAN=$(if
+>> $(IS_LITTLE_ENDIAN),-mlittle-endian,-mbig-endian)
+>>
+>>   # Determine if Clang supports BPF arch v4, and therefore atomics.
+>>   CLANG_SUPPORTS_V4=$(if $(findstring v4,$(shell $(CLANG) --target=bpf
+>> -mcpu=? 2>&1)),true,)
+>> -ifeq ($(CLANG_SUPPORTS_V4),true)
+>> -       CFLAGS += -DENABLE_ATOMICS_TESTS
+>> -endif
+>>
+>>   CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG))
+>>   BPF_CFLAGS = -g -D__TARGET_ARCH_$(SRCARCH) $(MENDIAN)                  \
+>> @@ -255,6 +252,7 @@ $(OUTPUT)/flow_dissector_load.o: flow_dissector_load.h
+>>   define CLANG_BPF_BUILD_RULE
+>>          $(call msg,CLNG-LLC,$(TRUNNER_BINARY),$2)
+>>          $(Q)($(CLANG) $3 -O2 -target bpf -emit-llvm                     \
+>> +               $(if $(CLANG_SUPPORTS_V4),-DENABLE_ATOMICS_TESTS,)      \
+>>                  -c $1 -o - || echo "BPF obj compilation failed") |      \
+>>          $(LLC) -mattr=dwarfris -march=bpf                               \
+>>                  -mcpu=$(if $(CLANG_SUPPORTS_V4),v4,v3)                  \
+>> @@ -399,7 +397,7 @@ TRUNNER_EXTRA_SOURCES := test_progs.c cgroup_helpers.c
+>> trace_helpers.c      \
+>>   TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read                          \
+>>                         $(wildcard progs/btf_dump_test_case_*.c)
+>>   TRUNNER_BPF_BUILD_RULE := CLANG_BPF_BUILD_RULE
+>> -TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(CLANG_CFLAGS) $(if
+>> $(CLANG_SUPPORTS_V4),-DENABLE_ATOMICS_TESTS,)
+>> +TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(CLANG_CFLAGS)
+>>   TRUNNER_BPF_LDFLAGS := -mattr=+alu32
+>>   $(eval $(call DEFINE_TEST_RUNNER,test_progs))
+> 
+> Ah, good point. I think your "hack" actually improves the overall result
+> anyway since it avoids the akward global mutation of CFLAGS. Thanks!
+> 
+> I wonder if we should actually have Clang define a built-in macro to say
+> that the atomics are supported?
 
-If so, we can apply an optimization to the XDP path. Instead of
-calling bpf_redirect_map() followed by xdp_do_redirect(), we simply
-perform the work of xdp_do_redirect() from bpf_redirect_map(). By
-doing so we can do fewer loads/stores/checks and save some cycles.
+We are using gcc builtin's and they are all supported by clang, so
+"#if __has_builtin(__sync_fetch_and_or)" is always true so it
+won't work here.
 
-The XDP core will introspect the XDP program to check whether the
-optimization can be performed, by checking the "redirect_opt" bit in
-the bpf_prog structure.
+We could add a macro like __BPF_ATOMICS_SUPPORTED__ in clang.
+But you still need a checking to decide whether to use -mcpu=v4. If
+you have that information, it will be trivial to add your
+own macros if it is -mcpu=v4.
 
-The bpf_redirect_info structure is extended with some new members:
-xdp_prog_redirect_opt and xdp. The xdp_prog_redirect_opt member is the
-current program executing the helper. This is also used as a flag in
-the XDP core to determine if the optimization is turned on. The xdp
-member is the current xdp_buff/context executing.
-
-The verifier detection is currently very simplistic, and aimed for
-very simple XDP programs such as the libbpf AF_XDP XDP program. If BPF
-tail calls or bpf2bpf calls are used, the optimization will be
-disabled.
-
-Performance up ~5% Mpps for the xdp_redirect_map and xdpsock samples,
-and ~3% for bpf_redirect() programs.
-
-An interesting extension would be to support an indirect jump
-instruction/proper tail calls (only for helpers) in BPF, so the call
-could be elided in favor for a jump.
-
-Thanks to Maciej for the internal code review.
-
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
----
- include/linux/bpf_verifier.h |   3 ++
- include/linux/filter.h       |  30 +++++++++--
- kernel/bpf/verifier.c        |  68 ++++++++++++++++++++++++
- net/core/dev.c               |   2 +-
- net/core/filter.c            | 100 +++++++++++++++++++++++++++++++++--
- 5 files changed, 195 insertions(+), 8 deletions(-)
-
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index 306869d4743b..74e7e2f89251 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -423,6 +423,9 @@ struct bpf_verifier_env {
- 	u32 peak_states;
- 	/* longest register parentage chain walked for liveness marking */
- 	u32 longest_mark_read_walk;
-+	/* Are all leaf nodes redirect_map? */
-+	bool all_leaves_redirect;
-+	u32 redirect_call_cnt;
- };
- 
- __printf(2, 0) void bpf_verifier_vlog(struct bpf_verifier_log *log,
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 1b62397bd124..6509ced898a2 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -534,7 +534,8 @@ struct bpf_prog {
- 				kprobe_override:1, /* Do we override a kprobe? */
- 				has_callchain_buf:1, /* callchain buffer allocated? */
- 				enforce_expected_attach_type:1, /* Enforce expected_attach_type checking at attach time */
--				call_get_stack:1; /* Do we call bpf_get_stack() or bpf_get_stackid() */
-+				call_get_stack:1, /* Do we call bpf_get_stack() or bpf_get_stackid() */
-+				redirect_opt:1; /* All bpf_redirect{,_map}() are leaf calls */
- 	enum bpf_prog_type	type;		/* Type of BPF program */
- 	enum bpf_attach_type	expected_attach_type; /* For some prog types */
- 	u32			len;		/* Number of filter blocks */
-@@ -622,6 +623,8 @@ struct bpf_redirect_info {
- 	struct bpf_map *map;
- 	u32 kern_flags;
- 	struct bpf_nh_params nh;
-+	const struct bpf_prog *xdp_prog_redirect_opt;
-+	struct xdp_buff *xdp;
- };
- 
- DECLARE_PER_CPU(struct bpf_redirect_info, bpf_redirect_info);
-@@ -734,6 +737,13 @@ DECLARE_BPF_DISPATCHER(xdp)
- static __always_inline u32 bpf_prog_run_xdp(const struct bpf_prog *prog,
- 					    struct xdp_buff *xdp)
- {
-+	if (prog->redirect_opt) {
-+		struct bpf_redirect_info *ri = this_cpu_ptr(&bpf_redirect_info);
-+
-+		ri->xdp_prog_redirect_opt = prog;
-+		ri->xdp = xdp;
-+	}
-+
- 	/* Caller needs to hold rcu_read_lock() (!), otherwise program
- 	 * can be released while still running, or map elements could be
- 	 * freed early while still having concurrent users. XDP fastpath
-@@ -743,6 +753,11 @@ static __always_inline u32 bpf_prog_run_xdp(const struct bpf_prog *prog,
- 	return __BPF_PROG_RUN(prog, xdp, BPF_DISPATCHER_FUNC(xdp));
- }
- 
-+static __always_inline u32 bpf_prog_run_xdp_skb(const struct bpf_prog *prog, struct xdp_buff *xdp)
-+{
-+	return __BPF_PROG_RUN(prog, xdp, BPF_DISPATCHER_FUNC(xdp));
-+}
-+
- void bpf_prog_change_xdp(struct bpf_prog *prev_prog, struct bpf_prog *prog);
- 
- static inline u32 bpf_prog_insn_size(const struct bpf_prog *prog)
-@@ -951,9 +966,16 @@ static inline int xdp_ok_fwd_dev(const struct net_device *fwd,
-  */
- int xdp_do_generic_redirect(struct net_device *dev, struct sk_buff *skb,
- 			    struct xdp_buff *xdp, struct bpf_prog *prog);
--int xdp_do_redirect(struct net_device *dev,
--		    struct xdp_buff *xdp,
--		    struct bpf_prog *prog);
-+int __xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp, struct bpf_prog *prog);
-+static inline int xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
-+				  struct bpf_prog *prog)
-+{
-+	if (prog->redirect_opt)
-+		return 0;
-+
-+	return __xdp_do_redirect(dev, xdp, prog);
-+}
-+
- void xdp_do_flush(void);
- 
- /* The xdp_do_flush_map() helper has been renamed to drop the _map suffix, as
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index e333ce43f281..9ede6f1bca37 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -5032,6 +5032,58 @@ static int check_reference_leak(struct bpf_verifier_env *env)
- 	return state->acquired_refs ? -EINVAL : 0;
- }
- 
-+static void check_redirect_opt(struct bpf_verifier_env *env, int func_id, int insn_idx)
-+{
-+	struct bpf_insn *insns = env->prog->insnsi;
-+	int insn_cnt = env->prog->len;
-+	struct bpf_insn *insn;
-+	bool is_leaf = false;
-+
-+	if (!(func_id == BPF_FUNC_redirect || func_id == BPF_FUNC_redirect_map))
-+		return;
-+
-+	/* Naive peephole leaf node checking */
-+	insn_idx++;
-+	if (insn_idx >= insn_cnt)
-+		return;
-+
-+	insn = &insns[insn_idx];
-+	switch (insn->code) {
-+	/* Is the instruction following the call, an exit? */
-+	case BPF_JMP | BPF_EXIT:
-+		is_leaf = true;
-+		break;
-+	/* Follow the true branch of "if return value (r/w0) is not
-+	 * zero", and look for exit.
-+	 */
-+	case BPF_JMP | BPF_JSGT | BPF_K:
-+	case BPF_JMP32 | BPF_JSGT | BPF_K:
-+	case BPF_JMP | BPF_JGT | BPF_K:
-+	case BPF_JMP32 | BPF_JGT | BPF_K:
-+	case BPF_JMP | BPF_JNE | BPF_K:
-+	case BPF_JMP32 | BPF_JNE | BPF_K:
-+		if (insn->dst_reg == BPF_REG_0 && insn->imm == 0) {
-+			insn_idx += insn->off + 1;
-+			if (insn_idx >= insn_cnt)
-+				break;
-+
-+			insn = &insns[insn_idx];
-+			is_leaf = insn->code == (BPF_JMP | BPF_EXIT);
-+		}
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	if (!env->redirect_call_cnt++) {
-+		env->all_leaves_redirect = is_leaf;
-+		return;
-+	}
-+
-+	if (!is_leaf)
-+		env->all_leaves_redirect = false;
-+}
-+
- static int check_helper_call(struct bpf_verifier_env *env, int func_id, int insn_idx)
- {
- 	const struct bpf_func_proto *fn = NULL;
-@@ -5125,6 +5177,8 @@ static int check_helper_call(struct bpf_verifier_env *env, int func_id, int insn
- 		}
- 	}
- 
-+	check_redirect_opt(env, func_id, insn_idx);
-+
- 	regs = cur_regs(env);
- 
- 	/* check that flags argument in get_local_storage(map, flags) is 0,
-@@ -11894,6 +11948,17 @@ static int check_attach_btf_id(struct bpf_verifier_env *env)
- 	return 0;
- }
- 
-+static void validate_redirect_opt(struct bpf_verifier_env *env)
-+{
-+	if (env->subprog_cnt != 1)
-+		return;
-+
-+	if (env->subprog_info[0].has_tail_call)
-+		return;
-+
-+	env->prog->redirect_opt = env->all_leaves_redirect;
-+}
-+
- struct btf *bpf_get_btf_vmlinux(void)
- {
- 	if (!btf_vmlinux && IS_ENABLED(CONFIG_DEBUG_INFO_BTF)) {
-@@ -12092,6 +12157,9 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr,
- 	if (ret == 0)
- 		adjust_btf_func(env);
- 
-+	if (ret == 0)
-+		validate_redirect_opt(env);
-+
- err_release_maps:
- 	if (!env->prog->aux->used_maps)
- 		/* if we didn't copy map pointers into bpf_prog_info, release
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 3b6b0e175fe7..d31f97ea955b 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -4654,7 +4654,7 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
- 	rxqueue = netif_get_rxqueue(skb);
- 	xdp->rxq = &rxqueue->xdp_rxq;
- 
--	act = bpf_prog_run_xdp(xdp_prog, xdp);
-+	act = bpf_prog_run_xdp_skb(xdp_prog, xdp);
- 
- 	/* check if bpf_xdp_adjust_head was used */
- 	off = xdp->data - orig_data;
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 2ca5eecebacf..f5a0d29aa272 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -3981,8 +3981,8 @@ void bpf_clear_redirect_map(struct bpf_map *map)
- 	}
- }
- 
--int xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
--		    struct bpf_prog *xdp_prog)
-+int __xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
-+		      struct bpf_prog *xdp_prog)
- {
- 	struct bpf_redirect_info *ri = this_cpu_ptr(&bpf_redirect_info);
- 	struct bpf_map *map = READ_ONCE(ri->map);
-@@ -4015,7 +4015,7 @@ int xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
- 	_trace_xdp_redirect_map_err(dev, xdp_prog, fwd, map, index, err);
- 	return err;
- }
--EXPORT_SYMBOL_GPL(xdp_do_redirect);
-+EXPORT_SYMBOL_GPL(__xdp_do_redirect);
- 
- static int xdp_do_generic_redirect_map(struct net_device *dev,
- 				       struct sk_buff *skb,
-@@ -4091,6 +4091,36 @@ int xdp_do_generic_redirect(struct net_device *dev, struct sk_buff *skb,
- 	return err;
- }
- 
-+static u64 __bpf_xdp_redirect_opt(u32 index, struct bpf_redirect_info *ri)
-+{
-+	const struct bpf_prog *xdp_prog;
-+	struct net_device *fwd, *dev;
-+	struct xdp_buff *xdp;
-+	int err;
-+
-+	xdp_prog = ri->xdp_prog_redirect_opt;
-+	xdp = ri->xdp;
-+	dev = xdp->rxq->dev;
-+
-+	ri->xdp_prog_redirect_opt = NULL;
-+
-+	fwd = dev_get_by_index_rcu(dev_net(dev), index);
-+	if (unlikely(!fwd)) {
-+		err = -EINVAL;
-+		goto err;
-+	}
-+
-+	err = dev_xdp_enqueue(fwd, xdp, dev);
-+	if (unlikely(err))
-+		goto err;
-+
-+	_trace_xdp_redirect_map(dev, xdp_prog, fwd, NULL, index);
-+	return XDP_REDIRECT;
-+err:
-+	_trace_xdp_redirect_map_err(dev, xdp_prog, fwd, NULL, index, err);
-+	return XDP_ABORTED;
-+}
-+
- BPF_CALL_2(bpf_xdp_redirect, u32, ifindex, u64, flags)
- {
- 	struct bpf_redirect_info *ri = this_cpu_ptr(&bpf_redirect_info);
-@@ -4098,6 +4128,9 @@ BPF_CALL_2(bpf_xdp_redirect, u32, ifindex, u64, flags)
- 	if (unlikely(flags))
- 		return XDP_ABORTED;
- 
-+	if (ri->xdp_prog_redirect_opt)
-+		return __bpf_xdp_redirect_opt(ifindex, ri);
-+
- 	ri->flags = flags;
- 	ri->tgt_index = ifindex;
- 	ri->tgt_value = NULL;
-@@ -4114,6 +4147,64 @@ static const struct bpf_func_proto bpf_xdp_redirect_proto = {
- 	.arg2_type      = ARG_ANYTHING,
- };
- 
-+static u64 __bpf_xdp_redirect_map_opt(struct bpf_map *map, u32 index, u64 flags,
-+				      struct bpf_redirect_info *ri)
-+{
-+	const struct bpf_prog *xdp_prog;
-+	struct net_device *dev;
-+	struct xdp_buff *xdp;
-+	void *val;
-+	int err;
-+
-+	xdp_prog = ri->xdp_prog_redirect_opt;
-+	xdp = ri->xdp;
-+	dev = xdp->rxq->dev;
-+
-+	ri->xdp_prog_redirect_opt = NULL;
-+
-+	switch (map->map_type) {
-+	case BPF_MAP_TYPE_DEVMAP: {
-+		val = __dev_map_lookup_elem(map, index);
-+		if (unlikely(!val))
-+			return flags;
-+		err = dev_map_enqueue(val, xdp, dev);
-+		break;
-+	}
-+	case BPF_MAP_TYPE_DEVMAP_HASH: {
-+		val = __dev_map_hash_lookup_elem(map, index);
-+		if (unlikely(!val))
-+			return flags;
-+		err = dev_map_enqueue(val, xdp, dev);
-+		break;
-+	}
-+	case BPF_MAP_TYPE_CPUMAP: {
-+		val = __cpu_map_lookup_elem(map, index);
-+		if (unlikely(!val))
-+			return flags;
-+		err = cpu_map_enqueue(val, xdp, dev);
-+		break;
-+	}
-+	case BPF_MAP_TYPE_XSKMAP: {
-+		val = __xsk_map_lookup_elem(map, index);
-+		if (unlikely(!val))
-+			return flags;
-+		err = __xsk_map_redirect(val, xdp);
-+		break;
-+	}
-+	default:
-+		return flags;
-+	}
-+
-+	if (unlikely(err))
-+		goto err;
-+
-+	_trace_xdp_redirect_map(dev, xdp_prog, val, map, index);
-+	return XDP_REDIRECT;
-+err:
-+	_trace_xdp_redirect_map_err(dev, xdp_prog, val, map, index, err);
-+	return XDP_ABORTED;
-+}
-+
- BPF_CALL_3(bpf_xdp_redirect_map, struct bpf_map *, map, u32, ifindex,
- 	   u64, flags)
- {
-@@ -4123,6 +4214,9 @@ BPF_CALL_3(bpf_xdp_redirect_map, struct bpf_map *, map, u32, ifindex,
- 	if (unlikely(flags > XDP_TX))
- 		return XDP_ABORTED;
- 
-+	if (ri->xdp_prog_redirect_opt)
-+		return __bpf_xdp_redirect_map_opt(map, ifindex, flags, ri);
-+
- 	ri->tgt_value = __xdp_map_lookup_elem(map, ifindex);
- 	if (unlikely(!ri->tgt_value)) {
- 		/* If the lookup fails we want to clear out the state in the
-
-base-commit: ba0581749fec389e55c9d761f2716f8fcbefced5
--- 
-2.27.0
-
+> 
+>>> diff --git a/tools/testing/selftests/bpf/prog_tests/atomics_test.c b/tools/testing/selftests/bpf/prog_tests/atomics_test.c
+>>> new file mode 100644
+>>> index 000000000000..8ecc0392fdf9
+>>> --- /dev/null
+>>> +++ b/tools/testing/selftests/bpf/prog_tests/atomics_test.c
+>>> @@ -0,0 +1,329 @@
+>>> +// SPDX-License-Identifier: GPL-2.0
+>>> +
+>>> +#include <test_progs.h>
+>>> +
+>>> +#ifdef ENABLE_ATOMICS_TESTS
+>>> +
+>>> +#include "atomics_test.skel.h"
+>>> +
+>>> +static void test_add(void)
+>> [...]
+>>> +
+>>> +#endif /* ENABLE_ATOMICS_TESTS */
+>>> diff --git a/tools/testing/selftests/bpf/progs/atomics_test.c b/tools/testing/selftests/bpf/progs/atomics_test.c
+> [...]
+>>> +__u64 xor64_value = (0x110ull << 32);
+>>> +__u64 xor64_result = 0;
+>>> +__u32 xor32_value = 0x110;
+>>> +__u32 xor32_result = 0;
+>>> +SEC("fentry/bpf_fentry_test1")
+>>> +int BPF_PROG(xor, int a)
+>>> +{
+>>> +	xor64_result = __sync_fetch_and_xor(&xor64_value, 0x011ull << 32);
+>>> +	xor32_result = __sync_fetch_and_xor(&xor32_value, 0x011);
+>>> +
+>>> +	return 0;
+>>> +}
+>>
+>> All above __sync_fetch_and_{add, sub, and, or, xor} produces a return
+>> value used later. To test atomic_<op> instructions, it will be good if
+>> you can add some tests which ignores the return value.
+> 
+> Good idea - adding an extra case to each prog. This won't assert that
+> LLVM is generating "optimal" code (without BPF_FETCH) but we can at
+> least get some confidence we aren't generating total garbage.
+> 
