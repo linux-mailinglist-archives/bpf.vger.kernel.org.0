@@ -2,206 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A2412CA57F
-	for <lists+bpf@lfdr.de>; Tue,  1 Dec 2020 15:24:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CA392CA5D9
+	for <lists+bpf@lfdr.de>; Tue,  1 Dec 2020 15:39:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730461AbgLAOX6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Dec 2020 09:23:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58145 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729239AbgLAOX6 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 1 Dec 2020 09:23:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606832551;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ESjPrFn6/56RO9QASZ5fwdS/xXKYooC0i6rzr8ADqJ4=;
-        b=dB+kUfIRJlXz+Duf23Ed31aRD0GqtTSHH7McyZWoyxBFPacJBoDHDwVTkzqGJoMV6LMuwp
-        1O9zIv90SmNPf+hyM3C4YyuxeND3DLaGmpgF80JkNC4QLiP+g/hgVzSGdHMvaSTci90TyZ
-        NGyLVW/HH5z7F0icaHKFxn29Gz6JcWk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-428-q2JmaAgUP0q7mu_kcplpQw-1; Tue, 01 Dec 2020 09:22:27 -0500
-X-MC-Unique: q2JmaAgUP0q7mu_kcplpQw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S2389268AbgLAOiE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Dec 2020 09:38:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55796 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388116AbgLAOiD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Dec 2020 09:38:03 -0500
+Received: from localhost (searspoint.nvidia.com [216.228.112.21])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 45E8880B71B;
-        Tue,  1 Dec 2020 14:22:25 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.55])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8CF5560BD8;
-        Tue,  1 Dec 2020 14:22:15 +0000 (UTC)
-Date:   Tue, 1 Dec 2020 15:22:14 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     David Ahern <dsahern@gmail.com>
-Cc:     Stephen Hemminger <stephen@networkplumber.org>,
-        Hangbin Liu <haliu@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        by mail.kernel.org (Postfix) with ESMTPSA id 115B920757;
+        Tue,  1 Dec 2020 14:37:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1606833442;
+        bh=wZROcP5CZTMECo5kQllBGtqQbcBo45uTKS8WHm8zLhs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Ddf6bVZ2M0dNM1TuN3TRYlCdVBWt/Tc0MZMlZOyYvHzYiTUSUWnff82UoBikvuR9S
+         ePAZE17dddi/GOBrCAtRBr/FxnKksZhBpZVsYCror0JBsuvUUU1WjHVtZpaRG8Idhi
+         roXPI87pVn0xiyHMy8FliP8MO70XUeyJH6y7yVZk=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Jiri Benc <jbenc@redhat.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
-        brouer@redhat.com
-Subject: Re: [PATCH iproute2-next 0/5] iproute2: add libbpf support
-Message-ID: <20201201152214.1a3fb47b@carbon>
-In-Reply-To: <08071e1e-497f-f53e-916a-8b519fdd1e0f@gmail.com>
-References: <20201023033855.3894509-1-haliu@redhat.com>
-        <20201128221635.63fdcf69@hermes.local>
-        <08071e1e-497f-f53e-916a-8b519fdd1e0f@gmail.com>
+        Michal Marek <michal.lkml@markovi.net>
+Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Edward Srouji <edwards@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>, bpf@vger.kernel.org,
+        kernel-team@fb.com, netdev@vger.kernel.org
+Subject: [PATCH bpf-next] kbuild: Restore ability to build out-of-tree modules
+Date:   Tue,  1 Dec 2020 16:37:00 +0200
+Message-Id: <20201201143700.719828-1-leon@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, 29 Nov 2020 12:41:49 -0700
-David Ahern <dsahern@gmail.com> wrote:
+From: Leon Romanovsky <leonro@nvidia.com>
 
-> On 11/28/20 11:16 PM, Stephen Hemminger wrote:
-> > Luca wants to put this in Debian 11 (good idea), but that means:
-> > 
-> > 1. It has to work with 5.10 release and kernel.
-> > 2. Someone has to test it.
-> > 3. The 5.10 is a LTS kernel release which means BPF developers have
-> >    to agree to supporting LTS releases.
-> > 
-> > If someone steps up to doing this then I would be happy to merge it now
-> > for 5.10. Otherwise it won't show up until 5.11.  
-> 
-> It would be good for Bullseye to have the option to use libbpf with
-> iproute2. If Debian uses the 5.10 kernel then it should use the 5.10
-> version of iproute2 and 5.10 version libbpf. All the components align
-> with consistent versioning.
-> 
-> I have some use cases I can move from bpftool loading to iproute2 as
-> additional testing to what Hangbin has already done. If that goes well,
-> I can re-send the patch series against iproute2-main branch by next weekend.
-> 
-> It would be good for others (Jesper, Toke, Jiri) to run their own
-> testing as well.
+The out-of-tree modules are built without vmlinux target and request
+to recompile that target unconditionally causes to the following
+compilation error.
 
-I have tested this on a Ubuntu 20.04.1 LTS.
+[root@server kernel]# make
+<..>
+make -f ./scripts/Makefile.modpost
+make -f ./scripts/Makefile.modfinal
+make[3]: *** No rule to make target 'vmlinux', needed by '/my_temp/out-of-tree-module/kernel/test.ko'.  Stop.
+make[2]: *** [scripts/Makefile.modpost:117: __modpost] Error 2
+make[1]: *** [Makefile:1703: modules] Error 2
+make[1]: Leaving directory '/usr/src/kernels/5.10.0-rc5_for_upstream_base_2020_11_29_11_34'
+make: *** [Makefile:80: modules] Error 2
 
-I had to compile tc my own "old" version (based it on iproute2 git
-tree), because Ubuntu vendor tc util version didn't even support loading
-BPF-ELF objects... weird!
+As a solution separate between build paths that has vmlinux target and paths without.
 
-Copy-pasted by compile instruction below signature (including one
-failure, that people can find via Google search).
+Fixes: 5f9ae91f7c0d ("kbuild: Build kernel module BTFs if BTF is enabled and pahole supports it")
+Reported-by: Edward Srouji <edwards@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+Not proficient enough in Makefile, but it fixes the issue.
+---
+ scripts/Makefile.modfinal | 5 +++++
+ scripts/Makefile.modpost  | 4 ++++
+ 2 files changed, 9 insertions(+)
 
-I tested difference combinations old vs. new loader with map pinning
-and reuse of maps (as instructed by Toke over IRC), all the cases
-worked.
+diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+index 02b892421f7a..8a7d0604e7d0 100644
+--- a/scripts/Makefile.modfinal
++++ b/scripts/Makefile.modfinal
+@@ -48,9 +48,14 @@ if_changed_except = $(if $(call newer_prereqs_except,$(2))$(cmd-check),      \
+ 	$(cmd);                                                              \
+ 	printf '%s\n' 'cmd_$@ := $(make-cmd)' > $(dot-target).cmd, @:)
 
-I took it one step further and implemented tc libbpf detection:
- https://github.com/netoptimizer/bpf-examples/commit/048c960756eb65
++ifdef MODPOST_VMLINUX
+ # Re-generate module BTFs if either module's .ko or vmlinux changed
+ $(modules): %.ko: %.o %.mod.o scripts/module.lds vmlinux FORCE
+ 	+$(call if_changed_except,ld_ko_o,vmlinux)
++else
++$(modules): %.ko: %.o %.mod.o scripts/module.lds FORCE
++	+$(call if_changed_except,ld_ko_o)
++endif
+ ifdef CONFIG_DEBUG_INFO_BTF_MODULES
+ 	+$(if $(newer-prereqs),$(call cmd,btf_ko))
+ endif
+diff --git a/scripts/Makefile.modpost b/scripts/Makefile.modpost
+index f54b6ac37ac2..f5aa5b422ad7 100644
+--- a/scripts/Makefile.modpost
++++ b/scripts/Makefile.modpost
+@@ -114,8 +114,12 @@ targets += $(output-symdump)
 
-So, my EDT-pacing code[1] now support BTF-maps, via configure detection
-and code gets compiled with support, which allows me to inspect the
-content really easily (data from production system):
+ __modpost: $(output-symdump)
+ ifneq ($(KBUILD_MODPOST_NOFINAL),1)
++ifdef MODPOST_VMLINUX
++	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modfinal MODPOST_VMLINUX=1
++else
+ 	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modfinal
+ endif
++endif
 
-$ bpftool map lookup id 1351 key 0x10 0x0 0x0 0x0
-{
-    "key": 16,
-    "value": {
-        "rate": 0,
-        "t_last": 3299496947649930,
-        "t_horizon_drop": 0,
-        "t_horizon_ecn": 0,
-        "codel": {
-            "first_above_time": 3299496641781522,
-            "drop_next": 3299497041788432,
-            "count": 9,
-            "dropping": 1
-        }
-    }
-}
-
-[1] https://github.com/netoptimizer/bpf-examples/tree/master/traffic-pacing-edt
-- - 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
-
-Very recently iproute2 got support for using libbpf as BPF-ELF loader.
-
-Testing this on Ubuntu 20.04.1 LTS.
-
-Currently avail is iproute2-next tree:
-- https://git.kernel.org/pub/scm/network/iproute2/iproute2-next.git/
-- git clone git://git.kernel.org/pub/scm/network/iproute2/iproute2-next.git
-
-
-First get libbpf:
-  git clone https://github.com/libbpf/libbpf.git
-  cd libbpf
-
-Build libbpf and install it locally:
-
-  cd ~/git/libbpf/
-  mkdir build
-  cd ~/git/libbpf/src
-  DESTDIR=../build make install
-  DESTDIR=../build make install_headers
-
-
-Attempt#1: Try to get iproute2 compiling against:
-
-  cd ~/git/iproute2-next
-  $ LIBBPF_DIR=../libbpf/build/ ./configure 
-  TC schedulers
-   ATM	no
-  
-  libc has setns: yes
-  SELinux support: no
-  libbpf support: yes
-  	libbpf version 0.3.0
-  ELF support: yes
-  libmnl support: yes
-  Berkeley DB: no
-  need for strlcpy: no
-  libcap support: no
-
-Make fails:
-  $ make
-
-  lib
-      CC       bpf_libbpf.o
-  bpf_libbpf.c:20:10: fatal error: bpf/libbpf.h: No such file or directory
-     20 | #include <bpf/libbpf.h>
-        |          ^~~~~~~~~~~~~~
-  compilation terminated.
-
-
-The problem is use of "relative path" in LIBBPF_DIR (../libbpf/build/), as
-the Makefile enter subdir 'lib' and have these include path CFLAGS:
-
-  CFLAGS += -DHAVE_LIBBPF  -I../libbpf/build//usr/include
-
-Attempt#2 works: Try to get iproute2 compiling against:
-
-  cd ~/git/iproute2-next
-  $ LIBBPF_DIR=~/git/libbpf/build/ ./configure
-  make
-
-
-Install as stow version:
-
-  export STOW=/usr/local/stow/iproute2-libbpf-next-git-c29f65db34
-  make
-  make PREFIX=$STOW SYSCONFDIR=$STOW CONFDIR=$STOW/etc/iproute2 SBINDIR=$STOW/sbin -n install
-  make PREFIX=$STOW SYSCONFDIR=$STOW CONFDIR=$STOW/etc/iproute2 SBINDIR=$STOW/sbin install
-
-Current state:
-  $ tc -V
-  tc utility, iproute2-5.9.0, libbpf 0.3.0
+ PHONY += FORCE
+ FORCE:
+--
+2.28.0
 
