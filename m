@@ -2,129 +2,206 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55DD72CA4E3
-	for <lists+bpf@lfdr.de>; Tue,  1 Dec 2020 15:05:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A2412CA57F
+	for <lists+bpf@lfdr.de>; Tue,  1 Dec 2020 15:24:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391549AbgLAOE1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Dec 2020 09:04:27 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:27830 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391301AbgLAOE1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Dec 2020 09:04:27 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4ClkN85gRwz9v0N1;
-        Tue,  1 Dec 2020 15:03:36 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id gWMNvLud-c5q; Tue,  1 Dec 2020 15:03:36 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4ClkN84n5dz9v0N0;
-        Tue,  1 Dec 2020 15:03:36 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 02B778B7B6;
-        Tue,  1 Dec 2020 15:03:38 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id fuT5u0mCRaZw; Tue,  1 Dec 2020 15:03:37 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 99C098B7B5;
-        Tue,  1 Dec 2020 15:03:37 +0100 (CET)
-To:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        bpf@vger.kernel.org, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Sandipan Das <sandipan@linux.ibm.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: powerpc32: BUG: KASAN: use-after-free in test_bpf_init+0x6f8/0xde8
- [test_bpf]
-Message-ID: <ccdc2bc3-ce71-1faa-c83f-cd3b0eaf963d@csgroup.eu>
-Date:   Tue, 1 Dec 2020 15:03:30 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1730461AbgLAOX6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Dec 2020 09:23:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58145 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729239AbgLAOX6 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 1 Dec 2020 09:23:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1606832551;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ESjPrFn6/56RO9QASZ5fwdS/xXKYooC0i6rzr8ADqJ4=;
+        b=dB+kUfIRJlXz+Duf23Ed31aRD0GqtTSHH7McyZWoyxBFPacJBoDHDwVTkzqGJoMV6LMuwp
+        1O9zIv90SmNPf+hyM3C4YyuxeND3DLaGmpgF80JkNC4QLiP+g/hgVzSGdHMvaSTci90TyZ
+        NGyLVW/HH5z7F0icaHKFxn29Gz6JcWk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-428-q2JmaAgUP0q7mu_kcplpQw-1; Tue, 01 Dec 2020 09:22:27 -0500
+X-MC-Unique: q2JmaAgUP0q7mu_kcplpQw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 45E8880B71B;
+        Tue,  1 Dec 2020 14:22:25 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.55])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8CF5560BD8;
+        Tue,  1 Dec 2020 14:22:15 +0000 (UTC)
+Date:   Tue, 1 Dec 2020 15:22:14 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     David Ahern <dsahern@gmail.com>
+Cc:     Stephen Hemminger <stephen@networkplumber.org>,
+        Hangbin Liu <haliu@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        David Miller <davem@davemloft.net>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Jiri Benc <jbenc@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
+        brouer@redhat.com
+Subject: Re: [PATCH iproute2-next 0/5] iproute2: add libbpf support
+Message-ID: <20201201152214.1a3fb47b@carbon>
+In-Reply-To: <08071e1e-497f-f53e-916a-8b519fdd1e0f@gmail.com>
+References: <20201023033855.3894509-1-haliu@redhat.com>
+        <20201128221635.63fdcf69@hermes.local>
+        <08071e1e-497f-f53e-916a-8b519fdd1e0f@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-I've got the following KASAN error while running test_bpf module on a powerpc 8xx (32 bits).
+On Sun, 29 Nov 2020 12:41:49 -0700
+David Ahern <dsahern@gmail.com> wrote:
 
-That's reproductible, happens each time at the same test.
+> On 11/28/20 11:16 PM, Stephen Hemminger wrote:
+> > Luca wants to put this in Debian 11 (good idea), but that means:
+> > 
+> > 1. It has to work with 5.10 release and kernel.
+> > 2. Someone has to test it.
+> > 3. The 5.10 is a LTS kernel release which means BPF developers have
+> >    to agree to supporting LTS releases.
+> > 
+> > If someone steps up to doing this then I would be happy to merge it now
+> > for 5.10. Otherwise it won't show up until 5.11.  
+> 
+> It would be good for Bullseye to have the option to use libbpf with
+> iproute2. If Debian uses the 5.10 kernel then it should use the 5.10
+> version of iproute2 and 5.10 version libbpf. All the components align
+> with consistent versioning.
+> 
+> I have some use cases I can move from bpftool loading to iproute2 as
+> additional testing to what Hangbin has already done. If that goes well,
+> I can re-send the patch series against iproute2-main branch by next weekend.
+> 
+> It would be good for others (Jesper, Toke, Jiri) to run their own
+> testing as well.
 
-Can someone help me to investigate and fix that ?
+I have tested this on a Ubuntu 20.04.1 LTS.
 
-[  209.381037] test_bpf: #298 LD_IND byte frag
-[  209.383041] Pass 1: shrink = 0, seen = 0x30000
-[  209.383284] Pass 2: shrink = 0, seen = 0x30000
-[  209.383562] flen=3 proglen=104 pass=3 image=8166dc91 from=modprobe pid=380
-[  209.383805] JIT code: 00000000: 7c 08 02 a6 90 01 00 04 91 c1 ff b8 91 e1 ff bc
-[  209.384044] JIT code: 00000010: 94 21 ff 70 80 e3 00 58 81 e3 00 54 7d e7 78 50
-[  209.384279] JIT code: 00000020: 81 c3 00 a0 38 a0 00 00 38 80 00 00 38 a0 00 40
-[  209.384516] JIT code: 00000030: 3c e0 c0 02 60 e7 62 14 7c e8 03 a6 38 c5 00 00
-[  209.384753] JIT code: 00000040: 4e 80 00 21 41 80 00 0c 60 00 00 00 7c 83 23 78
-[  209.384990] JIT code: 00000050: 38 21 00 90 80 01 00 04 7c 08 03 a6 81 c1 ff b8
-[  209.385207] JIT code: 00000060: 81 e1 ff bc 4e 80 00 20
-[  209.385442] jited:1
-[  209.385762] ==================================================================
-[  209.386272] BUG: KASAN: use-after-free in test_bpf_init+0x6f8/0xde8 [test_bpf]
-[  209.386503] Read of size 4 at addr c2de70c0 by task modprobe/380
-[  209.386622]
-[  209.386881] CPU: 0 PID: 380 Comm: modprobe Not tainted 5.10.0-rc5-s3k-dev-01341-g72d20eec3f8b #4178
-[  209.387032] Call Trace:
-[  209.387404] [cad6b878] [c020e0d4] print_address_description.constprop.0+0x70/0x4e0 (unreliable)
-[  209.387920] [cad6b8f8] [c020dc98] kasan_report+0x118/0x1c0
-[  209.388503] [cad6b938] [cb0e0c98] test_bpf_init+0x6f8/0xde8 [test_bpf]
-[  209.388918] [cad6ba58] [c0004084] do_one_initcall+0xa4/0x33c
-[  209.389377] [cad6bb28] [c00f9144] do_init_module+0x158/0x7f4
-[  209.389820] [cad6bbc8] [c00fccb0] load_module+0x3394/0x38d8
-[  209.390273] [cad6be38] [c00fd4e0] sys_finit_module+0x118/0x17c
-[  209.390700] [cad6bf38] [c00170d0] ret_from_syscall+0x0/0x34
-[  209.391020] --- interrupt: c01 at 0xfd5e7c0
-[  209.395301]
-[  209.395472] Allocated by task 276:
-[  209.395767]  __kasan_kmalloc.constprop.0+0xe8/0x134
-[  209.396029]  kmem_cache_alloc+0x150/0x290
-[  209.396281]  __alloc_skb+0x58/0x28c
-[  209.396563]  alloc_skb_with_frags+0x74/0x314
-[  209.396872]  sock_alloc_send_pskb+0x404/0x424
-[  209.397205]  unix_dgram_sendmsg+0x200/0xbf0
-[  209.397473]  __sys_sendto+0x17c/0x21c
-[  209.397754]  ret_from_syscall+0x0/0x34
-[  209.397877]
-[  209.398039] Freed by task 274:
-[  209.398308]  kasan_set_track+0x34/0x6c
-[  209.398608]  kasan_set_free_info+0x28/0x48
-[  209.398878]  __kasan_slab_free+0x10c/0x19c
-[  209.399141]  kmem_cache_free+0x68/0x390
-[  209.399433]  skb_free_datagram+0x20/0x8c
-[  209.399759]  unix_dgram_recvmsg+0x474/0x710
-[  209.400084]  sock_read_iter+0x17c/0x228
-[  209.400348]  vfs_read+0x3c8/0x4f4
-[  209.400603]  ksys_read+0x17c/0x1cc
-[  209.400878]  ret_from_syscall+0x0/0x34
-[  209.401001]
-[  209.401222] The buggy address belongs to the object at c2de70c0
-[  209.401222]  which belongs to the cache skbuff_head_cache of size 176
-[  209.401462] The buggy address is located 0 bytes inside of
-[  209.401462]  176-byte region [c2de70c0, c2de7170)
-[  209.401604] The buggy address belongs to the page:
-[  209.401867] page:464e6411 refcount:1 mapcount:0 mapping:00000000 index:0x0 pfn:0xb79
-[  209.402080] flags: 0x200(slab)
-[  209.402477] raw: 00000200 00000100 00000122 c2004a90 00000000 00440088 ffffffff 00000001
-[  209.402646] page dumped because: kasan: bad access detected
-[  209.402765]
-[  209.402897] Memory state around the buggy address:
-[  209.403142]  c2de6f80: fb fb fc fc fc fc fc fc fc fc fa fb fb fb fb fb
-[  209.403388]  c2de7000: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-[  209.403639] >c2de7080: fc fc fc fc fc fc fc fc fa fb fb fb fb fb fb fb
-[  209.403798]                                    ^
-[  209.404048]  c2de7100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fc fc
-[  209.404304]  c2de7180: fc fc fc fc fc fc fa fb fb fb fb fb fb fb fb fb
-[  209.404456] ==================================================================
-[  209.404591] Disabling lock debugging due to kernel taint
+I had to compile tc my own "old" version (based it on iproute2 git
+tree), because Ubuntu vendor tc util version didn't even support loading
+BPF-ELF objects... weird!
+
+Copy-pasted by compile instruction below signature (including one
+failure, that people can find via Google search).
+
+I tested difference combinations old vs. new loader with map pinning
+and reuse of maps (as instructed by Toke over IRC), all the cases
+worked.
+
+I took it one step further and implemented tc libbpf detection:
+ https://github.com/netoptimizer/bpf-examples/commit/048c960756eb65
+
+So, my EDT-pacing code[1] now support BTF-maps, via configure detection
+and code gets compiled with support, which allows me to inspect the
+content really easily (data from production system):
+
+$ bpftool map lookup id 1351 key 0x10 0x0 0x0 0x0
+{
+    "key": 16,
+    "value": {
+        "rate": 0,
+        "t_last": 3299496947649930,
+        "t_horizon_drop": 0,
+        "t_horizon_ecn": 0,
+        "codel": {
+            "first_above_time": 3299496641781522,
+            "drop_next": 3299497041788432,
+            "count": 9,
+            "dropping": 1
+        }
+    }
+}
+
+[1] https://github.com/netoptimizer/bpf-examples/tree/master/traffic-pacing-edt
+- - 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
 
-Thanks
-Christophe
+Very recently iproute2 got support for using libbpf as BPF-ELF loader.
+
+Testing this on Ubuntu 20.04.1 LTS.
+
+Currently avail is iproute2-next tree:
+- https://git.kernel.org/pub/scm/network/iproute2/iproute2-next.git/
+- git clone git://git.kernel.org/pub/scm/network/iproute2/iproute2-next.git
+
+
+First get libbpf:
+  git clone https://github.com/libbpf/libbpf.git
+  cd libbpf
+
+Build libbpf and install it locally:
+
+  cd ~/git/libbpf/
+  mkdir build
+  cd ~/git/libbpf/src
+  DESTDIR=../build make install
+  DESTDIR=../build make install_headers
+
+
+Attempt#1: Try to get iproute2 compiling against:
+
+  cd ~/git/iproute2-next
+  $ LIBBPF_DIR=../libbpf/build/ ./configure 
+  TC schedulers
+   ATM	no
+  
+  libc has setns: yes
+  SELinux support: no
+  libbpf support: yes
+  	libbpf version 0.3.0
+  ELF support: yes
+  libmnl support: yes
+  Berkeley DB: no
+  need for strlcpy: no
+  libcap support: no
+
+Make fails:
+  $ make
+
+  lib
+      CC       bpf_libbpf.o
+  bpf_libbpf.c:20:10: fatal error: bpf/libbpf.h: No such file or directory
+     20 | #include <bpf/libbpf.h>
+        |          ^~~~~~~~~~~~~~
+  compilation terminated.
+
+
+The problem is use of "relative path" in LIBBPF_DIR (../libbpf/build/), as
+the Makefile enter subdir 'lib' and have these include path CFLAGS:
+
+  CFLAGS += -DHAVE_LIBBPF  -I../libbpf/build//usr/include
+
+Attempt#2 works: Try to get iproute2 compiling against:
+
+  cd ~/git/iproute2-next
+  $ LIBBPF_DIR=~/git/libbpf/build/ ./configure
+  make
+
+
+Install as stow version:
+
+  export STOW=/usr/local/stow/iproute2-libbpf-next-git-c29f65db34
+  make
+  make PREFIX=$STOW SYSCONFDIR=$STOW CONFDIR=$STOW/etc/iproute2 SBINDIR=$STOW/sbin -n install
+  make PREFIX=$STOW SYSCONFDIR=$STOW CONFDIR=$STOW/etc/iproute2 SBINDIR=$STOW/sbin install
+
+Current state:
+  $ tc -V
+  tc utility, iproute2-5.9.0, libbpf 0.3.0
+
