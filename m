@@ -2,185 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55D3B2C9395
-	for <lists+bpf@lfdr.de>; Tue,  1 Dec 2020 01:05:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C360E2C93C9
+	for <lists+bpf@lfdr.de>; Tue,  1 Dec 2020 01:20:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730981AbgLAAEY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Nov 2020 19:04:24 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:5766 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730970AbgLAAEY (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 30 Nov 2020 19:04:24 -0500
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B100uVu012285
-        for <bpf@vger.kernel.org>; Mon, 30 Nov 2020 16:03:43 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=PfYV/v+uwNAdHgWlfUS6CxlpQgD2LLrJxGYYZg5n2O8=;
- b=POSOvlfTtWFS1OcUHOVVRu+iAHmDMqAiP4XOycFH8oGePocNy2fSpCl9GBKwkpPC8VXZ
- CeNkg9RreGeNHZSmkhCAaYqSdt/yp1Aalrw8SDibM+3FNUqKR/TayAjMKHBYWu0X2/p1
- 9nVbVEZL0b8aSGgwbHWxpVthbASQ4kSx7xY= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 354d4g7en4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 30 Nov 2020 16:03:43 -0800
-Received: from intmgw005.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 30 Nov 2020 16:03:41 -0800
-Received: by devvm3178.ftw3.facebook.com (Postfix, from userid 201728)
-        id 19FF14752A009; Mon, 30 Nov 2020 16:03:41 -0800 (PST)
-From:   Prankur gupta <prankgup@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     <kernel-team@fb.com>, <netdev@vger.kernel.org>
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Add Userspace tests for TCP_WINDOW_CLAMP
-Date:   Mon, 30 Nov 2020 16:03:39 -0800
-Message-ID: <20201201000339.3310760-3-prankgup@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20201201000339.3310760-1-prankgup@fb.com>
-References: <20201201000339.3310760-1-prankgup@fb.com>
+        id S1730880AbgLAATT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Nov 2020 19:19:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730866AbgLAATT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Nov 2020 19:19:19 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDC3DC0613CF;
+        Mon, 30 Nov 2020 16:18:38 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id o71so214626ybc.2;
+        Mon, 30 Nov 2020 16:18:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=TVrEVqt/8ABsHBtv0Fp/W/KXpGc70umzdJ6FtxyY6EQ=;
+        b=bBDiPJYS+JPOZ4/6wQzzaFPhVd3ywta5QKS1jDowPE/cRtLznV6HC1K/50tlOZWZs1
+         RpNd0mxZ+tGs1xabduJi2FjnFcNNhgdZh7gFzl/I2z0bbxh5RvB196Y9FmWc0TK0R2P5
+         rb6FkLA3VBY0xYviBumFiemHRtQE9dTjxyK1O7/H3Wu0Pgf5sy6OsYcdo2GISacYaQnj
+         Wx7WgUgXcp59o1URHh708TgyWX/tPm0q3EXeKzSSO2Grh68ZR4Vn1MT7C0e6A407Fhy9
+         CwYlo18F6zrDl7Up35wzSyIC6bn9uahrX7dp/MVHK7BjG4mYvLgLkLzgjZIFtDJ8LGH6
+         qQEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=TVrEVqt/8ABsHBtv0Fp/W/KXpGc70umzdJ6FtxyY6EQ=;
+        b=n9RvnqhmxLDgUzze4D+yCY8+QRKJEkQ4hKrwQCgHdPWLdbpd/QtWTw7IpXJeY5Owve
+         9R2fgmCWesEv9z3/z+fAFx2MNIiUgLgtG4uKAFJfsqs9J5MiClR9CvWD9ZimrXQtSXSH
+         eSeJtloeSlRnKg+a7+nL/qrAk5RWHGcsfwZ/RJ7aSdloM0SCJwYYgtUDaJhAI68rAx+S
+         KEiE3yWJbr8ZXjBg0eXu3QjVVHidiGapCg+ZA+3h5EEPUvNMiG+7XQhRtR06TnI7+gf+
+         nvnJSScIQ4CRBgLQoU1P9Kd6VFjevWT9ETECJIad6woNi/TLpLJn0kc5e6h79T28JyU+
+         1toA==
+X-Gm-Message-State: AOAM533E8J+Jx0i/sbdiktaRsCs0p+lhk0ehTpc4lLCVeaVKqRDJEAe8
+        fSx7+fk0I7mwf+B/D2oOlOWzA1IeBl+DY8DYkp4=
+X-Google-Smtp-Source: ABdhPJyiin5FC2vyv5AH20qeRrdSteNjE7sy9nMnEoy5XokXVvfJhpOCGWGfPX8+F4tsx2PyHffH+oKZY6D1WZq3prI=
+X-Received: by 2002:a25:3d7:: with SMTP id 206mr13028ybd.27.1606781918010;
+ Mon, 30 Nov 2020 16:18:38 -0800 (PST)
 MIME-Version: 1.0
+References: <20201130154143.292882-1-toke@redhat.com> <CAEf4BzZy0Y1hAwOpY=Azod3bSqUKfGNwycGS7s=-DQvTWd8ThA@mail.gmail.com>
+ <87pn3uwjrd.fsf@toke.dk>
+In-Reply-To: <87pn3uwjrd.fsf@toke.dk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 30 Nov 2020 16:18:27 -0800
+Message-ID: <CAEf4BzavUADiak9FboiThRC2W_agJXXh3dGm7zKqDNJ+dUFnHA@mail.gmail.com>
+Subject: Re: [PATCH bpf] libbpf: reset errno after probing kernel features
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-11-30_12:2020-11-30,2020-11-30 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- malwarescore=0 mlxscore=0 bulkscore=0 adultscore=0 suspectscore=13
- mlxlogscore=999 phishscore=0 spamscore=0 clxscore=1011 impostorscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2011300150
-X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding selftests for new added functionality to set TCP_WINDOW_CLAMP
-from bpf setsockopt.
+On Mon, Nov 30, 2020 at 2:41 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+>
+> > On Mon, Nov 30, 2020 at 7:42 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
+redhat.com> wrote:
+> >>
+> >> The kernel feature probing results in 'errno' being set if the probing
+> >> fails (as is often the case). This can stick around and leak to the ca=
+ller,
+> >> which can lead to confusion later. So let's make sure we always reset =
+errno
+> >> after calling a probe function.
+> >
+> > What specifically is the problem and what sort of confusion we are
+> > talking about here? You are not supposed to check errno, unless the
+> > function returned -1 or other error result.
+> >
+> > In some cases, you have to reset errno manually just to avoid
+> > confusion (see how strtol() is used, as an example).
+> >
+> > I.e., I don't see the problem here, any printf() technically can set
+> > errno to <0, we don't reset errno after each printf call though,
+> > right?
+>
+> Well yeah, technically things work fine in the common case. But this
 
-Signed-off-by: Prankur gupta <prankgup@fb.com>
----
- tools/testing/selftests/bpf/bpf_tcp_helpers.h |  1 +
- .../selftests/bpf/prog_tests/tcpbpf_user.c    |  4 +++
- .../selftests/bpf/progs/test_tcpbpf_kern.c    | 33 +++++++++++++++++++
- tools/testing/selftests/bpf/test_tcpbpf.h     |  2 ++
- 4 files changed, 40 insertions(+)
+It works fine in all cases. Assuming "errno !=3D 0 means last
+libc/syscall failed" is just wrong.
 
-diff --git a/tools/testing/selftests/bpf/bpf_tcp_helpers.h b/tools/testin=
-g/selftests/bpf/bpf_tcp_helpers.h
-index 2915664c335d..6a9053162cf2 100644
---- a/tools/testing/selftests/bpf/bpf_tcp_helpers.h
-+++ b/tools/testing/selftests/bpf/bpf_tcp_helpers.h
-@@ -56,6 +56,7 @@ struct tcp_sock {
- 	__u32	rcv_nxt;
- 	__u32	snd_nxt;
- 	__u32	snd_una;
-+	__u32	window_clamp;
- 	__u8	ecn_flags;
- 	__u32	delivered;
- 	__u32	delivered_ce;
-diff --git a/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c b/tools=
-/testing/selftests/bpf/prog_tests/tcpbpf_user.c
-index ab5281475f44..87923d2865b7 100644
---- a/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tcpbpf_user.c
-@@ -42,6 +42,10 @@ static void verify_result(struct tcpbpf_globals *resul=
-t)
-=20
- 	/* check getsockopt for SAVED_SYN */
- 	ASSERT_EQ(result->tcp_saved_syn, 1, "tcp_saved_syn");
-+
-+	/* check getsockopt for window_clamp */
-+	ASSERT_EQ(result->window_clamp_client, 9216, "window_clamp_client");
-+	ASSERT_EQ(result->window_clamp_server, 9216, "window_clamp_server");
- }
-=20
- static void run_test(struct tcpbpf_globals *result)
-diff --git a/tools/testing/selftests/bpf/progs/test_tcpbpf_kern.c b/tools=
-/testing/selftests/bpf/progs/test_tcpbpf_kern.c
-index e85e49deba70..94f50f7e94d6 100644
---- a/tools/testing/selftests/bpf/progs/test_tcpbpf_kern.c
-+++ b/tools/testing/selftests/bpf/progs/test_tcpbpf_kern.c
-@@ -12,17 +12,41 @@
- #include <linux/tcp.h>
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_endian.h>
-+#include "bpf_tcp_helpers.h"
- #include "test_tcpbpf.h"
-=20
- struct tcpbpf_globals global =3D {};
- int _version SEC("version") =3D 1;
-=20
-+/**
-+ * SOL_TCP is defined in <netinet/tcp.h> while
-+ * TCP_SAVED_SYN is defined in already included <linux/tcp.h>
-+ */
-+#ifndef SOL_TCP
-+#define SOL_TCP 6
-+#endif
-+
-+static __always_inline int get_tp_window_clamp(struct bpf_sock_ops *skop=
-s)
-+{
-+	struct bpf_sock *sk;
-+	struct tcp_sock *tp;
-+
-+	sk =3D skops->sk;
-+	if (!sk)
-+		return -1;
-+	tp =3D bpf_skc_to_tcp_sock(sk);
-+	if (!tp)
-+		return -1;
-+	return tp->window_clamp;
-+}
-+
- SEC("sockops")
- int bpf_testcb(struct bpf_sock_ops *skops)
- {
- 	char header[sizeof(struct ipv6hdr) + sizeof(struct tcphdr)];
- 	struct bpf_sock_ops *reuse =3D skops;
- 	struct tcphdr *thdr;
-+	int window_clamp =3D 9216;
- 	int good_call_rv =3D 0;
- 	int bad_call_rv =3D 0;
- 	int save_syn =3D 1;
-@@ -75,6 +99,11 @@ int bpf_testcb(struct bpf_sock_ops *skops)
- 	global.event_map |=3D (1 << op);
-=20
- 	switch (op) {
-+	case BPF_SOCK_OPS_TCP_CONNECT_CB:
-+		rv =3D bpf_setsockopt(skops, SOL_TCP, TCP_WINDOW_CLAMP,
-+				    &window_clamp, sizeof(window_clamp));
-+		global.window_clamp_client =3D get_tp_window_clamp(skops);
-+		break;
- 	case BPF_SOCK_OPS_ACTIVE_ESTABLISHED_CB:
- 		/* Test failure to set largest cb flag (assumes not defined) */
- 		global.bad_cb_test_rv =3D bpf_sock_ops_cb_flags_set(skops, 0x80);
-@@ -100,6 +129,10 @@ int bpf_testcb(struct bpf_sock_ops *skops)
- 				global.tcp_saved_syn =3D v;
- 			}
- 		}
-+		rv =3D bpf_setsockopt(skops, SOL_TCP, TCP_WINDOW_CLAMP,
-+				    &window_clamp, sizeof(window_clamp));
-+
-+		global.window_clamp_server =3D get_tp_window_clamp(skops);
- 		break;
- 	case BPF_SOCK_OPS_RTO_CB:
- 		break;
-diff --git a/tools/testing/selftests/bpf/test_tcpbpf.h b/tools/testing/se=
-lftests/bpf/test_tcpbpf.h
-index 0ed33521cbbb..9dd9b5590f9d 100644
---- a/tools/testing/selftests/bpf/test_tcpbpf.h
-+++ b/tools/testing/selftests/bpf/test_tcpbpf.h
-@@ -16,5 +16,7 @@ struct tcpbpf_globals {
- 	__u32 num_close_events;
- 	__u32 tcp_save_syn;
- 	__u32 tcp_saved_syn;
-+	__u32 window_clamp_client;
-+	__u32 window_clamp_server;
- };
- #endif
---=20
-2.24.1
+> errno thing sent me on quite the wild goose chase when trying to find
+> the root cause of the pinning issue I also sent a patch for...
+>
+> So since reseting errno doesn't hurt either I figured I'd save others
+> ending up in similar trouble. If it's not to your taste feel free to
+> just drop the patch :)
 
+Yep, let's just drop it, no need to create a bad precedent.
+
+>
+> -Toke
+>
