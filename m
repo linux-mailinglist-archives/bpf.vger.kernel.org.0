@@ -2,81 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE3AF2C928D
-	for <lists+bpf@lfdr.de>; Tue,  1 Dec 2020 00:31:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD53C2C9396
+	for <lists+bpf@lfdr.de>; Tue,  1 Dec 2020 01:05:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388686AbgK3Xau (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Nov 2020 18:30:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39786 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388590AbgK3Xau (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Nov 2020 18:30:50 -0500
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1606779008;
-        bh=sc9AcIKcGWtRyOxkD+akZIHNfARM1pr2D943DF9LSK0=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=zzIvINrLKGuLQ6/NX6qf2UGI1VXYl6ltCTYmNo3UBUU3NvWx87Hqf1FqgShUdzWrQ
-         w+x7hAJdsvQxGAnHcyS9tR3HuBYv2YmIQM1LgOHoXKFGh9xmr8iyg+yhXzIN2/f6QR
-         Z3pfh+gIijIUwvrgB43eOC0t7vK8y84qiFO0ybvA=
+        id S1730969AbgLAAE2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Nov 2020 19:04:28 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:19916 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730832AbgLAAE2 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 30 Nov 2020 19:04:28 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B101o7x006920
+        for <bpf@vger.kernel.org>; Mon, 30 Nov 2020 16:03:47 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=w5sEoSNi/hOic74AF7SaCo6Z2BfWFRfKgWDRCUfDgzU=;
+ b=RFdk9rzxagSnHbPh9q9KIyZCG+KnxDfML/jy4Mp1bnDXEGiEyzW0r3UgEpxSY03Y+5yF
+ nDJXsbm9NZtk9xQT3g37F2OyHGXqyNf1hOl90jyMKVxGjELW9mtuB3NYMr2+RCuZIRf3
+ LOU34DKN3aTKQZIKoOqI6Iwlm1P9t44CoXU= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 354hsyep4c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 30 Nov 2020 16:03:45 -0800
+Received: from intmgw004.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 30 Nov 2020 16:03:44 -0800
+Received: by devvm3178.ftw3.facebook.com (Postfix, from userid 201728)
+        id 121BC4752A005; Mon, 30 Nov 2020 16:03:39 -0800 (PST)
+From:   Prankur gupta <prankgup@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     <kernel-team@fb.com>, <netdev@vger.kernel.org>
+Subject: [PATCH bpf-next 0/2] Add support to set window_clamp from bpf setsockops
+Date:   Mon, 30 Nov 2020 16:03:37 -0800
+Message-ID: <20201201000339.3310760-1-prankgup@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v4 00/10] Introduce preferred busy-polling
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160677900881.6839.6641263585447290878.git-patchwork-notify@kernel.org>
-Date:   Mon, 30 Nov 2020 23:30:08 +0000
-References: <20201130185205.196029-1-bjorn.topel@gmail.com>
-In-Reply-To: <20201130185205.196029-1-bjorn.topel@gmail.com>
-To:     =?utf-8?b?QmrDtnJuIFTDtnBlbCA8Ympvcm4udG9wZWxAZ21haWwuY29tPg==?=@ci.codeaurora.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, bjorn.topel@intel.com,
-        magnus.karlsson@intel.com, ast@kernel.org, daniel@iogearbox.net,
-        maciej.fijalkowski@intel.com, sridhar.samudrala@intel.com,
-        jesse.brandeburg@intel.com, qi.z.zhang@intel.com, kuba@kernel.org,
-        edumazet@google.com, jonathan.lemon@gmail.com, maximmi@nvidia.com
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-30_12:2020-11-30,2020-11-30 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
+ adultscore=0 priorityscore=1501 impostorscore=0 mlxscore=0 spamscore=0
+ bulkscore=0 lowpriorityscore=0 suspectscore=13 mlxlogscore=962
+ phishscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2011300150
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+This patch contains support to set tcp window_field field from bpf setsoc=
+kops.
 
-This series was applied to bpf/bpf-next.git (refs/heads/master):
+Prankur gupta (2):
+  bpf: Adds support for setting window clamp
+  selftests/bpf: Add Userspace tests for TCP_WINDOW_CLAMP
 
-On Mon, 30 Nov 2020 19:51:55 +0100 you wrote:
-> This series introduces three new features:
-> 
-> 1. A new "heavy traffic" busy-polling variant that works in concert
->    with the existing napi_defer_hard_irqs and gro_flush_timeout knobs.
-> 
-> 2. A new socket option that let a user change the busy-polling NAPI
->    budget.
-> 
-> [...]
+ net/core/filter.c                             |  8 +++++
+ tools/testing/selftests/bpf/bpf_tcp_helpers.h |  1 +
+ .../selftests/bpf/prog_tests/tcpbpf_user.c    |  4 +++
+ .../selftests/bpf/progs/test_tcpbpf_kern.c    | 33 +++++++++++++++++++
+ tools/testing/selftests/bpf/test_tcpbpf.h     |  2 ++
+ 5 files changed, 48 insertions(+)
 
-Here is the summary with links:
-  - [bpf-next,v4,01/10] net: introduce preferred busy-polling
-    https://git.kernel.org/bpf/bpf-next/c/7fd3253a7de6
-  - [bpf-next,v4,02/10] net: add SO_BUSY_POLL_BUDGET socket option
-    https://git.kernel.org/bpf/bpf-next/c/7c951cafc0cb
-  - [bpf-next,v4,03/10] xsk: add support for recvmsg()
-    https://git.kernel.org/bpf/bpf-next/c/45a86681844e
-  - [bpf-next,v4,04/10] xsk: check need wakeup flag in sendmsg()
-    https://git.kernel.org/bpf/bpf-next/c/e39208183728
-  - [bpf-next,v4,05/10] xsk: add busy-poll support for {recv,send}msg()
-    https://git.kernel.org/bpf/bpf-next/c/a0731952d9cd
-  - [bpf-next,v4,06/10] xsk: propagate napi_id to XDP socket Rx path
-    https://git.kernel.org/bpf/bpf-next/c/b02e5a0ebb17
-  - [bpf-next,v4,07/10] samples/bpf: use recvfrom() in xdpsock/rxdrop
-    https://git.kernel.org/bpf/bpf-next/c/f2d2728220ac
-  - [bpf-next,v4,08/10] samples/bpf: use recvfrom() in xdpsock/l2fwd
-    https://git.kernel.org/bpf/bpf-next/c/284cbc61f851
-  - [bpf-next,v4,09/10] samples/bpf: add busy-poll support to xdpsock
-    https://git.kernel.org/bpf/bpf-next/c/b35fc1482ceb
-  - [bpf-next,v4,10/10] samples/bpf: add option to set the busy-poll budget
-    https://git.kernel.org/bpf/bpf-next/c/41bf900fe2a0
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+--=20
+2.24.1
 
