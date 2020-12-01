@@ -2,70 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A4032C948F
-	for <lists+bpf@lfdr.de>; Tue,  1 Dec 2020 02:20:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C73E2C94B9
+	for <lists+bpf@lfdr.de>; Tue,  1 Dec 2020 02:34:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729909AbgLABTl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 30 Nov 2020 20:19:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36042 "EHLO
+        id S2388007AbgLABeh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 30 Nov 2020 20:34:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728932AbgLABTl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 30 Nov 2020 20:19:41 -0500
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88DA7C0613CF;
-        Mon, 30 Nov 2020 17:19:00 -0800 (PST)
-Received: by mail-lf1-x142.google.com with SMTP id u19so528057lfr.7;
-        Mon, 30 Nov 2020 17:19:00 -0800 (PST)
+        with ESMTP id S1731244AbgLABeh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 30 Nov 2020 20:34:37 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C93BC0613D3;
+        Mon, 30 Nov 2020 17:34:16 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id j10so21355110lja.5;
+        Mon, 30 Nov 2020 17:34:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=C5P33nYxooHrLpCe1LR8Yn5hFMaTVV0o/RiUqPVL5R0=;
-        b=WnS1px+lhfMEQooID75MX8+MutuPlKdvehiunY+YCQtAMbP1Nl67XWhG9mOR9qRXrg
-         N0o491yx80ptB2Gpj+YDW/JhVnW2WAe9hvesb1Lly7W4RUZD4bZPnbt5VrLuP/9Sw6AE
-         +2eJnVwRkuZPM0Zhh6C5NrAIDc9bGUX0nTvhwSdHj0jOKVF/ggsqTJTUR3CHwvlbPeu+
-         vKxzi68v9rFNkZl5/uiEujV3Z/z5iOaTgInc3u6lR8yw+npwR3BBJmG1wlkiZ2+7qiv8
-         +kXedn+AC1tqYfjVh/llZRUQWDmX8bPXkXaa41y87TAReio97jgIRGaRDBGNuDFLunjx
-         BTiQ==
+        bh=Egg3a2e1qL7qHV5/zndxmywrtc1Vhd90TaMCylEAOPM=;
+        b=c4jNl/vOrbvPoVQZ7Xg6bXnn0aT1+uUk7cwgfX3heil7AAuamwXxV2VDzoPV6alTuL
+         G+5yE0/yZ1m8OCqA/j4p14R0FScZxIW+GLt6iWe6OtXC2h1tyxIJp3EWKhIHcutI8AhJ
+         PGijmPmSyN2sToWxpolbs2PiqG85lS6G2CpXk5n4cXrB9w1Hlpj24mUgWk6+pWShI3PO
+         JNd21m8jHLnRRIsQDJVQP6l6hYtLBBz5ViyoDfPNaeL8SyVJnBWjP0XTchKL/TzSp0be
+         ut/WVYR49oQ5Uj9YRBRjtG/X+v9Gn9DoRzde3h3tCzWEpN8V3S4Ws7SaHLGAal2TiNaE
+         kQiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=C5P33nYxooHrLpCe1LR8Yn5hFMaTVV0o/RiUqPVL5R0=;
-        b=Sq9GzOnjFslfIiNMi+8eKHxdGCrMKMrGoL+gSAl44ssL39hH4eSQFUwN7fxPGMPZWc
-         387xNT7KccF03HZ71wVYG0RrRt4qAMJVoEgAaxj9W545UMpceBWIJW2FOivt27oVNr+z
-         80pvhVweT7wW5/b4ilKVKrEZeiGfAykxIQJuF94183QdE9Hpng7enwwLuFu+OBJG3sjJ
-         9/F3cjnWgPJbp/gJvK3p1JqKKVqQjL13RUFLvAsNN5tnIOabQ6QJ4k6NEJfnYWS7irfj
-         akNbqOZz3Z8kVojIPhLn7Lc4eICJbMNFuXS4F3WWF+dsSGsAi34+apuiONz4n+MwVfvh
-         r3cA==
-X-Gm-Message-State: AOAM533NAZP1DSeHSUklRPqSPOD7d68bx4+sdZvlvX2b6YkKm8VHJT0c
-        SNPDwZufQg82PhOYi5MaDbhpUv0NSosTa3HRluk=
-X-Google-Smtp-Source: ABdhPJxX2gpzgGFZnFqgbr/NBPTUy5/diUraSACDOD28JrtMJYTDsXi/AZ8VuAzZjrLlrZZEcQaTR/BdGtrk2hR//6s=
-X-Received: by 2002:a05:6512:3384:: with SMTP id h4mr131481lfg.554.1606785538467;
- Mon, 30 Nov 2020 17:18:58 -0800 (PST)
+        bh=Egg3a2e1qL7qHV5/zndxmywrtc1Vhd90TaMCylEAOPM=;
+        b=MAmV8PNzSmZlBtUeDUR5FsEQTwqQ4bBW8SjtOFhccnuXQJ5S2vOjQj2Fzjd31ynova
+         q0UdWECiPR4NulsEAqCYTfSA9DZh09vEWZ/qIkCdPTM61Gugdbex3bf7OQxCc2xc2Jgc
+         QsG1vuOgheE7dGz6FCtWt/klLUR4WcC6Osjbtx9BSzFlrxmeWB7BckD39HMwEz1RwXj3
+         wah81KT1cFGnkb8ZKptZKTGMux6aK6gFCG7OMUyywiEQFjLrAILH4/HJzhVbmmtFg0PM
+         hFaDu4VBXUpIeLLJFVnRaTxaeS21QhsAJSRTeUKF91LND6V8qW0T/cd4fmpbd+ynOM4w
+         LQsA==
+X-Gm-Message-State: AOAM533YPNrCOwQH6mYwcLTVBUoYFLzIRiIzmewtnIVCvmGUBEE8hnds
+        QPe4JZLda0EigpL1cPK6mfVve+J/Qpz4eGjCCifHO5BD5io=
+X-Google-Smtp-Source: ABdhPJxFyuboyheRu1v0trFV8xP1NmEzayfDb4MOT31NWlAFAwmoUCW+Bujmaa+I1oxzs45TOd7N2RiKbXCWA1waUNo=
+X-Received: by 2002:a2e:9681:: with SMTP id q1mr194239lji.2.1606786454761;
+ Mon, 30 Nov 2020 17:34:14 -0800 (PST)
 MIME-Version: 1.0
-References: <20201121024616.1588175-1-andrii@kernel.org> <20201121024616.1588175-2-andrii@kernel.org>
- <20201129015628.4jxmeesxfynowpcn@ast-mbp> <CAEf4BzZN5RZ4qfMRKz0MGgEvX19TpzbmeMyTvf3misxvHuRGOg@mail.gmail.com>
-In-Reply-To: <CAEf4BzZN5RZ4qfMRKz0MGgEvX19TpzbmeMyTvf3misxvHuRGOg@mail.gmail.com>
+References: <20201201000339.3310760-1-prankgup@fb.com> <20201201000339.3310760-2-prankgup@fb.com>
+In-Reply-To: <20201201000339.3310760-2-prankgup@fb.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 30 Nov 2020 17:18:46 -0800
-Message-ID: <CAADnVQKaXPs6mrcHYUrA1V4sTqd9C6yzfQuZ03grgYEj91_EVg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/7] bpf: remove hard-coded btf_vmlinux
- assumption from BPF verifier
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
+Date:   Mon, 30 Nov 2020 17:34:03 -0800
+Message-ID: <CAADnVQJK=s5aovsKoQT=qF1novjM4VMyZCGG_6BEenQQWPbTQw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Adds support for setting window clamp
+To:     Prankur gupta <prankgup@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
+        Network Development <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Nov 30, 2020 at 3:04 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Mon, Nov 30, 2020 at 4:07 PM Prankur gupta <prankgup@fb.com> wrote:
 >
-> No more holes, but the same overall size. Does that work?
+> Adds a new bpf_setsockopt for TCP sockets, TCP_BPF_WINDOW_CLAMP,
+> which sets the maximum receiver window size. It will be useful for
+> limiting receiver window based on RTT.
+>
+> Signed-off-by: Prankur gupta <prankgup@fb.com>
+> ---
+>  net/core/filter.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 2ca5eecebacf..cb006962b677 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -4910,6 +4910,14 @@ static int _bpf_setsockopt(struct sock *sk, int level, int optname,
+>                                 tp->notsent_lowat = val;
+>                                 sk->sk_write_space(sk);
+>                                 break;
+> +                       case TCP_WINDOW_CLAMP:
+> +                               if (val <= 0)
+> +                                       ret = -EINVAL;
 
-Thanks. That's a good idea.
+Why zero is not allowed?
+Normal setsockopt() allows it.
+
+> +                               else
+> +                                       tp->window_clamp =
+> +                                               max_t(int, val,
+> +                                                     SOCK_MIN_RCVBUF / 2);
+> +                               break;
+>                         default:
+>                                 ret = -EINVAL;
+>                         }
+> --
+> 2.24.1
+>
