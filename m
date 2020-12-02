@@ -2,159 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36DD32CB229
-	for <lists+bpf@lfdr.de>; Wed,  2 Dec 2020 02:16:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52F9E2CB22E
+	for <lists+bpf@lfdr.de>; Wed,  2 Dec 2020 02:19:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727398AbgLBBPu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Dec 2020 20:15:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33392 "EHLO
+        id S1727353AbgLBBSo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Dec 2020 20:18:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726655AbgLBBPu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Dec 2020 20:15:50 -0500
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F02C0613CF;
-        Tue,  1 Dec 2020 17:15:09 -0800 (PST)
-Received: by mail-yb1-xb44.google.com with SMTP id o71so127256ybc.2;
-        Tue, 01 Dec 2020 17:15:09 -0800 (PST)
+        with ESMTP id S1727154AbgLBBSo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Dec 2020 20:18:44 -0500
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F96C0613CF
+        for <bpf@vger.kernel.org>; Tue,  1 Dec 2020 17:18:03 -0800 (PST)
+Received: by mail-lf1-x141.google.com with SMTP id a9so229766lfh.2
+        for <bpf@vger.kernel.org>; Tue, 01 Dec 2020 17:18:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Qb0BEBlvT6IR+TOIOrHO5m+kaHkPSk41EwYlXeDyqbE=;
-        b=lT/0F9aLFctTpNP9EiAre5Zt3iocuSP8aWZNYbVlCapzu4YlQj61XaGHyLZj3XBR9B
-         H7mpVaPdQwxoFsyvcmlVSk2xl5DupuzsqAaRtlubMKrMbgBIGB5stuSwWyXTaSBERYJq
-         9x6Zhxes3aobNakBmAx0TL/DZvsS3CZPVX59n6gy9QEBmOoQBbZbS4Tx+zYTSGnuS2UB
-         PUrheW21Q00bi3vXSPkK9mS0F6taTZSS517jIuehlD1JQH6r7cYSMXw1V/q9JbkgLxji
-         /jMZLi+Te18B8gnEB4+A02TSHPWVwZ1vO3JWWSU3J335AmvdLTumGHanxcutYjUvLr1Y
-         VAUg==
+        bh=uw5zh1rNQN/Z4webefxWM3a8R1fLyuMfHBlEmJwb3hI=;
+        b=IzSDzWnvK0SDNTd9G9tXvNqCcYYtqS4YZ0RiwxEGf0F2NWdCFfXARnhUIXuxEiZMEu
+         RxACdEy2QVq88MkvXf5eoUjCpYNjZWA8VAm7MYaVL7IyTJGXKcvqQz/vyq4tVN3k2xVv
+         lvu/a7Vc1riam41XznD8wW+wrrWTxqWhBXxBc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Qb0BEBlvT6IR+TOIOrHO5m+kaHkPSk41EwYlXeDyqbE=;
-        b=EtRuREsUcD6b0MneheH/jivp/W7I+o32r6ghPWDAE5QC/UfBVTDqlnn5d3CyummZol
-         0DZT2j+dVMheSx29xWKobb5kNXoe6Yc8nPjKpbVoh82XopEzbl9ep8J4BM5LxzLiAFSw
-         EXsJEwz9AV9VE0MbVPlDfw3YOGdb3yRAHvYsEDR86YMzJkk53Pi0rNoMP7iE+gqobOK3
-         qMTJpR0wpTdTlF6gBcMCbFnXIrNoUxdFlzMGU3cS2V3E9GOew55yh4sT8lPByvEbPHxi
-         B6E5Ujy9Yg2OnphyE4mC5ZSxvU9t65VTSK1rHVEYjF206lD7LkQJeOn3bVuBHZHcNntf
-         TaCA==
-X-Gm-Message-State: AOAM533sIQaP0IBkB6meWULdcd1xCJCuYidVCi/MdZTknnAVFVk8W008
-        vymVLtT1XuRxVPRuO/vJGeMbfZLP8UaDUHoIYilcwyi6gxg=
-X-Google-Smtp-Source: ABdhPJzQm84wAzlq7LJVPMHThf+WzPq7+jEJqHhlFSnAb4wFuTZWHajEOkifwbNDd2YP9a34K+qVTZvaqw3GnM6IyXI=
-X-Received: by 2002:a25:df8e:: with SMTP id w136mr196172ybg.230.1606871709183;
- Tue, 01 Dec 2020 17:15:09 -0800 (PST)
+        bh=uw5zh1rNQN/Z4webefxWM3a8R1fLyuMfHBlEmJwb3hI=;
+        b=IAJ8wX9ccApvLnAUhyHmea8mFFHkXh8Ixe4v0UFitoeP+aE4hN/p2YeAyLRuEHHSEJ
+         eSphjU7OvFG2QHqAEnYBOlw+ytsOjGvfa2B2t0l+7KM68KDXJ6pVy59hscFnVofkz1My
+         gkM3ZN7jbCdJuxJNbPlFdoqyB/FBnmYQfGwCluZD0FCEpS+A0al1akEiXXoWqcIqRtpX
+         0SwDhBsQeCfvqsIgJ1OgiqutVrXa2dff5n/uWkI7u9bUnXEq8j1mrZzMw/zjjmxYC6aX
+         YEuVHfxUUV7vkGQwpm+g9S/loUQkF9bH93mltI1lB6TXQuQX1oLqhrxiXehsxcsdq/44
+         szHA==
+X-Gm-Message-State: AOAM530Ul03vS2nmFK+JvyNiM4zJyt0wKql7TImrhG9yxrUonZN0oclS
+        c+wzK/6pK16OvY51foKn3xZxefW9Aflm/UIhXSMeVQ==
+X-Google-Smtp-Source: ABdhPJwjZRGjkP7UDFQ0bfp248YcDmSIkit6x2Q6s4reH+LJ/ZAWM12/2Rl2j98X9kNHdQii2lk19HC/520pqrvZ2HQ=
+X-Received: by 2002:ac2:51a4:: with SMTP id f4mr130872lfk.365.1606871881932;
+ Tue, 01 Dec 2020 17:18:01 -0800 (PST)
 MIME-Version: 1.0
-References: <20201127082601.4762-1-mariuszx.dudek@intel.com>
-In-Reply-To: <20201127082601.4762-1-mariuszx.dudek@intel.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 1 Dec 2020 17:14:58 -0800
-Message-ID: <CAEf4Bzby86qiQWiC5T4uK4dL2dGG0nEaQx4L2Rcjm2ZD-LTcjw@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 0/2] libbpf: add support for
- privileged/unprivileged control separation
-To:     mariusz.dudek@gmail.com
-Cc:     Magnus Karlsson <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+References: <20201201143924.2908241-1-kpsingh@chromium.org> <CAEf4BzZS9sfckQNqt1hsCV2QPWVGJZS=Xf83GYZO_Efz1oLOnw@mail.gmail.com>
+In-Reply-To: <CAEf4BzZS9sfckQNqt1hsCV2QPWVGJZS=Xf83GYZO_Efz1oLOnw@mail.gmail.com>
+From:   KP Singh <kpsingh@chromium.org>
+Date:   Wed, 2 Dec 2020 02:17:51 +0100
+Message-ID: <CACYkzJ53EWB53aYWva-uSWMO1jOevBXvB_AZ2+B=O-J34Y2H6Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] selftests/bpf: Update ima test helper's
+ losetup commands
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Networking <netdev@vger.kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Mariusz Dudek <mariuszx.dudek@intel.com>
+        Daniel Borkmann <daniel@iogearbox.net>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 27, 2020 at 12:26 AM <mariusz.dudek@gmail.com> wrote:
+On Tue, Dec 1, 2020 at 8:15 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> From: Mariusz Dudek <mariuszx.dudek@intel.com>
+> On Tue, Dec 1, 2020 at 6:39 AM KP Singh <kpsingh@chromium.org> wrote:
+> >
+> > From: KP Singh <kpsingh@google.com>
+> >
+> > Update the commands to use the bare minimum options so that it works
+> > in busybox environments.
+> >
+> > Fixes: 34b82d3ac105 ("bpf: Add a selftest for bpf_ima_inode_hash")
+> > Reported-by: Andrii Nakryiko <andrii@kernel.org>
+> > Signed-off-by: KP Singh <kpsingh@google.com>
+> > ---
+> >  tools/testing/selftests/bpf/ima_setup.sh | 9 ++++++---
+> >  1 file changed, 6 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/ima_setup.sh b/tools/testing/selftests/bpf/ima_setup.sh
+> > index 15490ccc5e55..ed29bde26a12 100755
+> > --- a/tools/testing/selftests/bpf/ima_setup.sh
+> > +++ b/tools/testing/selftests/bpf/ima_setup.sh
+> > @@ -3,6 +3,7 @@
+> >
+> >  set -e
+> >  set -u
+> > +set -o pipefail
+> >
+> >  IMA_POLICY_FILE="/sys/kernel/security/ima/policy"
+> >  TEST_BINARY="/bin/true"
+> > @@ -23,9 +24,10 @@ setup()
+> >
+> >          dd if=/dev/zero of="${mount_img}" bs=1M count=10
 >
-> This patch series adds support for separation of eBPF program
-> load and xsk socket creation. In for example a Kubernetes
-> environment you can have an AF_XDP CNI or daemonset that is
-> responsible for launching pods that execute an application
-> using AF_XDP sockets. It is desirable that the pod runs with
-> as low privileges as possible, CAP_NET_RAW in this case,
-> and that all operations that require privileges are contained
-> in the CNI or daemonset.
+> This, and few more commands in this script, produce a bunch of output
+> directly to stdout and stderr. Can you please silence it? If you need
+> that output for debugging, than you can check verbosity mode in
+> test_progs and pass extra parameters, if necessary.
 >
-> In this case, you have to be able separate ePBF program load from
-> xsk socket creation.
 >
-> Currently, this will not work with the xsk_socket__create APIs
-> because you need to have CAP_NET_ADMIN privileges to load eBPF
-> program and CAP_SYS_ADMIN privileges to create update xsk_bpf_maps.
-> To be exact xsk_set_bpf_maps does not need those privileges but
-> it takes the prog_fd and xsks_map_fd and those are known only to
-> process that was loading eBPF program. The api bpf_prog_get_fd_by_id
-> that looks up the fd of the prog using an prog_id and
-> bpf_map_get_fd_by_id that looks for xsks_map_fd usinb map_id both
-> requires CAP_SYS_ADMIN.
+> >
+> > -        local loop_device="$(losetup --find --show ${mount_img})"
+> > +        losetup -f "${mount_img}"
 >
-> With this patch, the pod can be run with CAP_NET_RAW capability
-> only. In case your umem is larger or equal process limit for
-> MEMLOCK you need either increase the limit or CAP_IPC_LOCK capability.
-> Without this patch in case of insufficient rights ENOPERM is
-> returned by xsk_socket__create.
+> This doesn't work :(
 >
-> To resolve this privileges issue two new APIs are introduced:
-> - xsk_setup_xdp_prog - loads the built in XDP program. It can
-> also return xsks_map_fd which is needed by unprivileged
-> process to update xsks_map with AF_XDP socket "fd"
-> - xsk_sokcet__update_xskmap - inserts an AF_XDP socket into an
-> xskmap for a particular xsk_socket
+> [root@(none) selftests]# ./ima_setup.sh setup /tmp/ima_measurednsymal
+> + set -e
+> + set -u
+> + set -o pipefail
+> + IMA_POLICY_FILE=/sys/kernel/security/ima/policy
+> + TEST_BINARY=/bin/true
+> + main setup /tmp/ima_measurednsymal
+> + [[ 2 -ne 2 ]]
+> + local action=setup
+> + local tmp_dir=/tmp/ima_measurednsymal
+> + [[ ! -d /tmp/ima_measurednsymal ]]
+> + [[ setup == \s\e\t\u\p ]]
+> + setup /tmp/ima_measurednsymal
+> + local tmp_dir=/tmp/ima_measurednsymal
+> + local mount_img=/tmp/ima_measurednsymal/test.img
+> + local mount_dir=/tmp/ima_measurednsymal/mnt
+> ++ basename /bin/true
+> + local copied_bin_path=/tmp/ima_measurednsymal/mnt/true
+> + mkdir -p /tmp/ima_measurednsymal/mnt
+> + dd if=/dev/zero of=/tmp/ima_measurednsymal/test.img bs=1M count=10
+> 10+0 records in
+> 10+0 records out
+> 10485760 bytes (10.0MB) copied, 0.044713 seconds, 223.6MB/s
+> + losetup -f /tmp/ima_measurednsymal/test.img
+> losetup: /tmp/ima_measurednsymal/test.img: No such file or directory
+> [root@(none) selftests]# ls -la /tmp/ima_measurednsymal/test.img
+> -rw-r--r--    1 root     root      10485760 Dec  1 19:13
+> /tmp/ima_measurednsymal/test.img
+> [root@(none) selftests]# losetup -f /tmp/ima_measurednsymal/test.img
+> losetup: /tmp/ima_measurednsymal/test.img: No such file or directory
 >
-> Usage example:
-> int xsk_setup_xdp_prog(int ifindex, int *xsks_map_fd)
 >
-> int xsk_socket__update_xskmap(struct xsk_socket *xsk, int xsks_map_fd);
->
-> Inserts AF_XDP socket "fd" into the xskmap.
->
-> The first patch introduces the new APIs. The second patch provides
-> a new sample applications working as control and modification to
-> existing xdpsock application to work with less privileges.
->
-> This patch set is based on bpf-next commit 830382e4ccb5
-> (Merge branch 'bpf: remove bpf_load loader completely')
->
-> Since v4
-> - sample/bpf/Makefile issues fixed
->
-> Since v3:
-> - force_set_map flag removed
-> - leaking of xsk struct fixed
-> - unified function error returning policy implemented
->
-> Since v2:
-> - new APIs moved itto LIBBPF_0.3.0 section
-> - struct bpf_prog_cfg_opts removed
-> - loading own eBPF program via xsk_setup_xdp_prog functionality removed
->
-> Since v1:
-> - struct bpf_prog_cfg improved for backward/forward compatibility
-> - API xsk_update_xskmap renamed to xsk_socket__update_xskmap
-> - commit message formatting fixed
->
-> Mariusz Dudek (2):
->   libbpf: separate XDP program load with xsk socket creation
->   samples/bpf: sample application for eBPF load and socket creation
->     split
->
->  samples/bpf/Makefile            |   4 +-
->  samples/bpf/xdpsock.h           |   8 ++
->  samples/bpf/xdpsock_ctrl_proc.c | 187 ++++++++++++++++++++++++++++++++
->  samples/bpf/xdpsock_user.c      | 146 +++++++++++++++++++++++--
->  tools/lib/bpf/libbpf.map        |   2 +
->  tools/lib/bpf/xsk.c             |  92 ++++++++++++++--
->  tools/lib/bpf/xsk.h             |   5 +
->  7 files changed, 425 insertions(+), 19 deletions(-)
->  create mode 100644 samples/bpf/xdpsock_ctrl_proc.c
+> I have zero context on what IMA is and know nothing about loop
+> devices, so can't really investigate much, sorry...
 >
 
-This doesn't apply cleanly to bpf-next, can you please rebase and resend?
+So after some debugging by using the same image as the bpf CI
+we noticed the following needs to be done:
 
+* SecurityFS needs to be mounted
+* "integrity" should be in CONFIG_LSM
+* mkfs.ext2 should be used instead of mkfs.ext4
+* The second patch of the series does not work as the image does not have a
+   /dev/disk/by-uuid directory.
+* The test image does have a blkid command but it ignores the options passed to
+   only print the UUID.
 
-> --
-> 2.20.1
->
+I will send the fixes and, for the future, we can:
+
+* Document / script how to run selftests against the CI image
+  (and possibly a few other pre-canned images) without need to setup or
+  configure things like travis CI for each fork / developer.
+* Use this before we send patches so that we can avoid similar
+   troubles in the future.
