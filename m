@@ -2,100 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6867F2CC6F1
-	for <lists+bpf@lfdr.de>; Wed,  2 Dec 2020 20:48:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2DD12CC7CC
+	for <lists+bpf@lfdr.de>; Wed,  2 Dec 2020 21:31:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729145AbgLBTrx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Dec 2020 14:47:53 -0500
-Received: from mx.der-flo.net ([193.160.39.236]:38384 "EHLO mx.der-flo.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728940AbgLBTrx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Dec 2020 14:47:53 -0500
-Received: by mx.der-flo.net (Postfix, from userid 110)
-        id EC8AA44560; Wed,  2 Dec 2020 20:46:53 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mx.der-flo.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=4.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.2
-Received: from localhost (unknown [IPv6:2a02:1203:ecb0:3930:1751:4157:4d75:a5e2])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx.der-flo.net (Postfix) with ESMTPSA id 66C5E44553;
-        Wed,  2 Dec 2020 20:46:52 +0100 (CET)
-From:   Florian Lehner <dev@der-flo.net>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, john.fastabend@gmail.com,
-        Florian Lehner <dev@der-flo.net>,
-        Krzesimir Nowak <krzesimir@kinvolk.io>
-Subject: [PATCH 2/2] selftests/bpf: Avoid errno clobbering
-Date:   Wed,  2 Dec 2020 20:45:32 +0100
-Message-Id: <20201202194532.12879-3-dev@der-flo.net>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201202194532.12879-1-dev@der-flo.net>
-References: <20201202194532.12879-1-dev@der-flo.net>
+        id S1727113AbgLBUaM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Dec 2020 15:30:12 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:26034 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726885AbgLBUaM (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 2 Dec 2020 15:30:12 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0B2KRQXf013003
+        for <bpf@vger.kernel.org>; Wed, 2 Dec 2020 12:29:30 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=KABH1YMs57kFvn7NXzvkZQPQ6YbnBtDQ71zNt1BBCmM=;
+ b=n3SBdZqF6F25u7giA+1CFIbEiKN/eg+cKqlMDx/5dobtrHso7XyQ+MxdsCicEPN3k7Uz
+ 6kuIFiq//FiuLCgxo8xIYJJDxS/RmXK5eEE1LKcZW/uoiWZuHo5T4ACbJe2Dh+80pFKu
+ zCtnWb3qwWiimzZf3zEkQdPu8l/b/OpnvWo= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 3562m9wpn6-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 02 Dec 2020 12:29:30 -0800
+Received: from intmgw004.08.frc2.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 2 Dec 2020 12:29:29 -0800
+Received: by devvm3178.ftw3.facebook.com (Postfix, from userid 201728)
+        id 41CF24762F190; Wed,  2 Dec 2020 12:29:25 -0800 (PST)
+From:   Prankur gupta <prankgup@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     <kernel-team@fb.com>, <netdev@vger.kernel.org>
+Subject: [PATCH v3 bpf-next 0/2] Add support to set window_clamp from bpf setsockops
+Date:   Wed, 2 Dec 2020 12:29:23 -0800
+Message-ID: <20201202202925.165803-1-prankgup@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-02_12:2020-11-30,2020-12-02 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ adultscore=0 mlxscore=0 suspectscore=13 phishscore=0 impostorscore=0
+ priorityscore=1501 spamscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012020122
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Print a message when the returned error is about a program type being
-not supported or because of permission problems.
-These messages are expected if the program to test was actually
-executed.
+This patch contains support to set tcp window_field field from bpf setsoc=
+kops.
 
-Cc: Krzesimir Nowak <krzesimir@kinvolk.io>
-Signed-off-by: Florian Lehner <dev@der-flo.net>
----
- tools/testing/selftests/bpf/test_verifier.c | 26 +++++++++++++++++----
- 1 file changed, 21 insertions(+), 5 deletions(-)
+v2: Used TCP_WINDOW_CLAMP setsockopt logic for bpf_setsockopt (review com=
+ment addressed)
 
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-index ceea9409639e..86ef28dd9919 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -875,19 +875,35 @@ static int do_prog_test_run(int fd_prog, bool unpriv, uint32_t expected_val,
- 	__u8 tmp[TEST_DATA_LEN << 2];
- 	__u32 size_tmp = sizeof(tmp);
- 	uint32_t retval;
--	int err;
-+	int err, saved_errno;
+v3: Created a common function for duplicated code (review comment address=
+ed)
 
- 	if (unpriv)
- 		set_admin(true);
- 	err = bpf_prog_test_run(fd_prog, 1, data, size_data,
- 				tmp, &size_tmp, &retval, NULL);
-+	saved_errno = errno;
-+
- 	if (unpriv)
- 		set_admin(false);
--	if (err && errno != 524/*ENOTSUPP*/ && errno != EPERM) {
--		printf("Unexpected bpf_prog_test_run error ");
--		return err;
-+
-+	if (err) {
-+		switch (saved_errno) {
-+		case 524/*ENOTSUPP*/:
-+			printf("Did not run the program (not supported) ");
-+			return 0;
-+		case EPERM:
-+			if (unpriv) {
-+				printf("Did not run the program (no permission) ");
-+				return 0;
-+			}
-+		default:
-+			printf("FAIL: Unexpected bpf_prog_test_run error (%s) ",
-+				strerror(saved_errno));
-+			return err;
-+		}
- 	}
--	if (!err && retval != expected_val &&
-+
-+	if (retval != expected_val &&
- 	    expected_val != POINTER_VALUE) {
- 		printf("FAIL retval %d != %d ", retval, expected_val);
- 		return 1;
---
-2.28.0
+
+Prankur gupta (2):
+  bpf: Adds support for setting window clamp
+  selftests/bpf: Add Userspace tests for TCP_WINDOW_CLAMP
+
+ include/net/tcp.h                             |  1 +
+ net/core/filter.c                             |  3 ++
+ net/ipv4/tcp.c                                | 23 ++++++++-----
+ tools/testing/selftests/bpf/bpf_tcp_helpers.h |  1 +
+ .../selftests/bpf/prog_tests/tcpbpf_user.c    |  4 +++
+ .../selftests/bpf/progs/test_tcpbpf_kern.c    | 33 +++++++++++++++++++
+ tools/testing/selftests/bpf/test_tcpbpf.h     |  2 ++
+ 7 files changed, 58 insertions(+), 9 deletions(-)
+
+--=20
+2.24.1
 
