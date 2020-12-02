@@ -2,106 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AF7E2CC8EF
-	for <lists+bpf@lfdr.de>; Wed,  2 Dec 2020 22:30:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31E362CC8F8
+	for <lists+bpf@lfdr.de>; Wed,  2 Dec 2020 22:34:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387821AbgLBV3r (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Dec 2020 16:29:47 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58392 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727623AbgLBV3r (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 2 Dec 2020 16:29:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606944500;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=R3y59cFkBFhJHLAJHRUlQeF2BXj1DNnEUxvigbFgejc=;
-        b=AOd3ogqo0hIaJs0UHkGYKHzClIVQSqgzsaPRSzsizDLl7aj7iXGLZSAgN0bv5Qf8y3Btsk
-        RJOc/v1VnjewL3zpVrRYmOrsvpGWsnk2O641fXn+0iamKlhgOQ5HoP8y/3s7t8Ba9Zwpda
-        hEoTLHQMA8jTXES+VuNMpxVsgApkZTY=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-516-vQ6Ip8jqMxahE12MLTjs2w-1; Wed, 02 Dec 2020 16:28:19 -0500
-X-MC-Unique: vQ6Ip8jqMxahE12MLTjs2w-1
-Received: by mail-qk1-f199.google.com with SMTP id a6so106894qkd.20
-        for <bpf@vger.kernel.org>; Wed, 02 Dec 2020 13:28:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=R3y59cFkBFhJHLAJHRUlQeF2BXj1DNnEUxvigbFgejc=;
-        b=CogW8LDtqDiCWo+xxiinO5Xk0XytQtVmVdlCH2JQCDws4Ac7jF/DAbitz4kenTAWWC
-         RV8u0dCypSFXVxQ5ns8TRGqID214LHYjSikgnq9VZkB41N9+zoxUVGWj2WkQ298hMJlD
-         sAIQX/pFpPcGgNXrlwJH0150qz8cd2qoceJQJj4TuE1HX/nlSgcPuvSgSomMUKFZKlo/
-         q2N+118fio7KIE4PMmFo7lZfDkU2NkKy8/JBl2GBwv6y5Ccz1OvhT40ZfYeqI6byEdFY
-         OtZKURezccmTZGj4idi/heZfM5AXPala2YIAgj18sjCArE/I1L2exuTNW382Q/DKJnJw
-         IAvA==
-X-Gm-Message-State: AOAM533hCR7ZaR933h0a62mKB/elpbIGxTlVp8qhLVP1UD1Pd/7wDGap
-        42jIzZq3CITRVslemoFlfDYsO8rQ0dUOtmXaJvjNOi/a2qT/C6jpdL42oZSoQZriaPr2PWNl3Th
-        REeY/yozlol0F
-X-Received: by 2002:aed:308a:: with SMTP id 10mr141341qtf.312.1606944498915;
-        Wed, 02 Dec 2020 13:28:18 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxMQAv9tZIsxapcS/KocPHAZTfaCE23GVIln0P+rFylEHpjwCBMxSLkJjYKU3ZJT2kBE1904g==
-X-Received: by 2002:aed:308a:: with SMTP id 10mr141308qtf.312.1606944498652;
-        Wed, 02 Dec 2020 13:28:18 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id q20sm2873760qke.0.2020.12.02.13.28.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 13:28:17 -0800 (PST)
-From:   trix@redhat.com
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
-        rostedt@goodmis.org, mingo@redhat.com
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH v2] bpf: remove trailing semicolon in macro definition
-Date:   Wed,  2 Dec 2020 13:28:10 -0800
-Message-Id: <20201202212810.3774614-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.4
+        id S1729366AbgLBVcg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Dec 2020 16:32:36 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:56702 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729462AbgLBVcf (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 2 Dec 2020 16:32:35 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B2LQG3E020062
+        for <bpf@vger.kernel.org>; Wed, 2 Dec 2020 13:31:55 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=G1Y9hdvbK4qmmUhPaxvp/07XyNLgHhb2MpEGsGRireQ=;
+ b=SbI4ZYF0leDFY+wFka9V9tzABq7CzVp0eIm/OZrok8Um9eonCmHWvu0lK7PSN6oVodRp
+ DxAEmmU9U8m/d4AMVf+jFdHSYEEG5apBsVzyNrJwca4YFArge1lGYwl8leWjwYBABa5e
+ FkkuW/cgQHln7JQqzvIGWH+zfff37+aCGsc= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 355wgw7uk9-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 02 Dec 2020 13:31:55 -0800
+Received: from intmgw001.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 2 Dec 2020 13:31:53 -0800
+Received: by devvm3178.ftw3.facebook.com (Postfix, from userid 201728)
+        id 2485C476377B8; Wed,  2 Dec 2020 13:31:52 -0800 (PST)
+From:   Prankur gupta <prankgup@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     <kernel-team@fb.com>, <netdev@vger.kernel.org>
+Subject: [PATCH v4 bpf-next 0/2] Add support to set window_clamp from bpf setsockops
+Date:   Wed, 2 Dec 2020 13:31:50 -0800
+Message-ID: <20201202213152.435886-1-prankgup@fb.com>
+X-Mailer: git-send-email 2.24.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-02_13:2020-11-30,2020-12-02 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ clxscore=1015 impostorscore=0 mlxlogscore=999 bulkscore=0 phishscore=0
+ adultscore=0 suspectscore=13 priorityscore=1501 mlxscore=0 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012020130
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+This patch contains support to set tcp window_field field from bpf setsoc=
+kops.
 
-The macro use will already have a semicolon.
-Clean up escaped newlines
+v2: Used TCP_WINDOW_CLAMP setsockopt logic for bpf_setsockopt (review com=
+ment addressed)
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
-v2: more macros fixed, escaped newlines cleaned
----
- include/trace/events/xdp.h | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+v3: Created a common function for duplicated code (review comment address=
+ed)
 
-diff --git a/include/trace/events/xdp.h b/include/trace/events/xdp.h
-index cd24e8a59529..76a97176ab81 100644
---- a/include/trace/events/xdp.h
-+++ b/include/trace/events/xdp.h
-@@ -145,17 +145,17 @@ DEFINE_EVENT(xdp_redirect_template, xdp_redirect_err,
- 	TP_ARGS(dev, xdp, tgt, err, map, index)
- );
- 
--#define _trace_xdp_redirect(dev, xdp, to)		\
--	 trace_xdp_redirect(dev, xdp, NULL, 0, NULL, to);
-+#define _trace_xdp_redirect(dev, xdp, to)				\
-+	 trace_xdp_redirect(dev, xdp, NULL, 0, NULL, to)
- 
--#define _trace_xdp_redirect_err(dev, xdp, to, err)	\
--	 trace_xdp_redirect_err(dev, xdp, NULL, err, NULL, to);
-+#define _trace_xdp_redirect_err(dev, xdp, to, err)			\
-+	 trace_xdp_redirect_err(dev, xdp, NULL, err, NULL, to)
- 
- #define _trace_xdp_redirect_map(dev, xdp, to, map, index)		\
--	 trace_xdp_redirect(dev, xdp, to, 0, map, index);
-+	 trace_xdp_redirect(dev, xdp, to, 0, map, index)
- 
- #define _trace_xdp_redirect_map_err(dev, xdp, to, map, index, err)	\
--	 trace_xdp_redirect_err(dev, xdp, to, err, map, index);
-+	 trace_xdp_redirect_err(dev, xdp, to, err, map, index)
- 
- /* not used anymore, but kept around so as not to break old programs */
- DEFINE_EVENT(xdp_redirect_template, xdp_redirect_map,
--- 
-2.18.4
+v4: Removing logic to pass struct sock and struct tcp_sock together (revi=
+ew comment addressed)
+
+Prankur gupta (2):
+  bpf: Adds support for setting window clamp
+  selftests/bpf: Add Userspace tests for TCP_WINDOW_CLAMP
+
+ include/net/tcp.h                             |  1 +
+ net/core/filter.c                             |  3 ++
+ net/ipv4/tcp.c                                | 25 +++++++++-----
+ tools/testing/selftests/bpf/bpf_tcp_helpers.h |  1 +
+ .../selftests/bpf/prog_tests/tcpbpf_user.c    |  4 +++
+ .../selftests/bpf/progs/test_tcpbpf_kern.c    | 33 +++++++++++++++++++
+ tools/testing/selftests/bpf/test_tcpbpf.h     |  2 ++
+ 7 files changed, 60 insertions(+), 9 deletions(-)
+
+--=20
+2.24.1
 
