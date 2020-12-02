@@ -2,157 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52F9E2CB22E
-	for <lists+bpf@lfdr.de>; Wed,  2 Dec 2020 02:19:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BC042CB241
+	for <lists+bpf@lfdr.de>; Wed,  2 Dec 2020 02:25:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727353AbgLBBSo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Dec 2020 20:18:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33832 "EHLO
+        id S1727635AbgLBBYi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Dec 2020 20:24:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727154AbgLBBSo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Dec 2020 20:18:44 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F96C0613CF
-        for <bpf@vger.kernel.org>; Tue,  1 Dec 2020 17:18:03 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id a9so229766lfh.2
-        for <bpf@vger.kernel.org>; Tue, 01 Dec 2020 17:18:03 -0800 (PST)
+        with ESMTP id S1727154AbgLBBYh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Dec 2020 20:24:37 -0500
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7F80C0613CF;
+        Tue,  1 Dec 2020 17:23:57 -0800 (PST)
+Received: by mail-yb1-xb44.google.com with SMTP id e81so145324ybc.1;
+        Tue, 01 Dec 2020 17:23:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=uw5zh1rNQN/Z4webefxWM3a8R1fLyuMfHBlEmJwb3hI=;
-        b=IzSDzWnvK0SDNTd9G9tXvNqCcYYtqS4YZ0RiwxEGf0F2NWdCFfXARnhUIXuxEiZMEu
-         RxACdEy2QVq88MkvXf5eoUjCpYNjZWA8VAm7MYaVL7IyTJGXKcvqQz/vyq4tVN3k2xVv
-         lvu/a7Vc1riam41XznD8wW+wrrWTxqWhBXxBc=
+        bh=m45HGgww8rwei1jF9IpqfIHeCT01SQ6NHFuOMNV2Kq8=;
+        b=Jtl07/7tAkSef9ioYWQbUPfy8al3gkUP9oA+rjZbdc00reaxXGeuq7tnru1y8gqFVY
+         EKG+vkphV43F1gKpnyk/zsJPHZwDbolr1uqBnTpzUBVxPuYChQxySYXt6oWIqnlIf63q
+         OQuNFzF9EI+LxUf29IjtBkcF4eVzjQrm8YnE3zrav9c184WO1VoiRNlZoN++jX0/8lew
+         Kwd1kXVswZPGwPPUD8dsHuH/BJZB2uNNvWuZWfetWcDof+fLhVz1I1YepvSj6UJkgPJv
+         R8j5oLUW1uOQT9xVDcrHGVIuSigYQXbOJpaMyNBRmrCNV+QeEq0HD7UXOUBo35YYfy5t
+         Rolw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=uw5zh1rNQN/Z4webefxWM3a8R1fLyuMfHBlEmJwb3hI=;
-        b=IAJ8wX9ccApvLnAUhyHmea8mFFHkXh8Ixe4v0UFitoeP+aE4hN/p2YeAyLRuEHHSEJ
-         eSphjU7OvFG2QHqAEnYBOlw+ytsOjGvfa2B2t0l+7KM68KDXJ6pVy59hscFnVofkz1My
-         gkM3ZN7jbCdJuxJNbPlFdoqyB/FBnmYQfGwCluZD0FCEpS+A0al1akEiXXoWqcIqRtpX
-         0SwDhBsQeCfvqsIgJ1OgiqutVrXa2dff5n/uWkI7u9bUnXEq8j1mrZzMw/zjjmxYC6aX
-         YEuVHfxUUV7vkGQwpm+g9S/loUQkF9bH93mltI1lB6TXQuQX1oLqhrxiXehsxcsdq/44
-         szHA==
-X-Gm-Message-State: AOAM530Ul03vS2nmFK+JvyNiM4zJyt0wKql7TImrhG9yxrUonZN0oclS
-        c+wzK/6pK16OvY51foKn3xZxefW9Aflm/UIhXSMeVQ==
-X-Google-Smtp-Source: ABdhPJwjZRGjkP7UDFQ0bfp248YcDmSIkit6x2Q6s4reH+LJ/ZAWM12/2Rl2j98X9kNHdQii2lk19HC/520pqrvZ2HQ=
-X-Received: by 2002:ac2:51a4:: with SMTP id f4mr130872lfk.365.1606871881932;
- Tue, 01 Dec 2020 17:18:01 -0800 (PST)
+        bh=m45HGgww8rwei1jF9IpqfIHeCT01SQ6NHFuOMNV2Kq8=;
+        b=csMRuxUuSwEBhCNg8HJ5Z1O08zovate6Kbx3wIQakR5Q5OJkPGBr1hyJoWu8rdyzSd
+         cyW2BRjGjb5W54bCCEPyqhmCMXUsyBz+OFomg/3zlQJsX4kKbx2W+9qw4DB4z0rRtOGk
+         dT/QbTef6QQjDs5LdtTZxMHN2CHFJv3rPVRN+kK/CW1s5RyzvxEW4WsOsYK3jUJfRjw7
+         TgG4FEGJg+Z7U5mzenkp0Ad8dwpOb1pTvfx4P1l+8YMZ6AbBNDmxk0OiFLKqQ1tFbWYU
+         pZ/9s8c3H84ApwEk+1rSK5RjEfPr0hkdGq3mynbVEmr38Cm+wmRcqkJ6Ud6VU+TwyKu5
+         vsbA==
+X-Gm-Message-State: AOAM532QSIZbyR4cZHNnmpkutW1CnwFfKgx7jZ+GTbpsH9sELMLhAv8R
+        u9adTs/bsf+kS/6/OSLsZsNMCuVIAnv4KdnBfm0=
+X-Google-Smtp-Source: ABdhPJzy01NvPiH0pMJyF7xSndPk/h78XB3eqvJJ1aXsD0M2QpRIlGnlOVJoqm4V33VSP8WLMcb6M2bsQJYOmqamhpo=
+X-Received: by 2002:a25:585:: with SMTP id 127mr182119ybf.425.1606872237019;
+ Tue, 01 Dec 2020 17:23:57 -0800 (PST)
 MIME-Version: 1.0
-References: <20201201143924.2908241-1-kpsingh@chromium.org> <CAEf4BzZS9sfckQNqt1hsCV2QPWVGJZS=Xf83GYZO_Efz1oLOnw@mail.gmail.com>
-In-Reply-To: <CAEf4BzZS9sfckQNqt1hsCV2QPWVGJZS=Xf83GYZO_Efz1oLOnw@mail.gmail.com>
-From:   KP Singh <kpsingh@chromium.org>
-Date:   Wed, 2 Dec 2020 02:17:51 +0100
-Message-ID: <CACYkzJ53EWB53aYWva-uSWMO1jOevBXvB_AZ2+B=O-J34Y2H6Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] selftests/bpf: Update ima test helper's
- losetup commands
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+References: <20201128192502.88195-1-dev@der-flo.net> <20201128192502.88195-3-dev@der-flo.net>
+In-Reply-To: <20201128192502.88195-3-dev@der-flo.net>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 1 Dec 2020 17:23:46 -0800
+Message-ID: <CAEf4BzZhKOi9kX-49+qx0Tq1Gf+KGZLWuOmMx=i4D=m1vLx-Zg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] selftests/bpf: Print reason when a tester could not
+ run a program
+To:     Florian Lehner <dev@der-flo.net>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        john fastabend <john.fastabend@gmail.com>,
+        Krzesimir Nowak <krzesimir@kinvolk.io>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 8:15 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Sat, Nov 28, 2020 at 11:29 AM Florian Lehner <dev@der-flo.net> wrote:
 >
-> On Tue, Dec 1, 2020 at 6:39 AM KP Singh <kpsingh@chromium.org> wrote:
-> >
-> > From: KP Singh <kpsingh@google.com>
-> >
-> > Update the commands to use the bare minimum options so that it works
-> > in busybox environments.
-> >
-> > Fixes: 34b82d3ac105 ("bpf: Add a selftest for bpf_ima_inode_hash")
-> > Reported-by: Andrii Nakryiko <andrii@kernel.org>
-> > Signed-off-by: KP Singh <kpsingh@google.com>
-> > ---
-> >  tools/testing/selftests/bpf/ima_setup.sh | 9 ++++++---
-> >  1 file changed, 6 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/ima_setup.sh b/tools/testing/selftests/bpf/ima_setup.sh
-> > index 15490ccc5e55..ed29bde26a12 100755
-> > --- a/tools/testing/selftests/bpf/ima_setup.sh
-> > +++ b/tools/testing/selftests/bpf/ima_setup.sh
-> > @@ -3,6 +3,7 @@
-> >
-> >  set -e
-> >  set -u
-> > +set -o pipefail
-> >
-> >  IMA_POLICY_FILE="/sys/kernel/security/ima/policy"
-> >  TEST_BINARY="/bin/true"
-> > @@ -23,9 +24,10 @@ setup()
-> >
-> >          dd if=/dev/zero of="${mount_img}" bs=1M count=10
+> Print a message when the returned error is about a program type being
+> not supported or because of permission problems.
+> These messages are expected if the program to test was actually
+> executed.
 >
-> This, and few more commands in this script, produce a bunch of output
-> directly to stdout and stderr. Can you please silence it? If you need
-> that output for debugging, than you can check verbosity mode in
-> test_progs and pass extra parameters, if necessary.
+> Cc: Krzesimir Nowak <krzesimir@kinvolk.io>
+> Signed-off-by: Florian Lehner <dev@der-flo.net>
+> ---
+>  tools/testing/selftests/bpf/test_verifier.c | 24 ++++++++++++++++-----
+>  1 file changed, 19 insertions(+), 5 deletions(-)
 >
+> diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
+> index ceea9409639e..bd95894b7ea0 100644
+> --- a/tools/testing/selftests/bpf/test_verifier.c
+> +++ b/tools/testing/selftests/bpf/test_verifier.c
+> @@ -875,19 +875,33 @@ static int do_prog_test_run(int fd_prog, bool unpriv, uint32_t expected_val,
+>         __u8 tmp[TEST_DATA_LEN << 2];
+>         __u32 size_tmp = sizeof(tmp);
+>         uint32_t retval;
+> -       int err;
+> +       int err, saved_errno;
 >
-> >
-> > -        local loop_device="$(losetup --find --show ${mount_img})"
-> > +        losetup -f "${mount_img}"
->
-> This doesn't work :(
->
-> [root@(none) selftests]# ./ima_setup.sh setup /tmp/ima_measurednsymal
-> + set -e
-> + set -u
-> + set -o pipefail
-> + IMA_POLICY_FILE=/sys/kernel/security/ima/policy
-> + TEST_BINARY=/bin/true
-> + main setup /tmp/ima_measurednsymal
-> + [[ 2 -ne 2 ]]
-> + local action=setup
-> + local tmp_dir=/tmp/ima_measurednsymal
-> + [[ ! -d /tmp/ima_measurednsymal ]]
-> + [[ setup == \s\e\t\u\p ]]
-> + setup /tmp/ima_measurednsymal
-> + local tmp_dir=/tmp/ima_measurednsymal
-> + local mount_img=/tmp/ima_measurednsymal/test.img
-> + local mount_dir=/tmp/ima_measurednsymal/mnt
-> ++ basename /bin/true
-> + local copied_bin_path=/tmp/ima_measurednsymal/mnt/true
-> + mkdir -p /tmp/ima_measurednsymal/mnt
-> + dd if=/dev/zero of=/tmp/ima_measurednsymal/test.img bs=1M count=10
-> 10+0 records in
-> 10+0 records out
-> 10485760 bytes (10.0MB) copied, 0.044713 seconds, 223.6MB/s
-> + losetup -f /tmp/ima_measurednsymal/test.img
-> losetup: /tmp/ima_measurednsymal/test.img: No such file or directory
-> [root@(none) selftests]# ls -la /tmp/ima_measurednsymal/test.img
-> -rw-r--r--    1 root     root      10485760 Dec  1 19:13
-> /tmp/ima_measurednsymal/test.img
-> [root@(none) selftests]# losetup -f /tmp/ima_measurednsymal/test.img
-> losetup: /tmp/ima_measurednsymal/test.img: No such file or directory
->
->
-> I have zero context on what IMA is and know nothing about loop
-> devices, so can't really investigate much, sorry...
->
+>         if (unpriv)
+>                 set_admin(true);
+>         err = bpf_prog_test_run(fd_prog, 1, data, size_data,
+>                                 tmp, &size_tmp, &retval, NULL);
+> +       saved_errno = errno;
+> +
+>         if (unpriv)
+>                 set_admin(false);
+> -       if (err && errno != 524/*ENOTSUPP*/ && errno != EPERM) {
+> -               printf("Unexpected bpf_prog_test_run error ");
+> -               return err;
+> +
+> +       if (err) {
+> +               switch (errno) {
 
-So after some debugging by using the same image as the bpf CI
-we noticed the following needs to be done:
+nit: stick to using saved_errno consistently, set_admin() does a lot
+of things that can change errno
 
-* SecurityFS needs to be mounted
-* "integrity" should be in CONFIG_LSM
-* mkfs.ext2 should be used instead of mkfs.ext4
-* The second patch of the series does not work as the image does not have a
-   /dev/disk/by-uuid directory.
-* The test image does have a blkid command but it ignores the options passed to
-   only print the UUID.
+> +               case 524/*ENOTSUPP*/:
+> +                       printf("Did not run the program (not supported) ");
+> +                       return 0;
+> +               case EPERM:
+> +                       printf("Did not run the program (no permission) ");
+> +                       return 0;
 
-I will send the fixes and, for the future, we can:
+This should be ok to ignore *only* in unpriv mode, no?
 
-* Document / script how to run selftests against the CI image
-  (and possibly a few other pre-canned images) without need to setup or
-  configure things like travis CI for each fork / developer.
-* Use this before we send patches so that we can avoid similar
-   troubles in the future.
+> +               default:
+> +                       printf("FAIL: Unexpected bpf_prog_test_run error (%s) ",
+> +                               strerror(saved_errno));
+> +                       return err;
+> +               }
+>         }
+> -       if (!err && retval != expected_val &&
+> +
+> +       if (retval != expected_val &&
+>             expected_val != POINTER_VALUE) {
+>                 printf("FAIL retval %d != %d ", retval, expected_val);
+>                 return 1;
+> --
+> 2.28.0
+>
