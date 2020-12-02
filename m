@@ -2,160 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 199652CB18B
-	for <lists+bpf@lfdr.de>; Wed,  2 Dec 2020 01:28:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50FAE2CB1A1
+	for <lists+bpf@lfdr.de>; Wed,  2 Dec 2020 01:40:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726342AbgLBA1h (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Dec 2020 19:27:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54138 "EHLO
+        id S1726765AbgLBAkk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Dec 2020 19:40:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726229AbgLBA1g (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Dec 2020 19:27:36 -0500
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A999C0613CF;
-        Tue,  1 Dec 2020 16:26:56 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id o71so38538ybc.2;
-        Tue, 01 Dec 2020 16:26:56 -0800 (PST)
+        with ESMTP id S1726166AbgLBAkk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Dec 2020 19:40:40 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EA89C0613D4;
+        Tue,  1 Dec 2020 16:40:00 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id l14so58783ybq.3;
+        Tue, 01 Dec 2020 16:40:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vfCF2rrgBv4Qtm98WE1uwXxGb7ee+2ZYnfEmg2VySPE=;
-        b=Lx0ntsOgTlCheqLAQiMrZXM0n1USD7f5oQf/FsL3s87zOyYRGgvULQOIU8Nr+b032u
-         joW3d9jxBpb1YzfF3mTvKJKFK4/29DIJoP1IJgGRMrMxiivqFEnaQ1p4fee/tjijFbW6
-         bW4MWlx6kCAKvls4J1tF4BFRn+XxNl6DEzHKKng0OZaaH95VbV+PJiHxFNY+TrZkbj6q
-         9vNmwsfvgiw284pEGNAcBGjdPuAL1Y1LMQKmJwppm7CuhoYN+zwyvo0778koDxyFx6vN
-         2PecywuGaQYjNNjtK4+9nGA1NljxWLwsqeYuGnVINVO8Ewlc+comMPGI+Dv0MEx61N6m
-         n+pA==
+         :cc:content-transfer-encoding;
+        bh=7IgGP7aV6Y93O2jr4hz7Ro1XSzZ05b6NeWqgiqqHIrI=;
+        b=Sbtxhy8tDANT+4u/57CIhzLr+EpvDT9d9ywEsHQAXVv5UkMM/SFlMZKiOthEUiNf0g
+         z6U1/+jYACPKrmxuoOvOscL8tZYPZt4NOc0QXf05qIRs/UWS8hQi7aY/zK5/SEM04i+h
+         QNPS3OpW4EgPmG6jIkOmCJ1zv4HaKtwMUd++oa6pg9tHbYOEIwOfo37tXqstUymXzyfG
+         Qkgy1WxQn7ZB/8Ehq+gw5dEJghDtZtewLgRBjj2orKVJm48iDYI0Xj3BqtA2YSXX5tTv
+         ZWdB3GN/l/Jc5e5M7TMZT/SxoU0HNAbkqbo7zw2ngOeAamhb5+SZvfs383tiowCA7ckh
+         FcNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vfCF2rrgBv4Qtm98WE1uwXxGb7ee+2ZYnfEmg2VySPE=;
-        b=pha+CbRPgAFeKYLZ3oqPdA43EfRzSY9ZIIlweginton02lsppkCkDvHMVuZy3kD+ba
-         A/XsNeeXC7vwXtILtJGJnXeN5eTUH1cBjcDrSHxDgWBYCbJEHz6pZYu8zeRWm3E4p8B6
-         WrKa2ZVG/0Y3AoBNpLHZ/sxyyshu0GIoqikoOGPuvBYDhC4eMmmhGGQ01K+VQ/kEk5p6
-         GTuS/tIY48VL8Q3ISshzoEGaz5MdeXAMmTYKHsB/NevyA2cH/b3/ANWxoSzMhFVOChIH
-         HhVXuwh9ZJyVp6FrnrxiryqD0tHZAGehjVCYjf5bNg5z9+uouRPu/6S78dT7PTK+qzXT
-         mTcQ==
-X-Gm-Message-State: AOAM531Mk3xrWzF9D37KJvWFEtxXM6xraB8WyJCv+NMXmhG8b4Lvs+vc
-        tEJrOAeRJvMrCf74jgK01T8g+JmNTToUdA6oBJ4=
-X-Google-Smtp-Source: ABdhPJxog44/VOr67JY6HNC903NDUE8Kw2I1Wc4DYYxrc0gUlLwGgmecdPKIsoWt3kCMVpHarTWIDGsGmfHKigeMzyg=
-X-Received: by 2002:a25:3d7:: with SMTP id 206mr6691097ybd.27.1606868815940;
- Tue, 01 Dec 2020 16:26:55 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=7IgGP7aV6Y93O2jr4hz7Ro1XSzZ05b6NeWqgiqqHIrI=;
+        b=e1sfS5L1WApBKTMESLr+3AAv2Hg7O2IgzjFJ5O6525qfYyL6bDWOOpuKId6v8tMZy/
+         ADZASp4HMwcAGpkMW53ls1nwBvr7r2pR+Ag+Z93PISnYJFv4z8p2tl0l0RzxhS3or32h
+         o7PIdSl5f/CSwjhrdcChyhtSfEaspWMhT5vY4Av478GQcGlj+5EY+wwho2p75gYiBl1D
+         MSdE6NTsB0inxO0Jhk02bgmt7NVo+wU5RIl3ZnOQp+stfiI5H+F06hK92FNKGftsTpR7
+         NPVaYRPweQQqdl+TluFBGqlsKD+MLSYE/RU1swSCKF033S04uJ9i7bfYHJGjgVxFgdaI
+         jckQ==
+X-Gm-Message-State: AOAM530SkBiGcDc/7h9Ke/aSuMdRmTkwF+uR4pSBuTE5Rj8Tr1WoBKSS
+        2HLIAynXKSbJQpZY69aMb+vAw2md/til5RmuFcU=
+X-Google-Smtp-Source: ABdhPJwYnARzBzXOG68YuCMOIBrmeAPQrGmH4OHC/F00lSJ4wOiauRLFkxR+/xzr2bCJWqENaiM+mfTQZQ84g5Vh+d4=
+X-Received: by 2002:a25:7717:: with SMTP id s23mr4729ybc.459.1606869598962;
+ Tue, 01 Dec 2020 16:39:58 -0800 (PST)
 MIME-Version: 1.0
-References: <20201118001742.85005-1-sdf@google.com> <20201118001742.85005-2-sdf@google.com>
-In-Reply-To: <20201118001742.85005-2-sdf@google.com>
+References: <20201130161720.8688-1-toke@redhat.com>
+In-Reply-To: <20201130161720.8688-1-toke@redhat.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 1 Dec 2020 16:26:45 -0800
-Message-ID: <CAEf4BzaQGJCAdbh3CYPK=z1XPBpqbWkXJLgHaEJc+O7R5dt9vw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/3] selftests/bpf: rewrite test_sock_addr bind
- bpf into C
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
+Date:   Tue, 1 Dec 2020 16:39:48 -0800
+Message-ID: <CAEf4BzYKWnNQqLOxgUaj=qOP15wpMY8axYxfRDukvw8Wypbjgw@mail.gmail.com>
+Subject: Re: [PATCH bpf] libbpf: sanitise map names before pinning
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Nov 17, 2020 at 4:20 PM Stanislav Fomichev <sdf@google.com> wrote:
+On Mon, Nov 30, 2020 at 8:17 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
 >
-> I'm planning to extend it in the next patches. It's much easier to
-> work with C than BPF assembly.
+> When we added sanitising of map names before loading programs to libbpf, =
+we
+> still allowed periods in the name. While the kernel will accept these for
+> the map names themselves, they are not allowed in file names when pinning
+
+That sounds like an unnecessary difference in kernel behavior. If the
+kernel allows maps with '.' in the name, why not allow to pin it?
+Should we fix that in the kernel?
+
+> maps. This means that bpf_object__pin_maps() will fail if called on an
+> object that contains internal maps (such as sections .rodata).
 >
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> Fix this by replacing periods with underscores when constructing map pin
+> paths. This only affects the paths generated by libbpf when
+> bpf_object__ping_maps() is called with a path argument. Any pin paths set
+> by bpf_map__set_pin_path() are unaffected, and it will still be up to the
+> caller to avoid invalid characters in those.
+>
+> Fixes: 113e6b7e15e2 ("libbpf: Sanitise internal map names so they are not=
+ rejected by the kernel")
+> Signed-off-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 > ---
-
-With nits below:
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
-
->  .../testing/selftests/bpf/progs/bind4_prog.c  |  73 +++++++
->  .../testing/selftests/bpf/progs/bind6_prog.c  |  90 ++++++++
->  tools/testing/selftests/bpf/test_sock_addr.c  | 196 ++----------------
->  3 files changed, 175 insertions(+), 184 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/progs/bind4_prog.c
->  create mode 100644 tools/testing/selftests/bpf/progs/bind6_prog.c
+>  tools/lib/bpf/libbpf.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
 >
-> diff --git a/tools/testing/selftests/bpf/progs/bind4_prog.c b/tools/testing/selftests/bpf/progs/bind4_prog.c
-> new file mode 100644
-> index 000000000000..ff3def2ee6f9
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/bind4_prog.c
-> @@ -0,0 +1,73 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <string.h>
-> +
-> +#include <linux/stddef.h>
-> +#include <linux/bpf.h>
-> +#include <linux/in.h>
-> +#include <linux/in6.h>
-> +#include <sys/socket.h>
-> +#include <netinet/tcp.h>
-> +#include <linux/if.h>
-> +#include <errno.h>
-> +
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_endian.h>
-> +
-> +#define SERV4_IP               0xc0a801feU /* 192.168.1.254 */
-> +#define SERV4_PORT             4040
-> +#define SERV4_REWRITE_IP       0x7f000001U /* 127.0.0.1 */
-> +#define SERV4_REWRITE_PORT     4444
-> +
-> +int _version SEC("version") = 1;
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 8d05132e1945..8a3b4713b356 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -7665,8 +7665,8 @@ int bpf_object__pin_maps(struct bpf_object *obj, co=
+nst char *path)
+>         }
+>
+>         bpf_object__for_each_map(map, obj) {
+> +               char buf[PATH_MAX], *s =3D buf;
+>                 char *pin_path =3D NULL;
+> -               char buf[PATH_MAX];
+>
+>                 if (path) {
+>                         int len;
+> @@ -7680,6 +7680,8 @@ int bpf_object__pin_maps(struct bpf_object *obj, co=
+nst char *path)
+>                                 err =3D -ENAMETOOLONG;
+>                                 goto err_unpin_maps;
+>                         }
+> +                       while ((s =3D strstr(s, ".")))
+> +                           *s =3D '_';
 
-not needed, let's not add it to a new test prog
+Let's extract this into a helper method?
 
-> +
-
-[...]
-
-> diff --git a/tools/testing/selftests/bpf/progs/bind6_prog.c b/tools/testing/selftests/bpf/progs/bind6_prog.c
-> new file mode 100644
-> index 000000000000..97686baaae65
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/bind6_prog.c
-> @@ -0,0 +1,90 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <string.h>
-> +
-> +#include <linux/stddef.h>
-> +#include <linux/bpf.h>
-> +#include <linux/in.h>
-> +#include <linux/in6.h>
-> +#include <sys/socket.h>
-> +#include <netinet/tcp.h>
-> +#include <linux/if.h>
-> +#include <errno.h>
-> +
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_endian.h>
-> +
-> +#define SERV6_IP_0             0xfaceb00c /* face:b00c:1234:5678::abcd */
-> +#define SERV6_IP_1             0x12345678
-> +#define SERV6_IP_2             0x00000000
-> +#define SERV6_IP_3             0x0000abcd
-> +#define SERV6_PORT             6060
-> +#define SERV6_REWRITE_IP_0     0x00000000
-> +#define SERV6_REWRITE_IP_1     0x00000000
-> +#define SERV6_REWRITE_IP_2     0x00000000
-> +#define SERV6_REWRITE_IP_3     0x00000001
-> +#define SERV6_REWRITE_PORT     6666
-> +
-> +int _version SEC("version") = 1;
-
-same
-
-> +
-> +SEC("cgroup/bind6")
-> +int bind_v6_prog(struct bpf_sock_addr *ctx)
-> +{
-
-[...]
+>                         pin_path =3D buf;
+>                 } else if (!map->pin_path) {
+>                         continue;
+> @@ -7712,8 +7714,8 @@ int bpf_object__unpin_maps(struct bpf_object *obj, =
+const char *path)
+>                 return -ENOENT;
+>
+>         bpf_object__for_each_map(map, obj) {
+> +               char buf[PATH_MAX], *s =3D buf;
+>                 char *pin_path =3D NULL;
+> -               char buf[PATH_MAX];
+>
+>                 if (path) {
+>                         int len;
+> @@ -7724,6 +7726,8 @@ int bpf_object__unpin_maps(struct bpf_object *obj, =
+const char *path)
+>                                 return -EINVAL;
+>                         else if (len >=3D PATH_MAX)
+>                                 return -ENAMETOOLONG;
+> +                       while ((s =3D strstr(s, ".")))
+> +                           *s =3D '_';
+>                         pin_path =3D buf;
+>                 } else if (!map->pin_path) {
+>                         continue;
+> --
+> 2.29.2
+>
