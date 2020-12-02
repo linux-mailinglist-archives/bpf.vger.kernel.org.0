@@ -2,69 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F58C2CBD6D
-	for <lists+bpf@lfdr.de>; Wed,  2 Dec 2020 13:55:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1B52CC0C7
+	for <lists+bpf@lfdr.de>; Wed,  2 Dec 2020 16:28:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729952AbgLBMxW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Dec 2020 07:53:22 -0500
-Received: from mout.kundenserver.de ([212.227.126.135]:56325 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727809AbgLBMxP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Dec 2020 07:53:15 -0500
-Received: from orion.localdomain ([77.7.48.174]) by mrelayeu.kundenserver.de
- (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1Mqrs9-1kO5Cx3RI1-00ms94; Wed, 02 Dec 2020 13:50:15 +0100
-From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, mareklindner@neomailbox.ch,
-        sw@simonwunderlich.de, a@unstable.cc, sven@narfation.org,
-        marcel@holtmann.org, johan.hedberg@gmail.com, roopa@nvidia.com,
-        nikolay@nvidia.com, edumazet@google.com, kuznet@ms2.inr.ac.ru,
-        yoshfuji@linux-ipv6.org, jmaloy@redhat.com, ying.xue@windriver.com,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        netdev@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net,
-        linux-hyperv@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH 7/7] net: tipc: remove unneeded MODULE_VERSION() usage
-Date:   Wed,  2 Dec 2020 13:49:59 +0100
-Message-Id: <20201202124959.29209-7-info@metux.net>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20201202124959.29209-1-info@metux.net>
-References: <20201202124959.29209-1-info@metux.net>
-X-Provags-ID: V03:K1:cwkhICXDufJUAlJsovXQtZ2OyBFVeHR/za/rs5521Cqz6Wh9Ch/
- n2r+/y4jIDyugCIgF5g7uue0fRRFBkrAyTDehF8v0E6LX4lDErP3ysYD0NDeGmQjUjxxaaA
- nFTGgM784D7I7zKZoupqMvSxa0FalL9ALhRllLbOKOVQ+UZi3nlYdpHU6DqBP8RfgTXzRTu
- LRvkO/nAPYZIyscGn/SZA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:jcGj6/3kF1g=:AqzM1phRwhfM1zwVGqFIvn
- uWCSSaCTm78/J3ALkHRgiZb5ARZR4qLcVPuAglVED3ww3ubpMwiyWf7eoeMePxvN9YwHwmBwQ
- 7dgsTsUCBuzou/TciuwkTjiYBhyX1sqRrcs1mIKDHg1nlHN9uXk5Fer9dpimwnjB2Lf8WP+tT
- C4c85VVOmCHLVSZRCBUE72FDp6NhNUDKz6udiqAx97K9wUdDmXN7yv47xDTpjSLv6FB8tyxAg
- pWsukYJ/9Bvp+ZsPNH5nwCwoYH4Kj/NDGc36TJYRfJyZlBkLJu9Ndus7+Md+m8ic19+Hvbplz
- JOUWD0AqYJikwpiy4hDyeKd+Pf2Wb0CXhj326D0FAfCWcu5Yg9xOKLthZQHnolafWMe6HFAuo
- 8cmGOi+jtiHZ5TFd9MGcS4kJ2UK96Q5ve873ySl8iqdwo32C6bso0YridYlmL
+        id S1730293AbgLBP0j (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Dec 2020 10:26:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726088AbgLBP0i (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Dec 2020 10:26:38 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FC24C0613CF;
+        Wed,  2 Dec 2020 07:25:52 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id l23so1161949pjg.1;
+        Wed, 02 Dec 2020 07:25:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HonYG6K8yyEAJPcRbmBUz568mb+2cYoZIgvfVgtc6Zg=;
+        b=OvkzNTF4jQ8jb8tj1Lr+NmzMd10zopaokeXK6ucA/bRT7iwayNa8vS5zqSyyM9+qPJ
+         8S8n594EBorUAtvsqGg3x6h+9xyFLgHD/5G7An498N6ZR5SKeUQc7X4YMI/EUngzcEYP
+         62VJFCg5cSuNEMRbOiZtq+9c5BzrUH520J2y9OmdW8MAg7cjFWCe7l4slXD3fFLGWE1A
+         tsbFp8VYdGVu+Z/FYTKPnTxmBv1Srz3FXsmZTo5fhRSPXZX3ts+rXM+vmu5EFXrrNh+t
+         tAMrPQYJ1X0/E7/0xv4unh8gLcbzsaPB68NCubz2yKzS/r4touBoEfxidouXKpGUgvgu
+         S36g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HonYG6K8yyEAJPcRbmBUz568mb+2cYoZIgvfVgtc6Zg=;
+        b=TFiSQNUS7h//5ZJOBTUd+4CJXVugdYLC0dVbm+XEeBRa3Jk7p8GWz/54zo6rDUFdH8
+         jqJvBUas0tH2CE2ILUnVqGB0ewG6LRF46BdtnEpfTkE2zzwvjJXH6JhlR+W35DZlormp
+         ygGz8se8J89eYnPBDvbRqaFqSfDqLJZFPsjvj4YiQRG/Fj3umYqpd3MoGkfV3QrGtCA6
+         yET/MicANDpQRp4PyjZ4YFA3cMiEmx17k+6WGDJLyMfIWxI5dFRwLO3x+AGMlSqiIhyZ
+         JaX5mRHxpkpqNeh0+GtlPpxZkR4me81DDO+MvcwEYyzin/9ZY6NHCU6b4tfJ0Ne2Lg9w
+         4uow==
+X-Gm-Message-State: AOAM530K/fEglbUGR1BiuzihrsjBFRLiYPOQUzAI7DSZAJDENBbqG2Sp
+        pjyKOl+4Yu3498miIJj4EEkEgIiPudEGcGM/8zU=
+X-Google-Smtp-Source: ABdhPJyWQpzogN+4iXbx6NzzPM0UtTIFyEPLB0aK5OHxn0Cv+wiR/HGQidspaW9QiFGO2TXiu/tt3dz18FZP5dad6oM=
+X-Received: by 2002:a17:90a:fcc:: with SMTP id 70mr367368pjz.168.1606922751841;
+ Wed, 02 Dec 2020 07:25:51 -0800 (PST)
+MIME-Version: 1.0
+References: <MW3PR11MB46023BE924A19FB198604C0DF7F40@MW3PR11MB4602.namprd11.prod.outlook.com>
+ <cover.1606555939.git.xuanzhuo@linux.alibaba.com> <e82f4697438cd63edbf271ebe1918db8261b7c09.1606555939.git.xuanzhuo@linux.alibaba.com>
+In-Reply-To: <e82f4697438cd63edbf271ebe1918db8261b7c09.1606555939.git.xuanzhuo@linux.alibaba.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Wed, 2 Dec 2020 16:25:40 +0100
+Message-ID: <CAJ8uoz3CcSVQTD-k4xzBF_atKooCyrSOkLSOwgNRgEpXdVMNZg@mail.gmail.com>
+Subject: Re: [PATCH bpf V3 1/2] xsk: replace datagram_poll by sock_poll_wait
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@chromium.org>,
+        "open list:XDP SOCKETS (AF_XDP)" <netdev@vger.kernel.org>,
+        "open list:XDP SOCKETS (AF_XDP)" <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Remove MODULE_VERSION(), as it isn't needed at all: the only version
-making sense is the kernel version.
+On Tue, Dec 1, 2020 at 3:00 PM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
+>
+> datagram_poll will judge the current socket status (EPOLLIN, EPOLLOUT)
+> based on the traditional socket information (eg: sk_wmem_alloc), but
+> this does not apply to xsk. So this patch uses sock_poll_wait instead of
+> datagram_poll, and the mask is calculated by xsk_poll.
+>
 
-Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
----
- net/tipc/core.c | 1 -
- 1 file changed, 1 deletion(-)
+Could you please add a Fixes label here as this is a bug fix? It will
+help the persons backporting this. Here is the line that goes just
+above your Sign-off-by.
 
-diff --git a/net/tipc/core.c b/net/tipc/core.c
-index c2ff42900b53..8c0c45347c53 100644
---- a/net/tipc/core.c
-+++ b/net/tipc/core.c
-@@ -227,4 +227,3 @@ module_exit(tipc_exit);
- 
- MODULE_DESCRIPTION("TIPC: Transparent Inter Process Communication");
- MODULE_LICENSE("Dual BSD/GPL");
--MODULE_VERSION(TIPC_MOD_VER);
--- 
-2.11.0
+Fixes: c497176cb2e4 ("xsk: add Rx receive functions and poll support")
 
+Thanks: Magnus
+
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> ---
+>  net/xdp/xsk.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> index b7b039b..9bbfd8a 100644
+> --- a/net/xdp/xsk.c
+> +++ b/net/xdp/xsk.c
+> @@ -471,11 +471,13 @@ static int xsk_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
+>  static __poll_t xsk_poll(struct file *file, struct socket *sock,
+>                              struct poll_table_struct *wait)
+>  {
+> -       __poll_t mask = datagram_poll(file, sock, wait);
+> +       __poll_t mask = 0;
+>         struct sock *sk = sock->sk;
+>         struct xdp_sock *xs = xdp_sk(sk);
+>         struct xsk_buff_pool *pool;
+>
+> +       sock_poll_wait(file, sock, wait);
+> +
+>         if (unlikely(!xsk_is_bound(xs)))
+>                 return mask;
+>
+> --
+> 1.8.3.1
+>
