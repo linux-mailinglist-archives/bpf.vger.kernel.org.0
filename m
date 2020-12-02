@@ -2,114 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3DE92CB248
-	for <lists+bpf@lfdr.de>; Wed,  2 Dec 2020 02:26:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34D2D2CB25A
+	for <lists+bpf@lfdr.de>; Wed,  2 Dec 2020 02:31:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727984AbgLBBZT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Dec 2020 20:25:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34834 "EHLO
+        id S1727677AbgLBBbf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Dec 2020 20:31:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727154AbgLBBZS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Dec 2020 20:25:18 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CA11C0613D6;
-        Tue,  1 Dec 2020 17:24:32 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id s8so101069yba.13;
-        Tue, 01 Dec 2020 17:24:32 -0800 (PST)
+        with ESMTP id S1727589AbgLBBbf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Dec 2020 20:31:35 -0500
+Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B6EC0613D4;
+        Tue,  1 Dec 2020 17:30:49 -0800 (PST)
+Received: by mail-yb1-xb42.google.com with SMTP id k65so142291ybk.5;
+        Tue, 01 Dec 2020 17:30:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=STVF/ryvADGkGMK7DNHXzwlJ5JL3imCy6lZ6BF1wMKE=;
-        b=dpSl1EuPN8vw/N4sDBBP8dnWGXDCYB0ca5jkjjdSCiHyV7+lqZv62mAvLlzbKVoxI0
-         EOdcBcwtIYUPRBhOfoJ5HAUi4fYRTXEdFpcxp4orRNSci/YZhPLbFJwGAHDWRAxrttZ4
-         7c5Y4r7Nt3/Z4Nz9SbQq+KskqDihm+QDX2bUtGluJ8V438mSIcCXokle9Ch8rCav3a9f
-         gGbXTcdNlJc2XrLjcRJ0FxVJa6iX6qOiqqn9oRmy3C61P1goQoSUGUdrKyRMYfWlfjmD
-         X9FEs6Kw/eKI34A4inL7lcKRXqpuB7EGzSE539xpyckWjOxVI3rmGcJM0sjJyYR7UON9
-         SY3w==
+        bh=xP44qHOp+ESajrSkrMGCR4T0dJKkIsBbHGrUioyMaSQ=;
+        b=BS0bAzbYz8iKqMxNaXP5WqKCPxmBj2lD2octArGCOhEXSSnWpuXvGmbBRYdmLS5IA0
+         VOuLW2qOSMFn5ixAkAEffS7s5ksMHeHVsM8NxdtQ5GpzIealRn1TW5SeshEeMmm87E1y
+         bkpAtH7K/AGpRsyY40szXj4EqbAxUh9cVn2ePwAEVj8mkvUPbzuVwAt0n66TN85Pyjob
+         ReVPYjOu2Ur9kMqn0tg4ElzxZ074VaVAPimZ/IS4pmxXX/Ke/e0DNtlAlB3sXoG6i0GS
+         PsgdpLzxQh8LB1xCutoQ6eMOGj2lQNOK59WtdMKVsQM5C2fmNoXK5AIWBShO1w0VlzzD
+         oM2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=STVF/ryvADGkGMK7DNHXzwlJ5JL3imCy6lZ6BF1wMKE=;
-        b=t7w6ZpfhsNG2P467XH9orczNm9xZyRux8Y7TfAh6dlQgGJA8gxAjeeHupPm4JuGMTZ
-         5zOZuZohhJ1QsnySVBLNQXYhZxIS2GCgAHBhKzeZGxKT/j8C7g3RKTPrE4EVvFu4KlIk
-         oPA6unhW5d1griXVw0eJI2qD5W+XZRiOmuMwCdkuPjx5HIBQl0udV1dRjg9gs3PMXWXB
-         VsYaz2x26qaXUD2hh/KIcAE4WJJaOYr5qzSjgQMm6TbBf8QO/OW/b6d4+8k+n11nzIyz
-         trCED/GAYUlq2DcSl+vadCwaLkzPJtQ4vcNRuLljrfgGcATQM8YFatIV2CaQKe7Yw6g7
-         BmUA==
-X-Gm-Message-State: AOAM533QHTqdxJ6XqN5u5nIrVupnVL6sKexG8BqWLZyCBNnfcQhlhsgU
-        l1M/KGUaL0tSwhuUWuf2SO3mVhJqBa4G/D3lihU=
-X-Google-Smtp-Source: ABdhPJz36D9qZ28r003t8vIswx9m70aeiSWOddpiPpsZB1sTGsyZYk7QMZlS20cBTaz0aBwVIHv+htvXMzH1UjuzVXU=
-X-Received: by 2002:a25:2845:: with SMTP id o66mr361759ybo.260.1606872271921;
- Tue, 01 Dec 2020 17:24:31 -0800 (PST)
+        bh=xP44qHOp+ESajrSkrMGCR4T0dJKkIsBbHGrUioyMaSQ=;
+        b=uGpHwJwIIrCTTuPp7IxhHEatWG4guH4TUrLTZtVdIlwATE2E7/rh+LeJpzkTCfwrjU
+         gOtTajoWk7zy42RqdhE44YSNH9Fjib3IQQtpJOLbUgnmc30HiCaS2k7enoVZ0WAW1Yts
+         vlBpvdo8TIdwSpg2HWbY0CDB1T0ORq98avLFvdYfrvAJypjlLyjGDCMFajok3KZ2EP0+
+         xB9NqzkX7CxjfBwalhwBKEHMBFFYNDq/eUlNx9sSkl86VRJgrLc1sAFcB99eUgYUhTId
+         iSPffiz1iNSp2vVxsx4P/toD5dCdtKFY5H/xZMtMYSNCxRW5ojKEVfnX/t3+zzFRuHt7
+         ZATw==
+X-Gm-Message-State: AOAM5305dGoU/WaY4afkXsluLvyBij8eZbnT7nDtMwiuyxWfhBIiOurn
+        KHPZcthahs4Uds4ZUOB3RqRUk1F6oYkgpb13qRY=
+X-Google-Smtp-Source: ABdhPJwz/6CG0fxQ4O0c2X2tG5W62oSGPMCM5RKcHTcb2Y3mdwMlFmuEz2z7eD6wvtFOMm8AhuHzSUQNZmi2EM7tCKQ=
+X-Received: by 2002:a25:df8e:: with SMTP id w136mr260284ybg.230.1606872648365;
+ Tue, 01 Dec 2020 17:30:48 -0800 (PST)
 MIME-Version: 1.0
-References: <20201128192502.88195-1-dev@der-flo.net> <20201128192502.88195-2-dev@der-flo.net>
-In-Reply-To: <20201128192502.88195-2-dev@der-flo.net>
+References: <CAADnVQJK=s5aovsKoQT=qF1novjM4VMyZCGG_6BEenQQWPbTQw@mail.gmail.com>
+ <20201201202215.3376498-1-prankgup@fb.com>
+In-Reply-To: <20201201202215.3376498-1-prankgup@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 1 Dec 2020 17:24:21 -0800
-Message-ID: <CAEf4BzbfDGQoazRO-ZZAksxSc_j5HMOpAPLx57A0UjR7JjAYDg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] selftests/bpf: Avoid errno clobbering
-To:     Florian Lehner <dev@der-flo.net>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        john fastabend <john.fastabend@gmail.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        Krzesimir Nowak <krzesimir@kinvolk.io>
+Date:   Tue, 1 Dec 2020 17:30:37 -0800
+Message-ID: <CAEf4Bzb4CQTbxXQXnukVfV5T5dWDutvyL6n7Krfw+T0Gc_aGSA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 0/2] Add support to set window_clamp from bpf setsockops
+To:     Prankur gupta <prankgup@fb.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
+        Networking <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Nov 28, 2020 at 11:28 AM Florian Lehner <dev@der-flo.net> wrote:
+On Tue, Dec 1, 2020 at 12:24 PM Prankur gupta <prankgup@fb.com> wrote:
 >
-> Commit 8184d44c9a57 ("selftests/bpf: skip verifier tests for unsupported
-> program types") added a check to skip unsupported program types. As
-> bpf_probe_prog_type can change errno, do_single_test should save it before
-> printing a reason why a supported BPF program type failed to load.
+> From: Prankur Gupta <prankgup@fb.com>
 >
-> Fixes: 8184d44c9a57 ("selftests/bpf: skip verifier tests for unsupported program types")
-> Cc: Stanislav Fomichev <sdf@google.com>
-> Cc: Krzesimir Nowak <krzesimir@kinvolk.io>
-> Signed-off-by: Florian Lehner <dev@der-flo.net>
-> ---
+> No reason in particular.
+> Updated the code (patch v2) to have logic as tcp setsockopt for tCP_WINDOW_CLAMP.
+>
+> PS: First time trying git send-em,ail, pleas elet me know if this is not the right way to reply.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+I use send-email for sending patches only, I reply from Gmail or
+Thunderbird (from work account). The latter has a plain text mode,
+while Outlook doesn't.
 
->  tools/testing/selftests/bpf/test_verifier.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-> index 4bfe3aa2cfc4..ceea9409639e 100644
-> --- a/tools/testing/selftests/bpf/test_verifier.c
-> +++ b/tools/testing/selftests/bpf/test_verifier.c
-> @@ -936,6 +936,7 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
->         int run_errs, run_successes;
->         int map_fds[MAX_NR_MAPS];
->         const char *expected_err;
-> +       int saved_errno;
->         int fixup_skips;
->         __u32 pflags;
->         int i, err;
-> @@ -997,6 +998,7 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
->         }
->
->         fd_prog = bpf_load_program_xattr(&attr, bpf_vlog, sizeof(bpf_vlog));
-> +       saved_errno = errno;
->
->         /* BPF_PROG_TYPE_TRACING requires more setup and
->          * bpf_probe_prog_type won't give correct answer
-> @@ -1013,7 +1015,7 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
->         if (expected_ret == ACCEPT || expected_ret == VERBOSE_ACCEPT) {
->                 if (fd_prog < 0) {
->                         printf("FAIL\nFailed to load prog '%s'!\n",
-> -                              strerror(errno));
-> +                              strerror(saved_errno));
->                         goto fail_log;
->                 }
->  #ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
-> --
-> 2.28.0
->
+But also, you need to add v2 to each patch, not just cover letter. You
+can do that when using `git format-patch --subject-prefix='PATCH v2
+bpf-next' ...`.
