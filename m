@@ -2,161 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CA592CC0DA
-	for <lists+bpf@lfdr.de>; Wed,  2 Dec 2020 16:31:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E288E2CC305
+	for <lists+bpf@lfdr.de>; Wed,  2 Dec 2020 18:08:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727584AbgLBPbF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Dec 2020 10:31:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52108 "EHLO
+        id S2387552AbgLBRFc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Dec 2020 12:05:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725962AbgLBPbF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Dec 2020 10:31:05 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D4BCC0613D4;
-        Wed,  2 Dec 2020 07:30:19 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id f17so1281173pge.6;
-        Wed, 02 Dec 2020 07:30:19 -0800 (PST)
+        with ESMTP id S2387464AbgLBRFb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Dec 2020 12:05:31 -0500
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29FD2C061A04
+        for <bpf@vger.kernel.org>; Wed,  2 Dec 2020 09:04:44 -0800 (PST)
+Received: by mail-qv1-xf49.google.com with SMTP id o16so1689499qvq.4
+        for <bpf@vger.kernel.org>; Wed, 02 Dec 2020 09:04:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mwTSpTZUymq3kHcr9Nu1z8YQRX/L7YbJh3Ulw0Y/ks8=;
-        b=AVpHvyVmPS6PvURO4TNoOS+xkJTKN4J89fiERyhK3zbr4LLuhBI90TR4TyRhgNACAY
-         Ykk6JRil3aQUc5rijqCv+RvgYFGj03GjNyjq8SnzOaUxjFH5xFG+kCoDCoA2Hj2XchlG
-         4yAh/RR/8ziZiD/emSe42+Y4i3N20MwpcA1xpD1ZT8HDa6Dav8vCCJly79foL9XX0CoW
-         SFGK6iKHavpRXdCMw8WZytNeSIlztaPPhMB8dnQjiBmfU2R3VSU6xjTVYH7W/pwr1VVT
-         d0SiG6hmYmwqq86ENfOPaHqiEIiy/t9QZ0bXWqH34SdsR7wqFOIY+Y/c9PREceZpwuno
-         CJyw==
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=fhMyhnnNKEJ49XIgzEQBRBGObFetYBnzrC8zuUBillQ=;
+        b=mCFGoaqy0YtGQpgCyBFLhVshQDjMsEZyqbtMmywjZSDzevQhZaSBiE54QbOBPcUDE5
+         tcnirweVwezwz1SrbeoMHQd63MJpmOBkTN2WZFU9rvxHM5C40XZi+tS/ThYzdm2Vx24A
+         TQKh3X8wSg49sNhc/MGwpCu1B3EmotJcbBgTrjoLgfi5QwX1OMYD82Ua9pbbsNoL+Rbr
+         36myGDRRugLmX2MU8PedLDKjTBMrawWGKEx2tGkemiNBOkhKA/lkRI1JNxthUS8AaATE
+         4xA0CMymFQwldECukh4Lyh0bgebOoQg4GNVmiYip7tA1ugZfwu3KAfUANqPOOhRHWs2i
+         cNOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mwTSpTZUymq3kHcr9Nu1z8YQRX/L7YbJh3Ulw0Y/ks8=;
-        b=Rg+ZjXq+5sMtCtskEzEsz4x+jvJeyJjMVw1+AR3oaXGmnAJWySsjrpuhDVDeU0X135
-         B79meZvywkCwPwVT5Jf/VM3mJD3garX0HJIwjz7CCxZ20J0Gad0lDPRBLdnQ7hf/u1Zw
-         8pB4CvNANwmCy1qFuIkS6vsWOAGpDyOWRKR8yFBpTOsnKXQnGBlBy0J1P7VmEPfogvWJ
-         UbOd/VTEi3M9zi+vqm9/DmhHG20oQJATYcEzU9yxtz00CD32cyoE8XT8xN1RoWAW8fSb
-         XkhS6VTBNeDCpM9gGtqJC0ODokjUJ9S7TtXYpsk0F4T8yeKJnQ8+dVndQLJp+RHUOFIk
-         f5GA==
-X-Gm-Message-State: AOAM531jLY9nPnQnipvEsbTym0T0A0YK8/cPPgVJotAI7ZxFM2nG0eH+
-        4q65bkRPWivWYV22394fmcOfRz719wykk6oFAOI=
-X-Google-Smtp-Source: ABdhPJzW5GDRw4d17zxtRMBP6HtDK/V/9hmWqMhsT2HnML2ftV8/5NXOGvllEgHuFXxBG5l4tRIoGsFMgO+Qk4q3irE=
-X-Received: by 2002:a63:ee0f:: with SMTP id e15mr369788pgi.292.1606923018036;
- Wed, 02 Dec 2020 07:30:18 -0800 (PST)
-MIME-Version: 1.0
-References: <MW3PR11MB46023BE924A19FB198604C0DF7F40@MW3PR11MB4602.namprd11.prod.outlook.com>
- <cover.1606555939.git.xuanzhuo@linux.alibaba.com> <508fef55188d4e1160747ead64c6dcda36735880.1606555939.git.xuanzhuo@linux.alibaba.com>
-In-Reply-To: <508fef55188d4e1160747ead64c6dcda36735880.1606555939.git.xuanzhuo@linux.alibaba.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Wed, 2 Dec 2020 16:30:07 +0100
-Message-ID: <CAJ8uoz1b3=gf5gttSe+Tknos7PdpBxaMEdud+iziDA55faMEcg@mail.gmail.com>
-Subject: Re: [PATCH bpf V3 2/2] xsk: change the tx writeable condition
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=fhMyhnnNKEJ49XIgzEQBRBGObFetYBnzrC8zuUBillQ=;
+        b=QL3+27Il7Qux6ARourfu9haauqsk18weUryVRKQvg7nYDsX7FL490u8NJClnWQ6fuD
+         Ws0W3BWL71MnSXodxXplUr0rxs+gzwRLWgZZMYNJFTWAPJyCDvD/DhX3LPzDPpD/isWo
+         OJfOIEN2WlBwa3R1Gnq3iQUZbI0JOImolGDXNIZ319gwTIDuzwOq9Pj0fXCV19r0IBIf
+         Hh/35TCNQqRdCSoiZvI48YH7bMrsLrUxUdFhje9j/AQPkJi3NKOTqxbyoR3j60xVbTtx
+         BwD6jA8kmUMm3TeHA7H+x0XgFZPvUqYLXPYYvyD3OXJWUILNLW2ll6o6evE5QpcXEMjm
+         5SpQ==
+X-Gm-Message-State: AOAM530rGNQuWu+qNERzeMMW1Uan7gkzRJ0gPKWu1XM3fgd5qAg3MemK
+        hJsA99DPwB9zssaeS5TPl7k9uJw=
+X-Google-Smtp-Source: ABdhPJzLSsJa6w2KaEmRmS7vrSTVfu0Jl+EREPxUfXxG22VNZzQJpjIAt0yioLN4UIhKTt5W8ipuh3U=
+Sender: "sdf via sendgmr" <sdf@sdf2.svl.corp.google.com>
+X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:7220:84ff:fe09:7732])
+ (user=sdf job=sendgmr) by 2002:a05:6214:29:: with SMTP id b9mr3748555qvr.18.1606928683263;
+ Wed, 02 Dec 2020 09:04:43 -0800 (PST)
+Date:   Wed, 2 Dec 2020 09:04:41 -0800
+In-Reply-To: <CAEf4BzaQGJCAdbh3CYPK=z1XPBpqbWkXJLgHaEJc+O7R5dt9vw@mail.gmail.com>
+Message-Id: <20201202170441.GC553169@google.com>
+Mime-Version: 1.0
+References: <20201118001742.85005-1-sdf@google.com> <20201118001742.85005-2-sdf@google.com>
+ <CAEf4BzaQGJCAdbh3CYPK=z1XPBpqbWkXJLgHaEJc+O7R5dt9vw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/3] selftests/bpf: rewrite test_sock_addr bind
+ bpf into C
+From:   sdf@google.com
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        "open list:XDP SOCKETS (AF_XDP)" <netdev@vger.kernel.org>,
-        "open list:XDP SOCKETS (AF_XDP)" <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 2:59 PM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
->
-> Modify the tx writeable condition from the queue is not full to the
-> number of present tx queues is less than the half of the total number
-> of queues. Because the tx queue not full is a very short time, this will
-> cause a large number of EPOLLOUT events, and cause a large number of
-> process wake up.
+On 12/01, Andrii Nakryiko wrote:
+> On Tue, Nov 17, 2020 at 4:20 PM Stanislav Fomichev <sdf@google.com> wrote:
+> >
+> > I'm planning to extend it in the next patches. It's much easier to
+> > work with C than BPF assembly.
+> >
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > ---
 
-And the Fixes label here should be:
+> With nits below:
 
-Fixes: 35fcde7f8deb ("xsk: support for Tx")
-
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> ---
->  net/xdp/xsk.c       | 16 +++++++++++++---
->  net/xdp/xsk_queue.h |  6 ++++++
->  2 files changed, 19 insertions(+), 3 deletions(-)
->
-> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index 9bbfd8a..6250447 100644
-> --- a/net/xdp/xsk.c
-> +++ b/net/xdp/xsk.c
-> @@ -211,6 +211,14 @@ static int __xsk_rcv(struct xdp_sock *xs, struct xdp_buff *xdp, u32 len,
->         return 0;
->  }
->
-> +static bool xsk_tx_writeable(struct xdp_sock *xs)
-> +{
-> +       if (xskq_cons_present_entries(xs->tx) > xs->tx->nentries / 2)
-> +               return false;
-> +
-> +       return true;
-> +}
-> +
->  static bool xsk_is_bound(struct xdp_sock *xs)
->  {
->         if (READ_ONCE(xs->state) == XSK_BOUND) {
-> @@ -296,7 +304,8 @@ void xsk_tx_release(struct xsk_buff_pool *pool)
->         rcu_read_lock();
->         list_for_each_entry_rcu(xs, &pool->xsk_tx_list, tx_list) {
->                 __xskq_cons_release(xs->tx);
-> -               xs->sk.sk_write_space(&xs->sk);
-> +               if (xsk_tx_writeable(xs))
-> +                       xs->sk.sk_write_space(&xs->sk);
->         }
->         rcu_read_unlock();
->  }
-> @@ -436,7 +445,8 @@ static int xsk_generic_xmit(struct sock *sk)
->
->  out:
->         if (sent_frame)
-> -               sk->sk_write_space(sk);
-> +               if (xsk_tx_writeable(xs))
-> +                       sk->sk_write_space(sk);
->
->         mutex_unlock(&xs->mutex);
->         return err;
-> @@ -493,7 +503,7 @@ static __poll_t xsk_poll(struct file *file, struct socket *sock,
->
->         if (xs->rx && !xskq_prod_is_empty(xs->rx))
->                 mask |= EPOLLIN | EPOLLRDNORM;
-> -       if (xs->tx && !xskq_cons_is_full(xs->tx))
-> +       if (xs->tx && xsk_tx_writeable(xs))
->                 mask |= EPOLLOUT | EPOLLWRNORM;
->
->         return mask;
-> diff --git a/net/xdp/xsk_queue.h b/net/xdp/xsk_queue.h
-> index cdb9cf3..9e71b9f 100644
-> --- a/net/xdp/xsk_queue.h
-> +++ b/net/xdp/xsk_queue.h
-> @@ -264,6 +264,12 @@ static inline bool xskq_cons_is_full(struct xsk_queue *q)
->                 q->nentries;
->  }
->
-> +static inline u32 xskq_cons_present_entries(struct xsk_queue *q)
-> +{
-> +       /* No barriers needed since data is not accessed */
-> +       return READ_ONCE(q->ring->producer) - READ_ONCE(q->ring->consumer);
-> +}
-> +
->  /* Functions for producers */
->
->  static inline bool xskq_prod_is_full(struct xsk_queue *q)
-> --
-> 1.8.3.1
->
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Thank you for the review! Will respin shortly with the nits addressed.
