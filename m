@@ -2,122 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D1E72CCA5A
-	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 00:14:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A3A12CCA5E
+	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 00:14:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726504AbgLBXNT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Dec 2020 18:13:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39584 "EHLO
+        id S2387664AbgLBXOT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Dec 2020 18:14:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726253AbgLBXNS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Dec 2020 18:13:18 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E0E5C0613D6;
-        Wed,  2 Dec 2020 15:12:38 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id y16so389776ljk.1;
-        Wed, 02 Dec 2020 15:12:38 -0800 (PST)
+        with ESMTP id S2387622AbgLBXOT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Dec 2020 18:14:19 -0500
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E7BC0617A6
+        for <bpf@vger.kernel.org>; Wed,  2 Dec 2020 15:13:39 -0800 (PST)
+Received: by mail-yb1-xb44.google.com with SMTP id 10so248578ybx.9
+        for <bpf@vger.kernel.org>; Wed, 02 Dec 2020 15:13:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=FHpERSumSrVk6EjMdTwvcnNqOmkyfUHJnVjfFgiAABU=;
-        b=Di0xQeIPjp5/4/xaFKIKaNE0+N8If9vEHaNLGWASxd59rOImNsPK9exccSwxxqSvcz
-         rf5hFTWntUyIG7yo9BP4NvndA/323ccho6Xz1DmeP9/CQB6aBIdjnKqVMyocr6wOQ6HQ
-         /O+jjkeof/e+fFr2yqAb/Rb61fET6oDgDyzO8WbahETBp7Ko+z78GmTcYQFnJf0+4MNi
-         tkmkN+DzLA1fA0BSVm4wKzZ/CPcM54bCX2crfBMh4qSun2ybQp4mx7ZF1MA+YtQERBc5
-         D3I/UhkBoxXYtbFOHhnOEojnjC8yFVydjC6gRTO7ervAc2fwPF77vO460Dnh1EZwVkzJ
-         jryw==
+        bh=rkQ5VhiTjOWTcEcaZ5PrPU7vDNQ0UxbJG4SPrbZBhIA=;
+        b=ovVyWKhVbVn25ysEVJ/4grPpMSuaq0vxT/iczbEFBIAwJN2sorm73M1kG9k2cgCclh
+         g59mTtSqVhl9j2hBnWfEKujn1zJNSxU5IyCD+zh6A0wnj0O/fbSYbZWW0ZJ+hYYeRDVc
+         U/+wCYC176gwfcpl1z68HwihX7IQa13zNx0IWUF/J/rrG0gSIrNiT+virxNbMI7d4g1+
+         WtuI3svbOIGqSU3iYRyxGGeu94esqOf3joDCE4yAXCeeNIO5Ww/4jIs0ZNv4P0Tc6E/r
+         06gXsTxGDBZpNkNGGH8o/Dw9D8Gfy64Y9pZTpr+lKFZ9eGvd0FOw6KdFkW7BYl49VqBU
+         pOWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=FHpERSumSrVk6EjMdTwvcnNqOmkyfUHJnVjfFgiAABU=;
-        b=gVMXrZpmdIZpHT9rA/v8pojIrL8ITRzj7NqxVOTtxgrs59W1Dufw4LKaAsU3fRtxVo
-         QNpvLkOikh26ulDtd8fdoYgZKaFkSfklOSi4ytwxfBFlZIXSlSTOr17ojHrjTxMv1aK8
-         4qJm5LXp/gUpVn3UC0+VrRmgp5wxWWQcrgdgCaxNjtZoVYuTcdPj9C7lxaKEyUh8jU63
-         HV3srY8pMNPfYlHPQ6ErNHJq3pMLSwskilkt9y8t2vV6YKzfZEjYVhaDRW8j61pyj2aK
-         1TYToDGYR+VZRO3qVvWxkW6RkWMIDHXly6BIdqS+1KSFb+tNvZkE+54oVUZfZvS0QgNy
-         ac5Q==
-X-Gm-Message-State: AOAM532dDnXMQo2x8BpVmFsdk/yi5Q8/e65HQn5i5k9+56zwbJrHYDCj
-        0Be5HDe0x1PfV57EwR+rAAL8pEHrkdet3UrhHtSmcgYaxzs=
-X-Google-Smtp-Source: ABdhPJwOpdERgHwGb4rvrJrci1WzW4885EUbqlW2MDUuSQtisjBxJKC0r3wNG9d/yOyDfcRzhbayLCQ7Uh5+XeS9Znk=
-X-Received: by 2002:a2e:b1c9:: with SMTP id e9mr71281lja.283.1606950756815;
- Wed, 02 Dec 2020 15:12:36 -0800 (PST)
+        bh=rkQ5VhiTjOWTcEcaZ5PrPU7vDNQ0UxbJG4SPrbZBhIA=;
+        b=ZRNlVguHPOKIEiS7UBwmLUAAGE+KZKdJ2mG3iNlW957rB7Az7cD4E9bVXncAcj6Z+L
+         550eYiQSodiQMgSSn3o9fsTNo5pm80fssITgbfvQMmywPYruJP0h2oPWuWIh8bvwOn2F
+         9oceJnkCLQzqyQLEbqxMZbwoEBRjNGWtgHpzJY4UbDr3aolxmCSTHdTQU5di7i9LdVCQ
+         AhII5DwYyfIpt2JHNAdYTS2o8wk6P7No4Q/xvsJ76rWaHd0VtiUJ244l7oWuR1rjCGFr
+         PinHvXWOIrYPKtPTPUkR3r1Gr2YR2SUbhiF3W4pZiWV4hW9++Rlvec+BgdTmgxYPktmU
+         ARzw==
+X-Gm-Message-State: AOAM533hccysE9taxywwkg4dSb1Nrj+XcndujEd6vrGQRMStPREgbC0H
+        QDMIaNOQSXFrU5xY6H6WlMSQwnMUinx8NBbFWABotvIXoXQ=
+X-Google-Smtp-Source: ABdhPJz5irBRnP0p+ZVQ69MFPy42TlsAcjUCJ/4cEmVvA+KOL6n6esIFWV8Zm0cKviP2MNxCEXjGQ4K0uBgkhXtoljQ=
+X-Received: by 2002:a25:c7c6:: with SMTP id w189mr616592ybe.403.1606950818528;
+ Wed, 02 Dec 2020 15:13:38 -0800 (PST)
 MIME-Version: 1.0
-References: <20201202001616.3378929-1-andrii@kernel.org> <20201202001616.3378929-11-andrii@kernel.org>
- <20201202205809.qwbismdmmtrcsar7@ast-mbp> <CAEf4BzbeUu78v63UmDCzQ5jDhBqzaX-85GHdqc1aMuiy7ZMn3w@mail.gmail.com>
-In-Reply-To: <CAEf4BzbeUu78v63UmDCzQ5jDhBqzaX-85GHdqc1aMuiy7ZMn3w@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 2 Dec 2020 15:12:25 -0800
-Message-ID: <CAADnVQ+6QAGSgaXZu7g75suOcG+KEanoJNb6DP-jFKoHZKKxiA@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 10/14] bpf: allow to specify kernel module
- BTFs when attaching BPF programs
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
+References: <20201202223944.456903-1-kpsingh@chromium.org>
+In-Reply-To: <20201202223944.456903-1-kpsingh@chromium.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 2 Dec 2020 15:13:27 -0800
+Message-ID: <CAEf4BzaijbvqoajZGT+Gar57ACbCdNJcmBtYbfO2DdOhDevhNw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/3] selftests/bpf: Update ima_setup.sh for busybox
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 2, 2020 at 2:43 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Wed, Dec 2, 2020 at 2:39 PM KP Singh <kpsingh@chromium.org> wrote:
 >
-> On Wed, Dec 2, 2020 at 12:58 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Tue, Dec 01, 2020 at 04:16:12PM -0800, Andrii Nakryiko wrote:
-> > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > index c3458ec1f30a..60b95b51ccb8 100644
-> > > --- a/include/uapi/linux/bpf.h
-> > > +++ b/include/uapi/linux/bpf.h
-> > > @@ -558,6 +558,7 @@ union bpf_attr {
-> > >               __u32           line_info_cnt;  /* number of bpf_line_info records */
-> > >               __u32           attach_btf_id;  /* in-kernel BTF type id to attach to */
-> > >               __u32           attach_prog_fd; /* 0 to attach to vmlinux */
-> > > +             __u32           attach_btf_obj_id; /* vmlinux/module BTF object ID for BTF type */
-> >
-> > I think the uapi should use attach_btf_obj_fd here.
-> > Everywhere else uapi is using FDs to point to maps, progs, BTFs of progs.
-> > BTF of a module isn't different from BTF of a program.
-> > Looking at libbpf implementation... it has the FD of a module anyway,
-> > since it needs to fetch it to search for the function btf_id in there.
-> > So there won't be any inconvenience for libbpf to pass FD in here.
-> > From the uapi perspective attach_btf_obj_fd will remove potential
-> > race condition. It's very unlikely race, of course.
+> From: KP Singh <kpsingh@google.com>
 >
-> Yes, I actually contemplated that, but my preference went the ID way,
-> because it made libbpf implementation simpler and there was a nice
-> duality of using ID for types and BTF instances themselves.
+> * losetup on busybox does not output the name of loop device on using
+>   -f with --show. It also dosn't support -j to find the loop devices
+>   for a given backing file. losetup is updated to use "-a" which is
+>   available on busybox.
+> * blkid does not support options (-s and -o) to only display the uuid.
+> * Not all environments have mkfs.ext4, the test requires a loop device
+>   with a backing image file which could formatted with any filesystem.
+>   Update to using mkfs.ext2 which is available on busybox.
 >
-> The problem with FD is that when I load all module BTF objects, I open
-> their FD one at a time, and close it as soon as I read BTF raw data
-> back. If I don't do that on systems with many modules, I'll be keeping
-> potentially hundreds of FDs open, so I figured I don't want to do
-> that.
->
-> But I do see the FD instead of ID consistency as well, so I can go
-> with a simple and inefficient implementation of separate FD for each
-> BTF object for now, and if someone complains, we can teach libbpf to
-> lazily open FDs of module BTFs that are actually used (later, it will
-> complicate code unnecessarily). Not really worried about racing with
-> kernel modules being unloaded.
->
-> Also, if we use FD, we might not need a new attach_bpf_obj_id field at
-> all, we can re-use attach_prog_fd field (put it in union and have
-> attach_prog_fd/attach_btf_fd). On the kernel side, it would be easy to
-> check whether provided FD is for bpf_prog or btf. What do you think?
-> Too mysterious? Or good?
+> Fixes: 34b82d3ac105 ("bpf: Add a selftest for bpf_ima_inode_hash")
+> Reported-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: KP Singh <kpsingh@google.com>
+> ---
 
-You mean like:
-union {
-         __u32           attach_prog_fd; /* valid prog_fd to attach to
-bpf prog */
-         __u32           attach_btf_obj_fd; /* or  valid module BTF
-object fd or zero to attach to vmlinux */
-};
-or don't introduce a new field name at all?
-Sure. I'm fine with both. I think it's a good idea.
+Thanks for the fixes!
+
+You have three related patches, please add a cover letter to the patch
+set as well.
+
+>  tools/testing/selftests/bpf/ima_setup.sh | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/ima_setup.sh b/tools/testing/selftests/bpf/ima_setup.sh
+> index 15490ccc5e55..d864c62c1207 100755
+> --- a/tools/testing/selftests/bpf/ima_setup.sh
+> +++ b/tools/testing/selftests/bpf/ima_setup.sh
+> @@ -3,6 +3,7 @@
+>
+>  set -e
+>  set -u
+> +set -o pipefail
+>
+>  IMA_POLICY_FILE="/sys/kernel/security/ima/policy"
+>  TEST_BINARY="/bin/true"
+> @@ -23,13 +24,15 @@ setup()
+>
+>          dd if=/dev/zero of="${mount_img}" bs=1M count=10
+>
+> -        local loop_device="$(losetup --find --show ${mount_img})"
+> +        losetup -f "${mount_img}"
+> +        local loop_device=$(losetup -a | grep ${mount_img:?} | cut -d ":" -f1)
+>
+> -        mkfs.ext4 "${loop_device}"
+> +        mkfs.ext2 "${loop_device:?}"
+>          mount "${loop_device}" "${mount_dir}"
+>
+>          cp "${TEST_BINARY}" "${mount_dir}"
+> -        local mount_uuid="$(blkid -s UUID -o value ${loop_device})"
+> +       local mount_uuid="$(blkid ${loop_device} | sed 's/.*UUID="\([^"]*\)".*/\1/')"
+
+tabs/spaces mix up here?
+
+> +
+>          echo "measure func=BPRM_CHECK fsuuid=${mount_uuid}" > ${IMA_POLICY_FILE}
+>  }
+>
+> @@ -38,7 +41,8 @@ cleanup() {
+>          local mount_img="${tmp_dir}/test.img"
+>          local mount_dir="${tmp_dir}/mnt"
+>
+> -        local loop_devices=$(losetup -j ${mount_img} -O NAME --noheadings)
+> +        local loop_devices=$(losetup -a | grep ${mount_img:?} | cut -d ":" -f1)
+
+didn't know about :?, fancy
+
+
+> +
+>          for loop_dev in "${loop_devices}"; do
+>                  losetup -d $loop_dev
+>          done
+> --
+> 2.29.2.576.ga3fc446d84-goog
+>
