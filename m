@@ -2,174 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D98212CC3A2
-	for <lists+bpf@lfdr.de>; Wed,  2 Dec 2020 18:27:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05B732CC3F0
+	for <lists+bpf@lfdr.de>; Wed,  2 Dec 2020 18:38:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728789AbgLBR0j (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Dec 2020 12:26:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42058 "EHLO
+        id S1728414AbgLBRgl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Dec 2020 12:36:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728746AbgLBR0j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Dec 2020 12:26:39 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A640C061A47
-        for <bpf@vger.kernel.org>; Wed,  2 Dec 2020 09:25:25 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id j138so2625530ybg.20
-        for <bpf@vger.kernel.org>; Wed, 02 Dec 2020 09:25:25 -0800 (PST)
+        with ESMTP id S1726070AbgLBRgl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Dec 2020 12:36:41 -0500
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C13C0613CF;
+        Wed,  2 Dec 2020 09:36:00 -0800 (PST)
+Received: by mail-oi1-x242.google.com with SMTP id y74so2391894oia.11;
+        Wed, 02 Dec 2020 09:36:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=MTbHV8okuT5HRxc+/IJXXaeKBpFbDCXy11Dtl4K4Ls4=;
-        b=SwXDX0KN7/GqSAMgFaISJwTrUBOk9lmWHh+pC5H845NsHx8IrBOoEBOVamVhQQx13m
-         A1vfsUZ1OFXZSTbfrYMkTEkqnqyaEvDxO8sf79nmauGhbMp1iZr+oFv2L9+fhFVb2a1t
-         /icHxJWhIwAyWAyb3x3/zXqUN2qK3b//2ZbqCSYqR2h0+ynBFVT82AqyMKySNzx2t40m
-         qdg/Xi4635igRAeX8t3QYF4+SZg1xzcIqi8vCd15H8yQtCBefsuSwXLcyAhWrASEo64S
-         UJ3rUdtxHgQ/T8A/n5kHQq72toJ05ZUoqvZQTUajbc59HqmXlwLqu55YGh0ol3qjI/h8
-         Xg0A==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pLAAu7+sji8IJoCg+8UXEel91VK0p8PGWM0v3i7M3IE=;
+        b=FF5+khDygMun8kdp3GfHydtG9WE1iWBNpgElfJAP6GPilfEqENd8MzWLR5qhXhhIel
+         8mzLZ8yYy2NKZ8PkWWtL8pSu4xcmB2KjyRfLJHYJ+Vbq1hnxYrCqemJ72RY7MGxYEtl5
+         j+NPbGQi5W1Qqm78GpuCUZaYio+/RMaWPOypPIHMlvwa1wSbiWvrOYmdJi0BaCnkEoUX
+         9G07SOnsbDFJQHmTiR7LKiLVqNJlgbeoo05pNRdbA4Befbqf6AjgSPAE2dS/kz3zJMUu
+         epNSrcQTsbVi73sGFtY3QBDObXVpVaRnGxNMY8D3q5VlCW+FwLM6+NNGqaQafDej2mq9
+         ybCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=MTbHV8okuT5HRxc+/IJXXaeKBpFbDCXy11Dtl4K4Ls4=;
-        b=K49wYd1n1AKdvh1e+9IPy/6Q+YgBieFD1aBiwMVpNiQXK75gpLi8RJFXN1NNc0+xRA
-         pdBascZlwZTxD1MNkntDKilwP21axe/ccj7cYYZuFywRnw4y/MQecc8tAuFdzBJ9BhB6
-         kzHZzBWJDWBWMOlsCToLId6r9CejFkkwu28Hsov0XW6PbztHXQ++Qpoj0fpkJg/3ha9B
-         yVPCo6uk/HZ3SfxtoYGyzCAAxXNzKy8FXHmeODgBNiQXnThKGVTMQp2MbPKFtRjTFqol
-         RemkqdbKmrLRKHZWVdL5U5qtm4oQcJdb1C+96b1ForB0XfbFznplzqbwRlueHT4L1AQx
-         Pjig==
-X-Gm-Message-State: AOAM531qumPhTibRzoG/F5F4CGWEu3bIWGDye5w0WZ/OfxZoYh8bDPf+
-        E+Nksbi1GVBkoc5ww3xeYdUHim4=
-X-Google-Smtp-Source: ABdhPJxc2B0xOWx8MTM4tUP5N21tpbE8SOAfIsI2xJHkx43PQg1uFY1g2L8SHtTPJSorc4RZSJdPyMQ=
-Sender: "sdf via sendgmr" <sdf@sdf2.svl.corp.google.com>
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:7220:84ff:fe09:7732])
- (user=sdf job=sendgmr) by 2002:a25:748a:: with SMTP id p132mr4446339ybc.430.1606929924404;
- Wed, 02 Dec 2020 09:25:24 -0800 (PST)
-Date:   Wed,  2 Dec 2020 09:25:16 -0800
-In-Reply-To: <20201202172516.3483656-1-sdf@google.com>
-Message-Id: <20201202172516.3483656-4-sdf@google.com>
-Mime-Version: 1.0
-References: <20201202172516.3483656-1-sdf@google.com>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH bpf-next 3/3] selftests/bpf: extend bind{4,6} programs with a
- call to bpf_setsockopt
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     davem@davemloft.net, ast@kernel.org, daniel@iogearbox.net,
-        Stanislav Fomichev <sdf@google.com>,
-        Andrii Nakryiko <andrii@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pLAAu7+sji8IJoCg+8UXEel91VK0p8PGWM0v3i7M3IE=;
+        b=hRChTGqDT3M5tGheotIxlDrr1pWAzvNVx/yKEtoPlG9WJhTWbjc2NiRPW0MDCKMTMX
+         3esDud4g/zypvkiGPSSyZaXTQPEu/qHGZ+4URWlUg8KTc5Fq1KyihPYC2JOyfcpdBFz4
+         D6zPN7L7aiLxQQJ5zMg1LbF0joOUa8raflqN8+apj6bJK572QV6GSk6Lt+Tf8j5ly7W7
+         0nS5RG31AIsD7uAyJUTegSLINMfk5RSaRA878USxf4JRVZeTkcBkAYebe1wusxU9aSnz
+         Ps0gyIWRIuHvGadb3We49JvUizKRNK7yATgpBANGls6PNcKaPV7cG2Lxm4yFshbpxZXY
+         7w7Q==
+X-Gm-Message-State: AOAM531yHEhXAQWrhdR87hYfsEUCfHG2arcRpGvHZZN9g5iPTK6mQHBy
+        92q10ZRmX8VC0RwWNAQrmBXL5Lff/4qzoDbqbrNjEbep
+X-Google-Smtp-Source: ABdhPJzflpE5g+va0hQ1zauT1Uz1LkNKIltAwQzrnETknXlx5hyAE14jVC2GOBOmUJGoLNV4WTmBvSKKWFccWuABT5E=
+X-Received: by 2002:a05:6808:562:: with SMTP id j2mr2375423oig.1.1606930560156;
+ Wed, 02 Dec 2020 09:36:00 -0800 (PST)
+MIME-Version: 1.0
+References: <20201127175738.1085417-1-jackmanb@google.com> <20201127175738.1085417-2-jackmanb@google.com>
+ <20201129011552.jbepegeeo2lqv6ke@ast-mbp> <20201201121437.GB2114905@google.com>
+ <CAADnVQJci_Fqq7d6GbUtivcmSgnPLbkwuH9MN30BhFomff=5rg@mail.gmail.com> <20201202105248.GA9710@google.com>
+In-Reply-To: <20201202105248.GA9710@google.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 2 Dec 2020 09:35:49 -0800
+Message-ID: <CAADnVQJNEcWgjH_HOwg=RSfLsbtD7NPtabVms=GoXwfNueb_+g@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 01/13] bpf: x86: Factor out emission of ModR/M
+ for *(reg + off)
+To:     Brendan Jackman <jackmanb@google.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>, Jann Horn <jannh@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-To make sure it doesn't trigger sock_owned_by_me splat.
+On Wed, Dec 2, 2020 at 2:52 AM Brendan Jackman <jackmanb@google.com> wrote:
+>
+> Tue, Dec 01, 2020 at 09:50:00PM -0800, Alexei Starovoitov wrote:
+> > On Tue, Dec 1, 2020 at 4:14 AM Brendan Jackman <jackmanb@google.com> wrote:
+> > >
+> > > On Sat, Nov 28, 2020 at 05:15:52PM -0800, Alexei Starovoitov wrote:
+> > > > On Fri, Nov 27, 2020 at 05:57:26PM +0000, Brendan Jackman wrote:
+> > > > > +/* Emit the ModR/M byte for addressing *(r1 + off) and r2 */
+> > > > > +static void emit_modrm_dstoff(u8 **pprog, u32 r1, u32 r2, int off)
+> > > >
+> > > > same concern as in the another patch. If you could avoid intel's puzzling names
+> > > > like above it will make reviewing the patch easier.
+> > >
+> > > In this case there is actually a call like
+> > >
+> > >   emit_modrm_dstoff(&prog, src_reg, dst_reg)
+> >
+> > emit_insn_prefix() ?
+>
+> Ah sorry, I thought you were talking about the _arg_ names.
 
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
----
- .../testing/selftests/bpf/progs/bind4_prog.c  | 31 +++++++++++++++++++
- .../testing/selftests/bpf/progs/bind6_prog.c  | 31 +++++++++++++++++++
- 2 files changed, 62 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/progs/bind4_prog.c b/tools/testing/selftests/bpf/progs/bind4_prog.c
-index 0951302a984a..c6520f21f5f5 100644
---- a/tools/testing/selftests/bpf/progs/bind4_prog.c
-+++ b/tools/testing/selftests/bpf/progs/bind4_prog.c
-@@ -19,6 +19,33 @@
- #define SERV4_REWRITE_IP	0x7f000001U /* 127.0.0.1 */
- #define SERV4_REWRITE_PORT	4444
- 
-+#ifndef IFNAMSIZ
-+#define IFNAMSIZ 16
-+#endif
-+
-+static __inline int bind_to_device(struct bpf_sock_addr *ctx)
-+{
-+	char veth1[IFNAMSIZ] = "test_sock_addr1";
-+	char veth2[IFNAMSIZ] = "test_sock_addr2";
-+	char missing[IFNAMSIZ] = "nonexistent_dev";
-+	char del_bind[IFNAMSIZ] = "";
-+
-+	if (bpf_setsockopt(ctx, SOL_SOCKET, SO_BINDTODEVICE,
-+				&veth1, sizeof(veth1)))
-+		return 1;
-+	if (bpf_setsockopt(ctx, SOL_SOCKET, SO_BINDTODEVICE,
-+				&veth2, sizeof(veth2)))
-+		return 1;
-+	if (bpf_setsockopt(ctx, SOL_SOCKET, SO_BINDTODEVICE,
-+				&missing, sizeof(missing)) != -ENODEV)
-+		return 1;
-+	if (bpf_setsockopt(ctx, SOL_SOCKET, SO_BINDTODEVICE,
-+				&del_bind, sizeof(del_bind)))
-+		return 1;
-+
-+	return 0;
-+}
-+
- SEC("cgroup/bind4")
- int bind_v4_prog(struct bpf_sock_addr *ctx)
- {
-@@ -62,6 +89,10 @@ int bind_v4_prog(struct bpf_sock_addr *ctx)
- 	if (ctx->user_ip4 != user_ip4)
- 		return 0;
- 
-+	/* Bind to device and unbind it. */
-+	if (bind_to_device(ctx))
-+		return 0;
-+
- 	ctx->user_ip4 = bpf_htonl(SERV4_REWRITE_IP);
- 	ctx->user_port = bpf_htons(SERV4_REWRITE_PORT);
- 
-diff --git a/tools/testing/selftests/bpf/progs/bind6_prog.c b/tools/testing/selftests/bpf/progs/bind6_prog.c
-index 16da1cf85418..4358e44dcf47 100644
---- a/tools/testing/selftests/bpf/progs/bind6_prog.c
-+++ b/tools/testing/selftests/bpf/progs/bind6_prog.c
-@@ -25,6 +25,33 @@
- #define SERV6_REWRITE_IP_3	0x00000001
- #define SERV6_REWRITE_PORT	6666
- 
-+#ifndef IFNAMSIZ
-+#define IFNAMSIZ 16
-+#endif
-+
-+static __inline int bind_to_device(struct bpf_sock_addr *ctx)
-+{
-+	char veth1[IFNAMSIZ] = "test_sock_addr1";
-+	char veth2[IFNAMSIZ] = "test_sock_addr2";
-+	char missing[IFNAMSIZ] = "nonexistent_dev";
-+	char del_bind[IFNAMSIZ] = "";
-+
-+	if (bpf_setsockopt(ctx, SOL_SOCKET, SO_BINDTODEVICE,
-+				&veth1, sizeof(veth1)))
-+		return 1;
-+	if (bpf_setsockopt(ctx, SOL_SOCKET, SO_BINDTODEVICE,
-+				&veth2, sizeof(veth2)))
-+		return 1;
-+	if (bpf_setsockopt(ctx, SOL_SOCKET, SO_BINDTODEVICE,
-+				&missing, sizeof(missing)) != -ENODEV)
-+		return 1;
-+	if (bpf_setsockopt(ctx, SOL_SOCKET, SO_BINDTODEVICE,
-+				&del_bind, sizeof(del_bind)))
-+		return 1;
-+
-+	return 0;
-+}
-+
- SEC("cgroup/bind6")
- int bind_v6_prog(struct bpf_sock_addr *ctx)
- {
-@@ -76,6 +103,10 @@ int bind_v6_prog(struct bpf_sock_addr *ctx)
- 			return 0;
- 	}
- 
-+	/* Bind to device and unbind it. */
-+	if (bind_to_device(ctx))
-+		return 0;
-+
- 	ctx->user_ip6[0] = bpf_htonl(SERV6_REWRITE_IP_0);
- 	ctx->user_ip6[1] = bpf_htonl(SERV6_REWRITE_IP_1);
- 	ctx->user_ip6[2] = bpf_htonl(SERV6_REWRITE_IP_2);
--- 
-2.29.2.454.gaff20da3a2-goog
-
+I meant both. Arg names and helper name. Sorry for the confusion.
