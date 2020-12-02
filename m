@@ -2,77 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34D2D2CB25A
-	for <lists+bpf@lfdr.de>; Wed,  2 Dec 2020 02:31:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F0332CB268
+	for <lists+bpf@lfdr.de>; Wed,  2 Dec 2020 02:39:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727677AbgLBBbf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 1 Dec 2020 20:31:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35784 "EHLO
+        id S1727910AbgLBBjJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 1 Dec 2020 20:39:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727589AbgLBBbf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 1 Dec 2020 20:31:35 -0500
+        with ESMTP id S1727660AbgLBBjJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 1 Dec 2020 20:39:09 -0500
 Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B6EC0613D4;
-        Tue,  1 Dec 2020 17:30:49 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id k65so142291ybk.5;
-        Tue, 01 Dec 2020 17:30:48 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2080EC0613D4;
+        Tue,  1 Dec 2020 17:38:29 -0800 (PST)
+Received: by mail-yb1-xb42.google.com with SMTP id s8so125713yba.13;
+        Tue, 01 Dec 2020 17:38:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xP44qHOp+ESajrSkrMGCR4T0dJKkIsBbHGrUioyMaSQ=;
-        b=BS0bAzbYz8iKqMxNaXP5WqKCPxmBj2lD2octArGCOhEXSSnWpuXvGmbBRYdmLS5IA0
-         VOuLW2qOSMFn5ixAkAEffS7s5ksMHeHVsM8NxdtQ5GpzIealRn1TW5SeshEeMmm87E1y
-         bkpAtH7K/AGpRsyY40szXj4EqbAxUh9cVn2ePwAEVj8mkvUPbzuVwAt0n66TN85Pyjob
-         ReVPYjOu2Ur9kMqn0tg4ElzxZ074VaVAPimZ/IS4pmxXX/Ke/e0DNtlAlB3sXoG6i0GS
-         PsgdpLzxQh8LB1xCutoQ6eMOGj2lQNOK59WtdMKVsQM5C2fmNoXK5AIWBShO1w0VlzzD
-         oM2A==
+         :cc:content-transfer-encoding;
+        bh=k0tPoBlU4NKyR6gcj3vy9nGS+9uhhqNqZLS5gO66TK0=;
+        b=W8z9s7y0Ua26sqELm+h84HFNCk1fsBqzDiglnalhsMtYstzFt55bJ17IxbHXTX7+Kq
+         B9q9NLbVB8WRAd9f4Go49EwJBs6YUyHtjWhZUXrwODxAUOUqAMr1MEmI5GeSgyxKqiVZ
+         d1uqSQJIVifxysC3KEKM9MavXJOK0y2xFuJ1TLkWGDhaBervLJZATW3vhcNcV/idtCYO
+         TEf4v7GKcP25LVw8K3eO4Z9nKkc1K+5m1rsSZMmBNKfjPlADDwe1bxmur9yvATVQjE1Q
+         tjhn49s7nC/obLXny/wfi5uYC8jh1ZFp/FcoL/bxMd7wVDzDQCpBtu8HJIC6PDjWvEk0
+         QQ2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xP44qHOp+ESajrSkrMGCR4T0dJKkIsBbHGrUioyMaSQ=;
-        b=uGpHwJwIIrCTTuPp7IxhHEatWG4guH4TUrLTZtVdIlwATE2E7/rh+LeJpzkTCfwrjU
-         gOtTajoWk7zy42RqdhE44YSNH9Fjib3IQQtpJOLbUgnmc30HiCaS2k7enoVZ0WAW1Yts
-         vlBpvdo8TIdwSpg2HWbY0CDB1T0ORq98avLFvdYfrvAJypjlLyjGDCMFajok3KZ2EP0+
-         xB9NqzkX7CxjfBwalhwBKEHMBFFYNDq/eUlNx9sSkl86VRJgrLc1sAFcB99eUgYUhTId
-         iSPffiz1iNSp2vVxsx4P/toD5dCdtKFY5H/xZMtMYSNCxRW5ojKEVfnX/t3+zzFRuHt7
-         ZATw==
-X-Gm-Message-State: AOAM5305dGoU/WaY4afkXsluLvyBij8eZbnT7nDtMwiuyxWfhBIiOurn
-        KHPZcthahs4Uds4ZUOB3RqRUk1F6oYkgpb13qRY=
-X-Google-Smtp-Source: ABdhPJwz/6CG0fxQ4O0c2X2tG5W62oSGPMCM5RKcHTcb2Y3mdwMlFmuEz2z7eD6wvtFOMm8AhuHzSUQNZmi2EM7tCKQ=
-X-Received: by 2002:a25:df8e:: with SMTP id w136mr260284ybg.230.1606872648365;
- Tue, 01 Dec 2020 17:30:48 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=k0tPoBlU4NKyR6gcj3vy9nGS+9uhhqNqZLS5gO66TK0=;
+        b=GrhxSptPhvlmQ96XWGl953v0d+dZxbVohT/918QMArQvYmimpAmCn+5Hdf50sihZdP
+         gIQRRB1Bn/hyW3IRxdNBfiyDTI2ZGz9ghbl4OYQ9r+eQ3fMompReq83EJMUIC9r6vUm5
+         puz4TB5nppGw0mHn4Nq9GqpNNtDO9BSNsJHXo3HneRfKCR8b1wPUODQXEKHcy/yZuXBd
+         //m7O0ne2H23+VACBpixdGLghhwA/gAuWnmuzfYv45DqfU/0WPNpEvzaJCTFeIjOcHqu
+         CLJZ34qNwRZb/D51qK9Sc+9Zc2HocHAh1J/GE+o5mPcUTcdMw8FJmPQSLmgfInT2/qUF
+         3t7A==
+X-Gm-Message-State: AOAM533fgCKJsALvKihtaXLKEynFhosDLJct7qjTWzdm3/EhzrbZ/Je1
+        C5RNGOQs7g7JUZkx6dtCn4JkLO86k0fYe73C//M=
+X-Google-Smtp-Source: ABdhPJzeFyn2AWeUIV6sKJUOxmAyHPcJ6Fed2FalTuZWQdaMu2TmwUpAeG1hc+OQuNGV+0ySqbJ9QvjUlAfqBNY7IcI=
+X-Received: by 2002:a25:585:: with SMTP id 127mr240609ybf.425.1606873108487;
+ Tue, 01 Dec 2020 17:38:28 -0800 (PST)
 MIME-Version: 1.0
-References: <CAADnVQJK=s5aovsKoQT=qF1novjM4VMyZCGG_6BEenQQWPbTQw@mail.gmail.com>
- <20201201202215.3376498-1-prankgup@fb.com>
-In-Reply-To: <20201201202215.3376498-1-prankgup@fb.com>
+References: <HKAPR02MB429180E153A7547C20F17915E0F40@HKAPR02MB4291.apcprd02.prod.outlook.com>
+In-Reply-To: <HKAPR02MB429180E153A7547C20F17915E0F40@HKAPR02MB4291.apcprd02.prod.outlook.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 1 Dec 2020 17:30:37 -0800
-Message-ID: <CAEf4Bzb4CQTbxXQXnukVfV5T5dWDutvyL6n7Krfw+T0Gc_aGSA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/2] Add support to set window_clamp from bpf setsockops
-To:     Prankur gupta <prankgup@fb.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>,
-        Networking <netdev@vger.kernel.org>
+Date:   Tue, 1 Dec 2020 17:38:17 -0800
+Message-ID: <CAEf4BzY1Q7XZVMheN-e78HCO=M74frFM1d6h56-ChTNrDhNMUw@mail.gmail.com>
+Subject: Re: [PATCH] tools/bpf: Return the appropriate error value
+To:     =?UTF-8?B?5b2t5rWpKFJpY2hhcmQp?= <richard.peng@oppo.com>
+Cc:     "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 12:24 PM Prankur gupta <prankgup@fb.com> wrote:
+On Mon, Nov 30, 2020 at 7:06 PM =E5=BD=AD=E6=B5=A9(Richard) <richard.peng@o=
+ppo.com> wrote:
 >
-> From: Prankur Gupta <prankgup@fb.com>
+> Compile times error:
+> "Error: failed to load BTF from /mnt/linux/vmlinux: No such file or direc=
+tory".
+> This file "/mnt/linux/vmlinux" actually exists, but only because CONFIG_D=
+EBUG_INFO_BTF
+> is not configured with this error.
 >
-> No reason in particular.
-> Updated the code (patch v2) to have logic as tcp setsockopt for tCP_WINDOW_CLAMP.
+> Signed-off-by: Peng Hao <richard.peng@oppo.com>
+> ---
+>  tools/lib/bpf/btf.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> PS: First time trying git send-em,ail, pleas elet me know if this is not the right way to reply.
+> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> index 231b07203e3d..228f508fbd04 100644
+> --- a/tools/lib/bpf/btf.c
+> +++ b/tools/lib/bpf/btf.c
+> @@ -865,7 +865,7 @@ struct btf *btf__parse_elf(const char *path, struct b=
+tf_ext **btf_ext)
+>         err =3D 0;
+>
+>         if (!btf_data) {
+> -               err =3D -ENOENT;
+> +               err =3D -EPROTO;
 
-I use send-email for sending patches only, I reply from Gmail or
-Thunderbird (from work account). The latter has a plain text mode,
-while Outlook doesn't.
+ENOENT as related to "no .BTF section found"... EPROTO would make
+sense as well, but I don't think we need to really change anything.
+"Protocol error" isn't very meaningful either...
 
-But also, you need to add v2 to each patch, not just cover letter. You
-can do that when using `git format-patch --subject-prefix='PATCH v2
-bpf-next' ...`.
+
+>                 goto done;
+>         }
+>         btf =3D btf__new(btf_data->d_buf, btf_data->d_size);
+> --
+> 2.18.4
