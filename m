@@ -2,163 +2,298 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A739C2CC83B
-	for <lists+bpf@lfdr.de>; Wed,  2 Dec 2020 21:46:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 966CD2CC86E
+	for <lists+bpf@lfdr.de>; Wed,  2 Dec 2020 21:58:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730462AbgLBUpV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Dec 2020 15:45:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44806 "EHLO
+        id S2388278AbgLBU4v (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Dec 2020 15:56:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730320AbgLBUpV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Dec 2020 15:45:21 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1AD5C0613D6;
-        Wed,  2 Dec 2020 12:44:40 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id k14so5536453wrn.1;
-        Wed, 02 Dec 2020 12:44:40 -0800 (PST)
+        with ESMTP id S2387730AbgLBU4h (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Dec 2020 15:56:37 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED19DC0617A7
+        for <bpf@vger.kernel.org>; Wed,  2 Dec 2020 12:55:50 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id g185so19428wmf.3
+        for <bpf@vger.kernel.org>; Wed, 02 Dec 2020 12:55:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=siQ+4u2fls2vEOT6ZxwPBa9lneCi2Mme+Eia6lpJ7BQ=;
-        b=ff/jONCPyYNtT7wZNpkzBrSui707VdITkSzfNCVKgvKl83E5+k05JM/FdNCPCKuLJH
-         pwkzeDSnx/ayzlTKl2i0LbP+upz6bGjN/510Tt/HXknDck64aS29AiE4Rz0cTLSNDnT2
-         T1Q5wDBX20wlODh0ZH4jIewKT/aMcWVjDNAq5iLdf3XsyALVysfDP4+rmKAzo/5hbVdL
-         uSBaclSqGiPM4/D4u3V5vJHspfEtJtWgZCqum3LuopPYt8xIZToDm9Ynbn8xRyY1VaDT
-         iZFLqd9EOBRyr8hpvBaeOtwigUiueI5zgJd2kuFNPMaJqpfDsDRTRBtL7jXzFEBYxp1c
-         Ogww==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KN099bxLQhgifyNEOADiiqRwquEtb1Hbzl77WS/Xn1U=;
+        b=XPC4NMc6m3VStODiVmfKoVX3ab+XWxwMJSvdYKg35u+gHLMMMCDhMQmoMqraL5x1g4
+         9ozuXHK9XFInMMIi3zQqqo5v0IZgPaaMJVf9gNwUaf3ln1CPf7nGQuHzTkCQ6braFHeP
+         lGd5RPNEWoW3N4Kr2lQK1ikekxjRoX5sySmrQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=siQ+4u2fls2vEOT6ZxwPBa9lneCi2Mme+Eia6lpJ7BQ=;
-        b=ExStukkw2tpQxQvY29RaxhahWd+134IHyIz1Ic7bUWC1VnFFdmnzfgfF3ibPL9pVVU
-         iVGT8TDRwoMnylN5jnm6tDCe/7uaxEantm/WbHg+yxeuqrzD/QU2rkb+So/C6Cf5tHQ7
-         hPiItRNgNb5gXf1YhLpSGOnDGQAcFyXn9e2qjZxSXTKQxLP3QzQsb8WFolzeHXAdzoeW
-         dBwUVcLM3jhuRMt/L8S/6PXYmRskm82LXspVH7PcuiF5dME8tIP3GRvvwGg6ysBOcOMS
-         +ZqMqZs7S5ZcGJR/d/0zLltncbCrL5StcGyQDiwpY91Nj0V9bLvjLU3+Hadiw8biiBxz
-         fCmQ==
-X-Gm-Message-State: AOAM532jeFNCni7SjBWt6ut/tlKu7HKUjnBMotOkyK/ng7d7LTyznmHu
-        vHyNj/6QK6Prvt5xZINcAYifvJCIiNY=
-X-Google-Smtp-Source: ABdhPJwFO74letTtAQieILhE5jr+JcdK02zDH06mdNzgh08vM6Mm/wBEkU1NzvXPbvtx/J5RQ3ebMw==
-X-Received: by 2002:a5d:550f:: with SMTP id b15mr5618656wrv.112.1606941879182;
-        Wed, 02 Dec 2020 12:44:39 -0800 (PST)
-Received: from [192.168.8.116] ([37.164.23.254])
-        by smtp.gmail.com with ESMTPSA id 34sm3362694wrh.78.2020.12.02.12.44.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Dec 2020 12:44:38 -0800 (PST)
-Subject: Re: [PATCH v3 bpf-next 1/2] bpf: Adds support for setting window
- clamp
-To:     Prankur gupta <prankgup@fb.com>, bpf@vger.kernel.org
-Cc:     kernel-team@fb.com, netdev@vger.kernel.org
-References: <20201202202925.165803-1-prankgup@fb.com>
- <20201202202925.165803-2-prankgup@fb.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <14fc7e89-29ae-0657-d626-e0417f2043e4@gmail.com>
-Date:   Wed, 2 Dec 2020 21:44:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        bh=KN099bxLQhgifyNEOADiiqRwquEtb1Hbzl77WS/Xn1U=;
+        b=qbwCmWW8M1uZd9aKW00SdS8Ap7308kEwAxbF8NA+ykI1SLJ9l4CnjAbJ05plcHMBej
+         v1i1zhtDRrzWQNBx/JZmyM6CBjmWzaxAE4xr60Zn9Han46AWPsCk3DU1Z8rtFzrqS3ZE
+         vTTlwOrZsrRZ50K5t396j1YGGoMKi5+Qp2JYjw5vglXNzT2NSfdgZYQbOSXopk/ALxRM
+         PaVkchb9DHJ8ZRc4PjtmyryenAHQ54K805QMNOkv5FStq4Z3ifq43Xs+8JiD9enPeEQn
+         LfuKn0MVoyOIa+ysc42tNaHmM1cwgYF2cgmrSXLYVsyXNXzugBjB/21IkNWsU3N29nve
+         wLLg==
+X-Gm-Message-State: AOAM530KPUSnrNCrB8368PbYnG5KHk/qpNxUOY6Y1s/bewefwwg6uc45
+        m4ZLZCCSI5cvKJkiC5JlF41+GG3ybBSA5Q==
+X-Google-Smtp-Source: ABdhPJw9YhSpaYoFITJG6Bog7n8gMa29ti0mUIZURTGlbCe4fpS4xj3X4lpj9jk849k/3x3zTUAg+g==
+X-Received: by 2002:a7b:cb82:: with SMTP id m2mr4881281wmi.75.1606942549154;
+        Wed, 02 Dec 2020 12:55:49 -0800 (PST)
+Received: from revest.zrh.corp.google.com ([2a00:79e0:42:204:f693:9fff:fef4:a569])
+        by smtp.gmail.com with ESMTPSA id d2sm3438486wrn.43.2020.12.02.12.55.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 12:55:48 -0800 (PST)
+From:   Florent Revest <revest@chromium.org>
+X-Google-Original-From: Florent Revest <revest@google.com>
+To:     bpf@vger.kernel.org
+Cc:     viro@zeniv.linux.org.uk, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, kafai@fb.com, yhs@fb.com,
+        andrii@kernel.org, kpsingh@chromium.org, revest@google.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        KP Singh <kpsingh@google.com>
+Subject: [PATCH bpf-next v4 1/6] net: Remove the err argument from sock_from_file
+Date:   Wed,  2 Dec 2020 21:55:22 +0100
+Message-Id: <20201202205527.984965-1-revest@google.com>
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
 MIME-Version: 1.0
-In-Reply-To: <20201202202925.165803-2-prankgup@fb.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Currently, the sock_from_file prototype takes an "err" pointer that is
+either not set or set to -ENOTSOCK IFF the returned socket is NULL. This
+makes the error redundant and it is ignored by a few callers.
 
+This patch simplifies the API by letting callers deduce the error based
+on whether the returned socket is NULL or not.
 
-On 12/2/20 9:29 PM, Prankur gupta wrote:
-> Adds a new bpf_setsockopt for TCP sockets, TCP_BPF_WINDOW_CLAMP,
-> which sets the maximum receiver window size. It will be useful for
-> limiting receiver window based on RTT.
-> 
-> Signed-off-by: Prankur gupta <prankgup@fb.com>
-> ---
->  include/net/tcp.h |  1 +
->  net/core/filter.c |  3 +++
->  net/ipv4/tcp.c    | 23 ++++++++++++++---------
->  3 files changed, 18 insertions(+), 9 deletions(-)
-> 
-> diff --git a/include/net/tcp.h b/include/net/tcp.h
-> index 4aba0f069b05..39ced5882fe3 100644
-> --- a/include/net/tcp.h
-> +++ b/include/net/tcp.h
-> @@ -406,6 +406,7 @@ void tcp_syn_ack_timeout(const struct request_sock *req);
->  int tcp_recvmsg(struct sock *sk, struct msghdr *msg, size_t len, int nonblock,
->  		int flags, int *addr_len);
->  int tcp_set_rcvlowat(struct sock *sk, int val);
-> +int tcp_set_window_clamp(struct sock *sk, struct tcp_sock *tp, int val);
->  void tcp_data_ready(struct sock *sk);
->  #ifdef CONFIG_MMU
->  int tcp_mmap(struct file *file, struct socket *sock,
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 2ca5eecebacf..d6225842cfb1 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -4910,6 +4910,9 @@ static int _bpf_setsockopt(struct sock *sk, int level, int optname,
->  				tp->notsent_lowat = val;
->  				sk->sk_write_space(sk);
->  				break;
-> +			case TCP_WINDOW_CLAMP:
-> +				ret = tcp_set_window_clamp(sk, tp, val);
-> +				break;
->  			default:
->  				ret = -EINVAL;
->  			}
-> diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-> index b2bc3d7fe9e8..312feb8fcae5 100644
-> --- a/net/ipv4/tcp.c
-> +++ b/net/ipv4/tcp.c
-> @@ -3022,6 +3022,19 @@ int tcp_sock_set_keepcnt(struct sock *sk, int val)
->  }
->  EXPORT_SYMBOL(tcp_sock_set_keepcnt);
->  
-> +int tcp_set_window_clamp(struct sock *sk, struct tcp_sock *tp, int val)
+Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Florent Revest <revest@google.com>
+Reviewed-by: KP Singh <kpsingh@google.com>
+---
+ fs/eventpoll.c               |  3 +--
+ fs/io_uring.c                | 16 ++++++++--------
+ include/linux/net.h          |  2 +-
+ net/core/netclassid_cgroup.c |  3 +--
+ net/core/netprio_cgroup.c    |  3 +--
+ net/core/sock.c              |  8 +-------
+ net/socket.c                 | 27 ++++++++++++++++-----------
+ 7 files changed, 29 insertions(+), 33 deletions(-)
 
-No TCP function pass both sk and tp (which are identical values)
+diff --git a/fs/eventpoll.c b/fs/eventpoll.c
+index 73c346e503d7..19499b7bb82c 100644
+--- a/fs/eventpoll.c
++++ b/fs/eventpoll.c
+@@ -416,12 +416,11 @@ static inline void ep_set_busy_poll_napi_id(struct epitem *epi)
+ 	unsigned int napi_id;
+ 	struct socket *sock;
+ 	struct sock *sk;
+-	int err;
+ 
+ 	if (!net_busy_loop_on())
+ 		return;
+ 
+-	sock = sock_from_file(epi->ffd.file, &err);
++	sock = sock_from_file(epi->ffd.file);
+ 	if (!sock)
+ 		return;
+ 
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 8018c7076b25..ace99b15cbd3 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -4341,9 +4341,9 @@ static int io_sendmsg(struct io_kiocb *req, bool force_nonblock,
+ 	unsigned flags;
+ 	int ret;
+ 
+-	sock = sock_from_file(req->file, &ret);
++	sock = sock_from_file(req->file);
+ 	if (unlikely(!sock))
+-		return ret;
++		return -ENOTSOCK;
+ 
+ 	if (req->async_data) {
+ 		kmsg = req->async_data;
+@@ -4390,9 +4390,9 @@ static int io_send(struct io_kiocb *req, bool force_nonblock,
+ 	unsigned flags;
+ 	int ret;
+ 
+-	sock = sock_from_file(req->file, &ret);
++	sock = sock_from_file(req->file);
+ 	if (unlikely(!sock))
+-		return ret;
++		return -ENOTSOCK;
+ 
+ 	ret = import_single_range(WRITE, sr->buf, sr->len, &iov, &msg.msg_iter);
+ 	if (unlikely(ret))
+@@ -4569,9 +4569,9 @@ static int io_recvmsg(struct io_kiocb *req, bool force_nonblock,
+ 	unsigned flags;
+ 	int ret, cflags = 0;
+ 
+-	sock = sock_from_file(req->file, &ret);
++	sock = sock_from_file(req->file);
+ 	if (unlikely(!sock))
+-		return ret;
++		return -ENOTSOCK;
+ 
+ 	if (req->async_data) {
+ 		kmsg = req->async_data;
+@@ -4632,9 +4632,9 @@ static int io_recv(struct io_kiocb *req, bool force_nonblock,
+ 	unsigned flags;
+ 	int ret, cflags = 0;
+ 
+-	sock = sock_from_file(req->file, &ret);
++	sock = sock_from_file(req->file);
+ 	if (unlikely(!sock))
+-		return ret;
++		return -ENOTSOCK;
+ 
+ 	if (req->flags & REQ_F_BUFFER_SELECT) {
+ 		kbuf = io_recv_buffer_select(req, !force_nonblock);
+diff --git a/include/linux/net.h b/include/linux/net.h
+index 0dcd51feef02..9e2324efc26a 100644
+--- a/include/linux/net.h
++++ b/include/linux/net.h
+@@ -240,7 +240,7 @@ int sock_sendmsg(struct socket *sock, struct msghdr *msg);
+ int sock_recvmsg(struct socket *sock, struct msghdr *msg, int flags);
+ struct file *sock_alloc_file(struct socket *sock, int flags, const char *dname);
+ struct socket *sockfd_lookup(int fd, int *err);
+-struct socket *sock_from_file(struct file *file, int *err);
++struct socket *sock_from_file(struct file *file);
+ #define		     sockfd_put(sock) fput(sock->file)
+ int net_ratelimit(void);
+ 
+diff --git a/net/core/netclassid_cgroup.c b/net/core/netclassid_cgroup.c
+index 41b24cd31562..b49c57d35a88 100644
+--- a/net/core/netclassid_cgroup.c
++++ b/net/core/netclassid_cgroup.c
+@@ -68,9 +68,8 @@ struct update_classid_context {
+ 
+ static int update_classid_sock(const void *v, struct file *file, unsigned n)
+ {
+-	int err;
+ 	struct update_classid_context *ctx = (void *)v;
+-	struct socket *sock = sock_from_file(file, &err);
++	struct socket *sock = sock_from_file(file);
+ 
+ 	if (sock) {
+ 		spin_lock(&cgroup_sk_update_lock);
+diff --git a/net/core/netprio_cgroup.c b/net/core/netprio_cgroup.c
+index 9bd4cab7d510..99a431c56f23 100644
+--- a/net/core/netprio_cgroup.c
++++ b/net/core/netprio_cgroup.c
+@@ -220,8 +220,7 @@ static ssize_t write_priomap(struct kernfs_open_file *of,
+ 
+ static int update_netprio(const void *v, struct file *file, unsigned n)
+ {
+-	int err;
+-	struct socket *sock = sock_from_file(file, &err);
++	struct socket *sock = sock_from_file(file);
+ 	if (sock) {
+ 		spin_lock(&cgroup_sk_update_lock);
+ 		sock_cgroup_set_prioidx(&sock->sk->sk_cgrp_data,
+diff --git a/net/core/sock.c b/net/core/sock.c
+index d422a6808405..eb55cf79bb24 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -2827,14 +2827,8 @@ EXPORT_SYMBOL(sock_no_mmap);
+ void __receive_sock(struct file *file)
+ {
+ 	struct socket *sock;
+-	int error;
+ 
+-	/*
+-	 * The resulting value of "error" is ignored here since we only
+-	 * need to take action when the file is a socket and testing
+-	 * "sock" for NULL is sufficient.
+-	 */
+-	sock = sock_from_file(file, &error);
++	sock = sock_from_file(file);
+ 	if (sock) {
+ 		sock_update_netprioidx(&sock->sk->sk_cgrp_data);
+ 		sock_update_classid(&sock->sk->sk_cgrp_data);
+diff --git a/net/socket.c b/net/socket.c
+index 6e6cccc2104f..c799d9652a2c 100644
+--- a/net/socket.c
++++ b/net/socket.c
+@@ -445,17 +445,15 @@ static int sock_map_fd(struct socket *sock, int flags)
+ /**
+  *	sock_from_file - Return the &socket bounded to @file.
+  *	@file: file
+- *	@err: pointer to an error code return
+  *
+- *	On failure returns %NULL and assigns -ENOTSOCK to @err.
++ *	On failure returns %NULL.
+  */
+ 
+-struct socket *sock_from_file(struct file *file, int *err)
++struct socket *sock_from_file(struct file *file)
+ {
+ 	if (file->f_op == &socket_file_ops)
+ 		return file->private_data;	/* set in sock_map_fd */
+ 
+-	*err = -ENOTSOCK;
+ 	return NULL;
+ }
+ EXPORT_SYMBOL(sock_from_file);
+@@ -484,9 +482,11 @@ struct socket *sockfd_lookup(int fd, int *err)
+ 		return NULL;
+ 	}
+ 
+-	sock = sock_from_file(file, err);
+-	if (!sock)
++	sock = sock_from_file(file);
++	if (!sock) {
++		*err = -ENOTSOCK;
+ 		fput(file);
++	}
+ 	return sock;
+ }
+ EXPORT_SYMBOL(sockfd_lookup);
+@@ -498,11 +498,12 @@ static struct socket *sockfd_lookup_light(int fd, int *err, int *fput_needed)
+ 
+ 	*err = -EBADF;
+ 	if (f.file) {
+-		sock = sock_from_file(f.file, err);
++		sock = sock_from_file(f.file);
+ 		if (likely(sock)) {
+ 			*fput_needed = f.flags & FDPUT_FPUT;
+ 			return sock;
+ 		}
++		*err = -ENOTSOCK;
+ 		fdput(f);
+ 	}
+ 	return NULL;
+@@ -1715,9 +1716,11 @@ int __sys_accept4_file(struct file *file, unsigned file_flags,
+ 	if (SOCK_NONBLOCK != O_NONBLOCK && (flags & SOCK_NONBLOCK))
+ 		flags = (flags & ~SOCK_NONBLOCK) | O_NONBLOCK;
+ 
+-	sock = sock_from_file(file, &err);
+-	if (!sock)
++	sock = sock_from_file(file);
++	if (!sock) {
++		err = -ENOTSOCK;
+ 		goto out;
++	}
+ 
+ 	err = -ENFILE;
+ 	newsock = sock_alloc();
+@@ -1840,9 +1843,11 @@ int __sys_connect_file(struct file *file, struct sockaddr_storage *address,
+ 	struct socket *sock;
+ 	int err;
+ 
+-	sock = sock_from_file(file, &err);
+-	if (!sock)
++	sock = sock_from_file(file);
++	if (!sock) {
++		err = -ENOTSOCK;
+ 		goto out;
++	}
+ 
+ 	err =
+ 	    security_socket_connect(sock, (struct sockaddr *)address, addrlen);
+-- 
+2.29.2.454.gaff20da3a2-goog
 
-Prefer :
-
-int tcp_set_window_clamp(struct sock *sk, int val)
-{
-        struct tcp_sock *tp = tcp_sk(sk);
-        ...
-
-This will allow optimal code generation.
-
-> +{
-> +	if (!val) {
-> +		if (sk->sk_state != TCP_CLOSE)
-> +			return -EINVAL;
-> +		tp->window_clamp = 0;
-> +	} else {
-> +		tp->window_clamp = val < SOCK_MIN_RCVBUF / 2 ?
-> +			SOCK_MIN_RCVBUF / 2 : val;
-> +	}
-> +	return 0;
-> +}
-> +
->  /*
->   *	Socket option code for TCP.
->   */
-> @@ -3235,15 +3248,7 @@ static int do_tcp_setsockopt(struct sock *sk, int level, int optname,
->  		break;
->  
->  	case TCP_WINDOW_CLAMP:
-> -		if (!val) {
-> -			if (sk->sk_state != TCP_CLOSE) {
-> -				err = -EINVAL;
-> -				break;
-> -			}
-> -			tp->window_clamp = 0;
-> -		} else
-> -			tp->window_clamp = val < SOCK_MIN_RCVBUF / 2 ?
-> -						SOCK_MIN_RCVBUF / 2 : val;
-> +		err = tcp_set_window_clamp(sk, tp, val);
->  		break;
->  
->  	case TCP_QUICKACK:
-> 
