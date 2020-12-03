@@ -2,63 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A724C2CCDF3
-	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 05:37:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8F242CCE17
+	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 05:52:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726158AbgLCEhL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Dec 2020 23:37:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33066 "EHLO
+        id S1726718AbgLCEwT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Dec 2020 23:52:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726071AbgLCEhL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Dec 2020 23:37:11 -0500
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B5A8C061A4D;
-        Wed,  2 Dec 2020 20:36:31 -0800 (PST)
-Received: by mail-oi1-x233.google.com with SMTP id h3so887923oie.8;
-        Wed, 02 Dec 2020 20:36:31 -0800 (PST)
+        with ESMTP id S1725933AbgLCEwT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Dec 2020 23:52:19 -0500
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AF4DC061A4D;
+        Wed,  2 Dec 2020 20:51:39 -0800 (PST)
+Received: by mail-ot1-x333.google.com with SMTP id y24so650964otk.3;
+        Wed, 02 Dec 2020 20:51:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=IjZ0M5xmOsM2BICruObOoDRJLz28Zom2iKuoFoNJ0XI=;
-        b=pVIksf5Ywcn9mqrX/jt2f6RpzOIhf5MHrle30HFejE++rRqq4suRLCwCZrMtubYIWU
-         IO9b6eEB+xl5uxePTbEEEw6qvTQh4OBR2WF2kKEnCaxrBJ3v0lh1F0obTwTzKmRpLQB7
-         9iMNILyUeHTQgvDT8BcgzZtZj4iho99Dv15EZDnt8BoxB9BEJbuLRhTbnlyPVehSUQOb
-         0HDo3PhECWLWz3zQBCxq7a4xrMT/Dm9QDP19JHbRUuhwBtInKUgE2XNm8+6XYsaPbXrp
-         5t1eZdHyA3AuCxYObaOcTLoYj4vicXOR/+GAvFE+k52drwqEUdRQMiVP/gDHqhU+Qm6s
-         MkFA==
+        bh=+3vG37t4H4id7G0zM27/WGVWYWCjdjaPOKX2kSDfr3U=;
+        b=clM75I0WcYBubM8uIKYMKwBBVokaFxFt0BTw+dbubJ+4l7aZnQuXocU6LaqTosFOTr
+         w91CwmPIcyfiNFl3TsivpkH1AdiXpFnzr+z+GlEL5ve/hGi4Hln4CP8ZZK1/LkcLQUaI
+         t8mxUXLeSJwce4rNey2Bz2YVoHm1KsT7hnEdvKz0IJqMhJPb0CaFhxxuFdxn+nd+WeFP
+         CgZAYSqqtEl7UJLLKFOsDXrP8+ghKd6bAvM8rKu52YGeIc3pcPnim2sP/SIg6AG0wMhm
+         w6xv8fzhZoVVjKf+ChR43r9uZr6uC68wzQKTRalJGai83DXCsk8/iAkF8zYRjDBuVVpC
+         2UUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=IjZ0M5xmOsM2BICruObOoDRJLz28Zom2iKuoFoNJ0XI=;
-        b=Pfovbaf+NbFUiKeejhodGbzN86o1O8lgzCZ9u65ucuylbNQTnVaOX1Vtm+h5snF2un
-         1grgv+sxrMEB8uNRqwBu4UfVR6VjyIcz0qQPq1VYCvOpYbMOthJJaZzkbqoZN7JRAbiS
-         c31L09GsmPCEpBfpjrAUoh3GT0VWoSK76NN915L0QVroyUsUZbRgoShA7EY0Jrww7rEQ
-         7Ryj9d9LHhyOzuql8DDFqdoSY7+Ry5oSTQCXlCD7bc2E7u5Hhhltd8a9IHjATOr6ilbt
-         TELLqEWUFV58WMtQ/sB/BIDMjrPRVJZ/vB20GWoWGC1puDpTQZFXjLPCVWY1fVpQeNKg
-         my/g==
-X-Gm-Message-State: AOAM531wjt5x+sfl/rHQAP+b12NTJTE5AfaUV6aEAe1fv9YSzHUhs93r
-        DlHYP3SbSQ+5j3BwDU7H+gg4uCz+UMU=
-X-Google-Smtp-Source: ABdhPJzNb+lIrgzYvn81meZhYoiFlr4qxd0aZA8gWfNbSQZqFD7XSPz4wUkbicEb0YfbI934yGWJgQ==
-X-Received: by 2002:aca:d586:: with SMTP id m128mr766421oig.73.1606970190629;
-        Wed, 02 Dec 2020 20:36:30 -0800 (PST)
+        bh=+3vG37t4H4id7G0zM27/WGVWYWCjdjaPOKX2kSDfr3U=;
+        b=YNjWRqMFdL4edRuLb4zumRdaoDKTjyC3lClls132l+4omhXGR52WqDbBtrXIQ3HPb9
+         GwNZgrnjZcomKHCmPVOKuYZR4ByVIYcsrPGokuURQ3I1bf+j6RoaHs7YuVreZiIOKUnh
+         oL800i9GJHNfjJlWTE5Npk7vwgHKrjitHPPLaaIbWIlGrYHAqwf7OxM0jpYWdLOqbg/q
+         WfXwOasBX9U3z+RcUiVhq2+l8ZI9VAXV7FX4rYqfU+Bh35DK+Vk+qH6oGmiJcZMvZok/
+         18UIaeGlgf3DRP3c121xjpOIGe1/GMin9NV3x8afc7ajiOkbUn3ws67eSBdIhXhoYKzH
+         Bn5A==
+X-Gm-Message-State: AOAM5325cdflg+uIUMsCQBfA7nnavnik4i6uGddtQoJwfpMl8fdV2ay6
+        4QBBkyyb+lLB7Vhe7fkLMrQ=
+X-Google-Smtp-Source: ABdhPJxxaFtBrwJlHxh8AKNGzX7gyFG0vygVE5Zz9iPGQIH/yWajmbeiIldAGorKqfgr0st71aXStA==
+X-Received: by 2002:a9d:4804:: with SMTP id c4mr929720otf.97.1606971098629;
+        Wed, 02 Dec 2020 20:51:38 -0800 (PST)
 Received: from localhost ([184.21.204.5])
-        by smtp.gmail.com with ESMTPSA id j126sm68920oib.13.2020.12.02.20.36.28
+        by smtp.gmail.com with ESMTPSA id y8sm251943ota.64.2020.12.02.20.51.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 20:36:29 -0800 (PST)
-Date:   Wed, 02 Dec 2020 20:36:19 -0800
+        Wed, 02 Dec 2020 20:51:38 -0800 (PST)
+Date:   Wed, 02 Dec 2020 20:51:29 -0800
 From:   John Fastabend <john.fastabend@gmail.com>
 To:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
         netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
-Cc:     andrii@kernel.org, kernel-team@fb.com,
-        Martin KaFai Lau <kafai@fb.com>
-Message-ID: <5fc86b43b2006_1123e2084c@john-XPS-13-9370.notmuch>
-In-Reply-To: <20201203035204.1411380-2-andrii@kernel.org>
+Cc:     andrii@kernel.org, kernel-team@fb.com
+Message-ID: <5fc86ed1c3cfb_1123e208ab@john-XPS-13-9370.notmuch>
+In-Reply-To: <20201203035204.1411380-4-andrii@kernel.org>
 References: <20201203035204.1411380-1-andrii@kernel.org>
- <20201203035204.1411380-2-andrii@kernel.org>
-Subject: RE: [PATCH v5 bpf-next 01/14] bpf: fix bpf_put_raw_tracepoint()'s use
- of __module_address()
+ <20201203035204.1411380-4-andrii@kernel.org>
+Subject: RE: [PATCH v5 bpf-next 03/14] libbpf: add internal helper to load BTF
+ data by FD
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -68,13 +67,9 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Andrii Nakryiko wrote:
-> __module_address() needs to be called with preemption disabled or with
-> module_mutex taken. preempt_disable() is enough for read-only uses, which is
-> what this fix does. Also, module_put() does internal check for NULL, so drop
-> it as well.
+> Add a btf_get_from_fd() helper, which constructs struct btf from in-kernel BTF
+> data by FD. This is used for loading module BTFs.
 > 
-> Fixes: a38d1107f937 ("bpf: support raw tracepoints in modules")
-> Acked-by: Martin KaFai Lau <kafai@fb.com>
 > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 > ---
 
