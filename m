@@ -2,221 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D614C2CCB56
-	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 01:59:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3DF52CCB72
+	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 02:12:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729050AbgLCA7B (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Dec 2020 19:59:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726851AbgLCA7B (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Dec 2020 19:59:01 -0500
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97235C061A48
-        for <bpf@vger.kernel.org>; Wed,  2 Dec 2020 16:58:18 -0800 (PST)
-Received: by mail-wm1-x343.google.com with SMTP id f190so1573436wme.1
-        for <bpf@vger.kernel.org>; Wed, 02 Dec 2020 16:58:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=sAj4CijO6YaK2Nh/ag2HPX9Fm7SDZZ1Y+XvbprTUDuk=;
-        b=T6HgMPXL8eoNA8sMJQmWAkZmNXT4qzO3/C9lWx10pqKj41FX4yO6eTdd7ffoBfh32e
-         p4yoOHb2rqo4ZObNzJcd+NCkODKmOikHEZdEOA9Qt/0KELj6ezQbljLhwmQ4yoCL5cIY
-         2kFsuVP1xxVBXkhBTD44lAGLpkDHmjBeG4ndc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=sAj4CijO6YaK2Nh/ag2HPX9Fm7SDZZ1Y+XvbprTUDuk=;
-        b=Nzh3pt+XN04NCBdHBTbSR6WDdYHOF9rtyFeauZ91OzE6caE8+5UhuElAVB3yV7dl4S
-         MuTJj5LpXiVGGXnwi4RiyUFGRSBtsQRO7qIY65HsPoF5I9/7xjltMYD5FBJMPywbewBX
-         Dwd3C0fbMhrNg5OiRtrZ9yJq/YqrYQO/PVbjxr2IuRD3CA4dj1d7xA606BpZAQROgt5e
-         Lj2ZjqFi8/IoF8uVnu/YPoSPXlUlL0ROsWuyKNxo6l6XoHhtwYSwCPdCSH48/ZlPltga
-         5AdSjjQ1OG+1twE3iXFV5stAYtqUdvBXu1bGgIVvmn4ZN6Bb+8gnZHau4QAmP2bxdc4V
-         x2qA==
-X-Gm-Message-State: AOAM531PHUVi0rsuz2F8rxPgKjmnQpz29vemJbH6+lM0yLH5HW0utl2a
-        ona2UmeZpZoK21pcsp+j5OsIklRCb2PPyH4z
-X-Google-Smtp-Source: ABdhPJzE/b7YBJH4ZyiiJ4IndE0U8AJjCDEU18S/JA3AhmnsS1nbtYPZncydsHcLGLVGZIQIkkwn/g==
-X-Received: by 2002:a05:600c:410d:: with SMTP id j13mr504329wmi.95.1606957097138;
-        Wed, 02 Dec 2020 16:58:17 -0800 (PST)
-Received: from kpsingh.c.googlers.com.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
-        by smtp.gmail.com with ESMTPSA id m4sm217960wmi.41.2020.12.02.16.58.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Dec 2020 16:58:16 -0800 (PST)
-From:   KP Singh <kpsingh@chromium.org>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH bpf-next v3 4/4] selftests/bpf: Indent ima_setup.sh with tabs.
-Date:   Thu,  3 Dec 2020 00:58:07 +0000
-Message-Id: <20201203005807.486320-5-kpsingh@chromium.org>
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
-In-Reply-To: <20201203005807.486320-1-kpsingh@chromium.org>
-References: <20201203005807.486320-1-kpsingh@chromium.org>
+        id S1727847AbgLCBLP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Dec 2020 20:11:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33200 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726839AbgLCBLP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Dec 2020 20:11:15 -0500
+Date:   Wed, 2 Dec 2020 17:10:32 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1606957834;
+        bh=PHRqPC6Dt/orxJDV6GWDum3/kkG3DDBCmCdPLzvMaZ0=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=AHacbRmERixiS6lKhtCg8QLjp0FxUXJwJY1FjOtJOzty4HOxc+MWGq2Xe/A1baS25
+         Ec7u+/0U7guWFQDvfFbLM0CbpYCvRo7CO1wp10qKhd1gsJ+DzBtL4U+Pn2x6nXzY1t
+         8bEM/MRSmQ4mtvI+VVTdaU2aLAKbVUkNVnuayNM7eONBNWdXx8BxRm0VIoFXSKJw0p
+         rlPLUtmWlSdkN/gPfRlf1iCS/UoS1pBRx4XA3C7KLFQz5WOsqdxUCuOuEWpLZmesKI
+         OTXMOVQB4fJfvXCiJzht89+nRuFSVp5jIA5Beou7mWe37Je1fPo6wT82tNm3aXqnXB
+         +58XZyfa68JYA==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     netdev@vger.kernel.org, Dongdong Wang <wangdongdong@bytedance.com>,
+        Thomas Graf <tgraf@suug.ch>, bpf@vger.kernel.org,
+        Cong Wang <cong.wang@bytedance.com>
+Subject: Re: [Patch net] lwt: disable BH too in run_lwt_bpf()
+Message-ID: <20201202171032.029b1cd8@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <20201201194438.37402-1-xiyou.wangcong@gmail.com>
+References: <20201201194438.37402-1-xiyou.wangcong@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: KP Singh <kpsingh@google.com>
+On Tue,  1 Dec 2020 11:44:38 -0800 Cong Wang wrote:
+> From: Dongdong Wang <wangdongdong@bytedance.com>
+> 
+> The per-cpu bpf_redirect_info is shared among all skb_do_redirect()
+> and BPF redirect helpers. Callers on RX path are all in BH context,
+> disabling preemption is not sufficient to prevent BH interruption.
+> 
+> In production, we observed strange packet drops because of the race
+> condition between LWT xmit and TC ingress, and we verified this issue
+> is fixed after we disable BH.
+> 
+> Although this bug was technically introduced from the beginning, that
+> is commit 3a0af8fd61f9 ("bpf: BPF for lightweight tunnel infrastructure"),
+> at that time call_rcu() had to be call_rcu_bh() to match the RCU context.
+> So this patch may not work well before RCU flavor consolidation has been
+> completed around v5.0.
+> 
+> Update the comments above the code too, as call_rcu() is now BH friendly.
+> 
+> Cc: Thomas Graf <tgraf@suug.ch>
+> Cc: bpf@vger.kernel.org
+> Reviewed-by: Cong Wang <cong.wang@bytedance.com>
+> Signed-off-by: Dongdong Wang <wangdongdong@bytedance.com>
+> ---
+>  net/core/lwt_bpf.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/net/core/lwt_bpf.c b/net/core/lwt_bpf.c
+> index 7d3438215f32..4f3cb7c15ddf 100644
+> --- a/net/core/lwt_bpf.c
+> +++ b/net/core/lwt_bpf.c
+> @@ -39,12 +39,11 @@ static int run_lwt_bpf(struct sk_buff *skb, struct bpf_lwt_prog *lwt,
+>  {
+>  	int ret;
+>  
+> -	/* Preempt disable is needed to protect per-cpu redirect_info between
+> -	 * BPF prog and skb_do_redirect(). The call_rcu in bpf_prog_put() and
+> -	 * access to maps strictly require a rcu_read_lock() for protection,
+> -	 * mixing with BH RCU lock doesn't work.
+> +	/* Preempt disable and BH disable are needed to protect per-cpu
+> +	 * redirect_info between BPF prog and skb_do_redirect().
+>  	 */
+>  	preempt_disable();
+> +	local_bh_disable();
 
-Signed-off-by: KP Singh <kpsingh@google.com>
----
- tools/testing/selftests/bpf/ima_setup.sh | 108 +++++++++++------------
- 1 file changed, 54 insertions(+), 54 deletions(-)
+Why not remove the preempt_disable()? Disabling BH must also disable
+preemption AFAIK.
 
-diff --git a/tools/testing/selftests/bpf/ima_setup.sh b/tools/testing/selftests/bpf/ima_setup.sh
-index b1ee4bf06996..2bfc646bc230 100755
---- a/tools/testing/selftests/bpf/ima_setup.sh
-+++ b/tools/testing/selftests/bpf/ima_setup.sh
-@@ -10,90 +10,90 @@ TEST_BINARY="/bin/true"
- 
- usage()
- {
--        echo "Usage: $0 <setup|cleanup|run> <existing_tmp_dir>"
--        exit 1
-+	echo "Usage: $0 <setup|cleanup|run> <existing_tmp_dir>"
-+	exit 1
- }
- 
- ensure_mount_securityfs()
- {
--        local securityfs_dir=$(grep "securityfs" /proc/mounts | awk '{print $2}')
-+	local securityfs_dir=$(grep "securityfs" /proc/mounts | awk '{print $2}')
- 
--        if [ -z "${securityfs_dir}" ]; then
--                securityfs_dir=/sys/kernel/security
--                mount -t securityfs security "${securityfs_dir}"
--        fi
-+	if [ -z "${securityfs_dir}" ]; then
-+		securityfs_dir=/sys/kernel/security
-+		mount -t securityfs security "${securityfs_dir}"
-+	fi
- 
--        if [ ! -d "${securityfs_dir}" ]; then
--                echo "${securityfs_dir}: securityfs is not mounted" && exit 1
--        fi
-+	if [ ! -d "${securityfs_dir}" ]; then
-+		echo "${securityfs_dir}: securityfs is not mounted" && exit 1
-+	fi
- }
- 
- setup()
- {
--        local tmp_dir="$1"
--        local mount_img="${tmp_dir}/test.img"
--        local mount_dir="${tmp_dir}/mnt"
--        local copied_bin_path="${mount_dir}/$(basename ${TEST_BINARY})"
--        mkdir -p ${mount_dir}
-+	local tmp_dir="$1"
-+	local mount_img="${tmp_dir}/test.img"
-+	local mount_dir="${tmp_dir}/mnt"
-+	local copied_bin_path="${mount_dir}/$(basename ${TEST_BINARY})"
-+	mkdir -p ${mount_dir}
- 
--        dd if=/dev/zero of="${mount_img}" bs=1M count=10
-+	dd if=/dev/zero of="${mount_img}" bs=1M count=10
- 
--        losetup -f "${mount_img}"
--        local loop_device=$(losetup -a | grep ${mount_img:?} | cut -d ":" -f1)
-+	losetup -f "${mount_img}"
-+	local loop_device=$(losetup -a | grep ${mount_img:?} | cut -d ":" -f1)
- 
--        mkfs.ext2 "${loop_device:?}"
--        mount "${loop_device}" "${mount_dir}"
-+	mkfs.ext2 "${loop_device:?}"
-+	mount "${loop_device}" "${mount_dir}"
- 
--        cp "${TEST_BINARY}" "${mount_dir}"
--        local mount_uuid="$(blkid ${loop_device} | sed 's/.*UUID="\([^"]*\)".*/\1/')"
-+	cp "${TEST_BINARY}" "${mount_dir}"
-+	local mount_uuid="$(blkid ${loop_device} | sed 's/.*UUID="\([^"]*\)".*/\1/')"
- 
--        ensure_mount_securityfs
--        echo "measure func=BPRM_CHECK fsuuid=${mount_uuid}" > ${IMA_POLICY_FILE}
-+	ensure_mount_securityfs
-+	echo "measure func=BPRM_CHECK fsuuid=${mount_uuid}" > ${IMA_POLICY_FILE}
- }
- 
- cleanup() {
--        local tmp_dir="$1"
--        local mount_img="${tmp_dir}/test.img"
--        local mount_dir="${tmp_dir}/mnt"
-+	local tmp_dir="$1"
-+	local mount_img="${tmp_dir}/test.img"
-+	local mount_dir="${tmp_dir}/mnt"
- 
--        local loop_devices=$(losetup -a | grep ${mount_img:?} | cut -d ":" -f1)
-+	local loop_devices=$(losetup -a | grep ${mount_img:?} | cut -d ":" -f1)
- 
--        for loop_dev in "${loop_devices}"; do
--                losetup -d $loop_dev
--        done
-+	for loop_dev in "${loop_devices}"; do
-+		losetup -d $loop_dev
-+	done
- 
--        umount ${mount_dir}
--        rm -rf ${tmp_dir}
-+	umount ${mount_dir}
-+	rm -rf ${tmp_dir}
- }
- 
- run()
- {
--        local tmp_dir="$1"
--        local mount_dir="${tmp_dir}/mnt"
--        local copied_bin_path="${mount_dir}/$(basename ${TEST_BINARY})"
-+	local tmp_dir="$1"
-+	local mount_dir="${tmp_dir}/mnt"
-+	local copied_bin_path="${mount_dir}/$(basename ${TEST_BINARY})"
- 
--        exec "${copied_bin_path}"
-+	exec "${copied_bin_path}"
- }
- 
- main()
- {
--        [[ $# -ne 2 ]] && usage
--
--        local action="$1"
--        local tmp_dir="$2"
--
--        [[ ! -d "${tmp_dir}" ]] && echo "Directory ${tmp_dir} doesn't exist" && exit 1
--
--        if [[ "${action}" == "setup" ]]; then
--                setup "${tmp_dir}"
--        elif [[ "${action}" == "cleanup" ]]; then
--                cleanup "${tmp_dir}"
--        elif [[ "${action}" == "run" ]]; then
--                run "${tmp_dir}"
--        else
--                echo "Unknown action: ${action}"
--                exit 1
--        fi
-+	[[ $# -ne 2 ]] && usage
-+
-+	local action="$1"
-+	local tmp_dir="$2"
-+
-+	[[ ! -d "${tmp_dir}" ]] && echo "Directory ${tmp_dir} doesn't exist" && exit 1
-+
-+	if [[ "${action}" == "setup" ]]; then
-+		setup "${tmp_dir}"
-+	elif [[ "${action}" == "cleanup" ]]; then
-+		cleanup "${tmp_dir}"
-+	elif [[ "${action}" == "run" ]]; then
-+		run "${tmp_dir}"
-+	else
-+		echo "Unknown action: ${action}"
-+		exit 1
-+	fi
- }
- 
- main "$@"
--- 
-2.29.2.576.ga3fc446d84-goog
+>  	bpf_compute_data_pointers(skb);
+>  	ret = bpf_prog_run_save_cb(lwt->prog, skb);
+>  
+> @@ -78,6 +77,7 @@ static int run_lwt_bpf(struct sk_buff *skb, struct bpf_lwt_prog *lwt,
+>  		break;
+>  	}
+>  
+> +	local_bh_enable();
+>  	preempt_enable();
+>  
+>  	return ret;
 
