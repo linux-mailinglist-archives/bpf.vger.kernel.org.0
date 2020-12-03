@@ -2,38 +2,38 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C092CD8B6
-	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 15:16:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 862F82CD8C3
+	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 15:16:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730728AbgLCONi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Dec 2020 09:13:38 -0500
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:34877 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726318AbgLCONh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Dec 2020 09:13:37 -0500
+        id S1726257AbgLCOPT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Dec 2020 09:15:19 -0500
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:18687 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726318AbgLCOPS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Dec 2020 09:15:18 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1607004816; x=1638540816;
+  s=amazon201209; t=1607004918; x=1638540918;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=5f0Fhu2AO04sPld9LC1LXYDFAHfWrn4XzNzhlsTgPH8=;
-  b=ZIX/eAPdl8mYcQ2gw8LekgX+zSnojAynIFCS7lUh+jwN80p4kmbU/97S
-   Z6ggSqXJRfuW5hE1RWyRsIyp3XGmezL2pGHIy1j6r8GUA/j9rpeOMVwu5
-   kZ5Szui+gld9LRX8FW582+YJHSjVmrOm8luiMwWr4ESUTG2Uihuvxd3c9
-   Y=;
+  bh=sxiOS76jByRh5QarTYcV7ExODNdCKRdOlEullxBBOmw=;
+  b=jvOLoXTU9M0vYiKrZqa1Tj4fxfXRt6KNvJFZwgVGOGmhmVPXhf1XnC8/
+   V199JZ8xw41N7gGRYEhyxKnxf4sal3bASijDTN2x33EvVOvUtfDjj7yFI
+   RxJ9HWwWIEQKHGqpE5qYHEawttLeIE3+2w/WwP4p0R0KihHGUqhIYapHe
+   U=;
 X-IronPort-AV: E=Sophos;i="5.78,389,1599523200"; 
-   d="scan'208";a="68903082"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2a-1c1b5cdd.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 03 Dec 2020 14:12:54 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2a-1c1b5cdd.us-west-2.amazon.com (Postfix) with ESMTPS id 9ACC3A1E42;
-        Thu,  3 Dec 2020 14:12:51 +0000 (UTC)
+   d="scan'208";a="100225513"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-474bcd9f.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 03 Dec 2020 14:14:36 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-1d-474bcd9f.us-east-1.amazon.com (Postfix) with ESMTPS id A76A9A2102;
+        Thu,  3 Dec 2020 14:14:32 +0000 (UTC)
 Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
  EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 3 Dec 2020 14:12:50 +0000
-Received: from 38f9d3582de7.ant.amazon.com (10.43.160.139) by
+ id 15.0.1497.2; Thu, 3 Dec 2020 14:14:32 +0000
+Received: from 38f9d3582de7.ant.amazon.com (10.43.161.124) by
  EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 3 Dec 2020 14:12:45 +0000
+ id 15.0.1497.2; Thu, 3 Dec 2020 14:14:27 +0000
 From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
 To:     <eric.dumazet@gmail.com>
 CC:     <ast@kernel.org>, <benh@amazon.com>, <bpf@vger.kernel.org>,
@@ -41,123 +41,233 @@ CC:     <ast@kernel.org>, <benh@amazon.com>, <bpf@vger.kernel.org>,
         <edumazet@google.com>, <kafai@fb.com>, <kuba@kernel.org>,
         <kuni1840@gmail.com>, <kuniyu@amazon.co.jp>,
         <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-Subject: Re: [PATCH v1 bpf-next 05/11] tcp: Migrate TCP_NEW_SYN_RECV requests.
-Date:   Thu, 3 Dec 2020 23:12:40 +0900
-Message-ID: <20201203141240.52810-1-kuniyu@amazon.co.jp>
+Subject: Re: [PATCH v1 bpf-next 03/11] tcp: Migrate TCP_ESTABLISHED/TCP_SYN_RECV sockets in accept queues.
+Date:   Thu, 3 Dec 2020 23:14:24 +0900
+Message-ID: <20201203141424.52912-1-kuniyu@amazon.co.jp>
 X-Mailer: git-send-email 2.17.2 (Apple Git-113)
-In-Reply-To: <6b34c251-05af-06c0-8003-858b6ae8d1fd@gmail.com>
-References: <6b34c251-05af-06c0-8003-858b6ae8d1fd@gmail.com>
+In-Reply-To: <e47b903d-6e7c-a2a7-ccdf-d2c701986d4f@gmail.com>
+References: <e47b903d-6e7c-a2a7-ccdf-d2c701986d4f@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.43.160.139]
-X-ClientProxiedBy: EX13D29UWA002.ant.amazon.com (10.43.160.63) To
+X-Originating-IP: [10.43.161.124]
+X-ClientProxiedBy: EX13D39UWA004.ant.amazon.com (10.43.160.73) To
  EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 From:   Eric Dumazet <eric.dumazet@gmail.com>
-Date:   Tue, 1 Dec 2020 16:13:39 +0100
+Date:   Tue, 1 Dec 2020 16:25:51 +0100
 > On 12/1/20 3:44 PM, Kuniyuki Iwashima wrote:
-> > This patch renames reuseport_select_sock() to __reuseport_select_sock() and
-> > adds two wrapper function of it to pass the migration type defined in the
-> > previous commit.
+> > This patch lets reuseport_detach_sock() return a pointer of struct sock,
+> > which is used only by inet_unhash(). If it is not NULL,
+> > inet_csk_reqsk_queue_migrate() migrates TCP_ESTABLISHED/TCP_SYN_RECV
+> > sockets from the closing listener to the selected one.
 > > 
-> >   reuseport_select_sock          : BPF_SK_REUSEPORT_MIGRATE_NO
-> >   reuseport_select_migrated_sock : BPF_SK_REUSEPORT_MIGRATE_REQUEST
+> > Listening sockets hold incoming connections as a linked list of struct
+> > request_sock in the accept queue, and each request has reference to a full
+> > socket and its listener. In inet_csk_reqsk_queue_migrate(), we only unlink
+> > the requests from the closing listener's queue and relink them to the head
+> > of the new listener's queue. We do not process each request and its
+> > reference to the listener, so the migration completes in O(1) time
+> > complexity. However, in the case of TCP_SYN_RECV sockets, we take special
+> > care in the next commit.
 > > 
-> > As mentioned before, we have to select a new listener for TCP_NEW_SYN_RECV
-> > requests at receiving the final ACK or sending a SYN+ACK. Therefore, this
-> > patch also changes the code to call reuseport_select_migrated_sock() even
-> > if the listening socket is TCP_CLOSE. If we can pick out a listening socket
-> > from the reuseport group, we rewrite request_sock.rsk_listener and resume
-> > processing the request.
+> > By default, the kernel selects a new listener randomly. In order to pick
+> > out a different socket every time, we select the last element of socks[] as
+> > the new listener. This behaviour is based on how the kernel moves sockets
+> > in socks[]. (See also [1])
 > > 
+> > Basically, in order to redistribute sockets evenly, we have to use an eBPF
+> > program called in the later commit, but as the side effect of such default
+> > selection, the kernel can redistribute old requests evenly to new listeners
+> > for a specific case where the application replaces listeners by
+> > generations.
+> > 
+> > For example, we call listen() for four sockets (A, B, C, D), and close the
+> > first two by turns. The sockets move in socks[] like below.
+> > 
+> >   socks[0] : A <-.      socks[0] : D          socks[0] : D
+> >   socks[1] : B   |  =>  socks[1] : B <-.  =>  socks[1] : C
+> >   socks[2] : C   |      socks[2] : C --'
+> >   socks[3] : D --'
+> > 
+> > Then, if C and D have newer settings than A and B, and each socket has a
+> > request (a, b, c, d) in their accept queue, we can redistribute old
+> > requests evenly to new listeners.
+> > 
+> >   socks[0] : A (a) <-.      socks[0] : D (a + d)      socks[0] : D (a + d)
+> >   socks[1] : B (b)   |  =>  socks[1] : B (b) <-.  =>  socks[1] : C (b + c)
+> >   socks[2] : C (c)   |      socks[2] : C (c) --'
+> >   socks[3] : D (d) --'
+> > 
+> > Here, (A, D) or (B, C) can have different application settings, but they
+> > MUST have the same settings at the socket API level; otherwise, unexpected
+> > error may happen. For instance, if only the new listeners have
+> > TCP_SAVE_SYN, old requests do not have SYN data, so the application will
+> > face inconsistency and cause an error.
+> > 
+> > Therefore, if there are different kinds of sockets, we must attach an eBPF
+> > program described in later commits.
+> > 
+> > Link: https://lore.kernel.org/netdev/CAEfhGiyG8Y_amDZ2C8dQoQqjZJMHjTY76b=KBkTKcBtA=dhdGQ@mail.gmail.com/
 > > Reviewed-by: Benjamin Herrenschmidt <benh@amazon.com>
 > > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
 > > ---
-> >  include/net/inet_connection_sock.h | 12 +++++++++++
-> >  include/net/request_sock.h         | 13 ++++++++++++
-> >  include/net/sock_reuseport.h       |  8 +++----
-> >  net/core/sock_reuseport.c          | 34 ++++++++++++++++++++++++------
-> >  net/ipv4/inet_connection_sock.c    | 13 ++++++++++--
-> >  net/ipv4/tcp_ipv4.c                |  9 ++++++--
-> >  net/ipv6/tcp_ipv6.c                |  9 ++++++--
-> >  7 files changed, 81 insertions(+), 17 deletions(-)
+> >  include/net/inet_connection_sock.h |  1 +
+> >  include/net/sock_reuseport.h       |  2 +-
+> >  net/core/sock_reuseport.c          | 10 +++++++++-
+> >  net/ipv4/inet_connection_sock.c    | 30 ++++++++++++++++++++++++++++++
+> >  net/ipv4/inet_hashtables.c         |  9 +++++++--
+> >  5 files changed, 48 insertions(+), 4 deletions(-)
 > > 
 > > diff --git a/include/net/inet_connection_sock.h b/include/net/inet_connection_sock.h
-> > index 2ea2d743f8fc..1e0958f5eb21 100644
+> > index 7338b3865a2a..2ea2d743f8fc 100644
 > > --- a/include/net/inet_connection_sock.h
 > > +++ b/include/net/inet_connection_sock.h
-> > @@ -272,6 +272,18 @@ static inline void inet_csk_reqsk_queue_added(struct sock *sk)
-> >  	reqsk_queue_added(&inet_csk(sk)->icsk_accept_queue);
+> > @@ -260,6 +260,7 @@ struct dst_entry *inet_csk_route_child_sock(const struct sock *sk,
+> >  struct sock *inet_csk_reqsk_queue_add(struct sock *sk,
+> >  				      struct request_sock *req,
+> >  				      struct sock *child);
+> > +void inet_csk_reqsk_queue_migrate(struct sock *sk, struct sock *nsk);
+> >  void inet_csk_reqsk_queue_hash_add(struct sock *sk, struct request_sock *req,
+> >  				   unsigned long timeout);
+> >  struct sock *inet_csk_complete_hashdance(struct sock *sk, struct sock *child,
+> > diff --git a/include/net/sock_reuseport.h b/include/net/sock_reuseport.h
+> > index 0e558ca7afbf..09a1b1539d4c 100644
+> > --- a/include/net/sock_reuseport.h
+> > +++ b/include/net/sock_reuseport.h
+> > @@ -31,7 +31,7 @@ struct sock_reuseport {
+> >  extern int reuseport_alloc(struct sock *sk, bool bind_inany);
+> >  extern int reuseport_add_sock(struct sock *sk, struct sock *sk2,
+> >  			      bool bind_inany);
+> > -extern void reuseport_detach_sock(struct sock *sk);
+> > +extern struct sock *reuseport_detach_sock(struct sock *sk);
+> >  extern struct sock *reuseport_select_sock(struct sock *sk,
+> >  					  u32 hash,
+> >  					  struct sk_buff *skb,
+> > diff --git a/net/core/sock_reuseport.c b/net/core/sock_reuseport.c
+> > index fd133516ac0e..60d7c1f28809 100644
+> > --- a/net/core/sock_reuseport.c
+> > +++ b/net/core/sock_reuseport.c
+> > @@ -216,9 +216,11 @@ int reuseport_add_sock(struct sock *sk, struct sock *sk2, bool bind_inany)
 > >  }
+> >  EXPORT_SYMBOL(reuseport_add_sock);
 > >  
-> > +static inline void inet_csk_reqsk_queue_migrated(struct sock *sk,
-> > +						 struct sock *nsk,
-> > +						 struct request_sock *req)
-> > +{
-> > +	reqsk_queue_migrated(&inet_csk(sk)->icsk_accept_queue,
-> > +			     &inet_csk(nsk)->icsk_accept_queue,
-> > +			     req);
-> > +	sock_put(sk);
-> > +	sock_hold(nsk);
-> 
-> This looks racy to me. nsk refcount might be zero at this point.
-> 
-> If you think it can _not_ be zero, please add a big comment here,
-> because this would mean something has been done before reaching this function,
-> and this sock_hold() would be not needed in the first place.
-> 
-> There is a good reason reqsk_alloc() is using refcount_inc_not_zero().
-
-Exactly, I will fix this in the next spin like below.
-Thank you.
-
----8<---
-diff --git a/include/net/inet_connection_sock.h b/include/net/inet_connection_sock.h
-index 1e0958f5eb21..d8c3be31e987 100644
---- a/include/net/inet_connection_sock.h
-+++ b/include/net/inet_connection_sock.h
-@@ -280,7 +280,6 @@ static inline void inet_csk_reqsk_queue_migrated(struct sock *sk,
-                             &inet_csk(nsk)->icsk_accept_queue,
-                             req);
-        sock_put(sk);
--       sock_hold(nsk);
-        req->rsk_listener = nsk;
- }
- 
-diff --git a/net/core/sock_reuseport.c b/net/core/sock_reuseport.c
-index 6b475897b496..4d07bddcf678 100644
---- a/net/core/sock_reuseport.c
-+++ b/net/core/sock_reuseport.c
-@@ -386,7 +386,14 @@ EXPORT_SYMBOL(reuseport_select_sock);
- struct sock *reuseport_select_migrated_sock(struct sock *sk, u32 hash,
-                                            struct sk_buff *skb)
- {
--       return __reuseport_select_sock(sk, hash, skb, 0, BPF_SK_REUSEPORT_MIGRATE_REQUEST);
-+       struct sock *nsk;
-+
-+       nsk = __reuseport_select_sock(sk, hash, skb, 0, BPF_SK_REUSEPORT_MIGRATE_REQUEST);
-+       if (IS_ERR_OR_NULL(nsk) ||
-+           unlikely(!refcount_inc_not_zero(&nsk->sk_refcnt)))
-+               return NULL;
-+
-+       return nsk;
- }
- EXPORT_SYMBOL(reuseport_select_migrated_sock);
- 
----8<---
-
-
-> > +	req->rsk_listener = nsk;
-> > +}
+> > -void reuseport_detach_sock(struct sock *sk)
+> > +struct sock *reuseport_detach_sock(struct sock *sk)
+> >  {
+> >  	struct sock_reuseport *reuse;
+> > +	struct bpf_prog *prog;
+> > +	struct sock *nsk = NULL;
+> >  	int i;
+> >  
+> >  	spin_lock_bh(&reuseport_lock);
+> > @@ -242,8 +244,12 @@ void reuseport_detach_sock(struct sock *sk)
+> >  
+> >  		reuse->num_socks--;
+> >  		reuse->socks[i] = reuse->socks[reuse->num_socks];
+> > +		prog = rcu_dereference(reuse->prog);
+> >  
+> >  		if (sk->sk_protocol == IPPROTO_TCP) {
+> > +			if (reuse->num_socks && !prog)
+> > +				nsk = i == reuse->num_socks ? reuse->socks[i - 1] : reuse->socks[i];
 > > +
+> >  			reuse->num_closed_socks++;
+> >  			reuse->socks[reuse->max_socks - reuse->num_closed_socks] = sk;
+> >  		} else {
+> > @@ -264,6 +270,8 @@ void reuseport_detach_sock(struct sock *sk)
+> >  		call_rcu(&reuse->rcu, reuseport_free_rcu);
+> >  out:
+> >  	spin_unlock_bh(&reuseport_lock);
+> > +
+> > +	return nsk;
+> >  }
+> >  EXPORT_SYMBOL(reuseport_detach_sock);
+> >  
+> > diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
+> > index 1451aa9712b0..b27241ea96bd 100644
+> > --- a/net/ipv4/inet_connection_sock.c
+> > +++ b/net/ipv4/inet_connection_sock.c
+> > @@ -992,6 +992,36 @@ struct sock *inet_csk_reqsk_queue_add(struct sock *sk,
+> >  }
+> >  EXPORT_SYMBOL(inet_csk_reqsk_queue_add);
+> >  
+> > +void inet_csk_reqsk_queue_migrate(struct sock *sk, struct sock *nsk)
+> > +{
+> > +	struct request_sock_queue *old_accept_queue, *new_accept_queue;
+> > +
+> > +	old_accept_queue = &inet_csk(sk)->icsk_accept_queue;
+> > +	new_accept_queue = &inet_csk(nsk)->icsk_accept_queue;
+> > +
+> > +	spin_lock(&old_accept_queue->rskq_lock);
+> > +	spin_lock(&new_accept_queue->rskq_lock);
 > 
-> Honestly, this patch series looks quite complex, and finding a bug in the
-> very first function I am looking at is not really a good sign...
+> Are you sure lockdep is happy with this ?
+> 
+> I would guess it should complain, because :
+> 
+> lock(A);
+> lock(B);
+> ...
+> unlock(B);
+> unlock(A);
+> 
+> will fail when the opposite action happens eventually
+> 
+> lock(B);
+> lock(A);
+> ...
+> unlock(A);
+> unlock(B);
 
-I also think this issue is quite complex, but it might be easier to fix
-than it was disscussed in 2015 [1] thanks to your some refactoring.
+I enabled lockdep and did not see warnings of lockdep.
 
-https://lore.kernel.org/netdev/1443313848-751-1-git-send-email-tolga.ceylan@gmail.com/
+Also, the inversion deadlock does not happen in this case.
+In reuseport_detach_sock(), sk is moved backward in socks[] and poped out
+from the eBPF map, so the old listener will not be selected as the new
+listener.
+
+
+> > +
+> > +	if (old_accept_queue->rskq_accept_head) {
+> > +		if (new_accept_queue->rskq_accept_head)
+> > +			old_accept_queue->rskq_accept_tail->dl_next =
+> > +				new_accept_queue->rskq_accept_head;
+> > +		else
+> > +			new_accept_queue->rskq_accept_tail = old_accept_queue->rskq_accept_tail;
+> > +
+> > +		new_accept_queue->rskq_accept_head = old_accept_queue->rskq_accept_head;
+> > +		old_accept_queue->rskq_accept_head = NULL;
+> > +		old_accept_queue->rskq_accept_tail = NULL;
+> > +
+> > +		WRITE_ONCE(nsk->sk_ack_backlog, nsk->sk_ack_backlog + sk->sk_ack_backlog);
+> > +		WRITE_ONCE(sk->sk_ack_backlog, 0);
+> > +	}
+> > +
+> > +	spin_unlock(&new_accept_queue->rskq_lock);
+> > +	spin_unlock(&old_accept_queue->rskq_lock);
+> > +}
+> > +EXPORT_SYMBOL(inet_csk_reqsk_queue_migrate);
+> 
+> I fail to understand how the kernel can run fine right after this patch, before following patches are merged.
+
+I will squash the two or reorganize them into definition part and migration
+part.
+
+
+> All request sockets in the socket accept queue MUST have their rsk_listener set to the listener,
+> this is how we designed things (each request socket has a reference taken on the listener)
+> 
+> We might even have some "BUG_ON(sk != req->rsk_listener);" in some places.
+> 
+> Since you splice list from old listener to the new one, without changing req->rsk_listener, bad things will happen.
+> 
+> I feel the order of your patches is not correct.
+
+I understand this series is against the design.
+But once the requests sockets are added in the queue, they are accessed
+from the accept queue, and then we have the correct listener and can
+rewirte rsk_listener. Otherwise, their full socket are accessed instead.
+
+Also, as far as I know, such BUG_ON was only in inet_child_forget().
