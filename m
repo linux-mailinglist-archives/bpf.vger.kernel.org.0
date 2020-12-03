@@ -2,130 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8319C2CDD17
-	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 19:08:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63D202CDD27
+	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 19:15:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729068AbgLCSHA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Dec 2020 13:07:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45708 "EHLO
+        id S1727004AbgLCSPP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Dec 2020 13:15:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725987AbgLCSG7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Dec 2020 13:06:59 -0500
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60914C061A4F
-        for <bpf@vger.kernel.org>; Thu,  3 Dec 2020 10:06:19 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id x2so2838234ybt.11
-        for <bpf@vger.kernel.org>; Thu, 03 Dec 2020 10:06:19 -0800 (PST)
+        with ESMTP id S1726885AbgLCSPP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Dec 2020 13:15:15 -0500
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5BBAC061A4F;
+        Thu,  3 Dec 2020 10:14:34 -0800 (PST)
+Received: by mail-pj1-x1041.google.com with SMTP id e5so1544524pjt.0;
+        Thu, 03 Dec 2020 10:14:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=i8zJr7paC9y+ZoYhdgsESxhoc+L9jYHk/0XNHPVT690=;
-        b=lRZRGYMANBRpPKmliEfz+D2mrLUbeAETdYmHECILovBx3RXaivfrCCXwdFBSGLh/P5
-         rZU16I/+tSZ4EtbWtjvontKPqiZWFGCWjGTxgBfyGxO6zrWhRINSuu1AHa7F5F0KQsi1
-         lTBbdilq5/rGFQXNjDEgJOmryko1aweU8LTAndy9qPuYrnKgbYc8NFSVYM3fRxD9mQrz
-         u48c+6qv/JiWx66FDJ0fTVUm9KCa8Pq3JDO+dyPDGIcfz8SwvvrJ5p6ouCnuezr06jVC
-         kt1jjzh56HmLaCHllA2/Qlsn2XKK5SRe6W6W9oAxrGlWAwudVL0mw4cmxj8e+qB8Wc14
-         2j3w==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TQMsGw5TYSt3nJ1A5aken7ygzu0wjxlcoNGw9kKmue0=;
+        b=iejdTNAB2XX7rYGGnSp0K+7wWy7I18mWggkvrs1FpBvqrP1bROgzyh7jBNiUSsDctV
+         uVK8iPbSLIjJDCPDOQwlQ26MoSQco7J/w3ifrTdRykYZriG8QrFBcsBcWIeY/kTb51lZ
+         lE6ROdv0tlMR0NWWUIiFOh6j2vGUoxqJvFV83goJBv9dJ14cFiYKOv0ChJLm3NY+k4P+
+         DPd8smKFc1pyJmOhpDsIxIKMPcAxnMpwzGpyxGxwEqoFSZll2A/4/1R+VdLPyAObNQ8v
+         ypFwy8vex1EkFa8iz+p/dmBC7Qn+rVAcWYtnj3kjr56gfSS3GP6sStpFG6K7YUAZrSUY
+         By2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i8zJr7paC9y+ZoYhdgsESxhoc+L9jYHk/0XNHPVT690=;
-        b=rQJfoMHB/B2EZfkP85aO47HTqpJBRjv2Sy0OaonP8dFcm7ie9ug+WVhoiTE1yhZ6Aa
-         gx6rWpNXqdq8TCbGj516aiDpLASJwFniGMffgOUVovp0ZVeRWl/rogvNOSuNsWrTrn7C
-         v/NgDLrwrsqf9CVo5obTjVZuTNEMZwHvwXkVBXlDE0/+t2GZYXGLNfa4b8NjAy36UVR5
-         wjZhNiDG5PR6YRQVMKmVnNnwx1ATxVdJewNO7dvOQc4/GNZgcA/6Oj+OrTRwfOyG69Uz
-         9IKEsA+UvKYf/rI4ZJ/W51jYqSGxfZuYIPPElHT63SREVMZnvw4NqrFrDLYNu7Wa6LL1
-         wIDg==
-X-Gm-Message-State: AOAM531P5Unt9pwkU/TO8ibef84KLicSHNi5Qa68/g9X/HZ28FoSFbHy
-        k3xnsSBGcxr/VlmID/6bZIA8Lca4/l1mebrwgjs=
-X-Google-Smtp-Source: ABdhPJzGFX765bl9wNzLbf13LF44biNdes70MhfMctzryLQ3IqOJfZvNtA0ZmoKeLe9CTKgWmv0vPp/XTomvANmTn0k=
-X-Received: by 2002:a25:c089:: with SMTP id c131mr439437ybf.510.1607018778659;
- Thu, 03 Dec 2020 10:06:18 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TQMsGw5TYSt3nJ1A5aken7ygzu0wjxlcoNGw9kKmue0=;
+        b=SrTUzABe/aWKJAGP2Hzki5yzolkRhbPjPnsfc+mkCUk9XWA9b0gtFu1vzuVi4nZ/Iz
+         MusvcBONPBUMY133Q5MPHXhhgy9ugno4iIflJtrvKVGGkTT012VwD/VGvN29FrOAmpN8
+         ZYMtUKHLOoFtQAtMNrbjgFli5sGZdd+7Y4uTOlcSD1Chz/ePGazRb8rLieNe6YHoicAs
+         r1MAWKmqnwnIfgFKou43UE/nyt/DonW2FpfRwPomgXUHYXaBdNvVvi5t1U02SfKqLwlK
+         nRx4aYQFo4+IjZPPEMvxY0Q1clJ6PEs/veebdpW6X4yzG3naiVt45iOOhcwUy7Hx8mX5
+         PEJw==
+X-Gm-Message-State: AOAM5328nm2XanizGeYHa6P266iMSWSPqgj+MeUwqWKywIPOjQQQ3l5t
+        UA8dWF2U79r7VP+LTqRl6OI=
+X-Google-Smtp-Source: ABdhPJzHsjuHf7s63jZQr10HWp/cMbWEsj7ImPOHDdh2Sqv0oWuhaFVBKA8A49ZD/5npl9N/qfTjaA==
+X-Received: by 2002:a17:902:9a90:b029:da:ba07:efdc with SMTP id w16-20020a1709029a90b02900daba07efdcmr388590plp.1.1607019274431;
+        Thu, 03 Dec 2020 10:14:34 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:400::5:a629])
+        by smtp.gmail.com with ESMTPSA id h6sm256161pgc.15.2020.12.03.10.14.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Dec 2020 10:14:33 -0800 (PST)
+Date:   Thu, 3 Dec 2020 10:14:31 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     Gary Lin <glin@suse.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        andreas.taschner@suse.com
+Subject: Re: [PATCH] bpf, x64: bump the number of passes to 64
+Message-ID: <20201203181431.t2l63nifzprxqc26@ast-mbp>
+References: <20201203091252.27604-1-glin@suse.com>
+ <8fbcb23d-d140-48fb-819d-61f49672d9bd@gmail.com>
 MIME-Version: 1.0
-References: <20201203005807.486320-1-kpsingh@chromium.org> <20201203005807.486320-4-kpsingh@chromium.org>
- <CAEf4BzbXA-az9cAKwy=bpqFOkX+6mtirm0TRxkyTmZdm+bXxoQ@mail.gmail.com>
- <CACYkzJ6PYgmkZg_=q3Yi300esXmjB_gnX4urmcLxSQFxf+QyuQ@mail.gmail.com> <CACYkzJ6rtH7mJ1mr3VsyvDjkM1tkpvd0XxvHPCuQAbyKBfNx-Q@mail.gmail.com>
-In-Reply-To: <CACYkzJ6rtH7mJ1mr3VsyvDjkM1tkpvd0XxvHPCuQAbyKBfNx-Q@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 3 Dec 2020 10:06:07 -0800
-Message-ID: <CAEf4BzYtstd6wPcUYWrDax2ykowVpfrqhOpYGnSObUjEVME1pg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 3/4] selftests/bpf: Add config dependency on BLK_DEV_LOOP
-To:     KP Singh <kpsingh@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8fbcb23d-d140-48fb-819d-61f49672d9bd@gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 9:35 AM KP Singh <kpsingh@chromium.org> wrote:
->
-> On Thu, Dec 3, 2020 at 11:56 AM KP Singh <kpsingh@chromium.org> wrote:
-> >
-> > On Thu, Dec 3, 2020 at 6:56 AM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Wed, Dec 2, 2020 at 4:58 PM KP Singh <kpsingh@chromium.org> wrote:
-> > > >
-> > > > From: KP Singh <kpsingh@google.com>
-> > > >
-> > > > The ima selftest restricts its scope to a test filesystem image
-> > > > mounted on a loop device and prevents permanent ima policy changes for
-> > > > the whole system.
-> > > >
-> > > > Fixes: 34b82d3ac105 ("bpf: Add a selftest for bpf_ima_inode_hash")
-> > > > Reported-by: Andrii Nakryiko <andrii@kernel.org>
-> > > > Signed-off-by: KP Singh <kpsingh@google.com>
-> > > > ---
-> > > >  tools/testing/selftests/bpf/config | 1 +
-> > > >  1 file changed, 1 insertion(+)
-> > > >
-> > > > diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-> > > > index 365bf9771b07..37e1f303fc11 100644
-> > > > --- a/tools/testing/selftests/bpf/config
-> > > > +++ b/tools/testing/selftests/bpf/config
-> > > > @@ -43,3 +43,4 @@ CONFIG_IMA=y
-> > > >  CONFIG_SECURITYFS=y
-> > > >  CONFIG_IMA_WRITE_POLICY=y
-> > > >  CONFIG_IMA_READ_POLICY=y
-> > > > +CONFIG_BLK_DEV_LOOP=y
-> > > > --
-> > >
-> > >
-> > > You mentioned also that CONFIG_LSM="selinux,bpf,integrity" is needed,
-> > > no? Let's add that as well?
-> >
-> > I did not add it because we did not do it when we added "bpf" to the list and
-> >
-> > I also don't think selinux is really required here which might be worse in
-> > some cases (e.g. when the required config options for
-> > SELinux are not selected).
-> >
-> > Also, when one selects CONFIG_BPF_LSM or CONFIG_IMA from make
-> > menuconfig / nconfig, we get "bpf" and "integrity" appended by default:
-> >
-> > We can add a comment that says that says:
-> >
-> >   "Please ensure "bpf" and "integrity" are present in CONFIG_LSM"
-> >
-> > Now, I was not sure if adding a comment would break any scripts that people
+On Thu, Dec 03, 2020 at 12:20:38PM +0100, Eric Dumazet wrote:
+> 
+> 
+> On 12/3/20 10:12 AM, Gary Lin wrote:
+> > The x64 bpf jit expects bpf images converge within the given passes, but
+> > it could fail to do so with some corner cases. For example:
+> > 
+> >       l0:     ldh [4]
+> >       l1:     jeq #0x537d, l2, l40
+> >       l2:     ld [0]
+> >       l3:     jeq #0xfa163e0d, l4, l40
+> >       l4:     ldh [12]
+> >       l5:     ldx #0xe
+> >       l6:     jeq #0x86dd, l41, l7
+> >       l8:     ld [x+16]
+> >       l9:     ja 41
+> > 
+> >         [... repeated ja 41 ]
+> > 
+> >       l40:    ja 41
+> >       l41:    ret #0
+> >       l42:    ld #len
+> >       l43:    ret a
+> > 
+> > This bpf program contains 32 "ja 41" instructions which are effectively
+> > NOPs and designed to be replaced with valid code dynamically. Ideally,
+> > bpf jit should optimize those "ja 41" instructions out when translating
+> > the bpf instructions into x86_64 machine code. However, do_jit() can
+> > only remove one "ja 41" for offset==0 on each pass, so it requires at
+> > least 32 runs to eliminate those JMPs and exceeds the current limit of
+> > passes (20). In the end, the program got rejected when BPF_JIT_ALWAYS_ON
+> > is set even though it's legit as a classic socket filter.
+> > 
+> > Since this kind of programs are usually handcrafted rather than
+> > generated by LLVM, those programs tend to be small. To avoid increasing
+> > the complexity of BPF JIT, this commit just bumps the number of passes
+> > to 64 as suggested by Daniel to make it less likely to fail on such cases.
+> > 
+> 
+> Another idea would be to stop trying to reduce size of generated
+> code after a given number of passes have been attempted.
+> 
+> Because even a limit of 64 wont ensure all 'valid' programs can be JITed.
 
-Any infra I'm in charge of is not using this config in an automated
-fashion, so adding
++1.
+Bumping the limit is not solving anything.
+It only allows bad actors force kernel to spend more time in JIT.
+If we're holding locks the longer looping may cause issues.
+I think JIT is parallel enough, but still it's a concern.
 
-# CONFIG_LSM="bpf,integrity"
+I wonder how assemblers deal with it?
+They probably face the same issue.
 
-would work just fine. But I can't know if anyone else relies on this.
-But # comments are part of Kconfig "spec", so probably is ok to add.
-
-> > have that parse this file, so I avoided it. But overriding the string
-> > completely
-> > might not be a good idea.
->
-> If it's okay, I can send the v4 out now and we can add the comment or CONFIG_LSM
-> in a separate patch?
-
-Sure.
+Instead of going back to 32-bit jumps and suddenly increase image size
+I think we can do nop padding instead.
+After few loops every insn is more or less optimal.
+I think the fix could be something like:
+  if (is_imm8(jmp_offset)) {
+       EMIT2(jmp_cond, jmp_offset);
+       if (loop_cnt > 5) {
+          EMIT N nops
+          where N = addrs[i] - addrs[i - 1]; // not sure about this math.
+          N can be 0 or 4 here.
+          // or may be NOPs should be emitted before EMIT2.
+          // need to think it through
+       }
+  }
+Will something like this work?
+I think that's what you're suggesting, right?
