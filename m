@@ -2,97 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB4432CD9EC
-	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 16:14:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C02ED2CD9FA
+	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 16:18:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729192AbgLCPMO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Dec 2020 10:12:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46916 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727427AbgLCPMO (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 3 Dec 2020 10:12:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607008247;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IBftimYBdL+rPRjoBGoNau5FbS8yM8qo7/BB2RqpMY4=;
-        b=a1PoymhM7/469CZiCbbrMQ8xZR7IlXKdOprCDvR9ThLPrh1bcaHAV4181s+4aaRAHT3wPt
-        nNzu8XP+GbScCwMf4JtN/rX+ofC8XYzdJwTtVRjS+S3f68QVkQVG2suPthh6EfzVoc6vO0
-        DGBAgMdkt5T3+xbd/6K0g23k+rRLn3E=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-309-WLVmL-oKMzq2YN7CX2rNpQ-1; Thu, 03 Dec 2020 10:10:43 -0500
-X-MC-Unique: WLVmL-oKMzq2YN7CX2rNpQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3835E1034AF3;
-        Thu,  3 Dec 2020 15:10:41 +0000 (UTC)
-Received: from krava (unknown [10.40.195.70])
-        by smtp.corp.redhat.com (Postfix) with SMTP id CFF3719C44;
-        Thu,  3 Dec 2020 15:10:38 +0000 (UTC)
-Date:   Thu, 3 Dec 2020 16:10:37 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Brendan Jackman <jackmanb@google.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [PATCH bpf-next] tools/resolve_btfids: Fix some error messages
-Message-ID: <20201203151037.GC3518322@krava>
-References: <20201203102234.648540-1-jackmanb@google.com>
+        id S1726032AbgLCPQE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Dec 2020 10:16:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725962AbgLCPQD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Dec 2020 10:16:03 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C140CC061A4E;
+        Thu,  3 Dec 2020 07:15:17 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id o1so2226600wrx.7;
+        Thu, 03 Dec 2020 07:15:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=fFaCriGSYx/jNXnz0XbvUiNq6DB0Sw/tCXGOND8c0og=;
+        b=SST5AJWfppZNIQZ1c71S4pRZRCgOpDQjBFI7O004IV1EmRNpg7MNTNTChLeSluy6b8
+         fr8gFfYFH1zQA+FY3C2DufLFhZWzCtsl+5fnNjqBd17+afqCq19pyYzSFO41g5c0Tvzh
+         679xIVJ88m/lyucAI/F6Pbmc5zqI3vTbP/ci1l459V1GnhILstgOizY3A4qySqeRJk9O
+         DiRlr89YzB49dNS9hbUqt5w3iUnJBsZRI4sFMBdm/iltObUWqy70gcmjjSnrBk1BiFa0
+         yTzGGehtkmFCOSm3Rwk06NYVuOo6oLdgpgAblJ3xOsMIKF9BKya7x9Ykhqv7OV/V0F3U
+         H29Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=fFaCriGSYx/jNXnz0XbvUiNq6DB0Sw/tCXGOND8c0og=;
+        b=uJiJ7la5WWGDB/7VRitZ4FFEpoFlWifh2foelckr4sLqDpTQVuJ9fbceMoRiN5U1e/
+         ZEfuU3hjsKX19mwNHu3bjuH1y/PO4BakTX0fBWWXVaXTJzU9AiB46eVUcOg/pKHITb0T
+         Ry2LJfTNad0xyQhc3EtsQHHfjPB0odJ8ovEs4stD+KnM6YpgnzwfCSF6Yj/wDUGuPrJF
+         ez44W9TvWsnvEa/86wJNtiM6NnUiuTiad/a6W9vzRfmNVtBCVcM+fQZ+sgXGS5FVtTKr
+         wi5RjpLzS8klXLK6YdmXN0j64VQAemHlPZV4nBfngpAJItOVmj45t/snA2Tqh34pso5R
+         BiSQ==
+X-Gm-Message-State: AOAM530Dtad5NKZQ9VdzK9YTQ1DI9zDTXYlqeDr7NuCerPPQReVYdAC5
+        wOFERiu+/nEbv7XHTZsUIVs1w1eedIrjoyQcnO0=
+X-Google-Smtp-Source: ABdhPJxFa6CoW2qkpeaUpLguTFOPv/6+OfkPZg79klK1iRQ7vQVjZnha+cFTtwHNmnpoGelHzHOcchdhsRgIiCveiJo=
+X-Received: by 2002:adf:ed04:: with SMTP id a4mr4273079wro.172.1607008515458;
+ Thu, 03 Dec 2020 07:15:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201203102234.648540-1-jackmanb@google.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20201203114452.1060017-1-colin.king@canonical.com>
+In-Reply-To: <20201203114452.1060017-1-colin.king@canonical.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Thu, 3 Dec 2020 16:15:02 +0100
+Message-ID: <CAJ+HfNiFcyqGYCNigs22k4=g_GQ_hJiZ=eE7f+hguOyN2ScdsA@mail.gmail.com>
+Subject: Re: [PATCH][next] samples/bpf: Fix spelling mistake "recieving" -> "receiving"
+To:     Colin King <colin.king@canonical.com>
+Cc:     Mariusz Dudek <mariuszx.dudek@intel.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 10:22:34AM +0000, Brendan Jackman wrote:
-> Add missing newlines and fix polarity of strerror argument.
-> 
-> Signed-off-by: Brendan Jackman <jackmanb@google.com>
+On Thu, 3 Dec 2020 at 12:46, Colin King <colin.king@canonical.com> wrote:
+>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> There is a spelling mistake in an error message. Fix it.
+>
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-
-thanks,
-jirka
+Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
 
 > ---
->  tools/bpf/resolve_btfids/main.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
-> index dfa540d8a02d..e3ea569ee125 100644
-> --- a/tools/bpf/resolve_btfids/main.c
-> +++ b/tools/bpf/resolve_btfids/main.c
-> @@ -454,7 +454,7 @@ static int symbols_collect(struct object *obj)
->  			return -ENOMEM;
->  
->  		if (id->addr_cnt >= ADDR_CNT) {
-> -			pr_err("FAILED symbol %s crossed the number of allowed lists",
-> +			pr_err("FAILED symbol %s crossed the number of allowed lists\n",
->  				id->name);
->  			return -1;
->  		}
-> @@ -477,8 +477,8 @@ static int symbols_resolve(struct object *obj)
->  	btf = btf__parse(obj->btf ?: obj->path, NULL);
->  	err = libbpf_get_error(btf);
->  	if (err) {
-> -		pr_err("FAILED: load BTF from %s: %s",
-> -			obj->path, strerror(err));
-> +		pr_err("FAILED: load BTF from %s: %s\n",
-> +			obj->path, strerror(-err));
->  		return -1;
->  	}
->  
-> 
-> base-commit: 97306be45fbe7a02461c3c2a57e666cf662b1aaf
-> -- 
-> 2.29.2.454.gaff20da3a2-goog
-> 
-
+>  samples/bpf/xdpsock_user.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/samples/bpf/xdpsock_user.c b/samples/bpf/xdpsock_user.c
+> index 0fee7f3aef3c..9553c7c47fc4 100644
+> --- a/samples/bpf/xdpsock_user.c
+> +++ b/samples/bpf/xdpsock_user.c
+> @@ -1570,7 +1570,7 @@ recv_xsks_map_fd(int *xsks_map_fd)
+>
+>         err =3D recv_xsks_map_fd_from_ctrl_node(sock, xsks_map_fd);
+>         if (err) {
+> -               fprintf(stderr, "Error %d recieving fd\n", err);
+> +               fprintf(stderr, "Error %d receiving fd\n", err);
+>                 return err;
+>         }
+>         return 0;
+> --
+> 2.29.2
+>
