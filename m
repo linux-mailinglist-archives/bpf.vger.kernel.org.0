@@ -2,113 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 689112CDAC4
-	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 17:06:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D2F62CDAE2
+	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 17:11:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731207AbgLCQFP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Dec 2020 11:05:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54948 "EHLO
+        id S1731212AbgLCQLH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Dec 2020 11:11:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729272AbgLCQFO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Dec 2020 11:05:14 -0500
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F3AEC094251
-        for <bpf@vger.kernel.org>; Thu,  3 Dec 2020 08:03:43 -0800 (PST)
-Received: by mail-qv1-xf49.google.com with SMTP id y8so1959570qvu.22
-        for <bpf@vger.kernel.org>; Thu, 03 Dec 2020 08:03:43 -0800 (PST)
+        with ESMTP id S1727656AbgLCQLH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Dec 2020 11:11:07 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 701FFC061A52
+        for <bpf@vger.kernel.org>; Thu,  3 Dec 2020 08:10:26 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id g14so2398036wrm.13
+        for <bpf@vger.kernel.org>; Thu, 03 Dec 2020 08:10:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=+oJt4YN1vV8BikzJk8T4MnuRoPet/ONJM85/l1oaFsA=;
-        b=fVN2tNQLNEwDBCS0z2Ugrc7Z322KowXofgwiQ9YEdeV/KCt2OGr2VBVa1EMDEa3wKz
-         YpU4Ba+Cl9MxtT2dEJYg5FdMcHTjj+6fBROVSB/N+NSL0TiLW2mHwqpo8ifxLtEZdrD+
-         x6P66T34hNWOrJKcGHbv30mOOjKtNiOFoExyWjKuAxS5djB+RtMiBt7GhEBLLZmKKHfl
-         Md5+jyELCFNLSaecee9i0NHD+EcOtPwqyRNlPsuXVZ3P88OJm/Zhyt6gjKgapTAQ/79f
-         FBvvYqNEbTpfZY7SzjM3k9cEX9dCDVEtrwx1ftqs398vsjI90tGKgDpMAGHK1AY5ZvjS
-         Vr+g==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4Ys3ZXevU8FZT2N8gxyqI3Tx9K/RTVhiVdtXVNw9PEo=;
+        b=sdvE0+/yC/5v9KY9Rei+N0j7UpMD/vEsf7V+d1TNvhr5ndMlJO+pHfg5EzyHrZsPc5
+         19mpSEmPKg5b7+nAibVksz7vmBNQlqy3ioadUgGdvSc00/eO4Uy+JluxKbglP8EWEESR
+         dYttiMjD3cuEpRGP9hsN643yV/coqgo4vrUBBpAtHs0XoKH+nu355NVJwa8y3HkELqHU
+         etSLK6SqiOL2+Edal0HK/abtbZ9kub8g/GSNhpyrXsF0uAojSnVliJN7pBvKP7QxcsxU
+         KhpOxxJj8VAq2cDgMnOOMPME6o/FC6G0mVD+oY7p01K5V0Tf62VW+RXvryvENg43Xo2z
+         Bspw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=+oJt4YN1vV8BikzJk8T4MnuRoPet/ONJM85/l1oaFsA=;
-        b=mhQVvrg/F3Voh8sWudidP5bECbCq/+Fmk8srSR/2GSKQRMO1c0lMf5gC6PqJDssdnW
-         rAvDWl7pFdXMSi2zr+0TIQdA7uqm0jnEb+VHMhZouuZns4PEqcfwwOHX2t9CZEOYdd/Z
-         t5l5P9mqlqzQPxvcFlYNQQERmoqydG6IgQhyDGLhhbj85usiEnJae9tn0b7fiDiQ4l8l
-         QwrwJfN6W3X7BZ2eOY+jwr8vtx8x5pGgjRRjbf5DhSBHcCFKqCt44sXAKDV66bbTE960
-         CjvrrbcOAEroIMci6Fyc/eHQr8QkDNUgkRi2a2OojnvVJzTkwp9QFelPVhe8pK4Lv/iL
-         KtWg==
-X-Gm-Message-State: AOAM530rCPXP610iA5b/bF0q2qHJeSHbwbuQ05ZWjtxKK/kdV9JJzjXB
-        0pgo9xBxn4QS28qHkD9WvjBH66a1gbITdQV56vZFoXXejZUWpjtoN+TfGOqtQpW65xdoWlM4eEq
-        aFhTc9xvdB0xZZHbJBuP1pV79p4/9UdNf2sY+mhuokjq9TLpYqA2HXXASZskI4WI=
-X-Google-Smtp-Source: ABdhPJzEd1nsztwyeAv0SEjKx8FK75ZZ+DgtqH3y1CX08lYeGnBAHDonB2nICe8xfwm8dnQc5SWESwtNDMWl4Q==
-Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
-X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
- (user=jackmanb job=sendgmr) by 2002:a0c:9d07:: with SMTP id
- m7mr4069974qvf.5.1607011422530; Thu, 03 Dec 2020 08:03:42 -0800 (PST)
-Date:   Thu,  3 Dec 2020 16:02:45 +0000
-In-Reply-To: <20201203160245.1014867-1-jackmanb@google.com>
-Message-Id: <20201203160245.1014867-15-jackmanb@google.com>
-Mime-Version: 1.0
-References: <20201203160245.1014867-1-jackmanb@google.com>
-X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
-Subject: [PATCH bpf-next v3 14/14] bpf: Document new atomic instructions
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4Ys3ZXevU8FZT2N8gxyqI3Tx9K/RTVhiVdtXVNw9PEo=;
+        b=TfrWoQmR/pevcLGgxgbyscASkZBWc1BYzVKh1HxWE3YCcmsje8m7ro9NH8FyfszKl6
+         TjCddeP5ZI/mF8aMcLMKcJvs1FeZPWhwffQt5WhrBEk3xa/OkK25vQ79EoT0vIhlMT37
+         8p0rxgaZWmWofu6qS9+5Kth2c+MruydybREqa7z2Npt4XdNULyr7YdYCA/3FpQhjbAUX
+         XvgCriOW4OqfmzaOuQis2xcquiU1544fZ9fMoVzeoLBnvyWpv7r0D1bauyGtTAw8mFK3
+         yhzgip6iyQYzQwKa4Dw4Mt+t+bcYQ5dAnZWo43XeAIdKiT/d9Hyf6W4O38Dr2xeSGExU
+         5W6A==
+X-Gm-Message-State: AOAM531RUEpQezQYAP9B8nmGadYGJMi073gTF6wJuF33zSnKrBQMo8IM
+        SzmWTLUgMbWrD9/4Bq5sHoVENOWTCcy5QQ==
+X-Google-Smtp-Source: ABdhPJy99W3XtGDuvMMePWAVHNIdwn0O5cc55gtc4N0/Ln27hNzknMKSms6eQy2k9FsvKOsHqHGBWQ==
+X-Received: by 2002:a5d:4004:: with SMTP id n4mr4559276wrp.230.1607011824754;
+        Thu, 03 Dec 2020 08:10:24 -0800 (PST)
+Received: from google.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
+        by smtp.gmail.com with ESMTPSA id w10sm2381396wra.34.2020.12.03.08.10.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Dec 2020 08:10:23 -0800 (PST)
+Date:   Thu, 3 Dec 2020 16:10:20 +0000
 From:   Brendan Jackman <jackmanb@google.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         KP Singh <kpsingh@chromium.org>,
         Florent Revest <revest@chromium.org>,
-        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>,
-        Brendan Jackman <jackmanb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
+Subject: Re: [PATCH bpf-next v3 00/14] Atomics for eBPF
+Message-ID: <X8kN7NA7bJC7aLQI@google.com>
+References: <20201203160245.1014867-1-jackmanb@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201203160245.1014867-1-jackmanb@google.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Change-Id: Ic70fe9e3cb4403df4eb3be2ea5ae5af53156559e
-Signed-off-by: Brendan Jackman <jackmanb@google.com>
----
- Documentation/networking/filter.rst | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+On Thu, Dec 03, 2020 at 04:02:31PM +0000, Brendan Jackman wrote:
+[...]
+> [1] Previous patchset:
+>     https://lore.kernel.org/bpf/20201123173202.1335708-1-jackmanb@google.com/
 
-diff --git a/Documentation/networking/filter.rst b/Documentation/networking/filter.rst
-index 1583d59d806d..26d508a5e038 100644
---- a/Documentation/networking/filter.rst
-+++ b/Documentation/networking/filter.rst
-@@ -1053,6 +1053,32 @@ encoding.
-    .imm = BPF_ADD, .code = BPF_ATOMIC | BPF_W  | BPF_STX: lock xadd *(u32 *)(dst_reg + off16) += src_reg
-    .imm = BPF_ADD, .code = BPF_ATOMIC | BPF_DW | BPF_STX: lock xadd *(u64 *)(dst_reg + off16) += src_reg
- 
-+The basic atomic operations supported (from architecture v4 onwards) are:
-+
-+    BPF_ADD
-+    BPF_AND
-+    BPF_OR
-+    BPF_XOR
-+
-+Each having equivalent semantics with the ``BPF_ADD`` example, that is: the
-+memory location addresed by ``dst_reg + off`` is atomically modified, with
-+``src_reg`` as the other operand. If the ``BPF_FETCH`` flag is set in the
-+immediate, then these operations also overwrite ``src_reg`` with the
-+value that was in memory before it was modified.
-+
-+The more special operations are:
-+
-+    BPF_XCHG
-+
-+This atomically exchanges ``src_reg`` with the value addressed by ``dst_reg +
-+off``.
-+
-+    BPF_CMPXCHG
-+
-+This atomically compares the value addressed by ``dst_reg + off`` with
-+``R0``. If they match it is replaced with ``src_reg``, The value that was there
-+before is loaded back to ``R0``.
-+
- Note that 1 and 2 byte atomic operations are not supported.
- 
- You may encounter BPF_XADD - this is a legacy name for BPF_ATOMIC, referring to
--- 
-2.29.2.454.gaff20da3a2-goog
-
+Sorry, bogus link. That's v1, here's v2:
+https://lore.kernel.org/bpf/20201127175738.1085417-1-jackmanb@google.com/
