@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FB402CE294
-	for <lists+bpf@lfdr.de>; Fri,  4 Dec 2020 00:23:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EB9A2CE299
+	for <lists+bpf@lfdr.de>; Fri,  4 Dec 2020 00:23:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728017AbgLCXVl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Dec 2020 18:21:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38064 "EHLO
+        id S1727223AbgLCXXL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Dec 2020 18:23:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727896AbgLCXVl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Dec 2020 18:21:41 -0500
-Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB34C061A4F;
-        Thu,  3 Dec 2020 15:20:55 -0800 (PST)
-Received: by mail-yb1-xb44.google.com with SMTP id t33so3684733ybd.0;
-        Thu, 03 Dec 2020 15:20:55 -0800 (PST)
+        with ESMTP id S1726885AbgLCXXK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Dec 2020 18:23:10 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9A8FC061A53;
+        Thu,  3 Dec 2020 15:22:29 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id 2so3628630ybc.12;
+        Thu, 03 Dec 2020 15:22:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=25ITGgyLfT0wP7ZTh/QW9d2jn5Se8Cwy9183U4JoZJQ=;
-        b=AaUkMqufdPNFLW9ku3F5XALkmjNGlhlKGQD9ioMknniYi+cCLa1/jLxHPmsqw2z+hO
-         dDSCp/aapjGrX0aPndPMnr6vxjfCI4w6CCJ1Ym0gqZjxuYLx9xcoIzCf1EZMi/mcbSaj
-         XLDb85//H8pz4MHbmEmqrmLd/cw/wEG/vKeVJdOfKosS/L1rNGZCHtmqj9aYjcvy/Se3
-         pTR2PYwK6wlLNVHLRYjRXgiQFqzIBdh6JeZ2pvzOT04A+bH4/B3D2Tqqzl9qY3Y8kBAm
-         zoS4exImWeQ6nQLJJtanaQbdp5Di/tunwLkp9sJyf/xptLqrbl74wo/ubJ6ppbYgqdQc
-         xHCQ==
+        bh=/0Ujqyr9SOu32wCr5NmjHzbSIH9DSGXFfdV6x7vToCE=;
+        b=u/aNkEDv7n20QykwPYbjsNWLEVguYTnRz0BMiu+A2BFILAj1CJBDGKpAOlBwky0w5M
+         c4mOAGpbrUfqUmnaWjQtSt5HOrBYNPsTYsub07yNomdXGKbUDbUAcQn0adoVs+zAcXQb
+         /O98X/FNicM3V5YCgGsE6cL+bRU7OeY3gPRneyG/BuuR9xOGU4gRmIlvNTsFv0JBqCIq
+         AAFftUk/mg7BYfxdkS5iUQeJMaY8PbP91TDgVqUi8JCT2jt2vPVnpp2Zerv0GD5BKa6W
+         VWTrdOML1KaOXfMHVAJqUivmxpS8lw1URLqoij8pVZSb5DGPgDP2/DHTJzGqPLuHnVWl
+         BsQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=25ITGgyLfT0wP7ZTh/QW9d2jn5Se8Cwy9183U4JoZJQ=;
-        b=DyKfnCKpLln++M431mkqI70VJBRkFlKinb/2qaTLMafMMFovEULWWWM7N/DRaTSefO
-         U4LldIzXfWXx8OJuv8mQ3rs6oB2KijanFnRrbbUPcBVOtIZqoX2unVcpp1gC6VK1zmFD
-         d4Jlu4rhn7oPgfUwR0Dqdw7grxIzt34JkK/42s6g6AlFQclX1OzIxuL1Z/KKkKtxK7Yg
-         6GF+Vhmmm7BvTGQvqXt+Ry9VJdtHG8wPat53peyzEcabKWc27FwBUL4CK+3Ubd1fGZu0
-         gdtW1+0nkt+LvCXIHMzoOQX+MiNRNQJH/eY0G/S9wTIGYekjf8RH2zmmYBUUIw10X8/7
-         ICJw==
-X-Gm-Message-State: AOAM532wGeRMtmIZY3ItRaRF5AJsZ/B2b/8wY6ezezlB8Ihkgbrr9r+N
-        jnJv3Xh8CLKL3fyn5j9HL7HMWtfitdgtDTnyYgY=
-X-Google-Smtp-Source: ABdhPJwcJWEbd4UCWeuU27I30FCpJvL5pF/5D+cU1dGpwlUEEADsj6ltfmrqZGg1VKY59d8tiDGwzRCSUrfVyzjYCL4=
-X-Received: by 2002:a25:c089:: with SMTP id c131mr2163792ybf.510.1607037654835;
- Thu, 03 Dec 2020 15:20:54 -0800 (PST)
+        bh=/0Ujqyr9SOu32wCr5NmjHzbSIH9DSGXFfdV6x7vToCE=;
+        b=czC+IyQP2R29+PZij23MZGZvsdpKBGfQgchmtmAfaiXeHGPiSXEAR0WoiaA4R3rI2I
+         bS+K+8JQ3mwskSPV8BDg1GIWhQcXPpvx1KDktF2B/Lp6lRuzRViEarKJoZSuU9GNPw+w
+         w/lMtE1IXSF/CZ4ILiIcsemVmeZliFD/OeLuymztLVFcuPsPlV+6xD97XqUYj3Llao75
+         Vg9e5dZj5Er9fkGcHCVl+XaIqo2aOmk4qIZmrDhQG2HhVVX76uQYkmPtIZ5CBh0zMTRA
+         FFIQKrjuIyO5EbHkAHq04PZ54NGj0S+YVs1kwhXMdBkOTIEpVDLMbOlBmocJTX0pmDI0
+         mkIw==
+X-Gm-Message-State: AOAM532zU7HfQB6KPMJXusmlN8AaHW6g8QxbZ5SNg6lPpZQEmIT8TO8f
+        /joI5Yq7BJuQTVi15wt7BtIo/MTS7yMx3CA22qrIzT8o/HA=
+X-Google-Smtp-Source: ABdhPJzwfOHyDBxXeh5YG63wOBkPRjgaHOank/RXntWfx2E+llpsdJc88uXUL90p4aO5JvlO2VDHqYlWZ5zn+JOxJDY=
+X-Received: by 2002:a25:585:: with SMTP id 127mr2028489ybf.425.1607037749220;
+ Thu, 03 Dec 2020 15:22:29 -0800 (PST)
 MIME-Version: 1.0
-References: <20201203220625.3704363-1-jolsa@kernel.org> <20201203220625.3704363-2-jolsa@kernel.org>
-In-Reply-To: <20201203220625.3704363-2-jolsa@kernel.org>
+References: <20201203220625.3704363-1-jolsa@kernel.org> <20201203220625.3704363-3-jolsa@kernel.org>
+In-Reply-To: <20201203220625.3704363-3-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 3 Dec 2020 15:20:44 -0800
-Message-ID: <CAEf4BzZ+eS=roOdzo0MP=2f2aDVNC=OYz8nHRjA7-Fv8wmQ8GQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] btf_encoder: Factor filter_functions function
+Date:   Thu, 3 Dec 2020 15:22:18 -0800
+Message-ID: <CAEf4BzbdB4DUJ2BKVsVdpcZHunNxb_6FvAWOFt_be=81Jyxmnw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] btf_encoder: Use address size based on ELF's class
 To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
@@ -61,22 +61,24 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 2:07 PM Jiri Olsa <jolsa@kernel.org> wrote:
+On Thu, Dec 3, 2020 at 2:08 PM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Reorder the filter_functions function so we can add
-> processing of kernel modules in following patch.
+> We can't assume the address size is always size of unsigned
+> long, we have to use directly the ELF's address size.
 >
-> There's no functional change intended.
+> Changing addrs array to __u64 and convert 32 bit address
+> values when copying from ELF section.
 >
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
 
-LGTM.
+It looks ok to me, but I didn't expect that changes would be so
+numerous... Makes me wonder if pahole ever supported working with ELF
+files of different bitness. I'll defer to Arnaldo to make a call on
+whether this is necessary.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
->  btf_encoder.c | 61 ++++++++++++++++++++++++++++++++++-----------------
->  1 file changed, 41 insertions(+), 20 deletions(-)
+>  btf_encoder.c | 24 +++++++++++++++++-------
+>  1 file changed, 17 insertions(+), 7 deletions(-)
 >
 
 [...]
