@@ -2,77 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E006E2CDDC4
-	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 19:34:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EDD32CDDE4
+	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 19:42:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731697AbgLCSdr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Dec 2020 13:33:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49898 "EHLO
+        id S1727730AbgLCSlE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Dec 2020 13:41:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726462AbgLCSdq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Dec 2020 13:33:46 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FA70C061A52;
-        Thu,  3 Dec 2020 10:33:06 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id e5so1571821pjt.0;
-        Thu, 03 Dec 2020 10:33:06 -0800 (PST)
+        with ESMTP id S1728186AbgLCSlE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Dec 2020 13:41:04 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CE40C061A4F;
+        Thu,  3 Dec 2020 10:40:18 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id t37so1934741pga.7;
+        Thu, 03 Dec 2020 10:40:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=wTm4MsPFchb7Zj9BUbI1foUgKuinG+YS4/akILLACGI=;
-        b=oFHZJaCwvNrf19hvnXoxTH3x8KSsk9R3Dwq8Mm+/rZ+XPPN4Sz1ODI3kJMI1SjX5Xj
-         huAgu8QJzpzhYP9WfiBCD6JnUTBR1bON4+6mFmjwe1VT6hhkQtXb04cIGg1YhomJv2nI
-         rO5DR8+8qCXRX19tEa6nNfTFA0GXpkAlyYxX0NgKeLWONHLa8N8guQpwbsQofVDPePcj
-         sAEUm+3I8LhAd2pjM+GsXPpZfV35k52Orm7SQaL61mr6R+gIjUuvKohS+shnza981oc/
-         rrst+0URTeK9QzBXczRb1I+cFbk47CeZOHMxFTzah1lRn0AdGzonBk8S3gW+9/rkOAhl
-         +hWg==
+        bh=W5vDV9iOP31Wm581raHT9lC6nNCaICsVygVFILGkqlU=;
+        b=ZNiThM9wtUopnYYeU5vnsAwWOLKHFITA1p6OBSrZwNxYK9e9SzRLsHviwxQBun0lsg
+         STNe4DervsrNNJw1dlg+y7MzaytFXajBZoMSDWTkH5AX5mUkTzHqeyLsRd5VacJYn+vy
+         4ijFBCiXoLnrBAIg7pSOAfwgeVYnbDASZU5rzqNIgyn+TiU2io8nqfMigrsRjVweRuBk
+         tCkDv3bNcnbl4DtpNusrVoBTpFBmmAfc4Jqbv1xf+YMWhUQJ1/86/6gYyc0yQxF++JtS
+         cCUoKElUuZdgVCMhjLlYpobxXx/K/ute0tHcuv2veBlWCbOXoptwXeeay9d1+PSrVWVX
+         mNnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=wTm4MsPFchb7Zj9BUbI1foUgKuinG+YS4/akILLACGI=;
-        b=Sj1iXm7Pw03eF6fj0GMqdOHOyBCXGfAYeQhqRHOAUyT5rudrWunG+x+DSrQYVvHbDd
-         1e5y/KM2Sn+Gd5euQWkdFVKACQZq0pS4o8anUGTJwGn05bb3C2ARDKXNcPbInBelfgrv
-         n3IIHrJ0uDD4JgUCyh0Ug/SZmbAFkD3pgUrpnD6JypN2A93oBDiAtu82OwlWkBPZyutV
-         p8L5vtv9bAKcvW0HD2yOPXxGvGcErre2itp9Zd+bktyh52n7Vfw3D6jAUdfa8GNX0Z1N
-         niW49WfzqJWy1kp7H6I7FXcmlCstPgGCvHRjXzpVVYiNS/IensEJSpEWgH8p9vFcqtIU
-         OjCA==
-X-Gm-Message-State: AOAM531O1QqchHZ3obvDPcOwFWvLbUnxCdCi+VLpyovdvoIR3j+Y99oG
-        mld4TwM4j+cCOsOdM4tvPcg=
-X-Google-Smtp-Source: ABdhPJxrD51vyIQ/hqEsn93ffMPY6H5K+fqlNL+jNZcv4BF/YBukJX+y/Kp9rQZ0iRK+/xGGyhHkrA==
-X-Received: by 2002:a17:90a:930f:: with SMTP id p15mr381847pjo.73.1607020386076;
-        Thu, 03 Dec 2020 10:33:06 -0800 (PST)
+        bh=W5vDV9iOP31Wm581raHT9lC6nNCaICsVygVFILGkqlU=;
+        b=JL3WcqSmXTJBJ8FyMmWQWQavIXcoxwbibSaVS/D2/9JWmMzzWNWVkiyMBsPAPBRdQ/
+         tF04V6qEMyeu0JOAIUOdRepE1xlwW7oqxnfoEjhkkgQWlYNI7oTZo7xSXvGHZLAvl72J
+         B03hNzu3WBDrQZc/njkHcLFyY4rUmmm7t+MPSPVHo3N2JOV69SbvqmCU18hSAbnxqc3F
+         VfJ4tn1q8na182k6zO5x8V7Z9Nh2kiTrocH0vZDZ00Bm6Xc/ggwxobZPtTEnyboDhS3v
+         5nEtpi1d/w7cpzgdexKix78mW+cZJeKmAkr/EBgjuf2oF/AEFmVDUKIW5jmKR+9yb1M0
+         kFxw==
+X-Gm-Message-State: AOAM5333bgsVpggTlItWxLtO4oJVLthQVudduQRMw/TqoPjk7RHGO5+y
+        7+dQYHeLmNbXgJI7uJUiqvk=
+X-Google-Smtp-Source: ABdhPJwhBqVIOPfAG1Z9q3dYb0G1X+vzjOYL5a98hLGTsMKYRA+PjHEVCeDbtR8Fdsoj2pNMpLRKeQ==
+X-Received: by 2002:a63:181b:: with SMTP id y27mr4191123pgl.408.1607020818122;
+        Thu, 03 Dec 2020 10:40:18 -0800 (PST)
 Received: from ast-mbp ([2620:10d:c090:400::5:a629])
-        by smtp.gmail.com with ESMTPSA id x21sm2448717pfn.196.2020.12.03.10.33.04
+        by smtp.gmail.com with ESMTPSA id m9sm2469683pfh.94.2020.12.03.10.40.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Dec 2020 10:33:05 -0800 (PST)
-Date:   Thu, 3 Dec 2020 10:33:03 -0800
+        Thu, 03 Dec 2020 10:40:17 -0800 (PST)
+Date:   Thu, 3 Dec 2020 10:40:14 -0800
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
-        ast@kernel.org, daniel@iogearbox.net
-Subject: Re: [PATCH bpf-next] selftests/bpf: copy file using read/write in
- local storage test
-Message-ID: <20201203183303.zv6aqwqtamkhne4p@ast-mbp>
-References: <20201202174947.3621989-1-sdf@google.com>
+To:     mariusz.dudek@gmail.com
+Cc:     andrii.nakryiko@gmail.com, magnus.karlsson@intel.com,
+        bjorn.topel@intel.com, ast@kernel.org, daniel@iogearbox.net,
+        netdev@vger.kernel.org, jonathan.lemon@gmail.com,
+        bpf@vger.kernel.org, Mariusz Dudek <mariuszx.dudek@intel.com>
+Subject: Re: [PATCH v7 bpf-next 0/2] libbpf: add support for
+ privileged/unprivileged control separation
+Message-ID: <20201203184014.fcayxrqusi6aptje@ast-mbp>
+References: <20201203090546.11976-1-mariuszx.dudek@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201202174947.3621989-1-sdf@google.com>
+In-Reply-To: <20201203090546.11976-1-mariuszx.dudek@intel.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 09:49:47AM -0800, Stanislav Fomichev wrote:
-> Splice (copy_file_range) doesn't work on all filesystems. I'm running
-> test kernels on top of my read-only disk image and it uses plan9 under the
-> hood. This prevents test_local_storage from successfully passing.
+On Thu, Dec 03, 2020 at 10:05:44AM +0100, mariusz.dudek@gmail.com wrote:
+> From: Mariusz Dudek <mariuszx.dudek@intel.com>
 > 
-> There is really no technical reason to use splice, so lets do
-> old-school read/write to copy file; this should work in all
-> environments.
+> This patch series adds support for separation of eBPF program
+> load and xsk socket creation. In for example a Kubernetes
+> environment you can have an AF_XDP CNI or daemonset that is 
+> responsible for launching pods that execute an application 
+> using AF_XDP sockets. It is desirable that the pod runs with
+> as low privileges as possible, CAP_NET_RAW in this case, 
+> and that all operations that require privileges are contained
+> in the CNI or daemonset.
+> 	
+> In this case, you have to be able separate ePBF program load from
+> xsk socket creation.
 > 
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> Currently, this will not work with the xsk_socket__create APIs
+> because you need to have CAP_NET_ADMIN privileges to load eBPF
+> program and CAP_SYS_ADMIN privileges to create update xsk_bpf_maps.
+> To be exact xsk_set_bpf_maps does not need those privileges but
+> it takes the prog_fd and xsks_map_fd and those are known only to
+> process that was loading eBPF program. The api bpf_prog_get_fd_by_id
+> that looks up the fd of the prog using an prog_id and
+> bpf_map_get_fd_by_id that looks for xsks_map_fd usinb map_id both
+> requires CAP_SYS_ADMIN.
+> 
+> With this patch, the pod can be run with CAP_NET_RAW capability
+> only. In case your umem is larger or equal process limit for
+> MEMLOCK you need either increase the limit or CAP_IPC_LOCK capability. 
+> Without this patch in case of insufficient rights ENOPERM is
+> returned by xsk_socket__create.
+> 
+> To resolve this privileges issue two new APIs are introduced:
+> - xsk_setup_xdp_prog - loads the built in XDP program. It can
+> also return xsks_map_fd which is needed by unprivileged
+> process to update xsks_map with AF_XDP socket "fd"
+> - xsk_sokcet__update_xskmap - inserts an AF_XDP socket into an
+> xskmap for a particular xsk_socket
+> 
+> Usage example:
+> int xsk_setup_xdp_prog(int ifindex, int *xsks_map_fd)
+> 
+> int xsk_socket__update_xskmap(struct xsk_socket *xsk, int xsks_map_fd);
+> 
+> Inserts AF_XDP socket "fd" into the xskmap.
+> 
+> The first patch introduces the new APIs. The second patch provides
+> a new sample applications working as control and modification to
+> existing xdpsock application to work with less privileges.
+> 
+> This patch set is based on bpf-next commit 97306be45fbe
+> (Merge branch 'switch to memcg-based memory accounting')
+> 
+> Since v6
+> - rebase on 97306be45fbe to resolve RLIMIT conflicts
 
 Applied, Thanks
