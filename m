@@ -2,128 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1EBB2CE06B
-	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 22:14:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 893652CE0CD
+	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 22:35:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727460AbgLCVOV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Dec 2020 16:14:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46558 "EHLO
+        id S1728014AbgLCVec (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Dec 2020 16:34:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727186AbgLCVOU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Dec 2020 16:14:20 -0500
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67CE8C061A51;
-        Thu,  3 Dec 2020 13:13:40 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id l14so3390659ybq.3;
-        Thu, 03 Dec 2020 13:13:40 -0800 (PST)
+        with ESMTP id S1729394AbgLCVeY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Dec 2020 16:34:24 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D29A2C061A51
+        for <bpf@vger.kernel.org>; Thu,  3 Dec 2020 13:33:43 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id t4so3331003wrr.12
+        for <bpf@vger.kernel.org>; Thu, 03 Dec 2020 13:33:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ti5mhIVq95auaPRHn01H7dvDj52ZG3ZMCcynug+Vee4=;
-        b=Pqhbj/zCRAy8x15QJUIzYW/7lAbso5As4/lxENF9aFkgYzqmQAlx+E9A/Ot15YHraE
-         RHZTrd+5T3pAgSLlEKBSAdxeICL3mEXsVRKiZxqT/rDQUrf5mXdETC72oh/LDRHcZDAT
-         ZMpwoJvdtlzN5HbXbNpUXWmBrUfxeQSZtV2NClWDoLyvcwNgHiXwjrBfH5rwyZRHC7DM
-         vGMTPI+YawfgptihV+UD5SLTcSKxAC4xKneKenB4/J5SkNKU6TcC3TI5+jsSIwAgA6dP
-         hfwZ+bVKfBZTNCSqycdDzqfzenasKiywctI3cqHanRAvQ9DOyuC2F0HEj66DVytQzP3P
-         d5bw==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NfJQii/CpgAN73aaGK4RbpTh+MNBum2Tvaak24gPmNs=;
+        b=RQCEVaxGJ3wraERVHRYy0hdiDqkphCWB1voN8JEuXFA0VzS2akRYiusaJ/C+ceMn6E
+         CjdfbQ2OE6BDi0KS1iNJLWS+oSuRGzYIBqbZqgSXYeMpOnDgXpsa/f0CxbUYq59uoJ88
+         NI+LkI+Ad+jVZzHoCV0Y6U1pmkHHk1zH26iLU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ti5mhIVq95auaPRHn01H7dvDj52ZG3ZMCcynug+Vee4=;
-        b=jNDcMDKV4kBeksnu6tEisExHR+60SOuyFTGKOWjyL3Y5F3/bJDRi7qIVNnownMJ/Y+
-         jeSdFGaMijtRpyxETLUU350eyr0Vx6t1zanWvekp4HR4lcQWGHYknPnsoBQCMUOPysNl
-         U+JzmqFHHVGykpys7BN4zKECSl0j8QB3BnfZha0DDttJ3Ak8NZ6hzTeiXCbJdoOwH+L0
-         UYtAqw7ikabuE5Vbv3OUFPwkvFr6pt4H+8K4s88fo85mHphjJnxrCwsX3iOObzJlvN+O
-         923Sxo2fjEyxv+KNOE/V4l3kwUAViqp7oInXjCl7GO+KqBAz+6MqXwHr0wLXvCfv8Dbv
-         +wrQ==
-X-Gm-Message-State: AOAM531mu8lPqG1VkWrw6QGzpjUNj6tMfSLFl9J08tFF25ajhCb8Ro/5
-        t9tTuNsnq65dBqbDRN2rKK5Hpg2UcIw01cYVy/gI+CYKVP4oyQ==
-X-Google-Smtp-Source: ABdhPJyQc8sLoVD0AxJW+jx/HXOW8k2mGz4m1a4ZPqgxxuCfGaJD6TwdC2qET7E0iPygrAL1S11ymIjz1aUida5S/w0=
-X-Received: by 2002:a25:df8e:: with SMTP id w136mr1529792ybg.230.1607030019773;
- Thu, 03 Dec 2020 13:13:39 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NfJQii/CpgAN73aaGK4RbpTh+MNBum2Tvaak24gPmNs=;
+        b=TEwxhjwwfCVYDryWxW8ZVRTwpM9en9aJvTkmNEbSOPbSHpssDM5I2QpwMwxUEt25qW
+         8gVexnqrJNsmOTxZcllDdYux3FSTHXYdVLk9lurUckvLrvN5+6LyG3SBsrFGfk24YTNP
+         D4uNr7308JWzp5bCOL8FuZdpBWAo2v+q2M5FdA6waleRXF/g7ZC6GpHirP+L3yP1VKBi
+         Fv/iLdXLD73h8/zwEDy34fdXndpNF8KuDyhsHnCnC8agIPT1vXBkrpRPkXEpTnr4Wxq1
+         cNzXiR0DQFnF24pVyJsB1YVe4uAA99JQnwoFtuMKAGBB2xoxMKSM8iqLW1dirp0mNk3Y
+         VnLg==
+X-Gm-Message-State: AOAM532/EnrInRYOaSQRuWUPyaGEQHF9drEOxfwqx5dUQp5Ji5g/SQZo
+        X54rrZxJfGayIcKxxKrBkz3PWm+AmVG4hA==
+X-Google-Smtp-Source: ABdhPJwFFrFKrzBn+ca/l9RuJ9j+w38NFolqOQnWevDe1neeP6kkh7I2nlQND/Dp+BAZIfjXPatt3A==
+X-Received: by 2002:adf:fd52:: with SMTP id h18mr1301891wrs.90.1607031222222;
+        Thu, 03 Dec 2020 13:33:42 -0800 (PST)
+Received: from revest.zrh.corp.google.com ([2a00:79e0:42:204:f693:9fff:fef4:a569])
+        by smtp.gmail.com with ESMTPSA id h83sm754013wmf.9.2020.12.03.13.33.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Dec 2020 13:33:41 -0800 (PST)
+From:   Florent Revest <revest@chromium.org>
+X-Google-Original-From: Florent Revest <revest@google.com>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kpsingh@chromium.org, revest@google.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v2 1/3] bpf: Expose bpf_get_socket_cookie to tracing programs
+Date:   Thu,  3 Dec 2020 22:33:28 +0100
+Message-Id: <20201203213330.1657666-1-revest@google.com>
+X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
 MIME-Version: 1.0
-References: <20201202194532.12879-1-dev@der-flo.net> <20201202194532.12879-3-dev@der-flo.net>
-In-Reply-To: <20201202194532.12879-3-dev@der-flo.net>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 3 Dec 2020 13:13:29 -0800
-Message-ID: <CAEf4BzbgH4Ezo-LmP0i=bMzT07vo2nfgB6ossnGHCDsRXBi8yg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] selftests/bpf: Avoid errno clobbering
-To:     Florian Lehner <dev@der-flo.net>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        john fastabend <john.fastabend@gmail.com>,
-        Krzesimir Nowak <krzesimir@kinvolk.io>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 2, 2020 at 11:46 AM Florian Lehner <dev@der-flo.net> wrote:
->
-> Print a message when the returned error is about a program type being
-> not supported or because of permission problems.
-> These messages are expected if the program to test was actually
-> executed.
->
-> Cc: Krzesimir Nowak <krzesimir@kinvolk.io>
-> Signed-off-by: Florian Lehner <dev@der-flo.net>
-> ---
->  tools/testing/selftests/bpf/test_verifier.c | 26 +++++++++++++++++----
->  1 file changed, 21 insertions(+), 5 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-> index ceea9409639e..86ef28dd9919 100644
-> --- a/tools/testing/selftests/bpf/test_verifier.c
-> +++ b/tools/testing/selftests/bpf/test_verifier.c
-> @@ -875,19 +875,35 @@ static int do_prog_test_run(int fd_prog, bool unpriv, uint32_t expected_val,
->         __u8 tmp[TEST_DATA_LEN << 2];
->         __u32 size_tmp = sizeof(tmp);
->         uint32_t retval;
-> -       int err;
-> +       int err, saved_errno;
->
->         if (unpriv)
->                 set_admin(true);
->         err = bpf_prog_test_run(fd_prog, 1, data, size_data,
->                                 tmp, &size_tmp, &retval, NULL);
-> +       saved_errno = errno;
-> +
->         if (unpriv)
->                 set_admin(false);
-> -       if (err && errno != 524/*ENOTSUPP*/ && errno != EPERM) {
-> -               printf("Unexpected bpf_prog_test_run error ");
-> -               return err;
-> +
-> +       if (err) {
-> +               switch (saved_errno) {
-> +               case 524/*ENOTSUPP*/:
-> +                       printf("Did not run the program (not supported) ");
-> +                       return 0;
-> +               case EPERM:
-> +                       if (unpriv) {
-> +                               printf("Did not run the program (no permission) ");
-> +                               return 0;
-> +                       }
+This creates a new helper proto because the existing
+bpf_get_socket_cookie_sock_proto has a ARG_PTR_TO_CTX argument and only
+works for BPF programs where the context is a sock.
 
-I see people specifying /* fallthrough; */ to make explicit that we
-expect falling through into default case?
+This helper could also be useful to other BPF program types such as LSM.
 
-> +               default:
-> +                       printf("FAIL: Unexpected bpf_prog_test_run error (%s) ",
-> +                               strerror(saved_errno));
-> +                       return err;
-> +               }
->         }
-> -       if (!err && retval != expected_val &&
-> +
-> +       if (retval != expected_val &&
->             expected_val != POINTER_VALUE) {
->                 printf("FAIL retval %d != %d ", retval, expected_val);
->                 return 1;
-> --
-> 2.28.0
->
+Signed-off-by: Florent Revest <revest@google.com>
+---
+ include/uapi/linux/bpf.h       | 7 +++++++
+ kernel/trace/bpf_trace.c       | 4 ++++
+ net/core/filter.c              | 7 +++++++
+ tools/include/uapi/linux/bpf.h | 7 +++++++
+ 4 files changed, 25 insertions(+)
+
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index c3458ec1f30a..3e0e33c43998 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1662,6 +1662,13 @@ union bpf_attr {
+  * 	Return
+  * 		A 8-byte long non-decreasing number.
+  *
++ * u64 bpf_get_socket_cookie(void *sk)
++ * 	Description
++ * 		Equivalent to **bpf_get_socket_cookie**\ () helper that accepts
++ * 		*sk*, but gets socket from a BTF **struct sock**.
++ * 	Return
++ * 		A 8-byte long non-decreasing number.
++ *
+  * u32 bpf_get_socket_uid(struct sk_buff *skb)
+  * 	Return
+  * 		The owner UID of the socket associated to *skb*. If the socket
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index d255bc9b2bfa..14ad96579813 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1725,6 +1725,8 @@ raw_tp_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 	}
+ }
+ 
++extern const struct bpf_func_proto bpf_get_socket_cookie_sock_tracing_proto;
++
+ const struct bpf_func_proto *
+ tracing_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ {
+@@ -1748,6 +1750,8 @@ tracing_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return &bpf_sk_storage_get_tracing_proto;
+ 	case BPF_FUNC_sk_storage_delete:
+ 		return &bpf_sk_storage_delete_tracing_proto;
++	case BPF_FUNC_get_socket_cookie:
++		return &bpf_get_socket_cookie_sock_tracing_proto;
+ #endif
+ 	case BPF_FUNC_seq_printf:
+ 		return prog->expected_attach_type == BPF_TRACE_ITER ?
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 2ca5eecebacf..177c4e5e529d 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -4631,6 +4631,13 @@ static const struct bpf_func_proto bpf_get_socket_cookie_sock_proto = {
+ 	.arg1_type	= ARG_PTR_TO_CTX,
+ };
+ 
++const struct bpf_func_proto bpf_get_socket_cookie_sock_tracing_proto = {
++	.func		= bpf_get_socket_cookie_sock,
++	.gpl_only	= false,
++	.ret_type	= RET_INTEGER,
++	.arg1_type      = ARG_PTR_TO_BTF_ID_SOCK_COMMON,
++};
++
+ BPF_CALL_1(bpf_get_socket_cookie_sock_ops, struct bpf_sock_ops_kern *, ctx)
+ {
+ 	return __sock_gen_cookie(ctx->sk);
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index c3458ec1f30a..3e0e33c43998 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -1662,6 +1662,13 @@ union bpf_attr {
+  * 	Return
+  * 		A 8-byte long non-decreasing number.
+  *
++ * u64 bpf_get_socket_cookie(void *sk)
++ * 	Description
++ * 		Equivalent to **bpf_get_socket_cookie**\ () helper that accepts
++ * 		*sk*, but gets socket from a BTF **struct sock**.
++ * 	Return
++ * 		A 8-byte long non-decreasing number.
++ *
+  * u32 bpf_get_socket_uid(struct sk_buff *skb)
+  * 	Return
+  * 		The owner UID of the socket associated to *skb*. If the socket
+-- 
+2.29.2.576.ga3fc446d84-goog
+
