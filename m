@@ -2,122 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 648AC2CCBDF
-	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 02:53:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A3C12CCCD8
+	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 03:51:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729462AbgLCBv2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 2 Dec 2020 20:51:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726312AbgLCBv1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 2 Dec 2020 20:51:27 -0500
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 329DFC061A4E;
-        Wed,  2 Dec 2020 17:50:47 -0800 (PST)
-Received: by mail-lf1-x141.google.com with SMTP id a9so405251lfh.2;
-        Wed, 02 Dec 2020 17:50:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9ctfBFQGQdbyGPKLrHCF1O72IncKLnWAmPeG02j1LxY=;
-        b=VleZ4CJrnZ6wSrw+kl8kXqRGS4UZOX45iFD6tELjGbxuEQ3VLdXvWCptvbQ3YSiGOu
-         iNgS93eM2f1m3OVayqREizIOvqOYIInbTrGLn3I7JrhnrYHee+1Y9WBDc7LuVyTkK16A
-         ENY6F4NaBtUprKudsbzgIP2XVUIj5Q0bAZ9nCemigRL3Z071cegIZ7rv22HMuI0dCjG2
-         lsyuvzOVQ7W7VPfykkhhyeTnIxD5Kq/VR47JlG86IaetDNT7dqabfGSYCWViNZiweasw
-         McbDXK1ly6XjA92FZGuk+cP0F5l1+eTtT1aM1QIaNC9RyE6AWr2oP1DV8dIMvkhgZ9gY
-         hHJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9ctfBFQGQdbyGPKLrHCF1O72IncKLnWAmPeG02j1LxY=;
-        b=E5OS08Ggacmypy4VGdU8cYnY/Nu920uoZ2ofgWJRCvD5SgMeXOdT/y/f7NuWfmy2iL
-         JyTTwkvczpAACZZ+CpAdXoDorPhg+J7wwRJyQbWd/+hybrl5kAJWk2AdbqEG/UfOgsdc
-         xMTmUlpERLYEahx9B7QSsqiZM42MFNIigxtB6StYezXkx4TJAgnYwRTD4lOoX1cqKhiy
-         7sLTX0+OyhH0U8c7QRCd4GreuBnOk4vXOFD+NiDKb34Y9i5d4dX91Hla8Fb+sZ7eLCLq
-         K1jtfrqhBitBTdZ72wZ6BRRyrYxk8Rj0Mgfx+cjZsNk2saWVD24JhT2Kw6lNQ2EuAkKq
-         AZVA==
-X-Gm-Message-State: AOAM531NbsJeo+Cf8unatQFMNFoZ8ttF3cvmVs9QyIjIxIUWUljg1JGT
-        /KECT9fJefIdQMlniX3F1izfxXNiSTl7UJ+DY58=
-X-Google-Smtp-Source: ABdhPJyEFsLs1vwkaM4TA1AtHHlSNgFOxah9qwVsg4TRqd75wXcvAsBUgfBkJ75kC4fDA0FVcIERCUL0vd5y8ho8bpY=
-X-Received: by 2002:a05:6512:3384:: with SMTP id h4mr340698lfg.554.1606960245691;
- Wed, 02 Dec 2020 17:50:45 -0800 (PST)
+        id S1726090AbgLCCuz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 2 Dec 2020 21:50:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57734 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725893AbgLCCuz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 2 Dec 2020 21:50:55 -0500
+Content-Type: text/plain; charset="utf-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1606963814;
+        bh=fcc2vMF7JXpGEwhIXJlwVsC7GeZ8+GUJEPNkGILoQVM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=KLQZoRJ8JhMIa0OJN5QLbLHx0VEGBpAAI3EVevwhowf6xUPqPVOwSlFxsipRefkwc
+         MeoM38HYGxotWdY7oirNd0dXoDWGvVzzb8Q2M0Q6we9g157VW1ZuV38SSS8OKBBkBo
+         UbzHXBqaHBSFNK7beDXSSHlkdFemU+HHAb3SgTI7pGgdvH4k4R/PV5PSFZNiVgmgk2
+         ZU35vprMCpTVxxm1d+G4jAt3NF0IQyzYXHDrxASgKTPy+5YM38akgdzTcyzLyBO6nZ
+         kgG0Kh7aFJU3ujVYzF1Az9q7tztqTWERlvSyzZOIA55Wbiw58napPH0uj32aSIjSbz
+         +bHX1265WQuMw==
 MIME-Version: 1.0
-References: <20201201194438.37402-1-xiyou.wangcong@gmail.com>
- <20201202171032.029b1cd8@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com> <CAM_iQpWfv59MoEJES1O=FhA4YsrB2nNGGaKzDmqcmXQXzc8gow@mail.gmail.com>
-In-Reply-To: <CAM_iQpWfv59MoEJES1O=FhA4YsrB2nNGGaKzDmqcmXQXzc8gow@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 2 Dec 2020 17:50:34 -0800
-Message-ID: <CAADnVQK74XFuK6ybYeqdw1qNt2ZDi-HbrgMxeem46Uh-76sX7Q@mail.gmail.com>
-Subject: Re: [Patch net] lwt: disable BH too in run_lwt_bpf()
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        Dongdong Wang <wangdongdong@bytedance.com>,
-        Thomas Graf <tgraf@suug.ch>, bpf <bpf@vger.kernel.org>,
-        Cong Wang <cong.wang@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v9 00/34] bpf: switch to memcg-based memory
+ accounting
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <160696381396.20026.12605091950733901404.git-patchwork-notify@kernel.org>
+Date:   Thu, 03 Dec 2020 02:50:13 +0000
+References: <20201201215900.3569844-1-guro@fb.com>
+In-Reply-To: <20201201215900.3569844-1-guro@fb.com>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        netdev@vger.kernel.org, andrii@kernel.org,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 2, 2020 at 5:32 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
->
-> On Wed, Dec 2, 2020 at 5:10 PM Jakub Kicinski <kuba@kernel.org> wrote:
-> >
-> > On Tue,  1 Dec 2020 11:44:38 -0800 Cong Wang wrote:
-> > > From: Dongdong Wang <wangdongdong@bytedance.com>
-> > >
-> > > The per-cpu bpf_redirect_info is shared among all skb_do_redirect()
-> > > and BPF redirect helpers. Callers on RX path are all in BH context,
-> > > disabling preemption is not sufficient to prevent BH interruption.
-> > >
-> > > In production, we observed strange packet drops because of the race
-> > > condition between LWT xmit and TC ingress, and we verified this issue
-> > > is fixed after we disable BH.
-> > >
-> > > Although this bug was technically introduced from the beginning, that
-> > > is commit 3a0af8fd61f9 ("bpf: BPF for lightweight tunnel infrastructure"),
-> > > at that time call_rcu() had to be call_rcu_bh() to match the RCU context.
-> > > So this patch may not work well before RCU flavor consolidation has been
-> > > completed around v5.0.
-> > >
-> > > Update the comments above the code too, as call_rcu() is now BH friendly.
-> > >
-> > > Cc: Thomas Graf <tgraf@suug.ch>
-> > > Cc: bpf@vger.kernel.org
-> > > Reviewed-by: Cong Wang <cong.wang@bytedance.com>
-> > > Signed-off-by: Dongdong Wang <wangdongdong@bytedance.com>
-> > > ---
-> > >  net/core/lwt_bpf.c | 8 ++++----
-> > >  1 file changed, 4 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/net/core/lwt_bpf.c b/net/core/lwt_bpf.c
-> > > index 7d3438215f32..4f3cb7c15ddf 100644
-> > > --- a/net/core/lwt_bpf.c
-> > > +++ b/net/core/lwt_bpf.c
-> > > @@ -39,12 +39,11 @@ static int run_lwt_bpf(struct sk_buff *skb, struct bpf_lwt_prog *lwt,
-> > >  {
-> > >       int ret;
-> > >
-> > > -     /* Preempt disable is needed to protect per-cpu redirect_info between
-> > > -      * BPF prog and skb_do_redirect(). The call_rcu in bpf_prog_put() and
-> > > -      * access to maps strictly require a rcu_read_lock() for protection,
-> > > -      * mixing with BH RCU lock doesn't work.
-> > > +     /* Preempt disable and BH disable are needed to protect per-cpu
-> > > +      * redirect_info between BPF prog and skb_do_redirect().
-> > >        */
-> > >       preempt_disable();
-> > > +     local_bh_disable();
-> >
-> > Why not remove the preempt_disable()? Disabling BH must also disable
-> > preemption AFAIK.
->
-> It seems RT kernel still needs preempt disable:
+Hello:
 
-No. It's the opposite. When we did RT+bpf changes we missed this function.
-It should be migrate_disable here instead of preempt_disable.
-I don't know what local_bh_disable() maps to in RT.
-Since it's used in many other places it's fine to use it here to
-prevent this race.
+This series was applied to bpf/bpf-next.git (refs/heads/master):
+
+On Tue, 1 Dec 2020 13:58:26 -0800 you wrote:
+> Currently bpf is using the memlock rlimit for the memory accounting.
+> This approach has its downsides and over time has created a significant
+> amount of problems:
+> 
+> 1) The limit is per-user, but because most bpf operations are performed
+>    as root, the limit has a little value.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,v9,01/34] mm: memcontrol: use helpers to read page's memcg data
+    https://git.kernel.org/bpf/bpf-next/c/bcfe06bf2622
+  - [bpf-next,v9,02/34] mm: memcontrol/slab: use helpers to access slab page's memcg_data
+    https://git.kernel.org/bpf/bpf-next/c/270c6a71460e
+  - [bpf-next,v9,03/34] mm: introduce page memcg flags
+    https://git.kernel.org/bpf/bpf-next/c/87944e2992bd
+  - [bpf-next,v9,04/34] mm: convert page kmemcg type to a page memcg flag
+    https://git.kernel.org/bpf/bpf-next/c/18b2db3b0385
+  - [bpf-next,v9,05/34] bpf: memcg-based memory accounting for bpf progs
+    https://git.kernel.org/bpf/bpf-next/c/ddf8503c7c43
+  - [bpf-next,v9,06/34] bpf: prepare for memcg-based memory accounting for bpf maps
+    https://git.kernel.org/bpf/bpf-next/c/48edc1f78aab
+  - [bpf-next,v9,07/34] bpf: memcg-based memory accounting for bpf maps
+    https://git.kernel.org/bpf/bpf-next/c/d5299b67dd59
+  - [bpf-next,v9,08/34] bpf: refine memcg-based memory accounting for arraymap maps
+    https://git.kernel.org/bpf/bpf-next/c/6d192c7938b7
+  - [bpf-next,v9,09/34] bpf: refine memcg-based memory accounting for cpumap maps
+    https://git.kernel.org/bpf/bpf-next/c/e88cc05b61f3
+  - [bpf-next,v9,10/34] bpf: memcg-based memory accounting for cgroup storage maps
+    https://git.kernel.org/bpf/bpf-next/c/3a61c7c58b30
+  - [bpf-next,v9,11/34] bpf: refine memcg-based memory accounting for devmap maps
+    https://git.kernel.org/bpf/bpf-next/c/1440290adf7b
+  - [bpf-next,v9,12/34] bpf: refine memcg-based memory accounting for hashtab maps
+    https://git.kernel.org/bpf/bpf-next/c/881456811a33
+  - [bpf-next,v9,13/34] bpf: memcg-based memory accounting for lpm_trie maps
+    https://git.kernel.org/bpf/bpf-next/c/353e7af4bf5e
+  - [bpf-next,v9,14/34] bpf: memcg-based memory accounting for bpf ringbuffer
+    https://git.kernel.org/bpf/bpf-next/c/be4035c734d1
+  - [bpf-next,v9,15/34] bpf: memcg-based memory accounting for bpf local storage maps
+    https://git.kernel.org/bpf/bpf-next/c/e9aae8beba82
+  - [bpf-next,v9,16/34] bpf: refine memcg-based memory accounting for sockmap and sockhash maps
+    https://git.kernel.org/bpf/bpf-next/c/7846dd9f835e
+  - [bpf-next,v9,17/34] bpf: refine memcg-based memory accounting for xskmap maps
+    https://git.kernel.org/bpf/bpf-next/c/28e1dcdef0cb
+  - [bpf-next,v9,18/34] bpf: eliminate rlimit-based memory accounting for arraymap maps
+    https://git.kernel.org/bpf/bpf-next/c/1bc5975613ed
+  - [bpf-next,v9,19/34] bpf: eliminate rlimit-based memory accounting for bpf_struct_ops maps
+    https://git.kernel.org/bpf/bpf-next/c/f043733f31e5
+  - [bpf-next,v9,20/34] bpf: eliminate rlimit-based memory accounting for cpumap maps
+    https://git.kernel.org/bpf/bpf-next/c/711cabaf1432
+  - [bpf-next,v9,21/34] bpf: eliminate rlimit-based memory accounting for cgroup storage maps
+    https://git.kernel.org/bpf/bpf-next/c/087b0d39fe22
+  - [bpf-next,v9,22/34] bpf: eliminate rlimit-based memory accounting for devmap maps
+    https://git.kernel.org/bpf/bpf-next/c/844f157f6c0a
+  - [bpf-next,v9,23/34] bpf: eliminate rlimit-based memory accounting for hashtab maps
+    https://git.kernel.org/bpf/bpf-next/c/755e5d55367a
+  - [bpf-next,v9,24/34] bpf: eliminate rlimit-based memory accounting for lpm_trie maps
+    https://git.kernel.org/bpf/bpf-next/c/cbddcb574d41
+  - [bpf-next,v9,25/34] bpf: eliminate rlimit-based memory accounting for queue_stack_maps maps
+    https://git.kernel.org/bpf/bpf-next/c/a37fb7ef24a4
+  - [bpf-next,v9,26/34] bpf: eliminate rlimit-based memory accounting for reuseport_array maps
+    https://git.kernel.org/bpf/bpf-next/c/db54330d3e13
+  - [bpf-next,v9,27/34] bpf: eliminate rlimit-based memory accounting for bpf ringbuffer
+    https://git.kernel.org/bpf/bpf-next/c/abbdd0813f34
+  - [bpf-next,v9,28/34] bpf: eliminate rlimit-based memory accounting for sockmap and sockhash maps
+    https://git.kernel.org/bpf/bpf-next/c/0d2c4f964050
+  - [bpf-next,v9,29/34] bpf: eliminate rlimit-based memory accounting for stackmap maps
+    https://git.kernel.org/bpf/bpf-next/c/370868107bf6
+  - [bpf-next,v9,30/34] bpf: eliminate rlimit-based memory accounting for xskmap maps
+    https://git.kernel.org/bpf/bpf-next/c/819a4f323579
+  - [bpf-next,v9,31/34] bpf: eliminate rlimit-based memory accounting for bpf local storage maps
+    https://git.kernel.org/bpf/bpf-next/c/ab31be378a63
+  - [bpf-next,v9,32/34] bpf: eliminate rlimit-based memory accounting infra for bpf maps
+    https://git.kernel.org/bpf/bpf-next/c/80ee81e0403c
+  - [bpf-next,v9,33/34] bpf: eliminate rlimit-based memory accounting for bpf progs
+    https://git.kernel.org/bpf/bpf-next/c/3ac1f01b43b6
+  - [bpf-next,v9,34/34] bpf: samples: do not touch RLIMIT_MEMLOCK
+    https://git.kernel.org/bpf/bpf-next/c/5b0764b2d345
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
