@@ -2,123 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 597892CDEA9
-	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 20:19:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A61752CDEF6
+	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 20:27:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726962AbgLCTTE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Dec 2020 14:19:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56908 "EHLO
+        id S1728943AbgLCT13 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Dec 2020 14:27:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725793AbgLCTTE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Dec 2020 14:19:04 -0500
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7960AC061A4E
-        for <bpf@vger.kernel.org>; Thu,  3 Dec 2020 11:18:24 -0800 (PST)
-Received: by mail-yb1-xb43.google.com with SMTP id 2so3029743ybc.12
-        for <bpf@vger.kernel.org>; Thu, 03 Dec 2020 11:18:24 -0800 (PST)
+        with ESMTP id S1726661AbgLCT12 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Dec 2020 14:27:28 -0500
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD1C8C061A4E
+        for <bpf@vger.kernel.org>; Thu,  3 Dec 2020 11:26:48 -0800 (PST)
+Received: by mail-yb1-xb41.google.com with SMTP id 10so3067046ybx.9
+        for <bpf@vger.kernel.org>; Thu, 03 Dec 2020 11:26:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Po9ihbuzHQYSGk6otUQcBtukFjW8BcR4dGnpKg/6h3s=;
-        b=PvN3WlsFtFscq0uVFpYo1xKloTjedqUQ9riu+GD4zpaMubQVWKm6czgXB12rnBZUPe
-         B4EuGTHm/8DYuBDtjOp7va0y4rwVqS3Y2OFqew53Mten8jo3sbJ2xxR9gCw7sWmNID2x
-         +6eLg/GkIJsRBUhKakmn4ovIQcOgXJHIrZ2cLGLGKypuAyPb7e+GGCgU9s5qXGosfv9f
-         qC/nScQtXWtLkI01UGeRYIv45HFHHQXvIdJfK+NNtVRkJ57jIqFNnyUjoYhYhYDgr9qa
-         ELC7QYlQa95swH13ODDPNOufXcLA/gC7lpACCwBzy9hDPgUSm1aIvpWYCiTm/bxT1W77
-         yqjA==
+        bh=jojN6pNGezjibG/id0Ga0nEmVE8COsCOFn1KmUsVWw0=;
+        b=oQEUfwFBWOwr+W5zPybWaYcfDtleZhxf7BwLzo+KXAqrRBVn94AdMTuOrRKhftmWuF
+         e9KoKmoIw0D9RgBzJnQMGcwjr/YMxR4Gj6C87vBnejpcYJHkLBb1VOSNsFLLKdQNbtVZ
+         UVN4We95kR7MUyf0/vk6OT57WqsC4ayqGKuNUAVgHw86eGHWhWVlw0xqiMblmdXNHHV2
+         lsGwqNZeJguNjP3fT8AFXRRLbFAF+zFnJtaEoo1nwFV/zmRs77BJVLYVvHaFgtFnonam
+         cGiO4Dyszs40jUkL3SBwVyt4TcRGbUywnHw3cHs/9a0MKujGWRsSaVRx/W0laLBE58C+
+         oGow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Po9ihbuzHQYSGk6otUQcBtukFjW8BcR4dGnpKg/6h3s=;
-        b=DPctV2cv3137o6B7ZzrilBWuRzoR7y6I/sMFsIGpwNUROKTErh+gaC9CraGqQ62bYB
-         4Ri9lpa+BadFaVsiMgV+iE9aV64z3FBxIHBHYuN4He/WB/L4EChL2USoxDk5OhADzq/A
-         peenxYxGqr6elIFXw5oEmLHVkXNUBNSc21NsGwmyae/pdRkUr9gC2LhskBOiorZwVyPX
-         nKRWHdGWoriP/3DdDrSFd4UeB74P2jFhL2D2IfBec6cXJoeRkSqKCBxYsF3y6D/chVrk
-         ahrRjK/ZKkGukSgVvotCAT6tPCPnB1CJcHFWa4dSCloB4vAQqgksifBtQlgmHCLxbJAh
-         SpUQ==
-X-Gm-Message-State: AOAM533KPWbsVe2KLI5/HmKwFjtUQ0cu04vJ9OU1MGhg8aL3+45yMBd+
-        +RpWAIT8vcV0k0M01mvd7hlNn5vl9rO6YaXQASb06yY4nZ4=
-X-Google-Smtp-Source: ABdhPJwLL5uz4R/XvSuxkVjyNr4vUkQYOuGBzADP9dVw7q5Jvwl4rimr/yrnLE1972I/NN4rcHoRHdK81pQWLXqIE+E=
-X-Received: by 2002:a25:df8e:: with SMTP id w136mr879344ybg.230.1607023103747;
- Thu, 03 Dec 2020 11:18:23 -0800 (PST)
+        bh=jojN6pNGezjibG/id0Ga0nEmVE8COsCOFn1KmUsVWw0=;
+        b=NlJ4tCuYuXtNhbQRd1zf1YDTZAY68FsG7uMbB885AAwoiz13kpJ/BVxbZFquvOldJm
+         +6olWym01aRZUah2HUJQnz0mdcdwzI9FZt/hFjSmbnuCbghREr6Knn6uLBqLY+AcglDn
+         xLuUXo7idws6EoXyWEnjS5uAJa2Ot3xYzKVlD3MzFbFx0ZSYTcnVqTtiUm8Z0+x0cKtZ
+         SrgDgUqweMbjVi8lZniGEQu4OIdKLeUpSZsqW3R1EmG/u+b3wHaB/47/3q9jyra2VdCu
+         1hpuEAhGfbIXI1Mha4XFl7VV86c8hPn9bA9GeJjhbh+x7iZxr9r97l10vsx1kN4jiGyc
+         YAGw==
+X-Gm-Message-State: AOAM531ggSkH/hgipibFxmRvX2ILJqrXZUPfiGwp04xMa+zIr5CRyQdJ
+        pNMHcie2eSRbxb5NGCHykf49rflt0oaQxMNAbas=
+X-Google-Smtp-Source: ABdhPJy6Xotr/8VATXy/kcrfIWcH1wCmeScQqRZ55u89+Xs/cE3y6ixjSDdOkhYYx1HMsnM1W7ipmj46A3bfH/6hTnE=
+X-Received: by 2002:a25:c7c6:: with SMTP id w189mr841009ybe.403.1607023608165;
+ Thu, 03 Dec 2020 11:26:48 -0800 (PST)
 MIME-Version: 1.0
-References: <20201203005807.486320-1-kpsingh@chromium.org> <20201203005807.486320-2-kpsingh@chromium.org>
- <CAEf4BzZPNWVzTMuFeTZzBkgj+5Q0vxFM0+vY+60s0Eqb7_pcCQ@mail.gmail.com> <CACYkzJ6BfPoVq3HYjuB7_0Z-7+aQisD-AWm-91hW3eQFAT3Jqw@mail.gmail.com>
-In-Reply-To: <CACYkzJ6BfPoVq3HYjuB7_0Z-7+aQisD-AWm-91hW3eQFAT3Jqw@mail.gmail.com>
+References: <20201203191437.666737-1-kpsingh@chromium.org>
+In-Reply-To: <20201203191437.666737-1-kpsingh@chromium.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 3 Dec 2020 11:18:12 -0800
-Message-ID: <CAEf4BzYNrWv_BqUvK1=kvPtPqH-uu-fGOjwBdBOFx6zHJZfy-g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/4] selftests/bpf: Update ima_setup.sh for busybox
+Date:   Thu, 3 Dec 2020 11:26:37 -0800
+Message-ID: <CAEf4BzbAg5AG=J_9ZNz5BikpP0HvbSPH0oCbaQPgXzret5HiSw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 0/4] Fixes for ima selftest
 To:     KP Singh <kpsingh@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 3:00 AM KP Singh <kpsingh@chromium.org> wrote:
+On Thu, Dec 3, 2020 at 11:14 AM KP Singh <kpsingh@chromium.org> wrote:
 >
-> On Thu, Dec 3, 2020 at 6:52 AM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Wed, Dec 2, 2020 at 4:58 PM KP Singh <kpsingh@chromium.org> wrote:
-> > >
-> > > From: KP Singh <kpsingh@google.com>
-> > >
-> > > * losetup on busybox does not output the name of loop device on using
-> > >   -f with --show. It also dosn't support -j to find the loop devices
-> >
-> > typo: doesn't
+> From: KP Singh <kpsingh@google.com>
 >
-> Fixed.
+> # v3 -> v4
 >
-> >
-> > >   for a given backing file. losetup is updated to use "-a" which is
-> > >   available on busybox.
-> > > * blkid does not support options (-s and -o) to only display the uuid.
-> >
-> > ... so parse it from full blkid output.
+> * Fix typos.
+> * Update commit message for the indentation patch.
+> * Added Andrii's acks.
 >
-> Done.
+> # v2 -> v3
 >
-> >
-> > > * Not all environments have mkfs.ext4, the test requires a loop device
-> > >   with a backing image file which could formatted with any filesystem.
-> > >   Update to using mkfs.ext2 which is available on busybox.
-> >
-> > This one is great. It explains the problem, and what solution was
-> > implemented, from the high-level. I'd just drop the " *" marks, it
-> > makes it more pleasant to read as if it was written for humans, not
-> > machines.
+> * Added missing tags.
+> * Indentation fixes + some other fixes suggested by Andrii.
+> * Re-indent file to tabs.
 >
-> I tend to use "* " for bullet points from the markdown syntax
-> (as we use it heavily internally) I can avoid if you prefer / don't like it.
+> The selftest for the bpf_ima_inode_hash helper uses a shell script to
+> setup the system for ima. While this worked without an issue on recent
+> desktop distros, it failed on environments with stripped out shells like
+> busybox which is also used by the bpf CI.
+>
+> This series fixes the assumptions made on the availablity of certain
+> command line switches and the expectation that securityfs being mounted
+> by default.
+>
+> It also adds the missing kernel config dependencies in
+> tools/testing/selftests/bpf and, lastly, changes the indentation of
+> ima_setup.sh to use tabs.
+>
 
-A list of bullet points don't read as a coherent text. It's not the
-end of the world, but it's also not a common style here either.
+Thanks, I think this reads much better. And a few months from now it
+would be easier to understand and page back the context, if necessary.
 
+I've pushed your fixes. ima selftest still emits a bunch of extra
+output from dd and maybe other commands:
+
+10+0 records in
+10+0 records out
+10485760 bytes (10.0MB) copied, 0.037096 seconds, 269.6MB/s
+Filesystem label=
+OS type: Linux
+Block size=1024 (log=0)
+Fragment size=1024 (log=0)
+2560 inodes, 10240 blocks
+512 blocks (5%) reserved for the super user
+First data block=1
+Maximum filesystem blocks=262144
+2 block groups
+8192 blocks per group, 8192 fragments per group
+1280 inodes per group
+Superblock backups stored on blocks:
+        8193
+
+Please follow up at your earliest convenience to silence those in
+default (non-verbose) mode.
+
+> KP Singh (4):
+>   selftests/bpf: Update ima_setup.sh for busybox
+>   selftests/bpf: Ensure securityfs mount before writing ima policy
+>   selftests/bpf: Add config dependency on BLK_DEV_LOOP
+>   selftests/bpf: Indent ima_setup.sh with tabs.
 >
+>  tools/testing/selftests/bpf/config       |   1 +
+>  tools/testing/selftests/bpf/ima_setup.sh | 107 +++++++++++++----------
+>  2 files changed, 64 insertions(+), 44 deletions(-)
 >
-> >
-> > > Fixes: 34b82d3ac105 ("bpf: Add a selftest for bpf_ima_inode_hash")
-> > > Reported-by: Andrii Nakryiko <andrii@kernel.org>
-> > > Signed-off-by: KP Singh <kpsingh@google.com>
-> > > ---
-> > >  tools/testing/selftests/bpf/ima_setup.sh | 12 ++++++++----
-> > >  1 file changed, 8 insertions(+), 4 deletions(-)
-> > >
-> >
-> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> >
-> > > diff --git a/tools/testing/selftests/bpf/ima_setup.sh b/tools/testing/selftests/bpf/ima_setup.sh
-> > > index 15490ccc5e55..137f2d32598f 100755
-> > > --- a/tools/testing/selftests/bpf/ima_setup.sh
-> > > +++ b/tools/testing/selftests/bpf/ima_setup.sh
-> > > @@ -3,6 +3,7 @@
-> > >
-> >
-> > [...]
+> --
+> 2.29.2.576.ga3fc446d84-goog
+>
