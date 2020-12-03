@@ -2,130 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06F122CD29D
-	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 10:36:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 192132CD353
+	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 11:23:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728037AbgLCJep (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Dec 2020 04:34:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47932 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726003AbgLCJep (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 3 Dec 2020 04:34:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606987998;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=uBzMWsgGtbXcdYHHTMh1lOFsxe85/SSnatB0cA3Z1Ew=;
-        b=BY7T6kbUyPiYJBsTRI7edAJ/mtaBWIrFITBr200MZpb6IKt/0vDmgIF88XllzEDMD/LB1V
-        mhFc4hbt5w1oyJlu2dx0aMoyHsVZxr61qC/I7qDTCw2c8Wz6EX537rjrtMv6WGDZgUlMeL
-        WDKgf1fvPNePImIYZ+3eSyKJD4riSVg=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-311-t-KKdQ4ZN7uMJ2z1WV-svA-1; Thu, 03 Dec 2020 04:33:16 -0500
-X-MC-Unique: t-KKdQ4ZN7uMJ2z1WV-svA-1
-Received: by mail-ed1-f69.google.com with SMTP id i15so709135edx.9
-        for <bpf@vger.kernel.org>; Thu, 03 Dec 2020 01:33:16 -0800 (PST)
+        id S1727069AbgLCKXU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Dec 2020 05:23:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726080AbgLCKXT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Dec 2020 05:23:19 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66DB3C061A4E
+        for <bpf@vger.kernel.org>; Thu,  3 Dec 2020 02:22:39 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id v12so2068840ybi.6
+        for <bpf@vger.kernel.org>; Thu, 03 Dec 2020 02:22:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=vsqjzCG97dcihSHBib7qbR9auIczQ/SwW03OgCf6BLA=;
+        b=KO9gk6ofgaQ/Jly7j0A1VuJ6WlC1hiy7I+SkR3CY5r4rxRyKJeUQJmvfI/EQno6COp
+         Pd5OebmmiB9NnixUYZFdzXYXFPucr2NFVCJ7nsQLg4JEgZ8uM3j6/SLlKg6hm1FJVOBu
+         vGKFcN2JlhWOB/MmW4n59K6e6vFmIyzDiqEVKgJN+4MitUUEpIXYlefxLkirm+Ji95+9
+         kWj/WrWvm0TWkh91QmiTAY7BkkiwOMsXCHkbtaPOLWd+z8GpWdK56UOyIDk3JCvz9Wl8
+         9cKrvOom8gi+fx+rfKBTzI4qnYw3HlJm7SXwg3gonwaCZzLeSdMV/qKKn9pa8x8WNwTZ
+         2ezQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uBzMWsgGtbXcdYHHTMh1lOFsxe85/SSnatB0cA3Z1Ew=;
-        b=atyKqiq04YLm3Y8X8mW9JzMTrCRvECWvtkLDqCr+wtTZxBFpsVT79wa0aN5bL4PlBx
-         iUKs8o3poN2NkNvL2DzNil0X38/xETJqYYsGrzMO72s6Ps3HtQV+2HvefM5wGOEqOzqQ
-         3hiQEZkYlBKmrSq9w5KoAhShUlV0J9AKYV7jRs96PVyp/dWk3aYt0KAJI6yrkdZpyQ9q
-         ZMU5eZK/y5T1E20x5g/jizjF7veAfLTzsH2s8nL5LMxGm0P/tLlxBx8UzpQ0XMSFED04
-         AdgqCj1yP/IB9qvM8a365HSJ7Y5kfWwBv13mPUL0cSSjxSSaKV70561aIotNfh6pv0Fg
-         GRLw==
-X-Gm-Message-State: AOAM530Q3o993Wm+aBm4IRO8xHfL9GXy9FaAWYodf6W2Tgr95EW3kHnz
-        IJ23cGIMnrRfYaBS7phl2pusRKQ4bXOIBE6mF4uXsR4KKvq1+fTfZgfxZhBopF4ldRzKlvsvQWH
-        1+LyPwcLI6iJn
-X-Received: by 2002:a50:c091:: with SMTP id k17mr1974351edf.137.1606987995698;
-        Thu, 03 Dec 2020 01:33:15 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxpcjscdDLv61o6nvrf4IeUgMNWts9rglY+4xclEtDM+Dqefb97EEaPbuarL1HUhxKKoEp1YQ==
-X-Received: by 2002:a50:c091:: with SMTP id k17mr1974343edf.137.1606987995554;
-        Thu, 03 Dec 2020 01:33:15 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id gt11sm423487ejb.67.2020.12.03.01.33.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Dec 2020 01:33:15 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 83630181CF8; Thu,  3 Dec 2020 10:33:14 +0100 (CET)
-From:   =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     daniel@iogearbox.net, ast@fb.com, andrii@kernel.org
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Subject: [PATCH bpf v3] libbpf: sanitise map names before pinning
-Date:   Thu,  3 Dec 2020 10:33:06 +0100
-Message-Id: <20201203093306.107676-1-toke@redhat.com>
-X-Mailer: git-send-email 2.29.2
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=vsqjzCG97dcihSHBib7qbR9auIczQ/SwW03OgCf6BLA=;
+        b=HVA0z/Z1qXgct1K3lkj+wODghtb4ET3ZJ1HFC2oZCloeg2eHuK2rgxKAkCng+Uwx0t
+         KtGuH+Fql26oRcJifNGzjyIO/RmR+cNnPYjQ7s01PHuDxEVS5Tsgz/gVO3T20qbXgAzS
+         fBlzDTTbcYOcvooG9jh4fNf0MzNPSUIrtnmK19rZeEDzEGPgRWAyhUpvm/mB41ugvmW5
+         RrvCe7sLeB4Hj2vvc/bG2I5vO7lLe1wZOhKbS4w9Gf7zPVVuqIf7OmXBWtn0zyLqps52
+         VMZYPuPV6QUKkobWVuaUBJs40bHm5qlSfQwoVsM3+htqonW1OjL9m3gxhnxMMmhDgzBt
+         yezA==
+X-Gm-Message-State: AOAM532vEMBFttG1qLfDNz+maRQsNT40F+tABsspLCcx4QKBSnrZ3qpg
+        qm7hSq0zWQQKuwuKTi7T3cBYA0maHfQtrTzNzWu/jSLS/3MAz9r6gyyDYMpS3WfgoDzwHldGQ2J
+        fHi+06xNTy4Co3igT1HpZ55cpiwqPyH60WHifLlGbkpQX+hipP4k79gY7xteVvbs=
+X-Google-Smtp-Source: ABdhPJwtpbLRCdwh6CxXu9InNBnq8+upXgOOu++rmsLwSfcBgI9lS5mLYW0FM3hQKqkKOC18S/foZathvHFdPw==
+Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
+X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
+ (user=jackmanb job=sendgmr) by 2002:a25:38d2:: with SMTP id
+ f201mr3520867yba.103.1606990958512; Thu, 03 Dec 2020 02:22:38 -0800 (PST)
+Date:   Thu,  3 Dec 2020 10:22:34 +0000
+Message-Id: <20201203102234.648540-1-jackmanb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.454.gaff20da3a2-goog
+Subject: [PATCH bpf-next] tools/resolve_btfids: Fix some error messages
+From:   Brendan Jackman <jackmanb@google.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Brendan Jackman <jackmanb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When we added sanitising of map names before loading programs to libbpf, we
-still allowed periods in the name. While the kernel will accept these for
-the map names themselves, they are not allowed in file names when pinning
-maps. This means that bpf_object__pin_maps() will fail if called on an
-object that contains internal maps (such as sections .rodata).
+Add missing newlines and fix polarity of strerror argument.
 
-Fix this by replacing periods with underscores when constructing map pin
-paths. This only affects the paths generated by libbpf when
-bpf_object__ping_maps() is called with a path argument. Any pin paths set
-by bpf_map__set_pin_path() are unaffected, and it will still be up to the
-caller to avoid invalid characters in those.
-
-Fixes: 113e6b7e15e2 ("libbpf: Sanitise internal map names so they are not rejected by the kernel")
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Signed-off-by: Brendan Jackman <jackmanb@google.com>
 ---
-v3:
-  - void return for helper function
-v2:
-  - Move string munging to helper function
+ tools/bpf/resolve_btfids/main.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
- tools/lib/bpf/libbpf.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 8d05132e1945..4a933ae64297 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -7651,6 +7651,16 @@ bool bpf_map__is_pinned(const struct bpf_map *map)
- 	return map->pinned;
- }
+diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+index dfa540d8a02d..e3ea569ee125 100644
+--- a/tools/bpf/resolve_btfids/main.c
++++ b/tools/bpf/resolve_btfids/main.c
+@@ -454,7 +454,7 @@ static int symbols_collect(struct object *obj)
+ 			return -ENOMEM;
  
-+static void sanitize_pin_path(char *s)
-+{
-+	/* bpffs disallows periods in path names */
-+	while (*s) {
-+		if (*s == '.')
-+			*s = '_';
-+		s++;
-+	}
-+}
-+
- int bpf_object__pin_maps(struct bpf_object *obj, const char *path)
- {
- 	struct bpf_map *map;
-@@ -7680,6 +7690,7 @@ int bpf_object__pin_maps(struct bpf_object *obj, const char *path)
- 				err = -ENAMETOOLONG;
- 				goto err_unpin_maps;
- 			}
-+			sanitize_pin_path(buf);
- 			pin_path = buf;
- 		} else if (!map->pin_path) {
- 			continue;
-@@ -7724,6 +7735,7 @@ int bpf_object__unpin_maps(struct bpf_object *obj, const char *path)
- 				return -EINVAL;
- 			else if (len >= PATH_MAX)
- 				return -ENAMETOOLONG;
-+			sanitize_pin_path(buf);
- 			pin_path = buf;
- 		} else if (!map->pin_path) {
- 			continue;
+ 		if (id->addr_cnt >= ADDR_CNT) {
+-			pr_err("FAILED symbol %s crossed the number of allowed lists",
++			pr_err("FAILED symbol %s crossed the number of allowed lists\n",
+ 				id->name);
+ 			return -1;
+ 		}
+@@ -477,8 +477,8 @@ static int symbols_resolve(struct object *obj)
+ 	btf = btf__parse(obj->btf ?: obj->path, NULL);
+ 	err = libbpf_get_error(btf);
+ 	if (err) {
+-		pr_err("FAILED: load BTF from %s: %s",
+-			obj->path, strerror(err));
++		pr_err("FAILED: load BTF from %s: %s\n",
++			obj->path, strerror(-err));
+ 		return -1;
+ 	}
+ 
+
+base-commit: 97306be45fbe7a02461c3c2a57e666cf662b1aaf
 -- 
-2.29.2
+2.29.2.454.gaff20da3a2-goog
 
