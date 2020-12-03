@@ -2,243 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7F532CDA4E
-	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 16:47:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBD132CDA61
+	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 16:52:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730852AbgLCPqo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Dec 2020 10:46:44 -0500
-Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:58874 "EHLO
-        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730832AbgLCPqn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Dec 2020 10:46:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1607010403; x=1638546403;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=iEqORASAc0p83GGQuYanBv7xolCxl7jigftmZ2kUBGs=;
-  b=NpZ1NDrq6htv4A+v2jygltyMuxZFvv27j2SfP+5sstzH59cTPOM4fxHN
-   Uc9+A/3UP6CrYRERqP6AEZHlRlvU7nXTjSBum2KkvI1gQT1MHGmRw/wbh
-   1lYL5E2UyP2DuezvNZ2V9/BMUIezkLQNyVKh8CDhWoUA/l6Tpv6OAribf
-   k=;
-X-IronPort-AV: E=Sophos;i="5.78,389,1599523200"; 
-   d="scan'208";a="68923395"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-474bcd9f.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 03 Dec 2020 15:42:12 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1d-474bcd9f.us-east-1.amazon.com (Postfix) with ESMTPS id 7B7B3A2102;
-        Thu,  3 Dec 2020 15:42:08 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 3 Dec 2020 15:42:07 +0000
-Received: from 38f9d3582de7.ant.amazon.com (10.43.160.229) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 3 Dec 2020 15:42:03 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     <edumazet@google.com>
-CC:     <ast@kernel.org>, <benh@amazon.com>, <bpf@vger.kernel.org>,
-        <daniel@iogearbox.net>, <davem@davemloft.net>,
-        <eric.dumazet@gmail.com>, <kafai@fb.com>, <kuba@kernel.org>,
-        <kuni1840@gmail.com>, <kuniyu@amazon.co.jp>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-Subject: Re: [PATCH v1 bpf-next 03/11] tcp: Migrate TCP_ESTABLISHED/TCP_SYN_RECV sockets in accept queues.
-Date:   Fri, 4 Dec 2020 00:41:59 +0900
-Message-ID: <20201203154159.76404-1-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.17.2 (Apple Git-113)
-In-Reply-To: <CANn89i+MtOWryWzeDXnG-waOnqY8SxVxb_Q2Y4C=FdPGsKXivA@mail.gmail.com>
-References: <CANn89i+MtOWryWzeDXnG-waOnqY8SxVxb_Q2Y4C=FdPGsKXivA@mail.gmail.com>
+        id S1726120AbgLCPv6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Dec 2020 10:51:58 -0500
+Received: from mail-eopbgr80058.outbound.protection.outlook.com ([40.107.8.58]:37560
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725849AbgLCPv4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Dec 2020 10:51:56 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RF/jhvHwbjyfGXSOTt2H7Bb49EavsVjgcCWNF6YVlAslz08Vvyi3ebEG6H0PrbxubbS6MZMPrYTc84g4I6DsrB4sfAQ4FRG9RRSwPVElHKBAH7FCGWmJIxfYgIGUOA+uysxl68+AV5Rdm+3N58kvjNvPZc/VyZUzMyS2REz1JjTq21RyqHu2J3A6MfIwKysRAYY5x5Wj3NaTDD8C+vtlxdkWP5e/Zmb2gpCB84rqNx+qwoT+TdYHyc5ISqFc/ncVEcQqRMHHoS+bVhrWNZQvVDKG/cw/cnAbQ3cNq/S/XjQsISaLQtcL1IqFIUE4IjpHFKlyhl7K6PKASX1yTRsgUg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kG/QwJ0aN1KI87GdPnB3epu2bq06U9EsT5pd1URhp0M=;
+ b=j+PKG9ia2SB0mp18pp1lkiRJGLLZZOp3aNso91um+mkVp1nYBI9oCX/SL82HCEneHT8V0XJUwxwV8MLYQNxq8hCCMPlSwOpp21a6zEWsqDTeuysR1e9R7VgwjFwcRPujpjut8oTqfEVenlqtjVeF/0HC/zqv99rDH/HZ9BJu+Z7PdWU8036iw5d2/rcAqnhUbjwFdjW4pvK7FbFlnlGxIfmglVBuo9mRap/lsjh5GnTvJWYCPDX0dIaiQxNwmBIGzyt+UiZhWh8pAG8csOzgjdlcYNxbTE7pKNyhITMk/TzkJEX/kmmbvvpKUpPpA+qRcRqxWf5ORajeTlhw/7zmSQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kG/QwJ0aN1KI87GdPnB3epu2bq06U9EsT5pd1URhp0M=;
+ b=mWEsN2somPUzf6412mrf+XHJz7B/m+Ci6JAdyJFl0yY6B+Mx4sQ+xfjJFSK48BfLEWRbEIwrZM309IQr0OkkBgSO8U/VxKgr9SPWNqIL16XIwY8CWwGQbYsi0h8OaFGtE5KMaoVUmPcxnKA3oee9ucw+ytAlFVmndk/+zj7Bb4c=
+Received: from AM6PR04MB3976.eurprd04.prod.outlook.com (2603:10a6:209:3f::17)
+ by AM6PR0402MB3335.eurprd04.prod.outlook.com (2603:10a6:209:a::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Thu, 3 Dec
+ 2020 15:51:05 +0000
+Received: from AM6PR04MB3976.eurprd04.prod.outlook.com
+ ([fe80::6c54:8278:771a:fc21]) by AM6PR04MB3976.eurprd04.prod.outlook.com
+ ([fe80::6c54:8278:771a:fc21%4]) with mapi id 15.20.3611.032; Thu, 3 Dec 2020
+ 15:51:05 +0000
+From:   "Madalin Bucur (OSS)" <madalin.bucur@oss.nxp.com>
+To:     Anders Roxell <anders.roxell@linaro.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "hawk@kernel.org" <hawk@kernel.org>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: RE: [PATCH] dpaa_eth: fix build errorr in dpaa_fq_init
+Thread-Topic: [PATCH] dpaa_eth: fix build errorr in dpaa_fq_init
+Thread-Index: AQHWyYK3NnTScBlWBESHuOopY6/w/KnlhN+g
+Date:   Thu, 3 Dec 2020 15:51:05 +0000
+Message-ID: <AM6PR04MB3976D797CD59CB6A7994F7D6ECF20@AM6PR04MB3976.eurprd04.prod.outlook.com>
+References: <20201203144343.790719-1-anders.roxell@linaro.org>
+In-Reply-To: <20201203144343.790719-1-anders.roxell@linaro.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=oss.nxp.com;
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [82.76.227.226]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 9286e8a6-b9df-4314-378b-08d897a33ea8
+x-ms-traffictypediagnostic: AM6PR0402MB3335:
+x-ms-exchange-sharedmailbox-routingagent-processed: True
+x-microsoft-antispam-prvs: <AM6PR0402MB3335F905BF71B7936B7E7F77ADF20@AM6PR0402MB3335.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:949;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: v3VMGIlQlXE/WYcG59nUBV6vjKnDRTW3vIVcAY1VF3TQRqy+61X2N9sfOtyMOMdl5Wq69/Hvd6MS9jH40soJr/JdsRix399BONaX/v+8Qez4eAtrb+aCUmFq+z8RXB0k8MvgPRZQXiMajRxhEUxpXhy07TxIg2AurQGu6P3nyNySxfZL3mnG//Xc/9xLHhmruv2wHUYGChIEHckwM29Hb54YmzGdTHSKxP2pJkvJoyX0yHSrwPZQ5E4qAOJjtjZsyUysarpFiwIDDCvw9nA/uIzrq0Drwx1addXVDasSKgUTPQXgAv/YefdERHvFyYjOeMQNiOfXvuZ/3fUt4IwPrw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB3976.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(346002)(396003)(376002)(366004)(54906003)(316002)(5660300002)(52536014)(86362001)(110136005)(6506007)(71200400001)(186003)(7416002)(7696005)(66446008)(53546011)(76116006)(64756008)(66556008)(4326008)(66476007)(66946007)(26005)(33656002)(9686003)(55016002)(8676002)(2906002)(8936002)(478600001)(83380400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?akQwRkt3dlY4RVBwbTMwWkxFajFYTGhBUFNrZnJOMXljY1ZCYVVrT25VNUkz?=
+ =?utf-8?B?MkRSVk11Y1htamlUVFdsNFBQbGh1YXJrZlczVm96RlNXQnFPMUV4YzFaMkRj?=
+ =?utf-8?B?bTZLZXVyaVYyRVd5aXJFWmduQ2hmbUt1RlUvdXVDVE9yTWVWMTM3eEk5WjhF?=
+ =?utf-8?B?VjJTeFNzUm9JNXZ0K2tuL0ZCaU1CbXRGRTQ5NmJqclk0UFZYaW00bTVJWHBh?=
+ =?utf-8?B?RzE3dXpiYTV3dS9FL3JlNFFOTmc2dnV2aTl3em4xZFJySDR1S0p2d29YSldY?=
+ =?utf-8?B?YnpjanE1WDBOYytNVkhWTEtJcURRTlBwUkZ3eFBqbVJQSzdSeVVid0ZBSlZr?=
+ =?utf-8?B?V0JoR1JWZm5NenNocDl1NUxGdnd1a0lTVnBpY0ZTam9JWFprby9xN2RGN0Rt?=
+ =?utf-8?B?Z3ZwREpoMWp4QkVBcGF6NEpzSklVNGlYWUNPeEZ4QXVySnNHdXduYzJpSlNU?=
+ =?utf-8?B?Wjh3d01QSi9QUHQ5YW94UExmY3E4V1NDSUZpeHQ4VTRUV1d2MHZKWnpUNENw?=
+ =?utf-8?B?NUdiLyt3VG95LzJMU3V2TTRlSmYvREtxM1Q2SitTenBYUFdLT00xUDhRMUNP?=
+ =?utf-8?B?MW5lT1RSWEQ4VVBMRWJYcEhNRG9UQlBOUEFqU1R5a3BWTU1uaURrYkhrWUxa?=
+ =?utf-8?B?ZnlQaldYUkI0SmdWNS9LQXBoWnVBQ0gyNW4yTUcySEsvTnZLTlk5ejVGSHJL?=
+ =?utf-8?B?UGxUL3ZyZEt5M1B3R2FWSUhDMU9LTlMyZHQxdVNWQm9VMTB5OHRQczdYMTly?=
+ =?utf-8?B?QWU2NzVTMVJIcktFMDc5TTROV0FNYXlpamI2ejNMNVgyMFhUSm1NREkrTzhX?=
+ =?utf-8?B?Rkh3d3JkaHpXQ3VBRjBYeG5zVzRUQUQxN2RTalZKVkljaHVFT0ZPMWNlS1ln?=
+ =?utf-8?B?T0J1K2tyZnJXMDFXSHdDM3RiWmplQUdsRzlHaElpaFNlOHFqYlUxRDFXRnJL?=
+ =?utf-8?B?aGszWW9teDlCMFA0SEJiZU41ZW1DbXNDRUJOMWFJVVVvTFpFT0oycXpWRTRM?=
+ =?utf-8?B?UFdZVFl3cW9GNDR0VFpZZGQ3UlFFbFFnUUk4Mm1OcGxqaEhnYVpMcjk0Ym4r?=
+ =?utf-8?B?N3J0WFZkWWlVYTFuc21NS2dXclhWREowbHJvcEdSdkVpRW5YZmxOWTVVSXZS?=
+ =?utf-8?B?NkxzK1VYQkpDTSsxVHRnWW8zRUcwdC9MY0YvWml3bjZhSjVkYzlhSENucnY5?=
+ =?utf-8?B?UE5qaXFpWTQzZzMvWHZldHg5U0pPSDNUL0VqTWcxWjZOK2wrQk94NkJobE5B?=
+ =?utf-8?B?Tk1jYkJvbkZqTS9SZ1VFWktTUW80Z2J5SGhRb0FqMG9jTFoySWVUcFBnT3Fj?=
+ =?utf-8?Q?QUeatiiK958+w=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.229]
-X-ClientProxiedBy: EX13D34UWC003.ant.amazon.com (10.43.162.66) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB3976.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9286e8a6-b9df-4314-378b-08d897a33ea8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Dec 2020 15:51:05.8900
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: dHiZA7p6UYzDZDRJjvcHvE6p2VstUxh3rqMTs5EzCDj7EUMSJCUMH6+ytxMvgDCtjAK/h1ZozxPRBdw0rT5deA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR0402MB3335
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 3 Dec 2020 15:31:53 +0100
-> On Thu, Dec 3, 2020 at 3:14 PM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
-> >
-> > From:   Eric Dumazet <eric.dumazet@gmail.com>
-> > Date:   Tue, 1 Dec 2020 16:25:51 +0100
-> > > On 12/1/20 3:44 PM, Kuniyuki Iwashima wrote:
-> > > > This patch lets reuseport_detach_sock() return a pointer of struct sock,
-> > > > which is used only by inet_unhash(). If it is not NULL,
-> > > > inet_csk_reqsk_queue_migrate() migrates TCP_ESTABLISHED/TCP_SYN_RECV
-> > > > sockets from the closing listener to the selected one.
-> > > >
-> > > > Listening sockets hold incoming connections as a linked list of struct
-> > > > request_sock in the accept queue, and each request has reference to a full
-> > > > socket and its listener. In inet_csk_reqsk_queue_migrate(), we only unlink
-> > > > the requests from the closing listener's queue and relink them to the head
-> > > > of the new listener's queue. We do not process each request and its
-> > > > reference to the listener, so the migration completes in O(1) time
-> > > > complexity. However, in the case of TCP_SYN_RECV sockets, we take special
-> > > > care in the next commit.
-> > > >
-> > > > By default, the kernel selects a new listener randomly. In order to pick
-> > > > out a different socket every time, we select the last element of socks[] as
-> > > > the new listener. This behaviour is based on how the kernel moves sockets
-> > > > in socks[]. (See also [1])
-> > > >
-> > > > Basically, in order to redistribute sockets evenly, we have to use an eBPF
-> > > > program called in the later commit, but as the side effect of such default
-> > > > selection, the kernel can redistribute old requests evenly to new listeners
-> > > > for a specific case where the application replaces listeners by
-> > > > generations.
-> > > >
-> > > > For example, we call listen() for four sockets (A, B, C, D), and close the
-> > > > first two by turns. The sockets move in socks[] like below.
-> > > >
-> > > >   socks[0] : A <-.      socks[0] : D          socks[0] : D
-> > > >   socks[1] : B   |  =>  socks[1] : B <-.  =>  socks[1] : C
-> > > >   socks[2] : C   |      socks[2] : C --'
-> > > >   socks[3] : D --'
-> > > >
-> > > > Then, if C and D have newer settings than A and B, and each socket has a
-> > > > request (a, b, c, d) in their accept queue, we can redistribute old
-> > > > requests evenly to new listeners.
-> > > >
-> > > >   socks[0] : A (a) <-.      socks[0] : D (a + d)      socks[0] : D (a + d)
-> > > >   socks[1] : B (b)   |  =>  socks[1] : B (b) <-.  =>  socks[1] : C (b + c)
-> > > >   socks[2] : C (c)   |      socks[2] : C (c) --'
-> > > >   socks[3] : D (d) --'
-> > > >
-> > > > Here, (A, D) or (B, C) can have different application settings, but they
-> > > > MUST have the same settings at the socket API level; otherwise, unexpected
-> > > > error may happen. For instance, if only the new listeners have
-> > > > TCP_SAVE_SYN, old requests do not have SYN data, so the application will
-> > > > face inconsistency and cause an error.
-> > > >
-> > > > Therefore, if there are different kinds of sockets, we must attach an eBPF
-> > > > program described in later commits.
-> > > >
-> > > > Link: https://lore.kernel.org/netdev/CAEfhGiyG8Y_amDZ2C8dQoQqjZJMHjTY76b=KBkTKcBtA=dhdGQ@mail.gmail.com/
-> > > > Reviewed-by: Benjamin Herrenschmidt <benh@amazon.com>
-> > > > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-> > > > ---
-> > > >  include/net/inet_connection_sock.h |  1 +
-> > > >  include/net/sock_reuseport.h       |  2 +-
-> > > >  net/core/sock_reuseport.c          | 10 +++++++++-
-> > > >  net/ipv4/inet_connection_sock.c    | 30 ++++++++++++++++++++++++++++++
-> > > >  net/ipv4/inet_hashtables.c         |  9 +++++++--
-> > > >  5 files changed, 48 insertions(+), 4 deletions(-)
-> > > >
-> > > > diff --git a/include/net/inet_connection_sock.h b/include/net/inet_connection_sock.h
-> > > > index 7338b3865a2a..2ea2d743f8fc 100644
-> > > > --- a/include/net/inet_connection_sock.h
-> > > > +++ b/include/net/inet_connection_sock.h
-> > > > @@ -260,6 +260,7 @@ struct dst_entry *inet_csk_route_child_sock(const struct sock *sk,
-> > > >  struct sock *inet_csk_reqsk_queue_add(struct sock *sk,
-> > > >                                   struct request_sock *req,
-> > > >                                   struct sock *child);
-> > > > +void inet_csk_reqsk_queue_migrate(struct sock *sk, struct sock *nsk);
-> > > >  void inet_csk_reqsk_queue_hash_add(struct sock *sk, struct request_sock *req,
-> > > >                                unsigned long timeout);
-> > > >  struct sock *inet_csk_complete_hashdance(struct sock *sk, struct sock *child,
-> > > > diff --git a/include/net/sock_reuseport.h b/include/net/sock_reuseport.h
-> > > > index 0e558ca7afbf..09a1b1539d4c 100644
-> > > > --- a/include/net/sock_reuseport.h
-> > > > +++ b/include/net/sock_reuseport.h
-> > > > @@ -31,7 +31,7 @@ struct sock_reuseport {
-> > > >  extern int reuseport_alloc(struct sock *sk, bool bind_inany);
-> > > >  extern int reuseport_add_sock(struct sock *sk, struct sock *sk2,
-> > > >                           bool bind_inany);
-> > > > -extern void reuseport_detach_sock(struct sock *sk);
-> > > > +extern struct sock *reuseport_detach_sock(struct sock *sk);
-> > > >  extern struct sock *reuseport_select_sock(struct sock *sk,
-> > > >                                       u32 hash,
-> > > >                                       struct sk_buff *skb,
-> > > > diff --git a/net/core/sock_reuseport.c b/net/core/sock_reuseport.c
-> > > > index fd133516ac0e..60d7c1f28809 100644
-> > > > --- a/net/core/sock_reuseport.c
-> > > > +++ b/net/core/sock_reuseport.c
-> > > > @@ -216,9 +216,11 @@ int reuseport_add_sock(struct sock *sk, struct sock *sk2, bool bind_inany)
-> > > >  }
-> > > >  EXPORT_SYMBOL(reuseport_add_sock);
-> > > >
-> > > > -void reuseport_detach_sock(struct sock *sk)
-> > > > +struct sock *reuseport_detach_sock(struct sock *sk)
-> > > >  {
-> > > >     struct sock_reuseport *reuse;
-> > > > +   struct bpf_prog *prog;
-> > > > +   struct sock *nsk = NULL;
-> > > >     int i;
-> > > >
-> > > >     spin_lock_bh(&reuseport_lock);
-> > > > @@ -242,8 +244,12 @@ void reuseport_detach_sock(struct sock *sk)
-> > > >
-> > > >             reuse->num_socks--;
-> > > >             reuse->socks[i] = reuse->socks[reuse->num_socks];
-> > > > +           prog = rcu_dereference(reuse->prog);
-> > > >
-> > > >             if (sk->sk_protocol == IPPROTO_TCP) {
-> > > > +                   if (reuse->num_socks && !prog)
-> > > > +                           nsk = i == reuse->num_socks ? reuse->socks[i - 1] : reuse->socks[i];
-> > > > +
-> > > >                     reuse->num_closed_socks++;
-> > > >                     reuse->socks[reuse->max_socks - reuse->num_closed_socks] = sk;
-> > > >             } else {
-> > > > @@ -264,6 +270,8 @@ void reuseport_detach_sock(struct sock *sk)
-> > > >             call_rcu(&reuse->rcu, reuseport_free_rcu);
-> > > >  out:
-> > > >     spin_unlock_bh(&reuseport_lock);
-> > > > +
-> > > > +   return nsk;
-> > > >  }
-> > > >  EXPORT_SYMBOL(reuseport_detach_sock);
-> > > >
-> > > > diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
-> > > > index 1451aa9712b0..b27241ea96bd 100644
-> > > > --- a/net/ipv4/inet_connection_sock.c
-> > > > +++ b/net/ipv4/inet_connection_sock.c
-> > > > @@ -992,6 +992,36 @@ struct sock *inet_csk_reqsk_queue_add(struct sock *sk,
-> > > >  }
-> > > >  EXPORT_SYMBOL(inet_csk_reqsk_queue_add);
-> > > >
-> > > > +void inet_csk_reqsk_queue_migrate(struct sock *sk, struct sock *nsk)
-> > > > +{
-> > > > +   struct request_sock_queue *old_accept_queue, *new_accept_queue;
-> > > > +
-> > > > +   old_accept_queue = &inet_csk(sk)->icsk_accept_queue;
-> > > > +   new_accept_queue = &inet_csk(nsk)->icsk_accept_queue;
-> > > > +
-> > > > +   spin_lock(&old_accept_queue->rskq_lock);
-> > > > +   spin_lock(&new_accept_queue->rskq_lock);
-> > >
-> > > Are you sure lockdep is happy with this ?
-> > >
-> > > I would guess it should complain, because :
-> > >
-> > > lock(A);
-> > > lock(B);
-> > > ...
-> > > unlock(B);
-> > > unlock(A);
-> > >
-> > > will fail when the opposite action happens eventually
-> > >
-> > > lock(B);
-> > > lock(A);
-> > > ...
-> > > unlock(A);
-> > > unlock(B);
-> >
-> > I enabled lockdep and did not see warnings of lockdep.
-> >
-> > Also, the inversion deadlock does not happen in this case.
-> > In reuseport_detach_sock(), sk is moved backward in socks[] and poped out
-> > from the eBPF map, so the old listener will not be selected as the new
-> > listener.
-> 
-> Until the socket is closed, reallocated and used again. LOCKDEP has no
-> idea about soreuseport logic.
-> 
-> If you run your tests long enough, lockdep should complain at some point.
-> 
-> git grep -n double_lock
-
-Thank you, I will change the code like double_lock().
-And I will try to continue testing lockdep without this change for
-curiosity!
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBBbmRlcnMgUm94ZWxsIDxhbmRl
+cnMucm94ZWxsQGxpbmFyby5vcmc+DQo+IFNlbnQ6IDAzIERlY2VtYmVyIDIwMjAgMTY6NDQNCj4g
+VG86IE1hZGFsaW4gQnVjdXIgPG1hZGFsaW4uYnVjdXJAbnhwLmNvbT47IGRhdmVtQGRhdmVtbG9m
+dC5uZXQ7DQo+IGt1YmFAa2VybmVsLm9yZzsgYXN0QGtlcm5lbC5vcmc7IGRhbmllbEBpb2dlYXJi
+b3gubmV0OyBoYXdrQGtlcm5lbC5vcmc7DQo+IGpvaG4uZmFzdGFiZW5kQGdtYWlsLmNvbQ0KPiBD
+YzogbmV0ZGV2QHZnZXIua2VybmVsLm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsN
+Cj4gYnBmQHZnZXIua2VybmVsLm9yZzsgQW5kZXJzIFJveGVsbCA8YW5kZXJzLnJveGVsbEBsaW5h
+cm8ub3JnPg0KPiBTdWJqZWN0OiBbUEFUQ0hdIGRwYWFfZXRoOiBmaXggYnVpbGQgZXJyb3JyIGlu
+IGRwYWFfZnFfaW5pdA0KPiANCj4gV2hlbiBidWlsZGluZyBGU0xfRFBBQV9FVEggdGhlIGZvbGxv
+d2luZyBidWlsZCBlcnJvciBzaG93cyB1cDoNCj4gDQo+IC90bXAvZHJpdmVycy9uZXQvZXRoZXJu
+ZXQvZnJlZXNjYWxlL2RwYWEvZHBhYV9ldGguYzogSW4gZnVuY3Rpb24NCj4g4oCYZHBhYV9mcV9p
+bml04oCZOg0KPiAvdG1wL2RyaXZlcnMvbmV0L2V0aGVybmV0L2ZyZWVzY2FsZS9kcGFhL2RwYWFf
+ZXRoLmM6MTEzNTo5OiBlcnJvcjogdG9vIGZldw0KPiBhcmd1bWVudHMgdG8gZnVuY3Rpb24g4oCY
+eGRwX3J4cV9pbmZvX3JlZ+KAmQ0KPiAgMTEzNSB8ICAgZXJyID0geGRwX3J4cV9pbmZvX3JlZygm
+ZHBhYV9mcS0+eGRwX3J4cSwgZHBhYV9mcS0+bmV0X2RldiwNCj4gICAgICAgfCAgICAgICAgIF5+
+fn5+fn5+fn5+fn5+fn4NCj4gDQo+IENvbW1pdCBiMDJlNWEwZWJiMTcgKCJ4c2s6IFByb3BhZ2F0
+ZSBuYXBpX2lkIHRvIFhEUCBzb2NrZXQgUnggcGF0aCIpDQo+IGFkZGVkIGFuIGV4dHJhIGFyZ3Vt
+ZW50IHRvIGZ1bmN0aW9uIHhkcF9yeHFfaW5mb19yZWcgYW5kIGNvbW1pdA0KPiBkNTdlNTdkMGNk
+MDQgKCJkcGFhX2V0aDogYWRkIFhEUF9UWCBzdXBwb3J0IikgZGlkbid0IGtub3cgYWJvdXQgdGhh
+dA0KPiBleHRyYSBhcmd1bWVudC4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEFuZGVycyBSb3hlbGwg
+PGFuZGVycy5yb3hlbGxAbGluYXJvLm9yZz4NCj4gLS0tDQo+IA0KPiBJIHRoaW5rIHRoaXMgaXNz
+dWUgaXMgc2VlbiBzaW5jZSBib3RoIHBhdGNoZXMgd2VudCBpbiBhdCB0aGUgc2FtZSB0aW1lDQo+
+IHRvIGJwZi1uZXh0IGFuZCBuZXQtbmV4dC4NCj4gDQo+ICBkcml2ZXJzL25ldC9ldGhlcm5ldC9m
+cmVlc2NhbGUvZHBhYS9kcGFhX2V0aC5jIHwgMiArLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5z
+ZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQv
+ZXRoZXJuZXQvZnJlZXNjYWxlL2RwYWEvZHBhYV9ldGguYw0KPiBiL2RyaXZlcnMvbmV0L2V0aGVy
+bmV0L2ZyZWVzY2FsZS9kcGFhL2RwYWFfZXRoLmMNCj4gaW5kZXggOTQ3YjNkMmY5YzdlLi42Y2M4
+YzRlMDc4ZGUgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbmV0L2V0aGVybmV0L2ZyZWVzY2FsZS9k
+cGFhL2RwYWFfZXRoLmMNCj4gKysrIGIvZHJpdmVycy9uZXQvZXRoZXJuZXQvZnJlZXNjYWxlL2Rw
+YWEvZHBhYV9ldGguYw0KPiBAQCAtMTEzMyw3ICsxMTMzLDcgQEAgc3RhdGljIGludCBkcGFhX2Zx
+X2luaXQoc3RydWN0IGRwYWFfZnEgKmRwYWFfZnEsDQo+IGJvb2wgdGRfZW5hYmxlKQ0KPiAgCWlm
+IChkcGFhX2ZxLT5mcV90eXBlID09IEZRX1RZUEVfUlhfREVGQVVMVCB8fA0KPiAgCSAgICBkcGFh
+X2ZxLT5mcV90eXBlID09IEZRX1RZUEVfUlhfUENEKSB7DQo+ICAJCWVyciA9IHhkcF9yeHFfaW5m
+b19yZWcoJmRwYWFfZnEtPnhkcF9yeHEsIGRwYWFfZnEtPm5ldF9kZXYsDQo+IC0JCQkJICAgICAg
+IGRwYWFfZnEtPmZxaWQpOw0KPiArCQkJCSAgICAgICBkcGFhX2ZxLT5mcWlkLCAwKTsNCj4gIAkJ
+aWYgKGVycikgew0KPiAgCQkJZGV2X2VycihkZXYsICJ4ZHBfcnhxX2luZm9fcmVnKCkgPSAlZFxu
+IiwgZXJyKTsNCj4gIAkJCXJldHVybiBlcnI7DQo+IC0tDQo+IDIuMjkuMg0KDQpUaGUgWERQIHN1
+cHBvcnQgZm9yIERQQUEgMSBhbmQgdGhlIG5hcGlfaWQgcHJvcGFnYXRpb24gd2VyZSBjb25jdXJy
+ZW50bHkNCmFwcGxpZWQsIHRoYW5rcyBmb3IgYWRkcmVzc2luZyB0aGlzLg0KDQpNYWRhbGluDQo=
