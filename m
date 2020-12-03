@@ -2,74 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D2F62CDAE2
-	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 17:11:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C4D52CDC83
+	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 18:36:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731212AbgLCQLH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Dec 2020 11:11:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55878 "EHLO
+        id S1727156AbgLCRgZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Dec 2020 12:36:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727656AbgLCQLH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Dec 2020 11:11:07 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 701FFC061A52
-        for <bpf@vger.kernel.org>; Thu,  3 Dec 2020 08:10:26 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id g14so2398036wrm.13
-        for <bpf@vger.kernel.org>; Thu, 03 Dec 2020 08:10:26 -0800 (PST)
+        with ESMTP id S1726730AbgLCRgZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Dec 2020 12:36:25 -0500
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6F83C061A4E
+        for <bpf@vger.kernel.org>; Thu,  3 Dec 2020 09:35:44 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id q8so3411560ljc.12
+        for <bpf@vger.kernel.org>; Thu, 03 Dec 2020 09:35:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4Ys3ZXevU8FZT2N8gxyqI3Tx9K/RTVhiVdtXVNw9PEo=;
-        b=sdvE0+/yC/5v9KY9Rei+N0j7UpMD/vEsf7V+d1TNvhr5ndMlJO+pHfg5EzyHrZsPc5
-         19mpSEmPKg5b7+nAibVksz7vmBNQlqy3ioadUgGdvSc00/eO4Uy+JluxKbglP8EWEESR
-         dYttiMjD3cuEpRGP9hsN643yV/coqgo4vrUBBpAtHs0XoKH+nu355NVJwa8y3HkELqHU
-         etSLK6SqiOL2+Edal0HK/abtbZ9kub8g/GSNhpyrXsF0uAojSnVliJN7pBvKP7QxcsxU
-         KhpOxxJj8VAq2cDgMnOOMPME6o/FC6G0mVD+oY7p01K5V0Tf62VW+RXvryvENg43Xo2z
-         Bspw==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0x1EjDar6dSL0l5YSOF6C8JvVk7KFexwtRk1hnbmU/g=;
+        b=BQPwGGyK85bogPGjNSjetqmsbynwiW0zvVrpzQ9DJtfi4QhYoWYDEN8Es+I/Be8e2X
+         hExOh9YgWtA2Dpi+ylTXdeHLMrR9QR/Ks6MsXhdIni4HGNNKtpV8UedPKf2cccsizO5A
+         No61CMxgX4qi+HRepxFI/3qKrmqXit7Ah/XM0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4Ys3ZXevU8FZT2N8gxyqI3Tx9K/RTVhiVdtXVNw9PEo=;
-        b=TfrWoQmR/pevcLGgxgbyscASkZBWc1BYzVKh1HxWE3YCcmsje8m7ro9NH8FyfszKl6
-         TjCddeP5ZI/mF8aMcLMKcJvs1FeZPWhwffQt5WhrBEk3xa/OkK25vQ79EoT0vIhlMT37
-         8p0rxgaZWmWofu6qS9+5Kth2c+MruydybREqa7z2Npt4XdNULyr7YdYCA/3FpQhjbAUX
-         XvgCriOW4OqfmzaOuQis2xcquiU1544fZ9fMoVzeoLBnvyWpv7r0D1bauyGtTAw8mFK3
-         yhzgip6iyQYzQwKa4Dw4Mt+t+bcYQ5dAnZWo43XeAIdKiT/d9Hyf6W4O38Dr2xeSGExU
-         5W6A==
-X-Gm-Message-State: AOAM531RUEpQezQYAP9B8nmGadYGJMi073gTF6wJuF33zSnKrBQMo8IM
-        SzmWTLUgMbWrD9/4Bq5sHoVENOWTCcy5QQ==
-X-Google-Smtp-Source: ABdhPJy99W3XtGDuvMMePWAVHNIdwn0O5cc55gtc4N0/Ln27hNzknMKSms6eQy2k9FsvKOsHqHGBWQ==
-X-Received: by 2002:a5d:4004:: with SMTP id n4mr4559276wrp.230.1607011824754;
-        Thu, 03 Dec 2020 08:10:24 -0800 (PST)
-Received: from google.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
-        by smtp.gmail.com with ESMTPSA id w10sm2381396wra.34.2020.12.03.08.10.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Dec 2020 08:10:23 -0800 (PST)
-Date:   Thu, 3 Dec 2020 16:10:20 +0000
-From:   Brendan Jackman <jackmanb@google.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
-Subject: Re: [PATCH bpf-next v3 00/14] Atomics for eBPF
-Message-ID: <X8kN7NA7bJC7aLQI@google.com>
-References: <20201203160245.1014867-1-jackmanb@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0x1EjDar6dSL0l5YSOF6C8JvVk7KFexwtRk1hnbmU/g=;
+        b=Uv+1v2PvoM922YPRLIwGpjzgkdgYs3+Orr2gaToCWBhkoE+BApqcTmHOfazgeAlaIb
+         WkxdmB+lx+ey8dMeu8+Qmf3Zil4qItQbYRi4iUOU2W+Neqez7ZZVgNMAwCumTt6E89hR
+         pEha+Gw5+2rXTYAjscBHIg5DBNCnek/c4YXCJrJbDQ9WT0SWNFGoB1i91Kvom/x/pdcn
+         j5c/w61ivXpnvHgaOJPZBYhsSMtkNeHAzlvvlCBPG/Pj/mWylmew2MHP9zj+9YwaSc7N
+         Q013wUUnS0xP+jJfojucOCFwJwujpDvJTXPacSms0+50YLJgqc+UBHxQvEnFgNZvz+qw
+         ZVEg==
+X-Gm-Message-State: AOAM532AERxB1Wnt7dGGQX4xOLdU8cHp3sD8ZsNbNYgt14Z494NCAlfB
+        Z37VvWSB8Q0VhjhLTXxmh1xWyhQZt0FUTwgrWDddftZhW9HS3A==
+X-Google-Smtp-Source: ABdhPJz5jx8YI7AjB/rTs9GyejjZ0NoUR3Wa2/qxgjZz1981HVQ2bWuWwfhXAmxhCjUSBVYhthgEhARfA33eh/iHT70=
+X-Received: by 2002:a2e:80c6:: with SMTP id r6mr1664186ljg.83.1607016943190;
+ Thu, 03 Dec 2020 09:35:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201203160245.1014867-1-jackmanb@google.com>
+References: <20201203005807.486320-1-kpsingh@chromium.org> <20201203005807.486320-4-kpsingh@chromium.org>
+ <CAEf4BzbXA-az9cAKwy=bpqFOkX+6mtirm0TRxkyTmZdm+bXxoQ@mail.gmail.com> <CACYkzJ6PYgmkZg_=q3Yi300esXmjB_gnX4urmcLxSQFxf+QyuQ@mail.gmail.com>
+In-Reply-To: <CACYkzJ6PYgmkZg_=q3Yi300esXmjB_gnX4urmcLxSQFxf+QyuQ@mail.gmail.com>
+From:   KP Singh <kpsingh@chromium.org>
+Date:   Thu, 3 Dec 2020 18:35:32 +0100
+Message-ID: <CACYkzJ6rtH7mJ1mr3VsyvDjkM1tkpvd0XxvHPCuQAbyKBfNx-Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/4] selftests/bpf: Add config dependency on BLK_DEV_LOOP
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 04:02:31PM +0000, Brendan Jackman wrote:
-[...]
-> [1] Previous patchset:
->     https://lore.kernel.org/bpf/20201123173202.1335708-1-jackmanb@google.com/
+On Thu, Dec 3, 2020 at 11:56 AM KP Singh <kpsingh@chromium.org> wrote:
+>
+> On Thu, Dec 3, 2020 at 6:56 AM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Wed, Dec 2, 2020 at 4:58 PM KP Singh <kpsingh@chromium.org> wrote:
+> > >
+> > > From: KP Singh <kpsingh@google.com>
+> > >
+> > > The ima selftest restricts its scope to a test filesystem image
+> > > mounted on a loop device and prevents permanent ima policy changes for
+> > > the whole system.
+> > >
+> > > Fixes: 34b82d3ac105 ("bpf: Add a selftest for bpf_ima_inode_hash")
+> > > Reported-by: Andrii Nakryiko <andrii@kernel.org>
+> > > Signed-off-by: KP Singh <kpsingh@google.com>
+> > > ---
+> > >  tools/testing/selftests/bpf/config | 1 +
+> > >  1 file changed, 1 insertion(+)
+> > >
+> > > diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
+> > > index 365bf9771b07..37e1f303fc11 100644
+> > > --- a/tools/testing/selftests/bpf/config
+> > > +++ b/tools/testing/selftests/bpf/config
+> > > @@ -43,3 +43,4 @@ CONFIG_IMA=y
+> > >  CONFIG_SECURITYFS=y
+> > >  CONFIG_IMA_WRITE_POLICY=y
+> > >  CONFIG_IMA_READ_POLICY=y
+> > > +CONFIG_BLK_DEV_LOOP=y
+> > > --
+> >
+> >
+> > You mentioned also that CONFIG_LSM="selinux,bpf,integrity" is needed,
+> > no? Let's add that as well?
+>
+> I did not add it because we did not do it when we added "bpf" to the list and
+>
+> I also don't think selinux is really required here which might be worse in
+> some cases (e.g. when the required config options for
+> SELinux are not selected).
+>
+> Also, when one selects CONFIG_BPF_LSM or CONFIG_IMA from make
+> menuconfig / nconfig, we get "bpf" and "integrity" appended by default:
+>
+> We can add a comment that says that says:
+>
+>   "Please ensure "bpf" and "integrity" are present in CONFIG_LSM"
+>
+> Now, I was not sure if adding a comment would break any scripts that people
+> have that parse this file, so I avoided it. But overriding the string
+> completely
+> might not be a good idea.
 
-Sorry, bogus link. That's v1, here's v2:
-https://lore.kernel.org/bpf/20201127175738.1085417-1-jackmanb@google.com/
+If it's okay, I can send the v4 out now and we can add the comment or CONFIG_LSM
+in a separate patch?
