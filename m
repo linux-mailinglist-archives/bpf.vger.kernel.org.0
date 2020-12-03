@@ -2,113 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C4D52CDC83
-	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 18:36:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 088832CDCDD
+	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 18:57:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727156AbgLCRgZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Dec 2020 12:36:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726730AbgLCRgZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Dec 2020 12:36:25 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6F83C061A4E
-        for <bpf@vger.kernel.org>; Thu,  3 Dec 2020 09:35:44 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id q8so3411560ljc.12
-        for <bpf@vger.kernel.org>; Thu, 03 Dec 2020 09:35:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0x1EjDar6dSL0l5YSOF6C8JvVk7KFexwtRk1hnbmU/g=;
-        b=BQPwGGyK85bogPGjNSjetqmsbynwiW0zvVrpzQ9DJtfi4QhYoWYDEN8Es+I/Be8e2X
-         hExOh9YgWtA2Dpi+ylTXdeHLMrR9QR/Ks6MsXhdIni4HGNNKtpV8UedPKf2cccsizO5A
-         No61CMxgX4qi+HRepxFI/3qKrmqXit7Ah/XM0=
+        id S1726955AbgLCR5O (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Dec 2020 12:57:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43178 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725987AbgLCR5N (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 3 Dec 2020 12:57:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607018146;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=7jarjHg35SrM+mxNLirg4qNUTGKmjpxYZq/xySyiUcs=;
+        b=M55vwdnkbNkKs7MXZ8tOiVwLoyPSsaq3zklOj507fY2wGokFWMIuFiKM+AHQZ10buldebH
+        I7YTg51F3/W5tuVYJcTAAQm8owTSLV5BvoEAX3x7KEqdhCfJHuX+0+qZ1yUtAO+SRBb8c0
+        3gmFgB2KEhMk6VQZeVJDb8GKBeXhNao=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-447-9mNrCtSFPwGsPRsKuL5UeQ-1; Thu, 03 Dec 2020 12:55:44 -0500
+X-MC-Unique: 9mNrCtSFPwGsPRsKuL5UeQ-1
+Received: by mail-ej1-f71.google.com with SMTP id u15so1070380ejg.17
+        for <bpf@vger.kernel.org>; Thu, 03 Dec 2020 09:55:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0x1EjDar6dSL0l5YSOF6C8JvVk7KFexwtRk1hnbmU/g=;
-        b=Uv+1v2PvoM922YPRLIwGpjzgkdgYs3+Orr2gaToCWBhkoE+BApqcTmHOfazgeAlaIb
-         WkxdmB+lx+ey8dMeu8+Qmf3Zil4qItQbYRi4iUOU2W+Neqez7ZZVgNMAwCumTt6E89hR
-         pEha+Gw5+2rXTYAjscBHIg5DBNCnek/c4YXCJrJbDQ9WT0SWNFGoB1i91Kvom/x/pdcn
-         j5c/w61ivXpnvHgaOJPZBYhsSMtkNeHAzlvvlCBPG/Pj/mWylmew2MHP9zj+9YwaSc7N
-         Q013wUUnS0xP+jJfojucOCFwJwujpDvJTXPacSms0+50YLJgqc+UBHxQvEnFgNZvz+qw
-         ZVEg==
-X-Gm-Message-State: AOAM532AERxB1Wnt7dGGQX4xOLdU8cHp3sD8ZsNbNYgt14Z494NCAlfB
-        Z37VvWSB8Q0VhjhLTXxmh1xWyhQZt0FUTwgrWDddftZhW9HS3A==
-X-Google-Smtp-Source: ABdhPJz5jx8YI7AjB/rTs9GyejjZ0NoUR3Wa2/qxgjZz1981HVQ2bWuWwfhXAmxhCjUSBVYhthgEhARfA33eh/iHT70=
-X-Received: by 2002:a2e:80c6:: with SMTP id r6mr1664186ljg.83.1607016943190;
- Thu, 03 Dec 2020 09:35:43 -0800 (PST)
-MIME-Version: 1.0
-References: <20201203005807.486320-1-kpsingh@chromium.org> <20201203005807.486320-4-kpsingh@chromium.org>
- <CAEf4BzbXA-az9cAKwy=bpqFOkX+6mtirm0TRxkyTmZdm+bXxoQ@mail.gmail.com> <CACYkzJ6PYgmkZg_=q3Yi300esXmjB_gnX4urmcLxSQFxf+QyuQ@mail.gmail.com>
-In-Reply-To: <CACYkzJ6PYgmkZg_=q3Yi300esXmjB_gnX4urmcLxSQFxf+QyuQ@mail.gmail.com>
-From:   KP Singh <kpsingh@chromium.org>
-Date:   Thu, 3 Dec 2020 18:35:32 +0100
-Message-ID: <CACYkzJ6rtH7mJ1mr3VsyvDjkM1tkpvd0XxvHPCuQAbyKBfNx-Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 3/4] selftests/bpf: Add config dependency on BLK_DEV_LOOP
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version;
+        bh=7jarjHg35SrM+mxNLirg4qNUTGKmjpxYZq/xySyiUcs=;
+        b=JNYTfTjDunQ52unlMnGZQIoGGKW34CEIfcBmhlvTObX7CnvFrFVRV88jj1X16n++pF
+         f907cTJfxDi2LTAUQkBi9vgKukZ9/3xSNw4mhQ+WSqywG4PMiRYSAm0fOS7I9o86/Auu
+         89NMlGTo2cY0dL8aM6dqxi2hkdyYwBqzvH1D0vP6tSGzL40ukg5Mqc6EI2I1TZUA2/x1
+         6fONA2B845UGR2TiUdJFLRNcDbiRmCGQDKYdmt7/ZNqb42e/nAx6jtajvc7XREMf0twy
+         CEGe2yUdYC3li5oStyOeO5sWtw+85xA54ymyhvdgECIYTDDK7YcCURw5MCdD99ApU3wC
+         Qi8A==
+X-Gm-Message-State: AOAM5312C5y43r8AGRUeY6oQPLbrMXTFUh5Z/GoN624VjxbYZkr0lHwI
+        gBvAmqxo8lD64zp8zy+Yrt+1h4yEYu9YiwBFMtezMvTHTN7W/jK1fv4V79terB78fmwZxn3qyq2
+        1sHdpj7g6g4Z5
+X-Received: by 2002:a50:af65:: with SMTP id g92mr3914167edd.273.1607018143016;
+        Thu, 03 Dec 2020 09:55:43 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyUaXq90Qkkvm2l+8AtC24DhIrfJXwwbkJQCT8hIl6pia+o2mXsbpD5UcD8w+bM5MsMZ/zLkQ==
+X-Received: by 2002:a50:af65:: with SMTP id g92mr3914157edd.273.1607018142743;
+        Thu, 03 Dec 2020 09:55:42 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id e3sm1339561ejq.96.2020.12.03.09.55.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 03 Dec 2020 09:55:42 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id B6346181CF8; Thu,  3 Dec 2020 18:55:41 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     bpf@vger.kernel.org
+Subject: Latest libbpf fails to load programs compiled with old LLVM
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 03 Dec 2020 18:55:41 +0100
+Message-ID: <87lfeebwpu.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 11:56 AM KP Singh <kpsingh@chromium.org> wrote:
->
-> On Thu, Dec 3, 2020 at 6:56 AM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Wed, Dec 2, 2020 at 4:58 PM KP Singh <kpsingh@chromium.org> wrote:
-> > >
-> > > From: KP Singh <kpsingh@google.com>
-> > >
-> > > The ima selftest restricts its scope to a test filesystem image
-> > > mounted on a loop device and prevents permanent ima policy changes for
-> > > the whole system.
-> > >
-> > > Fixes: 34b82d3ac105 ("bpf: Add a selftest for bpf_ima_inode_hash")
-> > > Reported-by: Andrii Nakryiko <andrii@kernel.org>
-> > > Signed-off-by: KP Singh <kpsingh@google.com>
-> > > ---
-> > >  tools/testing/selftests/bpf/config | 1 +
-> > >  1 file changed, 1 insertion(+)
-> > >
-> > > diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-> > > index 365bf9771b07..37e1f303fc11 100644
-> > > --- a/tools/testing/selftests/bpf/config
-> > > +++ b/tools/testing/selftests/bpf/config
-> > > @@ -43,3 +43,4 @@ CONFIG_IMA=y
-> > >  CONFIG_SECURITYFS=y
-> > >  CONFIG_IMA_WRITE_POLICY=y
-> > >  CONFIG_IMA_READ_POLICY=y
-> > > +CONFIG_BLK_DEV_LOOP=y
-> > > --
-> >
-> >
-> > You mentioned also that CONFIG_LSM="selinux,bpf,integrity" is needed,
-> > no? Let's add that as well?
->
-> I did not add it because we did not do it when we added "bpf" to the list and
->
-> I also don't think selinux is really required here which might be worse in
-> some cases (e.g. when the required config options for
-> SELinux are not selected).
->
-> Also, when one selects CONFIG_BPF_LSM or CONFIG_IMA from make
-> menuconfig / nconfig, we get "bpf" and "integrity" appended by default:
->
-> We can add a comment that says that says:
->
->   "Please ensure "bpf" and "integrity" are present in CONFIG_LSM"
->
-> Now, I was not sure if adding a comment would break any scripts that people
-> have that parse this file, so I avoided it. But overriding the string
-> completely
-> might not be a good idea.
+Hi Andrii
 
-If it's okay, I can send the v4 out now and we can add the comment or CONFIG_LSM
-in a separate patch?
+I noticed that recent libbpf versions fail to load BPF files compiled
+with old versions of LLVM. E.g., if I compile xdp-tools with LLVM 7 I
+get:
+
+$ sudo ./xdp-loader load testns ../lib/testing/xdp_drop.o -vv
+Loading 1 files on interface 'testns'.
+libbpf: loading ../lib/testing/xdp_drop.o
+libbpf: elf: section(3) prog, size 16, link 0, flags 6, type=1
+libbpf: sec 'prog': failed to find program symbol at offset 0
+Couldn't open file '../lib/testing/xdp_drop.o': BPF object format invalid
+
+The 'failed to find program symbol' error seems to have been introduced
+with commit c112239272c6 ("libbpf: Parse multi-function sections into
+multiple BPF programs").
+
+Looking at the object file in question, indeed it seems to not have any
+function symbols defined:
+
+$  llvm-objdump --syms ../lib/testing/xdp_drop.o
+
+../lib/testing/xdp_drop.o:	file format elf64-bpf
+
+SYMBOL TABLE:
+0000000000000000 l       .debug_str	0000000000000000 
+0000000000000037 l       .debug_str	0000000000000000 
+0000000000000042 l       .debug_str	0000000000000000 
+0000000000000068 l       .debug_str	0000000000000000 
+0000000000000071 l       .debug_str	0000000000000000 
+0000000000000076 l       .debug_str	0000000000000000 
+000000000000008a l       .debug_str	0000000000000000 
+0000000000000097 l       .debug_str	0000000000000000 
+00000000000000a3 l       .debug_str	0000000000000000 
+00000000000000ac l       .debug_str	0000000000000000 
+00000000000000b5 l       .debug_str	0000000000000000 
+00000000000000bc l       .debug_str	0000000000000000 
+00000000000000c9 l       .debug_str	0000000000000000 
+00000000000000d4 l       .debug_str	0000000000000000 
+00000000000000dd l       .debug_str	0000000000000000 
+00000000000000e1 l       .debug_str	0000000000000000 
+00000000000000e5 l       .debug_str	0000000000000000 
+00000000000000ea l       .debug_str	0000000000000000 
+00000000000000f0 l       .debug_str	0000000000000000 
+00000000000000f9 l       .debug_str	0000000000000000 
+0000000000000103 l       .debug_str	0000000000000000 
+0000000000000113 l       .debug_str	0000000000000000 
+0000000000000122 l       .debug_str	0000000000000000 
+0000000000000131 l       .debug_str	0000000000000000 
+0000000000000000 l    d  prog	0000000000000000 prog
+0000000000000000 l    d  .debug_abbrev	0000000000000000 .debug_abbrev
+0000000000000000 l    d  .debug_info	0000000000000000 .debug_info
+0000000000000000 l    d  .debug_frame	0000000000000000 .debug_frame
+0000000000000000 l    d  .debug_line	0000000000000000 .debug_line
+0000000000000000 g       license	0000000000000000 _license
+0000000000000000 g       prog	0000000000000000 xdp_drop
+
+
+I assume this is because old LLVM versions simply don't emit that symbol
+information?
+
+Anyhow, the patch series that introduced this restructures the program
+parsing some, so I wanted to get your input to make sure I don't break
+things when fixing this regression. So what's the best way to fix it?
+Just assume that the whole section is one program if no symbols are
+present, or is the some subtle reason why that would break any of the
+other logic for BPF-to-BPF calls?
+
+-Toke
+
