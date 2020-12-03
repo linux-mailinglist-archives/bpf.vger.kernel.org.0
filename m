@@ -2,118 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CFD42CD98E
-	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 15:50:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB4432CD9EC
+	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 16:14:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbgLCOuP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Dec 2020 09:50:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726056AbgLCOuO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Dec 2020 09:50:14 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63621C061A4E;
-        Thu,  3 Dec 2020 06:49:34 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id l1so2126667wrb.9;
-        Thu, 03 Dec 2020 06:49:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=PbnNTRLQSbEPf4GWwSeO8ArVoDFMPjXku4O6HzyA2QY=;
-        b=d7vRuzDC0zrhgnLbtOM5oW/ycePCNVNqBo0mUEogHy1jarJL3WsNrRYYSFOx3qBodv
-         6nkhiicSsPMf8bc+wKRT4eXWYsoLEH2YLhe5lyxc4sc3tKgquOrDqfpIMbmRbpioNSfl
-         WzPYEG1cILDohfVCWr9FzvlcnldZxEWEy5knoRQu3Dr5x1GanHQIhypNmn+27zBEz8/V
-         ttVpiAa29/BdwGm5yVB5CchMSrD936Gd6pvNfR3d+Ln07v9aAvfWxubu+x26BAUylbKh
-         2LW50Wmlmhndut4sCLJBEC1DUGZonxZnCKrIsmd/k9h8pBOGoM8ZGwouIeEZHla9NOn+
-         3Evg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=PbnNTRLQSbEPf4GWwSeO8ArVoDFMPjXku4O6HzyA2QY=;
-        b=AbabQz0kZrldwK12IKLdeIGK0jrJ8PrcFVBX3jHQbf88sbcGcYFZSEUOWkASo0EEUO
-         LX/3wcpCgAt2cQT5n6lDWxUih2wMy13zfaEqZGSFBAcn4fYgbwgOQeZwVBPpgJJQ6jhE
-         2QeGSVaoWgyq7kK/lhWhYwhpuV9KxeKKAgkiWJk7mTYbCjOzVbH8TO8fZPWAvHts5Noo
-         xNKyhI3BsytiMNW1VWDzI34xWDMMck3B5yz4uDl/zSDtwNSmHIVlMBGl6Zg+zAeh79Qy
-         wz2yTRChK8FLoK2DlYwTzgEkmYnjwROxAj7aeGo5sUGWLvRoPjT5KyelmKQqDgmNJ+Ds
-         tCkQ==
-X-Gm-Message-State: AOAM533AecO3CzuT7vK4CRI3y3rO/LXI421JKM3rRN4LVCVgsrqF1lET
-        jXdCoD8TsTRAWyfmpdDHMs/UXTeuuVVkwI9ZS70=
-X-Google-Smtp-Source: ABdhPJzGj0jdvbohM1HTwru2ZWH1XPWDwTahzKos8nheL72Xyhab3Ue38Jm0SHRCyWtPdConOWrCvxpiOCLp3l+sqQk=
-X-Received: by 2002:a5d:5741:: with SMTP id q1mr4077718wrw.160.1607006973101;
- Thu, 03 Dec 2020 06:49:33 -0800 (PST)
-MIME-Version: 1.0
-References: <20201203144343.790719-1-anders.roxell@linaro.org>
-In-Reply-To: <20201203144343.790719-1-anders.roxell@linaro.org>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Thu, 3 Dec 2020 15:49:21 +0100
-Message-ID: <CAJ+HfNg97HtDciv_z8F6Gs5Yncuua2Gx27HLxCYBNmA9Bk1jxg@mail.gmail.com>
-Subject: Re: [PATCH] dpaa_eth: fix build errorr in dpaa_fq_init
-To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     madalin.bucur@nxp.com, David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1729192AbgLCPMO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Dec 2020 10:12:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46916 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727427AbgLCPMO (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 3 Dec 2020 10:12:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607008247;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IBftimYBdL+rPRjoBGoNau5FbS8yM8qo7/BB2RqpMY4=;
+        b=a1PoymhM7/469CZiCbbrMQ8xZR7IlXKdOprCDvR9ThLPrh1bcaHAV4181s+4aaRAHT3wPt
+        nNzu8XP+GbScCwMf4JtN/rX+ofC8XYzdJwTtVRjS+S3f68QVkQVG2suPthh6EfzVoc6vO0
+        DGBAgMdkt5T3+xbd/6K0g23k+rRLn3E=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-309-WLVmL-oKMzq2YN7CX2rNpQ-1; Thu, 03 Dec 2020 10:10:43 -0500
+X-MC-Unique: WLVmL-oKMzq2YN7CX2rNpQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3835E1034AF3;
+        Thu,  3 Dec 2020 15:10:41 +0000 (UTC)
+Received: from krava (unknown [10.40.195.70])
+        by smtp.corp.redhat.com (Postfix) with SMTP id CFF3719C44;
+        Thu,  3 Dec 2020 15:10:38 +0000 (UTC)
+Date:   Thu, 3 Dec 2020 16:10:37 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Brendan Jackman <jackmanb@google.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>
+Subject: Re: [PATCH bpf-next] tools/resolve_btfids: Fix some error messages
+Message-ID: <20201203151037.GC3518322@krava>
+References: <20201203102234.648540-1-jackmanb@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201203102234.648540-1-jackmanb@google.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 3 Dec 2020 at 15:46, Anders Roxell <anders.roxell@linaro.org> wrote=
-:
->
-> When building FSL_DPAA_ETH the following build error shows up:
->
-> /tmp/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c: In function =E2=80=
-=98dpaa_fq_init=E2=80=99:
-> /tmp/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c:1135:9: error: too fe=
-w arguments to function =E2=80=98xdp_rxq_info_reg=E2=80=99
->  1135 |   err =3D xdp_rxq_info_reg(&dpaa_fq->xdp_rxq, dpaa_fq->net_dev,
->       |         ^~~~~~~~~~~~~~~~
->
-> Commit b02e5a0ebb17 ("xsk: Propagate napi_id to XDP socket Rx path")
-> added an extra argument to function xdp_rxq_info_reg and commit
-> d57e57d0cd04 ("dpaa_eth: add XDP_TX support") didn't know about that
-> extra argument.
->
-> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+On Thu, Dec 03, 2020 at 10:22:34AM +0000, Brendan Jackman wrote:
+> Add missing newlines and fix polarity of strerror argument.
+> 
+> Signed-off-by: Brendan Jackman <jackmanb@google.com>
+
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+
+thanks,
+jirka
+
 > ---
->
-> I think this issue is seen since both patches went in at the same time
-> to bpf-next and net-next.
->
+>  tools/bpf/resolve_btfids/main.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+> index dfa540d8a02d..e3ea569ee125 100644
+> --- a/tools/bpf/resolve_btfids/main.c
+> +++ b/tools/bpf/resolve_btfids/main.c
+> @@ -454,7 +454,7 @@ static int symbols_collect(struct object *obj)
+>  			return -ENOMEM;
+>  
+>  		if (id->addr_cnt >= ADDR_CNT) {
+> -			pr_err("FAILED symbol %s crossed the number of allowed lists",
+> +			pr_err("FAILED symbol %s crossed the number of allowed lists\n",
+>  				id->name);
+>  			return -1;
+>  		}
+> @@ -477,8 +477,8 @@ static int symbols_resolve(struct object *obj)
+>  	btf = btf__parse(obj->btf ?: obj->path, NULL);
+>  	err = libbpf_get_error(btf);
+>  	if (err) {
+> -		pr_err("FAILED: load BTF from %s: %s",
+> -			obj->path, strerror(err));
+> +		pr_err("FAILED: load BTF from %s: %s\n",
+> +			obj->path, strerror(-err));
+>  		return -1;
+>  	}
+>  
+> 
+> base-commit: 97306be45fbe7a02461c3c2a57e666cf662b1aaf
+> -- 
+> 2.29.2.454.gaff20da3a2-goog
+> 
 
-Thanks Anders!
-
-Indeed, when bpf-next is pulled into net-next this needs to be applied.
-
-Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
-
->  drivers/net/ethernet/freescale/dpaa/dpaa_eth.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c b/drivers/net=
-/ethernet/freescale/dpaa/dpaa_eth.c
-> index 947b3d2f9c7e..6cc8c4e078de 100644
-> --- a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
-> +++ b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
-> @@ -1133,7 +1133,7 @@ static int dpaa_fq_init(struct dpaa_fq *dpaa_fq, bo=
-ol td_enable)
->         if (dpaa_fq->fq_type =3D=3D FQ_TYPE_RX_DEFAULT ||
->             dpaa_fq->fq_type =3D=3D FQ_TYPE_RX_PCD) {
->                 err =3D xdp_rxq_info_reg(&dpaa_fq->xdp_rxq, dpaa_fq->net_=
-dev,
-> -                                      dpaa_fq->fqid);
-> +                                      dpaa_fq->fqid, 0);
->                 if (err) {
->                         dev_err(dev, "xdp_rxq_info_reg() =3D %d\n", err);
->                         return err;
-> --
-> 2.29.2
->
