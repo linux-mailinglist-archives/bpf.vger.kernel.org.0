@@ -2,245 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF7A42CCEB7
-	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 06:39:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96ED22CCEC5
+	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 06:45:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726921AbgLCFjN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Dec 2020 00:39:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42524 "EHLO
+        id S1728354AbgLCFor (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Dec 2020 00:44:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726327AbgLCFjN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Dec 2020 00:39:13 -0500
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CF85C061A4D;
-        Wed,  2 Dec 2020 21:38:33 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id o71so980385ybc.2;
-        Wed, 02 Dec 2020 21:38:33 -0800 (PST)
+        with ESMTP id S1727937AbgLCFor (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Dec 2020 00:44:47 -0500
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F45FC061A4E
+        for <bpf@vger.kernel.org>; Wed,  2 Dec 2020 21:44:07 -0800 (PST)
+Received: by mail-yb1-xb44.google.com with SMTP id r127so940243yba.10
+        for <bpf@vger.kernel.org>; Wed, 02 Dec 2020 21:44:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=LG5EEUr29IhQIKadWjoYDgVnJTBb6ZwFm/wYOR2Jerk=;
-        b=osUNEk85QVYNd7DeUeT6LAvmc9dgIL89+dPqsLjFmcyRcF1ajW4GRWSMUMuK6BjYAN
-         slXsBbeqHyuHaJwXZF7klJU4XdnkjHCDXhmhCi69O37dMwgLKuG5NuwO8RLAVm3KdGhZ
-         oX6dDQkT+vMRVXGAyH0qHkHk8u4pnQtbTampimjRWG8NxfMMyugU8bcs4U/VolhA+Ozf
-         D0RN1ev6KJRetdVfzUfGJSbHZ6bhYJILapyjm8OlG8byfxEeXrRH7y80n6xogmQGj+4l
-         pU2CBsGk/JzAaDD+avK30NxsWAeuvsglE8Ao2CLDxjdgl2JbDEKHD/rWnYWkxH8Xo8Ix
-         CXeQ==
+        bh=G/WdVpiyRnHOoNEXreSa41Wxs7aji4Z/L/kLnKrQiPc=;
+        b=rmIWPo96LkoyxSHSVADU5P4KndQgbnUNiAU+jG/Q3m7rahukU65VGn5Tc05FqLcSuP
+         lD4j5z3u+GNu8GzNhbf1mp0eJNhIDDopFN7JSRe1bV1LDZuqRD/ihoSxC7ojuvDn5q1H
+         KQBnGWTyMepnYnqd3SkFmaeKNUfzaCBBrBDlubGZC5bWHzHZnT3ULuAheFuleGiBq9jw
+         uzby6bfdJVskEWdr4MILo/p7QqfYt8iu5fuwb2hDc99bMbTUMD7tMTERS6PBI35hhYrm
+         SrpRySdRBCvY01BClbHAX1UEKrSBivYDNcKihZQJmpIqCpzUB6NRGlxZRS6A2byCXc2U
+         AKjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=LG5EEUr29IhQIKadWjoYDgVnJTBb6ZwFm/wYOR2Jerk=;
-        b=q9SbYgSYkgHPuu8540H732uEr4J5ZTKxK/7U2EyxyDaaDHltBcq+yrPGjjY7fynVen
-         j1dGIG5xQJbv/pq6PFNF9tZV1cIXao0Blu9ZdtyoA1vUMshOBVA/2LQFbnHxSQ10oaAe
-         FtvGpZX7Mc5h7HP2C30VoRmW/zyTZYiFTL2orPnFaqGziGjwIIALzkd+XjJcXTeHeqQh
-         ezG/Y3tInZnY2n6eAnve8ykG20YvIA3zUHy++X1zXwRMFEayfsR4ytk4TfsBofIhN8E0
-         zD1n2x+LJh2GW25zKxCmjZ9zjToPPWLvyQTBzQgbzq1CblBtARtr+WQciq5KxaiybSKL
-         jV5g==
-X-Gm-Message-State: AOAM531aWIUtws/mXFZO4HLe2WBC9E9e7fGPTBu30Bg9B4E6eyAgURAa
-        d3s5HnWeTqxUVu/HvjAYqUmn3J5seoBTTU0pbnLXnMHqRNA=
-X-Google-Smtp-Source: ABdhPJxslFi3EECh5n6E62T/JBisd9/tpVUvje6LttfaRoGdlAnbLXtA3Tt0kQKf8W5QAWv41y2GXl+QfGLaNbLqWlE=
-X-Received: by 2002:a25:3d7:: with SMTP id 206mr2185195ybd.27.1606973912667;
- Wed, 02 Dec 2020 21:38:32 -0800 (PST)
+        bh=G/WdVpiyRnHOoNEXreSa41Wxs7aji4Z/L/kLnKrQiPc=;
+        b=IC3VH3O1clvfue0c+I8RcD3i3MOzFNpUE84k0JQuUQtENP9wZdYTWUkE/w11qKr6r7
+         ex6d5ULDsQuh0dHJm6QjiBzGfZbzF0iHr9+p2kZmXAaW4wzxVDpXXNrgpFhrY3TfpZQg
+         jJPhzo4M3XBwvZx3dQGuE50Bb282pEvP0jYm3roqzSn8xLvubwwxb3fEdU4eaQZEgnUL
+         lVWmoXBTXs0HwMqyrKDMDP49UrEcLIvu3aBdWUY4dueYyJQ004vukSRMfzIm7B9cYiH5
+         5GjVJYDzundKu31tKRRqUEwOnpRifWVZ8wIbsMxnNaUi0dR2u4p71XHATWijchehqFCV
+         +w3w==
+X-Gm-Message-State: AOAM530LAWLL5CqKH1bHiNF2iIHoLgz1GH2ZffmwboeyPQu3wx1lEEgC
+        qvnzOgid0eYIutNIW3h/UBgC96wE+4jTDMZOTvAcF+x8AuM=
+X-Google-Smtp-Source: ABdhPJyvWX3u+M9W8GFg4EQE4FlnFSjTc1v3VN7Rxw0EdlD7dJnLegASgPTW7Mt9IX3NZNH3GznBoM2fhpcuLWQwK9Q=
+X-Received: by 2002:a25:c7c6:: with SMTP id w189mr2248144ybe.403.1606974246436;
+ Wed, 02 Dec 2020 21:44:06 -0800 (PST)
 MIME-Version: 1.0
-References: <20201203035204.1411380-1-andrii@kernel.org> <20201203035204.1411380-6-andrii@kernel.org>
- <5fc877ec37f7d_1123e208e8@john-XPS-13-9370.notmuch>
-In-Reply-To: <5fc877ec37f7d_1123e208e8@john-XPS-13-9370.notmuch>
+References: <20201203005807.486320-1-kpsingh@chromium.org>
+In-Reply-To: <20201203005807.486320-1-kpsingh@chromium.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 2 Dec 2020 21:38:21 -0800
-Message-ID: <CAEf4BzbxGvExEnrYMxqpyuS-8_rLFMQ5EJnKs_=obHn1VYeq2g@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 05/14] libbpf: add kernel module BTF support
- for CO-RE relocations
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+Date:   Wed, 2 Dec 2020 21:43:55 -0800
+Message-ID: <CAEf4BzZd8PYW1SxAVmYA7XBOGhfj4RWPndvKcUJsvSiRquFG+g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 0/4] Fixes for ima selftest
+To:     KP Singh <kpsingh@chromium.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
+        Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 2, 2020 at 9:30 PM John Fastabend <john.fastabend@gmail.com> wrote:
+On Wed, Dec 2, 2020 at 4:58 PM KP Singh <kpsingh@chromium.org> wrote:
 >
-> Andrii Nakryiko wrote:
-> > Teach libbpf to search for candidate types for CO-RE relocations across kernel
-> > modules BTFs, in addition to vmlinux BTF. If at least one candidate type is
-> > found in vmlinux BTF, kernel module BTFs are not iterated. If vmlinux BTF has
-> > no matching candidates, then find all kernel module BTFs and search for all
-> > matching candidates across all of them.
-> >
-> > Kernel's support for module BTFs are inferred from the support for BTF name
-> > pointer in BPF UAPI.
-> >
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
+> From: KP Singh <kpsingh@google.com>
 >
-> small typo and missing close maybe? Otherwise,
+> # v2 -> v3
 >
-> Acked-by: John Fastabend <john.fastabend@gmail.com>
+> * Added missing tags.
+> * Indentation fixes + some other fixes suggested by Andrii.
+> * Re-indent file to tabs.
 >
-> > +static int load_module_btfs(struct bpf_object *obj)
-> > +{
-> > +     struct bpf_btf_info info;
-> > +     struct module_btf *mod_btf;
-> > +     struct btf *btf;
-> > +     char name[64];
-> > +     __u32 id = 0, len;
-> > +     int err, fd;
-> > +
-> > +     if (obj->btf_modules_loaded)
-> > +             return 0;
-> > +
-> > +     /* don't do this again, even if we find no module BTFs */
+> # What?
 >
-> I wonder a bit if we might load modules at some point and want
-> to then run this, but I wouldn't worry about it. Its likely
-> easy enough to just reload or delay load until module is in place.
-
-right, internal function, super easy to adjust later
-
->
-> > +     obj->btf_modules_loaded = true;
-> > +
-> > +     /* kernel too old to support module BTFs */
-> > +     if (!kernel_supports(FEAT_MODULE_BTF))
-> > +             return 0;
-> > +
-> > +     while (true) {
-> > +             err = bpf_btf_get_next_id(id, &id);
-> > +             if (err && errno == ENOENT)
-> > +                     return 0;
-> > +             if (err) {
-> > +                     err = -errno;
-> > +                     pr_warn("failed to iterate BTF objects: %d\n", err);
-> > +                     return err;
-> > +             }
-> > +
-> > +             fd = bpf_btf_get_fd_by_id(id);
-> > +             if (fd < 0) {
-> > +                     if (errno == ENOENT)
-> > +                             continue; /* expected race: BTF was unloaded */
-> > +                     err = -errno;
-> > +                     pr_warn("failed to get BTF object #%d FD: %d\n", id, err);
-> > +                     return err;
-> > +             }
-> > +
-> > +             len = sizeof(info);
-> > +             memset(&info, 0, sizeof(info));
-> > +             info.name = ptr_to_u64(name);
-> > +             info.name_len = sizeof(name);
-> > +
-> > +             err = bpf_obj_get_info_by_fd(fd, &info, &len);
-> > +             if (err) {
->
-> do we also need to close(fd) here? If not then we don't need the close in xsk.c
-> I guess.
-
-Yes, we do. Nice catch! I added FD tracking for each module BTF in
-patch #12 and adjusted the clean up code there, so it's already fixed
-there. If I happen to do v6, I'll add close(fd) here just for
-completeness/correctness, but otherwise probably not worth it to
-respin just for that.
-
->
-> > +                     err = -errno;
-> > +                     pr_warn("failed to get BTF object #%d info: %d\n", id, err);
-> > +                     return err;
-> > +             }
-> > +
-> > +             /* ignore non-module BTFs */
-> > +             if (!info.kernel_btf || strcmp(name, "vmlinux") == 0) {
-> > +                     close(fd);
-> > +                     continue;
-> > +             }
-> > +
-> > +             btf = btf_get_from_fd(fd, obj->btf_vmlinux);
-> > +             close(fd);
-> > +             if (IS_ERR(btf)) {
-> > +                     pr_warn("failed to load module [%s]'s BTF object #%d: %ld\n",
-> > +                             name, id, PTR_ERR(btf));
-> > +                     return PTR_ERR(btf);
-> > +             }
-> > +
-> > +             err = btf_ensure_mem((void **)&obj->btf_modules, &obj->btf_module_cap,
-> > +                                  sizeof(*obj->btf_modules), obj->btf_module_cnt + 1);
-> > +             if (err)
-> > +                     return err;
-> > +
-> > +             mod_btf = &obj->btf_modules[obj->btf_module_cnt++];
-> > +
-> > +             mod_btf->btf = btf;
-> > +             mod_btf->id = id;
-> > +             mod_btf->name = strdup(name);
-> > +             if (!mod_btf->name)
-> > +                     return -ENOMEM;
-> > +     }
-> > +
-> > +     return 0;
-> > +}
-> > +
-> >  static struct core_cand_list *
-> >  bpf_core_find_cands(struct bpf_object *obj, const struct btf *local_btf, __u32 local_type_id)
-> >  {
-> >       struct core_cand local_cand = {};
-> >       struct core_cand_list *cands;
-> > +     const struct btf *main_btf;
-> >       size_t local_essent_len;
-> > -     int err;
-> > +     int err, i;
-> >
-> >       local_cand.btf = local_btf;
-> >       local_cand.t = btf__type_by_id(local_btf, local_type_id);
-> > @@ -4697,15 +4824,38 @@ bpf_core_find_cands(struct bpf_object *obj, const struct btf *local_btf, __u32 l
-> >               return ERR_PTR(-ENOMEM);
-> >
-> >       /* Attempt to find target candidates in vmlinux BTF first */
-> > -     err = bpf_core_add_cands(&local_cand, local_essent_len,
-> > -                              obj->btf_vmlinux_override ?: obj->btf_vmlinux,
-> > -                              "vmlinux", 1, cands);
-> > -     if (err) {
-> > -             bpf_core_free_cands(cands);
-> > -             return ERR_PTR(err);
-> > +     main_btf = obj->btf_vmlinux_override ?: obj->btf_vmlinux;
-> > +     err = bpf_core_add_cands(&local_cand, local_essent_len, main_btf, "vmlinux", 1, cands);
-> > +     if (err)
-> > +             goto err_out;
-> > +
-> > +     /* if vmlinux BTF has any candidate, don't got for module BTFs */
->
-> small typo: don't got for -> don't go for
+> * Fixes to work in busybox shell (tested on the one used by BPF CI).
+> * Ensure that securityfs is mounted before updating the ima policy
+> * Add missing config deps.
 >
 
-oops
+KP, please take a look at other cover letters to get a better idea of
+how they usually look like. It has to be a human-readable overview of
+why the patch set was posted and what problem it is solving. List of
+action items without any context is not the best format.
 
-> > +     if (cands->len)
-> > +             return cands;
-> > +
-> > +     /* if vmlinux BTF was overridden, don't attempt to load module BTFs */
-> > +     if (obj->btf_vmlinux_override)
-> > +             return cands;
-> > +
-> > +     /* now look through module BTFs, trying to still find candidates */
-> > +     err = load_module_btfs(obj);
-> > +     if (err)
-> > +             goto err_out;
-> > +
-> > +     for (i = 0; i < obj->btf_module_cnt; i++) {
-> > +             err = bpf_core_add_cands(&local_cand, local_essent_len,
-> > +                                      obj->btf_modules[i].btf,
-> > +                                      obj->btf_modules[i].name,
-> > +                                      btf__get_nr_types(obj->btf_vmlinux) + 1,
-> > +                                      cands);
-> > +             if (err)
-> > +                     goto err_out;
-> >       }
-> >
-> >       return cands;
-> > +err_out:
-> > +     bpf_core_free_cands(cands);
-> > +     return ERR_PTR(err);
-> >  }
-> >
+>
+> KP Singh (4):
+>   selftests/bpf: Update ima_setup.sh for busybox
+>   selftests/bpf: Ensure securityfs mount before writing ima policy
+>   selftests/bpf: Add config dependency on BLK_DEV_LOOP
+>   selftests/bpf: Indent ima_setup.sh with tabs.
+>
+>  tools/testing/selftests/bpf/config       |   1 +
+>  tools/testing/selftests/bpf/ima_setup.sh | 107 +++++++++++++----------
+>  2 files changed, 64 insertions(+), 44 deletions(-)
+>
+> --
+> 2.29.2.576.ga3fc446d84-goog
+>
