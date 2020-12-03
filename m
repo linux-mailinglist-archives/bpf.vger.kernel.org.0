@@ -2,81 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B71E22CDDBB
-	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 19:34:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E006E2CDDC4
+	for <lists+bpf@lfdr.de>; Thu,  3 Dec 2020 19:34:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731659AbgLCSd2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Dec 2020 13:33:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49848 "EHLO
+        id S1731697AbgLCSdr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Dec 2020 13:33:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731626AbgLCSd1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Dec 2020 13:33:27 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 420AFC061A4F;
-        Thu,  3 Dec 2020 10:32:47 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id b10so1871735pfo.4;
-        Thu, 03 Dec 2020 10:32:47 -0800 (PST)
+        with ESMTP id S1726462AbgLCSdq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Dec 2020 13:33:46 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FA70C061A52;
+        Thu,  3 Dec 2020 10:33:06 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id e5so1571821pjt.0;
+        Thu, 03 Dec 2020 10:33:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=2TfCXyDchUz9TycwEcuS6cS7AaZIiVS2ius4r0dHDq8=;
-        b=P35N3lCWaogrMVCaXzqMi5DKbjvhZI7qj+hyS6w/kuoXpbo4voiFZzaKiRhiaOh7iV
-         Wig2NSjEhkPBzCYMuQ33rEnNs3wnhBWy+rCVf3b1NBWFRfg++yZXcLk56SMtySkjxEkS
-         OcdfS07jdssMsB5BW2UYpZJ51lfjttAALPRoxbV24i/8BjsQCGhiMFelGXSgCqFjpuKK
-         D64fMSo/k5M3TSBTPldqIQVNhvF2Xo3GEqqRmowyQbPYDZ0LG5LpKWbVFUp6knjp6aYf
-         J+w2od0ugotnyr2b3tuiFyBHdPpBJ4Isw6M2RSideFVcKyWrsuQcTSqBe2cn9L7Z3GKM
-         pwPA==
+        bh=wTm4MsPFchb7Zj9BUbI1foUgKuinG+YS4/akILLACGI=;
+        b=oFHZJaCwvNrf19hvnXoxTH3x8KSsk9R3Dwq8Mm+/rZ+XPPN4Sz1ODI3kJMI1SjX5Xj
+         huAgu8QJzpzhYP9WfiBCD6JnUTBR1bON4+6mFmjwe1VT6hhkQtXb04cIGg1YhomJv2nI
+         rO5DR8+8qCXRX19tEa6nNfTFA0GXpkAlyYxX0NgKeLWONHLa8N8guQpwbsQofVDPePcj
+         sAEUm+3I8LhAd2pjM+GsXPpZfV35k52Orm7SQaL61mr6R+gIjUuvKohS+shnza981oc/
+         rrst+0URTeK9QzBXczRb1I+cFbk47CeZOHMxFTzah1lRn0AdGzonBk8S3gW+9/rkOAhl
+         +hWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=2TfCXyDchUz9TycwEcuS6cS7AaZIiVS2ius4r0dHDq8=;
-        b=suePgUO/rPAUxXzBRzxobE6EcWjKALsE3CHEGYcja7HIiLAcxwV865uYMuPU/3/FbG
-         xbZUa7M+4VpSOnhIKkMhUhT//tDHxlwDDCZHwXMi5sp4FGNVfcn/EY8PfDN/L91qTMC8
-         qEd6JppfZnX2tCI7L9UMNGNQCTUABhig6bwBJENMI/wJ742NoAEpJhR+r+SMBUB6U3FO
-         fWz9/9bQ3qcdz7m5ZQu0MikWcveKxVqzw9jT11wndKgLI4+uNt8QAFxkKkVXAmectYZD
-         hVMBNW8vTqM6sASS4LIooH2eYmFhDxhFSe9f4p7Ob7WoatZSR+vev/rpSsfXVbqhLWB/
-         Ipmg==
-X-Gm-Message-State: AOAM532c8YzzTFx3CPS4sKYYWK2FDJct5xZk6vHUIkwLTLsziZMQfwsn
-        9d+qy8p2c8G+mFc3Ak5aRAw=
-X-Google-Smtp-Source: ABdhPJw7wx5/+grSMsWIBs01kXAfJtJGNVjneeBfKb1YxePqGwDQK/yt5avOS6aJRMmrerbbjT+WRg==
-X-Received: by 2002:a63:2026:: with SMTP id g38mr4131553pgg.30.1607020366874;
-        Thu, 03 Dec 2020 10:32:46 -0800 (PST)
+        bh=wTm4MsPFchb7Zj9BUbI1foUgKuinG+YS4/akILLACGI=;
+        b=Sj1iXm7Pw03eF6fj0GMqdOHOyBCXGfAYeQhqRHOAUyT5rudrWunG+x+DSrQYVvHbDd
+         1e5y/KM2Sn+Gd5euQWkdFVKACQZq0pS4o8anUGTJwGn05bb3C2ARDKXNcPbInBelfgrv
+         n3IIHrJ0uDD4JgUCyh0Ug/SZmbAFkD3pgUrpnD6JypN2A93oBDiAtu82OwlWkBPZyutV
+         p8L5vtv9bAKcvW0HD2yOPXxGvGcErre2itp9Zd+bktyh52n7Vfw3D6jAUdfa8GNX0Z1N
+         niW49WfzqJWy1kp7H6I7FXcmlCstPgGCvHRjXzpVVYiNS/IensEJSpEWgH8p9vFcqtIU
+         OjCA==
+X-Gm-Message-State: AOAM531O1QqchHZ3obvDPcOwFWvLbUnxCdCi+VLpyovdvoIR3j+Y99oG
+        mld4TwM4j+cCOsOdM4tvPcg=
+X-Google-Smtp-Source: ABdhPJxrD51vyIQ/hqEsn93ffMPY6H5K+fqlNL+jNZcv4BF/YBukJX+y/Kp9rQZ0iRK+/xGGyhHkrA==
+X-Received: by 2002:a17:90a:930f:: with SMTP id p15mr381847pjo.73.1607020386076;
+        Thu, 03 Dec 2020 10:33:06 -0800 (PST)
 Received: from ast-mbp ([2620:10d:c090:400::5:a629])
-        by smtp.gmail.com with ESMTPSA id x16sm117362pjh.39.2020.12.03.10.32.44
+        by smtp.gmail.com with ESMTPSA id x21sm2448717pfn.196.2020.12.03.10.33.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Dec 2020 10:32:45 -0800 (PST)
-Date:   Thu, 3 Dec 2020 10:32:44 -0800
+        Thu, 03 Dec 2020 10:33:05 -0800 (PST)
+Date:   Thu, 3 Dec 2020 10:33:03 -0800
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     Stanislav Fomichev <sdf@google.com>
 Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, davem@davemloft.net,
         ast@kernel.org, daniel@iogearbox.net
-Subject: Re: [PATCH bpf-next 0/3] bpf: expose bpf_{s,g}etsockopt helpers to
- bind{4,6} hooks
-Message-ID: <20201203183244.5ws5dorn34q3gbtl@ast-mbp>
-References: <20201202172516.3483656-1-sdf@google.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: copy file using read/write in
+ local storage test
+Message-ID: <20201203183303.zv6aqwqtamkhne4p@ast-mbp>
+References: <20201202174947.3621989-1-sdf@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201202172516.3483656-1-sdf@google.com>
+In-Reply-To: <20201202174947.3621989-1-sdf@google.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 02, 2020 at 09:25:13AM -0800, Stanislav Fomichev wrote:
-> This might be useful for the listener sockets to pre-populate
-> some options. Since those helpers require locked sockets,
-> I'm changing bind hooks to lock/unlock the sockets. This
-> should not cause any performance overhead because at this
-> point there shouldn't be any socket lock contention and the
-> locking/unlocking should be cheap.
+On Wed, Dec 02, 2020 at 09:49:47AM -0800, Stanislav Fomichev wrote:
+> Splice (copy_file_range) doesn't work on all filesystems. I'm running
+> test kernels on top of my read-only disk image and it uses plan9 under the
+> hood. This prevents test_local_storage from successfully passing.
 > 
-> Also, as part of the series, I convert test_sock_addr bpf
-> assembly into C (and preserve the narrow load tests) to
-> make it easier to extend with th bpf_setsockopt later on.
+> There is really no technical reason to use splice, so lets do
+> old-school read/write to copy file; this should work in all
+> environments.
 > 
-> v2:
-> * remove version from bpf programs (Andrii Nakryiko)
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
 
 Applied, Thanks
