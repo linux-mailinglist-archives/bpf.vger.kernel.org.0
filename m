@@ -2,101 +2,50 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 238922CF3DB
-	for <lists+bpf@lfdr.de>; Fri,  4 Dec 2020 19:20:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8F2F2CF400
+	for <lists+bpf@lfdr.de>; Fri,  4 Dec 2020 19:27:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387419AbgLDSUI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Dec 2020 13:20:08 -0500
-Received: from mx.der-flo.net ([193.160.39.236]:40128 "EHLO mx.der-flo.net"
+        id S1729333AbgLDS0p (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Dec 2020 13:26:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46558 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726602AbgLDSUH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Dec 2020 13:20:07 -0500
-Received: by mx.der-flo.net (Postfix, from userid 110)
-        id C97BF4458E; Fri,  4 Dec 2020 19:19:25 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mx.der-flo.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=4.0 tests=ALL_TRUSTED,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.2
-Received: from localhost (unknown [IPv6:2a02:1205:34c2:d100:56f5:35da:21bf:c38d])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx.der-flo.net (Postfix) with ESMTPSA id C49F744581;
-        Fri,  4 Dec 2020 19:19:21 +0100 (CET)
-From:   Florian Lehner <dev@der-flo.net>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, john.fastabend@gmail.com,
-        Florian Lehner <dev@der-flo.net>,
-        Krzesimir Nowak <krzesimir@kinvolk.io>
-Subject: [PATCH 2/2] selftests/bpf: Avoid errno clobbering
-Date:   Fri,  4 Dec 2020 19:18:28 +0100
-Message-Id: <20201204181828.11974-3-dev@der-flo.net>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201204181828.11974-1-dev@der-flo.net>
-References: <20201204181828.11974-1-dev@der-flo.net>
+        id S1727729AbgLDS0o (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Dec 2020 13:26:44 -0500
+Date:   Fri, 4 Dec 2020 10:26:02 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607106364;
+        bh=QF/pmCEL+RHZ4HjL1GuCjx1bK4he9AnSqrhTRpa1PL0=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=NIUYYkys/LacBql/Ry9BOnR8NcZ0K8WN4iApDkldUBFuC1kX9vAr8bJgVNb79tmY4
+         B6UO6gn+8pgJXhpwegvwGEQwxNdmZ/Wm9eSwNNWrDMj1VMq7dQreAhajWbeSyt6yI3
+         enTtrVd8e6dk7HPKkhv/69EG8PU+3BPuZrEBRj29UqNmKNkHc3x9RPXDXNZSmxHsXB
+         RHxFf6BAT2mqKF4RiYqkCsbi6YWCWUZcB5IoBA1/YH9vPKOgNhyF00E7Y167Uh0+Qr
+         xjtSXv2jb0qCkyExjXUJGgL/bOenodk6E8Jgd2oOw9DNDLugTjh6r6NdT/kBKFIlVW
+         zj9vXgcws1ZOQ==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     davem@davemloft.net, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@fb.com
+Subject: Re: pull-request: bpf-next 2020-12-03
+Message-ID: <20201204102602.7c35cdbe@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+In-Reply-To: <20201204021936.85653-1-alexei.starovoitov@gmail.com>
+References: <20201204021936.85653-1-alexei.starovoitov@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Print a message when the returned error is about a program type being
-not supported or because of permission problems.
-These messages are expected if the program to test was actually
-executed.
+On Thu,  3 Dec 2020 18:19:36 -0800 Alexei Starovoitov wrote:
+> 1) Support BTF in kernel modules, from Andrii.
+>=20
+> 2) Introduce preferred busy-polling, from Bj=C3=B6rn.
+>=20
+> 3) bpf_ima_inode_hash() and bpf_bprm_opts_set() helpers, from KP Singh.
+>=20
+> 4) Memcg-based memory accounting for bpf objects, from Roman.
+>=20
+> 5) Allow bpf_{s,g}etsockopt from cgroup bind{4,6} hooks, from Stanislav.
 
-Cc: Krzesimir Nowak <krzesimir@kinvolk.io>
-Signed-off-by: Florian Lehner <dev@der-flo.net>
----
- tools/testing/selftests/bpf/test_verifier.c | 27 +++++++++++++++++----
- 1 file changed, 22 insertions(+), 5 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-index ceea9409639e..777a81404fdb 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -875,19 +875,36 @@ static int do_prog_test_run(int fd_prog, bool unpriv, uint32_t expected_val,
- 	__u8 tmp[TEST_DATA_LEN << 2];
- 	__u32 size_tmp = sizeof(tmp);
- 	uint32_t retval;
--	int err;
-+	int err, saved_errno;
- 
- 	if (unpriv)
- 		set_admin(true);
- 	err = bpf_prog_test_run(fd_prog, 1, data, size_data,
- 				tmp, &size_tmp, &retval, NULL);
-+	saved_errno = errno;
-+
- 	if (unpriv)
- 		set_admin(false);
--	if (err && errno != 524/*ENOTSUPP*/ && errno != EPERM) {
--		printf("Unexpected bpf_prog_test_run error ");
--		return err;
-+
-+	if (err) {
-+		switch (saved_errno) {
-+		case 524/*ENOTSUPP*/:
-+			printf("Did not run the program (not supported) ");
-+			return 0;
-+		case EPERM:
-+			if (unpriv) {
-+				printf("Did not run the program (no permission) ");
-+				return 0;
-+			}
-+			/* fallthrough; */
-+		default:
-+			printf("FAIL: Unexpected bpf_prog_test_run error (%s) ",
-+				strerror(saved_errno));
-+			return err;
-+		}
- 	}
--	if (!err && retval != expected_val &&
-+
-+	if (retval != expected_val &&
- 	    expected_val != POINTER_VALUE) {
- 		printf("FAIL retval %d != %d ", retval, expected_val);
- 		return 1;
--- 
-2.28.0
-
+Pulled, thanks!
