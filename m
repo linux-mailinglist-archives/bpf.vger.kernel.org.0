@@ -2,95 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96BD92CF4D0
-	for <lists+bpf@lfdr.de>; Fri,  4 Dec 2020 20:33:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15F5F2CF4F6
+	for <lists+bpf@lfdr.de>; Fri,  4 Dec 2020 20:42:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730513AbgLDTca (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Dec 2020 14:32:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730182AbgLDTc3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Dec 2020 14:32:29 -0500
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 722B8C0613D1;
-        Fri,  4 Dec 2020 11:31:49 -0800 (PST)
-Received: by mail-yb1-xb42.google.com with SMTP id e81so6472580ybc.1;
-        Fri, 04 Dec 2020 11:31:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=voQ5lfDVMzOYam6sMYIWBPLKZkkRpZtoYUdHJkVXnyo=;
-        b=MgpaSnyZbEuVQ1tq48gkH3nTUILv5dbh+fQiN7sWvrAX68uet1w9mnhMN9cz6C50kr
-         9B+IgSJey1l97joP0fSN4mxjNgmrbp5FWvsfhQlKveVkGX+0cAdxVnsgwStgix5ZNrej
-         r7NV16O/bHOu7yCaJ7RuJPFDMCtNGV8V3RNDuBBm5K7YFOrmywpNCD7d3T/NNsUxmY3u
-         Q101YMgwA5Fs2KohhE4+T0tKNriGkSL3TvqGPVnA09l5PBLBnI2/3CKvBhyz6Oj0/OuW
-         SJhzjlWvzpWyUkPDs4YJ8AqiCA/xbPKCZv+3/SNKjj1Ix21C/+Q4XMg/m8ePXEP8W+KV
-         RuWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=voQ5lfDVMzOYam6sMYIWBPLKZkkRpZtoYUdHJkVXnyo=;
-        b=qRP+rczwuRIxFn9kkamqpd6WfEWf7vPEDiXl/ev+17ImY+X1XEj2zY0QsG3XkaToAl
-         XZdhCFyT/wd4A+DGlxzDbqZ8Pd/C/1Ki3B7qrfQw9yknTPOD0+WpyJVPmTLYCbeWdykX
-         NiVG+2wINGi6c/lqJvYp8y3b7bpyK9AoRA4OTG+OqeT8oZYR2gONnVQi6CDRkwC1pzCq
-         BT/Tde+kBvPXQRPlkpDDmvwgrbKAkNzTNA6hJEaL5q7NSyunHu8+JZg0q5imZdVV698X
-         WfvnZQ+YCBD6N/Z1mB4eUQpB0dP02Du5GvtmbUet+lksOmeF9Tf+CDga7mliVR+E9f/h
-         twNQ==
-X-Gm-Message-State: AOAM533edABcJ7vZHCHms8RuED4+ae0iHzEt4uA99qCUaBdh94a40M2X
-        JNPE40Y3JK8CAa/2Fpgeq6DgKv9OYcupOJco1hMmdvDSgMU=
-X-Google-Smtp-Source: ABdhPJzfGL7HBGF2Eg+F+OK3y9ToHuBFF2CJytCQWCAM+So+BOR8xjeYlQSdcaqAnVom2SPnni0muXJlyLjALy3Dtjk=
-X-Received: by 2002:a25:6a05:: with SMTP id f5mr4486304ybc.459.1607110308781;
- Fri, 04 Dec 2020 11:31:48 -0800 (PST)
+        id S1726392AbgLDTk6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Dec 2020 14:40:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33008 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726021AbgLDTk6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Dec 2020 14:40:58 -0500
+Content-Type: text/plain; charset="utf-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607110817;
+        bh=rNDuMN1MmYiK1tAGoQ1k6iGiCCGFLolAECzOm9LjZhE=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=F1gkrMO0URllU+rs/1VuwRA3kVx7iUimHinDIYjJy08ftSbiMUgEM3gD+/UlyU1BT
+         YjVCbT8MhowFefZSLnSbdIJxqVS7653EJZM9BfCW2H8G5+uMPCssf57pP0yiNNGm21
+         xUN1buGZ1EraWvpVRJ6Q071vVjW2G0m2hr7D4ZGTO0MO1gUiziiCQZhRGfJkj3np6+
+         OVFEgOll+kpbuTcSZMi8qubabvkpXYOrymKwxDjf+Hkg4pk6k8EE0sLQaz6886T7CF
+         mBAuLjao2Ixi9nRr2SSggqC1NrrqGkYVD5zr/wrDJjyY6mNcI6IPLGMoChbCTFrF5K
+         sxiQH7edbXhog==
 MIME-Version: 1.0
-References: <20201203204634.1325171-1-andrii@kernel.org> <20201203204634.1325171-11-andrii@kernel.org>
- <20201204015358.sk5zl5l73zmcu7t2@ast-mbp>
-In-Reply-To: <20201204015358.sk5zl5l73zmcu7t2@ast-mbp>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 4 Dec 2020 11:31:37 -0800
-Message-ID: <CAEf4BzbqneM9bXn646EpNAnaZr=sStqf6guBvWvf9qtyDYO9mg@mail.gmail.com>
-Subject: Re: [PATCH v6 bpf-next 10/14] bpf: allow to specify kernel module
- BTFs when attaching BPF programs
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2] bpf: remove trailing semicolon in macro definition
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <160711081762.29539.3695576818249759103.git-patchwork-notify@kernel.org>
+Date:   Fri, 04 Dec 2020 19:40:17 +0000
+References: <20201202212810.3774614-1-trix@redhat.com>
+In-Reply-To: <20201202212810.3774614-1-trix@redhat.com>
+To:     Tom Rix <trix@redhat.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org,
+        davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
+        rostedt@goodmis.org, mingo@redhat.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 5:54 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Thu, Dec 03, 2020 at 12:46:30PM -0800, Andrii Nakryiko wrote:
-> > +     if (attr->attach_prog_fd) {
-> > +             dst_prog = bpf_prog_get(attr->attach_prog_fd);
-> > +             if (IS_ERR(dst_prog)) {
-> > +                     dst_prog = NULL;
-> > +                     attach_btf = btf_get_by_fd(attr->attach_btf_obj_fd);
-> > +                     if (IS_ERR(attach_btf))
-> > +                             return -EINVAL;
-> > +                     if (!btf_is_kernel(attach_btf)) {
-> > +                             btf_put(attach_btf);
-> > +                             return -EINVAL;
->
-> Applied, but please consider follow up with different err code here.
-> I think we might support this case in the future.
-> Specifying prog's BTF as a base and attach_btf_id within it might make
-> user space simpler in some cases. prog's btf covers the whole elf file.
+Hello:
 
-The problem is that there is no link from BTF to bpf_prog. And
-multiple instances of bpf_progs can re-use the same BTF object and the
-same BTF type ID. That would need to be resolved somehow.
+This patch was applied to bpf/bpf-next.git (refs/heads/master):
 
-But keeping our options open is a good idea either way. So I'll send a
-patch to switch this to -EOPNOTSUPP (I think that's the one we need to
-use for user-space).
+On Wed,  2 Dec 2020 13:28:10 -0800 you wrote:
+> From: Tom Rix <trix@redhat.com>
+> 
+> The macro use will already have a semicolon.
+> Clean up escaped newlines
+> 
+> Signed-off-by: Tom Rix <trix@redhat.com>
+> 
+> [...]
 
-> Where prog_fd is a specific prog. That narrow scope isn't really necessary.
-> So may be return ENOTSUPP here for now? With a hint that this might
-> work in the future?
+Here is the summary with links:
+  - [v2] bpf: remove trailing semicolon in macro definition
+    https://git.kernel.org/bpf/bpf-next/c/2fa3515cc0d3
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
