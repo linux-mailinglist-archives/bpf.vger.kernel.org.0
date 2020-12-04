@@ -2,330 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBD7A2CF454
-	for <lists+bpf@lfdr.de>; Fri,  4 Dec 2020 19:51:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3DA82CF474
+	for <lists+bpf@lfdr.de>; Fri,  4 Dec 2020 19:58:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729906AbgLDSue (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Dec 2020 13:50:34 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:46896 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730277AbgLDSue (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Dec 2020 13:50:34 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B4IdRT6080674;
-        Fri, 4 Dec 2020 18:49:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=LodmyqwDjSlhRwAL2+FQ9VMhHLbsi9nNb2DqAz9Jwck=;
- b=QsnK8LlyaOdGMqWdxHVY4obElKLM6cakDDAQplT+ZM5ZBgnjoha/JODZwqEYsULNp1Td
- diMR/jGPXf71djv6WdV1P81KLaVU/yui8DFy9C7ZToU2IH+6OjvtrsPCY1rpQJFuZXDI
- guZGVy8GbhwufwcJL7wmw78EgiFCaFlPXqCTg+y5Dx34PcZjmuFqMehi6oT3/Ra9y8EG
- T7qP7JmgS7B8O5ajWqaReMNA1zfWcwJ9Hv3wknFqySaekYa4CAx2pEAHyBpqpLQRY6PG
- Z6jiDoDSFLu6d4bPsWHHUfNNHaBNQ3nSwcI4wBN1Hj6ol1rjy+6YFbI89FBN+6uA6dAn Gw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 353c2bcpvw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 04 Dec 2020 18:49:06 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B4IaGEk044262;
-        Fri, 4 Dec 2020 18:49:06 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 3540f3pnxf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 04 Dec 2020 18:49:06 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B4In5vA025494;
-        Fri, 4 Dec 2020 18:49:05 GMT
-Received: from localhost.uk.oracle.com (/10.175.205.186)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 04 Dec 2020 10:49:04 -0800
-From:   Alan Maguire <alan.maguire@oracle.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
-Cc:     kafai@fb.com, yhs@fb.com, songliubraving@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        rostedt@goodmis.org, mingo@redhat.com, haoluo@google.com,
-        jolsa@kernel.org, quentin@isovalent.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, shuah@kernel.org, lmb@cloudflare.com,
-        linux-kselftest@vger.kernel.org,
-        Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH v2 bpf-next 3/3] selftests/bpf: verify module-specific types can be shown via bpf_snprintf_btf
-Date:   Fri,  4 Dec 2020 18:48:36 +0000
-Message-Id: <1607107716-14135-4-git-send-email-alan.maguire@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1607107716-14135-1-git-send-email-alan.maguire@oracle.com>
-References: <1607107716-14135-1-git-send-email-alan.maguire@oracle.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9825 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 phishscore=0
- suspectscore=0 bulkscore=0 spamscore=0 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012040106
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9825 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 lowpriorityscore=0
- clxscore=1015 bulkscore=0 mlxlogscore=999 phishscore=0 malwarescore=0
- spamscore=0 adultscore=0 mlxscore=0 priorityscore=1501 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012040106
+        id S1726179AbgLDS5L (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Dec 2020 13:57:11 -0500
+Received: from www62.your-server.de ([213.133.104.62]:55538 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726021AbgLDS5L (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Dec 2020 13:57:11 -0500
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1klGFo-00006u-Vn; Fri, 04 Dec 2020 19:56:29 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1klGFo-00074p-Pt; Fri, 04 Dec 2020 19:56:28 +0100
+Subject: Re: [PATCH bpf-next v2 1/3] bpf: Expose bpf_get_socket_cookie to
+ tracing programs
+To:     Florent Revest <revest@chromium.org>, bpf@vger.kernel.org
+Cc:     ast@kernel.org, andrii@kernel.org, kpsingh@chromium.org,
+        revest@google.com, linux-kernel@vger.kernel.org
+References: <20201203213330.1657666-1-revest@google.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <bdd7153b-4bf9-12dd-5950-df0ebe91659d@iogearbox.net>
+Date:   Fri, 4 Dec 2020 19:56:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <20201203213330.1657666-1-revest@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26007/Thu Dec  3 14:13:31 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Verify that specifying a module object id in "struct btf_ptr *" along
-with a type id of a module-specific type will succeed.
+On 12/3/20 10:33 PM, Florent Revest wrote:
+> This creates a new helper proto because the existing
+> bpf_get_socket_cookie_sock_proto has a ARG_PTR_TO_CTX argument and only
+> works for BPF programs where the context is a sock.
+> 
+> This helper could also be useful to other BPF program types such as LSM.
+> 
+> Signed-off-by: Florent Revest <revest@google.com>
+> ---
+>   include/uapi/linux/bpf.h       | 7 +++++++
+>   kernel/trace/bpf_trace.c       | 4 ++++
+>   net/core/filter.c              | 7 +++++++
+>   tools/include/uapi/linux/bpf.h | 7 +++++++
+>   4 files changed, 25 insertions(+)
+> 
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index c3458ec1f30a..3e0e33c43998 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -1662,6 +1662,13 @@ union bpf_attr {
+>    * 	Return
+>    * 		A 8-byte long non-decreasing number.
+>    *
+> + * u64 bpf_get_socket_cookie(void *sk)
+> + * 	Description
+> + * 		Equivalent to **bpf_get_socket_cookie**\ () helper that accepts
+> + * 		*sk*, but gets socket from a BTF **struct sock**.
+> + * 	Return
+> + * 		A 8-byte long non-decreasing number.
 
-veth_stats_rx() is chosen because its function signature consists
-of a module-specific type "struct veth_stats" and a kernel-specific
-one "struct net_device".
+I would not mention this here since it's not fully correct and we should avoid users
+taking non-decreasing granted in their progs. The only assumption you can make is
+that it can be considered a unique number. See also [0] with reverse counter..
 
-Currently the tests take the messy approach of determining object
-and type ids for the relevant module/function; __builtin_btf_type_id()
-supports object ids by returning a 64-bit value, but need to find a good
-way to determine if that support is present.
+   [0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=92acdc58ab11af66fcaef485433fde61b5e32fac
 
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
----
- .../selftests/bpf/prog_tests/snprintf_btf_mod.c    | 124 +++++++++++++++++++++
- tools/testing/selftests/bpf/progs/bpf_iter.h       |   2 +-
- tools/testing/selftests/bpf/progs/btf_ptr.h        |   2 +-
- tools/testing/selftests/bpf/progs/veth_stats_rx.c  |  72 ++++++++++++
- 4 files changed, 198 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/snprintf_btf_mod.c
- create mode 100644 tools/testing/selftests/bpf/progs/veth_stats_rx.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/snprintf_btf_mod.c b/tools/testing/selftests/bpf/prog_tests/snprintf_btf_mod.c
-new file mode 100644
-index 0000000..89805d7
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/snprintf_btf_mod.c
-@@ -0,0 +1,124 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include <linux/btf.h>
-+#include <bpf/btf.h>
-+#include "veth_stats_rx.skel.h"
-+
-+#define VETH_NAME	"bpfveth0"
-+
-+/* Demonstrate that bpf_snprintf_btf succeeds for both module-specific
-+ * and kernel-defined data structures; veth_stats_rx() is used as
-+ * it has both module-specific and kernel-defined data as arguments.
-+ * This test assumes that veth is built as a module and will skip if not.
-+ */
-+void test_snprintf_btf_mod(void)
-+{
-+	struct btf *vmlinux_btf = NULL, *veth_btf = NULL;
-+	struct veth_stats_rx *skel = NULL;
-+	struct veth_stats_rx__bss *bss;
-+	int err, duration = 0;
-+	__u32 id;
-+
-+	err = system("ip link add name " VETH_NAME " type veth");
-+	if (CHECK(err, "system", "ip link add veth failed: %d\n", err))
-+		return;
-+
-+	vmlinux_btf = btf__parse_raw("/sys/kernel/btf/vmlinux");
-+	err = libbpf_get_error(vmlinux_btf);
-+	if (CHECK(err, "parse vmlinux BTF", "failed parsing vmlinux BTF: %d\n",
-+		  err))
-+		goto cleanup;
-+	veth_btf = btf__parse_raw_split("/sys/kernel/btf/veth", vmlinux_btf);
-+	err = libbpf_get_error(veth_btf);
-+	if (err == -ENOENT) {
-+		printf("%s:SKIP:no BTF info for veth\n", __func__);
-+		test__skip();
-+		goto cleanup;
-+	}
-+
-+	if (CHECK(err, "parse veth BTF", "failed parsing veth BTF: %d\n", err))
-+		goto cleanup;
-+
-+	skel = veth_stats_rx__open();
-+	if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
-+		goto cleanup;
-+
-+	err = veth_stats_rx__load(skel);
-+	if (CHECK(err, "skel_load", "failed to load skeleton: %d\n", err))
-+		goto cleanup;
-+
-+	bss = skel->bss;
-+
-+	/* This could all be replaced by __builtin_btf_type_id(); but need
-+	 * a way to determine if it supports object and type id.  In the
-+	 * meantime, look up type id for veth_stats and object id for veth.
-+	 */
-+	bss->veth_stats_btf_id = btf__find_by_name(veth_btf, "veth_stats");
-+
-+	if (CHECK(bss->veth_stats_btf_id <= 0, "find 'struct veth_stats'",
-+		  "could not find 'struct veth_stats' in veth BTF: %d",
-+		  bss->veth_stats_btf_id))
-+		goto cleanup;
-+
-+	bss->veth_obj_id = 0;
-+
-+	for (id = 1; bpf_btf_get_next_id(id, &id) == 0; ) {
-+		struct bpf_btf_info info;
-+		__u32 len = sizeof(info);
-+		char name[64];
-+		int fd;
-+
-+		fd = bpf_btf_get_fd_by_id(id);
-+		if (fd < 0)
-+			continue;
-+
-+		memset(&info, 0, sizeof(info));
-+		info.name_len = sizeof(name);
-+		info.name = (__u64)name;
-+		if (bpf_obj_get_info_by_fd(fd, &info, &len) ||
-+		    strcmp((char *)info.name, "veth") != 0)
-+			continue;
-+		bss->veth_obj_id = info.id;
-+	}
-+
-+	if (CHECK(bss->veth_obj_id == 0, "get obj id for veth module",
-+		  "could not get veth module id"))
-+		goto cleanup;
-+
-+	err = veth_stats_rx__attach(skel);
-+	if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
-+		goto cleanup;
-+
-+	/* generate stats event, then delete; this ensures the program
-+	 * triggers prior to reading status.
-+	 */
-+	err = system("ethtool -S " VETH_NAME " > /dev/null");
-+	if (CHECK(err, "system", "ethtool -S failed: %d\n", err))
-+		goto cleanup;
-+
-+	system("ip link delete " VETH_NAME);
-+
-+	/* Make sure veth_stats_rx program was triggered and it set
-+	 * expected return values from bpf_trace_printk()s and all
-+	 * tests ran.
-+	 */
-+	if (CHECK(bss->ret <= 0,
-+		  "bpf_snprintf_btf: got return value",
-+		  "ret <= 0 %ld test %d\n", bss->ret, bss->ran_subtests))
-+		goto cleanup;
-+
-+	if (CHECK(bss->ran_subtests == 0, "check if subtests ran",
-+		  "no subtests ran, did BPF program run?"))
-+		goto cleanup;
-+
-+	if (CHECK(bss->num_subtests != bss->ran_subtests,
-+		  "check all subtests ran",
-+		  "only ran %d of %d tests\n", bss->num_subtests,
-+		  bss->ran_subtests))
-+		goto cleanup;
-+
-+cleanup:
-+	system("ip link delete " VETH_NAME ">/dev/null 2>&1");
-+	if (skel)
-+		veth_stats_rx__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter.h b/tools/testing/selftests/bpf/progs/bpf_iter.h
-index 6a12554..d6d9838 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter.h
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter.h
-@@ -119,7 +119,7 @@ struct bpf_iter__sockmap {
- struct btf_ptr {
- 	void *ptr;
- 	__u32 type_id;
--	__u32 flags;
-+	__u32 obj_id;
- };
- 
- enum {
-diff --git a/tools/testing/selftests/bpf/progs/btf_ptr.h b/tools/testing/selftests/bpf/progs/btf_ptr.h
-index c3c9797..4f84034 100644
---- a/tools/testing/selftests/bpf/progs/btf_ptr.h
-+++ b/tools/testing/selftests/bpf/progs/btf_ptr.h
-@@ -16,7 +16,7 @@
- struct btf_ptr {
- 	void *ptr;
- 	__u32 type_id;
--	__u32 flags;
-+	__u32 obj_id;
- };
- 
- enum {
-diff --git a/tools/testing/selftests/bpf/progs/veth_stats_rx.c b/tools/testing/selftests/bpf/progs/veth_stats_rx.c
-new file mode 100644
-index 0000000..f04fb55
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/veth_stats_rx.c
-@@ -0,0 +1,72 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020, Oracle and/or its affiliates. */
-+
-+#include "btf_ptr.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_core_read.h>
-+
-+#include <errno.h>
-+
-+long ret = 0;
-+int num_subtests = 0;
-+int ran_subtests = 0;
-+s32 veth_stats_btf_id = 0;
-+s32 veth_obj_id = 0;
-+
-+#define STRSIZE			2048
-+
-+#ifndef ARRAY_SIZE
-+#define ARRAY_SIZE(x)	(sizeof(x) / sizeof((x)[0]))
-+#endif
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, char[STRSIZE]);
-+} strdata SEC(".maps");
-+
-+SEC("kprobe/veth_stats_rx")
-+int veth_stats_rx(struct pt_regs *ctx)
-+{
-+	static __u64 flags[] = { 0, BTF_F_COMPACT, BTF_F_ZERO, BTF_F_PTR_RAW,
-+				 BTF_F_NONAME, BTF_F_COMPACT | BTF_F_ZERO |
-+				 BTF_F_PTR_RAW | BTF_F_NONAME };
-+	static struct btf_ptr p = { };
-+	__u32 btf_ids[] = { 0, 0 };
-+	__u32 obj_ids[] = { 0, 0 };
-+	void *ptrs[] = { 0, 0 };
-+	__u32 key = 0;
-+	int i, j;
-+	char *str;
-+
-+	btf_ids[0] = veth_stats_btf_id;
-+	obj_ids[0] = veth_obj_id;
-+	ptrs[0] = (void *)PT_REGS_PARM1_CORE(ctx);
-+
-+	btf_ids[1] = bpf_core_type_id_kernel(struct net_device);
-+	ptrs[1] = (void *)PT_REGS_PARM2_CORE(ctx);
-+
-+	str = bpf_map_lookup_elem(&strdata, &key);
-+	if (!str)
-+		return 0;
-+
-+	for (i = 0; i < ARRAY_SIZE(btf_ids); i++) {
-+		p.type_id = btf_ids[i];
-+		p.obj_id = obj_ids[i];
-+		p.ptr = ptrs[i];
-+		for (j = 0; j < ARRAY_SIZE(flags); j++) {
-+			++num_subtests;
-+			ret = bpf_snprintf_btf(str, STRSIZE, &p, sizeof(p), 0);
-+			if (ret < 0)
-+				bpf_printk("returned %d when writing id %d",
-+					   ret, p.type_id);
-+			++ran_subtests;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-1.8.3.1
-
+> + *
+>    * u32 bpf_get_socket_uid(struct sk_buff *skb)
+>    * 	Return
+>    * 		The owner UID of the socket associated to *skb*. If the socket
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index d255bc9b2bfa..14ad96579813 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -1725,6 +1725,8 @@ raw_tp_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>   	}
+>   }
+>   
+> +extern const struct bpf_func_proto bpf_get_socket_cookie_sock_tracing_proto;
+> +
+>   const struct bpf_func_proto *
+>   tracing_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>   {
+> @@ -1748,6 +1750,8 @@ tracing_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>   		return &bpf_sk_storage_get_tracing_proto;
+>   	case BPF_FUNC_sk_storage_delete:
+>   		return &bpf_sk_storage_delete_tracing_proto;
+> +	case BPF_FUNC_get_socket_cookie:
+> +		return &bpf_get_socket_cookie_sock_tracing_proto;
+>   #endif
+>   	case BPF_FUNC_seq_printf:
+>   		return prog->expected_attach_type == BPF_TRACE_ITER ?
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 2ca5eecebacf..177c4e5e529d 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -4631,6 +4631,13 @@ static const struct bpf_func_proto bpf_get_socket_cookie_sock_proto = {
+>   	.arg1_type	= ARG_PTR_TO_CTX,
+>   };
+>   
+> +const struct bpf_func_proto bpf_get_socket_cookie_sock_tracing_proto = {
+> +	.func		= bpf_get_socket_cookie_sock,
+> +	.gpl_only	= false,
+> +	.ret_type	= RET_INTEGER,
+> +	.arg1_type      = ARG_PTR_TO_BTF_ID_SOCK_COMMON,
+> +};
+> +
