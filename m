@@ -2,78 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A54BE2CF6B2
-	for <lists+bpf@lfdr.de>; Fri,  4 Dec 2020 23:21:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFF9C2CF762
+	for <lists+bpf@lfdr.de>; Sat,  5 Dec 2020 00:24:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726028AbgLDWUt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Dec 2020 17:20:49 -0500
-Received: from www62.your-server.de ([213.133.104.62]:36586 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgLDWUt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Dec 2020 17:20:49 -0500
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1klJQi-0000Ap-GR; Fri, 04 Dec 2020 23:19:56 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1klJQi-000WQ1-4q; Fri, 04 Dec 2020 23:19:56 +0100
-Subject: Re: [PATCH v2 bpf 1/5] net: ethtool: add xdp properties flag set
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     alardam@gmail.com, magnus.karlsson@intel.com,
-        bjorn.topel@intel.com, andrii.nakryiko@gmail.com, kuba@kernel.org,
-        ast@kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
-        john.fastabend@gmail.com, hawk@kernel.org,
-        jonathan.lemon@gmail.com, bpf@vger.kernel.org,
-        jeffrey.t.kirsher@intel.com, maciejromanfijalkowski@gmail.com,
-        intel-wired-lan@lists.osuosl.org,
-        Marek Majtyka <marekx.majtyka@intel.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-References: <20201204102901.109709-1-marekx.majtyka@intel.com>
- <20201204102901.109709-2-marekx.majtyka@intel.com> <878sad933c.fsf@toke.dk>
- <20201204124618.GA23696@ranger.igk.intel.com>
- <048bd986-2e05-ee5b-2c03-cd8c473f6636@iogearbox.net> <87pn3p7aiv.fsf@toke.dk>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <eb305a4f-c189-6b32-f718-6e709ef0fa55@iogearbox.net>
-Date:   Fri, 4 Dec 2020 23:19:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726479AbgLDXU7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 4 Dec 2020 18:20:59 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:5112 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727285AbgLDXU6 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 4 Dec 2020 18:20:58 -0500
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B4NJkE3005754
+        for <bpf@vger.kernel.org>; Fri, 4 Dec 2020 15:20:17 -0800
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 357quetp02-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 04 Dec 2020 15:20:16 -0800
+Received: from intmgw002.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 4 Dec 2020 15:20:10 -0800
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 8CB582ECAB80; Fri,  4 Dec 2020 15:20:03 -0800 (PST)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH bpf] tools/bpftool: fix PID fetching with a lot of results
+Date:   Fri, 4 Dec 2020 15:20:01 -0800
+Message-ID: <20201204232002.3589803-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-In-Reply-To: <87pn3p7aiv.fsf@toke.dk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26007/Thu Dec  3 14:13:31 2020)
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-12-04_13:2020-12-04,2020-12-04 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 spamscore=0
+ suspectscore=0 impostorscore=0 clxscore=1015 lowpriorityscore=0
+ priorityscore=1501 phishscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012040133
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/4/20 6:20 PM, Toke Høiland-Jørgensen wrote:
-> Daniel Borkmann <daniel@iogearbox.net> writes:
-[...]
->> We tried to standardize on a minimum guaranteed amount, but unfortunately not
->> everyone seems to implement it, but I think it would be very useful to query
->> this from application side, for example, consider that an app inserts a BPF
->> prog at XDP doing custom encap shortly before XDP_TX so it would be useful to
->> know which of the different encaps it implements are realistically possible on
->> the underlying XDP supported dev.
-> 
-> How many distinct values are there in reality? Enough to express this in
-> a few flags (XDP_HEADROOM_128, XDP_HEADROOM_192, etc?), or does it need
-> an additional field to get the exact value? If we implement the latter
-> we also run the risk of people actually implementing all sorts of weird
-> values, whereas if we constrain it to a few distinct values it's easier
-> to push back against adding new values (as it'll be obvious from the
-> addition of new flags).
+In case of having so many PID results that they don't fit into a singe page
+(4096) bytes, bpftool will erroneously conclude that it got corrupted data due
+to 4096 not being a multiple of struct pid_iter_entry, so the last entry will
+be partially truncated. Fix this by sizing the buffer to fit exactly N entries
+with no truncation in the middle of record.
 
-It's not everywhere straight forward to determine unfortunately, see also [0,1]
-as some data points where Jesper looked into in the past, so in some cases it
-might differ depending on the build/runtime config..
+Fixes: d53dee3fe013 ("tools/bpftool: Show info for processes holding BPF map/prog/link/btf FDs")
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ tools/bpf/bpftool/pids.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-   [0] https://lore.kernel.org/bpf/158945314698.97035.5286827951225578467.stgit@firesoul/
-   [1] https://lore.kernel.org/bpf/158945346494.97035.12809400414566061815.stgit@firesoul/
+diff --git a/tools/bpf/bpftool/pids.c b/tools/bpf/bpftool/pids.c
+index df7d8ec76036..477e55d59c34 100644
+--- a/tools/bpf/bpftool/pids.c
++++ b/tools/bpf/bpftool/pids.c
+@@ -89,9 +89,9 @@ libbpf_print_none(__maybe_unused enum libbpf_print_level level,
+ 
+ int build_obj_refs_table(struct obj_refs_table *table, enum bpf_obj_type type)
+ {
+-	char buf[4096];
+-	struct pid_iter_bpf *skel;
+ 	struct pid_iter_entry *e;
++	char buf[4096 / sizeof(*e) * sizeof(*e)];
++	struct pid_iter_bpf *skel;
+ 	int err, ret, fd = -1, i;
+ 	libbpf_print_fn_t default_print;
+ 
+-- 
+2.24.1
+
