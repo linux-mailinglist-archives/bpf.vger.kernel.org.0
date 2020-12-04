@@ -2,51 +2,51 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E35042CEC38
-	for <lists+bpf@lfdr.de>; Fri,  4 Dec 2020 11:30:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8BD22CEC3A
+	for <lists+bpf@lfdr.de>; Fri,  4 Dec 2020 11:30:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729736AbgLDKar (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Dec 2020 05:30:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56964 "EHLO
+        id S1726014AbgLDKas (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Dec 2020 05:30:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726014AbgLDKaq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Dec 2020 05:30:46 -0500
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18023C061A4F;
-        Fri,  4 Dec 2020 02:30:01 -0800 (PST)
-Received: by mail-lj1-x241.google.com with SMTP id r18so6044576ljc.2;
-        Fri, 04 Dec 2020 02:30:01 -0800 (PST)
+        with ESMTP id S1729777AbgLDKar (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Dec 2020 05:30:47 -0500
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAF0DC061A53;
+        Fri,  4 Dec 2020 02:30:06 -0800 (PST)
+Received: by mail-lf1-x141.google.com with SMTP id u9so1440167lfm.1;
+        Fri, 04 Dec 2020 02:30:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ntPyan2LMBW4YRlwZpm6QDwFqX2hAHbAcyK6DVkpbtY=;
-        b=VImxvOU5OT46FYPftU8rCcEoZ7SnblVXIkJJEu1KiCOo+BSHuF43pD94Ym23tDk7B6
-         6EvZ770shWSdVlfyEH40jcaP9pQSThrGMATnknJ6o7bkThs05uYyYMRN/6ssGfXHVGlO
-         KOqawCtcalwVw5AKImOtBdFgNWMvqpaZvBgF6gygfl/krQ/JQPt8GEw7e1JrE7Ma/Evi
-         VjvKGazy1JAZ7O295nxLdiPkghLLPnSnJ6W8NZApofndjDHJ1wMOVyJSWEahg7SOShrf
-         A50Jg3rzK/ZL7xxCgUWJv7CQ3OnIXLa25iBru+dGPgfac5KcJPIEqcTH0RJqMN0R1gTD
-         OllA==
+        bh=okK9R+EpQDmMtHiCvnMrxiTd1O0LGgdUU5QYwf1cWDY=;
+        b=LK2No5YP826qKY0vcMrXrj5zqKZxlfTuNgxC7wwStUuQ7F97Npllq+4iwQ7BORmVJF
+         nY1TM8WGi74JPaf65jEtFd+lSjxfQAfuFjDFmdLnKLFdcZEbXCCsAuR6qqni7jFhTUUR
+         4G70rrxDlkP74lQ6zQ7Slma9DmOuCeXIGCM048Fo4CyNxfPh3/83PDO5bgFfZYv9uxZT
+         hwBnSw2U3Bj/Rbjr/oISau22euJYVTt7w+b0uViDyA+mq81xYqAaufWeALvv7D1EadNF
+         FP8TSm7/4lrHB2DT6SIoVQqWHTEXp075hq27GuaXmfR9nFKpa7a6HJ/6kZvnj6ibz7xF
+         CmYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ntPyan2LMBW4YRlwZpm6QDwFqX2hAHbAcyK6DVkpbtY=;
-        b=Jvopl8lYCh5AFw2r5ppBPnjBXJSmmBwyhtJxiwYj4tb63BeDQt1OJCdkid+3CHNWVQ
-         FnNUrXakaQGnUe+STl8x3n2wQxMHIA2RXHjpeyPCQb5EsdM6xcpfsg0m7sMCYkhe8bUo
-         s/oMZMNJCT6A8s4dfrPSr/GM2e6hPYgZ3Wxe7Z2rlCUcfTS8MfzZqxZbn1+c74NT8rP6
-         mZnBQTARvcgG+pfr0FpCZ6b6y4tyzuGTo/184BWLwzNNbR3mdmqaM/xiyBf2csFFgbd0
-         1YoXsNVRDmy5diwGerqLZF3c8LAmJfxsRv26QvNHHa0b867Fy0T8sUjvIm7gx2w3EcSl
-         x3SQ==
-X-Gm-Message-State: AOAM530zh75D3MNj7TOlcLwj1dpmiDq0U6xntPvbkRifXXRHrsapnjhC
-        8VspzVjVm1yalbZJAp0R667F7Rh6O1o5lA==
-X-Google-Smtp-Source: ABdhPJwn1SV8gLhMfD+I0aFoQMed0TIb8GcL96twWjvp59TCO2/hyQvdWh2lcNc0uydjtZ2GPtyzKA==
-X-Received: by 2002:a2e:b0e6:: with SMTP id h6mr3080466ljl.196.1607077799596;
-        Fri, 04 Dec 2020 02:29:59 -0800 (PST)
+        bh=okK9R+EpQDmMtHiCvnMrxiTd1O0LGgdUU5QYwf1cWDY=;
+        b=LX0cu+2ksJ55a8j+yfgUvRflpe8K5DhhxYv7CCMZ4vGSWnuW5VqAIpu+izLO4nYbUx
+         Vyr7X5ZUgp7svLs5J+D1MVMlA4ybmP+z0sOC6KT26G0hbtsOPLPMQ0REYFvCUea/Iga4
+         /SAvEY6oXrtuRiZ4vZhryWETxVR0jsrTQ6cLPUCkDdPpEFPhwvb7RIbm4ThSmYJAnAmk
+         sohenzJ8DFi2DRtYy3BtQnG9iQ0n5hski3dZIn7DhTqPorWsQe7cj2n864MuAQs9Jq6S
+         2RijS7PwocvCsK6embq2jRUsGTwHzjM98L/9QZ5duPQJnnMU8P6JzirXyKcKPmPdmM63
+         CNIw==
+X-Gm-Message-State: AOAM532yQ75gYK6RXyRYyoZ4aIIemzN5XdWIvEWSMXLYJf/cr2rllELf
+        GuO94wHuCPUGfT+sig7H+RQ=
+X-Google-Smtp-Source: ABdhPJxkk+iECwG/S50v63B/0Tdh+L98gPLu8FcppDHXL5mUtgLV4biMQdvh0rY3kZCDcKhuPWgUHQ==
+X-Received: by 2002:a05:6512:48e:: with SMTP id v14mr3190398lfq.255.1607077805141;
+        Fri, 04 Dec 2020 02:30:05 -0800 (PST)
 Received: from localhost.localdomain (87-205-71-93.adsl.inetia.pl. [87.205.71.93])
-        by smtp.gmail.com with ESMTPSA id d9sm62738lfj.228.2020.12.04.02.29.57
+        by smtp.gmail.com with ESMTPSA id d9sm62738lfj.228.2020.12.04.02.30.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 02:29:58 -0800 (PST)
+        Fri, 04 Dec 2020 02:30:04 -0800 (PST)
 From:   alardam@gmail.com
 X-Google-Original-From: marekx.majtyka@intel.com
 To:     magnus.karlsson@intel.com, bjorn.topel@intel.com,
@@ -57,9 +57,9 @@ Cc:     maciej.fijalkowski@intel.com, jonathan.lemon@gmail.com,
         bpf@vger.kernel.org, jeffrey.t.kirsher@intel.com,
         maciejromanfijalkowski@gmail.com, intel-wired-lan@lists.osuosl.org,
         Marek Majtyka <marekx.majtyka@intel.com>
-Subject: [PATCH v2 bpf 1/5] net: ethtool: add xdp properties flag set
-Date:   Fri,  4 Dec 2020 11:28:57 +0100
-Message-Id: <20201204102901.109709-2-marekx.majtyka@intel.com>
+Subject: [PATCH v2 bpf 4/5] xsk: add check for full support of XDP in bind
+Date:   Fri,  4 Dec 2020 11:29:00 +0100
+Message-Id: <20201204102901.109709-5-marekx.majtyka@intel.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20201204102901.109709-1-marekx.majtyka@intel.com>
 References: <20201204102901.109709-1-marekx.majtyka@intel.com>
@@ -71,437 +71,151 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Marek Majtyka <marekx.majtyka@intel.com>
 
-Implement support for checking what kind of xdp functionality a netdev
-supports. Previously, there was no way to do this other than to try
-to create an AF_XDP socket on the interface or load an XDP program and see
-if it worked. This commit changes this by adding a new variable which
-describes all xdp supported functions on pretty detailed level:
- - aborted
- - drop
- - pass
- - tx
- - redirect
- - zero copy
- - hardware offload.
+Add check for full support of XDP in AF_XDP socket bind.
 
-Zerocopy mode requires that redirect xdp operation is implemented
-in a driver and the driver supports also zero copy mode.
-Full mode requires that all xdp operation are implemented in the driver.
-Basic mode is just full mode without redirect operation.
+To be able to use an AF_XDP socket with zero-copy, there needs to be
+support for both XDP_REDIRECT in the driver (XDP native mode) and the
+driver needs to support zero-copy. The problem is that there are
+drivers out there that only support XDP partially, so it is possible
+to successfully load the XDP program in native mode, but it will still
+not be able to support zero-copy as it does not have XDP_REDIRECT
+support. We can now alleviate this problem by using the new XDP netdev
+capability that signifies if full XDP support is indeed present. This
+check can be triggered by a new bind flag called
+XDP_CHECK_NATIVE_MODE.
 
-Initially, these new flags are disabled for all drivers by default.
+To simplify usage, this check is triggered automatically from inside
+libbpf library via turning on the new XDP_CHECK_NATIVE_MODE flag if and
+only if the driver mode is selected for the socket. As a result, the
+xsk_bind function decides if the native mode for a given interface makes
+sense or not using xdp netdev feature flags. Eventually the xsk socket is
+bound or an error is returned. Apart from this change and to catch all
+invalid inputs in a single place, an additional check is set to forbid
+sbk mode and zero copy settings at the same time as that combination makes
+no sense.
 
 Signed-off-by: Marek Majtyka <marekx.majtyka@intel.com>
 ---
- .../networking/netdev-xdp-properties.rst      | 42 ++++++++
- include/linux/netdevice.h                     |  2 +
- include/linux/xdp_properties.h                | 53 +++++++++++
- include/net/xdp.h                             | 95 +++++++++++++++++++
- include/net/xdp_sock_drv.h                    | 10 ++
- include/uapi/linux/ethtool.h                  |  1 +
- include/uapi/linux/xdp_properties.h           | 32 +++++++
- net/ethtool/common.c                          | 11 +++
- net/ethtool/common.h                          |  4 +
- net/ethtool/strset.c                          |  5 +
- 10 files changed, 255 insertions(+)
- create mode 100644 Documentation/networking/netdev-xdp-properties.rst
- create mode 100644 include/linux/xdp_properties.h
- create mode 100644 include/uapi/linux/xdp_properties.h
+ include/uapi/linux/if_xdp.h       |  1 +
+ net/xdp/xsk.c                     |  4 ++--
+ net/xdp/xsk_buff_pool.c           | 17 ++++++++++++++++-
+ tools/include/uapi/linux/if_xdp.h |  1 +
+ tools/lib/bpf/xsk.c               |  3 +++
+ 5 files changed, 23 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/networking/netdev-xdp-properties.rst b/Documentation/networking/netdev-xdp-properties.rst
-new file mode 100644
-index 000000000000..4a434a1c512b
---- /dev/null
-+++ b/Documentation/networking/netdev-xdp-properties.rst
-@@ -0,0 +1,42 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=====================
-+Netdev XDP properties
-+=====================
-+
-+ * XDP PROPERTIES FLAGS
-+
-+Following netdev xdp properties flags can be retrieve over netlink ethtool
-+interface the same way as netdev feature flags. These properties flags are
-+read only and cannot be change in the runtime.
-+
-+
-+*  XDP_ABORTED
-+
-+This property informs if netdev supports xdp aborted action.
-+
-+*  XDP_DROP
-+
-+This property informs if netdev supports xdp drop action.
-+
-+*  XDP_PASS
-+
-+This property informs if netdev supports xdp pass action.
-+
-+*  XDP_TX
-+
-+This property informs if netdev supports xdp tx action.
-+
-+*  XDP_REDIRECT
-+
-+This property informs if netdev supports xdp redirect action.
-+It assumes the all beforehand mentioned flags are enabled.
-+
-+*  XDP_ZEROCOPY
-+
-+This property informs if netdev driver supports xdp zero copy.
-+It assumes the all beforehand mentioned flags are enabled.
-+
-+*  XDP_HW_OFFLOAD
-+
-+This property informs if netdev driver supports xdp hw oflloading.
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index 52d1cc2bd8a7..2544c7f0e1b7 100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -43,6 +43,7 @@
- #include <net/xdp.h>
+diff --git a/include/uapi/linux/if_xdp.h b/include/uapi/linux/if_xdp.h
+index a78a8096f4ce..8f47754dacce 100644
+--- a/include/uapi/linux/if_xdp.h
++++ b/include/uapi/linux/if_xdp.h
+@@ -25,6 +25,7 @@
+  * application.
+  */
+ #define XDP_USE_NEED_WAKEUP (1 << 3)
++#define XDP_CHECK_NATIVE_MODE (1 << 4)
  
- #include <linux/netdev_features.h>
-+#include <linux/xdp_properties.h>
- #include <linux/neighbour.h>
- #include <uapi/linux/netdevice.h>
- #include <uapi/linux/if_bonding.h>
-@@ -2171,6 +2172,7 @@ struct net_device {
+ /* Flags for xsk_umem_config flags */
+ #define XDP_UMEM_UNALIGNED_CHUNK_FLAG (1 << 0)
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 7588e599a048..3b45754274bb 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -764,7 +764,7 @@ static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
  
- 	/* protected by rtnl_lock */
- 	struct bpf_xdp_entity	xdp_state[__MAX_XDP_MODE];
-+	xdp_properties_t	xdp_properties;
- };
- #define to_net_dev(d) container_of(d, struct net_device, dev)
+ 	flags = sxdp->sxdp_flags;
+ 	if (flags & ~(XDP_SHARED_UMEM | XDP_COPY | XDP_ZEROCOPY |
+-		      XDP_USE_NEED_WAKEUP))
++		      XDP_USE_NEED_WAKEUP | XDP_CHECK_NATIVE_MODE))
+ 		return -EINVAL;
  
-diff --git a/include/linux/xdp_properties.h b/include/linux/xdp_properties.h
-new file mode 100644
-index 000000000000..c72c9bcc50de
---- /dev/null
-+++ b/include/linux/xdp_properties.h
-@@ -0,0 +1,53 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/*
-+ * Network device xdp properties.
-+ */
-+#ifndef _LINUX_XDP_PROPERTIES_H
-+#define _LINUX_XDP_PROPERTIES_H
-+
-+#include <linux/types.h>
-+#include <linux/bitops.h>
-+#include <asm/byteorder.h>
-+
-+typedef u64 xdp_properties_t;
-+
-+enum {
-+	XDP_F_ABORTED_BIT,
-+	XDP_F_DROP_BIT,
-+	XDP_F_PASS_BIT,
-+	XDP_F_TX_BIT,
-+	XDP_F_REDIRECT_BIT,
-+	XDP_F_ZEROCOPY_BIT,
-+	XDP_F_HW_OFFLOAD_BIT,
-+
-+	/*
-+	 * Add your fresh new property above and remember to update
-+	 * xdp_properties_strings [] in net/core/ethtool.c and maybe
-+	 * some xdp_properties mask #defines below. Please also describe it
-+	 * in Documentation/networking/xdp_properties.rst.
-+	 */
-+
-+	/**/XDP_PROPERTIES_COUNT
-+};
-+
-+#define __XDP_F_BIT(bit)	((xdp_properties_t)1 << (bit))
-+#define __XDP_F(name)		__XDP_F_BIT(XDP_F_##name##_BIT)
-+
-+#define XDP_F_ABORTED		__XDP_F(ABORTED)
-+#define XDP_F_DROP		__XDP_F(DROP)
-+#define XDP_F_PASS		__XDP_F(PASS)
-+#define XDP_F_TX		__XDP_F(TX)
-+#define XDP_F_REDIRECT		__XDP_F(REDIRECT)
-+#define XDP_F_ZEROCOPY		__XDP_F(ZEROCOPY)
-+#define XDP_F_HW_OFFLOAD	__XDP_F(HW_OFFLOAD)
-+
-+#define XDP_F_BASIC		(XDP_F_ABORTED |	\
-+				 XDP_F_DROP |		\
-+				 XDP_F_PASS |		\
-+				 XDP_F_TX)
-+
-+#define XDP_F_FULL		(XDP_F_BASIC | XDP_F_REDIRECT)
-+
-+#define XDP_F_FULL_ZC		(XDP_F_FULL | XDP_F_ZEROCOPY)
-+
-+#endif /* _LINUX_XDP_PROPERTIES_H */
-diff --git a/include/net/xdp.h b/include/net/xdp.h
-index 700ad5db7f5d..a9fabc1282cf 100644
---- a/include/net/xdp.h
-+++ b/include/net/xdp.h
-@@ -7,6 +7,7 @@
- #define __LINUX_NET_XDP_H__
+ 	rtnl_lock();
+@@ -792,7 +792,7 @@ static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
+ 		struct socket *sock;
  
- #include <linux/skbuff.h> /* skb_shared_info */
-+#include <linux/xdp_properties.h>
- 
- /**
-  * DOC: XDP RX-queue information
-@@ -255,6 +256,100 @@ struct xdp_attachment_info {
- 	u32 flags;
- };
- 
-+#if defined(CONFIG_NET) && defined(CONFIG_BPF_SYSCALL)
-+
-+static __always_inline void
-+xdp_set_aborted_property(xdp_properties_t *properties)
-+{
-+	*properties |= XDP_F_ABORTED;
-+}
-+
-+static __always_inline void
-+xdp_set_pass_property(xdp_properties_t *properties)
-+{
-+	*properties |= XDP_F_PASS;
-+}
-+
-+static __always_inline void
-+xdp_set_drop_property(xdp_properties_t *properties)
-+{
-+	*properties |= XDP_F_DROP;
-+}
-+
-+static __always_inline void
-+xdp_set_tx_property(xdp_properties_t *properties)
-+{
-+	*properties |= XDP_F_TX;
-+}
-+
-+static __always_inline void
-+xdp_set_redirect_property(xdp_properties_t *properties)
-+{
-+	*properties |= XDP_F_REDIRECT;
-+}
-+
-+static __always_inline void
-+xdp_set_hw_offload_property(xdp_properties_t *properties)
-+{
-+	*properties |= XDP_F_HW_OFFLOAD;
-+}
-+
-+static __always_inline void
-+xdp_set_basic_properties(xdp_properties_t *properties)
-+{
-+	*properties |= XDP_F_BASIC;
-+}
-+
-+static __always_inline void
-+xdp_set_full_properties(xdp_properties_t *properties)
-+{
-+	*properties |= XDP_F_FULL;
-+}
-+
-+#else
-+
-+static __always_inline void
-+xdp_set_aborted_property(xdp_properties_t *properties)
-+{
-+}
-+
-+static __always_inline void
-+xdp_set_pass_property(xdp_properties_t *properties)
-+{
-+}
-+
-+static __always_inline void
-+xdp_set_drop_property(xdp_properties_t *properties)
-+{
-+}
-+
-+static __always_inline void
-+xdp_set_tx_property(xdp_properties_t *properties)
-+{
-+}
-+
-+static __always_inline void
-+xdp_set_redirect_property(xdp_properties_t *properties)
-+{
-+}
-+
-+static __always_inline void
-+xdp_set_hw_offload_property(xdp_properties_t *properties)
-+{
-+}
-+
-+static __always_inline void
-+xdp_set_basic_properties(xdp_properties_t *properties)
-+{
-+}
-+
-+static __always_inline void
-+xdp_set_full_properties(xdp_properties_t *properties)
-+{
-+}
-+
-+#endif
-+
- struct netdev_bpf;
- bool xdp_attachment_flags_ok(struct xdp_attachment_info *info,
- 			     struct netdev_bpf *bpf);
-diff --git a/include/net/xdp_sock_drv.h b/include/net/xdp_sock_drv.h
-index 4e295541e396..48a3b6d165c7 100644
---- a/include/net/xdp_sock_drv.h
-+++ b/include/net/xdp_sock_drv.h
-@@ -8,6 +8,7 @@
- 
- #include <net/xdp_sock.h>
- #include <net/xsk_buff_pool.h>
-+#include <linux/xdp_properties.h>
- 
- #ifdef CONFIG_XDP_SOCKETS
- 
-@@ -117,6 +118,11 @@ static inline void xsk_buff_raw_dma_sync_for_device(struct xsk_buff_pool *pool,
- 	xp_dma_sync_for_device(pool, dma, size);
- }
- 
-+static inline void xsk_set_zc_property(xdp_properties_t *properties)
-+{
-+	*properties |= XDP_F_ZEROCOPY;
-+}
-+
- #else
- 
- static inline void xsk_tx_completed(struct xsk_buff_pool *pool, u32 nb_entries)
-@@ -242,6 +248,10 @@ static inline void xsk_buff_raw_dma_sync_for_device(struct xsk_buff_pool *pool,
+ 		if ((flags & XDP_COPY) || (flags & XDP_ZEROCOPY) ||
+-		    (flags & XDP_USE_NEED_WAKEUP)) {
++		    (flags & XDP_USE_NEED_WAKEUP) || (flags & XDP_CHECK_NATIVE_MODE)) {
+ 			/* Cannot specify flags for shared sockets. */
+ 			err = -EINVAL;
+ 			goto out_unlock;
+diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
+index 7ff82e2b2b43..47e283ea1dca 100644
+--- a/net/xdp/xsk_buff_pool.c
++++ b/net/xdp/xsk_buff_pool.c
+@@ -123,7 +123,7 @@ static void xp_disable_drv_zc(struct xsk_buff_pool *pool)
+ static int __xp_assign_dev(struct xsk_buff_pool *pool,
+ 			   struct net_device *netdev, u16 queue_id, u16 flags)
  {
- }
+-	bool force_zc, force_copy;
++	bool force_zc, force_copy, force_check;
+ 	struct netdev_bpf bpf;
+ 	int err = 0;
  
-+static inline void xsk_set_zc_property(xdp_properties_t *properties)
-+{
-+}
-+
- #endif /* CONFIG_XDP_SOCKETS */
+@@ -131,10 +131,24 @@ static int __xp_assign_dev(struct xsk_buff_pool *pool,
  
- #endif /* _LINUX_XDP_SOCK_DRV_H */
-diff --git a/include/uapi/linux/ethtool.h b/include/uapi/linux/ethtool.h
-index 9ca87bc73c44..dfcb0e2c98b2 100644
---- a/include/uapi/linux/ethtool.h
-+++ b/include/uapi/linux/ethtool.h
-@@ -688,6 +688,7 @@ enum ethtool_stringset {
- 	ETH_SS_TS_TX_TYPES,
- 	ETH_SS_TS_RX_FILTERS,
- 	ETH_SS_UDP_TUNNEL_TYPES,
-+	ETH_SS_XDP_PROPERTIES,
+ 	force_zc = flags & XDP_ZEROCOPY;
+ 	force_copy = flags & XDP_COPY;
++	force_check = flags & XDP_CHECK_NATIVE_MODE;
++
  
- 	/* add new constants above here */
- 	ETH_SS_COUNT
-diff --git a/include/uapi/linux/xdp_properties.h b/include/uapi/linux/xdp_properties.h
-new file mode 100644
-index 000000000000..e85be03eb707
---- /dev/null
-+++ b/include/uapi/linux/xdp_properties.h
-@@ -0,0 +1,32 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+
-+/*
-+ * Copyright (c) 2020 Intel
-+ */
-+
-+#ifndef __UAPI_LINUX_XDP_PROPERTIES__
-+#define __UAPI_LINUX_XDP_PROPERTIES__
-+
-+/* ETH_GSTRING_LEN define is needed. */
-+#include <linux/ethtool.h>
-+
-+#define XDP_PROPERTIES_ABORTED_STR	"xdp-aborted"
-+#define XDP_PROPERTIES_DROP_STR		"xdp-drop"
-+#define XDP_PROPERTIES_PASS_STR		"xdp-pass"
-+#define XDP_PROPERTIES_TX_STR		"xdp-tx"
-+#define XDP_PROPERTIES_REDIRECT_STR	"xdp-redirect"
-+#define XDP_PROPERTIES_ZEROCOPY_STR	"xdp-zerocopy"
-+#define XDP_PROPERTIES_HW_OFFLOAD_STR	"xdp-hw-offload"
-+
-+#define	DECLARE_XDP_PROPERTIES_TABLE(name)		\
-+	const char name[][ETH_GSTRING_LEN] = {		\
-+		XDP_PROPERTIES_ABORTED_STR,		\
-+		XDP_PROPERTIES_DROP_STR,		\
-+		XDP_PROPERTIES_PASS_STR,		\
-+		XDP_PROPERTIES_TX_STR,			\
-+		XDP_PROPERTIES_REDIRECT_STR,		\
-+		XDP_PROPERTIES_ZEROCOPY_STR,		\
-+		XDP_PROPERTIES_HW_OFFLOAD_STR,		\
+ 	if (force_zc && force_copy)
+ 		return -EINVAL;
+ 
++	if (!(flags & XDP_SHARED_UMEM)) {
++		if (force_check) {
++			/* forbid driver mode without full XDP support */
++			if (!(XDP_F_REDIRECT & netdev->xdp_properties))
++				return -EOPNOTSUPP;
++		} else {
++			/* forbid skb mode and zero copy */
++			if (force_zc)
++				return -EINVAL;
++		}
 +	}
 +
-+#endif  /* __UAPI_LINUX_XDP_PROPERTIES__ */
-diff --git a/net/ethtool/common.c b/net/ethtool/common.c
-index 24036e3055a1..8f15f96b8922 100644
---- a/net/ethtool/common.c
-+++ b/net/ethtool/common.c
-@@ -4,6 +4,7 @@
- #include <linux/net_tstamp.h>
- #include <linux/phy.h>
- #include <linux/rtnetlink.h>
-+#include <uapi/linux/xdp_properties.h>
+ 	if (xsk_get_pool_from_qid(netdev, queue_id))
+ 		return -EBUSY;
  
- #include "common.h"
+@@ -204,6 +218,7 @@ int xp_assign_dev_shared(struct xsk_buff_pool *pool, struct xdp_umem *umem,
+ 		return -EINVAL;
  
-@@ -283,6 +284,16 @@ const char udp_tunnel_type_names[][ETH_GSTRING_LEN] = {
- static_assert(ARRAY_SIZE(udp_tunnel_type_names) ==
- 	      __ETHTOOL_UDP_TUNNEL_TYPE_CNT);
+ 	flags = umem->zc ? XDP_ZEROCOPY : XDP_COPY;
++	flags |= XDP_SHARED_UMEM;
+ 	if (pool->uses_need_wakeup)
+ 		flags |= XDP_USE_NEED_WAKEUP;
  
-+const char xdp_properties_strings[XDP_PROPERTIES_COUNT][ETH_GSTRING_LEN] = {
-+	[XDP_F_ABORTED_BIT] =		XDP_PROPERTIES_ABORTED_STR,
-+	[XDP_F_DROP_BIT] =		XDP_PROPERTIES_DROP_STR,
-+	[XDP_F_PASS_BIT] =		XDP_PROPERTIES_PASS_STR,
-+	[XDP_F_TX_BIT] =		XDP_PROPERTIES_TX_STR,
-+	[XDP_F_REDIRECT_BIT] =		XDP_PROPERTIES_REDIRECT_STR,
-+	[XDP_F_ZEROCOPY_BIT] =		XDP_PROPERTIES_ZEROCOPY_STR,
-+	[XDP_F_HW_OFFLOAD_BIT] =	XDP_PROPERTIES_HW_OFFLOAD_STR,
-+};
-+
- /* return false if legacy contained non-0 deprecated fields
-  * maxtxpkt/maxrxpkt. rest of ksettings always updated
+diff --git a/tools/include/uapi/linux/if_xdp.h b/tools/include/uapi/linux/if_xdp.h
+index a78a8096f4ce..8f47754dacce 100644
+--- a/tools/include/uapi/linux/if_xdp.h
++++ b/tools/include/uapi/linux/if_xdp.h
+@@ -25,6 +25,7 @@
+  * application.
   */
-diff --git a/net/ethtool/common.h b/net/ethtool/common.h
-index 3d9251c95a8b..85a35f8781eb 100644
---- a/net/ethtool/common.h
-+++ b/net/ethtool/common.h
-@@ -5,8 +5,10 @@
+ #define XDP_USE_NEED_WAKEUP (1 << 3)
++#define XDP_CHECK_NATIVE_MODE (1 << 4)
  
- #include <linux/netdevice.h>
+ /* Flags for xsk_umem_config flags */
+ #define XDP_UMEM_UNALIGNED_CHUNK_FLAG (1 << 0)
+diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+index e3e41ceeb1bc..c309d2c87be3 100644
+--- a/tools/lib/bpf/xsk.c
++++ b/tools/lib/bpf/xsk.c
+@@ -18,6 +18,7 @@
  #include <linux/ethtool.h>
-+#include <linux/xdp_properties.h>
+ #include <linux/filter.h>
+ #include <linux/if_ether.h>
++#include <linux/if_link.h>
+ #include <linux/if_packet.h>
+ #include <linux/if_xdp.h>
+ #include <linux/kernel.h>
+@@ -901,6 +902,8 @@ int xsk_socket__create_shared(struct xsk_socket **xsk_ptr,
+ 		sxdp.sxdp_shared_umem_fd = umem->fd;
+ 	} else {
+ 		sxdp.sxdp_flags = xsk->config.bind_flags;
++		if (xsk->config.xdp_flags & XDP_FLAGS_DRV_MODE)
++			sxdp.sxdp_flags |= XDP_CHECK_NATIVE_MODE;
+ 	}
  
- #define ETHTOOL_DEV_FEATURE_WORDS	DIV_ROUND_UP(NETDEV_FEATURE_COUNT, 32)
-+#define ETHTOOL_XDP_PROPERTIES_WORDS	DIV_ROUND_UP(XDP_PROPERTIES_COUNT, 32)
- 
- /* compose link mode index from speed, type and duplex */
- #define ETHTOOL_LINK_MODE(speed, type, duplex) \
-@@ -22,6 +24,8 @@ extern const char
- tunable_strings[__ETHTOOL_TUNABLE_COUNT][ETH_GSTRING_LEN];
- extern const char
- phy_tunable_strings[__ETHTOOL_PHY_TUNABLE_COUNT][ETH_GSTRING_LEN];
-+extern const char
-+xdp_properties_strings[XDP_PROPERTIES_COUNT][ETH_GSTRING_LEN];
- extern const char link_mode_names[][ETH_GSTRING_LEN];
- extern const char netif_msg_class_names[][ETH_GSTRING_LEN];
- extern const char wol_mode_names[][ETH_GSTRING_LEN];
-diff --git a/net/ethtool/strset.c b/net/ethtool/strset.c
-index 0baad0ce1832..684e751b31a9 100644
---- a/net/ethtool/strset.c
-+++ b/net/ethtool/strset.c
-@@ -80,6 +80,11 @@ static const struct strset_info info_template[] = {
- 		.count		= __ETHTOOL_UDP_TUNNEL_TYPE_CNT,
- 		.strings	= udp_tunnel_type_names,
- 	},
-+	[ETH_SS_XDP_PROPERTIES] = {
-+		.per_dev	= false,
-+		.count		= ARRAY_SIZE(xdp_properties_strings),
-+		.strings	= xdp_properties_strings,
-+	},
- };
- 
- struct strset_req_info {
+ 	err = bind(xsk->fd, (struct sockaddr *)&sxdp, sizeof(sxdp));
 -- 
 2.27.0
 
