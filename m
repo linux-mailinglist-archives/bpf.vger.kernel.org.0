@@ -2,37 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B6FE2CF5AB
-	for <lists+bpf@lfdr.de>; Fri,  4 Dec 2020 21:31:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05BB82CF676
+	for <lists+bpf@lfdr.de>; Fri,  4 Dec 2020 23:00:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728375AbgLDUar (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Dec 2020 15:30:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48960 "EHLO mail.kernel.org"
+        id S1725985AbgLDWAt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Dec 2020 17:00:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726441AbgLDUaq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Dec 2020 15:30:46 -0500
+        id S1725903AbgLDWAs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Dec 2020 17:00:48 -0500
 Content-Type: text/plain; charset="utf-8"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607113806;
-        bh=AUCS15uf0JYnRffSh3WYFb1hvqGziNQGH8XV3fjYO30=;
+        s=k20201202; t=1607119208;
+        bh=GLchs7RpbysdRcGDs0qUl/H2Yvy6mr6HLZKcyi1g8+8=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=fZjU02QbbY4yUUV77xdQzY+QsybDx13kLbToJ3D4aj9rvEswWw2tozmGiCAWxsWuo
-         0ajo7KRL+GauX7dZEI3xeujt/4ycZzPWNoRu0fwZUJTX8QDaa+Lep5pLCzWM5vpH0H
-         9v4x9jy3uzhRYNTVcQ4UQUoWRjYs7/+4Y3V5wopA+pMfYuaQa4R79kiGpMBlTliUEd
-         zxxU89mW2A0t5yigiAKSTQTGfLIeYfMf2yUnNI+4eXNKvpNZNw4HsIfRSFihxjy/x7
-         GO974DjKK8imn4ZDvponBvdLI1aDYZp8dH63vl1ZvcVAXWIiKy8LZUb5CUKeQEwKER
-         8Evk1NSYCIaoQ==
+        b=cQwIcDF/lRjN26cUEuU1n9+MtY6f8C8wAwFrWRAXrN0TeFURvmiQ75nNbdh9AsEj7
+         9BOuatosYHIc+uQnsQi6rb+Nu4vMq546gmJ4zPb/nxcQ3zfxpxC0vl37p5Z3tAk2W+
+         Rckdwf0mW2SnMFzcQfwxaTaSdRQeKs1ry6VteDB2Z3RaV5vocSy4UDYX2XU/lY7LtW
+         gw75aowxA01rMJ5vFl3ooG6Qr4AaGvBL0r/7qho9YXMQRhxa7sQ4wj5F1Cql6pXYgz
+         tX/lxGcT1iNoeM8pbvesN0p4CcLPR0D2aSc68LNFnOtvNvvosbjxFFACGf/f4erNiA
+         yHZnAoqZFouLA==
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 0/2 v3] Improve error handling of verifier tests
+Subject: Re: [PATCH bpf-next v5 1/6] net: Remove the err argument from
+ sock_from_file
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160711380631.17303.9145064627875444770.git-patchwork-notify@kernel.org>
-Date:   Fri, 04 Dec 2020 20:30:06 +0000
-References: <20201204181828.11974-1-dev@der-flo.net>
-In-Reply-To: <20201204181828.11974-1-dev@der-flo.net>
-To:     Florian Lehner <dev@der-flo.net>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, john.fastabend@gmail.com
+Message-Id: <160711920795.26112.15547923878362487061.git-patchwork-notify@kernel.org>
+Date:   Fri, 04 Dec 2020 22:00:07 +0000
+References: <20201204113609.1850150-1-revest@google.com>
+In-Reply-To: <20201204113609.1850150-1-revest@google.com>
+To:     Florent Revest <revest@chromium.org>
+Cc:     bpf@vger.kernel.org, viro@zeniv.linux.org.uk, davem@davemloft.net,
+        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kafai@fb.com, yhs@fb.com, andrii@kernel.org, kpsingh@chromium.org,
+        revest@google.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, kpsingh@google.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
@@ -41,23 +45,29 @@ Hello:
 
 This series was applied to bpf/bpf-next.git (refs/heads/master):
 
-On Fri,  4 Dec 2020 19:18:26 +0100 you wrote:
-> These patches improve the error handling for verifier tests. With "Test
-> the 32bit narrow read" Krzesimir Nowak provided these patches first, but
-> they were never merged.
-> The improved error handling helps to implement and test BPF program types
-> that are not supported yet.
+On Fri,  4 Dec 2020 12:36:04 +0100 you wrote:
+> Currently, the sock_from_file prototype takes an "err" pointer that is
+> either not set or set to -ENOTSOCK IFF the returned socket is NULL. This
+> makes the error redundant and it is ignored by a few callers.
 > 
-> v3:
->   - Add explicit fallthrough
+> This patch simplifies the API by letting callers deduce the error based
+> on whether the returned socket is NULL or not.
 > 
 > [...]
 
 Here is the summary with links:
-  - [1/2] selftests/bpf: Print reason when a tester could not run a program
-    https://git.kernel.org/bpf/bpf-next/c/7d17167244f5
-  - [2/2] selftests/bpf: Avoid errno clobbering
-    https://git.kernel.org/bpf/bpf-next/c/5f61b7c6975b
+  - [bpf-next,v5,1/6] net: Remove the err argument from sock_from_file
+    https://git.kernel.org/bpf/bpf-next/c/dba4a9256bb4
+  - [bpf-next,v5,2/6] bpf: Add a bpf_sock_from_file helper
+    https://git.kernel.org/bpf/bpf-next/c/4f19cab76136
+  - [bpf-next,v5,3/6] bpf: Expose bpf_sk_storage_* to iterator programs
+    https://git.kernel.org/bpf/bpf-next/c/a50a85e40c59
+  - [bpf-next,v5,4/6] selftests/bpf: Add an iterator selftest for bpf_sk_storage_delete
+    https://git.kernel.org/bpf/bpf-next/c/593f6d41abbb
+  - [bpf-next,v5,5/6] selftests/bpf: Add an iterator selftest for bpf_sk_storage_get
+    https://git.kernel.org/bpf/bpf-next/c/bd9b327e58f9
+  - [bpf-next,v5,6/6] selftests/bpf: Test bpf_sk_storage_get in tcp iterators
+    https://git.kernel.org/bpf/bpf-next/c/34da87213d3d
 
 You are awesome, thank you!
 --
