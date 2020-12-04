@@ -2,76 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05BB82CF676
-	for <lists+bpf@lfdr.de>; Fri,  4 Dec 2020 23:00:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A54BE2CF6B2
+	for <lists+bpf@lfdr.de>; Fri,  4 Dec 2020 23:21:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725985AbgLDWAt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Dec 2020 17:00:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56738 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725903AbgLDWAs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Dec 2020 17:00:48 -0500
-Content-Type: text/plain; charset="utf-8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607119208;
-        bh=GLchs7RpbysdRcGDs0qUl/H2Yvy6mr6HLZKcyi1g8+8=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=cQwIcDF/lRjN26cUEuU1n9+MtY6f8C8wAwFrWRAXrN0TeFURvmiQ75nNbdh9AsEj7
-         9BOuatosYHIc+uQnsQi6rb+Nu4vMq546gmJ4zPb/nxcQ3zfxpxC0vl37p5Z3tAk2W+
-         Rckdwf0mW2SnMFzcQfwxaTaSdRQeKs1ry6VteDB2Z3RaV5vocSy4UDYX2XU/lY7LtW
-         gw75aowxA01rMJ5vFl3ooG6Qr4AaGvBL0r/7qho9YXMQRhxa7sQ4wj5F1Cql6pXYgz
-         tX/lxGcT1iNoeM8pbvesN0p4CcLPR0D2aSc68LNFnOtvNvvosbjxFFACGf/f4erNiA
-         yHZnAoqZFouLA==
+        id S1726028AbgLDWUt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Dec 2020 17:20:49 -0500
+Received: from www62.your-server.de ([213.133.104.62]:36586 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725885AbgLDWUt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Dec 2020 17:20:49 -0500
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1klJQi-0000Ap-GR; Fri, 04 Dec 2020 23:19:56 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1klJQi-000WQ1-4q; Fri, 04 Dec 2020 23:19:56 +0100
+Subject: Re: [PATCH v2 bpf 1/5] net: ethtool: add xdp properties flag set
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     alardam@gmail.com, magnus.karlsson@intel.com,
+        bjorn.topel@intel.com, andrii.nakryiko@gmail.com, kuba@kernel.org,
+        ast@kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
+        john.fastabend@gmail.com, hawk@kernel.org,
+        jonathan.lemon@gmail.com, bpf@vger.kernel.org,
+        jeffrey.t.kirsher@intel.com, maciejromanfijalkowski@gmail.com,
+        intel-wired-lan@lists.osuosl.org,
+        Marek Majtyka <marekx.majtyka@intel.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+References: <20201204102901.109709-1-marekx.majtyka@intel.com>
+ <20201204102901.109709-2-marekx.majtyka@intel.com> <878sad933c.fsf@toke.dk>
+ <20201204124618.GA23696@ranger.igk.intel.com>
+ <048bd986-2e05-ee5b-2c03-cd8c473f6636@iogearbox.net> <87pn3p7aiv.fsf@toke.dk>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <eb305a4f-c189-6b32-f718-6e709ef0fa55@iogearbox.net>
+Date:   Fri, 4 Dec 2020 23:19:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
+In-Reply-To: <87pn3p7aiv.fsf@toke.dk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v5 1/6] net: Remove the err argument from
- sock_from_file
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160711920795.26112.15547923878362487061.git-patchwork-notify@kernel.org>
-Date:   Fri, 04 Dec 2020 22:00:07 +0000
-References: <20201204113609.1850150-1-revest@google.com>
-In-Reply-To: <20201204113609.1850150-1-revest@google.com>
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf@vger.kernel.org, viro@zeniv.linux.org.uk, davem@davemloft.net,
-        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kafai@fb.com, yhs@fb.com, andrii@kernel.org, kpsingh@chromium.org,
-        revest@google.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, kpsingh@google.com
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26007/Thu Dec  3 14:13:31 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (refs/heads/master):
-
-On Fri,  4 Dec 2020 12:36:04 +0100 you wrote:
-> Currently, the sock_from_file prototype takes an "err" pointer that is
-> either not set or set to -ENOTSOCK IFF the returned socket is NULL. This
-> makes the error redundant and it is ignored by a few callers.
+On 12/4/20 6:20 PM, Toke Høiland-Jørgensen wrote:
+> Daniel Borkmann <daniel@iogearbox.net> writes:
+[...]
+>> We tried to standardize on a minimum guaranteed amount, but unfortunately not
+>> everyone seems to implement it, but I think it would be very useful to query
+>> this from application side, for example, consider that an app inserts a BPF
+>> prog at XDP doing custom encap shortly before XDP_TX so it would be useful to
+>> know which of the different encaps it implements are realistically possible on
+>> the underlying XDP supported dev.
 > 
-> This patch simplifies the API by letting callers deduce the error based
-> on whether the returned socket is NULL or not.
-> 
-> [...]
+> How many distinct values are there in reality? Enough to express this in
+> a few flags (XDP_HEADROOM_128, XDP_HEADROOM_192, etc?), or does it need
+> an additional field to get the exact value? If we implement the latter
+> we also run the risk of people actually implementing all sorts of weird
+> values, whereas if we constrain it to a few distinct values it's easier
+> to push back against adding new values (as it'll be obvious from the
+> addition of new flags).
 
-Here is the summary with links:
-  - [bpf-next,v5,1/6] net: Remove the err argument from sock_from_file
-    https://git.kernel.org/bpf/bpf-next/c/dba4a9256bb4
-  - [bpf-next,v5,2/6] bpf: Add a bpf_sock_from_file helper
-    https://git.kernel.org/bpf/bpf-next/c/4f19cab76136
-  - [bpf-next,v5,3/6] bpf: Expose bpf_sk_storage_* to iterator programs
-    https://git.kernel.org/bpf/bpf-next/c/a50a85e40c59
-  - [bpf-next,v5,4/6] selftests/bpf: Add an iterator selftest for bpf_sk_storage_delete
-    https://git.kernel.org/bpf/bpf-next/c/593f6d41abbb
-  - [bpf-next,v5,5/6] selftests/bpf: Add an iterator selftest for bpf_sk_storage_get
-    https://git.kernel.org/bpf/bpf-next/c/bd9b327e58f9
-  - [bpf-next,v5,6/6] selftests/bpf: Test bpf_sk_storage_get in tcp iterators
-    https://git.kernel.org/bpf/bpf-next/c/34da87213d3d
+It's not everywhere straight forward to determine unfortunately, see also [0,1]
+as some data points where Jesper looked into in the past, so in some cases it
+might differ depending on the build/runtime config..
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+   [0] https://lore.kernel.org/bpf/158945314698.97035.5286827951225578467.stgit@firesoul/
+   [1] https://lore.kernel.org/bpf/158945346494.97035.12809400414566061815.stgit@firesoul/
