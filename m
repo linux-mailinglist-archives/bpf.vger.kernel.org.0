@@ -2,148 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D57A72CE32D
-	for <lists+bpf@lfdr.de>; Fri,  4 Dec 2020 00:56:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8FD62CE49E
+	for <lists+bpf@lfdr.de>; Fri,  4 Dec 2020 01:54:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726525AbgLCXzf convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 3 Dec 2020 18:55:35 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:8670 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729527AbgLCXze (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 3 Dec 2020 18:55:34 -0500
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B3Ns3g4008773
-        for <bpf@vger.kernel.org>; Thu, 3 Dec 2020 15:54:52 -0800
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 356fsfk52r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 03 Dec 2020 15:54:52 -0800
-Received: from intmgw002.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 3 Dec 2020 15:54:51 -0800
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id D4F062ECA8F6; Thu,  3 Dec 2020 15:54:50 -0800 (PST)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next 2/2] selftests/bpf: fix invalid use of strncat in test_sockmap
-Date:   Thu, 3 Dec 2020 15:54:40 -0800
-Message-ID: <20201203235440.2302137-2-andrii@kernel.org>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20201203235440.2302137-1-andrii@kernel.org>
-References: <20201203235440.2302137-1-andrii@kernel.org>
+        id S1727931AbgLDAyS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Dec 2020 19:54:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727897AbgLDAyS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 3 Dec 2020 19:54:18 -0500
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0965C061A51
+        for <bpf@vger.kernel.org>; Thu,  3 Dec 2020 16:53:37 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id 142so4643954ljj.10
+        for <bpf@vger.kernel.org>; Thu, 03 Dec 2020 16:53:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dmM+CWw/NxNIbgWm/O+v7G+4NZMyDNsXwDn3Z6jGoSs=;
+        b=CtABN3e5juvtOrsey+qfp+AszQYd2vzhOKXqR8YckVPTRqWRAChsMNUv4Cz1G4/RoR
+         Y0075SpeS9dSD4SlClQjJXaUCkRzelkwIQNL1+gNFOLB4FXPgfFy5AByKiOWkg0rlZjp
+         KhiZSRg0qGWMYhczIksn9MvKLOzQRHpoxuRaU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dmM+CWw/NxNIbgWm/O+v7G+4NZMyDNsXwDn3Z6jGoSs=;
+        b=VKK2w3TUid1YPN7CK6kqoGy1UrfKq/BQRshMgYgosYB/n243qH7wF/0eiNOesZKNwF
+         GwVZTxPsRepdyfvQseKQ+x/LPliPyrBRUdS/9VPKxkxeVjdvWGu3qgLWb5MgnyT2cp+P
+         XVJtC7F4NSW7H8X1erIQ3x0lPdVlIf5KWpyY13lvDBx3kM5blC3fBrsKTg3Ss4LgmA2c
+         Ag8tX2L2wGrZN0UZglrwIW4dQePMWAarnWQh/kT/3LKRcYKlUGLKcEaN6QTFGS3l4czi
+         T+ZJmxFazbp8Wb9uZ4+vcRRJ0daWbRPe0vULLU1udhGc/pyh1lQ82R9maduxVpKMHG2r
+         UOEw==
+X-Gm-Message-State: AOAM531S0yZXbZVn0+aTW620p97h08+bvi80FPBJt2sJ8Qb+GRU+NIU6
+        TA/EYFEraqF/ypQlSzjhRSE/At/ayvF+E+fqeX8CJg==
+X-Google-Smtp-Source: ABdhPJxxTxgm6wz2UDT5lzirxlSlrr5UxCLm74RLNtjQw1qrXhdQ8PWQ7uFCzSrDrShMSB7RMmR2E83CpYmvzTa0xG8=
+X-Received: by 2002:a2e:80c6:: with SMTP id r6mr2279546ljg.83.1607043216519;
+ Thu, 03 Dec 2020 16:53:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-03_15:2020-12-03,2020-12-03 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- bulkscore=0 adultscore=0 priorityscore=1501 mlxscore=0 malwarescore=0
- suspectscore=8 phishscore=0 clxscore=1034 spamscore=0 impostorscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012030132
-X-FB-Internal: deliver
+References: <20201203191437.666737-1-kpsingh@chromium.org> <CAEf4BzbAg5AG=J_9ZNz5BikpP0HvbSPH0oCbaQPgXzret5HiSw@mail.gmail.com>
+In-Reply-To: <CAEf4BzbAg5AG=J_9ZNz5BikpP0HvbSPH0oCbaQPgXzret5HiSw@mail.gmail.com>
+From:   KP Singh <kpsingh@chromium.org>
+Date:   Fri, 4 Dec 2020 01:53:25 +0100
+Message-ID: <CACYkzJ5mjs9ThxU8P53KMEgfZO6AnjJwMeA0haWSz6idt95KNg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 0/4] Fixes for ima selftest
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-strncat()'s third argument is how many bytes will be added *in addition* to
-already existing bytes in destination. Plus extra zero byte will be added
-after that. So existing use in test_sockmap has many opportunities to overflow
-the string and cause memory corruptions. And in this case, GCC complains for
-a good reason.
+[...]
 
-Fixes: 16962b2404ac ("bpf: sockmap, add selftests")
-Fixes: 73563aa3d977 ("selftests/bpf: test_sockmap, print additional test options")
-Fixes: 1ade9abadfca ("bpf: test_sockmap, add options for msg_pop_data() helper")
-Fixes: 463bac5f1ca7 ("bpf, selftests: Add test for ktls with skb bpf ingress policy")
-Fixes: e9dd904708c4 ("bpf: add tls support for testing in test_sockmap")
-Fixes: 753fb2ee0934 ("bpf: sockmap, add msg_peek tests to test_sockmap")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/testing/selftests/bpf/test_sockmap.c | 36 ++++++++++++++--------
- 1 file changed, 23 insertions(+), 13 deletions(-)
+> output from dd and maybe other commands:
+>
+> 10+0 records in
+> 10+0 records out
+> 10485760 bytes (10.0MB) copied, 0.037096 seconds, 269.6MB/s
+> Filesystem label=
+> OS type: Linux
+> Block size=1024 (log=0)
+> Fragment size=1024 (log=0)
+> 2560 inodes, 10240 blocks
+> 512 blocks (5%) reserved for the super user
+> First data block=1
+> Maximum filesystem blocks=262144
+> 2 block groups
+> 8192 blocks per group, 8192 fragments per group
+> 1280 inodes per group
+> Superblock backups stored on blocks:
+>         8193
+>
+> Please follow up at your earliest convenience to silence those in
+> default (non-verbose) mode.
 
-diff --git a/tools/testing/selftests/bpf/test_sockmap.c b/tools/testing/selftests/bpf/test_sockmap.c
-index 0fa1e421c3d7..427ca00a3217 100644
---- a/tools/testing/selftests/bpf/test_sockmap.c
-+++ b/tools/testing/selftests/bpf/test_sockmap.c
-@@ -1273,6 +1273,16 @@ static char *test_to_str(int test)
- 	return "unknown";
- }
- 
-+static void append_str(char *dst, const char *src, size_t dst_cap)
-+{
-+	size_t avail = dst_cap - strlen(dst);
-+
-+	if (avail <= 1) /* just zero byte could be written */
-+		return;
-+
-+	strncat(dst, src, avail - 1); /* strncat() adds + 1 for zero byte */
-+}
-+
- #define OPTSTRING 60
- static void test_options(char *options)
- {
-@@ -1281,42 +1291,42 @@ static void test_options(char *options)
- 	memset(options, 0, OPTSTRING);
- 
- 	if (txmsg_pass)
--		strncat(options, "pass,", OPTSTRING);
-+		append_str(options, "pass,", OPTSTRING);
- 	if (txmsg_redir)
--		strncat(options, "redir,", OPTSTRING);
-+		append_str(options, "redir,", OPTSTRING);
- 	if (txmsg_drop)
--		strncat(options, "drop,", OPTSTRING);
-+		append_str(options, "drop,", OPTSTRING);
- 	if (txmsg_apply) {
- 		snprintf(tstr, OPTSTRING, "apply %d,", txmsg_apply);
--		strncat(options, tstr, OPTSTRING);
-+		append_str(options, tstr, OPTSTRING);
- 	}
- 	if (txmsg_cork) {
- 		snprintf(tstr, OPTSTRING, "cork %d,", txmsg_cork);
--		strncat(options, tstr, OPTSTRING);
-+		append_str(options, tstr, OPTSTRING);
- 	}
- 	if (txmsg_start) {
- 		snprintf(tstr, OPTSTRING, "start %d,", txmsg_start);
--		strncat(options, tstr, OPTSTRING);
-+		append_str(options, tstr, OPTSTRING);
- 	}
- 	if (txmsg_end) {
- 		snprintf(tstr, OPTSTRING, "end %d,", txmsg_end);
--		strncat(options, tstr, OPTSTRING);
-+		append_str(options, tstr, OPTSTRING);
- 	}
- 	if (txmsg_start_pop) {
- 		snprintf(tstr, OPTSTRING, "pop (%d,%d),",
- 			 txmsg_start_pop, txmsg_start_pop + txmsg_pop);
--		strncat(options, tstr, OPTSTRING);
-+		append_str(options, tstr, OPTSTRING);
- 	}
- 	if (txmsg_ingress)
--		strncat(options, "ingress,", OPTSTRING);
-+		append_str(options, "ingress,", OPTSTRING);
- 	if (txmsg_redir_skb)
--		strncat(options, "redir_skb,", OPTSTRING);
-+		append_str(options, "redir_skb,", OPTSTRING);
- 	if (txmsg_ktls_skb)
--		strncat(options, "ktls_skb,", OPTSTRING);
-+		append_str(options, "ktls_skb,", OPTSTRING);
- 	if (ktls)
--		strncat(options, "ktls,", OPTSTRING);
-+		append_str(options, "ktls,", OPTSTRING);
- 	if (peek_flag)
--		strncat(options, "peek,", OPTSTRING);
-+		append_str(options, "peek,", OPTSTRING);
- }
- 
- static int __test_exec(int cgrp, int test, struct sockmap_options *opt)
--- 
-2.24.1
+Thanks, fixed. I added a verbosity flag to ima_setup.sh
+and am using env.verbosity to toggle this extra output. I will send
+in my patch tomorrow.
 
+[...]
