@@ -2,220 +2,264 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76ED22CE7DF
-	for <lists+bpf@lfdr.de>; Fri,  4 Dec 2020 06:58:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0AC02CE82A
+	for <lists+bpf@lfdr.de>; Fri,  4 Dec 2020 07:31:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725989AbgLDF6F (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Dec 2020 00:58:05 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:50748 "EHLO
+        id S1725550AbgLDGbZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Dec 2020 01:31:25 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:39838 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725550AbgLDF6F (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 4 Dec 2020 00:58:05 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B45oVnr005680;
-        Thu, 3 Dec 2020 21:57:03 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=k1Q9BtrYz+V+t4BIH7AIHf0VSJRVSWOZE1vcxFn15rs=;
- b=MDqFUeKf9zoVyUZwn1037bM7dl2liOy8Ky9OVhOanyOFodfQmWtA1EXIhrAKwi4e2a5j
- BRK8wkYjawyWAQyP9P22IRuaXkvTN7Y/hbdW3WeJFqUStO9JxVtQfh6JtUlItCGAAD9/
- U58ui7//LEfoxECJa/NgLxoJxQeFhrsmWVA= 
+        by vger.kernel.org with ESMTP id S1725372AbgLDGbZ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 4 Dec 2020 01:31:25 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0B46T2te008074;
+        Thu, 3 Dec 2020 22:30:24 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=h+rVcsTEac9GhRn8AmDK55Y1KA/0T+E8grHYCH3slUE=;
+ b=UM34xw5OCUoJ3D+dlGnO+X52NfWwodeR7a6SWdVoGKEn4kiKNCLIeqLyxch375cY9Frm
+ Hn+nJbCmdEZCM47UHL9YSQef/0MlOUwFkY+1JA3au/vfHjbRrmko1NGSHaeprWGabxIn
+ +cekgn+oiujTmYI0PsM9C1J6ZFUYtpYLwi0= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 357159x4pk-1
+        by mx0a-00082601.pphosted.com with ESMTP id 35615fsy3j-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 03 Dec 2020 21:57:03 -0800
-Received: from NAM04-SN1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
+        Thu, 03 Dec 2020 22:30:23 -0800
+Received: from NAM02-BL2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.230) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 3 Dec 2020 21:57:02 -0800
+ 15.1.1979.3; Thu, 3 Dec 2020 22:30:23 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PsnfOQGH9sWzBsKAwgFzHSDlO7PpowUar7TlLEZnUazwOOU4ba/iZJL6sWK3bZGqfJm9lHTjhhvag3VDXMylWTHb76OF4nAqA+DDJpHH1YgYHhqBeYe554m1d2mgd+la5PYYueU4vwMB8QYIs26H7ZQo+z/IbKwxan33uJWNkINuwpnG3Erqx2uqMjnBW8Aw7I9quAtYv8EPnRHIn6HoEEEQWSWSLlkHfnP+hrzkrJa40/LjpjvmbbMT88UbVutxvT20+FLkILAvHDEOe2Ez1jTxFx9Ln537dOHgzJmZnQ7/AxaFT3H93XeCHPfdPlXTjfHrQPUN6iUPCPisvZRF6Q==
+ b=cdCYmYA2+96y8P3Vk+GjEmraABKl+G/i8ENQ+RCAxxfugQ4vK8RPcmjFcRlWnU4bCsLtGJZOGmEf/otS3Dk+McvY/H9SCL+XIV0vG3hfDB1vvQykpxR4MTJHxnWGCTK3qyaT6nq9NXwaCwfE2E8exv07/zm/6M0aeSjWG6Oj/vcJzArFt6hGbyp3FIbYKHZc3NnpyMoRFIrUd7yC+knurGkBBFCvYDe+ZFaHHlJ8dxEpZFlLq9wamSohRM5I2Hz053IdXBkHmxI+X2zG2ARsWOIw9CutM/kYITyKgzZl8TAf3HRc5NgCVSVgi6HCZ6sQKeN5UiFPY8XmpkyxihypHA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k1Q9BtrYz+V+t4BIH7AIHf0VSJRVSWOZE1vcxFn15rs=;
- b=U6DYAZlOX5L0flofQTDVVnG6dVGqbiV+nWm29Gn9DvNyOZFT7FeviAcqJMF8qfcSM8vEMt8dsu7mwK395kojZpp9D/SBR0qv50+687cJtVBtWV9xDOsIHnIbghHWTtdB4d+umFDmzq11DcxRwJrlGe9/7sF0yOG3IybCByl7ZAGGi4BEfC5m4SDBZiI6bH5SEnL4qWrdfsm1RnHzS0f/eJerb8CX84qvi2Jic7+BY7IfEzq+fLXsHE0QHTk0nc/ZUQw3ZlshTXEl3DEn8XoX+XrDzzOAH5kdlFPSRD4KsV7EISUfKCqlPnd5nS9SR6e07od4kQ1vLT/YNAzoBLkXBg==
+ bh=h+rVcsTEac9GhRn8AmDK55Y1KA/0T+E8grHYCH3slUE=;
+ b=kF6T0iQCxO30/ljIZBzmm5zYOANlJiir/vZLe9ZZ8KO98/nbw9h9VX/oo59T6vWV4V0ETs4ObHWd9/OgSJtYS3386sToE8jW21NP1RexxfPSDN+TAefse1j6iM3SWxE08Rt3/RB+/q/TqkqEZ2agbq86jKLk0JVce7Dwsw2jDgisuxKw1ERGihu6vFA1RX79ga2mcilnby75KOs5oRR00cNFdlWSTk/A5TvJmPjxNd2Y5bFqHMQe+uKDupb3FyfBXn4Va6HP+VsazkvDk/0WC/VfiGQb1FQU/scptAIoRo1Ya6mOmwcrg4/jpAHihoVk98v4JqIFUxo84bXRQSTreA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k1Q9BtrYz+V+t4BIH7AIHf0VSJRVSWOZE1vcxFn15rs=;
- b=JmFretGUPXz7j+nHC+j4GEq4z2qE2rAYssxdbd88nRecWV1hUHgVjFtdu+NOwO4n3BDPo29Y/IvPnB9WlOTmd0a6kkRBB8MrdA8l4kMLgIySumetr4c0hmARVvb6J9E7KY/AzIFbTGsSXN+6yrnmPBTKnt1Px/qfFFgsn1AsIOA=
-Authentication-Results: amazon.co.jp; dkim=none (message not signed)
- header.d=none;amazon.co.jp; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by BYAPR15MB3367.namprd15.prod.outlook.com (2603:10b6:a03:105::28) with
+ bh=h+rVcsTEac9GhRn8AmDK55Y1KA/0T+E8grHYCH3slUE=;
+ b=KiIxsdtPSdAx13bG3bwyFLcjZLN+Cc8Gwh811au2vUQ0uTYS17bbpQxP1pGwSFkkvGriphSK30rHbOKYqMnlM8rvpWlF2bVHW+tEl3AOJJnAMmSpXQ13NRetrIhNfTQ3HEDxeje4LUkyrtbfWbj0YJMBWJpi59+zDBpSRRK4Xas=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by BYAPR15MB4085.namprd15.prod.outlook.com (2603:10b6:a02:bf::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3611.31; Fri, 4 Dec
- 2020 05:57:01 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::2831:21bf:8060:a0b]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::2831:21bf:8060:a0b%7]) with mapi id 15.20.3632.021; Fri, 4 Dec 2020
- 05:57:01 +0000
-Date:   Thu, 3 Dec 2020 21:56:53 -0800
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-CC:     <andrii.nakryiko@gmail.com>, <ast@kernel.org>, <benh@amazon.com>,
-        <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <kuni1840@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-Subject: Re: [PATCH v1 bpf-next 06/11] bpf: Introduce two attach types for
- BPF_PROG_TYPE_SK_REUSEPORT.
-Message-ID: <20201204055226.c6abex2dmperhgx5@kafai-mbp.dhcp.thefacebook.com>
-References: <20201203042402.6cskdlit5f3mw4ru@kafai-mbp.dhcp.thefacebook.com>
- <20201203141608.53206-1-kuniyu@amazon.co.jp>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201203141608.53206-1-kuniyu@amazon.co.jp>
-X-Originating-IP: [2620:10d:c090:400::5:fef]
-X-ClientProxiedBy: MWHPR03CA0011.namprd03.prod.outlook.com
- (2603:10b6:300:117::21) To BY5PR15MB3571.namprd15.prod.outlook.com
- (2603:10b6:a03:1f6::32)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.21; Fri, 4 Dec
+ 2020 06:30:20 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3632.021; Fri, 4 Dec 2020
+ 06:30:20 +0000
+Subject: Re: [PATCH bpf-next v3 09/14] bpf: Pull out a macro for interpreting
+ atomic ALU operations
+To:     Brendan Jackman <jackmanb@google.com>, <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        <linux-kernel@vger.kernel.org>, Jann Horn <jannh@google.com>
+References: <20201203160245.1014867-1-jackmanb@google.com>
+ <20201203160245.1014867-10-jackmanb@google.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <f1d5ec7e-6231-0876-f25d-9dd5da4112d0@fb.com>
+Date:   Thu, 3 Dec 2020 22:30:18 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.1
+In-Reply-To: <20201203160245.1014867-10-jackmanb@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2620:10d:c090:400::5:1dae]
+X-ClientProxiedBy: SJ0PR13CA0182.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c3::7) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
+MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:fef) by MWHPR03CA0011.namprd03.prod.outlook.com (2603:10b6:300:117::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.18 via Frontend Transport; Fri, 4 Dec 2020 05:56:59 +0000
+Received: from [IPv6:2620:10d:c085:21c8::12b3] (2620:10d:c090:400::5:1dae) by SJ0PR13CA0182.namprd13.prod.outlook.com (2603:10b6:a03:2c3::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.7 via Frontend Transport; Fri, 4 Dec 2020 06:30:19 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 84aab176-607c-443c-4425-08d898196adf
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3367:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB336737B29C981AECF39A81B0D5F10@BYAPR15MB3367.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 935eac4b-bd40-4e22-7630-08d8981e125e
+X-MS-TrafficTypeDiagnostic: BYAPR15MB4085:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB40859B750998FF06FCF56208D3F10@BYAPR15MB4085.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
+X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rMdFI0yALVjAhMhSrljgw0TzyDB560fQOJtF5xUZsZrNwMX6T1EZL+sWIIwoQOpMu3PMeZE1T2/1bvdor5r1qADJYAQIhGHjlXJieC0ctcjMBe8IYUz6/GE92t1M3kv2MAOrmFm0Wio0cZQgfWYjTuH8sao0aB5s04AxSPzvwjjQiuLeV6ykXBSO7rh4qKEef9nQWynkK70hm53glxMBbMY7L2TaNarGMBn0HP7NaaK+WpNr/8awvTwgQIZae3jLlW7l2fAwXxoz4ZcJypSl+UXzAcJwLAXvl+WYfJUiEu9H6rUKiJUJu1oObteSHYLBZGIps7kUJT5sD9DsuPqAbxgvk5BNDH1vG9i+kZ0WTsuutEz5tX/PehVGm83fLo1A6Mx8STxweG2/Ug0jvSYJxQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(39860400002)(136003)(366004)(396003)(8936002)(53546011)(6506007)(6916009)(66476007)(1076003)(66556008)(2906002)(478600001)(66946007)(316002)(7416002)(83380400001)(55016002)(86362001)(4326008)(8676002)(6666004)(16526019)(52116002)(186003)(966005)(5660300002)(7696005)(9686003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?O6iQusSAtolJ8X4UljHYUvVGMj+aS4BD6nE/41gacpK5+08QR2JzZSi+p7f7?=
- =?us-ascii?Q?1zS2oYzO+KPG5T3RzYIun69aLGgrwU/j+ZPoB/7+C0Sf/55ux/SQAItnAM8i?=
- =?us-ascii?Q?NNPgcpMvPIj6jQ7kEbSTGQxS3migJBme4uzsFLd91FIF5nH+vOG0Nl7k20XM?=
- =?us-ascii?Q?Qu2HQUAtQq5ee37EufhOK1WNzQbcG4dtfFMQ20kskbyjxG1IfYTeN6T2iB0r?=
- =?us-ascii?Q?VQXTynbLfrBPnx4ByhGQMVVPhbU25C5rnHqvzGvhENJNvRQus7I3bkUrwMkF?=
- =?us-ascii?Q?YKlcYN+dUqxkQuaoVjPRbr/tQlQYANx+iwiIM/JFlR3D9llh0BLsIs2OGLqP?=
- =?us-ascii?Q?MRwujPku4EmDBYJC4wt6e8WuCiNN4bBH6LxpmwQksm3cASHkBF/vexNu1A9p?=
- =?us-ascii?Q?LVDX5kGM/9b/Z7/mZcFd0hadudY5AAUOcffNXj77W/lflewSIkPcbP+UpJdt?=
- =?us-ascii?Q?uT7UK1S6qjZ8b6cPbBJ0JPqccn9f8rm2mWMM9AjyUkohapx0Y6Fu2kWoORON?=
- =?us-ascii?Q?zqhQGsj1b+f5uJor1OVWosbCFi5XUESSEMN4egxCPA+M1UGLfTisqA/PNmUT?=
- =?us-ascii?Q?V9HKF+gZVB/FU9qKCoiT+0mKsIIbuwfIVZ61agAY5xLcZqvRJYsXWqBhiKAM?=
- =?us-ascii?Q?5TTC2lkKS6Oo0Tw0NrfJeiBR3RlQixv3wNk6o5buSFx6GemZ9m63AM/a8AWS?=
- =?us-ascii?Q?j/9ja6tPOswpmwJSqsX1kn2dboWC6Y6gTlofUTI/ymKJhcDKhPhiRCWAU0Ly?=
- =?us-ascii?Q?tmcoi+UDcMNFRQ1YYhY2uG77VooOtwA9JpKdQ6WfTReFEcF1TXvsDQu5DtqK?=
- =?us-ascii?Q?THQ42FUny3XheiV9i94rFasqOSN8oTHs0sN2Y7jiVChdGoeDwLYR5fJHEzAZ?=
- =?us-ascii?Q?+6GsLHio3hrPZmoylABrcKZOrqvPRNQzzDhvMgYJu3N1HJ+jGH13eLD6PAi+?=
- =?us-ascii?Q?eXs4DBVcQW0r7r75AYx2IeQdR4y+8d33ABmyJqMFOQ10W+cqmDQ46a9SrWT+?=
- =?us-ascii?Q?qdki5+4MSUXNKg6QjmJuwFNvGw=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 84aab176-607c-443c-4425-08d898196adf
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: CoU5dRtnUH00sQEHdIR+M1CX0MTQImK/vZaO3WnjgmlPJMkG7h9FallFTvmQQBv4Om0lGy0rA3xj9jBilSVh3CoqkbqRPsq2Ce+L0zURux0gYv9YCCIn6VFbM1it/L1KgcDt7xv5Si8YcOWQxA6u+SMxRq5IZCa2Dv+rnRf3ob8SHO65YZO3hlUCwzMl36P7COsZ7xxm7ukUgLzyJH9nTqg3qkyX2GAUYtefO3f61AOKxYm0Ou//gycdvxSbq3h6r8KwxO/OnUIqe1wUWZ19fFvorA2JGufSP0Kp7gwlSpjmRWUTy/gMWMBhrqY5LuzIjZQrnHG4XYPD+VBEyWTJtICkWxKVSWm46SGPpcHczMg5p391zvqPgC6tXSO3OX97Ks7kv973h9RDcDGFfH+w3T9UPXocWZE8FgeAXogMrIU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(366004)(396003)(39860400002)(376002)(478600001)(4326008)(31686004)(83380400001)(66946007)(52116002)(66476007)(66556008)(31696002)(36756003)(16526019)(186003)(8676002)(53546011)(2906002)(8936002)(86362001)(54906003)(5660300002)(316002)(2616005)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?cHhqYVZoZmQ5elJrVmZHb2QrbG9WWWdDdGpOdHAza2RPUktqRkJFVDRQVkNz?=
+ =?utf-8?B?Z1VSTXh1NGJYc1dzZlpPenZSdzN5NFJjcmV5M0lvdlRpdnFxS0x0VGhSSnA3?=
+ =?utf-8?B?NHpaYjRneitOUlR3UHBlcnZNdWpkMUxyYTlpMFR3NlI5WVA2V29OY0xCQ2Ji?=
+ =?utf-8?B?a3ZPNGhzNnZmbFhaY2JXbFZSRUpzS0hObkZnOVRuWWMzVENLRzBnNzZUaEJ1?=
+ =?utf-8?B?OEdUNUJoUGtCWjJxdlFFVzdPVVIrYWQxazNnRkl5NXJWb2F6RVc3d2pQZW9O?=
+ =?utf-8?B?bjJCN2ZvdWM1SWtrRm1EV1g1YU9zQzExeTJ5eDhOc0tOQk9zT09hc3cxT0lU?=
+ =?utf-8?B?L0t4UmtnRkdxK1QyMDN0TWRiMHZIL0xXTTZnR2JjWU8xNDNmUytPL3ozckZ1?=
+ =?utf-8?B?aEhlNW80di9sMjNiQVh0OU04Ulc2VmE2ekhFRTUrT09zM244OGZFNVpVSjhw?=
+ =?utf-8?B?RktoMDN4M2JwaElQcWRlVE9XdGo5SUJaSnJFYWRMY05GUnlvTnJsMHhPTEFv?=
+ =?utf-8?B?b0I2dlFkU1RPNWVJV1ZCRndDZ2FjcC9TandJSTFLbDdHbjBzK2xQaHRHRFRU?=
+ =?utf-8?B?UkVhSWZqSWFvckswVlhJREsrM1FQamhxMEJHdVNWZDF0Qkk2SzNWaG5KTDZI?=
+ =?utf-8?B?NHVlRkd6djlOM01oU1hZdXptZ3BZSU5kNkxQNVpwTFJjZWJ5dUl3TDN6UDBU?=
+ =?utf-8?B?TUt6YkV5a0hmbE15R0lrK3F5Y2tTa2xoN3Z2RUVSMWUwUEkyMUxKcFFjNDZw?=
+ =?utf-8?B?MlRIRSs0bTdQbndlK1BBbnhJbndOemdzZ1grSWM2Y2R4Zkc5UDhBcDhRd1o1?=
+ =?utf-8?B?VjFuS2lKaHFmNlB2WmMrM1k4aEdCeXlmNjR6QjF2RnJqbC8zV3FMT0pyUWlE?=
+ =?utf-8?B?UTlUTFJRUE9GSEZuS2puamdIa2tVZ1Nmb2E4ZlF5V0ZnYzQzTnNhL2ZBeUkv?=
+ =?utf-8?B?bzUxbFBXRit5S3JnZy8rcTlIM3NDcy9QdDVrbkVpSmlmYW1FRXFxeUhXOEpu?=
+ =?utf-8?B?V09MUFROTDJFbmJmTWlUL0k5SXdseDl2Unhyb3JNWk5rWEJwOVhmVUFqaGhy?=
+ =?utf-8?B?enF1Q0h2SmUxUUZlRGU3R1ZmbXNRd0pOR3BaSGEwaTJVK1FNQm1xOUs3Y3BS?=
+ =?utf-8?B?TXN4dVQ3SnZISFFrc3lrVjRwTmRKNUtvY0gzdGd6alVNTklqSG5rRjVNZzhJ?=
+ =?utf-8?B?cHJ5ZE8wMnRuQWdORVo2ZkZzRzJobnI0MndZdkFkTVUrNHF1Z1FPdGRXbTgw?=
+ =?utf-8?B?aVBVWE9BdlpXTGg3Ulp0NGp5ckRqUmNmcmFtYU83elE1UXhDVmYvd3FtRUhk?=
+ =?utf-8?B?aE1FS1Vlcm9NcDBLZUVqRUZzM0F6OWpEejlOWFFFbXpCNTQrOEQxQSs5blly?=
+ =?utf-8?B?d2RSc1J2c3BLNGc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 935eac4b-bd40-4e22-7630-08d8981e125e
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2020 05:57:01.0434
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2020 06:30:19.9525
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Piw40zLXBdSa3wTb/UDZDQJJ90Lg7wylTeiCzrBtP55NreSvEf7OzsXKe4qg+bKA
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3367
+X-MS-Exchange-CrossTenant-UserPrincipalName: jbOyLDrFFgF+sx9Xk5lL5fYYvQm4QuwgfAoj8eCq7d03R9//ynX92Hasxp80uOGo
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB4085
 X-OriginatorOrg: fb.com
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
  definitions=2020-12-04_01:2020-12-04,2020-12-04 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
- mlxlogscore=999 clxscore=1015 lowpriorityscore=0 suspectscore=0
- bulkscore=0 spamscore=0 impostorscore=0 mlxscore=0 priorityscore=1501
- adultscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2012040033
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ bulkscore=0 lowpriorityscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ adultscore=0 mlxlogscore=999 suspectscore=0 clxscore=1015
+ priorityscore=1501 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2012040036
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 03, 2020 at 11:16:08PM +0900, Kuniyuki Iwashima wrote:
-> From:   Martin KaFai Lau <kafai@fb.com>
-> Date:   Wed, 2 Dec 2020 20:24:02 -0800
-> > On Wed, Dec 02, 2020 at 11:19:02AM -0800, Martin KaFai Lau wrote:
-> > > On Tue, Dec 01, 2020 at 06:04:50PM -0800, Andrii Nakryiko wrote:
-> > > > On Tue, Dec 1, 2020 at 6:49 AM Kuniyuki Iwashima <kuniyu@amazon.co.jp> wrote:
-> > > > >
-> > > > > This commit adds new bpf_attach_type for BPF_PROG_TYPE_SK_REUSEPORT to
-> > > > > check if the attached eBPF program is capable of migrating sockets.
-> > > > >
-> > > > > When the eBPF program is attached, the kernel runs it for socket migration
-> > > > > only if the expected_attach_type is BPF_SK_REUSEPORT_SELECT_OR_MIGRATE.
-> > > > > The kernel will change the behaviour depending on the returned value:
-> > > > >
-> > > > >   - SK_PASS with selected_sk, select it as a new listener
-> > > > >   - SK_PASS with selected_sk NULL, fall back to the random selection
-> > > > >   - SK_DROP, cancel the migration
-> > > > >
-> > > > > Link: https://lore.kernel.org/netdev/20201123003828.xjpjdtk4ygl6tg6h@kafai-mbp.dhcp.thefacebook.com/
-> > > > > Suggested-by: Martin KaFai Lau <kafai@fb.com>
-> > > > > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-> > > > > ---
-> > > > >  include/uapi/linux/bpf.h       | 2 ++
-> > > > >  kernel/bpf/syscall.c           | 8 ++++++++
-> > > > >  tools/include/uapi/linux/bpf.h | 2 ++
-> > > > >  3 files changed, 12 insertions(+)
-> > > > >
-> > > > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > > > > index 85278deff439..cfc207ae7782 100644
-> > > > > --- a/include/uapi/linux/bpf.h
-> > > > > +++ b/include/uapi/linux/bpf.h
-> > > > > @@ -241,6 +241,8 @@ enum bpf_attach_type {
-> > > > >         BPF_XDP_CPUMAP,
-> > > > >         BPF_SK_LOOKUP,
-> > > > >         BPF_XDP,
-> > > > > +       BPF_SK_REUSEPORT_SELECT,
-> > > > > +       BPF_SK_REUSEPORT_SELECT_OR_MIGRATE,
-> > > > >         __MAX_BPF_ATTACH_TYPE
-> > > > >  };
-> > > > >
-> > > > > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > > > > index f3fe9f53f93c..a0796a8de5ea 100644
-> > > > > --- a/kernel/bpf/syscall.c
-> > > > > +++ b/kernel/bpf/syscall.c
-> > > > > @@ -2036,6 +2036,14 @@ bpf_prog_load_check_attach(enum bpf_prog_type prog_type,
-> > > > >                 if (expected_attach_type == BPF_SK_LOOKUP)
-> > > > >                         return 0;
-> > > > >                 return -EINVAL;
-> > > > > +       case BPF_PROG_TYPE_SK_REUSEPORT:
-> > > > > +               switch (expected_attach_type) {
-> > > > > +               case BPF_SK_REUSEPORT_SELECT:
-> > > > > +               case BPF_SK_REUSEPORT_SELECT_OR_MIGRATE:
-> > > > > +                       return 0;
-> > > > > +               default:
-> > > > > +                       return -EINVAL;
-> > > > > +               }
-> > > > 
-> > > > this is a kernel regression, previously expected_attach_type wasn't
-> > > > enforced, so user-space could have provided any number without an
-> > > > error.
-> > > I also think this change alone will break things like when the usual
-> > > attr->expected_attach_type == 0 case.  At least changes is needed in
-> > > bpf_prog_load_fixup_attach_type() which is also handling a
-> > > similar situation for BPF_PROG_TYPE_CGROUP_SOCK.
-> > > 
-> > > I now think there is no need to expose new bpf_attach_type to the UAPI.
-> > > Since the prog->expected_attach_type is not used, it can be cleared at load time
-> > > and then only set to BPF_SK_REUSEPORT_SELECT_OR_MIGRATE (probably defined
-> > > internally at filter.[c|h]) in the is_valid_access() when "migration"
-> > > is accessed.  When "migration" is accessed, the bpf prog can handle
-> > > migration (and the original not-migration) case.
-> > Scrap this internal only BPF_SK_REUSEPORT_SELECT_OR_MIGRATE idea.
-> > I think there will be cases that bpf prog wants to do both
-> > without accessing any field from sk_reuseport_md.
-> > 
-> > Lets go back to the discussion on using a similar
-> > idea as BPF_PROG_TYPE_CGROUP_SOCK in bpf_prog_load_fixup_attach_type().
-> > I am not aware there is loader setting a random number
-> > in expected_attach_type, so the chance of breaking
-> > is very low.  There was a similar discussion earlier [0].
-> > 
-> > [0]: https://lore.kernel.org/netdev/20200126045443.f47dzxdglazzchfm@ast-mbp/
+
+
+On 12/3/20 8:02 AM, Brendan Jackman wrote:
+> Since the atomic operations that are added in subsequent commits are
+> all isomorphic with BPF_ADD, pull out a macro to avoid the
+> interpreter becoming dominated by lines of atomic-related code.
 > 
-> Thank you for the idea and reference.
+> Note that this sacrificies interpreter performance (combining
+> STX_ATOMIC_W and STX_ATOMIC_DW into single switch case means that we
+> need an extra conditional branch to differentiate them) in favour of
+> compact and (relatively!) simple C code.
 > 
-> I will remove the change in bpf_prog_load_check_attach() and set the
-> default value (BPF_SK_REUSEPORT_SELECT) in bpf_prog_load_fixup_attach_type()
-> for backward compatibility if expected_attach_type is 0.
-check_attach_type() can be kept.  You can refer to
-commit aac3fc320d94 for a similar situation.
+> Change-Id: I8cae5b66e75f34393de6063b91c05a8006fdd9e6
+> Signed-off-by: Brendan Jackman <jackmanb@google.com>
+
+Ack with a minor suggestion below.
+
+Acked-by: Yonghong Song <yhs@fb.com>
+
+> ---
+>   kernel/bpf/core.c | 79 +++++++++++++++++++++++------------------------
+>   1 file changed, 38 insertions(+), 41 deletions(-)
+> 
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index 28f960bc2e30..498d3f067be7 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -1618,55 +1618,52 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
+>   	LDX_PROBE(DW, 8)
+>   #undef LDX_PROBE
+>   
+> -	STX_ATOMIC_W:
+> -		switch (IMM) {
+> -		case BPF_ADD:
+> -			/* lock xadd *(u32 *)(dst_reg + off16) += src_reg */
+> -			atomic_add((u32) SRC, (atomic_t *)(unsigned long)
+> -				   (DST + insn->off));
+> -			break;
+> -		case BPF_ADD | BPF_FETCH:
+> -			SRC = (u32) atomic_fetch_add(
+> -				(u32) SRC,
+> -				(atomic_t *)(unsigned long) (DST + insn->off));
+> -			break;
+> -		case BPF_XCHG:
+> -			SRC = (u32) atomic_xchg(
+> -				(atomic_t *)(unsigned long) (DST + insn->off),
+> -				(u32) SRC);
+> -			break;
+> -		case BPF_CMPXCHG:
+> -			BPF_R0 = (u32) atomic_cmpxchg(
+> -				(atomic_t *)(unsigned long) (DST + insn->off),
+> -				(u32) BPF_R0, (u32) SRC);
+> +#define ATOMIC(BOP, KOP)						\
+
+ATOMIC a little bit generic. Maybe ATOMIC_FETCH_BOP?
+
+> +		case BOP:						\
+> +			if (BPF_SIZE(insn->code) == BPF_W)		\
+> +				atomic_##KOP((u32) SRC, (atomic_t *)(unsigned long) \
+> +					     (DST + insn->off));	\
+> +			else						\
+> +				atomic64_##KOP((u64) SRC, (atomic64_t *)(unsigned long) \
+> +					       (DST + insn->off));	\
+> +			break;						\
+> +		case BOP | BPF_FETCH:					\
+> +			if (BPF_SIZE(insn->code) == BPF_W)		\
+> +				SRC = (u32) atomic_fetch_##KOP(		\
+> +					(u32) SRC,			\
+> +					(atomic_t *)(unsigned long) (DST + insn->off)); \
+> +			else						\
+> +				SRC = (u64) atomic64_fetch_##KOP(	\
+> +					(u64) SRC,			\
+> +					(atomic64_t *)(s64) (DST + insn->off)); \
+>   			break;
+> -		default:
+> -			goto default_label;
+> -		}
+> -		CONT;
+>   
+>   	STX_ATOMIC_DW:
+> +	STX_ATOMIC_W:
+>   		switch (IMM) {
+> -		case BPF_ADD:
+> -			/* lock xadd *(u64 *)(dst_reg + off16) += src_reg */
+> -			atomic64_add((u64) SRC, (atomic64_t *)(unsigned long)
+> -				     (DST + insn->off));
+> -			break;
+> -		case BPF_ADD | BPF_FETCH:
+> -			SRC = (u64) atomic64_fetch_add(
+> -				(u64) SRC,
+> -				(atomic64_t *)(s64) (DST + insn->off));
+> -			break;
+> +		ATOMIC(BPF_ADD, add)
+> +
+>   		case BPF_XCHG:
+> -			SRC = (u64) atomic64_xchg(
+> -				(atomic64_t *)(u64) (DST + insn->off),
+> -				(u64) SRC);
+> +			if (BPF_SIZE(insn->code) == BPF_W)
+> +				SRC = (u32) atomic_xchg(
+> +					(atomic_t *)(unsigned long) (DST + insn->off),
+> +					(u32) SRC);
+> +			else
+> +				SRC = (u64) atomic64_xchg(
+> +					(atomic64_t *)(u64) (DST + insn->off),
+> +					(u64) SRC);
+>   			break;
+>   		case BPF_CMPXCHG:
+> -			BPF_R0 = (u64) atomic64_cmpxchg(
+> -				(atomic64_t *)(u64) (DST + insn->off),
+> -				(u64) BPF_R0, (u64) SRC);
+> +			if (BPF_SIZE(insn->code) == BPF_W)
+> +				BPF_R0 = (u32) atomic_cmpxchg(
+> +					(atomic_t *)(unsigned long) (DST + insn->off),
+> +					(u32) BPF_R0, (u32) SRC);
+> +			else
+> +				BPF_R0 = (u64) atomic64_cmpxchg(
+> +					(atomic64_t *)(u64) (DST + insn->off),
+> +					(u64) BPF_R0, (u64) SRC);
+>   			break;
+> +
+>   		default:
+>   			goto default_label;
+>   		}
+> 
