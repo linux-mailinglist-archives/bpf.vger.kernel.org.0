@@ -2,506 +2,192 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C0F2CE59D
-	for <lists+bpf@lfdr.de>; Fri,  4 Dec 2020 03:20:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCC822CE6A8
+	for <lists+bpf@lfdr.de>; Fri,  4 Dec 2020 04:43:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726332AbgLDCUT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 3 Dec 2020 21:20:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726112AbgLDCUT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 3 Dec 2020 21:20:19 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AB2CC061A4F;
-        Thu,  3 Dec 2020 18:19:39 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id f9so2061543pfc.11;
-        Thu, 03 Dec 2020 18:19:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EdPQGYgm+S6jyi1ae/x25ZZfRF2j/997sKqHBbyVNxM=;
-        b=UiHvLlSzDzPhH5wOEntuYgBBA0iZMTHZDQob4TkMViP7ubUY5mXdkZv+Boyww6ofoC
-         EgXTc4K1RXbZj5eeMkA4bMGC0Z4v/9pHk6tztJc3cGlR+pvkQ19YCsJcyHxOJDIjh7Ur
-         8KIgJwaZz7oH/tQXLO+mHvQPpg8v3tW8c0lh6uAy51EpuNTpFahBQ8iR8ZgrRtTMPsAe
-         KdMKH6kNzL2mwWc7wwfc4CzzSkOjD9IrVFGdWEqNlsM5cNiC0NWe9Ne4qhAl/KuDAx+z
-         0R5pktAN9QtQdN8oJjUhNm1znGUAfrEEp5w4N+HzQiML+rdbwVoEFnj/VF1t0eXzOU6I
-         fOlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EdPQGYgm+S6jyi1ae/x25ZZfRF2j/997sKqHBbyVNxM=;
-        b=pHRFG9PguwB34vusjucy0dLGi4uabYOUraBugxuifN3d8burUXTx6tcCVUCVdvxTA8
-         sM6tlWTqKR0GowwUPat58eLOzufnhRFDwH5vbymd7m8Fkq/jJ32UQ9VCo+Gr5V3Cs55t
-         69yTggTIP4+8wo956jOopHZ8cOFB7GDDdgA+nAmg8h9NE+ymxUa/6m0XQSKM1E/FZQiR
-         823nFHp+f8wBWyG/VsAyVKNeCyBoUyUMkwQwH3wHTtMSJ1TZbUTHAAB3+gAYhvjgLkQc
-         dWxFTGiFomPns/Tm0r2LOIOUf4Pxwxygvgi5UewOueKf5/F6xKPaPqH31WVOzxyTqSR4
-         ohbw==
-X-Gm-Message-State: AOAM530omgSOqti3S9TEY4fcQwTcqf8xkh+d213IyPmSrXsBmrjAPxhh
-        bdTNz85TeuRERABdXIAr+/M=
-X-Google-Smtp-Source: ABdhPJyxFlva7NVW6952S9wE7HaiYLZiMKInAbhg70eWWUIExGcKCTYxgfc2tl/a0bQK5OXFunJ+RA==
-X-Received: by 2002:a63:6882:: with SMTP id d124mr5597346pgc.197.1607048378651;
-        Thu, 03 Dec 2020 18:19:38 -0800 (PST)
-Received: from ast-mbp.thefacebook.com ([163.114.132.7])
-        by smtp.gmail.com with ESMTPSA id x10sm2169496pga.70.2020.12.03.18.19.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 03 Dec 2020 18:19:37 -0800 (PST)
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     davem@davemloft.net
-Cc:     daniel@iogearbox.net, kuba@kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, kernel-team@fb.com
-Subject: pull-request: bpf-next 2020-12-03
-Date:   Thu,  3 Dec 2020 18:19:36 -0800
-Message-Id: <20201204021936.85653-1-alexei.starovoitov@gmail.com>
-X-Mailer: git-send-email 2.13.5
+        id S1726935AbgLDDnf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 3 Dec 2020 22:43:35 -0500
+Received: from de-smtp-delivery-102.mimecast.com ([62.140.7.102]:46735 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725847AbgLDDne (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 3 Dec 2020 22:43:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1607053345;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=s8KrzQEMJsK3eWKkpXa05FVwfV8GWFvODLPoRsqUO8g=;
+        b=mzcE/yrKseY3+V2rmt16kcMJwvJZHGGiKf7DpgpJwVlh7WH8TPeXA9a+74mXBqL++J9yaA
+        WMtZ45muPux8LooZDT77SWG9XyNb3OO80XEwGDYffgYivsaRA5EQbIZaSzMa5oOfY3ryom
+        2V8ah87MT+eMPuJJK1CJa+k44jtQk1o=
+Received: from EUR01-DB5-obe.outbound.protection.outlook.com
+ (mail-db5eur01lp2054.outbound.protection.outlook.com [104.47.2.54]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-36-2S3CfSOWPwSa7iCpxZQ4UQ-1; Fri, 04 Dec 2020 04:42:23 +0100
+X-MC-Unique: 2S3CfSOWPwSa7iCpxZQ4UQ-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FQIeYFzQjMi5MAkcSDdbIuMZtpeBwCc/AErL2Z2lFr+pESgBYPGcrPmqtiTl2+LtRpzTC+4sBJ0apJ8Hb+ESmXDgJMEztUpLGzkidNIAUGNoQgtbma4/TJ6IHx54APmkFaCZB6sSh2djKwhvZaiyTNkvCie1h6H2/gTM1Jzlx0shOipXZ0uOQWZR0jkj6c/xjRyJ6ihR6rrPf0YaCwcUIakqE4XzxHmMOmDX9KwRFa2OZO3C1P6g1RryQ4UO1FhLVdztAd2D4XqtRk91KiLvKcW8+htCpb6owQKAjWe+yCIoQy3h9ZK9z/l9ZuLEkhJ9MLV1hkHZX9lCcM0cmrP2zA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=s8KrzQEMJsK3eWKkpXa05FVwfV8GWFvODLPoRsqUO8g=;
+ b=B/Lxf9Dxr7gywXWqmOeG8KdgHmiWkaPxVkyZgZITPslDq06ClvxVVQbIE8YqYwk62aUYSzZBjnMMJenIzKLIv2lWiBboI9Y6k1BwsyFLyblQw7b6n3iul7JPYO3Q6H3jwHi5Xi8sBh2RYUAqeM3wnQ3uR52sf1P07DMrOvEyNySv7romk/k4QrFeTAoSfVCXgHIphCdIwuByR47idnCQzyJu8nlKyKyZy/t7oC8amBIBXZ1R41Bm8WFSjcYSUom31eADs4SeaX3hc0fbyLFQ9t1o9O3bOqs7C5SKyYR+f0baTvIezpH6A7qAEei8WXpB0+2FlE7l8YYjNJXdJDcxWQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=suse.com;
+Received: from DB3PR0402MB3641.eurprd04.prod.outlook.com (2603:10a6:8:b::12)
+ by DB7PR04MB4474.eurprd04.prod.outlook.com (2603:10a6:5:3c::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.19; Fri, 4 Dec
+ 2020 03:42:22 +0000
+Received: from DB3PR0402MB3641.eurprd04.prod.outlook.com
+ ([fe80::80c9:1fa3:ae84:7313]) by DB3PR0402MB3641.eurprd04.prod.outlook.com
+ ([fe80::80c9:1fa3:ae84:7313%7]) with mapi id 15.20.3589.037; Fri, 4 Dec 2020
+ 03:42:22 +0000
+Date:   Fri, 4 Dec 2020 11:42:13 +0800
+From:   Gary Lin <glin@suse.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        andreas.taschner@suse.com
+Subject: Re: [PATCH] bpf, x64: bump the number of passes to 64
+Message-ID: <20201204034213.GA16653@GaryWorkstation>
+References: <20201203091252.27604-1-glin@suse.com>
+ <8fbcb23d-d140-48fb-819d-61f49672d9bd@gmail.com>
+ <20201203181431.t2l63nifzprxqc26@ast-mbp>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201203181431.t2l63nifzprxqc26@ast-mbp>
+X-Originating-IP: [60.251.47.115]
+X-ClientProxiedBy: AM0PR06CA0076.eurprd06.prod.outlook.com
+ (2603:10a6:208:fa::17) To DB3PR0402MB3641.eurprd04.prod.outlook.com
+ (2603:10a6:8:b::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from GaryWorkstation (60.251.47.115) by AM0PR06CA0076.eurprd06.prod.outlook.com (2603:10a6:208:fa::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend Transport; Fri, 4 Dec 2020 03:42:20 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 417405da-a79f-4b1b-371f-08d898069be5
+X-MS-TrafficTypeDiagnostic: DB7PR04MB4474:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB7PR04MB4474DF58CD47A6433CF5DDF2A9F10@DB7PR04MB4474.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: KVnqIocJljltET++vlZnU7Dh875GoBgucOA5b8ZgNAenC+ZKPhGIHmqmArL/jOw9jeXd5KI7dzWm+CE/DXR83/A4pniG9lBe0LwNevhNRp71YF4er8pUCOr42UkxG+I1R25jSNNk0jnNFum18h+Ol9qwA1/lVg9CXgtLEqYMQo71z2AjVOOPbnVgUTkZP/3cUNQ/OsNjWSanPRDsG5PGNwChARYlrQS3UDKkG0YdLE1bs05wtlcmyaMf3bDElgwNdpEdlFNIuGygZijgZ7eKx4OMHfPcsONo9oO8PrMXKjfpS/cCwgWP1QgH1Q45PErqbBzCIcwNgXpoXuoa/QDD/g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB3PR0402MB3641.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(346002)(39860400002)(376002)(366004)(136003)(6916009)(53546011)(5660300002)(33716001)(54906003)(86362001)(6496006)(83380400001)(4326008)(52116002)(55236004)(478600001)(55016002)(8676002)(1076003)(956004)(9686003)(66556008)(33656002)(66946007)(8936002)(186003)(16526019)(26005)(2906002)(316002)(107886003)(66476007)(6666004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?QbujSv06ftT0GjsYV6or64/p97WUbCK5ZYD+alKEDH0wA6tT1JDfU23ohcHN?=
+ =?us-ascii?Q?T7u74ve+VW2hdOBrlXuDBEbcu+mW5VQ8TLCJ7mKqk4eykLun6bMJPk+GJxHo?=
+ =?us-ascii?Q?NTwGhouMCVTQue7WP2RqwJExqPiG3DkpfqcmrHqMspjses4YSnxfSlo52e7K?=
+ =?us-ascii?Q?L2bUua/AgUnTO7h/RbCH5xVi6ubdTRAoUz6/Xfmef6U7su2kepKGGMslMj5q?=
+ =?us-ascii?Q?k+BLeRNPObhZqPDYisj01VNsrr6YYm9xVzRAB0Fa3jnS1xlxGZ3Qb8cUDm6N?=
+ =?us-ascii?Q?JlL2FP3Ai4sR5GozCiwMQJ/pHU9Hr2YUVFwt3m95wEvdQyrUZ/xpDmv6olnd?=
+ =?us-ascii?Q?fIOUW1yVAhoOtmmqiu+nBNBs/qXdWBQY5ved0a1S/+B+ggtUzu6vRFhmCj0a?=
+ =?us-ascii?Q?TPWO6sb/T3b7IrGfw7EW/cUbD8sbId5CU8yE5J9SkQR3Ba16vpwDH4X3yBM2?=
+ =?us-ascii?Q?4IfwtqEd7OQvE+4P35iLz14Twkq7vbSdmC4sL2+WZhOBZbMi9wjS7+tT67HF?=
+ =?us-ascii?Q?6kekiPEP942Zy6L+j6mvpGx7QjAgyUQFQhTe539h0lTn5+cbTmvkZHm3F0PN?=
+ =?us-ascii?Q?hBUrCzryxWqYP+80QcvRSapPdtFZjXfhKF4shjxSqglCU0EiCMKuDNCj1Vtd?=
+ =?us-ascii?Q?dYpcPRRJbC3KenMXQXQ1wjaK5nYBFQPZpgCTSJYp4bkOy+ZENwyMUSvDsrLy?=
+ =?us-ascii?Q?2OYBAs8K3tKjuVhdrpqJiZvvYXTViCr6m6heS1VhCm5VB4VlRNNokr4kmOxy?=
+ =?us-ascii?Q?6ZConPafuPPEME51vu1yzmmFUqssD1W7fjwQ7AljyZCXh5e/eCz4F5EahotD?=
+ =?us-ascii?Q?wSWnrw/nsogCcO0RIXdQhMmvbHa6Do44H77A7BfiQIJfkeou3+eKqqg785oJ?=
+ =?us-ascii?Q?e5K5qIvguzq0H8mbmh0XEFekBJgrOwEZoIKOG2gV/xFQLsss1huC+5mJjHlh?=
+ =?us-ascii?Q?6y79xISRGJknpVzE0ivW6Gggv99AHWZ1YwvQd216WSydOIo1IUDMVBAi8ZcZ?=
+ =?us-ascii?Q?3vUf?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 417405da-a79f-4b1b-371f-08d898069be5
+X-MS-Exchange-CrossTenant-AuthSource: DB3PR0402MB3641.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2020 03:42:22.7238
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WfGNfbzmlKr6MmEyH2NYuDuuyIcf4Xti1Va6y3eQmJDN57ZabVq8JZkDUSrAgJ+u
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB4474
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David, hi Jakub,
+On Thu, Dec 03, 2020 at 10:14:31AM -0800, Alexei Starovoitov wrote:
+> On Thu, Dec 03, 2020 at 12:20:38PM +0100, Eric Dumazet wrote:
+> > 
+> > 
+> > On 12/3/20 10:12 AM, Gary Lin wrote:
+> > > The x64 bpf jit expects bpf images converge within the given passes, but
+> > > it could fail to do so with some corner cases. For example:
+> > > 
+> > >       l0:     ldh [4]
+> > >       l1:     jeq #0x537d, l2, l40
+> > >       l2:     ld [0]
+> > >       l3:     jeq #0xfa163e0d, l4, l40
+> > >       l4:     ldh [12]
+> > >       l5:     ldx #0xe
+> > >       l6:     jeq #0x86dd, l41, l7
+> > >       l8:     ld [x+16]
+> > >       l9:     ja 41
+> > > 
+> > >         [... repeated ja 41 ]
+> > > 
+> > >       l40:    ja 41
+> > >       l41:    ret #0
+> > >       l42:    ld #len
+> > >       l43:    ret a
+> > > 
+> > > This bpf program contains 32 "ja 41" instructions which are effectively
+> > > NOPs and designed to be replaced with valid code dynamically. Ideally,
+> > > bpf jit should optimize those "ja 41" instructions out when translating
+> > > the bpf instructions into x86_64 machine code. However, do_jit() can
+> > > only remove one "ja 41" for offset==0 on each pass, so it requires at
+> > > least 32 runs to eliminate those JMPs and exceeds the current limit of
+> > > passes (20). In the end, the program got rejected when BPF_JIT_ALWAYS_ON
+> > > is set even though it's legit as a classic socket filter.
+> > > 
+> > > Since this kind of programs are usually handcrafted rather than
+> > > generated by LLVM, those programs tend to be small. To avoid increasing
+> > > the complexity of BPF JIT, this commit just bumps the number of passes
+> > > to 64 as suggested by Daniel to make it less likely to fail on such cases.
+> > > 
+> > 
+> > Another idea would be to stop trying to reduce size of generated
+> > code after a given number of passes have been attempted.
+> > 
+> > Because even a limit of 64 wont ensure all 'valid' programs can be JITed.
+> 
+> +1.
+> Bumping the limit is not solving anything.
+> It only allows bad actors force kernel to spend more time in JIT.
+> If we're holding locks the longer looping may cause issues.
+> I think JIT is parallel enough, but still it's a concern.
+> 
+> I wonder how assemblers deal with it?
+> They probably face the same issue.
+> 
+> Instead of going back to 32-bit jumps and suddenly increase image size
+> I think we can do nop padding instead.
+> After few loops every insn is more or less optimal.
+> I think the fix could be something like:
+>   if (is_imm8(jmp_offset)) {
+>        EMIT2(jmp_cond, jmp_offset);
+>        if (loop_cnt > 5) {
+>           EMIT N nops
+>           where N = addrs[i] - addrs[i - 1]; // not sure about this math.
+>           N can be 0 or 4 here.
+>           // or may be NOPs should be emitted before EMIT2.
+>           // need to think it through
+>        }
+>   }
+This looks promising. Once we switch to nop padding, the image is likely
+to converge soon. Maybe we can postpone the padding to the last 5 passes
+so that do_jit() could optimize the image a bit more.
 
-The following pull-request contains BPF updates for your *net-next* tree.
+> Will something like this work?
+> I think that's what you're suggesting, right?
+> 
+Besides nop padding, the optimization for 0 offset jump also has to be
+disabled since it's actually the one causing image shrinking in my case.
 
-We've added 118 non-merge commits during the last 20 day(s) which contain
-a total of 196 files changed, 4330 insertions(+), 2569 deletions(-).
+Gary Lin
 
-The main changes are:
-
-1) Support BTF in kernel modules, from Andrii.
-
-2) Introduce preferred busy-polling, from Björn.
-
-3) bpf_ima_inode_hash() and bpf_bprm_opts_set() helpers, from KP Singh.
-
-4) Memcg-based memory accounting for bpf objects, from Roman.
-
-5) Allow bpf_{s,g}etsockopt from cgroup bind{4,6} hooks, from Stanislav.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Andrey Ignatov, Andrii Nakryiko, Björn Töpel, Bruce Allan, Daniel 
-Borkmann, Florian Lehner, Ilias Apalodimas, Jakub Kicinski, Jakub 
-Sitnicki, Jesper Dangaard Brouer, Jessica Yu, Jiri Olsa, Johannes 
-Weiner, John Fastabend, Luke Nelson, Magnus Karlsson, Martin KaFai Lau, 
-Michael S. Tsirkin, Michal Hocko, Mimi Zohar, Shakeel Butt, Song Liu, 
-Stephen Rothwell, Tariq Toukan, Yonghong Song
-
-----------------------------------------------------------------
-
-The following changes since commit 2d38c5802f4626e85d280b68481c3f3ca4853ecb:
-
-  Merge branch 'ionic-updates' (2020-11-14 13:23:01 -0800)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git 
-
-for you to fetch changes up to eceae70bdeaeb6b8ceb662983cf663ff352fbc96:
-
-  selftests/bpf: Fix invalid use of strncat in test_sockmap (2020-12-03 18:07:05 -0800)
-
-----------------------------------------------------------------
-Alan Maguire (1):
-      libbpf: bpf__find_by_name[_kind] should use btf__get_nr_types()
-
-Alexei Starovoitov (6):
-      Merge branch 'bpf: expose bpf_{s,g}etsockopt helpers to bind{4,6} hooks'
-      Merge branch 'switch to memcg-based memory accounting'
-      Merge branch 'bpftool: improve split BTF support'
-      Merge branch 'libbpf: add support for privileged/unprivileged control separation'
-      Merge branch 'Add support to set window_clamp from bpf setsockops'
-      Merge branch 'Support BTF-powered BPF tracing programs for kernel modules'
-
-Andrei Matei (4):
-      selftest/bpf: Fix link in readme
-      selftest/bpf: Fix rst formatting in readme
-      bpf: Fix selftest compilation on clang 11
-      libbpf: Fail early when loading programs with unspecified type
-
-Andrii Nakryiko (24):
-      Merge branch 'RISC-V selftest/bpf fixes'
-      kbuild: Skip module BTF generation for out-of-tree external modules
-      bpf: Sanitize BTF data pointer after module is loaded
-      Merge branch 'bpf: remove bpf_load loader completely'
-      tools/bpftool: Emit name <anon> for anonymous BTFs
-      libbpf: Add base BTF accessor
-      tools/bpftool: Auto-detect split BTFs in common cases
-      Merge branch 'Fixes for ima selftest'
-      bpf: Fix bpf_put_raw_tracepoint()'s use of __module_address()
-      bpf: Keep module's btf_data_size intact after load
-      libbpf: Add internal helper to load BTF data by FD
-      libbpf: Refactor CO-RE relocs to not assume a single BTF object
-      libbpf: Add kernel module BTF support for CO-RE relocations
-      selftests/bpf: Add bpf_testmod kernel module for testing
-      selftests/bpf: Add support for marking sub-tests as skipped
-      selftests/bpf: Add CO-RE relocs selftest relying on kernel module BTF
-      bpf: Remove hard-coded btf_vmlinux assumption from BPF verifier
-      bpf: Allow to specify kernel module BTFs when attaching BPF programs
-      libbpf: Factor out low-level BPF program loading helper
-      libbpf: Support attachment of BPF tracing programs to kernel modules
-      selftests/bpf: Add tp_btf CO-RE reloc test for modules
-      selftests/bpf: Add fentry/fexit/fmod_ret selftest for kernel module
-      libbpf: Use memcpy instead of strncpy to please GCC
-      selftests/bpf: Fix invalid use of strncat in test_sockmap
-
-Björn Töpel (13):
-      selftests/bpf: Fix broken riscv build
-      selftests/bpf: Avoid running unprivileged tests with alignment requirements
-      selftests/bpf: Mark tests that require unaligned memory access
-      net: Introduce preferred busy-polling
-      net: Add SO_BUSY_POLL_BUDGET socket option
-      xsk: Add support for recvmsg()
-      xsk: Check need wakeup flag in sendmsg()
-      xsk: Add busy-poll support for {recv,send}msg()
-      xsk: Propagate napi_id to XDP socket Rx path
-      samples/bpf: Use recvfrom() in xdpsock/rxdrop
-      samples/bpf: Use recvfrom() in xdpsock/l2fwd
-      samples/bpf: Add busy-poll support to xdpsock
-      samples/bpf: Add option to set the busy-poll budget
-
-Brendan Jackman (2):
-      tools/resolve_btfids: Fix some error messages
-      bpf: Fix cold build of test_progs-no_alu32
-
-Colin Ian King (1):
-      samples/bpf: Fix spelling mistake "recieving" -> "receiving"
-
-Daniel Borkmann (3):
-      Merge branch 'af-xdp-tx-batch'
-      Merge branch 'xdp-preferred-busy-polling'
-      net, xdp, xsk: fix __sk_mark_napi_id_once napi_id error
-
-Daniel T. Lee (7):
-      samples: bpf: Refactor hbm program with libbpf
-      samples: bpf: Refactor test_cgrp2_sock2 program with libbpf
-      samples: bpf: Refactor task_fd_query program with libbpf
-      samples: bpf: Refactor ibumad program with libbpf
-      samples: bpf: Refactor test_overhead program with libbpf
-      samples: bpf: Fix lwt_len_hist reusing previous BPF map
-      samples: bpf: Remove bpf_load loader completely
-
-Dmitrii Banshchikov (1):
-      bpf: Add bpf_ktime_get_coarse_ns helper
-
-KP Singh (10):
-      bpf: Add bpf_bprm_opts_set helper
-      bpf: Add tests for bpf_bprm_opts_set helper
-      ima: Implement ima_inode_hash
-      bpf: Add a BPF helper for getting the IMA hash of an inode
-      bpf: Add a selftest for bpf_ima_inode_hash
-      selftests/bpf: Fix flavored variants of test_ima
-      selftests/bpf: Update ima_setup.sh for busybox
-      selftests/bpf: Ensure securityfs mount before writing ima policy
-      selftests/bpf: Add config dependency on BLK_DEV_LOOP
-      selftests/bpf: Indent ima_setup.sh with tabs.
-
-Li RongQing (1):
-      libbpf: Add support for canceling cached_cons advance
-
-Magnus Karlsson (6):
-      samples/bpf: Increment Tx stats at sending
-      i40e: Remove unnecessary sw_ring access from xsk Tx
-      xsk: Introduce padding between more ring pointers
-      xsk: Introduce batched Tx descriptor interfaces
-      i40e: Use batched xsk Tx interfaces to increase performance
-      libbpf: Replace size_t with __u32 in xsk interfaces
-
-Mariusz Dudek (2):
-      libbpf: Separate XDP program load with xsk socket creation
-      samples/bpf: Sample application for eBPF load and socket creation split
-
-Martin KaFai Lau (1):
-      bpf: Fix the irq and nmi check in bpf_sk_storage for tracing usage
-
-Prankur gupta (2):
-      bpf: Adds support for setting window clamp
-      selftests/bpf: Add Userspace tests for TCP_WINDOW_CLAMP
-
-Roman Gushchin (34):
-      mm: memcontrol: Use helpers to read page's memcg data
-      mm: memcontrol/slab: Use helpers to access slab page's memcg_data
-      mm: Introduce page memcg flags
-      mm: Convert page kmemcg type to a page memcg flag
-      bpf: Memcg-based memory accounting for bpf progs
-      bpf: Prepare for memcg-based memory accounting for bpf maps
-      bpf: Memcg-based memory accounting for bpf maps
-      bpf: Refine memcg-based memory accounting for arraymap maps
-      bpf: Refine memcg-based memory accounting for cpumap maps
-      bpf: Memcg-based memory accounting for cgroup storage maps
-      bpf: Refine memcg-based memory accounting for devmap maps
-      bpf: Refine memcg-based memory accounting for hashtab maps
-      bpf: Memcg-based memory accounting for lpm_trie maps
-      bpf: Memcg-based memory accounting for bpf ringbuffer
-      bpf: Memcg-based memory accounting for bpf local storage maps
-      bpf: Refine memcg-based memory accounting for sockmap and sockhash maps
-      bpf: Refine memcg-based memory accounting for xskmap maps
-      bpf: Eliminate rlimit-based memory accounting for arraymap maps
-      bpf: Eliminate rlimit-based memory accounting for bpf_struct_ops maps
-      bpf: Eliminate rlimit-based memory accounting for cpumap maps
-      bpf: Eliminate rlimit-based memory accounting for cgroup storage maps
-      bpf: Eliminate rlimit-based memory accounting for devmap maps
-      bpf: Eliminate rlimit-based memory accounting for hashtab maps
-      bpf: Eliminate rlimit-based memory accounting for lpm_trie maps
-      bpf: Eliminate rlimit-based memory accounting for queue_stack_maps maps
-      bpf: Eliminate rlimit-based memory accounting for reuseport_array maps
-      bpf: Eliminate rlimit-based memory accounting for bpf ringbuffer
-      bpf: Eliminate rlimit-based memory accounting for sockmap and sockhash maps
-      bpf: Eliminate rlimit-based memory accounting for stackmap maps
-      bpf: Eliminate rlimit-based memory accounting for xskmap maps
-      bpf: Eliminate rlimit-based memory accounting for bpf local storage maps
-      bpf: Eliminate rlimit-based memory accounting infra for bpf maps
-      bpf: Eliminate rlimit-based memory accounting for bpf progs
-      bpf: samples: Do not touch RLIMIT_MEMLOCK
-
-Santucci Pierpaolo (1):
-      selftest/bpf: Fix IPV6FR handling in flow dissector
-
-Song Liu (1):
-      bpf: Simplify task_file_seq_get_next()
-
-Stanislav Fomichev (5):
-      selftests/bpf: Rewrite test_sock_addr bind bpf into C
-      bpf: Allow bpf_{s,g}etsockopt from cgroup bind{4,6} hooks
-      selftests/bpf: Extend bind{4,6} programs with a call to bpf_setsockopt
-      selftests/bpf: Copy file using read/write in local storage test
-      libbpf: Cap retries in sys_bpf_prog_load
-
-Toke Høiland-Jørgensen (1):
-      libbpf: Sanitise map names before pinning
-
-Wedson Almeida Filho (1):
-      bpf: Refactor check_cfg to use a structured loop.
-
-Yonghong Song (1):
-      bpftool: Add {i,d}tlb_misses support for bpftool profile
-
-Zhu Yanjun (1):
-      xdp: Remove the functions xsk_map_inc and xsk_map_put
-
- arch/alpha/include/uapi/asm/socket.h               |   3 +
- arch/mips/include/uapi/asm/socket.h                |   3 +
- arch/parisc/include/uapi/asm/socket.h              |   3 +
- arch/sparc/include/uapi/asm/socket.h               |   3 +
- drivers/net/ethernet/amazon/ena/ena_netdev.c       |   2 +-
- drivers/net/ethernet/broadcom/bnxt/bnxt.c          |   2 +-
- drivers/net/ethernet/cavium/thunder/nicvf_queues.c |   2 +-
- drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c   |   2 +-
- drivers/net/ethernet/intel/i40e/i40e_txrx.c        |  13 +-
- drivers/net/ethernet/intel/i40e/i40e_txrx.h        |   1 +
- drivers/net/ethernet/intel/i40e/i40e_xsk.c         | 123 ++--
- drivers/net/ethernet/intel/i40e/i40e_xsk.h         |  16 +
- drivers/net/ethernet/intel/ice/ice_base.c          |   4 +-
- drivers/net/ethernet/intel/ice/ice_txrx.c          |   2 +-
- drivers/net/ethernet/intel/igb/igb_main.c          |   2 +-
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c      |   2 +-
- drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c  |   2 +-
- drivers/net/ethernet/marvell/mvneta.c              |   2 +-
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c    |   4 +-
- drivers/net/ethernet/mellanox/mlx4/en_rx.c         |   2 +-
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c  |   2 +-
- .../net/ethernet/netronome/nfp/nfp_net_common.c    |   2 +-
- drivers/net/ethernet/qlogic/qede/qede_main.c       |   2 +-
- drivers/net/ethernet/sfc/rx_common.c               |   2 +-
- drivers/net/ethernet/socionext/netsec.c            |   2 +-
- drivers/net/ethernet/ti/cpsw_priv.c                |   2 +-
- drivers/net/hyperv/netvsc.c                        |   2 +-
- drivers/net/tun.c                                  |   2 +-
- drivers/net/veth.c                                 |  12 +-
- drivers/net/virtio_net.c                           |   2 +-
- drivers/net/xen-netfront.c                         |   2 +-
- fs/buffer.c                                        |   2 +-
- fs/eventpoll.c                                     |   3 +-
- fs/iomap/buffered-io.c                             |   2 +-
- include/linux/bpf-cgroup.h                         |  12 +-
- include/linux/bpf.h                                |  71 ++-
- include/linux/bpf_verifier.h                       |  28 +-
- include/linux/btf.h                                |   6 +-
- include/linux/ima.h                                |   6 +
- include/linux/memcontrol.h                         | 215 ++++++-
- include/linux/mm.h                                 |  22 -
- include/linux/mm_types.h                           |   5 +-
- include/linux/netdevice.h                          |  35 +-
- include/linux/page-flags.h                         |  11 +-
- include/net/busy_poll.h                            |  27 +-
- include/net/sock.h                                 |   6 +
- include/net/tcp.h                                  |   1 +
- include/net/xdp.h                                  |   3 +-
- include/net/xdp_sock_drv.h                         |   7 +
- include/trace/events/writeback.h                   |   2 +-
- include/uapi/asm-generic/socket.h                  |   3 +
- include/uapi/linux/bpf.h                           |  45 +-
- kernel/bpf/arraymap.c                              |  30 +-
- kernel/bpf/bpf_local_storage.c                     |  20 +-
- kernel/bpf/bpf_lsm.c                               |  52 ++
- kernel/bpf/bpf_struct_ops.c                        |  19 +-
- kernel/bpf/btf.c                                   |  70 ++-
- kernel/bpf/core.c                                  |  23 +-
- kernel/bpf/cpumap.c                                |  37 +-
- kernel/bpf/devmap.c                                |  25 +-
- kernel/bpf/hashtab.c                               |  43 +-
- kernel/bpf/helpers.c                               |  13 +
- kernel/bpf/local_storage.c                         |  44 +-
- kernel/bpf/lpm_trie.c                              |  19 +-
- kernel/bpf/queue_stack_maps.c                      |  16 +-
- kernel/bpf/reuseport_array.c                       |  12 +-
- kernel/bpf/ringbuf.c                               |  35 +-
- kernel/bpf/stackmap.c                              |  16 +-
- kernel/bpf/syscall.c                               | 310 +++++-----
- kernel/bpf/task_iter.c                             |  54 +-
- kernel/bpf/verifier.c                              | 256 ++++----
- kernel/fork.c                                      |   7 +-
- kernel/module.c                                    |   4 +
- kernel/trace/bpf_trace.c                           |  10 +-
- mm/debug.c                                         |   4 +-
- mm/huge_memory.c                                   |   4 +-
- mm/memcontrol.c                                    | 139 ++---
- mm/page_alloc.c                                    |   8 +-
- mm/page_io.c                                       |   6 +-
- mm/slab.h                                          |  38 +-
- mm/workingset.c                                    |   2 +-
- net/core/bpf_sk_storage.c                          |   4 +-
- net/core/dev.c                                     |  89 ++-
- net/core/filter.c                                  |   7 +
- net/core/sock.c                                    |  19 +
- net/core/sock_map.c                                |  42 +-
- net/core/xdp.c                                     |   3 +-
- net/ipv4/af_inet.c                                 |   2 +-
- net/ipv4/bpf_tcp_ca.c                              |   3 +-
- net/ipv4/tcp.c                                     |  25 +-
- net/ipv6/af_inet6.c                                |   2 +-
- net/xdp/xsk.c                                      | 114 +++-
- net/xdp/xsk.h                                      |   2 -
- net/xdp/xsk_buff_pool.c                            |  13 +-
- net/xdp/xsk_queue.h                                |  93 ++-
- net/xdp/xskmap.c                                   |  35 +-
- samples/bpf/.gitignore                             |   3 +
- samples/bpf/Makefile                               |  24 +-
- samples/bpf/bpf_load.c                             | 667 ---------------------
- samples/bpf/bpf_load.h                             |  57 --
- samples/bpf/do_hbm_test.sh                         |  32 +-
- samples/bpf/hbm.c                                  | 111 ++--
- samples/bpf/hbm_kern.h                             |   2 +-
- samples/bpf/ibumad_kern.c                          |  26 +-
- samples/bpf/ibumad_user.c                          |  71 ++-
- samples/bpf/lwt_len_hist.sh                        |   2 +
- samples/bpf/map_perf_test_user.c                   |   6 -
- samples/bpf/offwaketime_user.c                     |   6 -
- samples/bpf/sockex2_user.c                         |   2 -
- samples/bpf/sockex3_user.c                         |   2 -
- samples/bpf/spintest_user.c                        |   6 -
- samples/bpf/syscall_tp_user.c                      |   2 -
- samples/bpf/task_fd_query_user.c                   | 103 +++-
- samples/bpf/test_cgrp2_sock2.c                     |  61 +-
- samples/bpf/test_cgrp2_sock2.sh                    |  21 +-
- samples/bpf/test_lru_dist.c                        |   3 -
- samples/bpf/test_lwt_bpf.sh                        |   0
- samples/bpf/test_map_in_map_user.c                 |   6 -
- samples/bpf/test_overhead_user.c                   |  84 ++-
- samples/bpf/trace_event_user.c                     |   2 -
- samples/bpf/tracex2_user.c                         |   6 -
- samples/bpf/tracex3_user.c                         |   6 -
- samples/bpf/tracex4_user.c                         |   6 -
- samples/bpf/tracex5_user.c                         |   3 -
- samples/bpf/tracex6_user.c                         |   3 -
- samples/bpf/xdp1_user.c                            |   6 -
- samples/bpf/xdp2skb_meta_kern.c                    |   2 +-
- samples/bpf/xdp_adjust_tail_user.c                 |   6 -
- samples/bpf/xdp_monitor_user.c                     |   5 -
- samples/bpf/xdp_redirect_cpu_user.c                |   6 -
- samples/bpf/xdp_redirect_map_user.c                |   6 -
- samples/bpf/xdp_redirect_user.c                    |   6 -
- samples/bpf/xdp_router_ipv4_user.c                 |   6 -
- samples/bpf/xdp_rxq_info_user.c                    |   6 -
- samples/bpf/xdp_sample_pkts_user.c                 |   6 -
- samples/bpf/xdp_tx_iptunnel_user.c                 |   6 -
- samples/bpf/xdpsock.h                              |   8 +
- samples/bpf/xdpsock_ctrl_proc.c                    | 187 ++++++
- samples/bpf/xdpsock_user.c                         | 230 +++++--
- scripts/Makefile.modfinal                          |   9 +-
- scripts/bpf_helpers_doc.py                         |   4 +
- security/integrity/ima/ima_main.c                  |  78 ++-
- tools/bpf/bpftool/btf.c                            |  27 +-
- tools/bpf/bpftool/prog.c                           |  30 +-
- tools/bpf/resolve_btfids/main.c                    |   6 +-
- tools/include/uapi/linux/bpf.h                     |  45 +-
- tools/lib/bpf/bpf.c                                | 104 +++-
- tools/lib/bpf/btf.c                                |  74 ++-
- tools/lib/bpf/btf.h                                |   1 +
- tools/lib/bpf/libbpf.c                             | 527 ++++++++++++----
- tools/lib/bpf/libbpf.map                           |   3 +
- tools/lib/bpf/libbpf_internal.h                    |  31 +
- tools/lib/bpf/xsk.c                                |  92 ++-
- tools/lib/bpf/xsk.h                                |  22 +-
- tools/testing/selftests/bpf/.gitignore             |   1 +
- tools/testing/selftests/bpf/Makefile               |  18 +-
- tools/testing/selftests/bpf/README.rst             |  33 +-
- tools/testing/selftests/bpf/bpf_tcp_helpers.h      |   1 +
- tools/testing/selftests/bpf/bpf_testmod/.gitignore |   6 +
- tools/testing/selftests/bpf/bpf_testmod/Makefile   |  20 +
- .../selftests/bpf/bpf_testmod/bpf_testmod-events.h |  36 ++
- .../selftests/bpf/bpf_testmod/bpf_testmod.c        |  52 ++
- .../selftests/bpf/bpf_testmod/bpf_testmod.h        |  14 +
- tools/testing/selftests/bpf/config                 |   5 +
- tools/testing/selftests/bpf/ima_setup.sh           |  99 +++
- .../testing/selftests/bpf/prog_tests/core_reloc.c  |  80 ++-
- .../selftests/bpf/prog_tests/module_attach.c       |  53 ++
- .../testing/selftests/bpf/prog_tests/tcpbpf_user.c |   4 +
- .../selftests/bpf/prog_tests/test_bprm_opts.c      | 116 ++++
- tools/testing/selftests/bpf/prog_tests/test_ima.c  |  74 +++
- .../selftests/bpf/prog_tests/test_local_storage.c  |  28 +-
- tools/testing/selftests/bpf/progs/bind4_prog.c     | 102 ++++
- tools/testing/selftests/bpf/progs/bind6_prog.c     | 119 ++++
- tools/testing/selftests/bpf/progs/bpf_flow.c       |   2 +
- .../testing/selftests/bpf/progs/bpf_iter_bpf_map.c |   2 +-
- tools/testing/selftests/bpf/progs/bprm_opts.c      |  34 ++
- .../testing/selftests/bpf/progs/core_reloc_types.h |  17 +
- tools/testing/selftests/bpf/progs/ima.c            |  28 +
- tools/testing/selftests/bpf/progs/map_ptr_kern.c   |   7 -
- tools/testing/selftests/bpf/progs/profiler.inc.h   |   2 +
- .../selftests/bpf/progs/test_core_reloc_module.c   |  96 +++
- .../selftests/bpf/progs/test_module_attach.c       |  66 ++
- .../testing/selftests/bpf/progs/test_tcpbpf_kern.c |  33 +
- tools/testing/selftests/bpf/test_progs.c           |  65 +-
- tools/testing/selftests/bpf/test_progs.h           |   1 +
- tools/testing/selftests/bpf/test_sock_addr.c       | 196 +-----
- tools/testing/selftests/bpf/test_sockmap.c         |  36 +-
- tools/testing/selftests/bpf/test_tcpbpf.h          |   2 +
- tools/testing/selftests/bpf/test_verifier.c        |  13 +
- .../testing/selftests/bpf/verifier/ctx_sk_lookup.c |   7 +
- .../selftests/bpf/verifier/direct_value_access.c   |   3 +
- tools/testing/selftests/bpf/verifier/map_ptr.c     |   1 +
- .../selftests/bpf/verifier/raw_tp_writable.c       |   1 +
- .../testing/selftests/bpf/verifier/ref_tracking.c  |   4 +
- tools/testing/selftests/bpf/verifier/regalloc.c    |   8 +
- tools/testing/selftests/bpf/verifier/wide_access.c |  46 +-
- 196 files changed, 4330 insertions(+), 2569 deletions(-)
- delete mode 100644 samples/bpf/bpf_load.c
- delete mode 100644 samples/bpf/bpf_load.h
- mode change 100644 => 100755 samples/bpf/lwt_len_hist.sh
- mode change 100644 => 100755 samples/bpf/test_lwt_bpf.sh
- create mode 100644 samples/bpf/xdpsock_ctrl_proc.c
- create mode 100644 tools/testing/selftests/bpf/bpf_testmod/.gitignore
- create mode 100644 tools/testing/selftests/bpf/bpf_testmod/Makefile
- create mode 100644 tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
- create mode 100644 tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
- create mode 100644 tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
- create mode 100755 tools/testing/selftests/bpf/ima_setup.sh
- create mode 100644 tools/testing/selftests/bpf/prog_tests/module_attach.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_bprm_opts.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_ima.c
- create mode 100644 tools/testing/selftests/bpf/progs/bind4_prog.c
- create mode 100644 tools/testing/selftests/bpf/progs/bind6_prog.c
- create mode 100644 tools/testing/selftests/bpf/progs/bprm_opts.c
- create mode 100644 tools/testing/selftests/bpf/progs/ima.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_core_reloc_module.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_module_attach.c
