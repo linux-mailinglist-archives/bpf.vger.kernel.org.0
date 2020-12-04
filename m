@@ -2,157 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C812CE737
-	for <lists+bpf@lfdr.de>; Fri,  4 Dec 2020 06:05:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B38CD2CE759
+	for <lists+bpf@lfdr.de>; Fri,  4 Dec 2020 06:23:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725379AbgLDFDx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Dec 2020 00:03:53 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:59206 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725300AbgLDFDw (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 4 Dec 2020 00:03:52 -0500
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 0B44xv8R029035;
-        Thu, 3 Dec 2020 21:02:56 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=68LZFNQH5U7WeffAMaVX4k8p8kkWTfDqFhuKMP08TQY=;
- b=A3AFPWZXw4cQK2n6T/gViE4esv4eWZ7xip6qkMWiXveRbYK9ARbew9SUOviWvlS9WP6F
- o8BViaJrPWzlZkCSB4+74KaBdJU9XfgO9UCYUpl+PEUHvxbNsWtrOAmIuYHwxgqohYin
- q0YLLZh6W0uC/+IYgTW8ewQVC16sJ+ZgYWY= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 357682b908-6
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 03 Dec 2020 21:02:56 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 3 Dec 2020 21:02:53 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LmjTz/YfRNoDiH2pry7yNjysh8lNtqbHELgffOsITXZyuzGtCVFV/Q9DQpor0+dNocnZ2FZzjKtW3Oz4bxUAO4pK3wVTp2K2ziUyzOQ08LrWyuN/V+x7MPVAXrCjDi0gwEK9mb1/DW5HYrIoeezE/33Ya/xNhKZKeWz7lNAtTf0Rx320Hko4bJYzi3GJi+dvMnjojBVW6Bm47PIxyd5uipm8bS+gET5xc11GoIBgvttRR0T387MjeM3mLB/urOQ+ubyc8+3MLoaIfPMHNbzPTSgkVfd61gxJfY13ktvN3CqK4gfqD0ol0et0avBlTzAi4xhzTjSolSRWlC6mS3mwBQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=68LZFNQH5U7WeffAMaVX4k8p8kkWTfDqFhuKMP08TQY=;
- b=J/3KC7h5+Nm4yObFrfBuMF4Zo0uiuwa12oDgJgucWdN0ziXH7RDF+dN9JSYPwD/7/R4KNgMVEl3xQLpWAQ0IrVitWUz7gbK9v5xki2F9Zg/fqU+E8ak0OaoOlkGatGUzoFO0BErEaaU9Z+aTXRe+mYt86camFqUX4Wzqmm4i9x6yIEE498u+Am+QG1Wt0I5ibbRWlJwpZEZ8mjXPdBSowZvFjZZKOxIMGqXWE+PFMJZ6PQkOqDkaT+7zDyVR3wH38QF8611Bdaxku5duijTXjEgzgXvLI8mI8D1xRq9q6xdKmR0kryWT+fYBnigze8iyJV60mXtSGpktDifeT15wVQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=68LZFNQH5U7WeffAMaVX4k8p8kkWTfDqFhuKMP08TQY=;
- b=XST82b+HV1k0IqTA+dieKeoyJPr8CTQ8sJcLn/z/DO+yBRwbRll4mkHpVVlQHzvPzQlpv3mB+PEv2gSYgWKRHmQG/5MMiFL9GXSdYll805XQ9zyyQ4gfScM9fGtoH5BIA55Q4kpeBuKlpmUZhyZDCzNgPb/AqWXhZBpUEF75pi8=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BY5PR15MB3713.namprd15.prod.outlook.com (2603:10b6:a03:1f8::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Fri, 4 Dec
- 2020 05:02:50 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3632.021; Fri, 4 Dec 2020
- 05:02:50 +0000
-Subject: Re: [PATCH bpf-next v3 07/14] bpf: Add BPF_FETCH field / create
- atomic_fetch_add instruction
-To:     Brendan Jackman <jackmanb@google.com>, <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        <linux-kernel@vger.kernel.org>, Jann Horn <jannh@google.com>
-References: <20201203160245.1014867-1-jackmanb@google.com>
- <20201203160245.1014867-8-jackmanb@google.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <9e19c8e7-7d46-0dbe-619a-1b6547fc7f73@fb.com>
-Date:   Thu, 3 Dec 2020 21:02:49 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.1
-In-Reply-To: <20201203160245.1014867-8-jackmanb@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2620:10d:c090:400::5:86b1]
-X-ClientProxiedBy: BYAPR05CA0070.namprd05.prod.outlook.com
- (2603:10b6:a03:74::47) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+        id S1725372AbgLDFXm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Dec 2020 00:23:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725300AbgLDFXm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Dec 2020 00:23:42 -0500
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D3EBC061A4F
+        for <bpf@vger.kernel.org>; Thu,  3 Dec 2020 21:23:02 -0800 (PST)
+Received: by mail-qv1-xf43.google.com with SMTP id es6so2247278qvb.7
+        for <bpf@vger.kernel.org>; Thu, 03 Dec 2020 21:23:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=+/5bgyvvZ58nhjBIzhnh5xTuuerncSVSwj8/HnfL26Y=;
+        b=aJCTxIVxYSpdwH9gP4+QwbU5xgHz8shPg3/Ms+k+pCtlOv/EPbW0mgiUg8xTMKdWmm
+         OBreEKfL8C207eMVY1C1itPDuNmc26VPhKKUcrhz/PDEA1wahr1A8mvLKowbei4ntJOd
+         8zhjhygOCJ78W8w0zKAwTcjdPbKQFuFAYXJxNCBCaufdmZosJY29vTT7nmhnrfAmmk7G
+         DwFLzY3ng0Y1eyaeSUghzF9EtQwqSpOf9UmX1XXHV9x9aI+rwa8K/eZbOXShKnpNw9tO
+         GnVIDrqlernj5iYvsvn/ieh3btM2OPRWG2H2u/xIOR9mw4GOYET9lIX1i7nxPCydJQKj
+         1tAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=+/5bgyvvZ58nhjBIzhnh5xTuuerncSVSwj8/HnfL26Y=;
+        b=l1TKklhvRRJnE4NRR0s64v8Ey6raAc1f7ncvODeU0hKJj7/qmmzy7QemFaK2HpqTjD
+         fFW7qqZfAq8NlNsLjbgBApNcFSKSWuaguXeA9tnJlQ2TAsZSsSBSKjJjFJYW60j0vhtn
+         vEUBUhnz9p5veXlk5ADX34As3mh9eU2w0s+3sawDvR5/jMauSAcLOreBgvRHbzQel+6U
+         YXJBazNUCj/fE6LdVdCbq576hO/KuO7Kz0V29ambhdU8F3+nbjGjyhi/PZ88qkAWfn8u
+         f7wvyEBB7rx5kA4bnxxIGiOft688b16Y52KPDQ5rEh6soC2wmqoJ6UW0x9o9hWRorrYV
+         KVMg==
+X-Gm-Message-State: AOAM532x3sTyMXEHWtGh78OY5xF6RnFr9Puq0SkFjAUY9ImLFhOFqJsq
+        B88+1zZ8w7V/WoeEKcW6L7YaLOqQpaxAdSO3oeg=
+X-Google-Smtp-Source: ABdhPJwq/OX19YRqynhHmlZWCEXrIn6gGAxL1nDRofVXTC0FI/kFslwxoOFz1Ug3PMEM8QrA0rgkTK4BmEd7Ig5yPss=
+X-Received: by 2002:a0c:f211:: with SMTP id h17mr3328837qvk.27.1607059381469;
+ Thu, 03 Dec 2020 21:23:01 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21c8::12b3] (2620:10d:c090:400::5:86b1) by BYAPR05CA0070.namprd05.prod.outlook.com (2603:10b6:a03:74::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.5 via Frontend Transport; Fri, 4 Dec 2020 05:02:50 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d472dd04-4a27-4e16-2deb-08d89811d9b2
-X-MS-TrafficTypeDiagnostic: BY5PR15MB3713:
-X-Microsoft-Antispam-PRVS: <BY5PR15MB3713650797F7E0EC6B6727EFD3F10@BY5PR15MB3713.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: yHcWSsWTnjQKT2umgtgI35FlMqpp8+0rmwwernijB+ZgnbT830/FE3tukCUjFaZYBHYbiXngtLBbAmL8jIS0oolAREcf600In0nKLM6hi43DttvcM4zIK6r9lMGW/yK1a4duDus7VzKI1uLuzICrm9r3AZq9gVItjsZxPA7K8UYzK1XtLMoX7TT13kmo4LjGGHEnwdT+ovSVXBBY+R7wfi8+6vkSAnSlaAx+vej7rGRF0NLDufMZI5ialUjyuWFMJbXKzAbndcLtBNFk0Zee2Ipxg8OVA9Jd1oltAJrOh53ODgvK8+j5r+tp2kpy1RrWl3Zlh+XdDTrEgkhU/18I1pFolZu4/tu7vjt1qOyKuSLlu2Omqhgkla1A9LFbOq1nbQyB1YsHU3s3jdLxzIRJqzq4El2P2f8W6o16K5XRPWM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(376002)(39860400002)(136003)(366004)(346002)(2616005)(31686004)(83380400001)(16526019)(54906003)(6486002)(4744005)(86362001)(316002)(36756003)(5660300002)(8936002)(8676002)(478600001)(53546011)(66476007)(31696002)(66946007)(186003)(4326008)(66556008)(2906002)(52116002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?TERja0swL05JRjVxTERINy9oOUQya25LK2VpUkdlQTNCM3JaTkdUWWF2c2Rz?=
- =?utf-8?B?cWEwd3pmUlN0aHJRRjNybEh6VjB2Y1gvVjhGSEwwNUErd2FXMmphVFFRMzhp?=
- =?utf-8?B?eFAzRWRQbGd1NVJhdWV6MDVlWXVxTjdlNXBjaVdqZXNqK3pKRFNsMEozaG44?=
- =?utf-8?B?SWhXOXVENlRnQ0pXSzVWd2puR0wydFRXNHZqUEpjSG9OT3hmbUo4dEVqVFdD?=
- =?utf-8?B?RGJNSElnTkcvSnArRzZIcTViTHpSMjRzc1dwemNsajZNM3NLYXNBMHBIRWZH?=
- =?utf-8?B?OXp1dkdobmpLc2JmK0EvSzQwUGVlSW5kNXhDaTFvRVlvVG1yU0Z1RWNWNnNS?=
- =?utf-8?B?N25EeERLb0J6ektucUJMSlNnbVdpQlpMdmVmYXp5Z1ZhVXlCaWl0cWVrSEVh?=
- =?utf-8?B?MHNReXlXTVJFdkJVS3o5ajYzSGpSZkpabWpxVzRkazR1U2xtUXZid1NzTVh1?=
- =?utf-8?B?NjNVU3oxNWVEU0pWUGlZdHpiamRmcEZ3UEJycGtFTlV4eXhIMVV1S0JpbnVU?=
- =?utf-8?B?RkhBSG9JUGFMazFLVDQxVkpzemVxcVFJdVZVNXFCTGFKeTREUEZOY2hERC9C?=
- =?utf-8?B?WjAwSXBndGNXblNBTHZ2VlhJNFgxSnNIV05lNnl5dTdnczFmR25UNzd2Y3RR?=
- =?utf-8?B?TVRsUXZYU0UzWDZyNXRzbi83VmZUYW5GMDllN1ovMEw4WVYxcTcvYithZzU3?=
- =?utf-8?B?bll1Sis0VkthNlNxL0lLaWltUHdmaWNCTTNJT3F1K2RyanV2bFFOa1UyRlJ3?=
- =?utf-8?B?RTQ1RFd1NmNtUnUvWlQwTTI2RUk2ZFJ3elhXUENobEw4VytqS1R3aDdUckVa?=
- =?utf-8?B?cGNlMWZYcUU4YlZZbWNRclE3YmVsak0xcklVc2xrb080OEdLMW94RTNiQjBN?=
- =?utf-8?B?a1hrUUxRUzJDTkZDUFVsbGt5MVV1dHluMktGajJaRCtLYk1GTW1YZm9YSW05?=
- =?utf-8?B?ZVB0eUViTE8zVU1pQXBJQllESVJ6Nk1XVTFUb3ExK0ptMjdyOFpYanhaM2hR?=
- =?utf-8?B?ck5ZNk9ILzI2Mnc4K0VuejRlUEs0anBCV1V1M0w0OTNOdDdJdmpjR2FJU1Rk?=
- =?utf-8?B?T1JUOUxqdjJ5VFdVRzlMZnMyTHpXeVl6ZTVPWnVVYXF3a05Rb3V4cGZubTkr?=
- =?utf-8?B?aUtucjRVWkRjUGttcnhUQ1RyMHhMd2I1WTRad3Vldk4xR1d3TjZXWG5FVUt0?=
- =?utf-8?B?VVhUOTlSTk9PMWQvcDZwbHZ4NkxXUHVudUhQdnFuTGFXNVNnaW4zOUQ5TXFF?=
- =?utf-8?B?NWF1NWxLUzR4anhnczY4bjNZTUx0eG5NUCt4ZUgwdnA4T0VrR1daV2xUeFpj?=
- =?utf-8?B?QVRIenh1cHBEc2xUbEh6NTR1QWdMZ1EvQ2pFTzAyM2o0cWc3bnI1eE1wbUpp?=
- =?utf-8?B?WUYxeHBIUWtrZFE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: d472dd04-4a27-4e16-2deb-08d89811d9b2
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2020 05:02:50.8273
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0vVvZJgku9WSXIMNB+E0heCQ3Qk2tgwp5SK1Hwp3g3KQEdUz/Kc41T+2vNCON9/G
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3713
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-04_01:2020-12-04,2020-12-04 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 spamscore=0
- bulkscore=0 malwarescore=0 priorityscore=1501 clxscore=1015 adultscore=0
- mlxlogscore=754 suspectscore=0 lowpriorityscore=0 phishscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012040028
-X-FB-Internal: deliver
+Received: by 2002:a0c:c1d3:0:0:0:0:0 with HTTP; Thu, 3 Dec 2020 21:23:01 -0800 (PST)
+Reply-To: ambrosecooker389@gmail.com
+From:   Ambrose Cooker <islamnurulislam402@gmail.com>
+Date:   Thu, 3 Dec 2020 21:23:01 -0800
+Message-ID: <CANFLDfEDBA9q=eSq139CfFNox5-eMnER5o6gUTe2pOaJwdpTLA@mail.gmail.com>
+Subject: Greetings to you my Dear!
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Greetings My Dear Friend,
 
+Before I introduce myself, I wish to inform you that this letter is
+not a hoax mail and I urge you to treat it serious.This letter must
+come to you as a big surprise, but I believe it is only a day that
+people meet and become great friends and business partners. Please I
+want you to read this letter very carefully and I must apologize for
+barging this message into your mail box without any formal
+introduction due to the urgency and confidentiality of this business.
+I make this contact with you as I believe that you can be of great
+assistance to me. My name is Mr.Ambrose Cooker, from Burkina Faso,
+West Africa. I work in African Development Bank (ADB) as Telex
+manager, please see this as a confidential message and do not reveal
+it to another person and let me know whether you can be of assistance
+regarding my proposal below because it is top secret.
 
-On 12/3/20 8:02 AM, Brendan Jackman wrote:
-> This value can be set in bpf_insn.imm, for BPF_ATOMIC instructions,
+I am about to retire from active Banking service to start a new life
+but I am skeptical to reveal this particular secret to a stranger. You
+must assure me that everything will be handled confidentially because
+we are not going to suffer again in life. It has been 10 years now
+that most of the greedy African Politicians used our bank to launder
+money overseas through the help of their Political advisers. Most of
+the funds which they transferred out of the shores of Africa were gold
+and oil money that was supposed to have been used to develop the
+continent. T heir Political advisers always inflated the amounts
+before
+transferring to foreign accounts, so I also used the opportunity to
+divert part of the funds hence I am aware that there is no official
+trace of how much was transferred as all the accounts used for such
+transfers were being closed after transfer. I acted as the Bank
+Officer to most of the politicians and when I discovered that they
+were using me to succeed in their greedy act; I also cleaned some of
+their banking records from the Bank files and no one cared to ask me
+because the money was too much for them to control. They laundered
+over $5billion Dollars during the process.
 
-it is not clear what "this value" means here.
-Maybe more specific using "The BPF_FETCH field"?
+Before I send this message to you, I have already diverted
+($10.5million Dollars) to an escrow account belonging to no one in the
+bank. The bank is anxious now to know who the beneficiary to the funds
+because they have made a lot of profits with the funds. It is more
+than Eight years now and most of the politicians are no longer using
+our bank to transfer funds overseas. The ($10.5million Dollars) has
+been laying waste in our bank and I don't want to retire from the bank
+without transferring the funds to a foreign account to enable me share
+the proceeds with the receiver (a foreigner). The money will be shared
+60% for me and 40% for you. There is no one coming to ask you about
+the funds because I secured everything. I only want you to assist me
+by providing a reliable bank account where the funds can be
+transferred.
 
-> in order to have the previous value of the atomically-modified memory
-> location loaded into the src register after an atomic op is carried
-> out.
-> 
-> Suggested-by: Yonghong Song <yhs@fb.com>
-> Signed-off-by: Brendan Jackman <jackmanb@google.com>
+You are not to face any difficulties or legal implications as I am
+going to handle the transfer personally. If you are capable of
+receiving the funds, do let me know immediately to enable me give you
+a detailed information on what to do. For me, I have not stolen the
+money from anyone because the other people that took the whole money
+did not face any problems. This is my chance to grab my own life
+opportunity but you must keep the details of the funds secret to avoid
+any leakages as no one in the bank knows about my plans.Please get
+back to me if you are interested and capable to handle this project, I
+am looking forward to hear from you immediately for further
+information.
 
-Ack with the above nit.
-
-Acked-by: Yonghong Song <yhs@fb.com>
+Thanks with my best regards.
+Mr.Ambrose Cooker.
+Telex Manager
+African Development Bank (ADB)
+Burkina Faso.
