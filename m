@@ -2,107 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 338532CFA62
-	for <lists+bpf@lfdr.de>; Sat,  5 Dec 2020 09:00:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76DDC2CFB41
+	for <lists+bpf@lfdr.de>; Sat,  5 Dec 2020 13:19:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728018AbgLEIAp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 5 Dec 2020 03:00:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57878 "EHLO
+        id S1726867AbgLEMKN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 5 Dec 2020 07:10:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726841AbgLEIAp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 5 Dec 2020 03:00:45 -0500
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB8F8C061A4F;
-        Fri,  4 Dec 2020 23:59:58 -0800 (PST)
-Received: by mail-oi1-x241.google.com with SMTP id h3so9084738oie.8;
-        Fri, 04 Dec 2020 23:59:58 -0800 (PST)
+        with ESMTP id S1729572AbgLELVZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 5 Dec 2020 06:21:25 -0500
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 277F9C061A52;
+        Sat,  5 Dec 2020 03:20:22 -0800 (PST)
+Received: by mail-ed1-x544.google.com with SMTP id d18so8563472edt.7;
+        Sat, 05 Dec 2020 03:20:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=n+gjpL22PdwtnyjizZfGUEUvMA1yz9k8zAS+MKH6L4Y=;
-        b=nYRPcxXsDIPIZoYjLQk+CPzMFmlYAfwELkMGwNZcWQlwaGC1RFmp2D37noyudNSFDG
-         IGlAn2SfdcVQ9V2Tlycn7v5xX4Mc08IG613LXaE6BXFbC3b1gVRbft6ds8z49lO0BJq7
-         yFW0PlhCkm8/qc4ER3LIHLO/rvqiMbymUk8nZ38RFTA9O6YQ/061Mne2Dmp4PdVksRms
-         lRV/sJHyBaD/VB1GeLebpr9e9xb/RpR1xXX5uvoK7aIpMMZUlRbWn/JQjmF4fbj32GVe
-         RYBOJxE4jG0jRCGApmlLhy5zeWqrQewvJIPM1UvC67iU36SdJUaFjCOqA+BEmeXJNMGa
-         R/Bg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pFubxfr8TFbxQDJSOpWOytb7HLBaRWXRUz4oP+BoVPY=;
+        b=AZURVcC6OJupQc+TX0wKSi9ndyA8sSCeiaKQjWp7MuLbjQ06CR27ZzrX60fG4wW0E9
+         neLjKkEmfALRY/L2LxUBvdX62A8AOUdzozr2nsK9ySd1EawIE92TzJhPjfjLDIMKFFtz
+         PjmY+YNS3mx7YqxE2AGFpukWbX0D6EJrYUJEIWBpc0HJMhZmYoR/Al/Ly9yTKTA5mBnI
+         iWqJ5q1x0UuJ2pFKOr2bjtRbbD7cMg1KzNJrPFHDKET4MDqMlYmFp2QB4U5jBjVg9TPo
+         F3JEipPVBV/+4bsC0lMxUpSLc7R9dRh4GcwPuN89YDtgnhINqzlk8l0SutVBsBXPL12Q
+         OxMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=n+gjpL22PdwtnyjizZfGUEUvMA1yz9k8zAS+MKH6L4Y=;
-        b=Ek59clszTbiY1n+AU3maKNeZ74iTyHiPM3xXYawvTwtb2O+1b0Lw2ZYSieSa7GFvXS
-         ELXhFA9yMQr5nPzQIIgjZRpMfED68n73NJ0MhX4+43kJEedmbAc26216RgOqikjOiR7j
-         iuOR1S2ucpncLiopHHlZTnYnhu72b/zQ++IISwi/B4elAqkYx3hf0qXXIdYJFqG3ssPP
-         muImS4EC5xonOdd4jKKfQA6gFcKMKKSzDKaaFS6Nx4WNh47XRDXo75R3FHWbnLJendnu
-         cLsJ5xhivQtF41s4Scz8s5AofVSBGNfv8j/WxXEv69P9esqSBu4sqZKeoZhjhQo7zq8t
-         XLxA==
-X-Gm-Message-State: AOAM531P339GZ2am1sxMNGFQKbB2vk58lExvc1jPTOyCYRSfsjRVcWbT
-        fPbO8EAEmyv0Wbwj++CC0bPpU08q7g2Dyw==
-X-Google-Smtp-Source: ABdhPJzr3IpP5GgHCaUoKqWAC/Ql6v11RLOi4wnPq0hTFkn5s9bfbfoZ2is3+xyx2Xgm5m0Z3adicg==
-X-Received: by 2002:aca:811:: with SMTP id 17mr6040186oii.109.1607155198112;
-        Fri, 04 Dec 2020 23:59:58 -0800 (PST)
-Received: from unknown.attlocal.net ([2600:1700:65a0:ab60:2482:49a9:7a40:f76b])
-        by smtp.gmail.com with ESMTPSA id i82sm1263305oif.33.2020.12.04.23.59.56
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pFubxfr8TFbxQDJSOpWOytb7HLBaRWXRUz4oP+BoVPY=;
+        b=aqyxNNQckoWQEWwdTuxycTxmOHJjv1CUuPS2lkvFpSngyeFf70KM5kBWGew0hTK6Pl
+         ZBQ2g8QZeEDA7UuEB7NgSC2NtdqYLWD73fKh/++FV6mrXNIAVT7XtAw7On4IoUSH5lG2
+         JCz9hck5lrgjatbX+H5dxt4wXMDd+HwEyR2bXEiC3Ac6YtyNxviYK8LcXP+5XHM+I8T/
+         m4C45f4z4X2jskSoP7gk2MUgWwvIYbGrPXNQ2ojZUEJqt7aNq9Ps2Ilsz5iTOOCjvmrH
+         t/26bwHNlt7eq3wryNz3wJg81dUhSPLat2QhG+xt3uLeiH2xKNq2iTaWcIEnG1zcKvQl
+         Cb0g==
+X-Gm-Message-State: AOAM531b1ygF6l4Fr37AKCqe07mkO+lJjUh68xZS/gRK507l/A6VSOAY
+        ff6gZxu5JyKcWND8J1Ycz2A=
+X-Google-Smtp-Source: ABdhPJw+unuRTFJO1NOL8frkI1yVuOJQmy3spxq/6bJQmnA9TDY3fDq8+xWvo35iYTRJvdJlNzjeKQ==
+X-Received: by 2002:a50:8163:: with SMTP id 90mr11604786edc.142.1607167220864;
+        Sat, 05 Dec 2020 03:20:20 -0800 (PST)
+Received: from skbuf ([188.25.2.120])
+        by smtp.gmail.com with ESMTPSA id m13sm5713938edi.87.2020.12.05.03.20.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 04 Dec 2020 23:59:57 -0800 (PST)
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Subject: [Patch net v2 2/2] lwt_bpf: replace preempt_disable() with migrate_disable()
-Date:   Fri,  4 Dec 2020 23:59:46 -0800
-Message-Id: <20201205075946.497763-2-xiyou.wangcong@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201205075946.497763-1-xiyou.wangcong@gmail.com>
-References: <20201205075946.497763-1-xiyou.wangcong@gmail.com>
+        Sat, 05 Dec 2020 03:20:20 -0800 (PST)
+Date:   Sat, 5 Dec 2020 13:20:18 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
+Cc:     linux-kernel@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        mareklindner@neomailbox.ch, sw@simonwunderlich.de, a@unstable.cc,
+        sven@narfation.org, marcel@holtmann.org, johan.hedberg@gmail.com,
+        roopa@nvidia.com, nikolay@nvidia.com, edumazet@google.com,
+        kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org, jmaloy@redhat.com,
+        ying.xue@windriver.com, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
+        netdev@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net,
+        linux-hyperv@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH 1/7] net: 8021q: remove unneeded MODULE_VERSION() usage
+Message-ID: <20201205112018.zrddte4hu6kr5bxg@skbuf>
+References: <20201202124959.29209-1-info@metux.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201202124959.29209-1-info@metux.net>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Cong Wang <cong.wang@bytedance.com>
+On Wed, Dec 02, 2020 at 01:49:53PM +0100, Enrico Weigelt, metux IT consult wrote:
+> Remove MODULE_VERSION(), as it isn't needed at all: the only version
+> making sense is the kernel version.
+>
+> Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+> ---
+>  net/8021q/vlan.c | 8 +-------
+>  1 file changed, 1 insertion(+), 7 deletions(-)
+>
+> diff --git a/net/8021q/vlan.c b/net/8021q/vlan.c
+> index f292e0267bb9..683e9e825b9e 100644
+> --- a/net/8021q/vlan.c
+> +++ b/net/8021q/vlan.c
+> @@ -36,15 +36,10 @@
+>  #include "vlan.h"
+>  #include "vlanproc.h"
+>
+> -#define DRV_VERSION "1.8"
+> -
+>  /* Global VLAN variables */
+>
+>  unsigned int vlan_net_id __read_mostly;
+>
+> -const char vlan_fullname[] = "802.1Q VLAN Support";
+> -const char vlan_version[] = DRV_VERSION;
+> -
+>  /* End of global variables definitions. */
+>
+>  static int vlan_group_prealloc_vid(struct vlan_group *vg,
+> @@ -687,7 +682,7 @@ static int __init vlan_proto_init(void)
+>  {
+>  	int err;
+>
+> -	pr_info("%s v%s\n", vlan_fullname, vlan_version);
+> +	pr_info("802.1Q VLAN Support\n");
 
-migrate_disable() is just a wrapper for preempt_disable() in
-non-RT kernel. It is safe to replace it, and RT kernel will
-benefit.
-
-Note that it is introduced since Feb 2020.
-
-Suggested-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Signed-off-by: Cong Wang <cong.wang@bytedance.com>
----
- net/core/lwt_bpf.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/net/core/lwt_bpf.c b/net/core/lwt_bpf.c
-index 4f3cb7c15ddf..2f7940bcf715 100644
---- a/net/core/lwt_bpf.c
-+++ b/net/core/lwt_bpf.c
-@@ -39,10 +39,10 @@ static int run_lwt_bpf(struct sk_buff *skb, struct bpf_lwt_prog *lwt,
- {
- 	int ret;
- 
--	/* Preempt disable and BH disable are needed to protect per-cpu
-+	/* Migration disable and BH disable are needed to protect per-cpu
- 	 * redirect_info between BPF prog and skb_do_redirect().
- 	 */
--	preempt_disable();
-+	migrate_disable();
- 	local_bh_disable();
- 	bpf_compute_data_pointers(skb);
- 	ret = bpf_prog_run_save_cb(lwt->prog, skb);
-@@ -78,7 +78,7 @@ static int run_lwt_bpf(struct sk_buff *skb, struct bpf_lwt_prog *lwt,
- 	}
- 
- 	local_bh_enable();
--	preempt_enable();
-+	migrate_enable();
- 
- 	return ret;
- }
--- 
-2.25.1
-
+How do we feel about deleting this not really informative message
+altogether in a future patch?
