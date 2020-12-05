@@ -2,32 +2,63 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3DC12CFB4C
-	for <lists+bpf@lfdr.de>; Sat,  5 Dec 2020 13:36:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 896552CFDAD
+	for <lists+bpf@lfdr.de>; Sat,  5 Dec 2020 19:53:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729186AbgLEKyd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 5 Dec 2020 05:54:33 -0500
-Received: from smtprelay0063.hostedemail.com ([216.40.44.63]:44106 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728406AbgLEKxv (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 5 Dec 2020 05:53:51 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 6C27B18224D86;
-        Sat,  5 Dec 2020 10:51:48 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3870:3871:3872:3873:4250:4321:5007:6691:6742:6743:10004:10400:10848:10967:11232:11658:11914:12297:12740:12760:12895:13019:13069:13311:13357:13439:14096:14097:14181:14659:14721:14777:14913:21080:21433:21451:21627:21819:30022:30029:30054:30079:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: edge87_1a0a959273cc
-X-Filterd-Recvd-Size: 2215
-Received: from XPS-9350.home (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf15.hostedemail.com (Postfix) with ESMTPA;
-        Sat,  5 Dec 2020 10:51:44 +0000 (UTC)
-Message-ID: <7779f4de8d70653fe0d92fd4821c32a71b6df436.camel@perches.com>
-Subject: Re: [PATCH 1/7] net: 8021q: remove unneeded MODULE_VERSION() usage
-From:   Joe Perches <joe@perches.com>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     linux-kernel@vger.kernel.org, davem@davemloft.net,
+        id S1726309AbgLESmm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 5 Dec 2020 13:42:42 -0500
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:58357 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727347AbgLEQ5U (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 5 Dec 2020 11:57:20 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 8DDBE60E;
+        Sat,  5 Dec 2020 10:51:54 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Sat, 05 Dec 2020 10:51:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=9zd5YnVW5m9n74ywBM5+lZcIQmt
+        S/W44ACx+gdsMPgw=; b=Dcdf5/aRZt5/spe1Wli8o9Qi0aEugAOjfXF4CWPyFUW
+        zvF8iOwYdP97wv37BATxsHTgr/UJelUV6EifUFUQ/wE1yuyDo1bJiNNZUAGf+ytO
+        DCAw7f6OOu0Rjn8GCHUfs7rP/6Zo1Kqx/9zO8vqUzDOTN2Q9e0npCIUhgN+8eNDO
+        utWliybb9XhFH/lrnRKZBy1ajXU7SqCGZp2z5sGI9L8qVj3obBCyu8/Vdudb3Cly
+        PGkKNlQ0bp6RhWBo1eaiWIgA4Gh3bZF9a8DxhZfTS7OCRxj8BrRQgUqqZT9Q2qex
+        pWk8yNVgODQj9j0Lro8+W5/MK5XFzCgp+So2t7CyatQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=9zd5Yn
+        VW5m9n74ywBM5+lZcIQmtS/W44ACx+gdsMPgw=; b=cuqxtYqiHDIiw4w8QuYQz2
+        JLA9e4vScA2joFZ8V9b42FjRPH3abofGkkbkV66axYjVRYSjZ21iR+/3z1oVGTBC
+        4+8fqj3kLQgORj+NRZxW3nc0wVUJa6gUTLwX3WqwF8N0LRQjf1GMpuBxlR33W/+5
+        N01Fd7NeY8rThZX6QGUuQBUu8u/byUt+l6om44QJuuqks8Kqz7jzn66+AoDKhSoP
+        EnrxHbhAkb7fjUWiguoF7Q5OWHanOBmddGZh+6UMBo44BX9jxATb4+fLCok76/lz
+        5P5/8Wy6vpZUZsHcOkVynkQK+YtqS/qnmjTfdxJnU6Wepf6orwKV9idpYxq2LmwQ
+        ==
+X-ME-Sender: <xms:l6zLX9W2Iefkq3KbTfpbKO14GeWL2dT03qVvJxF8ayJnPEl6wtWE9A>
+    <xme:l6zLX9lS8D3dzyXAfsWiOXvE7G4MtWkIRPDqZndhXMlT3uqs6UmhV3FS11Qh4KUS7
+    r24ueP7j-tbFg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudejtddgkeegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
+    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:l6zLX5aULs9Vjcs0JV9_TZXJSvd_m8-n7zJbhfZcq3-D81SNrjc29w>
+    <xmx:l6zLXwV0f2PHaMCNVx8ARTjv_svXGJmJzJtYFM102xYDw_vGLj_H7Q>
+    <xmx:l6zLX3moYGa1jCk1Vntn_TdSTFbb0NHKH2StAJ9OItgNCdLSzGXg3A>
+    <xmx:mqzLX3NgSqG2bmzPJyssWD9f4cKL_QspmNo_5SIiSuIVO8BQUKEPQRqWY_k>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id ECAB5108005F;
+        Sat,  5 Dec 2020 10:51:50 -0500 (EST)
+Date:   Sat, 5 Dec 2020 16:53:06 +0100
+From:   Greg KH <greg@kroah.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        linux-kernel@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
         mareklindner@neomailbox.ch, sw@simonwunderlich.de, a@unstable.cc,
         sven@narfation.org, marcel@holtmann.org, johan.hedberg@gmail.com,
         roopa@nvidia.com, nikolay@nvidia.com, edumazet@google.com,
@@ -37,35 +68,57 @@ Cc:     linux-kernel@vger.kernel.org, davem@davemloft.net,
         netdev@vger.kernel.org, linux-bluetooth@vger.kernel.org,
         tipc-discussion@lists.sourceforge.net,
         linux-hyperv@vger.kernel.org, bpf@vger.kernel.org
-Date:   Sat, 05 Dec 2020 02:51:43 -0800
-In-Reply-To: <20201204160924.2e170514@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
+Subject: Re: [PATCH 1/7] net: 8021q: remove unneeded MODULE_VERSION() usage
+Message-ID: <X8us4vsLCh/tXFLh@kroah.com>
 References: <20201202124959.29209-1-info@metux.net>
-         <20201204160924.2e170514@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+ <20201205112018.zrddte4hu6kr5bxg@skbuf>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201205112018.zrddte4hu6kr5bxg@skbuf>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 2020-12-04 at 16:09 -0800, Jakub Kicinski wrote:
-> On Wed,  2 Dec 2020 13:49:53 +0100 Enrico Weigelt, metux IT consult
-> wrote:
+On Sat, Dec 05, 2020 at 01:20:18PM +0200, Vladimir Oltean wrote:
+> On Wed, Dec 02, 2020 at 01:49:53PM +0100, Enrico Weigelt, metux IT consult wrote:
 > > Remove MODULE_VERSION(), as it isn't needed at all: the only version
 > > making sense is the kernel version.
-> > 
+> >
 > > Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+> > ---
+> >  net/8021q/vlan.c | 8 +-------
+> >  1 file changed, 1 insertion(+), 7 deletions(-)
+> >
+> > diff --git a/net/8021q/vlan.c b/net/8021q/vlan.c
+> > index f292e0267bb9..683e9e825b9e 100644
+> > --- a/net/8021q/vlan.c
+> > +++ b/net/8021q/vlan.c
+> > @@ -36,15 +36,10 @@
+> >  #include "vlan.h"
+> >  #include "vlanproc.h"
+> >
+> > -#define DRV_VERSION "1.8"
+> > -
+> >  /* Global VLAN variables */
+> >
+> >  unsigned int vlan_net_id __read_mostly;
+> >
+> > -const char vlan_fullname[] = "802.1Q VLAN Support";
+> > -const char vlan_version[] = DRV_VERSION;
+> > -
+> >  /* End of global variables definitions. */
+> >
+> >  static int vlan_group_prealloc_vid(struct vlan_group *vg,
+> > @@ -687,7 +682,7 @@ static int __init vlan_proto_init(void)
+> >  {
+> >  	int err;
+> >
+> > -	pr_info("%s v%s\n", vlan_fullname, vlan_version);
+> > +	pr_info("802.1Q VLAN Support\n");
 > 
-> Thanks for the patches. Please drop the "metux IT consult" from the
-> addresses. The from space is supposed to be for your name.
+> How do we feel about deleting this not really informative message
+> altogether in a future patch?
 
-If you _really_ want this superfluous 'metux IT consult' content in your
-signature, and I don't think you should, use parentheses around it.
-
-Enrico Weigelt (metux IT consult) <info@metux.net>
-
-Using a comma makes copy/paste into an email client think it's two addresses.
-
-
-
+It too should be removed.  If drivers are working properly, they are
+quiet.
