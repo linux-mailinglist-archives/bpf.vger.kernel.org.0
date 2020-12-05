@@ -2,72 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A78C2CF927
-	for <lists+bpf@lfdr.de>; Sat,  5 Dec 2020 04:15:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BD802CFA3C
+	for <lists+bpf@lfdr.de>; Sat,  5 Dec 2020 08:18:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726222AbgLEDPE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Dec 2020 22:15:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725300AbgLEDPE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Dec 2020 22:15:04 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9B97C0613D1;
-        Fri,  4 Dec 2020 19:14:23 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id j10so8799082lja.5;
-        Fri, 04 Dec 2020 19:14:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bhnaUEstsq49uk/fb5x2ARUhEHo6K3HNgE+BC9eamaA=;
-        b=oZFYYlsQCzEe9E03e1RLzM8JPqad72TY9Rj5HzvwilkHczQP4sLP9MepHecr4U6iD5
-         FjRAj2WasZZAmAGwMfhjgb+vGQu/wp5UWYbCISvk3hTzIxeUduw0OpuSTgUzbzrLaYSN
-         1fDELZFrCZzJ9joUJsZ1VsWzwpkqQHpGcPonhuB33TGmZK1hqtD3iKoQ9HEbhEK2xoei
-         Fm1gL3yNeheSlnIo9zZaipoEaa8Az+TCzyc+2EXe/gLytoyKiQln1YShMkrljl6eUXbu
-         Zuch6sne81LWpxLZi+u/UPcQXXx+IF1D1+ZJXDShDpwWDsADSGGMSWvX+nGPs3jVhaVk
-         g8fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bhnaUEstsq49uk/fb5x2ARUhEHo6K3HNgE+BC9eamaA=;
-        b=g581+HpLL8ZaH33uj2heDYN/GEjujWCMsGGr8WXqawiE9p8IdYH4gjnz9gKeEdO4eD
-         FVJnP05LBPwJTgyMlDkE7FGxY+ViPKfy83gLujb8nrcaeMujrdsSWLES3yfz5/yKdJkZ
-         KDTvG0tGlfP3/L4liZdxd4u59CSm9T8r37hKlIAWE0PBRDpVzu511bP+qFzoIh3wXiNC
-         Xb9GBryI5VStoB4pJU2EcSm5kDC4aZS4DXXbVwXWEfq5U2IbLf32OfI+J1wjVRUwdsUu
-         /Mm9eThRP5LLwRZhbjHWuc0hqYumZvPFpg/XX3dLjUONWsZblBoQPzGiUAVSuunCtOGR
-         ww/Q==
-X-Gm-Message-State: AOAM5311+NU4/8v7iiMoeF5GMYoEq9/KjVk2F3xAeCfkbF1Tbf533oC/
-        IP4i1JJzrmbHPS+8cMj6h6KYtYWRNCHt/2asMI84BsgWy6U=
-X-Google-Smtp-Source: ABdhPJyudMU3m1DeyEwjyVniEdUz6gQ+Cqqdg5l5d7SN7Oay2RvC0I7kTWt5yorQuywHmF/fNpiM2nEc0x8gogQPKNc=
-X-Received: by 2002:a2e:8891:: with SMTP id k17mr4275030lji.290.1607138062460;
- Fri, 04 Dec 2020 19:14:22 -0800 (PST)
+        id S1726841AbgLEHRz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 5 Dec 2020 02:17:55 -0500
+Received: from dvalin.narfation.org ([213.160.73.56]:58798 "EHLO
+        dvalin.narfation.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726513AbgLEHRz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 5 Dec 2020 02:17:55 -0500
+X-Greylist: delayed 625 seconds by postgrey-1.27 at vger.kernel.org; Sat, 05 Dec 2020 02:17:54 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=narfation.org;
+        s=20121; t=1607152004;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1+DE9Hr4PZDJaNqKitRhvlhDRRDrwrId/lwHL2xJ1ck=;
+        b=2e/jy53aNkFklxaB5Mx+OOqbO3eq8kTw4WtEQ6F95CF1n2CtgE1chEd3rBofTxLY8z6n2z
+        HZAUwzp8qpTUV+QCxvWSYK4Sg/s/WSh+sXHyVSKk9fyfOw7Td8FSY2WkzihRaDc+oEqREi
+        4kBMCn5kRvnYaDBRXOIBhO12BJApyFQ=
+From:   Sven Eckelmann <sven@narfation.org>
+To:     linux-kernel@vger.kernel.org,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>
+Cc:     davem@davemloft.net, kuba@kernel.org, mareklindner@neomailbox.ch,
+        sw@simonwunderlich.de, a@unstable.cc, marcel@holtmann.org,
+        johan.hedberg@gmail.com, roopa@nvidia.com, nikolay@nvidia.com,
+        edumazet@google.com, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
+        jmaloy@redhat.com, ying.xue@windriver.com, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@chromium.org, netdev@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net,
+        linux-hyperv@vger.kernel.org, bpf@vger.kernel.org,
+        Matthias Schiffer <mschiffer@universe-factory.net>
+Subject: Re: [PATCH 2/7] net: batman-adv: remove unneeded MODULE_VERSION() usage
+Date:   Sat, 05 Dec 2020 08:06:40 +0100
+Message-ID: <4581108.GXAFRqVoOG@sven-edge>
+In-Reply-To: <20201202124959.29209-2-info@metux.net>
+References: <20201202124959.29209-1-info@metux.net> <20201202124959.29209-2-info@metux.net>
 MIME-Version: 1.0
-References: <20201205030952.520743-1-andrii@kernel.org>
-In-Reply-To: <20201205030952.520743-1-andrii@kernel.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 4 Dec 2020 19:14:11 -0800
-Message-ID: <CAADnVQK25OLC+C7LLCvGY7kgr_F2vh5-s_4rnwCY7CqMEcfisw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: return -EOPNOTSUPP when attaching to
- non-kernel BTF
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="nextPart1766490.tdWV9SEqCh"; micalg="pgp-sha512"; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 4, 2020 at 7:11 PM Andrii Nakryiko <andrii@kernel.org> wrote:
-> +                               return -EOPNOTSUPP;
+--nextPart1766490.tdWV9SEqCh
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
+From: Sven Eckelmann <sven@narfation.org>
+To: linux-kernel@vger.kernel.org, "Enrico Weigelt, metux IT consult" <info@metux.net>
+Cc: davem@davemloft.net, kuba@kernel.org, mareklindner@neomailbox.ch, sw@simonwunderlich.de, a@unstable.cc, marcel@holtmann.org, johan.hedberg@gmail.com, roopa@nvidia.com, nikolay@nvidia.com, edumazet@google.com, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org, jmaloy@redhat.com, ying.xue@windriver.com, kafai@fb.com, songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org, netdev@vger.kernel.org, linux-bluetooth@vger.kernel.org, tipc-discussion@lists.sourceforge.net, linux-hyperv@vger.kernel.org, bpf@vger.kernel.org, Matthias Schiffer <mschiffer@universe-factory.net>
+Subject: Re: [PATCH 2/7] net: batman-adv: remove unneeded MODULE_VERSION() usage
+Date: Sat, 05 Dec 2020 08:06:40 +0100
+Message-ID: <4581108.GXAFRqVoOG@sven-edge>
+In-Reply-To: <20201202124959.29209-2-info@metux.net>
+References: <20201202124959.29209-1-info@metux.net> <20201202124959.29209-2-info@metux.net>
 
-$ cd kernel/bpf
-$ git grep ENOTSUPP|wc -l
-46
-$ git grep EOPNOTSUPP|wc -l
-11
+On Wednesday, 2 December 2020 13:49:54 CET Enrico Weigelt, metux IT consult wrote:
+> Remove MODULE_VERSION(), as it isn't needed at all: the only version
+> making sense is the kernel version.
+
+Is there some explanation besides an opinion? Some kind goal which you want to 
+achieve with it maybe?
+
+At least for us it was an easy way to query the release cycle information via 
+batctl. Which made it easier for us to roughly figure out what an reporter/
+inquirer was using - independent of whether he is using the in-kernel version 
+or a backported version.
+
+Loosing this source of information and breaking parts of batctl and other 
+tools (respondd, ...) is not the end of the world. But I would at least know 
+why this is now necessary.
+
+Kind regards,
+	Sven
+--nextPart1766490.tdWV9SEqCh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAl/LMYAACgkQXYcKB8Em
+e0bcIg/+Pc8t5DCC6EDef3uUWb0WaC/JHR6FD9ueabx2XmSpMR9EueQrVuea8ufv
+QAVsaCvfZQydsJStJ2I2+K73NZmLE/VdPXs4j1f0aBSQbeN34JmFesjne449g8OB
+kzRn6zd4elPV8cbMQMaVvZJg+GNtBbiYfgxnErxp+213TSHAqYQ7VBdtbxEO6qH0
+z7VsFrKzlyrLg+NmAZk9iswa5Pm/SI/vuW3pmZ4uHbKKrzLLdROyJDZNN7dXTC9K
+n/feL9bOuv+fQjwggDzS1Q/Ttiz73VTfCHwkWaIB/caBpiW730zKiC183EI1y5mt
+tLpyrSICHebE1VGIGXORUR7n7/1ceBUmJhu8kOM07XZw9HMRsBAMHrPIdx2hSL5/
+OHthiJLlycxVN7W8zfRU25vxlmlDYuXctMKItiqIgtAxq7G01Fgvh91RrCWCha3N
+pm4BN9r0D5byF/w38rLmBqEhZyi6Lzi0/H49JHwbEYSKKv+s3GK3LIik4aLPzTf8
+/FFYSN6EoCPzHw77vBpZMhP0bMCW+g7MWLW9cqbVGqQBdYuxn5DTzBx5K/BJxw6s
+AG8az/+K8Si/atL2IRDQZKqwnx4vHZxJtpd6JFUwG+38SczswlGzg5j1jjbYSiEi
+/x3y9QqKd1PfkS+JJ9I9wc+T1m+MTHbYfZ3E0tU9CR/vWGnf5os=
+=0NwX
+-----END PGP SIGNATURE-----
+
+--nextPart1766490.tdWV9SEqCh--
+
+
+
