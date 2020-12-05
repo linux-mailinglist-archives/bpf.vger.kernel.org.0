@@ -2,131 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F0AE2CFE11
-	for <lists+bpf@lfdr.de>; Sat,  5 Dec 2020 20:12:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2E572CFED9
+	for <lists+bpf@lfdr.de>; Sat,  5 Dec 2020 21:37:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726134AbgLETMb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 5 Dec 2020 14:12:31 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:59668 "EHLO
+        id S1726055AbgLEUgt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 5 Dec 2020 15:36:49 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:63758 "EHLO
         mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725949AbgLETMa (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 5 Dec 2020 14:12:30 -0500
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B5J5eJo014684;
-        Sat, 5 Dec 2020 11:11:36 -0800
+        by vger.kernel.org with ESMTP id S1725976AbgLEUgs (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 5 Dec 2020 15:36:48 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B5KZKiO031857;
+        Sat, 5 Dec 2020 12:35:20 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
  references : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=6ZWe10QKpSjloTY91ubWMy8VqcxnW9w+d6Z2zEyOBpI=;
- b=ePx00GDBeYt+LRz7CIpEJ7TTaK39F3DEKJ0Q05sArhVzWh5g/Shcy6z+Gxq8C3Ct6TzB
- 0egHxQKm1T1uAB/PQFr/N0xqSj16s2bdSEdWcVwCBuag2I8b5UqmzbFSMF7MeJOIoYCo
- aFovhjlnXBGKf3va8CpsUyeXmWkd85WFLQw= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 3588wns7ud-2
+ bh=/DbJ5vIqMtUjS1yazN2HfMbqCKjE7oNRORHqrBHV21U=;
+ b=TLF8AWdxyj8t3EA+PsoU4JbVK7nKVmePJ1mp4A9KFOhrWYu7uGOAYdYY+8fc6aDUalPT
+ EPAoOwHT1kTr7sYMBlZSn/mN+744eVf28Ihq/2RBta0HotbQNPyrkkAINxHMQMnynDwa
+ uhP3KDn82fC20NZIf4HoCkKR2AI1AN8Lvm4= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 3588tv9dt4-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sat, 05 Dec 2020 11:11:36 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+        Sat, 05 Dec 2020 12:35:20 -0800
+Received: from NAM02-BL2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Sat, 5 Dec 2020 11:11:30 -0800
+ 15.1.1979.3; Sat, 5 Dec 2020 12:35:18 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ny8PXlb3UpUMX4YtsHkQJyIIiFK7Ju91AEuCBJdMcC2JPvAwRvtQo+b8Je8ye9RcZvU1I/CNsQY7OzTjp2UegPTvxvRT6P3YAIZJDk3ZPRBjjT9h9ny1PwMJ6CodxRnLT5IxgvK/KCvzAw1ujXQbELAbwdSJSK2XtWpAV8rLOU74oRPsJAXyi11bTHLHizZZ9TjMkuz8MUADGcl7JSFlN48HwDpLRRrPRjko+i62uB0lGGht9K1zoDgLAC1X7rDW2dAWzgK0ZpNeQwQiC8QZCKf/NfZXnwqozfJqEd7v4ZaH6oBpGOvXCpM3bYHo9qTVI6LeJE9o3tzHhaqUW19Cbg==
+ b=nirZi0DCEhRgGZMnc6wqKl2EcD8qCKMcgAGqbKWEglWH8ggUla6Yu65REqginvLOlWgl1bObWH4dLCJIBYoePQjKc+sc7VaAwhwwsSNF/tbmjBZojz2dBSOoHt31UShAAOxen3y9O2ouS2sGPEPs45ejYnl/yDWE6rRTKIBe66E6ukT4XE9f6e2tW3ie+3bieno8lQsfPjDyALEVHnK+ioBp9An6zdUd/B9EF+HKPbGos71QzU5jbziIURlpQz3C0RR4J/J303lb4Nfl7by2akNfd6M5V4WiufRtpNpFA6LkAMrdhiGsO4tOvyCAoKAw8J+4fYcdWnaHk7Issg2H+A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6ZWe10QKpSjloTY91ubWMy8VqcxnW9w+d6Z2zEyOBpI=;
- b=b5h7BhRwC7gEil1nz7VFuCb3TZ1L4wmKsLKdRVGBqME+6wyZruIw5GwAZYbl5aJgb+hK1BLu3ldR3Pbd+V2xRfdPVbqzpToOf+sulkgesQfDo9bre75alR0UALLTnqI9LaTxz8Rp/uL4XZbzZv2vAidMnKILuX2PH8T606C5s/D9wySFTsARtpx3VXPNOUoAro3XyoPJ1sY+K38wiNvniWgOF9dV6jNsHgkj6EPaWy6UxHAfUcYRusU+MVMYDURZbIje0uWBclTapu9CvsIIuVddH9VR4qNil7YSr68L3nHJLum2b6UgG8smC5GO6rNwZ/TOadVLr3mzWJkbvRJqjg==
+ bh=/DbJ5vIqMtUjS1yazN2HfMbqCKjE7oNRORHqrBHV21U=;
+ b=RykP0WTIYbBjjU6cX43vgSl5mlvNAyJ4Y4riAXpRk9al2fs5TZT7YGGlMBUN2Ujvacmd3aDPpmi3k253Bv4b1s8T0CQr0mAWPa/w7gHklVE3smFvKcm311MzYfqXtxUXbI2sDCwbVaDaA4nEyDJ2+5wEXh5ShIBpy7fdv686AI/gYdOqhwOOuLGZVJAW4boqIhIm6YX/PJrdadENsvVFXhUy7TFze2BMtmvRHUIrRARHtIkWxqXWQbMBYIgC4x6ebJTZO4hJyc+3qYge7+hJ80+nSLywvDVRXbE16+iMZ50LUOrsQKSuMOAx17o4sInug1xpafA1nDkuzDj3cya3HA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6ZWe10QKpSjloTY91ubWMy8VqcxnW9w+d6Z2zEyOBpI=;
- b=Qm8wdj9sULm1YnZPprgG4H/yK2r9MBY2szCgN40o3CdMksyrkm/zK/p4pWW5U1QipIZX7wVUak00+BfshVd0EVZSBYKBj5lSQqL8OK74AHASF7benH5I4tTnsNPJZB2Cv9AKiJSmGF+HRFct8p1GD0tG0DKN4Ryj4uHJ+7Ymz+k=
+ bh=/DbJ5vIqMtUjS1yazN2HfMbqCKjE7oNRORHqrBHV21U=;
+ b=StrPCzUCQX8YiGlw4Dz8Mn8oESTDfaWPBgofmojuvJb1OOfUACUbi9L2V4m0ZiAFa44XU49jYz64ZP8lyPapst7B03en1+nMHm+uPYVpbmTkJQnY2HKUiMMbAt8Ugaanale+Y3D9Bohu4+F9mQduRG9QmyPHpB3lSKI7jXJDPZI=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
 Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB2328.namprd15.prod.outlook.com (2603:10b6:a02:8b::25) with
+ by BYAPR15MB2245.namprd15.prod.outlook.com (2603:10b6:a02:89::32) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.21; Sat, 5 Dec
- 2020 19:11:28 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.20; Sat, 5 Dec
+ 2020 20:35:15 +0000
 Received: from BYAPR15MB4088.namprd15.prod.outlook.com
  ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
  ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3632.021; Sat, 5 Dec 2020
- 19:11:28 +0000
-Subject: Re: [PATCH bpf] tools/bpftool: fix PID fetching with a lot of results
-To:     Andrii Nakryiko <andrii@kernel.org>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <ast@fb.com>, <daniel@iogearbox.net>
-CC:     <kernel-team@fb.com>
-References: <20201204232002.3589803-1-andrii@kernel.org>
+ 20:35:15 +0000
+Subject: Re: [PATCH v2 bpf-next 0/3] bpf: support module BTF in BTF display
+ helpers
+To:     Alan Maguire <alan.maguire@oracle.com>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <andrii@kernel.org>
+CC:     <kafai@fb.com>, <songliubraving@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
+        <rostedt@goodmis.org>, <mingo@redhat.com>, <haoluo@google.com>,
+        <jolsa@kernel.org>, <quentin@isovalent.com>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <shuah@kernel.org>, <lmb@cloudflare.com>,
+        <linux-kselftest@vger.kernel.org>
+References: <1607107716-14135-1-git-send-email-alan.maguire@oracle.com>
 From:   Yonghong Song <yhs@fb.com>
-Message-ID: <ea2478fc-45c4-6480-bba5-a956abf54f13@fb.com>
-Date:   Sat, 5 Dec 2020 11:11:25 -0800
+Message-ID: <3dce8546-60d4-bb94-2c7a-ed352882cd37@fb.com>
+Date:   Sat, 5 Dec 2020 12:35:11 -0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.5.1
-In-Reply-To: <20201204232002.3589803-1-andrii@kernel.org>
+In-Reply-To: <1607107716-14135-1-git-send-email-alan.maguire@oracle.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [2620:10d:c090:400::5:d155]
-X-ClientProxiedBy: CO1PR15CA0088.namprd15.prod.outlook.com
- (2603:10b6:101:20::32) To BYAPR15MB4088.namprd15.prod.outlook.com
+X-ClientProxiedBy: MWHPR12CA0050.namprd12.prod.outlook.com
+ (2603:10b6:300:103::12) To BYAPR15MB4088.namprd15.prod.outlook.com
  (2603:10b6:a02:c3::18)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21c1::1033] (2620:10d:c090:400::5:d155) by CO1PR15CA0088.namprd15.prod.outlook.com (2603:10b6:101:20::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend Transport; Sat, 5 Dec 2020 19:11:27 +0000
+Received: from [IPv6:2620:10d:c085:21c1::1033] (2620:10d:c090:400::5:d155) by MWHPR12CA0050.namprd12.prod.outlook.com (2603:10b6:300:103::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17 via Frontend Transport; Sat, 5 Dec 2020 20:35:13 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a0a47f11-37e6-4fa1-a648-08d89951917f
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2328:
+X-MS-Office365-Filtering-Correlation-Id: 82db3712-5900-4c65-b4d8-08d8995d45d1
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2245:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2328A4F4FC1A084A6B4CFF6BD3F00@BYAPR15MB2328.namprd15.prod.outlook.com>
+X-Microsoft-Antispam-PRVS: <BYAPR15MB224538536845DCA415E1CE3DD3F00@BYAPR15MB2245.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: o9h21lRVd2NZ4YeR6GiOtLVcqy3xxubMUFa6J9W58rMJ8xXv8rrhCPUTHjmiM6j493rRDOvttxiFo33+PKCYpsAThN6Jh44OVDn8Cr3FxKVsBwbexPO2W4ApqZrcKk8Bdu1FsjMLJEd8/A1sLPDT46Celm9kbdBlCMcEKbl9yJjvttGDswqWcWZsdzXkJMOBSdFDfYdc1PY8DcddZOWtoLGaB3prlUe+OohoRoraulWWk4bidPh3OIUxm8EwPZkWsEq7rb4fMwo6Itwkn9fUKvhNCybvvkc8CZZu+SVWMByMg5VWiwY75g4qHB4lLZOw3v7rjU0lfVx9bLAorD4OJ+NB2TWJf9YghTHPK4mBH9Z/MX84nkt2wAqyO+U/c7KMCNizlAnSawxzlKT5clls9tGjH1G5yd7FxRpX6NOPrNw=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(396003)(136003)(366004)(39860400002)(2906002)(66946007)(31696002)(83380400001)(6486002)(4326008)(16526019)(8936002)(66476007)(66556008)(186003)(31686004)(5660300002)(36756003)(53546011)(316002)(8676002)(2616005)(478600001)(52116002)(86362001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?M0ZLUG12L0J0MWFGMk5FTEIyY2haVGxCZFJCakRlMUQvamxBZXVDRVpna1hw?=
- =?utf-8?B?bmNPdWRVZG5mTmhWamIycmt4bzRZSmZOeDI5eWpwdTgzMDRiaEFaUDA2cVQz?=
- =?utf-8?B?L2lpclRCY09aYVlYY2FpcHM0YmhKNWpaYkV4Q2JLRWdXZjRtMURRVWNtVy9Q?=
- =?utf-8?B?d252UGdLNU5uMDM2S3FIM3VpUmUyYWRxa0NRWmNaSnJiQVJtN0NZZkk1bGNQ?=
- =?utf-8?B?Szk5TXVMREFtZmVjOWhyeEV0azY3U2lhV2tiVlNibHpZMG1ZazBzWm1WOFo5?=
- =?utf-8?B?MkR4dDNYNHJ2elRKeFE1ajBjRTZFSEtHOUdoR3VGYmY0Ri9Hdkd4bGNkclVX?=
- =?utf-8?B?N1ZFN3FqVjZaQkxZNGNMdS9ENHdrYk1FWFFRYjFMNFh4b3pkUWJUMnJyb09s?=
- =?utf-8?B?MFcxczdyS3lYbFdaNnVSNmtGSlBCd1phT2JFVSsxZEY0RWh6UmltZjZBS05B?=
- =?utf-8?B?ZUlYRHNBN1I1UW5DaWdVL25pMHV5V3l3TG5obFBLK2FheXhiR24waFBrWThj?=
- =?utf-8?B?SjNSS2IvY0NqeEFkWGYxeStpYjZFMDM3WkJHMityMzRJTVlyNnN4QkNQaDE2?=
- =?utf-8?B?SXlDTVpwOFh6VGQ5Uy85U1JpOEtMcXJPRWdCMWlnYndHYUxNM0ZZQS9TV2xo?=
- =?utf-8?B?d21ZeklSeVJSOU5qSllQeWZsZVlqN0NtM0Z4c3pYMmI5aXhIVkdGYzZnQWd3?=
- =?utf-8?B?NFRTOHE5OVhVWHRrWDEvUlNwenRKMmpwM2tQNHJzZXpyc0dlZHlmVTV3aE0r?=
- =?utf-8?B?UzlmbjRYcDlzelVyUkNZcHVTTE4xYTRESDZtQTE5VkQzNExHZE82S1NReVY5?=
- =?utf-8?B?YUV2TEd6WUZ0N0I1VThWMVk3Rkc1d1FVQU9xTUdIeHNTdDNQNmp4RDdrQkRX?=
- =?utf-8?B?M3BRY1R0K3h3QW1yeGpTYUM0RmZqUk5rMCt3YUhZdXR0aDNSVDRGV0RXOE9p?=
- =?utf-8?B?TU4wOVJuOWlWb2FTQmp4ZmJDRWZWOU1YUDBBWU9KQlZtYXcxYmp6VmFwQld0?=
- =?utf-8?B?YWIvTERGaTNwb3FzVFl2ZVlLQmw0blhIcWlPMjE5UWhaeFR6cmU1RTJuZGt2?=
- =?utf-8?B?WFQ5bHcxaTdKVUVHdVh4UmFLQ2cwMXhPVTJjSjR6bTZJNlRwN3FRL3hDZTk0?=
- =?utf-8?B?RzMxVW1KMXRnSmJqMmZuR0xMNUtwc01BenhLZ3ZqMEtWSWNqdnJXaG1vUklt?=
- =?utf-8?B?WkdWOVUzNVQ5VFBtR0hZcGZCTVJ0RUVSbjdhNTdPQlRkN3d2b0NvNFcrbHhn?=
- =?utf-8?B?MXRWWUw2Qk4rY2V0eHpNNE4xUnhKT2NrekZhWkZCUlMwaEljQXhIQU1VMzlG?=
- =?utf-8?B?Ris1V1F3eVNkazM4dmZOTzRlQ0FYUUJidWROelppaXpLRVVKalRhQlhBRU14?=
- =?utf-8?B?NFJ0ZTYrUEJoZUE9PQ==?=
+X-Microsoft-Antispam-Message-Info: +lBnTSLGiGesS/Ss73ggefgJ3wnsYhtIuCEjvTXiScN6pjaVBsrHSndpc9n8K74/s3lNNOIXcCRDtZNIbgFQyZE8DdA8ZqYaerTUr+GA03Lp8HJgaNVmm5kDSDVKh4CVzIvAfW5jUZe76xCdo1geIqjloanxfrmBh1VdXDC3ejhYZONPnS2Nq9O6SzpytIl7MdmnCAgEoXMV68V7XsY+a1RPfb1mkQ1TZudJIJuV5hrOrJnaDoAZRu8GFTZJC5U0ND17wES3zfDHFQBK3RnmMabVZ7zOOjxhcJ/bFPXY3nm9sQ2r9A/uEd565vCYHjDEdFyuvE1f4LkBU10CIG9kmCz/R6XXTVo9t3ojWngh9Pe6msASRv+mb6jkEElxrVvd6SPAQvrPK2ioB/UqYh5WT0jT2mNpv2nlUj2O5Pw8JvU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(366004)(39860400002)(346002)(396003)(5660300002)(83380400001)(186003)(2616005)(4326008)(6486002)(2906002)(7416002)(86362001)(16526019)(53546011)(31696002)(31686004)(478600001)(66556008)(8676002)(52116002)(66946007)(36756003)(316002)(66476007)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?cVRRSnc5Q053SndRN1cxcHR3NEdueWJ1UFRmZHlzM004a2NrQ05OK3BUSmVR?=
+ =?utf-8?B?TDFTUXlsS3FNU2c5SnAreXhGb1A4SlFsNnJ4Q2lyRGtWdGcrb0ZXTkJ3Q0p4?=
+ =?utf-8?B?V01jZ21ubDNqRE0vbjRCdFBlMXZYaXhGOVlEK0VGNVVacTBxNHNUS05yRjZ6?=
+ =?utf-8?B?UHdvSWtzajZsT3pud2RVSGNoZWpITzUzeCtWUThFdXZpWkpJNkVTS3puUGJw?=
+ =?utf-8?B?SlBpN0pDYklQTGk0ZlpKSU5SbDdJUU95UjF4UDZUVDVrZVB0LzJRWWp4SGVJ?=
+ =?utf-8?B?dDlqVlNPdHdjV3VHZEl0MXJvN3hwZCtiM0hlaEtOZjJhRUdHWTRFekF5Wkp5?=
+ =?utf-8?B?MkdQay9Vd0lHZFA1VkVJNnpCYXBhb1dacTQ0eng1TXJhbE5MVWpZU3cwNUZ2?=
+ =?utf-8?B?RkFKWDZGU3NGemN2N1g1VDhsWW9BVXpCK2ZaM2dyQmtwYWhtcEVNODNOZlV0?=
+ =?utf-8?B?VXV2QlBaRjNMZGV4MzU1anlUeWoyNUt6NE95TUd2a0VUZ2t4MnB6TEdGNFdR?=
+ =?utf-8?B?aTRZUkFYNk9QZE9oOUtNNXRDQi9sVWp2bVZLN2tObnEyQ2JtYlFVTmxucUt4?=
+ =?utf-8?B?Q2pvM1dTNkRrN3ZnNmVTL2xLbXBOcTdpRXB3T3d4dG80NW1xMWFCOHNEZUdE?=
+ =?utf-8?B?cmM0VGNNUTJIeWJVd2x5dHJZdGJNYkZWbXpvSXFjSVhsdnpqRWxUZmpFSDN5?=
+ =?utf-8?B?cnRaczRJdWxERTZ3Tkp1SEZNR0FXdENkL2xKQ3dVZk9TbjJpOHZkbnIrSU1R?=
+ =?utf-8?B?WlNTNUZBdFpTNkNwTHNvSFBGUFNhamk0RVY5Z0ZsSFJ5YkNNeE5FSExQb0JL?=
+ =?utf-8?B?eXBLdUhJVVdVNXJzd3FMTXhaMWh6eG81cTlUNWFJUkhuTFRhZnFHLzNKQ05B?=
+ =?utf-8?B?NXVIeWhDWEdMZnRVQ3hDNTNUV3dIeld0RkZwYlZaeC9PZ1FOQ1VkYWcrNXVk?=
+ =?utf-8?B?alFxOEVHenJaQWNVczY5R2o5cjY2cXg4TFdHOFcxYVBZNkVXeVZvVE42cnU3?=
+ =?utf-8?B?U01IOVhQVkFzNzh3Sko2NnRycjFmbkpBQ2pFdDI3QVdrNjVEYWQyVVN1azVR?=
+ =?utf-8?B?TlIrMDNUQSswOXVCYWdNTHhVeU1Hekc1RmtRM1BtV0lNTFp1czErQSs5OEVM?=
+ =?utf-8?B?cFFxVmo0TjB4Q29ZVi9VOFpMbUtIek1xdmRmaXNoaGNraGNTWlNQL0JvUkJJ?=
+ =?utf-8?B?TWdXdHdjMThKdlFvTUdOMGphbmIyU3BzbHVHMUFoeTduTmEwL3N6d2FSR2FW?=
+ =?utf-8?B?Qk1aMkpIYis5K3V1bXJYSktkODRRSm5zSHB5RnhyU1l2MXV3dFFpMzFMWVVK?=
+ =?utf-8?B?RVBOVFNvbmtJblZxeGlDNUVJU0N2Y2diQklhN0hZa2JseTFxaUpjdHNXMU5m?=
+ =?utf-8?B?MWlzbWJoaWpKbnc9PQ==?=
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2020 19:11:28.4008
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Dec 2020 20:35:15.4105
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-Network-Message-Id: a0a47f11-37e6-4fa1-a648-08d89951917f
+X-MS-Exchange-CrossTenant-Network-Message-Id: 82db3712-5900-4c65-b4d8-08d8995d45d1
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jU+6LtHapugWKGpkjhq0hm/ty82LrOBuudB8w4QnrB55fY4eZq1j3YpUAJv8Wquv
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2328
+X-MS-Exchange-CrossTenant-UserPrincipalName: UT7a5FVmeZm1w8I5YpnoelCGzo89b1jlCM42upV1Ke5SkgrVEF6vbL6rk8t/AxjQ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2245
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
- definitions=2020-12-05_15:2020-12-04,2020-12-05 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- bulkscore=0 adultscore=0 mlxscore=0 suspectscore=0 impostorscore=0
- clxscore=1015 lowpriorityscore=0 phishscore=0 mlxlogscore=999
- priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2012050127
+ definitions=2020-12-05_18:2020-12-04,2020-12-05 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1011 bulkscore=0
+ phishscore=0 impostorscore=0 spamscore=0 adultscore=0 malwarescore=0
+ suspectscore=0 mlxscore=0 priorityscore=1501 mlxlogscore=999
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012050138
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -134,41 +143,97 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 12/4/20 3:20 PM, Andrii Nakryiko wrote:
-> In case of having so many PID results that they don't fit into a singe page
-> (4096) bytes, bpftool will erroneously conclude that it got corrupted data due
-> to 4096 not being a multiple of struct pid_iter_entry, so the last entry will
-> be partially truncated. Fix this by sizing the buffer to fit exactly N entries
-> with no truncation in the middle of record.
+On 12/4/20 10:48 AM, Alan Maguire wrote:
+> This series aims to add support to bpf_snprintf_btf() and
+> bpf_seq_printf_btf() allowing them to store string representations
+> of module-specific types, as well as the kernel-specific ones
+> they currently support.
 > 
-> Fixes: d53dee3fe013 ("tools/bpftool: Show info for processes holding BPF map/prog/link/btf FDs")
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-
-Ack with one nit below.
-
-Acked-by: Yonghong Song <yhs@fb.com>
-
-> ---
->   tools/bpf/bpftool/pids.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+> Patch 1 removes the btf_module_mutex, as since we will need to
+> look up module BTF during BPF program execution, we don't want
+> to risk sleeping in the various contexts in which BPF can run.
+> The access patterns to the btf module list seem to conform to
+> classic list RCU usage so with a few minor tweaks this seems
+> workable.
 > 
-> diff --git a/tools/bpf/bpftool/pids.c b/tools/bpf/bpftool/pids.c
-> index df7d8ec76036..477e55d59c34 100644
-> --- a/tools/bpf/bpftool/pids.c
-> +++ b/tools/bpf/bpftool/pids.c
-> @@ -89,9 +89,9 @@ libbpf_print_none(__maybe_unused enum libbpf_print_level level,
->   
->   int build_obj_refs_table(struct obj_refs_table *table, enum bpf_obj_type type)
->   {
-> -	char buf[4096];
-> -	struct pid_iter_bpf *skel;
->   	struct pid_iter_entry *e;
-> +	char buf[4096 / sizeof(*e) * sizeof(*e)];
-> +	struct pid_iter_bpf *skel;
+> Patch 2 replaces the unused flags field in struct btf_ptr with
+> an obj_id field,  allowing the specification of the id of a
+> BTF module.  If the value is 0, the core kernel vmlinux is
+> assumed to contain the type's BTF information.  Otherwise the
+> module with that id is used to identify the type.  If the
+> object-id based lookup fails, we again fall back to vmlinux
+> BTF.
+> 
+> Patch 3 is a selftest that uses veth (when built as a
+> module) and a kprobe to display both a module-specific
+> and kernel-specific type; both are arguments to veth_stats_rx().
+> Currently it looks up the module-specific type and object ids
+> using libbpf; in future, these lookups will likely be supported
+> directly in the BPF program via __builtin_btf_type_id(); but
+> I need to determine a good test to determine if that builtin
+> supports object ids.
 
-No need to move "struct pid_iter_bpf *skel", right?
+__builtin_btf_type_id() is really only supported in llvm12
+and 64bit return value support is pushed to llvm12 trunk
+a while back. The builtin is introduced in llvm11 but has a
+corner bug, so llvm12 is recommended. So if people use the builtin,
+you can assume 64bit return value. libbpf support is required
+here. So in my opinion, there is no need to do feature detection.
 
->   	int err, ret, fd = -1, i;
->   	libbpf_print_fn_t default_print;
->   
+Andrii has a patch to support 64bit return value for
+__builtin_btf_type_id() and I assume that one should
+be landed before or together with your patch.
+
+Just for your info. The following is an example you could
+use to determine whether __builtin_btf_type_id()
+supports btf object id at llvm level.
+
+-bash-4.4$ cat t.c
+int test(int arg) {
+   return __builtin_btf_type_id(arg, 1);
+}
+
+Compile to generate assembly code with latest llvm12 trunk:
+   clang -target bpf -O2 -S -g -mcpu=v3 t.c
+In the asm code, you should see one line with
+   r0 = 1 ll
+
+Or you can generate obj code:
+   clang -target bpf -O2 -c -g -mcpu=v3 t.c
+and then you disassemble the obj file
+   llvm-objdump -d --no-show-raw-insn --no-leading-addr t.o
+You should see below in the output
+   r0 = 1 ll
+
+Use earlier version of llvm12 trunk, the builtin has
+32bit return value, you will see
+   r0 = 1
+which is a 32bit imm to r0, while "r0 = 1 ll" is
+64bit imm to r0.
+
+> 
+> Changes since RFC
+> 
+> - add patch to remove module mutex
+> - modify to use obj_id instead of module name as identifier
+>    in "struct btf_ptr" (Andrii)
+> 
+> Alan Maguire (3):
+>    bpf: eliminate btf_module_mutex as RCU synchronization can be used
+>    bpf: add module support to btf display helpers
+>    selftests/bpf: verify module-specific types can be shown via
+>      bpf_snprintf_btf
+> 
+>   include/linux/btf.h                                |  12 ++
+>   include/uapi/linux/bpf.h                           |  13 ++-
+>   kernel/bpf/btf.c                                   |  49 +++++---
+>   kernel/trace/bpf_trace.c                           |  44 ++++++--
+>   tools/include/uapi/linux/bpf.h                     |  13 ++-
+>   .../selftests/bpf/prog_tests/snprintf_btf_mod.c    | 124 +++++++++++++++++++++
+>   tools/testing/selftests/bpf/progs/bpf_iter.h       |   2 +-
+>   tools/testing/selftests/bpf/progs/btf_ptr.h        |   2 +-
+>   tools/testing/selftests/bpf/progs/veth_stats_rx.c  |  72 ++++++++++++
+>   9 files changed, 292 insertions(+), 39 deletions(-)
+>   create mode 100644 tools/testing/selftests/bpf/prog_tests/snprintf_btf_mod.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/veth_stats_rx.c
 > 
