@@ -2,79 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFB782CF7D3
-	for <lists+bpf@lfdr.de>; Sat,  5 Dec 2020 01:10:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B8822CF805
+	for <lists+bpf@lfdr.de>; Sat,  5 Dec 2020 01:38:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727686AbgLEAKH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 4 Dec 2020 19:10:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45894 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725902AbgLEAKG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 4 Dec 2020 19:10:06 -0500
-Date:   Fri, 4 Dec 2020 16:09:24 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607126966;
-        bh=3oHDGeeF1GqqXg4FoxMbracGhGTzKQb1qv5/cfL79bY=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=nJnqUjjqRKv3uMisJCCjqn0XtrJM8B0EOjRYQ20aX4M8X+xSqYr3PDM3OYcnorhf4
-         /L0neFg27HAYYhqHGZdv6hJ8ldwV2rcOw7rNxX3T/gxArIRebME82QEbD77g4pZ7iJ
-         HRXeeJs7ji48F6F7OBMMtU5j1+3ioWzNca2FuRZuzk1IaRl3tjLoeIfQ6we5D9RrrD
-         VI1KauV38TShYhnQu7N4YK3YXmub1lbL9LMs5KkteMks8HTOyAg29BFekWUycHjLfg
-         OuDBydZ9kShVUCmsidr+q1JHR1YByzxubNHdncPV/PojXJhAKYx/uGvi3kl7gqSvi6
-         f2y2vlpBRsrWw==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     linux-kernel@vger.kernel.org, davem@davemloft.net,
-        mareklindner@neomailbox.ch, sw@simonwunderlich.de, a@unstable.cc,
-        sven@narfation.org, marcel@holtmann.org, johan.hedberg@gmail.com,
-        roopa@nvidia.com, nikolay@nvidia.com, edumazet@google.com,
-        kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org, jmaloy@redhat.com,
-        ying.xue@windriver.com, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
-        netdev@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net,
-        linux-hyperv@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH 1/7] net: 8021q: remove unneeded MODULE_VERSION() usage
-Message-ID: <20201204160924.2e170514@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-In-Reply-To: <20201202124959.29209-1-info@metux.net>
-References: <20201202124959.29209-1-info@metux.net>
+        id S1726080AbgLEAh7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 4 Dec 2020 19:37:59 -0500
+Received: from www62.your-server.de ([213.133.104.62]:40872 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726070AbgLEAh7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 4 Dec 2020 19:37:59 -0500
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1klLZc-0002yZ-00; Sat, 05 Dec 2020 01:37:16 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1klLZb-0009Y1-OG; Sat, 05 Dec 2020 01:37:15 +0100
+Subject: Re: [PATCH bpf-next v9 00/34] bpf: switch to memcg-based memory
+ accounting
+To:     Roman Gushchin <guro@fb.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+References: <20201201215900.3569844-1-guro@fb.com>
+ <CAADnVQJThW0_5jJ=0ejjc3jh+w9_qzctqfZ-GvJrNQcKiaGYEQ@mail.gmail.com>
+ <20201203032645.GB1568874@carbon.DHCP.thefacebook.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <6abdd146-c584-9c66-261d-d7d39ff3f499@iogearbox.net>
+Date:   Sat, 5 Dec 2020 01:37:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20201203032645.GB1568874@carbon.DHCP.thefacebook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26008/Fri Dec  4 23:08:33 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed,  2 Dec 2020 13:49:53 +0100 Enrico Weigelt, metux IT consult
-wrote:
-> Remove MODULE_VERSION(), as it isn't needed at all: the only version
-> making sense is the kernel version.
+On 12/3/20 4:26 AM, Roman Gushchin wrote:
+> On Wed, Dec 02, 2020 at 06:54:46PM -0800, Alexei Starovoitov wrote:
+>> On Tue, Dec 1, 2020 at 1:59 PM Roman Gushchin <guro@fb.com> wrote:
+>>>
+>>> 5) Cryptic -EPERM is returned on exceeding the limit. Libbpf even had
+>>>     a function to "explain" this case for users.
+>> ...
+>>> v9:
+>>>    - always charge the saved memory cgroup, by Daniel, Toke and Alexei
+>>>    - added bpf_map_kzalloc()
+>>>    - rebase and minor fixes
+>>
+>> This looks great. Applied.
 > 
-> Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+> Thanks!
+> 
+>> Please follow up with a change to libbpf's pr_perm_msg().
+>> That helpful warning should stay for old kernels, but it would be
+>> misleading for new kernels.
+>> libbpf probably needs a feature check to make this warning conditional.
+> 
+> I think we've discussed it several months ago and at that time we didn't
+> find a good way to check this feature. I'll think again, but if somebody
+> has any ideas here, I'll appreciate a lot.
 
-Thanks for the patches. Please drop the "metux IT consult" from the
-addresses. The from space is supposed to be for your name.
-
-> diff --git a/net/8021q/vlan.c b/net/8021q/vlan.c
-> index f292e0267bb9..683e9e825b9e 100644
-> --- a/net/8021q/vlan.c
-> +++ b/net/8021q/vlan.c
-> @@ -36,15 +36,10 @@
->  #include "vlan.h"
->  #include "vlanproc.h"
->  
-> -#define DRV_VERSION "1.8"
-> -
->  /* Global VLAN variables */
->  
->  unsigned int vlan_net_id __read_mostly;
->  
-> -const char vlan_fullname[] = "802.1Q VLAN Support";
-> -const char vlan_version[] = DRV_VERSION;
-
-This patches does not build. Please redo it more carefully.
-
-You'll need to fix and resend the entire series. When you do so please
-provide a cover letter, even if it only contains a couple of sentences
-and separate the patches for bluetooth and batman-adv out as stand
-alone patches, so the respective maintainers can pick them up.
+Hm, bit tricky, agree .. given we only throw the warning in pr_perm_msg() for
+non-root and thus probing options are also limited, otherwise just probing for
+a helper that was added in this same cycle would have been good enough as a
+simple heuristic. I wonder if it would make sense to add some hint inside the
+bpf_{prog,map}_show_fdinfo() to indicate that accounting with memcg is enabled
+for the prog/map one way or another? Not just for the sake of pr_perm_msg(), but
+in general for apps to stop messing with rlimit at this point. Maybe also bpftool
+feature probe could be extended to indicate that as well (e.g. the json output
+can be fed into Go natively).
