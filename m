@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED8A42D1BAE
-	for <lists+bpf@lfdr.de>; Mon,  7 Dec 2020 22:08:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C18B52D1BBE
+	for <lists+bpf@lfdr.de>; Mon,  7 Dec 2020 22:12:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727664AbgLGVIH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Dec 2020 16:08:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46010 "EHLO
+        id S1726074AbgLGVJq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Dec 2020 16:09:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726269AbgLGVIG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Dec 2020 16:08:06 -0500
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A16D2C061749;
-        Mon,  7 Dec 2020 13:07:26 -0800 (PST)
-Received: by mail-oi1-x22f.google.com with SMTP id y74so16990511oia.11;
-        Mon, 07 Dec 2020 13:07:26 -0800 (PST)
+        with ESMTP id S1725885AbgLGVJp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Dec 2020 16:09:45 -0500
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6EC1C0617B0;
+        Mon,  7 Dec 2020 13:08:59 -0800 (PST)
+Received: by mail-ot1-x32b.google.com with SMTP id y24so13912139otk.3;
+        Mon, 07 Dec 2020 13:08:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=NmTBIYR5a7GHek/f1Tc4SvMiMP/uXzmkTt8oc4bEM8g=;
-        b=AfJ8l2FRPARTTdoMFkfnoCHnLIt4cPht3SzEqokTiewfEZXMfO2lZ83KI2sY/4u+WF
-         re+qMYqwJAwshAEomPRi0L3ZE6sgfL565WS4P2k1l7EYkbvylo3OG3su1amI9QoUVmtI
-         uiMpUiq1vBkoQ8y2riJMTz6vbu/RA2PWdYSrll7w52UFyQICTvGuqqo23kiWMnnhnD4n
-         LM1NLXGngpJ8vMmRSUB7IyhBeI4CXPwoBGVa82hpdSOAWy72g8bwwB4elx4q6HaMx9Fi
-         uGV1tL2TRcXZCTQYfuHpYVhYA2T/mBzbEbjEotFE4v/CN1bl3/rGy4w6NnvLrM9UdYdV
-         uaZQ==
+        bh=P/ijqFbV8KBugVxLlNX1Y58zrs/i9xvHOBeofNv4zLg=;
+        b=FS5Jxu9NzE+gitHHvefNFkAi9gWtnK/8Qje+xEm7QmROmRpVjEeUVS3CM1sEuXNAd0
+         IATXAWwgIOy/dXpXWZpGsLA26HGjj0+zfCtIRlFabIZiE5P30MroKOXwtxoo9g6w9ahJ
+         L13jJXjLAG0/MZl3gNr4Ei1JWo6b5Mp1+8UOmv8UUNO6UAYYUxaX+sjvDzOqsi6jw7Ic
+         tfEfWGLEFkF8/Cy6PBx0DKArdGUPmN0I1I2RMIotWNM3jUiedTbwZCadJ3fqNtSMWOEB
+         vQgm1lKmawiEpbNISuk13M51Aza93wqfoVapAS5o8xu50PNPVLLWUhBwJ1f+RatcaMBW
+         ww1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=NmTBIYR5a7GHek/f1Tc4SvMiMP/uXzmkTt8oc4bEM8g=;
-        b=BkeH0elXU/NRSdDVSoheHIUimTIEopquHeL0UUGaPi5uZdq6J9kps+a0SfK0LzuXWJ
-         3ywieS7jls/bIt6P0TUaSDGlLOoU74LYjDjDXMvyaV1JClj/3gxb8B2BuRVMkoPG/vjS
-         VX7mhtcsHgBRYc0UrVURsJp13opfEb27okomjdRuap6StXRkvIy6dYy3SlXs6IADrPQv
-         IU8LJFd/KVHrLOi7o0o2PJ5FdibHoQ8XEln811Z5d+hcx9g7/ZNDbnw7QteG6SaTjfam
-         35OMNh71wQ56t3N7odySEtm8BJb8cM4HmpOFxwjzkdXKcA9+iXurKY7aaBKR0uukR0SH
-         +APg==
-X-Gm-Message-State: AOAM530TW0n4oqSqNZp+jHnIKSGFCJVOieM3ELxFDfDiOu7wy/xa1ZGS
-        ZBi6m5CYEM6j3I47Z9xJf1w=
-X-Google-Smtp-Source: ABdhPJwH3tdhoPuogsyMez5WWFd6fp5uz/jljp++auWygVt6V6QcIEZAn9H/VypCHot7x1xqOortyw==
-X-Received: by 2002:aca:5e57:: with SMTP id s84mr542079oib.102.1607375246093;
-        Mon, 07 Dec 2020 13:07:26 -0800 (PST)
+        bh=P/ijqFbV8KBugVxLlNX1Y58zrs/i9xvHOBeofNv4zLg=;
+        b=PRNu2jqvs0Cm+ffxFisJ+LETtW6U3upDlN1DTuU8CtUuHNYaoMJ3ryCUkZCWjlMuf5
+         l2pGEjPHOTYaef5VNMpQ/4FmQFunWy6UsyL3upxT9phRJNyAFdNOzQZWD8+nGnUUtLvu
+         3hxHDIL4J7ajOAEZmBxsLIvCwFiFUy32oXcdH90cMcWl0NLozaP8OyhcnxmmeH0Eu+OF
+         gnqIZcaYFXEDDNLtyaLT55G+RtRyrrg5lWLaFVahmoXk7fNCkaHjIzLquNn59djj7+HT
+         sBytafdfn1OSvyTCu03PwBsLXVfQUY8krVQykR5s8u2zQcMLFrJjV+nb40VwWaS+J5ov
+         Alag==
+X-Gm-Message-State: AOAM533r353EicNUF4rrdPV0w2zwDv1AsMetT8jyhxbAC7Yjvsfhc/4Z
+        PDCdpOTARqvtJ57RvPFEToc=
+X-Google-Smtp-Source: ABdhPJxgKZuCmZTt0Ax6qvAwbxYPZNAgvXM6GwzY2RF1seo40AjCWpNPtRf7bYuQ8DFiE+VQgAdO0g==
+X-Received: by 2002:a05:6830:3154:: with SMTP id c20mr15098765ots.286.1607375338793;
+        Mon, 07 Dec 2020 13:08:58 -0800 (PST)
 Received: from localhost ([184.21.204.5])
-        by smtp.gmail.com with ESMTPSA id z14sm546150oot.5.2020.12.07.13.07.24
+        by smtp.gmail.com with ESMTPSA id t25sm2905926otj.13.2020.12.07.13.08.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 13:07:25 -0800 (PST)
-Date:   Mon, 07 Dec 2020 13:07:19 -0800
+        Mon, 07 Dec 2020 13:08:58 -0800 (PST)
+Date:   Mon, 07 Dec 2020 13:08:52 -0800
 From:   John Fastabend <john.fastabend@gmail.com>
 To:     Brendan Jackman <jackmanb@google.com>, bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
@@ -56,12 +56,12 @@ Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
         Florent Revest <revest@chromium.org>,
         linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>,
         Brendan Jackman <jackmanb@google.com>
-Message-ID: <5fce99871ec8c_5a96208eb@john-XPS-13-9370.notmuch>
-In-Reply-To: <20201207160734.2345502-3-jackmanb@google.com>
+Message-ID: <5fce99e440d06_5a962088e@john-XPS-13-9370.notmuch>
+In-Reply-To: <20201207160734.2345502-4-jackmanb@google.com>
 References: <20201207160734.2345502-1-jackmanb@google.com>
- <20201207160734.2345502-3-jackmanb@google.com>
-Subject: RE: [PATCH bpf-next v4 02/11] bpf: x86: Factor out emission of REX
- byte
+ <20201207160734.2345502-4-jackmanb@google.com>
+Subject: RE: [PATCH bpf-next v4 03/11] bpf: x86: Factor out a lookup table for
+ some ALU opcodes
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -71,11 +71,13 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Brendan Jackman wrote:
-> The JIT case for encoding atomic ops is about to get more
-> complicated. In order to make the review & resulting code easier,
-> let's factor out some shared helpers.
+> A later commit will need to lookup a subset of these opcodes. To
+> avoid duplicating code, pull out a table.
+> 
+> The shift opcodes won't be needed by that later commit, but they're
+> already duplicated, so fold them into the table anyway.
 > 
 > Signed-off-by: Brendan Jackman <jackmanb@google.com>
 > ---
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+Acked-byy: John Fastabend <john.fastabend@gmail.com>
