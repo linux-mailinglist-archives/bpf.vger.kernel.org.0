@@ -2,91 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3939E2D1A1E
-	for <lists+bpf@lfdr.de>; Mon,  7 Dec 2020 20:59:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52CCD2D1A35
+	for <lists+bpf@lfdr.de>; Mon,  7 Dec 2020 21:04:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725774AbgLGT5M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Dec 2020 14:57:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725995AbgLGT5M (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Dec 2020 14:57:12 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B41C061794
-        for <bpf@vger.kernel.org>; Mon,  7 Dec 2020 11:56:31 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id x22so322393wmc.5
-        for <bpf@vger.kernel.org>; Mon, 07 Dec 2020 11:56:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eA/fhHttmx4BYSoIV7Y3PyW0Xgp8HedWJZ3kSwGd7qM=;
-        b=Rx2kkCmZ+FgKln8FUJd506TxOlujIx2a854tc5Lv/wbSoF4I3D5Y3UTDvOiPf4BEU0
-         9b9A8fmyTZZ/BvEcc6/iQ4yZ7S4SkzfURcxY6jir+78TKz30w2hxqARUgdOrkXfeOUB9
-         OUjSXC+UW2mecPfAlRcn4bc31TC7dogLu/4Xs=
+        id S1726795AbgLGUD7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Dec 2020 15:03:59 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:48173 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725814AbgLGUD6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Dec 2020 15:03:58 -0500
+Received: by mail-io1-f70.google.com with SMTP id 191so12723056iob.15
+        for <bpf@vger.kernel.org>; Mon, 07 Dec 2020 12:03:36 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eA/fhHttmx4BYSoIV7Y3PyW0Xgp8HedWJZ3kSwGd7qM=;
-        b=kwnYKigfK9GwZTsNfsXwCdVpUvUKYefLWZKISJYDc03Q5BJjuMUkmr0xiOfHj+0G6R
-         gGAzImpnon9UEziqXFSAobWV31uWK8cyWNo5TImQKbZXtEQtESobdAEMxX7CUBvpQ8xA
-         d/LU2nDUKbzkTJmIKBtgj/BpH8Z2Yv/yk6lSNJlQZdzfnqFEeznZ8S+xX4NSvCjUaqPE
-         l2tOLTCx6BMidY6yeKm1Hv+lPBWe41Cdc11TdUTkuMP+5vD7j0uinCRPeYJcuQP8MbqN
-         KxsKd7vIAm25WduVXic6H1zzHQbKntn9k8XkoN70W6rDl7KjhE0ctwXe+Bnku7f/8PDP
-         FNng==
-X-Gm-Message-State: AOAM532SpfgCHgIactgfRfPEJnpz5+VGjUAXNkV7vMeDlpI5LPa2QSLm
-        pFwf2S2qp5+7pgI4QcAb1p1TaQ7B5wxTWg==
-X-Google-Smtp-Source: ABdhPJwRr3c35YwXYieC6vSlSfluvpB8QKErxv59vR3tfD4WwjdeDPBfFZj0sPyFG8L9BtVzgSKjvA==
-X-Received: by 2002:a1c:2ec6:: with SMTP id u189mr469286wmu.31.1607370990290;
-        Mon, 07 Dec 2020 11:56:30 -0800 (PST)
-Received: from revest.zrh.corp.google.com ([2a00:79e0:42:204:f693:9fff:fef4:a569])
-        by smtp.gmail.com with ESMTPSA id v20sm325722wml.34.2020.12.07.11.56.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 11:56:29 -0800 (PST)
-From:   Florent Revest <revest@chromium.org>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kpsingh@chromium.org, rdunlap@infradead.org,
-        linux-next@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Florent Revest <revest@chromium.org>
-Subject: [PATCH bpf-next] bpf: Only call sock_from_file with CONFIG_NET
-Date:   Mon,  7 Dec 2020 20:55:39 +0100
-Message-Id: <20201207195539.609787-1-revest@chromium.org>
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=XMGMPIEBErujLDEv/XhG8es0A2X7wQdMlren4Z/PANs=;
+        b=egVHj3G9iVAw+ge6xp2o0l/9Ro/jADrztEpTwSehBM9MgS1DAiqI7w32BkH6Q3Z6x+
+         1vjAvFF3KT1rUypc9xXX63aQfGEUI5yjd+O/E53GI01YpSe69QQJ4ddHOKIe096/4Wxj
+         EKRSSxG5LsTdxkZg8HlayAUipq05LrdcUFQHdpaYd/af08sOU7IVMHT6r0yK/FmwTX6O
+         xJfxkF7neHYzqXyzq9t/v4kL/pp5JXMyTUfAFNiRnLVTgkOsrtlF0DnBMuhuJFzXTLkQ
+         7pFrwBbAUGQPDqQ44Cue+mphcQWNe2vWpGUktpDQTIQpVPP61Pl0Vl+QFtalBmA/hZ0d
+         0dZw==
+X-Gm-Message-State: AOAM532evmLCLU1TyCeicSRRgzjnFE9Lg3hC7SOAHSGUe7S/EsPRQ+3t
+        RVxyIMBrUfWkIQ6eatFtl9xCkqkWkWmWemgXArAVmfFKkU3Y
+X-Google-Smtp-Source: ABdhPJzTcO6HdC1HPfBAdo9qmGVdcPBUW/k2i+We0dzvt/EZzDBbvbOZVtuuykvGXpgUi0FP8aosriwNV5mZyRTTk2+r7qY8ypQC
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a5e:a916:: with SMTP id c22mr9051978iod.144.1607371391149;
+ Mon, 07 Dec 2020 12:03:11 -0800 (PST)
+Date:   Mon, 07 Dec 2020 12:03:11 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000caabb705b5e550aa@google.com>
+Subject: KASAN: vmalloc-out-of-bounds Write in pcpu_freelist_populate
+From:   syzbot <syzbot+942085bfb8f7a276af1c@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@chromium.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This avoids
-  ld: kernel/trace/bpf_trace.o: in function `bpf_sock_from_file':
-  bpf_trace.c:(.text+0xe23): undefined reference to `sock_from_file'
-When compiling a kernel with BPF and without NET.
+Hello,
 
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Florent Revest <revest@chromium.org>
+syzbot found the following issue on:
+
+HEAD commit:    34da8721 selftests/bpf: Test bpf_sk_storage_get in tcp ite..
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=10c3b837500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3cb098ab0334059f
+dashboard link: https://syzkaller.appspot.com/bug?extid=942085bfb8f7a276af1c
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+942085bfb8f7a276af1c@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: vmalloc-out-of-bounds in pcpu_freelist_push_node kernel/bpf/percpu_freelist.c:33 [inline]
+BUG: KASAN: vmalloc-out-of-bounds in pcpu_freelist_populate+0x1fe/0x260 kernel/bpf/percpu_freelist.c:114
+Write of size 8 at addr ffffc90119e78020 by task syz-executor.4/27988
+
+CPU: 1 PID: 27988 Comm: syz-executor.4 Not tainted 5.10.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0x5/0x4c8 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
+ pcpu_freelist_push_node kernel/bpf/percpu_freelist.c:33 [inline]
+ pcpu_freelist_populate+0x1fe/0x260 kernel/bpf/percpu_freelist.c:114
+ prealloc_init kernel/bpf/hashtab.c:323 [inline]
+ htab_map_alloc+0x981/0x1230 kernel/bpf/hashtab.c:507
+ find_and_alloc_map kernel/bpf/syscall.c:123 [inline]
+ map_create kernel/bpf/syscall.c:829 [inline]
+ __do_sys_bpf+0xa81/0x5170 kernel/bpf/syscall.c:4374
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45e0f9
+Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f679c7a7c68 EFLAGS: 00000246
+ ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045e0f9
+RDX: 0000000000000040 RSI: 0000000020000040 RDI: 0000000000000000
+RBP: 000000000119c068 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000119c034
+R13: 00007fffd601c75f R14: 00007f679c7a89c0 R15: 000000000119c034
+
+
+Memory state around the buggy address:
+ ffffc90119e77f00: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+ ffffc90119e77f80: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+>ffffc90119e78000: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+                               ^
+ ffffc90119e78080: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+ ffffc90119e78100: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+==================================================================
+
+
 ---
- kernel/trace/bpf_trace.c | 4 ++++
- 1 file changed, 4 insertions(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 0cf0a6331482..877123bae71f 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1272,7 +1272,11 @@ const struct bpf_func_proto bpf_snprintf_btf_proto = {
- 
- BPF_CALL_1(bpf_sock_from_file, struct file *, file)
- {
-+#ifdef CONFIG_NET
- 	return (unsigned long) sock_from_file(file);
-+#else
-+	return NULL;
-+#endif
- }
- 
- BTF_ID_LIST(bpf_sock_from_file_btf_ids)
--- 
-2.29.2.576.ga3fc446d84-goog
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
