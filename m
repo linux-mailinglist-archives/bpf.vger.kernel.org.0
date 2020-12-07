@@ -2,129 +2,172 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D69EA2D15F4
-	for <lists+bpf@lfdr.de>; Mon,  7 Dec 2020 17:32:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E67682D1608
+	for <lists+bpf@lfdr.de>; Mon,  7 Dec 2020 17:36:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726989AbgLGQ3B (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Dec 2020 11:29:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726089AbgLGQ3B (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Dec 2020 11:29:01 -0500
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F484C061749;
-        Mon,  7 Dec 2020 08:28:21 -0800 (PST)
-Received: by mail-il1-x144.google.com with SMTP id x15so12752963ilq.1;
-        Mon, 07 Dec 2020 08:28:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LnL3r5xO3/fx7Z2QtNr7MP9X1jy1UpH6c8wI0kRJVnU=;
-        b=vRQotTdQ72iJTBqQPpmsoH+8dVTjUI576M40I4FfCXlRtAESaiSd7YPk3O83pr02ml
-         4/Y2VMY1uZOZB8ZcB5z+IsX5FdltqM1WPZYCkUMVzwEV+AGd9StHtGFKaeHlYUbQob4Y
-         hp9aptvyKZo+tvwG6NE6ORWQfju5M/BNA8l0fAuzCVOroY9EV49heOMWgV6NliaLrGlv
-         5O+zo3NkovEQ2VcQNn7cMZ3Uwz8TTce0D5aP1Ksk+Si588cX5uOwElBJtuJ4o5OnQ1oo
-         9Y0yupH3QuFLjDSvEtDFssQKJ7HRF33F7iv7RnbfnKSgHNeDUYUpljM2zO3DK+1YTaaS
-         roWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LnL3r5xO3/fx7Z2QtNr7MP9X1jy1UpH6c8wI0kRJVnU=;
-        b=IsNjxFUgrciSWjNl4LTugic6auNW836JUz+Gld7wg1TUL5kpf3VBJCBrDBLfgsbL9h
-         US2Bzl0IkZ/D7S793bsSOxYjzEGHTFlxJaj9bh9RWgg5ebLMZe3S2suMVCedFs75AdqB
-         FspEblqsRMRrLZGhYXiYHodzBi6uNG7G28L8KwikwvR1uqYrbw77M0a4+wEQpmPni90Y
-         ijK1h8IN7ylwnaTC4pbK4wrXZuSroKugdZMdgUlwJnV/G2E//EW4WB/ex/EkBH08i+Xz
-         O8RoRhJQG7cKztine2vZMSUbavYd7xUO5LvBbgL46cZuw53dgtyauEJ9HDUTJgInDQAf
-         HjsQ==
-X-Gm-Message-State: AOAM533dUfVNFDBFeZZeRDF8LiWehx6r/Yyz674nZ9eE8kymSPyvBOc6
-        SgrgBwaNhCq7btL54ZWEC/WwG2ckfaxGHxAdwHY=
-X-Google-Smtp-Source: ABdhPJzAPIkJv6/oiUZrILoK9k6D0gpWLBTZWT6CddYFBbvPG6eaBCYlqu8ziMMCme2b6s5WI0RSQUsOQ0bE17XczdM=
-X-Received: by 2002:a92:8587:: with SMTP id f129mr22302422ilh.251.1607358500532;
- Mon, 07 Dec 2020 08:28:20 -0800 (PST)
+        id S1726203AbgLGQdf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Dec 2020 11:33:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60568 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726069AbgLGQdf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Dec 2020 11:33:35 -0500
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, shayagr@amazon.com, sameehj@amazon.com,
+        john.fastabend@gmail.com, dsahern@kernel.org, brouer@redhat.com,
+        echaudro@redhat.com, lorenzo.bianconi@redhat.com,
+        jasowang@redhat.com
+Subject: [PATCH v5 bpf-next 00/14] mvneta: introduce XDP multi-buffer support
+Date:   Mon,  7 Dec 2020 17:32:29 +0100
+Message-Id: <cover.1607349924.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20201207123720.19111-1-lukas.bulwahn@gmail.com> <480e9a0f-0a27-aec2-e8c6-a73b46069ba8@fb.com>
-In-Reply-To: <480e9a0f-0a27-aec2-e8c6-a73b46069ba8@fb.com>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Mon, 7 Dec 2020 17:28:15 +0100
-Message-ID: <CAKXUXMxy92jnARL-ibh1BDqSE3VvzKFMpo8YsC+40JMjFpcSHg@mail.gmail.com>
-Subject: Re: [PATCH] bpf: propagate __user annotations properly
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 5:12 PM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 12/7/20 4:37 AM, Lukas Bulwahn wrote:
-> > __htab_map_lookup_and_delete_batch() stores a user pointer in the local
-> > variable ubatch and uses that in copy_{from,to}_user(), but ubatch misses a
-> > __user annotation.
-> >
-> > So, sparse warns in the various assignments and uses of ubatch:
-> >
-> >    kernel/bpf/hashtab.c:1415:24: warning: incorrect type in initializer
-> >      (different address spaces)
-> >    kernel/bpf/hashtab.c:1415:24:    expected void *ubatch
-> >    kernel/bpf/hashtab.c:1415:24:    got void [noderef] __user *
-> >
-> >    kernel/bpf/hashtab.c:1444:46: warning: incorrect type in argument 2
-> >      (different address spaces)
-> >    kernel/bpf/hashtab.c:1444:46:    expected void const [noderef] __user *from
-> >    kernel/bpf/hashtab.c:1444:46:    got void *ubatch
-> >
-> >    kernel/bpf/hashtab.c:1608:16: warning: incorrect type in assignment
-> >      (different address spaces)
-> >    kernel/bpf/hashtab.c:1608:16:    expected void *ubatch
-> >    kernel/bpf/hashtab.c:1608:16:    got void [noderef] __user *
-> >
-> >    kernel/bpf/hashtab.c:1609:26: warning: incorrect type in argument 1
-> >      (different address spaces)
-> >    kernel/bpf/hashtab.c:1609:26:    expected void [noderef] __user *to
-> >    kernel/bpf/hashtab.c:1609:26:    got void *ubatch
-> >
-> > Add the __user annotation to repair this chain of propagating __user
-> > annotations in __htab_map_lookup_and_delete_batch().
->
-> Add fix tag?
->
-> Fixes: 057996380a42 ("bpf: Add batch ops to all htab bpf map")
->
+This series introduce XDP multi-buffer support. The mvneta driver is
+the first to support these new "non-linear" xdp_{buff,frame}. Reviewers
+please focus on how these new types of xdp_{buff,frame} packets
+traverse the different layers and the layout design. It is on purpose
+that BPF-helpers are kept simple, as we don't want to expose the
+internal layout to allow later changes.
 
-Fixes tag can be added by the maintainers when they pick it, but I
-personally am not a fan of adding a Fixes tag for such a minor fix
-here.
+For now, to keep the design simple and to maintain performance, the XDP
+BPF-prog (still) only have access to the first-buffer. It is left for
+later (another patchset) to add payload access across multiple buffers.
+This patchset should still allow for these future extensions. The goal
+is to lift the XDP MTU restriction that comes with XDP, but maintain
+same performance as before.
 
-It is purely a syntactic change and change for the sparse semantic
-parser, but it really does not need to be backported and nothing
-observable in the binary was broken.
+The main idea for the new multi-buffer layout is to reuse the same
+layout used for non-linear SKB. We introduced a "xdp_shared_info" data
+structure at the end of the first buffer to link together subsequent buffers.
+xdp_shared_info will alias skb_shared_info allowing to keep most of the frags
+in the same cache-line (while with skb_shared_info only the first fragment will
+be placed in the first "shared_info" cache-line). Moreover we introduced some
+xdp_shared_info helpers aligned to skb_frag* ones.
+Converting xdp_frame to SKB and deliver it to the network stack is shown in
+cpumap code (patch 11/14). Building the SKB, the xdp_shared_info structure
+will be converted in a skb_shared_info one.
 
-That is my rationale for not adding a Fixes: tag here. It is your final call.
+A multi-buffer bit (mb) has been introduced in xdp_{buff,frame} structure
+to notify the bpf/network layer if this is a xdp multi-buffer frame (mb = 1)
+or not (mb = 0).
+The mb bit will be set by a xdp multi-buffer capable driver only for
+non-linear frames maintaining the capability to receive linear frames
+without any extra cost since the xdp_shared_info structure at the end
+of the first buffer will be initialized only if mb is set.
 
-> >
-> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
->
-> Thanks for the fix. LGTM. I guess either bpf or bpf-next tree is fine
-> since this is not a correctness issue.
->
+Typical use cases for this series are:
+- Jumbo-frames
+- Packet header split (please see Google’s use-case @ NetDevConf 0x14, [0])
+- TSO
 
-Agree, and it is no functional change, nor a change in the object
-code. So risks of regressions are very, very low (zero).
+A new frame_length field has been introduce in XDP ctx in order to notify the
+eBPF layer about the total frame size (linear + paged parts).
 
-Thanks for the review,
+bpf_xdp_adjust_tail helper has been modified to take info account xdp
+multi-buff frames.
 
-Lukas
+More info about the main idea behind this approach can be found here [1][2].
+
+Changes since v4:
+- rebase ontop of bpf-next
+- introduce xdp_shared_info to build xdp multi-buff instead of using the
+  skb_shared_info struct
+- introduce frame_length in xdp ctx
+- drop previous bpf helpers
+- fix bpf_xdp_adjust_tail for xdp multi-buff
+- introduce xdp multi-buff self-tests for bpf_xdp_adjust_tail
+- fix xdp_return_frame_bulk for xdp multi-buff
+
+Changes since v3:
+- rebase ontop of bpf-next
+- add patch 10/13 to copy back paged data from a xdp multi-buff frame to
+  userspace buffer for xdp multi-buff selftests
+
+Changes since v2:
+- add throughput measurements
+- drop bpf_xdp_adjust_mb_header bpf helper
+- introduce selftest for xdp multibuffer
+- addressed comments on bpf_xdp_get_frags_count
+- introduce xdp multi-buff support to cpumaps
+
+Changes since v1:
+- Fix use-after-free in xdp_return_{buff/frame}
+- Introduce bpf helpers
+- Introduce xdp_mb sample program
+- access skb_shared_info->nr_frags only on the last fragment
+
+Changes since RFC:
+- squash multi-buffer bit initialization in a single patch
+- add mvneta non-linear XDP buff support for tx side
+
+[0] https://netdevconf.info/0x14/session.html?talk-the-path-to-tcp-4k-mtu-and-rx-zerocopy
+[1] https://github.com/xdp-project/xdp-project/blob/master/areas/core/xdp-multi-buffer01-design.org
+[2] https://netdevconf.info/0x14/session.html?tutorial-add-XDP-support-to-a-NIC-driver (XDPmulti-buffers section)
+
+Eelco Chaudron (3):
+  bpf: add multi-buff support to the bpf_xdp_adjust_tail() API
+  bpf: add new frame_length field to the XDP ctx
+  bpf: update xdp_adjust_tail selftest to include multi-buffer
+
+Lorenzo Bianconi (11):
+  xdp: introduce mb in xdp_buff/xdp_frame
+  xdp: initialize xdp_buff mb bit to 0 in all XDP drivers
+  xdp: add xdp_shared_info data structure
+  net: mvneta: update mb bit before passing the xdp buffer to eBPF layer
+  xdp: add multi-buff support to xdp_return_{buff/frame}
+  net: mvneta: add multi buffer support to XDP_TX
+  bpf: move user_size out of bpf_test_init
+  bpf: introduce multibuff support to bpf_prog_test_run_xdp()
+  bpf: test_run: add xdp_shared_info pointer in bpf_test_finish
+    signature
+  net: mvneta: enable jumbo frames for XDP
+  bpf: cpumap: introduce xdp multi-buff support
+
+ drivers/net/ethernet/amazon/ena/ena_netdev.c  |   1 +
+ drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c |   1 +
+ .../net/ethernet/cavium/thunder/nicvf_main.c  |   1 +
+ .../net/ethernet/freescale/dpaa2/dpaa2-eth.c  |   1 +
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c   |   1 +
+ drivers/net/ethernet/intel/ice/ice_txrx.c     |   1 +
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c |   1 +
+ .../net/ethernet/intel/ixgbevf/ixgbevf_main.c |   1 +
+ drivers/net/ethernet/marvell/mvneta.c         | 181 ++++++++++--------
+ .../net/ethernet/marvell/mvpp2/mvpp2_main.c   |   1 +
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c    |   1 +
+ .../net/ethernet/mellanox/mlx5/core/en_rx.c   |   1 +
+ .../ethernet/netronome/nfp/nfp_net_common.c   |   1 +
+ drivers/net/ethernet/qlogic/qede/qede_fp.c    |   1 +
+ drivers/net/ethernet/sfc/rx.c                 |   1 +
+ drivers/net/ethernet/socionext/netsec.c       |   1 +
+ drivers/net/ethernet/ti/cpsw.c                |   1 +
+ drivers/net/ethernet/ti/cpsw_new.c            |   1 +
+ drivers/net/hyperv/netvsc_bpf.c               |   1 +
+ drivers/net/tun.c                             |   2 +
+ drivers/net/veth.c                            |   1 +
+ drivers/net/virtio_net.c                      |   2 +
+ drivers/net/xen-netfront.c                    |   1 +
+ include/net/xdp.h                             | 111 ++++++++++-
+ include/uapi/linux/bpf.h                      |   1 +
+ kernel/bpf/cpumap.c                           |  45 +----
+ kernel/bpf/verifier.c                         |   2 +-
+ net/bpf/test_run.c                            | 107 +++++++++--
+ net/core/dev.c                                |   1 +
+ net/core/filter.c                             | 146 ++++++++++++++
+ net/core/xdp.c                                | 150 ++++++++++++++-
+ tools/include/uapi/linux/bpf.h                |   1 +
+ .../bpf/prog_tests/xdp_adjust_tail.c          | 105 ++++++++++
+ .../bpf/progs/test_xdp_adjust_tail_grow.c     |  16 +-
+ .../bpf/progs/test_xdp_adjust_tail_shrink.c   |  32 +++-
+ 35 files changed, 761 insertions(+), 161 deletions(-)
+
+-- 
+2.28.0
+
