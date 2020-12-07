@@ -2,85 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B229B2D1E3D
-	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 00:21:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94A622D1E5E
+	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 00:31:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725887AbgLGXUq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Dec 2020 18:20:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56072 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725885AbgLGXUq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Dec 2020 18:20:46 -0500
-Message-ID: <71aa9016c087e4c8d502d835ef2cddad42b56fc1.camel@kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607383205;
-        bh=jyoTsKCqpLGWIMANYP5sAJ9u26qlqSc314V7xV0WlXc=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=ItNKpjB93vQF3Qo+YkbVih5a6KqatwJaI8Y0+9g7lV2MgFNWJq2pcDIehjBvqfSWb
-         Vdu9fLqkV8tJ/Rw9bGlvlWDHvxqtW2CBe+0DKREZij50UkbVXKi3rfYNb07rRoEhw2
-         ZSOyqAsKfWDN+ZdWh2tO4kNnOL8Gd0jgNalYnDYspkBS2A2fkwUQ5ueJpLgDU4XoKn
-         WCbufBgEIFkMreRe/uZbEI5um1kLBl2XWi9QFUp7TTudhapGKaGXpDVhIpO9Pbxae4
-         HbTpLnBBVzX3EX5EcdnyuDnIO+Dia9d+cMwTSslCynQ2m1gH7NqEkXpAf/AT5ZQVqQ
-         BjwODzXCv+3iQ==
-Subject: Re: [PATCH v5 bpf-next 02/14] xdp: initialize xdp_buff mb bit to 0
- in all XDP drivers
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        id S1727062AbgLGX3y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Dec 2020 18:29:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726869AbgLGX3y (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Dec 2020 18:29:54 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FBAEC061749;
+        Mon,  7 Dec 2020 15:29:14 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kmPwC-00HHdx-Bc; Mon, 07 Dec 2020 23:29:00 +0000
+Date:   Mon, 7 Dec 2020 23:29:00 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        criu@openvz.org, bpf@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Jann Horn <jann@thejh.net>, Kees Cook <keescook@chromium.org>,
+        Daniel P =?iso-8859-1?Q?=2E_Berrang=E9?= <berrange@redhat.com>,
+        Jeff Layton <jlayton@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Matthew Wilcox <willy@infradead.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Chris Wright <chrisw@redhat.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, shayagr@amazon.com,
-        "Jubran, Samih" <sameehj@amazon.com>,
-        John Fastabend <john.fastabend@gmail.com>, dsahern@kernel.org,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        lorenzo.bianconi@redhat.com, Jason Wang <jasowang@redhat.com>
-Date:   Mon, 07 Dec 2020 15:20:03 -0800
-In-Reply-To: <20201207213711.GA27205@ranger.igk.intel.com>
-References: <cover.1607349924.git.lorenzo@kernel.org>
-         <693d48b46dd5172763952acd94358cc5d02dcda3.1607349924.git.lorenzo@kernel.org>
-         <CAKgT0UcjtERgpV9tke-HcmP7rWOns_-jmthnGiNPES+aqhScFg@mail.gmail.com>
-         <20201207213711.GA27205@ranger.igk.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Andy Lavr <andy.lavr@gmail.com>
+Subject: Re: [PATCH v2 15/24] proc/fd: In proc_readfd_common use
+ task_lookup_next_fd_rcu
+Message-ID: <20201207232900.GD4115853@ZenIV.linux.org.uk>
+References: <87r1on1v62.fsf@x220.int.ebiederm.org>
+ <20201120231441.29911-15-ebiederm@xmission.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201120231441.29911-15-ebiederm@xmission.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 2020-12-07 at 22:37 +0100, Maciej Fijalkowski wrote:
-> On Mon, Dec 07, 2020 at 01:15:00PM -0800, Alexander Duyck wrote:
-> > On Mon, Dec 7, 2020 at 8:36 AM Lorenzo Bianconi <lorenzo@kernel.org
-> > > wrote:
-> > > Initialize multi-buffer bit (mb) to 0 in all XDP-capable drivers.
-> > > This is a preliminary patch to enable xdp multi-buffer support.
-> > > 
-> > > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > 
-> > I'm really not a fan of this design. Having to update every driver
-> > in
-> > order to initialize a field that was fragmented is a pain. At a
-> > minimum it seems like it might be time to consider introducing some
-> > sort of initializer function for this so that you can update things
-> > in
-> > one central place the next time you have to add a new field instead
-> > of
-> > having to update every individual driver that supports XDP.
-> > Otherwise
-> > this isn't going to scale going forward.
+On Fri, Nov 20, 2020 at 05:14:32PM -0600, Eric W. Biederman wrote:
+> When discussing[1] exec and posix file locks it was realized that none
+> of the callers of get_files_struct fundamentally needed to call
+> get_files_struct, and that by switching them to helper functions
+> instead it will both simplify their code and remove unnecessary
+> increments of files_struct.count.  Those unnecessary increments can
+> result in exec unnecessarily unsharing files_struct which breaking
+> posix locks, and it can result in fget_light having to fallback to
+> fget reducing system performance.
 > 
-> Also, a good example of why this might be bothering for us is a fact
-> that
-> in the meantime the dpaa driver got XDP support and this patch hasn't
-> been
-> updated to include mb setting in that driver.
+> Using task_lookup_next_fd_rcu simplifies proc_readfd_common, by moving
+> the checking for the maximum file descritor into the generic code, and
+> by remvoing the need for capturing and releasing a reference on
+> files_struct.
 > 
-something like
-init_xdp_buff(hard_start, headroom, len, frame_sz, rxq);
+> As task_lookup_fd_rcu may update the fd ctx->pos has been changed
+> to be the fd +2 after task_lookup_fd_rcu returns.
 
-would work for most of the drivers.
 
+> +	for (fd = ctx->pos - 2;; fd++) {
+>  		struct file *f;
+>  		struct fd_data data;
+>  		char name[10 + 1];
+>  		unsigned int len;
+>  
+> -		f = files_lookup_fd_rcu(files, fd);
+> +		f = task_lookup_next_fd_rcu(p, &fd);
+
+Ugh...  That makes for a massive cacheline pingpong on task_lock -
+instead of grabbing/dropping task_lock() once in the beginning, we do
+that for every damn descriptor.
+
+I really don't like this one.  If anything, I would rather have
+a helper that would collect a bunch of pairs (fd,mode) into an
+array and have lookups batched into it.  With the loop in that
+sucker grabbing a reasonable amount into a local array, then
+doing proc_fill_cache() for each collected.
