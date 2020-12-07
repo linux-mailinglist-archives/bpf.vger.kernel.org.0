@@ -2,91 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 101992D15D9
-	for <lists+bpf@lfdr.de>; Mon,  7 Dec 2020 17:22:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5A832D15EC
+	for <lists+bpf@lfdr.de>; Mon,  7 Dec 2020 17:28:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726234AbgLGQU7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Dec 2020 11:20:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725781AbgLGQU7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Dec 2020 11:20:59 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B76F4C061749
-        for <bpf@vger.kernel.org>; Mon,  7 Dec 2020 08:20:18 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id e7so5338750ljg.10
-        for <bpf@vger.kernel.org>; Mon, 07 Dec 2020 08:20:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ExTEv2H667JOfE6pkQV7NpKY2crYPN7oZNIwIWD5hKo=;
-        b=ZC998t6jEGt6giJOBoFjBpBaGYr4iFojObjBDAio7DogG8rHA8ZEuvdQKdgNMvDFb7
-         psLUnSAA9/hONlSKw4JUygDnekoqxr5+a23UIlqPMe8/Q8J9c2G/Unr+qjHBfUN6Q3EL
-         kW9PVi+U89oxcDBpJxkMl/d73wNOHu6wXnLFvAzUuFsyN78FEZWWOgOBMRJ+beMlQfV3
-         DtFkMI4cQEIBD30SeMp9vOoW6Q8doRSu0j8MKELJye4t71PQugIzg1+1ywYSwRZYFS+P
-         vx75WadR/NbAuqcmlXQzyP9LyIHmB2iJ2nVmBZ6+ZZQ/KsbvELbS376OAsVf5yzMSYGy
-         Phvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ExTEv2H667JOfE6pkQV7NpKY2crYPN7oZNIwIWD5hKo=;
-        b=CT0SIe39U3F6EG4KVNmoa0iw6vnb3RrLTdzu0FY3rwykEm6ql9zWCw/wXY9LYw3GVz
-         Ii0AAjt1rvfA3TLzJsyhs5o/G7m2mnQS4U3aDjiqqSPN0fIS/rKmAHntWxJ6Am/OMYUD
-         UEUqKbDiSGdauIsER3IEAieJwgKVWwcRB3lvj08fDShlsH6Io6WP2PTTh/csHSpgEgZT
-         jESB+mxQn9gBwafCVToklKsLqtccoT0R169znPBsrwmz8RkpRPhzS8sqggEivadCkoUH
-         TywWnL9DzPp4VcbPAcKOJn3u6vsOvAVJyH5FNDdVadQkMZlp0BHSN0SDYlRZYcGhtgOu
-         6ENQ==
-X-Gm-Message-State: AOAM53138SEXpLPm1WnILKMj+PSKUUSiL/58l5agIfZ039/CH7baUyzY
-        QydlndMoX30hVxZV22TCtJ/ns2HoxZgxzjL28lk=
-X-Google-Smtp-Source: ABdhPJybnuGxX5TefHygG9D1g+HpQSXoc3UD+QDPMPUDR8CcT4COdwq4SlXTrmw0XQF6vsaZBoN4fFufucWSSIA69/E=
-X-Received: by 2002:a2e:8891:: with SMTP id k17mr8450705lji.290.1607358017286;
- Mon, 07 Dec 2020 08:20:17 -0800 (PST)
+        id S1725887AbgLGQ0p (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Dec 2020 11:26:45 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41345 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725863AbgLGQ0o (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 7 Dec 2020 11:26:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607358317;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1D3JIzobwKk9i7LVUpI3dNGISxtvGHPzfqVPE78YWk8=;
+        b=dajHc3hRZ3AopkjGwesvhZ0BiBcBdRfrNPAMl6rtKDMoaIJsoyqYGu9jJftWu9loGRJ/Df
+        21Kun8+7TTyYlwMhsDUgduWT/x/kBQP/uuOGLzfu3gczuOWJts1iBk7P5wl2ss6Nu8hagS
+        HGpJ2dTU4mgm9AiOHfr1teEf14AC1Pg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-537-mkTbvSUcO9GkVEHEfa8fBQ-1; Mon, 07 Dec 2020 11:25:13 -0500
+X-MC-Unique: mkTbvSUcO9GkVEHEfa8fBQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F1A2E802B42;
+        Mon,  7 Dec 2020 16:25:09 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-118-86.rdu2.redhat.com [10.10.118.86])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 414565D6AB;
+        Mon,  7 Dec 2020 16:25:08 +0000 (UTC)
+Subject: Re: [PATCH v2 bpf-next 03/13] Revert "locking/spinlocks: Remove the
+ unused spin_lock_bh_nested() API"
+To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>
+Cc:     Benjamin Herrenschmidt <benh@amazon.com>,
+        Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201207132456.65472-1-kuniyu@amazon.co.jp>
+ <20201207132456.65472-4-kuniyu@amazon.co.jp>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <541e72f2-f836-1534-cd86-f3f0a13074a7@redhat.com>
+Date:   Mon, 7 Dec 2020 11:25:07 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <87lfeebwpu.fsf@toke.dk> <10679e62-50a2-4c01-31d2-cb79c01e4cbf@fb.com>
- <87r1o59aoc.fsf@toke.dk> <6801fcdb-932e-c185-22db-89987099b553@fb.com>
- <CAEf4BzZRu=sxEx7c8KGxSV1C6Aitrk01bSfabv5Bz+XUAMU6rg@mail.gmail.com>
- <875z5d7ufl.fsf@toke.dk> <CAADnVQ+qibC_8cDwaqOoAnL7CwXv85EjQ96Zcdtrm+86cgZq1g@mail.gmail.com>
- <878sa9619d.fsf@toke.dk>
-In-Reply-To: <878sa9619d.fsf@toke.dk>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 7 Dec 2020 08:20:05 -0800
-Message-ID: <CAADnVQKYaeF2KCC5SLBg3feUY_DBh-eq2_O=T10_+13z3wNm1Q@mail.gmail.com>
-Subject: Re: Latest libbpf fails to load programs compiled with old LLVM
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201207132456.65472-4-kuniyu@amazon.co.jp>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 8:15 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
-t.com> wrote:
+On 12/7/20 8:24 AM, Kuniyuki Iwashima wrote:
+> This reverts commit 607904c357c61adf20b8fd18af765e501d61a385 to use
+> spin_lock_bh_nested() in the next commit.
 >
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
->
-> > On Mon, Dec 7, 2020 at 3:03 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@r=
-edhat.com> wrote:
-> >>
-> >> Wait, what? This is a regression that *breaks people's programs* on
-> >> compiler versions that are still very much in the wild! I mean, fine i=
-f
-> >> you don't want to support new features on such files, but then surely =
-we
-> >> can at least revert back to the old behaviour?
-> >
-> > Those folks that care about compiling with old llvm would have to stick
-> > to whatever loader they have instead of using libbpf.
-> > It's not a backward compatibility breakage.
->
-> What? It's a change in libbpf that breaks loading of existing BPF object
-> files that were working (with libbpf) before. If that's not a backward
-> compatibility break then that term has lost all meaning.
+> Link: https://lore.kernel.org/netdev/9d290a57-49e1-04cd-2487-262b0d7c5844@gmail.com/
+> Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+> CC: Waiman Long <longman@redhat.com>
 
-The user space library is not a kernel.
-The library will change its interface. It will remove functions, features, =
-etc.
-That's what .map is for.
+If there is a use case for spin_lock_bh_nested(), it is perfectly fine 
+to add it back.
+
+Acked-by: Waiman Long <longman@redhat.com>
+
+> ---
+>   include/linux/spinlock.h         | 8 ++++++++
+>   include/linux/spinlock_api_smp.h | 2 ++
+>   include/linux/spinlock_api_up.h  | 1 +
+>   kernel/locking/spinlock.c        | 8 ++++++++
+>   4 files changed, 19 insertions(+)
+>
+> diff --git a/include/linux/spinlock.h b/include/linux/spinlock.h
+> index 79897841a2cc..c020b375a071 100644
+> --- a/include/linux/spinlock.h
+> +++ b/include/linux/spinlock.h
+> @@ -227,6 +227,8 @@ static inline void do_raw_spin_unlock(raw_spinlock_t *lock) __releases(lock)
+>   #ifdef CONFIG_DEBUG_LOCK_ALLOC
+>   # define raw_spin_lock_nested(lock, subclass) \
+>   	_raw_spin_lock_nested(lock, subclass)
+> +# define raw_spin_lock_bh_nested(lock, subclass) \
+> +	_raw_spin_lock_bh_nested(lock, subclass)
+>   
+>   # define raw_spin_lock_nest_lock(lock, nest_lock)			\
+>   	 do {								\
+> @@ -242,6 +244,7 @@ static inline void do_raw_spin_unlock(raw_spinlock_t *lock) __releases(lock)
+>   # define raw_spin_lock_nested(lock, subclass)		\
+>   	_raw_spin_lock(((void)(subclass), (lock)))
+>   # define raw_spin_lock_nest_lock(lock, nest_lock)	_raw_spin_lock(lock)
+> +# define raw_spin_lock_bh_nested(lock, subclass)	_raw_spin_lock_bh(lock)
+>   #endif
+>   
+>   #if defined(CONFIG_SMP) || defined(CONFIG_DEBUG_SPINLOCK)
+> @@ -369,6 +372,11 @@ do {								\
+>   	raw_spin_lock_nested(spinlock_check(lock), subclass);	\
+>   } while (0)
+>   
+> +#define spin_lock_bh_nested(lock, subclass)			\
+> +do {								\
+> +	raw_spin_lock_bh_nested(spinlock_check(lock), subclass);\
+> +} while (0)
+> +
+>   #define spin_lock_nest_lock(lock, nest_lock)				\
+>   do {									\
+>   	raw_spin_lock_nest_lock(spinlock_check(lock), nest_lock);	\
+> diff --git a/include/linux/spinlock_api_smp.h b/include/linux/spinlock_api_smp.h
+> index 19a9be9d97ee..d565fb6304f2 100644
+> --- a/include/linux/spinlock_api_smp.h
+> +++ b/include/linux/spinlock_api_smp.h
+> @@ -22,6 +22,8 @@ int in_lock_functions(unsigned long addr);
+>   void __lockfunc _raw_spin_lock(raw_spinlock_t *lock)		__acquires(lock);
+>   void __lockfunc _raw_spin_lock_nested(raw_spinlock_t *lock, int subclass)
+>   								__acquires(lock);
+> +void __lockfunc _raw_spin_lock_bh_nested(raw_spinlock_t *lock, int subclass)
+> +								__acquires(lock);
+>   void __lockfunc
+>   _raw_spin_lock_nest_lock(raw_spinlock_t *lock, struct lockdep_map *map)
+>   								__acquires(lock);
+> diff --git a/include/linux/spinlock_api_up.h b/include/linux/spinlock_api_up.h
+> index d0d188861ad6..d3afef9d8dbe 100644
+> --- a/include/linux/spinlock_api_up.h
+> +++ b/include/linux/spinlock_api_up.h
+> @@ -57,6 +57,7 @@
+>   
+>   #define _raw_spin_lock(lock)			__LOCK(lock)
+>   #define _raw_spin_lock_nested(lock, subclass)	__LOCK(lock)
+> +#define _raw_spin_lock_bh_nested(lock, subclass) __LOCK(lock)
+>   #define _raw_read_lock(lock)			__LOCK(lock)
+>   #define _raw_write_lock(lock)			__LOCK(lock)
+>   #define _raw_spin_lock_bh(lock)			__LOCK_BH(lock)
+> diff --git a/kernel/locking/spinlock.c b/kernel/locking/spinlock.c
+> index 0ff08380f531..48e99ed1bdd8 100644
+> --- a/kernel/locking/spinlock.c
+> +++ b/kernel/locking/spinlock.c
+> @@ -363,6 +363,14 @@ void __lockfunc _raw_spin_lock_nested(raw_spinlock_t *lock, int subclass)
+>   }
+>   EXPORT_SYMBOL(_raw_spin_lock_nested);
+>   
+> +void __lockfunc _raw_spin_lock_bh_nested(raw_spinlock_t *lock, int subclass)
+> +{
+> +	__local_bh_disable_ip(_RET_IP_, SOFTIRQ_LOCK_OFFSET);
+> +	spin_acquire(&lock->dep_map, subclass, 0, _RET_IP_);
+> +	LOCK_CONTENDED(lock, do_raw_spin_trylock, do_raw_spin_lock);
+> +}
+> +EXPORT_SYMBOL(_raw_spin_lock_bh_nested);
+> +
+>   unsigned long __lockfunc _raw_spin_lock_irqsave_nested(raw_spinlock_t *lock,
+>   						   int subclass)
+>   {
+
+
