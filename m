@@ -2,143 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 389302D0FA3
-	for <lists+bpf@lfdr.de>; Mon,  7 Dec 2020 12:44:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 674522D0FCA
+	for <lists+bpf@lfdr.de>; Mon,  7 Dec 2020 12:56:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726733AbgLGLn6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Dec 2020 06:43:58 -0500
-Received: from mail-il1-f197.google.com ([209.85.166.197]:43435 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726920AbgLGLn6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Dec 2020 06:43:58 -0500
-Received: by mail-il1-f197.google.com with SMTP id p6so10246461ils.10
-        for <bpf@vger.kernel.org>; Mon, 07 Dec 2020 03:43:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=RnH0gk+Ggl9SU1hd2RqCdO8fPhHvsCanm+XQaqUSaic=;
-        b=JBNscMd3lWhaqqpLDQkaRVUvr4ViBg/ob61o12gbsHWAv5Nnc3d1/i73rvwq6LkHGv
-         Wc0P0ezldJSTyt5qpTEISfFaYahwLyiJ+/PlLQGbupJVZRHnpdEIQBz8GI+0gmjQXkzF
-         fiedeOPoZIqO486jh65VIUI/DEjwhjW1TVnqzayii8hUILRF0cgY2xczjx8ICbNZTIas
-         77OdncJ/HR0UEI5Nkyg3AF/eCHyIhohH4aN8Dq0ES5zMah1Mvok3nTKNdZKBI5dk2y6I
-         78lg+S6L4f+cWhE2U1yqP2lGUGYTBebOptEPNI9nMWXpxapYueb8A8/uMlrYbb41dr5A
-         Xl1A==
-X-Gm-Message-State: AOAM532pHJAUBKGgpXUklnrstXNmFxJJnZ4OB1iDLq9PMSXcSn4ugIBI
-        ZISltoE9v0yn5z+tQRzV4giMP6ZgthKE6mxnkRrAdkRlx+rQ
-X-Google-Smtp-Source: ABdhPJzUlx+oPhmbyQL/NekSIbjRMQ2Ty1OUzOoHKQwibq/ge3Wotf5qeCBXta4kripcWaFaYn5ng/0NsTiUsRzsHsz4MerVK/Nt
+        id S1726188AbgLGL4m (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Dec 2020 06:56:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23530 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726254AbgLGL4l (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 7 Dec 2020 06:56:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607342115;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RFxHsnImOflCZF1OXAJjc3KHnp1DAGQjdGBQW7WJyfU=;
+        b=LuP/ePgV/hGQBHOlSCsifpzeB9KwibV67RYuL4Ffhx6bL9E5tILwtaFuQCqZwinsk5uXel
+        ei95uFk0j3LSi90DdswigNhVnp8E9L9WMbli3MdFwQ3M+BZPFf3k1vGXH6/XKsiU5NV+O4
+        c7I5PcFhE3Phnt7Agk6lHbCd/VEax3U=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-361-1vbLW6_MOg2laIdy23Kp7w-1; Mon, 07 Dec 2020 06:55:11 -0500
+X-MC-Unique: 1vbLW6_MOg2laIdy23Kp7w-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ADB8F801FDB;
+        Mon,  7 Dec 2020 11:55:08 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.55])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4A50C60C4D;
+        Mon,  7 Dec 2020 11:54:55 +0000 (UTC)
+Date:   Mon, 7 Dec 2020 12:54:54 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        alardam@gmail.com, magnus.karlsson@intel.com,
+        bjorn.topel@intel.com, andrii.nakryiko@gmail.com, kuba@kernel.org,
+        ast@kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
+        john.fastabend@gmail.com, hawk@kernel.org,
+        jonathan.lemon@gmail.com, bpf@vger.kernel.org,
+        jeffrey.t.kirsher@intel.com, maciejromanfijalkowski@gmail.com,
+        intel-wired-lan@lists.osuosl.org,
+        Marek Majtyka <marekx.majtyka@intel.com>, brouer@redhat.com,
+        Saeed Mahameed <saeed@kernel.org>
+Subject: Re: [PATCH v2 bpf 1/5] net: ethtool: add xdp properties flag set
+Message-ID: <20201207125454.3883d315@carbon>
+In-Reply-To: <eb305a4f-c189-6b32-f718-6e709ef0fa55@iogearbox.net>
+References: <20201204102901.109709-1-marekx.majtyka@intel.com>
+        <20201204102901.109709-2-marekx.majtyka@intel.com>
+        <878sad933c.fsf@toke.dk>
+        <20201204124618.GA23696@ranger.igk.intel.com>
+        <048bd986-2e05-ee5b-2c03-cd8c473f6636@iogearbox.net>
+        <87pn3p7aiv.fsf@toke.dk>
+        <eb305a4f-c189-6b32-f718-6e709ef0fa55@iogearbox.net>
 MIME-Version: 1.0
-X-Received: by 2002:a92:cd03:: with SMTP id z3mr407488iln.181.1607341390986;
- Mon, 07 Dec 2020 03:43:10 -0800 (PST)
-Date:   Mon, 07 Dec 2020 03:43:10 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a4832105b5de5453@google.com>
-Subject: BUG: unable to handle kernel paging request in bpf_lru_populate
-From:   syzbot <syzbot+ec2234240c96fdd26b93@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, andriin@fb.com, ast@kernel.org,
-        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        johannes@sipsolutions.net, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@chromium.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Fri, 4 Dec 2020 23:19:55 +0100
+Daniel Borkmann <daniel@iogearbox.net> wrote:
 
-syzbot found the following issue on:
+> On 12/4/20 6:20 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> > Daniel Borkmann <daniel@iogearbox.net> writes: =20
+> [...]
+> >> We tried to standardize on a minimum guaranteed amount, but unfortunat=
+ely not
+> >> everyone seems to implement it, but I think it would be very useful to=
+ query
+> >> this from application side, for example, consider that an app inserts =
+a BPF
+> >> prog at XDP doing custom encap shortly before XDP_TX so it would be us=
+eful to
+> >> know which of the different encaps it implements are realistically pos=
+sible on
+> >> the underlying XDP supported dev. =20
+> >=20
+> > How many distinct values are there in reality? Enough to express this in
+> > a few flags (XDP_HEADROOM_128, XDP_HEADROOM_192, etc?), or does it need
+> > an additional field to get the exact value? If we implement the latter
+> > we also run the risk of people actually implementing all sorts of weird
+> > values, whereas if we constrain it to a few distinct values it's easier
+> > to push back against adding new values (as it'll be obvious from the
+> > addition of new flags). =20
+>=20
+> It's not everywhere straight forward to determine unfortunately, see also=
+ [0,1]
+> as some data points where Jesper looked into in the past, so in some case=
+s it
+> might differ depending on the build/runtime config..
+>=20
+>    [0] https://lore.kernel.org/bpf/158945314698.97035.5286827951225578467=
+.stgit@firesoul/
+>    [1] https://lore.kernel.org/bpf/158945346494.97035.1280940041456606181=
+5.stgit@firesoul/
 
-HEAD commit:    bcd684aa net/nfc/nci: Support NCI 2.x initial sequence
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=12001bd3500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3cb098ab0334059f
-dashboard link: https://syzkaller.appspot.com/bug?extid=ec2234240c96fdd26b93
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11f7f2ef500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=103833f7500000
+Yes, unfortunately drivers have already gotten creative in this area,
+and variations have sneaked in.  I remember that we were forced to
+allow SFC driver to use 128 bytes headroom, to avoid a memory
+corruption. I tried hard to have the minimum 192 bytes as it is 3
+cachelines, but I failed to enforce this.
 
-The issue was bisected to:
+It might be valuable to expose info on the drivers headroom size, as
+this will allow end-users to take advantage of this (instead of having
+to use the lowest common headroom) and up-front in userspace rejecting
+to load on e.g. SFC that have this annoying limitation.
 
-commit b93ef089d35c3386dd197e85afb6399bbd54cfb3
-Author: Martin KaFai Lau <kafai@fb.com>
-Date:   Mon Nov 16 20:01:13 2020 +0000
+BUT thinking about what the drivers headroom size MEANS to userspace,
+I'm not sure it is wise to give this info to userspace.  The
+XDP-headroom is used for several kernel internal things, that limit the
+available space for growing packet-headroom.  E.g. (1) xdp_frame is
+something that we likely need to grow (even-though I'm pushing back),
+E.g. (2) metadata area which Saeed is looking to populate from driver
+code (also reduce packet-headroom for encap-headers).  So, userspace
+cannot use the XDP-headroom size to much...
 
-    bpf: Fix the irq and nmi check in bpf_sk_storage for tracing usage
+--=20
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1103b837500000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1303b837500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1503b837500000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ec2234240c96fdd26b93@syzkaller.appspotmail.com
-Fixes: b93ef089d35c ("bpf: Fix the irq and nmi check in bpf_sk_storage for tracing usage")
-
-BUG: unable to handle page fault for address: fffff5200471266c
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD 23fff2067 P4D 23fff2067 PUD 101a4067 PMD 32e3a067 PTE 0
-Oops: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 8503 Comm: syz-executor608 Not tainted 5.10.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:bpf_common_lru_populate kernel/bpf/bpf_lru_list.c:569 [inline]
-RIP: 0010:bpf_lru_populate+0xd8/0x5e0 kernel/bpf/bpf_lru_list.c:614
-Code: 03 4d 01 e7 48 01 d8 48 89 4c 24 10 4d 89 fe 48 89 44 24 08 e8 99 23 eb ff 49 8d 7e 12 48 89 f8 48 89 fa 48 c1 e8 03 83 e2 07 <0f> b6 04 18 38 d0 7f 08 84 c0 0f 85 80 04 00 00 49 8d 7e 13 41 c6
-RSP: 0018:ffffc9000126fc20 EFLAGS: 00010202
-RAX: 1ffff9200471266c RBX: dffffc0000000000 RCX: ffffffff8184e3e2
-RDX: 0000000000000002 RSI: ffffffff8184e2e7 RDI: ffffc90023893362
-RBP: 00000000000000bc R08: 000000000000107c R09: 0000000000000000
-R10: 000000000000107c R11: 0000000000000000 R12: 0000000000000001
-R13: 000000000000107c R14: ffffc90023893350 R15: ffffc900234832f0
-FS:  0000000000fe0880(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: fffff5200471266c CR3: 000000001ba62000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- prealloc_init kernel/bpf/hashtab.c:319 [inline]
- htab_map_alloc+0xf6e/0x1230 kernel/bpf/hashtab.c:507
- find_and_alloc_map kernel/bpf/syscall.c:123 [inline]
- map_create kernel/bpf/syscall.c:829 [inline]
- __do_sys_bpf+0xa81/0x5170 kernel/bpf/syscall.c:4374
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x4402e9
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffe77af23b8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 00000000004402e9
-RDX: 0000000000000040 RSI: 0000000020000000 RDI: 0d00000000000000
-RBP: 00000000006ca018 R08: 0000000000000000 R09: 0000000000000000
-R10: 00000000ffffffff R11: 0000000000000246 R12: 0000000000401af0
-R13: 0000000000401b80 R14: 0000000000000000 R15: 0000000000000000
-Modules linked in:
-CR2: fffff5200471266c
----[ end trace 4f3928bacde7b3ed ]---
-RIP: 0010:bpf_common_lru_populate kernel/bpf/bpf_lru_list.c:569 [inline]
-RIP: 0010:bpf_lru_populate+0xd8/0x5e0 kernel/bpf/bpf_lru_list.c:614
-Code: 03 4d 01 e7 48 01 d8 48 89 4c 24 10 4d 89 fe 48 89 44 24 08 e8 99 23 eb ff 49 8d 7e 12 48 89 f8 48 89 fa 48 c1 e8 03 83 e2 07 <0f> b6 04 18 38 d0 7f 08 84 c0 0f 85 80 04 00 00 49 8d 7e 13 41 c6
-RSP: 0018:ffffc9000126fc20 EFLAGS: 00010202
-RAX: 1ffff9200471266c RBX: dffffc0000000000 RCX: ffffffff8184e3e2
-RDX: 0000000000000002 RSI: ffffffff8184e2e7 RDI: ffffc90023893362
-RBP: 00000000000000bc R08: 000000000000107c R09: 0000000000000000
-R10: 000000000000107c R11: 0000000000000000 R12: 0000000000000001
-R13: 000000000000107c R14: ffffc90023893350 R15: ffffc900234832f0
-FS:  0000000000fe0880(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: fffff5200471266c CR3: 000000001ba62000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
