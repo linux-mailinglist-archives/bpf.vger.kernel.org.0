@@ -2,178 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00A862D0F05
-	for <lists+bpf@lfdr.de>; Mon,  7 Dec 2020 12:30:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 389302D0FA3
+	for <lists+bpf@lfdr.de>; Mon,  7 Dec 2020 12:44:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726524AbgLGL3d (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Dec 2020 06:29:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726441AbgLGL3c (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Dec 2020 06:29:32 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89FC1C061A54
-        for <bpf@vger.kernel.org>; Mon,  7 Dec 2020 03:28:42 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id g25so9358312wmh.1
-        for <bpf@vger.kernel.org>; Mon, 07 Dec 2020 03:28:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uHU8ebv9ZwzgWtYFikVpZiNJ4prcda3hg71IDSFXm/E=;
-        b=lKZLmN1YLmJ5CMELdnMLtS4Q5UeEj9a5mB0BIZ7rsgDlKVpOB93vBf2NtffgGBnfdq
-         xM026KHpsrhDdmcsFH+GhWXj9aBcw/2LL6A4p+VUu4R/AjGj0E1ZB94aZy2vpBfDUMk/
-         SsqbdQrUSQ8v+V3GC8CkIf2zu+K36lu+vUO9zdZ8hxO5IEBaYf2tHbtGPFgpWukhnruU
-         JVwUeO/W3g4sTbwn5K+r9ehLFHZOYxIF883yledKhYG8XWPNVPoxlNLB6Sqb6TCD175/
-         ggWfSdJncdSACYAgSdTKzlo+s/vTTUJAAtwB0SsQwMoxhFrNWab4d/leaAQ8Bd83txfz
-         pbew==
+        id S1726733AbgLGLn6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Dec 2020 06:43:58 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:43435 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726920AbgLGLn6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Dec 2020 06:43:58 -0500
+Received: by mail-il1-f197.google.com with SMTP id p6so10246461ils.10
+        for <bpf@vger.kernel.org>; Mon, 07 Dec 2020 03:43:36 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uHU8ebv9ZwzgWtYFikVpZiNJ4prcda3hg71IDSFXm/E=;
-        b=HL0zP4pPRmkwbXWPFVzKAAwnXHCAh27uNx88WpWM5v5JtcNZLiHoZ73V2nejib4nXY
-         r8d8xZtrNEUHmJl1SWrBCJULFVOHKfZ6pptWnrwpsIwKRWcX50vgaJd4kT6wgghfBXDk
-         o9vVJR/EFdm0jp50W7QeA+78LSFOLTzyzpg+sShpSKavGLvJSUO67IVElwb1KJ7B9pV4
-         vXcfsQovwX8xXxxthhcZdOwIWN0vghixKP4jdMvg5mcbewHHpPvNy/KlKKyGXa/RHU+1
-         YVnCZZL+Lijoeut/Czl8eeBUl9tvfQF3dnHnLnk/l0uilE9F5M3W0rWAuoyf74yvhZsM
-         nGlA==
-X-Gm-Message-State: AOAM531oZBL8L/ZRqg3BkxUFf+iBKSxrT2wc//CWo/x8YkKdseVWSVSU
-        sD/sPzvKqCFfA1qjXOMrPZB3Bw==
-X-Google-Smtp-Source: ABdhPJyJ9tuZHfKVa7CqR/qTSOyOI7GfCSP46VmGYfbnFlylpaOfb8RbZt+ItLdAEW0Z/P7QNxkVsA==
-X-Received: by 2002:a1c:b742:: with SMTP id h63mr17815588wmf.122.1607340521106;
-        Mon, 07 Dec 2020 03:28:41 -0800 (PST)
-Received: from google.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
-        by smtp.gmail.com with ESMTPSA id f4sm13449427wmb.47.2020.12.07.03.28.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 03:28:40 -0800 (PST)
-Date:   Mon, 7 Dec 2020 11:28:36 +0000
-From:   Brendan Jackman <jackmanb@google.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
-Subject: Re: [PATCH bpf-next v3 10/14] bpf: Add bitwise atomic instructions
-Message-ID: <X84R5DttN3WuHDYo@google.com>
-References: <20201203160245.1014867-1-jackmanb@google.com>
- <20201203160245.1014867-11-jackmanb@google.com>
- <86a88eba-83a1-93c0-490d-ceba238e3aad@fb.com>
- <X8oDEsEjU059T7+k@google.com>
- <534a6371-a5ed-2459-999b-90b8a8b773e8@fb.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=RnH0gk+Ggl9SU1hd2RqCdO8fPhHvsCanm+XQaqUSaic=;
+        b=JBNscMd3lWhaqqpLDQkaRVUvr4ViBg/ob61o12gbsHWAv5Nnc3d1/i73rvwq6LkHGv
+         Wc0P0ezldJSTyt5qpTEISfFaYahwLyiJ+/PlLQGbupJVZRHnpdEIQBz8GI+0gmjQXkzF
+         fiedeOPoZIqO486jh65VIUI/DEjwhjW1TVnqzayii8hUILRF0cgY2xczjx8ICbNZTIas
+         77OdncJ/HR0UEI5Nkyg3AF/eCHyIhohH4aN8Dq0ES5zMah1Mvok3nTKNdZKBI5dk2y6I
+         78lg+S6L4f+cWhE2U1yqP2lGUGYTBebOptEPNI9nMWXpxapYueb8A8/uMlrYbb41dr5A
+         Xl1A==
+X-Gm-Message-State: AOAM532pHJAUBKGgpXUklnrstXNmFxJJnZ4OB1iDLq9PMSXcSn4ugIBI
+        ZISltoE9v0yn5z+tQRzV4giMP6ZgthKE6mxnkRrAdkRlx+rQ
+X-Google-Smtp-Source: ABdhPJzUlx+oPhmbyQL/NekSIbjRMQ2Ty1OUzOoHKQwibq/ge3Wotf5qeCBXta4kripcWaFaYn5ng/0NsTiUsRzsHsz4MerVK/Nt
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <534a6371-a5ed-2459-999b-90b8a8b773e8@fb.com>
+X-Received: by 2002:a92:cd03:: with SMTP id z3mr407488iln.181.1607341390986;
+ Mon, 07 Dec 2020 03:43:10 -0800 (PST)
+Date:   Mon, 07 Dec 2020 03:43:10 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a4832105b5de5453@google.com>
+Subject: BUG: unable to handle kernel paging request in bpf_lru_populate
+From:   syzbot <syzbot+ec2234240c96fdd26b93@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, andriin@fb.com, ast@kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        johannes@sipsolutions.net, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@chromium.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 04, 2020 at 07:21:22AM -0800, Yonghong Song wrote:
-> 
-> 
-> On 12/4/20 1:36 AM, Brendan Jackman wrote:
-> > On Thu, Dec 03, 2020 at 10:42:19PM -0800, Yonghong Song wrote:
-> > > 
-> > > 
-> > > On 12/3/20 8:02 AM, Brendan Jackman wrote:
-> > > > This adds instructions for
-> > > > 
-> > > > atomic[64]_[fetch_]and
-> > > > atomic[64]_[fetch_]or
-> > > > atomic[64]_[fetch_]xor
-> > > > 
-> > > > All these operations are isomorphic enough to implement with the same
-> > > > verifier, interpreter, and x86 JIT code, hence being a single commit.
-> > > > 
-> > > > The main interesting thing here is that x86 doesn't directly support
-> > > > the fetch_ version these operations, so we need to generate a CMPXCHG
-> > > > loop in the JIT. This requires the use of two temporary registers,
-> > > > IIUC it's safe to use BPF_REG_AX and x86's AUX_REG for this purpose.
-> > > > 
-> > > > Change-Id: I340b10cecebea8cb8a52e3606010cde547a10ed4
-> > > > Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> > > > ---
-> > > >    arch/x86/net/bpf_jit_comp.c  | 50 +++++++++++++++++++++++++++++-
-> > > >    include/linux/filter.h       | 60 ++++++++++++++++++++++++++++++++++++
-> > > >    kernel/bpf/core.c            |  5 ++-
-> > > >    kernel/bpf/disasm.c          | 21 ++++++++++---
-> > > >    kernel/bpf/verifier.c        |  6 ++++
-> > > >    tools/include/linux/filter.h | 60 ++++++++++++++++++++++++++++++++++++
-> > > >    6 files changed, 196 insertions(+), 6 deletions(-)
-> > > > 
-> > [...]
-> > > > diff --git a/include/linux/filter.h b/include/linux/filter.h
-> > > > index 6186280715ed..698f82897b0d 100644
-> > > > --- a/include/linux/filter.h
-> > > > +++ b/include/linux/filter.h
-> > > > @@ -280,6 +280,66 @@ static inline bool insn_is_zext(const struct bpf_insn *insn)
-> > [...]
-> > > > +#define BPF_ATOMIC_FETCH_XOR(SIZE, DST, SRC, OFF)		\
-> > > > +	((struct bpf_insn) {					\
-> > > > +		.code  = BPF_STX | BPF_SIZE(SIZE) | BPF_ATOMIC,	\
-> > > > +		.dst_reg = DST,					\
-> > > > +		.src_reg = SRC,					\
-> > > > +		.off   = OFF,					\
-> > > > +		.imm   = BPF_XOR | BPF_FETCH })
-> > > > +
-> > > >    /* Atomic exchange, src_reg = atomic_xchg((dst_reg + off), src_reg) */
-> > > 
-> > > Looks like BPF_ATOMIC_XOR/OR/AND/... all similar to each other.
-> > > The same is for BPF_ATOMIC_FETCH_XOR/OR/AND/...
-> > > 
-> > > I am wondering whether it makes sence to have to
-> > > BPF_ATOMIC_BOP(BOP, SIZE, DST, SRC, OFF) and
-> > > BPF_ATOMIC_FETCH_BOP(BOP, SIZE, DST, SRC, OFF)
-> > > can have less number of macros?
-> > 
-> > Hmm yeah I think that's probably a good idea, it would be consistent
-> > with the macros for non-atomic ALU ops.
-> > 
-> > I don't think 'BOP' would be very clear though, 'ALU' might be more
-> > obvious.
-> 
-> BPF_ATOMIC_ALU and BPF_ATOMIC_FETCH_ALU indeed better.
+Hello,
 
-On second thoughts I think it feels right (i.e. it would be roughly
-consistent with the level of abstraction of the rest of this macro API)
-to go further and just have two macros BPF_ATOMIC64 and BPF_ATOMIC32:
+syzbot found the following issue on:
 
-	/*
-	 * Atomic ALU ops:
-	 *
-	 *   BPF_ADD                  *(uint *) (dst_reg + off16) += src_reg
-	 *   BPF_AND                  *(uint *) (dst_reg + off16) &= src_reg
-	 *   BPF_OR                   *(uint *) (dst_reg + off16) |= src_reg
-	 *   BPF_XOR                  *(uint *) (dst_reg + off16) ^= src_reg
-	 *   BPF_ADD | BPF_FETCH      src_reg = atomic_fetch_add(dst_reg + off16, src_reg);
-	 *   BPF_AND | BPF_FETCH      src_reg = atomic_fetch_and(dst_reg + off16, src_reg);
-	 *   BPF_OR | BPF_FETCH       src_reg = atomic_fetch_or(dst_reg + off16, src_reg);
-	 *   BPF_XOR | BPF_FETCH      src_reg = atomic_fetch_xor(dst_reg + off16, src_reg);
-	 *   BPF_XCHG                 src_reg = atomic_xchg(dst_reg + off16, src_reg)
-	 *   BPF_CMPXCHG              r0 = atomic_cmpxchg(dst_reg + off16, r0, src_reg)
-	 */
+HEAD commit:    bcd684aa net/nfc/nci: Support NCI 2.x initial sequence
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=12001bd3500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3cb098ab0334059f
+dashboard link: https://syzkaller.appspot.com/bug?extid=ec2234240c96fdd26b93
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11f7f2ef500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=103833f7500000
 
-	#define BPF_ATOMIC64(OP, DST, SRC, OFF)                         \
-		((struct bpf_insn) {                                    \
-			.code  = BPF_STX | BPF_DW | BPF_ATOMIC,         \
-			.dst_reg = DST,                                 \
-			.src_reg = SRC,                                 \
-			.off   = OFF,                                   \
-			.imm   = OP })
+The issue was bisected to:
 
-	#define BPF_ATOMIC32(OP, DST, SRC, OFF)                         \
-		((struct bpf_insn) {                                    \
-			.code  = BPF_STX | BPF_W | BPF_ATOMIC,         \
-			.dst_reg = DST,                                 \
-			.src_reg = SRC,                                 \
-			.off   = OFF,                                   \
-			.imm   = OP })
+commit b93ef089d35c3386dd197e85afb6399bbd54cfb3
+Author: Martin KaFai Lau <kafai@fb.com>
+Date:   Mon Nov 16 20:01:13 2020 +0000
 
-The downside compared to what's currently in the patchset is that the
-user can write e.g. BPF_ATOMIC64(BPF_SUB, BPF_REG_1, BPF_REG_2, 0) and
-it will compile. On the other hand they'll get a pretty clear
-"BPF_ATOMIC uses invalid atomic opcode 10" when they try to load the
-prog, and the valid atomic ops are clearly listed in Documentation as
-well as the comments here.
+    bpf: Fix the irq and nmi check in bpf_sk_storage for tracing usage
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1103b837500000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1303b837500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1503b837500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ec2234240c96fdd26b93@syzkaller.appspotmail.com
+Fixes: b93ef089d35c ("bpf: Fix the irq and nmi check in bpf_sk_storage for tracing usage")
+
+BUG: unable to handle page fault for address: fffff5200471266c
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 23fff2067 P4D 23fff2067 PUD 101a4067 PMD 32e3a067 PTE 0
+Oops: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 8503 Comm: syz-executor608 Not tainted 5.10.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:bpf_common_lru_populate kernel/bpf/bpf_lru_list.c:569 [inline]
+RIP: 0010:bpf_lru_populate+0xd8/0x5e0 kernel/bpf/bpf_lru_list.c:614
+Code: 03 4d 01 e7 48 01 d8 48 89 4c 24 10 4d 89 fe 48 89 44 24 08 e8 99 23 eb ff 49 8d 7e 12 48 89 f8 48 89 fa 48 c1 e8 03 83 e2 07 <0f> b6 04 18 38 d0 7f 08 84 c0 0f 85 80 04 00 00 49 8d 7e 13 41 c6
+RSP: 0018:ffffc9000126fc20 EFLAGS: 00010202
+RAX: 1ffff9200471266c RBX: dffffc0000000000 RCX: ffffffff8184e3e2
+RDX: 0000000000000002 RSI: ffffffff8184e2e7 RDI: ffffc90023893362
+RBP: 00000000000000bc R08: 000000000000107c R09: 0000000000000000
+R10: 000000000000107c R11: 0000000000000000 R12: 0000000000000001
+R13: 000000000000107c R14: ffffc90023893350 R15: ffffc900234832f0
+FS:  0000000000fe0880(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffff5200471266c CR3: 000000001ba62000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ prealloc_init kernel/bpf/hashtab.c:319 [inline]
+ htab_map_alloc+0xf6e/0x1230 kernel/bpf/hashtab.c:507
+ find_and_alloc_map kernel/bpf/syscall.c:123 [inline]
+ map_create kernel/bpf/syscall.c:829 [inline]
+ __do_sys_bpf+0xa81/0x5170 kernel/bpf/syscall.c:4374
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x4402e9
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffe77af23b8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 00000000004402e9
+RDX: 0000000000000040 RSI: 0000000020000000 RDI: 0d00000000000000
+RBP: 00000000006ca018 R08: 0000000000000000 R09: 0000000000000000
+R10: 00000000ffffffff R11: 0000000000000246 R12: 0000000000401af0
+R13: 0000000000401b80 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+CR2: fffff5200471266c
+---[ end trace 4f3928bacde7b3ed ]---
+RIP: 0010:bpf_common_lru_populate kernel/bpf/bpf_lru_list.c:569 [inline]
+RIP: 0010:bpf_lru_populate+0xd8/0x5e0 kernel/bpf/bpf_lru_list.c:614
+Code: 03 4d 01 e7 48 01 d8 48 89 4c 24 10 4d 89 fe 48 89 44 24 08 e8 99 23 eb ff 49 8d 7e 12 48 89 f8 48 89 fa 48 c1 e8 03 83 e2 07 <0f> b6 04 18 38 d0 7f 08 84 c0 0f 85 80 04 00 00 49 8d 7e 13 41 c6
+RSP: 0018:ffffc9000126fc20 EFLAGS: 00010202
+RAX: 1ffff9200471266c RBX: dffffc0000000000 RCX: ffffffff8184e3e2
+RDX: 0000000000000002 RSI: ffffffff8184e2e7 RDI: ffffc90023893362
+RBP: 00000000000000bc R08: 000000000000107c R09: 0000000000000000
+R10: 000000000000107c R11: 0000000000000000 R12: 0000000000000001
+R13: 000000000000107c R14: ffffc90023893350 R15: ffffc900234832f0
+FS:  0000000000fe0880(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffff5200471266c CR3: 000000001ba62000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
