@@ -2,444 +2,257 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3E182D1C7E
-	for <lists+bpf@lfdr.de>; Mon,  7 Dec 2020 22:57:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 950BA2D1C87
+	for <lists+bpf@lfdr.de>; Mon,  7 Dec 2020 22:59:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727113AbgLGV41 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Dec 2020 16:56:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53548 "EHLO
+        id S1726415AbgLGV5p (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Dec 2020 16:57:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726250AbgLGV40 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Dec 2020 16:56:26 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93B03C061749;
-        Mon,  7 Dec 2020 13:55:40 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id l14so14314602ybq.3;
-        Mon, 07 Dec 2020 13:55:40 -0800 (PST)
+        with ESMTP id S1726250AbgLGV5p (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Dec 2020 16:57:45 -0500
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 384E9C06179C;
+        Mon,  7 Dec 2020 13:57:05 -0800 (PST)
+Received: by mail-oi1-x231.google.com with SMTP id p126so17180911oif.7;
+        Mon, 07 Dec 2020 13:57:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=S09wxdnZINYcsTcIavXrOLQ3u++eor056wW5Mfdy2l4=;
-        b=ol2uDEhtEUelh18QJ35NJZEb0JofyATfqxTvBCWc40TcBp9OsYgihb1jFReRJYbYJh
-         drL4WNTgKs2pp3z6PEED7V8WLGUP+R6Zsh1DYSTrpKMPdcWHND+s6jo4GKpSr8VkN6Kl
-         94z9F78fcGKswiuarcmYH0Rp+v8RhXXyC8ElYp8Lpd3TH7EQE1TTEfGB/ZGyaapEaRe3
-         jriQVQ3Jc9u7vyrTLGIzTZA/iobQuHwhSRbn7LGDxPxqftwgW0F66olUxMmLVAGA8wt+
-         Qr41iidva0xOLJ7NRig8AoufyMMcbT0w1jSgG8G/ejyoK+2I1AsuG4srOkW2lFBdjbBf
-         wODg==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=JzNJLFb4lAYSbW6/KJMdrY9DpvzM0R/b2u1XF5c6kDc=;
+        b=ducwIV9pdGFJcWzvFjfKbwhqSQ4edoGEKENLKY0/MhKOsS7QCF2wj2ZKMdPZMVNo3Q
+         iLL+VH96hffegYfWHcF/dgHJmYLhijkH2/sEKC3Q0ambnPdtnm0amflIRlaPNS3GN0l2
+         ol673ETyGTkMuOkKKabGkfdWLVkmU9BkhUIJbor0DGjZqnrbl7z0Vic7Dwu5x7dlizEa
+         mGkejXeDoJVIpfBU0r4lfxGiBAGBx7wXegZj7kmy3mc6n8I9qTmLrgubMGCS1iPK5ZV9
+         TOUPbnhBEIspQHoE/1h0AO2cJ0KgBypELn+6XV5/MJHYTuOqOocApa6K2gUKU22qBPsf
+         STPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=S09wxdnZINYcsTcIavXrOLQ3u++eor056wW5Mfdy2l4=;
-        b=OvJRmfFlQqBLZS5HfKgO2jQzzdk1zIvU8cyD19BzQXzL8cbkJhyVKdcX2AoRenN/V4
-         H3FxZNdOC8qb2HmF/BUm0fuFc4ihJ6xc+bHqATxQ7zs7H0k04rJqnnmtv1mmWiI4ycAx
-         FFsDWoD4ifffAkiQwmmtwfhNH6grhggmkQQhX6uemRE+aTsyB9TPxVm+Q6wtoXd3fI/o
-         ywLgFLs5IwxM2UYZlkODM/ZmIjWRaoz2N4i7L4+TI3IzjMoF5hc3avPgtC09khNHqbOZ
-         xKpPobXH8tsh9SIyPTk0JiZ0XMlHqS82V9i2CU1UkSu5FyztISbCiYWCbh6Mm/Puvwzy
-         8dmg==
-X-Gm-Message-State: AOAM532Aqhq7TecfcF7dX+8LV+zdPss0w9tKlbuHTnfgdbEzKmjAU83k
-        bmFdb2wFBvAU/rSOnBMaLxMC0dyq1p1JNv3+NhoKQIpBmD+zo3tq
-X-Google-Smtp-Source: ABdhPJyEhSF/G71Z+XLVX65pkZGGwPh2F3F0SollSLy5yLecZSmNJeC21D1hR47dyEdRkwpcSy0kZKss2xv3hf9yVmk=
-X-Received: by 2002:a25:ab31:: with SMTP id u46mr17921449ybi.179.1607378139552;
- Mon, 07 Dec 2020 13:55:39 -0800 (PST)
-MIME-Version: 1.0
-References: <20201125183749.13797-1-weqaar.a.janjua@intel.com>
- <20201125183749.13797-2-weqaar.a.janjua@intel.com> <d8eedbad-7a8e-fd80-5fec-fc53b86e6038@fb.com>
- <1bcfb208-dfbd-7b49-e505-8ec17697239d@intel.com> <CAPLEeBYnYcWALN_JMBtZWt3uDnpYNtCA_HVLN6Gi7VbVk022xw@mail.gmail.com>
- <9c73643f-0fdc-d867-6fe0-b3b8031a6cf2@fb.com> <CAPLEeBZh+BEJp_k0bDQ8nmprMPqQ29JSEXCxscm5wAZQH81bAQ@mail.gmail.com>
- <b153b6af-6f75-d091-7022-999b01f553aa@fb.com>
-In-Reply-To: <b153b6af-6f75-d091-7022-999b01f553aa@fb.com>
-From:   Weqaar Janjua <weqaar.janjua@gmail.com>
-Date:   Mon, 7 Dec 2020 21:55:13 +0000
-Message-ID: <CAPLEeBY_soGW66KE3U66_h2R3s0cFLjsektvYXCFb+5Uvc0YfQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/5] selftests/bpf: xsk selftests framework
-To:     Yonghong Song <yhs@fb.com>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>, ast@kernel.org,
-        Magnus Karlsson <magnus.karlsson@gmail.com>,
-        Weqaar Janjua <weqaar.a.janjua@intel.com>, shuah@kernel.org,
-        skhan@linuxfoundation.org, linux-kselftest@vger.kernel.org,
-        Anders Roxell <anders.roxell@linaro.org>,
-        jonathan.lemon@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=JzNJLFb4lAYSbW6/KJMdrY9DpvzM0R/b2u1XF5c6kDc=;
+        b=lN8cj13R+jzpxVuz5GpZsanTXGpPVemHZ7Sqq1ivxi9FBfwZN/pGoCbYf7qYTDIhHE
+         6Pr8s9YD1R7ApA0t6zqM12NRQT3ommkUAcrLnn/AhxUgyp2d3KtXFJYKzzDPLP9eO2tq
+         5pR5r+yovqLkJ05B7VgnraloIx9wJvfmMjU2ntEPSh5JqTJ53snxozaARccDmlbolh8K
+         cYjA46JN/tWjXPHyjfaPkaspxtMpkGbpPXQUI2bEevyGtmZY8GiWrFRcd9MUVrxV/1MR
+         hfMYlt1G2s3W9L+tYw0rNfmIF2mEhmJyoysibOY8DLDimtaAiUzLYRHyCwnQ5ciIZA/P
+         QH/A==
+X-Gm-Message-State: AOAM533dz2JFdEpMmVk/hvrTv+XdbeSlvjoPPKa0X/gvr2w/6I3tpM4B
+        0HjZfKZ2+lhtSC0u5DHS09k=
+X-Google-Smtp-Source: ABdhPJwUritBdIFT/PVN8OF41qU/kF6kgk9wpVfYv+bYjNAWm30j51HvDqbHR8YgRsTu9fCHdynXGg==
+X-Received: by 2002:aca:60c4:: with SMTP id u187mr660267oib.42.1607378224627;
+        Mon, 07 Dec 2020 13:57:04 -0800 (PST)
+Received: from localhost ([184.21.204.5])
+        by smtp.gmail.com with ESMTPSA id i43sm2944368ota.39.2020.12.07.13.57.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 13:57:03 -0800 (PST)
+Date:   Mon, 07 Dec 2020 13:56:53 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Brendan Jackman <jackmanb@google.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>,
+        Brendan Jackman <jackmanb@google.com>
+Message-ID: <5fcea525c4971_5a96208bd@john-XPS-13-9370.notmuch>
+In-Reply-To: <20201207160734.2345502-5-jackmanb@google.com>
+References: <20201207160734.2345502-1-jackmanb@google.com>
+ <20201207160734.2345502-5-jackmanb@google.com>
+Subject: RE: [PATCH bpf-next v4 04/11] bpf: Rename BPF_XADD and prepare to
+ encode other atomics in .imm
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 28 Nov 2020 at 03:13, Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 11/27/20 9:54 AM, Weqaar Janjua wrote:
-> > On Fri, 27 Nov 2020 at 04:19, Yonghong Song <yhs@fb.com> wrote:
-> >>
-> >>
-> >>
-> >> On 11/26/20 1:22 PM, Weqaar Janjua wrote:
-> >>> On Thu, 26 Nov 2020 at 09:01, Bj=C3=B6rn T=C3=B6pel <bjorn.topel@inte=
-l.com> wrote:
-> >>>>
-> >>>> On 2020-11-26 07:44, Yonghong Song wrote:
-> >>>>>
-> >>>> [...]
-> >>>>>
-> >>>>> What other configures I am missing?
-> >>>>>
-> >>>>> BTW, I cherry-picked the following pick from bpf tree in this exper=
-iment.
-> >>>>>      commit e7f4a5919bf66e530e08ff352d9b78ed89574e6b (HEAD -> xsk)
-> >>>>>      Author: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
-> >>>>>      Date:   Mon Nov 23 18:56:00 2020 +0100
-> >>>>>
-> >>>>>          net, xsk: Avoid taking multiple skbuff references
-> >>>>>
-> >>>>
-> >>>> Hmm, I'm getting an oops, unless I cherry-pick:
-> >>>>
-> >>>> 36ccdf85829a ("net, xsk: Avoid taking multiple skbuff references")
-> >>>>
-> >>>> *AND*
-> >>>>
-> >>>> 537cf4e3cc2f ("xsk: Fix umem cleanup bug at socket destruct")
-> >>>>
-> >>>> from bpf/master.
-> >>>>
-> >>>
-> >>> Same as Bjorn's findings ^^^, additionally applying the second patch
-> >>> 537cf4e3cc2f [PASS] all tests for me
-> >>>
-> >>> PREREQUISITES: [ PASS ]
-> >>> SKB NOPOLL: [ PASS ]
-> >>> SKB POLL: [ PASS ]
-> >>> DRV NOPOLL: [ PASS ]
-> >>> DRV POLL: [ PASS ]
-> >>> SKB SOCKET TEARDOWN: [ PASS ]
-> >>> DRV SOCKET TEARDOWN: [ PASS ]
-> >>> SKB BIDIRECTIONAL SOCKETS: [ PASS ]
-> >>> DRV BIDIRECTIONAL SOCKETS: [ PASS ]
-> >>>
-> >>> With the first patch alone, as soon as we enter DRV/Native NOPOLL mod=
-e
-> >>> kernel panics, whereas in your case NOPOLL tests were falling with
-> >>> packets being *lost* as per seqnum mismatch.
-> >>>
-> >>> Can you please test this out with both patches and let us know?
-> >>
-> >> I applied both the above patches in bpf-next as well as this patch set=
-,
-> >> I still see failures. I am attaching my config file. Maybe you can tak=
-e
-> >> a look at what is the issue.
-> >>
-> > Thanks for the config, can you please confirm the compiler version,
-> > and resource limits i.e. stack size, memory, etc.?
->
-> root@arch-fb-vm1:~/net-next/net-next/tools/testing/selftests/bpf ulimit -=
-a
-> core file size          (blocks, -c) unlimited
-> data seg size           (kbytes, -d) unlimited
-> scheduling priority             (-e) 0
-> file size               (blocks, -f) unlimited
-> pending signals                 (-i) 15587
-> max locked memory       (kbytes, -l) unlimited
-> max memory size         (kbytes, -m) unlimited
-> open files                      (-n) 1024
-> pipe size            (512 bytes, -p) 8
-> POSIX message queues     (bytes, -q) 819200
-> real-time priority              (-r) 0
-> stack size              (kbytes, -s) 8192
-> cpu time               (seconds, -t) unlimited
-> max user processes              (-u) 15587
-> virtual memory          (kbytes, -v) unlimited
-> file locks                      (-x) unlimited
->
-> compiler: gcc 8.2
->
-> >
-> > Only NOPOLL tests are failing for you as I see it, do the same tests
-> > fail every time?
->
-> In my case, with above two bpf patches applied as well, I got:
-> $ ./test_xsk.sh
-> setting up ve9127: root: 192.168.222.1/30
->
-> setting up ve4520: af_xdp4520: 192.168.222.2/30
->
-> Spec file created: veth.spec
->
-> PREREQUISITES: [ PASS ]
->
-> # Interface found: ve9127
->
-> # Interface found: ve4520
->
-> # NS switched: af_xdp4520
->
-> 1..1
->
-> # Interface [ve4520] vector [Rx]
->
-> # Interface [ve9127] vector [Tx]
->
-> # Sending 10000 packets on interface ve9127
->
-> not ok 1 ERROR: [worker_pkt_validate] prev_pkt [59], payloadseqnum [0]
->
-> # Totals: pass:0 fail:1 xfail:0 xpass:0 skip:0 error:0
->
-> SKB NOPOLL: [ FAIL ]
->
-> # Interface found: ve9127
->
-> # Interface found: ve4520
->
-> # NS switched: af_xdp4520
-> # NS switched: af_xdp4520
->
-> 1..1
-> # Interface [ve4520] vector [Rx]
-> # Interface [ve9127] vector [Tx]
-> # Sending 10000 packets on interface ve9127
-> # End-of-tranmission frame received: PASS
-> # Received 10000 packets on interface ve4520
-> ok 1 PASS: SKB POLL
-> # Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
-> SKB POLL: [ PASS ]
-> # Interface found: ve9127
-> # Interface found: ve4520
-> # NS switched: af_xdp4520
-> 1..1
-> # Interface [ve4520] vector [Rx]
-> # Interface [ve9127] vector [Tx]
-> # Sending 10000 packets on interface ve9127
-> not ok 1 ERROR: [worker_pkt_validate] prev_pkt [153], payloadseqnum [0]
-> # Totals: pass:0 fail:1 xfail:0 xpass:0 skip:0 error:0
-> DRV NOPOLL: [ FAIL ]
-> # Interface found: ve9127
-> # Interface found: ve4520
-> # NS switched: af_xdp4520
-> 1..1
-> # Interface [ve4520] vector [Rx]
-> # Interface [ve9127] vector [Tx]
-> # Sending 10000 packets on interface ve9127
-> # End-of-tranmission frame received: PASS
-> # Received 10000 packets on interface ve4520
-> ok 1 PASS: DRV POLL
-> # Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
-> DRV POLL: [ PASS ]
-> # Interface found: ve9127
-> # Interface found: ve4520
-> # NS switched: af_xdp4520
-> 1..1
-> # Creating socket
-> # Interface [ve4520] vector [Rx]
-> # Interface [ve9127] vector [Tx]
-> # Sending 10000 packets on interface ve9127
-> not ok 1 ERROR: [worker_pkt_validate] prev_pkt [54], payloadseqnum [0]
-> # Totals: pass:0 fail:1 xfail:0 xpass:0 skip:0 error:0
-> SKB SOCKET TEARDOWN: [ FAIL ]
-> # Interface found: ve9127
-> # Interface found: ve4520
-> # NS switched: af_xdp4520
-> 1..1
-> # Creating socket
-> # Interface [ve4520] vector [Rx]
-> # Interface [ve9127] vector [Tx]
-> # Sending 10000 packets on interface ve9127
-> not ok 1 ERROR: [worker_pkt_validate] prev_pkt [0], payloadseqnum [0]
-> # Totals: pass:0 fail:1 xfail:0 xpass:0 skip:0 error:0
-> DRV SOCKET TEARDOWN: [ FAIL ]
-> # Interface found: ve9127
-> # Interface found: ve4520
-> # NS switched: af_xdp4520
-> 1..1
-> # Creating socket
-> # Interface [ve4520] vector [Rx]
-> # Interface [ve9127] vector [Tx]
-> # Sending 10000 packets on interface ve9127
-> not ok 1 ERROR: [worker_pkt_validate] prev_pkt [64], payloadseqnum [0]
-> # Totals: pass:0 fail:1 xfail:0 xpass:0 skip:0 error:0
-> SKB BIDIRECTIONAL SOCKETS: [ FAIL ]
-> # Interface found: ve9127
-> # Interface found: ve4520
-> # NS switched: af_xdp4520
-> 1..1
-> # Creating socket
-> # Interface [ve4520] vector [Rx]
-> # Interface [ve9127] vector [Tx]
-> # Sending 10000 packets on interface ve9127
-> not ok 1 ERROR: [worker_pkt_validate] prev_pkt [83], payloadseqnum [0]
-> # Totals: pass:0 fail:1 xfail:0 xpass:0 skip:0 error:0
-> DRV BIDIRECTIONAL SOCKETS: [ FAIL ]
-> cleaning up...
-> removing link ve4520
-> removing ns af_xdp4520
-> removing spec file: veth.spec
->
-> Second runs have one previous success becoming failure.
->
-> ./test_xsk.sh
-> setting up ve2458: root: 192.168.222.1/30
->
-> setting up ve4468: af_xdp4468: 192.168.222.2/30
->
-> [  286.597111] IPv6: ADDRCONF(NETDEV_CHANGE): ve4468: link becomes ready
->
-> Spec file created: veth.spec
->
-> PREREQUISITES: [ PASS ]
->
-> # Interface found: ve2458
->
-> # Interface found: ve4468
->
-> # NS switched: af_xdp4468
->
-> 1..1
->
-> # Interface [ve4468] vector [Rx]
->
-> # Interface [ve2458] vector [Tx]
->
-> # Sending 10000 packets on interface ve2458
->
-> not ok 1 ERROR: [worker_pkt_validate] prev_pkt [67], payloadseqnum [0]
->
-> # Totals: pass:0 fail:1 xfail:0 xpass:0 skip:0 error:0
->
-> SKB NOPOLL: [ FAIL ]
->
-> # Interface found: ve2458
->
-> # Interface found: ve4468
->
-> # NS switched: af_xdp4468
->
-> 1..1
->
-> # Interface [ve4468] vector [Rx]
->
-> # Interface [ve2458] vector [Tx]
->
-> # Sending 10000 packets on interface ve2458
->
-> # End-of-tranmission frame received: PASS
-> # Received 10000 packets on interface ve4468
-> ok 1 PASS: SKB POLL
-> # Totals: pass:1 fail:0 xfail:0 xpass:0 skip:0 error:0
-> SKB POLL: [ PASS ]
-> # Interface found: ve2458
-> # Interface found: ve4468
-> # NS switched: af_xdp4468
-> 1..1
-> # Interface [ve4468] vector [Rx]
-> # Interface [ve2458] vector [Tx]
-> # Sending 10000 packets on interface ve2458
-> not ok 1 ERROR: [worker_pkt_validate] prev_pkt [191], payloadseqnum [0]
-> # Totals: pass:0 fail:1 xfail:0 xpass:0 skip:0 error:0
-> DRV NOPOLL: [ FAIL ]
-> # Interface found: ve2458
-> # Interface found: ve4468
-> # NS switched: af_xdp4468
-> 1..1
-> # Interface [ve4468] vector [Rx]
-> # Interface [ve2458] vector [Tx]
-> # Sending 10000 packets on interface ve2458
-> not ok 1 ERROR: [worker_pkt_validate] prev_pkt [0], payloadseqnum [0]
-> # Totals: pass:0 fail:1 xfail:0 xpass:0 skip:0 error:0
-> DRV POLL: [ FAIL ]
-> # Interface found: ve2458
-> # Interface found: ve4468
-> # NS switched: af_xdp4468
-> 1..1
-> # Creating socket
-> # Interface [ve4468] vector [Rx]
-> # Interface [ve2458] vector [Tx]
-> # Sending 10000 packets on interface ve2458
-> not ok 1 ERROR: [worker_pkt_validate] prev_pkt [0], payloadseqnum [0]
-> # Totals: pass:0 fail:1 xfail:0 xpass:0 skip:0 error:0
-> SKB SOCKET TEARDOWN: [ FAIL ]
-> # Interface found: ve2458
-> # Interface found: ve4468
-> # NS switched: af_xdp4468
-> 1..1
-> # Creating socket
-> # Interface [ve4468] vector [Rx]
-> # Interface [ve2458] vector [Tx]
-> # Sending 10000 packets on interface ve2458
-> not ok 1 ERROR: [worker_pkt_validate] prev_pkt [171], payloadseqnum [0]
-> # Totals: pass:0 fail:1 xfail:0 xpass:0 skip:0 error:0
-> DRV SOCKET TEARDOWN: [ FAIL ]
-> # Interface found: ve2458
-> # Interface found: ve4468
-> # NS switched: af_xdp4468
-> 1..1
-> # Creating socket
-> # Interface [ve4468] vector [Rx]
-> # Interface [ve2458] vector [Tx]
-> # Sending 10000 packets on interface ve2458
-> not ok 1 ERROR: [worker_pkt_validate] prev_pkt [124], payloadseqnum [0]
-> # Totals: pass:0 fail:1 xfail:0 xpass:0 skip:0 error:0
-> SKB BIDIRECTIONAL SOCKETS: [ FAIL ]
-> # Interface found: ve2458
-> # Interface found: ve4468
-> # NS switched: af_xdp4468
-> 1..1
-> # Creating socket
-> # Interface [ve4468] vector [Rx]
-> # Interface [ve2458] vector [Tx]
-> # Sending 10000 packets on interface ve2458
-> not ok 1 ERROR: [worker_pkt_validate] prev_pkt [195], payloadseqnum [0]
-> # Totals: pass:0 fail:1 xfail:0 xpass:0 skip:0 error:0
-> DRV BIDIRECTIONAL SOCKETS: [ FAIL ]
-> cleaning up...
-> removing link ve4468
-> removing ns af_xdp4468
-> removing spec file: veth.spec
->
-> >
-> > I will need to spend some time debugging this to have a fix.
->
-> Thanks.
->
-> >
-> > Thanks,
-> > /Weqaar
-> >
-> >>>
-> >>>> Can I just run test_xsk.sh at tools/testing/selftests/bpf/ directory=
-?
-> >>>> This will be easier than the above for bpf developers. If it does no=
-t
-> >>>> work, I would like to recommend to make it work.
-> >>>>
-> >>> yes test_xsk.shis self contained, will update the instructions in the=
-re with v4.
-> >>
-> >> That will be great. Thanks!
-> >>
-v4 is out on the list, incorporating most if not all your suggestions
-to the best of my memory.
+Brendan Jackman wrote:
+> A subsequent patch will add additional atomic operations. These new
+> operations will use the same opcode field as the existing XADD, with
+> the immediate discriminating different operations.
+> 
+> In preparation, rename the instruction mode BPF_ATOMIC and start
+> calling the zero immediate BPF_ADD.
+> 
+> This is possible (doesn't break existing valid BPF progs) because the
+> immediate field is currently reserved MBZ and BPF_ADD is zero.
+> 
+> All uses are removed from the tree but the BPF_XADD definition is
+> kept around to avoid breaking builds for people including kernel
+> headers.
+> 
+> Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> ---
+>  Documentation/networking/filter.rst           | 30 ++++++++-----
+>  arch/arm/net/bpf_jit_32.c                     |  7 ++-
+>  arch/arm64/net/bpf_jit_comp.c                 | 16 +++++--
+>  arch/mips/net/ebpf_jit.c                      | 11 +++--
+>  arch/powerpc/net/bpf_jit_comp64.c             | 25 ++++++++---
+>  arch/riscv/net/bpf_jit_comp32.c               | 20 +++++++--
+>  arch/riscv/net/bpf_jit_comp64.c               | 16 +++++--
+>  arch/s390/net/bpf_jit_comp.c                  | 27 ++++++-----
+>  arch/sparc/net/bpf_jit_comp_64.c              | 17 +++++--
+>  arch/x86/net/bpf_jit_comp.c                   | 45 ++++++++++++++-----
+>  arch/x86/net/bpf_jit_comp32.c                 |  6 +--
+>  drivers/net/ethernet/netronome/nfp/bpf/jit.c  | 14 ++++--
+>  drivers/net/ethernet/netronome/nfp/bpf/main.h |  4 +-
+>  .../net/ethernet/netronome/nfp/bpf/verifier.c | 15 ++++---
+>  include/linux/filter.h                        | 29 ++++++++++--
+>  include/uapi/linux/bpf.h                      |  5 ++-
+>  kernel/bpf/core.c                             | 31 +++++++++----
+>  kernel/bpf/disasm.c                           |  6 ++-
+>  kernel/bpf/verifier.c                         | 24 +++++-----
+>  lib/test_bpf.c                                | 14 +++---
+>  samples/bpf/bpf_insn.h                        |  4 +-
+>  samples/bpf/cookie_uid_helper_example.c       |  6 +--
+>  samples/bpf/sock_example.c                    |  2 +-
+>  samples/bpf/test_cgrp2_attach.c               |  5 ++-
+>  tools/include/linux/filter.h                  | 28 ++++++++++--
+>  tools/include/uapi/linux/bpf.h                |  5 ++-
+>  .../bpf/prog_tests/cgroup_attach_multi.c      |  4 +-
+>  .../selftests/bpf/test_cgroup_storage.c       |  2 +-
+>  tools/testing/selftests/bpf/verifier/ctx.c    |  7 ++-
+>  .../bpf/verifier/direct_packet_access.c       |  4 +-
+>  .../testing/selftests/bpf/verifier/leak_ptr.c | 10 ++---
+>  .../selftests/bpf/verifier/meta_access.c      |  4 +-
+>  tools/testing/selftests/bpf/verifier/unpriv.c |  3 +-
+>  .../bpf/verifier/value_illegal_alu.c          |  2 +-
+>  tools/testing/selftests/bpf/verifier/xadd.c   | 18 ++++----
+>  35 files changed, 317 insertions(+), 149 deletions(-)
+> 
 
-I was able to reproduce the issue you were seeing (from your logs) ->
-veth interfaces were receiving packets from the IPv6 neighboring
-system (thanks @Bj=C3=B6rn T=C3=B6pel for mentioning this).
+[...]
 
-The packet validation algo in *xdpxceiver* *assumed* all packets would
-be IPv4 and intended for Rx.
-Rx validates packets on both ip->tos =3D 0x9 (id for xsk tests) and
-ip->version =3D 0x4, ignores the rest.
+> +++ a/arch/mips/net/ebpf_jit.c
 
-Hoping the tests now work -> PASS in your environment.
+[...]
 
-Thanks,
-/Weqaar
+> -		if (BPF_MODE(insn->code) == BPF_XADD) {
+> +		if (BPF_MODE(insn->code) == BPF_ATOMIC) {
+> +			if (insn->imm != BPF_ADD) {
+> +				pr_err("ATOMIC OP %02x NOT HANDLED\n", insn->imm);
+> +				return -EINVAL;
+> +			}
+> +
+>  			/*
+[...]
+> +++ b/arch/powerpc/net/bpf_jit_comp64.c
 
-> >>>
-> >>> Thanks,
-> >>> /Weqaar
-> >>>>
-> >>>> Bj=C3=B6rn
+> -		case BPF_STX | BPF_XADD | BPF_W:
+> +		case BPF_STX | BPF_ATOMIC | BPF_W:
+> +			if (insn->imm != BPF_ADD) {
+> +				pr_err_ratelimited(
+> +					"eBPF filter atomic op code %02x (@%d) unsupported\n",
+> +					code, i);
+> +				return -ENOTSUPP;
+> +			}
+[...]
+> @@ -699,8 +707,15 @@ static int bpf_jit_build_body(struct bpf_prog *fp, u32 *image,
+> -		case BPF_STX | BPF_XADD | BPF_DW:
+> +		case BPF_STX | BPF_ATOMIC | BPF_DW:
+> +			if (insn->imm != BPF_ADD) {
+> +				pr_err_ratelimited(
+> +					"eBPF filter atomic op code %02x (@%d) unsupported\n",
+> +					code, i);
+> +				return -ENOTSUPP;
+> +			}
+[...]
+> +	case BPF_STX | BPF_ATOMIC | BPF_W:
+> +		if (insn->imm != BPF_ADD) {
+> +			pr_info_once(
+> +				"bpf-jit: not supported: atomic operation %02x ***\n",
+> +				insn->imm);
+> +			return -EFAULT;
+> +		}
+[...]
+> +	case BPF_STX | BPF_ATOMIC | BPF_W:
+> +	case BPF_STX | BPF_ATOMIC | BPF_DW:
+> +		if (insn->imm != BPF_ADD) {
+> +			pr_err("bpf-jit: not supported: atomic operation %02x ***\n",
+> +			       insn->imm);
+> +			return -EINVAL;
+> +		}
+
+Can we standardize the error across jits and the error return code? It seems
+odd that we use pr_err, pr_info_once, pr_err_ratelimited and then return
+ENOTSUPP, EFAULT or EINVAL.
+
+granted the error codes might not propagate all the way out at the moment but
+still shouldn't hurt.
+
+> diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
+> index 0a4182792876..f973e2ead197 100644
+> --- a/arch/s390/net/bpf_jit_comp.c
+> +++ b/arch/s390/net/bpf_jit_comp.c
+> @@ -1205,18 +1205,23 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp,
+
+For example this will return -1 regardless of error from insn->imm != BPF_ADD.
+[...]
+> +	case BPF_STX | BPF_ATOMIC | BPF_DW:
+> +	case BPF_STX | BPF_ATOMIC | BPF_W:
+> +		if (insn->imm != BPF_ADD) {
+> +			pr_err("Unknown atomic operation %02x\n", insn->imm);
+> +			return -1;
+> +		}
+> +
+[...]
+
+> --- a/include/linux/filter.h
+> +++ b/include/linux/filter.h
+> @@ -259,15 +259,38 @@ static inline bool insn_is_zext(const struct bpf_insn *insn)
+>  		.off   = OFF,					\
+>  		.imm   = 0 })
+>  
+> -/* Atomic memory add, *(uint *)(dst_reg + off16) += src_reg */
+> +
+> +/*
+> + * Atomic operations:
+> + *
+> + *   BPF_ADD                  *(uint *) (dst_reg + off16) += src_reg
+> + */
+> +
+> +#define BPF_ATOMIC64(OP, DST, SRC, OFF)				\
+> +	((struct bpf_insn) {					\
+> +		.code  = BPF_STX | BPF_DW | BPF_ATOMIC,		\
+> +		.dst_reg = DST,					\
+> +		.src_reg = SRC,					\
+> +		.off   = OFF,					\
+> +		.imm   = OP })
+> +
+> +#define BPF_ATOMIC32(OP, DST, SRC, OFF)				\
+> +	((struct bpf_insn) {					\
+> +		.code  = BPF_STX | BPF_W | BPF_ATOMIC,		\
+> +		.dst_reg = DST,					\
+> +		.src_reg = SRC,					\
+> +		.off   = OFF,					\
+> +		.imm   = OP })
+> +
+> +/* Legacy equivalent of BPF_ATOMIC{64,32}(BPF_ADD, ...) */
+
+Not sure I care too much. Does seem more natural to follow
+below pattern and use,
+
+  BPF_ATOMIC(OP, SIZE, DST, SRC, OFF)
+
+>  
+>  #define BPF_STX_XADD(SIZE, DST, SRC, OFF)			\
+>  	((struct bpf_insn) {					\
+> -		.code  = BPF_STX | BPF_SIZE(SIZE) | BPF_XADD,	\
+> +		.code  = BPF_STX | BPF_SIZE(SIZE) | BPF_ATOMIC,	\
+>  		.dst_reg = DST,					\
+>  		.src_reg = SRC,					\
+>  		.off   = OFF,					\
+> -		.imm   = 0 })
+> +		.imm   = BPF_ADD })
+>  
+>  /* Memory store, *(uint *) (dst_reg + off16) = imm32 */
+>  
+
+[...]
+
+Otherwise LGTM, I'll try to get the remaining patches reviewed tonight
+I need to jump onto something else this afternoon. Thanks!
