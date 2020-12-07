@@ -2,21 +2,21 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A622D1E5E
-	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 00:31:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 095F12D1E6A
+	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 00:37:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727062AbgLGX3y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Dec 2020 18:29:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39892 "EHLO
+        id S1727468AbgLGXgq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Dec 2020 18:36:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726869AbgLGX3y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Dec 2020 18:29:54 -0500
+        with ESMTP id S1726708AbgLGXgq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Dec 2020 18:36:46 -0500
 Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FBAEC061749;
-        Mon,  7 Dec 2020 15:29:14 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3009C061793;
+        Mon,  7 Dec 2020 15:36:05 -0800 (PST)
 Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kmPwC-00HHdx-Bc; Mon, 07 Dec 2020 23:29:00 +0000
-Date:   Mon, 7 Dec 2020 23:29:00 +0000
+        id 1kmQ2w-00HHlG-RR; Mon, 07 Dec 2020 23:35:58 +0000
+Date:   Mon, 7 Dec 2020 23:35:58 +0000
 From:   Al Viro <viro@zeniv.linux.org.uk>
 To:     "Eric W. Biederman" <ebiederm@xmission.com>
 Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
@@ -39,56 +39,38 @@ Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Andy Lavr <andy.lavr@gmail.com>
-Subject: Re: [PATCH v2 15/24] proc/fd: In proc_readfd_common use
- task_lookup_next_fd_rcu
-Message-ID: <20201207232900.GD4115853@ZenIV.linux.org.uk>
+        KP Singh <kpsingh@chromium.org>
+Subject: Re: [PATCH v2 01/24] exec: Move unshare_files to fix posix file
+ locking during exec
+Message-ID: <20201207233558.GE3579531@ZenIV.linux.org.uk>
 References: <87r1on1v62.fsf@x220.int.ebiederm.org>
- <20201120231441.29911-15-ebiederm@xmission.com>
+ <20201120231441.29911-1-ebiederm@xmission.com>
+ <20201207222214.GA4115853@ZenIV.linux.org.uk>
+ <87zh2pusdw.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201120231441.29911-15-ebiederm@xmission.com>
+In-Reply-To: <87zh2pusdw.fsf@x220.int.ebiederm.org>
 Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Nov 20, 2020 at 05:14:32PM -0600, Eric W. Biederman wrote:
-> When discussing[1] exec and posix file locks it was realized that none
-> of the callers of get_files_struct fundamentally needed to call
-> get_files_struct, and that by switching them to helper functions
-> instead it will both simplify their code and remove unnecessary
-> increments of files_struct.count.  Those unnecessary increments can
-> result in exec unnecessarily unsharing files_struct which breaking
-> posix locks, and it can result in fget_light having to fallback to
-> fget reducing system performance.
+On Mon, Dec 07, 2020 at 05:07:55PM -0600, Eric W. Biederman wrote:
+
+> My mistake.  I missed that the actual code was highly optimized and only
+> safe in the presence of an unshared files struct.
+
+That's a polite way to spell "overoptimized for no good reason" ;-)
+
+> What I saw and what I thought the comment was talking about was that the
+> result of the test isn't guaranteed to be stable without having an
+> exclusive access to the files.  I figured and if something changes later
+> and it becomes safe to pass the file name to a script later we don't
+> really care.
 > 
-> Using task_lookup_next_fd_rcu simplifies proc_readfd_common, by moving
-> the checking for the maximum file descritor into the generic code, and
-> by remvoing the need for capturing and releasing a reference on
-> files_struct.
-> 
-> As task_lookup_fd_rcu may update the fd ctx->pos has been changed
-> to be the fd +2 after task_lookup_fd_rcu returns.
+> In any event thank you for the review.  I will queue up a follow on
+> patch that makes this use get_close_on_exec.
 
-
-> +	for (fd = ctx->pos - 2;; fd++) {
->  		struct file *f;
->  		struct fd_data data;
->  		char name[10 + 1];
->  		unsigned int len;
->  
-> -		f = files_lookup_fd_rcu(files, fd);
-> +		f = task_lookup_next_fd_rcu(p, &fd);
-
-Ugh...  That makes for a massive cacheline pingpong on task_lock -
-instead of grabbing/dropping task_lock() once in the beginning, we do
-that for every damn descriptor.
-
-I really don't like this one.  If anything, I would rather have
-a helper that would collect a bunch of pairs (fd,mode) into an
-array and have lookups batched into it.  With the loop in that
-sucker grabbing a reasonable amount into a local array, then
-doing proc_fill_cache() for each collected.
+I would rather put that switch to get_close_on_exec() first in the queue
+(or fold it into this patch)...
