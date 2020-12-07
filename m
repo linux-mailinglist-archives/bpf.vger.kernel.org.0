@@ -2,250 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BAF32D1632
-	for <lists+bpf@lfdr.de>; Mon,  7 Dec 2020 17:37:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1067B2D1690
+	for <lists+bpf@lfdr.de>; Mon,  7 Dec 2020 17:45:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727735AbgLGQef (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Dec 2020 11:34:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33960 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727128AbgLGQee (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Dec 2020 11:34:34 -0500
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, shayagr@amazon.com, sameehj@amazon.com,
-        john.fastabend@gmail.com, dsahern@kernel.org, brouer@redhat.com,
-        echaudro@redhat.com, lorenzo.bianconi@redhat.com,
-        jasowang@redhat.com
-Subject: [PATCH v5 bpf-next 14/14] bpf: update xdp_adjust_tail selftest to include multi-buffer
-Date:   Mon,  7 Dec 2020 17:32:43 +0100
-Message-Id: <6804eb7af70902fda5180b2f7494b2a671f96486.1607349924.git.lorenzo@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <cover.1607349924.git.lorenzo@kernel.org>
-References: <cover.1607349924.git.lorenzo@kernel.org>
+        id S1727017AbgLGQjc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Dec 2020 11:39:32 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:50546 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726203AbgLGQjc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Dec 2020 11:39:32 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B7GZjhp156507;
+        Mon, 7 Dec 2020 16:38:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : in-reply-to : message-id : references : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=Zl7wnLsAuQMDXPBpikmS7ojclWYVd0LHdaJgI9tl6mA=;
+ b=DSNSGgi0rPon65KwqMFnVFbj+t4zv8YnhBWYIAt2A79QwhZbBa1lpanMx1fpl6SGE1LI
+ 7mVRzY8XarjGUCbbmBsIQr7Pgr8j/rYu27noiSaCKeoYSsX7xmoygkPLwOmqrT0A22ga
+ pfN7Tfsia4is5eEQUPgnoHdTqkbUmpZLnT6peySkCKtvJtDoef5GuaQSESH7q37pOJNt
+ Ls/wfKh+Bm+1DkyscXMLXKx7K88eXusViOobdFjy+UgoFYU4i9RkAfKIlQJAejRIgnQK
+ tGI0Dxp9QBX081r4LWLDK/wT9gusNoXqPwDEP7MygJud4M2ewupCqcKJYMxMkNolVwqU Zg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 35825kx9kh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 07 Dec 2020 16:38:37 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B7GYjd4066131;
+        Mon, 7 Dec 2020 16:38:37 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 358ksmdecv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 07 Dec 2020 16:38:37 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B7GcaYO011997;
+        Mon, 7 Dec 2020 16:38:36 GMT
+Received: from dhcp-10-175-205-133.vpn.oracle.com (/10.175.205.133)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 07 Dec 2020 08:38:35 -0800
+Date:   Mon, 7 Dec 2020 16:38:16 +0000 (GMT)
+From:   Alan Maguire <alan.maguire@oracle.com>
+X-X-Sender: alan@localhost
+To:     Andrii Nakryiko <andrii@kernel.org>
+cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
+        daniel@iogearbox.net, kernel-team@fb.com,
+        Alan Maguire <alan.maguire@oracle.com>
+Subject: Re: [PATCH bpf-next] libbpf: support module BTF for BPF_TYPE_ID_TARGET
+ CO-RE relocation
+In-Reply-To: <20201205025140.443115-1-andrii@kernel.org>
+Message-ID: <alpine.LRH.2.23.451.2012071623080.3652@localhost>
+References: <20201205025140.443115-1-andrii@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9827 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=10
+ bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012070106
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9827 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=10 adultscore=0
+ bulkscore=0 phishscore=0 mlxlogscore=999 clxscore=1015 priorityscore=1501
+ mlxscore=0 spamscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012070106
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Eelco Chaudron <echaudro@redhat.com>
+On Fri, 4 Dec 2020, Andrii Nakryiko wrote:
 
-This change adds test cases for the multi-buffer scenarios when shrinking
-and growing.
+> When Clang emits ldimm64 instruction for BPF_TYPE_ID_TARGET CO-RE relocation,
+> put module BTF FD, containing target type, into upper 32 bits of imm64.
+> 
+> Because this FD is internal to libbpf, it's very cumbersome to test this in
+> selftests. Manual testing was performed with debug log messages sprinkled
+> across selftests and libbpf, confirming expected values are substituted.
+> Better testing will be performed as part of the work adding module BTF types
+> support to  bpf_snprintf_btf() helpers.
+> 
+> Cc: Alan Maguire <alan.maguire@oracle.com>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>  tools/lib/bpf/libbpf.c | 19 ++++++++++++++++---
+>  1 file changed, 16 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 9be88a90a4aa..539956f7920a 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -4795,6 +4795,7 @@ static int load_module_btfs(struct bpf_object *obj)
+>  
+>  		mod_btf = &obj->btf_modules[obj->btf_module_cnt++];
+>  
+> +		btf__set_fd(btf, fd);
+>  		mod_btf->btf = btf;
+>  		mod_btf->id = id;
+>  		mod_btf->fd = fd;
+> @@ -5445,6 +5446,10 @@ struct bpf_core_relo_res
+>  	__u32 orig_type_id;
+>  	__u32 new_sz;
+>  	__u32 new_type_id;
+> +	/* FD of the module BTF containing the target candidate, or 0 for
+> +	 * vmlinux BTF
+> +	 */
+> +	int btf_obj_fd;
+>  };
+>  
+>  /* Calculate original and target relocation values, given local and target
+> @@ -5469,6 +5474,7 @@ static int bpf_core_calc_relo(const struct bpf_program *prog,
+>  	res->fail_memsz_adjust = false;
+>  	res->orig_sz = res->new_sz = 0;
+>  	res->orig_type_id = res->new_type_id = 0;
+> +	res->btf_obj_fd = 0;
+>  
+>  	if (core_relo_is_field_based(relo->kind)) {
+>  		err = bpf_core_calc_field_relo(prog, relo, local_spec,
+> @@ -5519,6 +5525,9 @@ static int bpf_core_calc_relo(const struct bpf_program *prog,
+>  	} else if (core_relo_is_type_based(relo->kind)) {
+>  		err = bpf_core_calc_type_relo(relo, local_spec, &res->orig_val);
+>  		err = err ?: bpf_core_calc_type_relo(relo, targ_spec, &res->new_val);
+> +		if (!err && relo->kind == BPF_TYPE_ID_TARGET &&
+> +		    targ_spec->btf != prog->obj->btf_vmlinux) 
+> +			res->btf_obj_fd = btf__fd(targ_spec->btf);
 
-Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
----
- .../bpf/prog_tests/xdp_adjust_tail.c          | 105 ++++++++++++++++++
- .../bpf/progs/test_xdp_adjust_tail_grow.c     |  16 +--
- .../bpf/progs/test_xdp_adjust_tail_shrink.c   |  32 +++++-
- 3 files changed, 142 insertions(+), 11 deletions(-)
+Sorry about this Andrii, but I'm a bit stuck here.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c b/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
-index d5c98f2cb12f..b936beaba797 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_adjust_tail.c
-@@ -130,6 +130,107 @@ void test_xdp_adjust_tail_grow2(void)
- 	bpf_object__close(obj);
- }
- 
-+void test_xdp_adjust_mb_tail_shrink(void)
-+{
-+	const char *file = "./test_xdp_adjust_tail_shrink.o";
-+	__u32 duration, retval, size, exp_size;
-+	struct bpf_object *obj;
-+	static char buf[9000];
-+	int err, prog_fd;
-+
-+	/* For the individual test cases, the first byte in the packet
-+	 * indicates which test will be run.
-+	 */
-+
-+	err = bpf_prog_load(file, BPF_PROG_TYPE_XDP, &obj, &prog_fd);
-+	if (CHECK_FAIL(err))
-+		return;
-+
-+	/* Test case removing 10 bytes from last frag, NOT freeing it */
-+	buf[0] = 0;
-+	exp_size = sizeof(buf) - 10;
-+	err = bpf_prog_test_run(prog_fd, 1, buf, sizeof(buf),
-+				buf, &size, &retval, &duration);
-+
-+	CHECK(err || retval != XDP_TX || size != exp_size,
-+	      "9k-10b", "err %d errno %d retval %d[%d] size %d[%u]\n",
-+	      err, errno, retval, XDP_TX, size, exp_size);
-+
-+	/* Test case removing one of two pages, assuming 4K pages */
-+	buf[0] = 1;
-+	exp_size = sizeof(buf) - 4100;
-+	err = bpf_prog_test_run(prog_fd, 1, buf, sizeof(buf),
-+				buf, &size, &retval, &duration);
-+
-+	CHECK(err || retval != XDP_TX || size != exp_size,
-+	      "9k-1p", "err %d errno %d retval %d[%d] size %d[%u]\n",
-+	      err, errno, retval, XDP_TX, size, exp_size);
-+
-+	/* Test case removing two pages resulting in a non mb xdp_buff */
-+	buf[0] = 2;
-+	exp_size = sizeof(buf) - 8200;
-+	err = bpf_prog_test_run(prog_fd, 1, buf, sizeof(buf),
-+				buf, &size, &retval, &duration);
-+
-+	CHECK(err || retval != XDP_TX || size != exp_size,
-+	      "9k-2p", "err %d errno %d retval %d[%d] size %d[%u]\n",
-+	      err, errno, retval, XDP_TX, size, exp_size);
-+
-+	bpf_object__close(obj);
-+}
-+
-+void test_xdp_adjust_mb_tail_grow(void)
-+{
-+	const char *file = "./test_xdp_adjust_tail_grow.o";
-+	__u32 duration, retval, size, exp_size;
-+	static char buf[16384];
-+	struct bpf_object *obj;
-+	int err, i, prog_fd;
-+
-+	err = bpf_prog_load(file, BPF_PROG_TYPE_XDP, &obj, &prog_fd);
-+	if (CHECK_FAIL(err))
-+		return;
-+
-+	/* Test case add 10 bytes to last frag */
-+	memset(buf, 1, sizeof(buf));
-+	size = 9000;
-+	exp_size = size + 10;
-+	err = bpf_prog_test_run(prog_fd, 1, buf, size,
-+				buf, &size, &retval, &duration);
-+
-+	CHECK(err || retval != XDP_TX || size != exp_size,
-+	      "9k+10b", "err %d retval %d[%d] size %d[%u]\n",
-+	      err, retval, XDP_TX, size, exp_size);
-+
-+	for (i = 0; i < 9000; i++)
-+		CHECK(buf[i] != 1, "9k+10b-old",
-+		      "Old data not all ok, offset %i is failing [%u]!\n",
-+		      i, buf[i]);
-+
-+	for (i = 9000; i < 9010; i++)
-+		CHECK(buf[i] != 0, "9k+10b-new",
-+		      "New data not all ok, offset %i is failing [%u]!\n",
-+		      i, buf[i]);
-+
-+	for (i = 9010; i < sizeof(buf); i++)
-+		CHECK(buf[i] != 1, "9k+10b-untouched",
-+		      "Unused data not all ok, offset %i is failing [%u]!\n",
-+		      i, buf[i]);
-+
-+	/* Test a too large grow */
-+	memset(buf, 1, sizeof(buf));
-+	size = 9001;
-+	exp_size = size;
-+	err = bpf_prog_test_run(prog_fd, 1, buf, size,
-+				buf, &size, &retval, &duration);
-+
-+	CHECK(err || retval != XDP_DROP || size != exp_size,
-+	      "9k+10b", "err %d retval %d[%d] size %d[%u]\n",
-+	      err, retval, XDP_TX, size, exp_size);
-+
-+	bpf_object__close(obj);
-+}
-+
- void test_xdp_adjust_tail(void)
- {
- 	if (test__start_subtest("xdp_adjust_tail_shrink"))
-@@ -138,4 +239,8 @@ void test_xdp_adjust_tail(void)
- 		test_xdp_adjust_tail_grow();
- 	if (test__start_subtest("xdp_adjust_tail_grow2"))
- 		test_xdp_adjust_tail_grow2();
-+	if (test__start_subtest("xdp_adjust_mb_tail_shrink"))
-+		test_xdp_adjust_mb_tail_shrink();
-+	if (test__start_subtest("xdp_adjust_mb_tail_grow"))
-+		test_xdp_adjust_mb_tail_grow();
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_grow.c b/tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_grow.c
-index 3d66599eee2e..25ac7108a53f 100644
---- a/tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_grow.c
-+++ b/tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_grow.c
-@@ -7,20 +7,22 @@ int _xdp_adjust_tail_grow(struct xdp_md *xdp)
- {
- 	void *data_end = (void *)(long)xdp->data_end;
- 	void *data = (void *)(long)xdp->data;
--	unsigned int data_len;
- 	int offset = 0;
- 
- 	/* Data length determine test case */
--	data_len = data_end - data;
- 
--	if (data_len == 54) { /* sizeof(pkt_v4) */
-+	if (xdp->frame_length == 54) { /* sizeof(pkt_v4) */
- 		offset = 4096; /* test too large offset */
--	} else if (data_len == 74) { /* sizeof(pkt_v6) */
-+	} else if (xdp->frame_length == 74) { /* sizeof(pkt_v6) */
- 		offset = 40;
--	} else if (data_len == 64) {
-+	} else if (xdp->frame_length == 64) {
- 		offset = 128;
--	} else if (data_len == 128) {
--		offset = 4096 - 256 - 320 - data_len; /* Max tail grow 3520 */
-+	} else if (xdp->frame_length == 128) {
-+		offset = 4096 - 256 - 320 - xdp->frame_length; /* Max tail grow 3520 */
-+	} else if (xdp->frame_length == 9000) {
-+		offset = 10;
-+	} else if (xdp->frame_length == 9001) {
-+		offset = 4096;
- 	} else {
- 		return XDP_ABORTED; /* No matching test */
- 	}
-diff --git a/tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_shrink.c b/tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_shrink.c
-index 22065a9cfb25..689450414d29 100644
---- a/tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_shrink.c
-+++ b/tools/testing/selftests/bpf/progs/test_xdp_adjust_tail_shrink.c
-@@ -14,14 +14,38 @@ int _version SEC("version") = 1;
- SEC("xdp_adjust_tail_shrink")
- int _xdp_adjust_tail_shrink(struct xdp_md *xdp)
- {
--	void *data_end = (void *)(long)xdp->data_end;
--	void *data = (void *)(long)xdp->data;
-+	__u8 *data_end = (void *)(long)xdp->data_end;
-+	__u8 *data = (void *)(long)xdp->data;
- 	int offset = 0;
- 
--	if (data_end - data == 54) /* sizeof(pkt_v4) */
-+	switch (xdp->frame_length) {
-+	case 54:
-+		/* sizeof(pkt_v4) */
- 		offset = 256; /* shrink too much */
--	else
-+		break;
-+	case 9000:
-+		/* Multi-buffer test cases */
-+		if (data + 1 > data_end)
-+			return XDP_DROP;
-+
-+		switch (data[0]) {
-+		case 0:
-+			offset = 10;
-+			break;
-+		case 1:
-+			offset = 4100;
-+			break;
-+		case 2:
-+			offset = 8200;
-+			break;
-+		default:
-+			return XDP_DROP;
-+		}
-+		break;
-+	default:
- 		offset = 20;
-+		break;
-+	}
- 	if (bpf_xdp_adjust_tail(xdp, 0 - offset))
- 		return XDP_DROP;
- 	return XDP_TX;
--- 
-2.28.0
+I'm struggling to get tests working where the obj fd is used to designate
+the module BTF. Unless I'm missing something there are a few problems:
 
+- the fd association is removed by libbpf when the BPF program has loaded; 
+the module fds are closed and the module BTF is discarded.  However even if 
+that isn't done (and as you mentioned, we could hold onto BTF that is in 
+use, and I commented out the code that does that to test) - there's 
+another problem:
+- I can't see a way to use the object fd value we set here later in BPF 
+program context; btf_get_by_fd() returns -EBADF as the fd is associated 
+with the module BTF in the test's process context, not necessarily in 
+the context that the BPF program is running.  Would it be possible in this 
+case to use object id? Or is there another way to handle the fd->module 
+BTF association that we need to make in BPF program context that I'm 
+missing?
+- A more long-term issue; if we use fds to specify module BTFs and write 
+the object fd into the program, we can pin the BPF program such that it 
+outlives fds that refer to its associated BTF.  So unless we pinned the 
+BTF too, any code that assumed the BTF fd-> module mapping was valid would 
+start to break once the user-space side went away and the pinned program 
+persisted. 
+
+Maybe there are solutions to these problems that I'm missing of course, 
+but for now I'm not sure how to get things working.
+
+Thanks again for your help with this!
+
+Alan
