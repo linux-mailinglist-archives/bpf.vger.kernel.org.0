@@ -2,119 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 442D62D10AD
-	for <lists+bpf@lfdr.de>; Mon,  7 Dec 2020 13:38:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E43D92D1124
+	for <lists+bpf@lfdr.de>; Mon,  7 Dec 2020 13:56:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725774AbgLGMiS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Dec 2020 07:38:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725772AbgLGMiS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Dec 2020 07:38:18 -0500
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E10FAC0613D0;
-        Mon,  7 Dec 2020 04:37:31 -0800 (PST)
-Received: by mail-ej1-x641.google.com with SMTP id bo9so19159856ejb.13;
-        Mon, 07 Dec 2020 04:37:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=aUwTnuqZnXrzXUdRMDyUoF+/uTT+YAcAeAhD7mlLVbQ=;
-        b=Q8uUqcRvNNq6yYwv5RqGt+ClFR3tpVNNPyQNW4ZnhPAOiHmdPfjMHKxd15EphDGh6o
-         gM92fXdFpmMP1M6tndBnP2C4MrGgN+ll6SRYJmQkuZuCsN+fFvyKPgWAy67DfKEewewx
-         Mwo5LbrAL/NSih9hTd1LG0LHNnkd3znXkew80+lXY8BXFAhrIZ3ZN0H6W0uE870kIOv2
-         rd88rX6SRj7Htzw2zyIbITKjtEYACAICish9SInrsVxET3DYoGWlBdanro5DUwIrn/90
-         VzT8tjPsb+ul0JJ6JiFRgY8ctKxOe9ROi+JtxWjzD4bpnILEN2ovhn2WuxseM1UuAYsw
-         H31A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=aUwTnuqZnXrzXUdRMDyUoF+/uTT+YAcAeAhD7mlLVbQ=;
-        b=Uu1i5Lkp3bdl1IDhE9zGTt1/+z3a9BYrvzXXbjBkipk+3xhdzmKU6BIcHnc0+IP6Na
-         yIqNvojU5bF53B70yUZAQVigsY4YmyqlxFrg03TujNTxJHbvQBIxey+tUsZFPmEjhJvg
-         Ty2C0dntmJGDiEJLq1guBtLQMEQQwEEAjB8NM6dlJxPXI+gH68YctZf3fuWVmJA66x8j
-         c/0DCWU6mioJLRcnmcH4DJWFSwKgHA+yRoBkjfnWU2/y4cyjauY1BRldLfKLO7mogkqY
-         s/2WmB7lwjjwUtQr/XdU1Mtnj000BsDj9tAENUrE+qcrp+OnkPjqJv6IKxOEQmfjrEf4
-         cMDQ==
-X-Gm-Message-State: AOAM532zU/z3gRJt//XnM9udbU2BG/BnAOchdH4BGAp1a2akjcN+cILx
-        PMAn/LbShZ5xW+arWArcaQk=
-X-Google-Smtp-Source: ABdhPJzSM/eEU1fO8yP9OhDoxsK91+z17v3cKu2RB7tpgf6FWeYRxqKkYeaQoCrQSzhN31xWp0Mnog==
-X-Received: by 2002:a17:906:2581:: with SMTP id m1mr18311458ejb.28.1607344650673;
-        Mon, 07 Dec 2020 04:37:30 -0800 (PST)
-Received: from felia.fritz.box ([2001:16b8:2d4a:c600:c0f8:50a9:4ab0:a9ab])
-        by smtp.gmail.com with ESMTPSA id u15sm13848265edt.24.2020.12.07.04.37.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 04:37:30 -0800 (PST)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        kernel-janitors@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] bpf: propagate __user annotations properly
-Date:   Mon,  7 Dec 2020 13:37:20 +0100
-Message-Id: <20201207123720.19111-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1725834AbgLGM4R (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Dec 2020 07:56:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51843 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725802AbgLGM4R (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 7 Dec 2020 07:56:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607345690;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Z/UDXawBbiAwmcYELjEA0HOu1lNMEHhASoAQYhol/lw=;
+        b=aFUmM6wNL7gUeBnQGB3H7F0fIiSM1x0nocGDCp05tGenvEjdqKM05N5Sq/b4Y/ogqnhzJH
+        b18SihJ37Ta/roCKr1z4Kh3LL5zMJ/53Lys+ZD9LepuuMkCCh7c5ArreiEex5PD0FefVcE
+        d3c5p4katiraerR745cJ7ZD1qCYtiLE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-227-bTM0Fr_nPyaSkXpTLdjtFw-1; Mon, 07 Dec 2020 07:54:46 -0500
+X-MC-Unique: bTM0Fr_nPyaSkXpTLdjtFw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 241A1100C60A;
+        Mon,  7 Dec 2020 12:54:44 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.55])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9445A5D6AB;
+        Mon,  7 Dec 2020 12:54:36 +0000 (UTC)
+Date:   Mon, 7 Dec 2020 13:54:33 +0100
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Toke =?UTF-8?B?SMO4?= =?UTF-8?B?aWxhbmQtSsO4cmdlbnNlbg==?= 
+        <toke@redhat.com>, alardam@gmail.com, magnus.karlsson@intel.com,
+        bjorn.topel@intel.com, andrii.nakryiko@gmail.com, kuba@kernel.org,
+        ast@kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
+        john.fastabend@gmail.com, hawk@kernel.org,
+        jonathan.lemon@gmail.com, bpf@vger.kernel.org,
+        jeffrey.t.kirsher@intel.com, maciejromanfijalkowski@gmail.com,
+        intel-wired-lan@lists.osuosl.org,
+        Marek Majtyka <marekx.majtyka@intel.com>
+Subject: Re: [PATCH v2 bpf 1/5] net: ethtool: add xdp properties flag set
+Message-ID: <20201207135433.41172202@carbon>
+In-Reply-To: <048bd986-2e05-ee5b-2c03-cd8c473f6636@iogearbox.net>
+References: <20201204102901.109709-1-marekx.majtyka@intel.com>
+        <20201204102901.109709-2-marekx.majtyka@intel.com>
+        <878sad933c.fsf@toke.dk>
+        <20201204124618.GA23696@ranger.igk.intel.com>
+        <048bd986-2e05-ee5b-2c03-cd8c473f6636@iogearbox.net>
+Organization: Red Hat Inc.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-__htab_map_lookup_and_delete_batch() stores a user pointer in the local
-variable ubatch and uses that in copy_{from,to}_user(), but ubatch misses a
-__user annotation.
+On Fri, 4 Dec 2020 16:21:08 +0100
+Daniel Borkmann <daniel@iogearbox.net> wrote:
 
-So, sparse warns in the various assignments and uses of ubatch:
+> On 12/4/20 1:46 PM, Maciej Fijalkowski wrote:
+> > On Fri, Dec 04, 2020 at 01:18:31PM +0100, Toke H=C3=B8iland-J=C3=B8rgen=
+sen wrote: =20
+> >> alardam@gmail.com writes: =20
+> >>> From: Marek Majtyka <marekx.majtyka@intel.com>
+> >>>
+> >>> Implement support for checking what kind of xdp functionality a netdev
+> >>> supports. Previously, there was no way to do this other than to try
+> >>> to create an AF_XDP socket on the interface or load an XDP program an=
+d see
+> >>> if it worked. This commit changes this by adding a new variable which
+> >>> describes all xdp supported functions on pretty detailed level: =20
+> >>
+> >> I like the direction this is going! :)
 
-  kernel/bpf/hashtab.c:1415:24: warning: incorrect type in initializer
-    (different address spaces)
-  kernel/bpf/hashtab.c:1415:24:    expected void *ubatch
-  kernel/bpf/hashtab.c:1415:24:    got void [noderef] __user *
+(Me too, don't get discouraged by our nitpicking, keep working on this! :-))
 
-  kernel/bpf/hashtab.c:1444:46: warning: incorrect type in argument 2
-    (different address spaces)
-  kernel/bpf/hashtab.c:1444:46:    expected void const [noderef] __user *from
-  kernel/bpf/hashtab.c:1444:46:    got void *ubatch
+> >> =20
+> >>>   - aborted
+> >>>   - drop
+> >>>   - pass
+> >>>   - tx =20
+>=20
+> I strongly think we should _not_ merge any native XDP driver patchset
+> that does not support/implement the above return codes.=20
 
-  kernel/bpf/hashtab.c:1608:16: warning: incorrect type in assignment
-    (different address spaces)
-  kernel/bpf/hashtab.c:1608:16:    expected void *ubatch
-  kernel/bpf/hashtab.c:1608:16:    got void [noderef] __user *
+I agree, with above statement.
 
-  kernel/bpf/hashtab.c:1609:26: warning: incorrect type in argument 1
-    (different address spaces)
-  kernel/bpf/hashtab.c:1609:26:    expected void [noderef] __user *to
-  kernel/bpf/hashtab.c:1609:26:    got void *ubatch
+> Could we instead group them together and call this something like
+> XDP_BASE functionality to not give a wrong impression?
 
-Add the __user annotation to repair this chain of propagating __user
-annotations in __htab_map_lookup_and_delete_batch().
+I disagree.  I can accept that XDP_BASE include aborted+drop+pass.
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-applies cleanly on current master (v5.10-rc7) and next-20201204
+I think we need to keep XDP_TX action separate, because I think that
+there are use-cases where the we want to disable XDP_TX due to end-user
+policy or hardware limitations.
 
-BPF maintainers, please pick this minor non-urgent clean-up patch.
+Use-case(1): Cloud-provider want to give customers (running VMs) ability
+to load XDP program for DDoS protection (only), but don't want to allow
+customer to use XDP_TX (that can implement LB or cheat their VM
+isolation policy).
 
- kernel/bpf/hashtab.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Use-case(2): Disable XDP_TX on a driver to save hardware TX-queue
+resources, as the use-case is only DDoS.  Today we have this problem
+with the ixgbe hardware, that cannot load XDP programs on systems with
+more than 192 CPUs.
 
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index fe7a0733a63a..76c791def033 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -1412,7 +1412,7 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
- 	void *keys = NULL, *values = NULL, *value, *dst_key, *dst_val;
- 	void __user *uvalues = u64_to_user_ptr(attr->batch.values);
- 	void __user *ukeys = u64_to_user_ptr(attr->batch.keys);
--	void *ubatch = u64_to_user_ptr(attr->batch.in_batch);
-+	void __user *ubatch = u64_to_user_ptr(attr->batch.in_batch);
- 	u32 batch, max_count, size, bucket_size;
- 	struct htab_elem *node_to_free = NULL;
- 	u64 elem_map_flags, map_flags;
--- 
-2.17.1
+
+> If this is properly documented that these are basic must-have
+> _requirements_, then users and driver developers both know what the
+> expectations are.
+
+We can still document that XDP_TX is a must-have requirement, when a
+driver implements XDP.
+
+
+> >>>   - redirect =20
+> >>
+
+
+--=20
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
