@@ -2,159 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2518A2D0A29
-	for <lists+bpf@lfdr.de>; Mon,  7 Dec 2020 06:26:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9C422D0BA7
+	for <lists+bpf@lfdr.de>; Mon,  7 Dec 2020 09:21:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725681AbgLGFWB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Dec 2020 00:22:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36408 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725773AbgLGFWB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Dec 2020 00:22:01 -0500
-From:   saeed@kernel.org
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     bpf@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
-Cc:     netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH bpf] tools/bpftool: Add/Fix support for modules btf dump
-Date:   Sun,  6 Dec 2020 21:20:57 -0800
-Message-Id: <20201207052057.397223-1-saeed@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S1726168AbgLGIVO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Dec 2020 03:21:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725905AbgLGIVO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Dec 2020 03:21:14 -0500
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 601FDC0613D0;
+        Mon,  7 Dec 2020 00:20:28 -0800 (PST)
+Received: by mail-pg1-x543.google.com with SMTP id f17so8272357pge.6;
+        Mon, 07 Dec 2020 00:20:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7loJejYCZUiegYYfnZHF1zns7qEuuJti+0V+ypDNatk=;
+        b=qiNx+8BiKnA64HSAl6dDGA0EzBv7cjOSUUdA/SF2qwTDtkBSz276uVUjf4j73FQbxT
+         36zXWEs+JOMebWDAsu6zfsTQ9NyCF5yFngPKk426FnHnm+IRPIJU2zstGsogqDVTfmss
+         79RAJVR9QAGQly1rCsd5SOvgRQezoTG595V0dWVHFqDWIJZaL6Za3gznaNVLTgDbF4/V
+         UDN08SVJByUTsF/PimNRG5V0G0BKB7Z5zjBcCtZ2r/fZn/U4q1kIZ/Kdca5JCdaKBmAi
+         +WZk/lQvra1COO0q+SBwwK3ZAvlYUpfJY5I/ZcTngqFdlJ25qi6qTzaASeVoSVfxnXjt
+         RguQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7loJejYCZUiegYYfnZHF1zns7qEuuJti+0V+ypDNatk=;
+        b=a7dCikJyTBDZa7tDrrID+xF+Fw84eJhJ4N5YmQs43iazNIfp57mcrovAOFmjDwrHLt
+         dCu/NDCB59CTWrWEXunFjvfcx6UgHmWeWmmtVe3klyUeHM7TNpSwvu1QxE/TL3huqZp3
+         uuFhIi787DTGTS7YUODBSlF+Il/fwAsqWfx2Vekxo42Ibo0ytEclGL9oMrEmdDSbz5mn
+         Kgz/z6jpzsFFrDycdOT39QZWl6S24pFy1bA1aJU0PVtuAM+ko8qirEmE24DabgEXUwde
+         c7wUmevB4qHjFFeFclkQoBS2N7z3Lvn+oaU02XbJGNG7UlSbO53mJSQvzXWEd7excgzw
+         tuLA==
+X-Gm-Message-State: AOAM533aMJV0iNGcSQdJF9OpBfZRx7UdPmXv4Loy+GkTGlvh6eadOEdl
+        N464rwfUJoFPxWRz0aQr4frN2cwJcr2AZQ2k
+X-Google-Smtp-Source: ABdhPJz9Ff4GvMEQMz32yUO0DTmI1UWRZUmuGqe+dQBoV1af5faE3ty3mxUENOoQUuxwdFBcHl4VXQ==
+X-Received: by 2002:a63:5712:: with SMTP id l18mr17488343pgb.79.1607329227940;
+        Mon, 07 Dec 2020 00:20:27 -0800 (PST)
+Received: from btopel-mobl.ger.intel.com (fmdmzpr03-ext.fm.intel.com. [192.55.54.38])
+        by smtp.gmail.com with ESMTPSA id j9sm12971560pfa.58.2020.12.07.00.20.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 00:20:26 -0800 (PST)
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
+        kernel test robot <oliver.sang@intel.com>
+Subject: [PATCH bpf-next] xsk: Validate socket state in xsk_recvmsg, prior touching socket members
+Date:   Mon,  7 Dec 2020 09:20:08 +0100
+Message-Id: <20201207082008.132263-1-bjorn.topel@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Saeed Mahameed <saeedm@nvidia.com>
+From: Björn Töpel <bjorn.topel@intel.com>
 
-While playing with BTF for modules, i noticed that executing the command:
-$ bpftool btf dump id <module's btf id>
+In AF_XDP the socket state needs to be checked, prior touching the
+members of the socket. This was not the case for the recvmsg
+implementation. Fix that by moving the xsk_is_bound() call.
 
-Fails due to lack of information in the BTF data.
-
-Maybe I am missing a step but actually adding the support for this is
-very simple.
-
-To completely parse modules BTF data, we need the vmlinux BTF as their
-"base btf", which can be easily found by iterating through the btf ids and
-looking for btf.name == "vmlinux".
-
-I am not sure why this hasn't been added by the original patchset
-"Integrate kernel module BTF support", as adding the support for
-this is very trivial. Unless i am missing something, CCing Andrii..
-
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
-CC: Andrii Nakryiko <andrii@kernel.org>
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Fixes: 45a86681844e ("xsk: Add support for recvmsg()")
+Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
 ---
- tools/lib/bpf/btf.c      | 57 ++++++++++++++++++++++++++++++++++++++++
- tools/lib/bpf/btf.h      |  2 ++
- tools/lib/bpf/libbpf.map |  1 +
- 3 files changed, 60 insertions(+)
+ net/xdp/xsk.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 3c3f2bc6c652..5900cccf82e2 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -1370,6 +1370,14 @@ struct btf *btf_get_from_fd(int btf_fd, struct btf *base_btf)
- 		goto exit_free;
- 	}
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 56c46e5f57bc..e28c6825e089 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -554,12 +554,12 @@ static int xsk_recvmsg(struct socket *sock, struct msghdr *m, size_t len, int fl
+ 	struct sock *sk = sock->sk;
+ 	struct xdp_sock *xs = xdp_sk(sk);
  
-+	/* force base_btf for kernel modules */
-+	if (btf_info.kernel_btf && !base_btf) {
-+		int id = btf_get_kernel_id();
-+
-+		/* Double check our btf is not the kernel BTF itself */
-+		if (id != btf_info.id)
-+			btf__get_from_id(id, &base_btf);
-+	}
- 	btf = btf_new(ptr, btf_info.btf_size, base_btf);
++	if (unlikely(!xsk_is_bound(xs)))
++		return -ENXIO;
+ 	if (unlikely(!(xs->dev->flags & IFF_UP)))
+ 		return -ENETDOWN;
+ 	if (unlikely(!xs->rx))
+ 		return -ENOBUFS;
+-	if (unlikely(!xsk_is_bound(xs)))
+-		return -ENXIO;
+ 	if (unlikely(need_wait))
+ 		return -EOPNOTSUPP;
  
- exit_free:
-@@ -4623,3 +4631,52 @@ struct btf *libbpf_find_kernel_btf(void)
- 	pr_warn("failed to find valid kernel BTF\n");
- 	return ERR_PTR(-ESRCH);
- }
-+
-+#define foreach_btf_id(id, err) \
-+	for (err = bpf_btf_get_next_id((id), (&id)); !err; )
-+
-+/*
-+ * Scan all ids for a kernel btf with name == "vmlinux"
-+ */
-+int btf_get_kernel_id(void)
-+{
-+	struct bpf_btf_info info;
-+	__u32 len = sizeof(info);
-+	char name[64];
-+	__u32 id = 0;
-+	int err, fd;
-+
-+	foreach_btf_id(id, err) {
-+		fd = bpf_btf_get_fd_by_id(id);
-+		if (fd < 0) {
-+			if (errno == ENOENT)
-+				continue; /* expected race: BTF was unloaded */
-+			err = -errno;
-+			pr_warn("failed to get BTF object #%d FD: %d\n", id, err);
-+			return err;
-+		}
-+
-+		memset(&info, 0, sizeof(info));
-+		info.name = ptr_to_u64(name);
-+		info.name_len = sizeof(name);
-+
-+		err = bpf_obj_get_info_by_fd(fd, &info, &len);
-+		if (err) {
-+			err = -errno;
-+			pr_warn("failed to get BTF object #%d info: %d\n", id, err);
-+			return err;
-+		}
-+
-+		if (info.kernel_btf && strcmp(name, "vmlinux") == 0)
-+			return id;
-+
-+	}
-+
-+	if (err && errno != ENOENT) {
-+		err = -errno;
-+		pr_warn("failed to iterate BTF objects: %d\n", err);
-+		return err;
-+	}
-+
-+	return -ENOENT;
-+}
-\ No newline at end of file
-diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
-index 1237bcd1dd17..44075b086d1c 100644
---- a/tools/lib/bpf/btf.h
-+++ b/tools/lib/bpf/btf.h
-@@ -8,6 +8,7 @@
- #include <stdbool.h>
- #include <linux/btf.h>
- #include <linux/types.h>
-+#include <uapi/linux/bpf.h>
- 
- #include "libbpf_common.h"
- 
-@@ -90,6 +91,7 @@ LIBBPF_API __u32 btf_ext__func_info_rec_size(const struct btf_ext *btf_ext);
- LIBBPF_API __u32 btf_ext__line_info_rec_size(const struct btf_ext *btf_ext);
- 
- LIBBPF_API struct btf *libbpf_find_kernel_btf(void);
-+LIBBPF_API int btf_get_kernel_id(void);
- 
- LIBBPF_API int btf__find_str(struct btf *btf, const char *s);
- LIBBPF_API int btf__add_str(struct btf *btf, const char *s);
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 7c4126542e2b..727daeb57f35 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -348,4 +348,5 @@ LIBBPF_0.3.0 {
- 		btf__new_split;
- 		xsk_setup_xdp_prog;
- 		xsk_socket__update_xskmap;
-+		btf_get_kernel_id
- } LIBBPF_0.2.0;
+
+base-commit: 34da87213d3ddd26643aa83deff7ffc6463da0fc
 -- 
-2.26.2
+2.27.0
 
