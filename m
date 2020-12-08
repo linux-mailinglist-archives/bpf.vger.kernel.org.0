@@ -2,433 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4980C2D25B9
-	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 09:20:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 304502D25E9
+	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 09:31:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727679AbgLHITw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Dec 2020 03:19:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726734AbgLHITv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Dec 2020 03:19:51 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BB58C061749;
-        Tue,  8 Dec 2020 00:19:11 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id o4so11526409pgj.0;
-        Tue, 08 Dec 2020 00:19:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=e23pcXpl81f9+8bBMnQygIfjx34O4wrGjsXlxS/VveY=;
-        b=t682N+qfb9ajpsOoomOz9THNzaJ9fq9rC9T6b6UbzZ5H+N5xQbGvDtvGzFRQKes6TS
-         Na+W98hiHl2Vy6DJ2x7FTRE7vN7+7uMUy/JOUyBGrBJwaB8/w9oLN8AzgzHjGnVOS0B7
-         0+FdAoTWoS8jHpMn+VKSz8eeOauwfFxi3u93gHTjnhC1hp7p+jtmwAsSe0JGSspRY2AD
-         W3XkfLw4Uf9L7W5L28VrPslnWNaBIRZJyPCQ2wQiBmsckRsFCJZpsXcSrel62gUXDUbl
-         kzuTpWx9SC7kr+8UqNKtSzb08dTFYC9kR4FMv4VIIqbY/ozlIias6IGFk0mvXbAT5AWG
-         qfsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=e23pcXpl81f9+8bBMnQygIfjx34O4wrGjsXlxS/VveY=;
-        b=di1LuzA/umnnzkG4dP59Mklz+T/d3VsPj6o2I9PcnPWqaJH3n+ht+hZSjsciexKRiK
-         pyTS+6rXuCmGhnny5FTEjve78K60JpxpiYl+Q67XexS/vmNkmnAEp2/jMI4pwl6go+Jr
-         LksqabobYmAnLdc/UbwQPK11IQP7L3d9GdnLAu7RXH85ld2TlH80qQ3nhAg7QK13F7nB
-         cdVd8UVdqtjRPrBF/jXS7+XIlaDyREkLFbX5wEYpevSHC9L5RAxUZoiFwYF0fjIYhY4Y
-         cjQAaSMMggNpUZLtMb+xSpTSYhs2MzODlHmcUmcBCJGhh73eA0rmOnPrr5l3G1Bw/pHv
-         rsuQ==
-X-Gm-Message-State: AOAM533hClegNE50mxvUpdeReP9ztcuCAOKTDcxqeKXyAxzfcA8Wg3yk
-        a4/OVP0HekY74CwvQSegkMYrNg+hmcNuMG0F
-X-Google-Smtp-Source: ABdhPJwDjMVgQMLkQVC6Adc34cq56xrca/nmwtv1cPyKOB3yAiSFHF4Hfi9XmpXus5MVsYuDRDbP+Q==
-X-Received: by 2002:a05:6a00:2382:b029:198:15a2:aaf9 with SMTP id f2-20020a056a002382b029019815a2aaf9mr19433912pfc.39.1607415550609;
-        Tue, 08 Dec 2020 00:19:10 -0800 (PST)
-Received: from localhost.localdomain.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id y188sm17020594pfy.98.2020.12.08.00.19.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 00:19:10 -0800 (PST)
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Yonghong Song <yhs@fb.com>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Hangbin Liu <liuhangbin@gmail.com>
-Subject: [PATCHv3 bpf-next] samples/bpf: add xdp program on egress for xdp_redirect_map
-Date:   Tue,  8 Dec 2020 16:18:56 +0800
-Message-Id: <20201208081856.1627657-1-liuhangbin@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201126084325.477470-1-liuhangbin@gmail.com>
-References: <20201126084325.477470-1-liuhangbin@gmail.com>
+        id S1726340AbgLHI3r (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Dec 2020 03:29:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26726 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725927AbgLHI3r (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 8 Dec 2020 03:29:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607416100;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ozHeWOUVNvM9ehZuxlacPEBx82ka0XhjHeiTLN5BskU=;
+        b=MNYXkE+9/QnoLTH9Fcigkcxa80syoyIFSjOLyeHuXjxYMoLxEgPL1UBnSajZ0+54jdcBmk
+        GzD3HKOyuldNsd7wsN4FCPg7ccFTQ/ZJ4MGChufeeAapTYznuT5ognu+8PtEiO2nchqy9i
+        lGpyXDm+BC7hDNNHRIeWbt8JtOKnsR0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-313-h8PjrAhGMNKXN_aEdxfC4g-1; Tue, 08 Dec 2020 03:28:19 -0500
+X-MC-Unique: h8PjrAhGMNKXN_aEdxfC4g-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8572E1DDE3;
+        Tue,  8 Dec 2020 08:28:16 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.55])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E9D815C1A3;
+        Tue,  8 Dec 2020 08:28:06 +0000 (UTC)
+Date:   Tue, 8 Dec 2020 09:28:03 +0100
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+To:     David Ahern <dsahern@gmail.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
+        alardam@gmail.com, magnus.karlsson@intel.com,
+        bjorn.topel@intel.com, andrii.nakryiko@gmail.com, kuba@kernel.org,
+        ast@kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
+        hawk@kernel.org, jonathan.lemon@gmail.com, bpf@vger.kernel.org,
+        jeffrey.t.kirsher@intel.com, maciejromanfijalkowski@gmail.com,
+        intel-wired-lan@lists.osuosl.org,
+        Marek Majtyka <marekx.majtyka@intel.com>
+Subject: Re: [PATCH v2 bpf 1/5] net: ethtool: add xdp properties flag set
+Message-ID: <20201208092803.05b27db3@carbon>
+In-Reply-To: <431a53bd-25d7-8535-86e1-aa15bf94e6c3@gmail.com>
+References: <20201204102901.109709-1-marekx.majtyka@intel.com>
+        <20201204102901.109709-2-marekx.majtyka@intel.com>
+        <878sad933c.fsf@toke.dk>
+        <20201204124618.GA23696@ranger.igk.intel.com>
+        <048bd986-2e05-ee5b-2c03-cd8c473f6636@iogearbox.net>
+        <20201207135433.41172202@carbon>
+        <5fce960682c41_5a96208e4@john-XPS-13-9370.notmuch>
+        <431a53bd-25d7-8535-86e1-aa15bf94e6c3@gmail.com>
+Organization: Red Hat Inc.
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch add a xdp program on egress to show that we can modify
-the packet on egress. In this sample we will set the pkt's src
-mac to egress's mac address. The xdp_prog will be attached when
--X option supplied.
+On Mon, 7 Dec 2020 18:01:00 -0700
+David Ahern <dsahern@gmail.com> wrote:
 
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
----
-v3:
-a) modify the src mac address based on egress mac
+> On 12/7/20 1:52 PM, John Fastabend wrote:
+> >>
+> >> I think we need to keep XDP_TX action separate, because I think that
+> >> there are use-cases where the we want to disable XDP_TX due to end-user
+> >> policy or hardware limitations.  
+> > 
+> > How about we discover this at load time though. 
 
-v2:
-a) use pkt counter instead of IP ttl modification on egress program
-b) make the egress program selectable by option -X
----
- samples/bpf/xdp_redirect_map_kern.c |  60 ++++++++++-
- samples/bpf/xdp_redirect_map_user.c | 153 ++++++++++++++++++++--------
- 2 files changed, 168 insertions(+), 45 deletions(-)
+Nitpick at XDP "attach" time. The general disconnect between BPF and
+XDP is that BPF can verify at "load" time (as kernel knows what it
+support) while XDP can have different support/features per driver, and
+cannot do this until attachment time. (See later issue with tail calls).
+(All other BPF-hooks don't have this issue)
 
-diff --git a/samples/bpf/xdp_redirect_map_kern.c b/samples/bpf/xdp_redirect_map_kern.c
-index 6489352ab7a4..6b2164722649 100644
---- a/samples/bpf/xdp_redirect_map_kern.c
-+++ b/samples/bpf/xdp_redirect_map_kern.c
-@@ -19,12 +19,22 @@
- #include <linux/ipv6.h>
- #include <bpf/bpf_helpers.h>
- 
-+/* The 2nd xdp prog on egress does not support skb mode, so we define two
-+ * maps, tx_port_general and tx_port_native.
-+ */
- struct {
- 	__uint(type, BPF_MAP_TYPE_DEVMAP);
- 	__uint(key_size, sizeof(int));
- 	__uint(value_size, sizeof(int));
- 	__uint(max_entries, 100);
--} tx_port SEC(".maps");
-+} tx_port_general SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_DEVMAP);
-+	__uint(key_size, sizeof(int));
-+	__uint(value_size, sizeof(struct bpf_devmap_val));
-+	__uint(max_entries, 100);
-+} tx_port_native SEC(".maps");
- 
- /* Count RX packets, as XDP bpf_prog doesn't get direct TX-success
-  * feedback.  Redirect TX errors can be caught via a tracepoint.
-@@ -36,6 +46,14 @@ struct {
- 	__uint(max_entries, 1);
- } rxcnt SEC(".maps");
- 
-+/* map to stroe egress interface mac address */
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__type(key, u32);
-+	__type(value, __be64);
-+	__uint(max_entries, 1);
-+} tx_mac SEC(".maps");
-+
- static void swap_src_dst_mac(void *data)
- {
- 	unsigned short *p = data;
-@@ -52,17 +70,16 @@ static void swap_src_dst_mac(void *data)
- 	p[5] = dst[2];
- }
- 
--SEC("xdp_redirect_map")
--int xdp_redirect_map_prog(struct xdp_md *ctx)
-+static int xdp_redirect_map(struct xdp_md *ctx, void *redirect_map)
- {
- 	void *data_end = (void *)(long)ctx->data_end;
- 	void *data = (void *)(long)ctx->data;
- 	struct ethhdr *eth = data;
- 	int rc = XDP_DROP;
--	int vport, port = 0, m = 0;
- 	long *value;
- 	u32 key = 0;
- 	u64 nh_off;
-+	int vport;
- 
- 	nh_off = sizeof(*eth);
- 	if (data + nh_off > data_end)
-@@ -79,7 +96,40 @@ int xdp_redirect_map_prog(struct xdp_md *ctx)
- 	swap_src_dst_mac(data);
- 
- 	/* send packet out physical port */
--	return bpf_redirect_map(&tx_port, vport, 0);
-+	return bpf_redirect_map(redirect_map, vport, 0);
-+}
-+
-+SEC("xdp_redirect_general")
-+int xdp_redirect_map_general(struct xdp_md *ctx)
-+{
-+	return xdp_redirect_map(ctx, &tx_port_general);
-+}
-+
-+SEC("xdp_redirect_native")
-+int xdp_redirect_map_native(struct xdp_md *ctx)
-+{
-+	return xdp_redirect_map(ctx, &tx_port_native);
-+}
-+
-+SEC("xdp_devmap/map_prog")
-+int xdp_redirect_map_egress(struct xdp_md *ctx)
-+{
-+	void *data_end = (void *)(long)ctx->data_end;
-+	void *data = (void *)(long)ctx->data;
-+	struct ethhdr *eth = data;
-+	__be64 *mac;
-+	u32 key = 0;
-+	u64 nh_off;
-+
-+	nh_off = sizeof(*eth);
-+	if (data + nh_off > data_end)
-+		return XDP_DROP;
-+
-+	mac = bpf_map_lookup_elem(&tx_mac, &key);
-+	if (mac)
-+		__builtin_memcpy(eth->h_source, mac, ETH_ALEN);
-+
-+	return XDP_PASS;
- }
- 
- /* Redirect require an XDP bpf_prog loaded on the TX device */
-diff --git a/samples/bpf/xdp_redirect_map_user.c b/samples/bpf/xdp_redirect_map_user.c
-index 31131b6e7782..19636045c8dc 100644
---- a/samples/bpf/xdp_redirect_map_user.c
-+++ b/samples/bpf/xdp_redirect_map_user.c
-@@ -14,6 +14,10 @@
- #include <unistd.h>
- #include <libgen.h>
- #include <sys/resource.h>
-+#include <sys/ioctl.h>
-+#include <sys/types.h>
-+#include <sys/socket.h>
-+#include <netinet/in.h>
- 
- #include "bpf_util.h"
- #include <bpf/bpf.h>
-@@ -21,7 +25,8 @@
- 
- static int ifindex_in;
- static int ifindex_out;
--static bool ifindex_out_xdp_dummy_attached = true;
-+static bool ifindex_out_xdp_dummy_attached = false;
-+static bool xdp_devmap_attached = false;
- static __u32 prog_id;
- static __u32 dummy_prog_id;
- 
-@@ -83,6 +88,29 @@ static void poll_stats(int interval, int ifindex)
- 	}
- }
- 
-+static int get_mac_addr(unsigned int ifindex_out, void *mac_addr)
-+{
-+	struct ifreq ifr;
-+	char ifname[IF_NAMESIZE];
-+	int fd = socket(PF_INET, SOCK_DGRAM, IPPROTO_IP);
-+
-+	if (fd < 0)
-+		return -1;
-+
-+	if (!if_indextoname(ifindex_out, ifname))
-+		return -1;
-+
-+	strcpy(ifr.ifr_name, ifname);
-+
-+	if (ioctl(fd, SIOCGIFHWADDR, &ifr) != 0)
-+		return -1;
-+
-+	memcpy(mac_addr, ifr.ifr_hwaddr.sa_data, 6 * sizeof(char));
-+	close(fd);
-+
-+	return 0;
-+}
-+
- static void usage(const char *prog)
- {
- 	fprintf(stderr,
-@@ -90,24 +118,26 @@ static void usage(const char *prog)
- 		"OPTS:\n"
- 		"    -S    use skb-mode\n"
- 		"    -N    enforce native mode\n"
--		"    -F    force loading prog\n",
-+		"    -F    force loading prog\n"
-+		"    -X    load xdp program on egress\n",
- 		prog);
- }
- 
- int main(int argc, char **argv)
- {
- 	struct bpf_prog_load_attr prog_load_attr = {
--		.prog_type	= BPF_PROG_TYPE_XDP,
-+		.prog_type	= BPF_PROG_TYPE_UNSPEC,
- 	};
--	struct bpf_program *prog, *dummy_prog;
-+	struct bpf_program *prog, *dummy_prog, *devmap_prog;
-+	int prog_fd, dummy_prog_fd, devmap_prog_fd = -1;
-+	int tx_port_map_fd, tx_mac_map_fd;
-+	struct bpf_devmap_val devmap_val;
- 	struct bpf_prog_info info = {};
- 	__u32 info_len = sizeof(info);
--	int prog_fd, dummy_prog_fd;
--	const char *optstr = "FSN";
-+	const char *optstr = "FSNX";
- 	struct bpf_object *obj;
- 	int ret, opt, key = 0;
- 	char filename[256];
--	int tx_port_map_fd;
- 
- 	while ((opt = getopt(argc, argv, optstr)) != -1) {
- 		switch (opt) {
-@@ -120,6 +150,9 @@ int main(int argc, char **argv)
- 		case 'F':
- 			xdp_flags &= ~XDP_FLAGS_UPDATE_IF_NOEXIST;
- 			break;
-+		case 'X':
-+			xdp_devmap_attached = true;
-+			break;
- 		default:
- 			usage(basename(argv[0]));
- 			return 1;
-@@ -150,67 +183,107 @@ int main(int argc, char **argv)
- 	if (bpf_prog_load_xattr(&prog_load_attr, &obj, &prog_fd))
- 		return 1;
- 
--	prog = bpf_program__next(NULL, obj);
--	dummy_prog = bpf_program__next(prog, obj);
--	if (!prog || !dummy_prog) {
--		printf("finding a prog in obj file failed\n");
--		return 1;
-+	if (xdp_flags & XDP_FLAGS_SKB_MODE) {
-+		prog = bpf_object__find_program_by_title(obj, "xdp_redirect_general");
-+		tx_port_map_fd = bpf_object__find_map_fd_by_name(obj, "tx_port_general");
-+	} else {
-+		prog = bpf_object__find_program_by_title(obj, "xdp_redirect_native");
-+		tx_port_map_fd = bpf_object__find_map_fd_by_name(obj, "tx_port_native");
- 	}
--	/* bpf_prog_load_xattr gives us the pointer to first prog's fd,
--	 * so we're missing only the fd for dummy prog
--	 */
--	dummy_prog_fd = bpf_program__fd(dummy_prog);
--	if (prog_fd < 0 || dummy_prog_fd < 0) {
--		printf("bpf_prog_load_xattr: %s\n", strerror(errno));
--		return 1;
-+	prog_fd = bpf_program__fd(prog);
-+	if (!prog || prog_fd < 0 || tx_port_map_fd < 0) {
-+		printf("finding prog/tx_port_map in obj file failed\n");
-+		goto out;
- 	}
- 
--	tx_port_map_fd = bpf_object__find_map_fd_by_name(obj, "tx_port");
- 	rxcnt_map_fd = bpf_object__find_map_fd_by_name(obj, "rxcnt");
--	if (tx_port_map_fd < 0 || rxcnt_map_fd < 0) {
-+	tx_mac_map_fd = bpf_object__find_map_fd_by_name(obj, "tx_mac");
-+	if (rxcnt_map_fd < 0 || tx_mac_map_fd < 0) {
- 		printf("bpf_object__find_map_fd_by_name failed\n");
--		return 1;
-+		goto out;
- 	}
- 
- 	if (bpf_set_link_xdp_fd(ifindex_in, prog_fd, xdp_flags) < 0) {
- 		printf("ERROR: link set xdp fd failed on %d\n", ifindex_in);
--		return 1;
-+		goto out;
- 	}
- 
- 	ret = bpf_obj_get_info_by_fd(prog_fd, &info, &info_len);
- 	if (ret) {
- 		printf("can't get prog info - %s\n", strerror(errno));
--		return ret;
-+		goto out;
- 	}
- 	prog_id = info.id;
- 
--	/* Loading dummy XDP prog on out-device */
--	if (bpf_set_link_xdp_fd(ifindex_out, dummy_prog_fd,
--			    (xdp_flags | XDP_FLAGS_UPDATE_IF_NOEXIST)) < 0) {
--		printf("WARN: link set xdp fd failed on %d\n", ifindex_out);
--		ifindex_out_xdp_dummy_attached = false;
--	}
-+	/* If -X supplied, load 2nd xdp prog on egress.
-+	 * If not, just load dummy prog on egress.
-+	 */
-+	if (xdp_devmap_attached) {
-+		unsigned char mac_addr[6];
- 
--	memset(&info, 0, sizeof(info));
--	ret = bpf_obj_get_info_by_fd(dummy_prog_fd, &info, &info_len);
--	if (ret) {
--		printf("can't get prog info - %s\n", strerror(errno));
--		return ret;
-+		devmap_prog = bpf_object__find_program_by_title(obj, "xdp_devmap/map_prog");
-+		if (!devmap_prog) {
-+			printf("finding devmap_prog in obj file failed\n");
-+			goto out;
-+		}
-+		devmap_prog_fd = bpf_program__fd(devmap_prog);
-+		if (devmap_prog_fd < 0) {
-+			printf("finding devmap_prog fd failed\n");
-+			goto out;
-+		}
-+
-+		if (get_mac_addr(ifindex_out, mac_addr) < 0) {
-+			printf("get interface %d mac failed\n", ifindex_out);
-+			goto out;
-+		}
-+
-+		ret = bpf_map_update_elem(tx_mac_map_fd, &key, mac_addr, 0);
-+		if (ret) {
-+			perror("bpf_update_elem tx_mac_map_fd");
-+			goto out;
-+		}
-+	} else if (ifindex_in != ifindex_out) {
-+		dummy_prog = bpf_object__find_program_by_title(obj, "xdp_redirect_dummy");
-+		if (!dummy_prog) {
-+			printf("finding dummy_prog in obj file failed\n");
-+			goto out;
-+		}
-+
-+		dummy_prog_fd = bpf_program__fd(dummy_prog);
-+		if (dummy_prog_fd < 0) {
-+			printf("find dummy_prog fd failed\n");
-+			goto out;
-+		}
-+
-+		if (bpf_set_link_xdp_fd(ifindex_out, dummy_prog_fd,
-+					(xdp_flags | XDP_FLAGS_UPDATE_IF_NOEXIST)) == 0) {
-+			ifindex_out_xdp_dummy_attached = true;
-+		} else {
-+			printf("WARN: link set xdp fd failed on %d\n", ifindex_out);
-+		}
-+
-+		memset(&info, 0, sizeof(info));
-+		ret = bpf_obj_get_info_by_fd(dummy_prog_fd, &info, &info_len);
-+		if (ret) {
-+			printf("can't get prog info - %s\n", strerror(errno));
-+		}
-+		dummy_prog_id = info.id;
- 	}
--	dummy_prog_id = info.id;
- 
- 	signal(SIGINT, int_exit);
- 	signal(SIGTERM, int_exit);
- 
--	/* populate virtual to physical port map */
--	ret = bpf_map_update_elem(tx_port_map_fd, &key, &ifindex_out, 0);
-+	devmap_val.ifindex = ifindex_out;
-+	devmap_val.bpf_prog.fd = devmap_prog_fd;
-+	ret = bpf_map_update_elem(tx_port_map_fd, &key, &devmap_val, 0);
- 	if (ret) {
--		perror("bpf_update_elem");
-+		perror("bpf_update_elem tx_port_map_fd");
- 		goto out;
- 	}
- 
- 	poll_stats(2, ifindex_out);
- 
- out:
--	return 0;
-+	bpf_object__close(obj);
-+	return 1;
- }
+> > Meaning if the program
+> > doesn't use XDP_TX then the hardware can skip resource allocations for
+> > it. I think we could have verifier or extra pass discover the use of
+> > XDP_TX and then pass a bit down to driver to enable/disable TX caps.
+> >   
+> 
+> This was discussed in the context of virtio_net some months back - it is
+> hard to impossible to know a program will not return XDP_TX (e.g., value
+> comes from a map).
+
+It is hard, and sometimes not possible.  For maps the workaround is
+that BPF-programmer adds a bound check on values from the map. If not
+doing that the verifier have to assume all possible return codes are
+used by BPF-prog.
+
+The real nemesis is program tail calls, that can be added dynamically
+after the XDP program is attached.  It is at attachment time that
+changing the NIC resources is possible.  So, for program tail calls the
+verifier have to assume all possible return codes are used by BPF-prog.
+
+BPF now have function calls and function replace right(?)  How does
+this affect this detection of possible return codes?
+
+
+> Flipping that around, what if the program attach indicates whether
+> XDP_TX could be returned. If so, driver manages the resource needs. If
+> not, no resource needed and if the program violates that and returns
+> XDP_TX the packet is dropped.
+
+I do like this idea, as IMHO we do need something that is connected
+with the BPF-prog, that describe what resources the program request
+(either like above via detecting this in verifier, or simply manually
+configuring this in the BPF-prog ELF file)
+
+The main idea is that we all (I assume) want to provide a better
+end-user interface/experience. By direct feedback to the end-user that
+"loading+attaching" this XDP BPF-prog will not work, as e.g. driver
+don't support a specific return code.  Thus, we need to reject
+"loading+attaching" if features cannot be satisfied.
+
+We need a solution as; today it is causing frustration for end-users
+that packets can be (silently) dropped by XDP, e.g. if driver don't
+support XDP_REDIRECT.
+
 -- 
-2.26.2
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
