@@ -2,61 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F5CB2D3597
-	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 22:54:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E0942D35B1
+	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 23:00:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730167AbgLHVtr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Dec 2020 16:49:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40890 "EHLO mail.kernel.org"
+        id S1730297AbgLHV7m (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Dec 2020 16:59:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43876 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726114AbgLHVtr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Dec 2020 16:49:47 -0500
-From:   KP Singh <kpsingh@kernel.org>
-Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH bpf] bpf, doc: Update KP's email in MAINTAINERS
-Date:   Tue,  8 Dec 2020 22:49:00 +0100
-Message-Id: <20201208214900.80684-1-kpsingh@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S1730248AbgLHV7m (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Dec 2020 16:59:42 -0500
+X-Gm-Message-State: AOAM531MDpymxs0FRhuism9rkINpn7yCFNFT4EqEaqIeVckkGn45/D4T
+        V7Vitr3kH5D7qc/8gOl5lJu8IRqL0JITS17j+vkD1w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607464741;
+        bh=aq1REvmr8G4HHsMmI7IDmZOap2E/6/9t6PDlS39WANU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=gUWX7QEivlEBbfouHMgr400icneCDEUYZL6Vgvd+W7VFDbPj5ioDZEsyxrKScpxna
+         FOoNjLl3Fb014TRLuxA2Qix2nLq+Rj9xAR5I9b86gxL6deMLjVYwB6lMYsxTBH5Sl5
+         O+F+9cv7u0QFG+3oBhLKYxiM8SFMHGf/VFulCwRtR3o31NbmbBqhNxDRU7XokLe+Pr
+         PNZHYhRUVU8G/PoZ9uy+plQfCMLlIhKwk7Dn7QUfjC2r3tHp+/TRgm+OsSkDTVBlwD
+         iwLJLxJGHsKqwcSTgFUtRZ39gtMwRIvnj8qNOEGvmmfGoGDfz1Co0DWTndFptZ45H/
+         TAPE6CrL0C63Q==
+X-Google-Smtp-Source: ABdhPJz1BNeZy2zJhsVUwUwxQH6zhCY3cVJMR3mDK3yUi89dUtazop/iQ5s8I/mdJXZsMaJhBcUfaFKL5jM5H0sW15Q=
+X-Received: by 2002:a2e:9611:: with SMTP id v17mr584959ljh.69.1607464739743;
+ Tue, 08 Dec 2020 13:58:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201208173623.1136863-1-revest@chromium.org> <20201208205240.hucgnmi76ng2r5s7@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20201208205240.hucgnmi76ng2r5s7@kafai-mbp.dhcp.thefacebook.com>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Tue, 8 Dec 2020 22:58:48 +0100
+X-Gmail-Original-Message-ID: <CANA3-0fHyriceUjbSLBJgUA6oddGTRBuP_PwAyWar8o9eSPoaQ@mail.gmail.com>
+Message-ID: <CANA3-0fHyriceUjbSLBJgUA6oddGTRBuP_PwAyWar8o9eSPoaQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3] bpf: Only provide bpf_sock_from_file with CONFIG_NET
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     Florent Revest <revest@chromium.org>, bpf@vger.kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kpsingh@chromium.org, rdunlap@infradead.org,
+        linux-next@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Helps me use a single account to sign off and send patches use
-appropriate email redirection without needing to update MAINTAINERS.
+On Tue, Dec 8, 2020 at 9:56 PM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> On Tue, Dec 08, 2020 at 06:36:23PM +0100, Florent Revest wrote:
+> > This moves the bpf_sock_from_file definition into net/core/filter.c
+> > which only gets compiled with CONFIG_NET and also moves the helper proto
+> > usage next to other tracing helpers that are conditional on CONFIG_NET.
+> >
+> > This avoids
+> >   ld: kernel/trace/bpf_trace.o: in function `bpf_sock_from_file':
+> >   bpf_trace.c:(.text+0xe23): undefined reference to `sock_from_file'
+> > When compiling a kernel with BPF and without NET.
+> Acked-by: Martin KaFai Lau <kafai@fb.com>
 
-Signed-off-by: KP Singh <kpsingh@kernel.org>
----
- MAINTAINERS | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 061e64b2423a..2a6e1d409524 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3239,7 +3239,7 @@ R:	Martin KaFai Lau <kafai@fb.com>
- R:	Song Liu <songliubraving@fb.com>
- R:	Yonghong Song <yhs@fb.com>
- R:	John Fastabend <john.fastabend@gmail.com>
--R:	KP Singh <kpsingh@chromium.org>
-+R:	KP Singh <kpsingh@kernel.org>
- L:	netdev@vger.kernel.org
- L:	bpf@vger.kernel.org
- S:	Supported
-@@ -3358,7 +3358,7 @@ F:	arch/x86/net/
- X:	arch/x86/net/bpf_jit_comp32.c
- 
- BPF LSM (Security Audit and Enforcement using BPF)
--M:	KP Singh <kpsingh@chromium.org>
-+M:	KP Singh <kpsingh@kernel.org>
- R:	Florent Revest <revest@chromium.org>
- R:	Brendan Jackman <jackmanb@chromium.org>
- L:	bpf@vger.kernel.org
--- 
-2.27.0
-
+Acked-by: KP Singh <kpsingh@kernel.org>
