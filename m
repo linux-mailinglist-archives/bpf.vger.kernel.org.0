@@ -2,126 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55DA72D35F0
-	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 23:13:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94EB92D3610
+	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 23:21:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731332AbgLHWI7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Dec 2020 17:08:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51068 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731364AbgLHWI4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Dec 2020 17:08:56 -0500
-X-Gm-Message-State: AOAM530snzbmXi7scmEv/Rxst6FPlMy46CI6gxGVbRRZHmj46wlZVMKR
-        H6ju/LWIKyV47rsNRozBvSyUEglImX8GNtL57vtjFQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607465296;
-        bh=J7br4+6VmGx77/7VBZgfseCUz95g64+31jTTDT3s5to=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Ws8SSGdIyOUV/LoJdT9eDm8+sWO8kPtQTNGqfqQAN6Y1+gfRBsgC34eewSks3x7al
-         jPDK4GwFHpOrPQuU0uxRlbpkw4SpxPPmtp5foqhAxG+yu1RqSwZGvNuERuFQvNDcXq
-         US7ZO7EvN6qbsOr8deIw/u/hYWoFueY4mBtyvMvODFxVJgpgKGKk+td5A+tlkrm+6B
-         MiETpht8PRvBieXgg3J6D2vTG3mD6aA3SvaWn4VrkIarrqLvwhMb22PwwI+BBlM3tB
-         e/6BI52VUf4TwJIclWkk4RpBoaY2lhSjwRf5rpDraWUNlU2+CBrJ8GsENSB8USab+t
-         50DJBlyCZRB+g==
-X-Google-Smtp-Source: ABdhPJyiGQxFUq1siCws5D38GZ8eqcIJXn0RCbawbKZhP9JzdmJqu6p2p6oA78QUs+fK+JStXf4q29VjM+q31m+NSPQ=
-X-Received: by 2002:a05:6512:11e2:: with SMTP id p2mr790473lfs.153.1607465294452;
- Tue, 08 Dec 2020 14:08:14 -0800 (PST)
+        id S1727914AbgLHWOp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Dec 2020 17:14:45 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:33778 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726114AbgLHWOm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Dec 2020 17:14:42 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B8M9JOX080288;
+        Tue, 8 Dec 2020 22:13:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : in-reply-to : message-id : references : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=vODya7JNvspo7z4vEUFMHHOowJ4I1WcQwUOxnk+pJSw=;
+ b=NqLlXjwzxv6IiHWtyLfnpWHrtg6llJeCEtoCNd3SbUGWsuWqPpggVxZRucAV6h2QGLq3
+ k2dg1o/cyqqY0NDVq1sEjuiWDZAEGZbdexLsjd0P5U+tJpWLCm+NPgjfPv861/9ooPZU
+ PdZWg0tAfeZrz0Wm7oN6azgDxUkvu1r1jFfoX8SMUkzyjPJsZ4GzvFMwFM8k5v3gEwHR
+ wJXCuIUWnB+/9AF6tj7QijfVgs97TInmNnG8grn6QGpupN+TgVoN8+8CB+1iYaJc2DIt
+ +fdxWWGrvfXAAMPFsumw4r5dm7LqNHf8nEar8bOZo1uVOCYTyoeisCZ6d4xSz16gVM/P pA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 357yqbwccn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 08 Dec 2020 22:13:43 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B8MBjSn089223;
+        Tue, 8 Dec 2020 22:13:43 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 358m4yh66x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 08 Dec 2020 22:13:43 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B8MDfCI030483;
+        Tue, 8 Dec 2020 22:13:42 GMT
+Received: from dhcp-10-175-161-251.vpn.oracle.com (/10.175.161.251)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 08 Dec 2020 14:13:41 -0800
+Date:   Tue, 8 Dec 2020 22:13:35 +0000 (GMT)
+From:   Alan Maguire <alan.maguire@oracle.com>
+X-X-Sender: alan@localhost
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next] libbpf: support module BTF for BPF_TYPE_ID_TARGET
+ CO-RE relocation
+In-Reply-To: <CAEf4BzaXvFQzoYXbfutVn7A9ndQc9472SCK8Gj8R_Yj7=+rTcg@mail.gmail.com>
+Message-ID: <alpine.LRH.2.23.451.2012082202450.25628@localhost>
+References: <20201205025140.443115-1-andrii@kernel.org> <alpine.LRH.2.23.451.2012071623080.3652@localhost> <20201208031206.26mpjdbrvqljj7vl@ast-mbp> <CAEf4BzaXvFQzoYXbfutVn7A9ndQc9472SCK8Gj8R_Yj7=+rTcg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201208201533.1312057-1-revest@chromium.org> <20201208201533.1312057-2-revest@chromium.org>
-In-Reply-To: <20201208201533.1312057-2-revest@chromium.org>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Tue, 8 Dec 2020 23:08:03 +0100
-X-Gmail-Original-Message-ID: <CANA3-0c5NtYVGa_TQqY36ZWhmFztrgmKgA9Karo-HpW0MBTkPw@mail.gmail.com>
-Message-ID: <CANA3-0c5NtYVGa_TQqY36ZWhmFztrgmKgA9Karo-HpW0MBTkPw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/4] bpf: Expose bpf_get_socket_cookie to
- tracing programs
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kpsingh@chromium.org,
-        Martin KaFai Lau <kafai@fb.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=10
+ bulkscore=0 malwarescore=0 phishscore=0 adultscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012080138
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=10 mlxlogscore=999
+ clxscore=1015 malwarescore=0 bulkscore=0 phishscore=0 adultscore=0
+ spamscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012080138
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 9:20 PM Florent Revest <revest@chromium.org> wrote:
->
-> This needs two new helpers, one that works in a sleepable context (using
-> sock_gen_cookie which disables/enables preemption) and one that does not
-> (for performance reasons). Both take a struct sock pointer and need to
-> check it for NULLness.
->
-> This helper could also be useful to other BPF program types such as LSM.
->
-> Signed-off-by: Florent Revest <revest@chromium.org>
-> ---
->  include/linux/bpf.h            |  2 ++
->  include/uapi/linux/bpf.h       |  7 +++++++
->  kernel/trace/bpf_trace.c       |  4 ++++
->  net/core/filter.c              | 24 ++++++++++++++++++++++++
->  tools/include/uapi/linux/bpf.h |  7 +++++++
->  5 files changed, 44 insertions(+)
->
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index d05e75ed8c1b..2ecda549b773 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1859,6 +1859,8 @@ extern const struct bpf_func_proto bpf_snprintf_btf_proto;
->  extern const struct bpf_func_proto bpf_per_cpu_ptr_proto;
->  extern const struct bpf_func_proto bpf_this_cpu_ptr_proto;
->  extern const struct bpf_func_proto bpf_ktime_get_coarse_ns_proto;
-> +extern const struct bpf_func_proto bpf_get_socket_ptr_cookie_sleepable_proto;
-> +extern const struct bpf_func_proto bpf_get_socket_ptr_cookie_proto;
->
->  const struct bpf_func_proto *bpf_tracing_func_proto(
->         enum bpf_func_id func_id, const struct bpf_prog *prog);
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index ba59309f4d18..9ac66cf25959 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -1667,6 +1667,13 @@ union bpf_attr {
->   *     Return
->   *             A 8-byte long unique number.
->   *
-> + * u64 bpf_get_socket_cookie(void *sk)
-> + *     Description
-> + *             Equivalent to **bpf_get_socket_cookie**\ () helper that accepts
-> + *             *sk*, but gets socket from a BTF **struct sock**.
-> + *     Return
-> + *             A 8-byte long unique number.
-> + *
->   * u32 bpf_get_socket_uid(struct sk_buff *skb)
->   *     Return
->   *             The owner UID of the socket associated to *skb*. If the socket
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 0cf0a6331482..99accc2146bc 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -1778,6 +1778,10 @@ tracing_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->                 return &bpf_sk_storage_get_tracing_proto;
->         case BPF_FUNC_sk_storage_delete:
->                 return &bpf_sk_storage_delete_tracing_proto;
-> +       case BPF_FUNC_get_socket_cookie:
-> +               return prog->aux->sleepable ?
-> +                      &bpf_get_socket_ptr_cookie_sleepable_proto :
-> +                      &bpf_get_socket_ptr_cookie_proto;
->  #endif
->         case BPF_FUNC_seq_printf:
->                 return prog->expected_attach_type == BPF_TRACE_ITER ?
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 77001a35768f..34877796ab5b 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -4631,6 +4631,30 @@ static const struct bpf_func_proto bpf_get_socket_cookie_sock_proto = {
->         .arg1_type      = ARG_PTR_TO_CTX,
->  };
->
-> +BPF_CALL_1(bpf_get_socket_ptr_cookie_sleepable, struct sock *, sk)
-> +{
-> +       return sk ? sock_gen_cookie(sk) : 0;
+On Mon, 7 Dec 2020, Andrii Nakryiko wrote:
 
-My understanding is you can simply always call sock_gen_cookie and not
-have two protos.
+> On Mon, Dec 7, 2020 at 7:12 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Mon, Dec 07, 2020 at 04:38:16PM +0000, Alan Maguire wrote:
+> > > Sorry about this Andrii, but I'm a bit stuck here.
+> > >
+> > > I'm struggling to get tests working where the obj fd is used to designate
+> > > the module BTF. Unless I'm missing something there are a few problems:
+> > >
+> > > - the fd association is removed by libbpf when the BPF program has loaded;
+> > > the module fds are closed and the module BTF is discarded.  However even if
+> > > that isn't done (and as you mentioned, we could hold onto BTF that is in
+> > > use, and I commented out the code that does that to test) - there's
+> > > another problem:
+> > > - I can't see a way to use the object fd value we set here later in BPF
+> > > program context; btf_get_by_fd() returns -EBADF as the fd is associated
+> > > with the module BTF in the test's process context, not necessarily in
+> > > the context that the BPF program is running.  Would it be possible in this
+> > > case to use object id? Or is there another way to handle the fd->module
+> > > BTF association that we need to make in BPF program context that I'm
+> > > missing?
+> > > - A more long-term issue; if we use fds to specify module BTFs and write
+> > > the object fd into the program, we can pin the BPF program such that it
+> > > outlives fds that refer to its associated BTF.  So unless we pinned the
+> > > BTF too, any code that assumed the BTF fd-> module mapping was valid would
+> > > start to break once the user-space side went away and the pinned program
+> > > persisted.
+> >
+> > All of the above are not issues. They are features of FD based approach.
+> > When the program refers to btf via fd the verifier needs to increment btf's refcnt
+> > so it won't go away while the prog is running. For module's BTF it means
+> > that the module can be unloaded, but its BTF may stay around if there is a prog
+> > that needs to access it.
+> > I think the missing piece in the above is that btf_get_by_fd() should be
+> > done at load time instead of program run-time.
+> > Everything FD based needs to behave similar to map_fds where ld_imm64 insn
+> > contains map_fd that gets converted to map_ptr by the verifier at load time.
+> 
+> Right. I was going to extend verifier to do the same for all used BTF
+> objects as part of ksym support for module BTFs. So totally agree.
+> Just didn't need it so far.
+> 
 
-This will disable preemption in sleepable programs and not have any effect
-in non-sleepable programs since preemption will already be disabled.
+Does this approach prevent more complex run-time specification of BTF 
+object fd though?  For example, I've been working on a simple tracer 
+focused on kernel debugging; it uses a BPF map entry for each kernel 
+function that is traced. User-space populates the map entry with BTF type 
+ids for the function arguments/return value, and when the BPF program 
+runs it uses the instruction pointer to look up the map entry for that
+function, and uses bpf_snprintf_btf() to write the string representations 
+of the function arguments/return values.  I'll send out an RFC soon, 
+but longer-term I was hoping to extend it to support module-specific 
+types.  Would a dynamic case like that - where the BTF module fd is looked 
+up in a map entry during program execution (rather than derived via 
+__btf_builtin_type_id()) work too? Thanks!
+
+Alan
