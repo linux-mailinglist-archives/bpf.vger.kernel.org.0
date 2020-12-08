@@ -2,133 +2,263 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94EB92D3610
-	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 23:21:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08B802D3640
+	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 23:30:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727914AbgLHWOp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Dec 2020 17:14:45 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:33778 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726114AbgLHWOm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Dec 2020 17:14:42 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B8M9JOX080288;
-        Tue, 8 Dec 2020 22:13:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : in-reply-to : message-id : references : mime-version :
- content-type; s=corp-2020-01-29;
- bh=vODya7JNvspo7z4vEUFMHHOowJ4I1WcQwUOxnk+pJSw=;
- b=NqLlXjwzxv6IiHWtyLfnpWHrtg6llJeCEtoCNd3SbUGWsuWqPpggVxZRucAV6h2QGLq3
- k2dg1o/cyqqY0NDVq1sEjuiWDZAEGZbdexLsjd0P5U+tJpWLCm+NPgjfPv861/9ooPZU
- PdZWg0tAfeZrz0Wm7oN6azgDxUkvu1r1jFfoX8SMUkzyjPJsZ4GzvFMwFM8k5v3gEwHR
- wJXCuIUWnB+/9AF6tj7QijfVgs97TInmNnG8grn6QGpupN+TgVoN8+8CB+1iYaJc2DIt
- +fdxWWGrvfXAAMPFsumw4r5dm7LqNHf8nEar8bOZo1uVOCYTyoeisCZ6d4xSz16gVM/P pA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 357yqbwccn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 08 Dec 2020 22:13:43 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B8MBjSn089223;
-        Tue, 8 Dec 2020 22:13:43 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 358m4yh66x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 08 Dec 2020 22:13:43 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B8MDfCI030483;
-        Tue, 8 Dec 2020 22:13:42 GMT
-Received: from dhcp-10-175-161-251.vpn.oracle.com (/10.175.161.251)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 08 Dec 2020 14:13:41 -0800
-Date:   Tue, 8 Dec 2020 22:13:35 +0000 (GMT)
-From:   Alan Maguire <alan.maguire@oracle.com>
-X-X-Sender: alan@localhost
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next] libbpf: support module BTF for BPF_TYPE_ID_TARGET
- CO-RE relocation
-In-Reply-To: <CAEf4BzaXvFQzoYXbfutVn7A9ndQc9472SCK8Gj8R_Yj7=+rTcg@mail.gmail.com>
-Message-ID: <alpine.LRH.2.23.451.2012082202450.25628@localhost>
-References: <20201205025140.443115-1-andrii@kernel.org> <alpine.LRH.2.23.451.2012071623080.3652@localhost> <20201208031206.26mpjdbrvqljj7vl@ast-mbp> <CAEf4BzaXvFQzoYXbfutVn7A9ndQc9472SCK8Gj8R_Yj7=+rTcg@mail.gmail.com>
+        id S1730893AbgLHW1L (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Dec 2020 17:27:11 -0500
+Received: from mga03.intel.com ([134.134.136.65]:2596 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730547AbgLHW1L (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Dec 2020 17:27:11 -0500
+IronPort-SDR: lF161eQYjQxZJzLLE1id1mTc9Nje3XTrUQ1hr/ZziOkKA0/YlnhpXZbJtPy4xTQmdq4ivXpjOj
+ XcdaFPr56GNg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9829"; a="174099142"
+X-IronPort-AV: E=Sophos;i="5.78,404,1599548400"; 
+   d="scan'208";a="174099142"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2020 14:26:30 -0800
+IronPort-SDR: VCwCXd6mWbdPsUorOUqov8XqiwIBbIVHEQ9Dy/BYn9RQ5X/yeWrKxriGFPeEpTeVw8wQR9JiHx
+ axhM9P5u6R/w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,404,1599548400"; 
+   d="scan'208";a="437553203"
+Received: from ranger.igk.intel.com ([10.102.21.164])
+  by fmsmga001.fm.intel.com with ESMTP; 08 Dec 2020 14:26:27 -0800
+Date:   Tue, 8 Dec 2020 23:17:46 +0100
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
+        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        shayagr@amazon.com, sameehj@amazon.com, john.fastabend@gmail.com,
+        dsahern@kernel.org, brouer@redhat.com, echaudro@redhat.com,
+        lorenzo.bianconi@redhat.com, jasowang@redhat.com
+Subject: Re: [PATCH v5 bpf-next 13/14] bpf: add new frame_length field to the
+ XDP ctx
+Message-ID: <20201208221746.GA33399@ranger.igk.intel.com>
+References: <cover.1607349924.git.lorenzo@kernel.org>
+ <0547d6f752e325f56a8e5f6466b50e81ff29d65f.1607349924.git.lorenzo@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=10
- bulkscore=0 malwarescore=0 phishscore=0 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012080138
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=10 mlxlogscore=999
- clxscore=1015 malwarescore=0 bulkscore=0 phishscore=0 adultscore=0
- spamscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012080138
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0547d6f752e325f56a8e5f6466b50e81ff29d65f.1607349924.git.lorenzo@kernel.org>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 7 Dec 2020, Andrii Nakryiko wrote:
-
-> On Mon, Dec 7, 2020 at 7:12 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Mon, Dec 07, 2020 at 04:38:16PM +0000, Alan Maguire wrote:
-> > > Sorry about this Andrii, but I'm a bit stuck here.
-> > >
-> > > I'm struggling to get tests working where the obj fd is used to designate
-> > > the module BTF. Unless I'm missing something there are a few problems:
-> > >
-> > > - the fd association is removed by libbpf when the BPF program has loaded;
-> > > the module fds are closed and the module BTF is discarded.  However even if
-> > > that isn't done (and as you mentioned, we could hold onto BTF that is in
-> > > use, and I commented out the code that does that to test) - there's
-> > > another problem:
-> > > - I can't see a way to use the object fd value we set here later in BPF
-> > > program context; btf_get_by_fd() returns -EBADF as the fd is associated
-> > > with the module BTF in the test's process context, not necessarily in
-> > > the context that the BPF program is running.  Would it be possible in this
-> > > case to use object id? Or is there another way to handle the fd->module
-> > > BTF association that we need to make in BPF program context that I'm
-> > > missing?
-> > > - A more long-term issue; if we use fds to specify module BTFs and write
-> > > the object fd into the program, we can pin the BPF program such that it
-> > > outlives fds that refer to its associated BTF.  So unless we pinned the
-> > > BTF too, any code that assumed the BTF fd-> module mapping was valid would
-> > > start to break once the user-space side went away and the pinned program
-> > > persisted.
-> >
-> > All of the above are not issues. They are features of FD based approach.
-> > When the program refers to btf via fd the verifier needs to increment btf's refcnt
-> > so it won't go away while the prog is running. For module's BTF it means
-> > that the module can be unloaded, but its BTF may stay around if there is a prog
-> > that needs to access it.
-> > I think the missing piece in the above is that btf_get_by_fd() should be
-> > done at load time instead of program run-time.
-> > Everything FD based needs to behave similar to map_fds where ld_imm64 insn
-> > contains map_fd that gets converted to map_ptr by the verifier at load time.
+On Mon, Dec 07, 2020 at 05:32:42PM +0100, Lorenzo Bianconi wrote:
+> From: Eelco Chaudron <echaudro@redhat.com>
 > 
-> Right. I was going to extend verifier to do the same for all used BTF
-> objects as part of ksym support for module BTFs. So totally agree.
-> Just didn't need it so far.
+> This patch adds a new field to the XDP context called frame_length,
+> which will hold the full length of the packet, including fragments
+> if existing.
+
+The approach you took for ctx access conversion is barely described :/
+
 > 
+> eBPF programs can determine if fragments are present using something
+> like:
+> 
+>   if (ctx->data_end - ctx->data < ctx->frame_length) {
+>     /* Fragements exists. /*
+>   }
+> 
+> Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
+>  include/net/xdp.h              | 22 +++++++++
+>  include/uapi/linux/bpf.h       |  1 +
+>  kernel/bpf/verifier.c          |  2 +-
+>  net/core/filter.c              | 83 ++++++++++++++++++++++++++++++++++
+>  tools/include/uapi/linux/bpf.h |  1 +
+>  5 files changed, 108 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/net/xdp.h b/include/net/xdp.h
+> index 09078ab6644c..e54d733c90ed 100644
+> --- a/include/net/xdp.h
+> +++ b/include/net/xdp.h
+> @@ -73,8 +73,30 @@ struct xdp_buff {
+>  	void *data_hard_start;
+>  	struct xdp_rxq_info *rxq;
+>  	struct xdp_txq_info *txq;
+> +	/* If any of the bitfield lengths for frame_sz or mb below change,
+> +	 * make sure the defines here are also updated!
+> +	 */
+> +#ifdef __BIG_ENDIAN_BITFIELD
+> +#define MB_SHIFT	  0
+> +#define MB_MASK		  0x00000001
+> +#define FRAME_SZ_SHIFT	  1
+> +#define FRAME_SZ_MASK	  0xfffffffe
+> +#else
+> +#define MB_SHIFT	  31
+> +#define MB_MASK		  0x80000000
+> +#define FRAME_SZ_SHIFT	  0
+> +#define FRAME_SZ_MASK	  0x7fffffff
+> +#endif
+> +#define FRAME_SZ_OFFSET() offsetof(struct xdp_buff, __u32_bit_fields_offset)
+> +#define MB_OFFSET()	  offsetof(struct xdp_buff, __u32_bit_fields_offset)
+> +	/* private: */
+> +	u32 __u32_bit_fields_offset[0];
 
-Does this approach prevent more complex run-time specification of BTF 
-object fd though?  For example, I've been working on a simple tracer 
-focused on kernel debugging; it uses a BPF map entry for each kernel 
-function that is traced. User-space populates the map entry with BTF type 
-ids for the function arguments/return value, and when the BPF program 
-runs it uses the instruction pointer to look up the map entry for that
-function, and uses bpf_snprintf_btf() to write the string representations 
-of the function arguments/return values.  I'll send out an RFC soon, 
-but longer-term I was hoping to extend it to support module-specific 
-types.  Would a dynamic case like that - where the BTF module fd is looked 
-up in a map entry during program execution (rather than derived via 
-__btf_builtin_type_id()) work too? Thanks!
+Why? I don't get that. Please explain.
+Also, looking at all the need for masking/shifting, I wonder if it would
+be better to have u32 frame_sz and u8 mb...
 
-Alan
+> +	/* public: */
+>  	u32 frame_sz:31; /* frame size to deduce data_hard_end/reserved tailroom*/
+>  	u32 mb:1; /* xdp non-linear buffer */
+> +
+> +	/* Temporary registers to make conditional access/stores possible. */
+> +	u64 tmp_reg[2];
+
+IMHO this kills the bitfield approach we have for vars above.
+
+>  };
+>  
+>  /* Reserve memory area at end-of data area.
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 30b477a26482..62c50ab28ea9 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -4380,6 +4380,7 @@ struct xdp_md {
+>  	__u32 rx_queue_index;  /* rxq->queue_index  */
+>  
+>  	__u32 egress_ifindex;  /* txq->dev->ifindex */
+> +	__u32 frame_length;
+>  };
+>  
+>  /* DEVMAP map-value layout
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 93def76cf32b..c50caea29fa2 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -10526,7 +10526,7 @@ static int convert_ctx_accesses(struct bpf_verifier_env *env)
+>  	const struct bpf_verifier_ops *ops = env->ops;
+>  	int i, cnt, size, ctx_field_size, delta = 0;
+>  	const int insn_cnt = env->prog->len;
+> -	struct bpf_insn insn_buf[16], *insn;
+> +	struct bpf_insn insn_buf[32], *insn;
+>  	u32 target_size, size_default, off;
+>  	struct bpf_prog *new_prog;
+>  	enum bpf_access_type type;
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 4c4882d4d92c..278640db9e0a 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -8908,6 +8908,7 @@ static u32 xdp_convert_ctx_access(enum bpf_access_type type,
+>  				  struct bpf_insn *insn_buf,
+>  				  struct bpf_prog *prog, u32 *target_size)
+>  {
+> +	int ctx_reg, dst_reg, scratch_reg;
+>  	struct bpf_insn *insn = insn_buf;
+>  
+>  	switch (si->off) {
+> @@ -8954,6 +8955,88 @@ static u32 xdp_convert_ctx_access(enum bpf_access_type type,
+>  		*insn++ = BPF_LDX_MEM(BPF_W, si->dst_reg, si->dst_reg,
+>  				      offsetof(struct net_device, ifindex));
+>  		break;
+> +	case offsetof(struct xdp_md, frame_length):
+> +		/* Need tmp storage for src_reg in case src_reg == dst_reg,
+> +		 * and a scratch reg */
+> +		scratch_reg = BPF_REG_9;
+> +		dst_reg = si->dst_reg;
+> +
+> +		if (dst_reg == scratch_reg)
+> +			scratch_reg--;
+> +
+> +		ctx_reg = (si->src_reg == si->dst_reg) ? scratch_reg - 1 : si->src_reg;
+> +		while (dst_reg == ctx_reg || scratch_reg == ctx_reg)
+> +			ctx_reg--;
+> +
+> +		/* Save scratch registers */
+> +		if (ctx_reg != si->src_reg) {
+> +			*insn++ = BPF_STX_MEM(BPF_DW, si->src_reg, ctx_reg,
+> +					      offsetof(struct xdp_buff,
+> +						       tmp_reg[1]));
+> +
+> +			*insn++ = BPF_MOV64_REG(ctx_reg, si->src_reg);
+> +		}
+> +
+> +		*insn++ = BPF_STX_MEM(BPF_DW, ctx_reg, scratch_reg,
+> +				      offsetof(struct xdp_buff, tmp_reg[0]));
+
+Why don't you push regs to stack, use it and then pop it back? That way I
+suppose you could avoid polluting xdp_buff with tmp_reg[2].
+
+> +
+> +		/* What does this code do?
+> +		 *   dst_reg = 0
+> +		 *
+> +		 *   if (!ctx_reg->mb)
+> +		 *      goto no_mb:
+> +		 *
+> +		 *   dst_reg = (struct xdp_shared_info *)xdp_data_hard_end(xdp)
+> +		 *   dst_reg = dst_reg->data_length
+> +		 *
+> +		 * NOTE: xdp_data_hard_end() is xdp->hard_start +
+> +		 *       xdp->frame_sz - sizeof(shared_info)
+> +		 *
+> +		 * no_mb:
+> +		 *   dst_reg += ctx_reg->data_end - ctx_reg->data
+> +		 */
+> +		*insn++ = BPF_MOV64_IMM(dst_reg, 0);
+> +
+> +		*insn++ = BPF_LDX_MEM(BPF_W, scratch_reg, ctx_reg, MB_OFFSET());
+> +		*insn++ = BPF_ALU32_IMM(BPF_AND, scratch_reg, MB_MASK);
+> +		*insn++ = BPF_JMP_IMM(BPF_JEQ, scratch_reg, 0, 7); /*goto no_mb; */
+> +
+> +		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct xdp_buff,
+> +						       data_hard_start),
+> +				      dst_reg, ctx_reg,
+> +				      offsetof(struct xdp_buff, data_hard_start));
+> +		*insn++ = BPF_LDX_MEM(BPF_W, scratch_reg, ctx_reg,
+> +				      FRAME_SZ_OFFSET());
+> +		*insn++ = BPF_ALU32_IMM(BPF_AND, scratch_reg, FRAME_SZ_MASK);
+> +		*insn++ = BPF_ALU32_IMM(BPF_RSH, scratch_reg, FRAME_SZ_SHIFT);
+> +		*insn++ = BPF_ALU64_REG(BPF_ADD, dst_reg, scratch_reg);
+> +		*insn++ = BPF_ALU64_IMM(BPF_SUB, dst_reg,
+> +					SKB_DATA_ALIGN(sizeof(struct skb_shared_info)));
+> +		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct xdp_shared_info,
+> +						       data_length),
+> +				      dst_reg, dst_reg,
+> +				      offsetof(struct xdp_shared_info,
+> +					       data_length));
+> +
+> +		/* no_mb: */
+> +		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct xdp_buff, data_end),
+> +				      scratch_reg, ctx_reg,
+> +				      offsetof(struct xdp_buff, data_end));
+> +		*insn++ = BPF_ALU64_REG(BPF_ADD, dst_reg, scratch_reg);
+> +		*insn++ = BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct xdp_buff, data),
+> +				      scratch_reg, ctx_reg,
+> +				      offsetof(struct xdp_buff, data));
+> +		*insn++ = BPF_ALU64_REG(BPF_SUB, dst_reg, scratch_reg);
+> +
+> +		/* Restore scratch registers */
+> +		*insn++ = BPF_LDX_MEM(BPF_DW, scratch_reg, ctx_reg,
+> +				      offsetof(struct xdp_buff, tmp_reg[0]));
+> +
+> +		if (ctx_reg != si->src_reg)
+> +			*insn++ = BPF_LDX_MEM(BPF_DW, ctx_reg, ctx_reg,
+> +					      offsetof(struct xdp_buff,
+> +						       tmp_reg[1]));
+> +		break;
+>  	}
+>  
+>  	return insn - insn_buf;
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index 30b477a26482..62c50ab28ea9 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -4380,6 +4380,7 @@ struct xdp_md {
+>  	__u32 rx_queue_index;  /* rxq->queue_index  */
+>  
+>  	__u32 egress_ifindex;  /* txq->dev->ifindex */
+> +	__u32 frame_length;
+>  };
+>  
+>  /* DEVMAP map-value layout
+> -- 
+> 2.28.0
+> 
