@@ -2,109 +2,186 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5B7A2D2131
-	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 03:57:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 454DD2D2151
+	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 04:13:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728226AbgLHC4r (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Dec 2020 21:56:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43712 "EHLO
+        id S1726138AbgLHDMv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Dec 2020 22:12:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726830AbgLHC4q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 7 Dec 2020 21:56:46 -0500
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 558C7C061749;
-        Mon,  7 Dec 2020 18:56:06 -0800 (PST)
-Received: by mail-yb1-xb43.google.com with SMTP id a16so9795190ybh.5;
-        Mon, 07 Dec 2020 18:56:06 -0800 (PST)
+        with ESMTP id S1726002AbgLHDMv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Dec 2020 22:12:51 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEF39C0613D6;
+        Mon,  7 Dec 2020 19:12:10 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id bj5so6240345plb.4;
+        Mon, 07 Dec 2020 19:12:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nSje9n3VPr3wDX6ba9oiUHJZjrVWnD42SoJEnpxPaT0=;
-        b=Bt9prF0BlYUsDheIq5OsA2QMPJSXzB3MZUk0qf2EmHEpJa56RJL32qsBJUvyiUgHab
-         fLaRyvMhH9AZ4UKWcKWH9cXa5jcicEHG84C5H2tzfxFvD+sqn79s6jr6qT7SGjHf7IFB
-         SyOAfxlJxQ49f8Z6/NS0l+DBi1ow2+lWF22YL9RC1Pmfe3I/l1U7WznLaBhWcDRlPMme
-         Luc8BoUhFa2KqFUNUOapVyAkxgWlgZUM2TO+iRDtSRq9CEn+s6FM0X+AtK4kGYlXpTHO
-         yN/qc79kWYrvLdOssHMxnAV7eVhtrYaey7zLKotsNgx4gChegOK3w2ZXkFIiiWwnkWy2
-         eSQg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KQ9uRpmBuJGJjQzyCNv6aAvsoTL8pzGuqnCLRpSMCuE=;
+        b=Acfz00LgKxRmaEQgc6hVcS/CaUrWpMs9L/FRpmlup1VUbqPqBbTCn5UYRRLrdxoEv7
+         4hXs7iplcJVBOSYAoJgOFxjKN84hhQi733S/zNunoOdUBqu/zcvIexyfy86ZtQKeCKXr
+         FF8CZJ3E2VQ0OtN7JHLl5mU4/EE//9jp56/IiRDilUrTubaB+0mx2mRt9GY19wFB5vdv
+         K9G1N3k3pYbaM98cSv757Fh5WTPyigD8NF+X03KZd6WK51AfFYmaQwwgKMTawV/y9zwc
+         RYFCohbWoqpvLp7lr2XDNzcCnbX7M1pPlVJIikLYRVz+u2QD+UR05BS5wsvslKyAMGEM
+         JHIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nSje9n3VPr3wDX6ba9oiUHJZjrVWnD42SoJEnpxPaT0=;
-        b=SJyD2NRiR/NbHB7grUByh8yXka49GRNkAedPrVWDeFdloOLskJKQcJZvbCOD4WpeP7
-         RVVqn0YwFp5UJz2t5PIKVRuED+vP6VY+imkOE6siDkUh1fAHfe9pRmthumjsskSuCDiP
-         cTeSBCDJQ6/9UmVEpEy02lIpKARJ9DTIhTcqdsPbOYVJbgQJRFldVYORod0i+ln3cCK3
-         0b5iFbcxlPz1uPPpVCuuiwGcRczscZsjsWBjCNjt/zRF1VAoU0AK/G4HCCtbdk2Clbwy
-         PpKYjWVzRDYLKEhYJIVJSUTedhHnqiVa//E4vwGPhhkkJ3xHbbAllzPM9jo0gTj89DTK
-         UBGw==
-X-Gm-Message-State: AOAM533hoDwIjnBmiuPjGHpGPXGZufdikugTy27od7TSaEmkLN0LF2g8
-        qsu9i+Fa9stFoCHaINq3OWCJ9q9cII8+fMsvs7s=
-X-Google-Smtp-Source: ABdhPJz5q85EwD3/aj1kdc+nqtInzbkI4flXkxwH0I396nyNgBpWZVnLpeswcdLEMaD6Tg/P1YMxz8/wnNLaWEBIHCA=
-X-Received: by 2002:a25:c7c6:: with SMTP id w189mr27390825ybe.403.1607396165705;
- Mon, 07 Dec 2020 18:56:05 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KQ9uRpmBuJGJjQzyCNv6aAvsoTL8pzGuqnCLRpSMCuE=;
+        b=pq8TOs1Na/+xExjNJpGzAt7DjU3Ye6yXxAXnBYSCG2LfhKluW41veZzlKynD4LV8H2
+         OzSApC8v1UXe7Ti6AO2YE6GlCDgbiWeWK5i9OhL35Q5wP1VLdjORfk9+2aVJC37+1qph
+         lc2aVreojQVgzay9q1dSCDO+lNQqsmcTnFqvcUtIN2q5XCWbOYPm/2sa6eb6fAXPxVcu
+         PVCraK9I3vNpkqIf0XMItaxYHgTHWXxL4+FUKPz+pk85WY/fbjKM1ULATnkf2wUusMXa
+         YK4Ax/W6A172CrR335Ylpxv7Ah9g8Va6LiajMX8OUz64wgUsRwYs0YgnGOia4JbP3++0
+         5gQQ==
+X-Gm-Message-State: AOAM532qC7UavFb0nGQXJ6CqA/Avx6o9zMW9iJwF1MgBDYDhbMrT4gLR
+        oQba90WIxhSWoVsi5ngj/HOd8dTZiWI=
+X-Google-Smtp-Source: ABdhPJwA6US2Pl81XZE38AJ1RVMqyM4bpDFYjf5ZTP8XIudG+4NI6thbos5Oq7vokil1MB1cw5lBeg==
+X-Received: by 2002:a17:902:b7cb:b029:db:c0d6:96ee with SMTP id v11-20020a170902b7cbb02900dbc0d696eemr864841plz.21.1607397130338;
+        Mon, 07 Dec 2020 19:12:10 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:400::5:7f0])
+        by smtp.gmail.com with ESMTPSA id a124sm16300222pfd.43.2020.12.07.19.12.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Dec 2020 19:12:09 -0800 (PST)
+Date:   Mon, 7 Dec 2020 19:12:06 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net,
+        kernel-team@fb.com
+Subject: Re: [PATCH bpf-next] libbpf: support module BTF for
+ BPF_TYPE_ID_TARGET CO-RE relocation
+Message-ID: <20201208031206.26mpjdbrvqljj7vl@ast-mbp>
+References: <20201205025140.443115-1-andrii@kernel.org>
+ <alpine.LRH.2.23.451.2012071623080.3652@localhost>
 MIME-Version: 1.0
-References: <20201204232002.3589803-1-andrii@kernel.org> <ea2478fc-45c4-6480-bba5-a956abf54f13@fb.com>
-In-Reply-To: <ea2478fc-45c4-6480-bba5-a956abf54f13@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 7 Dec 2020 18:55:54 -0800
-Message-ID: <CAEf4BzbE8ddJqj-uwJSJ19vWhgOpd-hbK34+JhdRo1PX-omY_w@mail.gmail.com>
-Subject: Re: [PATCH bpf] tools/bpftool: fix PID fetching with a lot of results
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LRH.2.23.451.2012071623080.3652@localhost>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Dec 5, 2020 at 11:11 AM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 12/4/20 3:20 PM, Andrii Nakryiko wrote:
-> > In case of having so many PID results that they don't fit into a singe page
-> > (4096) bytes, bpftool will erroneously conclude that it got corrupted data due
-> > to 4096 not being a multiple of struct pid_iter_entry, so the last entry will
-> > be partially truncated. Fix this by sizing the buffer to fit exactly N entries
-> > with no truncation in the middle of record.
-> >
-> > Fixes: d53dee3fe013 ("tools/bpftool: Show info for processes holding BPF map/prog/link/btf FDs")
+On Mon, Dec 07, 2020 at 04:38:16PM +0000, Alan Maguire wrote:
+> On Fri, 4 Dec 2020, Andrii Nakryiko wrote:
+> 
+> > When Clang emits ldimm64 instruction for BPF_TYPE_ID_TARGET CO-RE relocation,
+> > put module BTF FD, containing target type, into upper 32 bits of imm64.
+> > 
+> > Because this FD is internal to libbpf, it's very cumbersome to test this in
+> > selftests. Manual testing was performed with debug log messages sprinkled
+> > across selftests and libbpf, confirming expected values are substituted.
+> > Better testing will be performed as part of the work adding module BTF types
+> > support to  bpf_snprintf_btf() helpers.
+> > 
+> > Cc: Alan Maguire <alan.maguire@oracle.com>
 > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
->
-> Ack with one nit below.
->
-> Acked-by: Yonghong Song <yhs@fb.com>
->
 > > ---
-> >   tools/bpf/bpftool/pids.c | 4 ++--
-> >   1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/tools/bpf/bpftool/pids.c b/tools/bpf/bpftool/pids.c
-> > index df7d8ec76036..477e55d59c34 100644
-> > --- a/tools/bpf/bpftool/pids.c
-> > +++ b/tools/bpf/bpftool/pids.c
-> > @@ -89,9 +89,9 @@ libbpf_print_none(__maybe_unused enum libbpf_print_level level,
-> >
-> >   int build_obj_refs_table(struct obj_refs_table *table, enum bpf_obj_type type)
-> >   {
-> > -     char buf[4096];
-> > -     struct pid_iter_bpf *skel;
-> >       struct pid_iter_entry *e;
-> > +     char buf[4096 / sizeof(*e) * sizeof(*e)];
-> > +     struct pid_iter_bpf *skel;
->
-> No need to move "struct pid_iter_bpf *skel", right?
+> >  tools/lib/bpf/libbpf.c | 19 ++++++++++++++++---
+> >  1 file changed, 16 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index 9be88a90a4aa..539956f7920a 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -4795,6 +4795,7 @@ static int load_module_btfs(struct bpf_object *obj)
+> >  
+> >  		mod_btf = &obj->btf_modules[obj->btf_module_cnt++];
+> >  
+> > +		btf__set_fd(btf, fd);
+> >  		mod_btf->btf = btf;
+> >  		mod_btf->id = id;
+> >  		mod_btf->fd = fd;
+> > @@ -5445,6 +5446,10 @@ struct bpf_core_relo_res
+> >  	__u32 orig_type_id;
+> >  	__u32 new_sz;
+> >  	__u32 new_type_id;
+> > +	/* FD of the module BTF containing the target candidate, or 0 for
+> > +	 * vmlinux BTF
+> > +	 */
+> > +	int btf_obj_fd;
+> >  };
+> >  
+> >  /* Calculate original and target relocation values, given local and target
+> > @@ -5469,6 +5474,7 @@ static int bpf_core_calc_relo(const struct bpf_program *prog,
+> >  	res->fail_memsz_adjust = false;
+> >  	res->orig_sz = res->new_sz = 0;
+> >  	res->orig_type_id = res->new_type_id = 0;
+> > +	res->btf_obj_fd = 0;
+> >  
+> >  	if (core_relo_is_field_based(relo->kind)) {
+> >  		err = bpf_core_calc_field_relo(prog, relo, local_spec,
+> > @@ -5519,6 +5525,9 @@ static int bpf_core_calc_relo(const struct bpf_program *prog,
+> >  	} else if (core_relo_is_type_based(relo->kind)) {
+> >  		err = bpf_core_calc_type_relo(relo, local_spec, &res->orig_val);
+> >  		err = err ?: bpf_core_calc_type_relo(relo, targ_spec, &res->new_val);
+> > +		if (!err && relo->kind == BPF_TYPE_ID_TARGET &&
+> > +		    targ_spec->btf != prog->obj->btf_vmlinux) 
+> > +			res->btf_obj_fd = btf__fd(targ_spec->btf);
+> 
+> Sorry about this Andrii, but I'm a bit stuck here.
+> 
+> I'm struggling to get tests working where the obj fd is used to designate
+> the module BTF. Unless I'm missing something there are a few problems:
+> 
+> - the fd association is removed by libbpf when the BPF program has loaded; 
+> the module fds are closed and the module BTF is discarded.  However even if 
+> that isn't done (and as you mentioned, we could hold onto BTF that is in 
+> use, and I commented out the code that does that to test) - there's 
+> another problem:
+> - I can't see a way to use the object fd value we set here later in BPF 
+> program context; btf_get_by_fd() returns -EBADF as the fd is associated 
+> with the module BTF in the test's process context, not necessarily in 
+> the context that the BPF program is running.  Would it be possible in this 
+> case to use object id? Or is there another way to handle the fd->module 
+> BTF association that we need to make in BPF program context that I'm 
+> missing?
+> - A more long-term issue; if we use fds to specify module BTFs and write 
+> the object fd into the program, we can pin the BPF program such that it 
+> outlives fds that refer to its associated BTF.  So unless we pinned the 
+> BTF too, any code that assumed the BTF fd-> module mapping was valid would 
+> start to break once the user-space side went away and the pinned program 
+> persisted. 
 
-It's actually a move of `struct pid_iter_entry *e;` in from of char
-buf[], to be able to use sizeof(*e) instead of sizeof(struct
-pid_iter_bpf). It's just that diff tool didn't catch this properly :)
-
->
-> >       int err, ret, fd = -1, i;
-> >       libbpf_print_fn_t default_print;
-> >
-> >
+All of the above are not issues. They are features of FD based approach.
+When the program refers to btf via fd the verifier needs to increment btf's refcnt
+so it won't go away while the prog is running. For module's BTF it means
+that the module can be unloaded, but its BTF may stay around if there is a prog
+that needs to access it.
+I think the missing piece in the above is that btf_get_by_fd() should be
+done at load time instead of program run-time.
+Everything FD based needs to behave similar to map_fds where ld_imm64 insn
+contains map_fd that gets converted to map_ptr by the verifier at load time.
+In this case single ld_imm64 with 32-bit FD + 32-bit btf_id is not enough.
+So either libbpf or the verifier need to insert additional instruction.
+I'm not sure yet how to extend 'struct btf_ptr' cleanly, so it looks good
+from C side. 
+In the other patch I saw:
+struct btf_ptr {
+        void *ptr;
+        __u32 type_id;
+-       __u32 flags;            /* BTF ptr flags; unused at present. */
++       __u32 obj_id;           /* BTF object; vmlinux if 0 */
+ };
+The removal of flags cannot be done, since it will break progs.
+Probably something like this:
+struct btf_ptr {
+  void *ptr;
+  __u32 type_id;
+  __u32 flags;
+  __u64 btf_obj_fd; /* this is 32-bit FD for libbpf which will become pointer after load */
+};
+would be the most convenient from the bpf prog side. The ld_imm64 init of
+btf_obj_fd will be replaced with absolute btf pointer by the verifier. So when
+bpf_snprintf_btf() is called the prog will pass the kernel internal pointer
+of struct btf to the helper. No extra run-time checks needed.
+bpf_snprintf_btf() would print that type_id within given struct btf object.
+libbpf would need to deal with two relos. One to store btf_id from
+bpf_core_type_id_kernel() into type_id. And another to find module's BTF and
+store its FD into btf_obj_fd with ld_imm64. I'm still thinking to how to frame
+that cleanly from C side.
+Other ideas?
