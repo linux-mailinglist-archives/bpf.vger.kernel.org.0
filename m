@@ -2,343 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FFEB2D3660
-	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 23:41:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 122642D36FF
+	for <lists+bpf@lfdr.de>; Wed,  9 Dec 2020 00:41:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726421AbgLHWkN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Dec 2020 17:40:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29857 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725940AbgLHWkN (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 8 Dec 2020 17:40:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607467124;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PemhUXF6Fu0rU5mxUg5KHVvpDzfaZjWrXsz7h6lWqEg=;
-        b=fbebu61N6NnEqlO+M9KDNeHeRHtI3ifUTPz9UzrYUuzBFSG7OjH546Q/0ezbAPEp5r2XgU
-        A47jd4JgcNbtv2NxyV1Q0Iwa6QTnabGiZl/e/Duy9X0ndaq+y4FqOzls37SIUUDi8G6I/B
-        49CkxuD3tbC65nUc0zaB4W5TzzhYEcM=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-442-_98zJEIrM_GrOFWC-IVNag-1; Tue, 08 Dec 2020 17:38:43 -0500
-X-MC-Unique: _98zJEIrM_GrOFWC-IVNag-1
-Received: by mail-wr1-f72.google.com with SMTP id v5so23386wrr.0
-        for <bpf@vger.kernel.org>; Tue, 08 Dec 2020 14:38:42 -0800 (PST)
+        id S1731708AbgLHXkE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Dec 2020 18:40:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731698AbgLHXkE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Dec 2020 18:40:04 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65569C0613CF;
+        Tue,  8 Dec 2020 15:39:24 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id s2so148061plr.9;
+        Tue, 08 Dec 2020 15:39:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eADlgZ+VjApM3WW59Y7Aka72cQ/enDZQufZ1bqN1G7Y=;
+        b=PRYy90S2a10HzP8M3XAQCd6kxKLzsPGp5mxNW8EHVFF4pbThTcPjukcmB1kj4phiCr
+         jrUKM+h1rmpcfYc3Yi6vA0D4cGUr94JnDUI2EldL7edxiPc3/HylD0gJgi8GffHK4vY7
+         RaES8auVFkOqjWbprInGYS215fThr9uSo11mxJ0XHlWDpDlXDArxB1BDSvjDEaoxw1mH
+         k0H7t31cy7S84eCe1IKmXZ+55Dt7htvPPOenLOIgC0VCDCOU4MkxZk1+UlGXf/XzWmQv
+         DUUwZAxJcFnx7XXm7c7y+cxZyHhmRnm9ueB5P85nWQHofxSGqP3gDHbgFhIQLgHCEgrX
+         kDtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=PemhUXF6Fu0rU5mxUg5KHVvpDzfaZjWrXsz7h6lWqEg=;
-        b=g3sZOGjWilcu7uwkApNA6Ab9q0EJZXes9t6HT/xiJaUaa+Gj+acgLVOcj9cS3uWw8r
-         n7/HdjhCujv6mevp22faGHlIp7LuzOvcAGOhkfU3Fha+8dNY8h9kaYRHce/nRqDU7pt5
-         dcXoGAq23tYBc2ILmDk52bqZmat83wAF7N7NZzPLnRmaXfkO7yekFmSfm5+Sp2nvzpB3
-         AXwCTnT3DLPgvqb6+I1JDFOaDNkGlHK3Q8V+yUSY+1eT+a2CEofoF7wHQSNTBxVGkhqF
-         5JffQJ/9ox/xTWw80cCPbQDjPiMJRuz+7mQeIDgcZ3iXyM3sNRDw/Do4ERxwvfi6i+pv
-         HJkg==
-X-Gm-Message-State: AOAM533SBSo+cjUfmbsD229wXxPVpXpfo1ou40vLJC9d490klMfnMN1t
-        TtfNiOdJiEms2PQVwBVVJCG7VKXf6bw9kBQ79ndJl8aY3ilu3HwZ9BMk5nSTA2LhbOALoIeilkD
-        dUSKJ4TTabCLT
-X-Received: by 2002:a1c:cc19:: with SMTP id h25mr25848wmb.124.1607467121474;
-        Tue, 08 Dec 2020 14:38:41 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzdg8qopMo8XIZ+yLQhCChpTW+o92vfU8ZLu15v3ZKuTMtUyRgXkKVDkxpH79EVQdaiDPicOg==
-X-Received: by 2002:a1c:cc19:: with SMTP id h25mr25808wmb.124.1607467120738;
-        Tue, 08 Dec 2020 14:38:40 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id g184sm327437wma.16.2020.12.08.14.38.39
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eADlgZ+VjApM3WW59Y7Aka72cQ/enDZQufZ1bqN1G7Y=;
+        b=dfU83b9G61sW1JpMgp4Xnb1fC8rhmIBVoW2pTCyeOd4eT7s528FT62yABJRqA4x6GY
+         01DGtq/qNVLBi7KpgjmLrfSQ13o708iR4lx8r5jNqaQT4UYP/UYDwGcrMjPGFdJFcpof
+         oBFJSl/3UGGgNzXLgIIirsPM6vJlRSAS4IBscs3aUECsmRwitNtsUHpYjPV14jbCBj0L
+         PP+4nzJfob6Sveu4DtqC9qs1r1nQ1BTjbvGuJwDwBD/QnRKDGA6rKIWG4EOjPFGuXPrf
+         is3oIQ1Izbh8yROyknYwrht1O55+Cd6tE1pLYoeIkdUaNrA2/vRJEKke0QURk7JEfqlW
+         ae+Q==
+X-Gm-Message-State: AOAM5301ec8yzEIZfmDB8/W2QA4IpblkrrVtv6ulTM5/2ddDFpeywh40
+        js9ZYP/LmcyHKgzuCYIbN5E=
+X-Google-Smtp-Source: ABdhPJyRBhpBWukVk3kYVyTCafGf+5OHPBpsn3w8pRsIHVQVTrhyBCHCPp9DPczSHMfJQzQio7Qd6Q==
+X-Received: by 2002:a17:902:ed11:b029:da:3137:2695 with SMTP id b17-20020a170902ed11b02900da31372695mr309660pld.1.1607470763853;
+        Tue, 08 Dec 2020 15:39:23 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:400::5:42ab])
+        by smtp.gmail.com with ESMTPSA id 19sm266933pfn.133.2020.12.08.15.39.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 14:38:40 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 92FC2180002; Tue,  8 Dec 2020 23:38:39 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>
-Subject: Re: Latest libbpf fails to load programs compiled with old LLVM
-In-Reply-To: <CAEf4Bzb-b8eye6pi5JRPAL439Yx0FPcd64WwpQz57GPra7Jr_w@mail.gmail.com>
-References: <87lfeebwpu.fsf@toke.dk>
- <10679e62-50a2-4c01-31d2-cb79c01e4cbf@fb.com> <87r1o59aoc.fsf@toke.dk>
- <6801fcdb-932e-c185-22db-89987099b553@fb.com>
- <CAEf4BzZRu=sxEx7c8KGxSV1C6Aitrk01bSfabv5Bz+XUAMU6rg@mail.gmail.com>
- <875z5d7ufl.fsf@toke.dk>
- <CAEf4Bzb=zi6ew3fgAg29ZB0tcBw8xfEX-pRuMeAyYBiXp5ewTw@mail.gmail.com>
- <87czzkifef.fsf@toke.dk>
- <CAEf4Bzb-b8eye6pi5JRPAL439Yx0FPcd64WwpQz57GPra7Jr_w@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 08 Dec 2020 23:38:39 +0100
-Message-ID: <87lfe7q5xs.fsf@toke.dk>
+        Tue, 08 Dec 2020 15:39:23 -0800 (PST)
+Date:   Tue, 8 Dec 2020 15:39:20 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next] libbpf: support module BTF for
+ BPF_TYPE_ID_TARGET CO-RE relocation
+Message-ID: <20201208233920.qgrluwoafckvq476@ast-mbp>
+References: <20201205025140.443115-1-andrii@kernel.org>
+ <alpine.LRH.2.23.451.2012071623080.3652@localhost>
+ <20201208031206.26mpjdbrvqljj7vl@ast-mbp>
+ <CAEf4BzaXvFQzoYXbfutVn7A9ndQc9472SCK8Gj8R_Yj7=+rTcg@mail.gmail.com>
+ <alpine.LRH.2.23.451.2012082202450.25628@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LRH.2.23.451.2012082202450.25628@localhost>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+On Tue, Dec 08, 2020 at 10:13:35PM +0000, Alan Maguire wrote:
+> On Mon, 7 Dec 2020, Andrii Nakryiko wrote:
+> 
+> > On Mon, Dec 7, 2020 at 7:12 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Mon, Dec 07, 2020 at 04:38:16PM +0000, Alan Maguire wrote:
+> > > > Sorry about this Andrii, but I'm a bit stuck here.
+> > > >
+> > > > I'm struggling to get tests working where the obj fd is used to designate
+> > > > the module BTF. Unless I'm missing something there are a few problems:
+> > > >
+> > > > - the fd association is removed by libbpf when the BPF program has loaded;
+> > > > the module fds are closed and the module BTF is discarded.  However even if
+> > > > that isn't done (and as you mentioned, we could hold onto BTF that is in
+> > > > use, and I commented out the code that does that to test) - there's
+> > > > another problem:
+> > > > - I can't see a way to use the object fd value we set here later in BPF
+> > > > program context; btf_get_by_fd() returns -EBADF as the fd is associated
+> > > > with the module BTF in the test's process context, not necessarily in
+> > > > the context that the BPF program is running.  Would it be possible in this
+> > > > case to use object id? Or is there another way to handle the fd->module
+> > > > BTF association that we need to make in BPF program context that I'm
+> > > > missing?
+> > > > - A more long-term issue; if we use fds to specify module BTFs and write
+> > > > the object fd into the program, we can pin the BPF program such that it
+> > > > outlives fds that refer to its associated BTF.  So unless we pinned the
+> > > > BTF too, any code that assumed the BTF fd-> module mapping was valid would
+> > > > start to break once the user-space side went away and the pinned program
+> > > > persisted.
+> > >
+> > > All of the above are not issues. They are features of FD based approach.
+> > > When the program refers to btf via fd the verifier needs to increment btf's refcnt
+> > > so it won't go away while the prog is running. For module's BTF it means
+> > > that the module can be unloaded, but its BTF may stay around if there is a prog
+> > > that needs to access it.
+> > > I think the missing piece in the above is that btf_get_by_fd() should be
+> > > done at load time instead of program run-time.
+> > > Everything FD based needs to behave similar to map_fds where ld_imm64 insn
+> > > contains map_fd that gets converted to map_ptr by the verifier at load time.
+> > 
+> > Right. I was going to extend verifier to do the same for all used BTF
+> > objects as part of ksym support for module BTFs. So totally agree.
+> > Just didn't need it so far.
+> > 
+> 
+> Does this approach prevent more complex run-time specification of BTF 
+> object fd though?  For example, I've been working on a simple tracer 
+> focused on kernel debugging; it uses a BPF map entry for each kernel 
+> function that is traced. User-space populates the map entry with BTF type 
+> ids for the function arguments/return value, and when the BPF program 
+> runs it uses the instruction pointer to look up the map entry for that
+> function, and uses bpf_snprintf_btf() to write the string representations 
+> of the function arguments/return values.  I'll send out an RFC soon, 
+> but longer-term I was hoping to extend it to support module-specific 
+> types.  Would a dynamic case like that - where the BTF module fd is looked 
+> up in a map entry during program execution (rather than derived via 
+> __btf_builtin_type_id()) work too? Thanks!
 
-> On Tue, Dec 8, 2020 at 5:41 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
-hat.com> wrote:
->>
->> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->>
->> > On Mon, Dec 7, 2020 at 3:00 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@=
-redhat.com> wrote:
->> >>
->> >> Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
->> >>
->> >> > On Fri, Dec 4, 2020 at 9:55 AM Yonghong Song <yhs@fb.com> wrote:
->> >> >>
->> >> >>
->> >> >>
->> >> >> On 12/4/20 1:34 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> >> >> > Yonghong Song <yhs@fb.com> writes:
->> >> >> >
->> >> >> >> On 12/3/20 9:55 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> >> >> >>> Hi Andrii
->> >> >> >>>
->> >> >> >>> I noticed that recent libbpf versions fail to load BPF files c=
-ompiled
->> >> >> >>> with old versions of LLVM. E.g., if I compile xdp-tools with L=
-LVM 7 I
->> >> >> >>> get:
->> >> >> >>>
->> >> >> >>> $ sudo ./xdp-loader load testns ../lib/testing/xdp_drop.o -vv
->> >> >> >>> Loading 1 files on interface 'testns'.
->> >> >> >>> libbpf: loading ../lib/testing/xdp_drop.o
->> >> >> >>> libbpf: elf: section(3) prog, size 16, link 0, flags 6, type=
-=3D1
->> >> >> >>> libbpf: sec 'prog': failed to find program symbol at offset 0
->> >> >> >>> Couldn't open file '../lib/testing/xdp_drop.o': BPF object for=
-mat invalid
->> >> >> >>>
->> >> >> >>> The 'failed to find program symbol' error seems to have been i=
-ntroduced
->> >> >> >>> with commit c112239272c6 ("libbpf: Parse multi-function sectio=
-ns into
->> >> >> >>> multiple BPF programs").
->> >> >> >>>
->> >> >> >>> Looking at the object file in question, indeed it seems to not=
- have any
->> >> >> >>> function symbols defined:
->> >> >> >>>
->> >> >> >>> $  llvm-objdump --syms ../lib/testing/xdp_drop.o
->> >> >> >>>
->> >> >> >>> ../lib/testing/xdp_drop.o:  file format elf64-bpf
->> >> >> >>>
->> >> >> >>> SYMBOL TABLE:
->> >> >> >>> 0000000000000000 l       .debug_str 0000000000000000
->> >> >> >>> 0000000000000037 l       .debug_str 0000000000000000
->> >> >> >>> 0000000000000042 l       .debug_str 0000000000000000
->> >> >> >>> 0000000000000068 l       .debug_str 0000000000000000
->> >> >> >>> 0000000000000071 l       .debug_str 0000000000000000
->> >> >> >>> 0000000000000076 l       .debug_str 0000000000000000
->> >> >> >>> 000000000000008a l       .debug_str 0000000000000000
->> >> >> >>> 0000000000000097 l       .debug_str 0000000000000000
->> >> >> >>> 00000000000000a3 l       .debug_str 0000000000000000
->> >> >> >>> 00000000000000ac l       .debug_str 0000000000000000
->> >> >> >>> 00000000000000b5 l       .debug_str 0000000000000000
->> >> >> >>> 00000000000000bc l       .debug_str 0000000000000000
->> >> >> >>> 00000000000000c9 l       .debug_str 0000000000000000
->> >> >> >>> 00000000000000d4 l       .debug_str 0000000000000000
->> >> >> >>> 00000000000000dd l       .debug_str 0000000000000000
->> >> >> >>> 00000000000000e1 l       .debug_str 0000000000000000
->> >> >> >>> 00000000000000e5 l       .debug_str 0000000000000000
->> >> >> >>> 00000000000000ea l       .debug_str 0000000000000000
->> >> >> >>> 00000000000000f0 l       .debug_str 0000000000000000
->> >> >> >>> 00000000000000f9 l       .debug_str 0000000000000000
->> >> >> >>> 0000000000000103 l       .debug_str 0000000000000000
->> >> >> >>> 0000000000000113 l       .debug_str 0000000000000000
->> >> >> >>> 0000000000000122 l       .debug_str 0000000000000000
->> >> >> >>> 0000000000000131 l       .debug_str 0000000000000000
->> >> >> >>> 0000000000000000 l    d  prog       0000000000000000 prog
->> >> >> >>> 0000000000000000 l    d  .debug_abbrev      0000000000000000 .=
-debug_abbrev
->> >> >> >>> 0000000000000000 l    d  .debug_info        0000000000000000 .=
-debug_info
->> >> >> >>> 0000000000000000 l    d  .debug_frame       0000000000000000 .=
-debug_frame
->> >> >> >>> 0000000000000000 l    d  .debug_line        0000000000000000 .=
-debug_line
->> >> >> >>> 0000000000000000 g       license    0000000000000000 _license
->> >> >> >>> 0000000000000000 g       prog       0000000000000000 xdp_drop
->> >> >> >>>
->> >> >> >>>
->> >> >> >>> I assume this is because old LLVM versions simply don't emit t=
-hat symbol
->> >> >> >>> information?
->> >> >>
->> >> >> Thanks for the below instruction and xdp_drop.c file. I can reprod=
-uce
->> >> >> the issue now.
->> >> >>
->> >> >> I added another function 'xdp_drop1' in the same thing. Below is t=
-he
->> >> >> symbol table with llvm7 vs. llvm12.
->> >> >>
->> >> >> -bash-4.4$ llvm-readelf -symbols xdp-7.o | grep xdp_drop
->> >> >>      32: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT     3 xdp_d=
-rop
->> >> >>      33: 0000000000000010     0 NOTYPE  GLOBAL DEFAULT     3 xdp_d=
-rop1
->> >> >>
->> >> >>    [ 3] prog              PROGBITS        0000000000000000 000040 =
-000020
->> >> >> 00  AX  0   0  8
->> >> >>
->> >> >> -bash-4.4$ llvm-readelf -symbols xdp-12.o | grep xdp_drop
->> >> >>      32: 0000000000000000    16 FUNC    GLOBAL DEFAULT     3 xdp_d=
-rop
->> >> >>      33: 0000000000000010    16 FUNC    GLOBAL DEFAULT     3 xdp_d=
-rop1
->> >> >> -bash-4.4$
->> >> >>
->> >> >>    [ 3] prog              PROGBITS        0000000000000000 000040 =
-000020
->> >> >> 00  AX  0   0  8
->> >> >>
->> >> >>
->> >> >> Yes, llvm7 does not encode type and size for FUNC's. I guess libbp=
-f can
->> >> >> change to recognize NOTYPE and use the symbol value (representing =
-the
->> >> >> offset from the start of the section) and section size to
->> >> >> calculate the individual function size. This is more complicated t=
-han
->> >> >> elf file providing FUNC type and symbol size directly.
->> >> >
->> >> > I think we should just face the fact that LLVM7 is way too old to
->> >> > produce a sensible BPF ELF file layout. We can extend:
->> >> >
->> >> > libbpf: sec 'prog': failed to find program symbol at offset 0
->> >> > Couldn't open file '../lib/testing/xdp_drop.o': BPF object format i=
-nvalid
->> >> >
->> >> > with a suggestion to upgrade Clang/LLVM to something more recent, if
->> >> > that would be helpful.
->> >> >
->> >> > But I don't want to add error-prone checks and assumptions in the
->> >> > already quite complicated logic. Even the kernel itself maintains t=
-hat
->> >> > Clang 10+ needs to be used for its compilation. BPF CO-RE is also n=
-ot
->> >> > working with older than Clang10, so lots of people have already
->> >> > upgraded way beyond that.
->> >>
->> >> Wait, what? This is a regression that *breaks people's programs* on
->> >> compiler versions that are still very much in the wild! I mean, fine =
-if
->> >> you don't want to support new features on such files, but then surely=
- we
->> >> can at least revert back to the old behaviour?
->> >
->> > This is clearly a bug in LLVM7, which didn't produce correct ELF
->> > symbols, do we agree on that? libbpf used to handle such invalid ELF
->> > files *by accident* until it changed its internal logic to be more
->> > strict in v0.2. It became more strict and doesn't work with such
->> > invalid ELF files anymore. Does it need to add extra quirks to support
->> > such broken ELF? I don't think so.
->>
->> I don't know enough about the intricacies of the ELF format to say, but
->> I believe you when you say it's a bug. However, that doesn't change the
->> fact that from a user's PoV, something that was working before is now
->> broken, with the only change being a newer libbpf.
->>
->> This is not a theoretical concern, BTW, I discovered this due to
->> feedback from a partner that we've been pushing to adopt libbpf. When
->> they finally tried it out, the first thing they noticed is that their
->> programs wouldn't load due to this issue.
->>
->> Sure, I can tell them to just upgrade their toolchain (and I will), but
->> that still means we're back to "in order to use this library, you should
->> expect to keep chasing the latest version of the entire toolchain". And
->
-> Migrating from LLVM7 to something like LLVM10 or LLVM11 (not asking
-> for not-yet-released LLVM12) hardly qualifies as "chasing the latest
-> version". LLVM8 or LLVM9 might work for their simple use case either,
-> I haven't checked. Just please don't use the extremely outdated
-> toolchain that is (now) known to be broken. That's all I'm asking.
-
-"Extremely outdated" is very much subjective: It's only two years old,
-and still shipping as the current version in major Linux distributions.
-
-But fine, "we won't promise not to break compilers older than a year" is
-also a support statement, it's just not the one (I thought you were)
-making before.
-
-In any case, having a clearly stated expectation articulated somewhere
-would be very helpful. Something concrete like "expect to run an LLVM
-version no older than two stable releases"; just saying "it's stable"
-seems to be a tad too subjective, as evidenced by this discussion (and
-similar ones we've had before) :)
-
->> this is a much harder sell than "this is a stable library and upstream
->> takes backwards compatibility very serious", which I *thought* was the
->> expectation.
->
-> That's still true and I'd rather not go over the same discussion
-> again. But libbpf is also not a dumpster of work-arounds for all
-> possible bugs in the kernel and compiler. Libbpf does a lot of that
-> for backwards compatibility reasons, no need to deal with quirks of
-> buggy and very outdated compilers (and kernels, if there are obvious
-> bugs like this).
-
-Not adding new workarounds for things that were broken from the start is
-fine. But we're discussing a change that broke something that was
-working before. Look at the kernel stability policy: If something was
-working with an old kernel, we promise it will keep working on new ones,
-regardless of whether what it was doing is technically outside of some
-spec. *That's* a stability promise.
-
->> > Surely, users that can't upgrade LLVM7 to something less ancient, can
->> > stick to libbpf v0.1, that was lenient enough to accept such invalid
->> > ELF files. libbpf v0.2 was released more than a month ago, and so far
->> > you are the only one who noticed this "regression". So hopefully it's
->> > not super annoying to people and they would be accommodating enough to
->> > use more up to date compiler (and save themselves lots of trouble
->> > along the way).
->>
->> Oh, boy, do I envy your adoption rate for new versions! In my world I
->> would expect that by one month a few people who are very early adopters
->> have started noticing and maybe thinking about testing the new version :)
->
-> In practice with the new libbpf releases I've been getting reports
-> about something broken within a few days. So yeah, I'm a lucky guy, I
-> suppose.
-
-Don't mean to knock early testing, that's awesome. I'm just objecting to
-the converse implication (i.e., "if it doesn't show up in early testing
-it's not a real bug").
-
->> >> a section name, so it makes it convenient to load programs with 'ip'
->> >> without supplying the section name. However, I do realise this is not
->> >> the best of reasons, and I am not opposed to changing it. However...
->> >>
->> >> > I'm also going to emit warnings in libbpf soon for section names th=
-at
->> >> > don't follow proper libbpf naming pattern, so it would be good if y=
-ou
->> >> > could get ahead of the curve.
->> >>
->> >> ...this sounds like just another way to annoy users by breaking things
->> >> that were working before? :/
->> >
->> > It won't break, libbpf will emit a warning about the need to use
->> > proper section name format, which will start to be enforced only with
->> > major version bump. So that will give users plenty of time to make
->> > sure their BPF programs are compatible with stricter libbpf.
->>
->> Well see above re: different expectations for "plenty of time". But OK,
->> maybe this isn't as bad as I figured at first glance :)
->
-> So far libbpf releases were timed to Linux releases, so roughly one
-> every 2 months. libbpf 1.0 is unlikely to come sooner than 2 releases
-> out. So it's not like 2 weeks notice, right? Waiting for a year or
-> more seems excessive as well.
-
-Removing deprecated features on major release versions does seem
-reasonable. But do keep in mind that for some projects, adding a warning
-still constitutes "breaking the build" due to downstream policy.
-
--Toke
-
+fd has to be resolved in the process context. bpf prog can read fd
+number from the map, but that number is meaningless.
+Say we allow using btf_obj_id+btf_id, how user space will know these
+two numbers? Some new libbpf api that searches for it?
+An extension to libbpf_find_vmlinux_btf_id() ? I was hoping that this api
+will stay semi-internal. But say it's extended.
+The user space will store a pair of numbers into a map and
+what program are going to do with it?
+If it's printing struct veth_stats contents it should have attached to
+a corresponding function in the veth module via fentry or something.
+The prog has hard coded logic in C with specific pointer to print.
+The prog has its type right there. Why would the prog take a pointer
+from one place, but it's type_id from the map? That's not realistic.
+Where it would potentially make sense is what I think you're descring
+where single kprobe style prog attached to many places and args of
+those places are stored in a map and the prog selects them with
+map_lookup with key=PT_REGS_IP ?
+And passes pointers into bpf_snprintf_btf() from PT_REGS_PARM1() ?
+I see why that is useful, but it's so racy. By the time the map
+is populated those btf_obj_id+btf_id could be invalid.
+I think instead of doing this in user space the program needs an access
+to vmlinux+mods BTFs. Sort-of like proposed bpf helper to return ksym
+based on IP there could be a helper to figure out btf_id+btf_obj_POINTER
+based on IP. Then there will no need for external map to populate.
+Would that solve your use case?
