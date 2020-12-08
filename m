@@ -2,94 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 345E82D307C
-	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 18:04:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 194072D3085
+	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 18:06:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730295AbgLHRD6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Dec 2020 12:03:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47042 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729585AbgLHRD6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Dec 2020 12:03:58 -0500
-Date:   Tue, 8 Dec 2020 09:03:15 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607446998;
-        bh=hOxuE1yQii1MZ5uR5LWDKoL24MnmLt2SEUCCB265/ow=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Zy2Icuu6Tc/wAPCjg+hlXbwqWtI/np7rvQJKtMOPYjyv4FEfAqW+1AVNsxKCcRl7t
-         TW4Ejn07tpvAdxiHNRWpAZCA8IVmpUG1Pf7MwYnoSL1KKIBqTuzZzPOQnQflPxmNyT
-         cb+fskkE89kZaYau5mk5U/nJCUyr8D/8v2rN9nkxolTXENRB7dTUwVXN6fZxReOjb0
-         yEB5HcrgrNcDF7x5yw4LoxLOEhc2f9KekGiUmWQH3gAwNsf2bDCkK/X9l2WdaZvw9X
-         bcEreRZSpa5G+uVEqztFXnQ0zPN80WapmHRiK7z06NTfWp7bxyCzyAqvFA3Csk8nek
-         ehgqZ3I8dbXfw==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
+        id S1730626AbgLHRFQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Dec 2020 12:05:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730568AbgLHRFQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Dec 2020 12:05:16 -0500
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2174DC061793
+        for <bpf@vger.kernel.org>; Tue,  8 Dec 2020 09:04:36 -0800 (PST)
+Received: by mail-wr1-x442.google.com with SMTP id c1so5028080wrq.6
+        for <bpf@vger.kernel.org>; Tue, 08 Dec 2020 09:04:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RE0ZyDjS9csHRr+SxXqoIyxGXkIUMbwk5h1vfdVY/Jo=;
+        b=sHlLDbSAF1DHYdjAU2pYOuCdGNMyW0m8wRXesU4XKzdY7L8cOA7KxxWcIyncPuP/Rf
+         J5BMIUU1VUeu7dJep3IeI4J1P7fWgkWZfiN9lpjieRsuVKTRBxIXDFl82TdM3yestIgI
+         thpEfYzDr+j8vl8CJgOhItUm8gw0FDjF8yeTypCo6xsHJhelJRzl4ecDaybLPmkiQiGR
+         e/q/jZRaRfzLCm+kaQzRjA2tBOQGX3p//WfiweKUZzk9/4O05taoof1qznyXp35Yd6TG
+         /bAN33zHiuwKk1KFHRqIgDE+XsR/G/d4m50ymoIf6GxU4KdAnbszijyDW0JgPxDv7wWW
+         8IlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RE0ZyDjS9csHRr+SxXqoIyxGXkIUMbwk5h1vfdVY/Jo=;
+        b=rwKcZyWGBqBOc7mFUmgjVnIfAIdpFxNWbS/Llg9NffnT/bmHcve/lGE6gBOoANqkOl
+         Yof8HJO63R3trRX/LRgSPU7dCGrfHpC6ugJhMD3T2ePFeukvXb0v8S1TzXPyGcvOHMAw
+         hJDeL6V3S+j77QjfF0eK9i5tHSg6FNlbboC7whQp2QVfK2wTcZFaSjMBl97gu2Oni/CV
+         ygkZjih/dfvbBbWxDUWkXT5NHFLc57Ebq/lMv9df+acr1+bLskwY3c3jQsr3eQbmWVSX
+         lq6o8xNWvvjhDeZ1JP92sbrVIoLxua6Nk8H7NRMzaPo4uI9o5vgBh4qZxygs3r59+0pK
+         1wfw==
+X-Gm-Message-State: AOAM5330NUhp2A89NhPZzU7dsRCeVYIw0Jzqoy3bVS+RNPfbNIi3V+DA
+        mBB7KM5945pDvnCRsZ5ZT55jTQ==
+X-Google-Smtp-Source: ABdhPJyIqFaUGn8WR2vjV5uSHTLO4k57M1T9jQtvOKXr26z8FICzPerdL4TvpBshQfn1WT/csPmoJQ==
+X-Received: by 2002:a05:6000:4b:: with SMTP id k11mr2533857wrx.76.1607447074798;
+        Tue, 08 Dec 2020 09:04:34 -0800 (PST)
+Received: from google.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
+        by smtp.gmail.com with ESMTPSA id 35sm20913983wro.71.2020.12.08.09.04.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 09:04:33 -0800 (PST)
+Date:   Tue, 8 Dec 2020 17:04:29 +0000
+From:   Brendan Jackman <jackmanb@google.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Romain Perier <romain.perier@gmail.com>,
-        Allen Pais <apais@linux.microsoft.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Simon Horman <simon.horman@netronome.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        Jiri Benc <jbenc@redhat.com>, oss-drivers@netronome.com,
-        linux-omap@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH bpf v2 0/7] selftests/bpf: Restore test_offload.py to
- working order
-Message-ID: <20201208090315.5106c049@kicinski-fedora-pc1c0hjn.DHCP.thefacebook.com>
-In-Reply-To: <87360gidoo.fsf@toke.dk>
-References: <160708272217.192754.14019805999368221369.stgit@toke.dk>
-        <87360gidoo.fsf@toke.dk>
+        Florent Revest <revest@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jann Horn <jannh@google.com>
+Subject: Re: [PATCH bpf-next v3 12/14] bpf: Pull tools/build/feature biz into
+ selftests Makefile
+Message-ID: <X8+yHRxv2g7dXeNP@google.com>
+References: <20201203160245.1014867-1-jackmanb@google.com>
+ <20201203160245.1014867-13-jackmanb@google.com>
+ <CAEf4BzbEfPScq_qMVJkDxfWBh-oRhY5phFr=517pam80YcpgMg@mail.gmail.com>
+ <X8oEOPViOhR8XdH6@google.com>
+ <CAEf4BzaEystdQ3PbaZXhmpTfqbs410BVCEToHfKLgx-3wAm-KA@mail.gmail.com>
+ <X84LPVp3PqfESx9U@google.com>
+ <CAEf4BzbQyyN620oOaK4Tc=0tju0-NuOQYESCrsOLPAmBjRD9Zw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzbQyyN620oOaK4Tc=0tju0-NuOQYESCrsOLPAmBjRD9Zw@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 08 Dec 2020 15:18:31 +0100 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> writes:
->=20
-> > This series restores the test_offload.py selftest to working order. It =
-seems a
-> > number of subtle behavioural changes have crept into various subsystems=
- which
-> > broke test_offload.py in a number of ways. Most of these are fairly ben=
-ign
-> > changes where small adjustments to the test script seems to be the best=
- fix, but
-> > one is an actual kernel bug that I've observed in the wild caused by a =
-bad
-> > interaction between xdp_attachment_flags_ok() and the rework of XDP pro=
-gram
-> > handling in the core netdev code.
+On Mon, Dec 07, 2020 at 06:19:12PM -0800, Andrii Nakryiko wrote:
+> On Mon, Dec 7, 2020 at 3:00 AM Brendan Jackman <jackmanb@google.com> wrote:
 > >
-> > Patch 1 fixes the bug by removing xdp_attachment_flags_ok(), and the re=
-minder of
-> > the patches are adjustments to test_offload.py, including a new feature=
- for
-> > netdevsim to force a BPF verification fail. Please see the individual p=
-atches
-> > for details.
+> > On Fri, Dec 04, 2020 at 11:00:24AM -0800, Andrii Nakryiko wrote:
+> > > On Fri, Dec 4, 2020 at 1:41 AM Brendan Jackman <jackmanb@google.com> wrote:
+> > > >
+> > > > On Thu, Dec 03, 2020 at 01:01:27PM -0800, Andrii Nakryiko wrote:
+> > > > > On Thu, Dec 3, 2020 at 8:07 AM Brendan Jackman <jackmanb@google.com> wrote:
+> > > > > >
+[...]
 > >
-> > Changelog:
+> > Ah right gotcha. Then yeah I think we can do this:
 > >
-> > v2:
-> > - Replace xdp_attachment_flags_ok() with a check in dev_xdp_attach()
-> > - Better packing of struct nsim_dev =20
->=20
-> Any feedback on v2? Would be great to get it merged before the final
-> 5.10 release :)
+> >  BPF_ATOMICS_SUPPORTED = $(shell \
+> >         echo "int x = 0; int foo(void) { return __sync_val_compare_and_swap(&x, 1, 2); }" \
+> >         | $(CLANG) -x cpp-output -S -target bpf -mcpu=v3 - -o /dev/null && echo 1 || echo 0)
+> 
+> Looks like it would work, yes.
+/
+> Curious what "-x cpp-output" does?
 
-LGTM but if my opinion mattered this could would not have been changed
-in the first place :)
+That's just to tell Clang what language to expect, since it can't infer
+it from a file extension:
+
+  $ echo foo | clang -S -
+  clang-10: error: -E or -x required when input is from standard input
+
+Yonghong pointed out that we can actually just use `-x c`.
