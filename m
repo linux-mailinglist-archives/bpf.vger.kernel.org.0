@@ -2,126 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 740B22D24C4
-	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 08:44:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9BAF2D24F4
+	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 08:52:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727555AbgLHHnW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Dec 2020 02:43:22 -0500
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:45786 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727553AbgLHHnW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Dec 2020 02:43:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1607413401; x=1638949401;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=T8wT7HHeLn/LSS2Bl2+pBce5pFFczv34J3fkqjLaloI=;
-  b=Ood+wUcoEnEXOcMzIkB1oGV38JpRtYr8rizv3DlWdb4+OpT6N12lr449
-   SS1QhFG30sBfZm8Mupxj6F4/CKEqLSHF8PKkWkPojsy8oAEeeBudHvM2I
-   5GqIhvOaWb/TggcgR1idabmsQs1PsKn7ebJbt1mg+c0EtRSnjMtg1y62Y
-   Q=;
-X-IronPort-AV: E=Sophos;i="5.78,401,1599523200"; 
-   d="scan'208";a="101236346"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-119b4f96.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 08 Dec 2020 07:42:41 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2a-119b4f96.us-west-2.amazon.com (Postfix) with ESMTPS id ED8C81A0B6D;
-        Tue,  8 Dec 2020 07:42:39 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 8 Dec 2020 07:42:39 +0000
-Received: from 38f9d3582de7.ant.amazon.com (10.43.162.53) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 8 Dec 2020 07:42:34 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     <kafai@fb.com>
-CC:     <ast@kernel.org>, <benh@amazon.com>, <bpf@vger.kernel.org>,
-        <daniel@iogearbox.net>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <kuni1840@gmail.com>,
-        <kuniyu@amazon.co.jp>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <osa-contribution-log@amazon.com>
-Subject: Re: [PATCH v1 bpf-next 03/11] tcp: Migrate TCP_ESTABLISHED/TCP_SYN_RECV sockets in accept queues.
-Date:   Tue, 8 Dec 2020 16:42:30 +0900
-Message-ID: <20201208074230.35109-1-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.17.2 (Apple Git-113)
-In-Reply-To: <20201208065418.ne75jprdbpglrgal@kafai-mbp.dhcp.thefacebook.com>
-References: <20201208065418.ne75jprdbpglrgal@kafai-mbp.dhcp.thefacebook.com>
+        id S1727325AbgLHHwO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Dec 2020 02:52:14 -0500
+Received: from mout.kundenserver.de ([217.72.192.74]:33995 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726829AbgLHHwO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Dec 2020 02:52:14 -0500
+Received: from [192.168.1.155] ([95.117.39.192]) by mrelayeu.kundenserver.de
+ (mreue106 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1N3K9E-1k4AHh0uGY-010MJG; Tue, 08 Dec 2020 08:49:07 +0100
+Subject: Re: [PATCH 2/7] net: batman-adv: remove unneeded MODULE_VERSION()
+ usage
+To:     Sven Eckelmann <sven@narfation.org>, linux-kernel@vger.kernel.org,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>
+Cc:     davem@davemloft.net, kuba@kernel.org, mareklindner@neomailbox.ch,
+        sw@simonwunderlich.de, a@unstable.cc, marcel@holtmann.org,
+        johan.hedberg@gmail.com, roopa@nvidia.com, nikolay@nvidia.com,
+        edumazet@google.com, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
+        jmaloy@redhat.com, ying.xue@windriver.com, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@chromium.org, netdev@vger.kernel.org,
+        linux-bluetooth@vger.kernel.org,
+        tipc-discussion@lists.sourceforge.net,
+        linux-hyperv@vger.kernel.org, bpf@vger.kernel.org,
+        Matthias Schiffer <mschiffer@universe-factory.net>
+References: <20201202124959.29209-1-info@metux.net>
+ <20201202124959.29209-2-info@metux.net> <4581108.GXAFRqVoOG@sven-edge>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <ca5c17a1-dea5-83eb-f9c5-a027b4135fec@metux.net>
+Date:   Tue, 8 Dec 2020 08:48:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.162.53]
-X-ClientProxiedBy: EX13D48UWB002.ant.amazon.com (10.43.163.125) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
+In-Reply-To: <4581108.GXAFRqVoOG@sven-edge>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:h8bNmxElVyI3h1+Nyku7bHTBtAaOLvHvVsdC9bGyQSsOED5F3Cj
+ Dc5QkiVs/ZBk+NcKthsQ230rBqEUcOorknjtkvuApOrZrlTzCKFWSUnpYoTvRnBQ4n7m5EX
+ chK0eoerQcDZwBWU+W3OKlYH/Ri950fzERNDDw6FyrvGorgAuRfxsVw3N3sEWxfmiqmiDwO
+ RvekdPs8+NG/Ta/hS2v8w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:kef8D6LPYu0=:cmiNBIxEZx0KDmv/6+ogX9
+ rlkms8HLbna+KOViXb6Yx5vDMQXZye2NsFlbGfczMFgZK4Q+8QhID395GyHrIrVMCr+8r3IxK
+ WPdLiaL/wx4J5jLXC7H6Luj2Gp3xbNHwOBMDcfPiQaFrdG07bSg3xoBEFvxVYwJVNMy0seo4H
+ f9FydN4pNU1mPzg/UK/ZmGZKNtZI6REeZkESqQTZ2u4eSgyTCZoAkZ4z7uTX5u5hJb1OELyl5
+ 1udFyf0bbAfy9jHRP+IjVpL7gyOg3xaS/oz3t4q+ItyJc2fukz2VjQJ4wUviRURaa1kDTy6La
+ ulk0bOzva4qTrIn3ZYQCqu1HKgrOdWUfQB+CKg2eakKglOJKRwtKBMyLF2dJDLUrisYb5btjo
+ gWtJ6npcQCS4tVy9gmvwiKjIBEDunzK/1UIPOw6FgipIT1X8OHlBuAKH5FTIX
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From:   Martin KaFai Lau <kafai@fb.com>
-Date:   Mon, 7 Dec 2020 22:54:18 -0800
-> On Tue, Dec 01, 2020 at 11:44:10PM +0900, Kuniyuki Iwashima wrote:
-> 
-> > @@ -242,8 +244,12 @@ void reuseport_detach_sock(struct sock *sk)
-> >  
-> >  		reuse->num_socks--;
-> >  		reuse->socks[i] = reuse->socks[reuse->num_socks];
-> > +		prog = rcu_dereference(reuse->prog);
-> >  
-> >  		if (sk->sk_protocol == IPPROTO_TCP) {
-> > +			if (reuse->num_socks && !prog)
-> > +				nsk = i == reuse->num_socks ? reuse->socks[i - 1] : reuse->socks[i];
-> I asked in the earlier thread if the primary use case is to only
-> use the bpf prog to pick.  That thread did not come to
-> a solid answer but did conclude that the sysctl should not
-> control the behavior of the BPF_SK_REUSEPORT_SELECT_OR_MIGRATE prog.
-> 
-> From this change here, it seems it is still desired to only depend
-> on the kernel to random pick even when no bpf prog is attached.
+On 05.12.20 08:06, Sven Eckelmann wrote:
 
-I wrote this way only to split patches into tcp and bpf parts.
-So, in the 10th patch, eBPF prog is run if the type is
-BPF_SK_REUSEPORT_SELECT_OR_MIGRATE.
-https://lore.kernel.org/netdev/20201201144418.35045-11-kuniyu@amazon.co.jp/
+Hi,
 
-But, it makes a breakage, so I will move
-BPF_SK_REUSEPORT_SELECT_OR_MIGRATE validation into 10th patch so that the
-type is only available after 10th patch.
+> Is there some explanation besides an opinion? Some kind goal which you want to 
+> achieve with it maybe?
 
----8<---
-	case BPF_PROG_TYPE_SK_REUSEPORT:
-		switch (expected_attach_type) {
-		case BPF_SK_REUSEPORT_SELECT:
-		case BPF_SK_REUSEPORT_SELECT_OR_MIGRATE: <- move to 10th.
-			return 0;
-		default:
-			return -EINVAL;
-		}
----8<---
+Just a cleanup. I've been under the impression that this version is just
+an relic from oot times.
+
+> At least for us it was an easy way to query the release cycle information via 
+> batctl. Which made it easier for us to roughly figure out what an reporter/
+> inquirer was using - independent of whether he is using the in-kernel version 
+> or a backported version.
+
+Is the OOT scenario still valid ?
+
+> Loosing this source of information and breaking parts of batctl and other 
+> tools (respondd, ...) is not the end of the world. But I would at least know 
+> why this is now necessary.
+
+Okay, if this particular information indeed has a practical value, we
+should keep it. Taking it as a NAK.
+
+Perhaps we should add a comment what it's used for and make sure, the
+version number is properly maintained.
+
+The problem I see w/ those version fields is that we have lots of
+changes in the kernel tree, w/o the version number being increased -
+making this information at least doubtful.
 
 
-> If that is the case, a sysctl to guard here for not changing
-> the current behavior makes sense.
-> It should still only control the non-bpf-pick behavior:
-> when the sysctl is on, the kernel will still do a random pick
-> when there is no bpf prog attached to the reuseport group.
-> Thoughts?
+--mtx
 
-If different applications listen on the same port without eBPF prog, I
-think sysctl is necessary. But honestly, I am not sure there is really such
-a case and sysctl is necessary.
-
-If patcheset with sysctl is more acceptable, I will add it back in the next
-spin.
-
-
-> > +
-> >  			reuse->num_closed_socks++;
-> >  			reuse->socks[reuse->max_socks - reuse->num_closed_socks] = sk;
-> >  		} else {
-> > @@ -264,6 +270,8 @@ void reuseport_detach_sock(struct sock *sk)
-> >  		call_rcu(&reuse->rcu, reuseport_free_rcu);
-> >  out:
-> >  	spin_unlock_bh(&reuseport_lock);
-> > +
-> > +	return nsk;
-> >  }
-> >  EXPORT_SYMBOL(reuseport_detach_sock);
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
