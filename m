@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A0532D22EF
-	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 06:14:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E819D2D2340
+	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 06:32:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725906AbgLHFOd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Dec 2020 00:14:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36630 "EHLO
+        id S1726508AbgLHFc3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Dec 2020 00:32:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725801AbgLHFOd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Dec 2020 00:14:33 -0500
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F30A5C061749;
-        Mon,  7 Dec 2020 21:13:46 -0800 (PST)
-Received: by mail-oi1-x244.google.com with SMTP id l200so18176594oig.9;
-        Mon, 07 Dec 2020 21:13:46 -0800 (PST)
+        with ESMTP id S1726068AbgLHFc3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Dec 2020 00:32:29 -0500
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E82CDC061749;
+        Mon,  7 Dec 2020 21:31:48 -0800 (PST)
+Received: by mail-oi1-x22a.google.com with SMTP id s75so15168265oih.1;
+        Mon, 07 Dec 2020 21:31:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=sadeGNSRFPIoFTYVcdnZgjQ48y5NGBk9I5/A99DQWxI=;
-        b=cpVQ2N3UgmfVIMaW6R2J3zD6cpcTbxMKt3p989Si/sfb4z4ZV7G7BW8MahYbrh9NXv
-         vWP0ADO22BMuB+0IzKhtV78tueAQETXob4RzsVu9nPlYCgHY5T4nWRZNW8O+nnYHIrzv
-         xvcaaUka8DfQzoK26lm2xSO9IUCOoIX5UNeLzuxLO0CZrlmTRzTvAQrlABeNmO97Z9TS
-         AH7ZVil+/KwsPA5SXsijirdQWsh5E4YG7fAwMp8Crcxgn5o0KIbLdQpozumJWUFDBqmT
-         qsLt/ejhpH23deonD4c1081rIQXY8l1IH1e7Lh+x+cEJ/EtBYeUQ8qPhYV+ggL5g8pSV
-         jNSg==
+        bh=F/C3M7PpJplaz2NlfMsMr7Z2jIBADqhdF6BrYFQrE2U=;
+        b=uPiDefoQYkKUSYVjpVcGFbjGGdgwvk2tmiacvGTPf1f1XKPLLEnQVTwTCx8tWNScnC
+         5j6c5sfjBEHrnhNhCj80/FWk0MTp670DUW5Dv4G2IUCx3Yd324y+YBTw3C7sot2KNTxS
+         eCd3u/BKvQq6Lpsj9pg4Rx9/ID1ezkPBxSBAbr8Jo3UhV8nfB4LGtur/M6evKWpsYeYr
+         Kta/pLzpmNREVmoWhp6gm736Rm4VmhVwhQGYxgwokNPamv1ZXQjxZyDMm48/vCgeZrty
+         wSK63DtyX5nZNX5tTgWgFTkRVDrwHvF2voN8metmYSxDRY2JPRc2BNn9ZyShUI48DnYx
+         jpbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=sadeGNSRFPIoFTYVcdnZgjQ48y5NGBk9I5/A99DQWxI=;
-        b=EhSmINKde7lSdtTfhZQKAqftnrgm/M737GSJkanJfQgWbaSlMfXierN3r/jjNoHRbv
-         9N5wT23Wb14bMcYaW5gU/LFvq2OcXOyLkkJoz5Zv/w0oR0BLdKOioUkAq9NkdvsoEgNm
-         wEEeY2OQSgbLmrUuylzZM5bRr/nbvsScWA9gV6EfPb2icID6JX/JgZTzJPOLigTsojTl
-         jQCcd9tFuAbMzqTgjdQ+5hWpzQlvWQJR0PlBaZTUhh4ApvDIPTJylqYDvXm4CrtUmCWJ
-         41b0XpudlLcot9n14whBVqLFWca40ZOV4nTCFPL34lorM0+CbeWrxNz50x07MwNu+9YL
-         nVZw==
-X-Gm-Message-State: AOAM531J0nY1I/wbQCSAajHZvnq/YDiiGXIaIm5GLrptaU3+2eBZ7q6R
-        /Sdz1ZXjBz4szq1/5Q/is7Y=
-X-Google-Smtp-Source: ABdhPJwvgYPuGDuISfyb1O2jLRFnr7KA0IUoNzmcX4++qlC6Wglm7ptMgEUFuTZNZAPknczARLNy4Q==
-X-Received: by 2002:aca:f456:: with SMTP id s83mr1505805oih.58.1607404426497;
-        Mon, 07 Dec 2020 21:13:46 -0800 (PST)
+        bh=F/C3M7PpJplaz2NlfMsMr7Z2jIBADqhdF6BrYFQrE2U=;
+        b=Yj3+PodwHv4IHqN6pEM54QjgYmla+7zdSq5uCsHEPb4Cvl24ck0M70n8Ym7PhGiwEM
+         vzu1lhXtqtk0n0+tKMP4cnBS3UMjgWFPhyMDHzbSKL7O2i78fvjezgJK40lHBrReqlJ7
+         PUTf0bC1sXMiQ6WDPT1Q3RgnJ3aiaTsn9xYWSiaEe43ePJY9m13B58ff4F/d+OiI6h+F
+         gBeirQPdsfhEjYLHUkz2lKm7t+NTTxmAfAAXsIVTjy2pbJBiXtNwoNTqovKdePnu96Yl
+         RITqXEgIIYSL55XKgvsfFmtVgdORhVpWK2Qb1jOBl93xr0O8JbKJsqsyQy+JxvfHGw4U
+         K6og==
+X-Gm-Message-State: AOAM5324hFs+SPHM4q2CLyBpS9jqpRLl8Hhgtm9JNWLKOGg3PlsW+BwK
+        0K4Z0pOSaCCF7ZK1lEUH8Tc=
+X-Google-Smtp-Source: ABdhPJx81dPrD6uJgJG8T7kA9bYfspa122kKDg8FYUgX72z8Wkl9JIPiXbCZyYapxK4XUnxjFnoHoQ==
+X-Received: by 2002:aca:2411:: with SMTP id n17mr1539117oic.43.1607405508392;
+        Mon, 07 Dec 2020 21:31:48 -0800 (PST)
 Received: from localhost ([184.21.204.5])
-        by smtp.gmail.com with ESMTPSA id v5sm3131017oob.40.2020.12.07.21.13.44
+        by smtp.gmail.com with ESMTPSA id k30sm2930191ool.34.2020.12.07.21.31.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 21:13:45 -0800 (PST)
-Date:   Mon, 07 Dec 2020 21:13:40 -0800
+        Mon, 07 Dec 2020 21:31:47 -0800 (PST)
+Date:   Mon, 07 Dec 2020 21:31:40 -0800
 From:   John Fastabend <john.fastabend@gmail.com>
 To:     Brendan Jackman <jackmanb@google.com>, bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
@@ -56,12 +56,12 @@ Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
         Florent Revest <revest@chromium.org>,
         linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>,
         Brendan Jackman <jackmanb@google.com>
-Message-ID: <5fcf0b8413fe_9ab3208ce@john-XPS-13-9370.notmuch>
-In-Reply-To: <20201207160734.2345502-6-jackmanb@google.com>
+Message-ID: <5fcf0fbcc8aa8_9ab320853@john-XPS-13-9370.notmuch>
+In-Reply-To: <20201207160734.2345502-7-jackmanb@google.com>
 References: <20201207160734.2345502-1-jackmanb@google.com>
- <20201207160734.2345502-6-jackmanb@google.com>
-Subject: RE: [PATCH bpf-next v4 05/11] bpf: Move BPF_STX reserved field check
- into BPF_STX verifier code
+ <20201207160734.2345502-7-jackmanb@google.com>
+Subject: RE: [PATCH bpf-next v4 06/11] bpf: Add BPF_FETCH field / create
+ atomic_fetch_add instruction
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -71,12 +71,59 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Brendan Jackman wrote:
-> I can't find a reason why this code is in resolve_pseudo_ldimm64;
-> since I'll be modifying it in a subsequent commit, tidy it up.
+> The BPF_FETCH field can be set in bpf_insn.imm, for BPF_ATOMIC
+> instructions, in order to have the previous value of the
+> atomically-modified memory location loaded into the src register
+> after an atomic op is carried out.
 > 
+> Suggested-by: Yonghong Song <yhs@fb.com>
 > Signed-off-by: Brendan Jackman <jackmanb@google.com>
 > ---
->  kernel/bpf/verifier.c | 13 ++++++-------
->  1 file changed, 6 insertions(+), 7 deletions(-)
+
+I like Yonghong suggestion 
+
+ #define BPF_ATOMIC_FETCH_ADD(SIZE, DST, SRC, OFF)               \
+     BPF_ATOMIC(SIZE, DST, SRC, OFF, BPF_ADD | BPF_FETCH)
+
+otherwise LGTM. One observation to consider below.
 
 Acked-by: John Fastabend <john.fastabend@gmail.com>
+
+>  arch/x86/net/bpf_jit_comp.c    |  4 ++++
+>  include/linux/filter.h         |  1 +
+>  include/uapi/linux/bpf.h       |  3 +++
+>  kernel/bpf/core.c              | 13 +++++++++++++
+>  kernel/bpf/disasm.c            |  7 +++++++
+>  kernel/bpf/verifier.c          | 33 ++++++++++++++++++++++++---------
+>  tools/include/linux/filter.h   | 11 +++++++++++
+>  tools/include/uapi/linux/bpf.h |  3 +++
+>  8 files changed, 66 insertions(+), 9 deletions(-)
+
+[...]
+
+> @@ -3652,8 +3656,20 @@ static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_i
+>  		return err;
+>  
+>  	/* check whether we can write into the same memory */
+> -	return check_mem_access(env, insn_idx, insn->dst_reg, insn->off,
+> -				BPF_SIZE(insn->code), BPF_WRITE, -1, true);
+> +	err = check_mem_access(env, insn_idx, insn->dst_reg, insn->off,
+> +			       BPF_SIZE(insn->code), BPF_WRITE, -1, true);
+> +	if (err)
+> +		return err;
+> +
+> +	if (!(insn->imm & BPF_FETCH))
+> +		return 0;
+> +
+> +	/* check and record load of old value into src reg  */
+> +	err = check_reg_arg(env, insn->src_reg, DST_OP);
+
+This will mark the reg unknown. I think this is fine here. Might be nice
+to carry bounds through though if possible
+
+> +	if (err)
+> +		return err;
+> +
+> +	return 0;
+>  }
+>  
