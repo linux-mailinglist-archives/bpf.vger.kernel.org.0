@@ -2,87 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F22A32D3391
-	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 21:28:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85D562D3350
+	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 21:27:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725874AbgLHUWE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Dec 2020 15:22:04 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:51209 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728234AbgLHUWD (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 8 Dec 2020 15:22:03 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id E000F5C0132;
-        Tue,  8 Dec 2020 13:57:51 -0500 (EST)
-Received: from imap35 ([10.202.2.85])
-  by compute3.internal (MEProxy); Tue, 08 Dec 2020 13:57:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        mime-version:message-id:in-reply-to:references:date:from:to
-        :subject:content-type; s=fm2; bh=M8pV4upo7ii74Z1m3AgToI7ZZ4ezJK7
-        OMZqHyoEiglM=; b=go4KlqL1DmnglLSwQgnaJv3DjgaZc0ll6Ear2WO2eBru6xf
-        GSTV65cgWXBctcXTnFlvEM8yEGciQHVplUosmVYAE7LociA8HAm7tLGGverIL/xY
-        hUGoSw5vbkYYTxzv3PfI4vfEsD1Eqv2C51L/pR45h6ls3yzw/xa62JBIt+5DDWrR
-        o1dVpDJifgoNDWbIz+xP5K43ZyfXwY4GhVQxiFHdKbuoeWKV7iodlKb1EYqlBycL
-        xzUPJxYsqNQU3bWsXnSyAKCEPQ4hYjLZVG7MDWv/LG88jy6W+3boi42FoofIW5Vh
-        GMdBlgV9Tino1Cb4IEKqqLv/2V/ThCViMdW8o1g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=M8pV4u
-        po7ii74Z1m3AgToI7ZZ4ezJK7OMZqHyoEiglM=; b=OrrxGqQd4y9maIvSc/FWy+
-        8jimWXxUjneaQ8hPv/32xLXGW5vf7KmoV4Rihr/K4O5qGLuiTzDxiJv2FBsmgkVH
-        YD/8dLlNGdCCqnaTrHg/1Q+45Sx3MkpuvteqPtM6b2TreZVKf+WnzOumWvYqHlnw
-        10OBAS3Ed+imqgYZqxDXRz289/lS1c7pDeza3OMU8Hb6RnK5SdLSeEt6gEgUTMrZ
-        vE5YkJN7+7nL68eBVLfUFTPk9/N+TQMee2IzupIBEOwL4+QS9QKIQIorDW3tMG9C
-        yLjXOhK8O6YyofM+o8p98fvUiJ5XXMH1TsFVzJkfc7q1h9uxYfHVXteGL3+HFaTA
-        ==
-X-ME-Sender: <xms:r8zPXwLnw8qsncfX2a2mlT-pet8_QOv8izZtzAzIrrf4bkoL4iDKFQ>
-    <xme:r8zPXwJEw1BZ4XLQJ_vSNo6p0DHhacatRTn5gEpxd7Uw0sTfsI7zlIjzDo8hamns6
-    ndz_KD9UrdnVH60pA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrudejiedguddvtdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enfghrlhcuvffnffculdefhedmnecujfgurhepofgfggfkjghffffhvffutgesthdtredt
-    reertdenucfhrhhomhepfdffrghnihgvlhcuighufdcuoegugihusegugihuuhhurdighi
-    iiqeenucggtffrrghtthgvrhhnpeejgfevtefhjeelgfefvddthffffeeutdffgeeihfek
-    teefheffgeeitdeifefhgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
-    grihhlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:r8zPXwsZdjcUXovtGjnjtfyUwuXclGnD6CIOSFSq-CTYXnoiegl5Hg>
-    <xmx:r8zPX9b3z5zeHTG1RxjfhcA6S6ftZkEzyCdDCuBx-uMaTlJZO1uX7Q>
-    <xmx:r8zPX3aOwuY1Gf9X9CGn7YKgBJGUFrmslAq2bpurJSTsv1AyUl-Rsw>
-    <xmx:r8zPXx01dzJv8DI_66Gwl5I6WJDNfB_2uUXedP8PUsUEMHFzfAcucA>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id A6D99AE005D; Tue,  8 Dec 2020 13:57:47 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.3.0-622-g4a97c0b-fm-20201115.001-g4a97c0b3
-Mime-Version: 1.0
-Message-Id: <919345aa-4746-40a5-be17-faf110619e84@www.fastmail.com>
-In-Reply-To: <CANaYP3GdNhD56xykv+uS2Y1Mof1vXWkSfdbTPo9bwjGmXxSHEA@mail.gmail.com>
-References: <CANaYP3GdNhD56xykv+uS2Y1Mof1vXWkSfdbTPo9bwjGmXxSHEA@mail.gmail.com>
-Date:   Tue, 08 Dec 2020 12:57:31 -0600
-From:   "Daniel Xu" <dxu@dxuuu.xyz>
-To:     "Gilad Reti" <gilad.reti@gmail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: Feature proposal - Attaching probes to cgroups
-Content-Type: text/plain
+        id S1731111AbgLHUQM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Dec 2020 15:16:12 -0500
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:33991 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731062AbgLHUMu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Dec 2020 15:12:50 -0500
+Received: by mail-wm1-f67.google.com with SMTP id g25so2511381wmh.1
+        for <bpf@vger.kernel.org>; Tue, 08 Dec 2020 12:11:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=e6YSCGu2Oi5y5zgx0PfCtwMdD4IMQhe57zZy7ZhqyTY=;
+        b=dGi561rx2Cs2oRQl86hpsUH21HEifyfEfBkhi2V+3yUYn6QtyCdBwS7Q7ZrbbTS/5c
+         ySSKB98xVWcDgkq52yZfSPG7K/XZXJtVT7HZwPTjfvTV0jYxH4B9orbRVHkKG2wovY6l
+         ICuuEwupKGOUWtxiWOjQ92HKhkFS4Q5FZ1BNQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=e6YSCGu2Oi5y5zgx0PfCtwMdD4IMQhe57zZy7ZhqyTY=;
+        b=Gw7eU2bEplqOKi2oEuOT9wc52Nl8wQuARD5y4au9pYNMCyqT3qA+hB8J5avFDb0DeG
+         bS3bxa5gc3qzvtwvgQ8xpuUM30BgTZO6KsMcqSAXP+yibDMtUorF6Ao70pJdEicg6h81
+         BirvjpzY3tWm5/oF8fl9InqVR0+Tjj5uIOPB7I9ICU5McxfgT8L97r9viDZjGLm1btzC
+         sYMBGu/hXrY5cyFyrGZ5CMhJsiddb8qlEbCJ0/4w7Mq9Toym0Ep8cmxP0H7Ct5eBa5iM
+         Wxhy3fCIcERq0CpGsz/kSbPEVVeCvaALPFNK3SWCT9cBq0GwW4WNC7KLJxR5yD+KhdOV
+         nudg==
+X-Gm-Message-State: AOAM533c7Ik5r6WGc4YLxWIcJa+GgN4+X8tsXjiT5dq28suie2IkVh66
+        l+VJNXWBk5aR1YRRlOPTDWL4th9uyZQ5ow==
+X-Google-Smtp-Source: ABdhPJwUdTAGR5hyNsc0++LpwBm+wq8xzQ0ph1Q1n3qM4dFS69jQjIc4yb0dJ2lg/W/QuDfMmdhzOQ==
+X-Received: by 2002:a1c:b608:: with SMTP id g8mr5270089wmf.110.1607456410525;
+        Tue, 08 Dec 2020 11:40:10 -0800 (PST)
+Received: from ?IPv6:2a04:ee41:4:1318:ea45:a00:4d43:48fc? ([2a04:ee41:4:1318:ea45:a00:4d43:48fc])
+        by smtp.gmail.com with ESMTPSA id c2sm21474188wrv.41.2020.12.08.11.40.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 11:40:09 -0800 (PST)
+Message-ID: <afd9317561b1823da2fa473f29723da83247767e.camel@chromium.org>
+Subject: Re: [PATCH bpf-next v2 1/3] bpf: Expose bpf_get_socket_cookie to
+ tracing programs
+From:   Florent Revest <revest@chromium.org>
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kpsingh@chromium.org, revest@google.com,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 08 Dec 2020 20:40:08 +0100
+In-Reply-To: <20201204194748.cqyz7hfx5s5dyszc@kafai-mbp.dhcp.thefacebook.com>
+References: <20201203213330.1657666-1-revest@google.com>
+         <20201204194748.cqyz7hfx5s5dyszc@kafai-mbp.dhcp.thefacebook.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-2 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 8, 2020, at 2:40 AM, Gilad Reti wrote:
-> Hello everyone,
+On Fri, 2020-12-04 at 11:47 -0800, Martin KaFai Lau wrote:
+> On Thu, Dec 03, 2020 at 10:33:28PM +0100, Florent Revest wrote:
+> > +const struct bpf_func_proto
+> > bpf_get_socket_cookie_sock_tracing_proto = {
+> > +	.func		= bpf_get_socket_cookie_sock,
+> > +	.gpl_only	= false,
+> > +	.ret_type	= RET_INTEGER,
+> > +	.arg1_type      = ARG_PTR_TO_BTF_ID_SOCK_COMMON,
 > 
-> Are there any plans on extending the cgroup program types to include
-> more probe types (or possibly allow restricting any probe type to a
-> specific cgroup)?
-> 
-> For a use case example, this will allow attaching programs to the
-> "docker" cgroup and thus tracing events from containers only (or even
-> enforcing eBPF LSM on docker containers only).
+> In tracing where it gets a sk pointer, the sk could be NULL.
+> A NULL check is required in the helper. Please refer to
+> bpf_skc_to_tcp_sock[_proto] as an example.
 
-Based on my understanding, this may not be possible. For example, the
-kernel may lose information about cgroups on deferred work. When the
-work is later executed, the cgroup may lose information on work it technically
-initiated.
+Ah, good catch! :) 
 
-Daniel
+> This proto is in general also useful for non tracing context where
+> it can get a hold of a sk pointer. (e.g. another similar usage that
+> will have a hold on a sk pointer for BPF_PROG_TYPE_SK_REUSEPORT [0]).
+
+Agreed.
+
+> In case if you don't need sleepable at this point as Daniel
+> mentioned in another thread.  Does it make sense to rename this
+> proto to something like bpf_get_socket_pointer_cookie_proto?
+
+My understanding is that I could have two helpers definitions and
+protos, one calling sock_gen_cookie and the other one calling
+__sock_gen_cookie. Then I could just use:
+
+return prog->aux->sleepable
+       ? bpf_get_socket_pointer_cookie_sleepable_proto
+       : bpf_get_socket_pointer_cookie_proto;
+
+Would that work ?
+
