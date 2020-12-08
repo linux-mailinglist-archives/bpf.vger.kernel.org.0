@@ -2,106 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F23C92D2843
-	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 10:58:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 106EA2D2853
+	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 11:00:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726697AbgLHJ4o (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Dec 2020 04:56:44 -0500
-Received: from dvalin.narfation.org ([213.160.73.56]:54640 "EHLO
-        dvalin.narfation.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726218AbgLHJ4o (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Dec 2020 04:56:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=narfation.org;
-        s=20121; t=1607421360;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NL9hsV0TeyX60QzTD/g2rg1p69Dgs1kBooBdA4Xh/Yk=;
-        b=dMXe8xj7l66jvnfkKBMdbWmk+78WOIIIctBtLnvakPh4+J0IL+AQAmFq0g8TsMJQs3q58J
-        HbCrHQnCMqsdbWiSob9frIwRB8edR+1btGVrz1xrw0c8AOtyXORhd45g36NuPbKqIjjAi9
-        N19dSIPbQdGNpk50jXOK/KTvgHEFRdY=
-From:   Sven Eckelmann <sven@narfation.org>
-To:     linux-kernel@vger.kernel.org,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        davem@davemloft.net
-Cc:     kuba@kernel.org, mareklindner@neomailbox.ch, sw@simonwunderlich.de,
-        a@unstable.cc, marcel@holtmann.org, johan.hedberg@gmail.com,
-        roopa@nvidia.com, nikolay@nvidia.com, edumazet@google.com,
-        kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org, jmaloy@redhat.com,
-        ying.xue@windriver.com, kafai@fb.com, songliubraving@fb.com,
-        yhs@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
-        netdev@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        tipc-discussion@lists.sourceforge.net,
-        linux-hyperv@vger.kernel.org, bpf@vger.kernel.org,
-        Matthias Schiffer <mschiffer@universe-factory.net>
-Subject: Re: [PATCH 2/7] net: batman-adv: remove unneeded MODULE_VERSION() usage
-Date:   Tue, 08 Dec 2020 10:55:57 +0100
-Message-ID: <1863144.usQuhbGJ8B@ripper>
-In-Reply-To: <ca5c17a1-dea5-83eb-f9c5-a027b4135fec@metux.net>
-References: <20201202124959.29209-1-info@metux.net> <4581108.GXAFRqVoOG@sven-edge> <ca5c17a1-dea5-83eb-f9c5-a027b4135fec@metux.net>
+        id S1727113AbgLHKA0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Dec 2020 05:00:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726334AbgLHKA0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Dec 2020 05:00:26 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98C88C0613D6
+        for <bpf@vger.kernel.org>; Tue,  8 Dec 2020 01:59:45 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id c1so3652261wrq.6
+        for <bpf@vger.kernel.org>; Tue, 08 Dec 2020 01:59:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QdGmwva9RtqTY7a7GN4dBmF3gJOdWFsFlLtWdXLRLeA=;
+        b=XAuv5QEeW/kEMbA4SLlD2kgsjqPXZd+4y+wc51LFw4CWcP0Jaw8W8hAAjawk115SEL
+         YxiSL7k1uZLUanxDFQtqNWDABvLkbAeJPJTGqyQ7vSXDjd7TTTJQSn28bbNJCtoI1eZr
+         muvqOnohKVlZlK1iLAwUeRmW7I7Xq8FSVRfnAstDhJDVwBHW3I5DukXufOms+KY72s/1
+         FcbvU+YYHE5Q2lDFWQZ7UMnCFtqqDQP16Tjx0x60U56vmHqzshWTsYY/9cnOL2zerwX4
+         VrEN77a0Xvg/S1n4OiQF+1dycTK2i1LDxE14ec7Wd+8UIYm6E+ej+RUWBPL3r5SMS4ew
+         xikg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QdGmwva9RtqTY7a7GN4dBmF3gJOdWFsFlLtWdXLRLeA=;
+        b=ferHRSKj3/bUQw9TjMJznXV0slj9wK1YwMOkP/OdoP4zrjaxbioZm82j0uVIG8I+q3
+         /Cim9xH1OaEcxtA9HZZ59giJBbPBBS708UIRVLzJJKuMSt04XtExZqY3eWqEeBr/YNkg
+         9TnlIvRUvQx3+SJN3Sp3A90BMYP1zhqAtXkyh8ORI1gt46A9tbi4+lX/bqY4WGRuvHF1
+         TJ63JUZraEdCcvJyK0v95EjzxWsTk7GCqs6ZAfUDQ3km4u9vs1lE9d9mwX0Q762hcTAV
+         9a1iA9grWdrGZUUCqdqmrC4+uW3rw+h+zW6t6XLvBgsIW+tV8FR6RzU/h1bo6g1+KIRg
+         TPJA==
+X-Gm-Message-State: AOAM533iUMToDrOJTUIPTkODMGtWsPbhbQVFbMHGzk9O3usb8/pmoO1C
+        SEvKwh+sTYiH6XnkxNzukwiehA==
+X-Google-Smtp-Source: ABdhPJzNhC3+5htN47FqdOjCq68HPhKctDxzg2/ih+f0nt6Mx/wIUL47vy4c3z6WRSEVesrFgrFFEw==
+X-Received: by 2002:adf:f6c8:: with SMTP id y8mr22962698wrp.59.1607421584172;
+        Tue, 08 Dec 2020 01:59:44 -0800 (PST)
+Received: from google.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
+        by smtp.gmail.com with ESMTPSA id f7sm3816543wmc.1.2020.12.08.01.59.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 01:59:43 -0800 (PST)
+Date:   Tue, 8 Dec 2020 09:59:39 +0000
+From:   Brendan Jackman <jackmanb@google.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
+Subject: Re: [PATCH bpf-next v4 06/11] bpf: Add BPF_FETCH field / create
+ atomic_fetch_add instruction
+Message-ID: <X89Oi7ndmwS+cLWx@google.com>
+References: <20201207160734.2345502-1-jackmanb@google.com>
+ <20201207160734.2345502-7-jackmanb@google.com>
+ <5fcf0fbcc8aa8_9ab320853@john-XPS-13-9370.notmuch>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart3265343.QJadu78ljV"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5fcf0fbcc8aa8_9ab320853@john-XPS-13-9370.notmuch>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
---nextPart3265343.QJadu78ljV
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
-From: Sven Eckelmann <sven@narfation.org>
-To: linux-kernel@vger.kernel.org, "Enrico Weigelt, metux IT consult" <info@metux.net>, davem@davemloft.net
-Cc: kuba@kernel.org, mareklindner@neomailbox.ch, sw@simonwunderlich.de, a@unstable.cc, marcel@holtmann.org, johan.hedberg@gmail.com, roopa@nvidia.com, nikolay@nvidia.com, edumazet@google.com, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org, jmaloy@redhat.com, ying.xue@windriver.com, kafai@fb.com, songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org, netdev@vger.kernel.org, linux-bluetooth@vger.kernel.org, tipc-discussion@lists.sourceforge.net, linux-hyperv@vger.kernel.org, bpf@vger.kernel.org, Matthias Schiffer <mschiffer@universe-factory.net>
-Subject: Re: [PATCH 2/7] net: batman-adv: remove unneeded MODULE_VERSION() usage
-Date: Tue, 08 Dec 2020 10:55:57 +0100
-Message-ID: <1863144.usQuhbGJ8B@ripper>
-In-Reply-To: <ca5c17a1-dea5-83eb-f9c5-a027b4135fec@metux.net>
-References: <20201202124959.29209-1-info@metux.net> <4581108.GXAFRqVoOG@sven-edge> <ca5c17a1-dea5-83eb-f9c5-a027b4135fec@metux.net>
-
-On Tuesday, 8 December 2020 08:48:56 CET Enrico Weigelt, metux IT consult wrote:
-> > Is there some explanation besides an opinion? Some kind goal which you want to 
-> > achieve with it maybe?
+On Mon, Dec 07, 2020 at 09:31:40PM -0800, John Fastabend wrote:
+> Brendan Jackman wrote:
+> > The BPF_FETCH field can be set in bpf_insn.imm, for BPF_ATOMIC
+> > instructions, in order to have the previous value of the
+> > atomically-modified memory location loaded into the src register
+> > after an atomic op is carried out.
+> > 
+> > Suggested-by: Yonghong Song <yhs@fb.com>
+> > Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> > ---
 > 
-> Just a cleanup. I've been under the impression that this version is just
-> an relic from oot times.
-
-There are various entities which are loving to use the distro kernel and 
-replace the batman-adv module with a backport from a newer kernel version. 
-Similar to what is done in OpenWrt for the wifi drivers.
-
-> > At least for us it was an easy way to query the release cycle information via 
-> > batctl. Which made it easier for us to roughly figure out what an reporter/
-> > inquirer was using - independent of whether he is using the in-kernel version 
-> > or a backported version.
+> I like Yonghong suggestion 
 > 
-> Is the OOT scenario still valid ?
+>  #define BPF_ATOMIC_FETCH_ADD(SIZE, DST, SRC, OFF)               \
+>      BPF_ATOMIC(SIZE, DST, SRC, OFF, BPF_ADD | BPF_FETCH)
+> 
+> otherwise LGTM. One observation to consider below.
+> 
+> Acked-by: John Fastabend <john.fastabend@gmail.com>
+> 
+> >  arch/x86/net/bpf_jit_comp.c    |  4 ++++
+> >  include/linux/filter.h         |  1 +
+> >  include/uapi/linux/bpf.h       |  3 +++
+> >  kernel/bpf/core.c              | 13 +++++++++++++
+> >  kernel/bpf/disasm.c            |  7 +++++++
+> >  kernel/bpf/verifier.c          | 33 ++++++++++++++++++++++++---------
+> >  tools/include/linux/filter.h   | 11 +++++++++++
+> >  tools/include/uapi/linux/bpf.h |  3 +++
+> >  8 files changed, 66 insertions(+), 9 deletions(-)
+> 
+> [...]
+> 
+> > @@ -3652,8 +3656,20 @@ static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_i
+> >  		return err;
+> >  
+> >  	/* check whether we can write into the same memory */
+> > -	return check_mem_access(env, insn_idx, insn->dst_reg, insn->off,
+> > -				BPF_SIZE(insn->code), BPF_WRITE, -1, true);
+> > +	err = check_mem_access(env, insn_idx, insn->dst_reg, insn->off,
+> > +			       BPF_SIZE(insn->code), BPF_WRITE, -1, true);
+> > +	if (err)
+> > +		return err;
+> > +
+> > +	if (!(insn->imm & BPF_FETCH))
+> > +		return 0;
+> > +
+> > +	/* check and record load of old value into src reg  */
+> > +	err = check_reg_arg(env, insn->src_reg, DST_OP);
+> 
+> This will mark the reg unknown. I think this is fine here. Might be nice
+> to carry bounds through though if possible
 
-Since the backport is OOT - yes, it is still valid.
+Ah, I hadn't thought of this. I think if I move this check_reg_arg to be
+before the first check_mem_access, and then (when BPF_FETCH) set the
+val_regno arg to load_reg, then the bounds from memory would get
+propagated back to the register:
 
-Kind regards,
-	Sven
---nextPart3265343.QJadu78ljV
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
+if (insn->imm & BPF_FETCH) {
+	if (insn->imm == BPF_CMPXCHG)
+		load_reg = BPF_REG_0;
+	else
+		load_reg = insn->src_reg;
+	err = check_reg_arg(env, load_reg, DST_OP);
+	if (err)
+		return err;
+} else {
+	load_reg = -1;
+}
+/* check wether we can read the memory */
+err = check_mem_access(env, insn_index, insn->dst_reg, insn->off
+		       BPF_SIZE(insn->code), BPF_READ,
+		       load_reg, // <--
+		       true);
 
------BEGIN PGP SIGNATURE-----
+Is that the kind of thing you had in mind?
 
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAl/PTa0ACgkQXYcKB8Em
-e0ZQVg//a3Ctdu0iWSyVCI0o4XYb/8+K+uVZDxsGud3XPMdUr5JrAgXXJrege9Br
-3y3yZMg9GMAHnf4i3TjgSddqRRKdAEB7swYD6OSXQr0MIHtF8TQpIAHGzi3llUx1
-dilGLIb/8xxMGD5QgeCl8wx4L8CJj9jGF/6O8lGXUZV8PFrvDXfTzQ6NUHQ5U2Z4
-xXYbqsf983ze1FLVwdVEmIOjXg2ncyGm1C3kQYPIehGXHYfPDwNSnWC91yxO3J/7
-7b1JILU9Tiytc0yzTlWtYIpzg+OlY0+qHgYcV37I+OPqwpqygK4//Iqh0CzSpLjb
-RQ6+/iEK09Xq2aTD1nWs7OOE5p3d5AcfiSVaaMpyBM09simkt+w4zExee+VPifkC
-UavwdUusybvSNJix8U6Gd0QksUPJpG46KXT1vM6RLTlps3hvMWou4xD8pfC0IkgA
-+8ce8Agpex2ZvqmsQ8RBR8pgO7IuC8hQqX+nVwHVud/kUZOZiqzaz3d6fxTpQM3B
-/e+s/FsYu0G4Zmj9t3GHHrb4V4a77wLmAUJ9IH9yc5pwmkEU0rWINtR7gXs53qXR
-CNFi5/8JMW+L3UXVdLqNTCKewD9no/RYigh3JvMiei8RKTbwVNNOXF5uaXs7kQum
-eRu83EVqnKTPAd4M7plJ5+bQD4uu9Tjq31VH9o0LlcTZNbo/Xvc=
-=XSUt
------END PGP SIGNATURE-----
-
---nextPart3265343.QJadu78ljV--
-
-
-
+> > +	if (err)
+> > +		return err;
+> > +
+> > +	return 0;
+> >  }
+> >  
