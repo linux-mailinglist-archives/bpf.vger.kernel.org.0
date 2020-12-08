@@ -2,194 +2,268 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A9FF2D26D9
-	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 10:06:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 581022D2795
+	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 10:27:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728626AbgLHJD3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Dec 2020 04:03:29 -0500
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:33908 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728594AbgLHJD2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Dec 2020 04:03:28 -0500
+        id S1728978AbgLHJ1h (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Dec 2020 04:27:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727628AbgLHJ1g (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Dec 2020 04:27:36 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56F8BC061749
+        for <bpf@vger.kernel.org>; Tue,  8 Dec 2020 01:26:56 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id u12so15550573wrt.0
+        for <bpf@vger.kernel.org>; Tue, 08 Dec 2020 01:26:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1607418207; x=1638954207;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=Y5xpdhYe8tDwUSn2h3cGPmst8Ze3CvXueiWyz/+4As0=;
-  b=ewnBjUDRX2WVOUECjZQLkpluWrT2APPOQ3YkFcQ55mrAUDfsTBJqPLrW
-   7+EqebnSjoJehxbQbCujpUlFIPIroVdwKqrbeuRQFEajM1zsvcekzeOA3
-   1HnYm7QZUIll479BxkzyqBTbsnpRLsS5B4vimHKjjtvIaDVj+XLNLRr0z
-   g=;
-X-IronPort-AV: E=Sophos;i="5.78,402,1599523200"; 
-   d="scan'208";a="101249711"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-55156cd4.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 08 Dec 2020 09:02:47 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2b-55156cd4.us-west-2.amazon.com (Postfix) with ESMTPS id A899DA2230;
-        Tue,  8 Dec 2020 09:02:45 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 8 Dec 2020 09:02:44 +0000
-Received: from 38f9d3582de7.ant.amazon.com (10.43.160.125) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 8 Dec 2020 09:02:40 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     <kafai@fb.com>
-CC:     <ast@kernel.org>, <benh@amazon.com>, <bpf@vger.kernel.org>,
-        <daniel@iogearbox.net>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <kuni1840@gmail.com>,
-        <kuniyu@amazon.co.jp>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-Subject: Re: [PATCH v1 bpf-next 03/11] tcp: Migrate TCP_ESTABLISHED/TCP_SYN_RECV sockets in accept queues.
-Date:   Tue, 8 Dec 2020 18:02:36 +0900
-Message-ID: <20201208090236.86926-1-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.17.2 (Apple Git-113)
-In-Reply-To: <20201208081328.aspzklzmeznw3hob@kafai-mbp.dhcp.thefacebook.com>
-References: <20201208081328.aspzklzmeznw3hob@kafai-mbp.dhcp.thefacebook.com>
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YXgYA9CeIM+j5i7wHnRUH6RMd2r+QbmdOpQX79NtK20=;
+        b=mqYC7iQ7YUDJkvX3hxzjnG724VOSfrqn1/fCQ70RUDrjVMya7Nvg+O5VWKT2jO8zfa
+         GVIhxGGGD0dNn3aLIkneJuFy2vtgiWfQf4t1HqBnXTp9h74DNgV3ljygWwyhjzKgDE2B
+         eUDUyiZXEOjvNMMF+Wo0Gwia+0qRFkWXepoTmgUZp3JhvY8DnX30VUzjONykGjKeMCPT
+         L+DEnJkf2fdRx5h9De345u7aRYQZYg/pw/lqhxPQHnkESIvWB/9kSyi5v8l69C0kJExZ
+         t7+BKjx1yMwVqTazbgIOp2S2roy4Rv0JRpop+3GyqZ6VvK22ZLIaZSwhZffRvAohXB/n
+         q0GA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YXgYA9CeIM+j5i7wHnRUH6RMd2r+QbmdOpQX79NtK20=;
+        b=sAKDVvi46gz1YCjpsSKWNBiO3OzgTUB6/Xt2GNQ87HMsLC2VhsGdafUOqr+/TZ/MhC
+         l2J0VrZoIOb60ru+BcuIQ3FyHD6tOHWrQMCv1hMrI5RG0KosYvC6CquWJYcbAd7xGiM+
+         bh86gUammJfmndOGoaQmRyMvDnnFwx9WP1rqbiDO6imLpbfdwQ8tnhrpyPapRYXP96AV
+         hhmU641sTs6WwI7P8RC64/qbIf/DRNqrHZvKBTv63Mxb/nzRmCwCTGbju4DilbH6I1M0
+         ec8e+OiMdsL91cU3cZjgN5g6yNiiBKh1bZtEj67N7W7zee7Tba3+Yx3GXpcg91sliaZ3
+         zxww==
+X-Gm-Message-State: AOAM532cv+xIe0yRI6jBfQOCgLYgneUBCy16brp3rVgyrlp1CJXfh47E
+        gJKWUG/y4F9QfCJ4VA64a5t9Dg==
+X-Google-Smtp-Source: ABdhPJxnjG8DP3SGg0ussYjOKPxpckG9YCL0g57TL1TOTJglEEcL6p54WHOJyjPXm0ueQrY/nQzJbQ==
+X-Received: by 2002:a5d:554e:: with SMTP id g14mr7078158wrw.264.1607419614931;
+        Tue, 08 Dec 2020 01:26:54 -0800 (PST)
+Received: from google.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
+        by smtp.gmail.com with ESMTPSA id i9sm12810706wrs.70.2020.12.08.01.26.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Dec 2020 01:26:54 -0800 (PST)
+Date:   Tue, 8 Dec 2020 09:26:50 +0000
+From:   Brendan Jackman <jackmanb@google.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
+Subject: Re: [PATCH bpf-next v4 04/11] bpf: Rename BPF_XADD and prepare to
+ encode other atomics in .imm
+Message-ID: <X89G2kItO2o60+A6@google.com>
+References: <20201207160734.2345502-1-jackmanb@google.com>
+ <20201207160734.2345502-5-jackmanb@google.com>
+ <5fcea525c4971_5a96208bd@john-XPS-13-9370.notmuch>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.125]
-X-ClientProxiedBy: EX13D28UWC001.ant.amazon.com (10.43.162.166) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5fcea525c4971_5a96208bd@john-XPS-13-9370.notmuch>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From:   Martin KaFai Lau <kafai@fb.com>
-Date:   Tue, 8 Dec 2020 00:13:28 -0800
-> On Tue, Dec 08, 2020 at 03:27:14PM +0900, Kuniyuki Iwashima wrote:
-> > From:   Martin KaFai Lau <kafai@fb.com>
-> > Date:   Mon, 7 Dec 2020 12:14:38 -0800
-> > > On Sun, Dec 06, 2020 at 01:03:07AM +0900, Kuniyuki Iwashima wrote:
-> > > > From:   Martin KaFai Lau <kafai@fb.com>
-> > > > Date:   Fri, 4 Dec 2020 17:42:41 -0800
-> > > > > On Tue, Dec 01, 2020 at 11:44:10PM +0900, Kuniyuki Iwashima wrote:
-> > > > > [ ... ]
-> > > > > > diff --git a/net/core/sock_reuseport.c b/net/core/sock_reuseport.c
-> > > > > > index fd133516ac0e..60d7c1f28809 100644
-> > > > > > --- a/net/core/sock_reuseport.c
-> > > > > > +++ b/net/core/sock_reuseport.c
-> > > > > > @@ -216,9 +216,11 @@ int reuseport_add_sock(struct sock *sk, struct sock *sk2, bool bind_inany)
-> > > > > >  }
-> > > > > >  EXPORT_SYMBOL(reuseport_add_sock);
-> > > > > >  
-> > > > > > -void reuseport_detach_sock(struct sock *sk)
-> > > > > > +struct sock *reuseport_detach_sock(struct sock *sk)
-> > > > > >  {
-> > > > > >  	struct sock_reuseport *reuse;
-> > > > > > +	struct bpf_prog *prog;
-> > > > > > +	struct sock *nsk = NULL;
-> > > > > >  	int i;
-> > > > > >  
-> > > > > >  	spin_lock_bh(&reuseport_lock);
-> > > > > > @@ -242,8 +244,12 @@ void reuseport_detach_sock(struct sock *sk)
-> > > > > >  
-> > > > > >  		reuse->num_socks--;
-> > > > > >  		reuse->socks[i] = reuse->socks[reuse->num_socks];
-> > > > > > +		prog = rcu_dereference(reuse->prog);
-> > > > > Is it under rcu_read_lock() here?
-> > > > 
-> > > > reuseport_lock is locked in this function, and we do not modify the prog,
-> > > > but is rcu_dereference_protected() preferable?
-> > > > 
-> > > > ---8<---
-> > > > prog = rcu_dereference_protected(reuse->prog,
-> > > > 				 lockdep_is_held(&reuseport_lock));
-> > > > ---8<---
-> > > It is not only reuse->prog.  Other things also require rcu_read_lock(),
-> > > e.g. please take a look at __htab_map_lookup_elem().
-> > > 
-> > > The TCP_LISTEN sk (selected by bpf to be the target of the migration)
-> > > is also protected by rcu.
+Hi John, thanks a lot for the reviews!
+
+On Mon, Dec 07, 2020 at 01:56:53PM -0800, John Fastabend wrote:
+> Brendan Jackman wrote:
+> > A subsequent patch will add additional atomic operations. These new
+> > operations will use the same opcode field as the existing XADD, with
+> > the immediate discriminating different operations.
 > > 
-> > Thank you, I will use rcu_read_lock() and rcu_dereference() in v3 patchset.
+> > In preparation, rename the instruction mode BPF_ATOMIC and start
+> > calling the zero immediate BPF_ADD.
 > > 
+> > This is possible (doesn't break existing valid BPF progs) because the
+> > immediate field is currently reserved MBZ and BPF_ADD is zero.
 > > 
-> > > I am surprised there is no WARNING in the test.
-> > > Do you have the needed DEBUG_LOCK* config enabled?
+> > All uses are removed from the tree but the BPF_XADD definition is
+> > kept around to avoid breaking builds for people including kernel
+> > headers.
 > > 
-> > Yes, DEBUG_LOCK* was 'y', but rcu_dereference() without rcu_read_lock()
-> > does not show warnings...
-> I would at least expect the "WARN_ON_ONCE(!rcu_read_lock_held() ...)"
-> from __htab_map_lookup_elem() should fire in your test
-> example in the last patch.
+> > Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> > ---
+> >  Documentation/networking/filter.rst           | 30 ++++++++-----
+> >  arch/arm/net/bpf_jit_32.c                     |  7 ++-
+> >  arch/arm64/net/bpf_jit_comp.c                 | 16 +++++--
+> >  arch/mips/net/ebpf_jit.c                      | 11 +++--
+> >  arch/powerpc/net/bpf_jit_comp64.c             | 25 ++++++++---
+> >  arch/riscv/net/bpf_jit_comp32.c               | 20 +++++++--
+> >  arch/riscv/net/bpf_jit_comp64.c               | 16 +++++--
+> >  arch/s390/net/bpf_jit_comp.c                  | 27 ++++++-----
+> >  arch/sparc/net/bpf_jit_comp_64.c              | 17 +++++--
+> >  arch/x86/net/bpf_jit_comp.c                   | 45 ++++++++++++++-----
+> >  arch/x86/net/bpf_jit_comp32.c                 |  6 +--
+> >  drivers/net/ethernet/netronome/nfp/bpf/jit.c  | 14 ++++--
+> >  drivers/net/ethernet/netronome/nfp/bpf/main.h |  4 +-
+> >  .../net/ethernet/netronome/nfp/bpf/verifier.c | 15 ++++---
+> >  include/linux/filter.h                        | 29 ++++++++++--
+> >  include/uapi/linux/bpf.h                      |  5 ++-
+> >  kernel/bpf/core.c                             | 31 +++++++++----
+> >  kernel/bpf/disasm.c                           |  6 ++-
+> >  kernel/bpf/verifier.c                         | 24 +++++-----
+> >  lib/test_bpf.c                                | 14 +++---
+> >  samples/bpf/bpf_insn.h                        |  4 +-
+> >  samples/bpf/cookie_uid_helper_example.c       |  6 +--
+> >  samples/bpf/sock_example.c                    |  2 +-
+> >  samples/bpf/test_cgrp2_attach.c               |  5 ++-
+> >  tools/include/linux/filter.h                  | 28 ++++++++++--
+> >  tools/include/uapi/linux/bpf.h                |  5 ++-
+> >  .../bpf/prog_tests/cgroup_attach_multi.c      |  4 +-
+> >  .../selftests/bpf/test_cgroup_storage.c       |  2 +-
+> >  tools/testing/selftests/bpf/verifier/ctx.c    |  7 ++-
+> >  .../bpf/verifier/direct_packet_access.c       |  4 +-
+> >  .../testing/selftests/bpf/verifier/leak_ptr.c | 10 ++---
+> >  .../selftests/bpf/verifier/meta_access.c      |  4 +-
+> >  tools/testing/selftests/bpf/verifier/unpriv.c |  3 +-
+> >  .../bpf/verifier/value_illegal_alu.c          |  2 +-
+> >  tools/testing/selftests/bpf/verifier/xadd.c   | 18 ++++----
+> >  35 files changed, 317 insertions(+), 149 deletions(-)
+> > 
 > 
-> It is better to check the config before sending v3.
-
-It seems ok, but I will check it again.
-
----8<---
-[ec2-user@ip-10-0-0-124 bpf-next]$ cat .config | grep DEBUG_LOCK
-CONFIG_DEBUG_LOCK_ALLOC=y
-CONFIG_DEBUG_LOCKDEP=y
-CONFIG_DEBUG_LOCKING_API_SELFTESTS=y
----8<---
-
-
-> > > > > > diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
-> > > > > > index 1451aa9712b0..b27241ea96bd 100644
-> > > > > > --- a/net/ipv4/inet_connection_sock.c
-> > > > > > +++ b/net/ipv4/inet_connection_sock.c
-> > > > > > @@ -992,6 +992,36 @@ struct sock *inet_csk_reqsk_queue_add(struct sock *sk,
-> > > > > >  }
-> > > > > >  EXPORT_SYMBOL(inet_csk_reqsk_queue_add);
-> > > > > >  
-> > > > > > +void inet_csk_reqsk_queue_migrate(struct sock *sk, struct sock *nsk)
-> > > > > > +{
-> > > > > > +	struct request_sock_queue *old_accept_queue, *new_accept_queue;
-> > > > > > +
-> > > > > > +	old_accept_queue = &inet_csk(sk)->icsk_accept_queue;
-> > > > > > +	new_accept_queue = &inet_csk(nsk)->icsk_accept_queue;
-> > > > > > +
-> > > > > > +	spin_lock(&old_accept_queue->rskq_lock);
-> > > > > > +	spin_lock(&new_accept_queue->rskq_lock);
-> > > > > I am also not very thrilled on this double spin_lock.
-> > > > > Can this be done in (or like) inet_csk_listen_stop() instead?
-> > > > 
-> > > > It will be possible to migrate sockets in inet_csk_listen_stop(), but I
-> > > > think it is better to do it just after reuseport_detach_sock() becuase we
-> > > > can select a different listener (almost) every time at a lower cost by
-> > > > selecting the moved socket and pass it to inet_csk_reqsk_queue_migrate()
-> > > > easily.
-> > > I don't see the "lower cost" point.  Please elaborate.
-> > 
-> > In reuseport_select_sock(), we pass sk_hash of the request socket to
-> > reciprocal_scale() and generate a random index for socks[] to select
-> > a different listener every time.
-> > On the other hand, we do not have request sockets in unhash path and
-> > sk_hash of the listener is always 0, so we have to generate a random number
-> > in another way. In reuseport_detach_sock(), we can use the index of the
-> > moved socket, but we do not have it in inet_csk_listen_stop(), so we have
-> > to generate a random number in inet_csk_listen_stop().
-> > I think it is at lower cost to use the index of the moved socket.
-> Generate a random number is not a big deal for the migration code path.
+> [...]
 > 
-> Also, I really still failed to see a particular way that the kernel
-> pick will help in the migration case.  The kernel has no clue
-> on how to select the right process to migrate to without
-> a proper policy signal from the user.  They are all as bad as
-> a random pick.  I am not sure this migration feature is
-> even useful if there is no bpf prog attached to define the policy.
+> > +++ a/arch/mips/net/ebpf_jit.c
+> 
+> [...]
+> 
+> > -		if (BPF_MODE(insn->code) == BPF_XADD) {
+> > +		if (BPF_MODE(insn->code) == BPF_ATOMIC) {
+> > +			if (insn->imm != BPF_ADD) {
+> > +				pr_err("ATOMIC OP %02x NOT HANDLED\n", insn->imm);
+> > +				return -EINVAL;
+> > +			}
+> > +
+> >  			/*
+> [...]
+> > +++ b/arch/powerpc/net/bpf_jit_comp64.c
+> 
+> > -		case BPF_STX | BPF_XADD | BPF_W:
+> > +		case BPF_STX | BPF_ATOMIC | BPF_W:
+> > +			if (insn->imm != BPF_ADD) {
+> > +				pr_err_ratelimited(
+> > +					"eBPF filter atomic op code %02x (@%d) unsupported\n",
+> > +					code, i);
+> > +				return -ENOTSUPP;
+> > +			}
+> [...]
+> > @@ -699,8 +707,15 @@ static int bpf_jit_build_body(struct bpf_prog *fp, u32 *image,
+> > -		case BPF_STX | BPF_XADD | BPF_DW:
+> > +		case BPF_STX | BPF_ATOMIC | BPF_DW:
+> > +			if (insn->imm != BPF_ADD) {
+> > +				pr_err_ratelimited(
+> > +					"eBPF filter atomic op code %02x (@%d) unsupported\n",
+> > +					code, i);
+> > +				return -ENOTSUPP;
+> > +			}
+> [...]
+> > +	case BPF_STX | BPF_ATOMIC | BPF_W:
+> > +		if (insn->imm != BPF_ADD) {
+> > +			pr_info_once(
+> > +				"bpf-jit: not supported: atomic operation %02x ***\n",
+> > +				insn->imm);
+> > +			return -EFAULT;
+> > +		}
+> [...]
+> > +	case BPF_STX | BPF_ATOMIC | BPF_W:
+> > +	case BPF_STX | BPF_ATOMIC | BPF_DW:
+> > +		if (insn->imm != BPF_ADD) {
+> > +			pr_err("bpf-jit: not supported: atomic operation %02x ***\n",
+> > +			       insn->imm);
+> > +			return -EINVAL;
+> > +		}
+> 
+> Can we standardize the error across jits and the error return code? It seems
+> odd that we use pr_err, pr_info_once, pr_err_ratelimited and then return
+> ENOTSUPP, EFAULT or EINVAL.
 
-I think most applications start new listeners before closing listeners, in
-this case, selecting the moved socket as the new listener works well.
+That would be a noble cause but I don't think it makes sense in this
+patchset: they are already inconsistent, so here I've gone for intra-JIT
+consistency over inter-JIT consistency.
 
+I think it would be more annoying, for example, if the s390 JIT returned
+-EOPNOTSUPP for a bad atomic but -1 for other unsupported ops, than it
+is already that the s390 JIT returns -1 where the MIPS returns -EINVAL.
 
-> That said, if it is still desired to do a random pick by kernel when
-> there is no bpf prog, it probably makes sense to guard it in a sysctl as
-> suggested in another reply.  To keep it simple, I would also keep this
-> kernel-pick consistent instead of request socket is doing something
-> different from the unhash path.
-
-Then, is this way better to keep kernel-pick consistent?
-
-  1. call reuseport_select_migrated_sock() without sk_hash from any path
-  2. generate a random number in reuseport_select_migrated_sock()
-  3. pass it to __reuseport_select_sock() only for select-by-hash
-  (4. pass 0 as sk_hash to bpf_run_sk_reuseport not to use it)
-  5. do migration per queue in inet_csk_listen_stop() or per request in
-     receive path.
-
-I understand it is beautiful to keep consistensy, but also think
-the kernel-pick with heuristic performs better than random-pick.
+> granted the error codes might not propagate all the way out at the moment but
+> still shouldn't hurt.
+> 
+> > diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
+> > index 0a4182792876..f973e2ead197 100644
+> > --- a/arch/s390/net/bpf_jit_comp.c
+> > +++ b/arch/s390/net/bpf_jit_comp.c
+> > @@ -1205,18 +1205,23 @@ static noinline int bpf_jit_insn(struct bpf_jit *jit, struct bpf_prog *fp,
+> 
+> For example this will return -1 regardless of error from insn->imm != BPF_ADD.
+> [...]
+> > +	case BPF_STX | BPF_ATOMIC | BPF_DW:
+> > +	case BPF_STX | BPF_ATOMIC | BPF_W:
+> > +		if (insn->imm != BPF_ADD) {
+> > +			pr_err("Unknown atomic operation %02x\n", insn->imm);
+> > +			return -1;
+> > +		}
+> > +
+> [...]
+> 
+> > --- a/include/linux/filter.h
+> > +++ b/include/linux/filter.h
+> > @@ -259,15 +259,38 @@ static inline bool insn_is_zext(const struct bpf_insn *insn)
+> >  		.off   = OFF,					\
+> >  		.imm   = 0 })
+> >  
+> > -/* Atomic memory add, *(uint *)(dst_reg + off16) += src_reg */
+> > +
+> > +/*
+> > + * Atomic operations:
+> > + *
+> > + *   BPF_ADD                  *(uint *) (dst_reg + off16) += src_reg
+> > + */
+> > +
+> > +#define BPF_ATOMIC64(OP, DST, SRC, OFF)				\
+> > +	((struct bpf_insn) {					\
+> > +		.code  = BPF_STX | BPF_DW | BPF_ATOMIC,		\
+> > +		.dst_reg = DST,					\
+> > +		.src_reg = SRC,					\
+> > +		.off   = OFF,					\
+> > +		.imm   = OP })
+> > +
+> > +#define BPF_ATOMIC32(OP, DST, SRC, OFF)				\
+> > +	((struct bpf_insn) {					\
+> > +		.code  = BPF_STX | BPF_W | BPF_ATOMIC,		\
+> > +		.dst_reg = DST,					\
+> > +		.src_reg = SRC,					\
+> > +		.off   = OFF,					\
+> > +		.imm   = OP })
+> > +
+> > +/* Legacy equivalent of BPF_ATOMIC{64,32}(BPF_ADD, ...) */
+> 
+> Not sure I care too much. Does seem more natural to follow
+> below pattern and use,
+> 
+>   BPF_ATOMIC(OP, SIZE, DST, SRC, OFF)
+> 
+> >  
+> >  #define BPF_STX_XADD(SIZE, DST, SRC, OFF)			\
+> >  	((struct bpf_insn) {					\
+> > -		.code  = BPF_STX | BPF_SIZE(SIZE) | BPF_XADD,	\
+> > +		.code  = BPF_STX | BPF_SIZE(SIZE) | BPF_ATOMIC,	\
+> >  		.dst_reg = DST,					\
+> >  		.src_reg = SRC,					\
+> >  		.off   = OFF,					\
+> > -		.imm   = 0 })
+> > +		.imm   = BPF_ADD })
+> >  
+> >  /* Memory store, *(uint *) (dst_reg + off16) = imm32 */
+> >  
+> 
+> [...]
+> 
+> Otherwise LGTM, I'll try to get the remaining patches reviewed tonight
+> I need to jump onto something else this afternoon. Thanks!
