@@ -2,199 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C5BF2D216B
-	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 04:26:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BA542D2170
+	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 04:29:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726048AbgLHD0W (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 7 Dec 2020 22:26:22 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:36682 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725995AbgLHD0V (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 7 Dec 2020 22:26:21 -0500
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B839ESV005879;
-        Mon, 7 Dec 2020 19:25:21 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=S61m4zdKmkJ+wD+/0Md1DULOfTGd0aa+RcBmIHyM+80=;
- b=AHyHMVEMCpY1FSp91oyQk7d4IAtz+XuIyZVjkO9KR/7vWUqgURFOy+Oe1P50ndAJPyFC
- WQEYrNzVj93p0U0lAzSDxDdPZ0gXy4eKyQBhPggKorMX9MuxQ9L6rfeNG7VfR+FdyFcv
- xn6yPaIvPq4ibA+TCU0o0iFJS/43EHoch2s= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 358u4dbnja-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 07 Dec 2020 19:25:21 -0800
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 7 Dec 2020 19:25:20 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OB4M3PqVf8gA8thxfcmxUqvOhXZJbmTq6sZMfd5sNBFZ5PWQHEDN/eJzrXqg2YkkjcHVytb4RXTas9D9TxFrKJI4w8winNgF/i4MQ9z/Nh3wIgbQYAs1CnZrYygk/Jol3IFErmscJDiuYaj4Y6vVrYZMx5B7H/r9UpxYoRY9GKyckbCnj9e+sxFeoMvZlCO+LwJNbPfjiM+i7HyBHAXa+muwvHTo+Eww++3fvwCdveMM+qn8FzdD9YunZcOgE89hKMcoEczl+DWHmMR+VfU2SIYZdS1jrOu9DuFg0g1xMGaMGgNtFwQJjGBku0kTgxE5jmV0eme9Rt1oLBwYKYghLg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=S61m4zdKmkJ+wD+/0Md1DULOfTGd0aa+RcBmIHyM+80=;
- b=PVUGg6EdsVVDW0C8DJJjnIolDV2JIowQw7CaggNAPjIUkQCL3mgVtZczonejCFaWWJvN10AtC0jIfL4wLONCUFQOq9ahy8swttBHVl15Cm8SQEcO9CVuk3dnmT1SBRS/yt4+kHRxsO/vgVTxJpysRXrt80uaclFv+TrpiYWj0bETKd+UJqiGV92sQaT3jrZALps5541o+B/H+qWL9dkXL1el2mwG0ovvBnUxt3TSo50nb7hs07r2oSTsUS7rWESmJSIQ0VWKCBRr48kJoSfZ3emIQtodUaYh4G+o6S60Oz3J4yccABq5PZm2dQ2knzAf7BheCBwCj8DwrAFXVe0Hug==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=S61m4zdKmkJ+wD+/0Md1DULOfTGd0aa+RcBmIHyM+80=;
- b=LFkONoQ/CR/f5xaGvrx70orzz/5bH7fhqS7QjOBv0wUj4hA64L23tq3C9P1qrduyLTzrd0cU7vhNx7T4wyxPsC1qiCc+EZFe7VZx+6y+HcdyYqTKtW0SQxg9HHnxqygttb4SrYo5myuneyzuxpZNx0piB5MXsPLBccRsOD7k/2w=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB3413.namprd15.prod.outlook.com (2603:10b6:a03:10b::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.21; Tue, 8 Dec
- 2020 03:25:19 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3632.021; Tue, 8 Dec 2020
- 03:25:19 +0000
-Subject: Re: [PATCH bpf-next v4 11/11] bpf: Document new atomic instructions
-To:     Brendan Jackman <jackmanb@google.com>, <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        <linux-kernel@vger.kernel.org>, Jann Horn <jannh@google.com>
-References: <20201207160734.2345502-1-jackmanb@google.com>
- <20201207160734.2345502-12-jackmanb@google.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <7b82cf2c-e7d0-0969-d5ce-2d3341b31a52@fb.com>
-Date:   Mon, 7 Dec 2020 19:25:16 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.1
-In-Reply-To: <20201207160734.2345502-12-jackmanb@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2620:10d:c090:400::5:4c73]
-X-ClientProxiedBy: MW4PR04CA0002.namprd04.prod.outlook.com
- (2603:10b6:303:69::7) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+        id S1726141AbgLHD3g (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 7 Dec 2020 22:29:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725863AbgLHD3f (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 7 Dec 2020 22:29:35 -0500
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6724C061749;
+        Mon,  7 Dec 2020 19:28:55 -0800 (PST)
+Received: by mail-yb1-xb44.google.com with SMTP id t33so14946370ybd.0;
+        Mon, 07 Dec 2020 19:28:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vGYs5Gkmvt+IN0Va079gulyVZYQxUla2XbMiolKa4aY=;
+        b=uCeFzefGJWiB8oNn9JGQ8iSumMZNiKYId6RjlMGwVZXH8NvE4SQ2QDnVllnAXRj0F6
+         JW2tzdj0cSEWn4T9cw3VkzOArysdkkQYwaEUuJLSImovp+HuED/rpq7WRr1rkocApssB
+         cjQ3FzKYxCReK6vWGsNv1/bTrB1UYFLFiCTC3Pbng2cAn523n9POYRiZiFAKTBwAiNPt
+         VwgmkCTRtb4AZkyIaYaoeO1yKFQg3F/kbHoggaQGsxhUn0MBLDvAZQKOKhvf7nAfdFSP
+         Uy+peLjaAMFiJyYrN7z9NfFZh6BKz3hZCqADzELu2HFEUmgyhgfifR2x9JNIE4O6/zlA
+         te3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vGYs5Gkmvt+IN0Va079gulyVZYQxUla2XbMiolKa4aY=;
+        b=kTUNXJksNM48Vskw9wTKq77pqp/euUt2DKSBOL8d5kfKTCAtm2HdDN0Dv2BeI91SCU
+         Da217H3cf8EmTMW3Ps/0bDSK444d/TIQP9PhkALsQOlidTKrXGhMjQNHLK+QND0PUAPJ
+         KmcrzC4ORt4biIFnzCQ8fdvvNwk/cQgr8BDKRobOz8SbSluF+KXk0dcwwx1ebHcJHtZF
+         YiOUpDjvhuZU/LWJMGmxzTC8L1OSbOvECmFZ5aWW+tuwJNsbPgm2SRobiFi/xBi5U9CO
+         gPSU8QGdX4UIVqbqKYwHrfmBecbiiWPJ2VZkTjCmorAzhmhnCIuLlzFlJhnJiV28nmXi
+         INnQ==
+X-Gm-Message-State: AOAM5315lf83NQoOFd1orsOCVNa9ksGSE2zWhRoeLU+BfOQT4qABFPMV
+        kBXd3ATRAM7L3t2c0ME3oVqjykd6VVUzHlTHOO8zCa0EffB+9g==
+X-Google-Smtp-Source: ABdhPJwcIoHs4gP/Ilq1AOrCi+5LHXOLqz0GcesF2Xw8HthhaENmvf0nNgXk8azO4yKXZHJxfjRcQ+1tpRPOyU0+pRg=
+X-Received: by 2002:a25:6a05:: with SMTP id f5mr23815351ybc.459.1607398134898;
+ Mon, 07 Dec 2020 19:28:54 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21c8::113f] (2620:10d:c090:400::5:4c73) by MW4PR04CA0002.namprd04.prod.outlook.com (2603:10b6:303:69::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.21 via Frontend Transport; Tue, 8 Dec 2020 03:25:18 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 938db3e6-3ca2-4309-df76-08d89b28e3aa
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3413:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB3413969BF7DD60E4CE2BE98FD3CD0@BYAPR15MB3413.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HWDc3fslYecZ5IQCjZxyDrt5Dp7mnBm1rx6PX1w+RoVAUrZE8y9ULyhn7xLEaXnhg8A1w7kC7POpUobXZMVQIkmyUW+DPcK4JlDBOOQW6p00MpiMVzsBPqOm/z2d16rCs/BeF1mO0diYqCPPTrgttUTyz+0eXTSeRv3Icr+qFUCsuRPSUezJGFLWtUWJMLg0iQLJgQ5PphGc32MumQivXE3vwSxZY3cVNmdG+1JNtndiHi2EMTMblDPuewfG+lT4ZGeokeUvzCL5+NAQL3NjCIhHoCoMG38uK+fd/vQzDtQuEEut/KoDy8mjrTFfrAK+MPbGfGUSOlgO8oa//65xEDILt7rV7xQNHNTt64jCsiZRPjNMXBvRbMo1/6JPsnrLMiSWtuWfTprF+M3GAwlft4eAVy0rTCK7lPqTKSVFYhE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(376002)(366004)(396003)(346002)(136003)(66946007)(66556008)(31686004)(2906002)(16526019)(66476007)(478600001)(8676002)(36756003)(186003)(83380400001)(31696002)(4326008)(52116002)(8936002)(2616005)(86362001)(316002)(54906003)(53546011)(6486002)(5660300002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?dnJEcURma0xQUVF3eFl0UENoS2lKOVJ1VWE2V1dkSDFlZ215RmIyZDFxMHVR?=
- =?utf-8?B?ck1vUmt1SXJrTXloSTNGenFsTGRmQ0lmYVhZdlFYNEc0UURhWWZHQUpUVVMy?=
- =?utf-8?B?QWpoOGxxK1VDeEY2QUtlWHF4QWUvc3FJWllwM1Ira3dSOCs3K01ac2cxUkZx?=
- =?utf-8?B?UXlySWxLc1ZtRUpnZUYyeXlyZDFadWRHM3prdkFqcGJUbTZkckFqK1ZtTVI3?=
- =?utf-8?B?dzNZZFdGVEt3ZUVWOSsxaE5zTC91NkVxSmczZ05INmRTd3BkUmJOU2dSdmZK?=
- =?utf-8?B?RFZjM0pOaTQxamtDUjB1Tm95Y1dVeVBlN1psU3JKTWJPNDNnRm1nQ0ZkRTl6?=
- =?utf-8?B?T3V6cWdML0s5Rlo5enBYZkdvVFpTU09xazB1NDhxeHRaQ0s2WXE3Q2RUTTd5?=
- =?utf-8?B?MHdRVTZZcUVCNFQzOGdXYnJlSWV3enc5cjZRM1dGcEJXY0crWTFZWTV3cEx2?=
- =?utf-8?B?UERUbmtXbDJxdU5SK2V2ODhMQ1oyQ21qeTBxSEIxSXd2VGRmZldic2xpWE9s?=
- =?utf-8?B?bktIS2Z0UDJXME8weG5vN09EZVRqZU53SWpnOG5LNHhGWFdwTk5ScXJxeldo?=
- =?utf-8?B?ZUVNK0lob0Z6VGNaV0NsQm1uQ09TTlNmSWdKMUsrWCtiUUZ5MWhRTSs0UVNI?=
- =?utf-8?B?b2RZWjlyV2RaaFBCUnJxcVF0Y0Z5U1pzUXUrK2JrNHlGTHhFbXpubXozZDY3?=
- =?utf-8?B?U21xc3p0QXFLUEdmbDA2c2xBZWZJdExILzRJVXdRN1pJK3FHb2MvVHlPRGI4?=
- =?utf-8?B?aDRyOGFPREZKRDJvcnJuc3pqQ0JvU25XaThTSjlEQ1NqTGxjdXZKZ2licWZs?=
- =?utf-8?B?UU5OZ0dpczZSb0w3djdkdTNGKzFITDh1U3EyOHFZWDVldExWNDNhenlJVlJn?=
- =?utf-8?B?V1BvRFpDcVRhVllhU29NR2MxWTFwaHU2WTRCTEFFcFl0VVhyMTgvR0dpN3pT?=
- =?utf-8?B?ekRwNyszdFRBR2FzTXAvbWkvbEdqQUI0RTRLRnZ0cGtzcUQyRmd6WnFHN2k1?=
- =?utf-8?B?ekxySnp1Ulk4Z3hSYVdhSkE5cnVNcDNjNWthWnhiUGNDYy9ubVhrNFc0eFFJ?=
- =?utf-8?B?ckxsQXdEellkT1FIOXRsc3FwelVqbEs1T3lTbmhkZjJlQ2oyeDlER2UxTkVz?=
- =?utf-8?B?ZWVrNFVHM2VuZkd3WDBEOFBEaXRPOEh2dlc1OGFpUVJDaUZsM1BsdW9paWNJ?=
- =?utf-8?B?c1MyMnRaOEd0Rk51NVkvNm1nVnN5SDlvM1FZbGRnWGh3R0h3NkNqSFliVWZS?=
- =?utf-8?B?UENibVdqa3hxbno4eGZGVlU3U1JUTGptN0dNWHpyWjUvRFZ1ZmJQbWV3U2k1?=
- =?utf-8?B?NEVKd2VQYU1UbEpCdWM1VEZYRjhuWHg1RkR1KzdmbXVDejJnanZYVmh3cW0x?=
- =?utf-8?B?YlNobjNETm1TZEE9PQ==?=
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Dec 2020 03:25:19.2109
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-Network-Message-Id: 938db3e6-3ca2-4309-df76-08d89b28e3aa
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2P55hmGOjuHnX8mgdNulCfd2zDiftMIH6NlFaRlUYxXHt91z3w/LUM5RHhIi108V
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3413
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-07_19:2020-12-04,2020-12-07 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015 mlxscore=0
- adultscore=0 impostorscore=0 suspectscore=0 mlxlogscore=999
- lowpriorityscore=0 priorityscore=1501 bulkscore=0 spamscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012080019
-X-FB-Internal: deliver
+References: <20201205025140.443115-1-andrii@kernel.org> <alpine.LRH.2.23.451.2012060025520.1505@localhost>
+In-Reply-To: <alpine.LRH.2.23.451.2012060025520.1505@localhost>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 7 Dec 2020 19:28:43 -0800
+Message-ID: <CAEf4BzbB87SDiD+=4u2u5iLhQiXUCc0Bf-7SX6BXZ4tkhjFU=g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: support module BTF for
+ BPF_TYPE_ID_TARGET CO-RE relocation
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Sat, Dec 5, 2020 at 4:38 PM Alan Maguire <alan.maguire@oracle.com> wrote:
+>
+> On Fri, 4 Dec 2020, Andrii Nakryiko wrote:
+>
+> > When Clang emits ldimm64 instruction for BPF_TYPE_ID_TARGET CO-RE relocation,
+> > put module BTF FD, containing target type, into upper 32 bits of imm64.
+> >
+> > Because this FD is internal to libbpf, it's very cumbersome to test this in
+> > selftests. Manual testing was performed with debug log messages sprinkled
+> > across selftests and libbpf, confirming expected values are substituted.
+> > Better testing will be performed as part of the work adding module BTF types
+> > support to  bpf_snprintf_btf() helpers.
+> >
+> > Cc: Alan Maguire <alan.maguire@oracle.com>
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+>
+> Thanks so much for doing this Andrii! When I tested, I ran into a problem;
+> it turns out when a module struct such as "veth_stats" is used, it's
+> classified as BTF_KIND_FWD, and as a result when we iterate over
+> the modules and look in the veth module, "struct veth_stats" does not
+> match since its module kind (BTF_KIND_STRUCT) does not match the candidate
+> kind (BTF_KIND_FWD). I'm kind of out of my depth here, but the below
+> patch (on top of your patch) worked.
+
+I'm not quite clear on the situation. BTF_KIND_FWD is for the local
+type or the remote type? Maybe a small example would help, before we
+go straight to assuming FWD can be always resolved into a concrete
+STRUCT/UNION.
 
 
-On 12/7/20 8:07 AM, Brendan Jackman wrote:
-> Document new atomic instructions.
-> 
-> Signed-off-by: Brendan Jackman <jackmanb@google.com>
+>  However without it - when we find
+> 0  candidate matches - as well as not substituting the module object
+> id/type id - we hit a segfault:
 
-Ack with minor comments below.
+Yep, I missed the null check in:
 
-Acked-by: Yonghong Song <yhs@fb.com>
+targ_spec->btf != prog->obj->btf_vmlinux
 
+I'll fix that.
+
+>
+> Program terminated with signal 11, Segmentation fault.
+> #0  0x0000000000480bf9 in bpf_core_calc_relo (prog=0x4d6ba40,
+> relo=0x4d70e7c,
+>     relo_idx=0, local_spec=0x7ffe2cf17b00, targ_spec=0x0,
+> res=0x7ffe2cf17ae0)
+>     at libbpf.c:4408
+> 4408            switch (kind) {
+> Missing separate debuginfos, use: debuginfo-install
+> elfutils-libelf-0.172-2.el7.x86_64 glibc-2.17-196.el7.x86_64
+> libattr-2.4.46-13.el7.x86_64 libcap-2.22-9.el7.x86_64
+> libgcc-4.8.5-36.0.1.el7_6.2.x86_64 zlib-1.2.7-18.el7.x86_64
+> (gdb) bt
+> #0  0x0000000000480bf9 in bpf_core_calc_relo (prog=0x4d6ba40,
+> relo=0x4d70e7c,
+>     relo_idx=0, local_spec=0x7ffe2cf17b00, targ_spec=0x0,
+> res=0x7ffe2cf17ae0)
+>     at libbpf.c:4408
+>
+>
+> The dereferences of targ_spec in bpf_core_recalc_relo() seem
+> to be the cause; that function is called with a NULL targ_spec
+> when 0 candidates are found, so it's possible we'd need to
+> guard those accesses for cases where a bogus type was passed
+> in and no candidates were found.  If the below looks good would
+> it make sense to roll it into your patch or will I add it to my
+> v3 patch series?
+>
+> Thanks again for your help with this!
+>
+> Alan
+>
+> From 08040730dbff6c5d7636927777ac85a71c10827f Mon Sep 17 00:00:00 2001
+> From: Alan Maguire <alan.maguire@oracle.com>
+> Date: Sun, 6 Dec 2020 01:10:28 +0100
+> Subject: [PATCH] libbpf: handle fwd kinds when checking candidate relocations
+>  for modules
+>
+> when a struct belonging to a module is being assessed, it will be
+> designated a fwd kind (BTF_KIND_FWD); when matching candidate
+> types constraints on exact type matching need to be relaxed to
+> ensure that such structures are found successfully.  Introduce
+> kinds_match() function to handle this comparison.
+>
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
 > ---
->   Documentation/networking/filter.rst | 26 ++++++++++++++++++++++++++
->   1 file changed, 26 insertions(+)
-> 
-> diff --git a/Documentation/networking/filter.rst b/Documentation/networking/filter.rst
-> index 1583d59d806d..26d508a5e038 100644
-> --- a/Documentation/networking/filter.rst
-> +++ b/Documentation/networking/filter.rst
-> @@ -1053,6 +1053,32 @@ encoding.
->      .imm = BPF_ADD, .code = BPF_ATOMIC | BPF_W  | BPF_STX: lock xadd *(u32 *)(dst_reg + off16) += src_reg
->      .imm = BPF_ADD, .code = BPF_ATOMIC | BPF_DW | BPF_STX: lock xadd *(u64 *)(dst_reg + off16) += src_reg
->   
-> +The basic atomic operations supported (from architecture v4 onwards) are:
+>  tools/lib/bpf/libbpf.c | 24 +++++++++++++++++++++---
+>  1 file changed, 21 insertions(+), 3 deletions(-)
+>
 
-No "v4" any more. Just say
-   The basic atomic operations supported are:
-
-> +
-> +    BPF_ADD
-> +    BPF_AND
-> +    BPF_OR
-> +    BPF_XOR
-> +
-> +Each having equivalent semantics with the ``BPF_ADD`` example, that is: the
-> +memory location addresed by ``dst_reg + off`` is atomically modified, with
-> +``src_reg`` as the other operand. If the ``BPF_FETCH`` flag is set in the
-> +immediate, then these operations also overwrite ``src_reg`` with the
-> +value that was in memory before it was modified.
-
-For 4-byte operations, except BPF_ADD, alu32 mode is required.
-alu32 is implied with -mcpu=v3.
-
-> +
-> +The more special operations are:
-> +
-> +    BPF_XCHG
-> +
-> +This atomically exchanges ``src_reg`` with the value addressed by ``dst_reg +
-> +off``.
-> +
-> +    BPF_CMPXCHG
-> +
-> +This atomically compares the value addressed by ``dst_reg + off`` with
-> +``R0``. If they match it is replaced with ``src_reg``, The value that was there
-> +before is loaded back to ``R0``.
-> +
->   Note that 1 and 2 byte atomic operations are not supported.
->   
->   You may encounter BPF_XADD - this is a legacy name for BPF_ATOMIC, referring to
-> 
+[...]
