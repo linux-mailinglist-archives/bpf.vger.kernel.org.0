@@ -2,148 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 968E22D27B6
-	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 10:32:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96C782D2803
+	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 10:44:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728913AbgLHJcF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Dec 2020 04:32:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728294AbgLHJcF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Dec 2020 04:32:05 -0500
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B20E6C0613D6
-        for <bpf@vger.kernel.org>; Tue,  8 Dec 2020 01:31:24 -0800 (PST)
-Received: by mail-wm1-x341.google.com with SMTP id c198so1541908wmd.0
-        for <bpf@vger.kernel.org>; Tue, 08 Dec 2020 01:31:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0vbqC0u2JWnbtIGEpLPfBL9KiWsE3RZwvKDpY4RGpF8=;
-        b=kdoKB6JBLBTZ8b22lJh0msXPFZt5UtbsZb33+FNj5OAInJYHfXNLVFxlGwHJ4zFIT1
-         HkTbyKnC+JUjwaf8ZeNhu9PAx90HlRUFvJ1SUffrJSmjatJHIub7B7rwaG0/M+FpfIQW
-         UpSD7zzdi5DcxB5Jes2TGDsUy5slAEXZvBy+j7ykT8ac2xo0cme7FgvBPY6kS7gW1Fxu
-         uPaG0DjAdPHiIlzzEeQPUezEZ6ZgnwpdC0EYotRTyfTTTkguRzmwxuFivID+fsw1TA8w
-         wq4RLdZIq8xaYRB29xwrYOQm2r0uu7hJUa2VkS0lOcJy8UBZamlgPoMWuj5WO7/Q6pFN
-         XHxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0vbqC0u2JWnbtIGEpLPfBL9KiWsE3RZwvKDpY4RGpF8=;
-        b=U25sKK30ZCSKQhMEa8T0dPmH/J0ValKD/aqo1xDjMRBoj1ihIpjaiFugKFGzFLRtlj
-         rwJ642Krs04fpP5HffXmmEb4uO6piTdU4nlaT/qYuPC8bKls5UJdwMl2C+Bbw3rOupIP
-         iahdDgYqAYl9+msVabv9uSZCdQ3WeFWBbZcRRnJEVFKj390xcWswzdU5336AKfAodwRq
-         ++Pt6F8Ajmn01N9aFpsiCImmMdD6Xb8MFcJnpwWps3wJ4XXaTZ+enQ90PN/e4BDitFem
-         0C2CPL6oRQ1E/S0ZouZ/G1857W5TSiqr6i+GGA/5nTGGrk6plyyg7YbtFF14SD+bClpB
-         kYPA==
-X-Gm-Message-State: AOAM530BF4nX5b+I3VtnssWFf43OOGjum1ZC+fkdF3zmx3ObvWaP9UmC
-        AqZiCgsoi0g4FSUkuUWJSuvceQ==
-X-Google-Smtp-Source: ABdhPJx1tn0cejKXc4GJWNJNSvJ9H7muYwgwMfEVdv5BDWHh4l/WblI6GJ5RZKzVE0by7dJ91gAlZQ==
-X-Received: by 2002:a1c:e2c2:: with SMTP id z185mr3095349wmg.49.1607419883353;
-        Tue, 08 Dec 2020 01:31:23 -0800 (PST)
-Received: from google.com (203.75.199.104.bc.googleusercontent.com. [104.199.75.203])
-        by smtp.gmail.com with ESMTPSA id k11sm2370546wmj.42.2020.12.08.01.31.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Dec 2020 01:31:22 -0800 (PST)
-Date:   Tue, 8 Dec 2020 09:31:18 +0000
-From:   Brendan Jackman <jackmanb@google.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
-Subject: Re: [PATCH bpf-next v4 06/11] bpf: Add BPF_FETCH field / create
- atomic_fetch_add instruction
-Message-ID: <X89H5i6OaYoNaUhN@google.com>
-References: <20201207160734.2345502-1-jackmanb@google.com>
- <20201207160734.2345502-7-jackmanb@google.com>
- <4163e34b-754a-5607-c28a-4c575a2cc6e5@fb.com>
+        id S1729111AbgLHJni (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Dec 2020 04:43:38 -0500
+Received: from www62.your-server.de ([213.133.104.62]:36184 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728007AbgLHJnh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Dec 2020 04:43:37 -0500
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kmZW9-0003EK-El; Tue, 08 Dec 2020 10:42:45 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kmZW9-0000AX-3P; Tue, 08 Dec 2020 10:42:45 +0100
+Subject: Re: [PATCH v2 bpf 1/5] net: ethtool: add xdp properties flag set
+To:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        alardam@gmail.com, magnus.karlsson@intel.com,
+        bjorn.topel@intel.com, andrii.nakryiko@gmail.com, kuba@kernel.org,
+        ast@kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
+        hawk@kernel.org, jonathan.lemon@gmail.com, bpf@vger.kernel.org,
+        jeffrey.t.kirsher@intel.com, maciejromanfijalkowski@gmail.com,
+        intel-wired-lan@lists.osuosl.org,
+        Marek Majtyka <marekx.majtyka@intel.com>
+References: <20201204102901.109709-1-marekx.majtyka@intel.com>
+ <20201204102901.109709-2-marekx.majtyka@intel.com> <878sad933c.fsf@toke.dk>
+ <20201204124618.GA23696@ranger.igk.intel.com>
+ <048bd986-2e05-ee5b-2c03-cd8c473f6636@iogearbox.net>
+ <20201207135433.41172202@carbon>
+ <5fce960682c41_5a96208e4@john-XPS-13-9370.notmuch>
+ <20201208100040.0d57742a@carbon>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <1c327ddf-f361-8abe-9f8d-605f05ddcc7a@iogearbox.net>
+Date:   Tue, 8 Dec 2020 10:42:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4163e34b-754a-5607-c28a-4c575a2cc6e5@fb.com>
+In-Reply-To: <20201208100040.0d57742a@carbon>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26011/Mon Dec  7 15:37:03 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 05:41:05PM -0800, Yonghong Song wrote:
+On 12/8/20 10:00 AM, Jesper Dangaard Brouer wrote:
+> On Mon, 07 Dec 2020 12:52:22 -0800
+> John Fastabend <john.fastabend@gmail.com> wrote:
 > 
+>>> Use-case(1): Cloud-provider want to give customers (running VMs) ability
+>>> to load XDP program for DDoS protection (only), but don't want to allow
+>>> customer to use XDP_TX (that can implement LB or cheat their VM
+>>> isolation policy).
+>>
+>> Not following. What interface do they want to allow loading on? If its
+>> the VM interface then I don't see how it matters. From outside the
+>> VM there should be no way to discover if its done in VM or in tc or
+>> some other stack.
+>>
+>> If its doing some onloading/offloading I would assume they need to
+>> ensure the isolation, etc. is still maintained because you can't
+>> let one VMs program work on other VMs packets safely.
+>>
+>> So what did I miss, above doesn't make sense to me.
 > 
-> On 12/7/20 8:07 AM, Brendan Jackman wrote:
-> > The BPF_FETCH field can be set in bpf_insn.imm, for BPF_ATOMIC
-> > instructions, in order to have the previous value of the
-> > atomically-modified memory location loaded into the src register
-> > after an atomic op is carried out.
-> > 
-> > Suggested-by: Yonghong Song <yhs@fb.com>
-> > Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> > ---
-> >   arch/x86/net/bpf_jit_comp.c    |  4 ++++
-> >   include/linux/filter.h         |  1 +
-> >   include/uapi/linux/bpf.h       |  3 +++
-> >   kernel/bpf/core.c              | 13 +++++++++++++
-> >   kernel/bpf/disasm.c            |  7 +++++++
-> >   kernel/bpf/verifier.c          | 33 ++++++++++++++++++++++++---------
-> >   tools/include/linux/filter.h   | 11 +++++++++++
-> >   tools/include/uapi/linux/bpf.h |  3 +++
-> >   8 files changed, 66 insertions(+), 9 deletions(-)
-> > 
-> > diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> [...]
+> The Cloud-provider want to load customer provided BPF-code on the
+> physical Host-OS NIC (that support XDP).  The customer can get access
+> to a web-interface where they can write or upload their BPF-prog.
 > 
-> > index f345f12c1ff8..4e0100ba52c2 100644
-> > --- a/tools/include/linux/filter.h
-> > +++ b/tools/include/linux/filter.h
-> > @@ -173,6 +173,7 @@
-> >    * Atomic operations:
-> >    *
-> >    *   BPF_ADD                  *(uint *) (dst_reg + off16) += src_reg
-> > + *   BPF_ADD | BPF_FETCH      src_reg = atomic_fetch_add(dst_reg + off16, src_reg);
-> >    */
-> >   #define BPF_ATOMIC64(OP, DST, SRC, OFF)				\
-> > @@ -201,6 +202,16 @@
-> >   		.off   = OFF,					\
-> >   		.imm   = BPF_ADD })
-> > +/* Atomic memory add with fetch, src_reg = atomic_fetch_add(dst_reg + off, src_reg); */
-> > +
-> > +#define BPF_ATOMIC_FETCH_ADD(SIZE, DST, SRC, OFF)		\
-> > +	((struct bpf_insn) {					\
-> > +		.code  = BPF_STX | BPF_SIZE(SIZE) | BPF_ATOMIC,	\
-> > +		.dst_reg = DST,					\
-> > +		.src_reg = SRC,					\
-> > +		.off   = OFF,					\
-> > +		.imm   = BPF_ADD | BPF_FETCH })
+> As multiple customers can upload BPF-progs, the Cloud-provider have to
+> write a BPF-prog dispatcher that runs these multiple program.  This
+> could be done via BPF tail-calls, or via Toke's libxdp[1], or via
+> devmap XDP-progs per egress port.
 > 
-> Not sure whether it is a good idea or not to fold this into BPF_ATOMIC
-> macro. At least you can define BPF_ATOMIC macro and
-> #define BPF_ATOMIC_FETCH_ADD(SIZE, DST, SRC, OFF)		\
->     BPF_ATOMIC(SIZE, DST, SRC, OFF, BPF_ADD | BPF_FETCH)
+> The Cloud-provider don't fully trust customers BPF-prog.   They already
+> pre-filtered traffic to the given VM, so they can allow customers
+> freedom to see traffic and do XDP_PASS and XDP_DROP.  They
+> administratively (via ethtool) want to disable the XDP_REDIRECT and
+> XDP_TX driver feature, as it can be used for violation their VM
+> isolation policy between customers.
 > 
-> to avoid too many code duplications?
+> Is the use-case more clear now?
 
-Oops.. I intended to totally get rid these and folded them into
-BPF_ATOMIC{64,32}! OK, let's combine all of them into a single macro.
-It will have to be called something slightly awkward like
-BPF_ATOMIC_INSN because BPF_ATOMIC is the name of the BPF_OP.
+I think we're talking about two different things. The use case as I understood
+it in (1) mentioned to be able to disable XDP_TX for NICs that are deployed in
+the VM. This would be a no-go as-is since that would mean my basic assumption
+for attaching XDP progs is gone in that today return codes pass/drop/tx is
+pretty much available everywhere on native XDP supported NICs. And if you've
+tried it on major cloud providers like AWS or Azure that offer SRIOV-based
+networking that works okay and further restricting this would mean breakage of
+existing programs.
 
-> 
-> > +
-> >   /* Memory store, *(uint *) (dst_reg + off16) = imm32 */
-> >   #define BPF_ST_MEM(SIZE, DST, OFF, IMM)				\
-> > diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-> > index 98161e2d389f..d5389119291e 100644
-> > --- a/tools/include/uapi/linux/bpf.h
-> > +++ b/tools/include/uapi/linux/bpf.h
-> > @@ -44,6 +44,9 @@
-> >   #define BPF_CALL	0x80	/* function call */
-> >   #define BPF_EXIT	0x90	/* function return */
-> > +/* atomic op type fields (stored in immediate) */
-> > +#define BPF_FETCH	0x01	/* fetch previous value into src reg */
-> > +
-> >   /* Register numbers */
-> >   enum {
-> >   	BPF_REG_0 = 0,
-> > 
+What you mean here is "offload" from guest to host which is a different use
+case than what likely John and I read from your description in (1). Such program
+should then be loaded via BPF offload API. Meaning, if offload is used and the
+host is then configured to disallow XDP_TX for such requests from guests, then
+these get rejected through such facility, but if the /same/ program was loaded as
+regular native XDP where it's still running in the guest, then it must succeed.
+These are two entirely different things.
+
+It's not clear to me whether some ethtool XDP properties flag is the right place
+to describe this (plus this needs to differ between offloaded / non-offloaded progs)
+or whether this should be an implementation detail for things like virtio_net e.g.
+via virtio_has_feature(). Feels more like the latter to me which already has such
+a facility in place.
