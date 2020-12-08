@@ -2,115 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E96492D35C2
-	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 23:04:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55DA72D35F0
+	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 23:13:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730538AbgLHWDK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Dec 2020 17:03:10 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:40794 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726421AbgLHWDJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Dec 2020 17:03:09 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B8LxKPM053029;
-        Tue, 8 Dec 2020 22:02:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : in-reply-to : message-id : references : mime-version :
- content-type; s=corp-2020-01-29;
- bh=hvdxjPy5MyGvTiVa5pu3QObb9iVq99nGN0L0ilpatgw=;
- b=LUeJFtCUZStMcWNePHA6VCGB/nj8xHreDOVC1TD3zKTu/CRo4ztmRdAT5YbJrJ2UsLox
- GzrNQR+c1C0mspR00Gl1SsxN/wDdAHGeaGnikKBJzejgvM4GEB24fpcBLmbVxRKRT013
- 3A53BACWbUxXwv1qM9QrA04w6pMRsPOkdjlcMy5hCndoKXd/7G5EBrwZvzoDeTHjEsaX
- iRroACQIElTr6O1lQGRSbdkwyPDQjXGG04lbNk4YTRWTPcbMcLAcbqD31FQeW1k2Y8cU
- Gzs7XgkeG3EzF7RaDrrQ0SuCJ6qXFpmy1GULAukh5cpqWNz40ogwN3h9Zhipe/4CjlQv 0w== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 35825m57vf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 08 Dec 2020 22:02:13 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B8M1joC057611;
-        Tue, 8 Dec 2020 22:02:13 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 358m4ygrgu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 08 Dec 2020 22:02:12 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B8M2ArX030698;
-        Tue, 8 Dec 2020 22:02:10 GMT
-Received: from dhcp-10-175-161-251.vpn.oracle.com (/10.175.161.251)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 08 Dec 2020 14:02:09 -0800
-Date:   Tue, 8 Dec 2020 22:02:01 +0000 (GMT)
-From:   Alan Maguire <alan.maguire@oracle.com>
-X-X-Sender: alan@localhost
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-cc:     Alan Maguire <alan.maguire@oracle.com>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH bpf-next] libbpf: support module BTF for BPF_TYPE_ID_TARGET
- CO-RE relocation
-In-Reply-To: <CAEf4BzbB87SDiD+=4u2u5iLhQiXUCc0Bf-7SX6BXZ4tkhjFU=g@mail.gmail.com>
-Message-ID: <alpine.LRH.2.23.451.2012082156300.25628@localhost>
-References: <20201205025140.443115-1-andrii@kernel.org> <alpine.LRH.2.23.451.2012060025520.1505@localhost> <CAEf4BzbB87SDiD+=4u2u5iLhQiXUCc0Bf-7SX6BXZ4tkhjFU=g@mail.gmail.com>
+        id S1731332AbgLHWI7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Dec 2020 17:08:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51068 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731364AbgLHWI4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Dec 2020 17:08:56 -0500
+X-Gm-Message-State: AOAM530snzbmXi7scmEv/Rxst6FPlMy46CI6gxGVbRRZHmj46wlZVMKR
+        H6ju/LWIKyV47rsNRozBvSyUEglImX8GNtL57vtjFQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607465296;
+        bh=J7br4+6VmGx77/7VBZgfseCUz95g64+31jTTDT3s5to=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Ws8SSGdIyOUV/LoJdT9eDm8+sWO8kPtQTNGqfqQAN6Y1+gfRBsgC34eewSks3x7al
+         jPDK4GwFHpOrPQuU0uxRlbpkw4SpxPPmtp5foqhAxG+yu1RqSwZGvNuERuFQvNDcXq
+         US7ZO7EvN6qbsOr8deIw/u/hYWoFueY4mBtyvMvODFxVJgpgKGKk+td5A+tlkrm+6B
+         MiETpht8PRvBieXgg3J6D2vTG3mD6aA3SvaWn4VrkIarrqLvwhMb22PwwI+BBlM3tB
+         e/6BI52VUf4TwJIclWkk4RpBoaY2lhSjwRf5rpDraWUNlU2+CBrJ8GsENSB8USab+t
+         50DJBlyCZRB+g==
+X-Google-Smtp-Source: ABdhPJyiGQxFUq1siCws5D38GZ8eqcIJXn0RCbawbKZhP9JzdmJqu6p2p6oA78QUs+fK+JStXf4q29VjM+q31m+NSPQ=
+X-Received: by 2002:a05:6512:11e2:: with SMTP id p2mr790473lfs.153.1607465294452;
+ Tue, 08 Dec 2020 14:08:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=10
- bulkscore=0 malwarescore=0 phishscore=0 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012080137
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=10 adultscore=0
- bulkscore=0 phishscore=0 mlxlogscore=999 clxscore=1015 priorityscore=1501
- mlxscore=0 spamscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012080137
+References: <20201208201533.1312057-1-revest@chromium.org> <20201208201533.1312057-2-revest@chromium.org>
+In-Reply-To: <20201208201533.1312057-2-revest@chromium.org>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Tue, 8 Dec 2020 23:08:03 +0100
+X-Gmail-Original-Message-ID: <CANA3-0c5NtYVGa_TQqY36ZWhmFztrgmKgA9Karo-HpW0MBTkPw@mail.gmail.com>
+Message-ID: <CANA3-0c5NtYVGa_TQqY36ZWhmFztrgmKgA9Karo-HpW0MBTkPw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 2/4] bpf: Expose bpf_get_socket_cookie to
+ tracing programs
+To:     Florent Revest <revest@chromium.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kpsingh@chromium.org,
+        Martin KaFai Lau <kafai@fb.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 7 Dec 2020, Andrii Nakryiko wrote:
-
-> On Sat, Dec 5, 2020 at 4:38 PM Alan Maguire <alan.maguire@oracle.com> wrote:
-> > Thanks so much for doing this Andrii! When I tested, I ran into a problem;
-> > it turns out when a module struct such as "veth_stats" is used, it's
-> > classified as BTF_KIND_FWD, and as a result when we iterate over
-> > the modules and look in the veth module, "struct veth_stats" does not
-> > match since its module kind (BTF_KIND_STRUCT) does not match the candidate
-> > kind (BTF_KIND_FWD). I'm kind of out of my depth here, but the below
-> > patch (on top of your patch) worked.
-> 
-> I'm not quite clear on the situation. BTF_KIND_FWD is for the local
-> type or the remote type? Maybe a small example would help, before we
-> go straight to assuming FWD can be always resolved into a concrete
-> STRUCT/UNION.
+On Tue, Dec 8, 2020 at 9:20 PM Florent Revest <revest@chromium.org> wrote:
 >
+> This needs two new helpers, one that works in a sleepable context (using
+> sock_gen_cookie which disables/enables preemption) and one that does not
+> (for performance reasons). Both take a struct sock pointer and need to
+> check it for NULLness.
+>
+> This helper could also be useful to other BPF program types such as LSM.
+>
+> Signed-off-by: Florent Revest <revest@chromium.org>
+> ---
+>  include/linux/bpf.h            |  2 ++
+>  include/uapi/linux/bpf.h       |  7 +++++++
+>  kernel/trace/bpf_trace.c       |  4 ++++
+>  net/core/filter.c              | 24 ++++++++++++++++++++++++
+>  tools/include/uapi/linux/bpf.h |  7 +++++++
+>  5 files changed, 44 insertions(+)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index d05e75ed8c1b..2ecda549b773 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1859,6 +1859,8 @@ extern const struct bpf_func_proto bpf_snprintf_btf_proto;
+>  extern const struct bpf_func_proto bpf_per_cpu_ptr_proto;
+>  extern const struct bpf_func_proto bpf_this_cpu_ptr_proto;
+>  extern const struct bpf_func_proto bpf_ktime_get_coarse_ns_proto;
+> +extern const struct bpf_func_proto bpf_get_socket_ptr_cookie_sleepable_proto;
+> +extern const struct bpf_func_proto bpf_get_socket_ptr_cookie_proto;
+>
+>  const struct bpf_func_proto *bpf_tracing_func_proto(
+>         enum bpf_func_id func_id, const struct bpf_prog *prog);
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index ba59309f4d18..9ac66cf25959 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -1667,6 +1667,13 @@ union bpf_attr {
+>   *     Return
+>   *             A 8-byte long unique number.
+>   *
+> + * u64 bpf_get_socket_cookie(void *sk)
+> + *     Description
+> + *             Equivalent to **bpf_get_socket_cookie**\ () helper that accepts
+> + *             *sk*, but gets socket from a BTF **struct sock**.
+> + *     Return
+> + *             A 8-byte long unique number.
+> + *
+>   * u32 bpf_get_socket_uid(struct sk_buff *skb)
+>   *     Return
+>   *             The owner UID of the socket associated to *skb*. If the socket
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 0cf0a6331482..99accc2146bc 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -1778,6 +1778,10 @@ tracing_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>                 return &bpf_sk_storage_get_tracing_proto;
+>         case BPF_FUNC_sk_storage_delete:
+>                 return &bpf_sk_storage_delete_tracing_proto;
+> +       case BPF_FUNC_get_socket_cookie:
+> +               return prog->aux->sleepable ?
+> +                      &bpf_get_socket_ptr_cookie_sleepable_proto :
+> +                      &bpf_get_socket_ptr_cookie_proto;
+>  #endif
+>         case BPF_FUNC_seq_printf:
+>                 return prog->expected_attach_type == BPF_TRACE_ITER ?
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 77001a35768f..34877796ab5b 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -4631,6 +4631,30 @@ static const struct bpf_func_proto bpf_get_socket_cookie_sock_proto = {
+>         .arg1_type      = ARG_PTR_TO_CTX,
+>  };
+>
+> +BPF_CALL_1(bpf_get_socket_ptr_cookie_sleepable, struct sock *, sk)
+> +{
+> +       return sk ? sock_gen_cookie(sk) : 0;
 
-The local type was BTF_KIND_FWD, and the target type was BTF_KIND_STRUCT
-IIRC; I'll try and get some libbpf debug output for you showing the
-relocation info.  If it helps, I think the situation was this; I was
-referencing __builtin_btf_type_id(struct veth_stats), and hadn't
-included a BTF-generated veth header, so I'm guessing libbpf classified
-it as a fwd declaration.  My patch was a bit too general I suspect in
-that it assumed that either target or local could be BTF_KIND_FWD and
-should match BTF_KIND_STRUCT in local/target, wheres I _think_ the
-local only should permit BTF_KIND_FWD.  Does that make sense? 
-> 
-> >  However without it - when we find
-> > 0  candidate matches - as well as not substituting the module object
-> > id/type id - we hit a segfault:
-> 
-> Yep, I missed the null check in:
-> 
-> targ_spec->btf != prog->obj->btf_vmlinux
-> 
-> I'll fix that.
-> 
+My understanding is you can simply always call sock_gen_cookie and not
+have two protos.
 
-Thanks! I think the core_reloc selftests trigger the segfault 
-also if you need a test case to verify.
-
-Alan
+This will disable preemption in sleepable programs and not have any effect
+in non-sleepable programs since preemption will already be disabled.
