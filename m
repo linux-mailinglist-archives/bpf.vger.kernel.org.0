@@ -2,173 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F7A72D23B2
-	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 07:38:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6E982D23B4
+	for <lists+bpf@lfdr.de>; Tue,  8 Dec 2020 07:39:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725910AbgLHGiV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Dec 2020 01:38:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49386 "EHLO
+        id S1726095AbgLHGjg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Dec 2020 01:39:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725874AbgLHGiV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Dec 2020 01:38:21 -0500
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59AEEC061749;
-        Mon,  7 Dec 2020 22:37:41 -0800 (PST)
-Received: by mail-ot1-x342.google.com with SMTP id y24so14984347otk.3;
-        Mon, 07 Dec 2020 22:37:41 -0800 (PST)
+        with ESMTP id S1725874AbgLHGjg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Dec 2020 01:39:36 -0500
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69BA7C0613D6;
+        Mon,  7 Dec 2020 22:38:56 -0800 (PST)
+Received: by mail-yb1-xb43.google.com with SMTP id a16so10151128ybh.5;
+        Mon, 07 Dec 2020 22:38:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=XHxE+9D2MV73874pg6D94J5O/5wRxrsY3k6+WdKxVCo=;
-        b=ulXhPJ4GwaWmDj57S3kfauTXdQFc9pcBR2BItjRXtv1Y55Mc1TFlNeFD13ekQ6n4ZZ
-         YIK9SUYem5L0qD4H1FepfFaHwZzwl0E4w2xI+SGCxv0OAcIESrpRBKnOCAJ2pZGTIe2j
-         24PjHT7xoEWZHpK4u97FiWtvBx++C155sx86f0GgjYppubsyXvuAAL01Y2D7STxQWssP
-         SnrPX+2TYAprsgM9IpdkBWOAAX/+1vK0gmVFy2TRKUt/5lP2bM/n+nEmIWst5cTCb7vV
-         5djLHbjvU/QuPaqzDL/b1END4h0OndtoMNHuI8MUf/3auGez9h/Io2/2wcpeLA014MkM
-         PWoQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=n+DomqOo2PhT6ykuvOU2eB7Z2/mQ2l0eQHy8iuDLKV4=;
+        b=SJJauJb1pLbD5glsSvQcPwoH6cG5a2cEFvOVhJnMLedik26ozqAJL2ts6WYZMYSZvx
+         p4GvCeEn7T0yHVhKucSezvYCH+qGX7raKZwoUgnHf7YvZ5yeuVCLbvJocL3DUOS5q6Yw
+         YBd/4gu22ExVHzSfPok64amPLKUt0niYVmT9yDTtgqh58e1MJoQggmQv4DAb5jn5vgna
+         D9lhfZOGGuhez6jC3TZaSMhzdnNGHofygvzQc1R71WmIixOki0edKmtTCNBUmHAy+0ri
+         xpKbHb47JmCcindsHk1slH69xnBx+5i9LdK+DvAoTP8rs+InHzAm5XjaXR76Rau8bzUe
+         cg/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=XHxE+9D2MV73874pg6D94J5O/5wRxrsY3k6+WdKxVCo=;
-        b=DWYWkethavPFI8fKfU2PppWQBbwlCNzdTzzgBnmQr+dmJv/P3GJvUFeEBWtsDCZeYl
-         1cFIyeWkjjiGXMtLoM3JJ4X+akcA8FVoEsupB/ODsuGxH/xHjaRCb+f7FKP4ZFCDU81F
-         jIVzgC4qK5dZFfq28oco70g0j88RCiYPWEGUlc6Kk8xlqkGXDwgutjanB1Wq4uQpzXva
-         xL8N1Ikx+S4dtxW3jkiPAClI1EXQFGdiPpOmopjgNS3zir3jU9M+ir9tnEV54+ctXXQH
-         WYMqh1CnKDh81jGZdlIP4YtBzlv/M5fmfdOrG3j+p30cCmpMmsglGYqpI3RueZHMlIXy
-         VDFQ==
-X-Gm-Message-State: AOAM531wLNzK7BKV0KNcYEezpZukX8Kykl5b99C3KjQfcgZAJbutDyG/
-        iCqqW+sWGAIgVUirURJumh4=
-X-Google-Smtp-Source: ABdhPJz52XHCFNNeXCTDeFYlENOBVWasWiuxpqRScVNMq0zAREeo9Q95K/XxmBLfGhKL32UyBq+jkA==
-X-Received: by 2002:a9d:2065:: with SMTP id n92mr15440932ota.150.1607409460685;
-        Mon, 07 Dec 2020 22:37:40 -0800 (PST)
-Received: from localhost ([184.21.204.5])
-        by smtp.gmail.com with ESMTPSA id l21sm3439466otd.0.2020.12.07.22.37.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Dec 2020 22:37:40 -0800 (PST)
-Date:   Mon, 07 Dec 2020 22:37:32 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Brendan Jackman <jackmanb@google.com>, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=n+DomqOo2PhT6ykuvOU2eB7Z2/mQ2l0eQHy8iuDLKV4=;
+        b=W+5dosFyeNI9GPNuHcEYtBRVcvFLyutAQqGqtzFuRgzCpAB/pFcmU0VKcgnT5GnXJ2
+         dOuX9nrYbx++iZRdkAfDucgQ3wzSTGR6s/OueOpYllOb78RHsLCW5pmMJt4OSqIDGb7t
+         DV1xzFEIeiflyVEEdVaujwwNclfkA965OVR1nD48j1vPWSPLUBLSrIbyP7CrKPLDBE8l
+         /sSYSyi6UPiyklimKU6rX+UkXJsGLQYspoYlUJkz3aAObNqKdblZLBXn6OWg3U7BeoP6
+         UC0OzgTdY9S9PREfCkbZ+XAQmW2vvJpVYBOFM4jRmIHyR8oAi4vSBtjSkcX4KU/7JVgo
+         LxwA==
+X-Gm-Message-State: AOAM5321D7qvzaYc07vYrtSEGwH9t8QYoGNJvE0QZ5zzwxX0P5O35L30
+        +ctHvqccUeUKllVpkI4Y2jD/1y45gcJ9LkgRuDTQ63vR4254Kg==
+X-Google-Smtp-Source: ABdhPJwISyhwAhl/kvoznjUoicbLOLCug5cAjOdzMRgrGTXU2ExaeOi24/UCox4URHYmKEe+m3lvivB2FtluuE8LSyg=
+X-Received: by 2002:a25:d44:: with SMTP id 65mr15958804ybn.260.1607409535674;
+ Mon, 07 Dec 2020 22:38:55 -0800 (PST)
+MIME-Version: 1.0
+References: <20201207052057.397223-1-saeed@kernel.org> <CAEf4BzZe2162nMsamMKkGRpR_9hUnaATWocE=XjgZd+2cJk5Jw@mail.gmail.com>
+ <76aa0d16e3d03cf12496184c848f60069bf71872.camel@kernel.org>
+In-Reply-To: <76aa0d16e3d03cf12496184c848f60069bf71872.camel@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 7 Dec 2020 22:38:44 -0800
+Message-ID: <CAEf4BzYzJuPt8Fct2pOTPjHLiiyGPQw05rFNK4d+MAJTC_itkw@mail.gmail.com>
+Subject: Re: [PATCH bpf] tools/bpftool: Add/Fix support for modules btf dump
+To:     Saeed Mahameed <saeed@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>,
-        Brendan Jackman <jackmanb@google.com>
-Message-ID: <5fcf1f2cd24e1_9ab320888@john-XPS-13-9370.notmuch>
-In-Reply-To: <20201207160734.2345502-8-jackmanb@google.com>
-References: <20201207160734.2345502-1-jackmanb@google.com>
- <20201207160734.2345502-8-jackmanb@google.com>
-Subject: RE: [PATCH bpf-next v4 07/11] bpf: Add instructions for
- atomic_[cmp]xchg
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        Networking <netdev@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Brendan Jackman wrote:
-> This adds two atomic opcodes, both of which include the BPF_FETCH
-> flag. XCHG without the BPF_FETCH flag would naturally encode
-> atomic_set. This is not supported because it would be of limited
-> value to userspace (it doesn't imply any barriers). CMPXCHG without
-> BPF_FETCH woulud be an atomic compare-and-write. We don't have such
-> an operation in the kernel so it isn't provided to BPF either.
-> 
-> There are two significant design decisions made for the CMPXCHG
-> instruction:
-> 
->  - To solve the issue that this operation fundamentally has 3
->    operands, but we only have two register fields. Therefore the
->    operand we compare against (the kernel's API calls it 'old') is
->    hard-coded to be R0. x86 has similar design (and A64 doesn't
->    have this problem).
-> 
->    A potential alternative might be to encode the other operand's
->    register number in the immediate field.
-> 
->  - The kernel's atomic_cmpxchg returns the old value, while the C11
->    userspace APIs return a boolean indicating the comparison
->    result. Which should BPF do? A64 returns the old value. x86 returns
->    the old value in the hard-coded register (and also sets a
->    flag). That means return-old-value is easier to JIT.
+On Mon, Dec 7, 2020 at 10:26 PM Saeed Mahameed <saeed@kernel.org> wrote:
+>
+> On Mon, 2020-12-07 at 19:14 -0800, Andrii Nakryiko wrote:
+> > On Sun, Dec 6, 2020 at 9:21 PM <saeed@kernel.org> wrote:
+> > > From: Saeed Mahameed <saeedm@nvidia.com>
+> > >
+> > > While playing with BTF for modules, i noticed that executing the
+> > > command:
+> > > $ bpftool btf dump id <module's btf id>
+> > >
+> > > Fails due to lack of information in the BTF data.
+> > >
+> > > Maybe I am missing a step but actually adding the support for this
+> > > is
+> > > very simple.
+> >
+> > yes, bpftool takes -B <path> argument for specifying base BTF. So if
+> > you added -B /sys/kernel/btf/vmlinux, it should have worked. I've
+> > added auto-detection logic for the case of `btf dump file
+> > /sys/kernel/btf/<module>` (see [0]), and we can also add it for when
+> > ID corresponds to a module BTF. But I think it's simplest to re-use
+> > the logic and just open /sys/kernel/btf/vmlinux, instead of adding
+> > narrowly-focused libbpf API for that.
+> >
+>
+> When dumping with a file it works even without the -B since you lookup
+> the vmlinux file, but the issue is not dumping from a file source, we
+> need it by id..
+>
+> > > To completely parse modules BTF data, we need the vmlinux BTF as
+> > > their
+> > > "base btf", which can be easily found by iterating through the btf
+> > > ids and
+> > > looking for btf.name == "vmlinux".
+> > >
+> > > I am not sure why this hasn't been added by the original patchset
+> >
+> > because I never though of dumping module BTF by id, given there is
+> > nicely named /sys/kernel/btf/<module> :)
+> >
+>
+> What if i didn't compile my kernel with SYSFS ? a user experience is a
+> user experience, there is no reason to not support dump a module btf by
+> id or to have different behavior for different BTF sources.
 
-Just a nit as it looks like perhaps we get one more spin here. Would
-be nice to be explicit about what the code does here. The above reads
-like it could go either way. Just an extra line "So we use ...' would
-be enough.
+Hm... I didn't claim otherwise and didn't oppose the feature, why the
+lecture about user experience?
 
-> 
-> Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> ---
+Not having sysfs is a valid point. In such cases, if BTF dumping is
+from ID and we see that it's a module BTF, finding vmlinux BTF from ID
+makes sense.
 
-One question below.
+>
+> I can revise this patch to support -B option and lookup vmlinux file if
+> not provided for module btf dump by ids.
 
->  arch/x86/net/bpf_jit_comp.c    |  8 ++++++++
->  include/linux/filter.h         | 22 ++++++++++++++++++++++
->  include/uapi/linux/bpf.h       |  4 +++-
->  kernel/bpf/core.c              | 20 ++++++++++++++++++++
->  kernel/bpf/disasm.c            | 15 +++++++++++++++
->  kernel/bpf/verifier.c          | 19 +++++++++++++++++--
->  tools/include/linux/filter.h   | 22 ++++++++++++++++++++++
->  tools/include/uapi/linux/bpf.h |  4 +++-
->  8 files changed, 110 insertions(+), 4 deletions(-)
-> 
+yep
 
-[...]
+>
+> but we  still need to pass base_btf to btf__get_from_id() in order to
+> support that, as was done for btf__parse_split() ... :/
 
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index f8c4e809297d..f5f4460b3e4e 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -3608,11 +3608,14 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
->  
->  static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_insn *insn)
->  {
-> +	int load_reg;
->  	int err;
->  
->  	switch (insn->imm) {
->  	case BPF_ADD:
->  	case BPF_ADD | BPF_FETCH:
-> +	case BPF_XCHG:
-> +	case BPF_CMPXCHG:
->  		break;
->  	default:
->  		verbose(env, "BPF_ATOMIC uses invalid atomic opcode %02x\n", insn->imm);
-> @@ -3634,6 +3637,13 @@ static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_i
->  	if (err)
->  		return err;
->  
-> +	if (insn->imm == BPF_CMPXCHG) {
-> +		/* Check comparison of R0 with memory location */
-> +		err = check_reg_arg(env, BPF_REG_0, SRC_OP);
-> +		if (err)
-> +			return err;
-> +	}
-> +
+btf__get_from_id_split() might be needed, yes.
 
-I need to think a bit more about it, but do we need to update is_reg64()
-at all for these?
+>
+> Are you sure you don't like the current patch/libbpf API ? it is pretty
+> straight forward and correct.
 
->  	if (is_pointer_value(env, insn->src_reg)) {
->  		verbose(env, "R%d leaks addr into mem\n", insn->src_reg);
->  		return -EACCES;
-> @@ -3664,8 +3674,13 @@ static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_i
->  	if (!(insn->imm & BPF_FETCH))
->  		return 0;
->  
-> -	/* check and record load of old value into src reg  */
-> -	err = check_reg_arg(env, insn->src_reg, DST_OP);
-> +	if (insn->imm == BPF_CMPXCHG)
-> +		load_reg = BPF_REG_0;
-> +	else
-> +		load_reg = insn->src_reg;
-> +
-> +	/* check and record load of old value */
-> +	err = check_reg_arg(env, load_reg, DST_OP);
->  	if (err)
->  		return err;
+I definitely don't like adding btf_get_kernel_id() API to libbpf.
+There is nothing special about it to warrant adding it as a public
+API. Everything we discussed can be done by bpftool.
+
+>
+> > > "Integrate kernel module BTF support", as adding the support for
+> > > this is very trivial. Unless i am missing something, CCing Andrii..
+> > >
+> > > Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+> > > CC: Andrii Nakryiko <andrii@kernel.org>
+> > > ---
+> > >  tools/lib/bpf/btf.c      | 57
+> > > ++++++++++++++++++++++++++++++++++++++++
+> > >  tools/lib/bpf/btf.h      |  2 ++
+> > >  tools/lib/bpf/libbpf.map |  1 +
+> > >  3 files changed, 60 insertions(+)
+> > >
+> >
+> > [...]
+>
