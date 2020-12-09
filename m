@@ -2,90 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81CB22D388A
-	for <lists+bpf@lfdr.de>; Wed,  9 Dec 2020 03:01:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 603512D38D4
+	for <lists+bpf@lfdr.de>; Wed,  9 Dec 2020 03:31:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726467AbgLICAC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 8 Dec 2020 21:00:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725796AbgLICAC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 8 Dec 2020 21:00:02 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0B49C0613CF
-        for <bpf@vger.kernel.org>; Tue,  8 Dec 2020 17:59:21 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id a1so775844ljq.3
-        for <bpf@vger.kernel.org>; Tue, 08 Dec 2020 17:59:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=h7aMz42Sz7HR0CodxloTeJL0Wyef938yAqRCUaMHA0E=;
-        b=IPGMNhxoVkhUHPEO7igUGddY6liQ8eZyuTxy4f//TX8Vm7/j8T2Gi1DL3p9+cJhBk7
-         Kf0x93uJhnoDWQxcUwhUA3kfFdKipjwdB/CMlMpZdmxVS2AD1Pwyt2v4/FJqSYTSQaq6
-         vw299eT86uIiTtP2o14lQdh79B/Y9Qz2TaMUz+9MAEIyl2wGKCWRSMMh4FObgQkbe2SQ
-         jjyqlLqguGdBGj+vrDNTCKuBy3gx7TYYvIbonRkbgKGakSMO3m6AgFxpA1OFySTJXCGO
-         izzEzIQX47fnj3xPiBzy8MaSslYp7vdGsxgxhF9494htuLsNeSkMVM5tjvKiFJ5fbQ9z
-         icqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h7aMz42Sz7HR0CodxloTeJL0Wyef938yAqRCUaMHA0E=;
-        b=IbNKmnHKRf0mNnO75y6T6SyBDelAOiVfRsR32PmyKZYTyRm+8jKjwt9Af6t2k0fuTv
-         gt1+QRlbtKzoTEJsAwDbEqDhsHbj2O/LIsPZI6a+Phd5lodKxxRyZx0+bq6nm56BibBH
-         c5qeZVPVVEvMlczQ5wCoVST5B/yQ97NxSzdbnP9jE2bq8qqQFp54j5KmIrKM4ed5k6p4
-         FhnlR57z5Q3ZVzSj1+/5K6ToyDUzNqmkNbiwCdkmN+JNbigomP1ExNddJSlv2DEgkPxV
-         bp+3X119Xa+j2+lG3q2VUlhk12vLTKXeXwn9tg7L9GnpMkxY2rqfvMtFr0pi+YBYU3SN
-         Ublg==
-X-Gm-Message-State: AOAM533Pxy8/L0k0evRwsfdEhODM8AFSDauU0t4Q0HvEn4+pzy7EMJUK
-        hypgsh/rRsS8ibtY++X0TC2FNYmf3XX+N7I2ykc=
-X-Google-Smtp-Source: ABdhPJyyDcuTyLHNwZQbC4FoFR/CFbOO82vXXSD5XyyU1uYGmbnjLy9kl9YznDVOckrENBPqLPc/LHAlL5nrxz9Q3jk=
-X-Received: by 2002:a2e:9cd8:: with SMTP id g24mr36393ljj.32.1607479160077;
- Tue, 08 Dec 2020 17:59:20 -0800 (PST)
+        id S1726754AbgLICar (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Dec 2020 21:30:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35256 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726483AbgLICar (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Dec 2020 21:30:47 -0500
+Content-Type: text/plain; charset="utf-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607481006;
+        bh=2VGJAdexmfW9zjpnTV1mJzTV6x8Q3WuHQuZxaP6vZMk=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=o1ZtjeV+WTXt2+mvK+67HiE10HA8qhU8ZvK188H2uQLaBJzUkltvp2JSqEFebYNan
+         5QTlVGtfflBgcmuFzX4b2jbZ7julcumXUuY21enS+/lbqV0o77LJbNyK2seajzdBof
+         Ll6WsI4hDZQPrEto8O7m6jRettJS0mR3UztR+EFLGTVBmv56WH7j8WcTl3JHy6UtbX
+         2elrGosZPlKpzZ6yfCG5Xxj79kNT2FxKEevaDIdtq1S+9WezQXD/NIiqwxQJog0T0X
+         zxKL0VjUzrid3TUMe/aHo7Qyv0JtzmTFPcvF/dk2j5EM6uaZ2TyGhIfz92+hiJXS15
+         YtNe7258z6l2Q==
 MIME-Version: 1.0
-References: <CANaYP3GdNhD56xykv+uS2Y1Mof1vXWkSfdbTPo9bwjGmXxSHEA@mail.gmail.com>
- <919345aa-4746-40a5-be17-faf110619e84@www.fastmail.com>
-In-Reply-To: <919345aa-4746-40a5-be17-faf110619e84@www.fastmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 8 Dec 2020 17:59:08 -0800
-Message-ID: <CAADnVQJcwihT43rtbMkQNfTQH6xbbZ23jgDz_2Zh0c2TY==vhw@mail.gmail.com>
-Subject: Re: Feature proposal - Attaching probes to cgroups
-To:     Daniel Xu <dxu@dxuuu.xyz>, Andrii Nakryiko <andrii@kernel.org>,
-        Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
-        Andrey Ignatov <rdna@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Gilad Reti <gilad.reti@gmail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v3] bpf: Only provide bpf_sock_from_file with
+ CONFIG_NET
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <160748100661.25606.9093135909734120756.git-patchwork-notify@kernel.org>
+Date:   Wed, 09 Dec 2020 02:30:06 +0000
+References: <20201208173623.1136863-1-revest@chromium.org>
+In-Reply-To: <20201208173623.1136863-1-revest@chromium.org>
+To:     Florent Revest <revest@chromium.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kpsingh@chromium.org, rdunlap@infradead.org,
+        kafai@fb.com, linux-next@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lkp@intel.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 12:38 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
->
-> On Tue, Dec 8, 2020, at 2:40 AM, Gilad Reti wrote:
-> > Hello everyone,
-> >
-> > Are there any plans on extending the cgroup program types to include
-> > more probe types (or possibly allow restricting any probe type to a
-> > specific cgroup)?
+Hello:
 
-This kind of feature was requested earlier.
-The rough idea was to add a program hook in the cgroup attach path.
-So that prog can decide which progs to which cgroups are ok.
-It's a bit tautological and not everyone was happy with the idea.
-No patches were produced either.
-Other ideas of extending existing default/override/multi logic were rejected
-as not flexible and not generic enough.
+This patch was applied to bpf/bpf-next.git (refs/heads/master):
 
-> > For a use case example, this will allow attaching programs to the
-> > "docker" cgroup and thus tracing events from containers only (or even
-> > enforcing eBPF LSM on docker containers only).
->
-> Based on my understanding, this may not be possible. For example, the
-> kernel may lose information about cgroups on deferred work. When the
-> work is later executed, the cgroup may lose information on work it technically
-> initiated.
->
-> Daniel
+On Tue,  8 Dec 2020 18:36:23 +0100 you wrote:
+> This moves the bpf_sock_from_file definition into net/core/filter.c
+> which only gets compiled with CONFIG_NET and also moves the helper proto
+> usage next to other tracing helpers that are conditional on CONFIG_NET.
+> 
+> This avoids
+>   ld: kernel/trace/bpf_trace.o: in function `bpf_sock_from_file':
+>   bpf_trace.c:(.text+0xe23): undefined reference to `sock_from_file'
+> When compiling a kernel with BPF and without NET.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,v3] bpf: Only provide bpf_sock_from_file with CONFIG_NET
+    https://git.kernel.org/bpf/bpf-next/c/b60da4955f53
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
