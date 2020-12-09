@@ -2,217 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E80E2D433B
-	for <lists+bpf@lfdr.de>; Wed,  9 Dec 2020 14:30:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7D602D4395
+	for <lists+bpf@lfdr.de>; Wed,  9 Dec 2020 14:53:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732385AbgLIN2r (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Dec 2020 08:28:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732343AbgLIN2B (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Dec 2020 08:28:01 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83DD1C0617B0
-        for <bpf@vger.kernel.org>; Wed,  9 Dec 2020 05:26:43 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id r3so1753599wrt.2
-        for <bpf@vger.kernel.org>; Wed, 09 Dec 2020 05:26:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=O9mDZF7etgTn6tPi+wLjx4mpeEvfX0cxhDjOxW77JZw=;
-        b=UiQzniNMGcPQKLgMJ0EzSi2Kxaf6qlPnE0Z6wiBoM3oMicnTBdvuSw0E9lg/rVc5fS
-         8CSHJj6Txg/LTewz8bLBQXPXghERXgK8ndh/sScGDtcUWDffh+3JJoh1b+xBlfBVig8C
-         9rvjTFdpOX3JqtGYTIwNO7j21vBUFP13Oa6i4=
+        id S1732532AbgLINxW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Dec 2020 08:53:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53832 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732548AbgLINxR (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 9 Dec 2020 08:53:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607521910;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Hg9g+sVoJ6kgUdtXHkyCXTcuMsLmixhN0YeOIGbL80w=;
+        b=bAbj0vaZ2W/fKQE0svPGMwLXnaS/RluzH6Q73/eCW9OZmNCh6wmwcT04oFFPSNjeoHe7G8
+        GQjkk728aDvsXWxY2A5pYeNF/UpqD9gudjCqwbj8rpzdpNAO3pJ7AXUfqG786gZJYIwTyD
+        h1PyX7vxJ4J1QgbyX3vRdieVPx/bQv4=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-214-Lv4vY7c_MJSSUjUJBPrXOw-1; Wed, 09 Dec 2020 08:51:47 -0500
+X-MC-Unique: Lv4vY7c_MJSSUjUJBPrXOw-1
+Received: by mail-wr1-f71.google.com with SMTP id n13so686081wrs.10
+        for <bpf@vger.kernel.org>; Wed, 09 Dec 2020 05:51:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=O9mDZF7etgTn6tPi+wLjx4mpeEvfX0cxhDjOxW77JZw=;
-        b=FSCbtglAKi7jJbGgYe2ywR1IGE4cvZ5VOWxX2DutDvA+WeqekqCov+YGQXAu14KVxD
-         Huxvurtih8MK0NDZDyH2BFxRsg4FJGJ46MRikNEsxlvfAQY6YuqKtSeiFgkpL8J5Qjkp
-         hYbNyIxB5tOBNTrJtYRXuwu0AL98WZH1LehL0UzEMfCqvTXMX+ftF6W/vPrS9beOHUPh
-         cnJV4p6Q0e+7pXkTKglzy5zHvcwbgKZ84QFYpnKqDj6+MjHwry+XGePyIX/xRPrydLHh
-         EGMA9ojzhhG39kXwoHTkJSJjKtiJq5gTJRQd09BovVhjAYuZ814vnuwL6yg/XUY5QCQJ
-         rupw==
-X-Gm-Message-State: AOAM532t+AMWcQEGls0aPoJSY4H0C0L71SZCnTdqXMA0GyQj06yIQ0jz
-        JWseyRuCc/wL8/1FN1Tu31LjlGyndAs4kg==
-X-Google-Smtp-Source: ABdhPJyJQpvCFFprTl21K/OpcEuA7dY8Og5NuNzUxF1gbNOZpbuDZNIoWdLZ8aANWO/x2NGPBJz52Q==
-X-Received: by 2002:adf:d081:: with SMTP id y1mr2734830wrh.388.1607520402020;
-        Wed, 09 Dec 2020 05:26:42 -0800 (PST)
-Received: from revest.zrh.corp.google.com ([2a00:79e0:42:204:f693:9fff:fef4:a569])
-        by smtp.gmail.com with ESMTPSA id t16sm3631490wri.42.2020.12.09.05.26.40
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=Hg9g+sVoJ6kgUdtXHkyCXTcuMsLmixhN0YeOIGbL80w=;
+        b=fMdu6EHdgOicje/pN/5yljWVjMtJSBUpcgqc82KYh3lII6Q8h1acuhiU6yC6PqRpxf
+         gkTh7ca9GDtLzh25/+wncKrRrF2F3yxbsvqR5jTInTOU+9Ns/pw4sZfJJ3qpKP6yp6RL
+         dr9FNarj+MbZJgt5SsyIgS362yZBf1uYudEdzAk+9pbXR+S3elcJvCBeMYpR9N8VRLdP
+         Em64ZVvna3DMDv4mlQLVG50XCAFa41l8PmGu2nHaETIgNSfx/+wkzKnzXrVEiMk6Pp5c
+         8x0TTZ9HMP94iHPwUv2VVH7Dx48PdT8EQWFduPtJCP08KrTcOK+7bp6SNq6UUDe5mXjo
+         G/dQ==
+X-Gm-Message-State: AOAM533kH9emDzCbHJw7UdtGVQ8fB9yw2NSkhMKwVCEyBvUz1LBPvV6t
+        sjyA6LSf1DoJ7+EOEVhqTo9lY8OM2PVkDYXJInMh1MVkazQ6L4jcnbRfKHXZaio7+Nm2eSeMmHw
+        s5xmznIfbG/UO
+X-Received: by 2002:adf:a551:: with SMTP id j17mr2796126wrb.217.1607521905992;
+        Wed, 09 Dec 2020 05:51:45 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy344kkv3uqKmIpHXLeHTtzvUQ+KbApOY9R7+uW9M5e9d7deK6JGMan9ETWm9IBUc89/wobZg==
+X-Received: by 2002:adf:a551:: with SMTP id j17mr2796108wrb.217.1607521905813;
+        Wed, 09 Dec 2020 05:51:45 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id v7sm3355177wma.26.2020.12.09.05.51.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 05:26:41 -0800 (PST)
-From:   Florent Revest <revest@chromium.org>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kpsingh@chromium.org, kafai@fb.com, linux-kernel@vger.kernel.org,
-        Florent Revest <revest@chromium.org>
-Subject: [PATCH bpf-next v4 4/4] selftests/bpf: Add a selftest for the tracing bpf_get_socket_cookie
-Date:   Wed,  9 Dec 2020 14:26:36 +0100
-Message-Id: <20201209132636.1545761-4-revest@chromium.org>
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
-In-Reply-To: <20201209132636.1545761-1-revest@chromium.org>
-References: <20201209132636.1545761-1-revest@chromium.org>
+        Wed, 09 Dec 2020 05:51:45 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id CC1AC180003; Wed,  9 Dec 2020 14:51:44 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Romain Perier <romain.perier@gmail.com>,
+        Allen Pais <apais@linux.microsoft.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Simon Horman <simon.horman@netronome.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        Jiri Benc <jbenc@redhat.com>, oss-drivers@netronome.com,
+        linux-omap@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH bpf v3 3/7] netdevsim: Add debugfs toggle to reject BPF
+ programs in verifier
+In-Reply-To: <160751272126.104774.9977428866761146011.stgit@toke.dk>
+References: <160751271801.104774.5575431902172553440.stgit@toke.dk>
+ <160751272126.104774.9977428866761146011.stgit@toke.dk>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 09 Dec 2020 14:51:44 +0100
+Message-ID: <87pn3jnl3j.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This builds up on the existing socket cookie test which checks whether
-the bpf_get_socket_cookie helpers provide the same value in
-cgroup/connect6 and sockops programs for a socket created by the
-userspace part of the test.
+Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> writes:
 
-Adding a tracing program to the existing objects requires a different
-attachment strategy and different headers.
+> From: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+>
+> This adds a new debugfs toggle ('bpf_bind_verifier_accept') that can be
+> used to make netdevsim reject BPF programs from being accepted by the
+> verifier. If this toggle (which defaults to true) is set to false,
+> nsim_bpf_verify_insn() will return EOPNOTSUPP on the last
+> instruction (after outputting the 'Hello from netdevsim' verifier message=
+).
+>
+> This makes it possible to check the verification callback in the driver
+> from test_offload.py in selftests, since the verifier now clears the
+> verifier log on a successful load, hiding the message from the driver.
+>
+> Fixes: 6f8a57ccf85 ("bpf: Make verifier log more relevant by default")
 
-Signed-off-by: Florent Revest <revest@chromium.org>
----
- .../selftests/bpf/prog_tests/socket_cookie.c  | 24 +++++++----
- .../selftests/bpf/progs/socket_cookie_prog.c  | 41 ++++++++++++++++---
- 2 files changed, 52 insertions(+), 13 deletions(-)
+Ugh, the patchwork bot pointed out that I somehow managed to truncate
+the commit ID here; apologies, will send a v4.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/socket_cookie.c b/tools/testing/selftests/bpf/prog_tests/socket_cookie.c
-index 53d0c44e7907..e5c5e2ea1deb 100644
---- a/tools/testing/selftests/bpf/prog_tests/socket_cookie.c
-+++ b/tools/testing/selftests/bpf/prog_tests/socket_cookie.c
-@@ -15,8 +15,8 @@ struct socket_cookie {
- 
- void test_socket_cookie(void)
- {
-+	struct bpf_link *set_link, *update_sockops_link, *update_tracing_link;
- 	socklen_t addr_len = sizeof(struct sockaddr_in6);
--	struct bpf_link *set_link, *update_link;
- 	int server_fd, client_fd, cgroup_fd;
- 	struct socket_cookie_prog *skel;
- 	__u32 cookie_expected_value;
-@@ -39,15 +39,21 @@ void test_socket_cookie(void)
- 		  PTR_ERR(set_link)))
- 		goto close_cgroup_fd;
- 
--	update_link = bpf_program__attach_cgroup(skel->progs.update_cookie,
--						 cgroup_fd);
--	if (CHECK(IS_ERR(update_link), "update-link-cg-attach", "err %ld\n",
--		  PTR_ERR(update_link)))
-+	update_sockops_link = bpf_program__attach_cgroup(
-+		skel->progs.update_cookie_sockops, cgroup_fd);
-+	if (CHECK(IS_ERR(update_sockops_link), "update-sockops-link-cg-attach",
-+		  "err %ld\n", PTR_ERR(update_sockops_link)))
- 		goto free_set_link;
- 
-+	update_tracing_link = bpf_program__attach(
-+		skel->progs.update_cookie_tracing);
-+	if (CHECK(IS_ERR(update_tracing_link), "update-tracing-link-attach",
-+		  "err %ld\n", PTR_ERR(update_tracing_link)))
-+		goto free_update_sockops_link;
-+
- 	server_fd = start_server(AF_INET6, SOCK_STREAM, "::1", 0, 0);
- 	if (CHECK(server_fd < 0, "start_server", "errno %d\n", errno))
--		goto free_update_link;
-+		goto free_update_tracing_link;
- 
- 	client_fd = connect_to_fd(server_fd, 0);
- 	if (CHECK(client_fd < 0, "connect_to_fd", "errno %d\n", errno))
-@@ -71,8 +77,10 @@ void test_socket_cookie(void)
- 	close(client_fd);
- close_server_fd:
- 	close(server_fd);
--free_update_link:
--	bpf_link__destroy(update_link);
-+free_update_tracing_link:
-+	bpf_link__destroy(update_tracing_link);
-+free_update_sockops_link:
-+	bpf_link__destroy(update_sockops_link);
- free_set_link:
- 	bpf_link__destroy(set_link);
- close_cgroup_fd:
-diff --git a/tools/testing/selftests/bpf/progs/socket_cookie_prog.c b/tools/testing/selftests/bpf/progs/socket_cookie_prog.c
-index 81e84be6f86d..1f770b732cb1 100644
---- a/tools/testing/selftests/bpf/progs/socket_cookie_prog.c
-+++ b/tools/testing/selftests/bpf/progs/socket_cookie_prog.c
-@@ -1,11 +1,13 @@
- // SPDX-License-Identifier: GPL-2.0
- // Copyright (c) 2018 Facebook
- 
--#include <linux/bpf.h>
--#include <sys/socket.h>
-+#include "vmlinux.h"
- 
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_endian.h>
-+#include <bpf/bpf_tracing.h>
-+
-+#define AF_INET6 10
- 
- struct socket_cookie {
- 	__u64 cookie_key;
-@@ -19,6 +21,14 @@ struct {
- 	__type(value, struct socket_cookie);
- } socket_cookies SEC(".maps");
- 
-+/*
-+ * These three programs get executed in a row on connect() syscalls. The
-+ * userspace side of the test creates a client socket, issues a connect() on it
-+ * and then checks that the local storage associated with this socket has:
-+ * cookie_value == local_port << 8 | 0xFF
-+ * The different parts of this cookie_value are appended by those hooks if they
-+ * all agree on the output of bpf_get_socket_cookie().
-+ */
- SEC("cgroup/connect6")
- int set_cookie(struct bpf_sock_addr *ctx)
- {
-@@ -32,14 +42,14 @@ int set_cookie(struct bpf_sock_addr *ctx)
- 	if (!p)
- 		return 1;
- 
--	p->cookie_value = 0xFF;
-+	p->cookie_value = 0xF;
- 	p->cookie_key = bpf_get_socket_cookie(ctx);
- 
- 	return 1;
- }
- 
- SEC("sockops")
--int update_cookie(struct bpf_sock_ops *ctx)
-+int update_cookie_sockops(struct bpf_sock_ops *ctx)
- {
- 	struct bpf_sock *sk;
- 	struct socket_cookie *p;
-@@ -60,9 +70,30 @@ int update_cookie(struct bpf_sock_ops *ctx)
- 	if (p->cookie_key != bpf_get_socket_cookie(ctx))
- 		return 1;
- 
--	p->cookie_value = (ctx->local_port << 8) | p->cookie_value;
-+	p->cookie_value |= (ctx->local_port << 8);
- 
- 	return 1;
- }
- 
-+SEC("fexit/inet_stream_connect")
-+int BPF_PROG(update_cookie_tracing, struct socket *sock,
-+	     struct sockaddr *uaddr, int addr_len, int flags)
-+{
-+	struct socket_cookie *p;
-+
-+	if (uaddr->sa_family != AF_INET6)
-+		return 0;
-+
-+	p = bpf_sk_storage_get(&socket_cookies, sock->sk, 0, 0);
-+	if (!p)
-+		return 0;
-+
-+	if (p->cookie_key != bpf_get_socket_cookie(sock->sk))
-+		return 0;
-+
-+	p->cookie_value |= 0xF0;
-+
-+	return 0;
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.29.2.576.ga3fc446d84-goog
+-Toke
 
