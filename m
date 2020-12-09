@@ -2,143 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E7302D4C41
-	for <lists+bpf@lfdr.de>; Wed,  9 Dec 2020 21:56:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF64D2D4C5F
+	for <lists+bpf@lfdr.de>; Wed,  9 Dec 2020 22:00:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729056AbgLIUyo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Dec 2020 15:54:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39566 "EHLO
+        id S1726501AbgLIVAJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Dec 2020 16:00:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726954AbgLIUyg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Dec 2020 15:54:36 -0500
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD70BC0613CF;
-        Wed,  9 Dec 2020 12:53:55 -0800 (PST)
-Received: by mail-yb1-xb36.google.com with SMTP id t13so2492039ybq.7;
-        Wed, 09 Dec 2020 12:53:55 -0800 (PST)
+        with ESMTP id S1728183AbgLIVAD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Dec 2020 16:00:03 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C973C0613D6;
+        Wed,  9 Dec 2020 12:59:23 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id d2so1918036pfq.5;
+        Wed, 09 Dec 2020 12:59:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=sIdtAqgo/qYzQQgMr74Yx6K7gOdyN5rs5fdPHporako=;
-        b=pa7B1ypTUnL+HVbXCZlmy4SArRz+7F/m7IcmS+gu6U0/E9G3OSLe2bnbHfB4DlB+F5
-         y7e88ATM+Hb/ppsG6FHe/ocUU/S7KeJbVRPjQSh6johPGZYx44Ab63tT4zIwlxRujIVL
-         ZXmsBdaS8kKm8aqSHaDot1xPIdci/r2ELfmAFI+McgwdbMMQC/vY8sPB+YNL6TPyDggu
-         cW8HfCt6KUUL4qH93PXqK7r1aLaYCo9/a+ISFEEaln+zpk93SaQbhzWtKmILFCMcv7zR
-         2n1Gka7dySsuy3LCJHUihdlLn8L3SZXhjlD36aIqSTXAEasBSMgyejLq1qrOpSMrmKWI
-         lnmg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pYWbWncWHL5hPUtr0/h39G2nFyFj5DZJ+1NpptfUOGE=;
+        b=qT81RrUelSi4/9CGafxmK+ntZGoAphMgJz0lBOeFpN3C60ZLVZglbdD1va6XQWsZlX
+         2WCX4IBP+W4m0JM3FvevJc050fRyP9kdAUPqRi9p9jkLvWiTA/YVHjLxhI1eHYlIGg6M
+         B+NNGssSvi1qsa54mziU8lbu8JCSuZi/FA3msuK40BX+B9UcqRtHVPEW2imISObDrBV+
+         BUqB024a9NyQEFiVSvAShjT4gbCCFtH4JqBTOw8i5WnTeeRWHsidllpZ5UckgW/4pmsd
+         dw1DLTaQ5mzOWw+qSee0Ku5S0TXglz06ZHSaUezYzGCrZUxjrXM68rdwn2GTMRaHoH1F
+         AlKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=sIdtAqgo/qYzQQgMr74Yx6K7gOdyN5rs5fdPHporako=;
-        b=pPPf0sgPBha5FfS7V24DWzofxKeumezd/5+9grIc+g+0rUiuj/8gSPSLagUXfP4HIN
-         GttgY2budP4HawWwlQ+EMrM+BnVwh1t4gjZNaotgRzF6YYAg64BIlTKqjZs1p1QKqFpv
-         6b1qdm1KUMHh6nFoO19NA6tWqrET6YFSKFyG063J5+B1HVkaEZBurgl3VwpISzu9Mgyh
-         +Mc6Eam9D5phXSYmTxqmqs+x/Izle0l+IAUBFUotU/Q+b+q2mmt10E/gsCarnrrzq0nw
-         EPRqbHjkUQVd8Y1I9aQhSx+PGcRPIg2n9j2e430fV6URxIQCI0QeigCshzwK6gWy1N3y
-         wxCw==
-X-Gm-Message-State: AOAM5320be/BD4xwiXtfxSWMCPjsAjae2WzYiiRqOe9LPfkd9zxiqvGn
-        1rYnPSjx6+w++K4dld9RVf2AkY/5GG/890BG9c8jnDlOVvnM6A==
-X-Google-Smtp-Source: ABdhPJzRXpI3JJHy6JgWfq6aHZ0AA/xxcQ0vLFSWRMhEzpM9Cg3U2Lpfqh6FpMgbfounjpTNKsn7212MhbL+zvRLvTw=
-X-Received: by 2002:a25:c7c6:: with SMTP id w189mr6339865ybe.403.1607547234901;
- Wed, 09 Dec 2020 12:53:54 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pYWbWncWHL5hPUtr0/h39G2nFyFj5DZJ+1NpptfUOGE=;
+        b=Lk98twughkZQnxWKKIbkMTwbLHEiU2WrCYD795/cUlMqIRlYx9719wWH5rfT3HjsrO
+         hbvAi8IU34AqcMdkt/eOXzgp87GHF79+UHjWOcP1dvslznEWUH8+q0kWG/5mY11jzNAO
+         QIXL93eLZ5hZbWSiQiTKbanWLoeI2tX+4hFej97s0q7/Or+V8YMPuWR7KQs3dPDfc3aP
+         2oqoBcZAIBjofa5GXFaAyxX77FzDNZIYlyYqWw5YwvYk2jynOMrTJdWSi664+EY+xS+J
+         FBRsRcDxVhglk0d+t3J2ykyYTt8iMfXglC4s4JTOBUyeid0LV5Xl76+G/oHe8Pc8kuev
+         +B+w==
+X-Gm-Message-State: AOAM533swLLjdKqO+Fxp80Toz5SYlXXkg5IjRUDoO3LJbxgL3Vi6NOnn
+        Tnebxvzl/2/iKhoJ4gdVR/7y8HpuPMkBSqfEYNM=
+X-Google-Smtp-Source: ABdhPJwJqp11WPmMBZbUh5oaeLciMyK4cwqSph9CTeKi9zlgKVe4qyo4RcU2rt3kmRYA+yUTAYEjbif1YrqDluzctI8=
+X-Received: by 2002:a63:e30b:: with SMTP id f11mr3611905pgh.149.1607547562970;
+ Wed, 09 Dec 2020 12:59:22 -0800 (PST)
 MIME-Version: 1.0
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 9 Dec 2020 12:53:44 -0800
-Message-ID: <CAEf4BzZWabv_hExaANQyQ71L2JHYqXaT4hFj52w-poWoVYWKqQ@mail.gmail.com>
-Subject: Per-CPU variables in modules and pahole
-To:     bpf <bpf@vger.kernel.org>, dwarves@vger.kernel.org,
-        Jiri Olsa <jolsa@kernel.org>, Hao Luo <haoluo@google.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
+References: <1604661895-5495-1-git-send-email-alex.shi@linux.alibaba.com>
+ <CAFqt6zZU76NOF6uD_c1vRPmEHwOzLp9wEWAmSX2ficpQb0zf6g@mail.gmail.com>
+ <20201110115037.f6a53faec8d65782ab65d8b4@linux-foundation.org>
+ <ddca2a9e-ed89-5dec-b1af-4f2fd2c99b57@linux.alibaba.com> <20201207081556.pwxmhgdxayzbofpi@lion.mk-sys.cz>
+ <CAFxkdApgQ4RCt-J43cK4_128pXr=Xn5jw+q0kOaP-TYufk_tPA@mail.gmail.com>
+ <CAADnVQK-EsdBohcVSaK+zaP9XuPZTBkGbQpkeYcrC9BzoPQUuw@mail.gmail.com> <20201207225351.2liywqaxxtuezzw3@lion.mk-sys.cz>
+In-Reply-To: <20201207225351.2liywqaxxtuezzw3@lion.mk-sys.cz>
+From:   Tony Luck <tony.luck@gmail.com>
+Date:   Wed, 9 Dec 2020 12:59:12 -0800
+Message-ID: <CA+8MBbLLcNwnegX9eA2AP8ymbbS28ivVeoQntKKsM4MfGzYw+g@mail.gmail.com>
+Subject: Re: [PATCH] mm/filemap: add static for function __add_to_page_cache_locked
+To:     Michal Kubecek <mkubecek@suse.cz>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Justin Forbes <jmforbes@linuxtx.org>,
+        bpf <bpf@vger.kernel.org>, Alex Shi <alex.shi@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Souptick Joarder <jrdr.linux@gmail.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Josef Bacik <josef@toxicpanda.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+On Mon, Dec 7, 2020 at 4:36 PM Michal Kubecek <mkubecek@suse.cz> wrote:
+> Not removal, commit 3351b16af494 ("mm/filemap: add static for function
+> __add_to_page_cache_locked") made the function static which breaks the
+> build in btfids phase - but it seems to happen only on some
+> architectures. In our case, ppc64, ppc64le and riscv64 are broken,
+> x86_64, i586 and s390x succeed. (I made a mistake above, aarch64 did not
+> fail - but only because it was not built at all.)
 
-I'm working on supporting per-CPU symbols in BPF/libbpf, and the
-prerequisite for that is BTF data for .data..percpu data section and
-variables inside that.
+x86_64 fails for me:
 
-Turns out, pahole doesn't currently emit any BTF information for such
-variables in kernel modules. And the reason why is quite confusing and
-I can't figure it out myself, so was hoping someone else might be able
-to help.
-
-To repro, you can take latest bpf-next tree and add this to
-bpf_testmod/bpf_testmod.c inside selftests/bpf:
-
-$ git diff bpf_testmod/bpf_testmod.c
-      diff --git
-a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index 2df19d73ca49..b2086b798019 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -3,6 +3,7 @@
- #include <linux/error-injection.h>
- #include <linux/init.h>
- #include <linux/module.h>
-+#include <linux/percpu-defs.h>
- #include <linux/sysfs.h>
- #include <linux/tracepoint.h>
- #include "bpf_testmod.h"
-@@ -10,6 +11,10 @@
- #define CREATE_TRACE_POINTS
- #include "bpf_testmod-events.h"
-
-+DEFINE_PER_CPU(int, bpf_testmod_ksym_dummy1) = -1;
-+DEFINE_PER_CPU(int, bpf_testmod_ksym_percpu) = 123;
-+DEFINE_PER_CPU(int, bpf_testmod_ksym_dummy2) = -1;
-+
- noinline ssize_t
- bpf_testmod_test_read(struct file *file, struct kobject *kobj,
-                      struct bin_attribute *bin_attr,
-
-1. So the very first issue (that I'm going to ignore for now) is that
-if I just added bpf_testmod_ksym_percpu, it would get addr == 0 and
-would be ignored by the current pahole logic. So we need to fix that
-for modules. Adding dummy1 and dummy2 takes care of this for now,
-bpf_testmod_ksym_percpu has offset 4.
-
-2. Second issue is more interesting. Somehow, when pahole iterates
-over DWARF variables, the address of bpf_testmod_ksym_percpu is
-reported as 0x10e74, not 4. Which totally confuses pahole because
-according to ELF symbols, bpf_testmod_ksym_percpu symbol has value 4.
-I tracked this down to dwarf_getlocation() returning 10e74 as number
-field in expr.
-
-But this seems wrong, because when looking at DWARF:
-
-$ readelf -wi bpf_testmod.ko | grep bpf_testmod_ksym_percpu -B1 -A6
- <1><fbc5>: Abbrev Number: 97 (DW_TAG_variable)
-    <fbc6>   DW_AT_name        : (indirect string, offset: 0x4afb):
-bpf_testmod_ksym_percpu
-    <fbca>   DW_AT_decl_file   : 5
-    <fbcb>   DW_AT_decl_line   : 15
-    <fbcc>   DW_AT_decl_column : 1
-    <fbcd>   DW_AT_type        : <0xce>
-    <fbd1>   DW_AT_external    : 1
-    <fbd1>   DW_AT_location    : 9 byte block: 3 4 0 0 0 0 0 0 0
- (DW_OP_addr: 4)
-
-You can see that addr is actually 4.
-
-And ELF symbols agree:
-
-$ readelf -a bpf_testmod.ko | grep bpf_testmod_ksym_percpu
-   102: 0000000000000004     4 OBJECT  GLOBAL DEFAULT   33
-bpf_testmod_ksym_percpu
-
-
-I also can't seem to match 0x10e74 to anything in bpf_testmod.ko, no
-section or anything like that.
-
-So, help! Is this just a libdw bug? If yes, why don't we see it
-anywhere else? If not, what am I missing and how can we make pahole
-emit BTF data for variables in modules?
-
-Thanks!
-
-
--- Andrii
+  LD      vmlinux
+  BTFIDS  vmlinux
+FAILED unresolved symbol __add_to_page_cache_locked
+make: *** [Makefile:1170: vmlinux] Error 255
