@@ -2,58 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95DC72D40E1
-	for <lists+bpf@lfdr.de>; Wed,  9 Dec 2020 12:20:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1920E2D4116
+	for <lists+bpf@lfdr.de>; Wed,  9 Dec 2020 12:31:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730601AbgLILUT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Dec 2020 06:20:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54755 "EHLO
+        id S1730679AbgLIL2c (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Dec 2020 06:28:32 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20416 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730584AbgLILUS (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 9 Dec 2020 06:20:18 -0500
+        by vger.kernel.org with ESMTP id S1730654AbgLIL2c (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 9 Dec 2020 06:28:32 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607512731;
+        s=mimecast20190719; t=1607513225;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=rdg7j0aoyv9xFKjTcy/3BS13uPnBUVbkHjhjaK6AxE0=;
-        b=S2108bF0cDW7RKHlAK5M0foap1uuDcDBnqQAqkeL227qJqN/RpEan2nhYYIL9B83aKfmNn
-        GOVgTw8bT3qtfCjygcy2hV1p99VuRASoZAB/+HLfpBSR8gpSr3q3ZCevcpV4G+yrG7fdFx
-        2w2915SF3YL0WrG0hT3AZv56pRXxspU=
+        bh=MU7CQgT+A+S9BhvCz6Q80+yj2qZjKz+oqKrOC0MV6ss=;
+        b=Rsgik8NyiOdJ+bU1wHPrYt17GP69RQYhSR1gWklejo/zJWhEZf42c54dxhdzoZvArwth1x
+        a7S2L1QzBv8AlrR5UhzXUioZO1g3In8LtarAt01S/qnNDpyXyimLLORjBaaCwgttWuFewz
+        skJHZd3zCyzh9x14bwgD6u6O7VuKvYc=
 Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
  [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-22-dqUjxBgQPm-Vh6ru0Zg-4g-1; Wed, 09 Dec 2020 06:18:49 -0500
-X-MC-Unique: dqUjxBgQPm-Vh6ru0Zg-4g-1
-Received: by mail-wm1-f69.google.com with SMTP id k23so439360wmj.1
-        for <bpf@vger.kernel.org>; Wed, 09 Dec 2020 03:18:49 -0800 (PST)
+ us-mta-452-1_CpuUmQMByFH43_RgSPSQ-1; Wed, 09 Dec 2020 06:27:03 -0500
+X-MC-Unique: 1_CpuUmQMByFH43_RgSPSQ-1
+Received: by mail-wm1-f69.google.com with SMTP id k23so447631wmj.1
+        for <bpf@vger.kernel.org>; Wed, 09 Dec 2020 03:27:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:from:to:cc:date:message-id:in-reply-to
          :references:user-agent:mime-version:content-transfer-encoding;
-        bh=rdg7j0aoyv9xFKjTcy/3BS13uPnBUVbkHjhjaK6AxE0=;
-        b=VY4fytBiLwMGGVD0CBf70IaMiKG+D9uEXRniCqCwGsszs3QMZPM4z9XGsOhDxdGvX1
-         GNDZwQqSvJijp1rg+RSwbJuUuYTjFg8XOBvPQmZK7FNTiFuSbABsVVJXeT8YiVmgUxuw
-         lQWjRdRdpLXc7C/U82g2LHjH3kzPnv+QNPHmcPabMTgAlWqmTY0teC2L/6BPQkcYIqxD
-         WVF9W0i7M/YW3jIxNMc4i58uK5WPQzYquDNir5TUSUJbNSCLChdz8cPbx9/0JQA3roB7
-         Ck3ftGWMYvSvlTA0pNAVZx2ynZDRqp+tg7EVQFV74EThZoMXUY2c8riSqJGBqRvQr06i
-         GJ8g==
-X-Gm-Message-State: AOAM531310mVkbPEVsPa3foj+aeH7XJOME9dGR5QpwWMkKYByXslxeXD
-        VPME1OdlXoJnDrVF6vYMyljL5tz3BCqHRQPTAyxUFt+PRtqJBXOJ7raPkaBGl8xVdcGJZmqjyEi
-        +P3cuA9HULeba
-X-Received: by 2002:adf:94c7:: with SMTP id 65mr2051403wrr.423.1607512728446;
-        Wed, 09 Dec 2020 03:18:48 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzByUzK4whQvOkVhb3u3QIf2WOJnMrhMKCWhHgegG+om0p+KZUQ0AX0otTOa/8uQfiNtIENbA==
-X-Received: by 2002:adf:94c7:: with SMTP id 65mr2051355wrr.423.1607512728038;
-        Wed, 09 Dec 2020 03:18:48 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id y2sm2663184wma.6.2020.12.09.03.18.45
+        bh=MU7CQgT+A+S9BhvCz6Q80+yj2qZjKz+oqKrOC0MV6ss=;
+        b=mbP3GtNJk8Ge3uRil1b61Ay8lgOVvEh3TiHLHFXhrHLwZ7gyMVBpF44YtFYeIydf5E
+         U5m54TJ7FCsudat0zn7DIKzLRnDSg9RTHQawPJDvPrtyq/BNth2gqqL+UB2tWOJPuqpG
+         t2F1GDxd3zF4CRXbuUaVETVuFCo3uPFstJhsTNO1n1aDbxR9xsNJc4kLcpi58tMtwyrk
+         B9I2/V67BPXjjgth8F7/rToi/lB5ENdZU1qNTRWRtH//wP0O6wuyLK6FARSicVRQSYMY
+         zsUqHf8aqHKC+p9KDAXOtuvVzYqVMj30uZgWreiJ5ldEauu+Zh58mnbuKblZtTF/mL1n
+         Q1WQ==
+X-Gm-Message-State: AOAM532bScKCuabps7wmrC3CDCuYGnxb8A0AzWgvgX9CQ1d+wQRrFCTg
+        /NTiUqUPpEn22ze0okSgGhwnFrHrryXQgWXcm9UU3q0SU8JNCGW7M7wcQGPOjl7O40KPIHyK7AW
+        4HmPIWZ8Syptt
+X-Received: by 2002:a05:6000:11c1:: with SMTP id i1mr2205360wrx.16.1607513222224;
+        Wed, 09 Dec 2020 03:27:02 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx4kEQwZHME/Wlz6Nd9XqGg5QzCY9JlMn7Oho4DCv+zv0U6Ck0N79UYtSLkLkEsPaoBsptJ/g==
+X-Received: by 2002:a05:6000:11c1:: with SMTP id i1mr2205334wrx.16.1607513222022;
+        Wed, 09 Dec 2020 03:27:02 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id m21sm2751701wml.13.2020.12.09.03.27.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 03:18:47 -0800 (PST)
+        Wed, 09 Dec 2020 03:27:01 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id AF47A180004; Wed,  9 Dec 2020 12:18:45 +0100 (CET)
-Subject: [PATCH bpf v3 7/7] selftests/bpf/test_offload.py: filter bpftool
- internal map when counting maps
+        id 82C04180068; Wed,  9 Dec 2020 12:18:43 +0100 (CET)
+Subject: [PATCH bpf v3 5/7] selftests/bpf/test_offload.py: fix expected case
+ of extack messages
 From:   =?utf-8?q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To:     Jakub Kicinski <kuba@kernel.org>
 Cc:     "David S. Miller" <davem@davemloft.net>,
@@ -76,8 +76,8 @@ Cc:     "David S. Miller" <davem@davemloft.net>,
         Jiri Benc <jbenc@redhat.com>, oss-drivers@netronome.com,
         linux-omap@vger.kernel.org, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Date:   Wed, 09 Dec 2020 12:18:45 +0100
-Message-ID: <160751272562.104774.12715774646876868194.stgit@toke.dk>
+Date:   Wed, 09 Dec 2020 12:18:43 +0100
+Message-ID: <160751272344.104774.16243874919103350259.stgit@toke.dk>
 In-Reply-To: <160751271801.104774.5575431902172553440.stgit@toke.dk>
 References: <160751271801.104774.5575431902172553440.stgit@toke.dk>
 User-Agent: StGit/0.23
@@ -90,42 +90,37 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Toke Høiland-Jørgensen <toke@redhat.com>
 
-A few of the tests in test_offload.py expects to see a certain number of
-maps created, and checks this by counting the number of maps returned by
-bpftool. There is already a filter that will remove any maps already there
-at the beginning of the test, but bpftool now creates a map for the PID
-iterator rodata on each invocation, which makes the map count wrong. Fix
-this by also filtering the pid_iter.rodata map by name when counting.
+Commit 7f0a838254bd ("bpf, xdp: Maintain info on attached XDP BPF programs
+in net_device") changed the case of some of the extack messages being
+returned when attaching of XDP programs failed. This broke test_offload.py,
+so let's fix the test to reflect this.
 
-Fixes: d53dee3fe013 ("tools/bpftool: Show info for processes holding BPF map/prog/link/btf FDs")
+Fixes: 7f0a838254bd ("bpf, xdp: Maintain info on attached XDP BPF programs in net_device")
 Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
 ---
- tools/testing/selftests/bpf/test_offload.py |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ tools/testing/selftests/bpf/test_offload.py |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/tools/testing/selftests/bpf/test_offload.py b/tools/testing/selftests/bpf/test_offload.py
-index 2128fbd8414b..b99bb8ed3ed4 100755
+index 61527b43f067..51a5e4d939cc 100755
 --- a/tools/testing/selftests/bpf/test_offload.py
 +++ b/tools/testing/selftests/bpf/test_offload.py
-@@ -184,9 +184,7 @@ def bpftool_prog_list(expected=None, ns=""):
- def bpftool_map_list(expected=None, ns=""):
-     _, maps = bpftool("map show", JSON=True, ns=ns, fail=True)
-     # Remove the base maps
--    for m in base_maps:
--        if m in maps:
--            maps.remove(m)
-+    maps = [m for m in maps if m not in base_maps and m.get('name') not in base_map_names]
-     if expected is not None:
-         if len(maps) != expected:
-             fail(True, "%d BPF maps loaded, expected %d" %
-@@ -770,6 +768,9 @@ ret, progs = bpftool("prog", fail=False)
- skip(ret != 0, "bpftool not installed")
- base_progs = progs
- _, base_maps = bpftool("map")
-+base_map_names = [
-+    'pid_iter.rodata' # created on each bpftool invocation
-+]
+@@ -1004,7 +1004,7 @@ try:
+                               fail=False, include_stderr=True)
+     fail(ret == 0, "Replaced XDP program with a program in different mode")
+     check_extack(err,
+-                 "native and generic XDP can't be active at the same time.",
++                 "Native and generic XDP can't be active at the same time.",
+                  args)
  
- # Check netdevsim
- ret, out = cmd("modprobe netdevsim", fail=False)
+     start_test("Test MTU restrictions...")
+@@ -1035,7 +1035,7 @@ try:
+     offload = bpf_pinned("/sys/fs/bpf/offload")
+     ret, _, err = sim.set_xdp(offload, "drv", fail=False, include_stderr=True)
+     fail(ret == 0, "attached offloaded XDP program to drv")
+-    check_extack(err, "using device-bound program without HW_MODE flag is not supported.", args)
++    check_extack(err, "Using device-bound program without HW_MODE flag is not supported.", args)
+     rm("/sys/fs/bpf/offload")
+     sim.wait_for_flush()
+ 
 
