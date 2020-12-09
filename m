@@ -2,133 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8566C2D46DE
-	for <lists+bpf@lfdr.de>; Wed,  9 Dec 2020 17:37:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D05F42D46D6
+	for <lists+bpf@lfdr.de>; Wed,  9 Dec 2020 17:37:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730669AbgLIQgz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Dec 2020 11:36:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48091 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730525AbgLIQgt (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 9 Dec 2020 11:36:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1607531722;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qKbfQ5NMpepEtLGaIbY4oPWcWPfYiGHOrnLYShZ/gfM=;
-        b=P4Uknr64xLoaQh57YMs9U0OL3RD+3D1o4mkW7E57n4o5r7zToLa8lZA/n1VMmkEvzFcMLf
-        wqi1nnN2O6rNnFw99/LAoGIMh/b5W/hQK0sbl0kGeK9gG6PgWEXtXQPyx2Wc0iFDKjpPfH
-        yyM+SO9TA3JAeF8HuJY7zX1sBCMbGiY=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-97-UujefTbjOkOPbhJ2VsvUnQ-1; Wed, 09 Dec 2020 11:35:21 -0500
-X-MC-Unique: UujefTbjOkOPbhJ2VsvUnQ-1
-Received: by mail-wr1-f69.google.com with SMTP id v1so860452wri.16
-        for <bpf@vger.kernel.org>; Wed, 09 Dec 2020 08:35:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=qKbfQ5NMpepEtLGaIbY4oPWcWPfYiGHOrnLYShZ/gfM=;
-        b=ETmK6AEdQZM4CRihoXyqm1wl7jfVAMkcRUX2DDol/HSKK/GtjBIzlDLm1H7NNA4vCY
-         kNAuh5Jyth6PG5Bi95MPnFD3aqXT4oCH/WPP8D+Rv8yhbvPU+9L3SamkGOTwQkrfUM9Z
-         PcZDjIwRqN3yU8dCPAmMMHc87SRedf0rMTbNaBHC1NuSWkQuXkl3hs1e6C1bNl3P8GhA
-         weXBuO1miivEjcEussYDBbfzfhM0zr6RYVlhOGPrdTepakpVVon/pZUy7MVc16gsZoJn
-         p/Qwcg1rySRGeswDkJVjJYBv0ZZSSH9uYaDYyLi62pslnlvjPDE5UVShZfhLvxVa8NJD
-         MfeQ==
-X-Gm-Message-State: AOAM5321q1Pxk5lmPaWk5XBlSVqym+3nNhP4+HTEjp+FMjcWdxhi96Uh
-        l06CJoMoGCdO8D6M2PGCjbIfoagjyCPzl0gNHdM1L5UG+VzEhLooTGez+hbX8HOFL+ysPdYiT1x
-        A8yPuRbtnTESY
-X-Received: by 2002:adf:e64b:: with SMTP id b11mr3557924wrn.257.1607531719278;
-        Wed, 09 Dec 2020 08:35:19 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxOSGetvGWLvNiBbhFZtDNafEkdK0HcIhVsLONLeDTzLG1ZxkKy8fBmAKT54r9JsOK4JA58cQ==
-X-Received: by 2002:adf:e64b:: with SMTP id b11mr3557876wrn.257.1607531718948;
-        Wed, 09 Dec 2020 08:35:18 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id n14sm4415803wmi.1.2020.12.09.08.35.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 08:35:18 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id AF8BF180068; Wed,  9 Dec 2020 17:35:17 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Romain Perier <romain.perier@gmail.com>,
-        Allen Pais <apais@linux.microsoft.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Simon Horman <simon.horman@netronome.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        Jiri Benc <jbenc@redhat.com>, oss-drivers@netronome.com,
-        linux-omap@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH bpf v4 0/7] selftests/bpf: Restore test_offload.py to
- working order
-In-Reply-To: <2263984f-68b9-c678-5cae-a26b3e96e36b@iogearbox.net>
-References: <160752225643.110217.4104692937165406635.stgit@toke.dk>
- <2263984f-68b9-c678-5cae-a26b3e96e36b@iogearbox.net>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 09 Dec 2020 17:35:17 +0100
-Message-ID: <87h7ovndiy.fsf@toke.dk>
+        id S1730070AbgLIQgB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Dec 2020 11:36:01 -0500
+Received: from www62.your-server.de ([213.133.104.62]:46626 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728121AbgLIQgB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Dec 2020 11:36:01 -0500
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kn2Qw-000AWm-AE; Wed, 09 Dec 2020 17:35:18 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kn2Qw-0001Eu-42; Wed, 09 Dec 2020 17:35:18 +0100
+Subject: Re: [PATCH bpf-next v4 2/4] bpf: Expose bpf_get_socket_cookie to
+ tracing programs
+To:     Florent Revest <revest@chromium.org>, bpf@vger.kernel.org
+Cc:     ast@kernel.org, andrii@kernel.org, kpsingh@chromium.org,
+        kafai@fb.com, linux-kernel@vger.kernel.org
+References: <20201209132636.1545761-1-revest@chromium.org>
+ <20201209132636.1545761-2-revest@chromium.org>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <c3f1619d-41c1-89d3-a2a2-c2de0041fa51@iogearbox.net>
+Date:   Wed, 9 Dec 2020 17:35:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201209132636.1545761-2-revest@chromium.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26013/Wed Dec  9 15:33:37 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Daniel Borkmann <daniel@iogearbox.net> writes:
+On 12/9/20 2:26 PM, Florent Revest wrote:
+> This needs two new helpers, one that works in a sleepable context (using
+> sock_gen_cookie which disables/enables preemption) and one that does not
+> (for performance reasons). Both take a struct sock pointer and need to
+> check it for NULLness.
+> 
+> This helper could also be useful to other BPF program types such as LSM.
 
-> On 12/9/20 2:57 PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> This series restores the test_offload.py selftest to working order. It s=
-eems a
->> number of subtle behavioural changes have crept into various subsystems =
-which
->> broke test_offload.py in a number of ways. Most of these are fairly beni=
-gn
->> changes where small adjustments to the test script seems to be the best =
-fix, but
->> one is an actual kernel bug that I've observed in the wild caused by a b=
-ad
->> interaction between xdp_attachment_flags_ok() and the rework of XDP prog=
-ram
->> handling in the core netdev code.
->>=20
->> Patch 1 fixes the bug by removing xdp_attachment_flags_ok(), and the rem=
-inder of
->> the patches are adjustments to test_offload.py, including a new feature =
-for
->> netdevsim to force a BPF verification fail. Please see the individual pa=
-tches
->> for details.
->>=20
->> Changelog:
->>=20
->> v4:
->> - Accidentally truncated the Fixes: hashes in patches 3/4 to 11 chars
->> v3:
->> - Add Fixes: tags
->> v2:
->> - Replace xdp_attachment_flags_ok() with a check in dev_xdp_attach()
->> - Better packing of struct nsim_dev
->
-> Applied, thanks! I took the liberty to document the prior review with 'LG=
-TM' as
-> an Ack so it's documented in the git log as well.
+Looks like this commit description is now stale and needs to be updated
+since we only really add one helper?
 
-SGTM, thanks! :)
+> Signed-off-by: Florent Revest <revest@chromium.org>
+> ---
+>   include/linux/bpf.h            |  1 +
+>   include/uapi/linux/bpf.h       |  7 +++++++
+>   kernel/trace/bpf_trace.c       |  2 ++
+>   net/core/filter.c              | 12 ++++++++++++
+>   tools/include/uapi/linux/bpf.h |  7 +++++++
+>   5 files changed, 29 insertions(+)
+> 
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 07cb5d15e743..5a858e8c3f1a 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1860,6 +1860,7 @@ extern const struct bpf_func_proto bpf_per_cpu_ptr_proto;
+>   extern const struct bpf_func_proto bpf_this_cpu_ptr_proto;
+>   extern const struct bpf_func_proto bpf_ktime_get_coarse_ns_proto;
+>   extern const struct bpf_func_proto bpf_sock_from_file_proto;
+> +extern const struct bpf_func_proto bpf_get_socket_ptr_cookie_proto;
+>   
+>   const struct bpf_func_proto *bpf_tracing_func_proto(
+>   	enum bpf_func_id func_id, const struct bpf_prog *prog);
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index ba59309f4d18..9ac66cf25959 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -1667,6 +1667,13 @@ union bpf_attr {
+>    * 	Return
+>    * 		A 8-byte long unique number.
+>    *
+> + * u64 bpf_get_socket_cookie(void *sk)
+> + * 	Description
+> + * 		Equivalent to **bpf_get_socket_cookie**\ () helper that accepts
+> + * 		*sk*, but gets socket from a BTF **struct sock**.
 
--Toke
+Maybe add a small comment that this one also works for sleepable [tracing] progs?
+
+> + * 	Return
+> + * 		A 8-byte long unique number.
+
+... or 0 if *sk* is NULL.
+
+>    * u32 bpf_get_socket_uid(struct sk_buff *skb)
+>    * 	Return
+>    * 		The owner UID of the socket associated to *skb*. If the socket
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 52ddd217d6a1..be5e96de306d 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -1760,6 +1760,8 @@ tracing_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>   		return &bpf_sk_storage_delete_tracing_proto;
+>   	case BPF_FUNC_sock_from_file:
+>   		return &bpf_sock_from_file_proto;
+> +	case BPF_FUNC_get_socket_cookie:
+> +		return &bpf_get_socket_ptr_cookie_proto;
+>   #endif
+>   	case BPF_FUNC_seq_printf:
+>   		return prog->expected_attach_type == BPF_TRACE_ITER ?
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 255aeee72402..13ad9a64f04f 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -4631,6 +4631,18 @@ static const struct bpf_func_proto bpf_get_socket_cookie_sock_proto = {
+>   	.arg1_type	= ARG_PTR_TO_CTX,
+>   };
+>   
+> +BPF_CALL_1(bpf_get_socket_ptr_cookie, struct sock *, sk)
+> +{
+> +	return sk ? sock_gen_cookie(sk) : 0;
+> +}
+> +
+> +const struct bpf_func_proto bpf_get_socket_ptr_cookie_proto = {
+> +	.func		= bpf_get_socket_ptr_cookie,
+> +	.gpl_only	= false,
+> +	.ret_type	= RET_INTEGER,
+> +	.arg1_type	= ARG_PTR_TO_BTF_ID_SOCK_COMMON,
+> +};
+> +
+>   BPF_CALL_1(bpf_get_socket_cookie_sock_ops, struct bpf_sock_ops_kern *, ctx)
+>   {
+>   	return __sock_gen_cookie(ctx->sk);
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index ba59309f4d18..9ac66cf25959 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -1667,6 +1667,13 @@ union bpf_attr {
+>    * 	Return
+>    * 		A 8-byte long unique number.
+>    *
+> + * u64 bpf_get_socket_cookie(void *sk)
+> + * 	Description
+> + * 		Equivalent to **bpf_get_socket_cookie**\ () helper that accepts
+> + * 		*sk*, but gets socket from a BTF **struct sock**.
+> + * 	Return
+> + * 		A 8-byte long unique number.
+> + *
+>    * u32 bpf_get_socket_uid(struct sk_buff *skb)
+>    * 	Return
+>    * 		The owner UID of the socket associated to *skb*. If the socket
+> 
 
