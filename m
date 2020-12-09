@@ -2,99 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D43ED2D47AB
-	for <lists+bpf@lfdr.de>; Wed,  9 Dec 2020 18:18:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 725792D482B
+	for <lists+bpf@lfdr.de>; Wed,  9 Dec 2020 18:43:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732214AbgLIRQ1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Dec 2020 12:16:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34100 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731689AbgLIRQY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Dec 2020 12:16:24 -0500
-Message-ID: <1e5e044c8382a68a8a547a1892b48fb21d53dbb9.camel@kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607534144;
-        bh=RkoZQZVCD+M6oeGyMp//Wyg7TGkpp9J9YjTrZtBHEns=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=YyUnzG89JCQSsZ1iZdfgLw/6Wm5sbJvDh+38Ell18c6ZnL1a1hN0GOT8kf3xjicB0
-         XrKpi0gPFnlBZTt7sKdgmU8Rb/23bIbOLQWEhtrrzX3o1E2+PLEsZSa/NNur4ZungI
-         YpNx9APv9UXZDf7QmV13u26XxjUnm6NAtHqCpcsFvstHAudzEqwx90jRQactrHDiWI
-         wzP1lNTsepuRyVJrhp94GbMqgieKlKIirpbqC91c9a+vMN2Yol6M70eH5XwBKtxb8j
-         CkFFNWp6RAUa8jQEpQjdgiJ+vzTmOhnHkGRDlfpVBcijiWViNEJOkapwg+JKSz3yqU
-         cvYg7hofOQVJA==
-Subject: Re: [PATCH v2 bpf 1/5] net: ethtool: add xdp properties flag set
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     David Ahern <dsahern@gmail.com>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Toke =?ISO-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        alardam@gmail.com, magnus.karlsson@intel.com,
-        bjorn.topel@intel.com, andrii.nakryiko@gmail.com, kuba@kernel.org,
-        ast@kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
-        hawk@kernel.org, jonathan.lemon@gmail.com, bpf@vger.kernel.org,
-        jeffrey.t.kirsher@intel.com, maciejromanfijalkowski@gmail.com,
-        intel-wired-lan@lists.osuosl.org,
-        Marek Majtyka <marekx.majtyka@intel.com>
-Date:   Wed, 09 Dec 2020 09:15:41 -0800
-In-Reply-To: <e1573338-17c0-48f4-b4cd-28eeb7ce699a@gmail.com>
-References: <20201204102901.109709-1-marekx.majtyka@intel.com>
-         <20201204102901.109709-2-marekx.majtyka@intel.com> <878sad933c.fsf@toke.dk>
-         <20201204124618.GA23696@ranger.igk.intel.com>
-         <048bd986-2e05-ee5b-2c03-cd8c473f6636@iogearbox.net>
-         <20201207135433.41172202@carbon>
-         <5fce960682c41_5a96208e4@john-XPS-13-9370.notmuch>
-         <20201207230755.GB27205@ranger.igk.intel.com>
-         <5fd068c75b92d_50ce20814@john-XPS-13-9370.notmuch>
-         <20201209095454.GA36812@ranger.igk.intel.com>
-         <20201209125223.49096d50@carbon>
-         <e1573338-17c0-48f4-b4cd-28eeb7ce699a@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        id S1732280AbgLIRmo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Dec 2020 12:42:44 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:45712 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729544AbgLIRmn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Dec 2020 12:42:43 -0500
+Received: by mail-ot1-f65.google.com with SMTP id h18so2157791otq.12;
+        Wed, 09 Dec 2020 09:42:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0ux4Sk94uLr3t/Ycz0/4r2TD0W2V25BvuMDypuy7cUw=;
+        b=rrsvBlbNTTgmSVy13Q1mQvNz9ohgsoshc45IwTTPOa80Mm1L1XBwdF2KN4Bjy30D9S
+         1leSAVZ39q74rKoM1cYNDx4dw+XaXxZ9yFMv055b+n4jcnPe5wogS0sjjY/El8mfRmhU
+         5ZNfmmmpRFuOrWmAzZcZCwL6eWq5nqzCEQBNVoKeuBuGc/uvf2QaMnUF0OJoJgrY9+de
+         GwESGfGtj0bNt8PkYFNuYziZwetWX2v69rrKqOIGLOewWgwp2TF+gC+9G3GnLqISbAQ7
+         Y2WBJH5eUCttR39dAOGnUsaybdQlUdpMDrUsSgHUKEncxmGOA+cUDJ8ElOlpkMvMqivD
+         wfdQ==
+X-Gm-Message-State: AOAM533G13OqnWKF73ParLw+fWD2lKCHuz5V0RUcrQrD+/nwvfTTpbOM
+        +5oSc3KrodCi2QSGP40XJ4I23TWLEQ==
+X-Google-Smtp-Source: ABdhPJyqDWbKXuuDf0HEfz8Ky1Z7aK1vmyy1JNFBJkxbozv7GaH7XFyZbqjuHFDqkDK/XUAAvmk45g==
+X-Received: by 2002:a9d:7a48:: with SMTP id z8mr2771119otm.146.1607535722765;
+        Wed, 09 Dec 2020 09:42:02 -0800 (PST)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id z12sm551330oti.45.2020.12.09.09.42.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Dec 2020 09:42:01 -0800 (PST)
+Received: (nullmailer pid 662198 invoked by uid 1000);
+        Wed, 09 Dec 2020 17:42:00 -0000
+Date:   Wed, 9 Dec 2020 11:42:00 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     "xiao.ma" <max701@126.com>
+Cc:     devicetree@vger.kernel.org, xiao.mx.ma@deltaww.com,
+        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>, jiajia.feng@deltaww.com
+Subject: Re: [PATCH]
+ dt-bindings:<devicetree/bindings/trivial-devices.yaml>:Add compatible
+ strings
+Message-ID: <20201209174200.GA660537@robh.at.kernel.org>
+References: <20201202072610.1666-1-max701@126.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201202072610.1666-1-max701@126.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 2020-12-09 at 08:41 -0700, David Ahern wrote:
-> On 12/9/20 4:52 AM, Jesper Dangaard Brouer wrote:
-> > > > still load and either share queues across multiple cores or
-> > > > restirct
-> > > > down to a subset of CPUs.  
-> > > 
-> > > And that's the missing piece of logic, I suppose.
-> > > 
-> > > > Do you need 192 cores for a 10gbps nic, probably not.  
-> > > 
-> > > Let's hear from Jesper :p
-> > 
-> > LOL - of-cause you don't need 192 cores.  With XDP I will claim
-> > that
-> > you only need 2 cores (with high GHz) to forward 10gbps wirespeed
-> > small
-> > packets.
+On Tue, 01 Dec 2020 21:26:10 -1000, xiao.ma wrote:
+> From: "xiao.ma" <xiao.mx.ma@deltaww.com>
 > 
-> You don't need 192 for 10G on Rx. However, if you are using
-> XDP_REDIRECT
-> from VM tap devices the next device (presumably the host NIC) does
-> need
-> to be able to handle the redirect.
+> Add delta,q54sj108a2 to trivial-devices.yaml.
 > 
-> My personal experience with this one is mlx5/ConnectX4-LX with a
-> limit
+> Signed-off-by: xiao.ma <xiao.mx.ma@deltaww.com>
+> ---
+>  Documentation/devicetree/bindings/trivial-devices.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
 
-This limit was removed from mlx5
-https://patchwork.ozlabs.org/project/netdev/patch/20200107191335.12272-5-saeedm@mellanox.com/
-Note: you still need to use ehttool to increase from 64 to 128 or 96 in
-your case.
+Applied with subject fixed. 'git log --oneline <file>' will give you an 
+idea of what the subject should look like.
 
-> of 63 queues and a server with 96 logical cpus. If the vhost thread
-> for
-> the tap device runs on a cpu that does not have an XDP TX Queue, the
-> packet is dropped. This is a really bizarre case to debug as some
-> packets go out fine while others are dropped.
-
-I agree, the user experience horrible.
-
+Rob
