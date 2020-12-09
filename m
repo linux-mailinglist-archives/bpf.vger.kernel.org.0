@@ -2,142 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7FB92D4BF6
-	for <lists+bpf@lfdr.de>; Wed,  9 Dec 2020 21:34:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E2092D4C3E
+	for <lists+bpf@lfdr.de>; Wed,  9 Dec 2020 21:53:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729817AbgLIUeD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Dec 2020 15:34:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36356 "EHLO
+        id S1728494AbgLIUxy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Dec 2020 15:53:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729563AbgLIUdy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Dec 2020 15:33:54 -0500
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6585FC0613D6
-        for <bpf@vger.kernel.org>; Wed,  9 Dec 2020 12:33:14 -0800 (PST)
-Received: by mail-yb1-xb43.google.com with SMTP id r127so2546836yba.10
-        for <bpf@vger.kernel.org>; Wed, 09 Dec 2020 12:33:14 -0800 (PST)
+        with ESMTP id S1727984AbgLIUxv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Dec 2020 15:53:51 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E63D2C0613CF
+        for <bpf@vger.kernel.org>; Wed,  9 Dec 2020 12:53:10 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id n186so3954228ybg.17
+        for <bpf@vger.kernel.org>; Wed, 09 Dec 2020 12:53:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uOWIaVHX1g8m3Lh8OngkG5wK1AD68AOfszlTYV3ODHo=;
-        b=MFy7NJYbLeqNt81comhcNmlWrlX2kPKIZyxdN1K26ZFRba0rAewqFbqrRXqSJCI7pi
-         AdnI/ADM5X+MuLX7VPYZlMnLeumWxLvn3uuOreHWCVqq5G/KWyCSUqds9dYHJ5M77hwB
-         q0mQPo8IppJvGpUehHQr+qncw/HO+nrq7P+RHdJ/vSW+Squ/e2M0yu73zTpG016VRIUn
-         wzRPf68aGXmLESjOdabskqenWJT+yMVDcRu6Xfzeomq3KV5MA7Tlr8Mi1FZ4GQCjfMfD
-         xb3x/VhGFfjXvSYcq+CMlTywX8gx5X9F0Hz6fMcOWGbyrmZ8AiqqIyE+WwwLByMDKNhp
-         h5qw==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=PPxRouLs713+goBDtoVbiilQ60mn7ruryaOTRQQrgWc=;
+        b=P0gc8lbVRDCSAFvPPDdeDtgL8C92otq9hyZnFnlqUFC9nNnBxX6xa75JpDqdcNuwOv
+         pu7HP65j50qCgjC/0pkwVWkoOvP2uW/l2GL/NTOVceZfOJbLyoQa07M3wHOiaNcdT20B
+         eyDCanBUvXFctVdbejGVXNASZU9lr6WABsCeoDuXzjwSq+vyOHMtY+8OKGC/DHz3KM9s
+         MfwVqIe/nT4Fdj2jb+ZOan2Ib58EyV19tMwxCoN5ykO6ljqcvq0T7IQRB/OnH7d9rJ1T
+         geEkCxFhr1qdBZNmIsGGeWm7vWL6EbqFh6+12Znjb3GK/cpznIpMcg2mbb/KmYNb+8Fe
+         upJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uOWIaVHX1g8m3Lh8OngkG5wK1AD68AOfszlTYV3ODHo=;
-        b=a6spWEJPfiX2WXDK+U4fgHnVLvQtjowcpaMMsmYetdxNm4i97DAEPxM0SdDs3a/5JL
-         rsPsPwcP8cD9LLWwdowA7jQYs0eU/w+90/5LnirotJ0NUG9a/5gaJhu7MuqDZlkOdFkL
-         /T1eR0Tp/EvSzCz8U3Lrd3Tj1f+csTc+au0LLpnaktCQmuQ/LmQt50jhnO/YxdVu6jkP
-         KeUARNQcOhvrs2rVIY4wZPpXu464R+Bwbk3HeeZm9zXIIOyyFPwi7LsY09033dR+quRe
-         hagbOGYQgE2Ks9eY5g90/1yL0BmaWE/+h50iH/W2ZLg5Bxn4eBhZRQwiDXkMtYZjY5E2
-         PyXQ==
-X-Gm-Message-State: AOAM530xIUDvQHs6XFH2w1j/ig0x5v6GWfCK1Xm47KAd+dwx1Mjvqh08
-        WQewRwHIal1ASXgOUAXazzxFEWFyLP4LyqqrH6U=
-X-Google-Smtp-Source: ABdhPJwqRvzh4Q5FSGeQSKUaTJS5RbGrwrzowxZZjwHIMhCpeqJDG+elsL02mW+bDEcuibEthBUco1b3vH6FndOMJzU=
-X-Received: by 2002:a25:aea8:: with SMTP id b40mr6259529ybj.347.1607545993714;
- Wed, 09 Dec 2020 12:33:13 -0800 (PST)
-MIME-Version: 1.0
-References: <20201209000120.2709992-1-kpsingh@kernel.org>
-In-Reply-To: <20201209000120.2709992-1-kpsingh@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 9 Dec 2020 12:33:02 -0800
-Message-ID: <CAEf4BzZC+Oz3BL5m4aAbtSKsz-6xBrH42C0CvDZbBT=ubH8gMA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] selftests/bpf: Silence ima_setup.sh when not
- running in verbose mode.
-To:     KP Singh <kpsingh@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=PPxRouLs713+goBDtoVbiilQ60mn7ruryaOTRQQrgWc=;
+        b=qNsVTTr1OZiyjZLWc4WACOsSRRxBWewHFlOnrVQNkG6XlM0DYJgZUX1fmF5mZ4rYi0
+         JXRCrsBUUzEKabhci+HfZYXYM6iOxDKBCN7vAUS+1SeV395XC4lIZM/ldDJKDUs43pp9
+         eWa3Lkg952sXKNyqZJCCouXXNNJWh+ifFAKjg79UdDfq3SO76DfwJ/eGP9f6pR/cyL0a
+         K7bBJKqKPMeKwNox+3wQp3HTisCBIrAL9rpneKsOwYzp4omeH+IqGfGM3IkJn4c60omv
+         IaZCt88O7bguusSEFQpQMaJl7gxdElLmitTJBDGLpq2poSQgGfJRq85QI0PeqhpMIpPE
+         gA9g==
+X-Gm-Message-State: AOAM53074DnwFiu6J8463kZKRZLfDk73su4tX/JrohXsraiqZVgQp89G
+        5HzhGWj4v71pg6a3zusu8JpP8DkV/X5LLGKVeGZfPJv+U+SSVy8O8E3P07d+xDWTpQGyRerw3f1
+        y6eCHR678si/CzSORMgKq87vN4bRstVHlHwys37kDZ0uqM+csiMctJ4c=
+X-Google-Smtp-Source: ABdhPJxhkXmud1RSLwzdkiJfBDJyfWX1JXX3segyV1hIQrW5HlSSb7DW5dLfNCDfaWj/DpkAnypnYILJ5A==
+Sender: "adelg via sendgmr" <adelg@adelg.c.googlers.com>
+X-Received: from adelg.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:a16])
+ (user=adelg job=sendgmr) by 2002:a25:8808:: with SMTP id c8mr6207882ybl.140.1607547190063;
+ Wed, 09 Dec 2020 12:53:10 -0800 (PST)
+Date:   Wed,  9 Dec 2020 20:53:01 +0000
+Message-Id: <20201209205301.2586678-1-adelg@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
+Subject: [PATCH bpf-next] selftests/bpf: Drop the need for LLVM's llc
+From:   Andrew Delgadillo <adelg@google.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrew Delgadillo <adelg@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 4:01 PM KP Singh <kpsingh@kernel.org> wrote:
->
-> Currently, ima_setup.sh spews outputs from commands like mkfs and dd
-> on the terminal without taking into account the verbosity level of
-> the test framework. Update test_progs to set the environment variable
-> SELFTESTS_VERBOSE=1 when a verbose output is requested. This
-> environment variable is then used by ima_setup.sh (and can be used by
-> other similar scripts) to obey the verbosity level of the test harness
-> without needing to re-implement command line options for verbosity.
->
-> Fixes: 34b82d3ac105 ("bpf: Add a selftest for bpf_ima_inode_hash")
-> Reported-by: Andrii Nakryiko <andrii@kernel.org>
-> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: KP Singh <kpsingh@kernel.org>
-> ---
->  tools/testing/selftests/bpf/ima_setup.sh |  6 ++++++
->  tools/testing/selftests/bpf/test_progs.c | 10 ++++++++++
->  2 files changed, 16 insertions(+)
->
-> diff --git a/tools/testing/selftests/bpf/ima_setup.sh b/tools/testing/selftests/bpf/ima_setup.sh
-> index 2bfc646bc230..7490a9bae33e 100755
-> --- a/tools/testing/selftests/bpf/ima_setup.sh
-> +++ b/tools/testing/selftests/bpf/ima_setup.sh
-> @@ -81,9 +81,15 @@ main()
->
->         local action="$1"
->         local tmp_dir="$2"
-> +       local verbose="${SELFTESTS_VERBOSE:=0}"
->
->         [[ ! -d "${tmp_dir}" ]] && echo "Directory ${tmp_dir} doesn't exist" && exit 1
->
-> +       if [[ "${verbose}" -eq 0 ]]; then
-> +               exec 1> /dev/null
-> +               exec 2>&1
+LLC is meant for compiler development and debugging. Consequently, it
+exposes many low level options about its backend. To avoid future bugs
+introduced by using the raw LLC tool, use clang directly so that all
+appropriate options are passed to the back end.
 
-can't this be done with one exec, though:
+Additionally, the native clang build rule was not being use in the
+selftests Makefile, so remove it.
 
-exec 2>&1 1>/dev/null
+Signed-off-by: Andrew Delgadillo <adelg@google.com>
+---
+ tools/testing/selftests/bpf/Makefile | 20 ++++----------------
+ 1 file changed, 4 insertions(+), 16 deletions(-)
 
-?
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 944ae17a39ed..74870d365b62 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -19,7 +19,6 @@ ifneq ($(wildcard $(GENHDR)),)
+ endif
+ 
+ CLANG		?= clang
+-LLC		?= llc
+ LLVM_OBJCOPY	?= llvm-objcopy
+ BPF_GCC		?= $(shell command -v bpf-gcc;)
+ SAN_CFLAGS	?=
+@@ -256,24 +255,13 @@ $(OUTPUT)/flow_dissector_load.o: flow_dissector_load.h
+ # $3 - CFLAGS
+ # $4 - LDFLAGS
+ define CLANG_BPF_BUILD_RULE
+-	$(call msg,CLNG-LLC,$(TRUNNER_BINARY),$2)
+-	$(Q)($(CLANG) $3 -O2 -target bpf -emit-llvm			\
+-		-c $1 -o - || echo "BPF obj compilation failed") | 	\
+-	$(LLC) -mattr=dwarfris -march=bpf -mcpu=v3 $4 -filetype=obj -o $2
++	$(call msg,CLNG-BPF,$(TRUNNER_BINARY),$2)
++	$(Q)$(CLANG) $3 -O2 -target bpf -c $1 -o $2 -Xclang -target-feature -Xclang +dwarfris -mcpu=v3 $4
+ endef
+ # Similar to CLANG_BPF_BUILD_RULE, but with disabled alu32
+ define CLANG_NOALU32_BPF_BUILD_RULE
+-	$(call msg,CLNG-LLC,$(TRUNNER_BINARY),$2)
+-	$(Q)($(CLANG) $3 -O2 -target bpf -emit-llvm			\
+-		-c $1 -o - || echo "BPF obj compilation failed") | 	\
+-	$(LLC) -march=bpf -mcpu=v2 $4 -filetype=obj -o $2
+-endef
+-# Similar to CLANG_BPF_BUILD_RULE, but using native Clang and bpf LLC
+-define CLANG_NATIVE_BPF_BUILD_RULE
+ 	$(call msg,CLNG-BPF,$(TRUNNER_BINARY),$2)
+-	$(Q)($(CLANG) $3 -O2 -emit-llvm					\
+-		-c $1 -o - || echo "BPF obj compilation failed") | 	\
+-	$(LLC) -march=bpf -mcpu=v3 $4 -filetype=obj -o $2
++	$(Q)$(CLANG) $3 -O2 -target bpf -c $1 -o $2 -mcpu=v2 $4
+ endef
+ # Build BPF object using GCC
+ define GCC_BPF_BUILD_RULE
+@@ -402,7 +390,7 @@ TRUNNER_EXTRA_FILES := $(OUTPUT)/urandom_read $(OUTPUT)/bpf_testmod.ko	\
+ 		       $(wildcard progs/btf_dump_test_case_*.c)
+ TRUNNER_BPF_BUILD_RULE := CLANG_BPF_BUILD_RULE
+ TRUNNER_BPF_CFLAGS := $(BPF_CFLAGS) $(CLANG_CFLAGS)
+-TRUNNER_BPF_LDFLAGS := -mattr=+alu32
++TRUNNER_BPF_LDFLAGS := -Xclang -target-feature -Xclang +alu32
+ $(eval $(call DEFINE_TEST_RUNNER,test_progs))
+ 
+ # Define test_progs-no_alu32 test runner.
+-- 
+2.29.2.576.ga3fc446d84-goog
 
-It also actually would be nice to not completely discard the output,
-but rather redirect it to a temporary file and emit it on error with
-trap. test_progs behavior is no extra output on success, but emit it
-fully at the end if test is failing. Would be nice to preserve this
-for shell script as well, as otherwise debugging this in CI would be
-nearly impossible.
-
-
-> +       fi
-> +
->         if [[ "${action}" == "setup" ]]; then
->                 setup "${tmp_dir}"
->         elif [[ "${action}" == "cleanup" ]]; then
-> diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
-> index 5ef081bdae4e..7d077d48cadd 100644
-> --- a/tools/testing/selftests/bpf/test_progs.c
-> +++ b/tools/testing/selftests/bpf/test_progs.c
-> @@ -587,6 +587,16 @@ static error_t parse_arg(int key, char *arg, struct argp_state *state)
->                                 return -EINVAL;
->                         }
->                 }
-> +
-> +               if (env->verbosity > VERBOSE_NONE) {
-> +                       if (setenv("SELFTESTS_VERBOSE", "1", 1) == -1) {
-> +                               fprintf(stderr,
-> +                                       "Unable to setenv SELFTESTS_VERBOSE=1 (errno=%d)",
-> +                                       errno);
-> +                               return -1;
-> +                       }
-> +               }
-
-yep, this is what I had in mind, thanks.
-
-> +
->                 break;
->         case ARG_GET_TEST_CNT:
->                 env->get_test_cnt = true;
-> --
-> 2.29.2.576.ga3fc446d84-goog
->
