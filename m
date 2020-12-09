@@ -2,130 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DFB02D3735
-	for <lists+bpf@lfdr.de>; Wed,  9 Dec 2020 00:56:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3161E2D3750
+	for <lists+bpf@lfdr.de>; Wed,  9 Dec 2020 01:02:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730398AbgLHXyc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 8 Dec 2020 18:54:32 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:49442 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730594AbgLHXy1 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 8 Dec 2020 18:54:27 -0500
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 0B8NePAW012311
-        for <bpf@vger.kernel.org>; Tue, 8 Dec 2020 15:53:46 -0800
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 35ac7qbu5g-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 08 Dec 2020 15:53:46 -0800
-Received: from intmgw002.03.ash8.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 8 Dec 2020 15:53:44 -0800
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 34DB62ECAF6B; Tue,  8 Dec 2020 15:53:34 -0800 (PST)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
-        Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH v2 bpf-next] libbpf: support module BTF for BPF_TYPE_ID_TARGET CO-RE relocation
-Date:   Tue, 8 Dec 2020 15:53:32 -0800
-Message-ID: <20201208235332.354826-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.24.1
+        id S1730241AbgLIACF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 8 Dec 2020 19:02:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38786 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729665AbgLIACF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 8 Dec 2020 19:02:05 -0500
+From:   KP Singh <kpsingh@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     bpf@vger.kernel.org
+Cc:     Andrii Nakryiko <andrii@kernel.org>, KP Singh <kpsingh@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: [PATCH bpf-next v2] selftests/bpf: Silence ima_setup.sh when not running in verbose mode.
+Date:   Wed,  9 Dec 2020 00:01:20 +0000
+Message-Id: <20201209000120.2709992-1-kpsingh@kernel.org>
+X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-08_17:2020-12-08,2020-12-08 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- clxscore=1015 bulkscore=0 lowpriorityscore=0 spamscore=0 impostorscore=0
- mlxscore=0 adultscore=0 mlxlogscore=999 priorityscore=1501 suspectscore=8
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012080150
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When Clang emits ldimm64 instruction for BPF_TYPE_ID_TARGET CO-RE relocation,
-put module BTF FD, containing target type, into upper 32 bits of imm64.
+Currently, ima_setup.sh spews outputs from commands like mkfs and dd
+on the terminal without taking into account the verbosity level of
+the test framework. Update test_progs to set the environment variable
+SELFTESTS_VERBOSE=1 when a verbose output is requested. This
+environment variable is then used by ima_setup.sh (and can be used by
+other similar scripts) to obey the verbosity level of the test harness
+without needing to re-implement command line options for verbosity.
 
-Because this FD is internal to libbpf, it's very cumbersome to test this in
-selftests. Manual testing was performed with debug log messages sprinkled
-across selftests and libbpf, confirming expected values are substituted.
-Better testing will be performed as part of the work adding module BTF types
-support to  bpf_snprintf_btf() helpers.
-
-v1->v2:
-  - fix crash on failing to resolve target spec (Alan).
-
-Cc: Alan Maguire <alan.maguire@oracle.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Fixes: 34b82d3ac105 ("bpf: Add a selftest for bpf_ima_inode_hash")
+Reported-by: Andrii Nakryiko <andrii@kernel.org>
+Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: KP Singh <kpsingh@kernel.org>
 ---
- tools/lib/bpf/libbpf.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
+ tools/testing/selftests/bpf/ima_setup.sh |  6 ++++++
+ tools/testing/selftests/bpf/test_progs.c | 10 ++++++++++
+ 2 files changed, 16 insertions(+)
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 9be88a90a4aa..2fb9824bf9bf 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -4795,6 +4795,7 @@ static int load_module_btfs(struct bpf_object *obj)
+diff --git a/tools/testing/selftests/bpf/ima_setup.sh b/tools/testing/selftests/bpf/ima_setup.sh
+index 2bfc646bc230..7490a9bae33e 100755
+--- a/tools/testing/selftests/bpf/ima_setup.sh
++++ b/tools/testing/selftests/bpf/ima_setup.sh
+@@ -81,9 +81,15 @@ main()
  
- 		mod_btf = &obj->btf_modules[obj->btf_module_cnt++];
+ 	local action="$1"
+ 	local tmp_dir="$2"
++	local verbose="${SELFTESTS_VERBOSE:=0}"
  
-+		btf__set_fd(btf, fd);
- 		mod_btf->btf = btf;
- 		mod_btf->id = id;
- 		mod_btf->fd = fd;
-@@ -5445,6 +5446,10 @@ struct bpf_core_relo_res
- 	__u32 orig_type_id;
- 	__u32 new_sz;
- 	__u32 new_type_id;
-+	/* FD of the module BTF containing the target candidate, or 0 for
-+	 * vmlinux BTF
-+	 */
-+	int btf_obj_fd;
- };
+ 	[[ ! -d "${tmp_dir}" ]] && echo "Directory ${tmp_dir} doesn't exist" && exit 1
  
- /* Calculate original and target relocation values, given local and target
-@@ -5469,6 +5474,7 @@ static int bpf_core_calc_relo(const struct bpf_program *prog,
- 	res->fail_memsz_adjust = false;
- 	res->orig_sz = res->new_sz = 0;
- 	res->orig_type_id = res->new_type_id = 0;
-+	res->btf_obj_fd = 0;
- 
- 	if (core_relo_is_field_based(relo->kind)) {
- 		err = bpf_core_calc_field_relo(prog, relo, local_spec,
-@@ -5519,6 +5525,9 @@ static int bpf_core_calc_relo(const struct bpf_program *prog,
- 	} else if (core_relo_is_type_based(relo->kind)) {
- 		err = bpf_core_calc_type_relo(relo, local_spec, &res->orig_val);
- 		err = err ?: bpf_core_calc_type_relo(relo, targ_spec, &res->new_val);
-+		if (!err && relo->kind == BPF_TYPE_ID_TARGET &&
-+		    targ_spec && targ_spec->btf != prog->obj->btf_vmlinux)
-+			res->btf_obj_fd = btf__fd(targ_spec->btf);
- 	} else if (core_relo_is_enumval_based(relo->kind)) {
- 		err = bpf_core_calc_enumval_relo(relo, local_spec, &res->orig_val);
- 		err = err ?: bpf_core_calc_enumval_relo(relo, targ_spec, &res->new_val);
-@@ -5725,10 +5734,14 @@ static int bpf_core_patch_insn(struct bpf_program *prog,
++	if [[ "${verbose}" -eq 0 ]]; then
++		exec 1> /dev/null
++		exec 2>&1
++	fi
++
+ 	if [[ "${action}" == "setup" ]]; then
+ 		setup "${tmp_dir}"
+ 	elif [[ "${action}" == "cleanup" ]]; then
+diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+index 5ef081bdae4e..7d077d48cadd 100644
+--- a/tools/testing/selftests/bpf/test_progs.c
++++ b/tools/testing/selftests/bpf/test_progs.c
+@@ -587,6 +587,16 @@ static error_t parse_arg(int key, char *arg, struct argp_state *state)
+ 				return -EINVAL;
+ 			}
  		}
- 
- 		insn[0].imm = new_val;
--		insn[1].imm = 0; /* currently only 32-bit values are supported */
--		pr_debug("prog '%s': relo #%d: patched insn #%d (LDIMM64) imm64 %llu -> %u\n",
-+		/* btf_obj_fd is zero for all relos but BPF_TYPE_ID_TARGET
-+		 * with target type in the kernel module BTF
-+		 */
-+		insn[1].imm = res->btf_obj_fd;
-+		pr_debug("prog '%s': relo #%d: patched insn #%d (LDIMM64) imm64 %llu -> %llu\n",
- 			 prog->name, relo_idx, insn_idx,
--			 (unsigned long long)imm, new_val);
-+			 (unsigned long long)imm,
-+			 ((unsigned long long)res->btf_obj_fd << 32) | new_val);
++
++		if (env->verbosity > VERBOSE_NONE) {
++			if (setenv("SELFTESTS_VERBOSE", "1", 1) == -1) {
++				fprintf(stderr,
++					"Unable to setenv SELFTESTS_VERBOSE=1 (errno=%d)",
++					errno);
++				return -1;
++			}
++		}
++
  		break;
- 	}
- 	default:
+ 	case ARG_GET_TEST_CNT:
+ 		env->get_test_cnt = true;
 -- 
-2.24.1
+2.29.2.576.ga3fc446d84-goog
 
