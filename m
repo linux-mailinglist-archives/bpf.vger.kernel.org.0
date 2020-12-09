@@ -2,79 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 048102D4620
-	for <lists+bpf@lfdr.de>; Wed,  9 Dec 2020 16:59:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1D2D2D463E
+	for <lists+bpf@lfdr.de>; Wed,  9 Dec 2020 17:02:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731015AbgLIPwy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Dec 2020 10:52:54 -0500
-Received: from mx4.wp.pl ([212.77.101.12]:37585 "EHLO mx4.wp.pl"
+        id S1732053AbgLIQAs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Dec 2020 11:00:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727526AbgLIPwt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Dec 2020 10:52:49 -0500
-Received: (wp-smtpd smtp.wp.pl 24471 invoked from network); 9 Dec 2020 16:51:49 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
-          t=1607529109; bh=3FjT/q8mbkb2XyA2MEM4/BuPSHX2DrgXduiPY1UbFxg=;
-          h=From:To:Cc:Subject;
-          b=aWOibTlM23BJzFKeIxtiUyvmCh0s2p+MN1SBv4fVFYIcEJpBdr9w5K5HK8rV5OPG4
-           PJtm+eF0dsMxueE/FAOoPaxZ6DKQqbQbIViVOjGa83n76IJxvpDoB0UD/+fuRO/Wq0
-           iII6F1UvtKgqU0GWUujmzPzpXQ8pWV16qfwLJXv4=
-Received: from ip4-46-39-164-203.cust.nbox.cz (HELO localhost) (stf_xl@wp.pl@[46.39.164.203])
-          (envelope-sender <stf_xl@wp.pl>)
-          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <willy@infradead.org>; 9 Dec 2020 16:51:49 +0100
-Date:   Wed, 9 Dec 2020 16:51:48 +0100
-From:   Stanislaw Gruszka <stf_xl@wp.pl>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Justin Forbes <jmforbes@linuxtx.org>,
-        bpf <bpf@vger.kernel.org>, Alex Shi <alex.shi@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Souptick Joarder <jrdr.linux@gmail.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Josef Bacik <josef@toxicpanda.com>
-Subject: Re: [PATCH] mm/filemap: add static for function
- __add_to_page_cache_locked
-Message-ID: <20201209155148.GA5552@wp.pl>
-References: <20201110115037.f6a53faec8d65782ab65d8b4@linux-foundation.org>
- <ddca2a9e-ed89-5dec-b1af-4f2fd2c99b57@linux.alibaba.com>
- <20201207081556.pwxmhgdxayzbofpi@lion.mk-sys.cz>
- <CAFxkdApgQ4RCt-J43cK4_128pXr=Xn5jw+q0kOaP-TYufk_tPA@mail.gmail.com>
- <CAADnVQK-EsdBohcVSaK+zaP9XuPZTBkGbQpkeYcrC9BzoPQUuw@mail.gmail.com>
- <20201207225351.2liywqaxxtuezzw3@lion.mk-sys.cz>
- <CAADnVQJARx6sKF-30YsabCd1W+MFDMmfxY+2u0Pm40RHHHQZ6Q@mail.gmail.com>
- <CAADnVQJ6tmzBXvtroBuEH6QA0H+q7yaSKxrVvVxhqr3KBZdEXg@mail.gmail.com>
- <20201209144628.GA3474@wp.pl>
- <20201209150826.GP7338@casper.infradead.org>
+        id S1731418AbgLIQAs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Dec 2020 11:00:48 -0500
+Content-Type: text/plain; charset="utf-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607529607;
+        bh=nPYVPZb8lF5AdNA/ZSa58MqKVIKgV5e+WU4mYaQy1hY=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=O4pqR+kgMVViT91hgn8Dhj5xDIqGJ9+wWNjcsRPwEA6FYVyMBE0VjqXJxL2eVKZtR
+         DXXIXD5/q8Nv66w7ut1Tnh9o4gz0R5RRqV43VYItyLwRjthnNqV2Z2d6fvKc4wii2w
+         DFHDua+6I6cMXi6Ql/hd8gL2K2Y0JaVYYxfcCa8Lw5WH0sQc8DkUaAkDxZfdYopJBo
+         hw4AKSSLNJ6WO5we5tC3rLmQ1Ybz38v4BxNjUMUVEL/O8gGSregRRIw2PlZf6KMaAd
+         5WEqiMsd3OhBJW6QbT2zM84lVD8an0SbyO1Pp4/Y+dzS5sKa5HuHFiJFETnfBzwRBT
+         hDEKH6TpofVXg==
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201209150826.GP7338@casper.infradead.org>
-X-WP-MailID: 729eafaf8c9901c095d530a4dd2b5e0e
-X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
-X-WP-SPAM: NO 0000000 [4aPk]                               
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v4 0/5] selftests/bpf: xsk selftests
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <160752960729.12976.12661383715171656742.git-patchwork-notify@kernel.org>
+Date:   Wed, 09 Dec 2020 16:00:07 +0000
+References: <20201207215333.11586-1-weqaar.a.janjua@intel.com>
+In-Reply-To: <20201207215333.11586-1-weqaar.a.janjua@intel.com>
+To:     Weqaar Janjua <weqaar.janjua@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, daniel@iogearbox.net,
+        ast@kernel.org, yhs@fb.com, magnus.karlsson@gmail.com,
+        bjorn.topel@intel.com, weqaar.a.janjua@intel.com, shuah@kernel.org,
+        skhan@linuxfoundation.org, linux-kselftest@vger.kernel.org,
+        anders.roxell@linaro.org, jonathan.lemon@gmail.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 09, 2020 at 03:08:26PM +0000, Matthew Wilcox wrote:
-> On Wed, Dec 09, 2020 at 03:46:28PM +0100, Stanislaw Gruszka wrote:
-> > At this point of release cycle we should probably go with revert,
-> > but I think the main problem is that BPF and ERROR_INJECTION use
-> > function that is not intended to be used externally. For external users
-> > add_to_page_cache_lru() and add_to_page_cache_locked() are exported
-> > and I think those should be used (see the patch below).
+Hello:
+
+This series was applied to bpf/bpf-next.git (refs/heads/master):
+
+On Mon,  7 Dec 2020 21:53:28 +0000 you wrote:
+> This patch set adds AF_XDP selftests based on veth to selftests/bpf.
 > 
-> FWIW, I intend to do some consolidation/renaming in this area.  I
-> trust that will not be a problem?
+> # Topology:
+> # ---------
+> #                 -----------
+> #               _ | Process | _
+> #              /  -----------  \
+> #             /        |        \
+> #            /         |         \
+> #      -----------     |     -----------
+> #      | Thread1 |     |     | Thread2 |
+> #      -----------     |     -----------
+> #           |          |          |
+> #      -----------     |     -----------
+> #      |  xskX   |     |     |  xskY   |
+> #      -----------     |     -----------
+> #           |          |          |
+> #      -----------     |     ----------
+> #      |  vethX  | --------- |  vethY |
+> #      -----------   peer    ----------
+> #           |          |          |
+> #      namespaceX      |     namespaceY
+> 
+> [...]
 
-If it does not break anything, it will be not a problem ;-)
+Here is the summary with links:
+  - [bpf-next,v4,1/5] selftests/bpf: xsk selftests framework
+    https://git.kernel.org/bpf/bpf-next/c/a89052572ebb
+  - [bpf-next,v4,2/5] selftests/bpf: xsk selftests - SKB POLL, NOPOLL
+    https://git.kernel.org/bpf/bpf-next/c/facb7cb2e909
+  - [bpf-next,v4,3/5] selftests/bpf: xsk selftests - DRV POLL, NOPOLL
+    https://git.kernel.org/bpf/bpf-next/c/9103a8594d93
+  - [bpf-next,v4,4/5] selftests/bpf: xsk selftests - Socket Teardown - SKB, DRV
+    https://git.kernel.org/bpf/bpf-next/c/6674bf66560a
+  - [bpf-next,v4,5/5] selftests/bpf: xsk selftests - Bi-directional Sockets - SKB, DRV
+    https://git.kernel.org/bpf/bpf-next/c/7d20441eb05e
 
-It's possible that __add_to_page_cache_locked() can be a global symbol
-with add_to_page_cache_lru() + add_to_page_cache_locked() being just
-static/inline wrappers around it.
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Stanislaw
+
