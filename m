@@ -2,97 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23A2F2D4434
-	for <lists+bpf@lfdr.de>; Wed,  9 Dec 2020 15:26:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D6952D4467
+	for <lists+bpf@lfdr.de>; Wed,  9 Dec 2020 15:32:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732863AbgLIOZr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Dec 2020 09:25:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732623AbgLIOZF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Dec 2020 09:25:05 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2665C0613CF;
-        Wed,  9 Dec 2020 06:24:24 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kn0Nr-0004e7-Se; Wed, 09 Dec 2020 14:24:00 +0000
-Date:   Wed, 9 Dec 2020 14:23:59 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        criu@openvz.org, bpf@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Jann Horn <jann@thejh.net>, Kees Cook <keescook@chromium.org>,
-        Daniel P =?iso-8859-1?Q?=2E_Berrang=E9?= <berrange@redhat.com>,
-        Jeff Layton <jlayton@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Matthew Wilcox <willy@infradead.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Chris Wright <chrisw@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1726885AbgLIOcS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 9 Dec 2020 09:32:18 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:60154 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726501AbgLIOcN (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 9 Dec 2020 09:32:13 -0500
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-495-Db5WfGVXNx6YZvAlHFwNoA-1; Wed, 09 Dec 2020 09:31:12 -0500
+X-MC-Unique: Db5WfGVXNx6YZvAlHFwNoA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5F38B113B22C;
+        Wed,  9 Dec 2020 14:29:16 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.195.176])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DC45B5D9D3;
+        Wed,  9 Dec 2020 14:29:13 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Andy Lavr <andy.lavr@gmail.com>
-Subject: Re: [PATCH v2 15/24] proc/fd: In proc_readfd_common use
- task_lookup_next_fd_rcu
-Message-ID: <20201209142359.GN3579531@ZenIV.linux.org.uk>
-References: <87r1on1v62.fsf@x220.int.ebiederm.org>
- <20201120231441.29911-15-ebiederm@xmission.com>
- <20201207232900.GD4115853@ZenIV.linux.org.uk>
- <877dprvs8e.fsf@x220.int.ebiederm.org>
- <20201209040731.GK3579531@ZenIV.linux.org.uk>
- <877dprtxly.fsf@x220.int.ebiederm.org>
+        KP Singh <kpsingh@chromium.org>
+Subject: [PATCH bpf-next] selftests/bpf: Fix selftest compilation on clang 11
+Date:   Wed,  9 Dec 2020 15:29:12 +0100
+Message-Id: <20201209142912.99145-1-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <877dprtxly.fsf@x220.int.ebiederm.org>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 08, 2020 at 10:24:57PM -0600, Eric W. Biederman wrote:
-> Al Viro <viro@zeniv.linux.org.uk> writes:
-> 
-> > On Tue, Dec 08, 2020 at 04:38:09PM -0600, Eric W. Biederman wrote:
-> >
-> >> Is there any reason we don't simply rcu free the files_struct?
-> >> That would remove the need for the task_lock entirely.
-> >
-> > Umm...  Potentially interesting part here is the interaction with
-> > close_files(); currently that can't overlap with any of those
-> > 3rd-party accesses to descriptor table, but with your changes
-> > here it's very much possible.
-> 
-> Good point.
-> 
-> I was worried there might have been a concern about the overhead
-> introduced by always rcu freeing files table.
-> 
-> > OTOH, it's not like close_files() did much beyond the effects of already
-> > possible close(2) done by one of the threads sharing that sucker.
-> > It's _probably_ safe (at least for proc_readfd_common()), but I'll need
-> > to look at the other places doing that kind of access.  Especially the
-> > BPF foulness...
+We can't compile test_core_reloc_module.c selftest with clang 11,
+compile fails with:
 
-Still digging, unfortunately ;-/
+  CLNG-LLC [test_maps] test_core_reloc_module.o
+  progs/test_core_reloc_module.c:57:21: error: use of unknown builtin \
+  '__builtin_preserve_type_info' [-Wimplicit-function-declaration]
+   out->read_ctx_sz = bpf_core_type_size(struct bpf_testmod_test_read_ctx);
 
-> > Oh, and in any case, the trick with repurposing ->rcu of embedded
-> > fdtable deserves a comment.  It's not hard to explain, so...
-> 
-> Agreed.  Something like fdtable.rcu isn't used so use it so by reusing
-> it we keep from wasting memory in files_struct to have a dedicated
-> rcu_head.
+Skipping these tests if __builtin_preserve_type_info() is not
+supported by compiler.
 
-I'd probably go for something along the lines of "we can avoid adding
-a separate rcu_head into files_struct, since rcu_head in struct fdtable
-is only used for separately allocated instances, allowing us to repurpose
-files_struct->fdtab.rcu for RCU-delayed freeing of files_struct"...
+Fixes: 6bcd39d366b6 ("selftests/bpf: Add CO-RE relocs selftest relying on kernel module BTF")
+Fixes: bc9ed69c79ae ("selftests/bpf: Add tp_btf CO-RE reloc test for modules")
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+ .../testing/selftests/bpf/progs/test_core_reloc_module.c  | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/tools/testing/selftests/bpf/progs/test_core_reloc_module.c b/tools/testing/selftests/bpf/progs/test_core_reloc_module.c
+index 56363959f7b0..f59f175c7baf 100644
+--- a/tools/testing/selftests/bpf/progs/test_core_reloc_module.c
++++ b/tools/testing/selftests/bpf/progs/test_core_reloc_module.c
+@@ -40,6 +40,7 @@ int BPF_PROG(test_core_module_probed,
+ 	     struct task_struct *task,
+ 	     struct bpf_testmod_test_read_ctx *read_ctx)
+ {
++#if __has_builtin(__builtin_preserve_enum_value)
+ 	struct core_reloc_module_output *out = (void *)&data.out;
+ 	__u64 pid_tgid = bpf_get_current_pid_tgid();
+ 	__u32 real_tgid = (__u32)(pid_tgid >> 32);
+@@ -61,6 +62,9 @@ int BPF_PROG(test_core_module_probed,
+ 	out->len_exists = bpf_core_field_exists(read_ctx->len);
+ 
+ 	out->comm_len = BPF_CORE_READ_STR_INTO(&out->comm, task, comm);
++#else
++	data.skip = true;
++#endif
+ 
+ 	return 0;
+ }
+@@ -70,6 +74,7 @@ int BPF_PROG(test_core_module_direct,
+ 	     struct task_struct *task,
+ 	     struct bpf_testmod_test_read_ctx *read_ctx)
+ {
++#if __has_builtin(__builtin_preserve_enum_value)
+ 	struct core_reloc_module_output *out = (void *)&data.out;
+ 	__u64 pid_tgid = bpf_get_current_pid_tgid();
+ 	__u32 real_tgid = (__u32)(pid_tgid >> 32);
+@@ -91,6 +96,9 @@ int BPF_PROG(test_core_module_direct,
+ 	out->len_exists = bpf_core_field_exists(read_ctx->len);
+ 
+ 	out->comm_len = BPF_CORE_READ_STR_INTO(&out->comm, task, comm);
++#else
++	data.skip = true;
++#endif
+ 
+ 	return 0;
+ }
+-- 
+2.26.2
+
