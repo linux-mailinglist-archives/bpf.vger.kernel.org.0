@@ -2,96 +2,79 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 861752D45BD
-	for <lists+bpf@lfdr.de>; Wed,  9 Dec 2020 16:45:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 048102D4620
+	for <lists+bpf@lfdr.de>; Wed,  9 Dec 2020 16:59:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730894AbgLIPp3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Dec 2020 10:45:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730836AbgLIPpS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Dec 2020 10:45:18 -0500
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32681C0613CF;
-        Wed,  9 Dec 2020 07:44:37 -0800 (PST)
-Received: by mail-ot1-x344.google.com with SMTP id o11so1766310ote.4;
-        Wed, 09 Dec 2020 07:44:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=L9Pq6BNyXG8ajxZyez3wZsQ0mKu/8ydF/Z7laX598Co=;
-        b=sn11wMPpiZyhhkIWsiIm01K/deqwOxQ5hJ3ajWCWQ0rjiAhA9iuHbUrzz4PiSP/KIN
-         gQ6bU2F0CYPk9f5AZHuPamZlk1giLV3ZzMEsY+56niIQbjnitaBHta+t145GUDQbvqJI
-         D02+U/LYN1/g9pExDtsEAT1LBGm1p6Oa8TqF+rsv9DXS2O/AMrU1ZKDZjGq0m86YFzt1
-         eEXlyQFAog26HzPxIkhad8O0mo3dcXHaL2noTuPPDz6h/PZif8mCc1lqD16uHg43mwwZ
-         C0xrVS6NU95pKKzi1MN1UY+VWl+nV4ZSNMd1fSq8L9bh7YdbylHIY6vtds/+wciLT6aC
-         uDbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=L9Pq6BNyXG8ajxZyez3wZsQ0mKu/8ydF/Z7laX598Co=;
-        b=hs9dXlPkERT+f6v8SdCOHaiLDmOQzLxiq3+mDdPGj6Mi5H6Ub+HtLSGsDx79bKWkQi
-         fpqrqcNO3Lsc+TUvhl3FPKznkhdCjchZzBrRxGuXOLGAEsV0F9clePJ0qI70iPekltsV
-         KcP2jMF5ZTQX4ESfb1eBNw62jAeQpffirQ1BfBEE0UIc3mDHYf+XCmGiwEE10YkGKHHa
-         EoiBpesstjkjVueaId00m86Xlxwy65lyB3oRh/2UFnvQ8sq9AnbKgtCrSt0tuQQ4SpHk
-         cRqF3ijpbQptGYJp0vDt7cacg42HkW5m/zFd7m0y5P5CoSUzV/5m+ojuDoPzw6Pg3S7W
-         l9jg==
-X-Gm-Message-State: AOAM532dcsXNftApY/vrIfp4d7CIoY1Ym33mbj3OvWcbvC6BnIhNB7KA
-        ePjnWqIUTnKOB9NP9Dh5ryM=
-X-Google-Smtp-Source: ABdhPJwf3/fYJzlqB2LPqMIKJHGAdXaozX1tdzHebBwDewhAxnnjKAvPoU3ss3ZqGK6l69aHoKypNg==
-X-Received: by 2002:a05:6830:1b7b:: with SMTP id d27mr2393689ote.132.1607528676657;
-        Wed, 09 Dec 2020 07:44:36 -0800 (PST)
-Received: from Davids-MacBook-Pro.local ([8.48.134.51])
-        by smtp.googlemail.com with ESMTPSA id v13sm381328ook.13.2020.12.09.07.44.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Dec 2020 07:44:36 -0800 (PST)
-Subject: Re: [PATCH v2 bpf 1/5] net: ethtool: add xdp properties flag set
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
+        id S1731015AbgLIPwy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Dec 2020 10:52:54 -0500
+Received: from mx4.wp.pl ([212.77.101.12]:37585 "EHLO mx4.wp.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727526AbgLIPwt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Dec 2020 10:52:49 -0500
+Received: (wp-smtpd smtp.wp.pl 24471 invoked from network); 9 Dec 2020 16:51:49 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
+          t=1607529109; bh=3FjT/q8mbkb2XyA2MEM4/BuPSHX2DrgXduiPY1UbFxg=;
+          h=From:To:Cc:Subject;
+          b=aWOibTlM23BJzFKeIxtiUyvmCh0s2p+MN1SBv4fVFYIcEJpBdr9w5K5HK8rV5OPG4
+           PJtm+eF0dsMxueE/FAOoPaxZ6DKQqbQbIViVOjGa83n76IJxvpDoB0UD/+fuRO/Wq0
+           iII6F1UvtKgqU0GWUujmzPzpXQ8pWV16qfwLJXv4=
+Received: from ip4-46-39-164-203.cust.nbox.cz (HELO localhost) (stf_xl@wp.pl@[46.39.164.203])
+          (envelope-sender <stf_xl@wp.pl>)
+          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <willy@infradead.org>; 9 Dec 2020 16:51:49 +0100
+Date:   Wed, 9 Dec 2020 16:51:48 +0100
+From:   Stanislaw Gruszka <stf_xl@wp.pl>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Justin Forbes <jmforbes@linuxtx.org>,
+        bpf <bpf@vger.kernel.org>, Alex Shi <alex.shi@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Souptick Joarder <jrdr.linux@gmail.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        alardam@gmail.com, magnus.karlsson@intel.com,
-        bjorn.topel@intel.com, andrii.nakryiko@gmail.com, kuba@kernel.org,
-        ast@kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
-        hawk@kernel.org, jonathan.lemon@gmail.com, bpf@vger.kernel.org,
-        jeffrey.t.kirsher@intel.com, maciejromanfijalkowski@gmail.com,
-        intel-wired-lan@lists.osuosl.org,
-        Marek Majtyka <marekx.majtyka@intel.com>
-References: <20201204102901.109709-1-marekx.majtyka@intel.com>
- <20201204102901.109709-2-marekx.majtyka@intel.com> <878sad933c.fsf@toke.dk>
- <20201204124618.GA23696@ranger.igk.intel.com>
- <048bd986-2e05-ee5b-2c03-cd8c473f6636@iogearbox.net>
- <20201207135433.41172202@carbon>
- <5fce960682c41_5a96208e4@john-XPS-13-9370.notmuch>
- <20201207230755.GB27205@ranger.igk.intel.com>
- <5fd068c75b92d_50ce20814@john-XPS-13-9370.notmuch>
- <20201209095454.GA36812@ranger.igk.intel.com>
- <20201209125223.49096d50@carbon>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <6913010d-2fd6-6713-94e9-8f5b8ad4b708@gmail.com>
-Date:   Wed, 9 Dec 2020 08:44:33 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.1
+        Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH] mm/filemap: add static for function
+ __add_to_page_cache_locked
+Message-ID: <20201209155148.GA5552@wp.pl>
+References: <20201110115037.f6a53faec8d65782ab65d8b4@linux-foundation.org>
+ <ddca2a9e-ed89-5dec-b1af-4f2fd2c99b57@linux.alibaba.com>
+ <20201207081556.pwxmhgdxayzbofpi@lion.mk-sys.cz>
+ <CAFxkdApgQ4RCt-J43cK4_128pXr=Xn5jw+q0kOaP-TYufk_tPA@mail.gmail.com>
+ <CAADnVQK-EsdBohcVSaK+zaP9XuPZTBkGbQpkeYcrC9BzoPQUuw@mail.gmail.com>
+ <20201207225351.2liywqaxxtuezzw3@lion.mk-sys.cz>
+ <CAADnVQJARx6sKF-30YsabCd1W+MFDMmfxY+2u0Pm40RHHHQZ6Q@mail.gmail.com>
+ <CAADnVQJ6tmzBXvtroBuEH6QA0H+q7yaSKxrVvVxhqr3KBZdEXg@mail.gmail.com>
+ <20201209144628.GA3474@wp.pl>
+ <20201209150826.GP7338@casper.infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20201209125223.49096d50@carbon>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201209150826.GP7338@casper.infradead.org>
+X-WP-MailID: 729eafaf8c9901c095d530a4dd2b5e0e
+X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
+X-WP-SPAM: NO 0000000 [4aPk]                               
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/9/20 4:52 AM, Jesper Dangaard Brouer wrote:
-> But I have redesigned the ndo_xdp_xmit call to take a bulk of packets
-> (up-to 16) so it should not be a problem to solve this by sharing
-> TX-queue and talking a lock per 16 packets.  I still recommend that,
-> for fallback case,  you allocated a number a TX-queue and distribute
-> this across CPUs to avoid hitting a congested lock (above measurements
-> are the optimal non-congested atomic lock operation)
+On Wed, Dec 09, 2020 at 03:08:26PM +0000, Matthew Wilcox wrote:
+> On Wed, Dec 09, 2020 at 03:46:28PM +0100, Stanislaw Gruszka wrote:
+> > At this point of release cycle we should probably go with revert,
+> > but I think the main problem is that BPF and ERROR_INJECTION use
+> > function that is not intended to be used externally. For external users
+> > add_to_page_cache_lru() and add_to_page_cache_locked() are exported
+> > and I think those should be used (see the patch below).
+> 
+> FWIW, I intend to do some consolidation/renaming in this area.  I
+> trust that will not be a problem?
 
-I have been meaning to ask you why 16 for the XDP batching? If the
-netdev budget is 64, why not something higher like 32 or 64?
+If it does not break anything, it will be not a problem ;-)
+
+It's possible that __add_to_page_cache_locked() can be a global symbol
+with add_to_page_cache_lru() + add_to_page_cache_locked() being just
+static/inline wrappers around it.
+
+Stanislaw
