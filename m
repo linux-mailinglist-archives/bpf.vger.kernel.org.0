@@ -2,190 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95C652D4E8A
-	for <lists+bpf@lfdr.de>; Thu, 10 Dec 2020 00:11:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FD952D4EB0
+	for <lists+bpf@lfdr.de>; Thu, 10 Dec 2020 00:23:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731647AbgLIXLN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Dec 2020 18:11:13 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:54560 "EHLO
+        id S1728185AbgLIXWo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Dec 2020 18:22:44 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:35774 "EHLO
         aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731632AbgLIXLG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Dec 2020 18:11:06 -0500
+        with ESMTP id S1725885AbgLIXWn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Dec 2020 18:22:43 -0500
 Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9N9MjF063309;
-        Wed, 9 Dec 2020 23:10:11 GMT
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9NJeFV092648;
+        Wed, 9 Dec 2020 23:21:49 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
  : subject : in-reply-to : message-id : references : mime-version :
  content-type; s=corp-2020-01-29;
- bh=HxUibRgEQchXyhuP7PtCuYUewCMkcKjkitD+LecbcUE=;
- b=MiopLcx0z4ZeFSfEa4DqEu3nfhaJqkB3oGYVkN3h+w0+wMQHbOv+2GYTecLoR74sYd2b
- V2NR8eaHMOnNPY5cXoWW/uupNQKglSK1nHr1Cw8ZZhtnRgXHch3bUYdFgHa1WZDMZwPT
- pm+vl9P3jTstB1NQJnLWmvOcw0HkUoKPlMvkLithV9vOox8R7a0hTF/IFtGt8V2G6ky3
- OEE9Vj8QjKJmQ1dwb3u2epB8od/vhXDdMbv+mxITBQipqbHfsRlzm+CnvS6Mr8hjzUsJ
- s+JxtqYRr5Yu6Y6j+qo3sIsT3NqD/W9PWS1syEEs0zT3JH3QkMZ1fRSdYnpp1F4wfMY/ vg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 357yqc2wn2-1
+ bh=os2tjc6ZENkqIupXpeArIU0898ZzATBtxVzyRO9TfgQ=;
+ b=ZBLBkfbtSYAISKWzRYSyJdJiRY3rDhd8d0qlGQ6bnGLJclJAAyySlmybnlTnHF+f5mNT
+ cKqJe2ANocOaQnsuoWDLgoRsyMbAwOTTxQ8IrJYmQ1gYRBEATWAAuG3weebAYPUgOz2a
+ ndJ7Ty0FcdSngNHc9U1JsJSFRAsJryLoX63DeyRu4w+IinKuGrz6rkyzf+inyR3ArOm9
+ tWGnC+Ja1EmsyR6QtJLc4tuXWCviwyjX5trBvw4rBZtQFsyrlodGmaS1Y6K24BXg8tyu
+ jXQYhsJMhyhAJGIyhe1wZ9Vjcvv2Uf0gAE25obvMQlBiMcbb9EJgTt6eijKeGxaDsq5X CQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 357yqc2xg0-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 09 Dec 2020 23:10:11 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9N0Z20170796;
-        Wed, 9 Dec 2020 23:08:10 GMT
+        Wed, 09 Dec 2020 23:21:49 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B9NFmqC139802;
+        Wed, 9 Dec 2020 23:21:48 GMT
 Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 358m40y9f4-1
+        by userp3030.oracle.com with ESMTP id 358m51bwsq-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Dec 2020 23:08:10 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B9N8AEl031768;
-        Wed, 9 Dec 2020 23:08:10 GMT
+        Wed, 09 Dec 2020 23:21:48 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0B9NLlFF006958;
+        Wed, 9 Dec 2020 23:21:47 GMT
 Received: from dhcp-10-175-171-125.vpn.oracle.com (/10.175.171.125)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 09 Dec 2020 15:08:09 -0800
-Date:   Wed, 9 Dec 2020 23:08:02 +0000 (GMT)
+        with ESMTP ; Wed, 09 Dec 2020 15:21:46 -0800
+Date:   Wed, 9 Dec 2020 23:21:43 +0000 (GMT)
 From:   Alan Maguire <alan.maguire@oracle.com>
 X-X-Sender: alan@localhost
-To:     Andrii Nakryiko <andrii@kernel.org>
-cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
-        daniel@iogearbox.net, kernel-team@fb.com,
-        Alan Maguire <alan.maguire@oracle.com>
-Subject: Re: [PATCH v2 bpf-next] libbpf: support module BTF for BPF_TYPE_ID_TARGET
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+cc:     Alan Maguire <alan.maguire@oracle.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next] libbpf: support module BTF for BPF_TYPE_ID_TARGET
  CO-RE relocation
-In-Reply-To: <20201208235332.354826-1-andrii@kernel.org>
-Message-ID: <alpine.LRH.2.23.451.2012092249520.26400@localhost>
-References: <20201208235332.354826-1-andrii@kernel.org>
+In-Reply-To: <20201208233920.qgrluwoafckvq476@ast-mbp>
+Message-ID: <alpine.LRH.2.23.451.2012092308240.26400@localhost>
+References: <20201205025140.443115-1-andrii@kernel.org> <alpine.LRH.2.23.451.2012071623080.3652@localhost> <20201208031206.26mpjdbrvqljj7vl@ast-mbp> <CAEf4BzaXvFQzoYXbfutVn7A9ndQc9472SCK8Gj8R_Yj7=+rTcg@mail.gmail.com> <alpine.LRH.2.23.451.2012082202450.25628@localhost>
+ <20201208233920.qgrluwoafckvq476@ast-mbp>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9830 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 adultscore=0
- bulkscore=0 phishscore=0 suspectscore=30 mlxscore=0 mlxlogscore=999
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=10
+ bulkscore=0 malwarescore=0 phishscore=0 adultscore=0 mlxlogscore=999
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012090158
+ definitions=main-2012090160
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9830 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=30 mlxlogscore=999
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=10 mlxlogscore=999
  clxscore=1015 malwarescore=0 bulkscore=0 phishscore=0 adultscore=0
  spamscore=0 priorityscore=1501 mlxscore=0 lowpriorityscore=0
  impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012090159
+ engine=8.12.0-2009150000 definitions=main-2012090160
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 8 Dec 2020, Andrii Nakryiko wrote:
+On Tue, 8 Dec 2020, Alexei Starovoitov wrote:
 
-> When Clang emits ldimm64 instruction for BPF_TYPE_ID_TARGET CO-RE relocation,
-> put module BTF FD, containing target type, into upper 32 bits of imm64.
+> On Tue, Dec 08, 2020 at 10:13:35PM +0000, Alan Maguire wrote:
+> > 
+> > Does this approach prevent more complex run-time specification of BTF 
+> > object fd though?  For example, I've been working on a simple tracer 
+> > focused on kernel debugging; it uses a BPF map entry for each kernel 
+> > function that is traced. User-space populates the map entry with BTF type 
+> > ids for the function arguments/return value, and when the BPF program 
+> > runs it uses the instruction pointer to look up the map entry for that
+> > function, and uses bpf_snprintf_btf() to write the string representations 
+> > of the function arguments/return values.  I'll send out an RFC soon, 
+> > but longer-term I was hoping to extend it to support module-specific 
+> > types.  Would a dynamic case like that - where the BTF module fd is looked 
+> > up in a map entry during program execution (rather than derived via 
+> > __btf_builtin_type_id()) work too? Thanks!
 > 
-> Because this FD is internal to libbpf, it's very cumbersome to test this in
-> selftests. Manual testing was performed with debug log messages sprinkled
-> across selftests and libbpf, confirming expected values are substituted.
-> Better testing will be performed as part of the work adding module BTF types
-> support to  bpf_snprintf_btf() helpers.
-> 
-> v1->v2:
->   - fix crash on failing to resolve target spec (Alan).
-> 
-> Cc: Alan Maguire <alan.maguire@oracle.com>
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> fd has to be resolved in the process context. bpf prog can read fd
+> number from the map, but that number is meaningless.
+> Say we allow using btf_obj_id+btf_id, how user space will know these
+> two numbers? Some new libbpf api that searches for it?
+> An extension to libbpf_find_vmlinux_btf_id() ? I was hoping that this api
+> will stay semi-internal. But say it's extended.
+> The user space will store a pair of numbers into a map and
+> what program are going to do with it?
+> If it's printing struct veth_stats contents it should have attached to
+> a corresponding function in the veth module via fentry or something.
+> The prog has hard coded logic in C with specific pointer to print.
+> The prog has its type right there. Why would the prog take a pointer
+> from one place, but it's type_id from the map? That's not realistic.
+> Where it would potentially make sense is what I think you're descring
+> where single kprobe style prog attached to many places and args of
+> those places are stored in a map and the prog selects them with
+> map_lookup with key=PT_REGS_IP ?
 
-Thanks for this!
+Right, that's exactly it.  A pair of generic tracing BPF programs are
+used, and they attach to kprobe/kretprobes, and when they run they use 
+the arguments plus the map details about BTF ids of those arguments to 
+run bpf_snprintf_btf(), and send perf events to userspace containing
+the results.
 
-Can confirm the segmentation fault has gone away. I tested with the
-veth_stats_rx program (though will switch to btf_test module later),
-and I still see the issue with a local kind of fwd for veth_stats
-leading to an inability to find the target kind in the module BTF:
+> And passes pointers into bpf_snprintf_btf() from PT_REGS_PARM1() ?
 
-libbpf: sec 'kprobe/veth_stats_rx': found 5 CO-RE relocations
-libbpf: prog 'veth_stats_rx': relo #0: kind <target_type_id> (7), spec is 
-[20] fwd veth_stats
-libbpf: prog 'veth_stats_rx': relo #0: no matching targets found
-libbpf: prog 'veth_stats_rx': relo #0: patched insn #3 (LDIMM64) imm64 20 
--> 0
-libbpf: prog 'veth_stats_rx': relo #1: kind <target_type_id> (7), spec is 
-[20] fwd veth_stats
-libbpf: prog 'veth_stats_rx': relo #1: no matching targets found
-libbpf: prog 'veth_stats_rx': relo #1: patched insn #5 (LDIMM64) imm64 20 
--> 0
+Exactly.
 
-Here's the same debug info with a patch on top of yours that loosens the 
-constraints on kind matching such that a fwd local type will match a struct 
-target type:
+> I see why that is useful, but it's so racy. By the time the map
+> is populated those btf_obj_id+btf_id could be invalid.
+> I think instead of doing this in user space the program needs an access
+> to vmlinux+mods BTFs. Sort-of like proposed bpf helper to return ksym
+> based on IP there could be a helper to figure out btf_id+btf_obj_POINTER
+> based on IP. Then there will no need for external map to populate.
+> Would that solve your use case?
 
-libbpf: prog 'veth_stats_rx': relo #0: kind <target_type_id> (7), spec is 
-[20] fwd veth_stats
-libbpf: CO-RE relocating [0] fwd veth_stats: found target candidate 
-[91516] struct veth_stats in [veth]
-libbpf: prog 'veth_stats_rx': relo #0: matching candidate #0 [91516] 
-struct veth_stats
-libbpf: prog 'veth_stats_rx': relo #0: patched insn #3 (LDIMM64) imm64 20 
--> 450971657596
-libbpf: prog 'veth_stats_rx': relo #1: kind <target_type_id> (7), spec is 
-[20] fwd veth_stats
-libbpf: prog 'veth_stats_rx': relo #1: matching candidate #0 [91516] 
-struct veth_stats
-libbpf: prog 'veth_stats_rx': relo #1: patched insn #5 (LDIMM64) imm64 20 
--> 450971657596
+That would be fantastic! We could do that from the context passed into a
+kprobe program as the IP in struct pt_regs points at the function.  
+kretprobes seems a bit trickier as in that case the IP in struct pt_regs 
+is actually set to kretprobe_trampoline rather than the function we're
+returning from due to how kretprobes work; maybe there's another way to 
+get it in that case though..
 
-Patch is below; if it makes sense to support loosening constraints on kind 
-matching like this feel free to roll it into your patch or I can send a 
-follow-up, whatever's easiest. Thanks!
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 2fb9824..9ead5b3 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -4673,6 +4673,23 @@ static void bpf_core_free_cands(struct 
-core_cand_list *ca
-        free(cands);
- }
- 
-+/* module-specific structs may have relo kind set to fwd, so as
-+ * well as handling exact matches, a fwd kind has to match
-+ * a target struct kind.
-+ */
-+static bool kind_matches_target(const struct btf_type *local,
-+                               const struct btf_type *target)
-+{
-+       __u8 local_kind = btf_kind(local);
-+       __u8 target_kind = btf_kind(target);
-+
-+       if (local_kind == target_kind)
-+               return true;
-+       if (local_kind == BTF_KIND_FWD && target_kind == BTF_KIND_STRUCT)
-+               return true;
-+       return false;
-+}
-+
- static int bpf_core_add_cands(struct core_cand *local_cand,
-                              size_t local_essent_len,
-                              const struct btf *targ_btf,
-@@ -4689,7 +4706,7 @@ static int bpf_core_add_cands(struct core_cand 
-*local_cand
-        n = btf__get_nr_types(targ_btf);
-        for (i = targ_start_id; i <= n; i++) {
-                t = btf__type_by_id(targ_btf, i);
--               if (btf_kind(t) != btf_kind(local_cand->t))
-+               if (!kind_matches_target(local_cand->t, t))
-                        continue;
- 
-                targ_name = btf__name_by_offset(targ_btf, t->name_off);
-@@ -5057,7 +5074,7 @@ static int bpf_core_types_are_compat(const struct 
-btf *loc
-        /* caller made sure that names match (ignoring flavor suffix) */
-        local_type = btf__type_by_id(local_btf, local_id);
-        targ_type = btf__type_by_id(targ_btf, targ_id);
--       if (btf_kind(local_type) != btf_kind(targ_type))
-+       if (!kind_matches_target(local_type, targ_type))
-                return 0;
- 
- recur:
-@@ -5070,7 +5087,7 @@ static int bpf_core_types_are_compat(const struct 
-btf *loc
-        if (!local_type || !targ_type)
-                return -EINVAL;
- 
--       if (btf_kind(local_type) != btf_kind(targ_type))
-+       if (!kind_matches_target(local_type, targ_type))
-                return 0;
- 
-        switch (btf_kind(local_type)) {
-
-
+Alan
