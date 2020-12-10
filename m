@@ -2,91 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 854732D621B
-	for <lists+bpf@lfdr.de>; Thu, 10 Dec 2020 17:38:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 655C32D6253
+	for <lists+bpf@lfdr.de>; Thu, 10 Dec 2020 17:45:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730829AbgLJQiM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Dec 2020 11:38:12 -0500
-Received: from www62.your-server.de ([213.133.104.62]:53330 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730905AbgLJQhi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Dec 2020 11:37:38 -0500
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1knOw1-00006j-09; Thu, 10 Dec 2020 17:36:53 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1knOw0-000Gmm-LC; Thu, 10 Dec 2020 17:36:52 +0100
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix selftest compilation on clang
- 11
-To:     KP Singh <kpsingh@kernel.org>, Jiri Olsa <jolsa@redhat.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Brendan Jackman <jackmanb@google.com>,
-        KP Singh <kpsingh@google.com>
-References: <20201209142912.99145-1-jolsa@kernel.org>
- <CAEf4BzYBddPaEzRUs=jaWSo5kbf=LZdb7geAUVj85GxLQztuAQ@mail.gmail.com>
- <20201210161554.GF69683@krava>
- <CANA3-0dvt3FH8=ZYO7CfW0YKeQemNcsP76j441wW31-WE1_o4A@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <d0dbe550-5d75-29bd-cded-7ecd86f41719@iogearbox.net>
-Date:   Thu, 10 Dec 2020 17:36:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S2391207AbgLJQoz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Dec 2020 11:44:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22140 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2391893AbgLJQos (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 10 Dec 2020 11:44:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607618601;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2+HLti2s/wIrYv82ti7bMHxdppCBUMBAOmSNG3h3caw=;
+        b=Bb0rhAgUFVsGSw4SmrSgjhNNMeH7qpdWMRvLp6JnjDir8G4hrCVk8rKEpnyX04076PF0wT
+        lyRWRnOrKqcQCeIpeXMfQ4ETrAHLjvy/PHCZ3zFpiZYJCC9zxKrYDd18A3VQdSbE5lqMj0
+        1FACJSR9njLjBpM9nqfZKMJHfZo4/HQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-343-flDf6tVsPTutfE42m786pg-1; Thu, 10 Dec 2020 11:43:19 -0500
+X-MC-Unique: flDf6tVsPTutfE42m786pg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F09D915720;
+        Thu, 10 Dec 2020 16:43:17 +0000 (UTC)
+Received: from krava (unknown [10.40.192.193])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 1C3166A252;
+        Thu, 10 Dec 2020 16:43:15 +0000 (UTC)
+Date:   Thu, 10 Dec 2020 17:43:15 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, dwarves@vger.kernel.org,
+        Jiri Olsa <jolsa@kernel.org>, Hao Luo <haoluo@google.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: Per-CPU variables in modules and pahole
+Message-ID: <20201210164315.GA184880@krava>
+References: <CAEf4BzZWabv_hExaANQyQ71L2JHYqXaT4hFj52w-poWoVYWKqQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CANA3-0dvt3FH8=ZYO7CfW0YKeQemNcsP76j441wW31-WE1_o4A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26014/Thu Dec 10 15:21:42 2020)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZWabv_hExaANQyQ71L2JHYqXaT4hFj52w-poWoVYWKqQ@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/10/20 5:28 PM, KP Singh wrote:
-> On Thu, Dec 10, 2020 at 5:18 PM Jiri Olsa <jolsa@redhat.com> wrote:
-[...]
->>> It's hard and time-consuming enough to develop these features, I'd
->>> rather keep selftests simpler, more manageable, and less brittle by
->>> not having excessive amount of feature detection and skipped
->>> selftests. I think that's the case for BPF atomics as well, btw (cc'ed
->>> Yonghong and Brendan).
->>>
->>> To alleviate some of the pain of setting up the environment, one way
->>> would be to provide script and/or image to help bring up qemu VM for
->>> easier testing. To that end, KP Singh (cc'ed) was able to re-use
->>> libbpf CI's VM setup and make it easier for local development. I hope
->>> he can share this soon.
+On Wed, Dec 09, 2020 at 12:53:44PM -0800, Andrii Nakryiko wrote:
+> Hi,
 > 
-> I will clean it up and share it asap and send it as an RFC which
-> adds it to tools/testing/selftests/bpf
-
-Thanks!
-
-> We can discuss on the RFC as to where the script would finally end up
-> but I think it would save a lot of time/back-and-forth if developers could
-> simply check:
+> I'm working on supporting per-CPU symbols in BPF/libbpf, and the
+> prerequisite for that is BTF data for .data..percpu data section and
+> variables inside that.
 > 
->    "Does my change break the BPF CI?"
+> Turns out, pahole doesn't currently emit any BTF information for such
+> variables in kernel modules. And the reason why is quite confusing and
+> I can't figure it out myself, so was hoping someone else might be able
+> to help.
+> 
+> To repro, you can take latest bpf-next tree and add this to
+> bpf_testmod/bpf_testmod.c inside selftests/bpf:
+> 
+> $ git diff bpf_testmod/bpf_testmod.c
+>       diff --git
+> a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> index 2df19d73ca49..b2086b798019 100644
+> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> @@ -3,6 +3,7 @@
+>  #include <linux/error-injection.h>
+>  #include <linux/init.h>
+>  #include <linux/module.h>
+> +#include <linux/percpu-defs.h>
+>  #include <linux/sysfs.h>
+>  #include <linux/tracepoint.h>
+>  #include "bpf_testmod.h"
+> @@ -10,6 +11,10 @@
+>  #define CREATE_TRACE_POINTS
+>  #include "bpf_testmod-events.h"
+> 
+> +DEFINE_PER_CPU(int, bpf_testmod_ksym_dummy1) = -1;
+> +DEFINE_PER_CPU(int, bpf_testmod_ksym_percpu) = 123;
+> +DEFINE_PER_CPU(int, bpf_testmod_ksym_dummy2) = -1;
+> +
+>  noinline ssize_t
+>  bpf_testmod_test_read(struct file *file, struct kobject *kobj,
+>                       struct bin_attribute *bin_attr,
+> 
+> 1. So the very first issue (that I'm going to ignore for now) is that
+> if I just added bpf_testmod_ksym_percpu, it would get addr == 0 and
+> would be ignored by the current pahole logic. So we need to fix that
+> for modules. Adding dummy1 and dummy2 takes care of this for now,
+> bpf_testmod_ksym_percpu has offset 4.
 
-I'd love to have a Dockerfile under tools/testing/selftests/bpf/ that
-replicates the CI env (e.g. busybox, nightly llvm, pahole git, etc) where
-we could have quay.io job auto-build this for bpf / bpf-next tree e.g. from a
-GH mirror. This would then allow to mount the local kernel tree as a volume
-into the container for easy compilation & test access for everyone where we
-then don't need all these workarounds like in this patch anymore.
+I removed that addr zero check in the modules changes but when
+collecting functions, but it's still there in collect_percpu_var
 
-Thanks,
-Daniel
+> 
+> 2. Second issue is more interesting. Somehow, when pahole iterates
+> over DWARF variables, the address of bpf_testmod_ksym_percpu is
+> reported as 0x10e74, not 4. Which totally confuses pahole because
+> according to ELF symbols, bpf_testmod_ksym_percpu symbol has value 4.
+> I tracked this down to dwarf_getlocation() returning 10e74 as number
+> field in expr.
+
+in which place do you see that address? when I put displayed
+address from collect_percpu_var it shows 4
+
+not sure this is related but looks like similar issue I had to
+solve for modules functions, as described in the changelog:
+(not merged yet)
+
+    btf_encoder: Detect kernel module ftrace addresses
+
+    ...
+    There's one tricky point with kernel modules wrt Elf object,
+    which we get from dwfl_module_getelf function. This function
+    performs all possible relocations, including __mcount_loc
+    section.
+
+    So addrs array contains relocated values, which we need take
+    into account when we compare them to functions values which
+    are relative to their sections.
+    ...
+
+The 0x10e74 value could be relocated 4.. but it's me guessing,
+because not sure where you see that address exactly
+
+jirka
+
