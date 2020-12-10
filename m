@@ -2,110 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CDA42D5A54
-	for <lists+bpf@lfdr.de>; Thu, 10 Dec 2020 13:20:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D526C2D5BE4
+	for <lists+bpf@lfdr.de>; Thu, 10 Dec 2020 14:36:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728462AbgLJMUW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Dec 2020 07:20:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728392AbgLJMUO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Dec 2020 07:20:14 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 627BAC0613CF;
-        Thu, 10 Dec 2020 04:19:34 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id bj5so2683265plb.4;
-        Thu, 10 Dec 2020 04:19:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=euIMWqXmb35zpjlHIisHFKgDZZP7z0+WRl9qw72DjtA=;
-        b=FdiJ6B2Q0xa2wOJ2qvjoH8EDGRT+MYF/tXY9LAPkMSKTWUSwPtNXkdppnItTtzcOIP
-         52rrJMDnHaBhKDAoVvWRKPQK692txMvbb024AaAPy2JZzxy2UF2RqTs2FPRYQfRc4WDx
-         SCwphnAYXTPQ2VPxU+hSCEhMc2Lpc4L2F5uou2ICoKyWJCtS8Yat8U5fj37IUkCeNx35
-         sXYHMCD5P1rgvl+FDB5F0xFfwBCcnYgaXGWyI7DArr8RFT0GkUAAU+rh9mQj8z7vD348
-         WefOTHo0Z5YyV52mXkEH2BbOPqMStCi7nxESf3jaIl8vnbI0KsDm3GARLylfdiSrrf23
-         MWbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=euIMWqXmb35zpjlHIisHFKgDZZP7z0+WRl9qw72DjtA=;
-        b=nZ3tIxMB+5xJ/e4HitBkqVpy8PI9Og/XYtcj4JTr9svSQl3x0yogOD2eTd65hKPHeq
-         bS4nvg+DH6+AMq34lZl/GsqlYnqupGDDxuu+5YD7VPd/rNVKh4yERoRVe/f1YoZSNgtv
-         Ui73GOi9UH2YX0cPJAhJdMmzawRhjXdGbplWTGN9cAS9vWxSDmbg/KDTuImllTaXjamh
-         UlzHLDllUDDl3nouKMCdR4x7tzr1yXI/J8y+prrRds8MfdbBS9fZaWF9y4MlCiQiwJGC
-         0JOJjfFgOJ8ECdoFBJ5RCuksZoIvpMqeY5k4cNNrsxLS8QN90G+nXBOkJoU3ymBdDFYk
-         Sm3Q==
-X-Gm-Message-State: AOAM5338zQNRr66hy473aGAkVqZjbwUuRpVSMb/2rv+tX6SSZSlbJ00M
-        JSQ1BaIDpkEhmlhR1rnumEke1l/9FE08qlSk
-X-Google-Smtp-Source: ABdhPJxxXJ66n/tteNPghYVge4G9CwAIkXxi+Ru706CyI0rH6S2aSkipg4KIA3FBiHEV9qS/TyKUUg==
-X-Received: by 2002:a17:902:bf03:b029:da:fcd1:b10 with SMTP id bi3-20020a170902bf03b02900dafcd10b10mr6050373plb.0.1607602773962;
-        Thu, 10 Dec 2020 04:19:33 -0800 (PST)
-Received: from btopel-mobl.ger.intel.com ([192.55.55.45])
-        by smtp.gmail.com with ESMTPSA id i123sm6411666pfb.28.2020.12.10.04.19.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 04:19:32 -0800 (PST)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     intel-wired-lan@lists.osuosl.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        magnus.karlsson@intel.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, maciej.fijalkowski@intel.com
-Subject: [PATCH net-next] ice, xsk: Move Rx alloction out of while-loop
-Date:   Thu, 10 Dec 2020 13:19:15 +0100
-Message-Id: <20201210121915.14412-1-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        id S1728925AbgLJNe3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Dec 2020 08:34:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34246 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389374AbgLJNeT (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 10 Dec 2020 08:34:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607607167;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7R+Qr15dnQkjiaPOVVgqK5mXQ5YRoH0BKswrwklypNY=;
+        b=hADCjV6NceLZkiSw+OofKFhgznUAiCy0w1oFhYk6cPgBO/ZELfTumgan7vbvSnCVcobTDc
+        guSdifVf/msvOZwp16TbZP/FEtyHRDwVptjtEGXKsyJfr7SxZS+562/4F9Vy9rs8VyH4hg
+        gpW6ZknyVzEEyaCSqGNbFIdHzkQpL94=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-97-XlvZ-sIZNDS17PtQY2FIlA-1; Thu, 10 Dec 2020 08:32:42 -0500
+X-MC-Unique: XlvZ-sIZNDS17PtQY2FIlA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 82F49DF8DD;
+        Thu, 10 Dec 2020 13:32:25 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.55])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 86C2E7770D;
+        Thu, 10 Dec 2020 13:32:13 +0000 (UTC)
+Date:   Thu, 10 Dec 2020 14:32:11 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     David Ahern <dsahern@gmail.com>,
+        Frey Alfredsson <freysteinn@freysteinn.com>
+Cc:     brouer@redhat.com,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
+        alardam@gmail.com, magnus.karlsson@intel.com,
+        bjorn.topel@intel.com, andrii.nakryiko@gmail.com, kuba@kernel.org,
+        ast@kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
+        hawk@kernel.org, jonathan.lemon@gmail.com, bpf@vger.kernel.org,
+        jeffrey.t.kirsher@intel.com, maciejromanfijalkowski@gmail.com,
+        intel-wired-lan@lists.osuosl.org,
+        Marek Majtyka <marekx.majtyka@intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Subject: Explaining XDP redirect bulk size design (Was: [PATCH v2 bpf 1/5]
+ net: ethtool: add xdp properties flag set)
+Message-ID: <20201210143211.2490f7f4@carbon>
+In-Reply-To: <6913010d-2fd6-6713-94e9-8f5b8ad4b708@gmail.com>
+References: <20201204102901.109709-1-marekx.majtyka@intel.com>
+        <20201204102901.109709-2-marekx.majtyka@intel.com>
+        <878sad933c.fsf@toke.dk>
+        <20201204124618.GA23696@ranger.igk.intel.com>
+        <048bd986-2e05-ee5b-2c03-cd8c473f6636@iogearbox.net>
+        <20201207135433.41172202@carbon>
+        <5fce960682c41_5a96208e4@john-XPS-13-9370.notmuch>
+        <20201207230755.GB27205@ranger.igk.intel.com>
+        <5fd068c75b92d_50ce20814@john-XPS-13-9370.notmuch>
+        <20201209095454.GA36812@ranger.igk.intel.com>
+        <20201209125223.49096d50@carbon>
+        <6913010d-2fd6-6713-94e9-8f5b8ad4b708@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
+On Wed, 9 Dec 2020 08:44:33 -0700
+David Ahern <dsahern@gmail.com> wrote:
 
-Instead of trying to allocate for each packet, move it outside the
-while loop and try to allocate once every NAPI loop.
+> On 12/9/20 4:52 AM, Jesper Dangaard Brouer wrote:
+> > But I have redesigned the ndo_xdp_xmit call to take a bulk of packets
+> > (up-to 16) so it should not be a problem to solve this by sharing
+> > TX-queue and talking a lock per 16 packets.  I still recommend that,
+> > for fallback case,  you allocated a number a TX-queue and distribute
+> > this across CPUs to avoid hitting a congested lock (above measurements
+> > are the optimal non-congested atomic lock operation)  
+> 
+> I have been meaning to ask you why 16 for the XDP batching? If the
+> netdev budget is 64, why not something higher like 32 or 64?
 
-This change boosts the xdpsock rxdrop scenario with 15% more
-packets-per-second.
+Thanks you for asking as there are multiple good reasons and
+consideration for this 16 batch size.  Notice cpumap have batch size 8,
+which is also an explicit choice.  And AF_XDP went in the wrong
+direction IMHO and I think have 256.  I designed this to be a choice in
+the map code, for the level of bulking it needs/wants.
 
-Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
----
- drivers/net/ethernet/intel/ice/ice_xsk.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+The low level explanation is that these 8 and 16 batch sizes are
+optimized towards cache sizes and Intel's Line-Fill-Buffer (prefetcher
+with 10 elements).  I'm betting on that memory backing these 8 or 16
+packets have higher chance to remain/being in cache, and I can prefetch
+them without evicting them from cache again.  In some cases the pointer
+to these packets are queued into a ptr_ring, and it is more optimal to
+write cacheline sizes 1 (8 pointers) or 2 (16 pointers) into the ptr_ring.
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-index 797886524054..39757b4cf8f4 100644
---- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-+++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-@@ -570,12 +570,6 @@ int ice_clean_rx_irq_zc(struct ice_ring *rx_ring, int budget)
- 		u16 vlan_tag = 0;
- 		u8 rx_ptype;
- 
--		if (cleaned_count >= ICE_RX_BUF_WRITE) {
--			failure |= ice_alloc_rx_bufs_zc(rx_ring,
--							cleaned_count);
--			cleaned_count = 0;
--		}
--
- 		rx_desc = ICE_RX_DESC(rx_ring, rx_ring->next_to_clean);
- 
- 		stat_err_bits = BIT(ICE_RX_FLEX_DESC_STATUS0_DD_S);
-@@ -642,6 +636,9 @@ int ice_clean_rx_irq_zc(struct ice_ring *rx_ring, int budget)
- 		ice_receive_skb(rx_ring, skb, vlan_tag);
- 	}
- 
-+	if (cleaned_count >= ICE_RX_BUF_WRITE)
-+		failure = !ice_alloc_rx_bufs_zc(rx_ring, cleaned_count);
-+
- 	ice_finalize_xdp_rx(rx_ring, xdp_xmit);
- 	ice_update_rx_ring_stats(rx_ring, total_rx_packets, total_rx_bytes);
- 
+The general explanation is my goal to do bulking without adding latency.
+This is explicitly stated in my presentation[1] as of Feb 2016, slide 20.
+Sure, you/we can likely make the micro-benchmarks look better by using
+64 batch size, but that will introduce added latency and likely shoot
+our-selves in the foot for real workloads.  With experience from
+bufferbloat and real networks, we know that massive TX bulking have bad
+effects.  Still XDP-redirect does massive bulking (NIC flush is after
+full 64 budget) and we don't have pushback or a queue mechanism (so I
+know we are already shooting ourselves in the foot) ...  Fortunately we
+now have a PhD student working on queuing for XDP.
 
-base-commit: a7105e3472bf6bb3099d1293ea7d70e7783aa582
+It is also important to understand that this is an adaptive bulking
+scheme, which comes from NAPI.  We don't wait for packets arriving
+shortly, we pickup what NIC have available, but by only taking 8 or 16
+packets (instead of emptying the entire RX-queue), and then spending
+some time to send them along, I'm hoping that NIC could have gotten
+some more frame.  For cpumap and veth (in-some-cases) they can start to
+consume packets from these batches, but NIC drivers gets XDP_XMIT_FLUSH
+signal at NAPI-end (xdp_do_flush). Still design allows NIC drivers to
+update their internal queue state (and BQL), and if it gets close to
+full they can choose to flush/doorbell the NIC earlier.  When doing
+queuing for XDP we need to expose these NIC queue states, and having 4
+calls with 16 packets (64 budget) also gives us more chances to get NIC
+queue state info which the NIC already touch.
+
+
+[1] https://people.netfilter.org/hawk/presentations/devconf2016/net_stack_challenges_100G_Feb2016.pdf
 -- 
-2.27.0
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
