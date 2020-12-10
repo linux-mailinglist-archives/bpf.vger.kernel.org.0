@@ -2,116 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E942D511C
-	for <lists+bpf@lfdr.de>; Thu, 10 Dec 2020 04:03:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E3BA2D5171
+	for <lists+bpf@lfdr.de>; Thu, 10 Dec 2020 04:36:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726278AbgLJDDF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 9 Dec 2020 22:03:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39812 "EHLO
+        id S1729808AbgLJDfc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 9 Dec 2020 22:35:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725933AbgLJDDF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 9 Dec 2020 22:03:05 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0D5CC0613CF;
-        Wed,  9 Dec 2020 19:02:24 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id s11so5018716ljp.4;
-        Wed, 09 Dec 2020 19:02:24 -0800 (PST)
+        with ESMTP id S1729311AbgLJDfc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 9 Dec 2020 22:35:32 -0500
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38D38C0613CF;
+        Wed,  9 Dec 2020 19:34:52 -0800 (PST)
+Received: by mail-oi1-x241.google.com with SMTP id f132so4224974oib.12;
+        Wed, 09 Dec 2020 19:34:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7VknBs3+OO4cbPFyac6UMvtv/ygbv9sRyQgm0I2urpo=;
-        b=j+aa7raWma8/6rkZiaQr+3m+3eWKFsEjNE2U004caJXgeqcLOk/0EKUSSxYF1AnZa7
-         qowaaEO66hpXpFQoRi2dLfJRIH7Z9LIlcmEkm6WLOzqLOJDcQu8B679Hxc+5YzaFQKfu
-         VKSE3GHyafnkGyZNudp2lDvCya3eH3tNh311Ue7d6j6nVyOqzPmf/FBy5Q7/qLlJXwXO
-         2MfdooZFVmgqzFs9XB/pJuFYIM8akbY2HJebXyLMM0VsgBzjx3Rl6ptJ0sAscl378Dv8
-         0V7q/Gb7jYRvbTm1SC8OAodTySZYNtXgDkrbl9OcLlWD0l611UJcv4tR1wdmWquXUyip
-         yS6Q==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=y1+dVCzQPF0KymNAnO7YyR5jmkfWoYWWIbPSsgMPYLA=;
+        b=EnbmGH79WOZ62PwDLomNtwuOxaxkeklUHmggDWLdKBkrX9fttVRYl1Q3PwS6Ivgeoi
+         lCDs2I8VSbMsXqX4sQDpnMLgqwdnMF7toP0juXHPGP35ppEVwoSDi5rG4olkfpOkVkZK
+         QwCSoMHmxQmXiaJH78lvnpjO4pzkct4NcEnvjoR2ZMP8xVn3ixfk/0YBphO24R/g69tH
+         xgcWJpeGMQ8SUiamyg/dCHeeJBAUvdRYp+JF0MRhuntqPHWbQo4Tcx7VctIRIqHu19yq
+         G0LDYjpqL0RflKnxBWXvel5gtqKGwAQojZWngU1cyTBLmpFeB94BhOibcZNJnQtLipYF
+         421g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7VknBs3+OO4cbPFyac6UMvtv/ygbv9sRyQgm0I2urpo=;
-        b=ofEc38aMdnS2SzWtYfyQZMjUnhMIfnk035LgPjS000fY+irBd4fsGKJyKTZ4qHoCA4
-         AFuApU94DbuJg+9pKWPbi8rbyZvrJxsUXwD4IRcYZ+Zfu9GHh0GbYEEo4O13pF0pX8Cr
-         7I3rAGCVC/917r8VmriPjqwpxaofl78AeihV08ULdc0C2zBbm6KMFK6eZUtlOIZltVeK
-         xgPGqmC5tQ0NKSqwbxJFhhb1FVQZIPIEvSOYfkaw5P9NmYhp87T/b/fz56D3GOAfY3NC
-         7odfxAWrJeJlQ2F/910PHKPqO/Yqt8t2hIxFN8p0igosV5KfvzLlFxNQ4WAgbEHWs8Xl
-         TYRQ==
-X-Gm-Message-State: AOAM530zg2nzH70JmRlcwU/HkxQ6t/0A9W8SBKkYZKvwsdDVNAL86pCI
-        XfED4DqhzCQhesZwpfTCSRnQBiSOcVgWTT+frMA=
-X-Google-Smtp-Source: ABdhPJwjascmpY96Tnzqi0NKpxktPoJnXSP0VBwfFTVswcQyH7eU8Zay190L548EDADATSwsDcNP6YaEq3VulbQW7HU=
-X-Received: by 2002:a2e:96c9:: with SMTP id d9mr2243344ljj.258.1607569343217;
- Wed, 09 Dec 2020 19:02:23 -0800 (PST)
-MIME-Version: 1.0
-References: <20201207081556.pwxmhgdxayzbofpi@lion.mk-sys.cz>
- <CAFxkdApgQ4RCt-J43cK4_128pXr=Xn5jw+q0kOaP-TYufk_tPA@mail.gmail.com>
- <CAADnVQK-EsdBohcVSaK+zaP9XuPZTBkGbQpkeYcrC9BzoPQUuw@mail.gmail.com>
- <20201207225351.2liywqaxxtuezzw3@lion.mk-sys.cz> <CAADnVQJARx6sKF-30YsabCd1W+MFDMmfxY+2u0Pm40RHHHQZ6Q@mail.gmail.com>
- <CAADnVQJ6tmzBXvtroBuEH6QA0H+q7yaSKxrVvVxhqr3KBZdEXg@mail.gmail.com>
- <20201209144628.GA3474@wp.pl> <20201209150826.GP7338@casper.infradead.org>
- <20201209155148.GA5552@wp.pl> <20201209180552.GA28692@infradead.org>
- <20201209223206.GA1935@home.goodmis.org> <CAADnVQKiBWG9NVNEV9EqGkyd-n3Yj88cNJpH997js-63eTVAOQ@mail.gmail.com>
- <20201209213126.79ca1326@oasis.local.home>
-In-Reply-To: <20201209213126.79ca1326@oasis.local.home>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 9 Dec 2020 19:02:11 -0800
-Message-ID: <CAADnVQ+6n4Nf5TczYWqLBrYJF_fEmRVyEbGqmaT0G9XoS7iMxA@mail.gmail.com>
-Subject: Re: [PATCH] mm/filemap: add static for function __add_to_page_cache_locked
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Stanislaw Gruszka <stf_xl@wp.pl>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Justin Forbes <jmforbes@linuxtx.org>,
-        bpf <bpf@vger.kernel.org>, Alex Shi <alex.shi@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Souptick Joarder <jrdr.linux@gmail.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=y1+dVCzQPF0KymNAnO7YyR5jmkfWoYWWIbPSsgMPYLA=;
+        b=rh1et+RwWljliIiADo3OzWUPFAxw1pjJwb81OqO5hPHibl/2pjzYJq+yKIdR/RaviR
+         JUJUkr8Ru3hDMgYX50kOlhV+37jN01musIOiGJkt+TgGyszxZ8byh+LwP5tuxPUWVeLP
+         WtehGVi/HpTQReCAAoFZCEw31iElHR5RRLn2X0bKQgZcMKzXUf5+LqGSCc07zkKy2jzB
+         /QEOdGQvPfWOQer2ycfYrhVHhCEulNwTPfSP/E0jaQjuP7xYkCjuE+WNGdeNgQ0AksNC
+         ZzBIrlaX2LjjTde9ovTlhWpkvOtx/bOMWBQaohNVfGM0WdyZtffcv867fXeKM0GwwUWA
+         8WKg==
+X-Gm-Message-State: AOAM533L/jfmnRl2qi4SQ34v3NSwaRSuZHndE1DiLnrviUSCmKqMCEaX
+        pBSo69BPNbycyYwhLOGlIp0=
+X-Google-Smtp-Source: ABdhPJzvkIhOSVedyOxoxH8BUW/CNlgcIw8xGfoa7nq64uZje5/VqHunyhjnc2jL+lVivqKAwTHbsw==
+X-Received: by 2002:aca:dd08:: with SMTP id u8mr4079603oig.85.1607571291718;
+        Wed, 09 Dec 2020 19:34:51 -0800 (PST)
+Received: from Davids-MacBook-Pro.local ([8.48.134.51])
+        by smtp.googlemail.com with ESMTPSA id t26sm170715otm.17.2020.12.09.19.34.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Dec 2020 19:34:50 -0800 (PST)
+Subject: Re: [PATCH v2 bpf 1/5] net: ethtool: add xdp properties flag set
+To:     Saeed Mahameed <saeed@kernel.org>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Josef Bacik <josef@toxicpanda.com>
-Content-Type: text/plain; charset="UTF-8"
+        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        alardam@gmail.com, magnus.karlsson@intel.com,
+        bjorn.topel@intel.com, andrii.nakryiko@gmail.com, kuba@kernel.org,
+        ast@kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
+        hawk@kernel.org, jonathan.lemon@gmail.com, bpf@vger.kernel.org,
+        jeffrey.t.kirsher@intel.com, maciejromanfijalkowski@gmail.com,
+        intel-wired-lan@lists.osuosl.org,
+        Marek Majtyka <marekx.majtyka@intel.com>
+References: <20201204102901.109709-1-marekx.majtyka@intel.com>
+ <20201204102901.109709-2-marekx.majtyka@intel.com> <878sad933c.fsf@toke.dk>
+ <20201204124618.GA23696@ranger.igk.intel.com>
+ <048bd986-2e05-ee5b-2c03-cd8c473f6636@iogearbox.net>
+ <20201207135433.41172202@carbon>
+ <5fce960682c41_5a96208e4@john-XPS-13-9370.notmuch>
+ <20201207230755.GB27205@ranger.igk.intel.com>
+ <5fd068c75b92d_50ce20814@john-XPS-13-9370.notmuch>
+ <20201209095454.GA36812@ranger.igk.intel.com>
+ <20201209125223.49096d50@carbon>
+ <e1573338-17c0-48f4-b4cd-28eeb7ce699a@gmail.com>
+ <1e5e044c8382a68a8a547a1892b48fb21d53dbb9.camel@kernel.org>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <cb6b6f50-7cf1-6519-a87a-6b0750c24029@gmail.com>
+Date:   Wed, 9 Dec 2020 20:34:48 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.1
+MIME-Version: 1.0
+In-Reply-To: <1e5e044c8382a68a8a547a1892b48fb21d53dbb9.camel@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 9, 2020 at 6:31 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Wed, 9 Dec 2020 17:12:43 -0800
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
->
-> > > > > > FWIW, I intend to do some consolidation/renaming in this area.  I
-> > > > > > trust that will not be a problem?
-> > > > >
-> > > > > If it does not break anything, it will be not a problem ;-)
-> > > > >
-> > > > > It's possible that __add_to_page_cache_locked() can be a global symbol
-> > > > > with add_to_page_cache_lru() + add_to_page_cache_locked() being just
-> > > > > static/inline wrappers around it.
-> > > >
-> > > > So what happens to BTF if we change this area entirely?  Your IDs
-> > > > sound like some kind of ABI to me, which is extremely scary.
-> > >
-> > > Is BTF becoming the new tracepoint? That is, random additions of things like:
-> > >
-> > >    BTF_ID(func,__add_to_page_cache_locked)
-> > >
-> > > Like was done in commit 1e6c62a882155 ("bpf: Introduce sleepable BPF
-> > > programs") without any notification to the maintainers of the
-> > > __add_to_page_cache_locked code, will suddenly become an API?
-> >
-> > huh? what api/abi you're talking about?
->
-> If the function __add_to_page_cache_locked were to be removed due to
-> the code being rewritten,  would it break any user space? If not, then
-> there's nothing to worry about. ;-)
+On 12/9/20 10:15 AM, Saeed Mahameed wrote:
+>> My personal experience with this one is mlx5/ConnectX4-LX with a
+>> limit
+> 
+> This limit was removed from mlx5
+> https://patchwork.ozlabs.org/project/netdev/patch/20200107191335.12272-5-saeedm@mellanox.com/
+> Note: you still need to use ehttool to increase from 64 to 128 or 96 in
+> your case.
+> 
 
-That function is marked with ALLOW_ERROR_INJECTION.
-So any script that exercises it via debugfs (or via bpf) will not work.
-That's nothing new. Same "breakage" happens with kprobes, etc.
-The function was marked with error_inject for a reason though.
-The refactoring or renaming of this code ideally should provide a way to do
-similar pattern of injecting errors in this code path.
-It could be a completely new function, of course.
+I asked you about that commit back in May:
+
+https://lore.kernel.org/netdev/198081c2-cb0d-e1d5-901c-446b63c36706@gmail.com/
+
+As noted in the thread, it did not work for me.
