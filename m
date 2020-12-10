@@ -2,265 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 411072D67DB
-	for <lists+bpf@lfdr.de>; Thu, 10 Dec 2020 21:01:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFD042D697B
+	for <lists+bpf@lfdr.de>; Thu, 10 Dec 2020 22:14:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404461AbgLJT7x (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Dec 2020 14:59:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60756 "EHLO mail.kernel.org"
+        id S2393948AbgLJVLe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Dec 2020 16:11:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33098 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404416AbgLJT7n (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Dec 2020 14:59:43 -0500
-Date:   Thu, 10 Dec 2020 20:58:55 +0100
+        id S2393912AbgLJVLZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Dec 2020 16:11:25 -0500
+Message-ID: <44ac4e64db37f1e51a61d67c90edb7e0753b0e38.camel@kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607630342;
-        bh=s2+iLf6qBKVf58ffYZN9l2zof1I9JLW9V6wDx6uBGB8=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eklBHcybGU7NaHOQQv++7WWXgTVIXfU4CnRYhDTvdmMh828hU1HhwGuy262A7mXl3
-         UVfMlgSR9hjmxiHEEmyAKdwE8N24GronEa9YX/3xByG12lhH5sLlYjOzWtARATmbU+
-         gbjs//eYTsEVpjwIHW5m8/FwAch5WCZ79eUruF3gO37OfRXISugUzkUxi/tczLL5H1
-         C81E6xkV7hUWEVha0XOmiWm7bl+CmN06kwTj6Wpcq+BBF8+02d6kP4fL05muxPEfXb
-         pZ3KGXhlBNtOeEDWP9EZLwn/4dPMZS2smZLYs42jw9BUNf2bClh/cggGRtfKBSWABt
-         n3IVdl/kI4rwg==
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     George Cherian <gcherian@marvell.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Zaibo Xu <xuzaibo@huawei.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        Arnaud Ebalard <arno@natisbad.org>,
-        Srujana Challa <schalla@marvell.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Elie Morisse <syniurge@gmail.com>,
-        Nehal Shah <nehal-bakulchandra.shah@amd.com>,
-        Shyam Sundar S K <shyam-sundar.s-k@amd.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Andreas Larsson <andreas@gaisler.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Netanel Belgazal <netanel@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        Guy Tzalik <gtzalik@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        Zorik Machulsky <zorik@amazon.com>,
-        Iyappan Subramanian <iyappan@os.amperecomputing.com>,
-        Keyur Chudgar <keyur@os.amperecomputing.com>,
-        Quan Nguyen <quan@os.amperecomputing.com>,
-        Igor Russkikh <irusskikh@marvell.com>,
-        Jay Cliburn <jcliburn@gmail.com>,
-        Chris Snook <chris.snook@gmail.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Sudarsana Kalluru <skalluru@marvell.com>,
-        GR-everest-linux-l2@marvell.com,
-        Michael Chan <michael.chan@broadcom.com>,
-        Raju Rangoju <rajur@chelsio.com>,
-        Madalin Bucur <madalin.bucur@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Ioana Radulescu <ruxandra.radulescu@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Catherine Sullivan <csully@google.com>,
-        Sagi Shahar <sagis@google.com>,
-        Jon Olson <jonolson@google.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>,
-        John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Jon Mason <jdmason@kudzu.us>,
-        Rain River <rain.1986.08.12@gmail.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Pensando Drivers <drivers@pensando.io>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        Daniele Venzano <venza@brownhat.org>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Wingman Kwok <w-kwok2@ti.com>,
-        Murali Karicheri <m-karicheri2@ti.com>,
-        Kevin Brace <kevinbrace@bracecomputerlab.com>,
-        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Nick Kossifidis <mickflemm@gmail.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, qat-linux@intel.com,
-        linux-i2c@vger.kernel.org, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        ath11k@lists.infradead.org, wil6210@qti.qualcomm.com,
-        b43-dev@lists.infradead.org, iommu@lists.linux-foundation.org
-Subject: Re: [PATCH] dma-mapping: move hint unlikely for dma_mapping_error
- from drivers to core
-Message-ID: <20201210195855.GA11120@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        George Cherian <gcherian@marvell.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Zaibo Xu <xuzaibo@huawei.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        Arnaud Ebalard <arno@natisbad.org>,
-        Srujana Challa <schalla@marvell.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Elie Morisse <syniurge@gmail.com>,
-        Nehal Shah <nehal-bakulchandra.shah@amd.com>,
-        Shyam Sundar S K <shyam-sundar.s-k@amd.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Andreas Larsson <andreas@gaisler.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Netanel Belgazal <netanel@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        Guy Tzalik <gtzalik@amazon.com>, Saeed Bishara <saeedb@amazon.com>,
-        Zorik Machulsky <zorik@amazon.com>,
-        Iyappan Subramanian <iyappan@os.amperecomputing.com>,
-        Keyur Chudgar <keyur@os.amperecomputing.com>,
-        Quan Nguyen <quan@os.amperecomputing.com>,
-        Igor Russkikh <irusskikh@marvell.com>,
-        Jay Cliburn <jcliburn@gmail.com>,
-        Chris Snook <chris.snook@gmail.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Sudarsana Kalluru <skalluru@marvell.com>,
-        GR-everest-linux-l2@marvell.com,
-        Michael Chan <michael.chan@broadcom.com>,
-        Raju Rangoju <rajur@chelsio.com>,
-        Madalin Bucur <madalin.bucur@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Ioana Radulescu <ruxandra.radulescu@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Catherine Sullivan <csully@google.com>,
-        Sagi Shahar <sagis@google.com>, Jon Olson <jonolson@google.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>,
-        John Crispin <john@phrozen.org>, Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>, Jon Mason <jdmason@kudzu.us>,
-        Rain River <rain.1986.08.12@gmail.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Pensando Drivers <drivers@pensando.io>,
-        Jiri Pirko <jiri@resnulli.us>, Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        Daniele Venzano <venza@brownhat.org>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Wingman Kwok <w-kwok2@ti.com>,
-        Murali Karicheri <m-karicheri2@ti.com>,
-        Kevin Brace <kevinbrace@bracecomputerlab.com>,
-        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Nick Kossifidis <mickflemm@gmail.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, qat-linux@intel.com,
-        linux-i2c@vger.kernel.org, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
-        ath11k@lists.infradead.org, wil6210@qti.qualcomm.com,
-        b43-dev@lists.infradead.org, iommu@lists.linux-foundation.org
-References: <5d08af46-5897-b827-dcfb-181d869c8f71@gmail.com>
+        s=k20201202; t=1607634644;
+        bh=RgF4ggI4Rrjq2bHdyztwJ4lP5mR2cVXsKfx5WA0dg5k=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=T+lRfQtq6lqG7wsUc3LRanCh5imfDmX8CpUXrDZvhKLIEqsqUvuYvVIT4ertQmmNq
+         dNCAIjj5b57j88K8ZtfZqqnQMIvsICe8eJeOMX5AvTQ8OnmhHx5wHS2ZpXpjd1tHdr
+         qIb347lwFKogb8Yh4E+bhpkiL8LhlnUrSKxFcT9ZGllHnLTp5R4xEdowOSyuHeoW+1
+         yA5A/2oryBv59HV/FapkSO2NVrAhmEO4cVw0xQcrtVnvwFCqXo8nlPaYR4fYb/fEvO
+         XYF4ovHy0iHmX4AuAvtUYQDdrKj4zHljWVTbzihGCrDVhJMOTYrfgoKhSs4uEuonFb
+         FPs+/tbmONndw==
+Subject: Re: [PATCH bpf-next] net: xdp: introduce xdp_init_buff utility
+ routine
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, brouer@redhat.com,
+        alexander.duyck@gmail.com
+Date:   Thu, 10 Dec 2020 13:10:42 -0800
+In-Reply-To: <20201210192804.GC462213@lore-desk>
+References: <e54fb61ff17c21f022392f1bb46ec951c9b909cc.1607615094.git.lorenzo@kernel.org>
+         <20201210160507.GC45760@ranger.igk.intel.com>
+         <20201210163241.GA462213@lore-desk>
+         <20201210165556.GA46492@ranger.igk.intel.com>
+         <20201210175945.GB462213@lore-desk>
+         <721648a5e14dadc32629291a7d1914dd1044b7d0.camel@kernel.org>
+         <20201210192804.GC462213@lore-desk>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="k+w/mQv8wyuph6w0"
-Content-Disposition: inline
-In-Reply-To: <5d08af46-5897-b827-dcfb-181d869c8f71@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, 2020-12-10 at 20:28 +0100, Lorenzo Bianconi wrote:
+> > On Thu, 2020-12-10 at 18:59 +0100, Lorenzo Bianconi wrote:
+> > > On Dec 10, Maciej Fijalkowski wrote:
+> > > > On Thu, Dec 10, 2020 at 05:32:41PM +0100, Lorenzo Bianconi
+> > > > wrote:
+> > > > > > On Thu, Dec 10, 2020 at 04:50:42PM +0100, Lorenzo Bianconi
+> > > > > > wrote:
+> > > > > > > Introduce xdp_init_buff utility routine to initialize
+> > > > > > > xdp_buff data
+> > > > > > > structure. Rely on xdp_init_buff in all XDP capable
+> > > > > > > drivers.
+> > > > > > 
+> > > > > > Hm, Jesper was suggesting two helpers, one that you
+> > > > > > implemented
+> > > > > > for things
+> > > > > > that are set once per NAPI and the other that is set per
+> > > > > > each
+> > > > > > buffer.
+> > > > > > 
+> > > > > > Not sure about the naming for a second one -
+> > > > > > xdp_prepare_buff ?
+> > > > > > xdp_init_buff that you have feels ok.
+> > > > > 
+> > > > > ack, so we can have xdp_init_buff() for initialization done
+> > > > > once
+> > > > > per NAPI run and 
+> > > > > xdp_prepare_buff() for per-NAPI iteration initialization,
+> > > > > e.g.
+> > > > > 
+> > > > > static inline void
+> > > > > xdp_prepare_buff(struct xdp_buff *xdp, unsigned char
+> > > > > *hard_start,
+> > > > > 		 int headroom, int data_len)
+> > > > > {
+> > > > > 	xdp->data_hard_start = hard_start;
+> > > > > 	xdp->data = hard_start + headroom;
+> > > > > 	xdp->data_end = xdp->data + data_len;
+> > > > > 	xdp_set_data_meta_invalid(xdp);
+> > > > > }
+> > > > 
+> > > > I think we should allow for setting the data_meta as well.
+> > > > x64 calling convention states that first four args are placed
+> > > > onto
+> > > > registers, so to keep it fast maybe have a third helper:
+> > > > 
+> > > > static inline void
+> > > > xdp_prepare_buff_meta(struct xdp_buff *xdp, unsigned char
+> > > > *hard_start,
+> > > > 		      int headroom, int data_len)
+> > > > {
+> > > > 	xdp->data_hard_start = hard_start;
+> > > > 	xdp->data = hard_start + headroom;
+> > > > 	xdp->data_end = xdp->data + data_len;
+> > > > 	xdp->data_meta = xdp->data;
+> > > > }
+> > > > 
+> > > > Thoughts?
+> > > 
+> > > ack, I am fine with it. Let's wait for some feedback.
+> > > 
+> > > Do you prefer to have xdp_prepare_buff/xdp_prepare_buff_meta in
+> > > the
+> > > same series
+> > > of xdp_buff_init() or is it ok to address it in a separate patch?
+> > > 
+> > 
+> > you only need 2
+> > why do you need xpd_prepare_buff_meta? that's exactly
+> > what xdp_set_data_meta_invalid(xdp) is all about.
+> 
+> IIUC what Maciej means is to avoid to overwrite xdp->data_meta with
+> xdp_set_data_meta_invalid() after setting it to xdp->data in
+> xdp_prepare_buff_meta().
+> I guess setting xdp->data_meta to xdp->data is valid, it means an
+> empty meta
+> area.
+> Anyway I guess we can set xdp->data_meta to xdp->data wherever we
+> need and just
+> keep xdp_prepare_buff(). Agree?
+> 
 
---k+w/mQv8wyuph6w0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+hmm, i agree, but I would choose a default that is best for common use
+case performance, so maybe do xd->data_meta = xdp->data by default and
+drivers can override it, as they are already doing today if they don't
+support it.
 
-On Thu, Dec 10, 2020 at 03:47:50PM +0100, Heiner Kallweit wrote:
-> Zillions of drivers use the unlikely() hint when checking the result of
-> dma_mapping_error(). This is an inline function anyway, so we can move
-> the hint into the function and remove it from drivers.
-> From time to time discussions pop up how effective unlikely() is,
-> and that it should be used only if something is really very unlikely.
-> I think that's the case here.
->=20
-> Patch was created with some help from coccinelle.
->=20
-> @@
-> expression dev, dma_addr;
-> @@
->=20
-> - unlikely(dma_mapping_error(dev, dma_addr))
-> + dma_mapping_error(dev, dma_addr)
->=20
-> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+> Regards,
+> Lorenzo
+> 
+> > 
 
-Acked-by: Wolfram Sang <wsa@kernel.org> # for I2C
-
-
---k+w/mQv8wyuph6w0
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/SffoACgkQFA3kzBSg
-KbYcjxAAgOE4gHcgEP8+Oex1fposdP2Z4KiWFjIYYWG4fo/Ry9PjDbSGh9Nptht2
-fnsCRcFXFj4oaSXaflBTq6ky4usgo2Gyp9puXbnpyj7P2uEjrqZs1zUFpAWdzMor
-UgiJkW/P2IZjCDfwxE8nn9L0fm8ZfcHWqVohAgDh/9SKsrQCdzlzwvd7vSQ94fXr
-qnYrmc6BF68dxVZx4TV18GddP5qFXYKytQ8pXL51XZEJTI05IGmc2l6hs/B4tKj6
-muxiEFw5Ac0eseMimi4J5YDJJZxWe28onn69mMJYQDzVPqSZRyhSAqCv0EhMg6Vp
-sABbG/eShtxir8A5ZrVRgqCaVyBjPu6pHAxdccHkj4d/6hfvD6F2FDXXaWirAf3i
-A4gsMJAmxtBYV0Lyx0D+fzCFnvUSDDSOEayRJdzotQXVCbLvuWHTp6EXVJFD5mMU
-/o3LApTC1uYQTXfGh1HHanpSEXLXfVgzjuDHRUsVIwemk5JwUAl6fw4oXbMrHYdZ
-v9Inx4U81LGxayz1vGmzbE39AeE7YH/5lH4metjot96RpKa+Gg++mMxUHBPW6Jam
-AOz6I3cKYsn7mPkzAZfDNvhvfgz2vxXcGGULSCdaWnVCJY7FMqe8i98w1z/Ymo7U
-JSXmDUhFS43r0JqUfbR0sRGgLL+kHTEa6I4ZT8UNd9DmTtS0Jmo=
-=4X1P
------END PGP SIGNATURE-----
-
---k+w/mQv8wyuph6w0--
