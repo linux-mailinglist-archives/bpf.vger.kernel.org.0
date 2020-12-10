@@ -2,55 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98FB42D6860
-	for <lists+bpf@lfdr.de>; Thu, 10 Dec 2020 21:14:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 698D72D6825
+	for <lists+bpf@lfdr.de>; Thu, 10 Dec 2020 21:10:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393463AbgLJUNu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Dec 2020 15:13:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53152 "EHLO
+        id S2404277AbgLJTnF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Dec 2020 14:43:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390124AbgLJTmv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Dec 2020 14:42:51 -0500
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45B12C061794
-        for <bpf@vger.kernel.org>; Thu, 10 Dec 2020 11:42:08 -0800 (PST)
-Received: by mail-pl1-x64a.google.com with SMTP id n8so3902953plp.3
-        for <bpf@vger.kernel.org>; Thu, 10 Dec 2020 11:42:08 -0800 (PST)
+        with ESMTP id S2393423AbgLJTm6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Dec 2020 14:42:58 -0500
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D26DC0613CF
+        for <bpf@vger.kernel.org>; Thu, 10 Dec 2020 11:42:18 -0800 (PST)
+Received: by mail-pg1-x549.google.com with SMTP id z24so4675183pgu.1
+        for <bpf@vger.kernel.org>; Thu, 10 Dec 2020 11:42:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
         bh=8NmwOfahTCP7W/9rBoKHiTMD1hQFyRHLTlM9386FI0k=;
-        b=i4/+TevYKmQrfagv1lHzkydO5vS2rulq+OrcO7GxhpQ2uzlLX2XJyVTrjxO/N8xpwM
-         gMKtP8dvTKUH8RDTcLxfUR5TfUW/a3HbCniNRhhpK/P2G0HaZcD5MrWmTxN+SzgehTyW
-         GlbiiuCOjf0mtYFhUi1M2hS4jEi2v4lQnM5+dfRePV0lSJYY6WZGREbjlXWGSKmwvVSG
-         FgdlUmWR6Gw6vFC7OlAc7W5dOLxjXiZxXO9+FlOMV3WhLcw68zEhXZqXhZOwIJTnzbwh
-         xNIqiIK/DeLKKiaiS92fGIzRROZKTy7khtpsQpBo6kxC8rBU5He+eCxMsVuCw7KbYD33
-         2i8Q==
+        b=VfbSgJ3ZeByy/fmdshk+GOwnoN1OMkhT1hfqljKJcgMYBqZrLLepi5XJGNmv4nLS2X
+         cLzL6uqUCEqRAXgjbhtmX5Hre9CZLBW8pDgNPg2MP0U/kpxDhlVeJz+cO0pvCcE27GUY
+         F/qCacQUZ6yLrDGAFfl2Ld0gW767PAYr0pEJz2Vxhl0gHvipyHCTcrwA+VgT8tUiqVmA
+         qkR3Jcx6n/ZjzlJrhaBz1KpAtMmVlMUFl1WQ45rg300IWTrO1tuXqOmzduGm5HJiZwLl
+         jQ+GueJB7p+5UFL5+nBad/5CIZ2hzzoL8fgNQCD3FpiL5KkY8rDGiZZso998a2VM2eG+
+         W4Jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
         bh=8NmwOfahTCP7W/9rBoKHiTMD1hQFyRHLTlM9386FI0k=;
-        b=SIZFA6RNpj53G0xyc5SQGEasImxRG1xWv3Ht0VsUhr0I8rlOB403fgoi9qTCuJeYh9
-         k8EYgoW3H/KswkkVz0YX97em7CE9dJBLC5STsZiKVAG1WgNNKrLMiSb1/aXKYOLBDplW
-         9qKzt1o038z91mLDyQpsDOlX8UoLXeuPKlRzaRwtwIz5NeDlbmocwB+IE5gxc9ta0NfB
-         +zguCmAhPC5ak7LKokebOpDWp38ZB1C8Owd6d9XK/Bwfge77wTbh/yYZQt4TVRzACUaT
-         NPN9MZZkc095yVPOiG8gcYw4kmRq5Hj018qoinScpCLUGJxO1BJM1DcebNzICs9itxeu
-         QytA==
-X-Gm-Message-State: AOAM530YGRDHt2t2wdHuDIfngLFxhEhdZl7euHqJ0SVXcLXSjd6lzl/i
-        5Rx4s2TnMGHcK4w1Oe4nbMQNQGb9u/XtkMBMAU/Nn2hF8Ik2HIxsf9qBxn0YTqqzU3PWTfTnbnP
-        VJqPdO+i7s5evY0wmk4mVr2p/9FAGA3vgni+N3QteUEj/k6xxr/d/2dA=
-X-Google-Smtp-Source: ABdhPJwxIe/tMguVpGXKWvzQ36MvRSWiQrR7xTCsePMDGM+6NUTpi+DgbR88gwXo+HsWdkjEd9LtoB3Avw==
+        b=gH0frYAg383zSNiXgUux/Vr/9tzBWNapMOiIMryeNrGOwfEhsKzVt05eqwwISf8dnN
+         SXOt4Sh1nvfxFz4qKmO32WuyhXUIWzvrUZp38ugEzY7xttRM+TwfxZk6J1yhDykUDNjs
+         CPaj2MLODTLFeHSNitomnK1nBFuKoqQ+UopQoO5ronfLC5JtBvfB/bXhFl6BCmclPXON
+         e6qVL3dSVY9ZaNb9XQ51rwtZZ1duvBFX7Q3yWlFKL53rijVPZM07bY8BxgdZ7f3jvaTY
+         0UiyhP8Lp8HTYWnwL9fvMPxjJq0eY6981OWvnKltdLeijkxcyHw9/TWfLlb4bd1LTaoC
+         kYqA==
+X-Gm-Message-State: AOAM530pDbVDkXFPn9pyVjTHhy7F8ro99p19k48hUaCq/NYTFY+Dd1Fw
+        lRrplmUiI3wf3p2ps4/jB0f5+tUxoIeWDdzE3g2CD07ATYlUj0WcAwgiGUXPUbsNbqpHIDeTNN0
+        Q+yj7zCMJnQObNPq++C8jHHuvhMdSqtRO6z5lxgCxiqCMn23EaEaPago=
+X-Google-Smtp-Source: ABdhPJz4Y5CMzEYk+SlvhT5Rmp7TZ12nbw/0m5WbOZnaJIXyeVoNu/rPSyHKwvR+e1lbYdgcTdFDlMzpbQ==
 Sender: "adelg via sendgmr" <adelg@adelg.c.googlers.com>
 X-Received: from adelg.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:a16])
- (user=adelg job=sendgmr) by 2002:a17:90a:c203:: with SMTP id
- e3mr2634004pjt.8.1607629327720; Thu, 10 Dec 2020 11:42:07 -0800 (PST)
-Date:   Thu, 10 Dec 2020 19:41:56 +0000
-In-Reply-To: <20201209205301.2586678-1-adelg@google.com>
-Message-Id: <20201210194157.3218806-1-adelg@google.com>
+ (user=adelg job=sendgmr) by 2002:a17:902:59dd:b029:db:cda3:39c0 with SMTP id
+ d29-20020a17090259ddb02900dbcda339c0mr7810947plj.81.1607629337697; Thu, 10
+ Dec 2020 11:42:17 -0800 (PST)
+Date:   Thu, 10 Dec 2020 19:41:57 +0000
+In-Reply-To: <20201210194157.3218806-1-adelg@google.com>
+Message-Id: <20201210194157.3218806-2-adelg@google.com>
 Mime-Version: 1.0
-References: <20201209205301.2586678-1-adelg@google.com>
+References: <20201209205301.2586678-1-adelg@google.com> <20201210194157.3218806-1-adelg@google.com>
 X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
 Subject: [PATCH bpf-next v2] selftests/bpf: Drop the need for LLVM's llc
 From:   Andrew Delgadillo <adelg@google.com>
