@@ -2,101 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8ED22D6190
-	for <lists+bpf@lfdr.de>; Thu, 10 Dec 2020 17:21:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72A6D2D6181
+	for <lists+bpf@lfdr.de>; Thu, 10 Dec 2020 17:19:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729218AbgLJQUY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Dec 2020 11:20:24 -0500
-Received: from mga09.intel.com ([134.134.136.24]:57784 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725947AbgLJQUS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Dec 2020 11:20:18 -0500
-IronPort-SDR: ytY2EAHtzuN/eBVkuBSENW+NXCI7K+0W226YfYh+ULV9IZirRkprV82uGRlNRpBiUIN0mP5eyn
- YH1/PjB7Wl2A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9830"; a="174427006"
-X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
-   d="scan'208";a="174427006"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Dec 2020 08:20:02 -0800
-IronPort-SDR: bAETIilQj4d+IkpjWrQQNvyXNV0m0m5oQ1nWkE+ymPTQC06TDdzSFyq/9eI/tJT8b9IONTCXgb
- ikFrq5cQ9SKw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,408,1599548400"; 
-   d="scan'208";a="484536231"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by orsmga004.jf.intel.com with ESMTP; 10 Dec 2020 08:20:00 -0800
-Date:   Thu, 10 Dec 2020 17:11:05 +0100
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>
-Cc:     intel-wired-lan@lists.osuosl.org,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
-        magnus.karlsson@intel.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH net-next] ice, xsk: Move Rx alloction out of while-loop
-Message-ID: <20201210161105.GD45760@ranger.igk.intel.com>
-References: <20201210121915.14412-1-bjorn.topel@gmail.com>
+        id S2388879AbgLJQRm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Dec 2020 11:17:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20487 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387589AbgLJQRd (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 10 Dec 2020 11:17:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607616965;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tR+QcJGndhq60ixX8jaoR1LgoVq1+PJO8TnsgtbJBGk=;
+        b=WNd/FLKDeQHHPkdLvWqmePxslPfiG718Btv+edJHqObUUd8fW5gpWEe9eC1IZoUaMUsZca
+        vc/Rw2teoTesJc9TxaXh+cYmb1+NaucBLWP/JypQ2z5b9MSHlpo5gIgPzVUSwRsJ3DAEbx
+        7QUCFxh2mQxBNqFPlpekHruYS36UCsw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-288-khxxPngNPR2AJ0HtOJstQA-1; Thu, 10 Dec 2020 11:16:01 -0500
+X-MC-Unique: khxxPngNPR2AJ0HtOJstQA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 397BC180A095;
+        Thu, 10 Dec 2020 16:15:59 +0000 (UTC)
+Received: from krava (unknown [10.40.192.193])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 1128F60862;
+        Thu, 10 Dec 2020 16:15:55 +0000 (UTC)
+Date:   Thu, 10 Dec 2020 17:15:54 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Brendan Jackman <jackmanb@google.com>,
+        KP Singh <kpsingh@google.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix selftest compilation on
+ clang 11
+Message-ID: <20201210161554.GF69683@krava>
+References: <20201209142912.99145-1-jolsa@kernel.org>
+ <CAEf4BzYBddPaEzRUs=jaWSo5kbf=LZdb7geAUVj85GxLQztuAQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201210121915.14412-1-bjorn.topel@gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <CAEf4BzYBddPaEzRUs=jaWSo5kbf=LZdb7geAUVj85GxLQztuAQ@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 01:19:15PM +0100, Björn Töpel wrote:
-> From: Björn Töpel <bjorn.topel@intel.com>
+On Wed, Dec 09, 2020 at 12:24:23PM -0800, Andrii Nakryiko wrote:
+> On Wed, Dec 9, 2020 at 7:16 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > We can't compile test_core_reloc_module.c selftest with clang 11,
+> > compile fails with:
+> >
+> >   CLNG-LLC [test_maps] test_core_reloc_module.o
+> >   progs/test_core_reloc_module.c:57:21: error: use of unknown builtin \
+> >   '__builtin_preserve_type_info' [-Wimplicit-function-declaration]
+> >    out->read_ctx_sz = bpf_core_type_size(struct bpf_testmod_test_read_ctx);
+> >
+> > Skipping these tests if __builtin_preserve_type_info() is not
+> > supported by compiler.
+> >
+> > Fixes: 6bcd39d366b6 ("selftests/bpf: Add CO-RE relocs selftest relying on kernel module BTF")
+> > Fixes: bc9ed69c79ae ("selftests/bpf: Add tp_btf CO-RE reloc test for modules")
 > 
-> Instead of trying to allocate for each packet, move it outside the
-> while loop and try to allocate once every NAPI loop.
+> The test isn't really broken, so "Fixes: " tags seem wrong here.
+> 
+> Given core_relo tests have established `data.skip = true` mechanism,
+> I'm fine with this patch. But moving forward I think we should
+> minimize the amount of feature-detection and tests skipping in
+> selftests. The point of selftests is to test the functionality at the
+> intersection of 4 projects: kernel, libbpf, pahole and clang. We've
+> stated before and I think it remains true that the expectation for
+> anyone that wants to develop and run selftests is to track latests
+> versions of all 4 of those, sometimes meaning nightly builds or
+> building from sources. For clang, which is arguably the hardest of the
+> 4 to build from sources, LLVM project publishes nightly builds for
+> Ubuntu and Debian, which are very easy to use to get recent enough
+> versions for selftests. That's exactly what libbpf CI is doing, BTW.
+> 
+> It's hard and time-consuming enough to develop these features, I'd
+> rather keep selftests simpler, more manageable, and less brittle by
+> not having excessive amount of feature detection and skipped
+> selftests. I think that's the case for BPF atomics as well, btw (cc'ed
+> Yonghong and Brendan).
+> 
+> To alleviate some of the pain of setting up the environment, one way
+> would be to provide script and/or image to help bring up qemu VM for
+> easier testing. To that end, KP Singh (cc'ed) was able to re-use
+> libbpf CI's VM setup and make it easier for local development. I hope
+> he can share this soon.
 
-To rectify above, it wasn't for each packet but per ICE_RX_BUF_WRITE
-cleaned frames (16).
+ok, that'd be great, thanks for taking this one
 
-You also have a typo in subject (alloction).
-
-Is spinning a v2 worth it?
+jirka
 
 > 
-> This change boosts the xdpsock rxdrop scenario with 15% more
-> packets-per-second.
+> So given minimal additions code-wise, but also considering all the above:
 > 
-> Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
-> ---
->  drivers/net/ethernet/intel/ice/ice_xsk.c | 9 +++------
->  1 file changed, 3 insertions(+), 6 deletions(-)
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
 > 
-> diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-> index 797886524054..39757b4cf8f4 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-> +++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-> @@ -570,12 +570,6 @@ int ice_clean_rx_irq_zc(struct ice_ring *rx_ring, int budget)
->  		u16 vlan_tag = 0;
->  		u8 rx_ptype;
->  
-> -		if (cleaned_count >= ICE_RX_BUF_WRITE) {
-> -			failure |= ice_alloc_rx_bufs_zc(rx_ring,
-> -							cleaned_count);
-> -			cleaned_count = 0;
-> -		}
-> -
->  		rx_desc = ICE_RX_DESC(rx_ring, rx_ring->next_to_clean);
->  
->  		stat_err_bits = BIT(ICE_RX_FLEX_DESC_STATUS0_DD_S);
-> @@ -642,6 +636,9 @@ int ice_clean_rx_irq_zc(struct ice_ring *rx_ring, int budget)
->  		ice_receive_skb(rx_ring, skb, vlan_tag);
->  	}
->  
-> +	if (cleaned_count >= ICE_RX_BUF_WRITE)
-> +		failure = !ice_alloc_rx_bufs_zc(rx_ring, cleaned_count);
-> +
->  	ice_finalize_xdp_rx(rx_ring, xdp_xmit);
->  	ice_update_rx_ring_stats(rx_ring, total_rx_packets, total_rx_bytes);
->  
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  .../testing/selftests/bpf/progs/test_core_reloc_module.c  | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
+> >
+> > diff --git a/tools/testing/selftests/bpf/progs/test_core_reloc_module.c b/tools/testing/selftests/bpf/progs/test_core_reloc_module.c
+> > index 56363959f7b0..f59f175c7baf 100644
+> > --- a/tools/testing/selftests/bpf/progs/test_core_reloc_module.c
+> > +++ b/tools/testing/selftests/bpf/progs/test_core_reloc_module.c
+> > @@ -40,6 +40,7 @@ int BPF_PROG(test_core_module_probed,
+> >              struct task_struct *task,
+> >              struct bpf_testmod_test_read_ctx *read_ctx)
+> >  {
+> > +#if __has_builtin(__builtin_preserve_enum_value)
+> >         struct core_reloc_module_output *out = (void *)&data.out;
+> >         __u64 pid_tgid = bpf_get_current_pid_tgid();
+> >         __u32 real_tgid = (__u32)(pid_tgid >> 32);
+> > @@ -61,6 +62,9 @@ int BPF_PROG(test_core_module_probed,
+> >         out->len_exists = bpf_core_field_exists(read_ctx->len);
+> >
+> >         out->comm_len = BPF_CORE_READ_STR_INTO(&out->comm, task, comm);
+> > +#else
+> > +       data.skip = true;
+> > +#endif
+> >
+> >         return 0;
+> >  }
+> > @@ -70,6 +74,7 @@ int BPF_PROG(test_core_module_direct,
+> >              struct task_struct *task,
+> >              struct bpf_testmod_test_read_ctx *read_ctx)
+> >  {
+> > +#if __has_builtin(__builtin_preserve_enum_value)
+> >         struct core_reloc_module_output *out = (void *)&data.out;
+> >         __u64 pid_tgid = bpf_get_current_pid_tgid();
+> >         __u32 real_tgid = (__u32)(pid_tgid >> 32);
+> > @@ -91,6 +96,9 @@ int BPF_PROG(test_core_module_direct,
+> >         out->len_exists = bpf_core_field_exists(read_ctx->len);
+> >
+> >         out->comm_len = BPF_CORE_READ_STR_INTO(&out->comm, task, comm);
+> > +#else
+> > +       data.skip = true;
+> > +#endif
+> >
+> >         return 0;
+> >  }
+> > --
+> > 2.26.2
+> >
 > 
-> base-commit: a7105e3472bf6bb3099d1293ea7d70e7783aa582
-> -- 
-> 2.27.0
-> 
+
