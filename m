@@ -2,168 +2,171 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A95092D6B31
-	for <lists+bpf@lfdr.de>; Fri, 11 Dec 2020 00:38:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D085F2D6B1E
+	for <lists+bpf@lfdr.de>; Fri, 11 Dec 2020 00:38:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393689AbgLJWzu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Dec 2020 17:55:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392429AbgLJWzk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Dec 2020 17:55:40 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 642D2C0619DB;
-        Thu, 10 Dec 2020 14:53:49 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id i9so7151567wrc.4;
-        Thu, 10 Dec 2020 14:53:49 -0800 (PST)
+        id S2404276AbgLJWb2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Dec 2020 17:31:28 -0500
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:33708 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405134AbgLJW0p (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Dec 2020 17:26:45 -0500
+Received: by mail-pf1-f193.google.com with SMTP id p4so5522784pfg.0;
+        Thu, 10 Dec 2020 14:26:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FOnvm6Baf3m5bMLWZg3kDehjBG8A7+9YWYoLpgMMYBE=;
-        b=UR01bWqSSrZnOmF0qD11GNEz54al4WVSIasPXhrmHQf+k7UcyeWv4R6OkrPOv79SgE
-         k1rW8h56PkskL8REzVYqP1I5kNut/XyF8eINYH4j1yIgnd+t0J9YBMj2QsmyAXf2DTnL
-         /ZupnS0KyyqwcTj9kJF9DmzpdvXoP+ynTn6ODOJP7juL672IaqvChhBqQPYr4V+roMIt
-         vy43s40wFE1grh0IJzZqWM/wmLZl2DkbUc+2cVedFW98SoikXYh6PqHaW3fytmNq1TXx
-         TGyHHTJ6ZcDozpNFSQCJruR9rc8OxKEep1QyXskcw14M1assuJ1Xhljrx5alqdRzW0EO
-         9nDA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KmpTAXH6TQaMqLKLYHpt2JiaznUgIMZlc7z9SKykbbA=;
+        b=IoJgxjjCIdYTjq+UGPavlSUpceKeKXAVWIAoRPwITNeinTNjHZPoSSGXPAs+BJfZRL
+         QPKSeO1yIVEyzDHI7PF9HHRayQ9uy9FtaqCnEQ4VJhOpS13Q1LQlkUC9YkGwdwTOlKt5
+         KaPxTmlWmpUwoajqOq/umyEAiMKnCxkTot22sZQ1u2IWVgSJJlydKZctOLVHXVPwX1HI
+         Oyp+uTwrboewd9mxPXzWFFpNo8tpGg4d2zDoVtEC/bkrkQvN4vIAn3g2DUhFm+DQohzN
+         1gT8X4NH3GmIEVICR+iAQdyCeskd2494rgHmCOxy7DeKvqsFDFBnS+nLBWkz5GGkRVvY
+         ttFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FOnvm6Baf3m5bMLWZg3kDehjBG8A7+9YWYoLpgMMYBE=;
-        b=X/CPuZD/fVXkuN/orCrJ/emiKt0akoPzMklAojZuICU/zJHZ0WwUYgxYyvGNi76DRb
-         Ux5ExJ3UE7wKT8NeBXe7QlawAqSiQvU5yNp7XBa/rMKx0GknyCFooOEJjackn9ENn+pG
-         oXI8hPzYccJM1Boz8IqcDdpUWFYmWYz9W1gSMFKuK5l8rzK3X3kel0FoWarhXxGmQ1iZ
-         yVKa9HgYB4kSbTekO/FH8f1fKRYHoz+z5ZCMjHA+emYS12X5tuj4dzFBMSlsSeGe9K2B
-         4AhV/1xU/g48tANjNx5j1dkIK557tzH5WMLrp3GTf/zcmQGeI0ZM8L5O89VxdPNdmEW1
-         P4YQ==
-X-Gm-Message-State: AOAM533sABcm2lpU8lPrUaFGKVw2g8mSK86xjI1okKluojeOj2UXv2Y4
-        DCBZIHKnAydM/WIFxye6q59JbIpXExYhBSFqhWfTci22
-X-Google-Smtp-Source: ABdhPJyBTgsANO8Ewc4TwqyNo9GTDY6eu+IbCLiC49Dn/sqblGhomWDdVkJ5HIaRoleZLzVf6V8ycYIBIlW/mnVMFCY=
-X-Received: by 2002:a19:8b83:: with SMTP id n125mr3848216lfd.75.1607637184027;
- Thu, 10 Dec 2020 13:53:04 -0800 (PST)
-MIME-Version: 1.0
-References: <20201210153618.21226-1-magnus.karlsson@gmail.com>
-In-Reply-To: <20201210153618.21226-1-magnus.karlsson@gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KmpTAXH6TQaMqLKLYHpt2JiaznUgIMZlc7z9SKykbbA=;
+        b=qA2Cro73WGnDyMUj5xcOd4g9zCdwRGwrX5AxwVhRZbABIGAX/83FqYgSNlsTNpTyzd
+         p6hak9uPSEB9LumhZToqRtpBTSAhzWi+yftyc1MFOZWxhOMAONY5saQI9IiSs+O8mwkh
+         mqUvE1ktJu6OwKSEE0ogjWPZR49oh4ONcvADJ3QUp0JcAWKHXWE1InX0SdFWxHEEMQue
+         uF1V/Y0LgspT+LUjLq0/qyQ/MiXfAUOB135RMc/q9l3j9OZMwMrGYYk+C+36n/PNbjWM
+         5Pa/EjLJsY1aEt4MHRtej3/FJldtrPCUNwKGkOV0U4RpE5GLnvVdzylx4FZEb6OivWtX
+         rjXA==
+X-Gm-Message-State: AOAM531I2vof19s3PrqExSjDwY9/Lt7G4juwCyCydY0Go46afhgCoDiE
+        IH6SE/tZNOnUfbuONWrZWZk=
+X-Google-Smtp-Source: ABdhPJzf5Ivvk2hvyIrirBsLROfWSW1Q1CpU7j7hQ3CEe51NdmdYhCEVLUHUnLnWDWi7BGi6NisHIQ==
+X-Received: by 2002:a17:90a:a502:: with SMTP id a2mr5704214pjq.155.1607639104736;
+        Thu, 10 Dec 2020 14:25:04 -0800 (PST)
+Received: from ast-mbp.thefacebook.com ([163.114.132.7])
+        by smtp.gmail.com with ESMTPSA id d142sm7326953pfd.6.2020.12.10.14.25.02
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 10 Dec 2020 14:25:03 -0800 (PST)
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 10 Dec 2020 13:52:52 -0800
-Message-ID: <CAADnVQKOjetBFuCVRWPEzephJTeZ7AYaHv+pKfJKia0F8vk=ww@mail.gmail.com>
-Subject: Re: [PATCH bpf] xsk: fix race in SKB mode transmit with shared cq
-To:     Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+To:     davem@davemloft.net
+Cc:     daniel@iogearbox.net, kuba@kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@fb.com
+Subject: pull-request: bpf 2020-12-10
+Date:   Thu, 10 Dec 2020 14:25:01 -0800
+Message-Id: <20201210222501.72430-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.13.5
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 7:36 AM Magnus Karlsson
-<magnus.karlsson@gmail.com> wrote:
->
-> From: Magnus Karlsson <magnus.karlsson@intel.com>
->
-> Fix a race when multiple sockets are simultaneously calling sendto()
-> when the completion ring is shared in the SKB case. This is the case
-> when you share the same netdev and queue id through the
-> XDP_SHARED_UMEM bind flag. The problem is that multiple processes can
-> be in xsk_generic_xmit() and call the backpressure mechanism in
-> xskq_prod_reserve(xs->pool->cq). As this is a shared resource in this
-> specific scenario, a race might occur since the rings are
-> single-producer single-consumer.
->
-> Fix this by moving the tx_completion_lock from the socket to the pool
-> as the pool is shared between the sockets that share the completion
-> ring. (The pool is not shared when this is not the case.) And then
-> protect the accesses to xskq_prod_reserve() with this lock. The
-> tx_completion_lock is renamed cq_lock to better reflect that it
-> protects accesses to the potentially shared completion ring.
->
-> Fixes: 35fcde7f8deb ("xsk: support for Tx")
-> Fixes: a9744f7ca200 ("xsk: fix potential race in SKB TX completion code")
-> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> Reported-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> ---
->  include/net/xdp_sock.h      | 4 ----
->  include/net/xsk_buff_pool.h | 5 +++++
->  net/xdp/xsk.c               | 9 ++++++---
->  net/xdp/xsk_buff_pool.c     | 1 +
->  4 files changed, 12 insertions(+), 7 deletions(-)
->
-> diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
-> index 4f4e93bf814c..cc17bc957548 100644
-> --- a/include/net/xdp_sock.h
-> +++ b/include/net/xdp_sock.h
-> @@ -58,10 +58,6 @@ struct xdp_sock {
->
->         struct xsk_queue *tx ____cacheline_aligned_in_smp;
->         struct list_head tx_list;
-> -       /* Mutual exclusion of NAPI TX thread and sendmsg error paths
-> -        * in the SKB destructor callback.
-> -        */
-> -       spinlock_t tx_completion_lock;
->         /* Protects generic receive. */
->         spinlock_t rx_lock;
->
-> diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
-> index 01755b838c74..eaa8386dbc63 100644
-> --- a/include/net/xsk_buff_pool.h
-> +++ b/include/net/xsk_buff_pool.h
-> @@ -73,6 +73,11 @@ struct xsk_buff_pool {
->         bool dma_need_sync;
->         bool unaligned;
->         void *addrs;
-> +       /* Mutual exclusion of the completion ring in the SKB mode. Two cases to protect:
-> +        * NAPI TX thread and sendmsg error paths in the SKB destructor callback and when
-> +        * sockets share a single cq when the same netdev and queue id is shared.
-> +        */
-> +       spinlock_t cq_lock;
->         struct xdp_buff_xsk *free_heads[];
->  };
->
-> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index 62504471fd20..42cb5f94d49e 100644
-> --- a/net/xdp/xsk.c
-> +++ b/net/xdp/xsk.c
-> @@ -364,9 +364,9 @@ static void xsk_destruct_skb(struct sk_buff *skb)
->         struct xdp_sock *xs = xdp_sk(skb->sk);
->         unsigned long flags;
->
-> -       spin_lock_irqsave(&xs->tx_completion_lock, flags);
-> +       spin_lock_irqsave(&xs->pool->cq_lock, flags);
->         xskq_prod_submit_addr(xs->pool->cq, addr);
-> -       spin_unlock_irqrestore(&xs->tx_completion_lock, flags);
-> +       spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
->
->         sock_wfree(skb);
->  }
-> @@ -378,6 +378,7 @@ static int xsk_generic_xmit(struct sock *sk)
->         bool sent_frame = false;
->         struct xdp_desc desc;
->         struct sk_buff *skb;
-> +       unsigned long flags;
->         int err = 0;
->
->         mutex_lock(&xs->mutex);
-> @@ -409,10 +410,13 @@ static int xsk_generic_xmit(struct sock *sk)
->                  * if there is space in it. This avoids having to implement
->                  * any buffering in the Tx path.
->                  */
-> +               spin_lock_irqsave(&xs->pool->cq_lock, flags);
->                 if (unlikely(err) || xskq_prod_reserve(xs->pool->cq)) {
-> +                       spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
->                         kfree_skb(skb);
->                         goto out;
->                 }
-> +               spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
+Hi David, hi Jakub,
 
-Lock/unlock for every packet?
-Do you have any performance concerns?
+The following pull-request contains BPF updates for your *net* tree.
+
+We've added 21 non-merge commits during the last 12 day(s) which contain
+a total of 21 files changed, 163 insertions(+), 88 deletions(-).
+
+The main changes are:
+
+1) Fix propagation of 32-bit signed bounds from 64-bit bounds, from Alexei.
+
+2) Fix ring_buffer__poll() return value, from Andrii.
+
+3) Fix race in lwt_bpf, from Cong.
+
+4) Fix test_offload, from Toke.
+
+5) Various xsk fixes.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Cong Wang, Hulk Robot, Jakub Kicinski, Jean-Philippe Brucker, John 
+Fastabend, Magnus Karlsson, Maxim Mikityanskiy, Yonghong Song
+
+----------------------------------------------------------------
+
+The following changes since commit 4d521943f76bd0d1e68ea5e02df7aadd30b2838a:
+
+  dt-bindings: net: correct interrupt flags in examples (2020-11-28 14:47:56 -0800)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
+
+for you to fetch changes up to 3615bdf6d9b19db12b1589861609b4f1c6a8d303:
+
+  selftests/bpf: Fix "dubious pointer arithmetic" test (2020-12-10 13:11:30 -0800)
+
+----------------------------------------------------------------
+Alexei Starovoitov (1):
+      bpf: Fix propagation of 32-bit signed bounds from 64-bit bounds.
+
+Andrii Nakryiko (3):
+      libbpf: Fix ring_buffer__poll() to return number of consumed samples
+      selftests/bpf: Drain ringbuf samples at the end of test
+      tools/bpftool: Fix PID fetching with a lot of results
+
+Björn Töpel (1):
+      xdp: Handle MEM_TYPE_XSK_BUFF_POOL correctly in xdp_return_buff()
+
+Cong Wang (1):
+      lwt_bpf: Replace preempt_disable() with migrate_disable()
+
+Daniel Borkmann (1):
+      Merge branch 'bpf-xdp-offload-fixes'
+
+Dongdong Wang (1):
+      lwt: Disable BH too in run_lwt_bpf()
+
+Jean-Philippe Brucker (3):
+      selftests/bpf: Add test for signed 32-bit bound check bug
+      selftests/bpf: Fix array access with signed variable test
+      selftests/bpf: Fix "dubious pointer arithmetic" test
+
+KP Singh (1):
+      bpf, doc: Update KP's email in MAINTAINERS
+
+Toke Høiland-Jørgensen (7):
+      xdp: Remove the xdp_attachment_flags_ok() callback
+      selftests/bpf/test_offload.py: Remove check for program load flags match
+      netdevsim: Add debugfs toggle to reject BPF programs in verifier
+      selftests/bpf/test_offload.py: Only check verifier log on verification fails
+      selftests/bpf/test_offload.py: Fix expected case of extack messages
+      selftests/bpf/test_offload.py: Reset ethtool features after failed setting
+      selftests/bpf/test_offload.py: Filter bpftool internal map when counting maps
+
+Xuan Zhuo (2):
+      xsk: Replace datagram_poll by sock_poll_wait
+      xsk: Change the tx writeable condition
+
+Zhang Changzhong (1):
+      xsk: Return error code if force_zc is set
+
+ MAINTAINERS                                        |  4 +-
+ .../net/ethernet/netronome/nfp/nfp_net_common.c    |  6 ---
+ drivers/net/ethernet/ti/cpsw_priv.c                |  3 --
+ drivers/net/netdevsim/bpf.c                        | 15 ++++--
+ drivers/net/netdevsim/netdevsim.h                  |  1 +
+ include/net/xdp.h                                  |  2 -
+ kernel/bpf/verifier.c                              | 10 ++--
+ net/core/dev.c                                     | 22 ++++++++-
+ net/core/lwt_bpf.c                                 | 12 ++---
+ net/core/xdp.c                                     | 29 ++++--------
+ net/xdp/xsk.c                                      | 20 ++++++--
+ net/xdp/xsk_buff_pool.c                            |  1 +
+ net/xdp/xsk_queue.h                                |  6 +++
+ tools/bpf/bpftool/pids.c                           |  4 +-
+ tools/lib/bpf/ringbuf.c                            |  2 +-
+ tools/testing/selftests/bpf/prog_tests/align.c     |  8 ++--
+ tools/testing/selftests/bpf/prog_tests/ringbuf.c   |  8 +++-
+ .../selftests/bpf/prog_tests/ringbuf_multi.c       |  2 +-
+ tools/testing/selftests/bpf/test_offload.py        | 53 ++++++++++++----------
+ .../testing/selftests/bpf/verifier/array_access.c  |  2 +-
+ tools/testing/selftests/bpf/verifier/bounds.c      | 41 +++++++++++++++++
+ 21 files changed, 163 insertions(+), 88 deletions(-)
