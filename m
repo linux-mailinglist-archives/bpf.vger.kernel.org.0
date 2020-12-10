@@ -2,166 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 067522D6AA4
-	for <lists+bpf@lfdr.de>; Thu, 10 Dec 2020 23:55:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A95092D6B31
+	for <lists+bpf@lfdr.de>; Fri, 11 Dec 2020 00:38:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391716AbgLJVZX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Dec 2020 16:25:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37698 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393988AbgLJVZR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Dec 2020 16:25:17 -0500
-Date:   Thu, 10 Dec 2020 22:24:31 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607635476;
-        bh=7JOIUKy6ABuwsWpGRfaD+x7h2DzmNQPzA318pYxa0bY=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nDK1e7qUuF0xLLvLnLTxZAS5KTe5Yz8NPS+FIaFJwlXd/gEQQHxr3OW/NABnfuCzX
-         DSRYwPWPB3Wwk8mR2glZ/uFe2YAyQ58NJOT1ZONtMKArXtKyAxRmDFLXM4SDiRx+8Z
-         l16aykiqPcOfWWtZyquwd0skEG3pSiU/JFxqeOgcxsin/B99QYzKmGHblZuQR3A24x
-         J6J/0r6Lxf4qkH9x6ij/dXrAPVsFzjt88Sc3KEst2IoHZdEC62MXXzc/1jMbunSRHp
-         spm/6s0364FImPCy8KfeFMszq5z4JWbTTS4VZoSTwz5JzJ9oYRJ4FARPH3a/KI3WgV
-         9YhSZFDVcrPHw==
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Saeed Mahameed <saeed@kernel.org>
-Cc:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
-        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        brouer@redhat.com, alexander.duyck@gmail.com
-Subject: Re: [PATCH bpf-next] net: xdp: introduce xdp_init_buff utility
- routine
-Message-ID: <20201210212431.GD462213@lore-desk>
-References: <e54fb61ff17c21f022392f1bb46ec951c9b909cc.1607615094.git.lorenzo@kernel.org>
- <20201210160507.GC45760@ranger.igk.intel.com>
- <20201210163241.GA462213@lore-desk>
- <20201210165556.GA46492@ranger.igk.intel.com>
- <20201210175945.GB462213@lore-desk>
- <721648a5e14dadc32629291a7d1914dd1044b7d0.camel@kernel.org>
- <20201210192804.GC462213@lore-desk>
- <44ac4e64db37f1e51a61d67c90edb7e0753b0e38.camel@kernel.org>
+        id S2393689AbgLJWzu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Dec 2020 17:55:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392429AbgLJWzk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Dec 2020 17:55:40 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 642D2C0619DB;
+        Thu, 10 Dec 2020 14:53:49 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id i9so7151567wrc.4;
+        Thu, 10 Dec 2020 14:53:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FOnvm6Baf3m5bMLWZg3kDehjBG8A7+9YWYoLpgMMYBE=;
+        b=UR01bWqSSrZnOmF0qD11GNEz54al4WVSIasPXhrmHQf+k7UcyeWv4R6OkrPOv79SgE
+         k1rW8h56PkskL8REzVYqP1I5kNut/XyF8eINYH4j1yIgnd+t0J9YBMj2QsmyAXf2DTnL
+         /ZupnS0KyyqwcTj9kJF9DmzpdvXoP+ynTn6ODOJP7juL672IaqvChhBqQPYr4V+roMIt
+         vy43s40wFE1grh0IJzZqWM/wmLZl2DkbUc+2cVedFW98SoikXYh6PqHaW3fytmNq1TXx
+         TGyHHTJ6ZcDozpNFSQCJruR9rc8OxKEep1QyXskcw14M1assuJ1Xhljrx5alqdRzW0EO
+         9nDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FOnvm6Baf3m5bMLWZg3kDehjBG8A7+9YWYoLpgMMYBE=;
+        b=X/CPuZD/fVXkuN/orCrJ/emiKt0akoPzMklAojZuICU/zJHZ0WwUYgxYyvGNi76DRb
+         Ux5ExJ3UE7wKT8NeBXe7QlawAqSiQvU5yNp7XBa/rMKx0GknyCFooOEJjackn9ENn+pG
+         oXI8hPzYccJM1Boz8IqcDdpUWFYmWYz9W1gSMFKuK5l8rzK3X3kel0FoWarhXxGmQ1iZ
+         yVKa9HgYB4kSbTekO/FH8f1fKRYHoz+z5ZCMjHA+emYS12X5tuj4dzFBMSlsSeGe9K2B
+         4AhV/1xU/g48tANjNx5j1dkIK557tzH5WMLrp3GTf/zcmQGeI0ZM8L5O89VxdPNdmEW1
+         P4YQ==
+X-Gm-Message-State: AOAM533sABcm2lpU8lPrUaFGKVw2g8mSK86xjI1okKluojeOj2UXv2Y4
+        DCBZIHKnAydM/WIFxye6q59JbIpXExYhBSFqhWfTci22
+X-Google-Smtp-Source: ABdhPJyBTgsANO8Ewc4TwqyNo9GTDY6eu+IbCLiC49Dn/sqblGhomWDdVkJ5HIaRoleZLzVf6V8ycYIBIlW/mnVMFCY=
+X-Received: by 2002:a19:8b83:: with SMTP id n125mr3848216lfd.75.1607637184027;
+ Thu, 10 Dec 2020 13:53:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="oj4kGyHlBMXGt3Le"
-Content-Disposition: inline
-In-Reply-To: <44ac4e64db37f1e51a61d67c90edb7e0753b0e38.camel@kernel.org>
+References: <20201210153618.21226-1-magnus.karlsson@gmail.com>
+In-Reply-To: <20201210153618.21226-1-magnus.karlsson@gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 10 Dec 2020 13:52:52 -0800
+Message-ID: <CAADnVQKOjetBFuCVRWPEzephJTeZ7AYaHv+pKfJKia0F8vk=ww@mail.gmail.com>
+Subject: Re: [PATCH bpf] xsk: fix race in SKB mode transmit with shared cq
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, Dec 10, 2020 at 7:36 AM Magnus Karlsson
+<magnus.karlsson@gmail.com> wrote:
+>
+> From: Magnus Karlsson <magnus.karlsson@intel.com>
+>
+> Fix a race when multiple sockets are simultaneously calling sendto()
+> when the completion ring is shared in the SKB case. This is the case
+> when you share the same netdev and queue id through the
+> XDP_SHARED_UMEM bind flag. The problem is that multiple processes can
+> be in xsk_generic_xmit() and call the backpressure mechanism in
+> xskq_prod_reserve(xs->pool->cq). As this is a shared resource in this
+> specific scenario, a race might occur since the rings are
+> single-producer single-consumer.
+>
+> Fix this by moving the tx_completion_lock from the socket to the pool
+> as the pool is shared between the sockets that share the completion
+> ring. (The pool is not shared when this is not the case.) And then
+> protect the accesses to xskq_prod_reserve() with this lock. The
+> tx_completion_lock is renamed cq_lock to better reflect that it
+> protects accesses to the potentially shared completion ring.
+>
+> Fixes: 35fcde7f8deb ("xsk: support for Tx")
+> Fixes: a9744f7ca200 ("xsk: fix potential race in SKB TX completion code")
+> Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+> Reported-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> ---
+>  include/net/xdp_sock.h      | 4 ----
+>  include/net/xsk_buff_pool.h | 5 +++++
+>  net/xdp/xsk.c               | 9 ++++++---
+>  net/xdp/xsk_buff_pool.c     | 1 +
+>  4 files changed, 12 insertions(+), 7 deletions(-)
+>
+> diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
+> index 4f4e93bf814c..cc17bc957548 100644
+> --- a/include/net/xdp_sock.h
+> +++ b/include/net/xdp_sock.h
+> @@ -58,10 +58,6 @@ struct xdp_sock {
+>
+>         struct xsk_queue *tx ____cacheline_aligned_in_smp;
+>         struct list_head tx_list;
+> -       /* Mutual exclusion of NAPI TX thread and sendmsg error paths
+> -        * in the SKB destructor callback.
+> -        */
+> -       spinlock_t tx_completion_lock;
+>         /* Protects generic receive. */
+>         spinlock_t rx_lock;
+>
+> diff --git a/include/net/xsk_buff_pool.h b/include/net/xsk_buff_pool.h
+> index 01755b838c74..eaa8386dbc63 100644
+> --- a/include/net/xsk_buff_pool.h
+> +++ b/include/net/xsk_buff_pool.h
+> @@ -73,6 +73,11 @@ struct xsk_buff_pool {
+>         bool dma_need_sync;
+>         bool unaligned;
+>         void *addrs;
+> +       /* Mutual exclusion of the completion ring in the SKB mode. Two cases to protect:
+> +        * NAPI TX thread and sendmsg error paths in the SKB destructor callback and when
+> +        * sockets share a single cq when the same netdev and queue id is shared.
+> +        */
+> +       spinlock_t cq_lock;
+>         struct xdp_buff_xsk *free_heads[];
+>  };
+>
+> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> index 62504471fd20..42cb5f94d49e 100644
+> --- a/net/xdp/xsk.c
+> +++ b/net/xdp/xsk.c
+> @@ -364,9 +364,9 @@ static void xsk_destruct_skb(struct sk_buff *skb)
+>         struct xdp_sock *xs = xdp_sk(skb->sk);
+>         unsigned long flags;
+>
+> -       spin_lock_irqsave(&xs->tx_completion_lock, flags);
+> +       spin_lock_irqsave(&xs->pool->cq_lock, flags);
+>         xskq_prod_submit_addr(xs->pool->cq, addr);
+> -       spin_unlock_irqrestore(&xs->tx_completion_lock, flags);
+> +       spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
+>
+>         sock_wfree(skb);
+>  }
+> @@ -378,6 +378,7 @@ static int xsk_generic_xmit(struct sock *sk)
+>         bool sent_frame = false;
+>         struct xdp_desc desc;
+>         struct sk_buff *skb;
+> +       unsigned long flags;
+>         int err = 0;
+>
+>         mutex_lock(&xs->mutex);
+> @@ -409,10 +410,13 @@ static int xsk_generic_xmit(struct sock *sk)
+>                  * if there is space in it. This avoids having to implement
+>                  * any buffering in the Tx path.
+>                  */
+> +               spin_lock_irqsave(&xs->pool->cq_lock, flags);
+>                 if (unlikely(err) || xskq_prod_reserve(xs->pool->cq)) {
+> +                       spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
+>                         kfree_skb(skb);
+>                         goto out;
+>                 }
+> +               spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
 
---oj4kGyHlBMXGt3Le
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-> On Thu, 2020-12-10 at 20:28 +0100, Lorenzo Bianconi wrote:
-> > > On Thu, 2020-12-10 at 18:59 +0100, Lorenzo Bianconi wrote:
-> > > > On Dec 10, Maciej Fijalkowski wrote:
-> > > > > On Thu, Dec 10, 2020 at 05:32:41PM +0100, Lorenzo Bianconi
-> > > > > wrote:
-> > > > > > > On Thu, Dec 10, 2020 at 04:50:42PM +0100, Lorenzo Bianconi
-> > > > > > > wrote:
-> > > > > > > > Introduce xdp_init_buff utility routine to initialize
-> > > > > > > > xdp_buff data
-> > > > > > > > structure. Rely on xdp_init_buff in all XDP capable
-> > > > > > > > drivers.
-> > > > > > >=20
-> > > > > > > Hm, Jesper was suggesting two helpers, one that you
-> > > > > > > implemented
-> > > > > > > for things
-> > > > > > > that are set once per NAPI and the other that is set per
-> > > > > > > each
-> > > > > > > buffer.
-> > > > > > >=20
-> > > > > > > Not sure about the naming for a second one -
-> > > > > > > xdp_prepare_buff ?
-> > > > > > > xdp_init_buff that you have feels ok.
-> > > > > >=20
-> > > > > > ack, so we can have xdp_init_buff() for initialization done
-> > > > > > once
-> > > > > > per NAPI run and=20
-> > > > > > xdp_prepare_buff() for per-NAPI iteration initialization,
-> > > > > > e.g.
-> > > > > >=20
-> > > > > > static inline void
-> > > > > > xdp_prepare_buff(struct xdp_buff *xdp, unsigned char
-> > > > > > *hard_start,
-> > > > > > 		 int headroom, int data_len)
-> > > > > > {
-> > > > > > 	xdp->data_hard_start =3D hard_start;
-> > > > > > 	xdp->data =3D hard_start + headroom;
-> > > > > > 	xdp->data_end =3D xdp->data + data_len;
-> > > > > > 	xdp_set_data_meta_invalid(xdp);
-> > > > > > }
-> > > > >=20
-> > > > > I think we should allow for setting the data_meta as well.
-> > > > > x64 calling convention states that first four args are placed
-> > > > > onto
-> > > > > registers, so to keep it fast maybe have a third helper:
-> > > > >=20
-> > > > > static inline void
-> > > > > xdp_prepare_buff_meta(struct xdp_buff *xdp, unsigned char
-> > > > > *hard_start,
-> > > > > 		      int headroom, int data_len)
-> > > > > {
-> > > > > 	xdp->data_hard_start =3D hard_start;
-> > > > > 	xdp->data =3D hard_start + headroom;
-> > > > > 	xdp->data_end =3D xdp->data + data_len;
-> > > > > 	xdp->data_meta =3D xdp->data;
-> > > > > }
-> > > > >=20
-> > > > > Thoughts?
-> > > >=20
-> > > > ack, I am fine with it. Let's wait for some feedback.
-> > > >=20
-> > > > Do you prefer to have xdp_prepare_buff/xdp_prepare_buff_meta in
-> > > > the
-> > > > same series
-> > > > of xdp_buff_init() or is it ok to address it in a separate patch?
-> > > >=20
-> > >=20
-> > > you only need 2
-> > > why do you need xpd_prepare_buff_meta? that's exactly
-> > > what xdp_set_data_meta_invalid(xdp) is all about.
-> >=20
-> > IIUC what Maciej means is to avoid to overwrite xdp->data_meta with
-> > xdp_set_data_meta_invalid() after setting it to xdp->data in
-> > xdp_prepare_buff_meta().
-> > I guess setting xdp->data_meta to xdp->data is valid, it means an
-> > empty meta
-> > area.
-> > Anyway I guess we can set xdp->data_meta to xdp->data wherever we
-> > need and just
-> > keep xdp_prepare_buff(). Agree?
-> >=20
->=20
-> hmm, i agree, but I would choose a default that is best for common use
-> case performance, so maybe do xd->data_meta =3D xdp->data by default and
-> drivers can override it, as they are already doing today if they don't
-> support it.
-
-ack, fine. I will fix int v2.
-
-Regards,
-Lorenzo
-
->=20
-> > Regards,
-> > Lorenzo
-> >=20
-> > >=20
->=20
-
---oj4kGyHlBMXGt3Le
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCX9KSCgAKCRA6cBh0uS2t
-rLvbAP95L5nkrDxkBxd0Rl3z0ACmZUFiN92H40pCJkbxivb24QEArdnNZhtpqOe1
-QNbgSex8+nssP1WPGfZxVlJzjkAKgQQ=
-=fvNY
------END PGP SIGNATURE-----
-
---oj4kGyHlBMXGt3Le--
+Lock/unlock for every packet?
+Do you have any performance concerns?
