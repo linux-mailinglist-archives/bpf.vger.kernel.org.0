@@ -2,125 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 663E92D6613
-	for <lists+bpf@lfdr.de>; Thu, 10 Dec 2020 20:12:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84E002D6641
+	for <lists+bpf@lfdr.de>; Thu, 10 Dec 2020 20:22:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390539AbgLJTMC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Dec 2020 14:12:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389324AbgLJTLr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Dec 2020 14:11:47 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60D25C061794;
-        Thu, 10 Dec 2020 11:11:07 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id 4so3267777plk.5;
-        Thu, 10 Dec 2020 11:11:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ixjBTL8ik2zV5HfQ8pkfcH2s6ihYaw94epz6NA5THr0=;
-        b=NIkbINsBVQU/Ej6aaIkPokyGq2YzoaR4uWZQYPc8e9TfWPLJXiCkDXmG1oVhqRdEQn
-         U0wyjTEk/+B1O5c+KK0z9tDg5/Wx1h2IghT1goipV8egomZck1mc31cpKtGDoADLNh+c
-         n6/x6V5LHuy0sC3jhJOumec2GJPXQxsyVTu7uGUVS/Uy7jOmP4Q5jXCFZ0ERSSVVP/YI
-         Z+y9JHFj3ro7G/gwaLVv8ZTpWPP2yfyGzlFfbLq5XiKWZyaf6jg22Ki3XTmlrycVA166
-         4nTgIYlvGi0w8I8yFSHqWrUlMGPv8m8jJXPRGnCT2YSR5kzo0UZRVciA/zUX5AkkltPy
-         xZaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ixjBTL8ik2zV5HfQ8pkfcH2s6ihYaw94epz6NA5THr0=;
-        b=bwZ8hEKoUJkiwAI3J1EhfUBQKKMqFoV1FxiYYyVfW2XpV0KhSfU3fpRJzR7CFtynd6
-         3cyvKjuwIymH45wFv0OQQNkod9PLsMUloWGAG+jm1tO9VbzJ7k8bbcNpdvp+yJi3bFAF
-         0kgi5w64UYDRmoRxiVTTrWMQdXFWw8BYV+lPa7VF6e85v38TzTVbH894yHaE8xironAs
-         Kkmlij/8LjVWs9Rw3v53cz04h8wcsxgD1G0qjSNFqDiZnI9a/JekwEnUAcrEtsaceAhM
-         WtydM6vErHRP1AXtzx6UoD9HyWVVBvmp7SLHjt6MP3ifDfwODMUlbVcXIl7wg4lwXKzp
-         IKhg==
-X-Gm-Message-State: AOAM531uTc9VqIhpB67z1ymtXWEIMzLCX60DlTgjdsWWNAA9dd1u8wpQ
-        CA8M/tDpPMO/9FG1JoT7oJY=
-X-Google-Smtp-Source: ABdhPJxFGYpgWWb6Gi6heTy285YUjxFfSn9MdVqlYCtJiVWIsDKZjhEaDltE0LRUkUNU3eQWEwGzDw==
-X-Received: by 2002:a17:902:6b48:b029:d8:e603:75fb with SMTP id g8-20020a1709026b48b02900d8e60375fbmr7770525plt.6.1607627466851;
-        Thu, 10 Dec 2020 11:11:06 -0800 (PST)
-Received: from ast-mbp ([2620:10d:c090:400::5:2a7e])
-        by smtp.gmail.com with ESMTPSA id z27sm7068050pfq.70.2020.12.10.11.11.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 11:11:06 -0800 (PST)
-Date:   Thu, 10 Dec 2020 11:11:03 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        id S2390492AbgLJTVY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Dec 2020 14:21:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44348 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2393408AbgLJTVP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Dec 2020 14:21:15 -0500
+Message-ID: <e8d17e650f641be4aabf119753aa07cacfda2182.camel@kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607628034;
+        bh=YKLfDAdzsz7Ak59EB3e7WoxkKdBklgKDO7pZxFH5sx0=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=Jhh5h8NrycRLRflXtcVnqCZ9dUCHoQQaAXPnYvMn7gk36FSBn7YjjF9IC2dFRUd0T
+         KOfqEwPAGZqmjwn1xOEtfq5AEGdoqGrVF3SoSK6Hcvv2kO1f8kP1fuCWCBX/Eb4v6L
+         jy+NSkF4Eic/eJtgRZhLBbqLPVJSOf2y/2JZsTGnBpybpBT8URnmzx51mxZ+rjSUuE
+         66JpEtizF3q8B1QJQMnvRFfD2G48Bxq6aAjn1cBtu6HxUf3x0tL7kHXmSI1KcC6Agb
+         EsC56ZhKNKr5lflqkW9hEMXvUbJlnuYucYKJjxnAPUdZzSOMm11U3Zyjeox83NPgOf
+         SREKwW2+6WNlA==
+Subject: Re: Explaining XDP redirect bulk size design (Was: [PATCH v2 bpf
+ 1/5] net: ethtool: add xdp properties flag set)
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        David Ahern <dsahern@gmail.com>,
+        Frey Alfredsson <freysteinn@freysteinn.com>
+Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Daniel Diaz <daniel.diaz@linaro.org>,
-        Veronika Kabatova <vkabatov@redhat.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Guillaume Tucker <guillaume.tucker@collabora.com>,
-        Kevin Hilman <khilman@baylibre.com>
-Subject: Re: [PATCH] selftests: Skip BPF seftests by default
-Message-ID: <20201210191103.kfrna27kv3xwnshr@ast-mbp>
-References: <20201210185233.28091-1-broonie@kernel.org>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Toke =?ISO-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        alardam@gmail.com, magnus.karlsson@intel.com,
+        bjorn.topel@intel.com, andrii.nakryiko@gmail.com, kuba@kernel.org,
+        ast@kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
+        hawk@kernel.org, jonathan.lemon@gmail.com, bpf@vger.kernel.org,
+        jeffrey.t.kirsher@intel.com, maciejromanfijalkowski@gmail.com,
+        intel-wired-lan@lists.osuosl.org,
+        Marek Majtyka <marekx.majtyka@intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Date:   Thu, 10 Dec 2020 11:20:31 -0800
+In-Reply-To: <20201210143211.2490f7f4@carbon>
+References: <20201204102901.109709-1-marekx.majtyka@intel.com>
+         <20201204102901.109709-2-marekx.majtyka@intel.com> <878sad933c.fsf@toke.dk>
+         <20201204124618.GA23696@ranger.igk.intel.com>
+         <048bd986-2e05-ee5b-2c03-cd8c473f6636@iogearbox.net>
+         <20201207135433.41172202@carbon>
+         <5fce960682c41_5a96208e4@john-XPS-13-9370.notmuch>
+         <20201207230755.GB27205@ranger.igk.intel.com>
+         <5fd068c75b92d_50ce20814@john-XPS-13-9370.notmuch>
+         <20201209095454.GA36812@ranger.igk.intel.com>
+         <20201209125223.49096d50@carbon>
+         <6913010d-2fd6-6713-94e9-8f5b8ad4b708@gmail.com>
+         <20201210143211.2490f7f4@carbon>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201210185233.28091-1-broonie@kernel.org>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 06:52:33PM +0000, Mark Brown wrote:
-> The BPF selftests have build time dependencies on cutting edge versions
-> of tools in the BPF ecosystem including LLVM which are more involved
-> to satisfy than more typical requirements like installing a package from
-> your distribution.  This causes issues for users looking at kselftest in
-> as a whole who find that a default build of kselftest fails and that
-> resolving this is time consuming and adds administrative overhead.  The
-> fast pace of BPF development and the need for a full BPF stack to do
-> substantial development or validation work on the code mean that people
-> working directly on it don't see a reasonable way to keep supporting
-> older environments without causing problems with the usability of the
-> BPF tests in BPF development so these requirements are unlikely to be
-> relaxed in the immediate future.
+On Thu, 2020-12-10 at 14:32 +0100, Jesper Dangaard Brouer wrote:
+> On Wed, 9 Dec 2020 08:44:33 -0700
+> David Ahern <dsahern@gmail.com> wrote:
 > 
-> There is already support for skipping targets so in order to reduce the
-> barrier to entry for people interested in kselftest as a whole let's use
-> that to skip the BPF tests by default when people work with the top
-> level kselftest build system.  Users can still build the BPF selftests
-> as part of the wider kselftest build by specifying SKIP_TARGETS,
-> including setting an empty SKIP_TARGETS to build everything.  They can
-> also continue to build the BPF selftests individually in cases where
-> they are specifically focused on BPF.
+> > On 12/9/20 4:52 AM, Jesper Dangaard Brouer wrote:
+> > > But I have redesigned the ndo_xdp_xmit call to take a bulk of
+> > > packets
+> > > (up-to 16) so it should not be a problem to solve this by sharing
+> > > TX-queue and talking a lock per 16 packets.  I still recommend
+> > > that,
+> > > for fallback case,  you allocated a number a TX-queue and
+> > > distribute
+> > > this across CPUs to avoid hitting a congested lock (above
+> > > measurements
+> > > are the optimal non-congested atomic lock operation)  
+> > 
+> > I have been meaning to ask you why 16 for the XDP batching? If the
+> > netdev budget is 64, why not something higher like 32 or 64?
 > 
-> This isn't ideal since it means people will need to take special steps
-> to build the BPF tests but the dependencies mean that realistically this
-> is already the case to some extent and it makes it easier for people to
-> pick up and work with the other selftests which is hopefully a net win.
+> Thanks you for asking as there are multiple good reasons and
+> consideration for this 16 batch size.  Notice cpumap have batch size
+> 8,
+> which is also an explicit choice.  And AF_XDP went in the wrong
+> direction IMHO and I think have 256.  I designed this to be a choice
+> in
+> the map code, for the level of bulking it needs/wants.
 > 
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> ---
->  tools/testing/selftests/Makefile | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+> The low level explanation is that these 8 and 16 batch sizes are
+> optimized towards cache sizes and Intel's Line-Fill-Buffer
+> (prefetcher
+> with 10 elements).  I'm betting on that memory backing these 8 or 16
+> packets have higher chance to remain/being in cache, and I can
+> prefetch
+> them without evicting them from cache again.  In some cases the
+> pointer
+> to these packets are queued into a ptr_ring, and it is more optimal
+> to
+> write cacheline sizes 1 (8 pointers) or 2 (16 pointers) into the
+> ptr_ring.
 > 
-> diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-> index afbab4aeef3c..8a917cb4426a 100644
-> --- a/tools/testing/selftests/Makefile
-> +++ b/tools/testing/selftests/Makefile
-> @@ -77,8 +77,10 @@ TARGETS += zram
->  TARGETS_HOTPLUG = cpu-hotplug
->  TARGETS_HOTPLUG += memory-hotplug
->  
-> -# User can optionally provide a TARGETS skiplist.
-> -SKIP_TARGETS ?=
-> +# User can optionally provide a TARGETS skiplist.  By default we skip
-> +# BPF since it has cutting edge build time dependencies which require
-> +# more effort to install.
-> +SKIP_TARGETS ?= bpf
 
-I'm fine with this, but I'd rather make an obvious second step right away
-and move selftests/bpf into a different directory.
+I've warned people about this once or twice on the mailing list, for
+example re-populating the rx ring, a common mistake is to use the napi
+budget, which has the exact side effects as you are explaining here
+Jesper !
+
+these 8/16 numbers are used in more than one place in the stack, xdp,
+gro, hw buffer re-population, etc..
+how can we enforce such numbers and a uniform handling in all drivers?
+1. have a clear documentation ? well know defines, for people to copy?
+
+2. for XDP we must keep track on the memory backing of the xdp bulked
+data as Jesper pointed out, so we always make sure whatever bulk-size
+we define it always remains cache friendly, especially now where people
+stated working on  multi-buff and other features that will extend the
+xdp_buff and xdp_frame, do we need a selftest that maybe runs pahole to
+see the those data strcutre remain within reasonable format/sizes ?
+
+
+
+> The general explanation is my goal to do bulking without adding
+> latency.
+> This is explicitly stated in my presentation[1] as of Feb 2016, slide
+> 20.
+> Sure, you/we can likely make the micro-benchmarks look better by
+> using
+> 64 batch size, but that will introduce added latency and likely shoot
+> our-selves in the foot for real workloads.  With experience from
+> bufferbloat and real networks, we know that massive TX bulking have
+> bad
+> effects.  Still XDP-redirect does massive bulking (NIC flush is after
+> full 64 budget) and we don't have pushback or a queue mechanism (so I
+> know we are already shooting ourselves in the foot) ...  Fortunately
+> we
+> now have a PhD student working on queuing for XDP.
+> 
+> It is also important to understand that this is an adaptive bulking
+> scheme, which comes from NAPI.  We don't wait for packets arriving
+> shortly, we pickup what NIC have available, but by only taking 8 or
+> 16
+> packets (instead of emptying the entire RX-queue), and then spending
+> some time to send them along, I'm hoping that NIC could have gotten
+> some more frame.  For cpumap and veth (in-some-cases) they can start
+> to
+> consume packets from these batches, but NIC drivers gets
+> XDP_XMIT_FLUSH
+> signal at NAPI-end (xdp_do_flush). Still design allows NIC drivers to
+> update their internal queue state (and BQL), and if it gets close to
+> full they can choose to flush/doorbell the NIC earlier.  When doing
+> queuing for XDP we need to expose these NIC queue states, and having
+> 4
+> calls with 16 packets (64 budget) also gives us more chances to get
+> NIC
+> queue state info which the NIC already touch.
+> 
+> 
+> [1] 
+> https://people.netfilter.org/hawk/presentations/devconf2016/net_stack_challenges_100G_Feb2016.pdf
+
