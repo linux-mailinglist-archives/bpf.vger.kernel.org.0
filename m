@@ -2,397 +2,195 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B873C2D6E2E
-	for <lists+bpf@lfdr.de>; Fri, 11 Dec 2020 03:43:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 658A12D6E44
+	for <lists+bpf@lfdr.de>; Fri, 11 Dec 2020 03:58:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391267AbgLKCmO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Dec 2020 21:42:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48926 "EHLO
+        id S2403896AbgLKC5K (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Dec 2020 21:57:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391211AbgLKClp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Dec 2020 21:41:45 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D174C0613CF;
-        Thu, 10 Dec 2020 18:41:05 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id g18so6182502pgk.1;
-        Thu, 10 Dec 2020 18:41:05 -0800 (PST)
+        with ESMTP id S2403848AbgLKC4z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 10 Dec 2020 21:56:55 -0500
+Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6722DC0613CF;
+        Thu, 10 Dec 2020 18:56:15 -0800 (PST)
+Received: by mail-yb1-xb41.google.com with SMTP id j17so6724471ybt.9;
+        Thu, 10 Dec 2020 18:56:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=u6LomfCd/ngvTDgGqG892b0TaCCHkTf7IhHA6XaLchw=;
-        b=WbzPCnZeUdy9ngY5UYN7B42xB7suD7aQ+3F8etOKVt10szHY0LElTSbHx8hifCD+3q
-         RXIY30WzLXHmX1Lui8ebfdziCHstOND+dNIuqN/doI8N1lkJ4snWZObqw2bWBvj4c8A/
-         xdbdYCohpSIK4E0AeAS12LCbiBZfG5uk7hKThne83oOoIpjXDFEZAIcZcp1yqXhtQf52
-         dfIb5yb2nzJ45ts5W5BExt5RpFvLcx10FbzY+4VdRwXRnyOvxfkXPA4QqJrH0qb68jA/
-         QGe5jNI0R8hesEldxWzk+pcmYZOkyE5Km3e1VV2F3AENsPb2GAzBW4EuPwgeoXJ44oxs
-         5PAA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=t1OgNsXDqy4RHXMYPMntKp+s7RkYqqk2aQMqq723GrM=;
+        b=PN5U2cPcvywrBEdalt0lmzRKm1F0DjfRJANnq+zAj48xGqlzov6FeWzT2rZpVdTL5H
+         AMQ0kma4ne7xqLfCGBg5G8nQznEqiLBqZSqKSxUfhgF8wYI1wR4MJR3uHXl/kOW5cL1j
+         qZgSTVfHaMnITfqj9DagEn7CZeWVaVQ4FiXhhOnotfxjDz1q+WSIMBHx9++/rdTO3c/T
+         6XZ7VlBIE+GLrL1DDwOFiXQiH8qnppNEKepzx6ufuiuctF3mgkrPY24F/QUDL02fxE+h
+         hTVwFLSpMXe10JZOGs83okr708krgU5hecpgIBPjsSBv/3gASQDLVJq1UguaxWfTLXCM
+         vCWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=u6LomfCd/ngvTDgGqG892b0TaCCHkTf7IhHA6XaLchw=;
-        b=FTybIIApuW/5J57mJbDUBmRLgPgpndIzVLh8dRnR3BHbDuAIzB9Q+/+IOek5r21HB7
-         X9hTDBbE+ydm75uwbzgsW21glkV+IBCTrWokOlb7BMKdm05Kv9WBN0U4xYOrlo2fEJRz
-         9Jq1NiVOJvCiNuPE/W1zL7g/4NHgTgSLANLHojnlqXsUeCd1zyzOLRB9cxmJgzffDLx7
-         3vTXPjxyfIDcDrDLwH9f8EHaqtOkeUkTlNny7lIW8elS8cPSaEh1UpqmmldwMOzWbzYc
-         rRkiEGwlCnW1qkOfMCzp4lGA/SEsEQthOTCmwkTKxfh8Vk749QGFAWhg+IssU6EH9YKA
-         EefQ==
-X-Gm-Message-State: AOAM531zQgY4U1V1DNXbHWz355zfk1DGIPGBmR/yx5aZHuUBPqEBy7qF
-        qWyhwlcA1bQ9P/UzRmF1oVgeG0jR0a4SAzFI
-X-Google-Smtp-Source: ABdhPJwtbD93nLag5t8yZII0vRDqoWwQenfmyqRpBCfoIsLK4a8ppi5LLfCwx4hD5PEFWVLIYXXVvg==
-X-Received: by 2002:a63:591c:: with SMTP id n28mr9422214pgb.230.1607654463545;
-        Thu, 10 Dec 2020 18:41:03 -0800 (PST)
-Received: from localhost.localdomain.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id a10sm7738174pfi.168.2020.12.10.18.41.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 18:41:02 -0800 (PST)
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Yonghong Song <yhs@fb.com>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Hangbin Liu <liuhangbin@gmail.com>
-Subject: [PATCHv5 bpf-next] samples/bpf: add xdp program on egress for xdp_redirect_map
-Date:   Fri, 11 Dec 2020 10:40:49 +0800
-Message-Id: <20201211024049.1444017-1-liuhangbin@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201208120159.2278277-1-liuhangbin@gmail.com>
-References: <20201208120159.2278277-1-liuhangbin@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=t1OgNsXDqy4RHXMYPMntKp+s7RkYqqk2aQMqq723GrM=;
+        b=IYNDp1Jo8xtiq7LqGVAyYKknYLHPvRbGBRMGKZdLdDp1aKYs1uZVb/rhCjn777TlgB
+         b9q6zxvphRlz8tgfpIP/z4+CmOjQCqSCwzSp93M9vtbaagYoii9laHZiJUbYOogPhYqI
+         E81ERRP1UT+ENiOqW2ocSaO2Lp4u+Iuj4pVTlrVG3dq+f05lgxtO54yLL1F8txsH4Hfd
+         aqf55XiJ6r+LZPGQQNBmrI8OhTfDuo7bh8tJ2A64HZfb3vUxaRjy7eVEqXPgX9oIXCPP
+         INp7FEmQSwurvH5N9PqeoIWiaBIz/xjKTvHCr3aFJ9Uo7SJeGfFwo7Rgx3AkvGHPz+4v
+         2Scw==
+X-Gm-Message-State: AOAM5332PZ4pdKNvEyHW7iIOZpA4UJ+ZgCS+nGp7IHVBjLzYDtjkDnLu
+        FZ6ynUXsCGT93Ce9Xl2Oew5P53EEaSL/SA+5EXE=
+X-Google-Smtp-Source: ABdhPJzOQ0jJrRGeKPDJc1Br/Q5LHygCNW2Qd0WvXMP8aBw7tnRZeENJ4/nMayeKIriDm7+WTK7FvcdZ9XIQOJCNWC4=
+X-Received: by 2002:a25:6a05:: with SMTP id f5mr15568107ybc.459.1607655374568;
+ Thu, 10 Dec 2020 18:56:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAEf4BzZWabv_hExaANQyQ71L2JHYqXaT4hFj52w-poWoVYWKqQ@mail.gmail.com>
+ <20201210164315.GA184880@krava> <CAEf4BzaBOoZsSK8yGZBhwFzAADkQKsGt1quV9RvFk_+WZr=Y=Q@mail.gmail.com>
+ <CA+khW7hU1+Ba+33gxyGWgwUyq8sOQthaLu6tUQP_cGWqS46gDw@mail.gmail.com>
+In-Reply-To: <CA+khW7hU1+Ba+33gxyGWgwUyq8sOQthaLu6tUQP_cGWqS46gDw@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 10 Dec 2020 18:56:03 -0800
+Message-ID: <CAEf4BzZHFcc78YXQbrftPtD7dsMfPrS=A3dBJggAVETrJd3NoQ@mail.gmail.com>
+Subject: Re: Per-CPU variables in modules and pahole
+To:     Hao Luo <haoluo@google.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, bpf <bpf@vger.kernel.org>,
+        dwarves@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch add a xdp program on egress to show that we can modify
-the packet on egress. In this sample we will set the pkt's src
-mac to egress's mac address. The xdp_prog will be attached when
--X option supplied.
+On Thu, Dec 10, 2020 at 10:29 AM Hao Luo <haoluo@google.com> wrote:
+>
+> On Thu, Dec 10, 2020 at 9:02 AM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Thu, Dec 10, 2020 at 8:43 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> > >
+> > > On Wed, Dec 09, 2020 at 12:53:44PM -0800, Andrii Nakryiko wrote:
+> > > > Hi,
+> > > >
+> > > > I'm working on supporting per-CPU symbols in BPF/libbpf, and the
+> > > > prerequisite for that is BTF data for .data..percpu data section and
+> > > > variables inside that.
+> > > >
+> > > > Turns out, pahole doesn't currently emit any BTF information for such
+> > > > variables in kernel modules. And the reason why is quite confusing and
+> > > > I can't figure it out myself, so was hoping someone else might be able
+> > > > to help.
+> > > >
+> > > > To repro, you can take latest bpf-next tree and add this to
+> > > > bpf_testmod/bpf_testmod.c inside selftests/bpf:
+> > > >
+> > > > $ git diff bpf_testmod/bpf_testmod.c
+> > > >       diff --git
+> > > > a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> > > > b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> > > > index 2df19d73ca49..b2086b798019 100644
+> > > > --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> > > > +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> > > > @@ -3,6 +3,7 @@
+> > > >  #include <linux/error-injection.h>
+> > > >  #include <linux/init.h>
+> > > >  #include <linux/module.h>
+> > > > +#include <linux/percpu-defs.h>
+> > > >  #include <linux/sysfs.h>
+> > > >  #include <linux/tracepoint.h>
+> > > >  #include "bpf_testmod.h"
+> > > > @@ -10,6 +11,10 @@
+> > > >  #define CREATE_TRACE_POINTS
+> > > >  #include "bpf_testmod-events.h"
+> > > >
+> > > > +DEFINE_PER_CPU(int, bpf_testmod_ksym_dummy1) = -1;
+> > > > +DEFINE_PER_CPU(int, bpf_testmod_ksym_percpu) = 123;
+> > > > +DEFINE_PER_CPU(int, bpf_testmod_ksym_dummy2) = -1;
+> > > > +
+> > > >  noinline ssize_t
+> > > >  bpf_testmod_test_read(struct file *file, struct kobject *kobj,
+> > > >                       struct bin_attribute *bin_attr,
+> > > >
+> > > > 1. So the very first issue (that I'm going to ignore for now) is that
+> > > > if I just added bpf_testmod_ksym_percpu, it would get addr == 0 and
+> > > > would be ignored by the current pahole logic. So we need to fix that
+> > > > for modules. Adding dummy1 and dummy2 takes care of this for now,
+> > > > bpf_testmod_ksym_percpu has offset 4.
+> > >
+> > > I removed that addr zero check in the modules changes but when
+> > > collecting functions, but it's still there in collect_percpu_var
+> >
+> > Hao had some reason to skip per-cpu variables with offset 0, maybe he
+> > can comment on that before we change it.
+> >
+>
+> When I initially write that check, I see there are multiple symbols of
+> the same name that associate with a single variable, but there is only
+> one that has a non-zero address. Besides, there are symbols that don't
+> associate to any variable and they have zero address. For example,
+> those defined as __ADDRESSABLE(sym) and __UNIQUE_ID(prefix). They are
+> quite a lot, I remember. So I filtered out the zero address for the
+> purpose of accelerating encoding. I noticed that on x86_64, the first
+> page of the percpu section is reserved, so I deem those symbols that
+> are of normal interest should have positive addresses.
 
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
----
-v5:
-a) close fd when err out in get_mac_addr()
-b) exit program when both -S and -X supplied.
+So I just checked my local vmlinux image, and seems like the only one
+with addr == 0 is fixed_percpu_data. Everything else that's detected
+as belonging to .data..percpu section looks sane and has non-zero
+offset.
 
-v4:
-a) Update get_mac_addr socket create
-b) Load dummy prog regardless of 2nd xdp prog on egress
+So I think this might have been the case before we switched to using
+ELF symbols and now it's not? I think I'll just drop this check, will
+post the patch, and would really appreciate if you can test it in your
+environment. Does that sound ok?
 
-v3:
-a) modify the src mac address based on egress mac
-
-v2:
-a) use pkt counter instead of IP ttl modification on egress program
-b) make the egress program selectable by option -X
----
- samples/bpf/xdp_redirect_map_kern.c |  60 +++++++++++++--
- samples/bpf/xdp_redirect_map_user.c | 113 +++++++++++++++++++++++-----
- 2 files changed, 148 insertions(+), 25 deletions(-)
-
-diff --git a/samples/bpf/xdp_redirect_map_kern.c b/samples/bpf/xdp_redirect_map_kern.c
-index 6489352ab7a4..6b2164722649 100644
---- a/samples/bpf/xdp_redirect_map_kern.c
-+++ b/samples/bpf/xdp_redirect_map_kern.c
-@@ -19,12 +19,22 @@
- #include <linux/ipv6.h>
- #include <bpf/bpf_helpers.h>
- 
-+/* The 2nd xdp prog on egress does not support skb mode, so we define two
-+ * maps, tx_port_general and tx_port_native.
-+ */
- struct {
- 	__uint(type, BPF_MAP_TYPE_DEVMAP);
- 	__uint(key_size, sizeof(int));
- 	__uint(value_size, sizeof(int));
- 	__uint(max_entries, 100);
--} tx_port SEC(".maps");
-+} tx_port_general SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_DEVMAP);
-+	__uint(key_size, sizeof(int));
-+	__uint(value_size, sizeof(struct bpf_devmap_val));
-+	__uint(max_entries, 100);
-+} tx_port_native SEC(".maps");
- 
- /* Count RX packets, as XDP bpf_prog doesn't get direct TX-success
-  * feedback.  Redirect TX errors can be caught via a tracepoint.
-@@ -36,6 +46,14 @@ struct {
- 	__uint(max_entries, 1);
- } rxcnt SEC(".maps");
- 
-+/* map to stroe egress interface mac address */
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__type(key, u32);
-+	__type(value, __be64);
-+	__uint(max_entries, 1);
-+} tx_mac SEC(".maps");
-+
- static void swap_src_dst_mac(void *data)
- {
- 	unsigned short *p = data;
-@@ -52,17 +70,16 @@ static void swap_src_dst_mac(void *data)
- 	p[5] = dst[2];
- }
- 
--SEC("xdp_redirect_map")
--int xdp_redirect_map_prog(struct xdp_md *ctx)
-+static int xdp_redirect_map(struct xdp_md *ctx, void *redirect_map)
- {
- 	void *data_end = (void *)(long)ctx->data_end;
- 	void *data = (void *)(long)ctx->data;
- 	struct ethhdr *eth = data;
- 	int rc = XDP_DROP;
--	int vport, port = 0, m = 0;
- 	long *value;
- 	u32 key = 0;
- 	u64 nh_off;
-+	int vport;
- 
- 	nh_off = sizeof(*eth);
- 	if (data + nh_off > data_end)
-@@ -79,7 +96,40 @@ int xdp_redirect_map_prog(struct xdp_md *ctx)
- 	swap_src_dst_mac(data);
- 
- 	/* send packet out physical port */
--	return bpf_redirect_map(&tx_port, vport, 0);
-+	return bpf_redirect_map(redirect_map, vport, 0);
-+}
-+
-+SEC("xdp_redirect_general")
-+int xdp_redirect_map_general(struct xdp_md *ctx)
-+{
-+	return xdp_redirect_map(ctx, &tx_port_general);
-+}
-+
-+SEC("xdp_redirect_native")
-+int xdp_redirect_map_native(struct xdp_md *ctx)
-+{
-+	return xdp_redirect_map(ctx, &tx_port_native);
-+}
-+
-+SEC("xdp_devmap/map_prog")
-+int xdp_redirect_map_egress(struct xdp_md *ctx)
-+{
-+	void *data_end = (void *)(long)ctx->data_end;
-+	void *data = (void *)(long)ctx->data;
-+	struct ethhdr *eth = data;
-+	__be64 *mac;
-+	u32 key = 0;
-+	u64 nh_off;
-+
-+	nh_off = sizeof(*eth);
-+	if (data + nh_off > data_end)
-+		return XDP_DROP;
-+
-+	mac = bpf_map_lookup_elem(&tx_mac, &key);
-+	if (mac)
-+		__builtin_memcpy(eth->h_source, mac, ETH_ALEN);
-+
-+	return XDP_PASS;
- }
- 
- /* Redirect require an XDP bpf_prog loaded on the TX device */
-diff --git a/samples/bpf/xdp_redirect_map_user.c b/samples/bpf/xdp_redirect_map_user.c
-index 31131b6e7782..a5a70df215c3 100644
---- a/samples/bpf/xdp_redirect_map_user.c
-+++ b/samples/bpf/xdp_redirect_map_user.c
-@@ -14,6 +14,10 @@
- #include <unistd.h>
- #include <libgen.h>
- #include <sys/resource.h>
-+#include <sys/ioctl.h>
-+#include <sys/types.h>
-+#include <sys/socket.h>
-+#include <netinet/in.h>
- 
- #include "bpf_util.h"
- #include <bpf/bpf.h>
-@@ -22,6 +26,7 @@
- static int ifindex_in;
- static int ifindex_out;
- static bool ifindex_out_xdp_dummy_attached = true;
-+static bool xdp_devmap_attached = false;
- static __u32 prog_id;
- static __u32 dummy_prog_id;
- 
-@@ -83,6 +88,32 @@ static void poll_stats(int interval, int ifindex)
- 	}
- }
- 
-+static int get_mac_addr(unsigned int ifindex_out, void *mac_addr)
-+{
-+	char ifname[IF_NAMESIZE];
-+	struct ifreq ifr;
-+	int fd, ret = -1;
-+
-+	fd = socket(AF_INET, SOCK_DGRAM, 0);
-+	if (fd < 0)
-+		return ret;
-+
-+	if (!if_indextoname(ifindex_out, ifname))
-+		goto err_out;
-+
-+	strcpy(ifr.ifr_name, ifname);
-+
-+	if (ioctl(fd, SIOCGIFHWADDR, &ifr) != 0)
-+		goto err_out;
-+
-+	memcpy(mac_addr, ifr.ifr_hwaddr.sa_data, 6 * sizeof(char));
-+	ret = 0;
-+
-+err_out:
-+	close(fd);
-+	return ret;
-+}
-+
- static void usage(const char *prog)
- {
- 	fprintf(stderr,
-@@ -90,24 +121,26 @@ static void usage(const char *prog)
- 		"OPTS:\n"
- 		"    -S    use skb-mode\n"
- 		"    -N    enforce native mode\n"
--		"    -F    force loading prog\n",
-+		"    -F    force loading prog\n"
-+		"    -X    load xdp program on egress\n",
- 		prog);
- }
- 
- int main(int argc, char **argv)
- {
- 	struct bpf_prog_load_attr prog_load_attr = {
--		.prog_type	= BPF_PROG_TYPE_XDP,
-+		.prog_type	= BPF_PROG_TYPE_UNSPEC,
- 	};
--	struct bpf_program *prog, *dummy_prog;
-+	struct bpf_program *prog, *dummy_prog, *devmap_prog;
-+	int prog_fd, dummy_prog_fd, devmap_prog_fd = -1;
-+	int tx_port_map_fd, tx_mac_map_fd;
-+	struct bpf_devmap_val devmap_val;
- 	struct bpf_prog_info info = {};
- 	__u32 info_len = sizeof(info);
--	int prog_fd, dummy_prog_fd;
--	const char *optstr = "FSN";
-+	const char *optstr = "FSNX";
- 	struct bpf_object *obj;
- 	int ret, opt, key = 0;
- 	char filename[256];
--	int tx_port_map_fd;
- 
- 	while ((opt = getopt(argc, argv, optstr)) != -1) {
- 		switch (opt) {
-@@ -120,14 +153,21 @@ int main(int argc, char **argv)
- 		case 'F':
- 			xdp_flags &= ~XDP_FLAGS_UPDATE_IF_NOEXIST;
- 			break;
-+		case 'X':
-+			xdp_devmap_attached = true;
-+			break;
- 		default:
- 			usage(basename(argv[0]));
- 			return 1;
- 		}
- 	}
- 
--	if (!(xdp_flags & XDP_FLAGS_SKB_MODE))
-+	if (!(xdp_flags & XDP_FLAGS_SKB_MODE)) {
- 		xdp_flags |= XDP_FLAGS_DRV_MODE;
-+	} else if (xdp_devmap_attached) {
-+		printf("Load xdp program on egress with SKB mode not supported yet\n");
-+		return 1;
-+	}
- 
- 	if (optind == argc) {
- 		printf("usage: %s <IFNAME|IFINDEX>_IN <IFNAME|IFINDEX>_OUT\n", argv[0]);
-@@ -150,24 +190,28 @@ int main(int argc, char **argv)
- 	if (bpf_prog_load_xattr(&prog_load_attr, &obj, &prog_fd))
- 		return 1;
- 
--	prog = bpf_program__next(NULL, obj);
--	dummy_prog = bpf_program__next(prog, obj);
--	if (!prog || !dummy_prog) {
--		printf("finding a prog in obj file failed\n");
--		return 1;
-+	if (xdp_flags & XDP_FLAGS_SKB_MODE) {
-+		prog = bpf_object__find_program_by_title(obj, "xdp_redirect_general");
-+		tx_port_map_fd = bpf_object__find_map_fd_by_name(obj, "tx_port_general");
-+	} else {
-+		prog = bpf_object__find_program_by_title(obj, "xdp_redirect_native");
-+		tx_port_map_fd = bpf_object__find_map_fd_by_name(obj, "tx_port_native");
-+	}
-+	dummy_prog = bpf_object__find_program_by_title(obj, "xdp_redirect_dummy");
-+	if (!prog || dummy_prog < 0 || tx_port_map_fd < 0) {
-+		printf("finding prog/tx_port_map in obj file failed\n");
-+		goto out;
- 	}
--	/* bpf_prog_load_xattr gives us the pointer to first prog's fd,
--	 * so we're missing only the fd for dummy prog
--	 */
-+	prog_fd = bpf_program__fd(prog);
- 	dummy_prog_fd = bpf_program__fd(dummy_prog);
--	if (prog_fd < 0 || dummy_prog_fd < 0) {
-+	if (prog_fd < 0 || dummy_prog_fd < 0 || tx_port_map_fd < 0) {
- 		printf("bpf_prog_load_xattr: %s\n", strerror(errno));
- 		return 1;
- 	}
- 
--	tx_port_map_fd = bpf_object__find_map_fd_by_name(obj, "tx_port");
-+	tx_mac_map_fd = bpf_object__find_map_fd_by_name(obj, "tx_mac");
- 	rxcnt_map_fd = bpf_object__find_map_fd_by_name(obj, "rxcnt");
--	if (tx_port_map_fd < 0 || rxcnt_map_fd < 0) {
-+	if (tx_mac_map_fd < 0 || rxcnt_map_fd < 0) {
- 		printf("bpf_object__find_map_fd_by_name failed\n");
- 		return 1;
- 	}
-@@ -199,11 +243,40 @@ int main(int argc, char **argv)
- 	}
- 	dummy_prog_id = info.id;
- 
-+	/* Load 2nd xdp prog on egress. */
-+	if (xdp_devmap_attached) {
-+		unsigned char mac_addr[6];
-+
-+		devmap_prog = bpf_object__find_program_by_title(obj, "xdp_devmap/map_prog");
-+		if (!devmap_prog) {
-+			printf("finding devmap_prog in obj file failed\n");
-+			goto out;
-+		}
-+		devmap_prog_fd = bpf_program__fd(devmap_prog);
-+		if (devmap_prog_fd < 0) {
-+			printf("finding devmap_prog fd failed\n");
-+			goto out;
-+		}
-+
-+		if (get_mac_addr(ifindex_out, mac_addr) < 0) {
-+			printf("get interface %d mac failed\n", ifindex_out);
-+			goto out;
-+		}
-+
-+		ret = bpf_map_update_elem(tx_mac_map_fd, &key, mac_addr, 0);
-+		if (ret) {
-+			perror("bpf_update_elem tx_mac_map_fd");
-+			goto out;
-+		}
-+	}
-+
-+
- 	signal(SIGINT, int_exit);
- 	signal(SIGTERM, int_exit);
- 
--	/* populate virtual to physical port map */
--	ret = bpf_map_update_elem(tx_port_map_fd, &key, &ifindex_out, 0);
-+	devmap_val.ifindex = ifindex_out;
-+	devmap_val.bpf_prog.fd = devmap_prog_fd;
-+	ret = bpf_map_update_elem(tx_port_map_fd, &key, &devmap_val, 0);
- 	if (ret) {
- 		perror("bpf_update_elem");
- 		goto out;
--- 
-2.26.2
-
+>
+> >
+> > >
+> > > >
+> > > > 2. Second issue is more interesting. Somehow, when pahole iterates
+> > > > over DWARF variables, the address of bpf_testmod_ksym_percpu is
+> > > > reported as 0x10e74, not 4. Which totally confuses pahole because
+> > > > according to ELF symbols, bpf_testmod_ksym_percpu symbol has value 4.
+> > > > I tracked this down to dwarf_getlocation() returning 10e74 as number
+> > > > field in expr.
+> > >
+> > > in which place do you see that address? when I put displayed
+> > > address from collect_percpu_var it shows 4
+> >
+> > yes, ELF symbol's value is 4, but when iterating DWARF variables
+> > (0x10e70 + 4) is returned. It does look like a special handling of
+> > modules. I missed that libdw does some special things for specifically
+> > modules. Further debugging yesterday showed that 0x10e70 roughly
+> > corresponds to the offset of .data..per_cpu if you count all the
+> > allocatable data sections that come before it. So I think you are
+> > right. We should probably centralize the logic of kernel module
+> > detection so that we can handle these module vs non-module differences
+> > properly.
+> >
+> > >
+> > > not sure this is related but looks like similar issue I had to
+> > > solve for modules functions, as described in the changelog:
+> > > (not merged yet)
+> > >
+> > >     btf_encoder: Detect kernel module ftrace addresses
+> > >
+> > >     ...
+> > >     There's one tricky point with kernel modules wrt Elf object,
+> > >     which we get from dwfl_module_getelf function. This function
+> > >     performs all possible relocations, including __mcount_loc
+> > >     section.
+> > >
+> > >     So addrs array contains relocated values, which we need take
+> > >     into account when we compare them to functions values which
+> > >     are relative to their sections.
+> > >     ...
+> > >
+> > > The 0x10e74 value could be relocated 4.. but it's me guessing,
+> > > because not sure where you see that address exactly
+> >
+> >
+> > It comes up in cu__encode_btf(), var->ip.addr is not 4, as we expect it to be.
+> >
+> > >
+> > > jirka
+> > >
