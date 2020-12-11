@@ -2,136 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 545262D6F07
-	for <lists+bpf@lfdr.de>; Fri, 11 Dec 2020 05:13:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE3AF2D6F42
+	for <lists+bpf@lfdr.de>; Fri, 11 Dec 2020 05:30:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395297AbgLKENA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 10 Dec 2020 23:13:00 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:46128 "EHLO
+        id S2389162AbgLKE3B convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Thu, 10 Dec 2020 23:29:01 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:51262 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2395304AbgLKEMd (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 10 Dec 2020 23:12:33 -0500
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BB44cu7005446
-        for <bpf@vger.kernel.org>; Thu, 10 Dec 2020 20:11:52 -0800
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 35byu08etm-2
+        by vger.kernel.org with ESMTP id S2395376AbgLKE2s (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 10 Dec 2020 23:28:48 -0500
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BB4DJtQ013722
+        for <bpf@vger.kernel.org>; Thu, 10 Dec 2020 20:28:08 -0800
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 35by3urpfs-3
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Thu, 10 Dec 2020 20:11:52 -0800
-Received: from intmgw003.03.ash8.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Thu, 10 Dec 2020 20:28:07 -0800
+Received: from intmgw001.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 10 Dec 2020 20:11:52 -0800
+ 15.1.1979.3; Thu, 10 Dec 2020 20:28:06 -0800
 Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 3A7092ECB19F; Thu, 10 Dec 2020 20:11:48 -0800 (PST)
+        id 90F322ECB1A1; Thu, 10 Dec 2020 20:28:03 -0800 (PST)
 From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <dwarves@vger.kernel.org>, <acme@kernel.org>, <bpf@vger.kernel.org>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@redhat.com>
-Subject: [PATCH dwarves 2/2] btf_encoder: fix skipping per-CPU variables at offset 0
-Date:   Thu, 10 Dec 2020 20:11:38 -0800
-Message-ID: <20201211041139.589692-3-andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH RFC bpf-next  0/4] Support kernel module ksym variables
+Date:   Thu, 10 Dec 2020 20:27:30 -0800
+Message-ID: <20201211042734.730147-1-andrii@kernel.org>
 X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20201211041139.589692-1-andrii@kernel.org>
-References: <20201211041139.589692-1-andrii@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
 X-FB-Internal: Safe
 Content-Type: text/plain
+Content-Transfer-Encoding: 8BIT
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
  definitions=2020-12-11_01:2020-12-09,2020-12-11 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
- mlxlogscore=954 mlxscore=0 lowpriorityscore=0 malwarescore=0
- impostorscore=0 bulkscore=0 priorityscore=1501 spamscore=0 suspectscore=8
- clxscore=1034 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012110022
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 phishscore=0
+ lowpriorityscore=0 spamscore=0 adultscore=0 clxscore=1034 impostorscore=0
+ malwarescore=0 priorityscore=1501 mlxlogscore=999 suspectscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012110023
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adjust pahole logic of skipping any per-CPU symbol with offset 0, which is
-especially bad for kernel modules, because it most certainly skips the very
-first per-CPU variable.
+This RFC is sent to show how ksym variable access in BPF program can be
+supported for kernel modules and gather some feedback while necessary fixes
+for pahole ([0]) are reviewed and hopefully will make it into 1.20 version.
 
-Instead, do collect per-CPU ELF symbol with 0 offset, but do extra check for
-non-kernel module case by verifying that ELF symbol name and DWARF variable
-name match. Due to the bug of DWARF name of variable sometimes being NULL,
-this is necessarily too pessimistic check (e.g., on my vmlinux image,
-fixed_percpu_data variable is still not emitted due to missing DWARF variable
-name), it allows to emit data for all module per-CPU variables.
+This work builds on all the previous kernel and libbpf changes to support
+kernel module BTFs. On top of that, BPF verifier will now support ldimm64 with
+src_reg=BPF_PSEUDO_BTF_ID and non-zero insn[1].imm field, which contains BTF
+FD for kernel module. In such case, used module BTF, similarly to used BPF
+map, will be recorded and refcnt will be increased for both BTF object itself
+and its kernel module. This makes sure kernel module won't be unloaded from
+under active attached BPF program.
 
-Fixes: f3d9054ba8ff ("btf_encoder: Teach pahole to store percpu variables in vmlinux BTF.")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- btf_encoder.c | 40 ++++++++++++++++++++++++----------------
- 1 file changed, 24 insertions(+), 16 deletions(-)
+New selftest validates all this is working as intended. bpf_testmod.ko is
+extended with per-CPU variable.
 
-diff --git a/btf_encoder.c b/btf_encoder.c
-index a7d484765ce2..1d7817078f89 100644
---- a/btf_encoder.c
-+++ b/btf_encoder.c
-@@ -412,21 +412,6 @@ static int collect_percpu_var(struct btf_elf *btfe, GElf_Sym *sym)
- 		return 0;
- 
- 	addr = elf_sym__value(sym);
--	/*
--	 * Store only those symbols that have allocated space in the percpu section.
--	 * This excludes the following three types of symbols:
--	 *
--	 *  1. __ADDRESSABLE(sym), which are forcely emitted as symbols.
--	 *  2. __UNIQUE_ID(prefix), which are introduced to generate unique ids.
--	 *  3. __exitcall(fn), functions which are labeled as exit calls.
--	 *
--	 * In addition, the variables defined using DEFINE_PERCPU_FIRST are
--	 * also not included, which currently includes:
--	 *
--	 *  1. fixed_percpu_data
--	 */
--	if (!addr)
--		return 0;
- 
- 	size = elf_sym__size(sym);
- 	if (!size)
-@@ -652,7 +637,7 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
- 
- 	cu__for_each_variable(cu, core_id, pos) {
- 		uint32_t size, type, linkage;
--		const char *name;
-+		const char *name, *dwarf_name;
- 		uint64_t addr;
- 		int id;
- 
-@@ -680,6 +665,29 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
- 		if (!percpu_var_exists(addr, &size, &name))
- 			continue; /* not a per-CPU variable */
- 
-+		/* A lot of "special" DWARF variables (e.g, __UNIQUE_ID___xxx)
-+		 * have addr == 0, which is the same as, say, valid
-+		 * fixed_percpu_data per-CPU variable. To distinguish between
-+		 * them, additionally compare DWARF and ELF symbol names. If
-+		 * DWARF doesn't provide proper name, pessimistically assume
-+		 * bad variable.
-+		 *
-+		 * Examples of such special variables are:
-+		 *
-+		 *  1. __ADDRESSABLE(sym), which are forcely emitted as symbols.
-+		 *  2. __UNIQUE_ID(prefix), which are introduced to generate unique ids.
-+		 *  3. __exitcall(fn), functions which are labeled as exit calls.
-+		 *
-+		 *  This is relevant only for vmlinux image, as for kernel
-+		 *  modules per-CPU data section has non-zero offset so all
-+		 *  per-CPU symbols have non-zero values.
-+		 */
-+		if (var->ip.addr == 0) {
-+			dwarf_name = variable__name(var, cu);
-+			if (!dwarf_name || strcmp(dwarf_name, name))
-+				continue;
-+		}
-+
- 		if (var->spec)
- 			var = var->spec;
- 
+  [0] https://patchwork.kernel.org/project/netdevbpf/list/?series=400229&state=*
+
+Andrii Nakryiko (4):
+  selftests/bpf: sync RCU before unloading bpf_testmod
+  bpf: support BPF ksym variables in kernel modules
+  libbpf: support kernel module ksym externs
+  selftests/bpf: test kernel module ksym externs
+
+ include/linux/bpf.h                           |   9 ++
+ include/linux/bpf_verifier.h                  |   3 +
+ include/linux/btf.h                           |   3 +
+ kernel/bpf/btf.c                              |  31 +++-
+ kernel/bpf/core.c                             |  23 +++
+ kernel/bpf/verifier.c                         | 149 ++++++++++++++----
+ tools/lib/bpf/libbpf.c                        |  47 ++++--
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |   3 +
+ .../selftests/bpf/prog_tests/btf_map_in_map.c |  33 ----
+ .../selftests/bpf/prog_tests/ksyms_module.c   |  33 ++++
+ .../selftests/bpf/progs/test_ksyms_module.c   |  26 +++
+ tools/testing/selftests/bpf/test_progs.c      |  40 +++++
+ tools/testing/selftests/bpf/test_progs.h      |   1 +
+ 13 files changed, 321 insertions(+), 80 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/ksyms_module.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_ksyms_module.c
+
 -- 
 2.24.1
 
