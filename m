@@ -2,96 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBE8A2D8126
-	for <lists+bpf@lfdr.de>; Fri, 11 Dec 2020 22:30:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B322D8132
+	for <lists+bpf@lfdr.de>; Fri, 11 Dec 2020 22:40:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392109AbgLKV2s (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Dec 2020 16:28:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391247AbgLKV2Z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Dec 2020 16:28:25 -0500
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DC93C0613CF;
-        Fri, 11 Dec 2020 13:27:45 -0800 (PST)
-Received: by mail-pg1-x541.google.com with SMTP id t37so7998424pga.7;
-        Fri, 11 Dec 2020 13:27:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AxBo7DuCrY0w5ou/wBwlnRTDbvkCAR5nr/KwMCjdb68=;
-        b=KvLRscuSEUJV1BFdXM0yFL+IE8NvUQW9mxdaFu9r9eCcvitCd38Q/7Kd5/7EaSBJUE
-         +Jj3nTQzmfrcBAV7eDCZaXPyLozwExHULFF33G5+5UKlxYu8Iq2/ug0uzRFQOzsqy84h
-         nwEZjVJBNyM0Zq4tUdu98uqPpMaurHzy2YJB9cKU1jcJG/VmJF6ujNmkJajnsts8IZ0z
-         UiWxK0pGaorJl0zZmAJkexlHoANSzd176vBoQ7pjn9keQqa9AInsoyk8Z9KqWj21fIbu
-         sSbWaVhAglBOzhUehaxF8WtbglAcXpcg6fjszeAj5Zy6svE6hSQ6pRYbW6tX/QodAaHh
-         XT1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AxBo7DuCrY0w5ou/wBwlnRTDbvkCAR5nr/KwMCjdb68=;
-        b=Qjw4JEl2XRMZu3DRNXfatIgUXvvfhn2bR0iB4ajen30CFTSE7srndw4A8DSXUWtcOE
-         jxh1u/cVgBhUGHCgR48QaKkqa2ymaZ6MM/D+tA3fbHm603M3TnSaMnn9ECPR4Fc/mwGl
-         to0chQXt35lIavwrxuR6iR34i9J1/lPuj0xCEpeb43QyK3cDh+Ai8qUabUZjadyB0say
-         NQQm4OvMOUXh6ERXjBDPxxujmmuNlDhUqm14gpfBP/o3pr/EkBPkZomvguIxjHEfv83f
-         E3W6P//2U1kszyvla748S9jBmuTe5RutukIhsyXlslDEtMMwV8qeM+a+lcDPDVcF6QW8
-         CMRg==
-X-Gm-Message-State: AOAM5314AgRKyGm2c1BmQHfPlvJ7vGTb+tTe1vDEP8usnUBjUfHPr51+
-        J3duhs3bdH6yDh0HkfIqRoo9Nh6qAMM=
-X-Google-Smtp-Source: ABdhPJx3t6YXv33M0E7++zQ+biP6+i2ejP610JaePUsbaeGNYoAe6RG9XY7q0PJRj46db3rFHzlyWw==
-X-Received: by 2002:a63:1450:: with SMTP id 16mr13822220pgu.279.1607722064831;
-        Fri, 11 Dec 2020 13:27:44 -0800 (PST)
-Received: from ast-mbp ([2620:10d:c090:400::5:70e5])
-        by smtp.gmail.com with ESMTPSA id g16sm11124221pfh.187.2020.12.11.13.27.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Dec 2020 13:27:43 -0800 (PST)
-Date:   Fri, 11 Dec 2020 13:27:41 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
-        daniel@iogearbox.net, kernel-team@fb.com
-Subject: Re: [PATCH RFC bpf-next  2/4] bpf: support BPF ksym variables in
- kernel modules
-Message-ID: <20201211212741.o2peyh3ybnkxsu5a@ast-mbp>
-References: <20201211042734.730147-1-andrii@kernel.org>
- <20201211042734.730147-3-andrii@kernel.org>
+        id S2406007AbgLKViY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Dec 2020 16:38:24 -0500
+Received: from www62.your-server.de ([213.133.104.62]:58094 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404598AbgLKVhX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Dec 2020 16:37:23 -0500
+Received: from 30.101.7.85.dynamic.wline.res.cust.swisscom.ch ([85.7.101.30] helo=localhost)
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1knq5h-000Eo1-Ja; Fri, 11 Dec 2020 22:36:41 +0100
+From:   Daniel Borkmann <daniel@iogearbox.net>
+To:     torvalds@linux-foundation.org
+Cc:     davem@davemloft.net, kuba@kernel.org, bpf@vger.kernel.org,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: [PATCH] bpf: Fix enum names for bpf_this_cpu_ptr() and bpf_per_cpu_ptr() helpers
+Date:   Fri, 11 Dec 2020 22:36:25 +0100
+Message-Id: <7c371fff2427c749f32523b9a4b834fe2dd1d58e.1607712517.git.daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201211042734.730147-3-andrii@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26014/Thu Dec 10 15:21:42 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 08:27:32PM -0800, Andrii Nakryiko wrote:
-> During BPF program load time, verifier will resolve FD to BTF object and will
-> take reference on BTF object itself and, for module BTFs, corresponding module
-> as well, to make sure it won't be unloaded from under running BPF program. The
-> mechanism used is similar to how bpf_prog keeps track of used bpf_maps.
-...
-> +
-> +	/* if we reference variables from kernel module, bump its refcount */
-> +	if (btf_is_module(btf)) {
-> +		btf_mod->module = btf_try_get_module(btf);
+From: Andrii Nakryiko <andrii@kernel.org>
 
-Is it necessary to refcnt the module? Correct me if I'm wrong, but
-for module's BTF we register a notifier. Then the module can be rmmod-ed
-at any time and we will do btf_put() for corresponding BTF, but that BTF may
-stay around because bpftool or something is looking at it.
-Similarly when prog is attached to raw_tp in a module we currently do try_module_get(),
-but is it really necessary ? When bpf is attached to a netdev the netdev can
-be removed and the link will be dangling. May be it makes sense to do the same
-with modules?  The raw_tp can become dangling after rmmod and the prog won't be
-executed anymore. So hard coded address of a per-cpu var in a ksym will
-be pointing to freed mod memory after rmmod, but that's ok, since that prog will
-never execute.
-On the other side if we envision a bpf prog attaching to a vmlinux function
-and accessing per-cpu or normal ksym in some module it would need to inc refcnt
-of that module, since we won't be able to guarantee that this prog will
-not execute any more. So we cannot allow dangling memory addresses.
-If latter is what we want to allow then we probably need a test case for it and
-document the reasons for keeping modules pinned while progs access their data.
-Since such pinning behavior is different from other bpf attaching cases where
-underlying objects (like netdev and cgroup) can go away.
+Remove bpf_ prefix, which causes these helpers to be reported in verifier
+dump as bpf_bpf_this_cpu_ptr() and bpf_bpf_per_cpu_ptr(), respectively. Lets
+fix it as long as it is still possible before UAPI freezes on these helpers.
+
+Fixes: eaa6bcb71ef6 ("bpf: Introduce bpf_per_cpu_ptr()")
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+---
+ [ Hi Linus, this small fix came unfortunately after we sent our last bpf
+   pull request to David's net tree, and as far as I'm aware no further pull
+   request for final 5.10 is planned at this moment from David's or Jakub's
+   side. If you could apply this last fix directly to your tree, that would
+   be very much appreciated. Thanks a lot! ]
+
+ include/uapi/linux/bpf.h       | 4 ++--
+ kernel/bpf/helpers.c           | 4 ++--
+ kernel/trace/bpf_trace.c       | 4 ++--
+ tools/include/uapi/linux/bpf.h | 4 ++--
+ 4 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index e6ceac3f7d62..556216dc9703 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -3897,8 +3897,8 @@ union bpf_attr {
+ 	FN(seq_printf_btf),		\
+ 	FN(skb_cgroup_classid),		\
+ 	FN(redirect_neigh),		\
+-	FN(bpf_per_cpu_ptr),            \
+-	FN(bpf_this_cpu_ptr),		\
++	FN(per_cpu_ptr),		\
++	FN(this_cpu_ptr),		\
+ 	FN(redirect_peer),		\
+ 	/* */
+ 
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 25520f5eeaf6..deda1185237b 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -717,9 +717,9 @@ bpf_base_func_proto(enum bpf_func_id func_id)
+ 		return &bpf_snprintf_btf_proto;
+ 	case BPF_FUNC_jiffies64:
+ 		return &bpf_jiffies64_proto;
+-	case BPF_FUNC_bpf_per_cpu_ptr:
++	case BPF_FUNC_per_cpu_ptr:
+ 		return &bpf_per_cpu_ptr_proto;
+-	case BPF_FUNC_bpf_this_cpu_ptr:
++	case BPF_FUNC_this_cpu_ptr:
+ 		return &bpf_this_cpu_ptr_proto;
+ 	default:
+ 		break;
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 048c655315f1..a125ea5e04cd 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1337,9 +1337,9 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 		return prog->aux->sleepable ? &bpf_copy_from_user_proto : NULL;
+ 	case BPF_FUNC_snprintf_btf:
+ 		return &bpf_snprintf_btf_proto;
+-	case BPF_FUNC_bpf_per_cpu_ptr:
++	case BPF_FUNC_per_cpu_ptr:
+ 		return &bpf_per_cpu_ptr_proto;
+-	case BPF_FUNC_bpf_this_cpu_ptr:
++	case BPF_FUNC_this_cpu_ptr:
+ 		return &bpf_this_cpu_ptr_proto;
+ 	default:
+ 		return NULL;
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index e6ceac3f7d62..556216dc9703 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -3897,8 +3897,8 @@ union bpf_attr {
+ 	FN(seq_printf_btf),		\
+ 	FN(skb_cgroup_classid),		\
+ 	FN(redirect_neigh),		\
+-	FN(bpf_per_cpu_ptr),            \
+-	FN(bpf_this_cpu_ptr),		\
++	FN(per_cpu_ptr),		\
++	FN(this_cpu_ptr),		\
+ 	FN(redirect_peer),		\
+ 	/* */
+ 
+-- 
+2.21.0
+
