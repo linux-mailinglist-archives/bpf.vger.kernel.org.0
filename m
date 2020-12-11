@@ -2,112 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51DA02D7F99
-	for <lists+bpf@lfdr.de>; Fri, 11 Dec 2020 20:47:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C8AD2D7FB6
+	for <lists+bpf@lfdr.de>; Fri, 11 Dec 2020 20:57:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389313AbgLKTpr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Dec 2020 14:45:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36910 "EHLO
+        id S2390447AbgLKT42 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Dec 2020 14:56:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728090AbgLKTpd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Dec 2020 14:45:33 -0500
-Received: from mail-yb1-xb41.google.com (mail-yb1-xb41.google.com [IPv6:2607:f8b0:4864:20::b41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF0FCC0613CF;
-        Fri, 11 Dec 2020 11:44:52 -0800 (PST)
-Received: by mail-yb1-xb41.google.com with SMTP id o144so8583949ybc.0;
-        Fri, 11 Dec 2020 11:44:52 -0800 (PST)
+        with ESMTP id S2390134AbgLKT42 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Dec 2020 14:56:28 -0500
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B600BC0613CF;
+        Fri, 11 Dec 2020 11:55:47 -0800 (PST)
+Received: by mail-yb1-xb44.google.com with SMTP id w135so9078121ybg.13;
+        Fri, 11 Dec 2020 11:55:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=yRGKqHf4iwEt3TjWcP3Q5MjQ/uQIJtJpPWbQ5Zk+e3U=;
-        b=JFqOGf6SQscn2ezlxm00wlKE1LUC8Ho53aY0g5ius2ClR0F+x67cL4JIXSPxFnqmIs
-         I6PG9C97V2v6613KjntyK5gpTGJ/il1VtQ4uPEIcLGlK7rtiqHYTt/33jfSMzCgzprtq
-         WPX6VN3OblFtiMk/LzKFpcXEmuzb0tEcyin0R8i6rGN+X60uSBPjXYTg8Bx1kwGEU1rT
-         FndOT82FdgZjF575WQc8qBjGk2iI2eUWIQ3+H1bFiVAb7OOwCYYMb8m6rv7ZqgrEOz/u
-         m8xKAeQlKZkFtBTLEG49bC7JRUbahhpcq3EWatA3k+gwASizOir+ZIuIhsaHtYtBzpi6
-         tfhw==
+        bh=eTjfaHSrdCOzqItoXPjoUbitJh68Tkt5gBw7hhWkKdA=;
+        b=oK96XtfTvVQUc6Z/j/rXPthdkCHnC82TvA2CEoa3Qqgedo02sQjagq5fF8jjAr5RDn
+         +Cv3mO+KYIVPpua9EjIeOoOyx73ylb6wiqpoiZJ+Vuhcrv0ACl+q0nnKucSRvRlbDfPL
+         qjkZb6VJiLKFEEaMX5468Cfv6PCvqNO4l3ahbgX5SHGMPOlwfbzMdZLDyKrgnw7JadDm
+         l7Qk8kvH5nVH+VeuYRrxEoKjy0PgiPzL9MuYv5Gidgf9D6YCLrOSxkYASccshXXIdquQ
+         6lc+HlEgrMN7bX8A9O34+SdDwc+jggkdahV+jGbbSvInl63Q1wCeKT3COcvtGbokw3+B
+         Zeyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=yRGKqHf4iwEt3TjWcP3Q5MjQ/uQIJtJpPWbQ5Zk+e3U=;
-        b=lxwuh40E2DFWTQhE0ax+XqqGw8M2mA1gOg14XQLZbJSHH6PjNPSeNcbSoYGWGVp0mV
-         UcJkXirEHtZEDd2gzN5ntEYNLRWHzL5geBHUfK/smuLPeV/nUk/iXsvzhAFGWagN0d5J
-         LMWV4zxdPZzVI+qszR8dFqapFX2iJQ/tRllBEV9VndUhsSySjC/7tcqSL/EcjC+6Q4ZF
-         o6vv/x4HK9/j8q2weB6HvanudS0/fJ6lnJo2QYXdiEt+BGpV2GoeobnTwfVvhMGN6cfU
-         KIMNto4Q9YHAaJDMGAt1H85vKaP3AsUBPXT7Ib09NxePjNvK5ISyjxwWJl3TaYe8ypTC
-         k04g==
-X-Gm-Message-State: AOAM530sqSAvyonkq0mxNFpofpIw7MzBAg9ClMdH+8AlFi9Fmx/k2l9Y
-        ZteP2/fzrWc97jTQt8Wcclzyb0FMMAsVFFAi504=
-X-Google-Smtp-Source: ABdhPJxwvcEJcelyxuFUxO+BI18Zh0JiV26i4TkDuxA5WPLVl0xo8sYeQy5x9aHmISaF/Te5piET0tFBru5CsS/vDWQ=
-X-Received: by 2002:a25:c089:: with SMTP id c131mr20240415ybf.510.1607715892173;
- Fri, 11 Dec 2020 11:44:52 -0800 (PST)
+        bh=eTjfaHSrdCOzqItoXPjoUbitJh68Tkt5gBw7hhWkKdA=;
+        b=BgWAr/fDZOoDJBRLGNlrz+Tr8LGWLuZxAR0dYjxXx9jtnLFHUbhsztcaE/Ivfr/ClA
+         bcquAJGeLJJ63gCwEh/aN6YHJ3HPwDy9cYjm5O+cboSz76iJQ/NaUjt+CnaYhTOOE0ss
+         90MiyLpISc6QAQIrYKz+WZVl+PGG+vbdinZzf43fSq/J2Uhx2Qa+Jc8/htsoxwkzOAP2
+         bw7pb8rVvWYAHq7dZFq9TbodyVux3/yahZ4SuXXcTaVoeM6mSICcEmaWTCMj/phgMyLR
+         HHNUDBOcBEWxIEhWk/NQ0iiiu0ZKnRSTQ1x2OCwmhOXOjDcUmCvkA7HjxGQpmNCQF7G3
+         tiUw==
+X-Gm-Message-State: AOAM533sB9jTqF2wNYC2Gh4LDn0yArmmDF3iaoXv/V6b2UdZtnn9Q35j
+        aI2+Xpl4wzLpTLaVbxIFOEHpDigZHDMLoJ0kG2iWsiHmNr81uQ==
+X-Google-Smtp-Source: ABdhPJyMxS8Luxn5mjw7le2I2Id/nRi/hoVU3IABQUpc9uQ8tQYXLlwezyvD1+IZDg0pJ18gK4sd+mH6Sf794Xuxjp4=
+X-Received: by 2002:a25:c089:: with SMTP id c131mr20299643ybf.510.1607716547010;
+ Fri, 11 Dec 2020 11:55:47 -0800 (PST)
 MIME-Version: 1.0
-References: <20201211172409.1918341-1-jackmanb@google.com>
-In-Reply-To: <20201211172409.1918341-1-jackmanb@google.com>
+References: <20201211000649.236635-1-xiyou.wangcong@gmail.com>
+In-Reply-To: <20201211000649.236635-1-xiyou.wangcong@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 11 Dec 2020 11:44:41 -0800
-Message-ID: <CAEf4BzYTKQR9cPHaiPe6DMSpUo+_LKa2qmGMZX+V7Mhf5UzT5w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] libbpf: Expose libbpf ringbufer epoll_fd
-To:     Brendan Jackman <jackmanb@google.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
+Date:   Fri, 11 Dec 2020 11:55:36 -0800
+Message-ID: <CAEf4BzY_497=xXkfok4WFsMRRrC94Q6WwdUWZA_HezXaTtb5GQ@mail.gmail.com>
+Subject: Re: [Patch bpf-next 0/3] bpf: introduce timeout map
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Cong Wang <cong.wang@bytedance.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 10:58 AM Brendan Jackman <jackmanb@google.com> wrote:
+On Fri, Dec 11, 2020 at 2:28 AM Cong Wang <xiyou.wangcong@gmail.com> wrote:
 >
-> This allows the user to do their own manual polling in more
-> complicated setups.
+> From: Cong Wang <cong.wang@bytedance.com>
 >
-> Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> This patchset introduces a new bpf hash map which has timeout.
+> Patch 1 is a preparation, patch 2 is the implementation of timeout
+> map, patch 3 contains a test case for timeout map. Please check each
+> patch description for more details.
+>
 > ---
 
-perf_buffer has it, so it's good for consistency. In practice, though,
-I'd expect anyone who needs more complicated polling to use ring buf's
-map FD directly on their instance of epoll. Doesn't that work for you?
+This patch set seems to be breaking existing selftests. Please take a
+look ([0]).
+Also patch #3 should have a commit message, even if pretty trivial one.
 
-Regardless, though, you need to add the API into libbpf.map file first.
+  [0] https://travis-ci.com/github/kernel-patches/bpf/builds/207928289
 
-
->  tools/lib/bpf/libbpf.h  | 1 +
->  tools/lib/bpf/ringbuf.c | 6 ++++++
->  2 files changed, 7 insertions(+)
+> Cong Wang (3):
+>   bpf: use index instead of hash for map_locked[]
+>   bpf: introduce timeout map
+>   tools: add a test case for bpf timeout map
 >
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index 6909ee81113a..cde07f64771e 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -536,6 +536,7 @@ LIBBPF_API int ring_buffer__add(struct ring_buffer *rb, int map_fd,
->                                 ring_buffer_sample_fn sample_cb, void *ctx);
->  LIBBPF_API int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms);
->  LIBBPF_API int ring_buffer__consume(struct ring_buffer *rb);
-> +LIBBPF_API int ring_buffer__epoll_fd(struct ring_buffer *rb);
+>  include/linux/bpf_types.h               |   1 +
+>  include/uapi/linux/bpf.h                |   3 +-
+>  kernel/bpf/hashtab.c                    | 296 +++++++++++++++++++++---
+>  kernel/bpf/syscall.c                    |   3 +-
+>  tools/include/uapi/linux/bpf.h          |   1 +
+>  tools/testing/selftests/bpf/test_maps.c |  41 ++++
+>  6 files changed, 314 insertions(+), 31 deletions(-)
 >
->  /* Perf buffer APIs */
->  struct perf_buffer;
-> diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
-> index 5c6522c89af1..45a36648b403 100644
-> --- a/tools/lib/bpf/ringbuf.c
-> +++ b/tools/lib/bpf/ringbuf.c
-> @@ -282,3 +282,9 @@ int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms)
->         }
->         return cnt < 0 ? -errno : res;
->  }
-> +
-> +/* Get an fd that can be used to sleep until data is available in the ring(s) */
-> +int ring_buffer__epoll_fd(struct ring_buffer *rb)
-> +{
-> +       return rb->epoll_fd;
-> +}
->
-> base-commit: b4fe9fec51ef48011f11c2da4099f0b530449c92
 > --
-> 2.29.2.576.ga3fc446d84-goog
+> 2.25.1
 >
