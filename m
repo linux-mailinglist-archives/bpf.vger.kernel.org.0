@@ -2,78 +2,184 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E1112D8055
-	for <lists+bpf@lfdr.de>; Fri, 11 Dec 2020 22:01:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A81D82D80DC
+	for <lists+bpf@lfdr.de>; Fri, 11 Dec 2020 22:17:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394752AbgLKVBE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Dec 2020 16:01:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46578 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394751AbgLKVAu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Dec 2020 16:00:50 -0500
-X-Gm-Message-State: AOAM5322j4ttJklW+DSxqy+Hd8WKQNQcckFq0lP19zt92d1S1z6A6tUY
-        CdMXowuzH33z9b53iHi2nwhvjj4a5uYg9L0n7js=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607720409;
-        bh=0OdAfHXVSmV4upgVK23rC2WbpmA/myKVM+LFlH0XlSQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=mpJYb+gNtdzZ6IlU8NXxiQGR6E4QaG75tYJQYVxDdFkWZw7S9r5DWhbVKQZJkN/wA
-         Qmrbem+xtwznOPgGAYj0/HzaCuOUhs3rSSf6pAT/BY8yGk1/wqEelrw+DavY9DW0hR
-         Ado57lSq5dCML+gxu+NYkcQQ0+341nPwL3TPT+0vHYjnvwOizrEM7jpeBLBkSwzJVu
-         f9uArj5QA9M1PLW89R1FC3qvmpD68DxNrPdCPiC9E2OMIxV+8Gm+sTYkayQrKdNxWE
-         x2xxxFFBb2K8+TaejDLAd+LIrmte6l/tfX/602H6grBPTJHfdaqL7zDaURzt85n/uw
-         PfiEF+8ekQjDA==
-X-Google-Smtp-Source: ABdhPJwiJpzQkQ22vcNutFE60niWIjCFOoaLOg3iwr+QhczmEN98RjDpRUwCX/UyGEjItEc0onPxtrvuVAJDsEytYT4=
-X-Received: by 2002:aca:418b:: with SMTP id o133mr10373990oia.67.1607720408751;
- Fri, 11 Dec 2020 13:00:08 -0800 (PST)
-MIME-Version: 1.0
-References: <20201211163749.31956-1-yonatanlinik@gmail.com> <20201211163749.31956-2-yonatanlinik@gmail.com>
-In-Reply-To: <20201211163749.31956-2-yonatanlinik@gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 11 Dec 2020 21:59:51 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0_AwRxTsYuK4p-vv61H34ERDp7od3C2c45u+0QyR+uhQ@mail.gmail.com>
-Message-ID: <CAK8P3a0_AwRxTsYuK4p-vv61H34ERDp7od3C2c45u+0QyR+uhQ@mail.gmail.com>
-Subject: Re: [PATCH 1/1] net: Fix use of proc_fs
-To:     Yonatan Linik <yonatanlinik@gmail.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        id S2392323AbgLKVOZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 11 Dec 2020 16:14:25 -0500
+Received: from www62.your-server.de ([213.133.104.62]:55052 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2395275AbgLKVN5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 11 Dec 2020 16:13:57 -0500
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1knpiz-000CJ8-1h; Fri, 11 Dec 2020 22:13:13 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1knpiy-000Dlh-Sg; Fri, 11 Dec 2020 22:13:12 +0100
+Subject: Re: [PATCH] bpf,x64: pad NOPs to make images converge more easily
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Gary Lin <glin@suse.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Willem de Bruijn <willemb@google.com>,
-        john.ogness@linutronix.de, Arnd Bergmann <arnd@arndb.de>,
-        Mao Wenan <maowenan@huawei.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        orcohen@paloaltonetworks.com, Networking <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        andreas.taschner@suse.com
+References: <20201211081903.17857-1-glin@suse.com>
+ <CAEf4BzbJRf-+_GE4r2+mk0FjT96Qszx3ru9wEfieP_zr6p6dOw@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <a9a00c89-3716-2296-d0d9-bba944e2cd82@iogearbox.net>
+Date:   Fri, 11 Dec 2020 22:13:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <CAEf4BzbJRf-+_GE4r2+mk0FjT96Qszx3ru9wEfieP_zr6p6dOw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26014/Thu Dec 10 15:21:42 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 5:37 PM Yonatan Linik <yonatanlinik@gmail.com> wrote:
+On 12/11/20 9:58 PM, Andrii Nakryiko wrote:
+> On Fri, Dec 11, 2020 at 8:51 AM Gary Lin <glin@suse.com> wrote:
+>>
+[...]
+>> +static int emit_nops(u8 **pprog, int len)
+>> +{
+>> +       u8 *prog = *pprog;
+>> +       int i, noplen, cnt = 0;
+>> +
+>> +       while (len > 0) {
+>> +               noplen = len;
+>> +
+>> +               if (noplen > ASM_NOP_MAX)
+>> +                       noplen = ASM_NOP_MAX;
+>> +
+>> +               for (i = 0; i < noplen; i++)
+>> +                       EMIT1(ideal_nops[noplen][i]);
+>> +               len -= noplen;
+>> +       }
+>> +
+>> +       *pprog = prog;
+>> +
+>> +       return cnt;
+> 
+> Isn't cnt always zero? I guess it was supposed to be `cnt = len` at
+> the beginning?
 
-> index 2b33e977a905..031f2b593720 100644
-> --- a/net/packet/af_packet.c
-> +++ b/net/packet/af_packet.c
-> @@ -4612,9 +4612,11 @@ static int __net_init packet_net_init(struct net *net)
->         mutex_init(&net->packet.sklist_lock);
->         INIT_HLIST_HEAD(&net->packet.sklist);
->
-> +#ifdef CONFIG_PROC_FS
->         if (!proc_create_net("packet", 0, net->proc_net, &packet_seq_ops,
->                         sizeof(struct seq_net_private)))
->                 return -ENOMEM;
-> +#endif /* CONFIG_PROC_FS */
->
+EMIT*() macros from the JIT will bump cnt internally.
 
-Another option would be to just ignore the return code here
-and continue without a procfs file, regardless of whether procfs
-is enabled or not.
+> But then it begs the question how this patch was actually tested given
+> emit_nops() is returning wrong answers? Changes like this should
+> definitely come with tests.
 
-       Arnd
+Yeah, applying a change like this without tests for the corner cases it is trying
+to fix would be no go, so they are definitely needed, ideally also with disasm dump
+of the relevant code and detailed analysis to show why it's bullet-proof.
+
+>> +#define INSN_SZ_DIFF (((addrs[i] - addrs[i - 1]) - (prog - temp)))
+>> +
+>>   static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
+>> -                 int oldproglen, struct jit_context *ctx)
+>> +                 int oldproglen, struct jit_context *ctx, bool jmp_padding)
+>>   {
+>>          bool tail_call_reachable = bpf_prog->aux->tail_call_reachable;
+>>          struct bpf_insn *insn = bpf_prog->insnsi;
+>> @@ -1409,6 +1432,8 @@ xadd:                     if (is_imm8(insn->off))
+>>                          }
+>>                          jmp_offset = addrs[i + insn->off] - addrs[i];
+>>                          if (is_imm8(jmp_offset)) {
+>> +                               if (jmp_padding)
+>> +                                       cnt += emit_nops(&prog, INSN_SZ_DIFF - 2);
+>>                                  EMIT2(jmp_cond, jmp_offset);
+>>                          } else if (is_simm32(jmp_offset)) {
+>>                                  EMIT2_off32(0x0F, jmp_cond + 0x10, jmp_offset);
+>> @@ -1431,11 +1456,19 @@ xadd:                   if (is_imm8(insn->off))
+>>                          else
+>>                                  jmp_offset = addrs[i + insn->off] - addrs[i];
+>>
+>> -                       if (!jmp_offset)
+>> -                               /* Optimize out nop jumps */
+>> +                       if (!jmp_offset) {
+>> +                               /*
+>> +                                * If jmp_padding is enabled, the extra nops will
+>> +                                * be inserted. Otherwise, optimize out nop jumps.
+>> +                                */
+>> +                               if (jmp_padding)
+>> +                                       cnt += emit_nops(&prog, INSN_SZ_DIFF);
+>>                                  break;
+>> +                       }
+>>   emit_jmp:
+>>                          if (is_imm8(jmp_offset)) {
+>> +                               if (jmp_padding)
+>> +                                       cnt += emit_nops(&prog, INSN_SZ_DIFF - 2);
+>>                                  EMIT2(0xEB, jmp_offset);
+>>                          } else if (is_simm32(jmp_offset)) {
+>>                                  EMIT1_off32(0xE9, jmp_offset);
+>> @@ -1578,26 +1611,6 @@ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
+>>          return 0;
+>>   }
+>>
+>> -static void emit_nops(u8 **pprog, unsigned int len)
+>> -{
+>> -       unsigned int i, noplen;
+>> -       u8 *prog = *pprog;
+>> -       int cnt = 0;
+>> -
+>> -       while (len > 0) {
+>> -               noplen = len;
+>> -
+>> -               if (noplen > ASM_NOP_MAX)
+>> -                       noplen = ASM_NOP_MAX;
+>> -
+>> -               for (i = 0; i < noplen; i++)
+>> -                       EMIT1(ideal_nops[noplen][i]);
+>> -               len -= noplen;
+>> -       }
+>> -
+>> -       *pprog = prog;
+>> -}
+>> -
+>>   static void emit_align(u8 **pprog, u32 align)
+>>   {
+>>          u8 *target, *prog = *pprog;
+>> @@ -1972,6 +1985,9 @@ struct x64_jit_data {
+>>          struct jit_context ctx;
+>>   };
+>>
+>> +#define MAX_PASSES 20
+>> +#define PADDING_PASSES (MAX_PASSES - 5)
+>> +
+>>   struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+>>   {
+>>          struct bpf_binary_header *header = NULL;
+>> @@ -1981,6 +1997,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+>>          struct jit_context ctx = {};
+>>          bool tmp_blinded = false;
+>>          bool extra_pass = false;
+>> +       bool padding = prog->padded;
+> 
+> can this ever be true on assignment? I.e., can the program be jitted twice?
+
+Yes, progs can be passed into the JIT twice, see also jit_subprogs(). In one of
+the earlier patches it would still potentially change the image size a second
+time which would break subprogs aka bpf2bpf calls.
+
+>>          u8 *image = NULL;
+>>          int *addrs;
+>>          int pass;
+>> @@ -2043,7 +2060,9 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+>>           * pass to emit the final image.
+>>           */
+>>          for (pass = 0; pass < 20 || image; pass++) {
+>> -               proglen = do_jit(prog, addrs, image, oldproglen, &ctx);
+>> +               if (!padding && pass >= PADDING_PASSES)
+>> +                       padding = true;
+> 
+[...]
