@@ -2,208 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE3E12D6EA3
-	for <lists+bpf@lfdr.de>; Fri, 11 Dec 2020 04:31:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C66E02D6ECF
+	for <lists+bpf@lfdr.de>; Fri, 11 Dec 2020 04:43:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390627AbgLKDas (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 10 Dec 2020 22:30:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405225AbgLKDaZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 10 Dec 2020 22:30:25 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E22C0613CF;
-        Thu, 10 Dec 2020 19:29:44 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id j17so6783669ybt.9;
-        Thu, 10 Dec 2020 19:29:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=R8lHSNSGsigFbnK9oQuGP0pyt3C7uRh0aSeDiZncgWw=;
-        b=IQ/Se7SubORK6PA9d9gXRGViW16BIVwuzI/5iPqlv9jO0wwstV7y2BESCLKogYdOlV
-         d7D8VBK6PV2dLyfAp6sZ0qSFO+1slmvMIx9MbxqA7D2ZySZwjNIcgp3tHAQONOv1nda9
-         CLNzaxaNHvB44RJQTiDiZaybTfAFdxw+BM5p26yK7/90/vHh335MoWONIbRFToeAYzX7
-         Rx7a3DkEybgqr/UGbA5efvSjdIQS1goCVj08z5vZvV21CyV/Mj3zrfyLIhScW9x82v+0
-         1kHeEFP7rNGBvs/eHaOq9zvqhcu2z9gQivo/RfZ8Aeb9NsPBxsSsGK2DffqjXHBK+3f/
-         XIsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=R8lHSNSGsigFbnK9oQuGP0pyt3C7uRh0aSeDiZncgWw=;
-        b=kmBYU/1p24jgwFnR78+Vzq1jBIjtOdrkYwNwZB7YCd5ohJrMHeet99Wz7MDIQWHQ3Q
-         rl/wCZeBpdB8l/sGVEJmNv0fsvc3ArwyLO+sZ+4urb2mfZ/na3JUvTjEkVZeLJH34BTK
-         CHSyVo1IN/M5pSF4IOeiIWd2W0HKNykwVsAdgSZGecxxZz+G5xMM7W9YQqSIJPHLHvqN
-         es7LoJQbF71RXDM49epmwCKiwBAhccYtxdYfDiGbprnKbG3FgvvsGV7QUNfTryuS4D/O
-         +UtpX0GOzb9+4Dxltaf5hIzc9RcUuZNkNVR+veKBH5aSdS4woUqKDoLyoNUP1dSHJdgK
-         Ft+g==
-X-Gm-Message-State: AOAM533okSL9oiNT45r40UI3uZFZt/85hUeAg6c4bEeIItikD3OTGJm4
-        yjeJBbVfKTg9GvTFmB/gqa6vh/It/GVGoL1duJPYUAW8WSk=
-X-Google-Smtp-Source: ABdhPJwxKYQlWrbwT/ttcy8WwMSRzdvynsGnYuE7ffDU988RdUJy8NK2BwFmCej8Y4Hdfd4NGHutmBb+hxIoKVCdMI8=
-X-Received: by 2002:a25:d6d0:: with SMTP id n199mr15137853ybg.27.1607657384179;
- Thu, 10 Dec 2020 19:29:44 -0800 (PST)
+        id S2405281AbgLKDmg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 10 Dec 2020 22:42:36 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:52546 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2405238AbgLKDmH (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 10 Dec 2020 22:42:07 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BB3P9EC019252
+        for <bpf@vger.kernel.org>; Thu, 10 Dec 2020 19:41:26 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=facebook;
+ bh=1ncYG1vbOeg9nT3FZ+0J4n1I+6d2KjtwiQRUO8jg/JQ=;
+ b=Lxo6U2XbmY4dPgsGea9RlnibRWSmTOOFy+aM/3b7u4m28eOmJl/eodPRTokFdDM4sm0B
+ k9ras45cGAFaElHgNfLt9DBx8jXaMfeVJqFrmcQZ7LS2ts/lc/nQRV13xnTCjdmDRoVc
+ gqBXWFboiy41cV2Lxo7OGmS7z6136ShFH14= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 35avdhd61q-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 10 Dec 2020 19:41:26 -0800
+Received: from intmgw002.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 10 Dec 2020 19:41:24 -0800
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id 7E7CF3705C0A; Thu, 10 Dec 2020 19:41:21 -0800 (PST)
+From:   Yonghong Song <yhs@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        Song Liu <songliubraving@fb.com>
+Subject: [PATCH bpf-next v3 1/2] bpf: permits pointers on stack for helper calls
+Date:   Thu, 10 Dec 2020 19:41:21 -0800
+Message-ID: <20201211034121.3452243-1-yhs@fb.com>
+X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20201211034121.3452172-1-yhs@fb.com>
+References: <20201211034121.3452172-1-yhs@fb.com>
 MIME-Version: 1.0
-References: <CAEf4BzZWabv_hExaANQyQ71L2JHYqXaT4hFj52w-poWoVYWKqQ@mail.gmail.com>
- <20201210164315.GA184880@krava> <CAEf4BzaBOoZsSK8yGZBhwFzAADkQKsGt1quV9RvFk_+WZr=Y=Q@mail.gmail.com>
- <CA+khW7hU1+Ba+33gxyGWgwUyq8sOQthaLu6tUQP_cGWqS46gDw@mail.gmail.com> <CAEf4BzZHFcc78YXQbrftPtD7dsMfPrS=A3dBJggAVETrJd3NoQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzZHFcc78YXQbrftPtD7dsMfPrS=A3dBJggAVETrJd3NoQ@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 10 Dec 2020 19:29:33 -0800
-Message-ID: <CAEf4BzY9+1o3jyD5rH+wmA3Zvdspc_36OkEVHemj8K6Tc96d3g@mail.gmail.com>
-Subject: Re: Per-CPU variables in modules and pahole
-To:     Hao Luo <haoluo@google.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, bpf <bpf@vger.kernel.org>,
-        dwarves@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-11_01:2020-12-09,2020-12-11 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ mlxlogscore=928 lowpriorityscore=0 impostorscore=0 malwarescore=0
+ clxscore=1015 bulkscore=0 suspectscore=13 adultscore=0 spamscore=0
+ mlxscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2012110019
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 6:56 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, Dec 10, 2020 at 10:29 AM Hao Luo <haoluo@google.com> wrote:
-> >
-> > On Thu, Dec 10, 2020 at 9:02 AM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Thu, Dec 10, 2020 at 8:43 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> > > >
-> > > > On Wed, Dec 09, 2020 at 12:53:44PM -0800, Andrii Nakryiko wrote:
-> > > > > Hi,
-> > > > >
-> > > > > I'm working on supporting per-CPU symbols in BPF/libbpf, and the
-> > > > > prerequisite for that is BTF data for .data..percpu data section and
-> > > > > variables inside that.
-> > > > >
-> > > > > Turns out, pahole doesn't currently emit any BTF information for such
-> > > > > variables in kernel modules. And the reason why is quite confusing and
-> > > > > I can't figure it out myself, so was hoping someone else might be able
-> > > > > to help.
-> > > > >
-> > > > > To repro, you can take latest bpf-next tree and add this to
-> > > > > bpf_testmod/bpf_testmod.c inside selftests/bpf:
-> > > > >
-> > > > > $ git diff bpf_testmod/bpf_testmod.c
-> > > > >       diff --git
-> > > > > a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> > > > > b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> > > > > index 2df19d73ca49..b2086b798019 100644
-> > > > > --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> > > > > +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> > > > > @@ -3,6 +3,7 @@
-> > > > >  #include <linux/error-injection.h>
-> > > > >  #include <linux/init.h>
-> > > > >  #include <linux/module.h>
-> > > > > +#include <linux/percpu-defs.h>
-> > > > >  #include <linux/sysfs.h>
-> > > > >  #include <linux/tracepoint.h>
-> > > > >  #include "bpf_testmod.h"
-> > > > > @@ -10,6 +11,10 @@
-> > > > >  #define CREATE_TRACE_POINTS
-> > > > >  #include "bpf_testmod-events.h"
-> > > > >
-> > > > > +DEFINE_PER_CPU(int, bpf_testmod_ksym_dummy1) = -1;
-> > > > > +DEFINE_PER_CPU(int, bpf_testmod_ksym_percpu) = 123;
-> > > > > +DEFINE_PER_CPU(int, bpf_testmod_ksym_dummy2) = -1;
-> > > > > +
-> > > > >  noinline ssize_t
-> > > > >  bpf_testmod_test_read(struct file *file, struct kobject *kobj,
-> > > > >                       struct bin_attribute *bin_attr,
-> > > > >
-> > > > > 1. So the very first issue (that I'm going to ignore for now) is that
-> > > > > if I just added bpf_testmod_ksym_percpu, it would get addr == 0 and
-> > > > > would be ignored by the current pahole logic. So we need to fix that
-> > > > > for modules. Adding dummy1 and dummy2 takes care of this for now,
-> > > > > bpf_testmod_ksym_percpu has offset 4.
-> > > >
-> > > > I removed that addr zero check in the modules changes but when
-> > > > collecting functions, but it's still there in collect_percpu_var
-> > >
-> > > Hao had some reason to skip per-cpu variables with offset 0, maybe he
-> > > can comment on that before we change it.
-> > >
-> >
-> > When I initially write that check, I see there are multiple symbols of
-> > the same name that associate with a single variable, but there is only
-> > one that has a non-zero address. Besides, there are symbols that don't
-> > associate to any variable and they have zero address. For example,
-> > those defined as __ADDRESSABLE(sym) and __UNIQUE_ID(prefix). They are
-> > quite a lot, I remember. So I filtered out the zero address for the
-> > purpose of accelerating encoding. I noticed that on x86_64, the first
-> > page of the percpu section is reserved, so I deem those symbols that
-> > are of normal interest should have positive addresses.
->
-> So I just checked my local vmlinux image, and seems like the only one
-> with addr == 0 is fixed_percpu_data. Everything else that's detected
-> as belonging to .data..percpu section looks sane and has non-zero
-> offset.
->
-> So I think this might have been the case before we switched to using
-> ELF symbols and now it's not? I think I'll just drop this check, will
-> post the patch, and would really appreciate if you can test it in your
-> environment. Does that sound ok?
+Currently, when checking stack memory accessed by helper calls,
+for spills, only PTR_TO_BTF_ID and SCALAR_VALUE are
+allowed.
 
-Ah, never mind. While ELF symbols look good, it's the DWARF variables
-side where the problem is. There are lots of DWARF variables that map
-to addr 0 and which are impossible to distinguish from readl
-fixed_percpu_data, because we can't even rely on getting DWARF
-variable name.
+Song discovered an issue where the below bpf program
+  int dump_task(struct bpf_iter__task *ctx)
+  {
+    struct seq_file *seq =3D ctx->meta->seq;
+    static char[] info =3D "abc";
+    BPF_SEQ_PRINTF(seq, "%s\n", info);
+    return 0;
+  }
+may cause a verifier failure.
 
-I guess I'll leave it as is for now, but we should come up with some
-solution, ideally.
+The verifier output looks like:
+  ; struct seq_file *seq =3D ctx->meta->seq;
+  1: (79) r1 =3D *(u64 *)(r1 +0)
+  ; BPF_SEQ_PRINTF(seq, "%s\n", info);
+  2: (18) r2 =3D 0xffff9054400f6000
+  4: (7b) *(u64 *)(r10 -8) =3D r2
+  5: (bf) r4 =3D r10
+  ;
+  6: (07) r4 +=3D -8
+  ; BPF_SEQ_PRINTF(seq, "%s\n", info);
+  7: (18) r2 =3D 0xffff9054400fe000
+  9: (b4) w3 =3D 4
+  10: (b4) w5 =3D 8
+  11: (85) call bpf_seq_printf#126
+   R1_w=3Dptr_seq_file(id=3D0,off=3D0,imm=3D0) R2_w=3Dmap_value(id=3D0,of=
+f=3D0,ks=3D4,vs=3D4,imm=3D0)
+  R3_w=3Dinv4 R4_w=3Dfp-8 R5_w=3Dinv8 R10=3Dfp0 fp-8_w=3Dmap_value
+  last_idx 11 first_idx 0
+  regs=3D8 stack=3D0 before 10: (b4) w5 =3D 8
+  regs=3D8 stack=3D0 before 9: (b4) w3 =3D 4
+  invalid indirect read from stack off -8+0 size 8
 
->
-> >
-> > >
-> > > >
-> > > > >
-> > > > > 2. Second issue is more interesting. Somehow, when pahole iterates
-> > > > > over DWARF variables, the address of bpf_testmod_ksym_percpu is
-> > > > > reported as 0x10e74, not 4. Which totally confuses pahole because
-> > > > > according to ELF symbols, bpf_testmod_ksym_percpu symbol has value 4.
-> > > > > I tracked this down to dwarf_getlocation() returning 10e74 as number
-> > > > > field in expr.
-> > > >
-> > > > in which place do you see that address? when I put displayed
-> > > > address from collect_percpu_var it shows 4
-> > >
-> > > yes, ELF symbol's value is 4, but when iterating DWARF variables
-> > > (0x10e70 + 4) is returned. It does look like a special handling of
-> > > modules. I missed that libdw does some special things for specifically
-> > > modules. Further debugging yesterday showed that 0x10e70 roughly
-> > > corresponds to the offset of .data..per_cpu if you count all the
-> > > allocatable data sections that come before it. So I think you are
-> > > right. We should probably centralize the logic of kernel module
-> > > detection so that we can handle these module vs non-module differences
-> > > properly.
-> > >
-> > > >
-> > > > not sure this is related but looks like similar issue I had to
-> > > > solve for modules functions, as described in the changelog:
-> > > > (not merged yet)
-> > > >
-> > > >     btf_encoder: Detect kernel module ftrace addresses
-> > > >
-> > > >     ...
-> > > >     There's one tricky point with kernel modules wrt Elf object,
-> > > >     which we get from dwfl_module_getelf function. This function
-> > > >     performs all possible relocations, including __mcount_loc
-> > > >     section.
-> > > >
-> > > >     So addrs array contains relocated values, which we need take
-> > > >     into account when we compare them to functions values which
-> > > >     are relative to their sections.
-> > > >     ...
-> > > >
-> > > > The 0x10e74 value could be relocated 4.. but it's me guessing,
-> > > > because not sure where you see that address exactly
-> > >
-> > >
-> > > It comes up in cu__encode_btf(), var->ip.addr is not 4, as we expect it to be.
-> > >
-> > > >
-> > > > jirka
-> > > >
+Basically, the verifier complains the map_value pointer at "fp-8" locatio=
+n.
+To fix the issue, if env->allow_ptr_leaks is true, let us also permit
+pointers on the stack to be accessible by the helper.
+
+Suggested-by: Alexei Starovoitov <ast@kernel.org>
+Reported-by: Song Liu <songliubraving@fb.com>
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ kernel/bpf/verifier.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 93def76cf32b..eebb2d3e16bf 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -3769,7 +3769,9 @@ static int check_stack_boundary(struct bpf_verifier=
+_env *env, int regno,
+ 			goto mark;
+=20
+ 		if (state->stack[spi].slot_type[0] =3D=3D STACK_SPILL &&
+-		    state->stack[spi].spilled_ptr.type =3D=3D SCALAR_VALUE) {
++		    (state->stack[spi].spilled_ptr.type =3D=3D SCALAR_VALUE ||
++		     (state->stack[spi].spilled_ptr.type !=3D NOT_INIT &&
++		      env->allow_ptr_leaks))) {
+ 			__mark_reg_unknown(env, &state->stack[spi].spilled_ptr);
+ 			for (j =3D 0; j < BPF_REG_SIZE; j++)
+ 				state->stack[spi].slot_type[j] =3D STACK_MISC;
+--=20
+2.24.1
+
