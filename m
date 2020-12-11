@@ -2,71 +2,68 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F19C52D7BE2
-	for <lists+bpf@lfdr.de>; Fri, 11 Dec 2020 18:04:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06CC32D7C88
+	for <lists+bpf@lfdr.de>; Fri, 11 Dec 2020 18:13:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392739AbgLKRCd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 11 Dec 2020 12:02:33 -0500
-Received: from mga06.intel.com ([134.134.136.31]:8172 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392284AbgLKRAq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 11 Dec 2020 12:00:46 -0500
-IronPort-SDR: 0Ma5hCUlEjNrqKOtRuQrEMwzKry4DS3wYECUZVBaYEZtT4z0drSPn17b0ijX3rgOBKSwG/NDI4
- xN7C9emBwUug==
-X-IronPort-AV: E=McAfee;i="6000,8403,9832"; a="236055113"
-X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
-   d="scan'208";a="236055113"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Dec 2020 08:59:41 -0800
-IronPort-SDR: a/edh5S++05OITw7g8Nm77D0CGanfPw213IMT96GmPop+iT5nqZFzkrar91MvZpaQuEbjE7Yuz
- bmo82Wcx/m8w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,411,1599548400"; 
-   d="scan'208";a="365497585"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by orsmga008.jf.intel.com with ESMTP; 11 Dec 2020 08:59:40 -0800
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     intel-wired-lan@lists.osuosl.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        anthony.l.nguyen@intel.com, kuba@kernel.org, bjorn.topel@intel.com,
-        magnus.karlsson@intel.com
-Subject: [PATCH net-next 8/8] i40e, xsk: Simplify the do-while allocation loop
-Date:   Fri, 11 Dec 2020 17:49:56 +0100
-Message-Id: <20201211164956.59628-9-maciej.fijalkowski@intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201211164956.59628-1-maciej.fijalkowski@intel.com>
-References: <20201211164956.59628-1-maciej.fijalkowski@intel.com>
+        id S2389587AbgLKRMl convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 11 Dec 2020 12:12:41 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:47926 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2393497AbgLKRMY (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 11 Dec 2020 12:12:24 -0500
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BBH8bZm003807
+        for <bpf@vger.kernel.org>; Fri, 11 Dec 2020 09:11:43 -0800
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 35c9reh4yq-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 11 Dec 2020 09:11:43 -0800
+Received: from intmgw003.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 11 Dec 2020 09:11:41 -0800
+Received: by devvm2494.atn0.facebook.com (Postfix, from userid 172786)
+        id B53045283262; Fri, 11 Dec 2020 09:11:38 -0800 (PST)
+From:   Jonathan Lemon <jonathan.lemon@gmail.com>
+To:     <netdev@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <yhs@fb.com>, <bpf@vger.kernel.org>
+CC:     <kernel-team@fb.com>
+Subject: [PATCH 0/1 v3 bpf-next] bpf: increment and use correct thread iterator
+Date:   Fri, 11 Dec 2020 09:11:37 -0800
+Message-ID: <20201211171138.63819-1-jonathan.lemon@gmail.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-11_05:2020-12-11,2020-12-11 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ priorityscore=1501 impostorscore=0 lowpriorityscore=0 spamscore=0
+ clxscore=1034 adultscore=0 bulkscore=0 malwarescore=0 phishscore=0
+ mlxscore=0 mlxlogscore=563 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012110115
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
+From: Jonathan Lemon <bsd@fb.com>
 
-Fold the count decrement into the while-statement.
+Reposting with one of the many splats seen.
 
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
----
- drivers/net/ethernet/intel/i40e/i40e_xsk.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+v2->v3:
+  Add splat to commitlog descriptions
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-index bfa84bfb0488..679200d94ef8 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-@@ -215,9 +215,7 @@ bool i40e_alloc_rx_buffers_zc(struct i40e_ring *rx_ring, u16 count)
- 			bi = i40e_rx_bi(rx_ring, 0);
- 			ntu = 0;
- 		}
--
--		count--;
--	} while (count);
-+	} while (--count);
- 
- no_buffers:
- 	if (rx_ring->next_to_use != ntu)
+v1->v2
+  Use Fixes: shas from correct tree
+
+Jonathan Lemon (1):
+  bpf: increment and use correct thread iterator
+
+ kernel/bpf/task_iter.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
 -- 
-2.20.1
+2.24.1
 
