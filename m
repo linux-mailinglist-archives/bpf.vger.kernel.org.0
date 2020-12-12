@@ -2,130 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DEE72D8A37
-	for <lists+bpf@lfdr.de>; Sat, 12 Dec 2020 22:52:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6092E2D8A50
+	for <lists+bpf@lfdr.de>; Sat, 12 Dec 2020 23:26:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408029AbgLLVwC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 12 Dec 2020 16:52:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52196 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408022AbgLLVwC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 12 Dec 2020 16:52:02 -0500
-Date:   Sat, 12 Dec 2020 13:51:19 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607809881;
-        bh=MpmTZDYvsuyckChPfpiFw4PCoYaOJ5VfYZAIYusX6U8=;
-        h=From:To:Cc:Subject:In-Reply-To:References:From;
-        b=qqieKxnMKzAZdMQcLSnTj55DKscZ1s9/VojDduAml6i8IGAc5UrFdHgbXwwhC+PqW
-         NO3DLXvfQBYLXiU4WqYC5Rx6crydVVwvfhPBwhj0dA+gXudztISBuujcB0xbxRtya4
-         Ho4s88RQ5J1DniSAhLk1/rUhEOMVVCDXczLAZSVUzXdTtdCRQNI2uojinl2HYhyBtT
-         hl+jVxA4bHMpKBPtNuJ8sIVaViCAzKtN6P2ZWWmHUDW57yMTKxgZTehbTVP9oWTfs0
-         ftdJHDOLUQi4Rb+IwYXMvmPYyuHqHI55K1G2fhtYU2b18+R4zn76X5maxLhpQC5B1J
-         o7YUf+tSJqsvA==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Yonatan Linik <yonatanlinik@gmail.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Willem de Bruijn <willemb@google.com>,
-        john.ogness@linutronix.de, Arnd Bergmann <arnd@arndb.de>,
-        Mao Wenan <maowenan@huawei.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        orcohen@paloaltonetworks.com, Networking <netdev@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH 1/1] net: Fix use of proc_fs
-Message-ID: <20201212135119.0db6723e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <CA+s=kw3gmvk7CLu9NyiEwtBQ05eNFsTM2A679arPESVb55E2Xw@mail.gmail.com>
-References: <20201211163749.31956-1-yonatanlinik@gmail.com>
-        <20201211163749.31956-2-yonatanlinik@gmail.com>
-        <20201212114802.21a6b257@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CA+s=kw3gmvk7CLu9NyiEwtBQ05eNFsTM2A679arPESVb55E2Xw@mail.gmail.com>
+        id S2408076AbgLLW0V (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 12 Dec 2020 17:26:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727042AbgLLW0O (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 12 Dec 2020 17:26:14 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC034C0613CF;
+        Sat, 12 Dec 2020 14:25:33 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id x18so496289pln.6;
+        Sat, 12 Dec 2020 14:25:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7SIy46EHuJLG4SV6zfUU4wuv+3W5Z0JutDfox1ueZTk=;
+        b=DRINd0HYWIhn/Eve5Bo/+6RFwXw/0gcgQUwVDzkA69VGEWQysBPK7ssVy5abDDy/tW
+         fPEaYvKP1y+zCb2pn16EfFfSMxZzbMys1/aqUR+8MBM/1QRz6OtjzkoPsCg8cmP/kjb8
+         4weBdoAa0o3eBf926CHOSVKbQkbRhR83fU6jPl8q9ZJvLI39lc0blgPTTVAJhzohi/OK
+         cFQIXkwMrsXs5e705LvGF1q6HUwK1STNT3CV5aH9MVqsBVEL+lNzBTgK1cMktbCIbxTt
+         zY2t1kO7SHvYzW2HdiaHjfoM8MhPgCa/NQmcyLqZknYSop2t27DIEWwcaI1f6VwH5TcD
+         DxrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7SIy46EHuJLG4SV6zfUU4wuv+3W5Z0JutDfox1ueZTk=;
+        b=TbkIr7fTHi7UmlZ/pQxKO94cltMO9D4McP2QFj8RyysoKEFAO1w2zl/X2m9Xg02L03
+         6VqSHvq2bLIhs+5o+8Z2luI8AbYfFBw5VylQ2HeEZiko/glyq64nfvnkJmi9F057mkBu
+         2rAyyyX+hCbdTK/hzNDT2TtI1WHKQIMnAibkEEkS/FyoCvmeBO3a3zh5FCKGY7JMqwQs
+         pUUWWMc6xFZCJKpkS2QnoP4c2qixWgFqwoR3QxG5kJuFakPqbU2evat9Q0iIceucSa6a
+         wy/g3SM5paPZPPH2BtDT6P1EveBCqN1xfLfn2kcDKoq4dsBTkfVSbOBy+d7We012P7uK
+         UcEA==
+X-Gm-Message-State: AOAM530jKUBHgJHM2+SBRKoyApKL/oTGNy7kox1lXEM8q2QVDJIfiCSH
+        nxNfGisTJBtOgwo554lNqH5jLeM7Y6YwVxJ0s5Q6kz79Aao=
+X-Google-Smtp-Source: ABdhPJyDLuNPnXX3Mh9HBjyByMiPFN4iYy0kyVa0U68Cl2lUdXz6AqSgRhY4ZrdcwmRlk2a7B1NcJVqQIAdX0lHX3yw=
+X-Received: by 2002:a17:902:6bc2:b029:d6:e0ba:f2ff with SMTP id
+ m2-20020a1709026bc2b02900d6e0baf2ffmr16254228plt.10.1607811933506; Sat, 12
+ Dec 2020 14:25:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20201211000649.236635-1-xiyou.wangcong@gmail.com> <CAEf4BzY_497=xXkfok4WFsMRRrC94Q6WwdUWZA_HezXaTtb5GQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzY_497=xXkfok4WFsMRRrC94Q6WwdUWZA_HezXaTtb5GQ@mail.gmail.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Sat, 12 Dec 2020 14:25:22 -0800
+Message-ID: <CAM_iQpV2ZoODE+Thr77oYCOYrsuDji28=3g8LrP29VKun3+B-A@mail.gmail.com>
+Subject: Re: [Patch bpf-next 0/3] bpf: introduce timeout map
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Cong Wang <cong.wang@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 12 Dec 2020 23:39:20 +0200 Yonatan Linik wrote:
-> On Sat, Dec 12, 2020 at 9:48 PM Jakub Kicinski <kuba@kernel.org> wrote:
+On Fri, Dec 11, 2020 at 11:55 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Fri, Dec 11, 2020 at 2:28 AM Cong Wang <xiyou.wangcong@gmail.com> wrote:
 > >
-> > On Fri, 11 Dec 2020 18:37:49 +0200 Yonatan Linik wrote:  
-> > > proc_fs was used, in af_packet, without a surrounding #ifdef,
-> > > although there is no hard dependency on proc_fs.
-> > > That caused the initialization of the af_packet module to fail
-> > > when CONFIG_PROC_FS=n.
-> > >
-> > > Specifically, proc_create_net() was used in af_packet.c,
-> > > and when it fails, packet_net_init() returns -ENOMEM.
-> > > It will always fail when the kernel is compiled without proc_fs,
-> > > because, proc_create_net() for example always returns NULL.
-> > >
-> > > The calling order that starts in af_packet.c is as follows:
-> > > packet_init()
-> > > register_pernet_subsys()
-> > > register_pernet_operations()
-> > > __register_pernet_operations()
-> > > ops_init()
-> > > ops->init() (packet_net_ops.init=packet_net_init())
-> > > proc_create_net()
-> > >
-> > > It worked in the past because register_pernet_subsys()'s return value
-> > > wasn't checked before this Commit 36096f2f4fa0 ("packet: Fix error path in
-> > > packet_init.").
-> > > It always returned an error, but was not checked before, so everything
-> > > was working even when CONFIG_PROC_FS=n.
-> > >
-> > > The fix here is simply to add the necessary #ifdef.
-> > >
-> > > Signed-off-by: Yonatan Linik <yonatanlinik@gmail.com>  
+> > From: Cong Wang <cong.wang@bytedance.com>
 > >
-> > Hm, I'm guessing you hit this on a kernel upgrade of a real system?  
-> 
-> Yeah, suddenly using socket with AF_PACKET didn't work,
-> so I checked what happened.
-> 
-> > It seems like all callers to proc_create_net (and friends) interpret
-> > NULL as an error, but only handful is protected by an ifdef.  
-> 
-> I guess where there is no ifdef,
-> there should be a hard dependency on procfs,
-> using depends on in the Kconfig.
-> Maybe that's not the case everywhere it should be.
+> > This patchset introduces a new bpf hash map which has timeout.
+> > Patch 1 is a preparation, patch 2 is the implementation of timeout
+> > map, patch 3 contains a test case for timeout map. Please check each
+> > patch description for more details.
+> >
+> > ---
+>
+> This patch set seems to be breaking existing selftests. Please take a
+> look ([0]).
 
-You're right, on a closer look most of the places have a larger #ifdef
-block (which my grep didn't catch) or are under Kconfig. Of those I
-checked only TLS looks wrong (good job me) - would you care to fix that
-one as well, or should I?
+Interesting, looks unrelated to my patches but let me double check.
 
-> > I checked a few and none of them cares about the proc_dir_entry pointer
-> > that gets returned. Should we perhaps rework the return values of the
-> > function so that we can return success if !CONFIG_PROC_FS without
-> > having to yield a pointer?  
-> 
-> Sometimes the pointer returned is used,
-> for example in drivers/acpi/button.c.
-> Are you suggesting returning a bool while
-> having the pointer as an out parameter?
-> Because that would still be problematic where the pointer is used.
+> Also patch #3 should have a commit message, even if pretty trivial one.
 
-Ack, I was only thinking of changing proc_create_net* but as you
-rightly pointed out most callers already deal with the problem, 
-so maybe it's not worth refactoring.
+Yeah, I thought its subject is sufficient for a trivial patch.
 
-> > Obviously we can apply this fix so we can backport to 5.4 if you need
-> > it. I think the ifdef is fine, since it's what other callers have.
-> 
-> It would be great to apply this where the problem exists,
-> I believe this applies to other versions as well.
-
-Will do. Linus is likely to cut the final 5.11 release on Sunday, so
-it needs to wait until next week for process reasons but it won't get
-lost. For the record:
-
-Fixes: 36096f2f4fa0 ("packet: Fix error path in packet_init")
+Thanks.
