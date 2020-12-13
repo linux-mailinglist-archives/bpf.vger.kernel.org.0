@@ -2,112 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41E712D8E0D
-	for <lists+bpf@lfdr.de>; Sun, 13 Dec 2020 15:55:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 993BD2D9086
+	for <lists+bpf@lfdr.de>; Sun, 13 Dec 2020 21:29:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395200AbgLMOxw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 13 Dec 2020 09:53:52 -0500
-Received: from mail-il1-f198.google.com ([209.85.166.198]:46892 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2395199AbgLMOxv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 13 Dec 2020 09:53:51 -0500
-Received: by mail-il1-f198.google.com with SMTP id q5so11477690ilc.13
-        for <bpf@vger.kernel.org>; Sun, 13 Dec 2020 06:53:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=fWF53rcHi8QspkjztKtg7fthAltlqOrg0gZKXd1Tx+4=;
-        b=nbs3P0rZFPtylDE6OmI3pLIzmYF9XIgSjezCvPMS+iwF5Fl6pVdP+K3bnVEYgFp63x
-         /e3mNhf79+vpsTHYE7qJFyflMZ+tXqCBq97Dd9nsda5Hu1FzmgEdyHOMk3JV6NNNyif8
-         lXn5bR4NVzb6MADSv5wsCPvo7C7t+W89/Cmhh5OhIBubpyc1VcJoDjYrjgX4BJNiDZ/I
-         pJB3KLHwg26BjY/L16OfM/PnxSJ4aJdI6PpVqy7bKqxu4xIVYxiWH5M3m3lPm+30Br2s
-         yQey/Yr01FfIliaFu1KjVr6e65qF/MKtHIbj501LJn5tTqEC9U+Dn4yyuunrp5ZiwwqO
-         VGlw==
-X-Gm-Message-State: AOAM5333dpsilmmJTY4vElbElHxS5XiI7sMZCEmusZdES4mi8Kx4bJzi
-        oTZDnPc5KQyMmoUv+8rFkw3VYdHf/tmEcJwRy2oeJMwjFXDh
-X-Google-Smtp-Source: ABdhPJzrJnVwLKuT4IGifrvkCv9PDEMjNNrq6FMGbcr0krUHEsKI3sBFDe0MTfP+Ug664/YEqs0v9dxinAyACJKe5RpnNxro4nSk
+        id S1726575AbgLMU3a (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 13 Dec 2020 15:29:30 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43108 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726063AbgLMU33 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 13 Dec 2020 15:29:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607891283;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qKQo1U5qUlDd3rxooekdaTivKSOdw/fBjhjxAEGtKr0=;
+        b=Fr+j+iLvCx3D227Z+HiWEjwr06MiQLvvc/ltK0Ac9D2NSQcYCI9rvPTn5KVYg+ur3WtPLH
+        sCcNQ+5/53MJpVaHGEfJvaJn+pyUAAq6p7KVnHLX3tUtYIc8YLb/d6jDvEGZ6DABESDFdD
+        Uj3pHoNzVNxsTKSokSrsEdu6hbQ18C8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-339--VKZLHK1N3SKTy0FI2xzXQ-1; Sun, 13 Dec 2020 15:28:01 -0500
+X-MC-Unique: -VKZLHK1N3SKTy0FI2xzXQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 38DF215720;
+        Sun, 13 Dec 2020 20:28:00 +0000 (UTC)
+Received: from krava (unknown [10.40.192.121])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 9EC8016C1F;
+        Sun, 13 Dec 2020 20:27:58 +0000 (UTC)
+Date:   Sun, 13 Dec 2020 21:27:57 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii@kernel.org>
+Cc:     dwarves@vger.kernel.org, acme@kernel.org, bpf@vger.kernel.org,
+        kernel-team@fb.com, Hao Luo <haoluo@google.com>
+Subject: Re: [PATCH dwarves 0/2] Fix pahole to emit kernel module BTF
+ variables
+Message-ID: <20201213202757.GA482741@krava>
+References: <20201211041139.589692-1-andrii@kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:5802:: with SMTP id m2mr4547791ilb.271.1607871190712;
- Sun, 13 Dec 2020 06:53:10 -0800 (PST)
-Date:   Sun, 13 Dec 2020 06:53:10 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002aca2e05b659af04@google.com>
-Subject: memory leak in xskq_create
-From:   syzbot <syzbot+cfa88ddd0655afa88763@syzkaller.appspotmail.com>
-To:     ast@kernel.org, bjorn.topel@intel.com, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, jonathan.lemon@gmail.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        magnus.karlsson@intel.com, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201211041139.589692-1-andrii@kernel.org>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+On Thu, Dec 10, 2020 at 08:11:36PM -0800, Andrii Nakryiko wrote:
+> Two bug fixes to make pahole emit correct kernel module BTF variable
+> information.
+> 
+> Cc: Hao Luo <haoluo@google.com>
+> Cc: Jiri Olsa <jolsa@redhat.com>
+> 
+> Andrii Nakryiko (2):
+>   btf_encoder: fix BTF variable generation for kernel modules
+>   btf_encoder: fix skipping per-CPU variables at offset 0
 
-syzbot found the following issue on:
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-HEAD commit:    a68a0262 mm/madvise: remove racy mm ownership check
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=165b9413500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4305fa9ea70c7a9f
-dashboard link: https://syzkaller.appspot.com/bug?extid=cfa88ddd0655afa88763
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1180a237500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=114067cf500000
+jirka
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+cfa88ddd0655afa88763@syzkaller.appspotmail.com
+> 
+>  btf_encoder.c | 61 +++++++++++++++++++++++++++++++++------------------
+>  libbtf.c      |  1 +
+>  libbtf.h      |  1 +
+>  3 files changed, 42 insertions(+), 21 deletions(-)
+> 
+> -- 
+> 2.24.1
+> 
 
-Debian GNU/Linux 9 syzkaller ttyS0
-Warning: Permanently added '10.128.0.50' (ECDSA) to the list of known hosts.
-executing program
-executing program
-BUG: memory leak
-unreferenced object 0xffff88810f897940 (size 64):
-  comm "syz-executor991", pid 8502, jiffies 4294942194 (age 14.080s)
-  hex dump (first 32 bytes):
-    7f 00 00 00 80 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 a0 37 0c 81 88 ff ff 00 00 00 00 00 00 00 00  ..7.............
-  backtrace:
-    [<00000000639d0dd1>] xskq_create+0x23/0xd0 include/linux/slab.h:552
-    [<00000000b680b035>] xsk_init_queue net/xdp/xsk.c:508 [inline]
-    [<00000000b680b035>] xsk_setsockopt+0x1c4/0x590 net/xdp/xsk.c:875
-    [<000000002b302260>] __sys_setsockopt+0x1b0/0x360 net/socket.c:2132
-    [<00000000ae03723e>] __do_sys_setsockopt net/socket.c:2143 [inline]
-    [<00000000ae03723e>] __se_sys_setsockopt net/socket.c:2140 [inline]
-    [<00000000ae03723e>] __x64_sys_setsockopt+0x22/0x30 net/socket.c:2140
-    [<0000000005c2b4a0>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000003db140f>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff88810f8979c0 (size 64):
-  comm "syz-executor991", pid 8503, jiffies 4294942194 (age 14.080s)
-  hex dump (first 32 bytes):
-    ff 03 00 00 00 04 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 13 12 81 88 ff ff 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000639d0dd1>] xskq_create+0x23/0xd0 include/linux/slab.h:552
-    [<00000000b680b035>] xsk_init_queue net/xdp/xsk.c:508 [inline]
-    [<00000000b680b035>] xsk_setsockopt+0x1c4/0x590 net/xdp/xsk.c:875
-    [<000000002b302260>] __sys_setsockopt+0x1b0/0x360 net/socket.c:2132
-    [<00000000ae03723e>] __do_sys_setsockopt net/socket.c:2143 [inline]
-    [<00000000ae03723e>] __se_sys_setsockopt net/socket.c:2140 [inline]
-    [<00000000ae03723e>] __x64_sys_setsockopt+0x22/0x30 net/socket.c:2140
-    [<0000000005c2b4a0>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000003db140f>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
