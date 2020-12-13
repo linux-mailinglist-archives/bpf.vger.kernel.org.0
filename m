@@ -2,94 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A3DA2D8A9D
-	for <lists+bpf@lfdr.de>; Sun, 13 Dec 2020 00:19:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03E5A2D8C89
+	for <lists+bpf@lfdr.de>; Sun, 13 Dec 2020 10:49:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725822AbgLLXTJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 12 Dec 2020 18:19:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53082 "EHLO
+        id S1728608AbgLMJtJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 13 Dec 2020 04:49:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388303AbgLLXTA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 12 Dec 2020 18:19:00 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33921C0613CF;
-        Sat, 12 Dec 2020 15:18:12 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id h7so3351991pjk.1;
-        Sat, 12 Dec 2020 15:18:12 -0800 (PST)
+        with ESMTP id S1726340AbgLMJtH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 13 Dec 2020 04:49:07 -0500
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73BF2C0613CF;
+        Sun, 13 Dec 2020 01:48:27 -0800 (PST)
+Received: by mail-io1-xd44.google.com with SMTP id i9so14013816ioo.2;
+        Sun, 13 Dec 2020 01:48:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=WraJQMutZwlwEYJUqPHZDiDka6u5YnInKbpbZUv+1Ko=;
-        b=hZhKYtzDR8I/zaOlb9VRr5amX7PC3qrqdHIwntuiAnYmoRo/WY2UwzDztXQ98alLID
-         voktdWfPC5t08c6rVjOU+Ro4uusNwQe8bpdl7f2FzwZ3sDDX+oQ2qTqq4ew7bd1lxCzJ
-         WqGQTAXIjQkQ+McRGQrpVcDlrgBGc1DB2SXHg/jBEgGZCj7FlhlzfcE1qoXCdUSgzz77
-         eE4BkBy1k85mJpcs9v8GkPzHksDqpNLpNsf/aizjC4NOwiEgoAt83BboRPEYiiIU7PTJ
-         DIcxmeaEU4ZRFPGNJFSRJPBKjRkPkuVnlPCQIQLjICrcjGchGw2tuP0wlpVlxQCCBuQN
-         6SXw==
+        bh=DrGbDyNeh25uekmQEz9FpP8pASRopkwZQwpthWnr/M8=;
+        b=Yaw5EQYbZRDwxMnl1nVENrrQ9HFFMXqbkqfWi7CgXPelJ0VCxe7Xzb7RhEF6Omuazx
+         Y5+eg6YKKlLd1fbpp/ll9qUxvcz0phRsbusah7xqoL31/+nyb2HFjhz+qlzsInF1LfrP
+         4Fsc8Ljwvw2uK3PqgmQ1swGtZ/jC1NzEUAjtZZ7t8Dc7zgQOn+TOohoGUwwXPqimyAgG
+         n5sZr+SrFVNa6SQ6EtBugzr2wRIVqgP4Q+WffGTiOOgJmZnfmdtEpXJUENU5JWRDqeMv
+         C1L/EPZSF29+LeTsL5jz/KT2BWMpcccOWvA5dGd1Wrj2C53I8S61WHTIIIUmqU67rOrX
+         1jiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=WraJQMutZwlwEYJUqPHZDiDka6u5YnInKbpbZUv+1Ko=;
-        b=mTybZi3HknBab1x/Wg6ekfW2PXhkxVK+cu+7WxA4Ovfbr7Ndz5BY2ZLfEk4K39Ucxj
-         AwRQRF+oPNJScRqM/4zPsdf2ZRPV3qstsDVMuBMn/fRH8i7+opp5i0BzmNV5cUZfp6FQ
-         T2AFygvw1USa6G6N7i9TLz7dMe2N39pue1xZtSDSLvh4L/2RDkn9O+7+5Y7ubjrPW5w0
-         zEOkp42XxQ6MS1+X+LB/aEvGxLx4Ovx+9x6uU7YMR2XnPtQWxwnn+tuJQX7x6rZFUHwl
-         hLL9YQYohS7sCaKNxWr9jsYDLrjdwLVy9QCJMTDDxm1NqnL5vFjymZotsE5n6neAcZ+4
-         OCZA==
-X-Gm-Message-State: AOAM53352xh+fXnqlSvM4k1xjy8r4cVSFPV5hJi95MF4jiRHTo0jdKtt
-        EcETDTGtjrzQYzBMxI9BFfzyJpnoO9+8Y0FheRU=
-X-Google-Smtp-Source: ABdhPJyfaSSvDnWPsKIVyU/IvGxUqXizCUoL8xEBt2STNaNPbMGinFO6KywcGk0o9C3eavWrGYCL5t32H3e/2E7fAGQ=
-X-Received: by 2002:a17:902:7242:b029:db:d1ae:46bb with SMTP id
- c2-20020a1709027242b02900dbd1ae46bbmr16121656pll.77.1607815091613; Sat, 12
- Dec 2020 15:18:11 -0800 (PST)
+        bh=DrGbDyNeh25uekmQEz9FpP8pASRopkwZQwpthWnr/M8=;
+        b=i+31aL+6etXSBatRE2YYg7AQSArdP+iFlq4khUYxeXViUgQgfHhAiAbpOagmBIcThc
+         K5eJnHloQYho6DRk2WU1PLRWU/xm35cGsyEgPLYNXNB9GPKzR0CKG1aWXwGMMTNm5xaO
+         Xq3BFRJ3w5mMvfxM7mjrhqPx06QZY0z0K8xM36mJp3NhBe4EiRa+kSErcTovvTla9qbk
+         pWBgu3uqQj+BfkiqBwJPAJBaHr2R6I6Xz3YMtKMYJKkX84PIWN1MSmMikkxBkZA9SFi5
+         ScsMy6FvIosV3rFyp9lwaPCmgXU0CCG+vAAT2oko+cBf8UCgYbKFvbL068N/PNnmwgCz
+         k0CA==
+X-Gm-Message-State: AOAM532zGfVX5J1UyHsR8zSQTeOphU1joGf9Mf0LWNwGoS8j6VZOWrHS
+        Jkyul9hYCOMUvg1iYophRp3u2bvumjkfWEouOWs=
+X-Google-Smtp-Source: ABdhPJwk8FoE15Szg8cwx7iAei7vz3MxELq08xWu1OFUF1gb5aZMI53l/lJzE/iatVqQiGcN+m6O8VmUiENZ4K6+7Ko=
+X-Received: by 2002:a6b:8ec9:: with SMTP id q192mr26733029iod.28.1607852906625;
+ Sun, 13 Dec 2020 01:48:26 -0800 (PST)
 MIME-Version: 1.0
-References: <20201211000649.236635-1-xiyou.wangcong@gmail.com>
- <CAEf4BzY_497=xXkfok4WFsMRRrC94Q6WwdUWZA_HezXaTtb5GQ@mail.gmail.com> <CAM_iQpV2ZoODE+Thr77oYCOYrsuDji28=3g8LrP29VKun3+B-A@mail.gmail.com>
-In-Reply-To: <CAM_iQpV2ZoODE+Thr77oYCOYrsuDji28=3g8LrP29VKun3+B-A@mail.gmail.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Sat, 12 Dec 2020 15:18:00 -0800
-Message-ID: <CAM_iQpWA_F5XkaYvp6wekr691Vd-3MUkV-aWx4KWP4Y1qo4W_Q@mail.gmail.com>
-Subject: Re: [Patch bpf-next 0/3] bpf: introduce timeout map
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Andrey Ignatov <rdna@fb.com>
+References: <20201211163749.31956-1-yonatanlinik@gmail.com>
+ <20201211163749.31956-2-yonatanlinik@gmail.com> <20201212114802.21a6b257@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CA+s=kw3gmvk7CLu9NyiEwtBQ05eNFsTM2A679arPESVb55E2Xw@mail.gmail.com> <20201212135119.0db6723e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201212135119.0db6723e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Yonatan Linik <yonatanlinik@gmail.com>
+Date:   Sun, 13 Dec 2020 11:48:15 +0200
+Message-ID: <CA+s=kw3xw-_Q846CigmygetaHXfr0KFHNsmO9a=Ww9Z=G6yT7w@mail.gmail.com>
+Subject: Re: [PATCH 1/1] net: Fix use of proc_fs
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     David Miller <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Willem de Bruijn <willemb@google.com>,
+        john.ogness@linutronix.de, Arnd Bergmann <arnd@arndb.de>,
+        Mao Wenan <maowenan@huawei.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        orcohen@paloaltonetworks.com, Networking <netdev@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Dec 12, 2020 at 2:25 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+On Sat, Dec 12, 2020 at 11:51 PM Jakub Kicinski <kuba@kernel.org> wrote:
 >
-> On Fri, Dec 11, 2020 at 11:55 AM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
+> On Sat, 12 Dec 2020 23:39:20 +0200 Yonatan Linik wrote:
+> > On Sat, Dec 12, 2020 at 9:48 PM Jakub Kicinski <kuba@kernel.org> wrote:
+> > >
+> > > On Fri, 11 Dec 2020 18:37:49 +0200 Yonatan Linik wrote:
+> > > > proc_fs was used, in af_packet, without a surrounding #ifdef,
+> > > > although there is no hard dependency on proc_fs.
+> > > > That caused the initialization of the af_packet module to fail
+> > > > when CONFIG_PROC_FS=n.
+> > > >
+> > > > Specifically, proc_create_net() was used in af_packet.c,
+> > > > and when it fails, packet_net_init() returns -ENOMEM.
+> > > > It will always fail when the kernel is compiled without proc_fs,
+> > > > because, proc_create_net() for example always returns NULL.
+> > > >
+> > > > The calling order that starts in af_packet.c is as follows:
+> > > > packet_init()
+> > > > register_pernet_subsys()
+> > > > register_pernet_operations()
+> > > > __register_pernet_operations()
+> > > > ops_init()
+> > > > ops->init() (packet_net_ops.init=packet_net_init())
+> > > > proc_create_net()
+> > > >
+> > > > It worked in the past because register_pernet_subsys()'s return value
+> > > > wasn't checked before this Commit 36096f2f4fa0 ("packet: Fix error path in
+> > > > packet_init.").
+> > > > It always returned an error, but was not checked before, so everything
+> > > > was working even when CONFIG_PROC_FS=n.
+> > > >
+> > > > The fix here is simply to add the necessary #ifdef.
+> > > >
+> > > > Signed-off-by: Yonatan Linik <yonatanlinik@gmail.com>
+> > >
+> > > Hm, I'm guessing you hit this on a kernel upgrade of a real system?
 > >
-> > On Fri, Dec 11, 2020 at 2:28 AM Cong Wang <xiyou.wangcong@gmail.com> wrote:
-> > >
-> > > From: Cong Wang <cong.wang@bytedance.com>
-> > >
-> > > This patchset introduces a new bpf hash map which has timeout.
-> > > Patch 1 is a preparation, patch 2 is the implementation of timeout
-> > > map, patch 3 contains a test case for timeout map. Please check each
-> > > patch description for more details.
-> > >
-> > > ---
+> > Yeah, suddenly using socket with AF_PACKET didn't work,
+> > so I checked what happened.
 > >
-> > This patch set seems to be breaking existing selftests. Please take a
-> > look ([0]).
+> > > It seems like all callers to proc_create_net (and friends) interpret
+> > > NULL as an error, but only handful is protected by an ifdef.
+> >
+> > I guess where there is no ifdef,
+> > there should be a hard dependency on procfs,
+> > using depends on in the Kconfig.
+> > Maybe that's not the case everywhere it should be.
 >
-> Interesting, looks unrelated to my patches but let me double check.
+> You're right, on a closer look most of the places have a larger #ifdef
+> block (which my grep didn't catch) or are under Kconfig. Of those I
+> checked only TLS looks wrong (good job me) - would you care to fix that
+> one as well, or should I?
 
-Cc'ing Andrey...
-
-Looks like the failure is due to the addition of a new member to struct
-htab_elem. Any reason why it is hard-coded as 64 in check_hash()?
-And what's the point of verifying its size? htab_elem should be only
-visible to the kernel itself.
-
-I can certainly change 64 to whatever its new size is, but I do wonder
-why the test is there.
-
-Thanks.
+I can fix that as well, you are talking about tls_proc.c, right?
