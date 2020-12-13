@@ -2,127 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03E5A2D8C89
-	for <lists+bpf@lfdr.de>; Sun, 13 Dec 2020 10:49:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41E712D8E0D
+	for <lists+bpf@lfdr.de>; Sun, 13 Dec 2020 15:55:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728608AbgLMJtJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 13 Dec 2020 04:49:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726340AbgLMJtH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 13 Dec 2020 04:49:07 -0500
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73BF2C0613CF;
-        Sun, 13 Dec 2020 01:48:27 -0800 (PST)
-Received: by mail-io1-xd44.google.com with SMTP id i9so14013816ioo.2;
-        Sun, 13 Dec 2020 01:48:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DrGbDyNeh25uekmQEz9FpP8pASRopkwZQwpthWnr/M8=;
-        b=Yaw5EQYbZRDwxMnl1nVENrrQ9HFFMXqbkqfWi7CgXPelJ0VCxe7Xzb7RhEF6Omuazx
-         Y5+eg6YKKlLd1fbpp/ll9qUxvcz0phRsbusah7xqoL31/+nyb2HFjhz+qlzsInF1LfrP
-         4Fsc8Ljwvw2uK3PqgmQ1swGtZ/jC1NzEUAjtZZ7t8Dc7zgQOn+TOohoGUwwXPqimyAgG
-         n5sZr+SrFVNa6SQ6EtBugzr2wRIVqgP4Q+WffGTiOOgJmZnfmdtEpXJUENU5JWRDqeMv
-         C1L/EPZSF29+LeTsL5jz/KT2BWMpcccOWvA5dGd1Wrj2C53I8S61WHTIIIUmqU67rOrX
-         1jiQ==
+        id S2395200AbgLMOxw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 13 Dec 2020 09:53:52 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:46892 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2395199AbgLMOxv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 13 Dec 2020 09:53:51 -0500
+Received: by mail-il1-f198.google.com with SMTP id q5so11477690ilc.13
+        for <bpf@vger.kernel.org>; Sun, 13 Dec 2020 06:53:36 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DrGbDyNeh25uekmQEz9FpP8pASRopkwZQwpthWnr/M8=;
-        b=i+31aL+6etXSBatRE2YYg7AQSArdP+iFlq4khUYxeXViUgQgfHhAiAbpOagmBIcThc
-         K5eJnHloQYho6DRk2WU1PLRWU/xm35cGsyEgPLYNXNB9GPKzR0CKG1aWXwGMMTNm5xaO
-         Xq3BFRJ3w5mMvfxM7mjrhqPx06QZY0z0K8xM36mJp3NhBe4EiRa+kSErcTovvTla9qbk
-         pWBgu3uqQj+BfkiqBwJPAJBaHr2R6I6Xz3YMtKMYJKkX84PIWN1MSmMikkxBkZA9SFi5
-         ScsMy6FvIosV3rFyp9lwaPCmgXU0CCG+vAAT2oko+cBf8UCgYbKFvbL068N/PNnmwgCz
-         k0CA==
-X-Gm-Message-State: AOAM532zGfVX5J1UyHsR8zSQTeOphU1joGf9Mf0LWNwGoS8j6VZOWrHS
-        Jkyul9hYCOMUvg1iYophRp3u2bvumjkfWEouOWs=
-X-Google-Smtp-Source: ABdhPJwk8FoE15Szg8cwx7iAei7vz3MxELq08xWu1OFUF1gb5aZMI53l/lJzE/iatVqQiGcN+m6O8VmUiENZ4K6+7Ko=
-X-Received: by 2002:a6b:8ec9:: with SMTP id q192mr26733029iod.28.1607852906625;
- Sun, 13 Dec 2020 01:48:26 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=fWF53rcHi8QspkjztKtg7fthAltlqOrg0gZKXd1Tx+4=;
+        b=nbs3P0rZFPtylDE6OmI3pLIzmYF9XIgSjezCvPMS+iwF5Fl6pVdP+K3bnVEYgFp63x
+         /e3mNhf79+vpsTHYE7qJFyflMZ+tXqCBq97Dd9nsda5Hu1FzmgEdyHOMk3JV6NNNyif8
+         lXn5bR4NVzb6MADSv5wsCPvo7C7t+W89/Cmhh5OhIBubpyc1VcJoDjYrjgX4BJNiDZ/I
+         pJB3KLHwg26BjY/L16OfM/PnxSJ4aJdI6PpVqy7bKqxu4xIVYxiWH5M3m3lPm+30Br2s
+         yQey/Yr01FfIliaFu1KjVr6e65qF/MKtHIbj501LJn5tTqEC9U+Dn4yyuunrp5ZiwwqO
+         VGlw==
+X-Gm-Message-State: AOAM5333dpsilmmJTY4vElbElHxS5XiI7sMZCEmusZdES4mi8Kx4bJzi
+        oTZDnPc5KQyMmoUv+8rFkw3VYdHf/tmEcJwRy2oeJMwjFXDh
+X-Google-Smtp-Source: ABdhPJzrJnVwLKuT4IGifrvkCv9PDEMjNNrq6FMGbcr0krUHEsKI3sBFDe0MTfP+Ug664/YEqs0v9dxinAyACJKe5RpnNxro4nSk
 MIME-Version: 1.0
-References: <20201211163749.31956-1-yonatanlinik@gmail.com>
- <20201211163749.31956-2-yonatanlinik@gmail.com> <20201212114802.21a6b257@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CA+s=kw3gmvk7CLu9NyiEwtBQ05eNFsTM2A679arPESVb55E2Xw@mail.gmail.com> <20201212135119.0db6723e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20201212135119.0db6723e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Yonatan Linik <yonatanlinik@gmail.com>
-Date:   Sun, 13 Dec 2020 11:48:15 +0200
-Message-ID: <CA+s=kw3xw-_Q846CigmygetaHXfr0KFHNsmO9a=Ww9Z=G6yT7w@mail.gmail.com>
-Subject: Re: [PATCH 1/1] net: Fix use of proc_fs
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     David Miller <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Willem de Bruijn <willemb@google.com>,
-        john.ogness@linutronix.de, Arnd Bergmann <arnd@arndb.de>,
-        Mao Wenan <maowenan@huawei.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        orcohen@paloaltonetworks.com, Networking <netdev@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, bpf <bpf@vger.kernel.org>
+X-Received: by 2002:a92:5802:: with SMTP id m2mr4547791ilb.271.1607871190712;
+ Sun, 13 Dec 2020 06:53:10 -0800 (PST)
+Date:   Sun, 13 Dec 2020 06:53:10 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002aca2e05b659af04@google.com>
+Subject: memory leak in xskq_create
+From:   syzbot <syzbot+cfa88ddd0655afa88763@syzkaller.appspotmail.com>
+To:     ast@kernel.org, bjorn.topel@intel.com, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, jonathan.lemon@gmail.com,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        magnus.karlsson@intel.com, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Dec 12, 2020 at 11:51 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Sat, 12 Dec 2020 23:39:20 +0200 Yonatan Linik wrote:
-> > On Sat, Dec 12, 2020 at 9:48 PM Jakub Kicinski <kuba@kernel.org> wrote:
-> > >
-> > > On Fri, 11 Dec 2020 18:37:49 +0200 Yonatan Linik wrote:
-> > > > proc_fs was used, in af_packet, without a surrounding #ifdef,
-> > > > although there is no hard dependency on proc_fs.
-> > > > That caused the initialization of the af_packet module to fail
-> > > > when CONFIG_PROC_FS=n.
-> > > >
-> > > > Specifically, proc_create_net() was used in af_packet.c,
-> > > > and when it fails, packet_net_init() returns -ENOMEM.
-> > > > It will always fail when the kernel is compiled without proc_fs,
-> > > > because, proc_create_net() for example always returns NULL.
-> > > >
-> > > > The calling order that starts in af_packet.c is as follows:
-> > > > packet_init()
-> > > > register_pernet_subsys()
-> > > > register_pernet_operations()
-> > > > __register_pernet_operations()
-> > > > ops_init()
-> > > > ops->init() (packet_net_ops.init=packet_net_init())
-> > > > proc_create_net()
-> > > >
-> > > > It worked in the past because register_pernet_subsys()'s return value
-> > > > wasn't checked before this Commit 36096f2f4fa0 ("packet: Fix error path in
-> > > > packet_init.").
-> > > > It always returned an error, but was not checked before, so everything
-> > > > was working even when CONFIG_PROC_FS=n.
-> > > >
-> > > > The fix here is simply to add the necessary #ifdef.
-> > > >
-> > > > Signed-off-by: Yonatan Linik <yonatanlinik@gmail.com>
-> > >
-> > > Hm, I'm guessing you hit this on a kernel upgrade of a real system?
-> >
-> > Yeah, suddenly using socket with AF_PACKET didn't work,
-> > so I checked what happened.
-> >
-> > > It seems like all callers to proc_create_net (and friends) interpret
-> > > NULL as an error, but only handful is protected by an ifdef.
-> >
-> > I guess where there is no ifdef,
-> > there should be a hard dependency on procfs,
-> > using depends on in the Kconfig.
-> > Maybe that's not the case everywhere it should be.
->
-> You're right, on a closer look most of the places have a larger #ifdef
-> block (which my grep didn't catch) or are under Kconfig. Of those I
-> checked only TLS looks wrong (good job me) - would you care to fix that
-> one as well, or should I?
+Hello,
 
-I can fix that as well, you are talking about tls_proc.c, right?
+syzbot found the following issue on:
+
+HEAD commit:    a68a0262 mm/madvise: remove racy mm ownership check
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=165b9413500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4305fa9ea70c7a9f
+dashboard link: https://syzkaller.appspot.com/bug?extid=cfa88ddd0655afa88763
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1180a237500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=114067cf500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+cfa88ddd0655afa88763@syzkaller.appspotmail.com
+
+Debian GNU/Linux 9 syzkaller ttyS0
+Warning: Permanently added '10.128.0.50' (ECDSA) to the list of known hosts.
+executing program
+executing program
+BUG: memory leak
+unreferenced object 0xffff88810f897940 (size 64):
+  comm "syz-executor991", pid 8502, jiffies 4294942194 (age 14.080s)
+  hex dump (first 32 bytes):
+    7f 00 00 00 80 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 a0 37 0c 81 88 ff ff 00 00 00 00 00 00 00 00  ..7.............
+  backtrace:
+    [<00000000639d0dd1>] xskq_create+0x23/0xd0 include/linux/slab.h:552
+    [<00000000b680b035>] xsk_init_queue net/xdp/xsk.c:508 [inline]
+    [<00000000b680b035>] xsk_setsockopt+0x1c4/0x590 net/xdp/xsk.c:875
+    [<000000002b302260>] __sys_setsockopt+0x1b0/0x360 net/socket.c:2132
+    [<00000000ae03723e>] __do_sys_setsockopt net/socket.c:2143 [inline]
+    [<00000000ae03723e>] __se_sys_setsockopt net/socket.c:2140 [inline]
+    [<00000000ae03723e>] __x64_sys_setsockopt+0x22/0x30 net/socket.c:2140
+    [<0000000005c2b4a0>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<0000000003db140f>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff88810f8979c0 (size 64):
+  comm "syz-executor991", pid 8503, jiffies 4294942194 (age 14.080s)
+  hex dump (first 32 bytes):
+    ff 03 00 00 00 04 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 13 12 81 88 ff ff 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000639d0dd1>] xskq_create+0x23/0xd0 include/linux/slab.h:552
+    [<00000000b680b035>] xsk_init_queue net/xdp/xsk.c:508 [inline]
+    [<00000000b680b035>] xsk_setsockopt+0x1c4/0x590 net/xdp/xsk.c:875
+    [<000000002b302260>] __sys_setsockopt+0x1b0/0x360 net/socket.c:2132
+    [<00000000ae03723e>] __do_sys_setsockopt net/socket.c:2143 [inline]
+    [<00000000ae03723e>] __se_sys_setsockopt net/socket.c:2140 [inline]
+    [<00000000ae03723e>] __x64_sys_setsockopt+0x22/0x30 net/socket.c:2140
+    [<0000000005c2b4a0>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<0000000003db140f>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
