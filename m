@@ -2,40 +2,39 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 536FB2DA1EA
-	for <lists+bpf@lfdr.de>; Mon, 14 Dec 2020 21:47:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A02952DA28E
+	for <lists+bpf@lfdr.de>; Mon, 14 Dec 2020 22:27:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503428AbgLNUqw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Dec 2020 15:46:52 -0500
-Received: from www62.your-server.de ([213.133.104.62]:33924 "EHLO
+        id S2503587AbgLNV1Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Dec 2020 16:27:25 -0500
+Received: from www62.your-server.de ([213.133.104.62]:56128 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2503422AbgLNUqw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Dec 2020 15:46:52 -0500
+        with ESMTP id S2503444AbgLNV1Z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Dec 2020 16:27:25 -0500
 Received: from sslproxy06.your-server.de ([78.46.172.3])
         by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92.3)
         (envelope-from <daniel@iogearbox.net>)
-        id 1koujS-0008m6-GC; Mon, 14 Dec 2020 21:46:10 +0100
+        id 1kovMi-000D6h-4L; Mon, 14 Dec 2020 22:26:44 +0100
 Received: from [85.7.101.30] (helo=pc-9.home)
         by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <daniel@iogearbox.net>)
-        id 1koujS-000Por-9g; Mon, 14 Dec 2020 21:46:10 +0100
-Subject: Re: [PATCH bpf-next v2] libbpf: Expose libbpf ringbufer epoll_fd
-To:     Brendan Jackman <jackmanb@google.com>, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-kernel@vger.kernel.org
-References: <20201214113812.305274-1-jackmanb@google.com>
+        id 1kovMh-000WRA-Uv; Mon, 14 Dec 2020 22:26:43 +0100
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: permits pointers on stack for helper
+ calls
+To:     Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>, kernel-team@fb.com,
+        Song Liu <songliubraving@fb.com>
+References: <20201211034121.3452172-1-yhs@fb.com>
+ <20201211034121.3452243-1-yhs@fb.com>
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <f19112d6-7ee7-f685-b203-e0961a246b80@iogearbox.net>
-Date:   Mon, 14 Dec 2020 21:46:09 +0100
+Message-ID: <e48545be-6b03-aa2b-d5f6-a12b180ba116@iogearbox.net>
+Date:   Mon, 14 Dec 2020 22:26:43 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20201214113812.305274-1-jackmanb@google.com>
+In-Reply-To: <20201211034121.3452243-1-yhs@fb.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -45,62 +44,73 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/14/20 12:38 PM, Brendan Jackman wrote:
-> This provides a convenient perf ringbuf -> libbpf ringbuf migration
-> path for users of external polling systems. It is analogous to
-> perf_buffer__epoll_fd.
+On 12/11/20 4:41 AM, Yonghong Song wrote:
+> Currently, when checking stack memory accessed by helper calls,
+> for spills, only PTR_TO_BTF_ID and SCALAR_VALUE are
+> allowed.
 > 
-> Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> Song discovered an issue where the below bpf program
+>    int dump_task(struct bpf_iter__task *ctx)
+>    {
+>      struct seq_file *seq = ctx->meta->seq;
+>      static char[] info = "abc";
+>      BPF_SEQ_PRINTF(seq, "%s\n", info);
+>      return 0;
+>    }
+> may cause a verifier failure.
+> 
+> The verifier output looks like:
+>    ; struct seq_file *seq = ctx->meta->seq;
+>    1: (79) r1 = *(u64 *)(r1 +0)
+>    ; BPF_SEQ_PRINTF(seq, "%s\n", info);
+>    2: (18) r2 = 0xffff9054400f6000
+>    4: (7b) *(u64 *)(r10 -8) = r2
+>    5: (bf) r4 = r10
+>    ;
+>    6: (07) r4 += -8
+>    ; BPF_SEQ_PRINTF(seq, "%s\n", info);
+>    7: (18) r2 = 0xffff9054400fe000
+>    9: (b4) w3 = 4
+>    10: (b4) w5 = 8
+>    11: (85) call bpf_seq_printf#126
+>     R1_w=ptr_seq_file(id=0,off=0,imm=0) R2_w=map_value(id=0,off=0,ks=4,vs=4,imm=0)
+>    R3_w=inv4 R4_w=fp-8 R5_w=inv8 R10=fp0 fp-8_w=map_value
+>    last_idx 11 first_idx 0
+>    regs=8 stack=0 before 10: (b4) w5 = 8
+>    regs=8 stack=0 before 9: (b4) w3 = 4
+>    invalid indirect read from stack off -8+0 size 8
+> 
+> Basically, the verifier complains the map_value pointer at "fp-8" location.
+> To fix the issue, if env->allow_ptr_leaks is true, let us also permit
+> pointers on the stack to be accessible by the helper.
+> 
+> Suggested-by: Alexei Starovoitov <ast@kernel.org>
+> Reported-by: Song Liu <songliubraving@fb.com>
+> Signed-off-by: Yonghong Song <yhs@fb.com>
 > ---
-> Difference from v1: Added entry to libbpf.map.
+>   kernel/bpf/verifier.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
 > 
->   tools/lib/bpf/libbpf.h   | 1 +
->   tools/lib/bpf/libbpf.map | 1 +
->   tools/lib/bpf/ringbuf.c  | 6 ++++++
->   3 files changed, 8 insertions(+)
-> 
-> diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-> index 6909ee81113a..cde07f64771e 100644
-> --- a/tools/lib/bpf/libbpf.h
-> +++ b/tools/lib/bpf/libbpf.h
-> @@ -536,6 +536,7 @@ LIBBPF_API int ring_buffer__add(struct ring_buffer *rb, int map_fd,
->   				ring_buffer_sample_fn sample_cb, void *ctx);
->   LIBBPF_API int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms);
->   LIBBPF_API int ring_buffer__consume(struct ring_buffer *rb);
-> +LIBBPF_API int ring_buffer__epoll_fd(struct ring_buffer *rb);
-> 
->   /* Perf buffer APIs */
->   struct perf_buffer;
-> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-> index 7c4126542e2b..7be850271be6 100644
-> --- a/tools/lib/bpf/libbpf.map
-> +++ b/tools/lib/bpf/libbpf.map
-> @@ -348,4 +348,5 @@ LIBBPF_0.3.0 {
->   		btf__new_split;
->   		xsk_setup_xdp_prog;
->   		xsk_socket__update_xskmap;
-> +                ring_buffer__epoll_fd;
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 93def76cf32b..eebb2d3e16bf 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -3769,7 +3769,9 @@ static int check_stack_boundary(struct bpf_verifier_env *env, int regno,
+>   			goto mark;
+>   
+>   		if (state->stack[spi].slot_type[0] == STACK_SPILL &&
+> -		    state->stack[spi].spilled_ptr.type == SCALAR_VALUE) {
+> +		    (state->stack[spi].spilled_ptr.type == SCALAR_VALUE ||
+> +		     (state->stack[spi].spilled_ptr.type != NOT_INIT &&
 
-Fyi, this had a whitespace issue, Andrii fixed it up while applying.
+Thinking more on this, your v2 was actually correct since in such case stype
+would have been STACK_MISC or STACK_ZERO and we would have jumped to goto mark
+here instead, so the above is not reachable under NOT_INIT. Anyway, I took the
+v2 in, thanks!
 
->   } LIBBPF_0.2.0;
-> diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
-> index 5c6522c89af1..45a36648b403 100644
-> --- a/tools/lib/bpf/ringbuf.c
-> +++ b/tools/lib/bpf/ringbuf.c
-> @@ -282,3 +282,9 @@ int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms)
->   	}
->   	return cnt < 0 ? -errno : res;
->   }
-> +
-> +/* Get an fd that can be used to sleep until data is available in the ring(s) */
-> +int ring_buffer__epoll_fd(struct ring_buffer *rb)
-> +{
-> +	return rb->epoll_fd;
-> +}
-> 
-> base-commit: b4fe9fec51ef48011f11c2da4099f0b530449c92
-> --
-> 2.29.2.576.ga3fc446d84-goog
+> +		      env->allow_ptr_leaks))) {
+>   			__mark_reg_unknown(env, &state->stack[spi].spilled_ptr);
+>   			for (j = 0; j < BPF_REG_SIZE; j++)
+>   				state->stack[spi].slot_type[j] = STACK_MISC;
 > 
 
