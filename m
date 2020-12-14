@@ -2,138 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12F212D936E
-	for <lists+bpf@lfdr.de>; Mon, 14 Dec 2020 08:01:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D2772D9390
+	for <lists+bpf@lfdr.de>; Mon, 14 Dec 2020 08:15:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727672AbgLNHBV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Dec 2020 02:01:21 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:51086 "EHLO
+        id S2438911AbgLNHOx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Dec 2020 02:14:53 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:49960 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1733073AbgLNHBT (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 14 Dec 2020 02:01:19 -0500
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BE6uvLt000571;
-        Sun, 13 Dec 2020 23:00:15 -0800
+        by vger.kernel.org with ESMTP id S1726305AbgLNHOx (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 14 Dec 2020 02:14:53 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BE71B6c004899;
+        Sun, 13 Dec 2020 23:13:57 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
  references : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=vS/NUF1H04v4R9GUU3eC5OItWgKT4kjE/qlAcPZLPG4=;
- b=KqW7zrxIau20a1wdkyMF7CYgTdAdpNR7yPLu+5XkDZ6HIsOWdpr0tSv9Y2Z4O2D08hwR
- ZhR/tJV3XXNba6ZomkJG6DS1rFnMSMBMN+398FutcgBlaj+dPZ4XTw4RGkVNA8XO7r37
- LJA8jof9/JKpYJJY34fG6QVAE0yY2KeOndE= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 35df0e36hg-2
+ bh=imvGekJ8JxR9V0GXhGEy3XfvSAn2qq/4nE7MtUbQ/gg=;
+ b=QdYsBNUEH5WmFTO5p6YuQ67Vqg8kHDm1TX9WGMEkSqWIxltdCzodd5f9ny0vN5lSCkmw
+ kcvySgtRZyT1jxZz0jut8NU3b5qQw/sEa6WSWsfPAW+R76TIzWogzUIl1W34QmOtUeIl
+ bPusQKcKHj3L/QYu6Zu4B+QiejfZpjvqKTM= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 35desu383q-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sun, 13 Dec 2020 23:00:15 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
+        Sun, 13 Dec 2020 23:13:57 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Sun, 13 Dec 2020 23:00:12 -0800
+ 15.1.1979.3; Sun, 13 Dec 2020 23:13:55 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ki6O3LW/k/UdG5ptsXMYRL0pfLGJwsd1kWWy93+Fv4ouFLoeM6SO2kFsQ3vZ4J5tt/hdpMOI/PAwHO2L74Qy8t+c+SgRZy89GzwnBUIQTOIvZljZAHkccoYmmssNknGmDkmXUjPsvK1dGIKSUKb2JqKRhuuHeff+j/SkWvDOxR/j0wrkjPEnEITZtwdNGAB458UzMknbMa5z8H1aL93jKqu2+12gZPuKGVdYA3uZuHi26QXu+EDeXfWqSfrD7NpbqNA8giDAeuvO92YjW/OAPZGZaVPbL76dTxSQO4/v1b61/xDtSq8YPww2dGWrRQOZB344xSZfAM3xtxs80t0B9g==
+ b=X020G539a3c6SONFVPq4gut7LZ+pVVVQo6oR+W2fEiKpB0sPlKX6t5Q9B6ByqU5BQQBbiSilE/gndLAHhGj3rhZD1i5DuNMNYWIdumNq5TymlP6NOuHen4uvUSZaD+Djl04bH9WUnUFwc4sZEqUDA0hveXTeyrXJHWw7wcepzfeVHf7BYSfUVnrJqojamHCBZcBHvCAcZ04isgxZoqiNhwg4XftqThG4cSc9y92MWe3tQSo/i7eV8b1QuXnhvyJfRiSv5h2skheGyFjjUystgFOIgbF5Bd03GZXpa3cV+nrIFaRHaHxIsy/8lPPz7SAyxVcE00J6J1zX+J3h7qc1Kg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vS/NUF1H04v4R9GUU3eC5OItWgKT4kjE/qlAcPZLPG4=;
- b=fKlDO9NyPKNNIba0cABS+/6stghk+7Maj5N+QC6runcYdvJKuUYBGLKlj/5MWUs0XiPBGmSU0lGf2nOdydPLVAoPjEG8C1CFctxX+BZuzczpzERypgg2/YuUoVhM0qeN1v1CKXl98DiXXYPqKBMTYdYdJFVLVbjb20Uc22Q2Dg11K+xUmlWs8JbrACWZaA1K7sY9ahwGigtUDj5VkJgiDA2PAGNUxd6RGJBXpyCwg1yZ+UsbCTr5XBZRhhJaskpJJhTcGUaIeeSTYq4WyVEuYyle2ZSERUK38Obkdd+1k80EUVZ6Ok9zFZ7dUvbZrsMCnKxtLrZX8ZzkWY/T8/ghcg==
+ bh=imvGekJ8JxR9V0GXhGEy3XfvSAn2qq/4nE7MtUbQ/gg=;
+ b=JN4acPsspVLzUqpl/QUaN/QvMbMv1Tnet7ZnA0/kc+ancGizI1r73fKGwiaAkFH96ZyLxNOUZKG+KI7N7AaFRF6Aolb0f3zX92qIb1tETJ3ohZNbS6JlQ3enng14XbZuxpURWkqefbeV5FJVC6YsWrr9oUpK8l6pWRvvEQeobmtaz/5iJGfDfuCBP1R81JehfJCs8O7XWoxV/2oDoCDe0niwqU6CoTmD4qb4wUuXjzk2cB+UJCqYOrrJ7kqDhUMO9S4bs6DPxtgbJ3hOz1xQiKmPB0hrUyq7l4sqPt8P69drooCECN02GFIYaf0czlR0Zjg5u1sUlXUPc0jzPiXJZg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vS/NUF1H04v4R9GUU3eC5OItWgKT4kjE/qlAcPZLPG4=;
- b=NttwWmaDjZ29ld4fKnMLZLq0b4dpAkpzOxPEd8eQvIbYVwMVE6AcyVYKfgU4ZYtSTQbDHwVrMtz0Jb3Z8WCcVVRfHu7V1FdNmIJqtPcuK+tTAZmZe4bliU1d+Zz5j3AsWy3sgoB3UQKWOpLV/Jp/Vvu5WL6FlGb8VtcWptpQrEA=
+ bh=imvGekJ8JxR9V0GXhGEy3XfvSAn2qq/4nE7MtUbQ/gg=;
+ b=In4qxZnlrlNBNIs2Y8cMOleikPIpWICkypfwxZGCZYYBb+29HqDx1Q24IqMbpbRUsqg476026mT5u32+s70+mrllTemy+Nwxql91iRQ0aewT0LmnaEueNLQp4yTxiJUx1mgV+WfZi4uvdys0Z15RwdWaKPSqrgp5hy0SWb0Bfc8=
 Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB2696.namprd15.prod.outlook.com (2603:10b6:a03:156::23) with
+ by BY5PR15MB3617.namprd15.prod.outlook.com (2603:10b6:a03:1fc::28) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Mon, 14 Dec
- 2020 07:00:11 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.25; Mon, 14 Dec
+ 2020 07:13:39 +0000
 Received: from BYAPR15MB4088.namprd15.prod.outlook.com
  ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
  ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3654.025; Mon, 14 Dec 2020
- 07:00:11 +0000
-Subject: Re: [PATCH 1/1 v3 bpf-next] bpf: increment and use correct thread
- iterator
-To:     Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
-References: <20201211171138.63819-1-jonathan.lemon@gmail.com>
- <20201211171138.63819-2-jonathan.lemon@gmail.com>
- <CAEf4BzYswHcuQNdqyOymB5MTFDKJy0xkG4+Yo_CpUGH4BVqjzg@mail.gmail.com>
- <20201211230134.qswet7pfrda23ooa@bsd-mbp.dhcp.thefacebook.com>
+ 07:13:39 +0000
+Subject: Re: [PATCH bpf-next 1/4] bpf: introduce task_vma bpf_iter
+To:     Song Liu <songliubraving@fb.com>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
+        <kernel-team@fb.com>
+References: <20201212024810.807616-1-songliubraving@fb.com>
+ <20201212024810.807616-2-songliubraving@fb.com>
 From:   Yonghong Song <yhs@fb.com>
-Message-ID: <7774ab85-ef6d-8928-0374-ae037f495cab@fb.com>
-Date:   Sun, 13 Dec 2020 23:00:09 -0800
+Message-ID: <ec9dbc75-84e7-45fe-65ab-5b0b6d86507a@fb.com>
+Date:   Sun, 13 Dec 2020 23:13:37 -0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.5.1
-In-Reply-To: <20201211230134.qswet7pfrda23ooa@bsd-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20201212024810.807616-2-songliubraving@fb.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [2620:10d:c090:400::5:c9f6]
-X-ClientProxiedBy: SJ0PR05CA0081.namprd05.prod.outlook.com
- (2603:10b6:a03:332::26) To BYAPR15MB4088.namprd15.prod.outlook.com
+X-ClientProxiedBy: BYAPR05CA0010.namprd05.prod.outlook.com
+ (2603:10b6:a03:c0::23) To BYAPR15MB4088.namprd15.prod.outlook.com
  (2603:10b6:a02:c3::18)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21e8::112b] (2620:10d:c090:400::5:c9f6) by SJ0PR05CA0081.namprd05.prod.outlook.com (2603:10b6:a03:332::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.13 via Frontend Transport; Mon, 14 Dec 2020 07:00:10 +0000
+Received: from [IPv6:2620:10d:c085:21e8::112b] (2620:10d:c090:400::5:c9f6) by BYAPR05CA0010.namprd05.prod.outlook.com (2603:10b6:a03:c0::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.9 via Frontend Transport; Mon, 14 Dec 2020 07:13:39 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 937e8c14-d7ab-49d5-cd08-08d89ffde643
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2696:
+X-MS-Office365-Filtering-Correlation-Id: b1753705-9b2b-4e2e-63e4-08d89fffc83a
+X-MS-TrafficTypeDiagnostic: BY5PR15MB3617:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB26961DF5CC0583DD65FE9CEBD3C70@BYAPR15MB2696.namprd15.prod.outlook.com>
+X-Microsoft-Antispam-PRVS: <BY5PR15MB3617BD8A12641837DD501911D3C70@BY5PR15MB3617.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1ON9LACoFkbcGnOJptvuSKQoLSeSUgyAwsHhBz12BuY3l0TdbipOZyfeTK3sskrJe4IKzfoPw8Xv1Rp5M0HkLH/Aaqb6wF16fBy1XCA7RGpsXBzDjjR5Z5fNFEq7RCEmKuhM0LKj+XgRGs0ESfAizimW3sRLcT3DfRU/KmSTk+T48prMlTEkkv/dScfz+IPmmjtqMdtNeiyFmlNwCRy3kUL5XQb/dFp0LQVbIgGVLZPG2U7Yggg6/f54CXRjWs+veDe32WlWXpxqC0ceXrmXhjY//VgRI5XMG0J9KjGhMvD93G6GViDY0rOgk2vbwQc6rnNZoSO9QwSpw47jJcIqxvIPBRFL38vhQRa5dZ6nznlUzYvYJQtfHxp494Sj/BHjKTMwKWAxBUkZ1rxvgZ7uw6Y7qrY0YuP9+sbrj2WUcGk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(136003)(346002)(5660300002)(66476007)(4326008)(8676002)(36756003)(66946007)(8936002)(2616005)(508600001)(31696002)(66556008)(186003)(86362001)(2906002)(52116002)(31686004)(110136005)(53546011)(6486002)(54906003)(83380400001)(16526019)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?cURXRzBhcG80dmhEWnREblFJamRoWmhJaUVXMEVndWRmZUEwb3M1TnN2cjRh?=
- =?utf-8?B?L3JkbWpaRm1SeS9vRkk5bmdQSytOcnl6clJsUjk5bzVJQWY4TmI5akNXOVJp?=
- =?utf-8?B?ci9jVEx5cnRJUm5GbUFMWWxzTmJLQkNYN1Y5bWpQRUZTdHljcHFpVm40bHhX?=
- =?utf-8?B?THZjK0R0a2FPU0dsQWM4eDhlZmlmMVd2RU5hSVFhUWY2MytmSHh1UWU0Ykhp?=
- =?utf-8?B?TDRTZldxOWx2R1VvVW41amVXN2I0aG1MYlU0L0JxY1B4U0gvMEtoOFRXamxX?=
- =?utf-8?B?SkRHVVFOeXhVWis5M2hCR2hDVFI0cmNFVlBzOGg3aHdmbEdmTHFFTGowRFg3?=
- =?utf-8?B?K0dGK1BPTitKdENkei9wV2YwcmdsNWFkY2N5ZVk4VEJuVnhYZGdQTFBPV1Fw?=
- =?utf-8?B?VkI0NFgzQ01wZW5YVEdaQzZHc2FpVlpTVk1NMkd2c0FqV24xSFpBVTNaYUJH?=
- =?utf-8?B?TmRIRmh4MkhOV1BxVzI2aTc1MzlQNWFFSnJ3NjErZFJwLy9NUG01VVVxc0Rv?=
- =?utf-8?B?MElKVFlrVGhOSmtKMnA1RGRlQkxvZGM0akdCNzgvVUhYTWpGSTMzQ0Y0Y29I?=
- =?utf-8?B?Tnd3eS9TT2t1OEs0UHE5bDVua012R2l4RTJlVmdJWFRPeFBqUXU0endmcDhN?=
- =?utf-8?B?aXhrYWtEL1NQa2VmNlQ5R0x6a3hFQXJIcnBNbHZuZkZodHdOS3U4ekYza21V?=
- =?utf-8?B?S1EzRERscVovdGVWWTJBdEF3a0YzbEw4cEtJS2FSN0JjNkNydzljc3JzN2lT?=
- =?utf-8?B?ZVgxeDBTVFpDL1BKNkRqNGNGd2gxeWRIV2lmaXhPRjlBMzU0QTUzN295dmU1?=
- =?utf-8?B?NjV0YXN1R0duU1ZTWjA0elFLV0tPOTROZDRid2lCYTRRR2RnYWJYbm04eWtI?=
- =?utf-8?B?UjVCT0hkVXVrNkRoS2xnZExwUFp6Qk5PcFQvZm4rb2ZSbzJCNnVUNi9oLzNv?=
- =?utf-8?B?Q2tLQjRIMVR0bndDUjZzTXJJSjY3Ni9pcXZVMVRDbjFRalRoa0E0L0pqbloy?=
- =?utf-8?B?a1dlbUJCVFBZcFphUk1KL1F1RExVQXlEU25xc3FkT0dvRG4vMmtzT2NHTGJI?=
- =?utf-8?B?YUVld0tUUkRINmFEL2F0N0F5M1RCeHlkZXRDSVBYVW9oSitpSkwzTXNJQ3hE?=
- =?utf-8?B?MHhoaWM2c0E4NDZlVitRYXlNNnUrbmUvTS9xZGM5Q3Aza2lFM0x5aVpTV3ZP?=
- =?utf-8?B?bDcyYUtaMW5JWENFOFNvNVFVcy9yY3RoYzhiWHEwbElxL2xBRnpkUFBHb1Yv?=
- =?utf-8?B?TTVGdHAzVUU1ek5LVGMyMllEbWJJd0VjZzVmOC93bnU0ekpnTFRZYnYyN3A4?=
- =?utf-8?B?MjNleEV1ZVNMcWErRlpTSFFvOUp1dW5HdW53amhrT1Fjd3d3UnlRR3d6TCtp?=
- =?utf-8?B?TlNYVkxxT1Y5dVE9PQ==?=
+X-Microsoft-Antispam-Message-Info: 2I+8xleBBTIGS7P7o5yljYI877KuiPqbv7Nrkcs2YXPwzKr2l2T5iwXaqJXZpFyWXnRHNBXI6/OK8cDxk6V/jZYnbO3c3pzZ1xLT278KyVrKUbohFBsRlnyfk21hMLloTLT0sLWEQ1bJMouA55TnPEbE8CSH52xfB88j7w1BssiXcjU3ikpWZaE1luZXWhD8DC/VEk+Zc6lYMN/6kUOO9aTQO+kc2zSMeLi+85sDDtEbh9IZ6Wc2ZPOS+xfyz1s64NmwMpYWhB5kiFmTuX2i/09/8DdS7+n4zWknIScNZnfLwLJTbyB5osjrRnf6DaLWs9E/gTtQEd10fqYxPtIGZlNDnJmsqtXFjl8qG5lHH2ZD82d0GCx4OdgTAxhUpfN73JjAgTQDtcW8qUDujl+hY7S17XtTKQ/tw9V4PURi2lc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(346002)(136003)(376002)(53546011)(83380400001)(8936002)(2616005)(16526019)(4326008)(31686004)(86362001)(6486002)(36756003)(8676002)(186003)(2906002)(52116002)(66556008)(66476007)(66946007)(5660300002)(508600001)(31696002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?UWVaVWV4azNBUC9FY3I5NWIvYTZkL3JKeXFDcDFhMnRIWHcwcGJhcmxJSkZ6?=
+ =?utf-8?B?RzEybnhxZ2RJM3hneXRRMmwxdGQ2T0FFTEk5cEtJWk5ieG0wdHRENmIvTFVt?=
+ =?utf-8?B?T0luQ2I3RVlrbkNBelFnWEdmUlYrZEU1NmV2ZUZaY3MzSWZQY3ZmTHRzVzFs?=
+ =?utf-8?B?ZGVXZSs0MHhOcEprcHhpY0NjaUZ3Q0RSSmUyT1JHS3FmSW5oVU9oOGN1TkVT?=
+ =?utf-8?B?dGF5bWZmdkV4dXZyS0tlSjEwaXIzdTNrTG5oNDJqd0dLWndjcmVPalZZenpl?=
+ =?utf-8?B?VWVWTGUrTDJadFJIUVlBRGZieVVHWFprZ1JDZFBTbU43TmJWMWVsNTVaYU1r?=
+ =?utf-8?B?VUNpdmxOb1o4NjdRbkxGa2F4ZjRValBXZStSRHB3REtnTFNPMmhIT0ZFbUNI?=
+ =?utf-8?B?ZFRXZmFCdENaLzZhek1udTNJNmpCdkZOWlFQTFR4L05WNkwxWTgvd01rRzA1?=
+ =?utf-8?B?Y0thVEhBRjdHZU5CckpFVllvUWw4ejNHZUo2bDNUQzcwNGpjK0ROZUdXMDZF?=
+ =?utf-8?B?TFlxR01EOG1rb2tPczh6dmI3SGJ1NHE2SDE4b08vak84OTBmcjRzMG5uVzE2?=
+ =?utf-8?B?ODExY1hSY2NkWGgvYVZROTBBY08xRXIrYmFBVjByamRtKys3UVhDQ2xsSEZJ?=
+ =?utf-8?B?ellldjAzeUtDZmJVTmtkTW5ZUzR6OU5LMzd2Zm0yaFVPbzJMNmc4TnNyNzJO?=
+ =?utf-8?B?SXFWcXM3S09odS94Tlg2aHlwZmhwdTVvMVFrQ1dZb1pLU3RTUkpIL0VWeHFR?=
+ =?utf-8?B?Mncwa2dwMjJtOEJIWUFaRHg0WWdHd0U5dE84M1d4d25yVy9wSzNvdFFCRkk0?=
+ =?utf-8?B?ZWZINkJ1SUhad2tCUkkzK3o0Rm1LMDlUTmxYSUJWbE8wTkxVbVpwSjN3S09C?=
+ =?utf-8?B?UW9aTElydjVGL3hoWWRJVHhsZjR6VVpRREk2NDRneVBMQlFTY2FJUXRQR24v?=
+ =?utf-8?B?YUttYWEzcmtJR0ZaRWdTM0FnSTNjZiswSzJTV0JpRERxT2ZHeTA5R2lXYjkr?=
+ =?utf-8?B?T2htOE52aFNZRW0yNFE3M29tNm5UL1dBK0MzL3hucEdxcS8rMTE2YzI3dWVP?=
+ =?utf-8?B?WUZHQVBOcytGc0I3UU95eTlUQUc1VmdKVmtDQTN5U0hkYVZNWGpCbUpQeWZK?=
+ =?utf-8?B?Vk0yc3kzMXRSdy9oWlF4VUczaTFDUEpqOXFqaHkyMWlFaGlOaWdSQTI5SURn?=
+ =?utf-8?B?ZEEvMlFXdHgwOVRGeWVwSnNEa0s0ajMxNTU3MEFQem9SeHRLSGdNaEpCajJw?=
+ =?utf-8?B?bVV3OW9GVE1BeVNoZkh5ZHJsRm1LQ2hqRGVuNG9kUTdoaFNXQ1pJbXNTQkZ2?=
+ =?utf-8?B?Z0MvQytSVUhwbzh3bGM4Z3QrOGpMeXAvRWpad0FVam54YTF3MWhiZnM0WlpU?=
+ =?utf-8?B?RFVERFVkTFdETlE9PQ==?=
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Dec 2020 07:00:11.0431
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Dec 2020 07:13:39.6912
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-Network-Message-Id: 937e8c14-d7ab-49d5-cd08-08d89ffde643
+X-MS-Exchange-CrossTenant-Network-Message-Id: b1753705-9b2b-4e2e-63e4-08d89fffc83a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: h8qu+MvQbSR7lLKyyUfzFflIPcPwfRwzm48Vuo7sL7tj159hj5D6rW0Ux3eX0HM1
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2696
+X-MS-Exchange-CrossTenant-UserPrincipalName: syU6/ub7JvDyvJY5W3HgOo24B/SkIFCnXCtXP3TwO543XrHzon2wAR9C5rND+QVF
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3617
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
  definitions=2020-12-14_03:2020-12-11,2020-12-14 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
- impostorscore=0 mlxlogscore=684 suspectscore=0 adultscore=0 mlxscore=0
- lowpriorityscore=0 malwarescore=0 clxscore=1015 spamscore=0 bulkscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012140052
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
+ mlxlogscore=999 phishscore=0 priorityscore=1501 impostorscore=0
+ malwarescore=0 adultscore=0 lowpriorityscore=0 suspectscore=0 mlxscore=0
+ bulkscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012140053
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -141,49 +137,79 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 12/11/20 3:01 PM, Jonathan Lemon wrote:
-> On Fri, Dec 11, 2020 at 12:23:34PM -0800, Andrii Nakryiko wrote:
->>> @@ -164,7 +164,7 @@ task_file_seq_get_next(struct bpf_iter_seq_task_file_info *info)
->>>                  curr_files = get_files_struct(curr_task);
->>>                  if (!curr_files) {
->>>                          put_task_struct(curr_task);
->>> -                       curr_tid = ++(info->tid);
->>> +                       curr_tid = curr_tid + 1;
->>
->> Yonghong might know definitively, but it seems like we need to update
->> info->tid here as well:
->>
->> info->tid = curr_tid;
->>
->> If the search eventually yields no task, then info->tid will stay at
->> some potentially much smaller value, and we'll keep re-searching tasks
->> from the same TID on each subsequent read (if user keeps reading the
->> file). So corner case, but good to have covered.
+On 12/11/20 6:48 PM, Song Liu wrote:
+> Introduce task_vma bpf_iter to print memory information of a process. It
+> can be used to print customized information similar to /proc/<pid>/maps.
 > 
-> That applies earlier as well:
+> task_vma iterator releases mmap_lock before calling the BPF program.
+> Therefore, we cannot pass vm_area_struct directly to the BPF program. A
+> new __vm_area_struct is introduced to keep key information of a vma. On
+> each iteration, task_vma gathers information in __vm_area_struct and
+> passes it to the BPF program.
 > 
->                  curr_task = task_seq_get_next(ns, &curr_tid, true);
->                  if (!curr_task) {
->                          info->task = NULL;
->                          info->files = NULL;
->                          return NULL;
->                  }
+> If the vma maps to a file, task_vma also holds a reference to the file
+> while calling the BPF program.
 > 
-> The logic seems to be "if task == NULL, then return NULL and stop".
-> Is the seq_iterator allowed to continue/restart if seq_next returns NULL?
+> Signed-off-by: Song Liu <songliubraving@fb.com>
+> ---
+>   include/linux/bpf.h      |   2 +-
+>   include/uapi/linux/bpf.h |   7 ++
+>   kernel/bpf/task_iter.c   | 193 ++++++++++++++++++++++++++++++++++++++-
+>   3 files changed, 200 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 07cb5d15e7439..49dd1e29c8118 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1325,7 +1325,7 @@ enum bpf_iter_feature {
+>   	BPF_ITER_RESCHED	= BIT(0),
+>   };
+>   
+> -#define BPF_ITER_CTX_ARG_MAX 2
+> +#define BPF_ITER_CTX_ARG_MAX 3
+>   struct bpf_iter_reg {
+>   	const char *target;
+>   	bpf_iter_attach_target_t attach_target;
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 30b477a264827..c2db8a1d0cbd2 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -5151,4 +5151,11 @@ enum {
+>   	BTF_F_ZERO	=	(1ULL << 3),
+>   };
+>   
+> +struct __vm_area_struct {
+> +	__u64 start;
+> +	__u64 end;
+> +	__u64 flags;
+> +	__u64 pgoff;
+> +};
 
-If seq_next() returns NULL, bpf_seq_read() will end and the control
-will return to user space. There are two cases here:
-    - there are something in the buffer and user will get non-zero-length
-      return data and after this typically user will call read() syscall
-      again. In such cases case, the search will be from last info->tid.
-    - the buffer is empty and user will get a "0" return value for read()
-      system. Typically, user will not call read() syscall any more.
-      But if it does, the search will start from last info->tid.
+Probably we should not expose the above structure as uapi.
+All other bpf_iter ctx argument layouts are btf based
+and consider unstable. btf_iter itself is considered
+as an unstable interface to dump kernel internal
+data structures.
 
-Agree with Andrii, in general, this should not be a big problem.
-But it is good to get this fixed too.
-
-> --
-> Jonathan
-> 
+> +
+>   #endif /* _UAPI__LINUX_BPF_H__ */
+> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
+> index 0458a40edf10a..30e5475d0831e 100644
+> --- a/kernel/bpf/task_iter.c
+> +++ b/kernel/bpf/task_iter.c
+> @@ -304,9 +304,171 @@ static const struct seq_operations task_file_seq_ops = {
+>   	.show	= task_file_seq_show,
+>   };
+>   
+> +struct bpf_iter_seq_task_vma_info {
+> +	/* The first field must be struct bpf_iter_seq_task_common.
+> +	 * this is assumed by {init, fini}_seq_pidns() callback functions.
+> +	 */
+> +	struct bpf_iter_seq_task_common common;
+> +	struct task_struct *task;
+> +	struct __vm_area_struct vma;
+> +	struct file *file;
+> +	u32 tid;
+> +};
+> +
+[...]
