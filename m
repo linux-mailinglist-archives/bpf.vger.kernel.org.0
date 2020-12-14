@@ -2,138 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A5592D9768
-	for <lists+bpf@lfdr.de>; Mon, 14 Dec 2020 12:34:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7034E2D9786
+	for <lists+bpf@lfdr.de>; Mon, 14 Dec 2020 12:42:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438010AbgLNLd3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Dec 2020 06:33:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46218 "EHLO
+        id S1727892AbgLNLjN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Dec 2020 06:39:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438097AbgLNLd1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Dec 2020 06:33:27 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9706EC0613CF;
-        Mon, 14 Dec 2020 03:33:12 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id bj5so8495227plb.4;
-        Mon, 14 Dec 2020 03:33:12 -0800 (PST)
+        with ESMTP id S1729649AbgLNLi7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Dec 2020 06:38:59 -0500
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DC89C0613D3
+        for <bpf@vger.kernel.org>; Mon, 14 Dec 2020 03:38:19 -0800 (PST)
+Received: by mail-qt1-x849.google.com with SMTP id b11so11496208qtj.11
+        for <bpf@vger.kernel.org>; Mon, 14 Dec 2020 03:38:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cBVb1jFsASJsSe1NamAzmoDRIpXSvh9pGjIhBirNzcs=;
-        b=rUi3Hif5kqB6uaX65vcQbFiwebqVisYGNBSM3aOrP0M4916+XGWoYTKTHAR1NdLzEP
-         FhGLlcGuh7PW3EVUEz5Wz0Dr9fdkD/eFrPc1IU8usY8/27oLkf3iBnXGsqVUAZL1uhMg
-         icn+6NaVLQIqKrLXEi0ALtwpJseWozdiP2+naNY2XZDKXkp4QNwsdJ4aZXhf+7/LZJhA
-         CAXcz+1iVvKixpV8BDolDvnBbf+gxG2LEvhgslv448vwj334k8PdTw64Nvo0+Yj+8emr
-         OIDDIRWnWfrCBMb2crD5TgEhwDOU/EBFzFJRf8QFs6UG1Q9WXUvCvfjue46UnyLYnCA1
-         WELw==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=uG9hUyn2l1hT7e+Msb6nBQLe6pVUc/Tidhzusbc3Z5E=;
+        b=ZTznCCQdNCgK7E2pAMIcNbbA7wJKQTUvxOpa22aA1+jPwk96Q6ybn5x0Hlewl1BV+M
+         rdm2A5IYo22MuIYm2ayvtprzP14QUHxfL2YaEuKws1KAxNUZKm+sb0p6O++oaRNlltYl
+         9fJru+O7IVxaWdY7nsTgVYiaano6f3uFs1K8qvLOEWXkwm1MrQjDj9azwrQIsONxou1C
+         HGAMcoq5m53BjAIoHoGl/dCrsQzpuCUhwTjSEklHB4K9EQb3Ly94fkYQy9fb8fUALq5w
+         od0leQyMDFwrwzbMMVf1xlNh1t4EPwBdnDZsw7MrtVu57cDs653DfJXbUMb1WPPrQh60
+         Qomg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cBVb1jFsASJsSe1NamAzmoDRIpXSvh9pGjIhBirNzcs=;
-        b=tGY2fOIBIrXUUaGTSi8czdV8lqnf3jTpQl0kzIjSjPJz85oETxawqUe3AZFgyVC7cl
-         bv6Zv+tYyNxoO7gmp/ICv8zQxaa57s0ZG7NsB0elPTGodugo8ulBIZVurfvjC4pFDh56
-         V0HHKpw9L9mkXCW0vAkwvSXTKv6+uIqHB6JEB5cCRa6seeN0/ENtSpBavmi6ZkGtFNFI
-         nDROkZVEEDbKNxMs6CJ7WJ1fM4FphIBmGolEwEiiu0vVky4W0pVrxUuBbZZ66WFy0fIt
-         TI1gavS/j0H3qkzDfGLjwa21j2V1IDTdUmnUTmtvLoTn8Jr1bd8KYj/gOTtx6qeJkmFE
-         bz2A==
-X-Gm-Message-State: AOAM530BWsJ2rhQ3RbkZ+cYwN6QdZknXLdioCkQ2nBJOvMGdtvr3L1sH
-        a0TQnebH4pb6cv72ufkuZwmdyFChsD1L8KhW3wo=
-X-Google-Smtp-Source: ABdhPJwg0wBuACxKcbYs8D8YRpfl1IIQE8IcYWD3KgotbchtPjvyYooSvnNFYKq+0ga/3DF2KD0AEOJDXlwBBXy5/8w=
-X-Received: by 2002:a17:902:d38b:b029:db:e003:3ff0 with SMTP id
- e11-20020a170902d38bb02900dbe0033ff0mr18317583pld.7.1607945591970; Mon, 14
- Dec 2020 03:33:11 -0800 (PST)
-MIME-Version: 1.0
-References: <20201214085127.3960-1-magnus.karlsson@gmail.com> <20201214110957.GA11487@ranger.igk.intel.com>
-In-Reply-To: <20201214110957.GA11487@ranger.igk.intel.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Mon, 14 Dec 2020 12:33:01 +0100
-Message-ID: <CAJ8uoz1khf8mQCRxCmAFu7q+HasAsaP0tG_5x38=NQq+BAUbAg@mail.gmail.com>
-Subject: Re: [PATCH bpf] xsk: fix memory leak for failed bind
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=uG9hUyn2l1hT7e+Msb6nBQLe6pVUc/Tidhzusbc3Z5E=;
+        b=KtfvxV+wFWOUI9o+5/bxZcQ/tjHKOSGGDAcGnJPlXZ/66Lg6nwaOQDSRLSke9XeMNa
+         Jac0DOv7Yeed25m/CDFRyOa2DuRlkcFEy83/nft7ekbWxCXWCfn8FAu2T29lAQcaWGHu
+         RXMrcloGZ7kez9ooBdgbMXUTKcraQvnsqNlQrhR/SUpBGJ0dp1qnozLXHp4eOzeND8v1
+         P8mH4r240uBNi/nqHo+FAWhh9BixMG/sKQd7AurIGjN2IOdI9r33x63cmq5cozXuaQe0
+         ZCRZqbFPpzN+Xm++3BincuUjLO9kQdRZYUPonYG8q4uWx24PlnOfZGMG63fV5pOk5DrM
+         pnDQ==
+X-Gm-Message-State: AOAM533EV+fiCmNzAbu4g6EWNgGbLHwVC0TYQxz8CG0mDAw0CabJvIQc
+        f23Ydjry9/c9mJtbfRpl0hHLLTszZkYByTPqjM/Iw8N5mrY74mvExo7r3pWrGk8SXQUPC7EJI4F
+        UV/dAZQjd2rOlrXaMlaVE8ByDzmZ2QVyPwNhvF+WnxtH5w4DGHWBshkEicnfLDWc=
+X-Google-Smtp-Source: ABdhPJxHwGmlZQ28Xrpp+ClKhqzlEFvlg574xO6+LQM9eMJO9G054bEQyV8VMrMOXnK4L4JwkFMWXhYkqJ8pkQ==
+Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
+X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:11db])
+ (user=jackmanb job=sendgmr) by 2002:a05:6214:302:: with SMTP id
+ i2mr15763177qvu.14.1607945898242; Mon, 14 Dec 2020 03:38:18 -0800 (PST)
+Date:   Mon, 14 Dec 2020 11:38:12 +0000
+Message-Id: <20201214113812.305274-1-jackmanb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
+Subject: [PATCH bpf-next v2] libbpf: Expose libbpf ringbufer epoll_fd
+From:   Brendan Jackman <jackmanb@google.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        syzbot+cfa88ddd0655afa88763@syzkaller.appspotmail.com
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-kernel@vger.kernel.org, Brendan Jackman <jackmanb@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 12:19 PM Maciej Fijalkowski
-<maciej.fijalkowski@intel.com> wrote:
->
-> On Mon, Dec 14, 2020 at 09:51:27AM +0100, Magnus Karlsson wrote:
-> > From: Magnus Karlsson <magnus.karlsson@intel.com>
-> >
-> > Fix a possible memory leak when a bind of an AF_XDP socket fails. When
-> > the fill and completion rings are created, they are tied to the
-> > socket. But when the buffer pool is later created at bind time, the
-> > ownership of these two rings are transferred to the buffer pool as
-> > they might be shared between sockets (and the buffer pool cannot be
-> > created until we know what we are binding to). So, before the buffer
-> > pool is created, these two rings are cleaned up with the socket, and
-> > after they have been transferred they are cleaned up together with
-> > the buffer pool.
-> >
-> > The problem is that ownership was transferred before it was absolutely
-> > certain that the buffer pool could be created and initialized
-> > correctly and when one of these errors occurred, the fill and
-> > completion rings did neither belong to the socket nor the pool and
-> > where therefore leaked. Solve this by moving the ownership transfer
-> > to the point where the buffer pool has been completely set up and
-> > there is no way it can fail.
-> >
-> > Fixes: 7361f9c3d719 ("xsk: Move fill and completion rings to buffer pool")
-> > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> > Reported-by: syzbot+cfa88ddd0655afa88763@syzkaller.appspotmail.com
-> > ---
-> >  net/xdp/xsk.c           | 4 ++++
-> >  net/xdp/xsk_buff_pool.c | 2 --
-> >  2 files changed, 4 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> > index 62504471fd20..189cfbbcccc0 100644
-> > --- a/net/xdp/xsk.c
-> > +++ b/net/xdp/xsk.c
-> > @@ -772,6 +772,10 @@ static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
-> >               }
-> >       }
-> >
-> > +     /* FQ and CQ are now owned by the buffer pool and cleaned up with it. */
-> > +     xs->fq_tmp = NULL;
-> > +     xs->cq_tmp = NULL;
-> > +
-> >       xs->dev = dev;
-> >       xs->zc = xs->umem->zc;
-> >       xs->queue_id = qid;
-> > diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
-> > index d5adeee9d5d9..46c2ae7d91d1 100644
-> > --- a/net/xdp/xsk_buff_pool.c
-> > +++ b/net/xdp/xsk_buff_pool.c
-> > @@ -75,8 +75,6 @@ struct xsk_buff_pool *xp_create_and_assign_umem(struct xdp_sock *xs,
-> >
-> >       pool->fq = xs->fq_tmp;
-> >       pool->cq = xs->cq_tmp;
-> > -     xs->fq_tmp = NULL;
-> > -     xs->cq_tmp = NULL;
->
-> Given this change, are there any circumstances that we could hit
-> xsk_release with xs->{f,c}q_tmp != NULL ?
+This provides a convenient perf ringbuf -> libbpf ringbuf migration
+path for users of external polling systems. It is analogous to
+perf_buffer__epoll_fd.
 
-Yes, if the user has not registered any fill or completion ring and
-the socket is torn down.
+Signed-off-by: Brendan Jackman <jackmanb@google.com>
+---
+Difference from v1: Added entry to libbpf.map.
 
-> >
-> >       for (i = 0; i < pool->free_heads_cnt; i++) {
-> >               xskb = &pool->heads[i];
-> >
-> > base-commit: d9838b1d39283c1200c13f9076474c7624b8ec34
-> > --
-> > 2.29.0
-> >
+ tools/lib/bpf/libbpf.h   | 1 +
+ tools/lib/bpf/libbpf.map | 1 +
+ tools/lib/bpf/ringbuf.c  | 6 ++++++
+ 3 files changed, 8 insertions(+)
+
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 6909ee81113a..cde07f64771e 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -536,6 +536,7 @@ LIBBPF_API int ring_buffer__add(struct ring_buffer *rb, int map_fd,
+ 				ring_buffer_sample_fn sample_cb, void *ctx);
+ LIBBPF_API int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms);
+ LIBBPF_API int ring_buffer__consume(struct ring_buffer *rb);
++LIBBPF_API int ring_buffer__epoll_fd(struct ring_buffer *rb);
+
+ /* Perf buffer APIs */
+ struct perf_buffer;
+diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+index 7c4126542e2b..7be850271be6 100644
+--- a/tools/lib/bpf/libbpf.map
++++ b/tools/lib/bpf/libbpf.map
+@@ -348,4 +348,5 @@ LIBBPF_0.3.0 {
+ 		btf__new_split;
+ 		xsk_setup_xdp_prog;
+ 		xsk_socket__update_xskmap;
++                ring_buffer__epoll_fd;
+ } LIBBPF_0.2.0;
+diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
+index 5c6522c89af1..45a36648b403 100644
+--- a/tools/lib/bpf/ringbuf.c
++++ b/tools/lib/bpf/ringbuf.c
+@@ -282,3 +282,9 @@ int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms)
+ 	}
+ 	return cnt < 0 ? -errno : res;
+ }
++
++/* Get an fd that can be used to sleep until data is available in the ring(s) */
++int ring_buffer__epoll_fd(struct ring_buffer *rb)
++{
++	return rb->epoll_fd;
++}
+
+base-commit: b4fe9fec51ef48011f11c2da4099f0b530449c92
+--
+2.29.2.576.ga3fc446d84-goog
+
