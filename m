@@ -2,131 +2,180 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3158C2D9B1B
-	for <lists+bpf@lfdr.de>; Mon, 14 Dec 2020 16:36:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC4E62D9B4B
+	for <lists+bpf@lfdr.de>; Mon, 14 Dec 2020 16:43:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727280AbgLNPd1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Dec 2020 10:33:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54858 "EHLO
+        id S2408123AbgLNPk2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Dec 2020 10:40:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729851AbgLNPdZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Dec 2020 10:33:25 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BC53C0613D3;
-        Mon, 14 Dec 2020 07:32:44 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id q18so9327061wrn.1;
-        Mon, 14 Dec 2020 07:32:44 -0800 (PST)
+        with ESMTP id S2405532AbgLNPkZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Dec 2020 10:40:25 -0500
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46F06C0613D6
+        for <bpf@vger.kernel.org>; Mon, 14 Dec 2020 07:39:45 -0800 (PST)
+Received: by mail-wm1-x342.google.com with SMTP id g25so9237884wmh.1
+        for <bpf@vger.kernel.org>; Mon, 14 Dec 2020 07:39:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=t9tfHZ7qzv0OG/aI1UXzHdYUmhcbXBLi/GRcSGPa9Wc=;
-        b=iYOxyLJVyDzZX0c1YMNrCpBp30Iorl5Ol3ys7Ksn8B93k2VnoNOlWDOabq/KgVH+Gf
-         Ao7qs3tuCMdgydjqrBsH7QKC5UCfzaP2Z6HSuz1YyiAosPXhU4MmlZK8mRUS68yUefPv
-         k4mi4146FHAU1LHAbUW3rGleJOQg/enqCxLYVikgwhAeWcZr1//dyw9+Xj8o3783VBIC
-         3viYxEFLMSfcgsWKWP3fvRYCELONM4RV/2VYKI7lBwXChAqNSDUIMeoqdKUz5gpQ3mpD
-         Lopj/t2UaJZNgYnaiVO02WDLTzlF5O1BcRAXOkFIPv+VUXL09RY/bTb7IyQ8mnklUVfK
-         qJWw==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2v32g2+g7NoLmT8mxjxrPYHTmiFDOu5TOwqsKq+Dn9A=;
+        b=hUbI8Ekux1+83kBcz/BLKSbyR4vWDK3ljGxKYXbgy0jh/qOUGA7N/ng2qcMiHloqpj
+         ulHWUbjePLyQjTdqIxbCCpwVPoDYPjimP35imvKHPuSGR0+TQJM4k7qmLNB1OUcNGZZu
+         0wrwAs1Mvm83sZnBw9n32QiDmxOu9Y+ly4wtx9lKLJslN1Qb2be2YF1SbDECWjXIlaHO
+         iUdos3kdwfQ60lxnVKi+a+TeWJf0GB8N18kHnie2YQ9ph2CvFm2NlvZKQ84fnWJ0Z4cC
+         zo13AmCntjE8D94yih7Gvbhwi4uWJgx9QRPQsFQOlwLDptA264Qnw9k6AHDngXvDQFRv
+         SDsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to:user-agent;
-        bh=t9tfHZ7qzv0OG/aI1UXzHdYUmhcbXBLi/GRcSGPa9Wc=;
-        b=p1oXsBUwFidG3rKh93M3UELpSmT6yO3bR7AxIz4HQ1VBASb1arClN1SWrEz4ie9UhM
-         klHTRRBtrayEdqyEg0VIu7os9Hp+dFdZvPvRXWx/kM6eIu6uBLKBACeEbYG1Ye1J1RIj
-         CJY3h0FFg5oTD7tzJf1i4wM/cS+odFBjPesS3QBqeameI2411RAxYsqGd05Hi+3+4PEU
-         3z/RFagFiqmaF3t2gNLjLBjELlsqPp+PwzkZuCQGI7bBoUw1oG5L0Z7hq1O31auRgcMH
-         4w+NdF5+W9xAszuUEbp007naBuBPlx6jhxDC6XDM/iipXgRBKwOipe1hjqvKMz6ZKXnD
-         RByw==
-X-Gm-Message-State: AOAM531CEPyEpVbtVkpGsd0vxplgwyg6hJ4lnK3mOYE5dE5Aqlr/nqJe
-        gc5jABnbhs+g+koKa58j1iw=
-X-Google-Smtp-Source: ABdhPJxMPxWHSILIf1tihFx1amtA3y1le8Lipj7tRwaYG4UGBHtDYnlx6dlIbh9DpGEkgoLVcEUATQ==
-X-Received: by 2002:a5d:4682:: with SMTP id u2mr29265881wrq.265.1607959963458;
-        Mon, 14 Dec 2020 07:32:43 -0800 (PST)
-Received: from gmail.com ([81.168.73.77])
-        by smtp.gmail.com with ESMTPSA id s13sm31789724wrt.80.2020.12.14.07.32.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 14 Dec 2020 07:32:42 -0800 (PST)
-Date:   Mon, 14 Dec 2020 15:32:35 +0000
-From:   Martin Habets <habetsm.xilinx@gmail.com>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
-        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        brouer@redhat.com, lorenzo.bianconi@redhat.com,
-        alexander.duyck@gmail.com, maciej.fijalkowski@intel.com,
-        saeed@kernel.org
-Subject: Re: [PATCH v3 bpf-next 0/2] introduce xdp_init_buff/xdp_prepare_buff
-Message-ID: <20201214153235.s3dpayxpo7xnfqdk@gmail.com>
-Mail-Followup-To: Lorenzo Bianconi <lorenzo@kernel.org>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
-        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        brouer@redhat.com, lorenzo.bianconi@redhat.com,
-        alexander.duyck@gmail.com, maciej.fijalkowski@intel.com,
-        saeed@kernel.org
-References: <cover.1607794551.git.lorenzo@kernel.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2v32g2+g7NoLmT8mxjxrPYHTmiFDOu5TOwqsKq+Dn9A=;
+        b=Spw4wvi4p9bI4CWOSUlrbP2k4s48hgptNlJOAIV/767PFLtdud07t3AQ94fzEe/lnJ
+         s3kd7PERObIGZN9xqmoZLhrIYqofNTQBPjP3CtbKearBq4vzCMNJWkp7y05/aUu5bWD/
+         01iwCt7RmPzqw7REWBu4Zt/wQq4W2iUBwp+QZK9fSAxycYRqBg1VIgZ3vw9WNVKLT/22
+         vru8c9Ze7MVVoeU5roA08bxhTBhSbzmhh5L6qTdjwRptCKxgOAmIgfETpL/a44KaLZ2v
+         j+Bkmr/snn53xcIdz4XiScmbZD3rLRzznqHisVVMIL+hgc0I9uUxwf66grUo2c7+vIaf
+         lwjw==
+X-Gm-Message-State: AOAM530v/6q8AWzPMY8DByDxB+8Yna9uaTCZsTyQ3ph9U1+NsNIi1Neq
+        h1rzbcSTTD4jVcWXAF+TSMXKVHFrGLH2bQ==
+X-Google-Smtp-Source: ABdhPJyRq2ZTBw8ZjNk+E44MrgpYVEcJr6tNgAlw6huK6vn97GZ8bBow9UGvOPHtXUpghzGxwkbxHg==
+X-Received: by 2002:a1c:2d8b:: with SMTP id t133mr27809264wmt.127.1607960383787;
+        Mon, 14 Dec 2020 07:39:43 -0800 (PST)
+Received: from google.com (216.131.76.34.bc.googleusercontent.com. [34.76.131.216])
+        by smtp.gmail.com with ESMTPSA id k1sm3911631wrn.46.2020.12.14.07.39.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Dec 2020 07:39:42 -0800 (PST)
+Date:   Mon, 14 Dec 2020 15:39:38 +0000
+From:   Brendan Jackman <jackmanb@google.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>
+Subject: Re: [PATCH bpf-next v4 07/11] bpf: Add instructions for
+ atomic_[cmp]xchg
+Message-ID: <X9eHOu2xwMT9m//z@google.com>
+References: <20201207160734.2345502-1-jackmanb@google.com>
+ <20201207160734.2345502-8-jackmanb@google.com>
+ <5fcf1f2cd24e1_9ab320888@john-XPS-13-9370.notmuch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1607794551.git.lorenzo@kernel.org>
-User-Agent: NeoMutt/20170113 (1.7.2)
+In-Reply-To: <5fcf1f2cd24e1_9ab320888@john-XPS-13-9370.notmuch>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Dec 12, 2020 at 06:41:47PM +0100, Lorenzo Bianconi wrote:
-> Introduce xdp_init_buff and xdp_prepare_buff utility routines to initialize
-> xdp_buff data structure and remove duplicated code in all XDP capable
-> drivers.
-> 
-> Changes since v2:
-> - precompute xdp->data as hard_start + headroom and save it in a local
->   variable to reuse it for xdp->data_end and xdp->data_meta in
->   xdp_prepare_buff()
-> 
-> Changes since v1:
-> - introduce xdp_prepare_buff utility routine
-> 
-> Lorenzo Bianconi (2):
->   net: xdp: introduce xdp_init_buff utility routine
->   net: xdp: introduce xdp_prepare_buff utility routine
+Seems I never replied to this, thanks for the reviews!
 
-For changes in drivers/net/ethernet/sfc:
-
-Acked-by: Martin Habets <habetsm.xilinx@gmail.com>
-
->  drivers/net/ethernet/amazon/ena/ena_netdev.c  |  8 +++-----
->  drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c |  7 ++-----
->  .../net/ethernet/cavium/thunder/nicvf_main.c  | 11 ++++++-----
->  .../net/ethernet/freescale/dpaa/dpaa_eth.c    | 10 ++++------
->  .../net/ethernet/freescale/dpaa2/dpaa2-eth.c  | 13 +++++--------
->  drivers/net/ethernet/intel/i40e/i40e_txrx.c   | 18 +++++++++---------
->  drivers/net/ethernet/intel/ice/ice_txrx.c     | 17 +++++++++--------
->  drivers/net/ethernet/intel/igb/igb_main.c     | 18 +++++++++---------
->  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 19 +++++++++----------
->  .../net/ethernet/intel/ixgbevf/ixgbevf_main.c | 19 +++++++++----------
->  drivers/net/ethernet/marvell/mvneta.c         |  9 +++------
->  .../net/ethernet/marvell/mvpp2/mvpp2_main.c   | 13 +++++++------
->  drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  8 +++-----
->  .../net/ethernet/mellanox/mlx5/core/en_rx.c   |  7 ++-----
->  .../ethernet/netronome/nfp/nfp_net_common.c   | 12 ++++++------
->  drivers/net/ethernet/qlogic/qede/qede_fp.c    |  7 ++-----
->  drivers/net/ethernet/sfc/rx.c                 |  9 +++------
->  drivers/net/ethernet/socionext/netsec.c       |  8 +++-----
->  drivers/net/ethernet/ti/cpsw.c                | 17 ++++++-----------
->  drivers/net/ethernet/ti/cpsw_new.c            | 17 ++++++-----------
->  drivers/net/hyperv/netvsc_bpf.c               |  7 ++-----
->  drivers/net/tun.c                             | 11 ++++-------
->  drivers/net/veth.c                            | 14 +++++---------
->  drivers/net/virtio_net.c                      | 18 ++++++------------
->  drivers/net/xen-netfront.c                    |  8 +++-----
->  include/net/xdp.h                             | 19 +++++++++++++++++++
->  net/bpf/test_run.c                            |  9 +++------
->  net/core/dev.c                                | 18 ++++++++----------
->  28 files changed, 156 insertions(+), 195 deletions(-)
+On Mon, Dec 07, 2020 at 10:37:32PM -0800, John Fastabend wrote:
+> Brendan Jackman wrote:
+> > This adds two atomic opcodes, both of which include the BPF_FETCH
+> > flag. XCHG without the BPF_FETCH flag would naturally encode
+> > atomic_set. This is not supported because it would be of limited
+> > value to userspace (it doesn't imply any barriers). CMPXCHG without
+> > BPF_FETCH woulud be an atomic compare-and-write. We don't have such
+> > an operation in the kernel so it isn't provided to BPF either.
+> > 
+> > There are two significant design decisions made for the CMPXCHG
+> > instruction:
+> > 
+> >  - To solve the issue that this operation fundamentally has 3
+> >    operands, but we only have two register fields. Therefore the
+> >    operand we compare against (the kernel's API calls it 'old') is
+> >    hard-coded to be R0. x86 has similar design (and A64 doesn't
+> >    have this problem).
+> > 
+> >    A potential alternative might be to encode the other operand's
+> >    register number in the immediate field.
+> > 
+> >  - The kernel's atomic_cmpxchg returns the old value, while the C11
+> >    userspace APIs return a boolean indicating the comparison
+> >    result. Which should BPF do? A64 returns the old value. x86 returns
+> >    the old value in the hard-coded register (and also sets a
+> >    flag). That means return-old-value is easier to JIT.
 > 
-> -- 
-> 2.29.2
+> Just a nit as it looks like perhaps we get one more spin here. Would
+> be nice to be explicit about what the code does here. The above reads
+> like it could go either way. Just an extra line "So we use ...' would
+> be enough.
 
--- 
-Martin Habets <habetsm.xilinx@gmail.com>
+Ack, adding the note.
+
+> > Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> > ---
+> 
+> One question below.
+> 
+> >  arch/x86/net/bpf_jit_comp.c    |  8 ++++++++
+> >  include/linux/filter.h         | 22 ++++++++++++++++++++++
+> >  include/uapi/linux/bpf.h       |  4 +++-
+> >  kernel/bpf/core.c              | 20 ++++++++++++++++++++
+> >  kernel/bpf/disasm.c            | 15 +++++++++++++++
+> >  kernel/bpf/verifier.c          | 19 +++++++++++++++++--
+> >  tools/include/linux/filter.h   | 22 ++++++++++++++++++++++
+> >  tools/include/uapi/linux/bpf.h |  4 +++-
+> >  8 files changed, 110 insertions(+), 4 deletions(-)
+> > 
+> 
+> [...]
+> 
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index f8c4e809297d..f5f4460b3e4e 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -3608,11 +3608,14 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+> >  
+> >  static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_insn *insn)
+> >  {
+> > +	int load_reg;
+> >  	int err;
+> >  
+> >  	switch (insn->imm) {
+> >  	case BPF_ADD:
+> >  	case BPF_ADD | BPF_FETCH:
+> > +	case BPF_XCHG:
+> > +	case BPF_CMPXCHG:
+> >  		break;
+> >  	default:
+> >  		verbose(env, "BPF_ATOMIC uses invalid atomic opcode %02x\n", insn->imm);
+> > @@ -3634,6 +3637,13 @@ static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_i
+> >  	if (err)
+> >  		return err;
+> >  
+> > +	if (insn->imm == BPF_CMPXCHG) {
+> > +		/* Check comparison of R0 with memory location */
+> > +		err = check_reg_arg(env, BPF_REG_0, SRC_OP);
+> > +		if (err)
+> > +			return err;
+> > +	}
+> > +
+> 
+> I need to think a bit more about it, but do we need to update is_reg64()
+> at all for these?
+
+I don't think so - this all falls into the same
+`if (class == BPF_STX)` case as the existing BPF_STX_XADD instruction.
+
+> >  	if (is_pointer_value(env, insn->src_reg)) {
+> >  		verbose(env, "R%d leaks addr into mem\n", insn->src_reg);
+> >  		return -EACCES;
+> > @@ -3664,8 +3674,13 @@ static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_i
+> >  	if (!(insn->imm & BPF_FETCH))
+> >  		return 0;
+> >  
+> > -	/* check and record load of old value into src reg  */
+> > -	err = check_reg_arg(env, insn->src_reg, DST_OP);
+> > +	if (insn->imm == BPF_CMPXCHG)
+> > +		load_reg = BPF_REG_0;
+> > +	else
+> > +		load_reg = insn->src_reg;
+> > +
+> > +	/* check and record load of old value */
+> > +	err = check_reg_arg(env, load_reg, DST_OP);
+> >  	if (err)
+> >  		return err;
