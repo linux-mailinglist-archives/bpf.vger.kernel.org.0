@@ -2,179 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19B8C2D9224
-	for <lists+bpf@lfdr.de>; Mon, 14 Dec 2020 05:00:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B98D2D927E
+	for <lists+bpf@lfdr.de>; Mon, 14 Dec 2020 06:13:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438391AbgLNEAL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 13 Dec 2020 23:00:11 -0500
-Received: from de-smtp-delivery-102.mimecast.com ([51.163.158.102]:27911 "EHLO
+        id S1728046AbgLNFNd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Dec 2020 00:13:33 -0500
+Received: from de-smtp-delivery-102.mimecast.com ([51.163.158.102]:29551 "EHLO
         de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726775AbgLNEAK (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 13 Dec 2020 23:00:10 -0500
+        by vger.kernel.org with ESMTP id S1725776AbgLNFNd (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 14 Dec 2020 00:13:33 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1607918340;
+        t=1607922745;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=r2lipl1YivPLlm+Qtcxz7tZc41EaLGD8okE7sSSQFhM=;
-        b=hsgayQJAHe/QXEEXrNPgpSvbOf/fs6haVkdplKdysdmfOgvymDEAxPIiRXQ8/VH8eIJgcl
-        Bh6QYSjUkeTyORwDiEIca0C25vZSBRD1DxPP23POuj/rh8wkrNm/ab5eG7/LRleQJc2dW0
-        VVOSa3Qq6/EXyWVmPzyvlzmLruLkJKI=
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com
- (mail-am6eur05lp2104.outbound.protection.outlook.com [104.47.18.104])
- (Using TLS) by relay.mimecast.com with ESMTP id
- de-mta-3-CkFeoEDbNJGeWliBFGFkZw-1; Mon, 14 Dec 2020 04:56:33 +0100
-X-MC-Unique: CkFeoEDbNJGeWliBFGFkZw-1
+        bh=WYz7eFBA5t1QZrNCirMbbA/evj82nD5oKztzWvBESTk=;
+        b=b5tB/EjDDf6godlw2QLUqrYTWnePeKyTsmVbeG+U5fHnD9QqWmvkPXY7Dm96QsskqYkGVp
+        /WBDFvfOlZ9a6yi5/ciuG53RSqkHtINizZbieBjZJN9GMZesfx0xWX8UbdqqhE7Pmp06Ek
+        849tC+Ry309o3Z2YbJ1zKSbIVRpnbUA=
+Received: from EUR01-VE1-obe.outbound.protection.outlook.com
+ (mail-ve1eur01lp2051.outbound.protection.outlook.com [104.47.1.51]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-25-9Kr7xWs0OZCKvh1teibUXQ-1; Mon, 14 Dec 2020 06:12:23 +0100
+X-MC-Unique: 9Kr7xWs0OZCKvh1teibUXQ-1
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HF1p9A2T/WpiuATjj6u7HUGXRQoSaRnS3gbx/dkPd+8bcm1eq6ar/oWk+iJJW8G+vGDUH8mA7LWDdMzO2720H9y4AMKIwEILFuAXr4v837Uh9TzJseeuGAA6Cf/4H+Dnzvc14GWC8s9ZlqxARk5CWOovXNP4UoMVWLl6n5FLs8FnktIPioVz6WIWa3Bqxp8YVW+I6bw23oPfKjSPC3hZpPcJQm+V1ecZRsReYzr5erzcSFxg8zXAdUKlwuXzZaRxXLgFKlHOyySEhxk8JFEp26N4VV9x4DMo5u7oVelaBCY4PQfmGUavvUUoVjvJNfxysVUXoainCTqydfZ68w3H3A==
+ b=VjVheQvfqSkJozN57W/K4mi42GPxDmG463D6k5mxN40w8ncVyTYvqDHzzXgG047EttlhwXzJH/uHMXbt0pavClIbg+PWFRM7AtOBlg5HAAOJG0eZc9tIGauPsQ8M8fMdo5+pCFht3/BWLJh8lWegqcJL8JA7HGrYJ9ZYm9TwsZ7GMicSWy0sYuao6bu8voISOWDtYLT9Iku7n54uXFytHAH02mxe1hRDOSwzZjps5PvqzUuKuxyiFb/4Zb/l8wt+EeFRcxbCziJl+77AAMPmFeh/zKWaVbsPVzgTr/DCDJoGREwU4J8ZpUB21Gsv8DE+26WgcQs9ChQ7IVaEMMgojw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=r2lipl1YivPLlm+Qtcxz7tZc41EaLGD8okE7sSSQFhM=;
- b=GH7B/4I7x8gjqsJdXECl8WVLYC2RgDMWnGFQFj8KSHnDxheoxTZWwfhee1n3XoK76fxZ/+kRhKTs1OmFdkLpk8xTEGZI6HSkx37NBDXSk2exrXoohoil3tPPWV89iupwMrFr/2B4z4DS2dz+E2PAZUSC0Ovo4bqOF5Y1RXwFiqEeTz8WJPgxZCc2Qy33S9ROe1o0nMPk/1y7pj/UwPrraCRzHuRBW9mw5JKR962Ra7jjQrSrbyG7FCUoadYh9lpTkWYmkA3zAmY6PLDpNYb40I+uFEujZAKbJ7Jfak0PqGFLol89o/q/80NX7XcRuOvtLBji3hegNczchoXBrLehWg==
+ bh=WYz7eFBA5t1QZrNCirMbbA/evj82nD5oKztzWvBESTk=;
+ b=IEvv4omLEo+9Yovhs/X+nJYJ2A5si9vh3vfWpQYe/zEngcFEwZU/kj6+pXi7uEgE8vUzRq/F5o9BrSOO/JUMVlul0hM5KgnerY3eus685ZZ662cz3OTh14m7ZsBhz7OfsO078fx7Jfq2vCtF0CytstCnK18H355eRszK6e/XuaF6t7glSovSpqVqu4t0w684mmHTPyXbbDJnkcE31w51eCASfDm/60RQvbV6wre8H5OLCVVy8L+NpcfsgRqq1smDGUipBQPD+QkegH1NN94EEmpnDjWEVfbic5QgaYrHGf3oJUfIbQF/neA8UcOKSTjfL4R/IqYMVlncb1+FoQKKPg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
  dkim=pass header.d=suse.com; arc=none
-Authentication-Results: iogearbox.net; dkim=none (message not signed)
- header.d=none;iogearbox.net; dmarc=none action=none header.from=suse.com;
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=suse.com;
 Received: from DB3PR0402MB3641.eurprd04.prod.outlook.com (2603:10a6:8:b::12)
- by DB6PR0402MB2918.eurprd04.prod.outlook.com (2603:10a6:4:9a::18) with
+ by DB8PR04MB6474.eurprd04.prod.outlook.com (2603:10a6:10:10c::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Mon, 14 Dec
- 2020 03:56:33 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.13; Mon, 14 Dec
+ 2020 05:12:22 +0000
 Received: from DB3PR0402MB3641.eurprd04.prod.outlook.com
  ([fe80::80c9:1fa3:ae84:7313]) by DB3PR0402MB3641.eurprd04.prod.outlook.com
  ([fe80::80c9:1fa3:ae84:7313%6]) with mapi id 15.20.3654.025; Mon, 14 Dec 2020
- 03:56:32 +0000
-Date:   Mon, 14 Dec 2020 11:56:22 +0800
+ 05:12:22 +0000
+Date:   Mon, 14 Dec 2020 13:12:12 +0800
 From:   Gary Lin <glin@suse.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Eric Dumazet <eric.dumazet@gmail.com>,
         andreas.taschner@suse.com
 Subject: Re: [PATCH] bpf,x64: pad NOPs to make images converge more easily
-Message-ID: <X9biZvkGPfslPOL4@GaryWorkstation>
+Message-ID: <X9b0LHBvj4UDGIwe@GaryWorkstation>
 References: <20201211081903.17857-1-glin@suse.com>
- <61348cb4-6e61-6b76-28fa-1aff1c50912c@iogearbox.net>
+ <CAEf4BzbJRf-+_GE4r2+mk0FjT96Qszx3ru9wEfieP_zr6p6dOw@mail.gmail.com>
+ <a9a00c89-3716-2296-d0d9-bba944e2cd82@iogearbox.net>
+ <CAADnVQKr9XYS3ijsiFiEH3sUAx-HjqkzybSZ379SLkyiXBkNhQ@mail.gmail.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <61348cb4-6e61-6b76-28fa-1aff1c50912c@iogearbox.net>
+In-Reply-To: <CAADnVQKr9XYS3ijsiFiEH3sUAx-HjqkzybSZ379SLkyiXBkNhQ@mail.gmail.com>
 X-Originating-IP: [60.251.47.115]
-X-ClientProxiedBy: AM0PR07CA0012.eurprd07.prod.outlook.com
- (2603:10a6:208:ac::25) To DB3PR0402MB3641.eurprd04.prod.outlook.com
+X-ClientProxiedBy: AM0PR01CA0175.eurprd01.prod.exchangelabs.com
+ (2603:10a6:208:aa::44) To DB3PR0402MB3641.eurprd04.prod.outlook.com
  (2603:10a6:8:b::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from GaryWorkstation (60.251.47.115) by AM0PR07CA0012.eurprd07.prod.outlook.com (2603:10a6:208:ac::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.9 via Frontend Transport; Mon, 14 Dec 2020 03:56:30 +0000
+Received: from GaryWorkstation (60.251.47.115) by AM0PR01CA0175.eurprd01.prod.exchangelabs.com (2603:10a6:208:aa::44) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Mon, 14 Dec 2020 05:12:19 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 700ab1e5-b8c1-46c8-550c-08d89fe43ee9
-X-MS-TrafficTypeDiagnostic: DB6PR0402MB2918:
+X-MS-Office365-Filtering-Correlation-Id: f13b9efd-8e3f-43dc-3390-08d89feed6c0
+X-MS-TrafficTypeDiagnostic: DB8PR04MB6474:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB6PR0402MB2918C1116A80FC1EC2EA21DCA9C70@DB6PR0402MB2918.eurprd04.prod.outlook.com>
+X-Microsoft-Antispam-PRVS: <DB8PR04MB6474C93FA846F4E486965BFEA9C70@DB8PR04MB6474.eurprd04.prod.outlook.com>
 X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Me0KNNy3RjyUy5s37GtxzcUw9Va2e+nV+vfPw2udm/8f4yy0/x3X8yMSx+/OYu8Q00t/Yy9isWzT/hzJCjMIa34tSadi+4DvcoMO0beGli7MNNf3QhDU7aoBafwDs/Z1fXmIgnhv6hRCm912iVvDf5kpdoMiLsRRJ47Mhs8HeIZZM6n/viqtSsVfqJte8ilpeLGCmUYhuYsOONaPTa5S6Fvvz1RQpn4E2mAdxBRMSxAUAstMTsln8U5sBfWt6xbvh1gsLJ/1qlGeYvgFDrhujFDXRRGL4OfWB70Xho5A1fGwlcn4MPTi0JMoioDS2vjgYCU7q4RvGeg6rG0aeXOk8w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB3PR0402MB3641.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(346002)(39850400004)(376002)(136003)(2906002)(6666004)(33716001)(55236004)(66946007)(54906003)(66476007)(83380400001)(53546011)(66556008)(5660300002)(8676002)(6496006)(52116002)(107886003)(4326008)(26005)(956004)(86362001)(478600001)(16526019)(55016002)(6916009)(9686003)(186003)(8936002)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?mx+ZW/QVZriXPmjyQXRQg1VZMzds4fsO2m/WqmfJKyJzeZBOmMJ6SgH9RElq?=
- =?us-ascii?Q?nCSfZMcsCj1adHZSl1KBxqzSC8OV/0RNN2Rvt7v0BBmxhOwFWaI/k0uR00uz?=
- =?us-ascii?Q?21ShVTnlmkOZG8p2JnIMDFQhpIyX+hYqQsTLH9RMudi5w2dUIkWpRqJq+EYe?=
- =?us-ascii?Q?qgbp7zc4or/jNcPPGMwp0fR3wusS1qhyxbl6fsWPfrQsVPBKxHIiEHmBIUEn?=
- =?us-ascii?Q?FadQiLM3cgqly++sfgQwbfCnTLKDZXX19eVbc6UC50AfntGu9ebmlsIRQFKw?=
- =?us-ascii?Q?xW+T5voz/lXgfJU8HinY87Ifl5/+bR8ol+byFynfc2B73KpUw7EvDJhp+FNi?=
- =?us-ascii?Q?Qq5YRD6/njgJS/IK6hgdbfdEFr5tk3/n6uRJdftOgEQ9bfB7YTSZS16SclfI?=
- =?us-ascii?Q?HZccW0+1ghGLFxccbLvT0Vw5UFu6y8A6jcPKa2hceNMkR289VXWDlo9jAtBb?=
- =?us-ascii?Q?1/zvu4mSimZXfhZeZwn+8TUCe6uGVdCRXb7APqmjlWLPNSsBbXhAyUcVlFCS?=
- =?us-ascii?Q?Qi0VaTJP+Zh0yKFq7vTE7XtS85hXsXfbEFqlXQ5O0NVLunbvuCxA7qkXgL6T?=
- =?us-ascii?Q?EvUukL5GRLUQbV7caeht66thj1gwNXrtv8nmkk6rhR5CB1hyP9kxWgrtB4VI?=
- =?us-ascii?Q?uTmxrxwR1/aZ/4FG3zN7Oxam/AN5M1TBMffq/2wA+XwGHo+j5NtNa3KkoAS/?=
- =?us-ascii?Q?igppQeMKPOuLCIj/88F4LfTWHpoQ5yX8FzOMj+Hm5Xip1GlR8opX9+TBOwui?=
- =?us-ascii?Q?DFbVRDYoZZO1eqok1qSgHfKzXYwwMN1TJlKuAFkZn7vZqW6sMlYf2q7eu6UU?=
- =?us-ascii?Q?5jPd2gmrJk7BU2GWH5mKJRlBSdA5d4jXcplZSfUhifsHkbOCRQ5Qk0NOYkQ9?=
- =?us-ascii?Q?zFITCUHCHNCWLatfc+2ONz2uzute84Cpr5q/ovwbtgd9+NBWE2EU9yxgqk58?=
- =?us-ascii?Q?RyZfGo7H/Tl4wMHPXoRLYxP7kDMQ6e+ooy/jcfZHOgRg7DdxB7gvvym9cPko?=
- =?us-ascii?Q?zSGe?=
+X-Microsoft-Antispam-Message-Info: KgLLfFhVj0x99XT8QJvQZxJSd3Z21i5U1CEv8kIN6T325S4AXtSvQ71OYypFzz50dbnQjEhLgUs8XrVqBAN1J/NM3V4Hliyata2KuRkl3ZBaJ+4UDmezo18zFVK1IU3zshcQFfrcb0RUMV0JWxXCQGMAczCGyZieBvNhluPXTCxPckWv0uZ4v/dybDXGs/NP6xJZXbe4/I19Zd3YQHhqhSJzwCgvTxCqgaC9nKWsa5qlzKYrqs8UbVjYxjjTLNlogx3ObdUxtGQLlweSvfK9kgTc1AxTaMCAfgbytUvUACi/AmSn6ZKZLFAzLrQ6LHxhTTJYb1N8hcMI0GufWn/5oQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB3PR0402MB3641.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(396003)(39850400004)(346002)(376002)(2906002)(6496006)(4326008)(66476007)(66946007)(6916009)(8676002)(66556008)(8936002)(5660300002)(52116002)(55236004)(956004)(478600001)(83380400001)(54906003)(33716001)(6666004)(316002)(53546011)(107886003)(26005)(9686003)(55016002)(86362001)(186003)(16526019);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?erJOyHgAwewAU8S7Csx/ygQSLp8BGNjmT9xKqZHGRz+ke2jeZ0Nn+GpFyD/Y?=
+ =?us-ascii?Q?NuW3bNg8K6MDgJM9bWX7FKPYcUxDo70SXE26lZZNqmcS6JCnbgBR9NuQ/jm1?=
+ =?us-ascii?Q?Wt/T+HPmBeYZbpGOKPsM0plt7A47ETW9wGgqfZndSBPRPQ4p1qRwf+rz9t3o?=
+ =?us-ascii?Q?uzXgXe79YxW/zBJZRTBihuuwxQO2aS7HSZ/4xzqI7oEnBZSb8BwmNXqn4SbM?=
+ =?us-ascii?Q?Ntfw+YN6Ec4aNW4CB2kbZiDbwX+VE6OmFAxMpk5qrCSgDy+2V/3auognwscY?=
+ =?us-ascii?Q?OvEtfJv6dB7ysRyEC4gqBnp50jQ6dPGBNrHjziblHdho+CJupvlqsh8TJBKX?=
+ =?us-ascii?Q?8o/M49m50H2MIuHCzRmcmatHSTGP5Rg74hzLJZoEucH/UKETx+RIhk4sF9O/?=
+ =?us-ascii?Q?WOJI5gQoBw9kSx6beU0PoJlvPPAYFMjMd/Ux+A0fXs0X+oJl/HspYsutZhbg?=
+ =?us-ascii?Q?wuLMJqbg85VlXYZYvCAaWmPV1KFmPcCaM/sxcb6FmqqNOdgkazMIh6tNNse4?=
+ =?us-ascii?Q?MDL+EOnvqxq0+KWUsXMtDLkdqBFAhjmsZkguqjk+842aGln//jHJuvmtONB5?=
+ =?us-ascii?Q?h+CWbh8LPxQIl39TusRf5q1M8rXAo4mpplRSG/pcb6Nsm2nuXSwAfBr+JRZj?=
+ =?us-ascii?Q?ZJKAh/101jGqVCLwml9x9uXmHXjIc55j8hOHpLk28oZ/rs+o4NrgXuhbKeZW?=
+ =?us-ascii?Q?eO3gxqwxRhIa/jjW1frusJavvoozWuZeD6UbxWYPyE8/FJ80fAb2Nr5zFIVD?=
+ =?us-ascii?Q?XcWNqDBtSy2XbIf+WGbu5rlhbKezxiJk8xmDyOxKDEUty6+U9ph1GOtSvXsS?=
+ =?us-ascii?Q?uSDwtROazVPsiy+/rkHRgvwKnCLk+EkZ9PB65OBZmWwexyXT6K/g6ThsS/Yl?=
+ =?us-ascii?Q?RSodSA9MGwtQcxPFjKy63TLsXoiTuySjAOeHvIov/6kLNa4hT/KEQQpsRliG?=
+ =?us-ascii?Q?LTKnWjssChWgRQgl3Xd2vJ8FuiMUEAyMlnB31tr9iHJdLFpLMItnJxsscTk1?=
+ =?us-ascii?Q?mTnw?=
 X-OriginatorOrg: suse.com
 X-MS-Exchange-CrossTenant-AuthSource: DB3PR0402MB3641.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Dec 2020 03:56:32.8554
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Dec 2020 05:12:22.5978
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-Network-Message-Id: 700ab1e5-b8c1-46c8-550c-08d89fe43ee9
+X-MS-Exchange-CrossTenant-Network-Message-Id: f13b9efd-8e3f-43dc-3390-08d89feed6c0
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: w1qAuH9ZJbprBJ6aVqFltAg7JkAQ8g/reqZFzyGRKFa0c6GLMVORjSV+siQ3KSFQ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0402MB2918
+X-MS-Exchange-CrossTenant-UserPrincipalName: uICTeUjLVquilsZ0rJxHYiLNlBxMAvcWI26WGGDpJZULSaUzFa6XDlHdhEtNOfxX
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB6474
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 09:05:05PM +0100, Daniel Borkmann wrote:
-> On 12/11/20 9:19 AM, Gary Lin wrote:
-> > The x64 bpf jit expects bpf images converge within the given passes, but
-> > it could fail to do so with some corner cases. For example:
-> > 
-> >        l0:     ldh [4]
-> >        l1:     jeq #0x537d, l2, l40
-> >        l2:     ld [0]
-> >        l3:     jeq #0xfa163e0d, l4, l40
-> >        l4:     ldh [12]
-> >        l5:     ldx #0xe
-> >        l6:     jeq #0x86dd, l41, l7
-> >        l8:     ld [x+16]
-> >        l9:     ja 41
-> > 
-> >          [... repeated ja 41 ]
-> > 
-> >        l40:    ja 41
-> >        l41:    ret #0
-> >        l42:    ld #len
-> >        l43:    ret a
-> > 
-> > This bpf program contains 32 "ja 41" instructions which are effectively
-> > NOPs and designed to be replaced with valid code dynamically. Ideally,
-> > bpf jit should optimize those "ja 41" instructions out when translating
-> > the bpf instructions into x86_64 machine code. However, do_jit() can
-> > only remove one "ja 41" for offset==0 on each pass, so it requires at
-> > least 32 runs to eliminate those JMPs and exceeds the current limit of
-> > passes (20). In the end, the program got rejected when BPF_JIT_ALWAYS_ON
-> > is set even though it's legit as a classic socket filter.
-> > 
-> > To make the image more likely converge within 20 passes, this commit
-> > pads some instructions with NOPs in the last 5 passes:
-> > 
-> > 1. conditional jumps
-> >    A possible size variance comes from the adoption of imm8 JMP. If the
-> >    offset is imm8, we calculate the size difference of this BPF instruction
-> >    between the previous pass and the current pass and fill the gap with NOPs.
-> >    To avoid the recalculation of jump offset, those NOPs are inserted before
-> >    the JMP code, so we have to subtract the 2 bytes of imm8 JMP when
-> >    calculating the NOP number.
-> > 
-> > 2. BPF_JA
-> >    There are two conditions for BPF_JA.
-> >    a.) nop jumps
-> >      If this instruction is not optimized out in the previous pass,
-> >      instead of removing it, we insert the equivalent size of NOPs.
-> >    b.) label jumps
-> >      Similar to condition jumps, we prepend NOPs right before the JMP
-> >      code.
-> > 
-> > To make the code concise, emit_nops() is modified to use the signed len and
-> > return the number of inserted NOPs.
-> > 
-> > To support bpf-to-bpf, a new flag, padded, is introduced to 'struct bpf_prog'
-> > so that bpf_int_jit_compile() could know if the program is padded or not.
+On Fri, Dec 11, 2020 at 06:24:47PM -0800, Alexei Starovoitov wrote:
+> On Fri, Dec 11, 2020 at 1:13 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> > >> +                       }
+> > >>   emit_jmp:
+> > >>                          if (is_imm8(jmp_offset)) {
+> > >> +                               if (jmp_padding)
+> > >> +                                       cnt += emit_nops(&prog, INSN_SZ_DIFF - 2);
 > 
-> Please also add multiple hand-crafted test cases e.g. for bpf-to-bpf calls into
-> test_verifier (which is part of bpf kselftests) that would exercise this corner
-> case in x86 jit where we would start to nop pad so that there is proper coverage,
-> too.
+> Could you describe all possible numbers of bytes in padding?
+> Is it 0, 2, 4 ?
+> Would be good to add warn_on_once to make sure the number
+> of nops is expected.
 > 
-The corner case I had in the commit description is likely being rejected by
-the verifier because most of those "ja 41" are unreachable instructions.
-Is there any known test case that needs more than 15 passes in x86 jit?
+For the conditional jumps, it could be 0 or 4. As for nop jumps, it may be
+0, 2, or 5. For the pure jumps, 0 or 3. Will add the warning in the next
+version.
+
+> > >>   struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+> > >>   {
+> > >>          struct bpf_binary_header *header = NULL;
+> > >> @@ -1981,6 +1997,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+> > >>          struct jit_context ctx = {};
+> > >>          bool tmp_blinded = false;
+> > >>          bool extra_pass = false;
+> > >> +       bool padding = prog->padded;
+> > >
+> > > can this ever be true on assignment? I.e., can the program be jitted twice?
+> >
+> > Yes, progs can be passed into the JIT twice, see also jit_subprogs(). In one of
+> > the earlier patches it would still potentially change the image size a second
+> > time which would break subprogs aka bpf2bpf calls.
+> 
+> Right. I think memorized padded flag shouldn't be in sticky bits
+> of the prog structure.
+> It's only needed between the last pass and extra pass for bpf2bpf calls.
+> I think it would be cleaner to keep it in struct x64_jit_data *jit_data.
+> 
+Okay, jit_data is surely a better place for the flag.
+
+> As others have said the selftests are must have.
+> Especially for bpf2bpf calls where one subprog is padded.
+> 
+Will try to craft some test cases for this patch in v2.
 
 Gary Lin
 
