@@ -2,60 +2,184 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6B852D9935
-	for <lists+bpf@lfdr.de>; Mon, 14 Dec 2020 14:49:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AE632D9945
+	for <lists+bpf@lfdr.de>; Mon, 14 Dec 2020 14:54:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438166AbgLNNsI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Dec 2020 08:48:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38284 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406099AbgLNNoM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Dec 2020 08:44:12 -0500
-Date:   Mon, 14 Dec 2020 10:43:43 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607953411;
-        bh=7H1l/OZXZjWrQ4sxxJQS8JEP7T6y9WpDSART6dvQ+ec=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Dt3ebbQmuaupJqAtbUX9FNX4haD7prTtABSBFu6mzjI8iVMjT0wPi4zyF1b2zQ/4a
-         bsiTmFZF1e9Km+/bM65wG3tJRTKXvlkXuf8lv8xq7APMH71xGeOUmGig4WgxlqMdwX
-         WNJaK8WN4c0LrRAstBNE9V/qgj94HW63E99gbSXZy9RMQlRn85uEimBwCOw1MONaJD
-         clEgEYCgwtsSxjwRCwljRqJ0YNsicAO+Pff4u4jmNDKVuBXSAWhC7KK8rkupmVqY96
-         ZAB0kZgIOhuFDl1XlC9RpuJVJ17PHJ5UtNJux+aZ15JX5kKBXCKmI3x3CRi1GHvA9C
-         YDS9Ezg3tPycA==
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, dwarves@vger.kernel.org,
-        bpf@vger.kernel.org, kernel-team@fb.com,
-        Hao Luo <haoluo@google.com>
-Subject: Re: [PATCH dwarves 0/2] Fix pahole to emit kernel module BTF
- variables
-Message-ID: <20201214134343.GF238399@kernel.org>
-References: <20201211041139.589692-1-andrii@kernel.org>
- <20201213202757.GA482741@krava>
+        id S2407571AbgLNNxL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Dec 2020 08:53:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21704 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728558AbgLNNxJ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 14 Dec 2020 08:53:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607953901;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xDkRp2qRbnWF9+i4J4sLPRtdAIpeZ2Kke3VeR7rVDKs=;
+        b=KIuzslZeApKtLF1kRBQ82R+qeV8HbWmZzfUuiqXqo4bK0Lsc2fbSQq6mz9vuYCxJfXshE4
+        BC8IgC0CTr+Czm+aoNSnpvDJgn6haez08HP+aql2xs9nRVlt9esXABAtYqgAZTtXHg6iuf
+        u6QdSTSXTzPKkvHzIN8wwTiABTUi8PQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-34-f7zaRQw5O2mmf5s0jEr_KQ-1; Mon, 14 Dec 2020 08:51:39 -0500
+X-MC-Unique: f7zaRQw5O2mmf5s0jEr_KQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 905278144E9;
+        Mon, 14 Dec 2020 13:51:37 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.6])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D4B2E1007606;
+        Mon, 14 Dec 2020 13:51:29 +0000 (UTC)
+Date:   Mon, 14 Dec 2020 14:51:28 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
+        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
+        colrack@gmail.com, brouer@redhat.com
+Subject: Re: [PATCH bpf-next V8 4/8] bpf: add BPF-helper for MTU checking
+Message-ID: <20201214145128.0046316c@carbon>
+In-Reply-To: <e5d7ade3-6648-5934-ede1-956e379834a2@iogearbox.net>
+References: <160650034591.2890576.1092952641487480652.stgit@firesoul>
+        <160650039783.2890576.1174164236647947165.stgit@firesoul>
+        <e5d7ade3-6648-5934-ede1-956e379834a2@iogearbox.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201213202757.GA482741@krava>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Sun, Dec 13, 2020 at 09:27:57PM +0100, Jiri Olsa escreveu:
-> On Thu, Dec 10, 2020 at 08:11:36PM -0800, Andrii Nakryiko wrote:
-> > Two bug fixes to make pahole emit correct kernel module BTF variable
-> > information.
-> > 
-> > Cc: Hao Luo <haoluo@google.com>
-> > Cc: Jiri Olsa <jolsa@redhat.com>
-> > 
-> > Andrii Nakryiko (2):
-> >   btf_encoder: fix BTF variable generation for kernel modules
-> >   btf_encoder: fix skipping per-CPU variables at offset 0
+On Thu, 3 Dec 2020 00:23:14 +0100
+Daniel Borkmann <daniel@iogearbox.net> wrote:
+
+> On 11/27/20 7:06 PM, Jesper Dangaard Brouer wrote:
+> [...]
+> > +static struct net_device *__dev_via_ifindex(struct net_device *dev_curr,
+> > +					    u32 ifindex)
+> > +{
+> > +	struct net *netns = dev_net(dev_curr);
+> > +
+> > +	/* Non-redirect use-cases can use ifindex=0 and save ifindex lookup */
+> > +	if (ifindex == 0)
+> > +		return dev_curr;
+> > +
+> > +	return dev_get_by_index_rcu(netns, ifindex);
+> > +}
+> > +
+> > +BPF_CALL_5(bpf_skb_check_mtu, struct sk_buff *, skb,
+> > +	   u32, ifindex, u32 *, mtu_len, s32, len_diff, u64, flags)
+> > +{
+> > +	int ret = BPF_MTU_CHK_RET_FRAG_NEEDED;
+> > +	struct net_device *dev = skb->dev;
+> > +	int len;
+> > +	int mtu;
+> > +
+> > +	if (flags & ~(BPF_MTU_CHK_SEGS))  
 > 
-> Acked-by: Jiri Olsa <jolsa@redhat.com>
+> nit: unlikely() (similar for XDP case)
 
-Thanks, applied.
+ok
 
-- Arnaldo
+> > +		return -EINVAL;
+> > +
+> > +	dev = __dev_via_ifindex(dev, ifindex);
+> > +	if (!dev)  
+> 
+> nit: unlikely() (ditto XDP)
+
+ok
+
+> > +		return -ENODEV;
+> > +
+> > +	mtu = READ_ONCE(dev->mtu);
+> > +
+> > +	/* TC len is L2, remove L2-header as dev MTU is L3 size */
+> > +	len = skb->len - ETH_HLEN;  
+> 
+> s/ETH_HLEN/dev->hard_header_len/ ?
+
+ok
+ 
+> > +	len += len_diff; /* len_diff can be negative, minus result pass check */
+> > +	if (len <= mtu) {
+> > +		ret = BPF_MTU_CHK_RET_SUCCESS;  
+> 
+> Wouldn't it be more intuitive to do ...
+> 
+>     len_dev = READ_ONCE(dev->mtu) + dev->hard_header_len + VLAN_HLEN;
+>     len_skb = skb->len + len_diff;
+>     if (len_skb <= len_dev) {
+>        ret = BPF_MTU_CHK_RET_SUCCESS;
+>        got out;
+>     }
+
+Yes, that is more intuitive to read.
+
+
+> > +		goto out;
+> > +	}
+> > +	/* At this point, skb->len exceed MTU, but as it include length of all
+> > +	 * segments, it can still be below MTU.  The SKB can possibly get
+> > +	 * re-segmented in transmit path (see validate_xmit_skb).  Thus, user
+> > +	 * must choose if segs are to be MTU checked.  Last SKB "headlen" is
+> > +	 * checked against MTU.
+> > +	 */
+> > +	if (skb_is_gso(skb)) {
+> > +		ret = BPF_MTU_CHK_RET_SUCCESS;
+> > +
+> > +		if (flags & BPF_MTU_CHK_SEGS &&
+> > +		    skb_gso_validate_network_len(skb, mtu)) {
+> > +			ret = BPF_MTU_CHK_RET_SEGS_TOOBIG;
+> > +			goto out;  
+> 
+> Maybe my lack of coffe, but looking at ip_exceeds_mtu() for example, shouldn't
+> the above test be on !skb_gso_validate_network_len() instead?
+
+Yes, you are right!
+
+> skb_is_gso(skb) && skb_gso_validate_network_len(skb, mtu) would indicate that
+> it does /not/ exceed mtu.
+> 
+> > +		}
+> > +
+> > +		len = skb_headlen(skb) - ETH_HLEN + len_diff;  
+> 
+> How does this work with GRO when we invoke this helper at tc ingress, e.g. when
+> there is still non-linear data in skb_shinfo(skb)->frags[]?
+
+In case of skb_is_gso() then this code will check the linear part
+skb_headlen(skb) against the MTU.  I though this was an improvement
+from what we have today, where skb_is_gso() packets will skip all
+checks, which have caused a lot of confusion by end-users.
+
+I will put this under the BPF_MTU_CHK_SEGS flag (in V9) as I understand
+from you comment, you don't think this is correct at tc ingress.
+
+> > +		if (len > mtu) {
+> > +			ret = BPF_MTU_CHK_RET_FRAG_NEEDED;
+> > +			goto out;
+> > +		}
+> > +	}
+> > +out:
+> > +	/* BPF verifier guarantees valid pointer */
+> > +	*mtu_len = mtu;
+> > +
+> > +	return ret;
+> > +}
+[...]
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
