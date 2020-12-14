@@ -2,71 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CC6C2D9ADF
-	for <lists+bpf@lfdr.de>; Mon, 14 Dec 2020 16:25:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D382D9AFC
+	for <lists+bpf@lfdr.de>; Mon, 14 Dec 2020 16:33:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408053AbgLNPYQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Dec 2020 10:24:16 -0500
-Received: from mga17.intel.com ([192.55.52.151]:28673 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408356AbgLNPYM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Dec 2020 10:24:12 -0500
-IronPort-SDR: 0ZIPLNF+c/k8CKq3GSZIgg8c4P+OKZLUU2wX04xENfLKO04upCeA4j4VTIg7r9xVOVHa5VLRGe
- KR+VorUbn00Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9834"; a="154531366"
-X-IronPort-AV: E=Sophos;i="5.78,420,1599548400"; 
-   d="scan'208";a="154531366"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2020 07:23:11 -0800
-IronPort-SDR: ctp9ScIgn6YcqGCvrAdH0QTDHWYEnWb8z+6R82dHgYTMKJNdwk7MX1I1sr2oCNFG/QFVtwkE+L
- 1WnJpaF38FWw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,420,1599548400"; 
-   d="scan'208";a="411285763"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by orsmga001.jf.intel.com with ESMTP; 14 Dec 2020 07:23:09 -0800
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     intel-wired-lan@lists.osuosl.org
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        anthony.l.nguyen@intel.com, kuba@kernel.org, bjorn.topel@intel.com,
-        magnus.karlsson@intel.com
-Subject: [PATCH v2 net-next 8/8] i40e, xsk: Simplify the do-while allocation loop
-Date:   Mon, 14 Dec 2020 16:13:08 +0100
-Message-Id: <20201214151308.15275-9-maciej.fijalkowski@intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201214151308.15275-1-maciej.fijalkowski@intel.com>
-References: <20201214151308.15275-1-maciej.fijalkowski@intel.com>
+        id S1729926AbgLNP3C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Dec 2020 10:29:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731884AbgLNP2z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Dec 2020 10:28:55 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF107C0613D3;
+        Mon, 14 Dec 2020 07:28:14 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id p21so4983337pjv.0;
+        Mon, 14 Dec 2020 07:28:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JntfCgfYG2ldn/Xx3xyW83K/+qr92LgPi/s946Gzg78=;
+        b=gK2kGOlYc1N2gmkqBk1OZG6XQj+oAW13oM2gPC9CirJXABj4LRTniv6V9LoHDUeMgM
+         iKTNSmD2RwP0IgTizmtv0sS9aXEUnUapqa56QCKHxvTZNaAX9qn74PwHbGV03ZyTilTi
+         GnqYOdXq3CD9n03W1A/edjXWn6/RTVOQCS3iftGzgWVTcjshsetaGXoryOb38+E65Pyj
+         wxTIpZKa2OCdmhekBebGkcx2Wq3yUg1xyTPe+dQQfF2XPN74LKA82BilKCVSJ6qPw+m1
+         +zMP0HMgqT/vitMmeknrt0D6kwJdTt/Wnr6uLG5Oyf7Yabg9/SxvwK85wyhvQen5qP+r
+         pMow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JntfCgfYG2ldn/Xx3xyW83K/+qr92LgPi/s946Gzg78=;
+        b=NjoZUYTyTT7EX7aMFpJwC5X/pTWeOBMt7JONXndPkGFT/LL8K9opCQVz8Z+Iv1TC0T
+         8nz1TlOrEILq3Ea4h1bW+jTHpv3GY37F3ZL6GWBGcxoKLqVqeJ8z3wUlpUgS9tE6RNQi
+         fLHIeSBoTevmMPs3NeXc4kCg9OpyL+//BcUyFh4BARF5AZtolVBvQXDW6Lr9jXgbZdfr
+         RVonpsVG1Ryn/wHnqZXoAJKFwJv9S5epbU0OSokx+230WsK/ZDcgjYVwOgWgGUA18fIk
+         vqD8YkRvh0alYbx1riOn/90t6K9LbeRsQPhRzgPPjo+U1UNkfmTj6m3UaA9pQ0bzymYy
+         HVKA==
+X-Gm-Message-State: AOAM533ikBFILIv26DR8OSmah1HPsmn6XJAQexEuLQ3WerJ1wxM4ekFr
+        1MPXW8EwTd9MxK2PR6YN3Lo=
+X-Google-Smtp-Source: ABdhPJwa+tDqbW08yiVxRo57kDGW3jVvAc3hxhABF085PkRZO4ejjO7ontSyJIIcgXe+aJX0+TQAag==
+X-Received: by 2002:a17:90b:11d7:: with SMTP id gv23mr25935280pjb.2.1607959694494;
+        Mon, 14 Dec 2020 07:28:14 -0800 (PST)
+Received: from VM.ger.corp.intel.com ([192.55.54.42])
+        by smtp.gmail.com with ESMTPSA id 5sm20036027pgm.57.2020.12.14.07.28.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 14 Dec 2020 07:28:13 -0800 (PST)
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+To:     magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        jonathan.lemon@gmail.com
+Cc:     Magnus Karlsson <magnus.karlsson@gmail.com>, bpf@vger.kernel.org,
+        A.Zema@falconvsystems.com, maciej.fijalkowski@intel.com,
+        maciejromanfijalkowski@gmail.com
+Subject: [PATCH bpf 0/2] xsk: fix two bugs in the SKB Tx path
+Date:   Mon, 14 Dec 2020 16:27:55 +0100
+Message-Id: <20201214152757.7632-1-magnus.karlsson@gmail.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
+This patch set contains two bug fixes to the Tx SKB path. Details can
+be found in the individual commit messages. Special thanks to Xuan
+Zhuo for spotting both of them.
 
-Fold the count decrement into the while-statement.
+Thanks: Magnus
 
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
----
- drivers/net/ethernet/intel/i40e/i40e_xsk.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Magnus Karlsson (2):
+  xsk: fix race in SKB mode transmit with shared cq
+  xsk: rollback reservation at NETDEV_TX_BUSY
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-index bfa84bfb0488..679200d94ef8 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
-@@ -215,9 +215,7 @@ bool i40e_alloc_rx_buffers_zc(struct i40e_ring *rx_ring, u16 count)
- 			bi = i40e_rx_bi(rx_ring, 0);
- 			ntu = 0;
- 		}
--
--		count--;
--	} while (count);
-+	} while (--count);
- 
- no_buffers:
- 	if (rx_ring->next_to_use != ntu)
--- 
-2.20.1
+ include/net/xdp_sock.h      |  4 ----
+ include/net/xsk_buff_pool.h |  5 +++++
+ net/xdp/xsk.c               | 12 +++++++++---
+ net/xdp/xsk_buff_pool.c     |  1 +
+ net/xdp/xsk_queue.h         |  5 +++++
+ 5 files changed, 20 insertions(+), 7 deletions(-)
 
+
+base-commit: d9838b1d39283c1200c13f9076474c7624b8ec34
+--
+2.29.0
