@@ -2,150 +2,507 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 713A32D9D70
-	for <lists+bpf@lfdr.de>; Mon, 14 Dec 2020 18:18:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B4FF2D9E36
+	for <lists+bpf@lfdr.de>; Mon, 14 Dec 2020 18:53:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408441AbgLNRRZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Dec 2020 12:17:25 -0500
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:44445 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408437AbgLNRRY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Dec 2020 12:17:24 -0500
+        id S2407662AbgLNRuv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Dec 2020 12:50:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2439430AbgLNRun (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Dec 2020 12:50:43 -0500
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D32AC0613D3;
+        Mon, 14 Dec 2020 09:50:03 -0800 (PST)
+Received: by mail-qv1-xf2b.google.com with SMTP id s6so8193278qvn.6;
+        Mon, 14 Dec 2020 09:50:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1607966243; x=1639502243;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=CQGamH5EYsnyVqy9qJ/OP61I+HLUicTHXTVqOFab65M=;
-  b=NlHDFh7sfZed7QMgOrOeI9gW503fgeL3R6HBmt0gz/msPZ2GBwmkN6fl
-   Vkg9/xuu9A7gT7dmVSLm6Fuocb2S+m2EChOkrWx8k45KZiwEU1JITSbni
-   eEjLznBchHVki1JjLnlL0afCGmNsWzBZ1WPMCkoTX99WylGsm/NuoIuEE
-   4=;
-X-IronPort-AV: E=Sophos;i="5.78,420,1599523200"; 
-   d="scan'208";a="72514614"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1a-af6a10df.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 14 Dec 2020 17:16:42 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1a-af6a10df.us-east-1.amazon.com (Postfix) with ESMTPS id 7F641A198E;
-        Mon, 14 Dec 2020 17:16:39 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 14 Dec 2020 17:16:38 +0000
-Received: from 38f9d3582de7.ant.amazon.com (10.43.161.223) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 14 Dec 2020 17:16:34 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     <kafai@fb.com>
-CC:     <ast@kernel.org>, <benh@amazon.com>, <bpf@vger.kernel.org>,
-        <daniel@iogearbox.net>, <davem@davemloft.net>,
-        <edumazet@google.com>, <eric.dumazet@gmail.com>, <kuba@kernel.org>,
-        <kuni1840@gmail.com>, <kuniyu@amazon.co.jp>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-Subject: Re: [PATCH v1 bpf-next 03/11] tcp: Migrate TCP_ESTABLISHED/TCP_SYN_RECV sockets in accept queues.
-Date:   Tue, 15 Dec 2020 02:16:30 +0900
-Message-ID: <20201214171630.62542-1-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.17.2 (Apple Git-113)
-In-Reply-To: <20201210193340.x6qdykdalhdebxv3@kafai-mbp.dhcp.thefacebook.com>
-References: <20201210193340.x6qdykdalhdebxv3@kafai-mbp.dhcp.thefacebook.com>
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=KUJvtcU7praBwmxje82Hm8Pu13gE7+rFgKOCOe5N1hA=;
+        b=EMy6uSwMi7uUWOylsxnnfW5BA4Q79ryQzO9d7VPfwMQ7lzHdXPLV9ll0AePnWVIaz6
+         wGPBoPyfUTsaD9gDiKaqwZ17axieJQQD6EBDkFPwLWBL6Bdg+/QM7EWbBk4YVm4Lvu2Q
+         Mq7kfq5fWdAktui+kTFSBCWvJ6dFatYzIgftRWprv39mUrp7EkNTxwEP+t05HTI0pY3P
+         cLQEJ1maRYzT8EcI6UR4hNWxrsnlszZk9jc27fjQduCoCJCvw2prja5gDUMEHj4zDMNa
+         a+mXEVIzaEZdqe+kCWecW6yBmnFXPbCwsB7dGZOsvrDheiAZJl5fdN0/M/8L6m9R4kMh
+         nHMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=KUJvtcU7praBwmxje82Hm8Pu13gE7+rFgKOCOe5N1hA=;
+        b=f2Gp8Tfo9Vnb6ZBIcFSuX9v1xskta4ywGa+P6LAwl/IUAweT9FwrhvxxzftmFkQDQB
+         tksa+qNvh7DyD2y+YjFzRIAqj3cMRH5qdqrXt2p2yAjClleMqFZKO0eCB8+HjSZsYed/
+         cD/ihmUinZZtmYfqHLgHVJ3bH0C+ALntO8pJQ0nL0c+bgJiwtRuZ9Tq7B5kg7OMHo8uR
+         REuRvUQ9s/x5AjNekUgZDSh6oyB3QwEVtH7KEJA5Oj4OPoEEZBW4G7VmL31/4VkFdY8S
+         SShWh/WPFWFOYgr4j0q2e5qL6w9ItzBNQbVsKWYdTf2yuNW8meerVTsI2CipLmPxb/kl
+         nGjw==
+X-Gm-Message-State: AOAM531JwWnLeKdkEWshgMYEP3ndwrjKsYbB/xMMNd3omaK5tJVlziIo
+        S1n4IzE9Hy8F/Na61Bwu74edVm65l5SMgg==
+X-Google-Smtp-Source: ABdhPJyI3nUsP+uoPidCaCroOU3JiU2iI9lN5HLIGT8kxiwry4Oo7b/PwoW/RzhGBBRF+as5nVJZ6Q==
+X-Received: by 2002:ad4:5188:: with SMTP id b8mr33346607qvp.55.1607968202024;
+        Mon, 14 Dec 2020 09:50:02 -0800 (PST)
+Received: from localhost (pc-145-79-45-190.cm.vtr.net. [190.45.79.145])
+        by smtp.gmail.com with ESMTPSA id u26sm11831377qkm.69.2020.12.14.09.49.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Dec 2020 09:50:01 -0800 (PST)
+Date:   Mon, 14 Dec 2020 14:49:56 -0300
+From:   Carlos Neira <cneirabustos@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     andriin@fb.com, yhs@fb.com, ebiederm@xmission.com,
+        brouer@redhat.com, bpf@vger.kernel.org, cneirabustos@gmail.com
+Subject: [PATCH v8 bpf-next] bpf/selftests: fold test_current_pid_tgid_new_ns
+ into test_progs.
+Message-ID: <20201214174953.GA14038@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.223]
-X-ClientProxiedBy: EX13D45UWA003.ant.amazon.com (10.43.160.92) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From:   Martin KaFai Lau <kafai@fb.com>
-Date:   Thu, 10 Dec 2020 11:33:40 -0800
-> On Thu, Dec 10, 2020 at 02:58:10PM +0900, Kuniyuki Iwashima wrote:
-> 
-> [ ... ]
-> 
-> > > > I've implemented one-by-one migration only for the accept queue for now.
-> > > > In addition to the concern about TFO queue,
-> > > You meant this queue:  queue->fastopenq.rskq_rst_head?
-> > 
-> > Yes.
-> > 
-> > 
-> > > Can "req" be passed?
-> > > I did not look up the lock/race in details for that though.
-> > 
-> > I think if we rewrite freeing TFO requests part like one of accept queue
-> > using reqsk_queue_remove(), we can also migrate them.
-> > 
-> > In this patchset, selecting a listener for accept queue, the TFO queue of
-> > the same listener is also migrated to another listener in order to prevent
-> > TFO spoofing attack.
-> > 
-> > If the request in the accept queue is migrated one by one, I am wondering
-> > which should the request in TFO queue be migrated to prevent attack or
-> > freed.
-> > 
-> > I think user need not know about keeping such requests in kernel to prevent
-> > attacks, so passing them to eBPF prog is confusing. But, redistributing
-> > them randomly without user's intention can make some irrelevant listeners
-> > unnecessarily drop new TFO requests, so this is also bad. Moreover, freeing
-> > such requests seems not so good in the point of security.
-> The current behavior (during process restart) is also not carrying this
-> security queue.  Not carrying them in this patch will make it
-> less secure than the current behavior during process restart?
+Currently tests for bpf_get_ns_current_pid_tgid() are outside test_progs.
+This change folds test cases into test_progs.
 
-No, I thought I could make it more secure.
+Changes from V7:
+ - Rebased changes.
+ - Changed function scope.
 
+Signed-off-by: Carlos Neira <cneirabustos@gmail.com>
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+---
+ tools/testing/selftests/bpf/.gitignore        |   1 -
+ tools/testing/selftests/bpf/Makefile          |   3 +-
+ .../bpf/prog_tests/ns_current_pid_tgid.c      | 148 ++++++++++------
+ .../bpf/progs/test_ns_current_pid_tgid.c      |  26 +--
+ .../bpf/test_current_pid_tgid_new_ns.c        | 160 ------------------
+ 5 files changed, 105 insertions(+), 233 deletions(-)
+ delete mode 100644 tools/testing/selftests/bpf/test_current_pid_tgid_new_ns.c
 
-> Do you need it now or it is something that can be considered for later
-> without changing uapi bpf.h?
+diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
+index f5b7ef93618c..9abca0616ec0 100644
+--- a/tools/testing/selftests/bpf/.gitignore
++++ b/tools/testing/selftests/bpf/.gitignore
+@@ -26,7 +26,6 @@ test_tcpnotify_user
+ test_libbpf
+ test_tcp_check_syncookie_user
+ test_sysctl
+-test_current_pid_tgid_new_ns
+ xdping
+ test_cpp
+ *.skel.h
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 8c33e999319a..886577bc2bb6 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -35,8 +35,7 @@ TEST_GEN_PROGS = test_verifier test_tag test_maps test_lru_map test_lpm_map test
+ 	test_sock test_sockmap get_cgroup_id_user test_socket_cookie \
+ 	test_cgroup_storage \
+ 	test_netcnt test_tcpnotify_user test_sysctl \
+-	test_progs-no_alu32 \
+-	test_current_pid_tgid_new_ns
++	test_progs-no_alu32
+ 
+ # Also test bpf-gcc, if present
+ ifneq ($(BPF_GCC),)
+diff --git a/tools/testing/selftests/bpf/prog_tests/ns_current_pid_tgid.c b/tools/testing/selftests/bpf/prog_tests/ns_current_pid_tgid.c
+index e74dc501b27f..c838c77ced26 100644
+--- a/tools/testing/selftests/bpf/prog_tests/ns_current_pid_tgid.c
++++ b/tools/testing/selftests/bpf/prog_tests/ns_current_pid_tgid.c
+@@ -1,85 +1,131 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Copyright (c) 2020 Carlos Neira cneirabustos@gmail.com */
++
++#define _GNU_SOURCE
+ #include <test_progs.h>
++#include "test_ns_current_pid_tgid.skel.h"
+ #include <sys/stat.h>
+ #include <sys/types.h>
+ #include <unistd.h>
+ #include <sys/syscall.h>
++#include <sched.h>
++#include <sys/wait.h>
++#include <sys/mount.h>
++#include <sys/fcntl.h>
+ 
+-struct bss {
+-	__u64 dev;
+-	__u64 ino;
+-	__u64 pid_tgid;
+-	__u64 user_pid_tgid;
+-};
++#define STACK_SIZE (1024 * 1024)
++static char child_stack[STACK_SIZE];
+ 
+-void test_ns_current_pid_tgid(void)
++static void test_ns_current_pid_tgid_global_ns(void)
+ {
+-	const char *probe_name = "raw_tracepoint/sys_enter";
+-	const char *file = "test_ns_current_pid_tgid.o";
+-	int err, key = 0, duration = 0;
+-	struct bpf_link *link = NULL;
+-	struct bpf_program *prog;
+-	struct bpf_map *bss_map;
+-	struct bpf_object *obj;
+-	struct bss bss;
++	struct test_ns_current_pid_tgid__bss  *bss;
++	struct test_ns_current_pid_tgid *skel;
++	int err, duration = 0;
+ 	struct stat st;
++	pid_t tid, pid;
+ 	__u64 id;
+ 
+-	obj = bpf_object__open_file(file, NULL);
+-	if (CHECK(IS_ERR(obj), "obj_open", "err %ld\n", PTR_ERR(obj)))
+-		return;
++	skel = test_ns_current_pid_tgid__open_and_load();
++	CHECK(!skel, "skel_open_load", "failed to load skeleton\n");
++	goto cleanup;
+ 
+-	err = bpf_object__load(obj);
+-	if (CHECK(err, "obj_load", "err %d errno %d\n", err, errno))
+-		goto cleanup;
++	tid = syscall(SYS_gettid);
++	pid = getpid();
++
++	id = ((__u64)tid << 32) | pid;
+ 
+-	bss_map = bpf_object__find_map_by_name(obj, "test_ns_.bss");
+-	if (CHECK(!bss_map, "find_bss_map", "failed\n"))
++	err = stat("/proc/self/ns/pid", &st);
++	if (CHECK(err, "stat", "failed /proc/self/ns/pid: %d", err))
+ 		goto cleanup;
+ 
+-	prog = bpf_object__find_program_by_title(obj, probe_name);
+-	if (CHECK(!prog, "find_prog", "prog '%s' not found\n",
+-		  probe_name))
++	bss = skel->bss;
++	bss->dev = st.st_dev;
++	bss->ino = st.st_ino;
++	bss->user_pid_tgid = 0;
++
++	err = test_ns_current_pid_tgid__attach(skel);
++	if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
+ 		goto cleanup;
+ 
+-	memset(&bss, 0, sizeof(bss));
+-	pid_t tid = syscall(SYS_gettid);
+-	pid_t pid = getpid();
++	/* trigger tracepoint */
++	usleep(1);
+ 
+-	id = (__u64) tid << 32 | pid;
+-	bss.user_pid_tgid = id;
++	CHECK(bss->user_pid_tgid != id, "pid/tgid", "got %llu != exp %llu\n",
++	 bss->user_pid_tgid, id);
++cleanup:
++	 test_ns_current_pid_tgid__destroy(skel);
++}
+ 
+-	if (CHECK_FAIL(stat("/proc/self/ns/pid", &st))) {
+-		perror("Failed to stat /proc/self/ns/pid");
++static int newns_pidtgid(void *arg)
++{
++	struct test_ns_current_pid_tgid__bss  *bss;
++	int pidns_fd = 0, err = 0, duration = 0;
++	struct test_ns_current_pid_tgid *skel;
++	pid_t pid, tid;
++	struct stat st;
++	__u64 id;
++
++	skel = test_ns_current_pid_tgid__open_and_load();
++	if (!skel) {
++		perror("Failed to load skeleton");
+ 		goto cleanup;
+ 	}
+ 
+-	bss.dev = st.st_dev;
+-	bss.ino = st.st_ino;
++	tid = syscall(SYS_gettid);
++	pid = getpid();
++	id = ((__u64) tid << 32) | pid;
+ 
+-	err = bpf_map_update_elem(bpf_map__fd(bss_map), &key, &bss, 0);
+-	if (CHECK(err, "setting_bss", "failed to set bss : %d\n", err))
++	err = stat("/proc/self/ns/pid", &st);
++	if (CHECK(err, "stat", "failed /proc/self/ns/pid: %d", err))
+ 		goto cleanup;
+ 
+-	link = bpf_program__attach_raw_tracepoint(prog, "sys_enter");
+-	if (CHECK(IS_ERR(link), "attach_raw_tp", "err %ld\n",
+-		  PTR_ERR(link))) {
+-		link = NULL;
++	bss = skel->bss;
++	bss->dev = st.st_dev;
++	bss->ino = st.st_ino;
++	bss->user_pid_tgid = 0;
++
++	err = test_ns_current_pid_tgid__attach(skel);
++	if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
+ 		goto cleanup;
+-	}
+ 
+-	/* trigger some syscalls */
++	/* trigger tracepoint */
+ 	usleep(1);
+ 
+-	err = bpf_map_lookup_elem(bpf_map__fd(bss_map), &key, &bss);
+-	if (CHECK(err, "set_bss", "failed to get bss : %d\n", err))
+-		goto cleanup;
++	CHECK(bss->user_pid_tgid != id, "pid/tgid", "got %llu != exp %llu\n",
++	 bss->user_pid_tgid, id);
+ 
+-	if (CHECK(id != bss.pid_tgid, "Compare user pid/tgid vs. bpf pid/tgid",
+-		  "User pid/tgid %llu BPF pid/tgid %llu\n", id, bss.pid_tgid))
+-		goto cleanup;
+ cleanup:
+-	bpf_link__destroy(link);
+-	bpf_object__close(obj);
++	 setns(pidns_fd, CLONE_NEWPID);
++	 test_ns_current_pid_tgid__destroy(skel);
++
++	return err;
++}
++
++static void test_ns_current_pid_tgid_new_ns(void)
++{
++	int wstatus, duration = 0;
++	pid_t cpid;
++
++	cpid = clone(newns_pidtgid,
++	  child_stack + STACK_SIZE,
++	  CLONE_NEWPID | SIGCHLD, NULL);
++
++	if (CHECK(cpid == -1, "clone", strerror(errno)))
++		exit(EXIT_FAILURE);
++
++	if (CHECK(waitpid(cpid, &wstatus, 0) == -1, "waitpid",
++	 strerror(errno))) {
++		exit(EXIT_FAILURE);
++	}
++
++	CHECK(WEXITSTATUS(wstatus) != 0, "newns_pidtgid",
++	 "failed");
++}
++
++void test_ns_current_pid_tgid(void)
++{
++	if (test__start_subtest("ns_current_pid_tgid_global_ns"))
++		test_ns_current_pid_tgid_global_ns();
++	if (test__start_subtest("ns_current_pid_tgid_new_ns"))
++		test_ns_current_pid_tgid_new_ns();
+ }
+diff --git a/tools/testing/selftests/bpf/progs/test_ns_current_pid_tgid.c b/tools/testing/selftests/bpf/progs/test_ns_current_pid_tgid.c
+index 1dca70a6de2f..0daa12db0d83 100644
+--- a/tools/testing/selftests/bpf/progs/test_ns_current_pid_tgid.c
++++ b/tools/testing/selftests/bpf/progs/test_ns_current_pid_tgid.c
+@@ -5,31 +5,19 @@
+ #include <stdint.h>
+ #include <bpf/bpf_helpers.h>
+ 
+-static volatile struct {
+-	__u64 dev;
+-	__u64 ino;
+-	__u64 pid_tgid;
+-	__u64 user_pid_tgid;
+-} res;
++__u64 user_pid_tgid = 0;
++__u64 dev = 0;
++__u64 ino = 0;
+ 
+ SEC("raw_tracepoint/sys_enter")
+-int trace(void *ctx)
++int handler(const void *ctx)
+ {
+-	__u64  ns_pid_tgid, expected_pid;
+ 	struct bpf_pidns_info nsdata;
+-	__u32 key = 0;
+ 
+-	if (bpf_get_ns_current_pid_tgid(res.dev, res.ino, &nsdata,
+-		   sizeof(struct bpf_pidns_info)))
++	if (bpf_get_ns_current_pid_tgid(dev, ino, &nsdata,
++		sizeof(struct bpf_pidns_info)))
+ 		return 0;
+-
+-	ns_pid_tgid = (__u64)nsdata.tgid << 32 | nsdata.pid;
+-	expected_pid = res.user_pid_tgid;
+-
+-	if (expected_pid != ns_pid_tgid)
+-		return 0;
+-
+-	res.pid_tgid = ns_pid_tgid;
++	user_pid_tgid = ((__u64)nsdata.tgid << 32) | nsdata.pid;
+ 
+ 	return 0;
+ }
+diff --git a/tools/testing/selftests/bpf/test_current_pid_tgid_new_ns.c b/tools/testing/selftests/bpf/test_current_pid_tgid_new_ns.c
+deleted file mode 100644
+index ec53b1ef90d2..000000000000
+--- a/tools/testing/selftests/bpf/test_current_pid_tgid_new_ns.c
++++ /dev/null
+@@ -1,160 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0
+-/* Copyright (c) 2020 Carlos Neira cneirabustos@gmail.com */
+-#define _GNU_SOURCE
+-#include <sys/stat.h>
+-#include <sys/types.h>
+-#include <unistd.h>
+-#include <sys/syscall.h>
+-#include <sched.h>
+-#include <sys/wait.h>
+-#include <sys/mount.h>
+-#include "test_progs.h"
+-
+-#define CHECK_NEWNS(condition, tag, format...) ({		\
+-	int __ret = !!(condition);			\
+-	if (__ret) {					\
+-		printf("%s:FAIL:%s ", __func__, tag);	\
+-		printf(format);				\
+-	} else {					\
+-		printf("%s:PASS:%s\n", __func__, tag);	\
+-	}						\
+-	__ret;						\
+-})
+-
+-struct bss {
+-	__u64 dev;
+-	__u64 ino;
+-	__u64 pid_tgid;
+-	__u64 user_pid_tgid;
+-};
+-
+-int main(int argc, char **argv)
+-{
+-	pid_t pid;
+-	int exit_code = 1;
+-	struct stat st;
+-
+-	printf("Testing bpf_get_ns_current_pid_tgid helper in new ns\n");
+-
+-	if (stat("/proc/self/ns/pid", &st)) {
+-		perror("stat failed on /proc/self/ns/pid ns\n");
+-		printf("%s:FAILED\n", argv[0]);
+-		return exit_code;
+-	}
+-
+-	if (CHECK_NEWNS(unshare(CLONE_NEWPID | CLONE_NEWNS),
+-			"unshare CLONE_NEWPID | CLONE_NEWNS", "error errno=%d\n", errno))
+-		return exit_code;
+-
+-	pid = fork();
+-	if (pid == -1) {
+-		perror("Fork() failed\n");
+-		printf("%s:FAILED\n", argv[0]);
+-		return exit_code;
+-	}
+-
+-	if (pid > 0) {
+-		int status;
+-
+-		usleep(5);
+-		waitpid(pid, &status, 0);
+-		return 0;
+-	} else {
+-
+-		pid = fork();
+-		if (pid == -1) {
+-			perror("Fork() failed\n");
+-			printf("%s:FAILED\n", argv[0]);
+-			return exit_code;
+-		}
+-
+-		if (pid > 0) {
+-			int status;
+-			waitpid(pid, &status, 0);
+-			return 0;
+-		} else {
+-			if (CHECK_NEWNS(mount("none", "/proc", NULL, MS_PRIVATE|MS_REC, NULL),
+-				"Unmounting proc", "Cannot umount proc! errno=%d\n", errno))
+-				return exit_code;
+-
+-			if (CHECK_NEWNS(mount("proc", "/proc", "proc", MS_NOSUID|MS_NOEXEC|MS_NODEV, NULL),
+-				"Mounting proc", "Cannot mount proc! errno=%d\n", errno))
+-				return exit_code;
+-
+-			const char *probe_name = "raw_tracepoint/sys_enter";
+-			const char *file = "test_ns_current_pid_tgid.o";
+-			struct bpf_link *link = NULL;
+-			struct bpf_program *prog;
+-			struct bpf_map *bss_map;
+-			struct bpf_object *obj;
+-			int exit_code = 1;
+-			int err, key = 0;
+-			struct bss bss;
+-			struct stat st;
+-			__u64 id;
+-
+-			obj = bpf_object__open_file(file, NULL);
+-			if (CHECK_NEWNS(IS_ERR(obj), "obj_open", "err %ld\n", PTR_ERR(obj)))
+-				return exit_code;
+-
+-			err = bpf_object__load(obj);
+-			if (CHECK_NEWNS(err, "obj_load", "err %d errno %d\n", err, errno))
+-				goto cleanup;
+-
+-			bss_map = bpf_object__find_map_by_name(obj, "test_ns_.bss");
+-			if (CHECK_NEWNS(!bss_map, "find_bss_map", "failed\n"))
+-				goto cleanup;
+-
+-			prog = bpf_object__find_program_by_title(obj, probe_name);
+-			if (CHECK_NEWNS(!prog, "find_prog", "prog '%s' not found\n",
+-						probe_name))
+-				goto cleanup;
+-
+-			memset(&bss, 0, sizeof(bss));
+-			pid_t tid = syscall(SYS_gettid);
+-			pid_t pid = getpid();
+-
+-			id = (__u64) tid << 32 | pid;
+-			bss.user_pid_tgid = id;
+-
+-			if (CHECK_NEWNS(stat("/proc/self/ns/pid", &st),
+-				"stat new ns", "Failed to stat /proc/self/ns/pid errno=%d\n", errno))
+-				goto cleanup;
+-
+-			bss.dev = st.st_dev;
+-			bss.ino = st.st_ino;
+-
+-			err = bpf_map_update_elem(bpf_map__fd(bss_map), &key, &bss, 0);
+-			if (CHECK_NEWNS(err, "setting_bss", "failed to set bss : %d\n", err))
+-				goto cleanup;
+-
+-			link = bpf_program__attach_raw_tracepoint(prog, "sys_enter");
+-			if (CHECK_NEWNS(IS_ERR(link), "attach_raw_tp", "err %ld\n",
+-						PTR_ERR(link))) {
+-				link = NULL;
+-				goto cleanup;
+-			}
+-
+-			/* trigger some syscalls */
+-			usleep(1);
+-
+-			err = bpf_map_lookup_elem(bpf_map__fd(bss_map), &key, &bss);
+-			if (CHECK_NEWNS(err, "set_bss", "failed to get bss : %d\n", err))
+-				goto cleanup;
+-
+-			if (CHECK_NEWNS(id != bss.pid_tgid, "Compare user pid/tgid vs. bpf pid/tgid",
+-						"User pid/tgid %llu BPF pid/tgid %llu\n", id, bss.pid_tgid))
+-				goto cleanup;
+-
+-			exit_code = 0;
+-			printf("%s:PASS\n", argv[0]);
+-cleanup:
+-			if (!link) {
+-				bpf_link__destroy(link);
+-				link = NULL;
+-			}
+-			bpf_object__close(obj);
+-		}
+-	}
+-	return 0;
+-}
+-- 
+2.20.1
 
-No, I do not need it for any other reason, so I will simply free the
-requests in TFO queue.
-Thank you.
-
-
-> > > > ---8<---
-> > > > diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
-> > > > index a82fd4c912be..d0ddd3cb988b 100644
-> > > > --- a/net/ipv4/inet_connection_sock.c
-> > > > +++ b/net/ipv4/inet_connection_sock.c
-> > > > @@ -1001,6 +1001,29 @@ struct sock *inet_csk_reqsk_queue_add(struct sock *sk,
-> > > >  }
-> > > >  EXPORT_SYMBOL(inet_csk_reqsk_queue_add);
-> > > >  
-> > > > +static bool inet_csk_reqsk_queue_migrate(struct sock *sk, struct sock *nsk, struct request_sock *req)
-> > > > +{
-> > > > +       struct request_sock_queue *queue = &inet_csk(nsk)->icsk_accept_queue;
-> > > > +       bool migrated = false;
-> > > > +
-> > > > +       spin_lock(&queue->rskq_lock);
-> > > > +       if (likely(nsk->sk_state == TCP_LISTEN)) {
-> > > > +               migrated = true;
-> > > > +
-> > > > +               req->dl_next = NULL;
-> > > > +               if (queue->rskq_accept_head == NULL)
-> > > > +                       WRITE_ONCE(queue->rskq_accept_head, req);
-> > > > +               else
-> > > > +                       queue->rskq_accept_tail->dl_next = req;
-> > > > +               queue->rskq_accept_tail = req;
-> > > > +               sk_acceptq_added(nsk);
-> > > > +               inet_csk_reqsk_queue_migrated(sk, nsk, req);
-> > > need to first resolve the question raised in patch 5 regarding
-> > > to the update on req->rsk_listener though.
-> > 
-> > In the unhash path, it is also safe to call sock_put() for the old listner.
-> > 
-> > In inet_csk_listen_stop(), the sk_refcnt of the listener >= 1. If the
-> > listener does not have immature requests, sk_refcnt is 1 and freed in
-> > __tcp_close().
-> > 
-> >   sock_hold(sk) in __tcp_close()
-> >   sock_put(sk) in inet_csk_destroy_sock()
-> >   sock_put(sk) in __tcp_clsoe()
-> I don't see how it is different here than in patch 5.
-> I could be missing something.
-> 
-> Lets contd the discussion on the other thread (patch 5) first.
-
-The listening socket has two kinds of refcounts for itself(1) and
-requests(n). I think the listener has its own refcount at least in
-inet_csk_listen_stop(), so sock_put() here never free the listener.
