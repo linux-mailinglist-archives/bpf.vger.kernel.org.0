@@ -2,118 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7034E2D9786
-	for <lists+bpf@lfdr.de>; Mon, 14 Dec 2020 12:42:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 526542D97B8
+	for <lists+bpf@lfdr.de>; Mon, 14 Dec 2020 12:55:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727892AbgLNLjN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Dec 2020 06:39:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729649AbgLNLi7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Dec 2020 06:38:59 -0500
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DC89C0613D3
-        for <bpf@vger.kernel.org>; Mon, 14 Dec 2020 03:38:19 -0800 (PST)
-Received: by mail-qt1-x849.google.com with SMTP id b11so11496208qtj.11
-        for <bpf@vger.kernel.org>; Mon, 14 Dec 2020 03:38:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=uG9hUyn2l1hT7e+Msb6nBQLe6pVUc/Tidhzusbc3Z5E=;
-        b=ZTznCCQdNCgK7E2pAMIcNbbA7wJKQTUvxOpa22aA1+jPwk96Q6ybn5x0Hlewl1BV+M
-         rdm2A5IYo22MuIYm2ayvtprzP14QUHxfL2YaEuKws1KAxNUZKm+sb0p6O++oaRNlltYl
-         9fJru+O7IVxaWdY7nsTgVYiaano6f3uFs1K8qvLOEWXkwm1MrQjDj9azwrQIsONxou1C
-         HGAMcoq5m53BjAIoHoGl/dCrsQzpuCUhwTjSEklHB4K9EQb3Ly94fkYQy9fb8fUALq5w
-         od0leQyMDFwrwzbMMVf1xlNh1t4EPwBdnDZsw7MrtVu57cDs653DfJXbUMb1WPPrQh60
-         Qomg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=uG9hUyn2l1hT7e+Msb6nBQLe6pVUc/Tidhzusbc3Z5E=;
-        b=KtfvxV+wFWOUI9o+5/bxZcQ/tjHKOSGGDAcGnJPlXZ/66Lg6nwaOQDSRLSke9XeMNa
-         Jac0DOv7Yeed25m/CDFRyOa2DuRlkcFEy83/nft7ekbWxCXWCfn8FAu2T29lAQcaWGHu
-         RXMrcloGZ7kez9ooBdgbMXUTKcraQvnsqNlQrhR/SUpBGJ0dp1qnozLXHp4eOzeND8v1
-         P8mH4r240uBNi/nqHo+FAWhh9BixMG/sKQd7AurIGjN2IOdI9r33x63cmq5cozXuaQe0
-         ZCRZqbFPpzN+Xm++3BincuUjLO9kQdRZYUPonYG8q4uWx24PlnOfZGMG63fV5pOk5DrM
-         pnDQ==
-X-Gm-Message-State: AOAM533EV+fiCmNzAbu4g6EWNgGbLHwVC0TYQxz8CG0mDAw0CabJvIQc
-        f23Ydjry9/c9mJtbfRpl0hHLLTszZkYByTPqjM/Iw8N5mrY74mvExo7r3pWrGk8SXQUPC7EJI4F
-        UV/dAZQjd2rOlrXaMlaVE8ByDzmZ2QVyPwNhvF+WnxtH5w4DGHWBshkEicnfLDWc=
-X-Google-Smtp-Source: ABdhPJxHwGmlZQ28Xrpp+ClKhqzlEFvlg574xO6+LQM9eMJO9G054bEQyV8VMrMOXnK4L4JwkFMWXhYkqJ8pkQ==
-Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
-X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:11db])
- (user=jackmanb job=sendgmr) by 2002:a05:6214:302:: with SMTP id
- i2mr15763177qvu.14.1607945898242; Mon, 14 Dec 2020 03:38:18 -0800 (PST)
-Date:   Mon, 14 Dec 2020 11:38:12 +0000
-Message-Id: <20201214113812.305274-1-jackmanb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
-Subject: [PATCH bpf-next v2] libbpf: Expose libbpf ringbufer epoll_fd
-From:   Brendan Jackman <jackmanb@google.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-kernel@vger.kernel.org, Brendan Jackman <jackmanb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S2407325AbgLNLy0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Dec 2020 06:54:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56301 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2406208AbgLNLyY (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 14 Dec 2020 06:54:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1607946777;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=I46AtJGRfllTnbXs3tPtsbfpAVA6Q24/jlgqmeCMhmc=;
+        b=Nyvyqc0cmk5e2CobWamB4mZe8OMCWqszSkVY+DYvOZWlmas19B9q9XnPnlP9YdiuHkx+en
+        yx9WfQL40ym/Tp2BVPKWYx8BbdwIcs1m65zek+AWxCGYgpv7DoSXIn3h10T2yFtgsPOkim
+        W5XbbR1pedD1zCUxTJYp1emNOfcCHJs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-449-RKfSy3OmPcqm6Ek4MemKiA-1; Mon, 14 Dec 2020 06:52:54 -0500
+X-MC-Unique: RKfSy3OmPcqm6Ek4MemKiA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9165EEC1A0;
+        Mon, 14 Dec 2020 11:52:51 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.6])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4E5B71750D;
+        Mon, 14 Dec 2020 11:52:44 +0000 (UTC)
+Date:   Mon, 14 Dec 2020 12:52:42 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     sdf@google.com
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
+        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
+        colrack@gmail.com, brouer@redhat.com
+Subject: Re: [PATCH bpf-next V7 4/8] bpf: add BPF-helper for MTU checking
+Message-ID: <20201214125242.7cea3ecb@carbon>
+In-Reply-To: <X8ktpX/BYfiL0l2l@google.com>
+References: <160588903254.2817268.4861837335793475314.stgit@firesoul>
+        <160588910708.2817268.17750536562819017509.stgit@firesoul>
+        <X8ktpX/BYfiL0l2l@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This provides a convenient perf ringbuf -> libbpf ringbuf migration
-path for users of external polling systems. It is analogous to
-perf_buffer__epoll_fd.
+On Thu, 3 Dec 2020 10:25:41 -0800
+sdf@google.com wrote:
 
-Signed-off-by: Brendan Jackman <jackmanb@google.com>
----
-Difference from v1: Added entry to libbpf.map.
+> > +BPF_CALL_5(bpf_skb_check_mtu, struct sk_buff *, skb,
+> > +	   u32, ifindex, u32 *, mtu_len, s32, len_diff, u64, flags)
+> > +{
+> > +	int ret = BPF_MTU_CHK_RET_FRAG_NEEDED;
+> > +	struct net_device *dev = skb->dev;
+> > +	int len;
+> > +	int mtu;
+> > +
+> > +	if (flags & ~(BPF_MTU_CHK_SEGS))
+> > +		return -EINVAL;
+> > +
+> > +	dev = __dev_via_ifindex(dev, ifindex);
+> > +	if (!dev)
+> > +		return -ENODEV;
+> > +
+> > +	mtu = READ_ONCE(dev->mtu);
+> > +
+> > +	/* TC len is L2, remove L2-header as dev MTU is L3 size */  
+> 
+> [..]
+> > +	len = skb->len - ETH_HLEN;  
+> Any reason not to do s/ETH_HLEN/dev->hard_header_len/ (or min_header_len?)
+> thought this patch?
 
- tools/lib/bpf/libbpf.h   | 1 +
- tools/lib/bpf/libbpf.map | 1 +
- tools/lib/bpf/ringbuf.c  | 6 ++++++
- 3 files changed, 8 insertions(+)
+Will fix in V9.
 
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 6909ee81113a..cde07f64771e 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -536,6 +536,7 @@ LIBBPF_API int ring_buffer__add(struct ring_buffer *rb, int map_fd,
- 				ring_buffer_sample_fn sample_cb, void *ctx);
- LIBBPF_API int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms);
- LIBBPF_API int ring_buffer__consume(struct ring_buffer *rb);
-+LIBBPF_API int ring_buffer__epoll_fd(struct ring_buffer *rb);
+There is a very small (performance) overhead, but mostly because
+net_device struct layout have placed mtu and hard_header_len on
+different cache-lines. (This is something that should be fixed
+separately).
 
- /* Perf buffer APIs */
- struct perf_buffer;
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 7c4126542e2b..7be850271be6 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -348,4 +348,5 @@ LIBBPF_0.3.0 {
- 		btf__new_split;
- 		xsk_setup_xdp_prog;
- 		xsk_socket__update_xskmap;
-+                ring_buffer__epoll_fd;
- } LIBBPF_0.2.0;
-diff --git a/tools/lib/bpf/ringbuf.c b/tools/lib/bpf/ringbuf.c
-index 5c6522c89af1..45a36648b403 100644
---- a/tools/lib/bpf/ringbuf.c
-+++ b/tools/lib/bpf/ringbuf.c
-@@ -282,3 +282,9 @@ int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms)
- 	}
- 	return cnt < 0 ? -errno : res;
- }
-+
-+/* Get an fd that can be used to sleep until data is available in the ring(s) */
-+int ring_buffer__epoll_fd(struct ring_buffer *rb)
-+{
-+	return rb->epoll_fd;
-+}
-
-base-commit: b4fe9fec51ef48011f11c2da4099f0b530449c92
---
-2.29.2.576.ga3fc446d84-goog
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
