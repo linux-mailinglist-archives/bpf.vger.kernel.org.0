@@ -2,147 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61F9D2D982D
-	for <lists+bpf@lfdr.de>; Mon, 14 Dec 2020 13:43:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6B852D9935
+	for <lists+bpf@lfdr.de>; Mon, 14 Dec 2020 14:49:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731892AbgLNMmF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Dec 2020 07:42:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407536AbgLNMmA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Dec 2020 07:42:00 -0500
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A71C0613D6;
-        Mon, 14 Dec 2020 04:41:20 -0800 (PST)
-Received: by mail-oi1-x242.google.com with SMTP id w124so15820785oia.6;
-        Mon, 14 Dec 2020 04:41:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=m2RkTas+mrztpo0nvrh9n3aa0mWUkynQJjOL8sthHrw=;
-        b=GLSYa2r5q6IYpYf8oKScxiLuKWd75f/k4L5vu/XDxaGawTjPdkA2Yoa2ciNTk+v0C/
-         rEXLrDfHDcxp4P3IbinvSAiUjkcC8D2MKuoLHIpY/9tQRL47s6GiWPd4EC4eGdCnY8zT
-         ZK+bw4/qmmeF4h4feNyloz5qTPkJKeu2tGGGH3OJ0fb6YmsDN7a/KmOCsWrrpSkFXYYA
-         1KJZgj26gYTM2VQfS7gM/gNzXQgwhJ69LnQwuMAYcpySwBBRdr0INVgNnHHSjzshOGQd
-         1fj3pOhuD+IXKbyKuOTSap6mfzclXuNyXm/VeBatwlxQxMgcij8Krn6v6AgvZWxvftmB
-         6qsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=m2RkTas+mrztpo0nvrh9n3aa0mWUkynQJjOL8sthHrw=;
-        b=GqcYYwb2qGZ84kEmCUT3SD0bF7dcW5jyBTM0ijh3eySFliM5aSbYZHluPYoj2GN8jX
-         i+ZSpbrtuWnQix+fGeGaWJBn8k8Lk7MpItYB1EaCDyP4SoJ/mZIXc5of4D7K9e1AcPQF
-         5c4NdemyANX/S6b6gJRspg1GOjAdBUraQVW9fWqRku2eZB2r0+RrEHq6x1GCGn4Tk8Nn
-         v1t13t2nSJpp64RVJ5CQAbKWkVpoQnba2yGJwSWOsWDit4PXoEYZRVDz0KDoF1nAD3NN
-         zNIJfMftvxVSWbf/du0BGdDcWJc0QJ0bWyXJAh+h2ZLG8a851lA0drUbGv29V2T+TOxV
-         lZqw==
-X-Gm-Message-State: AOAM533UFwMyDV6+6HN4Jhs081OeOIlXYw1OoDmRxw8fM2cUgbR6vo0L
-        5btjzeoSoUOqY5PY4Xns0j/TKNc+c6MBfqIfIbZdOhecpup4WgQl
-X-Google-Smtp-Source: ABdhPJxFOW5VJfyzwz2FBd7/y8Sk12CHl6mL5R3UzZlcIyHjyoch3OUBX9bPtu4G5w/rfHeJZHBJaXjt7xkrt4bssi0=
-X-Received: by 2002:a17:90a:fcc:: with SMTP id 70mr24362585pjz.168.1607949217359;
- Mon, 14 Dec 2020 04:33:37 -0800 (PST)
+        id S2438166AbgLNNsI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Dec 2020 08:48:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38284 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2406099AbgLNNoM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Dec 2020 08:44:12 -0500
+Date:   Mon, 14 Dec 2020 10:43:43 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1607953411;
+        bh=7H1l/OZXZjWrQ4sxxJQS8JEP7T6y9WpDSART6dvQ+ec=;
+        h=From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Dt3ebbQmuaupJqAtbUX9FNX4haD7prTtABSBFu6mzjI8iVMjT0wPi4zyF1b2zQ/4a
+         bsiTmFZF1e9Km+/bM65wG3tJRTKXvlkXuf8lv8xq7APMH71xGeOUmGig4WgxlqMdwX
+         WNJaK8WN4c0LrRAstBNE9V/qgj94HW63E99gbSXZy9RMQlRn85uEimBwCOw1MONaJD
+         clEgEYCgwtsSxjwRCwljRqJ0YNsicAO+Pff4u4jmNDKVuBXSAWhC7KK8rkupmVqY96
+         ZAB0kZgIOhuFDl1XlC9RpuJVJ17PHJ5UtNJux+aZ15JX5kKBXCKmI3x3CRi1GHvA9C
+         YDS9Ezg3tPycA==
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, dwarves@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@fb.com,
+        Hao Luo <haoluo@google.com>
+Subject: Re: [PATCH dwarves 0/2] Fix pahole to emit kernel module BTF
+ variables
+Message-ID: <20201214134343.GF238399@kernel.org>
+References: <20201211041139.589692-1-andrii@kernel.org>
+ <20201213202757.GA482741@krava>
 MIME-Version: 1.0
-References: <20201214085127.3960-1-magnus.karlsson@gmail.com>
- <20201214110957.GA11487@ranger.igk.intel.com> <CAJ8uoz1khf8mQCRxCmAFu7q+HasAsaP0tG_5x38=NQq+BAUbAg@mail.gmail.com>
-In-Reply-To: <CAJ8uoz1khf8mQCRxCmAFu7q+HasAsaP0tG_5x38=NQq+BAUbAg@mail.gmail.com>
-From:   "magnus.karlsson" <magnus.karlsson@gmail.com>
-Date:   Mon, 14 Dec 2020 13:33:26 +0100
-Message-ID: <CAJ8uoz0Mhmc7oW=T54p-bE-fa=m6YR69UVuVFhFWgATDVk1U_g@mail.gmail.com>
-Subject: Re: [PATCH bpf] xsk: fix memory leak for failed bind
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        syzbot+cfa88ddd0655afa88763@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201213202757.GA482741@krava>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 12:33 PM Magnus Karlsson
-<magnus.karlsson@gmail.com> wrote:
->
-> On Mon, Dec 14, 2020 at 12:19 PM Maciej Fijalkowski
-> <maciej.fijalkowski@intel.com> wrote:
-> >
-> > On Mon, Dec 14, 2020 at 09:51:27AM +0100, Magnus Karlsson wrote:
-> > > From: Magnus Karlsson <magnus.karlsson@intel.com>
-> > >
-> > > Fix a possible memory leak when a bind of an AF_XDP socket fails. When
-> > > the fill and completion rings are created, they are tied to the
-> > > socket. But when the buffer pool is later created at bind time, the
-> > > ownership of these two rings are transferred to the buffer pool as
-> > > they might be shared between sockets (and the buffer pool cannot be
-> > > created until we know what we are binding to). So, before the buffer
-> > > pool is created, these two rings are cleaned up with the socket, and
-> > > after they have been transferred they are cleaned up together with
-> > > the buffer pool.
-> > >
-> > > The problem is that ownership was transferred before it was absolutely
-> > > certain that the buffer pool could be created and initialized
-> > > correctly and when one of these errors occurred, the fill and
-> > > completion rings did neither belong to the socket nor the pool and
-> > > where therefore leaked. Solve this by moving the ownership transfer
-> > > to the point where the buffer pool has been completely set up and
-> > > there is no way it can fail.
-> > >
-> > > Fixes: 7361f9c3d719 ("xsk: Move fill and completion rings to buffer pool")
-> > > Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> > > Reported-by: syzbot+cfa88ddd0655afa88763@syzkaller.appspotmail.com
-> > > ---
-> > >  net/xdp/xsk.c           | 4 ++++
-> > >  net/xdp/xsk_buff_pool.c | 2 --
-> > >  2 files changed, 4 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> > > index 62504471fd20..189cfbbcccc0 100644
-> > > --- a/net/xdp/xsk.c
-> > > +++ b/net/xdp/xsk.c
-> > > @@ -772,6 +772,10 @@ static int xsk_bind(struct socket *sock, struct sockaddr *addr, int addr_len)
-> > >               }
-> > >       }
-> > >
-> > > +     /* FQ and CQ are now owned by the buffer pool and cleaned up with it. */
-> > > +     xs->fq_tmp = NULL;
-> > > +     xs->cq_tmp = NULL;
-> > > +
-> > >       xs->dev = dev;
-> > >       xs->zc = xs->umem->zc;
-> > >       xs->queue_id = qid;
-> > > diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
-> > > index d5adeee9d5d9..46c2ae7d91d1 100644
-> > > --- a/net/xdp/xsk_buff_pool.c
-> > > +++ b/net/xdp/xsk_buff_pool.c
-> > > @@ -75,8 +75,6 @@ struct xsk_buff_pool *xp_create_and_assign_umem(struct xdp_sock *xs,
-> > >
-> > >       pool->fq = xs->fq_tmp;
-> > >       pool->cq = xs->cq_tmp;
-> > > -     xs->fq_tmp = NULL;
-> > > -     xs->cq_tmp = NULL;
-> >
-> > Given this change, are there any circumstances that we could hit
-> > xsk_release with xs->{f,c}q_tmp != NULL ?
->
-> Yes, if the user has not registered any fill or completion ring and
-> the socket is torn down.
+Em Sun, Dec 13, 2020 at 09:27:57PM +0100, Jiri Olsa escreveu:
+> On Thu, Dec 10, 2020 at 08:11:36PM -0800, Andrii Nakryiko wrote:
+> > Two bug fixes to make pahole emit correct kernel module BTF variable
+> > information.
+> > 
+> > Cc: Hao Luo <haoluo@google.com>
+> > Cc: Jiri Olsa <jolsa@redhat.com>
+> > 
+> > Andrii Nakryiko (2):
+> >   btf_encoder: fix BTF variable generation for kernel modules
+> >   btf_encoder: fix skipping per-CPU variables at offset 0
+> 
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-Sorry Maciej. I answered the inverse of your question, i.e. == NULL.
-For != NULL answer:
+Thanks, applied.
 
-Yes, this is possible if the user registers a fill ring and/or
-completion ring but does not bind and then closes the socket.
+- Arnaldo
 
-> > >
-> > >       for (i = 0; i < pool->free_heads_cnt; i++) {
-> > >               xskb = &pool->heads[i];
-> > >
-> > > base-commit: d9838b1d39283c1200c13f9076474c7624b8ec34
-> > > --
-> > > 2.29.0
-> > >
