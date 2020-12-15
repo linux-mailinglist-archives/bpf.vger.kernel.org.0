@@ -2,322 +2,381 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17EC82DB4A3
-	for <lists+bpf@lfdr.de>; Tue, 15 Dec 2020 20:48:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E0272DB4DE
+	for <lists+bpf@lfdr.de>; Tue, 15 Dec 2020 21:09:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726882AbgLOTr3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Dec 2020 14:47:29 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:9404 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726266AbgLOTr3 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 15 Dec 2020 14:47:29 -0500
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BFJixOB015964;
-        Tue, 15 Dec 2020 11:46:34 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=diHpSS9oTYuwutnnVW6tIdNr5lDuw7B+CKs4X5hfZUE=;
- b=p1SDBi44kTMnd5R4geLrlAVeqZeRBJGUjtORJivGbacJMroX7o+RpWcZjO2j5hZdzjSk
- PKsH3PRuDpTCBnxk1i71+LSn8dc5LfQAOa0MWN8h2vSFfen+tJLaFajRk2y2puFdVA7+
- befhoj09e5JSQD40tkxrKn4Igr5Xce/2yaA= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 35eypshpuc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 15 Dec 2020 11:46:33 -0800
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 15 Dec 2020 11:46:32 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TIm1vHuKLR8OtMTLdkYMM/FAglXBzXVo/Jx1q91OIczJjDfBLSffGn+daeANSToe9JTfFHxpHWUsQODLGeNfUtwsdvqNsx7cuXskD5SS2jSFisZoxNo9rk0V5OkTxqTxE7IC7DL+4zbe4kZIK2PhSgc36Mm+eg1a7FpUOkjT3bRk8spVHIjXRU06T1355PNgauYfJ94w+dN+7fhaVCzDMY+qGSr7YKDajWjYZTvc0RJC84Ws/c+6bncoWjjhY0N3qRtddqTL4GE1w+S2fwxt7J7zgHrj/OSXXAaVZzj+rGaFZLiZRUI/5mzHk8HKjxkWgD9+Kn8Xbj7B863nY7DgfA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=diHpSS9oTYuwutnnVW6tIdNr5lDuw7B+CKs4X5hfZUE=;
- b=TZMUv96uhsjWKvNF5uvjaMHvZpoJOYrCh8kQV2WOVfxCNsPKj72eZwnOgBIslNH7ISal81E+HRhISK9cH0WqHHnxXAcGrfLzIjtRuMG7dR8lyMlzVtFaslteLWxDqfNczIxuyjJvdA0hEons9pOqCAPjP9OBnfZggcBg63+5gaodl/78qj6x9cxVkk0eoIh42Krp3AdEKBRESYfcd195lOvUAsdLV8tqPeroeuckC9to0Hw+SXCi4uOQBvzJB+lrAjfTSQcqvnEXh2gBqlU/Ail0MYrFBktIh5gGAR9OMIzLJYducc12PH18M56sg/Wd8XxoI9C9Af/oqOumf/8Z+A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=diHpSS9oTYuwutnnVW6tIdNr5lDuw7B+CKs4X5hfZUE=;
- b=Vxq30ngUvNGNz5MiQ9rtmiPConcpYsxsqRhbMDGn2hycPPJ9kmIkO8X6tyJFfuv+eR/1ggQpmlV4wXkrwkV0JKyMwYjwE6dD01tPDX0RxNtm3vlowDb1rIQYi8XGxNZNvAWXzawfauQWnHytKCx4O9r8y9xRvrN6PNmjNaZN5fk=
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB2824.namprd15.prod.outlook.com (2603:10b6:a03:158::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Tue, 15 Dec
- 2020 19:46:28 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3654.025; Tue, 15 Dec 2020
- 19:46:28 +0000
-Subject: Re: [PATCH bpf-next 1/4] bpf: introduce task_vma bpf_iter
-To:     Song Liu <songliubraving@fb.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
-        <kernel-team@fb.com>
-References: <20201212024810.807616-1-songliubraving@fb.com>
- <20201212024810.807616-2-songliubraving@fb.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <4e3d3931-1877-ea75-acde-313ab1537531@fb.com>
-Date:   Tue, 15 Dec 2020 11:46:25 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.1
-In-Reply-To: <20201212024810.807616-2-songliubraving@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2620:10d:c090:400::5:e381]
-X-ClientProxiedBy: CO2PR05CA0094.namprd05.prod.outlook.com
- (2603:10b6:104:1::20) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+        id S1727685AbgLOUHV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Dec 2020 15:07:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729708AbgLOUHO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Dec 2020 15:07:14 -0500
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD25C0617A7;
+        Tue, 15 Dec 2020 12:06:34 -0800 (PST)
+Received: by mail-pl1-x644.google.com with SMTP id x18so5526362pln.6;
+        Tue, 15 Dec 2020 12:06:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Pvv5kkhs+So6EgNluwcpWgvWL/vtGO25MTwQWZ5vynQ=;
+        b=TwttiP8iTZL0wyHv1mnogQtaCJHzX5mYGz2FNbVDlh38Qk9Nrtaaw/4qdbpwAN3UAq
+         e6I3/RA5oYchl3A2l0PIHOGVaBTiWSA46CQVM8t/10cggpDD2NPJLjoHjYwCwKKQvlZ8
+         1lWv9TCMIXVXx5BSU+cPeq/easBi3g7P15Hh0VzaY5Jif+AVfrXcOowze1Y7x34Z+9+J
+         pTxXUNtk8syBw5q4RAJwM25DIw04z+ASiBMzXmO1Lw19gDzjxoH95lwTMtGPWM4yWxUF
+         +XyaTaBjod1dScBNz0RCjbMMG3UQ52GAQGkfbhjWPmQ871R0s9te6NTwSNbx1Zno8ifj
+         YZAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Pvv5kkhs+So6EgNluwcpWgvWL/vtGO25MTwQWZ5vynQ=;
+        b=fRV770dPhuNmJcvsY1fxaD1zhVcCD8u0HWlQURthE5FG+0mPGhtqXhsI8kj/6ez36O
+         nzwoU3fVDu+9c2hbW8MvUW3H62GvbK4NSvogMj64Bh7bJBve1st66ARv2cpgAnRI1ddZ
+         iB5ti5ZR5pjpH+BqNGYVbObYiRn8tz0LOdUyzZNT08EtWYEw6KV6NNBG20uzpYpZm+hs
+         8R/o62gQTBHfF+92I84tL8889AVxz6VyzU+cLiD9fjOZtpfLV0LTNdJlXQbEMf6mG8uX
+         jmTISqhlUWDD5tLw4CBnXmT8nNaf7xZkW49Q8qneYHr9th9O5Aecd7K/EKjyarn82tlM
+         ZqkQ==
+X-Gm-Message-State: AOAM533TMIa1pvQv1nFJtb5u7frp4jEWL+F1kdAr34aqMeKov6fXxT9/
+        v0xJUT0aZtrE6LPW492D71fSL3oTbyyY10/HK2k=
+X-Google-Smtp-Source: ABdhPJwc5UPFXKvROl577pCIPH1HgOufjMeDAI7H/2VERDl1NPXz7LqFEc/6OlgsR4dHlnswRTOw4PyEsNgSJzij1Mo=
+X-Received: by 2002:a17:90a:ae13:: with SMTP id t19mr519721pjq.52.1608062793385;
+ Tue, 15 Dec 2020 12:06:33 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21e8::112b] (2620:10d:c090:400::5:e381) by CO2PR05CA0094.namprd05.prod.outlook.com (2603:10b6:104:1::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.13 via Frontend Transport; Tue, 15 Dec 2020 19:46:27 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 36e0a3d3-03a3-48b5-b6b3-08d8a1321d1b
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2824:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB28249165800D101D42C5442DD3C60@BYAPR15MB2824.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tmpZgMWbPcQUYptiM/JPyOpw6N8/wKS8eFu4R2yFBe68Zyb3Tiqv8ZapnJzZkayTw3xss+kungQsXO4AInRww+pW8Pq3TuTovo0Ao0zOnEgmRLK/+zvsrLt0thLKiKWaLCMbUm06RXr3DtA9p81TKTfom9EENAxpf5aiOK549EmZrli14WypDPaAGeCkX66BOfd9e4WfqnY1XCdmGrC3lKOp6bSQAc/Jtue1XstB6cCOO0Uf4/JKiQDaSsB1HdlMU9wm9RyfbSAawgWZUk8NJ2iF47ZGF+h35fMyHyvKEMSv4LA1KSn5LTEa/Ajmqtqd0YLscXSl/qvWHfgm+mG2wVHHyIGkT7LzxqoeWxMG81sVlaT6dGlBg7YLikbLZHUu/qe2DK6T/0DOCvuAvHcH1Wa6iKMNntA1uQ+GMmzCf2c=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(39860400002)(346002)(376002)(366004)(8936002)(53546011)(186003)(478600001)(4326008)(6486002)(316002)(2906002)(5660300002)(16526019)(2616005)(31696002)(86362001)(66556008)(8676002)(36756003)(31686004)(83380400001)(52116002)(66476007)(66946007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?eUJKby93ZlMxdm5aUjN3b0g4aU1MV0hCK0xETGRDYmdlTTBWRzMzNGVnVzkz?=
- =?utf-8?B?TERrUVZETjZaMUJGc1NYR0xVYmNYcU5uRTRmeU1LWXFhOTdHUkh2RGFtRWxi?=
- =?utf-8?B?QXZsbTJkNW1VWnJ3eTVyb3BBcW9iRzRTRHorZmNEMWh3cXF4dWdYK1dWNFha?=
- =?utf-8?B?cjFJbUd2bk9pMW0vdkN0cHB4ZjFGOW1CTU9yOGhMMmZNcTFPUUZFMms4RVpp?=
- =?utf-8?B?ZnZMMHE2cmN2MW1mMk1OTEdTSVRCVElmUWVjWnkzc01ueXJuZnVCRHd3NStU?=
- =?utf-8?B?eFdESzEwUWovY09scUR6WFU2OWw5R2RrbjZJdDV3N3VKNEQxeC83cklQczBC?=
- =?utf-8?B?TUFaSGkwaFN5ZTRXYzFZOVpmVjBnTG0rR3V3aG9vcjVZY0VQTHdMZUVmMGcw?=
- =?utf-8?B?Z0VIbUo3R0hxaTVwQ2tyYUpuMmRVNVNXeWFWZ0EvRHlBS2tIZHU5eW53dlY3?=
- =?utf-8?B?M2RqVjRVLzI5ZVp4OTFIcVhGMWxrYTMxckJqd09RR1RZMkQ3NUJyWTJuN3Ay?=
- =?utf-8?B?ZlhsTUpYVlZBK0xzMWZUc3czRUk4aFI5OXIwdDc1YzNSNnBhb0RjQXRjS0h0?=
- =?utf-8?B?OGN3bGF5eDI2cVV6cWFiRXBCeHJ2UGI3bGQwU1AzclRNWm9oZ0x3UXJPaVg2?=
- =?utf-8?B?a1poNE94STRxVWU3REFEdlg3MTlYL0w1YnVVM1UrRTc0aGxwd25QN0gwMDhr?=
- =?utf-8?B?aWc0ZXhua0JMSWR4S05Nb2Nhem9SZk1vUGFrTy9LM0EydENrMG9QdFBtV0pS?=
- =?utf-8?B?KzdDS0xROVMrTFdSZnpLYXF4Q1pWRTcwL3hQWEVqR1JvWVlhQmo0NHFyNkUz?=
- =?utf-8?B?Ukl1NkR2QlB3RUdwdjRtZ2k1SlFwZ1g2SytYaTIrSmdHMGZha2w4Tm5acTY3?=
- =?utf-8?B?cFRZZ3NTN2tEOTVmK25FSDBhT1VGUzdYQkQ2ZTNUTk5PbTBXcjFiRmVKT0lu?=
- =?utf-8?B?QTFaZkVXRGk4b1VYa29mT1ZadVJEWFFKUnFmbUtIOTd0NHdCRVgzK2d6citS?=
- =?utf-8?B?Q1ZyendSWEFxNzczMXp3NmJPMk5iYWpwMVl3NmJML1d4c2x6djE5VzFBSnlk?=
- =?utf-8?B?Ym5qdExNRVRQdTVTZ2hleDRJdU01dURqMWp3R2x0dXJoU1JiTUdZSWcyN2dC?=
- =?utf-8?B?QUxjQ2k4V29LSE5sUDlROTJTRGlVTm91eHRPSGg0ZTNTbE8xRTNZNUMyTlN2?=
- =?utf-8?B?VWh0MWwwM0g3dFNjTHFsNlMyTzhVZDZIbFVnQTlBYXQ1UWhxaFVSdTBKZGI1?=
- =?utf-8?B?YkorL25PRnlqcmx4MHZoTll0U1dWcktGbUNRaEhPTXNYUFdrVExpczZBY2I4?=
- =?utf-8?B?QUNtS2Zhd1htTnFkcG9xS0hFVlM4VU4yd25yamM4T3ByMkNRVkJOcXVYYXRL?=
- =?utf-8?B?T1lXNEdqQnVLQVE9PQ==?=
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2020 19:46:28.0468
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-Network-Message-Id: 36e0a3d3-03a3-48b5-b6b3-08d8a1321d1b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Cm6BWnntiH53voDWw3xPyef4B63XG2KYGU6sgPTYZM8wsfRmYTPRxnIxd5HNzNzs
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2824
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-15_12:2020-12-15,2020-12-15 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- phishscore=0 spamscore=0 clxscore=1015 suspectscore=0 adultscore=0
- impostorscore=0 lowpriorityscore=0 mlxscore=0 bulkscore=0 mlxlogscore=999
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012150132
-X-FB-Internal: deliver
+References: <20201214201118.148126-1-xiyou.wangcong@gmail.com>
+ <20201214201118.148126-3-xiyou.wangcong@gmail.com> <CAEf4BzZa15kMT+xEO9ZBmS-1=E85+k02zeddx+a_N_9+MOLhkQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzZa15kMT+xEO9ZBmS-1=E85+k02zeddx+a_N_9+MOLhkQ@mail.gmail.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Tue, 15 Dec 2020 12:06:22 -0800
+Message-ID: <CAM_iQpVR_owLgZp1tYJyfWco-s4ov_ytL6iisg3NmtyPBdbO2Q@mail.gmail.com>
+Subject: Re: [Patch bpf-next v2 2/5] bpf: introduce timeout map
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dongdong Wang <wangdongdong.6@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Tue, Dec 15, 2020 at 11:27 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Mon, Dec 14, 2020 at 12:17 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+> >
+> > From: Cong Wang <cong.wang@bytedance.com>
+> >
+> > This borrows the idea from conntrack and will be used for conntrack in
+> > bpf too. Each element in a timeout map has a user-specified timeout
+> > in secs, after it expires it will be automatically removed from the map.
+> >
+> > There are two cases here:
+> >
+> > 1. When the timeout map is idle, that is, no one updates or accesses it,
+> >    we rely on the idle work to scan the whole hash table and remove
+> >    these expired. The idle work is scheduled every 1 sec.
+>
+> Would 1 second be a good period for a lot of cases? Probably would be
+> good to expand on what went into this decision.
+
+Sure, because our granularity is 1 sec, I will add it into changelog.
+
+>
+> >
+> > 2. When the timeout map is actively accessed, we could reach expired
+> >    elements before the idle work kicks in, we can simply skip them and
+> >    schedule another work to do the actual removal work. We avoid taking
+> >    locks on fast path.
+> >
+> > The timeout of each element can be set or updated via bpf_map_update_elem()
+> > and we reuse the upper 32-bit of the 64-bit flag for the timeout value.
+> >
+> > Cc: Alexei Starovoitov <ast@kernel.org>
+> > Cc: Daniel Borkmann <daniel@iogearbox.net>
+> > Cc: Dongdong Wang <wangdongdong.6@bytedance.com>
+> > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> > ---
+> >  include/linux/bpf_types.h      |   1 +
+> >  include/uapi/linux/bpf.h       |   3 +-
+> >  kernel/bpf/hashtab.c           | 244 ++++++++++++++++++++++++++++++++-
+> >  kernel/bpf/syscall.c           |   3 +-
+> >  tools/include/uapi/linux/bpf.h |   1 +
+> >  5 files changed, 248 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
+> > index 99f7fd657d87..00a3b17b6af2 100644
+> > --- a/include/linux/bpf_types.h
+> > +++ b/include/linux/bpf_types.h
+> > @@ -125,6 +125,7 @@ BPF_MAP_TYPE(BPF_MAP_TYPE_STACK, stack_map_ops)
+> >  BPF_MAP_TYPE(BPF_MAP_TYPE_STRUCT_OPS, bpf_struct_ops_map_ops)
+> >  #endif
+> >  BPF_MAP_TYPE(BPF_MAP_TYPE_RINGBUF, ringbuf_map_ops)
+> > +BPF_MAP_TYPE(BPF_MAP_TYPE_TIMEOUT_HASH, htab_timeout_map_ops)
+> >
+> >  BPF_LINK_TYPE(BPF_LINK_TYPE_RAW_TRACEPOINT, raw_tracepoint)
+> >  BPF_LINK_TYPE(BPF_LINK_TYPE_TRACING, tracing)
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index 30b477a26482..dedb47bc3f52 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -158,6 +158,7 @@ enum bpf_map_type {
+> >         BPF_MAP_TYPE_RINGBUF,
+> >         BPF_MAP_TYPE_INODE_STORAGE,
+> >         BPF_MAP_TYPE_TASK_STORAGE,
+> > +       BPF_MAP_TYPE_TIMEOUT_HASH,
+> >  };
+> >
+> >  /* Note that tracing related programs such as
+> > @@ -393,7 +394,7 @@ enum bpf_link_type {
+> >   */
+> >  #define BPF_PSEUDO_CALL                1
+> >
+> > -/* flags for BPF_MAP_UPDATE_ELEM command */
+> > +/* flags for BPF_MAP_UPDATE_ELEM command, upper 32 bits are timeout */
+>
+> timeout in what units of time?
+
+1 sec, should I also add it in this comment (and everywhere else)?
+
+>
+> >  enum {
+> >         BPF_ANY         = 0, /* create new element or update existing */
+> >         BPF_NOEXIST     = 1, /* create new element if it didn't exist */
+> > diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+> > index f0b7b54fa3a8..178cb376c397 100644
+> > --- a/kernel/bpf/hashtab.c
+> > +++ b/kernel/bpf/hashtab.c
+> > @@ -8,6 +8,8 @@
+> >  #include <linux/filter.h>
+> >  #include <linux/rculist_nulls.h>
+> >  #include <linux/random.h>
+> > +#include <linux/llist.h>
+> > +#include <linux/workqueue.h>
+> >  #include <uapi/linux/btf.h>
+> >  #include <linux/rcupdate_trace.h>
+> >  #include "percpu_freelist.h"
+> > @@ -84,6 +86,8 @@ struct bucket {
+> >                 raw_spinlock_t raw_lock;
+> >                 spinlock_t     lock;
+> >         };
+> > +       struct llist_node gc_node;
+> > +       atomic_t pending;
+>
+> HASH is an extremely frequently used type of map, and oftentimes with
+> a lot of entries/buckets. I don't think users of normal
+> BPF_MAP_TYPE_HASH should pay the price of way more niche hashmap with
+> timeouts. So I think it's not appropriate to increase the size of the
+> struct bucket here.
+
+I understand that, but what's a better way to do this? I can wrap it up
+on top of struct bucket for sure, but it would need to change a lot of code.
+So, basically code reuse vs. struct bucket size increase. ;)
+
+>
+> >  };
+> >
+> >  #define HASHTAB_MAP_LOCK_COUNT 8
+> > @@ -104,6 +108,9 @@ struct bpf_htab {
+> >         u32 hashrnd;
+> >         struct lock_class_key lockdep_key;
+> >         int __percpu *map_locked[HASHTAB_MAP_LOCK_COUNT];
+> > +       struct llist_head gc_list;
+> > +       struct work_struct gc_work;
+> > +       struct delayed_work gc_idle_work;
+> >  };
+> >
+> >  /* each htab element is struct htab_elem + key + value */
+> > @@ -124,6 +131,7 @@ struct htab_elem {
+> >                 struct bpf_lru_node lru_node;
+> >         };
+> >         u32 hash;
+> > +       u64 expires;
+>
+> time units? and similar concerns about wasting a lot of added memory
+> for not benefit to HASH users.
+
+'expires' is in jiffies, I can add a comment here if necessary.
+
+Similarly, please suggest how to expand struct htab_elem without changing
+a lot of code. I also tried to find some hole in the struct, but I
+couldn't, so I
+ran out of ideas here.
+
+>
+> >         char key[] __aligned(8);
+> >  };
+> >
+> > @@ -143,6 +151,7 @@ static void htab_init_buckets(struct bpf_htab *htab)
+> >
+> >         for (i = 0; i < htab->n_buckets; i++) {
+> >                 INIT_HLIST_NULLS_HEAD(&htab->buckets[i].head, i);
+> > +               atomic_set(&htab->buckets[i].pending, 0);
+> >                 if (htab_use_raw_lock(htab)) {
+> >                         raw_spin_lock_init(&htab->buckets[i].raw_lock);
+> >                         lockdep_set_class(&htab->buckets[i].raw_lock,
+> > @@ -431,6 +440,14 @@ static int htab_map_alloc_check(union bpf_attr *attr)
+> >         return 0;
+> >  }
+> >
+> > +static void htab_sched_gc(struct bpf_htab *htab, struct bucket *b)
+> > +{
+> > +       if (atomic_fetch_or(1, &b->pending))
+> > +               return;
+> > +       llist_add(&b->gc_node, &htab->gc_list);
+> > +       queue_work(system_unbound_wq, &htab->gc_work);
+> > +}
+>
+> I'm concerned about each bucket being scheduled individually... And
+> similarly concerned that each instance of TIMEOUT_HASH will do its own
+> scheduling independently. Can you think about the way to have a
+> "global" gc/purging logic, and just make sure that buckets that need
+> processing would be just internally chained together. So the purging
+> routing would iterate all the scheduled hashmaps, and within each it
+> will have a linked list of buckets that need processing? And all that
+> is done just once each GC period. Not N times for N maps or N*M times
+> for N maps with M buckets in each.
+
+Our internal discussion went to the opposite actually, people here argued
+one work is not sufficient for a hashtable because there would be millions
+of entries (max_entries, which is also number of buckets). ;)
+
+I chose one work per hash table because we could use map-in-map to divide
+the millions of entries.
+
+So, this really depends on how many maps and how many buckets in each
+map. I tend to leave this as it is, because there is no way to satisfy
+all of the
+cases.
+
+>
+> > +
+> >  static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+> >  {
+> >         bool percpu = (attr->map_type == BPF_MAP_TYPE_PERCPU_HASH ||
+> > @@ -732,10 +749,13 @@ static bool htab_lru_map_delete_node(void *arg, struct bpf_lru_node *node)
+> >  static int htab_map_get_next_key(struct bpf_map *map, void *key, void *next_key)
+> >  {
+> >         struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
+> > +       bool is_timeout = map->map_type == BPF_MAP_TYPE_TIMEOUT_HASH;
+> >         struct hlist_nulls_head *head;
+> >         struct htab_elem *l, *next_l;
+> >         u32 hash, key_size;
+> > +       struct bucket *b;
+> >         int i = 0;
+> > +       u64 now;
+> >
+> >         WARN_ON_ONCE(!rcu_read_lock_held());
+> >
+> > @@ -746,7 +766,8 @@ static int htab_map_get_next_key(struct bpf_map *map, void *key, void *next_key)
+> >
+> >         hash = htab_map_hash(key, key_size, htab->hashrnd);
+> >
+> > -       head = select_bucket(htab, hash);
+> > +       b = __select_bucket(htab, hash);
+> > +       head = &b->head;
+> >
+> >         /* lookup the key */
+> >         l = lookup_nulls_elem_raw(head, hash, key, key_size, htab->n_buckets);
+> > @@ -759,6 +780,13 @@ static int htab_map_get_next_key(struct bpf_map *map, void *key, void *next_key)
+> >                                   struct htab_elem, hash_node);
+> >
+> >         if (next_l) {
+> > +               if (is_timeout) {
+> > +                       now = get_jiffies_64();
+> > +                       if (time_after_eq64(now, next_l->expires)) {
+> > +                               htab_sched_gc(htab, b);
+> > +                               goto find_first_elem;
+> > +                       }
+> > +               }
+>
+> this piece of logic is repeated verbatim many times, seems like a
+> helper function would make sense here
+
+Except goto or continue, isn't it? ;) Please do share your ideas on
+how to make it a helper for both goto and continue.
 
 
-On 12/11/20 6:48 PM, Song Liu wrote:
-> Introduce task_vma bpf_iter to print memory information of a process. It
-> can be used to print customized information similar to /proc/<pid>/maps.
-> 
-> task_vma iterator releases mmap_lock before calling the BPF program.
-> Therefore, we cannot pass vm_area_struct directly to the BPF program. A
-> new __vm_area_struct is introduced to keep key information of a vma. On
-> each iteration, task_vma gathers information in __vm_area_struct and
-> passes it to the BPF program.
-> 
-> If the vma maps to a file, task_vma also holds a reference to the file
-> while calling the BPF program.
-> 
-> Signed-off-by: Song Liu <songliubraving@fb.com>
-> ---
->   include/linux/bpf.h      |   2 +-
->   include/uapi/linux/bpf.h |   7 ++
->   kernel/bpf/task_iter.c   | 193 ++++++++++++++++++++++++++++++++++++++-
->   3 files changed, 200 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 07cb5d15e7439..49dd1e29c8118 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1325,7 +1325,7 @@ enum bpf_iter_feature {
->   	BPF_ITER_RESCHED	= BIT(0),
->   };
->   
-> -#define BPF_ITER_CTX_ARG_MAX 2
-> +#define BPF_ITER_CTX_ARG_MAX 3
->   struct bpf_iter_reg {
->   	const char *target;
->   	bpf_iter_attach_target_t attach_target;
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 30b477a264827..c2db8a1d0cbd2 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -5151,4 +5151,11 @@ enum {
->   	BTF_F_ZERO	=	(1ULL << 3),
->   };
->   
-> +struct __vm_area_struct {
-> +	__u64 start;
-> +	__u64 end;
-> +	__u64 flags;
-> +	__u64 pgoff;
-> +};
-> +
->   #endif /* _UAPI__LINUX_BPF_H__ */
-> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-> index 0458a40edf10a..30e5475d0831e 100644
-> --- a/kernel/bpf/task_iter.c
-> +++ b/kernel/bpf/task_iter.c
-> @@ -304,9 +304,171 @@ static const struct seq_operations task_file_seq_ops = {
->   	.show	= task_file_seq_show,
->   };
->   
-> +struct bpf_iter_seq_task_vma_info {
-> +	/* The first field must be struct bpf_iter_seq_task_common.
-> +	 * this is assumed by {init, fini}_seq_pidns() callback functions.
-> +	 */
-> +	struct bpf_iter_seq_task_common common;
-> +	struct task_struct *task;
-> +	struct __vm_area_struct vma;
-> +	struct file *file;
-> +	u32 tid;
-> +};
-> +
-> +static struct __vm_area_struct *
-> +task_vma_seq_get_next(struct bpf_iter_seq_task_vma_info *info)
-> +{
-> +	struct pid_namespace *ns = info->common.ns;
-> +	struct task_struct *curr_task;
-> +	struct vm_area_struct *vma;
-> +	u32 curr_tid = info->tid;
-> +	bool new_task = false;
-> +
-> +	/* If this function returns a non-NULL vma, it held a reference to
+>
+> >                 /* if next elem in this hash list is non-zero, just return it */
+> >                 memcpy(next_key, next_l->key, key_size);
+> >                 return 0;
+> > @@ -771,12 +799,20 @@ static int htab_map_get_next_key(struct bpf_map *map, void *key, void *next_key)
+> >  find_first_elem:
+> >         /* iterate over buckets */
+> >         for (; i < htab->n_buckets; i++) {
+> > -               head = select_bucket(htab, i);
+> > +               b = __select_bucket(htab, i);
+> > +               head = &b->head;
+> >
+> >                 /* pick first element in the bucket */
+> >                 next_l = hlist_nulls_entry_safe(rcu_dereference_raw(hlist_nulls_first_rcu(head)),
+> >                                           struct htab_elem, hash_node);
+> >                 if (next_l) {
+> > +                       if (is_timeout) {
+> > +                               now = get_jiffies_64();
+> > +                               if (time_after_eq64(now, next_l->expires)) {
+> > +                                       htab_sched_gc(htab, b);
+> > +                                       continue;
+> > +                               }
+> > +                       }
+> >                         /* if it's not empty, just return it */
+> >                         memcpy(next_key, next_l->key, key_size);
+> >                         return 0;
+> > @@ -975,18 +1011,31 @@ static int check_flags(struct bpf_htab *htab, struct htab_elem *l_old,
+> >         return 0;
+> >  }
+> >
+> > +static u32 fetch_timeout(u64 *map_flags)
+> > +{
+> > +       u32 timeout = (*map_flags) >> 32;
+> > +
+> > +       *map_flags = (*map_flags) & 0xffffffff;
+> > +       return timeout;
+> > +}
+> > +
+> >  /* Called from syscall or from eBPF program */
+> >  static int htab_map_update_elem(struct bpf_map *map, void *key, void *value,
+> >                                 u64 map_flags)
+> >  {
+> >         struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
+> > +       bool timeout_map = map->map_type == BPF_MAP_TYPE_TIMEOUT_HASH;
+> >         struct htab_elem *l_new = NULL, *l_old;
+> >         struct hlist_nulls_head *head;
+> >         unsigned long flags;
+> >         struct bucket *b;
+> >         u32 key_size, hash;
+> > +       u32 timeout;
+> > +       u64 now;
+> >         int ret;
+> >
+> > +       timeout = fetch_timeout(&map_flags);
+> > +
+> >         if (unlikely((map_flags & ~BPF_F_LOCK) > BPF_EXIST))
+> >                 /* unknown flags */
+> >                 return -EINVAL;
+> > @@ -1042,6 +1091,10 @@ static int htab_map_update_elem(struct bpf_map *map, void *key, void *value,
+> >                 copy_map_value_locked(map,
+> >                                       l_old->key + round_up(key_size, 8),
+> >                                       value, false);
+> > +               if (timeout_map) {
+> > +                       now = get_jiffies_64();
+> > +                       l_old->expires = now + HZ * timeout;
+> > +               }
+>
+> Ok, so it seems timeout is at a second granularity. Would it make
+> sense to make it at millisecond granularity instead? I think
+> millisecond would be more powerful and allow more use cases, in the
+> long run. Micro- and nano-second granularity seems like an overkill,
+> though. And would reduce the max timeout to pretty small numbers. With
+> milliseconds, you still will get more than 23 days of timeout, which
+> seems to be plenty.
 
-the function does not return vma, it returns an internal data
-structure __vm_area_struct which captures some fields from vma.
+Sure if you want to pay the price of scheduling the work more often...
 
-> +	 * the task_struct. If info->file is non-NULL, it also holds a
-> +	 * reference to the file. Otherwise, it does not hold any
-> +	 * reference.
-> +	 */
-> +again:
-> +	if (info->task) {
-> +		curr_task = info->task;
-> +	} else {
-> +		curr_task = task_seq_get_next(ns, &curr_tid, true);
-> +		if (!curr_task) {
-> +			info->task = NULL;
+For our own use case, second is sufficient. What use case do you have
+for paying this price? I am happy to hear.
 
-adding "info->tid = curr_tid  + 1" so next read, e.g. after read()
-syscall return 0 read length, will start after last checked curr_tid.
-
-> +			return NULL;
-> +		}
-> +
-> +		if (curr_tid != info->tid) {
-> +			info->tid = curr_tid;
-> +			new_task = true;
-> +		}
-> +
-> +		if (!curr_task->mm)
-> +			goto next_task;
-> +		info->task = curr_task;
-> +	}
-> +
-> +	mmap_read_lock(curr_task->mm);
-> +	if (new_task) {
-> +		vma = curr_task->mm->mmap;
-> +	} else {
-> +		/* We drop the lock between each iteration, so it is
-> +		 * necessary to use find_vma() to find the next vma. This
-> +		 * is similar to the mechanism in show_smaps_rollup().
-> +		 */
-> +		vma = find_vma(curr_task->mm, info->vma.end - 1);
-> +		/* same vma as previous iteration, use vma->next */
-> +		if (vma && (vma->vm_start == info->vma.start))
-> +			vma = vma->vm_next;
-> +	}
-> +	if (!vma) {
-> +		mmap_read_unlock(curr_task->mm);
-> +		goto next_task;
-> +	}
-> +	info->task = curr_task;
-> +	info->vma.start = vma->vm_start;
-> +	info->vma.end = vma->vm_end;
-> +	info->vma.pgoff = vma->vm_pgoff;
-> +	info->vma.flags = vma->vm_flags;
-> +	if (vma->vm_file)
-> +		info->file = get_file(vma->vm_file);
-> +	mmap_read_unlock(curr_task->mm);
-> +	return &info->vma;
-> +
-> +next_task:
-> +	put_task_struct(curr_task);
-> +	info->task = NULL;
-> +	curr_tid = ++(info->tid);
-> +	goto again;
-> +}
-> +
-> +static void *task_vma_seq_start(struct seq_file *seq, loff_t *pos)
-> +{
-> +	struct bpf_iter_seq_task_vma_info *info = seq->private;
-> +	struct __vm_area_struct *vma;
-> +
-> +	info->task = NULL;
-
-Maybe put info->task = NULL in task_vma_seq_stop()?
-
-> +	vma = task_vma_seq_get_next(info);
-> +	if (vma && *pos == 0)
-> +		++*pos;
-> +
-> +	return vma;
-> +}
-> +
-> +static void *task_vma_seq_next(struct seq_file *seq, void *v, loff_t *pos)
-> +{
-> +	struct bpf_iter_seq_task_vma_info *info = seq->private;
-> +
-> +	++*pos;
-> +	if (info->file) {
-> +		fput(info->file);
-> +		info->file = NULL;
-> +	}
-> +	return task_vma_seq_get_next(info);
-> +}
-> +
-> +struct bpf_iter__task_vma {
-> +	__bpf_md_ptr(struct bpf_iter_meta *, meta);
-> +	__bpf_md_ptr(struct task_struct *, task);
-> +	__bpf_md_ptr(struct __vm_area_struct *, vma);
-> +	__bpf_md_ptr(struct file *, file);
-> +};
-> +
-> +DEFINE_BPF_ITER_FUNC(task_vma, struct bpf_iter_meta *meta,
-> +		     struct task_struct *task, struct __vm_area_struct *vma,
-> +		     struct file *file)
-> +
-[...]
+Thanks.
