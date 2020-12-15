@@ -2,218 +2,217 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36DDC2DA6FA
-	for <lists+bpf@lfdr.de>; Tue, 15 Dec 2020 04:58:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBEEB2DAA60
+	for <lists+bpf@lfdr.de>; Tue, 15 Dec 2020 10:47:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725850AbgLOD6N (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Dec 2020 22:58:13 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:40814 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725821AbgLOD6M (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 14 Dec 2020 22:58:12 -0500
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BF3lm04019723;
-        Mon, 14 Dec 2020 19:57:18 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=kfXjFlFxufa9Bu2NkRJtFJHR+uR5lcviObWOo/36mBc=;
- b=TcQFsgSyx/EiYHL+WBrgJ+AapRwTPvcKgpGSFHY/1YJhZb37mTrYy11iU6icVoFJrYr+
- jN9upJHFh+m78aCPPcmf6buYsvEJpLqfc+tWAH0rAsNI7KtsuWs+u447RWixEo4XlXPU
- C8eSiG0DykFTP6u3+mPdWUJiqr1ZAL6xcSs= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 35descguxw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 14 Dec 2020 19:57:18 -0800
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 14 Dec 2020 19:57:17 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EYh7FBWk5iWjmRl1kFa4wv8MJuVTzHT6gBHQ+xjeWs1zo2W1/AflgMVGO0D4LD8A75UTHo5IhYZ9p9Ks3z5HcEsLYO7ziRHPKPMOCQEqxLqN1K5vAJJ6cDv9Kq0MSw38A2kfvYh9qDn1IJbjqWfhcRO89dGZvXMts2GaeFdcd3hLI3a/FihD0fMwtYyqggkHBpjFjJEg9OA6geUJfInhwO+ZedXRaQymtHxnfn5LdbDf2S+gU486ni3ZU0NZsh7C7TqAa7rxqxK53nGWoA2RFpp4EP9B+XB9HkHi1JitRjIg08AWpnToqvukKIIBrSLIpJECBE938BvkJxyu1HCK3g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kfXjFlFxufa9Bu2NkRJtFJHR+uR5lcviObWOo/36mBc=;
- b=cWoZmyFNYI/jEm8b51g6F1rU1D8BePKOoWNV+k+sQj7O04UoaxxaUVUlKW7wjADguisMKdlblHirC9xleIuKtfpjdNw1GOc0VcetQRcWPtfJSGFHq5ONW0akPerHUcKTvQYjar9sPs2+tQUGdj+4R8yR/qfUtedDhKhPaN+mmGxgjpzuaWLDFoQbo3t20K1PGKiFYSY4ZLVuvfmMl7jLyHNdqE9RPsmLYGf2H+ciSdnyv5/P73ucfHSvSygVWMiPsDilQhzSxC3jbYz1PrlEYi6iIWTHeD848kJjeiLmtN2o3CMsSrN9lMMB9gepfV0FCrG33AEHzcTvK4EKbARf4w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kfXjFlFxufa9Bu2NkRJtFJHR+uR5lcviObWOo/36mBc=;
- b=PFGMc9PpzQuGSBrVcx1wFsVCuRygRaYHEIi1qHG9QHBOTgBM3PhLS88K8LQMsKiTro8o60YoIT38V+5utZYSZ/jfdEYQB2mFsDzdGT69X+FJ72E6WelRJddUjAIcTWpveJmRDgBdq18D91bF76sEA+EFmS/cWyf/Xa/q0sJau4s=
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB2407.namprd15.prod.outlook.com (2603:10b6:a02:8d::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3632.17; Tue, 15 Dec
- 2020 03:57:15 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3654.025; Tue, 15 Dec 2020
- 03:57:15 +0000
-Subject: Re: [PATCH bpf-next v3 1/2] bpf: permits pointers on stack for helper
- calls
-To:     Daniel Borkmann <daniel@iogearbox.net>, <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>, <kernel-team@fb.com>,
-        Song Liu <songliubraving@fb.com>
-References: <20201211034121.3452172-1-yhs@fb.com>
- <20201211034121.3452243-1-yhs@fb.com>
- <e48545be-6b03-aa2b-d5f6-a12b180ba116@iogearbox.net>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <12bc8fa8-0cb8-596a-995c-9312d2a390e2@fb.com>
-Date:   Mon, 14 Dec 2020 19:57:10 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.1
-In-Reply-To: <e48545be-6b03-aa2b-d5f6-a12b180ba116@iogearbox.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [2620:10d:c090:400::5:9862]
-X-ClientProxiedBy: MW4PR04CA0191.namprd04.prod.outlook.com
- (2603:10b6:303:86::16) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+        id S1727331AbgLOJqE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Dec 2020 04:46:04 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26332 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727997AbgLOJpI (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 15 Dec 2020 04:45:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608025421;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5DEf40TZBhJmDgffeKprAt1Jld/xfe5jp8dtrGkv+oI=;
+        b=ZI9RGzWXF2CBufG9sdfFKBWkaAfpYsWhjPfr9hhhknjGhVTVh89eMcGUuPdTBpvprcL3oJ
+        LU9e/rdNkRKJ4de9ONDoJhaiCSJm+AdoSVgQqY26XCapxDlRVfmIzaQcEPe2xDjkpIgqZw
+        velzRTxy73K0EBs0UaSzHKh6on3SXN8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-302-2Wv7YS5cP-WmJ5I5cb1fug-1; Tue, 15 Dec 2020 04:43:36 -0500
+X-MC-Unique: 2Wv7YS5cP-WmJ5I5cb1fug-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C15ED800D53;
+        Tue, 15 Dec 2020 09:43:34 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.6])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 10E8B1E5;
+        Tue, 15 Dec 2020 09:43:30 +0000 (UTC)
+Date:   Tue, 15 Dec 2020 10:43:27 +0100
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+To:     Ivan Babrou <ivan@cloudflare.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@cloudflare.com,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Subject: Re: [PATCH net-next] sfc: reduce the number of requested xdp ev
+ queues
+Message-ID: <20201215104327.2be76156@carbon>
+In-Reply-To: <20201215012907.3062-1-ivan@cloudflare.com>
+References: <20201215012907.3062-1-ivan@cloudflare.com>
+Organization: Red Hat Inc.
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21e8::112b] (2620:10d:c090:400::5:9862) by MW4PR04CA0191.namprd04.prod.outlook.com (2603:10b6:303:86::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Tue, 15 Dec 2020 03:57:13 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 460b7fd6-8720-42e5-849c-08d8a0ad82ac
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2407:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB24075E7A336B37238147E2E3D3C60@BYAPR15MB2407.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:2089;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 43rOXYvZZGat20jwdQsn92umRbDCAZWh/L9LrXkWty7ctqkoIEmCL/OT93SobwAcQg9a2ulgIVKKuP+rPXfFLDZCX1Ai/ax6bgfcbS9q4hE8CpoBqflaJxuH/hu1mQl+BRjxGujhpPoRJxfcyq9yCYSCye5SF4BXZRbqp5p3U/CgxJPtZUzTSP8kDp9k9Mit8hqTBMWVOcC79asp1k5aYTUnKSfG+LD+M1NcunUTyCWLn8ybjDT/BZm50JoSrW7v4WBmWZlWSMI1K0ELn7uxjiHo06LJKzjt26xL/bI/rG+x3Q752UyRmk9WdD+glaoBKmhDvl/OkoEiMua7AmfZ0k2aPvEbqa8vK8AaiR3safJ3VocIm6e7pFcMAc+EuXx7n+rz2vb1tGWDIapK7E3mgm2e3FXCbQ+JCcEDgqar014=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(366004)(346002)(508600001)(8936002)(86362001)(4326008)(6486002)(83380400001)(53546011)(36756003)(66946007)(5660300002)(31686004)(66476007)(2906002)(16526019)(54906003)(186003)(66556008)(31696002)(2616005)(52116002)(8676002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?V2k2eWdGREJmV1FJdDlTWkwzU25mTW5Pb0VRZTFpdXpnQ24yQXhrSDI3aU9M?=
- =?utf-8?B?dmhiYkthQTNOVmg0VzRrY2RsNGcwK29BTU9SUVU4MGJIUzRLY285cUlhMitW?=
- =?utf-8?B?anVNdk5icTF2aDZXMDkzdDVIRnhnZkgrcyttNVp1d2VFV0grNTFsKzZCcCsx?=
- =?utf-8?B?TDVpS3V2WngzeWdnUTFSdkRqYk1XMlNPL2twaWF2OG50ODZXNFNqOUlvQ0E4?=
- =?utf-8?B?YjdESXlCc2M2LzFpR0NBT1lrdzd5eW5HeUdyTjJmR0FrNzg1THpFSXJWcnpM?=
- =?utf-8?B?Y3BBYzhhVjdlUEM3akVzSXh0OXVNaHhrblBaalBNU1JIcG8xYi9KVmxXMmVu?=
- =?utf-8?B?NGI1QTdyS0d0dFlrZVJtVnVjOTM0ZG9sQXVQRTByZm93Q05LdmNSVmd0WFNn?=
- =?utf-8?B?ZW03VWdpZURpWmdSMVFzQmhrWllCYVhWalJMNnV2dTdRS3o2a291dW1IbEJx?=
- =?utf-8?B?WjJWaldqV2lPUkhQM3BnOVZ1djdyMVFEM1djR1pEaUZNK2JNSlhRZEhvajZ3?=
- =?utf-8?B?VlVpVTl2Zkx3NG9KLys0RTR2bzExSzdRTWlnMVZUck51OVRraWh4dDRBUEds?=
- =?utf-8?B?NHV6cDVJYlpZUHVUWlRSOWtvYi81dDhpNzNjN1M5cjlOVkxCQVRGelJhY0dR?=
- =?utf-8?B?SWs2VStHZmpBd0N2aGl3SFhlTU11eWc2aGd4NTJjcEVlL3NtTDI2dGJ2bnFu?=
- =?utf-8?B?ckJvQ0s3VGlBN2Q3QWk0TzZuYUtvb2FsVTA0OHBzODVzWG1Ka1FQRk5Xdlhx?=
- =?utf-8?B?NmNLZWd4L0RSZTdyY2tXN0hMNGVYNEs5VUxBSkwwNHo0aVVDNVpsUkVWYlZ3?=
- =?utf-8?B?akt0SU5RWG10c2hQTWMwamVaRW1NZnlvdEwySmUraHFwSTFEWE5JUW10Q2Iy?=
- =?utf-8?B?QkxkZXd3S3pRajBJNnRCUkMxUSs5QzM2eUk4QjZiU2VMMXBURmg3R3BMNFht?=
- =?utf-8?B?a2xuemNkekEzKytZZC9xN2dMOHJvUVdaaFZyOXEySzhRbk0ySkMvd0dsdG5T?=
- =?utf-8?B?T2xka0xNaGdHLzlkRS9TTFBYMCtJQmFGQnZCSkZUVlRtaEUxamU2c1NSU29n?=
- =?utf-8?B?TytWNWpHUmtkcFdod0lmSVg5UDhBZE4vWjZ1RUt5NjlpdVJTZGdhdURYUFFl?=
- =?utf-8?B?d1NHcDllbGl3WXpHSGVoVGMraHFwais1YkRrVkpDQTYrcHBtKzgxVHZtQkgx?=
- =?utf-8?B?ZHdlSEdGSHdzTXFHc05RRkFjdVN5YWJwQ2dUampVR21HV0dWbEJjdnZEdFpQ?=
- =?utf-8?B?SjVEbkhsMk1oKzBIR1J1UytTTStkanp5SXN5eTYydWZsVk1abW91V3RoS3dH?=
- =?utf-8?B?Ty9mOEpVMGxXWDBLWmJlSEVZblNXUXp4d045dXU4Rk9XMVRBZTJnSGNEaUNL?=
- =?utf-8?B?Nmd3bktRYmxkT2c9PQ==?=
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Dec 2020 03:57:14.8089
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-Network-Message-Id: 460b7fd6-8720-42e5-849c-08d8a0ad82ac
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: y6N4w5VDMXGx4lj50amyjmJaoGHelXqM1EmulFpgfDRXVCmrUIQTjVYh9FKEaJPE
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2407
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-15_03:2020-12-11,2020-12-15 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- malwarescore=0 priorityscore=1501 lowpriorityscore=0 bulkscore=0
- spamscore=0 mlxlogscore=999 phishscore=0 impostorscore=0 clxscore=1015
- mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012150022
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Mon, 14 Dec 2020 17:29:06 -0800
+Ivan Babrou <ivan@cloudflare.com> wrote:
 
-
-On 12/14/20 1:26 PM, Daniel Borkmann wrote:
-> On 12/11/20 4:41 AM, Yonghong Song wrote:
->> Currently, when checking stack memory accessed by helper calls,
->> for spills, only PTR_TO_BTF_ID and SCALAR_VALUE are
->> allowed.
->>
->> Song discovered an issue where the below bpf program
->>    int dump_task(struct bpf_iter__task *ctx)
->>    {
->>      struct seq_file *seq = ctx->meta->seq;
->>      static char[] info = "abc";
->>      BPF_SEQ_PRINTF(seq, "%s\n", info);
->>      return 0;
->>    }
->> may cause a verifier failure.
->>
->> The verifier output looks like:
->>    ; struct seq_file *seq = ctx->meta->seq;
->>    1: (79) r1 = *(u64 *)(r1 +0)
->>    ; BPF_SEQ_PRINTF(seq, "%s\n", info);
->>    2: (18) r2 = 0xffff9054400f6000
->>    4: (7b) *(u64 *)(r10 -8) = r2
->>    5: (bf) r4 = r10
->>    ;
->>    6: (07) r4 += -8
->>    ; BPF_SEQ_PRINTF(seq, "%s\n", info);
->>    7: (18) r2 = 0xffff9054400fe000
->>    9: (b4) w3 = 4
->>    10: (b4) w5 = 8
->>    11: (85) call bpf_seq_printf#126
->>     R1_w=ptr_seq_file(id=0,off=0,imm=0) 
->> R2_w=map_value(id=0,off=0,ks=4,vs=4,imm=0)
->>    R3_w=inv4 R4_w=fp-8 R5_w=inv8 R10=fp0 fp-8_w=map_value
->>    last_idx 11 first_idx 0
->>    regs=8 stack=0 before 10: (b4) w5 = 8
->>    regs=8 stack=0 before 9: (b4) w3 = 4
->>    invalid indirect read from stack off -8+0 size 8
->>
->> Basically, the verifier complains the map_value pointer at "fp-8" 
->> location.
->> To fix the issue, if env->allow_ptr_leaks is true, let us also permit
->> pointers on the stack to be accessible by the helper.
->>
->> Suggested-by: Alexei Starovoitov <ast@kernel.org>
->> Reported-by: Song Liu <songliubraving@fb.com>
->> Signed-off-by: Yonghong Song <yhs@fb.com>
->> ---
->>   kernel/bpf/verifier.c | 4 +++-
->>   1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index 93def76cf32b..eebb2d3e16bf 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -3769,7 +3769,9 @@ static int check_stack_boundary(struct 
->> bpf_verifier_env *env, int regno,
->>               goto mark;
->>           if (state->stack[spi].slot_type[0] == STACK_SPILL &&
->> -            state->stack[spi].spilled_ptr.type == SCALAR_VALUE) {
->> +            (state->stack[spi].spilled_ptr.type == SCALAR_VALUE ||
->> +             (state->stack[spi].spilled_ptr.type != NOT_INIT &&
+> Without this change the driver tries to allocate too many queues,
+> breaching the number of available msi-x interrupts on machines
+> with many logical cpus and default adapter settings:
 > 
-> Thinking more on this, your v2 was actually correct since in such case 
-> stype
-> would have been STACK_MISC or STACK_ZERO and we would have jumped to 
-> goto mark
-> here instead, so the above is not reachable under NOT_INIT. Anyway, I 
-> took the
-> v2 in, thanks!
-
-Thanks! I missed this (NOT_INIT is associated with STACK_MISC/STACK_ZERO 
-spill type) too.
-
+> Insufficient resources for 12 XDP event queues (24 other channels, max 32)
 > 
->> +              env->allow_ptr_leaks))) {
->>               __mark_reg_unknown(env, &state->stack[spi].spilled_ptr);
->>               for (j = 0; j < BPF_REG_SIZE; j++)
->>                   state->stack[spi].slot_type[j] = STACK_MISC;
->>
+> Which in turn triggers EINVAL on XDP processing:
 > 
+> sfc 0000:86:00.0 ext0: XDP TX failed (-22)
+
+I have a similar QA report with XDP_REDIRECT:
+  sfc 0000:05:00.0 ens1f0np0: XDP redirect failed (-22)
+
+Here we are back to the issue we discussed with ixgbe, that NIC / msi-x
+interrupts hardware resources are not enough on machines with many
+logical cpus.
+
+After this fix, what will happen if (cpu >= efx->xdp_tx_queue_count) ?
+(Copied efx_xdp_tx_buffers code below signature)
+
+The question leads to, does this driver need a fallback mechanism when
+HW resource or systems logical cpus exceed the one TX-queue per CPU
+assumption?
+
+ 
+> Signed-off-by: Ivan Babrou <ivan@cloudflare.com>
+> ---
+>  drivers/net/ethernet/sfc/efx_channels.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/sfc/efx_channels.c
+> b/drivers/net/ethernet/sfc/efx_channels.c index
+> a4a626e9cd9a..1bfeee283ea9 100644 ---
+> a/drivers/net/ethernet/sfc/efx_channels.c +++
+> b/drivers/net/ethernet/sfc/efx_channels.c @@ -17,6 +17,7 @@
+>  #include "rx_common.h"
+>  #include "nic.h"
+>  #include "sriov.h"
+> +#include "workarounds.h"
+>  
+>  /* This is the first interrupt mode to try out of:
+>   * 0 => MSI-X
+> @@ -137,6 +138,7 @@ static int efx_allocate_msix_channels(struct
+> efx_nic *efx, {
+>  	unsigned int n_channels = parallelism;
+>  	int vec_count;
+> +	int tx_per_ev;
+>  	int n_xdp_tx;
+>  	int n_xdp_ev;
+>  
+> @@ -149,9 +151,9 @@ static int efx_allocate_msix_channels(struct
+> efx_nic *efx,
+>  	 * multiple tx queues, assuming tx and ev queues are both
+>  	 * maximum size.
+>  	 */
+> -
+> +	tx_per_ev = EFX_MAX_EVQ_SIZE / EFX_TXQ_MAX_ENT(efx);
+>  	n_xdp_tx = num_possible_cpus();
+> -	n_xdp_ev = DIV_ROUND_UP(n_xdp_tx, EFX_MAX_TXQ_PER_CHANNEL);
+> +	n_xdp_ev = DIV_ROUND_UP(n_xdp_tx, tx_per_ev);
+>  
+>  	vec_count = pci_msix_vec_count(efx->pci_dev);
+>  	if (vec_count < 0)
+
+
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
+
+/* Transmit a packet from an XDP buffer
+ *
+ * Returns number of packets sent on success, error code otherwise.
+ * Runs in NAPI context, either in our poll (for XDP TX) or a different NIC
+ * (for XDP redirect).
+ */
+int efx_xdp_tx_buffers(struct efx_nic *efx, int n, struct xdp_frame **xdpfs,
+		       bool flush)
+{
+	struct efx_tx_buffer *tx_buffer;
+	struct efx_tx_queue *tx_queue;
+	struct xdp_frame *xdpf;
+	dma_addr_t dma_addr;
+	unsigned int len;
+	int space;
+	int cpu;
+	int i;
+
+	cpu = raw_smp_processor_id();
+
+	if (!efx->xdp_tx_queue_count ||
+	    unlikely(cpu >= efx->xdp_tx_queue_count))
+		return -EINVAL;
+
+	tx_queue = efx->xdp_tx_queues[cpu];
+	if (unlikely(!tx_queue))
+		return -EINVAL;
+
+	if (unlikely(n && !xdpfs))
+		return -EINVAL;
+
+	if (!n)
+		return 0;
+
+	/* Check for available space. We should never need multiple
+	 * descriptors per frame.
+	 */
+	space = efx->txq_entries +
+		tx_queue->read_count - tx_queue->insert_count;
+
+	for (i = 0; i < n; i++) {
+		xdpf = xdpfs[i];
+
+		if (i >= space)
+			break;
+
+		/* We'll want a descriptor for this tx. */
+		prefetchw(__efx_tx_queue_get_insert_buffer(tx_queue));
+
+		len = xdpf->len;
+
+		/* Map for DMA. */
+		dma_addr = dma_map_single(&efx->pci_dev->dev,
+					  xdpf->data, len,
+					  DMA_TO_DEVICE);
+		if (dma_mapping_error(&efx->pci_dev->dev, dma_addr))
+			break;
+
+		/*  Create descriptor and set up for unmapping DMA. */
+		tx_buffer = efx_tx_map_chunk(tx_queue, dma_addr, len);
+		tx_buffer->xdpf = xdpf;
+		tx_buffer->flags = EFX_TX_BUF_XDP |
+				   EFX_TX_BUF_MAP_SINGLE;
+		tx_buffer->dma_offset = 0;
+		tx_buffer->unmap_len = len;
+		tx_queue->tx_packets++;
+	}
+
+	/* Pass mapped frames to hardware. */
+	if (flush && i > 0)
+		efx_nic_push_buffers(tx_queue);
+
+	if (i == 0)
+		return -EIO;
+
+	efx_xdp_return_frames(n - i, xdpfs + i);
+
+	return i;
+}
+
