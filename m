@@ -2,156 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D52262DAFF8
-	for <lists+bpf@lfdr.de>; Tue, 15 Dec 2020 16:24:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E57C32DB383
+	for <lists+bpf@lfdr.de>; Tue, 15 Dec 2020 19:19:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728772AbgLOPYK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Dec 2020 10:24:10 -0500
-Received: from mga09.intel.com ([134.134.136.24]:59801 "EHLO mga09.intel.com"
+        id S1731518AbgLOSRG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Dec 2020 13:17:06 -0500
+Received: from mga04.intel.com ([192.55.52.120]:5907 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728109AbgLOPYC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Dec 2020 10:24:02 -0500
-IronPort-SDR: NQDnRwgL2P6GN2ObFnyGJzvxVMfMTtLOaSXnFkX/ltc9YLj8UGYz94mVkoVuyIeyAhk9LIPdxV
- WdTzrM8H9MXQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9836"; a="175036170"
-X-IronPort-AV: E=Sophos;i="5.78,421,1599548400"; 
-   d="scan'208";a="175036170"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 07:23:20 -0800
-IronPort-SDR: Ao7SwFY8A+xjYZRBASPHQbX6HfgL/hyMtw8mAZp0A0zwiZlt2SK9pU7rdP0dD0t/Zfzv2rDCLg
- e8bH+fcSUrHQ==
+        id S1731519AbgLOSQz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Dec 2020 13:16:55 -0500
+IronPort-SDR: GF4LOZg/0kMJX/KUSBird20sXTkffx7US8OQxYeXV7G2R+xMJWi1A3jWCTdwubZKDg0rxhDiqP
+ ZIaX0Uf7eJcw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9836"; a="172358596"
+X-IronPort-AV: E=Sophos;i="5.78,422,1599548400"; 
+   d="scan'208";a="172358596"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 10:16:14 -0800
+IronPort-SDR: MRnosgKBBLZI3ZrdPNs7J7pKMfcCs0ejNncK4t2iU4CGdaGFH5edJnI/X/v0RXh2bYu40V5bVp
+ RwTEMe6OztRw==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,421,1599548400"; 
-   d="scan'208";a="337299264"
+X-IronPort-AV: E=Sophos;i="5.78,422,1599548400"; 
+   d="scan'208";a="336868302"
 Received: from ranger.igk.intel.com ([10.102.21.164])
-  by fmsmga008.fm.intel.com with ESMTP; 15 Dec 2020 07:23:17 -0800
-Date:   Tue, 15 Dec 2020 16:13:44 +0100
+  by orsmga003.jf.intel.com with ESMTP; 15 Dec 2020 10:16:13 -0800
+Date:   Tue, 15 Dec 2020 19:06:38 +0100
 From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, brouer@redhat.com, alexander.duyck@gmail.com,
-        saeed@kernel.org
-Subject: Re: [PATCH v3 bpf-next 2/2] net: xdp: introduce xdp_prepare_buff
- utility routine
-Message-ID: <20201215151344.GA24650@ranger.igk.intel.com>
-References: <cover.1607794551.git.lorenzo@kernel.org>
- <71d5ae9f810c2c80f1cb09e304330be0b5ce5345.1607794552.git.lorenzo@kernel.org>
- <20201215123643.GA23785@ranger.igk.intel.com>
- <20201215134710.GB5477@lore-desk>
- <6886cd02-8dec-1905-b878-d45ee9a0c9b4@iogearbox.net>
- <20201215150620.GC5477@lore-desk>
+To:     Eelco Chaudron <echaudro@redhat.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH v5 bpf-next 13/14] bpf: add new frame_length field to the
+ XDP ctx
+Message-ID: <20201215180638.GB23785@ranger.igk.intel.com>
+References: <cover.1607349924.git.lorenzo@kernel.org>
+ <0547d6f752e325f56a8e5f6466b50e81ff29d65f.1607349924.git.lorenzo@kernel.org>
+ <20201208221746.GA33399@ranger.igk.intel.com>
+ <96C89134-A747-4E05-AA11-CB6EA1420900@redhat.com>
+ <20201209111047.GB36812@ranger.igk.intel.com>
+ <170BF39B-894D-495F-93E0-820EC7880328@redhat.com>
+ <38C60760-4F8C-43AC-A5DE-7FAECB65C310@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201215150620.GC5477@lore-desk>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <38C60760-4F8C-43AC-A5DE-7FAECB65C310@redhat.com>
 User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 04:06:20PM +0100, Lorenzo Bianconi wrote:
-> > On 12/15/20 2:47 PM, Lorenzo Bianconi wrote:
-> > [...]
-> > > > > diff --git a/drivers/net/xen-netfront.c b/drivers/net/xen-netfront.c
-> > > > > index 329397c60d84..61d3f5f8b7f3 100644
-> > > > > --- a/drivers/net/xen-netfront.c
-> > > > > +++ b/drivers/net/xen-netfront.c
-> > > > > @@ -866,10 +866,8 @@ static u32 xennet_run_xdp(struct netfront_queue *queue, struct page *pdata,
-> > > > >   	xdp_init_buff(xdp, XEN_PAGE_SIZE - XDP_PACKET_HEADROOM,
-> > > > >   		      &queue->xdp_rxq);
-> > > > > -	xdp->data_hard_start = page_address(pdata);
-> > > > > -	xdp->data = xdp->data_hard_start + XDP_PACKET_HEADROOM;
-> > > > > +	xdp_prepare_buff(xdp, page_address(pdata), XDP_PACKET_HEADROOM, len);
-> > > > >   	xdp_set_data_meta_invalid(xdp);
-> > > > > -	xdp->data_end = xdp->data + len;
-> > > > >   	act = bpf_prog_run_xdp(prog, xdp);
-> > > > >   	switch (act) {
-> > > > > diff --git a/include/net/xdp.h b/include/net/xdp.h
-> > > > > index 3fb3a9aa1b71..66d8a4b317a3 100644
-> > > > > --- a/include/net/xdp.h
-> > > > > +++ b/include/net/xdp.h
-> > > > > @@ -83,6 +83,18 @@ xdp_init_buff(struct xdp_buff *xdp, u32 frame_sz, struct xdp_rxq_info *rxq)
-> > > > >   	xdp->rxq = rxq;
-> > > > >   }
-> > > > > +static inline void
+On Tue, Dec 15, 2020 at 02:28:39PM +0100, Eelco Chaudron wrote:
+> 
+> 
+> On 9 Dec 2020, at 13:07, Eelco Chaudron wrote:
+> 
+> > On 9 Dec 2020, at 12:10, Maciej Fijalkowski wrote:
+> 
+> <SNIP>
+> 
+> > > > > > +
+> > > > > > +		ctx_reg = (si->src_reg == si->dst_reg) ? scratch_reg - 1 :
+> > > > > > si->src_reg;
+> > > > > > +		while (dst_reg == ctx_reg || scratch_reg == ctx_reg)
+> > > > > > +			ctx_reg--;
+> > > > > > +
+> > > > > > +		/* Save scratch registers */
+> > > > > > +		if (ctx_reg != si->src_reg) {
+> > > > > > +			*insn++ = BPF_STX_MEM(BPF_DW, si->src_reg, ctx_reg,
+> > > > > > +					      offsetof(struct xdp_buff,
+> > > > > > +						       tmp_reg[1]));
+> > > > > > +
+> > > > > > +			*insn++ = BPF_MOV64_REG(ctx_reg, si->src_reg);
+> > > > > > +		}
+> > > > > > +
+> > > > > > +		*insn++ = BPF_STX_MEM(BPF_DW, ctx_reg, scratch_reg,
+> > > > > > +				      offsetof(struct xdp_buff, tmp_reg[0]));
+> > > > > 
+> > > > > Why don't you push regs to stack, use it and then pop it
+> > > > > back? That way
+> > > > > I
+> > > > > suppose you could avoid polluting xdp_buff with tmp_reg[2].
+> > > > 
+> > > > There is no “real” stack in eBPF, only a read-only frame
+> > > > pointer, and as we
+> > > > are replacing a single instruction, we have no info on what we
+> > > > can use as
+> > > > scratch space.
+> > > 
+> > > Uhm, what? You use R10 for stack operations. Verifier tracks the
+> > > stack
+> > > depth used by programs and then it is passed down to JIT so that
+> > > native
+> > > asm will create a properly sized stack frame.
+> > > 
+> > > From the top of my head I would let know xdp_convert_ctx_access of a
+> > > current stack depth and use it for R10 stores, so your scratch space
+> > > would
+> > > be R10 + (stack depth + 8), R10 + (stack_depth + 16).
 > > 
-> > nit: maybe __always_inline
-> 
-> ack, I will add in v4
-> 
+> > Other instances do exactly the same, i.e. put some scratch registers in
+> > the underlying data structure, so I reused this approach. From the
+> > current information in the callback, I was not able to determine the
+> > current stack_depth. With "real" stack above, I meant having a pop/push
+> > like instruction.
 > > 
-> > > > > +xdp_prepare_buff(struct xdp_buff *xdp, unsigned char *hard_start,
-> > > > > +		 int headroom, int data_len)
-> > > > > +{
-> > > > > +	unsigned char *data = hard_start + headroom;
-> > > > > +
-> > > > > +	xdp->data_hard_start = hard_start;
-> > > > > +	xdp->data = data;
-> > > > > +	xdp->data_end = data + data_len;
-> > > > > +	xdp->data_meta = data;
-> > > > > +}
-> > > > > +
-> > > > >   /* Reserve memory area at end-of data area.
-> > > > >    *
+> > I do not know the verifier code well enough, but are you suggesting I
+> > can get the current stack_depth from the verifier in the
+> > xdp_convert_ctx_access() callback? If so any pointers?
+> 
+> Maciej any feedback on the above, i.e. getting the stack_depth in
+> xdp_convert_ctx_access()?
+
+Sorry. I'll try to get my head around it. If i recall correctly stack
+depth is tracked per subprogram whereas convert_ctx_accesses is iterating
+through *all* insns (so a prog that is not chunked onto subprogs), but
+maybe we could dig up the subprog based on insn idx.
+
+But at first, you mentioned that you took the approach from other
+instances, can you point me to them?
+
+I'd also like to hear from Daniel/Alexei/John and others their thoughts.
+
+> 
+> > > Problem with that would be the fact that convert_ctx_accesses()
+> > > happens to
+> > > be called after the check_max_stack_depth(), so probably stack_depth
+> > > of a
+> > > prog that has frame_length accesses would have to be adjusted
+> > > earlier.
 > > 
-> > For the drivers with xdp_set_data_meta_invalid(), we're basically setting xdp->data_meta
-> > twice unless compiler is smart enough to optimize the first one away (did you double check?).
-> > Given this is supposed to be a cleanup, why not integrate this logic as well so the
-> > xdp_set_data_meta_invalid() doesn't get extra treatment?
-
-That's what I was trying to say previously.
-
+> > Ack, need to learn more on the verifier part…
 > 
-> we discussed it before, but I am fine to add it in v4. Something like:
+> <SNIP>
 > 
-> static __always_inline void
-> xdp_prepare_buff(struct xdp_buff *xdp, unsigned char *hard_start,
-> 		 int headroom, int data_len, bool meta_valid)
-> {
-> 	unsigned char *data = hard_start + headroom;
-> 	
-> 	xdp->data_hard_start = hard_start;
-> 	xdp->data = data;
-> 	xdp->data_end = data + data_len;
-> 	xdp->data_meta = meta_valid ? data : data + 1;
-
-This will introduce branch, so for intel drivers we're getting the
-overhead of one add and a branch. I'm still opting for a separate helper.
-
-static __always_inline void
-xdp_prepare_buff(struct xdp_buff *xdp, unsigned char *hard_start,
-		 int headroom, int data_len)
-{
-	unsigned char *data = hard_start + headroom;
-
-	xdp->data_hard_start = hard_start;
-	xdp->data = data;
-	xdp->data_end = data + data_len;
-	xdp_set_data_meta_invalid(xdp);
-}
-
-static __always_inline void
-xdp_prepare_buff_meta(struct xdp_buff *xdp, unsigned char *hard_start,
-		      int headroom, int data_len)
-{
-	unsigned char *data = hard_start + headroom;
-
-	xdp->data_hard_start = hard_start;
-	xdp->data = data;
-	xdp->data_end = data + data_len;
-	xdp->data_meta = data;
-}
-
-> }
-> 
-> Regards,
-> Lorenzo
-> 
-> > 
-> > Thanks,
-> > Daniel
-> > 
-
-
