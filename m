@@ -2,64 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED11B2DA5E9
-	for <lists+bpf@lfdr.de>; Tue, 15 Dec 2020 03:01:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EB782DA600
+	for <lists+bpf@lfdr.de>; Tue, 15 Dec 2020 03:13:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725306AbgLOCAw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 14 Dec 2020 21:00:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58858 "EHLO mail.kernel.org"
+        id S1725973AbgLOCLl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 14 Dec 2020 21:11:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725815AbgLOCAs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 14 Dec 2020 21:00:48 -0500
-Content-Type: text/plain; charset="utf-8"
+        id S1726209AbgLOCLV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 14 Dec 2020 21:11:21 -0500
+Date:   Mon, 14 Dec 2020 18:10:39 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1607997608;
-        bh=fXFFllEAKOMgoTnpJVYTId/ziDzVTmSoFEQXhGG3OBk=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=WV27/sOI1gUggbGXSmDn1fEdNeRXoeKE1cFR2k9tp2of1YpuLL93fyP8KyCglmFWl
-         dsfWW3yEklYEjZM0BO/TTKUx4l0JHAEE8xrGicWzaRAymHfMd2qVcbXEBBuvZ1ATZh
-         Rgtojp3mX0mii0tjNsTv1z95EHJxEdhWO4Qn9mgiPpT8bKB23fYT623y+ROquFlkVC
-         fjS7GUbgBL3cogv//TzgMl7+NaZCfUV0pRp51SgQW987SvJrjJiX5jiqi5o0CVQfRd
-         SevPnU7nrtTkryj3J7V0O1Hi0SGUCLkRocJqp4q3W5owW58THC4bWW94Ilwz8+KjFC
-         KhyEMfb7pDVYQ==
+        s=k20201202; t=1607998240;
+        bh=VJ4pVUDqJ186Yb6AbWAOxpO/nft9uAvVGLlN7xLGu4A=;
+        h=From:To:Cc:Subject:In-Reply-To:References:From;
+        b=AGEUkxGxKAsYC8svjBA/XL7+RchddVg8uokxA3jDxFTl4Cp0I6B3fS+Yxb26dktYw
+         pKS9JoCcelmF026rKG7xXCDAX8gGw2g90NnFUdxHHbdfrCKVO5QVeT1cywyUflEfGE
+         RyTe3DQGygQ2ldZaIMkF4oppxGsneUggRc9MlLUQA6STVHG7Q1k1zBIJpZROunYoQy
+         Hoj1zv73lbcKbjK7YHG9xJMvSMm7FTBRBI8S2HS+nTtyF5EOpJY5npCG0NOvWotU/4
+         VTDlpBundhtNeCp5pKhTq6ErKEYRgPjeIxzUIq6YFQrkodQXn2r+awixPB7mTwo3Z2
+         tRYi/Mwq/mqwg==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     davem@davemloft.net, ast@kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: pull-request: bpf-next 2020-12-14
+Message-ID: <20201214181039.2b58ef46@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20201214214316.20642-1-daniel@iogearbox.net>
+References: <20201214214316.20642-1-daniel@iogearbox.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 net-next] ice, xsk: Move Rx allocation out of while-loop
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160799760821.15807.11906942397903153665.git-patchwork-notify@kernel.org>
-Date:   Tue, 15 Dec 2020 02:00:08 +0000
-References: <20201211085410.59350-1-bjorn.topel@gmail.com>
-In-Reply-To: <20201211085410.59350-1-bjorn.topel@gmail.com>
-To:     =?utf-8?b?QmrDtnJuIFTDtnBlbCA8Ympvcm4udG9wZWxAZ21haWwuY29tPg==?=@ci.codeaurora.org
-Cc:     intel-wired-lan@lists.osuosl.org, bjorn.topel@intel.com,
-        magnus.karlsson@intel.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, maciej.fijalkowski@intel.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Mon, 14 Dec 2020 22:43:16 +0100 Daniel Borkmann wrote:
+> 1) Expose bpf_sk_storage_*() helpers to iterator programs, from Florent R=
+evest.
+>=20
+> 2) Add AF_XDP selftests based on veth devs to BPF selftests, from Weqaar =
+Janjua.
+>=20
+> 3) Support for finding BTF based kernel attach targets through libbpf's
+>    bpf_program__set_attach_target() API, from Andrii Nakryiko.
+>=20
+> 4) Permit pointers on stack for helper calls in the verifier, from Yongho=
+ng Song.
+>=20
+> 5) Fix overflows in hash map elem size after rlimit removal, from Eric Du=
+mazet.
+>=20
+> 6) Get rid of direct invocation of llc in BPF selftests, from Andrew Delg=
+adillo.
+>=20
+> 7) Fix xsk_recvmsg() to reorder socket state check before access, from Bj=
+=C3=B6rn T=C3=B6pel.
+>=20
+> 8) Add new libbpf API helper to retrieve ring buffer epoll fd, from Brend=
+an Jackman.
+>=20
+> 9) Batch of minor BPF selftest improvements all over the place, from Flor=
+ian Lehner,
+>    KP Singh, Jiri Olsa and various others.
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+Looks like the reply bot is not keeping it 100.. I'll report=20
+to Konstantin after the merge window craziness is over.
 
-On Fri, 11 Dec 2020 09:54:10 +0100 you wrote:
-> From: Björn Töpel <bjorn.topel@intel.com>
-> 
-> Instead doing the check for allocation in each loop, move it outside
-> the while loop and do it every NAPI loop.
-> 
-> This change boosts the xdpsock rxdrop scenario with 15% more
-> packets-per-second.
-> 
-> [...]
-
-Here is the summary with links:
-  - [v2,net-next] ice, xsk: Move Rx allocation out of while-loop
-    https://git.kernel.org/netdev/net-next/c/5bb0c4b5eb61
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Pulled, thanks!
