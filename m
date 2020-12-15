@@ -2,135 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E57C32DB383
-	for <lists+bpf@lfdr.de>; Tue, 15 Dec 2020 19:19:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 780D62DB39B
+	for <lists+bpf@lfdr.de>; Tue, 15 Dec 2020 19:23:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731518AbgLOSRG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Dec 2020 13:17:06 -0500
-Received: from mga04.intel.com ([192.55.52.120]:5907 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731519AbgLOSQz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Dec 2020 13:16:55 -0500
-IronPort-SDR: GF4LOZg/0kMJX/KUSBird20sXTkffx7US8OQxYeXV7G2R+xMJWi1A3jWCTdwubZKDg0rxhDiqP
- ZIaX0Uf7eJcw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9836"; a="172358596"
-X-IronPort-AV: E=Sophos;i="5.78,422,1599548400"; 
-   d="scan'208";a="172358596"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2020 10:16:14 -0800
-IronPort-SDR: MRnosgKBBLZI3ZrdPNs7J7pKMfcCs0ejNncK4t2iU4CGdaGFH5edJnI/X/v0RXh2bYu40V5bVp
- RwTEMe6OztRw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,422,1599548400"; 
-   d="scan'208";a="336868302"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by orsmga003.jf.intel.com with ESMTP; 15 Dec 2020 10:16:13 -0800
-Date:   Tue, 15 Dec 2020 19:06:38 +0100
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Eelco Chaudron <echaudro@redhat.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH v5 bpf-next 13/14] bpf: add new frame_length field to the
- XDP ctx
-Message-ID: <20201215180638.GB23785@ranger.igk.intel.com>
-References: <cover.1607349924.git.lorenzo@kernel.org>
- <0547d6f752e325f56a8e5f6466b50e81ff29d65f.1607349924.git.lorenzo@kernel.org>
- <20201208221746.GA33399@ranger.igk.intel.com>
- <96C89134-A747-4E05-AA11-CB6EA1420900@redhat.com>
- <20201209111047.GB36812@ranger.igk.intel.com>
- <170BF39B-894D-495F-93E0-820EC7880328@redhat.com>
- <38C60760-4F8C-43AC-A5DE-7FAECB65C310@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <38C60760-4F8C-43AC-A5DE-7FAECB65C310@redhat.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+        id S1731318AbgLOSVP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Dec 2020 13:21:15 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:45267 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727655AbgLOSVK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Dec 2020 13:21:10 -0500
+Received: from 2.general.kamal.us.vpn ([10.172.68.52] helo=ascalon)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kamal@canonical.com>)
+        id 1kpEvp-0001JY-BQ; Tue, 15 Dec 2020 18:20:17 +0000
+Received: from kamal by ascalon with local (Exim 4.90_1)
+        (envelope-from <kamal@ascalon>)
+        id 1kpEvm-00048O-50; Tue, 15 Dec 2020 10:20:14 -0800
+From:   Kamal Mostafa <kamal@canonical.com>
+To:     andrii.nakryiko@gmail.com
+Cc:     Kamal Mostafa <kamal@canonical.com>, stable@vger.kernel.org,
+        Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, linux-kselftest@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] selftests/bpf: clarify build error if no vmlinux
+Date:   Tue, 15 Dec 2020 10:20:10 -0800
+Message-Id: <20201215182011.15755-1-kamal@canonical.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <CAEf4BzYBvz4TDayTE=Bc_bjqvOGaavmmw1sJhOCKhq9DwUpd4A@mail.gmail.com>
+References: <CAEf4BzYBvz4TDayTE=Bc_bjqvOGaavmmw1sJhOCKhq9DwUpd4A@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 02:28:39PM +0100, Eelco Chaudron wrote:
-> 
-> 
-> On 9 Dec 2020, at 13:07, Eelco Chaudron wrote:
-> 
-> > On 9 Dec 2020, at 12:10, Maciej Fijalkowski wrote:
-> 
-> <SNIP>
-> 
-> > > > > > +
-> > > > > > +		ctx_reg = (si->src_reg == si->dst_reg) ? scratch_reg - 1 :
-> > > > > > si->src_reg;
-> > > > > > +		while (dst_reg == ctx_reg || scratch_reg == ctx_reg)
-> > > > > > +			ctx_reg--;
-> > > > > > +
-> > > > > > +		/* Save scratch registers */
-> > > > > > +		if (ctx_reg != si->src_reg) {
-> > > > > > +			*insn++ = BPF_STX_MEM(BPF_DW, si->src_reg, ctx_reg,
-> > > > > > +					      offsetof(struct xdp_buff,
-> > > > > > +						       tmp_reg[1]));
-> > > > > > +
-> > > > > > +			*insn++ = BPF_MOV64_REG(ctx_reg, si->src_reg);
-> > > > > > +		}
-> > > > > > +
-> > > > > > +		*insn++ = BPF_STX_MEM(BPF_DW, ctx_reg, scratch_reg,
-> > > > > > +				      offsetof(struct xdp_buff, tmp_reg[0]));
-> > > > > 
-> > > > > Why don't you push regs to stack, use it and then pop it
-> > > > > back? That way
-> > > > > I
-> > > > > suppose you could avoid polluting xdp_buff with tmp_reg[2].
-> > > > 
-> > > > There is no “real” stack in eBPF, only a read-only frame
-> > > > pointer, and as we
-> > > > are replacing a single instruction, we have no info on what we
-> > > > can use as
-> > > > scratch space.
-> > > 
-> > > Uhm, what? You use R10 for stack operations. Verifier tracks the
-> > > stack
-> > > depth used by programs and then it is passed down to JIT so that
-> > > native
-> > > asm will create a properly sized stack frame.
-> > > 
-> > > From the top of my head I would let know xdp_convert_ctx_access of a
-> > > current stack depth and use it for R10 stores, so your scratch space
-> > > would
-> > > be R10 + (stack depth + 8), R10 + (stack_depth + 16).
-> > 
-> > Other instances do exactly the same, i.e. put some scratch registers in
-> > the underlying data structure, so I reused this approach. From the
-> > current information in the callback, I was not able to determine the
-> > current stack_depth. With "real" stack above, I meant having a pop/push
-> > like instruction.
-> > 
-> > I do not know the verifier code well enough, but are you suggesting I
-> > can get the current stack_depth from the verifier in the
-> > xdp_convert_ctx_access() callback? If so any pointers?
-> 
-> Maciej any feedback on the above, i.e. getting the stack_depth in
-> xdp_convert_ctx_access()?
+If Makefile cannot find any of the vmlinux's in its VMLINUX_BTF_PATHS list,
+it tries to run btftool incorrectly, with VMLINUX_BTF unset:
 
-Sorry. I'll try to get my head around it. If i recall correctly stack
-depth is tracked per subprogram whereas convert_ctx_accesses is iterating
-through *all* insns (so a prog that is not chunked onto subprogs), but
-maybe we could dig up the subprog based on insn idx.
+    bpftool btf dump file $(VMLINUX_BTF) format c
 
-But at first, you mentioned that you took the approach from other
-instances, can you point me to them?
+Such that the keyword 'format' is misinterpreted as the path to vmlinux.
+The resulting build error message is fairly cryptic:
 
-I'd also like to hear from Daniel/Alexei/John and others their thoughts.
+      GEN      vmlinux.h
+    Error: failed to load BTF from format: No such file or directory
 
-> 
-> > > Problem with that would be the fact that convert_ctx_accesses()
-> > > happens to
-> > > be called after the check_max_stack_depth(), so probably stack_depth
-> > > of a
-> > > prog that has frame_length accesses would have to be adjusted
-> > > earlier.
-> > 
-> > Ack, need to learn more on the verifier part…
-> 
-> <SNIP>
-> 
+This patch makes the failure reason clearer by yielding this instead:
+
+    Makefile:...: *** cannot find a vmlinux for VMLINUX_BTF at any of
+    "{paths}".  Stop.
+
+Fixes: acbd06206bbb ("selftests/bpf: Add vmlinux.h selftest exercising tracing of syscalls")
+Cc: stable@vger.kernel.org # 5.7+
+Signed-off-by: Kamal Mostafa <kamal@canonical.com>
+---
+
+[v2] moves the check to right after the VMLINUX_BTF definition.
+
+ tools/testing/selftests/bpf/Makefile | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 542768f5195b..7ba631f495f7 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -146,6 +146,9 @@ VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmlinux)				\
+ 		     /sys/kernel/btf/vmlinux				\
+ 		     /boot/vmlinux-$(shell uname -r)
+ VMLINUX_BTF ?= $(abspath $(firstword $(wildcard $(VMLINUX_BTF_PATHS))))
++ifeq ($(VMLINUX_BTF),)
++$(error cannot find a vmlinux for VMLINUX_BTF at any of "$(VMLINUX_BTF_PATHS)")
++endif
+ 
+ DEFAULT_BPFTOOL := $(SCRATCH_DIR)/sbin/bpftool
+ 
+-- 
+2.17.1
+
