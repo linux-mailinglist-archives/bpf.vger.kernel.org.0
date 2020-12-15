@@ -2,129 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B71C82DAE00
-	for <lists+bpf@lfdr.de>; Tue, 15 Dec 2020 14:31:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 981942DAE3A
+	for <lists+bpf@lfdr.de>; Tue, 15 Dec 2020 14:46:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727053AbgLONaa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Dec 2020 08:30:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20483 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726995AbgLONaX (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 15 Dec 2020 08:30:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608038932;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6eeo8Ye6UfGjKYpt3nL8YdwOzf2ER5qXBUTuYett2vM=;
-        b=MO/nOwkyMuKRTGHHOKWhueFZ1F9RTIYGCBGpUDwluptoUaLzWFzSjWDL3HzDaDsj4UZlVa
-        qHLc3st/DeI6JaU0fyihjmFHbYPoVeyyBmXFmN8jVVwf5NY8wNAVV0adA7Fvk/FW/hmU4t
-        g2jvVHpiieLdLNf/MqmwnGaD/BXpPGQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-264-755MRjIwN4uJoYE0aCEFpA-1; Tue, 15 Dec 2020 08:28:50 -0500
-X-MC-Unique: 755MRjIwN4uJoYE0aCEFpA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9742D801817;
-        Tue, 15 Dec 2020 13:28:49 +0000 (UTC)
-Received: from [10.36.113.44] (ovpn-113-44.ams2.redhat.com [10.36.113.44])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id AACF560861;
-        Tue, 15 Dec 2020 13:28:48 +0000 (UTC)
-From:   "Eelco Chaudron" <echaudro@redhat.com>
-To:     "Maciej Fijalkowski" <maciej.fijalkowski@intel.com>
-Cc:     "Lorenzo Bianconi" <lorenzo@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH v5 bpf-next 13/14] bpf: add new frame_length field to the
- XDP ctx
-Date:   Tue, 15 Dec 2020 14:28:39 +0100
-Message-ID: <38C60760-4F8C-43AC-A5DE-7FAECB65C310@redhat.com>
-In-Reply-To: <170BF39B-894D-495F-93E0-820EC7880328@redhat.com>
-References: <cover.1607349924.git.lorenzo@kernel.org>
- <0547d6f752e325f56a8e5f6466b50e81ff29d65f.1607349924.git.lorenzo@kernel.org>
- <20201208221746.GA33399@ranger.igk.intel.com>
- <96C89134-A747-4E05-AA11-CB6EA1420900@redhat.com>
- <20201209111047.GB36812@ranger.igk.intel.com>
- <170BF39B-894D-495F-93E0-820EC7880328@redhat.com>
+        id S1728676AbgLONn5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Dec 2020 08:43:57 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49184 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727907AbgLONn5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Dec 2020 08:43:57 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id ACC30AC7F;
+        Tue, 15 Dec 2020 13:43:14 +0000 (UTC)
+Subject: Re: [LSFMMBPF 2021] A status update
+To:     Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-nvme@vger.kernel.org" <linux-nvme@vger.kernel.org>
+References: <fd5264ac-c84d-e1d4-01e2-62b9c05af892@toxicpanda.com>
+ <20201212172957.GE2443@casper.infradead.org>
+ <20201215122307.GN32193@dhcp22.suse.cz>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <af2d36e8-7265-578c-0b7b-dd61cd851410@suse.de>
+Date:   Tue, 15 Dec 2020 14:43:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+In-Reply-To: <20201215122307.GN32193@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 9 Dec 2020, at 13:07, Eelco Chaudron wrote:
-
-> On 9 Dec 2020, at 12:10, Maciej Fijalkowski wrote:
-
-<SNIP>
-
->>>>> +
->>>>> +		ctx_reg = (si->src_reg == si->dst_reg) ? scratch_reg - 1 :
->>>>> si->src_reg;
->>>>> +		while (dst_reg == ctx_reg || scratch_reg == ctx_reg)
->>>>> +			ctx_reg--;
->>>>> +
->>>>> +		/* Save scratch registers */
->>>>> +		if (ctx_reg != si->src_reg) {
->>>>> +			*insn++ = BPF_STX_MEM(BPF_DW, si->src_reg, ctx_reg,
->>>>> +					      offsetof(struct xdp_buff,
->>>>> +						       tmp_reg[1]));
->>>>> +
->>>>> +			*insn++ = BPF_MOV64_REG(ctx_reg, si->src_reg);
->>>>> +		}
->>>>> +
->>>>> +		*insn++ = BPF_STX_MEM(BPF_DW, ctx_reg, scratch_reg,
->>>>> +				      offsetof(struct xdp_buff, tmp_reg[0]));
->>>>
->>>> Why don't you push regs to stack, use it and then pop it back? That 
->>>> way
->>>> I
->>>> suppose you could avoid polluting xdp_buff with tmp_reg[2].
+On 12/15/20 1:23 PM, Michal Hocko wrote:
+> On Sat 12-12-20 17:29:57, Matthew Wilcox wrote:
+>> On Fri, Dec 04, 2020 at 10:48:53AM -0500, Josef Bacik wrote:
+>>> We on the program committee hope everybody has been able to stay safe and
+>>> healthy during this challenging time, and look forward to being able to see
+>>> all of you in person again when it is safe.
 >>>
->>> There is no “real” stack in eBPF, only a read-only frame 
->>> pointer, and as we
->>> are replacing a single instruction, we have no info on what we can 
->>> use as
->>> scratch space.
+>>> The current plans for LSFMMBPF 2021 are to schedule an in person conference
+>>> in H2 (after June) of 2021.  The tentative plan is to use the same hotel
+>>> that we had planned to use for 2020, as we still have contracts with them.
+>>> However clearly that is not set in stone.  The Linux Foundation has done a
+>>> wonderful job of working with us to formulate a plan and figure out the
+>>> logistics that will work the best for everybody, I really can't thank them
+>>> enough for their help.
 >>
->> Uhm, what? You use R10 for stack operations. Verifier tracks the 
->> stack
->> depth used by programs and then it is passed down to JIT so that 
->> native
->> asm will create a properly sized stack frame.
+>> Thank you all for doing your best in the face of this disruption.  I
+>> really appreciate all the work you're putting in, and I can't wait to
+>> see you all again in person.
 >>
->> From the top of my head I would let know xdp_convert_ctx_access of a
->> current stack depth and use it for R10 stores, so your scratch space 
->> would
->> be R10 + (stack depth + 8), R10 + (stack_depth + 16).
->
-> Other instances do exactly the same, i.e. put some scratch registers 
-> in the underlying data structure, so I reused this approach. From the 
-> current information in the callback, I was not able to determine the 
-> current stack_depth. With "real" stack above, I meant having a 
-> pop/push like instruction.
->
-> I do not know the verifier code well enough, but are you suggesting I 
-> can get the current stack_depth from the verifier in the 
-> xdp_convert_ctx_access() callback? If so any pointers?
+>> I hosted a Zoom call yesterday on the topic of Page Folios, and uploaded
+>> the video.
+> 
+> Thanks for organizing this. I couldn't attent directly but I have
+> watched the video. I think this was a useful meeting.
+> 
+>> There was interest expressed in the call on doing a follow-up
+>> call on the topic of GUP (get_user_pages and friends).  It would probably
+>> also be good to have meetings on other topics.
+> 
+> I hope I will have time to join this one.
+> 
+>> I don't want this to be seen in any way as taking away from LSFMMBPF.
+>> I see Zoom calls as an interim solution to not having face-to-face
+>> meetings.
+> 
+> Agreed!
+> 
+>> I'd like to solicit feedback from this group on:
+>>
+>>   - Time of day.  There is no good time that suits everyone around
+>>     the world.  With developers in basically every inhabited time zone, the
+>>     call will definitely take place in the middle of somebody's night, and
+>>     during somebody else's normal family time.  Publishing the recordings
+>>     helps ameliorate some of this, but I feel we should shift the time
+>>     around.  Having it at the same time of day helps people fit it into
+>>     their schedule of other meetings (and meals), but I think the benefits
+>>     of allowing more people to participate live outweighs the costs.
+> 
+> Hard question without any good answer. You can rotate preferred timezone
+> which should spread the suffering.
+> 
+What I found useful is to have a fixed schedule for the actual talk, but 
+keep the recording online for an extended time (say 24h). And require 
+the presenters to be available in a break-out room for any questions for 
+an extended time, too.
+That way any participant can choose which time would suit him best to 
+watch the presentation, _and_ being reasonably sure that he can fire up 
+questions later on.
 
-Maciej any feedback on the above, i.e. getting the stack_depth in 
-xdp_convert_ctx_access()?
+>>   - Schedule.  Friday's probably a bad day to have it, as it ends up
+>>     being Saturday for some people.  It can move around the week too.
+>>     Also, probably wise to not have it over Christmas as most developers
+>>     have that period as family time.
+> 
+> Yes, Friday tends to be not great. I think mid week should work better
+> as the overalap
+> 
+>>   - Topics.  I'm sure there's no shortage of things to discuss!  I'm
+>>     happy to organise meetings for people even on topics I have no direct
+>>     interest in.
+> 
+> Thanks for organizing this. I am pretty sure poeple will land on topics
+> either in the call or over email.
+> 
+>> And most urgently, when should we have the GUP meeting? On the call,
+>> I suggested Friday the 8th of January, but I'm happy to set something
+>> up for next week if we'd like to talk more urgently.
+> 
+> I am unlikely to be able to join before the end of year so if you ask
+> me.
+> 
+> Thanks again and fingers crossed we can actually have a face to face
+> meeting sometimes during next year.
+> 
+I'd side with Michal here; having something this year will be 
+challenging, as quite some ppl (myself included) will be on holiday.
+Rather move it to start of next year; mid-February would be a good time, 
+giving enough room to organize etc.
 
->> Problem with that would be the fact that convert_ctx_accesses() 
->> happens to
->> be called after the check_max_stack_depth(), so probably stack_depth 
->> of a
->> prog that has frame_length accesses would have to be adjusted 
->> earlier.
->
-> Ack, need to learn more on the verifier part…
+Cheers,
 
-<SNIP>
-
+Hannes
+-- 
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
