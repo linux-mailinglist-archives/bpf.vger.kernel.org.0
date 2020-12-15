@@ -2,273 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A94E12DB556
-	for <lists+bpf@lfdr.de>; Tue, 15 Dec 2020 21:43:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C6512DB559
+	for <lists+bpf@lfdr.de>; Tue, 15 Dec 2020 21:45:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727816AbgLOUnN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Dec 2020 15:43:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43836 "EHLO
+        id S1726365AbgLOUpU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Dec 2020 15:45:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727693AbgLOUnK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Dec 2020 15:43:10 -0500
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95604C0617A6;
-        Tue, 15 Dec 2020 12:42:30 -0800 (PST)
-Received: by mail-qv1-xf43.google.com with SMTP id s6so10265793qvn.6;
-        Tue, 15 Dec 2020 12:42:30 -0800 (PST)
+        with ESMTP id S1726291AbgLOUpS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Dec 2020 15:45:18 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05FF0C06179C
+        for <bpf@vger.kernel.org>; Tue, 15 Dec 2020 12:44:38 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id ga15so29641066ejb.4
+        for <bpf@vger.kernel.org>; Tue, 15 Dec 2020 12:44:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=122b3GJHBoI9hFt00W+Aw6LC5oNOnt0kv5GB8+1gaCQ=;
-        b=IXWYyCfd3sstGkmdbL3Y2jm1Q+zuGhlD64i4QzL+YjRTGYFTG52jLbtAAUnkxIWHtt
-         QyKfYI64hiF43twGiRG9Pu4rNbgPUfPl3tVG4Oepm5NZjtNnj8Sp+EZI5gVkoIwFZ6zC
-         I3Y3cB7EMhGFmtJBd+27RVpSPpZWwjybhQdLnTxKFQLI6Op85FW98nTeDWWeVNHDef6D
-         M2LuiALAUJIPpLpOBdpAi/u/Gta5AzhF2w8VgLA/WFdSIX5FOQMgpBBVWzStOioWDeYO
-         9t+TKVsaIKndTji8/5+J5bt0SVCvCt/7nIcksL5hNOOFbKzhsnkkJVW1FYCfTVvFprTU
-         9mwA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cmPmSDCNdb0S99NxrxVQxRR9GorQHDjKAsu98tgUB6E=;
+        b=eUyyizdJ3i3ElWIZd9jWH7sDdLZk71BJ2PCtRNyYOaCIUj7e1YkfDQscpiHJnDHpUR
+         vjginfAW6bdMZS9H4MbwyAgHPnGW+uHlDBttkYXZetXuKQB8BIH2AEUw8mY39exGN3e/
+         f6sQFyQ/1ntqXT4nECsslm8n2Dao4miCXODwqtdPSLJ16+IjLjLZgQNMDZR876u+IGdW
+         yKBtPDMQhsjEtWUTXIjC4Og80fCq/CbVnJwA/4RGFE2h/F46J5MsSo5Hzwjv0F2uqUn+
+         T/WSXAtZI3ftYRcleKPFtWQ5JetPGqXa4Hw0sEJ68B4DkTu8xuZlsY1lSLxYHKqJbUB4
+         x0BQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=122b3GJHBoI9hFt00W+Aw6LC5oNOnt0kv5GB8+1gaCQ=;
-        b=HVSKiNn+q6XW4vv6g7MYj8SPA73jXztBHahIBEP/9Gxwnz7dHGM87HbDj+dAhHK5iM
-         k9UpwtOSaKwFQt/A+igQA928XTiR7r+oWIJYwnEX9EJviOtKzqHhayLiUJi+Mcx85N8v
-         +eVLW7r6WlQUAAJMfZrOcmgUzB3/6fIGB1Xcs6Qxi9UTgGeGrQTpfSqwjBP1quKt70MY
-         3ybGAvSVG7ikwj2aTrOg1VVoNdKWxhuRYWKolGA4qrwgEUkEBlk87WzU0dKmPfI0Np1C
-         ugrtRWRuew+TtLW3kV6ND34AJ6WhI2r/B4IT+JQU2fUMHQqDYnleUzZRDSeZ8XgDwCs6
-         Lplg==
-X-Gm-Message-State: AOAM533v4BgTcsheOlcBOQKnpqFIo6InA7jgxdRm1IUoxDicjxcYljFx
-        ooXHNfqnvp6virpMf0ZsQsfLkdXmLDEg4Vp5
-X-Google-Smtp-Source: ABdhPJzIiLLA6/oDjaFtA2buzc/M0cP4uhcm1HJswSEg8duZ8HgS0WbChY8h9Fo64X7wbYQKNadbGQ==
-X-Received: by 2002:a0c:e583:: with SMTP id t3mr39426093qvm.42.1608064949772;
-        Tue, 15 Dec 2020 12:42:29 -0800 (PST)
-Received: from localhost (pc-145-79-45-190.cm.vtr.net. [190.45.79.145])
-        by smtp.gmail.com with ESMTPSA id 198sm1565790qkk.4.2020.12.15.12.42.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 12:42:29 -0800 (PST)
-Date:   Tue, 15 Dec 2020 17:42:25 -0300
-From:   Carlos Antonio Neira Bustos <cneirabustos@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH v8 bpf-next] bpf/selftests: fold
- test_current_pid_tgid_new_ns into test_progs.
-Message-ID: <20201215204224.GA15407@localhost>
-References: <20201214174953.GA14038@localhost>
- <CAEf4BzapLB+ORVJz2zOzO7MsOUcHBRcO6b-NFCiboasMx9Vq0g@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cmPmSDCNdb0S99NxrxVQxRR9GorQHDjKAsu98tgUB6E=;
+        b=TY3vrffepOTf84g49gMP+X8/L2VN/nril5RcjbfmpgjDjunWsqpY5cst/OTSgjaZLw
+         EhuSZ3glFcWT3GYgM+WqbOmZS7aBjcVuFj6Ecrlnp1+QccXv9Q11OzM6T3TiZwUynI5V
+         mdXbFoJPQLF7/JeTvIWwlkKcsvBdhldUsdBAvdZ5gzjl4OSchnYgeJ/yeKCRVynZfgAO
+         QH2+upUCL1RzhlgNPXedwdeK79ZskfwPmdU46CZoAp8Y0AsZsCrdkngSFEInyw/c0eDE
+         5K23jCFK6XymdJ6wvTpRfGJjmnNtx1UqfaWJ21ARYeshdL+GERtYudtdqw8ce8nlsrrI
+         uX3A==
+X-Gm-Message-State: AOAM532aozXm4RGtws6p7fdyskzkp88x7xyGEBrfj+S0vhPjYhTJCLhD
+        Y1roPDsHo4xjZQEqCwOEh8AK5D7qi9z5Yl/ZPEY=
+X-Google-Smtp-Source: ABdhPJxL/XwqJoXWLGvrG42ZT51DeLt+zvVxqkqYmHXbkRk1No4JArqp8eHVJZtGDqhstHrcpNZ4oOhyllaFmL5x8us=
+X-Received: by 2002:a17:906:2f95:: with SMTP id w21mr1300159eji.238.1608065076693;
+ Tue, 15 Dec 2020 12:44:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzapLB+ORVJz2zOzO7MsOUcHBRcO6b-NFCiboasMx9Vq0g@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <CANaYP3EH2tS=LnAoRfYsnO-zs5qaO7GuHDhw03==t+B_C8Gf2w@mail.gmail.com>
+ <CAEf4Bza4P51cGFN4zgTBr5nt_3tcoeGQ-QfP5CjoGx2scJP5-g@mail.gmail.com>
+ <CANaYP3Euo8XYsDtqgoESLT_VRPGDKEyR8c0Wf3z1r_+nvS+ffw@mail.gmail.com> <CAEf4Bzb3ShNmD=_6XqUfL7DSDd_3rDcuuPN0Y4u8qVK2uOUsAA@mail.gmail.com>
+In-Reply-To: <CAEf4Bzb3ShNmD=_6XqUfL7DSDd_3rDcuuPN0Y4u8qVK2uOUsAA@mail.gmail.com>
+From:   Gilad Reti <gilad.reti@gmail.com>
+Date:   Tue, 15 Dec 2020 22:44:00 +0200
+Message-ID: <CANaYP3GetBKUPDfo6PqWnm3xuGs2GZjLF8Ed51Q1=Emv2J-dKg@mail.gmail.com>
+Subject: Re: libbpf CO-RE read_user{,_str} macros
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-Andrii,
-
-Thank you very much for checking this out!, you were right the test was
-incorrect. I'll work on your feedback and resend.
-Thanks!
-
-On Tue, Dec 15, 2020 at 11:05:50AM -0800, Andrii Nakryiko wrote:
-> On Mon, Dec 14, 2020 at 10:39 AM Carlos Neira <cneirabustos@gmail.com> wrote:
+On Tue, Dec 15, 2020 at 8:47 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Tue, Dec 15, 2020 at 4:50 AM Gilad Reti <gilad.reti@gmail.com> wrote:
 > >
-> > Currently tests for bpf_get_ns_current_pid_tgid() are outside test_progs.
-> > This change folds test cases into test_progs.
-> >
-> > Changes from V7:
-> >  - Rebased changes.
-> >  - Changed function scope.
-> >
-> > Signed-off-by: Carlos Neira <cneirabustos@gmail.com>
-> > Acked-by: Andrii Nakryiko <andriin@fb.com>
-> 
-> please drop my ack for the next version given the changes requested, thanks!
-> 
-> > ---
-> >  tools/testing/selftests/bpf/.gitignore        |   1 -
-> >  tools/testing/selftests/bpf/Makefile          |   3 +-
-> >  .../bpf/prog_tests/ns_current_pid_tgid.c      | 148 ++++++++++------
-> >  .../bpf/progs/test_ns_current_pid_tgid.c      |  26 +--
-> >  .../bpf/test_current_pid_tgid_new_ns.c        | 160 ------------------
-> >  5 files changed, 105 insertions(+), 233 deletions(-)
-> >  delete mode 100644 tools/testing/selftests/bpf/test_current_pid_tgid_new_ns.c
-> >
-> 
-> [...]
-> 
-> >
-> > -       obj = bpf_object__open_file(file, NULL);
-> > -       if (CHECK(IS_ERR(obj), "obj_open", "err %ld\n", PTR_ERR(obj)))
-> > -               return;
-> > +       skel = test_ns_current_pid_tgid__open_and_load();
-> > +       CHECK(!skel, "skel_open_load", "failed to load skeleton\n");
-> > +       goto cleanup;
-> 
-> Are you sure your test is doing what you think it's doing? Try running
-> `sudo ./test_progs -t ns_current_pid_tgid -v` and see if you get all
-> the CHECK()s you expect.
-> 
-> It's a long way of saying that you are missing `if ()` and just
-> unconditionally clean up after opening and loading the skeleton.
-> 
-> And if the skeleton is not open_and_load()'ed successfully, there is
-> nothing to clean up, btw.
-> 
-> >
-> > -       err = bpf_object__load(obj);
-> > -       if (CHECK(err, "obj_load", "err %d errno %d\n", err, errno))
-> > -               goto cleanup;
-> > +       tid = syscall(SYS_gettid);
-> > +       pid = getpid();
-> > +
-> > +       id = ((__u64)tid << 32) | pid;
-> >
-> > -       bss_map = bpf_object__find_map_by_name(obj, "test_ns_.bss");
-> > -       if (CHECK(!bss_map, "find_bss_map", "failed\n"))
-> > +       err = stat("/proc/self/ns/pid", &st);
-> > +       if (CHECK(err, "stat", "failed /proc/self/ns/pid: %d", err))
-> >                 goto cleanup;
-> >
-> > -       prog = bpf_object__find_program_by_title(obj, probe_name);
-> > -       if (CHECK(!prog, "find_prog", "prog '%s' not found\n",
-> > -                 probe_name))
-> > +       bss = skel->bss;
-> > +       bss->dev = st.st_dev;
-> > +       bss->ino = st.st_ino;
-> > +       bss->user_pid_tgid = 0;
-> > +
-> > +       err = test_ns_current_pid_tgid__attach(skel);
-> > +       if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
-> >                 goto cleanup;
-> >
-> > -       memset(&bss, 0, sizeof(bss));
-> > -       pid_t tid = syscall(SYS_gettid);
-> > -       pid_t pid = getpid();
-> > +       /* trigger tracepoint */
-> > +       usleep(1);
-> >
-> > -       id = (__u64) tid << 32 | pid;
-> > -       bss.user_pid_tgid = id;
-> > +       CHECK(bss->user_pid_tgid != id, "pid/tgid", "got %llu != exp %llu\n",
-> > +        bss->user_pid_tgid, id);
-> > +cleanup:
-> > +        test_ns_current_pid_tgid__destroy(skel);
-> > +}
-> >
-> > -       if (CHECK_FAIL(stat("/proc/self/ns/pid", &st))) {
-> > -               perror("Failed to stat /proc/self/ns/pid");
-> > +static int newns_pidtgid(void *arg)
-> 
-> nit: pid_tgid?
-> 
-> > +{
-> > +       struct test_ns_current_pid_tgid__bss  *bss;
-> > +       int pidns_fd = 0, err = 0, duration = 0;
-> > +       struct test_ns_current_pid_tgid *skel;
-> > +       pid_t pid, tid;
-> > +       struct stat st;
-> > +       __u64 id;
-> > +
-> > +       skel = test_ns_current_pid_tgid__open_and_load();
-> > +       if (!skel) {
-> > +               perror("Failed to load skeleton");
-> 
-> please use CHECK() or ASSERT_OK_PTR() instead of perror()
-> 
-> >                 goto cleanup;
-> >         }
-> >
-> > -       bss.dev = st.st_dev;
-> > -       bss.ino = st.st_ino;
-> > +       tid = syscall(SYS_gettid);
-> > +       pid = getpid();
-> > +       id = ((__u64) tid << 32) | pid;
-> >
-> 
-> [...]
-> 
-> > +
-> > +static void test_ns_current_pid_tgid_new_ns(void)
-> > +{
-> > +       int wstatus, duration = 0;
-> > +       pid_t cpid;
-> > +
-> > +       cpid = clone(newns_pidtgid,
-> > +         child_stack + STACK_SIZE,
-> > +         CLONE_NEWPID | SIGCHLD, NULL);
-> 
-> formatting here and below for wrapped arguments looks wrong. Please
-> double-check whitespaces and align arguments. There is also
-> `scripts/checkpatch.pl -f <path-to-file>` which will help.
-> 
-> > +
-> > +       if (CHECK(cpid == -1, "clone", strerror(errno)))
-> > +               exit(EXIT_FAILURE);
-> > +
-> > +       if (CHECK(waitpid(cpid, &wstatus, 0) == -1, "waitpid",
-> > +        strerror(errno))) {
-> > +               exit(EXIT_FAILURE);
-> > +       }
-> > +
-> > +       CHECK(WEXITSTATUS(wstatus) != 0, "newns_pidtgid",
-> > +        "failed");
-> > +}
-> > +
-> > +void test_ns_current_pid_tgid(void)
-> > +{
-> > +       if (test__start_subtest("ns_current_pid_tgid_global_ns"))
-> > +               test_ns_current_pid_tgid_global_ns();
-> > +       if (test__start_subtest("ns_current_pid_tgid_new_ns"))
-> > +               test_ns_current_pid_tgid_new_ns();
-> >  }
-> > diff --git a/tools/testing/selftests/bpf/progs/test_ns_current_pid_tgid.c b/tools/testing/selftests/bpf/progs/test_ns_current_pid_tgid.c
-> > index 1dca70a6de2f..0daa12db0d83 100644
-> > --- a/tools/testing/selftests/bpf/progs/test_ns_current_pid_tgid.c
-> > +++ b/tools/testing/selftests/bpf/progs/test_ns_current_pid_tgid.c
-> > @@ -5,31 +5,19 @@
-> >  #include <stdint.h>
-> >  #include <bpf/bpf_helpers.h>
-> >
-> > -static volatile struct {
-> > -       __u64 dev;
-> > -       __u64 ino;
-> > -       __u64 pid_tgid;
-> > -       __u64 user_pid_tgid;
-> > -} res;
-> > +__u64 user_pid_tgid = 0;
-> 
-> imo, no need to combine pid and tgid into a single u64, why not using
-> two separate global variables and keep it simple?
-> 
-> > +__u64 dev = 0;
-> > +__u64 ino = 0;
-> >
-> >  SEC("raw_tracepoint/sys_enter")
-> > -int trace(void *ctx)
-> > +int handler(const void *ctx)
-> >  {
-> > -       __u64  ns_pid_tgid, expected_pid;
-> >         struct bpf_pidns_info nsdata;
-> > -       __u32 key = 0;
-> >
-> > -       if (bpf_get_ns_current_pid_tgid(res.dev, res.ino, &nsdata,
-> > -                  sizeof(struct bpf_pidns_info)))
-> > +       if (bpf_get_ns_current_pid_tgid(dev, ino, &nsdata,
-> > +               sizeof(struct bpf_pidns_info)))
-> 
-> here as well, wrapped argument looks misaligned (unless it's my email client)
-> 
-> >                 return 0;
-> > -
-> > -       ns_pid_tgid = (__u64)nsdata.tgid << 32 | nsdata.pid;
-> > -       expected_pid = res.user_pid_tgid;
-> > -
-> 
-> [...]
+> > On Tue, Dec 15, 2020 at 3:26 AM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Mon, Dec 14, 2020 at 1:58 AM Gilad Reti <gilad.reti@gmail.com> wrote:
+> > > >
+> > > > Hello there,
+> > > > libbpf provides BPF_CORE_READ macros for reading struct members in a
+> > > > CO-RE compatible way. By default those macros reduct to the relevant
+> > > > bpf_probe_read_kernel functions. As far as I could tell, there are no
+> > > > variants of this macros that wrap the _user variants of the read
+> > > > functions. Are there any plans to support ones?
+> > >
+> > > BPF_CORE_READ() are using BPF CO-RE and thus emit relocations, which
+> > > will be adjusted by libbpf to match kernel struct layouts by using
+> > > kernel's BTF(s). Because of this, having xxx_user() variants doesn't
+> > > make much sense, because libbpf can't relocate field offsets against
+> > > user-space types (as there is no BTF for user-space applications,
+> > > typically). Which is why there are no BPF_CORE_READ_USER()-like
+> > > macros.
+> > >
+> > > What's your use case, though? There might be a valid one that we are
+> > > not aware of, so please provide more details. Thanks.
+> > Currently my use case is tracing syscall pointer arguments (For
+> > example, "connect" has a "struct sockaddr *" argument).
+>
+> So if it's a kernel-defined data structure provided from user-space,
+> then it has to be part of a stable UAPI type definitions, right? In
+> such a case, you shouldn't need CO-RE, because the layout is stable.
+> So it's still unclear why you'd need BPF_CORE_READ for that?..
+I may be completely off, but can't struct offsets and members change
+across different architectures?
+>
+>
+> Or is it because of the convenience of doing BPF_CORE_READ(s, field1,
+> field2, field3) instead of a sequence of bpf_probe_read_user() calls?
+> That's a different angle of BPF_CORE_READ() and we should clarify the
+> desired functionality you are looking for.
+>
+>
+> > >
+> > > > Thanks,
+> > > > Gilad Reti.
