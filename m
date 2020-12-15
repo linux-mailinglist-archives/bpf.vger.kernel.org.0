@@ -2,94 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA0842DAE86
-	for <lists+bpf@lfdr.de>; Tue, 15 Dec 2020 15:08:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 863AD2DAF6C
+	for <lists+bpf@lfdr.de>; Tue, 15 Dec 2020 15:53:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727200AbgLOOGk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Dec 2020 09:06:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727876AbgLOOGa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 15 Dec 2020 09:06:30 -0500
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2ECBC06179C;
-        Tue, 15 Dec 2020 06:05:49 -0800 (PST)
-Received: by mail-wr1-x441.google.com with SMTP id c5so16323486wrp.6;
-        Tue, 15 Dec 2020 06:05:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=gK+9YqVJCbtE3lQ5Don8jQgcKt63bQ7YNsENkuEVRUE=;
-        b=qPV3HGsEfqw5c3jtXuS+vSjHNl8VETOoc3VbCRnTuxTLnre2GeankDt5kkgTHBlOJJ
-         zniL7Vhb0Z53drb6aw0O8UcvwXDy1N43yBXb0FZ4MtEaVzo8XCedNKEi0BadQubgcFWs
-         6bKMbvnDHi3/PeCKtvOYIrjE5kdFbchptbAyMPdhzAYpiGEb6uwJxSjZ3+93ipxfLoqc
-         JiQqsDmsEkkdfLfsNDvjYdXiDj1X0mg/dn3sPMNtOQxy/BxRikgrr3iFc5po2UP+DFtj
-         z/hvy+14U11M8J0D03oFSDyI09TWP5d2Aw5A69gmWPDmAcRgTqcaMtlisi9857V5NCns
-         S0Rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=gK+9YqVJCbtE3lQ5Don8jQgcKt63bQ7YNsENkuEVRUE=;
-        b=aaMyhKsv+ij2r/QxXyoR2shQ+o7hhs2zqcn0EnJ8cXPV524km2CYfkNh0GJX27ppaW
-         GmNLqh2jGD9uUQi18WKNSsWcsZpyctOW5NJMFAHzzquSJv3kNYT2yyM3uU5RcZvXuef3
-         eZ6vfmnEYrWU8K5sf4kyL2/MCL6/jh5BPZY8HDTP3cD2+R94L/lTdSmPsO7uymXw2z+3
-         VOZB0TR4JwRgRfFwj5/PcWxSdPhoys+wsuWGOG5A3QG13Kejfohd49Qqprkp/vUd3kK/
-         i2PUhluH4EaHwq4N5eOMZLntgLGqZ3rQQ0dEfS+zr/3v96kD21E33uRBwnZ3d/xAUrfW
-         Sn0w==
-X-Gm-Message-State: AOAM531Ak9Ga877IuJ1qq4QJUy0sOKSGevC9A6GUsMpMjOCwpLg0tsRn
-        7hb0948pNpLmrqUbw5I0ODh9OfwsPy3mGRd6NKk=
-X-Google-Smtp-Source: ABdhPJw0TvI/84WJdHKHkNLWAhh5uOLOg15l6fjsw9HoAXZZUKlCeo2D9tqXJksK271XP8S7Hvm3c1VEcbd1aeQtdyM=
-X-Received: by 2002:adf:e512:: with SMTP id j18mr2954037wrm.52.1608041148627;
- Tue, 15 Dec 2020 06:05:48 -0800 (PST)
+        id S1730083AbgLOOwG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Dec 2020 09:52:06 -0500
+Received: from www62.your-server.de ([213.133.104.62]:44970 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730081AbgLOOv7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Dec 2020 09:51:59 -0500
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kpBfQ-00074i-V3; Tue, 15 Dec 2020 15:51:08 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kpBfQ-0009k5-NV; Tue, 15 Dec 2020 15:51:08 +0100
+Subject: Re: [PATCH v3 bpf-next 2/2] net: xdp: introduce xdp_prepare_buff
+ utility routine
+To:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, brouer@redhat.com, alexander.duyck@gmail.com,
+        saeed@kernel.org
+References: <cover.1607794551.git.lorenzo@kernel.org>
+ <71d5ae9f810c2c80f1cb09e304330be0b5ce5345.1607794552.git.lorenzo@kernel.org>
+ <20201215123643.GA23785@ranger.igk.intel.com>
+ <20201215134710.GB5477@lore-desk>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <6886cd02-8dec-1905-b878-d45ee9a0c9b4@iogearbox.net>
+Date:   Tue, 15 Dec 2020 15:51:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20201215121816.1048557-1-jackmanb@google.com> <20201215121816.1048557-6-jackmanb@google.com>
-In-Reply-To: <20201215121816.1048557-6-jackmanb@google.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Date:   Tue, 15 Dec 2020 15:05:36 +0100
-Message-ID: <CAJ+HfNieDqvamAzZfp36_yZHzsnwkeaARwedQaiFjaEu5Cn1tQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 04/11] bpf: Rename BPF_XADD and prepare to
- encode other atomics in .imm
-To:     Brendan Jackman <jackmanb@google.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201215134710.GB5477@lore-desk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26017/Mon Dec 14 15:33:39 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 15 Dec 2020 at 13:25, Brendan Jackman <jackmanb@google.com> wrote:
->
-> A subsequent patch will add additional atomic operations. These new
-> operations will use the same opcode field as the existing XADD, with
-> the immediate discriminating different operations.
->
-> In preparation, rename the instruction mode BPF_ATOMIC and start
-> calling the zero immediate BPF_ADD.
->
-> This is possible (doesn't break existing valid BPF progs) because the
-> immediate field is currently reserved MBZ and BPF_ADD is zero.
->
-> All uses are removed from the tree but the BPF_XADD definition is
-> kept around to avoid breaking builds for people including kernel
-> headers.
->
-> Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> ---
->  Documentation/networking/filter.rst           | 30 +++++++-----
->  arch/arm/net/bpf_jit_32.c                     |  7 ++-
->  arch/arm64/net/bpf_jit_comp.c                 | 16 +++++--
->  arch/mips/net/ebpf_jit.c                      | 11 +++--
->  arch/powerpc/net/bpf_jit_comp64.c             | 25 ++++++++--
->  arch/riscv/net/bpf_jit_comp32.c               | 20 ++++++--
->  arch/riscv/net/bpf_jit_comp64.c               | 16 +++++--
+On 12/15/20 2:47 PM, Lorenzo Bianconi wrote:
+[...]
+>>> diff --git a/drivers/net/xen-netfront.c b/drivers/net/xen-netfront.c
+>>> index 329397c60d84..61d3f5f8b7f3 100644
+>>> --- a/drivers/net/xen-netfront.c
+>>> +++ b/drivers/net/xen-netfront.c
+>>> @@ -866,10 +866,8 @@ static u32 xennet_run_xdp(struct netfront_queue *queue, struct page *pdata,
+>>>   
+>>>   	xdp_init_buff(xdp, XEN_PAGE_SIZE - XDP_PACKET_HEADROOM,
+>>>   		      &queue->xdp_rxq);
+>>> -	xdp->data_hard_start = page_address(pdata);
+>>> -	xdp->data = xdp->data_hard_start + XDP_PACKET_HEADROOM;
+>>> +	xdp_prepare_buff(xdp, page_address(pdata), XDP_PACKET_HEADROOM, len);
+>>>   	xdp_set_data_meta_invalid(xdp);
+>>> -	xdp->data_end = xdp->data + len;
+>>>   
+>>>   	act = bpf_prog_run_xdp(prog, xdp);
+>>>   	switch (act) {
+>>> diff --git a/include/net/xdp.h b/include/net/xdp.h
+>>> index 3fb3a9aa1b71..66d8a4b317a3 100644
+>>> --- a/include/net/xdp.h
+>>> +++ b/include/net/xdp.h
+>>> @@ -83,6 +83,18 @@ xdp_init_buff(struct xdp_buff *xdp, u32 frame_sz, struct xdp_rxq_info *rxq)
+>>>   	xdp->rxq = rxq;
+>>>   }
+>>>   
+>>> +static inline void
 
-For RISC-V:
+nit: maybe __always_inline
 
-Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com>
+>>> +xdp_prepare_buff(struct xdp_buff *xdp, unsigned char *hard_start,
+>>> +		 int headroom, int data_len)
+>>> +{
+>>> +	unsigned char *data = hard_start + headroom;
+>>> +
+>>> +	xdp->data_hard_start = hard_start;
+>>> +	xdp->data = data;
+>>> +	xdp->data_end = data + data_len;
+>>> +	xdp->data_meta = data;
+>>> +}
+>>> +
+>>>   /* Reserve memory area at end-of data area.
+>>>    *
+
+For the drivers with xdp_set_data_meta_invalid(), we're basically setting xdp->data_meta
+twice unless compiler is smart enough to optimize the first one away (did you double check?).
+Given this is supposed to be a cleanup, why not integrate this logic as well so the
+xdp_set_data_meta_invalid() doesn't get extra treatment?
+
+Thanks,
+Daniel
