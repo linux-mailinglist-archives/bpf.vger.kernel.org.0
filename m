@@ -2,269 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B5612DC47C
-	for <lists+bpf@lfdr.de>; Wed, 16 Dec 2020 17:43:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA4302DC4E6
+	for <lists+bpf@lfdr.de>; Wed, 16 Dec 2020 18:01:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726721AbgLPQmx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Dec 2020 11:42:53 -0500
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:47003 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725939AbgLPQmx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Dec 2020 11:42:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1608136971; x=1639672971;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=EINpcIYTjwYeOkbDneqm5cXPEFSVJPKdld+/Olx8XLU=;
-  b=GVYOr675W7sshryceeJ+4Xx/iwg0CASCV4byI9TColYLIdCJALAp//3R
-   MZ8vI3U+5U9qOKmd4HN/uyn2bRATZyB1u9Ze4bIGoTfbgX351RE+ldYzJ
-   oZUW5ZyypeDKNLTjD67/aTzFAMUcrTCUKha/rRJrdwvipVkRBoqoWTcJx
-   0=;
-X-IronPort-AV: E=Sophos;i="5.78,424,1599523200"; 
-   d="scan'208";a="96586335"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1e-a70de69e.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 16 Dec 2020 16:42:10 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1e-a70de69e.us-east-1.amazon.com (Postfix) with ESMTPS id 5F44BA2054;
-        Wed, 16 Dec 2020 16:42:07 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 16 Dec 2020 16:42:06 +0000
-Received: from 38f9d3582de7.ant.amazon.com (10.43.162.144) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 16 Dec 2020 16:42:02 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     <kafai@fb.com>
-CC:     <ast@kernel.org>, <benh@amazon.com>, <bpf@vger.kernel.org>,
-        <daniel@iogearbox.net>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <kuni1840@gmail.com>,
-        <kuniyu@amazon.co.jp>, <linux-kernel@vger.kernel.org>,
+        id S1726912AbgLPRBO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Dec 2020 12:01:14 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:53446 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726745AbgLPRBN (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 16 Dec 2020 12:01:13 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BGGnDK5010077;
+        Wed, 16 Dec 2020 09:00:18 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=BQN71zfq//H7X3tr2fzPDBgEUtELfWj9/V6swgtbz6w=;
+ b=lTB/d9ksfaM3kXKBxvOl2MBbcQruIDD3SixKobXPsnGCZth8kFfkhVZUCuZeAqnzcx8V
+ 1SQ1WNwAxhJYEZ1zrMwysulf7ntxZPgT0sCqSr6zA1dP1ztODJqycvtDrp56mRFql29o
+ E8+46mWVPaxDssrxZ5YkTDlurqcYikMSpaM= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 35f54ncjym-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 16 Dec 2020 09:00:18 -0800
+Received: from NAM04-SN1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 16 Dec 2020 09:00:16 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LX6FkP9Mb1eOVQ92Cg3HPEU+DBlgOpNTQune2b9FsL/b5bL8hpR551CCJp70LhnsAAABA1AuJYgntlLee56BJ6YGLsnM5HR0PvIxCD3KWGpFAx9Qn8wARVLsctw3yXZYI4Q7nHrZC+9ucGBXrq+yrDPBtpKd3Woa1GTdMatOmYV1HDQhcKXUWKiBjLxhJLqNi4yD+EPnxXFEBUgya7355tEaVlfFVUnUx5kbONPHO+S3vFlTLcuD//Q3ma4CDWe/ab0IHHcofKPqu6iBIcgfrmNezxQWBYdyAh2kDNqWZ+u5zqxDD7bBsmKoYNMcZ74r46kOOu/we3r+B3Nx8PEfOg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BQN71zfq//H7X3tr2fzPDBgEUtELfWj9/V6swgtbz6w=;
+ b=cl7TShsHrhje8dJvzeX+jWfVUzrgE9rAi4hUxKIVrQdYv8Q2wvFnaX19i1LVzRI/ZjntecSK4Bet3laRwMiQddK07IlL61huaXdj67RVIfvfQ+auiFvh3GnW6UgzjvX3gh8buZEWo/QaJgVWd9Qj6C+K0CLyUUezX4vE+7FsWdglZZxFWSLQcQWwBx2jSAZ6M0hTKHn0zeED2QoB6sLn4Bvsfz/PuprfKvQn9a9/svmzDpuPBZMi8E8KuScNX/PrHvlVHIRwowIOqrzY0S7PNFiuOxeZVZUG7DZ98G4tvAjJSI6XDckN+XagAq/GoGaS8JyGGE2tL9JZTovaMJePfg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BQN71zfq//H7X3tr2fzPDBgEUtELfWj9/V6swgtbz6w=;
+ b=Ch0zcCfzln5oyPugLQdx/eMVQzzuYIXu1ydpnhvCL6Q39fF51rd5Qox/AV83fYE3VsFyqzAD4eS8r2HSG3Z/0sRFLhkYfqUe274L8JopPKrGyhkepMQZ5UnjvrjjxbLOLPa2+W5yb1MzFo1dnVbsuC+f2FO4hf+EAqnNrXaEIpo=
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by BYAPR15MB4087.namprd15.prod.outlook.com (2603:10b6:a02:bd::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.18; Wed, 16 Dec
+ 2020 17:00:09 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3654.025; Wed, 16 Dec 2020
+ 17:00:09 +0000
+Subject: Re: [PATCH v2 bpf-next 0/4] introduce bpf_iter for task_vma
+To:     Song Liu <songliubraving@fb.com>, <bpf@vger.kernel.org>,
         <netdev@vger.kernel.org>
-Subject: Re: [PATCH v1 bpf-next 05/11] tcp: Migrate TCP_NEW_SYN_RECV requests.
-Date:   Thu, 17 Dec 2020 01:41:58 +0900
-Message-ID: <20201216164158.65104-1-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.17.2 (Apple Git-113)
-In-Reply-To: <20201215025837.k2cuhykmz6h46fud@kafai-mbp.dhcp.thefacebook.com>
-References: <20201215025837.k2cuhykmz6h46fud@kafai-mbp.dhcp.thefacebook.com>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
+        <kernel-team@fb.com>
+References: <20201215233702.3301881-1-songliubraving@fb.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <7032f6a9-ec51-51b0-8981-bdfda1aad5b6@fb.com>
+Date:   Wed, 16 Dec 2020 09:00:06 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.1
+In-Reply-To: <20201215233702.3301881-1-songliubraving@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2620:10d:c090:400::5:4fea]
+X-ClientProxiedBy: MW4PR04CA0272.namprd04.prod.outlook.com
+ (2603:10b6:303:89::7) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.162.144]
-X-ClientProxiedBy: EX13D47UWA001.ant.amazon.com (10.43.163.6) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21cf::12e6] (2620:10d:c090:400::5:4fea) by MW4PR04CA0272.namprd04.prod.outlook.com (2603:10b6:303:89::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Wed, 16 Dec 2020 17:00:08 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f86a403d-02b1-4e3a-23d8-08d8a1e40bc0
+X-MS-TrafficTypeDiagnostic: BYAPR15MB4087:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB408737AE38321B4EB90F97B6D3C50@BYAPR15MB4087.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rSJeLAX20U6kavWt6icmxnGgfbMxP0eT2ZuEE8i6vWZu90aiExnLBzl6Llg6DkZPxiwqI98/CkMKwC+9tBW7HGsKhUEIEW8RSwsZzDGjJg2LOfYD23CoBu/BSCrZPuPfyyBp0tQvosAXyY40NIZ5/CmMngOoVokbCRjWWYrEq9rrGlKSx/O391n2DYQyO4J9HVOhNLaDCgtl/J4YWAuLiM4o0a6xwuhORuJJ0alzZUJe0b2J2D5ndbb0E04DzAKNHIc4cvBky37N9Af2jRIpiFfM5vphSOwhE8L2/6EBYx77XBKrY/DBbdIkCVbsejdtuAoByaV5OpBGfQn73ulFzkEyaFMr9x61BFSp8yS++c8+DELF7uPR8dcaGVFGINEbu0qet7vTGT5MLfcfZxqxg3OgWxzvzrR76k2RCsRWH2w=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39860400002)(376002)(136003)(366004)(396003)(4326008)(31696002)(478600001)(16526019)(52116002)(8936002)(186003)(8676002)(53546011)(66556008)(66476007)(6486002)(66946007)(31686004)(5660300002)(2906002)(316002)(83380400001)(86362001)(36756003)(2616005)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: MtEQJCoH8XhPp3TSz7Y4ak6jmTgvfHnzfeezljZLoyEwPGHfMU5/D9b/OyVbq5O+ivnEi/mHtyL2e0DecgL/TYaD0Sp4rMfGFg8fV+1itdBPQ96lUPxFSlNLBbCNB6YNH3tJefVfFMH9/1S+woKhDvsNfgEmrWjiWnxDt8wPaBvDMYAfOSzHM5AJLgclVYVzFAp7Xdn5LHOLQb72mDiS+lZPMm2YI+43cMDYCk9x8HZqwaCYHOrGxQeEcVOOmspAdmNiG1uVUNPDjoFdNMe07PD4y/42Un0izuAQ7rRuNsVMWTf/U3GLaAuWJb5cCHi1vaSNUAm/v85+S5wgWaLjw0bj+tORQ9a2LtCRVnRWo3qzkH3tsbd33RqeERT5sf82NdiX3ykj3lTdQutK2ExGlqeK8Pu0ROloYf5HR9N5boDSaZMN8p5MidlNEvKnbdUcNeYcpM8gAtpCB0fWxo+5s92Bu3+823X3vquAQtb6beBk1Lb+k/bLLbIFgOdN5b5s9W4bhekQsJSMNAjILCnEniUIkzUlzAiuL/qspaHNial6R9mP8JNbWwn0LWnKnmvL0MCGEIrZcrQfUwtRK52rXobCAgPqYqxmuiVzPEurQagTgeGaqh3WNYNOjO0VSoKKQnBeN/AAGpUUOhDE0lerWNnKQhgyiz3NIq20Y72GnkocVcZ0+01kO8EDLvyyCcbXG5N6Me1M7It3pncefenTOruc+z8EAy8iWu7ZGKrzvIGHFRLDUnRGMri3RLXeCik4eiHvWeo79SXN4evhDTOZB5e1fVro34zGVt7GH0lqt2Y=
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Dec 2020 17:00:09.3552
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-Network-Message-Id: f86a403d-02b1-4e3a-23d8-08d8a1e40bc0
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +3XZpVWscRMXdX6D01kFnfG+qsbn7mgjBcJu16YyUFFz7bsAs7jves7buEKq1KB0
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB4087
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-16_07:2020-12-15,2020-12-16 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ bulkscore=0 phishscore=0 priorityscore=1501 spamscore=0 impostorscore=0
+ mlxlogscore=977 lowpriorityscore=0 malwarescore=0 mlxscore=0 adultscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012160110
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From:   Martin KaFai Lau <kafai@fb.com>
-Date:   Mon, 14 Dec 2020 18:58:37 -0800
-> On Tue, Dec 15, 2020 at 02:03:13AM +0900, Kuniyuki Iwashima wrote:
-> > From:   Martin KaFai Lau <kafai@fb.com>
-> > Date:   Thu, 10 Dec 2020 10:49:15 -0800
-> > > On Thu, Dec 10, 2020 at 02:15:38PM +0900, Kuniyuki Iwashima wrote:
-> > > > From:   Martin KaFai Lau <kafai@fb.com>
-> > > > Date:   Wed, 9 Dec 2020 16:07:07 -0800
-> > > > > On Tue, Dec 01, 2020 at 11:44:12PM +0900, Kuniyuki Iwashima wrote:
-> > > > > > This patch renames reuseport_select_sock() to __reuseport_select_sock() and
-> > > > > > adds two wrapper function of it to pass the migration type defined in the
-> > > > > > previous commit.
-> > > > > > 
-> > > > > >   reuseport_select_sock          : BPF_SK_REUSEPORT_MIGRATE_NO
-> > > > > >   reuseport_select_migrated_sock : BPF_SK_REUSEPORT_MIGRATE_REQUEST
-> > > > > > 
-> > > > > > As mentioned before, we have to select a new listener for TCP_NEW_SYN_RECV
-> > > > > > requests at receiving the final ACK or sending a SYN+ACK. Therefore, this
-> > > > > > patch also changes the code to call reuseport_select_migrated_sock() even
-> > > > > > if the listening socket is TCP_CLOSE. If we can pick out a listening socket
-> > > > > > from the reuseport group, we rewrite request_sock.rsk_listener and resume
-> > > > > > processing the request.
-> > > > > > 
-> > > > > > Reviewed-by: Benjamin Herrenschmidt <benh@amazon.com>
-> > > > > > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-> > > > > > ---
-> > > > > >  include/net/inet_connection_sock.h | 12 +++++++++++
-> > > > > >  include/net/request_sock.h         | 13 ++++++++++++
-> > > > > >  include/net/sock_reuseport.h       |  8 +++----
-> > > > > >  net/core/sock_reuseport.c          | 34 ++++++++++++++++++++++++------
-> > > > > >  net/ipv4/inet_connection_sock.c    | 13 ++++++++++--
-> > > > > >  net/ipv4/tcp_ipv4.c                |  9 ++++++--
-> > > > > >  net/ipv6/tcp_ipv6.c                |  9 ++++++--
-> > > > > >  7 files changed, 81 insertions(+), 17 deletions(-)
-> > > > > > 
-> > > > > > diff --git a/include/net/inet_connection_sock.h b/include/net/inet_connection_sock.h
-> > > > > > index 2ea2d743f8fc..1e0958f5eb21 100644
-> > > > > > --- a/include/net/inet_connection_sock.h
-> > > > > > +++ b/include/net/inet_connection_sock.h
-> > > > > > @@ -272,6 +272,18 @@ static inline void inet_csk_reqsk_queue_added(struct sock *sk)
-> > > > > >  	reqsk_queue_added(&inet_csk(sk)->icsk_accept_queue);
-> > > > > >  }
-> > > > > >  
-> > > > > > +static inline void inet_csk_reqsk_queue_migrated(struct sock *sk,
-> > > > > > +						 struct sock *nsk,
-> > > > > > +						 struct request_sock *req)
-> > > > > > +{
-> > > > > > +	reqsk_queue_migrated(&inet_csk(sk)->icsk_accept_queue,
-> > > > > > +			     &inet_csk(nsk)->icsk_accept_queue,
-> > > > > > +			     req);
-> > > > > > +	sock_put(sk);
-> > > > > not sure if it is safe to do here.
-> > > > > IIUC, when the req->rsk_refcnt is held, it also holds a refcnt
-> > > > > to req->rsk_listener such that sock_hold(req->rsk_listener) is
-> > > > > safe because its sk_refcnt is not zero.
-> > > > 
-> > > > I think it is safe to call sock_put() for the old listener here.
-> > > > 
-> > > > Without this patchset, at receiving the final ACK or retransmitting
-> > > > SYN+ACK, if sk_state == TCP_CLOSE, sock_put(req->rsk_listener) is done
-> > > > by calling reqsk_put() twice in inet_csk_reqsk_queue_drop_and_put().
-> > > Note that in your example (final ACK), sock_put(req->rsk_listener) is
-> > > _only_ called when reqsk_put() can get refcount_dec_and_test(&req->rsk_refcnt)
-> > > to reach zero.
-> > > 
-> > > Here in this patch, it sock_put(req->rsk_listener) without req->rsk_refcnt
-> > > reaching zero.
-> > > 
-> > > Let says there are two cores holding two refcnt to req (one cnt for each core)
-> > > by looking up the req from ehash.  One of the core do this migrate and
-> > > sock_put(req->rsk_listener).  Another core does sock_hold(req->rsk_listener).
-> > > 
-> > > 	Core1					Core2
-> > > 						sock_put(req->rsk_listener)
-> > > 
-> > > 	sock_hold(req->rsk_listener)
-> > 
-> > I'm sorry for the late reply.
-> > 
-> > I missed this situation that different Cores get into NEW_SYN_RECV path,
-> > but this does exist.
-> > https://lore.kernel.org/netdev/1517977874.3715.153.camel@gmail.com/#t
-> > https://lore.kernel.org/netdev/1518531252.3715.178.camel@gmail.com/
-> > 
-> > 
-> > If close() is called for the listener and the request has the last refcount
-> > for it, sock_put() by Core2 frees it, so Core1 cannot proceed with freed
-> > listener. So, it is good to call refcount_inc_not_zero() instead of
-> > sock_hold(). If refcount_inc_not_zero() fails, it means that the listener
-> _inc_not_zero() usually means it requires rcu_read_lock().
-> That may have rippling effect on other req->rsk_listener readers.
+
+
+On 12/15/20 3:36 PM, Song Liu wrote:
+> This set introduces bpf_iter for task_vma, which can be used to generate
+> information similar to /proc/pid/maps or /proc/pid/smaps. Patch 4/4 adds
+
+I did not see an example for /proc/pid/smaps. It would be good if you 
+can cover smaps as well since it is used by a lot of people.
+
+> an example that mimics /proc/pid/maps.
 > 
-> There may also be places assuming that the req->rsk_listener will never
-> change once it is assigned.  not sure.  have not looked closely yet.
-
-I have checked this again. There are no functions that expect explicitly
-req->rsk_listener never change except for BUG_ON in inet_child_forget().
-No BUG_ON/WARN_ON does not mean they does not assume listener never
-change, but such functions still work properly if rsk_listener is changed.
-
-
-> It probably needs some more thoughts here to get a simpler solution.
-
-Is it fine to move sock_hold() before assigning rsk_listener and defer
-sock_put() to the end of tcp_v[46]_rcv() ?
-
-Also, we have to rewrite rsk_listener first and then call sock_put() in
-reqsk_timer_handler() so that rsk_listener always has refcount more than 1.
-
----8<---
-	struct sock *nsk, *osk;
-	bool migrated = false;
-	...
-	sock_hold(req->rsk_listener);  // (i)
-	sk = req->rsk_listener;
-	...
-	if (sk->sk_state == TCP_CLOSE) {
-		osk = sk;
-		// do migration without sock_put()
-		sock_hold(nsk);  // (ii) (as with (i))
-		sk = nsk;
-		migrated = true;
-	}
-	...
-	if (migrated) {
-		sock_put(sk);  // pair with (ii)
-		sock_put(osk); // decrement old listener's refcount
-		sk = osk;
-	}
-	sock_put(sk);  // pair with (i)
----8<---
-
-
-> > is closed and the req->rsk_listener is changed in another place. Then, we
-> > can continue processing the request by rewriting sk with rsk_listener and
-> > calling sock_hold() for it.
-> > 
-> > Also, the migration by Core2 can be done after sock_hold() by Core1. Then
-> > if Core1 win the race by removing the request from ehash,
-> > in inet_csk_reqsk_queue_add(), instead of sk, req->rsk_listener should be
-> > used as the proper listener to add the req into its queue. But if the
-> > rsk_listener is also TCP_CLOSE, we have to call inet_child_forget().
-> > 
-> > Moreover, we have to check the listener is freed in the beginning of
-> > reqsk_timer_handler() by refcount_inc_not_zero().
-> > 
-> > 
-> > > > And then, we do `goto lookup;` and overwrite the sk.
-> > > > 
-> > > > In the v2 patchset, refcount_inc_not_zero() is done for the new listener in
-> > > > reuseport_select_migrated_sock(), so we have to call sock_put() for the old
-> > > > listener instead to free it properly.
-> > > > 
-> > > > ---8<---
-> > > > +struct sock *reuseport_select_migrated_sock(struct sock *sk, u32 hash,
-> > > > +					    struct sk_buff *skb)
-> > > > +{
-> > > > +	struct sock *nsk;
-> > > > +
-> > > > +	nsk = __reuseport_select_sock(sk, hash, skb, 0, BPF_SK_REUSEPORT_MIGRATE_REQUEST);
-> > > > +	if (nsk && likely(refcount_inc_not_zero(&nsk->sk_refcnt)))
-> > > There is another potential issue here.  The TCP_LISTEN nsk is protected
-> > > by rcu.  refcount_inc_not_zero(&nsk->sk_refcnt) cannot be done if it
-> > > is not under rcu_read_lock().
-> > > 
-> > > The receive path may be ok as it is in rcu.  You may need to check for
-> > > others.
-> > 
-> > IIUC, is this mean nsk can be NULL after grace period of RCU? If so, I will
-> worse than NULL.  an invalid pointer.
->  
-> > move rcu_read_lock/unlock() from __reuseport_select_sock() to
-> > reuseport_select_sock() and reuseport_select_migrated_sock().
-> ok.
+> Changes v1 => v2:
+>    1. Small fixes in task_iter.c and the selftests. (Yonghong)
 > 
-> > 
-> > 
-> > > > +		return nsk;
-> > > > +
-> > > > +	return NULL;
-> > > > +}
-> > > > +EXPORT_SYMBOL(reuseport_select_migrated_sock);
-> > > > ---8<---
-> > > > https://lore.kernel.org/netdev/20201207132456.65472-8-kuniyu@amazon.co.jp/
-> > > > 
-> > > > 
-> > > > > > +	sock_hold(nsk);
-> > > > > > +	req->rsk_listener = nsk;
-> > > It looks like there is another race here.  What
-> > > if multiple cores try to update req->rsk_listener?
-> > 
-> > I think we have to add a lock in struct request_sock, acquire it, check
-> > if the rsk_listener is changed or not, and then do migration. Also, if the
-> > listener has been changed, we have to tell the caller to use it as the new
-> > listener.
-> > 
-> > ---8<---
-> >        spin_lock(&lock)
-> >        if (sk != req->rsk_listener) {
-> >                nsk = req->rsk_listener;
-> >                goto out;
-> >        }
-> > 
-> >        // do migration
-> > out:
-> >        spin_unlock(&lock)
-> >        return nsk;
-> > ---8<---
-> cmpxchg may help here.
-
-Thank you, I will use cmpxchg() to rewrite rsk_listener atomically and
-check if req->rsk_listener is updated.
+> Song Liu (4):
+>    bpf: introduce task_vma bpf_iter
+>    bpf: allow bpf_d_path in sleepable bpf_iter program
+>    libbpf: introduce section "iter.s/" for sleepable bpf_iter program
+>    selftests/bpf: add test for bpf_iter_task_vma
+> 
+>   include/linux/bpf.h                           |   2 +-
+>   kernel/bpf/task_iter.c                        | 205 +++++++++++++++++-
+>   kernel/trace/bpf_trace.c                      |   5 +
+>   tools/lib/bpf/libbpf.c                        |   5 +
+>   .../selftests/bpf/prog_tests/bpf_iter.c       | 106 ++++++++-
+>   tools/testing/selftests/bpf/progs/bpf_iter.h  |   9 +
+>   .../selftests/bpf/progs/bpf_iter_task_vma.c   |  55 +++++
+>   7 files changed, 375 insertions(+), 12 deletions(-)
+>   create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_task_vma.c
+> 
+> --
+> 2.24.1
+> 
