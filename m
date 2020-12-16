@@ -2,392 +2,371 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67D992DBFD9
-	for <lists+bpf@lfdr.de>; Wed, 16 Dec 2020 12:53:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6F352DC06B
+	for <lists+bpf@lfdr.de>; Wed, 16 Dec 2020 13:41:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726013AbgLPLwp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Dec 2020 06:52:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44140 "EHLO
+        id S1725956AbgLPMlU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Dec 2020 07:41:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbgLPLwp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Dec 2020 06:52:45 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6DD5C06179C
-        for <bpf@vger.kernel.org>; Wed, 16 Dec 2020 03:52:04 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id d9so23674697iob.6
-        for <bpf@vger.kernel.org>; Wed, 16 Dec 2020 03:52:04 -0800 (PST)
+        with ESMTP id S1725879AbgLPMlU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Dec 2020 07:41:20 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FC5EC061794
+        for <bpf@vger.kernel.org>; Wed, 16 Dec 2020 04:40:40 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id h16so24639637edt.7
+        for <bpf@vger.kernel.org>; Wed, 16 Dec 2020 04:40:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=8HJ+xb/a9oqIR8xR8fqVtF6iMeQd6DTTe6f36lZzVXs=;
-        b=TzxyQRWLziS9EsZgrc5b9P56kBUOh/38eQobLLOJSZ1YukJpsFfHoO8zkJp7Uwy/hV
-         W1ks1Ui2mEaKQ5ur0x6oS5fIJqVnPt11YbjBuV1XN8y1iX61VWqt1HpthboEWi/3xZcG
-         3HdBP58f5z9l1fW7edQ29W0Z1Qp9uBT0p3OaDx1dVdB/oB9u2TefE+UgZij14sCbaa/e
-         hMKRt06k+yzlVRdxHyewuk7t7LVNoFx6gZzGGSILhhify77NIPBYSftp7LPg32BBjQzC
-         i/r0WwBJJrCuNdZnmUV1QmqMImQNq/LMTFRXkgJ+tCZHmwY9U/NDcIS7TFU9XA3+l1CC
-         T77A==
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=3+24FVm7G2PdFINSVK5bgqGfot8W8NytzB+t5EcpvgI=;
+        b=g2ZP2SDRah5nbddZopUeIRBXFfz17l7NpXpnm68Safqk4rWhv2AP78YWl7kxMoW8TN
+         l9dKQpYTOUEuz+TMSeX1xzrGljoUtfzplIaBlzxo2TEsjFfsG0wG0iZP14ijzNcs26kT
+         Km1DzLG0gAG6Kgf4Gu2npNc6I8dsxYYuQXhPbBwHOaQXtyVWjTbBOsEBiQ6PEGuaVARp
+         e7zZVPrShngVgQz7XOx+cktjlBZpr86PFIzzYmJIzI0ocmRH0q4GggW/kUeuZVqXiIjW
+         VhTevQr9p2W8Qs6smfYqVHE/BN/8CVNvI2n/Y54iwlJ/G7Xdk5vhqjp+R/5I/BIP4lY7
+         p4Xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=8HJ+xb/a9oqIR8xR8fqVtF6iMeQd6DTTe6f36lZzVXs=;
-        b=ksKJkrQ3aIg5Bl/gQChb6AHU+rYs58A1T3XhaXLqrbJXUf60k8p3JyZmkpt/UGYTAH
-         Zs23wY66hZdKWGniDRw7rH2j2eh5mCua9Dw3Km9Q2/3u9p+pn5kwJYKHlMjOy6RDdChz
-         h+yZBTKeSNwg6/AxNemVJLZ3emkcjumhwROPXR6I5YnUlZ9ZU5eCJBcmiVGQc4uQPEhE
-         sxHUvUDV7zv28Bqlg3uxzghTx43KSp7oY2hDtHldthKTz9GcTt5WJBbWfH00q/VfrcW+
-         +QybEtuz1lSTsW5Bcs4KXj1Y7+3R1h5YfiM8nIf79TPuw6gLKVRbipESmgwB+xYnT/Of
-         X1mw==
-X-Gm-Message-State: AOAM530vkFUGAG/DvMwTyHatQDthI5rrt6MW9V+g+ekJgHburjiwDE6+
-        jSdzQicn3zrlQhKbklLW3WGk/CfPEJqvT13NVcJGvQ==
-X-Google-Smtp-Source: ABdhPJz1+E/vgd0VBYIqx7i+wSWHpBSPIlTjjgtT1z8hhMoK/g8KMyhwmob/vts1DNuBHN2AUBZX+tCL2l6IHv+KXU4=
-X-Received: by 2002:a02:ce8a:: with SMTP id y10mr41534860jaq.102.1608119524010;
- Wed, 16 Dec 2020 03:52:04 -0800 (PST)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=3+24FVm7G2PdFINSVK5bgqGfot8W8NytzB+t5EcpvgI=;
+        b=CM7n876zKIWdWxyC7IrW4DzaGA284a0zLPogQiEZDg6d+fXYd+FqVKcLJDQ7StGSxx
+         8VuY1H0TDy+iWJZJEAhgt3hVGoMyfynU9eK+cZFRVfcDsp8TruPSGzR3mfLNqKrNQj2Y
+         dzataGkBTMG6O+DQHoli96sSfvfK17WGG44Xf+ytDfcWz4QLr0LI058HYlsRGay1R6v7
+         /Pm49KxNzfpYD3S4BSXIfJPjhQNDZzA4coFugMqykMcZd5TpZh7ZiSZRMeyKPCvEdcwy
+         6Nyz0jd/dqLyGnbZo3/uT33OreaDpVxN50yZCnM1R88VV964zGhuzaM7GmdUpc1Wi1iX
+         PKgg==
+X-Gm-Message-State: AOAM530qnwMQkBX9pfEAazywB47PX83HpU2eGHxlICwF0ueEw7BHk9dB
+        pER64X0kS0D+fn5JUUcKVQfIvnJMpQdl1O1dEHDINjgZJ7qqiw==
+X-Google-Smtp-Source: ABdhPJy7CZeKxnVXo6cTvPVsBzYLTk/UOe9PxHl5qXDTR2OSOhvRG8qMVAFcHsrxl1WNyIFDeNL3H79kPsQxHMgNBQM=
+X-Received: by 2002:a50:fc96:: with SMTP id f22mr34994419edq.162.1608122438524;
+ Wed, 16 Dec 2020 04:40:38 -0800 (PST)
 MIME-Version: 1.0
-References: <20201207160734.2345502-1-jackmanb@google.com> <20201207160734.2345502-11-jackmanb@google.com>
- <3adb88d5-b8d8-9c15-a988-7c10f86686fd@fb.com> <X890lro0A5mFJHyD@google.com>
- <24c9b2d7-f9b1-d7d4-71dc-47f4208ee6e9@fb.com> <X8+w8g56z11AKNci@google.com>
- <67ee3925-9388-c9d4-8ad8-9c28cff35d55@fb.com> <X9iaHF4FdFAPYBLx@google.com> <3f49c18e-fed6-b005-19ca-b11ad620f535@fb.com>
-In-Reply-To: <3f49c18e-fed6-b005-19ca-b11ad620f535@fb.com>
-From:   Brendan Jackman <jackmanb@google.com>
-Date:   Wed, 16 Dec 2020 12:51:52 +0100
-Message-ID: <CA+i-1C1qfhgZOnpD1kZW9_UzGSDpWgmqGM+YgCiJr5qxx4NeFg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 10/11] bpf: Add tests for new BPF atomic operations
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>, Jann Horn <jannh@google.com>
+From:   Gilad Reti <gilad.reti@gmail.com>
+Date:   Wed, 16 Dec 2020 14:40:02 +0200
+Message-ID: <CANaYP3Fo3eHCxs-3Dpurnf0Q3HhCcaJ4rD5JjQG-VPzYnfKchw@mail.gmail.com>
+Subject: verifier fails after register spill
+To:     bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 16 Dec 2020 at 08:19, Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 12/15/20 3:12 AM, Brendan Jackman wrote:
-> > On Tue, Dec 08, 2020 at 10:15:35AM -0800, Yonghong Song wrote:
-> >>
-> >>
-> >> On 12/8/20 8:59 AM, Brendan Jackman wrote:
-> >>> On Tue, Dec 08, 2020 at 08:38:04AM -0800, Yonghong Song wrote:
-> >>>>
-> >>>>
-> >>>> On 12/8/20 4:41 AM, Brendan Jackman wrote:
-> >>>>> On Mon, Dec 07, 2020 at 07:18:57PM -0800, Yonghong Song wrote:
-> >>>>>>
-> >>>>>>
-> >>>>>> On 12/7/20 8:07 AM, Brendan Jackman wrote:
-> >>>>>>> The prog_test that's added depends on Clang/LLVM features added b=
-y
-> >>>>>>> Yonghong in commit 286daafd6512 (was https://reviews.llvm.org/D72=
-184    ).
-> >>>>>>>
-> >>>>>>> Note the use of a define called ENABLE_ATOMICS_TESTS: this is use=
-d
-> >>>>>>> to:
-> >>>>>>>
-> >>>>>>>      - Avoid breaking the build for people on old versions of Cla=
-ng
-> >>>>>>>      - Avoid needing separate lists of test objects for no_alu32,=
- where
-> >>>>>>>        atomics are not supported even if Clang has the feature.
-> >>>>>>>
-> >>>>>>> The atomics_test.o BPF object is built unconditionally both for
-> >>>>>>> test_progs and test_progs-no_alu32. For test_progs, if Clang supp=
-orts
-> >>>>>>> atomics, ENABLE_ATOMICS_TESTS is defined, so it includes the prop=
-er
-> >>>>>>> test code. Otherwise, progs and global vars are defined anyway, a=
-s
-> >>>>>>> stubs; this means that the skeleton user code still builds.
-> >>>>>>>
-> >>>>>>> The atomics_test.o userspace object is built once and used for bo=
-th
-> >>>>>>> test_progs and test_progs-no_alu32. A variable called skip_tests =
-is
-> >>>>>>> defined in the BPF object's data section, which tells the userspa=
-ce
-> >>>>>>> object whether to skip the atomics test.
-> >>>>>>>
-> >>>>>>> Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> >>>>>>
-> >>>>>> Ack with minor comments below.
-> >>>>>>
-> >>>>>> Acked-by: Yonghong Song <yhs@fb.com>
-> >>>>>>
-> >>>>>>> ---
-> >>>>>>>      tools/testing/selftests/bpf/Makefile          |  10 +
-> >>>>>>>      .../selftests/bpf/prog_tests/atomics.c        | 246 ++++++++=
-++++++++++
-> >>>>>>>      tools/testing/selftests/bpf/progs/atomics.c   | 154 ++++++++=
-+++
-> >>>>>>>      .../selftests/bpf/verifier/atomic_and.c       |  77 ++++++
-> >>>>>>>      .../selftests/bpf/verifier/atomic_cmpxchg.c   |  96 +++++++
-> >>>>>>>      .../selftests/bpf/verifier/atomic_fetch_add.c | 106 ++++++++
-> >>>>>>>      .../selftests/bpf/verifier/atomic_or.c        |  77 ++++++
-> >>>>>>>      .../selftests/bpf/verifier/atomic_xchg.c      |  46 ++++
-> >>>>>>>      .../selftests/bpf/verifier/atomic_xor.c       |  77 ++++++
-> >>>>>>>      9 files changed, 889 insertions(+)
-> >>>>>>>      create mode 100644 tools/testing/selftests/bpf/prog_tests/at=
-omics.c
-> >>>>>>>      create mode 100644 tools/testing/selftests/bpf/progs/atomics=
-.c
-> >>>>>>>      create mode 100644 tools/testing/selftests/bpf/verifier/atom=
-ic_and.c
-> >>>>>>>      create mode 100644 tools/testing/selftests/bpf/verifier/atom=
-ic_cmpxchg.c
-> >>>>>>>      create mode 100644 tools/testing/selftests/bpf/verifier/atom=
-ic_fetch_add.c
-> >>>>>>>      create mode 100644 tools/testing/selftests/bpf/verifier/atom=
-ic_or.c
-> >>>>>>>      create mode 100644 tools/testing/selftests/bpf/verifier/atom=
-ic_xchg.c
-> >>>>>>>      create mode 100644 tools/testing/selftests/bpf/verifier/atom=
-ic_xor.c
-> >>>>>>>
-> >>>>>>> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing=
-/selftests/bpf/Makefile
-> >>>>>>> index ac25ba5d0d6c..13bc1d736164 100644
-> >>>>>>> --- a/tools/testing/selftests/bpf/Makefile
-> >>>>>>> +++ b/tools/testing/selftests/bpf/Makefile
-> >>>>>>> @@ -239,6 +239,12 @@ BPF_CFLAGS =3D -g -D__TARGET_ARCH_$(SRCARCH)=
- $(MENDIAN)                      \
-> >>>>>>>              -I$(INCLUDE_DIR) -I$(CURDIR) -I$(APIDIR)            =
-       \
-> >>>>>>>              -I$(abspath $(OUTPUT)/../usr/include)
-> >>>>>>> +# BPF atomics support was added to Clang in llvm-project commit =
-286daafd6512
-> >>>>>>> +# (release 12.0.0).
-> >>>>>>> +BPF_ATOMICS_SUPPORTED =3D $(shell \
-> >>>>>>> +       echo "int x =3D 0; int foo(void) { return __sync_val_comp=
-are_and_swap(&x, 1, 2); }" \
-> >>>>>>> +       | $(CLANG) -x cpp-output -S -target bpf -mcpu=3Dv3 - -o /=
-dev/null && echo 1 || echo 0)
-> >>>>>>
-> >>>>>> '-x c' here more intuitive?
-> >>>>>>
-> >>>>>>> +
-> >>>>>>>      CLANG_CFLAGS =3D $(CLANG_SYS_INCLUDES) \
-> >>>>>>>                -Wno-compare-distinct-pointer-types
-> >>>>>>> @@ -399,11 +405,15 @@ TRUNNER_EXTRA_FILES :=3D $(OUTPUT)/urandom_=
-read $(OUTPUT)/bpf_testmod.ko    \
-> >>>>>>>                        $(wildcard progs/btf_dump_test_case_*.c)
-> >>>>>>>      TRUNNER_BPF_BUILD_RULE :=3D CLANG_BPF_BUILD_RULE
-> >>>>>>>      TRUNNER_BPF_CFLAGS :=3D $(BPF_CFLAGS) $(CLANG_CFLAGS)
-> >>>>>>> +ifeq ($(BPF_ATOMICS_SUPPORTED),1)
-> >>>>>>> +  TRUNNER_BPF_CFLAGS +=3D -DENABLE_ATOMICS_TESTS
-> >>>>>>> +endif
-> >>>>>>>      TRUNNER_BPF_LDFLAGS :=3D -mattr=3D+alu32
-> >>>>>>>      $(eval $(call DEFINE_TEST_RUNNER,test_progs))
-> >>>>>>>      # Define test_progs-no_alu32 test runner.
-> >>>>>>>      TRUNNER_BPF_BUILD_RULE :=3D CLANG_NOALU32_BPF_BUILD_RULE
-> >>>>>>> +TRUNNER_BPF_CFLAGS :=3D $(BPF_CFLAGS) $(CLANG_CFLAGS)
-> >>>>>>>      TRUNNER_BPF_LDFLAGS :=3D
-> >>>>>>>      $(eval $(call DEFINE_TEST_RUNNER,test_progs,no_alu32))
-> >>>>>>> diff --git a/tools/testing/selftests/bpf/prog_tests/atomics.c b/t=
-ools/testing/selftests/bpf/prog_tests/atomics.c
-> >>>>>>> new file mode 100644
-> >>>>>>> index 000000000000..c841a3abc2f7
-> >>>>>>> --- /dev/null
-> >>>>>>> +++ b/tools/testing/selftests/bpf/prog_tests/atomics.c
-> >>>>>>> @@ -0,0 +1,246 @@
-> >>>>>>> +// SPDX-License-Identifier: GPL-2.0
-> >>>>>>> +
-> >>>>>>> +#include <test_progs.h>
-> >>>>>>> +
-> >>>>>>> +#include "atomics.skel.h"
-> >>>>>>> +
-> >>>>>>> +static void test_add(struct atomics *skel)
-> >>>>>>> +{
-> >>>>>>> +       int err, prog_fd;
-> >>>>>>> +       __u32 duration =3D 0, retval;
-> >>>>>>> +       struct bpf_link *link;
-> >>>>>>> +
-> >>>>>>> +       link =3D bpf_program__attach(skel->progs.add);
-> >>>>>>> +       if (CHECK(IS_ERR(link), "attach(add)", "err: %ld\n", PTR_=
-ERR(link)))
-> >>>>>>> +               return;
-> >>>>>>> +
-> >>>>>>> +       prog_fd =3D bpf_program__fd(skel->progs.add);
-> >>>>>>> +       err =3D bpf_prog_test_run(prog_fd, 1, NULL, 0,
-> >>>>>>> +                               NULL, NULL, &retval, &duration);
-> >>>>>>> +       if (CHECK(err || retval, "test_run add",
-> >>>>>>> +                 "err %d errno %d retval %d duration %d\n", err,=
- errno, retval, duration))
-> >>>>>>> +               goto cleanup;
-> >>>>>>> +
-> >>>>>>> +       ASSERT_EQ(skel->data->add64_value, 3, "add64_value");
-> >>>>>>> +       ASSERT_EQ(skel->bss->add64_result, 1, "add64_result");
-> >>>>>>> +
-> >>>>>>> +       ASSERT_EQ(skel->data->add32_value, 3, "add32_value");
-> >>>>>>> +       ASSERT_EQ(skel->bss->add32_result, 1, "add32_result");
-> >>>>>>> +
-> >>>>>>> +       ASSERT_EQ(skel->bss->add_stack_value_copy, 3, "add_stack_=
-value");
-> >>>>>>> +       ASSERT_EQ(skel->bss->add_stack_result, 1, "add_stack_resu=
-lt");
-> >>>>>>> +
-> >>>>>>> +       ASSERT_EQ(skel->data->add_noreturn_value, 3, "add_noretur=
-n_value");
-> >>>>>>> +
-> >>>>>>> +cleanup:
-> >>>>>>> +       bpf_link__destroy(link);
-> >>>>>>> +}
-> >>>>>>> +
-> >>>>>> [...]
-> >>>>>>> +
-> >>>>>>> +__u64 xchg64_value =3D 1;
-> >>>>>>> +__u64 xchg64_result =3D 0;
-> >>>>>>> +__u32 xchg32_value =3D 1;
-> >>>>>>> +__u32 xchg32_result =3D 0;
-> >>>>>>> +
-> >>>>>>> +SEC("fentry/bpf_fentry_test1")
-> >>>>>>> +int BPF_PROG(xchg, int a)
-> >>>>>>> +{
-> >>>>>>> +#ifdef ENABLE_ATOMICS_TESTS
-> >>>>>>> +       __u64 val64 =3D 2;
-> >>>>>>> +       __u32 val32 =3D 2;
-> >>>>>>> +
-> >>>>>>> +       __atomic_exchange(&xchg64_value, &val64, &xchg64_result, =
-__ATOMIC_RELAXED);
-> >>>>>>> +       __atomic_exchange(&xchg32_value, &val32, &xchg32_result, =
-__ATOMIC_RELAXED);
-> >>>>>>
-> >>>>>> Interesting to see this also works. I guess we probably won't adve=
-rtise
-> >>>>>> this, right? Currently for LLVM, the memory ordering parameter is =
-ignored.
-> >>>>>
-> >>>>> Well IIUC this specific case is fine: the ordering that you get wit=
-h
-> >>>>> BPF_[CMP]XCHG (via kernel atomic_[cmpxchg]) is sequential consisten=
-cy,
-> >>>>> and its' fine to provide a stronger ordering than the one requested=
-. I
-> >>>>> should change it to say __ATOMIC_SEQ_CST to avoid confusing readers=
-,
-> >>>>> though.
-> >>>>>
-> >>>>> (I wrote it this way because I didn't see a __sync* function for
-> >>>>> unconditional atomic exchange, and I didn't see an __atomic* functi=
-on
-> >>>>> where you don't need to specify the ordering).
-> >>>>
-> >>>> For the above code,
-> >>>>      __atomic_exchange(&xchg64_value, &val64, &xchg64_result,
-> >>>> __ATOMIC_RELAXED);
-> >>>> It tries to do an atomic exchange between &xchg64_value and
-> >>>>    &val64, and store the old &xchg64_value to &xchg64_result. So it =
-is
-> >>>> equivalent to
-> >>>>       xchg64_result =3D __sync_lock_test_and_set(&xchg64_value, val6=
-4);
-> >>>>
-> >>>> So I think this test case can be dropped.
-> >>>
-> >>> Ah nice, I didn't know about __sync_lock_test_and_set, let's switch t=
-o
-> >>> that I think.
-> >>>
-> >>>>> However... this led me to double-check the semantics and realise th=
-at we
-> >>>>> do have a problem with ordering: The kernel's atomic_{add,and,or,xo=
-r} do
-> >>>>> not imply memory barriers and therefore neither do the correspondin=
-g BPF
-> >>>>> instructions. That means Clang can compile this:
-> >>>>>
-> >>>>>     (void)__atomic_fetch_add(&val, 1, __ATOMIC_SEQ_CST)
-> >>>>>
-> >>>>> to a {.code =3D (BPF_STX | BPF_DW | BPF_ATOMIC), .imm =3D BPF_ADD},
-> >>>>> which is implemented with atomic_add, which doesn't actually satisf=
-y
-> >>>>> __ATOMIC_SEQ_CST.
-> >>>>
-> >>>> This is the main reason in all my llvm selftests I did not use
-> >>>> __atomic_* intrinsics because we cannot handle *different* memory
-> >>>> ordering properly.
-> >>>>
-> >>>>>
-> >>>>> In fact... I think this is a pre-existing issue with BPF_XADD.
-> >>>>>
-> >>>>> If all I've written here is correct, the fix is to use
-> >>>>> (void)atomic_fetch_add etc (these imply barriers) even when BPF_FET=
-CH is
-> >>>>> not set. And that change ought to be backported to fix BPF_XADD.
-> >>>>
-> >>>> We cannot change BPF_XADD behavior. If we change BPF_XADD to use
-> >>>> atomic_fetch_add, then suddenly old code compiled with llvm12 will
-> >>>> suddenly requires latest kernel, which will break userland very badl=
-y.
-> >>>
-> >>> Sorry I should have been more explicit: I meant that the fix would be=
- to
-> >>> call atomic_fetch_add but discard the return value, purely for the
-> >>> implied barrier. The x86 JIT would stay the same. It would not break =
-any
-> >>> existing code, only add ordering guarantees that the user probably
-> >>> already expected (since these builtins come from GCC originally and t=
-he
-> >>> GCC docs say "these builtins are considered a full barrier" [1])
-> >>>
-> >>> [1] https://gcc.gnu.org/onlinedocs/gcc-4.1.1/gcc/Atomic-Builtins.html
-> >>
-> >> This is indeed the issue. In the past, people already use gcc
-> >> __sync_fetch_and_add() for xadd instruction for which git generated
-> >> code does not implying barrier.
-> >>
-> >> The new atomics support has the following logic:
-> >>    . if return value is used, it is atomic_fetch_add
-> >>    . if return value is not used, it is xadd
-> >> The reason to do this is to preserve backward compabiility
-> >> and this way, we can get rid of -mcpu=3Dv4.
-> >>
-> >> barrier issue is tricky and as we discussed earlier let us
-> >> delay this after basic atomics support landed. We may not
-> >> 100% conform to gcc __sync_fetch_and_add() or __atomic_*()
-> >> semantics. We do need to clearly document what is expected
-> >> in llvm and kernel.
-> >
-> > OK, then I think we can probably justify not conforming to the
-> > __sync_fetch_and_add() semantics since that API is under-specified
-> > anyway.
-> >
-> > However IMO it's unambiguously a bug for
-> >
-> >    (void)__atomic_fetch_add(&x, y, __ATOMIC_SEQ_CST);
-> >
-> > to compile down to a kernel atomic_add. I think for that specific API
-> > Clang really ought to always use BPF_FETCH | BPF_ADD when
-> > anything stronger than __ATOMIC_RELAXED is requested, or even just
-> > refuse to compile with when the return value is ignored and a
-> > none-relaxed memory ordering is specified.
->
-> Both the following codes:
->     (void)__sync_fetch_and_add(p, a);
->     (void)__atomic_fetch_add(p, a, __ATOMIC_SEQ_CST);
->
-> will generate the same IR:
->     %0 =3D atomicrmw add i32* %p, i32 %a seq_cst
->
-> Basically that means for old compiler (<=3D llvm11),
->    (void)__atomic_fetch_add(&x, y, __ATOMIC_SEQ_CST)
-> already generates xadd.
+Hello there,
 
-Ah, I didn't realise that was already the case, that's unfortunate.
+I am having an issue with passing bpf programs through the verifier.
 
-For users of newer Clang with alu32 enabled, unless I'm being na=C3=AFve
-this could be fixed without breaking compatibility. Clang could just
-start generating a BPF_ADD|BPF_FETCH, and then handle the fact that
-the src_reg is clobbered, right?
+For a minimal example, I took andrii's examples from libbpf-bootstrap
+(bootstrap.bpf.c) and added the following lines (to forcibly claim all
+available registers in order to cause register spilling):
 
-For users without alu32 enabled I would actually argue that the new
-Clang should start failing to build that code - as a user I'd much
-rather have my build suddenly fail than my explicitly-stated ordering
-assumptions violated. But I understand if that doesn't seem too
-palatable...
+int a, b, c, d, e_, f, g, h, i;
+
+a = b = c = d = e_ = f = g = h = i = 0;
+asm volatile(""
+            : "=r"(a), "=r"(b), "=r"(c), "=r"(d), "=r"(e_), "=r"(f),
+"=r"(g), "=r"(h), "=r"(i)
+            : "0"(a), "1"(b), "2"(c), "3"(d), "4"(e_), "5"(f), "6"(g),
+"7"(h), "8"(i));
+
+This causes r7 (the register pointing to the ringbuf reserved memory)
+to spill out to the stack, and later when it is returned to the
+registers it is marked as "inv" which causes the verifier to reject
+loading the program.
+
+My setup is Linux 5.10.0, clang 11.0.0-2.
+
+For a reference, here is the complete bpf program (userspace program
+is the same as andrii's):
+
+
+// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+/* Copyright (c) 2020 Facebook */
+#include "vmlinux.h"
+#include <bpf/bpf_helpers.h>
+#include <bpf/bpf_tracing.h>
+#include <bpf/bpf_core_read.h>
+#include "bootstrap.h"
+
+char LICENSE[] SEC("license") = "Dual BSD/GPL";
+
+struct
+{
+    __uint(type, BPF_MAP_TYPE_HASH);
+    __uint(max_entries, 8192);
+    __type(key, pid_t);
+    __type(value, u64);
+} exec_start SEC(".maps");
+
+struct
+{
+    __uint(type, BPF_MAP_TYPE_RINGBUF);
+    __uint(max_entries, 256 * 1024);
+} rb SEC(".maps");
+
+const volatile unsigned long long min_duration_ns = 0;
+
+SEC("tp/sched/sched_process_exec")
+int handle_exec(struct trace_event_raw_sched_process_exec *ctx)
+{
+    struct task_struct *task;
+    unsigned fname_off;
+    struct event *e;
+    pid_t pid;
+    u64 ts;
+
+    /* remember time exec() was executed for this PID */
+    pid = bpf_get_current_pid_tgid() >> 32;
+    ts = bpf_ktime_get_ns();
+    bpf_map_update_elem(&exec_start, &pid, &ts, BPF_ANY);
+
+    /* don't emit exec events when minimum duration is specified */
+    if (min_duration_ns)
+        return 0;
+
+    /* reserve sample from BPF ringbuf */
+    e = bpf_ringbuf_reserve(&rb, sizeof(*e), 0);
+    if (!e)
+        return 0;
+
+    /* fill out the sample with data */
+    task = (struct task_struct *)bpf_get_current_task();
+
+    e->exit_event = false;
+    e->pid = pid;
+    e->ppid = BPF_CORE_READ(task, real_parent, tgid);
+    bpf_get_current_comm(&e->comm, sizeof(e->comm));
+
+    int a, b, c, d, e_, f, g, h, i;
+
+    a = b = c = d = e_ = f = g = h = i = 0;
+    asm volatile(""
+                 : "=r"(a), "=r"(b), "=r"(c), "=r"(d), "=r"(e_),
+"=r"(f), "=r"(g), "=r"(h), "=r"(i)
+                 : "0"(a), "1"(b), "2"(c), "3"(d), "4"(e_), "5"(f),
+"6"(g), "7"(h), "8"(i));
+
+    fname_off = ctx->__data_loc_filename & 0xFFFF;
+    bpf_probe_read_str(&e->filename, sizeof(e->filename), (void *)ctx
++ fname_off);
+
+    /* successfully submit it to user-space for post-processing */
+    bpf_ringbuf_submit(e, 0);
+    return 0;
+}
+
+SEC("tp/sched/sched_process_exit")
+int handle_exit(struct trace_event_raw_sched_process_template *ctx)
+{
+    struct task_struct *task;
+    struct event *e;
+    pid_t pid, tid;
+    u64 id, ts, *start_ts, duration_ns = 0;
+
+    /* get PID and TID of exiting thread/process */
+    id = bpf_get_current_pid_tgid();
+    pid = id >> 32;
+    tid = (u32)id;
+
+    /* ignore thread exits */
+    if (pid != tid)
+        return 0;
+
+    /* if we recorded start of the process, calculate lifetime duration */
+    start_ts = bpf_map_lookup_elem(&exec_start, &pid);
+    if (start_ts)
+        duration_ns = bpf_ktime_get_ns() - *start_ts;
+    else if (min_duration_ns)
+        return 0;
+    bpf_map_delete_elem(&exec_start, &pid);
+
+    /* if process didn't live long enough, return early */
+    if (min_duration_ns && duration_ns < min_duration_ns)
+        return 0;
+
+    /* reserve sample from BPF ringbuf */
+    e = bpf_ringbuf_reserve(&rb, sizeof(*e), 0);
+    if (!e)
+        return 0;
+
+    /* fill out the sample with data */
+    task = (struct task_struct *)bpf_get_current_task();
+
+    e->exit_event = true;
+    e->duration_ns = duration_ns;
+    e->pid = pid;
+    e->ppid = BPF_CORE_READ(task, real_parent, tgid);
+    e->exit_code = (BPF_CORE_READ(task, exit_code) >> 8) & 0xff;
+    bpf_get_current_comm(&e->comm, sizeof(e->comm));
+
+    /* send data to user-space for post-processing */
+    bpf_ringbuf_submit(e, 0);
+    return 0;
+}
+
+
+
+
+And libbpf's output:
+
+libbpf: load bpf program failed: Permission denied
+libbpf: -- BEGIN DUMP LOG ---
+libbpf:
+Unrecognized arg#0 type PTR
+; int handle_exec(struct trace_event_raw_sched_process_exec *ctx)
+0: (bf) r6 = r1
+; pid = bpf_get_current_pid_tgid() >> 32;
+1: (85) call bpf_get_current_pid_tgid#14
+; pid = bpf_get_current_pid_tgid() >> 32;
+2: (77) r0 >>= 32
+; pid = bpf_get_current_pid_tgid() >> 32;
+3: (63) *(u32 *)(r10 -4) = r0
+; ts = bpf_ktime_get_ns();
+4: (85) call bpf_ktime_get_ns#5
+; ts = bpf_ktime_get_ns();
+5: (7b) *(u64 *)(r10 -16) = r0
+6: (bf) r2 = r10
+;
+7: (07) r2 += -4
+8: (bf) r3 = r10
+9: (07) r3 += -16
+; bpf_map_update_elem(&exec_start, &pid, &ts, BPF_ANY);
+10: (18) r1 = 0xffff8bf45ddd1400
+12: (b7) r4 = 0
+13: (85) call bpf_map_update_elem#2
+; if (min_duration_ns)
+14: (18) r1 = 0xffffa1b980644000
+16: (79) r1 = *(u64 *)(r1 +0)
+ R0=inv(id=0) R1_w=map_value(id=0,off=0,ks=4,vs=8,imm=0)
+R6=ctx(id=0,off=0,imm=0) R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm
+; if (min_duration_ns)
+17: (55) if r1 != 0x0 goto pc+60
+last_idx 17 first_idx 14
+regs=2 stack=0 before 16: (79) r1 = *(u64 *)(r1 +0)
+18: (b7) r8 = 0
+; e = bpf_ringbuf_reserve(&rb, sizeof(*e), 0);
+19: (18) r1 = 0xffff8bf461b60600
+21: (b7) r2 = 168
+22: (b7) r3 = 0
+23: (85) call bpf_ringbuf_reserve#131
+24: (bf) r7 = r0
+; if (!e)
+25: (15) if r7 == 0x0 goto pc+52
+ R0=mem(id=0,ref_obj_id=2,off=0,imm=0) R6=ctx(id=0,off=0,imm=0)
+R7_w=mem(id=0,ref_obj_id=2,off=0,imm=0) R8=inv0 R10=fp0 fp-8=mmmm????
+fp-16=mmmmmmmm refs=2
+; task = (struct task_struct *)bpf_get_current_task();
+26: (85) call bpf_get_current_task#35
+; e->exit_event = false;
+27: (73) *(u8 *)(r7 +167) = r8
+ R0_w=inv(id=0) R6=ctx(id=0,off=0,imm=0)
+R7_w=mem(id=0,ref_obj_id=2,off=0,imm=0) R8=inv0 R10=fp0 fp-8=mmmm????
+fp-16=mmmmmmmm refs=2
+; e->pid = pid;
+28: (61) r1 = *(u32 *)(r10 -4)
+; e->pid = pid;
+29: (63) *(u32 *)(r7 +0) = r1
+ R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0;
+0xffffffff)) R6=ctx(id=0,off=0,imm=0)
+R7_w=mem(id=0,ref_obj_id=2,off=0,imm=0) R8=inv0 R10=fp0 fp-8=mmmm????
+fp-16=mmmmmmmm refs=2
+30: (b7) r1 = 2264
+31: (0f) r0 += r1
+32: (bf) r1 = r10
+;
+33: (07) r1 += -32
+; e->ppid = BPF_CORE_READ(task, real_parent, tgid);
+34: (b7) r2 = 8
+35: (bf) r3 = r0
+36: (85) call bpf_probe_read_kernel#113
+last_idx 36 first_idx 24
+regs=4 stack=0 before 35: (bf) r3 = r0
+regs=4 stack=0 before 34: (b7) r2 = 8
+37: (b7) r1 = 2252
+38: (79) r3 = *(u64 *)(r10 -32)
+39: (0f) r3 += r1
+40: (bf) r1 = r10
+;
+41: (07) r1 += -20
+; e->ppid = BPF_CORE_READ(task, real_parent, tgid);
+42: (b7) r2 = 4
+43: (85) call bpf_probe_read_kernel#113
+last_idx 43 first_idx 37
+regs=4 stack=0 before 42: (b7) r2 = 4
+; e->ppid = BPF_CORE_READ(task, real_parent, tgid);
+44: (61) r1 = *(u32 *)(r10 -20)
+; e->ppid = BPF_CORE_READ(task, real_parent, tgid);
+45: (63) *(u32 *)(r7 +4) = r1
+ R0_w=inv(id=0) R1_w=inv(id=0,umax_value=4294967295,var_off=(0x0;
+0xffffffff)) R6=ctx(id=0,off=0,imm=0)
+R7=mem(id=0,ref_obj_id=2,off=0,imm=0) R8=inv0 R10=fp0 fp-8=mmmm????
+fp-16=mmmmmmmm fp-24=mmmm???? fp-32=mmmmmmmm refs=2
+; bpf_get_current_comm(&e->comm, sizeof(e->comm));
+46: (bf) r1 = r7
+47: (07) r1 += 24
+; bpf_get_current_comm(&e->comm, sizeof(e->comm));
+48: (b7) r2 = 16
+49: (85) call bpf_get_current_comm#16
+ R0_w=inv(id=0) R1_w=mem(id=0,ref_obj_id=2,off=24,imm=0) R2_w=inv16
+R6=ctx(id=0,off=0,imm=0) R7=mem(id=0,ref_obj_id=2,off=0,imm=0) R8=inv0
+R10=fp0 fp-8=mmmm???? fp-16=mmmmmmmm fp-24=mmmm???? fp-32=mmmmmmmm
+refs=2
+last_idx 49 first_idx 37
+regs=4 stack=0 before 48: (b7) r2 = 16
+; asm volatile(""
+50: (b7) r1 = 0
+51: (7b) *(u64 *)(r10 -40) = r1
+last_idx 51 first_idx 50
+regs=2 stack=0 before 50: (b7) r1 = 0
+52: (b7) r1 = 0
+53: (7b) *(u64 *)(r10 -48) = r1
+last_idx 53 first_idx 50
+regs=2 stack=0 before 52: (b7) r1 = 0
+54: (b7) r1 = 0
+55: (7b) *(u64 *)(r10 -56) = r1
+last_idx 55 first_idx 50
+regs=2 stack=0 before 54: (b7) r1 = 0
+56: (b7) r4 = 0
+57: (b7) r5 = 0
+58: (b7) r0 = 0
+59: (b7) r8 = 0
+60: (b7) r9 = 0
+61: (bf) r3 = r6
+62: (b7) r6 = 0
+63: (79) r2 = *(u64 *)(r10 -40)
+64: (79) r1 = *(u64 *)(r10 -48)
+65: (7b) *(u64 *)(r10 -64) = r7
+66: (79) r7 = *(u64 *)(r10 -56)
+; fname_off = ctx->__data_loc_filename & 0xFFFF;
+67: (61) r1 = *(u32 *)(r3 +8)
+; bpf_probe_read_str(&e->filename, sizeof(e->filename), (void *)ctx +
+fname_off);
+68: (57) r1 &= 65535
+69: (0f) r3 += r1
+last_idx 69 first_idx 50
+regs=2 stack=0 before 68: (57) r1 &= 65535
+regs=2 stack=0 before 67: (61) r1 = *(u32 *)(r3 +8)
+70: (79) r6 = *(u64 *)(r10 -64)
+; bpf_probe_read_str(&e->filename, sizeof(e->filename), (void *)ctx +
+fname_off);
+71: (bf) r1 = r6
+72: (07) r1 += 40
+; bpf_probe_read_str(&e->filename, sizeof(e->filename), (void *)ctx +
+fname_off);
+73: (b7) r2 = 127
+74: (85) call bpf_probe_read_str#45
+R1 type=inv expected=fp, pkt, pkt_meta, map_value, mem, rdonly_buf, rdwr_buf
+processed 72 insns (limit 1000000) max_states_per_insn 0 total_states
+4 peak_states 4 mark_read 4
+
+libbpf: -- END LOG --
+libbpf: failed to load program 'handle_exec'
+libbpf: failed to load object 'bootstrap_bpf'
+libbpf: failed to load BPF skeleton 'bootstrap_bpf': -4007
+Failed to load and verify BPF skeleton
+
+
+
+Thanks for your time,
+
+Gilad Reti
