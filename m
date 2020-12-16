@@ -2,176 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB0C62DBBF7
-	for <lists+bpf@lfdr.de>; Wed, 16 Dec 2020 08:31:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E5162DBC82
+	for <lists+bpf@lfdr.de>; Wed, 16 Dec 2020 09:19:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726011AbgLPHaE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Dec 2020 02:30:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60138 "EHLO
+        id S1725831AbgLPIS7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Dec 2020 03:18:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725947AbgLPHaD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Dec 2020 02:30:03 -0500
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D8BDC0613D6;
-        Tue, 15 Dec 2020 23:29:23 -0800 (PST)
-Received: by mail-il1-x130.google.com with SMTP id p5so21675969iln.8;
-        Tue, 15 Dec 2020 23:29:23 -0800 (PST)
+        with ESMTP id S1725274AbgLPIS7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Dec 2020 03:18:59 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D75B8C0613D6;
+        Wed, 16 Dec 2020 00:18:18 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id 3so1520187wmg.4;
+        Wed, 16 Dec 2020 00:18:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Mf51/0hO3Vc2LKMTU2Ibr25UaXIyUb896HSFIW5Rh1k=;
-        b=rRPba7GnS+IsJ7u653aPODP0MpppaPO1DNgW2TTDLsMHh0IVyqavA+Dljqe/WIlHEn
-         BdOt+VvLzDbxtbQw5tK9AMo5wh1azehCII/bxXkNtlMAndPnTm3zsPt7S9Nhj2dt3BJQ
-         UlbwartfE/urhhx0+RncFuZk8To2YRkdocfN5cZnwwCPXYYWY2VMzaTmRz5TDvlBgEVW
-         LgzJKJuZDhWnA+tlwuqQj9GXbH4sXN5C8h9Redv+wq8bgTO1pQ+wuTrb9/RUn0gCyB8S
-         YJ0TtUlYnJ+GHWhuCq9jn9bIlNemTHxIxEbGdL4r6ZgCC3JI+stEqWpOZOZjqHn41EX/
-         Q3Ng==
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=OsOzas/w/eSfqOtHOGgepo3zxkPHG/qg3EkWGzcgIY8=;
+        b=WesLM46cYqkvDM11I0wuqigkm5AWitGsfCK7aWBAgxMicsGw6+HNROPhOlCWYL+iEJ
+         WiDhj9N+GG03RaFy4poJjsDtzf5XwkjDgOeeSXXsgOENSBA0pG/eWY3o9XGRIcLeqfHS
+         pHW2ts22TPRs1ra5hjHSqEov/Qw+eMVbMcueZ3mMZA+P7+NDc5eYsAsMVme8AQUKKqgN
+         Cfpkb245c7TRWR+rVWSEUYIk1KBXNRIiE/TRkSNy8TZtNiXW5V4gEP87FX/2DodreYcB
+         M/rDiCOCjxyhJfLX/aOklf0FK8yTfNrMMEDlP+FCURLVxfr7HRP2DQk6Ke6JsFAq5bqJ
+         Nejw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Mf51/0hO3Vc2LKMTU2Ibr25UaXIyUb896HSFIW5Rh1k=;
-        b=CgKp5DeWGQ3+ojhTYCjQUCR5bwPRsOQ8sYL5KuXDlS1qHl/eN633SAWsnTwzkor4+/
-         Bvgv7SRDevCmJZyoHno6nYZSxqMLz0rH4JremwviPi853ZGnjwFYaqzj1tz9jMEsXqOt
-         heraSUGCBnqFwLvh9FkASmgVBlfDdED5R4xSGa5EohprtH1d8pL4sqR2TOPkGVu4xcAH
-         EvHiqQ/aAo7PKpr7Jw/t1tLRuap6LBhj1Fo3fFaNAN/t6Xz6BRvNQAjtKeg5dweH7oP5
-         m1kjyfK57Jyu2yF9gCevx1aSIOtv/kT8rIr3r29or0OhhimpSq0zJPQFbpl98l6gbG0O
-         G2wg==
-X-Gm-Message-State: AOAM531mG1qT9usvhSv+cOQtAEbGOG1tTihykYR10zDAj7j8ahkFdH7E
-        ZCwmNHHXRBscSNrjGpH7DAw=
-X-Google-Smtp-Source: ABdhPJyV2koamg8M6Hyt3qfdDMsEOXezEB5q6kguGaWnQOOCpjbJ3+xjjfR809M64f332hf+/FEk9A==
-X-Received: by 2002:a92:2912:: with SMTP id l18mr33564907ilg.173.1608103762786;
-        Tue, 15 Dec 2020 23:29:22 -0800 (PST)
-Received: from localhost (c-71-199-46-190.hsd1.ut.comcast.net. [71.199.46.190])
-        by smtp.gmail.com with ESMTPSA id h70sm11979449iof.31.2020.12.15.23.29.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Dec 2020 23:29:21 -0800 (PST)
-Date:   Wed, 16 Dec 2020 00:29:20 -0700
-From:   "Brian G. Merrell" <brian.g.merrell@gmail.com>
-To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc:     xdp-newbies@vger.kernel.org,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Maciej =?utf-8?Q?=C5=BBenczykowski?= <maze@google.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Andrey Ignatov <rdna@fb.com>, bpf@vger.kernel.org
-Subject: Re: How to orchestrate multiple XDP programs
-Message-ID: <20201216072920.hh42kxb5voom4aau@snout.localdomain>
-References: <20201201091203.ouqtpdmvvl2m2pga@snout.localdomain>
- <878sah3f0n.fsf@toke.dk>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to:user-agent;
+        bh=OsOzas/w/eSfqOtHOGgepo3zxkPHG/qg3EkWGzcgIY8=;
+        b=sD57vdezXni8rOh4zHo1BIeHATw/d14GscKaAV7dLiNDh+AkTKY4kP0bF8Ck3S2mYl
+         IU4WOuvH/XPIkYWzEa5QdIxIfS6PbSQiwbemjtef2P5+R/yjcDcGyQCRU3Q8QUvLUOsA
+         qW05ea2LJv3fDbzHF06VN9+twdrgntVArzh2Qld5JfWAKjfn/K0lwENUmu0cy4YMoKLo
+         IXKzT8C4SpSHPAxl3kqtgM6SWUVTcRXJto59MYHwwXy4xAnfHPH+FyzGzjaxNNduwSeR
+         NZ84by2u9AZrirWR/mehRZIdItdDwLYO3DrEUMUwYlrZ9hZLPcquYRz+h+9RjV97D1tH
+         aJ5Q==
+X-Gm-Message-State: AOAM532EtyOZkg2TnhANbrOxNLLLOJLIK8uxXsUucfjfdxx4kSo5gGxx
+        2XOy0hQw58gY8Byt8WbInU8=
+X-Google-Smtp-Source: ABdhPJzHeFoP5KZ4/1PKPsAcS1CL9F0trZ83qjPMopC7aPN6AW/HZ02O8UE++K+AEq681Fu5ROling==
+X-Received: by 2002:a1c:6208:: with SMTP id w8mr2068448wmb.96.1608106697688;
+        Wed, 16 Dec 2020 00:18:17 -0800 (PST)
+Received: from gmail.com ([81.168.73.77])
+        by smtp.gmail.com with ESMTPSA id i16sm1908890wrx.89.2020.12.16.00.18.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 16 Dec 2020 00:18:17 -0800 (PST)
+Date:   Wed, 16 Dec 2020 08:18:14 +0000
+From:   Martin Habets <habetsm.xilinx@gmail.com>
+To:     Ivan Babrou <ivan@cloudflare.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kernel-team@cloudflare.com,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Subject: Re: [PATCH net-next] sfc: reduce the number of requested xdp ev
+ queues
+Message-ID: <20201216081814.jcwq6xzdxur5xm4l@gmail.com>
+Mail-Followup-To: Ivan Babrou <ivan@cloudflare.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@cloudflare.com, Edward Cree <ecree.xilinx@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+References: <20201215012907.3062-1-ivan@cloudflare.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <878sah3f0n.fsf@toke.dk>
+In-Reply-To: <20201215012907.3062-1-ivan@cloudflare.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 20/12/01 01:08PM, Toke Høiland-Jørgensen wrote:
-> "Brian G. Merrell" <brian.g.merrell@gmail.com> writes:
+On Mon, Dec 14, 2020 at 05:29:06PM -0800, Ivan Babrou wrote:
+> Without this change the driver tries to allocate too many queues,
+> breaching the number of available msi-x interrupts on machines
+> with many logical cpus and default adapter settings:
 > 
-> > Hi all,
-> >
-> > tl;dr: What does the future look like for Go programs orchestrating
-> > multiple, chained eBPF network functions? Is it worth considering doing
-> > the orchestration from C++ (or Rust) instead of Go? I'm hoping the
-> > Cilium and/or Katran folks (and any other interested people) can weigh
-> > in!
+> Insufficient resources for 12 XDP event queues (24 other channels, max 32)
 > 
-> Thank you for bringing this up! Adding a few people (and bpf@vger) to Cc
-> to widen the discussion a bit.
+> Which in turn triggers EINVAL on XDP processing:
 > 
-
-[snip]
-
+> sfc 0000:86:00.0 ext0: XDP TX failed (-22)
 > 
-> As I see it there are basically four paths to widen the language support
-> for libxdp/multiprog:
+> Signed-off-by: Ivan Babrou <ivan@cloudflare.com>
 
-Thanks for enumerating these paths; I think they are all feasible. It's
-just a matter of weighing trade-offs, naturally.
+Acked-by: Martin Habets <habetsm.xilinx@gmail.com>
 
+> ---
+>  drivers/net/ethernet/sfc/efx_channels.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 > 
-> 1. Regular language bindings for the C libxdp. I gather this is somewhat
->    cumbersome in Go, though, as evidenced by the existence of a
->    native-go BPF library.
+> diff --git a/drivers/net/ethernet/sfc/efx_channels.c b/drivers/net/ethernet/sfc/efx_channels.c
+> index a4a626e9cd9a..1bfeee283ea9 100644
+> --- a/drivers/net/ethernet/sfc/efx_channels.c
+> +++ b/drivers/net/ethernet/sfc/efx_channels.c
+> @@ -17,6 +17,7 @@
+>  #include "rx_common.h"
+>  #include "nic.h"
+>  #include "sriov.h"
+> +#include "workarounds.h"
+>  
+>  /* This is the first interrupt mode to try out of:
+>   * 0 => MSI-X
+> @@ -137,6 +138,7 @@ static int efx_allocate_msix_channels(struct efx_nic *efx,
+>  {
+>  	unsigned int n_channels = parallelism;
+>  	int vec_count;
+> +	int tx_per_ev;
+>  	int n_xdp_tx;
+>  	int n_xdp_ev;
+>  
+> @@ -149,9 +151,9 @@ static int efx_allocate_msix_channels(struct efx_nic *efx,
+>  	 * multiple tx queues, assuming tx and ev queues are both
+>  	 * maximum size.
+>  	 */
+> -
+> +	tx_per_ev = EFX_MAX_EVQ_SIZE / EFX_TXQ_MAX_ENT(efx);
+>  	n_xdp_tx = num_possible_cpus();
+> -	n_xdp_ev = DIV_ROUND_UP(n_xdp_tx, EFX_MAX_TXQ_PER_CHANNEL);
+> +	n_xdp_ev = DIV_ROUND_UP(n_xdp_tx, tx_per_ev);
+>  
+>  	vec_count = pci_msix_vec_count(efx->pci_dev);
+>  	if (vec_count < 0)
+> -- 
+> 2.29.2
 
-"Cumbersome" is a nice, succinct way to put it. While we could hack
-something together for POC code (if we get to that point before a better
-option is available), I don't think this is the right answer for Go
-applications in general (based on personal experience, documented
-experiences from other projects, and apparently lack of interest in cgo
-from the Go team--anyone curious about details need only search the
-web).
-
-> 
-> 2. Reimplement the libxdp functionality in each language. Libxdp really
->    implements a "protocol" for how to cooperatively build a multiprog
->    dispatcher from component programs, including atomic replace etc.
->    This could be re-implemented by other libraries / in other languages
->    as well, and if people want to go this route I'm happy to write up a
->    formal specification if that's helpful. I'm not aware of any efforts
->    in this direction thus far, though.
-
-With a small edge over option #4, I think this is the best of the
-options. The downside is that it is not part of the xdp project, so the
-developers of the Go implementation will obviously be responsible for
-all of the initial and continuing overhead of a full reimplementation.
-Toke, you probably see that as an upside :). Regardless, I think that
-libxdp is not so large to make this overly burdensome.
-
-Could you please write up that format specification and we will start
-running with it?
-
-> 
-> 3. Make xdp-loader explicitly support the fork/exec use case you're
->    describing above. Nothing says this has to lose any information
->    compared to the library, we just have to design for it (JSON output
->    and the ability to pass a BPF object file as an fd on exit would be
->    the main things missing here, I think). I certainly wouldn't object
->    to including this in xdp-loader.
-
-There is some temptation in asking for this approach because it becomes
-part of the xdp project. I just can't help but think it will be a
-constant struggle to keep the same level of flexibility and control with
-this approach versus access to a full library. I will admit that I am
-moderately ignorant about exactly what challenges we might face because
-I'm still learning more about bpf, xdp, and libxdp every day; I am
-definitely open to being convinced that my concerns are wrong.
-
-> 
-> 4. Implement an "xdpd" daemon that exposes an IPC interface (say, a
->    socket) and does all the stuff libxdp currently does in application
->    context. Each language then just has to talk to the daemon which is
->    less complex than the full libxdp re-implementation.
-
-This option very tempting. I understand your hesitancy to add another
-dependency for running XDP--if it wasn't for that, I may have pushed
-harder for this approach. I do like the idea of the xdpd daemon being
-part of the xdp project and providing a language agnostic interface to
-the library.
-
-There will still need to be a new Go project written to interface with the
-daemon. This seems like quite a bit less work than a reimplementation,
-but combined with the downside of adding another dependency, I think we
-can pass on this option--unless you really have a change of heart :)
-
-> 
-> I've been resisting the daemon approach because I don't like introducing
-> another dependency for running XDP. But my main concern is that we end
-> up with something that is compatible across environments and
-> implementations, so applications that use XDP don't have to deal with
-> multiple incompatible ways of loading their programs.
-> 
-> So any feedback anyone has as to which approach(es) would/would not work
-> for you would be welcome (speaking to everyone here)!
-
-Yes, please, if anyone has additional thoughts please weigh in, but I
-think my team is ready to commit to option #2.
-
-Any concerns about my assessment and request?
-
-Thanks,
-Brian
+-- 
+Martin Habets <habetsm.xilinx@gmail.com>
