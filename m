@@ -2,248 +2,269 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2ED92DC3E3
-	for <lists+bpf@lfdr.de>; Wed, 16 Dec 2020 17:20:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B5612DC47C
+	for <lists+bpf@lfdr.de>; Wed, 16 Dec 2020 17:43:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726291AbgLPQT4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Dec 2020 11:19:56 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:49048 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726419AbgLPQTl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Dec 2020 11:19:41 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BGGAVLg052622;
-        Wed, 16 Dec 2020 16:18:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : in-reply-to : message-id : references : mime-version :
- content-type; s=corp-2020-01-29;
- bh=re/aI2fDMWGF30Md61TwWVGiHxw2BS1EGri0QGH2ZjA=;
- b=Zb66kinQJQnM34RnSrwh6ye6bwQ0iRhJ03HmGsjCwZndNoSOb+4onKl4WP4YuLnmhHQk
- TOnlnHzRkElVt+R3Qkw53Vb46z3rgP97xxazlnNtkp9VXCQYbRH3XtDnDfnQa33Vlvt4
- glz1Xo5QfLisxOpdkqN55jH4pIj6gpfOZUum3CXbR6ldD4eTkCUNWTC2oPgW4y3ZNFCK
- wIZAQUB7hwArVGof5xtc2tRq1FTqOlfKAp/36vjt4gpSO/hrWLzdeaHd1JsekCyD3Z88
- kt8+JKMRxF3OS/JihnhFVW4xdLh421d8HRYQegxSrtCJJ4SyBnnH92NvEch7KTN6oHi0 kw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 35cn9rh54s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 16 Dec 2020 16:18:43 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BGG6Emf139320;
-        Wed, 16 Dec 2020 16:18:42 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 35d7sy037j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 16 Dec 2020 16:18:42 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0BGGIfCZ021631;
-        Wed, 16 Dec 2020 16:18:41 GMT
-Received: from dhcp-10-175-181-136.vpn.oracle.com (/10.175.181.136)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 16 Dec 2020 08:18:40 -0800
-Date:   Wed, 16 Dec 2020 16:18:34 +0000 (GMT)
-From:   Alan Maguire <alan.maguire@oracle.com>
-X-X-Sender: alan@localhost
-To:     Alexei Starovoitov <ast@fb.com>
-cc:     Alan Maguire <alan.maguire@oracle.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: one prog multi fentry. Was: [PATCH bpf-next] libbpf: support
- module BTF for BPF_TYPE_ID_TARGET CO-RE relocation
-In-Reply-To: <8d483a31-71a4-1d8c-6fc3-603233be545b@fb.com>
-Message-ID: <alpine.LRH.2.23.451.2012161457030.27611@localhost>
-References: <20201205025140.443115-1-andrii@kernel.org> <alpine.LRH.2.23.451.2012071623080.3652@localhost> <20201208031206.26mpjdbrvqljj7vl@ast-mbp> <CAEf4BzaXvFQzoYXbfutVn7A9ndQc9472SCK8Gj8R_Yj7=+rTcg@mail.gmail.com> <alpine.LRH.2.23.451.2012082202450.25628@localhost>
- <20201208233920.qgrluwoafckvq476@ast-mbp> <alpine.LRH.2.23.451.2012092308240.26400@localhost> <8d483a31-71a4-1d8c-6fc3-603233be545b@fb.com>
+        id S1726721AbgLPQmx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Dec 2020 11:42:53 -0500
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:47003 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725939AbgLPQmx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Dec 2020 11:42:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1608136971; x=1639672971;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version;
+  bh=EINpcIYTjwYeOkbDneqm5cXPEFSVJPKdld+/Olx8XLU=;
+  b=GVYOr675W7sshryceeJ+4Xx/iwg0CASCV4byI9TColYLIdCJALAp//3R
+   MZ8vI3U+5U9qOKmd4HN/uyn2bRATZyB1u9Ze4bIGoTfbgX351RE+ldYzJ
+   oZUW5ZyypeDKNLTjD67/aTzFAMUcrTCUKha/rRJrdwvipVkRBoqoWTcJx
+   0=;
+X-IronPort-AV: E=Sophos;i="5.78,424,1599523200"; 
+   d="scan'208";a="96586335"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1e-a70de69e.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 16 Dec 2020 16:42:10 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-1e-a70de69e.us-east-1.amazon.com (Postfix) with ESMTPS id 5F44BA2054;
+        Wed, 16 Dec 2020 16:42:07 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 16 Dec 2020 16:42:06 +0000
+Received: from 38f9d3582de7.ant.amazon.com (10.43.162.144) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 16 Dec 2020 16:42:02 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     <kafai@fb.com>
+CC:     <ast@kernel.org>, <benh@amazon.com>, <bpf@vger.kernel.org>,
+        <daniel@iogearbox.net>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <kuni1840@gmail.com>,
+        <kuniyu@amazon.co.jp>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>
+Subject: Re: [PATCH v1 bpf-next 05/11] tcp: Migrate TCP_NEW_SYN_RECV requests.
+Date:   Thu, 17 Dec 2020 01:41:58 +0900
+Message-ID: <20201216164158.65104-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.17.2 (Apple Git-113)
+In-Reply-To: <20201215025837.k2cuhykmz6h46fud@kafai-mbp.dhcp.thefacebook.com>
+References: <20201215025837.k2cuhykmz6h46fud@kafai-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9837 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0
- mlxlogscore=999 spamscore=0 mlxscore=0 suspectscore=0 malwarescore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012160108
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9836 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
- impostorscore=0 lowpriorityscore=0 clxscore=1015 spamscore=0
- malwarescore=0 priorityscore=1501 phishscore=0 mlxscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012160108
+Content-Type: text/plain
+X-Originating-IP: [10.43.162.144]
+X-ClientProxiedBy: EX13D47UWA001.ant.amazon.com (10.43.163.6) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 15 Dec 2020, Alexei Starovoitov wrote:
-
-> On Wed, Dec 09, 2020 at 11:21:43PM +0000, Alan Maguire wrote:
-> > Right, that's exactly it.  A pair of generic tracing BPF programs are
-> > used, and they attach to kprobe/kretprobes, and when they run they
-> > use the arguments plus the map details about BTF ids of those arguments to
-> > run bpf_snprintf_btf(), and send perf events to userspace containing the
-> > results.
-> ...
-> > That would be fantastic! We could do that from the context passed into a
-> > kprobe program as the IP in struct pt_regs points at the function.
-> > kretprobes seems a bit trickier as in that case the IP in struct pt_regs is
-> > actually set to kretprobe_trampoline rather than the function we're
-> > returning from due to how kretprobes work; maybe there's another way to get
-> > it in that case though..
+From:   Martin KaFai Lau <kafai@fb.com>
+Date:   Mon, 14 Dec 2020 18:58:37 -0800
+> On Tue, Dec 15, 2020 at 02:03:13AM +0900, Kuniyuki Iwashima wrote:
+> > From:   Martin KaFai Lau <kafai@fb.com>
+> > Date:   Thu, 10 Dec 2020 10:49:15 -0800
+> > > On Thu, Dec 10, 2020 at 02:15:38PM +0900, Kuniyuki Iwashima wrote:
+> > > > From:   Martin KaFai Lau <kafai@fb.com>
+> > > > Date:   Wed, 9 Dec 2020 16:07:07 -0800
+> > > > > On Tue, Dec 01, 2020 at 11:44:12PM +0900, Kuniyuki Iwashima wrote:
+> > > > > > This patch renames reuseport_select_sock() to __reuseport_select_sock() and
+> > > > > > adds two wrapper function of it to pass the migration type defined in the
+> > > > > > previous commit.
+> > > > > > 
+> > > > > >   reuseport_select_sock          : BPF_SK_REUSEPORT_MIGRATE_NO
+> > > > > >   reuseport_select_migrated_sock : BPF_SK_REUSEPORT_MIGRATE_REQUEST
+> > > > > > 
+> > > > > > As mentioned before, we have to select a new listener for TCP_NEW_SYN_RECV
+> > > > > > requests at receiving the final ACK or sending a SYN+ACK. Therefore, this
+> > > > > > patch also changes the code to call reuseport_select_migrated_sock() even
+> > > > > > if the listening socket is TCP_CLOSE. If we can pick out a listening socket
+> > > > > > from the reuseport group, we rewrite request_sock.rsk_listener and resume
+> > > > > > processing the request.
+> > > > > > 
+> > > > > > Reviewed-by: Benjamin Herrenschmidt <benh@amazon.com>
+> > > > > > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+> > > > > > ---
+> > > > > >  include/net/inet_connection_sock.h | 12 +++++++++++
+> > > > > >  include/net/request_sock.h         | 13 ++++++++++++
+> > > > > >  include/net/sock_reuseport.h       |  8 +++----
+> > > > > >  net/core/sock_reuseport.c          | 34 ++++++++++++++++++++++++------
+> > > > > >  net/ipv4/inet_connection_sock.c    | 13 ++++++++++--
+> > > > > >  net/ipv4/tcp_ipv4.c                |  9 ++++++--
+> > > > > >  net/ipv6/tcp_ipv6.c                |  9 ++++++--
+> > > > > >  7 files changed, 81 insertions(+), 17 deletions(-)
+> > > > > > 
+> > > > > > diff --git a/include/net/inet_connection_sock.h b/include/net/inet_connection_sock.h
+> > > > > > index 2ea2d743f8fc..1e0958f5eb21 100644
+> > > > > > --- a/include/net/inet_connection_sock.h
+> > > > > > +++ b/include/net/inet_connection_sock.h
+> > > > > > @@ -272,6 +272,18 @@ static inline void inet_csk_reqsk_queue_added(struct sock *sk)
+> > > > > >  	reqsk_queue_added(&inet_csk(sk)->icsk_accept_queue);
+> > > > > >  }
+> > > > > >  
+> > > > > > +static inline void inet_csk_reqsk_queue_migrated(struct sock *sk,
+> > > > > > +						 struct sock *nsk,
+> > > > > > +						 struct request_sock *req)
+> > > > > > +{
+> > > > > > +	reqsk_queue_migrated(&inet_csk(sk)->icsk_accept_queue,
+> > > > > > +			     &inet_csk(nsk)->icsk_accept_queue,
+> > > > > > +			     req);
+> > > > > > +	sock_put(sk);
+> > > > > not sure if it is safe to do here.
+> > > > > IIUC, when the req->rsk_refcnt is held, it also holds a refcnt
+> > > > > to req->rsk_listener such that sock_hold(req->rsk_listener) is
+> > > > > safe because its sk_refcnt is not zero.
+> > > > 
+> > > > I think it is safe to call sock_put() for the old listener here.
+> > > > 
+> > > > Without this patchset, at receiving the final ACK or retransmitting
+> > > > SYN+ACK, if sk_state == TCP_CLOSE, sock_put(req->rsk_listener) is done
+> > > > by calling reqsk_put() twice in inet_csk_reqsk_queue_drop_and_put().
+> > > Note that in your example (final ACK), sock_put(req->rsk_listener) is
+> > > _only_ called when reqsk_put() can get refcount_dec_and_test(&req->rsk_refcnt)
+> > > to reach zero.
+> > > 
+> > > Here in this patch, it sock_put(req->rsk_listener) without req->rsk_refcnt
+> > > reaching zero.
+> > > 
+> > > Let says there are two cores holding two refcnt to req (one cnt for each core)
+> > > by looking up the req from ehash.  One of the core do this migrate and
+> > > sock_put(req->rsk_listener).  Another core does sock_hold(req->rsk_listener).
+> > > 
+> > > 	Core1					Core2
+> > > 						sock_put(req->rsk_listener)
+> > > 
+> > > 	sock_hold(req->rsk_listener)
+> > 
+> > I'm sorry for the late reply.
+> > 
+> > I missed this situation that different Cores get into NEW_SYN_RECV path,
+> > but this does exist.
+> > https://lore.kernel.org/netdev/1517977874.3715.153.camel@gmail.com/#t
+> > https://lore.kernel.org/netdev/1518531252.3715.178.camel@gmail.com/
+> > 
+> > 
+> > If close() is called for the listener and the request has the last refcount
+> > for it, sock_put() by Core2 frees it, so Core1 cannot proceed with freed
+> > listener. So, it is good to call refcount_inc_not_zero() instead of
+> > sock_hold(). If refcount_inc_not_zero() fails, it means that the listener
+> _inc_not_zero() usually means it requires rcu_read_lock().
+> That may have rippling effect on other req->rsk_listener readers.
 > 
-> Yeah. kprobe's IP doesn't match kretprobe's IP which makes such tracing
-> use cases more complicated. Also kretprobe is quite slow. See
-> prog_tests/test_overhead and selftests/bpf/bench.
-> I think the key realization is that the user space knows all IPs
-> it will attach to. It has to know all IPs otherwise
-> hashmap{key=ip, value=btf_data} is not possible.
-> Obvious, right ? What it means that we can use this key observation
-> to build better interfaces at all layers. kprobes are slow to
-> setup one by one. It's also slow to execute. fentry/fexit is slow
-> to setup, but fast to execute. Jiri proposed a batching api for
-> fentry, but it doesn't quite make sense from api perspective
-> since user space has to give different bpf prog for every fentry.
-> bpf trampoline is unique for every target fentry kernel function.
-> The batched attach would make sense for kprobe because one prog
-> can be attached everywhere. But kprobe is slow.
-> This thought process justifies an addition of a new program
-> type where one program can attach to multiple fentry.
-> Since fentry ctx is no longer fixed the verifier won't be able to
-> track btf_id-s of arguments, but btf based pointer walking is fast
-> and powerful, so if btf is passed into the program there could
-> be a helper that does dynamic cast from long to PTR_TO_BTF_ID.
-> Since such new fentry prog will have btf in the context and
-> there will be no need for user space to populate hashmap and
-> mess with IPs. And the best part that batched attach will not
-> only be desired, but mandatory part of the api.
-> So I'm proposing to extend BPF_PROG_LOAD cmd with an array of
-> pairs (attach_obj_fd, attach_btf_id).
-> The fentry prog in .c file might even have a regex in attach pattern:
-> SEC("fentry/sys_*")
-> int BPF_PROG(test, struct btf *btf_obj, __u32 btf_id, __u64 arg1,
->              __u64 arg2, ...__u64 arg6)
-> {
->   struct btf_ptr ptr1 = {
->     .ptr = arg1,
->     .type_id = bpf_core_type_id_kernel(struct foo),
->     .btf_obj = btf_obj,
->   },
->   ptr2 = {
->     .ptr = arg2,
->     .type_id = bpf_core_type_id_kernel(struct bar),
->     .btf_obj = btf_obj,
->   };
->   bpf_snprintf_btf(,, &ptr1, sizeof(ptr1), );
->   bpf_snprintf_btf(,, &ptr1, sizeof(ptr2), );
-> }
+> There may also be places assuming that the req->rsk_listener will never
+> change once it is assigned.  not sure.  have not looked closely yet.
+
+I have checked this again. There are no functions that expect explicitly
+req->rsk_listener never change except for BUG_ON in inet_child_forget().
+No BUG_ON/WARN_ON does not mean they does not assume listener never
+change, but such functions still work properly if rsk_listener is changed.
+
+
+> It probably needs some more thoughts here to get a simpler solution.
+
+Is it fine to move sock_hold() before assigning rsk_listener and defer
+sock_put() to the end of tcp_v[46]_rcv() ?
+
+Also, we have to rewrite rsk_listener first and then call sock_put() in
+reqsk_timer_handler() so that rsk_listener always has refcount more than 1.
+
+---8<---
+	struct sock *nsk, *osk;
+	bool migrated = false;
+	...
+	sock_hold(req->rsk_listener);  // (i)
+	sk = req->rsk_listener;
+	...
+	if (sk->sk_state == TCP_CLOSE) {
+		osk = sk;
+		// do migration without sock_put()
+		sock_hold(nsk);  // (ii) (as with (i))
+		sk = nsk;
+		migrated = true;
+	}
+	...
+	if (migrated) {
+		sock_put(sk);  // pair with (ii)
+		sock_put(osk); // decrement old listener's refcount
+		sk = osk;
+	}
+	sock_put(sk);  // pair with (i)
+---8<---
+
+
+> > is closed and the req->rsk_listener is changed in another place. Then, we
+> > can continue processing the request by rewriting sk with rsk_listener and
+> > calling sock_hold() for it.
+> > 
+> > Also, the migration by Core2 can be done after sock_hold() by Core1. Then
+> > if Core1 win the race by removing the request from ehash,
+> > in inet_csk_reqsk_queue_add(), instead of sk, req->rsk_listener should be
+> > used as the proper listener to add the req into its queue. But if the
+> > rsk_listener is also TCP_CLOSE, we have to call inet_child_forget().
+> > 
+> > Moreover, we have to check the listener is freed in the beginning of
+> > reqsk_timer_handler() by refcount_inc_not_zero().
+> > 
+> > 
+> > > > And then, we do `goto lookup;` and overwrite the sk.
+> > > > 
+> > > > In the v2 patchset, refcount_inc_not_zero() is done for the new listener in
+> > > > reuseport_select_migrated_sock(), so we have to call sock_put() for the old
+> > > > listener instead to free it properly.
+> > > > 
+> > > > ---8<---
+> > > > +struct sock *reuseport_select_migrated_sock(struct sock *sk, u32 hash,
+> > > > +					    struct sk_buff *skb)
+> > > > +{
+> > > > +	struct sock *nsk;
+> > > > +
+> > > > +	nsk = __reuseport_select_sock(sk, hash, skb, 0, BPF_SK_REUSEPORT_MIGRATE_REQUEST);
+> > > > +	if (nsk && likely(refcount_inc_not_zero(&nsk->sk_refcnt)))
+> > > There is another potential issue here.  The TCP_LISTEN nsk is protected
+> > > by rcu.  refcount_inc_not_zero(&nsk->sk_refcnt) cannot be done if it
+> > > is not under rcu_read_lock().
+> > > 
+> > > The receive path may be ok as it is in rcu.  You may need to check for
+> > > others.
+> > 
+> > IIUC, is this mean nsk can be NULL after grace period of RCU? If so, I will
+> worse than NULL.  an invalid pointer.
+>  
+> > move rcu_read_lock/unlock() from __reuseport_select_sock() to
+> > reuseport_select_sock() and reuseport_select_migrated_sock().
+> ok.
 > 
-> libbpf will process the attach regex and find all matching functions in
-> the kernel and in the kernel modules. Then it will pass this list of
-> (fd,btf_id) pairs to the kernel. The kernel will find IP addresses and
-> BTFs of all functions. It will generate single bpf trampoline to handle
-> all the functions. Either one trampoline or multiple trampolines is an
-> implementation detail. It could be one trampoline that does lookup based
-> on IP to find btf_obj, btf_id to pass into the program or multiple
-> trampolines that share most of the code with N unique trampoline
-> prefixes with hardcoded btf_obj, btf_id. The argument save/restore code
-> can be the same for all fentries. The same way we can support single
-> fexit prog attaching to multiple kernel functions. And even single
-> fmod_ret prog attaching to multiple. The batching part will make
-> attaching to thousands of functions efficient. We can use batched
-> text_poke_bp, etc.
-> 
-> As far as dynamic btf casting helper we could do something like this:
-> SEC("fentry/sys_*")
-> int BPF_PROG(test, struct btf *btf_obj, __u32 btf_id, __u64 arg1, __u64
-> arg2, ...__u64 arg6)
-> {
->   struct sk_buff *skb;
->   struct task_struct *task;
-> 
->   skb = bpf_dynamic_cast(btf_obj, btf_id, 1, arg1,
->                          bpf_core_type_id_kernel(skb));
->   task = bpf_dynamic_cast(btf_obj, btf_id, 2, arg2,
->                           bpf_core_type_id_kernel(task));
->   skb->len + task->status;
-> }
-> The dynamic part of the helper will walk btf of func_proto that was
-> pointed to by 'btf_id' argument. It will find Nth argument and
-> if argument's btf_id matches the last u32 passed into bpf_dynamic_cast()
-> it will return ptr_to_btf_id. The verifier needs 5th u32 arg to know
-> const value of btf_id during verification.
-> The execution time of this casting helper will be pretty fast.
-> Thoughts?
-> 
-> 
+> > 
+> > 
+> > > > +		return nsk;
+> > > > +
+> > > > +	return NULL;
+> > > > +}
+> > > > +EXPORT_SYMBOL(reuseport_select_migrated_sock);
+> > > > ---8<---
+> > > > https://lore.kernel.org/netdev/20201207132456.65472-8-kuniyu@amazon.co.jp/
+> > > > 
+> > > > 
+> > > > > > +	sock_hold(nsk);
+> > > > > > +	req->rsk_listener = nsk;
+> > > It looks like there is another race here.  What
+> > > if multiple cores try to update req->rsk_listener?
+> > 
+> > I think we have to add a lock in struct request_sock, acquire it, check
+> > if the rsk_listener is changed or not, and then do migration. Also, if the
+> > listener has been changed, we have to tell the caller to use it as the new
+> > listener.
+> > 
+> > ---8<---
+> >        spin_lock(&lock)
+> >        if (sk != req->rsk_listener) {
+> >                nsk = req->rsk_listener;
+> >                goto out;
+> >        }
+> > 
+> >        // do migration
+> > out:
+> >        spin_unlock(&lock)
+> >        return nsk;
+> > ---8<---
+> cmpxchg may help here.
 
-From a bpf programmer's perspective, the above sounds fantastic and opens 
-up a bunch of new possibilities.  For example, a program that attaches to 
-a bunch of networking functions at once and uses dynamic casts to find the 
-skb argument could help trace packet flow through the stack without having 
-to match exact function signatures.  From a mechanics perspective I 
-wonder if we could take a similar approach to the cgroup storage, and use 
-the bpf prog array structure to store a struct btf * and any other 
-site-specific metadata at attach time? Then when the array runs we could 
-set a per-cpu variable such that helpers could pick up that info if 
-needed.
-
-Having the function argument BTF ids gets us nearly the whole way there 
-from a generic tracer perspective - I can now attach my generic tracing 
-program to an arbitrary function via fentry/fexit and get the BTF ids 
-of the arguments or return value, and even better can do it with wildcarding.
-There is an additional use case though - at least for the ksnoop program
-I'm working on at least - and it's where we access members and need their 
-type ids too.  The ksnoop program (which I wanted to send out last week but due 
-to a system move I'm temporarily not able to access the code, sorry about that,
-hoping it'll be back online early next week) operates in two modes;
-
-- default mode where we trace function arguments for kprobe and return value
-  for kretprobe; that's covered by the above; and
-- a mode where the user specifies what they want. For example running
-
-$ ksnoop "ip_send_skb" 
-
-...is an example of default mode, this will trace entry/return and print 
-arguments and return values, while
-
-$ ksnoop "ip_send_skb(skb)"
-
-...will trace the skb argument only, and
-
-$ ksnoop "ip_send_skb(skb->sk)"
-
-...will trace the skb->sk value.  The user-space side of the program 
-matches the function/arg name and looks up the referenced type, setting it 
-in the function's map.  For field references such as skb->sk, it also 
-records offset and whether that offset is a pointer (as is the case for 
-skb->sk) - in such cases we need to read the offset value via bpf_probe_read()
-and use it in bpf_snprintf_btf() along with the referenced type.  Only a
-single simple reference like the above is supported currently, but 
-multiple levels of reference could be made to work too.
-
-This latter case would be awkward to support programmatically in BPF 
-program context I think, though I'm sure it could be done.  To turn back 
-to our earlier conversation, your concern as I understand it was that 
-pre-specifying module BTF type ids in a map is racy, and I'd like to dig 
-into that a bit more if you don't mind because I think some form of
-user-space-specified BTF ids may be the easiest approach for more flexible
-generic tracing that covers more than function arguments.
-
-I assume the race you're concerned about is caused by the module unloading 
-after the BTF ids have been set in the map? And then the module reappears 
-with different BTF/type id mappings? Perhaps a helper for retrieving
-the struct btf * which was set at attach time would be enough?
-
-So for example something like
-
-
-	struct btf_ptr ptr;
-
-	ptr.type_id = /* retrieve from map */
-	ptr.obj_id = bpf_get_btf(THIS_MODULE);
-
-...where we don't actually specify a type but a libbpf-specified fd
-is used to stash the associated "struct btf *" for the module in the 
-prog array at attach.  Are there still race conditions we need to worry
-about in a scenario like this? Thanks!
-
-Alan
+Thank you, I will use cmpxchg() to rewrite rsk_listener atomically and
+check if req->rsk_listener is updated.
