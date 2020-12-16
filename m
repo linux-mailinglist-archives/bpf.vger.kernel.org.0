@@ -2,128 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D1292DC071
-	for <lists+bpf@lfdr.de>; Wed, 16 Dec 2020 13:44:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCCF32DC075
+	for <lists+bpf@lfdr.de>; Wed, 16 Dec 2020 13:47:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725868AbgLPMoR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Dec 2020 07:44:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725562AbgLPMoR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Dec 2020 07:44:17 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A36DC061794
-        for <bpf@vger.kernel.org>; Wed, 16 Dec 2020 04:43:37 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id h16so24648461edt.7
-        for <bpf@vger.kernel.org>; Wed, 16 Dec 2020 04:43:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7f/TuKYXcY2S7hF3e7foyaVj4dg6Ot16VKFFTCnvppE=;
-        b=b3kkbvL8oHgWwqJ2gd+sCarUljOg2nMmJfjIxe9OvRJrTP+RYF1p2/uNbqQEipdGkj
-         oYMjzxcC5Iz2lx1NzWlGzOrWuCmDuWOlysKje+vr1kjwmmGB8rKpU5t6/C3NIi4M+UkU
-         Cqf4Ns+hC7J3tKPsHJ1/Oez6S1IqwelGr9u+odV8Mh7e6lrqMtyriFK/26byhIKTGVcH
-         SQknnZ12PY1zmTKu/8DYV17MI43dZF08CymtwNtjlDef0g0vGAXrrOIiEZ1RToX4O9MT
-         82uPC7PkiK/2oXbGlmgZ/8g8l7g26Pd0iFTAPxTDg25JeenGETsBh7HeVU26PYKdQHdo
-         kjrA==
+        id S1725970AbgLPMqs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Dec 2020 07:46:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24200 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726077AbgLPMqs (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 16 Dec 2020 07:46:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608122722;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ebb5CMBBOFtuJcYfYXNX6XOzZRifgXHpVpP3voMyqP4=;
+        b=FKrc5IecE0YFLN9wScqWHQOkPxOLQRlnbElCp9YRBbKlYnq0cP3Ttq7SWrIEeqzy/akR8a
+        /Gt8MHZ/mPijgXzZ+dsNU1cfgfjxnbmkehAYTAcgTNY4sh3k11gICiwChXaM5zWxT86R5r
+        1WZHMXdbbrDr8iYEqp+EEH54uJVHaIU=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-12-B-KvkkAuMLKR-q2HrBBFMg-1; Wed, 16 Dec 2020 07:45:20 -0500
+X-MC-Unique: B-KvkkAuMLKR-q2HrBBFMg-1
+Received: by mail-ed1-f71.google.com with SMTP id dc6so11661292edb.14
+        for <bpf@vger.kernel.org>; Wed, 16 Dec 2020 04:45:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7f/TuKYXcY2S7hF3e7foyaVj4dg6Ot16VKFFTCnvppE=;
-        b=J+pgne8K/uPsY4zKpiobAd9BoYVuVxtO8rb1Wg83TCjDMXaupCDqncNOiPYatTBrwh
-         9UyV4C79p5GuAEfGEUuZNuBnH+QvIxQGZiVXSjKCXXw7mqyKNItKSmoQVvZOS4m4nXYd
-         dZ/K/wjSLwZ7NKeP2mGbuv9sI4HsioDrSuZ62hKopowdcAXeyhNAzQzJBYEDDYOf7/OX
-         Kn6qbv6cRUzBV18i7MQW5i8JXczF0swyufJx2UO+mgGMYTkkh8BPPHvSK2rrGxa7zaLV
-         cSJP+8Hr5a4foEnndPGDPontS/Efg11t0WR27sz4tR/8R5If1RR2nwV4+gppdPT9pJv/
-         2jYw==
-X-Gm-Message-State: AOAM531NKpRHbSNw1WDuhlhaqFb7Ja2hPwCqzlMZRVRZ8Gg9FaZy3Vto
-        4id4jy6ZKNKQBVch0BoBQIWDLJERw9byhi6bZ+w=
-X-Google-Smtp-Source: ABdhPJwcsj0DSwd8Q+TOZ5pFpnIG0ISLblxeRpLz6tgXKpRjHMgZONmSJlSFpE5Q5iQ9BRdXkO686Az8e6I/ZoYi8hY=
-X-Received: by 2002:a05:6402:2070:: with SMTP id bd16mr32548026edb.107.1608122615728;
- Wed, 16 Dec 2020 04:43:35 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=Ebb5CMBBOFtuJcYfYXNX6XOzZRifgXHpVpP3voMyqP4=;
+        b=J9GLEgGJK/7SPd8ea7BUV7Lusv9ah6ck0C/iNJrujngjYjPqv2zmeIqKhVfUWrU4Hb
+         KaoiDwSgiOQl5ThoX6NDmmEni4yozrO5nwz3+0C6F8eJ4IXNo/qtAG7v5TU7o9vUSKzS
+         /GzTtxmVbaWqvN4As1N1tbCNZT7c/cm7/MlXHfQ1gdQoKOL1v3bun/ue+Ja47DrJLrvo
+         A+3UafMHaCfEE1fmsL6uIPHgU7miy7gljA3z3xjdiYpQCTtCl/hhhmr5c5ooFNHJLAZU
+         AKgFrvR1b433YoX6Ypfzdo+qhYR5nbldS3B0tpNhuQYygFBQGvp6AccUnLKsI12vzF83
+         nLPw==
+X-Gm-Message-State: AOAM530fs6lcTHy362Hazsw3F+d1Q17A85lOHZFpFXH6ll/1o+49aBtv
+        CT3W+M04GaEg1iYCBtvi5gJdNXJzM1ZbBjULAdkfEhAIhoYv7i3/gfqW4iH+GTvBdBt/t5uJ8Gh
+        U1+sDDeDq5UCx
+X-Received: by 2002:a17:906:7243:: with SMTP id n3mr29852474ejk.246.1608122718573;
+        Wed, 16 Dec 2020 04:45:18 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxC8G+lU1STw+5xVl90HvA8DJZAIdU1CYG7aev740xp3lfWhfORuzaxOcMehcK3mUZRuUmWmg==
+X-Received: by 2002:a17:906:7243:: with SMTP id n3mr29852444ejk.246.1608122718051;
+        Wed, 16 Dec 2020 04:45:18 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id ng1sm1319740ejb.112.2020.12.16.04.45.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Dec 2020 04:45:17 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 304DF1802A7; Wed, 16 Dec 2020 13:45:17 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     "Brian G. Merrell" <brian.g.merrell@gmail.com>
+Cc:     xdp-newbies@vger.kernel.org,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Maciej =?utf-8?Q?=C5=BBenczykowski?= <maze@google.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Andrey Ignatov <rdna@fb.com>, bpf@vger.kernel.org
+Subject: Re: How to orchestrate multiple XDP programs
+In-Reply-To: <20201216072920.hh42kxb5voom4aau@snout.localdomain>
+References: <20201201091203.ouqtpdmvvl2m2pga@snout.localdomain>
+ <878sah3f0n.fsf@toke.dk>
+ <20201216072920.hh42kxb5voom4aau@snout.localdomain>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 16 Dec 2020 13:45:17 +0100
+Message-ID: <873605din6.fsf@toke.dk>
 MIME-Version: 1.0
-References: <CANaYP3EH2tS=LnAoRfYsnO-zs5qaO7GuHDhw03==t+B_C8Gf2w@mail.gmail.com>
- <CAEf4Bza4P51cGFN4zgTBr5nt_3tcoeGQ-QfP5CjoGx2scJP5-g@mail.gmail.com>
- <CANaYP3Euo8XYsDtqgoESLT_VRPGDKEyR8c0Wf3z1r_+nvS+ffw@mail.gmail.com>
- <CAEf4Bzb3ShNmD=_6XqUfL7DSDd_3rDcuuPN0Y4u8qVK2uOUsAA@mail.gmail.com>
- <CANaYP3GetBKUPDfo6PqWnm3xuGs2GZjLF8Ed51Q1=Emv2J-dKg@mail.gmail.com> <CAEf4BzZdFB_PgB4sYLn5xcNY5DDihWwZ8_0WvrLJL7zGETD4iQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzZdFB_PgB4sYLn5xcNY5DDihWwZ8_0WvrLJL7zGETD4iQ@mail.gmail.com>
-From:   Gilad Reti <gilad.reti@gmail.com>
-Date:   Wed, 16 Dec 2020 14:42:59 +0200
-Message-ID: <CANaYP3Ezq8p6dkXj8Vwj2d5qC4Ls2Zg=mu_UJPZJQVfKQN9gyQ@mail.gmail.com>
-Subject: Re: libbpf CO-RE read_user{,_str} macros
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 15, 2020 at 11:48 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+"Brian G. Merrell" <brian.g.merrell@gmail.com> writes:
+
+> Yes, please, if anyone has additional thoughts please weigh in, but I
+> think my team is ready to commit to option #2.
 >
-> On Tue, Dec 15, 2020 at 12:44 PM Gilad Reti <gilad.reti@gmail.com> wrote:
-> >
-> > On Tue, Dec 15, 2020 at 8:47 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Tue, Dec 15, 2020 at 4:50 AM Gilad Reti <gilad.reti@gmail.com> wrote:
-> > > >
-> > > > On Tue, Dec 15, 2020 at 3:26 AM Andrii Nakryiko
-> > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > >
-> > > > > On Mon, Dec 14, 2020 at 1:58 AM Gilad Reti <gilad.reti@gmail.com>
-> > > > > wrote:
-> > > > > >
-> > > > > > Hello there,
-> > > > > > libbpf provides BPF_CORE_READ macros for reading struct members in
-> > > > > > a
-> > > > > > CO-RE compatible way. By default those macros reduct to the
-> > > > > > relevant
-> > > > > > bpf_probe_read_kernel functions. As far as I could tell, there are
-> > > > > > no
-> > > > > > variants of this macros that wrap the _user variants of the read
-> > > > > > functions. Are there any plans to support ones?
-> > > > >
-> > > > > BPF_CORE_READ() are using BPF CO-RE and thus emit relocations, which
-> > > > > will be adjusted by libbpf to match kernel struct layouts by using
-> > > > > kernel's BTF(s). Because of this, having xxx_user() variants doesn't
-> > > > > make much sense, because libbpf can't relocate field offsets against
-> > > > > user-space types (as there is no BTF for user-space applications,
-> > > > > typically). Which is why there are no BPF_CORE_READ_USER()-like
-> > > > > macros.
-> > > > >
-> > > > > What's your use case, though? There might be a valid one that we are
-> > > > > not aware of, so please provide more details. Thanks.
-> > > > Currently my use case is tracing syscall pointer arguments (For
-> > > > example, "connect" has a "struct sockaddr *" argument).
-> > >
-> > > So if it's a kernel-defined data structure provided from user-space,
-> > > then it has to be part of a stable UAPI type definitions, right? In
-> > > such a case, you shouldn't need CO-RE, because the layout is stable.
-> > > So it's still unclear why you'd need BPF_CORE_READ for that?..
-> > I may be completely off, but can't struct offsets and members change
-> > across different architectures?
->
-> Hm.. that's an interesting angle, certainly across 32-bit and 64-bit
-> architectures UAPI structs can have different layouts and it's
-> possible to write and compile a single BPF program that would work on
-> both. You'll most likely still have to compile twice (once for each
-> architecture) due to the user-space part. But I think there is a use
-> case or BPF_CORE_READ_USER() macro, so I don't mind adding it, let's
-> just figure out the best way to do this. Thanks for elaborating!
-Thank you for your time!
->
-> > >
-> > >
-> > > Or is it because of the convenience of doing BPF_CORE_READ(s, field1,
-> > > field2, field3) instead of a sequence of bpf_probe_read_user() calls?
-> > > That's a different angle of BPF_CORE_READ() and we should clarify the
-> > > desired functionality you are looking for.
-> > >
-> > >
-> > > > >
-> > > > > > Thanks,
-> > > > > > Gilad Reti.
+> Any concerns about my assessment and request?
+
+Just a quick note - since the holidays are fast approaching I won't have
+time to do anything more about it before January anyway. But until then,
+thank you for volunteering to do the Go implementation work!
+
+I'll write up the "spec" once I'm back from the holidays, and we can
+continue the discussion (and you can start prototyping an
+implementation). And if you run away screaming after seeing the gory
+details we can of course reconsider ;)
+
+Sounds good?
+
+And if someone else chimes in with opinions before or during that, great!
+
+-Toke
+
