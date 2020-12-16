@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBC8B2DC930
-	for <lists+bpf@lfdr.de>; Wed, 16 Dec 2020 23:45:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 791F62DC935
+	for <lists+bpf@lfdr.de>; Wed, 16 Dec 2020 23:47:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730280AbgLPWpN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Dec 2020 17:45:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60528 "EHLO
+        id S1727829AbgLPWru (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Dec 2020 17:47:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727838AbgLPWpM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Dec 2020 17:45:12 -0500
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC80CC061794
-        for <bpf@vger.kernel.org>; Wed, 16 Dec 2020 14:44:32 -0800 (PST)
-Received: by mail-yb1-xb29.google.com with SMTP id y4so3478303ybn.3
-        for <bpf@vger.kernel.org>; Wed, 16 Dec 2020 14:44:32 -0800 (PST)
+        with ESMTP id S1727823AbgLPWrt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Dec 2020 17:47:49 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93792C061794
+        for <bpf@vger.kernel.org>; Wed, 16 Dec 2020 14:47:09 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id u203so24011616ybb.2
+        for <bpf@vger.kernel.org>; Wed, 16 Dec 2020 14:47:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/bEGYC7haX5hVkJO6gZp3/9UlAVMZ51tvMTvkLjCZXk=;
-        b=IUvzuvzo8WuB8bR8OmTUeg/lD/sm0k6XzCL9O+TK7xcm3eLNwcC+jkaBtGn0kfdIaS
-         A10VWZWmTQTlqcgptFnyoBsRRkru4jCHODanZC4pxd19/tpS9opd4S64IRIUudXj5v0q
-         y6B/9W7bnqn61MxFUwfAHc43vmoV61aa2wVjluTyoH74R7SK8mgK2ZdCakYkBZ/asb15
-         2Vjn3QmSh0xIk5gScnUJfS7wBLu4iZhDRQUfH/eYRqELoLZlbecTh7P/Pb4WMBCt1mJp
-         hLChTrJ5MhKmZg4gAjwwbj951d6gcXeX2GAcsLmJSrjkKyH7Lw0P3Vk+Ml3WQHTcv5nf
-         XaHg==
+        bh=QAq1Cyz5FbkyrRqT65pmBimBepYkTyBr8tBoHKyN4/A=;
+        b=nkaKPfwy1MezD1ak01Dt65aurlO12pFpRD/kUR/8OkyW0Y1WfAgrj1c2+nKQVrzK22
+         DG4V7F277l6VJHt1TZyoyN1y0vAk3jB+fJJuNrXYCd+erMBTlY+7l7JwkRymdTj7Ki1Y
+         ze37d7TAvULwnZ9TGeaT60OYtcVq+Itd+4D0tm0K+mL8BfGKqjQ4MJyjYa1dcXL8n2cz
+         fRIy2HduFyfxDm4DzLwNOTker8rfeu4zwPr6FSs7g/cuuzYV78Ey8mgHKrEIejKvqR5r
+         3EeIZA9xM8rvHUzyCVa7SoctZAdLgSXO5kOdy+U6vNQgyFITxE0+iQJzzBTvwiTSsLPg
+         0yYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/bEGYC7haX5hVkJO6gZp3/9UlAVMZ51tvMTvkLjCZXk=;
-        b=e81JohMTFXpDiHpsiLOq5x26biBTxpijyT1FGjamy3kaSRQyOzcdIf/2BPm0DIuLhn
-         3RVNydRxQj79DVnSKIGOqPRQzFsAdY69vunIxhjTHOCDPpEQ3Q+VD/ixovKClBub+Y4m
-         p4YJHJYbEksdTgSycQxzdxw7o6CxQfie74wUNQNHZc+fI8ttzQ9P56ZDWzf2I+fgHYB8
-         aej50jvudcPl9HqVRIsPBhcGlZRn2Pd/YlnAxlDu9xY7wU6BTD0s0nA8ekbioF6FpkE5
-         G698mepDHEyuRgZ86uP3zsR4CgYMV5RbKjhJ9zwwX4MAEoplXnv9tH1Q35TnMHeIB7cD
-         /KxA==
-X-Gm-Message-State: AOAM532GeFQ2S/3iuX4+HPg2ERvwN+H45d6DRYJW04sYE7CdJJ7ZJyaN
-        +IRZRsbIcsVvrtZssT/7SWwk6MstgzY2WMB7N8E=
-X-Google-Smtp-Source: ABdhPJy+G4R+uFjGsuJyzlZdraESzb3xs7xC1NUO6xpwDZn6rGL4sJJrM+1ZyPQ/P+SjsLP5ySEaCAm2GHCTTqrJjlA=
-X-Received: by 2002:a25:f505:: with SMTP id a5mr51256471ybe.425.1608158671924;
- Wed, 16 Dec 2020 14:44:31 -0800 (PST)
+        bh=QAq1Cyz5FbkyrRqT65pmBimBepYkTyBr8tBoHKyN4/A=;
+        b=tmIy5jzh5Th8TSAgw9DZqCIwKtsSbfPeGJXHEBLQX42vSadkoxpv3lewDxNl1q00AA
+         Gp34KyhzCIox/23k3RsqAW/HA78hy59s7MbwQUlNkUkp6fenQNeulKc5RqTdiapxSgVM
+         xBoKXkoiR6oL7bWewUu6pVX2avAVEX92gJQ7tUUPq9xfeC6EGUuB40fhHlFYOtv0Vxdl
+         wE5KqZ6Knh69PgIZqaQnDW74dGgwflELCMG5cs21Uy1hKD5/iBdOB0I0V4N2QW+n044t
+         2CGULEZbQOT3+u2J71xK/j4p2e9r6iZvHmuXq4X279dn/jXLINimntvcZ4dr1EZlY5qe
+         rhcw==
+X-Gm-Message-State: AOAM533AP7EkITvX8CFrR8O3+vDzD+/5HA0Bu9gOXeECSgSpews8ktwO
+        ggOAbBLtTtJdt1zNS6QPOJ23xblR382r9HP1awM=
+X-Google-Smtp-Source: ABdhPJxDl1u7ISaIioRhgRcRW3gknMx1yL+aAutNpB8guTddJlWu2Av/L4/cm/DWTL2cYoTSld2KrR1CINcS45vA9AU=
+X-Received: by 2002:a25:d44:: with SMTP id 65mr53428928ybn.260.1608158828900;
+ Wed, 16 Dec 2020 14:47:08 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1607973529.git.me@ubique.spb.ru>
-In-Reply-To: <cover.1607973529.git.me@ubique.spb.ru>
+References: <cover.1607973529.git.me@ubique.spb.ru> <0ff8927166f6e18e72adab8a94cb6d694c610cc0.1607973529.git.me@ubique.spb.ru>
+In-Reply-To: <0ff8927166f6e18e72adab8a94cb6d694c610cc0.1607973529.git.me@ubique.spb.ru>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 16 Dec 2020 14:44:21 -0800
-Message-ID: <CAEf4BzadLQ3jxcjhXNU06VkGW9nuFuU3q1-Z7TRU4wQ6s=PgAg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/3] Add support of pointer to struct in global functions
+Date:   Wed, 16 Dec 2020 14:46:58 -0800
+Message-ID: <CAEf4BzZZoD8C3u97KMoJ4iOzkx3TNVT9E36hpQri0sMWTZVqUQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/3] bpf: Factor out nullable reg type conversion
 To:     Dmitrii Banshchikov <me@ubique.spb.ru>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -64,40 +64,55 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Mon, Dec 14, 2020 at 11:53 AM Dmitrii Banshchikov <me@ubique.spb.ru> wrote:
 >
-> This patchset adds support of a pointer to struct among global function
-> arguments.
+> Factor out helper function for conversion nullable register type to its
+> corresponding type with value.
 >
-> The motivation is to overcome the limit on the maximum number of allowed
-> arguments and avoid tricky and unoptimal ways of passing arguments.
+> Signed-off-by: Dmitrii Banshchikov <me@ubique.spb.ru>
+> ---
+>  kernel/bpf/verifier.c | 77 ++++++++++++++++++++++++-------------------
+>  1 file changed, 44 insertions(+), 33 deletions(-)
 >
-> The limitation is that used structs may not contain any other pointers.
->
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 93def76cf32b..dee296dbc7a1 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -1073,6 +1073,43 @@ static void mark_reg_known_zero(struct bpf_verifier_env *env,
+>         __mark_reg_known_zero(regs + regno);
+>  }
 
-This patch set seems to be breaking a few selftests, please take a look ([0]).
+[...]
 
-  [0] https://travis-ci.com/github/kernel-patches/bpf/builds/208973941
+> -               if (is_null) {
+>                         /* We don't need id and ref_obj_id from this point
+>                          * onwards anymore, thus we should better reset it,
+>                          * so that state pruning has chances to take effect.
+>                          */
+>                         reg->id = 0;
+>                         reg->ref_obj_id = 0;
 
-> Dmitrii Banshchikov (3):
->   bpf: Factor out nullable reg type conversion
->   bpf: Support pointer to struct in global func args
->   selftests/bpf: Add unit tests for global functions
->
->  include/linux/bpf_verifier.h                  |   2 +
->  kernel/bpf/btf.c                              |  59 ++++++++--
->  kernel/bpf/verifier.c                         | 107 ++++++++++++------
->  .../bpf/prog_tests/test_global_funcs.c        |   5 +
->  .../selftests/bpf/progs/test_global_func10.c  |  29 +++++
->  .../selftests/bpf/progs/test_global_func11.c  |  19 ++++
->  .../selftests/bpf/progs/test_global_func12.c  |  21 ++++
->  .../selftests/bpf/progs/test_global_func13.c  |  24 ++++
->  .../selftests/bpf/progs/test_global_func9.c   |  59 ++++++++++
->  9 files changed, 284 insertions(+), 41 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/progs/test_global_func10.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_global_func11.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_global_func12.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_global_func13.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_global_func9.c
->
+nit: I'd just return here and reduce further nesting of the else branch.
+
+> -               } else if (!reg_may_point_to_spin_lock(reg)) {
+> -                       /* For not-NULL ptr, reg->ref_obj_id will be reset
+> +               } else {
+> +                       mark_ptr_not_null_reg(reg);
+
+Now that this can return -EINVAL, I think some WARN or error message is due.
+
+> +
+> +                       if (!reg_may_point_to_spin_lock(reg)) {
+> +                               /* For not-NULL ptr, reg->ref_obj_id will be reset
+>                          * in release_reg_references().
+>                          *
+>                          * reg->id is still used by spin_lock ptr. Other
+>                          * than spin_lock ptr type, reg->id can be reset.
+>                          */
+> -                       reg->id = 0;
+> +                               reg->id = 0;
+> +                       }
+>                 }
+>         }
+>  }
 > --
 > 2.25.1
 >
