@@ -2,139 +2,171 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E5162DBC82
-	for <lists+bpf@lfdr.de>; Wed, 16 Dec 2020 09:19:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 025172DBCB7
+	for <lists+bpf@lfdr.de>; Wed, 16 Dec 2020 09:32:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725831AbgLPIS7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Dec 2020 03:18:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725274AbgLPIS7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 16 Dec 2020 03:18:59 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D75B8C0613D6;
-        Wed, 16 Dec 2020 00:18:18 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id 3so1520187wmg.4;
-        Wed, 16 Dec 2020 00:18:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=OsOzas/w/eSfqOtHOGgepo3zxkPHG/qg3EkWGzcgIY8=;
-        b=WesLM46cYqkvDM11I0wuqigkm5AWitGsfCK7aWBAgxMicsGw6+HNROPhOlCWYL+iEJ
-         WiDhj9N+GG03RaFy4poJjsDtzf5XwkjDgOeeSXXsgOENSBA0pG/eWY3o9XGRIcLeqfHS
-         pHW2ts22TPRs1ra5hjHSqEov/Qw+eMVbMcueZ3mMZA+P7+NDc5eYsAsMVme8AQUKKqgN
-         Cfpkb245c7TRWR+rVWSEUYIk1KBXNRIiE/TRkSNy8TZtNiXW5V4gEP87FX/2DodreYcB
-         M/rDiCOCjxyhJfLX/aOklf0FK8yTfNrMMEDlP+FCURLVxfr7HRP2DQk6Ke6JsFAq5bqJ
-         Nejw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to:user-agent;
-        bh=OsOzas/w/eSfqOtHOGgepo3zxkPHG/qg3EkWGzcgIY8=;
-        b=sD57vdezXni8rOh4zHo1BIeHATw/d14GscKaAV7dLiNDh+AkTKY4kP0bF8Ck3S2mYl
-         IU4WOuvH/XPIkYWzEa5QdIxIfS6PbSQiwbemjtef2P5+R/yjcDcGyQCRU3Q8QUvLUOsA
-         qW05ea2LJv3fDbzHF06VN9+twdrgntVArzh2Qld5JfWAKjfn/K0lwENUmu0cy4YMoKLo
-         IXKzT8C4SpSHPAxl3kqtgM6SWUVTcRXJto59MYHwwXy4xAnfHPH+FyzGzjaxNNduwSeR
-         NZ84by2u9AZrirWR/mehRZIdItdDwLYO3DrEUMUwYlrZ9hZLPcquYRz+h+9RjV97D1tH
-         aJ5Q==
-X-Gm-Message-State: AOAM532EtyOZkg2TnhANbrOxNLLLOJLIK8uxXsUucfjfdxx4kSo5gGxx
-        2XOy0hQw58gY8Byt8WbInU8=
-X-Google-Smtp-Source: ABdhPJzHeFoP5KZ4/1PKPsAcS1CL9F0trZ83qjPMopC7aPN6AW/HZ02O8UE++K+AEq681Fu5ROling==
-X-Received: by 2002:a1c:6208:: with SMTP id w8mr2068448wmb.96.1608106697688;
-        Wed, 16 Dec 2020 00:18:17 -0800 (PST)
-Received: from gmail.com ([81.168.73.77])
-        by smtp.gmail.com with ESMTPSA id i16sm1908890wrx.89.2020.12.16.00.18.16
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 16 Dec 2020 00:18:17 -0800 (PST)
-Date:   Wed, 16 Dec 2020 08:18:14 +0000
-From:   Martin Habets <habetsm.xilinx@gmail.com>
-To:     Ivan Babrou <ivan@cloudflare.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, kernel-team@cloudflare.com,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1725287AbgLPIb6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Dec 2020 03:31:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42618 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725889AbgLPIb6 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 16 Dec 2020 03:31:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608107431;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rJk4b0qKB9nHSk8Z04RQF0+zGdRza+ILSu4IdYlp+aU=;
+        b=Wcg0apgllLQRLsROYflcpASRkqSaqmpEGI0WDWiPxcdfjAUPRnkovL+gIoY9d0GLNKF0QV
+        v7VPm+/YReV8GgKNPBK/A2hHYV6Sgdef+TBuo0WuSjFAhNw3tucT/F4R0FkPpJ5zZu89RO
+        DAU4yVU1kVxfCFGszQBDVyuwpVjb52s=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-98--dbtsSWaMaaEcTdveJUEGg-1; Wed, 16 Dec 2020 03:30:28 -0500
+X-MC-Unique: -dbtsSWaMaaEcTdveJUEGg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E7657803621;
+        Wed, 16 Dec 2020 08:30:26 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.6])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5889860C15;
+        Wed, 16 Dec 2020 08:30:17 +0000 (UTC)
+Date:   Wed, 16 Dec 2020 09:30:15 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Subject: Re: [PATCH net-next] sfc: reduce the number of requested xdp ev
- queues
-Message-ID: <20201216081814.jcwq6xzdxur5xm4l@gmail.com>
-Mail-Followup-To: Ivan Babrou <ivan@cloudflare.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@cloudflare.com, Edward Cree <ecree.xilinx@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-References: <20201215012907.3062-1-ivan@cloudflare.com>
+        Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, alexander.duyck@gmail.com, saeed@kernel.org,
+        brouer@redhat.com
+Subject: Re: [PATCH v3 bpf-next 2/2] net: xdp: introduce xdp_prepare_buff
+ utility routine
+Message-ID: <20201216093015.3a0b78e2@carbon>
+In-Reply-To: <20201215151344.GA24650@ranger.igk.intel.com>
+References: <cover.1607794551.git.lorenzo@kernel.org>
+        <71d5ae9f810c2c80f1cb09e304330be0b5ce5345.1607794552.git.lorenzo@kernel.org>
+        <20201215123643.GA23785@ranger.igk.intel.com>
+        <20201215134710.GB5477@lore-desk>
+        <6886cd02-8dec-1905-b878-d45ee9a0c9b4@iogearbox.net>
+        <20201215150620.GC5477@lore-desk>
+        <20201215151344.GA24650@ranger.igk.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201215012907.3062-1-ivan@cloudflare.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 05:29:06PM -0800, Ivan Babrou wrote:
-> Without this change the driver tries to allocate too many queues,
-> breaching the number of available msi-x interrupts on machines
-> with many logical cpus and default adapter settings:
-> 
-> Insufficient resources for 12 XDP event queues (24 other channels, max 32)
-> 
-> Which in turn triggers EINVAL on XDP processing:
-> 
-> sfc 0000:86:00.0 ext0: XDP TX failed (-22)
-> 
-> Signed-off-by: Ivan Babrou <ivan@cloudflare.com>
+On Tue, 15 Dec 2020 16:13:44 +0100
+Maciej Fijalkowski <maciej.fijalkowski@intel.com> wrote:
 
-Acked-by: Martin Habets <habetsm.xilinx@gmail.com>
-
-> ---
->  drivers/net/ethernet/sfc/efx_channels.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+> On Tue, Dec 15, 2020 at 04:06:20PM +0100, Lorenzo Bianconi wrote:
+> > > On 12/15/20 2:47 PM, Lorenzo Bianconi wrote:
+> > > [...]  
+> > > > > > diff --git a/drivers/net/xen-netfront.c b/drivers/net/xen-netfront.c
+> > > > > > index 329397c60d84..61d3f5f8b7f3 100644
+> > > > > > --- a/drivers/net/xen-netfront.c
+> > > > > > +++ b/drivers/net/xen-netfront.c
+> > > > > > @@ -866,10 +866,8 @@ static u32 xennet_run_xdp(struct netfront_queue *queue, struct page *pdata,
+> > > > > >   	xdp_init_buff(xdp, XEN_PAGE_SIZE - XDP_PACKET_HEADROOM,
+> > > > > >   		      &queue->xdp_rxq);
+> > > > > > -	xdp->data_hard_start = page_address(pdata);
+> > > > > > -	xdp->data = xdp->data_hard_start + XDP_PACKET_HEADROOM;
+> > > > > > +	xdp_prepare_buff(xdp, page_address(pdata), XDP_PACKET_HEADROOM, len);
+> > > > > >   	xdp_set_data_meta_invalid(xdp);
+> > > > > > -	xdp->data_end = xdp->data + len;
+> > > > > >   	act = bpf_prog_run_xdp(prog, xdp);
+> > > > > >   	switch (act) {
+> > > > > > diff --git a/include/net/xdp.h b/include/net/xdp.h
+> > > > > > index 3fb3a9aa1b71..66d8a4b317a3 100644
+> > > > > > --- a/include/net/xdp.h
+> > > > > > +++ b/include/net/xdp.h
+> > > > > > @@ -83,6 +83,18 @@ xdp_init_buff(struct xdp_buff *xdp, u32 frame_sz, struct xdp_rxq_info *rxq)
+> > > > > >   	xdp->rxq = rxq;
+> > > > > >   }
+> > > > > > +static inline void  
+> > > 
+> > > nit: maybe __always_inline  
+> > 
+> > ack, I will add in v4
+> >   
+> > >   
+> > > > > > +xdp_prepare_buff(struct xdp_buff *xdp, unsigned char *hard_start,
+> > > > > > +		 int headroom, int data_len)
+> > > > > > +{
+> > > > > > +	unsigned char *data = hard_start + headroom;
+> > > > > > +
+> > > > > > +	xdp->data_hard_start = hard_start;
+> > > > > > +	xdp->data = data;
+> > > > > > +	xdp->data_end = data + data_len;
+> > > > > > +	xdp->data_meta = data;
+> > > > > > +}
+> > > > > > +
+> > > > > >   /* Reserve memory area at end-of data area.
+> > > > > >    *  
+> > > 
+> > > For the drivers with xdp_set_data_meta_invalid(), we're basically setting xdp->data_meta
+> > > twice unless compiler is smart enough to optimize the first one away (did you double check?).
+> > > Given this is supposed to be a cleanup, why not integrate this logic as well so the
+> > > xdp_set_data_meta_invalid() doesn't get extra treatment?  
 > 
-> diff --git a/drivers/net/ethernet/sfc/efx_channels.c b/drivers/net/ethernet/sfc/efx_channels.c
-> index a4a626e9cd9a..1bfeee283ea9 100644
-> --- a/drivers/net/ethernet/sfc/efx_channels.c
-> +++ b/drivers/net/ethernet/sfc/efx_channels.c
-> @@ -17,6 +17,7 @@
->  #include "rx_common.h"
->  #include "nic.h"
->  #include "sriov.h"
-> +#include "workarounds.h"
->  
->  /* This is the first interrupt mode to try out of:
->   * 0 => MSI-X
-> @@ -137,6 +138,7 @@ static int efx_allocate_msix_channels(struct efx_nic *efx,
->  {
->  	unsigned int n_channels = parallelism;
->  	int vec_count;
-> +	int tx_per_ev;
->  	int n_xdp_tx;
->  	int n_xdp_ev;
->  
-> @@ -149,9 +151,9 @@ static int efx_allocate_msix_channels(struct efx_nic *efx,
->  	 * multiple tx queues, assuming tx and ev queues are both
->  	 * maximum size.
->  	 */
-> -
-> +	tx_per_ev = EFX_MAX_EVQ_SIZE / EFX_TXQ_MAX_ENT(efx);
->  	n_xdp_tx = num_possible_cpus();
-> -	n_xdp_ev = DIV_ROUND_UP(n_xdp_tx, EFX_MAX_TXQ_PER_CHANNEL);
-> +	n_xdp_ev = DIV_ROUND_UP(n_xdp_tx, tx_per_ev);
->  
->  	vec_count = pci_msix_vec_count(efx->pci_dev);
->  	if (vec_count < 0)
-> -- 
-> 2.29.2
+> That's what I was trying to say previously.
+> 
+> > 
+> > we discussed it before, but I am fine to add it in v4. Something like:
+> > 
+> > static __always_inline void
+> > xdp_prepare_buff(struct xdp_buff *xdp, unsigned char *hard_start,
+> > 		 int headroom, int data_len, bool meta_valid)
+> > {
+> > 	unsigned char *data = hard_start + headroom;
+> > 	
+> > 	xdp->data_hard_start = hard_start;
+> > 	xdp->data = data;
+> > 	xdp->data_end = data + data_len;
+> > 	xdp->data_meta = meta_valid ? data : data + 1;  
+> 
+> This will introduce branch, so for intel drivers we're getting the
+> overhead of one add and a branch. I'm still opting for a separate helper.
+
+I should think, as this gets inlined the compiler should be able to
+remove the branch.  I assume that the usage of 'meta_valid' will be a
+const in the drivers.  Maybe we should have the API be 'const bool meta_valid'?
+
+
+> static __always_inline void
+> xdp_prepare_buff(struct xdp_buff *xdp, unsigned char *hard_start,
+> 		 int headroom, int data_len)
+> {
+> 	unsigned char *data = hard_start + headroom;
+> 
+> 	xdp->data_hard_start = hard_start;
+> 	xdp->data = data;
+> 	xdp->data_end = data + data_len;
+> 	xdp_set_data_meta_invalid(xdp);
+> }
+> 
+> static __always_inline void
+> xdp_prepare_buff_meta(struct xdp_buff *xdp, unsigned char *hard_start,
+> 		      int headroom, int data_len)
+> {
+> 	unsigned char *data = hard_start + headroom;
+> 
+> 	xdp->data_hard_start = hard_start;
+> 	xdp->data = data;
+> 	xdp->data_end = data + data_len;
+> 	xdp->data_meta = data;
+> }
+
+Thanks to you Maciej for reviewing this! :-)
 
 -- 
-Martin Habets <habetsm.xilinx@gmail.com>
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
