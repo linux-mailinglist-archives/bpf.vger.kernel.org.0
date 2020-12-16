@@ -2,85 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C908C2DBEDA
-	for <lists+bpf@lfdr.de>; Wed, 16 Dec 2020 11:40:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF4E32DBFA5
+	for <lists+bpf@lfdr.de>; Wed, 16 Dec 2020 12:45:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725942AbgLPKkg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Dec 2020 05:40:36 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:40854 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725917AbgLPKkf (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 16 Dec 2020 05:40:35 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-212-Ub8oJyahMCWCrAmRpZs81Q-1; Wed, 16 Dec 2020 10:38:56 +0000
-X-MC-Unique: Ub8oJyahMCWCrAmRpZs81Q-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Wed, 16 Dec 2020 10:38:56 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Wed, 16 Dec 2020 10:38:56 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Alexei Starovoitov' <alexei.starovoitov@gmail.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>
-CC:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Cong Wang <cong.wang@bytedance.com>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Dongdong Wang <wangdongdong.6@bytedance.com>
-Subject: RE: [Patch bpf-next v2 2/5] bpf: introduce timeout map
-Thread-Topic: [Patch bpf-next v2 2/5] bpf: introduce timeout map
-Thread-Index: AQHW01R6Sggx3wYPikaoTV76dzuU7Kn5h55w
-Date:   Wed, 16 Dec 2020 10:38:56 +0000
-Message-ID: <a73e4e66b8a541d7bf74fe8a66ebbc6a@AcuMS.aculab.com>
-References: <20201214201118.148126-1-xiyou.wangcong@gmail.com>
- <20201214201118.148126-3-xiyou.wangcong@gmail.com>
- <CAEf4BzZa15kMT+xEO9ZBmS-1=E85+k02zeddx+a_N_9+MOLhkQ@mail.gmail.com>
- <CAM_iQpVR_owLgZp1tYJyfWco-s4ov_ytL6iisg3NmtyPBdbO2Q@mail.gmail.com>
- <CAEf4BzbyHHDrECCEjrSC3A5X39qb_WZaU_3_qNONP+vHAcUzuQ@mail.gmail.com>
- <1de72112-d2b8-24c5-de29-0d3dfd361f16@iogearbox.net>
- <CAM_iQpVedtfLLbMroGCJuuRVrBPoVFgsLkQenTrwKD8uRft2wQ@mail.gmail.com>
- <20201216011422.phgv4o3jgsrg33ob@ast-mbp>
- <CAM_iQpVJLg5yCF=2w3ZpBBiR3pR4FWSNjz7FvJGqx0R+BomWDw@mail.gmail.com>
- <CAADnVQL70bVdms6_D_ep1L2v-OcgXu-9KTtLULQdfCMftLhENQ@mail.gmail.com>
-In-Reply-To: <CAADnVQL70bVdms6_D_ep1L2v-OcgXu-9KTtLULQdfCMftLhENQ@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1725906AbgLPLpi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Dec 2020 06:45:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725811AbgLPLph (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Dec 2020 06:45:37 -0500
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DD27C061794
+        for <bpf@vger.kernel.org>; Wed, 16 Dec 2020 03:44:57 -0800 (PST)
+Received: by mail-il1-x136.google.com with SMTP id x15so22300150ilq.1
+        for <bpf@vger.kernel.org>; Wed, 16 Dec 2020 03:44:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7/ZlIpaN8xcDIn8bKlAdp8paf+KXXpCzF6s0NyTWF14=;
+        b=Q5nIWr6CT1PZPxyJY/xL1sS1xFuq6P0IzKI6Z9O7GmIiB8h1m50Uu+t+wXFBSLDo0u
+         s9xyHUenf6wNTYgM8d1q1RMdhUpskmaHxhw+W9HgrUoyOBlMYzRXlYlhWOPUVOkWOo54
+         gLBg57k2BPlObdfH2ltq08SZ6e8NpAS/CCoC4wJ7GUWeYAcP8RGjutaTvLUnXOMV5x13
+         1gEdOfqMwp5GCLTynmkplYKdsUHwtWQ+Za8oHWl/zts0CV2HdZo94WKXUNk9oZIU5Osx
+         I/1jhuYrkUd4Vn83v5tYUHqun4rA9JQIdU6o+dFtCxuGHbcqNAGzuz+0BNzrnV3l5Zmq
+         BqSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7/ZlIpaN8xcDIn8bKlAdp8paf+KXXpCzF6s0NyTWF14=;
+        b=RjXFLhhMIdL8vA3VJtXtV2wsEC0+7xIzR41WVXSmfFNRXdcs9faEKXxz+ZbsHtiZMB
+         6JHzXE7kAN9GubBUj1RdEQcgfRfmcvQie60jnJ/1YD+gTsaI7v8H0tLvUwMNzgPLm26D
+         1TjeERGA5v8To+okbor6467PPWOkiHihaNzc0mRYnvRHjR/Y6mowJMkvVjofA0NsW1AQ
+         MiPs/QnY/606WGYm5RLDvcqoHO6Sl9sXWbE4KJDji5KQvT+mIJTvAPL495C1F1Jw4y52
+         ddG9u8dcx6teA4b1sGx3wfHjPGSx8uv9jAPD1kzvmTVsuNNYJb1AYqBdIRjsdY2fSQ+7
+         W2Fg==
+X-Gm-Message-State: AOAM531qZMMa/5vtZ8B9IPNjk6leLM31IQOoIoD0pgEFyT/2W/RFBtxk
+        WsyNI8jkeDGmbBR7iFz5sv8qVnLsRB9RHeFEr7gDdg==
+X-Google-Smtp-Source: ABdhPJzSCCI6malJksUrOeoVx3K8oV4+R7HDqCAN1A4vRRuK3ZhyjuVf8l2fvI0ancEoOyCP7rpuj78xsGiQRcfJ4S8=
+X-Received: by 2002:a92:c26c:: with SMTP id h12mr39048784ild.165.1608119096598;
+ Wed, 16 Dec 2020 03:44:56 -0800 (PST)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+References: <20201215121816.1048557-1-jackmanb@google.com> <20201215121816.1048557-13-jackmanb@google.com>
+ <fcb9335c-000c-0097-7a70-983de271a3b7@fb.com>
+In-Reply-To: <fcb9335c-000c-0097-7a70-983de271a3b7@fb.com>
+From:   Brendan Jackman <jackmanb@google.com>
+Date:   Wed, 16 Dec 2020 12:44:45 +0100
+Message-ID: <CA+i-1C2ddNES0DXoO1L_nrqpK5EtA9xKE1yRGrqSVv0dECZozQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 11/11] bpf: Document new atomic instructions
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-RnJvbTogQWxleGVpIFN0YXJvdm9pdG92DQo+IFNlbnQ6IDE2IERlY2VtYmVyIDIwMjAgMDI6MzYN
-Ci4uLg0KPiA+IFRoZSBwcm9ibGVtIGlzIG5ldmVyIGFib3V0IGdyYW51bGFyaXR5LCBpdCBpcyBh
-Ym91dCBob3cgZWZmaWNpZW50IHdlIGNhbg0KPiA+IEdDLiBVc2VyLXNwYWNlIGhhcyB0byBzY2Fu
-IHRoZSB3aG9sZSB0YWJsZSBvbmUgYnkgb25lLCB3aGlsZSB0aGUga2VybmVsDQo+ID4gY2FuIGp1
-c3QgZG8gdGhpcyBiZWhpbmQgdGhlIHNjZW5lIHdpdGggYSBtdWNoIGxvd2VyIG92ZXJoZWFkLg0K
-PiA+DQo+ID4gTGV0J3Mgc2F5IHdlIGFybSBhIHRpbWVyIGZvciBlYWNoIGVudHJ5IGluIHVzZXIt
-c3BhY2UsIGl0IHJlcXVpcmVzIGEgc3lzY2FsbA0KPiA+IGFuZCBsb2NraW5nIGJ1Y2tldHMgZWFj
-aCB0aW1lIGZvciBlYWNoIGVudHJ5LiBLZXJuZWwgY291bGQgZG8gaXQgd2l0aG91dA0KPiA+IGFu
-eSBhZGRpdGlvbmFsIHN5c2NhbGwgYW5kIGJhdGNoaW5nLiBMaWtlIEkgc2FpZCBhYm92ZSwgd2Ug
-Y291bGQgaGF2ZQ0KPiA+IG1pbGxpb25zIG9mIGVudHJpZXMsIHNvIHRoZSBvdmVyaGVhZCB3b3Vs
-ZCBiZSBiaWcgaW4gdGhpcyBzY2VuYXJpby4NCj4gDQo+IGFuZCB0aGUgdXNlciBzcGFjZSBjYW4g
-cGljayBhbnkgb3RoZXIgaW1wbGVtZW50YXRpb24gaW5zdGVhZA0KPiBvZiB0cml2aWFsIGVudHJ5
-IGJ5IGVudHJ5IGdjIHdpdGggdGltZXIuDQoNClRoZSBrZXJuZWwgY2FuIGFsc28gZ2MgZW50cmll
-cyB3aGVuIHNjYW5uaW5nIGhhc2ggbGlzdHMgZHVyaW5nIGluc2VydA0KKG9yIGV2ZW4gZHVyaW5n
-IGxvb2t1cCBpZiBub3QgdXNpbmcgcncgbG9ja3MpLg0KDQpBcGFydCBmcm9tIHRoZSBtZW1vcnkg
-dXNlIHRoZXJlIGlzbid0IHJlYWxseSBhIHByb2JsZW0gaGF2aW5nIHRpbWVkLW91dA0KZW50cmll
-cyBpbiB0aGUgaGFzaCB0YWJsZSBpZiBub3RoaW5nIGlzIGxvb2tpbmcgYXQgdGhlbS4NCg0KCURh
-dmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3Vu
-dCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3
-Mzg2IChXYWxlcykNCg==
+On Wed, 16 Dec 2020 at 08:08, Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 12/15/20 4:18 AM, Brendan Jackman wrote:
+> > Document new atomic instructions.
+> >
+> > Signed-off-by: Brendan Jackman <jackmanb@google.com>
+>
+> Ack with minor comments below.
+>
+> Acked-by: Yonghong Song <yhs@fb.com>
+>
+> > ---
+> >   Documentation/networking/filter.rst | 26 ++++++++++++++++++++++++++
+> >   1 file changed, 26 insertions(+)
+> >
+> > diff --git a/Documentation/networking/filter.rst b/Documentation/networking/filter.rst
+> > index 1583d59d806d..26d508a5e038 100644
+> > --- a/Documentation/networking/filter.rst
+> > +++ b/Documentation/networking/filter.rst
+> > @@ -1053,6 +1053,32 @@ encoding.
+> >      .imm = BPF_ADD, .code = BPF_ATOMIC | BPF_W  | BPF_STX: lock xadd *(u32 *)(dst_reg + off16) += src_reg
+> >      .imm = BPF_ADD, .code = BPF_ATOMIC | BPF_DW | BPF_STX: lock xadd *(u64 *)(dst_reg + off16) += src_reg
+> >
+> > +The basic atomic operations supported (from architecture v4 onwards) are:
+>
+> Remove "(from architecture v4 onwards)".
 
+Oops, thanks.
+
+> > +
+> > +    BPF_ADD
+> > +    BPF_AND
+> > +    BPF_OR
+> > +    BPF_XOR
+> > +
+> > +Each having equivalent semantics with the ``BPF_ADD`` example, that is: the
+> > +memory location addresed by ``dst_reg + off`` is atomically modified, with
+> > +``src_reg`` as the other operand. If the ``BPF_FETCH`` flag is set in the
+> > +immediate, then these operations also overwrite ``src_reg`` with the
+> > +value that was in memory before it was modified.
+> > +
+> > +The more special operations are:
+> > +
+> > +    BPF_XCHG
+> > +
+> > +This atomically exchanges ``src_reg`` with the value addressed by ``dst_reg +
+> > +off``.
+> > +
+> > +    BPF_CMPXCHG
+> > +
+> > +This atomically compares the value addressed by ``dst_reg + off`` with
+> > +``R0``. If they match it is replaced with ``src_reg``, The value that was there
+> > +before is loaded back to ``R0``.
+> > +
+> >   Note that 1 and 2 byte atomic operations are not supported.
+>
+> Adding something like below.
+>
+> Except xadd for legacy reason, all other 4 byte atomic operations
+> require alu32 mode.
+> The alu32 mode can be enabled with clang flags "-Xclang -target-feature
+> -Xclang +alu32" or "-mcpu=v3". The cpu version 3 has alu32 mode on by
+> default.
+
+Thanks, I've written it as:
+
+Except ``BPF_ADD`` _without_ ``BPF_FETCH`` (for legacy reasons), all 4
+byte atomic operations require alu32 mode. Clang enables this mode by
+default in architecture v3 (``-mcpu=v3``). For older versions it can
+be enabled with ``-Xclang -target-feature -Xclang +alu32``.
+
+> >
+> >   You may encounter BPF_XADD - this is a legacy name for BPF_ATOMIC, referring to
+> >
