@@ -2,337 +2,501 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCAB12DB79B
-	for <lists+bpf@lfdr.de>; Wed, 16 Dec 2020 01:09:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87EAB2DB7B9
+	for <lists+bpf@lfdr.de>; Wed, 16 Dec 2020 01:16:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726692AbgLPABP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 15 Dec 2020 19:01:15 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:59394 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726228AbgLOXiB (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 15 Dec 2020 18:38:01 -0500
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BFNWvVJ008171
-        for <bpf@vger.kernel.org>; Tue, 15 Dec 2020 15:37:19 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=S+EA0I96zi5nkyHqlKPU2+dcHKzq+z+TYfraL6H8TQw=;
- b=fsmBOMLRlZJPayU3mlZBmXv2MmhyKt8yuV9cfhjQsFH0qNxX7LWQ1DDS42M5aTNrk/nR
- +Otb/UPr7DTgsMEGURv7EoLhfKNpQvVabBgZ1ts6fYCocfCFhpimoVXeB3+KNEd4L4P5
- NpJAOh0Qbo73NH8TFgMdfRMgkrERr6607Hc= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 35ej69p7af-7
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 15 Dec 2020 15:37:19 -0800
-Received: from intmgw001.03.ash8.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:21d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 15 Dec 2020 15:37:16 -0800
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 3AFB962E56FB; Tue, 15 Dec 2020 15:37:13 -0800 (PST)
-From:   Song Liu <songliubraving@fb.com>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
-        <kernel-team@fb.com>, Song Liu <songliubraving@fb.com>
-Subject: [PATCH v2 bpf-next 4/4] selftests/bpf: add test for bpf_iter_task_vma
-Date:   Tue, 15 Dec 2020 15:37:02 -0800
-Message-ID: <20201215233702.3301881-5-songliubraving@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20201215233702.3301881-1-songliubraving@fb.com>
-References: <20201215233702.3301881-1-songliubraving@fb.com>
+        id S1726468AbgLPAQL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 15 Dec 2020 19:16:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725790AbgLPAQJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 15 Dec 2020 19:16:09 -0500
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6783AC0613D3;
+        Tue, 15 Dec 2020 16:15:29 -0800 (PST)
+Received: by mail-pj1-x1044.google.com with SMTP id iq13so500449pjb.3;
+        Tue, 15 Dec 2020 16:15:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=h0rdN4lXdMY3uB9u1p5NCLyIVQ8uVkWTbhnMtR2YlME=;
+        b=MazMPLljVr6HdrzeiDDjkHKL2YkTkopwI+dfkmM+QmLiuUr0/QDL7aSo7Ge0djz/Oy
+         gp5snIwcnQ6boTMNhpC3bT5y1G69c8+4IIY/QT849Du3hz7ydcxvIPpeq9swzEUlRI/E
+         cnIow3PanQQ0oTlVB30v816pYaZ76fS7c04kylJHBv6llF0KjBuPVxT44q7tPHBCFyVy
+         bStGDLEDz97trXzu+wixV7yCVt/8wYhF5tH+4gmd86Wto5xoRbg66VhwZtrYMV1zNPR8
+         9CjnJNmOy3HpfjyzFvOO6J0lqb/YXc17P05Z/kX4AkrRu7Ppvi2KYipAcJLErsGeRI3C
+         xHtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=h0rdN4lXdMY3uB9u1p5NCLyIVQ8uVkWTbhnMtR2YlME=;
+        b=No980uk9+tAiyz/xIsGBdDlVXJxyTmdwyGvXR7w3cKqqi+Jcvw4stu0Lc3IATfvKvR
+         jxdcx5V4wb3QW2OOLBZbPCGMyFG3bYUPQvHiLDBzRf+GPcc/waDRNW7Ggv7MU9Ouya8L
+         cuuFzjL6qJNcyESbV3W4dDnenoH3hI++72d3pBHxAQuNQN3zttZRt+F3D4HDZ/rP9KOD
+         XIRnT3nU9i9mWvPjyjZn9puLWFe0H/uCIntlW0nFC2x2cCIvrMZAdnq0P1zzMqku/Jai
+         Ih+xRrxk7n0YxMC+LVqtVDQ1oSgJAA3jXnQNJaUcvQMgQqmV/+xIxdIWmVLhIWe2fNcM
+         ZcsQ==
+X-Gm-Message-State: AOAM530TU7HXz+T3RjIjNpKUui8Qi5fuev8YzWoRTHLJ2hFYDKyB1FJZ
+        Dhb2WI9zgehZV8xuqWSuVI6B7rRToaajlz2Nhlbwo45qiD+lNQ==
+X-Google-Smtp-Source: ABdhPJyKHF8b+3mY2Xl/8b/RKOTk7WEwrD68z1I1Wx0kWhb9/s3WdRuVDkUyaO91sjtKvLAz8bYZo1lE+2H9iXhI/I8=
+X-Received: by 2002:a17:90a:a24:: with SMTP id o33mr852132pjo.191.1608077728706;
+ Tue, 15 Dec 2020 16:15:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-15_13:2020-12-15,2020-12-15 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 bulkscore=0
- impostorscore=0 lowpriorityscore=0 priorityscore=1501 phishscore=0
- mlxlogscore=999 malwarescore=0 spamscore=0 suspectscore=0 adultscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012150159
-X-FB-Internal: deliver
+References: <20201214201118.148126-1-xiyou.wangcong@gmail.com>
+ <20201214201118.148126-3-xiyou.wangcong@gmail.com> <CAEf4BzZa15kMT+xEO9ZBmS-1=E85+k02zeddx+a_N_9+MOLhkQ@mail.gmail.com>
+ <CAM_iQpVR_owLgZp1tYJyfWco-s4ov_ytL6iisg3NmtyPBdbO2Q@mail.gmail.com> <CAEf4BzbyHHDrECCEjrSC3A5X39qb_WZaU_3_qNONP+vHAcUzuQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzbyHHDrECCEjrSC3A5X39qb_WZaU_3_qNONP+vHAcUzuQ@mail.gmail.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Tue, 15 Dec 2020 16:15:17 -0800
+Message-ID: <CAM_iQpVBPRJ+t3HPryh-1eKxV-=2CmxW9T3OyO6-_sQVLskQVQ@mail.gmail.com>
+Subject: Re: [Patch bpf-next v2 2/5] bpf: introduce timeout map
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dongdong Wang <wangdongdong.6@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The test dumps information similar to /proc/pid/maps. The first line of
-the output is compared against the /proc file to make sure they match.
+On Tue, Dec 15, 2020 at 2:08 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Tue, Dec 15, 2020 at 12:06 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+> >
+> > On Tue, Dec 15, 2020 at 11:27 AM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Mon, Dec 14, 2020 at 12:17 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+> > > >
+> > > > From: Cong Wang <cong.wang@bytedance.com>
+> > > >
+> > > > This borrows the idea from conntrack and will be used for conntrack in
+> > > > bpf too. Each element in a timeout map has a user-specified timeout
+> > > > in secs, after it expires it will be automatically removed from the map.
+> > > >
+> > > > There are two cases here:
+> > > >
+> > > > 1. When the timeout map is idle, that is, no one updates or accesses it,
+> > > >    we rely on the idle work to scan the whole hash table and remove
+> > > >    these expired. The idle work is scheduled every 1 sec.
+> > >
+> > > Would 1 second be a good period for a lot of cases? Probably would be
+> > > good to expand on what went into this decision.
+> >
+> > Sure, because our granularity is 1 sec, I will add it into changelog.
+> >
+>
+> Granularity of a timeout is not that coupled with the period of
+> garbage collection. In this case, with 1 second period, you can have
+> some items not garbage collected for up to 2 seconds due to timing and
+> races. Just keep that in mind.
 
-Signed-off-by: Song Liu <songliubraving@fb.com>
----
- .../selftests/bpf/prog_tests/bpf_iter.c       | 106 ++++++++++++++++--
- tools/testing/selftests/bpf/progs/bpf_iter.h  |   9 ++
- .../selftests/bpf/progs/bpf_iter_task_vma.c   |  55 +++++++++
- 3 files changed, 160 insertions(+), 10 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_task_vma.c
+Well, it is. Let's say we add entries every ms and kick gc every sec, we
+could end up with thousands of expired entries in hash map, which could
+be a problem under memory pressure.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/te=
-sting/selftests/bpf/prog_tests/bpf_iter.c
-index 0e586368948dd..7afd3abae1899 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-@@ -7,6 +7,7 @@
- #include "bpf_iter_task.skel.h"
- #include "bpf_iter_task_stack.skel.h"
- #include "bpf_iter_task_file.skel.h"
-+#include "bpf_iter_task_vma.skel.h"
- #include "bpf_iter_task_btf.skel.h"
- #include "bpf_iter_tcp4.skel.h"
- #include "bpf_iter_tcp6.skel.h"
-@@ -64,6 +65,22 @@ static void do_dummy_read(struct bpf_program *prog)
- 	bpf_link__destroy(link);
- }
-=20
-+static int read_fd_into_buffer(int fd, char *buf, int size)
-+{
-+	int bufleft =3D size;
-+	int len;
-+
-+	do {
-+		len =3D read(fd, buf, bufleft);
-+		if (len > 0) {
-+			buf +=3D len;
-+			bufleft -=3D len;
-+		}
-+	} while (len > 0);
-+
-+	return len;
-+}
-+
- static void test_ipv6_route(void)
- {
- 	struct bpf_iter_ipv6_route *skel;
-@@ -177,7 +194,7 @@ static int do_btf_read(struct bpf_iter_task_btf *skel=
-)
- {
- 	struct bpf_program *prog =3D skel->progs.dump_task_struct;
- 	struct bpf_iter_task_btf__bss *bss =3D skel->bss;
--	int iter_fd =3D -1, len =3D 0, bufleft =3D TASKBUFSZ;
-+	int iter_fd =3D -1, err;
- 	struct bpf_link *link;
- 	char *buf =3D taskbuf;
- 	int ret =3D 0;
-@@ -190,14 +207,7 @@ static int do_btf_read(struct bpf_iter_task_btf *ske=
-l)
- 	if (CHECK(iter_fd < 0, "create_iter", "create_iter failed\n"))
- 		goto free_link;
-=20
--	do {
--		len =3D read(iter_fd, buf, bufleft);
--		if (len > 0) {
--			buf +=3D len;
--			bufleft -=3D len;
--		}
--	} while (len > 0);
--
-+	err =3D read_fd_into_buffer(iter_fd, buf, TASKBUFSZ);
- 	if (bss->skip) {
- 		printf("%s:SKIP:no __builtin_btf_type_id\n", __func__);
- 		ret =3D 1;
-@@ -205,7 +215,7 @@ static int do_btf_read(struct bpf_iter_task_btf *skel=
-)
- 		goto free_link;
- 	}
-=20
--	if (CHECK(len < 0, "read", "read failed: %s\n", strerror(errno)))
-+	if (CHECK(err < 0, "read", "read failed: %s\n", strerror(errno)))
- 		goto free_link;
-=20
- 	CHECK(strstr(taskbuf, "(struct task_struct)") =3D=3D NULL,
-@@ -1133,6 +1143,80 @@ static void test_buf_neg_offset(void)
- 		bpf_iter_test_kern6__destroy(skel);
- }
-=20
-+#define CMP_BUFFER_SIZE 1024
-+char task_vma_output[CMP_BUFFER_SIZE];
-+char proc_maps_output[CMP_BUFFER_SIZE];
-+
-+/* remove \0 and \t from str, and only keep the first line */
-+static void str_strip_first_line(char *str)
-+{
-+	char *dst =3D str, *src =3D str;
-+
-+	do {
-+		if (*src =3D=3D ' ' || *src =3D=3D '\t')
-+			src++;
-+		else
-+			*(dst++) =3D *(src++);
-+
-+	} while (*src !=3D '\0' && *src !=3D '\n');
-+
-+	*dst =3D '\0';
-+}
-+
-+static void test_task_vma(void)
-+{
-+	int err, iter_fd =3D -1, proc_maps_fd =3D -1;
-+	struct bpf_iter_task_vma *skel;
-+	char maps_path[64];
-+
-+	skel =3D bpf_iter_task_vma__open();
-+	if (CHECK(!skel, "bpf_iter_task_vma__open", "skeleton open failed\n"))
-+		return;
-+
-+	skel->bss->pid =3D getpid();
-+
-+	err =3D bpf_iter_task_vma__load(skel);
-+	if (CHECK(err, "bpf_iter_task_vma__load", "skeleton load failed\n"))
-+		goto out;
-+
-+	do_dummy_read(skel->progs.proc_maps);
-+
-+	skel->links.proc_maps =3D bpf_program__attach_iter(
-+		skel->progs.proc_maps, NULL);
-+
-+	if (CHECK(IS_ERR(skel->links.proc_maps), "bpf_program__attach_iter",
-+		  "attach iterator failed\n"))
-+		goto out;
-+
-+	/* read 1kB from bpf_iter */
-+	iter_fd =3D bpf_iter_create(bpf_link__fd(skel->links.proc_maps));
-+	if (CHECK(iter_fd < 0, "create_iter", "create_iter failed\n"))
-+		goto out;
-+	err =3D read_fd_into_buffer(iter_fd, task_vma_output, CMP_BUFFER_SIZE);
-+	if (CHECK(err < 0, "read_iter_fd", "read_iter_fd failed\n"))
-+		goto out;
-+
-+	/* read 1kB from /proc/pid/maps */
-+	snprintf(maps_path, 64, "/proc/%u/maps", skel->bss->pid);
-+	proc_maps_fd =3D open(maps_path, O_RDONLY);
-+	if (CHECK(proc_maps_fd < 0, "open_proc_maps", "open_proc_maps failed\n"=
-))
-+		goto out;
-+	err =3D read_fd_into_buffer(proc_maps_fd, proc_maps_output, CMP_BUFFER_=
-SIZE);
-+	if (CHECK(err < 0, "read_prog_maps_fd", "read_prog_maps_fd failed\n"))
-+		goto out;
-+
-+	/* strip and compare the first line of the two files */
-+	str_strip_first_line(task_vma_output);
-+	str_strip_first_line(proc_maps_output);
-+
-+	CHECK(strcmp(task_vma_output, proc_maps_output), "compare_output",
-+	      "found mismatch\n");
-+out:
-+	close(proc_maps_fd);
-+	close(iter_fd);
-+	bpf_iter_task_vma__destroy(skel);
-+}
-+
- void test_bpf_iter(void)
- {
- 	if (test__start_subtest("btf_id_or_null"))
-@@ -1149,6 +1233,8 @@ void test_bpf_iter(void)
- 		test_task_stack();
- 	if (test__start_subtest("task_file"))
- 		test_task_file();
-+	if (test__start_subtest("task_vma"))
-+		test_task_vma();
- 	if (test__start_subtest("task_btf"))
- 		test_task_btf();
- 	if (test__start_subtest("tcp4"))
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter.h b/tools/testing=
-/selftests/bpf/progs/bpf_iter.h
-index 6a1255465fd6d..4dab0869c4fcb 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter.h
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter.h
-@@ -7,6 +7,7 @@
- #define bpf_iter__netlink bpf_iter__netlink___not_used
- #define bpf_iter__task bpf_iter__task___not_used
- #define bpf_iter__task_file bpf_iter__task_file___not_used
-+#define bpf_iter__task_vma bpf_iter__task_vma___not_used
- #define bpf_iter__tcp bpf_iter__tcp___not_used
- #define tcp6_sock tcp6_sock___not_used
- #define bpf_iter__udp bpf_iter__udp___not_used
-@@ -26,6 +27,7 @@
- #undef bpf_iter__netlink
- #undef bpf_iter__task
- #undef bpf_iter__task_file
-+#undef bpf_iter__task_vma
- #undef bpf_iter__tcp
- #undef tcp6_sock
- #undef bpf_iter__udp
-@@ -67,6 +69,13 @@ struct bpf_iter__task_file {
- 	struct file *file;
- } __attribute__((preserve_access_index));
-=20
-+struct bpf_iter__task_vma {
-+	struct bpf_iter_meta *meta;
-+	struct task_struct *task;
-+	struct __vm_area_struct *vma;
-+	struct file *file;
-+} __attribute__((preserve_access_index));
-+
- struct bpf_iter__bpf_map {
- 	struct bpf_iter_meta *meta;
- 	struct bpf_map *map;
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task_vma.c b/tool=
-s/testing/selftests/bpf/progs/bpf_iter_task_vma.c
-new file mode 100644
-index 0000000000000..ba87afe01024c
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_task_vma.c
-@@ -0,0 +1,55 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Facebook */
-+#include "bpf_iter.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+/* Copied from mm.h */
-+#define VM_READ		0x00000001
-+#define VM_WRITE	0x00000002
-+#define VM_EXEC		0x00000004
-+#define VM_MAYSHARE	0x00000080
-+
-+/* Copied from kdev_t.h */
-+#define MINORBITS	20
-+#define MINORMASK	((1U << MINORBITS) - 1)
-+#define MAJOR(dev)	((unsigned int) ((dev) >> MINORBITS))
-+#define MINOR(dev)	((unsigned int) ((dev) & MINORMASK))
-+
-+#define D_PATH_BUF_SIZE 1024
-+char d_path_buf[D_PATH_BUF_SIZE];
-+__u32 pid;
-+
-+SEC("iter.s/task_vma") int proc_maps(struct bpf_iter__task_vma *ctx)
-+{
-+	struct __vm_area_struct *vma =3D ctx->vma;
-+	struct seq_file *seq =3D ctx->meta->seq;
-+	struct task_struct *task =3D ctx->task;
-+	struct file *file =3D ctx->file;
-+	char perm_str[] =3D "----";
-+
-+	if (task =3D=3D (void *)0 || vma =3D=3D (void *)0 || task->pid !=3D pid=
-)
-+		return 0;
-+
-+	perm_str[0] =3D (vma->flags & VM_READ) ? 'r' : '-';
-+	perm_str[1] =3D (vma->flags & VM_WRITE) ? 'w' : '-';
-+	perm_str[2] =3D (vma->flags & VM_EXEC) ? 'x' : '-';
-+	perm_str[3] =3D (vma->flags & VM_MAYSHARE) ? 's' : 'p';
-+	BPF_SEQ_PRINTF(seq, "%08llx-%08llx %s ", vma->start, vma->end, perm_str=
-);
-+
-+	if (file) {
-+		__u32 dev =3D file->f_inode->i_sb->s_dev;
-+
-+		bpf_d_path(&file->f_path, d_path_buf, D_PATH_BUF_SIZE);
-+
-+		BPF_SEQ_PRINTF(seq, "%08llx ", vma->pgoff << 12);
-+		BPF_SEQ_PRINTF(seq, "%02x:%02x %u", MAJOR(dev), MINOR(dev),
-+			       file->f_inode->i_ino);
-+		BPF_SEQ_PRINTF(seq, "\t%s\n", d_path_buf);
-+	} else {
-+		BPF_SEQ_PRINTF(seq, "%08llx 00:00 0\n", 0ULL);
-+	}
-+	return 0;
-+}
---=20
-2.24.1
+>
+> > >
+> > > >
+> > > > 2. When the timeout map is actively accessed, we could reach expired
+> > > >    elements before the idle work kicks in, we can simply skip them and
+> > > >    schedule another work to do the actual removal work. We avoid taking
+> > > >    locks on fast path.
+> > > >
+> > > > The timeout of each element can be set or updated via bpf_map_update_elem()
+> > > > and we reuse the upper 32-bit of the 64-bit flag for the timeout value.
+> > > >
+> > > > Cc: Alexei Starovoitov <ast@kernel.org>
+> > > > Cc: Daniel Borkmann <daniel@iogearbox.net>
+> > > > Cc: Dongdong Wang <wangdongdong.6@bytedance.com>
+> > > > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> > > > ---
+> > > >  include/linux/bpf_types.h      |   1 +
+> > > >  include/uapi/linux/bpf.h       |   3 +-
+> > > >  kernel/bpf/hashtab.c           | 244 ++++++++++++++++++++++++++++++++-
+> > > >  kernel/bpf/syscall.c           |   3 +-
+> > > >  tools/include/uapi/linux/bpf.h |   1 +
+> > > >  5 files changed, 248 insertions(+), 4 deletions(-)
+> > > >
+> > > > diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
+> > > > index 99f7fd657d87..00a3b17b6af2 100644
+> > > > --- a/include/linux/bpf_types.h
+> > > > +++ b/include/linux/bpf_types.h
+> > > > @@ -125,6 +125,7 @@ BPF_MAP_TYPE(BPF_MAP_TYPE_STACK, stack_map_ops)
+> > > >  BPF_MAP_TYPE(BPF_MAP_TYPE_STRUCT_OPS, bpf_struct_ops_map_ops)
+> > > >  #endif
+> > > >  BPF_MAP_TYPE(BPF_MAP_TYPE_RINGBUF, ringbuf_map_ops)
+> > > > +BPF_MAP_TYPE(BPF_MAP_TYPE_TIMEOUT_HASH, htab_timeout_map_ops)
+> > > >
+> > > >  BPF_LINK_TYPE(BPF_LINK_TYPE_RAW_TRACEPOINT, raw_tracepoint)
+> > > >  BPF_LINK_TYPE(BPF_LINK_TYPE_TRACING, tracing)
+> > > > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > > > index 30b477a26482..dedb47bc3f52 100644
+> > > > --- a/include/uapi/linux/bpf.h
+> > > > +++ b/include/uapi/linux/bpf.h
+> > > > @@ -158,6 +158,7 @@ enum bpf_map_type {
+> > > >         BPF_MAP_TYPE_RINGBUF,
+> > > >         BPF_MAP_TYPE_INODE_STORAGE,
+> > > >         BPF_MAP_TYPE_TASK_STORAGE,
+> > > > +       BPF_MAP_TYPE_TIMEOUT_HASH,
+> > > >  };
+> > > >
+> > > >  /* Note that tracing related programs such as
+> > > > @@ -393,7 +394,7 @@ enum bpf_link_type {
+> > > >   */
+> > > >  #define BPF_PSEUDO_CALL                1
+> > > >
+> > > > -/* flags for BPF_MAP_UPDATE_ELEM command */
+> > > > +/* flags for BPF_MAP_UPDATE_ELEM command, upper 32 bits are timeout */
+> > >
+> > > timeout in what units of time?
+> >
+> > 1 sec, should I also add it in this comment (and everywhere else)?
+>
+> yes, please
 
+Sure.
+
+>
+> >
+> > >
+> > > >  enum {
+> > > >         BPF_ANY         = 0, /* create new element or update existing */
+> > > >         BPF_NOEXIST     = 1, /* create new element if it didn't exist */
+> > > > diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+> > > > index f0b7b54fa3a8..178cb376c397 100644
+> > > > --- a/kernel/bpf/hashtab.c
+> > > > +++ b/kernel/bpf/hashtab.c
+> > > > @@ -8,6 +8,8 @@
+> > > >  #include <linux/filter.h>
+> > > >  #include <linux/rculist_nulls.h>
+> > > >  #include <linux/random.h>
+> > > > +#include <linux/llist.h>
+> > > > +#include <linux/workqueue.h>
+> > > >  #include <uapi/linux/btf.h>
+> > > >  #include <linux/rcupdate_trace.h>
+> > > >  #include "percpu_freelist.h"
+> > > > @@ -84,6 +86,8 @@ struct bucket {
+> > > >                 raw_spinlock_t raw_lock;
+> > > >                 spinlock_t     lock;
+> > > >         };
+> > > > +       struct llist_node gc_node;
+> > > > +       atomic_t pending;
+> > >
+> > > HASH is an extremely frequently used type of map, and oftentimes with
+> > > a lot of entries/buckets. I don't think users of normal
+> > > BPF_MAP_TYPE_HASH should pay the price of way more niche hashmap with
+> > > timeouts. So I think it's not appropriate to increase the size of the
+> > > struct bucket here.
+> >
+> > I understand that, but what's a better way to do this? I can wrap it up
+> > on top of struct bucket for sure, but it would need to change a lot of code.
+> > So, basically code reuse vs. struct bucket size increase. ;)
+>
+> I think not paying potentially lots of memory for unused features
+> wins. Some struct embedding might work. Or just better code reuse.
+> Please think this through, don't wait for me to write the code for
+> you.
+
+I perfectly understand this point, but other reviewers could easily argue
+why not just reuse the existing hashmap code given they are pretty much
+similar.
+
+I personally have no problem duplicating the code, but I need to justify it,
+right? :-/
+
+
+>
+> >
+> > >
+> > > >  };
+> > > >
+> > > >  #define HASHTAB_MAP_LOCK_COUNT 8
+> > > > @@ -104,6 +108,9 @@ struct bpf_htab {
+> > > >         u32 hashrnd;
+> > > >         struct lock_class_key lockdep_key;
+> > > >         int __percpu *map_locked[HASHTAB_MAP_LOCK_COUNT];
+> > > > +       struct llist_head gc_list;
+> > > > +       struct work_struct gc_work;
+> > > > +       struct delayed_work gc_idle_work;
+> > > >  };
+> > > >
+> > > >  /* each htab element is struct htab_elem + key + value */
+> > > > @@ -124,6 +131,7 @@ struct htab_elem {
+> > > >                 struct bpf_lru_node lru_node;
+> > > >         };
+> > > >         u32 hash;
+> > > > +       u64 expires;
+> > >
+> > > time units? and similar concerns about wasting a lot of added memory
+> > > for not benefit to HASH users.
+> >
+> > 'expires' is in jiffies, I can add a comment here if necessary.
+>
+> I think it's really helpful, because everyone reading this would be
+> wondering and then jumping around the code to figure it out
+
+Sure.
+
+>
+> >
+> > Similarly, please suggest how to expand struct htab_elem without changing
+> > a lot of code. I also tried to find some hole in the struct, but I
+> > couldn't, so I
+> > ran out of ideas here.
+>
+> I mentioned above, you can have your own struct and embed htab_elem
+> inside. It might need some refactoring, of course.
+
+So increasing 8 bytes of struct htab_elem is a solid reason to change
+_potentially_ all of the hash map code? It does not sound solid to me,
+at least it is arguable.
+
+I also doubt I could really wrap up on top of htab_elem, as it assumes
+key and value are stored at the end. And these structs are internal,
+it is really hard to factor out.
+
+>
+> >
+> > >
+> > > >         char key[] __aligned(8);
+> > > >  };
+> > > >
+> > > > @@ -143,6 +151,7 @@ static void htab_init_buckets(struct bpf_htab *htab)
+> > > >
+> > > >         for (i = 0; i < htab->n_buckets; i++) {
+> > > >                 INIT_HLIST_NULLS_HEAD(&htab->buckets[i].head, i);
+> > > > +               atomic_set(&htab->buckets[i].pending, 0);
+> > > >                 if (htab_use_raw_lock(htab)) {
+> > > >                         raw_spin_lock_init(&htab->buckets[i].raw_lock);
+> > > >                         lockdep_set_class(&htab->buckets[i].raw_lock,
+> > > > @@ -431,6 +440,14 @@ static int htab_map_alloc_check(union bpf_attr *attr)
+> > > >         return 0;
+> > > >  }
+> > > >
+> > > > +static void htab_sched_gc(struct bpf_htab *htab, struct bucket *b)
+> > > > +{
+> > > > +       if (atomic_fetch_or(1, &b->pending))
+> > > > +               return;
+> > > > +       llist_add(&b->gc_node, &htab->gc_list);
+> > > > +       queue_work(system_unbound_wq, &htab->gc_work);
+> > > > +}
+> > >
+> > > I'm concerned about each bucket being scheduled individually... And
+> > > similarly concerned that each instance of TIMEOUT_HASH will do its own
+> > > scheduling independently. Can you think about the way to have a
+> > > "global" gc/purging logic, and just make sure that buckets that need
+> > > processing would be just internally chained together. So the purging
+> > > routing would iterate all the scheduled hashmaps, and within each it
+> > > will have a linked list of buckets that need processing? And all that
+> > > is done just once each GC period. Not N times for N maps or N*M times
+> > > for N maps with M buckets in each.
+> >
+> > Our internal discussion went to the opposite actually, people here argued
+> > one work is not sufficient for a hashtable because there would be millions
+> > of entries (max_entries, which is also number of buckets). ;)
+>
+> I was hoping that it's possible to expire elements without iterating
+> the entire hash table every single time, only items that need to be
+> processed. Hashed timing wheel is one way to do something like this,
+
+How could we know which ones are expired without scanning the
+whole table? They are clearly not sorted even within a bucket. Sorting
+them with expiration? Slightly better, as we can just stop at the first
+non-expired but with an expense of slowing down the update path.
+
+> kernel has to solve similar problems with timeouts as well, why not
+> taking inspiration there?
+
+Mind to point out which similar problems in the kernel?
+
+If you mean inspiration from conntrack, it is even worse, it uses multiple
+locking and locks on fast path too. I also looked at xt_hashlimit, it is not
+any better either.
+
+>
+> >
+> > I chose one work per hash table because we could use map-in-map to divide
+> > the millions of entries.
+> >
+> > So, this really depends on how many maps and how many buckets in each
+> > map. I tend to leave this as it is, because there is no way to satisfy
+> > all of the
+> > cases.
+>
+> But I think some ways are better than others. Please consider all the
+> options, not just the simplest one.
+
+I _did_ consider multiple works per hash map carefully, like I said, it
+could be workarounded with map-in-map and the locking would be more
+complicated. Hence I pick this current implementation.
+
+Simplicity also means less bugs, in case you do not like it. ;)
+
+>
+> >
+> > >
+> > > > +
+> > > >  static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+> > > >  {
+> > > >         bool percpu = (attr->map_type == BPF_MAP_TYPE_PERCPU_HASH ||
+> > > > @@ -732,10 +749,13 @@ static bool htab_lru_map_delete_node(void *arg, struct bpf_lru_node *node)
+> > > >  static int htab_map_get_next_key(struct bpf_map *map, void *key, void *next_key)
+> > > >  {
+> > > >         struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
+> > > > +       bool is_timeout = map->map_type == BPF_MAP_TYPE_TIMEOUT_HASH;
+> > > >         struct hlist_nulls_head *head;
+> > > >         struct htab_elem *l, *next_l;
+> > > >         u32 hash, key_size;
+> > > > +       struct bucket *b;
+> > > >         int i = 0;
+> > > > +       u64 now;
+> > > >
+> > > >         WARN_ON_ONCE(!rcu_read_lock_held());
+> > > >
+> > > > @@ -746,7 +766,8 @@ static int htab_map_get_next_key(struct bpf_map *map, void *key, void *next_key)
+> > > >
+> > > >         hash = htab_map_hash(key, key_size, htab->hashrnd);
+> > > >
+> > > > -       head = select_bucket(htab, hash);
+> > > > +       b = __select_bucket(htab, hash);
+> > > > +       head = &b->head;
+> > > >
+> > > >         /* lookup the key */
+> > > >         l = lookup_nulls_elem_raw(head, hash, key, key_size, htab->n_buckets);
+> > > > @@ -759,6 +780,13 @@ static int htab_map_get_next_key(struct bpf_map *map, void *key, void *next_key)
+> > > >                                   struct htab_elem, hash_node);
+> > > >
+> > > >         if (next_l) {
+> > > > +               if (is_timeout) {
+> > > > +                       now = get_jiffies_64();
+> > > > +                       if (time_after_eq64(now, next_l->expires)) {
+> > > > +                               htab_sched_gc(htab, b);
+> > > > +                               goto find_first_elem;
+> > > > +                       }
+> > > > +               }
+> > >
+> > > this piece of logic is repeated verbatim many times, seems like a
+> > > helper function would make sense here
+> >
+> > Except goto or continue, isn't it? ;) Please do share your ideas on
+> > how to make it a helper for both goto and continue.
+>
+> So there is no way to make it work like this:
+>
+> if (htab_elem_expired(htab, next_l))
+>     goto find_first_elem;
+>
+> ?
+
+Good idea, it also needs to pass in struct bucket.
+
+>
+> >
+> >
+> > >
+> > > >                 /* if next elem in this hash list is non-zero, just return it */
+> > > >                 memcpy(next_key, next_l->key, key_size);
+> > > >                 return 0;
+> > > > @@ -771,12 +799,20 @@ static int htab_map_get_next_key(struct bpf_map *map, void *key, void *next_key)
+> > > >  find_first_elem:
+> > > >         /* iterate over buckets */
+> > > >         for (; i < htab->n_buckets; i++) {
+> > > > -               head = select_bucket(htab, i);
+> > > > +               b = __select_bucket(htab, i);
+> > > > +               head = &b->head;
+> > > >
+> > > >                 /* pick first element in the bucket */
+> > > >                 next_l = hlist_nulls_entry_safe(rcu_dereference_raw(hlist_nulls_first_rcu(head)),
+> > > >                                           struct htab_elem, hash_node);
+> > > >                 if (next_l) {
+> > > > +                       if (is_timeout) {
+> > > > +                               now = get_jiffies_64();
+> > > > +                               if (time_after_eq64(now, next_l->expires)) {
+> > > > +                                       htab_sched_gc(htab, b);
+> > > > +                                       continue;
+> > > > +                               }
+> > > > +                       }
+> > > >                         /* if it's not empty, just return it */
+> > > >                         memcpy(next_key, next_l->key, key_size);
+> > > >                         return 0;
+> > > > @@ -975,18 +1011,31 @@ static int check_flags(struct bpf_htab *htab, struct htab_elem *l_old,
+> > > >         return 0;
+> > > >  }
+> > > >
+> > > > +static u32 fetch_timeout(u64 *map_flags)
+> > > > +{
+> > > > +       u32 timeout = (*map_flags) >> 32;
+> > > > +
+> > > > +       *map_flags = (*map_flags) & 0xffffffff;
+> > > > +       return timeout;
+> > > > +}
+> > > > +
+> > > >  /* Called from syscall or from eBPF program */
+> > > >  static int htab_map_update_elem(struct bpf_map *map, void *key, void *value,
+> > > >                                 u64 map_flags)
+> > > >  {
+> > > >         struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
+> > > > +       bool timeout_map = map->map_type == BPF_MAP_TYPE_TIMEOUT_HASH;
+> > > >         struct htab_elem *l_new = NULL, *l_old;
+> > > >         struct hlist_nulls_head *head;
+> > > >         unsigned long flags;
+> > > >         struct bucket *b;
+> > > >         u32 key_size, hash;
+> > > > +       u32 timeout;
+> > > > +       u64 now;
+> > > >         int ret;
+> > > >
+> > > > +       timeout = fetch_timeout(&map_flags);
+> > > > +
+> > > >         if (unlikely((map_flags & ~BPF_F_LOCK) > BPF_EXIST))
+> > > >                 /* unknown flags */
+> > > >                 return -EINVAL;
+> > > > @@ -1042,6 +1091,10 @@ static int htab_map_update_elem(struct bpf_map *map, void *key, void *value,
+> > > >                 copy_map_value_locked(map,
+> > > >                                       l_old->key + round_up(key_size, 8),
+> > > >                                       value, false);
+> > > > +               if (timeout_map) {
+> > > > +                       now = get_jiffies_64();
+> > > > +                       l_old->expires = now + HZ * timeout;
+> > > > +               }
+> > >
+> > > Ok, so it seems timeout is at a second granularity. Would it make
+> > > sense to make it at millisecond granularity instead? I think
+> > > millisecond would be more powerful and allow more use cases, in the
+> > > long run. Micro- and nano-second granularity seems like an overkill,
+> > > though. And would reduce the max timeout to pretty small numbers. With
+> > > milliseconds, you still will get more than 23 days of timeout, which
+> > > seems to be plenty.
+> >
+> > Sure if you want to pay the price of scheduling the work more often...
+>
+> See above about timer granularity and GC period. You can have
+> nanosecond precision timeout and still GC only once every seconds, as
+> an example. You are checking expiration on lookup, so it can be
+> handled very precisely. You don't have to GC 1000 times per second to
+> support millisecond granularity.
+
+Like I said, if memory were not a problem, we could schedule it once per
+hour too. But I believe memory matters here. ;)
+
+
+> > For our own use case, second is sufficient. What use case do you have
+> > for paying this price? I am happy to hear.
+>
+> I don't have a specific use case. But I also don't see the extra price
+> we need to pay. You are adding a new *generic* data structure to the
+> wide BPF infrastructure, so please consider implications beyond your
+> immediate use case.
+
+I have considered it, just not able to find any better way to make everyone
+happy. If I choose not to increase struct bucket/htab_elem, I may have to
+duplicate or change a lot more hash map code. If I choose to increase it,
+regular map users could get an overhead. See the trouble? :)
+
+Thanks.
