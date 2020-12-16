@@ -2,207 +2,297 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6964C2DC98F
-	for <lists+bpf@lfdr.de>; Thu, 17 Dec 2020 00:24:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF2BF2DC9A6
+	for <lists+bpf@lfdr.de>; Thu, 17 Dec 2020 00:36:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730477AbgLPXY0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 16 Dec 2020 18:24:26 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:64230 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726865AbgLPXY0 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 16 Dec 2020 18:24:26 -0500
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 0BGNFZoB029125;
-        Wed, 16 Dec 2020 15:23:31 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=fQ891/zI985wiUAkR/Ar3LgH+NK6TfapU13DaHSskkU=;
- b=G1nZB05O1a184IDsUsYy5V+c58u/+HIq6OjDsB1Zweiz7egMj/LlZtllCMErzagkhupo
- oPhldEqgsl7ZkScCPxmt2et2M5le2rxh3nveMOV/2GPDRapxll8SgoE0WdTowEz59SJS
- U//ArhYy7ztCK4ROhslX1RpRggpclCegJzA= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 35f7h65upr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 16 Dec 2020 15:23:31 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 16 Dec 2020 15:23:29 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZFAUJwBDV11MoScwxgkIcAe1iRP8EPl18bCRWxqZJCrJFknIIB4p4VMJQv8qd5zAYcc7TQkdROGrG9VWzOchsm4x1/f0PWsTCw5QG1Igp0nmjdks1bKqPEK7HuDvXYVro+8zDciG8pbSIWsHIayNMSYHO+obsJDHCr1+maPISICfhodCS3UonFT7dBhel3u8RMbrHAhq1G9Rr4D+AjN4GNJE+qSLgQbguKGQRxvjOylyhdn2nZ/vglhSLJoi5hQ99b/DxNhK051+badqdQEj/Yc2Q0g+FoJdwywviT4AQfpcXJJLGnw0/Vo3Ti7qpssEQIvjkmbd7sWrhVzX+OWUtA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fQ891/zI985wiUAkR/Ar3LgH+NK6TfapU13DaHSskkU=;
- b=UMq2AGV89Lux0Q7IVLre+5FPMOeTOLzkqbr93pkXJVpL09X1kLBPPq10/bGmWCUSjfN8jMKssw1Fs33NwsApbomWzJ89wvJw+Ftbo3L9M1VQSPnE8BkzIII623JWR4VPsb2A332GGOsgVwj1LM596DjGdsgJ3yAjhaslcVkkHsXfniCc1Jct2ws+Ao74JugYh47t3cd7V2wXMVJ4n1ISuIEA2OeHlLHB6zJKj5Ns1AIN25RF2sU7SdKxrhkaVqmJX3QulpjaZD9j5umr5HpaXhQfhAg7EPklRzOaUJuSbUlE158Rltt6PTE104YR0cyfj0VWbvo5I1BUSD9s9rPwCw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fQ891/zI985wiUAkR/Ar3LgH+NK6TfapU13DaHSskkU=;
- b=fWBFIn4pDC9jgftWCGEdL8rJr6d52lv46I8ybu93jTCzIFCQdcvTXdTvEfHz3zxQt93SMu38xZ94EUKhQDXFtKulnqweBduFuRnXluX2SZOX30oWUUWSMnHZBZiOTpxdE8zNKBI6bClwLKCI+6r5SQOFpW6PhIgXptdelSlwSCM=
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
- by BYAPR15MB2725.namprd15.prod.outlook.com (2603:10b6:a03:158::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.15; Wed, 16 Dec
- 2020 23:23:24 +0000
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::f49e:bdbb:8cd7:bf6b]) by BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::f49e:bdbb:8cd7:bf6b%7]) with mapi id 15.20.3654.025; Wed, 16 Dec 2020
- 23:23:24 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Yonghong Song <yhs@fb.com>
-CC:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "Andrii Nakryiko" <andrii@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        "kpsingh@chromium.org" <kpsingh@chromium.org>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH v2 bpf-next 4/4] selftests/bpf: add test for
- bpf_iter_task_vma
-Thread-Topic: [PATCH v2 bpf-next 4/4] selftests/bpf: add test for
- bpf_iter_task_vma
-Thread-Index: AQHW0zs6KjDuN0nfMkKjCJzT2YpTXan6CS4AgABVPwA=
-Date:   Wed, 16 Dec 2020 23:23:24 +0000
-Message-ID: <EE276BC6-9513-414D-91D1-6257909AB952@fb.com>
-References: <20201215233702.3301881-1-songliubraving@fb.com>
- <20201215233702.3301881-5-songliubraving@fb.com>
- <29e8f249-a23b-3c17-4000-a4075398b669@fb.com>
-In-Reply-To: <29e8f249-a23b-3c17-4000-a4075398b669@fb.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.120.23.2.4)
-x-originating-ip: [2620:10d:c091:480::1:e346]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6bd5fbe2-e7dc-4193-04bf-08d8a21995b1
-x-ms-traffictypediagnostic: BYAPR15MB2725:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB2725AA9E83FF2D9B3390FCF8B3C50@BYAPR15MB2725.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 1ELCRliBy0tJCPjWEC6frPuzUhlDZHrzdsCjJ66+UQVvLVie4IZtLCFCJYgo0q/FIvPzeLwcOxQqsF6cVkgQzuL5ki8RTwWsXmXuQVH9jjAeNf3kjqLaz/m5p7YZblEGz9RP+3aU5YLDbXRxV3l/ETBTwALI4Bgc2rhU2EXKiXAv6WBCH4z+X6RW3IbuMkATBGvQQKGdxz7jRXM6EBLyM+9y1ql4/SDhcyrwPA3Q0CPtdNFrqlkgyPop/EjpEUf9y/QxNAZzWet+PL4jpRVghHgSoGWdp0IvRYAmi+hrgoM/JF6oez6Qi0oRMGus60FtzATWZBW2R6UhUIf+Zv02may+b6vcwoZ05oT87vtXC7ZRpleR8n5VratPiQMuoxTm
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(64756008)(66556008)(6862004)(5660300002)(76116006)(91956017)(71200400001)(66946007)(36756003)(66476007)(8936002)(33656002)(2616005)(66446008)(54906003)(8676002)(86362001)(186003)(53546011)(6636002)(37006003)(6506007)(2906002)(498600001)(4326008)(83380400001)(6486002)(6512007)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?a40VVA/CWabO/N+HXls2GvVH/GKon315k3O5HFWCp0G9A6E6N/IvfNGgFeh2?=
- =?us-ascii?Q?Ouv19FDEXtmw//I7nycMD5U0L844pcd0vD7wMhAYQgeHIPdli23f35vKO+rp?=
- =?us-ascii?Q?cMZnliQDqX005e9sz5aIZWcvd9bz+ugtobnT2HW7TjC+2GAChXmHhpoqskNJ?=
- =?us-ascii?Q?pxZ1VskwhemlnPsQvDvnE0oyT27UEBrVxFj5K1PWRKeis90nH9xV1m/1odEW?=
- =?us-ascii?Q?56mV45BczjYMEosTJAsPNzyRDfa+mTFG+vaFxYJhNdNFPSEs57hHv30P0WQF?=
- =?us-ascii?Q?3T2mTohe6iguTepVuSUVRjEuJUvmE4LuGFWiaLw9g5pBN6JynoeNuius9+fd?=
- =?us-ascii?Q?8YGCIqDMTErnn8/qIoDmDQDXzYjgB/Z9jVXjTBvuSh/JBPSUAhQcbT7fkZQj?=
- =?us-ascii?Q?OY669I0N2BEXscT766kYBWD3l2sgjHBFKbR5xDqpRLSM29zLvJQ/+6aqqKP6?=
- =?us-ascii?Q?KAe89GEMslWCU4mO27n/yK2p2+iqZKp2FaQQ8IFpOAMC0bkiTBFoB+MCp5pX?=
- =?us-ascii?Q?9dxPI0N/r4UXfgTXGCs9k17VQmoyPZx0SiluoaFY1ajYWeg5ms55kuh0tWF3?=
- =?us-ascii?Q?fr1ZwwvVo/ZE/AGgeF8Wia1rrfYgup4DS3zUAWN1sGxHZIlIDhXoPDUWtJrd?=
- =?us-ascii?Q?m19Fz96GFnHlKYiN037k6QCtqPCJdKtLuCRqOgh48tEWAQ3/ttIXL7D6naKM?=
- =?us-ascii?Q?mJxTGyZMo0pfdn1xwg+/WGtq7OttILGCP3V2hyO/2skdayTgckIBjyR66RFS?=
- =?us-ascii?Q?mriyVGxYAX2FNc+WPLfkiXcpUisk+Lm6DnZfj6IgaFQQl5Z+yr0p7z/da8QW?=
- =?us-ascii?Q?02ySso5imXa9U8SuL6UN5su5dGtyhpzeVdLDe2j+h6dzmT6dBJdfxdVq4Rkk?=
- =?us-ascii?Q?FnN8dzTofTXSFjmADOcrjlRZ1LKP0gMeG+rJFyeh/dxekgZMwjP0TOJVoHuT?=
- =?us-ascii?Q?zA9GS6UhVoPGjp5BHS6VB2j1Bec9SuFZcip3x4iZNJDrJAN8iBMUCgpvNmYj?=
- =?us-ascii?Q?GXqqdzjaZhdHmV9nZsPckg/ooHRVzF0agblmhTWMGRBF0tU=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <31E07C11E3B716419B1D981E66216842@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1726858AbgLPXgd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 16 Dec 2020 18:36:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726110AbgLPXgd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 16 Dec 2020 18:36:33 -0500
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 568EEC061794
+        for <bpf@vger.kernel.org>; Wed, 16 Dec 2020 15:35:53 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id t13so24003198ybq.7
+        for <bpf@vger.kernel.org>; Wed, 16 Dec 2020 15:35:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aawkY8SHop5hshTAr1n4eH4ea1UiR9WrN23SfzBoaTk=;
+        b=ptUGtgMRzewTSLSANVN92GnXN5RtrZjzL/n486YHPWWNX3fjA1GAbeAxpDet8TTO5E
+         86C5Dk7C42m6fP2MnjeGIqvkdQla3yiyF0rbfn49LvUnjV0oZjLFwOYaHlvUMcZLA6Lo
+         9RfNY3Nv6XaBb0C6fYQXN7jcQC9p7zE4qcKpLMFErJ7ylfvZyy9zq/ZT9zddpKntR0zS
+         6SkrgxJ0D/dflutSkdHDO7Mxi24wRTXHME5IkuAGee6c8k31mjGt03GMMBq+1B0bN6Cf
+         aPas52mX8fVyyXoJd0sCcKVisaM3xGzb1D+EJdt4qckfS+WR/rSwWG93AES+Xptgw9Os
+         /s7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aawkY8SHop5hshTAr1n4eH4ea1UiR9WrN23SfzBoaTk=;
+        b=qcAhCPeDuhalMkUhtxlDVP/isAVlwiPhaoE0gJq6sm4y1fd1796VnvMuHkl/afYd1+
+         K1RLH7MJmaqbgEv9QBXf+KiTGLEvLyPChVhtbrtczM6E0z9ORiZyJDG0Gh/fCcGIFE2w
+         cEy1I9r4PUs7kOymAms7+Z+sjULX8BE3SM12Mzqm4e075fvGd2UMw68R8jG28kLEImjZ
+         poT0VP00Ta6nc2mVK03CxrURoGR/V+kL092pHYc/rvVR273m5eGpe+LYSrk4oStFJZBZ
+         9OkJFjLr7XbqjZSZPOR+0X4Wa6f+J7Ywhh4ppsLG5n3aO3Opq9KTzTVpgZTMPCqU6VJt
+         CThA==
+X-Gm-Message-State: AOAM530Z2HRb0wVCoSPk1MvPC3viik9nmFeY28mZOfxtFizYEXz3agyC
+        NrqG8y2AoKqqaU3euqNYRhHcE7IWX5xatrbYa2Q=
+X-Google-Smtp-Source: ABdhPJxTCF8r3UhUudIFCQhkQDgkMEFly8IxK9jcewmLHpVlmQp8eojscV+YACC+O9dgAx/yxftWORzRk3n2bxdtP5w=
+X-Received: by 2002:a25:c7c6:: with SMTP id w189mr53212802ybe.403.1608161752565;
+ Wed, 16 Dec 2020 15:35:52 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6bd5fbe2-e7dc-4193-04bf-08d8a21995b1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Dec 2020 23:23:24.0944
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 0HEdoJEXaoLPQDMbnXezb0cPUXmfOz4kU3f42kzueGR9uIHd23HKe4G+fWDXep0O7q8bAbaBVZMZ2C0U+0uD5A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2725
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-16_10:2020-12-15,2020-12-16 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
- suspectscore=0 bulkscore=0 phishscore=0 impostorscore=0 lowpriorityscore=0
- malwarescore=0 mlxlogscore=999 mlxscore=0 clxscore=1015 priorityscore=1501
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012160145
-X-FB-Internal: deliver
+References: <cover.1607973529.git.me@ubique.spb.ru> <5e2ca46ecadda0bde060a7cc0da7edba746b68da.1607973529.git.me@ubique.spb.ru>
+In-Reply-To: <5e2ca46ecadda0bde060a7cc0da7edba746b68da.1607973529.git.me@ubique.spb.ru>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 16 Dec 2020 15:35:41 -0800
+Message-ID: <CAEf4BzY3RaxvPcmQkTYsDa8MB+v6XpWuftdZEkFfgVVKgeLPbQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] bpf: Support pointer to struct in global
+ func args
+To:     Dmitrii Banshchikov <me@ubique.spb.ru>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, Andrey Ignatov <rdna@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Mon, Dec 14, 2020 at 11:53 AM Dmitrii Banshchikov <me@ubique.spb.ru> wrote:
+>
+> Add an ability to pass a pointer to a struct in arguments for a global
+> function. The struct may not have any pointers as it isn't possible to
+> verify them in a general case.
+>
+
+If such a passed struct has a field which is a pointer, will it
+immediately reject the program, or that field is just going to be
+treated as an unknown scalar. The latter makes most sense and if the
+verifier behaves like that already, it would be good to clarify that
+here.
+
+> Passing a struct pointer to a global function allows to overcome the
+> limit on maximum number of arguments and avoid expensive and tricky
+> workarounds.
+>
+> The implementation consists of two parts: if a global function has an
+> argument that is a pointer to struct then:
+>   1) In btf_check_func_arg_match(): check that the corresponding
+> register points to NULL or to a valid memory region that is large enough
+> to contain the struct.
+>   2) In btf_prepare_func_args(): set the corresponding register type to
+> PTR_TO_MEM_OR_NULL and its size to the size of the struct.
+>
+> Signed-off-by: Dmitrii Banshchikov <me@ubique.spb.ru>
+> ---
+>  include/linux/bpf_verifier.h |  2 ++
+>  kernel/bpf/btf.c             | 59 +++++++++++++++++++++++++++++++-----
+>  kernel/bpf/verifier.c        | 30 ++++++++++++++++++
+>  3 files changed, 83 insertions(+), 8 deletions(-)
+>
+> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> index e941fe1484e5..dbd00a7743d8 100644
+> --- a/include/linux/bpf_verifier.h
+> +++ b/include/linux/bpf_verifier.h
+> @@ -467,6 +467,8 @@ bpf_prog_offload_remove_insns(struct bpf_verifier_env *env, u32 off, u32 cnt);
+>
+>  int check_ctx_reg(struct bpf_verifier_env *env,
+>                   const struct bpf_reg_state *reg, int regno);
+> +int check_mem_reg(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
+> +                 int regno, u32 mem_size);
+>
+>  /* this lives here instead of in bpf.h because it needs to dereference tgt_prog */
+>  static inline u64 bpf_trampoline_compute_key(const struct bpf_prog *tgt_prog,
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 8d6bdb4f4d61..0bb5ea523486 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -5352,10 +5352,6 @@ int btf_check_func_arg_match(struct bpf_verifier_env *env, int subprog,
+>                         goto out;
+>                 }
+>                 if (btf_type_is_ptr(t)) {
+> -                       if (reg[i + 1].type == SCALAR_VALUE) {
+> -                               bpf_log(log, "R%d is not a pointer\n", i + 1);
+> -                               goto out;
+> -                       }
+>                         /* If function expects ctx type in BTF check that caller
+>                          * is passing PTR_TO_CTX.
+>                          */
+> @@ -5370,6 +5366,30 @@ int btf_check_func_arg_match(struct bpf_verifier_env *env, int subprog,
+>                                         goto out;
+>                                 continue;
+>                         }
+> +
+> +                       t = btf_type_by_id(btf, t->type);
+> +                       while (btf_type_is_modifier(t))
+> +                               t = btf_type_by_id(btf, t->type);
+> +                       if (btf_type_is_struct(t)) {
+> +                               u32 mem_size;
+> +                               const struct btf_type *ret =
+> +                                       btf_resolve_size(btf, t, &mem_size);
+> +
+> +                               if (IS_ERR(ret)) {
+> +                                       bpf_log(log,
+> +                                               "unable to resolve the size of type '%s': %ld\n",
+> +                                               btf_name_by_offset(btf,
+> +                                                                  t->name_off),
+
+this wrapping is just distracting, please keep it in one line
+
+> +                                               PTR_ERR(ret));
+> +                                       return -EINVAL;
+
+goto out to mark as unreliable?
+
+> +                               }
+> +
+> +                               if (check_mem_reg(env, &reg[i + 1], i + 1,
+> +                                                 mem_size))
+
+same here, no need to wrap for this, imo
+
+> +                                       goto out;
+> +
+> +                               continue;
+> +                       }
+>                 }
+>                 bpf_log(log, "Unrecognized arg#%d type %s\n",
+>                         i, btf_kind_str[BTF_INFO_KIND(t->info)]);
+> @@ -5471,10 +5491,33 @@ int btf_prepare_func_args(struct bpf_verifier_env *env, int subprog,
+>                         reg[i + 1].type = SCALAR_VALUE;
+>                         continue;
+>                 }
+> -               if (btf_type_is_ptr(t) &&
+> -                   btf_get_prog_ctx_type(log, btf, t, prog_type, i)) {
+> -                       reg[i + 1].type = PTR_TO_CTX;
+> -                       continue;
+> +               if (btf_type_is_ptr(t)) {
+> +                       if (btf_get_prog_ctx_type(log, btf, t, prog_type, i)) {
+> +                               reg[i + 1].type = PTR_TO_CTX;
+> +                               continue;
+> +                       }
+> +
+> +                       t = btf_type_by_id(btf, t->type);
+> +                       while (btf_type_is_modifier(t))
+> +                               t = btf_type_by_id(btf, t->type);
+> +                       if (btf_type_is_struct(t)) {
+
+Can we support a pointer to integer/enum here as well? Basically, a
+pointer to any sized type would make sense. So if you just drop above
+3 lines and just rely on btf_resolve_size() to either fail or return
+the correct memory size, it would just work.
 
 
-> On Dec 16, 2020, at 10:18 AM, Yonghong Song <yhs@fb.com> wrote:
->=20
+> +                               const struct btf_type *ret = btf_resolve_size(
+> +                                       btf, t, &reg[i + 1].mem_size);
+> +
+> +                               if (IS_ERR(ret)) {
+> +                                       const char *tname = btf_name_by_offset(
+> +                                               btf, t->name_off);
+> +                                       bpf_log(log,
+> +                                               "unable to resolve the size of type '%s': %ld\n",
 
-[...]
+With the above change, this would be better to adjust to look like an
+expected, but not supported case (E.g., "Arg is not supported because
+it's impossible to determine the size of accessed memory" or something
+along those lines).
 
->> +
->> +	err =3D bpf_iter_task_vma__load(skel);
->> +	if (CHECK(err, "bpf_iter_task_vma__load", "skeleton load failed\n"))
->> +		goto out;
->> +
->> +	do_dummy_read(skel->progs.proc_maps);
->=20
-> This do_dummy_read() is not needed, right?
+A small surprising bit:
 
-do_dummy_read() helped me got bug in earlier version. I am planning to=20
-change the following to do smaller reads, then do_dummy_read() is no longer
-needed.=20
+int foo(char arr[123]) { return arr[0]; }
 
-[...]
+would be legal, but arr[1] not. Which is a C type system quirk, but
+it's probably fine to allow.
 
->=20
->> +
->> +SEC("iter.s/task_vma") int proc_maps(struct bpf_iter__task_vma *ctx)
->> +{
->> +	struct __vm_area_struct *vma =3D ctx->vma;
->> +	struct seq_file *seq =3D ctx->meta->seq;
->> +	struct task_struct *task =3D ctx->task;
->> +	struct file *file =3D ctx->file;
->> +	char perm_str[] =3D "----";
->> +
->> +	if (task =3D=3D (void *)0 || vma =3D=3D (void *)0 || task->pid !=3D pi=
-d)
->=20
-> I suppose kernel already filtered all non-group-leader tasks, so here
-> we can have task->tgid !=3D pid?
 
-Yeah, that works.=20
+> +                                               tname, PTR_ERR(ret));
+> +                                       return -EINVAL;
+> +                               }
+> +
+> +                               reg[i + 1].type = PTR_TO_MEM_OR_NULL;
+> +                               reg[i + 1].id = i + 1;
 
->=20
->> +		return 0;
->=20
-> Using /proc system, user typically do cat /proc/pid/maps. How can we
-> have a similar user experience with vma_iter here? One way to do this
-> is:
->   - We still have this bpf program, filtering based on user pid,
->   - normal bpftool iter pin command pid the program to say /sys/fs/bpf/ta=
-sk_vma
->   - since "pid" is in a map, user can use bpftool to update "pid"
->     with the target pid.
->   - "cat /sys/fs/bpf/task_vma" will work.
->=20
-> One thing here is pid and d_path_buf are global (map) variables, so
-> if two users are trying to do "cat /sys/fs/bpf/task_vma" at the same
-> time, there will be interferences and it will not work.
->=20
-> One possible way is during BPF_ITER_CREATE, we duplicate all program
-> maps. But this is unnecessary as in most cases, the bpf_iter is not
-> pinned and private to applications.
->=20
-> Any other ideas?
+this reg[i + 1] addressing is error-prone and verbose, let's just have
+a local pointer variable? Probably would want to rename `struct
+bpf_reg_state *reg` to regs.
 
-Maybe we can use task local storage for pid and d_path_buf?=20
+> +
+> +                               continue;
+> +                       }
+>                 }
+>                 bpf_log(log, "Arg#%d type %s in %s() is not supported yet.\n",
+>                         i, btf_kind_str[BTF_INFO_KIND(t->info)], tname);
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index dee296dbc7a1..a08f85fffdb2 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -3886,6 +3886,29 @@ static int check_helper_mem_access(struct bpf_verifier_env *env, int regno,
+>         }
+>  }
+>
+> +int check_mem_reg(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
+> +                 int regno, u32 mem_size)
+> +{
+> +       if (register_is_null(reg))
+> +               return 0;
+> +
+> +       if (reg_type_may_be_null(reg->type)) {
 
-To make it more practical, we probably want in kernel filtering based=20
-on pid. IOW, let user specify which task to iterate.=20
+this looks wrong, we expect the register to be PTR_TO_MEM or
+PTR_TO_MEM_OR_NULL here. So any other NU
 
-Thanks,
-Song
+> +               const struct bpf_reg_state saved_reg = *reg;
 
+this saving and restoring of the original state due to
+mark_ptr_not_null_reg() is a bit ugly. Maybe it's better to refactor
+mark_ptr_not_null_reg to just return a new register type on success or
+0 (NOT_INIT) on failure? Then you won't have to do this.
+
+> +               int rv;
+> +
+> +               if (mark_ptr_not_null_reg(reg)) {
+> +                       verbose(env, "R%d type=%s expected nullable\n", regno,
+> +                               reg_type_str[reg->type]);
+> +                       return -EINVAL;
+> +               }
+> +               rv = check_helper_mem_access(env, regno, mem_size, 1, NULL);
+> +               *reg = saved_reg;
+> +               return rv;
+> +       }
+> +
+> +       return check_helper_mem_access(env, regno, mem_size, 1, NULL);
+
+
+here and above, use true instead of 1, it's a bool argument, not
+integer, super confusing
+
+> +}
+> +
+>  /* Implementation details:
+>   * bpf_map_lookup returns PTR_TO_MAP_VALUE_OR_NULL
+>   * Two bpf_map_lookups (even with the same key) will have different reg->id.
+> @@ -11435,6 +11458,13 @@ static int do_check_common(struct bpf_verifier_env *env, int subprog)
+>                                 mark_reg_known_zero(env, regs, i);
+>                         else if (regs[i].type == SCALAR_VALUE)
+>                                 mark_reg_unknown(env, regs, i);
+> +                       else if (regs[i].type == PTR_TO_MEM_OR_NULL) {
+> +                               const u32 mem_size = regs[i].mem_size;
+> +
+> +                               mark_reg_known_zero(env, regs, i);
+> +                               regs[i].mem_size = mem_size;
+> +                               regs[i].id = i;
+
+I don't think we need to set id, we don't use that for PTR_TO_MEM registers.
+
+> +                       }
+>                 }
+>         } else {
+>                 /* 1st arg to a function */
+> --
+> 2.25.1
+>
