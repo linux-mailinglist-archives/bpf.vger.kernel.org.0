@@ -2,111 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19B482DD43A
-	for <lists+bpf@lfdr.de>; Thu, 17 Dec 2020 16:32:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16A0A2DD4A7
+	for <lists+bpf@lfdr.de>; Thu, 17 Dec 2020 16:56:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727354AbgLQPcA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Dec 2020 10:32:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45974 "EHLO
+        id S1728575AbgLQPyT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Dec 2020 10:54:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726291AbgLQPb7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Dec 2020 10:31:59 -0500
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 709DCC061794
-        for <bpf@vger.kernel.org>; Thu, 17 Dec 2020 07:31:19 -0800 (PST)
-Received: by mail-io1-xd34.google.com with SMTP id w18so14027441iot.0
-        for <bpf@vger.kernel.org>; Thu, 17 Dec 2020 07:31:19 -0800 (PST)
+        with ESMTP id S1727414AbgLQPyS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Dec 2020 10:54:18 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7412EC0617B0
+        for <bpf@vger.kernel.org>; Thu, 17 Dec 2020 07:53:38 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id z5so27935050iob.11
+        for <bpf@vger.kernel.org>; Thu, 17 Dec 2020 07:53:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SNLzqNA7Yv8jUaImikGcte3pXfNXnVGyGGbxaqJSnmE=;
-        b=NstEXwcBZ58bsIqvPEou/vpNRiwQWHboP9Z0GcBCOZ8Zb8GlpgRMYIix6IgT+k1c7q
-         /ZeFfGVxYFWgLX6Ra5z66ckoBCfcJRLVAijaEbs4WtQkm9kvUtr3hYUGj0cl7RMfjhaU
-         xdRAHAGvTvaTGOVG0cHMEgHCEmVfY0ft1egwM=
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=1tS/TPZAajsb6a4c9RGCrJLAfHltUkaFmVEdRYEivFw=;
+        b=SB3dU4WyB1PXusFJSVHyaDGab5FNdkiftmzo1JGqFGpxCsRHPYqHdndiCTPIfpyAoA
+         dZavB6mNbbXhvbdmY/9ftV0QOmkMdFayEvq7NSre/oLvfElDLFyZmo7ETmkSiCnjkKSo
+         hqEegmshqqPRw0FO9cwVBmlXxQvHe5n6xV5a0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SNLzqNA7Yv8jUaImikGcte3pXfNXnVGyGGbxaqJSnmE=;
-        b=fv6LB5R1UZMZ2zWYvmiH63c5PYk/68KuKk++ZKumjAiUSmBcdA4bMUzaLdW6UwiUzE
-         C+PA0nY7gHzFZ0aerrLR05v/2Uuvl02lBFR5ofh1Vo22V4dd/P4/HMaZBPgmvW0+TSAp
-         7xeYxFLh3bQHOudta6cEMcDfsDE4gnbAej+T8pCBVxe/+yMXcx7UmNmlfGI3Oj73TO8g
-         yguikW3hEjg5TCZQurz6LdO3gxx6XMuuPPgNkweIJjzsKBjp2PjbUhSjnIMNZuo15fVH
-         RxRHhUFVa5g2idyOuG4QQAQE+fv3HPTl27OcAYUQJT3omWkbpua0Uyo1bh1C8l7zovEz
-         3Tlw==
-X-Gm-Message-State: AOAM532sQsEHJHntRrnomdPJLGwlrBCrRB5D6cw2udDSWB1a5BApURnk
-        oqgXiW/eVpU8T2Jl6xQ0oEOGu9a2UjTNe9wBCIYj4w==
-X-Google-Smtp-Source: ABdhPJwGHY8bZs97SycriCjRPbd9tDIlKsouhD/rI6FdX+ZALVYkmXeiTNH2xpyk3fGPfBBSWYjON8DeZP3ikISG75g=
-X-Received: by 2002:a05:6602:387:: with SMTP id f7mr22817510iov.209.1608219078885;
- Thu, 17 Dec 2020 07:31:18 -0800 (PST)
-MIME-Version: 1.0
-References: <20201126165748.1748417-1-revest@google.com> <50047415-cafe-abab-a6ba-e85bb6a9b651@fb.com>
- <CACYkzJ7T4y7in1AsCvJ2izA3yiAke8vE9SRFRCyTPeqMnDHoyQ@mail.gmail.com>
- <e8b03cbc-c120-43d5-168c-cde5b6a97af8@fb.com> <CAEf4BzYz9Yf9abPBtP+swCuqvvhL0cbbbF1x-3stg9mp=a6+-A@mail.gmail.com>
- <194b5a6e6e30574a035a3e3baa98d7fde7f91f1c.camel@chromium.org>
- <CAADnVQK6GjmL19zQykYbh=THM9ktQUzfnwF_FfhUKimCxDnnkQ@mail.gmail.com>
- <CABRcYm+zjC-WH2gxtfEX5S6mZj-5_ByAzVd5zi3aRmQv-asYqg@mail.gmail.com> <221fb873-80fc-5407-965e-b075c964fa13@fb.com>
-In-Reply-To: <221fb873-80fc-5407-965e-b075c964fa13@fb.com>
-From:   Florent Revest <revest@chromium.org>
-Date:   Thu, 17 Dec 2020 16:31:08 +0100
-Message-ID: <CABRcYmLL=SUsPS6qWVgTyYJ26r-QtECfeTZXkXSp7iRBDZRbZA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1tS/TPZAajsb6a4c9RGCrJLAfHltUkaFmVEdRYEivFw=;
+        b=ViWBaK7caaI8USJgCGyNxcu1T6cwB/RHebsPj9XTRWhIpeLGWnPOFWTfgZs0+Zv8jA
+         hfsMXC8FhDzkqbWEac9meQrGfWbXFevxLJ8tDw6pfohjXNNu4vaAcAAKgq5hpGzhv5C0
+         btyKVesTx3hcuZp5et9TfKAxlOEsqyqEd4RRYAASyPcisUKRUib/ThjJV+sdihc9sYaf
+         956FO70lDDfDflGekBjOpR8u2O1RJSzxWrZvtcosXppK4ELrPQiUBfE9j8DUcinK98Km
+         iVNmeyh2bEPLB1mL9gRyfGBiTKV1WIngAwoVJSkU6At97PTZUyYzQMvOp3jXbTGOmjpU
+         el1Q==
+X-Gm-Message-State: AOAM530HF3i9Zpi68zJ7MA5oNKyFxvX2CqH6Q4kEEIf9Z420y3slUJRc
+        cwj0Vfr1cKmcNxxtBKhAB+UzyQ==
+X-Google-Smtp-Source: ABdhPJwFKs72LIIAoNy8AlcxOBj2qkgjalhkB41+xRe9ghJ6Iq6ypq8oDxfJBkTODIta16gtRk8+Tg==
+X-Received: by 2002:a05:6638:83:: with SMTP id v3mr47713212jao.106.1608220417790;
+        Thu, 17 Dec 2020 07:53:37 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id j65sm3551569ilg.53.2020.12.17.07.53.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Dec 2020 07:53:37 -0800 (PST)
+Subject: Re: [PATCH] selftests: Skip BPF seftests by default
+To:     Mark Brown <broonie@kernel.org>,
+        Seth Forshee <seth.forshee@canonical.com>
+Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Daniel Diaz <daniel.diaz@linaro.org>,
+        Veronika Kabatova <vkabatov@redhat.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Guillaume Tucker <guillaume.tucker@collabora.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20201210185233.28091-1-broonie@kernel.org>
+ <X9qExiKXPVmk3BJI@ubuntu-x1> <20201217130735.GA4708@sirena.org.uk>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <94010653-0cb3-d804-7410-a571480d6db2@linuxfoundation.org>
+Date:   Thu, 17 Dec 2020 08:53:36 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+MIME-Version: 1.0
+In-Reply-To: <20201217130735.GA4708@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Dec 14, 2020 at 7:47 AM Yonghong Song <yhs@fb.com> wrote:
-> On 12/11/20 6:40 AM, Florent Revest wrote:
-> > On Wed, Dec 2, 2020 at 10:18 PM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> >> I still think that adopting printk/vsnprintf for this instead of
-> >> reinventing the wheel
-> >> is more flexible and easier to maintain long term.
-> >> Almost the same layout can be done with vsnprintf
-> >> with exception of \0 char.
-> >> More meaningful names, etc.
-> >> See Documentation/core-api/printk-formats.rst
-> >
-> > I agree this would be nice. I finally got a bit of time to experiment
-> > with this and I noticed a few things:
-> >
-> > First of all, because helpers only have 5 arguments, if we use two for
-> > the output buffer and its size and two for the format string and its
-> > size, we are only left with one argument for a modifier. This is still
-> > enough for our usecase (where we'd only use "%ps" for example) but it
-> > does not strictly-speaking allow for the same layout that Andrii
-> > proposed.
->
-> See helper bpf_seq_printf. It packs all arguments for format string and
-> puts them into an array. bpf_seq_printf will unpack them as it parsed
-> through the format string. So it should be doable to have more than
-> "%ps" in format string.
+On 12/17/20 6:07 AM, Mark Brown wrote:
+> On Wed, Dec 16, 2020 at 04:05:58PM -0600, Seth Forshee wrote:
+>> On Thu, Dec 10, 2020 at 06:52:33PM +0000, Mark Brown wrote:
+> 
+>>> as part of the wider kselftest build by specifying SKIP_TARGETS,
+>>> including setting an empty SKIP_TARGETS to build everything.  They can
+>>> also continue to build the BPF selftests individually in cases where
+>>> they are specifically focused on BPF.
+> 
+>> Why not just remove the line which adds bpf to TARGETS? This has the
+>> same effect, but doesn't require an emtpy SKIP_TARGETS to run them. We
+>> have testing scripts which use 'make TARGETS=bpf ...' which will have to
+>> be updated, and I doubt we are the only ones.
+> 
 
-This could be a nice trick, thank you for the suggestion Yonghong :)
+I would prefer leaving bpf in the main Makefile TARGETS. This will be
+useful to users that have their systems setup for bpf builds.
 
-My understanding is that this would also require two extra args (one
-for the array of arguments and one for the size of this array) so it
-would still not fit the 5 arguments limit I described in my previous
-email.
-eg: this would not be possible:
-long bpf_snprintf(const char *out, u32 out_size,
-                  const char *fmt, u32 fmt_size,
-                 const void *data, u32 data_len)
+>> I also feel like this creates confusing semantics around SKIP_TARGETS.
+>> If I don't supply a value then I don't get the bpf selftests, but then
+>> if I try to use SKIP_TARGETS to skip some other test suddenly I do get
+>> them. That's counterintuitive.
+> 
+> That's what I did first, it's also messy just differently.  If you
+> don't add bpf to TARGETS then if you do what's needed to get it building
+> it becomes inconvenient to run it as part of running everything else at
+> the top level since you need to enumerate all the targets.  It felt like
+> skipping is what we're actually doing here and it seems like those
+> actively working with BPF will be used to having to update things in
+> their environment.  People who start using SKIP_TARGETS are *probably*
+> going to find out about it from the Makefile anyway so will see the
+> default that's there.
+> 
+> Fundamentally having such demanding build dependencies is always going
+> to result in some kind of mess, it's just where we push it.
+> 
+>> I also wanted to point out that the net/test_bpf.sh selftest requires
+>> having the test_bpf module from the bpf selftest build. So when the bpf
+>> selftests aren't built this test is guaranteed to fail. Though it would
+>> be nice if the net selftests didn't require building the bpf self tests
+>> in order to pass.
+> 
+> Right, that's a separate issue - the net tests should really skip that
+> if they don't have BPF, as we do for other runtime detectable
+> dependencies.  It's nowhere near as severe as failing to build though.
+> 
 
-Would you then suggest that we also put the format string and its
-length in the first and second cells of this array and have something
-along the line of:
-long bpf_snprintf(const char *out, u32 out_size,
-                  const void *args, u32 args_len) ?
-This seems like a fairly opaque signature to me and harder to verify.
+Correct. This has to be handled as a run-time dependency check and skip
+instead of fail.
+
+thanks,
+-- Shuah
