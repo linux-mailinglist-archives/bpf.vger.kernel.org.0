@@ -2,171 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A54862DCE18
-	for <lists+bpf@lfdr.de>; Thu, 17 Dec 2020 10:08:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB7312DCEE8
+	for <lists+bpf@lfdr.de>; Thu, 17 Dec 2020 10:55:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727224AbgLQJHF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Dec 2020 04:07:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727215AbgLQJHF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Dec 2020 04:07:05 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C7F6C061285
-        for <bpf@vger.kernel.org>; Thu, 17 Dec 2020 01:06:14 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id u18so55474709lfd.9
-        for <bpf@vger.kernel.org>; Thu, 17 Dec 2020 01:06:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vAO/2/47mbhlLw+965PNTisNKeQzGGv2Q/ZDNBlq8ho=;
-        b=ug3HU0/BD5jHUI6DBI3tUcGDLe5Vi0dADf7CQjmuw/ZLMEvO78n6LoGbJVJ9/LH/oY
-         02XfSpETFlVPf2/TuFtgteUxWs4gqgZd8XpPPXZqFJ+3W7fYS2Mo4+z/BVYuNpus6vtz
-         pyZo35hXAxYxPKHwOWQEa28G/ws1llfu1/sO/dgTA2sCj2CHq+PjFNtbH5wP9b92HQTt
-         CUhhGqnd82VO3vyy5jObExl/xwXUQsiT+DVOkAQGGLq1JmbCb+tOKMnYVsNUdxnvshLX
-         AD/iJCQ8RHOTiwU9+j7lRaeJCvbkpPvketTDkElKJfk82Cv9xmcLl4GgDQXxLVZm4TIP
-         EXfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vAO/2/47mbhlLw+965PNTisNKeQzGGv2Q/ZDNBlq8ho=;
-        b=J6AzuzGCZKhXafO+Fu11Zj7MkasaQbW6zYEFVwhQvT6Mv5m/EWvGYfHfVjjYau/S9r
-         mJYIS+r2cXnzSxemBXitQBUHbZgBy6y1QTYeJaa58wzTNcsX8AUErLCbL86hBG2cCQ8K
-         tZn9iOWa1Xzo3+d5zr4lTyzFDs0sOnmuY+NIxj7PirT8KNZFF//t/1M35DqJwvXb65Jm
-         2mhhAXXUuW1n8kAUIAFetEduSdVCSywmbyWkx0n9MNbuNDwRHlJNMwq47sXJKENpfnd2
-         wp5WbY097aRplzwYfpAsvAMey3BhY39JIuUkIjIQfLQ7zgaOK+NYOz7AxFI/NODu8q1f
-         3k0w==
-X-Gm-Message-State: AOAM531K8ies/TSR6iUb04rBlcg4GOojH4VyfdY8HIHrHZegtvC1ddHi
-        /MSR/6fKEFxVS5xwbJnqpoATbdGcY8WhZdlt8a0hRA==
-X-Google-Smtp-Source: ABdhPJxsq2p+kthVsRGDbdBPYMJuYG963MsSL6IXTPPE/fUcPdixmm5ttc1CfxGFCERB7fPnA+WDEJZLkKAp9rbYRAA=
-X-Received: by 2002:a05:6512:30a:: with SMTP id t10mr911692lfp.124.1608195972094;
- Thu, 17 Dec 2020 01:06:12 -0800 (PST)
+        id S1727624AbgLQJzY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Dec 2020 04:55:24 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:39808 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726890AbgLQJzY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Dec 2020 04:55:24 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4CxS5X2DHlz9v0PW;
+        Thu, 17 Dec 2020 10:54:40 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 1Zv_-zH0n3ZU; Thu, 17 Dec 2020 10:54:40 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4CxS5X19YGz9v0PP;
+        Thu, 17 Dec 2020 10:54:40 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 65DAC8B7EB;
+        Thu, 17 Dec 2020 10:54:41 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id qEOXafSG18AY; Thu, 17 Dec 2020 10:54:41 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 540E18B7CD;
+        Thu, 17 Dec 2020 10:54:40 +0100 (CET)
+Subject: Re: [RFC PATCH v1 7/7] powerpc/bpf: Implement extended BPF on PPC32
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@chromium.org, naveen.n.rao@linux.ibm.com,
+        sandipan@linux.ibm.com, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <cover.1608112796.git.christophe.leroy@csgroup.eu>
+ <1fed5e11ba08ee28d12f3f57986e5b143a6aa937.1608112797.git.christophe.leroy@csgroup.eu>
+ <20201217061133.lnfnhbzvikgtjb3i@ast-mbp>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <854404a0-1951-91d9-2ebb-208390a64c77@csgroup.eu>
+Date:   Thu, 17 Dec 2020 10:54:34 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-References: <20201119085022.3606135-1-davidgow@google.com> <CAEf4BzY4i0fH34eO=-4WOzVpifgPmJ0ER5ipBJWB0_4Zdv0AQg@mail.gmail.com>
- <CABVgOSn10kCaD7EQCMJTgD8udNx6fOExqUL1gXHzEViemiq3LA@mail.gmail.com> <3678c6eb-3815-a360-f495-fc246513f0f5@isovalent.com>
-In-Reply-To: <3678c6eb-3815-a360-f495-fc246513f0f5@isovalent.com>
-From:   David Gow <davidgow@google.com>
-Date:   Thu, 17 Dec 2020 17:05:59 +0800
-Message-ID: <CABVgOSmRrtHQ_6n43kFk6MFYCpf+cS-E=TOiwS=__v6wGNeMNQ@mail.gmail.com>
-Subject: Re: [RFC PATCH] bpf: preload: Fix build error when O= is set
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-um <linux-um@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201217061133.lnfnhbzvikgtjb3i@ast-mbp>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 10:53 PM Quentin Monnet <quentin@isovalent.com> wrote:
->
-> 2020-11-21 17:48 UTC+0800 ~ David Gow <davidgow@google.com>
-> > On Sat, Nov 21, 2020 at 3:38 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> >>
-> >> On Thu, Nov 19, 2020 at 12:51 AM David Gow <davidgow@google.com> wrote:
-> >>>
-> >>> If BPF_PRELOAD is enabled, and an out-of-tree build is requested with
-> >>> make O=<path>, compilation seems to fail with:
-> >>>
-> >>> tools/scripts/Makefile.include:4: *** O=.kunit does not exist.  Stop.
-> >>> make[4]: *** [../kernel/bpf/preload/Makefile:8: kernel/bpf/preload/libbpf.a] Error 2
-> >>> make[3]: *** [../scripts/Makefile.build:500: kernel/bpf/preload] Error 2
-> >>> make[2]: *** [../scripts/Makefile.build:500: kernel/bpf] Error 2
-> >>> make[2]: *** Waiting for unfinished jobs....
-> >>> make[1]: *** [.../Makefile:1799: kernel] Error 2
-> >>> make[1]: *** Waiting for unfinished jobs....
-> >>> make: *** [Makefile:185: __sub-make] Error 2
-> >>>
-> >>> By the looks of things, this is because the (relative path) O= passed on
-> >>> the command line is being passed to the libbpf Makefile, which then
-> >>> can't find the directory. Given OUTPUT= is being passed anyway, we can
-> >>> work around this by explicitly setting an empty O=, which will be
-> >>> ignored in favour of OUTPUT= in tools/scripts/Makefile.include.
-> >>
-> >> Strange, but I can't repro it. I use make O=<absolute path> all the
-> >> time with no issues. I just tried specifically with a make O=.build,
-> >> where .build is inside Linux repo, and it still worked fine. See also
-> >> be40920fbf10 ("tools: Let O= makes handle a relative path with -C
-> >> option") which was supposed to address such an issue. So I'm wondering
-> >> what exactly is causing this problem.
-> >>
-> > [+ linux-um list]
-> >
-> > Hmm... From a quick check, I can't reproduce this on x86, so it's
-> > possibly a UML-specific issue.
-> >
-> > The problem here seems to be that $PWD is, for whatever reason, equal
-> > to the srcdir on x86, but not on UML. In general, $PWD behaves pretty
-> > weirdly -- I don't fully understand it -- but if I add a tactical "PWD
-> > := $(shell pwd)" or use $(CURDIR) instead, the issue shows up on x86
-> > as well. I guess this is because PWD only gets updated when set by a
-> > shell or something, and UML does this somewhere?
-> >
-> > Thoughts?
-> >
-> > Cheers,
-> > -- David
->
-> Hi David, Andrii,
->
-> David, did you use a different command for building for UML and x86? I'm
-> asking because I reproduce on x86, but only for some targets, in
-> particular when I tried bindeb-pkg.
-
-I just ran "make ARCH={x86,um} O=.bpftest", with defconfig + enabling
-BPF_PRELOAD and its dependencies. UML fails, x86 works. (Though I can
-reproduce the failure if I make bindeb-pkg on x86).
-
-(It also shows up when building UML with the allyesconfig-based KUnit
-alltests option by running "./tools/testing/kunit/kunit.py run
---alltests", though this understandably takes a long time and is less
-obvious)
->
-> With "make O=.build vmlinux", I have:
-> - $(O) for "dummy" check in tools/scripts/Makefile.include set to
-> /linux/.build
-> - $(PWD) for same check set to /linux/tools
-> - Since $(O) is an absolute path, the "dummy" check passes
->
-> With "make O=.build bindeb-pkg", I have instead:
-> - $(O) set to .build (relative path)
-> - $(PWD) set to /linux/.build
-> - "dummy" check changes to /linux/.build and searches for .build in it,
-> which fails and aborts the build
->
-> (tools/scripts/Makefile.include is included from libbpf's Makefile,
-> called from kernel/bpf/preload/Makefile.)
->
-> I'm not sure how exactly the bindeb-pkg target ends up passing these values.
-
-Yeah: I haven't been able to find where uml is changing them either:
-I'm assuming there's something which changes directory and/or spawns a
-shell/recursive make to change $(PWD) or something.
-
-> For what it's worth, I have been solving this (before finding this
-> thread) with a fix close to yours, I pass "O=$(abspath .)" on the
-> command line for building libbpf in kernel/bpf/preload/Makefile. It
-> looked consistent to me with the "tools/:" target from the main
-> Makefile, where "O=$(abspath $(objtree))" is passed (and $(objtree) is ".").
-
-Given that there are several targets being broken here, it's probably
-worth having a fix like this which overrides O= rather than trying to
-hunt down every target which could change $(PWD). I don't particularly
-mind whether we use O= or O=$(abspath .), both are working in the UML
-usecase as well.
-
-Does anyone object to basically accepting either this patch as-is, or
-using O=$(abspath .)?
 
 
-Cheers,
--- David
+Le 17/12/2020 à 07:11, Alexei Starovoitov a écrit :
+> On Wed, Dec 16, 2020 at 10:07:37AM +0000, Christophe Leroy wrote:
+>> Implement Extended Berkeley Packet Filter on Powerpc 32
+>>
+>> Test result with test_bpf module:
+>>
+>> 	test_bpf: Summary: 378 PASSED, 0 FAILED, [354/366 JIT'ed]
+> 
+> nice!
+> 
+>> Registers mapping:
+>>
+>> 	[BPF_REG_0] = r11-r12
+>> 	/* function arguments */
+>> 	[BPF_REG_1] = r3-r4
+>> 	[BPF_REG_2] = r5-r6
+>> 	[BPF_REG_3] = r7-r8
+>> 	[BPF_REG_4] = r9-r10
+>> 	[BPF_REG_5] = r21-r22 (Args 9 and 10 come in via the stack)
+>> 	/* non volatile registers */
+>> 	[BPF_REG_6] = r23-r24
+>> 	[BPF_REG_7] = r25-r26
+>> 	[BPF_REG_8] = r27-r28
+>> 	[BPF_REG_9] = r29-r30
+>> 	/* frame pointer aka BPF_REG_10 */
+>> 	[BPF_REG_FP] = r31
+>> 	/* eBPF jit internal registers */
+>> 	[BPF_REG_AX] = r19-r20
+>> 	[TMP_REG] = r18
+>>
+>> As PPC32 doesn't have a redzone in the stack,
+>> use r17 as tail call counter.
+>>
+>> r0 is used as temporary register as much as possible. It is referenced
+>> directly in the code in order to avoid misuse of it, because some
+>> instructions interpret it as value 0 instead of register r0
+>> (ex: addi, addis, stw, lwz, ...)
+>>
+>> The following operations are not implemented:
+>>
+>> 		case BPF_ALU64 | BPF_DIV | BPF_X: /* dst /= src */
+>> 		case BPF_ALU64 | BPF_MOD | BPF_X: /* dst %= src */
+>> 		case BPF_STX | BPF_XADD | BPF_DW: /* *(u64 *)(dst + off) += src */
+>>
+>> The following operations are only implemented for power of two constants:
+>>
+>> 		case BPF_ALU64 | BPF_MOD | BPF_K: /* dst %= imm */
+>> 		case BPF_ALU64 | BPF_DIV | BPF_K: /* dst /= imm */
+> 
+> Those are sensible limitations. MOD and DIV are rare, but XADD is common.
+> Please consider doing it as a cmpxchg loop in the future.
+> 
+> Also please run test_progs. It will give a lot better coverage than test_bpf.ko
+> 
+
+I'm having hard time cross building test_progs:
+
+~/linux-powerpc/tools/testing/selftests/bpf/$ make CROSS_COMPILE=ppc-linux-
+...
+   GEN 
+/home/chr/linux-powerpc/tools/testing/selftests/bpf/tools/build/bpftool/Documentation/bpf-helpers.7
+   INSTALL  eBPF_helpers-manpage
+   INSTALL  Documentation-man
+   GEN      vmlinux.h
+/bin/sh: /home/chr/linux-powerpc/tools/testing/selftests/bpf/tools/sbin/bpftool: cannot execute 
+binary file
+make: *** [/home/chr/linux-powerpc/tools/testing/selftests/bpf/tools/include/vmlinux.h] Error 126
+make: *** Deleting file `/home/chr/linux-powerpc/tools/testing/selftests/bpf/tools/include/vmlinux.h'
+
+Looks like it builds bpftool for powerpc and tries to run it on my x86.
+How should I proceed ?
+
+Thanks
+Christophe
