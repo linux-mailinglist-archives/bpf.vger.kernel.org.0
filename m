@@ -2,152 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A3D52DCCDE
-	for <lists+bpf@lfdr.de>; Thu, 17 Dec 2020 08:17:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A510A2DCD12
+	for <lists+bpf@lfdr.de>; Thu, 17 Dec 2020 08:52:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726529AbgLQHRE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Dec 2020 02:17:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54418 "EHLO
+        id S1726547AbgLQHvq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Dec 2020 02:51:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbgLQHRE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Dec 2020 02:17:04 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4877EC061794;
-        Wed, 16 Dec 2020 23:16:24 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id m6so8729742pfm.6;
-        Wed, 16 Dec 2020 23:16:24 -0800 (PST)
+        with ESMTP id S1725988AbgLQHvq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Dec 2020 02:51:46 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 414ECC061794;
+        Wed, 16 Dec 2020 23:51:06 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id hk16so3635585pjb.4;
+        Wed, 16 Dec 2020 23:51:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jThrRAJfWnIe1Jvy0RWseTH8BCbAGXHskZcNtWSoEY8=;
-        b=AKZX7XiyNCqz95/QP6yKeWDHHwVJZoP4fdAFUfyWbkzd7QveokreSRF3DMN+hRaQjd
-         48y8wzTtK+CA+2T9vls6u5o0/4mBZWG/pMPAOQGnf0o1SYkmcMcazaBpqlFWs/64sm1D
-         i71U60FwCcCck8Zm/JGXyrHwYkVN24lXu9aPrslnjMkuQHt0wiZmatCDcQ+ON7I0TbXi
-         t6LS7hIp+yXkeGrM0KUS7BdexCqELCudusIHOdvJNP3SkB02/qSb7Yil+0k1ng3H6B0q
-         OIGRAotDH96wbU5CQmc+SiZAzPtF7H7oFjn+FYGA7ljFDguvOpvGlB0L/JmaSt8/fS+W
-         /l1A==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=nXdlH/w0rqJMvWwzhJtuxGzAMj6KbRyBWWhJY+HL26Q=;
+        b=C0Xggz8VVexAoZtduHhbFOez1Mw7Duev9wa2WCENO58rQAyxsz6knEQFDbfhIqqtkS
+         1vsEe3NDH+e99YvFBqW0AGDNAIq4jHjA3Tp07bwBVt9OIHZx/21OCc+90ooUnUHX4KJw
+         myVGCybw1XlaZJ8CMoAK4UjmA7PG86DSAGNKZmBgjMz84+JGIWbvsRCVPSXSVz/B1J8b
+         FQlHag8wK3q1Bp2Atmx33VAajrN9xawX1imqcdiqGqrN4dhV2F+ja2+YZTWF8ZSmbcE/
+         zO+14y7kTXOZlEoocbWl4cmpYMdiuC80jCU3rktU2m+TvbUmjB+Tb0W3faCLmyTszBMu
+         m+Ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jThrRAJfWnIe1Jvy0RWseTH8BCbAGXHskZcNtWSoEY8=;
-        b=MHHPJxY1zvU7ezWqLiA40aCekBvBLQa3JZtTUgDRX7FHH46HAEJF4aKoMknSbUuycx
-         mmp+19tK2su7ny3Degs+ou5Ysx1gvPhVV7sU3MUwmWRPoOKyVgVxdkMpe04ozjBVx90i
-         lg1+WXVbAvTp7YkIIWIplazClZT2pDeuoeH4vRfgTFMDIRVN31NfjoBBbVbzEssxAuTp
-         PULq1AcFQJVzmMx0wHVGdoxtVJGGvptHoRlI8mP6l8frLh988FnNKIJSFrisc8x8eUYh
-         own5zbuvW0N3lUVvxoVqcbczkuEf0b4aNI36pLKwEnNn59I6W7IYTgqYIo2enXwKXSNL
-         B8pw==
-X-Gm-Message-State: AOAM533WM0VR8ZGBMcFYmsqlis2T+L5V/OBuVLYp9USCRZYpE/1r3Okd
-        QVTwCYlO7IIaUFJieoLeJe0=
-X-Google-Smtp-Source: ABdhPJy0IxNiaGE7N8ISAO1rCfDDsnoYF78zwU9CkOd0uY0zlGWLcOK6vLaaUfbb9uUXDPVusgH1KQ==
-X-Received: by 2002:aa7:85d2:0:b029:1a2:73fe:5c28 with SMTP id z18-20020aa785d20000b02901a273fe5c28mr24083575pfn.40.1608189383768;
-        Wed, 16 Dec 2020 23:16:23 -0800 (PST)
-Received: from ast-mbp ([2620:10d:c090:400::5:5c8d])
-        by smtp.gmail.com with ESMTPSA id o9sm4148967pjw.9.2020.12.16.23.16.22
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=nXdlH/w0rqJMvWwzhJtuxGzAMj6KbRyBWWhJY+HL26Q=;
+        b=AnukvJ0pfwgPJc3XrTWo6j0yDODO/E3s+QhASLQ040TuySCyDWlhgXiSHRFaw5PUOA
+         wx6+Zc9lvUZpfZBI6VXGg1ACZxb20igJyD6pFHgUpqX6Ku8HOdNVabUquYH5DhfLF3xW
+         et3Jcyolyth+bapTnAQqLG2CNUSqaE6FSuuE8wLduSg/1wSkd/tnCRJUwPDrRz3VsCXC
+         i2x6Lc7JOqWtJkC2V9TS5+rsr6F3VyLnE8J+13y/e3lKV9W82ckKvxmVD5t99YOD1Pnl
+         60a5Ro+BUidVb/xaco4Em5W9vTvXtJ28QZGMBrYUiZx3EzCSSAccfQL+MwtqSy/7++j0
+         vgDA==
+X-Gm-Message-State: AOAM532HEowx4NaM3vxyw80y4CGn4+qMbh1leQShX0OuQ5Xve6EGwZJ3
+        Mx9vI2GWRUCKIBVkqFElcQ==
+X-Google-Smtp-Source: ABdhPJylqMaha43936xHqNHLVmCeiX7rb40fQceO0ZPVMeV/yCwUnDXXczZpa9CfcGLe9mA5Mrfw/Q==
+X-Received: by 2002:a17:90b:68e:: with SMTP id m14mr6827087pjz.228.1608191465881;
+        Wed, 16 Dec 2020 23:51:05 -0800 (PST)
+Received: from PWN (59-125-13-244.HINET-IP.hinet.net. [59.125.13.244])
+        by smtp.gmail.com with ESMTPSA id c6sm5151598pgl.38.2020.12.16.23.50.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Dec 2020 23:16:22 -0800 (PST)
-Date:   Wed, 16 Dec 2020 23:16:20 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alan Maguire <alan.maguire@oracle.com>,
-        Alexei Starovoitov <ast@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: one prog multi fentry. Was: [PATCH bpf-next] libbpf: support
- module BTF for BPF_TYPE_ID_TARGET CO-RE relocation
-Message-ID: <20201217071620.j3uehcshue3ug7fy@ast-mbp>
-References: <20201205025140.443115-1-andrii@kernel.org>
- <alpine.LRH.2.23.451.2012071623080.3652@localhost>
- <20201208031206.26mpjdbrvqljj7vl@ast-mbp>
- <CAEf4BzaXvFQzoYXbfutVn7A9ndQc9472SCK8Gj8R_Yj7=+rTcg@mail.gmail.com>
- <alpine.LRH.2.23.451.2012082202450.25628@localhost>
- <20201208233920.qgrluwoafckvq476@ast-mbp>
- <alpine.LRH.2.23.451.2012092308240.26400@localhost>
- <8d483a31-71a4-1d8c-6fc3-603233be545b@fb.com>
- <alpine.LRH.2.23.451.2012161457030.27611@localhost>
- <CAEf4BzZ0_iGqnzqz3qAEggdTRhXkddtdYRUgs0XxibUyA_KH3w@mail.gmail.com>
+        Wed, 16 Dec 2020 23:51:05 -0800 (PST)
+Date:   Thu, 17 Dec 2020 02:50:42 -0500
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>
+Cc:     ast@kernel.org, bpf@vger.kernel.org, daniel@iogearbox.net,
+        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
+        jonathan.lemon@gmail.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, magnus.karlsson@intel.com,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: memory leak in xskq_create
+Message-ID: <20201217075042.GA108200@PWN>
+References: <0000000000002aca2e05b659af04@google.com>
+ <20201216181135.GA94576@PWN>
+ <0a6cb67b-c24a-07e3-819b-820f3be9e3cd@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzZ0_iGqnzqz3qAEggdTRhXkddtdYRUgs0XxibUyA_KH3w@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0a6cb67b-c24a-07e3-819b-820f3be9e3cd@intel.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 02:27:23PM -0800, Andrii Nakryiko wrote:
+Hi Björn,
+
+On Thu, Dec 17, 2020 at 08:12:26AM +0100, Björn Töpel wrote:
+> On 2020-12-16 19:11, Peilin Ye wrote:
+> > I have tested the following diff locally against syzbot's reproducer,
+> > and sent a patch to it [1] for testing.  I will send a real patch here
+> > tomorrow if syzbot is happy about it.  Please see explanation below.
 > 
-> But this seems more "verifiable" and nicer to use, even though it
-> won't substituting an arbitrary btf_id and btf_obj (but that's sort of
-> a goal, I think):
+> Hi Peilin Ye!
 > 
-> skb = bpf_get_btf_arg(ctx, 1, bpf_core_type_id_kernel(skb));
+> Thanks for taking a look! Magnus has already addressed this problem in
+> another patch [1].
 
-yep. makes sense to me.
-Assuming that ctx has both:
-- BTF of the func and the helper will follow to arg's BTF at run-time
-  to check that it matches 3rd arg btf_id.
-- and the actual arg values as well. So that helper will return them.
+No problem!  Oops, I searched for "cfa88ddd0655afa88763" on LKML and
+didn't notice Magnus's patch.  I should have searched netdev too.
 
-> > - default mode where we trace function arguments for kprobe and return value
-> >   for kretprobe; that's covered by the above; and
-> > - a mode where the user specifies what they want. For example running
-> >
-> > $ ksnoop "ip_send_skb"
-> >
-> > ...is an example of default mode, this will trace entry/return and print
-> > arguments and return values, while
-> >
-> > $ ksnoop "ip_send_skb(skb)"
-> >
-> > ...will trace the skb argument only, and
-> >
-> > $ ksnoop "ip_send_skb(skb->sk)"
-> >
-> > ...will trace the skb->sk value.  The user-space side of the program
-> > matches the function/arg name and looks up the referenced type, setting it
-> > in the function's map.  For field references such as skb->sk, it also
-> > records offset and whether that offset is a pointer (as is the case for
-> > skb->sk) - in such cases we need to read the offset value via bpf_probe_read()
-> > and use it in bpf_snprintf_btf() along with the referenced type.  Only a
-> > single simple reference like the above is supported currently, but
-> > multiple levels of reference could be made to work too.
+Thanks,
+Peilin Ye
 
-Alan,
-
-I'm not sure why the last example is so different form the first two.
-I think ksnoop tool will generate the program on the fly, right?
-So it can generate normal LDX insn with CO-RE relocation (instead of bpf_probe_read)
-to access skb->sk. It can also add relo for that LDX to point to
-struct sk_buff's btf_id defined inside prog's BTF.
-The 'sk' offset inside bpf program and inside BTF can be anything: 0, 4, ...
-libbpf relocation logic will find the right offset in kernel's sk_buff.
-If ksnoop doesn't have an ability to parse vmlinux.h file or kernel's BTF
-it can 'cheat'.
-If the cmdline looks like:
-$ ksnoop "ip_send_skb(skb->sk)"
-It can generate BTF:
-struct sk_buff {
-   struct sock *sk;
-};
-
-If cmdline looks like:
-$ ksnoop "ip_send_skb(skb->sock)"
-It can generate BTF:
-struct sk_buff {
-   struct sock *sock;
-};
-Obviously there is no 'sock' field inside kernel's struct sk_buff, but tool
-doesn't need to care. It can let libbpf do the checking and match
-fields properly.
-
-> > into that a bit more if you don't mind because I think some form of
-> > user-space-specified BTF ids may be the easiest approach for more flexible
-> > generic tracing that covers more than function arguments.
-
-I think you're trying to figure out kernel's btf_ids in ksnoop tool.
-I suggest to leave that job to libbpf. Generate local BTFs in ksnoop
-with CO-RE relocs and let libbpf handle insn patching.
-No FDs to worry about from ksnoop side either.
