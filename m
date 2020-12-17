@@ -2,87 +2,229 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C01DB2DD1F5
-	for <lists+bpf@lfdr.de>; Thu, 17 Dec 2020 14:13:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D172A2DD335
+	for <lists+bpf@lfdr.de>; Thu, 17 Dec 2020 15:48:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726155AbgLQNNF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Dec 2020 08:13:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbgLQNNF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Dec 2020 08:13:05 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B6CC061794;
-        Thu, 17 Dec 2020 05:12:25 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id e2so20285821pgi.5;
-        Thu, 17 Dec 2020 05:12:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cjO4VbjqTSiJSfh7o6HTbmhfPolYnzmH+2qlwgnhTqw=;
-        b=gxnCOVNWi9imXkTxYIjwVGU5xF8sjdMZCE5U6lisgVWkM6+VpqRFZNvrxTxvfd0nJk
-         KdFGLjZau47dBfaqQoz/+kPl1pc3yLD16uDFa7HSZK045GKCUnEE3YLjgHB6QTOxJBs+
-         zePpCRLicUaeNTB1ZPXZvI3Lzb0xxECk13+txP6JgjkXvatf3KVqiKGDVnz+tm8IaiwW
-         3tK+k6f7k4zsFkULZUyOSW83M0sptFyAVrsJdH+KC1t2LxTCa6ZGb8ewCCBOcovEoFSE
-         04GWjE3h66Bp0ZRB32OSppswRIrIjaw4ARZZ5iM/XUaEx79OfNfvjNZPfLA16kPFhQGi
-         zDSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cjO4VbjqTSiJSfh7o6HTbmhfPolYnzmH+2qlwgnhTqw=;
-        b=ibfIxdm7u1vlLSzK4evhStDpYZq52ag2L6a9NnpOfhE1FWotWW8brI4ZkQajxZtZE1
-         ZCfDbnPrg7QNmz+PJr9DsnY7CAXTJTw+LrhiI+Wp7kKQFcJew5F2GX6ywT5HlOSEcJpS
-         XtccG67VPTxGDov5yWbwGHXlODE8cjTyqKWpYnqxkkLO7nCBHTSPcBQDqYkdu6zFXKTr
-         zRcQxCZq5rNadQNybIl3FkIPe5Jlz0V6GyVL3yP8dQoCqtcZDMLCRm09m/dOdAfvX+uf
-         jW5tEIcV4QgSMwHGlxQUkwsx/y7oKMJpm0LDzc+mqctMzajxhGhM8UlH7vgT0CjATGut
-         Z/5g==
-X-Gm-Message-State: AOAM531ZpJHd7oxOZLosopVhD94Q4JoQ3WdjVKuHYa61vkoV/p7AFpZD
-        KW/dCDSwkxZ6lAFhoR+HJ4mMN1dDWupPPQ==
-X-Google-Smtp-Source: ABdhPJzUzGaZpaIf966PsS0EDcKHKhjFzIge4SuX+biz4WlhPzmivEWM/Abp9tmEgcIA3TQG4BINCg==
-X-Received: by 2002:aa7:810a:0:b029:1a6:501b:19ed with SMTP id b10-20020aa7810a0000b02901a6501b19edmr15118104pfi.17.1608210744773;
-        Thu, 17 Dec 2020 05:12:24 -0800 (PST)
-Received: from [192.168.1.18] (i121-115-229-245.s42.a013.ap.plala.or.jp. [121.115.229.245])
-        by smtp.googlemail.com with ESMTPSA id r10sm1179381pgs.49.2020.12.17.05.12.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Dec 2020 05:12:23 -0800 (PST)
-Subject: Re: [PATCH bpf-next 2/2] net: xdp: introduce xdp_build_skb_from_frame
- utility routine
-To:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, brouer@redhat.com,
-        lorenzo.bianconi@redhat.com
-References: <cover.1608142960.git.lorenzo@kernel.org>
- <9d24e4c90c91aa2d9de413ee38adc4e8e44fc81a.1608142960.git.lorenzo@kernel.org>
-From:   Toshiaki Makita <toshiaki.makita1@gmail.com>
-Message-ID: <434e65f4-0b29-3bfb-b5d3-7eebcdd791db@gmail.com>
-Date:   Thu, 17 Dec 2020 22:12:18 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S1726533AbgLQOsg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Dec 2020 09:48:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23909 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726291AbgLQOsf (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 17 Dec 2020 09:48:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608216428;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9dIgUyuEcjJkPwiD61XKrH42CdrbPPDWnkmKtHwrOL4=;
+        b=YhpuSTQjBIyRDSJ8Xh24xY3BV5YXxq+OEIb88xby/rDa5HTZl56ZH6IyumW2czBUBqkmRl
+        AyNKKbS6pVX9RdEodxmmZa5Ke2mppxmNY1qlS2s90/GDfgk88Wn1Uly8O4xP4PCTz9+0JP
+        KlpROsRsx3IifO82ElvTowSb1B+2ufE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-363-AVE7hUvePDCP6czJlEGH0Q-1; Thu, 17 Dec 2020 09:47:06 -0500
+X-MC-Unique: AVE7hUvePDCP6czJlEGH0Q-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1FB8551B6;
+        Thu, 17 Dec 2020 14:47:04 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.6])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9A82E5D9E3;
+        Thu, 17 Dec 2020 14:46:56 +0000 (UTC)
+Date:   Thu, 17 Dec 2020 15:46:55 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
+        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
+        colrack@gmail.com, brouer@redhat.com
+Subject: Re: [PATCH bpf-next V8 5/8] bpf: drop MTU check when doing TC-BPF
+ redirect to ingress
+Message-ID: <20201217154655.42e89d08@carbon>
+In-Reply-To: <af28e4e7-8089-b252-3927-a962b98ad7b8@iogearbox.net>
+References: <160650034591.2890576.1092952641487480652.stgit@firesoul>
+        <160650040292.2890576.17040975200628427127.stgit@firesoul>
+        <af28e4e7-8089-b252-3927-a962b98ad7b8@iogearbox.net>
 MIME-Version: 1.0
-In-Reply-To: <9d24e4c90c91aa2d9de413ee38adc4e8e44fc81a.1608142960.git.lorenzo@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2020/12/17 3:38, Lorenzo Bianconi wrote:
-> Introduce xdp_build_skb_from_frame utility routine to build the skb
-> from xdp_frame. Respect to __xdp_build_skb_from_frame,
-> xdp_build_skb_from_frame will allocate the skb object. Rely on
-> xdp_build_skb_from_frame in veth driver.
+On Thu, 3 Dec 2020 00:43:36 +0100
+Daniel Borkmann <daniel@iogearbox.net> wrote:
+
+> On 11/27/20 7:06 PM, Jesper Dangaard Brouer wrote:
+> > The use-case for dropping the MTU check when TC-BPF does redirect to
+> > ingress, is described by Eyal Birger in email[0]. The summary is the
+> > ability to increase packet size (e.g. with IPv6 headers for NAT64) and
+> > ingress redirect packet and let normal netstack fragment packet as needed.
+> > 
+> > [0] https://lore.kernel.org/netdev/CAHsH6Gug-hsLGHQ6N0wtixdOa85LDZ3HNRHVd0opR=19Qo4W4Q@mail.gmail.com/
+> > 
+> > V4:
+> >   - Keep net_device "up" (IFF_UP) check.
+> >   - Adjustment to handle bpf_redirect_peer() helper
+> > 
+> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> > ---
+> >   include/linux/netdevice.h |   31 +++++++++++++++++++++++++++++--
+> >   net/core/dev.c            |   19 ++-----------------
+> >   net/core/filter.c         |   14 +++++++++++---
+> >   3 files changed, 42 insertions(+), 22 deletions(-)
+> > 
+> > diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> > index 7ce648a564f7..4a854e09e918 100644
+> > --- a/include/linux/netdevice.h
+> > +++ b/include/linux/netdevice.h
+> > @@ -3917,11 +3917,38 @@ int dev_forward_skb(struct net_device *dev, struct sk_buff *skb);
+> >   bool is_skb_forwardable(const struct net_device *dev,
+> >   			const struct sk_buff *skb);
+> >   
+> > +static __always_inline bool __is_skb_forwardable(const struct net_device *dev,
+> > +						 const struct sk_buff *skb,
+> > +						 const bool check_mtu)
+> > +{
+> > +	const u32 vlan_hdr_len = 4; /* VLAN_HLEN */
+> > +	unsigned int len;
+> > +
+> > +	if (!(dev->flags & IFF_UP))
+> > +		return false;
+> > +
+> > +	if (!check_mtu)
+> > +		return true;
+> > +
+> > +	len = dev->mtu + dev->hard_header_len + vlan_hdr_len;
+> > +	if (skb->len <= len)
+> > +		return true;
+> > +
+> > +	/* if TSO is enabled, we don't care about the length as the packet
+> > +	 * could be forwarded without being segmented before
+> > +	 */
+> > +	if (skb_is_gso(skb))
+> > +		return true;
+> > +
+> > +	return false;
+> > +}
+> > +
+> >   static __always_inline int ____dev_forward_skb(struct net_device *dev,
+> > -					       struct sk_buff *skb)
+> > +					       struct sk_buff *skb,
+> > +					       const bool check_mtu)
+> >   {
+> >   	if (skb_orphan_frags(skb, GFP_ATOMIC) ||
+> > -	    unlikely(!is_skb_forwardable(dev, skb))) {
+> > +	    unlikely(!__is_skb_forwardable(dev, skb, check_mtu))) {
+> >   		atomic_long_inc(&dev->rx_dropped);
+> >   		kfree_skb(skb);
+> >   		return NET_RX_DROP;
+> > diff --git a/net/core/dev.c b/net/core/dev.c
+> > index 60d325bda0d7..6ceb6412ee97 100644
+> > --- a/net/core/dev.c
+> > +++ b/net/core/dev.c
+> > @@ -2189,28 +2189,13 @@ static inline void net_timestamp_set(struct sk_buff *skb)
+> >   
+> >   bool is_skb_forwardable(const struct net_device *dev, const struct sk_buff *skb)
+> >   {
+> > -	unsigned int len;
+> > -
+> > -	if (!(dev->flags & IFF_UP))
+> > -		return false;
+> > -
+> > -	len = dev->mtu + dev->hard_header_len + VLAN_HLEN;
+> > -	if (skb->len <= len)
+> > -		return true;
+> > -
+> > -	/* if TSO is enabled, we don't care about the length as the packet
+> > -	 * could be forwarded without being segmented before
+> > -	 */
+> > -	if (skb_is_gso(skb))
+> > -		return true;
+> > -
+> > -	return false;
+> > +	return __is_skb_forwardable(dev, skb, true);
+> >   }
+> >   EXPORT_SYMBOL_GPL(is_skb_forwardable);  
 > 
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> Only user of is_skb_forwardable() that is left after this patch is bridge, maybe
+> the whole thing should be moved into the header?
 
-Thanks.
-It seems you added missing metadata support in veth_xdp_rcv_one()?
-It might be better to note that in the commitlog.
+Well, yes, maybe... I just felt it belongs in another patchset.
 
-The code looks fine to me.
 
-Reviewed-by: Toshiaki Makita <toshiaki.makita1@gmail.com>
+> >   int __dev_forward_skb(struct net_device *dev, struct sk_buff *skb)
+> >   {
+> > -	int ret = ____dev_forward_skb(dev, skb);
+> > +	int ret = ____dev_forward_skb(dev, skb, true);
+> >   
+> >   	if (likely(!ret)) {
+> >   		skb->protocol = eth_type_trans(skb, dev);
+> > diff --git a/net/core/filter.c b/net/core/filter.c
+> > index d6125cfc49c3..4673afe59533 100644
+> > --- a/net/core/filter.c
+> > +++ b/net/core/filter.c
+> > @@ -2083,13 +2083,21 @@ static const struct bpf_func_proto bpf_csum_level_proto = {
+> >   
+> >   static inline int __bpf_rx_skb(struct net_device *dev, struct sk_buff *skb)
+> >   {
+> > -	return dev_forward_skb(dev, skb);
+> > +	int ret = ____dev_forward_skb(dev, skb, false);
+> > +
+> > +	if (likely(!ret)) {
+> > +		skb->protocol = eth_type_trans(skb, dev);
+> > +		skb_postpull_rcsum(skb, eth_hdr(skb), ETH_HLEN);
+> > +		ret = netif_rx(skb);  
+> 
+> Why netif_rx() and not netif_rx_internal() as in dev_forward_skb() originally?
+> One extra call otherwise.
+
+This is because the function below calls netif_rx(), which is just
+outside patch-diff-window.  Thus, it looked wrong/strange to call
+netif_rx_internal(), but sure I can use netif_rx_internal() instead.
+
+> 
+> > +	}
+> > +
+> > +	return ret;
+> >   }
+> >   
+> >   static inline int __bpf_rx_skb_no_mac(struct net_device *dev,
+> >   				      struct sk_buff *skb)
+> >   {
+> > -	int ret = ____dev_forward_skb(dev, skb);
+> > +	int ret = ____dev_forward_skb(dev, skb, false);
+> >   
+> >   	if (likely(!ret)) {
+> >   		skb->dev = dev;
+> > @@ -2480,7 +2488,7 @@ int skb_do_redirect(struct sk_buff *skb)
+> >   			goto out_drop;
+> >   		dev = ops->ndo_get_peer_dev(dev);
+> >   		if (unlikely(!dev ||
+> > -			     !is_skb_forwardable(dev, skb) ||
+> > +			     !__is_skb_forwardable(dev, skb, false) ||  
+> 
+> If we only use __is_skb_forwardable() with false directly here, maybe then
+> lets just have the !(dev->flags & IFF_UP) test here instead..
+
+Sure, let do that.
+
+> >   			     net_eq(net, dev_net(dev))))
+> >   			goto out_drop;
+> >   		skb->dev = dev;
+> > 
+
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
