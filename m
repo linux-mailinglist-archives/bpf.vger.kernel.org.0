@@ -2,87 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A172DDAA9
-	for <lists+bpf@lfdr.de>; Thu, 17 Dec 2020 22:16:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D412DDB10
+	for <lists+bpf@lfdr.de>; Thu, 17 Dec 2020 22:54:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728356AbgLQVPH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Dec 2020 16:15:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730768AbgLQVPG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Dec 2020 16:15:06 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C57C0617A7;
-        Thu, 17 Dec 2020 13:14:26 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id t22so189181pfl.3;
-        Thu, 17 Dec 2020 13:14:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=X8jlvHg6Q7y3xiJzuJA/KXnJAwu4vh56DFFNSdAhHgo=;
-        b=YmyKXAbxl+EEI5A3fL92uUTNa56/jhxrj7Pew7YWXtxSVlJG7oTStecsPLNoi+y4de
-         dlNm1WjjVjIWMl/jA5DzBssSz7mUBMPA4qk0tWxaF15VTMCrUA424xRyt7XmFXNbUyUa
-         5s+8FTnZ+FQR1w4jxBkddsaZU89RlF66JY3PC/4ooaZPVtXZinztM7Qk+sdTKbsDMw2D
-         qKQivk+rYS2h56X1k6sP9CQ0MEIZTbChU07WCG9h7i/9YBI0XWKgQitWTQnG8rlNdrXr
-         uKk9Alx6ZUrFfhQ1peEzipgsssfguMtj2A7DKfE2j/k5eDbnhh7KZT/08XoqJeFrAOcZ
-         q0Ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=X8jlvHg6Q7y3xiJzuJA/KXnJAwu4vh56DFFNSdAhHgo=;
-        b=uNhQWarZxkQdswF/ORNI52XVSSYO5zgouup74JvvOa2h6f8Z31CdXPICm5Wj62/Xzk
-         cuQt9hdIj9w63n4cez3cEw9bHq36yVycUVF7nkg8hkRUyBc3HO3YMZIq/twaxl69HwXo
-         U2hum5hfbuDutMPHG9pFH5le/IjmMASuguWm34ZYR0XyUdzViANmq14yNN5vrTMODpEf
-         w6oxk4DJ29Fjtjy3FgoYXMsM83heiajsWwhXpNm2uF+varjTqT+VWKMcq6s3jD0qID83
-         0YGLlRLu8uRlZONRUdFthohxUaejEGBmefz2UORCszPBVb8H0CrbY4Rn+1WJ5qPdqfF+
-         1GLA==
-X-Gm-Message-State: AOAM531vuPdkDNDzNFXw9p+GmK5JjlzW4xsubSu+62rVzisetjj8rY2N
-        lT/KCMKTXze+NX1goM984jrw96ElOrwvz5cmUEo=
-X-Google-Smtp-Source: ABdhPJx+A+AZ+b8PrqUGvgQInAugU+o3zKmkIfQWobkx7kkfdwFVsyyGf8bnipMaXTVWN+mZz5aRr/diBK1fYTtlKq4=
-X-Received: by 2002:a63:e109:: with SMTP id z9mr1137578pgh.5.1608239666081;
- Thu, 17 Dec 2020 13:14:26 -0800 (PST)
+        id S1731899AbgLQVwV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Dec 2020 16:52:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34934 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731896AbgLQVwV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Dec 2020 16:52:21 -0500
+Content-Type: text/plain; charset="utf-8"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1608241900;
+        bh=EFmsj5MotFmgfBv5iky15f0a26zMN/tUOZ39knmVtxg=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=IrZxBpssw8KnTn1E8777xfJf/tTb+BE9msq/lC2EAsVEkTIpuWghdE6KhPs93V4t4
+         avMLbb1QO+YrIw1yD2xvwwW5UOMDck5PT2zzoYvjCFct/40Tdv/RYmPoYcZLH08wZ7
+         NcEWR1dXrzUNOXqMzEcD/iq7sfYuhAj70kbgt3xcAOUz2i5SkkIhE52z8U3NnG/m7U
+         MA0S16+39P7bnSAVl8r8azzPIgC3ivmvXR4MtMA6TXtpOV1lueIRs9ZaJbedVhEmtX
+         SU8bn4+ksP9VarcZrpICKlsDrrqJb5vBYA6XqvYHBhFR7X24B4HLoFYdkoOt+JGB1h
+         RN1f8a2T+sbFQ==
 MIME-Version: 1.0
-References: <20201214201118.148126-1-xiyou.wangcong@gmail.com>
- <20201214201118.148126-3-xiyou.wangcong@gmail.com> <CAEf4BzZa15kMT+xEO9ZBmS-1=E85+k02zeddx+a_N_9+MOLhkQ@mail.gmail.com>
- <CAM_iQpVR_owLgZp1tYJyfWco-s4ov_ytL6iisg3NmtyPBdbO2Q@mail.gmail.com>
- <CAEf4BzbyHHDrECCEjrSC3A5X39qb_WZaU_3_qNONP+vHAcUzuQ@mail.gmail.com>
- <CAM_iQpVBPRJ+t3HPryh-1eKxV-=2CmxW9T3OyO6-_sQVLskQVQ@mail.gmail.com>
- <CAEf4BzY4fdGieUbuAc4ttzfavBeGtE2a0rDmVfqpmZ6h6_dHiQ@mail.gmail.com> <CAM_iQpVsR=K344msuREEmidwXOeeZ=tdj4zpkrSX5yXz6VhijA@mail.gmail.com>
-In-Reply-To: <CAM_iQpVsR=K344msuREEmidwXOeeZ=tdj4zpkrSX5yXz6VhijA@mail.gmail.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Thu, 17 Dec 2020 13:14:14 -0800
-Message-ID: <CAM_iQpXOts4YFsfaZYKiL-8u=v=0_vQ+DjML8g_JD0jPfz9kpw@mail.gmail.com>
-Subject: Re: [Patch bpf-next v2 2/5] bpf: introduce timeout map
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dongdong Wang <wangdongdong.6@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf] xsk: fix memory leak for failed bind
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <160824190054.27821.1116135617027194862.git-patchwork-notify@kernel.org>
+Date:   Thu, 17 Dec 2020 21:51:40 +0000
+References: <20201214085127.3960-1-magnus.karlsson@gmail.com>
+In-Reply-To: <20201214085127.3960-1-magnus.karlsson@gmail.com>
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+Cc:     magnus.karlsson@intel.com, bjorn.topel@intel.com, ast@kernel.org,
+        daniel@iogearbox.net, netdev@vger.kernel.org,
+        jonathan.lemon@gmail.com, bpf@vger.kernel.org,
+        syzbot+cfa88ddd0655afa88763@syzkaller.appspotmail.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 10:29 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
->
-> On Wed, Dec 16, 2020 at 10:35 AM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> > Minimize duplication of the code, no one said copy/paste all the code.
-> > But memory bloat is a real problem and should be justification enough
-> > to at least consider other options.
->
-> Sure, I have no problem with this. The question is how do we balance?
-> Is rewriting 200 lines of code to save 8 bytes of each entry acceptable?
-> What about rewriting 2000 lines of code? Do people prefer to review 200
-> or 2000 (or whatever number) lines of code? Or people just want a
-> minimal change for easier reviews?
+Hello:
 
-No worry any more. I manage to find some way to reuse the existing
-members, that is lru_node. So the end result is putting gc stuff into
-the union with lru_node without increasing the size of htab_elem.
-And of course, without duplicating/refactoring regular htab code.
+This patch was applied to bpf/bpf.git (refs/heads/master):
 
-Thanks.
+On Mon, 14 Dec 2020 09:51:27 +0100 you wrote:
+> From: Magnus Karlsson <magnus.karlsson@intel.com>
+> 
+> Fix a possible memory leak when a bind of an AF_XDP socket fails. When
+> the fill and completion rings are created, they are tied to the
+> socket. But when the buffer pool is later created at bind time, the
+> ownership of these two rings are transferred to the buffer pool as
+> they might be shared between sockets (and the buffer pool cannot be
+> created until we know what we are binding to). So, before the buffer
+> pool is created, these two rings are cleaned up with the socket, and
+> after they have been transferred they are cleaned up together with
+> the buffer pool.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf] xsk: fix memory leak for failed bind
+    https://git.kernel.org/bpf/bpf/c/8bee68338408
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
