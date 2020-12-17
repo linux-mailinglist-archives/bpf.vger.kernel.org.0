@@ -2,487 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56F6F2DD634
-	for <lists+bpf@lfdr.de>; Thu, 17 Dec 2020 18:30:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A75E2DD68C
+	for <lists+bpf@lfdr.de>; Thu, 17 Dec 2020 18:49:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729160AbgLQR2d (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Dec 2020 12:28:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58883 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729996AbgLQR2b (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 17 Dec 2020 12:28:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608226023;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=syTvU0jrp0ayBwL6zMDhSOwpXyqcnTrTsriNHwa1rMo=;
-        b=E9JjvYLoLj1akDnbsd2pwN+jCmtvOQUn/7/9jUZG6tDatn3QMlLJf8cU6h2jjWu/+d9zmV
-        gVIZfYfQye2tL6wGJ4D1zQAyIkoXnDshPsDY/7KmDt6vfaExU7Y3Ro2RxXIrGDvfFgLDL0
-        rO6dcf5fT7P/lMpRQhaG6HInPElwnac=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-175-AS0V1oIUNmqur6DBrWl4Jg-1; Thu, 17 Dec 2020 12:26:58 -0500
-X-MC-Unique: AS0V1oIUNmqur6DBrWl4Jg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D733318C8C3B;
-        Thu, 17 Dec 2020 17:26:55 +0000 (UTC)
-Received: from firesoul.localdomain (unknown [10.40.208.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DDE2F60D01;
-        Thu, 17 Dec 2020 17:26:51 +0000 (UTC)
-Received: from [192.168.42.3] (localhost [IPv6:::1])
-        by firesoul.localdomain (Postfix) with ESMTP id F1B2D32138454;
-        Thu, 17 Dec 2020 18:26:50 +0100 (CET)
-Subject: [PATCH bpf-next V9 7/7] bpf/selftests: tests using bpf_check_mtu
- BPF-helper
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
-        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
-        colrack@gmail.com
-Date:   Thu, 17 Dec 2020 18:26:50 +0100
-Message-ID: <160822601093.3481451.9135115478358953965.stgit@firesoul>
-In-Reply-To: <160822594178.3481451.1208057539613401103.stgit@firesoul>
-References: <160822594178.3481451.1208057539613401103.stgit@firesoul>
-User-Agent: StGit/0.19
+        id S1729323AbgLQRrr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Dec 2020 12:47:47 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:46554 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729070AbgLQRrr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Dec 2020 12:47:47 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BHHhlmO045183;
+        Thu, 17 Dec 2020 17:46:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : in-reply-to : message-id : references : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=y5K/Vi8tmH6Yvp7BKtFvQ4m8kTjmzRYG7lDR6yEjfa4=;
+ b=iF8jDv6jOUayqFrGTT5P3bHpaOZOseFOSz8AspwirVpPbjCGp5dxxr/3lLicyCrS3nGw
+ p3mNNTufRyUa+UzT1tq258zuVZj9g/3AWS2FfhDUzyMYSgY6vz6/Qxx9Rs6pMuoMAK5P
+ wXEQNIK708mnNezL6ZoZbQ9x1DskDag0UKIGfIZrx/yVu7nA1behplX+uPLwa9OtTzoM
+ CI3iLvh6im7F4lBv7AZN+eK3wJHOXIHXsBCej0cTZXQUOoHftqpfhAf6Ita7UXiBLKY6
+ g1sKSNzapZgdVQBCDzOAkm+OZKBkoNGBdY9CxRZLqp4SwpX9Lb5A+DWYMNYuWuIfdiJh Ng== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 35cntmemj4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 17 Dec 2020 17:46:50 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0BHHjI5t010479;
+        Thu, 17 Dec 2020 17:46:50 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 35g3reyq73-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 17 Dec 2020 17:46:50 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0BHHkmhT003567;
+        Thu, 17 Dec 2020 17:46:48 GMT
+Received: from dhcp-10-175-174-14.vpn.oracle.com (/10.175.174.14)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 17 Dec 2020 09:46:48 -0800
+Date:   Thu, 17 Dec 2020 17:46:42 +0000 (GMT)
+From:   Alan Maguire <alan.maguire@oracle.com>
+X-X-Sender: alan@localhost
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Alexei Starovoitov <ast@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: one prog multi fentry. Was: [PATCH bpf-next] libbpf: support
+ module BTF for BPF_TYPE_ID_TARGET CO-RE relocation
+In-Reply-To: <20201217071620.j3uehcshue3ug7fy@ast-mbp>
+Message-ID: <alpine.LRH.2.23.451.2012171732410.2929@localhost>
+References: <20201205025140.443115-1-andrii@kernel.org> <alpine.LRH.2.23.451.2012071623080.3652@localhost> <20201208031206.26mpjdbrvqljj7vl@ast-mbp> <CAEf4BzaXvFQzoYXbfutVn7A9ndQc9472SCK8Gj8R_Yj7=+rTcg@mail.gmail.com> <alpine.LRH.2.23.451.2012082202450.25628@localhost>
+ <20201208233920.qgrluwoafckvq476@ast-mbp> <alpine.LRH.2.23.451.2012092308240.26400@localhost> <8d483a31-71a4-1d8c-6fc3-603233be545b@fb.com> <alpine.LRH.2.23.451.2012161457030.27611@localhost> <CAEf4BzZ0_iGqnzqz3qAEggdTRhXkddtdYRUgs0XxibUyA_KH3w@mail.gmail.com>
+ <20201217071620.j3uehcshue3ug7fy@ast-mbp>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=US-ASCII
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9838 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 malwarescore=0
+ spamscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012170122
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9838 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 mlxscore=0
+ lowpriorityscore=0 spamscore=0 adultscore=0 malwarescore=0 suspectscore=0
+ mlxlogscore=999 impostorscore=0 priorityscore=1501 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2012170122
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding selftest for BPF-helper bpf_check_mtu(). Making sure
-it can be used from both XDP and TC.
-
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
----
- tools/testing/selftests/bpf/prog_tests/check_mtu.c |  204 ++++++++++++++++++++
- tools/testing/selftests/bpf/progs/test_check_mtu.c |  196 +++++++++++++++++++
- 2 files changed, 400 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/check_mtu.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_check_mtu.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/check_mtu.c b/tools/testing/selftests/bpf/prog_tests/check_mtu.c
-new file mode 100644
-index 000000000000..b5d0c3a9abe8
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/check_mtu.c
-@@ -0,0 +1,204 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Jesper Dangaard Brouer */
-+
-+#include <linux/if_link.h> /* before test_progs.h, avoid bpf_util.h redefines */
-+
-+#include <test_progs.h>
-+#include "test_check_mtu.skel.h"
-+#include <network_helpers.h>
-+
-+#include <stdlib.h>
-+#include <inttypes.h>
-+
-+#define IFINDEX_LO 1
-+
-+static __u32 duration; /* Hint: needed for CHECK macro */
-+
-+static int read_mtu_device_lo(void)
-+{
-+	const char *filename = "/sys/devices/virtual/net/lo/mtu";
-+	char buf[11] = {};
-+	int value;
-+	int fd;
-+
-+	fd = open(filename, 0, O_RDONLY);
-+	if (fd == -1)
-+		return -1;
-+
-+	if (read(fd, buf, sizeof(buf)) == -1)
-+		return -2;
-+	close(fd);
-+
-+	value = strtoimax(buf, NULL, 10);
-+	if (errno == ERANGE)
-+		return -3;
-+
-+	return value;
-+}
-+
-+static void test_check_mtu_xdp_attach(struct bpf_program *prog)
-+{
-+	int err = 0;
-+	int fd;
-+
-+	fd = bpf_program__fd(prog);
-+	err = bpf_set_link_xdp_fd(IFINDEX_LO, fd, XDP_FLAGS_SKB_MODE);
-+	if (CHECK(err, "XDP-attach", "failed"))
-+		return;
-+
-+	bpf_set_link_xdp_fd(IFINDEX_LO, -1, 0);
-+}
-+
-+static void test_check_mtu_run_xdp(struct test_check_mtu *skel,
-+				   struct bpf_program *prog,
-+				   __u32 mtu_expect)
-+{
-+	const char *prog_name = bpf_program__name(prog);
-+	int retval_expect = XDP_PASS;
-+	__u32 mtu_result = 0;
-+	char buf[256];
-+	int err;
-+
-+	struct bpf_prog_test_run_attr tattr = {
-+		.repeat = 1,
-+		.data_in = &pkt_v4,
-+		.data_size_in = sizeof(pkt_v4),
-+		.data_out = buf,
-+		.data_size_out = sizeof(buf),
-+		.prog_fd = bpf_program__fd(prog),
-+	};
-+
-+	memset(buf, 0, sizeof(buf));
-+
-+	err = bpf_prog_test_run_xattr(&tattr);
-+	CHECK_ATTR(err != 0 || errno != 0, "bpf_prog_test_run",
-+		   "prog_name:%s (err %d errno %d retval %d)\n",
-+		   prog_name, err, errno, tattr.retval);
-+
-+        CHECK(tattr.retval != retval_expect, "retval",
-+	      "progname:%s unexpected retval=%d expected=%d\n",
-+	      prog_name, tattr.retval, retval_expect);
-+
-+	/* Extract MTU that BPF-prog got */
-+	mtu_result = skel->bss->global_bpf_mtu_xdp;
-+	CHECK(mtu_result != mtu_expect, "MTU-compare-user",
-+	      "failed (MTU user:%d bpf:%d)", mtu_expect, mtu_result);
-+}
-+
-+static void test_check_mtu_xdp(__u32 mtu, __u32 ifindex)
-+{
-+	struct test_check_mtu *skel;
-+	int err;
-+
-+	skel = test_check_mtu__open();
-+	if (CHECK(!skel, "skel_open", "failed"))
-+		return;
-+
-+	/* Update "constants" in BPF-prog *BEFORE* libbpf load */
-+	skel->rodata->GLOBAL_USER_MTU = mtu;
-+	skel->rodata->GLOBAL_USER_IFINDEX = ifindex;
-+
-+	err = test_check_mtu__load(skel);
-+	if (CHECK(err, "skel_load", "failed: %d\n", err))
-+		goto cleanup;
-+
-+	test_check_mtu_run_xdp(skel, skel->progs.xdp_use_helper, mtu);
-+	test_check_mtu_run_xdp(skel, skel->progs.xdp_exceed_mtu, mtu);
-+	test_check_mtu_run_xdp(skel, skel->progs.xdp_minus_delta, mtu);
-+
-+cleanup:
-+	test_check_mtu__destroy(skel);
-+}
-+
-+static void test_check_mtu_run_tc(struct test_check_mtu *skel,
-+				  struct bpf_program *prog,
-+				  __u32 mtu_expect)
-+{
-+	const char *prog_name = bpf_program__name(prog);
-+	int retval_expect = BPF_OK;
-+	__u32 mtu_result = 0;
-+	char buf[256];
-+	int err;
-+
-+	struct bpf_prog_test_run_attr tattr = {
-+		.repeat = 1,
-+		.data_in = &pkt_v4,
-+		.data_size_in = sizeof(pkt_v4),
-+		.data_out = buf,
-+		.data_size_out = sizeof(buf),
-+		.prog_fd = bpf_program__fd(prog),
-+	};
-+
-+	memset(buf, 0, sizeof(buf));
-+
-+	err = bpf_prog_test_run_xattr(&tattr);
-+	CHECK_ATTR(err != 0 || errno != 0, "bpf_prog_test_run",
-+		   "prog_name:%s (err %d errno %d retval %d)\n",
-+		   prog_name, err, errno, tattr.retval);
-+
-+        CHECK(tattr.retval != retval_expect, "retval",
-+	      "progname:%s unexpected retval=%d expected=%d\n",
-+	      prog_name, tattr.retval, retval_expect);
-+
-+	/* Extract MTU that BPF-prog got */
-+	mtu_result = skel->bss->global_bpf_mtu_tc;
-+	CHECK(mtu_result != mtu_expect, "MTU-compare-user",
-+	      "failed (MTU user:%d bpf:%d)", mtu_expect, mtu_result);
-+}
-+
-+
-+static void test_check_mtu_tc(__u32 mtu, __u32 ifindex)
-+{
-+	struct test_check_mtu *skel;
-+	int err;
-+
-+	skel = test_check_mtu__open();
-+	if (CHECK(!skel, "skel_open", "failed"))
-+		return;
-+
-+	/* Update "constants" in BPF-prog *BEFORE* libbpf load */
-+	skel->rodata->GLOBAL_USER_MTU = mtu;
-+	skel->rodata->GLOBAL_USER_IFINDEX = ifindex;
-+
-+	err = test_check_mtu__load(skel);
-+	if (CHECK(err, "skel_load", "failed: %d\n", err))
-+		goto cleanup;
-+
-+	test_check_mtu_run_tc(skel, skel->progs.tc_use_helper, mtu);
-+	test_check_mtu_run_tc(skel, skel->progs.tc_exceed_mtu, mtu);
-+	test_check_mtu_run_tc(skel, skel->progs.tc_exceed_mtu_da, mtu);
-+	test_check_mtu_run_tc(skel, skel->progs.tc_minus_delta, mtu);
-+cleanup:
-+	test_check_mtu__destroy(skel);
-+}
-+
-+void test_check_mtu(void)
-+{
-+	struct test_check_mtu *skel;
-+	__u32 mtu_lo;
-+
-+	skel = test_check_mtu__open_and_load();
-+	if (CHECK(!skel, "open and load skel", "failed"))
-+		return; /* Exit if e.g. helper unknown to kernel */
-+
-+	if (test__start_subtest("bpf_check_mtu XDP-attach"))
-+		test_check_mtu_xdp_attach(skel->progs.xdp_use_helper_basic);
-+
-+	test_check_mtu__destroy(skel);
-+
-+	mtu_lo = read_mtu_device_lo();
-+	if (CHECK(mtu_lo < 0, "reading MTU value", "failed (err:%d)", mtu_lo))
-+		return;
-+
-+	if (test__start_subtest("bpf_check_mtu XDP-run"))
-+		test_check_mtu_xdp(mtu_lo, 0);
-+
-+	if (test__start_subtest("bpf_check_mtu XDP-run ifindex-lookup"))
-+		test_check_mtu_xdp(mtu_lo, IFINDEX_LO);
-+
-+	if (test__start_subtest("bpf_check_mtu TC-run"))
-+		test_check_mtu_tc(mtu_lo, 0);
-+
-+	if (test__start_subtest("bpf_check_mtu TC-run ifindex-lookup"))
-+		test_check_mtu_tc(mtu_lo, IFINDEX_LO);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_check_mtu.c b/tools/testing/selftests/bpf/progs/test_check_mtu.c
-new file mode 100644
-index 000000000000..91a026b8d458
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_check_mtu.c
-@@ -0,0 +1,196 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Jesper Dangaard Brouer */
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <linux/if_ether.h>
-+
-+#include <stddef.h>
-+#include <stdint.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+/* Userspace will update with MTU it can see on device */
-+static volatile const int GLOBAL_USER_MTU;
-+static volatile const __u32 GLOBAL_USER_IFINDEX;
-+
-+/* BPF-prog will update these with MTU values it can see */
-+__u32 global_bpf_mtu_xdp = 0;
-+__u32 global_bpf_mtu_tc  = 0;
-+
-+SEC("xdp")
-+int xdp_use_helper_basic(struct xdp_md *ctx)
-+{
-+	__u32 mtu_len = 0;
-+
-+	if (bpf_check_mtu(ctx, 0, &mtu_len, 0, 0))
-+		return XDP_ABORTED;
-+
-+	return XDP_PASS;
-+}
-+
-+SEC("xdp")
-+int xdp_use_helper(struct xdp_md *ctx)
-+{
-+	int retval = XDP_PASS; /* Expected retval on successful test */
-+	__u32 mtu_len = 0;
-+	__u32 ifindex = 0;
-+	int delta = 0;
-+
-+	/* When ifindex is zero, save net_device lookup and use ctx netdev */
-+	if (GLOBAL_USER_IFINDEX > 0)
-+		ifindex = GLOBAL_USER_IFINDEX;
-+
-+	if (bpf_check_mtu(ctx, ifindex, &mtu_len, delta, 0)) {
-+		/* mtu_len is also valid when check fail */
-+		retval = XDP_ABORTED;
-+		goto out;
-+	}
-+
-+	if (GLOBAL_USER_MTU != mtu_len)
-+		retval = XDP_DROP;
-+
-+out:
-+	global_bpf_mtu_xdp = mtu_len;
-+	return retval;
-+}
-+
-+SEC("xdp")
-+int xdp_exceed_mtu(struct xdp_md *ctx)
-+{
-+	void *data_end = (void *)(long)ctx->data_end;
-+	void *data = (void *)(long)ctx->data;
-+	__u32 ifindex = GLOBAL_USER_IFINDEX;
-+	__u32 data_len = data_end - data;
-+	int retval = XDP_ABORTED; /* Fail */
-+	__u32 mtu_len = 0;
-+
-+	int delta;
-+	int err;
-+
-+	/* Exceed MTU with 1 via delta adjust */
-+	delta = GLOBAL_USER_MTU - (data_len - ETH_HLEN) + 1;
-+
-+	if ((err = bpf_check_mtu(ctx, ifindex, &mtu_len, delta, 0))) {
-+		retval = XDP_PASS; /* Success in exceeding MTU check */
-+		if (err != BPF_MTU_CHK_RET_FRAG_NEEDED)
-+			retval = XDP_DROP;
-+	}
-+
-+	global_bpf_mtu_xdp = mtu_len;
-+	return retval;
-+}
-+
-+SEC("xdp")
-+int xdp_minus_delta(struct xdp_md *ctx)
-+{
-+	int retval = XDP_PASS; /* Expected retval on successful test */
-+	void *data_end = (void *)(long)ctx->data_end;
-+	void *data = (void *)(long)ctx->data;
-+	__u32 ifindex = GLOBAL_USER_IFINDEX;
-+	__u32 data_len = data_end - data;
-+	__u32 mtu_len = 0;
-+	int delta;
-+
-+	/* Boarderline test case: Minus delta exceeding packet length allowed */
-+	delta = -((data_len - ETH_HLEN) + 1);
-+
-+	/* Minus length (adjusted via delta) still pass MTU check, other helpers
-+	 * are responsible for catching this, when doing actual size adjust
-+	 */
-+	if (bpf_check_mtu(ctx, ifindex, &mtu_len, delta, 0))
-+		retval = XDP_ABORTED;
-+
-+	global_bpf_mtu_xdp = mtu_len;
-+	return retval;
-+}
-+
-+SEC("classifier")
-+int tc_use_helper(struct __sk_buff *ctx)
-+{
-+	int retval = BPF_OK; /* Expected retval on successful test */
-+	__u32 mtu_len = 0;
-+	int delta = 0;
-+
-+	if (bpf_check_mtu(ctx, 0, &mtu_len, delta, 0)) {
-+		retval = BPF_DROP;
-+		goto out;
-+	}
-+
-+	if (GLOBAL_USER_MTU != mtu_len)
-+		retval = BPF_REDIRECT;
-+out:
-+	global_bpf_mtu_tc = mtu_len;
-+	return retval;
-+}
-+
-+SEC("classifier")
-+int tc_exceed_mtu(struct __sk_buff *ctx)
-+{
-+	__u32 ifindex = GLOBAL_USER_IFINDEX;
-+	int retval = BPF_DROP; /* Fail */
-+	__u32 skb_len = ctx->len;
-+	__u32 mtu_len = 0;
-+	int delta;
-+	int err;
-+
-+	/* Exceed MTU with 1 via delta adjust */
-+	delta = GLOBAL_USER_MTU - (skb_len - ETH_HLEN) + 1;
-+
-+	if ((err = bpf_check_mtu(ctx, ifindex, &mtu_len, delta, 0))) {
-+		retval = BPF_OK; /* Success in exceeding MTU check */
-+		if (err != BPF_MTU_CHK_RET_FRAG_NEEDED)
-+			retval = BPF_DROP;
-+	}
-+
-+	global_bpf_mtu_tc = mtu_len;
-+	return retval;
-+}
-+
-+SEC("classifier")
-+int tc_exceed_mtu_da(struct __sk_buff *ctx)
-+{
-+	/* SKB Direct-Access variant */
-+	void *data_end = (void *)(long)ctx->data_end;
-+	void *data = (void *)(long)ctx->data;
-+	__u32 ifindex = GLOBAL_USER_IFINDEX;
-+	__u32 data_len = data_end - data;
-+	int retval = BPF_DROP; /* Fail */
-+	__u32 mtu_len = 0;
-+	int delta;
-+	int err;
-+
-+	/* Exceed MTU with 1 via delta adjust */
-+	delta = GLOBAL_USER_MTU - (data_len - ETH_HLEN) + 1;
-+
-+	if ((err = bpf_check_mtu(ctx, ifindex, &mtu_len, delta, 0))) {
-+		retval = BPF_OK; /* Success in exceeding MTU check */
-+		if (err != BPF_MTU_CHK_RET_FRAG_NEEDED)
-+			retval = BPF_DROP;
-+	}
-+
-+	global_bpf_mtu_tc = mtu_len;
-+	return retval;
-+}
-+
-+SEC("classifier")
-+int tc_minus_delta(struct __sk_buff *ctx)
-+{
-+	int retval = BPF_OK; /* Expected retval on successful test */
-+	__u32 ifindex = GLOBAL_USER_IFINDEX;
-+	__u32 skb_len = ctx->len;
-+	__u32 mtu_len = 0;
-+	int delta;
-+
-+	/* Boarderline test case: Minus delta exceeding packet length allowed */
-+	delta = -((skb_len - ETH_HLEN) + 1);
-+
-+	/* Minus length (adjusted via delta) still pass MTU check, other helpers
-+	 * are responsible for catching this, when doing actual size adjust
-+	 */
-+	if (bpf_check_mtu(ctx, ifindex, &mtu_len, delta, 0))
-+		retval = BPF_DROP;
-+
-+	global_bpf_mtu_xdp = mtu_len;
-+	return retval;
-+}
 
 
+On Wed, 16 Dec 2020, Alexei Starovoitov wrote:
+
+> > > $ ksnoop "ip_send_skb(skb->sk)"
+> > >
+> > > ...will trace the skb->sk value.  The user-space side of the program
+> > > matches the function/arg name and looks up the referenced type, setting it
+> > > in the function's map.  For field references such as skb->sk, it also
+> > > records offset and whether that offset is a pointer (as is the case for
+> > > skb->sk) - in such cases we need to read the offset value via bpf_probe_read()
+> > > and use it in bpf_snprintf_btf() along with the referenced type.  Only a
+> > > single simple reference like the above is supported currently, but
+> > > multiple levels of reference could be made to work too.
+> 
+> Alan,
+> 
+> I'm not sure why the last example is so different form the first two.
+> I think ksnoop tool will generate the program on the fly, right?
+
+Nope, the BPF program is hard-coded; it adapts to different functions
+through use of the map entries describing function signatures and their
+BTF ids, and other associated tracing info.  The aim is to provide a
+generic tracing tool which displays kernel function arguments but
+doesn't require LLVM/clang on the target, just a kernel built with BTF 
+and libbpf.  Sorry this wasn't clearer in my explanation; I'm working
+on rewriting the code and will send it out ASAP.
+
+> So it can generate normal LDX insn with CO-RE relocation (instead of bpf_probe_read)
+> to access skb->sk. It can also add relo for that LDX to point to
+> struct sk_buff's btf_id defined inside prog's BTF.
+> The 'sk' offset inside bpf program and inside BTF can be anything: 0, 4, ...
+> libbpf relocation logic will find the right offset in kernel's sk_buff.
+> If ksnoop doesn't have an ability to parse vmlinux.h file or kernel's BTF
+> it can 'cheat'.
+> If the cmdline looks like:
+> $ ksnoop "ip_send_skb(skb->sk)"
+> It can generate BTF:
+> struct sk_buff {
+>    struct sock *sk;
+> };
+> 
+> If cmdline looks like:
+> $ ksnoop "ip_send_skb(skb->sock)"
+> It can generate BTF:
+> struct sk_buff {
+>    struct sock *sock;
+> };
+> Obviously there is no 'sock' field inside kernel's struct sk_buff, but tool
+> doesn't need to care. It can let libbpf do the checking and match
+> fields properly.
+> 
+> > > into that a bit more if you don't mind because I think some form of
+> > > user-space-specified BTF ids may be the easiest approach for more flexible
+> > > generic tracing that covers more than function arguments.
+> 
+> I think you're trying to figure out kernel's btf_ids in ksnoop tool.
+
+Yep.
+
+> I suggest to leave that job to libbpf. Generate local BTFs in ksnoop
+> with CO-RE relocs and let libbpf handle insn patching.
+> No FDs to worry about from ksnoop side either.
+> 
+
+The current approach doesn't rely on instruction patching outside
+of limited CORE use around struct pt_regs fields (args, IP, etc)
+which shouldn't require LLVM/clang availability on the target system. 
+I'll try and get it ready for RFC submission by the weekend so you
+can see more details of the approach.
+
+Thanks!
+
+Alan
