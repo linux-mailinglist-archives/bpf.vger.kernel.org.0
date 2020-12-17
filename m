@@ -2,101 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D7742DDA19
-	for <lists+bpf@lfdr.de>; Thu, 17 Dec 2020 21:33:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3A172DDAA9
+	for <lists+bpf@lfdr.de>; Thu, 17 Dec 2020 22:16:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727051AbgLQUbv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Dec 2020 15:31:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36154 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726955AbgLQUbv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Dec 2020 15:31:51 -0500
-Message-ID: <4d9e2dd071314f73136d77912cb9cc40d4557c80.camel@kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608237070;
-        bh=zOLHGFDp5FnPQFS+OeDdSnYT7a6W2uVY99nsszxy6FY=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=e+DU0UXs2tUAVYS5sy5E0dng5GPAhxCLgG0EMFyQSxgeXpdwFRnAA8pBxwcWCEZ3T
-         c7AUv3KBoRi+LjBQYgD8LAuRkdcUcJWHhVesqOUw9RFJMmrkq2EYgk9hB5dbNZX5KX
-         rjgWj2fFyWNa35aowoxYEnEJ7QG/cgc2bPoKioF1H76cUUx869nlSgYu6lHWX5nU1s
-         nKEKtJVOXLKYx0J3NsyIghnopZ+HenVrZAx8XOE8XSGbY+mKGiRFBOTCKWJURHwRUE
-         7iHzQxSNdo+DRzDeWHgwF2Tt7CduyT0FMNXdOBDwG9YnKwlGu+GkcMakduNwxHwuX1
-         LeH87KK5Owrtw==
-Subject: Re: [PATCH v3 bpf-next 2/2] net: xdp: introduce xdp_prepare_buff
- utility routine
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, alexander.duyck@gmail.com
-Date:   Thu, 17 Dec 2020 12:31:09 -0800
-In-Reply-To: <20201217182845.GB43061@ranger.igk.intel.com>
-References: <cover.1607794551.git.lorenzo@kernel.org>
-         <71d5ae9f810c2c80f1cb09e304330be0b5ce5345.1607794552.git.lorenzo@kernel.org>
-         <20201215123643.GA23785@ranger.igk.intel.com>
-         <20201215134710.GB5477@lore-desk> <20201216095240.43867406@carbon>
-         <20201216150126.GD2036@lore-desk>
-         <f6ea4b091ce6aa7fc91954ff1e988a3bf285ca52.camel@kernel.org>
-         <20201217182845.GB43061@ranger.igk.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        id S1728356AbgLQVPH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Dec 2020 16:15:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730768AbgLQVPG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Dec 2020 16:15:06 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C57C0617A7;
+        Thu, 17 Dec 2020 13:14:26 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id t22so189181pfl.3;
+        Thu, 17 Dec 2020 13:14:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=X8jlvHg6Q7y3xiJzuJA/KXnJAwu4vh56DFFNSdAhHgo=;
+        b=YmyKXAbxl+EEI5A3fL92uUTNa56/jhxrj7Pew7YWXtxSVlJG7oTStecsPLNoi+y4de
+         dlNm1WjjVjIWMl/jA5DzBssSz7mUBMPA4qk0tWxaF15VTMCrUA424xRyt7XmFXNbUyUa
+         5s+8FTnZ+FQR1w4jxBkddsaZU89RlF66JY3PC/4ooaZPVtXZinztM7Qk+sdTKbsDMw2D
+         qKQivk+rYS2h56X1k6sP9CQ0MEIZTbChU07WCG9h7i/9YBI0XWKgQitWTQnG8rlNdrXr
+         uKk9Alx6ZUrFfhQ1peEzipgsssfguMtj2A7DKfE2j/k5eDbnhh7KZT/08XoqJeFrAOcZ
+         q0Ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X8jlvHg6Q7y3xiJzuJA/KXnJAwu4vh56DFFNSdAhHgo=;
+        b=uNhQWarZxkQdswF/ORNI52XVSSYO5zgouup74JvvOa2h6f8Z31CdXPICm5Wj62/Xzk
+         cuQt9hdIj9w63n4cez3cEw9bHq36yVycUVF7nkg8hkRUyBc3HO3YMZIq/twaxl69HwXo
+         U2hum5hfbuDutMPHG9pFH5le/IjmMASuguWm34ZYR0XyUdzViANmq14yNN5vrTMODpEf
+         w6oxk4DJ29Fjtjy3FgoYXMsM83heiajsWwhXpNm2uF+varjTqT+VWKMcq6s3jD0qID83
+         0YGLlRLu8uRlZONRUdFthohxUaejEGBmefz2UORCszPBVb8H0CrbY4Rn+1WJ5qPdqfF+
+         1GLA==
+X-Gm-Message-State: AOAM531vuPdkDNDzNFXw9p+GmK5JjlzW4xsubSu+62rVzisetjj8rY2N
+        lT/KCMKTXze+NX1goM984jrw96ElOrwvz5cmUEo=
+X-Google-Smtp-Source: ABdhPJx+A+AZ+b8PrqUGvgQInAugU+o3zKmkIfQWobkx7kkfdwFVsyyGf8bnipMaXTVWN+mZz5aRr/diBK1fYTtlKq4=
+X-Received: by 2002:a63:e109:: with SMTP id z9mr1137578pgh.5.1608239666081;
+ Thu, 17 Dec 2020 13:14:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20201214201118.148126-1-xiyou.wangcong@gmail.com>
+ <20201214201118.148126-3-xiyou.wangcong@gmail.com> <CAEf4BzZa15kMT+xEO9ZBmS-1=E85+k02zeddx+a_N_9+MOLhkQ@mail.gmail.com>
+ <CAM_iQpVR_owLgZp1tYJyfWco-s4ov_ytL6iisg3NmtyPBdbO2Q@mail.gmail.com>
+ <CAEf4BzbyHHDrECCEjrSC3A5X39qb_WZaU_3_qNONP+vHAcUzuQ@mail.gmail.com>
+ <CAM_iQpVBPRJ+t3HPryh-1eKxV-=2CmxW9T3OyO6-_sQVLskQVQ@mail.gmail.com>
+ <CAEf4BzY4fdGieUbuAc4ttzfavBeGtE2a0rDmVfqpmZ6h6_dHiQ@mail.gmail.com> <CAM_iQpVsR=K344msuREEmidwXOeeZ=tdj4zpkrSX5yXz6VhijA@mail.gmail.com>
+In-Reply-To: <CAM_iQpVsR=K344msuREEmidwXOeeZ=tdj4zpkrSX5yXz6VhijA@mail.gmail.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Thu, 17 Dec 2020 13:14:14 -0800
+Message-ID: <CAM_iQpXOts4YFsfaZYKiL-8u=v=0_vQ+DjML8g_JD0jPfz9kpw@mail.gmail.com>
+Subject: Re: [Patch bpf-next v2 2/5] bpf: introduce timeout map
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dongdong Wang <wangdongdong.6@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 2020-12-17 at 19:28 +0100, Maciej Fijalkowski wrote:
-> On Thu, Dec 17, 2020 at 10:16:06AM -0800, Saeed Mahameed wrote:
-> > On Wed, 2020-12-16 at 16:01 +0100, Lorenzo Bianconi wrote:
-> > > > On Tue, 15 Dec 2020 14:47:10 +0100
-> > > > Lorenzo Bianconi <lorenzo.bianconi@redhat.com> wrote:
-> > > > 
-> > > > > [...]
-> > > > > > >  	xdp_act = bpf_prog_run_xdp(xdp_prog, &xdp);
-> > > > > > > diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-> > > > > > > b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-> > > > > > > index 4dbbbd49c389..fcd1ca3343fb 100644
-> > > > > > > --- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-> > > > > > > +++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-> > > > > > > @@ -2393,12 +2393,12 @@ static int
-> > > > > > > i40e_clean_rx_irq(struct
-> > > > > > > i40e_ring *rx_ring, int budget)
-> > > > > > >  
-> > > > > > >  		/* retrieve a buffer from the ring */
-> > > > > > >  		if (!skb) {
-> > > > > > > -			xdp.data = page_address(rx_buffer-
-> > > > > > > > page) +
-> > > > > > > -				   rx_buffer->page_offset;
-> > > > > > > -			xdp.data_meta = xdp.data;
-> > > > > > > -			xdp.data_hard_start = xdp.data -
-> > > > > > > -					      i40e_rx_offset(rx
-> > > > > > > _ring);
-> > > > > > > -			xdp.data_end = xdp.data + size;
-> > > > > > > +			unsigned int offset =
-> > > > > > > i40e_rx_offset(rx_ring);  
-> > > > > > 
-> > > > > > I now see that we could call the i40e_rx_offset() once per
-> > > > > > napi, so can
-> > > > > > you pull this variable out and have it initialized a single
-> > > > > > time? Applies
-> > > > > > to other intel drivers as well.  
-> > 
-> > How is this related to this series? i suggest to keep this series
-> > clean
-> > of vendor specific unrelated optimizations, this must be done in a
-> > separate patchset.
-> 
-> Well, Lorenzo explicitly is touching the thing that I referred to, so
-> I
-> just ask if he can optimize it while he's at it.
-> 
-> Of course I'm fine with addressing this by myself once -next opens :)
-> 
-Oh, don't get me wrong I am ok with doing this now, and i can do it my
-self if you want :), but it shouldn't be part of the this series, so we
-won't confuse others who want to implement XDP in the future, that's
-all.
+On Wed, Dec 16, 2020 at 10:29 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+>
+> On Wed, Dec 16, 2020 at 10:35 AM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> > Minimize duplication of the code, no one said copy/paste all the code.
+> > But memory bloat is a real problem and should be justification enough
+> > to at least consider other options.
+>
+> Sure, I have no problem with this. The question is how do we balance?
+> Is rewriting 200 lines of code to save 8 bytes of each entry acceptable?
+> What about rewriting 2000 lines of code? Do people prefer to review 200
+> or 2000 (or whatever number) lines of code? Or people just want a
+> minimal change for easier reviews?
 
+No worry any more. I manage to find some way to reuse the existing
+members, that is lru_node. So the end result is putting gc stuff into
+the union with lru_node without increasing the size of htab_elem.
+And of course, without duplicating/refactoring regular htab code.
+
+Thanks.
