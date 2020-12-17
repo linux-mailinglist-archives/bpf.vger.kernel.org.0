@@ -2,402 +2,219 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A2302DD5FF
-	for <lists+bpf@lfdr.de>; Thu, 17 Dec 2020 18:24:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 755F32DD61C
+	for <lists+bpf@lfdr.de>; Thu, 17 Dec 2020 18:29:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728996AbgLQRYM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Dec 2020 12:24:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728534AbgLQRYL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Dec 2020 12:24:11 -0500
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20412C061282
-        for <bpf@vger.kernel.org>; Thu, 17 Dec 2020 09:23:31 -0800 (PST)
-Received: by mail-pl1-x64a.google.com with SMTP id t13so15844553plo.16
-        for <bpf@vger.kernel.org>; Thu, 17 Dec 2020 09:23:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=vX8enmnfN6Z18TG6SvtSPOgq4vmtJpELSARuNlP7BK4=;
-        b=j4756+Er0lkNY90KMPLeMVY9Rwy+YlPLXlpgNzCJSgcyX1FBR2qxVfJG4fj/uf1B8I
-         V+KRFcOKEI2zLCVXFErMVa5XihMauc9xjSq/Csl/SQw04PULaJjo11YAOLdClPFxXHNG
-         dQtjAqbIO++9zgqwuGYoz6lu7euxniUQb0ZySvpeOAgta9ivx6MtqaeOZqKDZgaitD/y
-         6N8zsXyD5xIKkfrKGYXvS3Scjflp0LKFAs14kT60OKXSLOeiVRdXaJ0CnzbXXe9GS/Pa
-         fiKfCjE4bQ1Maifke1QBGN3OTxLcWYYrHxiJn7tN6a+I6Ro4Pg8kOoq/V/GyByM5gdMP
-         qAaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=vX8enmnfN6Z18TG6SvtSPOgq4vmtJpELSARuNlP7BK4=;
-        b=LlHkDKaVN9k/Yz1u9gAFoBjuLt0YL8m0QT87jwResrao0nNya1DM3p42FZSYMoqLuN
-         A0u639hpTN/OfxkwmTmXe1+Yb5pqCoRno15RfvDt8WB/ZBElOlIjiLF2rktvWcJ5aD5X
-         YswhYst7Phq2lXrtxMK1bqzQuxxS1g1i/BrJWxNFj2ieoSMYALuJDsVr+79HPw9CpSFT
-         NFE0kY0vflQkOY8EyDdX4ydJPaUU/e9XfTsyLCsxhG4TOtfUQ6Cle4t1UqJ2BgBfLgqh
-         RCAWgxaVCM3Cjxm1q0h1DODx1JPC7Xwp7EtKmB8N+JYYWqli4FzfVEViAS4RLUDy7mNt
-         yVEg==
-X-Gm-Message-State: AOAM532Y2unLVcuhN+T5QjiSNRmh11zhuTjcI4b8mFucD8IFUZuHRcmg
-        Q7CZK1Mrok+Au5y/p/IDaFF7eXI=
-X-Google-Smtp-Source: ABdhPJzCJ21dNPylb4TASU0KiZQ49bDipFjf7N61NEvjcQw1lWlNZEQ240WpycXYs/UoSBkFRqfnNAQ=
-Sender: "sdf via sendgmr" <sdf@sdf2.svl.corp.google.com>
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:7220:84ff:fe09:7732])
- (user=sdf job=sendgmr) by 2002:a17:90a:8b94:: with SMTP id
- z20mr1010279pjn.1.1608225810251; Thu, 17 Dec 2020 09:23:30 -0800 (PST)
-Date:   Thu, 17 Dec 2020 09:23:24 -0800
-In-Reply-To: <20201217172324.2121488-1-sdf@google.com>
-Message-Id: <20201217172324.2121488-3-sdf@google.com>
-Mime-Version: 1.0
-References: <20201217172324.2121488-1-sdf@google.com>
-X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
-Subject: [PATCH bpf-next 2/2] bpf: split cgroup_bpf_enabled per attach type
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net,
-        Stanislav Fomichev <sdf@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728958AbgLQR1c (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Dec 2020 12:27:32 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:21036 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727723AbgLQR1b (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 17 Dec 2020 12:27:31 -0500
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BHHPDYR004279;
+        Thu, 17 Dec 2020 09:26:33 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=3W8ZRbBJhJBCjrbDqS3oJfVJPUGJCcRvWdRvftq6N1M=;
+ b=hZPYBKJDZ4qzJhI3lusADIuTReN1SKfoZLTTTvdVQgpx+PNR23Krktm40Lr6+kXYJE3o
+ Iz8r552kAjwHc9Y46fTGIZ9g94zpRVdCAHvDTsYTb1Llr7hpBSv/Q71tSVekDC8v1AHt
+ ctJxwNp3flL5qytww1WnPXixhfyBGNBA4FI= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 35g83xhb8n-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 17 Dec 2020 09:26:33 -0800
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 17 Dec 2020 09:26:16 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hL5lsHI+26staOxGSzK+9qjMKsAZK70YCf8mKjYae1iZ6LHr+AV0d80XstRKfjbsDRNQgnas8De1WG2GHetYb2YE102i0w6AcpS4HZCqVb0Lyc8nawJ4tkiFhuqRPhNAMPDJS/EUVdz9NUZ1E2EYeoiKTjkcgE1y4NbPJmkvDEloXkAzIrxEmX/FqzNkWyEWa0SG40STh/LEVYOGCymLa0CN9gdehnOkRJz6evsuCZygbvQPVdBeI9kRc/egoFSImals+dEtv5pNZPsW01rSAL/5YbQd4hoNPGOgUiihCiRSJddtxfMkBlCoFbJhIpurzOiHGxZZm5X0enpxGYGhyw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3W8ZRbBJhJBCjrbDqS3oJfVJPUGJCcRvWdRvftq6N1M=;
+ b=D5tVGQDdFOu1xecCavc/gC0FBuvFyyUDtU/t3S4ThmF8UyjSU4CkDV3DcLiCG1LnWD2YoAn3TeXihXsTWpnGf+UxfcTE5m2apYayyWF+AWVCQAinFbhlL6JOgOFgTvvel6eFj8tDiUqQF8H1ROyARbM5bK01AL6P+bITpqL4g5do+yKcGQevZBEjDl4SzSBSipkzgaxStKwTtrCbyBylQN+TEOnWKtAXy0GeLa45LXvm8OGl7T05KXbHZ8coUFkFogeTfN9octS0+eXSiZKEXP/5eM/HQOAd2eaD39jTt+XEUWImTQISxYEMBkui2pWlF2NzvruvI3Zd9ZEmx+y6ng==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3W8ZRbBJhJBCjrbDqS3oJfVJPUGJCcRvWdRvftq6N1M=;
+ b=lDnAW/W1a5VwxSj3A7evsO0Xp92H1jFXnap8nTlIFZeQzZJ6wMHuWDUSuE7R9O20KdNOxHqvb0ClyIIx8rVDFg6vfIAW66j5F8DW3hggxrYRpgCX6eUG7fP9bB3qSj68d6tFjsbzsAM6sTBS62ekOlAI84FuwQNJnzdQyFIGkok=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by BYAPR15MB2728.namprd15.prod.outlook.com (2603:10b6:a03:14c::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.20; Thu, 17 Dec
+ 2020 17:26:14 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3654.025; Thu, 17 Dec 2020
+ 17:26:14 +0000
+Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
+To:     Florent Revest <revest@chromium.org>
+CC:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Florent Revest <revest@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20201126165748.1748417-1-revest@google.com>
+ <50047415-cafe-abab-a6ba-e85bb6a9b651@fb.com>
+ <CACYkzJ7T4y7in1AsCvJ2izA3yiAke8vE9SRFRCyTPeqMnDHoyQ@mail.gmail.com>
+ <e8b03cbc-c120-43d5-168c-cde5b6a97af8@fb.com>
+ <CAEf4BzYz9Yf9abPBtP+swCuqvvhL0cbbbF1x-3stg9mp=a6+-A@mail.gmail.com>
+ <194b5a6e6e30574a035a3e3baa98d7fde7f91f1c.camel@chromium.org>
+ <CAADnVQK6GjmL19zQykYbh=THM9ktQUzfnwF_FfhUKimCxDnnkQ@mail.gmail.com>
+ <CABRcYm+zjC-WH2gxtfEX5S6mZj-5_ByAzVd5zi3aRmQv-asYqg@mail.gmail.com>
+ <221fb873-80fc-5407-965e-b075c964fa13@fb.com>
+ <CABRcYmLL=SUsPS6qWVgTyYJ26r-QtECfeTZXkXSp7iRBDZRbZA@mail.gmail.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <d29c2ed6-d99c-9d28-e6ea-d79ffd4d7e65@fb.com>
+Date:   Thu, 17 Dec 2020 09:26:09 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.5.1
+In-Reply-To: <CABRcYmLL=SUsPS6qWVgTyYJ26r-QtECfeTZXkXSp7iRBDZRbZA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2620:10d:c090:400::5:9810]
+X-ClientProxiedBy: MW4PR03CA0087.namprd03.prod.outlook.com
+ (2603:10b6:303:b6::32) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21cf::12e6] (2620:10d:c090:400::5:9810) by MW4PR03CA0087.namprd03.prod.outlook.com (2603:10b6:303:b6::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Thu, 17 Dec 2020 17:26:12 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f762e00f-350a-4496-5681-08d8a2b0daf0
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2728:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB27287B96D087B12BE646C74FD3C40@BYAPR15MB2728.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: uUhkR3AUGfOV8KWLfRCIZYVZ5eXRKA+YHGWhQ506X/lqkv2Nn67tA2AKSADRLhUKb018iZy5FBKZTXzaST5/MOVVw2P/U+IslUawKjkvkWe6QG3wCzfIL4hY/iMSPiO4l1OKmJmI7SDWrzayFsonMUqROewNaJG8tGmYZYAf+0S2MiOy63fZKSqELEGwcZXu8jwWGxQSlsrcNg7PlzYt8IGZn0Ox7bLv/n6OV1yoaee9avzYrxJ/T9l75SWeldVFsRVNsRu1ii2OYgTg2lj2YmEYvajJjWZQ7Wn85mx5jbUBQn7KiYDWd2UJVz7DlfR+yvhBP/He9M9khWj3a6olJCEH0KSM0lLUH3CnSXZttEXoFoCrn3uCUCuO9z/IWbRtaNIfjjKgVWk3yun9B3tQgDFZjdGIre+MtB2C4vhkFTg=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(39860400002)(366004)(136003)(396003)(316002)(52116002)(86362001)(5660300002)(8936002)(83380400001)(36756003)(16526019)(2616005)(2906002)(6666004)(53546011)(31696002)(4326008)(6916009)(7416002)(6486002)(66476007)(66946007)(478600001)(8676002)(186003)(66556008)(31686004)(54906003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?NG5PRHpGSUFzR3h0Nkk1UjBMWWl2eTIwQzRKbnA2dnEwTXo3a01iVmJJUkZi?=
+ =?utf-8?B?WG9PQVJlbjZYNlVDWEU3ZVJ4MTFFbVR4WVQ2dnltV3lCU20vemJVa3NBOGxw?=
+ =?utf-8?B?YkpTUmdRWnRhOGZOTFlScDB4V005Z0dENU9kdDZWVTl2R3hUWjJRRDFxWW9k?=
+ =?utf-8?B?ZGM3Q3NMNmNYOWxkcmVZTTV0U1JNSXpmT2FGcjliOEFob2dxK2FET2l2OVdC?=
+ =?utf-8?B?a3NkRjRMVWhSdXZLN1V5SXROOTZsRW8zNDRhRmNuQ1EyWVhwRy9IMGNxTExX?=
+ =?utf-8?B?dmNickVuRmllOUZsdWU0dDZUNnhJaThNN3Z4REJ4YmozTFBTa0RsRUFKUmxV?=
+ =?utf-8?B?SzZrZmdFOW1PenJqOE1XRDVXMFUxWmtqUW1qaFBxQWs5VmdQcjNXQmJaMlJP?=
+ =?utf-8?B?T2l1TWlHUEYrS3JGeC81Y3g0NVkxaVpDOVp0VFBOdHBkVW9PQ0Q1VEs2ZTht?=
+ =?utf-8?B?VHVTUUlzbTlCRmphZ3U2NUZWQkdxN1p1bjNkbGRZaExYSUJDUDl6NEF3WDBu?=
+ =?utf-8?B?WmpZOVFSSVZqUjdFNFdVNGR5aDR2cUs1YWJldDY3SldmQjBVWWg2c0dJUzlC?=
+ =?utf-8?B?aU5zWC80V2QzUUEwaXVkL08xaG1FamhuY21rVEtDK244MmtLOHdzNUl4Sm90?=
+ =?utf-8?B?UUJsQ2RvTGJzczd3OWd3YUM4RUxwZUFZR09LaHZRSlgwZDdTZzFqK2EwZ09P?=
+ =?utf-8?B?U1dWK2pmNHpSTWhqOUp3N3YyUXo3bDhERUlaWU1ZSmpMNWMzTmovOWhiZ3Zx?=
+ =?utf-8?B?b2VGZklIL0xjYzVwUXdtNnZmR0ZCWmRNQzltUU4ramtIcTZrNXZQY0xrV3dv?=
+ =?utf-8?B?ZzBYRVpnekJ2MUZYVkc4bUQyb0Z0SlNXU1JXbitBN3g1RXJIYzcrbmdlaUJC?=
+ =?utf-8?B?aGZCQ2h0R1EyY0UzV01xMWJYRWQ5YjN4bXNrZGs1a0cvUG9PajZuN2FZQk4v?=
+ =?utf-8?B?RVJQMGtNaExsY0tvT0FyZTRjclpUdmQ2NG1kL2RGME5kaVNyNDI4WXMwUFU0?=
+ =?utf-8?B?WUFNTHNHSzV0Q0dTWG9MZmJiRDlnaHVCV01lUjFGTEJENGRzWFp6cGcwYUxw?=
+ =?utf-8?B?L1J6Y3F0Y0VRL2t6M0RtTUdwRkhFM25EZFkxNkdsbC9QWkhVQWVINCtiUUxN?=
+ =?utf-8?B?RGhmdUl4YjF5Q01xck1teFVQTE1uTDh4bGY0TmpKeXUxbjlpaU5lYUxyeEcx?=
+ =?utf-8?B?ckZld0NlMG9WUEdNc0piUGhJTlduNnMrcDMyWm42Mlh4Nlloejc1dExJeE1X?=
+ =?utf-8?B?eEFlbGhjZC9QYW41T3piZ3NFQ0hXZXpIVHBuSXJXVGNic1cyUkR1Y0ErZDJq?=
+ =?utf-8?B?emZHS3JEZkFSMFVMc0xMV29mZUhhVDVtNE1Objc5aTlMWlJLMVliRmJmcFVQ?=
+ =?utf-8?B?MFlCaXBseGhZTnc9PQ==?=
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Dec 2020 17:26:14.3433
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-Network-Message-Id: f762e00f-350a-4496-5681-08d8a2b0daf0
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nJU3u89cMz6VLXkT0Ok229M2aRq3ItXyKq0ljDVuy/vT3kBouWxKO5RbH4eltSya
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2728
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-17_11:2020-12-15,2020-12-17 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ impostorscore=0 suspectscore=0 spamscore=0 clxscore=1011 adultscore=0
+ malwarescore=0 lowpriorityscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012170120
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When we attach any cgroup hook, the rest (even if unused/unattached) start
-to contribute small overhead. In particular, the one we want to avoid is
-__cgroup_bpf_run_filter_skb which does two redirections to get to
-the cgroup and pushes/pulls skb.
 
-Let's split cgroup_bpf_enabled to be per-attach to make sure
-only used attach types trigger.
 
-I've dropped some existing high-level cgroup_bpf_enabled in some
-places because BPF_PROG_CGROUP_XXX_RUN macros usually have another
-cgroup_bpf_enabled check.
+On 12/17/20 7:31 AM, Florent Revest wrote:
+> On Mon, Dec 14, 2020 at 7:47 AM Yonghong Song <yhs@fb.com> wrote:
+>> On 12/11/20 6:40 AM, Florent Revest wrote:
+>>> On Wed, Dec 2, 2020 at 10:18 PM Alexei Starovoitov
+>>> <alexei.starovoitov@gmail.com> wrote:
+>>>> I still think that adopting printk/vsnprintf for this instead of
+>>>> reinventing the wheel
+>>>> is more flexible and easier to maintain long term.
+>>>> Almost the same layout can be done with vsnprintf
+>>>> with exception of \0 char.
+>>>> More meaningful names, etc.
+>>>> See Documentation/core-api/printk-formats.rst
+>>>
+>>> I agree this would be nice. I finally got a bit of time to experiment
+>>> with this and I noticed a few things:
+>>>
+>>> First of all, because helpers only have 5 arguments, if we use two for
+>>> the output buffer and its size and two for the format string and its
+>>> size, we are only left with one argument for a modifier. This is still
+>>> enough for our usecase (where we'd only use "%ps" for example) but it
+>>> does not strictly-speaking allow for the same layout that Andrii
+>>> proposed.
+>>
+>> See helper bpf_seq_printf. It packs all arguments for format string and
+>> puts them into an array. bpf_seq_printf will unpack them as it parsed
+>> through the format string. So it should be doable to have more than
+>> "%ps" in format string.
+> 
+> This could be a nice trick, thank you for the suggestion Yonghong :)
+> 
+> My understanding is that this would also require two extra args (one
+> for the array of arguments and one for the size of this array) so it
+> would still not fit the 5 arguments limit I described in my previous
+> email.
+> eg: this would not be possible:
+> long bpf_snprintf(const char *out, u32 out_size,
+>                    const char *fmt, u32 fmt_size,
+>                   const void *data, u32 data_len)
 
-I also had to copy-paste BPF_CGROUP_RUN_SA_PROG_LOCK for
-GETPEERNAME/GETSOCKNAME because type for cgroup_bpf_enabled[type]
-has to be constant and known at compile time.
+Right. bpf allows only up to 5 parameters.
+> 
+> Would you then suggest that we also put the format string and its
+> length in the first and second cells of this array and have something
+> along the line of:
+> long bpf_snprintf(const char *out, u32 out_size,
+>                    const void *args, u32 args_len) ?
+> This seems like a fairly opaque signature to me and harder to verify.
 
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- include/linux/bpf-cgroup.h | 36 +++++++++++++++++++-----------------
- kernel/bpf/cgroup.c        | 14 ++++++--------
- net/ipv4/af_inet.c         |  9 +++++----
- net/ipv4/udp.c             |  7 +++----
- net/ipv6/af_inet6.c        |  9 +++++----
- net/ipv6/udp.c             |  7 +++----
- 6 files changed, 41 insertions(+), 41 deletions(-)
+One way is to define an explicit type for args, something like
+    struct bpf_fmt_str_data {
+       char *fmt;
+       u64 fmt_len;
+       u64 data[];
+    };
 
-diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
-index 72e69a0e1e8c..05877980e4e6 100644
---- a/include/linux/bpf-cgroup.h
-+++ b/include/linux/bpf-cgroup.h
-@@ -23,8 +23,8 @@ struct ctl_table_header;
- 
- #ifdef CONFIG_CGROUP_BPF
- 
--extern struct static_key_false cgroup_bpf_enabled_key;
--#define cgroup_bpf_enabled static_branch_unlikely(&cgroup_bpf_enabled_key)
-+extern struct static_key_false cgroup_bpf_enabled_key[MAX_BPF_ATTACH_TYPE];
-+#define cgroup_bpf_enabled(type) static_branch_unlikely(&cgroup_bpf_enabled_key[type])
- 
- DECLARE_PER_CPU(struct bpf_cgroup_storage*,
- 		bpf_cgroup_storage[MAX_BPF_CGROUP_STORAGE_TYPE]);
-@@ -185,7 +185,7 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
- #define BPF_CGROUP_RUN_PROG_INET_INGRESS(sk, skb)			      \
- ({									      \
- 	int __ret = 0;							      \
--	if (cgroup_bpf_enabled)						      \
-+	if (cgroup_bpf_enabled(BPF_CGROUP_INET_INGRESS))		      \
- 		__ret = __cgroup_bpf_run_filter_skb(sk, skb,		      \
- 						    BPF_CGROUP_INET_INGRESS); \
- 									      \
-@@ -195,7 +195,7 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
- #define BPF_CGROUP_RUN_PROG_INET_EGRESS(sk, skb)			       \
- ({									       \
- 	int __ret = 0;							       \
--	if (cgroup_bpf_enabled && sk && sk == skb->sk) {		       \
-+	if (cgroup_bpf_enabled(BPF_CGROUP_INET_EGRESS) && sk && sk == skb->sk) { \
- 		typeof(sk) __sk = sk_to_full_sk(sk);			       \
- 		if (sk_fullsock(__sk))					       \
- 			__ret = __cgroup_bpf_run_filter_skb(__sk, skb,	       \
-@@ -207,7 +207,7 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
- #define BPF_CGROUP_RUN_SK_PROG(sk, type)				       \
- ({									       \
- 	int __ret = 0;							       \
--	if (cgroup_bpf_enabled) {					       \
-+	if (cgroup_bpf_enabled(type)) {					       \
- 		__ret = __cgroup_bpf_run_filter_sk(sk, type);		       \
- 	}								       \
- 	__ret;								       \
-@@ -228,7 +228,7 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
- #define BPF_CGROUP_RUN_SA_PROG(sk, uaddr, type)				       \
- ({									       \
- 	int __ret = 0;							       \
--	if (cgroup_bpf_enabled)						       \
-+	if (cgroup_bpf_enabled(type))					       \
- 		__ret = __cgroup_bpf_run_filter_sock_addr(sk, uaddr, type,     \
- 							  NULL);	       \
- 	__ret;								       \
-@@ -237,7 +237,7 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
- #define BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, type, t_ctx)		       \
- ({									       \
- 	int __ret = 0;							       \
--	if (cgroup_bpf_enabled)	{					       \
-+	if (cgroup_bpf_enabled(type))	{				       \
- 		lock_sock(sk);						       \
- 		__ret = __cgroup_bpf_run_filter_sock_addr(sk, uaddr, type,     \
- 							  t_ctx);	       \
-@@ -252,8 +252,10 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
- #define BPF_CGROUP_RUN_PROG_INET6_BIND_LOCK(sk, uaddr)			       \
- 	BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, BPF_CGROUP_INET6_BIND, NULL)
- 
--#define BPF_CGROUP_PRE_CONNECT_ENABLED(sk) (cgroup_bpf_enabled && \
--					    sk->sk_prot->pre_connect)
-+#define BPF_CGROUP_PRE_CONNECT_ENABLED(sk)				       \
-+	((cgroup_bpf_enabled(BPF_CGROUP_INET4_CONNECT) ||		       \
-+	  cgroup_bpf_enabled(BPF_CGROUP_INET6_CONNECT)) &&		       \
-+	 sk->sk_prot->pre_connect)
- 
- #define BPF_CGROUP_RUN_PROG_INET4_CONNECT(sk, uaddr)			       \
- 	BPF_CGROUP_RUN_SA_PROG(sk, uaddr, BPF_CGROUP_INET4_CONNECT)
-@@ -297,7 +299,7 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
- #define BPF_CGROUP_RUN_PROG_SOCK_OPS_SK(sock_ops, sk)			\
- ({									\
- 	int __ret = 0;							\
--	if (cgroup_bpf_enabled)						\
-+	if (cgroup_bpf_enabled(BPF_CGROUP_SOCK_OPS))			\
- 		__ret = __cgroup_bpf_run_filter_sock_ops(sk,		\
- 							 sock_ops,	\
- 							 BPF_CGROUP_SOCK_OPS); \
-@@ -307,7 +309,7 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
- #define BPF_CGROUP_RUN_PROG_SOCK_OPS(sock_ops)				       \
- ({									       \
- 	int __ret = 0;							       \
--	if (cgroup_bpf_enabled && (sock_ops)->sk) {	       \
-+	if (cgroup_bpf_enabled(BPF_CGROUP_SOCK_OPS) && (sock_ops)->sk) {       \
- 		typeof(sk) __sk = sk_to_full_sk((sock_ops)->sk);	       \
- 		if (__sk && sk_fullsock(__sk))				       \
- 			__ret = __cgroup_bpf_run_filter_sock_ops(__sk,	       \
-@@ -320,7 +322,7 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
- #define BPF_CGROUP_RUN_PROG_DEVICE_CGROUP(type, major, minor, access)	      \
- ({									      \
- 	int __ret = 0;							      \
--	if (cgroup_bpf_enabled)						      \
-+	if (cgroup_bpf_enabled(BPF_CGROUP_DEVICE))			      \
- 		__ret = __cgroup_bpf_check_dev_permission(type, major, minor, \
- 							  access,	      \
- 							  BPF_CGROUP_DEVICE); \
-@@ -332,7 +334,7 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
- #define BPF_CGROUP_RUN_PROG_SYSCTL(head, table, write, buf, count, pos)  \
- ({									       \
- 	int __ret = 0;							       \
--	if (cgroup_bpf_enabled)						       \
-+	if (cgroup_bpf_enabled(BPF_CGROUP_SYSCTL))			       \
- 		__ret = __cgroup_bpf_run_filter_sysctl(head, table, write,     \
- 						       buf, count, pos,        \
- 						       BPF_CGROUP_SYSCTL);     \
-@@ -343,7 +345,7 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
- 				       kernel_optval)			       \
- ({									       \
- 	int __ret = 0;							       \
--	if (cgroup_bpf_enabled)						       \
-+	if (cgroup_bpf_enabled(BPF_CGROUP_SETSOCKOPT))			       \
- 		__ret = __cgroup_bpf_run_filter_setsockopt(sock, level,	       \
- 							   optname, optval,    \
- 							   optlen,	       \
-@@ -354,7 +356,7 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
- #define BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen)			       \
- ({									       \
- 	int __ret = 0;							       \
--	if (cgroup_bpf_enabled)						       \
-+	if (cgroup_bpf_enabled(BPF_CGROUP_GETSOCKOPT))			       \
- 		get_user(__ret, optlen);				       \
- 	__ret;								       \
- })
-@@ -363,7 +365,7 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
- 				       max_optlen, retval)		       \
- ({									       \
- 	int __ret = retval;						       \
--	if (cgroup_bpf_enabled)						       \
-+	if (cgroup_bpf_enabled(BPF_CGROUP_GETSOCKOPT))			       \
- 		__ret = __cgroup_bpf_run_filter_getsockopt(sock, level,	       \
- 							   optname, optval,    \
- 							   optlen, max_optlen, \
-@@ -427,7 +429,7 @@ static inline int bpf_percpu_cgroup_storage_update(struct bpf_map *map,
- 	return 0;
- }
- 
--#define cgroup_bpf_enabled (0)
-+#define cgroup_bpf_enabled(type) (0)
- #define BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, type, t_ctx) ({ 0; })
- #define BPF_CGROUP_PRE_CONNECT_ENABLED(sk) (0)
- #define BPF_CGROUP_RUN_PROG_INET_INGRESS(sk,skb) ({ 0; })
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index 0cb5d4376844..7986d9ef85f1 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -19,7 +19,7 @@
- 
- #include "../cgroup/cgroup-internal.h"
- 
--DEFINE_STATIC_KEY_FALSE(cgroup_bpf_enabled_key);
-+DEFINE_STATIC_KEY_ARRAY_FALSE(cgroup_bpf_enabled_key, MAX_BPF_ATTACH_TYPE);
- EXPORT_SYMBOL(cgroup_bpf_enabled_key);
- 
- void cgroup_bpf_offline(struct cgroup *cgrp)
-@@ -128,7 +128,7 @@ static void cgroup_bpf_release(struct work_struct *work)
- 			if (pl->link)
- 				bpf_cgroup_link_auto_detach(pl->link);
- 			kfree(pl);
--			static_branch_dec(&cgroup_bpf_enabled_key);
-+			static_branch_dec(&cgroup_bpf_enabled_key[type]);
- 		}
- 		old_array = rcu_dereference_protected(
- 				cgrp->bpf.effective[type],
-@@ -499,7 +499,7 @@ int __cgroup_bpf_attach(struct cgroup *cgrp,
- 	if (old_prog)
- 		bpf_prog_put(old_prog);
- 	else
--		static_branch_inc(&cgroup_bpf_enabled_key);
-+		static_branch_inc(&cgroup_bpf_enabled_key[type]);
- 	bpf_cgroup_storages_link(new_storage, cgrp, type);
- 	return 0;
- 
-@@ -698,7 +698,7 @@ int __cgroup_bpf_detach(struct cgroup *cgrp, struct bpf_prog *prog,
- 		cgrp->bpf.flags[type] = 0;
- 	if (old_prog)
- 		bpf_prog_put(old_prog);
--	static_branch_dec(&cgroup_bpf_enabled_key);
-+	static_branch_dec(&cgroup_bpf_enabled_key[type]);
- 	return 0;
- 
- cleanup:
-@@ -1371,8 +1371,7 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
- 	 * attached to the hook so we don't waste time allocating
- 	 * memory and locking the socket.
- 	 */
--	if (!cgroup_bpf_enabled ||
--	    __cgroup_bpf_prog_array_is_empty(cgrp, BPF_CGROUP_SETSOCKOPT))
-+	if (__cgroup_bpf_prog_array_is_empty(cgrp, BPF_CGROUP_SETSOCKOPT))
- 		return 0;
- 
- 	/* Allocate a bit more than the initial user buffer for
-@@ -1455,8 +1454,7 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
- 	 * attached to the hook so we don't waste time allocating
- 	 * memory and locking the socket.
- 	 */
--	if (!cgroup_bpf_enabled ||
--	    __cgroup_bpf_prog_array_is_empty(cgrp, BPF_CGROUP_GETSOCKOPT))
-+	if (__cgroup_bpf_prog_array_is_empty(cgrp, BPF_CGROUP_GETSOCKOPT))
- 		return retval;
- 
- 	ctx.optlen = max_optlen;
-diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
-index b94fa8eb831b..6ba2930ff49b 100644
---- a/net/ipv4/af_inet.c
-+++ b/net/ipv4/af_inet.c
-@@ -777,18 +777,19 @@ int inet_getname(struct socket *sock, struct sockaddr *uaddr,
- 			return -ENOTCONN;
- 		sin->sin_port = inet->inet_dport;
- 		sin->sin_addr.s_addr = inet->inet_daddr;
-+		BPF_CGROUP_RUN_SA_PROG_LOCK(sk, (struct sockaddr *)sin,
-+					    BPF_CGROUP_INET4_GETPEERNAME,
-+					    NULL);
- 	} else {
- 		__be32 addr = inet->inet_rcv_saddr;
- 		if (!addr)
- 			addr = inet->inet_saddr;
- 		sin->sin_port = inet->inet_sport;
- 		sin->sin_addr.s_addr = addr;
--	}
--	if (cgroup_bpf_enabled)
- 		BPF_CGROUP_RUN_SA_PROG_LOCK(sk, (struct sockaddr *)sin,
--					    peer ? BPF_CGROUP_INET4_GETPEERNAME :
--						   BPF_CGROUP_INET4_GETSOCKNAME,
-+					    BPF_CGROUP_INET4_GETSOCKNAME,
- 					    NULL);
-+	}
- 	memset(sin->sin_zero, 0, sizeof(sin->sin_zero));
- 	return sizeof(*sin);
- }
-diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-index dece195f212c..fc3c2e75e400 100644
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -1124,7 +1124,7 @@ int udp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
- 		rcu_read_unlock();
- 	}
- 
--	if (cgroup_bpf_enabled && !connected) {
-+	if (cgroup_bpf_enabled(BPF_CGROUP_UDP4_SENDMSG) && !connected) {
- 		err = BPF_CGROUP_RUN_PROG_UDP4_SENDMSG_LOCK(sk,
- 					    (struct sockaddr *)usin, &ipc.addr);
- 		if (err)
-@@ -1858,9 +1858,8 @@ int udp_recvmsg(struct sock *sk, struct msghdr *msg, size_t len, int noblock,
- 		memset(sin->sin_zero, 0, sizeof(sin->sin_zero));
- 		*addr_len = sizeof(*sin);
- 
--		if (cgroup_bpf_enabled)
--			BPF_CGROUP_RUN_PROG_UDP4_RECVMSG_LOCK(sk,
--							(struct sockaddr *)sin);
-+		BPF_CGROUP_RUN_PROG_UDP4_RECVMSG_LOCK(sk,
-+						      (struct sockaddr *)sin);
- 	}
- 
- 	if (udp_sk(sk)->gro_enabled)
-diff --git a/net/ipv6/af_inet6.c b/net/ipv6/af_inet6.c
-index a7e3d170af51..fc985658dc91 100644
---- a/net/ipv6/af_inet6.c
-+++ b/net/ipv6/af_inet6.c
-@@ -527,18 +527,19 @@ int inet6_getname(struct socket *sock, struct sockaddr *uaddr,
- 		sin->sin6_addr = sk->sk_v6_daddr;
- 		if (np->sndflow)
- 			sin->sin6_flowinfo = np->flow_label;
-+		BPF_CGROUP_RUN_SA_PROG_LOCK(sk, (struct sockaddr *)sin,
-+					    BPF_CGROUP_INET6_GETPEERNAME,
-+					    NULL);
- 	} else {
- 		if (ipv6_addr_any(&sk->sk_v6_rcv_saddr))
- 			sin->sin6_addr = np->saddr;
- 		else
- 			sin->sin6_addr = sk->sk_v6_rcv_saddr;
- 		sin->sin6_port = inet->inet_sport;
--	}
--	if (cgroup_bpf_enabled)
- 		BPF_CGROUP_RUN_SA_PROG_LOCK(sk, (struct sockaddr *)sin,
--					    peer ? BPF_CGROUP_INET6_GETPEERNAME :
--						   BPF_CGROUP_INET6_GETSOCKNAME,
-+					    BPF_CGROUP_INET6_GETSOCKNAME,
- 					    NULL);
-+	}
- 	sin->sin6_scope_id = ipv6_iface_scope_id(&sin->sin6_addr,
- 						 sk->sk_bound_dev_if);
- 	return sizeof(*sin);
-diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
-index 9008f5796ad4..50611bd63647 100644
---- a/net/ipv6/udp.c
-+++ b/net/ipv6/udp.c
-@@ -409,9 +409,8 @@ int udpv6_recvmsg(struct sock *sk, struct msghdr *msg, size_t len,
- 		}
- 		*addr_len = sizeof(*sin6);
- 
--		if (cgroup_bpf_enabled)
--			BPF_CGROUP_RUN_PROG_UDP6_RECVMSG_LOCK(sk,
--						(struct sockaddr *)sin6);
-+		BPF_CGROUP_RUN_PROG_UDP6_RECVMSG_LOCK(sk,
-+						      (struct sockaddr *)sin6);
- 	}
- 
- 	if (udp_sk(sk)->gro_enabled)
-@@ -1462,7 +1461,7 @@ int udpv6_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
- 		fl6.saddr = np->saddr;
- 	fl6.fl6_sport = inet->inet_sport;
- 
--	if (cgroup_bpf_enabled && !connected) {
-+	if (cgroup_bpf_enabled(BPF_CGROUP_UDP6_SENDMSG) && !connected) {
- 		err = BPF_CGROUP_RUN_PROG_UDP6_SENDMSG_LOCK(sk,
- 					   (struct sockaddr *)sin6, &fl6.saddr);
- 		if (err)
--- 
-2.29.2.729.g45daf8777d-goog
+The bpf_snprintf signature can be
+    long bpf_snprintf(const char *out, u32 out_size,
+                      const struct bpf_fmt_str_data *fmt_data,
+                      u32 fmt_data_len);
 
+Internally you can have one argument type for "struct bpf_fmt_str_data" 
+like PTR_TO_FMT_DATA as a verifier reg state. if bpf_snprintf is used, 
+when you try to verify PTR_TO_FMT_DATA, you can just verify 
+fmt_data->fmt and fmt_data->fmt_len which satifies mem contraints.
+The rest of data can be passed to the helper as is.
+
+Yes, still some verifier work. But may be useful for this and
+future format string related helpers.
