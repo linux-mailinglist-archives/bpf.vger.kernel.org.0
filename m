@@ -2,124 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E1B32DD883
-	for <lists+bpf@lfdr.de>; Thu, 17 Dec 2020 19:39:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0245C2DD870
+	for <lists+bpf@lfdr.de>; Thu, 17 Dec 2020 19:34:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728183AbgLQSjT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Dec 2020 13:39:19 -0500
-Received: from mga01.intel.com ([192.55.52.88]:9829 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728160AbgLQSjT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Dec 2020 13:39:19 -0500
-IronPort-SDR: 8fSbeASh3S0aVSod3m35UjfaT+fAO5QSMbi+4WCBuvsUNB+kJ6/o9QildlrZNJHPxGKfpMpRtb
- frthc2Ebwcmg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9838"; a="193705823"
-X-IronPort-AV: E=Sophos;i="5.78,428,1599548400"; 
-   d="scan'208";a="193705823"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Dec 2020 10:38:38 -0800
-IronPort-SDR: ny0qku8lz4QI5uJeEqRi3PBiMkeX5GghdqAk0ms3AJeYpTZHsvOr0L/l0xERBAqgC+bvFY1ox5
- 8Fgk0N6MBjJw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,428,1599548400"; 
-   d="scan'208";a="339732303"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by fmsmga008.fm.intel.com with ESMTP; 17 Dec 2020 10:38:36 -0800
-Date:   Thu, 17 Dec 2020 19:28:45 +0100
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Saeed Mahameed <saeed@kernel.org>
-Cc:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, alexander.duyck@gmail.com
-Subject: Re: [PATCH v3 bpf-next 2/2] net: xdp: introduce xdp_prepare_buff
- utility routine
-Message-ID: <20201217182845.GB43061@ranger.igk.intel.com>
-References: <cover.1607794551.git.lorenzo@kernel.org>
- <71d5ae9f810c2c80f1cb09e304330be0b5ce5345.1607794552.git.lorenzo@kernel.org>
- <20201215123643.GA23785@ranger.igk.intel.com>
- <20201215134710.GB5477@lore-desk>
- <20201216095240.43867406@carbon>
- <20201216150126.GD2036@lore-desk>
- <f6ea4b091ce6aa7fc91954ff1e988a3bf285ca52.camel@kernel.org>
+        id S1730142AbgLQSda (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Dec 2020 13:33:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728704AbgLQSda (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Dec 2020 13:33:30 -0500
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 599DAC0617A7
+        for <bpf@vger.kernel.org>; Thu, 17 Dec 2020 10:32:49 -0800 (PST)
+Received: by mail-il1-x130.google.com with SMTP id x15so26759442ilq.1
+        for <bpf@vger.kernel.org>; Thu, 17 Dec 2020 10:32:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=euqBXwlKpksM2O1B20N3zwYJHM+krRb1R0QlrPJovKs=;
+        b=hloE6vQ34Nt0jvI6wpY7VyipHe1zhzyr1SdISONaS2dIFdFEvi78131QKFFDzX4pKc
+         NrO6qu4ndHfPR+rXUnD3mJbBbsvfgiNoLocM+ZCbE9Ij20m3Kn2GxT755xEKCgh1fvh6
+         yU9lp7+wI8RWhYTb8mQH3oHnDFFN9h94b8WQ8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=euqBXwlKpksM2O1B20N3zwYJHM+krRb1R0QlrPJovKs=;
+        b=llCXeaVXcdg+CjisqtKvyBzl6dA0NnPpawMAV9WM7H2ZVhRW3Ea2OKqKB6HpYlw7i6
+         I8TajTexD13blrycMPWopKTjB6V3e75O2xsLlT1bctAeVyBEkm5BQzZ/SLBQekegq1qo
+         VZR1ZRc5fqWC4H/cECCivN+/KCtgLQ6x603GMxLlbEZrLiz9YNtcOX9pl9mTlKBHdMNe
+         LafN9OQDvKelWILs23qaJLBJYX/gaG6xLBIejkVZL5CWziuLhIr3AuX0xfyaxtnKT+nC
+         zMG/ew1xct0JSM3cOXrP36HgbkiBX6YBiCwkS7CSucuqF+t5V3NP1DYJF8xKJvRMDVPL
+         CyqA==
+X-Gm-Message-State: AOAM531yaAwwsUZ5cyVfWdJici2WrFOyxuhuy7wbrMH489VXO525s0Xf
+        +ACY10kXiSAf836FiBgyCr+fDQ==
+X-Google-Smtp-Source: ABdhPJwKbvtaglTe9buBF6UPtZDTuxPohT7p6/IvZcZYmSMeL0UCG5btnwEfAEImPVuebSVaKl8DdQ==
+X-Received: by 2002:a92:155b:: with SMTP id v88mr124823ilk.303.1608229968746;
+        Thu, 17 Dec 2020 10:32:48 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id d18sm3662791ilo.49.2020.12.17.10.32.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Dec 2020 10:32:48 -0800 (PST)
+Subject: Re: [PATCH] selftests: Skip BPF seftests by default
+To:     Mark Brown <broonie@kernel.org>,
+        Seth Forshee <seth.forshee@canonical.com>
+Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Daniel Diaz <daniel.diaz@linaro.org>,
+        Veronika Kabatova <vkabatov@redhat.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Guillaume Tucker <guillaume.tucker@collabora.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20201210185233.28091-1-broonie@kernel.org>
+ <X9qExiKXPVmk3BJI@ubuntu-x1> <20201217130735.GA4708@sirena.org.uk>
+ <94010653-0cb3-d804-7410-a571480d6db2@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <008fb8b6-2632-e0c8-8e6a-c643d953bde5@linuxfoundation.org>
+Date:   Thu, 17 Dec 2020 11:32:47 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f6ea4b091ce6aa7fc91954ff1e988a3bf285ca52.camel@kernel.org>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <94010653-0cb3-d804-7410-a571480d6db2@linuxfoundation.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 10:16:06AM -0800, Saeed Mahameed wrote:
-> On Wed, 2020-12-16 at 16:01 +0100, Lorenzo Bianconi wrote:
-> > > On Tue, 15 Dec 2020 14:47:10 +0100
-> > > Lorenzo Bianconi <lorenzo.bianconi@redhat.com> wrote:
-> > > 
-> > > > [...]
-> > > > > >  	xdp_act = bpf_prog_run_xdp(xdp_prog, &xdp);
-> > > > > > diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-> > > > > > b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-> > > > > > index 4dbbbd49c389..fcd1ca3343fb 100644
-> > > > > > --- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-> > > > > > +++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-> > > > > > @@ -2393,12 +2393,12 @@ static int i40e_clean_rx_irq(struct
-> > > > > > i40e_ring *rx_ring, int budget)
-> > > > > >  
-> > > > > >  		/* retrieve a buffer from the ring */
-> > > > > >  		if (!skb) {
-> > > > > > -			xdp.data = page_address(rx_buffer-
-> > > > > > >page) +
-> > > > > > -				   rx_buffer->page_offset;
-> > > > > > -			xdp.data_meta = xdp.data;
-> > > > > > -			xdp.data_hard_start = xdp.data -
-> > > > > > -					      i40e_rx_offset(rx
-> > > > > > _ring);
-> > > > > > -			xdp.data_end = xdp.data + size;
-> > > > > > +			unsigned int offset =
-> > > > > > i40e_rx_offset(rx_ring);  
-> > > > > 
-> > > > > I now see that we could call the i40e_rx_offset() once per
-> > > > > napi, so can
-> > > > > you pull this variable out and have it initialized a single
-> > > > > time? Applies
-> > > > > to other intel drivers as well.  
-> > > > 
-> 
-> How is this related to this series? i suggest to keep this series clean
-> of vendor specific unrelated optimizations, this must be done in a
-> separate patchset.
+On 12/17/20 8:53 AM, Shuah Khan wrote:
+> On 12/17/20 6:07 AM, Mark Brown wrote:
+>> On Wed, Dec 16, 2020 at 04:05:58PM -0600, Seth Forshee wrote:
+>>> On Thu, Dec 10, 2020 at 06:52:33PM +0000, Mark Brown wrote:
+>>
+>>>> as part of the wider kselftest build by specifying SKIP_TARGETS,
+>>>> including setting an empty SKIP_TARGETS to build everything.  They can
+>>>> also continue to build the BPF selftests individually in cases where
+>>>> they are specifically focused on BPF.
+>>
 
-Well, Lorenzo explicitly is touching the thing that I referred to, so I
-just ask if he can optimize it while he's at it.
+Applied to linuxkselftest fixes for rc2
 
-Of course I'm fine with addressing this by myself once -next opens :)
-
-> 
-> 
-> > > > ack, fine. I will fix in v4.
-> > > 
-> > > Be careful with the Intel drivers.  They have two modes (at compile
-> > > time) depending on PAGE_SIZE in system.  In one of the modes
-> > > (default
-> > > one) you can place init of xdp.frame_sz outside the NAPI loop and
-> > > init a
-> > > single time.  In the other mode you cannot, and it becomes dynamic
-> > > per
-> > > packet.  Intel review this carefully, please!
-> > 
-> > ack. Actully I kept the xdp.frame_sz configuration in the NAPI loop
-> > but
-> > an Intel review will be nice.
-> > 
-> > Regards,
-> > Lorenzo
-> > 
-> > > -- 
-> > > Best regards,
-> > >   Jesper Dangaard Brouer
-> > >   MSc.CS, Principal Kernel Engineer at Red Hat
-> > >   LinkedIn: http://www.linkedin.com/in/brouer
-> > > 
-> 
+thanks,
+-- Shuah
