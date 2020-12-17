@@ -2,287 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37A242DD4F3
-	for <lists+bpf@lfdr.de>; Thu, 17 Dec 2020 17:08:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44B882DD4FA
+	for <lists+bpf@lfdr.de>; Thu, 17 Dec 2020 17:12:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727781AbgLQQHs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Dec 2020 11:07:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727769AbgLQQHs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Dec 2020 11:07:48 -0500
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15ABCC061794;
-        Thu, 17 Dec 2020 08:07:08 -0800 (PST)
-Received: by mail-ot1-x32e.google.com with SMTP id b24so10290787otj.0;
-        Thu, 17 Dec 2020 08:07:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=eNrflhnat4e4hEDmIASVHKPqsG6rOPWoVu8ELuRKqGQ=;
-        b=RmydDMEBR8naEK20jfZKFVCNmXaxHCFZH0z513cS/Y0n0zsnvzcV5pz2ovSEW+6xmk
-         or/ol+0nA97ibk+WeOTGx67+B5bzmKdCyLINM0xMTwSC/C/p/XXxfBEeStMtNleTtxLo
-         UDs3Il5kcrBpox4ze40rt/rN1/UXjf78XJ90FYLmjp8NqiJ/PFj4xjNlxsx2XJoZqmwi
-         EYsGkbO0S5gR0NTXr+Q1fRBsknRALINLKyxR4ySXf+CanVEQiqsnvADaxva5p7LEWfqS
-         wo3ueRYlb2CPDiNToACHpTNwfYpWlYSiQ9/pjuDqZM1UtPlzm5fmRWUPDvlCIRIiWcmw
-         q4+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eNrflhnat4e4hEDmIASVHKPqsG6rOPWoVu8ELuRKqGQ=;
-        b=GOZfzVjZdRpfF3mnPB5DH/zSnAzzxP+64bBVyXsgfeNnK1K05hNRdN3xROZ7feAqdq
-         JHuZoKcCvIWUm8SQkRvf+STSIdjLLUvII02kTD4rKY/ltKn3GYzi1FRB7rKRkhiRnWMy
-         wdwoYFYh7P0ii0/f6Wy5XuOwIxR8fK8UL5Wlq4wR9dsPh6X01F+QTpEbZbeVDI1BTSz3
-         1UQn+MUXA2xQqkYrdUqw0lzArFGpMzq6JQPxNfOse434wt+KnPaR/4yucNQxB8NMtrR/
-         JpfMlZPYgEneadGbinK3oevP/ct/3fD7dPXUrUJau1irDhdlORynYrxAygGi0TPUqGU+
-         tcZw==
-X-Gm-Message-State: AOAM530AjSRTODmyDtUmjib2QOn78ZQyfu/4Zt9XPKCeUBn0ATngueWa
-        e3S1H5BDAOYdm/uBi6ZGE4A=
-X-Google-Smtp-Source: ABdhPJyGDq/YcwxBRfXA54+QkGci3T5z0W8OASUMhi2SS29NnU+iXblZ3LBKTRjB9HOIPBXkVtMxng==
-X-Received: by 2002:a05:6830:1398:: with SMTP id d24mr31178841otq.199.1608221227480;
-        Thu, 17 Dec 2020 08:07:07 -0800 (PST)
-Received: from Davids-MacBook-Pro.local ([2601:282:800:dc80:4cdf:c7b2:9c38:dc7d])
-        by smtp.googlemail.com with ESMTPSA id l6sm1275815otf.34.2020.12.17.08.07.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Dec 2020 08:07:06 -0800 (PST)
-Subject: Re: [PATCHv12 bpf-next 1/6] bpf: run devmap xdp_prog on flush instead
- of bulk enqueue
-To:     Hangbin Liu <liuhangbin@gmail.com>, bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Jiri Benc <jbenc@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        id S1726012AbgLQQMl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Dec 2020 11:12:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39370 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726291AbgLQQMk (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 17 Dec 2020 11:12:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608221474;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=o8uqzEh2yDZGv6IQSU+LjpuBTK7ef37k28xQm9V5cVU=;
+        b=jBQ8dfnRGC8jOYYRVCDcke74bi/CLDnHHe5dBbA25cnNghwYPWZXQnrgcnsHGIzXdd9WFh
+        QLdrjB9OfLN0ArVrWl874cOycL/q8O+P75lupS3ZYgpQ8v3wL0+PAZx5geIQ8cuMoblGYO
+        /h8LStAVha5uQ9unkzNm0uVaLDfnEHs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-437-gCYFofFyOOeBqe0aNRY3YA-1; Thu, 17 Dec 2020 11:11:09 -0500
+X-MC-Unique: gCYFofFyOOeBqe0aNRY3YA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1BC851005513;
+        Thu, 17 Dec 2020 16:11:07 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.6])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A7E651C92F;
+        Thu, 17 Dec 2020 16:10:58 +0000 (UTC)
+Date:   Thu, 17 Dec 2020 17:10:57 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Daniel Borkmann <borkmann@iogearbox.net>,
         Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Hangbin Liu <haliu@redhat.com>
-References: <20200907082724.1721685-1-liuhangbin@gmail.com>
- <20201216143036.2296568-1-liuhangbin@gmail.com>
- <20201216143036.2296568-2-liuhangbin@gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <913a8e62-3f17-84ed-e4f5-099ba441508c@gmail.com>
-Date:   Thu, 17 Dec 2020 09:07:03 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.1
+        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
+        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
+        colrack@gmail.com, brouer@redhat.com
+Subject: Re: [PATCH bpf-next V8 5/8] bpf: drop MTU check when doing TC-BPF
+ redirect to ingress
+Message-ID: <20201217171057.734c79d8@carbon>
+In-Reply-To: <20201217154655.42e89d08@carbon>
+References: <160650034591.2890576.1092952641487480652.stgit@firesoul>
+        <160650040292.2890576.17040975200628427127.stgit@firesoul>
+        <af28e4e7-8089-b252-3927-a962b98ad7b8@iogearbox.net>
+        <20201217154655.42e89d08@carbon>
 MIME-Version: 1.0
-In-Reply-To: <20201216143036.2296568-2-liuhangbin@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/16/20 7:30 AM, Hangbin Liu wrote:
-> @@ -327,40 +328,92 @@ bool dev_map_can_have_prog(struct bpf_map *map)
->  	return false;
->  }
->  
-> +static int dev_map_bpf_prog_run(struct bpf_prog *xdp_prog,
-> +				struct xdp_frame **frames, int n,
-> +				struct net_device *dev)
-> +{
-> +	struct xdp_txq_info txq = { .dev = dev };
-> +	struct xdp_buff xdp;
-> +	int i, nframes = 0;
-> +
-> +	for (i = 0; i < n; i++) {
-> +		struct xdp_frame *xdpf = frames[i];
-> +		u32 act;
-> +		int err;
-> +
-> +		xdp_convert_frame_to_buff(xdpf, &xdp);
-> +		xdp.txq = &txq;
-> +
-> +		act = bpf_prog_run_xdp(xdp_prog, &xdp);
-> +		switch (act) {
-> +		case XDP_PASS:
-> +			err = xdp_update_frame_from_buff(&xdp, xdpf);
-> +			if (unlikely(err < 0))
-> +				xdp_return_frame_rx_napi(xdpf);
-> +			else
-> +				frames[nframes++] = xdpf;
-> +			break;
-> +		default:
-> +			bpf_warn_invalid_xdp_action(act);
-> +			fallthrough;
-> +		case XDP_ABORTED:
-> +			trace_xdp_exception(dev, xdp_prog, act);
-> +			fallthrough;
-> +		case XDP_DROP:
-> +			xdp_return_frame_rx_napi(xdpf);
-> +			break;
-> +		}
-> +	}
-> +	return n - nframes; /* dropped frames count */
+On Thu, 17 Dec 2020 15:46:55 +0100
+Jesper Dangaard Brouer <brouer@redhat.com> wrote:
 
-just return nframes here, since ...
+> > > diff --git a/net/core/filter.c b/net/core/filter.c
+> > > index d6125cfc49c3..4673afe59533 100644
+> > > --- a/net/core/filter.c
+> > > +++ b/net/core/filter.c
+> > > @@ -2083,13 +2083,21 @@ static const struct bpf_func_proto bpf_csum_l=
+evel_proto =3D {
+> > >  =20
+> > >   static inline int __bpf_rx_skb(struct net_device *dev, struct sk_bu=
+ff *skb)
+> > >   {
+> > > -	return dev_forward_skb(dev, skb);
+> > > +	int ret =3D ____dev_forward_skb(dev, skb, false);
+> > > +
+> > > +	if (likely(!ret)) {
+> > > +		skb->protocol =3D eth_type_trans(skb, dev);
+> > > +		skb_postpull_rcsum(skb, eth_hdr(skb), ETH_HLEN);
+> > > +		ret =3D netif_rx(skb);   =20
+> >=20
+> > Why netif_rx() and not netif_rx_internal() as in dev_forward_skb() orig=
+inally?
+> > One extra call otherwise. =20
+>=20
+> This is because the function below calls netif_rx(), which is just
+> outside patch-diff-window.  Thus, it looked wrong/strange to call
+> netif_rx_internal(), but sure I can use netif_rx_internal() instead.
 
-> +}
-> +
->  static void bq_xmit_all(struct xdp_dev_bulk_queue *bq, u32 flags)
->  {
->  	struct net_device *dev = bq->dev;
->  	int sent = 0, drops = 0, err = 0;
-> +	unsigned int cnt = bq->count;
-> +	unsigned int xdp_drop;
->  	int i;
->  
-> -	if (unlikely(!bq->count))
-> +	if (unlikely(!cnt))
->  		return;
->  
-> -	for (i = 0; i < bq->count; i++) {
-> +	for (i = 0; i < cnt; i++) {
->  		struct xdp_frame *xdpf = bq->q[i];
->  
->  		prefetch(xdpf);
->  	}
->  
-> -	sent = dev->netdev_ops->ndo_xdp_xmit(dev, bq->count, bq->q, flags);
-> +	if (unlikely(bq->xdp_prog)) {
-> +		xdp_drop = dev_map_bpf_prog_run(bq->xdp_prog, bq->q, cnt, dev);
-> +		cnt -= xdp_drop;
+Well, when building I found that we obviously cannot call
+netif_rx_internal() as this is filter.c, else we get a build error:
 
-... that is apparently what you really want.
+net/core/filter.c:2091:9: error: implicit declaration of function =E2=80=98=
+netif_rx_internal=E2=80=99 [-Werror=3Dimplicit-function-declaration]
+ 2091 |   ret =3D netif_rx_internal(skb);
+      |         ^~~~~~~~~~~~~~~~~
 
-> +		if (!cnt) {
-> +			sent = 0;
-> +			drops = xdp_drop;
-> +			goto out;
-> +		}
-> +	}
-> +
-> +	sent = dev->netdev_ops->ndo_xdp_xmit(dev, cnt, bq->q, flags);
->  	if (sent < 0) {
->  		err = sent;
->  		sent = 0;
->  		goto error;
->  	}
-> -	drops = bq->count - sent;
-> +	drops = (cnt - sent) + xdp_drop;
->  out:
->  	bq->count = 0;
->  
->  	trace_xdp_devmap_xmit(bq->dev_rx, dev, sent, drops, err);
->  	bq->dev_rx = NULL;
-> +	bq->xdp_prog = NULL;
->  	__list_del_clearprev(&bq->flush_node);
->  	return;
->  error:
->  	/* If ndo_xdp_xmit fails with an errno, no frames have been
->  	 * xmit'ed and it's our responsibility to them free all.
->  	 */
-> -	for (i = 0; i < bq->count; i++) {
-> +	for (i = 0; i < cnt; i++) {
->  		struct xdp_frame *xdpf = bq->q[i];
->  
->  		xdp_return_frame_rx_napi(xdpf);
-> @@ -408,7 +461,8 @@ struct bpf_dtab_netdev *__dev_map_lookup_elem(struct bpf_map *map, u32 key)
->   * Thus, safe percpu variable access.
->   */
->  static void bq_enqueue(struct net_device *dev, struct xdp_frame *xdpf,
-> -		       struct net_device *dev_rx)
-> +		       struct net_device *dev_rx,
-> +		       struct bpf_dtab_netdev *dst)
->  {
->  	struct list_head *flush_list = this_cpu_ptr(&dev_flush_list);
->  	struct xdp_dev_bulk_queue *bq = this_cpu_ptr(dev->xdp_bulkq);
-> @@ -423,6 +477,14 @@ static void bq_enqueue(struct net_device *dev, struct xdp_frame *xdpf,
->  	if (!bq->dev_rx)
->  		bq->dev_rx = dev_rx;
->  
-> +	/* Store (potential) xdp_prog that run before egress to dev as
-> +	 * part of bulk_queue.  This will be same xdp_prog for all
-> +	 * xdp_frame's in bulk_queue, because this per-CPU store must
-> +	 * be flushed from net_device drivers NAPI func end.
-> +	 */
-> +	if (dst && dst->xdp_prog && !bq->xdp_prog)
-> +		bq->xdp_prog = dst->xdp_prog;
-
-
-if you pass in xdp_prog through __xdp_enqueue you can reduce that to just:
-
-	if (!bq->xdp_prog)
-		bq->xdp_prog = xdp_prog;
-
-
->  	bq->q[bq->count++] = xdpf;
->  
->  	if (!bq->flush_node.prev)
-> @@ -430,7 +492,8 @@ static void bq_enqueue(struct net_device *dev, struct xdp_frame *xdpf,
->  }
->  
->  static inline int __xdp_enqueue(struct net_device *dev, struct xdp_buff *xdp,
-> -			       struct net_device *dev_rx)
-> +				struct net_device *dev_rx,
-> +				struct bpf_dtab_netdev *dst)
->  {
->  	struct xdp_frame *xdpf;
->  	int err;
-> @@ -446,42 +509,14 @@ static inline int __xdp_enqueue(struct net_device *dev, struct xdp_buff *xdp,
->  	if (unlikely(!xdpf))
->  		return -EOVERFLOW;
->  
-> -	bq_enqueue(dev, xdpf, dev_rx);
-> +	bq_enqueue(dev, xdpf, dev_rx, dst);
->  	return 0;
->  }
->  
-> -static struct xdp_buff *dev_map_run_prog(struct net_device *dev,
-> -					 struct xdp_buff *xdp,
-> -					 struct bpf_prog *xdp_prog)
-> -{
-> -	struct xdp_txq_info txq = { .dev = dev };
-> -	u32 act;
-> -
-> -	xdp_set_data_meta_invalid(xdp);
-> -	xdp->txq = &txq;
-> -
-> -	act = bpf_prog_run_xdp(xdp_prog, xdp);
-> -	switch (act) {
-> -	case XDP_PASS:
-> -		return xdp;
-> -	case XDP_DROP:
-> -		break;
-> -	default:
-> -		bpf_warn_invalid_xdp_action(act);
-> -		fallthrough;
-> -	case XDP_ABORTED:
-> -		trace_xdp_exception(dev, xdp_prog, act);
-> -		break;
-> -	}
-> -
-> -	xdp_return_buff(xdp);
-> -	return NULL;
-> -}
-> -
->  int dev_xdp_enqueue(struct net_device *dev, struct xdp_buff *xdp,
->  		    struct net_device *dev_rx)
->  {
-> -	return __xdp_enqueue(dev, xdp, dev_rx);
-> +	return __xdp_enqueue(dev, xdp, dev_rx, NULL);
->  }
->  
->  int dev_map_enqueue(struct bpf_dtab_netdev *dst, struct xdp_buff *xdp,
-> @@ -489,12 +524,7 @@ int dev_map_enqueue(struct bpf_dtab_netdev *dst, struct xdp_buff *xdp,
->  {
->  	struct net_device *dev = dst->dev;
->  
-> -	if (dst->xdp_prog) {
-> -		xdp = dev_map_run_prog(dev, xdp, dst->xdp_prog);
-> -		if (!xdp)
-> -			return 0;
-> -	}
-> -	return __xdp_enqueue(dev, xdp, dev_rx);
-> +	return __xdp_enqueue(dev, xdp, dev_rx, dst);
->  }
->  
->  int dev_map_generic_redirect(struct bpf_dtab_netdev *dst, struct sk_buff *skb,
-> 
+--=20
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
