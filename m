@@ -2,31 +2,32 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 176892DCDB9
-	for <lists+bpf@lfdr.de>; Thu, 17 Dec 2020 09:40:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E1E2DCE67
+	for <lists+bpf@lfdr.de>; Thu, 17 Dec 2020 10:32:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726864AbgLQIkK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Dec 2020 03:40:10 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:9899 "EHLO
+        id S1726259AbgLQJc1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Dec 2020 04:32:27 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:9900 "EHLO
         szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726862AbgLQIkK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 17 Dec 2020 03:40:10 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CxQPw5Psrz7Fp9;
-        Thu, 17 Dec 2020 16:38:44 +0800 (CST)
-Received: from huawei.com (10.44.142.101) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Thu, 17 Dec 2020
- 16:39:16 +0800
+        with ESMTP id S1726155AbgLQJc0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Dec 2020 04:32:26 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CxRZK57hgz7Fwt;
+        Thu, 17 Dec 2020 17:31:05 +0800 (CST)
+Received: from huawei.com (10.44.142.101) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Thu, 17 Dec 2020
+ 17:31:36 +0800
 From:   Zhuling <zhuling8@huawei.com>
 To:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
         <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
         <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
         <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
         <bpf@vger.kernel.org>
-CC:     <luanjianhai@huawei.com>, <luchunhua@huawei.com>
-Subject: [PATCH] Modify hardcode 2 to SECCOMP_MODE_FILTER
-Date:   Thu, 17 Dec 2020 15:54:13 +0800
-Message-ID: <20201217075413.19314-1-zhuling8@huawei.com>
+CC:     <luanjianhai@huawei.com>, <luchunhua@huawei.com>,
+        <zhuling8@huawei.com>
+Subject: [PATCH] Modify hardcode to SECCOMP_MODE_FILTER
+Date:   Thu, 17 Dec 2020 16:46:32 +0800
+Message-ID: <20201217084632.67251-1-zhuling8@huawei.com>
 X-Mailer: git-send-email 2.9.5
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -37,6 +38,11 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 From: zhuling <zhuling8@huawei.com>
+
+    bpf/seccomp: modify hardcode 2 to SECCOMP_MODE_FILTER
+
+    while the hardcode 2 has been define in seccomp_bpf.c, we should use
+the definitions(SECCOMP_MODE_FILTER) instead of hardcode 2.
 
 Signed-off-by: zhuling <zhuling8@huawei.com>
 ---
