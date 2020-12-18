@@ -2,271 +2,215 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1C972DDF3E
-	for <lists+bpf@lfdr.de>; Fri, 18 Dec 2020 08:51:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 711C62DE014
+	for <lists+bpf@lfdr.de>; Fri, 18 Dec 2020 09:49:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728137AbgLRHuz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Dec 2020 02:50:55 -0500
-Received: from de-smtp-delivery-102.mimecast.com ([62.140.7.102]:38285 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732367AbgLRHuz (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 18 Dec 2020 02:50:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1608277785;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hyrYqRtTXMHSyqoUwmKQEUTSYec7i3mrrG1VEpyCw98=;
-        b=cCvsSsN6oTSECfZkwAM9irArvAihsSbyJTIU6NnWdi2tAoKLMJNky0e3qTkDKgAoIZTXv1
-        DrkIt6OIf1WMf91Hoaxx0YjngqK734hZDHXnpGa0kSr9MQfOC4XZS9pE/4MX6VYlHkC39c
-        CKOgZWyIqaU8g774KKsAExxoI9G1j5c=
-Received: from EUR03-AM5-obe.outbound.protection.outlook.com
- (mail-am5eur03lp2058.outbound.protection.outlook.com [104.47.8.58]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-32-bpqHbXHBOuy-SwDRA5_j4w-4; Fri, 18 Dec 2020 08:49:44 +0100
-X-MC-Unique: bpqHbXHBOuy-SwDRA5_j4w-4
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=b2BLMN9BIwc+UCPfmznCM2c/TefV5u4wsWM3dvgRrGQFvsd0r/stKoBpwGnUMFbS9xREhCCfBEvQlkaBMjl8khdVRJWSxkoC99XoREP1/uYQJB44P8l9eFM8PnYsnwjJmKc9yt5+NJqT5EBbBV/k9FNksKJ9Nj1I+I9zQU7i4nXR2piMko3DCtXRNL3ahLHyKbJCI6oTer9j9oGcDkObKTnjKPM6dHfMvyRaibhZgdxUMXfAlvv8NK6wHyyZq+K6gjNkKwR13n7RMpGPaMp8ohZ9xMM57J8/d048dnCOzES3jJQXOYLbkkqBzIDWhYdmBq7eL9CMQk7IKt3jHMZE2g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BfsH9zmb27Cp6M9alTjweF2YknHyXXP5e6uFAYUAYj8=;
- b=BQk1wottZTm5vb7miMKLGv+OIrTDexXjxuNBC16iKBKXehp18eBEgJ+iDwLBxc9wd8ofBisiL0qsH4Gr6cOYLOFsQ32BtP3T4v23XWPYAep2cWEirMCC8hGRA+jWAkz6WGsalpfkPgjeTcBP/do+TqFcZuu9cDrTrsb0RGJ5ts7Ur6O0RgKpB5zCyzfoYrO0UJ0IMsAzuMXm/4nS4sSP5CHRwGe4TMCPmx5Jh3x0f6d3NJnBH+Cn0NTTKoDYfNjUPjJRKSQADC5Pu1LPbUPx2ZZKwD7dWO1JpeO92lkeOkwiX9/xOtFmJpLLaXqj+BkCzc3raUDXXN4qnC9mHtKJeQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
-Received: from DB3PR0402MB3641.eurprd04.prod.outlook.com (2603:10a6:8:b::12)
- by DB8PR04MB5755.eurprd04.prod.outlook.com (2603:10a6:10:ac::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.15; Fri, 18 Dec
- 2020 07:49:40 +0000
-Received: from DB3PR0402MB3641.eurprd04.prod.outlook.com
- ([fe80::80c9:1fa3:ae84:7313]) by DB3PR0402MB3641.eurprd04.prod.outlook.com
- ([fe80::80c9:1fa3:ae84:7313%6]) with mapi id 15.20.3676.025; Fri, 18 Dec 2020
- 07:49:40 +0000
-From:   Gary Lin <glin@suse.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-CC:     Alexei Starovoitov <ast@kernel.org>,
+        id S1732745AbgLRIta (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Dec 2020 03:49:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732708AbgLRIta (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Dec 2020 03:49:30 -0500
+X-Greylist: delayed 64020 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 18 Dec 2020 00:48:49 PST
+Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96074C0617A7;
+        Fri, 18 Dec 2020 00:48:48 -0800 (PST)
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id C7FA6C6357; Fri, 18 Dec 2020 08:48:44 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
+        t=1608281324; bh=CIzQrAxB7jgM7leCH+INznRjBjqtpr1Q5eX8IU853Gs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c+foaB8HTf0USnft7LqxYZA0Z5Iy4qGqYKAUqCLKH7zIZqPaJFdeYOwfT7WaMja4g
+         DPdNXrfQHnGINeG3HViP1H+XaUAx9+yV/P8F7IQX9xF/rnU/FclrKt0YTptn87RRPK
+         X7WiQG+hSa8B+2HGHkpE9FrW8B6PuZXQyWeNgXXm79FVDXFV5i1qLKjsLZnwjzuOe7
+         xZNZlCgAHUoD5jFdPZgI9Hzb1NoXdnHG5MtYCszSeD3Am2BbxNPd4HJ7NJNSPS/GYQ
+         9OlScxKHMScuJWBcYcJfy7+O66Jr29bi+bLMC8T7Y/SKkQH6KUmiqpekgvVmPVZiJI
+         IMarfEcNWnM/A==
+Date:   Fri, 18 Dec 2020 08:48:44 +0000
+From:   Sean Young <sean@mess.org>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        andreas.taschner@suse.com
-Subject: [PATCH v2 3/3] selftests/bpf: Add verifier test for x64 jit jump padding
-Date:   Fri, 18 Dec 2020 15:49:15 +0800
-Message-ID: <20201218074915.22242-4-glin@suse.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201218074915.22242-1-glin@suse.com>
-References: <20201218074915.22242-1-glin@suse.com>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-X-Originating-IP: [36.227.5.136]
-X-ClientProxiedBy: AM0PR10CA0037.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:20b:150::17) To DB3PR0402MB3641.eurprd04.prod.outlook.com
- (2603:10a6:8:b::12)
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        linux-doc@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] btf: support ints larger than 128 bits
+Message-ID: <20201218084844.GA28455@gofer.mess.org>
+References: <20201217150102.GA13532@gofer.mess.org>
+ <1e9594be-c21d-88d2-e3bf-0b8e3e991aa1@fb.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from GaryLaptop.prv.suse.net (36.227.5.136) by AM0PR10CA0037.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:150::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3676.28 via Frontend Transport; Fri, 18 Dec 2020 07:49:38 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6904bf3f-5bdc-478f-8b3a-08d8a32979f6
-X-MS-TrafficTypeDiagnostic: DB8PR04MB5755:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB8PR04MB57556D59EE9886CF84BE086CA9C30@DB8PR04MB5755.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: cKkVOkGxktNTE98UNmPjIpQN/zGYg8NxshuTHohzD/9S0x7nrFNsKcxpArQu/CKmQjXVSq+whTagePCGS6V7991sNL1DeEHodL4EKdeauaAcOZZOhAWwU8BqI1RO6i0e76UDu7ojxfL46nCHGrxKddu3cdrnF+g90X7tJsW1Rol0dDIsQgwk2sRXdTb0UsFyP8Ehns/z9Oo7THstPSh9T4LS0T5tUzPoX1qqaKLFL/cioy1EU2DEL6V/EQ7QSpRSN/+1here4kd2B5IBhDv4YrYEEiy8+MhXiEZ+ye0IkGmY/1icmKdAAiTlckfSZqpM
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB3PR0402MB3641.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(39860400002)(396003)(376002)(346002)(6506007)(956004)(54906003)(66556008)(66946007)(52116002)(186003)(2906002)(66476007)(2616005)(26005)(8936002)(107886003)(86362001)(1076003)(16526019)(6486002)(4326008)(8676002)(6512007)(5660300002)(6666004)(478600001)(316002)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?RnpWqsQklstf43Ljx1x+4kaRhfgt/CkH0fh3r/Oj9O3YOBZLGd/CII7/1ttU?=
- =?us-ascii?Q?xnQf+Fxepnr0ctgMTFzTIXpfjc+zqNnkk4CYFTKOzPGQvumRCq4nksCW4/nQ?=
- =?us-ascii?Q?fa/jfQx4kapLmZKxjMT5Ogp4f2FOHXTtOecYTm51YaPXcFXtYTyP+L5VyaNT?=
- =?us-ascii?Q?6/q857VkD9nxtTNWmA4oeAiz1xnBFntWvKy/ZA+66Gvaoc2GSy7PS1xmjzt3?=
- =?us-ascii?Q?LscCxXpiZP5X5DZ2W8cvtElVd3YwqjZ+m7OZPaOfd1M0kM6S2ZEwSxebFEOc?=
- =?us-ascii?Q?EK1dZqndTbZ1ZNzb8y8MMhrvHO+tiwKWQuPMj0p6cM99RDae75bzq3+tof4h?=
- =?us-ascii?Q?UunC69pLpSePc9Yo0QChuaSf0yTq08euGITBvN+oSU20DOGxbTRrWjL8HsZ1?=
- =?us-ascii?Q?7sFNoUQiedamA2UiFXGZ8uJ9WuxEzkWhGZIxcPb/Ds9uEuagQe+GlkVOhXvY?=
- =?us-ascii?Q?XbKBPW0DCPry+PukYAsp6OFoPD7BmCb49uOQm3RdeNF9QrJdX77OkYhZlFkM?=
- =?us-ascii?Q?DqLuPJgkLk6UDCmgfcfReiX3Oi6JSWA6JDXgoItC4DQ2y9S3RPtlQbewrbng?=
- =?us-ascii?Q?67H3kvrV76jI+ilZEgpXVoP4m0awtoL6G0uN67zF2RBGNZHBTe0EWw6IDC2o?=
- =?us-ascii?Q?liJJuv/fIKM0fBMH5Yc4PEJPIglfbzquueRo6OyrZ4SNDuKCPTM9j2fi1mPL?=
- =?us-ascii?Q?llWwFN7teDaKWfojbeMswWT5v396cs20XJV2k+hgQvRpROJnr8jP8oKSyRI5?=
- =?us-ascii?Q?n6pIaEOkrB5wMSUemSoARsfiqm9TV9oSWYbaaF+xYCNJvjjftVx4owOawrgh?=
- =?us-ascii?Q?5QDse85NtR6/uRCBOGEJDY25mn//UL12k7VHHO/cR21Wziy+3gGaOhdBetSX?=
- =?us-ascii?Q?dWe//BXVpE2GwD6MxxnXjAGapoOgW/oKu2UIDr5dP/dX0xvHDieB48qxHf2d?=
- =?us-ascii?Q?rNM4RKw2/5/kf7JMV4B8O8QGdh5ygI5etoQzznr6+DY=3D?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-AuthSource: DB3PR0402MB3641.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Dec 2020 07:49:40.6703
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6904bf3f-5bdc-478f-8b3a-08d8a32979f6
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kluwO/jFeS6wiTvG1BJGLPMrMnqALF1M6PzXWHaY72sgecd0w9CKrKsy80V67oQB
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB5755
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1e9594be-c21d-88d2-e3bf-0b8e3e991aa1@fb.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-There are two tests added into verifier's jit tests to trigger x64
-jit jump padding. The first test can be represented as the following
-assembly code:
+Hi Yonghong,
 
-      1: bpf_call bpf_get_prandom_u32
-      2: if r0 =3D=3D 0 goto pc+128
-      3: if r0 =3D=3D 1 goto pc+128
-         ...
-    129: if r0 =3D=3D 127 goto pc+128
-    130: goto pc+128
-    131: goto pc+127
-         ...
-    256: goto pc+1
-    257: goto pc+0
-    258: r0 =3D 1
-    259: ret
+Thank you for the detailed review.
 
-We first store a random number to r0 and add the corresponding
-conditional jumps (2~129) to make verifier believe that those jump
-instructions from 130 to 257 are reachable. When the program is sent to
-x64 jit, it starts to optimize out the NOP jumps backwards from 257.
-Since there are 128 such jumps, the program easily reaches 15 passes and
-triggers jump padding.
+On Thu, Dec 17, 2020 at 06:12:11PM -0800, Yonghong Song wrote:
+> On 12/17/20 7:01 AM, Sean Young wrote:
+> > clang supports arbitrary length ints using the _ExtInt extension. This
+> > can be useful to hold very large values, e.g. 256 bit or 512 bit types.
+> > 
+> > Larger types (e.g. 1024 bits) are possible but I am unaware of a use
+> > case for these.
+> > 
+> > This requires the _ExtInt extension to enabled for BPF in clang, which
+> > is under review.
+> > 
+> > Link: https://clang.llvm.org/docs/LanguageExtensions.html#extended-integer-types
+> > Link: https://reviews.llvm.org/D93103
+> > 
+> > Signed-off-by: Sean Young <sean@mess.org>
+> > ---
+> >   Documentation/bpf/btf.rst      |  4 ++--
+> >   include/uapi/linux/btf.h       |  2 +-
+> >   tools/bpf/bpftool/btf_dumper.c | 39 ++++++++++++++++++++++++++++++++++
+> >   tools/include/uapi/linux/btf.h |  2 +-
+> >   4 files changed, 43 insertions(+), 4 deletions(-)
+> 
+> Thanks for the patch. But the change is not enough and no tests in the patch
+> set.
+> 
+> For example, in kernel/bpf/btf.c, we BITS_PER_U128 to guard in various
+> places where the number of integer bits must be <= 128 bits which is
+> what we supported now. In function btf_type_int_is_regular(), # of int
+> bits larger than 128 considered false. The extint like 256/512bits should be
+> also regular int.
 
-Here is the x64 jit code of the first test:
+Right, thanks for spotting that. I'll give the next version some better
+testing.
 
-      0:    0f 1f 44 00 00          nop    DWORD PTR [rax+rax*1+0x0]
-      5:    66 90                   xchg   ax,ax
-      7:    55                      push   rbp
-      8:    48 89 e5                mov    rbp,rsp
-      b:    e8 4c 90 75 e3          call   0xffffffffe375905c
-     10:    48 83 f8 01             cmp    rax,0x1
-     14:    0f 84 fe 04 00 00       je     0x518
-     1a:    48 83 f8 02             cmp    rax,0x2
-     1e:    0f 84 f9 04 00 00       je     0x51d
-      ...
-     f6:    48 83 f8 18             cmp    rax,0x18
-     fa:    0f 84 8b 04 00 00       je     0x58b
-    100:    48 83 f8 19             cmp    rax,0x19
-    104:    0f 84 86 04 00 00       je     0x590
-    10a:    48 83 f8 1a             cmp    rax,0x1a
-    10e:    0f 84 81 04 00 00       je     0x595
-      ...
-    500:    0f 84 83 01 00 00       je     0x689
-    506:    48 81 f8 80 00 00 00    cmp    rax,0x80
-    50d:    0f 84 76 01 00 00       je     0x689
-    513:    e9 71 01 00 00          jmp    0x689
-    518:    e9 6c 01 00 00          jmp    0x689
-      ...
-    5fe:    e9 86 00 00 00          jmp    0x689
-    603:    e9 81 00 00 00          jmp    0x689
-    608:    0f 1f 00                nop    DWORD PTR [rax]
-    60b:    eb 7c                   jmp    0x689
-    60d:    eb 7a                   jmp    0x689
-      ...
-    683:    eb 04                   jmp    0x689
-    685:    eb 02                   jmp    0x689
-    687:    66 90                   xchg   ax,ax
-    689:    b8 01 00 00 00          mov    eax,0x1
-    68e:    c9                      leave
-    68f:    c3                      ret
+> extint permits non-power-of-2 bits (e.g., 192bits), to support them
+> may not be necessary and this is not your use case. what do you think?
 
-As expected, a 3 bytes NOPs is inserted at 608 due to the transition
-from imm32 jmp to imm8 jmp. A 2 bytes NOPs is also inserted at 687 to
-replace a NOP jump.
+My feeling is that non-power-of-2 types are useful for llvm targets
+which such registers. I'm not sure they have much use for our use case
+or bpf in general. If anyone thinks otherwise I'm easily convinced.
 
-The second test is to invoke the first test as a subprog to test
-bpf2bpf. Per the system log, there was one more jit happened with only
-one pass and the same jit code was produced.
+> lib/bpf/btf.c btf__and_int() function also has the following check,
+> 
+>         /* byte_sz must be power of 2 */
+>         if (!byte_sz || (byte_sz & (byte_sz - 1)) || byte_sz > 16)
+>                 return -EINVAL;
+> 
+> So Extint 256 bits will fail here.
 
-Signed-off-by: Gary Lin <glin@suse.com>
----
- tools/testing/selftests/bpf/test_verifier.c | 43 +++++++++++++++++++++
- tools/testing/selftests/bpf/verifier/jit.c  | 16 ++++++++
- 2 files changed, 59 insertions(+)
+Indeed it will.
 
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/se=
-lftests/bpf/test_verifier.c
-index 9be395d9dc64..0671e88bc15d 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -296,6 +296,49 @@ static void bpf_fill_scale(struct bpf_test *self)
- 	}
- }
-=20
-+static int bpf_fill_torturous_jumps_insn(struct bpf_insn *insn)
-+{
-+	unsigned int len =3D 259, hlen =3D 128;
-+	int i;
-+
-+	insn[0] =3D BPF_EMIT_CALL(BPF_FUNC_get_prandom_u32);
-+	for (i =3D 1; i <=3D hlen; i++) {
-+		insn[i]        =3D BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, i, hlen);
-+		insn[i + hlen] =3D BPF_JMP_A(hlen - i);
-+	}
-+	insn[len - 2] =3D BPF_MOV64_IMM(BPF_REG_0, 1);
-+	insn[len - 1] =3D BPF_EXIT_INSN();
-+
-+	return len;
-+}
-+
-+static void bpf_fill_torturous_jumps(struct bpf_test *self)
-+{
-+	struct bpf_insn *insn =3D self->fill_insns;
-+	int i =3D 0;
-+
-+	switch (self->retval) {
-+	case 1:
-+		self->prog_len =3D bpf_fill_torturous_jumps_insn(insn);
-+		return;
-+	case 2:
-+		/* main */
-+		insn[i++] =3D BPF_RAW_INSN(BPF_JMP|BPF_CALL, 0, 1, 0, 3);
-+		insn[i++] =3D BPF_ST_MEM(BPF_B, BPF_REG_10, -32, 0);
-+		insn[i++] =3D BPF_MOV64_IMM(BPF_REG_0, 2);
-+		insn[i++] =3D BPF_EXIT_INSN();
-+
-+		/* subprog */
-+		i +=3D bpf_fill_torturous_jumps_insn(insn + i);
-+
-+		self->prog_len =3D i;
-+		return;
-+	default:
-+		self->prog_len =3D 0;
-+		break;
-+	}
-+}
-+
- /* BPF_SK_LOOKUP contains 13 instructions, if you need to fix up maps */
- #define BPF_SK_LOOKUP(func)						\
- 	/* struct bpf_sock_tuple tuple =3D {} */				\
-diff --git a/tools/testing/selftests/bpf/verifier/jit.c b/tools/testing/sel=
-ftests/bpf/verifier/jit.c
-index c33adf344fae..b7653a334497 100644
---- a/tools/testing/selftests/bpf/verifier/jit.c
-+++ b/tools/testing/selftests/bpf/verifier/jit.c
-@@ -105,3 +105,19 @@
- 	.result =3D ACCEPT,
- 	.retval =3D 2,
- },
-+{
-+	"jit: torturous jumps",
-+	.insns =3D { },
-+	.fill_helper =3D bpf_fill_torturous_jumps,
-+	.prog_type =3D BPF_PROG_TYPE_SCHED_CLS,
-+	.result =3D ACCEPT,
-+	.retval =3D 1,
-+},
-+{
-+	"jit: torturous jumps in subprog",
-+	.insns =3D { },
-+	.fill_helper =3D bpf_fill_torturous_jumps,
-+	.prog_type =3D BPF_PROG_TYPE_SCHED_CLS,
-+	.result =3D ACCEPT,
-+	.retval =3D 2,
-+},
---=20
-2.29.2
+> Please do add some selftests tools/testing/selftests/bpf
+> directories:
+>    - to ensure btf with newly supported int types loaded successfully
+>      in kernel
+>    - to ensure bpftool map [pretty] print working fine with new types
+>    - to ensure kernel map pretty print works fine
+>      (tests at tools/testing/selftests/bpf/prog_tests/btf.c)
+>    - to ensure btf manipulation APIs works with new types.
 
+Absolutely. I'll send out a v2 when ready.
+
+Thanks again for the great review.
+
+Sean
+
+> 
+> > 
+> > diff --git a/Documentation/bpf/btf.rst b/Documentation/bpf/btf.rst
+> > index 44dc789de2b4..784f1743dbc7 100644
+> > --- a/Documentation/bpf/btf.rst
+> > +++ b/Documentation/bpf/btf.rst
+> > @@ -132,7 +132,7 @@ The following sections detail encoding of each kind.
+> >     #define BTF_INT_ENCODING(VAL)   (((VAL) & 0x0f000000) >> 24)
+> >     #define BTF_INT_OFFSET(VAL)     (((VAL) & 0x00ff0000) >> 16)
+> > -  #define BTF_INT_BITS(VAL)       ((VAL)  & 0x000000ff)
+> > +  #define BTF_INT_BITS(VAL)       ((VAL)  & 0x000003ff)
+> >   The ``BTF_INT_ENCODING`` has the following attributes::
+> > @@ -147,7 +147,7 @@ pretty print. At most one encoding can be specified for the int type.
+> >   The ``BTF_INT_BITS()`` specifies the number of actual bits held by this int
+> >   type. For example, a 4-bit bitfield encodes ``BTF_INT_BITS()`` equals to 4.
+> >   The ``btf_type.size * 8`` must be equal to or greater than ``BTF_INT_BITS()``
+> > -for the type. The maximum value of ``BTF_INT_BITS()`` is 128.
+> > +for the type. The maximum value of ``BTF_INT_BITS()`` is 512.
+> >   The ``BTF_INT_OFFSET()`` specifies the starting bit offset to calculate values
+> >   for this int. For example, a bitfield struct member has:
+> > diff --git a/include/uapi/linux/btf.h b/include/uapi/linux/btf.h
+> > index 5a667107ad2c..1696fd02b302 100644
+> > --- a/include/uapi/linux/btf.h
+> > +++ b/include/uapi/linux/btf.h
+> > @@ -84,7 +84,7 @@ struct btf_type {
+> >    */
+> >   #define BTF_INT_ENCODING(VAL)	(((VAL) & 0x0f000000) >> 24)
+> >   #define BTF_INT_OFFSET(VAL)	(((VAL) & 0x00ff0000) >> 16)
+> > -#define BTF_INT_BITS(VAL)	((VAL)  & 0x000000ff)
+> > +#define BTF_INT_BITS(VAL)	((VAL)  & 0x000003ff)
+> >   /* Attributes stored in the BTF_INT_ENCODING */
+> >   #define BTF_INT_SIGNED	(1 << 0)
+> > diff --git a/tools/bpf/bpftool/btf_dumper.c b/tools/bpf/bpftool/btf_dumper.c
+> > index 0e9310727281..45ed45ea9962 100644
+> > --- a/tools/bpf/bpftool/btf_dumper.c
+> > +++ b/tools/bpf/bpftool/btf_dumper.c
+> > @@ -271,6 +271,40 @@ static void btf_int128_print(json_writer_t *jw, const void *data,
+> >   	}
+> >   }
+> > +static void btf_bigint_print(json_writer_t *jw, const void *data, int nr_bits,
+> > +			     bool is_plain_text)
+> > +{
+> > +	char buf[nr_bits / 4 + 1];
+> > +	bool first = true;
+> > +	int i;
+> > +
+> > +#ifdef __BIG_ENDIAN_BITFIELD
+> > +	for (i = 0; i < nr_bits / 64; i++) {
+> > +#else
+> > +	for (i = nr_bits / 64 - 1; i >= 0; i++) {
+> > +#endif
+> > +		__u64 v = ((__u64 *)data)[i];
+> > +
+> > +		if (first) {
+> > +			if (!v)
+> > +				continue;
+> > +
+> > +			snprintf(buf, sizeof(buf), "%llx", v);
+> > +
+> > +			first = false;
+> > +		} else {
+> > +			size_t off = strlen(buf);
+> > +
+> > +			snprintf(buf + off, sizeof(buf) - off, "%016llx", v);
+> > +		}
+> > +	}
+> > +
+> > +	if (is_plain_text)
+> > +		jsonw_printf(jw, "0x%s", buf);
+> > +	else
+> > +		jsonw_printf(jw, "\"0x%s\"", buf);
+> > +}
+> > +
+> >   static void btf_int128_shift(__u64 *print_num, __u16 left_shift_bits,
+> >   			     __u16 right_shift_bits)
+> >   {
+> > @@ -373,6 +407,11 @@ static int btf_dumper_int(const struct btf_type *t, __u8 bit_offset,
+> >   		return 0;
+> >   	}
+> > +	if (nr_bits > 128) {
+> > +		btf_bigint_print(jw, data, nr_bits, is_plain_text);
+> > +		return 0;
+> > +	}
+> > +
+> >   	if (nr_bits == 128) {
+> >   		btf_int128_print(jw, data, is_plain_text);
+> >   		return 0;
+> [...]
