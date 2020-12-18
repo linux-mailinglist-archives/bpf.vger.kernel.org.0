@@ -2,169 +2,304 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 214512DE9CE
-	for <lists+bpf@lfdr.de>; Fri, 18 Dec 2020 20:34:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 211BE2DE9F1
+	for <lists+bpf@lfdr.de>; Fri, 18 Dec 2020 20:53:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726344AbgLRTe1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Dec 2020 14:34:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50450 "EHLO
+        id S1726019AbgLRTxM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Dec 2020 14:53:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726241AbgLRTe1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Dec 2020 14:34:27 -0500
+        with ESMTP id S1726018AbgLRTxL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Dec 2020 14:53:11 -0500
 Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F13BC0617B0;
-        Fri, 18 Dec 2020 11:33:46 -0800 (PST)
-Received: by mail-yb1-xb2e.google.com with SMTP id u203so2944978ybb.2;
-        Fri, 18 Dec 2020 11:33:46 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 919C1C0617A7
+        for <bpf@vger.kernel.org>; Fri, 18 Dec 2020 11:52:31 -0800 (PST)
+Received: by mail-yb1-xb2e.google.com with SMTP id a16so2974894ybh.5
+        for <bpf@vger.kernel.org>; Fri, 18 Dec 2020 11:52:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=KNBRvdmn/wyHTPHKsxQKl3rgA8nQ9Ef1h/1/1RSinx0=;
-        b=smd6OovZibegU2ze2AZcT6ztlhK9aFY8OGPE8O/x8dVdjACocHuWUkqs1kVbf0FnQs
-         DzvRqEM8tsVULNCUN4uUoaAOyX3BYPY34+3XMmvnrENqgg4F5/ki4Ky5kunhE9j7HO+N
-         hjNQTLhSg/1zUa3kI52+eBPbOyqaP4wsZnZS/ZaLU/Gwzrc3+ehGPq1gYGlOQJwO3ETG
-         cs0hPx1wUbTVkF8mnQ3qfvbr+FdEsnCEsSyJn6mLDxtj4X622XyBpDD/5I/s1Uz9zJx+
-         lxfZFmjKUvSOM/Y9ilH6uN1j5N7/kEvYqCrkxQDCYXCxKPxjOrzCsEk0Ton2xc5ss94j
-         Nt0Q==
+         :cc;
+        bh=OGf7i30IEkmqKcwLL72Ab3QRHApgDm93l44T5mMltuQ=;
+        b=PnTGetishi75w6Gz7cY+ZMs1wf7RbZI8WVsKI9aL6ocjPAfjwLFlCZs3NIbkuf1xwi
+         1jJs8xciMM4X5bMSGoREdH2shKZB4JaiBJY/tEkA7SSUihmRt4twfjJuo91uRGKXv9n3
+         FTfjjRuNGtR7MJswKvXwHhep60ZH4EG59csyTHVsoO1OaaFXwCfusK/7eZ/re0tyD21c
+         BybHHD2P1PeVgUilPBrawqtGxLyxxdaC9iLDKvRGBnVsv72soOJx2MTLR229EXe4KEoF
+         orp+j7JTSgPerGibMLr4H+VdQdbQkj4LU7mzExokp5CGuM7bLxSV6hYTzzookAEUa7rA
+         TJEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=KNBRvdmn/wyHTPHKsxQKl3rgA8nQ9Ef1h/1/1RSinx0=;
-        b=mFki/RhdocE1fJ5iHAjP0dMDknX+vWFLKUVcmc+H10x6VjowpFNdlBLoWTULjFkozQ
-         35V4HR0aNniAYr6SxquYRI/Z0HvTWr5e/0mpvbJ/s1USqeDQgQ+3ZuXEz4xJo5kWm5HT
-         k8VnPlxZAd+4d+bQl/+sBVsgl0kTGltv3n3AZk7y429QqkKwykYFzES2qk8QzmOdUjtK
-         fBoCz/hMgOAniOxEvG86WY9Gy94Bz5UzTMbmXQ3Er4VqgzJCFzjAuNRYAahQ59SV57dM
-         lFpaRjGIoMuLkyctybzRlNU6druEVCtDMABedvSHUGA5o8ZjrtKsQzKB4KuowYfb+Gww
-         UT3w==
-X-Gm-Message-State: AOAM5328X9yLyeqztOcNoRGjr+aAU7TSzK9cTds06xfYKINSHu6BHlsu
-        ssKYbKu38HFou8quWWWTEom8XnEU9h8pZpun79A=
-X-Google-Smtp-Source: ABdhPJxEs172K5VHfcViqfe+yfi8RChWTtiy61V1DgUR9JtIfk5I1OUYbtJ2w0fp6/iN5zKhS4GhnS3HcQ+h5sxyBdU=
-X-Received: by 2002:a25:818e:: with SMTP id p14mr7850113ybk.425.1608320025975;
- Fri, 18 Dec 2020 11:33:45 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=OGf7i30IEkmqKcwLL72Ab3QRHApgDm93l44T5mMltuQ=;
+        b=LLHTYrq1N9AU2VRTzQ3eZhHgd4qxtFAHpj9zznb3KO+glmaMwWjNRc7hMTpdGdQvTV
+         h9kEskYN2qsLDyB52MndStaZBdZ2A6NSjI/xkhB41LywaarrPG1wzXqQ2VXUY55OlxVq
+         U/EtGa7Qi8/HgiXKsrmNGTpi86U0eqXc4zsTQDWqDBcas6PTMMr2DQr7namASA9ZMPlu
+         zTwV0eCpmIlV4M3fYQbGH4t2NsHJv/bt1iShnPVEemGx8OwLy53Guo23nTeK42sgZVkd
+         LADi9bPkI8JpIxQBC9Y6kmIOMCn7h2Vlu7PPBnPbVEDiqTBKkcspEpvdH9p1DxTHwFzS
+         WRsw==
+X-Gm-Message-State: AOAM5313qOSEl1N4xj5feCR2DCfV1mqLnbeYqpaeh01OeqlFedHFyM1m
+        br2oCSvHbWHPcufnxC+428cCdJ3LsK4N6XCclgA=
+X-Google-Smtp-Source: ABdhPJz7y6yY607g16zDrCr7qvdTLPcgDBAAsbWupBhrPhS7F3Go+VNHXdhjJ909PCNNMe5TIdC82Fohg3mDLeAkV7M=
+X-Received: by 2002:a25:c7c6:: with SMTP id w189mr8111502ybe.403.1608321150845;
+ Fri, 18 Dec 2020 11:52:30 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1608112796.git.christophe.leroy@csgroup.eu>
- <1fed5e11ba08ee28d12f3f57986e5b143a6aa937.1608112797.git.christophe.leroy@csgroup.eu>
- <20201217061133.lnfnhbzvikgtjb3i@ast-mbp> <854404a0-1951-91d9-2ebb-208390a64c77@csgroup.eu>
-In-Reply-To: <854404a0-1951-91d9-2ebb-208390a64c77@csgroup.eu>
+References: <cover.1607973529.git.me@ubique.spb.ru> <5e2ca46ecadda0bde060a7cc0da7edba746b68da.1607973529.git.me@ubique.spb.ru>
+ <CAEf4BzY3RaxvPcmQkTYsDa8MB+v6XpWuftdZEkFfgVVKgeLPbQ@mail.gmail.com> <20201217061307.e4m7ezbc73ga7lke@amnesia>
+In-Reply-To: <20201217061307.e4m7ezbc73ga7lke@amnesia>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 18 Dec 2020 11:33:35 -0800
-Message-ID: <CAEf4BzbNp0bvTbh4UjHO0KTs3Q83yuBMdh-8wCHCcTrPWnO25Q@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 7/7] powerpc/bpf: Implement extended BPF on PPC32
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Fri, 18 Dec 2020 11:52:20 -0800
+Message-ID: <CAEf4BzZ-6ocyCASKt8r-q=GY2WY4u_bs+ybb2F5Q7ph+sfxDBw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] bpf: Support pointer to struct in global
+ func args
+To:     Dmitrii Banshchikov <me@ubique.spb.ru>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, naveen.n.rao@linux.ibm.com,
-        sandipan@linux.ibm.com, open list <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, Networking <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>
+        KP Singh <kpsingh@chromium.org>, Andrey Ignatov <rdna@fb.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 1:54 AM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
+On Wed, Dec 16, 2020 at 10:13 PM Dmitrii Banshchikov <me@ubique.spb.ru> wrote:
+>
+> On Wed, Dec 16, 2020 at 03:35:41PM -0800, Andrii Nakryiko wrote:
+> > On Mon, Dec 14, 2020 at 11:53 AM Dmitrii Banshchikov <me@ubique.spb.ru> wrote:
+> > >
+> > > Add an ability to pass a pointer to a struct in arguments for a global
+> > > function. The struct may not have any pointers as it isn't possible to
+> > > verify them in a general case.
+> > >
+> >
+> > If such a passed struct has a field which is a pointer, will it
+> > immediately reject the program, or that field is just going to be
+> > treated as an unknown scalar. The latter makes most sense and if the
+> > verifier behaves like that already, it would be good to clarify that
+> > here.
+>
+> Such a field is treated as an unknown scalar.
+>
+
+Cool. That's great, please reword the commit then to make this clear.
+It sounds like passing a struct with a pointer field won't work at
+all, even if no one is reading that field. Scary stuff :)
+
+>
+> >
+> > > Passing a struct pointer to a global function allows to overcome the
+> > > limit on maximum number of arguments and avoid expensive and tricky
+> > > workarounds.
+> > >
+> > > The implementation consists of two parts: if a global function has an
+> > > argument that is a pointer to struct then:
+> > >   1) In btf_check_func_arg_match(): check that the corresponding
+> > > register points to NULL or to a valid memory region that is large enough
+> > > to contain the struct.
+> > >   2) In btf_prepare_func_args(): set the corresponding register type to
+> > > PTR_TO_MEM_OR_NULL and its size to the size of the struct.
+> > >
+> > > Signed-off-by: Dmitrii Banshchikov <me@ubique.spb.ru>
+> > > ---
+> > >  include/linux/bpf_verifier.h |  2 ++
+> > >  kernel/bpf/btf.c             | 59 +++++++++++++++++++++++++++++++-----
+> > >  kernel/bpf/verifier.c        | 30 ++++++++++++++++++
+> > >  3 files changed, 83 insertions(+), 8 deletions(-)
+> > >
+
+[...]
+
+> >
+> > With the above change, this would be better to adjust to look like an
+> > expected, but not supported case (E.g., "Arg is not supported because
+> > it's impossible to determine the size of accessed memory" or something
+> > along those lines).
+> >
+> > A small surprising bit:
+> >
+> > int foo(char arr[123]) { return arr[0]; }
+> >
+> > would be legal, but arr[1] not. Which is a C type system quirk, but
+> > it's probably fine to allow.
+>
+> If an array size is known at compile time then it should be
+> possible to use pointer to array type and support access to the
+> entire array:
+>
+> int foo (char (*arr)[123]) { return arr[1]; }
+
+well, even better then
+
 >
 >
+> >
+> >
+> > > +                                               tname, PTR_ERR(ret));
+> > > +                                       return -EINVAL;
+> > > +                               }
+> > > +
+> > > +                               reg[i + 1].type = PTR_TO_MEM_OR_NULL;
+> > > +                               reg[i + 1].id = i + 1;
+> >
+> > this reg[i + 1] addressing is error-prone and verbose, let's just have
+> > a local pointer variable? Probably would want to rename `struct
+> > bpf_reg_state *reg` to regs.
+> >
+> > > +
+> > > +                               continue;
+> > > +                       }
+> > >                 }
+> > >                 bpf_log(log, "Arg#%d type %s in %s() is not supported yet.\n",
+> > >                         i, btf_kind_str[BTF_INFO_KIND(t->info)], tname);
+> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > index dee296dbc7a1..a08f85fffdb2 100644
+> > > --- a/kernel/bpf/verifier.c
+> > > +++ b/kernel/bpf/verifier.c
+> > > @@ -3886,6 +3886,29 @@ static int check_helper_mem_access(struct bpf_verifier_env *env, int regno,
+> > >         }
+> > >  }
+> > >
+> > > +int check_mem_reg(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
+> > > +                 int regno, u32 mem_size)
+> > > +{
+> > > +       if (register_is_null(reg))
+> > > +               return 0;
+> > > +
+> > > +       if (reg_type_may_be_null(reg->type)) {
+> >
+> > this looks wrong, we expect the register to be PTR_TO_MEM or
+> > PTR_TO_MEM_OR_NULL here. So any other NU
 >
-> Le 17/12/2020 =C3=A0 07:11, Alexei Starovoitov a =C3=A9crit :
-> > On Wed, Dec 16, 2020 at 10:07:37AM +0000, Christophe Leroy wrote:
-> >> Implement Extended Berkeley Packet Filter on Powerpc 32
-> >>
-> >> Test result with test_bpf module:
-> >>
-> >>      test_bpf: Summary: 378 PASSED, 0 FAILED, [354/366 JIT'ed]
-> >
-> > nice!
-> >
-> >> Registers mapping:
-> >>
-> >>      [BPF_REG_0] =3D r11-r12
-> >>      /* function arguments */
-> >>      [BPF_REG_1] =3D r3-r4
-> >>      [BPF_REG_2] =3D r5-r6
-> >>      [BPF_REG_3] =3D r7-r8
-> >>      [BPF_REG_4] =3D r9-r10
-> >>      [BPF_REG_5] =3D r21-r22 (Args 9 and 10 come in via the stack)
-> >>      /* non volatile registers */
-> >>      [BPF_REG_6] =3D r23-r24
-> >>      [BPF_REG_7] =3D r25-r26
-> >>      [BPF_REG_8] =3D r27-r28
-> >>      [BPF_REG_9] =3D r29-r30
-> >>      /* frame pointer aka BPF_REG_10 */
-> >>      [BPF_REG_FP] =3D r31
-> >>      /* eBPF jit internal registers */
-> >>      [BPF_REG_AX] =3D r19-r20
-> >>      [TMP_REG] =3D r18
-> >>
-> >> As PPC32 doesn't have a redzone in the stack,
-> >> use r17 as tail call counter.
-> >>
-> >> r0 is used as temporary register as much as possible. It is referenced
-> >> directly in the code in order to avoid misuse of it, because some
-> >> instructions interpret it as value 0 instead of register r0
-> >> (ex: addi, addis, stw, lwz, ...)
-> >>
-> >> The following operations are not implemented:
-> >>
-> >>              case BPF_ALU64 | BPF_DIV | BPF_X: /* dst /=3D src */
-> >>              case BPF_ALU64 | BPF_MOD | BPF_X: /* dst %=3D src */
-> >>              case BPF_STX | BPF_XADD | BPF_DW: /* *(u64 *)(dst + off) =
-+=3D src */
-> >>
-> >> The following operations are only implemented for power of two constan=
-ts:
-> >>
-> >>              case BPF_ALU64 | BPF_MOD | BPF_K: /* dst %=3D imm */
-> >>              case BPF_ALU64 | BPF_DIV | BPF_K: /* dst /=3D imm */
-> >
-> > Those are sensible limitations. MOD and DIV are rare, but XADD is commo=
-n.
-> > Please consider doing it as a cmpxchg loop in the future.
-> >
-> > Also please run test_progs. It will give a lot better coverage than tes=
-t_bpf.ko
-> >
+> check_mem_reg() is called from btf_check_func_arg_match() which
+> is called from check_func_call() which is called when the
+> verifier encounters BPF_CALL(from calle). For example it should
+> be possible to pass a return value of bpf_map_lookup_elem()
+> directly to a global function. Without any additional checks in
+> callee the type of a register would be PTR_TO_MAP_VALUE_OR_NULL.
 >
-> I'm having hard time cross building test_progs:
+> In other words the goal of check_mem_reg() is to ensure that a
+> register has a value that points to NULL or any valid memory
+> region(PTR_TO_STACK, PTR_TO_MAP_VALUE etc.). If a register has a
+> nullable type we temporarly convert the register type to its
+> corresponding type with a value and check if the access would be
+> safe.
 >
-> ~/linux-powerpc/tools/testing/selftests/bpf/$ make CROSS_COMPILE=3Dppc-li=
-nux-
+> A caller works just with PTR_TO_MEM_OR_NULL which abstracts all
+> the possible underlying types. btf_prepare_func_args() prepares
+> registers on entry to a verification of a global function.
+>
+> A callee handles all the possible types of a register while a
+> caller uses PTR_TO_MEM_OR_NULL only.
+
+Yeah, you are right. mem register is not just PTR_TO_MEM_OR_NULL. I
+now remember I actually saw that in verifier.c later while reviewing
+the rest of your code and was a bit surprised initially, but it looked
+sensible. Just forgot to remove this comment, sorry.
+
+
+>
+>
+> >
+> > > +               const struct bpf_reg_state saved_reg = *reg;
+> >
+> > this saving and restoring of the original state due to
+> > mark_ptr_not_null_reg() is a bit ugly. Maybe it's better to refactor
+> > mark_ptr_not_null_reg to just return a new register type on success or
+> > 0 (NOT_INIT) on failure? Then you won't have to do this.
+>
+> It is not enough just to convert register's type - e.g. we also
+> want to change map_ptr to map->inner_map_meta for a case of
+> PTR_TO_MAP_VALUE_OR_NULL and inner_map_meta because it may be
+> used in check_helper_mem_access() -> check_map_access().
+
+
+Yep, missed that part in patch #1. But thinking about this more, I'm
+now missing the point of saving and restoring the register state. A
+comment would be welcome here, if it's really needed. I.e., if
+mark_ptr_not_null_reg fails, it doesn't change the state of the
+register. If check_helper_mem_access fails and changes the sate, then
+you have a similar problem few lines below anyway. So what's the case
+when check_helper_mem_access() succeeds and changes register state,
+but you still need to restore the register?
+
+>
+>
+> >
+> > > +               int rv;
+> > > +
+> > > +               if (mark_ptr_not_null_reg(reg)) {
+> > > +                       verbose(env, "R%d type=%s expected nullable\n", regno,
+> > > +                               reg_type_str[reg->type]);
+> > > +                       return -EINVAL;
+> > > +               }
+> > > +               rv = check_helper_mem_access(env, regno, mem_size, 1, NULL);
+> > > +               *reg = saved_reg;
+> > > +               return rv;
+> > > +       }
+> > > +
+> > > +       return check_helper_mem_access(env, regno, mem_size, 1, NULL);
+> >
+> >
+> > here and above, use true instead of 1, it's a bool argument, not
+> > integer, super confusing
+> >
+> > > +}
+> > > +
+> > >  /* Implementation details:
+> > >   * bpf_map_lookup returns PTR_TO_MAP_VALUE_OR_NULL
+> > >   * Two bpf_map_lookups (even with the same key) will have different reg->id.
+> > > @@ -11435,6 +11458,13 @@ static int do_check_common(struct bpf_verifier_env *env, int subprog)
+> > >                                 mark_reg_known_zero(env, regs, i);
+> > >                         else if (regs[i].type == SCALAR_VALUE)
+> > >                                 mark_reg_unknown(env, regs, i);
+> > > +                       else if (regs[i].type == PTR_TO_MEM_OR_NULL) {
+> > > +                               const u32 mem_size = regs[i].mem_size;
+> > > +
+> > > +                               mark_reg_known_zero(env, regs, i);
+> > > +                               regs[i].mem_size = mem_size;
+> > > +                               regs[i].id = i;
+> >
+> > I don't think we need to set id, we don't use that for PTR_TO_MEM registers.
+>
+> If we don't set id then in check_cond_jump_id() ->
+> mark_ptr_or_null_regs() -> mark_ptr_or_null_reg() we don't
+> transform register type either to SCALAR(NULL case) or
+> PTR_TO_MEM(value case):
 > ...
->    GEN
-> /home/chr/linux-powerpc/tools/testing/selftests/bpf/tools/build/bpftool/D=
-ocumentation/bpf-helpers.7
->    INSTALL  eBPF_helpers-manpage
->    INSTALL  Documentation-man
->    GEN      vmlinux.h
-> /bin/sh: /home/chr/linux-powerpc/tools/testing/selftests/bpf/tools/sbin/b=
-pftool: cannot execute
-> binary file
-> make: *** [/home/chr/linux-powerpc/tools/testing/selftests/bpf/tools/incl=
-ude/vmlinux.h] Error 126
-> make: *** Deleting file `/home/chr/linux-powerpc/tools/testing/selftests/=
-bpf/tools/include/vmlinux.h'
+> if (reg_type_may_be_null(reg->type) && reg->id == id &&
+> ...
 >
-> Looks like it builds bpftool for powerpc and tries to run it on my x86.
-> How should I proceed ?
+> The end result is that the verifier mem access checks fail for a
+> PTR_TO_MEM_OR_NULL register.
+
+Hm... I see now. I was looking at check_helper_call() and handling of
+RET_PTR_TO_ALLOC_MEM_OR_NULL return result for bpf_ringbuf_reserve().
+It didn't seem to set id at all and yet works just fine. But now I see
+extra
+
+if (reg_type_may_be_null(regs[BPF_REG_0].type))
+    regs[BPF_REG_0].id = ++env->id_gen;
+
+after the big if/else if block there, so it makes sense. Thanks.
 
 
-The best way would be to fix whatever needs to be fixed in
-selftests/bpf and/or bpftool Makefiles to support cross-compilation.
-There was some work already for bpftool to support that (with building
-bpftool-bootstrap separately for a host architecture, etc). Please
-check what's broken and let's try to fix it.
+regs[i].id = i; might not be wrong, but is unconventional, so let's
+stick with `++env->id_gen`?
+
 
 >
-> Thanks
-> Christophe
+>
+> >
+> > > +                       }
+> > >                 }
+> > >         } else {
+> > >                 /* 1st arg to a function */
+> > > --
+> > > 2.25.1
+> > >
+>
+> --
+>
+> Dmitrii Banshchikov
