@@ -2,304 +2,317 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 211BE2DE9F1
-	for <lists+bpf@lfdr.de>; Fri, 18 Dec 2020 20:53:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A61ED2DEA08
+	for <lists+bpf@lfdr.de>; Fri, 18 Dec 2020 21:14:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726019AbgLRTxM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Dec 2020 14:53:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53316 "EHLO
+        id S2387410AbgLRUOh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Dec 2020 15:14:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726018AbgLRTxL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Dec 2020 14:53:11 -0500
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 919C1C0617A7
-        for <bpf@vger.kernel.org>; Fri, 18 Dec 2020 11:52:31 -0800 (PST)
-Received: by mail-yb1-xb2e.google.com with SMTP id a16so2974894ybh.5
-        for <bpf@vger.kernel.org>; Fri, 18 Dec 2020 11:52:31 -0800 (PST)
+        with ESMTP id S1726697AbgLRUOh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Dec 2020 15:14:37 -0500
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A68BFC0617A7;
+        Fri, 18 Dec 2020 12:13:56 -0800 (PST)
+Received: by mail-yb1-xb2f.google.com with SMTP id a16so3025563ybh.5;
+        Fri, 18 Dec 2020 12:13:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=OGf7i30IEkmqKcwLL72Ab3QRHApgDm93l44T5mMltuQ=;
-        b=PnTGetishi75w6Gz7cY+ZMs1wf7RbZI8WVsKI9aL6ocjPAfjwLFlCZs3NIbkuf1xwi
-         1jJs8xciMM4X5bMSGoREdH2shKZB4JaiBJY/tEkA7SSUihmRt4twfjJuo91uRGKXv9n3
-         FTfjjRuNGtR7MJswKvXwHhep60ZH4EG59csyTHVsoO1OaaFXwCfusK/7eZ/re0tyD21c
-         BybHHD2P1PeVgUilPBrawqtGxLyxxdaC9iLDKvRGBnVsv72soOJx2MTLR229EXe4KEoF
-         orp+j7JTSgPerGibMLr4H+VdQdbQkj4LU7mzExokp5CGuM7bLxSV6hYTzzookAEUa7rA
-         TJEw==
+        bh=PhPOI3RSL/Me8q5ZKaUmaGiiPfOru1ej3QAdbJ76iaw=;
+        b=sbg8ni2O6oEMIjvwiTa16ooNV1sJSkC9DcSy7OujiTKP9l0SgookngOSGx4gChapY1
+         5bXqyYgg2atSc6jwzRGjURWXZgzYaWFsiZI5nxZDxnm9bv3oqq0faWi62zgL1ppEXveD
+         W4AAzKaMFIN5yWoX2lSwXpM/oSxSz3oT5YGJQcIMrIiwcggMQbqJs9VnYdnv3FoLCZw5
+         DUG5o5vaZDzkp92zQfq+xk8ANGKdVLp7DtcCu9Ffcad3glJcyEwDw50bHD2UduwMGXzZ
+         ksQfgCjWr0ljrhokfM4S+TYJUnspW1V5lgJv11e2gZM2QOniGTNLiWOx5E7P9zAPt9mu
+         dBsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=OGf7i30IEkmqKcwLL72Ab3QRHApgDm93l44T5mMltuQ=;
-        b=LLHTYrq1N9AU2VRTzQ3eZhHgd4qxtFAHpj9zznb3KO+glmaMwWjNRc7hMTpdGdQvTV
-         h9kEskYN2qsLDyB52MndStaZBdZ2A6NSjI/xkhB41LywaarrPG1wzXqQ2VXUY55OlxVq
-         U/EtGa7Qi8/HgiXKsrmNGTpi86U0eqXc4zsTQDWqDBcas6PTMMr2DQr7namASA9ZMPlu
-         zTwV0eCpmIlV4M3fYQbGH4t2NsHJv/bt1iShnPVEemGx8OwLy53Guo23nTeK42sgZVkd
-         LADi9bPkI8JpIxQBC9Y6kmIOMCn7h2Vlu7PPBnPbVEDiqTBKkcspEpvdH9p1DxTHwFzS
-         WRsw==
-X-Gm-Message-State: AOAM5313qOSEl1N4xj5feCR2DCfV1mqLnbeYqpaeh01OeqlFedHFyM1m
-        br2oCSvHbWHPcufnxC+428cCdJ3LsK4N6XCclgA=
-X-Google-Smtp-Source: ABdhPJz7y6yY607g16zDrCr7qvdTLPcgDBAAsbWupBhrPhS7F3Go+VNHXdhjJ909PCNNMe5TIdC82Fohg3mDLeAkV7M=
-X-Received: by 2002:a25:c7c6:: with SMTP id w189mr8111502ybe.403.1608321150845;
- Fri, 18 Dec 2020 11:52:30 -0800 (PST)
+        bh=PhPOI3RSL/Me8q5ZKaUmaGiiPfOru1ej3QAdbJ76iaw=;
+        b=sMho2tdGJ/cnUcs63cCj9dvBIb4U3NYLCMgvoh8C/VLC4gY3L+UvbQh1aqdp3t9Exl
+         bS7Vnp2+Yz2rlvGV0wDPnBrfAnDSNDtdxN4DrJzXYKSRwbUgZGrN6RB5oGAURRdmAm96
+         u3cd+pfnT8lp3qk/zHeV2pwivHiK3+NO8ycfIlpmgz8XnKwKCJ5KiQILzDgott/j8pZV
+         9Kt9bo8z4B3z2sNpOLlPNeu3ZCYZLP/YF2O3AfN3R/3ljciwu6bz0QLKmX4eUFIrQROW
+         yTnxMv0ACc+pEd87O41Jod+LzDbYapPRBk+BB1QbAg+YJ7AES6AcC9b5g3y695tsdoh+
+         U5ow==
+X-Gm-Message-State: AOAM533ldIZ83f5ss12oEwnTS61OxC78Dl5uU3LwX3fBmS7nayNxoqNy
+        m2LSHjTf7JglCgZfg/YyuY4HruN0aJy9mJoJNSM=
+X-Google-Smtp-Source: ABdhPJwXqy/T12Sf1WPbuhjB9Dbwevq/yrphHHK4H/R55uj2E6uWfa+z3g3Ty4CX9sFX5GVAdFdAYGOTdOLR2PLGcqU=
+X-Received: by 2002:a25:818e:: with SMTP id p14mr8062412ybk.425.1608322435860;
+ Fri, 18 Dec 2020 12:13:55 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1607973529.git.me@ubique.spb.ru> <5e2ca46ecadda0bde060a7cc0da7edba746b68da.1607973529.git.me@ubique.spb.ru>
- <CAEf4BzY3RaxvPcmQkTYsDa8MB+v6XpWuftdZEkFfgVVKgeLPbQ@mail.gmail.com> <20201217061307.e4m7ezbc73ga7lke@amnesia>
-In-Reply-To: <20201217061307.e4m7ezbc73ga7lke@amnesia>
+References: <160822594178.3481451.1208057539613401103.stgit@firesoul> <160822601093.3481451.9135115478358953965.stgit@firesoul>
+In-Reply-To: <160822601093.3481451.9135115478358953965.stgit@firesoul>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 18 Dec 2020 11:52:20 -0800
-Message-ID: <CAEf4BzZ-6ocyCASKt8r-q=GY2WY4u_bs+ybb2F5Q7ph+sfxDBw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/3] bpf: Support pointer to struct in global
- func args
-To:     Dmitrii Banshchikov <me@ubique.spb.ru>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, Andrey Ignatov <rdna@fb.com>
+Date:   Fri, 18 Dec 2020 12:13:45 -0800
+Message-ID: <CAEf4Bzbud5EWAo9E=95VzGeCZGLA9_MdQUrAc8unh3izXcd3AA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next V9 7/7] bpf/selftests: tests using bpf_check_mtu BPF-helper
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>,
+        Lorenz Bauer <lmb@cloudflare.com>, shaun@tigera.io,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Marek Majkowski <marek@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
+        colrack@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 10:13 PM Dmitrii Banshchikov <me@ubique.spb.ru> wrote:
+On Thu, Dec 17, 2020 at 9:30 AM Jesper Dangaard Brouer
+<brouer@redhat.com> wrote:
 >
-> On Wed, Dec 16, 2020 at 03:35:41PM -0800, Andrii Nakryiko wrote:
-> > On Mon, Dec 14, 2020 at 11:53 AM Dmitrii Banshchikov <me@ubique.spb.ru> wrote:
-> > >
-> > > Add an ability to pass a pointer to a struct in arguments for a global
-> > > function. The struct may not have any pointers as it isn't possible to
-> > > verify them in a general case.
-> > >
-> >
-> > If such a passed struct has a field which is a pointer, will it
-> > immediately reject the program, or that field is just going to be
-> > treated as an unknown scalar. The latter makes most sense and if the
-> > verifier behaves like that already, it would be good to clarify that
-> > here.
+> Adding selftest for BPF-helper bpf_check_mtu(). Making sure
+> it can be used from both XDP and TC.
 >
-> Such a field is treated as an unknown scalar.
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> ---
+>  tools/testing/selftests/bpf/prog_tests/check_mtu.c |  204 ++++++++++++++++++++
+>  tools/testing/selftests/bpf/progs/test_check_mtu.c |  196 +++++++++++++++++++
+>  2 files changed, 400 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/check_mtu.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_check_mtu.c
 >
+> diff --git a/tools/testing/selftests/bpf/prog_tests/check_mtu.c b/tools/testing/selftests/bpf/prog_tests/check_mtu.c
+> new file mode 100644
+> index 000000000000..b5d0c3a9abe8
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/check_mtu.c
+> @@ -0,0 +1,204 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2020 Jesper Dangaard Brouer */
+> +
+> +#include <linux/if_link.h> /* before test_progs.h, avoid bpf_util.h redefines */
+> +
+> +#include <test_progs.h>
+> +#include "test_check_mtu.skel.h"
+> +#include <network_helpers.h>
+> +
+> +#include <stdlib.h>
+> +#include <inttypes.h>
+> +
+> +#define IFINDEX_LO 1
+> +
+> +static __u32 duration; /* Hint: needed for CHECK macro */
+> +
+> +static int read_mtu_device_lo(void)
+> +{
+> +       const char *filename = "/sys/devices/virtual/net/lo/mtu";
+> +       char buf[11] = {};
+> +       int value;
+> +       int fd;
+> +
+> +       fd = open(filename, 0, O_RDONLY);
+> +       if (fd == -1)
+> +               return -1;
+> +
+> +       if (read(fd, buf, sizeof(buf)) == -1)
 
-Cool. That's great, please reword the commit then to make this clear.
-It sounds like passing a struct with a pointer field won't work at
-all, even if no one is reading that field. Scary stuff :)
+close fd missing here?
 
->
-> >
-> > > Passing a struct pointer to a global function allows to overcome the
-> > > limit on maximum number of arguments and avoid expensive and tricky
-> > > workarounds.
-> > >
-> > > The implementation consists of two parts: if a global function has an
-> > > argument that is a pointer to struct then:
-> > >   1) In btf_check_func_arg_match(): check that the corresponding
-> > > register points to NULL or to a valid memory region that is large enough
-> > > to contain the struct.
-> > >   2) In btf_prepare_func_args(): set the corresponding register type to
-> > > PTR_TO_MEM_OR_NULL and its size to the size of the struct.
-> > >
-> > > Signed-off-by: Dmitrii Banshchikov <me@ubique.spb.ru>
-> > > ---
-> > >  include/linux/bpf_verifier.h |  2 ++
-> > >  kernel/bpf/btf.c             | 59 +++++++++++++++++++++++++++++++-----
-> > >  kernel/bpf/verifier.c        | 30 ++++++++++++++++++
-> > >  3 files changed, 83 insertions(+), 8 deletions(-)
-> > >
+> +               return -2;
+> +       close(fd);
+> +
+> +       value = strtoimax(buf, NULL, 10);
+> +       if (errno == ERANGE)
+> +               return -3;
+> +
+> +       return value;
+> +}
+> +
+> +static void test_check_mtu_xdp_attach(struct bpf_program *prog)
+> +{
+> +       int err = 0;
+> +       int fd;
+> +
+> +       fd = bpf_program__fd(prog);
+> +       err = bpf_set_link_xdp_fd(IFINDEX_LO, fd, XDP_FLAGS_SKB_MODE);
+> +       if (CHECK(err, "XDP-attach", "failed"))
+> +               return;
+> +
+> +       bpf_set_link_xdp_fd(IFINDEX_LO, -1, 0);
+
+can you please use bpf_link-based bpf_program__attach_xdp() which will
+provide auto-cleanup in case of crash?
+
+also check that it succeeded?
+
+> +}
+> +
+> +static void test_check_mtu_run_xdp(struct test_check_mtu *skel,
+> +                                  struct bpf_program *prog,
+> +                                  __u32 mtu_expect)
+> +{
+> +       const char *prog_name = bpf_program__name(prog);
+> +       int retval_expect = XDP_PASS;
+> +       __u32 mtu_result = 0;
+> +       char buf[256];
+> +       int err;
+> +
+> +       struct bpf_prog_test_run_attr tattr = {
+> +               .repeat = 1,
+> +               .data_in = &pkt_v4,
+> +               .data_size_in = sizeof(pkt_v4),
+> +               .data_out = buf,
+> +               .data_size_out = sizeof(buf),
+> +               .prog_fd = bpf_program__fd(prog),
+> +       };
+
+nit: it's a variable declaration, so keep it all in one block. There
+is also opts-based variant, which might be good to use here instead.
+
+> +
+> +       memset(buf, 0, sizeof(buf));
+
+char buf[256] = {}; would make this unnecessary
+
+
+> +
+> +       err = bpf_prog_test_run_xattr(&tattr);
+> +       CHECK_ATTR(err != 0 || errno != 0, "bpf_prog_test_run",
+> +                  "prog_name:%s (err %d errno %d retval %d)\n",
+> +                  prog_name, err, errno, tattr.retval);
+> +
+> +        CHECK(tattr.retval != retval_expect, "retval",
+
+whitespaces are off?
+
+> +             "progname:%s unexpected retval=%d expected=%d\n",
+> +             prog_name, tattr.retval, retval_expect);
+> +
+> +       /* Extract MTU that BPF-prog got */
+> +       mtu_result = skel->bss->global_bpf_mtu_xdp;
+> +       CHECK(mtu_result != mtu_expect, "MTU-compare-user",
+> +             "failed (MTU user:%d bpf:%d)", mtu_expect, mtu_result);
+
+There is nicer ASSERT_EQ() macro for such cases:
+
+ASSERT_EQ(mtu_result, mtu_expect, "MTU-compare-user"); it will format
+sensible error message automatically
+
+> +}
+> +
 
 [...]
 
-> >
-> > With the above change, this would be better to adjust to look like an
-> > expected, but not supported case (E.g., "Arg is not supported because
-> > it's impossible to determine the size of accessed memory" or something
-> > along those lines).
-> >
-> > A small surprising bit:
-> >
-> > int foo(char arr[123]) { return arr[0]; }
-> >
-> > would be legal, but arr[1] not. Which is a C type system quirk, but
-> > it's probably fine to allow.
->
-> If an array size is known at compile time then it should be
-> possible to use pointer to array type and support access to the
-> entire array:
->
-> int foo (char (*arr)[123]) { return arr[1]; }
+> +       char buf[256];
+> +       int err;
+> +
+> +       struct bpf_prog_test_run_attr tattr = {
+> +               .repeat = 1,
+> +               .data_in = &pkt_v4,
+> +               .data_size_in = sizeof(pkt_v4),
+> +               .data_out = buf,
+> +               .data_size_out = sizeof(buf),
+> +               .prog_fd = bpf_program__fd(prog),
+> +       };
+> +
+> +       memset(buf, 0, sizeof(buf));
+> +
 
-well, even better then
+same as above
 
->
->
-> >
-> >
-> > > +                                               tname, PTR_ERR(ret));
-> > > +                                       return -EINVAL;
-> > > +                               }
-> > > +
-> > > +                               reg[i + 1].type = PTR_TO_MEM_OR_NULL;
-> > > +                               reg[i + 1].id = i + 1;
-> >
-> > this reg[i + 1] addressing is error-prone and verbose, let's just have
-> > a local pointer variable? Probably would want to rename `struct
-> > bpf_reg_state *reg` to regs.
-> >
-> > > +
-> > > +                               continue;
-> > > +                       }
-> > >                 }
-> > >                 bpf_log(log, "Arg#%d type %s in %s() is not supported yet.\n",
-> > >                         i, btf_kind_str[BTF_INFO_KIND(t->info)], tname);
-> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > index dee296dbc7a1..a08f85fffdb2 100644
-> > > --- a/kernel/bpf/verifier.c
-> > > +++ b/kernel/bpf/verifier.c
-> > > @@ -3886,6 +3886,29 @@ static int check_helper_mem_access(struct bpf_verifier_env *env, int regno,
-> > >         }
-> > >  }
-> > >
-> > > +int check_mem_reg(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
-> > > +                 int regno, u32 mem_size)
-> > > +{
-> > > +       if (register_is_null(reg))
-> > > +               return 0;
-> > > +
-> > > +       if (reg_type_may_be_null(reg->type)) {
-> >
-> > this looks wrong, we expect the register to be PTR_TO_MEM or
-> > PTR_TO_MEM_OR_NULL here. So any other NU
->
-> check_mem_reg() is called from btf_check_func_arg_match() which
-> is called from check_func_call() which is called when the
-> verifier encounters BPF_CALL(from calle). For example it should
-> be possible to pass a return value of bpf_map_lookup_elem()
-> directly to a global function. Without any additional checks in
-> callee the type of a register would be PTR_TO_MAP_VALUE_OR_NULL.
->
-> In other words the goal of check_mem_reg() is to ensure that a
-> register has a value that points to NULL or any valid memory
-> region(PTR_TO_STACK, PTR_TO_MAP_VALUE etc.). If a register has a
-> nullable type we temporarly convert the register type to its
-> corresponding type with a value and check if the access would be
-> safe.
->
-> A caller works just with PTR_TO_MEM_OR_NULL which abstracts all
-> the possible underlying types. btf_prepare_func_args() prepares
-> registers on entry to a verification of a global function.
->
-> A callee handles all the possible types of a register while a
-> caller uses PTR_TO_MEM_OR_NULL only.
+> +       err = bpf_prog_test_run_xattr(&tattr);
+> +       CHECK_ATTR(err != 0 || errno != 0, "bpf_prog_test_run",
+> +                  "prog_name:%s (err %d errno %d retval %d)\n",
+> +                  prog_name, err, errno, tattr.retval);
+> +
+> +        CHECK(tattr.retval != retval_expect, "retval",
 
-Yeah, you are right. mem register is not just PTR_TO_MEM_OR_NULL. I
-now remember I actually saw that in verifier.c later while reviewing
-the rest of your code and was a bit surprised initially, but it looked
-sensible. Just forgot to remove this comment, sorry.
+same :)
 
+> +             "progname:%s unexpected retval=%d expected=%d\n",
+> +             prog_name, tattr.retval, retval_expect);
+> +
+> +       /* Extract MTU that BPF-prog got */
+> +       mtu_result = skel->bss->global_bpf_mtu_tc;
+> +       CHECK(mtu_result != mtu_expect, "MTU-compare-user",
+> +             "failed (MTU user:%d bpf:%d)", mtu_expect, mtu_result);
+> +}
+> +
+> +
 
->
->
-> >
-> > > +               const struct bpf_reg_state saved_reg = *reg;
-> >
-> > this saving and restoring of the original state due to
-> > mark_ptr_not_null_reg() is a bit ugly. Maybe it's better to refactor
-> > mark_ptr_not_null_reg to just return a new register type on success or
-> > 0 (NOT_INIT) on failure? Then you won't have to do this.
->
-> It is not enough just to convert register's type - e.g. we also
-> want to change map_ptr to map->inner_map_meta for a case of
-> PTR_TO_MAP_VALUE_OR_NULL and inner_map_meta because it may be
-> used in check_helper_mem_access() -> check_map_access().
+[...]
+
+> +
+> +void test_check_mtu(void)
+> +{
+> +       struct test_check_mtu *skel;
+> +       __u32 mtu_lo;
+> +
+> +       skel = test_check_mtu__open_and_load();
+> +       if (CHECK(!skel, "open and load skel", "failed"))
+> +               return; /* Exit if e.g. helper unknown to kernel */
+> +
+> +       if (test__start_subtest("bpf_check_mtu XDP-attach"))
+> +               test_check_mtu_xdp_attach(skel->progs.xdp_use_helper_basic);
+> +
+> +       test_check_mtu__destroy(skel);
+
+here it's not clear why you instantiate skeleton outside of
+test_check_mtu_xdp_attach() subtest. Can you please move it in? It
+will keep this failure local to that specific subtest, not the entire
+test. And is just cleaner, of course.
+
+> +
+> +       mtu_lo = read_mtu_device_lo();
+> +       if (CHECK(mtu_lo < 0, "reading MTU value", "failed (err:%d)", mtu_lo))
+
+ASSERT_OK() could be used here
+
+> +               return;
+> +
+> +       if (test__start_subtest("bpf_check_mtu XDP-run"))
+> +               test_check_mtu_xdp(mtu_lo, 0);
+> +
+> +       if (test__start_subtest("bpf_check_mtu XDP-run ifindex-lookup"))
+> +               test_check_mtu_xdp(mtu_lo, IFINDEX_LO);
+> +
+> +       if (test__start_subtest("bpf_check_mtu TC-run"))
+> +               test_check_mtu_tc(mtu_lo, 0);
+> +
+> +       if (test__start_subtest("bpf_check_mtu TC-run ifindex-lookup"))
+> +               test_check_mtu_tc(mtu_lo, IFINDEX_LO);
+> +}
+
+[...]
+
+> +
+> +       global_bpf_mtu_tc = mtu_len;
+> +       return retval;
+> +}
+> +
+> +SEC("classifier")
+
+nice use of the same SEC()'tion BPF programs!
 
 
-Yep, missed that part in patch #1. But thinking about this more, I'm
-now missing the point of saving and restoring the register state. A
-comment would be welcome here, if it's really needed. I.e., if
-mark_ptr_not_null_reg fails, it doesn't change the state of the
-register. If check_helper_mem_access fails and changes the sate, then
-you have a similar problem few lines below anyway. So what's the case
-when check_helper_mem_access() succeeds and changes register state,
-but you still need to restore the register?
-
+> +int tc_minus_delta(struct __sk_buff *ctx)
+> +{
+> +       int retval = BPF_OK; /* Expected retval on successful test */
+> +       __u32 ifindex = GLOBAL_USER_IFINDEX;
+> +       __u32 skb_len = ctx->len;
+> +       __u32 mtu_len = 0;
+> +       int delta;
+> +
+> +       /* Boarderline test case: Minus delta exceeding packet length allowed */
+> +       delta = -((skb_len - ETH_HLEN) + 1);
+> +
+> +       /* Minus length (adjusted via delta) still pass MTU check, other helpers
+> +        * are responsible for catching this, when doing actual size adjust
+> +        */
+> +       if (bpf_check_mtu(ctx, ifindex, &mtu_len, delta, 0))
+> +               retval = BPF_DROP;
+> +
+> +       global_bpf_mtu_xdp = mtu_len;
+> +       return retval;
+> +}
 >
 >
-> >
-> > > +               int rv;
-> > > +
-> > > +               if (mark_ptr_not_null_reg(reg)) {
-> > > +                       verbose(env, "R%d type=%s expected nullable\n", regno,
-> > > +                               reg_type_str[reg->type]);
-> > > +                       return -EINVAL;
-> > > +               }
-> > > +               rv = check_helper_mem_access(env, regno, mem_size, 1, NULL);
-> > > +               *reg = saved_reg;
-> > > +               return rv;
-> > > +       }
-> > > +
-> > > +       return check_helper_mem_access(env, regno, mem_size, 1, NULL);
-> >
-> >
-> > here and above, use true instead of 1, it's a bool argument, not
-> > integer, super confusing
-> >
-> > > +}
-> > > +
-> > >  /* Implementation details:
-> > >   * bpf_map_lookup returns PTR_TO_MAP_VALUE_OR_NULL
-> > >   * Two bpf_map_lookups (even with the same key) will have different reg->id.
-> > > @@ -11435,6 +11458,13 @@ static int do_check_common(struct bpf_verifier_env *env, int subprog)
-> > >                                 mark_reg_known_zero(env, regs, i);
-> > >                         else if (regs[i].type == SCALAR_VALUE)
-> > >                                 mark_reg_unknown(env, regs, i);
-> > > +                       else if (regs[i].type == PTR_TO_MEM_OR_NULL) {
-> > > +                               const u32 mem_size = regs[i].mem_size;
-> > > +
-> > > +                               mark_reg_known_zero(env, regs, i);
-> > > +                               regs[i].mem_size = mem_size;
-> > > +                               regs[i].id = i;
-> >
-> > I don't think we need to set id, we don't use that for PTR_TO_MEM registers.
->
-> If we don't set id then in check_cond_jump_id() ->
-> mark_ptr_or_null_regs() -> mark_ptr_or_null_reg() we don't
-> transform register type either to SCALAR(NULL case) or
-> PTR_TO_MEM(value case):
-> ...
-> if (reg_type_may_be_null(reg->type) && reg->id == id &&
-> ...
->
-> The end result is that the verifier mem access checks fail for a
-> PTR_TO_MEM_OR_NULL register.
-
-Hm... I see now. I was looking at check_helper_call() and handling of
-RET_PTR_TO_ALLOC_MEM_OR_NULL return result for bpf_ringbuf_reserve().
-It didn't seem to set id at all and yet works just fine. But now I see
-extra
-
-if (reg_type_may_be_null(regs[BPF_REG_0].type))
-    regs[BPF_REG_0].id = ++env->id_gen;
-
-after the big if/else if block there, so it makes sense. Thanks.
-
-
-regs[i].id = i; might not be wrong, but is unconventional, so let's
-stick with `++env->id_gen`?
-
-
->
->
-> >
-> > > +                       }
-> > >                 }
-> > >         } else {
-> > >                 /* 1st arg to a function */
-> > > --
-> > > 2.25.1
-> > >
->
-> --
->
-> Dmitrii Banshchikov
