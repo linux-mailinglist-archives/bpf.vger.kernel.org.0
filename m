@@ -2,249 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF61F2DDD35
-	for <lists+bpf@lfdr.de>; Fri, 18 Dec 2020 04:17:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D8962DDD3D
+	for <lists+bpf@lfdr.de>; Fri, 18 Dec 2020 04:21:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726951AbgLRDRA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 17 Dec 2020 22:17:00 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:62574 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726796AbgLRDQ7 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 17 Dec 2020 22:16:59 -0500
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BI3DT7D017266;
-        Thu, 17 Dec 2020 19:16:03 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=5SVTVLhAlksCuLUDW6Tepgbt/fN37FiBhV5Fxzusui0=;
- b=dkYl5ZybyCqHsDbB7urBu/5Fwc0Tlg15dlpknBM7Ul6iUUCyJGaJ9g6WD/xwzsbFlLIC
- QLpG6jp38J7Y/X12cOAU8OneXKtpvLIPgxJrQaNNI/qWde8m0smbppGHY2tJBiVsCI2I
- Z/gwAkuUe+z//7gIYDCzO55BcMyCkOUtYJA= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 35gbrjtkv0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 17 Dec 2020 19:16:03 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 17 Dec 2020 19:16:02 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CejSDre5TXL0MI9s7BKL234cXMdyQjfNz2jJ6q06kSuMvQFL8Rz+wHSdgoP70LnPc0pYZhn5S+dlmYyS2MyTilEhCHKgQSOdRjc9wDJyULuoG/Q1ifvkuVnidypk+2fnJSc++d/OUZKugWVEeb6MljLHn37uENCcl+Vahemne+h0ajreFGnPu4uNIbahbx+jPIakOBNnupP6IMc0Bdv7J/AQw6xupcE3CsD2Ga3ExTl03PeLOhMIRTPynoUNdFDEH2bcAoV+pTpN2/9kyOQiB4vg5QsuJToc3RVBQxWOGrW4Ki0v4X62MxUOeDMvLdksNbozxr8TKHrZPnnD2FPgSg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5SVTVLhAlksCuLUDW6Tepgbt/fN37FiBhV5Fxzusui0=;
- b=VEXRj6t3sDels49E0ki5CCeU1y/jD+puxRleyO6xLZnPjY5k8Fimh7yB56RCwNDeq0HN7MZD4DXADTFwwRvQGB8NPiBvi4WTiwcEmAInb3xh6EvbH+9PI8oF5DzYOhL9Rb8J15ZL+zXgvp/aRnIqlPihe2kIBobldV5pBWkKSSoeK39f3MWEIj9by1OLlNNUUgrNxipioytApqVa3Ha6/bQjorjCUOORbjvlVAoUjjCMEH+OSyszcmw+L0JIE2aDadFaxX1heW9fUYJmeNscpp5sNG185o6iQm8dDGkcVV1q9NN38M0enJFRmgmQ+/AxSPuIUw9inzUJx4tErLtl0Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5SVTVLhAlksCuLUDW6Tepgbt/fN37FiBhV5Fxzusui0=;
- b=fSK2n/h+3N2MvHQtvrc813cI/YO4c1Ta9GEsgE7bozFap5uO6nLlMUhVDgbEBkLQh30nmt12PV3eVY+ziKacgSU+nFFaezpYNXF+iek+1dFV6QmjKbootEUAmJbsOMmGkKciyulbEzj5qdIJgiNuvHyv+W5Kn/RHpuPwfgOaZ+c=
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB3094.namprd15.prod.outlook.com (2603:10b6:a03:ff::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.24; Fri, 18 Dec
- 2020 03:15:57 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3654.025; Fri, 18 Dec 2020
- 03:15:57 +0000
-Subject: Re: [PATCH v2 bpf-next 1/4] bpf: introduce task_vma bpf_iter
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Song Liu <songliubraving@fb.com>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kpsingh@chromium.org" <kpsingh@chromium.org>,
-        Kernel Team <Kernel-team@fb.com>
-References: <20201215233702.3301881-1-songliubraving@fb.com>
- <20201215233702.3301881-2-songliubraving@fb.com>
- <20201217190308.insbsxpf6ujapbs3@ast-mbp>
- <C4D9D25A-C3DD-4081-9EAD-B7A5B6B74F45@fb.com>
- <20201218023444.i6hmdi3bp5vgxou2@ast-mbp>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <74326643-e457-f497-4cbd-c99d9b2c6405@fb.com>
-Date:   Thu, 17 Dec 2020 19:15:52 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.5.1
-In-Reply-To: <20201218023444.i6hmdi3bp5vgxou2@ast-mbp>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2620:10d:c090:400::5:370a]
-X-ClientProxiedBy: MW4PR03CA0265.namprd03.prod.outlook.com
- (2603:10b6:303:b4::30) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+        id S1727197AbgLRDUx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 17 Dec 2020 22:20:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727177AbgLRDUx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 17 Dec 2020 22:20:53 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F29E9C0617A7;
+        Thu, 17 Dec 2020 19:20:12 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id t22so690610pfl.3;
+        Thu, 17 Dec 2020 19:20:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gtA3GIEly3YIJ+GgXUGAd5q4aDboc+hlemv8auSkl3A=;
+        b=qqxVaNataHWQET6UvsVwrWEdOO99PnBYzkTivgiQsejKIdm2lEbaKZiweHvk2424pr
+         KrJ4VT6dFw+42X2QQxanyZpAlq4y7vZLRlrGivAEM3rfOFg5r1jEYr3kM0nDS3XtHIAO
+         WlRahrdZvsTf9qDosP4QGXaNRGfChCFORvUHg0JxF4yvykzL4qoktCIzMxFD+kgaAB/X
+         DlDb/3gauCpMvWhcjaLEQFIxEANWU2ON+AV17Ptv9Fmoj6btcWy6QEIsbXmeLPgTOXup
+         Yj955XjJlHZcWkV8GmHGir5EghbnP8+/UQq0Vij3nZb+VAMgAeVsKd+jBx5e2UcBP029
+         ERyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gtA3GIEly3YIJ+GgXUGAd5q4aDboc+hlemv8auSkl3A=;
+        b=tEEo3H8z6zgAC/bsHw5hYSJZptdpid3zSBj+Serk8pHEsYQ1LovZZByBmRS5RXWRlP
+         dg69qs66x/mnBHey/DMge5atOcnPF+HdOjXXcLAfDw7PzDGafk0tx59+MCxJR5Rzur+f
+         YHvWLRXTwdXFyn8CgAZcJ3sG1nf++v9jEl8rF3qtYEEOfAUcncTfdOzsrI4Nj6ZviFA1
+         9KLZ+NQhbyC/kshwbKLWa5BHtHay2XdRmi3dSNehm1Jlni/KLNMilt3syORoAJy4h3QJ
+         dKgXGa0cluUJ+7v5K+OfrUu47dOhnbXLsZRGRINzPJjIJzUFl93u/mnZ35VvwupbPBge
+         H+Gw==
+X-Gm-Message-State: AOAM533q56fWg2a45lCqnFlqSEFvR9btHrwzZXXLKNDtLhG1Zof4YTJ0
+        eapTkF6XJpAp6agr7+JqP3o=
+X-Google-Smtp-Source: ABdhPJyjxRRaLoakroUv5inkgevuhM3Xs4CdaP4q7qqaXO/Tig6hhyXFbBQOAdonRstLkRU6DPmM4g==
+X-Received: by 2002:a65:6405:: with SMTP id a5mr2216655pgv.389.1608261612452;
+        Thu, 17 Dec 2020 19:20:12 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:400::5:8bfc])
+        by smtp.gmail.com with ESMTPSA id p16sm6148764pju.47.2020.12.17.19.20.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Dec 2020 19:20:11 -0800 (PST)
+Date:   Thu, 17 Dec 2020 19:20:09 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Florent Revest <revest@chromium.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Florent Revest <revest@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
+Message-ID: <20201218032009.ycmyqn2kjs3ynfbp@ast-mbp>
+References: <50047415-cafe-abab-a6ba-e85bb6a9b651@fb.com>
+ <CACYkzJ7T4y7in1AsCvJ2izA3yiAke8vE9SRFRCyTPeqMnDHoyQ@mail.gmail.com>
+ <e8b03cbc-c120-43d5-168c-cde5b6a97af8@fb.com>
+ <CAEf4BzYz9Yf9abPBtP+swCuqvvhL0cbbbF1x-3stg9mp=a6+-A@mail.gmail.com>
+ <194b5a6e6e30574a035a3e3baa98d7fde7f91f1c.camel@chromium.org>
+ <CAADnVQK6GjmL19zQykYbh=THM9ktQUzfnwF_FfhUKimCxDnnkQ@mail.gmail.com>
+ <CABRcYm+zjC-WH2gxtfEX5S6mZj-5_ByAzVd5zi3aRmQv-asYqg@mail.gmail.com>
+ <221fb873-80fc-5407-965e-b075c964fa13@fb.com>
+ <CABRcYmLL=SUsPS6qWVgTyYJ26r-QtECfeTZXkXSp7iRBDZRbZA@mail.gmail.com>
+ <d29c2ed6-d99c-9d28-e6ea-d79ffd4d7e65@fb.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21cf::12e6] (2620:10d:c090:400::5:370a) by MW4PR03CA0265.namprd03.prod.outlook.com (2603:10b6:303:b4::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.17 via Frontend Transport; Fri, 18 Dec 2020 03:15:54 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a1731904-f9e7-434a-5612-08d8a3033d1e
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3094:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB309479200CFFEA0BDDF6BBA9D3C30@BYAPR15MB3094.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: t1k0sR3qANa6wuqqEbjbWZW4VCRYlwmXiGst+ju5eQXMrY5V4BcAy7hwQGrRU/5AftgI7sX/bntbNI59VGMjQZ8Kc6PMPHFvZ3Jhc1oQm/uSZeiMZUw3HssmUe937fWEFIZD3motj+q1oHA/7HXluCYRfmaERgU1Qszfp+BCDeenjWiu/BucjPyuJznEW15KX+kapbtvuTQTqJ3A31gni9clIxsAYRZVT76QSioo5UkgtRpwnWT8mEQ3J5+6Dt5IKppIU9EKYEUy2tZyWtZPxi4XQQW5rZafq9fOuzQs/lFS8Ub/rIfIZqyD/vER9geAy0xBpCJTZMcrFSIl+MjkCx9ouUhjKaLRU0qTUijHvDPBtnxq9ia29IAL1zCobArV6NQzu3nzLSHmnMNC9LYd3NrIR9Xwt34wq0jaDBhHnyU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(366004)(396003)(376002)(346002)(136003)(31696002)(66476007)(16526019)(54906003)(86362001)(2906002)(2616005)(8676002)(478600001)(36756003)(83380400001)(6636002)(4326008)(66556008)(8936002)(316002)(52116002)(31686004)(53546011)(5660300002)(186003)(110136005)(66946007)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?aUtoaUpXdHVobUlkblFRbFhiWklCaWxMdm5DdVZHN0Z5ZmovMTB1QmNCSUFP?=
- =?utf-8?B?ZWJUQlhWUVE4K1pOYmlBZ2xsV3BQc0JHbWFzdUZXb2tjdU5mU0pNalM5VFM4?=
- =?utf-8?B?RE15UkVPTjFNZGFWVThUZDBsdENobGU4eXYvRWZQZ20wVzVBUVkrczdScG1H?=
- =?utf-8?B?Rmt4cGZnTFViYkMzZFM0S2sxcldub1RKVVV1SDJpZ05CeG9HZ2lESG1wbGtI?=
- =?utf-8?B?aG16c0MzOEh4aW1vVlYzbUcxSWljTE5mMGNSVitkaHJiSUN5TzRqVnV5UThS?=
- =?utf-8?B?SWxSK2J4dGhkdTJucUFIbFZLSnhPSDZxMGhhek5ycC9pNkpVUjRoOTRnQUVT?=
- =?utf-8?B?OG9DS25jay95bXNzR1dkdVhGNUthTklhdWt4Ums2ZUFycTlKaUhzNk4xTWxv?=
- =?utf-8?B?WlBQbTE2T3lYUExTMTZRQkk0K2Nnc1FLNXlYbVlVRlVUaDd3RElzd29LNHN1?=
- =?utf-8?B?VEZERzEzQi81TGpwaWowQzZkaXFIdVJDM0t3S2IzeWtVVWFZb1E3Z1d4SG4z?=
- =?utf-8?B?ZzlvUExNOFV3U2syU3ZMZzBpUlVyVStQK2NZbVVIZnJhek9qSHBWVUdsdWxB?=
- =?utf-8?B?TkVzdUVoNklxNTgyR1VuZFFWVUdyenRuNDdVcTJrR21nNUk5endvWFdDM3gz?=
- =?utf-8?B?eXhQdkVLcUpSVnY4V3k0UjVPQzFIRk9ZOU9DT3lKOSt0dDlPODZRWFg5Z2xR?=
- =?utf-8?B?NG5RVDEraFBiZFAzOER0SmZRTFg5Wm9TTHFuU3pjZXNjZDh4YjRoOGFzZTN3?=
- =?utf-8?B?YVFYYUk2NnJ5QlFDRExhai84QkRMVHArRFVRb05tU0F4ZDJTdnM3RktaTlk2?=
- =?utf-8?B?dlBRU0NrdndXMkNPSmFCVi9kZnJVSTE5Wlkvc1BtR2d0ZVcyMk1Ja1lCdWFH?=
- =?utf-8?B?dEFJTGhEZ2EzR3YrSURQQkxSRnU3bkorVlBzUnIzM3pWcjlxbmZ4bGdFRHNz?=
- =?utf-8?B?MW56aUxPbFVyZ0dXNUtQdzdRSjA1d3NZT0NMeHk5MUw0eFlMcy9qRVZKZ2do?=
- =?utf-8?B?Z0pWRTIzaUFlTHVKYkw0R05rN0Y1NXVCckFxNHk1c2k4UjEvbm5HNWgxTzFp?=
- =?utf-8?B?dkRIYkJoRWJ5ZlJwRVZrQlg2aDdjNkd2L1V2WTRzZVRrV1Y3UmJBL0tCQ3hZ?=
- =?utf-8?B?SElzajJDVzQwVGxyenoxU29HRCthMjJxWHk4S2c5Z0ZxSWhtVnpubndqdXU5?=
- =?utf-8?B?RWd0elZFR1ZQeDBPdmE4ZmhtOVJnZW5raDdvbWl2cUFhWGdJV3FseWZkTmdW?=
- =?utf-8?B?QXo1cm1hdEhTaGIweWxwOXFyU1JLZFZaV1NpZ2I0eVR4QVBNOFpMWVJoQTBI?=
- =?utf-8?B?UzZZM1kwcTg5b1A3Wkw4WUxYRUhOVkROV2dnUzRsWDMrWUFvN3ZERU9odUQ4?=
- =?utf-8?B?akJsN1k2OStPekE9PQ==?=
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Dec 2020 03:15:57.7153
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-Network-Message-Id: a1731904-f9e7-434a-5612-08d8a3033d1e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YQpKkGadt1yl5aLmi8Zt8fhCJCo5k4LnqdgBAlu1MtUv+VgkMYi/aI2r6Ht4fBHD
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3094
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-17_17:2020-12-17,2020-12-17 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
- suspectscore=0 bulkscore=0 clxscore=1015 phishscore=0 priorityscore=1501
- mlxscore=0 adultscore=0 lowpriorityscore=0 malwarescore=0 spamscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012180021
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d29c2ed6-d99c-9d28-e6ea-d79ffd4d7e65@fb.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Thu, Dec 17, 2020 at 09:26:09AM -0800, Yonghong Song wrote:
+> 
+> 
+> On 12/17/20 7:31 AM, Florent Revest wrote:
+> > On Mon, Dec 14, 2020 at 7:47 AM Yonghong Song <yhs@fb.com> wrote:
+> > > On 12/11/20 6:40 AM, Florent Revest wrote:
+> > > > On Wed, Dec 2, 2020 at 10:18 PM Alexei Starovoitov
+> > > > <alexei.starovoitov@gmail.com> wrote:
+> > > > > I still think that adopting printk/vsnprintf for this instead of
+> > > > > reinventing the wheel
+> > > > > is more flexible and easier to maintain long term.
+> > > > > Almost the same layout can be done with vsnprintf
+> > > > > with exception of \0 char.
+> > > > > More meaningful names, etc.
+> > > > > See Documentation/core-api/printk-formats.rst
+> > > > 
+> > > > I agree this would be nice. I finally got a bit of time to experiment
+> > > > with this and I noticed a few things:
+> > > > 
+> > > > First of all, because helpers only have 5 arguments, if we use two for
+> > > > the output buffer and its size and two for the format string and its
+> > > > size, we are only left with one argument for a modifier. This is still
+> > > > enough for our usecase (where we'd only use "%ps" for example) but it
+> > > > does not strictly-speaking allow for the same layout that Andrii
+> > > > proposed.
+> > > 
+> > > See helper bpf_seq_printf. It packs all arguments for format string and
+> > > puts them into an array. bpf_seq_printf will unpack them as it parsed
+> > > through the format string. So it should be doable to have more than
+> > > "%ps" in format string.
+> > 
+> > This could be a nice trick, thank you for the suggestion Yonghong :)
+> > 
+> > My understanding is that this would also require two extra args (one
+> > for the array of arguments and one for the size of this array) so it
+> > would still not fit the 5 arguments limit I described in my previous
+> > email.
+> > eg: this would not be possible:
+> > long bpf_snprintf(const char *out, u32 out_size,
+> >                    const char *fmt, u32 fmt_size,
+> >                   const void *data, u32 data_len)
+> 
+> Right. bpf allows only up to 5 parameters.
+> > 
+> > Would you then suggest that we also put the format string and its
+> > length in the first and second cells of this array and have something
+> > along the line of:
+> > long bpf_snprintf(const char *out, u32 out_size,
+> >                    const void *args, u32 args_len) ?
+> > This seems like a fairly opaque signature to me and harder to verify.
+> 
+> One way is to define an explicit type for args, something like
+>    struct bpf_fmt_str_data {
+>       char *fmt;
+>       u64 fmt_len;
+>       u64 data[];
+>    };
 
+that feels a bit convoluted.
 
-On 12/17/20 6:34 PM, Alexei Starovoitov wrote:
-> On Thu, Dec 17, 2020 at 10:08:31PM +0000, Song Liu wrote:
->>
->>
->>> On Dec 17, 2020, at 11:03 AM, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
->>>
->>> On Tue, Dec 15, 2020 at 03:36:59PM -0800, Song Liu wrote:
->>>> +/*
->>>> + * Key information from vm_area_struct. We need this because we cannot
->>>> + * assume the vm_area_struct is still valid after each iteration.
->>>> + */
->>>> +struct __vm_area_struct {
->>>> +	__u64 start;
->>>> +	__u64 end;
->>>> +	__u64 flags;
->>>> +	__u64 pgoff;
->>>> +};
->>>
->>> Where it's inside .c or exposed in uapi/bpf.h it will become uapi
->>> if it's used this way. Let's switch to arbitrary BTF-based access instead.
->>>
->>>> +static struct __vm_area_struct *
->>>> +task_vma_seq_get_next(struct bpf_iter_seq_task_vma_info *info)
->>>> +{
->>>> +	struct pid_namespace *ns = info->common.ns;
->>>> +	struct task_struct *curr_task;
->>>> +	struct vm_area_struct *vma;
->>>> +	u32 curr_tid = info->tid;
->>>> +	bool new_task = false;
->>>> +
->>>> +	/* If this function returns a non-NULL __vm_area_struct, it held
->>>> +	 * a reference to the task_struct. If info->file is non-NULL, it
->>>> +	 * also holds a reference to the file. If this function returns
->>>> +	 * NULL, it does not hold any reference.
->>>> +	 */
->>>> +again:
->>>> +	if (info->task) {
->>>> +		curr_task = info->task;
->>>> +	} else {
->>>> +		curr_task = task_seq_get_next(ns, &curr_tid, true);
->>>> +		if (!curr_task) {
->>>> +			info->task = NULL;
->>>> +			info->tid++;
->>>> +			return NULL;
->>>> +		}
->>>> +
->>>> +		if (curr_tid != info->tid) {
->>>> +			info->tid = curr_tid;
->>>> +			new_task = true;
->>>> +		}
->>>> +
->>>> +		if (!curr_task->mm)
->>>> +			goto next_task;
->>>> +		info->task = curr_task;
->>>> +	}
->>>> +
->>>> +	mmap_read_lock(curr_task->mm);
->>>
->>> That will hurt. /proc readers do that and it causes all sorts
->>> of production issues. We cannot take this lock.
->>> There is no need to take it.
->>> Switch the whole thing to probe_read style walking.
->>> And reimplement find_vma with probe_read while omitting vmacache.
->>> It will be short rbtree walk.
->>> bpf prog doesn't need to see a stable struct. It will read it through ptr_to_btf_id
->>> which will use probe_read equivalent underneath.
->>
->> rw_semaphore is designed to avoid write starvation, so read_lock should not cause
->> problem unless the lock was taken for extended period. [1] was a recent fix that
->> avoids /proc issue by releasing mmap_lock between iterations. We are using similar
->> mechanism here. BTW: I changed this to mmap_read_lock_killable() in the next version.
->>
->> On the other hand, we need a valid vm_file pointer for bpf_d_path. So walking the
-> 
-> ahh. I missed that. Makes sense.
-> vm_file needs to be accurate, but vm_area_struct should be accessed as ptr_to_btf_id.
-> 
->> rbtree without taking any lock would not work. We can avoid taking the lock when
->> some SPF like mechanism merged (hopefully soonish).
->>
->> Did I miss anything?
->>
->> We can improve bpf_iter with some mechanism to specify which task to iterate, so
->> that we don't have to iterate through all tasks when the user only want to inspect
->> vmas in one task.
-> 
-> yes. let's figure out how to make it parametrizable.
-> map_iter runs only for given map_fd.
-> Maybe vma_iter should run only for given pidfd?
-> I think all_task_all_vmas iter is nice to have, but we don't really need it?
+The reason I feel unease with the helper as was originally proposed
+and with Andrii's proposal is all the extra strlen and strcpy that
+needs to be done. In the helper we have to call kallsyms_lookup()
+which is ok interface for what it was desinged to do,
+but it's awkward to use to construct new string ("%s [%s]", sym, modname)
+or to send two strings into a ring buffer.
+Andrii's zero separator idea will simplify bpf prog, but user space
+would need to do strlen anyway if it needs to pretty print.
+If we take pain on converting addr to sym+modname let's figure out
+how to make it easy for the bpf prog to do and easy for user space to consume.
+That's why I proposed snprintf.
 
-We could make pidfd optional? If pidfd == 0, all vmas of all tasks will 
-be traversed. Otherwise, pidfd > 0, only vmas of that pidfd will be 
-traversed.
-
-> 
->> Thanks,
->> Song
->>
->> [1] ff9f47f6f00c ("mm: proc: smaps_rollup: do not stall write attempts on mmap_lock")
-> 
-> Thanks for this link. With "if (mmap_lock_is_contended())" check it should work indeed.
-> 
+As far as 6 arg issue:
+long bpf_snprintf(const char *out, u32 out_size,
+                  const char *fmt, u32 fmt_size,
+                  const void *data, u32 data_len);
+Yeah. It won't work as-is, but fmt_size is unnecessary nowadays.
+The verifier understands read-only data.
+Hence the helper can be:
+long bpf_snprintf(const char *out, u32 out_size,
+                  const char *fmt,
+                  const void *data, u32 data_len);
+The 3rd arg cannot be ARG_PTR_TO_MEM.
+Instead we can introduce ARG_PTR_TO_CONST_STR in the verifier.
+See check_mem_access() where it's doing bpf_map_direct_read().
+That 'fmt' string will be accessed through the same bpf_map_direct_read().
+The verifier would need to check that it's NUL-terminated valid string.
+It should probably do % specifier checks at the same time.
+At the end bpf_snprintf() will have 5 args and when wrapped with 
+BPF_SNPRINTF() macro it will accept arbitrary number of arguments to print.
+It also will be generally useful to do all other kinds of pretty printing.
