@@ -2,80 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB202DE1BC
-	for <lists+bpf@lfdr.de>; Fri, 18 Dec 2020 12:06:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E67B2DE2DA
+	for <lists+bpf@lfdr.de>; Fri, 18 Dec 2020 13:36:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389096AbgLRLFi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Dec 2020 06:05:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46852 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1733110AbgLRLFi (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 18 Dec 2020 06:05:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608289452;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ekDfiKBvfpxU0bWX1IyxVyj0gbpvMm6uRrEf41nOeAs=;
-        b=NLDR/uJegLEvNNqIzjCMHVLg9Dsj2aJkjYWCL6WULftOXSo/zEnnAL85wsejsoZ07ZmecZ
-        LJRZahBaTKnIlHR9CbbmMJuzN8l/reQF7qRpBDwIfhecnKfJZt4r7ucwdJ/k+EYa2HbRDg
-        0SKwGyha/0WETKZDPFroW+nnClhBfO8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-153-DMQM8guNNC2sEBiTNX1EUw-1; Fri, 18 Dec 2020 06:04:10 -0500
-X-MC-Unique: DMQM8guNNC2sEBiTNX1EUw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0DA46800D53;
-        Fri, 18 Dec 2020 11:04:09 +0000 (UTC)
-Received: from oldenburg2.str.redhat.com (ovpn-112-120.ams2.redhat.com [10.36.112.120])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 02D9F72163;
-        Fri, 18 Dec 2020 11:04:07 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Meng Zhuo <mengzhuo1203@gmail.com>, linux-api@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: Please remove all bit fields in bpf uapi
-References: <CACt3ES2LCfNDq-nskrySJjWD5EO9WCAst_+kJT7UbhYOmD+45g@mail.gmail.com>
-        <X9xu2q8QFCCf70r7@kroah.com>
-        <CACt3ES3NTRZF4jbCjgHybGHofNypQ3EPnYvuJi-eZZXJtonQUg@mail.gmail.com>
-        <X9yE+hJpT73PdKjG@kroah.com>
-Date:   Fri, 18 Dec 2020 12:04:06 +0100
-In-Reply-To: <X9yE+hJpT73PdKjG@kroah.com> (Greg KH's message of "Fri, 18 Dec
-        2020 11:31:22 +0100")
-Message-ID: <87im8z1il5.fsf@oldenburg2.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S1725954AbgLRMgP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Dec 2020 07:36:15 -0500
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:39399 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725947AbgLRMgO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Dec 2020 07:36:14 -0500
+Received: by mail-ot1-f47.google.com with SMTP id d8so1741468otq.6;
+        Fri, 18 Dec 2020 04:35:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6DkNUPLV4pty/yUPNr3zH12sGf0mqEAZH7OQh5zf4K8=;
+        b=Cbe+ZMZ7Hv+3wvSxKwbxHFHTesx6iENh9ELFCCka4qaJcI9pdnGy3EVVUH9z8Vy0A6
+         ddD7tO4nd0Y82lp/7iIsvsmfdssW5nV20uAi451qsU8dYKqNGBKFLXIsOQjGsy+CEmVe
+         qN9HeFOmF68Xdos0ZwrGEN3ZLCmBbudznEp3p695TUGXa3Hm3iVsRgNW0hxHbXpsXk1m
+         G8imU/OD9pAMTU8bI7jUwaybX4HyhjyIWnCvR9pVUGalHCJoy9A3IZdaLfTSyjhnRGwa
+         7iD9Z2rlPqOladaw0amBhuItZbeKxz/IgN8X9Cz4zEEIeERosFbeA0LmXvYo0Lzrws63
+         lJgw==
+X-Gm-Message-State: AOAM5308e1iUxAwzs92iJK7WPGM7vCF59dbeTw4qlz+0thm3mL3h9nck
+        N2foC/Y1Ox9UwYozPfP/FNU7U1HFHLZpDBBGEKiiu/jD
+X-Google-Smtp-Source: ABdhPJxfxl8yKvwDyX+PZdHV9q/oXdW8TwcExmFO7cyFXUgs7tlC+yddRm9fZPOke+BiKpjClwWCzDNXD7sWbAFO+/Y=
+X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr2604996otc.145.1608294933980;
+ Fri, 18 Dec 2020 04:35:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <cover.1602431034.git.yifeifz2@illinois.edu> <4706b0ff81f28b498c9012fd3517fe88319e7c42.1602431034.git.yifeifz2@illinois.edu>
+ <CAMuHMdVU1BhmwMiHKDYmnyRHtQfeMtwtwkFLQwinfBPto-rtOQ@mail.gmail.com> <CABqSeARw2tcxEPiU4peuURZybVsFo5K+OkAK0ojADUEENMoKuA@mail.gmail.com>
+In-Reply-To: <CABqSeARw2tcxEPiU4peuURZybVsFo5K+OkAK0ojADUEENMoKuA@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 18 Dec 2020 13:35:21 +0100
+Message-ID: <CAMuHMdVYLZ3t6yieKVG7fbn1+YMQN26jZnxQ1Jo38LiSm_Eh5A@mail.gmail.com>
+Subject: Re: [PATCH v5 seccomp 5/5] seccomp/cache: Report cache data through /proc/pid/seccomp_cache
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-* Greg KH:
+Hi YiFei,
 
-> On Fri, Dec 18, 2020 at 05:09:58PM +0800, Meng Zhuo wrote:
->> Hi, Greg
->> 
->> Thank you for your reply
->> It's fine to do compile bit fields "by hand".
+On Thu, Dec 17, 2020 at 7:34 PM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> On Thu, Dec 17, 2020 at 6:14 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > Should there be a dependency on SECCOMP_ARCH_NATIVE?
+> > Should all architectures that implement seccomp have this?
+> >
+> > E.g. mips does select HAVE_ARCH_SECCOMP_FILTER, but doesn't
+> > have SECCOMP_ARCH_NATIVE?
+> >
+> > (noticed with preliminary out-of-tree seccomp implementation for m68k,
+> >  which doesn't have SECCOMP_ARCH_NATIVE
 >
-> Surely Go has something like "if (field & 0x01)", right?  That's all you
-> need for a bitfield.
+> You are correct. This specific patch in this series was not applied,
+> and this was addressed in a follow up patch series [1]. MIPS does not
+> define SECCOMP_ARCH_NATIVE because the bitmap expects syscall numbers
+> to start from 0, whereas MIPS does not (defines
+> CONFIG_HAVE_SPARSE_SYSCALL_NR). The follow up patch makes it so that
+> any arch with HAVE_SPARSE_SYSCALL_NR (currently just MIPS) cannot have
+> CONFIG_SECCOMP_CACHE_DEBUG on, by the depend on clause.
 >
-> Look at the most common syscall, open(2)?  It uses bitfields, why
-> can't Go handle that?
+> I see that you are doing an out of tree seccomp implementation for
+> m68k. Assuming unchanged arch/xtensa/include/asm/syscall.h, something
+> like this to arch/m68k/include/asm/seccomp.h should make it work:
+>
+> #define SECCOMP_ARCH_NATIVE        AUDIT_ARCH_M68K
+> #define SECCOMP_ARCH_NATIVE_NR        NR_syscalls
+> #define SECCOMP_ARCH_NATIVE_NAME    "m68k"
+>
+> If the file does not exist already, arch/xtensa/include/asm/seccomp.h
+> is a good example of how the file should look like, and remember to
+> remove `generic-y += seccomp.h` from arch/m68k/include/asm/Kbuild.
+>
+> [1] https://lore.kernel.org/lkml/cover.1605101222.git.yifeifz2@illinois.edu/T/
 
-Flag arguments are very different from bit-fields in struct types.
+Thank you for your extensive explanation.
 
-Structs with bit-fields are not part of the highly portable C subset.
-Even C compilers differ in their interpretation.
+Gr{oetje,eeting}s,
 
-Thanks,
-Florian
--- 
-Red Hat GmbH, https://de.redhat.com/ , Registered seat: Grasbrunn,
-Commercial register: Amtsgericht Muenchen, HRB 153243,
-Managing Directors: Charles Cachera, Brian Klemm, Laurie Krebs, Michael O'Neill
+                        Geert
 
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
