@@ -2,197 +2,384 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 860D42DE959
-	for <lists+bpf@lfdr.de>; Fri, 18 Dec 2020 19:55:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01FF62DE9A2
+	for <lists+bpf@lfdr.de>; Fri, 18 Dec 2020 20:14:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730065AbgLRSyu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 18 Dec 2020 13:54:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44340 "EHLO
+        id S1727484AbgLRTOk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 18 Dec 2020 14:14:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730006AbgLRSyt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 18 Dec 2020 13:54:49 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 296C7C0617A7;
-        Fri, 18 Dec 2020 10:54:09 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id w127so2818295ybw.8;
-        Fri, 18 Dec 2020 10:54:09 -0800 (PST)
+        with ESMTP id S1728681AbgLRTOj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 18 Dec 2020 14:14:39 -0500
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D09F3C0617A7;
+        Fri, 18 Dec 2020 11:13:58 -0800 (PST)
+Received: by mail-yb1-xb29.google.com with SMTP id w127so2868993ybw.8;
+        Fri, 18 Dec 2020 11:13:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=xS0F7nVE0LZgOJjr38NIlpM7s/imAsrx6lW5J/Oc/eg=;
-        b=nMl2mSmV1mDn1esAvqbGSKKMRho1MCAmG4sEojWAifkySt6unIHwrF3l2aR8MFnvVY
-         m12vz8ZLS5Y6waGhXELCdulZc8t4Yu/dHkeIIMxMlSGkNGN9rojSkhSgyaL7lK/Yrv2F
-         yNd4QHtCLutv4/5RevSwVJz0++KxdyO/1ulrsrv+x7fH5IeyqsWWd4xD2sPalDAxptyj
-         tj7FMe8Wk2o7/B2D0vIUtfqOWcKenl+qtB8ffOdR3dOiSVQnQ+yJUbx5ZLM7ATYxCwE6
-         FHqHwurT7k92ipR60URo2/s7I9spyULb+Y536JHWqL5hlmDw/dfjKT3HUr1nPTAyVrhJ
-         DNQA==
+        bh=8g2jcYXqXcjBAImiXCgHyxs1d55YWQHvilB0pWPmJKM=;
+        b=LxlGJnkWN8teutCWg/eUGpZuYWGxGw4Swc0DAdi/r505U1e16o8bDbc4VrGyUI/vnH
+         tfiiAfs7yYFv/E6/V8J8aADoqY5htD7e5LE+/ZQZNcEZ7XMDVcsJMVe6oyZ2UEmH6bfJ
+         bedFhZoN5uu0EcxZr0BmqfJRXbR4Vml8N+eKQRvOo1NANbL3fqTQA+QZ0g3jsmzD3Mnv
+         rTfvA7p5xqLXvqhQpurw/bg6/sAJzrVAcbF5v9mD1yu8/sVGvYlKABog8WabNQv2c2lw
+         O3X91NLboNm0lgllwO9GIdceYF5rmbprSGe3uzOhaf7wT+lYXaAXhrT/+IbeW6pLkHxV
+         G6hg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=xS0F7nVE0LZgOJjr38NIlpM7s/imAsrx6lW5J/Oc/eg=;
-        b=NbxUIWjKr6E30foxx7B8loDn0dXu/pQnoXxSZdTL4yqWdvlMN8aJNhtC/LKFpmTroG
-         q1BDDpdCNW2NJYcrcwfZnB76R94F9Ku6wPxNUwUmWssUaVXD7sAQwKtbwW5PBoQ8x5na
-         IvUJSJxm0GcqiVVDuZt+ftV3m/vNJaqIAH5ncW6Bm7TmMWvToXTVDsJ0Oh7b4bOvKmZS
-         cLC1sYJnrMPhjqFsy+mwDv7bA0lpfVol2gtFHHTQPDIymi3jIcWC73GKwCDVGHyjhKx1
-         CIQHYf0nu+IaoaKibQ0+xLkmjPbcudwcCmhSpbb+i5XziJQ7YvEYeGOgVWe3Zw8IqRut
-         HCQw==
-X-Gm-Message-State: AOAM531ZZkwqXu4Wt0KdJi1pl4rKgA02+TBxgdGOxzvjTcv3Htbv5BnG
-        gGEUooIuGZcfNYXwB6/ULjhSWKl7yGx9xEaIRs4=
-X-Google-Smtp-Source: ABdhPJy16oHglvcmGwj9lPsbfCYai3rb2juHH6r8Ze1QaN4tZ4H7RNlQPL+8zeJ4ElaeYZQbdhtgG2/m9swiN/ac0Ds=
-X-Received: by 2002:a25:818e:: with SMTP id p14mr7624180ybk.425.1608317648419;
- Fri, 18 Dec 2020 10:54:08 -0800 (PST)
+        bh=8g2jcYXqXcjBAImiXCgHyxs1d55YWQHvilB0pWPmJKM=;
+        b=MYkTX/ifUiT9aNrOpMjzXKWBgzg2JnUi64yGLAP0+J+mdiqyZdp6CJ6X3GkhyJFFEr
+         OGr5pZ9bJ4fyEz5LYTt3DYFXsODGlxrGfbx/0GTElAz6G5lFhG8yOTWSJam/AfAidscL
+         PxAJDRzAjWFjWY11e9BducDo3XNc7GtDb8uulp3jeEjIBFrFLDvdlT82fpARpWPkLY3B
+         wYwUHgspLiqfOkvtubH6VAOFbGKh7eeB8rdWf6mWPGPoFXwjUq1IAIQodb1mQVWXwYxt
+         rT5CxucQKLFLJC3fjEfSAUp+FHmWe8V47KxiHCTLItB3hZ3nT63+/7Iglb/sb7Um99xs
+         4dIQ==
+X-Gm-Message-State: AOAM533pLWnBQS+LVzUKmpn3YQZD9zHDl4AJW5xL1BvmODlRUA4ngD93
+        q5BuO15poBs9JzqqR5ak7Wyq3kEI5HwoCmFrT6o=
+X-Google-Smtp-Source: ABdhPJxJFgiD8EGXFz9yTECf6jgZt+ltLFFHLdX/nDNcxqFrLhtmcPYYPSJ+tOk1JAOEObNNTOyaQsRhSUBO4Ko0u9Q=
+X-Received: by 2002:a25:818e:: with SMTP id p14mr7742592ybk.425.1608318837594;
+ Fri, 18 Dec 2020 11:13:57 -0800 (PST)
 MIME-Version: 1.0
-References: <50047415-cafe-abab-a6ba-e85bb6a9b651@fb.com> <CACYkzJ7T4y7in1AsCvJ2izA3yiAke8vE9SRFRCyTPeqMnDHoyQ@mail.gmail.com>
- <e8b03cbc-c120-43d5-168c-cde5b6a97af8@fb.com> <CAEf4BzYz9Yf9abPBtP+swCuqvvhL0cbbbF1x-3stg9mp=a6+-A@mail.gmail.com>
- <194b5a6e6e30574a035a3e3baa98d7fde7f91f1c.camel@chromium.org>
- <CAADnVQK6GjmL19zQykYbh=THM9ktQUzfnwF_FfhUKimCxDnnkQ@mail.gmail.com>
- <CABRcYm+zjC-WH2gxtfEX5S6mZj-5_ByAzVd5zi3aRmQv-asYqg@mail.gmail.com>
- <221fb873-80fc-5407-965e-b075c964fa13@fb.com> <CABRcYmLL=SUsPS6qWVgTyYJ26r-QtECfeTZXkXSp7iRBDZRbZA@mail.gmail.com>
- <d29c2ed6-d99c-9d28-e6ea-d79ffd4d7e65@fb.com> <20201218032009.ycmyqn2kjs3ynfbp@ast-mbp>
-In-Reply-To: <20201218032009.ycmyqn2kjs3ynfbp@ast-mbp>
+References: <20201214201118.148126-1-xiyou.wangcong@gmail.com>
+ <20201214201118.148126-3-xiyou.wangcong@gmail.com> <CAEf4BzZa15kMT+xEO9ZBmS-1=E85+k02zeddx+a_N_9+MOLhkQ@mail.gmail.com>
+ <CAM_iQpVR_owLgZp1tYJyfWco-s4ov_ytL6iisg3NmtyPBdbO2Q@mail.gmail.com>
+ <CAEf4BzbyHHDrECCEjrSC3A5X39qb_WZaU_3_qNONP+vHAcUzuQ@mail.gmail.com>
+ <CAM_iQpVBPRJ+t3HPryh-1eKxV-=2CmxW9T3OyO6-_sQVLskQVQ@mail.gmail.com>
+ <CAEf4BzY4fdGieUbuAc4ttzfavBeGtE2a0rDmVfqpmZ6h6_dHiQ@mail.gmail.com> <CAM_iQpVsR=K344msuREEmidwXOeeZ=tdj4zpkrSX5yXz6VhijA@mail.gmail.com>
+In-Reply-To: <CAM_iQpVsR=K344msuREEmidwXOeeZ=tdj4zpkrSX5yXz6VhijA@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 18 Dec 2020 10:53:57 -0800
-Message-ID: <CAEf4BzZagDk=HZMqnX_Vvm0Nf+YxjxYARan2hUWy5tyt7qCrFA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, Florent Revest <revest@chromium.org>,
-        KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>,
+Date:   Fri, 18 Dec 2020 11:13:46 -0800
+Message-ID: <CAEf4BzaES+UO3UYuhQ4StgECrfg4oESJCs=+vy=M7x8xK03MxA@mail.gmail.com>
+Subject: Re: [Patch bpf-next v2 2/5] bpf: introduce timeout map
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Cong Wang <cong.wang@bytedance.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@google.com>,
-        open list <linux-kernel@vger.kernel.org>
+        Dongdong Wang <wangdongdong.6@bytedance.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 7:20 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Wed, Dec 16, 2020 at 10:29 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
 >
-> On Thu, Dec 17, 2020 at 09:26:09AM -0800, Yonghong Song wrote:
+> On Wed, Dec 16, 2020 at 10:35 AM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
 > >
-> >
-> > On 12/17/20 7:31 AM, Florent Revest wrote:
-> > > On Mon, Dec 14, 2020 at 7:47 AM Yonghong Song <yhs@fb.com> wrote:
-> > > > On 12/11/20 6:40 AM, Florent Revest wrote:
-> > > > > On Wed, Dec 2, 2020 at 10:18 PM Alexei Starovoitov
-> > > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > > > I still think that adopting printk/vsnprintf for this instead of
-> > > > > > reinventing the wheel
-> > > > > > is more flexible and easier to maintain long term.
-> > > > > > Almost the same layout can be done with vsnprintf
-> > > > > > with exception of \0 char.
-> > > > > > More meaningful names, etc.
-> > > > > > See Documentation/core-api/printk-formats.rst
-> > > > >
-> > > > > I agree this would be nice. I finally got a bit of time to experiment
-> > > > > with this and I noticed a few things:
-> > > > >
-> > > > > First of all, because helpers only have 5 arguments, if we use two for
-> > > > > the output buffer and its size and two for the format string and its
-> > > > > size, we are only left with one argument for a modifier. This is still
-> > > > > enough for our usecase (where we'd only use "%ps" for example) but it
-> > > > > does not strictly-speaking allow for the same layout that Andrii
-> > > > > proposed.
+> > On Tue, Dec 15, 2020 at 4:15 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+> > >
+> > > On Tue, Dec 15, 2020 at 2:08 PM Andrii Nakryiko
+> > > <andrii.nakryiko@gmail.com> wrote:
 > > > >
-> > > > See helper bpf_seq_printf. It packs all arguments for format string and
-> > > > puts them into an array. bpf_seq_printf will unpack them as it parsed
-> > > > through the format string. So it should be doable to have more than
-> > > > "%ps" in format string.
+> > > > On Tue, Dec 15, 2020 at 12:06 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+> > > > >
+> > > > > On Tue, Dec 15, 2020 at 11:27 AM Andrii Nakryiko
+> > > > > <andrii.nakryiko@gmail.com> wrote:
+> > > > > >
+> > > > > > On Mon, Dec 14, 2020 at 12:17 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+> > > > > > >
+> > > > > > > From: Cong Wang <cong.wang@bytedance.com>
+> > > > > > >
+> > > > > > > This borrows the idea from conntrack and will be used for conntrack in
+> > > > > > > bpf too. Each element in a timeout map has a user-specified timeout
+> > > > > > > in secs, after it expires it will be automatically removed from the map.
+> > > > > > >
+> > > > > > > There are two cases here:
+> > > > > > >
+> > > > > > > 1. When the timeout map is idle, that is, no one updates or accesses it,
+> > > > > > >    we rely on the idle work to scan the whole hash table and remove
+> > > > > > >    these expired. The idle work is scheduled every 1 sec.
+> > > > > >
+> > > > > > Would 1 second be a good period for a lot of cases? Probably would be
+> > > > > > good to expand on what went into this decision.
+> > > > >
+> > > > > Sure, because our granularity is 1 sec, I will add it into changelog.
+> > > > >
+> > > >
+> > > > Granularity of a timeout is not that coupled with the period of
+> > > > garbage collection. In this case, with 1 second period, you can have
+> > > > some items not garbage collected for up to 2 seconds due to timing and
+> > > > races. Just keep that in mind.
 > > >
-> > > This could be a nice trick, thank you for the suggestion Yonghong :)
-> > >
-> > > My understanding is that this would also require two extra args (one
-> > > for the array of arguments and one for the size of this array) so it
-> > > would still not fit the 5 arguments limit I described in my previous
-> > > email.
-> > > eg: this would not be possible:
-> > > long bpf_snprintf(const char *out, u32 out_size,
-> > >                    const char *fmt, u32 fmt_size,
-> > >                   const void *data, u32 data_len)
+> > > Well, it is. Let's say we add entries every ms and kick gc every sec, we
+> > > could end up with thousands of expired entries in hash map, which could
+> > > be a problem under memory pressure.
 > >
-> > Right. bpf allows only up to 5 parameters.
-> > >
-> > > Would you then suggest that we also put the format string and its
-> > > length in the first and second cells of this array and have something
-> > > along the line of:
-> > > long bpf_snprintf(const char *out, u32 out_size,
-> > >                    const void *args, u32 args_len) ?
-> > > This seems like a fairly opaque signature to me and harder to verify.
+> > You can have the same thousands of entries expired with 1 second
+> > timeout granularity, so not sure what point you are making. Think
+>
+> It is impossible to have expired entries within 1 sec when the granularity
+> is 1 sec and GC interval is 1 sec (which is my current code).
+
+What are you talking about? Have you read an example I described
+below? Have you seen your __htab_timeout_map_lookup_elem()
+implementation?
+
+l_new->expires = now + HZ * timeout;
+
+and
+
+time_after_eq64(get_jiffies_64(), l->expires)
+
+Your expiration is in jiffies internally, which is most definitely
+more granular than one second, with HZ=1000 it's going to be in
+milliseconds. So even if you allow to specify the timeout with only 1
+second granularity, they will expire at "jiffies granularity". Don't
+forget that expiration time is a function of when you updated/inserted
+the element (jiffy granularity) and timeout (a second granularity), so
+results in jiffy granularity.
+
+Just because it's not physically removed from the hashmap (because GC
+hasn't happened) it doesn't mean it didn't expire. You won't return
+the item if its l_new->expires signals expiration, so for the BPF
+program and user-space that element doesn't exist anymore. So all I'm
+asking is to allow to specify a timeout in milliseconds, that's the
+only change. All the other concerns stay exactly the same.
+
+>
+> > about entries being added 1 every millisecond with 1 second timeout.
+> > So at time +1ms you have 1 message with timeout at +1001ms, at +2ms,
+> > you have 2 messages, one expiring at +1001ms and another at +1002ms.
+> > So when you 1 second period GC kicks in at, say, +1000ms, it discards
+> > nothing. By the time it kicks in second time at +2000ms, you are going
+> > to expire 1000items, but you could have expired 500 at +1500ms, if
+> > your period was 500ms, for example. With a 200ms period, you'd have at
+> > most 200 not expired entries.
 > >
-> > One way is to define an explicit type for args, something like
-> >    struct bpf_fmt_str_data {
-> >       char *fmt;
-> >       u64 fmt_len;
-> >       u64 data[];
-> >    };
+> > This is why I'm saying granularity of timeout units is not coupled
+> > with the GC period. I hope this makes it clearer. More granular
+> > timeout units give more flexibility and power to users without
+> > changing anything else.
 >
-> that feels a bit convoluted.
->
-> The reason I feel unease with the helper as was originally proposed
-> and with Andrii's proposal is all the extra strlen and strcpy that
-> needs to be done. In the helper we have to call kallsyms_lookup()
-> which is ok interface for what it was desinged to do,
-> but it's awkward to use to construct new string ("%s [%s]", sym, modname)
-> or to send two strings into a ring buffer.
-> Andrii's zero separator idea will simplify bpf prog, but user space
-> would need to do strlen anyway if it needs to pretty print.
-> If we take pain on converting addr to sym+modname let's figure out
-> how to make it easy for the bpf prog to do and easy for user space to consume.
-> That's why I proposed snprintf.
+> The point is the smaller the granularity is, the more entries could be
+> expired within a GC schedule interval. This is an issue when we have
+> a burst within an interval and it would cause memory pressure during this
+> interval.
 
-I have nothing against snprintf support for symbols. But
-bpf_ksym_resolve() solves only a partially overlapping problem, so
-deserves to be added in addition to snprintf support. With snprintf,
-it will be hard to avoid two lookups of the same symbol to print "%s
-[%s]" form, so there is a performance loss, which is probably bigger
-than a simple search for a zero-byte. But bpf_ksym_resolve() can be
-used flexibly. You can either do two separate bpf_ksym_resolve() calls
-to get symbol name (and its length) and symbol's module (and its
-length), if you need to process it programmatically in BPF program. Or
-you can bundle it together and let user-space process it. User-space
-will need to copy data anyways because it can't stay in
-perfbuf/ringbuf for long. So scanning for zero delimiters will be
-negligible, it will just bring data into cache. All I'm saying is that
-ksym_resolve() gives flexibility which snprintf can't provide.
-
-Additionally, with ksym_resolve() being able to return base address,
-it's now possible to do a bunch of new stuff, from in-BPF
-symbolization to additional things like correlating memory accesses or
-function calls, etc. We just need to make sure that fixed-length base
-addr is put first, before symbol name and symbol module (if they are
-requested), so that a BPF program just knows that it's at offset 0. We
-can discuss those details separately (it's just a matter of ordering
-bits), my point is that ksym_resolve() is more powerful than
-snprintf(): the latter can be used pretty much only for
-pretty-printing.
+Not at all. See above.
 
 >
-> As far as 6 arg issue:
-> long bpf_snprintf(const char *out, u32 out_size,
->                   const char *fmt, u32 fmt_size,
->                   const void *data, u32 data_len);
-> Yeah. It won't work as-is, but fmt_size is unnecessary nowadays.
-> The verifier understands read-only data.
-> Hence the helper can be:
-> long bpf_snprintf(const char *out, u32 out_size,
+> >
+> > But relying purely on GC period is bad, because with more frequent
+> > updates you can accumulate almost arbitrary number of expired entries
+> > between two GC passes. No matter the timeout granularity.
+>
+> True, this is why xt_hashlimit simply lets users pick the gc interval. And
+> in fact, my initial implementation of timeout map exposed gc interval to
+> user too, I removed it when I learned the granularity can be just 1 sec
+> for conntrack use case (see Documentation/networking/nf_conntrack-sysctl.txt).
+>
+> Anyway, it is not a simple task to just convert sec to ms here, the gc
+> interval matters more when the granularity becomes smaller.
 
-With the power of BTF, we can also put these two correlated values
-into a single struct and pass a pointer to it. It will take only one
-parameter for one memory region. Alternative is the "fat pointer"
-approach that Go and Rust use, but it's less flexible overall.
+GC interval matters, it just has nothing to do with the timeout
+granularity. And relying only on GC period is also problematic, as me
+and Daniel pointed out already.
 
->                   const char *fmt,
->                   const void *data, u32 data_len);
-> The 3rd arg cannot be ARG_PTR_TO_MEM.
-> Instead we can introduce ARG_PTR_TO_CONST_STR in the verifier.
-> See check_mem_access() where it's doing bpf_map_direct_read().
-> That 'fmt' string will be accessed through the same bpf_map_direct_read().
-> The verifier would need to check that it's NUL-terminated valid string.
-> It should probably do % specifier checks at the same time.
-> At the end bpf_snprintf() will have 5 args and when wrapped with
-> BPF_SNPRINTF() macro it will accept arbitrary number of arguments to print.
-> It also will be generally useful to do all other kinds of pretty printing.
+>
+>
+> > > >
+> > > > >
+> > > > > >
+> > > > > > >  enum {
+> > > > > > >         BPF_ANY         = 0, /* create new element or update existing */
+> > > > > > >         BPF_NOEXIST     = 1, /* create new element if it didn't exist */
+> > > > > > > diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+> > > > > > > index f0b7b54fa3a8..178cb376c397 100644
+> > > > > > > --- a/kernel/bpf/hashtab.c
+> > > > > > > +++ b/kernel/bpf/hashtab.c
+> > > > > > > @@ -8,6 +8,8 @@
+> > > > > > >  #include <linux/filter.h>
+> > > > > > >  #include <linux/rculist_nulls.h>
+> > > > > > >  #include <linux/random.h>
+> > > > > > > +#include <linux/llist.h>
+> > > > > > > +#include <linux/workqueue.h>
+> > > > > > >  #include <uapi/linux/btf.h>
+> > > > > > >  #include <linux/rcupdate_trace.h>
+> > > > > > >  #include "percpu_freelist.h"
+> > > > > > > @@ -84,6 +86,8 @@ struct bucket {
+> > > > > > >                 raw_spinlock_t raw_lock;
+> > > > > > >                 spinlock_t     lock;
+> > > > > > >         };
+> > > > > > > +       struct llist_node gc_node;
+> > > > > > > +       atomic_t pending;
+> > > > > >
+> > > > > > HASH is an extremely frequently used type of map, and oftentimes with
+> > > > > > a lot of entries/buckets. I don't think users of normal
+> > > > > > BPF_MAP_TYPE_HASH should pay the price of way more niche hashmap with
+> > > > > > timeouts. So I think it's not appropriate to increase the size of the
+> > > > > > struct bucket here.
+> > > > >
+> > > > > I understand that, but what's a better way to do this? I can wrap it up
+> > > > > on top of struct bucket for sure, but it would need to change a lot of code.
+> > > > > So, basically code reuse vs. struct bucket size increase. ;)
+> > > >
+> > > > I think not paying potentially lots of memory for unused features
+> > > > wins. Some struct embedding might work. Or just better code reuse.
+> > > > Please think this through, don't wait for me to write the code for
+> > > > you.
+> > >
+> > > I perfectly understand this point, but other reviewers could easily argue
+> > > why not just reuse the existing hashmap code given they are pretty much
+> > > similar.
+> > >
+> > > I personally have no problem duplicating the code, but I need to justify it,
+> > > right? :-/
+> >
+> > Minimize duplication of the code, no one said copy/paste all the code.
+> > But memory bloat is a real problem and should be justification enough
+> > to at least consider other options.
+>
+> Sure, I have no problem with this. The question is how do we balance?
+> Is rewriting 200 lines of code to save 8 bytes of each entry acceptable?
+> What about rewriting 2000 lines of code? Do people prefer to review 200
+> or 2000 (or whatever number) lines of code? Or people just want a
+> minimal change for easier reviews?
+
+If I were "people" I'd want a robust functionality first and foremost.
+Minimizing the amount of code is good, but secondary to the main goal.
+
+>
+> >
+> > [...]
+> >
+> > >
+> > > >
+> > > > >
+> > > > > Similarly, please suggest how to expand struct htab_elem without changing
+> > > > > a lot of code. I also tried to find some hole in the struct, but I
+> > > > > couldn't, so I
+> > > > > ran out of ideas here.
+> > > >
+> > > > I mentioned above, you can have your own struct and embed htab_elem
+> > > > inside. It might need some refactoring, of course.
+> > >
+> > > So increasing 8 bytes of struct htab_elem is a solid reason to change
+> > > _potentially_ all of the hash map code? It does not sound solid to me,
+> > > at least it is arguable.
+> >
+> > 8 bytes for htab_elem and 16 bytes for bucket (which equals
+> > max_entries). Solid enough for me. But I certainly hope that not all
+> > of the hashmap code would need to be changed.
+>
+> I can try, but I have to say the worst case is I have to duplicate most the
+> hashmap lookup/update code. I'd estimate few hundreds more lines of
+> code. And I want to make sure this is also acceptable to reviewers, in case
+> of wasting my time.
+>
+> >
+> > >
+> > > I also doubt I could really wrap up on top of htab_elem, as it assumes
+> > > key and value are stored at the end. And these structs are internal,
+> > > it is really hard to factor out.
+> >
+> > I didn't do the exercise of trying to implement this, so discussing
+> > this is a bit meaningless at this time. But
+> >
+> > struct htab_elem_timeout {
+> >   ... my timeout related stuff ...
+> >   struct htab_elem elem;
+> > };
+> >
+> > would preserve that property.
+>
+> Sure, but you know once the type changes, literally all the code has
+> to be changed. We can not just pass timeout_elem->elem to
+> htab_map_update_elem() as it is just internal.
+
+Literally?..
+
+>
+> >
+> >
+> > >
+> > > >
+> > > > >
+> > > > > >
+> > > > > > >         char key[] __aligned(8);
+> > > > > > >  };
+> > > > > > >
+> > > > > > > @@ -143,6 +151,7 @@ static void htab_init_buckets(struct bpf_htab *htab)
+> > > > > > >
+> > > > > > >         for (i = 0; i < htab->n_buckets; i++) {
+> > > > > > >                 INIT_HLIST_NULLS_HEAD(&htab->buckets[i].head, i);
+> > > > > > > +               atomic_set(&htab->buckets[i].pending, 0);
+> > > > > > >                 if (htab_use_raw_lock(htab)) {
+> > > > > > >                         raw_spin_lock_init(&htab->buckets[i].raw_lock);
+> > > > > > >                         lockdep_set_class(&htab->buckets[i].raw_lock,
+> > > > > > > @@ -431,6 +440,14 @@ static int htab_map_alloc_check(union bpf_attr *attr)
+> > > > > > >         return 0;
+> > > > > > >  }
+> > > > > > >
+> > > > > > > +static void htab_sched_gc(struct bpf_htab *htab, struct bucket *b)
+> > > > > > > +{
+> > > > > > > +       if (atomic_fetch_or(1, &b->pending))
+> > > > > > > +               return;
+> > > > > > > +       llist_add(&b->gc_node, &htab->gc_list);
+> > > > > > > +       queue_work(system_unbound_wq, &htab->gc_work);
+> > > > > > > +}
+> > > > > >
+> > > > > > I'm concerned about each bucket being scheduled individually... And
+> > > > > > similarly concerned that each instance of TIMEOUT_HASH will do its own
+> > > > > > scheduling independently. Can you think about the way to have a
+> > > > > > "global" gc/purging logic, and just make sure that buckets that need
+> > > > > > processing would be just internally chained together. So the purging
+> > > > > > routing would iterate all the scheduled hashmaps, and within each it
+> > > > > > will have a linked list of buckets that need processing? And all that
+> > > > > > is done just once each GC period. Not N times for N maps or N*M times
+> > > > > > for N maps with M buckets in each.
+> > > > >
+> > > > > Our internal discussion went to the opposite actually, people here argued
+> > > > > one work is not sufficient for a hashtable because there would be millions
+> > > > > of entries (max_entries, which is also number of buckets). ;)
+> > > >
+> > > > I was hoping that it's possible to expire elements without iterating
+> > > > the entire hash table every single time, only items that need to be
+> > > > processed. Hashed timing wheel is one way to do something like this,
+> > >
+> > > How could we know which ones are expired without scanning the
+> > > whole table? They are clearly not sorted even within a bucket. Sorting
+> > > them with expiration? Slightly better, as we can just stop at the first
+> > > non-expired but with an expense of slowing down the update path.
+> >
+> > Have you looked up "hashed timing wheel"?
+>
+> I thought you mean the timer wheel in Linux kernel, I can not immediately
+> see how it can be used for our GC here. I guess you suggest to to link
+> each entry based on expiration sec?
+
+Expiration second or jiffy or whatever other bucket is an
+implementation detail. The point is that a hash timer wheel allows to
+have only a small subset of items to iterate through (that have a
+chance to be expired in a given "time bucket", modulo time hash
+collisions).
+
+>
+> >
+> > >
+> > > > kernel has to solve similar problems with timeouts as well, why not
+> > > > taking inspiration there?
+> > >
+> > > Mind to point out which similar problems in the kernel?
+> > >
+> > > If you mean inspiration from conntrack, it is even worse, it uses multiple
+> > > locking and locks on fast path too. I also looked at xt_hashlimit, it is not
+> > > any better either.
+> >
+> > I was thinking about epoll timeouts, but I don't know all the
+> > implementation details, of course. My point was that kernel solves the
+> > problem of maintaining a lot of uncorrelated timeouts already (epoll,
+> > timeout signals, etc).
+>
+> They possibly just use a timer or delayed work etc.. This is why I only
+> look at similar timeout hash maps.
+
+And what does the "timer" use? I bet it's a hashed time wheel.
+
+>
+> Thanks!
