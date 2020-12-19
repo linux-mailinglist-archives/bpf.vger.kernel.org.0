@@ -2,172 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A8582DF016
-	for <lists+bpf@lfdr.de>; Sat, 19 Dec 2020 15:59:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75E812DF03D
+	for <lists+bpf@lfdr.de>; Sat, 19 Dec 2020 16:31:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726545AbgLSO7g (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 19 Dec 2020 09:59:36 -0500
-Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:9610 "EHLO
-        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726510AbgLSO7g (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 19 Dec 2020 09:59:36 -0500
+        id S1726680AbgLSPbl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 19 Dec 2020 10:31:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726578AbgLSPbk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 19 Dec 2020 10:31:40 -0500
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A406DC0617B0
+        for <bpf@vger.kernel.org>; Sat, 19 Dec 2020 07:31:00 -0800 (PST)
+Received: by mail-qk1-x72e.google.com with SMTP id 143so4986941qke.10
+        for <bpf@vger.kernel.org>; Sat, 19 Dec 2020 07:31:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1608389976; x=1639925976;
-  h=references:from:to:cc:subject:in-reply-to:date:
-   message-id:mime-version;
-  bh=tvjbOZ8zpKBoBtL3XeqPW67PPKjbir27mkK3gEAWW7Q=;
-  b=iBTFaSv2yMJf4M1g5SGzPQNJKnxMB5jifYkh4E+IlI7ALZvrG7kxUz3r
-   cIbvGA0VvHdsB+pKkP5Ne6eJXxt4MfNyr2oRq8sNTx70/QmbkytDUDfU9
-   qSmBi5UN97zqpmemxXQpLxOcCUxpZam5P1gThwdCSHqzp2etdKrw6r3kl
-   I=;
-X-IronPort-AV: E=Sophos;i="5.78,433,1599523200"; 
-   d="scan'208";a="104462864"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-859fe132.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 19 Dec 2020 14:58:49 +0000
-Received: from EX13D28EUC001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2b-859fe132.us-west-2.amazon.com (Postfix) with ESMTPS id E0481225F69;
-        Sat, 19 Dec 2020 14:54:27 +0000 (UTC)
-Received: from u68c7b5b1d2d758.ant.amazon.com.amazon.com (10.43.161.43) by
- EX13D28EUC001.ant.amazon.com (10.43.164.4) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Sat, 19 Dec 2020 14:54:20 +0000
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Mnxj/ATKB1MlnwmVSmmqoIzxnVWNw1Scl7Hlo4abUiM=;
+        b=D7dkAyOOc5bVta3x8wWCYTWw1buGNRmbtzcYzjYdJWXPolSNZDWMiMVKUfWmfBANIS
+         oXrUNye9INjyClpMBL3xQA02Wja2ixQA8BIcdtAcOr/aNFAEnUPl/il9sWaHtk+v17d9
+         /oUO3Q0ki25SC6vP8lNzrPtcpT0CzQX/kUEq+FxjDhZnR2HeGocKAXsdHILkjxlCJFZw
+         VjfbfhOIuJgCe3ac6fwX4hyh9iMUnAS6nePg3vqvV/iCFlIE7KL6fy49P+nVYQoxsKhs
+         Q/DPMRfy0lIaoulhUwr+n2fKpJD6m8utYFo4GmppIOT1a+nuLuvL6wlsmLVdGlfw9CXl
+         9FxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Mnxj/ATKB1MlnwmVSmmqoIzxnVWNw1Scl7Hlo4abUiM=;
+        b=mnUZ9276gWgOFMaT9G0huFmGc9vewmLm5jFT9w/jEWgWEcPhfoioY+uQa0C86s0XSp
+         CuVkQ7E1UYvnGnAKgcgBAn/rHDsj5tOZC0eQdRgfqLI9bfABL3Ab36uOaB6kGoClPHxe
+         6ptW5LKf5BoKJ0usqQZ8bKLt8N1RB890IK4AhhlKAi5G6SWfEAYgmJZjTkOePcP8PgLm
+         z/fr8MJ3XGK1jNb+Lst6qmGAU6fn/YY+0vtNk7hZEFUwGtRJlAMFLOjYypPApFBTgXW/
+         pl00XbaE9V+hweLdwWYyTbuq4N1z4AWe/sToad2TQ5WEStIy55FDWMNUMmofwHhpQEUV
+         BWcw==
+X-Gm-Message-State: AOAM533zefbrXvLpbcTQirN/YZXAmLr/SlHMUGenqco9lfml08sZShMv
+        L3QFw8qOSyUKrspyM8OPXXzpgQ==
+X-Google-Smtp-Source: ABdhPJwhOkMU+H59rE17l5pxJhljj5GBsKjG6MoQ59lAlOlhF0nAFXHlWYWPQeeaOFRFDK2I2Et4Bg==
+X-Received: by 2002:a37:a110:: with SMTP id k16mr10395520qke.320.1608391859778;
+        Sat, 19 Dec 2020 07:30:59 -0800 (PST)
+Received: from [192.168.2.48] (bras-base-kntaon1617w-grc-10-184-147-165-106.dsl.bell.ca. [184.147.165.106])
+        by smtp.googlemail.com with ESMTPSA id m8sm418094qkh.21.2020.12.19.07.30.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 19 Dec 2020 07:30:58 -0800 (PST)
+Subject: Re: [PATCH v5 bpf-next 03/14] xdp: add xdp_shared_info data structure
+To:     Shay Agroskin <shayagr@amazon.com>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+Cc:     Saeed Mahameed <saeed@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, sameehj@amazon.com,
+        john.fastabend@gmail.com, dsahern@kernel.org, brouer@redhat.com,
+        echaudro@redhat.com, jasowang@redhat.com
 References: <cover.1607349924.git.lorenzo@kernel.org>
  <21d27f233e37b66c9ad4073dd09df5c2904112a4.1607349924.git.lorenzo@kernel.org>
  <5465830698257f18ae474877648f4a9fe2e1eefe.camel@kernel.org>
  <20201208110125.GC36228@lore-desk>
-User-agent: mu4e 1.4.12; emacs 27.1
-From:   Shay Agroskin <shayagr@amazon.com>
-To:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-CC:     Saeed Mahameed <saeed@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <davem@davemloft.net>, <kuba@kernel.org>,
-        <ast@kernel.org>, <daniel@iogearbox.net>, <sameehj@amazon.com>,
-        <john.fastabend@gmail.com>, <dsahern@kernel.org>,
-        <brouer@redhat.com>, <echaudro@redhat.com>, <jasowang@redhat.com>
-Subject: Re: [PATCH v5 bpf-next 03/14] xdp: add xdp_shared_info data structure
-In-Reply-To: <20201208110125.GC36228@lore-desk>
-Date:   Sat, 19 Dec 2020 16:53:57 +0200
-Message-ID: <pj41zlk0tdq22i.fsf@u68c7b5b1d2d758.ant.amazon.com>
+ <pj41zlk0tdq22i.fsf@u68c7b5b1d2d758.ant.amazon.com>
+From:   Jamal Hadi Salim <jhs@mojatatu.com>
+Message-ID: <1b0a5b59-f7e6-78b3-93bd-2ea35274e783@mojatatu.com>
+Date:   Sat, 19 Dec 2020 10:30:57 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.3
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
-X-Originating-IP: [10.43.161.43]
-X-ClientProxiedBy: EX13D22UWB004.ant.amazon.com (10.43.161.165) To
- EX13D28EUC001.ant.amazon.com (10.43.164.4)
+In-Reply-To: <pj41zlk0tdq22i.fsf@u68c7b5b1d2d758.ant.amazon.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 2020-12-19 9:53 a.m., Shay Agroskin wrote:
+> 
+> Lorenzo Bianconi <lorenzo.bianconi@redhat.com> writes:
+> 
 
-Lorenzo Bianconi <lorenzo.bianconi@redhat.com> writes:
+>> for the moment I do not know if this area is used for other purposes.
+>> Do you think there are other use-cases for it?
 
->> On Mon, 2020-12-07 at 17:32 +0100, Lorenzo Bianconi wrote:
->> > Introduce xdp_shared_info data structure to contain info 
->> > about
->> > "non-linear" xdp frame. xdp_shared_info will alias 
->> > skb_shared_info
->> > allowing to keep most of the frags in the same cache-line.
-[...]
->> 
->> > +	u16 nr_frags;
->> > +	u16 data_length; /* paged area length */
->> > +	skb_frag_t frags[MAX_SKB_FRAGS];
->> 
->> why MAX_SKB_FRAGS ? just use a flexible array member 
->> skb_frag_t frags[]; 
->> 
->> and enforce size via the n_frags and on the construction of the
->> tailroom preserved buffer, which is already being done.
->> 
->> this is waste of unnecessary space, at lease by definition of 
->> the
->> struct, in your use case you do:
->> memcpy(frag_list, xdp_sinfo->frags, sizeof(skb_frag_t) * 
->> num_frags);
->> And the tailroom space was already preserved for a full 
->> skb_shinfo.
->> so i don't see why you need this array to be of a fixed 
->> MAX_SKB_FRAGS
->> size.
->
-> In order to avoid cache-misses, xdp_shared info is built as a 
-> variable
-> on mvneta_rx_swbm() stack and it is written to "shared_info" 
-> area only on the
-> last fragment in mvneta_swbm_add_rx_fragment(). I used 
-> MAX_SKB_FRAGS to be
-> aligned with skb_shared_info struct but probably we can use even 
-> a smaller value.
-> Another approach would be to define two different struct, e.g.
->
-> stuct xdp_frag_metadata {
-> 	u16 nr_frags;
-> 	u16 data_length; /* paged area length */
-> };
->
-> struct xdp_frags {
-> 	skb_frag_t frags[MAX_SKB_FRAGS];
-> };
->
-> and then define xdp_shared_info as
->
-> struct xdp_shared_info {
-> 	stuct xdp_frag_metadata meta;
-> 	skb_frag_t frags[];
-> };
->
-> In this way we can probably optimize the space. What do you 
-> think?
+Sorry to interject:
+Does it make sense to use it to store arbitrary metadata or a scratchpad
+in this space? Something equivalent to skb->cb which is lacking in
+XDP.
 
-We're still reserving ~sizeof(skb_shared_info) bytes at the end of 
-the first buffer and it seems like in mvneta code you keep 
-updating all three fields (frags, nr_frags and data_length).
-Can you explain how the space is optimized by splitting the 
-structs please?
-
->> 
->> > +};
->> > +
->> > +static inline struct xdp_shared_info *
->> >  xdp_get_shared_info_from_buff(struct xdp_buff *xdp)
->> >  {
->> > -	return (struct skb_shared_info *)xdp_data_hard_end(xdp);
->> > +	BUILD_BUG_ON(sizeof(struct xdp_shared_info) >
->> > +		     sizeof(struct skb_shared_info));
->> > +	return (struct xdp_shared_info *)xdp_data_hard_end(xdp);
->> > +}
->> > +
->> 
->> Back to my first comment, do we have plans to use this tail 
->> room buffer
->> for other than frag_list use cases ? what will be the buffer 
->> format
->> then ? should we push all new fields to the end of the 
->> xdp_shared_info
->> struct ? or deal with this tailroom buffer as a stack ? 
->> my main concern is that for drivers that don't support frag 
->> list and
->> still want to utilize the tailroom buffer for other usecases 
->> they will
->> have to skip the first sizeof(xdp_shared_info) so they won't 
->> break the
->> stack.
->
-> for the moment I do not know if this area is used for other 
-> purposes.
-> Do you think there are other use-cases for it?
->
-
-Saeed, the stack receives skb_shared_info when the frames are 
-passed to the stack (skb_add_rx_frag is used to add the whole 
-information to skb's shared info), and for XDP_REDIRECT use case, 
-it doesn't seem like all drivers check page's tailroom for more 
-information anyway (ena doesn't at least).
-Can you please explain what do you mean by "break the stack"?
-
-Thanks, Shay
-
->> 
-[...]
->
->> 
-
+cheers,
+jamal
