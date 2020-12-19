@@ -2,115 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A84CE2DF0BC
-	for <lists+bpf@lfdr.de>; Sat, 19 Dec 2020 18:47:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9AA2DF0CA
+	for <lists+bpf@lfdr.de>; Sat, 19 Dec 2020 18:56:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726131AbgLSRrg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 19 Dec 2020 12:47:36 -0500
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:30620 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725944AbgLSRrg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 19 Dec 2020 12:47:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1608400056; x=1639936056;
-  h=references:from:to:cc:subject:in-reply-to:date:
-   message-id:mime-version;
-  bh=F7IdQ8uO633RpYfrqVxuaxBymtGiyiFpbnJzX3JKznU=;
-  b=Ga9+16TqPHBUQzdAfDz4JfbEUMrEXqB8TeDCcKxefp8L0u47xW9yWtQp
-   8plwczOlNF4MRRCCf8NnSVaObv290pM79aU7LLekfB2A3UHkWLIbzluSS
-   tumXl6mAK5n2EXzxV3ezW3I9aeEGlEioVYcmU+XEP6uXgvbmDMAPVgCwk
-   4=;
-X-IronPort-AV: E=Sophos;i="5.78,433,1599523200"; 
-   d="scan'208";a="97458502"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1a-807d4a99.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 19 Dec 2020 17:46:48 +0000
-Received: from EX13D28EUC001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1a-807d4a99.us-east-1.amazon.com (Postfix) with ESMTPS id 1C467A1F4B;
-        Sat, 19 Dec 2020 17:46:43 +0000 (UTC)
-Received: from u68c7b5b1d2d758.ant.amazon.com.amazon.com (10.43.160.90) by
- EX13D28EUC001.ant.amazon.com (10.43.164.4) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Sat, 19 Dec 2020 17:46:36 +0000
-References: <cover.1607349924.git.lorenzo@kernel.org>
- <a12bf957bf99fa86d229f383f615f11ee7153340.1607349924.git.lorenzo@kernel.org>
-User-agent: mu4e 1.4.12; emacs 27.1
-From:   Shay Agroskin <shayagr@amazon.com>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <davem@davemloft.net>, <kuba@kernel.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <sameehj@amazon.com>,
-        <john.fastabend@gmail.com>, <dsahern@kernel.org>,
-        <brouer@redhat.com>, <echaudro@redhat.com>,
-        <lorenzo.bianconi@redhat.com>, <jasowang@redhat.com>
-Subject: Re: [PATCH v5 bpf-next 11/14] bpf: cpumap: introduce xdp multi-buff
- support
-In-Reply-To: <a12bf957bf99fa86d229f383f615f11ee7153340.1607349924.git.lorenzo@kernel.org>
-Date:   Sat, 19 Dec 2020 19:46:15 +0200
-Message-ID: <pj41zleejlpu3c.fsf@u68c7b5b1d2d758.ant.amazon.com>
+        id S1727143AbgLSRzw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 19 Dec 2020 12:55:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57290 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727127AbgLSRzv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 19 Dec 2020 12:55:51 -0500
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+Authentication-Results: mail.kernel.org; dkim=permerror (bad message/signature format)
+To:     bpf@vger.kernel.org, netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, brouer@redhat.com,
+        lorenzo.bianconi@redhat.com, alexander.duyck@gmail.com,
+        maciej.fijalkowski@intel.com, saeed@kernel.org
+Subject: [PATCH v4 bpf-next 0/2] introduce xdp_init_buff/xdp_prepare_buff
+Date:   Sat, 19 Dec 2020 18:54:59 +0100
+Message-Id: <cover.1608399672.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
-X-Originating-IP: [10.43.160.90]
-X-ClientProxiedBy: EX13D19UWA004.ant.amazon.com (10.43.160.102) To
- EX13D28EUC001.ant.amazon.com (10.43.164.4)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Introduce xdp_init_buff and xdp_prepare_buff utility routines to initialize
+xdp_buff data structure and remove duplicated code in all XDP capable
+drivers.
 
-Lorenzo Bianconi <lorenzo@kernel.org> writes:
+Changes since v3:
+- use __always_inline instead of inline for xdp_init_buff/xdp_prepare_buff
+- add 'const bool meta_valid' to xdp_prepare_buff signature to avoid
+  overwriting data_meta with xdp_set_data_meta_invalid()
+- introduce removed comment in bnxt driver
 
-> Introduce __xdp_build_skb_from_frame and 
-> xdp_build_skb_from_frame
-> utility routines to build the skb from xdp_frame.
-> Add xdp multi-buff support to cpumap
->
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> ---
->  include/net/xdp.h   |  5 ++++
->  kernel/bpf/cpumap.c | 45 +---------------------------
->  net/core/xdp.c      | 73 
->  +++++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 79 insertions(+), 44 deletions(-)
->
-[...]
-> diff --git a/net/core/xdp.c b/net/core/xdp.c
-> index 6c8e743ad03a..55f3e9c69427 100644
-> --- a/net/core/xdp.c
-> +++ b/net/core/xdp.c
-> @@ -597,3 +597,76 @@ void xdp_warn(const char *msg, const char 
-> *func, const int line)
->  	WARN(1, "XDP_WARN: %s(line:%d): %s\n", func, line, msg);
->  };
->  EXPORT_SYMBOL_GPL(xdp_warn);
-> +
-> +struct sk_buff *__xdp_build_skb_from_frame(struct xdp_frame 
-> *xdpf,
-> +					   struct sk_buff *skb,
-> +					   struct net_device *dev)
-> +{
-> +	unsigned int headroom = sizeof(*xdpf) + xdpf->headroom;
-> +	void *hard_start = xdpf->data - headroom;
-> +	skb_frag_t frag_list[MAX_SKB_FRAGS];
-> +	struct xdp_shared_info *xdp_sinfo;
-> +	int i, num_frags = 0;
-> +
-> +	xdp_sinfo = xdp_get_shared_info_from_frame(xdpf);
-> +	if (unlikely(xdpf->mb)) {
-> +		num_frags = xdp_sinfo->nr_frags;
-> +		memcpy(frag_list, xdp_sinfo->frags,
-> +		       sizeof(skb_frag_t) * num_frags);
-> +	}
+Changes since v2:
+- precompute xdp->data as hard_start + headroom and save it in a local
+  variable to reuse it for xdp->data_end and xdp->data_meta in
+  xdp_prepare_buff()
 
-nit, can you please move the xdp_sinfo assignment inside this 'if' 
-? This would help to emphasize that regarding xdp_frame tailroom 
-as xdp_shared_info struct (rather than skb_shared_info) is correct 
-only when the mb bit is set
+Changes since v1:
+- introduce xdp_prepare_buff utility routine
 
-thanks,
-Shay
+Lorenzo Bianconi (2):
+  net: xdp: introduce xdp_init_buff utility routine
+  net: xdp: introduce xdp_prepare_buff utility routine
 
-> +
-> +	skb = build_skb_around(skb, hard_start, xdpf->frame_sz);
-> +	if (unlikely(!skb))
-> +		return NULL;
-[...]
+Acked-by: Martin Habets <habetsm.xilinx@gmail.com>
+Acked-by: Camelia Groza <camelia.groza@nxp.com>
+
+ drivers/net/ethernet/amazon/ena/ena_netdev.c  | 10 ++++------
+ drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c |  9 +++------
+ .../net/ethernet/cavium/thunder/nicvf_main.c  | 12 ++++++------
+ .../net/ethernet/freescale/dpaa/dpaa_eth.c    | 10 ++++------
+ .../net/ethernet/freescale/dpaa2/dpaa2-eth.c  | 14 +++++---------
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c   | 18 +++++++++---------
+ drivers/net/ethernet/intel/ice/ice_txrx.c     | 15 ++++++++-------
+ drivers/net/ethernet/intel/igb/igb_main.c     | 18 +++++++++---------
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 19 +++++++++----------
+ .../net/ethernet/intel/ixgbevf/ixgbevf_main.c | 19 +++++++++----------
+ drivers/net/ethernet/marvell/mvneta.c         | 10 +++-------
+ .../net/ethernet/marvell/mvpp2/mvpp2_main.c   | 14 +++++++-------
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c    |  9 +++------
+ .../net/ethernet/mellanox/mlx5/core/en_rx.c   |  8 ++------
+ .../ethernet/netronome/nfp/nfp_net_common.c   | 12 ++++++------
+ drivers/net/ethernet/qlogic/qede/qede_fp.c    |  9 +++------
+ drivers/net/ethernet/sfc/rx.c                 | 10 +++-------
+ drivers/net/ethernet/socionext/netsec.c       |  9 +++------
+ drivers/net/ethernet/ti/cpsw.c                | 18 ++++++------------
+ drivers/net/ethernet/ti/cpsw_new.c            | 18 ++++++------------
+ drivers/net/hyperv/netvsc_bpf.c               |  8 ++------
+ drivers/net/tun.c                             | 12 ++++--------
+ drivers/net/veth.c                            | 14 +++++---------
+ drivers/net/virtio_net.c                      | 18 ++++++------------
+ drivers/net/xen-netfront.c                    | 10 ++++------
+ include/net/xdp.h                             | 19 +++++++++++++++++++
+ net/bpf/test_run.c                            |  9 +++------
+ net/core/dev.c                                | 18 ++++++++----------
+ 28 files changed, 159 insertions(+), 210 deletions(-)
+
+-- 
+2.29.2
+
