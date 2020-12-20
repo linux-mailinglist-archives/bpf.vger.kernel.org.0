@@ -2,139 +2,200 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 200582DF552
-	for <lists+bpf@lfdr.de>; Sun, 20 Dec 2020 13:07:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0259A2DF653
+	for <lists+bpf@lfdr.de>; Sun, 20 Dec 2020 18:54:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727429AbgLTMF3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 20 Dec 2020 07:05:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727391AbgLTMF2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 20 Dec 2020 07:05:28 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0777FC061282
-        for <bpf@vger.kernel.org>; Sun, 20 Dec 2020 04:04:47 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id a6so7115131wmc.2
-        for <bpf@vger.kernel.org>; Sun, 20 Dec 2020 04:04:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qrn+x9lX3jcTz2wVgUBrM7DkKsxjXEra+Jy1eyLqErQ=;
-        b=naOTe06SHxPS/6OBbwjbFP5gEyKx1oosTrOeIpFENcucHkj6M4BfldEb5/KPevKmPh
-         GEvTH5RMMRe8fhVSGC9wo6nFZZgYw7UuM5HUcD11IYQnXd9kNy3KL0KT73L/CUfAd/zr
-         VqwkA7HvmRn839TISjpwe3EHBnX2wevB/duyQQGMN/q2vNXgBIwvahKUWHWKkeo+picP
-         an/z/7NZC0ZBN9sH+GcEFEn0pGKl2erSIACTjL2vrUkSXWaQqrFrZmXOKPlcUF39/qrd
-         tTjO1+HcQBilpqR+04mYryhDX+0xRWnwVe6rI5tgRh/6A1aPAovhMMOGYvrQB0QO91YH
-         vOJg==
+        id S1726963AbgLTRyE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 20 Dec 2020 12:54:04 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40219 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726896AbgLTRyD (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 20 Dec 2020 12:54:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608486756;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pVoF1GuSzUjJXCw3G/HdhD3nhCcK87FV2ryidN/EbJk=;
+        b=M4v6kkZE81DIIDKM8L6NNMFTzvUIeJu8CXpOKGtbg6QYzB9dcsxUPx1CkoKl7lEBgTeRIY
+        +aUyapimtpnkVKtYw2OVofg9aEcm5dA7oGmpFFUZiCDLrv3MoC3mvpnZr8fUt9fk3LEsmg
+        bbBtaPEuyjmXHkPtXiK1WqLIxEdeTSg=
+Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
+ [209.85.219.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-319-4119BDolOym7nrN49_jDUw-1; Sun, 20 Dec 2020 12:52:33 -0500
+X-MC-Unique: 4119BDolOym7nrN49_jDUw-1
+Received: by mail-yb1-f197.google.com with SMTP id 203so11367884ybz.2
+        for <bpf@vger.kernel.org>; Sun, 20 Dec 2020 09:52:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qrn+x9lX3jcTz2wVgUBrM7DkKsxjXEra+Jy1eyLqErQ=;
-        b=VJUbINdPECjW/G6oYWXkZEAvoaPyXNrxWQ4Jus7HgzJQoqOkFQsd+CsxRQe8JZ2vuh
-         nkuIBOaGGNcUEKHutpW3FspbZgXS9m4QNTxvI7e+pxwSXBgY1q/2tRwyP/wIeYYReUdz
-         vEtrN2zeCML6YJ5ah5WjJOH0ZtsFShPku1YmZg+QwK5tZ3BW2lLhhjBypX98BXIBsCP0
-         T22XiXZT9AGneW81MbbexmQ/EWTF5HFKwt3rut5hRZ6rg808+5N4xhDAZ7SgcdwSzBdt
-         6IjUem3HGIEqYdzDjorm87WrKv2xgId2127n6Jbuy3W2iW0PWUpqCRf53E0RsQnGtrYA
-         twtw==
-X-Gm-Message-State: AOAM530vpv6cgpbu4dHDfrxRbBtO7nASlSgbAfdD5l3Dp5/+eSBfZ0mM
-        DF9D/kd7q6GSPLxyUn+HopCYSg==
-X-Google-Smtp-Source: ABdhPJxKHrA3iDITLiCdMUF/9mnzJFyxnL6Rem0UwUvdhjFOojYMyvms6s//StCF5cJVpP/1sBw0Mg==
-X-Received: by 2002:a7b:c208:: with SMTP id x8mr11862312wmi.179.1608465886268;
-        Sun, 20 Dec 2020 04:04:46 -0800 (PST)
-Received: from larix.localdomain ([2001:1715:4e26:a7e0:ed35:e18a:5e36:8c84])
-        by smtp.gmail.com with ESMTPSA id g5sm21652517wro.60.2020.12.20.04.04.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Dec 2020 04:04:45 -0800 (PST)
-Date:   Sun, 20 Dec 2020 13:05:19 +0100
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.4 08/10] selftests/bpf: Fix array access with
- signed variable test
-Message-ID: <X989/9omnIGyDvzV@larix.localdomain>
-References: <20201220033457.2728519-1-sashal@kernel.org>
- <20201220033457.2728519-8-sashal@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pVoF1GuSzUjJXCw3G/HdhD3nhCcK87FV2ryidN/EbJk=;
+        b=dBOZQrNdVmhLtrOadPKUjNCE34k2IYzLJfncaL2CbOqZRA7i7TZKbOkXHGLXk++R3R
+         jt/Hcf8E1HGgx8dwoHCDVJ+UlOljNHVJ2td/ejP5GllwYBB0pZ6EeGQ5tahJP99rMeDb
+         o1rvBfDElX2UbJQLvlMNgKTxHnt1fT/SA6Vb4IzFmvn7cezlxJeGR67yHomc5HSSxvrT
+         D5EAuMv7u+FXWexeshlB0LSpdrc8oJtLx1ykmds7YPk3VeXw6k1xpGXGUlXVnpnl1Azs
+         2zhIhuWDEv/VnFYaS3z6xDVFwp8X9WVJ8ki+a2M3yTT6uBwhfRTGuK/QhfblaF9qIwS+
+         VH1g==
+X-Gm-Message-State: AOAM533i8ds27NwrFSCC/83WDr2Jl6Eqk5lHt92Scfwjn4V0xl9L1TAz
+        lYNZzXWcDdbI0MOmR1MDkxPEJyaR0djK5INHtkmVb+2IJfksY5g7GnLznjMpaCJbpKFLIIoU7LA
+        W4xCMAAUxBlzte/w8gF0sqAoIHEoP
+X-Received: by 2002:a25:3a04:: with SMTP id h4mr1935474yba.285.1608486753410;
+        Sun, 20 Dec 2020 09:52:33 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwv3EKIyYiOTEQmymOosTLMxXi+rc/bNY99x4v7vvEV+VuUAPJO6yGTyIAwbDCGB67vPincINDo7Lpb9SXjnO8=
+X-Received: by 2002:a25:3a04:: with SMTP id h4mr1935447yba.285.1608486753133;
+ Sun, 20 Dec 2020 09:52:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201220033457.2728519-8-sashal@kernel.org>
+References: <cover.1607349924.git.lorenzo@kernel.org> <21d27f233e37b66c9ad4073dd09df5c2904112a4.1607349924.git.lorenzo@kernel.org>
+ <5465830698257f18ae474877648f4a9fe2e1eefe.camel@kernel.org>
+ <20201208110125.GC36228@lore-desk> <pj41zlk0tdq22i.fsf@u68c7b5b1d2d758.ant.amazon.com>
+In-Reply-To: <pj41zlk0tdq22i.fsf@u68c7b5b1d2d758.ant.amazon.com>
+From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+Date:   Sun, 20 Dec 2020 18:52:29 +0100
+Message-ID: <CAJ0CqmWUJzrpOpQ01sr+e5hr1K1U4tsqEiF=FdLL--wLYpu3DA@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 03/14] xdp: add xdp_shared_info data structure
+To:     Shay Agroskin <shayagr@amazon.com>
+Cc:     Saeed Mahameed <saeed@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        BPF-dev-list <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "Jubran, Samih" <sameehj@amazon.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Jesper Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>,
+        Jason Wang <jasowang@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+>
+>
+> Lorenzo Bianconi <lorenzo.bianconi@redhat.com> writes:
+>
+> >> On Mon, 2020-12-07 at 17:32 +0100, Lorenzo Bianconi wrote:
+> >> > Introduce xdp_shared_info data structure to contain info
+> >> > about
+> >> > "non-linear" xdp frame. xdp_shared_info will alias
+> >> > skb_shared_info
+> >> > allowing to keep most of the frags in the same cache-line.
+> [...]
+> >>
+> >> > +  u16 nr_frags;
+> >> > +  u16 data_length; /* paged area length */
+> >> > +  skb_frag_t frags[MAX_SKB_FRAGS];
+> >>
+> >> why MAX_SKB_FRAGS ? just use a flexible array member
+> >> skb_frag_t frags[];
+> >>
+> >> and enforce size via the n_frags and on the construction of the
+> >> tailroom preserved buffer, which is already being done.
+> >>
+> >> this is waste of unnecessary space, at lease by definition of
+> >> the
+> >> struct, in your use case you do:
+> >> memcpy(frag_list, xdp_sinfo->frags, sizeof(skb_frag_t) *
+> >> num_frags);
+> >> And the tailroom space was already preserved for a full
+> >> skb_shinfo.
+> >> so i don't see why you need this array to be of a fixed
+> >> MAX_SKB_FRAGS
+> >> size.
+> >
+> > In order to avoid cache-misses, xdp_shared info is built as a
+> > variable
+> > on mvneta_rx_swbm() stack and it is written to "shared_info"
+> > area only on the
+> > last fragment in mvneta_swbm_add_rx_fragment(). I used
+> > MAX_SKB_FRAGS to be
+> > aligned with skb_shared_info struct but probably we can use even
+> > a smaller value.
+> > Another approach would be to define two different struct, e.g.
+> >
+> > stuct xdp_frag_metadata {
+> >       u16 nr_frags;
+> >       u16 data_length; /* paged area length */
+> > };
+> >
+> > struct xdp_frags {
+> >       skb_frag_t frags[MAX_SKB_FRAGS];
+> > };
+> >
+> > and then define xdp_shared_info as
+> >
+> > struct xdp_shared_info {
+> >       stuct xdp_frag_metadata meta;
+> >       skb_frag_t frags[];
+> > };
+> >
+> > In this way we can probably optimize the space. What do you
+> > think?
+>
+> We're still reserving ~sizeof(skb_shared_info) bytes at the end of
+> the first buffer and it seems like in mvneta code you keep
+> updating all three fields (frags, nr_frags and data_length).
+> Can you explain how the space is optimized by splitting the
+> structs please?
 
-On Sat, Dec 19, 2020 at 10:34:55PM -0500, Sasha Levin wrote:
-> From: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> 
-> [ Upstream commit 77ce220c0549dcc3db8226c61c60e83fc59dfafc ]
-> 
-> The test fails because of a recent fix to the verifier, even though this
+using xdp_shared_info struct we will have the first 3 fragments in the
+same cacheline of nr_frags while using skb_shared_info struct only the
+first fragment will be in the same cacheline of nr_frags. Moreover
+skb_shared_info has multiple fields unused by xdp.
 
-That fix is commit b02709587ea3 ("bpf: Fix propagation of 32-bit signed
-bounds from 64-bit bounds.") upstream, which only needed backport to 5.9.
-So although backporting this patch to 5.4 shouldn't break anything, I
-wouldn't bother. 
+Regards,
+Lorenzo
 
-Thanks,
-Jean
+>
+> >>
+> >> > +};
+> >> > +
+> >> > +static inline struct xdp_shared_info *
+> >> >  xdp_get_shared_info_from_buff(struct xdp_buff *xdp)
+> >> >  {
+> >> > -  return (struct skb_shared_info *)xdp_data_hard_end(xdp);
+> >> > +  BUILD_BUG_ON(sizeof(struct xdp_shared_info) >
+> >> > +               sizeof(struct skb_shared_info));
+> >> > +  return (struct xdp_shared_info *)xdp_data_hard_end(xdp);
+> >> > +}
+> >> > +
+> >>
+> >> Back to my first comment, do we have plans to use this tail
+> >> room buffer
+> >> for other than frag_list use cases ? what will be the buffer
+> >> format
+> >> then ? should we push all new fields to the end of the
+> >> xdp_shared_info
+> >> struct ? or deal with this tailroom buffer as a stack ?
+> >> my main concern is that for drivers that don't support frag
+> >> list and
+> >> still want to utilize the tailroom buffer for other usecases
+> >> they will
+> >> have to skip the first sizeof(xdp_shared_info) so they won't
+> >> break the
+> >> stack.
+> >
+> > for the moment I do not know if this area is used for other
+> > purposes.
+> > Do you think there are other use-cases for it?
+> >
+>
+> Saeed, the stack receives skb_shared_info when the frames are
+> passed to the stack (skb_add_rx_frag is used to add the whole
+> information to skb's shared info), and for XDP_REDIRECT use case,
+> it doesn't seem like all drivers check page's tailroom for more
+> information anyway (ena doesn't at least).
+> Can you please explain what do you mean by "break the stack"?
+>
+> Thanks, Shay
+>
+> >>
+> [...]
+> >
+> >>
+>
 
-> program is valid. In details what happens is:
-> 
->     7: (61) r1 = *(u32 *)(r0 +0)
-> 
-> Load a 32-bit value, with signed bounds [S32_MIN, S32_MAX]. The bounds
-> of the 64-bit value are [0, U32_MAX]...
-> 
->     8: (65) if r1 s> 0xffffffff goto pc+1
-> 
-> ... therefore this is always true (the operand is sign-extended).
-> 
->     10: (b4) w2 = 11
->     11: (6d) if r2 s> r1 goto pc+1
-> 
-> When true, the 64-bit bounds become [0, 10]. The 32-bit bounds are still
-> [S32_MIN, 10].
-> 
->     13: (64) w1 <<= 2
-> 
-> Because this is a 32-bit operation, the verifier propagates the new
-> 32-bit bounds to the 64-bit ones, and the knowledge gained from insn 11
-> is lost.
-> 
->     14: (0f) r0 += r1
->     15: (7a) *(u64 *)(r0 +0) = 4
-> 
-> Then the verifier considers r0 unbounded here, rejecting the test. To
-> make the test work, change insn 8 to check the sign of the 32-bit value.
-> 
-> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> Acked-by: John Fastabend <john.fastabend@gmail.com>
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  tools/testing/selftests/bpf/verifier/array_access.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/verifier/array_access.c b/tools/testing/selftests/bpf/verifier/array_access.c
-> index f3c33e128709b..a80d806ead15f 100644
-> --- a/tools/testing/selftests/bpf/verifier/array_access.c
-> +++ b/tools/testing/selftests/bpf/verifier/array_access.c
-> @@ -68,7 +68,7 @@
->  	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
->  	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 9),
->  	BPF_LDX_MEM(BPF_W, BPF_REG_1, BPF_REG_0, 0),
-> -	BPF_JMP_IMM(BPF_JSGT, BPF_REG_1, 0xffffffff, 1),
-> +	BPF_JMP32_IMM(BPF_JSGT, BPF_REG_1, 0xffffffff, 1),
->  	BPF_MOV32_IMM(BPF_REG_1, 0),
->  	BPF_MOV32_IMM(BPF_REG_2, MAX_ENTRIES),
->  	BPF_JMP_REG(BPF_JSGT, BPF_REG_2, BPF_REG_1, 1),
-> -- 
-> 2.27.0
-> 
