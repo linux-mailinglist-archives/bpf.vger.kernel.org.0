@@ -2,42 +2,42 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31F052E027D
-	for <lists+bpf@lfdr.de>; Mon, 21 Dec 2020 23:27:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3DE52E0298
+	for <lists+bpf@lfdr.de>; Mon, 21 Dec 2020 23:42:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726094AbgLUW0p (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Dec 2020 17:26:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38598 "EHLO mail.kernel.org"
+        id S1725844AbgLUWlj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Dec 2020 17:41:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40740 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726080AbgLUW0o (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Dec 2020 17:26:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B555A22B51;
-        Mon, 21 Dec 2020 22:26:03 +0000 (UTC)
+        id S1725780AbgLUWlj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Dec 2020 17:41:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 231AA22D2A;
+        Mon, 21 Dec 2020 22:40:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608589564;
-        bh=j7oP1p+v4onbs15YBpeQ6Z26fIi6i3Bkj7pl6ROeWAs=;
+        s=k20201202; t=1608590458;
+        bh=eroVDsgkwPE0p23aSdWQOoS+rJ1sqpmZb2dMjFjGBdU=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ppH74T2NWi/PJjn6kotU8Gx5PscTPQsPlHlPBy3DkY7xXGF21Qbz9V0zESOoloxWy
-         JmNboHmllCbZ1K1PJxaRAJ5MMVHV8N5IeQhqxl3X1DgzLvAt8o62hlzcDEeu1rNR/g
-         pGRegGjgPE8fvQnA7BYUSZjcS82MQpPtTcfToQSCE8ZK75fCMCvIxoyyUefpdip0eM
-         31FY2kvVx1I7cZNj/osNrrDwDC4NHqHKQ16id5yy4GwipjBSwZn5LRR+ulLHs/o6s9
-         yFIOe4frBaDoqTAwE5549/vhR6UvcR4j6vwHWur9hn2UZQv5/71syk1f39XcQMhB3E
-         GaQhAfF8xX5NA==
-Received: by mail-lf1-f48.google.com with SMTP id h205so27403428lfd.5;
-        Mon, 21 Dec 2020 14:26:03 -0800 (PST)
-X-Gm-Message-State: AOAM5337vLB1zG5pFTXAHBn9ruF5EbuUST/ibdsK+aS8snGcWl+Rg9A8
-        1gvQz3N5nQjn2gFKvurwJrbb+xn5mdizoEynP3E=
-X-Google-Smtp-Source: ABdhPJytQqW0AG+oIF241EtENmmd2ta/kg9Co5TKnuQso5tgQtFGH5GzTcTuwKLAT0LbtAAl5sBmVa+TWHsRDDS+gD0=
-X-Received: by 2002:a19:650:: with SMTP id 77mr7818787lfg.160.1608589561972;
- Mon, 21 Dec 2020 14:26:01 -0800 (PST)
+        b=h9olFuwF/LtHR5EurtJsEvuU6YhRe1WduPf4zsjb3u7g5gI/wFBBP4n0G+Ys5UGzS
+         yMf7A18d81RkqpCdcMedAQAwW1tNdLoeQlLh217Ynrx9nnNidHMgm30UYXhliwxVdr
+         dAXgrkuUCku24C/eR8GQkXEqkD2r5M4S/wuUEGDeTxo9LgkentE1JA4EyuWGB7O3KN
+         ZHC0uGDLRnSIooTm+G1mc7eHbPxy9rqcEeDTRxPhYEbaB/k/tL5smkC+rphvO2eISt
+         weMBL9Y43C7phgcjtZNtODChlY97QbwTRf5yt9Atkx8qxM4RTraAt/Ejraxd05Ql/C
+         XDAPWE5ZJUiSg==
+Received: by mail-lf1-f47.google.com with SMTP id x20so27397002lfe.12;
+        Mon, 21 Dec 2020 14:40:58 -0800 (PST)
+X-Gm-Message-State: AOAM531qAVpIQCKVEzere3tEVwi0avHBJOi9NU5+x8+C2kILuqmGFXff
+        ZaE3HHe5GuEkclQcYjfz6xuE5LfKiReIGQ+JB/c=
+X-Google-Smtp-Source: ABdhPJyLbjGZqPCK7a9fWx4OfY3BhYhoL2BLeHIqZSn2zS47ujTqMiTvUwHZkEWquhgwz8ACTKkXhrr6O6lOdtmWMEc=
+X-Received: by 2002:ac2:5199:: with SMTP id u25mr7241662lfi.438.1608590456361;
+ Mon, 21 Dec 2020 14:40:56 -0800 (PST)
 MIME-Version: 1.0
-References: <20201217172324.2121488-1-sdf@google.com> <20201217172324.2121488-2-sdf@google.com>
-In-Reply-To: <20201217172324.2121488-2-sdf@google.com>
+References: <20201217172324.2121488-1-sdf@google.com> <20201217172324.2121488-3-sdf@google.com>
+In-Reply-To: <20201217172324.2121488-3-sdf@google.com>
 From:   Song Liu <song@kernel.org>
-Date:   Mon, 21 Dec 2020 14:25:50 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW6KPF6J9Q6P-g6LQGBjwP_cGdM+VPGgYfOZ8pTkwShqaQ@mail.gmail.com>
-Message-ID: <CAPhsuW6KPF6J9Q6P-g6LQGBjwP_cGdM+VPGgYfOZ8pTkwShqaQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: try to avoid kzalloc in cgroup/{s,g}etsockopt
+Date:   Mon, 21 Dec 2020 14:40:45 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW63um6NL6QF4E=iYpCeCiavuqYahO1h39Eu=agQU8LL5g@mail.gmail.com>
+Message-ID: <CAPhsuW63um6NL6QF4E=iYpCeCiavuqYahO1h39Eu=agQU8LL5g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] bpf: split cgroup_bpf_enabled per attach type
 To:     Stanislav Fomichev <sdf@google.com>
 Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -47,32 +47,48 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 9:24 AM Stanislav Fomichev <sdf@google.com> wrote:
+On Thu, Dec 17, 2020 at 9:26 AM Stanislav Fomichev <sdf@google.com> wrote:
 >
-> When we attach a bpf program to cgroup/getsockopt any other getsockopt()
-> syscall starts incurring kzalloc/kfree cost. While, in general, it's
-> not an issue, sometimes it is, like in the case of TCP_ZEROCOPY_RECEIVE.
-> TCP_ZEROCOPY_RECEIVE (ab)uses getsockopt system call to implement
-> fastpath for incoming TCP, we don't want to have extra allocations in
-> there.
+> When we attach any cgroup hook, the rest (even if unused/unattached) start
+> to contribute small overhead. In particular, the one we want to avoid is
+> __cgroup_bpf_run_filter_skb which does two redirections to get to
+> the cgroup and pushes/pulls skb.
 >
-> Let add a small buffer on the stack and use it for small (majority)
-> {s,g}etsockopt values. I've started with 128 bytes to cover
-> the options we care about (TCP_ZEROCOPY_RECEIVE which is 32 bytes
-> currently, with some planned extension to 64 + some headroom
-> for the future).
+> Let's split cgroup_bpf_enabled to be per-attach to make sure
+> only used attach types trigger.
 >
-> It seems natural to do the same for setsockopt, but it's a bit more
-> involved when the BPF program modifies the data (where we have to
-> kmalloc). The assumption is that for the majority of setsockopt
-> calls (which are doing pure BPF options or apply policy) this
-> will bring some benefit as well.
+> I've dropped some existing high-level cgroup_bpf_enabled in some
+> places because BPF_PROG_CGROUP_XXX_RUN macros usually have another
+> cgroup_bpf_enabled check.
+>
+> I also had to copy-paste BPF_CGROUP_RUN_SA_PROG_LOCK for
+> GETPEERNAME/GETSOCKNAME because type for cgroup_bpf_enabled[type]
+> has to be constant and known at compile time.
 >
 > Signed-off-by: Stanislav Fomichev <sdf@google.com>
 
-Could you please share some performance numbers for this optimization?
-
-Thanks,
-Song
-
 [...]
+
+> @@ -252,8 +252,10 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
+>  #define BPF_CGROUP_RUN_PROG_INET6_BIND_LOCK(sk, uaddr)                        \
+>         BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, BPF_CGROUP_INET6_BIND, NULL)
+>
+> -#define BPF_CGROUP_PRE_CONNECT_ENABLED(sk) (cgroup_bpf_enabled && \
+> -                                           sk->sk_prot->pre_connect)
+> +#define BPF_CGROUP_PRE_CONNECT_ENABLED(sk)                                    \
+> +       ((cgroup_bpf_enabled(BPF_CGROUP_INET4_CONNECT) ||                      \
+> +         cgroup_bpf_enabled(BPF_CGROUP_INET6_CONNECT)) &&                     \
+> +        sk->sk_prot->pre_connect)
+
+Patchworks highlighted the following (from checkpatch.pl I guess):
+
+CHECK: Macro argument 'sk' may be better as '(sk)' to avoid precedence issues
+#99: FILE: include/linux/bpf-cgroup.h:255:
++#define BPF_CGROUP_PRE_CONNECT_ENABLED(sk)       \
++ ((cgroup_bpf_enabled(BPF_CGROUP_INET4_CONNECT) ||       \
++  cgroup_bpf_enabled(BPF_CGROUP_INET6_CONNECT)) &&       \
++ sk->sk_prot->pre_connect)
+
+Other than, looks good to me.
+
+Acked-by: Song Liu <songliubraving@fb.com>
