@@ -2,64 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 526552E00C0
-	for <lists+bpf@lfdr.de>; Mon, 21 Dec 2020 20:10:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F292E00EE
+	for <lists+bpf@lfdr.de>; Mon, 21 Dec 2020 20:27:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725947AbgLUTKS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 21 Dec 2020 14:10:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55928 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725818AbgLUTKS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 21 Dec 2020 14:10:18 -0500
-Date:   Mon, 21 Dec 2020 14:09:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608577777;
-        bh=Vs/wCDAlf1tXrLmrsYBElNZPfe5oXS5d4dOycNslqBw=;
-        h=From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hKd3wzV6JTACaL0Kc3NwWtIH7mFpgzb3d6YQy1+OZ88IBTR3ttit5FOVAC49uQFII
-         BUJGpSNB8BK/wPFEB+EwL8qdihnSP3C2grLJCE7B1rTPMbdscOXgcqyqxrk1q0zZcA
-         gRPoJlsKkZKHlyIJeIsLeNltY2k+GmjjZ086lpPNBzqOvhEQ/Pbjlxl/+ww8/KI9YS
-         ny7EPOflRr6a3yslsC2wl1rMbIuDjtSJ0AnKmPF/JLPauZmHfBZ0hAGnPKZrSJRZo/
-         vPcvwFBXh+O2C6h2bJluqK/FcwTt0GXh3Ppfaw9Or9U7ljIO8tHy2XWwyNgXd6c3jL
-         h1F/XAt0a7feg==
-From:   Sasha Levin <sashal@kernel.org>
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.4 08/10] selftests/bpf: Fix array access with
- signed variable test
-Message-ID: <20201221190936.GF643756@sasha-vm>
-References: <20201220033457.2728519-1-sashal@kernel.org>
- <20201220033457.2728519-8-sashal@kernel.org>
- <X989/9omnIGyDvzV@larix.localdomain>
+        id S1726328AbgLUTZv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Dec 2020 14:25:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726290AbgLUTZv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 21 Dec 2020 14:25:51 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50EBAC0613D3;
+        Mon, 21 Dec 2020 11:25:11 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id 4so6119814plk.5;
+        Mon, 21 Dec 2020 11:25:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rgVexWO89fCt9Azriz+azlsgzrNkcgjEEvrNcljJLdA=;
+        b=en4a1uP5UYq+sYyw/M7tm/rDX16KTnM0tAki1mPSWjtMAe8hm5lqWVbobV7VTHLpP7
+         g6n5yXMEmlIwTbrv6wGU9M5KFjVny28uIuAD3kHviO8QdaEJyeDREdR2j+1HvxkzpQoW
+         p6bcaVzGIfLqB0CjgA9AOn5ZHy3dB5BXe+THwXJayTntWJLIZNmk7K5nbBrJI+Ldyugi
+         eB96iQld4mZqZmyRe3w+Au1jSlfJqY6csK/EKDAdBG3NGumF6JnPxoRV4587LWYTDdF9
+         Eh3sZm8id0UET1OA1fMRne8ArIjW4ioAQs6umZtGaHNOL7GA9DKwnnkEkePJ+ESytY6X
+         I1cQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rgVexWO89fCt9Azriz+azlsgzrNkcgjEEvrNcljJLdA=;
+        b=ND3BKPgbgnqdU3+mSEKTmVMAerIoY48+/x2u1NVdulCrQjofNT/yZbdWpB1STWvgw6
+         I8KaE4osBX84b4VlQIXTNkP48irOVKp68OdWEkr0/dGq667SxwZrrjF7MV5mqC8qk8Pw
+         o+frDcvH96H5i2M6w0mKTuC+okHxYVWBn2vz03ILCrDBWORaoitTImM6/LNgUK/m75Ar
+         g2XlmCUdab5EYTCKrHvIP0uCVpyqRoYCBuI3NBDW0nDWW6AyHx1lR5j/vzLr9ytaax5E
+         Tj7qVSOlhv/7g/5QDy71zCH4UuPcfsrBV9pMhs3hxBgGOljIoAaPJtIVCqOJIl+bUpSk
+         0glg==
+X-Gm-Message-State: AOAM533RrSljJLeb/QxvgQ4cBsjTtupeen5Bfaxnz0LovCzdkbWjL4fS
+        d7qboDwmbWfwj1hw43cp6Vk=
+X-Google-Smtp-Source: ABdhPJw7XEmBJaWAsQtIQaFO4QlYH+q2tg3hTOh8rNcWGvLT/vtieNtt4kAhfFarECPVEoYaYMw54A==
+X-Received: by 2002:a17:90a:fa18:: with SMTP id cm24mr18462825pjb.220.1608578710882;
+        Mon, 21 Dec 2020 11:25:10 -0800 (PST)
+Received: from edumazet1.svl.corp.google.com ([2620:15c:2c4:201:7220:84ff:fe09:1424])
+        by smtp.gmail.com with ESMTPSA id f29sm17592370pfk.32.2020.12.21.11.25.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Dec 2020 11:25:10 -0800 (PST)
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        bpf <bpf@vger.kernel.org>, John Sperbeck <jsperbeck@google.com>,
+        Song Liu <songliubraving@fb.com>
+Subject: [PATCH bpf] bpf: add schedule point in htab_init_buckets()
+Date:   Mon, 21 Dec 2020 11:25:06 -0800
+Message-Id: <20201221192506.707584-1-eric.dumazet@gmail.com>
+X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <X989/9omnIGyDvzV@larix.localdomain>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Dec 20, 2020 at 01:05:19PM +0100, Jean-Philippe Brucker wrote:
->Hi,
->
->On Sat, Dec 19, 2020 at 10:34:55PM -0500, Sasha Levin wrote:
->> From: Jean-Philippe Brucker <jean-philippe@linaro.org>
->>
->> [ Upstream commit 77ce220c0549dcc3db8226c61c60e83fc59dfafc ]
->>
->> The test fails because of a recent fix to the verifier, even though this
->
->That fix is commit b02709587ea3 ("bpf: Fix propagation of 32-bit signed
->bounds from 64-bit bounds.") upstream, which only needed backport to 5.9.
->So although backporting this patch to 5.4 shouldn't break anything, I
->wouldn't bother.
+From: Eric Dumazet <edumazet@google.com>
 
-I'll drop it from 5.4, thanks!
+We noticed that with a LOCKDEP enabled kernel,
+allocating a hash table with 65536 buckets would
+use more than 60ms.
 
+htab_init_buckets() runs from process context,
+it is safe to schedule to avoid latency spikes.
+
+Fixes: c50eb518e262 ("bpf: Use separate lockdep class for each hashtab")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-By: John Sperbeck <jsperbeck@google.com>
+Cc: Song Liu <songliubraving@fb.com>
+---
+ kernel/bpf/hashtab.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index 7e848200cd268a0f9ed063f0b641d3c355787013..c1ac7f964bc997925fd427f5192168829d812e5d 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -152,6 +152,7 @@ static void htab_init_buckets(struct bpf_htab *htab)
+ 			lockdep_set_class(&htab->buckets[i].lock,
+ 					  &htab->lockdep_key);
+ 		}
++		cond_resched();
+ 	}
+ }
+ 
 -- 
-Thanks,
-Sasha
+2.29.2.729.g45daf8777d-goog
+
