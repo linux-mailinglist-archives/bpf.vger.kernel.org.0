@@ -2,147 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B365B2DF66B
-	for <lists+bpf@lfdr.de>; Sun, 20 Dec 2020 19:09:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9994C2DFA05
+	for <lists+bpf@lfdr.de>; Mon, 21 Dec 2020 09:39:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726779AbgLTSI3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 20 Dec 2020 13:08:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49031 "EHLO
+        id S1725878AbgLUIid (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 21 Dec 2020 03:38:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29766 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726958AbgLTSI3 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 20 Dec 2020 13:08:29 -0500
+        by vger.kernel.org with ESMTP id S1726492AbgLUIid (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 21 Dec 2020 03:38:33 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1608487622;
+        s=mimecast20190719; t=1608539826;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=4wC6925RUdwnOWULkOoUOrNkkpuduWiXS0s9QV8Mu2A=;
-        b=M8Kkx5VovNCW1No8EZ9tt4mp/9baF1EnidI389lU5c3K5f64C4Kp4x8YmdYVMCrOSyk2J4
-        09tYFsg2Hpf0Zsc37GXlUPoq70eLzH55PQAA/3U2aUSiZmLt2PItFchavO0b88NZhHQR9P
-        xslGfaUB8pMwZUN0ozFfcUxq+kW3Ayo=
-Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com
- [209.85.219.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-309-vErWgrNzOE2msPzQvG_wLg-1; Sun, 20 Dec 2020 13:07:00 -0500
-X-MC-Unique: vErWgrNzOE2msPzQvG_wLg-1
-Received: by mail-yb1-f200.google.com with SMTP id d187so11533489ybc.6
-        for <bpf@vger.kernel.org>; Sun, 20 Dec 2020 10:07:00 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4wC6925RUdwnOWULkOoUOrNkkpuduWiXS0s9QV8Mu2A=;
-        b=mM2j8SusoFnIvVuEFrvwzc7OJXT0I88zWffuGV/yY/KdBqdeUBPAyQr1THRYLwHyZl
-         vX0a6tTeN2WcixscxOoaKe75vHQMQiBw2ojrk9meEHQVWn4CWvD0jq9D+PaD4ErwFnjr
-         EmlOqFAEJ4A91x+zwNw47O+CQzfhFFE2p2gIgVJDOpmsoWl7dtjmUx/3KQ3bsZG1t5k6
-         vYuEsLf+fPGQCAQ1ATyygOwtl2tdnAB+RvceS3n5JaNDrjtO9J/NOE+3ArgEfnW5+TQQ
-         j2mPQDNqjlkiFBek48IBBreEuacXcUnqnSyRDZE1XC7zzvGt5amOj9zy2x8KZKtyImdx
-         SfZQ==
-X-Gm-Message-State: AOAM530kWSb9jGdyxL/5AFx2h+I17Ug7xXuTULneKo8lXllO4NVO7OhA
-        eM5KfE3zYekjHSZqksJ06iWiAlM8mJ2KffEgol9pmdMVE7Qwwh9SFXpSci9MwPA7yrbcWIgi5IU
-        Coy+AmvgMgzWs337iuNYW8ks6GQAx
-X-Received: by 2002:a25:dc7:: with SMTP id 190mr18137232ybn.73.1608487619967;
-        Sun, 20 Dec 2020 10:06:59 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyRGo97tZJiV3Qqn1a+pmbVfcUP+6oubUCyA0D12F68fTdXKxtujCPRyDphaJXw1ZNt3Q2d0shUDUrpsLzeGKc=
-X-Received: by 2002:a25:dc7:: with SMTP id 190mr18137210ybn.73.1608487619764;
- Sun, 20 Dec 2020 10:06:59 -0800 (PST)
+        bh=4SXCl0QIzH64Vxn0oBAU/MjIwf7VvPol07R1vFHiaYg=;
+        b=Ya8dw3RrKNpijboc7v61e21zIjcudMObwRciXu/CIcEiHtrKGWY5ANcRFTRVi2io0vrzrE
+        JmwO2YsD+pA5s/DAuCJjHg/pAZqMuq2Du6ayg2i9/e8sCuHEz2uoRyCpBgsoaOm34M0XQ/
+        UgwnsSuQoX6CROo8LfWrqN6hbUW/j0Y=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-357-znt9a7rBN72WbXd9PzaLZA-1; Mon, 21 Dec 2020 03:37:04 -0500
+X-MC-Unique: znt9a7rBN72WbXd9PzaLZA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5505D801817;
+        Mon, 21 Dec 2020 08:37:02 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.6])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E5C7810016FB;
+        Mon, 21 Dec 2020 08:36:52 +0000 (UTC)
+Date:   Mon, 21 Dec 2020 09:36:51 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
+        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        lorenzo.bianconi@redhat.com, alexander.duyck@gmail.com,
+        maciej.fijalkowski@intel.com, saeed@kernel.org, brouer@redhat.com
+Subject: Re: [PATCH v4 bpf-next 1/2] net: xdp: introduce xdp_init_buff
+ utility routine
+Message-ID: <20201221093651.44ff4195@carbon>
+In-Reply-To: <7f8329b6da1434dc2b05a77f2e800b29628a8913.1608399672.git.lorenzo@kernel.org>
+References: <cover.1608399672.git.lorenzo@kernel.org>
+        <7f8329b6da1434dc2b05a77f2e800b29628a8913.1608399672.git.lorenzo@kernel.org>
 MIME-Version: 1.0
-References: <cover.1607349924.git.lorenzo@kernel.org> <f3d2937208eae9644f36d805cd5b30e0985767a6.1607349924.git.lorenzo@kernel.org>
- <pj41zlh7ohpz6h.fsf@u68c7b5b1d2d758.ant.amazon.com>
-In-Reply-To: <pj41zlh7ohpz6h.fsf@u68c7b5b1d2d758.ant.amazon.com>
-From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Date:   Sun, 20 Dec 2020 19:06:56 +0100
-Message-ID: <CAJ0CqmXB1yUzBAxjeyxDw2smpOMXqN=3TdqwwAkr49k8-6x8qA@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 06/14] net: mvneta: add multi buffer support
- to XDP_TX
-To:     Shay Agroskin <shayagr@amazon.com>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>,
-        BPF-dev-list <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "Jubran, Samih" <sameehj@amazon.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Jesper Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>,
-        Jason Wang <jasowang@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Dec 19, 2020 at 4:56 PM Shay Agroskin <shayagr@amazon.com> wrote:
->
->
-> Lorenzo Bianconi <lorenzo@kernel.org> writes:
->
-> > Introduce the capability to map non-linear xdp buffer running
-> > mvneta_xdp_submit_frame() for XDP_TX and XDP_REDIRECT
-> >
-> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > ---
-> >  drivers/net/ethernet/marvell/mvneta.c | 94
-> >  ++++++++++++++++-----------
-> >  1 file changed, 56 insertions(+), 38 deletions(-)
-> [...]
-> >                       if (napi && buf->type ==
-> >  MVNETA_TYPE_XDP_TX)
-> >                               xdp_return_frame_rx_napi(buf->xdpf);
-> >                       else
-> > @@ -2054,45 +2054,64 @@ mvneta_xdp_put_buff(struct mvneta_port
-> > *pp, struct mvneta_rx_queue *rxq,
-> >
-> >  static int
-> >  mvneta_xdp_submit_frame(struct mvneta_port *pp, struct
-> >  mvneta_tx_queue *txq,
-> > -                     struct xdp_frame *xdpf, bool dma_map)
-> > +                     struct xdp_frame *xdpf, int *nxmit_byte,
-> > bool dma_map)
-> >  {
-> > -     struct mvneta_tx_desc *tx_desc;
-> > -     struct mvneta_tx_buf *buf;
-> > -     dma_addr_t dma_addr;
-> > +     struct xdp_shared_info *xdp_sinfo =
-> > xdp_get_shared_info_from_frame(xdpf);
-> > +     int i, num_frames = xdpf->mb ? xdp_sinfo->nr_frags + 1 :
-> > 1;
-> > +     struct mvneta_tx_desc *tx_desc = NULL;
-> > +     struct page *page;
-> >
-> > -     if (txq->count >= txq->tx_stop_threshold)
-> > +     if (txq->count + num_frames >= txq->size)
-> >               return MVNETA_XDP_DROPPED;
-> >
-> > -     tx_desc = mvneta_txq_next_desc_get(txq);
-> > +     for (i = 0; i < num_frames; i++) {
-> > +             struct mvneta_tx_buf *buf =
-> > &txq->buf[txq->txq_put_index];
-> > +             skb_frag_t *frag = i ? &xdp_sinfo->frags[i - 1] :
-> > NULL;
-> > +             int len = frag ? xdp_get_frag_size(frag) :
-> > xdpf->len;
->
-> nit, from branch prediction point of view, maybe it would be
-> better to write
->      int len = i ? xdp_get_frag_size(frag) : xdpf->len;
->
+On Sat, 19 Dec 2020 18:55:00 +0100
+Lorenzo Bianconi <lorenzo@kernel.org> wrote:
 
-ack, I will fix it in v6.
+> diff --git a/include/net/xdp.h b/include/net/xdp.h
+> index 11ec93f827c0..323340caef88 100644
+> --- a/include/net/xdp.h
+> +++ b/include/net/xdp.h
+> @@ -76,6 +76,13 @@ struct xdp_buff {
+>  	u32 frame_sz; /* frame size to deduce data_hard_end/reserved tailroom*/
+>  };
+>  
+> +static __always_inline void
+> +xdp_init_buff(struct xdp_buff *xdp, u32 frame_sz, struct xdp_rxq_info *rxq)
+> +{
+> +	xdp->frame_sz = frame_sz;
+> +	xdp->rxq = rxq;
 
-Regards,
-Lorenzo
+Later you will add 'xdp->mb = 0' here.
 
-> since the value of i is checked one line above
-> Disclaimer: I'm far from a compiler expert, and don't know whether
-> the compiler would know to group these two assignments together
-> into a single branch prediction decision, but it feels like using
-> 'i' would make this decision easier for it.
->
-> Thanks,
-> Shay
->
-> [...]
->
+> +}
+
+Via the names of your functions, I assume that xdp_init_buff() is
+called before xdp_prepare_buff(), right?
+(And your pending 'xdp->mb = 0' also prefer this.)
+
+Below in bpf_prog_test_run_xdp() and netif_receive_generic_xdp() you
+violate this order... which will give you headaches when implementing
+the multi-buff support.  It is also a bad example for driver developer
+that need to figure out this calling-order from the function names.
+
+Below, will it be possible to have 'init' before 'prepare'?
+
+
+> +
+>  /* Reserve memory area at end-of data area.
+>   *
+>   * This macro reserves tailroom in the XDP buffer by limiting the
+> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+> index c1c30a9f76f3..a8fa5a9e4137 100644
+> --- a/net/bpf/test_run.c
+> +++ b/net/bpf/test_run.c
+> @@ -640,10 +640,10 @@ int bpf_prog_test_run_xdp(struct bpf_prog *prog, const union bpf_attr *kattr,
+>  	xdp.data = data + headroom;
+>  	xdp.data_meta = xdp.data;
+>  	xdp.data_end = xdp.data + size;
+> -	xdp.frame_sz = headroom + max_data_sz + tailroom;
+>  
+>  	rxqueue = __netif_get_rx_queue(current->nsproxy->net_ns->loopback_dev, 0);
+> -	xdp.rxq = &rxqueue->xdp_rxq;
+> +	xdp_init_buff(&xdp, headroom + max_data_sz + tailroom,
+> +		      &rxqueue->xdp_rxq);
+>  	bpf_prog_change_xdp(NULL, prog);
+>  	ret = bpf_test_run(prog, &xdp, repeat, &retval, &duration, true);
+>  	if (ret)
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index a46334906c94..b1a765900c01 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -4588,11 +4588,11 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
+>  	struct netdev_rx_queue *rxqueue;
+>  	void *orig_data, *orig_data_end;
+>  	u32 metalen, act = XDP_DROP;
+> +	u32 mac_len, frame_sz;
+>  	__be16 orig_eth_type;
+>  	struct ethhdr *eth;
+>  	bool orig_bcast;
+>  	int hlen, off;
+> -	u32 mac_len;
+>  
+>  	/* Reinjected packets coming from act_mirred or similar should
+>  	 * not get XDP generic processing.
+> @@ -4631,8 +4631,8 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
+>  	xdp->data_hard_start = skb->data - skb_headroom(skb);
+>  
+>  	/* SKB "head" area always have tailroom for skb_shared_info */
+> -	xdp->frame_sz  = (void *)skb_end_pointer(skb) - xdp->data_hard_start;
+> -	xdp->frame_sz += SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
+> +	frame_sz = (void *)skb_end_pointer(skb) - xdp->data_hard_start;
+> +	frame_sz += SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
+>  
+>  	orig_data_end = xdp->data_end;
+>  	orig_data = xdp->data;
+> @@ -4641,7 +4641,7 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
+>  	orig_eth_type = eth->h_proto;
+>  
+>  	rxqueue = netif_get_rxqueue(skb);
+> -	xdp->rxq = &rxqueue->xdp_rxq;
+> +	xdp_init_buff(xdp, frame_sz, &rxqueue->xdp_rxq);
+>  
+>  	act = bpf_prog_run_xdp(xdp_prog, xdp);
+
+
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
