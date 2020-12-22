@@ -2,61 +2,306 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86EE82E0B98
-	for <lists+bpf@lfdr.de>; Tue, 22 Dec 2020 15:19:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB0292E0CC7
+	for <lists+bpf@lfdr.de>; Tue, 22 Dec 2020 16:32:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727028AbgLVOTF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Dec 2020 09:19:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726802AbgLVOTE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Dec 2020 09:19:04 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F1F9C0613D3;
-        Tue, 22 Dec 2020 06:18:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Czhr0lZ6q7lggbyK5BscVjMM51bWnt+mp2M9jPtWApM=; b=OYm3LQIX07Nw82C/3BFSqrMbww
-        w8YueS8jraJ7fHEdX4kWtlkFiQ5UU6juC18/mY8mLT7tTJQtWc9iIzLFwdEirmXZyyxnXUtEgCphb
-        CbrwGhniNr/l0GMrPftPvhCAqMJUljn+wED/f79le8Aa+DlqcrUXDcEu8kZAdwIyGMHSRG6MsLG4z
-        D49Maf+QHKenhKjXA4FJl5eitKhVThAdppdwprBdi8ty3q7vID4rVk7CMUTxSYFXpnr/wc04qgvLZ
-        EiuUcvImrPFeTFVn+FVzhjvG3wXo/0ewNw3ACLsN+16qneZP2PpA9zdmw2NbD9FdL+nBnAcULahl0
-        SGI2wVdQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kriUU-0004aY-3u; Tue, 22 Dec 2020 14:18:18 +0000
-Date:   Tue, 22 Dec 2020 14:18:18 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Florent Revest <revest@chromium.org>,
+        id S1727019AbgLVPcQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Dec 2020 10:32:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28528 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727645AbgLVPcQ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 22 Dec 2020 10:32:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608651048;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yAkpHC4YXj0isQg/CwgoYzp4WFHdlaWA3PELAYzb/yA=;
+        b=QkUalHAseEqOM/+s02LRB9VKh78wa2Xvgfqx3ACqHFJkCovtjE4BWDk07EvKM6f0L6OWr6
+        RSFitzDyMMxRiDn2xfK2AB8RO6udgwpEAENM0z3WwcfSk8DyqEO6sgzyolPoa1uFIrBI5u
+        EbV7JLuhDapLJKewdIJ+A9/FjYZ5xVA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-542-wgD7Fuc4OJWYkjTpBLSWNg-1; Tue, 22 Dec 2020 10:30:43 -0500
+X-MC-Unique: wgD7Fuc4OJWYkjTpBLSWNg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 08C84107ACE4;
+        Tue, 22 Dec 2020 15:30:41 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.6])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DDC3260C68;
+        Tue, 22 Dec 2020 15:30:33 +0000 (UTC)
+Date:   Tue, 22 Dec 2020 16:30:32 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
         Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
-Message-ID: <20201222141818.GA17056@infradead.org>
-References: <20201126165748.1748417-1-revest@google.com>
- <50047415-cafe-abab-a6ba-e85bb6a9b651@fb.com>
- <CACYkzJ7T4y7in1AsCvJ2izA3yiAke8vE9SRFRCyTPeqMnDHoyQ@mail.gmail.com>
- <e8b03cbc-c120-43d5-168c-cde5b6a97af8@fb.com>
- <CAEf4BzYz9Yf9abPBtP+swCuqvvhL0cbbbF1x-3stg9mp=a6+-A@mail.gmail.com>
- <194b5a6e6e30574a035a3e3baa98d7fde7f91f1c.camel@chromium.org>
- <CAADnVQK6GjmL19zQykYbh=THM9ktQUzfnwF_FfhUKimCxDnnkQ@mail.gmail.com>
- <CABRcYm+zjC-WH2gxtfEX5S6mZj-5_ByAzVd5zi3aRmQv-asYqg@mail.gmail.com>
- <221fb873-80fc-5407-965e-b075c964fa13@fb.com>
+        Maciej =?UTF-8?B?xbtlbmN6eWtvd3NraQ==?= <maze@google.com>,
+        Lorenz Bauer <lmb@cloudflare.com>, shaun@tigera.io,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Marek Majkowski <marek@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
+        colrack@gmail.com, brouer@redhat.com
+Subject: Re: [PATCH bpf-next V9 7/7] bpf/selftests: tests using
+ bpf_check_mtu BPF-helper
+Message-ID: <20201222163032.0529ab4d@carbon>
+In-Reply-To: <CAEf4Bzbud5EWAo9E=95VzGeCZGLA9_MdQUrAc8unh3izXcd3AA@mail.gmail.com>
+References: <160822594178.3481451.1208057539613401103.stgit@firesoul>
+        <160822601093.3481451.9135115478358953965.stgit@firesoul>
+        <CAEf4Bzbud5EWAo9E=95VzGeCZGLA9_MdQUrAc8unh3izXcd3AA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <221fb873-80fc-5407-965e-b075c964fa13@fb.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-FYI, there is a reason why kallsyms_lookup is not exported any more.
-I don't think adding that back through a backdoor is a good idea.
+On Fri, 18 Dec 2020 12:13:45 -0800
+Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+
+> On Thu, Dec 17, 2020 at 9:30 AM Jesper Dangaard Brouer
+> <brouer@redhat.com> wrote:
+> >
+> > Adding selftest for BPF-helper bpf_check_mtu(). Making sure
+> > it can be used from both XDP and TC.
+> >
+> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> > ---
+> >  tools/testing/selftests/bpf/prog_tests/check_mtu.c |  204 ++++++++++++++++++++
+> >  tools/testing/selftests/bpf/progs/test_check_mtu.c |  196 +++++++++++++++++++
+> >  2 files changed, 400 insertions(+)
+> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/check_mtu.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/test_check_mtu.c
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/check_mtu.c b/tools/testing/selftests/bpf/prog_tests/check_mtu.c
+> > new file mode 100644
+> > index 000000000000..b5d0c3a9abe8
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/prog_tests/check_mtu.c
+> > @@ -0,0 +1,204 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/* Copyright (c) 2020 Jesper Dangaard Brouer */
+> > +
+> > +#include <linux/if_link.h> /* before test_progs.h, avoid bpf_util.h redefines */
+> > +
+> > +#include <test_progs.h>
+> > +#include "test_check_mtu.skel.h"
+> > +#include <network_helpers.h>
+> > +
+> > +#include <stdlib.h>
+> > +#include <inttypes.h>
+> > +
+> > +#define IFINDEX_LO 1
+> > +
+> > +static __u32 duration; /* Hint: needed for CHECK macro */
+> > +
+> > +static int read_mtu_device_lo(void)
+> > +{
+> > +       const char *filename = "/sys/devices/virtual/net/lo/mtu";
+
+I will change this to: /sys/class/net/lo/mtu
+
+> > +       char buf[11] = {};
+> > +       int value;
+> > +       int fd;
+> > +
+> > +       fd = open(filename, 0, O_RDONLY);
+> > +       if (fd == -1)
+> > +               return -1;
+> > +
+> > +       if (read(fd, buf, sizeof(buf)) == -1)  
+> 
+> close fd missing here?
+
+ack, fixed.
+
+> > +               return -2;
+> > +       close(fd);
+> > +
+> > +       value = strtoimax(buf, NULL, 10);
+> > +       if (errno == ERANGE)
+> > +               return -3;
+> > +
+> > +       return value;
+> > +}
+> > +
+> > +static void test_check_mtu_xdp_attach(struct bpf_program *prog)
+> > +{
+> > +       int err = 0;
+> > +       int fd;
+> > +
+> > +       fd = bpf_program__fd(prog);
+> > +       err = bpf_set_link_xdp_fd(IFINDEX_LO, fd, XDP_FLAGS_SKB_MODE);
+> > +       if (CHECK(err, "XDP-attach", "failed"))
+> > +               return;
+> > +
+> > +       bpf_set_link_xdp_fd(IFINDEX_LO, -1, 0);  
+> 
+> can you please use bpf_link-based bpf_program__attach_xdp() which will
+> provide auto-cleanup in case of crash?
+
+Sure, that will be good for me to learn.
+
+> also check that it succeeded?
+> 
+> > +}
+> > +
+> > +static void test_check_mtu_run_xdp(struct test_check_mtu *skel,
+> > +                                  struct bpf_program *prog,
+> > +                                  __u32 mtu_expect)
+> > +{
+> > +       const char *prog_name = bpf_program__name(prog);
+> > +       int retval_expect = XDP_PASS;
+> > +       __u32 mtu_result = 0;
+> > +       char buf[256];
+> > +       int err;
+> > +
+> > +       struct bpf_prog_test_run_attr tattr = {
+> > +               .repeat = 1,
+> > +               .data_in = &pkt_v4,
+> > +               .data_size_in = sizeof(pkt_v4),
+> > +               .data_out = buf,
+> > +               .data_size_out = sizeof(buf),
+> > +               .prog_fd = bpf_program__fd(prog),
+> > +       };  
+> 
+> nit: it's a variable declaration, so keep it all in one block. There
+> is also opts-based variant, which might be good to use here instead.
+> 
+> > +
+> > +       memset(buf, 0, sizeof(buf));  
+> 
+> char buf[256] = {}; would make this unnecessary
+
+ok.
+
+> 
+> > +
+> > +       err = bpf_prog_test_run_xattr(&tattr);
+> > +       CHECK_ATTR(err != 0 || errno != 0, "bpf_prog_test_run",
+> > +                  "prog_name:%s (err %d errno %d retval %d)\n",
+> > +                  prog_name, err, errno, tattr.retval);
+> > +
+> > +        CHECK(tattr.retval != retval_expect, "retval",  
+> 
+> whitespaces are off?
+
+Yes, I noticed with scripts/checkpatch.pl.  And there are a couple
+more, that I've already fixed.
+
+
+> > +             "progname:%s unexpected retval=%d expected=%d\n",
+> > +             prog_name, tattr.retval, retval_expect);
+> > +
+> > +       /* Extract MTU that BPF-prog got */
+> > +       mtu_result = skel->bss->global_bpf_mtu_xdp;
+> > +       CHECK(mtu_result != mtu_expect, "MTU-compare-user",
+> > +             "failed (MTU user:%d bpf:%d)", mtu_expect, mtu_result);  
+> 
+> There is nicer ASSERT_EQ() macro for such cases:
+> 
+> ASSERT_EQ(mtu_result, mtu_expect, "MTU-compare-user"); it will format
+> sensible error message automatically
+
+Nice simplification :-)
+
+> 
+> > +}
+> > +  
+> 
+> [...]
+
+[... same ...] 
+
+> [...]
+> 
+> > +
+> > +void test_check_mtu(void)
+> > +{
+> > +       struct test_check_mtu *skel;
+> > +       __u32 mtu_lo;
+> > +
+> > +       skel = test_check_mtu__open_and_load();
+> > +       if (CHECK(!skel, "open and load skel", "failed"))
+> > +               return; /* Exit if e.g. helper unknown to kernel */
+> > +
+> > +       if (test__start_subtest("bpf_check_mtu XDP-attach"))
+> > +               test_check_mtu_xdp_attach(skel->progs.xdp_use_helper_basic);
+> > +
+> > +       test_check_mtu__destroy(skel);  
+> 
+> here it's not clear why you instantiate skeleton outside of
+> test_check_mtu_xdp_attach() subtest. Can you please move it in? It
+> will keep this failure local to that specific subtest, not the entire
+> test. And is just cleaner, of course.
+
+Sure will "move it in".  The intent was to fail the entire test if this
+failed, but it is more clean to "move it in".
+
+> > +
+> > +       mtu_lo = read_mtu_device_lo();
+> > +       if (CHECK(mtu_lo < 0, "reading MTU value", "failed (err:%d)", mtu_lo))  
+> 
+> ASSERT_OK() could be used here
+> 
+> > +               return;
+> > +
+> > +       if (test__start_subtest("bpf_check_mtu XDP-run"))
+> > +               test_check_mtu_xdp(mtu_lo, 0);
+> > +
+> > +       if (test__start_subtest("bpf_check_mtu XDP-run ifindex-lookup"))
+> > +               test_check_mtu_xdp(mtu_lo, IFINDEX_LO);
+> > +
+> > +       if (test__start_subtest("bpf_check_mtu TC-run"))
+> > +               test_check_mtu_tc(mtu_lo, 0);
+> > +
+> > +       if (test__start_subtest("bpf_check_mtu TC-run ifindex-lookup"))
+> > +               test_check_mtu_tc(mtu_lo, IFINDEX_LO);
+> > +}  
+> 
+> [...]
+> 
+> > +
+> > +       global_bpf_mtu_tc = mtu_len;
+> > +       return retval;
+> > +}
+> > +
+> > +SEC("classifier")  
+> 
+> nice use of the same SEC()'tion BPF programs!
+> 
+> 
+> > +int tc_minus_delta(struct __sk_buff *ctx)
+> > +{
+> > +       int retval = BPF_OK; /* Expected retval on successful test */
+> > +       __u32 ifindex = GLOBAL_USER_IFINDEX;
+> > +       __u32 skb_len = ctx->len;
+> > +       __u32 mtu_len = 0;
+> > +       int delta;
+> > +
+> > +       /* Boarderline test case: Minus delta exceeding packet length allowed */
+> > +       delta = -((skb_len - ETH_HLEN) + 1);
+> > +
+> > +       /* Minus length (adjusted via delta) still pass MTU check, other helpers
+> > +        * are responsible for catching this, when doing actual size adjust
+> > +        */
+> > +       if (bpf_check_mtu(ctx, ifindex, &mtu_len, delta, 0))
+> > +               retval = BPF_DROP;
+> > +
+> > +       global_bpf_mtu_xdp = mtu_len;
+> > +       return retval;
+> > +}
+
+
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
