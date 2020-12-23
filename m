@@ -2,140 +2,186 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C06482E2122
-	for <lists+bpf@lfdr.de>; Wed, 23 Dec 2020 21:09:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E102E212E
+	for <lists+bpf@lfdr.de>; Wed, 23 Dec 2020 21:15:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728617AbgLWUHl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 23 Dec 2020 15:07:41 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:42792 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728141AbgLWUHl (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 23 Dec 2020 15:07:41 -0500
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BNK1gjd014076
-        for <bpf@vger.kernel.org>; Wed, 23 Dec 2020 12:07:00 -0800
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 35k0e932xr-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 23 Dec 2020 12:07:00 -0800
-Received: from intmgw004.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 23 Dec 2020 12:06:58 -0800
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id 0A8EE2ECBE98; Wed, 23 Dec 2020 12:06:55 -0800 (PST)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH v2 bpf] selftests/bpf: work-around EBUSY errors from hashmap update/delete
-Date:   Wed, 23 Dec 2020 12:06:52 -0800
-Message-ID: <20201223200652.3417075-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.24.1
+        id S1728017AbgLWUOo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Dec 2020 15:14:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727671AbgLWUOn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Dec 2020 15:14:43 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E11FC061794
+        for <bpf@vger.kernel.org>; Wed, 23 Dec 2020 12:14:03 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id o144so595789ybc.0
+        for <bpf@vger.kernel.org>; Wed, 23 Dec 2020 12:14:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Jc3OGL5DkQ4x+74MyRY8dVbswkgpggER3SkYrUX+8AE=;
+        b=aC7Yjg0Leq05dpbHJCQZlJwpCGY6xVpC3BvfaWL6FfdF7Ayfk08gh+9pKJE4AIf1bO
+         1YwQ50WFvMoyvKWdsXRrl5Xn8O1+i08z+eZ7vw09/SyANbcvpcTjOEHfCL8DIslsdlWg
+         ShhAj1Ee9Y2iQim3I7LhtUOqd19qflEq+c7LLGQDnCflKOuPUMkX3fRZSAalM7xP0Pf4
+         8N7wOSfc0OsShscJ6CpVjyvdg8GKFeJM1XSU8/74bhM9Mq3c+uan++EcCn/S8UHrstsD
+         YtZmrWsLvTL5OOLR11X2j04eYj3EDXH002uoCDbFpy03jaoFNdbY4MzJs2rq5j+np1nn
+         /nMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Jc3OGL5DkQ4x+74MyRY8dVbswkgpggER3SkYrUX+8AE=;
+        b=eHwqZ6c3yjS/tr4BBY0D6mANed6NmC5qizNo22b0cPRAsYlQIVoYmeHxkuGf+4WO59
+         SdAiECHKCgcGen0wmng2Sq0F4VhI0V3ZTon5ZkUDtE0JzaU/Zni2HQah16Q1XXu4yR5+
+         XMOkzf4mPzAww6Qz+hKc1qJ1x+1Q2eqCKAuEnHBDaHIh6etWCDVV9PSxGPYOOaUTCM+R
+         Wdn3Iu8UZz7mNXi615GPELZ5PKnGviR6VlCzroIsWcRiNUPH/gh71RYKCNeXylTdgHNQ
+         t+lhyCIVmawG+Em9lO2NuEkzNwh8qJ8o/ZslT/YsDG8/ad8OpDOz/UZ/Z9Q1lSLmYjnx
+         cctQ==
+X-Gm-Message-State: AOAM5333s6SWlPYttGfHGb8fVfp77OsGUfhbY2bkpn5Z72N+Cb1wjkuB
+        Shru5Hp3JGUjLT2RAYdvBOXN6vjdmBfz9rSIeOI=
+X-Google-Smtp-Source: ABdhPJz/CfJR7jUqQAJn3A16h+DSarW5S0i/pQu270rvtIBm93iAO8cmmuA1LIKGc6kwItYFmtK3Gdiwh8soM6el0nY=
+X-Received: by 2002:a25:818e:: with SMTP id p14mr36889227ybk.425.1608754442773;
+ Wed, 23 Dec 2020 12:14:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-23_12:2020-12-23,2020-12-23 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- priorityscore=1501 impostorscore=0 mlxscore=0 suspectscore=0 bulkscore=0
- spamscore=0 mlxlogscore=999 malwarescore=0 adultscore=0 clxscore=1034
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2012230143
-X-FB-Internal: deliver
+References: <CAEf4BzapVMa4dnXpwU0uwj3oHqyYutVp_YCbuwrPWNbVjdH08A@mail.gmail.com>
+ <CAEf4BzbzsK8A8-tjigcde2zUY0JkHY495LDd3OYRxokG4wfAJg@mail.gmail.com> <5fe2f279bfc6f_1b18d20838@john-XPS-13-9370.notmuch>
+In-Reply-To: <5fe2f279bfc6f_1b18d20838@john-XPS-13-9370.notmuch>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 23 Dec 2020 12:13:51 -0800
+Message-ID: <CAEf4BzYeSU6hAO1Yk06bFzh5=ufWD2pwd6+xvoip3GW_1gT77A@mail.gmail.com>
+Subject: Re: Warnings in test_maps selftests in test_sockmap parts
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Martin Lau <kafai@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-20b6cc34ea74 ("bpf: Avoid hashtab deadlock with map_locked") introduced
-a possibility of getting EBUSY error on lock contention, which seems to happen
-very deterministically in test_maps when running 1024 threads on low-CPU
-machine. In libbpf CI case, it's a 2 CPU VM and it's hitting this 100% of the
-time. Work around by retrying on EBUSY (and EAGAIN, while we are at it) after
-a small sleep. sched_yield() is too agressive and fails even after 20 retries,
-so I went with usleep(1) for backoff.
+On Tue, Dec 22, 2020 at 11:32 PM John Fastabend
+<john.fastabend@gmail.com> wrote:
+>
+> Andrii Nakryiko wrote:
+> > On Tue, Dec 22, 2020 at 11:44 AM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > Hi John and Martin,
+> > >
+> > > I've noticed that all our CIs (libbpf and kernel-patches) started to
+> > > emit kernel warning when running test_maps test. I've narrowed it down
+> > > to test_sockmap() part of it. If I disable it, the warning goes away.
+> > > The warning looks like this:
+> > >
+> > > Failed sockmap unexpected timeout
+> > > [   23.316720] ------------[ cut here ]------------
+> > > [   23.317615] WARNING: CPU: 0 PID: 93 at net/core/stream.c:208
+> > > sk_stream_kill_queues+0x111/0x120
+> > > [   23.319194] Modules linked in:
+> > > [   23.319698] CPU: 0 PID: 93 Comm: test_maps Not tainted
+> > > 5.10.0-rc7-02263-g0e12c0271887-dirty #51
+> > > [   23.321297] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+> > > BIOS 1.9.3-1.el7.centos 04/01/2014
+> > > [   23.322756] RIP: 0010:sk_stream_kill_queues+0x111/0x120
+> > > [   23.323668] Code: 00 85 c0 75 1f 85 f6 75 21 5b 5d c3 48 89 df e8
+> > > d5 fd fe ff 8b 83 68 02 00 00 8b b3 20 02 00 00 85 c0 74 e1 0f 0b 85
+> > > f6 74 df <0f> 0b 5b 5d c3 0f 0b eb ac 66 0f 1f 44 00 00 0f 1f 44 00 00
+> > > 41 57
+> > > [   23.326251] RSP: 0018:ffffc900001d7d80 EFLAGS: 00010202
+> > > [   23.326863] RAX: 0000000000000000 RBX: ffff88813a44a280 RCX: 0000000000000000
+> > > [   23.327597] RDX: 0000000000000001 RSI: 0000000000000aec RDI: ffff88813a44a3d0
+> > > [   23.328375] RBP: ffff88813a44a3d0 R08: 0000000000000000 R09: 0000000000000001
+> > > [   23.329300] R10: 0000000000000050 R11: 0000000000000000 R12: ffff888100362200
+> > > [   23.330281] R13: ffff88802564b8e0 R14: ffff8881006175f0 R15: 0000000000000000
+> > > [   23.331106] FS:  00007f56532ad740(0000) GS:ffff88813bc00000(0000)
+> > > knlGS:0000000000000000
+> > > [   23.332162] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > [   23.333011] CR2: 000000000064d448 CR3: 0000000101fd2000 CR4: 00000000000006f0
+> > > [   23.334051] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > > [   23.334876] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > > [   23.335777] Call Trace:
+> > > [   23.336027]  inet_csk_destroy_sock+0x4f/0x120
+> > > [   23.336542]  tcp_rcv_state_process+0xcee/0x1240
+> > > [   23.337010]  tcp_v4_do_rcv+0xb2/0x1e0
+> > > [   23.337541]  __release_sock+0x5c/0xf0
+> > > [   23.337956]  __tcp_close+0x1cb/0x4c0
+> > > [   23.338351]  tcp_close+0x20/0x70
+> > > [   23.338875]  inet_release+0x3c/0x70
+> > > [   23.339466]  __sock_release+0x37/0xa0
+> > > [   23.340003]  sock_close+0x14/0x20
+> > > [   23.340580]  __fput+0xb1/0x260
+> > > [   23.341091]  task_work_run+0x59/0xa0
+> > > [   23.341685]  exit_to_user_mode_prepare+0x152/0x160
+> > > [   23.342213]  syscall_exit_to_user_mode+0x38/0x240
+> > > [   23.342758]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > > [   23.343250] RIP: 0033:0x7f565348b797
+> > > [   23.343702] Code: 64 89 02 48 c7 c0 ff ff ff ff eb bb 0f 1f 80 00
+> > > 00 00 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 03 00 00
+> > > 00 0f 05 <48> 3d 00 f0 ff ff 77 41 c3 48 83 ec 18 89 7c 24 0c e8 f3 fb
+> > > ff ff
+> > > [   23.345817] RSP: 002b:00007ffd178c1b68 EFLAGS: 00000246 ORIG_RAX:
+> > > 0000000000000003
+> > > [   23.346972] RAX: 0000000000000000 RBX: 00007ffd178c1be0 RCX: 00007f565348b797
+> > > [   23.348069] RDX: 0000000000000078 RSI: 00007ffd178c1ae0 RDI: 0000000000000008
+> > > [   23.349139] RBP: 00007ffd178c1cd0 R08: 0000000000000017 R09: 0000000000000016
+> > > [   23.350210] R10: 0000000000000016 R11: 0000000000000246 R12: 00007ffd178c1c20
+> > > [   23.351442] R13: 0000000000000016 R14: 000000000000000f R15: 0000000000000017
+> > > [   23.352500] irq event stamp: 1775071
+> > > [   23.352999] hardirqs last  enabled at (1775079):
+> > > [<ffffffff810d0dbf>] console_unlock+0x48f/0x590
+> > > [   23.354360] hardirqs last disabled at (1775088):
+> > > [<ffffffff810d0d27>] console_unlock+0x3f7/0x590
+> > > [   23.355748] softirqs last  enabled at (1775026):
+> > > [<ffffffff81a00ebf>] asm_call_irq_on_stack+0xf/0x20
+> > > [   23.357071] softirqs last disabled at (1775021):
+> > > [<ffffffff81a00ebf>] asm_call_irq_on_stack+0xf/0x20
+> > > [   23.358497] ---[ end trace 1fe2d145c0b7718d ]---
+> > >
+> > > When trying to bisect, it turns out we get this warning even with
+> > > older versions of bpf-next tree, which didn't seem to trigger this
+> > > warning before. One thing that seems to have changed in our CI setup
+> > > is that we went from 4 CPU VM to 2 CPU VM (due to Travis CI
+> > > limitations). So that might have changed some timings and
+> > > interactions.
+> > >
+> > > I'm dealing with other fallouts of this 4 to 2 CPU reduction and this
+> > > warning itself doesn't cause the failure in libbpf CI (but it will in
+> >
+> > I take this back, it does return error from test_maps due to "Failed
+> > sockmap unexpected timeout", so both CIs are broken, I've just
+> > disabled test_maps in libbpf CI for now. And I'm sending a work-around
+> > for EBUSY errors from hashmap on update/delete in a separate patch.
+>
+> OK thanks Andrii, I'll take a look. If its not obvious to me what the problem
+> is though it might slip into the new year as I'm on PTO shortly.
+>
 
-Also log actual error returned to make it easier to see what's going on.
+Yeah, no worries. I just wanted to give a heads up and get it off my
+head :) Don't lose your sleep over it.
 
-Fixes: 20b6cc34ea74 ("bpf: Avoid hashtab deadlock with map_locked")
-Cc: Song Liu <songliubraving@fb.com>
-Acked-by: Song Liu <songliubraving@fb.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/testing/selftests/bpf/test_maps.c | 48 +++++++++++++++++++++----
- 1 file changed, 42 insertions(+), 6 deletions(-)
+> Also FWIW I'm sitting on some patches to start pulling the tests from
+> test_sockmap into the more normal test progs framework. Then we can just
+> keep test_sockmap around as a tool to test different setups or move it
+> out of tree. As far as I understand it CI doesn't run test_sockmap at the
+> moment.
 
-diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
-index 0ad3e6305ff0..51adc42b2b40 100644
---- a/tools/testing/selftests/bpf/test_maps.c
-+++ b/tools/testing/selftests/bpf/test_maps.c
-@@ -1312,22 +1312,58 @@ static void test_map_stress(void)
- #define DO_UPDATE 1
- #define DO_DELETE 0
- 
-+#define MAP_RETRIES 20
-+
-+static int map_update_retriable(int map_fd, const void *key, const void *value,
-+				int flags, int attempts)
-+{
-+	while (bpf_map_update_elem(map_fd, key, value, flags)) {
-+		if (!attempts || (errno != EAGAIN && errno != EBUSY))
-+			return -errno;
-+
-+		usleep(1);
-+		attempts--;
-+	}
-+
-+	return 0;
-+}
-+
-+static int map_delete_retriable(int map_fd, const void *key, int attempts)
-+{
-+	while (bpf_map_delete_elem(map_fd, key)) {
-+		if (!attempts || (errno != EAGAIN && errno != EBUSY))
-+			return -errno;
-+
-+		usleep(1);
-+		attempts--;
-+	}
-+
-+	return 0;
-+}
-+
- static void test_update_delete(unsigned int fn, void *data)
- {
- 	int do_update = ((int *)data)[1];
- 	int fd = ((int *)data)[0];
--	int i, key, value;
-+	int i, key, value, err;
- 
- 	for (i = fn; i < MAP_SIZE; i += TASKS) {
- 		key = value = i;
- 
- 		if (do_update) {
--			assert(bpf_map_update_elem(fd, &key, &value,
--						   BPF_NOEXIST) == 0);
--			assert(bpf_map_update_elem(fd, &key, &value,
--						   BPF_EXIST) == 0);
-+			err = map_update_retriable(fd, &key, &value, BPF_NOEXIST, MAP_RETRIES);
-+			if (err)
-+				printf("error %d %d\n", err, errno);
-+			assert(err == 0);
-+			err = map_update_retriable(fd, &key, &value, BPF_EXIST, MAP_RETRIES);
-+			if (err)
-+				printf("error %d %d\n", err, errno);
-+			assert(err == 0);
- 		} else {
--			assert(bpf_map_delete_elem(fd, &key) == 0);
-+			err = map_delete_retriable(fd, &key, MAP_RETRIES);
-+			if (err)
-+				printf("error %d %d\n", err, errno);
-+			assert(err == 0);
- 		}
- 	}
- }
--- 
-2.24.1
+CI that tests all incoming patches is currently red due to this and
+the EBUSY problem I worked around in [0]. Libbpf CI doesn't run
+test_maps currently, so it's good. I hesitated to disable test_maps
+for patches CI, though, but we can do that temporarily as well, if
+necessary.
 
+  [0] https://patchwork.kernel.org/project/netdevbpf/patch/20201223200652.3417075-1-andrii@kernel.org/
+
+>
+> Thanks,
+> John
+>
+> >
+> > > kernel-patches CI), but it would be great if you can take a look at
+> > > this and see if we can get it fixed soon-ish to get CI to a green
+> > > state.
+> > >
+> > > Thanks!
+> > >
+> > >
+> > > -- Andrii
