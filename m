@@ -2,201 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A80D2E1AB4
-	for <lists+bpf@lfdr.de>; Wed, 23 Dec 2020 11:05:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C06482E2122
+	for <lists+bpf@lfdr.de>; Wed, 23 Dec 2020 21:09:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728376AbgLWKFM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Dec 2020 05:05:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726022AbgLWKFL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Dec 2020 05:05:11 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FAC0C0613D3;
-        Wed, 23 Dec 2020 02:04:31 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id n3so879099pjm.1;
-        Wed, 23 Dec 2020 02:04:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=d5XHgKNmGxjNiDE5b2KtQ27P+6FboVI+ofwBHe/X6fw=;
-        b=C7EU8nzzmc83zR6nl8GTUmbIR4hYm+QIReH0eCNJtTacD/CPyEnb9xZEFzLAMA6lX1
-         TpNp/9Fv/882R1br8UjpWXqL/sHqyXuMEeQh8LE6fB+GOKqs/mPcJ5ilTUSnkUT/yMyv
-         vEWAVspbSxUWcZhcdN2GKHRqSYHjF+QZ4mITkWV4GKPbu6HOPwAYuYP2jZT1upLbEDwA
-         EtM+QGS9N+g/kdZbsHb7ultxZ9TIfKOM5q7GHE2eeHggfaGL+OS/WmqE/jd/N7NmBmMt
-         Ryrk065EHvlYdRwsd0bE2XkNjUkhiT9eT2kH7JH1rxrxCxdgmOAo8OFGo3vjo0E9TkK1
-         kcZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d5XHgKNmGxjNiDE5b2KtQ27P+6FboVI+ofwBHe/X6fw=;
-        b=OLfvzCe+KpcJjJJSzRUcm4A9AKjzttla7kWuEaMp6kWqSpGF1yNBuJojgsRTgniIYP
-         7hXGxjwVd1CYANZdB6HTbFtjqKYxQ0/tA007o4N/iQagpSr5jvQrGvets0R/l1zTGEgz
-         VHpcjuoujQ2F0soczv+qHllJlTG3W2HJ4MTX61/dS24ClqBHKmhcHQkpxtGi1bP42m6p
-         QgntWhmsrIVG6mWu7b0nC4908TaWJXSQO/h9Q/6D2QVhraEp+2k2Usj3N1ZzIjOIRX2o
-         HAXz/X46qH6x7DWKF3wgYqAtHqh/Ge5gtO+2LaY73h1r9RvuCRXj1Jxq5E01WuEnMS9k
-         Xpvg==
-X-Gm-Message-State: AOAM532rGHvVH/ggJ9N9RSErVsOF9x8U6Iwlei4rHaGRqB+HhurPS29Y
-        fbeJ1Ov5kBhZxdVxUVnUSt2jmBvCzkkjNK+fPL0=
-X-Google-Smtp-Source: ABdhPJyIYYgicvnsR+BGJ3UdRrM2LeQbrvQwy5ibqijTo2qKHPufau8DK2LwgA8tFMCTQ4O7xn3hqrACF9krZXKK+Eo=
-X-Received: by 2002:a17:902:d38b:b029:db:e003:3ff0 with SMTP id
- e11-20020a170902d38bb02900dbe0033ff0mr93725pld.7.1608717870664; Wed, 23 Dec
- 2020 02:04:30 -0800 (PST)
+        id S1728617AbgLWUHl convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 23 Dec 2020 15:07:41 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:42792 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728141AbgLWUHl (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 23 Dec 2020 15:07:41 -0500
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BNK1gjd014076
+        for <bpf@vger.kernel.org>; Wed, 23 Dec 2020 12:07:00 -0800
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 35k0e932xr-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 23 Dec 2020 12:07:00 -0800
+Received: from intmgw004.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 23 Dec 2020 12:06:58 -0800
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 0A8EE2ECBE98; Wed, 23 Dec 2020 12:06:55 -0800 (PST)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
+        Song Liu <songliubraving@fb.com>
+Subject: [PATCH v2 bpf] selftests/bpf: work-around EBUSY errors from hashmap update/delete
+Date:   Wed, 23 Dec 2020 12:06:52 -0800
+Message-ID: <20201223200652.3417075-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <9830fcef7159a47bae361fc213c589449f6a77d3.1608713585.git.xuanzhuo@linux.alibaba.com>
-In-Reply-To: <9830fcef7159a47bae361fc213c589449f6a77d3.1608713585.git.xuanzhuo@linux.alibaba.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Wed, 23 Dec 2020 11:04:19 +0100
-Message-ID: <CAJ8uoz2Enx-WwY6RmCp0RXBG2U3BUpagw-X8hQChPResHCM-XA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] xsk: build skb by page
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "open list:XDP SOCKETS (AF_XDP)" <netdev@vger.kernel.org>,
-        "open list:XDP SOCKETS (AF_XDP)" <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-23_12:2020-12-23,2020-12-23 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ priorityscore=1501 impostorscore=0 mlxscore=0 suspectscore=0 bulkscore=0
+ spamscore=0 mlxlogscore=999 malwarescore=0 adultscore=0 clxscore=1034
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012230143
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 9:57 AM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
->
-> This patch is used to construct skb based on page to save memory copy
-> overhead.
->
-> Taking into account the problem of addr unaligned, and the
-> possibility of frame size greater than page in the future.
+20b6cc34ea74 ("bpf: Avoid hashtab deadlock with map_locked") introduced
+a possibility of getting EBUSY error on lock contention, which seems to happen
+very deterministically in test_maps when running 1024 threads on low-CPU
+machine. In libbpf CI case, it's a 2 CPU VM and it's hitting this 100% of the
+time. Work around by retrying on EBUSY (and EAGAIN, while we are at it) after
+a small sleep. sched_yield() is too agressive and fails even after 20 retries,
+so I went with usleep(1) for backoff.
 
-Thanks Xuan for the patch set. Could you please share performance
-numbers so we know how much this buys us? Would be good if you could
-produce them for 64 bytes, 1500 bytes and something in the middle so
-we can judge the benefits of this.
+Also log actual error returned to make it easier to see what's going on.
 
-Please note that responses will be delayed this week and next due to
-the Christmas and New Years holidays over here.
+Fixes: 20b6cc34ea74 ("bpf: Avoid hashtab deadlock with map_locked")
+Cc: Song Liu <songliubraving@fb.com>
+Acked-by: Song Liu <songliubraving@fb.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ tools/testing/selftests/bpf/test_maps.c | 48 +++++++++++++++++++++----
+ 1 file changed, 42 insertions(+), 6 deletions(-)
 
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> ---
->  net/xdp/xsk.c | 68 ++++++++++++++++++++++++++++++++++++++++++++---------------
->  1 file changed, 51 insertions(+), 17 deletions(-)
->
-> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index ac4a317..7cab40f 100644
-> --- a/net/xdp/xsk.c
-> +++ b/net/xdp/xsk.c
-> @@ -430,6 +430,55 @@ static void xsk_destruct_skb(struct sk_buff *skb)
->         sock_wfree(skb);
->  }
->
-> +static struct sk_buff *xsk_build_skb_bypage(struct xdp_sock *xs, struct xdp_desc *desc)
-> +{
-> +       char *buffer;
-> +       u64 addr;
-> +       u32 len, offset, copy, copied;
-> +       int err, i;
-> +       struct page *page;
-> +       struct sk_buff *skb;
-> +
-> +       skb = sock_alloc_send_skb(&xs->sk, 0, 1, &err);
-> +       if (unlikely(!skb))
-> +               return NULL;
-> +
-> +       addr = desc->addr;
-> +       len = desc->len;
-> +
-> +       buffer = xsk_buff_raw_get_data(xs->pool, addr);
-> +       offset = offset_in_page(buffer);
-> +       addr = buffer - (char *)xs->pool->addrs;
-> +
-> +       for (copied = 0, i = 0; copied < len; ++i) {
-> +               page = xs->pool->umem->pgs[addr >> PAGE_SHIFT];
-> +
-> +               get_page(page);
-> +
-> +               copy = min((u32)(PAGE_SIZE - offset), len - copied);
-> +
-> +               skb_fill_page_desc(skb, i, page, offset, copy);
-> +
-> +               copied += copy;
-> +               addr += copy;
-> +               offset = 0;
-> +       }
-> +
-> +       skb->len += len;
-> +       skb->data_len += len;
-> +       skb->truesize += len;
-> +
-> +       refcount_add(len, &xs->sk.sk_wmem_alloc);
-> +
-> +       skb->dev = xs->dev;
-> +       skb->priority = xs->sk.sk_priority;
-> +       skb->mark = xs->sk.sk_mark;
-> +       skb_shinfo(skb)->destructor_arg = (void *)(long)addr;
-> +       skb->destructor = xsk_destruct_skb;
-> +
-> +       return skb;
-> +}
-> +
->  static int xsk_generic_xmit(struct sock *sk)
->  {
->         struct xdp_sock *xs = xdp_sk(sk);
-> @@ -445,40 +494,25 @@ static int xsk_generic_xmit(struct sock *sk)
->                 goto out;
->
->         while (xskq_cons_peek_desc(xs->tx, &desc, xs->pool)) {
-> -               char *buffer;
-> -               u64 addr;
-> -               u32 len;
-> -
->                 if (max_batch-- == 0) {
->                         err = -EAGAIN;
->                         goto out;
->                 }
->
-> -               len = desc.len;
-> -               skb = sock_alloc_send_skb(sk, len, 1, &err);
-> +               skb = xsk_build_skb_bypage(xs, &desc);
->                 if (unlikely(!skb))
->                         goto out;
->
-> -               skb_put(skb, len);
-> -               addr = desc.addr;
-> -               buffer = xsk_buff_raw_get_data(xs->pool, addr);
-> -               err = skb_store_bits(skb, 0, buffer, len);
->                 /* This is the backpressure mechanism for the Tx path.
->                  * Reserve space in the completion queue and only proceed
->                  * if there is space in it. This avoids having to implement
->                  * any buffering in the Tx path.
->                  */
-> -               if (unlikely(err) || xskq_prod_reserve(xs->pool->cq)) {
-> +               if (xskq_prod_reserve(xs->pool->cq)) {
->                         kfree_skb(skb);
->                         goto out;
->                 }
->
-> -               skb->dev = xs->dev;
-> -               skb->priority = sk->sk_priority;
-> -               skb->mark = sk->sk_mark;
-> -               skb_shinfo(skb)->destructor_arg = (void *)(long)desc.addr;
-> -               skb->destructor = xsk_destruct_skb;
-> -
->                 err = __dev_direct_xmit(skb, xs->queue_id);
->                 if  (err == NETDEV_TX_BUSY) {
->                         /* Tell user-space to retry the send */
-> --
-> 1.8.3.1
->
+diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
+index 0ad3e6305ff0..51adc42b2b40 100644
+--- a/tools/testing/selftests/bpf/test_maps.c
++++ b/tools/testing/selftests/bpf/test_maps.c
+@@ -1312,22 +1312,58 @@ static void test_map_stress(void)
+ #define DO_UPDATE 1
+ #define DO_DELETE 0
+ 
++#define MAP_RETRIES 20
++
++static int map_update_retriable(int map_fd, const void *key, const void *value,
++				int flags, int attempts)
++{
++	while (bpf_map_update_elem(map_fd, key, value, flags)) {
++		if (!attempts || (errno != EAGAIN && errno != EBUSY))
++			return -errno;
++
++		usleep(1);
++		attempts--;
++	}
++
++	return 0;
++}
++
++static int map_delete_retriable(int map_fd, const void *key, int attempts)
++{
++	while (bpf_map_delete_elem(map_fd, key)) {
++		if (!attempts || (errno != EAGAIN && errno != EBUSY))
++			return -errno;
++
++		usleep(1);
++		attempts--;
++	}
++
++	return 0;
++}
++
+ static void test_update_delete(unsigned int fn, void *data)
+ {
+ 	int do_update = ((int *)data)[1];
+ 	int fd = ((int *)data)[0];
+-	int i, key, value;
++	int i, key, value, err;
+ 
+ 	for (i = fn; i < MAP_SIZE; i += TASKS) {
+ 		key = value = i;
+ 
+ 		if (do_update) {
+-			assert(bpf_map_update_elem(fd, &key, &value,
+-						   BPF_NOEXIST) == 0);
+-			assert(bpf_map_update_elem(fd, &key, &value,
+-						   BPF_EXIST) == 0);
++			err = map_update_retriable(fd, &key, &value, BPF_NOEXIST, MAP_RETRIES);
++			if (err)
++				printf("error %d %d\n", err, errno);
++			assert(err == 0);
++			err = map_update_retriable(fd, &key, &value, BPF_EXIST, MAP_RETRIES);
++			if (err)
++				printf("error %d %d\n", err, errno);
++			assert(err == 0);
+ 		} else {
+-			assert(bpf_map_delete_elem(fd, &key) == 0);
++			err = map_delete_retriable(fd, &key, MAP_RETRIES);
++			if (err)
++				printf("error %d %d\n", err, errno);
++			assert(err == 0);
+ 		}
+ 	}
+ }
+-- 
+2.24.1
+
