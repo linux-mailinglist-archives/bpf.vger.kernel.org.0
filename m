@@ -2,79 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83FCB2E1982
-	for <lists+bpf@lfdr.de>; Wed, 23 Dec 2020 08:52:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9FA42E1A32
+	for <lists+bpf@lfdr.de>; Wed, 23 Dec 2020 09:57:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727899AbgLWHvl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Dec 2020 02:51:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727063AbgLWHvl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Dec 2020 02:51:41 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25960C0613D3;
-        Tue, 22 Dec 2020 23:51:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=DsUx9mdZt707uyB4UvQMhQtnSAx/QVWXa/XPYhsbpHk=; b=JOxqt6e59p0nOH9ElSu4Ow4Hgl
-        TiduuNNekNGLdyKvSi9zc3opGxX4X7xqH0pdopvqdHxWxOqeylhmdX8KmirUxZm8TzOAtSoaJxvL4
-        QRveder0RjEfY0dsMfLcvOsHJqmobESmc/JUTBoVlzkNU3DF0etyLOAYkqCFUTO8e2ZAUKOMnPsG3
-        di09XN+NeLaE/OYI1toNu2olSscAPqyGn2oc1cdSa/CF7GcNa+y7xlzwDDQN4sXcFpMxitkQRolQU
-        RebBLDaEQDgqKvu9F590yvKx1G5dj3lqqXAIGoiOrhmAhDqC09yJnoWxgT1D58EHVrzvF9B+gBgnU
-        iopambxQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kryv1-0004HW-Ec; Wed, 23 Dec 2020 07:50:47 +0000
-Date:   Wed, 23 Dec 2020 07:50:47 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Florent Revest <revest@chromium.org>
-Cc:     Christoph Hellwig <hch@infradead.org>, Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>,
+        id S1727940AbgLWI4x (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Dec 2020 03:56:53 -0500
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:46975 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727050AbgLWI4w (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 23 Dec 2020 03:56:52 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R271e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0UJWi-3e_1608713766;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0UJWi-3e_1608713766)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 23 Dec 2020 16:56:07 +0800
+From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To:     magnus.karlsson@intel.com
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add a bpf_kallsyms_lookup helper
-Message-ID: <20201223075047.GA15781@infradead.org>
-References: <50047415-cafe-abab-a6ba-e85bb6a9b651@fb.com>
- <CACYkzJ7T4y7in1AsCvJ2izA3yiAke8vE9SRFRCyTPeqMnDHoyQ@mail.gmail.com>
- <e8b03cbc-c120-43d5-168c-cde5b6a97af8@fb.com>
- <CAEf4BzYz9Yf9abPBtP+swCuqvvhL0cbbbF1x-3stg9mp=a6+-A@mail.gmail.com>
- <194b5a6e6e30574a035a3e3baa98d7fde7f91f1c.camel@chromium.org>
- <CAADnVQK6GjmL19zQykYbh=THM9ktQUzfnwF_FfhUKimCxDnnkQ@mail.gmail.com>
- <CABRcYm+zjC-WH2gxtfEX5S6mZj-5_ByAzVd5zi3aRmQv-asYqg@mail.gmail.com>
- <221fb873-80fc-5407-965e-b075c964fa13@fb.com>
- <20201222141818.GA17056@infradead.org>
- <CABRcYmKBgQYHezKVaLCVwUvksFaVuU7RHW8VVjM6auOC_GOr+w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABRcYmKBgQYHezKVaLCVwUvksFaVuU7RHW8VVjM6auOC_GOr+w@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        netdev@vger.kernel.org (open list:XDP SOCKETS (AF_XDP)),
+        bpf@vger.kernel.org (open list:XDP SOCKETS (AF_XDP)),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH bpf-next] xsk: build skb by page
+Date:   Wed, 23 Dec 2020 16:56:06 +0800
+Message-Id: <9830fcef7159a47bae361fc213c589449f6a77d3.1608713585.git.xuanzhuo@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 09:17:41PM +0100, Florent Revest wrote:
-> On Tue, Dec 22, 2020 at 3:18 PM Christoph Hellwig <hch@infradead.org> wrote:
-> >
-> > FYI, there is a reason why kallsyms_lookup is not exported any more.
-> > I don't think adding that back through a backdoor is a good idea.
-> 
-> Did you maybe mean kallsyms_lookup_name (the one that looks an address
-> up based on a symbol name) ? It used to be exported but isn't anymore
-> indeed.
-> However, this is not what we're trying to do. As far as I can tell,
-> kallsyms_lookup (the one that looks a symbol name up based on an
-> address) has never been exported but its close cousins sprint_symbol
-> and sprint_symbol_no_offset (which only call kallsyms_lookup and
-> pretty print the result) are still exported, they are also used by
-> vsprintf. Is this an issue ?
+This patch is used to construct skb based on page to save memory copy
+overhead.
 
-Indeed, I thought of kallsyms_lookup_name.  Let me take another
-look at the patch, but kallsyms_lookup still seems like a very
-lowlevel function to export to arbitrary eBPF programs.
+Taking into account the problem of addr unaligned, and the
+possibility of frame size greater than page in the future.
+
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+---
+ net/xdp/xsk.c | 68 ++++++++++++++++++++++++++++++++++++++++++++---------------
+ 1 file changed, 51 insertions(+), 17 deletions(-)
+
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index ac4a317..7cab40f 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -430,6 +430,55 @@ static void xsk_destruct_skb(struct sk_buff *skb)
+ 	sock_wfree(skb);
+ }
+ 
++static struct sk_buff *xsk_build_skb_bypage(struct xdp_sock *xs, struct xdp_desc *desc)
++{
++	char *buffer;
++	u64 addr;
++	u32 len, offset, copy, copied;
++	int err, i;
++	struct page *page;
++	struct sk_buff *skb;
++
++	skb = sock_alloc_send_skb(&xs->sk, 0, 1, &err);
++	if (unlikely(!skb))
++		return NULL;
++
++	addr = desc->addr;
++	len = desc->len;
++
++	buffer = xsk_buff_raw_get_data(xs->pool, addr);
++	offset = offset_in_page(buffer);
++	addr = buffer - (char *)xs->pool->addrs;
++
++	for (copied = 0, i = 0; copied < len; ++i) {
++		page = xs->pool->umem->pgs[addr >> PAGE_SHIFT];
++
++		get_page(page);
++
++		copy = min((u32)(PAGE_SIZE - offset), len - copied);
++
++		skb_fill_page_desc(skb, i, page, offset, copy);
++
++		copied += copy;
++		addr += copy;
++		offset = 0;
++	}
++
++	skb->len += len;
++	skb->data_len += len;
++	skb->truesize += len;
++
++	refcount_add(len, &xs->sk.sk_wmem_alloc);
++
++	skb->dev = xs->dev;
++	skb->priority = xs->sk.sk_priority;
++	skb->mark = xs->sk.sk_mark;
++	skb_shinfo(skb)->destructor_arg = (void *)(long)addr;
++	skb->destructor = xsk_destruct_skb;
++
++	return skb;
++}
++
+ static int xsk_generic_xmit(struct sock *sk)
+ {
+ 	struct xdp_sock *xs = xdp_sk(sk);
+@@ -445,40 +494,25 @@ static int xsk_generic_xmit(struct sock *sk)
+ 		goto out;
+ 
+ 	while (xskq_cons_peek_desc(xs->tx, &desc, xs->pool)) {
+-		char *buffer;
+-		u64 addr;
+-		u32 len;
+-
+ 		if (max_batch-- == 0) {
+ 			err = -EAGAIN;
+ 			goto out;
+ 		}
+ 
+-		len = desc.len;
+-		skb = sock_alloc_send_skb(sk, len, 1, &err);
++		skb = xsk_build_skb_bypage(xs, &desc);
+ 		if (unlikely(!skb))
+ 			goto out;
+ 
+-		skb_put(skb, len);
+-		addr = desc.addr;
+-		buffer = xsk_buff_raw_get_data(xs->pool, addr);
+-		err = skb_store_bits(skb, 0, buffer, len);
+ 		/* This is the backpressure mechanism for the Tx path.
+ 		 * Reserve space in the completion queue and only proceed
+ 		 * if there is space in it. This avoids having to implement
+ 		 * any buffering in the Tx path.
+ 		 */
+-		if (unlikely(err) || xskq_prod_reserve(xs->pool->cq)) {
++		if (xskq_prod_reserve(xs->pool->cq)) {
+ 			kfree_skb(skb);
+ 			goto out;
+ 		}
+ 
+-		skb->dev = xs->dev;
+-		skb->priority = sk->sk_priority;
+-		skb->mark = sk->sk_mark;
+-		skb_shinfo(skb)->destructor_arg = (void *)(long)desc.addr;
+-		skb->destructor = xsk_destruct_skb;
+-
+ 		err = __dev_direct_xmit(skb, xs->queue_id);
+ 		if  (err == NETDEV_TX_BUSY) {
+ 			/* Tell user-space to retry the send */
+-- 
+1.8.3.1
+
