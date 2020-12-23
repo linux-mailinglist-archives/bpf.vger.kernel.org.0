@@ -2,221 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F5302E1798
-	for <lists+bpf@lfdr.de>; Wed, 23 Dec 2020 04:12:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 950DA2E1774
+	for <lists+bpf@lfdr.de>; Wed, 23 Dec 2020 04:12:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727629AbgLWCR6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 22 Dec 2020 21:17:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45508 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727621AbgLWCRz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 22 Dec 2020 21:17:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EF8422257;
-        Wed, 23 Dec 2020 02:16:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1608689804;
-        bh=q7TG0KsZCYUlSgC/9zSB80EN5W2B7/T3SaiZh2jZSjI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KaMnw+EdRnlNDvxlRed/C5IISfjCBR3B0zb3lgThdEcUhW1g2srXzgHSFFvVtOY4C
-         jLQ43rdBjSqwk74/5J24SJiMywdsMJaKo+bA90q0d6xvJbL1Tz9dcEcIdpeu0kAy0x
-         dFuDHFdhr6ZB3h6Qweel90RGieI1eU8VGhdzrkoJr6G4W4LRK7z7vkyDzJwsERBF0t
-         gmr9vSZjmsCaxP0ggM/i8GNjZa9gL1WfuUeWN8FGnp849YSU1+7hDrej6kMBSK+aXb
-         9HDzpygEDZ3Og5OumXtHTe2Fj0ETPu52Q4ljSMiXSJEKuMXwl7p73OfKc3vMVbJyrj
-         Y2Zp71rJOfFnQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Song Liu <songliubraving@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 014/217] bpf: Use separate lockdep class for each hashtab
-Date:   Tue, 22 Dec 2020 21:13:03 -0500
-Message-Id: <20201223021626.2790791-14-sashal@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201223021626.2790791-1-sashal@kernel.org>
-References: <20201223021626.2790791-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        id S1726558AbgLWDKS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 22 Dec 2020 22:10:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728386AbgLWDKR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 22 Dec 2020 22:10:17 -0500
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A859C0613D6
+        for <bpf@vger.kernel.org>; Tue, 22 Dec 2020 19:09:36 -0800 (PST)
+Received: by mail-pg1-x549.google.com with SMTP id z24so9760063pgu.1
+        for <bpf@vger.kernel.org>; Tue, 22 Dec 2020 19:09:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=IQ0Qx44OK2RIPX1fqXRvuwqi8v00WWJehzRQIJJdt78=;
+        b=AQhzzeMPZiggsa1o0X5/do5St9pB5j+aXTO4iOUS/wNkLDaKFYWKzAXv8ucJ4/F9Fp
+         2b+foY+J9e5BLzbQP8Ku6b5qLx5Mitv8IqD+HQDSd7n5jgv6Rc2B7h6J/18WA44S3z6D
+         3/FjW+ApQW1VXk2Iq15qf26pMyRNDOtB6pFDph/T3aNSLYcjIAri7NlyWPHI6MchubCz
+         ZatBHZTqfbFqlIPsLCFK1jNEMnMnEdhqbXx0NsHLkOzFxUgSPIp0bGRO7SRqINolaiTl
+         vR7hWzPB4I1siF7IRtJiODh7ekcRtuIaC3TEa8mGr4gUwRpSVvr/Rt3FV9wN6JhJEP2G
+         Lfkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=IQ0Qx44OK2RIPX1fqXRvuwqi8v00WWJehzRQIJJdt78=;
+        b=PhwUMWWW9EqW71ab95RC62m3okoeXhTkzXUvME3hJwtvDRmSaYiFrReXsfGg2tAPFg
+         TpLWG3obtpGn0sMZUr7cSB8cgqOiGen8U1KDPSZjTuDis6PdMCcgEqlmANmVZZ3CO85F
+         3dgXqZgRNJNptYEqF03+cICH0I2TpkOtA1sG9lYkpcBk/WCU2Vx0zSe43s3IrEO+3RU2
+         q2ZIrAtTbwNZdHwCV1Ar2J7+D79e2UHXqbI2/ZsU6RPPtEFeB6XrnvNCGz61f1eyZkxC
+         daQhdd3GNIYop0B6wW4+Zm19U5xvfBIa1hlghxJilAocepBXzqfuDNeo+EA3MEZf78Zk
+         BAOw==
+X-Gm-Message-State: AOAM531mPUfCqN3aP4pJQedShL2Q3lcOoHfJWN6YisgHoTx964KmiA4q
+        gmXOr/NtaZhevCOvrm3sG1JQb2g=
+X-Google-Smtp-Source: ABdhPJwVsSI0uyG3ae/9ix2056ZV+FQPFFzi0mJagMNHlT91ie5sG+gzJ7BkeGUwkl9tVtXaJMYxMXM=
+Sender: "sdf via sendgmr" <sdf@sdf2.svl.corp.google.com>
+X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:7220:84ff:fe09:7732])
+ (user=sdf job=sendgmr) by 2002:a17:90a:8b94:: with SMTP id
+ z20mr162522pjn.1.1608692975589; Tue, 22 Dec 2020 19:09:35 -0800 (PST)
+Date:   Tue, 22 Dec 2020 19:09:33 -0800
+In-Reply-To: <20201222191107.bbg6yafayxp4jx5i@kafai-mbp.dhcp.thefacebook.com>
+Message-Id: <X+K07Rh+2qECwxJp@google.com>
+Mime-Version: 1.0
+References: <20201217172324.2121488-1-sdf@google.com> <20201217172324.2121488-2-sdf@google.com>
+ <20201222191107.bbg6yafayxp4jx5i@kafai-mbp.dhcp.thefacebook.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: try to avoid kzalloc in cgroup/{s,g}etsockopt
+From:   sdf@google.com
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Song Liu <songliubraving@fb.com>
+On 12/22, Martin KaFai Lau wrote:
+> On Thu, Dec 17, 2020 at 09:23:23AM -0800, Stanislav Fomichev wrote:
+> > When we attach a bpf program to cgroup/getsockopt any other getsockopt()
+> > syscall starts incurring kzalloc/kfree cost. While, in general, it's
+> > not an issue, sometimes it is, like in the case of TCP_ZEROCOPY_RECEIVE.
+> > TCP_ZEROCOPY_RECEIVE (ab)uses getsockopt system call to implement
+> > fastpath for incoming TCP, we don't want to have extra allocations in
+> > there.
+> >
+> > Let add a small buffer on the stack and use it for small (majority)
+> > {s,g}etsockopt values. I've started with 128 bytes to cover
+> > the options we care about (TCP_ZEROCOPY_RECEIVE which is 32 bytes
+> > currently, with some planned extension to 64 + some headroom
+> > for the future).
+> >
+> > It seems natural to do the same for setsockopt, but it's a bit more
+> > involved when the BPF program modifies the data (where we have to
+> > kmalloc). The assumption is that for the majority of setsockopt
+> > calls (which are doing pure BPF options or apply policy) this
+> > will bring some benefit as well.
+> >
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > ---
+> >  include/linux/filter.h |  3 +++
+> >  kernel/bpf/cgroup.c    | 41 +++++++++++++++++++++++++++++++++++++++--
+> >  2 files changed, 42 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/include/linux/filter.h b/include/linux/filter.h
+> > index 29c27656165b..362eb0d7af5d 100644
+> > --- a/include/linux/filter.h
+> > +++ b/include/linux/filter.h
+> > @@ -1281,6 +1281,8 @@ struct bpf_sysctl_kern {
+> >  	u64 tmp_reg;
+> >  };
+> >
+> > +#define BPF_SOCKOPT_KERN_BUF_SIZE	128
+> Since these 128 bytes (which then needs to be zero-ed) is modeled after
+> the TCP_ZEROCOPY_RECEIVE use case, it will be useful to explain
+> a use case on how the bpf prog will interact with
+> getsockopt(TCP_ZEROCOPY_RECEIVE).
+The only thing I would expect BPF program can do is to return EPERM
+to cause application to fallback to non-zerocopy path (and, mostly,
+bypass). I don't think BPF can meaningfully mangle the data in struct
+tcp_zerocopy_receive.
 
-[ Upstream commit c50eb518e262fa06bd334e6eec172eaf5d7a5bd9 ]
-
-If a hashtab is accessed in both NMI and non-NMI contexts, it may cause
-deadlock in bucket->lock. LOCKDEP NMI warning highlighted this issue:
-
-./test_progs -t stacktrace
-
-[   74.828970]
-[   74.828971] ================================
-[   74.828972] WARNING: inconsistent lock state
-[   74.828973] 5.9.0-rc8+ #275 Not tainted
-[   74.828974] --------------------------------
-[   74.828975] inconsistent {INITIAL USE} -> {IN-NMI} usage.
-[   74.828976] taskset/1174 [HC2[2]:SC0[0]:HE0:SE1] takes:
-[   74.828977] ffffc90000ee96b0 (&htab->buckets[i].raw_lock){....}-{2:2}, at: htab_map_update_elem+0x271/0x5a0
-[   74.828981] {INITIAL USE} state was registered at:
-[   74.828982]   lock_acquire+0x137/0x510
-[   74.828983]   _raw_spin_lock_irqsave+0x43/0x90
-[   74.828984]   htab_map_update_elem+0x271/0x5a0
-[   74.828984]   0xffffffffa0040b34
-[   74.828985]   trace_call_bpf+0x159/0x310
-[   74.828986]   perf_trace_run_bpf_submit+0x5f/0xd0
-[   74.828987]   perf_trace_urandom_read+0x1be/0x220
-[   74.828988]   urandom_read_nowarn.isra.0+0x26f/0x380
-[   74.828989]   vfs_read+0xf8/0x280
-[   74.828989]   ksys_read+0xc9/0x160
-[   74.828990]   do_syscall_64+0x33/0x40
-[   74.828991]   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[   74.828992] irq event stamp: 1766
-[   74.828993] hardirqs last  enabled at (1765): [<ffffffff82800ace>] asm_exc_page_fault+0x1e/0x30
-[   74.828994] hardirqs last disabled at (1766): [<ffffffff8267df87>] irqentry_enter+0x37/0x60
-[   74.828995] softirqs last  enabled at (856): [<ffffffff81043e7c>] fpu__clear+0xac/0x120
-[   74.828996] softirqs last disabled at (854): [<ffffffff81043df0>] fpu__clear+0x20/0x120
-[   74.828997]
-[   74.828998] other info that might help us debug this:
-[   74.828999]  Possible unsafe locking scenario:
-[   74.828999]
-[   74.829000]        CPU0
-[   74.829001]        ----
-[   74.829001]   lock(&htab->buckets[i].raw_lock);
-[   74.829003]   <Interrupt>
-[   74.829004]     lock(&htab->buckets[i].raw_lock);
-[   74.829006]
-[   74.829006]  *** DEADLOCK ***
-[   74.829007]
-[   74.829008] 1 lock held by taskset/1174:
-[   74.829008]  #0: ffff8883ec3fd020 (&cpuctx_lock){-...}-{2:2}, at: perf_event_task_tick+0x101/0x650
-[   74.829012]
-[   74.829013] stack backtrace:
-[   74.829014] CPU: 0 PID: 1174 Comm: taskset Not tainted 5.9.0-rc8+ #275
-[   74.829015] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.11.0-2.el7 04/01/2014
-[   74.829016] Call Trace:
-[   74.829016]  <NMI>
-[   74.829017]  dump_stack+0x9a/0xd0
-[   74.829018]  lock_acquire+0x461/0x510
-[   74.829019]  ? lock_release+0x6b0/0x6b0
-[   74.829020]  ? stack_map_get_build_id_offset+0x45e/0x800
-[   74.829021]  ? htab_map_update_elem+0x271/0x5a0
-[   74.829022]  ? rcu_read_lock_held_common+0x1a/0x50
-[   74.829022]  ? rcu_read_lock_held+0x5f/0xb0
-[   74.829023]  _raw_spin_lock_irqsave+0x43/0x90
-[   74.829024]  ? htab_map_update_elem+0x271/0x5a0
-[   74.829025]  htab_map_update_elem+0x271/0x5a0
-[   74.829026]  bpf_prog_1fd9e30e1438d3c5_oncpu+0x9c/0xe88
-[   74.829027]  bpf_overflow_handler+0x127/0x320
-[   74.829028]  ? perf_event_text_poke_output+0x4d0/0x4d0
-[   74.829029]  ? sched_clock_cpu+0x18/0x130
-[   74.829030]  __perf_event_overflow+0xae/0x190
-[   74.829030]  handle_pmi_common+0x34c/0x470
-[   74.829031]  ? intel_pmu_save_and_restart+0x90/0x90
-[   74.829032]  ? lock_acquire+0x3f8/0x510
-[   74.829033]  ? lock_release+0x6b0/0x6b0
-[   74.829034]  intel_pmu_handle_irq+0x11e/0x240
-[   74.829034]  perf_event_nmi_handler+0x40/0x60
-[   74.829035]  nmi_handle+0x110/0x360
-[   74.829036]  ? __intel_pmu_enable_all.constprop.0+0x72/0xf0
-[   74.829037]  default_do_nmi+0x6b/0x170
-[   74.829038]  exc_nmi+0x106/0x130
-[   74.829038]  end_repeat_nmi+0x16/0x55
-[   74.829039] RIP: 0010:__intel_pmu_enable_all.constprop.0+0x72/0xf0
-[   74.829042] Code: 2f 1f 03 48 8d bb b8 0c 00 00 e8 29 09 41 00 48 ...
-[   74.829043] RSP: 0000:ffff8880a604fc90 EFLAGS: 00000002
-[   74.829044] RAX: 000000070000000f RBX: ffff8883ec2195a0 RCX: 000000000000038f
-[   74.829045] RDX: 0000000000000007 RSI: ffffffff82e72c20 RDI: ffff8883ec21a258
-[   74.829046] RBP: 000000070000000f R08: ffffffff8101b013 R09: fffffbfff0a7982d
-[   74.829047] R10: ffffffff853cc167 R11: fffffbfff0a7982c R12: 0000000000000000
-[   74.829049] R13: ffff8883ec3f0af0 R14: ffff8883ec3fd120 R15: ffff8883e9c92098
-[   74.829049]  ? intel_pmu_lbr_enable_all+0x43/0x240
-[   74.829050]  ? __intel_pmu_enable_all.constprop.0+0x72/0xf0
-[   74.829051]  ? __intel_pmu_enable_all.constprop.0+0x72/0xf0
-[   74.829052]  </NMI>
-[   74.829053]  perf_event_task_tick+0x48d/0x650
-[   74.829054]  scheduler_tick+0x129/0x210
-[   74.829054]  update_process_times+0x37/0x70
-[   74.829055]  tick_sched_handle.isra.0+0x35/0x90
-[   74.829056]  tick_sched_timer+0x8f/0xb0
-[   74.829057]  __hrtimer_run_queues+0x364/0x7d0
-[   74.829058]  ? tick_sched_do_timer+0xa0/0xa0
-[   74.829058]  ? enqueue_hrtimer+0x1e0/0x1e0
-[   74.829059]  ? recalibrate_cpu_khz+0x10/0x10
-[   74.829060]  ? ktime_get_update_offsets_now+0x1a3/0x360
-[   74.829061]  hrtimer_interrupt+0x1bb/0x360
-[   74.829062]  ? rcu_read_lock_sched_held+0xa1/0xd0
-[   74.829063]  __sysvec_apic_timer_interrupt+0xed/0x3d0
-[   74.829064]  sysvec_apic_timer_interrupt+0x3f/0xd0
-[   74.829064]  ? asm_sysvec_apic_timer_interrupt+0xa/0x20
-[   74.829065]  asm_sysvec_apic_timer_interrupt+0x12/0x20
-[   74.829066] RIP: 0033:0x7fba18d579b4
-[   74.829068] Code: 74 54 44 0f b6 4a 04 41 83 e1 0f 41 80 f9 ...
-[   74.829069] RSP: 002b:00007ffc9ba69570 EFLAGS: 00000206
-[   74.829071] RAX: 00007fba192084c0 RBX: 00007fba18c24d28 RCX: 00000000000007a4
-[   74.829072] RDX: 00007fba18c30488 RSI: 0000000000000000 RDI: 000000000000037b
-[   74.829073] RBP: 00007fba18ca5760 R08: 00007fba18c248fc R09: 00007fba18c94c30
-[   74.829074] R10: 000000000000002f R11: 0000000000073c30 R12: 00007ffc9ba695e0
-[   74.829075] R13: 00000000000003f3 R14: 00007fba18c21ac8 R15: 00000000000058d6
-
-However, such warning should not apply across multiple hashtabs. The
-system will not deadlock if one hashtab is used in NMI, while another
-hashtab is used in non-NMI.
-
-Use separate lockdep class for each hashtab, so that we don't get this
-false alert.
-
-Signed-off-by: Song Liu <songliubraving@fb.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20201029071925.3103400-2-songliubraving@fb.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- kernel/bpf/hashtab.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 1fccba6e88c4e..224e2652a7c64 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -99,6 +99,7 @@ struct bpf_htab {
- 	u32 n_buckets;	/* number of hash buckets */
- 	u32 elem_size;	/* size of each element in bytes */
- 	u32 hashrnd;
-+	struct lock_class_key lockdep_key;
- };
- 
- /* each htab element is struct htab_elem + key + value */
-@@ -136,12 +137,18 @@ static void htab_init_buckets(struct bpf_htab *htab)
- {
- 	unsigned i;
- 
-+	lockdep_register_key(&htab->lockdep_key);
- 	for (i = 0; i < htab->n_buckets; i++) {
- 		INIT_HLIST_NULLS_HEAD(&htab->buckets[i].head, i);
--		if (htab_use_raw_lock(htab))
-+		if (htab_use_raw_lock(htab)) {
- 			raw_spin_lock_init(&htab->buckets[i].raw_lock);
--		else
-+			lockdep_set_class(&htab->buckets[i].raw_lock,
-+					  &htab->lockdep_key);
-+		} else {
- 			spin_lock_init(&htab->buckets[i].lock);
-+			lockdep_set_class(&htab->buckets[i].lock,
-+					  &htab->lockdep_key);
-+		}
- 	}
- }
- 
-@@ -1338,6 +1345,7 @@ static void htab_map_free(struct bpf_map *map)
- 
- 	free_percpu(htab->extra_elems);
- 	bpf_map_area_free(htab->buckets);
-+	lockdep_unregister_key(&htab->lockdep_key);
- 	kfree(htab);
- }
- 
--- 
-2.27.0
-
+Does it address your concern? Or do you want me to add a comment or
+something?
