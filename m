@@ -2,127 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 130782E2326
-	for <lists+bpf@lfdr.de>; Thu, 24 Dec 2020 02:10:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F2D42E2357
+	for <lists+bpf@lfdr.de>; Thu, 24 Dec 2020 02:15:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728342AbgLXBJd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Dec 2020 20:09:33 -0500
-Received: from www62.your-server.de ([213.133.104.62]:41302 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726004AbgLXBJd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Dec 2020 20:09:33 -0500
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ksF7a-0004IG-GT; Thu, 24 Dec 2020 02:08:50 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1ksF7a-000UMT-AK; Thu, 24 Dec 2020 02:08:50 +0100
-Subject: Re: [PATCH 1/3 v4 bpf-next] bpf: save correct stopping point in file
- seq iteration.
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-References: <20201218185032.2464558-1-jonathan.lemon@gmail.com>
- <20201218185032.2464558-2-jonathan.lemon@gmail.com>
- <CAEf4BzbHEjwOhFYeu2kyzZj3fROJ3RguNuWb7HJ0C2NExL+r9Q@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <12d507d3-cdc7-438d-f9c1-43cef44ba328@iogearbox.net>
-Date:   Thu, 24 Dec 2020 02:08:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <CAEf4BzbHEjwOhFYeu2kyzZj3fROJ3RguNuWb7HJ0C2NExL+r9Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26026/Wed Dec 23 13:53:03 2020)
+        id S1728449AbgLXBOL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 23 Dec 2020 20:14:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728444AbgLXBOL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 23 Dec 2020 20:14:11 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CA27C061794
+        for <bpf@vger.kernel.org>; Wed, 23 Dec 2020 17:13:31 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id z12so307965pjn.1
+        for <bpf@vger.kernel.org>; Wed, 23 Dec 2020 17:13:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=oEB/K+/1a1TbERA41YPGQZ634+oV6MBUudjc1gIr9Sk=;
+        b=d3ORO5ShNMs1pkhQ29br1mERag49q/f83ZtdBI6QdI3MVihNc/r5XVwYPxYroDFLct
+         zrClBqJ8/KcQsop2nf1EPj01VxIvOK/n9FqG7sEJhkxz9dy7N905hwXBD6esh2csdA4F
+         L/kTmtLsVtHm20LxK3QuGPkUzJngoIougG0mnFiwHa/TZiuZA57r+E1M641ieD3A2p09
+         bGJ+ebpCK8PpNP/cfkbVA3Kut50Ap5lqHViv2ZJ2zrI8TE5KrKxyTV6Mqs5rg8f9Rxga
+         heIl1gFMj5WTdP/A4EpDmXYq8t1cReNJKiieVRhN20oSX84o7/PIyxmYIvLcituhhm0F
+         ZbBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=oEB/K+/1a1TbERA41YPGQZ634+oV6MBUudjc1gIr9Sk=;
+        b=aMZM4L1FQPEPJ3VMR/6ts9rimgnVFTnfMrf6LfuKfQg/icE/m2iJi3xxnvnCCy5mhh
+         EyJL4GqBdNxod7A9+GDfjMeBqiZUFenCWr3MtyhXfG3/X8zrPgQJT3sXZasdUcAOSemA
+         K3mVKLPvhOwZ4jc7As7rFsQOmlbtCsOf6e4WzmGa25+t0STD2LgfbaUzZCR3J2VG787+
+         LFSnY0tK1ffNnrfH1yIUbcTbQRRiUdOZlRtO95pd8+bB2/7oYX47h00kElwD2myOETD4
+         HB3YKMSpm3qR2GQ7xg8mgAJLZmAJFBtniYTRf0KhAwPABrHXowjGfzJ0hXL2zgdTb2Q8
+         GndQ==
+X-Gm-Message-State: AOAM531OzJ9lLLfCvys2oHLZ0eh8s+dxuTqsM+Pij54dKh1sqJb5vusD
+        cWKpjjLb5tZxgDaMx6meEwlGDY0bMAaUlmIMmcQ=
+X-Google-Smtp-Source: ABdhPJxp6pFBDWgwrquCGYhzlbRGI+Qxau++0DkeM0wYnPsoAjxKMfDKOY9N0lYbXn1bmXU1t+ERHA==
+X-Received: by 2002:a17:90b:a4a:: with SMTP id gw10mr2023693pjb.29.1608772410727;
+        Wed, 23 Dec 2020 17:13:30 -0800 (PST)
+Received: from n124-121-013.byted.org (ec2-54-241-92-238.us-west-1.compute.amazonaws.com. [54.241.92.238])
+        by smtp.gmail.com with ESMTPSA id o14sm20386864pgr.44.2020.12.23.17.13.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 23 Dec 2020 17:13:30 -0800 (PST)
+From:   Jiang Wang <jiang.wang@bytedance.com>
+To:     bpf@vger.kernel.org
+Cc:     cong.wang@bytedance.com, kpsingh@google.com,
+        Jiang Wang <jiang.wang@bytedance.com>
+Subject: [PATCH] selftests/bpf: fix a compile error for BPF_F_BPRM_SECUREEXEC
+Date:   Thu, 24 Dec 2020 01:12:42 +0000
+Message-Id: <20201224011242.585967-1-jiang.wang@bytedance.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 12/18/20 10:01 PM, Andrii Nakryiko wrote:
-> On Fri, Dec 18, 2020 at 12:47 PM Jonathan Lemon
-> <jonathan.lemon@gmail.com> wrote:
->>
->> From: Jonathan Lemon <bsd@fb.com>
->>
->> On some systems, some variant of the following splat is
->> repeatedly seen.  The common factor in all traces seems
->> to be the entry point to task_file_seq_next().  With the
->> patch, all warnings go away.
->>
->>      rcu: INFO: rcu_sched self-detected stall on CPU
->>      rcu: \x0926-....: (20992 ticks this GP) idle=d7e/1/0x4000000000000002 softirq=81556231/81556231 fqs=4876
->>      \x09(t=21033 jiffies g=159148529 q=223125)
->>      NMI backtrace for cpu 26
->>      CPU: 26 PID: 2015853 Comm: bpftool Kdump: loaded Not tainted 5.6.13-0_fbk4_3876_gd8d1f9bf80bb #1
->>      Hardware name: Quanta Twin Lakes MP/Twin Lakes Passive MP, BIOS F09_3A12 10/08/2018
->>      Call Trace:
->>       <IRQ>
->>       dump_stack+0x50/0x70
->>       nmi_cpu_backtrace.cold.6+0x13/0x50
->>       ? lapic_can_unplug_cpu.cold.30+0x40/0x40
->>       nmi_trigger_cpumask_backtrace+0xba/0xca
->>       rcu_dump_cpu_stacks+0x99/0xc7
->>       rcu_sched_clock_irq.cold.90+0x1b4/0x3aa
->>       ? tick_sched_do_timer+0x60/0x60
->>       update_process_times+0x24/0x50
->>       tick_sched_timer+0x37/0x70
->>       __hrtimer_run_queues+0xfe/0x270
->>       hrtimer_interrupt+0xf4/0x210
->>       smp_apic_timer_interrupt+0x5e/0x120
->>       apic_timer_interrupt+0xf/0x20
->>       </IRQ>
->>      RIP: 0010:get_pid_task+0x38/0x80
->>      Code: 89 f6 48 8d 44 f7 08 48 8b 00 48 85 c0 74 2b 48 83 c6 55 48 c1 e6 04 48 29 f0 74 19 48 8d 78 20 ba 01 00 00 00 f0 0f c1 50 20 <85> d2 74 27 78 11 83 c2 01 78 0c 48 83 c4 08 c3 31 c0 48 83 c4 08
->>      RSP: 0018:ffffc9000d293dc8 EFLAGS: 00000202 ORIG_RAX: ffffffffffffff13
->>      RAX: ffff888637c05600 RBX: ffffc9000d293e0c RCX: 0000000000000000
->>      RDX: 0000000000000001 RSI: 0000000000000550 RDI: ffff888637c05620
->>      RBP: ffffffff8284eb80 R08: ffff88831341d300 R09: ffff88822ffd8248
->>      R10: ffff88822ffd82d0 R11: 00000000003a93c0 R12: 0000000000000001
->>      R13: 00000000ffffffff R14: ffff88831341d300 R15: 0000000000000000
->>       ? find_ge_pid+0x1b/0x20
->>       task_seq_get_next+0x52/0xc0
->>       task_file_seq_get_next+0x159/0x220
->>       task_file_seq_next+0x4f/0xa0
->>       bpf_seq_read+0x159/0x390
->>       vfs_read+0x8a/0x140
->>       ksys_read+0x59/0xd0
->>       do_syscall_64+0x42/0x110
->>       entry_SYSCALL_64_after_hwframe+0x44/0xa9
->>      RIP: 0033:0x7f95ae73e76e
->>      Code: Bad RIP value.
->>      RSP: 002b:00007ffc02c1dbf8 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
->>      RAX: ffffffffffffffda RBX: 000000000170faa0 RCX: 00007f95ae73e76e
->>      RDX: 0000000000001000 RSI: 00007ffc02c1dc30 RDI: 0000000000000007
->>      RBP: 00007ffc02c1ec70 R08: 0000000000000005 R09: 0000000000000006
->>      R10: fffffffffffff20b R11: 0000000000000246 R12: 00000000019112a0
->>      R13: 0000000000000000 R14: 0000000000000007 R15: 00000000004283c0
->>
->> If unable to obtain the file structure for the current task,
->> proceed to the next task number after the one returned from
->> task_seq_get_next(), instead of the next task number from the
->> original iterator.
->>
->> Also, save the stopping task number from task_seq_get_next()
->> on failure in case of restarts.
->>
->> Fixes: a650da2ee52a ("bpf: Add task and task/file iterator targets")
+When CONFIG_BPF_LSM is not configured, running bpf selftesting will show
+BPF_F_BPRM_SECUREEXEC undefined error for bprm_opts.c.
 
-Commit sha is non-existent, I fixed it up. Took first 2 into bpf given first in
-particular is a fix. Please submit 3/3 individually once we synced trees back.
+The problem is that bprm_opts.c includes vmliunx.h. The vmlinux.h is
+generated by "bpftool btf dump file ./vmlinux format c". On the other
+hand, BPF_F_BPRM_SECUREEXEC is defined in include/uapi/linux/bpf.h
+and used only in bpf_lsm.c. When CONFIG_BPF_LSM is not set, bpf_lsm
+will not be compiled, so vmlinux.h will not include definition of
+BPF_F_BPRM_SECUREEXEC.
 
->> Signed-off-by: Jonathan Lemon <jonathan.lemon@gmail.com>
->> ---
-> 
-> LGTM, thanks!
-> 
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Ideally, we want to compile bpf selftest regardless of the configuration
+setting, so change the include file from vmlinux.h to bpf.h.
+
+Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
+---
+ tools/testing/selftests/bpf/progs/bprm_opts.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/bpf/progs/bprm_opts.c b/tools/testing/selftests/bpf/progs/bprm_opts.c
+index 5bfef2887e70..418d9c6d4952 100644
+--- a/tools/testing/selftests/bpf/progs/bprm_opts.c
++++ b/tools/testing/selftests/bpf/progs/bprm_opts.c
+@@ -4,7 +4,7 @@
+  * Copyright 2020 Google LLC.
+  */
+ 
+-#include "vmlinux.h"
++#include <linux/bpf.h>
+ #include <errno.h>
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_tracing.h>
+-- 
+2.11.0
+
