@@ -2,128 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACA9D2E286E
-	for <lists+bpf@lfdr.de>; Thu, 24 Dec 2020 18:40:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53BF12E28C7
+	for <lists+bpf@lfdr.de>; Thu, 24 Dec 2020 21:27:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727861AbgLXRk1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Dec 2020 12:40:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58694 "EHLO
+        id S1728843AbgLXUWh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Dec 2020 15:22:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726839AbgLXRk0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 24 Dec 2020 12:40:26 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7B6BC061573;
-        Thu, 24 Dec 2020 09:39:45 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id d14so2516482qkc.13;
-        Thu, 24 Dec 2020 09:39:45 -0800 (PST)
+        with ESMTP id S1728782AbgLXUWg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 24 Dec 2020 15:22:36 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 801F6C061757
+        for <bpf@vger.kernel.org>; Thu, 24 Dec 2020 12:21:56 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id y24so2914086edt.10
+        for <bpf@vger.kernel.org>; Thu, 24 Dec 2020 12:21:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=netronome-com.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=rTTWwvMtGEYtpZ+VsHsHi+ahZuxpKvcxcrMaAqQHYfQ=;
-        b=li3d7Ul0SwqX5wc+E2ZO0oA725Q6lPeVeOpjFxkkTlKwWrek60V1ReN6FSDj8nxsrf
-         3vXa3mH22+k01GL2jAj3tq+UkjC1mnd3L7qAGAVRdpeg4VLWS398x3gyjwp6sZPRKaf9
-         1fYG5PW4MumUw2TUVyAh/pqeAcmsrLOu8u9aAiDKnsZcjnLY/sGajVINT3zRi3VKODBt
-         BXjIwLmu+lbsKfJnTCXzWyfGtsEcIjCABk8vats7bmt/81kZg+iV3370RgI/AMeEy23M
-         k7877KCTN5/a6Z+8EnvIKejWyPg3m4hbPIOZLF8xpoiT5K0rbbVXHG9XfSher0q+2jGh
-         cv+A==
+        bh=OSyMhhLOs+gJkV1hBlUrD8wxjF+XuKOQBS1qIF2OVBo=;
+        b=GXPu9iXNKroXhBQ3NuRBUyu7qwxpJj81nQEXg6lFqE6JtI9vqTmWWqPkzUvISXEHpS
+         rnEP5EeblPBviGkjtRHNCCkG13ZHUKPHzkVq93cWpTuWXWopRXTQDvOK9pA26MNpeuXa
+         crtsjTt+QHR+qkS9WUBfdkJ87O06hQpwNNPYjimDPJduZA+m6xHVKw7txDROvCt2IkGW
+         u2PgQfUnO1Cc/6YFyoTEce0z18kr7TuYXwthdzE/CDIswLOUpMiRDMn4p78YJqu9j32O
+         p5frJeCjMv7+Qz5a5TjGCL7Ur3Z7+L6fq/nNXS5GRHEX6wh3OPGEG55SouTEzPhqv91m
+         lGDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=rTTWwvMtGEYtpZ+VsHsHi+ahZuxpKvcxcrMaAqQHYfQ=;
-        b=reqgvbBTUjJkyl4OifW9r7YA01S85fNm0GeC/VYdAY4XdMzsIzxkBTzQSEEnCANk1s
-         56/BoRVaC+SgdnUQBX6YZOoNE+2PFpfOe54xsYjce/9dJgiRki4A8PxkmfjvFusNGxzO
-         1aQCq+trBF0AZ9WOAeepw7oa+uVPaI8yvHGmYkPTPmOR2SWd6ZckL/63RurGIx/ycS2x
-         xAQwgbvKAfJBHE95L42EmoFZE89MJaLiscMXYu9Qy48+rRKmDnWsMoGbOQuRDERlsbYu
-         pSziNLL6s1fEqdZ/80uE+VYgOwD2soIMCTWKygqPxpfEFVKHFb2PekpotvS2oI+WN88U
-         NtMw==
-X-Gm-Message-State: AOAM532HpsY0r9JRrOIv1Olxu5av2xlRIJNj5zFQBP/EWyw3TyP3oDeL
-        Uq6O69bh1Val9rdoA7C2EkY=
-X-Google-Smtp-Source: ABdhPJyy8IKFpLmcPK1GBCWg4VNIV06eHB6aEx81ms3EgFUj8WlLfgD/rYT2lI3TQvOF6+IQuykmqA==
-X-Received: by 2002:a05:620a:958:: with SMTP id w24mr32092270qkw.99.1608831585025;
-        Thu, 24 Dec 2020 09:39:45 -0800 (PST)
-Received: from localhost (pc-145-79-45-190.cm.vtr.net. [190.45.79.145])
-        by smtp.gmail.com with ESMTPSA id v4sm16444868qth.16.2020.12.24.09.39.43
+        bh=OSyMhhLOs+gJkV1hBlUrD8wxjF+XuKOQBS1qIF2OVBo=;
+        b=fyOJX1Gkjusyf7R5h98Z3mEaDD5ULbAecGDishsjBx3/kbVchLlxw2BcXJhCPyGc1S
+         GdvVMI/o7cTgHRzR/3OLNAlEhFuyTjvIufZLetjwA0Q6BkmEOJX4mz/b94sNkkQEmkjS
+         yuqv8ZqVaI5v3KZruMcN6a/buUZRVnxD19xTIMsGX4eNqVfwBfjXt/GCnUxSN5fyHm4v
+         W7JuPq8YZV8AoK3R1msnGvqoI9wUpBMdBZAKBOO06O39fM3z7BRFRWSni4ODo79BJ+yq
+         U3B8bkIXgHJIxupVt1Uk8cX7Z8Kp1wH7NRUZqptTUAS7BiLvklP8LbtCMdePH1Tc0uhy
+         h2WQ==
+X-Gm-Message-State: AOAM533LVt0Zp8HSfzzhk7/lwKaPFSh+7burYuV8frPHMM9TGNEEiU1P
+        bDXfpKqJsOragRUvCQTyvdvNSA==
+X-Google-Smtp-Source: ABdhPJx+uTKMo065QA17ljoCp5G/bHHEIvKZRQvh62B1ObvYgNEWw5suRU9fRncpMLe+WStRSvqviw==
+X-Received: by 2002:a05:6402:5114:: with SMTP id m20mr19785736edd.35.1608841315120;
+        Thu, 24 Dec 2020 12:21:55 -0800 (PST)
+Received: from netronome.com ([2001:982:7ed1:403:9eeb:e8ff:fe0d:5b6a])
+        by smtp.gmail.com with ESMTPSA id q25sm32419922eds.85.2020.12.24.12.21.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Dec 2020 09:39:44 -0800 (PST)
-Date:   Thu, 24 Dec 2020 14:39:40 -0300
-From:   Carlos Antonio Neira Bustos <cneirabustos@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH v10 bpf-next] bpf/selftests: fold
- test_current_pid_tgid_new_ns into test_progs.
-Message-ID: <20201224173939.GA7572@localhost>
-References: <20201221222315.GA19972@localhost>
- <CAEf4BzbqWa+Eco4u1zN4RqyprezBAJM-O6Oq4xv9q8Ac74ZhWg@mail.gmail.com>
+        Thu, 24 Dec 2020 12:21:54 -0800 (PST)
+Date:   Thu, 24 Dec 2020 21:21:53 +0100
+From:   Simon Horman <simon.horman@netronome.com>
+To:     trix@redhat.com
+Cc:     kuba@kernel.org, davem@davemloft.net, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, gustavoars@kernel.org,
+        louis.peens@netronome.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, oss-drivers@netronome.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] nfp: remove h from printk format specifier
+Message-ID: <20201224202152.GA3380@netronome.com>
+References: <20201223202053.131157-1-trix@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzbqWa+Eco4u1zN4RqyprezBAJM-O6Oq4xv9q8Ac74ZhWg@mail.gmail.com>
+In-Reply-To: <20201223202053.131157-1-trix@redhat.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 22, 2020 at 12:26:04PM -0800, Andrii Nakryiko wrote:
-> On Mon, Dec 21, 2020 at 2:25 PM Carlos Neira <cneirabustos@gmail.com> wrote:
-> >
-> > Currently tests for bpf_get_ns_current_pid_tgid() are outside test_progs.
-> > This change folds test cases into test_progs.
-> >
-> > Changes from v9:
-> >
-> >  - Added test in root namespace.
-> >  - Fixed changed tracepoint from sys_enter to sys_usleep.
-> >  - Fixed pid, tgid values were inverted.
-> >  - Used CLONE(2) for namespaced test, the new process pid will be 1.
-> >  - Used ASSERTEQ on pid/tgid validation.
-> >  - Added comment on CLONE(2) call
-> >
-> > Signed-off-by: Carlos Neira <cneirabustos@gmail.com>
-> > ---
-
-Andrii,
-
-Thanks for taking the time to check this out.
-
-
-For the code style issues I found out that I was not using the --strict flag for
-checkpatch.pl so I missed those warnings, now I'm using--strict as default. 
-I should look into using cindent or clang-format to avoid this.
-
+On Wed, Dec 23, 2020 at 12:20:53PM -0800, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
 > 
-> See checkpatch.pl errors ([0]), ignore the "do not initialize globals
-> with zero" ones. Next time, please don't wait for me to point out
-> every single instance where you didn't align wrapped around
-> parameters.
+> This change fixes the checkpatch warning described in this commit
+> commit cbacb5ab0aa0 ("docs: printk-formats: Stop encouraging use of unnecessary %h[xudi] and %hh[xudi]")
 > 
->   [0] https://patchwork.hopto.org/static/nipa/405025/11985347/checkpatch/stdout
+> Standard integer promotion is already done and %hx and %hhx is useless
+> so do not encourage the use of %hh[xudi] or %h[xudi].
 > 
-> >  tools/testing/selftests/bpf/.gitignore        |   1 -
-> >  tools/testing/selftests/bpf/Makefile          |   3 +-
-> >  .../bpf/prog_tests/ns_current_pid_tgid.c      | 149 ++++++++++------
-> >  .../bpf/progs/test_ns_current_pid_tgid.c      |  29 ++--
-> >  .../bpf/test_current_pid_tgid_new_ns.c        | 160 ------------------
-> >  5 files changed, 106 insertions(+), 236 deletions(-)
-> >  delete mode 100644 tools/testing/selftests/bpf/test_current_pid_tgid_new_ns.c
-> >
+> Signed-off-by: Tom Rix <trix@redhat.com>
 
-You are right, the code is redundant I'll reuse it.
-> newns_pidtgid and test_ns_current_pid_tgid_global_ns look identical to
-> me, am I missing something on why you didn't reuse the testing logic
-> between the two?
-> 
-> > +{
-> > +       struct test_ns_current_pid_tgid__bss  *bss;
-> > +       int err = 0, duration = 0;
-> > +       struct test_ns_current_pid_tgid *skel;
-> > +       pid_t pid, tgid;
-> > +       struct stat st;
-> >
-> 
-> [...]
+Hi Tom,
+
+This patch looks appropriate for net-next, which is currently closed.
+
+The changes look fine, but I'm curious to know if its intentionally that
+the following was left alone in ethernet/netronome/nfp/nfp_net_ethtool.c:nfp_net_get_nspinfo()
+
+	snprintf(version, ETHTOOL_FWVERS_LEN, "%hu.%hu"
+
+If the above was not intentional then perhaps you could respin with that
+updated and resubmit when net-next re-opens. Feel free to add:
+
+Reviewed-by: Simon Horman <simon.horman@netronome.com>
