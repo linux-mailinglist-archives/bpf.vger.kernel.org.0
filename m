@@ -2,92 +2,61 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F2D42E2357
-	for <lists+bpf@lfdr.de>; Thu, 24 Dec 2020 02:15:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB18F2E24FA
+	for <lists+bpf@lfdr.de>; Thu, 24 Dec 2020 08:02:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728449AbgLXBOL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 23 Dec 2020 20:14:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728444AbgLXBOL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 23 Dec 2020 20:14:11 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CA27C061794
-        for <bpf@vger.kernel.org>; Wed, 23 Dec 2020 17:13:31 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id z12so307965pjn.1
-        for <bpf@vger.kernel.org>; Wed, 23 Dec 2020 17:13:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id;
-        bh=oEB/K+/1a1TbERA41YPGQZ634+oV6MBUudjc1gIr9Sk=;
-        b=d3ORO5ShNMs1pkhQ29br1mERag49q/f83ZtdBI6QdI3MVihNc/r5XVwYPxYroDFLct
-         zrClBqJ8/KcQsop2nf1EPj01VxIvOK/n9FqG7sEJhkxz9dy7N905hwXBD6esh2csdA4F
-         L/kTmtLsVtHm20LxK3QuGPkUzJngoIougG0mnFiwHa/TZiuZA57r+E1M641ieD3A2p09
-         bGJ+ebpCK8PpNP/cfkbVA3Kut50Ap5lqHViv2ZJ2zrI8TE5KrKxyTV6Mqs5rg8f9Rxga
-         heIl1gFMj5WTdP/A4EpDmXYq8t1cReNJKiieVRhN20oSX84o7/PIyxmYIvLcituhhm0F
-         ZbBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=oEB/K+/1a1TbERA41YPGQZ634+oV6MBUudjc1gIr9Sk=;
-        b=aMZM4L1FQPEPJ3VMR/6ts9rimgnVFTnfMrf6LfuKfQg/icE/m2iJi3xxnvnCCy5mhh
-         EyJL4GqBdNxod7A9+GDfjMeBqiZUFenCWr3MtyhXfG3/X8zrPgQJT3sXZasdUcAOSemA
-         K3mVKLPvhOwZ4jc7As7rFsQOmlbtCsOf6e4WzmGa25+t0STD2LgfbaUzZCR3J2VG787+
-         LFSnY0tK1ffNnrfH1yIUbcTbQRRiUdOZlRtO95pd8+bB2/7oYX47h00kElwD2myOETD4
-         HB3YKMSpm3qR2GQ7xg8mgAJLZmAJFBtniYTRf0KhAwPABrHXowjGfzJ0hXL2zgdTb2Q8
-         GndQ==
-X-Gm-Message-State: AOAM531OzJ9lLLfCvys2oHLZ0eh8s+dxuTqsM+Pij54dKh1sqJb5vusD
-        cWKpjjLb5tZxgDaMx6meEwlGDY0bMAaUlmIMmcQ=
-X-Google-Smtp-Source: ABdhPJxp6pFBDWgwrquCGYhzlbRGI+Qxau++0DkeM0wYnPsoAjxKMfDKOY9N0lYbXn1bmXU1t+ERHA==
-X-Received: by 2002:a17:90b:a4a:: with SMTP id gw10mr2023693pjb.29.1608772410727;
-        Wed, 23 Dec 2020 17:13:30 -0800 (PST)
-Received: from n124-121-013.byted.org (ec2-54-241-92-238.us-west-1.compute.amazonaws.com. [54.241.92.238])
-        by smtp.gmail.com with ESMTPSA id o14sm20386864pgr.44.2020.12.23.17.13.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 23 Dec 2020 17:13:30 -0800 (PST)
-From:   Jiang Wang <jiang.wang@bytedance.com>
-To:     bpf@vger.kernel.org
-Cc:     cong.wang@bytedance.com, kpsingh@google.com,
-        Jiang Wang <jiang.wang@bytedance.com>
-Subject: [PATCH] selftests/bpf: fix a compile error for BPF_F_BPRM_SECUREEXEC
-Date:   Thu, 24 Dec 2020 01:12:42 +0000
-Message-Id: <20201224011242.585967-1-jiang.wang@bytedance.com>
-X-Mailer: git-send-email 2.11.0
+        id S1725613AbgLXHCh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Dec 2020 02:02:37 -0500
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:30461 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725536AbgLXHCh (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 24 Dec 2020 02:02:37 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0UJcT9Ok_1608793300;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UJcT9Ok_1608793300)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 24 Dec 2020 15:01:54 +0800
+From:   YANG LI <abaci-bugfix@linux.alibaba.com>
+To:     ast@kernel.org
+Cc:     daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org,
+        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        YANG LI <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH] bpf: fix: address of local auto-variable assigned to a function parameter.
+Date:   Thu, 24 Dec 2020 15:01:38 +0800
+Message-Id: <1608793298-123684-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When CONFIG_BPF_LSM is not configured, running bpf selftesting will show
-BPF_F_BPRM_SECUREEXEC undefined error for bprm_opts.c.
+Assigning local variable txq to the outputting parameter xdp->txq is not
+safe, txq will be released after the end of the function call. 
+Then the result of using xdp is unpredictable.
 
-The problem is that bprm_opts.c includes vmliunx.h. The vmlinux.h is
-generated by "bpftool btf dump file ./vmlinux format c". On the other
-hand, BPF_F_BPRM_SECUREEXEC is defined in include/uapi/linux/bpf.h
-and used only in bpf_lsm.c. When CONFIG_BPF_LSM is not set, bpf_lsm
-will not be compiled, so vmlinux.h will not include definition of
-BPF_F_BPRM_SECUREEXEC.
+Fix this error by defining the struct xdp_txq_info in function
+dev_map_run_prog() as a static type.
 
-Ideally, we want to compile bpf selftest regardless of the configuration
-setting, so change the include file from vmlinux.h to bpf.h.
-
-Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
+Signed-off-by: YANG LI <abaci-bugfix@linux.alibaba.com>
+Reported-by: Abaci <abaci@linux.alibaba.com>
 ---
- tools/testing/selftests/bpf/progs/bprm_opts.c | 2 +-
+ kernel/bpf/devmap.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/bprm_opts.c b/tools/testing/selftests/bpf/progs/bprm_opts.c
-index 5bfef2887e70..418d9c6d4952 100644
---- a/tools/testing/selftests/bpf/progs/bprm_opts.c
-+++ b/tools/testing/selftests/bpf/progs/bprm_opts.c
-@@ -4,7 +4,7 @@
-  * Copyright 2020 Google LLC.
-  */
+diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+index f6e9c68..af6f004 100644
+--- a/kernel/bpf/devmap.c
++++ b/kernel/bpf/devmap.c
+@@ -454,7 +454,7 @@ static struct xdp_buff *dev_map_run_prog(struct net_device *dev,
+ 					 struct xdp_buff *xdp,
+ 					 struct bpf_prog *xdp_prog)
+ {
+-	struct xdp_txq_info txq = { .dev = dev };
++	static struct xdp_txq_info txq = { .dev = dev };
+ 	u32 act;
  
--#include "vmlinux.h"
-+#include <linux/bpf.h>
- #include <errno.h>
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_tracing.h>
+ 	xdp_set_data_meta_invalid(xdp);
 -- 
-2.11.0
+1.8.3.1
 
