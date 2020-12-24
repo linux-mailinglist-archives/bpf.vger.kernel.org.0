@@ -2,58 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D88822E255C
-	for <lists+bpf@lfdr.de>; Thu, 24 Dec 2020 09:02:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 137812E27F8
+	for <lists+bpf@lfdr.de>; Thu, 24 Dec 2020 16:53:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726347AbgLXIBs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 24 Dec 2020 03:01:48 -0500
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:36015 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726266AbgLXIBs (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 24 Dec 2020 03:01:48 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R871e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0UJcXTH5_1608796849;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UJcXTH5_1608796849)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 24 Dec 2020 16:01:05 +0800
-From:   YANG LI <abaci-bugfix@linux.alibaba.com>
-To:     ast@kernel.org
-Cc:     daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        hawk@kernel.org, natechancellor@gmail.com, ndesaulniers@google.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        YANG LI <abaci-bugfix@linux.alibaba.com>
-Subject: [PATCH] bpf: fix: symbol 'btf_vmlinux' was not declared.
-Date:   Thu, 24 Dec 2020 16:00:48 +0800
-Message-Id: <1608796848-49865-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1728122AbgLXPxM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 24 Dec 2020 10:53:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40904 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728065AbgLXPxK (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 24 Dec 2020 10:53:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1608825103;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vAYd6Tfv3EXYk/sjNyYkHfmlP+djjGI2nc+mjGe127o=;
+        b=WADtwe5MNZB76dsren4xBk1r9deukAbxo+CFAIb5+4dzw3mhuMIBmfIBWrV6eRE4WwtDAM
+        SwCVsvs/aA7aanyqsxhiJTbbTzJRgUeVt9TmQ49DOBYF2uHRWwzZCE3abtZAjxIHNyAMGe
+        RXwkkIg+xJp29pADF0gusJp7Ed8jl6E=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-386--k_u8b-dOLGuXq95cBkV7g-1; Thu, 24 Dec 2020 10:51:41 -0500
+X-MC-Unique: -k_u8b-dOLGuXq95cBkV7g-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2E94C801817;
+        Thu, 24 Dec 2020 15:51:39 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.6])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C55CA6B8D4;
+        Thu, 24 Dec 2020 15:51:29 +0000 (UTC)
+Date:   Thu, 24 Dec 2020 16:51:28 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
+        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        lorenzo.bianconi@redhat.com, alexander.duyck@gmail.com,
+        maciej.fijalkowski@intel.com, saeed@kernel.org, brouer@redhat.com
+Subject: Re: [PATCH v5 bpf-next 1/2] net: xdp: introduce xdp_init_buff
+ utility routine
+Message-ID: <20201224165128.1f89c988@carbon>
+In-Reply-To: <7f8329b6da1434dc2b05a77f2e800b29628a8913.1608670965.git.lorenzo@kernel.org>
+References: <cover.1608670965.git.lorenzo@kernel.org>
+        <7f8329b6da1434dc2b05a77f2e800b29628a8913.1608670965.git.lorenzo@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Symbol 'btf_vmlinux' was not declared in the header file and does not 
-add extern, so no other file uses it. It's better to add static to it.
+On Tue, 22 Dec 2020 22:09:28 +0100
+Lorenzo Bianconi <lorenzo@kernel.org> wrote:
 
-Signed-off-by: YANG LI <abaci-bugfix@linux.alibaba.com>
-Reported-by: Abaci <abaci@linux.alibaba.com>
----
- kernel/bpf/verifier.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Introduce xdp_init_buff utility routine to initialize xdp_buff fields
+> const over NAPI iterations (e.g. frame_sz or rxq pointer). Rely on
+> xdp_init_buff in all XDP capable drivers.
+> 
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> ---
+>  drivers/net/ethernet/amazon/ena/ena_netdev.c        | 3 +--
+>  drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c       | 4 ++--
+>  drivers/net/ethernet/cavium/thunder/nicvf_main.c    | 4 ++--
+>  drivers/net/ethernet/freescale/dpaa/dpaa_eth.c      | 4 ++--
+>  drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c    | 8 ++++----
+>  drivers/net/ethernet/intel/i40e/i40e_txrx.c         | 6 +++---
+>  drivers/net/ethernet/intel/ice/ice_txrx.c           | 6 +++---
+>  drivers/net/ethernet/intel/igb/igb_main.c           | 6 +++---
+>  drivers/net/ethernet/intel/ixgbe/ixgbe_main.c       | 7 +++----
+>  drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c   | 7 +++----
+>  drivers/net/ethernet/marvell/mvneta.c               | 3 +--
+>  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c     | 8 +++++---
+>  drivers/net/ethernet/mellanox/mlx4/en_rx.c          | 3 +--
+>  drivers/net/ethernet/mellanox/mlx5/core/en_rx.c     | 3 +--
+>  drivers/net/ethernet/netronome/nfp/nfp_net_common.c | 4 ++--
+>  drivers/net/ethernet/qlogic/qede/qede_fp.c          | 3 +--
+>  drivers/net/ethernet/sfc/rx.c                       | 3 +--
+>  drivers/net/ethernet/socionext/netsec.c             | 3 +--
+>  drivers/net/ethernet/ti/cpsw.c                      | 4 ++--
+>  drivers/net/ethernet/ti/cpsw_new.c                  | 4 ++--
+>  drivers/net/hyperv/netvsc_bpf.c                     | 3 +--
+>  drivers/net/tun.c                                   | 7 +++----
+>  drivers/net/veth.c                                  | 8 ++++----
+>  drivers/net/virtio_net.c                            | 6 ++----
+>  drivers/net/xen-netfront.c                          | 4 ++--
+>  include/net/xdp.h                                   | 7 +++++++
+>  net/bpf/test_run.c                                  | 4 ++--
+>  net/core/dev.c                                      | 8 ++++----
+>  28 files changed, 68 insertions(+), 72 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 17270b8..535d364 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -244,7 +244,7 @@ struct bpf_call_arg_meta {
- 	u32 ret_btf_id;
- };
- 
--struct btf *btf_vmlinux;
-+static struct btf *btf_vmlinux;
- 
- static DEFINE_MUTEX(bpf_verifier_lock);
- 
+Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+
 -- 
-1.8.3.1
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
