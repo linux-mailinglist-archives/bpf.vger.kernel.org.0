@@ -2,88 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92FD92E2F16
-	for <lists+bpf@lfdr.de>; Sat, 26 Dec 2020 21:44:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC4062E34A2
+	for <lists+bpf@lfdr.de>; Mon, 28 Dec 2020 08:09:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725964AbgLZUma (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 26 Dec 2020 15:42:30 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:30844 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725849AbgLZUm3 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 26 Dec 2020 15:42:29 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-23-I-8rGLxaNH6OrhhBUzf87g-1; Sat, 26 Dec 2020 20:40:50 +0000
-X-MC-Unique: I-8rGLxaNH6OrhhBUzf87g-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Sat, 26 Dec 2020 20:40:48 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Sat, 26 Dec 2020 20:40:48 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Tom Rix' <trix@redhat.com>, Joe Perches <joe@perches.com>,
-        Simon Horman <simon.horman@netronome.com>
-CC:     "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "kafai@fb.com" <kafai@fb.com>,
-        "songliubraving@fb.com" <songliubraving@fb.com>,
-        "yhs@fb.com" <yhs@fb.com>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "gustavoars@kernel.org" <gustavoars@kernel.org>,
-        "louis.peens@netronome.com" <louis.peens@netronome.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "oss-drivers@netronome.com" <oss-drivers@netronome.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] nfp: remove h from printk format specifier
-Thread-Topic: [PATCH] nfp: remove h from printk format specifier
-Thread-Index: AQHW2s6Qh9Jx9VdXck+UoJgZsYMiQaoJ1s2w
-Date:   Sat, 26 Dec 2020 20:40:48 +0000
-Message-ID: <bf541f5de2624693ae96887afbfd04bc@AcuMS.aculab.com>
-References: <20201223202053.131157-1-trix@redhat.com>
- <20201224202152.GA3380@netronome.com>
- <bac92bab-243b-ca48-647c-dad5688fa060@redhat.com>
- <18c81854639aa21e76c8b26cc3e7999b0428cc4e.camel@perches.com>
- <7b5517e6-41a9-cc7f-f42f-8ef449f3898e@redhat.com>
-In-Reply-To: <7b5517e6-41a9-cc7f-f42f-8ef449f3898e@redhat.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1726313AbgL1HFv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Dec 2020 02:05:51 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:9937 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726242AbgL1HFv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Dec 2020 02:05:51 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4D47p66lS3zhyMc;
+        Mon, 28 Dec 2020 15:04:30 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 28 Dec 2020 15:05:06 +0800
+From:   Tian Tao <tiantao6@hisilicon.com>
+To:     <catalin.marinas@arm.com>, <will@kernel.org>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <andrii@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+Subject: [PATCH] arm64: traps: remove duplicate include statement
+Date:   Mon, 28 Dec 2020 15:05:08 +0800
+Message-ID: <1609139108-10819-1-git-send-email-tiantao6@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-RnJvbTogVG9tIFJpeA0KPiBTZW50OiAyNSBEZWNlbWJlciAyMDIwIDE0OjU3DQouLi4NCj4gPiBL
-ZXJuZWwgY29kZSBkb2Vzbid0IHVzZSBhIHNpZ25lZCBjaGFyIG9yIHNob3J0IHdpdGggJWh4IG9y
-ICVodSB2ZXJ5IG9mdGVuDQo+ID4gYnV0IGluIGNhc2UgeW91IGRpZG4ndCBhbHJlYWR5IGtub3cs
-IGFueSBzaWduZWQgY2hhci9zaG9ydCBlbWl0dGVkIHdpdGgNCj4gPiBhbnl0aGluZyBsaWtlICVo
-eCBvciAlaHUgbmVlZHMgdG8gYmUgbGVmdCBhbG9uZSBhcyBzaWduIGV4dGVuc2lvbiBvY2N1cnMg
-c286DQo+IA0KPiBZZXMsIHRoaXMgd291bGQgYWxzbyBlZmZlY3QgY2hlY2twYXRjaC4NCg0KRG9l
-cyB0aGUga2VybmVsIHByaW50ZiBkbyB0aGUgbWFza2luZyBmb3IgJWh4IGFuZCAlaGh4Pw0KQSBx
-dWljayBjaGVjayBJIGRpZCBzaG93ZWQgdGhhdCAoYXQgbGVhc3Qgc29tZSB2ZXJzaW9ucyBvZikg
-Z2xpYmMgZG9lcy4NCkJ1dCB0aGUgcHJpbnRmIGJ1aWx0aW4gaW4gYmFzaCBkb2Vzbid0Lg0KDQpJ
-ZiB0aGUgbWFza2luZyBpcyB0aGVyZSB0aGVuICVoW2RpdXhdIGFuZCAlaGhbZGl1eF0gYXJlIHZh
-bGlkDQpldmVuIHRob3VnaCB0aGUgdmFyYXJncyBzdXBwbGllZCBwYXJhbWV0ZXIgaXMgYWx3YXlz
-IGV4dGVuZGVkIHRvDQphdCBsZWFzdCB0aGUgc2l6ZSBvZiBpbnQuDQoNClRoaXMgaXMgZXZlbiB0
-cnVlIGlmIHRoZSBwYXJhbWV0ZXIgbWlnaHQgYmUgbGFyZ2UuDQpGb3IgaW5zdGFuY2UgZG9pbmc6
-DQoJLi4uLCAiJWhoMDJ4OiVoaDAyeDolaGgwMng6JWhoMDJ4IiwgeCA+PiAyNCwgeCA+PiAxNiwg
-eCA+PiA4LCB4KTsNCndpbGwgZ2VuZXJhdGUgc2xpZ2h0bHkgc21hbGxlciBjb2RlIHRoYW4gbWFz
-a2luZyB0aGUgcGFzc2VkIHZhbHVlcy4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVz
-cyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEg
-MVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+asm/exception.h is included more than once. Remove the one that isn't
+necessary.
+
+Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+---
+ arch/arm64/kernel/traps.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
+index 08156be..6895ce7 100644
+--- a/arch/arm64/kernel/traps.c
++++ b/arch/arm64/kernel/traps.c
+@@ -42,7 +42,6 @@
+ #include <asm/smp.h>
+ #include <asm/stack_pointer.h>
+ #include <asm/stacktrace.h>
+-#include <asm/exception.h>
+ #include <asm/system_misc.h>
+ #include <asm/sysreg.h>
+ 
+-- 
+2.7.4
 
