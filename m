@@ -2,58 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68B572E6A02
-	for <lists+bpf@lfdr.de>; Mon, 28 Dec 2020 19:33:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 745582E6A09
+	for <lists+bpf@lfdr.de>; Mon, 28 Dec 2020 19:38:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728815AbgL1Sax (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Dec 2020 13:30:53 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:16982 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727255AbgL1Sax (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 28 Dec 2020 13:30:53 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0BSIF3K6019572
-        for <bpf@vger.kernel.org>; Mon, 28 Dec 2020 10:30:12 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=I+nnTaPCI74GsbKLUhjPMbaQ54u6cT0LHffjDy8iLvw=;
- b=TYW2gSQamlBU6soUnbqbmNZgvabbXs5RTwnYtMlCQXU1y57hM+AXeRYISTap0ygNFpSf
- yzrgulXsBib7vbdUA5rqfOanREg8OJ3uRdnVf9/6FyJKWud9S9YRYlGvc3lv419CkYZQ
- ghDbUhGmGXuSC+D6tS/qvwLc2ZW0ZSJwNiU= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 35pp3vmj5x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 28 Dec 2020 10:30:12 -0800
-Received: from intmgw002.03.ash8.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 28 Dec 2020 10:30:12 -0800
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 5416362E2E12; Mon, 28 Dec 2020 10:30:11 -0800 (PST)
-From:   Song Liu <songliubraving@fb.com>
-To:     <bpf@vger.kernel.org>, Leah Neukirchen <leah@vuxu.org>
-CC:     Song Liu <songliubraving@fb.com>
-Subject: Re: [PATCH] bpf: Remove unnecessary <argp.h> include from  preload/iterators
-Date:   Mon, 28 Dec 2020 10:29:57 -0800
-Message-ID: <20201228182957.1122078-1-songliubraving@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20201216100306.30942-1-leah@vuxu.org>
-References: <20201216100306.30942-1-leah@vuxu.org>
+        id S1728803AbgL1Sif (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Dec 2020 13:38:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36648 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728802AbgL1Sif (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Dec 2020 13:38:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF4CC229C4
+        for <bpf@vger.kernel.org>; Mon, 28 Dec 2020 18:37:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609180675;
+        bh=fK4damFom9kgCpDA1TZhQ0tn0A24MzC+yRIuXTqtcg8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=MYGypbSlG8pFV5U60yuB/t1EI3tuhiVL5bj9Zi7g6Ay0xSsUvlo7Jvm+pLVDye9Ev
+         zKLUFOPdyMUW45V9CXvzdcj8KIsUW/fl01Sz31yCmfdEMMnDomTO2GDSkVIDaQegfj
+         qCEiJLEQhAt1Nq/z1QhoCmgScH/geo3O4rECWCsCSqeW2lb9M6GR2P7HVpczwHoYbj
+         F8txpIvtWe7tggi7M0KSLk1u/Ry73FO0rXRYh5L3s/Rz0ibM5Ly1DrM8M+C8HMCdCu
+         jCqHpC7fOSxZcbbOYXBZU/UzN49FNOSdTN9nRwkokd/hgPwZS9lEq1VH+IzXptCKPJ
+         YgM9QTfNJQVGA==
+Received: by mail-lf1-f50.google.com with SMTP id o17so25853483lfg.4
+        for <bpf@vger.kernel.org>; Mon, 28 Dec 2020 10:37:54 -0800 (PST)
+X-Gm-Message-State: AOAM533q4dDOcG1yIRzCHAfAM9JSyIcK5Lvyf06WIHKYDBAgUJ7LeKyM
+        R/5VbNdnNRuBEhYRVZAXI9+2OBw/Izhsy2F+H1o=
+X-Google-Smtp-Source: ABdhPJwJJ3yNs26bimHFVty/jFQKtSjvdUTFMD+YwyKJo65aGA9zd9KbUjWYUYXmMSh4LP0KvAcFvw3rrKNzhxhG4f8=
+X-Received: by 2002:a2e:b525:: with SMTP id z5mr23669008ljm.344.1609180673096;
+ Mon, 28 Dec 2020 10:37:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-28_17:2020-12-28,2020-12-28 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- spamscore=0 priorityscore=1501 clxscore=1015 impostorscore=0
- suspectscore=0 mlxscore=0 bulkscore=0 phishscore=0 mlxlogscore=644
- lowpriorityscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2012280113
-X-FB-Internal: deliver
+References: <20201224011242.585967-1-jiang.wang@bytedance.com>
+In-Reply-To: <20201224011242.585967-1-jiang.wang@bytedance.com>
+From:   Song Liu <song@kernel.org>
+Date:   Mon, 28 Dec 2020 10:37:42 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW4aYbyAdz0txmnudwe4E-NYoC3Up5oxd-LBzyfTtLGn7w@mail.gmail.com>
+Message-ID: <CAPhsuW4aYbyAdz0txmnudwe4E-NYoC3Up5oxd-LBzyfTtLGn7w@mail.gmail.com>
+Subject: Re: [PATCH] selftests/bpf: fix a compile error for BPF_F_BPRM_SECUREEXEC
+To:     Jiang Wang <jiang.wang@bytedance.com>
+Cc:     bpf <bpf@vger.kernel.org>, cong.wang@bytedance.com,
+        KP Singh <kpsingh@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Wed, Dec 23, 2020 at 5:14 PM Jiang Wang <jiang.wang@bytedance.com> wrote:
+>
+> When CONFIG_BPF_LSM is not configured, running bpf selftesting will show
+> BPF_F_BPRM_SECUREEXEC undefined error for bprm_opts.c.
+>
+> The problem is that bprm_opts.c includes vmliunx.h. The vmlinux.h is
+> generated by "bpftool btf dump file ./vmlinux format c". On the other
+> hand, BPF_F_BPRM_SECUREEXEC is defined in include/uapi/linux/bpf.h
+> and used only in bpf_lsm.c. When CONFIG_BPF_LSM is not set, bpf_lsm
+> will not be compiled, so vmlinux.h will not include definition of
+> BPF_F_BPRM_SECUREEXEC.
+>
+> Ideally, we want to compile bpf selftest regardless of the configuration
+> setting, so change the include file from vmlinux.h to bpf.h.
+>
+> Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
+
+Thanks for the fix!
+
 Acked-by: Song Liu <songliubraving@fb.com>
+
+[...]
