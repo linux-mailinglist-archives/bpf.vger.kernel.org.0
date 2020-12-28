@@ -2,41 +2,41 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 745582E6A09
-	for <lists+bpf@lfdr.de>; Mon, 28 Dec 2020 19:38:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C8342E6A0C
+	for <lists+bpf@lfdr.de>; Mon, 28 Dec 2020 19:42:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728803AbgL1Sif (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Dec 2020 13:38:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36648 "EHLO mail.kernel.org"
+        id S1728186AbgL1SmC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Dec 2020 13:42:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36944 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728802AbgL1Sif (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Dec 2020 13:38:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF4CC229C4
-        for <bpf@vger.kernel.org>; Mon, 28 Dec 2020 18:37:54 +0000 (UTC)
+        id S1728181AbgL1SmC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 28 Dec 2020 13:42:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D7EF207D0
+        for <bpf@vger.kernel.org>; Mon, 28 Dec 2020 18:41:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609180675;
-        bh=fK4damFom9kgCpDA1TZhQ0tn0A24MzC+yRIuXTqtcg8=;
+        s=k20201202; t=1609180881;
+        bh=/5M/KiUPuAzXIaIJ9S1kkhxgNwWlF2+bb2LrW88h/Yo=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=MYGypbSlG8pFV5U60yuB/t1EI3tuhiVL5bj9Zi7g6Ay0xSsUvlo7Jvm+pLVDye9Ev
-         zKLUFOPdyMUW45V9CXvzdcj8KIsUW/fl01Sz31yCmfdEMMnDomTO2GDSkVIDaQegfj
-         qCEiJLEQhAt1Nq/z1QhoCmgScH/geo3O4rECWCsCSqeW2lb9M6GR2P7HVpczwHoYbj
-         F8txpIvtWe7tggi7M0KSLk1u/Ry73FO0rXRYh5L3s/Rz0ibM5Ly1DrM8M+C8HMCdCu
-         jCqHpC7fOSxZcbbOYXBZU/UzN49FNOSdTN9nRwkokd/hgPwZS9lEq1VH+IzXptCKPJ
-         YgM9QTfNJQVGA==
-Received: by mail-lf1-f50.google.com with SMTP id o17so25853483lfg.4
-        for <bpf@vger.kernel.org>; Mon, 28 Dec 2020 10:37:54 -0800 (PST)
-X-Gm-Message-State: AOAM533q4dDOcG1yIRzCHAfAM9JSyIcK5Lvyf06WIHKYDBAgUJ7LeKyM
-        R/5VbNdnNRuBEhYRVZAXI9+2OBw/Izhsy2F+H1o=
-X-Google-Smtp-Source: ABdhPJwJJ3yNs26bimHFVty/jFQKtSjvdUTFMD+YwyKJo65aGA9zd9KbUjWYUYXmMSh4LP0KvAcFvw3rrKNzhxhG4f8=
-X-Received: by 2002:a2e:b525:: with SMTP id z5mr23669008ljm.344.1609180673096;
- Mon, 28 Dec 2020 10:37:53 -0800 (PST)
+        b=Zn+YFiueJ2zFS7xx6qU4yFTcDu6uZchg6sbjSCWam1SbQ0rWDv3MaD3CSLjHQd/Ge
+         DOfqGTe+NJlZo/I+MP2mPcGigpH81kBBtLEimoBLzMO3Z6EO5uH0XUfE7Lui+hdkLp
+         OZFw5sUsBCGjGSr9X7hnZnZb+frjuR77ys3biKTaFDJN2FV53JRjB7psL+QrFymgBl
+         Olq85Bg/QKPQA4Iq+v4+kh+cCILkwUXJAcQzq6L89i7GSMPo+38GEPoCjAxh+6ZDQS
+         jJ3P0npeKEhdk13vkvWoVhC7h7bktt4JvjD7WvjGGPxUSsXtDpsECzsGr3C+QOspbj
+         2779KlnWbV2/g==
+Received: by mail-lf1-f42.google.com with SMTP id 23so25791691lfg.10
+        for <bpf@vger.kernel.org>; Mon, 28 Dec 2020 10:41:20 -0800 (PST)
+X-Gm-Message-State: AOAM5307/oF9m3gUWT/DnSdgXxDrWNatLJllLt+o5aEpje9qhK3pNiCu
+        YVLuyTkJf6ZnXmE0ouOfCWAiuRiAGfgdVbWCWqQ=
+X-Google-Smtp-Source: ABdhPJy6LmZWKdNuVUTjCBKt39TjGWB7qFeZ3lpl3XZVSLuUSzlFatye3QwJaE/8oLZVbheSZar7NKFEUChDLQBY5Ug=
+X-Received: by 2002:ac2:43b9:: with SMTP id t25mr18573402lfl.261.1609180879436;
+ Mon, 28 Dec 2020 10:41:19 -0800 (PST)
 MIME-Version: 1.0
 References: <20201224011242.585967-1-jiang.wang@bytedance.com>
 In-Reply-To: <20201224011242.585967-1-jiang.wang@bytedance.com>
 From:   Song Liu <song@kernel.org>
-Date:   Mon, 28 Dec 2020 10:37:42 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW4aYbyAdz0txmnudwe4E-NYoC3Up5oxd-LBzyfTtLGn7w@mail.gmail.com>
-Message-ID: <CAPhsuW4aYbyAdz0txmnudwe4E-NYoC3Up5oxd-LBzyfTtLGn7w@mail.gmail.com>
+Date:   Mon, 28 Dec 2020 10:41:08 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW6orZPGdBfss8S0EstHPrLLPciFcRGfExOAFfz9ca8X4g@mail.gmail.com>
+Message-ID: <CAPhsuW6orZPGdBfss8S0EstHPrLLPciFcRGfExOAFfz9ca8X4g@mail.gmail.com>
 Subject: Re: [PATCH] selftests/bpf: fix a compile error for BPF_F_BPRM_SECUREEXEC
 To:     Jiang Wang <jiang.wang@bytedance.com>
 Cc:     bpf <bpf@vger.kernel.org>, cong.wang@bytedance.com,
@@ -63,8 +63,30 @@ On Wed, Dec 23, 2020 at 5:14 PM Jiang Wang <jiang.wang@bytedance.com> wrote:
 >
 > Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
 
-Thanks for the fix!
+btw: for future patches, please prefix the subject as [PATCH bpf] or
+[PATCH bpf-next], so it is
+clear which tree the patch applies to. In this case, this should be bpf tree.
 
-Acked-by: Song Liu <songliubraving@fb.com>
+Thanks,
+Song
 
-[...]
+> ---
+>  tools/testing/selftests/bpf/progs/bprm_opts.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/testing/selftests/bpf/progs/bprm_opts.c b/tools/testing/selftests/bpf/progs/bprm_opts.c
+> index 5bfef2887e70..418d9c6d4952 100644
+> --- a/tools/testing/selftests/bpf/progs/bprm_opts.c
+> +++ b/tools/testing/selftests/bpf/progs/bprm_opts.c
+> @@ -4,7 +4,7 @@
+>   * Copyright 2020 Google LLC.
+>   */
+>
+> -#include "vmlinux.h"
+> +#include <linux/bpf.h>
+>  #include <errno.h>
+>  #include <bpf/bpf_helpers.h>
+>  #include <bpf/bpf_tracing.h>
+> --
+> 2.11.0
+>
