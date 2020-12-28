@@ -2,471 +2,252 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A24822E63F0
-	for <lists+bpf@lfdr.de>; Mon, 28 Dec 2020 16:45:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9742F2E69E5
+	for <lists+bpf@lfdr.de>; Mon, 28 Dec 2020 18:56:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504307AbgL1Pp0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 28 Dec 2020 10:45:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2504296AbgL1PpZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 28 Dec 2020 10:45:25 -0500
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B997BC061796;
-        Mon, 28 Dec 2020 07:44:44 -0800 (PST)
-Received: by mail-qk1-x72d.google.com with SMTP id c7so9116826qke.1;
-        Mon, 28 Dec 2020 07:44:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=m/vIPI/exk1gUlD0hLcE3ctLkKf2mxwJdOzNwjKIkL0=;
-        b=a1TreTGj5mVwaDxgCMMPQAP8Usex6YfESKAJSaN6geeVrAnGqOZGEBd/6XJt8eVr9L
-         UJQNJ0ihOGUuuSeuiuM8AD5xT6KoyWuAuH+ihccAOmTx666QbWoChEYx5crHUnttJzAN
-         7CKuHkp5bCwsJPwyLbg0MjFa5IpaimZUCGd3N6iUHkJTZzlO0BAd3dA6dOfdcDjsEuHt
-         O00U+7Uj+cdmUug5b88/1KIQmDDzygcgcIdKHsqHOc9tJLJmSJiD15Olq+q8zwUVSp7t
-         LcOWiLCxVW6F/QYiAVrXEqhUMUzAPgEN92oyx9Fhar0jczB0hCZnkM+B4LjI+AqKvAYg
-         6J+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=m/vIPI/exk1gUlD0hLcE3ctLkKf2mxwJdOzNwjKIkL0=;
-        b=gnES8kHTyuZRZc7FZWydysQGxCVu1NnZAg2c4gzdbIAfofqgWWQ11uHYlCSIFAkP4R
-         CqRCbTKylHnW/l+zpwAdlINAcXMU/D+uJA6dmgEy63rh5zUaQupY2D7qLsQ2rCYvFn7z
-         suYmZRbIOHF2rrRXOkeeBU7QJN+u/Bz7BTcSQ8odBltTIsyotAZuBJEgj/wOnjv3hLha
-         avEawnl9QLuxJ6OOP1kWOQu/V58x/h+dNKlJ5ccqHlG3Rc3lW7EsDeGO5RuIkmx0UIvP
-         ZFeo2FpCxV5cUy82ZfRiiMh/r/R080l6tvmZAc7l6e8ZVOvh2nq4oDqtN9wCBet00n1r
-         bEyw==
-X-Gm-Message-State: AOAM532Xhd2bb0CQlYZELW904A5fTXId0v6NaFyQPKBYjgfWCQD4Efm+
-        fotW6BjHGmpyQG1c8Sf6YleRzRsY3L+hbjXBLnU=
-X-Google-Smtp-Source: ABdhPJxgjP/3gkDaq9B25F/lq+9Mr98bVvLbF0Fr4nuBjpB2g8vDb4juWlu1Tn38oleKSaCHfRrqxA==
-X-Received: by 2002:a37:78c4:: with SMTP id t187mr1837125qkc.139.1609170283669;
-        Mon, 28 Dec 2020 07:44:43 -0800 (PST)
-Received: from localhost (pc-145-79-45-190.cm.vtr.net. [190.45.79.145])
-        by smtp.gmail.com with ESMTPSA id g28sm23383939qtm.91.2020.12.28.07.44.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Dec 2020 07:44:43 -0800 (PST)
-Date:   Mon, 28 Dec 2020 12:44:39 -0300
-From:   Carlos Neira <cneirabustos@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     andriin@fb.com, yhs@fb.com, ebiederm@xmission.com,
-        brouer@redhat.com, bpf@vger.kernel.org, cneirabustos@gmail.com
-Subject: [PATCH v11 bpf-next] bpf/selftests: fold
- test_current_pid_tgid_new_ns into test_progs.
-Message-ID: <20201228154437.GA18684@localhost>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1727213AbgL1R4F (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 28 Dec 2020 12:56:05 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:39704 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728580AbgL1R4B (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 28 Dec 2020 12:56:01 -0500
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BSHVBRr181258;
+        Mon, 28 Dec 2020 12:55:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=575WtQFj0wqQyr0cGY9p3bIWqpxBZ1k/uxC+oK37Iy0=;
+ b=L2l2XDVoznzmqLRMDcCy7ZzPiir4Qc+76Tn2I76txrpqZP9bPVh9Kdifvh4Fzkdai673
+ rqSOQxuTunKupSuRRvliDMVw2jBJKxa4nQt/iNk89JraLO6B1mPRwohgr4TpuJD+dfsY
+ ItKrJpzdoNNIxGpM1h/vQUbY9DXJbH6W6obn90nvxBLMn+2XMIUJCyYL2vJamP3RCuL/
+ j4Us1q13QYTDK4aB/0yaqBWxGsFxoe1Lq25lqUtJfef13IQOJYnwGNImXYrerpmEqNhq
+ tDBN1d1LE7r+rCN9qt5Cu0hJxct/80vCiqYpeWfj0hQ55034oxtHX5lnRHJ6dxcfgVCQ BA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 35qkcjgyvm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Dec 2020 12:55:08 -0500
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BSHYUW6194223;
+        Mon, 28 Dec 2020 12:55:07 -0500
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 35qkcjgyuv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Dec 2020 12:55:07 -0500
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BSHbhF5020741;
+        Mon, 28 Dec 2020 17:55:05 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma05fra.de.ibm.com with ESMTP id 35qfp6g3bk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Dec 2020 17:55:05 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BSHt3sR47055324
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 28 Dec 2020 17:55:03 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4007C4C046;
+        Mon, 28 Dec 2020 17:55:03 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5171D4C040;
+        Mon, 28 Dec 2020 17:55:00 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.72.172])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 28 Dec 2020 17:55:00 +0000 (GMT)
+Message-ID: <903c37e9036d167958165ab700e646c1622a9c40.camel@linux.ibm.com>
+Subject: Re: [PATCH v23 02/23] LSM: Create and manage the lsmblob data
+ structure.
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Casey Schaufler <casey@schaufler-ca.com>,
+        casey.schaufler@intel.com, jmorris@namei.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org
+Cc:     linux-audit@redhat.com, keescook@chromium.org,
+        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
+        paul@paul-moore.com, sds@tycho.nsa.gov,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Date:   Mon, 28 Dec 2020 12:54:59 -0500
+In-Reply-To: <20201120201507.11993-3-casey@schaufler-ca.com>
+References: <20201120201507.11993-1-casey@schaufler-ca.com>
+         <20201120201507.11993-3-casey@schaufler-ca.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-28_15:2020-12-28,2020-12-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 adultscore=0 spamscore=0 clxscore=1011 mlxscore=0
+ impostorscore=0 mlxlogscore=999 malwarescore=0 phishscore=0 bulkscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012280107
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Currently tests for bpf_get_ns_current_pid_tgid() are outside test_progs.
-This change folds test cases into test_progs.
+Hi Casey,
 
-Changes from v10:
+On Fri, 2020-11-20 at 12:14 -0800, Casey Schaufler wrote:
+> When more than one security module is exporting data to
+> audit and networking sub-systems a single 32 bit integer
+> is no longer sufficient to represent the data. Add a
+> structure to be used instead.
+> 
+> The lsmblob structure is currently an array of
+> u32 "secids". There is an entry for each of the
+> security modules built into the system that would
+> use secids if active. The system assigns the module
+> a "slot" when it registers hooks. If modules are
+> compiled in but not registered there will be unused
+> slots.
+> 
+> A new lsm_id structure, which contains the name
+> of the LSM and its slot number, is created. There
+> is an instance for each LSM, which assigns the name
+> and passes it to the infrastructure to set the slot.
+> 
+> The audit rules data is expanded to use an array of
+> security module data rather than a single instance.
+> Because IMA uses the audit rule functions it is
+> affected as well.
 
- - Code style fixes.
- - Remove redundant code.
+This patch is quite large, even without the audit rule change.  I would
+limit this patch to the new lsm_id structure changes.  The audit rule
+change should be broken out as a separate patch so that the audit
+changes aren't hidden.
 
-Signed-off-by: Carlos Neira <cneirabustos@gmail.com>
----
- tools/testing/selftests/bpf/.gitignore        |   1 -
- tools/testing/selftests/bpf/Makefile          |   3 +-
- .../bpf/prog_tests/ns_current_pid_tgid.c      | 118 ++++++-------
- .../bpf/progs/test_ns_current_pid_tgid.c      |  28 +--
- .../bpf/test_current_pid_tgid_new_ns.c        | 160 ------------------
- 5 files changed, 69 insertions(+), 241 deletions(-)
- delete mode 100644 tools/testing/selftests/bpf/test_current_pid_tgid_new_ns.c
+In addition, here are a few high level nits:
+- The (patch description) body of the explanation, line wrapped at 75
+columns, which will be copied to the permanent changelog to describe
+this patch. (Refer  Documentation/process/submitting-patches.rst.)
 
-diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selftests/bpf/.gitignore
-index f5b7ef93618c..9abca0616ec0 100644
---- a/tools/testing/selftests/bpf/.gitignore
-+++ b/tools/testing/selftests/bpf/.gitignore
-@@ -26,7 +26,6 @@ test_tcpnotify_user
- test_libbpf
- test_tcp_check_syncookie_user
- test_sysctl
--test_current_pid_tgid_new_ns
- xdping
- test_cpp
- *.skel.h
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 8c33e999319a..886577bc2bb6 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -35,8 +35,7 @@ TEST_GEN_PROGS = test_verifier test_tag test_maps test_lru_map test_lpm_map test
- 	test_sock test_sockmap get_cgroup_id_user test_socket_cookie \
- 	test_cgroup_storage \
- 	test_netcnt test_tcpnotify_user test_sysctl \
--	test_progs-no_alu32 \
--	test_current_pid_tgid_new_ns
-+	test_progs-no_alu32
- 
- # Also test bpf-gcc, if present
- ifneq ($(BPF_GCC),)
-diff --git a/tools/testing/selftests/bpf/prog_tests/ns_current_pid_tgid.c b/tools/testing/selftests/bpf/prog_tests/ns_current_pid_tgid.c
-index e74dc501b27f..d3af9285d4d4 100644
---- a/tools/testing/selftests/bpf/prog_tests/ns_current_pid_tgid.c
-+++ b/tools/testing/selftests/bpf/prog_tests/ns_current_pid_tgid.c
-@@ -1,85 +1,85 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2020 Carlos Neira cneirabustos@gmail.com */
-+
-+#define _GNU_SOURCE
- #include <test_progs.h>
-+#include "test_ns_current_pid_tgid.skel.h"
- #include <sys/stat.h>
- #include <sys/types.h>
- #include <unistd.h>
- #include <sys/syscall.h>
-+#include <sched.h>
-+#include <sys/wait.h>
-+#include <sys/mount.h>
-+#include <sys/fcntl.h>
- 
--struct bss {
--	__u64 dev;
--	__u64 ino;
--	__u64 pid_tgid;
--	__u64 user_pid_tgid;
--};
-+#define STACK_SIZE (1024 * 1024)
-+static char child_stack[STACK_SIZE];
- 
--void test_ns_current_pid_tgid(void)
-+static int test_current_pid_tgid(void *args)
- {
--	const char *probe_name = "raw_tracepoint/sys_enter";
--	const char *file = "test_ns_current_pid_tgid.o";
--	int err, key = 0, duration = 0;
--	struct bpf_link *link = NULL;
--	struct bpf_program *prog;
--	struct bpf_map *bss_map;
--	struct bpf_object *obj;
--	struct bss bss;
-+	struct test_ns_current_pid_tgid__bss  *bss;
-+	struct test_ns_current_pid_tgid *skel;
-+	int err = 0, duration = 0;
-+	pid_t tgid, pid;
- 	struct stat st;
--	__u64 id;
--
--	obj = bpf_object__open_file(file, NULL);
--	if (CHECK(IS_ERR(obj), "obj_open", "err %ld\n", PTR_ERR(obj)))
--		return;
- 
--	err = bpf_object__load(obj);
--	if (CHECK(err, "obj_load", "err %d errno %d\n", err, errno))
-+	skel = test_ns_current_pid_tgid__open_and_load();
-+	if (CHECK(!skel, "skel_open_load", "failed to load skeleton\n"))
- 		goto cleanup;
- 
--	bss_map = bpf_object__find_map_by_name(obj, "test_ns_.bss");
--	if (CHECK(!bss_map, "find_bss_map", "failed\n"))
--		goto cleanup;
-+	pid = syscall(SYS_gettid);
-+	tgid = getpid();
- 
--	prog = bpf_object__find_program_by_title(obj, probe_name);
--	if (CHECK(!prog, "find_prog", "prog '%s' not found\n",
--		  probe_name))
-+	err = stat("/proc/self/ns/pid", &st);
-+	if (CHECK(err, "stat", "failed /proc/self/ns/pid: %d\n", err))
- 		goto cleanup;
- 
--	memset(&bss, 0, sizeof(bss));
--	pid_t tid = syscall(SYS_gettid);
--	pid_t pid = getpid();
--
--	id = (__u64) tid << 32 | pid;
--	bss.user_pid_tgid = id;
-+	bss = skel->bss;
-+	bss->dev = st.st_dev;
-+	bss->ino = st.st_ino;
-+	bss->user_pid = 0;
-+	bss->user_tgid = 0;
- 
--	if (CHECK_FAIL(stat("/proc/self/ns/pid", &st))) {
--		perror("Failed to stat /proc/self/ns/pid");
-+	err = test_ns_current_pid_tgid__attach(skel);
-+	if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
- 		goto cleanup;
--	}
- 
--	bss.dev = st.st_dev;
--	bss.ino = st.st_ino;
-+	/* trigger tracepoint */
-+	usleep(1);
-+	ASSERT_EQ(bss->user_pid, pid, "pid");
-+	ASSERT_EQ(bss->user_tgid, tgid, "tgid");
- 
--	err = bpf_map_update_elem(bpf_map__fd(bss_map), &key, &bss, 0);
--	if (CHECK(err, "setting_bss", "failed to set bss : %d\n", err))
--		goto cleanup;
-+cleanup:
-+	 test_ns_current_pid_tgid__destroy(skel);
- 
--	link = bpf_program__attach_raw_tracepoint(prog, "sys_enter");
--	if (CHECK(IS_ERR(link), "attach_raw_tp", "err %ld\n",
--		  PTR_ERR(link))) {
--		link = NULL;
--		goto cleanup;
--	}
-+	return err;
-+}
- 
--	/* trigger some syscalls */
--	usleep(1);
-+static void test_ns_current_pid_tgid_new_ns(void)
-+{
-+	int wstatus, duration = 0;
-+	pid_t cpid;
-+	/* Create a process in a new namespace, this process
-+	 * will be the init process of this new namespace hence will be pid 1.
-+	 */
-+	cpid = clone(test_current_pid_tgid, child_stack + STACK_SIZE, CLONE_NEWPID |
-+			SIGCHLD, NULL);
- 
--	err = bpf_map_lookup_elem(bpf_map__fd(bss_map), &key, &bss);
--	if (CHECK(err, "set_bss", "failed to get bss : %d\n", err))
--		goto cleanup;
-+	if (CHECK(cpid == -1, "clone", strerror(errno)))
-+		exit(EXIT_FAILURE);
- 
--	if (CHECK(id != bss.pid_tgid, "Compare user pid/tgid vs. bpf pid/tgid",
--		  "User pid/tgid %llu BPF pid/tgid %llu\n", id, bss.pid_tgid))
--		goto cleanup;
--cleanup:
--	bpf_link__destroy(link);
--	bpf_object__close(obj);
-+	if (CHECK(waitpid(cpid, &wstatus, 0) == -1, "waitpid", strerror(errno)))
-+		exit(EXIT_FAILURE);
-+
-+	if (CHECK(WEXITSTATUS(wstatus) != 0, "newns_pidtgid", "failed"))
-+		exit(EXIT_FAILURE);
-+}
-+
-+void test_ns_current_pid_tgid(void)
-+{
-+	if (test__start_subtest("ns_current_pid_tgid_root_ns"))
-+		test_current_pid_tgid(NULL);
-+	if (test__start_subtest("ns_current_pid_tgid_new_ns"))
-+		test_ns_current_pid_tgid_new_ns();
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_ns_current_pid_tgid.c b/tools/testing/selftests/bpf/progs/test_ns_current_pid_tgid.c
-index 1dca70a6de2f..0763d49f9c42 100644
---- a/tools/testing/selftests/bpf/progs/test_ns_current_pid_tgid.c
-+++ b/tools/testing/selftests/bpf/progs/test_ns_current_pid_tgid.c
-@@ -5,31 +5,21 @@
- #include <stdint.h>
- #include <bpf/bpf_helpers.h>
- 
--static volatile struct {
--	__u64 dev;
--	__u64 ino;
--	__u64 pid_tgid;
--	__u64 user_pid_tgid;
--} res;
-+__u64 user_pid = 0;
-+__u64 user_tgid = 0;
-+__u64 dev = 0;
-+__u64 ino = 0;
- 
--SEC("raw_tracepoint/sys_enter")
--int trace(void *ctx)
-+SEC("tracepoint/syscalls/sys_enter_nanosleep")
-+int handler(const void *ctx)
- {
--	__u64  ns_pid_tgid, expected_pid;
- 	struct bpf_pidns_info nsdata;
--	__u32 key = 0;
- 
--	if (bpf_get_ns_current_pid_tgid(res.dev, res.ino, &nsdata,
--		   sizeof(struct bpf_pidns_info)))
-+	if (bpf_get_ns_current_pid_tgid(dev, ino, &nsdata, sizeof(struct bpf_pidns_info)))
- 		return 0;
- 
--	ns_pid_tgid = (__u64)nsdata.tgid << 32 | nsdata.pid;
--	expected_pid = res.user_pid_tgid;
--
--	if (expected_pid != ns_pid_tgid)
--		return 0;
--
--	res.pid_tgid = ns_pid_tgid;
-+	user_pid = nsdata.pid;
-+	user_tgid = nsdata.tgid;
- 
- 	return 0;
- }
-diff --git a/tools/testing/selftests/bpf/test_current_pid_tgid_new_ns.c b/tools/testing/selftests/bpf/test_current_pid_tgid_new_ns.c
-deleted file mode 100644
-index ec53b1ef90d2..000000000000
---- a/tools/testing/selftests/bpf/test_current_pid_tgid_new_ns.c
-+++ /dev/null
-@@ -1,160 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/* Copyright (c) 2020 Carlos Neira cneirabustos@gmail.com */
--#define _GNU_SOURCE
--#include <sys/stat.h>
--#include <sys/types.h>
--#include <unistd.h>
--#include <sys/syscall.h>
--#include <sched.h>
--#include <sys/wait.h>
--#include <sys/mount.h>
--#include "test_progs.h"
--
--#define CHECK_NEWNS(condition, tag, format...) ({		\
--	int __ret = !!(condition);			\
--	if (__ret) {					\
--		printf("%s:FAIL:%s ", __func__, tag);	\
--		printf(format);				\
--	} else {					\
--		printf("%s:PASS:%s\n", __func__, tag);	\
--	}						\
--	__ret;						\
--})
--
--struct bss {
--	__u64 dev;
--	__u64 ino;
--	__u64 pid_tgid;
--	__u64 user_pid_tgid;
--};
--
--int main(int argc, char **argv)
--{
--	pid_t pid;
--	int exit_code = 1;
--	struct stat st;
--
--	printf("Testing bpf_get_ns_current_pid_tgid helper in new ns\n");
--
--	if (stat("/proc/self/ns/pid", &st)) {
--		perror("stat failed on /proc/self/ns/pid ns\n");
--		printf("%s:FAILED\n", argv[0]);
--		return exit_code;
--	}
--
--	if (CHECK_NEWNS(unshare(CLONE_NEWPID | CLONE_NEWNS),
--			"unshare CLONE_NEWPID | CLONE_NEWNS", "error errno=%d\n", errno))
--		return exit_code;
--
--	pid = fork();
--	if (pid == -1) {
--		perror("Fork() failed\n");
--		printf("%s:FAILED\n", argv[0]);
--		return exit_code;
--	}
--
--	if (pid > 0) {
--		int status;
--
--		usleep(5);
--		waitpid(pid, &status, 0);
--		return 0;
--	} else {
--
--		pid = fork();
--		if (pid == -1) {
--			perror("Fork() failed\n");
--			printf("%s:FAILED\n", argv[0]);
--			return exit_code;
--		}
--
--		if (pid > 0) {
--			int status;
--			waitpid(pid, &status, 0);
--			return 0;
--		} else {
--			if (CHECK_NEWNS(mount("none", "/proc", NULL, MS_PRIVATE|MS_REC, NULL),
--				"Unmounting proc", "Cannot umount proc! errno=%d\n", errno))
--				return exit_code;
--
--			if (CHECK_NEWNS(mount("proc", "/proc", "proc", MS_NOSUID|MS_NOEXEC|MS_NODEV, NULL),
--				"Mounting proc", "Cannot mount proc! errno=%d\n", errno))
--				return exit_code;
--
--			const char *probe_name = "raw_tracepoint/sys_enter";
--			const char *file = "test_ns_current_pid_tgid.o";
--			struct bpf_link *link = NULL;
--			struct bpf_program *prog;
--			struct bpf_map *bss_map;
--			struct bpf_object *obj;
--			int exit_code = 1;
--			int err, key = 0;
--			struct bss bss;
--			struct stat st;
--			__u64 id;
--
--			obj = bpf_object__open_file(file, NULL);
--			if (CHECK_NEWNS(IS_ERR(obj), "obj_open", "err %ld\n", PTR_ERR(obj)))
--				return exit_code;
--
--			err = bpf_object__load(obj);
--			if (CHECK_NEWNS(err, "obj_load", "err %d errno %d\n", err, errno))
--				goto cleanup;
--
--			bss_map = bpf_object__find_map_by_name(obj, "test_ns_.bss");
--			if (CHECK_NEWNS(!bss_map, "find_bss_map", "failed\n"))
--				goto cleanup;
--
--			prog = bpf_object__find_program_by_title(obj, probe_name);
--			if (CHECK_NEWNS(!prog, "find_prog", "prog '%s' not found\n",
--						probe_name))
--				goto cleanup;
--
--			memset(&bss, 0, sizeof(bss));
--			pid_t tid = syscall(SYS_gettid);
--			pid_t pid = getpid();
--
--			id = (__u64) tid << 32 | pid;
--			bss.user_pid_tgid = id;
--
--			if (CHECK_NEWNS(stat("/proc/self/ns/pid", &st),
--				"stat new ns", "Failed to stat /proc/self/ns/pid errno=%d\n", errno))
--				goto cleanup;
--
--			bss.dev = st.st_dev;
--			bss.ino = st.st_ino;
--
--			err = bpf_map_update_elem(bpf_map__fd(bss_map), &key, &bss, 0);
--			if (CHECK_NEWNS(err, "setting_bss", "failed to set bss : %d\n", err))
--				goto cleanup;
--
--			link = bpf_program__attach_raw_tracepoint(prog, "sys_enter");
--			if (CHECK_NEWNS(IS_ERR(link), "attach_raw_tp", "err %ld\n",
--						PTR_ERR(link))) {
--				link = NULL;
--				goto cleanup;
--			}
--
--			/* trigger some syscalls */
--			usleep(1);
--
--			err = bpf_map_lookup_elem(bpf_map__fd(bss_map), &key, &bss);
--			if (CHECK_NEWNS(err, "set_bss", "failed to get bss : %d\n", err))
--				goto cleanup;
--
--			if (CHECK_NEWNS(id != bss.pid_tgid, "Compare user pid/tgid vs. bpf pid/tgid",
--						"User pid/tgid %llu BPF pid/tgid %llu\n", id, bss.pid_tgid))
--				goto cleanup;
--
--			exit_code = 0;
--			printf("%s:PASS\n", argv[0]);
--cleanup:
--			if (!link) {
--				bpf_link__destroy(link);
--				link = NULL;
--			}
--			bpf_object__close(obj);
--		}
--	}
--	return 0;
--}
--- 
-2.20.1
+- The brief kernel-doc descriptions should not have a trailing period. 
+Nor should kernel-doc variable definitions have a trailing period. 
+Example(s) inline below.  (The existing kernel-doc is mostly correct.)
+
+- For some reason existing comments that span multiple lines aren't
+formatted properly.   In those cases, where there is another change,
+please fix the comment and function description.
+
+thanks,
+
+Mimi
+
+> 
+> Acked-by: Stephen Smalley <sds@tycho.nsa.gov>
+> Acked-by: Paul Moore <paul@paul-moore.com>
+> Acked-by: John Johansen <john.johansen@canonical.com>
+> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+
+> Cc: <bpf@vger.kernel.org>
+> Cc: linux-audit@redhat.com
+> Cc: linux-security-module@vger.kernel.org
+> Cc: selinux@vger.kernel.org
+> ---
+
+> diff --git a/include/linux/security.h b/include/linux/security.h
+> index bc2725491560..fdb6e95c98e8 100644
+> --- a/include/linux/security.h
+> +++ b/include/linux/security.h
+> @@ -132,6 +132,65 @@ enum lockdown_reason {
+> 
+>  extern const char *const lockdown_reasons[LOCKDOWN_CONFIDENTIALITY_MAX+1];
+> 
+> +/*
+> + * Data exported by the security modules
+> + *
+> + * Any LSM that provides secid or secctx based hooks must be included.
+> + */
+> +#define LSMBLOB_ENTRIES ( \
+> +	(IS_ENABLED(CONFIG_SECURITY_SELINUX) ? 1 : 0) + \
+> +	(IS_ENABLED(CONFIG_SECURITY_SMACK) ? 1 : 0) + \
+> +	(IS_ENABLED(CONFIG_SECURITY_APPARMOR) ? 1 : 0) + \
+> +	(IS_ENABLED(CONFIG_BPF_LSM) ? 1 : 0))
+> +
+> +struct lsmblob {
+> +	u32     secid[LSMBLOB_ENTRIES];
+> +};
+> +
+> +#define LSMBLOB_INVALID		-1	/* Not a valid LSM slot number */
+> +#define LSMBLOB_NEEDED		-2	/* Slot requested on initialization */
+> +#define LSMBLOB_NOT_NEEDED	-3	/* Slot not requested */
+> +
+> +/**
+> + * lsmblob_init - initialize an lsmblob structure.
+
+Only this kernel-doc brief description is suffixed with a period.  
+Please remove.
+
+> + * @blob: Pointer to the data to initialize
+> + * @secid: The initial secid value
+> + *
+> + * Set all secid for all modules to the specified value.
+> + */
+> +static inline void lsmblob_init(struct lsmblob *blob, u32 secid)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < LSMBLOB_ENTRIES; i++)
+> +		blob->secid[i] = secid;
+> +}
+> +
+> +/**
+> + * lsmblob_is_set - report if there is an value in the lsmblob
+> + * @blob: Pointer to the exported LSM data
+> + *
+> + * Returns true if there is a secid set, false otherwise
+> + */
+> +static inline bool lsmblob_is_set(struct lsmblob *blob)
+> +{
+> +	struct lsmblob empty = {};
+> +
+> +	return !!memcmp(blob, &empty, sizeof(*blob));
+> +}
+> +
+> +/**
+> + * lsmblob_equal - report if the two lsmblob's are equal
+> + * @bloba: Pointer to one LSM data
+> + * @blobb: Pointer to the other LSM data
+> + *
+> + * Returns true if all entries in the two are equal, false otherwise
+> + */
+> +static inline bool lsmblob_equal(struct lsmblob *bloba, struct lsmblob *blobb)
+> +{
+> +	return !memcmp(bloba, blobb, sizeof(*bloba));
+> +}
+> +
+>  /* These functions are in security/commoncap.c */
+>  extern int cap_capable(const struct cred *cred, struct user_namespace *ns,
+
+> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+> index 9b5adeaa47fc..cd393aaa17d5 100644
+> --- a/security/integrity/ima/ima_policy.c
+> +++ b/security/integrity/ima/ima_policy.c
+>  	} lsm[MAX_LSM_RULES];
+> @@ -88,6 +88,22 @@ struct ima_rule_entry {
+>  	struct ima_template_desc *template;
+>  };
+> 
+> +/**
+> + * ima_lsm_isset - Is a rule set for any of the active security modules
+> + * @rules: The set of IMA rules to check.
+
+Nor do kernel-doc variable definitions have a trailing period.
+
+> + *
+> + * If a rule is set for any LSM return true, otherwise return false.
+> + */
+> +static inline bool ima_lsm_isset(void *rules[])
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < LSMBLOB_ENTRIES; i++)
+> +		if (rules[i])
+> +			return true;
+> +	return false;
+> +}
+> +
+>  /*
+>   * Without LSM specific knowledge, the default policy can only be
+>   * written in terms of .action, .func, .mask, .fsmagic, .uid, and .fowner
 
