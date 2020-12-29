@@ -2,108 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3951F2E72EC
-	for <lists+bpf@lfdr.de>; Tue, 29 Dec 2020 19:14:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C460D2E7309
+	for <lists+bpf@lfdr.de>; Tue, 29 Dec 2020 19:40:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726284AbgL2SLV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Dec 2020 13:11:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48934 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726111AbgL2SLV (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 29 Dec 2020 13:11:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609265394;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ueyI+cWoH67BxlB2tzBM71S76RsMBcue4/o5aXgZcWA=;
-        b=dI5oXYPUYKTnEFwqzA6wpWmJqCnlRq0Lzvy/hBdLC0dOFOYu68Jj3YIldiGSUOlZ2xa7cS
-        mUtolVOW3GCI4s0xPFAdowWP2OSt/CB7rdlU6HykT/iLDvX5bBKm8y/ilu8P1LlrOqCABd
-        uSNyAA/IEP+IbBOdn9FFNi4dVgCAYHU=
-Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
- [209.85.219.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-218-wRzaGKluNcaQhICUaUhVcQ-1; Tue, 29 Dec 2020 13:09:52 -0500
-X-MC-Unique: wRzaGKluNcaQhICUaUhVcQ-1
-Received: by mail-yb1-f199.google.com with SMTP id b123so24922396ybh.17
-        for <bpf@vger.kernel.org>; Tue, 29 Dec 2020 10:09:52 -0800 (PST)
+        id S1726114AbgL2SkX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Dec 2020 13:40:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726111AbgL2SkX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Dec 2020 13:40:23 -0500
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFF0BC061574
+        for <bpf@vger.kernel.org>; Tue, 29 Dec 2020 10:39:42 -0800 (PST)
+Received: by mail-ot1-x32a.google.com with SMTP id 11so12585889oty.9
+        for <bpf@vger.kernel.org>; Tue, 29 Dec 2020 10:39:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qW4JJn6DBG3BfilK9j1COekIhlE1AUweXbWDkh5ZGOs=;
+        b=YU67tsbAZwuGtJUFtM2o0tCkLPYms+19tI/yT7cDekEi3iR1Kxg3I9uR3Xn2qnHznc
+         8VHzqjDUvyYM4X9JbkJ453IWtXPRQQJMQCC+ZNbv9pO/U6cQDAarLe16LGyR0BHQSWiu
+         hDOQBVkh/VTOPE5CduTHt/O8nZd5b0boZzi9w4OSrw63LBakLkbx1Z/Wxrf2rE1k58Nu
+         I/e1X+/XgW3f+Z1PDILGP5lAgqynAp9x8WboUUeV+es4cmmldeFbCK5vlK5oXAwp62zC
+         z4NvEfanGuY20wp23XaPun0yUVNRcFHalc808Lho7J2h4dehJiaM8WejZ/OOQDudsJqq
+         y7dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ueyI+cWoH67BxlB2tzBM71S76RsMBcue4/o5aXgZcWA=;
-        b=Eu3ZQfDPklA/SXHPTv5NHUdUUu76VY3DHYWWaLW5ICNyoD+XbKNNGEpGJOuwTW8I+7
-         Tw7ykOHXMGod6xfE5N0/Jn0Vu9H3l2naDVimWXn9nAPU2t3lKpA5EzAvrGRP3Giwud0X
-         AnzJ80I6dAIhKVj5QckOvMp6KL8RAIhaAwQs3hbxQZ/xhScsW6dLj+RMtqr/ZO8ZU+Rh
-         6j7Wlgxg7Tjx68x0KH1HJpNjhNB+MjC/eaMujWMutntOp0pqU0h406C/mK+rwjTD1eIN
-         fIXtKCcUU9vJG9lpGuHRa7FLnoCpArOBrPlooMDZTPwoRbOYQHdt35nFE84foVDjMlWO
-         bEcA==
-X-Gm-Message-State: AOAM533nnVNC89EO6pvaEqgzqBeP1Ip8HF+nB5Oz7jxlNvP+mM+QuanT
-        eEMn0v4ip9JbzIPyeVh+pH4HpJ3OG7XSqIxQ7m9fhBxm3bhAt/uxWVyE3flVwg+68uqT9PL0Aue
-        VrQoTqmZyGgRGSr1YkzkfdW+1doGH
-X-Received: by 2002:a25:260f:: with SMTP id m15mr74957599ybm.43.1609265392259;
-        Tue, 29 Dec 2020 10:09:52 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwLUkb+cXPdJE5ZQ0eZ0Wfwhu0qSSc+HcpLS8Wk6aqHyigAzVKwNORGm77nlJWES0hP9a30j3xIOPCXzIeSLoA=
-X-Received: by 2002:a25:260f:: with SMTP id m15mr74957576ybm.43.1609265392025;
- Tue, 29 Dec 2020 10:09:52 -0800 (PST)
+        bh=qW4JJn6DBG3BfilK9j1COekIhlE1AUweXbWDkh5ZGOs=;
+        b=E6Vk3fjHT4Su9fkv2GY5kjotG5LKoOZncVOFatvnGRG/lINpZCdUxNv4KgH5DaPzMK
+         0mvTuStOTqI5HYMmf+wjWcbZLuuFFIYjK7rmH6POulntrxZI7VFEPnUf8lPsFAe5EfcB
+         gumZyJH4gVud4rzUl6k/3O5mXeURf/7ZXsHrLxz0Y2yGPw/53Hv/tBSz77cI0NyPdhXs
+         PzQnC2yvt58b5840wWDI8/byqX1UxdJup+vaslU39WZpZ8+0l1z33MvtPAmbGbXPhmE/
+         ouRfZlC031Iq17x1TiyjHAKnDmwLredLiQi9V0lOip/8f/44IT3JGNTMFznwo74Hww60
+         qSrQ==
+X-Gm-Message-State: AOAM532v2piZh69AWTz6AMthhk317J+EL7AE3GrW9Q6cjpjv4aqK3YWb
+        k5CNZ26UvWTDgolpNOZs7ZupPZ+N6ST0G3NVtRIgRA==
+X-Google-Smtp-Source: ABdhPJwtQo77wnGqnsLGghVSQSjyesR4oU4pS43dbsrobYf4xVWZ6OvGfPDxql4HP+U4YclIwWqXUS8/AeyKDSXFmdM=
+X-Received: by 2002:a05:6830:1e62:: with SMTP id m2mr36407366otr.279.1609267182165;
+ Tue, 29 Dec 2020 10:39:42 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1608670965.git.lorenzo@kernel.org> <45f46f12295972a97da8ca01990b3e71501e9d89.1608670965.git.lorenzo@kernel.org>
- <63bcde67-4124-121d-e96a-066493542ca9@iogearbox.net>
-In-Reply-To: <63bcde67-4124-121d-e96a-066493542ca9@iogearbox.net>
-From:   Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Date:   Tue, 29 Dec 2020 19:09:41 +0100
-Message-ID: <CAJ0CqmVsr=cv+0ndg3g4RDqVmKt=X6qQ7sbArNVrB+98e_3Sag@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 2/2] net: xdp: introduce xdp_prepare_buff
- utility routine
+References: <20201224011242.585967-1-jiang.wang@bytedance.com>
+ <CAPhsuW4aYbyAdz0txmnudwe4E-NYoC3Up5oxd-LBzyfTtLGn7w@mail.gmail.com>
+ <5feabb2d30e93_7421e208de@john-XPS-13-9370.notmuch> <2993b084-37bf-e296-633e-598189d8769b@iogearbox.net>
+In-Reply-To: <2993b084-37bf-e296-633e-598189d8769b@iogearbox.net>
+From:   "Jiang Wang ." <jiang.wang@bytedance.com>
+Date:   Tue, 29 Dec 2020 10:39:31 -0800
+Message-ID: <CAP_N_Z_o9TA31CWw-gtmbUf3W1NZZJHpgJq0YJCPy+0KV-6=VQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] selftests/bpf: fix a compile error for BPF_F_BPRM_SECUREEXEC
 To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Lorenzo Bianconi <lorenzo@kernel.org>,
-        BPF-dev-list <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jesper Brouer <brouer@redhat.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Saeed Mahameed <saeed@kernel.org>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>,
+        cong.wang@bytedance.com, KP Singh <kpsingh@google.com>,
+        andrii@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> > +                     hard_start = page_address(rx_buffer->page) +
-> > +                                  rx_buffer->page_offset - offset;
-> > +                     xdp_prepare_buff(&xdp, hard_start, offset, size, true);
-> >   #if (PAGE_SIZE > 4096)
-> >                       /* At larger PAGE_SIZE, frame_sz depend on len size */
-> >                       xdp.frame_sz = ixgbevf_rx_frame_truesize(rx_ring, size);
+Got it. Thank you guys. I will fix the title next time.
 
-Hi Daniel,
 
-thx for the review.
-
-> [...]
-> The design is very similar for most of the Intel drivers. Why the inconsistency on
-> ice driver compared to the rest, what's the rationale there to do it in one but not
-> the others? Generated code better there?
-
-I applied the same logic for the ice driver but the code is just
-slightly different.
-
+On Tue, Dec 29, 2020 at 6:28 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
 >
-> Couldn't you even move the 'unsigned int offset = xyz_rx_offset(rx_ring)' out of the
-> while loop altogether for all of them? (You already use the xyz_rx_offset() implicitly
-> for most of them when setting xdp.frame_sz.)
+> On 12/29/20 6:14 AM, John Fastabend wrote:
+> > Song Liu wrote:
+> >> On Wed, Dec 23, 2020 at 5:14 PM Jiang Wang <jiang.wang@bytedance.com> wrote:
+> >>>
+> >>> When CONFIG_BPF_LSM is not configured, running bpf selftesting will show
+> >>> BPF_F_BPRM_SECUREEXEC undefined error for bprm_opts.c.
+> >>>
+> >>> The problem is that bprm_opts.c includes vmliunx.h. The vmlinux.h is
+> >>> generated by "bpftool btf dump file ./vmlinux format c". On the other
+> >>> hand, BPF_F_BPRM_SECUREEXEC is defined in include/uapi/linux/bpf.h
+> >>> and used only in bpf_lsm.c. When CONFIG_BPF_LSM is not set, bpf_lsm
+> >>> will not be compiled, so vmlinux.h will not include definition of
+> >>> BPF_F_BPRM_SECUREEXEC.
+> >>>
+> >>> Ideally, we want to compile bpf selftest regardless of the configuration
+> >>> setting, so change the include file from vmlinux.h to bpf.h.
+> >>>
+> >>> Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
+> >>
+> >> Thanks for the fix!
+> >>
+> >> Acked-by: Song Liu <songliubraving@fb.com>
+> >>
+> >> [...]
+> >
+> > LGTM
+> >
+> > Acked-by: John Fastabend <john.fastabend@gmail.com>
 >
-
-We discussed moving "offset = xyz_rx_offset(rx_ring)" out of the while
-loop before but Saeed asked to address it in a dedicated series since
-it is a little bit out of the scope. I have no strong opinion on it,
-do you prefer to address it directly here?
-
-Regards,
-Lorenzo
-
-> Thanks,
-> Daniel
->
-
+> I think it's okay'ish as a workaround, but in case that selftest needs to be
+> extended to the point where we need kernel internal structures from vmlinux.h
+> again, then we need to come up with a different solution. Overall, I'd like to
+> remind that BPF selftests need to be run with the full/needed config options set
+> to not miss out on coverage on some of the BPF subsystems. Anyway, applied, thx!
