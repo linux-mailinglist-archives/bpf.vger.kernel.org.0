@@ -2,81 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C44D82E6E58
-	for <lists+bpf@lfdr.de>; Tue, 29 Dec 2020 06:40:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE66D2E6EF1
+	for <lists+bpf@lfdr.de>; Tue, 29 Dec 2020 09:33:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726277AbgL2Fkq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Dec 2020 00:40:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726274AbgL2Fkp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Dec 2020 00:40:45 -0500
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5786EC0613D6;
-        Mon, 28 Dec 2020 21:40:05 -0800 (PST)
-Received: by mail-ot1-x32c.google.com with SMTP id x13so11029945oto.8;
-        Mon, 28 Dec 2020 21:40:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=kwkydlycgL+LfXIxFJaVTJYy6HCMNVPuKMi7Zzs4Ziw=;
-        b=KaAvqbPCrQU/f25FZSJmnuEloU5W+3P9EAW0+Y/x/c8TiW+fZPdAzXDce5QWixLx4c
-         8Cz80BkGa0H2PZvq88GFpfUuE1PHaCCOJsINWZoXPaItabeS52rS04X9WKQdOkcHJ1Ad
-         T+0nw3Phllm+BkgtEHU1cnP1LLUch7ACwZ+PUCiVtKVez1Mc8KBN2gUbfKNVzzR1ccvd
-         6mQUN3D+zSlZvmcUSpOjBYYxQ8m63grL19N+6D8BBLD6AwJM2td+Yz8OsF/U6I7l85HQ
-         sRrAWkBOGXGto4UAoG0GXb+95cAIBf3wlC2UvvV6yWA2v5vWycNM6U7CqVBj5BDXQa33
-         hWKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=kwkydlycgL+LfXIxFJaVTJYy6HCMNVPuKMi7Zzs4Ziw=;
-        b=ivP9aHUevpm7d2JerIpzCYxj7NHI5z/iNR7QSJmYPb8YnKME4EkGAUSgp4pQ6ukEKe
-         y7xKYuVJeh+hO5Nc7RgFuuO3niZUQlxWu/3IVmG/m1j8FWQ/saSgEdDJcgmQJen3A4jW
-         DdfAM6T/IMcVbgosAuMSSuxdUcS+m4LuL4vmx0+4y6vl9sDwJPKC16j2uLj/GfH8SCyB
-         +XzdlPDNlXiwz/MrC/vZ2j1Rx7eQLvdfwLrgWa2rQzw6p3QFSgDHFpGfVblaiuAsj4Sa
-         Hnu7wuBljrz0PaNA0Kmw3xicMksMz/MRgkA4wkHNygWxZp5pJAAy5xshv20N8rRj0p8+
-         PyEQ==
-X-Gm-Message-State: AOAM531Yim4ljUkXpAi4V0z4IzGxR7ehBQMSSQnrVVABBBTsD2huF3lf
-        8663pv2OiizX/6Aa0dcd5fk=
-X-Google-Smtp-Source: ABdhPJwDE/Hk/4m7aQqZ17RpKsKKmONcsTi2IEcyLBxN1a29NBZv4i4fgEhBh8FBWU8urd/SIgpd/w==
-X-Received: by 2002:a9d:68d8:: with SMTP id i24mr36912910oto.31.1609220404876;
-        Mon, 28 Dec 2020 21:40:04 -0800 (PST)
-Received: from localhost ([184.21.204.5])
-        by smtp.gmail.com with ESMTPSA id t12sm9543542oot.21.2020.12.28.21.40.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Dec 2020 21:40:04 -0800 (PST)
-Date:   Mon, 28 Dec 2020 21:39:57 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, brouer@redhat.com,
-        lorenzo.bianconi@redhat.com, alexander.duyck@gmail.com,
-        maciej.fijalkowski@intel.com, saeed@kernel.org
-Message-ID: <5feac12dcbe7c_7421e2083e@john-XPS-13-9370.notmuch>
-In-Reply-To: <45f46f12295972a97da8ca01990b3e71501e9d89.1608670965.git.lorenzo@kernel.org>
-References: <cover.1608670965.git.lorenzo@kernel.org>
- <45f46f12295972a97da8ca01990b3e71501e9d89.1608670965.git.lorenzo@kernel.org>
-Subject: RE: [PATCH v5 bpf-next 2/2] net: xdp: introduce xdp_prepare_buff
- utility routine
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S1726047AbgL2Id0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Dec 2020 03:33:26 -0500
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:59191 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726008AbgL2Id0 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 29 Dec 2020 03:33:26 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R251e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0UK7gJ7u_1609230761;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0UK7gJ7u_1609230761)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 29 Dec 2020 16:32:41 +0800
+From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To:     magnus.karlsson@intel.com
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        netdev@vger.kernel.org (open list:XDP SOCKETS (AF_XDP)),
+        bpf@vger.kernel.org (open list:XDP SOCKETS (AF_XDP)),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH bpf-next] xsk: build skb by page
+Date:   Tue, 29 Dec 2020 16:32:41 +0800
+Message-Id: <3fab080e36b322b6749190ad6054d53c67658050.1609230615.git.xuanzhuo@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <CAJ8uoz2Enx-WwY6RmCp0RXBG2U3BUpagw-X8hQChPResHCM-XA@mail.gmail.com>
+References: <CAJ8uoz2Enx-WwY6RmCp0RXBG2U3BUpagw-X8hQChPResHCM-XA@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Lorenzo Bianconi wrote:
-> Introduce xdp_prepare_buff utility routine to initialize per-descriptor
-> xdp_buff fields (e.g. xdp_buff pointers). Rely on xdp_prepare_buff() in
-> all XDP capable drivers.
-> 
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> ---
+This patch is used to construct skb based on page to save memory copy
+overhead.
 
-Same as 1, looks like a reasonable cleanup and spot checked math in a few drivers.
+Taking into account the problem of addr unaligned, and the
+possibility of frame size greater than page in the future.
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+The test environment is Aliyun ECS server.
+Test cmd:
+```
+xdpsock -i eth0 -t  -S -s <msg size>
+```
+
+Test result data:
+
+size 	64	512	1024	1500
+copy	1916747	1775988	1600203	1440054
+page	1974058	1953655	1945463	1904478
+percent	3.0%	10.0%	21.58%	32.3%
+
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+---
+ net/xdp/xsk.c | 68 ++++++++++++++++++++++++++++++++++++++++++++---------------
+ 1 file changed, 51 insertions(+), 17 deletions(-)
+
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index ac4a317..7cab40f 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -430,6 +430,55 @@ static void xsk_destruct_skb(struct sk_buff *skb)
+ 	sock_wfree(skb);
+ }
+ 
++static struct sk_buff *xsk_build_skb_bypage(struct xdp_sock *xs, struct xdp_desc *desc)
++{
++	char *buffer;
++	u64 addr;
++	u32 len, offset, copy, copied;
++	int err, i;
++	struct page *page;
++	struct sk_buff *skb;
++
++	skb = sock_alloc_send_skb(&xs->sk, 0, 1, &err);
++	if (unlikely(!skb))
++		return NULL;
++
++	addr = desc->addr;
++	len = desc->len;
++
++	buffer = xsk_buff_raw_get_data(xs->pool, addr);
++	offset = offset_in_page(buffer);
++	addr = buffer - (char *)xs->pool->addrs;
++
++	for (copied = 0, i = 0; copied < len; ++i) {
++		page = xs->pool->umem->pgs[addr >> PAGE_SHIFT];
++
++		get_page(page);
++
++		copy = min((u32)(PAGE_SIZE - offset), len - copied);
++
++		skb_fill_page_desc(skb, i, page, offset, copy);
++
++		copied += copy;
++		addr += copy;
++		offset = 0;
++	}
++
++	skb->len += len;
++	skb->data_len += len;
++	skb->truesize += len;
++
++	refcount_add(len, &xs->sk.sk_wmem_alloc);
++
++	skb->dev = xs->dev;
++	skb->priority = xs->sk.sk_priority;
++	skb->mark = xs->sk.sk_mark;
++	skb_shinfo(skb)->destructor_arg = (void *)(long)addr;
++	skb->destructor = xsk_destruct_skb;
++
++	return skb;
++}
++
+ static int xsk_generic_xmit(struct sock *sk)
+ {
+ 	struct xdp_sock *xs = xdp_sk(sk);
+@@ -445,40 +494,25 @@ static int xsk_generic_xmit(struct sock *sk)
+ 		goto out;
+ 
+ 	while (xskq_cons_peek_desc(xs->tx, &desc, xs->pool)) {
+-		char *buffer;
+-		u64 addr;
+-		u32 len;
+-
+ 		if (max_batch-- == 0) {
+ 			err = -EAGAIN;
+ 			goto out;
+ 		}
+ 
+-		len = desc.len;
+-		skb = sock_alloc_send_skb(sk, len, 1, &err);
++		skb = xsk_build_skb_bypage(xs, &desc);
+ 		if (unlikely(!skb))
+ 			goto out;
+ 
+-		skb_put(skb, len);
+-		addr = desc.addr;
+-		buffer = xsk_buff_raw_get_data(xs->pool, addr);
+-		err = skb_store_bits(skb, 0, buffer, len);
+ 		/* This is the backpressure mechanism for the Tx path.
+ 		 * Reserve space in the completion queue and only proceed
+ 		 * if there is space in it. This avoids having to implement
+ 		 * any buffering in the Tx path.
+ 		 */
+-		if (unlikely(err) || xskq_prod_reserve(xs->pool->cq)) {
++		if (xskq_prod_reserve(xs->pool->cq)) {
+ 			kfree_skb(skb);
+ 			goto out;
+ 		}
+ 
+-		skb->dev = xs->dev;
+-		skb->priority = sk->sk_priority;
+-		skb->mark = sk->sk_mark;
+-		skb_shinfo(skb)->destructor_arg = (void *)(long)desc.addr;
+-		skb->destructor = xsk_destruct_skb;
+-
+ 		err = __dev_direct_xmit(skb, xs->queue_id);
+ 		if  (err == NETDEV_TX_BUSY) {
+ 			/* Tell user-space to retry the send */
+-- 
+1.8.3.1
+
