@@ -2,67 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FC182E7152
-	for <lists+bpf@lfdr.de>; Tue, 29 Dec 2020 15:21:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C7272E7161
+	for <lists+bpf@lfdr.de>; Tue, 29 Dec 2020 15:31:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726203AbgL2OUr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 29 Dec 2020 09:20:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54904 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726196AbgL2OUq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 29 Dec 2020 09:20:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 3EC8C207D1;
-        Tue, 29 Dec 2020 14:20:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609251606;
-        bh=ppFpc8YpWiFuiGCE+BmBJKur35Hz2jpCudL4Gvg0byc=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=CrcjYf6oT5DIZi4+xkKsUv61G3D4kNJStq58ZZm9Tck3Q0EQGMOd+2W6R2I+5dnmP
-         gRc8A0wQk8JiRMdVeWCtX2o7UIaUoy/yteDVIhPQ64aO2M/zn4iIaFwXoZdSJq1FR0
-         QWvQWeqNxTaVp5pDXytyu6U1Dq7rel7x8n2SAXHVd6W2jNd0u9TQTRQXoS7nAS2jQ+
-         tg31hSubY7xrlrjVqQzOLRxhKql5QVeYFlZUaVQGUN5u6DdUrravG+bmZ82KflFuLq
-         7huJ+uwJM1MyVV3YPernjh7G49CWJEZH7Ez8Ikp9oFbDPtJgrbuQP2Vodd29wTLvgF
-         PcKvhxoaZSAKg==
-Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 34009604D7;
-        Tue, 29 Dec 2020 14:20:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S1726144AbgL2O3V (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 29 Dec 2020 09:29:21 -0500
+Received: from www62.your-server.de ([213.133.104.62]:58604 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726126AbgL2O3U (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 29 Dec 2020 09:29:20 -0500
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kuFzJ-000G1a-NT; Tue, 29 Dec 2020 15:28:37 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kuFzJ-000Bkc-HK; Tue, 29 Dec 2020 15:28:37 +0100
+Subject: Re: [PATCH] selftests/bpf: fix a compile error for
+ BPF_F_BPRM_SECUREEXEC
+To:     John Fastabend <john.fastabend@gmail.com>,
+        Song Liu <song@kernel.org>,
+        Jiang Wang <jiang.wang@bytedance.com>
+Cc:     bpf <bpf@vger.kernel.org>, cong.wang@bytedance.com,
+        KP Singh <kpsingh@google.com>, andrii@kernel.org
+References: <20201224011242.585967-1-jiang.wang@bytedance.com>
+ <CAPhsuW4aYbyAdz0txmnudwe4E-NYoC3Up5oxd-LBzyfTtLGn7w@mail.gmail.com>
+ <5feabb2d30e93_7421e208de@john-XPS-13-9370.notmuch>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <2993b084-37bf-e296-633e-598189d8769b@iogearbox.net>
+Date:   Tue, 29 Dec 2020 15:28:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] bpf: Remove unnecessary <argp.h> include from
- preload/iterators
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160925160620.2585.17801325123968170711.git-patchwork-notify@kernel.org>
-Date:   Tue, 29 Dec 2020 14:20:06 +0000
-References: <20201216100306.30942-1-leah@vuxu.org>
-In-Reply-To: <20201216100306.30942-1-leah@vuxu.org>
-To:     Leah Neukirchen <leah@vuxu.org>
-Cc:     bpf@vger.kernel.org, hayashi.kunihiko@socionext.com,
-        davem@davemloft.net, linux-kernel@vger.kernel.org
+In-Reply-To: <5feabb2d30e93_7421e208de@john-XPS-13-9370.notmuch>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26032/Tue Dec 29 13:42:39 2020)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
-
-On Wed, 16 Dec 2020 11:03:06 +0100 you wrote:
-> This program does not use argp (which is a glibcism).
-> Instead include <errno.h> directly, which was pulled in by <argp.h>.
+On 12/29/20 6:14 AM, John Fastabend wrote:
+> Song Liu wrote:
+>> On Wed, Dec 23, 2020 at 5:14 PM Jiang Wang <jiang.wang@bytedance.com> wrote:
+>>>
+>>> When CONFIG_BPF_LSM is not configured, running bpf selftesting will show
+>>> BPF_F_BPRM_SECUREEXEC undefined error for bprm_opts.c.
+>>>
+>>> The problem is that bprm_opts.c includes vmliunx.h. The vmlinux.h is
+>>> generated by "bpftool btf dump file ./vmlinux format c". On the other
+>>> hand, BPF_F_BPRM_SECUREEXEC is defined in include/uapi/linux/bpf.h
+>>> and used only in bpf_lsm.c. When CONFIG_BPF_LSM is not set, bpf_lsm
+>>> will not be compiled, so vmlinux.h will not include definition of
+>>> BPF_F_BPRM_SECUREEXEC.
+>>>
+>>> Ideally, we want to compile bpf selftest regardless of the configuration
+>>> setting, so change the include file from vmlinux.h to bpf.h.
+>>>
+>>> Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
+>>
+>> Thanks for the fix!
+>>
+>> Acked-by: Song Liu <songliubraving@fb.com>
+>>
+>> [...]
 > 
-> Signed-off-by: Leah Neukirchen <leah@vuxu.org>
-> ---
->  kernel/bpf/preload/iterators/iterators.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> LGTM
+> 
+> Acked-by: John Fastabend <john.fastabend@gmail.com>
 
-Here is the summary with links:
-  - bpf: Remove unnecessary <argp.h> include from preload/iterators
-    https://git.kernel.org/bpf/bpf-next/c/1bcf3a740aa5
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+I think it's okay'ish as a workaround, but in case that selftest needs to be
+extended to the point where we need kernel internal structures from vmlinux.h
+again, then we need to come up with a different solution. Overall, I'd like to
+remind that BPF selftests need to be run with the full/needed config options set
+to not miss out on coverage on some of the BPF subsystems. Anyway, applied, thx!
