@@ -2,96 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0455D2E774D
-	for <lists+bpf@lfdr.de>; Wed, 30 Dec 2020 10:07:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62FFE2E777A
+	for <lists+bpf@lfdr.de>; Wed, 30 Dec 2020 10:38:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726419AbgL3JFL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Dec 2020 04:05:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57392 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726190AbgL3JFK (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 30 Dec 2020 04:05:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609319022;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lop/poXyiJNf2yKQyNAGmJKrn/jVxE6AMImof5eHXJw=;
-        b=NiRXQqNncJ/JC0emzmygPZ8i1JWXpnS4L1p+7FZYPX8MAqZiH78NmBwBUAgxAfpgfQq/pP
-        pgtUBLiOnNOoY6PR+7/EG0BZrNFCqp22Mvm+O2GcWG0BrrM170Tt6syNUsCrlU4HP7GQaf
-        PzVKzOpVSbafQ8V3l7L2/xi4lKOPJ7o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-216-IHPATD3ON2CIFLi1vCFgBQ-1; Wed, 30 Dec 2020 04:03:38 -0500
-X-MC-Unique: IHPATD3ON2CIFLi1vCFgBQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F2436107ACE3;
-        Wed, 30 Dec 2020 09:03:36 +0000 (UTC)
-Received: from krava (unknown [10.40.192.76])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 82AE16E53E;
-        Wed, 30 Dec 2020 09:03:34 +0000 (UTC)
-Date:   Wed, 30 Dec 2020 10:03:33 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: BTFIDS: FAILED unresolved symbol udp6_sock
-Message-ID: <20201230090333.GA577428@krava>
-References: <20201229151352.6hzmjvu3qh6p2qgg@e107158-lin>
- <20201229173401.GH450923@krava>
- <20201229232835.cbyfmja3bu3lx7we@e107158-lin>
+        id S1726313AbgL3Jie (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Dec 2020 04:38:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726279AbgL3Jid (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Dec 2020 04:38:33 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5152AC06179B;
+        Wed, 30 Dec 2020 01:37:53 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id p22so14841386edu.11;
+        Wed, 30 Dec 2020 01:37:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/hMCew1Zrbs9U+h/kunHwBDwzyG1fgaDdekyBTSHGcE=;
+        b=dKX0kyohpawdO/Y06Yib6KxKLsEM5szQbXTDfi5FWDtA870x3xrVntLvqeqfIB0D4V
+         OW74CeuVj5LQEZGqpEaqFyanyKoGCYVWBpo4oam1+ow6MbquyBQ4OOD6aVyQTg8zta4s
+         qvjLV18Raz4TZRKgdCfo2S1rVekEkxMS0HCXJXkZm1bQsS6aBL7S9vE72zGWQzJak1e6
+         pvoO2MGHP20wZ6tfbjRXWdvZVA8lv7V9Fb1XfqmbypuiTtZi5tEAn7i3t0ffqeQD9vwi
+         Yfta5FmV675fiOoRiAT3cFnrJCst/39BmsOVDu19zvwnxuLtUs8DzgKBEXywBfLJMLAA
+         Zqyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/hMCew1Zrbs9U+h/kunHwBDwzyG1fgaDdekyBTSHGcE=;
+        b=BNwfEcbCnsAZ3qVFgYAPot+Qd3hXf/Vg9/vT5dtU4AdgK7ha7iyugprkm3P27xNwgh
+         dbOySnOi1TQkDBsau4I64uPwR058wXumAQnS/fBVSD5ujUvFyik4pRicAIP9sxUDTVpk
+         st5HFH+z6kuJ5DdgqCKs7cPEoxol9bcAmbyN7ftzHM0OmaLmB1el8sUhHCZWtIRG3Se4
+         eK0BljQY9AI18SfdoODtIximBnBeR4s0MG5dUfA3qtCUzdJRbtEojE58/mfIkwNHUCf7
+         uamcVa5Q7oq/a9DAaq2rybQciRNLTfkZEmgdMpsf1eHojpb4V6HW2+y88uzrmPuM8+dL
+         yeHA==
+X-Gm-Message-State: AOAM5316zATsksRcAx7F/qP8r0cIV+3ey4S3Au0n3dFo1NVGEP74qwYi
+        BrEdRWvbbksMDoeKSRyfIK7nMwJ75zQ=
+X-Google-Smtp-Source: ABdhPJzED01427ee+y7EssPXm15JKvCnhwcBoTgaAqo7LCQeN3et81V9ByC88Hku+dbnzFh5/rxKhw==
+X-Received: by 2002:a05:6402:100c:: with SMTP id c12mr51593560edu.356.1609321072006;
+        Wed, 30 Dec 2020 01:37:52 -0800 (PST)
+Received: from [192.168.0.112] ([77.126.22.168])
+        by smtp.gmail.com with ESMTPSA id m24sm18941836ejo.52.2020.12.30.01.37.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Dec 2020 01:37:51 -0800 (PST)
+Subject: Re: [PATCH] mlx4: style: replace zero-length array with
+ flexible-array member.
+To:     YANG LI <abaci-bugfix@linux.alibaba.com>,
+        "kuba@kernel.org" <kuba@kernel.org>
+Cc:     "davem@davemloft.net" <davem@davemloft.net>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "hawk@kernel.org" <hawk@kernel.org>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "kafai@fb.com" <kafai@fb.com>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "yhs@fb.com" <yhs@fb.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+References: <1609309731-70464-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+From:   Tariq Toukan <ttoukan.linux@gmail.com>
+Message-ID: <e7a8eff0-d6b0-58ef-29a9-650bf0baa7bf@gmail.com>
+Date:   Wed, 30 Dec 2020 11:37:48 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201229232835.cbyfmja3bu3lx7we@e107158-lin>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <1609309731-70464-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Dec 29, 2020 at 11:28:35PM +0000, Qais Yousef wrote:
-> Hi Jiri
-> 
-> On 12/29/20 18:34, Jiri Olsa wrote:
-> > On Tue, Dec 29, 2020 at 03:13:52PM +0000, Qais Yousef wrote:
-> > > Hi
-> > > 
-> > > When I enable CONFIG_DEBUG_INFO_BTF I get the following error in the BTFIDS
-> > > stage
-> > > 
-> > > 	FAILED unresolved symbol udp6_sock
-> > > 
-> > > I cross compile for arm64. My .config is attached.
-> > > 
-> > > I managed to reproduce the problem on v5.9 and v5.10. Plus 5.11-rc1.
-> > > 
-> > > Have you seen this before? I couldn't find a specific report about this
-> > > problem.
-> > > 
-> > > Let me know if you need more info.
-> > 
-> > hi,
-> > this looks like symptom of the gcc DWARF bug we were
-> > dealing with recently:
-> > 
-> >   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97060
-> >   https://lore.kernel.org/lkml/CAE1WUT75gu9G62Q9uAALGN6vLX=o7vZ9uhqtVWnbUV81DgmFPw@mail.gmail.com/#r
-> > 
-> > what pahole/gcc version are you using?
-> 
-> I'm on gcc 9.3.0
-> 
-> 	aarch64-linux-gnu-gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0
-> 
-> I was on pahole v1.17. I moved to v1.19 but I still see the same problem.
 
-I can reproduce with your .config, but make 'defconfig' works,
-so I guess it's some config option issue, I'll check later today
 
-jirka
+On 12/30/2020 8:28 AM, YANG LI wrote:
+> There is a regular need in the kernel to provide a way to declare
+> having a dynamically sized set of trailing elements in a structure.
+> Kernel code should always use "flexible array members"[1] for these
+> cases. The older style of one-element or zero-length arrays should
+> no longer be used[2].
+> 
+> [1] https://en.wikipedia.org/wiki/Flexible_array_member
+> [2] https://www.kernel.org/doc/html/v5.9/process/
+>      deprecated.html#zero-length-and-one-element-arrays
+> 
+> Signed-off-by: YANG LI <abaci-bugfix@linux.alibaba.com>
+> Reported-by: Abaci <abaci@linux.alibaba.com>
+> ---
+>   drivers/net/ethernet/mellanox/mlx4/mlx4_en.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h b/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
+> index e8ed2319..4029a8b 100644
+> --- a/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
+> +++ b/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
+> @@ -314,7 +314,7 @@ struct mlx4_en_tx_ring {
+>   
+>   struct mlx4_en_rx_desc {
+>   	/* actual number of entries depends on rx ring stride */
+> -	struct mlx4_wqe_data_seg data[0];
+> +	struct mlx4_wqe_data_seg data[];
+>   };
+>   
+>   struct mlx4_en_rx_ring {
+> 
 
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+
+Thanks.
