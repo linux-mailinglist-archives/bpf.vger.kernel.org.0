@@ -2,118 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 248DB2E7A2E
-	for <lists+bpf@lfdr.de>; Wed, 30 Dec 2020 16:07:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20FE42E7A55
+	for <lists+bpf@lfdr.de>; Wed, 30 Dec 2020 16:30:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726365AbgL3PGG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 30 Dec 2020 10:06:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42473 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726144AbgL3PGG (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 30 Dec 2020 10:06:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609340679;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kZIXZvnYFXxS/me1jrkJ7b6mDqrcu//hDM6B6mG0eeg=;
-        b=JlXLmWN3tCG2LY7O6WNNB+FJHMHsHW0FohbasyWWX9UeNrGMLq41yfXV8D3U58oNmG78qh
-        bATuYOSn7vRXCFyB4LuNwuWSywZ82APy461HAZ6sm9JUO8EwK+/aZ+JsBdAy2+LGxo0RZ9
-        5sc6FUw5U8JtPOzgk3NU+Om3TpJho0w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-232-mjACzZMjMGuoINdeD4oG3A-1; Wed, 30 Dec 2020 10:04:35 -0500
-X-MC-Unique: mjACzZMjMGuoINdeD4oG3A-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 43FF4801AC0;
-        Wed, 30 Dec 2020 15:04:34 +0000 (UTC)
-Received: from krava (unknown [10.40.192.27])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 2379B5D9CC;
-        Wed, 30 Dec 2020 15:04:31 +0000 (UTC)
-Date:   Wed, 30 Dec 2020 16:04:31 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Qais Yousef <qais.yousef@arm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1726247AbgL3Pag (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 30 Dec 2020 10:30:36 -0500
+Received: from foss.arm.com ([217.140.110.172]:40584 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726197AbgL3Pag (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 30 Dec 2020 10:30:36 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2DBC8101E;
+        Wed, 30 Dec 2020 07:29:50 -0800 (PST)
+Received: from e107158-lin (unknown [10.1.194.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E8F323F719;
+        Wed, 30 Dec 2020 07:29:48 -0800 (PST)
+Date:   Wed, 30 Dec 2020 15:29:46 +0000
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Jiri Olsa <jolsa@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
 Subject: Re: BTFIDS: FAILED unresolved symbol udp6_sock
-Message-ID: <20201230150431.GA587975@krava>
+Message-ID: <20201230152946.gththmiujgj7qkj4@e107158-lin>
 References: <20201229151352.6hzmjvu3qh6p2qgg@e107158-lin>
  <20201229173401.GH450923@krava>
  <20201229232835.cbyfmja3bu3lx7we@e107158-lin>
  <20201230090333.GA577428@krava>
  <20201230132759.GB577428@krava>
  <20201230132852.GC577428@krava>
- <20201230141936.GA3922432@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201230141936.GA3922432@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20201230132852.GC577428@krava>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 30, 2020 at 11:19:36AM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Wed, Dec 30, 2020 at 02:28:52PM +0100, Jiri Olsa escreveu:
-> > On Wed, Dec 30, 2020 at 02:28:02PM +0100, Jiri Olsa wrote:
-> > > On Wed, Dec 30, 2020 at 10:03:37AM +0100, Jiri Olsa wrote:
-> > > > On Tue, Dec 29, 2020 at 11:28:35PM +0000, Qais Yousef wrote:
-> > > > > Hi Jiri
-> > > > > 
-> > > > > On 12/29/20 18:34, Jiri Olsa wrote:
-> > > > > > On Tue, Dec 29, 2020 at 03:13:52PM +0000, Qais Yousef wrote:
-> > > > > > > Hi
-> > > > > > > 
-> > > > > > > When I enable CONFIG_DEBUG_INFO_BTF I get the following error in the BTFIDS
-> > > > > > > stage
-> > > > > > > 
-> > > > > > > 	FAILED unresolved symbol udp6_sock
-> > > > > > > 
-> > > > > > > I cross compile for arm64. My .config is attached.
-> > > > > > > 
-> > > > > > > I managed to reproduce the problem on v5.9 and v5.10. Plus 5.11-rc1.
-> > > > > > > 
-> > > > > > > Have you seen this before? I couldn't find a specific report about this
-> > > > > > > problem.
-> > > > > > > 
-> > > > > > > Let me know if you need more info.
+On 12/30/20 14:28, Jiri Olsa wrote:
+> On Wed, Dec 30, 2020 at 02:28:02PM +0100, Jiri Olsa wrote:
+> > On Wed, Dec 30, 2020 at 10:03:37AM +0100, Jiri Olsa wrote:
+> > > On Tue, Dec 29, 2020 at 11:28:35PM +0000, Qais Yousef wrote:
+> > > > Hi Jiri
+> > > > 
+> > > > On 12/29/20 18:34, Jiri Olsa wrote:
+> > > > > On Tue, Dec 29, 2020 at 03:13:52PM +0000, Qais Yousef wrote:
+> > > > > > Hi
 > > > > > > 
-> > > > > > hi,
-> > > > > > this looks like symptom of the gcc DWARF bug we were
-> > > > > > dealing with recently:
+> > > > > > When I enable CONFIG_DEBUG_INFO_BTF I get the following error in the BTFIDS
+> > > > > > stage
 > > > > > > 
-> > > > > >   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97060
-> > > > > >   https://lore.kernel.org/lkml/CAE1WUT75gu9G62Q9uAALGN6vLX=o7vZ9uhqtVWnbUV81DgmFPw@mail.gmail.com/#r
+> > > > > > 	FAILED unresolved symbol udp6_sock
 > > > > > > 
-> > > > > > what pahole/gcc version are you using?
+> > > > > > I cross compile for arm64. My .config is attached.
+> > > > > > 
+> > > > > > I managed to reproduce the problem on v5.9 and v5.10. Plus 5.11-rc1.
+> > > > > > 
+> > > > > > Have you seen this before? I couldn't find a specific report about this
+> > > > > > problem.
+> > > > > > 
+> > > > > > Let me know if you need more info.
 > > > > > 
-> > > > > I'm on gcc 9.3.0
+> > > > > hi,
+> > > > > this looks like symptom of the gcc DWARF bug we were
+> > > > > dealing with recently:
 > > > > > 
-> > > > > 	aarch64-linux-gnu-gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0
+> > > > >   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=97060
+> > > > >   https://lore.kernel.org/lkml/CAE1WUT75gu9G62Q9uAALGN6vLX=o7vZ9uhqtVWnbUV81DgmFPw@mail.gmail.com/#r
 > > > > > 
-> > > > > I was on pahole v1.17. I moved to v1.19 but I still see the same problem.
-> 
-> There are some changes post v1.19 in the git repo:
-> 
-> [acme@five pahole]$ git log --oneline v1.19..
-> b688e35970600c15 (HEAD -> master) btf_encoder: fix skipping per-CPU variables at offset 0
-> 8c009d6ce762dfc9 btf_encoder: fix BTF variable generation for kernel modules
-> b94e97e015a94e6b dwarves: Fix compilation on 32-bit architectures
-> 17df51c700248f02 btf_encoder: Detect kernel module ftrace addresses
-> 06ca639505fc56c6 btf_encoder: Use address size based on ELF's class
-> aff60970d16b909e btf_encoder: Factor filter_functions function
-> 1e6a3fed6e52d365 (quaco/master) rpm: Fix changelog date
-> [acme@five pahole]$
-> 
-> But I think these won't matter in this case :-\
+> > > > > what pahole/gcc version are you using?
+> > > > 
+> > > > I'm on gcc 9.3.0
+> > > > 
+> > > > 	aarch64-linux-gnu-gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0
+> > > > 
+> > > > I was on pahole v1.17. I moved to v1.19 but I still see the same problem.
+> > > 
+> > > I can reproduce with your .config, but make 'defconfig' works,
+> > > so I guess it's some config option issue, I'll check later today
 
-yep, it did not.. I used the latest dwarves code
+My .config was a defconfig + CONFIG_DEBUG_INFO_BTF + convert all modules to
+built-in.
 
-jirka
+> > 
+> > so your .config has
+> >   CONFIG_CRYPTO_DEV_BCM_SPU=y
 
+Ah, how random. I removed this config and indeed it does work then, thanks!
+
+> > 
+> > and that defines 'struct device_private' which
+> > clashes with the same struct defined in drivers/base/base.h
+> > 
+> > so several networking structs will be doubled, like net_device:
+> > 
+> > 	$ bpftool btf dump file ../vmlinux.config | grep net_device\' | grep STRUCT
+> > 	[2731] STRUCT 'net_device' size=2240 vlen=133
+> > 	[113981] STRUCT 'net_device' size=2240 vlen=133
+> > 
+> > each is using different 'struct device_private' when it's unwinded
+> > 
+> > and that will confuse BTFIDS logic, becase we have multiple structs
+> > with the same name, and we can't be sure which one to pick
+
+We can't tell which object/subsystem the struct come from?
+
+Or maybe we can introduce some annotation to help BTFIDS to pick the right one?
+
+> > 
+> > perhaps we should check on this in pahole and warn earlier with
+> > better error message.. I'll check, but I'm not sure if pahole can
+> > survive another hastab ;-)
+> > 
+> > Andrii, any ideas on this? ;-)
+> > 
+> > easy fix is the patch below that renames the bcm's structs,
+> > it makes the kernel to compile.. but of course the new name
+> > is probably wrong and we should push this through that code
+> > authors
+> 
+> also another quick fix is to switch it to module
+
+This works too.
+
+Thanks for your speedy response.
+
+Cheers
+
+--
+Qais Yousef
