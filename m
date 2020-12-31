@@ -2,220 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A68512E813A
-	for <lists+bpf@lfdr.de>; Thu, 31 Dec 2020 17:31:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A7FB2E81E8
+	for <lists+bpf@lfdr.de>; Thu, 31 Dec 2020 21:15:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727372AbgLaQ3y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 31 Dec 2020 11:29:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37992 "EHLO
+        id S1726423AbgLaUO5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 31 Dec 2020 15:14:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726642AbgLaQ3y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 31 Dec 2020 11:29:54 -0500
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F4099C061573;
-        Thu, 31 Dec 2020 08:29:13 -0800 (PST)
-Received: by mail-oi1-x230.google.com with SMTP id f132so22220234oib.12;
-        Thu, 31 Dec 2020 08:29:13 -0800 (PST)
+        with ESMTP id S1726219AbgLaUO4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 31 Dec 2020 15:14:56 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D550C061575
+        for <bpf@vger.kernel.org>; Thu, 31 Dec 2020 12:14:16 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id a206so35232738ybg.0
+        for <bpf@vger.kernel.org>; Thu, 31 Dec 2020 12:14:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=Vn+j/WNjIhIUuxZEWw5e5TKYZNMJfqI1mbpEqq5yOpc=;
-        b=Lca1oWR8tl2XHHisLTpXhvuv+Ls10CS/+osfKC33Rx20E6kwWRnyinO44PwVvlhvnc
-         V+Qozk4haEM5fRG8i7cEloJsfTFgRipSMEF1/4Rew1KQklmIRZBnOmAcmzb8PaIsoBko
-         jemzG1S6Xv5hkShir32jvxcT5hFfgDhOrJK4zhR5xqJRKG1KvE+eNtIgC1knLtgU7teI
-         Vh7haWxi14nYWxeawQQ6QwJXmJKpxuJsQWhQHlPM6aI2HOvssYoWCoxf3LdinmcDN6iv
-         3E8ca2zDcByYZBW9VhKQvuTuG931EMm6g9PLi2B6CwzPnLEq6o9zsVf48tCSQOHQcCzE
-         LxBw==
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=I8HcRE9PQpGzhtd57DtZYJVZUrGRfD/rQqXsgrN7czY=;
+        b=TkZCSGqVVCfqJ9RZYyFppUa9sTp/R3bTHPDiP7o6WSXgD/VmlCbh6B+YgEpejah6xP
+         OcfUNT4fmzH54LUpsMKjjuTCbZ70b64VZbVgPEz8fY0vFBlRVe3YNrXpShNFqRonePV5
+         stkoVE5Y6/Ekv1CXUgo8M6jwBGvxmNqu0retmm5qquyp+ik4eM5QG4lDfqcoEieECOW/
+         Z2Ap/QbkawrOdlEUBTlFsVVT7ZhBAXlu9n3poZC6YQbKa7UCFD+0rQaqoEF2s8rRRUqU
+         rbJFPt+5YHh156b4WILT0JG7m/ojHMgruOcGn637aQjJqZtwF3f5m828IkLuw0cU2FLz
+         eraw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=Vn+j/WNjIhIUuxZEWw5e5TKYZNMJfqI1mbpEqq5yOpc=;
-        b=e+pv9q35sDCMLdyF+LABFrXtGLDtqnk6DfMi5LcFusAN1VnKv282TRXvyHaaC/WbZm
-         savmmtTdQCH51TFHYRn/YauEJPjiLZ+rBGIrTe8PCvdSR34kU1wUuD850GdestIgOm3V
-         zrYERVQ5pDggcKvC+6oLB1Xai7GOdrryDkZFb8X0cJzdZ4y/27TCzoxFQkwTvj23UpwI
-         QnVjiNrYTPRRcyC/DHsSVi5yit2wCQ17dEjPwzSCGdBmb+ijMmDbL+vVA2QzD7OnH+NR
-         6Ny1FttZxqjgNQlPyfjOWgEa6sYPnbP5URPCRhPWbujbmNfAoRYr4hlcG8h1CBqdo2CD
-         GZjg==
-X-Gm-Message-State: AOAM530xDZabUNjhC8RBVxj7ldc7uZwrd6dMZN/IdGdDn/4z4lCyKxNp
-        ak1c1Yhh7/2l4ObwEcpfFVE=
-X-Google-Smtp-Source: ABdhPJwPHc9yRDYcP8A75erYXDsjLxi3zJHLATqhDNoBmgWT6m6ovj1aNE/EuuNF8pSA7GaKBELYmg==
-X-Received: by 2002:aca:474b:: with SMTP id u72mr8706432oia.114.1609432153315;
-        Thu, 31 Dec 2020 08:29:13 -0800 (PST)
-Received: from localhost ([184.21.204.5])
-        by smtp.gmail.com with ESMTPSA id c204sm10955890oob.44.2020.12.31.08.29.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Dec 2020 08:29:12 -0800 (PST)
-Date:   Thu, 31 Dec 2020 08:29:04 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>, magnus.karlsson@intel.com
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "(open list:XDP SOCKETS \\(AF_XDP\\))" <netdev@vger.kernel.org>,
-        bpf@vger.kernel.org (open list:XDP SOCKETS \(AF_XDP\)),
-        "(open list:XDP SOCKETS \\(AF_XDP\\) open list)" 
-        <linux-kernel@vger.kernel.org>
-Message-ID: <5fedfc50493de_4b796208cb@john-XPS-13-9370.notmuch>
-In-Reply-To: <9830fcef7159a47bae361fc213c589449f6a77d3.1608713585.git.xuanzhuo@linux.alibaba.com>
-References: <9830fcef7159a47bae361fc213c589449f6a77d3.1608713585.git.xuanzhuo@linux.alibaba.com>
-Subject: RE: [PATCH bpf-next] xsk: build skb by page
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=I8HcRE9PQpGzhtd57DtZYJVZUrGRfD/rQqXsgrN7czY=;
+        b=B6pSycYUUnZBsLf9PqqxfmoW409p4uAAhbzNLK0L6BV+dAMg5W6OnMJ4TFjHxbpEcX
+         atWjePc9EF1WrDmAuH3t6lKiDg+FFNDABAclNtDDp3Nizm/OvoVO7k1LVi1CVsv/aQHo
+         Y34IXwbfNXZJtJz+CiEvSUCJRIho50AyS0GTLEJMapXtdNLPk0vvRdXgHWicpmKXHd7j
+         kQIXEeTr09FeAagd4+doaZkczPUU5c1kQxiUB4yLjvW0ohwj/mEXhet1ER/wuQ4sAehS
+         rvmQYvSSMlHiuYfvgCcrk+TuAr5fwqrpPUBBs2prlmw3f6Ke8oESMlwuuWxUDOXeIpEp
+         +luw==
+X-Gm-Message-State: AOAM532XsDD+C0KZp2qzFEmx3xTwiHWj4Y2fSYNiO/pDSO5dzU6keowk
+        mSzEdjjxVOK0dXxahO9E9uGdJYw=
+X-Google-Smtp-Source: ABdhPJx9sDLKcYEG0apaN1ZIPfGcIH3WRf5WyvwwvKMPAkQkn/MpCySxagYobXHwNa6hqS8k3bTdXjo=
+Sender: "sdf via sendgmr" <sdf@sdf2.svl.corp.google.com>
+X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:7220:84ff:fe09:7732])
+ (user=sdf job=sendgmr) by 2002:a25:ea09:: with SMTP id p9mr44588429ybd.109.1609445655377;
+ Thu, 31 Dec 2020 12:14:15 -0800 (PST)
+Date:   Thu, 31 Dec 2020 12:14:13 -0800
+In-Reply-To: <20201231064728.x7vywfzxxn3sqq7e@kafai-mbp.dhcp.thefacebook.com>
+Message-Id: <X+4xFUuYHUIufeJ1@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+References: <20201217172324.2121488-1-sdf@google.com> <20201217172324.2121488-2-sdf@google.com>
+ <CAPhsuW52eTurJ4pPAgZtv0giw2C+7r6aMacZXx8XkwUxBGARAQ@mail.gmail.com> <20201231064728.x7vywfzxxn3sqq7e@kafai-mbp.dhcp.thefacebook.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: try to avoid kzalloc in cgroup/{s,g}etsockopt
+From:   sdf@google.com
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     Song Liu <song@kernel.org>, Networking <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Xuan Zhuo wrote:
-> This patch is used to construct skb based on page to save memory copy
-> overhead.
-> 
-> Taking into account the problem of addr unaligned, and the
-> possibility of frame size greater than page in the future.
-> 
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> ---
->  net/xdp/xsk.c | 68 ++++++++++++++++++++++++++++++++++++++++++++---------------
->  1 file changed, 51 insertions(+), 17 deletions(-)
-> 
-> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index ac4a317..7cab40f 100644
-> --- a/net/xdp/xsk.c
-> +++ b/net/xdp/xsk.c
-> @@ -430,6 +430,55 @@ static void xsk_destruct_skb(struct sk_buff *skb)
->  	sock_wfree(skb);
->  }
->  
-> +static struct sk_buff *xsk_build_skb_bypage(struct xdp_sock *xs, struct xdp_desc *desc)
-> +{
-> +	char *buffer;
-> +	u64 addr;
-> +	u32 len, offset, copy, copied;
-> +	int err, i;
-> +	struct page *page;
-> +	struct sk_buff *skb;
-> +
-> +	skb = sock_alloc_send_skb(&xs->sk, 0, 1, &err);
+On 12/30, Martin KaFai Lau wrote:
+> On Mon, Dec 21, 2020 at 02:22:41PM -0800, Song Liu wrote:
+> > On Thu, Dec 17, 2020 at 9:24 AM Stanislav Fomichev <sdf@google.com>  
+> wrote:
+> > >
+> > > When we attach a bpf program to cgroup/getsockopt any other  
+> getsockopt()
+> > > syscall starts incurring kzalloc/kfree cost. While, in general, it's
+> > > not an issue, sometimes it is, like in the case of  
+> TCP_ZEROCOPY_RECEIVE.
+> > > TCP_ZEROCOPY_RECEIVE (ab)uses getsockopt system call to implement
+> > > fastpath for incoming TCP, we don't want to have extra allocations in
+> > > there.
+> > >
+> > > Let add a small buffer on the stack and use it for small (majority)
+> > > {s,g}etsockopt values. I've started with 128 bytes to cover
+> > > the options we care about (TCP_ZEROCOPY_RECEIVE which is 32 bytes
+> > > currently, with some planned extension to 64 + some headroom
+> > > for the future).
+> >
+> > I don't really know the rule of thumb, but 128 bytes on stack feels too  
+> big to
+> > me. I would like to hear others' opinions on this. Can we solve the  
+> problem
+> > with some other mechanisms, e.g. a mempool?
+> It seems the do_tcp_getsockopt() is also having "struct  
+> tcp_zerocopy_receive"
+> in the stack.  I think the buf here is also mimicking
+> "struct tcp_zerocopy_receive", so should not cause any
+> new problem.
+Good point!
 
-Because this is just grabbing an skb did you consider build_skb?
+> However, "struct tcp_zerocopy_receive" is only 40 bytes now.  I think it
+> is better to have a smaller buf for now and increase it later when the
+> the future needs in "struct tcp_zerocopy_receive" is also upstreamed.
+I can lower it to 64. Or even 40?
 
-> +	if (unlikely(!skb))
-> +		return NULL;
-
-I think it would be best to push err back to caller here with ERR_PTR().
-
-> +
-> +	addr = desc->addr;
-> +	len = desc->len;
-> +
-> +	buffer = xsk_buff_raw_get_data(xs->pool, addr);
-> +	offset = offset_in_page(buffer);
-> +	addr = buffer - (char *)xs->pool->addrs;
-> +
-> +	for (copied = 0, i = 0; copied < len; ++i) {
-> +		page = xs->pool->umem->pgs[addr >> PAGE_SHIFT];
-> +
-> +		get_page(page);
-
-Is it obvious why this get_page() is needed? Maybe a small comment would
-be nice. Something like, "we need to inc refcnt on page to ensure skb
-does not release page from pool".
-
-> +
-> +		copy = min((u32)(PAGE_SIZE - offset), len - copied);
-> +
-
-nit: take it or leave it, seems like a lot of new lines imo. I would
-just put all these together. Not really important though.
-
-> +		skb_fill_page_desc(skb, i, page, offset, copy);
-> +
-> +		copied += copy;
-> +		addr += copy;
-> +		offset = 0;
-> +	}
-> +
-> +	skb->len += len;
-> +	skb->data_len += len;
-> +	skb->truesize += len;
-> +
-> +	refcount_add(len, &xs->sk.sk_wmem_alloc);
-> +
-> +	skb->dev = xs->dev;
-> +	skb->priority = xs->sk.sk_priority;
-> +	skb->mark = xs->sk.sk_mark;
-> +	skb_shinfo(skb)->destructor_arg = (void *)(long)addr;
-> +	skb->destructor = xsk_destruct_skb;
-> +
-> +	return skb;
-> +}
-> +
->  static int xsk_generic_xmit(struct sock *sk)
->  {
->  	struct xdp_sock *xs = xdp_sk(sk);
-> @@ -445,40 +494,25 @@ static int xsk_generic_xmit(struct sock *sk)
->  		goto out;
->  
->  	while (xskq_cons_peek_desc(xs->tx, &desc, xs->pool)) {
-> -		char *buffer;
-> -		u64 addr;
-> -		u32 len;
-> -
->  		if (max_batch-- == 0) {
->  			err = -EAGAIN;
->  			goto out;
->  		}
->  
-> -		len = desc.len;
-> -		skb = sock_alloc_send_skb(sk, len, 1, &err);
-> +		skb = xsk_build_skb_bypage(xs, &desc);
->  		if (unlikely(!skb))
-
-Is err set here? Either way if skb is an ERR_PTR we can use that
-here for better error handling.
-
->  			goto out;
->  
-> -		skb_put(skb, len);
-> -		addr = desc.addr;
-> -		buffer = xsk_buff_raw_get_data(xs->pool, addr);
-> -		err = skb_store_bits(skb, 0, buffer, len);
->  		/* This is the backpressure mechanism for the Tx path.
->  		 * Reserve space in the completion queue and only proceed
->  		 * if there is space in it. This avoids having to implement
->  		 * any buffering in the Tx path.
->  		 */
-> -		if (unlikely(err) || xskq_prod_reserve(xs->pool->cq)) {
-> +		if (xskq_prod_reserve(xs->pool->cq)) {
->  			kfree_skb(skb);
-
-Same here, do we need to set err now that its not explicit above in
-err = skb_store_bits...
-
->  			goto out;
->  		}
->  
-> -		skb->dev = xs->dev;
-> -		skb->priority = sk->sk_priority;
-> -		skb->mark = sk->sk_mark;
-> -		skb_shinfo(skb)->destructor_arg = (void *)(long)desc.addr;
-> -		skb->destructor = xsk_destruct_skb;
-> -
->  		err = __dev_direct_xmit(skb, xs->queue_id);
->  		if  (err == NETDEV_TX_BUSY) {
->  			/* Tell user-space to retry the send */
-> -- 
-> 1.8.3.1
-> 
+I can also try to add something like BUILD_BUG_ON(sizeof(struct
+tcp_zerocopy_receive) < BPF_SOCKOPT_KERN_BUF_SIZE) to make sure this
+buffer gets adjusted whenever we touch tcp_zerocopy_receive.
