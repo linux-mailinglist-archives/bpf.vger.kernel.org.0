@@ -2,129 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59C8F2E8944
-	for <lists+bpf@lfdr.de>; Sun,  3 Jan 2021 00:09:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5C5A2E89BB
+	for <lists+bpf@lfdr.de>; Sun,  3 Jan 2021 01:52:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726864AbhABXIb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 2 Jan 2021 18:08:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30176 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726777AbhABXIa (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 2 Jan 2021 18:08:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609628823;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=haYPUQnlq92kVGfzi+gKYWueiXZI9wZI1FGZmjza/5k=;
-        b=Tk2SzJujbPEutOUBqGOrOyoAXO3kywKTtqg6X8glUnIHh7Gocn0Zm8dS3YeZxB/0X9qs/U
-        0GP9JnjlOI247g9ktrwN5YeQD8SA16jem/Nkg7ceqLX1KOyKCYaUpjZ3dVs5+AkdhI9kHW
-        /476RsARR+w61WjtuBiKushVKsv9jlk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-401-pVONn62IOSqtFEkvCq5I3w-1; Sat, 02 Jan 2021 18:07:00 -0500
-X-MC-Unique: pVONn62IOSqtFEkvCq5I3w-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CB604C287;
-        Sat,  2 Jan 2021 23:06:57 +0000 (UTC)
-Received: from krava (unknown [10.40.192.22])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 3EE75100239A;
-        Sat,  2 Jan 2021 23:06:55 +0000 (UTC)
-Date:   Sun, 3 Jan 2021 00:06:54 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Qais Yousef <qais.yousef@arm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: Re: BTFIDS: FAILED unresolved symbol udp6_sock
-Message-ID: <20210102230654.GA732432@krava>
-References: <20201229151352.6hzmjvu3qh6p2qgg@e107158-lin>
- <20201229173401.GH450923@krava>
- <20201229232835.cbyfmja3bu3lx7we@e107158-lin>
- <20201230090333.GA577428@krava>
- <20201230132759.GB577428@krava>
- <CAEf4BzYbeQqzK2n9oz6wqysVj35k+VZC7DZrXFEtjUM6eiyvOA@mail.gmail.com>
+        id S1726832AbhACAuq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 2 Jan 2021 19:50:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50990 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726766AbhACAuq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 2 Jan 2021 19:50:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3CDDC2078E;
+        Sun,  3 Jan 2021 00:50:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609635006;
+        bh=EAHXiHS4OzA1WBssLvIUl2ldX+LzhXKQiiNZqbc+ZHc=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=iyp7CioVLpSmPCqkMEabDm6t1TwrRZKrc9rruASL3AnMBTQNyteNF+40EEwADllTg
+         7pgE9RSIf2YV8pLNXErfYdZTsWyvsdxvp95ng8C04URT+7yB6EgIozMym81v4WwvNe
+         ufFrWca2C/1Neda1eDOs9TfGpdamZe1MlDZOYMXBFX3jXNdyCHY5RKugOgAW10DICN
+         tUfQo+d9tR7fkUUA3FdG7G5v7fJwp7jFePG9oSnEieVwzG3Mkqdaib6TWC5Sn1i6PU
+         zxLlEOAd1Qov0wl1r/lOIQ1LdxVxg6JJvgrODXJiYGuBjlGc5JaO2wJmfs7UVQLUhn
+         TC91iDuqvsyZg==
+Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 316606013D;
+        Sun,  3 Jan 2021 00:50:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzYbeQqzK2n9oz6wqysVj35k+VZC7DZrXFEtjUM6eiyvOA@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf] bpf: fix a task_iter bug caused by a merge conflict
+ resolution
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <160963500619.25136.4438244384142452463.git-patchwork-notify@kernel.org>
+Date:   Sun, 03 Jan 2021 00:50:06 +0000
+References: <20201231052418.577024-1-yhs@fb.com>
+In-Reply-To: <20201231052418.577024-1-yhs@fb.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        kernel-team@fb.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jan 02, 2021 at 02:25:34PM -0800, Andrii Nakryiko wrote:
+Hello:
 
-SNIP
+This patch was applied to bpf/bpf.git (refs/heads/master):
 
-> >
-> > so your .config has
-> >   CONFIG_CRYPTO_DEV_BCM_SPU=y
-> >
-> > and that defines 'struct device_private' which
-> > clashes with the same struct defined in drivers/base/base.h
-> >
-> > so several networking structs will be doubled, like net_device:
-> >
-> >         $ bpftool btf dump file ../vmlinux.config | grep net_device\' | grep STRUCT
-> >         [2731] STRUCT 'net_device' size=2240 vlen=133
-> >         [113981] STRUCT 'net_device' size=2240 vlen=133
-> >
-> > each is using different 'struct device_private' when it's unwinded
-> >
-> > and that will confuse BTFIDS logic, becase we have multiple structs
-> > with the same name, and we can't be sure which one to pick
-> >
-> > perhaps we should check on this in pahole and warn earlier with
-> > better error message.. I'll check, but I'm not sure if pahole can
-> > survive another hastab ;-)
-> >
-> > Andrii, any ideas on this? ;-)
+On Wed, 30 Dec 2020 21:24:18 -0800 you wrote:
+> Latest bpf tree has a bug for bpf_iter selftest.
+>   $ ./test_progs -n 4/25
+>   test_bpf_sk_storage_get:PASS:bpf_iter_bpf_sk_storage_helpers__open_and_load 0 nsec
+>   test_bpf_sk_storage_get:PASS:socket 0 nsec
+>   ...
+>   do_dummy_read:PASS:read 0 nsec
+>   test_bpf_sk_storage_get:FAIL:bpf_map_lookup_elem map value wasn't set correctly
+>                           (expected 1792, got -1, err=0)
+>   #4/25 bpf_sk_storage_get:FAIL
+>   #4 bpf_iter:FAIL
+>   Summary: 0/0 PASSED, 0 SKIPPED, 2 FAILED
 > 
-> It's both unavoidable and correct from the C type system's
-> perspective, so there is nothing for pahole to warn about. We used to
-> have (for a long time) a similar clash with two completely different
-> ring_buffer structs. Eventually they just got renamed to avoid
-> duplication of related structs (task_struct and tons of other). But
-> both BTF dedup and CO-RE relocation algorithms are designed to handle
-> this correctly, ...
+> [...]
 
-AFAIU it's all correctly dedulicated, but still all structs that
-contain (at some point) 'struct device_private' will appear twice
-in BTF data.. each with different 'struct device_private'
+Here is the summary with links:
+  - [bpf] bpf: fix a task_iter bug caused by a merge conflict resolution
+    https://git.kernel.org/bpf/bpf/c/04901aab40ea
 
-> ... so perhaps BTFIDS should be able to handle this as
-> well?
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-hm, BTFIDS sees BTF data with two same struct names and has no
-way to tell which one to use
-
-unless we have some annotation data for BTF types I don't
-see a way to handle this correctly.. but I think we can
-detect this directly in BTFIDS and print more accurate error
-message
-
-as long as we dont see this on daily basis, I think that better
-error message + following struct rename is good solution
-
-> 
-> >
-> > easy fix is the patch below that renames the bcm's structs,
-> > it makes the kernel to compile.. but of course the new name
-> > is probably wrong and we should push this through that code
-> > authors
-> 
-> In this case, I think renaming generic device_private name is a good
-> thing regardless.
-
-ok, I'll send the change
-
-jirka
 
