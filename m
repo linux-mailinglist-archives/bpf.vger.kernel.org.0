@@ -2,88 +2,227 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24C022EA0C6
-	for <lists+bpf@lfdr.de>; Tue,  5 Jan 2021 00:26:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E52662EA08A
+	for <lists+bpf@lfdr.de>; Tue,  5 Jan 2021 00:15:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727566AbhADX0j (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 4 Jan 2021 18:26:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57984 "EHLO
+        id S1727377AbhADXMm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 4 Jan 2021 18:12:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727473AbhADX0i (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 4 Jan 2021 18:26:38 -0500
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48A0DC061795
-        for <bpf@vger.kernel.org>; Mon,  4 Jan 2021 15:25:58 -0800 (PST)
-Received: by mail-pj1-x104a.google.com with SMTP id my8so554077pjb.3
-        for <bpf@vger.kernel.org>; Mon, 04 Jan 2021 15:25:58 -0800 (PST)
+        with ESMTP id S1727094AbhADXMm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 4 Jan 2021 18:12:42 -0500
+Received: from mail-oo1-xc4a.google.com (mail-oo1-xc4a.google.com [IPv6:2607:f8b0:4864:20::c4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B63ABC061796
+        for <bpf@vger.kernel.org>; Mon,  4 Jan 2021 15:12:01 -0800 (PST)
+Received: by mail-oo1-xc4a.google.com with SMTP id p66so18590900ooa.17
+        for <bpf@vger.kernel.org>; Mon, 04 Jan 2021 15:12:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=ptl9lvlNeQ8rb1QFATiaT3uH/4C0oopGRoPxfvyAb2c=;
-        b=PSk2pLEREebJjCZgCidiMVgVTczCb9yXAsf7cDX6JwkPX/fXZIVH66P1pI+iCasrDz
-         U1E4qLZHl1KuMxEwVjhfvMYGl8p1K4Ausimy3aqIS1e4+JUk5c2uz1ABNpKNW0u932bJ
-         zWUwN9VfydzOvd6wwsGTh7w7Xsobn2xNioXavE91ZWbpB6VsqNl7Cq6ng8dQwRGIjvUe
-         BFR3F2i3uSO1eXb7Mmyym7D2b+d95FVBwjTGm6XQcO8HeNEpaPX/Z3TwHo+tMMlWzU2l
-         yxO+fM9ZYlHVdwKbKpwQTDYNLY1LgJXGThP3+T4Nc8hCV3PzohjqS9uVsDL+Hz5krlhu
-         sw7Q==
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=YdbAgIO2OPnsvaT1YJ6/WAFB+WtpWDBBJcdWS3MT4Zc=;
+        b=RttI15fHGDabyDPtR1/WtJj+60bQoGOe+Ho72yf0WfOM16FZR35nhpsoLCyC7g49a3
+         k4Cliz0DlKlrfR+IFI5gFSYOz8ERLqqTTHGL/C7viSc+lTYkK75FDquKpWksK6xYV+gR
+         W3EOlmWTHnx/TclP+KvoWCEtENcA9CDko3yVPZu0whkpz7MoFxUBSAXwmhOsE/YU97iF
+         YAMs8+NvMflCiZcaV5FVXh8QL9Thav+1iWYcQjenNmauEk+p/rXwruG1g/QJKWvoZL8z
+         w1aTSDtLMFu5DPJy4A6ieQfx7AWiVl+fzSyEjMZrueYJxzUvkw5hLxQIAS9iWVyy/k7H
+         3ylg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=ptl9lvlNeQ8rb1QFATiaT3uH/4C0oopGRoPxfvyAb2c=;
-        b=qbk+rnznbFQfSzGvT1iSxyBAyGNOMViD4/IXM+bKbnjsDfcamyvXMXNrCNDyUHpAPM
-         tqGYLBnZnCc64WHaDvGKFQFWqOENx2XshWaGJ/i3HEPN+zcXFQvFT0NzpxcNBHh3X90e
-         cYjb8lN4oRBKUXTPbVRvVhs1qTbyt7D8VmbV+b8BZ7nLkL82LzkkuxDhjYOD8pBKcG8U
-         qlygan6Kwp4/mM+6uFLLJpkJAbtDNud8WugbVKUKY51rTJtFhSOBFMczCr1bbHg2qQ+1
-         0wks3RVK2AtUHiKU6LatvPna7WCQtxyHHcXtC8SdxKLJrSPcsY3c2NDWAms8359uTNjG
-         g0Qg==
-X-Gm-Message-State: AOAM533l4q0Np2u+pDltn0kRpN3NcW6/wqdNHI+YA03y6ii41Ho5QB71
-        mZX2pH8ad6onkZ5zg8jjX+b/9Oo=
-X-Google-Smtp-Source: ABdhPJzjaMED1n2APX00sZbDymFDwQSDI3BjsSgJNrEf5XTtzu0nfbCt88SbsYI4a4Pb7ZT91X4tN7Y=
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=YdbAgIO2OPnsvaT1YJ6/WAFB+WtpWDBBJcdWS3MT4Zc=;
+        b=h/NJsKQ1oshpNTLsIUMdml1KO4azLQp9PVgVHCpU3g7yDqddg84j2AaDmOp7OHWR7J
+         UCDfotwPInVm+0xPdwo7O4EKxoIFT0/FLGOZCxvHhXT5ro5EBojRTZSTRabYK7+1xyPY
+         PPAZfawGVdOK0JhC35+tg3NOLbC3D7hQKZV7fE7T0S9JIHWH+m6bbc6RpcT7Ig7M1Byo
+         MZPQQBjMbbcCD5DmNzP1i543rgAVXsaMAWYhdzKjShOPInhOAIhB2Tuigit+DClfMkG5
+         sn3tarC0SzqR1fm3EKN4BOfmPlY22BFZF6MgBkcMtimU1Tcox1nvOwgKNQkopOmFrbJW
+         gwHg==
+X-Gm-Message-State: AOAM533ZlNFG/r9FXvAdQC3q4E+9sI6qmGousVnu4TlKZPOTmEWm4Emm
+        pK8M1sYgr6xoB0yYrQ8GOjUZQh8=
+X-Google-Smtp-Source: ABdhPJyN5Mm/VMNT4Vtvg6Ai+kiZL40mk9j/uSA+S3FkpvfUTubV6DbXQ9UQBouwAegT8oS1buJ7JV4=
 Sender: "sdf via sendgmr" <sdf@sdf2.svl.corp.google.com>
 X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:7220:84ff:fe09:7732])
- (user=sdf job=sendgmr) by 2002:a05:6214:1887:: with SMTP id
- cx7mr78894414qvb.39.1609798496582; Mon, 04 Jan 2021 14:14:56 -0800 (PST)
-Date:   Mon,  4 Jan 2021 14:14:52 -0800
-Message-Id: <20210104221454.2204239-1-sdf@google.com>
+ (user=sdf job=sendgmr) by 2002:a25:7789:: with SMTP id s131mr110750168ybc.212.1609798498611;
+ Mon, 04 Jan 2021 14:14:58 -0800 (PST)
+Date:   Mon,  4 Jan 2021 14:14:53 -0800
+In-Reply-To: <20210104221454.2204239-1-sdf@google.com>
+Message-Id: <20210104221454.2204239-2-sdf@google.com>
 Mime-Version: 1.0
+References: <20210104221454.2204239-1-sdf@google.com>
 X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
-Subject: [PATCH bpf-next v2 0/2] bpf: misc performance improvements for cgroup hooks
+Subject: [PATCH bpf-next v2 1/2] bpf: try to avoid kzalloc in cgroup/{s,g}etsockopt
 From:   Stanislav Fomichev <sdf@google.com>
 To:     netdev@vger.kernel.org, bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net,
-        Stanislav Fomichev <sdf@google.com>
+        Stanislav Fomichev <sdf@google.com>,
+        Martin KaFai Lau <kafai@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-First patch tries to remove kzalloc/kfree from getsockopt for the
-common cases.
+When we attach a bpf program to cgroup/getsockopt any other getsockopt()
+syscall starts incurring kzalloc/kfree cost. While, in general, it's
+not an issue, sometimes it is, like in the case of TCP_ZEROCOPY_RECEIVE.
+TCP_ZEROCOPY_RECEIVE (ab)uses getsockopt system call to implement
+fastpath for incoming TCP, we don't want to have extra allocations in
+there.
 
-Second patch switches cgroup_bpf_enabled to be per-attach to
-to add only overhead for the cgroup attach types used on the system.
+Let add a small buffer on the stack and use it for small (majority)
+{s,g}etsockopt values. I've started with 128 bytes to cover
+the options we care about (TCP_ZEROCOPY_RECEIVE which is 32 bytes
+currently, with some planned extension to 64).
 
-No visible user-side changes.
+It seems natural to do the same for setsockopt, but it's a bit more
+involved when the BPF program modifies the data (where we have to
+kmalloc). The assumption is that for the majority of setsockopt
+calls (which are doing pure BPF options or apply policy) this
+will bring some benefit as well.
 
-v2:
-- perf numbers for getsockopt kmalloc reduction (Song Liu)
-- (sk) in BPF_CGROUP_PRE_CONNECT_ENABLED (Song Liu)
-- 128 -> 64 buffer size, BUILD_BUG_ON (Martin KaFai Lau)
+Collected some performance numbers using (on a 65k MTU localhost in a VM):
+$ perf record -g -- ./tcp_mmap -s -z
+$ ./tcp_mmap -H ::1 -z
+$ ...
+$ perf report --symbol-filter=__cgroup_bpf_run_filter_getsockopt
 
-Stanislav Fomichev (2):
-  bpf: try to avoid kzalloc in cgroup/{s,g}etsockopt
-  bpf: split cgroup_bpf_enabled per attach type
+Without this patch:
+     4.81%     0.07%  tcp_mmap  [kernel.kallsyms]  [k] __cgroup_bpf_run_filter_>
+            |
+             --4.74%--__cgroup_bpf_run_filter_getsockopt
+                       |
+                       |--1.06%--__kmalloc
+                       |
+                       |--0.71%--lock_sock_nested
+                       |
+                       |--0.62%--__might_fault
+                       |
+                        --0.52%--release_sock
 
- include/linux/bpf-cgroup.h | 36 +++++++++++++------------
- include/linux/filter.h     |  3 +++
- kernel/bpf/cgroup.c        | 54 +++++++++++++++++++++++++++++++-------
- net/ipv4/af_inet.c         |  9 ++++---
- net/ipv4/udp.c             |  7 +++--
- net/ipv6/af_inet6.c        |  9 ++++---
- net/ipv6/udp.c             |  7 +++--
- 7 files changed, 83 insertions(+), 42 deletions(-)
+With the patch applied:
+     3.29%     0.07%  tcp_mmap  [kernel.kallsyms]  [k] __cgroup_bpf_run_filter_getsockopt
+            |
+             --3.22%--__cgroup_bpf_run_filter_getsockopt
+                       |
+                       |--0.66%--lock_sock_nested
+                       |
+                       |--0.57%--__might_fault
+                       |
+                        --0.56%--release_sock
 
+So it saves about 1% of the system call. Unfortunately, we still get
+2-3% of overhead due to another socket lock/unlock :-(
+
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+Cc: Martin KaFai Lau <kafai@fb.com>
+---
+ include/linux/filter.h |  3 +++
+ kernel/bpf/cgroup.c    | 40 +++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 42 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index 29c27656165b..54a4225f36d8 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -1281,6 +1281,8 @@ struct bpf_sysctl_kern {
+ 	u64 tmp_reg;
+ };
+ 
++#define BPF_SOCKOPT_KERN_BUF_SIZE	64
++
+ struct bpf_sockopt_kern {
+ 	struct sock	*sk;
+ 	u8		*optval;
+@@ -1289,6 +1291,7 @@ struct bpf_sockopt_kern {
+ 	s32		optname;
+ 	s32		optlen;
+ 	s32		retval;
++	u8		buf[BPF_SOCKOPT_KERN_BUF_SIZE];
+ };
+ 
+ int copy_bpf_fprog_from_user(struct sock_fprog *dst, sockptr_t src, int len);
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index 6ec088a96302..e6a5c7aec1ec 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -16,6 +16,7 @@
+ #include <linux/bpf-cgroup.h>
+ #include <net/sock.h>
+ #include <net/bpf_sk_storage.h>
++#include <net/tcp.h> /* sizeof(struct tcp_zerocopy_receive) */
+ 
+ #include "../cgroup/cgroup-internal.h"
+ 
+@@ -1298,6 +1299,7 @@ static bool __cgroup_bpf_prog_array_is_empty(struct cgroup *cgrp,
+ 	return empty;
+ }
+ 
++
+ static int sockopt_alloc_buf(struct bpf_sockopt_kern *ctx, int max_optlen)
+ {
+ 	if (unlikely(max_optlen < 0))
+@@ -1310,6 +1312,18 @@ static int sockopt_alloc_buf(struct bpf_sockopt_kern *ctx, int max_optlen)
+ 		max_optlen = PAGE_SIZE;
+ 	}
+ 
++	if (max_optlen <= sizeof(ctx->buf)) {
++		/* When the optval fits into BPF_SOCKOPT_KERN_BUF_SIZE
++		 * bytes avoid the cost of kzalloc.
++		 */
++		BUILD_BUG_ON(sizeof(struct tcp_zerocopy_receive) >
++			     BPF_SOCKOPT_KERN_BUF_SIZE);
++
++		ctx->optval = ctx->buf;
++		ctx->optval_end = ctx->optval + max_optlen;
++		return max_optlen;
++	}
++
+ 	ctx->optval = kzalloc(max_optlen, GFP_USER);
+ 	if (!ctx->optval)
+ 		return -ENOMEM;
+@@ -1321,9 +1335,16 @@ static int sockopt_alloc_buf(struct bpf_sockopt_kern *ctx, int max_optlen)
+ 
+ static void sockopt_free_buf(struct bpf_sockopt_kern *ctx)
+ {
++	if (ctx->optval == ctx->buf)
++		return;
+ 	kfree(ctx->optval);
+ }
+ 
++static bool sockopt_buf_allocated(struct bpf_sockopt_kern *ctx)
++{
++	return ctx->optval != ctx->buf;
++}
++
+ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
+ 				       int *optname, char __user *optval,
+ 				       int *optlen, char **kernel_optval)
+@@ -1390,7 +1411,24 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
+ 		 */
+ 		if (ctx.optlen != 0) {
+ 			*optlen = ctx.optlen;
+-			*kernel_optval = ctx.optval;
++			/* We've used bpf_sockopt_kern->buf as an intermediary
++			 * storage, but the BPF program indicates that we need
++			 * to pass this data to the kernel setsockopt handler.
++			 * No way to export on-stack buf, have to allocate a
++			 * new buffer.
++			 */
++			if (!sockopt_buf_allocated(&ctx)) {
++				void *p = kzalloc(ctx.optlen, GFP_USER);
++
++				if (!p) {
++					ret = -ENOMEM;
++					goto out;
++				}
++				memcpy(p, ctx.optval, ctx.optlen);
++				*kernel_optval = p;
++			} else {
++				*kernel_optval = ctx.optval;
++			}
+ 		}
+ 	}
+ 
 -- 
 2.29.2.729.g45daf8777d-goog
 
