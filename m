@@ -2,179 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA2392EB345
-	for <lists+bpf@lfdr.de>; Tue,  5 Jan 2021 20:07:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 414502EB37E
+	for <lists+bpf@lfdr.de>; Tue,  5 Jan 2021 20:32:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729467AbhAETEk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Jan 2021 14:04:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43704 "EHLO
+        id S1729925AbhAETb3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Jan 2021 14:31:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729376AbhAETEj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Jan 2021 14:04:39 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A432BC061574;
-        Tue,  5 Jan 2021 11:03:59 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id r4so204887pls.11;
-        Tue, 05 Jan 2021 11:03:59 -0800 (PST)
+        with ESMTP id S1729891AbhAETb2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Jan 2021 14:31:28 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3C66C061793;
+        Tue,  5 Jan 2021 11:30:48 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id j13so232036pjz.3;
+        Tue, 05 Jan 2021 11:30:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=3oN4gIUKR6n9m4yAkgGMVU5D5SXCHxMf5VYllGbDYlU=;
-        b=gTqYN++gJo23GUfdyR9bqbeaCDlncZI55pkQ1g6A2QFDR8FZj6FC+qwi4na3QI8NCu
-         cdoHHysOeFTvZ9AXr+Y+n5LbKdaS3QoH5OvnjRhnGjKE7B64tAd/Z45YxKIK6qh4LCEi
-         M7Y18elm72W7Mcz2P/WZWhmaP0o6kRa1wTnoqX69cGXhsjwckPaMJDzbUBVfInn0DBoR
-         pePUkhg9HlBEuMwISw+lCp/a3TzEyKPwJwfVCSnavK0EUOPhuNC8kPFeh5re8ccwYN3U
-         t7SjaDFey/1ZeR3+amszDleRT2oRUX1Wmmu9KWDS7YO19PGurOG0zN18sSfq4J5tItGR
-         uVPg==
+        bh=F88oCXSqS5Vbl5G2XzWl1J2aBVDAgNwp3y6EJL4c05c=;
+        b=DftTVuQ6grwuykSF84GnB11LZ2zF7PqajsCoVCL2p3FXEger7h87zDeAffIQzKYSll
+         MBW6lw9uzIKnsmmFmAZjh/ygoFsq/17FXTU2RcB5o3zCe61jx8sEjyai68UVlzy/U/6x
+         4Y2x/6obgGj/3Oz0uEcF4ukGQVbmV6PQsBGkcX+JaBjQFacAAeX8HqP5HbVRXsiRgmb5
+         +5KDCwX8RR1UpQRvwdEL5wQ/MGMrF0+5r7AQFnrM1aGDT1wPLKFw1gXixURrF7y5iYp1
+         Ba/FO+/UcEyrArkV4ptByZ+W/d33yRJvs4vj0rr280SYe2pQ7Ur87PYlPf7dp5e99aNp
+         bmpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=3oN4gIUKR6n9m4yAkgGMVU5D5SXCHxMf5VYllGbDYlU=;
-        b=P+zrVOj9P8xRoUeppUtYg/fXozI0XVa8ZzLdShx0LjUe//4aKjdwPws2l0qgZPZS8o
-         Ye1xtAEBYAVm5ZCISkMr/KaQvcUMZJbhs4WTAkbcByRIiv8mPxgCye1iKBRgmfNQyyju
-         7V6hg8MoQWwWB7cQ2Sg03g6ZyCzghbCcvnBzoUQt5pojMqre4gnpu4PAptqKwdXF/KDr
-         SaWUJAoa3SPi+5VjafZLe5b6GxKAIbXMGHmABWvits3bYlOm0tp6XVKhQ8tpaDvDvo+4
-         xON833pQ/yys75q0O7hXA2H/x9/YyVarinfsR+o0ufHzcFvY1YdJ6lplRphUQ98PpPfT
-         QHNA==
-X-Gm-Message-State: AOAM533xPrQf9U2x55xTCbI3plkGsojgAL9qJHz/02R3/TpFh5Pgzl80
-        zUe1pzSeQaIxiezjAnWZsUo=
-X-Google-Smtp-Source: ABdhPJwkh0dHQPI5Wm2caIz0nCFY3vs1rKB25r+tio2lN2YRWVXR7cf4Cbhea1XX3i7ACz2Zoir6WQ==
-X-Received: by 2002:a17:902:9f89:b029:dc:3032:e439 with SMTP id g9-20020a1709029f89b02900dc3032e439mr691730plq.35.1609873439108;
-        Tue, 05 Jan 2021 11:03:59 -0800 (PST)
+        bh=F88oCXSqS5Vbl5G2XzWl1J2aBVDAgNwp3y6EJL4c05c=;
+        b=ATQqQQhRVG6bCEr9YQ3+CFkakZYX5+2Ga0tBYFnrcbZGhletDO0DnIpk6ATEl29XXm
+         YQiERkQpfFZR1OFaDFxWWRUuBQA8f2HIbDgMb8sOkZpqRIxDuMHB5xSMc7wJA15kGPWT
+         sYI0xXHGkMcEm/iDqhrYYYsgyDXBiX5EmrLH3ntt1y4cEYHXRR5OskOZEOrmUNk/XD5g
+         ttCu8MVbEYhHnBAjwQD4EG0swbFndOF6tT2L4L9jkP2NR3h1v9ZzT4iCHMbxv0433sPR
+         m1yp1UIV9Yn6e77dTo5/q61F5Q+RJTCM5OtGw9WC5buZ8gM84QlS4yhCviZEyK98kcpS
+         DYsQ==
+X-Gm-Message-State: AOAM531b6390/YKz95X1EZf2Ne1vTpwYixqIcaNSpfry+IwTcP7i4Z2T
+        W6WdbzYo4TxP+OpwsyR44/Y=
+X-Google-Smtp-Source: ABdhPJyQO3F8uHZPi+sc8C3Ab+VJ46CSdR/2+DxSZqyJNA7TyaNVzzsNeLF2gaMRl7AHrKHbE3kAsw==
+X-Received: by 2002:a17:90a:9483:: with SMTP id s3mr682131pjo.61.1609875048228;
+        Tue, 05 Jan 2021 11:30:48 -0800 (PST)
 Received: from ast-mbp ([2620:10d:c090:400::5:5456])
-        by smtp.gmail.com with ESMTPSA id dw16sm273504pjb.35.2021.01.05.11.03.57
+        by smtp.gmail.com with ESMTPSA id p16sm11181pju.47.2021.01.05.11.30.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 11:03:57 -0800 (PST)
-Date:   Tue, 5 Jan 2021 11:03:55 -0800
+        Tue, 05 Jan 2021 11:30:47 -0800 (PST)
+Date:   Tue, 5 Jan 2021 11:30:45 -0800
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
+To:     Yuri Benditovich <yuri.benditovich@daynix.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Gilad Reti <gilad.reti@gmail.com>
-Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: add tests for user- and
- non-CO-RE BPF_CORE_READ() variants
-Message-ID: <20210105190355.2lbt6vlmi752segx@ast-mbp>
-References: <20201218235614.2284956-1-andrii@kernel.org>
- <20201218235614.2284956-4-andrii@kernel.org>
- <20210105034644.5thpans6alifiq65@ast-mbp>
- <CAEf4BzY4qXW_xV+0pcWPQp+Tda6BY69xgJnaA3RFxKc255rP2g@mail.gmail.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, yan@daynix.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [RFC PATCH 3/7] tun: allow use of BPF_PROG_TYPE_SCHED_CLS
+ program type
+Message-ID: <20210105193045.g3q6n3dsl6idthbe@ast-mbp>
+References: <20210105122416.16492-1-yuri.benditovich@daynix.com>
+ <20210105122416.16492-4-yuri.benditovich@daynix.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzY4qXW_xV+0pcWPQp+Tda6BY69xgJnaA3RFxKc255rP2g@mail.gmail.com>
+In-Reply-To: <20210105122416.16492-4-yuri.benditovich@daynix.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 04, 2021 at 09:08:21PM -0800, Andrii Nakryiko wrote:
-> On Mon, Jan 4, 2021 at 7:46 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Fri, Dec 18, 2020 at 03:56:14PM -0800, Andrii Nakryiko wrote:
-> > > +
-> > > +/* shuffled layout for relocatable (CO-RE) reads */
-> > > +struct callback_head___shuffled {
-> > > +     void (*func)(struct callback_head___shuffled *head);
-> > > +     struct callback_head___shuffled *next;
-> > > +};
-> > > +
-> > > +struct callback_head k_probe_in = {};
-> > > +struct callback_head___shuffled k_core_in = {};
-> > > +
-> > > +struct callback_head *u_probe_in = 0;
-> > > +struct callback_head___shuffled *u_core_in = 0;
-> > > +
-> > > +long k_probe_out = 0;
-> > > +long u_probe_out = 0;
-> > > +
-> > > +long k_core_out = 0;
-> > > +long u_core_out = 0;
-> > > +
-> > > +int my_pid = 0;
-> > > +
-> > > +SEC("raw_tracepoint/sys_enter")
-> > > +int handler(void *ctx)
-> > > +{
-> > > +     int pid = bpf_get_current_pid_tgid() >> 32;
-> > > +
-> > > +     if (my_pid != pid)
-> > > +             return 0;
-> > > +
-> > > +     /* next pointers for kernel address space have to be initialized from
-> > > +      * BPF side, user-space mmaped addresses are stil user-space addresses
-> > > +      */
-> > > +     k_probe_in.next = &k_probe_in;
-> > > +     __builtin_preserve_access_index(({k_core_in.next = &k_core_in;}));
-> > > +
-> > > +     k_probe_out = (long)BPF_PROBE_READ(&k_probe_in, next, next, func);
-> > > +     k_core_out = (long)BPF_CORE_READ(&k_core_in, next, next, func);
-> > > +     u_probe_out = (long)BPF_PROBE_READ_USER(u_probe_in, next, next, func);
-> > > +     u_core_out = (long)BPF_CORE_READ_USER(u_core_in, next, next, func);
-> >
-> > I don't understand what the test suppose to demonstrate.
-> > co-re relocs work for kernel btf only.
-> > Are you saying that 'struct callback_head' happened to be used by user space
-> > process that allocated it in user memory. And that is the same struct as
-> > being used by the kernel? So co-re relocs that apply against the kernel
-> > will sort-of work against the data of user space process because
-> > the user space is using the same struct? That sounds convoluted.
+On Tue, Jan 05, 2021 at 02:24:12PM +0200, Yuri Benditovich wrote:
+> This program type can set skb hash value. It will be useful
+> when the tun will support hash reporting feature if virtio-net.
 > 
-> The test itself just tests that bpf_probe_read_user() is executed, not
-> bpf_probe_read_kernel(). But yes, the use case is to read kernel data
-> structures from the user memory address space. See [0] for the last
-> time this was requested and justifications. It's not the first time
-> someone asked about the user-space variant of BPF_CORE_READ(), though
-> I won't be able to find the reference at this time.
+> Signed-off-by: Yuri Benditovich <yuri.benditovich@daynix.com>
+> ---
+>  drivers/net/tun.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
->   [0] https://lore.kernel.org/bpf/CANaYP3GetBKUPDfo6PqWnm3xuGs2GZjLF8Ed51Q1=Emv2J-dKg@mail.gmail.com/
+> diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+> index 7959b5c2d11f..455f7afc1f36 100644
+> --- a/drivers/net/tun.c
+> +++ b/drivers/net/tun.c
+> @@ -2981,6 +2981,8 @@ static int tun_set_ebpf(struct tun_struct *tun, struct tun_prog __rcu **prog_p,
+>  		prog = NULL;
+>  	} else {
+>  		prog = bpf_prog_get_type(fd, BPF_PROG_TYPE_SOCKET_FILTER);
+> +		if (IS_ERR(prog))
+> +			prog = bpf_prog_get_type(fd, BPF_PROG_TYPE_SCHED_CLS);
 
-That's quite confusing thread.
-
-> > I struggle to see the point of patch 1:
-> > +#define bpf_core_read_user(dst, sz, src)                                   \
-> > +       bpf_probe_read_user(dst, sz, (const void *)__builtin_preserve_access_index(src))
-> >
-> > co-re for user structs? Aren't they uapi? No reloc is needed.
-> 
-> The use case in [0] above is for reading UAPI structs, passed as input
-> arguments to syscall. It's a pretty niche use case, but there are at
-> least two more-or-less valid benefits to use CO-RE with "stable" UAPI
-> structs:
-> 
->   - handling 32-bit vs 64-bit UAPI structs uniformly;
-
-what do you mean?
-32-bit user space running on 64-bit kernel works through 'compat' syscalls.
-If bpf progs are accessing 64-bit uapi structs in such case they're broken
-and no amount of co-re can help.
-
->   - handling UAPI fields that were added in later kernels, but are
-> missing on the earlier ones.
-> 
-> For the former, you'd need to compile two variants of the BPF program
-> (or do convoluted and inconvenient 32-bit UAPI struct re-definition
-> for 64-bit BPF target). 
-
-No. 32-bit uapi structs should be used by bpf prog.
-compat stuff is not only casting pointers from 64-bit to 32.
-
-> For the latter... I guess you can do if/else
-> dance based on the kernel version. Which sucks and is inconvenient
-> (and kernel version checks are discouraged, it's more reliable to
-> detect availability of specific types and fields).
-
-Not really. ifdef based on kernel version is not needed.
-bpf_core_field_exists() will work just fine.
-No need to bpf_probe_read_user() macros.
-
-> So all in all, while pretty rare and niche, seemed like a valid use
-> case. And easy to support while reusing all the macro logic almost
-> without any changes.
-
-I think these new macros added with confusing and unclear goals
-will do more harm than good.
+Patches 1 and 2 are missing for me, so I couldn't review properly,
+but this diff looks odd.
+It allows sched_cls prog type to attach to tun.
+That means everything that sched_cls progs can do will be done from tun hook?
+sched_cls assumes l2 and can modify the packet.
+I think crashes are inevitable.
