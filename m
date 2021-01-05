@@ -2,451 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 053C42EB502
-	for <lists+bpf@lfdr.de>; Tue,  5 Jan 2021 22:47:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED9522EB580
+	for <lists+bpf@lfdr.de>; Tue,  5 Jan 2021 23:45:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731558AbhAEVpO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Jan 2021 16:45:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731552AbhAEVpO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Jan 2021 16:45:14 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70196C06179E
-        for <bpf@vger.kernel.org>; Tue,  5 Jan 2021 13:43:59 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id w8so1297763ybj.14
-        for <bpf@vger.kernel.org>; Tue, 05 Jan 2021 13:43:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=/YPqH1RQ8TMuqVKScmdEk231ZnY94EC9bD9gJ5IJ+zo=;
-        b=EKg4Gu42zSfZT+J8h0zk7VTsFGON3/IOB+H7n59GtkFU3Zc9drBtIZqcgxdPfhJ5SS
-         hJWy38gRnlYp8EABGBT9HWqJQdr1JBPA3Q4qG7OnLng9C+Or5mjKfdyPfhGnZsiSAWOK
-         Krx9Tx64GmHrfqK/sdL9k+cgUk3shfwsReCQp6Bu7K/HO8lpu2xfSEPnN4fBdqzSVOk9
-         wKJOo85n/ONSCJplweL0ldJ3gFzV41QweHuH9l5butRyMe/shntZXAFUeBAiZf8dw0mX
-         p9QLUE01FF/nxD3awJO5fE0PLwziiV1cx6nD2Axxt0uD0Ndl4nUZaqutHSByl3gwlUpb
-         erOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=/YPqH1RQ8TMuqVKScmdEk231ZnY94EC9bD9gJ5IJ+zo=;
-        b=D96b4PSmKpd8fbXa/ZGWRTDXvdfflu3D2usseWe0hVfHNcoitxpW6algW7g6vLQzwP
-         IxH09e3q0xEXQaKWwNhiImh67frjugXx7zHiILcGKQLjN+ugeK5UQmyjL2uG5YXydymL
-         a7MDAlzIoTqO3ep+8BW8S7EhWQZJ4mMl8+UwiEADi1IiF2OhMMhF4AY+zc7M0VLW/w1Z
-         IyUqGFRjcmEzPRmrzer8nxd0DfhyTGLZQuETo8ncz80ZEfJWtpXdTirjDe+QOA+OSC0s
-         LYT6f3kj+MbX4K3/gv6uS8dUS05MiL4lRA+8lroizvIxZCf7/eE1MGcQW+XLXIOWXOzm
-         4hhQ==
-X-Gm-Message-State: AOAM531roXxA4T5sGLVeMK3o7DU9WHEhZVehsxaoX439vhWSidmSx6Qs
-        WzPtV8grPixLzkvSuzeC4arqwh8=
-X-Google-Smtp-Source: ABdhPJx9t3z74mpnQJvwcawEu42zdhmmu4+C1wTvqfksHdq8iUhFa7o3csb2147Zb0ccBK3KbmpGFgY=
-Sender: "sdf via sendgmr" <sdf@sdf2.svl.corp.google.com>
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:7220:84ff:fe09:7732])
- (user=sdf job=sendgmr) by 2002:a25:3206:: with SMTP id y6mr2116887yby.127.1609883038671;
- Tue, 05 Jan 2021 13:43:58 -0800 (PST)
-Date:   Tue,  5 Jan 2021 13:43:50 -0800
-In-Reply-To: <20210105214350.138053-1-sdf@google.com>
-Message-Id: <20210105214350.138053-4-sdf@google.com>
-Mime-Version: 1.0
-References: <20210105214350.138053-1-sdf@google.com>
-X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
-Subject: [PATCH bpf-next v3 3/3] bpf: remove extra lock_sock for TCP_ZEROCOPY_RECEIVE
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net,
-        Stanislav Fomichev <sdf@google.com>,
+        id S1728071AbhAEWpl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Jan 2021 17:45:41 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:47320 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728058AbhAEWpk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Jan 2021 17:45:40 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 105MOr0A022106;
+        Tue, 5 Jan 2021 22:44:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : in-reply-to : message-id : references : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=EVuLtaEoqyVF8xI9Fk+aPgVK+nQKGqBw67gRTMEOd70=;
+ b=0dlbbXl6u7/DpS6PcTRxA+F2SUcyX7kazCvwbWmflGJLlP4XOrhp/pkCNu579jTxJ3DF
+ FbWthhLCqItmTvZQvOMYsKfPwlVnF///LgLEHHQaGYDzuFMaCdTuQRTsHm2y1PL702Yl
+ cJTEsx2ynmpC9v4lWp4VUu5W4O+xffmwWPkT64PPUCN1/zR1aeOSz61jwBJ+y03TKoEa
+ UBwYMQIdLuNGe4F1muPmQrQMGQcH+f+12HjN+zg3MNP9KE1vXWHrWLbkMqAmxtizYQ89
+ Y/fHK1fbjVZsjurlCdgY4My5jmcLVBdXxMo6znt186TXFEwR5pVTcZwlIoc5pkhM/wxa ew== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 35tgsku31g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 05 Jan 2021 22:44:41 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 105MPLL7186292;
+        Tue, 5 Jan 2021 22:44:40 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 35vct6funb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 05 Jan 2021 22:44:40 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 105Micqj022028;
+        Tue, 5 Jan 2021 22:44:39 GMT
+Received: from dhcp-10-175-187-168.vpn.oracle.com (/10.175.187.168)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 05 Jan 2021 22:44:38 +0000
+Date:   Tue, 5 Jan 2021 22:44:29 +0000 (GMT)
+From:   Alan Maguire <alan.maguire@oracle.com>
+X-X-Sender: alan@localhost
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+cc:     Alan Maguire <alan.maguire@oracle.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, andrii@kernel.org,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Eric Dumazet <edumazet@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Song Liu <songliubraving@fb.com>, yhs@fb.com,
+        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        =?ISO-8859-15?Q?Toke_H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        jean-philippe@linaro.org, bpf <bpf@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH bpf-next] ksnoop: kernel argument/return value
+ tracing/display using BTF
+In-Reply-To: <CAM_iQpW5ajiTTW7HBZiK+n_F1MhGyzzD+OWExns1YbejHRsy5A@mail.gmail.com>
+Message-ID: <alpine.LRH.2.23.451.2101052209360.30305@localhost>
+References: <1609773991-10509-1-git-send-email-alan.maguire@oracle.com> <CAM_iQpW5ajiTTW7HBZiK+n_F1MhGyzzD+OWExns1YbejHRsy5A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9855 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101050129
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9855 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 malwarescore=0
+ phishscore=0 impostorscore=0 bulkscore=0 clxscore=1011 priorityscore=1501
+ lowpriorityscore=0 adultscore=0 suspectscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101050129
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add custom implementation of getsockopt hook for TCP_ZEROCOPY_RECEIVE.
-We skip generic hooks for TCP_ZEROCOPY_RECEIVE and have a custom
-call in do_tcp_getsockopt using the on-stack data. This removes
-3% overhead for locking/unlocking the socket.
 
-Also:
-- Removed BUILD_BUG_ON (zerocopy doesn't depend on the buf size anymore)
-- Separated on-stack buffer into bpf_sockopt_buf and downsized to 32 bytes
-  (let's keep it to help with the other options)
 
-(I can probably split this patch into two: add new features and rework
- bpf_sockopt_buf; can follow up if the approach in general sounds
- good).
+On Tue, 5 Jan 2021, Cong Wang wrote:
 
-Without this patch:
-     3.29%     0.07%  tcp_mmap  [kernel.kallsyms]  [k] __cgroup_bpf_run_filter_getsockopt
-            |
-             --3.22%--__cgroup_bpf_run_filter_getsockopt
-                       |
-                       |--0.66%--lock_sock_nested
-                       |
-                       |--0.57%--__might_fault
-                       |
-                        --0.56%--release_sock
+> On Mon, Jan 4, 2021 at 7:29 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+> >
+> > BPF Type Format (BTF) provides a description of kernel data structures
+> > and of the types kernel functions utilize as arguments and return values.
+> >
+> > A helper was recently added - bpf_snprintf_btf() - that uses that
+> > description to create a string representation of the data provided,
+> > using the BTF id of its type.  For example to create a string
+> > representation of a "struct sk_buff", the pointer to the skb
+> > is provided along with the type id of "struct sk_buff".
+> >
+> > Here that functionality is utilized to support tracing kernel
+> > function entry and return using k[ret]probes.  The "struct pt_regs"
+> > context can be used to derive arguments and return values, and
+> > when the user supplies a function name we
+> >
+> > - look it up in /proc/kallsyms to find its address/module
+> > - look it up in the BTF kernel data to get types of arguments
+> >   and return value
+> > - store a map representation of the trace information, keyed by
+> >   instruction pointer
+> > - on function entry/return we look up the map to retrieve the BTF
+> >   ids of the arguments/return values and can call bpf_snprintf_btf()
+> >   with these argument/return values along with the type ids to store
+> >   a string representation in the map.
+> > - this is then sent via perf event to userspace where it can be
+> >   displayed.
+> >
+> > ksnoop can be used to show function signatures; for example:
+> 
+> This is definitely quite useful!
+> 
+> Is it possible to integrate this with bpftrace? That would save people
+> from learning yet another tool. ;)
+> 
 
-With the patch applied:
-     0.42%     0.10%  tcp_mmap  [kernel.kallsyms]  [k] __cgroup_bpf_run_filter_getsockopt_kern
-     0.02%     0.02%  tcp_mmap  [kernel.kallsyms]  [k] __cgroup_bpf_run_filter_getsockopt
+I'd imagine (and hope!) other tracing tools will do this, but right 
+now the aim is to make the task of tracing kernel data structures simpler, 
+so having a tool dedicated to just that can hopefully help those 
+discussions.  There's a bit more work to be done to simplify that task, for
+example  implementing Alexei's suggestion to support pretty-printing of 
+data structures using BTF in libbpf.
 
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Eric Dumazet <edumazet@google.com>
----
- include/linux/bpf-cgroup.h                    |  16 +++
- include/linux/filter.h                        |   6 +-
- kernel/bpf/cgroup.c                           | 103 +++++++++++++-----
- net/ipv4/tcp.c                                |   2 +
- .../selftests/bpf/prog_tests/sockopt_sk.c     |  22 ++++
- .../testing/selftests/bpf/progs/sockopt_sk.c  |  15 +++
- 6 files changed, 135 insertions(+), 29 deletions(-)
+My hope is that we can evolve this tool - or something like it - to the 
+point where we can solve that one problem easily, and that other more 
+general tracers can then make use of that solution.  I probably should
+have made all of this clearer in the patch submission, sorry about that.
 
-diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
-index dd4b8e300746..e8ed9a839abe 100644
---- a/include/linux/bpf-cgroup.h
-+++ b/include/linux/bpf-cgroup.h
-@@ -147,6 +147,10 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
- 				       int __user *optlen, int max_optlen,
- 				       int retval);
- 
-+int __cgroup_bpf_run_filter_getsockopt_kern(struct sock *sk, int level,
-+					    int optname, void *optval,
-+					    int *optlen, int retval);
-+
- static inline enum bpf_cgroup_storage_type cgroup_storage_type(
- 	struct bpf_map *map)
- {
-@@ -373,6 +377,16 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
- 	__ret;								       \
- })
- 
-+#define BPF_CGROUP_RUN_PROG_GETSOCKOPT_KERN(sock, level, optname, optval,      \
-+					    optlen, retval)		       \
-+({									       \
-+	int __ret = retval;						       \
-+	if (cgroup_bpf_enabled(BPF_CGROUP_GETSOCKOPT))			       \
-+		__ret = __cgroup_bpf_run_filter_getsockopt_kern(	       \
-+			sock, level, optname, optval, optlen, retval);	       \
-+	__ret;								       \
-+})
-+
- int cgroup_bpf_prog_attach(const union bpf_attr *attr,
- 			   enum bpf_prog_type ptype, struct bpf_prog *prog);
- int cgroup_bpf_prog_detach(const union bpf_attr *attr,
-@@ -454,6 +468,8 @@ static inline int bpf_percpu_cgroup_storage_update(struct bpf_map *map,
- #define BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen) ({ 0; })
- #define BPF_CGROUP_RUN_PROG_GETSOCKOPT(sock, level, optname, optval, \
- 				       optlen, max_optlen, retval) ({ retval; })
-+#define BPF_CGROUP_RUN_PROG_GETSOCKOPT_KERN(sock, level, optname, optval, \
-+					    optlen, retval) ({ retval; })
- #define BPF_CGROUP_RUN_PROG_SETSOCKOPT(sock, level, optname, optval, optlen, \
- 				       kernel_optval) ({ 0; })
- 
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 54a4225f36d8..8739f1d4cac4 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -1281,7 +1281,10 @@ struct bpf_sysctl_kern {
- 	u64 tmp_reg;
- };
- 
--#define BPF_SOCKOPT_KERN_BUF_SIZE	64
-+#define BPF_SOCKOPT_KERN_BUF_SIZE	32
-+struct bpf_sockopt_buf {
-+	u8		data[BPF_SOCKOPT_KERN_BUF_SIZE];
-+};
- 
- struct bpf_sockopt_kern {
- 	struct sock	*sk;
-@@ -1291,7 +1294,6 @@ struct bpf_sockopt_kern {
- 	s32		optname;
- 	s32		optlen;
- 	s32		retval;
--	u8		buf[BPF_SOCKOPT_KERN_BUF_SIZE];
- };
- 
- int copy_bpf_fprog_from_user(struct sock_fprog *dst, sockptr_t src, int len);
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index adbecdcaa370..5ac927b8d75b 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -16,7 +16,7 @@
- #include <linux/bpf-cgroup.h>
- #include <net/sock.h>
- #include <net/bpf_sk_storage.h>
--#include <uapi/linux/tcp.h> /* sizeof(struct tcp_zerocopy_receive) */
-+#include <net/tcp.h> /* sizeof(struct tcp_zerocopy_receive) & tcp_getsockopt */
- 
- #include "../cgroup/cgroup-internal.h"
- 
-@@ -1299,7 +1299,8 @@ static bool __cgroup_bpf_prog_array_is_empty(struct cgroup *cgrp,
- 	return empty;
- }
- 
--static int sockopt_alloc_buf(struct bpf_sockopt_kern *ctx, int max_optlen)
-+static int sockopt_alloc_buf(struct bpf_sockopt_kern *ctx, int max_optlen,
-+			     struct bpf_sockopt_buf *buf)
- {
- 	if (unlikely(max_optlen < 0))
- 		return -EINVAL;
-@@ -1311,18 +1312,11 @@ static int sockopt_alloc_buf(struct bpf_sockopt_kern *ctx, int max_optlen)
- 		max_optlen = PAGE_SIZE;
- 	}
- 
--	if (max_optlen <= sizeof(ctx->buf)) {
-+	if (max_optlen <= sizeof(buf->data)) {
- 		/* When the optval fits into BPF_SOCKOPT_KERN_BUF_SIZE
- 		 * bytes avoid the cost of kzalloc.
--		 *
--		 * In order to remove extra allocations from the TCP
--		 * fast zero-copy path ensure that buffer covers
--		 * the size of struct tcp_zerocopy_receive.
- 		 */
--		BUILD_BUG_ON(sizeof(struct tcp_zerocopy_receive) >
--			     BPF_SOCKOPT_KERN_BUF_SIZE);
--
--		ctx->optval = ctx->buf;
-+		ctx->optval = buf->data;
- 		ctx->optval_end = ctx->optval + max_optlen;
- 		return max_optlen;
- 	}
-@@ -1336,16 +1330,18 @@ static int sockopt_alloc_buf(struct bpf_sockopt_kern *ctx, int max_optlen)
- 	return max_optlen;
- }
- 
--static void sockopt_free_buf(struct bpf_sockopt_kern *ctx)
-+static void sockopt_free_buf(struct bpf_sockopt_kern *ctx,
-+			     struct bpf_sockopt_buf *buf)
- {
--	if (ctx->optval == ctx->buf)
-+	if (ctx->optval == buf->data)
- 		return;
- 	kfree(ctx->optval);
- }
- 
--static bool sockopt_buf_allocated(struct bpf_sockopt_kern *ctx)
-+static bool sockopt_buf_allocated(struct bpf_sockopt_kern *ctx,
-+				  struct bpf_sockopt_buf *buf)
- {
--	return ctx->optval != ctx->buf;
-+	return ctx->optval != buf->data;
- }
- 
- int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
-@@ -1353,6 +1349,7 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
- 				       int *optlen, char **kernel_optval)
- {
- 	struct cgroup *cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
-+	struct bpf_sockopt_buf buf = {};
- 	struct bpf_sockopt_kern ctx = {
- 		.sk = sk,
- 		.level = *level,
-@@ -1373,7 +1370,7 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
- 	 */
- 	max_optlen = max_t(int, 16, *optlen);
- 
--	max_optlen = sockopt_alloc_buf(&ctx, max_optlen);
-+	max_optlen = sockopt_alloc_buf(&ctx, max_optlen, &buf);
- 	if (max_optlen < 0)
- 		return max_optlen;
- 
-@@ -1419,7 +1416,7 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
- 			 * No way to export on-stack buf, have to allocate a
- 			 * new buffer.
- 			 */
--			if (!sockopt_buf_allocated(&ctx)) {
-+			if (!sockopt_buf_allocated(&ctx, &buf)) {
- 				void *p = kzalloc(ctx.optlen, GFP_USER);
- 
- 				if (!p) {
-@@ -1436,7 +1433,7 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
- 
- out:
- 	if (ret)
--		sockopt_free_buf(&ctx);
-+		sockopt_free_buf(&ctx, &buf);
- 	return ret;
- }
- 
-@@ -1445,15 +1442,29 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
- 				       int __user *optlen, int max_optlen,
- 				       int retval)
- {
--	struct cgroup *cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
--	struct bpf_sockopt_kern ctx = {
--		.sk = sk,
--		.level = level,
--		.optname = optname,
--		.retval = retval,
--	};
-+	struct bpf_sockopt_kern ctx;
-+	struct bpf_sockopt_buf buf;
-+	struct cgroup *cgrp;
- 	int ret;
- 
-+#ifdef CONFIG_INET
-+	/* TCP do_tcp_getsockopt has optimized getsockopt implementation
-+	 * to avoid extra socket lock for TCP_ZEROCOPY_RECEIVE.
-+	 */
-+	if (sk->sk_prot->getsockopt == tcp_getsockopt &&
-+	    level == SOL_TCP && optname == TCP_ZEROCOPY_RECEIVE)
-+		return retval;
-+#endif
-+
-+	memset(&buf, 0, sizeof(buf));
-+	memset(&ctx, 0, sizeof(ctx));
-+
-+	cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
-+	ctx.sk = sk;
-+	ctx.level = level;
-+	ctx.optname = optname;
-+	ctx.retval = retval;
-+
- 	/* Opportunistic check to see whether we have any BPF program
- 	 * attached to the hook so we don't waste time allocating
- 	 * memory and locking the socket.
-@@ -1463,7 +1474,7 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
- 
- 	ctx.optlen = max_optlen;
- 
--	max_optlen = sockopt_alloc_buf(&ctx, max_optlen);
-+	max_optlen = sockopt_alloc_buf(&ctx, max_optlen, &buf);
- 	if (max_optlen < 0)
- 		return max_optlen;
- 
-@@ -1521,9 +1532,47 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
- 	ret = ctx.retval;
- 
- out:
--	sockopt_free_buf(&ctx);
-+	sockopt_free_buf(&ctx, &buf);
- 	return ret;
- }
-+
-+int __cgroup_bpf_run_filter_getsockopt_kern(struct sock *sk, int level,
-+					    int optname, void *optval,
-+					    int *optlen, int retval)
-+{
-+	struct cgroup *cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
-+	struct bpf_sockopt_kern ctx = {
-+		.sk = sk,
-+		.level = level,
-+		.optname = optname,
-+		.retval = retval,
-+		.optlen = *optlen,
-+		.optval = optval,
-+		.optval_end = optval + *optlen,
-+	};
-+	int ret;
-+
-+	ret = BPF_PROG_RUN_ARRAY(cgrp->bpf.effective[BPF_CGROUP_GETSOCKOPT],
-+				 &ctx, BPF_PROG_RUN);
-+	if (!ret)
-+		return -EPERM;
-+
-+	if (ctx.optlen > *optlen)
-+		return -EFAULT;
-+
-+	/* BPF programs only allowed to set retval to 0, not some
-+	 * arbitrary value.
-+	 */
-+	if (ctx.retval != 0 && ctx.retval != retval)
-+		return -EFAULT;
-+
-+	/* BPF programs can shrink the buffer, export the modifications.
-+	 */
-+	if (ctx.optlen != 0)
-+		*optlen = ctx.optlen;
-+
-+	return ctx.retval;
-+}
- #endif
- 
- static ssize_t sysctl_cpy_dir(const struct ctl_dir *dir, char **bufp,
-diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-index ed42d2193c5c..d5367a879ed2 100644
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -4098,6 +4098,8 @@ static int do_tcp_getsockopt(struct sock *sk, int level,
- 			return -EFAULT;
- 		lock_sock(sk);
- 		err = tcp_zerocopy_receive(sk, &zc);
-+		err = BPF_CGROUP_RUN_PROG_GETSOCKOPT_KERN(sk, level, optname,
-+							  &zc, &len, err);
- 		release_sock(sk);
- 		if (len >= offsetofend(struct tcp_zerocopy_receive, err))
- 			goto zerocopy_rcv_sk_err;
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c b/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
-index b25c9c45c148..6bb18b1d8578 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
-@@ -11,6 +11,7 @@ static int getsetsockopt(void)
- 		char u8[4];
- 		__u32 u32;
- 		char cc[16]; /* TCP_CA_NAME_MAX */
-+		struct tcp_zerocopy_receive zc;
- 	} buf = {};
- 	socklen_t optlen;
- 	char *big_buf = NULL;
-@@ -154,6 +155,27 @@ static int getsetsockopt(void)
- 		goto err;
- 	}
- 
-+	/* TCP_ZEROCOPY_RECEIVE triggers */
-+	memset(&buf, 0, sizeof(buf));
-+	optlen = sizeof(buf.zc);
-+	err = getsockopt(fd, SOL_TCP, TCP_ZEROCOPY_RECEIVE, &buf, &optlen);
-+	if (err) {
-+		log_err("Unexpected getsockopt(TCP_ZEROCOPY_RECEIVE) err=%d errno=%d",
-+			err, errno);
-+		goto err;
-+	}
-+
-+	memset(&buf, 0, sizeof(buf));
-+	buf.zc.address = 12345; /* rejected by BPF */
-+	optlen = sizeof(buf.zc);
-+	errno = 0;
-+	err = getsockopt(fd, SOL_TCP, TCP_ZEROCOPY_RECEIVE, &buf, &optlen);
-+	if (errno != EPERM) {
-+		log_err("Unexpected getsockopt(TCP_ZEROCOPY_RECEIVE) err=%d errno=%d",
-+			err, errno);
-+		goto err;
-+	}
-+
- 	free(big_buf);
- 	close(fd);
- 	return 0;
-diff --git a/tools/testing/selftests/bpf/progs/sockopt_sk.c b/tools/testing/selftests/bpf/progs/sockopt_sk.c
-index 712df7b49cb1..c726f0763a13 100644
---- a/tools/testing/selftests/bpf/progs/sockopt_sk.c
-+++ b/tools/testing/selftests/bpf/progs/sockopt_sk.c
-@@ -57,6 +57,21 @@ int _getsockopt(struct bpf_sockopt *ctx)
- 		return 1;
- 	}
- 
-+	if (ctx->level == SOL_TCP && ctx->optname == TCP_ZEROCOPY_RECEIVE) {
-+		/* Verify that TCP_ZEROCOPY_RECEIVE triggers.
-+		 * It has a custom implementation for performance
-+		 * reasons.
-+		 */
-+
-+		if (optval + sizeof(struct tcp_zerocopy_receive) > optval_end)
-+			return 0; /* EPERM, bounds check */
-+
-+		if (((struct tcp_zerocopy_receive *)optval)->address != 0)
-+			return 0; /* EPERM, unexpected data */
-+
-+		return 1;
-+	}
-+
- 	if (ctx->level == SOL_IP && ctx->optname == IP_FREEBIND) {
- 		if (optval + 1 > optval_end)
- 			return 0; /* EPERM, bounds check */
--- 
-2.29.2.729.g45daf8777d-goog
-
+Alan
