@@ -2,117 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B276E2EAA45
-	for <lists+bpf@lfdr.de>; Tue,  5 Jan 2021 12:58:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E24F02EAA97
+	for <lists+bpf@lfdr.de>; Tue,  5 Jan 2021 13:25:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729696AbhAEL5W (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Jan 2021 06:57:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32922 "EHLO
+        id S1728002AbhAEMZJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Jan 2021 07:25:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726074AbhAEL5V (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Jan 2021 06:57:21 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 723E1C061574;
-        Tue,  5 Jan 2021 03:56:41 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id c132so9812159pga.3;
-        Tue, 05 Jan 2021 03:56:41 -0800 (PST)
+        with ESMTP id S1725831AbhAEMZJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Jan 2021 07:25:09 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3051C061793
+        for <bpf@vger.kernel.org>; Tue,  5 Jan 2021 04:24:28 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id a12so35965768wrv.8
+        for <bpf@vger.kernel.org>; Tue, 05 Jan 2021 04:24:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GjrvkpU/AGcjZIUG3h6dX5jurwGnXUE8Hhbb+57Aipw=;
-        b=uAuJvOVujn0Z5sGNtyDbi/ashwYJSbTpzoLztZFtgfEbcwJtywI68EvNRYMlpPd7QG
-         0LzloFAVKZ8OkNjcRcga0U4S/8BMKeggB5FkGm+n4U6sZa86M30hMwOaasFoN21KnFDY
-         df//0Z0zPZzrhwFQAGDoGgHXbQa21MBcCgolZo2CsB+14kquOiKLXh7lrqF0RnpzX8Ow
-         EzM+GZNQ4b9f3U4/7SSUOqcvjSJQEwBnZ1bIiSVIjAld3HElrMoQ5D3N7236k9zaW5wx
-         OTpczU8omOuLtCqPkDoDPHV3YmY6w9P4mqnXsNni15n2VKsEXaCSHJEvftKLsXnw3gV+
-         42Uw==
+        d=daynix-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=9oioH7fTimHXbwiOIluI6SOkD883+857JncYScStEP4=;
+        b=FbMwTrKR3cHf2zWL9klv6VK4ofspjXiOKHz6DEaLIOOalGVtItVxyCqOPP800WhLbi
+         wFi2HsKPNvZdpo8E+hNyGsuYb7ssalbqsyvaK4oPI22KlV6BRH2bG3u6FWkFlB69pIR8
+         Mzaj2gSyw79793NiaO9r8vQXW0XGCyB1lJb/cNMOIFP6X5gMbJupxKnIKYgchD6hT1RF
+         3kUDGDsAVgBLnNjdVJgpY2NMvK3HVuNu8jjjV09c7XxKRBfAdMS1iZcmfavT0ykU6hY6
+         zpqj71VsNbRoA/gW9DVTYd7a9uYGYPekodMcNhXvVlRFdX46g4pKll/xxPRoLsSoHmnh
+         c0/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GjrvkpU/AGcjZIUG3h6dX5jurwGnXUE8Hhbb+57Aipw=;
-        b=mhuq/pKF6o1QiC38mfrKNW/nTgYa5gMBnBgq63X7wOfmFZOmi1mYJysQ5b9jP09A3A
-         +XaZBM9UnVMNKUJqg8H2tPPmq93NNje5AO5WqqQwhACXJ6RJrsEAhhSZHDUpYrDy7g7o
-         eO6BQykuV+w2IqEDLfMX4Ps2+usl027vlXCh8zTyepyf/QH1DRcwqGRNDUtaezApiJmK
-         qEv33eM2DqlvpHRM9M6Gar1ilT+Q2KpQF305pY0hppRJV2EjPp280wQ3W8EcMoJUQsPY
-         j47LjQK3je9ATxRldSrPkQLBae9R3retMn849Zr5kOfPL+sBQz9K1b9dWYnIBdmpFry0
-         sUKg==
-X-Gm-Message-State: AOAM530msxHiXaR1+YGj0AZTmMyu3L6wxWTKylW5HXm1woTDTGDKJ1ej
-        ZUFuao9ukTWflqcYlOPGlQZytqimXI89QrkgvVH0blr9TeM=
-X-Google-Smtp-Source: ABdhPJwWMUSo118gSNiRmh+JZtN0BRDD9lpvkGrw2nOb6SpOHeJoAtyQmix72gXZCCy2DA8c3OypCO2eVLllZyoCgs4=
-X-Received: by 2002:a62:e516:0:b029:156:3b35:9423 with SMTP id
- n22-20020a62e5160000b02901563b359423mr47629907pff.19.1609847801044; Tue, 05
- Jan 2021 03:56:41 -0800 (PST)
-MIME-Version: 1.0
-References: <20201204102901.109709-1-marekx.majtyka@intel.com>
- <20201204102901.109709-2-marekx.majtyka@intel.com> <878sad933c.fsf@toke.dk>
- <20201204124618.GA23696@ranger.igk.intel.com> <048bd986-2e05-ee5b-2c03-cd8c473f6636@iogearbox.net>
- <20201207135433.41172202@carbon> <5fce960682c41_5a96208e4@john-XPS-13-9370.notmuch>
- <20201207230755.GB27205@ranger.igk.intel.com> <5fd068c75b92d_50ce20814@john-XPS-13-9370.notmuch>
- <20201209095454.GA36812@ranger.igk.intel.com> <20201209125223.49096d50@carbon>
- <e1573338-17c0-48f4-b4cd-28eeb7ce699a@gmail.com> <1e5e044c8382a68a8a547a1892b48fb21d53dbb9.camel@kernel.org>
- <cb6b6f50-7cf1-6519-a87a-6b0750c24029@gmail.com> <f4eb614ac91ee7623d13ea77ff3c005f678c512b.camel@kernel.org>
- <d5be0627-6a11-9c1f-8507-cc1a1421dade@gmail.com> <6f8c23d4ac60525830399754b4891c12943b63ac.camel@kernel.org>
-In-Reply-To: <6f8c23d4ac60525830399754b4891c12943b63ac.camel@kernel.org>
-From:   Marek Majtyka <alardam@gmail.com>
-Date:   Tue, 5 Jan 2021 12:56:30 +0100
-Message-ID: <CAAOQfrHN1-oHmbOksDv-BKWv4gDF2zHZ5dTew6R_QTh6s_1abg@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf 1/5] net: ethtool: add xdp properties flag set
-To:     Saeed Mahameed <saeed@kernel.org>, David Ahern <dsahern@gmail.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=9oioH7fTimHXbwiOIluI6SOkD883+857JncYScStEP4=;
+        b=aCamFb+wRH8izRutGcS6AgE/6XZNppDCO35U0/oSAHjl7hvi97k7GrWC3vWuYqyhZE
+         HELz4RQQJn843WiOd5/edYLo0LpbNkCRMhEfnazNJsTcOaQj2H9jhrEquoBdXv3hT5OR
+         XcHw+dWCl9FIk4wt2t+tF1Avh6gG3FFM7ngj3vh/OL7bZI18JuFvj7v4ZyLa8bOxyZDg
+         TYLZO4VaboNPQX6GYKxh+45E0Jz3zKgOjIBxgrnhVnHnu4elTH6ywiZzP3cGZ5TIwrnF
+         QhxdqM+d7l5kxoiuqfwb9B/SkUaciV7mEnFGqskKLf0Ee/P2FSVSjvk+jEb0bclwgeks
+         5fHw==
+X-Gm-Message-State: AOAM533DXVMT9i6Rj7aoLyB8SWpOAEpc2gkKKIBQtEXoj0nIq5Xn+gOk
+        yHMvVQ1CqFmV7FV8Mt8VHWaXDw==
+X-Google-Smtp-Source: ABdhPJzDFqgXfrQp5xp/ZdVS3eJS4pVr3HLwm3vZVbK5A1KjbHq655u+3K3H13y3kF8I1PPCp/eltQ==
+X-Received: by 2002:a5d:6045:: with SMTP id j5mr81535395wrt.223.1609849467537;
+        Tue, 05 Jan 2021 04:24:27 -0800 (PST)
+Received: from f2.redhat.com (bzq-79-183-72-147.red.bezeqint.net. [79.183.72.147])
+        by smtp.gmail.com with ESMTPSA id 138sm4242281wma.41.2021.01.05.04.24.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 05 Jan 2021 04:24:26 -0800 (PST)
+From:   Yuri Benditovich <yuri.benditovich@daynix.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, hawk@kernel.org,
-        bpf <bpf@vger.kernel.org>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        jeffrey.t.kirsher@intel.com
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+Cc:     yan@daynix.com, netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [RFC PATCH 0/7] Support for virtio-net hash reporting
+Date:   Tue,  5 Jan 2021 14:24:09 +0200
+Message-Id: <20210105122416.16492-1-yuri.benditovich@daynix.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-I would like to thank you for your time, comments, nitpicking as well
-as encouraging.
+Existing TUN module is able to use provided "steering eBPF" to
+calculate per-packet hash and derive the destination queue to
+place the packet to. The eBPF uses mapped configuration data
+containing a key for hash calculation and indirection table
+with array of queues' indices.
 
-One thing needs clarification I think, that is, that those flags
-describe driver static feature sets - which are read-only. They have
-nothing in common with driver runtime configuration change yet.
-Runtime change of this state can be added but it needs a new variable
-and it can be done later on if someone needs it.
+This series of patches adds support for virtio-net hash reporting
+feature as defined in virtio specification. It extends the TUN module
+and the "steering eBPF" as follows:
 
-Obviously, it is not possible to make everybody happy, especially with
-XDP_BASE flags set. To be honest, this XDP_BASE definition is a
-syntactic sugar for me and I can live without it. We can either remove
-it completely, from
-which IMO we all and other developers will suffer later on, or maybe
-we can agree on these two helper set of flags: XDP_BASE (TX, ABORTED,
-PASS, DROP) and XDP_LIMITED_BASE(ABORTED,PASS_DROP).
-What do you think?
+Extended steering eBPF calculates the hash value and hash type, keeps
+hash value in the skb->hash and returns index of destination virtqueue
+and the type of the hash. TUN module keeps returned hash type in
+(currently unused) field of the skb. 
+skb->__unused renamed to 'hash_report_type'.
 
-I am also going to add a new XDP_REDIRECT_TARGET flag and retrieving
-XDP flags over rtnelink interface.
+When TUN module is called later to allocate and fill the virtio-net
+header and push it to destination virtqueue it populates the hash
+and the hash type into virtio-net header.
 
-I also think that for completeness, ethtool implementation should be
-kept  together with rtnelink part in order to cover both ip and
-ethtool tools. Do I have your approval or disagreement? Please let me know.
+VHOST driver is made aware of respective virtio-net feature that
+extends the virtio-net header to report the hash value and hash report
+type.
 
-Both AF_XDP_ZEROCOPY and XDP_SOCK_ZEROCOPY are good to me. I will pick
-the one XDP_SOCK_ZEROCOPY unless there are protests.
+Yuri Benditovich (7):
+  skbuff: define field for hash report type
+  vhost: support for hash report virtio-net feature
+  tun: allow use of BPF_PROG_TYPE_SCHED_CLS program type
+  tun: free bpf_program by bpf_prog_put instead of bpf_prog_destroy
+  tun: add ioctl code TUNSETHASHPOPULATION
+  tun: populate hash in virtio-net header when needed
+  tun: report new tun feature IFF_HASH
 
-I don't think that HEADROOM parameter should be passed via the flags.
-It is by nature a number and an attempt to quantize with flags seems
-to be an unnatural limitation for the future.
+ drivers/net/tun.c           | 43 +++++++++++++++++++++++++++++++------
+ drivers/vhost/net.c         | 37 ++++++++++++++++++++++++-------
+ include/linux/skbuff.h      |  7 +++++-
+ include/uapi/linux/if_tun.h |  2 ++
+ 4 files changed, 74 insertions(+), 15 deletions(-)
 
-Thanks
-Marek
+-- 
+2.17.1
+
