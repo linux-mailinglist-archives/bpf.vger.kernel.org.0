@@ -2,177 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C5A42EAA0C
-	for <lists+bpf@lfdr.de>; Tue,  5 Jan 2021 12:40:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B276E2EAA45
+	for <lists+bpf@lfdr.de>; Tue,  5 Jan 2021 12:58:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727949AbhAELjr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Jan 2021 06:39:47 -0500
-Received: from foss.arm.com ([217.140.110.172]:53194 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727384AbhAELjr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Jan 2021 06:39:47 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1DC7E1FB;
-        Tue,  5 Jan 2021 03:39:01 -0800 (PST)
-Received: from e107158-lin (e107158-lin.cambridge.arm.com [10.1.194.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8E1D03F70D;
-        Tue,  5 Jan 2021 03:38:59 -0800 (PST)
-Date:   Tue, 5 Jan 2021 11:38:57 +0000
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Phil Auld <pauld@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        vincent.donnefort@arm.com, Ingo Molnar <mingo@redhat.com>,
-        vincent.guittot@linaro.org, LKML <linux-kernel@vger.kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Subject: Re: [PATCH v2] sched/debug: Add new tracepoint to track cpu_capacity
-Message-ID: <20210105113857.gzqaiuhxsxdtu474@e107158-lin>
-References: <1598605249-72651-1-git-send-email-vincent.donnefort@arm.com>
- <20200828102724.wmng7p6je2pkc33n@e107158-lin.cambridge.arm.com>
- <1e806d48-fd54-fd86-5b3a-372d9876f360@arm.com>
- <20200828172658.dxygk7j672gho4ax@e107158-lin.cambridge.arm.com>
- <58f5d2e8-493b-7ce1-6abd-57705e5ab437@arm.com>
- <20200902135423.GB93959@lorien.usersys.redhat.com>
- <20200907110223.gtdgqod2iv2w7xmg@e107158-lin.cambridge.arm.com>
- <20200908131954.GA147026@lorien.usersys.redhat.com>
- <20210104182642.xglderapsfrop6pi@e107158-lin>
- <CAADnVQ+1BNO577iz+05M4nNk+DB2n9ffwr4KrktWxO+2mP1b-Q@mail.gmail.com>
+        id S1729696AbhAEL5W (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Jan 2021 06:57:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726074AbhAEL5V (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Jan 2021 06:57:21 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 723E1C061574;
+        Tue,  5 Jan 2021 03:56:41 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id c132so9812159pga.3;
+        Tue, 05 Jan 2021 03:56:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GjrvkpU/AGcjZIUG3h6dX5jurwGnXUE8Hhbb+57Aipw=;
+        b=uAuJvOVujn0Z5sGNtyDbi/ashwYJSbTpzoLztZFtgfEbcwJtywI68EvNRYMlpPd7QG
+         0LzloFAVKZ8OkNjcRcga0U4S/8BMKeggB5FkGm+n4U6sZa86M30hMwOaasFoN21KnFDY
+         df//0Z0zPZzrhwFQAGDoGgHXbQa21MBcCgolZo2CsB+14kquOiKLXh7lrqF0RnpzX8Ow
+         EzM+GZNQ4b9f3U4/7SSUOqcvjSJQEwBnZ1bIiSVIjAld3HElrMoQ5D3N7236k9zaW5wx
+         OTpczU8omOuLtCqPkDoDPHV3YmY6w9P4mqnXsNni15n2VKsEXaCSHJEvftKLsXnw3gV+
+         42Uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GjrvkpU/AGcjZIUG3h6dX5jurwGnXUE8Hhbb+57Aipw=;
+        b=mhuq/pKF6o1QiC38mfrKNW/nTgYa5gMBnBgq63X7wOfmFZOmi1mYJysQ5b9jP09A3A
+         +XaZBM9UnVMNKUJqg8H2tPPmq93NNje5AO5WqqQwhACXJ6RJrsEAhhSZHDUpYrDy7g7o
+         eO6BQykuV+w2IqEDLfMX4Ps2+usl027vlXCh8zTyepyf/QH1DRcwqGRNDUtaezApiJmK
+         qEv33eM2DqlvpHRM9M6Gar1ilT+Q2KpQF305pY0hppRJV2EjPp280wQ3W8EcMoJUQsPY
+         j47LjQK3je9ATxRldSrPkQLBae9R3retMn849Zr5kOfPL+sBQz9K1b9dWYnIBdmpFry0
+         sUKg==
+X-Gm-Message-State: AOAM530msxHiXaR1+YGj0AZTmMyu3L6wxWTKylW5HXm1woTDTGDKJ1ej
+        ZUFuao9ukTWflqcYlOPGlQZytqimXI89QrkgvVH0blr9TeM=
+X-Google-Smtp-Source: ABdhPJwWMUSo118gSNiRmh+JZtN0BRDD9lpvkGrw2nOb6SpOHeJoAtyQmix72gXZCCy2DA8c3OypCO2eVLllZyoCgs4=
+X-Received: by 2002:a62:e516:0:b029:156:3b35:9423 with SMTP id
+ n22-20020a62e5160000b02901563b359423mr47629907pff.19.1609847801044; Tue, 05
+ Jan 2021 03:56:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAADnVQ+1BNO577iz+05M4nNk+DB2n9ffwr4KrktWxO+2mP1b-Q@mail.gmail.com>
+References: <20201204102901.109709-1-marekx.majtyka@intel.com>
+ <20201204102901.109709-2-marekx.majtyka@intel.com> <878sad933c.fsf@toke.dk>
+ <20201204124618.GA23696@ranger.igk.intel.com> <048bd986-2e05-ee5b-2c03-cd8c473f6636@iogearbox.net>
+ <20201207135433.41172202@carbon> <5fce960682c41_5a96208e4@john-XPS-13-9370.notmuch>
+ <20201207230755.GB27205@ranger.igk.intel.com> <5fd068c75b92d_50ce20814@john-XPS-13-9370.notmuch>
+ <20201209095454.GA36812@ranger.igk.intel.com> <20201209125223.49096d50@carbon>
+ <e1573338-17c0-48f4-b4cd-28eeb7ce699a@gmail.com> <1e5e044c8382a68a8a547a1892b48fb21d53dbb9.camel@kernel.org>
+ <cb6b6f50-7cf1-6519-a87a-6b0750c24029@gmail.com> <f4eb614ac91ee7623d13ea77ff3c005f678c512b.camel@kernel.org>
+ <d5be0627-6a11-9c1f-8507-cc1a1421dade@gmail.com> <6f8c23d4ac60525830399754b4891c12943b63ac.camel@kernel.org>
+In-Reply-To: <6f8c23d4ac60525830399754b4891c12943b63ac.camel@kernel.org>
+From:   Marek Majtyka <alardam@gmail.com>
+Date:   Tue, 5 Jan 2021 12:56:30 +0100
+Message-ID: <CAAOQfrHN1-oHmbOksDv-BKWv4gDF2zHZ5dTew6R_QTh6s_1abg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf 1/5] net: ethtool: add xdp properties flag set
+To:     Saeed Mahameed <saeed@kernel.org>, David Ahern <dsahern@gmail.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>, hawk@kernel.org,
+        bpf <bpf@vger.kernel.org>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        jeffrey.t.kirsher@intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 01/04/21 10:59, Alexei Starovoitov wrote:
-> > > > I did have a patch that allowed that. It might be worth trying to upstream it.
-> > > > It just required a new macro which could be problematic.
-> > > >
-> > > > https://github.com/qais-yousef/linux/commit/fb9fea29edb8af327e6b2bf3bc41469a8e66df8b
-> > > >
-> > > > With the above I could attach using bpf::RAW_TRACEPOINT mechanism.
-> > > >
-> > >
-> > > Yeah, that could work. I meant there was no way to do it with what was there :)
-> > >
-> > > In our initial attempts at using BPF to get at nr_running (which I was not
-> > > involved in and don't have all the details...) there were issues being able to
-> > > keep up and losing events.  That may have been an implementation issue, but
-> > > using the module and trace-cmd doesn't have that problem. Hopefully you don't
-> > > see that using RAW_TRACEPOINTs.
-> >
-> > So I have a proper patch for that now, that actually turned out to be really
-> > tiny once you untangle exactly what is missing.
-> >
-> > Peter, bpf programs aren't considered ABIs AFAIK, do you have concerns about
-> > that?
-> >
-> > Thanks
-> >
-> > --
-> > Qais Yousef
-> >
-> > -->8--
-> >
-> > From cf81de8c7db03d62730939aa902579339e2fc859 Mon Sep 17 00:00:00 2001
-> > From: Qais Yousef <qais.yousef@arm.com>
-> > Date: Wed, 30 Dec 2020 22:20:34 +0000
-> > Subject: [PATCH] trace: bpf: Allow bpf to attach to bare tracepoints
-> >
-> > Some subsystems only have bare tracepoints (a tracepoint with no
-> > associated trace event) to avoid the problem of trace events being an
-> > ABI that can't be changed.
-> >
-> > From bpf presepective, bare tracepoints are what it calls
-> > RAW_TRACEPOINT().
-> >
-> > Since bpf assumed there's 1:1 mapping, it relied on hooking to
-> > DEFINE_EVENT() macro to create bpf mapping of the tracepoints. Since
-> > bare tracepoints use DECLARE_TRACE() to create the tracepoint, bpf had
-> > no knowledge about their existence.
-> >
-> > By teaching bpf_probe.h to parse DECLARE_TRACE() in a similar fashion to
-> > DEFINE_EVENT(), bpf can find and attach to the new raw tracepoints.
-> >
-> > Enabling that comes with the contract that changes to raw tracepoints
-> > don't constitute a regression if they break existing bpf programs.
-> > We need the ability to continue to morph and modify these raw
-> > tracepoints without worrying about any ABI.
-> >
-> > Signed-off-by: Qais Yousef <qais.yousef@arm.com>
-> > ---
-> >  include/trace/bpf_probe.h | 12 ++++++++++--
-> >  1 file changed, 10 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/include/trace/bpf_probe.h b/include/trace/bpf_probe.h
-> > index cd74bffed5c6..a23be89119aa 100644
-> > --- a/include/trace/bpf_probe.h
-> > +++ b/include/trace/bpf_probe.h
-> > @@ -55,8 +55,7 @@
-> >  /* tracepoints with more than 12 arguments will hit build error */
-> >  #define CAST_TO_U64(...) CONCATENATE(__CAST, COUNT_ARGS(__VA_ARGS__))(__VA_ARGS__)
-> >
-> > -#undef DECLARE_EVENT_CLASS
-> > -#define DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print) \
-> > +#define __BPF_DECLARE_TRACE(call, proto, args)                         \
-> >  static notrace void                                                    \
-> >  __bpf_trace_##call(void *__data, proto)                                        \
-> >  {                                                                      \
-> > @@ -64,6 +63,10 @@ __bpf_trace_##call(void *__data, proto)                                      \
-> >         CONCATENATE(bpf_trace_run, COUNT_ARGS(args))(prog, CAST_TO_U64(args));  \
-> >  }
-> >
-> > +#undef DECLARE_EVENT_CLASS
-> > +#define DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print) \
-> > +       __BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args))
-> > +
-> >  /*
-> >   * This part is compiled out, it is only here as a build time check
-> >   * to make sure that if the tracepoint handling changes, the
-> > @@ -111,6 +114,11 @@ __DEFINE_EVENT(template, call, PARAMS(proto), PARAMS(args), size)
-> >  #define DEFINE_EVENT_PRINT(template, name, proto, args, print) \
-> >         DEFINE_EVENT(template, name, PARAMS(proto), PARAMS(args))
-> >
-> > +#undef DECLARE_TRACE
-> > +#define DECLARE_TRACE(call, proto, args)                               \
-> > +       __BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args))          \
-> > +       __DEFINE_EVENT(call, call, PARAMS(proto), PARAMS(args), 0)
-> > +
-> >  #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
-> 
-> The patch looks fine to me.
-> Please add a few things:
-> - selftests to make sure it gets routinely tested with bpf CI.
+I would like to thank you for your time, comments, nitpicking as well
+as encouraging.
 
-Any pointer to an example test I could base this on?
+One thing needs clarification I think, that is, that those flags
+describe driver static feature sets - which are read-only. They have
+nothing in common with driver runtime configuration change yet.
+Runtime change of this state can be added but it needs a new variable
+and it can be done later on if someone needs it.
 
-> - add a doc with contents from commit log.
+Obviously, it is not possible to make everybody happy, especially with
+XDP_BASE flags set. To be honest, this XDP_BASE definition is a
+syntactic sugar for me and I can live without it. We can either remove
+it completely, from
+which IMO we all and other developers will suffer later on, or maybe
+we can agree on these two helper set of flags: XDP_BASE (TX, ABORTED,
+PASS, DROP) and XDP_LIMITED_BASE(ABORTED,PASS_DROP).
+What do you think?
 
-You're referring to the ABI part of the changelog, right?
+I am also going to add a new XDP_REDIRECT_TARGET flag and retrieving
+XDP flags over rtnelink interface.
 
-> The "Does bpf make things into an abi ?" question keeps coming back
-> over and over again.
-> Everytime we have the same answer that No, bpf cannot bake things into abi.
-> I think once it's spelled out somewhere in Documentation/ it would be easier to
-> repeat this message.
+I also think that for completeness, ethtool implementation should be
+kept  together with rtnelink part in order to cover both ip and
+ethtool tools. Do I have your approval or disagreement? Please let me know.
 
-How about a new Documentation/bpf/ABI.rst? I can write something up initially
-for us to discuss in detail when I post.
+Both AF_XDP_ZEROCOPY and XDP_SOCK_ZEROCOPY are good to me. I will pick
+the one XDP_SOCK_ZEROCOPY unless there are protests.
 
-We have Documentation/ABI directory but I don't think it's suitable for what we
-want.
-
-> Also please tag future patches to bpf-next tree to make sure things
-> keep being tested.
-
-Sure. I understood this means adding a [PATCH bpf-next ...] in the subject
-line.
+I don't think that HEADROOM parameter should be passed via the flags.
+It is by nature a number and an attempt to quantize with flags seems
+to be an unnatural limitation for the future.
 
 Thanks
-
---
-Qais Yousef
+Marek
