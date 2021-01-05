@@ -2,30 +2,28 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17C182EAC84
-	for <lists+bpf@lfdr.de>; Tue,  5 Jan 2021 15:01:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D25F2EADB2
+	for <lists+bpf@lfdr.de>; Tue,  5 Jan 2021 15:46:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729090AbhAEN6w (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Jan 2021 08:58:52 -0500
-Received: from gofer.mess.org ([88.97.38.141]:45217 "EHLO gofer.mess.org"
+        id S1726957AbhAEOqS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Jan 2021 09:46:18 -0500
+Received: from gofer.mess.org ([88.97.38.141]:54255 "EHLO gofer.mess.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726962AbhAEN6v (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Jan 2021 08:58:51 -0500
+        id S1726694AbhAEOqR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Jan 2021 09:46:17 -0500
 Received: by gofer.mess.org (Postfix, from userid 1000)
-        id F2539C637E; Tue,  5 Jan 2021 13:58:08 +0000 (GMT)
+        id 7A5CEC637E; Tue,  5 Jan 2021 14:45:34 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
-        t=1609855089; bh=gH+Lz6nVQLvOPcvGmGMj2CJj4YjwnBzm+oF+wUpTKBo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Gv6wjYb3gwZkeT1yOF/i+WCz0iHlLUILW8Lj+yeF6Pk7W3PCwposSzOrlgyfnt4CG
-         E6i7P7zI+sYpI6D8z1mvlxt04wejgD+qSO6ypv5yY83LUZyNyOJAL9ubzjjpCmjiUb
-         +UXOfU64U4P1e1bAw1/IA+BkBtKHYbjq0av9vodOXCc4QT1OGiu4nDsLGDlQ4jiSK3
-         FQPbpE9SaHQe5NuL+/WFUTGfsyxgj+1sSj9YM7a1RYmoChlTITvkmnfdDoB6QV3PoO
-         LVttg9P6ny4co6Peh016HnKUhyZnKDeHqfq+xnVxpyDMF79UOfsSvp1YsjBQxzpSYZ
-         /7ut9Xx1dJQKg==
-Date:   Tue, 5 Jan 2021 13:58:08 +0000
+        t=1609857934; bh=iJ86QbxBrhi/nSJypbCAMvYcDP4l2HigQ2w1KwuFLoQ=;
+        h=From:To:Subject:Date:From;
+        b=RKRuRNaOSqpGKmLkT3YE+xHyCRSzR4zz81sZRfyaVxK8mA2RFPOzlnFQrROGo21BW
+         pu8RJr1qccWhZAOhhjmsOxfnYeE/yGxQlLsQAQCe/DDkQXutEIT755yNGygMOy+Jsr
+         bH1UaIJR1DatoIcPI47IOOrWbpNEGXgn9IuNEdPE0IdTCkcgm2FTGF4+WZQnalWrgn
+         V8lvjotfbWfpMf5APdQYlpsHoe5IFvh8EiKq7K9MvmLJs4Av/wYlMF4m43RCZv0La5
+         KQihe77WRKfe8bjxFINZWq2NY83gEgljwPtsHl7r4ENBW7xTZvvXqXvkxYOFe1/OMa
+         46qe4HK4rP3Xg==
 From:   Sean Young <sean@mess.org>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+To:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
@@ -35,69 +33,62 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Nathan Chancellor <natechancellor@gmail.com>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Quentin Monnet <quentin@isovalent.com>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
         linux-doc@vger.kernel.org, netdev@vger.kernel.org,
         bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
         clang-built-linux@googlegroups.com
-Subject: Re: [PATCH v2] btf: support ints larger than 128 bits
-Message-ID: <20210105135808.GA13438@gofer.mess.org>
-References: <20201219163652.GA22049@gofer.mess.org>
- <bf26fcc9-a2b5-9d6f-a2ac-e39a0b14d838@fb.com>
+Subject: [PATCH v3 0/4] btf: support ints larger than 128 bits
+Date:   Tue,  5 Jan 2021 14:45:30 +0000
+Message-Id: <cover.1609855479.git.sean@mess.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bf26fcc9-a2b5-9d6f-a2ac-e39a0b14d838@fb.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Dec 30, 2020 at 10:21:09AM -0800, Yonghong Song wrote:
-> On 12/19/20 8:36 AM, Sean Young wrote:
-> > clang supports arbitrary length ints using the _ExtInt extension. This
-> > can be useful to hold very large values, e.g. 256 bit or 512 bit types.
-> > 
-> > Larger types (e.g. 1024 bits) are possible but I am unaware of a use
-> > case for these.
-> > 
-> > This requires the _ExtInt extension enabled in clang, which is under
-> > review.
-> > 
-> > Link: https://clang.llvm.org/docs/LanguageExtensions.html#extended-integer-types
-> > Link: https://reviews.llvm.org/D93103
-> > 
-> > Signed-off-by: Sean Young <sean@mess.org>
-> > ---
-> > changes since v2:
-> >   - added tests as suggested by Yonghong Song
-> >   - added kernel pretty-printer
-> > 
-> >   Documentation/bpf/btf.rst                     |   4 +-
-> >   include/uapi/linux/btf.h                      |   2 +-
-> >   kernel/bpf/btf.c                              |  54 +-
-> >   tools/bpf/bpftool/btf_dumper.c                |  40 ++
-> >   tools/include/uapi/linux/btf.h                |   2 +-
-> >   tools/lib/bpf/btf.c                           |   2 +-
-> >   tools/testing/selftests/bpf/Makefile          |   3 +-
-> >   tools/testing/selftests/bpf/prog_tests/btf.c  |   3 +-
-> >   .../selftests/bpf/progs/test_btf_extint.c     |  50 ++
-> >   tools/testing/selftests/bpf/test_extint.py    | 535 ++++++++++++++++++
-> 
-> For easier review, maybe you can break this patch into a patch series like
-> below?
->   patch 1 (kernel related changes and doc)
->       kernel/bpf/btf.c, include/uapi/linux/btf.h,
->       tools/include/uapi/linux/btf.h
->       Documentation/bpf/btf.rst
->   patch 2 (libbpf support)
->       tools/lib/bpf/btf.c
->   patch 3 (bpftool support)
->       tools/bpf/bpftool/btf_dumper.c
->   patch 4 (testing)
->       rest files
+clang supports arbitrary length ints using the _ExtInt extension. This
+can be useful to hold very large values, e.g. 256 bit or 512 bit types.
 
-That makes sense, I'll send out v3 shortly.
+Larger types (e.g. 1024 bits) are possible but I am unaware of a use
+case for these.
 
-Thanks,
+This requires the _ExtInt extension enabled in clang, which is under
+review.
 
-Sean
+Link: https://clang.llvm.org/docs/LanguageExtensions.html#extended-integer-types
+Link: https://reviews.llvm.org/D93103
+
+Signed-off-by: Sean Young <sean@mess.org>
+
+changes since v2:
+ - split patches into 4 distinct patches
+
+changes since v1:
+ - added tests as suggested by Yonghong Song
+ - added kernel pretty-printer
+
+
+Sean Young (4):
+  btf: add support for ints larger than 128 bits
+  libbpf: add support for ints larger than 128 bits
+  bpftool: add support for ints larger than 128 bits
+  bpf: add tests for ints larger than 128 bits
+
+ Documentation/bpf/btf.rst                     |   4 +-
+ include/uapi/linux/btf.h                      |   2 +-
+ kernel/bpf/btf.c                              |  54 +-
+ tools/bpf/bpftool/btf_dumper.c                |  40 ++
+ tools/include/uapi/linux/btf.h                |   2 +-
+ tools/lib/bpf/btf.c                           |   2 +-
+ tools/testing/selftests/bpf/Makefile          |   3 +-
+ tools/testing/selftests/bpf/prog_tests/btf.c  |   3 +-
+ .../selftests/bpf/progs/test_btf_extint.c     |  50 ++
+ tools/testing/selftests/bpf/test_extint.py    | 535 ++++++++++++++++++
+ 10 files changed, 679 insertions(+), 16 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/test_btf_extint.c
+ create mode 100755 tools/testing/selftests/bpf/test_extint.py
+
+-- 
+2.29.2
+
