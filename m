@@ -2,114 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1B592EA2FC
-	for <lists+bpf@lfdr.de>; Tue,  5 Jan 2021 02:47:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 958192EA31A
+	for <lists+bpf@lfdr.de>; Tue,  5 Jan 2021 02:58:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726124AbhAEBrK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 4 Jan 2021 20:47:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51602 "EHLO
+        id S1726124AbhAEB5w (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 4 Jan 2021 20:57:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725921AbhAEBrJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 4 Jan 2021 20:47:09 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DB30C061574;
-        Mon,  4 Jan 2021 17:46:29 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id y8so15507697plp.8;
-        Mon, 04 Jan 2021 17:46:29 -0800 (PST)
+        with ESMTP id S1725921AbhAEB5w (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 4 Jan 2021 20:57:52 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DF08C061574;
+        Mon,  4 Jan 2021 17:57:12 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id i7so20274657pgc.8;
+        Mon, 04 Jan 2021 17:57:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=6rJHKD1k8iLoBVJmfTVtFUbHaU4YAJTAH6eGwvb2u3I=;
-        b=AdTk4JrjQDBKRIFoPKJwvdnCi9Zo+wGhggWuM4Pm7MxcaVsD5M/ypIoOBbjxF2EAKX
-         KVpcvNbspbJYX/vF36xIz5XWHNjvIDXXkwBbUmPA0bBlxXOBeAUOEVBGptjtBVzqdoxA
-         RdHLiSOR7XBT9qAg2sysOSPfYQtrb85+kx6AlVxyF6EnAPHdAtF/QXrs2S37WaHzetkR
-         QBGVKpoqTwirnzPe+coSl1VY6Q35CkYbeP2MdOKJB8k5oWRGzUrBICtgVRd9U3FpxOQ1
-         blC1YS71SqNsfybyKSAGeLc18qsEMcfB5EVwU85kHzSvAnj0mao2UJk5ikUqbAdH7QMK
-         YrPQ==
+        bh=KiFoNCz0mL7WJA8dkCz5O3nky6l6BcwhHYdfVx2mWfc=;
+        b=GY5FiKBuxQJPuAl93yNUjMNkPmk4y0hWLvUbx/4rOqLpxtdyUP70wANnnMl8Lzd/FM
+         E7UXlT+hFL+nsZ8op4kuWCPp1u8tr0bAgFg+r/x6Lfty2wR5CNw0y+kllbb0uWn2SDiH
+         rqeP4PnRPZ27b8L89U14ieus06JrFJUpwKxdVjti/T5BViCHr3cAMm4fitdzSPHAznaG
+         FySNCSByMXhacN0JTl4aB2Wio85ls2vEVb9RPRbZPlORRSEVeNpfQgMl0dkPn7jKyqsW
+         kYaSqbZGU8UW5D018FVOSHU5OIdhwg9RSIinvs/d8Wa3mobPpln25O0UV+m7QvMh3FNH
+         T9MA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=6rJHKD1k8iLoBVJmfTVtFUbHaU4YAJTAH6eGwvb2u3I=;
-        b=GLc8R0bOwEv7tSvHM/yJKEVKoRGe5IxVQP8+2kRRb4pLOA0pxIAJJaifpCzPIN49k5
-         TE1DI+YEaQCLGGjXLonNEbX2yD6Ok0xKGz8A4gAypLYiXCVxR37UQxmPj7NNpNgLJsYt
-         K0q+iq9SXH9as2OXWXFkm2TqC1fvSVjgVWyPYxnlEkauZ02pbs97vKtEf6f3jZfd+wdi
-         l4sPZVnuU3WPLZdfjA1iI4nNJPvObruPV94kTaU4bSyqFeUTNZ2DViP/F9oyKRBleSLm
-         piyoqtpZNLMgoQzRPUH+vRJ7eyiN/6Glw8pK//tV1ms5ASyG+FdYREtJiTujwvkXn+my
-         Ts5A==
-X-Gm-Message-State: AOAM533dUd+jaVkiNA3q6qyMQgi0VfMwIF2ThHM4OBk4ougz+l/QRRKi
-        lUuHuClAkmzHAovrDOM9y4LiR06KBoCPRg==
-X-Google-Smtp-Source: ABdhPJyGMQwnusRfLP8VLG4DJ5A+ClXTxS87R559BsbMEPvFt2PBNgMgtY6lIoqinkBcnW22YJHKFQ==
-X-Received: by 2002:a17:902:d351:b029:db:e003:3b88 with SMTP id l17-20020a170902d351b02900dbe0033b88mr73812053plk.70.1609811188906;
-        Mon, 04 Jan 2021 17:46:28 -0800 (PST)
+        bh=KiFoNCz0mL7WJA8dkCz5O3nky6l6BcwhHYdfVx2mWfc=;
+        b=mwJxVS1vCNmHeCrssmamJenWvZ/AC62R3MDagfvvSzCSUxq7ovqavQ+iOu3+DMvc3V
+         ftUQdYmpqw5Lk/g1DxM0QJLDR/IGV5VxiuoIYsF3bHAj6DAxkwHR+tenMAauaPgcrU4e
+         IkqiBDfOmIs2FVbZi76Vr6+4otHZx7FHHohH4DeKB8DEY7YL6N7qV3acjn3Y+phb147X
+         z1RRxlwvuHK6xvVQo46NqXEc9I0Y7BkRJocqtr/HLScMFUZf24XWBZ8RRvg8Xn+bNEEq
+         hwh79q4q8UUmlX2gLZW3g2ZowuDsnaygF4MgW2Te5LCPZE8Oz0CvL5nG60CxQPguN7oh
+         5QUA==
+X-Gm-Message-State: AOAM532P9mxGcY92LslCcrXrujhnaKF0VtxmbtrMq5Wyyw82wvH/pOEJ
+        BGxcmjbD+bsuCGa1VuXYlOA=
+X-Google-Smtp-Source: ABdhPJy4xVVFKlj1qHUrO4zjwh2PdZotkPxNh03ABT/tyKZqgh/XATG4wD98ulhZdi5MAQa17KNbTw==
+X-Received: by 2002:a05:6a00:228a:b029:18b:212a:1af7 with SMTP id f10-20020a056a00228ab029018b212a1af7mr67342050pfe.55.1609811831717;
+        Mon, 04 Jan 2021 17:57:11 -0800 (PST)
 Received: from ast-mbp ([2620:10d:c090:400::5:429b])
-        by smtp.gmail.com with ESMTPSA id v10sm545118pjr.47.2021.01.04.17.46.27
+        by smtp.gmail.com with ESMTPSA id f24sm608852pjj.5.2021.01.04.17.57.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jan 2021 17:46:28 -0800 (PST)
-Date:   Mon, 4 Jan 2021 17:46:25 -0800
+        Mon, 04 Jan 2021 17:57:10 -0800 (PST)
+Date:   Mon, 4 Jan 2021 17:57:08 -0800
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Yonghong Song <yhs@fb.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kpsingh@chromium.org" <kpsingh@chromium.org>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH v2 bpf-next 1/4] bpf: introduce task_vma bpf_iter
-Message-ID: <20210105014625.krtz3uzqtfu4y7m5@ast-mbp>
-References: <20201215233702.3301881-1-songliubraving@fb.com>
- <20201215233702.3301881-2-songliubraving@fb.com>
- <20201217190308.insbsxpf6ujapbs3@ast-mbp>
- <C4D9D25A-C3DD-4081-9EAD-B7A5B6B74F45@fb.com>
- <20201218023444.i6hmdi3bp5vgxou2@ast-mbp>
- <D964C66B-2C25-4C3D-AFDE-E600364A721C@fb.com>
- <CAADnVQJyTVgnsDx6bJ1t-Diib9r+fiph9Ax-d97qSMvU3iKcRw@mail.gmail.com>
- <231d0521-62a7-427b-5351-359092e73dde@fb.com>
- <09DA43B9-0F6F-45C1-A60D-12E61493C71F@fb.com>
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        natechancellor@gmail.com, ndesaulniers@google.com, toke@redhat.com,
+        jean-philippe@linaro.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH bpf-next] ksnoop: kernel argument/return value
+ tracing/display using BTF
+Message-ID: <20210105015708.bcw7l7gijeshw7fj@ast-mbp>
+References: <1609773991-10509-1-git-send-email-alan.maguire@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <09DA43B9-0F6F-45C1-A60D-12E61493C71F@fb.com>
+In-Reply-To: <1609773991-10509-1-git-send-email-alan.maguire@oracle.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 05:23:25PM +0000, Song Liu wrote:
+On Mon, Jan 04, 2021 at 03:26:31PM +0000, Alan Maguire wrote:
 > 
+> ksnoop can be used to show function signatures; for example:
 > 
-> > On Dec 18, 2020, at 8:38 AM, Yonghong Song <yhs@fb.com> wrote:
-> > 
-> > 
-> > 
-> > On 12/17/20 9:23 PM, Alexei Starovoitov wrote:
-> >> On Thu, Dec 17, 2020 at 8:33 PM Song Liu <songliubraving@fb.com> wrote:
-> >>>> 
-> >>>> ahh. I missed that. Makes sense.
-> >>>> vm_file needs to be accurate, but vm_area_struct should be accessed as ptr_to_btf_id.
-> >>> 
-> >>> Passing pointer of vm_area_struct into BPF will be tricky. For example, shall we
-> >>> allow the user to access vma->vm_file? IIUC, with ptr_to_btf_id the verifier will
-> >>> allow access of vma->vm_file as a valid pointer to struct file. However, since the
-> >>> vma might be freed, vma->vm_file could point to random data.
-> >> I don't think so. The proposed patch will do get_file() on it.
-> >> There is actually no need to assign it into a different variable.
-> >> Accessing it via vma->vm_file is safe and cleaner.
-> > 
-> > I did not check the code but do you have scenarios where vma is freed but old vma->vm_file is not freed due to reference counting, but
-> > freed vma area is reused so vma->vm_file could be garbage?
+> $ ksnoop info ip_send_skb
+> int  ip_send_skb(struct net  * net, struct sk_buff  * skb);
 > 
-> AFAIK, once we unlock mmap_sem, the vma could be freed and reused. I guess ptr_to_btf_id
-> or probe_read would not help with this?
+> Then we can trace the function, for example:
+> 
+> $ ksnoop trace ip_send_skb
 
-Theoretically we can hack the verifier to treat some ptr_to_btf_id as "less
-valid" than the other ptr_to_btf_id, but the user experience will not be great.
-Reading such bpf prog will not be obvious. I think it's better to run bpf prog
-in mmap_lock then and let it access vma->vm_file. After prog finishes the iter
-bit can do if (mmap_lock_is_contended()) before iterating. That will deliver
-better performance too. Instead of task_vma_seq_get_next() doing
-mmap_lock/unlock at every vma. No need for get_file() either. And no
-__vm_area_struct exposure.
+Thanks for sharing. It will be useful tool.
+
+> +
+> +		data = get_arg(ctx, currtrace->base_arg);
+> +
+> +		dataptr = (void *)data;
+> +
+> +		if (currtrace->offset)
+> +			dataptr += currtrace->offset;
+> +
+> +		/* look up member value and read into data field, provided
+> +		 * it <= size of a __u64; when it is, it can be used in
+> +		 * predicate evaluation.
+> +		 */
+> +		if (currtrace->flags & KSNOOP_F_MEMBER) {
+> +			ret = -EINVAL;
+> +			data = 0;
+> +			if (currtrace->size <= sizeof(__u64))
+> +				ret = bpf_probe_read_kernel(&data,
+> +							    currtrace->size,
+> +							    dataptr);
+> +			else
+> +				bpf_printk("size was %d cant trace",
+> +					   currtrace->size);
+> +			if (ret) {
+> +				currdata->err_type_id =
+> +					currtrace->type_id;
+> +				currdata->err = ret;
+> +				continue;
+> +			}
+> +			if (currtrace->flags & KSNOOP_F_PTR)
+> +				dataptr = (void *)data;
+> +		}
+> +
+> +		/* simple predicate evaluation: if any predicate fails,
+> +		 * skip all tracing for this function.
+> +		 */
+> +		if (currtrace->flags & KSNOOP_F_PREDICATE_MASK) {
+> +			bool ok = false;
+> +
+> +			if (currtrace->flags & KSNOOP_F_PREDICATE_EQ &&
+> +			    data == currtrace->predicate_value)
+> +				ok = true;
+> +
+> +			if (currtrace->flags & KSNOOP_F_PREDICATE_NOTEQ &&
+> +			    data != currtrace->predicate_value)
+> +				ok = true;
+> +
+> +			if (currtrace->flags & KSNOOP_F_PREDICATE_GT &&
+> +			    data > currtrace->predicate_value)
+> +				ok = true;
+> +			if (currtrace->flags & KSNOOP_F_PREDICATE_LT &&
+> +			    data < currtrace->predicate_value)
+> +				ok = true;
+> +
+> +			if (!ok)
+> +				goto skiptrace;
+> +		}
+> +
+> +		currdata->raw_value = data;
+> +
+> +		if (currtrace->flags & (KSNOOP_F_PTR | KSNOOP_F_MEMBER))
+> +			btf_ptr.ptr = dataptr;
+> +		else
+> +			btf_ptr.ptr = &data;
+> +
+> +		btf_ptr.type_id = currtrace->type_id;
+> +
+> +		if (trace->buf_len + MAX_TRACE_DATA >= MAX_TRACE_BUF)
+> +			break;
+> +
+> +		buf_offset = &trace->buf[trace->buf_len];
+> +		if (buf_offset > &trace->buf[MAX_TRACE_BUF]) {
+> +			currdata->err_type_id = currtrace->type_id;
+> +			currdata->err = -ENOSPC;
+> +			continue;
+> +		}
+> +		currdata->buf_offset = trace->buf_len;
+> +
+> +		ret = bpf_snprintf_btf(buf_offset,
+> +				       MAX_TRACE_DATA,
+> +				       &btf_ptr, sizeof(btf_ptr),
+> +				       BTF_F_PTR_RAW);
+
+The overhead would be much lower if instead of printing in the kernel the
+tool's bpf prog would dump the struct data into ring buffer and let the user
+space part of the tool do the pretty printing. There would be no need to pass
+btf_id from the user space to the kernel either. The user space would need to
+gain pretty printing logic, but may be we can share the code somehow between
+the kernel and libbpf.
+
+Separately the interpreter in the bpf prog to handle predicates is kinda
+anti-bpf :) I think ksnoop can generate bpf code on the fly instead. No need
+for llvm. The currtrace->offset/size would be written into the prog placeholder
+instructions by ksnoop before loading the prog. With much improved overhead for
+filtering.
