@@ -2,211 +2,285 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67FC72EA504
-	for <lists+bpf@lfdr.de>; Tue,  5 Jan 2021 06:48:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2850D2EA63F
+	for <lists+bpf@lfdr.de>; Tue,  5 Jan 2021 09:01:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725776AbhAEFsh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Jan 2021 00:48:37 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:30364 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725766AbhAEFsh (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 5 Jan 2021 00:48:37 -0500
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1055ev6v015555;
-        Mon, 4 Jan 2021 21:47:42 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=yLk0GexK0V0FQxZdUTnIFAmr0rIG5UcSsYqOwP0pgGw=;
- b=Qm1q4KPVDV2ruw7BNiTazsQxqiiOa4nu8Xws2dT3r9PLRQBs6bzYhwFaYeKOUDWYXKan
- QBJ4SAn0OEDSxxrU5WN4k46vERGssERWTOrPCMXhEU5VQ7JFmsCHwCc+hkgKQwMIThSP
- SctyaHYVs8QDbxN9DCHvirjthAtfvRUmiSo= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 35u9cp7mgq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 04 Jan 2021 21:47:42 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 4 Jan 2021 21:47:40 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Akz/TnHyWCmyS6IdukpTpvdS9Q45fjSDQ2Rc1sXZZHFIp2Yl2DizfmgF13kmlArQaz1Z0b1e6G2oE0aNdiorVn3fI3YPDoSJgBSKuQFUyHsPHKndLnZ+RDHZydfAz1ZaS0WPuXEnIfYy4facniGbXLqdRycIq0MAC2JQP98NAf69EFS1dCeGzRlKVY5JKYIdEtzoSk5lvzrAH1SWufs1bb+zVQkOXq7OnGL3FHAvmXLtObh0weocLqgjwvvltNmovVLOkwors0rwLbk4mkazojoS5QB/9yPHi1CXOJkmsRZHZknSMQkrBpZWgrC5hOfqkyql5wsg0FqPMjmqTkZhWQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yLk0GexK0V0FQxZdUTnIFAmr0rIG5UcSsYqOwP0pgGw=;
- b=kSlm41epeS++XYNgWkivTurDsXr0UD246h0M+1swdinjBIYRr8Q/o/a0ber0UPy9BVWeCmShshWCA2WkhdiCYrZTEt7yQNoBAv8pnJFu5FYlV0avTRfE+iKQB+8Cqa5TutBnjHTkpNlVjSaALwDquGyBywrYqqf64jtUq3Cnp3xuYPFXxSRAwQ63xSC0LN6U9vlgEgi6GtHNXc/qM6zIrHcRA1ZEUzMGNSmn6rkeZiZL6v9GnoFOk7pn+uFliI1E0OqJGbSekp877faBUXc/vQqJ35ocoDA72+3FiPkbBIW0pkCnyNKMs04t1hKNMW7iCZGJP/1L8EJgh5QrcbwpaQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yLk0GexK0V0FQxZdUTnIFAmr0rIG5UcSsYqOwP0pgGw=;
- b=dxXjrtptF1g2k9PJLdjsA1jiZWmagy44nc0YtWTT5xAbFjYBGofuBVqli1RQREWGRWvfMSXWKJFqSQ9uKwoHDOMbjsEZFm6ZVjlCQSDWnXcfnINg3xG9pWIv4rPnbY855rYRcptCBHok7DsMBWr213DhXedWbBWYDvFqB+URXtE=
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
- by BYAPR15MB2246.namprd15.prod.outlook.com (2603:10b6:a02:8d::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.23; Tue, 5 Jan
- 2021 05:47:34 +0000
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::c97:58e4:ee9:1dc0]) by BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::c97:58e4:ee9:1dc0%7]) with mapi id 15.20.3721.024; Tue, 5 Jan 2021
- 05:47:34 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-CC:     Yonghong Song <yhs@fb.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kpsingh@chromium.org" <kpsingh@chromium.org>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH v2 bpf-next 1/4] bpf: introduce task_vma bpf_iter
-Thread-Topic: [PATCH v2 bpf-next 1/4] bpf: introduce task_vma bpf_iter
-Thread-Index: AQHW0zs42cd9AcJBNEyi77fZmX7Jx6n7qAwAgAAzywCAAEpiAIAAIRcAgAAOLwCAALyEgIAADIEAgBtELICAAENfgA==
-Date:   Tue, 5 Jan 2021 05:47:34 +0000
-Message-ID: <6E122A14-0F77-46F9-8891-EDF4DB494E37@fb.com>
-References: <20201215233702.3301881-1-songliubraving@fb.com>
- <20201215233702.3301881-2-songliubraving@fb.com>
- <20201217190308.insbsxpf6ujapbs3@ast-mbp>
- <C4D9D25A-C3DD-4081-9EAD-B7A5B6B74F45@fb.com>
- <20201218023444.i6hmdi3bp5vgxou2@ast-mbp>
- <D964C66B-2C25-4C3D-AFDE-E600364A721C@fb.com>
- <CAADnVQJyTVgnsDx6bJ1t-Diib9r+fiph9Ax-d97qSMvU3iKcRw@mail.gmail.com>
- <231d0521-62a7-427b-5351-359092e73dde@fb.com>
- <09DA43B9-0F6F-45C1-A60D-12E61493C71F@fb.com>
- <20210105014625.krtz3uzqtfu4y7m5@ast-mbp>
-In-Reply-To: <20210105014625.krtz3uzqtfu4y7m5@ast-mbp>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.120.23.2.4)
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
-x-originating-ip: [2620:10d:c090:400::5:4dc5]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6a4d6cbb-3dc0-43bf-daf6-08d8b13d66a0
-x-ms-traffictypediagnostic: BYAPR15MB2246:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB224659FE73DD8C257E2C275BB3D10@BYAPR15MB2246.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 6mC96y+MzWFUQj5JyGEdzLHBHKa69rYRtoZWd5lGraWukEJQ8QYo394D/8l7aOOVvt7G0YVotvWmzxVaUwjuSz85Rb2nHJ8lhunx3UOemW3sb6mjIeMEL2mmIBW/erCn961UVKoQMv3/Oxh6h6RC01izP4NSx0ifmB9UkKWaf9Zun8ABhAmsZJpnks/Nq8mv0PoiCKSzUqKZiASYN0dFcHeeAAyuLLOIS0ay7VojatBXdDRoQIHxaeGNETTjT8nhWUqAlPooX66C+rxF6KFD/wU0nBlJxQ81CIgjC3DC6v9bJA1VDZ0rMloBoSxbyuMb43KnM53wmYSH7iZiZr7o7z+nbvW7mPOTsHE44WU12Izi28JrA5v14CE7pcW+VEtNLJNyz5Bqy52ZDjPxb8543eYSa8eT35oqxPlRq75vUNrQCvSENeWHHHR+3/JbhHcK
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(366004)(346002)(396003)(39860400002)(186003)(53546011)(478600001)(54906003)(33656002)(6512007)(71200400001)(86362001)(4326008)(6506007)(66556008)(66446008)(64756008)(2906002)(316002)(66946007)(91956017)(66476007)(36756003)(8676002)(6916009)(2616005)(5660300002)(83380400001)(6486002)(76116006)(8936002)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?Aqo8Bk5QgAFB++jCo9vkVFAHhtIbTtBbTcyvEB8ks3t1yoL8uCIM0uP8ksFZ?=
- =?us-ascii?Q?dnvPaKBZJfCuAjErc3qChS8z2LrAk+DvZ5j7oPdEWGIcgNxMp4OJP+ewWLes?=
- =?us-ascii?Q?YvSDSxyKU/4leoLpx2Zd1aJWmHH5mcCY9fhMAwIeK/GMEcneuZI8qnn+Hnic?=
- =?us-ascii?Q?k/lxupVR+sw73PsheyFQDVKXI3I7ByuYh2XWOgxrglngM9gkhF5kwWnvrZXM?=
- =?us-ascii?Q?8e4B2hUxaXXTmNY7oeIUJ6n16gYP/bkS4FtZspYuohBkeavNCbT+As4h684+?=
- =?us-ascii?Q?6si1qxMneEaTPb/oFhSXX8iFG6e+lRkPefDaob6M38lM8oREVCNG5fIBA/bb?=
- =?us-ascii?Q?Ny755qN1SP/dN+3YhaRpjo23hrKllkFrvw3IgMl+cm9KPXnyta50o6LBe2VB?=
- =?us-ascii?Q?8TpKExL6aaslARBCJbMzxfHL9Ta02fHHe5ybLsprz7g7q99XmmZHfQXAtjBv?=
- =?us-ascii?Q?YnsAgrNazNWE3FGaOJjLtoNax5Rga7hnQ1gndlKUcnxjje1doUv+moINzo0D?=
- =?us-ascii?Q?E+HgT0eP10DygVVJosie7jNZXC9gNbzb6ZD1zjkosKb4TOWwy9QdeznnOom7?=
- =?us-ascii?Q?+BJC2FbQSdHmz/fBHBY5Q3pM3mwj5YI9+3uRjqex2Y2LN21o48kYAshVDf2D?=
- =?us-ascii?Q?a91zAo5G7/pwlb+svCFgmCRpZeind19gTfaOY4CDkXB6amuY5IRLf7+uHxcu?=
- =?us-ascii?Q?qdCmsNIVROirr2F5m0qml0JYI3rUsgRdBDvhQaaA09pPO/3e0I38CIcYa+v4?=
- =?us-ascii?Q?1KnFmaRqM7cQRV/waJJXi5kK5h+La3G/0+vP4A/r9M2CpzuV1RStzeM/CW0h?=
- =?us-ascii?Q?JVsxJEdpS64dkwDws0/T0+DFLW7cf5JUxbO2Bgf2QJv+YTq0Qukp7Hkhn3Vs?=
- =?us-ascii?Q?xvwpWaqO/GLkDyUYVFjvgeg+R3ndZsSB9yZeQXNlZYkRnG+Il5zkyaOOmxTP?=
- =?us-ascii?Q?1DQhXqJDMJ+DnkWt1CI9EgmVI2YxpGEGbz7ZcLsGb1v6G79J2NupRCkd9WSF?=
- =?us-ascii?Q?yLSjjUg/xkq2EbVPqvEpbz3u8ID8u8ct8fIr3IY/oNAxsWw=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <25AE158875720849B0808DE9FC997B5A@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1727454AbhAEIBE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Jan 2021 03:01:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727452AbhAEIBD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Jan 2021 03:01:03 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2863C061794
+        for <bpf@vger.kernel.org>; Tue,  5 Jan 2021 00:00:37 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id i7so20776467pgc.8
+        for <bpf@vger.kernel.org>; Tue, 05 Jan 2021 00:00:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3nlfo9/mhaNQaOLW+/54quz4laF3lE7RfS8AoXKz4As=;
+        b=Hi0eGK430kFj6mC4/oLfF2qLXsWo+5dT6yQOBbNBpTi1WqbIQ6jYL9ed//fSkUvlto
+         KVrHkUTIkNgx6u1ScApiowjWaJC9JtA7PmJ1XNHJ9yZMdIeIFoiVWYr5E+7q1bSnhuMK
+         91+ZMtWrXqdqnEqaMd3R+/EzHS6Wz9zzGcs5Wa/DAvojVGTvRxAJmdBDiosWWhZLWjXa
+         8bKn2PhEN6PlZapkaWxsIkwKqYFl7LGemCJpvfpaddbNuUIcn8ufSjw9f5zOiiUd1xwB
+         tLrXgqKZT4+ytoXCD8dz0NXBQMlgQU97GeQt/YYd1gfdAnypSrwEcZdNWn43M6aT2HRk
+         mrZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3nlfo9/mhaNQaOLW+/54quz4laF3lE7RfS8AoXKz4As=;
+        b=XwA0XciA7XicUmkC7ojFKoXNeXaTkLXEt6H1PgfrmJbTdy+34esqL+3iOl6SELgVMe
+         JMvGljcW4On/7nwieFoE16cMz+9nfayHFYEjDHvsOLQ7/ApgfhiHusyH46uIc/EBx6Rl
+         qLI9n03ELv35rDMhXYUKUAl18buyV3gXZMEf1plZ3cVpJFTHm26Xdi21qreo92WMdCJu
+         iDi930Up+WVfC1TaLFtj7gFdaNqAbtiPtfBXOtIZzF+vKdiWyFSX4HTlpB0A/0CkeeP7
+         3lpj78QSODgK87Xb3Pu5U2GIZExFOVclh01QkwP4+QXe08Pgy2OnKCT9a5Ptf9PVQ6f1
+         cECw==
+X-Gm-Message-State: AOAM532ng8XaMZenaQN1Z65BA8+KlsDNG2F8fvlbrDyxLuxupnuArudV
+        VhJZBVbC7p6rJ9QF2SXr2v+JVA==
+X-Google-Smtp-Source: ABdhPJxbt3vW5nq4MrAq9EWw9m+WRWOMgVjJ7121HntrlM+d0R45S/o9d6jS0LCaMSvjcXNfl8YUmA==
+X-Received: by 2002:aa7:96d8:0:b029:19e:bc79:cf7 with SMTP id h24-20020aa796d80000b029019ebc790cf7mr44470361pfq.22.1609833636366;
+        Tue, 05 Jan 2021 00:00:36 -0800 (PST)
+Received: from C02X655XJG5H.bytedance.net ([61.120.150.71])
+        by smtp.gmail.com with ESMTPSA id r20sm56546403pgb.3.2021.01.05.00.00.32
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 05 Jan 2021 00:00:35 -0800 (PST)
+From:   Xichen Lin <linxichen.01@bytedance.com>
+X-Google-Original-From: Xichen Lin <linxichen.01@bytedance>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        wangdongdong.6@bytedance.com, cong.wang@bytedance.com,
+        Xichen Lin <linxichen.01@bytedance.com>
+Subject: [PATCH] bpf: Add signature checking for BPF programs
+Date:   Tue,  5 Jan 2021 16:00:27 +0800
+Message-Id: <20210105080027.36692-1-linxichen.01@bytedance.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6a4d6cbb-3dc0-43bf-daf6-08d8b13d66a0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Jan 2021 05:47:34.4025
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: GoxcWlC3BlK/7R1aViGy0R3UTXBDZlvzF+Suxz0U60FTX9jeM0VPzsEQh1wkpvwc7dCgkBl8NU5bSAyIloxv3w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2246
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-05_01:2021-01-04,2021-01-05 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
- priorityscore=1501 malwarescore=0 bulkscore=0 mlxlogscore=999 mlxscore=0
- phishscore=0 lowpriorityscore=0 suspectscore=0 clxscore=1015 spamscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101050035
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+From: Xichen Lin <linxichen.01@bytedance.com>
 
+Check the signature of a BPF program against the same set of keys for
+module signature checking.
 
-> On Jan 4, 2021, at 5:46 PM, Alexei Starovoitov <alexei.starovoitov@gmail.=
-com> wrote:
->=20
-> On Fri, Dec 18, 2020 at 05:23:25PM +0000, Song Liu wrote:
->>=20
->>=20
->>> On Dec 18, 2020, at 8:38 AM, Yonghong Song <yhs@fb.com> wrote:
->>>=20
->>>=20
->>>=20
->>> On 12/17/20 9:23 PM, Alexei Starovoitov wrote:
->>>> On Thu, Dec 17, 2020 at 8:33 PM Song Liu <songliubraving@fb.com> wrote=
-:
->>>>>>=20
->>>>>> ahh. I missed that. Makes sense.
->>>>>> vm_file needs to be accurate, but vm_area_struct should be accessed =
-as ptr_to_btf_id.
->>>>>=20
->>>>> Passing pointer of vm_area_struct into BPF will be tricky. For exampl=
-e, shall we
->>>>> allow the user to access vma->vm_file? IIUC, with ptr_to_btf_id the v=
-erifier will
->>>>> allow access of vma->vm_file as a valid pointer to struct file. Howev=
-er, since the
->>>>> vma might be freed, vma->vm_file could point to random data.
->>>> I don't think so. The proposed patch will do get_file() on it.
->>>> There is actually no need to assign it into a different variable.
->>>> Accessing it via vma->vm_file is safe and cleaner.
->>>=20
->>> I did not check the code but do you have scenarios where vma is freed b=
-ut old vma->vm_file is not freed due to reference counting, but
->>> freed vma area is reused so vma->vm_file could be garbage?
->>=20
->> AFAIK, once we unlock mmap_sem, the vma could be freed and reused. I gue=
-ss ptr_to_btf_id
->> or probe_read would not help with this?
->=20
-> Theoretically we can hack the verifier to treat some ptr_to_btf_id as "le=
-ss
-> valid" than the other ptr_to_btf_id, but the user experience will not be =
-great.
-> Reading such bpf prog will not be obvious. I think it's better to run bpf=
- prog
-> in mmap_lock then and let it access vma->vm_file. After prog finishes the=
- iter
-> bit can do if (mmap_lock_is_contended()) before iterating. That will deli=
-ver
-> better performance too. Instead of task_vma_seq_get_next() doing
-> mmap_lock/unlock at every vma. No need for get_file() either. And no
-> __vm_area_struct exposure.
+Currently the format of a signed BPF program is similar to that of
+a signed kernel module, composed of BPF bytecode, signature,
+module_signature structure and a magic string, in order, aligned to
+struct sock_filter.
 
-I think there might be concern calling BPF program with mmap_lock, especial=
-ly that=20
-the program is sleepable (for bpf_d_path). It shouldn't be a problem for co=
-mmon=20
-cases, but I am not 100% sure for corner cases (many instructions in BPF + =
-sleep).=20
-Current version is designed to be very safe for the workload, which might b=
-e too
-conservative.=20
+Signed-off-by: Xichen Lin <linxichen.01@bytedance.com>
+---
+ include/linux/bpf_sig.h | 26 ++++++++++++++++++
+ init/Kconfig            | 10 +++++++
+ kernel/bpf/Makefile     |  3 +++
+ kernel/bpf/bpf_sig.c    | 70 +++++++++++++++++++++++++++++++++++++++++++++++++
+ kernel/bpf/syscall.c    |  5 ++++
+ kernel/sysctl.c         | 14 ++++++++++
+ 6 files changed, 128 insertions(+)
+ create mode 100644 include/linux/bpf_sig.h
+ create mode 100644 kernel/bpf/bpf_sig.c
 
-Thanks,
-Song
+diff --git a/include/linux/bpf_sig.h b/include/linux/bpf_sig.h
+new file mode 100644
+index 000000000000..da87ba50f340
+--- /dev/null
++++ b/include/linux/bpf_sig.h
+@@ -0,0 +1,26 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++/*
++ * Copyright (C) 2020 Bytedance
++ */
++
++#ifndef _LINUX_BPF_SIG_H
++#define _LINUX_BPF_SIG_H
++
++#include <linux/bpf.h>
++
++#define BPF_PROG_SIG_STRING "~BPF signature appended~\n"
++
++#ifdef CONFIG_BPF_SIGNATURE
++extern int sysctl_bpf_signature_enable;
++#endif /* CONFIG_BPF_SIGNATURE */
++
++#ifdef CONFIG_BPF_SIGNATURE
++int bpf_check_prog_sig(struct bpf_prog *prog);
++#else
++static inline int bpf_check_prog_sig(struct bpf_prog *prog)
++{
++	return 0;
++}
++#endif /* CONFIG_BPF_SIGNATURE */
++#endif /* _LINUX_BPF_SIG_H */
+diff --git a/init/Kconfig b/init/Kconfig
+index b77c60f8b963..24225c966803 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -2212,6 +2212,16 @@ config MODULE_SIG_HASH
+ 	default "sha384" if MODULE_SIG_SHA384
+ 	default "sha512" if MODULE_SIG_SHA512
+ 
++config BPF_SIGNATURE
++	bool "BPF program signature verification"
++	depends on MODULE_SIG
++	help
++	  Check BPF programs for valid signatures upon load: the signature
++	  is appended to the end of the BPF program similar to module signing.
++
++	  BPF signature checking will use the same kernel facilities as
++	  module signature checking as well as the keys and hash functions.
++
+ config MODULE_COMPRESS
+ 	bool "Compress modules on installation"
+ 	help
+diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
+index d1249340fd6b..c6d2b200e795 100644
+--- a/kernel/bpf/Makefile
++++ b/kernel/bpf/Makefile
+@@ -37,3 +37,6 @@ obj-$(CONFIG_BPF_SYSCALL) += bpf_struct_ops.o
+ obj-${CONFIG_BPF_LSM} += bpf_lsm.o
+ endif
+ obj-$(CONFIG_BPF_PRELOAD) += preload/
++ifeq ($(CONFIG_BPF_SIGNATURE),y)
++obj-$(CONFIG_BPF_SIGNATURE) += bpf_sig.o
++endif
+diff --git a/kernel/bpf/bpf_sig.c b/kernel/bpf/bpf_sig.c
+new file mode 100644
+index 000000000000..7fcfc1b5d5d8
+--- /dev/null
++++ b/kernel/bpf/bpf_sig.c
+@@ -0,0 +1,70 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/* Copyright (c) 2021 Bytedance */
++
++#include <linux/bpf.h>
++#include <linux/filter.h>
++#include <linux/bpf_sig.h>
++#include <linux/module_signature.h>
++#include <linux/verification.h>
++
++int sysctl_bpf_signature_enable;
++
++static bool bpf_strip_prog_ms(struct bpf_prog *prog, unsigned int *sig_len_ptr)
++{
++	void *data = (void *) prog->insns;
++	unsigned int prog_len = bpf_prog_size(prog->len) - sizeof(struct bpf_prog);
++	unsigned int rounded_ms_len = round_up(sizeof(struct module_signature),
++					       sizeof(struct sock_filter));
++	struct module_signature *ms = (struct module_signature *)
++		(data + prog_len - rounded_ms_len);
++	unsigned int rounded_sig_len;
++
++	*sig_len_ptr = be32_to_cpu(ms->sig_len);
++	rounded_sig_len = round_up(*sig_len_ptr, sizeof(struct sock_filter));
++
++	if (mod_check_sig(ms, prog_len, "bpf"))
++		return false;
++
++	if (prog_len > rounded_ms_len + rounded_sig_len) {
++		prog->len -= rounded_ms_len / sizeof(struct sock_filter);
++		prog->len -= rounded_sig_len / sizeof(struct sock_filter);
++		return true;
++	}
++
++	return false;
++}
++
++static bool bpf_strip_prog_sig(struct bpf_prog *prog, unsigned int *sig_len_ptr)
++{
++	void *data = (void *) prog->insns;
++	const unsigned int marker_len = sizeof(BPF_PROG_SIG_STRING) - 1;
++	const unsigned int rounded_marker_len = round_up(marker_len,
++							 sizeof(struct sock_filter));
++	unsigned int prog_len = bpf_prog_size(prog->len) - sizeof(struct bpf_prog);
++
++	if (prog_len > rounded_marker_len &&
++	    memcmp(data + prog_len - rounded_marker_len,
++		   BPF_PROG_SIG_STRING, marker_len) == 0) {
++		prog->len -= rounded_marker_len / sizeof(struct sock_filter);
++		return bpf_strip_prog_ms(prog, sig_len_ptr);
++	}
++
++	return false;
++}
++
++int bpf_check_prog_sig(struct bpf_prog *prog)
++{
++	bool stripped;
++	unsigned int sig_len;
++
++	stripped = bpf_strip_prog_sig(prog, &sig_len);
++	if (!sysctl_bpf_signature_enable)
++		return 0;
++	if (!stripped)
++		return -ENODATA;
++	return verify_pkcs7_signature(prog->insns, prog->len * sizeof(struct sock_filter),
++				      prog->insns + prog->len,
++				      sig_len, VERIFY_USE_SECONDARY_KEYRING,
++				      VERIFYING_MODULE_SIGNATURE,
++				      NULL, NULL);
++}
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 4caf06fe4152..2ce0afb12248 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -32,6 +32,7 @@
+ #include <linux/bpf-netns.h>
+ #include <linux/rcupdate_trace.h>
+ #include <linux/memcontrol.h>
++#include <linux/bpf_sig.h>
+ 
+ #define IS_FD_ARRAY(map) ((map)->map_type == BPF_MAP_TYPE_PERF_EVENT_ARRAY || \
+ 			  (map)->map_type == BPF_MAP_TYPE_CGROUP_ARRAY || \
+@@ -2201,6 +2202,10 @@ static int bpf_prog_load(union bpf_attr *attr, union bpf_attr __user *uattr)
+ 	if (err < 0)
+ 		goto free_prog_sec;
+ 
++	err = bpf_check_prog_sig(prog);
++	if (err < 0)
++		goto free_prog;
++
+ 	/* run eBPF verifier */
+ 	err = bpf_check(&prog, attr, uattr);
+ 	if (err < 0)
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index c9fbdd848138..d447d26dd0eb 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -103,6 +103,9 @@
+ #ifdef CONFIG_LOCKUP_DETECTOR
+ #include <linux/nmi.h>
+ #endif
++#ifdef CONFIG_BPF_SIGNATURE
++#include <linux/bpf_sig.h>
++#endif /* CONFIG_BPF_SIGNATURE */
+ 
+ #if defined(CONFIG_SYSCTL)
+ 
+@@ -2621,6 +2624,17 @@ static struct ctl_table kern_table[] = {
+ 	},
+ #endif
+ #ifdef CONFIG_BPF_SYSCALL
++#ifdef CONFIG_BPF_SIGNATURE
++	{
++		.procname	= "bpf_signature_enable",
++		.data		= &sysctl_bpf_signature_enable,
++		.maxlen		= sizeof(sysctl_bpf_signature_enable),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec_minmax,
++		.extra1		= SYSCTL_ONE,
++		.extra2		= SYSCTL_ONE,
++	},
++#endif /* CONFIG_BPF_SIGNATURE */
+ 	{
+ 		.procname	= "unprivileged_bpf_disabled",
+ 		.data		= &sysctl_unprivileged_bpf_disabled,
+-- 
+2.11.0
 
