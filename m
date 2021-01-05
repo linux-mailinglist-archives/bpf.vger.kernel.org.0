@@ -2,137 +2,213 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B93502EB483
-	for <lists+bpf@lfdr.de>; Tue,  5 Jan 2021 21:52:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFD2D2EB49C
+	for <lists+bpf@lfdr.de>; Tue,  5 Jan 2021 22:05:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730438AbhAEUuq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Jan 2021 15:50:46 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:49410 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728714AbhAEUup (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 5 Jan 2021 15:50:45 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 105KmHal028540;
-        Tue, 5 Jan 2021 12:49:49 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=bS8EPV6VBMiIMq60nR0A8DPtlpy/w/ZvBdywojDU7hA=;
- b=Le+g2pgiJSL/Gv/5RJqtmP4etxVS7nBC3o+FEbAOrN9Trd89CLFzxxG5EkMytrt9Wbg+
- IrvA9WwPaYYGYfd0aiB5uW/47N3aVnz74PHo4rxo96qnxJMAwe5+ixAXpJUgSHAhNxAG
- gC+4LIvtdeBSacepKU2FpjwMSZFDuFHyBpg= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 35tncudra8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 05 Jan 2021 12:49:49 -0800
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 5 Jan 2021 12:49:48 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LbuwPtO614dOUyeJjI9lStlM4Wan6sKMZT9KFLse92N6bARfuW6ou6Y3j6mqYfHTWh7wTvOc01qOWVD94+iaW3rFL8bsnmK49XinYtpecjYm9Eyn3MBGel7WAe2hmtI24jxtR4pjYIDGVqkfu7BkHQ6+VYnMXF6+li2SP9AUpcTrwQ+UzGYhcR0hpeRKa46GDTmnNS5e/xzmniCs2Ch2ao3zbRGoWWzp7VHCALK8VCbmriWN53hLA8hjGlnQ9b2Wp+31mIEwLke/9VXeWMEj5cb4bUpqqNMKYJiQ2fvFez1UzcNlO70V88hpzFAVbRNW6PA/kR0HTFS8x1/7HxhGWg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bS8EPV6VBMiIMq60nR0A8DPtlpy/w/ZvBdywojDU7hA=;
- b=hYel8+LLKsSpuL3nsxTs6p2stn7Jnz9HTusXilq79fgaoAetOjAxRHMOmOAubnC25BHADeVBVLbM7lgDTGTQbT1AHIjzSTofKnMXtoBIp9sQSxjExLUR8xFAtdseop+2bGTlG9vlH6Z29qBJd+ag3axIkOUi37HbxCU1S1ZSts3oiyjNm44FudTlS1ls2qLsqf8o1ndrav2RyOzRJ5eMRSFLglmTZac29rwY89sXckSfMamWt8DrnDRmhy9k3H35o9HKqTwW6ljsa4VI7051MhrpAh3xMW69+982+r3yD1hFr/9eqbdLre7y96hO1H60BtHD9RJgJEJ/9cj2hS/TFA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bS8EPV6VBMiIMq60nR0A8DPtlpy/w/ZvBdywojDU7hA=;
- b=jNRzdsCgv38Bt5Arh/GVl/3r/NFKMrKGCu3G6IRKPcN6scUAGwobMVsZ2+bNTyQAEArn4WN3V6AjjggwFZu+kO9K/nPYGEH/3xpKKNGAegVp4y77av8fgL3k21oRCtuiPSy+Q2zld1GonduO811CP8/LyGQJAjZ0sx6U4dIt7XY=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by BYAPR15MB4119.namprd15.prod.outlook.com (2603:10b6:a02:cd::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Tue, 5 Jan
- 2021 20:49:46 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::217e:885b:1cef:e1f7]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::217e:885b:1cef:e1f7%7]) with mapi id 15.20.3721.024; Tue, 5 Jan 2021
- 20:49:46 +0000
-Date:   Tue, 5 Jan 2021 12:49:38 -0800
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     <menglong8.dong@gmail.com>
-CC:     <shuah@kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andrii@kernel.org>, <songliubraving@fb.com>, <yhs@fb.com>,
-        <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <jamorris@linux.microsoft.com>, <dong.menglong@zte.com.cn>,
-        <linux-kselftest@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] selftests/bpf: remove duplicate include in test_lsm
-Message-ID: <20210105204938.owgrphakjvwp6l6y@kafai-mbp>
-References: <20210105152047.6070-1-dong.menglong@zte.com.cn>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210105152047.6070-1-dong.menglong@zte.com.cn>
-X-Originating-IP: [2620:10d:c090:400::5:66db]
-X-ClientProxiedBy: MW2PR16CA0048.namprd16.prod.outlook.com
- (2603:10b6:907:1::25) To BY5PR15MB3571.namprd15.prod.outlook.com
- (2603:10b6:a03:1f6::32)
+        id S1726934AbhAEVEj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Jan 2021 16:04:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726119AbhAEVEj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Jan 2021 16:04:39 -0500
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FB35C061574;
+        Tue,  5 Jan 2021 13:03:59 -0800 (PST)
+Received: by mail-yb1-xb2f.google.com with SMTP id k4so798577ybp.6;
+        Tue, 05 Jan 2021 13:03:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JQXFw/+QcftjZUsC58ItFBOKP3f1MsgZ8muOqxdv4S8=;
+        b=opYVF0OqOvKJNckIwQXSpGTFhrC6zPV/xRXMW1p3gIRyBxuA4zXffOLl3K5LsANY0c
+         qK0UEwqeVaho4vtECsFK5wVDSweZP1AAQHWb18rBdc+UcE8ikyWNJxVJmBOLf9CY+pVF
+         1e4uZX9e67x8us7Ir/jy2jq10+sZm3lr+ONyKO/+KT4bQPVRqFONKyiuxyJjubNiBsWa
+         Ghb8lJu6JYoA6nzcKE7pYRXdPl8uUyZukzU5rveclN3V0E6V8A7eSX7BIoaS0htiX2l8
+         cblOz3vBistjsHKHhfNReAIosKHZmIHrkkId8FzTdWOMDjLSvB2Ap9pyHsahP3ZTPcf3
+         iq6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JQXFw/+QcftjZUsC58ItFBOKP3f1MsgZ8muOqxdv4S8=;
+        b=CpBtJ1qopwOz9XqHM5QmTcjhN6gJy64BCfawrUiXVa5S60bJ2auBvSUo32tQSE+0ul
+         CtsaUrqu/vTEuU7ix5PAwbLNp7dfcvRoXqX0f+jdW8FuneraE1H3AGdYfeY3GyGtw2kQ
+         XWoRIby+tV1M60N4MnHgg6WXY2lLTe7qfWpd787Z/mwDR42lVKWBOZzV6uWw8+fx/KCz
+         Y7xmM5L/W68UjOXDxYDVMh/cnurMYTZEg15Fyokkl5nCEJC6ScSoaTj5sEz8Cneavr5l
+         wKt5i6/Y+haR0z2FWJ0BINHHyKm4dDoOKo3NRYPglxhX2DTkRmzTmeHqpMN5yBjTUJfD
+         qi5g==
+X-Gm-Message-State: AOAM531N677yFGBpwLoL4cCj01+lHLpU2hudapH6e8U6jqR7H2fLdCAO
+        NpS0cJzJ2anWYkv07MDTNMDugNrDknMwRa78zb+wO0t4zt4=
+X-Google-Smtp-Source: ABdhPJxgvWV15g2tLEQxobwYj8y+CBEqQbhfFRkK4fbNeRWoMVt6E6GpREvzimOCiNjoeCx4nqiTVrLaawORd1kJCxQ=
+X-Received: by 2002:a25:d6d0:: with SMTP id n199mr1795923ybg.27.1609880638479;
+ Tue, 05 Jan 2021 13:03:58 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp (2620:10d:c090:400::5:66db) by MW2PR16CA0048.namprd16.prod.outlook.com (2603:10b6:907:1::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Tue, 5 Jan 2021 20:49:44 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fc8e7333-c40c-4d17-971d-08d8b1bb6ff5
-X-MS-TrafficTypeDiagnostic: BYAPR15MB4119:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB4119E127800959E575F08F51D5D10@BYAPR15MB4119.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:1360;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: v6h7nSfph4Z6McdT0wIf1pFS/M9y1lSMjKQGvjEuAciaCFDPB88Ao6z6nosjfxrsZLVtXLVxNt1PDhLlmuu48XzE8AEeQXWwaS7UmN6aFalWdg2SRmc7fRWKo0owF9SVkbyaNLR2vrDZpA+X/04pY+r1RA2mqr3pGp/P1XGPmphfBKYqfgPkY4JTrk8xmJVjRjdlopau4clR2ewA1gL8pAoeQBAzynerdPkzBhx/q+lPjMWa+ztncdOIOqpZk9q1HkknPeBQl4mI9mPhqkAE5mQoOuirOjbczq2kk3agvnVB3PKtUN8Q0W4ncmDoU1/0LVdBo38SpTICipnNT+D16WefCSseLkdvQWhDUuHd8Dk5whHeJEWiB/ecYKa20tKM5kIJ3ugZruO2Ai4b7HHYmQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(396003)(376002)(39860400002)(366004)(66476007)(66556008)(86362001)(66946007)(6666004)(16526019)(55016002)(6496006)(9686003)(5660300002)(6916009)(186003)(8676002)(2906002)(8936002)(33716001)(1076003)(52116002)(478600001)(7416002)(558084003)(4326008)(316002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?FhoTt9lJflcLVkMWyqKIPiGqaeN7Q9lhFKHDujy4tq7EwtzbO65OhhfLUwPj?=
- =?us-ascii?Q?8O0jPnc+3T6DxnFqQOHByrHvB8jZ56chUZcTAD1aeTBaSCMgDqeJTkcS1RQP?=
- =?us-ascii?Q?rUyB95TurtKCy2egXDa7IU9aV+unG6N1WFZzHeyJkbuXS8RWoUEyTsHjv06W?=
- =?us-ascii?Q?IggXndnDIi+W17dHrAwMAScOx/5dpA5XpOEN+3vFkbKfMtj3eLxBL8MUxoLN?=
- =?us-ascii?Q?6kVlb4VuvnOLDEAQNOEd7FiT8oI9w31cZx4bgoWJW48WBmGyhQQtP+rtMuHq?=
- =?us-ascii?Q?m8q5HCijoSrx9yj7X2ibSiEl0fPREFgGJoQr8y3BPXV78GDekXHdDbY5G6Ip?=
- =?us-ascii?Q?pmu6YZybf0CqK54LSybA++Wf35qKVZg/B/U5WuftoNQY1pF5OWdNb0Jrhmoh?=
- =?us-ascii?Q?VRS+JZkpyMekiLg4DvWh1lNjA62OW11R/k+77WANrohr9D+om1Qb8mL/Qo0z?=
- =?us-ascii?Q?JQnaiej4UsYxGk0fqwV6lR9ABBuxSuPo7NCQAvfE6aNzAjOal+sXqgj7d0Tt?=
- =?us-ascii?Q?4gQFRMUN+zA+MOR1sYNlVzLrCnRiYZoAm+TjgBH2u374s7bOs9SDzpgYYrRE?=
- =?us-ascii?Q?mFmupM6ibtNtB+iWt5G95DsiW+ZwIeIx/BtVvZUjzeNis0ES7u6MClGG6JWV?=
- =?us-ascii?Q?MHvkKUoVgy0WzvtFVTdNKWlXLiJclAs9Ayt6DP9wUYh37wq/f3Y6UV07UHQq?=
- =?us-ascii?Q?QKG8KqIDBkPWR/+ZG/FDuzK08tAfwLwRF+6q4KPbBk210VqX6IBqWdi/ZlMO?=
- =?us-ascii?Q?8FpNq1JrmkR7HqEvn0yoyf1nChj7hEVu5q47QfOy8F/bKb4P0e9Mra7kINFF?=
- =?us-ascii?Q?SkgveUQRmsSgGKIp4MNqS6/J7IG5JQwXWsYCJSqvnYnKTOXKD1Xf9T8MmvEh?=
- =?us-ascii?Q?sGzqYMTQsNrdYy1OsgwxrhQ+5QvJ7q3ss3AGFlvBjB+UuBzSg+EhHD/6IkMH?=
- =?us-ascii?Q?sv8XIItQXFDb29pw4Jk8J0s+z2TBakQSN8EB+Sf8F0Ksgjx9jyg58J4PNAVh?=
- =?us-ascii?Q?o3bECFOJ4LXHqPYQh2OcTI7hdA=3D=3D?=
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jan 2021 20:49:46.6812
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-Network-Message-Id: fc8e7333-c40c-4d17-971d-08d8b1bb6ff5
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YEgq32VBHisExRHKIcudRftqCwdUqJVe9EHOYadK7I5wK1JYmHVuV98haieOpBev
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB4119
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-05_06:2021-01-05,2021-01-05 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0 mlxscore=0
- adultscore=0 mlxlogscore=911 priorityscore=1501 clxscore=1011
- lowpriorityscore=0 spamscore=0 malwarescore=0 bulkscore=0 impostorscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101050122
-X-FB-Internal: deliver
+References: <20201218235614.2284956-1-andrii@kernel.org> <20201218235614.2284956-4-andrii@kernel.org>
+ <20210105034644.5thpans6alifiq65@ast-mbp> <CAEf4BzY4qXW_xV+0pcWPQp+Tda6BY69xgJnaA3RFxKc255rP2g@mail.gmail.com>
+ <20210105190355.2lbt6vlmi752segx@ast-mbp>
+In-Reply-To: <20210105190355.2lbt6vlmi752segx@ast-mbp>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 5 Jan 2021 13:03:47 -0800
+Message-ID: <CAEf4BzZPqBp=Th5Xy3mrWZ2k5ANo_+1rQSkC1Q=uEHz6FcBqpA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: add tests for user- and
+ non-CO-RE BPF_CORE_READ() variants
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Gilad Reti <gilad.reti@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 07:20:47AM -0800, menglong8.dong@gmail.com wrote:
-> From: Menglong Dong <dong.menglong@zte.com.cn>
-> 
-> 'unistd.h' included in 'selftests/bpf/prog_tests/test_lsm.c' is
-> duplicated.
-It is for bpf-next.  Please put a proper tag next time.
+On Tue, Jan 5, 2021 at 11:04 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Mon, Jan 04, 2021 at 09:08:21PM -0800, Andrii Nakryiko wrote:
+> > On Mon, Jan 4, 2021 at 7:46 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Fri, Dec 18, 2020 at 03:56:14PM -0800, Andrii Nakryiko wrote:
+> > > > +
+> > > > +/* shuffled layout for relocatable (CO-RE) reads */
+> > > > +struct callback_head___shuffled {
+> > > > +     void (*func)(struct callback_head___shuffled *head);
+> > > > +     struct callback_head___shuffled *next;
+> > > > +};
+> > > > +
+> > > > +struct callback_head k_probe_in = {};
+> > > > +struct callback_head___shuffled k_core_in = {};
+> > > > +
+> > > > +struct callback_head *u_probe_in = 0;
+> > > > +struct callback_head___shuffled *u_core_in = 0;
+> > > > +
+> > > > +long k_probe_out = 0;
+> > > > +long u_probe_out = 0;
+> > > > +
+> > > > +long k_core_out = 0;
+> > > > +long u_core_out = 0;
+> > > > +
+> > > > +int my_pid = 0;
+> > > > +
+> > > > +SEC("raw_tracepoint/sys_enter")
+> > > > +int handler(void *ctx)
+> > > > +{
+> > > > +     int pid = bpf_get_current_pid_tgid() >> 32;
+> > > > +
+> > > > +     if (my_pid != pid)
+> > > > +             return 0;
+> > > > +
+> > > > +     /* next pointers for kernel address space have to be initialized from
+> > > > +      * BPF side, user-space mmaped addresses are stil user-space addresses
+> > > > +      */
+> > > > +     k_probe_in.next = &k_probe_in;
+> > > > +     __builtin_preserve_access_index(({k_core_in.next = &k_core_in;}));
+> > > > +
+> > > > +     k_probe_out = (long)BPF_PROBE_READ(&k_probe_in, next, next, func);
+> > > > +     k_core_out = (long)BPF_CORE_READ(&k_core_in, next, next, func);
+> > > > +     u_probe_out = (long)BPF_PROBE_READ_USER(u_probe_in, next, next, func);
+> > > > +     u_core_out = (long)BPF_CORE_READ_USER(u_core_in, next, next, func);
+> > >
+> > > I don't understand what the test suppose to demonstrate.
+> > > co-re relocs work for kernel btf only.
+> > > Are you saying that 'struct callback_head' happened to be used by user space
+> > > process that allocated it in user memory. And that is the same struct as
+> > > being used by the kernel? So co-re relocs that apply against the kernel
+> > > will sort-of work against the data of user space process because
+> > > the user space is using the same struct? That sounds convoluted.
+> >
+> > The test itself just tests that bpf_probe_read_user() is executed, not
+> > bpf_probe_read_kernel(). But yes, the use case is to read kernel data
+> > structures from the user memory address space. See [0] for the last
+> > time this was requested and justifications. It's not the first time
+> > someone asked about the user-space variant of BPF_CORE_READ(), though
+> > I won't be able to find the reference at this time.
+> >
+> >   [0] https://lore.kernel.org/bpf/CANaYP3GetBKUPDfo6PqWnm3xuGs2GZjLF8Ed51Q1=Emv2J-dKg@mail.gmail.com/
+>
+> That's quite confusing thread.
+>
+> > > I struggle to see the point of patch 1:
+> > > +#define bpf_core_read_user(dst, sz, src)                                   \
+> > > +       bpf_probe_read_user(dst, sz, (const void *)__builtin_preserve_access_index(src))
+> > >
+> > > co-re for user structs? Aren't they uapi? No reloc is needed.
+> >
+> > The use case in [0] above is for reading UAPI structs, passed as input
+> > arguments to syscall. It's a pretty niche use case, but there are at
+> > least two more-or-less valid benefits to use CO-RE with "stable" UAPI
+> > structs:
+> >
+> >   - handling 32-bit vs 64-bit UAPI structs uniformly;
+>
+> what do you mean?
+> 32-bit user space running on 64-bit kernel works through 'compat' syscalls.
+> If bpf progs are accessing 64-bit uapi structs in such case they're broken
+> and no amount of co-re can help.
 
-Acked-by: Martin KaFai Lau <kafai@fb.com>
+I know nothing about compat, so can't comment on that. But the way I
+understood the situation was the BPF program compiled once (well, at
+least from the unmodified source code), but runs on ARM32 and (on a
+separate physical host) on ARM64. And it's task is, say, to read UAPI
+kernel structures from syscall arguments.
+
+>
+> >   - handling UAPI fields that were added in later kernels, but are
+> > missing on the earlier ones.
+> >
+> > For the former, you'd need to compile two variants of the BPF program
+> > (or do convoluted and inconvenient 32-bit UAPI struct re-definition
+> > for 64-bit BPF target).
+>
+> No. 32-bit uapi structs should be used by bpf prog.
+> compat stuff is not only casting pointers from 64-bit to 32.
+>
+
+See above about compat, that's not what I was thinking about.
+
+One simple example I found in UAPI definitions is struct timespec, it
+seems it's defined with `long`:
+
+struct timespec {
+        __kernel_old_time_t     tv_sec;         /* seconds */
+        long                    tv_nsec;        /* nanoseconds */
+}
+
+So if you were to trace clock_gettime(), you'd need to deal with
+differently-sized reads of tv_nsec, depending on whether you are
+running on the 32-bit or 64-bit host.
+
+There are probably other examples where UAPI structs use long instead
+of __u32 or __u64, but I didn't dig too deep.
+
+
+> > For the latter... I guess you can do if/else
+> > dance based on the kernel version. Which sucks and is inconvenient
+> > (and kernel version checks are discouraged, it's more reliable to
+> > detect availability of specific types and fields).
+>
+> Not really. ifdef based on kernel version is not needed.
+> bpf_core_field_exists() will work just fine.
+> No need to bpf_probe_read_user() macros.
+
+Yes, you are right, detection of field/type existence doesn't depend
+on kernel- vs user-space, disregard this one.
+
+>
+> > So all in all, while pretty rare and niche, seemed like a valid use
+> > case. And easy to support while reusing all the macro logic almost
+> > without any changes.
+>
+> I think these new macros added with confusing and unclear goals
+> will do more harm than good.
+
+Let's see if Gilad can provide his perspective. I have no strong
+feelings about this and can send a patch removing CORE_READ_USER
+variants (they didn't make it into libbpf v0.3, so no harm or API
+stability concerns). BPF_PROBE_READ() and BPF_PROBE_READ_USER() are
+still useful for reading non-relocatable, but nested data structures,
+so I'd prefer to keep those.
