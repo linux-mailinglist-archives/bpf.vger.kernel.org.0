@@ -2,122 +2,206 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FDF92EB005
-	for <lists+bpf@lfdr.de>; Tue,  5 Jan 2021 17:28:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37F2C2EB063
+	for <lists+bpf@lfdr.de>; Tue,  5 Jan 2021 17:45:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728321AbhAEQ2B (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Jan 2021 11:28:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46848 "EHLO
+        id S1728475AbhAEQoz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 5 Jan 2021 11:44:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726827AbhAEQ2B (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 5 Jan 2021 11:28:01 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E5C4C061574;
-        Tue,  5 Jan 2021 08:27:21 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id o13so73989557lfr.3;
-        Tue, 05 Jan 2021 08:27:20 -0800 (PST)
+        with ESMTP id S1728169AbhAEQoy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 5 Jan 2021 11:44:54 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A36EC061574;
+        Tue,  5 Jan 2021 08:44:14 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id b26so74126093lff.9;
+        Tue, 05 Jan 2021 08:44:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=LDR5huaMnhKWOdBFRFS1M8FgUWRZwltZZXIo/H14IHE=;
-        b=hYYZIVJ0mP9upp8BO6c8thauCsqnM2EYQdjbzcqd91guQbh5WyRV2u+4l8C/aPGWup
-         STmTPUHRzPbiPH0EGczI4T79PECqRxZ0+juYi3NmRQMBKMKiFEbR9nUxtSvM8KpqMVUa
-         KujZiXEQQc9cdYw7mzgoyNX+rk5egGloGY1v3jNA/zosA2NIveQjtw5LRDfDqrihd7bt
-         uKodyheNfvp2uMtAoxK0H8KU5DQQnqRbzI8BNuB2R08T1QzS3bW+p+K1uJCkpGNL3F4o
-         JHFt6rECJSZKV9vznImtuqlwfE2QI/AEqfb4hEOGgMA5u3tJN+29Ji3/xjvmGiZfZ2t0
-         WCHA==
+        bh=fBCJ3467pFpzu3Ws0eKRl2qSB4n17iKkJeF+xf/ypVc=;
+        b=uco/WKOFuHH4uRZVA9bS7LqaYM3AbaGyHok7Pp+1AgionhdbsCchU0IE3IPwP0ozfG
+         EnemHTg5IVLCJaY4AS0F7k3JiZLzF9+Q7ikZTpg5TSRo5flB7/tQWtpUQ/zSEeK3Fbt9
+         GJkNbSJ/R0YN/+F4KzhglqOQ3vUKy0eSSC76YO2S0fGIa1WBjiTQiICqarn6/JoTPiFc
+         lv0nzRPOfdTdZ+TkHh17EzAIUNa2mJWit7c2d8odMNFqDvX7aCpgtqeku+ujuxS4RiX/
+         wc5A2RbpZ6xqUXiui495ru33C1PQVp7zMMP4r5y9gon386l9XaAHpe7ZpZhsmP68ZVx0
+         BxJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=LDR5huaMnhKWOdBFRFS1M8FgUWRZwltZZXIo/H14IHE=;
-        b=pxca6Tl1mvtKZMdavLJlMKvI3jhfiA0sKxKGY109ap6R/CQ4rBBuZrdHCZ3q7YgFGw
-         2sEZGX3GT3Mi1b1TYvbbyKz4kY/MTbDCeY+CvFaz7cF2F91/zsK1SRCwC3rPu9fIaE1q
-         G4Dx3gQJf6bkv7rAOSTpClz2XvuZOJ5XWdzj5Oac/hbHc5yT0FfcuM+bvJvAi9mKGxNp
-         sJTmjYapPX2TQLn5GWem1HWqaXce/vtbkeLHFUjtxhBbE5M4wy7VHC5gvKpkNFkcDb6g
-         MvxByT36gIW+NfKp/vSFWfUsLtvnNTF+V0EpQA3ZCTgfikebMcvDNZ4S6O9F/KPYtEDQ
-         o2gg==
-X-Gm-Message-State: AOAM530Kbz9GKK6NAMg2hglx1XnamQzklNR70V40lOFQTMwa3/9OHGFp
-        IpXIL/1qHUzz4YAzBGISXhcnybJJNgWmwp+n8UaLuXaucEM=
-X-Google-Smtp-Source: ABdhPJz8Hkl5A5o6WZUQuMyuZdXWn2cw8hYSREkCe4JrcZYrAMGt+VgkW/VipxO0Hd/OX0GYi1h/lf69/y5Du63E+6I=
-X-Received: by 2002:ac2:5497:: with SMTP id t23mr29269lfk.534.1609864039532;
- Tue, 05 Jan 2021 08:27:19 -0800 (PST)
+        bh=fBCJ3467pFpzu3Ws0eKRl2qSB4n17iKkJeF+xf/ypVc=;
+        b=BX7ILWzvKt8RAluttwLxA44xXBGrcnAXO5/Cr3I23hi25m4MmhDqUS6WgB/wIcBKgn
+         T68AOgx8JjEBFi/0D4EypTDz/UNAws3Q+kS2VXzJGnlNNf2Py8bZ7mAjpyx+OMRMIJXp
+         0PtqZiKtgSywgICtLBYMisUDy28kHa/DoqD2j62/hPl83rGY3ro/D7VPK0r8E2XF0uVb
+         tKiHEAAek/x6d9CSqcHinpWASPIX6W8JnwPySYvijE2/a8ArUP+OyidJC3whm5mm3Ec6
+         FSlDHo2cWj+iqyVY4ea4VYLfq5HM5kvhmFMRE4Fol3uMPpiRPsk10w9YGa8oZP9wjGfs
+         yI4g==
+X-Gm-Message-State: AOAM532k5gqcsm5kNEktcRpfrUaxcGsUbOjZdRvc0fwHsH2SNs2YJsWu
+        Z+JXsGFbXRlDrPo50C81gDFreZ/Yg8dAqpYBBNGCY1pAOFR5EQ==
+X-Google-Smtp-Source: ABdhPJwo9ovtmL+xWjt+CiuupdXmuMjW112JAsyF/nnqvaCOVhNi0/67s9uq7O0ieiyCGjvGRXkSiLrX6yDA4OHzmQU=
+X-Received: by 2002:a05:6512:34c5:: with SMTP id w5mr70419lfr.214.1609865052579;
+ Tue, 05 Jan 2021 08:44:12 -0800 (PST)
 MIME-Version: 1.0
-References: <20201215233702.3301881-1-songliubraving@fb.com>
- <20201215233702.3301881-2-songliubraving@fb.com> <20201217190308.insbsxpf6ujapbs3@ast-mbp>
- <C4D9D25A-C3DD-4081-9EAD-B7A5B6B74F45@fb.com> <20201218023444.i6hmdi3bp5vgxou2@ast-mbp>
- <D964C66B-2C25-4C3D-AFDE-E600364A721C@fb.com> <CAADnVQJyTVgnsDx6bJ1t-Diib9r+fiph9Ax-d97qSMvU3iKcRw@mail.gmail.com>
- <231d0521-62a7-427b-5351-359092e73dde@fb.com> <09DA43B9-0F6F-45C1-A60D-12E61493C71F@fb.com>
- <20210105014625.krtz3uzqtfu4y7m5@ast-mbp> <6E122A14-0F77-46F9-8891-EDF4DB494E37@fb.com>
-In-Reply-To: <6E122A14-0F77-46F9-8891-EDF4DB494E37@fb.com>
+References: <1598605249-72651-1-git-send-email-vincent.donnefort@arm.com>
+ <20200828102724.wmng7p6je2pkc33n@e107158-lin.cambridge.arm.com>
+ <1e806d48-fd54-fd86-5b3a-372d9876f360@arm.com> <20200828172658.dxygk7j672gho4ax@e107158-lin.cambridge.arm.com>
+ <58f5d2e8-493b-7ce1-6abd-57705e5ab437@arm.com> <20200902135423.GB93959@lorien.usersys.redhat.com>
+ <20200907110223.gtdgqod2iv2w7xmg@e107158-lin.cambridge.arm.com>
+ <20200908131954.GA147026@lorien.usersys.redhat.com> <20210104182642.xglderapsfrop6pi@e107158-lin>
+ <CAADnVQ+1BNO577iz+05M4nNk+DB2n9ffwr4KrktWxO+2mP1b-Q@mail.gmail.com> <20210105113857.gzqaiuhxsxdtu474@e107158-lin>
+In-Reply-To: <20210105113857.gzqaiuhxsxdtu474@e107158-lin>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 5 Jan 2021 08:27:08 -0800
-Message-ID: <CAADnVQJ5eKCnkoUV-K-S80-0CGLNstNw50OX2tndLM+Or+CSHQ@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/4] bpf: introduce task_vma bpf_iter
-To:     Song Liu <songliubraving@fb.com>
-Cc:     Yonghong Song <yhs@fb.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kpsingh@chromium.org" <kpsingh@chromium.org>,
-        Kernel Team <Kernel-team@fb.com>
+Date:   Tue, 5 Jan 2021 08:44:01 -0800
+Message-ID: <CAADnVQ+GH9DfaRJ3CCDYL8o9UUH-eAuBq6EhjVLbicY_XWbySw@mail.gmail.com>
+Subject: Re: [PATCH v2] sched/debug: Add new tracepoint to track cpu_capacity
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Phil Auld <pauld@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        vincent.donnefort@arm.com, Ingo Molnar <mingo@redhat.com>,
+        vincent.guittot@linaro.org, LKML <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 4, 2021 at 9:47 PM Song Liu <songliubraving@fb.com> wrote:
+On Tue, Jan 5, 2021 at 3:39 AM Qais Yousef <qais.yousef@arm.com> wrote:
 >
->
->
-> > On Jan 4, 2021, at 5:46 PM, Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> On 01/04/21 10:59, Alexei Starovoitov wrote:
+> > > > > I did have a patch that allowed that. It might be worth trying to upstream it.
+> > > > > It just required a new macro which could be problematic.
+> > > > >
+> > > > > https://github.com/qais-yousef/linux/commit/fb9fea29edb8af327e6b2bf3bc41469a8e66df8b
+> > > > >
+> > > > > With the above I could attach using bpf::RAW_TRACEPOINT mechanism.
+> > > > >
+> > > >
+> > > > Yeah, that could work. I meant there was no way to do it with what was there :)
+> > > >
+> > > > In our initial attempts at using BPF to get at nr_running (which I was not
+> > > > involved in and don't have all the details...) there were issues being able to
+> > > > keep up and losing events.  That may have been an implementation issue, but
+> > > > using the module and trace-cmd doesn't have that problem. Hopefully you don't
+> > > > see that using RAW_TRACEPOINTs.
+> > >
+> > > So I have a proper patch for that now, that actually turned out to be really
+> > > tiny once you untangle exactly what is missing.
+> > >
+> > > Peter, bpf programs aren't considered ABIs AFAIK, do you have concerns about
+> > > that?
+> > >
+> > > Thanks
+> > >
+> > > --
+> > > Qais Yousef
+> > >
+> > > -->8--
+> > >
+> > > From cf81de8c7db03d62730939aa902579339e2fc859 Mon Sep 17 00:00:00 2001
+> > > From: Qais Yousef <qais.yousef@arm.com>
+> > > Date: Wed, 30 Dec 2020 22:20:34 +0000
+> > > Subject: [PATCH] trace: bpf: Allow bpf to attach to bare tracepoints
+> > >
+> > > Some subsystems only have bare tracepoints (a tracepoint with no
+> > > associated trace event) to avoid the problem of trace events being an
+> > > ABI that can't be changed.
+> > >
+> > > From bpf presepective, bare tracepoints are what it calls
+> > > RAW_TRACEPOINT().
+> > >
+> > > Since bpf assumed there's 1:1 mapping, it relied on hooking to
+> > > DEFINE_EVENT() macro to create bpf mapping of the tracepoints. Since
+> > > bare tracepoints use DECLARE_TRACE() to create the tracepoint, bpf had
+> > > no knowledge about their existence.
+> > >
+> > > By teaching bpf_probe.h to parse DECLARE_TRACE() in a similar fashion to
+> > > DEFINE_EVENT(), bpf can find and attach to the new raw tracepoints.
+> > >
+> > > Enabling that comes with the contract that changes to raw tracepoints
+> > > don't constitute a regression if they break existing bpf programs.
+> > > We need the ability to continue to morph and modify these raw
+> > > tracepoints without worrying about any ABI.
+> > >
+> > > Signed-off-by: Qais Yousef <qais.yousef@arm.com>
+> > > ---
+> > >  include/trace/bpf_probe.h | 12 ++++++++++--
+> > >  1 file changed, 10 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/include/trace/bpf_probe.h b/include/trace/bpf_probe.h
+> > > index cd74bffed5c6..a23be89119aa 100644
+> > > --- a/include/trace/bpf_probe.h
+> > > +++ b/include/trace/bpf_probe.h
+> > > @@ -55,8 +55,7 @@
+> > >  /* tracepoints with more than 12 arguments will hit build error */
+> > >  #define CAST_TO_U64(...) CONCATENATE(__CAST, COUNT_ARGS(__VA_ARGS__))(__VA_ARGS__)
+> > >
+> > > -#undef DECLARE_EVENT_CLASS
+> > > -#define DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print) \
+> > > +#define __BPF_DECLARE_TRACE(call, proto, args)                         \
+> > >  static notrace void                                                    \
+> > >  __bpf_trace_##call(void *__data, proto)                                        \
+> > >  {                                                                      \
+> > > @@ -64,6 +63,10 @@ __bpf_trace_##call(void *__data, proto)                                      \
+> > >         CONCATENATE(bpf_trace_run, COUNT_ARGS(args))(prog, CAST_TO_U64(args));  \
+> > >  }
+> > >
+> > > +#undef DECLARE_EVENT_CLASS
+> > > +#define DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print) \
+> > > +       __BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args))
+> > > +
+> > >  /*
+> > >   * This part is compiled out, it is only here as a build time check
+> > >   * to make sure that if the tracepoint handling changes, the
+> > > @@ -111,6 +114,11 @@ __DEFINE_EVENT(template, call, PARAMS(proto), PARAMS(args), size)
+> > >  #define DEFINE_EVENT_PRINT(template, name, proto, args, print) \
+> > >         DEFINE_EVENT(template, name, PARAMS(proto), PARAMS(args))
+> > >
+> > > +#undef DECLARE_TRACE
+> > > +#define DECLARE_TRACE(call, proto, args)                               \
+> > > +       __BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args))          \
+> > > +       __DEFINE_EVENT(call, call, PARAMS(proto), PARAMS(args), 0)
+> > > +
+> > >  #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
 > >
-> > On Fri, Dec 18, 2020 at 05:23:25PM +0000, Song Liu wrote:
-> >>
-> >>
-> >>> On Dec 18, 2020, at 8:38 AM, Yonghong Song <yhs@fb.com> wrote:
-> >>>
-> >>>
-> >>>
-> >>> On 12/17/20 9:23 PM, Alexei Starovoitov wrote:
-> >>>> On Thu, Dec 17, 2020 at 8:33 PM Song Liu <songliubraving@fb.com> wrote:
-> >>>>>>
-> >>>>>> ahh. I missed that. Makes sense.
-> >>>>>> vm_file needs to be accurate, but vm_area_struct should be accessed as ptr_to_btf_id.
-> >>>>>
-> >>>>> Passing pointer of vm_area_struct into BPF will be tricky. For example, shall we
-> >>>>> allow the user to access vma->vm_file? IIUC, with ptr_to_btf_id the verifier will
-> >>>>> allow access of vma->vm_file as a valid pointer to struct file. However, since the
-> >>>>> vma might be freed, vma->vm_file could point to random data.
-> >>>> I don't think so. The proposed patch will do get_file() on it.
-> >>>> There is actually no need to assign it into a different variable.
-> >>>> Accessing it via vma->vm_file is safe and cleaner.
-> >>>
-> >>> I did not check the code but do you have scenarios where vma is freed but old vma->vm_file is not freed due to reference counting, but
-> >>> freed vma area is reused so vma->vm_file could be garbage?
-> >>
-> >> AFAIK, once we unlock mmap_sem, the vma could be freed and reused. I guess ptr_to_btf_id
-> >> or probe_read would not help with this?
-> >
-> > Theoretically we can hack the verifier to treat some ptr_to_btf_id as "less
-> > valid" than the other ptr_to_btf_id, but the user experience will not be great.
-> > Reading such bpf prog will not be obvious. I think it's better to run bpf prog
-> > in mmap_lock then and let it access vma->vm_file. After prog finishes the iter
-> > bit can do if (mmap_lock_is_contended()) before iterating. That will deliver
-> > better performance too. Instead of task_vma_seq_get_next() doing
-> > mmap_lock/unlock at every vma. No need for get_file() either. And no
-> > __vm_area_struct exposure.
+> > The patch looks fine to me.
+> > Please add a few things:
+> > - selftests to make sure it gets routinely tested with bpf CI.
 >
-> I think there might be concern calling BPF program with mmap_lock, especially that
-> the program is sleepable (for bpf_d_path). It shouldn't be a problem for common
-> cases, but I am not 100% sure for corner cases (many instructions in BPF + sleep).
-> Current version is designed to be very safe for the workload, which might be too
-> conservative.
+> Any pointer to an example test I could base this on?
 
-I know and I agree with all that, but how do you propose to fix the
-vm_file concern
-without holding the lock while prog is running? I couldn't come up with a way.
+selftests/bpf/
+
+> > - add a doc with contents from commit log.
+>
+> You're referring to the ABI part of the changelog, right?
+>
+> > The "Does bpf make things into an abi ?" question keeps coming back
+> > over and over again.
+> > Everytime we have the same answer that No, bpf cannot bake things into abi.
+> > I think once it's spelled out somewhere in Documentation/ it would be easier to
+> > repeat this message.
+>
+> How about a new Documentation/bpf/ABI.rst? I can write something up initially
+> for us to discuss in detail when I post.
+
+There is Documentation/bpf/bpf_design_QA.rst
+and we already have this text in there that was added back in 2017:
+
+Q: Does BPF have a stable ABI?
+------------------------------
+A: YES. BPF instructions, arguments to BPF programs, set of helper
+functions and their arguments, recognized return codes are all part
+of ABI. However there is one specific exception to tracing programs
+which are using helpers like bpf_probe_read() to walk kernel internal
+data structures and compile with kernel internal headers. Both of these
+kernel internals are subject to change and can break with newer kernels
+such that the program needs to be adapted accordingly.
+
+I'm suggesting to add an additional section to this Q/A doc to include
+more or less
+the same text you had in the commit log.
