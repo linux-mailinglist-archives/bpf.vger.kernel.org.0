@@ -2,76 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D95822EC6E5
-	for <lists+bpf@lfdr.de>; Thu,  7 Jan 2021 00:31:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10D3C2EC707
+	for <lists+bpf@lfdr.de>; Thu,  7 Jan 2021 00:43:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726787AbhAFXas (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Jan 2021 18:30:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50290 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726293AbhAFXas (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Jan 2021 18:30:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 1FE2A2313A;
-        Wed,  6 Jan 2021 23:30:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609975808;
-        bh=h9cvYcIzci27Ptk6NinbKrsmZrHcY5MmuETl7A5EjqE=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=s0Cn45MHifTOtxJb1pNi6wRqOBIgfjmnHYCD6Qw+5pyMIdhuEcAV/vKceATtBQLNL
-         b36cZemJXJsLt072J74CZ/7eys44atxVAO9c1sk03Q8KuUPRdf+zCip4doJ4sB2gCC
-         60JqeoKfhVvHMjWyY6fKnU3j+5u7I/U2EFLUoW84wTkbyBA0pGcCByZSnyp/w+nk/3
-         I3lj+mGlBjOS0/Y0RXxyAPz+Ba/u4a/Gv9DuxrDCb4D8AerNtP9q2DNd644KObKddM
-         5jJe3SNKU0fZ84zYkTFC4GuWylQTtBbQzG8qG+PSr4WYnZ+3sb2mLxCKYTggSwB3n1
-         EGgCVqNiPHOSQ==
-Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 112BD60597;
-        Wed,  6 Jan 2021 23:30:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S1727859AbhAFXnF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Jan 2021 18:43:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726293AbhAFXnF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Jan 2021 18:43:05 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C28F7C061786;
+        Wed,  6 Jan 2021 15:42:24 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id d37so4469427ybi.4;
+        Wed, 06 Jan 2021 15:42:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZPW74S8PzIlFk41Z9RviD5za69Jyj385qTRgrriyRfQ=;
+        b=S0kMVmMOEkQuiA3qikpKc4BMjBTXdDJdlK4bFcFIkkYzMyXw4OGfqMK/L508rfLHN+
+         d07j69i0GzAyIlulGof/vefhHNdMSYnOExlI7aFxmzXjUyC7J+rmfDFhBelv5EM1I0JB
+         KfcxUapS1h9X79msPZZP5HGqO9iEbFoO8Kt40Hllj08b07DHHgHmjNbGKhkZOmgpz/az
+         +oXjzK85Rh9TqNw8m/rds/5oaAFe0X2j12Dx9ppDNqS8whTRpkihI5RFO+0sZuferHLu
+         XYy5fHr7ET8CcjiP76AcCv/7c3/OKmM5ICR1T+lrp7XYxGgw4BRHluICdgOFqlqCUxPC
+         HK7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZPW74S8PzIlFk41Z9RviD5za69Jyj385qTRgrriyRfQ=;
+        b=ch0PLpwJGeUt/X/7VhjM4/M2ASIGg457leN6AZsQzPUsJMTdEo3af/rQerrrYUIRyf
+         fnDhX7AIvR/MXn0F3KLzcPoVM1NzsMex6liCRX5dhL08nwSyPP8T9QA2M1NMBR5yNngY
+         STocRqzYsISqlTCnOYxCC2Bm4jRM0cEl5YRKCHvIm2iDcRAiKWo9BPBZwNR60cMi02Wi
+         /iejnahN9oiBfO9dkZ8SGPdBS6sBMaTwTn6ZF2m1SmtV2UMmNh654wN31za3bqge7oTE
+         PUU6HAwQl+8zRBJiyBMJOtwpOC4iTCHyxfJ+O0lMuQWJMwkd82fSTZvFTkY/M1aSNTeP
+         VeOA==
+X-Gm-Message-State: AOAM531KbbZz67simAB4B687Zi3Xw0ha/MLKNv0eN14UzD7LXcoW35OU
+        ovaTSpc0VZPcgiepZ8879OvHkE+ZBXaMIJQH7n8=
+X-Google-Smtp-Source: ABdhPJxVTeXuACDNbhp+4/Qf0sV9wAp5WcMb5z/EiaVR+M1N+WTuS1/M6QqTnsmwZM9Kw3DRLLUJrQQjBTyXWMtMCZ8=
+X-Received: by 2002:a25:854a:: with SMTP id f10mr9115524ybn.510.1609976544040;
+ Wed, 06 Jan 2021 15:42:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] bpftool: fix compilation failure for net.o with older
- glibc
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160997580806.29559.1033130735626335263.git-patchwork-notify@kernel.org>
-Date:   Wed, 06 Jan 2021 23:30:08 +0000
-References: <1609948746-15369-1-git-send-email-alan.maguire@oracle.com>
-In-Reply-To: <1609948746-15369-1-git-send-email-alan.maguire@oracle.com>
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, toke@redhat.com,
-        wanghai38@huawei.com, quentin@isovalent.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <1e806d48-fd54-fd86-5b3a-372d9876f360@arm.com> <20200828172658.dxygk7j672gho4ax@e107158-lin.cambridge.arm.com>
+ <58f5d2e8-493b-7ce1-6abd-57705e5ab437@arm.com> <20200902135423.GB93959@lorien.usersys.redhat.com>
+ <20200907110223.gtdgqod2iv2w7xmg@e107158-lin.cambridge.arm.com>
+ <20200908131954.GA147026@lorien.usersys.redhat.com> <20210104182642.xglderapsfrop6pi@e107158-lin>
+ <CAADnVQ+1BNO577iz+05M4nNk+DB2n9ffwr4KrktWxO+2mP1b-Q@mail.gmail.com>
+ <20210105113857.gzqaiuhxsxdtu474@e107158-lin> <CAADnVQ+GH9DfaRJ3CCDYL8o9UUH-eAuBq6EhjVLbicY_XWbySw@mail.gmail.com>
+ <20210106112712.6ec7yejhidauo432@e107158-lin>
+In-Reply-To: <20210106112712.6ec7yejhidauo432@e107158-lin>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 6 Jan 2021 15:42:13 -0800
+Message-ID: <CAEf4BzaL8788pNdk4A9_EGTZF52MikCPJX1-fh3JO2uca6x9FQ@mail.gmail.com>
+Subject: Re: [PATCH v2] sched/debug: Add new tracepoint to track cpu_capacity
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Phil Auld <pauld@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        vincent.donnefort@arm.com, Ingo Molnar <mingo@redhat.com>,
+        vincent.guittot@linaro.org, LKML <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Wed, Jan 6, 2021 at 3:27 AM Qais Yousef <qais.yousef@arm.com> wrote:
+>
+> On 01/05/21 08:44, Alexei Starovoitov wrote:
+> > > Any pointer to an example test I could base this on?
+> >
+> > selftests/bpf/
+>
+> I was hoping for something more elaborate. I thought there's something already
+> there that do some verification for raw tracepoint that I could either extend
+> or replicate. Otherwise this could end up being a time sink for me and I'm not
+> keen on jumping down this rabbit hole.
 
-This patch was applied to bpf/bpf.git (refs/heads/master):
+One way would be to add either another custom tracepoint definition to
+a test module or modify the existing one to be a bare tracepoint. See
+links below.
 
-On Wed,  6 Jan 2021 15:59:06 +0000 you wrote:
-> For older glibc ~2.17, #include'ing both linux/if.h and net/if.h
-> fails due to complaints about redefinition of interface flags:
-> 
->   CC       net.o
-> In file included from net.c:13:0:
-> /usr/include/linux/if.h:71:2: error: redeclaration of enumerator ‘IFF_UP’
->   IFF_UP    = 1<<0,  /* sysfs */
->   ^
-> /usr/include/net/if.h:44:5: note: previous definition of ‘IFF_UP’ was here
->      IFF_UP = 0x1,  /* Interface is up.  */
-> 
-> [...]
+If it's easy to trigger those tracepoints from user-space on demand,
+writing a similar (to module_attach) selftest for in-kernel tracepoint
+is trivial.
 
-Here is the summary with links:
-  - [bpf] bpftool: fix compilation failure for net.o with older glibc
-    https://git.kernel.org/bpf/bpf/c/6f02b540d759
+  [0] https://github.com/torvalds/linux/blob/master/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
+  [1] https://github.com/torvalds/linux/blob/master/tools/testing/selftests/bpf/progs/test_module_attach.c#L12-L18
+  [2] https://github.com/torvalds/linux/blob/master/tools/testing/selftests/bpf/prog_tests/module_attach.c
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+>
+> > > > - add a doc with contents from commit log.
+> > >
+> > > You're referring to the ABI part of the changelog, right?
+> > >
+> > > > The "Does bpf make things into an abi ?" question keeps coming back
+> > > > over and over again.
+> > > > Everytime we have the same answer that No, bpf cannot bake things into abi.
+> > > > I think once it's spelled out somewhere in Documentation/ it would be easier to
+> > > > repeat this message.
+> > >
+> > > How about a new Documentation/bpf/ABI.rst? I can write something up initially
+> > > for us to discuss in detail when I post.
+> >
+> > There is Documentation/bpf/bpf_design_QA.rst
+> > and we already have this text in there that was added back in 2017:
+> >
+> > Q: Does BPF have a stable ABI?
+> > ------------------------------
+> > A: YES. BPF instructions, arguments to BPF programs, set of helper
+> > functions and their arguments, recognized return codes are all part
+> > of ABI. However there is one specific exception to tracing programs
+> > which are using helpers like bpf_probe_read() to walk kernel internal
+> > data structures and compile with kernel internal headers. Both of these
+> > kernel internals are subject to change and can break with newer kernels
+> > such that the program needs to be adapted accordingly.
+> >
+> > I'm suggesting to add an additional section to this Q/A doc to include
+> > more or less
+> > the same text you had in the commit log.
+>
+> Works for me.
+>
+> Thanks
+>
+> --
+> Qais Yousef
