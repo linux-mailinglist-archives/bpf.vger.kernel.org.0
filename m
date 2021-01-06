@@ -2,180 +2,188 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC5E92EC657
-	for <lists+bpf@lfdr.de>; Wed,  6 Jan 2021 23:47:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84D562EC6D7
+	for <lists+bpf@lfdr.de>; Thu,  7 Jan 2021 00:26:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727098AbhAFWqj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Jan 2021 17:46:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50036 "EHLO
+        id S1726449AbhAFX0X (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Jan 2021 18:26:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726866AbhAFWqj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Jan 2021 17:46:39 -0500
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDC4BC061575
-        for <bpf@vger.kernel.org>; Wed,  6 Jan 2021 14:45:58 -0800 (PST)
-Received: by mail-qt1-x84a.google.com with SMTP id t7so3405706qtn.19
-        for <bpf@vger.kernel.org>; Wed, 06 Jan 2021 14:45:58 -0800 (PST)
+        with ESMTP id S1726293AbhAFX0X (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Jan 2021 18:26:23 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B23CC061757;
+        Wed,  6 Jan 2021 15:25:42 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id r63so4430339ybf.5;
+        Wed, 06 Jan 2021 15:25:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=z/minfmnrCiZQKZriVAE3kJbpflP12fwCuTdg+lvXfs=;
-        b=LRt3VS2Qn/kw01C4b4FGHOiC4xEszwrU+2zXDqLEBPlzYU5WIJsqJSuVQZaKRDRLZK
-         I6S4E+79b9HV4ZYL5p1Ku8DJEcVUpPQl0AzkueiILjketSY8eIeDxxXm+WhhEgW17k2W
-         +wymWR2GqBcCg6/TO4rpV9IC5cr5Gobt5AtniVlQJ7twhO+BCn0LqNhfDHWRcg0PfPsm
-         ugvPph+mt80UfONP2CkTc3daARibnp5UcCsqGCBcW/iqa8FPrz34vFanUufMztF8SolX
-         xa3pVRopQ81kltC/r+Cex32MHHN5bum+yMOA4LKUdH7TukUp+fNPlmQxnbIw/GQFbx7h
-         ZEgA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x0YrIMBBWBn97y+yprI1QvAdWudZQ/QK8v4zbR8sops=;
+        b=HJGn3NtTPNLOqik+BpAqAFiaKBdcp6X1sA9IdcVyfhrNrfeI1yjAiuYvyUUaqVGv+D
+         RmBflcUB99VdFaFkI97c/e2iWQHXh3NGTo7vmPJFjQpY47Fv0/ZqoZHDb5BtKsp7LT//
+         KbKgBmH9kRpaH1qmujAa/EyL4WicYsSM6fgr2QN2ePwbx0lNS+Sx12Dl9YM9kFzEQSfY
+         TwwfMMUMMWtaEYZECw09BETeEG6VV9HgNvKZExqxs6PBNjM7u4rCWpFGeo8xR6zgVDqm
+         nGVtEq4o1lMSKEQTP9B8mwAleLbezChmEgVRms79OOcpw0Nm0C0w5YgXEiYCGUMfUdu6
+         E8Eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=z/minfmnrCiZQKZriVAE3kJbpflP12fwCuTdg+lvXfs=;
-        b=QkDrrFxffAW9Iki83gPdJEp9lSANFUTVn+2bHqxwZm0r8BZD3ZSxrRONoun5oHrdKr
-         plrs/IaqvgbfSq4L5nXNiHgUKHNAmjf8I1pxri8nfn0S6xGYMktg4PwU5RPvBA+nNxtj
-         Xb4ZyJAmH4y/yoIo09rBzTcHIa1U1FqAN/To1ZDD6xOPOIkHspzIbtGeNMQPnSN+6eIR
-         oJ8G0jvr1uNNEgE7BhiiqmezEsNSBkNbxy/89gFR3WEIEQ5WYYO6HluuJ/cNrGg+wfnq
-         /AZZZiXwyBVufkGPs6GSGVOMxys7ziHVVNjIK8iAF1LSL+GC4oonios2yM1Rzr0Im4jb
-         J/tw==
-X-Gm-Message-State: AOAM533Npob1ImWtbZV72uHeianWk/PQ1cNOX7AsAfCQO/lxrxTL30qw
-        +WUBp1LJU5enCNrMHrwHx+/AmJM=
-X-Google-Smtp-Source: ABdhPJwLccvHErMuMdBybE0Z0T+2vCwRgDAuzmZ5/ukOihAcHxIcI6L5mKGMCvX4fBypmQJcNJ0kYFs=
-Sender: "sdf via sendgmr" <sdf@sdf2.svl.corp.google.com>
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:7220:84ff:fe09:7732])
- (user=sdf job=sendgmr) by 2002:a0c:fdec:: with SMTP id m12mr6242193qvu.11.1609973157864;
- Wed, 06 Jan 2021 14:45:57 -0800 (PST)
-Date:   Wed, 6 Jan 2021 14:45:56 -0800
-In-Reply-To: <20210106194756.vjkulozifc4bfuut@kafai-mbp.dhcp.thefacebook.com>
-Message-Id: <X/Y9pAaiq2FMHoBs@google.com>
-Mime-Version: 1.0
-References: <20210105214350.138053-1-sdf@google.com> <20210105214350.138053-4-sdf@google.com>
- <20210106194756.vjkulozifc4bfuut@kafai-mbp.dhcp.thefacebook.com>
-Subject: Re: [PATCH bpf-next v3 3/3] bpf: remove extra lock_sock for TCP_ZEROCOPY_RECEIVE
-From:   sdf@google.com
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, Song Liu <songliubraving@fb.com>,
-        Eric Dumazet <edumazet@google.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x0YrIMBBWBn97y+yprI1QvAdWudZQ/QK8v4zbR8sops=;
+        b=OMtuRHi6bLBOg125KYYXfuUFZ8cq4TXcsJe7jy0dhH/ywf/DhSpIrMpKUKhmOBmPMp
+         6jCI2L4XGw6MIWfcPqgkwm8NMi7WoRWWMeJjtOkGKwuIxD8byi998cG2vKBlqXYXo8Vp
+         gM+wiC41LFs0bDlVWj0oiSHkFAVSO3/pezqCG3PFGd7KPy5Ewh2leoyzW9zKrXhFxP2S
+         QFRmBQVYVkAB+KlQOUWlnWLxJWKhBD3RD6W3T5wIbnkQ6gYpr/iISIOmL4QQbOEDS82r
+         JsCS6IMCkzJkgSo9G0kUlkXpteCF7yVk4kPPFElqml7yKx8yO71RWuamSStzxmwqdDNO
+         wumA==
+X-Gm-Message-State: AOAM530DJXrnUUxQwtNLnyOBtdLss2ERGlC0pt3Y0LunO/OHAkgxbW3c
+        ghPXI6cwLpn8B3heCTpo2zVjIVN53ean000EQ8zJv6MG
+X-Google-Smtp-Source: ABdhPJxjcuLrkqLLY3RbaQtHKihGl6u6jbIaYuROLS5KVIiBtPyoCWI7/ne63MhGEe6roh+IJCYTPEfQr+G3wN3Thm4=
+X-Received: by 2002:a25:2c4c:: with SMTP id s73mr9537727ybs.230.1609975541329;
+ Wed, 06 Jan 2021 15:25:41 -0800 (PST)
+MIME-Version: 1.0
+References: <20201218235614.2284956-1-andrii@kernel.org> <20201218235614.2284956-4-andrii@kernel.org>
+ <20210105034644.5thpans6alifiq65@ast-mbp> <CAEf4BzY4qXW_xV+0pcWPQp+Tda6BY69xgJnaA3RFxKc255rP2g@mail.gmail.com>
+ <20210105190355.2lbt6vlmi752segx@ast-mbp> <CAEf4BzZPqBp=Th5Xy3mrWZ2k5ANo_+1rQSkC1Q=uEHz6FcBqpA@mail.gmail.com>
+ <20210106060920.wmnvwolbmju4edp3@ast-mbp> <CANaYP3E5qYq0JznOkxVf6r3N-oM-WjKEw6kqPKD_ofQtk1gL+A@mail.gmail.com>
+In-Reply-To: <CANaYP3E5qYq0JznOkxVf6r3N-oM-WjKEw6kqPKD_ofQtk1gL+A@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 6 Jan 2021 15:25:30 -0800
+Message-ID: <CAEf4BzZay-ofoZ-RURa0vTyQnEVaqF4_xuTAijSA9wgm=kt02g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: add tests for user- and
+ non-CO-RE BPF_CORE_READ() variants
+To:     Gilad Reti <gilad.reti@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 01/06, Martin KaFai Lau wrote:
-> On Tue, Jan 05, 2021 at 01:43:50PM -0800, Stanislav Fomichev wrote:
-> > Add custom implementation of getsockopt hook for TCP_ZEROCOPY_RECEIVE.
-> > We skip generic hooks for TCP_ZEROCOPY_RECEIVE and have a custom
-> > call in do_tcp_getsockopt using the on-stack data. This removes
-> > 3% overhead for locking/unlocking the socket.
+On Wed, Jan 6, 2021 at 2:10 AM Gilad Reti <gilad.reti@gmail.com> wrote:
+>
+> On Wed, Jan 6, 2021 at 8:09 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
 > >
-> > Also:
-> > - Removed BUILD_BUG_ON (zerocopy doesn't depend on the buf size anymore)
-> > - Separated on-stack buffer into bpf_sockopt_buf and downsized to 32  
-> bytes
-> >   (let's keep it to help with the other options)
+> > On Tue, Jan 05, 2021 at 01:03:47PM -0800, Andrii Nakryiko wrote:
+> > > > >
+> > > > >   - handling 32-bit vs 64-bit UAPI structs uniformly;
+> > > >
+> > > > what do you mean?
+> > > > 32-bit user space running on 64-bit kernel works through 'compat' syscalls.
+> > > > If bpf progs are accessing 64-bit uapi structs in such case they're broken
+> > > > and no amount of co-re can help.
+> > >
+> > > I know nothing about compat, so can't comment on that. But the way I
+> > > understood the situation was the BPF program compiled once (well, at
+> > > least from the unmodified source code), but runs on ARM32 and (on a
+> > > separate physical host) on ARM64. And it's task is, say, to read UAPI
+> > > kernel structures from syscall arguments.
 > >
-> > (I can probably split this patch into two: add new features and rework
-> >  bpf_sockopt_buf; can follow up if the approach in general sounds
-> >  good).
+> > I'm not sure about arm, but on x86 there should be two different progs
+> > for this to work (if we're talking about 32-bit userspace).
+> > See below.
 > >
-> > Without this patch:
-> >      3.29%     0.07%  tcp_mmap  [kernel.kallsyms]  [k]  
-> __cgroup_bpf_run_filter_getsockopt
-> >             |
-> >              --3.22%--__cgroup_bpf_run_filter_getsockopt
-> >                        |
-> >                        |--0.66%--lock_sock_nested
-> A general question for sockopt prog, why the BPF_CGROUP_(GET|SET)SOCKOPT  
-> prog
-> has to run under lock_sock()?
-I don't think there is a strong reason. We expose sk to the BPF program,
-but mainly for the socket storage map (which, afaik, doesn't require
-socket to be locked). OTOH, it seems that providing a consistent view
-of the sk to the BPF is a good idea.
-
-Eric has suggested to try to use fast socket lock. It helps a bit,
-but it doesn't remove the issue completely because
-we do a bunch of copy_{to,from}_user in the generic
-__cgroup_bpf_run_filter_getsockopt as well :-(
-
-> >                        |
-> >                        |--0.57%--__might_fault
-> >                        |
-> >                         --0.56%--release_sock
+> > > One simple example I found in UAPI definitions is struct timespec, it
+> > > seems it's defined with `long`:
+> > >
+> > > struct timespec {
+> > >         __kernel_old_time_t     tv_sec;         /* seconds */
+> > >         long                    tv_nsec;        /* nanoseconds */
+> > > }
+> > >
+> > > So if you were to trace clock_gettime(), you'd need to deal with
+> > > differently-sized reads of tv_nsec, depending on whether you are
+> > > running on the 32-bit or 64-bit host.
 > >
-> > With the patch applied:
-> >      0.42%     0.10%  tcp_mmap  [kernel.kallsyms]  [k]  
-> __cgroup_bpf_run_filter_getsockopt_kern
-> >      0.02%     0.02%  tcp_mmap  [kernel.kallsyms]  [k]  
-> __cgroup_bpf_run_filter_getsockopt
+> > I believe gettime is vdso, so that's not a syscall and there are no bpf hooks
+> > available to track that.
+> > For normal syscall with timespec argument like sys_recvmmsg and sys_nanosleep
+> > the user needs to load two programs and attach to two different points:
+> > fentry/__x64_sys_nanosleep and fentry/__ia32_sys_nanosleep.
+> > (I'm not an expert on compat and not quite sure how _time32 suffix is handled,
+> > so may be 4 different progs are needed).
+> > The point is that there are several different entry points with different args.
+> > ia32 user space will call into the kernel differently.
+> > At the end different pieces of the syscall and compat handling will call
+> > into hrtimer_nanosleep with ktime.
+> > So if one bpf prog needs to work for 32 and 64 bit user space it should be
+> > attached to common piece of code like hrtimer_nanosleep().
+> > If it's attached to syscall entry it needs to attach to at least 2 different
+> > entry points with 2 different progs.
+>
+> I think that while it is true that syscall handlers are different for
+> 32 and 64 bit,
+> it may happen that some syscall handlers will pass user-space pointers down to
+> shared common functions, which may be hooked by ebpf probes. I am no expert, but
+> I think that the cp_new_stat function is such an example; it gets a
+> user struct stat* pointer,
+> whose definition varies across different architectures (32/64-bit,
+> different processor archs etc.)
+>
+> > I guess it's possible to load single prog and kprobe-attach it to
+> > two different kernel functions, but code is kinda different.
+> > For the simplest things like sys_nanosleep it might work and timespec
+> > is simple enough structure to handle with sizeof(long) co-re tricks,
+> > but it's not a generally applicable approach.
+> > So for a tool to track 32-bit and 64-bit user space is quite tricky.
 > >
-> [ ... ]
-
-> > @@ -1445,15 +1442,29 @@ int __cgroup_bpf_run_filter_getsockopt(struct  
-> sock *sk, int level,
-> >  				       int __user *optlen, int max_optlen,
-> >  				       int retval)
-> >  {
-> > -	struct cgroup *cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
-> > -	struct bpf_sockopt_kern ctx = {
-> > -		.sk = sk,
-> > -		.level = level,
-> > -		.optname = optname,
-> > -		.retval = retval,
-> > -	};
-> > +	struct bpf_sockopt_kern ctx;
-> > +	struct bpf_sockopt_buf buf;
-> > +	struct cgroup *cgrp;
-> >  	int ret;
+> > If bpf prog doesn't care about user space and only needs to deal
+> > with 64-bit kernel + 64-bit user space and 32-bit kernel + 32-bit user space
+> > then it's a bit simpler, but probably still requires attaching
+> > to two different points. On 32-bit x86 kernel there will be no
+> > "fentry/__x64_sys_nanosleep" function.
 > >
-> > +#ifdef CONFIG_INET
-> > +	/* TCP do_tcp_getsockopt has optimized getsockopt implementation
-> > +	 * to avoid extra socket lock for TCP_ZEROCOPY_RECEIVE.
-> > +	 */
-> > +	if (sk->sk_prot->getsockopt == tcp_getsockopt &&
-> > +	    level == SOL_TCP && optname == TCP_ZEROCOPY_RECEIVE)
-> > +		return retval;
-> > +#endif
-> That seems too much protocol details and not very scalable.
-> It is not very related to kernel/bpf/cgroup.c which has very little idea
-> whether a specific protocol has optimized things in some ways (e.g. by
-> directly calling cgroup's bpf prog at some strategic places in this  
-> patch).
-> Lets see if it can be done better.
+> > > There are probably other examples where UAPI structs use long instead
+> > > of __u32 or __u64, but I didn't dig too deep.
+> >
+> > There is also crazy difference between compact_ioctl vs ioctl.
+> >
+> > The point I'm trying to get across is that the clean 32-bit processing is
+> > a lot more involved than just CORE_READ_USER macro and I want to make sure that
+> > the expections are set correctly.
+> > BPF CO-RE prog may handle 32-bit and 64-bit at the same time, but
+> > it's probably exception than the rule.
+> >
+> > > Let's see if Gilad can provide his perspective. I have no strong
+> > > feelings about this and can send a patch removing CORE_READ_USER
+> > > variants (they didn't make it into libbpf v0.3, so no harm or API
+> > > stability concerns). BPF_PROBE_READ() and BPF_PROBE_READ_USER() are
+> > > still useful for reading non-relocatable, but nested data structures,
+> > > so I'd prefer to keep those.
+> >
+> > Let's hear from Gilad.
+> > I'm not against BPF_CORE_READ_USER macro as-is. I was objecting
+> > to the reasons of implementing it.
+>
+> If I am not mistaken (which is completely possible), I think that
+> providing such a macro will
+> not cause any more confusion than the bpf_probe_read_{,user}
+> distinction already does,
+> since BPF_CORE_READ_USER to BPF_CORE_READ is the same as bpf_probe_read_user
+> to bpf_probe_read.
 
-> At least, these protocol checks belong to the net's socket.c
-> more than the bpf's cgroup.c here.  If it also looks like layering
-> breakage in socket.c, may be adding a signal in sk_prot (for example)
-> to tell if the sk_prot->getsockopt has already called the cgroup's bpf
-> prog?  (e.g. tcp_getsockopt() can directly call the cgroup's bpf for all
-> optname instead of only TCP_ZEROCOPY_RECEIVE).
+I think the biggest source of confusion is that USER part in
+BPF_CORE_READ_USER refers to reading data from user address space, not
+really user structs (which is kind of natural instinct here). CO-RE
+*always* works only with kernel types, which is obvious if you have a
+lot of experience with using CO-RE, but not initially, unfortunately.
 
-> For example:
+So in the end, while a narrow use case, it seems like it might be
+useful to have BPF_CORE_READ_USER. Maybe emphasizing (in the doc
+comment) the fact that all types need to be kernel types would help a
+bit? If not, it's not a big deal, because it's pretty easy for users
+to just explicitly write bpf_probe_read_user(&dst, sizeof(dst),
+__builtin_preserve_access_index(src)). But there is definitely a bit
+of mental satisfaction with having all possible combinations of
+CORE/non-CORE and USER/KERNEL variants :)
 
-> int __sys_getsockopt(...)
-> {
-> 	/* ... */
-
-> 	if (!sk_prot->bpf_getsockopt_handled)
-> 		BPF_CGROUP_RUN_PROG_GETSOCKOPT(...);
-> }
-
-> Thoughts?
-
-Sounds good. I didn't go that far because I don't expect there to be
-a lot of special cases like that. But it might be worth supporting
-it in a generic way from the beginning.
-
-I was thinking about something simpler:
-
-int __cgroup_bpf_run_filter_getsockopt(sk, ...)
-{
-	if (sk->sk_prot->bypass_bpf_getsockopt(level, optlen)) {
-		return retval;
-	}
-
-  	// ...
-}
-
-Not sure it's worth exposing it to the __sys_getsockopt. WDYT?
+Btw, it seems these patches are already in bpf-next, so, Alexei,
+please let me know if you insist on removing BPF_CORE_READ_USER()
+variant and I'll send a follow up patch.
