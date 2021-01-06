@@ -2,212 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DCCF2EB97D
-	for <lists+bpf@lfdr.de>; Wed,  6 Jan 2021 06:28:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B5482EB9DC
+	for <lists+bpf@lfdr.de>; Wed,  6 Jan 2021 07:10:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725788AbhAFF1S (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Jan 2021 00:27:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57026 "EHLO
+        id S1726225AbhAFGKE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Jan 2021 01:10:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725562AbhAFF1R (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Jan 2021 00:27:17 -0500
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADF1EC06134C;
-        Tue,  5 Jan 2021 21:26:37 -0800 (PST)
-Received: by mail-yb1-xb33.google.com with SMTP id y128so1741960ybf.10;
-        Tue, 05 Jan 2021 21:26:37 -0800 (PST)
+        with ESMTP id S1726220AbhAFGKE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Jan 2021 01:10:04 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04EE8C06134D;
+        Tue,  5 Jan 2021 22:09:24 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id s21so1097181pfu.13;
+        Tue, 05 Jan 2021 22:09:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UknX9QmHip+tndRmYcnv02sGjXL/6i8uFjVy4S3Vt/Q=;
-        b=UCqx7khl9md1WnUTUb7YlN78GS0MsCd0mzo/BVqnUQtr2UsI9ZRjYRzBgoehkg22R9
-         /IWD53nu5L+j/BqZNXkU22MBN5k+DU2EpmPBnxoD5tlHG6+ckRYp+blgGNktePOHVRJz
-         7DTUVb+2iLoKxijxEqSDi6RldMhKyOJH6hM/rkJgGbQ7OPHbdaVWd5ibNdxFA7BMQf5M
-         bd3svGVmYFunWx727frVHFI2tf7u65hxMMgrNaoMxYsU3mn5ntsZbjv34HdL8CXM0qwl
-         1lTLfQomb36JqhKEdmboQWozdEFvL5gJI973hMmbbrwHZRzSpeg8o2qRk0QX6NNMPzVy
-         iV4Q==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hLC4e/uWxbPvWq2CAZHTjcrZzuof3P9/ZxitB9WSmb0=;
+        b=oNrj+4xawpCPNdLNQfilfJE/Wky+Q2ViJq82f2ZVI/5Jk8Jam43n5PCoz8KYS7Q2hH
+         W3lKyo6/qrIGjHbXCUgFVNpPAuXZApCFzEGk2IJBpq9rJhlUQ8horUkbQlT8hGa1/obT
+         H9IfZ4G5kFjM7wyFOSTmkx40cfrgatQR7j93dTVNrRN2JZVSx/BvhzLo4axiB8yfcBB7
+         zUWRWUUE/oyy32TeiSnGN76gjn9fxPqrh3GSgfRtbZA3aTBC/bia/wL5LyxGiuHmxile
+         Na/EZdIBg8D0xEtLEPLqUh9HIDVg2BlhJeHzY6aZ98aQQji/1ZQQObQ9I22DmgdU1Yil
+         giKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UknX9QmHip+tndRmYcnv02sGjXL/6i8uFjVy4S3Vt/Q=;
-        b=H4cadZUfSa4/2IxNKqHK5nnCJeG6q0SukL3LEymijZD+2opScbL5ITbeRF/NjSRY0l
-         k1jo7HzzSbdeuY9lidwx7oBzyeQb/ycRFqql5u6+S2bOL579xIrtE6CLKE7fpE4XfNu9
-         kbW7VheGw8sMN3Rg4P3e0OLM5WuwjkkRBUruM6JBvtX4lwjEViQGRB6p2hkGEXUIjkhr
-         qRtrVp+sBKR5zPcIVz1/HDYLfBXVwYtSCJS6IsexxteKfg5P9KFik7LPPNPZ+7U7qbjS
-         Ye4IYpEt1jA6fdMqJU2BiHW/pPu10SuxHmCPXLjFoY0ZEA4+VylvZOWlSrOElPXT0J8v
-         TCLw==
-X-Gm-Message-State: AOAM532G7/B4XJaRIrMVuoU5XaztrSkHQr2jIFuVr19XVafyOnIav7Dq
-        aVc4FG9bCa8bXcH1pVO23AtRbayIB+S96mKCGMA=
-X-Google-Smtp-Source: ABdhPJzwaP4vbBtfhgJ0/2XhRCDqHdkub1FRWUHNWILKxZRFis779cP0s0aUseN5F4krORUSrTDk5/+Vl/6naN0a6AE=
-X-Received: by 2002:a25:aea8:: with SMTP id b40mr4044517ybj.347.1609910796865;
- Tue, 05 Jan 2021 21:26:36 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1609855479.git.sean@mess.org> <a9334d4ecb66d58d326c19b78e18b44a180967d1.1609855479.git.sean@mess.org>
-In-Reply-To: <a9334d4ecb66d58d326c19b78e18b44a180967d1.1609855479.git.sean@mess.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 5 Jan 2021 21:26:26 -0800
-Message-ID: <CAEf4BzY2nDzT4FjfARiPJdu=G-0uwhxrUHpNrdAEB9NRxu4RqQ@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] bpf: add tests for ints larger than 128 bits
-To:     Sean Young <sean@mess.org>
-Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hLC4e/uWxbPvWq2CAZHTjcrZzuof3P9/ZxitB9WSmb0=;
+        b=c5pvpLjNyLJn/qHtijbHwbYfyVw5QiowIrySbdHMEotY/2LmV+xcdfFIT89u3PQVWi
+         ORK30RGW0/DW7eqNDwZymzMKP/wHfX2qhYO8D0QB2tXJGC1cYBYTo0hUfbZrIMj549q8
+         Q+XEpmqLSiuTKgLENDHgfFj32J6hSGOdX4Sixog9fpHBGP0JIDQKqWbiiuwJ781xWSxi
+         v5C3dC+v/s6aPFAO5n8OZZ53vYV+4XhIi4jgwnrJ1GPr3RczgMJNpPmiqHTVzO7PeQSU
+         jYZuDXKFDWbypwTux83+Knl9LEZ8fYJuY7kx+CteUfQ71LzxFg4QkcnMmpVUzXCdFkjI
+         L5eA==
+X-Gm-Message-State: AOAM531yc5Kxgj8SKqInAKfk5mTdCGDSQ/cQVip+eq1O72E47KMolPHu
+        +AuO96F2tYhlmlthrjUo0Jc=
+X-Google-Smtp-Source: ABdhPJy1JRNPcQGZaJJ9R4IyaHzclMpyg6gu7wORDrATbLRL/VpEWbDQPcb7Vx6j4CFBZX0nYTZ2MA==
+X-Received: by 2002:a63:c205:: with SMTP id b5mr2814009pgd.281.1609913363481;
+        Tue, 05 Jan 2021 22:09:23 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:400::5:cb32])
+        by smtp.gmail.com with ESMTPSA id f7sm977642pjs.25.2021.01.05.22.09.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 22:09:22 -0800 (PST)
+Date:   Tue, 5 Jan 2021 22:09:20 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        linux-doc@vger.kernel.org, Networking <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+        Kernel Team <kernel-team@fb.com>,
+        Gilad Reti <gilad.reti@gmail.com>
+Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: add tests for user- and
+ non-CO-RE BPF_CORE_READ() variants
+Message-ID: <20210106060920.wmnvwolbmju4edp3@ast-mbp>
+References: <20201218235614.2284956-1-andrii@kernel.org>
+ <20201218235614.2284956-4-andrii@kernel.org>
+ <20210105034644.5thpans6alifiq65@ast-mbp>
+ <CAEf4BzY4qXW_xV+0pcWPQp+Tda6BY69xgJnaA3RFxKc255rP2g@mail.gmail.com>
+ <20210105190355.2lbt6vlmi752segx@ast-mbp>
+ <CAEf4BzZPqBp=Th5Xy3mrWZ2k5ANo_+1rQSkC1Q=uEHz6FcBqpA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZPqBp=Th5Xy3mrWZ2k5ANo_+1rQSkC1Q=uEHz6FcBqpA@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 5, 2021 at 6:45 AM Sean Young <sean@mess.org> wrote:
->
-> clang supports arbitrary length ints using the _ExtInt extension. This
-> can be useful to hold very large values, e.g. 256 bit or 512 bit types.
->
-> Larger types (e.g. 1024 bits) are possible but I am unaware of a use
-> case for these.
->
-> This requires the _ExtInt extension enabled in clang, which is under
-> review.
->
-> Link: https://clang.llvm.org/docs/LanguageExtensions.html#extended-integer-types
-> Link: https://reviews.llvm.org/D93103
->
-> Signed-off-by: Sean Young <sean@mess.org>
-> ---
->  tools/testing/selftests/bpf/Makefile          |   3 +-
->  tools/testing/selftests/bpf/prog_tests/btf.c  |   3 +-
->  .../selftests/bpf/progs/test_btf_extint.c     |  50 ++
->  tools/testing/selftests/bpf/test_extint.py    | 535 ++++++++++++++++++
->  4 files changed, 589 insertions(+), 2 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/progs/test_btf_extint.c
->  create mode 100755 tools/testing/selftests/bpf/test_extint.py
->
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> index 8c33e999319a..436ad1aed3d9 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -70,7 +70,8 @@ TEST_PROGS := test_kmod.sh \
->         test_bpftool_build.sh \
->         test_bpftool.sh \
->         test_bpftool_metadata.sh \
-> -       test_xsk.sh
-> +       test_xsk.sh \
-> +       test_extint.py
->
->  TEST_PROGS_EXTENDED := with_addr.sh \
->         with_tunnels.sh \
-> diff --git a/tools/testing/selftests/bpf/prog_tests/btf.c b/tools/testing/selftests/bpf/prog_tests/btf.c
-> index 8ae97e2a4b9d..96a93502cf27 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/btf.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/btf.c
-> @@ -4073,6 +4073,7 @@ struct btf_file_test {
->  static struct btf_file_test file_tests[] = {
->         { .file = "test_btf_haskv.o", },
->         { .file = "test_btf_newkv.o", },
-> +       { .file = "test_btf_extint.o", },
->         { .file = "test_btf_nokv.o", .btf_kv_notfound = true, },
->  };
->
-> @@ -4414,7 +4415,7 @@ static struct btf_raw_test pprint_test_template[] = {
->          * will have both int and enum types.
->          */
->         .raw_types = {
-> -               /* unsighed char */                     /* [1] */
-> +               /* unsigned char */                     /* [1] */
+On Tue, Jan 05, 2021 at 01:03:47PM -0800, Andrii Nakryiko wrote:
+> > >
+> > >   - handling 32-bit vs 64-bit UAPI structs uniformly;
+> >
+> > what do you mean?
+> > 32-bit user space running on 64-bit kernel works through 'compat' syscalls.
+> > If bpf progs are accessing 64-bit uapi structs in such case they're broken
+> > and no amount of co-re can help.
+> 
+> I know nothing about compat, so can't comment on that. But the way I
+> understood the situation was the BPF program compiled once (well, at
+> least from the unmodified source code), but runs on ARM32 and (on a
+> separate physical host) on ARM64. And it's task is, say, to read UAPI
+> kernel structures from syscall arguments.
 
-unintentional whitespaces change?
+I'm not sure about arm, but on x86 there should be two different progs
+for this to work (if we're talking about 32-bit userspace).
+See below.
 
->                 BTF_TYPE_INT_ENC(NAME_TBD, 0, 0, 8, 1),
->                 /* unsigned short */                    /* [2] */
->                 BTF_TYPE_INT_ENC(NAME_TBD, 0, 0, 16, 2),
-> diff --git a/tools/testing/selftests/bpf/progs/test_btf_extint.c b/tools/testing/selftests/bpf/progs/test_btf_extint.c
-> new file mode 100644
-> index 000000000000..b0fa9f130dda
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_btf_extint.c
-> @@ -0,0 +1,50 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include "bpf_legacy.h"
-> +
-> +struct extint {
-> +       _ExtInt(256) v256;
-> +       _ExtInt(512) v512;
-> +};
-> +
-> +struct bpf_map_def SEC("maps") btf_map = {
-> +       .type = BPF_MAP_TYPE_ARRAY,
-> +       .key_size = sizeof(int),
-> +       .value_size = sizeof(struct extint),
-> +       .max_entries = 1,
-> +};
-> +
-> +BPF_ANNOTATE_KV_PAIR(btf_map, int, struct extint);
+> One simple example I found in UAPI definitions is struct timespec, it
+> seems it's defined with `long`:
+> 
+> struct timespec {
+>         __kernel_old_time_t     tv_sec;         /* seconds */
+>         long                    tv_nsec;        /* nanoseconds */
+> }
+> 
+> So if you were to trace clock_gettime(), you'd need to deal with
+> differently-sized reads of tv_nsec, depending on whether you are
+> running on the 32-bit or 64-bit host.
 
-this is deprecated, don't add new tests using it. Please use BTF-based
-map definition instead (see any other selftests).
+I believe gettime is vdso, so that's not a syscall and there are no bpf hooks
+available to track that.
+For normal syscall with timespec argument like sys_recvmmsg and sys_nanosleep
+the user needs to load two programs and attach to two different points:
+fentry/__x64_sys_nanosleep and fentry/__ia32_sys_nanosleep.
+(I'm not an expert on compat and not quite sure how _time32 suffix is handled,
+so may be 4 different progs are needed).
+The point is that there are several different entry points with different args.
+ia32 user space will call into the kernel differently.
+At the end different pieces of the syscall and compat handling will call
+into hrtimer_nanosleep with ktime.
+So if one bpf prog needs to work for 32 and 64 bit user space it should be
+attached to common piece of code like hrtimer_nanosleep().
+If it's attached to syscall entry it needs to attach to at least 2 different
+entry points with 2 different progs.
+I guess it's possible to load single prog and kprobe-attach it to
+two different kernel functions, but code is kinda different.
+For the simplest things like sys_nanosleep it might work and timespec
+is simple enough structure to handle with sizeof(long) co-re tricks,
+but it's not a generally applicable approach.
+So for a tool to track 32-bit and 64-bit user space is quite tricky.
 
-> +
-> +__attribute__((noinline))
-> +int test_long_fname_2(void)
-> +{
-> +       struct extint *bi;
-> +       int key = 0;
-> +
-> +       bi = bpf_map_lookup_elem(&btf_map, &key);
-> +       if (!bi)
-> +               return 0;
-> +
-> +       bi->v256 <<= 64;
-> +       bi->v256 += (_ExtInt(256))0xcafedead;
-> +       bi->v512 <<= 128;
-> +       bi->v512 += (_ExtInt(512))0xff00ff00ff00ffull;
-> +
-> +       return 0;
-> +}
-> +
-> +__attribute__((noinline))
-> +int test_long_fname_1(void)
-> +{
-> +       return test_long_fname_2();
-> +}
-> +
-> +SEC("dummy_tracepoint")
-> +int _dummy_tracepoint(void *arg)
-> +{
-> +       return test_long_fname_1();
-> +}
+If bpf prog doesn't care about user space and only needs to deal
+with 64-bit kernel + 64-bit user space and 32-bit kernel + 32-bit user space
+then it's a bit simpler, but probably still requires attaching
+to two different points. On 32-bit x86 kernel there will be no
+"fentry/__x64_sys_nanosleep" function.
 
-why the chain of test_long_fname functions? Please minimize the test
-to only test the essential logic - _ExtInt handling.
+> There are probably other examples where UAPI structs use long instead
+> of __u32 or __u64, but I didn't dig too deep.
 
-> +
-> +char _license[] SEC("license") = "GPL";
-> diff --git a/tools/testing/selftests/bpf/test_extint.py b/tools/testing/selftests/bpf/test_extint.py
-> new file mode 100755
-> index 000000000000..86af815a0cf6
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/test_extint.py
+There is also crazy difference between compact_ioctl vs ioctl.
 
-this looks like a total overkill (with a lot of unrelated code) for a
-pretty simple test you need to perform. you can run bpftool and get
-its output from test_progs with popen().
+The point I'm trying to get across is that the clean 32-bit processing is
+a lot more involved than just CORE_READ_USER macro and I want to make sure that
+the expections are set correctly.
+BPF CO-RE prog may handle 32-bit and 64-bit at the same time, but
+it's probably exception than the rule.
 
-> @@ -0,0 +1,535 @@
-> +#!/usr/bin/python3
+> Let's see if Gilad can provide his perspective. I have no strong
+> feelings about this and can send a patch removing CORE_READ_USER
+> variants (they didn't make it into libbpf v0.3, so no harm or API
+> stability concerns). BPF_PROBE_READ() and BPF_PROBE_READ_USER() are
+> still useful for reading non-relocatable, but nested data structures,
+> so I'd prefer to keep those.
 
-[...]
+Let's hear from Gilad.
+I'm not against BPF_CORE_READ_USER macro as-is. I was objecting
+to the reasons of implementing it.
