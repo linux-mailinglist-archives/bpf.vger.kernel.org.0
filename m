@@ -2,113 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBBB72EC56F
-	for <lists+bpf@lfdr.de>; Wed,  6 Jan 2021 22:04:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 386562EC5D4
+	for <lists+bpf@lfdr.de>; Wed,  6 Jan 2021 22:41:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726793AbhAFVDw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Jan 2021 16:03:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58472 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726592AbhAFVDw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Jan 2021 16:03:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B1CF62313B
-        for <bpf@vger.kernel.org>; Wed,  6 Jan 2021 21:03:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609966992;
-        bh=Q6xLMoT557K4CK1nMQoURYYeVLLQf+dvFEEfDFxaN9A=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=l2U6lOwQ/MkCcZbzY7bYSPxCvWtJWHSh7+qWeFUbQkuo7Pkg51rSCVHBdLLd8lLyU
-         jGiiuil3IkWpiemOoJkVWsBiPzcyvJRBTac0wQeNEf5pOb4/SpLiLOHC118vwPa6ng
-         /OtPDKwH6+7aYb16LCnKKgRZqpDo6/xcoIRTruM5JzTQmTpWdlB953IHhuJeEhVXFc
-         3M+z981D5P+hBlUVxu5Tk/pUK/ZOu08SOLS1o9Kf6GlqCR0QrlIRuBfweh8WVW51Om
-         jr5vOP+R2lblpHiftBZiO97eztAu+kJ1CrntYcd4awc6tceKsRo9kThqhInPfj+aKC
-         +yKtgItjrlPXw==
-Received: by mail-lf1-f42.google.com with SMTP id b26so9671237lff.9
-        for <bpf@vger.kernel.org>; Wed, 06 Jan 2021 13:03:11 -0800 (PST)
-X-Gm-Message-State: AOAM531aHhK5vElItXpKYFJZVOzrm2/R44m/35kobe/6obj4k/lIWCDp
-        Z0LBNlMqZwoVz7XpAujkNTw4asuFpXikAWI6p7HDPg==
-X-Google-Smtp-Source: ABdhPJxSAiCa9LTFAZzFlYli1CyM8oY2WDYVvRWkjgUZrxieA6t6kapCENTcJQQ5Alx2hcsB4lDTJnCWqUlIHByH0G0=
-X-Received: by 2002:a19:b4d:: with SMTP id 74mr2508765lfl.162.1609966989999;
- Wed, 06 Jan 2021 13:03:09 -0800 (PST)
+        id S1726328AbhAFVlE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Jan 2021 16:41:04 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:48262 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726225AbhAFVlE (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 6 Jan 2021 16:41:04 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 106LMJAh027294;
+        Wed, 6 Jan 2021 13:39:56 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type :
+ content-transfer-encoding : in-reply-to : mime-version; s=facebook;
+ bh=N5/IGZH1DuiwviUa62guIiX/6K5eA1KdxHBXzodBugw=;
+ b=nt+Qb+YoWtkIAY6ZwPwIhRjj6IowQQxrQbU68JSJ8rSoKpawsC6Hofgaqymqua/86+AH
+ RKm0Mka1C8TaI6rcqvi6xl45W0/yEHLJ+xc/fvLoadRwimUU3z4ACChk/xx6tKe7YxuE
+ SiQg/z8saIa6k4tqPvH2PN4A54diDCorZWM= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 35wjnj0x2s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 06 Jan 2021 13:39:56 -0800
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 6 Jan 2021 13:39:55 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Twoh656uCJ00XbpWzg6Su0ETJ0MyMYDN8ClwjEGEUnKmWilvnYWTHjs8h89cCzm9aMUR0qmz1rACrl22Ruy71zATKsdXqdpUlEV4qfJ2SqJzUIwnkER47l0RggRBupu6fp0cnF+eDsPAChRTOri6AZ1+SXSEvRTZ900zXvk18BrLRNQuJKNdqQr/2f35rj0cokn3LjLpnZL4WifwpEZp8w476oUUAPlPBshcdXxXF5Q7YHp8JeIGZpbDh5HeiiXL/pQBJXyqXCFc8cIEwwk6LXhCaLSBxNN+NQKlmubG0lovpgBnKr96kRtvVPGXkfwi9YXKVAK4z4DH+hUKbcBr0Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=N5/IGZH1DuiwviUa62guIiX/6K5eA1KdxHBXzodBugw=;
+ b=J98KZs70h2dVaReJjuXJSF3YX/1Jlz7/qBo/qa0b0qC+1R1OrqguVG1rY7ismJ/j82GuKZ17fRODNBDfyW7yDwtpao/9C7Pa0WcXz3c/WfUqcrSXSA+ltcNmheem79h83kixdkmg/wHdDap22p1T8ShXTlU32pTVwDf6wIgSPpxkbtxY3dfYwnxN+GpPxVj6eLcMRhy3zDxf99ch6h3IziwH5s3PtCU/o9Kuyw5whFih0EHx3LGyjIoYe3wMf1Rljqhavf/YAmyC7bCgZKNgWbtEOCC0hGAbIvhMzKqWmqZn5bstwQzatykzPhObXBhDaB5IanGoqAGhKfnS+5dxwg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=N5/IGZH1DuiwviUa62guIiX/6K5eA1KdxHBXzodBugw=;
+ b=feLOERPaQMtQi28/OCEVQFxc4FSXvJvxH4ILGSYk/MsTzwCXIzdRPiuoi6noVF8UTutXx2gnaK/wYeZTEgQLkdiE3J29ImJRtD7fSS34UWnwx3UpagZ4QKdFHnUCL5ZXfbGRiu++oph1YAJtxSjnrethc+vfcxqZ7G03Nc6U4CE=
+Authentication-Results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=fb.com;
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by BYAPR15MB2582.namprd15.prod.outlook.com (2603:10b6:a03:154::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Wed, 6 Jan
+ 2021 21:39:53 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::217e:885b:1cef:e1f7]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::217e:885b:1cef:e1f7%7]) with mapi id 15.20.3721.024; Wed, 6 Jan 2021
+ 21:39:53 +0000
+Date:   Wed, 6 Jan 2021 13:39:46 -0800
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Alan Maguire <alan.maguire@oracle.com>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <songliubraving@fb.com>, <yhs@fb.com>, <john.fastabend@gmail.com>,
+        <kpsingh@kernel.org>, <toke@redhat.com>, <wanghai38@huawei.com>,
+        <quentin@isovalent.com>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf] bpftool: fix compilation failure for net.o with
+ older glibc
+Message-ID: <20210106213946.sfnjfiycieo3f3em@kafai-mbp.dhcp.thefacebook.com>
+References: <1609948746-15369-1-git-send-email-alan.maguire@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1609948746-15369-1-git-send-email-alan.maguire@oracle.com>
+X-Originating-IP: [2620:10d:c090:400::5:5a1c]
+X-ClientProxiedBy: CO1PR15CA0077.namprd15.prod.outlook.com
+ (2603:10b6:101:20::21) To BY5PR15MB3571.namprd15.prod.outlook.com
+ (2603:10b6:a03:1f6::32)
 MIME-Version: 1.0
-References: <CANaYP3HWkH91SN=wTNO9FL_2ztHfqcXKX38SSE-JJ2voh+vssw@mail.gmail.com>
- <CANaYP3H0RfcRK=bnNbvnKWe7cvnf0XD36JGWJVTDNUjPtHk6Fg@mail.gmail.com> <CAADnVQKkixx3+WWqp5uQ2kxYK_AAx9NiMG38bvwKhgTKBsKWUg@mail.gmail.com>
-In-Reply-To: <CAADnVQKkixx3+WWqp5uQ2kxYK_AAx9NiMG38bvwKhgTKBsKWUg@mail.gmail.com>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Wed, 6 Jan 2021 22:02:59 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ5CjcEJH7UywROkVSeL4RVi+fcU9fPRi-a7Nqjx_HiAOg@mail.gmail.com>
-Message-ID: <CACYkzJ5CjcEJH7UywROkVSeL4RVi+fcU9fPRi-a7Nqjx_HiAOg@mail.gmail.com>
-Subject: Re: BPF Kernel OOPS - NULL pointer dereference
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Gilad Reti <gilad.reti@gmail.com>, KP Singh <kpsingh@google.com>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:5a1c) by CO1PR15CA0077.namprd15.prod.outlook.com (2603:10b6:101:20::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Wed, 6 Jan 2021 21:39:51 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b725db9f-ddd1-4d54-5f47-08d8b28b9a62
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2582:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB25827F65FD46FD3993B28016D5D00@BYAPR15MB2582.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: uVFIJ1tfhIYXnmWEBO7LUNzbInmfxHuwMwITI3Wc/leZuzTdGuGHmbIHlhHCYiw/UwNwktRiKsUIJWUZUJWLe2A59wj+n7A2jrV9VKhtZPdZk5zcW6aXEY0m0+ML6ZMEFVzMXoFJGPTxzHjjKUXY/aJwnxcbRaIBuM1WuF2akDgsN67GdmRe9isHsL6EsJCr/BIW72B0P2mW211Jo3t15bUc4cFgljHIY7YRHimFHb2SOmeYRKvOPmzZSBMmRAOhx960c9oc3lpo1fGfXU3z14vFilH8C+3vllpb/sQTTaEM83iDmNlRC3nrQWmM/xKMW04wd5Ff0Et1LoCcFCSm3lQDpDhSCxDmT/hTgDbo/jL79xSIHLTXlSq3YkweHlCxsX3YFlrUfrWVIEad4DaBew==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(366004)(346002)(396003)(136003)(376002)(4744005)(86362001)(9686003)(186003)(7696005)(1076003)(52116002)(6506007)(5660300002)(16526019)(8936002)(478600001)(6916009)(55016002)(4326008)(6666004)(66946007)(7416002)(66476007)(2906002)(8676002)(316002)(66556008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?RFh3dTRuYVNLTVI1Q1I1ZmlxL3MwSXBPR2ljNGpvaGtvTUIzQVNKaU8vSHdX?=
+ =?utf-8?B?MEtLd0lMajVqcVJ1YUtvRzQyQ3FyMzN4d2szM1VqQlArWlk2R0s0UEIyUkF6?=
+ =?utf-8?B?cE9qUkVEbzRoVUpGdDVHcnFvdzFSR2RTZDVwczB1T1BOK25kSDZHOUxQbjg2?=
+ =?utf-8?B?eXMxU0tTc01BT2tsRitVK1hVRnN0ZkZ4dGsza1psTVBuZERWZjlzejhQTWx1?=
+ =?utf-8?B?cXl0RnVMaU53Y2E3aGZER0dxOWR5bWtXNW55MHJnNTdBWTBIS3pWczUxL0Zu?=
+ =?utf-8?B?OW5iWWMzZVBBQUVOQlB2QWxxTzNQWTQwWkRqMisxWTRVMW1MNDlWRUhxMzBI?=
+ =?utf-8?B?UHhHTFg5R3U0eW0xdzFndjMvRjVwaTNyYmJSekovTFMzTWlWM0cyaitnbEhR?=
+ =?utf-8?B?cnVLOFVIOGhUYjNjSlB2N3h6VUtZUHU5eEdBN2RSSTROckFtdG5GRDQ4RGZt?=
+ =?utf-8?B?WjBtOUpGcHhzd0ZvYTI1YmNZQ2l6NmVINXExdW5PQXpBSGVaRVNxemp0bmVT?=
+ =?utf-8?B?SGV1bTM1RFhoYzJueVkzZ0lFOEZHVlhXTTNCL0ZIYnpIQkV4RUFTWHlLVFRC?=
+ =?utf-8?B?RGMzeFdienh0aGlzVG0rVGFPUFZzUXkvd09ZMDFDKysxYlU2aktocmlFaFMw?=
+ =?utf-8?B?RS9UZmpJdERuODkxZDR2UWhXWC9nKzMyTGN2bWFYdXNSVDFJejVUeDhCT1ZV?=
+ =?utf-8?B?WVQ2bUVvNVArTjQ1QmNMMk1uSzdtcWw3SlRVZnV2WXJySmlRQklHd1EvWHdM?=
+ =?utf-8?B?dEFxK3QzSTdyeVFHM1pmWG1Ma0JhYUlCTUhUT1k1ZU9aNlFBZDhMcEJnTGVU?=
+ =?utf-8?B?aGxhWEZjVVZ6WHYxQ1ZwUUVlcm5DR0tKNkRnSm9ya0E0d0dNL0N6WG1GWW5O?=
+ =?utf-8?B?R2RrNG81MGwwbld4MXBiUC82RFhwNjgwWlpaRjJDN1Nuc0RCM1J5emJCdEY5?=
+ =?utf-8?B?VXMxRU5wTW8zZk9rak5PejlLS1RZOGhtbm9GNnZKSTVJNlVmNmhmdnhMRnFp?=
+ =?utf-8?B?dXZnQnRoUEhDVUIrcDYwdnBBd09wb3k1bUpEYVQ1VXp5UWtKWG5jM3JZdE0v?=
+ =?utf-8?B?NWRBMXY1YlRIdmg5NkNONGxaV2xFbnVua294ZFR1djcrY3E4dE1KWlpJQkww?=
+ =?utf-8?B?VjlxeDFEL0hxUUFmeHk1UzlyRWtiZXZRUWxpUG5HTEZ3QUloL043R2J4SlJH?=
+ =?utf-8?B?bTlhWW9xbHVuUEQxYjhqWGZZSWZ2M2dqeWg4SHhJemlEakNWM1VrQW5nWnNK?=
+ =?utf-8?B?dnp0VjRtcFkxY1FWa0xibUhoN1JFOTEzWjJPaERkVXhwTnNIRmUyTk9RVzl4?=
+ =?utf-8?B?SFhVdHROVHp3aXB3WEk2Sy9SS2dXNExhUTJib0xqSHBXV3RScHFrUnFCMSty?=
+ =?utf-8?B?M0NwMmk1dnJWckE9PQ==?=
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jan 2021 21:39:53.2342
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-Network-Message-Id: b725db9f-ddd1-4d54-5f47-08d8b28b9a62
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: H+6gO7hNjX0OsyF5Z+7inc7pqA6Z50ZcPJY1Lz7EPU7ycY48xv4jU5tC2YzhF4xV
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2582
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-06_12:2021-01-06,2021-01-06 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
+ mlxlogscore=665 impostorscore=0 suspectscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 malwarescore=0 adultscore=0 priorityscore=1501
+ mlxscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101060122
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 6, 2021 at 6:27 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Wed, Jan 6, 2021 at 2:18 AM Gilad Reti <gilad.reti@gmail.com> wrote:
-> >
-> > Hello all,
-> >
-> > Hope you had a great new year vacation.
-> >
-> > Sorry for bumping up the thread, but I believe that it is an important one.
->
-> Thanks for bumping.
-> KP, please take a look.
->
-> > On Sun, Dec 20, 2020 at 12:16 PM Gilad Reti <gilad.reti@gmail.com> wrote:
-> > >
-> > > Hello there,
-> > >
-> > > During experimenting with the new inode local storage I have stumbled
-> > > across an invalid pointer dereference that passed through the
-> > > verifier.
-> > >
-> > > After investigating, I think that it happens in the
-> > > bpf_inode_storage_get helper, and in particular in the following line:
-> > > https://elixir.bootlin.com/linux/v5.10.1/source/include/linux/bpf_lsm.h#L32
-> > >
-> > > I have a single bpf lsm probe in the security_inode_rename probe, and
-> > > I have called bpf_inode_storage_get on the inode of the "new_dentry"
-> > > argument. This inode may be null in cases where renameat(2) is called
-> > > to move a file from one path to a new path which didn't exist before.
-> > >
-> > > As can be seen, inode is dereferenced without first checking that it
-> > > is not NULL.
-> > > I don't know what should be the correct behavior, but I believe that
-> > > either the helper should check the validity of passed pointers, or the
-> > > verifier should treat fields of BTF pointers (PTR_TO_BTF_ID) as
-> > > PTR_TO_BTF_ID_OR_NULL.
-
-Thanks for adding me, I missed responding to this over the winter holidays.
-
-In this case this should indeed be PTR_TO_BTF_ID_OR_NULL. I will send in a
-fix.
-
-> > >
-> > > I am attaching a minimal program example, along with the kernel demsg
-> > > output. To reproduce, load the probe and run "mv file1 file2" where
-> > > file2 does not exist.
-
-Thanks for sending the repro program as well! Really appreciate it!
-
-> > >
-> > > Thanks,
-> > > Gilad Reti
-> > >
-> > > inode_oops.c:
-> > >
-> > > // SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
-
-[...]
-
-> > > [Thu Dec 17 11:35:37 2020] FS:  00007fa878948740(0000)
-> > > GS:ffff895cede00000(0000) knlGS:0000000000000000
-> > > [Thu Dec 17 11:35:37 2020] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > [Thu Dec 17 11:35:37 2020] CR2: 0000000000000038 CR3: 0000000121f34001
-> > > CR4: 00000000003706f0
+On Wed, Jan 06, 2021 at 03:59:06PM +0000, Alan Maguire wrote:
+> For older glibc ~2.17, #include'ing both linux/if.h and net/if.h
+> fails due to complaints about redefinition of interface flags:
+> 
+>   CC       net.o
+> In file included from net.c:13:0:
+> /usr/include/linux/if.h:71:2: error: redeclaration of enumerator ‘IFF_UP’
+>   IFF_UP    = 1<<0,  /* sysfs */
+>   ^
+> /usr/include/net/if.h:44:5: note: previous definition of ‘IFF_UP’ was here
+>      IFF_UP = 0x1,  /* Interface is up.  */
+> 
+> The issue was fixed in kernel headers in [1], but since compilation
+> of net.c picks up system headers the problem can recur.
+> 
+> Dropping #include <linux/if.h> resolves the issue and it is
+> not needed for compilation anyhow.
+Acked-by: Martin KaFai Lau <kafai@fb.com>
