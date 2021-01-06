@@ -2,95 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C69C82EBD26
-	for <lists+bpf@lfdr.de>; Wed,  6 Jan 2021 12:28:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CD1F2EC0C1
+	for <lists+bpf@lfdr.de>; Wed,  6 Jan 2021 17:02:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725877AbhAFL2C (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Jan 2021 06:28:02 -0500
-Received: from foss.arm.com ([217.140.110.172]:39612 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726216AbhAFL2C (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Jan 2021 06:28:02 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 974F1106F;
-        Wed,  6 Jan 2021 03:27:16 -0800 (PST)
-Received: from e107158-lin (e107158-lin.cambridge.arm.com [10.1.194.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1337B3F719;
-        Wed,  6 Jan 2021 03:27:14 -0800 (PST)
-Date:   Wed, 6 Jan 2021 11:27:12 +0000
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Phil Auld <pauld@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        vincent.donnefort@arm.com, Ingo Molnar <mingo@redhat.com>,
-        vincent.guittot@linaro.org, LKML <linux-kernel@vger.kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Subject: Re: [PATCH v2] sched/debug: Add new tracepoint to track cpu_capacity
-Message-ID: <20210106112712.6ec7yejhidauo432@e107158-lin>
-References: <1e806d48-fd54-fd86-5b3a-372d9876f360@arm.com>
- <20200828172658.dxygk7j672gho4ax@e107158-lin.cambridge.arm.com>
- <58f5d2e8-493b-7ce1-6abd-57705e5ab437@arm.com>
- <20200902135423.GB93959@lorien.usersys.redhat.com>
- <20200907110223.gtdgqod2iv2w7xmg@e107158-lin.cambridge.arm.com>
- <20200908131954.GA147026@lorien.usersys.redhat.com>
- <20210104182642.xglderapsfrop6pi@e107158-lin>
- <CAADnVQ+1BNO577iz+05M4nNk+DB2n9ffwr4KrktWxO+2mP1b-Q@mail.gmail.com>
- <20210105113857.gzqaiuhxsxdtu474@e107158-lin>
- <CAADnVQ+GH9DfaRJ3CCDYL8o9UUH-eAuBq6EhjVLbicY_XWbySw@mail.gmail.com>
+        id S1726251AbhAFQCM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Jan 2021 11:02:12 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:54890 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725925AbhAFQCM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Jan 2021 11:02:12 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 106FtftW089467;
+        Wed, 6 Jan 2021 15:59:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=e280thpeH4MDj+q41MOrlKwQhwr0+ZqgSZTW/ewQcjs=;
+ b=uIjNH2JKtab15z7hmqijke50pN59OsA9mCfXgSYKnP+BVSpOY99S1dFzULkEt8DTmxgm
+ kyW11yuqL5W4R2CFhbEGUmZR3MofR66qamrCL4+bwtB8fhWCuus87VLeDNNFcyh5E6Ci
+ u/PMxhJjfdBUY+nQ4wPR7X2WGEUUE2jbRLzi/CtE4zuNqQkoWTlurLwyf2lxNBsMJ+4e
+ z8heDckYwbXjOT7CD4Z1FIX7HHZVhnu8Km7ldoTQsLaZJMCTvEq+epkWn9x01r4tdW09
+ EX8ovXxkcHGJjaTNtCefu3UF9eTLFoh8dSzVkIWykrM82CGxnRt56m7Oliarp2GfVVm4 3A== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 35wftx856u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 06 Jan 2021 15:59:37 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 106FtOwo154567;
+        Wed, 6 Jan 2021 15:59:37 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 35w3g17tm9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 06 Jan 2021 15:59:37 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 106FxXO2027087;
+        Wed, 6 Jan 2021 15:59:33 GMT
+Received: from localhost.uk.oracle.com (/10.175.165.159)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 06 Jan 2021 15:59:33 +0000
+From:   Alan Maguire <alan.maguire@oracle.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, toke@redhat.com,
+        wanghai38@huawei.com, quentin@isovalent.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Alan Maguire <alan.maguire@oracle.com>
+Subject: [PATCH bpf] bpftool: fix compilation failure for net.o with older glibc
+Date:   Wed,  6 Jan 2021 15:59:06 +0000
+Message-Id: <1609948746-15369-1-git-send-email-alan.maguire@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAADnVQ+GH9DfaRJ3CCDYL8o9UUH-eAuBq6EhjVLbicY_XWbySw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9855 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 adultscore=0
+ phishscore=0 spamscore=0 mlxlogscore=939 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101060098
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9855 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0 mlxscore=0
+ bulkscore=0 priorityscore=1501 impostorscore=0 clxscore=1011
+ lowpriorityscore=0 mlxlogscore=942 malwarescore=0 spamscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101060098
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 01/05/21 08:44, Alexei Starovoitov wrote:
-> > Any pointer to an example test I could base this on?
-> 
-> selftests/bpf/
+For older glibc ~2.17, #include'ing both linux/if.h and net/if.h
+fails due to complaints about redefinition of interface flags:
 
-I was hoping for something more elaborate. I thought there's something already
-there that do some verification for raw tracepoint that I could either extend
-or replicate. Otherwise this could end up being a time sink for me and I'm not
-keen on jumping down this rabbit hole.
+  CC       net.o
+In file included from net.c:13:0:
+/usr/include/linux/if.h:71:2: error: redeclaration of enumerator ‘IFF_UP’
+  IFF_UP    = 1<<0,  /* sysfs */
+  ^
+/usr/include/net/if.h:44:5: note: previous definition of ‘IFF_UP’ was here
+     IFF_UP = 0x1,  /* Interface is up.  */
 
-> > > - add a doc with contents from commit log.
-> >
-> > You're referring to the ABI part of the changelog, right?
-> >
-> > > The "Does bpf make things into an abi ?" question keeps coming back
-> > > over and over again.
-> > > Everytime we have the same answer that No, bpf cannot bake things into abi.
-> > > I think once it's spelled out somewhere in Documentation/ it would be easier to
-> > > repeat this message.
-> >
-> > How about a new Documentation/bpf/ABI.rst? I can write something up initially
-> > for us to discuss in detail when I post.
-> 
-> There is Documentation/bpf/bpf_design_QA.rst
-> and we already have this text in there that was added back in 2017:
-> 
-> Q: Does BPF have a stable ABI?
-> ------------------------------
-> A: YES. BPF instructions, arguments to BPF programs, set of helper
-> functions and their arguments, recognized return codes are all part
-> of ABI. However there is one specific exception to tracing programs
-> which are using helpers like bpf_probe_read() to walk kernel internal
-> data structures and compile with kernel internal headers. Both of these
-> kernel internals are subject to change and can break with newer kernels
-> such that the program needs to be adapted accordingly.
-> 
-> I'm suggesting to add an additional section to this Q/A doc to include
-> more or less
-> the same text you had in the commit log.
+The issue was fixed in kernel headers in [1], but since compilation
+of net.c picks up system headers the problem can recur.
 
-Works for me.
+Dropping #include <linux/if.h> resolves the issue and it is
+not needed for compilation anyhow.
 
-Thanks
+[1] https://lore.kernel.org/netdev/1461512707-23058-1-git-send-email-mikko.rapeli__34748.27880641$1462831734$gmane$org@iki.fi/
 
---
-Qais Yousef
+Fixes: f6f3bac08ff9 ("tools/bpf: bpftool: add net support")
+Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+---
+ tools/bpf/bpftool/net.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
+index 3fae61e..ff3aa0c 100644
+--- a/tools/bpf/bpftool/net.c
++++ b/tools/bpf/bpftool/net.c
+@@ -11,7 +11,6 @@
+ #include <bpf/bpf.h>
+ #include <bpf/libbpf.h>
+ #include <net/if.h>
+-#include <linux/if.h>
+ #include <linux/rtnetlink.h>
+ #include <linux/socket.h>
+ #include <linux/tc_act/tc_bpf.h>
+-- 
+1.8.3.1
+
