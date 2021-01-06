@@ -2,155 +2,180 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 386562EC5D4
-	for <lists+bpf@lfdr.de>; Wed,  6 Jan 2021 22:41:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC5E92EC657
+	for <lists+bpf@lfdr.de>; Wed,  6 Jan 2021 23:47:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726328AbhAFVlE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Jan 2021 16:41:04 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:48262 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726225AbhAFVlE (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 6 Jan 2021 16:41:04 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 106LMJAh027294;
-        Wed, 6 Jan 2021 13:39:56 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type :
- content-transfer-encoding : in-reply-to : mime-version; s=facebook;
- bh=N5/IGZH1DuiwviUa62guIiX/6K5eA1KdxHBXzodBugw=;
- b=nt+Qb+YoWtkIAY6ZwPwIhRjj6IowQQxrQbU68JSJ8rSoKpawsC6Hofgaqymqua/86+AH
- RKm0Mka1C8TaI6rcqvi6xl45W0/yEHLJ+xc/fvLoadRwimUU3z4ACChk/xx6tKe7YxuE
- SiQg/z8saIa6k4tqPvH2PN4A54diDCorZWM= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 35wjnj0x2s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 06 Jan 2021 13:39:56 -0800
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 6 Jan 2021 13:39:55 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Twoh656uCJ00XbpWzg6Su0ETJ0MyMYDN8ClwjEGEUnKmWilvnYWTHjs8h89cCzm9aMUR0qmz1rACrl22Ruy71zATKsdXqdpUlEV4qfJ2SqJzUIwnkER47l0RggRBupu6fp0cnF+eDsPAChRTOri6AZ1+SXSEvRTZ900zXvk18BrLRNQuJKNdqQr/2f35rj0cokn3LjLpnZL4WifwpEZp8w476oUUAPlPBshcdXxXF5Q7YHp8JeIGZpbDh5HeiiXL/pQBJXyqXCFc8cIEwwk6LXhCaLSBxNN+NQKlmubG0lovpgBnKr96kRtvVPGXkfwi9YXKVAK4z4DH+hUKbcBr0Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=N5/IGZH1DuiwviUa62guIiX/6K5eA1KdxHBXzodBugw=;
- b=J98KZs70h2dVaReJjuXJSF3YX/1Jlz7/qBo/qa0b0qC+1R1OrqguVG1rY7ismJ/j82GuKZ17fRODNBDfyW7yDwtpao/9C7Pa0WcXz3c/WfUqcrSXSA+ltcNmheem79h83kixdkmg/wHdDap22p1T8ShXTlU32pTVwDf6wIgSPpxkbtxY3dfYwnxN+GpPxVj6eLcMRhy3zDxf99ch6h3IziwH5s3PtCU/o9Kuyw5whFih0EHx3LGyjIoYe3wMf1Rljqhavf/YAmyC7bCgZKNgWbtEOCC0hGAbIvhMzKqWmqZn5bstwQzatykzPhObXBhDaB5IanGoqAGhKfnS+5dxwg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=N5/IGZH1DuiwviUa62guIiX/6K5eA1KdxHBXzodBugw=;
- b=feLOERPaQMtQi28/OCEVQFxc4FSXvJvxH4ILGSYk/MsTzwCXIzdRPiuoi6noVF8UTutXx2gnaK/wYeZTEgQLkdiE3J29ImJRtD7fSS34UWnwx3UpagZ4QKdFHnUCL5ZXfbGRiu++oph1YAJtxSjnrethc+vfcxqZ7G03Nc6U4CE=
-Authentication-Results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by BYAPR15MB2582.namprd15.prod.outlook.com (2603:10b6:a03:154::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Wed, 6 Jan
- 2021 21:39:53 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::217e:885b:1cef:e1f7]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::217e:885b:1cef:e1f7%7]) with mapi id 15.20.3721.024; Wed, 6 Jan 2021
- 21:39:53 +0000
-Date:   Wed, 6 Jan 2021 13:39:46 -0800
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Alan Maguire <alan.maguire@oracle.com>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <songliubraving@fb.com>, <yhs@fb.com>, <john.fastabend@gmail.com>,
-        <kpsingh@kernel.org>, <toke@redhat.com>, <wanghai38@huawei.com>,
-        <quentin@isovalent.com>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf] bpftool: fix compilation failure for net.o with
- older glibc
-Message-ID: <20210106213946.sfnjfiycieo3f3em@kafai-mbp.dhcp.thefacebook.com>
-References: <1609948746-15369-1-git-send-email-alan.maguire@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1609948746-15369-1-git-send-email-alan.maguire@oracle.com>
-X-Originating-IP: [2620:10d:c090:400::5:5a1c]
-X-ClientProxiedBy: CO1PR15CA0077.namprd15.prod.outlook.com
- (2603:10b6:101:20::21) To BY5PR15MB3571.namprd15.prod.outlook.com
- (2603:10b6:a03:1f6::32)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:5a1c) by CO1PR15CA0077.namprd15.prod.outlook.com (2603:10b6:101:20::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Wed, 6 Jan 2021 21:39:51 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b725db9f-ddd1-4d54-5f47-08d8b28b9a62
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2582:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB25827F65FD46FD3993B28016D5D00@BYAPR15MB2582.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: uVFIJ1tfhIYXnmWEBO7LUNzbInmfxHuwMwITI3Wc/leZuzTdGuGHmbIHlhHCYiw/UwNwktRiKsUIJWUZUJWLe2A59wj+n7A2jrV9VKhtZPdZk5zcW6aXEY0m0+ML6ZMEFVzMXoFJGPTxzHjjKUXY/aJwnxcbRaIBuM1WuF2akDgsN67GdmRe9isHsL6EsJCr/BIW72B0P2mW211Jo3t15bUc4cFgljHIY7YRHimFHb2SOmeYRKvOPmzZSBMmRAOhx960c9oc3lpo1fGfXU3z14vFilH8C+3vllpb/sQTTaEM83iDmNlRC3nrQWmM/xKMW04wd5Ff0Et1LoCcFCSm3lQDpDhSCxDmT/hTgDbo/jL79xSIHLTXlSq3YkweHlCxsX3YFlrUfrWVIEad4DaBew==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(366004)(346002)(396003)(136003)(376002)(4744005)(86362001)(9686003)(186003)(7696005)(1076003)(52116002)(6506007)(5660300002)(16526019)(8936002)(478600001)(6916009)(55016002)(4326008)(6666004)(66946007)(7416002)(66476007)(2906002)(8676002)(316002)(66556008);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?RFh3dTRuYVNLTVI1Q1I1ZmlxL3MwSXBPR2ljNGpvaGtvTUIzQVNKaU8vSHdX?=
- =?utf-8?B?MEtLd0lMajVqcVJ1YUtvRzQyQ3FyMzN4d2szM1VqQlArWlk2R0s0UEIyUkF6?=
- =?utf-8?B?cE9qUkVEbzRoVUpGdDVHcnFvdzFSR2RTZDVwczB1T1BOK25kSDZHOUxQbjg2?=
- =?utf-8?B?eXMxU0tTc01BT2tsRitVK1hVRnN0ZkZ4dGsza1psTVBuZERWZjlzejhQTWx1?=
- =?utf-8?B?cXl0RnVMaU53Y2E3aGZER0dxOWR5bWtXNW55MHJnNTdBWTBIS3pWczUxL0Zu?=
- =?utf-8?B?OW5iWWMzZVBBQUVOQlB2QWxxTzNQWTQwWkRqMisxWTRVMW1MNDlWRUhxMzBI?=
- =?utf-8?B?UHhHTFg5R3U0eW0xdzFndjMvRjVwaTNyYmJSekovTFMzTWlWM0cyaitnbEhR?=
- =?utf-8?B?cnVLOFVIOGhUYjNjSlB2N3h6VUtZUHU5eEdBN2RSSTROckFtdG5GRDQ4RGZt?=
- =?utf-8?B?WjBtOUpGcHhzd0ZvYTI1YmNZQ2l6NmVINXExdW5PQXpBSGVaRVNxemp0bmVT?=
- =?utf-8?B?SGV1bTM1RFhoYzJueVkzZ0lFOEZHVlhXTTNCL0ZIYnpIQkV4RUFTWHlLVFRC?=
- =?utf-8?B?RGMzeFdienh0aGlzVG0rVGFPUFZzUXkvd09ZMDFDKysxYlU2aktocmlFaFMw?=
- =?utf-8?B?RS9UZmpJdERuODkxZDR2UWhXWC9nKzMyTGN2bWFYdXNSVDFJejVUeDhCT1ZV?=
- =?utf-8?B?WVQ2bUVvNVArTjQ1QmNMMk1uSzdtcWw3SlRVZnV2WXJySmlRQklHd1EvWHdM?=
- =?utf-8?B?dEFxK3QzSTdyeVFHM1pmWG1Ma0JhYUlCTUhUT1k1ZU9aNlFBZDhMcEJnTGVU?=
- =?utf-8?B?aGxhWEZjVVZ6WHYxQ1ZwUUVlcm5DR0tKNkRnSm9ya0E0d0dNL0N6WG1GWW5O?=
- =?utf-8?B?R2RrNG81MGwwbld4MXBiUC82RFhwNjgwWlpaRjJDN1Nuc0RCM1J5emJCdEY5?=
- =?utf-8?B?VXMxRU5wTW8zZk9rak5PejlLS1RZOGhtbm9GNnZKSTVJNlVmNmhmdnhMRnFp?=
- =?utf-8?B?dXZnQnRoUEhDVUIrcDYwdnBBd09wb3k1bUpEYVQ1VXp5UWtKWG5jM3JZdE0v?=
- =?utf-8?B?NWRBMXY1YlRIdmg5NkNONGxaV2xFbnVua294ZFR1djcrY3E4dE1KWlpJQkww?=
- =?utf-8?B?VjlxeDFEL0hxUUFmeHk1UzlyRWtiZXZRUWxpUG5HTEZ3QUloL043R2J4SlJH?=
- =?utf-8?B?bTlhWW9xbHVuUEQxYjhqWGZZSWZ2M2dqeWg4SHhJemlEakNWM1VrQW5nWnNK?=
- =?utf-8?B?dnp0VjRtcFkxY1FWa0xibUhoN1JFOTEzWjJPaERkVXhwTnNIRmUyTk9RVzl4?=
- =?utf-8?B?SFhVdHROVHp3aXB3WEk2Sy9SS2dXNExhUTJib0xqSHBXV3RScHFrUnFCMSty?=
- =?utf-8?B?M0NwMmk1dnJWckE9PQ==?=
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jan 2021 21:39:53.2342
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-Network-Message-Id: b725db9f-ddd1-4d54-5f47-08d8b28b9a62
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: H+6gO7hNjX0OsyF5Z+7inc7pqA6Z50ZcPJY1Lz7EPU7ycY48xv4jU5tC2YzhF4xV
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2582
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-06_12:2021-01-06,2021-01-06 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
- mlxlogscore=665 impostorscore=0 suspectscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 malwarescore=0 adultscore=0 priorityscore=1501
- mlxscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101060122
-X-FB-Internal: deliver
+        id S1727098AbhAFWqj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Jan 2021 17:46:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726866AbhAFWqj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Jan 2021 17:46:39 -0500
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDC4BC061575
+        for <bpf@vger.kernel.org>; Wed,  6 Jan 2021 14:45:58 -0800 (PST)
+Received: by mail-qt1-x84a.google.com with SMTP id t7so3405706qtn.19
+        for <bpf@vger.kernel.org>; Wed, 06 Jan 2021 14:45:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=z/minfmnrCiZQKZriVAE3kJbpflP12fwCuTdg+lvXfs=;
+        b=LRt3VS2Qn/kw01C4b4FGHOiC4xEszwrU+2zXDqLEBPlzYU5WIJsqJSuVQZaKRDRLZK
+         I6S4E+79b9HV4ZYL5p1Ku8DJEcVUpPQl0AzkueiILjketSY8eIeDxxXm+WhhEgW17k2W
+         +wymWR2GqBcCg6/TO4rpV9IC5cr5Gobt5AtniVlQJ7twhO+BCn0LqNhfDHWRcg0PfPsm
+         ugvPph+mt80UfONP2CkTc3daARibnp5UcCsqGCBcW/iqa8FPrz34vFanUufMztF8SolX
+         xa3pVRopQ81kltC/r+Cex32MHHN5bum+yMOA4LKUdH7TukUp+fNPlmQxnbIw/GQFbx7h
+         ZEgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=z/minfmnrCiZQKZriVAE3kJbpflP12fwCuTdg+lvXfs=;
+        b=QkDrrFxffAW9Iki83gPdJEp9lSANFUTVn+2bHqxwZm0r8BZD3ZSxrRONoun5oHrdKr
+         plrs/IaqvgbfSq4L5nXNiHgUKHNAmjf8I1pxri8nfn0S6xGYMktg4PwU5RPvBA+nNxtj
+         Xb4ZyJAmH4y/yoIo09rBzTcHIa1U1FqAN/To1ZDD6xOPOIkHspzIbtGeNMQPnSN+6eIR
+         oJ8G0jvr1uNNEgE7BhiiqmezEsNSBkNbxy/89gFR3WEIEQ5WYYO6HluuJ/cNrGg+wfnq
+         /AZZZiXwyBVufkGPs6GSGVOMxys7ziHVVNjIK8iAF1LSL+GC4oonios2yM1Rzr0Im4jb
+         J/tw==
+X-Gm-Message-State: AOAM533Npob1ImWtbZV72uHeianWk/PQ1cNOX7AsAfCQO/lxrxTL30qw
+        +WUBp1LJU5enCNrMHrwHx+/AmJM=
+X-Google-Smtp-Source: ABdhPJwLccvHErMuMdBybE0Z0T+2vCwRgDAuzmZ5/ukOihAcHxIcI6L5mKGMCvX4fBypmQJcNJ0kYFs=
+Sender: "sdf via sendgmr" <sdf@sdf2.svl.corp.google.com>
+X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:7220:84ff:fe09:7732])
+ (user=sdf job=sendgmr) by 2002:a0c:fdec:: with SMTP id m12mr6242193qvu.11.1609973157864;
+ Wed, 06 Jan 2021 14:45:57 -0800 (PST)
+Date:   Wed, 6 Jan 2021 14:45:56 -0800
+In-Reply-To: <20210106194756.vjkulozifc4bfuut@kafai-mbp.dhcp.thefacebook.com>
+Message-Id: <X/Y9pAaiq2FMHoBs@google.com>
+Mime-Version: 1.0
+References: <20210105214350.138053-1-sdf@google.com> <20210105214350.138053-4-sdf@google.com>
+ <20210106194756.vjkulozifc4bfuut@kafai-mbp.dhcp.thefacebook.com>
+Subject: Re: [PATCH bpf-next v3 3/3] bpf: remove extra lock_sock for TCP_ZEROCOPY_RECEIVE
+From:   sdf@google.com
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, Song Liu <songliubraving@fb.com>,
+        Eric Dumazet <edumazet@google.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 03:59:06PM +0000, Alan Maguire wrote:
-> For older glibc ~2.17, #include'ing both linux/if.h and net/if.h
-> fails due to complaints about redefinition of interface flags:
-> 
->   CC       net.o
-> In file included from net.c:13:0:
-> /usr/include/linux/if.h:71:2: error: redeclaration of enumerator ‘IFF_UP’
->   IFF_UP    = 1<<0,  /* sysfs */
->   ^
-> /usr/include/net/if.h:44:5: note: previous definition of ‘IFF_UP’ was here
->      IFF_UP = 0x1,  /* Interface is up.  */
-> 
-> The issue was fixed in kernel headers in [1], but since compilation
-> of net.c picks up system headers the problem can recur.
-> 
-> Dropping #include <linux/if.h> resolves the issue and it is
-> not needed for compilation anyhow.
-Acked-by: Martin KaFai Lau <kafai@fb.com>
+On 01/06, Martin KaFai Lau wrote:
+> On Tue, Jan 05, 2021 at 01:43:50PM -0800, Stanislav Fomichev wrote:
+> > Add custom implementation of getsockopt hook for TCP_ZEROCOPY_RECEIVE.
+> > We skip generic hooks for TCP_ZEROCOPY_RECEIVE and have a custom
+> > call in do_tcp_getsockopt using the on-stack data. This removes
+> > 3% overhead for locking/unlocking the socket.
+> >
+> > Also:
+> > - Removed BUILD_BUG_ON (zerocopy doesn't depend on the buf size anymore)
+> > - Separated on-stack buffer into bpf_sockopt_buf and downsized to 32  
+> bytes
+> >   (let's keep it to help with the other options)
+> >
+> > (I can probably split this patch into two: add new features and rework
+> >  bpf_sockopt_buf; can follow up if the approach in general sounds
+> >  good).
+> >
+> > Without this patch:
+> >      3.29%     0.07%  tcp_mmap  [kernel.kallsyms]  [k]  
+> __cgroup_bpf_run_filter_getsockopt
+> >             |
+> >              --3.22%--__cgroup_bpf_run_filter_getsockopt
+> >                        |
+> >                        |--0.66%--lock_sock_nested
+> A general question for sockopt prog, why the BPF_CGROUP_(GET|SET)SOCKOPT  
+> prog
+> has to run under lock_sock()?
+I don't think there is a strong reason. We expose sk to the BPF program,
+but mainly for the socket storage map (which, afaik, doesn't require
+socket to be locked). OTOH, it seems that providing a consistent view
+of the sk to the BPF is a good idea.
+
+Eric has suggested to try to use fast socket lock. It helps a bit,
+but it doesn't remove the issue completely because
+we do a bunch of copy_{to,from}_user in the generic
+__cgroup_bpf_run_filter_getsockopt as well :-(
+
+> >                        |
+> >                        |--0.57%--__might_fault
+> >                        |
+> >                         --0.56%--release_sock
+> >
+> > With the patch applied:
+> >      0.42%     0.10%  tcp_mmap  [kernel.kallsyms]  [k]  
+> __cgroup_bpf_run_filter_getsockopt_kern
+> >      0.02%     0.02%  tcp_mmap  [kernel.kallsyms]  [k]  
+> __cgroup_bpf_run_filter_getsockopt
+> >
+> [ ... ]
+
+> > @@ -1445,15 +1442,29 @@ int __cgroup_bpf_run_filter_getsockopt(struct  
+> sock *sk, int level,
+> >  				       int __user *optlen, int max_optlen,
+> >  				       int retval)
+> >  {
+> > -	struct cgroup *cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
+> > -	struct bpf_sockopt_kern ctx = {
+> > -		.sk = sk,
+> > -		.level = level,
+> > -		.optname = optname,
+> > -		.retval = retval,
+> > -	};
+> > +	struct bpf_sockopt_kern ctx;
+> > +	struct bpf_sockopt_buf buf;
+> > +	struct cgroup *cgrp;
+> >  	int ret;
+> >
+> > +#ifdef CONFIG_INET
+> > +	/* TCP do_tcp_getsockopt has optimized getsockopt implementation
+> > +	 * to avoid extra socket lock for TCP_ZEROCOPY_RECEIVE.
+> > +	 */
+> > +	if (sk->sk_prot->getsockopt == tcp_getsockopt &&
+> > +	    level == SOL_TCP && optname == TCP_ZEROCOPY_RECEIVE)
+> > +		return retval;
+> > +#endif
+> That seems too much protocol details and not very scalable.
+> It is not very related to kernel/bpf/cgroup.c which has very little idea
+> whether a specific protocol has optimized things in some ways (e.g. by
+> directly calling cgroup's bpf prog at some strategic places in this  
+> patch).
+> Lets see if it can be done better.
+
+> At least, these protocol checks belong to the net's socket.c
+> more than the bpf's cgroup.c here.  If it also looks like layering
+> breakage in socket.c, may be adding a signal in sk_prot (for example)
+> to tell if the sk_prot->getsockopt has already called the cgroup's bpf
+> prog?  (e.g. tcp_getsockopt() can directly call the cgroup's bpf for all
+> optname instead of only TCP_ZEROCOPY_RECEIVE).
+
+> For example:
+
+> int __sys_getsockopt(...)
+> {
+> 	/* ... */
+
+> 	if (!sk_prot->bpf_getsockopt_handled)
+> 		BPF_CGROUP_RUN_PROG_GETSOCKOPT(...);
+> }
+
+> Thoughts?
+
+Sounds good. I didn't go that far because I don't expect there to be
+a lot of special cases like that. But it might be worth supporting
+it in a generic way from the beginning.
+
+I was thinking about something simpler:
+
+int __cgroup_bpf_run_filter_getsockopt(sk, ...)
+{
+	if (sk->sk_prot->bypass_bpf_getsockopt(level, optlen)) {
+		return retval;
+	}
+
+  	// ...
+}
+
+Not sure it's worth exposing it to the __sys_getsockopt. WDYT?
