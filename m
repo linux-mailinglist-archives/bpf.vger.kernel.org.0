@@ -2,207 +2,282 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEDA82EB8BA
-	for <lists+bpf@lfdr.de>; Wed,  6 Jan 2021 04:57:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B282EB937
+	for <lists+bpf@lfdr.de>; Wed,  6 Jan 2021 06:11:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725860AbhAFD4O (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 5 Jan 2021 22:56:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55195 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725800AbhAFD4O (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 5 Jan 2021 22:56:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609905286;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OVA/p6Dm+RBVu73ubuD5HfRwhKe3wKe0AbtSSZXHXtA=;
-        b=AYvj1EJzyKtYG2H/yL+3K/mqNA8J4+O8ZtIanb60rLm/UkrjhlKzOKtO0BnJ/vL0on2kda
-        ESJBT3lOkQHfxvABFeLG8JaiL/aWYCxBpso3x0pOQqtTF1Eo3CZPN2kezQx/BS6hmf9YTB
-        1XlWmFFhu0lrUH941DQ68kOd3aEf/B4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-444-cXuI3NPCMYmJkAxweS85JQ-1; Tue, 05 Jan 2021 22:54:42 -0500
-X-MC-Unique: cXuI3NPCMYmJkAxweS85JQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 554A1107ACE3;
-        Wed,  6 Jan 2021 03:54:40 +0000 (UTC)
-Received: from [10.72.13.221] (ovpn-13-221.pek2.redhat.com [10.72.13.221])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1890D709A5;
-        Wed,  6 Jan 2021 03:54:27 +0000 (UTC)
-Subject: Re: [PATCH netdev 0/5] virtio-net support xdp socket zero copy xmit
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc:     dust.li@linux.alibaba.com, tonylu@linux.alibaba.com,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1725788AbhAFFLf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Jan 2021 00:11:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725562AbhAFFLf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Jan 2021 00:11:35 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1459BC06134C;
+        Tue,  5 Jan 2021 21:10:55 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id d37so1760566ybi.4;
+        Tue, 05 Jan 2021 21:10:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zXdX42ua40xKPxCS3alHiWCo/OZpqmT3ZMbLUhJVIoQ=;
+        b=ScquwSv3l1zJD5Zz7N+SxbCl1vS0Ry24uNIc6MXY5OsLM9r/Yv7dwjlqA0o8jhmd7M
+         0kD4V/zkTef/juusVHqbvV6x7ZKrS19sFnBBm8SAdqWf4bc+4GcxtKQR2Uc6oBMZbpIN
+         CNTmynMWVoLj7vgb980TnUtePUsWYc+flj5iysjRCbXA/ZNHlEgVQeRe8pIrfddAAZ9y
+         LGKF+TEbRf+9+0Wg+/d53zAk83Mcng6h3N1wsrORQULhaZSE6MDn+RPrbLrI66FRzzT8
+         zsg9gbEhXdh8Pq51Vy2WMYvjWbi02gfR03AYxr7wkraNvqZ7yI2EXTG0MW84I3BJ2dLc
+         NukQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zXdX42ua40xKPxCS3alHiWCo/OZpqmT3ZMbLUhJVIoQ=;
+        b=EcTd+rwUthkCrGJXvsYixjH2pZiWR7RcHpKRbeysGlyVzpp6HRxs4xJaQl9DsrupUa
+         bx1CFPZCMKK8BVUHjoPTZVY5jgb0R1SikY249St1ivUN2CEc/kWFnlHfH5+2N+ALCPFU
+         Wl8wPtXGMLGB5i7fejRlSu/SFKg63TuXyKXqWkt1qkIKKvTHATkq3IBTb8SQwrGmCg0j
+         wGWjmNIL4/jqoZNv5YWNd0LXNq4KVIRzPLtznIWmTAu69sUW26acxk7c8zLzQGXZUmi7
+         ZWFKoffEVQJAY5x1mRf12nnF6+2d1CGLVkzv1h8y8vcLU0QirkdMvFIk7q+8mSO68BjP
+         O5Fw==
+X-Gm-Message-State: AOAM531/Zkvahvni3TFHIHlwSBOnn4zPeQvZPdmX2s0mqrDmNhH9AyIO
+        ZM1UrNC6g8Y6Q7FF/Hqo/UApdqbGmTN7I9/+LQc=
+X-Google-Smtp-Source: ABdhPJzibH1Jx33aQqyK0T+FEsVCOYsD6mY+Ni1wTcXokioTjSOKv22NRgxCBbGm9JXS4QgLpHZmWs8hUeoKOxBhWjQ=
+X-Received: by 2002:a25:d44:: with SMTP id 65mr3853240ybn.260.1609909853620;
+ Tue, 05 Jan 2021 21:10:53 -0800 (PST)
+MIME-Version: 1.0
+References: <cover.1609855479.git.sean@mess.org> <13cfab3593e0ea960ca732c259bfa60bf3c16b3b.1609855479.git.sean@mess.org>
+In-Reply-To: <13cfab3593e0ea960ca732c259bfa60bf3c16b3b.1609855479.git.sean@mess.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 5 Jan 2021 21:10:42 -0800
+Message-ID: <CAEf4BzZgPx7YZ_S6a142gu+0XqxOq5-0=iMnAr1-DDJqyNOQrg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/4] btf: add support for ints larger than 128 bits
+To:     Sean Young <sean@mess.org>
+Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
-        VIRTIO CORE AND NET DRIVERS 
-        <virtualization@lists.linux-foundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        linux-doc@vger.kernel.org, Networking <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
         open list <linux-kernel@vger.kernel.org>,
-        "XDP SOCKETS (AF_XDP)" <bpf@vger.kernel.org>,
-        netdev@vger.kernel.org
-References: <1609901717.683732-2-xuanzhuo@linux.alibaba.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <b5dee65c-2a0c-296c-56b4-1ed17f7aec38@redhat.com>
-Date:   Wed, 6 Jan 2021 11:54:26 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <1609901717.683732-2-xuanzhuo@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-On 2021/1/6 上午10:55, Xuan Zhuo wrote:
-> On Wed, 6 Jan 2021 10:46:43 +0800, Jason Wang <jasowang@redhat.com> wrote:
->> On 2021/1/5 下午8:42, Xuan Zhuo wrote:
->>> On Tue, 5 Jan 2021 17:32:19 +0800, Jason Wang <jasowang@redhat.com> wrote:
->>>> On 2021/1/5 下午5:11, Xuan Zhuo wrote:
->>>>> The first patch made some adjustments to xsk.
->>>> Thanks a lot for the work. It's rather interesting.
->>>>
->>>>
->>>>> The second patch itself can be used as an independent patch to solve the problem
->>>>> that XDP may fail to load when the number of queues is insufficient.
->>>> It would be better to send this as a separated patch. Several people
->>>> asked for this before.
->>>>
->>>>
->>>>> The third to last patch implements support for xsk in virtio-net.
->>>>>
->>>>> A practical problem with virtio is that tx interrupts are not very reliable.
->>>>> There will always be some missing or delayed tx interrupts. So I specially added
->>>>> a point timer to solve this problem. Of course, considering performance issues,
->>>>> The timer only triggers when the ring of the network card is full.
->>>> This is sub-optimal. We need figure out the root cause. We don't meet
->>>> such issue before.
->>>>
->>>> Several questions:
->>>>
->>>> - is tx interrupt enabled?
->>>> - can you still see the issue if you disable event index?
->>>> - what's backend did you use? qemu or vhost(user)?
->>> Sorry, it may just be a problem with the backend I used here. I just tested the
->>> latest qemu and it did not have this problem. I think I should delete the
->>> timer-related code?
->>
->> Yes, please.
->>
->>
->>>>> Regarding the issue of virtio-net supporting xsk's zero copy rx, I am also
->>>>> developing it, but I found that the modification may be relatively large, so I
->>>>> consider this patch set to be separated from the code related to xsk zero copy
->>>>> rx.
->>>> That's fine, but a question here.
->>>>
->>>> How is the multieuque being handled here. I'm asking since there's no
->>>> programmable filters/directors support in virtio spec now.
->>>>
->>>> Thanks
->>> I don't really understand what you mean. In the case of multiple queues,
->>> there is no problem.
->>
->> So consider we bind xsk to queue 4, how can you make sure the traffic to
->> be directed queue 4? One possible solution is to use filters as what
->> suggested in af_xdp.rst:
->>
->>         ethtool -N p3p2 rx-flow-hash udp4 fn
->>         ethtool -N p3p2 flow-type udp4 src-port 4242 dst-port 4242 \
->>             action 16
->> ...
->>
->> But virtio-net doesn't have any filters that could be programmed from
->> the driver.
->>
->> Anything I missed here?
->>
->> Thanks
-> I understand what you mean, this problem does exist, and I encountered it when I
-> tested qemu.
+On Tue, Jan 5, 2021 at 6:45 AM Sean Young <sean@mess.org> wrote:
 >
-> First of all, this is that the problem only affects recv. This patch is for
-> xmit. Of course, our normal business must also have recv scenarios.
+> clang supports arbitrary length ints using the _ExtInt extension. This
+> can be useful to hold very large values, e.g. 256 bit or 512 bit types.
 >
-> My solution in developing the upper-level application is to bond all the queues
-> to ensure that we can receive the packets we want.
-
-
-I'm not sure I get you here. Note that. one advantage of AF_XDP is that 
-is allows XSK to be bound to a specific queue and the rest could still 
-be used by kernel.
-
-
->   And I think in the
-> implementation of the use, even if the network card supports filters, we should
-> also bond all the queues, because we don't know which queue the traffic we care
-> about will arrive from.
-
-
-With the help of filters the card can select a specific queue based on 
-hash or n-tuple so it should work?
-
-
+> Larger types (e.g. 1024 bits) are possible but I am unaware of a use
+> case for these.
 >
-> Regarding the problem of virtio-net, I think our core question is whether we
-> need to deal with this problem in the driver of virtio-net, I personally think
-> that we should add the virtio specification to define this scenario.
-
-
-Yes, so do you want to do that? It would make virtio-net more user 
-friendly to AF_XDP. (Or if you wish I can post patch to extend the spec).
-
-
+> This requires the _ExtInt extension enabled in clang, which is under
+> review.
 >
-> When I tested it, I found that some cloud vendors' implementations guarantee
-> this queue selection algorithm.
-
-
-Right, though spec suggest a automatic steering algorithm but it's not 
-mandatory. Vendor can implement their own.
-
-But hash or ntuple filter should be still useful.
-
-Thanks
-
-
+> Link: https://clang.llvm.org/docs/LanguageExtensions.html#extended-integer-types
+> Link: https://reviews.llvm.org/D93103
 >
-> Thanks!!
+> Signed-off-by: Sean Young <sean@mess.org>
+> ---
+>  Documentation/bpf/btf.rst      |  4 +--
+>  include/uapi/linux/btf.h       |  2 +-
+>  kernel/bpf/btf.c               | 54 ++++++++++++++++++++++++++++------
+>  tools/include/uapi/linux/btf.h |  2 +-
+>  4 files changed, 49 insertions(+), 13 deletions(-)
 >
->>
->>>>> Xuan Zhuo (5):
->>>>>      xsk: support get page for drv
->>>>>      virtio-net: support XDP_TX when not more queues
->>>>>      virtio-net, xsk: distinguish XDP_TX and XSK XMIT ctx
->>>>>      xsk, virtio-net: prepare for support xsk
->>>>>      virtio-net, xsk: virtio-net support xsk zero copy tx
->>>>>
->>>>>     drivers/net/virtio_net.c    | 643 +++++++++++++++++++++++++++++++++++++++-----
->>>>>     include/linux/netdevice.h   |   1 +
->>>>>     include/net/xdp_sock_drv.h  |  10 +
->>>>>     include/net/xsk_buff_pool.h |   1 +
->>>>>     net/xdp/xsk_buff_pool.c     |  10 +-
->>>>>     5 files changed, 597 insertions(+), 68 deletions(-)
->>>>>
->>>>> --
->>>>> 1.8.3.1
->>>>>
+> diff --git a/Documentation/bpf/btf.rst b/Documentation/bpf/btf.rst
+> index 44dc789de2b4..784f1743dbc7 100644
+> --- a/Documentation/bpf/btf.rst
+> +++ b/Documentation/bpf/btf.rst
+> @@ -132,7 +132,7 @@ The following sections detail encoding of each kind.
+>
+>    #define BTF_INT_ENCODING(VAL)   (((VAL) & 0x0f000000) >> 24)
+>    #define BTF_INT_OFFSET(VAL)     (((VAL) & 0x00ff0000) >> 16)
+> -  #define BTF_INT_BITS(VAL)       ((VAL)  & 0x000000ff)
+> +  #define BTF_INT_BITS(VAL)       ((VAL)  & 0x000003ff)
+>
+>  The ``BTF_INT_ENCODING`` has the following attributes::
+>
+> @@ -147,7 +147,7 @@ pretty print. At most one encoding can be specified for the int type.
+>  The ``BTF_INT_BITS()`` specifies the number of actual bits held by this int
+>  type. For example, a 4-bit bitfield encodes ``BTF_INT_BITS()`` equals to 4.
+>  The ``btf_type.size * 8`` must be equal to or greater than ``BTF_INT_BITS()``
+> -for the type. The maximum value of ``BTF_INT_BITS()`` is 128.
+> +for the type. The maximum value of ``BTF_INT_BITS()`` is 512.
+>
+>  The ``BTF_INT_OFFSET()`` specifies the starting bit offset to calculate values
+>  for this int. For example, a bitfield struct member has:
+> diff --git a/include/uapi/linux/btf.h b/include/uapi/linux/btf.h
+> index 5a667107ad2c..1696fd02b302 100644
+> --- a/include/uapi/linux/btf.h
+> +++ b/include/uapi/linux/btf.h
+> @@ -84,7 +84,7 @@ struct btf_type {
+>   */
+>  #define BTF_INT_ENCODING(VAL)  (((VAL) & 0x0f000000) >> 24)
+>  #define BTF_INT_OFFSET(VAL)    (((VAL) & 0x00ff0000) >> 16)
+> -#define BTF_INT_BITS(VAL)      ((VAL)  & 0x000000ff)
+> +#define BTF_INT_BITS(VAL)      ((VAL)  & 0x000003ff)
+>
+>  /* Attributes stored in the BTF_INT_ENCODING */
+>  #define BTF_INT_SIGNED (1 << 0)
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 8d6bdb4f4d61..44bc17207e9b 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -166,7 +166,8 @@
+>   *
+>   */
+>
+> -#define BITS_PER_U128 (sizeof(u64) * BITS_PER_BYTE * 2)
+> +#define BITS_PER_U128 128
+> +#define BITS_PER_U512 512
+>  #define BITS_PER_BYTE_MASK (BITS_PER_BYTE - 1)
+>  #define BITS_PER_BYTE_MASKED(bits) ((bits) & BITS_PER_BYTE_MASK)
+>  #define BITS_ROUNDDOWN_BYTES(bits) ((bits) >> 3)
+> @@ -1907,9 +1908,9 @@ static int btf_int_check_member(struct btf_verifier_env *env,
+>         nr_copy_bits = BTF_INT_BITS(int_data) +
+>                 BITS_PER_BYTE_MASKED(struct_bits_off);
+>
+> -       if (nr_copy_bits > BITS_PER_U128) {
+> +       if (nr_copy_bits > BITS_PER_U512) {
+>                 btf_verifier_log_member(env, struct_type, member,
+> -                                       "nr_copy_bits exceeds 128");
+> +                                       "nr_copy_bits exceeds 512");
+>                 return -EINVAL;
+>         }
+>
+> @@ -1963,9 +1964,9 @@ static int btf_int_check_kflag_member(struct btf_verifier_env *env,
+>
+>         bytes_offset = BITS_ROUNDDOWN_BYTES(struct_bits_off);
+>         nr_copy_bits = nr_bits + BITS_PER_BYTE_MASKED(struct_bits_off);
+> -       if (nr_copy_bits > BITS_PER_U128) {
+> +       if (nr_copy_bits > BITS_PER_U512) {
+>                 btf_verifier_log_member(env, struct_type, member,
+> -                                       "nr_copy_bits exceeds 128");
+> +                                       "nr_copy_bits exceeds 512");
+>                 return -EINVAL;
+>         }
+>
+> @@ -2012,9 +2013,9 @@ static s32 btf_int_check_meta(struct btf_verifier_env *env,
+>
+>         nr_bits = BTF_INT_BITS(int_data) + BTF_INT_OFFSET(int_data);
+>
+> -       if (nr_bits > BITS_PER_U128) {
+> -               btf_verifier_log_type(env, t, "nr_bits exceeds %zu",
+> -                                     BITS_PER_U128);
+> +       if (nr_bits > BITS_PER_U512) {
+> +               btf_verifier_log_type(env, t, "nr_bits exceeds %u",
+> +                                     BITS_PER_U512);
+>                 return -EINVAL;
+>         }
+>
+> @@ -2080,6 +2081,37 @@ static void btf_int128_print(struct btf_show *show, void *data)
+>                                      lower_num);
+>  }
+>
+> +static void btf_bigint_print(struct btf_show *show, void *data, u16 nr_bits)
+> +{
+> +       /* data points to 256 or 512 bit int type */
+> +       char buf[129];
+> +       int last_u64 = nr_bits / 64 - 1;
+> +       bool seen_nonzero = false;
+> +       int i;
+> +
+> +       for (i = 0; i <= last_u64; i++) {
+> +#ifdef __BIG_ENDIAN_BITFIELD
+> +               u64 v = ((u64 *)data)[i];
+> +#else
+> +               u64 v = ((u64 *)data)[last_u64 - i];
+> +#endif
+> +               if (!seen_nonzero) {
+> +                       if (!v && i != last_u64)
+> +                               continue;
+> +
+> +                       snprintf(buf, sizeof(buf), "%llx", v);
+> +
+> +                       seen_nonzero = true;
+> +               } else {
+> +                       size_t off = strlen(buf);
 
+this is wasteful, snprintf() returns number of characters printed, so
+you can maintain offset properly
+
+> +
+> +                       snprintf(buf + off, sizeof(buf) - off, "%016llx", v);
+> +               }
+> +       }
+> +
+> +       btf_show_type_value(show, "0x%s", buf);
+> +}
+
+seen_nonzero is a bit convoluted, two simple loops might be more
+straightforward:
+
+u64 v;
+int off;
+
+/* find first non-zero u64 (or stop on the last one regardless) */
+for (i = 0; i < last_u64; i++) {
+  v = ...;
+  if (!v)
+    continue;
+}
+/* print non-zero or zero, but last u64 */
+off = snprintf(buf, sizeof(buf), "%llx", v);
+/* print the rest with zero padding */
+for (i++; i <= last_u64; i++) {
+  v = ...;
+  off += snprintf(buf + off, sizeof(buf) - off, "%016llx", v);
+}
+
+> +
+>  static void btf_int128_shift(u64 *print_num, u16 left_shift_bits,
+>                              u16 right_shift_bits)
+>  {
+> @@ -2172,7 +2204,7 @@ static void btf_int_show(const struct btf *btf, const struct btf_type *t,
+>         u32 int_data = btf_type_int(t);
+>         u8 encoding = BTF_INT_ENCODING(int_data);
+>         bool sign = encoding & BTF_INT_SIGNED;
+> -       u8 nr_bits = BTF_INT_BITS(int_data);
+> +       u16 nr_bits = BTF_INT_BITS(int_data);
+>         void *safe_data;
+>
+>         safe_data = btf_show_start_type(show, t, type_id, data);
+> @@ -2186,6 +2218,10 @@ static void btf_int_show(const struct btf *btf, const struct btf_type *t,
+>         }
+>
+>         switch (nr_bits) {
+> +       case 512:
+> +       case 256:
+> +               btf_bigint_print(show, safe_data, nr_bits);
+> +               break;
+>         case 128:
+>                 btf_int128_print(show, safe_data);
+
+btf_bigint_print() supersedes btf_int128_print(), why maintain both?
+
+>                 break;
+> diff --git a/tools/include/uapi/linux/btf.h b/tools/include/uapi/linux/btf.h
+> index 5a667107ad2c..1696fd02b302 100644
+> --- a/tools/include/uapi/linux/btf.h
+> +++ b/tools/include/uapi/linux/btf.h
+> @@ -84,7 +84,7 @@ struct btf_type {
+>   */
+>  #define BTF_INT_ENCODING(VAL)  (((VAL) & 0x0f000000) >> 24)
+>  #define BTF_INT_OFFSET(VAL)    (((VAL) & 0x00ff0000) >> 16)
+> -#define BTF_INT_BITS(VAL)      ((VAL)  & 0x000000ff)
+> +#define BTF_INT_BITS(VAL)      ((VAL)  & 0x000003ff)
+>
+>  /* Attributes stored in the BTF_INT_ENCODING */
+>  #define BTF_INT_SIGNED (1 << 0)
+> --
+> 2.29.2
+>
