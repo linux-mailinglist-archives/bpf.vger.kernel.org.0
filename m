@@ -2,134 +2,131 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10D3C2EC707
-	for <lists+bpf@lfdr.de>; Thu,  7 Jan 2021 00:43:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 263672EC71D
+	for <lists+bpf@lfdr.de>; Thu,  7 Jan 2021 00:56:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727859AbhAFXnF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Jan 2021 18:43:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58890 "EHLO
+        id S1727237AbhAFX4R (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Jan 2021 18:56:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726293AbhAFXnF (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Jan 2021 18:43:05 -0500
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C28F7C061786;
-        Wed,  6 Jan 2021 15:42:24 -0800 (PST)
-Received: by mail-yb1-xb36.google.com with SMTP id d37so4469427ybi.4;
-        Wed, 06 Jan 2021 15:42:24 -0800 (PST)
+        with ESMTP id S1726878AbhAFX4Q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 6 Jan 2021 18:56:16 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C73AC06136A
+        for <bpf@vger.kernel.org>; Wed,  6 Jan 2021 15:55:36 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id b64so4472141ybg.7
+        for <bpf@vger.kernel.org>; Wed, 06 Jan 2021 15:55:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ZPW74S8PzIlFk41Z9RviD5za69Jyj385qTRgrriyRfQ=;
-        b=S0kMVmMOEkQuiA3qikpKc4BMjBTXdDJdlK4bFcFIkkYzMyXw4OGfqMK/L508rfLHN+
-         d07j69i0GzAyIlulGof/vefhHNdMSYnOExlI7aFxmzXjUyC7J+rmfDFhBelv5EM1I0JB
-         KfcxUapS1h9X79msPZZP5HGqO9iEbFoO8Kt40Hllj08b07DHHgHmjNbGKhkZOmgpz/az
-         +oXjzK85Rh9TqNw8m/rds/5oaAFe0X2j12Dx9ppDNqS8whTRpkihI5RFO+0sZuferHLu
-         XYy5fHr7ET8CcjiP76AcCv/7c3/OKmM5ICR1T+lrp7XYxGgw4BRHluICdgOFqlqCUxPC
-         HK7Q==
+        bh=Ow8Ps1KHcWoR1FhAA7H2eHMH9CQCQ3ZT/EcwsW1DSnI=;
+        b=KccQLkRoQufnG1EWSxZn3s55vAA+ieP51NWVWhKUQgj73NS6YAv2/ZTFxtHEJ8Es3f
+         ntu+Qq7VQMCYcJ4jFCCemkW1meLba8xraiSfepGWcx668c/J3LH2Sdi8av1dnyY4jagN
+         pJG7iolCpWBbSDPCi83NMOffTbjqSmUv/GufD/YsXxcUU8lQ483I6j95blKU/AaSi1xI
+         N+4x+DVs+JA8fVLZu8nMrwsMfazSj7A+kTn+LgNaxgwTRE6rnFi6dYd87UbLY88EjZ5c
+         WFWIyt+DpJWV9owHHCT3d46Sx7ihSoY2TmIAeS/mlV/xUhEfhTn61pLOo85fdcf7A37a
+         BPPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ZPW74S8PzIlFk41Z9RviD5za69Jyj385qTRgrriyRfQ=;
-        b=ch0PLpwJGeUt/X/7VhjM4/M2ASIGg457leN6AZsQzPUsJMTdEo3af/rQerrrYUIRyf
-         fnDhX7AIvR/MXn0F3KLzcPoVM1NzsMex6liCRX5dhL08nwSyPP8T9QA2M1NMBR5yNngY
-         STocRqzYsISqlTCnOYxCC2Bm4jRM0cEl5YRKCHvIm2iDcRAiKWo9BPBZwNR60cMi02Wi
-         /iejnahN9oiBfO9dkZ8SGPdBS6sBMaTwTn6ZF2m1SmtV2UMmNh654wN31za3bqge7oTE
-         PUU6HAwQl+8zRBJiyBMJOtwpOC4iTCHyxfJ+O0lMuQWJMwkd82fSTZvFTkY/M1aSNTeP
-         VeOA==
-X-Gm-Message-State: AOAM531KbbZz67simAB4B687Zi3Xw0ha/MLKNv0eN14UzD7LXcoW35OU
-        ovaTSpc0VZPcgiepZ8879OvHkE+ZBXaMIJQH7n8=
-X-Google-Smtp-Source: ABdhPJxVTeXuACDNbhp+4/Qf0sV9wAp5WcMb5z/EiaVR+M1N+WTuS1/M6QqTnsmwZM9Kw3DRLLUJrQQjBTyXWMtMCZ8=
-X-Received: by 2002:a25:854a:: with SMTP id f10mr9115524ybn.510.1609976544040;
- Wed, 06 Jan 2021 15:42:24 -0800 (PST)
+        bh=Ow8Ps1KHcWoR1FhAA7H2eHMH9CQCQ3ZT/EcwsW1DSnI=;
+        b=frSsDrecOrbD6CkHhN/GwQvRuYRJYy7KrrLWqpPGKxigLDBaoEDF76ibyUKV6NuX1C
+         L4gY+UDHl/N+UX6MNQJQKhA2uz1AphlSph5yykLuh8h0J6tGq49/uSq+9CRU9JqVoK7v
+         u39UHZjW3uXRJqeKBT5QOv1QiMLSldfCNxFIT11fVepUFQLZXJ27ZfVwG+YvDspm663X
+         X5hvWLUnocUhEXgpY/t38dU6AwPRizLkfWiJo+Ph2Tj2xONR3T/L8/3ZQJzOge+lARAS
+         J85mMPJLIZq20ZpVjhncWdS+UDn1daZnCTfllZdvOWITDutb1lzmkcz3t7B5tlIZbDNW
+         vwFQ==
+X-Gm-Message-State: AOAM531fSkAqgTMSDHBtxOTTGe0YmIFH7chF/gOIBH8WFVjOWVFJowKn
+        9pv9uDJTUlwykrSovCSG6deKfW1fciPu4FmLYjtwLsEmvTM=
+X-Google-Smtp-Source: ABdhPJxF7Nvpvce8hZ972tjmssiWmeb58Qzo8F6pHgWWuveScz6XRobOTrpoJu6sYJcISc5rIC68Tun1OwfGdS39tr4=
+X-Received: by 2002:a25:c7c6:: with SMTP id w189mr9320964ybe.403.1609977335743;
+ Wed, 06 Jan 2021 15:55:35 -0800 (PST)
 MIME-Version: 1.0
-References: <1e806d48-fd54-fd86-5b3a-372d9876f360@arm.com> <20200828172658.dxygk7j672gho4ax@e107158-lin.cambridge.arm.com>
- <58f5d2e8-493b-7ce1-6abd-57705e5ab437@arm.com> <20200902135423.GB93959@lorien.usersys.redhat.com>
- <20200907110223.gtdgqod2iv2w7xmg@e107158-lin.cambridge.arm.com>
- <20200908131954.GA147026@lorien.usersys.redhat.com> <20210104182642.xglderapsfrop6pi@e107158-lin>
- <CAADnVQ+1BNO577iz+05M4nNk+DB2n9ffwr4KrktWxO+2mP1b-Q@mail.gmail.com>
- <20210105113857.gzqaiuhxsxdtu474@e107158-lin> <CAADnVQ+GH9DfaRJ3CCDYL8o9UUH-eAuBq6EhjVLbicY_XWbySw@mail.gmail.com>
- <20210106112712.6ec7yejhidauo432@e107158-lin>
-In-Reply-To: <20210106112712.6ec7yejhidauo432@e107158-lin>
+References: <CADmGQ+1euj7Uv9e8UyZMMXDiYAKqXe9=GSTBFNbbg1E0R-ejyg@mail.gmail.com>
+In-Reply-To: <CADmGQ+1euj7Uv9e8UyZMMXDiYAKqXe9=GSTBFNbbg1E0R-ejyg@mail.gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 6 Jan 2021 15:42:13 -0800
-Message-ID: <CAEf4BzaL8788pNdk4A9_EGTZF52MikCPJX1-fh3JO2uca6x9FQ@mail.gmail.com>
-Subject: Re: [PATCH v2] sched/debug: Add new tracepoint to track cpu_capacity
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Phil Auld <pauld@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        vincent.donnefort@arm.com, Ingo Molnar <mingo@redhat.com>,
-        vincent.guittot@linaro.org, LKML <linux-kernel@vger.kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>
+Date:   Wed, 6 Jan 2021 15:55:25 -0800
+Message-ID: <CAEf4BzbJZLjNoiK8_VfeVg_Vrg=9iYFv+po-38SMe=UzwDKJ=Q@mail.gmail.com>
+Subject: Re: [BPF CO-RE clarification] Use CO-RE on older kernel versions.
+To:     Vamsi Kodavanty <vamsi@araalinetworks.com>
+Cc:     bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 6, 2021 at 3:27 AM Qais Yousef <qais.yousef@arm.com> wrote:
+On Wed, Jan 6, 2021 at 10:04 AM Vamsi Kodavanty
+<vamsi@araalinetworks.com> wrote:
 >
-> On 01/05/21 08:44, Alexei Starovoitov wrote:
-> > > Any pointer to an example test I could base this on?
-> >
-> > selftests/bpf/
+> Had a few questions on CO-RE dependencies and usage. From what I read
+> CO-RE needs a supported kernel version and be compiled with
+> `CONFIG_DEBUG_INFO_BTF=y`.
 >
-> I was hoping for something more elaborate. I thought there's something already
-> there that do some verification for raw tracepoint that I could either extend
-> or replicate. Otherwise this could end up being a time sink for me and I'm not
-> keen on jumping down this rabbit hole.
+> I also understand there are three pieces to enable CO-RE
+> functionality. (1) The BTF format. For efficient/compressed kernel
+> symbol table. (2) clang changes to emit the BTF relocations. (3)
 
-One way would be to add either another custom tracepoint definition to
-a test module or modify the existing one to be a bare tracepoint. See
-links below.
+BTF is not really a symbol table, rather a type information. Like
+simpler and more compact DWARF.
 
-If it's easy to trigger those tracepoints from user-space on demand,
-writing a similar (to module_attach) selftest for in-kernel tracepoint
-is trivial.
+> `libbpf` changes to locate a BTF file and fix-up relocations. Once
+> these 3 steps are done the resulting byte code is no different from
+> non-CO-RE byte code.
+>
+> Given this I am hoping the knowledgeable folks on this mailer correct
+> and guide me if I am stating something incorrectly.
+>
+> (1) Is the kernel support requirement ONLY for the purposes of
+> generating and exposing the BTF file information on
+> `/sys/kernel/btf/vmlinux`? So that the eBPF CO-RE applications
+> `libbpf` can find the BTF information at a standard location?.
 
-  [0] https://github.com/torvalds/linux/blob/master/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
-  [1] https://github.com/torvalds/linux/blob/master/tools/testing/selftests/bpf/progs/test_module_attach.c#L12-L18
-  [2] https://github.com/torvalds/linux/blob/master/tools/testing/selftests/bpf/prog_tests/module_attach.c
+/sys/kernel/btf/vmlinux is a standardized place, but libbpf will also
+try to search for vmlinux image (and BTF info within it) in a few
+standard locations, see [0]. Early versions of in-kernel BTF didn't
+even expose /sys/kernel/btf/vmlinux.
+
+  [0] https://github.com/libbpf/libbpf/blob/master/src/btf.c#L4580
 
 >
-> > > > - add a doc with contents from commit log.
-> > >
-> > > You're referring to the ABI part of the changelog, right?
-> > >
-> > > > The "Does bpf make things into an abi ?" question keeps coming back
-> > > > over and over again.
-> > > > Everytime we have the same answer that No, bpf cannot bake things into abi.
-> > > > I think once it's spelled out somewhere in Documentation/ it would be easier to
-> > > > repeat this message.
-> > >
-> > > How about a new Documentation/bpf/ABI.rst? I can write something up initially
-> > > for us to discuss in detail when I post.
-> >
-> > There is Documentation/bpf/bpf_design_QA.rst
-> > and we already have this text in there that was added back in 2017:
-> >
-> > Q: Does BPF have a stable ABI?
-> > ------------------------------
-> > A: YES. BPF instructions, arguments to BPF programs, set of helper
-> > functions and their arguments, recognized return codes are all part
-> > of ABI. However there is one specific exception to tracing programs
-> > which are using helpers like bpf_probe_read() to walk kernel internal
-> > data structures and compile with kernel internal headers. Both of these
-> > kernel internals are subject to change and can break with newer kernels
-> > such that the program needs to be adapted accordingly.
-> >
-> > I'm suggesting to add an additional section to this Q/A doc to include
-> > more or less
-> > the same text you had in the commit log.
+> (2) If the answer to the above question is YES. Could the below
+> mechanism be used so that it works on all kernels whether they support
+> the `CONFIG_DEBUG_INFO_BTF` flag or not?.
+>        (a) Extract BTF generation process outside of the kernel build.
+> Use this to generate the equivalent BTF file for it.
+
+Yes, CONFIG_DEBUG_INFO_BTF=y is the most convenient way to add BTF
+info, but it's also possible to just embed BTF manually with a direct
+invocation of pahole -J, see [1] on how it's done for
+CONFIG_DEBUG_INFO_BTF. You can do that for *any* kernel image, no
+matter the version, and it will work with CO-RE relocations.
+
+  [1] https://github.com/torvalds/linux/blob/master/scripts/link-vmlinux.sh#L137-L170
+
+>        (b) Make changes to `libbpf` to look for BTF not only at the
+> standard locations but also at a user specified location. The BTF file
+> generated in (a) can be presented here.
+
+You can already do that, actually, though it's not very obvious. You
+can specify (or override) kernel BTF location by using
+bpf_object__load_xattr() and passing target_btf_path pointing to your
+BTF location (see [2]). I've been meaning to add it instead to a
+bpf_object_open_opts, btw, to make its use possible with a BPF
+skeleton. Also keep in mind that currently libbpf expects that custom
+BTF to be an ELF file with .BTF section, not just a raw BTF data. But
+we can improve that, of course.
+
+  [2] https://github.com/libbpf/libbpf/blob/master/src/libbpf.h#L136-L141
 >
-> Works for me.
+> This should provide us a way to enable CO-RE functionality on older
+> kernel versions as well. I tried to make the above changes and tried
+> against a 4.14 kernel and it did not work. Either I am not doing
+> something right or my assumptions are wrong.
 >
-> Thanks
+> Thanks in advance for your time. And I hope someone here can guide me
+> in the right direction.
 >
-> --
-> Qais Yousef
+> Regards
+> Vamsi.
