@@ -2,513 +2,218 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83D1D2ED6DB
-	for <lists+bpf@lfdr.de>; Thu,  7 Jan 2021 19:44:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 925B82ED6F8
+	for <lists+bpf@lfdr.de>; Thu,  7 Jan 2021 19:53:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729200AbhAGSoC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Jan 2021 13:44:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39696 "EHLO
+        id S1726386AbhAGSw4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Jan 2021 13:52:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729189AbhAGSoB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Jan 2021 13:44:01 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EDC8C0612FD
-        for <bpf@vger.kernel.org>; Thu,  7 Jan 2021 10:43:14 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id x17so11737601ybs.12
-        for <bpf@vger.kernel.org>; Thu, 07 Jan 2021 10:43:14 -0800 (PST)
+        with ESMTP id S1726064AbhAGSw4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Jan 2021 13:52:56 -0500
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3888C0612F4
+        for <bpf@vger.kernel.org>; Thu,  7 Jan 2021 10:52:15 -0800 (PST)
+Received: by mail-yb1-xb2e.google.com with SMTP id w127so7045677ybw.8
+        for <bpf@vger.kernel.org>; Thu, 07 Jan 2021 10:52:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=0Lt9L+ol0tsNmbBSajXxpZf/QkBU7nNaW69TAkZsRxs=;
-        b=q8zGpbJ6CfWnwFOzTY57utDi/VDT0Ebnzi0ZAM5kcwQARJtgahpyx9MalDm8A2PA2N
-         Sxh71owmMATu1s6JmFLQgCKX409derZ3mhWyhW86gjMG4CXAA+vZJOX6ZcFwKcYU9nvD
-         xDjJijeQ1HdKVDRFLQjHMC69pGJRoPZ7QSHZw7FhSYqLVE/5RIdjZJ72T7WXH6OXW3iW
-         aLIpy4Glpg1cik2HF7uf1Ki3Vm2r0ykP+wUV/PIL/NJ865J1tElBISzT0uicZJBgbIzh
-         F3wlJlOuH0T8gKjBmh29Rke6o9E4JWXJIxr7qEDTYBlLb7K2aGiDV3IgsiKNfbOCXyIy
-         p0VA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OsHqO2XQdnnb94wfdTvh3x9KEpm0rAc23B75Nwbw9XQ=;
+        b=vKtLTeldP/DwsON9gMQv5eeblBvD88+4l8TslrrPsso3m05ZOqjeRE9n2AwmbTtLov
+         ZXdbgYWlVc2Zy54K6W6ZFvZCVJ9JzIUq+KrMcK8B40SVnRtwbY/eHK3yANdy9quEyvvX
+         JYl7ZecS76pu+tV1cVClbccTS9RQuR1DLJfO+kNorV1PWgRuTm+7XbSCJtEfD1QTOKB3
+         ec8NFaW7LCPR88kA4I92vV4Hj4JzgVIsPOJphVTEEiWhRrOe72agVLZRe4ZGFVKD4vH5
+         6kEGmd2XKym7XfI3cbxXE+tVMQCB5gp57OCQJXt+b9BWdII7IMXLNQSNs5zvZXTOqLRN
+         N24g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=0Lt9L+ol0tsNmbBSajXxpZf/QkBU7nNaW69TAkZsRxs=;
-        b=ozu3ncr8ZGUrx9hKyP7Nvb4MsEqH4B0LPDz8A7/SWZVaQjkoqINbR39GvgvCyg/k6i
-         6iFUfSS0RYSO6rv+PLVE4PQTdFuMSO9eqKnJyjrDVoOB/1eIaxVDm4k5PBk76gSE5eun
-         sW9P71l0/YdnyzzniedwA9BrSz0ANVwuNAufw3+FNTRb6+I2nisoHq1Zh0brHyfSnDCH
-         IWifk+y6cpO0ILmzFqDfg0HsjTcy3NSldhgU8i/1xSytX6+Db7At5veCbK+sBWw7Ljyh
-         /mZDBcZ7cy5OQBGuUYL0F0aOEqibpK+WwRaGkvo7HoGNeCbAOBWnyCWUxi8aDRGzQaQL
-         VE8Q==
-X-Gm-Message-State: AOAM530reYKzg3fy4nvkjQiQsQL5AEyM65v+8kpmnvZNvqp/66HzRvLY
-        OCUawIBw8eB35CrpLKMZxnty784=
-X-Google-Smtp-Source: ABdhPJxXbhFZ0KNEk94NxpOeH0Z0x+6MbPT2RRObinAE5X/Lmlim3JVGPX7Gg3MsAnPxFY8RSO2yQs4=
-Sender: "sdf via sendgmr" <sdf@sdf2.svl.corp.google.com>
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:7220:84ff:fe09:7732])
- (user=sdf job=sendgmr) by 2002:a25:d1c4:: with SMTP id i187mr203777ybg.7.1610044993376;
- Thu, 07 Jan 2021 10:43:13 -0800 (PST)
-Date:   Thu,  7 Jan 2021 10:43:05 -0800
-In-Reply-To: <20210107184305.444635-1-sdf@google.com>
-Message-Id: <20210107184305.444635-4-sdf@google.com>
-Mime-Version: 1.0
-References: <20210107184305.444635-1-sdf@google.com>
-X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
-Subject: [PATCH bpf-next v4 3/3] bpf: remove extra lock_sock for TCP_ZEROCOPY_RECEIVE
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net,
-        Stanislav Fomichev <sdf@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Eric Dumazet <edumazet@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OsHqO2XQdnnb94wfdTvh3x9KEpm0rAc23B75Nwbw9XQ=;
+        b=l2VD0lcNPUCq9gLxrqLpq49QcgGEva11B31uvUmJ8WRygq6b5e6c9JUHdF1IJfz501
+         H56kCOpy8IKDN3ubicGnwRNX7b0A7mQzCIKX0VdskRCttGVUB8e7qe7dEYXbsxipmTZo
+         Nkk2FZh9ISkFDMNXOqLQCWEk35wj3S8O+gNkO5i9PT8ButTMWChEbo3IdG08I3zlXgDx
+         ZwQwrGtqhIlTiSRAEhqpSqSyiROnD9wQlVoLDOYnDKGWRzCIabq1neX68xi52U5eptza
+         htvZuGXwZvZGXwWc0kLaMuP1vsLr6eOCppXP/enw0Vp7FoLDMkW+Rrid5iMTPyqLmiw2
+         0Fgg==
+X-Gm-Message-State: AOAM531EYLRV2RpklfV85CdCpfNyvXdeSEOa6+krNSAxGvW/GlidLc8U
+        m1Ulc3PUZQYE2H7Dpdw28h7bXvFjby656IQ3epc=
+X-Google-Smtp-Source: ABdhPJxj8uyav3y315zNelmjPuutpD8d7k4sc769iW3LlRFkTrkdbbD8zyLYpxNrx1ahztDHbuunks8RlxodlE0LuX4=
+X-Received: by 2002:a25:2c4c:: with SMTP id s73mr288853ybs.230.1610045535027;
+ Thu, 07 Jan 2021 10:52:15 -0800 (PST)
+MIME-Version: 1.0
+References: <CADmGQ+1euj7Uv9e8UyZMMXDiYAKqXe9=GSTBFNbbg1E0R-ejyg@mail.gmail.com>
+ <CAEf4BzbJZLjNoiK8_VfeVg_Vrg=9iYFv+po-38SMe=UzwDKJ=Q@mail.gmail.com> <CADmGQ+1ugPF-n1KnbVpOmC=xiOG_57GyS+0NetfsPz99HxS36A@mail.gmail.com>
+In-Reply-To: <CADmGQ+1ugPF-n1KnbVpOmC=xiOG_57GyS+0NetfsPz99HxS36A@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 7 Jan 2021 10:52:04 -0800
+Message-ID: <CAEf4BzbpOVKLKq+Cz5kWNZHu-yNG9BsY4udOU+md_zdoT7sG1A@mail.gmail.com>
+Subject: Re: [BPF CO-RE clarification] Use CO-RE on older kernel versions.
+To:     Vamsi Kodavanty <vamsi@araalinetworks.com>
+Cc:     bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add custom implementation of getsockopt hook for TCP_ZEROCOPY_RECEIVE.
-We skip generic hooks for TCP_ZEROCOPY_RECEIVE and have a custom
-call in do_tcp_getsockopt using the on-stack data. This removes
-2% overhead for locking/unlocking the socket.
+On Thu, Jan 7, 2021 at 10:12 AM Vamsi Kodavanty
+<vamsi@araalinetworks.com> wrote:
+>
+> First of all thank you very much for your quick response. And helpful pointers.
+> It seems like you also think what I am attempting to do should work.
+>
+> Please see inline [VAMSI-2].
+>
+> On Wed, Jan 6, 2021 at 3:55 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Wed, Jan 6, 2021 at 10:04 AM Vamsi Kodavanty
+> > <vamsi@araalinetworks.com> wrote:
+> > >
+> > > Had a few questions on CO-RE dependencies and usage. From what I read
+> > > CO-RE needs a supported kernel version and be compiled with
+> > > `CONFIG_DEBUG_INFO_BTF=y`.
+> > >
+> > > I also understand there are three pieces to enable CO-RE
+> > > functionality. (1) The BTF format. For efficient/compressed kernel
+> > > symbol table. (2) clang changes to emit the BTF relocations. (3)
+> >
+> > BTF is not really a symbol table, rather a type information. Like
+> > simpler and more compact DWARF.
+> >
+> > > `libbpf` changes to locate a BTF file and fix-up relocations. Once
+> > > these 3 steps are done the resulting byte code is no different from
+> > > non-CO-RE byte code.
+> > >
+> > > Given this I am hoping the knowledgeable folks on this mailer correct
+> > > and guide me if I am stating something incorrectly.
+> > >
+> > > (1) Is the kernel support requirement ONLY for the purposes of
+> > > generating and exposing the BTF file information on
+> > > `/sys/kernel/btf/vmlinux`? So that the eBPF CO-RE applications
+> > > `libbpf` can find the BTF information at a standard location?.
+> >
+> > /sys/kernel/btf/vmlinux is a standardized place, but libbpf will also
+> > try to search for vmlinux image (and BTF info within it) in a few
+> > standard locations, see [0]. Early versions of in-kernel BTF didn't
+> > even expose /sys/kernel/btf/vmlinux.
+> >
+> >   [0] https://github.com/libbpf/libbpf/blob/master/src/btf.c#L4580
+> >
+> > >
+> > > (2) If the answer to the above question is YES. Could the below
+> > > mechanism be used so that it works on all kernels whether they support
+> > > the `CONFIG_DEBUG_INFO_BTF` flag or not?.
+> > >        (a) Extract BTF generation process outside of the kernel build.
+> > > Use this to generate the equivalent BTF file for it.
+> >
+> > Yes, CONFIG_DEBUG_INFO_BTF=y is the most convenient way to add BTF
+> > info, but it's also possible to just embed BTF manually with a direct
+> > invocation of pahole -J, see [1] on how it's done for
+> > CONFIG_DEBUG_INFO_BTF. You can do that for *any* kernel image, no
+> > matter the version, and it will work with CO-RE relocations.
+> >
+> >   [1] https://github.com/torvalds/linux/blob/master/scripts/link-vmlinux.sh#L137-L170
+> >
+>
+> [VAMSI-2] Yes, this is exactly what I did. I extracted out the
+> `gen_btf` from the
+> `link-vmlinux.sh` (which uses pahole -J) and used it to generate a BTF
+> file for the
+> 4.14.0 kernel.
+>
+> > >        (b) Make changes to `libbpf` to look for BTF not only at the
+> > > standard locations but also at a user specified location. The BTF file
+> > > generated in (a) can be presented here.
+> >
+> > You can already do that, actually, though it's not very obvious. You
+> > can specify (or override) kernel BTF location by using
+> > bpf_object__load_xattr() and passing target_btf_path pointing to your
+> > BTF location (see [2]). I've been meaning to add it instead to a
+> > bpf_object_open_opts, btw, to make its use possible with a BPF
+> > skeleton. Also keep in mind that currently libbpf expects that custom
+> > BTF to be an ELF file with .BTF section, not just a raw BTF data. But
+> > we can improve that, of course.
+> >
+> >   [2] https://github.com/libbpf/libbpf/blob/master/src/libbpf.h#L136-L141
+>
+> [VAMSI-2] I took a look at this and what you suggested above does not
+> work as is.
+> Even if we used `bpf_object__load_xattr` with `target_btf_path`. It seems like
+> `bpf_object__load_vmlinux_btf` is not yet modified to use the
+> `target_btf_path` attribute.
 
-Also:
-- Removed BUILD_BUG_ON (zerocopy doesn't depend on the buf size anymore)
-- Separated on-stack buffer into bpf_sockopt_buf and downsized to 32 bytes
-  (let's keep it to help with the other options)
+Ah, right. We used to need vmlinux BTF only for CO-RE relocations, but
+since then added a bunch more use cases. So some libbpf changes are
+needed to make this work. But it should still work for CO-RE to have a
+custom BTF.
 
-(I can probably split this patch into two: add new features and rework
- bpf_sockopt_buf; can follow up if the approach in general sounds
- good).
+I'm not sure about making bpf_object__load_vmlinux_btf() load custom
+BTF as the real kernel BTF, because that will never work for
+fentry/fexit, struct_ops, etc. I think it is better to teach
+bpf_object__load_vmlinux_btf() to not attempt to load real kernel BTF
+if we need it only for CO-RE relocations *and* we have it overloaded
+with target_btf_path
 
-Without this patch:
-     1.87%     0.06%  tcp_mmap  [kernel.kallsyms]  [k] __cgroup_bpf_run_filter_getsockopt
+> Only, the `bpf_object__relocate` looks at the `target_btf_path`. As
+> you suggested enabling
+> use from the BPF skeleton seems useful and I can possibly help with that.
 
-With the patch applied:
-     0.52%     0.12%  tcp_mmap  [kernel.kallsyms]  [k] __cgroup_bpf_run_filter_getsockopt_kern
+Yeah, adding something like core_btf_path option to
+bpf_object_open_opts would go nicely with this change.
 
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Eric Dumazet <edumazet@google.com>
----
- include/linux/bpf-cgroup.h                    | 25 ++++-
- include/linux/filter.h                        |  6 +-
- include/net/sock.h                            |  2 +
- include/net/tcp.h                             |  1 +
- kernel/bpf/cgroup.c                           | 93 +++++++++++++------
- net/ipv4/tcp.c                                | 14 +++
- net/ipv4/tcp_ipv4.c                           |  1 +
- net/ipv6/tcp_ipv6.c                           |  1 +
- .../selftests/bpf/prog_tests/sockopt_sk.c     | 22 +++++
- .../testing/selftests/bpf/progs/sockopt_sk.c  | 15 +++
- 10 files changed, 147 insertions(+), 33 deletions(-)
+>
+> For now, just for proof of concept I modified the search options in
+> `libbpf_find_kernel_btf` to
+> include my custom path. And on a 4.14 AmazonLinux2 VM I observe these failures.
+>
+> libbpf: loading kernel BTF '/home/ec2-user/vmlinux.btf': 0
 
-diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
-index dd4b8e300746..cbba9c9ab073 100644
---- a/include/linux/bpf-cgroup.h
-+++ b/include/linux/bpf-cgroup.h
-@@ -147,6 +147,10 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
- 				       int __user *optlen, int max_optlen,
- 				       int retval);
- 
-+int __cgroup_bpf_run_filter_getsockopt_kern(struct sock *sk, int level,
-+					    int optname, void *optval,
-+					    int *optlen, int retval);
-+
- static inline enum bpf_cgroup_storage_type cgroup_storage_type(
- 	struct bpf_map *map)
- {
-@@ -366,10 +370,21 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
- ({									       \
- 	int __ret = retval;						       \
- 	if (cgroup_bpf_enabled(BPF_CGROUP_GETSOCKOPT))			       \
--		__ret = __cgroup_bpf_run_filter_getsockopt(sock, level,	       \
--							   optname, optval,    \
--							   optlen, max_optlen, \
--							   retval);	       \
-+		if (!(sock)->sk_prot->bpf_bypass_getsockopt ||		       \
-+		    !(sock)->sk_prot->bpf_bypass_getsockopt(level, optname))   \
-+			__ret = __cgroup_bpf_run_filter_getsockopt(	       \
-+				sock, level, optname, optval, optlen,	       \
-+				max_optlen, retval);			       \
-+	__ret;								       \
-+})
-+
-+#define BPF_CGROUP_RUN_PROG_GETSOCKOPT_KERN(sock, level, optname, optval,      \
-+					    optlen, retval)		       \
-+({									       \
-+	int __ret = retval;						       \
-+	if (cgroup_bpf_enabled(BPF_CGROUP_GETSOCKOPT))			       \
-+		__ret = __cgroup_bpf_run_filter_getsockopt_kern(	       \
-+			sock, level, optname, optval, optlen, retval);	       \
- 	__ret;								       \
- })
- 
-@@ -454,6 +469,8 @@ static inline int bpf_percpu_cgroup_storage_update(struct bpf_map *map,
- #define BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen) ({ 0; })
- #define BPF_CGROUP_RUN_PROG_GETSOCKOPT(sock, level, optname, optval, \
- 				       optlen, max_optlen, retval) ({ retval; })
-+#define BPF_CGROUP_RUN_PROG_GETSOCKOPT_KERN(sock, level, optname, optval, \
-+					    optlen, retval) ({ retval; })
- #define BPF_CGROUP_RUN_PROG_SETSOCKOPT(sock, level, optname, optval, optlen, \
- 				       kernel_optval) ({ 0; })
- 
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 54a4225f36d8..8739f1d4cac4 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -1281,7 +1281,10 @@ struct bpf_sysctl_kern {
- 	u64 tmp_reg;
- };
- 
--#define BPF_SOCKOPT_KERN_BUF_SIZE	64
-+#define BPF_SOCKOPT_KERN_BUF_SIZE	32
-+struct bpf_sockopt_buf {
-+	u8		data[BPF_SOCKOPT_KERN_BUF_SIZE];
-+};
- 
- struct bpf_sockopt_kern {
- 	struct sock	*sk;
-@@ -1291,7 +1294,6 @@ struct bpf_sockopt_kern {
- 	s32		optname;
- 	s32		optlen;
- 	s32		retval;
--	u8		buf[BPF_SOCKOPT_KERN_BUF_SIZE];
- };
- 
- int copy_bpf_fprog_from_user(struct sock_fprog *dst, sockptr_t src, int len);
-diff --git a/include/net/sock.h b/include/net/sock.h
-index bdc4323ce53c..ebf44d724845 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -1174,6 +1174,8 @@ struct proto {
- 
- 	int			(*backlog_rcv) (struct sock *sk,
- 						struct sk_buff *skb);
-+	bool			(*bpf_bypass_getsockopt)(int level,
-+							 int optname);
- 
- 	void		(*release_cb)(struct sock *sk);
- 
-diff --git a/include/net/tcp.h b/include/net/tcp.h
-index 78d13c88720f..4bb42fb19711 100644
---- a/include/net/tcp.h
-+++ b/include/net/tcp.h
-@@ -403,6 +403,7 @@ __poll_t tcp_poll(struct file *file, struct socket *sock,
- 		      struct poll_table_struct *wait);
- int tcp_getsockopt(struct sock *sk, int level, int optname,
- 		   char __user *optval, int __user *optlen);
-+bool tcp_bpf_bypass_getsockopt(int level, int optname);
- int tcp_setsockopt(struct sock *sk, int level, int optname, sockptr_t optval,
- 		   unsigned int optlen);
- void tcp_set_keepalive(struct sock *sk, int val);
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index adbecdcaa370..e82df63aedc7 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -16,7 +16,6 @@
- #include <linux/bpf-cgroup.h>
- #include <net/sock.h>
- #include <net/bpf_sk_storage.h>
--#include <uapi/linux/tcp.h> /* sizeof(struct tcp_zerocopy_receive) */
- 
- #include "../cgroup/cgroup-internal.h"
- 
-@@ -1299,7 +1298,8 @@ static bool __cgroup_bpf_prog_array_is_empty(struct cgroup *cgrp,
- 	return empty;
- }
- 
--static int sockopt_alloc_buf(struct bpf_sockopt_kern *ctx, int max_optlen)
-+static int sockopt_alloc_buf(struct bpf_sockopt_kern *ctx, int max_optlen,
-+			     struct bpf_sockopt_buf *buf)
- {
- 	if (unlikely(max_optlen < 0))
- 		return -EINVAL;
-@@ -1311,18 +1311,11 @@ static int sockopt_alloc_buf(struct bpf_sockopt_kern *ctx, int max_optlen)
- 		max_optlen = PAGE_SIZE;
- 	}
- 
--	if (max_optlen <= sizeof(ctx->buf)) {
-+	if (max_optlen <= sizeof(buf->data)) {
- 		/* When the optval fits into BPF_SOCKOPT_KERN_BUF_SIZE
- 		 * bytes avoid the cost of kzalloc.
--		 *
--		 * In order to remove extra allocations from the TCP
--		 * fast zero-copy path ensure that buffer covers
--		 * the size of struct tcp_zerocopy_receive.
- 		 */
--		BUILD_BUG_ON(sizeof(struct tcp_zerocopy_receive) >
--			     BPF_SOCKOPT_KERN_BUF_SIZE);
--
--		ctx->optval = ctx->buf;
-+		ctx->optval = buf->data;
- 		ctx->optval_end = ctx->optval + max_optlen;
- 		return max_optlen;
- 	}
-@@ -1336,16 +1329,18 @@ static int sockopt_alloc_buf(struct bpf_sockopt_kern *ctx, int max_optlen)
- 	return max_optlen;
- }
- 
--static void sockopt_free_buf(struct bpf_sockopt_kern *ctx)
-+static void sockopt_free_buf(struct bpf_sockopt_kern *ctx,
-+			     struct bpf_sockopt_buf *buf)
- {
--	if (ctx->optval == ctx->buf)
-+	if (ctx->optval == buf->data)
- 		return;
- 	kfree(ctx->optval);
- }
- 
--static bool sockopt_buf_allocated(struct bpf_sockopt_kern *ctx)
-+static bool sockopt_buf_allocated(struct bpf_sockopt_kern *ctx,
-+				  struct bpf_sockopt_buf *buf)
- {
--	return ctx->optval != ctx->buf;
-+	return ctx->optval != buf->data;
- }
- 
- int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
-@@ -1353,6 +1348,7 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
- 				       int *optlen, char **kernel_optval)
- {
- 	struct cgroup *cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
-+	struct bpf_sockopt_buf buf = {};
- 	struct bpf_sockopt_kern ctx = {
- 		.sk = sk,
- 		.level = *level,
-@@ -1373,7 +1369,7 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
- 	 */
- 	max_optlen = max_t(int, 16, *optlen);
- 
--	max_optlen = sockopt_alloc_buf(&ctx, max_optlen);
-+	max_optlen = sockopt_alloc_buf(&ctx, max_optlen, &buf);
- 	if (max_optlen < 0)
- 		return max_optlen;
- 
-@@ -1419,7 +1415,7 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
- 			 * No way to export on-stack buf, have to allocate a
- 			 * new buffer.
- 			 */
--			if (!sockopt_buf_allocated(&ctx)) {
-+			if (!sockopt_buf_allocated(&ctx, &buf)) {
- 				void *p = kzalloc(ctx.optlen, GFP_USER);
- 
- 				if (!p) {
-@@ -1436,7 +1432,7 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
- 
- out:
- 	if (ret)
--		sockopt_free_buf(&ctx);
-+		sockopt_free_buf(&ctx, &buf);
- 	return ret;
- }
- 
-@@ -1445,15 +1441,20 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
- 				       int __user *optlen, int max_optlen,
- 				       int retval)
- {
--	struct cgroup *cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
--	struct bpf_sockopt_kern ctx = {
--		.sk = sk,
--		.level = level,
--		.optname = optname,
--		.retval = retval,
--	};
-+	struct bpf_sockopt_kern ctx;
-+	struct bpf_sockopt_buf buf;
-+	struct cgroup *cgrp;
- 	int ret;
- 
-+	memset(&buf, 0, sizeof(buf));
-+	memset(&ctx, 0, sizeof(ctx));
-+
-+	cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
-+	ctx.sk = sk;
-+	ctx.level = level;
-+	ctx.optname = optname;
-+	ctx.retval = retval;
-+
- 	/* Opportunistic check to see whether we have any BPF program
- 	 * attached to the hook so we don't waste time allocating
- 	 * memory and locking the socket.
-@@ -1463,7 +1464,7 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
- 
- 	ctx.optlen = max_optlen;
- 
--	max_optlen = sockopt_alloc_buf(&ctx, max_optlen);
-+	max_optlen = sockopt_alloc_buf(&ctx, max_optlen, &buf);
- 	if (max_optlen < 0)
- 		return max_optlen;
- 
-@@ -1521,9 +1522,47 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
- 	ret = ctx.retval;
- 
- out:
--	sockopt_free_buf(&ctx);
-+	sockopt_free_buf(&ctx, &buf);
- 	return ret;
- }
-+
-+int __cgroup_bpf_run_filter_getsockopt_kern(struct sock *sk, int level,
-+					    int optname, void *optval,
-+					    int *optlen, int retval)
-+{
-+	struct cgroup *cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
-+	struct bpf_sockopt_kern ctx = {
-+		.sk = sk,
-+		.level = level,
-+		.optname = optname,
-+		.retval = retval,
-+		.optlen = *optlen,
-+		.optval = optval,
-+		.optval_end = optval + *optlen,
-+	};
-+	int ret;
-+
-+	ret = BPF_PROG_RUN_ARRAY(cgrp->bpf.effective[BPF_CGROUP_GETSOCKOPT],
-+				 &ctx, BPF_PROG_RUN);
-+	if (!ret)
-+		return -EPERM;
-+
-+	if (ctx.optlen > *optlen)
-+		return -EFAULT;
-+
-+	/* BPF programs only allowed to set retval to 0, not some
-+	 * arbitrary value.
-+	 */
-+	if (ctx.retval != 0 && ctx.retval != retval)
-+		return -EFAULT;
-+
-+	/* BPF programs can shrink the buffer, export the modifications.
-+	 */
-+	if (ctx.optlen != 0)
-+		*optlen = ctx.optlen;
-+
-+	return ctx.retval;
-+}
- #endif
- 
- static ssize_t sysctl_cpy_dir(const struct ctl_dir *dir, char **bufp,
-diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-index ed42d2193c5c..ef3c895b66c1 100644
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -4098,6 +4098,8 @@ static int do_tcp_getsockopt(struct sock *sk, int level,
- 			return -EFAULT;
- 		lock_sock(sk);
- 		err = tcp_zerocopy_receive(sk, &zc);
-+		err = BPF_CGROUP_RUN_PROG_GETSOCKOPT_KERN(sk, level, optname,
-+							  &zc, &len, err);
- 		release_sock(sk);
- 		if (len >= offsetofend(struct tcp_zerocopy_receive, err))
- 			goto zerocopy_rcv_sk_err;
-@@ -4132,6 +4134,18 @@ static int do_tcp_getsockopt(struct sock *sk, int level,
- 	return 0;
- }
- 
-+bool tcp_bpf_bypass_getsockopt(int level, int optname)
-+{
-+	/* TCP do_tcp_getsockopt has optimized getsockopt implementation
-+	 * to avoid extra socket lock for TCP_ZEROCOPY_RECEIVE.
-+	 */
-+	if (level == SOL_TCP && optname == TCP_ZEROCOPY_RECEIVE)
-+		return true;
-+
-+	return false;
-+}
-+EXPORT_SYMBOL(tcp_bpf_bypass_getsockopt);
-+
- int tcp_getsockopt(struct sock *sk, int level, int optname, char __user *optval,
- 		   int __user *optlen)
- {
-diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
-index 58207c7769d0..8b4906980fce 100644
---- a/net/ipv4/tcp_ipv4.c
-+++ b/net/ipv4/tcp_ipv4.c
-@@ -2792,6 +2792,7 @@ struct proto tcp_prot = {
- 	.shutdown		= tcp_shutdown,
- 	.setsockopt		= tcp_setsockopt,
- 	.getsockopt		= tcp_getsockopt,
-+	.bpf_bypass_getsockopt	= tcp_bpf_bypass_getsockopt,
- 	.keepalive		= tcp_set_keepalive,
- 	.recvmsg		= tcp_recvmsg,
- 	.sendmsg		= tcp_sendmsg,
-diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
-index e254569a3005..6624eccff85b 100644
---- a/net/ipv6/tcp_ipv6.c
-+++ b/net/ipv6/tcp_ipv6.c
-@@ -2121,6 +2121,7 @@ struct proto tcpv6_prot = {
- 	.shutdown		= tcp_shutdown,
- 	.setsockopt		= tcp_setsockopt,
- 	.getsockopt		= tcp_getsockopt,
-+	.bpf_bypass_getsockopt	= tcp_bpf_bypass_getsockopt,
- 	.keepalive		= tcp_set_keepalive,
- 	.recvmsg		= tcp_recvmsg,
- 	.sendmsg		= tcp_sendmsg,
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c b/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
-index b25c9c45c148..6bb18b1d8578 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
-@@ -11,6 +11,7 @@ static int getsetsockopt(void)
- 		char u8[4];
- 		__u32 u32;
- 		char cc[16]; /* TCP_CA_NAME_MAX */
-+		struct tcp_zerocopy_receive zc;
- 	} buf = {};
- 	socklen_t optlen;
- 	char *big_buf = NULL;
-@@ -154,6 +155,27 @@ static int getsetsockopt(void)
- 		goto err;
- 	}
- 
-+	/* TCP_ZEROCOPY_RECEIVE triggers */
-+	memset(&buf, 0, sizeof(buf));
-+	optlen = sizeof(buf.zc);
-+	err = getsockopt(fd, SOL_TCP, TCP_ZEROCOPY_RECEIVE, &buf, &optlen);
-+	if (err) {
-+		log_err("Unexpected getsockopt(TCP_ZEROCOPY_RECEIVE) err=%d errno=%d",
-+			err, errno);
-+		goto err;
-+	}
-+
-+	memset(&buf, 0, sizeof(buf));
-+	buf.zc.address = 12345; /* rejected by BPF */
-+	optlen = sizeof(buf.zc);
-+	errno = 0;
-+	err = getsockopt(fd, SOL_TCP, TCP_ZEROCOPY_RECEIVE, &buf, &optlen);
-+	if (errno != EPERM) {
-+		log_err("Unexpected getsockopt(TCP_ZEROCOPY_RECEIVE) err=%d errno=%d",
-+			err, errno);
-+		goto err;
-+	}
-+
- 	free(big_buf);
- 	close(fd);
- 	return 0;
-diff --git a/tools/testing/selftests/bpf/progs/sockopt_sk.c b/tools/testing/selftests/bpf/progs/sockopt_sk.c
-index 712df7b49cb1..c726f0763a13 100644
---- a/tools/testing/selftests/bpf/progs/sockopt_sk.c
-+++ b/tools/testing/selftests/bpf/progs/sockopt_sk.c
-@@ -57,6 +57,21 @@ int _getsockopt(struct bpf_sockopt *ctx)
- 		return 1;
- 	}
- 
-+	if (ctx->level == SOL_TCP && ctx->optname == TCP_ZEROCOPY_RECEIVE) {
-+		/* Verify that TCP_ZEROCOPY_RECEIVE triggers.
-+		 * It has a custom implementation for performance
-+		 * reasons.
-+		 */
-+
-+		if (optval + sizeof(struct tcp_zerocopy_receive) > optval_end)
-+			return 0; /* EPERM, bounds check */
-+
-+		if (((struct tcp_zerocopy_receive *)optval)->address != 0)
-+			return 0; /* EPERM, unexpected data */
-+
-+		return 1;
-+	}
-+
- 	if (ctx->level == SOL_IP && ctx->optname == IP_FREEBIND) {
- 		if (optval + 1 > optval_end)
- 			return 0; /* EPERM, bounds check */
--- 
-2.29.2.729.g45daf8777d-goog
+so here you successfully loaded custom BTF, which is good.
 
+> libbpf: Kernel doesn't support BTF, skipping uploading it.
+
+this just means that your BPF object's BTF won't be loaded into the
+kernel. That's no big deal, ignore this.
+
+> libbpf: kernel doesn't support global data
+
+But this means that your BPF programs rely on global variables, which
+are not supported by the kernel. So you need to change the code to not
+use global variables to make this work on very old kernels.
+
+
+> libbpf: failed to load object 'tcpconnect_bpf'
+> libbpf: failed to load BPF skeleton 'tcpconnect_bpf': -95
+> failed to load BPF object: -95
+
+This is probably OPNOTSUPP from the global data above
+
+>
+> This is the reason I had posted on the mailer. If the CO-RE executable
+> has relocations
+> resolved by the time of the BPF load. Why do we need to check for
+> kernel support?. Also,
+> does this mean what I am attempting to do will not work?.
+>
+
+it will work with minimal libbpf logic changes. Nothing in principle
+prevents this.
+
+
+> Best Regards. And again thanks a lot for your precious time.
+> - Vamsi.
+>
+> > >
+> > > This should provide us a way to enable CO-RE functionality on older
+> > > kernel versions as well. I tried to make the above changes and tried
+> > > against a 4.14 kernel and it did not work. Either I am not doing
+> > > something right or my assumptions are wrong.
+> > >
+> > > Thanks in advance for your time. And I hope someone here can guide me
+> > > in the right direction.
+> > >
+> > > Regards
+> > > Vamsi.
