@@ -2,131 +2,264 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 263672EC71D
-	for <lists+bpf@lfdr.de>; Thu,  7 Jan 2021 00:56:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 785632EC7BD
+	for <lists+bpf@lfdr.de>; Thu,  7 Jan 2021 02:31:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727237AbhAFX4R (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Jan 2021 18:56:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726878AbhAFX4Q (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 6 Jan 2021 18:56:16 -0500
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C73AC06136A
-        for <bpf@vger.kernel.org>; Wed,  6 Jan 2021 15:55:36 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id b64so4472141ybg.7
-        for <bpf@vger.kernel.org>; Wed, 06 Jan 2021 15:55:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ow8Ps1KHcWoR1FhAA7H2eHMH9CQCQ3ZT/EcwsW1DSnI=;
-        b=KccQLkRoQufnG1EWSxZn3s55vAA+ieP51NWVWhKUQgj73NS6YAv2/ZTFxtHEJ8Es3f
-         ntu+Qq7VQMCYcJ4jFCCemkW1meLba8xraiSfepGWcx668c/J3LH2Sdi8av1dnyY4jagN
-         pJG7iolCpWBbSDPCi83NMOffTbjqSmUv/GufD/YsXxcUU8lQ483I6j95blKU/AaSi1xI
-         N+4x+DVs+JA8fVLZu8nMrwsMfazSj7A+kTn+LgNaxgwTRE6rnFi6dYd87UbLY88EjZ5c
-         WFWIyt+DpJWV9owHHCT3d46Sx7ihSoY2TmIAeS/mlV/xUhEfhTn61pLOo85fdcf7A37a
-         BPPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ow8Ps1KHcWoR1FhAA7H2eHMH9CQCQ3ZT/EcwsW1DSnI=;
-        b=frSsDrecOrbD6CkHhN/GwQvRuYRJYy7KrrLWqpPGKxigLDBaoEDF76ibyUKV6NuX1C
-         L4gY+UDHl/N+UX6MNQJQKhA2uz1AphlSph5yykLuh8h0J6tGq49/uSq+9CRU9JqVoK7v
-         u39UHZjW3uXRJqeKBT5QOv1QiMLSldfCNxFIT11fVepUFQLZXJ27ZfVwG+YvDspm663X
-         X5hvWLUnocUhEXgpY/t38dU6AwPRizLkfWiJo+Ph2Tj2xONR3T/L8/3ZQJzOge+lARAS
-         J85mMPJLIZq20ZpVjhncWdS+UDn1daZnCTfllZdvOWITDutb1lzmkcz3t7B5tlIZbDNW
-         vwFQ==
-X-Gm-Message-State: AOAM531fSkAqgTMSDHBtxOTTGe0YmIFH7chF/gOIBH8WFVjOWVFJowKn
-        9pv9uDJTUlwykrSovCSG6deKfW1fciPu4FmLYjtwLsEmvTM=
-X-Google-Smtp-Source: ABdhPJxF7Nvpvce8hZ972tjmssiWmeb58Qzo8F6pHgWWuveScz6XRobOTrpoJu6sYJcISc5rIC68Tun1OwfGdS39tr4=
-X-Received: by 2002:a25:c7c6:: with SMTP id w189mr9320964ybe.403.1609977335743;
- Wed, 06 Jan 2021 15:55:35 -0800 (PST)
+        id S1726456AbhAGBat (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Jan 2021 20:30:49 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:37762 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726367AbhAGBas (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 6 Jan 2021 20:30:48 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1071P10X027191;
+        Wed, 6 Jan 2021 17:29:52 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=er5ipm3XGFmXtCw1u19E3GFVw+2eHKJs094JcL5fhg8=;
+ b=CKR0dB3Yr5ZGAGjicFA7K5l5gsCfez47+tgsamR1eX2g9e7nLNAMxl6R5kDAu0fsQLyo
+ 3jqcudRgy4S7aNgnkwn2+jwR5f3seleZ/Y8Zzg9dDU4e4uwVFx7FB2TGXQbK+dHfFU/F
+ JnxReDurIo4kqaqrXGQsdpnzXZYsbNYlhtU= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 35wpuxregd-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 06 Jan 2021 17:29:52 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 6 Jan 2021 17:29:51 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TDGyzAYZMUY0qWlNKCtJuM9aKGQEjct5lwVsYeiEzMRMwctToHrOJn6iJpnbBG5qgPejsCja3a2+tQkyPsCuBxEuCQBFwQudwmqAvJvH+AwxW431b1HR+Uw6XR0lDhdQXqVpUkuQhF00HXOU9CVVxjH9KrTUp8R+oOirDf1nDGgxfGT7sB2B0pinV9xPQH0/mJi7N8uYIVXYkKNOEete5AfRfmf2gUSM/RhUwEfvHFsVpOJtQPrOlOY2EqhEst6TDOwIS2BwxjINU1mrXYiIOcXGziCP2V9pmsMaeo9EoCSEy8s97s6RXe2V8cqRKBaMa73yNQbgSaorDSsnH8R7xg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=er5ipm3XGFmXtCw1u19E3GFVw+2eHKJs094JcL5fhg8=;
+ b=OXunwupDxLvsvxjkD9aQF21tNcarV93xnWi1LmPewoCWXmafVgeD/vzki6HvzwSHDMeNe7qMh6o6vVLk4TgzTWl5Cx8Co0kWmMjDls/QJYSgbancOTXI+ACmPi8KJnTMvDZ18EXdoSkdhZZkQVrR1vl+SErpt8Yfm6HeQVFb0yHgii9aNANO/pmO91ZwfkzDXk18cB6/21/wt7RbDTBYmY/X+DBmY+FLmdt27Dr0PQ9zYzTgPAQSY0/epiWcafafiSq/GKQNi04s1Qwkokmb6FYmhooeeT+yRiOY8FnIkiPTxMRGT/tNJNZ7dhvu9EltO9S+jwFNguMnEQ7Ifz3NJQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=er5ipm3XGFmXtCw1u19E3GFVw+2eHKJs094JcL5fhg8=;
+ b=HsxOkhoYc0lufEb4DLEQ66kjCijP7HDuBt4petbW21H4SLCF4OooNAhOFUOdEaWWGQ+am7a0Xa6b9qJC78aADHZ3is9EiDcv90QCNXKpBXrkCJJnxM9ywRjGS0bBmZFmbfuHryUlAMqGO02k+NXXAKKJuSh5upMok+mv9sK0bNI=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by BYAPR15MB3461.namprd15.prod.outlook.com (2603:10b6:a03:109::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Thu, 7 Jan
+ 2021 01:29:50 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::217e:885b:1cef:e1f7]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::217e:885b:1cef:e1f7%7]) with mapi id 15.20.3721.024; Thu, 7 Jan 2021
+ 01:29:50 +0000
+Date:   Wed, 6 Jan 2021 17:29:43 -0800
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     <sdf@google.com>
+CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, Song Liu <songliubraving@fb.com>,
+        Eric Dumazet <edumazet@google.com>
+Subject: Re: [PATCH bpf-next v3 3/3] bpf: remove extra lock_sock for
+ TCP_ZEROCOPY_RECEIVE
+Message-ID: <20210107012943.rht4ktth5ecdrz42@kafai-mbp.dhcp.thefacebook.com>
+References: <20210105214350.138053-1-sdf@google.com>
+ <20210105214350.138053-4-sdf@google.com>
+ <20210106194756.vjkulozifc4bfuut@kafai-mbp.dhcp.thefacebook.com>
+ <X/Y9pAaiq2FMHoBs@google.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/Y9pAaiq2FMHoBs@google.com>
+X-Originating-IP: [2620:10d:c090:400::5:5a1c]
+X-ClientProxiedBy: MW4PR04CA0304.namprd04.prod.outlook.com
+ (2603:10b6:303:82::9) To BY5PR15MB3571.namprd15.prod.outlook.com
+ (2603:10b6:a03:1f6::32)
 MIME-Version: 1.0
-References: <CADmGQ+1euj7Uv9e8UyZMMXDiYAKqXe9=GSTBFNbbg1E0R-ejyg@mail.gmail.com>
-In-Reply-To: <CADmGQ+1euj7Uv9e8UyZMMXDiYAKqXe9=GSTBFNbbg1E0R-ejyg@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 6 Jan 2021 15:55:25 -0800
-Message-ID: <CAEf4BzbJZLjNoiK8_VfeVg_Vrg=9iYFv+po-38SMe=UzwDKJ=Q@mail.gmail.com>
-Subject: Re: [BPF CO-RE clarification] Use CO-RE on older kernel versions.
-To:     Vamsi Kodavanty <vamsi@araalinetworks.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:5a1c) by MW4PR04CA0304.namprd04.prod.outlook.com (2603:10b6:303:82::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Thu, 7 Jan 2021 01:29:48 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8881b2db-f966-4504-7f6a-08d8b2abba17
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3461:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB346113A60BD8E44446833ECDD5AF0@BYAPR15MB3461.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 2rRmZOUHqq8TKzmbHDn7RCauTfFMmutIR1bOaCjR9y+D/go+sXVfz4d6WgxxxhUgPlsjyP9vpObNC2vidmUDTcEUB5cAYaSusPSVuZkLUnN3vW6gRqj+DJHzo3xPQgxTuvbJKHyKiIL3tnfzcazvsxNqlWbIs+2Zz760Uwvtr60UqI2EqnfFzFlR2/XHTbupwXXmPywl1ECs3r3ruyP0oXzDiPlrfhsxrbRDBs3UNIRf9/739+kvq1SAmmDhj55pzkgaVcaYHmzJLCCB4n49GnyYG7fVkA0i62hrZXVGmA42oYp3G/H4VjuvdGb46wldjxFC12QQpSk+4HsYNiskXVW74VPCFqEni+l6qXz7jjbNOXonFLwx1A5FwzB4RgwAGqPwCrmm/ilIm2KTgM2xXw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(366004)(39860400002)(346002)(396003)(86362001)(4326008)(8676002)(66476007)(316002)(16526019)(83380400001)(6666004)(186003)(54906003)(6916009)(9686003)(2906002)(8936002)(66556008)(66946007)(52116002)(478600001)(1076003)(6506007)(55016002)(7696005)(5660300002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?XPlOY4VkDgCbxhhJjZLjigtILhg2YRicJ2GiWGzjU2Ck4QtUkAc7fdHP8pVh?=
+ =?us-ascii?Q?zmDur3ym7O5h/k8SDwNQciw2wx1J0YuPvgbKd/4WhZZwNqj6Geo3VSlejlwl?=
+ =?us-ascii?Q?gXiTTIPItr7JdBzLkRPy9okzZdkap76A4OU1+YFoGttcU3E+yiTJSaAySGph?=
+ =?us-ascii?Q?Gj/+SrXW/PChVbavRKgdxV0u8/0KgkeSmw3FmYNXfEEJNfvztiMbmzVqfJYg?=
+ =?us-ascii?Q?eM0Y6fvt+VzKHXl8hKy14SH91LsibnEKUHeoZtFTBqDfxNu69IszJJix+FwV?=
+ =?us-ascii?Q?rzIVUuVKBLOXOs1UbmUbjfYXYAt7XGkiZaWoYqFA80/4prt5BFytRVGcDZJ5?=
+ =?us-ascii?Q?EnsrkTDwHOYhrgwZ+gUD0l5lqQQ3RhMRwFpi8uScxB6YEgdzGi3GazoVgTL6?=
+ =?us-ascii?Q?St/5XyCM0+/429ssXLbVBTXCGDKVKwo8sJb6SqYYWVCT9JwwUF0ANU/Ryw6b?=
+ =?us-ascii?Q?GZNsLtsCTJeZbuOCNI7qJU1sQsmijuFMMOayuhJYtm9oPieNbUQP+7jS/v36?=
+ =?us-ascii?Q?ZuVoVFf+tPfM+xKKEgttEOJBJuzCmJ530fMbRxck65M9+F7aj7ehxyKlO+WH?=
+ =?us-ascii?Q?JU6eLgFmkk3aeS5R1LWRMse9gpkO0areQ52hggQLw2LETY+8G+JD/scHY5nR?=
+ =?us-ascii?Q?fPNr+w/Ck3VRUX2LuCvvUw3yDHHn0OSZA3ZglEpA6IKvj66yU3RM0W0XSNQZ?=
+ =?us-ascii?Q?oniw8lHdonTK3WuTBnXcTQzJnJlJKvEUCBksEnO9Ig8mpUcGSGGfW7Bxlu7g?=
+ =?us-ascii?Q?oXtSoIMM306n+/mVPAF2YVYFWKLT6eumnuk7+0VLBzRhadSjIAkdT4Tu56+t?=
+ =?us-ascii?Q?ZXJrvoQOzgX7KJux15MoZWnW05FdJ0+HEKmYoC4MI+dETi+QoaLsJ9EkrhOF?=
+ =?us-ascii?Q?aeJJYZ3tjuOZ6tuvPzqCpqJbYwuAHYWGdEYl8/u1suq6XJiGh9dnLbddiIvX?=
+ =?us-ascii?Q?Ma5VqnwMuEYs9Q+PM+7R6AkocMu/PrOiNNApGThUXO4dBmURXbZk1SQ7A+u2?=
+ =?us-ascii?Q?IFD4CZ7frs8LwH9k49UJ+b8swQ=3D=3D?=
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jan 2021 01:29:50.2480
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8881b2db-f966-4504-7f6a-08d8b2abba17
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Uw58fyEapUx/ulo2+spXiJBvgM1a0MikiLEs2zUCvNYKgXNiuNtclOGe3Va7ezrG
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3461
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-06_12:2021-01-06,2021-01-06 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ impostorscore=0 lowpriorityscore=0 adultscore=0 suspectscore=0 spamscore=0
+ bulkscore=0 mlxscore=0 phishscore=0 malwarescore=0 clxscore=1015
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101070005
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 6, 2021 at 10:04 AM Vamsi Kodavanty
-<vamsi@araalinetworks.com> wrote:
->
-> Had a few questions on CO-RE dependencies and usage. From what I read
-> CO-RE needs a supported kernel version and be compiled with
-> `CONFIG_DEBUG_INFO_BTF=y`.
->
-> I also understand there are three pieces to enable CO-RE
-> functionality. (1) The BTF format. For efficient/compressed kernel
-> symbol table. (2) clang changes to emit the BTF relocations. (3)
+On Wed, Jan 06, 2021 at 02:45:56PM -0800, sdf@google.com wrote:
+> On 01/06, Martin KaFai Lau wrote:
+> > On Tue, Jan 05, 2021 at 01:43:50PM -0800, Stanislav Fomichev wrote:
+> > > Add custom implementation of getsockopt hook for TCP_ZEROCOPY_RECEIVE.
+> > > We skip generic hooks for TCP_ZEROCOPY_RECEIVE and have a custom
+> > > call in do_tcp_getsockopt using the on-stack data. This removes
+> > > 3% overhead for locking/unlocking the socket.
+> > >
+> > > Also:
+> > > - Removed BUILD_BUG_ON (zerocopy doesn't depend on the buf size anymore)
+> > > - Separated on-stack buffer into bpf_sockopt_buf and downsized to 32
+> > bytes
+> > >   (let's keep it to help with the other options)
+> > >
+> > > (I can probably split this patch into two: add new features and rework
+> > >  bpf_sockopt_buf; can follow up if the approach in general sounds
+> > >  good).
+> > >
+> > > Without this patch:
+> > >      3.29%     0.07%  tcp_mmap  [kernel.kallsyms]  [k]
+> > __cgroup_bpf_run_filter_getsockopt
+> > >             |
+> > >              --3.22%--__cgroup_bpf_run_filter_getsockopt
+> > >                        |
+> > >                        |--0.66%--lock_sock_nested
+> > A general question for sockopt prog, why the BPF_CGROUP_(GET|SET)SOCKOPT
+> > prog
+> > has to run under lock_sock()?
+> I don't think there is a strong reason. We expose sk to the BPF program,
+> but mainly for the socket storage map (which, afaik, doesn't require
+> socket to be locked). OTOH, it seems that providing a consistent view
+> of the sk to the BPF is a good idea.
+hmm... most of the bpf prog also does not require a locked sock.  For
+example, the __sk_buff->sk.  If a bpf prog needs a locked view of sk,
+a more generic solution is desired.  Anyhow, I guess the train has sort
+of sailed for sockopt bpf.
 
-BTF is not really a symbol table, rather a type information. Like
-simpler and more compact DWARF.
+> 
+> Eric has suggested to try to use fast socket lock. It helps a bit,
+> but it doesn't remove the issue completely because
+> we do a bunch of copy_{to,from}_user in the generic
+> __cgroup_bpf_run_filter_getsockopt as well :-(
+> 
+> > >                        |
+> > >                        |--0.57%--__might_fault
+Is it a debug kernel?
 
-> `libbpf` changes to locate a BTF file and fix-up relocations. Once
-> these 3 steps are done the resulting byte code is no different from
-> non-CO-RE byte code.
->
-> Given this I am hoping the knowledgeable folks on this mailer correct
-> and guide me if I am stating something incorrectly.
->
-> (1) Is the kernel support requirement ONLY for the purposes of
-> generating and exposing the BTF file information on
-> `/sys/kernel/btf/vmlinux`? So that the eBPF CO-RE applications
-> `libbpf` can find the BTF information at a standard location?.
+> > >                        |
+> > >                         --0.56%--release_sock
+> > >
+> > > With the patch applied:
+> > >      0.42%     0.10%  tcp_mmap  [kernel.kallsyms]  [k]
+> > __cgroup_bpf_run_filter_getsockopt_kern
+> > >      0.02%     0.02%  tcp_mmap  [kernel.kallsyms]  [k]
+> > __cgroup_bpf_run_filter_getsockopt
+> > >
+> > [ ... ]
+> 
+> > > @@ -1445,15 +1442,29 @@ int __cgroup_bpf_run_filter_getsockopt(struct
+> > sock *sk, int level,
+> > >  				       int __user *optlen, int max_optlen,
+> > >  				       int retval)
+> > >  {
+> > > -	struct cgroup *cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
+> > > -	struct bpf_sockopt_kern ctx = {
+> > > -		.sk = sk,
+> > > -		.level = level,
+> > > -		.optname = optname,
+> > > -		.retval = retval,
+> > > -	};
+> > > +	struct bpf_sockopt_kern ctx;
+> > > +	struct bpf_sockopt_buf buf;
+> > > +	struct cgroup *cgrp;
+> > >  	int ret;
+> > >
+> > > +#ifdef CONFIG_INET
+> > > +	/* TCP do_tcp_getsockopt has optimized getsockopt implementation
+> > > +	 * to avoid extra socket lock for TCP_ZEROCOPY_RECEIVE.
+> > > +	 */
+> > > +	if (sk->sk_prot->getsockopt == tcp_getsockopt &&
+> > > +	    level == SOL_TCP && optname == TCP_ZEROCOPY_RECEIVE)
+> > > +		return retval;
+> > > +#endif
+> > That seems too much protocol details and not very scalable.
+> > It is not very related to kernel/bpf/cgroup.c which has very little idea
+> > whether a specific protocol has optimized things in some ways (e.g. by
+> > directly calling cgroup's bpf prog at some strategic places in this
+> > patch).
+> > Lets see if it can be done better.
+> 
+> > At least, these protocol checks belong to the net's socket.c
+> > more than the bpf's cgroup.c here.  If it also looks like layering
+> > breakage in socket.c, may be adding a signal in sk_prot (for example)
+> > to tell if the sk_prot->getsockopt has already called the cgroup's bpf
+> > prog?  (e.g. tcp_getsockopt() can directly call the cgroup's bpf for all
+> > optname instead of only TCP_ZEROCOPY_RECEIVE).
+> 
+> > For example:
+> 
+> > int __sys_getsockopt(...)
+> > {
+> > 	/* ... */
+> 
+> > 	if (!sk_prot->bpf_getsockopt_handled)
+> > 		BPF_CGROUP_RUN_PROG_GETSOCKOPT(...);
+> > }
+> 
+> > Thoughts?
+> 
+> Sounds good. I didn't go that far because I don't expect there to be
+> a lot of special cases like that. But it might be worth supporting
+> it in a generic way from the beginning.
+> 
+> I was thinking about something simpler:
+> 
+> int __cgroup_bpf_run_filter_getsockopt(sk, ...)
+> {
+> 	if (sk->sk_prot->bypass_bpf_getsockopt(level, optlen)) {
+I think it meant s/optlen/optname/ which is not __user.
+Yeah, I think that can provide a more generic solution
+and also abstract things away.
+Please add a details comment in this function.
 
-/sys/kernel/btf/vmlinux is a standardized place, but libbpf will also
-try to search for vmlinux image (and BTF info within it) in a few
-standard locations, see [0]. Early versions of in-kernel BTF didn't
-even expose /sys/kernel/btf/vmlinux.
+> 		return retval;
+> 	}
+> 
+>  	// ...
+> }
+> 
+> Not sure it's worth exposing it to the __sys_getsockopt. WDYT?
+or call that in BPF_CGROUP_RUN_PROG_GETSOCKOPT().  then the
+changes in __cgroup_bpf_run_filter_getsockopt() in this
+patch should go away?
 
-  [0] https://github.com/libbpf/libbpf/blob/master/src/btf.c#L4580
-
->
-> (2) If the answer to the above question is YES. Could the below
-> mechanism be used so that it works on all kernels whether they support
-> the `CONFIG_DEBUG_INFO_BTF` flag or not?.
->        (a) Extract BTF generation process outside of the kernel build.
-> Use this to generate the equivalent BTF file for it.
-
-Yes, CONFIG_DEBUG_INFO_BTF=y is the most convenient way to add BTF
-info, but it's also possible to just embed BTF manually with a direct
-invocation of pahole -J, see [1] on how it's done for
-CONFIG_DEBUG_INFO_BTF. You can do that for *any* kernel image, no
-matter the version, and it will work with CO-RE relocations.
-
-  [1] https://github.com/torvalds/linux/blob/master/scripts/link-vmlinux.sh#L137-L170
-
->        (b) Make changes to `libbpf` to look for BTF not only at the
-> standard locations but also at a user specified location. The BTF file
-> generated in (a) can be presented here.
-
-You can already do that, actually, though it's not very obvious. You
-can specify (or override) kernel BTF location by using
-bpf_object__load_xattr() and passing target_btf_path pointing to your
-BTF location (see [2]). I've been meaning to add it instead to a
-bpf_object_open_opts, btw, to make its use possible with a BPF
-skeleton. Also keep in mind that currently libbpf expects that custom
-BTF to be an ELF file with .BTF section, not just a raw BTF data. But
-we can improve that, of course.
-
-  [2] https://github.com/libbpf/libbpf/blob/master/src/libbpf.h#L136-L141
->
-> This should provide us a way to enable CO-RE functionality on older
-> kernel versions as well. I tried to make the above changes and tried
-> against a 4.14 kernel and it did not work. Either I am not doing
-> something right or my assumptions are wrong.
->
-> Thanks in advance for your time. And I hope someone here can guide me
-> in the right direction.
->
-> Regards
-> Vamsi.
