@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 590102EC95E
-	for <lists+bpf@lfdr.de>; Thu,  7 Jan 2021 05:21:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E68A2EC95C
+	for <lists+bpf@lfdr.de>; Thu,  7 Jan 2021 05:21:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726740AbhAGEVX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Jan 2021 23:21:23 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:59724 "EHLO
+        id S1726684AbhAGEVQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Jan 2021 23:21:16 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:29124 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726709AbhAGEVX (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 6 Jan 2021 23:21:23 -0500
+        by vger.kernel.org with ESMTP id S1725803AbhAGEVP (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 6 Jan 2021 23:21:15 -0500
 Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 1074ISus020303
-        for <bpf@vger.kernel.org>; Wed, 6 Jan 2021 20:20:41 -0800
+        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 1074Iopj020453
+        for <bpf@vger.kernel.org>; Wed, 6 Jan 2021 20:20:33 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=mqhnVaCO95/Ll/U6rLu2l1VJht93mCglFedvtQxrNRk=;
- b=GW0izjLYnPQNhjwp1Mv+yIjX8ktG24YyaGvcAeItO9PNZYbt/KE7BHjeAHXbL+h1idKV
- 8ioyXLrZBMDpIVtGN2kbaX4Xs5pLnVCJcf9eUXBjqAnyJjA3Vqij4qhNRlVpJttFJnd0
- Ap/PAxkS9txH6YxQZhHzxjO17bKUPLMyGXY= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 35wpuxh0d9-4
+ bh=xWeZCllHAszWQoRGy8PuLHjqYCV4nVlHOBNGoeXXDUQ=;
+ b=iN/j2tocN56E+ddjNYEOyBfonfhs+kzS9LkmpwT+E0Ee0H7IcAzMb8Gi4T5W/Qe0wdUp
+ 1Dp+IrI8Mu2xDkXYRsej+5vfpqP4bPFVJY8pU6KZlKoOFlf4i/vmfQi3tLFLoqT5Lbma
+ eQUElaer1bItCM95RGaNfPAbY7yCk5q9a2s= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 35wpuxh0d1-3
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 06 Jan 2021 20:20:41 -0800
-Received: from intmgw003.08.frc2.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Wed, 06 Jan 2021 20:20:33 -0800
+Received: from intmgw003.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 6 Jan 2021 20:20:40 -0800
+ 15.1.1979.3; Wed, 6 Jan 2021 20:20:32 -0800
 Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 00F0E62E05AF; Wed,  6 Jan 2021 20:18:14 -0800 (PST)
+        id 2468062E0629; Wed,  6 Jan 2021 20:18:22 -0800 (PST)
 From:   Song Liu <songliubraving@fb.com>
 To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
         <linux-mm@kvack.org>
@@ -38,9 +38,9 @@ CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
         <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
         <kernel-team@fb.com>, <akpm@linux-foundation.org>,
         Song Liu <songliubraving@fb.com>
-Subject: [PATCH v3 bpf-next 1/4] bpf: introduce task_vma bpf_iter
-Date:   Wed, 6 Jan 2021 20:17:58 -0800
-Message-ID: <20210107041801.2003241-2-songliubraving@fb.com>
+Subject: [PATCH v3 bpf-next 4/4] selftests/bpf: add test for bpf_iter_task_vma
+Date:   Wed, 6 Jan 2021 20:18:01 -0800
+Message-ID: <20210107041801.2003241-5-songliubraving@fb.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20210107041801.2003241-1-songliubraving@fb.com>
 References: <20210107041801.2003241-1-songliubraving@fb.com>
@@ -60,268 +60,290 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Introduce task_vma bpf_iter to print memory information of a process. It
-can be used to print customized information similar to /proc/<pid>/maps.
-
-Current /proc/<pid>/maps and /proc/<pid>/smaps provide information of
-vma's of a process. However, these information are not flexible enough to
-cover all use cases. For example, if a vma cover mixed 2MB pages and 4kB
-pages (x86_64), there is no easy way to tell which address ranges are
-backed by 2MB pages. task_vma solves the problem by enabling the user to
-generate customize information based on the vma (and vma->vm_mm,
-vma->vm_file, etc.).
-
-To access the vma safely in the BPF program, task_vma iterator holds
-target mmap_lock while calling the BPF program. If the mmap_lock is
-contended, task_vma unlocks mmap_lock between iterations to unblock the
-writer(s). This lock contention avoidance mechanism is similar to the one
-used in show_smaps_rollup().
+The test dumps information similar to /proc/pid/maps. The first line of
+the output is compared against the /proc file to make sure they match.
 
 Signed-off-by: Song Liu <songliubraving@fb.com>
 ---
- kernel/bpf/task_iter.c | 211 ++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 210 insertions(+), 1 deletion(-)
+ .../selftests/bpf/prog_tests/bpf_iter.c       | 114 ++++++++++++++++--
+ tools/testing/selftests/bpf/progs/bpf_iter.h  |   8 ++
+ .../selftests/bpf/progs/bpf_iter_task_vma.c   |  58 +++++++++
+ 3 files changed, 170 insertions(+), 10 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_task_vma.c
 
-diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-index 0458a40edf10a..a1d3c9d230f68 100644
---- a/kernel/bpf/task_iter.c
-+++ b/kernel/bpf/task_iter.c
-@@ -304,9 +304,192 @@ static const struct seq_operations task_file_seq_op=
-s =3D {
- 	.show	=3D task_file_seq_show,
- };
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/te=
+sting/selftests/bpf/prog_tests/bpf_iter.c
+index 0e586368948dd..9e8027685e859 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+@@ -7,6 +7,7 @@
+ #include "bpf_iter_task.skel.h"
+ #include "bpf_iter_task_stack.skel.h"
+ #include "bpf_iter_task_file.skel.h"
++#include "bpf_iter_task_vma.skel.h"
+ #include "bpf_iter_task_btf.skel.h"
+ #include "bpf_iter_tcp4.skel.h"
+ #include "bpf_iter_tcp6.skel.h"
+@@ -64,6 +65,22 @@ static void do_dummy_read(struct bpf_program *prog)
+ 	bpf_link__destroy(link);
+ }
 =20
-+struct bpf_iter_seq_task_vma_info {
-+	/* The first field must be struct bpf_iter_seq_task_common.
-+	 * this is assumed by {init, fini}_seq_pidns() callback functions.
-+	 */
-+	struct bpf_iter_seq_task_common common;
++static int read_fd_into_buffer(int fd, char *buf, int size)
++{
++	int bufleft =3D size;
++	int len;
++
++	do {
++		len =3D read(fd, buf, bufleft);
++		if (len > 0) {
++			buf +=3D len;
++			bufleft -=3D len;
++		}
++	} while (len > 0);
++
++	return len < 0 ? len : size - bufleft;
++}
++
+ static void test_ipv6_route(void)
+ {
+ 	struct bpf_iter_ipv6_route *skel;
+@@ -177,7 +194,7 @@ static int do_btf_read(struct bpf_iter_task_btf *skel=
+)
+ {
+ 	struct bpf_program *prog =3D skel->progs.dump_task_struct;
+ 	struct bpf_iter_task_btf__bss *bss =3D skel->bss;
+-	int iter_fd =3D -1, len =3D 0, bufleft =3D TASKBUFSZ;
++	int iter_fd =3D -1, err;
+ 	struct bpf_link *link;
+ 	char *buf =3D taskbuf;
+ 	int ret =3D 0;
+@@ -190,14 +207,7 @@ static int do_btf_read(struct bpf_iter_task_btf *ske=
+l)
+ 	if (CHECK(iter_fd < 0, "create_iter", "create_iter failed\n"))
+ 		goto free_link;
+=20
+-	do {
+-		len =3D read(iter_fd, buf, bufleft);
+-		if (len > 0) {
+-			buf +=3D len;
+-			bufleft -=3D len;
+-		}
+-	} while (len > 0);
+-
++	err =3D read_fd_into_buffer(iter_fd, buf, TASKBUFSZ);
+ 	if (bss->skip) {
+ 		printf("%s:SKIP:no __builtin_btf_type_id\n", __func__);
+ 		ret =3D 1;
+@@ -205,7 +215,7 @@ static int do_btf_read(struct bpf_iter_task_btf *skel=
+)
+ 		goto free_link;
+ 	}
+=20
+-	if (CHECK(len < 0, "read", "read failed: %s\n", strerror(errno)))
++	if (CHECK(err < 0, "read", "read failed: %s\n", strerror(errno)))
+ 		goto free_link;
+=20
+ 	CHECK(strstr(taskbuf, "(struct task_struct)") =3D=3D NULL,
+@@ -1133,6 +1143,88 @@ static void test_buf_neg_offset(void)
+ 		bpf_iter_test_kern6__destroy(skel);
+ }
+=20
++#define CMP_BUFFER_SIZE 1024
++static char task_vma_output[CMP_BUFFER_SIZE];
++static char proc_maps_output[CMP_BUFFER_SIZE];
++
++/* remove \0 and \t from str, and only keep the first line */
++static void str_strip_first_line(char *str)
++{
++	char *dst =3D str, *src =3D str;
++
++	do {
++		if (*src =3D=3D ' ' || *src =3D=3D '\t')
++			src++;
++		else
++			*(dst++) =3D *(src++);
++
++	} while (*src !=3D '\0' && *src !=3D '\n');
++
++	*dst =3D '\0';
++}
++
++#define min(a, b) ((a) < (b) ? (a) : (b))
++
++static void test_task_vma(void)
++{
++	int err, iter_fd =3D -1, proc_maps_fd =3D -1;
++	struct bpf_iter_task_vma *skel;
++	int len, read_size =3D 4;
++	char maps_path[64];
++
++	skel =3D bpf_iter_task_vma__open();
++	if (CHECK(!skel, "bpf_iter_task_vma__open", "skeleton open failed\n"))
++		return;
++
++	skel->bss->pid =3D getpid();
++
++	err =3D bpf_iter_task_vma__load(skel);
++	if (CHECK(err, "bpf_iter_task_vma__load", "skeleton load failed\n"))
++		goto out;
++
++	skel->links.proc_maps =3D bpf_program__attach_iter(
++		skel->progs.proc_maps, NULL);
++
++	if (CHECK(IS_ERR(skel->links.proc_maps), "bpf_program__attach_iter",
++		  "attach iterator failed\n"))
++		goto out;
++
++	/* read CMP_BUFFER_SIZE (1kB) from bpf_iter */
++	iter_fd =3D bpf_iter_create(bpf_link__fd(skel->links.proc_maps));
++	if (CHECK(iter_fd < 0, "create_iter", "create_iter failed\n"))
++		goto out;
++
++	/* read in small chunks to trigger seq_file corner cases */
++	len =3D 0;
++	while (len < CMP_BUFFER_SIZE) {
++		err =3D read_fd_into_buffer(iter_fd, task_vma_output + len,
++					  min(read_size, CMP_BUFFER_SIZE - len));
++		if (CHECK(err < 0, "read_iter_fd", "read_iter_fd failed\n"))
++			goto out;
++		len +=3D err;
++	}
++
++	/* read CMP_BUFFER_SIZE (1kB) from /proc/pid/maps */
++	snprintf(maps_path, 64, "/proc/%u/maps", skel->bss->pid);
++	proc_maps_fd =3D open(maps_path, O_RDONLY);
++	if (CHECK(proc_maps_fd < 0, "open_proc_maps", "open_proc_maps failed\n"=
+))
++		goto out;
++	err =3D read_fd_into_buffer(proc_maps_fd, proc_maps_output, CMP_BUFFER_=
+SIZE);
++	if (CHECK(err < 0, "read_prog_maps_fd", "read_prog_maps_fd failed\n"))
++		goto out;
++
++	/* strip and compare the first line of the two files */
++	str_strip_first_line(task_vma_output);
++	str_strip_first_line(proc_maps_output);
++
++	CHECK(strcmp(task_vma_output, proc_maps_output), "compare_output",
++	      "found mismatch\n");
++out:
++	close(proc_maps_fd);
++	close(iter_fd);
++	bpf_iter_task_vma__destroy(skel);
++}
++
+ void test_bpf_iter(void)
+ {
+ 	if (test__start_subtest("btf_id_or_null"))
+@@ -1149,6 +1241,8 @@ void test_bpf_iter(void)
+ 		test_task_stack();
+ 	if (test__start_subtest("task_file"))
+ 		test_task_file();
++	if (test__start_subtest("task_vma"))
++		test_task_vma();
+ 	if (test__start_subtest("task_btf"))
+ 		test_task_btf();
+ 	if (test__start_subtest("tcp4"))
+diff --git a/tools/testing/selftests/bpf/progs/bpf_iter.h b/tools/testing=
+/selftests/bpf/progs/bpf_iter.h
+index 6a1255465fd6d..3d83b185c4bcb 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_iter.h
++++ b/tools/testing/selftests/bpf/progs/bpf_iter.h
+@@ -7,6 +7,7 @@
+ #define bpf_iter__netlink bpf_iter__netlink___not_used
+ #define bpf_iter__task bpf_iter__task___not_used
+ #define bpf_iter__task_file bpf_iter__task_file___not_used
++#define bpf_iter__task_vma bpf_iter__task_vma___not_used
+ #define bpf_iter__tcp bpf_iter__tcp___not_used
+ #define tcp6_sock tcp6_sock___not_used
+ #define bpf_iter__udp bpf_iter__udp___not_used
+@@ -26,6 +27,7 @@
+ #undef bpf_iter__netlink
+ #undef bpf_iter__task
+ #undef bpf_iter__task_file
++#undef bpf_iter__task_vma
+ #undef bpf_iter__tcp
+ #undef tcp6_sock
+ #undef bpf_iter__udp
+@@ -67,6 +69,12 @@ struct bpf_iter__task_file {
+ 	struct file *file;
+ } __attribute__((preserve_access_index));
+=20
++struct bpf_iter__task_vma {
++	struct bpf_iter_meta *meta;
 +	struct task_struct *task;
 +	struct vm_area_struct *vma;
-+	u32 tid;
-+	unsigned long prev_vm_start;
-+	unsigned long prev_vm_end;
-+};
++} __attribute__((preserve_access_index));
 +
-+enum bpf_task_vma_iter_find_op {
-+	task_vma_iter_first_vma,   /* use mm->mmap */
-+	task_vma_iter_next_vma,    /* use curr_vma->vm_next */
-+	task_vma_iter_find_vma,    /* use find_vma() to find next vma */
-+};
+ struct bpf_iter__bpf_map {
+ 	struct bpf_iter_meta *meta;
+ 	struct bpf_map *map;
+diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task_vma.c b/tool=
+s/testing/selftests/bpf/progs/bpf_iter_task_vma.c
+new file mode 100644
+index 0000000000000..d789e32cdb16c
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/bpf_iter_task_vma.c
+@@ -0,0 +1,58 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2020 Facebook */
++#include "bpf_iter.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
 +
-+static struct vm_area_struct *
-+task_vma_seq_get_next(struct bpf_iter_seq_task_vma_info *info)
++char _license[] SEC("license") =3D "GPL";
++
++/* Copied from mm.h */
++#define VM_READ		0x00000001
++#define VM_WRITE	0x00000002
++#define VM_EXEC		0x00000004
++#define VM_MAYSHARE	0x00000080
++
++/* Copied from kdev_t.h */
++#define MINORBITS	20
++#define MINORMASK	((1U << MINORBITS) - 1)
++#define MAJOR(dev)	((unsigned int) ((dev) >> MINORBITS))
++#define MINOR(dev)	((unsigned int) ((dev) & MINORMASK))
++
++#define D_PATH_BUF_SIZE 1024
++char d_path_buf[D_PATH_BUF_SIZE] =3D {};
++__u32 pid =3D 0;
++
++SEC("iter.s/task_vma") int proc_maps(struct bpf_iter__task_vma *ctx)
 +{
-+	struct pid_namespace *ns =3D info->common.ns;
-+	enum bpf_task_vma_iter_find_op op;
-+	struct vm_area_struct *curr_vma;
-+	struct task_struct *curr_task;
-+	u32 curr_tid =3D info->tid;
++	struct vm_area_struct *vma =3D ctx->vma;
++	struct seq_file *seq =3D ctx->meta->seq;
++	struct task_struct *task =3D ctx->task;
++	struct file *file;
++	char perm_str[] =3D "----";
 +
-+	/* If this function returns a non-NULL vma, it holds a reference to
-+	 * the task_struct, and holds read lock on vma->mm->mmap_lock.
-+	 * If this function returns NULL, it does not hold any reference or
-+	 * lock.
-+	 */
-+again:
-+	if (info->task) {
-+		curr_task =3D info->task;
-+		curr_vma =3D info->vma;
-+		/* In case of lock contention, drop mmap_lock to unblock
-+		 * the writer.
-+		 */
-+		if (mmap_lock_is_contended(curr_task->mm)) {
-+			info->prev_vm_start =3D curr_vma->vm_start;
-+			info->prev_vm_end =3D curr_vma->vm_end;
-+			op =3D task_vma_iter_find_vma;
-+			mmap_read_unlock(curr_task->mm);
-+			if (mmap_read_lock_killable(curr_task->mm))
-+				goto finish;
-+		} else {
-+			op =3D task_vma_iter_next_vma;
-+		}
-+	} else {
-+		curr_task =3D task_seq_get_next(ns, &curr_tid, true);
-+		if (!curr_task) {
-+			info->tid =3D curr_tid + 1;
-+			goto finish;
-+		}
-+
-+		if (curr_tid !=3D info->tid) {
-+			info->tid =3D curr_tid;
-+			op =3D task_vma_iter_first_vma;
-+		} else {
-+			op =3D task_vma_iter_find_vma;
-+		}
-+
-+		if (!curr_task->mm)
-+			goto next_task;
-+
-+		if (mmap_read_lock_killable(curr_task->mm))
-+			goto finish;
-+	}
-+
-+	switch (op) {
-+	case task_vma_iter_first_vma:
-+		curr_vma =3D curr_task->mm->mmap;
-+		break;
-+	case task_vma_iter_next_vma:
-+		curr_vma =3D curr_vma->vm_next;
-+		break;
-+	case task_vma_iter_find_vma:
-+		/* We dropped mmap_lock so it is necessary to use find_vma
-+		 * to find the next vma. This is similar to the  mechanism
-+		 * in show_smaps_rollup().
-+		 */
-+		curr_vma =3D find_vma(curr_task->mm, info->prev_vm_end - 1);
-+
-+		if (curr_vma && (curr_vma->vm_start =3D=3D info->prev_vm_start))
-+			curr_vma =3D curr_vma->vm_next;
-+		break;
-+	}
-+	if (!curr_vma) {
-+		mmap_read_unlock(curr_task->mm);
-+		goto next_task;
-+	}
-+	info->task =3D curr_task;
-+	info->vma =3D curr_vma;
-+	return curr_vma;
-+
-+next_task:
-+	put_task_struct(curr_task);
-+	info->task =3D NULL;
-+	curr_tid++;
-+	goto again;
-+
-+finish:
-+	info->task =3D NULL;
-+	info->vma =3D NULL;
-+	return NULL;
-+}
-+
-+static void *task_vma_seq_start(struct seq_file *seq, loff_t *pos)
-+{
-+	struct bpf_iter_seq_task_vma_info *info =3D seq->private;
-+	struct vm_area_struct *vma;
-+
-+	vma =3D task_vma_seq_get_next(info);
-+	if (vma && *pos =3D=3D 0)
-+		++*pos;
-+
-+	return vma;
-+}
-+
-+static void *task_vma_seq_next(struct seq_file *seq, void *v, loff_t *po=
-s)
-+{
-+	struct bpf_iter_seq_task_vma_info *info =3D seq->private;
-+
-+	++*pos;
-+	return task_vma_seq_get_next(info);
-+}
-+
-+struct bpf_iter__task_vma {
-+	__bpf_md_ptr(struct bpf_iter_meta *, meta);
-+	__bpf_md_ptr(struct task_struct *, task);
-+	__bpf_md_ptr(struct vm_area_struct *, vma);
-+};
-+
-+DEFINE_BPF_ITER_FUNC(task_vma, struct bpf_iter_meta *meta,
-+		     struct task_struct *task, struct vm_area_struct *vma)
-+
-+static int __task_vma_seq_show(struct seq_file *seq, bool in_stop)
-+{
-+	struct bpf_iter_seq_task_vma_info *info =3D seq->private;
-+	struct bpf_iter__task_vma ctx;
-+	struct bpf_iter_meta meta;
-+	struct bpf_prog *prog;
-+
-+	meta.seq =3D seq;
-+	prog =3D bpf_iter_get_info(&meta, in_stop);
-+	if (!prog)
++	if (task =3D=3D (void *)0 || vma =3D=3D (void *)0)
 +		return 0;
 +
-+	ctx.meta =3D &meta;
-+	ctx.task =3D info->task;
-+	ctx.vma =3D info->vma;
-+	return bpf_iter_run_prog(prog, &ctx);
-+}
++	file =3D vma->vm_file;
++	if (task->tgid !=3D pid)
++		return 0;
++	perm_str[0] =3D (vma->vm_flags & VM_READ) ? 'r' : '-';
++	perm_str[1] =3D (vma->vm_flags & VM_WRITE) ? 'w' : '-';
++	perm_str[2] =3D (vma->vm_flags & VM_EXEC) ? 'x' : '-';
++	perm_str[3] =3D (vma->vm_flags & VM_MAYSHARE) ? 's' : 'p';
++	BPF_SEQ_PRINTF(seq, "%08llx-%08llx %s ", vma->vm_start, vma->vm_end, pe=
+rm_str);
 +
-+static int task_vma_seq_show(struct seq_file *seq, void *v)
-+{
-+	return __task_vma_seq_show(seq, false);
-+}
++	if (file) {
++		__u32 dev =3D file->f_inode->i_sb->s_dev;
 +
-+static void task_vma_seq_stop(struct seq_file *seq, void *v)
-+{
-+	struct bpf_iter_seq_task_vma_info *info =3D seq->private;
++		bpf_d_path(&file->f_path, d_path_buf, D_PATH_BUF_SIZE);
 +
-+	if (!v) {
-+		(void)__task_vma_seq_show(seq, true);
++		BPF_SEQ_PRINTF(seq, "%08llx ", vma->vm_pgoff << 12);
++		BPF_SEQ_PRINTF(seq, "%02x:%02x %u", MAJOR(dev), MINOR(dev),
++			       file->f_inode->i_ino);
++		BPF_SEQ_PRINTF(seq, "\t%s\n", d_path_buf);
 +	} else {
-+		info->prev_vm_start =3D info->vma->vm_start;
-+		info->prev_vm_end =3D info->vma->vm_end;
-+		mmap_read_unlock(info->task->mm);
-+		put_task_struct(info->task);
-+		info->task =3D NULL;
++		BPF_SEQ_PRINTF(seq, "%08llx 00:00 0\n", 0ULL);
 +	}
++	return 0;
 +}
-+
-+static const struct seq_operations task_vma_seq_ops =3D {
-+	.start	=3D task_vma_seq_start,
-+	.next	=3D task_vma_seq_next,
-+	.stop	=3D task_vma_seq_stop,
-+	.show	=3D task_vma_seq_show,
-+};
-+
- BTF_ID_LIST(btf_task_file_ids)
- BTF_ID(struct, task_struct)
- BTF_ID(struct, file)
-+BTF_ID(struct, vm_area_struct)
-=20
- static const struct bpf_iter_seq_info task_seq_info =3D {
- 	.seq_ops		=3D &task_seq_ops,
-@@ -346,6 +529,26 @@ static struct bpf_iter_reg task_file_reg_info =3D {
- 	.seq_info		=3D &task_file_seq_info,
- };
-=20
-+static const struct bpf_iter_seq_info task_vma_seq_info =3D {
-+	.seq_ops		=3D &task_vma_seq_ops,
-+	.init_seq_private	=3D init_seq_pidns,
-+	.fini_seq_private	=3D fini_seq_pidns,
-+	.seq_priv_size		=3D sizeof(struct bpf_iter_seq_task_vma_info),
-+};
-+
-+static struct bpf_iter_reg task_vma_reg_info =3D {
-+	.target			=3D "task_vma",
-+	.feature		=3D BPF_ITER_RESCHED,
-+	.ctx_arg_info_size	=3D 2,
-+	.ctx_arg_info		=3D {
-+		{ offsetof(struct bpf_iter__task_vma, task),
-+		  PTR_TO_BTF_ID_OR_NULL },
-+		{ offsetof(struct bpf_iter__task_vma, vma),
-+		  PTR_TO_BTF_ID_OR_NULL },
-+	},
-+	.seq_info		=3D &task_vma_seq_info,
-+};
-+
- static int __init task_iter_init(void)
- {
- 	int ret;
-@@ -357,6 +560,12 @@ static int __init task_iter_init(void)
-=20
- 	task_file_reg_info.ctx_arg_info[0].btf_id =3D btf_task_file_ids[0];
- 	task_file_reg_info.ctx_arg_info[1].btf_id =3D btf_task_file_ids[1];
--	return bpf_iter_reg_target(&task_file_reg_info);
-+	ret =3D  bpf_iter_reg_target(&task_file_reg_info);
-+	if (ret)
-+		return ret;
-+
-+	task_vma_reg_info.ctx_arg_info[0].btf_id =3D btf_task_file_ids[0];
-+	task_vma_reg_info.ctx_arg_info[1].btf_id =3D btf_task_file_ids[2];
-+	return bpf_iter_reg_target(&task_vma_reg_info);
- }
- late_initcall(task_iter_init);
 --=20
 2.24.1
 
