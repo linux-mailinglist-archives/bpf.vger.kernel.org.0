@@ -2,130 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54A972EE660
-	for <lists+bpf@lfdr.de>; Thu,  7 Jan 2021 20:49:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD29B2EE676
+	for <lists+bpf@lfdr.de>; Thu,  7 Jan 2021 21:01:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726386AbhAGTtd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Jan 2021 14:49:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49858 "EHLO
+        id S1726877AbhAGUAd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Jan 2021 15:00:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726326AbhAGTtd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Jan 2021 14:49:33 -0500
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFF52C0612F4
-        for <bpf@vger.kernel.org>; Thu,  7 Jan 2021 11:48:52 -0800 (PST)
-Received: by mail-yb1-xb2a.google.com with SMTP id x2so7175874ybt.11
-        for <bpf@vger.kernel.org>; Thu, 07 Jan 2021 11:48:52 -0800 (PST)
+        with ESMTP id S1726073AbhAGUAd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Jan 2021 15:00:33 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65042C0612F4;
+        Thu,  7 Jan 2021 12:00:18 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id j13so4441264pjz.3;
+        Thu, 07 Jan 2021 12:00:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=E1uLkG7sTbcmoPVwABiVI0pp4U1RQFVKdDeAuyTcroo=;
-        b=WJKbcyJsq49NtEPodvjTdtPSnlZfLV1CRRjj8un9lSdDUw7HP0yzj5i63AIA5dL+jc
-         +NH58DkIsgUBcwlokjhECTndf1+6ieGJvWgNJGFdwZvJaGW54w4HTSr7YXQV09rNCnk6
-         XunLj7uNjCsErpMw7C1eZXZel6X5SZ3oGx5K1LCNMb/UJ6KOmIFgVBmZ9mz3XAWdjsSI
-         fd9QL+ZqAjuK28lmeDoMsA1CQe+cZ+w0zUFF6UqLmIOVelRu13C5X/FaJUCA2O2bXH8c
-         z/ewYx9e9mEkRZGGMKjNa7EXI34hCgcSOG8Kqf31zL3tUJB6LlpIgM2zI4PLbqSJ8D7S
-         ABlg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wh+6IqxKBsEEEDVUlamA3AcE5xJ7bW9iP0jShrBxnko=;
+        b=gAg/nAshHthLBXuKkSQOWhq3JbJqISNbcwapevF4wqnUqUSycDoPJonVb/GoX2SBdn
+         qGiFPZVWTM8vmYnOKiKGhGuhl1zdOnqbbRd/lTC8svQN29Lv/eBztWpeRghJ1hAF0IJA
+         e5bCPoruv2EJian7OIj2LTv/X8QZpDudEjBQDmhmVFoZgJcf2AxbazbfawRLrwBhfwP2
+         a/hbiMOKoR6pt9BRoB00X1JJ06CKWxh/OUX/NyqRDz2vjyYCCqxSBcym53TL1z1biQm3
+         XKyYowklgL1JEQsb6zcdWakUUf651DlepJkQVl9XWnqHwzOq6tvcO1WDs/nevCvcVoXI
+         Hfvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=E1uLkG7sTbcmoPVwABiVI0pp4U1RQFVKdDeAuyTcroo=;
-        b=DzMhYMGxnQmxVmxjfLnxwpql4rlpa3v52rAeQ4S3Is/wFtHgX/893/e6q/WhRR5g2W
-         vIPceNWjEYf4CA9QRUr3l3X1eDE/Km8TBvjEiDyUD9IbvcebdDlMKvJx84zqsyV0ZjCx
-         fpYVzhSI/PB+9wYLSgu2MgOHJsW6KhDdSRI99riSNQSZsbCxchFZgOxs4YHNcn/HPUOA
-         sBZmFbnA3GyvdKBzh/bqPnqC7GYPnALTOB+SYnYlWzSKr7L8zQvXEsVT8J6eRS47DaCZ
-         4dDdvgit7VV1JLXilZ+eJvU9mbCslzwVtVn/7zjO3TnGY0niD/IIBptpZaMVKKZI9K+x
-         q1Dw==
-X-Gm-Message-State: AOAM531E+UoEweXxIefmefzilYBUmIn/tfiLgeaACj48tOWjloy53ln4
-        BHCkV31XaylKkjF4ZWE1O5YsmVGu18MbHqy3xR8=
-X-Google-Smtp-Source: ABdhPJwQQME8Has61QzhS+ZxrCSvy7iZPQ3f2qn4sBNQf7pU42h8/z4iSAWCyiMKZvXlCV3ul4qi9Cx30xboEp21UX0=
-X-Received: by 2002:a25:2c4c:: with SMTP id s73mr635075ybs.230.1610048932008;
- Thu, 07 Jan 2021 11:48:52 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wh+6IqxKBsEEEDVUlamA3AcE5xJ7bW9iP0jShrBxnko=;
+        b=p9cSI81Cd8fg86kg5KyF4+NqVvniELqUhNbdEffksdJorwtcBAtj6STiJbKijJRuoh
+         3FmpwsANJep4uEBmASKt9PrW7SaNDiv26FZ+9Il6vmuPUAtraDSGaDMol7SP9NxSrwPZ
+         SXuRSEn0cxAzdLIjUJ9oU0Vj4ZqK6a3G7R3FqdYZgX0qXYlhjTAYf9kZtWhXuFOQVTNo
+         fEr2HNgNPTeXIJ5lVBBKkU7SrEXIgtlDzu4rna7iJE/29+cxaFMR7TGcrkB8ac912x7B
+         uoAq1bVqhx+sBzCgDA5R+OsIaYcJ898bWnLtCtRfzVTB6PX59/2UeCjHkHp7ZJnqH9Df
+         aZbw==
+X-Gm-Message-State: AOAM531h6zhtfAwdHgfoC4uNlxaAb08P9IPFm35giDI3T7Ysh6JnH/G3
+        soU7YUbQORgmejyQiPa/NOU=
+X-Google-Smtp-Source: ABdhPJwv+nlRU5J3h8BZSVcCwhM5fednEuF0RaagfZN3zOWuGVW2E4knvGYeky8sH+N4Y7jDRuaiDQ==
+X-Received: by 2002:a17:90b:215:: with SMTP id fy21mr97886pjb.227.1610049617964;
+        Thu, 07 Jan 2021 12:00:17 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:400::5:4d7d])
+        by smtp.gmail.com with ESMTPSA id b12sm6507295pft.114.2021.01.07.12.00.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jan 2021 12:00:16 -0800 (PST)
+Date:   Thu, 7 Jan 2021 12:00:14 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Gilad Reti <gilad.reti@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: add tests for user- and
+ non-CO-RE BPF_CORE_READ() variants
+Message-ID: <20210107200014.ijpg3n7mjqdrrrvo@ast-mbp>
+References: <20201218235614.2284956-1-andrii@kernel.org>
+ <20201218235614.2284956-4-andrii@kernel.org>
+ <20210105034644.5thpans6alifiq65@ast-mbp>
+ <CAEf4BzY4qXW_xV+0pcWPQp+Tda6BY69xgJnaA3RFxKc255rP2g@mail.gmail.com>
+ <20210105190355.2lbt6vlmi752segx@ast-mbp>
+ <CAEf4BzZPqBp=Th5Xy3mrWZ2k5ANo_+1rQSkC1Q=uEHz6FcBqpA@mail.gmail.com>
+ <20210106060920.wmnvwolbmju4edp3@ast-mbp>
+ <CANaYP3E5qYq0JznOkxVf6r3N-oM-WjKEw6kqPKD_ofQtk1gL+A@mail.gmail.com>
+ <CAEf4BzZay-ofoZ-RURa0vTyQnEVaqF4_xuTAijSA9wgm=kt02g@mail.gmail.com>
 MIME-Version: 1.0
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 7 Jan 2021 11:48:41 -0800
-Message-ID: <CAEf4BzZw5Zt92PHMP=3+aKEiJNP6aG6+Xpw5BLK2mQAohVPyxw@mail.gmail.com>
-Subject: BPF ring buffer variable-length data appending
-To:     Brendan Jackman <jackmanb@google.com>,
-        KP Singh <kpsingh@google.com>, bpf <bpf@vger.kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZay-ofoZ-RURa0vTyQnEVaqF4_xuTAijSA9wgm=kt02g@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-We discussed this topic today at office hour. As I mentioned, I don't
-know the ideal solution, but here is something that has enough
-flexibility for real-world uses, while giving the performance and
-convenience of reserve/commit API. Ignore naming, we can bikeshed that
-later.
+On Wed, Jan 06, 2021 at 03:25:30PM -0800, Andrii Nakryiko wrote:
+> >
+> > If I am not mistaken (which is completely possible), I think that
+> > providing such a macro will
+> > not cause any more confusion than the bpf_probe_read_{,user}
+> > distinction already does,
+> > since BPF_CORE_READ_USER to BPF_CORE_READ is the same as bpf_probe_read_user
+> > to bpf_probe_read.
+> 
+> I think the biggest source of confusion is that USER part in
+> BPF_CORE_READ_USER refers to reading data from user address space, not
+> really user structs (which is kind of natural instinct here). CO-RE
+> *always* works only with kernel types, which is obvious if you have a
+> lot of experience with using CO-RE, but not initially, unfortunately.
 
-So what we can do is introduce a new bpf_ringbuf_reserve() variant:
-
-bpf_ringbuf_reserve_extra(void *ringbuf, __u64 size, __u64 flags, void
-*extra, __u64 extra_sz);
-
-The idea is that we reserve a fixed size amount of data that can be
-used like it is today for filling a fixed-sized metadata/sample
-directly. But the real size of the reserved sample is (size +
-extra_sz), and bpf_ringbuf_reserve_extra() helper will bpf_probe_read
-(kernel or user, depending on flags) data from extra and put it right
-after the fixed-size part.
-
-So the use would be something like:
-
-struct my_meta *m = bpf_ringbuf_reserve_extra(&rb, sizeof(*m),
-BPF_RB_PROBE_USER, env_vars, 1024);
-
-if (!m)
-    /* too bad, either probe_read_user failed or ringbuf is full */
-    return 1;
-
-m->my_field1 = 123;
-m->my_field2 = 321;
-
-
-So the main problem with this is that when probe_read fails, we fail
-reservation completely(internally we'd just discard ringbuf sample).
-Is that OK? Or is it better to still reserve fixed-sized part and
-zero-out the variable-length part? We are combining two separate
-operations into a single API, so error handling is more convoluted.
-
-
-Now, the main use case requested was to be able to fetch an array of
-zero-terminated strings. I honestly don't think it's possible to
-implement this efficiently without two copies of string data. Mostly
-because to just determine the size of the string you have to read it
-one extra time. And you'd probably want to copy string data into some
-controlled storage first, so that you don't end up reading it once
-successfully and then failing to read it on the second try. Next, when
-you have multiple strings, how do you deal with partial failures? It's
-even worse in terms of error handling and error propagation than the
-fixed extra size variant described above.
-
-Ignoring all that, let's say we'd implement
-bpf_ringbuf_reserve_extra_strs() helper, that would somehow be copying
-multiple zero-terminated strings after the fixed-size prefix. Think
-about implementation. Just to determine the total size of the ringbuf
-sample, you'd need to read all strings once, and probably also copy
-them locally.  Then you'd reserve a ringbuf sample and copy all that
-for the second time. So it's as inefficient as a BPF program
-constructing a single block of memory by reading all such strings
-manually into a per-CPU array and then using the above
-bpf_ringbuf_reserve_extra().
-
-But offloading that preparation to a BPF program bypasses all these
-error handling and memory layout questions. It will be up to a BPF
-program itself. From a kernel perspective, we just append a block of
-memory with known (at runtime) size.
-
-As a more restricted version of bpf_ringbuf_reserve_extra(), instead
-of allowing reading arbitrary kernel or user-space memory in
-bpf_ringbuf_reserve_extra() we can say that it has to be known and
-initialized memory (like MAP_VALUE pointer), so helper knows that it
-can just copy data directly.
-
-Thoughts?
-
--- Andrii
+Please send a patch to add such clarifying comment.
