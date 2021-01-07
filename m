@@ -2,218 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 925B82ED6F8
-	for <lists+bpf@lfdr.de>; Thu,  7 Jan 2021 19:53:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 440A22ED73C
+	for <lists+bpf@lfdr.de>; Thu,  7 Jan 2021 20:08:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726386AbhAGSw4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Jan 2021 13:52:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41068 "EHLO
+        id S1729350AbhAGTIF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Jan 2021 14:08:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726064AbhAGSw4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Jan 2021 13:52:56 -0500
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3888C0612F4
-        for <bpf@vger.kernel.org>; Thu,  7 Jan 2021 10:52:15 -0800 (PST)
-Received: by mail-yb1-xb2e.google.com with SMTP id w127so7045677ybw.8
-        for <bpf@vger.kernel.org>; Thu, 07 Jan 2021 10:52:15 -0800 (PST)
+        with ESMTP id S1729081AbhAGTIE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Jan 2021 14:08:04 -0500
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACDFDC0612F6
+        for <bpf@vger.kernel.org>; Thu,  7 Jan 2021 11:07:24 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id w127so7088720ybw.8
+        for <bpf@vger.kernel.org>; Thu, 07 Jan 2021 11:07:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=OsHqO2XQdnnb94wfdTvh3x9KEpm0rAc23B75Nwbw9XQ=;
-        b=vKtLTeldP/DwsON9gMQv5eeblBvD88+4l8TslrrPsso3m05ZOqjeRE9n2AwmbTtLov
-         ZXdbgYWlVc2Zy54K6W6ZFvZCVJ9JzIUq+KrMcK8B40SVnRtwbY/eHK3yANdy9quEyvvX
-         JYl7ZecS76pu+tV1cVClbccTS9RQuR1DLJfO+kNorV1PWgRuTm+7XbSCJtEfD1QTOKB3
-         ec8NFaW7LCPR88kA4I92vV4Hj4JzgVIsPOJphVTEEiWhRrOe72agVLZRe4ZGFVKD4vH5
-         6kEGmd2XKym7XfI3cbxXE+tVMQCB5gp57OCQJXt+b9BWdII7IMXLNQSNs5zvZXTOqLRN
-         N24g==
+        bh=oPMNlYualM+N/+Fns6VA0GYnh+CUNtOcKT0VzR778Ak=;
+        b=H/a2OF33anH68hj3YbEoN1V7IyjztcCvjuS9Q2mP7SEyd1K7fj8200kf5AmudB1c3J
+         h2uplo6A+AK+g1m7elctIcTdTXzzm4BjD51H3jP+EJKAcpLGCHL8gPzqNK0PiDz32Iri
+         FzDH3qsbkTolyZ/ANXiR8vFZyRrkb4T0ZZrnfF/aqJlp+ARMaEqzdopgTIqlEUDGeIsq
+         OjF6U93+RqiKK60rmLfELKC3gmo8E4GTMQLue9+Z3VLCV8i+2bbQr80P4oTEGUTy6Uub
+         /TLxdGxWFyokcBDxNCuiyRa95TgPk06WbceVQSIYWDQ+bwxTi/08c9u7XycnTmpvP8p4
+         eOaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=OsHqO2XQdnnb94wfdTvh3x9KEpm0rAc23B75Nwbw9XQ=;
-        b=l2VD0lcNPUCq9gLxrqLpq49QcgGEva11B31uvUmJ8WRygq6b5e6c9JUHdF1IJfz501
-         H56kCOpy8IKDN3ubicGnwRNX7b0A7mQzCIKX0VdskRCttGVUB8e7qe7dEYXbsxipmTZo
-         Nkk2FZh9ISkFDMNXOqLQCWEk35wj3S8O+gNkO5i9PT8ButTMWChEbo3IdG08I3zlXgDx
-         ZwQwrGtqhIlTiSRAEhqpSqSyiROnD9wQlVoLDOYnDKGWRzCIabq1neX68xi52U5eptza
-         htvZuGXwZvZGXwWc0kLaMuP1vsLr6eOCppXP/enw0Vp7FoLDMkW+Rrid5iMTPyqLmiw2
-         0Fgg==
-X-Gm-Message-State: AOAM531EYLRV2RpklfV85CdCpfNyvXdeSEOa6+krNSAxGvW/GlidLc8U
-        m1Ulc3PUZQYE2H7Dpdw28h7bXvFjby656IQ3epc=
-X-Google-Smtp-Source: ABdhPJxj8uyav3y315zNelmjPuutpD8d7k4sc769iW3LlRFkTrkdbbD8zyLYpxNrx1ahztDHbuunks8RlxodlE0LuX4=
-X-Received: by 2002:a25:2c4c:: with SMTP id s73mr288853ybs.230.1610045535027;
- Thu, 07 Jan 2021 10:52:15 -0800 (PST)
+        bh=oPMNlYualM+N/+Fns6VA0GYnh+CUNtOcKT0VzR778Ak=;
+        b=M8xS8DkVTNpYbRbB+Z2BsoCkcBzsXOS4HhlmFpktLNSzA9whkRRvCYE2FmZg+pP1NB
+         3u9sWqPAjC2OhwWoIrimg+TwxZKvjmBqUD72pUfDsLR4rr/t9MosQWPpVQR0vMQ4sFRo
+         N5t321iBcUbh3VwiNan/SRC8jCZTFsl0SxFl8gIWWHgXnMT2thmgtE5iaBbTy6pK50s7
+         TvNxjYWcKdusCrs9Gf0chDK11vepelDNiSxMJDjx4hf1g4oduCx8JUToxWXv5xkKd3yr
+         kKOPoZ78ZWi48jW6HpqmF56ST9x3GwYiCiTlfLggjsoPGg8WZc3i/sKWmVSgiR23NHzN
+         ubcA==
+X-Gm-Message-State: AOAM532HJQLef1NplnLYjRWfkHu3CGUn0C5Nu6HZPKPca73eWVc+fUPG
+        L3THYJPLMF1ZthIAyXtWVWRWYUEIcJNchssBWFQ=
+X-Google-Smtp-Source: ABdhPJwlkBxKesDHI1VSjI0S6IOGvsqI3O8TXHjJ04sK0mb9jSFFfk5QiEuvwNbM+8+xSo4Rk85Lt3q1qmILX+JDLUg=
+X-Received: by 2002:a25:2c4c:: with SMTP id s73mr384162ybs.230.1610046443964;
+ Thu, 07 Jan 2021 11:07:23 -0800 (PST)
 MIME-Version: 1.0
-References: <CADmGQ+1euj7Uv9e8UyZMMXDiYAKqXe9=GSTBFNbbg1E0R-ejyg@mail.gmail.com>
- <CAEf4BzbJZLjNoiK8_VfeVg_Vrg=9iYFv+po-38SMe=UzwDKJ=Q@mail.gmail.com> <CADmGQ+1ugPF-n1KnbVpOmC=xiOG_57GyS+0NetfsPz99HxS36A@mail.gmail.com>
-In-Reply-To: <CADmGQ+1ugPF-n1KnbVpOmC=xiOG_57GyS+0NetfsPz99HxS36A@mail.gmail.com>
+References: <20210107173729.2667975-1-kpsingh@kernel.org>
+In-Reply-To: <20210107173729.2667975-1-kpsingh@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 7 Jan 2021 10:52:04 -0800
-Message-ID: <CAEf4BzbpOVKLKq+Cz5kWNZHu-yNG9BsY4udOU+md_zdoT7sG1A@mail.gmail.com>
-Subject: Re: [BPF CO-RE clarification] Use CO-RE on older kernel versions.
-To:     Vamsi Kodavanty <vamsi@araalinetworks.com>
-Cc:     bpf <bpf@vger.kernel.org>
+Date:   Thu, 7 Jan 2021 11:07:13 -0800
+Message-ID: <CAEf4BzbxVtR+kaTFyHiH0tz3npr_vnpOidmG=t4sQAtaNE95UA@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: local storage helpers should check nullness of
+ owner ptr passed
+To:     KP Singh <kpsingh@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Gilad Reti <gilad.reti@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 7, 2021 at 10:12 AM Vamsi Kodavanty
-<vamsi@araalinetworks.com> wrote:
+On Thu, Jan 7, 2021 at 9:37 AM KP Singh <kpsingh@kernel.org> wrote:
 >
-> First of all thank you very much for your quick response. And helpful pointers.
-> It seems like you also think what I am attempting to do should work.
+> The verifier allows ARG_PTR_TO_BTF_ID helper arguments to be NULL, so
+> helper implementations need to check this before dereferencing them.
+> This was already fixed for the socket storage helpers but not for task
+> and inode.
 >
-> Please see inline [VAMSI-2].
+> The issue can be reproduced by attaching an LSM program to
+> inode_rename hook (called when moving files) which tries to get the
+> inode of the new file without checking for its nullness and then trying
+> to move an existing file to a new path:
 >
-> On Wed, Jan 6, 2021 at 3:55 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Wed, Jan 6, 2021 at 10:04 AM Vamsi Kodavanty
-> > <vamsi@araalinetworks.com> wrote:
-> > >
-> > > Had a few questions on CO-RE dependencies and usage. From what I read
-> > > CO-RE needs a supported kernel version and be compiled with
-> > > `CONFIG_DEBUG_INFO_BTF=y`.
-> > >
-> > > I also understand there are three pieces to enable CO-RE
-> > > functionality. (1) The BTF format. For efficient/compressed kernel
-> > > symbol table. (2) clang changes to emit the BTF relocations. (3)
-> >
-> > BTF is not really a symbol table, rather a type information. Like
-> > simpler and more compact DWARF.
-> >
-> > > `libbpf` changes to locate a BTF file and fix-up relocations. Once
-> > > these 3 steps are done the resulting byte code is no different from
-> > > non-CO-RE byte code.
-> > >
-> > > Given this I am hoping the knowledgeable folks on this mailer correct
-> > > and guide me if I am stating something incorrectly.
-> > >
-> > > (1) Is the kernel support requirement ONLY for the purposes of
-> > > generating and exposing the BTF file information on
-> > > `/sys/kernel/btf/vmlinux`? So that the eBPF CO-RE applications
-> > > `libbpf` can find the BTF information at a standard location?.
-> >
-> > /sys/kernel/btf/vmlinux is a standardized place, but libbpf will also
-> > try to search for vmlinux image (and BTF info within it) in a few
-> > standard locations, see [0]. Early versions of in-kernel BTF didn't
-> > even expose /sys/kernel/btf/vmlinux.
-> >
-> >   [0] https://github.com/libbpf/libbpf/blob/master/src/btf.c#L4580
-> >
-> > >
-> > > (2) If the answer to the above question is YES. Could the below
-> > > mechanism be used so that it works on all kernels whether they support
-> > > the `CONFIG_DEBUG_INFO_BTF` flag or not?.
-> > >        (a) Extract BTF generation process outside of the kernel build.
-> > > Use this to generate the equivalent BTF file for it.
-> >
-> > Yes, CONFIG_DEBUG_INFO_BTF=y is the most convenient way to add BTF
-> > info, but it's also possible to just embed BTF manually with a direct
-> > invocation of pahole -J, see [1] on how it's done for
-> > CONFIG_DEBUG_INFO_BTF. You can do that for *any* kernel image, no
-> > matter the version, and it will work with CO-RE relocations.
-> >
-> >   [1] https://github.com/torvalds/linux/blob/master/scripts/link-vmlinux.sh#L137-L170
-> >
->
-> [VAMSI-2] Yes, this is exactly what I did. I extracted out the
-> `gen_btf` from the
-> `link-vmlinux.sh` (which uses pahole -J) and used it to generate a BTF
-> file for the
-> 4.14.0 kernel.
->
-> > >        (b) Make changes to `libbpf` to look for BTF not only at the
-> > > standard locations but also at a user specified location. The BTF file
-> > > generated in (a) can be presented here.
-> >
-> > You can already do that, actually, though it's not very obvious. You
-> > can specify (or override) kernel BTF location by using
-> > bpf_object__load_xattr() and passing target_btf_path pointing to your
-> > BTF location (see [2]). I've been meaning to add it instead to a
-> > bpf_object_open_opts, btw, to make its use possible with a BPF
-> > skeleton. Also keep in mind that currently libbpf expects that custom
-> > BTF to be an ELF file with .BTF section, not just a raw BTF data. But
-> > we can improve that, of course.
-> >
-> >   [2] https://github.com/libbpf/libbpf/blob/master/src/libbpf.h#L136-L141
->
-> [VAMSI-2] I took a look at this and what you suggested above does not
-> work as is.
-> Even if we used `bpf_object__load_xattr` with `target_btf_path`. It seems like
-> `bpf_object__load_vmlinux_btf` is not yet modified to use the
-> `target_btf_path` attribute.
+>   mv existing_file new_file_does_not_exist
 
-Ah, right. We used to need vmlinux BTF only for CO-RE relocations, but
-since then added a bunch more use cases. So some libbpf changes are
-needed to make this work. But it should still work for CO-RE to have a
-custom BTF.
-
-I'm not sure about making bpf_object__load_vmlinux_btf() load custom
-BTF as the real kernel BTF, because that will never work for
-fentry/fexit, struct_ops, etc. I think it is better to teach
-bpf_object__load_vmlinux_btf() to not attempt to load real kernel BTF
-if we need it only for CO-RE relocations *and* we have it overloaded
-with target_btf_path
-
-> Only, the `bpf_object__relocate` looks at the `target_btf_path`. As
-> you suggested enabling
-> use from the BPF skeleton seems useful and I can possibly help with that.
-
-Yeah, adding something like core_btf_path option to
-bpf_object_open_opts would go nicely with this change.
+Seems like it's simple to write a selftest for this then?
 
 >
-> For now, just for proof of concept I modified the search options in
-> `libbpf_find_kernel_btf` to
-> include my custom path. And on a 4.14 AmazonLinux2 VM I observe these failures.
+> The report including the sample program and the steps for reproducing
+> the bug:
 >
-> libbpf: loading kernel BTF '/home/ec2-user/vmlinux.btf': 0
-
-so here you successfully loaded custom BTF, which is good.
-
-> libbpf: Kernel doesn't support BTF, skipping uploading it.
-
-this just means that your BPF object's BTF won't be loaded into the
-kernel. That's no big deal, ignore this.
-
-> libbpf: kernel doesn't support global data
-
-But this means that your BPF programs rely on global variables, which
-are not supported by the kernel. So you need to change the code to not
-use global variables to make this work on very old kernels.
-
-
-> libbpf: failed to load object 'tcpconnect_bpf'
-> libbpf: failed to load BPF skeleton 'tcpconnect_bpf': -95
-> failed to load BPF object: -95
-
-This is probably OPNOTSUPP from the global data above
-
+>   https://lore.kernel.org/bpf/CANaYP3HWkH91SN=wTNO9FL_2ztHfqcXKX38SSE-JJ2voh+vssw@mail.gmail.com
 >
-> This is the reason I had posted on the mailer. If the CO-RE executable
-> has relocations
-> resolved by the time of the BPF load. Why do we need to check for
-> kernel support?. Also,
-> does this mean what I am attempting to do will not work?.
+> Fixes: 4cf1bc1f1045 ("bpf: Implement task local storage")
+> Fixes: 8ea636848aca ("bpf: Implement bpf_local_storage for inodes")
+> Reported-by: Gilad Reti <gilad.reti@gmail.com>
+> Signed-off-by: KP Singh <kpsingh@kernel.org>
+> ---
+>  kernel/bpf/bpf_inode_storage.c | 5 ++++-
+>  kernel/bpf/bpf_task_storage.c  | 5 ++++-
+>  2 files changed, 8 insertions(+), 2 deletions(-)
 >
+> diff --git a/kernel/bpf/bpf_inode_storage.c b/kernel/bpf/bpf_inode_storage.c
+> index 6edff97ad594..dbc1dbdd2cbf 100644
+> --- a/kernel/bpf/bpf_inode_storage.c
+> +++ b/kernel/bpf/bpf_inode_storage.c
+> @@ -176,7 +176,7 @@ BPF_CALL_4(bpf_inode_storage_get, struct bpf_map *, map, struct inode *, inode,
+>          * bpf_local_storage_update expects the owner to have a
+>          * valid storage pointer.
+>          */
+> -       if (!inode_storage_ptr(inode))
+> +       if (!inode || !inode_storage_ptr(inode))
 
-it will work with minimal libbpf logic changes. Nothing in principle
-prevents this.
+would it be bad to move !inode check inside inode_storage_ptr itself?
+same for task_storage_ptr() below.
 
-
-> Best Regards. And again thanks a lot for your precious time.
-> - Vamsi.
+>                 return (unsigned long)NULL;
 >
-> > >
-> > > This should provide us a way to enable CO-RE functionality on older
-> > > kernel versions as well. I tried to make the above changes and tried
-> > > against a 4.14 kernel and it did not work. Either I am not doing
-> > > something right or my assumptions are wrong.
-> > >
-> > > Thanks in advance for your time. And I hope someone here can guide me
-> > > in the right direction.
-> > >
-> > > Regards
-> > > Vamsi.
+>         sdata = inode_storage_lookup(inode, map, true);
+> @@ -200,6 +200,9 @@ BPF_CALL_4(bpf_inode_storage_get, struct bpf_map *, map, struct inode *, inode,
+>  BPF_CALL_2(bpf_inode_storage_delete,
+>            struct bpf_map *, map, struct inode *, inode)
+>  {
+> +       if (!inode)
+> +               return -EINVAL;
+> +
+>         /* This helper must only called from where the inode is gurranteed
+
+Gmail highlights a typo in "gurranteed" ;)
+
+>          * to have a refcount and cannot be freed.
+>          */
+> diff --git a/kernel/bpf/bpf_task_storage.c b/kernel/bpf/bpf_task_storage.c
+> index 4ef1959a78f2..e0da0258b732 100644
+> --- a/kernel/bpf/bpf_task_storage.c
+> +++ b/kernel/bpf/bpf_task_storage.c
+> @@ -218,7 +218,7 @@ BPF_CALL_4(bpf_task_storage_get, struct bpf_map *, map, struct task_struct *,
+>          * bpf_local_storage_update expects the owner to have a
+>          * valid storage pointer.
+>          */
+> -       if (!task_storage_ptr(task))
+> +       if (!task || !task_storage_ptr(task))
+>                 return (unsigned long)NULL;
+>
+>         sdata = task_storage_lookup(task, map, true);
+> @@ -243,6 +243,9 @@ BPF_CALL_4(bpf_task_storage_get, struct bpf_map *, map, struct task_struct *,
+>  BPF_CALL_2(bpf_task_storage_delete, struct bpf_map *, map, struct task_struct *,
+>            task)
+>  {
+> +       if (!task)
+> +               return -EINVAL;
+> +
+>         /* This helper must only be called from places where the lifetime of the task
+>          * is guaranteed. Either by being refcounted or by being protected
+>          * by an RCU read-side critical section.
+> --
+> 2.30.0.284.gd98b1dd5eaa7-goog
+>
