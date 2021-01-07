@@ -2,82 +2,212 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 584D42ECEB2
-	for <lists+bpf@lfdr.de>; Thu,  7 Jan 2021 12:24:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D8EF2ED3F6
+	for <lists+bpf@lfdr.de>; Thu,  7 Jan 2021 17:10:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726340AbhAGLYe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Jan 2021 06:24:34 -0500
-Received: from foss.arm.com ([217.140.110.172]:58242 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726229AbhAGLYe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Jan 2021 06:24:34 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2F3131FB;
-        Thu,  7 Jan 2021 03:23:48 -0800 (PST)
-Received: from e107158-lin (unknown [10.1.194.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 81F4A3F719;
-        Thu,  7 Jan 2021 03:23:46 -0800 (PST)
-Date:   Thu, 7 Jan 2021 11:23:44 +0000
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Phil Auld <pauld@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        vincent.donnefort@arm.com, Ingo Molnar <mingo@redhat.com>,
-        vincent.guittot@linaro.org, LKML <linux-kernel@vger.kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>
-Subject: Re: [PATCH v2] sched/debug: Add new tracepoint to track cpu_capacity
-Message-ID: <20210107112344.y73hmx3bg7cjkp53@e107158-lin>
-References: <58f5d2e8-493b-7ce1-6abd-57705e5ab437@arm.com>
- <20200902135423.GB93959@lorien.usersys.redhat.com>
- <20200907110223.gtdgqod2iv2w7xmg@e107158-lin.cambridge.arm.com>
- <20200908131954.GA147026@lorien.usersys.redhat.com>
- <20210104182642.xglderapsfrop6pi@e107158-lin>
- <CAADnVQ+1BNO577iz+05M4nNk+DB2n9ffwr4KrktWxO+2mP1b-Q@mail.gmail.com>
- <20210105113857.gzqaiuhxsxdtu474@e107158-lin>
- <CAADnVQ+GH9DfaRJ3CCDYL8o9UUH-eAuBq6EhjVLbicY_XWbySw@mail.gmail.com>
- <20210106112712.6ec7yejhidauo432@e107158-lin>
- <CAEf4BzaL8788pNdk4A9_EGTZF52MikCPJX1-fh3JO2uca6x9FQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzaL8788pNdk4A9_EGTZF52MikCPJX1-fh3JO2uca6x9FQ@mail.gmail.com>
+        id S1726669AbhAGQKY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Jan 2021 11:10:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726514AbhAGQKY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Jan 2021 11:10:24 -0500
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA0CCC0612F5
+        for <bpf@vger.kernel.org>; Thu,  7 Jan 2021 08:09:43 -0800 (PST)
+Received: by mail-qv1-xf4a.google.com with SMTP id t17so5749678qvv.17
+        for <bpf@vger.kernel.org>; Thu, 07 Jan 2021 08:09:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=3RBxr/reMzKfPribD5dZoWu7aXfUyId4YfssBQJvW2o=;
+        b=X2liaHVP1bFT2QLr+XbJHbt5yM5hTWrJNrNf1ywq2unnECdQQrOQbB7VsFX/LEiZ2R
+         g5TN24fFyMBTSVMtPhm/Egw1TwH2PPbjdd/6agWNNyL139QH7GjyntKKiLcDeF8d+ona
+         cM7Wh4ZcKmBIKuoOhM2hfv+G6eLYgqAokj3RxV2SNBQPIOIkzXYzZpmtYA6nWOT4oRi2
+         bFqIY2pKwkFPYqXGaJzUXW0gcNQLaS5ccNQrmsNh3B29PEWOnDscwBk7GUD6TxtkbewQ
+         JTLCNjuj8shaShJiHgtwksD0DXRSOPgMAaLIRa/lxgfbMmXAUSXGN5qJobdVbVVcZWdl
+         DdbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=3RBxr/reMzKfPribD5dZoWu7aXfUyId4YfssBQJvW2o=;
+        b=gvYQl2ODKwoYrNN+ewswZaKrWaHDQbxdnbE0D1eszvaoVn/Noy+FFnz8navTA+RSm4
+         UnM5uwxxf3aD+dVeqQOWlDLA66AtkakiSHR3RYSGWRrnvdpMhzbHz7HgtHQ054l9r46d
+         RGLvAAKLMi9HzAje4q9VHeVI/ADpNDxJmPR+KkZTlscJ2IR2EQVW3Fjdc9rglERZzkLB
+         AAPYp21EKhHgPenTWmrmG8/9lEXhPLWFexEfT0LSehRQnryJsxES0tQceuiBLbcdRUdk
+         9O8aZCXTo0sVM+F/hiUSAMfBdaGk7+4EXbto+GRhdMNOCKARhbl2wVZEDYJnfg98d+Cj
+         WyYg==
+X-Gm-Message-State: AOAM531pPX/tA8U+7FYx8Lt9ZWOfE2yj16LOQi3WhvN9yOXbhRZpsEnU
+        NvG6vpoH08o0wEiyB8Ac9zzulUs=
+X-Google-Smtp-Source: ABdhPJzRVg5bEU4/NgP93X8o6FEcsbk03MPfbGI9AN3U3LrNSOghRh4yQakopzykrsyVcVYSawnaPkg=
+Sender: "sdf via sendgmr" <sdf@sdf2.svl.corp.google.com>
+X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:7220:84ff:fe09:7732])
+ (user=sdf job=sendgmr) by 2002:ad4:4643:: with SMTP id y3mr9197086qvv.3.1610035782775;
+ Thu, 07 Jan 2021 08:09:42 -0800 (PST)
+Date:   Thu, 7 Jan 2021 08:09:41 -0800
+In-Reply-To: <20210107012943.rht4ktth5ecdrz42@kafai-mbp.dhcp.thefacebook.com>
+Message-Id: <X/cyRZy9Tw7Va6gp@google.com>
+Mime-Version: 1.0
+References: <20210105214350.138053-1-sdf@google.com> <20210105214350.138053-4-sdf@google.com>
+ <20210106194756.vjkulozifc4bfuut@kafai-mbp.dhcp.thefacebook.com>
+ <X/Y9pAaiq2FMHoBs@google.com> <20210107012943.rht4ktth5ecdrz42@kafai-mbp.dhcp.thefacebook.com>
+Subject: Re: [PATCH bpf-next v3 3/3] bpf: remove extra lock_sock for TCP_ZEROCOPY_RECEIVE
+From:   sdf@google.com
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, Song Liu <songliubraving@fb.com>,
+        Eric Dumazet <edumazet@google.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 01/06/21 15:42, Andrii Nakryiko wrote:
-> On Wed, Jan 6, 2021 at 3:27 AM Qais Yousef <qais.yousef@arm.com> wrote:
+On 01/06, Martin KaFai Lau wrote:
+> On Wed, Jan 06, 2021 at 02:45:56PM -0800, sdf@google.com wrote:
+> > On 01/06, Martin KaFai Lau wrote:
+> > > On Tue, Jan 05, 2021 at 01:43:50PM -0800, Stanislav Fomichev wrote:
+> > > > Add custom implementation of getsockopt hook for  
+> TCP_ZEROCOPY_RECEIVE.
+> > > > We skip generic hooks for TCP_ZEROCOPY_RECEIVE and have a custom
+> > > > call in do_tcp_getsockopt using the on-stack data. This removes
+> > > > 3% overhead for locking/unlocking the socket.
+> > > >
+> > > > Also:
+> > > > - Removed BUILD_BUG_ON (zerocopy doesn't depend on the buf size  
+> anymore)
+> > > > - Separated on-stack buffer into bpf_sockopt_buf and downsized to 32
+> > > bytes
+> > > >   (let's keep it to help with the other options)
+> > > >
+> > > > (I can probably split this patch into two: add new features and  
+> rework
+> > > >  bpf_sockopt_buf; can follow up if the approach in general sounds
+> > > >  good).
+> > > >
+> > > > Without this patch:
+> > > >      3.29%     0.07%  tcp_mmap  [kernel.kallsyms]  [k]
+> > > __cgroup_bpf_run_filter_getsockopt
+> > > >             |
+> > > >              --3.22%--__cgroup_bpf_run_filter_getsockopt
+> > > >                        |
+> > > >                        |--0.66%--lock_sock_nested
+> > > A general question for sockopt prog, why the BPF_CGROUP_(GET| 
+> SET)SOCKOPT
+> > > prog
+> > > has to run under lock_sock()?
+> > I don't think there is a strong reason. We expose sk to the BPF program,
+> > but mainly for the socket storage map (which, afaik, doesn't require
+> > socket to be locked). OTOH, it seems that providing a consistent view
+> > of the sk to the BPF is a good idea.
+> hmm... most of the bpf prog also does not require a locked sock.  For
+> example, the __sk_buff->sk.  If a bpf prog needs a locked view of sk,
+> a more generic solution is desired.  Anyhow, I guess the train has sort
+> of sailed for sockopt bpf.
+
 > >
-> > On 01/05/21 08:44, Alexei Starovoitov wrote:
-> > > > Any pointer to an example test I could base this on?
-> > >
-> > > selftests/bpf/
+> > Eric has suggested to try to use fast socket lock. It helps a bit,
+> > but it doesn't remove the issue completely because
+> > we do a bunch of copy_{to,from}_user in the generic
+> > __cgroup_bpf_run_filter_getsockopt as well :-(
 > >
-> > I was hoping for something more elaborate. I thought there's something already
-> > there that do some verification for raw tracepoint that I could either extend
-> > or replicate. Otherwise this could end up being a time sink for me and I'm not
-> > keen on jumping down this rabbit hole.
-> 
-> One way would be to add either another custom tracepoint definition to
-> a test module or modify the existing one to be a bare tracepoint. See
-> links below.
-> 
-> If it's easy to trigger those tracepoints from user-space on demand,
-> writing a similar (to module_attach) selftest for in-kernel tracepoint
-> is trivial.
-> 
->   [0] https://github.com/torvalds/linux/blob/master/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
->   [1] https://github.com/torvalds/linux/blob/master/tools/testing/selftests/bpf/progs/test_module_attach.c#L12-L18
->   [2] https://github.com/torvalds/linux/blob/master/tools/testing/selftests/bpf/prog_tests/module_attach.c
+> > > >                        |
+> > > >                        |--0.57%--__might_fault
+> Is it a debug kernel?
+Yeah, I think I did have CONFIG_DEBUG_ATOMIC_SLEEP=y for this particular
+run, but I don't think I have anything else debugging related (although,
+it might bring in DEBUG_KERNEL and some other crap). Let me check if
+something else has crept in and rerun the benchmarks without it.
+I'll respin with the updated data if nothing serious pop up.
 
-Thanks a lot Andrii. That will make it much easier to figure out something.
+> > > >                        |
+> > > >                         --0.56%--release_sock
+> > > >
+> > > > With the patch applied:
+> > > >      0.42%     0.10%  tcp_mmap  [kernel.kallsyms]  [k]
+> > > __cgroup_bpf_run_filter_getsockopt_kern
+> > > >      0.02%     0.02%  tcp_mmap  [kernel.kallsyms]  [k]
+> > > __cgroup_bpf_run_filter_getsockopt
+> > > >
+> > > [ ... ]
+> >
+> > > > @@ -1445,15 +1442,29 @@ int  
+> __cgroup_bpf_run_filter_getsockopt(struct
+> > > sock *sk, int level,
+> > > >  				       int __user *optlen, int max_optlen,
+> > > >  				       int retval)
+> > > >  {
+> > > > -	struct cgroup *cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
+> > > > -	struct bpf_sockopt_kern ctx = {
+> > > > -		.sk = sk,
+> > > > -		.level = level,
+> > > > -		.optname = optname,
+> > > > -		.retval = retval,
+> > > > -	};
+> > > > +	struct bpf_sockopt_kern ctx;
+> > > > +	struct bpf_sockopt_buf buf;
+> > > > +	struct cgroup *cgrp;
+> > > >  	int ret;
+> > > >
+> > > > +#ifdef CONFIG_INET
+> > > > +	/* TCP do_tcp_getsockopt has optimized getsockopt implementation
+> > > > +	 * to avoid extra socket lock for TCP_ZEROCOPY_RECEIVE.
+> > > > +	 */
+> > > > +	if (sk->sk_prot->getsockopt == tcp_getsockopt &&
+> > > > +	    level == SOL_TCP && optname == TCP_ZEROCOPY_RECEIVE)
+> > > > +		return retval;
+> > > > +#endif
+> > > That seems too much protocol details and not very scalable.
+> > > It is not very related to kernel/bpf/cgroup.c which has very little  
+> idea
+> > > whether a specific protocol has optimized things in some ways (e.g. by
+> > > directly calling cgroup's bpf prog at some strategic places in this
+> > > patch).
+> > > Lets see if it can be done better.
+> >
+> > > At least, these protocol checks belong to the net's socket.c
+> > > more than the bpf's cgroup.c here.  If it also looks like layering
+> > > breakage in socket.c, may be adding a signal in sk_prot (for example)
+> > > to tell if the sk_prot->getsockopt has already called the cgroup's bpf
+> > > prog?  (e.g. tcp_getsockopt() can directly call the cgroup's bpf for  
+> all
+> > > optname instead of only TCP_ZEROCOPY_RECEIVE).
+> >
+> > > For example:
+> >
+> > > int __sys_getsockopt(...)
+> > > {
+> > > 	/* ... */
+> >
+> > > 	if (!sk_prot->bpf_getsockopt_handled)
+> > > 		BPF_CGROUP_RUN_PROG_GETSOCKOPT(...);
+> > > }
+> >
+> > > Thoughts?
+> >
+> > Sounds good. I didn't go that far because I don't expect there to be
+> > a lot of special cases like that. But it might be worth supporting
+> > it in a generic way from the beginning.
+> >
+> > I was thinking about something simpler:
+> >
+> > int __cgroup_bpf_run_filter_getsockopt(sk, ...)
+> > {
+> > 	if (sk->sk_prot->bypass_bpf_getsockopt(level, optlen)) {
+> I think it meant s/optlen/optname/ which is not __user.
+> Yeah, I think that can provide a more generic solution
+> and also abstract things away.
+> Please add a details comment in this function.
+Sure, will do!
 
-Cheers
-
---
-Qais Yousef
+> > 		return retval;
+> > 	}
+> >
+> >  	// ...
+> > }
+> >
+> > Not sure it's worth exposing it to the __sys_getsockopt. WDYT?
+> or call that in BPF_CGROUP_RUN_PROG_GETSOCKOPT().  then the
+> changes in __cgroup_bpf_run_filter_getsockopt() in this
+> patch should go away?
+SG, will add to BPF_CGROUP_RUN_PROG_GETSOCKOPT.
