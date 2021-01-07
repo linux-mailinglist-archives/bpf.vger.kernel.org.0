@@ -2,212 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D8EF2ED3F6
-	for <lists+bpf@lfdr.de>; Thu,  7 Jan 2021 17:10:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE0F2ED5C7
+	for <lists+bpf@lfdr.de>; Thu,  7 Jan 2021 18:38:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726669AbhAGQKY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Jan 2021 11:10:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726514AbhAGQKY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Jan 2021 11:10:24 -0500
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA0CCC0612F5
-        for <bpf@vger.kernel.org>; Thu,  7 Jan 2021 08:09:43 -0800 (PST)
-Received: by mail-qv1-xf4a.google.com with SMTP id t17so5749678qvv.17
-        for <bpf@vger.kernel.org>; Thu, 07 Jan 2021 08:09:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=3RBxr/reMzKfPribD5dZoWu7aXfUyId4YfssBQJvW2o=;
-        b=X2liaHVP1bFT2QLr+XbJHbt5yM5hTWrJNrNf1ywq2unnECdQQrOQbB7VsFX/LEiZ2R
-         g5TN24fFyMBTSVMtPhm/Egw1TwH2PPbjdd/6agWNNyL139QH7GjyntKKiLcDeF8d+ona
-         cM7Wh4ZcKmBIKuoOhM2hfv+G6eLYgqAokj3RxV2SNBQPIOIkzXYzZpmtYA6nWOT4oRi2
-         bFqIY2pKwkFPYqXGaJzUXW0gcNQLaS5ccNQrmsNh3B29PEWOnDscwBk7GUD6TxtkbewQ
-         JTLCNjuj8shaShJiHgtwksD0DXRSOPgMAaLIRa/lxgfbMmXAUSXGN5qJobdVbVVcZWdl
-         DdbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=3RBxr/reMzKfPribD5dZoWu7aXfUyId4YfssBQJvW2o=;
-        b=gvYQl2ODKwoYrNN+ewswZaKrWaHDQbxdnbE0D1eszvaoVn/Noy+FFnz8navTA+RSm4
-         UnM5uwxxf3aD+dVeqQOWlDLA66AtkakiSHR3RYSGWRrnvdpMhzbHz7HgtHQ054l9r46d
-         RGLvAAKLMi9HzAje4q9VHeVI/ADpNDxJmPR+KkZTlscJ2IR2EQVW3Fjdc9rglERZzkLB
-         AAPYp21EKhHgPenTWmrmG8/9lEXhPLWFexEfT0LSehRQnryJsxES0tQceuiBLbcdRUdk
-         9O8aZCXTo0sVM+F/hiUSAMfBdaGk7+4EXbto+GRhdMNOCKARhbl2wVZEDYJnfg98d+Cj
-         WyYg==
-X-Gm-Message-State: AOAM531pPX/tA8U+7FYx8Lt9ZWOfE2yj16LOQi3WhvN9yOXbhRZpsEnU
-        NvG6vpoH08o0wEiyB8Ac9zzulUs=
-X-Google-Smtp-Source: ABdhPJzRVg5bEU4/NgP93X8o6FEcsbk03MPfbGI9AN3U3LrNSOghRh4yQakopzykrsyVcVYSawnaPkg=
-Sender: "sdf via sendgmr" <sdf@sdf2.svl.corp.google.com>
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:7220:84ff:fe09:7732])
- (user=sdf job=sendgmr) by 2002:ad4:4643:: with SMTP id y3mr9197086qvv.3.1610035782775;
- Thu, 07 Jan 2021 08:09:42 -0800 (PST)
-Date:   Thu, 7 Jan 2021 08:09:41 -0800
-In-Reply-To: <20210107012943.rht4ktth5ecdrz42@kafai-mbp.dhcp.thefacebook.com>
-Message-Id: <X/cyRZy9Tw7Va6gp@google.com>
-Mime-Version: 1.0
-References: <20210105214350.138053-1-sdf@google.com> <20210105214350.138053-4-sdf@google.com>
- <20210106194756.vjkulozifc4bfuut@kafai-mbp.dhcp.thefacebook.com>
- <X/Y9pAaiq2FMHoBs@google.com> <20210107012943.rht4ktth5ecdrz42@kafai-mbp.dhcp.thefacebook.com>
-Subject: Re: [PATCH bpf-next v3 3/3] bpf: remove extra lock_sock for TCP_ZEROCOPY_RECEIVE
-From:   sdf@google.com
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, Song Liu <songliubraving@fb.com>,
-        Eric Dumazet <edumazet@google.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+        id S1728967AbhAGRiP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Jan 2021 12:38:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58688 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728966AbhAGRiP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Jan 2021 12:38:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 65733233FD;
+        Thu,  7 Jan 2021 17:37:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610041054;
+        bh=2hX1cRD2A7aZ85vx9504qeSWNT13L9QYSeFCOzb/17I=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DYZosgkg9scHB7gboFjA0cDDjyQ+QmZ122XnN+d5xn98uWGbZCVJ3PjH7AAB9udSt
+         Ls96YzPivQQv0ahGsuOmP/BlP2HFEofolmFuzovj4k4rX6Y+YUnZHc0jGPPjWbvDhb
+         urAmuVH9WWlx+EaotDtwmDJAD9pAtCv9lCco66ljy8iPSrXO/LA7mYLHteiNJ5pFEZ
+         aS/sscvK6TqGRm65GbUPtdziw0E2hc6lxSIuKrSYJemK0jta7/ObnOjBSbgz0+/Dxd
+         vhW2O/agwSDOrbjK8lRGserXHpF8+qs1QU3KsNlDxOYNBfH6VnS648E6a+lEdaxvbg
+         Fl3TT+HE0xPBg==
+From:   KP Singh <kpsingh@kernel.org>
+To:     bpf@vger.kernel.org
+Cc:     Gilad Reti <gilad.reti@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>
+Subject: [PATCH bpf] bpf: local storage helpers should check nullness of owner ptr passed
+Date:   Thu,  7 Jan 2021 17:37:29 +0000
+Message-Id: <20210107173729.2667975-1-kpsingh@kernel.org>
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 01/06, Martin KaFai Lau wrote:
-> On Wed, Jan 06, 2021 at 02:45:56PM -0800, sdf@google.com wrote:
-> > On 01/06, Martin KaFai Lau wrote:
-> > > On Tue, Jan 05, 2021 at 01:43:50PM -0800, Stanislav Fomichev wrote:
-> > > > Add custom implementation of getsockopt hook for  
-> TCP_ZEROCOPY_RECEIVE.
-> > > > We skip generic hooks for TCP_ZEROCOPY_RECEIVE and have a custom
-> > > > call in do_tcp_getsockopt using the on-stack data. This removes
-> > > > 3% overhead for locking/unlocking the socket.
-> > > >
-> > > > Also:
-> > > > - Removed BUILD_BUG_ON (zerocopy doesn't depend on the buf size  
-> anymore)
-> > > > - Separated on-stack buffer into bpf_sockopt_buf and downsized to 32
-> > > bytes
-> > > >   (let's keep it to help with the other options)
-> > > >
-> > > > (I can probably split this patch into two: add new features and  
-> rework
-> > > >  bpf_sockopt_buf; can follow up if the approach in general sounds
-> > > >  good).
-> > > >
-> > > > Without this patch:
-> > > >      3.29%     0.07%  tcp_mmap  [kernel.kallsyms]  [k]
-> > > __cgroup_bpf_run_filter_getsockopt
-> > > >             |
-> > > >              --3.22%--__cgroup_bpf_run_filter_getsockopt
-> > > >                        |
-> > > >                        |--0.66%--lock_sock_nested
-> > > A general question for sockopt prog, why the BPF_CGROUP_(GET| 
-> SET)SOCKOPT
-> > > prog
-> > > has to run under lock_sock()?
-> > I don't think there is a strong reason. We expose sk to the BPF program,
-> > but mainly for the socket storage map (which, afaik, doesn't require
-> > socket to be locked). OTOH, it seems that providing a consistent view
-> > of the sk to the BPF is a good idea.
-> hmm... most of the bpf prog also does not require a locked sock.  For
-> example, the __sk_buff->sk.  If a bpf prog needs a locked view of sk,
-> a more generic solution is desired.  Anyhow, I guess the train has sort
-> of sailed for sockopt bpf.
+The verifier allows ARG_PTR_TO_BTF_ID helper arguments to be NULL, so
+helper implementations need to check this before dereferencing them.
+This was already fixed for the socket storage helpers but not for task
+and inode.
 
-> >
-> > Eric has suggested to try to use fast socket lock. It helps a bit,
-> > but it doesn't remove the issue completely because
-> > we do a bunch of copy_{to,from}_user in the generic
-> > __cgroup_bpf_run_filter_getsockopt as well :-(
-> >
-> > > >                        |
-> > > >                        |--0.57%--__might_fault
-> Is it a debug kernel?
-Yeah, I think I did have CONFIG_DEBUG_ATOMIC_SLEEP=y for this particular
-run, but I don't think I have anything else debugging related (although,
-it might bring in DEBUG_KERNEL and some other crap). Let me check if
-something else has crept in and rerun the benchmarks without it.
-I'll respin with the updated data if nothing serious pop up.
+The issue can be reproduced by attaching an LSM program to
+inode_rename hook (called when moving files) which tries to get the
+inode of the new file without checking for its nullness and then trying
+to move an existing file to a new path:
 
-> > > >                        |
-> > > >                         --0.56%--release_sock
-> > > >
-> > > > With the patch applied:
-> > > >      0.42%     0.10%  tcp_mmap  [kernel.kallsyms]  [k]
-> > > __cgroup_bpf_run_filter_getsockopt_kern
-> > > >      0.02%     0.02%  tcp_mmap  [kernel.kallsyms]  [k]
-> > > __cgroup_bpf_run_filter_getsockopt
-> > > >
-> > > [ ... ]
-> >
-> > > > @@ -1445,15 +1442,29 @@ int  
-> __cgroup_bpf_run_filter_getsockopt(struct
-> > > sock *sk, int level,
-> > > >  				       int __user *optlen, int max_optlen,
-> > > >  				       int retval)
-> > > >  {
-> > > > -	struct cgroup *cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
-> > > > -	struct bpf_sockopt_kern ctx = {
-> > > > -		.sk = sk,
-> > > > -		.level = level,
-> > > > -		.optname = optname,
-> > > > -		.retval = retval,
-> > > > -	};
-> > > > +	struct bpf_sockopt_kern ctx;
-> > > > +	struct bpf_sockopt_buf buf;
-> > > > +	struct cgroup *cgrp;
-> > > >  	int ret;
-> > > >
-> > > > +#ifdef CONFIG_INET
-> > > > +	/* TCP do_tcp_getsockopt has optimized getsockopt implementation
-> > > > +	 * to avoid extra socket lock for TCP_ZEROCOPY_RECEIVE.
-> > > > +	 */
-> > > > +	if (sk->sk_prot->getsockopt == tcp_getsockopt &&
-> > > > +	    level == SOL_TCP && optname == TCP_ZEROCOPY_RECEIVE)
-> > > > +		return retval;
-> > > > +#endif
-> > > That seems too much protocol details and not very scalable.
-> > > It is not very related to kernel/bpf/cgroup.c which has very little  
-> idea
-> > > whether a specific protocol has optimized things in some ways (e.g. by
-> > > directly calling cgroup's bpf prog at some strategic places in this
-> > > patch).
-> > > Lets see if it can be done better.
-> >
-> > > At least, these protocol checks belong to the net's socket.c
-> > > more than the bpf's cgroup.c here.  If it also looks like layering
-> > > breakage in socket.c, may be adding a signal in sk_prot (for example)
-> > > to tell if the sk_prot->getsockopt has already called the cgroup's bpf
-> > > prog?  (e.g. tcp_getsockopt() can directly call the cgroup's bpf for  
-> all
-> > > optname instead of only TCP_ZEROCOPY_RECEIVE).
-> >
-> > > For example:
-> >
-> > > int __sys_getsockopt(...)
-> > > {
-> > > 	/* ... */
-> >
-> > > 	if (!sk_prot->bpf_getsockopt_handled)
-> > > 		BPF_CGROUP_RUN_PROG_GETSOCKOPT(...);
-> > > }
-> >
-> > > Thoughts?
-> >
-> > Sounds good. I didn't go that far because I don't expect there to be
-> > a lot of special cases like that. But it might be worth supporting
-> > it in a generic way from the beginning.
-> >
-> > I was thinking about something simpler:
-> >
-> > int __cgroup_bpf_run_filter_getsockopt(sk, ...)
-> > {
-> > 	if (sk->sk_prot->bypass_bpf_getsockopt(level, optlen)) {
-> I think it meant s/optlen/optname/ which is not __user.
-> Yeah, I think that can provide a more generic solution
-> and also abstract things away.
-> Please add a details comment in this function.
-Sure, will do!
+  mv existing_file new_file_does_not_exist
 
-> > 		return retval;
-> > 	}
-> >
-> >  	// ...
-> > }
-> >
-> > Not sure it's worth exposing it to the __sys_getsockopt. WDYT?
-> or call that in BPF_CGROUP_RUN_PROG_GETSOCKOPT().  then the
-> changes in __cgroup_bpf_run_filter_getsockopt() in this
-> patch should go away?
-SG, will add to BPF_CGROUP_RUN_PROG_GETSOCKOPT.
+The report including the sample program and the steps for reproducing
+the bug:
+
+  https://lore.kernel.org/bpf/CANaYP3HWkH91SN=wTNO9FL_2ztHfqcXKX38SSE-JJ2voh+vssw@mail.gmail.com
+
+Fixes: 4cf1bc1f1045 ("bpf: Implement task local storage")
+Fixes: 8ea636848aca ("bpf: Implement bpf_local_storage for inodes")
+Reported-by: Gilad Reti <gilad.reti@gmail.com>
+Signed-off-by: KP Singh <kpsingh@kernel.org>
+---
+ kernel/bpf/bpf_inode_storage.c | 5 ++++-
+ kernel/bpf/bpf_task_storage.c  | 5 ++++-
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/bpf/bpf_inode_storage.c b/kernel/bpf/bpf_inode_storage.c
+index 6edff97ad594..dbc1dbdd2cbf 100644
+--- a/kernel/bpf/bpf_inode_storage.c
++++ b/kernel/bpf/bpf_inode_storage.c
+@@ -176,7 +176,7 @@ BPF_CALL_4(bpf_inode_storage_get, struct bpf_map *, map, struct inode *, inode,
+ 	 * bpf_local_storage_update expects the owner to have a
+ 	 * valid storage pointer.
+ 	 */
+-	if (!inode_storage_ptr(inode))
++	if (!inode || !inode_storage_ptr(inode))
+ 		return (unsigned long)NULL;
+ 
+ 	sdata = inode_storage_lookup(inode, map, true);
+@@ -200,6 +200,9 @@ BPF_CALL_4(bpf_inode_storage_get, struct bpf_map *, map, struct inode *, inode,
+ BPF_CALL_2(bpf_inode_storage_delete,
+ 	   struct bpf_map *, map, struct inode *, inode)
+ {
++	if (!inode)
++		return -EINVAL;
++
+ 	/* This helper must only called from where the inode is gurranteed
+ 	 * to have a refcount and cannot be freed.
+ 	 */
+diff --git a/kernel/bpf/bpf_task_storage.c b/kernel/bpf/bpf_task_storage.c
+index 4ef1959a78f2..e0da0258b732 100644
+--- a/kernel/bpf/bpf_task_storage.c
++++ b/kernel/bpf/bpf_task_storage.c
+@@ -218,7 +218,7 @@ BPF_CALL_4(bpf_task_storage_get, struct bpf_map *, map, struct task_struct *,
+ 	 * bpf_local_storage_update expects the owner to have a
+ 	 * valid storage pointer.
+ 	 */
+-	if (!task_storage_ptr(task))
++	if (!task || !task_storage_ptr(task))
+ 		return (unsigned long)NULL;
+ 
+ 	sdata = task_storage_lookup(task, map, true);
+@@ -243,6 +243,9 @@ BPF_CALL_4(bpf_task_storage_get, struct bpf_map *, map, struct task_struct *,
+ BPF_CALL_2(bpf_task_storage_delete, struct bpf_map *, map, struct task_struct *,
+ 	   task)
+ {
++	if (!task)
++		return -EINVAL;
++
+ 	/* This helper must only be called from places where the lifetime of the task
+ 	 * is guaranteed. Either by being refcounted or by being protected
+ 	 * by an RCU read-side critical section.
+-- 
+2.30.0.284.gd98b1dd5eaa7-goog
+
