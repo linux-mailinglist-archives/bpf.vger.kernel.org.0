@@ -2,264 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 785632EC7BD
-	for <lists+bpf@lfdr.de>; Thu,  7 Jan 2021 02:31:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 453C62EC802
+	for <lists+bpf@lfdr.de>; Thu,  7 Jan 2021 03:19:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726456AbhAGBat (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 6 Jan 2021 20:30:49 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:37762 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726367AbhAGBas (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 6 Jan 2021 20:30:48 -0500
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1071P10X027191;
-        Wed, 6 Jan 2021 17:29:52 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=er5ipm3XGFmXtCw1u19E3GFVw+2eHKJs094JcL5fhg8=;
- b=CKR0dB3Yr5ZGAGjicFA7K5l5gsCfez47+tgsamR1eX2g9e7nLNAMxl6R5kDAu0fsQLyo
- 3jqcudRgy4S7aNgnkwn2+jwR5f3seleZ/Y8Zzg9dDU4e4uwVFx7FB2TGXQbK+dHfFU/F
- JnxReDurIo4kqaqrXGQsdpnzXZYsbNYlhtU= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 35wpuxregd-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 06 Jan 2021 17:29:52 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 6 Jan 2021 17:29:51 -0800
+        id S1726773AbhAGCSd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 6 Jan 2021 21:18:33 -0500
+Received: from de-smtp-delivery-102.mimecast.com ([62.140.7.102]:34567 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726706AbhAGCSd (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 6 Jan 2021 21:18:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1609985845;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=/d6PkSxgHGdSO2G/bGXqwO9r0hc+j9TjkglmPmxN7qY=;
+        b=FiTlEHZvmUv89wyc4iDDas37QxvL6XVaNIXAytlWdG7QFKxGQ391ZlZHTd0cWdf3Ygos0D
+        /qWyRhscsCgodWHFDg6oeT7RdRHN4cc/pNWVFrJPGcE7vNQbAdKYlteMZVyloXnPfLsqNF
+        pORfr7psAr1WnDMe4L3y1U7LrUBImJ0=
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com
+ (mail-vi1eur04lp2057.outbound.protection.outlook.com [104.47.14.57]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-30-QDFCRoFmO2qwp6g_6vlLRA-1; Thu, 07 Jan 2021 03:17:23 +0100
+X-MC-Unique: QDFCRoFmO2qwp6g_6vlLRA-1
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TDGyzAYZMUY0qWlNKCtJuM9aKGQEjct5lwVsYeiEzMRMwctToHrOJn6iJpnbBG5qgPejsCja3a2+tQkyPsCuBxEuCQBFwQudwmqAvJvH+AwxW431b1HR+Uw6XR0lDhdQXqVpUkuQhF00HXOU9CVVxjH9KrTUp8R+oOirDf1nDGgxfGT7sB2B0pinV9xPQH0/mJi7N8uYIVXYkKNOEete5AfRfmf2gUSM/RhUwEfvHFsVpOJtQPrOlOY2EqhEst6TDOwIS2BwxjINU1mrXYiIOcXGziCP2V9pmsMaeo9EoCSEy8s97s6RXe2V8cqRKBaMa73yNQbgSaorDSsnH8R7xg==
+ b=NAJmWHSCmTJPVfhY8Q4pS9vn+i2F8dtqgC3TuKrj4W9griwp6y1EBvKByZW+UPZ5vsq7O9vzUDHJpVK9o8N7ojCrOGEcnKQuz7zSiBzeOHCmD8laitZOQHeA7WR9PXDOG3R9QexuXV2js43XbSV2pWiewZf68YxfZp6SVtWWcb+VVJiibax9Fj5SGVLIA4z8v2x3kKuRxtR1Pvq14RGm1zdyy0Hg3Oi7Brn5TTxlFwYA22eaVnEWNH8fVymDsmMjSUddMj/UdGpibnXiWj4mmtkZ5ZuJXGuhYo7MVtQ/SK8X/Hh57cUxpEBhXGQLnRcGp/aNjJn/agoPe1GU8U/oqQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=er5ipm3XGFmXtCw1u19E3GFVw+2eHKJs094JcL5fhg8=;
- b=OXunwupDxLvsvxjkD9aQF21tNcarV93xnWi1LmPewoCWXmafVgeD/vzki6HvzwSHDMeNe7qMh6o6vVLk4TgzTWl5Cx8Co0kWmMjDls/QJYSgbancOTXI+ACmPi8KJnTMvDZ18EXdoSkdhZZkQVrR1vl+SErpt8Yfm6HeQVFb0yHgii9aNANO/pmO91ZwfkzDXk18cB6/21/wt7RbDTBYmY/X+DBmY+FLmdt27Dr0PQ9zYzTgPAQSY0/epiWcafafiSq/GKQNi04s1Qwkokmb6FYmhooeeT+yRiOY8FnIkiPTxMRGT/tNJNZ7dhvu9EltO9S+jwFNguMnEQ7Ifz3NJQ==
+ bh=DzJtz1nvJ5cu4n8yvT9Y3LIlPmRzzoP8wHFLST9meWQ=;
+ b=l8b+FgU71TRaIU/4EAJ291ja2+KZURhsXDvgl6UpyI1oG+cEoY3Qa0ZC9bBEiVlRfstXR+2ybKIskVa/ZdX8kBEQpHUWCO8Nv4CnVVthB8FN4nCR82q+Z0h/tJCtHvL2XwLt714gFjHf78hIX//9/DCe2PG5U9KgN5RU3ECkh9fuOm0bRxmMc8cDL2R0T7O+E1Pmziq5iAyi4ufQxb44eZPcuHjAPobIF3I5iaah9SJ4wxusotOtj5c4VoDplhpOOFpDqVLQfv+0Oc1EbFoIUJL58dHvzR8pVVQtCltgpNztsx5gJJxwl+Oqn2N1NnipJmL2DlKyFnlke7eOgSdwlg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=er5ipm3XGFmXtCw1u19E3GFVw+2eHKJs094JcL5fhg8=;
- b=HsxOkhoYc0lufEb4DLEQ66kjCijP7HDuBt4petbW21H4SLCF4OooNAhOFUOdEaWWGQ+am7a0Xa6b9qJC78aADHZ3is9EiDcv90QCNXKpBXrkCJJnxM9ywRjGS0bBmZFmbfuHryUlAMqGO02k+NXXAKKJuSh5upMok+mv9sK0bNI=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by BYAPR15MB3461.namprd15.prod.outlook.com (2603:10b6:a03:109::13) with
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
+Received: from DB3PR0402MB3641.eurprd04.prod.outlook.com (2603:10a6:8:b::12)
+ by DB7PR04MB5226.eurprd04.prod.outlook.com (2603:10a6:10:21::18) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Thu, 7 Jan
- 2021 01:29:50 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::217e:885b:1cef:e1f7]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::217e:885b:1cef:e1f7%7]) with mapi id 15.20.3721.024; Thu, 7 Jan 2021
- 01:29:50 +0000
-Date:   Wed, 6 Jan 2021 17:29:43 -0800
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     <sdf@google.com>
-CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, Song Liu <songliubraving@fb.com>,
-        Eric Dumazet <edumazet@google.com>
-Subject: Re: [PATCH bpf-next v3 3/3] bpf: remove extra lock_sock for
- TCP_ZEROCOPY_RECEIVE
-Message-ID: <20210107012943.rht4ktth5ecdrz42@kafai-mbp.dhcp.thefacebook.com>
-References: <20210105214350.138053-1-sdf@google.com>
- <20210105214350.138053-4-sdf@google.com>
- <20210106194756.vjkulozifc4bfuut@kafai-mbp.dhcp.thefacebook.com>
- <X/Y9pAaiq2FMHoBs@google.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X/Y9pAaiq2FMHoBs@google.com>
-X-Originating-IP: [2620:10d:c090:400::5:5a1c]
-X-ClientProxiedBy: MW4PR04CA0304.namprd04.prod.outlook.com
- (2603:10b6:303:82::9) To BY5PR15MB3571.namprd15.prod.outlook.com
- (2603:10b6:a03:1f6::32)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.20; Thu, 7 Jan
+ 2021 02:17:22 +0000
+Received: from DB3PR0402MB3641.eurprd04.prod.outlook.com
+ ([fe80::80c9:1fa3:ae84:7313]) by DB3PR0402MB3641.eurprd04.prod.outlook.com
+ ([fe80::80c9:1fa3:ae84:7313%6]) with mapi id 15.20.3721.024; Thu, 7 Jan 2021
+ 02:17:22 +0000
+From:   Gary Lin <glin@suse.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+CC:     Eric Dumazet <eric.dumazet@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        andreas.taschner@suse.com
+Subject: [PATCH RESEND v2 0/3] bpf,x64: implement jump padding in jit
+Date:   Thu,  7 Jan 2021 10:16:58 +0800
+Message-ID: <20210107021701.1797-1-glin@suse.com>
+X-Mailer: git-send-email 2.26.2
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Originating-IP: [111.240.141.15]
+X-ClientProxiedBy: AM4P190CA0024.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:200:56::34) To DB3PR0402MB3641.eurprd04.prod.outlook.com
+ (2603:10a6:8:b::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:5a1c) by MW4PR04CA0304.namprd04.prod.outlook.com (2603:10b6:303:82::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Thu, 7 Jan 2021 01:29:48 +0000
+Received: from GaryLaptop.prv.suse.net (111.240.141.15) by AM4P190CA0024.EURP190.PROD.OUTLOOK.COM (2603:10a6:200:56::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Thu, 7 Jan 2021 02:17:19 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8881b2db-f966-4504-7f6a-08d8b2abba17
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3461:
+X-MS-Office365-Filtering-Correlation-Id: cdbae070-bfcf-4807-2d1d-08d8b2b25dd3
+X-MS-TrafficTypeDiagnostic: DB7PR04MB5226:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB346113A60BD8E44446833ECDD5AF0@BYAPR15MB3461.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-Microsoft-Antispam-PRVS: <DB7PR04MB5226F1DEAAE98844399FA7E7A9AF0@DB7PR04MB5226.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:854;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2rRmZOUHqq8TKzmbHDn7RCauTfFMmutIR1bOaCjR9y+D/go+sXVfz4d6WgxxxhUgPlsjyP9vpObNC2vidmUDTcEUB5cAYaSusPSVuZkLUnN3vW6gRqj+DJHzo3xPQgxTuvbJKHyKiIL3tnfzcazvsxNqlWbIs+2Zz760Uwvtr60UqI2EqnfFzFlR2/XHTbupwXXmPywl1ECs3r3ruyP0oXzDiPlrfhsxrbRDBs3UNIRf9/739+kvq1SAmmDhj55pzkgaVcaYHmzJLCCB4n49GnyYG7fVkA0i62hrZXVGmA42oYp3G/H4VjuvdGb46wldjxFC12QQpSk+4HsYNiskXVW74VPCFqEni+l6qXz7jjbNOXonFLwx1A5FwzB4RgwAGqPwCrmm/ilIm2KTgM2xXw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(366004)(39860400002)(346002)(396003)(86362001)(4326008)(8676002)(66476007)(316002)(16526019)(83380400001)(6666004)(186003)(54906003)(6916009)(9686003)(2906002)(8936002)(66556008)(66946007)(52116002)(478600001)(1076003)(6506007)(55016002)(7696005)(5660300002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?XPlOY4VkDgCbxhhJjZLjigtILhg2YRicJ2GiWGzjU2Ck4QtUkAc7fdHP8pVh?=
- =?us-ascii?Q?zmDur3ym7O5h/k8SDwNQciw2wx1J0YuPvgbKd/4WhZZwNqj6Geo3VSlejlwl?=
- =?us-ascii?Q?gXiTTIPItr7JdBzLkRPy9okzZdkap76A4OU1+YFoGttcU3E+yiTJSaAySGph?=
- =?us-ascii?Q?Gj/+SrXW/PChVbavRKgdxV0u8/0KgkeSmw3FmYNXfEEJNfvztiMbmzVqfJYg?=
- =?us-ascii?Q?eM0Y6fvt+VzKHXl8hKy14SH91LsibnEKUHeoZtFTBqDfxNu69IszJJix+FwV?=
- =?us-ascii?Q?rzIVUuVKBLOXOs1UbmUbjfYXYAt7XGkiZaWoYqFA80/4prt5BFytRVGcDZJ5?=
- =?us-ascii?Q?EnsrkTDwHOYhrgwZ+gUD0l5lqQQ3RhMRwFpi8uScxB6YEgdzGi3GazoVgTL6?=
- =?us-ascii?Q?St/5XyCM0+/429ssXLbVBTXCGDKVKwo8sJb6SqYYWVCT9JwwUF0ANU/Ryw6b?=
- =?us-ascii?Q?GZNsLtsCTJeZbuOCNI7qJU1sQsmijuFMMOayuhJYtm9oPieNbUQP+7jS/v36?=
- =?us-ascii?Q?ZuVoVFf+tPfM+xKKEgttEOJBJuzCmJ530fMbRxck65M9+F7aj7ehxyKlO+WH?=
- =?us-ascii?Q?JU6eLgFmkk3aeS5R1LWRMse9gpkO0areQ52hggQLw2LETY+8G+JD/scHY5nR?=
- =?us-ascii?Q?fPNr+w/Ck3VRUX2LuCvvUw3yDHHn0OSZA3ZglEpA6IKvj66yU3RM0W0XSNQZ?=
- =?us-ascii?Q?oniw8lHdonTK3WuTBnXcTQzJnJlJKvEUCBksEnO9Ig8mpUcGSGGfW7Bxlu7g?=
- =?us-ascii?Q?oXtSoIMM306n+/mVPAF2YVYFWKLT6eumnuk7+0VLBzRhadSjIAkdT4Tu56+t?=
- =?us-ascii?Q?ZXJrvoQOzgX7KJux15MoZWnW05FdJ0+HEKmYoC4MI+dETi+QoaLsJ9EkrhOF?=
- =?us-ascii?Q?aeJJYZ3tjuOZ6tuvPzqCpqJbYwuAHYWGdEYl8/u1suq6XJiGh9dnLbddiIvX?=
- =?us-ascii?Q?Ma5VqnwMuEYs9Q+PM+7R6AkocMu/PrOiNNApGThUXO4dBmURXbZk1SQ7A+u2?=
- =?us-ascii?Q?IFD4CZ7frs8LwH9k49UJ+b8swQ=3D=3D?=
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: PsohQRQlGIWhjb50gT0sNXIhoXLd2KxwgTJjgYAiXZEP+ibFyzqqUxNAwDYRP4zAwSMEm4gkv0ENgVIeJ9F3alobCD49D7MdsUfonHxq9P924UZUaTFtCum8GVz+3tADY985I0vZ8hrvAGVtGYV2SXKDV4uAC17Y5t4h9XAZKrJB2QmlQ84nGA+XlLskKlQs3krOBgdP0vel7QvyLU+aC3nSJkx7r2IK02Ub2aSpz3TLtdpI6w5cx0FNHEZzBG00oS1QIKBD58cIDVQ/6DC7bN7RcdSuF9zHUf9RqCrFT0pdY6ajextY5Gvr+wc9NKROLvw1I0glipQ2o1qH2lNvAGGElDYYpe57JyDhwlb5sfr8EYBMbqRJonRtkEeFcQmJ
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB3PR0402MB3641.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(366004)(136003)(39850400004)(396003)(478600001)(8676002)(5660300002)(6512007)(54906003)(86362001)(2616005)(956004)(110136005)(4326008)(8936002)(316002)(107886003)(6486002)(36756003)(4744005)(1076003)(83380400001)(66946007)(66556008)(6666004)(16526019)(2906002)(52116002)(186003)(6506007)(66476007)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?ht27g2BJ6FlT2/KgXwl7chgkNZxeGRS/3dV+QhReF5CyuRR7ogASUOSBWAUM?=
+ =?us-ascii?Q?zO5S5SOmidxvWdWrt+hP3ENMgHrd20hsxi3LBp0026Stpbk8xBRxCorNlMeg?=
+ =?us-ascii?Q?nU6tjMstKGT3c9Y6LQy2ByQB0j6sUwUjBw2akpsjMxPZy4GP72xDubcfIthA?=
+ =?us-ascii?Q?zzHyzXsQw0WIA7S855WCBpp4OErCCUM8XoqQLUNcpE2GyYtQOaYK5pqNSPxQ?=
+ =?us-ascii?Q?UnnZBp5fUfbVDX3n3TnyFVzOx8ZzzS10AlqNXPgsl9wkuO72EdQUhTYQw5dV?=
+ =?us-ascii?Q?pYPyiWezRVXwJ+vtmvKt2gvYAAPwZjzEfOpRw36ZPo3XIOp09M8RkJlZtrHj?=
+ =?us-ascii?Q?VNSZagmRm6/R3jv6n2XB47pxHfm+/Wwsl0UOkLmJY4lzGt7NRUdQy4hsEo7V?=
+ =?us-ascii?Q?b3+S3bQoMsREOz7r17qXlzicpXyQr26VopYZZ2jJCLS3lP93IVP5k/408GLd?=
+ =?us-ascii?Q?t02E0DCczS9VdgLazherSOwuJeQ7vNDrQ8ResT5f/ln7nMmFW5tOndcAPDD9?=
+ =?us-ascii?Q?P3JGERpWggkWFepdES36sKQs3JMyYw85BwHTmB/xOHtSruuhIWv8nVzW9wbY?=
+ =?us-ascii?Q?2zHEgnc9BaT0ilUPoRobbpE6wS0k3nMVkUPMF3nshUp/fd1D5XvhvxtkOjuT?=
+ =?us-ascii?Q?P9fmHsbfwm9ZwUKk7jfY9V/3jcsm+nYWyZU3RHWYCoXprtHEpmHLZVgu1eDX?=
+ =?us-ascii?Q?TNeOZjsPubgKNoz+L5l79Vx0VYJunuaR/QaMVMvgGd+p5aB4RBQASbTycVfA?=
+ =?us-ascii?Q?QgUCD35njN+rDgyyGM5HFwM9gQXw3PuGXJabZoVtZwhVJxPQv9ZnM5Npb4DQ?=
+ =?us-ascii?Q?LwBODf7MdNP7sDB9Pzsg8mQmsMdEnzE/yxS/OmZnzX0X36OL4bRbUlnkkRGj?=
+ =?us-ascii?Q?53nOfRU+Tijlc2v6Q9Ag1/JyETQRfo753ptdFaXtmbiN1n7ZE7622ixUHUwM?=
+ =?us-ascii?Q?paukwJb+jIQ5F0a8I2A+43kWAudGhX7I7YCU/Arr8huniWuzeRZDUBD3dQBM?=
+ =?us-ascii?Q?JJeU?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-AuthSource: DB3PR0402MB3641.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jan 2021 01:29:50.2480
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jan 2021 02:17:22.0059
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8881b2db-f966-4504-7f6a-08d8b2abba17
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-Network-Message-Id: cdbae070-bfcf-4807-2d1d-08d8b2b25dd3
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Uw58fyEapUx/ulo2+spXiJBvgM1a0MikiLEs2zUCvNYKgXNiuNtclOGe3Va7ezrG
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3461
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-06_12:2021-01-06,2021-01-06 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- impostorscore=0 lowpriorityscore=0 adultscore=0 suspectscore=0 spamscore=0
- bulkscore=0 mlxscore=0 phishscore=0 malwarescore=0 clxscore=1015
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101070005
-X-FB-Internal: deliver
+X-MS-Exchange-CrossTenant-UserPrincipalName: RP9/wIvg/J7pwmdh7keLwnvrxwnwRP8ltDqh9IxlLOx40SUBF4ffIpxe+9xs2dLz
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB5226
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 02:45:56PM -0800, sdf@google.com wrote:
-> On 01/06, Martin KaFai Lau wrote:
-> > On Tue, Jan 05, 2021 at 01:43:50PM -0800, Stanislav Fomichev wrote:
-> > > Add custom implementation of getsockopt hook for TCP_ZEROCOPY_RECEIVE.
-> > > We skip generic hooks for TCP_ZEROCOPY_RECEIVE and have a custom
-> > > call in do_tcp_getsockopt using the on-stack data. This removes
-> > > 3% overhead for locking/unlocking the socket.
-> > >
-> > > Also:
-> > > - Removed BUILD_BUG_ON (zerocopy doesn't depend on the buf size anymore)
-> > > - Separated on-stack buffer into bpf_sockopt_buf and downsized to 32
-> > bytes
-> > >   (let's keep it to help with the other options)
-> > >
-> > > (I can probably split this patch into two: add new features and rework
-> > >  bpf_sockopt_buf; can follow up if the approach in general sounds
-> > >  good).
-> > >
-> > > Without this patch:
-> > >      3.29%     0.07%  tcp_mmap  [kernel.kallsyms]  [k]
-> > __cgroup_bpf_run_filter_getsockopt
-> > >             |
-> > >              --3.22%--__cgroup_bpf_run_filter_getsockopt
-> > >                        |
-> > >                        |--0.66%--lock_sock_nested
-> > A general question for sockopt prog, why the BPF_CGROUP_(GET|SET)SOCKOPT
-> > prog
-> > has to run under lock_sock()?
-> I don't think there is a strong reason. We expose sk to the BPF program,
-> but mainly for the socket storage map (which, afaik, doesn't require
-> socket to be locked). OTOH, it seems that providing a consistent view
-> of the sk to the BPF is a good idea.
-hmm... most of the bpf prog also does not require a locked sock.  For
-example, the __sk_buff->sk.  If a bpf prog needs a locked view of sk,
-a more generic solution is desired.  Anyhow, I guess the train has sort
-of sailed for sockopt bpf.
+This patch series implements jump padding to x64 jit to cover some
+corner cases that used to consume more than 20 passes and caused
+failure.
 
-> 
-> Eric has suggested to try to use fast socket lock. It helps a bit,
-> but it doesn't remove the issue completely because
-> we do a bunch of copy_{to,from}_user in the generic
-> __cgroup_bpf_run_filter_getsockopt as well :-(
-> 
-> > >                        |
-> > >                        |--0.57%--__might_fault
-Is it a debug kernel?
+v2:
+  - Simplify the sample code in the commit description and provide the
+    jit code
+  - Check the expected padding bytes with WARN_ONCE
+  - Move the 'padded' flag to 'struct x64_jit_data'
+  - Remove the EXPECTED_FAIL flag from bpf_fill_maxinsns11() in test_bpf
+  - Add 2 verifier tests
 
-> > >                        |
-> > >                         --0.56%--release_sock
-> > >
-> > > With the patch applied:
-> > >      0.42%     0.10%  tcp_mmap  [kernel.kallsyms]  [k]
-> > __cgroup_bpf_run_filter_getsockopt_kern
-> > >      0.02%     0.02%  tcp_mmap  [kernel.kallsyms]  [k]
-> > __cgroup_bpf_run_filter_getsockopt
-> > >
-> > [ ... ]
-> 
-> > > @@ -1445,15 +1442,29 @@ int __cgroup_bpf_run_filter_getsockopt(struct
-> > sock *sk, int level,
-> > >  				       int __user *optlen, int max_optlen,
-> > >  				       int retval)
-> > >  {
-> > > -	struct cgroup *cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
-> > > -	struct bpf_sockopt_kern ctx = {
-> > > -		.sk = sk,
-> > > -		.level = level,
-> > > -		.optname = optname,
-> > > -		.retval = retval,
-> > > -	};
-> > > +	struct bpf_sockopt_kern ctx;
-> > > +	struct bpf_sockopt_buf buf;
-> > > +	struct cgroup *cgrp;
-> > >  	int ret;
-> > >
-> > > +#ifdef CONFIG_INET
-> > > +	/* TCP do_tcp_getsockopt has optimized getsockopt implementation
-> > > +	 * to avoid extra socket lock for TCP_ZEROCOPY_RECEIVE.
-> > > +	 */
-> > > +	if (sk->sk_prot->getsockopt == tcp_getsockopt &&
-> > > +	    level == SOL_TCP && optname == TCP_ZEROCOPY_RECEIVE)
-> > > +		return retval;
-> > > +#endif
-> > That seems too much protocol details and not very scalable.
-> > It is not very related to kernel/bpf/cgroup.c which has very little idea
-> > whether a specific protocol has optimized things in some ways (e.g. by
-> > directly calling cgroup's bpf prog at some strategic places in this
-> > patch).
-> > Lets see if it can be done better.
-> 
-> > At least, these protocol checks belong to the net's socket.c
-> > more than the bpf's cgroup.c here.  If it also looks like layering
-> > breakage in socket.c, may be adding a signal in sk_prot (for example)
-> > to tell if the sk_prot->getsockopt has already called the cgroup's bpf
-> > prog?  (e.g. tcp_getsockopt() can directly call the cgroup's bpf for all
-> > optname instead of only TCP_ZEROCOPY_RECEIVE).
-> 
-> > For example:
-> 
-> > int __sys_getsockopt(...)
-> > {
-> > 	/* ... */
-> 
-> > 	if (!sk_prot->bpf_getsockopt_handled)
-> > 		BPF_CGROUP_RUN_PROG_GETSOCKOPT(...);
-> > }
-> 
-> > Thoughts?
-> 
-> Sounds good. I didn't go that far because I don't expect there to be
-> a lot of special cases like that. But it might be worth supporting
-> it in a generic way from the beginning.
-> 
-> I was thinking about something simpler:
-> 
-> int __cgroup_bpf_run_filter_getsockopt(sk, ...)
-> {
-> 	if (sk->sk_prot->bypass_bpf_getsockopt(level, optlen)) {
-I think it meant s/optlen/optname/ which is not __user.
-Yeah, I think that can provide a more generic solution
-and also abstract things away.
-Please add a details comment in this function.
+Gary Lin (3):
+  bpf,x64: pad NOPs to make images converge more easily
+  test_bpf: remove EXPECTED_FAIL flag from bpf_fill_maxinsns11
+  selftests/bpf: Add verifier test for x64 jit jump padding
 
-> 		return retval;
-> 	}
-> 
->  	// ...
-> }
-> 
-> Not sure it's worth exposing it to the __sys_getsockopt. WDYT?
-or call that in BPF_CGROUP_RUN_PROG_GETSOCKOPT().  then the
-changes in __cgroup_bpf_run_filter_getsockopt() in this
-patch should go away?
+ arch/x86/net/bpf_jit_comp.c                 | 86 +++++++++++++++------
+ lib/test_bpf.c                              |  7 +-
+ tools/testing/selftests/bpf/test_verifier.c | 43 +++++++++++
+ tools/testing/selftests/bpf/verifier/jit.c  | 16 ++++
+ 4 files changed, 122 insertions(+), 30 deletions(-)
+
+--=20
+2.29.2
 
