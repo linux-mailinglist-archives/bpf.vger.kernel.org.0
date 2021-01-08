@@ -2,163 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D42BB2EF2DB
-	for <lists+bpf@lfdr.de>; Fri,  8 Jan 2021 14:07:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E88892EF65F
+	for <lists+bpf@lfdr.de>; Fri,  8 Jan 2021 18:19:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726011AbhAHNGJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Jan 2021 08:06:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725816AbhAHNGJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Jan 2021 08:06:09 -0500
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD586C0612F5
-        for <bpf@vger.kernel.org>; Fri,  8 Jan 2021 05:05:28 -0800 (PST)
-Received: by mail-io1-xd34.google.com with SMTP id t8so9656749iov.8
-        for <bpf@vger.kernel.org>; Fri, 08 Jan 2021 05:05:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FoZ36nvKGmBM6PjnVM75KlQgWxheD1KsASjWnU5y1fU=;
-        b=p9WKsAO6CyfD1kjoCdeOGX/PeSiuA/AFYj2tMyhGYgedMy7q0X/VbpeBx8px2xUL+W
-         V9XCkb65vH31gga/0ww4Ucj6ZSDWbfEkpQwoEYCu7PF9WWxsMQLLzXUO6hCO10QMZW7Z
-         WHXddO3qaTxxuePbPmEEJk3s8TTffdJNQQ+liTqbUSfcoU9Jh0lp1c2bJxevpXgH2S+t
-         XGjh0+R9RraPMhcVEUX5MLwmbf80FlEKBgKQ8QVvZLn+inoxguE9ciNZk7hvHEzEhRIe
-         vYQ6wVq0z/aEqezwNgaRYxcCYatLWjoKOEvtx65cd7ac/zkRi1vYoNE5WPojpe8sX+nN
-         fazg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FoZ36nvKGmBM6PjnVM75KlQgWxheD1KsASjWnU5y1fU=;
-        b=FmL3a1BrZTI6r7byKj5CLy0ThO4y6HqicOg/h2iKOoBAFRbozxvmacqDgZ/ctceDPA
-         WFjpTjGzraeB6BkIW63wWGpTPWeAcWyYl9EpukNfUuf8mloZAL7iJMwzbDGEBxR/4EVD
-         5dW1GHb+/ZnZExVfZG558J/FGVnDv93EUzWe9ILstzS2AmIOEzKukyE8r2aNS5crzNGL
-         DG5p1KL/3L94rAxtAIoHCbAMJBnvQlGLU62KpDFeD40N5SFvygD7V9bLAjwY6c37yl2a
-         UlX03PUqBnTQsz1PrK746BiUanilbKYcVG09uEIpnQSmaNz7DjK6BE4Cfg2OQfUmmQN8
-         OflA==
-X-Gm-Message-State: AOAM533rFkdFyuF2wY8VIOXfpzd8cJsp3kKuHrIiUYuDsEJL/QhIN8qZ
-        zP0OznYY0IdKfTW4eUcF+Ed3vYfflxf/p+lxnEQLGA==
-X-Google-Smtp-Source: ABdhPJyd5rZXdozTpA463unD8iBQ+2OoYxC+Az8jdjJRXPiOzSCveMnieQVMcDcW+9czld+Pz1LoG0+J2u+0TTq/pZw=
-X-Received: by 2002:a6b:bac3:: with SMTP id k186mr5222118iof.194.1610111127677;
- Fri, 08 Jan 2021 05:05:27 -0800 (PST)
+        id S1726650AbhAHRTf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Jan 2021 12:19:35 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:8604 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726011AbhAHRTf (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 8 Jan 2021 12:19:35 -0500
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 108GqW6x008164;
+        Fri, 8 Jan 2021 09:18:48 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=H4oliN7CKkX2REamPvkk/6qHKJIver9wub8ZxejoKeI=;
+ b=ePQ43ytNt21jfkhp1Hs2Pvg7Ten61PKMT/TVBgV+MmOn43quSVTbF1tL0TxP99r5aYIF
+ SLyM2zHVEbfn7hFcn8OC+rXt8ul8wKcSNd5Ass2L3Esab9yLnbdeL8rksxGEbruNwtU7
+ QB18irQK87JbHqV2E1iYS5fbyD4jo8WcKKU= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 35wpuv9e07-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 08 Jan 2021 09:18:47 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 8 Jan 2021 09:18:46 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Tt21n6b3dfJY3oTn5+eg+9xpSNC0i3UzE7NvKVjZd4WyCblkTK5rnxBD9vnEqj0wTDh1Jn8Tn1OWyGjwPpUt1AhlJo+FATVeOKLFArSzkixmosenufivlInmg9Qw4OHeEMRkL0KE6CVKfC38PqjbK9oHkSRF0Gj1QL3uaPHqYSaMIy6VloR93gFXZd1uLN0ucy03N/A4DbBIAJWrAxXGIH3uU5kE5ixsM8CgoE473x7P1doquJxcDSts7u5/oHVmc2oiQPy3HJmSIoNJUvMXiZFhr2KEDb9+jgyk1ong+D8s5dxMZi0adFIxa4ea65KaMuXcUwjuE9WWOwamdWQ97A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=H4oliN7CKkX2REamPvkk/6qHKJIver9wub8ZxejoKeI=;
+ b=iZIzioUQDb6+OVPrgJZR9qy9nREoOoDs2hpkMvHuhgtUNpIy/HobH+30u0MuPBpG4jElobDlA6pGQdmjY/MlmvkeA9QchnX03f9jIQmM4rm4ynKm5Q2nwTuJXKUm1Qqjub6Dd+M5aWJOQorLgLwVC3oyukuWb2JUwb3+sws/cNSFN+8xw5KKFcFHmw4Vl3IXyGF2l1TWWrF/MgwDNdQV5uqymX2WvcHbn/tWiqoAYO4X2rjS9Wxz9wWgcSnlhXElITsAtkVKTETO63HzTPVn5kZ96etVf1l3V4Qelr/ZmbbaxAdppeiUy2xIQ0SbiAm7ABnVpl9MMlA1qbbEYdtuag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=H4oliN7CKkX2REamPvkk/6qHKJIver9wub8ZxejoKeI=;
+ b=VOrOfII1IfH10C5CtO35tZaNo3xz7un0/jMe7f23SjC+0slENeNqFak/E72/PNmpGge273CVfVXCooNXelpF5RW+TRJDjn2kbGOkKVDwM1deWrubtsH7a2Kqyevvf9Zexb680vJsdG9Wy3lMijaod46kEhbogczPZpXzJz44NRE=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by BYAPR15MB3415.namprd15.prod.outlook.com (2603:10b6:a03:112::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Fri, 8 Jan
+ 2021 17:18:45 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3721.024; Fri, 8 Jan 2021
+ 17:18:45 +0000
+Subject: Re: [PATCH] tools/bpf: Remove unnecessary parameter in
+ bpf_object__probe_loading
+To:     =?UTF-8?B?5b2t5rWpKFJpY2hhcmQp?= <richard.peng@oppo.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>
+CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <HKAPR02MB42916F8599BF7B58AD73C27AE0AE0@HKAPR02MB4291.apcprd02.prod.outlook.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <f19a1163-fe4f-5a5c-3d50-3f035a080359@fb.com>
+Date:   Fri, 8 Jan 2021 09:18:42 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.0
+In-Reply-To: <HKAPR02MB42916F8599BF7B58AD73C27AE0AE0@HKAPR02MB4291.apcprd02.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [2620:10d:c090:400::5:2644]
+X-ClientProxiedBy: MWHPR22CA0065.namprd22.prod.outlook.com
+ (2603:10b6:300:12a::27) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
 MIME-Version: 1.0
-References: <CAEf4BzZw5Zt92PHMP=3+aKEiJNP6aG6+Xpw5BLK2mQAohVPyxw@mail.gmail.com>
-In-Reply-To: <CAEf4BzZw5Zt92PHMP=3+aKEiJNP6aG6+Xpw5BLK2mQAohVPyxw@mail.gmail.com>
-From:   Brendan Jackman <jackmanb@google.com>
-Date:   Fri, 8 Jan 2021 14:05:16 +0100
-Message-ID: <CA+i-1C12rrRbTUDZXYUKWoVOgXDw+K6Hrj0Lg6wnrEL93R7_oA@mail.gmail.com>
-Subject: Re: BPF ring buffer variable-length data appending
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     KP Singh <kpsingh@google.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21c1::1627] (2620:10d:c090:400::5:2644) by MWHPR22CA0065.namprd22.prod.outlook.com (2603:10b6:300:12a::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Fri, 8 Jan 2021 17:18:44 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f3952ae6-5ecb-4968-e1bf-08d8b3f9747b
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3415:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB3415D856B780C6976FC36428D3AE0@BYAPR15MB3415.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:2887;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: UewTYN/yN+NsGDuUUP3cGvq5WXN+NxTWvWWbKKZzGYjR2xl2zZfJdH+M45bvRmoicwLrCZ5ZlPXBJk2dRtNupUO71ml2NOmTvPERrCCzqeYnbpitdsozyZSGVFRyU18bMMAAxzOLvwkakhz8vFqCA8PoavittP0mfCHAJEoFL3IYKmG/iSg1zb1zdOnnN6KpNvJK4/KDaQBZd3WEnXYz45iDynly4YsHPkzKb611WtMcmz1kZVWMbO4SP5GjnBs8uXnrGwzLs4DkypWghe/OPkkhWJZpl/9h7nibp6PWWc6k93+v6uw8ojo04l+qiXyHFw3GtM89cnd9Hr+VTZ4AooJezTL2WVw5JzdrScaif4FFLjyu/hpug+NLPHIWmETw12fRjRu8bmsTvxF2PBiCDkejBBB63bb7Q9yQSROwSfnn70iRKywfh8dKWvz8v088mR+HTPHlcJ6iuWC2BZHqfG3Mc75ZuFx3AwO1+DBCm/m525v63Jc6lP+SfGSemk2HNFhxO28eIZXpIo8gVHfdOQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(366004)(396003)(346002)(39860400002)(31686004)(8676002)(16526019)(86362001)(31696002)(4326008)(2616005)(558084003)(186003)(6486002)(8936002)(52116002)(316002)(36756003)(478600001)(110136005)(54906003)(2906002)(66556008)(5660300002)(53546011)(66476007)(66946007)(101420200001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?TUNodUdOazZZS3h0ajVYcklhR1lXV0pxNDlLV2xjbHpaR2RudnV5NEcyVVhR?=
+ =?utf-8?B?L0JmTjB5aWVXbWxkWDFOaU5WaTdxU2QxQTdETUtyWjZMUXB1VTBHWG51OUlF?=
+ =?utf-8?B?NWlQeFh6S0FTL24wZy9pcDUvcW9yYXA5N2IvczIzS1RVMXAwR2hSZU1KOXRE?=
+ =?utf-8?B?ZDRFSFh6U2oyWGdlWCtyZWE1dFBDUnRXelh1UHFCQmJnZ3pBS0ppYWNYa3VJ?=
+ =?utf-8?B?Zm9WYmhmT09WOHNCdlo0VGMzQmVvOFlBL1J4bWt6TGtlUDFEU0lLeEtIUXlk?=
+ =?utf-8?B?bHo2L01mMk9aMEc1K0NlN3ptcnpWY3p6NS9wMlVHOUN0bDdHMmFWQ1l4SXJm?=
+ =?utf-8?B?VHppdWV2MlVuZnpCZkE0NnRmc0xSb0I2bjI2ZWxPeDJEUTlDUXo4dExkMDls?=
+ =?utf-8?B?ZHFSd0lSWG5RWTJQazVrbzV0ZXlOalFTZEJOdGNhRGh1U2E0YmdBbjVlTUFR?=
+ =?utf-8?B?RTJmTUMycVpOWTRTUFZGYTZuMy84RklGUUFWUGprQTR0Q0Y2em5URXNhRm11?=
+ =?utf-8?B?UG1pb0RVcFlzcFRPUnd6RSt4ckxVVFNTalpWNWZUMUFnOWNYdnBHQnhpVnFk?=
+ =?utf-8?B?cGRZUG1JL1NsUVpHUnYwMGdXaGd0cmM4NDduWXhyeHF2a0FYVkxNU296cGJQ?=
+ =?utf-8?B?SGQ0Rm5iOFQ0aUtuaWpoVkdpZHkvUU9NS0kvUmNtWXJJem4wSGwzQ3ROVnhy?=
+ =?utf-8?B?V2xEOG5JQzRra2VjUTM4SHJzT0F4QzdXYmxidjJlRnZBWU5KS1dtNVUvMXNS?=
+ =?utf-8?B?OEdUSDFHcWpKZ0VVYTJjdTd1RVRUQ09wajlwbXkvWEQ4ZGhZMitOdmxzbmtB?=
+ =?utf-8?B?SGdhRW5ZVUVWOFlWM0lVY2VPZ0FrR2huM3kyQ1VxYXV1VWNKcFNRZjRha1Uv?=
+ =?utf-8?B?Y0ZSOTVBYS9OcUhhMDI3THdpU1Bhemp2Yjhlekt5d2piYzIyQ0RHdXBpdVFk?=
+ =?utf-8?B?T1hEMEZGeURiUE9DVVBKQnhKRE9SdGpRM2pCbkpuV3cwM2l4ckFLSHlpSmQw?=
+ =?utf-8?B?dTZIc2M4UElDTG5wL1ByczhLTno2NkRrMWxINUJ1RUR5Rlh5YTJZS3gzbGU5?=
+ =?utf-8?B?dzVMck9uQTNqV2tDZUlGOHFkQ3NncGpXQ2lZSHNLYlRQZWE2WTg1Y01RYmlD?=
+ =?utf-8?B?em1qMDVZczZNWURpM0ZTQjl0ZzNyNSszWnNVdEpua2p6RGk0ZUpFMTIzRHFQ?=
+ =?utf-8?B?T3VobTV4Z0RkZE1LeHdjR2czR2pDeFRxYlROcmZ3ZXZPN0hRbkJZZnFHZWVl?=
+ =?utf-8?B?bDkyeW0rTE9hVmI4K2pITm1LSzRXeXNnR2xyYXViTE01MDBnS3lrbnVEdkRl?=
+ =?utf-8?B?dmxVOG9jczd0Q3hCMVY5VENoTzM5M0lGWS9wTC9pcG5oVnU2QzUxYkw1N01l?=
+ =?utf-8?B?TC8wdVloMnNoSXc9PQ==?=
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jan 2021 17:18:45.4310
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-Network-Message-Id: f3952ae6-5ecb-4968-e1bf-08d8b3f9747b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /8anQU4u/IRDPb4grFkLNMEX2XiTnqz0AsuN01hfeE5bW4HMxGULUwmybj2AioQm
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3415
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-08_08:2021-01-07,2021-01-08 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ adultscore=0 spamscore=0 mlxscore=0 malwarescore=0 priorityscore=1501
+ lowpriorityscore=0 mlxlogscore=999 phishscore=0 clxscore=1011 bulkscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101080095
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Andrii,
 
-I should preface by saying I don't yet truly understand why
-variable-length reservations are difficult in the first place. With
-that caveat in place...
 
-On Thu, 7 Jan 2021 at 20:48, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
->
-> We discussed this topic today at office hour. As I mentioned, I don't
-> know the ideal solution, but here is something that has enough
-> flexibility for real-world uses, while giving the performance and
-> convenience of reserve/commit API. Ignore naming, we can bikeshed that
-> later.
->
-> So what we can do is introduce a new bpf_ringbuf_reserve() variant:
->
-> bpf_ringbuf_reserve_extra(void *ringbuf, __u64 size, __u64 flags, void
-> *extra, __u64 extra_sz);
->
-> The idea is that we reserve a fixed size amount of data that can be
-> used like it is today for filling a fixed-sized metadata/sample
-> directly. But the real size of the reserved sample is (size +
-> extra_sz), and bpf_ringbuf_reserve_extra() helper will bpf_probe_read
-> (kernel or user, depending on flags) data from extra and put it right
-> after the fixed-size part.
->
-> So the use would be something like:
->
-> struct my_meta *m = bpf_ringbuf_reserve_extra(&rb, sizeof(*m),
-> BPF_RB_PROBE_USER, env_vars, 1024);
->
-> if (!m)
->     /* too bad, either probe_read_user failed or ringbuf is full */
->     return 1;
->
-> m->my_field1 = 123;
-> m->my_field2 = 321;
+On 1/7/21 6:08 PM, 彭浩(Richard) wrote:
+> struct bpf_object *obj is not used in bpf_object__probe_loading, so we
+> can remove it.
+> 
+> Signed-off-by: Peng Hao <richard.peng@oppo.com>
 
-This seems useful although it seems we would then also want a version
-that did probe_read_{user,kernel}_str as well...
-
-> So the main problem with this is that when probe_read fails, we fail
-> reservation completely(internally we'd just discard ringbuf sample).
-> Is that OK? Or is it better to still reserve fixed-sized part and
-> zero-out the variable-length part? We are combining two separate
-> operations into a single API, so error handling is more convoluted.
-
-I think the correct answer here is "we don't know", and the natural
-response is to then let the user decide. However then we already have
-at least two or three dimensions (user/kernel, error behaviour, _str
-or runtime-fixed size...) which feels like a "design smell" to me.
-
-> Now, the main use case requested was to be able to fetch an array of
-> zero-terminated strings. I honestly don't think it's possible to
-> implement this efficiently without two copies of string data. Mostly
-> because to just determine the size of the string you have to read it
-> one extra time. And you'd probably want to copy string data into some
-> controlled storage first, so that you don't end up reading it once
-> successfully and then failing to read it on the second try. Next, when
-> you have multiple strings, how do you deal with partial failures? It's
-> even worse in terms of error handling and error propagation than the
-> fixed extra size variant described above.
->
-> Ignoring all that, let's say we'd implement
-> bpf_ringbuf_reserve_extra_strs() helper, that would somehow be copying
-> multiple zero-terminated strings after the fixed-size prefix. Think
-> about implementation. Just to determine the total size of the ringbuf
-> sample, you'd need to read all strings once, and probably also copy
-> them locally.  Then you'd reserve a ringbuf sample and copy all that
-> for the second time. So it's as inefficient as a BPF program
-> constructing a single block of memory by reading all such strings
-> manually into a per-CPU array and then using the above
-> bpf_ringbuf_reserve_extra().
->
-> But offloading that preparation to a BPF program bypasses all these
-> error handling and memory layout questions. It will be up to a BPF
-> program itself. From a kernel perspective, we just append a block of
-> memory with known (at runtime) size.
-
-I agree, I think bpf_ringbuf_reserve_extra_strs would be unnecessarily
-complex, especially if we have what I suggested above which would
-probably be called bpf_ringbuf_reserve_extra_str.
-
-> As a more restricted version of bpf_ringbuf_reserve_extra(), instead
-> of allowing reading arbitrary kernel or user-space memory in
-> bpf_ringbuf_reserve_extra() we can say that it has to be known and
-> initialized memory (like MAP_VALUE pointer), so helper knows that it
-> can just copy data directly.
-
-This is just some preliminary input but I need to do some reading and
-think more deeply about this.
-
-Another dimension to think about is that it would be great to be able
-to go directly from a helper like bpf_get_cwd into the ringbuffer with
-neither an intermediate copy nor a reservation of PATH_MAX.
-
-On the other hand, as you pointed out in the call, reserving PATH_MAX
-may not be as bad as it sounds since you still only copy the actual
-string length. I'm planning to do some benchmarking next week to
-investigate that.
-
-Thanks,
-Brendan
+Acked-by: Yonghong Song <yhs@fb.com>
