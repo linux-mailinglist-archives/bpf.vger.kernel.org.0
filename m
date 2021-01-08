@@ -2,378 +2,238 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FBFA2EF9DB
-	for <lists+bpf@lfdr.de>; Fri,  8 Jan 2021 22:05:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19C5F2EF9DD
+	for <lists+bpf@lfdr.de>; Fri,  8 Jan 2021 22:05:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729560AbhAHVDJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Jan 2021 16:03:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59842 "EHLO
+        id S1729539AbhAHVDS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Jan 2021 16:03:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729522AbhAHVDI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Jan 2021 16:03:08 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3832DC061793
-        for <bpf@vger.kernel.org>; Fri,  8 Jan 2021 13:02:28 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id a206so16818866ybg.0
-        for <bpf@vger.kernel.org>; Fri, 08 Jan 2021 13:02:28 -0800 (PST)
+        with ESMTP id S1729142AbhAHVDS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Jan 2021 16:03:18 -0500
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BFFFC061798
+        for <bpf@vger.kernel.org>; Fri,  8 Jan 2021 13:02:30 -0800 (PST)
+Received: by mail-qt1-x849.google.com with SMTP id a11so9165659qto.16
+        for <bpf@vger.kernel.org>; Fri, 08 Jan 2021 13:02:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=FS5jwRdkG7ECiUj5zaFntluWc7G1p1NWSA/1gKAG45o=;
-        b=L8xgroAGwM1lpUmY4gmyKYiYQQQjcHCEaa4LfajN3PFKoGKzaPOdq1OGylWyi1Lbm0
-         qhUwcrqdP5sfcXCgEAy193E2AAO8wKLL98lo9f8rk0aa1TEo1WrZaTmReY21Xw46cFkw
-         xG6uT0jbmOenlV7uG5NqPZhfx6Clen2+GyWcrFyPoO1hkNowAj/cf+sCHbanPiV9bFMc
-         2va0SO6Vj4NMdoBQuKbYoiMx9u+j1iL5S+kdtqab5MgzBKk2pPnwCdHkFnrCYxCBXerF
-         gB2MUx01wFJfVpvG2U7yipOfgrOw0iQrTeL17wAOEMharFqNbIi72XoQSEhktoMFha3w
-         fXUw==
+        bh=if/p6hl4f7LIK9IcixrLlQ36UeteZrMy3UWZSeRXeX8=;
+        b=LVDyITHDL3kvCEEqrdYGU6RavUeBpcumoP1rxpeP+r6Xnh+CU/KJGqXzr5RLE+Qxxs
+         VYoAxSAS7CFfBaSxNigq1610BBEMejS0lkRUjG+6ZxpQMQx2oG+IHDmVsa4bFAgx6m4w
+         EXNcelLmTnOmyx5tPQjHhim8hU39oYcmMJhNcmkdagFViKlE7Qoh0QkWb9pjIC7moOqn
+         HYBGLOFjxxwrKP/8LNotKb2TkF2IjWmcPXM8WzCQiIaJRg9YZ5m+kFCuC3FLlR71rE1X
+         0t4C+1Zv6JlG1XwzEkMqTanl9eXDg+zMbYTaeihKjimo2uoAOInOhtM+6K7/d2SA9LSJ
+         cYtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=FS5jwRdkG7ECiUj5zaFntluWc7G1p1NWSA/1gKAG45o=;
-        b=FdTfHFgfl96qsJKYpfn9oq4wFMmjgMwE2wGJ+BrfxXXxxlbpHbVqbq5G9A784BjJAF
-         UiNpWZm+mTIo77a3R9Eh8EV/cetwfjT0/we+LqEYPgXhNXsKhk2Rtw1CWSfcIlnKHXd/
-         qW54L35fRrWh1nHThIxbxjCkHTSxieA4maa8+DGxtVjfoluukaOJyILNYS9b0GCQdR2O
-         bB1LEDvwmSlgkKzgyx/U1cDsctVLIh51iYaMWB0RyXVNaUK/NEuC0Y+dbkv/2svdLt+0
-         qMk20PKWZEgszGl56ZoeZ15u4uzHQEDOzPLxb7cwVMFX/BsRaFFd5BjHa0T6gxaOi9kZ
-         CWSA==
-X-Gm-Message-State: AOAM531G1oFRoNM+cs+ullovaiVEKxGNNCPLDvo+BKyOzp3S67GMhxK5
-        nVMcUBqnQvY/kmTBlSuWAYzMHso=
-X-Google-Smtp-Source: ABdhPJwlfO2gyZUvgikg4+vMmYrpG8iloPPrE86awxoD/MWkxQENrEPYFNrZ/bB/GDSzhAyxeIXLyks=
+        bh=if/p6hl4f7LIK9IcixrLlQ36UeteZrMy3UWZSeRXeX8=;
+        b=nZfW26gTRCEMkmFpmml9V9TKJlvy3AgTjOGi8qezw7sPqF/xCiHCmbJM4yWEmeiiZH
+         ZILQmvhkrwmRDUd7jrn05nRiy0pAWw2aVzbp+1N99pmlKewCBzesJGdnlnUranJZzCZ2
+         9Sl45M+Es9kXHhw3q2lIn45A2tOI5WhujSLnCn2l6F/WJQGAhyc3pJEt8XdYgC6N1QQR
+         s8RNYi6ixngoG7fKvfIMUNhViA6ieFm7+GZzhS62glpg0O/BeWGntjGg88JjNfNtrcrn
+         OODkb6kcU/Iz5tc2zLJm1gOtJwhHxpHVMI8v4/3Q5bUTZQUlgQtFAPmgtoz32TI68qFy
+         SeCA==
+X-Gm-Message-State: AOAM531z47H+cBVzg7sjL7P0T01Ea9mHt/NprH17JxsJD0ZicwpsGgL4
+        /gn4acS0OZ+znxv/lrjnD+AS8bU=
+X-Google-Smtp-Source: ABdhPJxC5BXPXoUZI1fQHY/lOJyMkux9Qu8KVsXudD+vCXrqXD3A3t6L3jjPuTc8lri6lnwcFzxmjVM=
 Sender: "sdf via sendgmr" <sdf@sdf2.svl.corp.google.com>
 X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:7220:84ff:fe09:7732])
- (user=sdf job=sendgmr) by 2002:a5b:482:: with SMTP id n2mr7818566ybp.25.1610139747423;
- Fri, 08 Jan 2021 13:02:27 -0800 (PST)
-Date:   Fri,  8 Jan 2021 13:02:21 -0800
+ (user=sdf job=sendgmr) by 2002:a0c:f888:: with SMTP id u8mr8663035qvn.47.1610139749309;
+ Fri, 08 Jan 2021 13:02:29 -0800 (PST)
+Date:   Fri,  8 Jan 2021 13:02:22 -0800
 In-Reply-To: <20210108210223.972802-1-sdf@google.com>
-Message-Id: <20210108210223.972802-2-sdf@google.com>
+Message-Id: <20210108210223.972802-3-sdf@google.com>
 Mime-Version: 1.0
 References: <20210108210223.972802-1-sdf@google.com>
 X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH bpf-next v6 1/3] bpf: remove extra lock_sock for TCP_ZEROCOPY_RECEIVE
+Subject: [PATCH bpf-next v6 2/3] bpf: try to avoid kzalloc in cgroup/{s,g}etsockopt
 From:   Stanislav Fomichev <sdf@google.com>
 To:     netdev@vger.kernel.org, bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net,
         Stanislav Fomichev <sdf@google.com>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Eric Dumazet <edumazet@google.com>
+        Song Liu <songliubraving@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add custom implementation of getsockopt hook for TCP_ZEROCOPY_RECEIVE.
-We skip generic hooks for TCP_ZEROCOPY_RECEIVE and have a custom
-call in do_tcp_getsockopt using the on-stack data. This removes
-3% overhead for locking/unlocking the socket.
+When we attach a bpf program to cgroup/getsockopt any other getsockopt()
+syscall starts incurring kzalloc/kfree cost.
 
-Without this patch:
+Let add a small buffer on the stack and use it for small (majority)
+{s,g}etsockopt values. The buffer is small enough to fit into
+the cache line and cover the majority of simple options (most
+of them are 4 byte ints).
+
+It seems natural to do the same for setsockopt, but it's a bit more
+involved when the BPF program modifies the data (where we have to
+kmalloc). The assumption is that for the majority of setsockopt
+calls (which are doing pure BPF options or apply policy) this
+will bring some benefit as well.
+
+Without this patch (we remove about 1% __kmalloc):
      3.38%     0.07%  tcp_mmap  [kernel.kallsyms]  [k] __cgroup_bpf_run_filter_getsockopt
             |
              --3.30%--__cgroup_bpf_run_filter_getsockopt
                        |
                         --0.81%--__kmalloc
 
-With the patch applied:
-     0.52%     0.12%  tcp_mmap  [kernel.kallsyms]  [k] __cgroup_bpf_run_filter_getsockopt_kern
-
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 Cc: Martin KaFai Lau <kafai@fb.com>
 Cc: Song Liu <songliubraving@fb.com>
-Cc: Eric Dumazet <edumazet@google.com>
 ---
- include/linux/bpf-cgroup.h                    | 27 +++++++++++--
- include/linux/indirect_call_wrapper.h         |  6 +++
- include/net/sock.h                            |  2 +
- include/net/tcp.h                             |  1 +
- kernel/bpf/cgroup.c                           | 38 +++++++++++++++++++
- net/ipv4/tcp.c                                | 14 +++++++
- net/ipv4/tcp_ipv4.c                           |  1 +
- net/ipv6/tcp_ipv6.c                           |  1 +
- net/socket.c                                  |  3 ++
- .../selftests/bpf/prog_tests/sockopt_sk.c     | 22 +++++++++++
- .../testing/selftests/bpf/progs/sockopt_sk.c  | 15 ++++++++
- 11 files changed, 126 insertions(+), 4 deletions(-)
+ include/linux/filter.h |  5 ++++
+ kernel/bpf/cgroup.c    | 52 ++++++++++++++++++++++++++++++++++++------
+ 2 files changed, 50 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
-index 72e69a0e1e8c..bcb2915e6124 100644
---- a/include/linux/bpf-cgroup.h
-+++ b/include/linux/bpf-cgroup.h
-@@ -147,6 +147,10 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
- 				       int __user *optlen, int max_optlen,
- 				       int retval);
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index 29c27656165b..8739f1d4cac4 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -1281,6 +1281,11 @@ struct bpf_sysctl_kern {
+ 	u64 tmp_reg;
+ };
  
-+int __cgroup_bpf_run_filter_getsockopt_kern(struct sock *sk, int level,
-+					    int optname, void *optval,
-+					    int *optlen, int retval);
++#define BPF_SOCKOPT_KERN_BUF_SIZE	32
++struct bpf_sockopt_buf {
++	u8		data[BPF_SOCKOPT_KERN_BUF_SIZE];
++};
 +
- static inline enum bpf_cgroup_storage_type cgroup_storage_type(
- 	struct bpf_map *map)
- {
-@@ -364,10 +368,23 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
- ({									       \
- 	int __ret = retval;						       \
- 	if (cgroup_bpf_enabled)						       \
--		__ret = __cgroup_bpf_run_filter_getsockopt(sock, level,	       \
--							   optname, optval,    \
--							   optlen, max_optlen, \
--							   retval);	       \
-+		if (!(sock)->sk_prot->bpf_bypass_getsockopt ||		       \
-+		    !INDIRECT_CALL_INET_1((sock)->sk_prot->bpf_bypass_getsockopt, \
-+					tcp_bpf_bypass_getsockopt,	       \
-+					level, optname))		       \
-+			__ret = __cgroup_bpf_run_filter_getsockopt(	       \
-+				sock, level, optname, optval, optlen,	       \
-+				max_optlen, retval);			       \
-+	__ret;								       \
-+})
-+
-+#define BPF_CGROUP_RUN_PROG_GETSOCKOPT_KERN(sock, level, optname, optval,      \
-+					    optlen, retval)		       \
-+({									       \
-+	int __ret = retval;						       \
-+	if (cgroup_bpf_enabled)						       \
-+		__ret = __cgroup_bpf_run_filter_getsockopt_kern(	       \
-+			sock, level, optname, optval, optlen, retval);	       \
- 	__ret;								       \
- })
- 
-@@ -452,6 +469,8 @@ static inline int bpf_percpu_cgroup_storage_update(struct bpf_map *map,
- #define BPF_CGROUP_GETSOCKOPT_MAX_OPTLEN(optlen) ({ 0; })
- #define BPF_CGROUP_RUN_PROG_GETSOCKOPT(sock, level, optname, optval, \
- 				       optlen, max_optlen, retval) ({ retval; })
-+#define BPF_CGROUP_RUN_PROG_GETSOCKOPT_KERN(sock, level, optname, optval, \
-+					    optlen, retval) ({ retval; })
- #define BPF_CGROUP_RUN_PROG_SETSOCKOPT(sock, level, optname, optval, optlen, \
- 				       kernel_optval) ({ 0; })
- 
-diff --git a/include/linux/indirect_call_wrapper.h b/include/linux/indirect_call_wrapper.h
-index 54c02c84906a..cfcfef37b2f1 100644
---- a/include/linux/indirect_call_wrapper.h
-+++ b/include/linux/indirect_call_wrapper.h
-@@ -60,4 +60,10 @@
- #define INDIRECT_CALL_INET(f, f2, f1, ...) f(__VA_ARGS__)
- #endif
- 
-+#if IS_ENABLED(CONFIG_INET)
-+#define INDIRECT_CALL_INET_1(f, f1, ...) INDIRECT_CALL_1(f, f1, __VA_ARGS__)
-+#else
-+#define INDIRECT_CALL_INET_1(f, f1, ...) f(__VA_ARGS__)
-+#endif
-+
- #endif
-diff --git a/include/net/sock.h b/include/net/sock.h
-index bdc4323ce53c..ebf44d724845 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -1174,6 +1174,8 @@ struct proto {
- 
- 	int			(*backlog_rcv) (struct sock *sk,
- 						struct sk_buff *skb);
-+	bool			(*bpf_bypass_getsockopt)(int level,
-+							 int optname);
- 
- 	void		(*release_cb)(struct sock *sk);
- 
-diff --git a/include/net/tcp.h b/include/net/tcp.h
-index 78d13c88720f..4bb42fb19711 100644
---- a/include/net/tcp.h
-+++ b/include/net/tcp.h
-@@ -403,6 +403,7 @@ __poll_t tcp_poll(struct file *file, struct socket *sock,
- 		      struct poll_table_struct *wait);
- int tcp_getsockopt(struct sock *sk, int level, int optname,
- 		   char __user *optval, int __user *optlen);
-+bool tcp_bpf_bypass_getsockopt(int level, int optname);
- int tcp_setsockopt(struct sock *sk, int level, int optname, sockptr_t optval,
- 		   unsigned int optlen);
- void tcp_set_keepalive(struct sock *sk, int val);
+ struct bpf_sockopt_kern {
+ 	struct sock	*sk;
+ 	u8		*optval;
 diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index 6ec088a96302..c41bb2f34013 100644
+index c41bb2f34013..a9aad9c419e1 100644
 --- a/kernel/bpf/cgroup.c
 +++ b/kernel/bpf/cgroup.c
-@@ -1485,6 +1485,44 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
- 	sockopt_free_buf(&ctx);
+@@ -1298,7 +1298,8 @@ static bool __cgroup_bpf_prog_array_is_empty(struct cgroup *cgrp,
+ 	return empty;
+ }
+ 
+-static int sockopt_alloc_buf(struct bpf_sockopt_kern *ctx, int max_optlen)
++static int sockopt_alloc_buf(struct bpf_sockopt_kern *ctx, int max_optlen,
++			     struct bpf_sockopt_buf *buf)
+ {
+ 	if (unlikely(max_optlen < 0))
+ 		return -EINVAL;
+@@ -1310,6 +1311,15 @@ static int sockopt_alloc_buf(struct bpf_sockopt_kern *ctx, int max_optlen)
+ 		max_optlen = PAGE_SIZE;
+ 	}
+ 
++	if (max_optlen <= sizeof(buf->data)) {
++		/* When the optval fits into BPF_SOCKOPT_KERN_BUF_SIZE
++		 * bytes avoid the cost of kzalloc.
++		 */
++		ctx->optval = buf->data;
++		ctx->optval_end = ctx->optval + max_optlen;
++		return max_optlen;
++	}
++
+ 	ctx->optval = kzalloc(max_optlen, GFP_USER);
+ 	if (!ctx->optval)
+ 		return -ENOMEM;
+@@ -1319,16 +1329,26 @@ static int sockopt_alloc_buf(struct bpf_sockopt_kern *ctx, int max_optlen)
+ 	return max_optlen;
+ }
+ 
+-static void sockopt_free_buf(struct bpf_sockopt_kern *ctx)
++static void sockopt_free_buf(struct bpf_sockopt_kern *ctx,
++			     struct bpf_sockopt_buf *buf)
+ {
++	if (ctx->optval == buf->data)
++		return;
+ 	kfree(ctx->optval);
+ }
+ 
++static bool sockopt_buf_allocated(struct bpf_sockopt_kern *ctx,
++				  struct bpf_sockopt_buf *buf)
++{
++	return ctx->optval != buf->data;
++}
++
+ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
+ 				       int *optname, char __user *optval,
+ 				       int *optlen, char **kernel_optval)
+ {
+ 	struct cgroup *cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
++	struct bpf_sockopt_buf buf = {};
+ 	struct bpf_sockopt_kern ctx = {
+ 		.sk = sk,
+ 		.level = *level,
+@@ -1350,7 +1370,7 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
+ 	 */
+ 	max_optlen = max_t(int, 16, *optlen);
+ 
+-	max_optlen = sockopt_alloc_buf(&ctx, max_optlen);
++	max_optlen = sockopt_alloc_buf(&ctx, max_optlen, &buf);
+ 	if (max_optlen < 0)
+ 		return max_optlen;
+ 
+@@ -1390,13 +1410,30 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
+ 		 */
+ 		if (ctx.optlen != 0) {
+ 			*optlen = ctx.optlen;
+-			*kernel_optval = ctx.optval;
++			/* We've used bpf_sockopt_kern->buf as an intermediary
++			 * storage, but the BPF program indicates that we need
++			 * to pass this data to the kernel setsockopt handler.
++			 * No way to export on-stack buf, have to allocate a
++			 * new buffer.
++			 */
++			if (!sockopt_buf_allocated(&ctx, &buf)) {
++				void *p = kzalloc(ctx.optlen, GFP_USER);
++
++				if (!p) {
++					ret = -ENOMEM;
++					goto out;
++				}
++				memcpy(p, ctx.optval, ctx.optlen);
++				*kernel_optval = p;
++			} else {
++				*kernel_optval = ctx.optval;
++			}
+ 		}
+ 	}
+ 
+ out:
+ 	if (ret)
+-		sockopt_free_buf(&ctx);
++		sockopt_free_buf(&ctx, &buf);
  	return ret;
  }
-+
-+int __cgroup_bpf_run_filter_getsockopt_kern(struct sock *sk, int level,
-+					    int optname, void *optval,
-+					    int *optlen, int retval)
-+{
-+	struct cgroup *cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
-+	struct bpf_sockopt_kern ctx = {
-+		.sk = sk,
-+		.level = level,
-+		.optname = optname,
-+		.retval = retval,
-+		.optlen = *optlen,
-+		.optval = optval,
-+		.optval_end = optval + *optlen,
-+	};
-+	int ret;
-+
-+	ret = BPF_PROG_RUN_ARRAY(cgrp->bpf.effective[BPF_CGROUP_GETSOCKOPT],
-+				 &ctx, BPF_PROG_RUN);
-+	if (!ret)
-+		return -EPERM;
-+
-+	if (ctx.optlen > *optlen)
-+		return -EFAULT;
-+
-+	/* BPF programs only allowed to set retval to 0, not some
-+	 * arbitrary value.
-+	 */
-+	if (ctx.retval != 0 && ctx.retval != retval)
-+		return -EFAULT;
-+
-+	/* BPF programs can shrink the buffer, export the modifications.
-+	 */
-+	if (ctx.optlen != 0)
-+		*optlen = ctx.optlen;
-+
-+	return ctx.retval;
-+}
- #endif
  
- static ssize_t sysctl_cpy_dir(const struct ctl_dir *dir, char **bufp,
-diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-index ed42d2193c5c..ef3c895b66c1 100644
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -4098,6 +4098,8 @@ static int do_tcp_getsockopt(struct sock *sk, int level,
- 			return -EFAULT;
- 		lock_sock(sk);
- 		err = tcp_zerocopy_receive(sk, &zc);
-+		err = BPF_CGROUP_RUN_PROG_GETSOCKOPT_KERN(sk, level, optname,
-+							  &zc, &len, err);
- 		release_sock(sk);
- 		if (len >= offsetofend(struct tcp_zerocopy_receive, err))
- 			goto zerocopy_rcv_sk_err;
-@@ -4132,6 +4134,18 @@ static int do_tcp_getsockopt(struct sock *sk, int level,
- 	return 0;
- }
- 
-+bool tcp_bpf_bypass_getsockopt(int level, int optname)
-+{
-+	/* TCP do_tcp_getsockopt has optimized getsockopt implementation
-+	 * to avoid extra socket lock for TCP_ZEROCOPY_RECEIVE.
-+	 */
-+	if (level == SOL_TCP && optname == TCP_ZEROCOPY_RECEIVE)
-+		return true;
-+
-+	return false;
-+}
-+EXPORT_SYMBOL(tcp_bpf_bypass_getsockopt);
-+
- int tcp_getsockopt(struct sock *sk, int level, int optname, char __user *optval,
- 		   int __user *optlen)
+@@ -1406,6 +1443,7 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
+ 				       int retval)
  {
-diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
-index 58207c7769d0..8b4906980fce 100644
---- a/net/ipv4/tcp_ipv4.c
-+++ b/net/ipv4/tcp_ipv4.c
-@@ -2792,6 +2792,7 @@ struct proto tcp_prot = {
- 	.shutdown		= tcp_shutdown,
- 	.setsockopt		= tcp_setsockopt,
- 	.getsockopt		= tcp_getsockopt,
-+	.bpf_bypass_getsockopt	= tcp_bpf_bypass_getsockopt,
- 	.keepalive		= tcp_set_keepalive,
- 	.recvmsg		= tcp_recvmsg,
- 	.sendmsg		= tcp_sendmsg,
-diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
-index 0e1509b02cb3..8539715ff035 100644
---- a/net/ipv6/tcp_ipv6.c
-+++ b/net/ipv6/tcp_ipv6.c
-@@ -2121,6 +2121,7 @@ struct proto tcpv6_prot = {
- 	.shutdown		= tcp_shutdown,
- 	.setsockopt		= tcp_setsockopt,
- 	.getsockopt		= tcp_getsockopt,
-+	.bpf_bypass_getsockopt	= tcp_bpf_bypass_getsockopt,
- 	.keepalive		= tcp_set_keepalive,
- 	.recvmsg		= tcp_recvmsg,
- 	.sendmsg		= tcp_sendmsg,
-diff --git a/net/socket.c b/net/socket.c
-index 33e8b6c4e1d3..7f0617ab5437 100644
---- a/net/socket.c
-+++ b/net/socket.c
-@@ -2126,6 +2126,9 @@ SYSCALL_DEFINE5(setsockopt, int, fd, int, level, int, optname,
- 	return __sys_setsockopt(fd, level, optname, optval, optlen);
+ 	struct cgroup *cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
++	struct bpf_sockopt_buf buf = {};
+ 	struct bpf_sockopt_kern ctx = {
+ 		.sk = sk,
+ 		.level = level,
+@@ -1424,7 +1462,7 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
+ 
+ 	ctx.optlen = max_optlen;
+ 
+-	max_optlen = sockopt_alloc_buf(&ctx, max_optlen);
++	max_optlen = sockopt_alloc_buf(&ctx, max_optlen, &buf);
+ 	if (max_optlen < 0)
+ 		return max_optlen;
+ 
+@@ -1482,7 +1520,7 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
+ 	ret = ctx.retval;
+ 
+ out:
+-	sockopt_free_buf(&ctx);
++	sockopt_free_buf(&ctx, &buf);
+ 	return ret;
  }
  
-+INDIRECT_CALLABLE_DECLARE(bool tcp_bpf_bypass_getsockopt(int level,
-+							 int optname));
-+
- /*
-  *	Get a socket option. Because we don't know the option lengths we have
-  *	to pass a user mode parameter for the protocols to sort out.
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c b/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
-index b25c9c45c148..6bb18b1d8578 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockopt_sk.c
-@@ -11,6 +11,7 @@ static int getsetsockopt(void)
- 		char u8[4];
- 		__u32 u32;
- 		char cc[16]; /* TCP_CA_NAME_MAX */
-+		struct tcp_zerocopy_receive zc;
- 	} buf = {};
- 	socklen_t optlen;
- 	char *big_buf = NULL;
-@@ -154,6 +155,27 @@ static int getsetsockopt(void)
- 		goto err;
- 	}
- 
-+	/* TCP_ZEROCOPY_RECEIVE triggers */
-+	memset(&buf, 0, sizeof(buf));
-+	optlen = sizeof(buf.zc);
-+	err = getsockopt(fd, SOL_TCP, TCP_ZEROCOPY_RECEIVE, &buf, &optlen);
-+	if (err) {
-+		log_err("Unexpected getsockopt(TCP_ZEROCOPY_RECEIVE) err=%d errno=%d",
-+			err, errno);
-+		goto err;
-+	}
-+
-+	memset(&buf, 0, sizeof(buf));
-+	buf.zc.address = 12345; /* rejected by BPF */
-+	optlen = sizeof(buf.zc);
-+	errno = 0;
-+	err = getsockopt(fd, SOL_TCP, TCP_ZEROCOPY_RECEIVE, &buf, &optlen);
-+	if (errno != EPERM) {
-+		log_err("Unexpected getsockopt(TCP_ZEROCOPY_RECEIVE) err=%d errno=%d",
-+			err, errno);
-+		goto err;
-+	}
-+
- 	free(big_buf);
- 	close(fd);
- 	return 0;
-diff --git a/tools/testing/selftests/bpf/progs/sockopt_sk.c b/tools/testing/selftests/bpf/progs/sockopt_sk.c
-index 712df7b49cb1..c726f0763a13 100644
---- a/tools/testing/selftests/bpf/progs/sockopt_sk.c
-+++ b/tools/testing/selftests/bpf/progs/sockopt_sk.c
-@@ -57,6 +57,21 @@ int _getsockopt(struct bpf_sockopt *ctx)
- 		return 1;
- 	}
- 
-+	if (ctx->level == SOL_TCP && ctx->optname == TCP_ZEROCOPY_RECEIVE) {
-+		/* Verify that TCP_ZEROCOPY_RECEIVE triggers.
-+		 * It has a custom implementation for performance
-+		 * reasons.
-+		 */
-+
-+		if (optval + sizeof(struct tcp_zerocopy_receive) > optval_end)
-+			return 0; /* EPERM, bounds check */
-+
-+		if (((struct tcp_zerocopy_receive *)optval)->address != 0)
-+			return 0; /* EPERM, unexpected data */
-+
-+		return 1;
-+	}
-+
- 	if (ctx->level == SOL_IP && ctx->optname == IP_FREEBIND) {
- 		if (optval + 1 > optval_end)
- 			return 0; /* EPERM, bounds check */
 -- 
 2.30.0.284.gd98b1dd5eaa7-goog
 
