@@ -2,173 +2,167 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 144782EF819
-	for <lists+bpf@lfdr.de>; Fri,  8 Jan 2021 20:28:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1E652EF859
+	for <lists+bpf@lfdr.de>; Fri,  8 Jan 2021 20:45:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728877AbhAHT1k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Jan 2021 14:27:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728739AbhAHT1k (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Jan 2021 14:27:40 -0500
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25E8EC061380
-        for <bpf@vger.kernel.org>; Fri,  8 Jan 2021 11:27:00 -0800 (PST)
-Received: by mail-qk1-x732.google.com with SMTP id 143so9431198qke.10
-        for <bpf@vger.kernel.org>; Fri, 08 Jan 2021 11:27:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=r3YWZKOsbKHdcfW5cDuSwubW/xGwJ2ZqokaG99gSdTg=;
-        b=D8Rfdfg2utOln5e+sUKnih8x/0abAxpSzRsCg0h3UgsTV3RvgTbR2LLWY76z1RcZQs
-         iBpiX9e6KqBcD/O3pdh+3zYxT3hyvypBRVOoolVeKIqp+JVx/pdPB4f05IuY6MHwKxTR
-         /kK2ITakWNLXo9CQyxo6aI+F6sYIYOoyIhdmChdN2/dGt21f/iGPH6SbZ/Wm07TvokdY
-         5RQRwZ9fiyFmqMNm9q9VcBNhcYCPuU/A6kpJ+wjWDyFUBcHzx1qCAAFvSyILnweKXWZ6
-         DRlxuFsmsnhcuVnnCelq5dLOvJ+21m+gnSZFf90bm/vKEQ5sU2QLnxXign8yH2h/bcxe
-         bN8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=r3YWZKOsbKHdcfW5cDuSwubW/xGwJ2ZqokaG99gSdTg=;
-        b=Lq7HHM52YJKORPzqwIEAqBOGs4WU7nKlps2aVM5BPIb0BuTUJ+EPHqaK1D7/VT8UiU
-         1Nxpd7S/82qqi5Qrspx/H1MvWiP4iJBziwSC6zKlBZW1jQQyrs4DFkGHvCsfug7TLzwo
-         VTEDT9ZxRfj0RU5WdbAHPQiF0uio1fCh7qLwoq/+b6cjqt+DZc4+2QXekprQXK9aVXt5
-         KwO+UFx9jSVqJM0Iv09gqpw6wEGtiuFDX5Qhx/CsKEAfStLOMe0JxVl4BfQ/YzVpGP7q
-         20fguSXwNsEvVJCrW+JnXrR+1iIWhq1RtuojeurUMuCkDGz81KsesIfWO93hEcblL2NQ
-         IgWA==
-X-Gm-Message-State: AOAM530X6HXDc7bOwbimp3MqsE1LFCODB/8TE1SKsTF1qT7/OtuX7bXz
-        itLU/L1W3CnGQc1F0LAOqvJa06SvwFz2NYPuWNCn2A==
-X-Google-Smtp-Source: ABdhPJwTkv6X3cWmZOIcFxWHWAj3c+37hg/v3tmT3ydBhmV++EVFunI+g2I0EuZmp1oldw7RtxPIhJuhZphr4boTCXs=
-X-Received: by 2002:a37:a516:: with SMTP id o22mr5532131qke.17.1610134019074;
- Fri, 08 Jan 2021 11:26:59 -0800 (PST)
+        id S1729062AbhAHToz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 8 Jan 2021 14:44:55 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:53748 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728724AbhAHToz (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 8 Jan 2021 14:44:55 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 108JScBY023703
+        for <bpf@vger.kernel.org>; Fri, 8 Jan 2021 11:44:14 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 35xu1t0xdu-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Fri, 08 Jan 2021 11:44:14 -0800
+Received: from intmgw005.03.ash8.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:21d::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 8 Jan 2021 11:44:12 -0800
+Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
+        id 973672ECD211; Fri,  8 Jan 2021 11:44:10 -0800 (PST)
+From:   Andrii Nakryiko <andrii@kernel.org>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
+        <daniel@iogearbox.net>
+CC:     <andrii@kernel.org>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next] libbpf: clarify kernel type use with USER variants of CORE reading macros
+Date:   Fri, 8 Jan 2021 11:44:08 -0800
+Message-ID: <20210108194408.3468860-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <20210108180333.180906-1-sdf@google.com> <20210108180333.180906-2-sdf@google.com>
- <CANn89i+GvEUmoapF+C0Mf1qw+AuWhU5_MMPz-jy8fND0HmUJ=Q@mail.gmail.com>
- <CAKH8qBsWsKVxAyvhEYqXytTFMGEN=C3ZMKBPLs2RKcEpM4hXXQ@mail.gmail.com>
- <CANn89iKv1aKE3Tcyr-vqv2mHeDompWjUn6txeK-qEO6-G-pBBw@mail.gmail.com>
- <CAKH8qBuGi_7eFpX0y+HdJznMvUxZsrJtdz2O5P4WK-4H_8s8Xw@mail.gmail.com> <CANn89iL9L_6MyZ2qYM8pGmNqjfP25mO_wMAtb7ixp+dweBS0vw@mail.gmail.com>
-In-Reply-To: <CANn89iL9L_6MyZ2qYM8pGmNqjfP25mO_wMAtb7ixp+dweBS0vw@mail.gmail.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Fri, 8 Jan 2021 11:26:47 -0800
-Message-ID: <CAKH8qBsuea-HbfDD4AB0sMgT2Gn-0P3xw0CdaTcoytRAGLa4zg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 1/3] bpf: remove extra lock_sock for TCP_ZEROCOPY_RECEIVE
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Brian Vazquez <brianvv@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-08_09:2021-01-07,2021-01-08 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ malwarescore=0 suspectscore=0 priorityscore=1501 mlxscore=0 clxscore=1015
+ bulkscore=0 adultscore=0 spamscore=0 mlxlogscore=844 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101080103
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 8, 2021 at 11:23 AM Eric Dumazet <edumazet@google.com> wrote:
->
-> On Fri, Jan 8, 2021 at 8:08 PM Stanislav Fomichev <sdf@google.com> wrote:
-> >
-> > On Fri, Jan 8, 2021 at 10:41 AM Eric Dumazet <edumazet@google.com> wrote:
-> > >
-> > > On Fri, Jan 8, 2021 at 7:26 PM Stanislav Fomichev <sdf@google.com> wrote:
-> > > >
-> > > > On Fri, Jan 8, 2021 at 10:10 AM Eric Dumazet <edumazet@google.com> wrote:
-> > > > >
-> > > > > On Fri, Jan 8, 2021 at 7:03 PM Stanislav Fomichev <sdf@google.com> wrote:
-> > > > > >
-> > > > > > Add custom implementation of getsockopt hook for TCP_ZEROCOPY_RECEIVE.
-> > > > > > We skip generic hooks for TCP_ZEROCOPY_RECEIVE and have a custom
-> > > > > > call in do_tcp_getsockopt using the on-stack data. This removes
-> > > > > > 3% overhead for locking/unlocking the socket.
-> > > > > >
-> > > > > > Without this patch:
-> > > > > >      3.38%     0.07%  tcp_mmap  [kernel.kallsyms]  [k] __cgroup_bpf_run_filter_getsockopt
-> > > > > >             |
-> > > > > >              --3.30%--__cgroup_bpf_run_filter_getsockopt
-> > > > > >                        |
-> > > > > >                         --0.81%--__kmalloc
-> > > > > >
-> > > > > > With the patch applied:
-> > > > > >      0.52%     0.12%  tcp_mmap  [kernel.kallsyms]  [k] __cgroup_bpf_run_filter_getsockopt_kern
-> > > > > >
-> > > > >
-> > > > >
-> > > > > OK but we are adding yet another indirect call.
-> > > > >
-> > > > > Can you add a patch on top of it adding INDIRECT_CALL_INET() avoidance ?
-> > > > Sure, but do you think it will bring any benefit?
-> > >
-> > > Sure, avoiding an indirect call might be the same gain than the
-> > > lock_sock() avoidance :)
-> > >
-> > > > We don't have any indirect avoidance in __sys_getsockopt for the
-> > > > sock->ops->getsockopt() call.
-> > > > If we add it for this new bpf_bypass_getsockopt, we might as well add
-> > > > it for sock->ops->getsockopt?
-> > >
-> > > Well, that is orthogonal to this patch.
-> > > As you may know, Google kernels do have a mitigation there already and
-> > > Brian may upstream it.
-> > I guess my point here was that if I send it out only for bpf_bypass_getsockopt
-> > it might look a bit strange because the rest of the getsockopt still
-> > suffers the indirect costs.
->
->
-> Each new indirect call adds a cost. If you focus on optimizing
-> TCP_ZEROCOPY_RECEIVE,
-> it is counter intuitive adding an expensive indirect call.
-Ok, then let me resend with a mitigation in place and a note
-that the rest will be added later.
+Add comments clarifying that USER variants of CO-RE reading macro are still
+only going to work with kernel types, defined in kernel or kernel module BTF.
+This should help preventing invalid use of those macro to read user-defined
+types (which doesn't work with CO-RE).
 
->  If Brian has plans to upstream the rest, maybe
-> > it's better to upstream everything together with some numbers?
-> > CC'ing him for his opinion.
->
-> I am just saying your point about the other indirect call is already taken care.
->
-> >
-> > I'm happy to follow up in whatever form is best. I can also resend
-> > with INDIRECT_CALL_INET2 if there are no objections in including
-> > this version from the start.
-> >
->
-> INDIRECT_CALL_INET2 seems a strange name to me.
-Any suggestion for a better name? I did play with the following:
-diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
-index cbba9c9ab073..f7342a30284c 100644
---- a/include/linux/bpf-cgroup.h
-+++ b/include/linux/bpf-cgroup.h
-@@ -371,7 +371,9 @@ int bpf_percpu_cgroup_storage_update(struct
-bpf_map *map, void *key,
-        int __ret = retval;                                                    \
-        if (cgroup_bpf_enabled(BPF_CGROUP_GETSOCKOPT))                         \
-                if (!(sock)->sk_prot->bpf_bypass_getsockopt ||                 \
--                   !(sock)->sk_prot->bpf_bypass_getsockopt(level, optname))   \
-+
-!INDIRECT_CALL_INET1((sock)->sk_prot->bpf_bypass_getsockopt, \
-+                                       tcp_bpf_bypass_getsockopt,             \
-+                                       level, optname))                       \
-                        __ret = __cgroup_bpf_run_filter_getsockopt(            \
-                                sock, level, optname, optval, optlen,          \
-                                max_optlen, retval);                           \
-diff --git a/include/linux/indirect_call_wrapper.h
-b/include/linux/indirect_call_wrapper.h
-index 54c02c84906a..9c3252f7e9bb 100644
---- a/include/linux/indirect_call_wrapper.h
-+++ b/include/linux/indirect_call_wrapper.h
-@@ -54,10 +54,13 @@
- #if IS_BUILTIN(CONFIG_IPV6)
- #define INDIRECT_CALL_INET(f, f2, f1, ...) \
-        INDIRECT_CALL_2(f, f2, f1, __VA_ARGS__)
-+#define INDIRECT_CALL_INET1(f, f1, ...) INDIRECT_CALL_1(f, f1, __VA_ARGS__)
- #elif IS_ENABLED(CONFIG_INET)
- #define INDIRECT_CALL_INET(f, f2, f1, ...) INDIRECT_CALL_1(f, f1, __VA_ARGS__)
-+#define INDIRECT_CALL_INET1(f, f1, ...) INDIRECT_CALL_1(f, f1, __VA_ARGS__)
- #else
- #define INDIRECT_CALL_INET(f, f2, f1, ...) f(__VA_ARGS__)
-+#define INDIRECT_CALL_INET1(f, f1, ...) f(__VA_ARGS__)
- #endif
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ tools/lib/bpf/bpf_core_read.h | 45 ++++++++++++++++++++++++++++++-----
+ 1 file changed, 39 insertions(+), 6 deletions(-)
 
- #endif
+diff --git a/tools/lib/bpf/bpf_core_read.h b/tools/lib/bpf/bpf_core_read.h
+index 9456aabcb03a..53b3e199fb25 100644
+--- a/tools/lib/bpf/bpf_core_read.h
++++ b/tools/lib/bpf/bpf_core_read.h
+@@ -197,6 +197,7 @@ enum bpf_enum_value_kind {
+ #define bpf_core_read(dst, sz, src)					    \
+ 	bpf_probe_read_kernel(dst, sz, (const void *)__builtin_preserve_access_index(src))
+ 
++/* NOTE: see comments for BPF_CORE_READ_USER() about the proper types use. */
+ #define bpf_core_read_user(dst, sz, src)				    \
+ 	bpf_probe_read_user(dst, sz, (const void *)__builtin_preserve_access_index(src))
+ /*
+@@ -207,6 +208,7 @@ enum bpf_enum_value_kind {
+ #define bpf_core_read_str(dst, sz, src)					    \
+ 	bpf_probe_read_kernel_str(dst, sz, (const void *)__builtin_preserve_access_index(src))
+ 
++/* NOTE: see comments for BPF_CORE_READ_USER() about the proper types use. */
+ #define bpf_core_read_user_str(dst, sz, src)				    \
+ 	bpf_probe_read_user_str(dst, sz, (const void *)__builtin_preserve_access_index(src))
+ 
+@@ -302,7 +304,11 @@ enum bpf_enum_value_kind {
+ 		     dst, (src), a, ##__VA_ARGS__)			    \
+ })
+ 
+-/* Variant of BPF_CORE_READ_INTO() for reading from user-space memory */
++/*
++ * Variant of BPF_CORE_READ_INTO() for reading from user-space memory.
++ *
++ * NOTE: see comments for BPF_CORE_READ_USER() about the proper types use.
++ */
+ #define BPF_CORE_READ_USER_INTO(dst, src, a, ...) ({			    \
+ 	___core_read(bpf_core_read_user, bpf_core_read_user,		    \
+ 		     dst, (src), a, ##__VA_ARGS__)			    \
+@@ -314,7 +320,11 @@ enum bpf_enum_value_kind {
+ 		     dst, (src), a, ##__VA_ARGS__)			    \
+ })
+ 
+-/* Non-CO-RE variant of BPF_CORE_READ_USER_INTO() */
++/* Non-CO-RE variant of BPF_CORE_READ_USER_INTO().
++ *
++ * As no CO-RE relocations are emitted, source types can be arbitrary and are
++ * not restricted to kernel types only.
++ */
+ #define BPF_PROBE_READ_USER_INTO(dst, src, a, ...) ({			    \
+ 	___core_read(bpf_probe_read_user, bpf_probe_read_user,		    \
+ 		     dst, (src), a, ##__VA_ARGS__)			    \
+@@ -330,7 +340,11 @@ enum bpf_enum_value_kind {
+ 		     dst, (src), a, ##__VA_ARGS__)			    \
+ })
+ 
+-/* Variant of BPF_CORE_READ_STR_INTO() for reading from user-space memory */
++/*
++ * Variant of BPF_CORE_READ_STR_INTO() for reading from user-space memory.
++ *
++ * NOTE: see comments for BPF_CORE_READ_USER() about the proper types use.
++ */
+ #define BPF_CORE_READ_USER_STR_INTO(dst, src, a, ...) ({		    \
+ 	___core_read(bpf_core_read_user_str, bpf_core_read_user,	    \
+ 		     dst, (src), a, ##__VA_ARGS__)			    \
+@@ -342,7 +356,12 @@ enum bpf_enum_value_kind {
+ 		     dst, (src), a, ##__VA_ARGS__)			    \
+ })
+ 
+-/* Non-CO-RE variant of BPF_CORE_READ_USER_STR_INTO() */
++/*
++ * Non-CO-RE variant of BPF_CORE_READ_USER_STR_INTO().
++ *
++ * As no CO-RE relocations are emitted, source types can be arbitrary and are
++ * not restricted to kernel types only.
++ */
+ #define BPF_PROBE_READ_USER_STR_INTO(dst, src, a, ...) ({		    \
+ 	___core_read(bpf_probe_read_user_str, bpf_probe_read_user,	    \
+ 		     dst, (src), a, ##__VA_ARGS__)			    \
+@@ -378,7 +397,16 @@ enum bpf_enum_value_kind {
+ 	__r;								    \
+ })
+ 
+-/* Variant of BPF_CORE_READ() for reading from user-space memory */
++/*
++ * Variant of BPF_CORE_READ() for reading from user-space memory.
++ *
++ * NOTE: all the source types involved are still *kernel types* and need to
++ * exist in kernel (or kernel module) BTF, otherwise CO-RE relocation will
++ * fail. Custom user types are not relocatable with CO-RE.
++ * The typical situation in which BPF_CORE_READ_USER() might be used is to
++ * read kernel UAPI types from the user-space memory passed in as a syscall
++ * input argument.
++ */
+ #define BPF_CORE_READ_USER(src, a, ...) ({				    \
+ 	___type((src), a, ##__VA_ARGS__) __r;				    \
+ 	BPF_CORE_READ_USER_INTO(&__r, (src), a, ##__VA_ARGS__);		    \
+@@ -392,7 +420,12 @@ enum bpf_enum_value_kind {
+ 	__r;								    \
+ })
+ 
+-/* Non-CO-RE variant of BPF_CORE_READ_USER() */
++/*
++ * Non-CO-RE variant of BPF_CORE_READ_USER().
++ *
++ * As no CO-RE relocations are emitted, source types can be arbitrary and are
++ * not restricted to kernel types only.
++ */
+ #define BPF_PROBE_READ_USER(src, a, ...) ({				    \
+ 	___type((src), a, ##__VA_ARGS__) __r;				    \
+ 	BPF_PROBE_READ_USER_INTO(&__r, (src), a, ##__VA_ARGS__);	    \
+-- 
+2.24.1
+
