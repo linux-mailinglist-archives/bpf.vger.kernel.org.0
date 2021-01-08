@@ -2,127 +2,433 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B2C2EEB2D
-	for <lists+bpf@lfdr.de>; Fri,  8 Jan 2021 03:09:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD2142EECA4
+	for <lists+bpf@lfdr.de>; Fri,  8 Jan 2021 05:44:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726526AbhAHCJf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Jan 2021 21:09:35 -0500
-Received: from mail-eopbgr1320082.outbound.protection.outlook.com ([40.107.132.82]:7229
-        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726477AbhAHCJe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Jan 2021 21:09:34 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ln6ejZ580otBLJZArlB/YkE4tMhk3z48UnEQHbkHwiakP8PWP/+zy6EWNzlRw9azTTFy6XUIyEny0pfTqznpPXr3NFMnpTEgh4Q+wjrOPQYtcYK94gTRkEmciWyAUux017AHVBU+WXT9JC1elk3KCQeo6ySkKEg/GLRfL6Q2vWHZMVtNPqnltS4wC7pOxNUl5X56pMdb73/PqK9kLksPlo38poNWSbzkQCsetzSXtIvDVVqLjGJkULoPni86pwqbI7svpnHo9kY7R4QDt6Dc/oq0nUBIdVaD4i33GmeBxSDbJ9JR9iBWSbW68Qo6r+8r5fZ+wHA/ovQhvOxrlk5F4w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=q0iJgr2FmvEC2+OBdUqxmKDXCLlDE5BeBVLPO/Cii9M=;
- b=ICDiuwp+TC031vzIXjJFK5jvoICu0GTrV1S314Larfmeev6tFIexVUaaj/k78CHRcANopz4yLtbhvc5k+D0w593ty3Gr83Mz40px1szTbRVCUoObofgV7rSgo4PpscgVDDlL2sOwCsH453qljGRLY1t0R/i7rcWlAV4HGcG044rAC//ksLF/ki/BfXPY3EGBNkFQ5jHwE25clS9gboJA+awA9IwMUBD4OX4zOBD/KFeXCnkEZ9H/KNVuWTzvp7kYzTPq4HjsWtxjj2eNTN2nIaKJxvqBx6VenGKulMax9mTLrzwa0biYWQQyZlEIO/M8WAoyy4vBGS25WDBZjdzsdA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
- dkim=pass header.d=oppo.com; arc=none
+        id S1727582AbhAHEnp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Jan 2021 23:43:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727571AbhAHEnp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Jan 2021 23:43:45 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02B5BC0612F4
+        for <bpf@vger.kernel.org>; Thu,  7 Jan 2021 20:43:05 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id n10so6855871pgl.10
+        for <bpf@vger.kernel.org>; Thu, 07 Jan 2021 20:43:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oppoglobal.onmicrosoft.com; s=selector1-oppoglobal-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=q0iJgr2FmvEC2+OBdUqxmKDXCLlDE5BeBVLPO/Cii9M=;
- b=hSP1sJeARc9e9z9dk9gj8yvgdtNSVLEdpy372wHvf3hZiSF2R1qwOIlNGNy2iHnSVfVUzGjL74fCTh7M+wRAGBVt6d5cBd8VwdMmHnKp7Y6RdttLLq8cNXdA+pgZnu8nuok1M/JYRb0lVDkOyy1sFmpvfd6JvMO98D9YqSBdIqA=
-Received: from HKAPR02MB4291.apcprd02.prod.outlook.com (2603:1096:203:d3::12)
- by HK2PR02MB3873.apcprd02.prod.outlook.com (2603:1096:202:19::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Fri, 8 Jan
- 2021 02:08:00 +0000
-Received: from HKAPR02MB4291.apcprd02.prod.outlook.com
- ([fe80::e87c:a07c:77fc:630c]) by HKAPR02MB4291.apcprd02.prod.outlook.com
- ([fe80::e87c:a07c:77fc:630c%7]) with mapi id 15.20.3742.006; Fri, 8 Jan 2021
- 02:08:00 +0000
-From:   =?utf-8?B?5b2t5rWpKFJpY2hhcmQp?= <richard.peng@oppo.com>
-To:     "ast@kernel.org" <ast@kernel.org>,
-        "andrii@kernel.org" <andrii@kernel.org>
-CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: [PATCH] tools/bpf: Remove unnecessary parameter in
- bpf_object__probe_loading
-Thread-Topic: [PATCH] tools/bpf: Remove unnecessary parameter in
- bpf_object__probe_loading
-Thread-Index: AdblYbQpQKmKVR0hTa2lc5nK9Yvjhg==
-Date:   Fri, 8 Jan 2021 02:08:00 +0000
-Message-ID: <HKAPR02MB42916F8599BF7B58AD73C27AE0AE0@HKAPR02MB4291.apcprd02.prod.outlook.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oppo.com;
-x-originating-ip: [58.255.79.102]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b53abdac-c101-4555-3c6e-08d8b37a396e
-x-ms-traffictypediagnostic: HK2PR02MB3873:
-x-microsoft-antispam-prvs: <HK2PR02MB3873D20BE075FC44476DF3B9E0AE0@HK2PR02MB3873.apcprd02.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2657;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ygcFEZcaN8fwqaHnVBSVnPvIUXLhVAvcpv4VyQpgutwYHg6qy3f7YqW+Ps66cx3Qa4U8uE8CYWJ12ee9rt8fL2drulAgi+LWWBBNh0n6GO4yulEI5OiTNf2gg0i+0RVJ/hIQTn4fVu7WJMkXHNkED7rq3Iax73rTzJ9su/TS9tpS2kjLLA6CCfmYTWt2ylOWFpu8xyaSNeELOBDb7hy0eCFMMZvLNEgGA9JnMwQxDDZqTVsaGW9ePp59LYazK6YL57CSUbazK3L4rnOvXrAVKwbZPMgYl0wQtTU8d2GZDt8GB4+DgRaOg1oiN6sIaOkl64CGrhHyJUaa/6qZN7VkGIlrVfXt5G1CVb62Ts2GnOB4CufBlY7MJe50ihi6uMNcoYGScmdpnWdkd1Pskha/JSQj2w+mgohwMlshEH+CzYMDEtl4XgNVticmuBKPOmz3BSuHHV8z0sR/6mWtHpawO5wLGdLJDGP0kOt3lzx/Sr0=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HKAPR02MB4291.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(376002)(396003)(366004)(136003)(64756008)(66556008)(66446008)(8676002)(66946007)(83380400001)(4744005)(8936002)(9686003)(186003)(66476007)(52536014)(478600001)(6506007)(33656002)(26005)(110136005)(7696005)(71200400001)(86362001)(5660300002)(55016002)(2906002)(4326008)(316002)(85182001)(54906003)(76116006)(11606006)(101420200001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?V3B5dnFwcjREREpmcjdjcUdxY3psWVZhN3NLZllrY0h1R2YrdGpQR3NLaHFh?=
- =?utf-8?B?aTJCdzN5RjhQZHZhaFBjanpVL1NSczR3U1lyUVBRbFpTdGMwK3RZVTh3VGZL?=
- =?utf-8?B?WGZ4YVVlanZTWE82cW5hZmpTd1J1bjhPWm1yTUZsMHpHemFSdG8wN1ZKRFhs?=
- =?utf-8?B?UzFHekRFSEQ5V2lENllid3VUbUFNZEJublVpVG5kZXE3eDhHNkUvQ1VOTzRH?=
- =?utf-8?B?aFFjMllDc1JIOEVMTjdwVmNaRTJDelBzdlNQZzRPQkloVVhLTytOTllqbGlr?=
- =?utf-8?B?eDIxL09ONTByT0hpWHZmTDVsU09WL3hpN3h1Z3hGdkpwSnRoMTl4UHRyQlRJ?=
- =?utf-8?B?cXlnTmRqWVFJSWJJRWg3YUtLRDBVSWUwR0RxRUU3QVVGVFdFOGNmMUx5RDM2?=
- =?utf-8?B?OXg1ZVpjem5SSm5iRnBXR2F3MG9ReEhIQkpOVjdmbEE1dUt4YjA0aTlSN29n?=
- =?utf-8?B?WUNoc2YvY1ovdlBsek96MFJxMjA5RkRibVhwb2ZabUxRZWFOZ3FuNHpBTmt4?=
- =?utf-8?B?WURGR0V0cFB0VTVlTFNxNDhZYzZRQWR3YzA1RjZTc3NHMFBobnRwWXhISFJD?=
- =?utf-8?B?Vk1KQy9ER0dXY0NxV0hWeElHUWxrdnVwRW0wSmtzSmVVd3I2ajA4YnZrNEIr?=
- =?utf-8?B?dE84Y1lLQXg2c3FTU3QzYldlWHhtSWJDK0VtZ3A5ZmpCMG1BZ0lqcVB4d0dk?=
- =?utf-8?B?eFk0cHV6bDJ2NE9oQU9GSGU3VGlkaWh5QVQrZVZVeXp2V2wvMW1LaDVJTTZK?=
- =?utf-8?B?NGQrSUhLQVllcS9SNmNpQ01NWjZ5NWdGS1c4WU5mdDFNa0dxb253aXdWWk1r?=
- =?utf-8?B?akludWFvSDJ0bEw0Q3gvNVNWRWxCbDhyemlkeG11N1h6bWxISGZab1I5S3Js?=
- =?utf-8?B?WGpwUzFWNlU1a3psNHJQY0tHMW1IWEs4dWpZSjMxYkJnTHpMVkdQMjd4K0k2?=
- =?utf-8?B?MjQxOEl5V2p1YVAza0tqVjgySWN0QlNxRUpkYWlsWHNCOGljYW1LK2d4bHpV?=
- =?utf-8?B?QnF6Y1VTWXIyTDFIczV3MTNoZGlzYUpKazhlczVJZ3NSc3h3M08ybS8vb1c0?=
- =?utf-8?B?ZkFHLzdLdFhPMUhmZTBucU11aWdqMkxDNWtDdEpockd4YkRKUUVUd0MzNUZR?=
- =?utf-8?B?SUsrZC9iYUxZUy9pQXlsb0hrZVZaWitRWi9nOWV3a28veDBWT1B3c1VvbG9L?=
- =?utf-8?B?eEZOVm5QNXVUbG50ZTRTRmptT29NZjF1VThDTml0T0Q1eW16OE9sV2tDazl5?=
- =?utf-8?B?Qm1PMlhxWWM0WVlWenJyNituZzlQSXR4bStOUEFXazhoM3djWmZMVk5jNVNi?=
- =?utf-8?Q?HqbqrPU//A80c=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RUz+dmXZLq1E/SSoC2vmTuU0PBYo3hkfLbE9/hZCJpc=;
+        b=cRs5HUOQS3hO9HgzkM4D2wW2wiOmbccPMNK1GnYHoQBCE7zwdpOxytpZX3f6V5cKaf
+         J/v6smQwSrW9v2Eyfu4U7SIi6lQ/iaUyZz/64eST0j1afd2ci5xojfi+rzTmEB2ugvSi
+         uprRlug8gQIFtzp2Hdp7PL0Oqa+jcpEPALw0dFYkNNByRe/jmfynQsBM4b4tPSk2GHlb
+         73EHhRZrZJrdFjuvsPJWNP3BUFuHXUYxgx5Ph+ivGeB05UJAY1eTUt3BYx4/OFYHw8Kp
+         PtK2KOMWO/JoQhIVFCAqqa9Iq8+ws8IFIDdUOtzLMAXpGil3NBFXm3C6C+vmHZG3yEsb
+         p3Ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RUz+dmXZLq1E/SSoC2vmTuU0PBYo3hkfLbE9/hZCJpc=;
+        b=aLzVJIDKyvABsbeYJAiQC5K7uPhopOr1+0aJVS4859/+5/Y1bDOhWlXaJZGbhVLLYm
+         TkcKot4L6Dg1/KJJlPBmynr3wABsKrNQsn/4LmYR+hFI2551hfemOaYCeIMvGp0/L5g2
+         W4keStSfr603m0Cs+dy5GmBRQaQsdba2eo3q0nbiKtUqhpHcy4Aq3/5wudToubMwmWpl
+         KdXLseTvZfi8723BNDfkkwE8axVu6O7aflUwU9zGRBgozYBWp7VoIARfnZFI3AXlwG0U
+         bjg2cMHuCKwUuFX1qWt3eLzN4rDfNce1pqnVBIlwvUzVTgXpDctqMQh+sraWupNoxiA3
+         /eQA==
+X-Gm-Message-State: AOAM531WolT1IM19TjOlaFr2/oCFHY0zZQ/fG94uXXtRD0+8aULKMBjq
+        /AYE+DBkxbzwrDjMvRK9bQ0POe0t7TEE3A==
+X-Google-Smtp-Source: ABdhPJxYX2O+yzTNemXieG8Dj83Ob8NLo2CK5FWHQ8SKuqBeDknIaW7WSQZlRK6VcQe76wV30m0/7g==
+X-Received: by 2002:a62:83cf:0:b029:1a8:3b72:ebb7 with SMTP id h198-20020a6283cf0000b02901a83b72ebb7mr5096969pfe.25.1610080984287;
+        Thu, 07 Jan 2021 20:43:04 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:400::5:143e])
+        by smtp.gmail.com with ESMTPSA id z3sm7157818pfq.89.2021.01.07.20.43.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jan 2021 20:43:03 -0800 (PST)
+Date:   Thu, 7 Jan 2021 20:43:01 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andrei Matei <andreimatei1@gmail.com>
+Cc:     bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next] bpf: allow variable-offset stack reads
+Message-ID: <20210108044301.fonis5xffhtxf6je@ast-mbp>
+References: <20201230012231.1324633-1-andreimatei1@gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: oppo.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HKAPR02MB4291.apcprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b53abdac-c101-4555-3c6e-08d8b37a396e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jan 2021 02:08:00.2558
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: rTGu1R4hFl6r4zMRjxeNLIIIK458/UTd6FtJcBHu5txZ+oGCpH/OTmzguAyHqKWU0Sj0Skd77IQmTmDKkN7y+g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK2PR02MB3873
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201230012231.1324633-1-andreimatei1@gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-c3RydWN0IGJwZl9vYmplY3QgKm9iaiBpcyBub3QgdXNlZCBpbiBicGZfb2JqZWN0X19wcm9iZV9s
-b2FkaW5nLCBzbyB3ZQ0KY2FuIHJlbW92ZSBpdC4NCg0KU2lnbmVkLW9mZi1ieTogUGVuZyBIYW8g
-PHJpY2hhcmQucGVuZ0BvcHBvLmNvbT4NCi0tLQ0KIHRvb2xzL2xpYi9icGYvbGliYnBmLmMgfCA0
-ICsrLS0NCiAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0K
-DQpkaWZmIC0tZ2l0IGEvdG9vbHMvbGliL2JwZi9saWJicGYuYyBiL3Rvb2xzL2xpYi9icGYvbGli
-YnBmLmMNCmluZGV4IDMxMzAzNDExNzA3MC4uMTdkOTA3NzlmMDlhIDEwMDY0NA0KLS0tIGEvdG9v
-bHMvbGliL2JwZi9saWJicGYuYw0KKysrIGIvdG9vbHMvbGliL2JwZi9saWJicGYuYw0KQEAgLTM2
-ODUsNyArMzY4NSw3IEBAIGludCBicGZfbWFwX19yZXNpemUoc3RydWN0IGJwZl9tYXAgKm1hcCwg
-X191MzIgbWF4X2VudHJpZXMpDQogfQ0KDQogc3RhdGljIGludA0KLWJwZl9vYmplY3RfX3Byb2Jl
-X2xvYWRpbmcoc3RydWN0IGJwZl9vYmplY3QgKm9iaikNCiticGZfb2JqZWN0X19wcm9iZV9sb2Fk
-aW5nKHZvaWQpDQogew0KICAgICAgICBzdHJ1Y3QgYnBmX2xvYWRfcHJvZ3JhbV9hdHRyIGF0dHI7
-DQogICAgICAgIGNoYXIgKmNwLCBlcnJtc2dbU1RSRVJSX0JVRlNJWkVdOw0KQEAgLTcyNTgsNyAr
-NzI1OCw3IEBAIGludCBicGZfb2JqZWN0X19sb2FkX3hhdHRyKHN0cnVjdCBicGZfb2JqZWN0X2xv
-YWRfYXR0ciAqYXR0cikNCiAgICAgICAgICAgICAgICByZXR1cm4gLUVJTlZBTDsNCiAgICAgICAg
-fQ0KDQotICAgICAgIGVyciA9IGJwZl9vYmplY3RfX3Byb2JlX2xvYWRpbmcob2JqKTsNCisgICAg
-ICAgZXJyID0gYnBmX29iamVjdF9fcHJvYmVfbG9hZGluZygpOw0KICAgICAgICBlcnIgPSBlcnIg
-PyA6IGJwZl9vYmplY3RfX2xvYWRfdm1saW51eF9idGYob2JqKTsNCiAgICAgICAgZXJyID0gZXJy
-ID8gOiBicGZfb2JqZWN0X19yZXNvbHZlX2V4dGVybnMob2JqLCBvYmotPmtjb25maWcpOw0KICAg
-ICAgICBlcnIgPSBlcnIgPyA6IGJwZl9vYmplY3RfX3Nhbml0aXplX2FuZF9sb2FkX2J0ZihvYmop
-Ow0KLS0NCjIuMTguNA0K
+On Tue, Dec 29, 2020 at 08:22:31PM -0500, Andrei Matei wrote:
+> Before this patch, variable offset access to the stack was dissalowed
+> for regular instructions, but was allowed for "indirect" accesses (i.e.
+> helpers). This patch narrows the restriction, allowing reading the stack
+> through pointers with variable offsets. This makes stack-allocated
+> buffers more usable in programs, and brings stack pointers closer to
+> other types of pointers.
+> 
+> All register spilled in stack slots that might be read are marked as
+> having been read, however reads through such pointers don't do register
+> filling; the target register will always be either a scalar or a
+> constant zero.
+> 
+> Notes:
+> - Writes with variable offsets are still dissallowed; this patch only
+>   deals with reads.
+
+Would be great to make it symmetrical with writes as well.
+
+> - All the stack slots in the variable range needs to be initialized,
+>   otherwise the read is rejected.
+> - Variable offset direct reads remain dissallowed for non-priviledged
+>   programs; they were already dissalowed for "indirect" accesses.
+> - The code for checking variable-offset reads is somewhat shared with
+>   the code for checking helper accesses. The fit is not quite perfect
+>   as check_stack_boundary() assumes that the helpers clobber the stack
+>   (which is not the case for a direct read).
+> 
+> Signed-off-by: Andrei Matei <andreimatei1@gmail.com>
+
+Overall looks great.
+Pls add C based test and split patches into
+- refactoring that doesn't change the logic
+- additional code to handle variable offsets
+- asm tests
+- C based test for test_progs
+
+Few other nits below:
+
+> ---
+>  include/linux/bpf_verifier.h                  |   2 +-
+>  kernel/bpf/verifier.c                         | 250 +++++++++++++-----
+>  tools/testing/selftests/bpf/test_verifier.c   |  13 +-
+>  .../testing/selftests/bpf/verifier/var_off.c  |  52 +++-
+>  4 files changed, 241 insertions(+), 76 deletions(-)
+> 
+> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> index e941fe1484e5..76b2fce7e012 100644
+> --- a/include/linux/bpf_verifier.h
+> +++ b/include/linux/bpf_verifier.h
+> @@ -195,7 +195,7 @@ struct bpf_func_state {
+>  	 * 0 = main function, 1 = first callee.
+>  	 */
+>  	u32 frameno;
+> -	/* subprog number == index within subprog_stack_depth
+> +	/* subprog number == index within subprog_info
+>  	 * zero == main subprog
+>  	 */
+>  	u32 subprogno;
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 17270b8404f1..dd0436623f2e 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -2400,9 +2400,63 @@ static int check_stack_write(struct bpf_verifier_env *env,
+>  	return 0;
+>  }
+>  
+> -static int check_stack_read(struct bpf_verifier_env *env,
+> -			    struct bpf_func_state *reg_state /* func where register points to */,
+> -			    int off, int size, int value_regno)
+> +/* When register 'regno' is assigned some values from stack[min_off, max_off),
+> + * we set the register's type according to the types of the respective stack
+> + * slots. If all the stack values are known to be zeros, then so is the
+> + * destination reg. Otherwise, the register is considered to be SCALAR. This
+> + * function does not deal with register filling; the caller must ensure that
+> + * all spilled registers in the stack range have been marked as read.
+> + */
+> +static void mark_reg_stack_read(struct bpf_verifier_env *env,
+> +				/* func where src register points to */
+
+
+It's a bit odd to add comments in the function proto.
+pls move it into the comment immediately preceding.
+
+> +				struct bpf_func_state *reg_state,
+> +				int min_off, int max_off, int regno)
+> +{
+> +	struct bpf_verifier_state *vstate = env->cur_state;
+> +	struct bpf_func_state *state = vstate->frame[vstate->curframe];
+> +	int i, slot, spi;
+> +	u8 *stype;
+> +	int zeros = 0;
+> +
+> +	for (i = min_off; i < max_off; i++) {
+> +		slot = -i - 1;
+> +		spi = slot / BPF_REG_SIZE;
+> +		stype = reg_state->stack[spi].slot_type;
+> +		if (stype[slot % BPF_REG_SIZE] != STACK_ZERO)
+> +			break;
+> +		zeros++;
+> +	}
+> +	if (zeros == (max_off - min_off)) {
+
+Extra () are unnecessary.
+
+> +		/* any access_size read into register is zero extended,
+> +		 * so the whole register == const_zero
+> +		 */
+> +		__mark_reg_const_zero(&state->regs[regno]);
+> +		/* backtracking doesn't support STACK_ZERO yet,
+> +		 * so mark it precise here, so that later
+> +		 * backtracking can stop here.
+> +		 * Backtracking may not need this if this register
+> +		 * doesn't participate in pointer adjustment.
+> +		 * Forward propagation of precise flag is not
+> +		 * necessary either. This mark is only to stop
+> +		 * backtracking. Any register that contributed
+> +		 * to const 0 was marked precise before spill.
+> +		 */
+> +		state->regs[regno].precise = true;
+> +	} else {
+> +		/* have read misc data from the stack */
+> +		mark_reg_unknown(env, state->regs, regno);
+> +	}
+> +	state->regs[regno].live |= REG_LIVE_WRITTEN;
+> +}
+> +
+> +/* Read the stack at 'off' and put the results into the register indicated by
+> + * 'value_regno'. It handles reg filling if the addressed stack slot is a
+> + * spilled reg.
+> + */
+> +static int check_stack_read_fixed_off(struct bpf_verifier_env *env,
+> +				      /* func where src register points to */
+> +				      struct bpf_func_state *reg_state,
+> +				      int off, int size, int value_regno)
+>  {
+>  	struct bpf_verifier_state *vstate = env->cur_state;
+>  	struct bpf_func_state *state = vstate->frame[vstate->curframe];
+> @@ -2460,54 +2514,91 @@ static int check_stack_read(struct bpf_verifier_env *env,
+>  		}
+>  		mark_reg_read(env, reg, reg->parent, REG_LIVE_READ64);
+>  	} else {
+> -		int zeros = 0;
+> -
+> +		u8 type;
+
+Empty line needed after var defs.
+
+Also pls run checkpatch.pl on your patch. It's not hard requirement,
+but pls try to fix what it complains about.
+
+>  		for (i = 0; i < size; i++) {
+> -			if (stype[(slot - i) % BPF_REG_SIZE] == STACK_MISC)
+> +			type = stype[(slot - i) % BPF_REG_SIZE];
+> +			if (type == STACK_MISC)
+>  				continue;
+> -			if (stype[(slot - i) % BPF_REG_SIZE] == STACK_ZERO) {
+> -				zeros++;
+> +			if (type == STACK_ZERO)
+>  				continue;
+> -			}
+>  			verbose(env, "invalid read from stack off %d+%d size %d\n",
+>  				off, i, size);
+>  			return -EACCES;
+>  		}
+>  		mark_reg_read(env, reg, reg->parent, REG_LIVE_READ64);
+> -		if (value_regno >= 0) {
+> -			if (zeros == size) {
+> -				/* any size read into register is zero extended,
+> -				 * so the whole register == const_zero
+> -				 */
+> -				__mark_reg_const_zero(&state->regs[value_regno]);
+> -				/* backtracking doesn't support STACK_ZERO yet,
+> -				 * so mark it precise here, so that later
+> -				 * backtracking can stop here.
+> -				 * Backtracking may not need this if this register
+> -				 * doesn't participate in pointer adjustment.
+> -				 * Forward propagation of precise flag is not
+> -				 * necessary either. This mark is only to stop
+> -				 * backtracking. Any register that contributed
+> -				 * to const 0 was marked precise before spill.
+> -				 */
+> -				state->regs[value_regno].precise = true;
+> -			} else {
+> -				/* have read misc data from the stack */
+> -				mark_reg_unknown(env, state->regs, value_regno);
+> -			}
+> -			state->regs[value_regno].live |= REG_LIVE_WRITTEN;
+> -		}
+> +		if (value_regno >= 0)
+> +			mark_reg_stack_read(env, reg_state, off, off + size, value_regno);
+>  	}
+>  	return 0;
+>  }
+>  
+> -static int check_stack_access(struct bpf_verifier_env *env,
+> -			      const struct bpf_reg_state *reg,
+> -			      int off, int size)
+> +enum stack_access_type {
+> +	ACCESS_DIRECT,  /* the access is performed by an instruction */
+> +	ACCESS_HELPER,  /* the access is performed by a helper*/
+
+extra space is needed before */
+
+> +};
+> +
+> +static int check_stack_boundary(struct bpf_verifier_env *env, int regno,
+> +				int off,
+> +				int access_size, bool zero_size_allowed,
+> +				enum stack_access_type type,
+> +				struct bpf_call_arg_meta *meta);
+> +
+> +/* Read the stack at 'ptr_regno + off' and put the result into the register
+> + * 'dst_regno'.
+> + * 'off' includes the pointer register's fixed offset(i.e. 'ptr_regno.off'),
+> + * but not its variable offset.
+> + * 'size' is assumed to be <= reg size and the access is assumed to be aligned.
+> + *
+> + * As opposed to check_stack_read_fixed_off, this function doesn't deal with
+> + * filling registers (i.e. reads of spilled register cannot be detected when
+> + * the offset is not fixed). We conservatively mark 'dst_regno' as containing
+> + * SCALAR_VALUE. That's why we assert that the 'ptr_regno' has a variable
+> + * offset; for a fixed offset 'check_stack_read_fixed_off' should be used
+> + * instead.
+> + */
+> +static int check_stack_read_var_off(struct bpf_verifier_env *env,
+> +				    int ptr_regno, int off, int size, int dst_regno)
+>  {
+> -	/* Stack accesses must be at a fixed offset, so that we
+> -	 * can determine what type of data were returned. See
+> -	 * check_stack_read().
+> +	int err;
+> +	int min_off, max_off;
+> +	struct bpf_verifier_state *vstate = env->cur_state;
+> +	struct bpf_func_state *state = vstate->frame[vstate->curframe];
+> +	struct bpf_reg_state *reg = state->regs + ptr_regno;
+> +
+> +	if (tnum_is_const(reg->var_off)) {
+> +		char tn_buf[48];
+> +
+> +		tnum_strn(tn_buf, sizeof(tn_buf), reg->var_off);
+> +		verbose(env, "%s: fixed stack access illegal: reg=%d var_off=%s off=%d size=%d\n",
+> +			__func__, ptr_regno, tn_buf, off, size);
+> +		return -EINVAL;
+> +	}
+> +	/* Note that we pass a NULL meta, so raw access will not be permitted. Also
+> +	 * note that, for simplicity, check_stack_boundary is going to pretend that
+> +	 * all the stack slots in range [off, off+size) will be clobbered, although
+> +	 * that's not the case for a stack read.
+> +	 */
+> +	err = check_stack_boundary(env, ptr_regno, off, size,
+> +			false, ACCESS_DIRECT, NULL);
+> +	if (err)
+> +		return err;
+> +
+> +	min_off = reg->smin_value + off;
+> +	max_off = reg->smax_value + off;
+> +	mark_reg_stack_read(env, state, min_off, max_off + size, dst_regno);
+> +	return 0;
+> +}
+> +
+> +
+> +// check that stack access falls within stack limits and that 'reg' doesn't
+> +// have a variable offset.
+> +// 'off' includes 'reg->off'.
+
+C++ style comments are not allowed.
+
+> +static int check_fixed_stack_access(struct bpf_verifier_env *env,
+> +				    const struct bpf_reg_state *reg,
+> +				    int off, int size)
+> +{
+> +	/* Stack accesses must be at a fixed offset for register spill tracking.
+> +	 * See check_stack_write().
+>  	 */
+>  	if (!tnum_is_const(reg->var_off)) {
+>  		char tn_buf[48];
+> @@ -2980,7 +3071,7 @@ static int check_ptr_alignment(struct bpf_verifier_env *env,
+>  	case PTR_TO_STACK:
+>  		pointer_desc = "stack ";
+>  		/* The stack spill tracking logic in check_stack_write()
+> -		 * and check_stack_read() relies on stack accesses being
+> +		 * and check_stack_read_fixed_off() relies on stack accesses being
+>  		 * aligned.
+>  		 */
+>  		strict = true;
+> @@ -3513,22 +3604,36 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+>  		}
+>  
+>  	} else if (reg->type == PTR_TO_STACK) {
+> -		off += reg->var_off.value;
+> -		err = check_stack_access(env, reg, off, size);
+> -		if (err)
+> -			return err;
+> +		if ((t == BPF_WRITE)
+
+unnecessary ()
+
+> +				/* fixed offset stack reads track reg fills */
+> +				|| tnum_is_const(reg->var_off)
+> +				/* reads that don't go to a register need extra checks about
+> +				 * what's being read in order to not leak pointers (see
+> +				 * check_stack_read_fixed_off)
+> +				 */
+
+The comments inside if() look odd. Do we have a precedent for such things?
+I think it would read better if they're outside.
+
+> +				|| (value_regno < 0)) {
+...
+
+> +/* Returns true if every part of exp (tab-separated) appears in log, in order.
+> + */
+>  static bool cmp_str_seq(const char *log, const char *exp)
+>  {
+> -	char needle[80];
+> +	char needle[200];
+
+string output longer than 80 chars? where?
+
+>  	const char *p, *q;
+>  	int len;
+>  
+> @@ -1048,7 +1053,11 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
+>  			printf("FAIL\nUnexpected success to load!\n");
+>  			goto fail_log;
+>  		}
+> -		if (!expected_err || !strstr(bpf_vlog, expected_err)) {
+> +		if (!expected_err) {
+> +			printf("FAIL\nTestcase bug; missing expected_err\n");
+> +			goto fail_log;
+> +		}
+> +		if ((strlen(expected_err) > 0) && !cmp_str_seq(bpf_vlog, expected_err)) {
+>  			printf("FAIL\nUnexpected error message!\n\tEXP: %s\n\tRES: %s\n",
+>  			      expected_err, bpf_vlog);
+>  			goto fail_log;
+> diff --git a/tools/testing/selftests/bpf/verifier/var_off.c b/tools/testing/selftests/bpf/verifier/var_off.c
+> index 8504ac937809..a1a46a6ec376 100644
+> --- a/tools/testing/selftests/bpf/verifier/var_off.c
+> +++ b/tools/testing/selftests/bpf/verifier/var_off.c
+> @@ -18,7 +18,7 @@
+>  	.prog_type = BPF_PROG_TYPE_LWT_IN,
+>  },
+>  {
+> -	"variable-offset stack access",
+> +	"variable-offset stack read",
+>  	.insns = {
+>  	/* Fill the top 8 bytes of the stack */
+>  	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
+> @@ -31,11 +31,57 @@
+>  	 * we don't know which
+>  	 */
+>  	BPF_ALU64_REG(BPF_ADD, BPF_REG_2, BPF_REG_10),
+> -	/* dereference it */
+> +	/* dereference it for a stack read */
+> +	BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_REG_2, 0),
+> +	BPF_MOV64_IMM(BPF_REG_0, 0),
+> +	BPF_EXIT_INSN(),
+> +	},
+> +	.result = ACCEPT,
+> +	.result_unpriv = REJECT,
+> +	.errstr_unpriv =
+> +		"variable stack access var_off=(0xfffffffffffffff8; 0x4) off=-8 size=1\tR2 stack pointer arithmetic goes out of range, prohibited for !root",
+
+this one?
+Just trim it. The verifier messages change often. If expected string
+is too strict it creates code churn.
+
+> +	.prog_type = BPF_PROG_TYPE_CGROUP_SKB,
+> +},
