@@ -2,318 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6E262EEAF7
-	for <lists+bpf@lfdr.de>; Fri,  8 Jan 2021 02:33:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5B2C2EEB2D
+	for <lists+bpf@lfdr.de>; Fri,  8 Jan 2021 03:09:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729738AbhAHBcE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 7 Jan 2021 20:32:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729736AbhAHBcE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 7 Jan 2021 20:32:04 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D148C0612F4
-        for <bpf@vger.kernel.org>; Thu,  7 Jan 2021 17:31:24 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id d17so12355292ejy.9
-        for <bpf@vger.kernel.org>; Thu, 07 Jan 2021 17:31:24 -0800 (PST)
+        id S1726526AbhAHCJf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 7 Jan 2021 21:09:35 -0500
+Received: from mail-eopbgr1320082.outbound.protection.outlook.com ([40.107.132.82]:7229
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726477AbhAHCJe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 7 Jan 2021 21:09:34 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ln6ejZ580otBLJZArlB/YkE4tMhk3z48UnEQHbkHwiakP8PWP/+zy6EWNzlRw9azTTFy6XUIyEny0pfTqznpPXr3NFMnpTEgh4Q+wjrOPQYtcYK94gTRkEmciWyAUux017AHVBU+WXT9JC1elk3KCQeo6ySkKEg/GLRfL6Q2vWHZMVtNPqnltS4wC7pOxNUl5X56pMdb73/PqK9kLksPlo38poNWSbzkQCsetzSXtIvDVVqLjGJkULoPni86pwqbI7svpnHo9kY7R4QDt6Dc/oq0nUBIdVaD4i33GmeBxSDbJ9JR9iBWSbW68Qo6r+8r5fZ+wHA/ovQhvOxrlk5F4w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=q0iJgr2FmvEC2+OBdUqxmKDXCLlDE5BeBVLPO/Cii9M=;
+ b=ICDiuwp+TC031vzIXjJFK5jvoICu0GTrV1S314Larfmeev6tFIexVUaaj/k78CHRcANopz4yLtbhvc5k+D0w593ty3Gr83Mz40px1szTbRVCUoObofgV7rSgo4PpscgVDDlL2sOwCsH453qljGRLY1t0R/i7rcWlAV4HGcG044rAC//ksLF/ki/BfXPY3EGBNkFQ5jHwE25clS9gboJA+awA9IwMUBD4OX4zOBD/KFeXCnkEZ9H/KNVuWTzvp7kYzTPq4HjsWtxjj2eNTN2nIaKJxvqBx6VenGKulMax9mTLrzwa0biYWQQyZlEIO/M8WAoyy4vBGS25WDBZjdzsdA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
+ dkim=pass header.d=oppo.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=araalinetworks-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FEQqSaji7x4g9sJP714WqIXWe2yFgkV8N/hJleIjVrU=;
-        b=rEF0qRv8sYGS3gcaW978YXrvkXgRODH4WX5530dGLUvgI0qIqHXhmHADhe/SkqXgEN
-         i0/dPUKqUUs5D9HKww2ZfaalfTdjsQJfj13wvJkZw1buNxpOYoZsiDOLn3Dh8xxQB8JD
-         rKiA67XVrsSPYYWwl6wecaNGAWV7Cf/Q0GB/093c5Aj/YPKHbRx9f2y2CzKQ8uikcU7L
-         h1u9kjtB8+QxLGOOfIS+JljquInj/fRQAQPcUOuXBnOG+uVpkyXFP6LPAQUi4BzsYY2+
-         aQvOUXP1HvKK5l/cRwtPt07004x258AyPyhUyDQCAvx43aYTLb0Qn3fZHWib7vFgblA8
-         qTBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FEQqSaji7x4g9sJP714WqIXWe2yFgkV8N/hJleIjVrU=;
-        b=DkgLDt0/vhYSvj59NsydBWfQXvzkXShmAFIRnQqwrY7lAHGrPKFPOq2NqI2//mME72
-         suHXvvibCR1N/J5+fh/so3aKimO9mMfqsP/GzbNTskZxMUqX7WoaeVKErFoezrOlR1+9
-         Zpmi80+p42BXPUXIQ0hCxh/+gHIhgPTk95uIRrHRH7YXtTHukDJRnJmer1FxDKg8ZeRq
-         4zePylpNbB7FjhndpSCu03Y6o0PtWk/Ubf9BM36kldWfcLLoee25SyVEG5S7GM8Go1Eu
-         rQv5W8CifOyMM2+oIklIfE9ZPSB3cZhF12lalRktjFjzAX7bcwRqL3WGGPn1suHZVFO/
-         JDYg==
-X-Gm-Message-State: AOAM530iJIgsIqxi7liKexHYBnK/51vbPrd+s368yemdQm/6x1yOoVAA
-        LcIZ/EJ1hP2Cgkk8W8MOBoWOOkWGUqnJfe0dmqVydg==
-X-Google-Smtp-Source: ABdhPJxF0ZK9sYhIiuNMF0kACyzqjbPfx1x7EILcjG1GXZLKsjdRbReLuKOSiQEFBjet2ct11rZ9OvRCa7K2AlXZPIs=
-X-Received: by 2002:a17:906:af75:: with SMTP id os21mr1123591ejb.330.1610069482833;
- Thu, 07 Jan 2021 17:31:22 -0800 (PST)
+ d=oppoglobal.onmicrosoft.com; s=selector1-oppoglobal-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=q0iJgr2FmvEC2+OBdUqxmKDXCLlDE5BeBVLPO/Cii9M=;
+ b=hSP1sJeARc9e9z9dk9gj8yvgdtNSVLEdpy372wHvf3hZiSF2R1qwOIlNGNy2iHnSVfVUzGjL74fCTh7M+wRAGBVt6d5cBd8VwdMmHnKp7Y6RdttLLq8cNXdA+pgZnu8nuok1M/JYRb0lVDkOyy1sFmpvfd6JvMO98D9YqSBdIqA=
+Received: from HKAPR02MB4291.apcprd02.prod.outlook.com (2603:1096:203:d3::12)
+ by HK2PR02MB3873.apcprd02.prod.outlook.com (2603:1096:202:19::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Fri, 8 Jan
+ 2021 02:08:00 +0000
+Received: from HKAPR02MB4291.apcprd02.prod.outlook.com
+ ([fe80::e87c:a07c:77fc:630c]) by HKAPR02MB4291.apcprd02.prod.outlook.com
+ ([fe80::e87c:a07c:77fc:630c%7]) with mapi id 15.20.3742.006; Fri, 8 Jan 2021
+ 02:08:00 +0000
+From:   =?utf-8?B?5b2t5rWpKFJpY2hhcmQp?= <richard.peng@oppo.com>
+To:     "ast@kernel.org" <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>
+CC:     "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: [PATCH] tools/bpf: Remove unnecessary parameter in
+ bpf_object__probe_loading
+Thread-Topic: [PATCH] tools/bpf: Remove unnecessary parameter in
+ bpf_object__probe_loading
+Thread-Index: AdblYbQpQKmKVR0hTa2lc5nK9Yvjhg==
+Date:   Fri, 8 Jan 2021 02:08:00 +0000
+Message-ID: <HKAPR02MB42916F8599BF7B58AD73C27AE0AE0@HKAPR02MB4291.apcprd02.prod.outlook.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=oppo.com;
+x-originating-ip: [58.255.79.102]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b53abdac-c101-4555-3c6e-08d8b37a396e
+x-ms-traffictypediagnostic: HK2PR02MB3873:
+x-microsoft-antispam-prvs: <HK2PR02MB3873D20BE075FC44476DF3B9E0AE0@HK2PR02MB3873.apcprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2657;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ygcFEZcaN8fwqaHnVBSVnPvIUXLhVAvcpv4VyQpgutwYHg6qy3f7YqW+Ps66cx3Qa4U8uE8CYWJ12ee9rt8fL2drulAgi+LWWBBNh0n6GO4yulEI5OiTNf2gg0i+0RVJ/hIQTn4fVu7WJMkXHNkED7rq3Iax73rTzJ9su/TS9tpS2kjLLA6CCfmYTWt2ylOWFpu8xyaSNeELOBDb7hy0eCFMMZvLNEgGA9JnMwQxDDZqTVsaGW9ePp59LYazK6YL57CSUbazK3L4rnOvXrAVKwbZPMgYl0wQtTU8d2GZDt8GB4+DgRaOg1oiN6sIaOkl64CGrhHyJUaa/6qZN7VkGIlrVfXt5G1CVb62Ts2GnOB4CufBlY7MJe50ihi6uMNcoYGScmdpnWdkd1Pskha/JSQj2w+mgohwMlshEH+CzYMDEtl4XgNVticmuBKPOmz3BSuHHV8z0sR/6mWtHpawO5wLGdLJDGP0kOt3lzx/Sr0=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HKAPR02MB4291.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(376002)(396003)(366004)(136003)(64756008)(66556008)(66446008)(8676002)(66946007)(83380400001)(4744005)(8936002)(9686003)(186003)(66476007)(52536014)(478600001)(6506007)(33656002)(26005)(110136005)(7696005)(71200400001)(86362001)(5660300002)(55016002)(2906002)(4326008)(316002)(85182001)(54906003)(76116006)(11606006)(101420200001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?V3B5dnFwcjREREpmcjdjcUdxY3psWVZhN3NLZllrY0h1R2YrdGpQR3NLaHFh?=
+ =?utf-8?B?aTJCdzN5RjhQZHZhaFBjanpVL1NSczR3U1lyUVBRbFpTdGMwK3RZVTh3VGZL?=
+ =?utf-8?B?WGZ4YVVlanZTWE82cW5hZmpTd1J1bjhPWm1yTUZsMHpHemFSdG8wN1ZKRFhs?=
+ =?utf-8?B?UzFHekRFSEQ5V2lENllid3VUbUFNZEJublVpVG5kZXE3eDhHNkUvQ1VOTzRH?=
+ =?utf-8?B?aFFjMllDc1JIOEVMTjdwVmNaRTJDelBzdlNQZzRPQkloVVhLTytOTllqbGlr?=
+ =?utf-8?B?eDIxL09ONTByT0hpWHZmTDVsU09WL3hpN3h1Z3hGdkpwSnRoMTl4UHRyQlRJ?=
+ =?utf-8?B?cXlnTmRqWVFJSWJJRWg3YUtLRDBVSWUwR0RxRUU3QVVGVFdFOGNmMUx5RDM2?=
+ =?utf-8?B?OXg1ZVpjem5SSm5iRnBXR2F3MG9ReEhIQkpOVjdmbEE1dUt4YjA0aTlSN29n?=
+ =?utf-8?B?WUNoc2YvY1ovdlBsek96MFJxMjA5RkRibVhwb2ZabUxRZWFOZ3FuNHpBTmt4?=
+ =?utf-8?B?WURGR0V0cFB0VTVlTFNxNDhZYzZRQWR3YzA1RjZTc3NHMFBobnRwWXhISFJD?=
+ =?utf-8?B?Vk1KQy9ER0dXY0NxV0hWeElHUWxrdnVwRW0wSmtzSmVVd3I2ajA4YnZrNEIr?=
+ =?utf-8?B?dE84Y1lLQXg2c3FTU3QzYldlWHhtSWJDK0VtZ3A5ZmpCMG1BZ0lqcVB4d0dk?=
+ =?utf-8?B?eFk0cHV6bDJ2NE9oQU9GSGU3VGlkaWh5QVQrZVZVeXp2V2wvMW1LaDVJTTZK?=
+ =?utf-8?B?NGQrSUhLQVllcS9SNmNpQ01NWjZ5NWdGS1c4WU5mdDFNa0dxb253aXdWWk1r?=
+ =?utf-8?B?akludWFvSDJ0bEw0Q3gvNVNWRWxCbDhyemlkeG11N1h6bWxISGZab1I5S3Js?=
+ =?utf-8?B?WGpwUzFWNlU1a3psNHJQY0tHMW1IWEs4dWpZSjMxYkJnTHpMVkdQMjd4K0k2?=
+ =?utf-8?B?MjQxOEl5V2p1YVAza0tqVjgySWN0QlNxRUpkYWlsWHNCOGljYW1LK2d4bHpV?=
+ =?utf-8?B?QnF6Y1VTWXIyTDFIczV3MTNoZGlzYUpKazhlczVJZ3NSc3h3M08ybS8vb1c0?=
+ =?utf-8?B?ZkFHLzdLdFhPMUhmZTBucU11aWdqMkxDNWtDdEpockd4YkRKUUVUd0MzNUZR?=
+ =?utf-8?B?SUsrZC9iYUxZUy9pQXlsb0hrZVZaWitRWi9nOWV3a28veDBWT1B3c1VvbG9L?=
+ =?utf-8?B?eEZOVm5QNXVUbG50ZTRTRmptT29NZjF1VThDTml0T0Q1eW16OE9sV2tDazl5?=
+ =?utf-8?B?Qm1PMlhxWWM0WVlWenJyNituZzlQSXR4bStOUEFXazhoM3djWmZMVk5jNVNi?=
+ =?utf-8?Q?HqbqrPU//A80c=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <CADmGQ+1euj7Uv9e8UyZMMXDiYAKqXe9=GSTBFNbbg1E0R-ejyg@mail.gmail.com>
- <CAEf4BzbJZLjNoiK8_VfeVg_Vrg=9iYFv+po-38SMe=UzwDKJ=Q@mail.gmail.com>
- <CADmGQ+1ugPF-n1KnbVpOmC=xiOG_57GyS+0NetfsPz99HxS36A@mail.gmail.com>
- <CAEf4BzbpOVKLKq+Cz5kWNZHu-yNG9BsY4udOU+md_zdoT7sG1A@mail.gmail.com>
- <CADmGQ+0UFDY2Eb_xbcsrPKDmoD8ri1ufZ4Mp3YiMo8AW-X=zgw@mail.gmail.com>
- <CAEf4BzYtOYuZnVnvi_12xR+EEKddQmMM891rWHGsSgwzt473VA@mail.gmail.com> <CADmGQ+294Fx7Z2xJzLwxFqsFvoEkY0_CjrUff3XvjrReHtKcYw@mail.gmail.com>
-In-Reply-To: <CADmGQ+294Fx7Z2xJzLwxFqsFvoEkY0_CjrUff3XvjrReHtKcYw@mail.gmail.com>
-From:   Vamsi Kodavanty <vamsi@araalinetworks.com>
-Date:   Thu, 7 Jan 2021 17:31:11 -0800
-Message-ID: <CADmGQ+0dDjfs6UL63m3vLAfu+GHgSFdMO+Rmz_jk+0R9Wva2Tw@mail.gmail.com>
-Subject: Re: [BPF CO-RE clarification] Use CO-RE on older kernel versions.
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: oppo.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HKAPR02MB4291.apcprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b53abdac-c101-4555-3c6e-08d8b37a396e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jan 2021 02:08:00.2558
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: rTGu1R4hFl6r4zMRjxeNLIIIK458/UTd6FtJcBHu5txZ+oGCpH/OTmzguAyHqKWU0Sj0Skd77IQmTmDKkN7y+g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK2PR02MB3873
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 7, 2021 at 4:16 PM Vamsi Kodavanty <vamsi@araalinetworks.com> wrote:
->
-> On Thu, Jan 7, 2021 at 3:32 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Thu, Jan 7, 2021 at 2:45 PM Vamsi Kodavanty <vamsi@araalinetworks.com> wrote:
-> > >
-> > > Andrii,
-> > >     Thank you so much for the quick response. You were right. I was
-> > > trying to CO-RE the `tcpconnect.py` program. It had some `.rodata`
-> > > which I removed. Now the program goes much further. It now finishes
-> > > the relocations successfully. But, fails at the next step
-> > > `bpf_object__load_progs`.
-> >
-> > It's discouraged to use top posting on the mailing list. So for the
-> > future please reply inline.
-> >
->
-> [VAMSI-3] Apologies. Will be mindful next time on.
->
-> >
-> > >
-> > > ===
-> > > libbpf: prog 'tcp_v6_connect_ret': relo #3: patched insn #50
-> > > (ALU/ALU64) imm 56 -> 56
-> > > libbpf: failed to open '/sys/bus/event_source/devices/kprobe/type': No
-> > > such file or directory
-> > > libbpf: failed to determine kprobe perf type: No such file or directory
-> > > libbpf: prog 'tcp_v4_connect': failed to create kprobe
-> > > 'tcp_v4_connect' perf event: No such file or directory
-> > > libbpf: failed to auto-attach program 'tcp_v4_connect': -2
-> > > ===
-> > >
-> > > This host has a 4.14 kernel AmazonLinux2 and does not have the above
-> > > file. It instead has this
-> > >
-> > > ===
-> > > $ sudo cat /sys/kernel/debug/tracing/kprobe_events
-> > > p:kprobes/p_sys_execve_bcc_2566 sys_execve
-> > > ===
-> > >
-> >
-> > Right. Libbpf only supports a newer and safer way to attach to
-> > kprobes. For your experiments, try to stick to tracepoints and you'll
-> > have a better time.
-> >
-> > But it's another thing I've been meaning to add to libbpf for
-> > supporting older kernels. I even have code written to do legacy kprobe
-> > attachment, just need to find time to send a patch to add it as a
-> > fallback for kernels that don't support new kprobe interface.
-> >
->
-> [VAMSI-3] I think that will be very helpful, as there are bound to be hosts
-> with older kernels for the foreseeable future. Good to know it's being
-> considered.
->
-> >
-> > > I am guessing this is a backward compatibility issue?. I will try to
-> > > look at an earlier version of libbpf to see how this was handled.
-> >
-> > it was never supported by libbpf. BCC support both old and new APIs,
-> > but old APIs is more dangerous, as it's easy to leave attached kprobe
-> > BPF program active in the kernel unintentionally. E.g., if the process
-> > crashes. But with bpf_link and its expected use of
-> > bpf_link__destroy(), we can support the legacy API (it won't be any
-> > safer, but still).
-> >
->
-> [VAMSI-3] Will use tracepoints to validate the process as you suggested. I
-> will then try to see what I can do to use this on kprobe/kretprobe's. Will also
-> check how BCC does this. I will start a new thread if needed.
->
-
-[VAMSI-4] Just to round up this thread. The tracepoints did work out
-of the box.
-I tried the `execsnoop` tool and it worked fine.
-
-Thank you again.
-Vamsi.
-
-> Again appreciate the inputs and direction very much.
->
-> Best Regards
-> Vamsi.
->
-> > > Meanwhile, if you have further comments they are appreciated.
-> > >
-> > > And again I can't thank you enough for how helpful you have been and
-> > > your time. Cheers!.
-> > >
-> > >
-> > >
-> > >
-> > > On Thu, Jan 7, 2021 at 10:52 AM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
-> > > >
-> > > > On Thu, Jan 7, 2021 at 10:12 AM Vamsi Kodavanty
-> > > > <vamsi@araalinetworks.com> wrote:
-> > > > >
-> > > > > First of all thank you very much for your quick response. And helpful pointers.
-> > > > > It seems like you also think what I am attempting to do should work.
-> > > > >
-> > > > > Please see inline [VAMSI-2].
-> > > > >
-> > > > > On Wed, Jan 6, 2021 at 3:55 PM Andrii Nakryiko
-> > > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > > >
-> > > > > > On Wed, Jan 6, 2021 at 10:04 AM Vamsi Kodavanty
-> > > > > > <vamsi@araalinetworks.com> wrote:
-> > > > > > >
-> > > > > > > Had a few questions on CO-RE dependencies and usage. From what I read
-> > > > > > > CO-RE needs a supported kernel version and be compiled with
-> > > > > > > `CONFIG_DEBUG_INFO_BTF=y`.
-> > > > > > >
-> > > > > > > I also understand there are three pieces to enable CO-RE
-> > > > > > > functionality. (1) The BTF format. For efficient/compressed kernel
-> > > > > > > symbol table. (2) clang changes to emit the BTF relocations. (3)
-> > > > > >
-> > > > > > BTF is not really a symbol table, rather a type information. Like
-> > > > > > simpler and more compact DWARF.
-> > > > > >
-> > > > > > > `libbpf` changes to locate a BTF file and fix-up relocations. Once
-> > > > > > > these 3 steps are done the resulting byte code is no different from
-> > > > > > > non-CO-RE byte code.
-> > > > > > >
-> > > > > > > Given this I am hoping the knowledgeable folks on this mailer correct
-> > > > > > > and guide me if I am stating something incorrectly.
-> > > > > > >
-> > > > > > > (1) Is the kernel support requirement ONLY for the purposes of
-> > > > > > > generating and exposing the BTF file information on
-> > > > > > > `/sys/kernel/btf/vmlinux`? So that the eBPF CO-RE applications
-> > > > > > > `libbpf` can find the BTF information at a standard location?.
-> > > > > >
-> > > > > > /sys/kernel/btf/vmlinux is a standardized place, but libbpf will also
-> > > > > > try to search for vmlinux image (and BTF info within it) in a few
-> > > > > > standard locations, see [0]. Early versions of in-kernel BTF didn't
-> > > > > > even expose /sys/kernel/btf/vmlinux.
-> > > > > >
-> > > > > >   [0] https://github.com/libbpf/libbpf/blob/master/src/btf.c#L4580
-> > > > > >
-> > > > > > >
-> > > > > > > (2) If the answer to the above question is YES. Could the below
-> > > > > > > mechanism be used so that it works on all kernels whether they support
-> > > > > > > the `CONFIG_DEBUG_INFO_BTF` flag or not?.
-> > > > > > >        (a) Extract BTF generation process outside of the kernel build.
-> > > > > > > Use this to generate the equivalent BTF file for it.
-> > > > > >
-> > > > > > Yes, CONFIG_DEBUG_INFO_BTF=y is the most convenient way to add BTF
-> > > > > > info, but it's also possible to just embed BTF manually with a direct
-> > > > > > invocation of pahole -J, see [1] on how it's done for
-> > > > > > CONFIG_DEBUG_INFO_BTF. You can do that for *any* kernel image, no
-> > > > > > matter the version, and it will work with CO-RE relocations.
-> > > > > >
-> > > > > >   [1] https://github.com/torvalds/linux/blob/master/scripts/link-vmlinux.sh#L137-L170
-> > > > > >
-> > > > >
-> > > > > [VAMSI-2] Yes, this is exactly what I did. I extracted out the
-> > > > > `gen_btf` from the
-> > > > > `link-vmlinux.sh` (which uses pahole -J) and used it to generate a BTF
-> > > > > file for the
-> > > > > 4.14.0 kernel.
-> > > > >
-> > > > > > >        (b) Make changes to `libbpf` to look for BTF not only at the
-> > > > > > > standard locations but also at a user specified location. The BTF file
-> > > > > > > generated in (a) can be presented here.
-> > > > > >
-> > > > > > You can already do that, actually, though it's not very obvious. You
-> > > > > > can specify (or override) kernel BTF location by using
-> > > > > > bpf_object__load_xattr() and passing target_btf_path pointing to your
-> > > > > > BTF location (see [2]). I've been meaning to add it instead to a
-> > > > > > bpf_object_open_opts, btw, to make its use possible with a BPF
-> > > > > > skeleton. Also keep in mind that currently libbpf expects that custom
-> > > > > > BTF to be an ELF file with .BTF section, not just a raw BTF data. But
-> > > > > > we can improve that, of course.
-> > > > > >
-> > > > > >   [2] https://github.com/libbpf/libbpf/blob/master/src/libbpf.h#L136-L141
-> > > > >
-> > > > > [VAMSI-2] I took a look at this and what you suggested above does not
-> > > > > work as is.
-> > > > > Even if we used `bpf_object__load_xattr` with `target_btf_path`. It seems like
-> > > > > `bpf_object__load_vmlinux_btf` is not yet modified to use the
-> > > > > `target_btf_path` attribute.
-> > > >
-> > > > Ah, right. We used to need vmlinux BTF only for CO-RE relocations, but
-> > > > since then added a bunch more use cases. So some libbpf changes are
-> > > > needed to make this work. But it should still work for CO-RE to have a
-> > > > custom BTF.
-> > > >
-> > > > I'm not sure about making bpf_object__load_vmlinux_btf() load custom
-> > > > BTF as the real kernel BTF, because that will never work for
-> > > > fentry/fexit, struct_ops, etc. I think it is better to teach
-> > > > bpf_object__load_vmlinux_btf() to not attempt to load real kernel BTF
-> > > > if we need it only for CO-RE relocations *and* we have it overloaded
-> > > > with target_btf_path
-> > > >
-> > > > > Only, the `bpf_object__relocate` looks at the `target_btf_path`. As
-> > > > > you suggested enabling
-> > > > > use from the BPF skeleton seems useful and I can possibly help with that.
-> > > >
-> > > > Yeah, adding something like core_btf_path option to
-> > > > bpf_object_open_opts would go nicely with this change.
-> > > >
-> > > > >
-> > > > > For now, just for proof of concept I modified the search options in
-> > > > > `libbpf_find_kernel_btf` to
-> > > > > include my custom path. And on a 4.14 AmazonLinux2 VM I observe these failures.
-> > > > >
-> > > > > libbpf: loading kernel BTF '/home/ec2-user/vmlinux.btf': 0
-> > > >
-> > > > so here you successfully loaded custom BTF, which is good.
-> > > >
-> > > > > libbpf: Kernel doesn't support BTF, skipping uploading it.
-> > > >
-> > > > this just means that your BPF object's BTF won't be loaded into the
-> > > > kernel. That's no big deal, ignore this.
-> > > >
-> > > > > libbpf: kernel doesn't support global data
-> > > >
-> > > > But this means that your BPF programs rely on global variables, which
-> > > > are not supported by the kernel. So you need to change the code to not
-> > > > use global variables to make this work on very old kernels.
-> > > >
-> > > >
-> > > > > libbpf: failed to load object 'tcpconnect_bpf'
-> > > > > libbpf: failed to load BPF skeleton 'tcpconnect_bpf': -95
-> > > > > failed to load BPF object: -95
-> > > >
-> > > > This is probably OPNOTSUPP from the global data above
-> > > >
-> > > > >
-> > > > > This is the reason I had posted on the mailer. If the CO-RE executable
-> > > > > has relocations
-> > > > > resolved by the time of the BPF load. Why do we need to check for
-> > > > > kernel support?. Also,
-> > > > > does this mean what I am attempting to do will not work?.
-> > > > >
-> > > >
-> > > > it will work with minimal libbpf logic changes. Nothing in principle
-> > > > prevents this.
-> > > >
-> > > >
-> > > > > Best Regards. And again thanks a lot for your precious time.
-> > > > > - Vamsi.
-> > > > >
-> > > > > > >
-> > > > > > > This should provide us a way to enable CO-RE functionality on older
-> > > > > > > kernel versions as well. I tried to make the above changes and tried
-> > > > > > > against a 4.14 kernel and it did not work. Either I am not doing
-> > > > > > > something right or my assumptions are wrong.
-> > > > > > >
-> > > > > > > Thanks in advance for your time. And I hope someone here can guide me
-> > > > > > > in the right direction.
-> > > > > > >
-> > > > > > > Regards
-> > > > > > > Vamsi.
+c3RydWN0IGJwZl9vYmplY3QgKm9iaiBpcyBub3QgdXNlZCBpbiBicGZfb2JqZWN0X19wcm9iZV9s
+b2FkaW5nLCBzbyB3ZQ0KY2FuIHJlbW92ZSBpdC4NCg0KU2lnbmVkLW9mZi1ieTogUGVuZyBIYW8g
+PHJpY2hhcmQucGVuZ0BvcHBvLmNvbT4NCi0tLQ0KIHRvb2xzL2xpYi9icGYvbGliYnBmLmMgfCA0
+ICsrLS0NCiAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0K
+DQpkaWZmIC0tZ2l0IGEvdG9vbHMvbGliL2JwZi9saWJicGYuYyBiL3Rvb2xzL2xpYi9icGYvbGli
+YnBmLmMNCmluZGV4IDMxMzAzNDExNzA3MC4uMTdkOTA3NzlmMDlhIDEwMDY0NA0KLS0tIGEvdG9v
+bHMvbGliL2JwZi9saWJicGYuYw0KKysrIGIvdG9vbHMvbGliL2JwZi9saWJicGYuYw0KQEAgLTM2
+ODUsNyArMzY4NSw3IEBAIGludCBicGZfbWFwX19yZXNpemUoc3RydWN0IGJwZl9tYXAgKm1hcCwg
+X191MzIgbWF4X2VudHJpZXMpDQogfQ0KDQogc3RhdGljIGludA0KLWJwZl9vYmplY3RfX3Byb2Jl
+X2xvYWRpbmcoc3RydWN0IGJwZl9vYmplY3QgKm9iaikNCiticGZfb2JqZWN0X19wcm9iZV9sb2Fk
+aW5nKHZvaWQpDQogew0KICAgICAgICBzdHJ1Y3QgYnBmX2xvYWRfcHJvZ3JhbV9hdHRyIGF0dHI7
+DQogICAgICAgIGNoYXIgKmNwLCBlcnJtc2dbU1RSRVJSX0JVRlNJWkVdOw0KQEAgLTcyNTgsNyAr
+NzI1OCw3IEBAIGludCBicGZfb2JqZWN0X19sb2FkX3hhdHRyKHN0cnVjdCBicGZfb2JqZWN0X2xv
+YWRfYXR0ciAqYXR0cikNCiAgICAgICAgICAgICAgICByZXR1cm4gLUVJTlZBTDsNCiAgICAgICAg
+fQ0KDQotICAgICAgIGVyciA9IGJwZl9vYmplY3RfX3Byb2JlX2xvYWRpbmcob2JqKTsNCisgICAg
+ICAgZXJyID0gYnBmX29iamVjdF9fcHJvYmVfbG9hZGluZygpOw0KICAgICAgICBlcnIgPSBlcnIg
+PyA6IGJwZl9vYmplY3RfX2xvYWRfdm1saW51eF9idGYob2JqKTsNCiAgICAgICAgZXJyID0gZXJy
+ID8gOiBicGZfb2JqZWN0X19yZXNvbHZlX2V4dGVybnMob2JqLCBvYmotPmtjb25maWcpOw0KICAg
+ICAgICBlcnIgPSBlcnIgPyA6IGJwZl9vYmplY3RfX3Nhbml0aXplX2FuZF9sb2FkX2J0ZihvYmop
+Ow0KLS0NCjIuMTguNA0K
