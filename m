@@ -2,163 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 019E62EED35
-	for <lists+bpf@lfdr.de>; Fri,  8 Jan 2021 06:44:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D42BB2EF2DB
+	for <lists+bpf@lfdr.de>; Fri,  8 Jan 2021 14:07:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725942AbhAHFom (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Jan 2021 00:44:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58256 "EHLO
+        id S1726011AbhAHNGJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Jan 2021 08:06:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725844AbhAHFol (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Jan 2021 00:44:41 -0500
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9004FC0612F4
-        for <bpf@vger.kernel.org>; Thu,  7 Jan 2021 21:44:01 -0800 (PST)
-Received: by mail-oo1-xc2d.google.com with SMTP id j21so2133542oou.11
-        for <bpf@vger.kernel.org>; Thu, 07 Jan 2021 21:44:01 -0800 (PST)
+        with ESMTP id S1725816AbhAHNGJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Jan 2021 08:06:09 -0500
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD586C0612F5
+        for <bpf@vger.kernel.org>; Fri,  8 Jan 2021 05:05:28 -0800 (PST)
+Received: by mail-io1-xd34.google.com with SMTP id t8so9656749iov.8
+        for <bpf@vger.kernel.org>; Fri, 08 Jan 2021 05:05:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=/UuLDy+VMfg2CKBz1zHEOw1gXEfxxSoXAsPrXp7HrZs=;
-        b=QPseVHQ83ZGkr9FtA0boYFs2RqK66nSgTkBnYXtt6yXhRU6r6CXNLgsLDnA3cy6bXl
-         lsbZ8/9/CYTNKFZtdJbTY4yeGA4H8bT/49ags4PZ0TZa25pnMaZLPXGC0H8Mh2fF/cNw
-         vaMu2qPpvCF0xvSCsc1EGFguMd+Rd53Y2zvm9F2mremTj9nbrkLgGtXSlO2SsU+vc/WS
-         emz/ZsuqVBJ9v/fQGqYE5wPK/k5mYtCgswkIxuNIXUIE9WMOhc1v0M2Lqq09YLlS3z+F
-         ezvSlEIY2AJEYSM0F8+uRdrVkK/y9TTp2z5GzmG8ajK2J9v6Mmkw0wDCbTucaIerWsv6
-         C0Vg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FoZ36nvKGmBM6PjnVM75KlQgWxheD1KsASjWnU5y1fU=;
+        b=p9WKsAO6CyfD1kjoCdeOGX/PeSiuA/AFYj2tMyhGYgedMy7q0X/VbpeBx8px2xUL+W
+         V9XCkb65vH31gga/0ww4Ucj6ZSDWbfEkpQwoEYCu7PF9WWxsMQLLzXUO6hCO10QMZW7Z
+         WHXddO3qaTxxuePbPmEEJk3s8TTffdJNQQ+liTqbUSfcoU9Jh0lp1c2bJxevpXgH2S+t
+         XGjh0+R9RraPMhcVEUX5MLwmbf80FlEKBgKQ8QVvZLn+inoxguE9ciNZk7hvHEzEhRIe
+         vYQ6wVq0z/aEqezwNgaRYxcCYatLWjoKOEvtx65cd7ac/zkRi1vYoNE5WPojpe8sX+nN
+         fazg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=/UuLDy+VMfg2CKBz1zHEOw1gXEfxxSoXAsPrXp7HrZs=;
-        b=Emq4ai4pXvGmxjalfKwt4aaUQhp/n+wPcPLkPOg/OhWX8izu8tzJBOf9sGrA5BnwN7
-         UHidA++0pZfrBL5t+zb+FiU6dy9bpnvKaoXLlcwAgJjUE0KXp7jcu7M83IkB5G4nxKmu
-         v1D8A3TSiwQmUEMEGzyHtPovLBSH+k4i6BesXV1UySpsLOxLm2TiL2Wa/TObwcKFW2SV
-         DmBOVQTdRGOXhj+m+5MwOEmbKeofjMG68UmIYD0QGoMSpN+oCCkAIf0ueU5ZXP1sFvyl
-         bogpxpqMOzJtr1888Jwa9ON144avCJkj8KUe4VQarfQLVsCM2DIoV7EAS14G1KuNSzIq
-         +OEQ==
-X-Gm-Message-State: AOAM5327FmBjtWNx9SgAvjSn5lxrObTqxq+Gdtt73L//Gt7j3UemS2k/
-        VRCYjltic42vgxCoT8G3pkA=
-X-Google-Smtp-Source: ABdhPJwQJf5OvfYdL4H11y/sKhEBSA8dzPXZuQleoDCN/0aDDSBLZpyYH1MMTZGg1iFcU7zCMmKGtg==
-X-Received: by 2002:a4a:9f47:: with SMTP id d7mr3350420ool.23.1610084640999;
-        Thu, 07 Jan 2021 21:44:00 -0800 (PST)
-Received: from localhost ([184.21.204.5])
-        by smtp.gmail.com with ESMTPSA id f145sm1635199oob.18.2021.01.07.21.43.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 21:44:00 -0800 (PST)
-Date:   Thu, 07 Jan 2021 21:43:50 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Brendan Jackman <jackmanb@google.com>,
-        KP Singh <kpsingh@google.com>, bpf <bpf@vger.kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <5ff7f1167259b_36910208ef@john-XPS-13-9370.notmuch>
-In-Reply-To: <CAEf4BzZw5Zt92PHMP=3+aKEiJNP6aG6+Xpw5BLK2mQAohVPyxw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FoZ36nvKGmBM6PjnVM75KlQgWxheD1KsASjWnU5y1fU=;
+        b=FmL3a1BrZTI6r7byKj5CLy0ThO4y6HqicOg/h2iKOoBAFRbozxvmacqDgZ/ctceDPA
+         WFjpTjGzraeB6BkIW63wWGpTPWeAcWyYl9EpukNfUuf8mloZAL7iJMwzbDGEBxR/4EVD
+         5dW1GHb+/ZnZExVfZG558J/FGVnDv93EUzWe9ILstzS2AmIOEzKukyE8r2aNS5crzNGL
+         DG5p1KL/3L94rAxtAIoHCbAMJBnvQlGLU62KpDFeD40N5SFvygD7V9bLAjwY6c37yl2a
+         UlX03PUqBnTQsz1PrK746BiUanilbKYcVG09uEIpnQSmaNz7DjK6BE4Cfg2OQfUmmQN8
+         OflA==
+X-Gm-Message-State: AOAM533rFkdFyuF2wY8VIOXfpzd8cJsp3kKuHrIiUYuDsEJL/QhIN8qZ
+        zP0OznYY0IdKfTW4eUcF+Ed3vYfflxf/p+lxnEQLGA==
+X-Google-Smtp-Source: ABdhPJyd5rZXdozTpA463unD8iBQ+2OoYxC+Az8jdjJRXPiOzSCveMnieQVMcDcW+9czld+Pz1LoG0+J2u+0TTq/pZw=
+X-Received: by 2002:a6b:bac3:: with SMTP id k186mr5222118iof.194.1610111127677;
+ Fri, 08 Jan 2021 05:05:27 -0800 (PST)
+MIME-Version: 1.0
 References: <CAEf4BzZw5Zt92PHMP=3+aKEiJNP6aG6+Xpw5BLK2mQAohVPyxw@mail.gmail.com>
-Subject: RE: BPF ring buffer variable-length data appending
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAEf4BzZw5Zt92PHMP=3+aKEiJNP6aG6+Xpw5BLK2mQAohVPyxw@mail.gmail.com>
+From:   Brendan Jackman <jackmanb@google.com>
+Date:   Fri, 8 Jan 2021 14:05:16 +0100
+Message-ID: <CA+i-1C12rrRbTUDZXYUKWoVOgXDw+K6Hrj0Lg6wnrEL93R7_oA@mail.gmail.com>
+Subject: Re: BPF ring buffer variable-length data appending
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     KP Singh <kpsingh@google.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii Nakryiko wrote:
+Hi Andrii,
+
+I should preface by saying I don't yet truly understand why
+variable-length reservations are difficult in the first place. With
+that caveat in place...
+
+On Thu, 7 Jan 2021 at 20:48, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+>
 > We discussed this topic today at office hour. As I mentioned, I don't
 > know the ideal solution, but here is something that has enough
 > flexibility for real-world uses, while giving the performance and
 > convenience of reserve/commit API. Ignore naming, we can bikeshed that
 > later.
-
-Missed office hours today, dang sounds interesting. Apoligies if I'm
-missing some context.
-
-> 
+>
 > So what we can do is introduce a new bpf_ringbuf_reserve() variant:
-> 
+>
 > bpf_ringbuf_reserve_extra(void *ringbuf, __u64 size, __u64 flags, void
 > *extra, __u64 extra_sz);
-> 
+>
 > The idea is that we reserve a fixed size amount of data that can be
 > used like it is today for filling a fixed-sized metadata/sample
 > directly. But the real size of the reserved sample is (size +
 > extra_sz), and bpf_ringbuf_reserve_extra() helper will bpf_probe_read
 > (kernel or user, depending on flags) data from extra and put it right
 > after the fixed-size part.
-> 
+>
 > So the use would be something like:
-> 
+>
 > struct my_meta *m = bpf_ringbuf_reserve_extra(&rb, sizeof(*m),
 > BPF_RB_PROBE_USER, env_vars, 1024);
-> 
+>
 > if (!m)
 >     /* too bad, either probe_read_user failed or ringbuf is full */
 >     return 1;
-> 
+>
 > m->my_field1 = 123;
 > m->my_field2 = 321;
-> 
 
-Is this a way to increase the reserved space? I'm a bit fuzzy on the
-details here. But what happens if something else has done another
-reserve? Then it fails I guess?
+This seems useful although it seems we would then also want a version
+that did probe_read_{user,kernel}_str as well...
 
-So consider,
-
-CPU0                   CPU1
-
-bpf_ringbuf_reserve()
-                       bpf_ringbuf_reserve()
-bpf_ringbuf_reserve_extra()
-
-Does that *_reserve_extra() fail then? If so it seems very limited
-from a use perspective. Most the systems we work with will fail more
-often than not I think.
-
-If the above doesn't fail, I'm missing something about how userspace
-can know where that buffer is without a scatter-gather list.
-
-> 
 > So the main problem with this is that when probe_read fails, we fail
 > reservation completely(internally we'd just discard ringbuf sample).
 > Is that OK? Or is it better to still reserve fixed-sized part and
 > zero-out the variable-length part? We are combining two separate
 > operations into a single API, so error handling is more convoluted.
 
-My $.02 here. Failing is going to be ugly and a real pain to deal
-with. I think best approach is reserve a fixed-sized buffer that
-meets your 99% case or whatever. Then reserve some overflow buffers
-you can point to for the oddball java application with a million
-strings. Yes you need to get more complicated in userspace to manage
-the thing, but once that codes written everything works out.
+I think the correct answer here is "we don't know", and the natural
+response is to then let the user decide. However then we already have
+at least two or three dimensions (user/kernel, error behaviour, _str
+or runtime-fixed size...) which feels like a "design smell" to me.
 
-Also I think we keep the kernel simpler if the BPF program just
-does another reserve() if it needs more space so,
-
- bpf_ringbuf_reserve()
- copy
- copy
- ENOMEM <- buff is full,
- bpf_ringbuf_reserve()
- copy
- copy
- ....
-
-Again userspace needs some logic to join the two buffers but we
-could come up with some user side convention to do this. libbpf
-for example could have a small buffer header to do this if folks
-wanted.  Smart BPF programs can even reserve a couple buffers
-up front for the worse case and recycle them back into its
-next invocation, I think.
-
-Conceptually, what is the difference between a second reserve
-as compared to reserve_extra()?
-
-> 
-> 
 > Now, the main use case requested was to be able to fetch an array of
 > zero-terminated strings. I honestly don't think it's possible to
 > implement this efficiently without two copies of string data. Mostly
@@ -169,10 +121,7 @@ as compared to reserve_extra()?
 > you have multiple strings, how do you deal with partial failures? It's
 > even worse in terms of error handling and error propagation than the
 > fixed extra size variant described above.
-
-+1 agree
-
-> 
+>
 > Ignoring all that, let's say we'd implement
 > bpf_ringbuf_reserve_extra_strs() helper, that would somehow be copying
 > multiple zero-terminated strings after the fixed-size prefix. Think
@@ -183,33 +132,33 @@ as compared to reserve_extra()?
 > constructing a single block of memory by reading all such strings
 > manually into a per-CPU array and then using the above
 > bpf_ringbuf_reserve_extra().
-
-+1
-
-> 
+>
 > But offloading that preparation to a BPF program bypasses all these
 > error handling and memory layout questions. It will be up to a BPF
 > program itself. From a kernel perspective, we just append a block of
 > memory with known (at runtime) size.
 
-Still missing how this would be different from multiple reserve()
-calls. Its not too hard to join user space buffers I promise ;)
+I agree, I think bpf_ringbuf_reserve_extra_strs would be unnecessarily
+complex, especially if we have what I suggested above which would
+probably be called bpf_ringbuf_reserve_extra_str.
 
-> 
 > As a more restricted version of bpf_ringbuf_reserve_extra(), instead
 > of allowing reading arbitrary kernel or user-space memory in
 > bpf_ringbuf_reserve_extra() we can say that it has to be known and
 > initialized memory (like MAP_VALUE pointer), so helper knows that it
 > can just copy data directly.
 
-This is a fairly common operation for us, but also just chunks of a map
-value pointer. So would want a start/end offset bytes. Often our
-map values have extra data that user space doesn't need or care about.
+This is just some preliminary input but I need to do some reading and
+think more deeply about this.
 
-> 
-> Thoughts?
+Another dimension to think about is that it would be great to be able
+to go directly from a helper like bpf_get_cwd into the ringbuffer with
+neither an intermediate copy nor a reservation of PATH_MAX.
 
-I think I missed the point.
+On the other hand, as you pointed out in the call, reserving PATH_MAX
+may not be as bad as it sounds since you still only copy the actual
+string length. I'm planning to do some benchmarking next week to
+investigate that.
 
-> 
-> -- Andrii
+Thanks,
+Brendan
