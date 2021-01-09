@@ -2,249 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24FC52EFD28
-	for <lists+bpf@lfdr.de>; Sat,  9 Jan 2021 03:37:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E4612F0364
+	for <lists+bpf@lfdr.de>; Sat,  9 Jan 2021 21:18:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725848AbhAIChD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Jan 2021 21:37:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725836AbhAIChD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 8 Jan 2021 21:37:03 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49319C061573
-        for <bpf@vger.kernel.org>; Fri,  8 Jan 2021 18:36:23 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id n10so8798725pgl.10
-        for <bpf@vger.kernel.org>; Fri, 08 Jan 2021 18:36:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=araalinetworks-com.20150623.gappssmtp.com; s=20150623;
-        h=from:content-transfer-encoding:mime-version:subject:message-id:date
-         :to;
-        bh=Ib3QpoJ447ggRwcylWma7BQpa/3Z/Z8dLysHF3i/CMc=;
-        b=keqyvGxC+M7Lepx67W1uAHPQ/3LCc6aD3K2/1DiJ4W8R+CE1N4nphrvw/NIiLE5cT2
-         qH7O/JymAJPrvKET2WaoF8WTXly/t5KNfMB1W2fb0nCL+MF+XQQFt9EPMR7erzhOX0zL
-         WK2QbBM3aYQOtMYbKg5w4MBqBezolz0zX24R8crfiPl6TxbQuFa7zXbbHPbkoBoPMGXP
-         mLxznzdkk30f2dNd4GY2q9ktZi7uQr6aD7eQ+7s0DzBiPlQ3NLeCbg1EVCRRzsfz3c0h
-         bLbMzQkcLtTFFrS/X4UJDehE9FPBxMeFcaYvcKCIBGNumvbQzZgM5KQB4K+AJ1HuDZkh
-         7d6A==
+        id S1726283AbhAIUR6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 9 Jan 2021 15:17:58 -0500
+Received: from mail-io1-f69.google.com ([209.85.166.69]:36713 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726005AbhAIUR5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 9 Jan 2021 15:17:57 -0500
+Received: by mail-io1-f69.google.com with SMTP id y197so10355297iof.3
+        for <bpf@vger.kernel.org>; Sat, 09 Jan 2021 12:17:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:content-transfer-encoding:mime-version
-         :subject:message-id:date:to;
-        bh=Ib3QpoJ447ggRwcylWma7BQpa/3Z/Z8dLysHF3i/CMc=;
-        b=KFBLL/UPsh/LDp9Lyc4+m0t/vfsqPUmNo4G71UgDqcVEFTb4LZiytrzMtVhxNqfbfl
-         wK3mSy3NyWzNwAOoR1KExF2cbLX6Ke7fNZa596+CaFQXpUV0rplTGGwjM5ke1RwSKfg6
-         tePJ7Eb1V85FMUt8Rjl2e7vAgWAhH/riPOGOVGVN+NxQA67xOsg86BGCpDnle2RG2xq1
-         uDBtWf3AiMbg5dIBhZXXdLM9W5JPs+beB3j97UiQeC8rXrRgmDCu0Pbr2lhvbkwjzFp0
-         /WOaxR6s3apOsxn/8XAFlWK8Fv61aKMFZMdwJrH4q9Ft9FzpTkxQAfzot70DQyE+SwEj
-         xMrQ==
-X-Gm-Message-State: AOAM533AKCTtdKTwEmY8R1bflNjJnCtuToRRSWClptxzw2bsMqN4YKRE
-        vONfZCOrjt27htQAK3pFIAA4KodHFLnqlT3A
-X-Google-Smtp-Source: ABdhPJwos9BSf0bIGiv90z1ibjMwhRDSkoGSdtbMTbFGkMjYOMwa2qzKBEImd1F7RyXLWMGDPOc4jA==
-X-Received: by 2002:a63:c207:: with SMTP id b7mr9799705pgd.184.1610159782187;
-        Fri, 08 Jan 2021 18:36:22 -0800 (PST)
-Received: from vamsis-mbp.lan ([24.6.74.54])
-        by smtp.gmail.com with ESMTPSA id t4sm2248449pfe.212.2021.01.08.18.36.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 08 Jan 2021 18:36:21 -0800 (PST)
-From:   Vamsi Kodavanty <vamsi@araalinetworks.com>
-Content-Type: text/plain;
-        charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: [PATCH bpf v1] Add `core_btf_path` to `bpf_object_open_opts` to pass
- BTF path from skeleton program
-Message-Id: <B8801F77-37E8-4EF8-8994-D366D48169A3@araalinetworks.com>
-Date:   Fri, 8 Jan 2021 18:36:19 -0800
-To:     bpf@vger.kernel.org, andrii.nakryiko@gmail.com
-X-Mailer: Apple Mail (2.3445.104.11)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=DOtSLUgu9OHp2xhaOIkH4fbkHc8mfJ2oKCEW3M693y0=;
+        b=flYx5okoNB3GXZCF9rwdYwTzjtoY55Xflv/jVBloUvqV4UwH2Bez0ObEfbsrCPpBmt
+         bh5qab00B/VH/THnWWlGp2WdADWrTUpCZ90xa7KNaFUMYtmzhkuRfsr/hNSy0JP0i1Hy
+         chz3YeHVQQJTln4EpTJ4gxCooKgxBLdg33NORYF8eJiJyQFXQYPNwpwQENsaIKx7Wrbw
+         QWiADiSzkn6DKArWBgYqZ4YoGt3YIEii1R5+QA9jLsYsgHxGz3umDTX3PZg9Ocpk9e3M
+         ClJPHcVq4m4+FqhzCfyg6LXs59VgQpczKNUtLHx8FnRFxqXp17XxpWCiGxhqwyrrMLKu
+         MxXw==
+X-Gm-Message-State: AOAM5329SodCBPddkgKfE8raJPYby5CZwTh21tjMrx2qnkxYooq5JuXE
+        a8y5OGq/TNVKvFEihzD/5/bZpxGVzE+eGCNbHQltRp8UPkRM
+X-Google-Smtp-Source: ABdhPJxxwioHJph+8kt6pb9ZunIYl4nLWF909hlBmmyLcDiQTwOXNZ+LPJZkNYdvHjaMWgkLnaRw86MYW/RmzyKPvNI1vDmTxsBd
+MIME-Version: 1.0
+X-Received: by 2002:a5d:9c57:: with SMTP id 23mr9875259iof.43.1610223436678;
+ Sat, 09 Jan 2021 12:17:16 -0800 (PST)
+Date:   Sat, 09 Jan 2021 12:17:16 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f3cf2e05b87d5bcd@google.com>
+Subject: WARNING in bpf_prog_test_run_raw_tp
+From:   syzbot <syzbot+4f98876664c7337a4ae6@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, andriin@fb.com, ast@kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        hawk@kernel.org, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@chromium.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Andrii,
-     I have made the following changes as discussed to add an option to =
-the `open_opts`
-to take in the BTF.
-     Please do take a look. Also, I am not sure what the procedure is =
-for submitting patches/reviews.=20
-If anyone has any pointers to a webpage where this is described I can go =
-through it. But, below are
-the proposed changes.
+Hello,
 
-Best Regards,
-Vamsi.
+syzbot found the following issue on:
+
+HEAD commit:    f6e7a024 Merge tag 'arc-5.11-rc3' of git://git.kernel.org/..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=16f6472b500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8aa30b9da402d224
+dashboard link: https://syzkaller.appspot.com/bug?extid=4f98876664c7337a4ae6
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1004b248d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1773c767500000
+
+The issue was bisected to:
+
+commit 1b4d60ec162f82ea29a2e7a907b5c6cc9f926321
+Author: Song Liu <songliubraving@fb.com>
+Date:   Fri Sep 25 20:54:29 2020 +0000
+
+    bpf: Enable BPF_PROG_TEST_RUN for raw_tracepoint
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15e5b0f7500000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=17e5b0f7500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=13e5b0f7500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4f98876664c7337a4ae6@syzkaller.appspotmail.com
+Fixes: 1b4d60ec162f ("bpf: Enable BPF_PROG_TEST_RUN for raw_tracepoint")
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 8484 at mm/page_alloc.c:4976 __alloc_pages_nodemask+0x5f8/0x730 mm/page_alloc.c:5011
+Modules linked in:
+CPU: 1 PID: 8484 Comm: syz-executor862 Not tainted 5.11.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__alloc_pages_nodemask+0x5f8/0x730 mm/page_alloc.c:4976
+Code: 00 00 0c 00 0f 85 a7 00 00 00 8b 3c 24 4c 89 f2 44 89 e6 c6 44 24 70 00 48 89 6c 24 58 e8 d0 d7 ff ff 49 89 c5 e9 ea fc ff ff <0f> 0b e9 b5 fd ff ff 89 74 24 14 4c 89 4c 24 08 4c 89 74 24 18 e8
+RSP: 0018:ffffc900012efb10 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 1ffff9200025df66 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 0000000000140dc0
+RBP: 0000000000140dc0 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff81b1f7e1 R11: 0000000000000000 R12: 0000000000000014
+R13: 0000000000000014 R14: 0000000000000000 R15: 0000000000000000
+FS:  000000000190c880(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f08b7f316c0 CR3: 0000000012073000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ alloc_pages_current+0x18c/0x2a0 mm/mempolicy.c:2267
+ alloc_pages include/linux/gfp.h:547 [inline]
+ kmalloc_order+0x2e/0xb0 mm/slab_common.c:837
+ kmalloc_order_trace+0x14/0x120 mm/slab_common.c:853
+ kmalloc include/linux/slab.h:557 [inline]
+ kzalloc include/linux/slab.h:682 [inline]
+ bpf_prog_test_run_raw_tp+0x4b5/0x670 net/bpf/test_run.c:282
+ bpf_prog_test_run kernel/bpf/syscall.c:3120 [inline]
+ __do_sys_bpf+0x1ea9/0x4f10 kernel/bpf/syscall.c:4398
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x440499
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffe1f3bfb18 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440499
+RDX: 0000000000000048 RSI: 0000000020000600 RDI: 000000000000000a
+RBP: 00000000006ca018 R08: 0000000000000000 R09: 00000000004002c8
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401ca0
+R13: 0000000000401d30 R14: 0000000000000000 R15: 0000000000000000
+
 
 ---
- src/libbpf.c | 56 +++++++++++++++++++++++++++++++++++++---------------
- src/libbpf.h |  4 +++-
- 2 files changed, 43 insertions(+), 17 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/src/libbpf.c b/src/libbpf.c
-index 6ae748f..35d7254 100644
---- a/src/libbpf.c
-+++ b/src/libbpf.c
-@@ -2538,9 +2538,12 @@ static bool obj_needs_vmlinux_btf(const struct =
-bpf_object *obj)
- 	struct bpf_program *prog;
- 	int i;
-=20
--	/* CO-RE relocations need kernel BTF */
-+	/* CO-RE relocations need kernel BTF or an override BTF.
-+	 * If override BTF present CO-RE can use it.
-+	 */
- 	if (obj->btf_ext && obj->btf_ext->core_relo_info.len)
--		return true;
-+		if (!obj->btf_vmlinux_override)
-+			return true;
-=20
- 	/* Support for typed ksyms needs kernel BTF */
- 	for (i =3D 0; i < obj->nr_extern; i++) {
-@@ -2561,6 +2564,27 @@ static bool obj_needs_vmlinux_btf(const struct =
-bpf_object *obj)
- 	return false;
- }
-=20
-+static int bpf_object__load_override_btf(struct bpf_object *obj,
-+										=
- const char *targ_btf_path)
-+{
-+	/* Could have been be set via `bpf_object_open_opts` */
-+	if (obj->btf_vmlinux_override)
-+		return 0;
-+
-+	if (!targ_btf_path)
-+		return 0;
-+
-+	obj->btf_vmlinux_override =3D btf__parse(targ_btf_path, NULL);
-+	if (IS_ERR_OR_NULL(obj->btf_vmlinux_override)) {
-+		int err =3D PTR_ERR(obj->btf_vmlinux_override);
-+		obj->btf_vmlinux_override =3D NULL;
-+		pr_warn("failed to parse target BTF: %d\n", err);
-+		return err;
-+	}
-+
-+	return 0;
-+}
-+
- static int bpf_object__load_vmlinux_btf(struct bpf_object *obj, bool =
-force)
- {
- 	int err;
-@@ -6031,7 +6055,7 @@ patch_insn:
- }
-=20
- static int
--bpf_object__relocate_core(struct bpf_object *obj, const char =
-*targ_btf_path)
-+bpf_object__relocate_core(struct bpf_object *obj)
- {
- 	const struct btf_ext_info_sec *sec;
- 	const struct bpf_core_relo *rec;
-@@ -6045,15 +6069,6 @@ bpf_object__relocate_core(struct bpf_object *obj, =
-const char *targ_btf_path)
- 	if (obj->btf_ext->core_relo_info.len =3D=3D 0)
- 		return 0;
-=20
--	if (targ_btf_path) {
--		obj->btf_vmlinux_override =3D btf__parse(targ_btf_path, =
-NULL);
--		if (IS_ERR_OR_NULL(obj->btf_vmlinux_override)) {
--			err =3D PTR_ERR(obj->btf_vmlinux_override);
--			pr_warn("failed to parse target BTF: %d\n", =
-err);
--			return err;
--		}
--	}
--
- 	cand_cache =3D hashmap__new(bpf_core_hash_fn, bpf_core_equal_fn, =
-NULL);
- 	if (IS_ERR(cand_cache)) {
- 		err =3D PTR_ERR(cand_cache);
-@@ -6556,14 +6571,14 @@ bpf_object__relocate_calls(struct bpf_object =
-*obj, struct bpf_program *prog)
- }
-=20
- static int
--bpf_object__relocate(struct bpf_object *obj, const char *targ_btf_path)
-+bpf_object__relocate(struct bpf_object *obj)
- {
- 	struct bpf_program *prog;
- 	size_t i;
- 	int err;
-=20
- 	if (obj->btf_ext) {
--		err =3D bpf_object__relocate_core(obj, targ_btf_path);
-+		err =3D bpf_object__relocate_core(obj);
- 		if (err) {
- 			pr_warn("failed to perform CO-RE relocations: =
-%d\n",
- 				err);
-@@ -7088,7 +7103,7 @@ static struct bpf_object *
- __bpf_object__open(const char *path, const void *obj_buf, size_t =
-obj_buf_sz,
- 		   const struct bpf_object_open_opts *opts)
- {
--	const char *obj_name, *kconfig;
-+	const char *obj_name, *kconfig, *core_btf_path;
- 	struct bpf_program *prog;
- 	struct bpf_object *obj;
- 	char tmp_name[64];
-@@ -7126,6 +7141,14 @@ __bpf_object__open(const char *path, const void =
-*obj_buf, size_t obj_buf_sz,
- 			return ERR_PTR(-ENOMEM);
- 	}
-=20
-+	core_btf_path =3D OPTS_GET(opts, core_btf_path, NULL);
-+	if (core_btf_path) {
-+		pr_debug("parse btf '%s' for CO-RE relocations\n", =
-core_btf_path);
-+		obj->btf_vmlinux_override =3D btf__parse(core_btf_path, =
-NULL);
-+		if (IS_ERR_OR_NULL(obj->btf_vmlinux_override))
-+			pr_warn("can't parse btf at '%s'\n", =
-core_btf_path);
-+	}
-+
- 	err =3D bpf_object__elf_init(obj);
- 	err =3D err ? : bpf_object__check_endianness(obj);
- 	err =3D err ? : bpf_object__elf_collect(obj);
-@@ -7481,13 +7504,14 @@ int bpf_object__load_xattr(struct =
-bpf_object_load_attr *attr)
- 	}
-=20
- 	err =3D bpf_object__probe_loading(obj);
-+	err =3D err ? : bpf_object__load_override_btf(obj, =
-attr->target_btf_path);
- 	err =3D err ? : bpf_object__load_vmlinux_btf(obj, false);
- 	err =3D err ? : bpf_object__resolve_externs(obj, obj->kconfig);
- 	err =3D err ? : bpf_object__sanitize_and_load_btf(obj);
- 	err =3D err ? : bpf_object__sanitize_maps(obj);
- 	err =3D err ? : bpf_object__init_kern_struct_ops_maps(obj);
- 	err =3D err ? : bpf_object__create_maps(obj);
--	err =3D err ? : bpf_object__relocate(obj, =
-attr->target_btf_path);
-+	err =3D err ? : bpf_object__relocate(obj);
- 	err =3D err ? : bpf_object__load_progs(obj, attr->log_level);
-=20
- 	/* clean up module BTFs */
-diff --git a/src/libbpf.h b/src/libbpf.h
-index 3c35eb4..40c4ee9 100644
---- a/src/libbpf.h
-+++ b/src/libbpf.h
-@@ -93,8 +93,10 @@ struct bpf_object_open_opts {
- 	 * system Kconfig for CONFIG_xxx externs.
- 	 */
- 	const char *kconfig;
-+	/* Path to ELF file with BTF section to be used for relocations. =
-*/
-+	const char *core_btf_path;
- };
--#define bpf_object_open_opts__last_field kconfig
-+#define bpf_object_open_opts__last_field core_btf_path
-=20
- LIBBPF_API struct bpf_object *bpf_object__open(const char *path);
- LIBBPF_API struct bpf_object *
---=20
-2.23.3
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
