@@ -2,276 +2,249 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 533B32EFCEE
-	for <lists+bpf@lfdr.de>; Sat,  9 Jan 2021 02:57:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24FC52EFD28
+	for <lists+bpf@lfdr.de>; Sat,  9 Jan 2021 03:37:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726426AbhAIB5A (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 8 Jan 2021 20:57:00 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:45546 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726418AbhAIB5A (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 8 Jan 2021 20:57:00 -0500
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1091nn4a010134;
-        Fri, 8 Jan 2021 17:56:05 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=2pba+ppLU5cKaNKpCyL+e+AiP57PyvEhENQ+605u0RE=;
- b=nisBXCzZ1DD6PDrrJjIVGSdT0eZz8gInWQAK7nb2CR4gAr87eTXd/8EY+z8aSe/6Amnu
- JmNl7lJygKWFH5K9lhslINbl+EjdZuP7UkCpQL3RolJ+B7AbTXUYNrz0vcOcpRxM+YE4
- k9pXtbM63FbW96AZC7ln6MXNI/+v2UlTG1A= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 35y0afgnpt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 08 Jan 2021 17:56:05 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 8 Jan 2021 17:56:04 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kk4IEMxfTccPs+bgZ9gCQxr4PKhzdmDzxYxwGYcaJ5aYkz1UkBqJ0GdMxrN5SqNSchJHjJWwN7ZN2zJXmyz0yzbcfUxREHGJeZ68qPuuSUxAdW5T/YvIJvIjf5QhzSEqhkN9ZyNV3tbf68v/vccXhMmwTi3ioK21QIjKdWTyPpoTXUVacq0ZzicP4bWgnWHMvA5HsiuJTDDMZXb/hPOWsDCTqMD2Ebmmjn5aWofPo49MJ0n7qXpc0PfZVT7vATO9MZzvBitf0ilQ3wrvR+c6ZdzxawEPn2CWLluD2DCzzAB6BFRGAIvnTS40DL8utd80Ske2uMnHt1xnIJ+Rx4bG4w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2pba+ppLU5cKaNKpCyL+e+AiP57PyvEhENQ+605u0RE=;
- b=hl1nqBZ9sMnhj3W6/No0WMD/vCdW8cTStsbsDWz7BIlMdIfjq7t2nOWEzd/wKVnuHp0As/sEWs/RZ/r3t4nx7VvekS7G4zdzPyEEA9g0+xE1GDJIvFcc34CYT1gV0xZDXRDvT5wePTBvK1GGogCLdynnlhV5HetWNqW+nDmFQ2sApocOKKYyE9m4QaXJbhMnIRmkvalo3x5VyUx/KMXsEXhq4oFKsmvAKaYuCh7UG2dP5z2PhXa6TnDm8sEZCuRC9v5nKSbGLVdbmXIxvaaIrmBqsGlkyMYUy0R2GNBupi98t0499C9kyhD5v+9Dl+skrImyCP90n9n2eq9sImzmqg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2pba+ppLU5cKaNKpCyL+e+AiP57PyvEhENQ+605u0RE=;
- b=SCIu6++s91UmtZXQA+TSEAb2gW5FTMQGW89ldZv8pZGbGcWdf418cRmwv6ajeYlSCHmBbOqf+n0OMp0Or9llqAzTlX2q4cWlkbfOjnoXqKdJRD4Rei/XksrI5HaYnF9kzUl44fXRf5uVmUJmK2SaL+19/PsFWL1uv8ZRTAXkAO0=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by BYAPR15MB2456.namprd15.prod.outlook.com (2603:10b6:a02:82::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.9; Sat, 9 Jan
- 2021 01:56:03 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::217e:885b:1cef:e1f7]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::217e:885b:1cef:e1f7%7]) with mapi id 15.20.3721.024; Sat, 9 Jan 2021
- 01:56:03 +0000
-Date:   Fri, 8 Jan 2021 17:55:56 -0800
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Stanislav Fomichev <sdf@google.com>
-CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, Song Liu <songliubraving@fb.com>
-Subject: Re: [PATCH bpf-next v6 2/3] bpf: try to avoid kzalloc in
- cgroup/{s,g}etsockopt
-Message-ID: <20210109015556.6sajviuria5qknf7@kafai-mbp.dhcp.thefacebook.com>
-References: <20210108210223.972802-1-sdf@google.com>
- <20210108210223.972802-3-sdf@google.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210108210223.972802-3-sdf@google.com>
-X-Originating-IP: [2620:10d:c090:400::5:47b0]
-X-ClientProxiedBy: MWHPR10CA0061.namprd10.prod.outlook.com
- (2603:10b6:300:2c::23) To BY5PR15MB3571.namprd15.prod.outlook.com
- (2603:10b6:a03:1f6::32)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:47b0) by MWHPR10CA0061.namprd10.prod.outlook.com (2603:10b6:300:2c::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Sat, 9 Jan 2021 01:56:02 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 45eedc68-2b1a-40d2-b408-08d8b441b861
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2456:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2456ACE8B9B69D1254A4AB51D5AD0@BYAPR15MB2456.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: FfVXncWe1lm0MEg+JHXPoy72PWKa0dsL3ts0lhV8+xoL4i5GSzEPCnWC8bj6TwxGHMLss2qQgsRx0BNwmmPaLiLsmPtwNbZm4i+qGpymsQZ5riQAjdUwBzeTwpqqVTwf1/7EcfzQDVFuCID82fVVBi8lE9ODOaOYnuh1qpQYWPbBCAlySOmhb13vTNyBqQgbptinopS8soA37tx5RFD4kn92/QYyrzIoz16/J0CCJ7GEgvNwr1t7OFZSPrXj/7FCryzZ6h+7RvFsZj0Qks1CWv9V132lRFyqjqrN+qLMoNDgclkyYNSV7PJyd76y5s1yhXmPihJLvnYcKJQY7dJMLygY98GuSAYska5CWZ2ItMPeLNlOEk9Wd1xcdTKaFJ2ljf4+Fq/BFq7iW2D2NpaYTQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(346002)(366004)(39860400002)(376002)(5660300002)(316002)(83380400001)(4326008)(2906002)(66946007)(6506007)(66476007)(8676002)(7696005)(478600001)(52116002)(66556008)(186003)(6916009)(6666004)(1076003)(9686003)(86362001)(16526019)(55016002)(8936002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?oVineNd+V94YFMuX6elz+wBJ7zxG57x1H/R2IpSnLf9kev+ZNKO2tzCC424Q?=
- =?us-ascii?Q?ZtQiUNWTfWZbRv9x5/CJP9JyFGqqzvwUSS1rBzwAINXgfvubz+qTGUGh1Rjg?=
- =?us-ascii?Q?7sbodJGaWVa5+ApfYHUhUPaFvq0StmDT8H5yUDBpMgjvasS/DIbnQBiZBebu?=
- =?us-ascii?Q?8SJbm9Xxv5ZFgvoyEXaH2Bg2/eWvI/9TS59evZeSepayCvkjtY/sM5IEN0E8?=
- =?us-ascii?Q?hDmiO0e2xh2E8nrzej14CGA0O8qX3tumEEBUFD9qDjJA5kZ5CrBEyADmXZBx?=
- =?us-ascii?Q?0NyNYgXnduBOAKmByf7yL1M9NoBrlAbO8191tUxfdN5dqghane0bOwUFqF7h?=
- =?us-ascii?Q?5kDKWpQrSyPgTy6c9clfbXQ2H74pgyKJw5IF0D8aDuOIBjZ5KUqrxkQmU22E?=
- =?us-ascii?Q?+jRvO92NPw94dt8Hg+OfdSI39y5LQmyBsr/qlZ98SHAkInrd0f0fHJwDfLW9?=
- =?us-ascii?Q?w5FASo4TR/CmPoAdDA6TTEGOznrr5MW4ONpfxeYlgjDzR9ibBaOMrcMa1oEq?=
- =?us-ascii?Q?TQmxN9AkT2EptyEsdihZXytDzm2FOB0QLItmeFmOg3ROOLHtKGBaSSrsVrsl?=
- =?us-ascii?Q?qsxtup63krprZiAN+Rp8wHHaSDhTJB5OJtCk9B6qPYUrmV8/LFwNCVTbd1xd?=
- =?us-ascii?Q?EqjL6OAf7wHUukZMdktlo2TOdcSkq9RHUK1EUtlrxQ+jQYnIbJqGsqFN7YRm?=
- =?us-ascii?Q?94f+bMe+1oIALoEgN0M22w+qonRP4vwtUisPL0EG+Tv/0SnBbwXssGPEpS3P?=
- =?us-ascii?Q?K6dEIlCdGQpfvlhhLDcQcPmR5fdxDilnGBqYhMgbsfyuBxGAkfY9iP1SZa+E?=
- =?us-ascii?Q?LP+NC2Ojb0Oq6g9cLr8cPyhQ5hhujPTSLnJoacX6GsQ/eK+vhGcuQmMJ6Tzi?=
- =?us-ascii?Q?a8kLfLcdsvf2QgTKaubmnlc+HWZ7DBzeFcr3XhzYrhvTchtHKOeFjHrK6914?=
- =?us-ascii?Q?3BmWd/0h+OIihAv9pq/4UbZfGeO0XwWFGHhMAQkD3+K3/Y6Wk1bCWDyAQwXw?=
- =?us-ascii?Q?SogO+PHSANF2v9iW8fN8XPnwLQ=3D=3D?=
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Jan 2021 01:56:03.1430
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-Network-Message-Id: 45eedc68-2b1a-40d2-b408-08d8b441b861
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6ZaHjJNxiz7IwzWdxKDU2n/MvU5UROd3gYLLg0ryiPYULcymPE13b67KFbrta5Z5
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2456
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-08_12:2021-01-07,2021-01-08 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
- priorityscore=1501 impostorscore=0 spamscore=0 suspectscore=0 phishscore=0
- malwarescore=0 clxscore=1015 adultscore=0 bulkscore=0 mlxscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101090010
-X-FB-Internal: deliver
+        id S1725848AbhAIChD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 8 Jan 2021 21:37:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725836AbhAIChD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 8 Jan 2021 21:37:03 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49319C061573
+        for <bpf@vger.kernel.org>; Fri,  8 Jan 2021 18:36:23 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id n10so8798725pgl.10
+        for <bpf@vger.kernel.org>; Fri, 08 Jan 2021 18:36:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=araalinetworks-com.20150623.gappssmtp.com; s=20150623;
+        h=from:content-transfer-encoding:mime-version:subject:message-id:date
+         :to;
+        bh=Ib3QpoJ447ggRwcylWma7BQpa/3Z/Z8dLysHF3i/CMc=;
+        b=keqyvGxC+M7Lepx67W1uAHPQ/3LCc6aD3K2/1DiJ4W8R+CE1N4nphrvw/NIiLE5cT2
+         qH7O/JymAJPrvKET2WaoF8WTXly/t5KNfMB1W2fb0nCL+MF+XQQFt9EPMR7erzhOX0zL
+         WK2QbBM3aYQOtMYbKg5w4MBqBezolz0zX24R8crfiPl6TxbQuFa7zXbbHPbkoBoPMGXP
+         mLxznzdkk30f2dNd4GY2q9ktZi7uQr6aD7eQ+7s0DzBiPlQ3NLeCbg1EVCRRzsfz3c0h
+         bLbMzQkcLtTFFrS/X4UJDehE9FPBxMeFcaYvcKCIBGNumvbQzZgM5KQB4K+AJ1HuDZkh
+         7d6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:content-transfer-encoding:mime-version
+         :subject:message-id:date:to;
+        bh=Ib3QpoJ447ggRwcylWma7BQpa/3Z/Z8dLysHF3i/CMc=;
+        b=KFBLL/UPsh/LDp9Lyc4+m0t/vfsqPUmNo4G71UgDqcVEFTb4LZiytrzMtVhxNqfbfl
+         wK3mSy3NyWzNwAOoR1KExF2cbLX6Ke7fNZa596+CaFQXpUV0rplTGGwjM5ke1RwSKfg6
+         tePJ7Eb1V85FMUt8Rjl2e7vAgWAhH/riPOGOVGVN+NxQA67xOsg86BGCpDnle2RG2xq1
+         uDBtWf3AiMbg5dIBhZXXdLM9W5JPs+beB3j97UiQeC8rXrRgmDCu0Pbr2lhvbkwjzFp0
+         /WOaxR6s3apOsxn/8XAFlWK8Fv61aKMFZMdwJrH4q9Ft9FzpTkxQAfzot70DQyE+SwEj
+         xMrQ==
+X-Gm-Message-State: AOAM533AKCTtdKTwEmY8R1bflNjJnCtuToRRSWClptxzw2bsMqN4YKRE
+        vONfZCOrjt27htQAK3pFIAA4KodHFLnqlT3A
+X-Google-Smtp-Source: ABdhPJwos9BSf0bIGiv90z1ibjMwhRDSkoGSdtbMTbFGkMjYOMwa2qzKBEImd1F7RyXLWMGDPOc4jA==
+X-Received: by 2002:a63:c207:: with SMTP id b7mr9799705pgd.184.1610159782187;
+        Fri, 08 Jan 2021 18:36:22 -0800 (PST)
+Received: from vamsis-mbp.lan ([24.6.74.54])
+        by smtp.gmail.com with ESMTPSA id t4sm2248449pfe.212.2021.01.08.18.36.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 08 Jan 2021 18:36:21 -0800 (PST)
+From:   Vamsi Kodavanty <vamsi@araalinetworks.com>
+Content-Type: text/plain;
+        charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: [PATCH bpf v1] Add `core_btf_path` to `bpf_object_open_opts` to pass
+ BTF path from skeleton program
+Message-Id: <B8801F77-37E8-4EF8-8994-D366D48169A3@araalinetworks.com>
+Date:   Fri, 8 Jan 2021 18:36:19 -0800
+To:     bpf@vger.kernel.org, andrii.nakryiko@gmail.com
+X-Mailer: Apple Mail (2.3445.104.11)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 01:02:22PM -0800, Stanislav Fomichev wrote:
-> When we attach a bpf program to cgroup/getsockopt any other getsockopt()
-> syscall starts incurring kzalloc/kfree cost.
-> 
-> Let add a small buffer on the stack and use it for small (majority)
-> {s,g}etsockopt values. The buffer is small enough to fit into
-> the cache line and cover the majority of simple options (most
-> of them are 4 byte ints).
-> 
-> It seems natural to do the same for setsockopt, but it's a bit more
-> involved when the BPF program modifies the data (where we have to
-> kmalloc). The assumption is that for the majority of setsockopt
-> calls (which are doing pure BPF options or apply policy) this
-> will bring some benefit as well.
-> 
-> Without this patch (we remove about 1% __kmalloc):
->      3.38%     0.07%  tcp_mmap  [kernel.kallsyms]  [k] __cgroup_bpf_run_filter_getsockopt
->             |
->              --3.30%--__cgroup_bpf_run_filter_getsockopt
->                        |
->                         --0.81%--__kmalloc
-> 
-> Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> Cc: Martin KaFai Lau <kafai@fb.com>
-> Cc: Song Liu <songliubraving@fb.com>
-> ---
->  include/linux/filter.h |  5 ++++
->  kernel/bpf/cgroup.c    | 52 ++++++++++++++++++++++++++++++++++++------
->  2 files changed, 50 insertions(+), 7 deletions(-)
-> 
-> diff --git a/include/linux/filter.h b/include/linux/filter.h
-> index 29c27656165b..8739f1d4cac4 100644
-> --- a/include/linux/filter.h
-> +++ b/include/linux/filter.h
-> @@ -1281,6 +1281,11 @@ struct bpf_sysctl_kern {
->  	u64 tmp_reg;
->  };
->  
-> +#define BPF_SOCKOPT_KERN_BUF_SIZE	32
-> +struct bpf_sockopt_buf {
-> +	u8		data[BPF_SOCKOPT_KERN_BUF_SIZE];
-> +};
-> +
->  struct bpf_sockopt_kern {
->  	struct sock	*sk;
->  	u8		*optval;
-> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-> index c41bb2f34013..a9aad9c419e1 100644
-> --- a/kernel/bpf/cgroup.c
-> +++ b/kernel/bpf/cgroup.c
-> @@ -1298,7 +1298,8 @@ static bool __cgroup_bpf_prog_array_is_empty(struct cgroup *cgrp,
->  	return empty;
->  }
->  
-> -static int sockopt_alloc_buf(struct bpf_sockopt_kern *ctx, int max_optlen)
-> +static int sockopt_alloc_buf(struct bpf_sockopt_kern *ctx, int max_optlen,
-> +			     struct bpf_sockopt_buf *buf)
->  {
->  	if (unlikely(max_optlen < 0))
->  		return -EINVAL;
-> @@ -1310,6 +1311,15 @@ static int sockopt_alloc_buf(struct bpf_sockopt_kern *ctx, int max_optlen)
->  		max_optlen = PAGE_SIZE;
->  	}
->  
-> +	if (max_optlen <= sizeof(buf->data)) {
-> +		/* When the optval fits into BPF_SOCKOPT_KERN_BUF_SIZE
-> +		 * bytes avoid the cost of kzalloc.
-> +		 */
-> +		ctx->optval = buf->data;
-> +		ctx->optval_end = ctx->optval + max_optlen;
-> +		return max_optlen;
-> +	}
-> +
->  	ctx->optval = kzalloc(max_optlen, GFP_USER);
->  	if (!ctx->optval)
->  		return -ENOMEM;
-> @@ -1319,16 +1329,26 @@ static int sockopt_alloc_buf(struct bpf_sockopt_kern *ctx, int max_optlen)
->  	return max_optlen;
->  }
->  
-> -static void sockopt_free_buf(struct bpf_sockopt_kern *ctx)
-> +static void sockopt_free_buf(struct bpf_sockopt_kern *ctx,
-> +			     struct bpf_sockopt_buf *buf)
->  {
-> +	if (ctx->optval == buf->data)
-> +		return;
->  	kfree(ctx->optval);
->  }
->  
-> +static bool sockopt_buf_allocated(struct bpf_sockopt_kern *ctx,
-> +				  struct bpf_sockopt_buf *buf)
-> +{
-> +	return ctx->optval != buf->data;
-> +}
-> +
->  int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
->  				       int *optname, char __user *optval,
->  				       int *optlen, char **kernel_optval)
->  {
->  	struct cgroup *cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
-> +	struct bpf_sockopt_buf buf = {};
->  	struct bpf_sockopt_kern ctx = {
->  		.sk = sk,
->  		.level = *level,
-> @@ -1350,7 +1370,7 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
->  	 */
->  	max_optlen = max_t(int, 16, *optlen);
->  
-> -	max_optlen = sockopt_alloc_buf(&ctx, max_optlen);
-> +	max_optlen = sockopt_alloc_buf(&ctx, max_optlen, &buf);
->  	if (max_optlen < 0)
->  		return max_optlen;
->  
-> @@ -1390,13 +1410,30 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
->  		 */
->  		if (ctx.optlen != 0) {
-When ctx.optlen == 0, is sockopt_free_buf() called?
-Did I miss something?
+Andrii,
+     I have made the following changes as discussed to add an option to =
+the `open_opts`
+to take in the BTF.
+     Please do take a look. Also, I am not sure what the procedure is =
+for submitting patches/reviews.=20
+If anyone has any pointers to a webpage where this is described I can go =
+through it. But, below are
+the proposed changes.
 
->  			*optlen = ctx.optlen;
-> -			*kernel_optval = ctx.optval;
-> +			/* We've used bpf_sockopt_kern->buf as an intermediary
-> +			 * storage, but the BPF program indicates that we need
-> +			 * to pass this data to the kernel setsockopt handler.
-> +			 * No way to export on-stack buf, have to allocate a
-> +			 * new buffer.
-> +			 */
-> +			if (!sockopt_buf_allocated(&ctx, &buf)) {
-> +				void *p = kzalloc(ctx.optlen, GFP_USER);
-> +
-> +				if (!p) {
-> +					ret = -ENOMEM;
-> +					goto out;
-> +				}
-> +				memcpy(p, ctx.optval, ctx.optlen);
-> +				*kernel_optval = p;
-> +			} else {
-> +				*kernel_optval = ctx.optval;
-> +			}
->  		}
->  	}
->  
->  out:
->  	if (ret)
-> -		sockopt_free_buf(&ctx);
-> +		sockopt_free_buf(&ctx, &buf);
->  	return ret;
->  }
->  
+Best Regards,
+Vamsi.
+
+---
+ src/libbpf.c | 56 +++++++++++++++++++++++++++++++++++++---------------
+ src/libbpf.h |  4 +++-
+ 2 files changed, 43 insertions(+), 17 deletions(-)
+
+diff --git a/src/libbpf.c b/src/libbpf.c
+index 6ae748f..35d7254 100644
+--- a/src/libbpf.c
++++ b/src/libbpf.c
+@@ -2538,9 +2538,12 @@ static bool obj_needs_vmlinux_btf(const struct =
+bpf_object *obj)
+ 	struct bpf_program *prog;
+ 	int i;
+=20
+-	/* CO-RE relocations need kernel BTF */
++	/* CO-RE relocations need kernel BTF or an override BTF.
++	 * If override BTF present CO-RE can use it.
++	 */
+ 	if (obj->btf_ext && obj->btf_ext->core_relo_info.len)
+-		return true;
++		if (!obj->btf_vmlinux_override)
++			return true;
+=20
+ 	/* Support for typed ksyms needs kernel BTF */
+ 	for (i =3D 0; i < obj->nr_extern; i++) {
+@@ -2561,6 +2564,27 @@ static bool obj_needs_vmlinux_btf(const struct =
+bpf_object *obj)
+ 	return false;
+ }
+=20
++static int bpf_object__load_override_btf(struct bpf_object *obj,
++										=
+ const char *targ_btf_path)
++{
++	/* Could have been be set via `bpf_object_open_opts` */
++	if (obj->btf_vmlinux_override)
++		return 0;
++
++	if (!targ_btf_path)
++		return 0;
++
++	obj->btf_vmlinux_override =3D btf__parse(targ_btf_path, NULL);
++	if (IS_ERR_OR_NULL(obj->btf_vmlinux_override)) {
++		int err =3D PTR_ERR(obj->btf_vmlinux_override);
++		obj->btf_vmlinux_override =3D NULL;
++		pr_warn("failed to parse target BTF: %d\n", err);
++		return err;
++	}
++
++	return 0;
++}
++
+ static int bpf_object__load_vmlinux_btf(struct bpf_object *obj, bool =
+force)
+ {
+ 	int err;
+@@ -6031,7 +6055,7 @@ patch_insn:
+ }
+=20
+ static int
+-bpf_object__relocate_core(struct bpf_object *obj, const char =
+*targ_btf_path)
++bpf_object__relocate_core(struct bpf_object *obj)
+ {
+ 	const struct btf_ext_info_sec *sec;
+ 	const struct bpf_core_relo *rec;
+@@ -6045,15 +6069,6 @@ bpf_object__relocate_core(struct bpf_object *obj, =
+const char *targ_btf_path)
+ 	if (obj->btf_ext->core_relo_info.len =3D=3D 0)
+ 		return 0;
+=20
+-	if (targ_btf_path) {
+-		obj->btf_vmlinux_override =3D btf__parse(targ_btf_path, =
+NULL);
+-		if (IS_ERR_OR_NULL(obj->btf_vmlinux_override)) {
+-			err =3D PTR_ERR(obj->btf_vmlinux_override);
+-			pr_warn("failed to parse target BTF: %d\n", =
+err);
+-			return err;
+-		}
+-	}
+-
+ 	cand_cache =3D hashmap__new(bpf_core_hash_fn, bpf_core_equal_fn, =
+NULL);
+ 	if (IS_ERR(cand_cache)) {
+ 		err =3D PTR_ERR(cand_cache);
+@@ -6556,14 +6571,14 @@ bpf_object__relocate_calls(struct bpf_object =
+*obj, struct bpf_program *prog)
+ }
+=20
+ static int
+-bpf_object__relocate(struct bpf_object *obj, const char *targ_btf_path)
++bpf_object__relocate(struct bpf_object *obj)
+ {
+ 	struct bpf_program *prog;
+ 	size_t i;
+ 	int err;
+=20
+ 	if (obj->btf_ext) {
+-		err =3D bpf_object__relocate_core(obj, targ_btf_path);
++		err =3D bpf_object__relocate_core(obj);
+ 		if (err) {
+ 			pr_warn("failed to perform CO-RE relocations: =
+%d\n",
+ 				err);
+@@ -7088,7 +7103,7 @@ static struct bpf_object *
+ __bpf_object__open(const char *path, const void *obj_buf, size_t =
+obj_buf_sz,
+ 		   const struct bpf_object_open_opts *opts)
+ {
+-	const char *obj_name, *kconfig;
++	const char *obj_name, *kconfig, *core_btf_path;
+ 	struct bpf_program *prog;
+ 	struct bpf_object *obj;
+ 	char tmp_name[64];
+@@ -7126,6 +7141,14 @@ __bpf_object__open(const char *path, const void =
+*obj_buf, size_t obj_buf_sz,
+ 			return ERR_PTR(-ENOMEM);
+ 	}
+=20
++	core_btf_path =3D OPTS_GET(opts, core_btf_path, NULL);
++	if (core_btf_path) {
++		pr_debug("parse btf '%s' for CO-RE relocations\n", =
+core_btf_path);
++		obj->btf_vmlinux_override =3D btf__parse(core_btf_path, =
+NULL);
++		if (IS_ERR_OR_NULL(obj->btf_vmlinux_override))
++			pr_warn("can't parse btf at '%s'\n", =
+core_btf_path);
++	}
++
+ 	err =3D bpf_object__elf_init(obj);
+ 	err =3D err ? : bpf_object__check_endianness(obj);
+ 	err =3D err ? : bpf_object__elf_collect(obj);
+@@ -7481,13 +7504,14 @@ int bpf_object__load_xattr(struct =
+bpf_object_load_attr *attr)
+ 	}
+=20
+ 	err =3D bpf_object__probe_loading(obj);
++	err =3D err ? : bpf_object__load_override_btf(obj, =
+attr->target_btf_path);
+ 	err =3D err ? : bpf_object__load_vmlinux_btf(obj, false);
+ 	err =3D err ? : bpf_object__resolve_externs(obj, obj->kconfig);
+ 	err =3D err ? : bpf_object__sanitize_and_load_btf(obj);
+ 	err =3D err ? : bpf_object__sanitize_maps(obj);
+ 	err =3D err ? : bpf_object__init_kern_struct_ops_maps(obj);
+ 	err =3D err ? : bpf_object__create_maps(obj);
+-	err =3D err ? : bpf_object__relocate(obj, =
+attr->target_btf_path);
++	err =3D err ? : bpf_object__relocate(obj);
+ 	err =3D err ? : bpf_object__load_progs(obj, attr->log_level);
+=20
+ 	/* clean up module BTFs */
+diff --git a/src/libbpf.h b/src/libbpf.h
+index 3c35eb4..40c4ee9 100644
+--- a/src/libbpf.h
++++ b/src/libbpf.h
+@@ -93,8 +93,10 @@ struct bpf_object_open_opts {
+ 	 * system Kconfig for CONFIG_xxx externs.
+ 	 */
+ 	const char *kconfig;
++	/* Path to ELF file with BTF section to be used for relocations. =
+*/
++	const char *core_btf_path;
+ };
+-#define bpf_object_open_opts__last_field kconfig
++#define bpf_object_open_opts__last_field core_btf_path
+=20
+ LIBBPF_API struct bpf_object *bpf_object__open(const char *path);
+ LIBBPF_API struct bpf_object *
+--=20
+2.23.3
+
