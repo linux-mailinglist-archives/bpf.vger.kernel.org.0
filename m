@@ -2,127 +2,283 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E4612F0364
-	for <lists+bpf@lfdr.de>; Sat,  9 Jan 2021 21:18:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 308D52F04A7
+	for <lists+bpf@lfdr.de>; Sun, 10 Jan 2021 02:08:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726283AbhAIUR6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 9 Jan 2021 15:17:58 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:36713 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726005AbhAIUR5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 9 Jan 2021 15:17:57 -0500
-Received: by mail-io1-f69.google.com with SMTP id y197so10355297iof.3
-        for <bpf@vger.kernel.org>; Sat, 09 Jan 2021 12:17:42 -0800 (PST)
+        id S1726270AbhAJA6r (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 9 Jan 2021 19:58:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726062AbhAJA6q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 9 Jan 2021 19:58:46 -0500
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81108C061786
+        for <bpf@vger.kernel.org>; Sat,  9 Jan 2021 16:58:06 -0800 (PST)
+Received: by mail-ot1-x332.google.com with SMTP id d8so13562399otq.6
+        for <bpf@vger.kernel.org>; Sat, 09 Jan 2021 16:58:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=Cw0FQkPofbp8UhaGkGD2N7kZb7ecJLNHTfC8/jBdcp0=;
+        b=XAuydqCwnrTxKOUFSDlATdZpFUL77qHuL0a1QWijZ9kU8ycLis4dAnZP85sE6hubOa
+         1JC8dUSSx8tu7rFkpBEzyQe28dbNDaZjqvoEAVZ/iJVcQb9lS0jeQIULlzdiH2oQFL/1
+         TUaH0agK2tlZQ6lgRH8894tu83ysP6vZUJWav6NtAYaTFCZ3kgLw+KyIyyYm10oKSNq1
+         0txcSdBBh3jJr9pmFCVlwYd9tRNbH1xwEbcDRVsMJ01AwoOjGfMv2+4fDrLCi4+IpQl+
+         boAWCe70lCwTaZdOnL2z18XZ8k0+/v13NqyvY937P7Eikdp5UZA6ytooGBHhEkUrtPw9
+         LSJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=DOtSLUgu9OHp2xhaOIkH4fbkHc8mfJ2oKCEW3M693y0=;
-        b=flYx5okoNB3GXZCF9rwdYwTzjtoY55Xflv/jVBloUvqV4UwH2Bez0ObEfbsrCPpBmt
-         bh5qab00B/VH/THnWWlGp2WdADWrTUpCZ90xa7KNaFUMYtmzhkuRfsr/hNSy0JP0i1Hy
-         chz3YeHVQQJTln4EpTJ4gxCooKgxBLdg33NORYF8eJiJyQFXQYPNwpwQENsaIKx7Wrbw
-         QWiADiSzkn6DKArWBgYqZ4YoGt3YIEii1R5+QA9jLsYsgHxGz3umDTX3PZg9Ocpk9e3M
-         ClJPHcVq4m4+FqhzCfyg6LXs59VgQpczKNUtLHx8FnRFxqXp17XxpWCiGxhqwyrrMLKu
-         MxXw==
-X-Gm-Message-State: AOAM5329SodCBPddkgKfE8raJPYby5CZwTh21tjMrx2qnkxYooq5JuXE
-        a8y5OGq/TNVKvFEihzD/5/bZpxGVzE+eGCNbHQltRp8UPkRM
-X-Google-Smtp-Source: ABdhPJxxwioHJph+8kt6pb9ZunIYl4nLWF909hlBmmyLcDiQTwOXNZ+LPJZkNYdvHjaMWgkLnaRw86MYW/RmzyKPvNI1vDmTxsBd
-MIME-Version: 1.0
-X-Received: by 2002:a5d:9c57:: with SMTP id 23mr9875259iof.43.1610223436678;
- Sat, 09 Jan 2021 12:17:16 -0800 (PST)
-Date:   Sat, 09 Jan 2021 12:17:16 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f3cf2e05b87d5bcd@google.com>
-Subject: WARNING in bpf_prog_test_run_raw_tp
-From:   syzbot <syzbot+4f98876664c7337a4ae6@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, andriin@fb.com, ast@kernel.org,
-        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        hawk@kernel.org, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@chromium.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=Cw0FQkPofbp8UhaGkGD2N7kZb7ecJLNHTfC8/jBdcp0=;
+        b=lV7ym7ks0W4J+Deh/BBAY3zvK7bzJ1wj2Pk1pN28u86ag4UVaN0KdewH2IRfHmJh/c
+         CKQXHwd4k714+YLbev91wUbzcgT53OFKEeU85wz9Gwx2rUnQc1Kdr1gui4pQ8N3KvSls
+         E5AoAohLIM3/w9hfPUfruMse6/Lvsv9rtuDeQ8tN+fzlS21onLUloH3CzYbIvVIMkk1L
+         lVRdtvG+EYAnvmSXsataL+BtKkWpOfyEA+Rz/54lp1DtSiM6zGDUuf+4ZvF9jscvHuk+
+         humPTGaUBdF6egOQrtrBuzN1whxlrXdpW0/WT3ExIdXl/w7vHy1tu82UsrKIB0x4PEoM
+         dm+A==
+X-Gm-Message-State: AOAM533vBmsudmP+gdfv5V0/PVEgTqQkJqumMhFKsJk6lepd/m1J7b9P
+        9WJKyTc7Q7f8cUmCOuirgHk=
+X-Google-Smtp-Source: ABdhPJx6py+E+lxHSh0BY8UWJQsXR2YgYKnB4BrwpuFoC4nX3usegglSqQYRXp2h/uSE859JuDRH0g==
+X-Received: by 2002:a9d:4b19:: with SMTP id q25mr7227333otf.124.1610240285134;
+        Sat, 09 Jan 2021 16:58:05 -0800 (PST)
+Received: from localhost ([184.21.204.5])
+        by smtp.gmail.com with ESMTPSA id 39sm2703024otu.6.2021.01.09.16.58.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Jan 2021 16:58:04 -0800 (PST)
+Date:   Sat, 09 Jan 2021 16:57:55 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Brendan Jackman <jackmanb@google.com>,
+        KP Singh <kpsingh@google.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <5ffa5113467a9_815b208fa@john-XPS-13-9370.notmuch>
+In-Reply-To: <CAEf4Bzaw5r9Cs_jnacTZ54LtgQrK9PNyTdTY5KU9-wSHYtXzww@mail.gmail.com>
+References: <CAEf4BzZw5Zt92PHMP=3+aKEiJNP6aG6+Xpw5BLK2mQAohVPyxw@mail.gmail.com>
+ <5ff7f1167259b_36910208ef@john-XPS-13-9370.notmuch>
+ <CAEf4Bzaw5r9Cs_jnacTZ54LtgQrK9PNyTdTY5KU9-wSHYtXzww@mail.gmail.com>
+Subject: Re: BPF ring buffer variable-length data appending
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+Andrii Nakryiko wrote:
+> On Thu, Jan 7, 2021 at 9:44 PM John Fastabend <john.fastabend@gmail.com> wrote:
+> >
+> > Andrii Nakryiko wrote:
+> > > We discussed this topic today at office hour. As I mentioned, I don't
+> > > know the ideal solution, but here is something that has enough
+> > > flexibility for real-world uses, while giving the performance and
+> > > convenience of reserve/commit API. Ignore naming, we can bikeshed that
+> > > later.
+> >
+> > Missed office hours today, dang sounds interesting. Apoligies if I'm
+> > missing some context.
+> >
+> > >
+> > > So what we can do is introduce a new bpf_ringbuf_reserve() variant:
+> > >
+> > > bpf_ringbuf_reserve_extra(void *ringbuf, __u64 size, __u64 flags, void
+> > > *extra, __u64 extra_sz);
+> > >
+> > > The idea is that we reserve a fixed size amount of data that can be
+> > > used like it is today for filling a fixed-sized metadata/sample
+> > > directly. But the real size of the reserved sample is (size +
+> > > extra_sz), and bpf_ringbuf_reserve_extra() helper will bpf_probe_read
+> > > (kernel or user, depending on flags) data from extra and put it right
+> > > after the fixed-size part.
+> > >
+> > > So the use would be something like:
+> > >
+> > > struct my_meta *m = bpf_ringbuf_reserve_extra(&rb, sizeof(*m),
+> > > BPF_RB_PROBE_USER, env_vars, 1024);
+> > >
+> > > if (!m)
+> > >     /* too bad, either probe_read_user failed or ringbuf is full */
+> > >     return 1;
+> > >
+> > > m->my_field1 = 123;
+> > > m->my_field2 = 321;
+> > >
+> >
+> > Is this a way to increase the reserved space? I'm a bit fuzzy on the
+> > details here. But what happens if something else has done another
+> > reserve? Then it fails I guess?
+> 
+> No, you misunderstood. There is no way to safely increase the size of
+> already reserved ringbuf record. Naming is hard.
 
-syzbot found the following issue on:
+Great without a scatter-gather list I couldn't see any way increasing
+size would work ;)
 
-HEAD commit:    f6e7a024 Merge tag 'arc-5.11-rc3' of git://git.kernel.org/..
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=16f6472b500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8aa30b9da402d224
-dashboard link: https://syzkaller.appspot.com/bug?extid=4f98876664c7337a4ae6
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1004b248d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1773c767500000
+> bpf_ringbuf_reserve_extra() reserve the correct size of the record
+> from the very beginning. It's just that size is (size + extra_sz). The
+> difference from non-extra() variant is that size is still restricted
+> to be a known constant, so that verifier can verify safe direct memory
+> reads and writes within first *size* bytes. But extra_sz can be
+> unknown at the verification time (so it's ARG_ANYTHING), do it can be
+> calculated dynamically. That's most of the difference. The other part
+> is that because BPF program can't do much with this dynamic part of
+> ringbuf record, we also immediately copy provided memory for later
+> submission to the user space.
 
-The issue was bisected to:
+OK. Thanks for the extra details.
 
-commit 1b4d60ec162f82ea29a2e7a907b5c6cc9f926321
-Author: Song Liu <songliubraving@fb.com>
-Date:   Fri Sep 25 20:54:29 2020 +0000
+> 
+> >
+> > So consider,
+> >
+> > CPU0                   CPU1
+> >
+> > bpf_ringbuf_reserve()
+> >                        bpf_ringbuf_reserve()
+> > bpf_ringbuf_reserve_extra()
+> >
+> > Does that *_reserve_extra() fail then? If so it seems very limited
+> > from a use perspective. Most the systems we work with will fail more
+> > often than not I think.
+> >
+> > If the above doesn't fail, I'm missing something about how userspace
+> > can know where that buffer is without a scatter-gather list.
+> >
+> > >
+> > > So the main problem with this is that when probe_read fails, we fail
+> > > reservation completely(internally we'd just discard ringbuf sample).
+> > > Is that OK? Or is it better to still reserve fixed-sized part and
+> > > zero-out the variable-length part? We are combining two separate
+> > > operations into a single API, so error handling is more convoluted.
+> >
+> > My $.02 here. Failing is going to be ugly and a real pain to deal
+> 
+> If data copying failed, you are not getting data you expected. So
+> failing seems reasonable in such case. The convoluted and unfortunate
+> part is that you don't know whether it is ringbuf ran out of free
+> space or memory copying failed. If we restring extra_data pointer to
+> be a known good memory (like sk_buff, map_value, etc), then this
+> concern goes away. But you also won't be able to use this directly to
+> read some piece of generic kernel or user memory without extra
+> (explicit) bpf_probe_read(). Which might be acceptable, I think.
 
-    bpf: Enable BPF_PROG_TEST_RUN for raw_tracepoint
+Seems reasonable. Not knowing what failed seems like a horrible
+to debug error case so better to fix that.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15e5b0f7500000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=17e5b0f7500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=13e5b0f7500000
+> 
+> > with. I think best approach is reserve a fixed-sized buffer that
+> > meets your 99% case or whatever. Then reserve some overflow buffers
+> > you can point to for the oddball java application with a million
+> > strings. Yes you need to get more complicated in userspace to manage
+> > the thing, but once that codes written everything works out.
+> >
+> > Also I think we keep the kernel simpler if the BPF program just
+> > does another reserve() if it needs more space so,
+> >
+> >  bpf_ringbuf_reserve()
+> >  copy
+> >  copy
+> >  ENOMEM <- buff is full,
+> >  bpf_ringbuf_reserve()
+> >  copy
+> >  copy
+> >  ....
+> >
+> > Again userspace needs some logic to join the two buffers but we
+> > could come up with some user side convention to do this. libbpf
+> > for example could have a small buffer header to do this if folks
+> > wanted.  Smart BPF programs can even reserve a couple buffers
+> > up front for the worse case and recycle them back into its
+> > next invocation, I think.
+> 
+> First, I don't think libbpf should do anything extra here. It's just
+> bound to be suboptimal and cumbersome.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4f98876664c7337a4ae6@syzkaller.appspotmail.com
-Fixes: 1b4d60ec162f ("bpf: Enable BPF_PROG_TEST_RUN for raw_tracepoint")
+Agree, not a great idea. Users will want to do this using specifics
+of their use case.
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 8484 at mm/page_alloc.c:4976 __alloc_pages_nodemask+0x5f8/0x730 mm/page_alloc.c:5011
-Modules linked in:
-CPU: 1 PID: 8484 Comm: syz-executor862 Not tainted 5.11.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__alloc_pages_nodemask+0x5f8/0x730 mm/page_alloc.c:4976
-Code: 00 00 0c 00 0f 85 a7 00 00 00 8b 3c 24 4c 89 f2 44 89 e6 c6 44 24 70 00 48 89 6c 24 58 e8 d0 d7 ff ff 49 89 c5 e9 ea fc ff ff <0f> 0b e9 b5 fd ff ff 89 74 24 14 4c 89 4c 24 08 4c 89 74 24 18 e8
-RSP: 0018:ffffc900012efb10 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 1ffff9200025df66 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 0000000000140dc0
-RBP: 0000000000140dc0 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff81b1f7e1 R11: 0000000000000000 R12: 0000000000000014
-R13: 0000000000000014 R14: 0000000000000000 R15: 0000000000000000
-FS:  000000000190c880(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f08b7f316c0 CR3: 0000000012073000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- alloc_pages_current+0x18c/0x2a0 mm/mempolicy.c:2267
- alloc_pages include/linux/gfp.h:547 [inline]
- kmalloc_order+0x2e/0xb0 mm/slab_common.c:837
- kmalloc_order_trace+0x14/0x120 mm/slab_common.c:853
- kmalloc include/linux/slab.h:557 [inline]
- kzalloc include/linux/slab.h:682 [inline]
- bpf_prog_test_run_raw_tp+0x4b5/0x670 net/bpf/test_run.c:282
- bpf_prog_test_run kernel/bpf/syscall.c:3120 [inline]
- __do_sys_bpf+0x1ea9/0x4f10 kernel/bpf/syscall.c:4398
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x440499
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffe1f3bfb18 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440499
-RDX: 0000000000000048 RSI: 0000000020000600 RDI: 000000000000000a
-RBP: 00000000006ca018 R08: 0000000000000000 R09: 00000000004002c8
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401ca0
-R13: 0000000000401d30 R14: 0000000000000000 R15: 0000000000000000
+> 
+> But yes, this is another approach, though arguably quite complicated.
+> Chaining buffers can be done simply by using cpu_id and recording the
+> total number of expected chunks in the very first chunk. You can
+> submit the first chunk last, if you use reserve/commit API.
+> Reconstruction in user-space is going to require memory allocations
+> and copying, though.
 
+Sure, although maybe not copying if you have a scatter gather list
+somewhere. I guess it all depends on your use case.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+[...]
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+> > >
+> > > But offloading that preparation to a BPF program bypasses all these
+> > > error handling and memory layout questions. It will be up to a BPF
+> > > program itself. From a kernel perspective, we just append a block of
+> > > memory with known (at runtime) size.
+> >
+> > Still missing how this would be different from multiple reserve()
+> > calls. Its not too hard to join user space buffers I promise ;)
+> 
+> It's not trivial, but also probably less efficiently, as now you need
+> to dynamically allocate memory and still do extra copy. So I can
+> certainly see the appeal of being able to submit one whole record,
+> instead of trying to re-construct intermingled chunks across multiple
+> CPUs.
+> 
+> Anyways, I'm not advocating one or the other approach, both have the
+> right to exist, IMO. There is no free lunch, unfortunately. Either way
+> complexity and extra overhead creeps in.
+
+Sure.
+
+> 
+> >
+> > >
+> > > As a more restricted version of bpf_ringbuf_reserve_extra(), instead
+> > > of allowing reading arbitrary kernel or user-space memory in
+> > > bpf_ringbuf_reserve_extra() we can say that it has to be known and
+> > > initialized memory (like MAP_VALUE pointer), so helper knows that it
+> > > can just copy data directly.
+> >
+> > This is a fairly common operation for us, but also just chunks of a map
+> > value pointer. So would want a start/end offset bytes. Often our
+> > map values have extra data that user space doesn't need or care about.
+> 
+> Huh? It's just a pointer, you can point inside the MAP_VALUE today,
+> no? And you already have extra_sz. So this should work:
+> 
+> struct my_data *d = bpf_map_lookup_elem(&my_map, &my_key);
+> if (!d) return 0;
+> 
+> bpf_ringbuf_reserve_extra(&rb, 100, 0, d + 100, 200);
+> 
+> And you'll be copying [100, 200) range into ringbuf. No?
+
+Yep that works fine.
+
+> 
+> >
+> > >
+> > > Thoughts?
+> >
+> > I think I missed the point.
+> 
+> I think you misunderstood what bpf_ringbuf_reserve_extra() is going to
+> do. And we might differ in evaluating how easy it is to handle
+> chunking, both in kernel and user-space :)
+
+Yep above clarifies the ringbuf_reserve_extra() proposal thanks. And
+having done the work to handle chunking I don't think its terribly
+difficult, but agree non-trivial. Once done though its actually
+fairly flexible and handles use cases like array of strings and
+variable data size structures (TLVs ;) well and seemingly
+efficiently.
+
+> 
+> >
+> > >
+> > > -- Andrii
