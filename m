@@ -2,37 +2,36 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 277B92F21B6
+	by mail.lfdr.de (Postfix) with ESMTP id 9E0212F21B7
 	for <lists+bpf@lfdr.de>; Mon, 11 Jan 2021 22:24:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730086AbhAKVY2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Jan 2021 16:24:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45366 "EHLO mail.kernel.org"
+        id S1727525AbhAKVY3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Jan 2021 16:24:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727525AbhAKVY2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        id S1729600AbhAKVY2 (ORCPT <rfc822;bpf@vger.kernel.org>);
         Mon, 11 Jan 2021 16:24:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B93F22D05;
-        Mon, 11 Jan 2021 21:23:44 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B48C722D06;
+        Mon, 11 Jan 2021 21:23:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610400226;
-        bh=4mKHti2N32kIYhNocFeaAJE9PD/5KhR2rNvF1mAwOO8=;
+        s=k20201202; t=1610400228;
+        bh=GL1pR0GnhN8JThEE4X5ym/IOUfYEZ+UbWkN81zbY3SU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hccB6rZhloa8Js/wW6oDj+adrDt4BxbGBwgIuVSfCiFJWMrUpVhFDg9zDkRVdBnfQ
-         5KO45nAuJQM2wz0AfhdoUKYm4m0YcNuVTv5LJagfrri3L23QexM12vY/S7DlcWZN8O
-         ZA6TC2HH/qVAV43K8toyGdleDiaY5a8lqVsunQwqKyqiZDfndAVdRLGwWkGGK4vFhs
-         ZDJypsAISrFes3k9hLgY9P4AfbyXAUvaHUd7w809AIoWdJLRvuGfSBvjy9TXY7kmfb
-         4TucFtuyh+tNCkfBqMBixsEsNqBZiRjsBjHFvfxiyYQzIimer+H+coTO5dcrHOEEyN
-         KR078FxBW7C+A==
+        b=M288OvnR/DClOU3zvM0dH9VB2R/EvZsK+DHKp63DlxTN6nBpY9L1ssmgp6CIddrMJ
+         Hta7mtTgiDd5j+TlS/yCB0Yxtc9D5Tp8awZQDgcfx79j9vEdvM43hieKnPwNsfuMfv
+         PM8Dm8pBJ0mYZM/hQRuDRrPkJPardf02M9glzAo3iwfRrgMnnGkaLyqpJwintJJLUH
+         xJGur2EWYB2YhRN7F99zue/ZHc3dulnmrdmh6FrSDL/Baax6RTvD5dh6XvrjoshVR7
+         q1UsTAwUUFIYeF9erZfi4Fhp853v2dGRJUOzZ2d0OrtVcgljxXt1v3XtQTUsHKrV2D
+         1BxCKBI7JHAMA==
 From:   KP Singh <kpsingh@kernel.org>
 To:     bpf@vger.kernel.org
-Cc:     Gilad Reti <gilad.reti@gmail.com>,
+Cc:     Gilad Reti <gilad.reti@gmail.com>, Martin KaFai Lau <kafai@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>
-Subject: [PATCH bpf v2 1/3] bpf: update local storage test to check handling of null ptrs
-Date:   Mon, 11 Jan 2021 21:23:38 +0000
-Message-Id: <20210111212340.86393-2-kpsingh@kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH bpf v2 2/3] bpf: local storage helpers should check nullness of owner ptr passed
+Date:   Mon, 11 Jan 2021 21:23:39 +0000
+Message-Id: <20210111212340.86393-3-kpsingh@kernel.org>
 X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
 In-Reply-To: <20210111212340.86393-1-kpsingh@kernel.org>
 References: <20210111212340.86393-1-kpsingh@kernel.org>
@@ -42,293 +41,79 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-It was found in [1] that bpf_inode_storage_get helper did not check
-the nullness of the passed owner ptr which caused an oops when
-dereferenced. This change incorporates the example suggested in [1] into
-the local storage selftest.
+The verifier allows ARG_PTR_TO_BTF_ID helper arguments to be NULL, so
+helper implementations need to check this before dereferencing them.
+This was already fixed for the socket storage helpers but not for task
+and inode.
 
-The test is updated to create a temporary directory instead of just
-using a tempfile. In order to replicate the issue this copied rm binary
-is renamed tiggering the inode_rename with a null pointer for the
-new_inode. The logic to verify the setting and deletion of the inode
-local storage of the old inode is also moved to this LSM hook.
+The issue can be reproduced by attaching an LSM program to
+inode_rename hook (called when moving files) which tries to get the
+inode of the new file without checking for its nullness and then trying
+to move an existing file to a new path:
 
-The change also removes the copy_rm function and simply shells out
-to copy files and recursively delete directories and consolidates the
-logic of setting the initial inode storage to the bprm_committed_creds
-hook and removes the file_open hook.
+  mv existing_file new_file_does_not_exist
 
-[1]: https://lore.kernel.org/bpf/CANaYP3HWkH91SN=wTNO9FL_2ztHfqcXKX38SSE-JJ2voh+vssw@mail.gmail.com
+The report including the sample program and the steps for reproducing
+the bug:
 
-Suggested-by: Gilad Reti <gilad.reti@gmail.com>
+  https://lore.kernel.org/bpf/CANaYP3HWkH91SN=wTNO9FL_2ztHfqcXKX38SSE-JJ2voh+vssw@mail.gmail.com
+
+Fixes: 4cf1bc1f1045 ("bpf: Implement task local storage")
+Fixes: 8ea636848aca ("bpf: Implement bpf_local_storage for inodes")
+Reported-by: Gilad Reti <gilad.reti@gmail.com>
+Acked-by: Martin KaFai Lau <kafai@fb.com>
 Signed-off-by: KP Singh <kpsingh@kernel.org>
 ---
- .../bpf/prog_tests/test_local_storage.c       | 96 +++++--------------
- .../selftests/bpf/progs/local_storage.c       | 62 ++++++------
- 2 files changed, 61 insertions(+), 97 deletions(-)
+ kernel/bpf/bpf_inode_storage.c | 5 ++++-
+ kernel/bpf/bpf_task_storage.c  | 5 ++++-
+ 2 files changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_local_storage.c b/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
-index c0fe73a17ed1..338475fe9ffb 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
-@@ -34,61 +34,6 @@ struct storage {
- 	struct bpf_spin_lock lock;
- };
- 
--/* Copies an rm binary to a temp file. dest is a mkstemp template */
--static int copy_rm(char *dest)
--{
--	int fd_in, fd_out = -1, ret = 0;
--	struct stat stat;
--	char *buf = NULL;
--
--	fd_in = open("/bin/rm", O_RDONLY);
--	if (fd_in < 0)
--		return -errno;
--
--	fd_out = mkstemp(dest);
--	if (fd_out < 0) {
--		ret = -errno;
--		goto out;
--	}
--
--	ret = fstat(fd_in, &stat);
--	if (ret == -1) {
--		ret = -errno;
--		goto out;
--	}
--
--	buf = malloc(stat.st_blksize);
--	if (!buf) {
--		ret = -errno;
--		goto out;
--	}
--
--	while (ret = read(fd_in, buf, stat.st_blksize), ret > 0) {
--		ret = write(fd_out, buf, ret);
--		if (ret < 0) {
--			ret = -errno;
--			goto out;
--
--		}
--	}
--	if (ret < 0) {
--		ret = -errno;
--		goto out;
--
--	}
--
--	/* Set executable permission on the copied file */
--	ret = chmod(dest, 0100);
--	if (ret == -1)
--		ret = -errno;
--
--out:
--	free(buf);
--	close(fd_in);
--	close(fd_out);
--	return ret;
--}
--
- /* Fork and exec the provided rm binary and return the exit code of the
-  * forked process and its pid.
-  */
-@@ -168,9 +113,11 @@ static bool check_syscall_operations(int map_fd, int obj_fd)
- 
- void test_test_local_storage(void)
- {
--	char tmp_exec_path[PATH_MAX] = "/tmp/copy_of_rmXXXXXX";
-+	char tmp_dir_path[64] = "/tmp/local_storageXXXXXX";
- 	int err, serv_sk = -1, task_fd = -1, rm_fd = -1;
- 	struct local_storage *skel = NULL;
-+	char tmp_exec_path[64];
-+	char cmd[256];
- 
- 	skel = local_storage__open_and_load();
- 	if (CHECK(!skel, "skel_load", "lsm skeleton failed\n"))
-@@ -189,18 +136,24 @@ void test_test_local_storage(void)
- 				      task_fd))
- 		goto close_prog;
- 
--	err = copy_rm(tmp_exec_path);
--	if (CHECK(err < 0, "copy_rm", "err %d errno %d\n", err, errno))
-+	mkdtemp(tmp_dir_path);
-+	if (CHECK(errno < 0, "mkdtemp", "unable to create tmpdir: %d\n", errno))
- 		goto close_prog;
- 
-+	snprintf(tmp_exec_path, sizeof(tmp_exec_path), "%s/copy_of_rm",
-+		 tmp_dir_path);
-+	snprintf(cmd, sizeof(cmd), "cp /bin/rm %s", tmp_exec_path);
-+	if (CHECK_FAIL(system(cmd)))
-+		goto close_prog_rmdir;
-+
- 	rm_fd = open(tmp_exec_path, O_RDONLY);
- 	if (CHECK(rm_fd < 0, "open", "failed to open %s err:%d, errno:%d",
- 		  tmp_exec_path, rm_fd, errno))
--		goto close_prog;
-+		goto close_prog_rmdir;
- 
- 	if (!check_syscall_operations(bpf_map__fd(skel->maps.inode_storage_map),
- 				      rm_fd))
--		goto close_prog;
-+		goto close_prog_rmdir;
- 
- 	/* Sets skel->bss->monitored_pid to the pid of the forked child
- 	 * forks a child process that executes tmp_exec_path and tries to
-@@ -209,33 +162,36 @@ void test_test_local_storage(void)
+diff --git a/kernel/bpf/bpf_inode_storage.c b/kernel/bpf/bpf_inode_storage.c
+index 6edff97ad594..dbc1dbdd2cbf 100644
+--- a/kernel/bpf/bpf_inode_storage.c
++++ b/kernel/bpf/bpf_inode_storage.c
+@@ -176,7 +176,7 @@ BPF_CALL_4(bpf_inode_storage_get, struct bpf_map *, map, struct inode *, inode,
+ 	 * bpf_local_storage_update expects the owner to have a
+ 	 * valid storage pointer.
  	 */
- 	err = run_self_unlink(&skel->bss->monitored_pid, tmp_exec_path);
- 	if (CHECK(err != EPERM, "run_self_unlink", "err %d want EPERM\n", err))
--		goto close_prog_unlink;
-+		goto close_prog_rmdir;
+-	if (!inode_storage_ptr(inode))
++	if (!inode || !inode_storage_ptr(inode))
+ 		return (unsigned long)NULL;
  
- 	/* Set the process being monitored to be the current process */
- 	skel->bss->monitored_pid = getpid();
- 
--	/* Remove the temporary created executable */
--	err = unlink(tmp_exec_path);
--	if (CHECK(err != 0, "unlink", "unable to unlink %s: %d", tmp_exec_path,
--		  errno))
--		goto close_prog_unlink;
-+	/* Move copy_of_rm to a new location so that it triggers the
-+	 * inode_rename LSM hook with a new_dentry that has a NULL inode ptr.
-+	 */
-+	snprintf(cmd, sizeof(cmd), "mv %s/copy_of_rm %s/check_null_ptr",
-+		 tmp_dir_path, tmp_dir_path);
-+	if (CHECK_FAIL(system(cmd)))
-+		goto close_prog_rmdir;
- 
- 	CHECK(skel->data->inode_storage_result != 0, "inode_storage_result",
- 	      "inode_local_storage not set\n");
- 
- 	serv_sk = start_server(AF_INET6, SOCK_STREAM, NULL, 0, 0);
- 	if (CHECK(serv_sk < 0, "start_server", "failed to start server\n"))
--		goto close_prog;
-+		goto close_prog_rmdir;
- 
- 	CHECK(skel->data->sk_storage_result != 0, "sk_storage_result",
- 	      "sk_local_storage not set\n");
- 
- 	if (!check_syscall_operations(bpf_map__fd(skel->maps.sk_storage_map),
- 				      serv_sk))
--		goto close_prog;
-+		goto close_prog_rmdir;
- 
--close_prog_unlink:
--	unlink(tmp_exec_path);
-+close_prog_rmdir:
-+	snprintf(cmd, sizeof(cmd), "rm -rf %s", tmp_dir_path);
-+	system(cmd);
- close_prog:
- 	close(serv_sk);
- 	close(rm_fd);
-diff --git a/tools/testing/selftests/bpf/progs/local_storage.c b/tools/testing/selftests/bpf/progs/local_storage.c
-index 3e3de130f28f..95868bc7ada9 100644
---- a/tools/testing/selftests/bpf/progs/local_storage.c
-+++ b/tools/testing/selftests/bpf/progs/local_storage.c
-@@ -50,7 +50,6 @@ int BPF_PROG(unlink_hook, struct inode *dir, struct dentry *victim)
- 	__u32 pid = bpf_get_current_pid_tgid() >> 32;
- 	struct local_storage *storage;
- 	bool is_self_unlink;
--	int err;
- 
- 	if (pid != monitored_pid)
- 		return 0;
-@@ -66,8 +65,27 @@ int BPF_PROG(unlink_hook, struct inode *dir, struct dentry *victim)
- 			return -EPERM;
- 	}
- 
--	storage = bpf_inode_storage_get(&inode_storage_map, victim->d_inode, 0,
--					BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	return 0;
-+}
-+
-+SEC("lsm/inode_rename")
-+int BPF_PROG(inode_rename, struct inode *old_dir, struct dentry *old_dentry,
-+	     struct inode *new_dir, struct dentry *new_dentry,
-+	     unsigned int flags)
-+{
-+	__u32 pid = bpf_get_current_pid_tgid() >> 32;
-+	struct local_storage *storage;
-+	int err;
-+
-+	/* new_dentry->d_inode can be NULL when the inode is renamed to a file
-+	 * that did not exist before. The helper should be able to handle this
-+	 * NULL pointer.
-+	 */
-+	bpf_inode_storage_get(&inode_storage_map, new_dentry->d_inode, 0,
-+			      BPF_LOCAL_STORAGE_GET_F_CREATE);
-+
-+	storage = bpf_inode_storage_get(&inode_storage_map, old_dentry->d_inode,
-+					0, 0);
- 	if (!storage)
- 		return 0;
- 
-@@ -76,7 +94,7 @@ int BPF_PROG(unlink_hook, struct inode *dir, struct dentry *victim)
- 		inode_storage_result = -1;
- 	bpf_spin_unlock(&storage->lock);
- 
--	err = bpf_inode_storage_delete(&inode_storage_map, victim->d_inode);
-+	err = bpf_inode_storage_delete(&inode_storage_map, old_dentry->d_inode);
- 	if (!err)
- 		inode_storage_result = err;
- 
-@@ -133,37 +151,18 @@ int BPF_PROG(socket_post_create, struct socket *sock, int family, int type,
- 	return 0;
- }
- 
--SEC("lsm/file_open")
--int BPF_PROG(file_open, struct file *file)
--{
--	__u32 pid = bpf_get_current_pid_tgid() >> 32;
--	struct local_storage *storage;
--
--	if (pid != monitored_pid)
--		return 0;
--
--	if (!file->f_inode)
--		return 0;
--
--	storage = bpf_inode_storage_get(&inode_storage_map, file->f_inode, 0,
--					BPF_LOCAL_STORAGE_GET_F_CREATE);
--	if (!storage)
--		return 0;
--
--	bpf_spin_lock(&storage->lock);
--	storage->value = DUMMY_STORAGE_VALUE;
--	bpf_spin_unlock(&storage->lock);
--	return 0;
--}
--
- /* This uses the local storage to remember the inode of the binary that a
-  * process was originally executing.
-  */
- SEC("lsm/bprm_committed_creds")
- void BPF_PROG(exec, struct linux_binprm *bprm)
+ 	sdata = inode_storage_lookup(inode, map, true);
+@@ -200,6 +200,9 @@ BPF_CALL_4(bpf_inode_storage_get, struct bpf_map *, map, struct inode *, inode,
+ BPF_CALL_2(bpf_inode_storage_delete,
+ 	   struct bpf_map *, map, struct inode *, inode)
  {
-+	__u32 pid = bpf_get_current_pid_tgid() >> 32;
- 	struct local_storage *storage;
++	if (!inode)
++		return -EINVAL;
++
+ 	/* This helper must only called from where the inode is gurranteed
+ 	 * to have a refcount and cannot be freed.
+ 	 */
+diff --git a/kernel/bpf/bpf_task_storage.c b/kernel/bpf/bpf_task_storage.c
+index 4ef1959a78f2..e0da0258b732 100644
+--- a/kernel/bpf/bpf_task_storage.c
++++ b/kernel/bpf/bpf_task_storage.c
+@@ -218,7 +218,7 @@ BPF_CALL_4(bpf_task_storage_get, struct bpf_map *, map, struct task_struct *,
+ 	 * bpf_local_storage_update expects the owner to have a
+ 	 * valid storage pointer.
+ 	 */
+-	if (!task_storage_ptr(task))
++	if (!task || !task_storage_ptr(task))
+ 		return (unsigned long)NULL;
  
-+	if (pid != monitored_pid)
-+		return;
+ 	sdata = task_storage_lookup(task, map, true);
+@@ -243,6 +243,9 @@ BPF_CALL_4(bpf_task_storage_get, struct bpf_map *, map, struct task_struct *,
+ BPF_CALL_2(bpf_task_storage_delete, struct bpf_map *, map, struct task_struct *,
+ 	   task)
+ {
++	if (!task)
++		return -EINVAL;
 +
- 	storage = bpf_task_storage_get(&task_storage_map,
- 				       bpf_get_current_task_btf(), 0,
- 				       BPF_LOCAL_STORAGE_GET_F_CREATE);
-@@ -172,4 +171,13 @@ void BPF_PROG(exec, struct linux_binprm *bprm)
- 		storage->exec_inode = bprm->file->f_inode;
- 		bpf_spin_unlock(&storage->lock);
- 	}
-+
-+	storage = bpf_inode_storage_get(&inode_storage_map, bprm->file->f_inode,
-+					0, BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	if (!storage)
-+		return;
-+
-+	bpf_spin_lock(&storage->lock);
-+	storage->value = DUMMY_STORAGE_VALUE;
-+	bpf_spin_unlock(&storage->lock);
- }
+ 	/* This helper must only be called from places where the lifetime of the task
+ 	 * is guaranteed. Either by being refcounted or by being protected
+ 	 * by an RCU read-side critical section.
 -- 
 2.30.0.284.gd98b1dd5eaa7-goog
 
