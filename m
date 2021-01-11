@@ -2,129 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 257282F20FA
-	for <lists+bpf@lfdr.de>; Mon, 11 Jan 2021 21:40:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C18ED2F2129
+	for <lists+bpf@lfdr.de>; Mon, 11 Jan 2021 21:52:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387948AbhAKUj5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Jan 2021 15:39:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32862 "EHLO
+        id S1726435AbhAKUwJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Jan 2021 15:52:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387533AbhAKUj5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 Jan 2021 15:39:57 -0500
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90551C061794;
-        Mon, 11 Jan 2021 12:39:16 -0800 (PST)
-Received: by mail-yb1-xb33.google.com with SMTP id b64so52705ybg.7;
-        Mon, 11 Jan 2021 12:39:16 -0800 (PST)
+        with ESMTP id S1725917AbhAKUwJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Jan 2021 15:52:09 -0500
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC45C061786;
+        Mon, 11 Jan 2021 12:51:28 -0800 (PST)
+Received: by mail-yb1-xb34.google.com with SMTP id r63so93947ybf.5;
+        Mon, 11 Jan 2021 12:51:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=R4z8VuhNyMDL7g096sbikTkm1i+21r0leC/d47KG000=;
-        b=ZJeLWXP4rm29LpTASshdqb2QPKHYF7FZlN1CyQCn7y3N5TZAG81UbOkHMEOrTHs/Yp
-         Id1Kj+czxOJ3iBhERZDdaVf3lt2WnVkKmaOzb/kUfB4vtjJkB9zzjWpGAG149FOdON8i
-         3d8IwdN8Vo8X5ckoqon9dFdRFXgRo2ruGw6acRHduw3klS0YSQQ2dbVvI1LebpvnCQqt
-         bMBrWbx0MnvaWTqDseoJOc8dLzXCTcDgU2SSrHfdqSjNA7e4G0VpNXlgBdtXgyUePqKz
-         GyHmyZ19FVO8XDuwaflslYk2FoSdh7D1CZE0W0nNYuL2+maaih7gR0RHr+k9g0Zu1c1l
-         HI9g==
+        bh=XBkaYt5WREhWLVNUYKKmCiMEYrqWo6+GrHTKOekyuZs=;
+        b=qlKh1L8FbjHHW9xvlr7/fmEufY/3bamOppWooa6Pz+CSud25F6C4L0eIKuI94pbKNd
+         BIthwYVGW3VxFj1QUNRBD4WCGSG4GwOvZ9L2R5qfLObLSzhV+O0K82xgV7eiN2wxZw1s
+         Wq6rbuFefBopZWGJi39yga1DXX/k2o4BGKQd9u2MK6O0G1rOedMawqNnWLE40H1CDbEx
+         mNkgHXR6P8SdhVWCx+gbgPAxXBqq1AfWsh3FsqxBTCNb5w53Z6aKqlc6W2lBnl2NNQib
+         eoFSbBRfyqgzMgjefrLUlVanCLIfdAjo28TVTK+YmER8rGIocrN8byHQZZu98JafxbPE
+         gjBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=R4z8VuhNyMDL7g096sbikTkm1i+21r0leC/d47KG000=;
-        b=PWUZZqbi504IpmfSJOxME2+frmkIdVCIffV4sMnyCdoQjkmhvMmFzMybtZwtnAR/kE
-         ASMpIo5q06Nvne9z5POvRivDa9gE3miqIVusYzcKkE0ALIrfjJWQGNcJV/9RURXIZA53
-         zMbS9vcb0D4xGINkkaNHxD+cqzXJpXLhWMQlV+FpyzTgWGElSU0ggD6NjImUxTNzav3h
-         Rw6JzX4iPTXrHXm4UC8gmEpIuuDR0augxVcxnsUdGeyP1MhDRBtNg8sOmkWV53fJp9FF
-         k/7C9IAry4m/Tb4KmhJ9F1SnKG83VqWQpthYA94aPaQZvFNpgCXjBYDPjTngPSfwfYzi
-         +V8w==
-X-Gm-Message-State: AOAM530654uW0aPt922cjc3WXVyaXanGxryAbs5n0VZP6RlRrZVPFWDR
-        1ziXWABfSYJbF7vFKydAADuWepnxssM8HqQxIF0=
-X-Google-Smtp-Source: ABdhPJzy85RUE/nM7uiN77b46n1I1uFND5gf1iCHGJMDBBwXvVmPHE3iNagHqaCJEW2rzJ5Wqkg75zo5lrC4A/x0228=
-X-Received: by 2002:a25:d6d0:: with SMTP id n199mr2172909ybg.27.1610397555867;
- Mon, 11 Jan 2021 12:39:15 -0800 (PST)
+        bh=XBkaYt5WREhWLVNUYKKmCiMEYrqWo6+GrHTKOekyuZs=;
+        b=MbCpKQC5r42wW0VtEMca7Q81cET/73bnJSktbDm1gJqyEbWFQousFU71yABjFcfpNq
+         j/470CAIXWyAVhI0lMCs1FxLArNGXZcljd5oA664YSCmlTRqRpP7aih5O8nLJvuAJ2az
+         VNCfITcbvQw+TvYS980pAH+m8zTF/2T+gTct/i8BYBl5o54wWC7mTLycF/d7Z0ru7Ar9
+         3Q3bq1wP3DdLoLH40R4y22+bxwT+x7X5k6/O/moXGeSckot2ZRUyeH96Wbn2Qrgs/GvZ
+         C7Us2DVWJpYjWJDrC+EtpjHHLjGjnRm0C7AzSzjOTfqBuL/6o8fbFySNbvNKBTCKwk9T
+         /vTg==
+X-Gm-Message-State: AOAM53146Dbw/Vk72JsHUoUz6rUehI8lzFRI6NO+PT2WrUGdwJDShbCL
+        HhOwilNXvnmc5N0FZkVq955c6Q5iOjcXhOKokMnfN2aEFj8=
+X-Google-Smtp-Source: ABdhPJyQUTAT1d2wXFSbqCke8Uz35fl6+5A2UHF9JDlmOZvptkUnIStHzZYuLZQng2CTIMBapWuwQIuZCsiJMXVnuXs=
+X-Received: by 2002:a25:aea8:: with SMTP id b40mr2291043ybj.347.1610398287941;
+ Mon, 11 Jan 2021 12:51:27 -0800 (PST)
 MIME-Version: 1.0
-References: <20210111153123.GA423936@ubuntu> <17629073-4fab-a922-ecc3-25b019960f44@iogearbox.net>
- <CANaYP3FiB-+Zs3C27VgPW+4Ltg8b9dErYAoX7Gu2WqkczcC8vw@mail.gmail.com>
-In-Reply-To: <CANaYP3FiB-+Zs3C27VgPW+4Ltg8b9dErYAoX7Gu2WqkczcC8vw@mail.gmail.com>
+References: <20210110070341.1380086-1-andrii@kernel.org> <20210110070341.1380086-2-andrii@kernel.org>
+ <e621981d-5c3d-6d92-871b-a98520778363@fb.com>
+In-Reply-To: <e621981d-5c3d-6d92-871b-a98520778363@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 11 Jan 2021 12:39:05 -0800
-Message-ID: <CAEf4BzaG2q-4qFZ0WDhbfPJL70T7z84CE=MoKkT2peOXrx28cw@mail.gmail.com>
-Subject: Re: [PATCH] Signed-off-by: giladreti <gilad.reti@gmail.com>
-To:     Gilad Reti <gilad.reti@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Mon, 11 Jan 2021 12:51:17 -0800
+Message-ID: <CAEf4BzZhFrHho-F+JyY6wQyWUZ+0cJJLkGv+=DHP4equkkm4iw@mail.gmail.com>
+Subject: Re: [PATCH bpf 2/2] libbpf: allow loading empty BTFs
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
         Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+        Alexei Starovoitov <ast@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        Christopher William Snowhill <chris@kode54.net>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 8:06 AM Gilad Reti <gilad.reti@gmail.com> wrote:
+On Mon, Jan 11, 2021 at 10:13 AM Yonghong Song <yhs@fb.com> wrote:
 >
-> On Mon, Jan 11, 2021, 17:55 Daniel Borkmann <daniel@iogearbox.net> wrote:
-> >
-> > Hello Gilad,
-> >
-> > On 1/11/21 4:31 PM, giladreti wrote:
-> > > Added support for pointer to mem register spilling, to allow the verifier
-> > > to track pointer to valid memory addresses. Such pointers are returned
-> > > for example by a successful call of the bpf_ringbuf_reserve helper.
-> > >
-> > > This patch was suggested as a solution by Yonghong Song.
-> >
-> > The SoB should not be in subject line but as part of the commit message instead
-> > and with proper name, e.g.
-> >
-> > Signed-off-by: Gilad Reti <gilad.reti@gmail.com>
-> >
-> > For subject line, please use a short summary that fits the patch prefixed with
-> > the subsystem "bpf: [...]", see also [0] as an example. Thanks.
-> >
-> > It would be good if you could also add a BPF selftest for this [1].
-> >
-> >    [0] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=e22d7f05e445165e58feddb4e40cc9c0f94453bc
-> >    [1] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/tools/testing/selftests/bpf/
-> >        https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/tools/testing/selftests/bpf/verifier/spill_fill.c
-> >
 >
-> Sure. Thanks for your guidance. As you can probably tell, I am new to
-> kernel code contribution (in fact this is a first time for me).
-> Should I try to submit this patch again?
+>
+> On 1/9/21 11:03 PM, Andrii Nakryiko wrote:
+> > Empty BTFs do come up (e.g., simple kernel modules with no new types and
+> > strings, compared to the vmlinux BTF) and there is nothing technically wrong
+> > with them. So remove unnecessary check preventing loading empty BTFs.
+> >
+> > Reported-by: Christopher William Snowhill <chris@kode54.net>
+> > Fixes: ("d8123624506c libbpf: Fix BTF data layout checks and allow empty BTF")
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > ---
+> >   tools/lib/bpf/btf.c | 5 -----
+> >   1 file changed, 5 deletions(-)
+> >
+> > diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> > index 3c3f2bc6c652..9970a288dda5 100644
+> > --- a/tools/lib/bpf/btf.c
+> > +++ b/tools/lib/bpf/btf.c
+> > @@ -240,11 +240,6 @@ static int btf_parse_hdr(struct btf *btf)
+> >       }
+> >
+> >       meta_left = btf->raw_size - sizeof(*hdr);
+> > -     if (!meta_left) {
+> > -             pr_debug("BTF has no data\n");
+> > -             return -EINVAL;
+> > -     }
+>
+> Previous kernel patch allows empty btf only if that btf is module (not
+> base/vmlinux) btf. Here it seems we allow any empty non-module btf to be
+> loaded into the kernel. In such cases, loading may fail? Maybe we should
+> detect such cases in libbpf and error out instead of going to kernel and
+> get error back?
 
-In addition to all already mentioned things, also make sure you have
-[PATCH bpf] prefix in the subject, to identify that this is a bug fix
-for the bpf tree.
+I did this consciously. Kernel is more strict, because there is no
+reasonable case when vmlinux BTF or BPF program's BTF can be empty (at
+least not that now we have FUNCs in BTF). But allowing libbpf to load
+empty BTF generically is helpful for bpftool, as one example, for
+inspection. If you do `bpftool btf dump` on empty BTF, it will just
+print nothing and you'll know that it's a valid (from BTF header
+perspective) BTF, just doesn't have any types (besides VOID). If we
+don't allow it, then we'll just get an error and then you'll have to
+do painful hex dumping and decoding to see what's wrong.
 
-Also you missed adding Fixes tag, please add this:
-
-Fixes: 457f44363a88 ("bpf: Implement BPF ring buffer and verifier
-support for it")
-
-And yes, please re-submit with all the feedback incorporated
-(including the selftest).
+In practice, no BPF program's BTF should be empty, but if it is, the
+kernel will rightfully stop you. I don't think it's a common enough
+case for libbpf to handle.
 
 >
-> Sorry in advance for all the overhead I may be causing to you...
->
-> > > ---
-> > >   kernel/bpf/verifier.c | 2 ++
-> > >   1 file changed, 2 insertions(+)
-> > >
-> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > index 17270b8404f1..36af69fac591 100644
-> > > --- a/kernel/bpf/verifier.c
-> > > +++ b/kernel/bpf/verifier.c
-> > > @@ -2217,6 +2217,8 @@ static bool is_spillable_regtype(enum bpf_reg_type type)
-> > >       case PTR_TO_RDWR_BUF:
-> > >       case PTR_TO_RDWR_BUF_OR_NULL:
-> > >       case PTR_TO_PERCPU_BTF_ID:
-> > > +     case PTR_TO_MEM:
-> > > +     case PTR_TO_MEM_OR_NULL:
-> > >               return true;
-> > >       default:
-> > >               return false;
-> > >
+> > -
+> >       if (meta_left < hdr->str_off + hdr->str_len) {
+> >               pr_debug("Invalid BTF total size:%u\n", btf->raw_size);
+> >               return -EINVAL;
 > >
