@@ -2,82 +2,151 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3B7F2F1FC9
-	for <lists+bpf@lfdr.de>; Mon, 11 Jan 2021 20:50:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 818AF2F1FE2
+	for <lists+bpf@lfdr.de>; Mon, 11 Jan 2021 20:52:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391018AbhAKTtk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Jan 2021 14:49:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388832AbhAKTtk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 Jan 2021 14:49:40 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECA92C0617A2
-        for <bpf@vger.kernel.org>; Mon, 11 Jan 2021 11:48:59 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id jx16so43295ejb.10
-        for <bpf@vger.kernel.org>; Mon, 11 Jan 2021 11:48:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5h4A0L7tVN4UX2Z9TEeukCL57ohmt7+pkrlPJsYpILQ=;
-        b=VDg8dCYtAFhytjYdQX3IeN8lvLiYAz0Cn/mrMOCp8xwLfm7tMImb2UMwRiwNRPglte
-         htUiDgZqfjxPpoXjARbTocD6qg70FQ3KAEkE1T1QXqgMBgAr9FxG2n28rm9vwAYVY+eN
-         KVlkv4MUgpbRrN+t5JKrQ0FN2frPiCt8GfZljxHMaeA5eLKmma8yh7sjy3ujQFJyA7Mz
-         fxeIwgzHBCp/3B6Pfk6y2AZti+ZrWBRxJyyMDGKOVlBiqI6F8dXxAsmKhtC5kp+iTOBr
-         3lmy0D1cBK8jRomDIyb4vuVioKfdzN+lJKtwQ2enxe7SPr9KMHby/AUlR6tWZIin5Ns+
-         6wIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5h4A0L7tVN4UX2Z9TEeukCL57ohmt7+pkrlPJsYpILQ=;
-        b=YLc/i0Wo7np/6Eu4OcLBCoN1+HcZgazIrIfveg1BEtqQ5QSurJL4CieYHR2oukIyui
-         PiQQBsgPBsuiPv+mu3Av7d6uCaxg4izfbMpn/ZJMl7n7JF/QIglvA8BnXE1yP/jjCh6R
-         vDEKaX3bt41H0CXhe/o4alABDHNKKCTLeJtpVF12lBRp0Y5S/suavmkuCb74iBdVAuXE
-         icmikmh+rPoSxA6c65Cn9ydKDtpoMO01h7osZF+2IM5YVWUhOeR7luSvqr/pYMIJZlUa
-         cAhmit98X6IDcVqEi01wouagaTt8pAB3FOiBiL8YiDopAQU15jiPbHyZuqJtEe3eP3sB
-         h9cg==
-X-Gm-Message-State: AOAM533C5mgFuhr9qXer62fAvtOKRg80/FKKssP6INK2FkYSMiR/nMOd
-        P0hnz2pz1/ygVP0kieyMO+S3Z0MSlfsiQYP57Rg=
-X-Google-Smtp-Source: ABdhPJz2NajkdpKj1LFdnnybXKVqQsqYY4hG4XF/gzBvHvg247f7Zrh7gm2H03E5fHmO8KhJGLR5EEm4ZwKRgcR8WLs=
-X-Received: by 2002:a17:907:4243:: with SMTP id np3mr736413ejb.212.1610394538702;
- Mon, 11 Jan 2021 11:48:58 -0800 (PST)
+        id S2390963AbhAKTw1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Jan 2021 14:52:27 -0500
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:45956 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389589AbhAKTw0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Jan 2021 14:52:26 -0500
+X-Greylist: delayed 1890 seconds by postgrey-1.27 at vger.kernel.org; Mon, 11 Jan 2021 14:52:24 EST
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 10BJpRbo021925;
+        Tue, 12 Jan 2021 04:51:27 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 10BJpRbo021925
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1610394688;
+        bh=ItG6RXKqICsvoOxHCqOhjokCnPBLYEL/fl3sMptIQxM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=aZnGLDoeg10Xj/lLkkvubtnDMFXBOWqn+G9q0gCgMr7x3jwwQ6yAYFFuyBFrpCtQ0
+         QiyvcPiFxHh+d91md3EaCE1ank3G2zqG7k1DeEvcuuP0Dqx0xLjd1U9XErzPQ3SrX2
+         Fg73drapC6OgIFkLUcaMqGsQIfi4eLv+mJFNTpeRyDrwqWbkWlilncrncxL4Y/BRRP
+         fyVO2J90yy0le6YbNdZfrk0Cvy7n2mQ1vcNygTft2ru3jhM4ofwj7pbs2WoPyifajL
+         CrlBEojNwZb179L62f9KIz9d+h9K8RE2GNpKB/7FYiVgv5xUIoT1pQHclzhSaxCEx9
+         QFpYUTjzv/ZPQ==
+X-Nifty-SrcIP: [209.85.215.169]
+Received: by mail-pg1-f169.google.com with SMTP id n25so371004pgb.0;
+        Mon, 11 Jan 2021 11:51:27 -0800 (PST)
+X-Gm-Message-State: AOAM531EqcIsRFyQl8FHOHQS8gGOEo73oc+CZiKl9xYlG6HwWV9Pag7d
+        TcZ6dNI6g3UWIUfM8XxD1z6Ikg7XGQSSBEsHVTo=
+X-Google-Smtp-Source: ABdhPJwiWmifGckt7py++NZBF3MlPvLFNx7xeFXySdQrm+pbBznt0vx0PAl1WQLBSrjANOHybx/pbWbQ2rAQPltB7uQ=
+X-Received: by 2002:a63:eb0c:: with SMTP id t12mr1117953pgh.7.1610394686894;
+ Mon, 11 Jan 2021 11:51:26 -0800 (PST)
 MIME-Version: 1.0
-References: <CAHAzn3rz5ZH25-53+ijGXhzoV2DqiOhEtV==V2k2R72AwpGAdA@mail.gmail.com>
- <20210111111949.18236404@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210111111949.18236404@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Konstantinos Kaffes <kkaffes@gmail.com>
-Date:   Mon, 11 Jan 2021 11:48:47 -0800
-Message-ID: <CAHAzn3o4HQQAXXnGg8My14z8dJmREkVDsBheNtxwtNHZB+xp-Q@mail.gmail.com>
-Subject: Re: [QUESTION] TCP connected socket selection
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     bpf@vger.kernel.org
+References: <20210111180609.713998-1-natechancellor@gmail.com>
+ <CAK7LNAQ=38BUi-EG5v2UiuAF-BOsVe5BTd-=jVYHHHPD7ikS5A@mail.gmail.com> <20210111193400.GA1343746@ubuntu-m3-large-x86>
+In-Reply-To: <20210111193400.GA1343746@ubuntu-m3-large-x86>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 12 Jan 2021 04:50:50 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASZuWp=aPOCKo6QkdHwM5KG6MUv8305v3x-2yR7cKEX-w@mail.gmail.com>
+Message-ID: <CAK7LNASZuWp=aPOCKo6QkdHwM5KG6MUv8305v3x-2yR7cKEX-w@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Hoise pahole version checks into Kconfig
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 11 Jan 2021 at 11:19, Jakub Kicinski <kuba@kernel.org> wrote:
+On Tue, Jan 12, 2021 at 4:34 AM Nathan Chancellor
+<natechancellor@gmail.com> wrote:
 >
-> On Mon, 11 Jan 2021 10:33:49 -0800 Konstantinos Kaffes wrote:
-> > Hi everyone,
+> On Tue, Jan 12, 2021 at 04:19:01AM +0900, Masahiro Yamada wrote:
+> > On Tue, Jan 12, 2021 at 3:06 AM Nathan Chancellor
+> > <natechancellor@gmail.com> wrote:
+> > >
+> > > After commit da5fb18225b4 ("bpf: Support pre-2.25-binutils objcopy for
+> > > vmlinux BTF"), having CONFIG_DEBUG_INFO_BTF enabled but lacking a valid
+> > > copy of pahole results in a kernel that will fully compile but fail to
+> > > link. The user then has to either install pahole or disable
+> > > CONFIG_DEBUG_INFO_BTF and rebuild the kernel but only after their build
+> > > has failed, which could have been a significant amount of time depending
+> > > on the hardware.
+> > >
+> > > Avoid a poor user experience and require pahole to be installed with an
+> > > appropriate version to select and use CONFIG_DEBUG_INFO_BTF, which is
+> > > standard for options that require a specific tools version.
+> > >
+> > > Suggested-by: Sedat Dilek <sedat.dilek@gmail.com>
+> > > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
 > >
-> > It is the first time I am posting to a kernel mailing list so please
-> > let me know if this question needs to be directed elsewhere.
 > >
-> > I have been using BPF to programmatically steer UDP datagrams to
-> > sockets using the "sk_reuseport" hook.
 > >
-> > Similarly, I would like to identify request boundaries within a TCP
-> > stream/connection and programmably forward requests to different
-> > sockets *after* a connection is established. Is there a way to do that
-> > in the kernel using BPF?
+> > I am not sure if this is the right direction.
+> >
+> >
+> > I used to believe moving any tool test to the Kconfig
+> > was the right thing to do.
+> >
+> > For example, I tried to move the libelf test to Kconfig,
+> > and make STACK_VALIDATION depend on it.
+> >
+> > https://patchwork.kernel.org/project/linux-kbuild/patch/1531186516-15764-1-git-send-email-yamada.masahiro@socionext.com/
+> >
+> > It was rejected.
+> >
+> >
+> > In my understanding, it is good to test target toolchains
+> > in Kconfig (e.g. cc-option, ld-option, etc).
+> >
+> > As for host tools, in contrast, it is better to _intentionally_
+> > break the build in order to let users know that something needed is missing.
+> > Then, they will install necessary tools or libraries.
+> > It is just a one-time setup, in most cases,
+> > just running 'apt install' or 'dnf install'.
+> >
+> >
+> >
+> > Recently, a similar thing happened to GCC_PLUGINS
+> > https://patchwork.kernel.org/project/linux-kbuild/patch/20201203125700.161354-1-masahiroy@kernel.org/#23855673
+> >
+> >
+> >
+> >
+> > Following this pattern, if a new pahole is not installed,
+> > it might be better to break the build instead of hiding
+> > the CONFIG option.
+> >
+> > In my case, it is just a matter of 'apt install pahole'.
+> > On some distributions, the bundled pahole is not new enough,
+> > and people may end up with building pahole from the source code.
 >
-> Sounds like what KCM does.
+> This is fair enough. However, I think that parts of this patch could
+> still be salvaged into something that fits this by making it so that if
+> pahole is not installed (CONFIG_PAHOLE_VERSION=0) or too old, the build
+> errors at the beginning, rather at the end. I am not sure where the best
+> place to put that check would be though.
 
-Thanks! KCM would work but it is unclear to me how I can specify the
-policy used by the multiplexor to match messages to specific sockets.
+Me neither.
 
-The documentation has examples on how to do the delineation but
-nothing on how to specify the matching policy.
+
+Collecting tool checks to the beginning would be user-friendly.
+However, scattering the related code to multiple places is not
+nice from the developer point of view.
+
+How big is it a problem if the build fails
+at the very last stage?
+
+You can install pahole, then resume "make".
+
+Kbuild skips unneeded building, then you will
+be able to come back to the last build stage shortly.
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
