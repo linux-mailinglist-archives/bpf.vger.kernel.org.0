@@ -2,87 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E172F1FC1
-	for <lists+bpf@lfdr.de>; Mon, 11 Jan 2021 20:49:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3B7F2F1FC9
+	for <lists+bpf@lfdr.de>; Mon, 11 Jan 2021 20:50:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403884AbhAKTsV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Jan 2021 14:48:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49892 "EHLO
+        id S2391018AbhAKTtk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Jan 2021 14:49:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403839AbhAKTsV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 Jan 2021 14:48:21 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27F8BC061795
-        for <bpf@vger.kernel.org>; Mon, 11 Jan 2021 11:47:41 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id w8so847784ybj.14
-        for <bpf@vger.kernel.org>; Mon, 11 Jan 2021 11:47:41 -0800 (PST)
+        with ESMTP id S2388832AbhAKTtk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Jan 2021 14:49:40 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECA92C0617A2
+        for <bpf@vger.kernel.org>; Mon, 11 Jan 2021 11:48:59 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id jx16so43295ejb.10
+        for <bpf@vger.kernel.org>; Mon, 11 Jan 2021 11:48:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=xUocMv2mOdcyH4QCmuhEcB0lNnr4xgx5lFffo1oDelo=;
-        b=YuBxC3Nu4KiswAN+JQXNyZ0Jfe3BBNgPWZUtSfrzr6g15hR/8Gw+3RsgZtJ5Lp54aK
-         XZFiEP7/Noi6TpQG/msX03XdlGMFjn7o9kcxBKUf3exYti5BzGfmk3GokvnzQEaHD8mZ
-         fCbN47xQDVBE+4x5ts+YTWhcahU/6s1c3/yU7zx9hQRR/zKxCs6HO5SGNcoDYLTjuNqC
-         Ggiud363URFTo7jnRTp56J2/H717MtYd0PZtYX2xG5oqpll4zhfZdiDiD1H2vk12xarN
-         5AZv+W1RvjFFOrcTX4GRq9gaFVKr7o2bTJSrpVH487ugkTN9mbtbCh9Ul3vk3biNN9qN
-         gIMA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5h4A0L7tVN4UX2Z9TEeukCL57ohmt7+pkrlPJsYpILQ=;
+        b=VDg8dCYtAFhytjYdQX3IeN8lvLiYAz0Cn/mrMOCp8xwLfm7tMImb2UMwRiwNRPglte
+         htUiDgZqfjxPpoXjARbTocD6qg70FQ3KAEkE1T1QXqgMBgAr9FxG2n28rm9vwAYVY+eN
+         KVlkv4MUgpbRrN+t5JKrQ0FN2frPiCt8GfZljxHMaeA5eLKmma8yh7sjy3ujQFJyA7Mz
+         fxeIwgzHBCp/3B6Pfk6y2AZti+ZrWBRxJyyMDGKOVlBiqI6F8dXxAsmKhtC5kp+iTOBr
+         3lmy0D1cBK8jRomDIyb4vuVioKfdzN+lJKtwQ2enxe7SPr9KMHby/AUlR6tWZIin5Ns+
+         6wIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=xUocMv2mOdcyH4QCmuhEcB0lNnr4xgx5lFffo1oDelo=;
-        b=qbYX636i28VIB2CChIMdmHW++7wgk9zq0s/L94UPu+FkTjnPM+w/Ruo/ffU3IzCiRR
-         +GyTWwqHfKFQhaHepBIgkj/HZ0Dvbio6Gxv/XmTqhVoZo8R+G0LVQqWceJ98taFASGVg
-         /oPM6FiCDWH7drGKC2vi5nLu63W4hNlyPPXQFGpn3ptbs7W1W8yS8r+mSgF88giwdfYS
-         ruDVp0ohmeSd6SkEDqGtV0b96IPsVV2HOTwT/kPMzi720P3p8BVRAAzqaxPVoHCZLMW8
-         q27EfigYcxEx1nkaoUuKbrmz1yOgRmAhbJpkzoZKZx4zaw0QdRE8YjE2QaMeVN6X8RxT
-         rUYQ==
-X-Gm-Message-State: AOAM533rhAORqfvzn7rXrEXe2iSb5gdgrpfCZOg09/w6lTOMdYFILKr/
-        P3FeJmorAuORdZWGV6e4Jv6LEvE=
-X-Google-Smtp-Source: ABdhPJxmTCmudGn+ZRVOZ76XkhLi3pgE7rvtDuzIW4Mm3GtN9Eo89TiuA37fB/7xKyzwJUjz/oTP3Ac=
-Sender: "sdf via sendgmr" <sdf@sdf2.svl.corp.google.com>
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:7220:84ff:fe09:7732])
- (user=sdf job=sendgmr) by 2002:a25:1104:: with SMTP id 4mr1988439ybr.476.1610394460296;
- Mon, 11 Jan 2021 11:47:40 -0800 (PST)
-Date:   Mon, 11 Jan 2021 11:47:38 -0800
-Message-Id: <20210111194738.132139-1-sdf@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH bpf] bpf: don't leak memory in bpf getsockopt when optlen == 0
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net,
-        Stanislav Fomichev <sdf@google.com>,
-        Martin KaFai Lau <kafai@fb.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5h4A0L7tVN4UX2Z9TEeukCL57ohmt7+pkrlPJsYpILQ=;
+        b=YLc/i0Wo7np/6Eu4OcLBCoN1+HcZgazIrIfveg1BEtqQ5QSurJL4CieYHR2oukIyui
+         PiQQBsgPBsuiPv+mu3Av7d6uCaxg4izfbMpn/ZJMl7n7JF/QIglvA8BnXE1yP/jjCh6R
+         vDEKaX3bt41H0CXhe/o4alABDHNKKCTLeJtpVF12lBRp0Y5S/suavmkuCb74iBdVAuXE
+         icmikmh+rPoSxA6c65Cn9ydKDtpoMO01h7osZF+2IM5YVWUhOeR7luSvqr/pYMIJZlUa
+         cAhmit98X6IDcVqEi01wouagaTt8pAB3FOiBiL8YiDopAQU15jiPbHyZuqJtEe3eP3sB
+         h9cg==
+X-Gm-Message-State: AOAM533C5mgFuhr9qXer62fAvtOKRg80/FKKssP6INK2FkYSMiR/nMOd
+        P0hnz2pz1/ygVP0kieyMO+S3Z0MSlfsiQYP57Rg=
+X-Google-Smtp-Source: ABdhPJz2NajkdpKj1LFdnnybXKVqQsqYY4hG4XF/gzBvHvg247f7Zrh7gm2H03E5fHmO8KhJGLR5EEm4ZwKRgcR8WLs=
+X-Received: by 2002:a17:907:4243:: with SMTP id np3mr736413ejb.212.1610394538702;
+ Mon, 11 Jan 2021 11:48:58 -0800 (PST)
+MIME-Version: 1.0
+References: <CAHAzn3rz5ZH25-53+ijGXhzoV2DqiOhEtV==V2k2R72AwpGAdA@mail.gmail.com>
+ <20210111111949.18236404@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210111111949.18236404@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Konstantinos Kaffes <kkaffes@gmail.com>
+Date:   Mon, 11 Jan 2021 11:48:47 -0800
+Message-ID: <CAHAzn3o4HQQAXXnGg8My14z8dJmREkVDsBheNtxwtNHZB+xp-Q@mail.gmail.com>
+Subject: Re: [QUESTION] TCP connected socket selection
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-optlen == 0 indicates that the kernel should ignore BPF buffer
-and use the original one from the user. We, however, forget
-to free the temporary buffer that we've allocated for BPF.
+On Mon, 11 Jan 2021 at 11:19, Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Mon, 11 Jan 2021 10:33:49 -0800 Konstantinos Kaffes wrote:
+> > Hi everyone,
+> >
+> > It is the first time I am posting to a kernel mailing list so please
+> > let me know if this question needs to be directed elsewhere.
+> >
+> > I have been using BPF to programmatically steer UDP datagrams to
+> > sockets using the "sk_reuseport" hook.
+> >
+> > Similarly, I would like to identify request boundaries within a TCP
+> > stream/connection and programmably forward requests to different
+> > sockets *after* a connection is established. Is there a way to do that
+> > in the kernel using BPF?
+>
+> Sounds like what KCM does.
 
-Reported-by: Martin KaFai Lau <kafai@fb.com>
-Fixes: d8fe449a9c51 ("bpf: Don't return EINVAL from {get,set}sockopt when optlen > PAGE_SIZE")
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- kernel/bpf/cgroup.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks! KCM would work but it is unclear to me how I can specify the
+policy used by the multiplexor to match messages to specific sockets.
 
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index 6ec088a96302..09179ab72c03 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -1395,7 +1395,7 @@ int __cgroup_bpf_run_filter_setsockopt(struct sock *sk, int *level,
- 	}
- 
- out:
--	if (ret)
-+	if (*kernel_optval == NULL)
- 		sockopt_free_buf(&ctx);
- 	return ret;
- }
--- 
-2.30.0.284.gd98b1dd5eaa7-goog
-
+The documentation has examples on how to do the delineation but
+nothing on how to specify the matching policy.
