@@ -2,135 +2,67 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 373292F21A5
-	for <lists+bpf@lfdr.de>; Mon, 11 Jan 2021 22:19:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D28A2F21B5
+	for <lists+bpf@lfdr.de>; Mon, 11 Jan 2021 22:24:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730300AbhAKVS6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Jan 2021 16:18:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29106 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727150AbhAKVS6 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 11 Jan 2021 16:18:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610399851;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SCB2GqMRzpSLrROmd2i5ytegCaTaZU6PyeFCGOKDImk=;
-        b=aMpb9TH0Xg0OYL1tBpaKxFdnS+bU8g0235mHAYLjlbeY6fgQCFxpe+aQsG29nWQHqClB48
-        MGm1qa3cqnGQW46iONDn8aF/AUYY5ztugkGcKQujVOoG0K5Eg8cLnHQbF7YkURQkEpkITX
-        r77zpv2Vdb/hPOGnXa9wgma+DCDO8Ok=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-463-fuuvH0CXOAyrbopb-ZX05w-1; Mon, 11 Jan 2021 16:17:27 -0500
-X-MC-Unique: fuuvH0CXOAyrbopb-ZX05w-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D883C80ED8A;
-        Mon, 11 Jan 2021 21:17:25 +0000 (UTC)
-Received: from krava (unknown [10.40.192.185])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 33BDB5B4A7;
-        Mon, 11 Jan 2021 21:17:20 +0000 (UTC)
-Date:   Mon, 11 Jan 2021 22:17:19 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        id S1728605AbhAKVYZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Jan 2021 16:24:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45344 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727525AbhAKVYZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Jan 2021 16:24:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CF4D22CB2;
+        Mon, 11 Jan 2021 21:23:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610400224;
+        bh=L0oHmXyzyu9jBXHht79UJ0wZWMLrCnskYRSWfs5H5ws=;
+        h=From:To:Cc:Subject:Date:From;
+        b=q7gu/VNTFlfs8rT0PSTQ0ZSRd1mBm5YmOBBYkHWRYIjudKlWTiRFRsU+SA9MLEEOn
+         WXLka4gzZrteDZwWzGUI2esO3NM4+pr+2ujFIax5gk3N3HzKE4oaxIIpDEpURWn0bU
+         h53QWcWLfADdnKJMa0uTY0eZOKrT1/8wY3K6POyRkrW0/SQpw0ctgy540VMN1L4jRH
+         ndVITGUXQu2AfqNCZsggay/aImhY2Zkc8daCnfFZk347q6AnBDwzf9FmAkqOBDBMDO
+         Je9YpN3w7yHa4zfOgEdSU2Wb1fkheK4MXgrdJEPQl3ljb6ofr4+pdDVFC2PrX4F01t
+         sgsYrhzR9R7/Q==
+From:   KP Singh <kpsingh@kernel.org>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Subject: Re: [PATCH] bpf: Prevent double bpf_prog_put call from
- bpf_tracing_prog_attach
-Message-ID: <20210111211719.GD1210240@krava>
-References: <20210111191650.1241578-1-jolsa@kernel.org>
- <CAEf4BzboXkJ96z45+CNJ0QNf74sR9=Ew7Nr94eXiBUk_5w-mDA@mail.gmail.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>
+Subject: [PATCH bpf v2 0/3] Fix local storage helper OOPs
+Date:   Mon, 11 Jan 2021 21:23:37 +0000
+Message-Id: <20210111212340.86393-1-kpsingh@kernel.org>
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzboXkJ96z45+CNJ0QNf74sR9=Ew7Nr94eXiBUk_5w-mDA@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 12:34:48PM -0800, Andrii Nakryiko wrote:
-> On Mon, Jan 11, 2021 at 11:18 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > The bpf_tracing_prog_attach error path calls bpf_prog_put
-> > on prog, which causes refcount underflow when it's called
-> > from link_create function.
-> >
-> >   link_create
-> >     prog = bpf_prog_get              <-- get
-> >     ...
-> >     tracing_bpf_link_attach(prog..
-> >       bpf_tracing_prog_attach(prog..
-> >         out_put_prog:
-> >           bpf_prog_put(prog);        <-- put
-> >
-> >     if (ret < 0)
-> >       bpf_prog_put(prog);            <-- put
-> >
-> > Removing bpf_prog_put call from bpf_tracing_prog_attach
-> > and making sure its callers call it instead.
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> 
-> I also double-checked all other attach functions called from
-> link_create, they all seem to be fine and don't put prog on failure,
-> so this should be the only needed fix. Also, missing:
+It was noted in
+https://lore.kernel.org/bpf/CACYkzJ55X8Tp2q4+EFf2hOM_Lysoim1xJY1YdA3k=T3woMW6mg@mail.gmail.com/T/#t
+that the local storage helpers do not handle null owner pointers
+correctly. This patch fixes the task and inode storage helpers with a
+null check. In order to keep the check explicit, it's kept in the body
+of the helpers similar to sk_storage and also fixes a minor typo in
+bpf_inode_storage.c [I did not add a fixes and reported tag to the
+patch that fixes the typo since it's a non-functional change].
 
-it'd be easier to spot this if we use refcount_t instead of the atomic64_t,
-I replaced it for this refcount and got nice console warning for this bug
+The series also incorporates the example posted by Gilad into the
+selftest. The selftest, without the fix reproduces the oops and the
+subsequent patch fixes it.
 
-then I saw:
-  85192dbf4de0 bpf: Convert bpf_prog refcnt to atomic64_t
+KP Singh (3):
+  bpf: update local storage test to check handling of null ptrs
+  bpf: local storage helpers should check nullness of owner ptr passed
+  bpf: Fix typo in bpf_inode_storage.c
 
-so I guess we need something like refcount64_t first
+ kernel/bpf/bpf_inode_storage.c                |  9 +-
+ kernel/bpf/bpf_task_storage.c                 |  5 +-
+ .../bpf/prog_tests/test_local_storage.c       | 96 +++++--------------
+ .../selftests/bpf/progs/local_storage.c       | 62 ++++++------
+ 4 files changed, 71 insertions(+), 101 deletions(-)
 
-jirka
-
-> 
-> Fixes: 4a1e7c0c63e0 ("bpf: Support attaching freplace programs to
-> multiple attach points")
-> 
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> 
-> >  kernel/bpf/syscall.c | 6 ++++--
-> >  1 file changed, 4 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> > index c3bb03c8371f..e5999d86c76e 100644
-> > --- a/kernel/bpf/syscall.c
-> > +++ b/kernel/bpf/syscall.c
-> > @@ -2712,7 +2712,6 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
-> >  out_put_prog:
-> >         if (tgt_prog_fd && tgt_prog)
-> >                 bpf_prog_put(tgt_prog);
-> > -       bpf_prog_put(prog);
-> >         return err;
-> >  }
-> >
-> > @@ -2825,7 +2824,10 @@ static int bpf_raw_tracepoint_open(const union bpf_attr *attr)
-> >                         tp_name = prog->aux->attach_func_name;
-> >                         break;
-> >                 }
-> > -               return bpf_tracing_prog_attach(prog, 0, 0);
-> > +               err = bpf_tracing_prog_attach(prog, 0, 0);
-> > +               if (err >= 0)
-> > +                       return err;
-> > +               goto out_put_prog;
-> >         case BPF_PROG_TYPE_RAW_TRACEPOINT:
-> >         case BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE:
-> >                 if (strncpy_from_user(buf,
-> > --
-> > 2.26.2
-> >
-> 
+-- 
+2.30.0.284.gd98b1dd5eaa7-goog
 
