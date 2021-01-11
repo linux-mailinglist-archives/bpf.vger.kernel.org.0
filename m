@@ -2,125 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 176D72F0FE8
-	for <lists+bpf@lfdr.de>; Mon, 11 Jan 2021 11:19:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EEE42F1292
+	for <lists+bpf@lfdr.de>; Mon, 11 Jan 2021 13:49:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728762AbhAKKSg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Jan 2021 05:18:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46290 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728893AbhAKKSg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 Jan 2021 05:18:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1607C22CB1
-        for <bpf@vger.kernel.org>; Mon, 11 Jan 2021 10:17:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610360275;
-        bh=jWFDugK4pflbSyLGsa3mIPsmVN/Rix2+PjepD852jR4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=E+xGVIMkOIJq28Y1lONrG1CNnYXc7k5RGQnw9EDxHH6upy9B1TP35BAykPba+znGO
-         nPc8cQKTH53Te5RXez4p20/0DMcPuYVKPFEXDNeoIgSDyBEfPiRDpVFp2YuTQmOvGI
-         X0Mutem5HFhu64JF5t/t2RpL6OJ668hEaJyrmno8alOeNdPJ+kbYKaC0s4JBSZKBFX
-         6uppxhgqmZ5RNGWtJTEqVdXSZvlIvAP9Gc/uI/6tDXA+1/skcp4+D3rdJq8Bzme6Tn
-         hc+QGlj9aeU2+H0AFeX6JX4VgSPMbWzZZxhj7RT63r6n635BPQ4QU6RnkJ3Gll7eXZ
-         muOlXY2mQDq7g==
-Received: by mail-lf1-f54.google.com with SMTP id v67so8688460lfa.0
-        for <bpf@vger.kernel.org>; Mon, 11 Jan 2021 02:17:54 -0800 (PST)
-X-Gm-Message-State: AOAM533poblg5oVIab8WTVq7MY8XTqfLb1hKpZwFVSHVE9vbpo0fgYTQ
-        lRHK/PbuejFC3H0qiJWuwcSn0DvwI9nX/yl0CxLM8g==
-X-Google-Smtp-Source: ABdhPJxU99GB15WaFlWsxsv4T/qPAQfe1HbJUHUoK89qj2NGpbl3M7j6mPnIswj00mxsFmV9OFpMlbmgiJH2jqmjgzM=
-X-Received: by 2002:a19:cbd8:: with SMTP id b207mr6689822lfg.550.1610360273029;
- Mon, 11 Jan 2021 02:17:53 -0800 (PST)
+        id S1727128AbhAKMtm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Jan 2021 07:49:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727071AbhAKMtm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Jan 2021 07:49:42 -0500
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F7FC061786;
+        Mon, 11 Jan 2021 04:49:02 -0800 (PST)
+Received: by mail-il1-x136.google.com with SMTP id x15so18258484ilq.1;
+        Mon, 11 Jan 2021 04:49:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to:cc;
+        bh=Qi5Ue2Fa5K8j/6FFk7i0qA38bcCZMdE6+qZIvP07LIc=;
+        b=p2R0DsNr2I++u6Yf976kLrtM2r39n9rWQ/96pIN4u4njgGH4f3RT7WCB4+rXQ1d/j1
+         5nUmlP5wFuohYWrog+l7FAJgYjw0GVG9RYxdbUk0GYUyBn0qFuof+vk9hYvz/YhzK5wS
+         ZaJRsEvaqVjDa1oR6u8GBrSj9335dEH0ROHNBN5uWOrRaZE5Moo4igHGZk3VyHy7iiiN
+         Xm8WdP0MOblddtTMYYEYA/rbNAfGmtOvOfNgSMvtL1vh5FwxanpBjMEb4AeduBD0T3Oq
+         BrbNXn+yYHsQ2Hb8BMg/68CELcMRXctCtekTMQNULewE4N7JKdnL6+YR2vF09/RGtXyB
+         DEJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=Qi5Ue2Fa5K8j/6FFk7i0qA38bcCZMdE6+qZIvP07LIc=;
+        b=pLcDeAxVvJ2sV5xBiWEDbGlX9IpW1NcQII1FlsZWmCVX8mD0+8u4k66PLYVxnYByRp
+         REVeevbVB3b/tSXz0qchTet3kcansiiVxelJDNX5PknE2PKOQDrSbwPtg0tPEvu3PLJz
+         vCz9ZGo/v1D0eafkMIclssCXTuYEYGQdGDFYc83nlQa4aI26S83VUbUAMjGRo61M3ezc
+         NYZWxR7ZBXc+jBVM1IdF9lsut80GUVkpSRpyJm0B5ihLJChHY4gxfkKDL9RMKQcB1q0K
+         EzvfUB2l5EJ8TTP4Vy5JK45stXdc/ehzJR0wiLI0fhjalUuI6ZtYH8NEf0egAe6qzZCD
+         4dzg==
+X-Gm-Message-State: AOAM533i4md5QlPfjTiWpg+iQyPrMw62dLgx1YPW2Q5lHYrKHrzYxjfl
+        /q/vgrJakE+go19cSog0U34kWDjVlq9KqghZt88=
+X-Google-Smtp-Source: ABdhPJxhxmfVZlitBa9vZVlyXJz3wWgY/HN3CeMF3ZZKfWmc0nq7QlwEJT0fFfHaJwefuSuGRrQxhn9OOQAzt/00Rgk=
+X-Received: by 2002:a92:9e57:: with SMTP id q84mr5529394ili.112.1610369341611;
+ Mon, 11 Jan 2021 04:49:01 -0800 (PST)
 MIME-Version: 1.0
-References: <20210108231950.3844417-1-songliubraving@fb.com>
- <20210108231950.3844417-2-songliubraving@fb.com> <733ebec6-e4b0-0913-0483-c79338d03798@fb.com>
-In-Reply-To: <733ebec6-e4b0-0913-0483-c79338d03798@fb.com>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Mon, 11 Jan 2021 11:17:42 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ7eJa7C8=eRL3XoRjmccgD0udoyoi38MOjo7H0rsnZOYA@mail.gmail.com>
-Message-ID: <CACYkzJ7eJa7C8=eRL3XoRjmccgD0udoyoi38MOjo7H0rsnZOYA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/4] bpf: enable task local storage for tracing programs
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Song Liu <songliubraving@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>, mingo@redhat.com,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Mon, 11 Jan 2021 13:48:50 +0100
+Message-ID: <CA+icZUVuk5PVY4_HoCoY2ymd27UjuDi6kcAmFb_3=dqkvOA_Qw@mail.gmail.com>
+Subject: Check pahole availibity and BPF support of toolchain before starting
+ a Linux kernel build
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Kernel Team <kernel-team@fb.com>, Hao Luo <haoluo@google.com>,
-        kernel test robot <lkp@intel.com>
+        KP Singh <kpsingh@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     bpf@vger.kernel.org, linux-kbuild@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 7:27 AM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 1/8/21 3:19 PM, Song Liu wrote:
-> > To access per-task data, BPF program typically creates a hash table with
-> > pid as the key. This is not ideal because:
-> >   1. The use need to estimate requires size of the hash table, with may be
-> >      inaccurate;
-> >   2. Big hash tables are slow;
-> >   3. To clean up the data properly during task terminations, the user need
-> >      to write code.
-> >
-> > Task local storage overcomes these issues and becomes a better option for
-> > these per-task data. Task local storage is only available to BPF_LSM. Now
-> > enable it for tracing programs.
-> >
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Signed-off-by: Song Liu <songliubraving@fb.com>
-> > ---
+Hi BPF maintainers and Mashiro,
 
-[...]
+Debian started to use CONFIG_DEBUG_INFO_BTF=y.
 
-> >   struct cfs_rq;
-> >   struct fs_struct;
-> > @@ -1348,6 +1349,10 @@ struct task_struct {
-> >       /* Used by LSM modules for access restriction: */
-> >       void                            *security;
-> >   #endif
-> > +#ifdef CONFIG_BPF_SYSCALL
-> > +     /* Used by BPF task local storage */
-> > +     struct bpf_local_storage        *bpf_storage;
-> > +#endif
->
-> I remembered there is a discussion where KP initially wanted to put
-> bpf_local_storage in task_struct, but later on changed to
-> use in lsm as his use case mostly for lsm. Did anybody
-> remember the details of the discussion? Just want to be
-> sure what is the concern people has with putting bpf_local_storage
-> in task_struct and whether the use case presented by
-> Song will justify it.
->
+My kernel-build fails like this:
 
-If I recall correctly, the discussion was about inode local storage and
-it was decided to use the security blob since the use-case was only LSM
-programs. Since we now plan to use it in tracing,
-detangling the dependency from CONFIG_BPF_LSM
-sounds logical to me.
++ info BTFIDS vmlinux
++ [  != silent_ ]
++ printf   %-7s %s\n BTFIDS vmlinux
+ BTFIDS  vmlinux
++ ./tools/bpf/resolve_btfids/resolve_btfids vmlinux
+FAILED: load BTF from vmlinux: Invalid argument
+
+The root cause is my selfmade LLVM toolchain has no BPF support.
+
+$ which llc
+/home/dileks/src/llvm-toolchain/install/bin/llc
+
+$ llc --version
+LLVM (http://llvm.org/):
+ LLVM version 11.0.1
+ Optimized build.
+ Default target: x86_64-unknown-linux-gnu
+ Host CPU: sandybridge
+
+ Registered Targets:
+   x86    - 32-bit X86: Pentium-Pro and above
+   x86-64 - 64-bit X86: EM64T and AMD64
+
+Debian's llc-11 shows me BPF support is built-in.
+
+I see the breakag approx. 3 hours after the start of my kernel-build -
+in the stage "vmlinux".
+After 2 faulures in my build (2x 3 hours of build-time) I have still
+no finished Linux v5.11-rc3 kernel.
+This is a bit frustrating.
+
+What about doing pre-checks - means before doing a single line of
+compilation - to check for:
+1. Required binaries
+2. Required support of whatever feature in compiler, linker, toolchain etc.
+
+Recently, I fell over depmod binary not found in my PATH - in one of
+the last steps (modfinal) of the kernel build.
+
+Any ideas to improve the situation?
+( ...and please no RTFM, see links below. )
+
+Thanks.
+
+Regards,
+- Sedat -
 
 
-> >
-> >   #ifdef CONFIG_GCC_PLUGIN_STACKLEAK
-> >       unsigned long                   lowest_stack;
-> > diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-> > index d1249340fd6ba..ca995fdfa45e7 100644
-> > --- a/kernel/bpf/Makefile
-> > +++ b/kernel/bpf/Makefile
-> > @@ -8,9 +8,8 @@ CFLAGS_core.o += $(call cc-disable-warning, override-init) $(cflags-nogcse-yy)
-> >
-> >   obj-$(CONFIG_BPF_SYSCALL) += syscall.o verifier.o inode.o helpers.o tnum.o bpf_iter.o map_iter.o task_iter.o prog_iter.o
-> >   obj-$(CONFIG_BPF_SYSCALL) += hashtab.o arraymap.o percpu_freelist.o bpf_lru_list.o lpm_trie.o map_in_map.o
-> > -obj-$(CONFIG_BPF_SYSCALL) += local_storage.o queue_stack_maps.o ringbuf.o
-> > +obj-$(CONFIG_BPF_SYSCALL) += local_storage.o queue_stack_maps.o ringbuf.o bpf_task_storage.o
-> >   obj-${CONFIG_BPF_LSM}         += bpf_inode_storage.o
-> > -obj-${CONFIG_BPF_LSM}          += bpf_task_storage.o
-> >   obj-$(CONFIG_BPF_SYSCALL) += disasm.o
-> >   obj-$(CONFIG_BPF_JIT) += trampoline.o
-> >   obj-$(CONFIG_BPF_SYSCALL) += btf.o
-> [...]
+[0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/scripts/link-vmlinux.sh#n144
+[1] https://salsa.debian.org/kernel-team/linux/-/commit/929891281c61ce4403ddd869664c949692644a2f
+[2] https://www.kernel.org/doc/html/latest/bpf/bpf_devel_QA.html?highlight=pahole#llvm
+[3] https://www.kernel.org/doc/html/latest/bpf/btf.html?highlight=pahole#btf-generation
