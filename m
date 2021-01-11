@@ -2,281 +2,177 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6845C2F1C7C
-	for <lists+bpf@lfdr.de>; Mon, 11 Jan 2021 18:35:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8687A2F1C9E
+	for <lists+bpf@lfdr.de>; Mon, 11 Jan 2021 18:39:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730261AbhAKRe6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Jan 2021 12:34:58 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:33490 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730773AbhAKRe6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 Jan 2021 12:34:58 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10BHJRER063275;
-        Mon, 11 Jan 2021 17:33:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=wYF21yiyMes/Rd1CUFeiP6Mu2oujM3ecEj6JYraC1JA=;
- b=W9qO6kJu9xx20ny0j6lHd/2/aC5IhHPT0atRzIp+qfaxc/gK44GNwsAwfjiJFI3JmL/y
- tQNZbFP6p3BkEBAFcRwvKy8KQ/+2RhDVAuCRoxCfSSNYTmnN/GQMutziCN4wT5Gd5g6x
- NJNFK3YZJQWUr8X86r9dXHaSnu7mxAm3ysG+eUBd+0zcdVxmQoMwFjDiLG1jKb7OnJTo
- PaBbn5jQ7M8civ9xMZgghmZuZbyPLrmfC/azbSRL4rU4twWv79klwOgfCiF4nKtBSs9g
- 9DAAgYmJnmB2JijcItPRBdXf3eaAtnY0gazaNPBpHNWDgkW9wpfME2fl6/mI2btgOU7L Cw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 360kg1jdg2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 11 Jan 2021 17:33:31 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10BHKRo4017082;
-        Mon, 11 Jan 2021 17:33:30 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 360kf3v4nc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 11 Jan 2021 17:33:30 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10BHXSGw012655;
-        Mon, 11 Jan 2021 17:33:28 GMT
-Received: from localhost.localdomain (/95.45.14.174)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 11 Jan 2021 09:33:28 -0800
-From:   Alan Maguire <alan.maguire@oracle.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
-Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, rostedt@goodmis.org,
-        mingo@redhat.com, haoluo@google.com, jolsa@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        shuah@kernel.org
-Subject: [RFC PATCH bpf-next 2/2] selftests/bpf: test libbpf-based type display
-Date:   Mon, 11 Jan 2021 17:32:53 +0000
-Message-Id: <1610386373-24162-3-git-send-email-alan.maguire@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1610386373-24162-1-git-send-email-alan.maguire@oracle.com>
-References: <1610386373-24162-1-git-send-email-alan.maguire@oracle.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9861 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- mlxlogscore=999 phishscore=0 bulkscore=0 spamscore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101110100
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9861 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
- clxscore=1015 impostorscore=0 spamscore=0 priorityscore=1501 mlxscore=0
- phishscore=0 mlxlogscore=999 bulkscore=0 adultscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101110100
+        id S1731342AbhAKRjC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Jan 2021 12:39:02 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:51574 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728222AbhAKRjC (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 11 Jan 2021 12:39:02 -0500
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10BHNGBW013055;
+        Mon, 11 Jan 2021 09:38:03 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=aJar5OssyX25rI8Q1LyGPVqjkcrYqi1OlQgrAFeB+C4=;
+ b=fNBfG8sXmzOuZu0w0V1XTAzA1tp5aPwuI8V2JhH4DHTst2KjC7A/I4vHsqMjqpS4Etnx
+ 6OYoxv/2mngpYLp5jDwLaDaSH+J+pO/o924Nn0ZIJYZUeIR1xuESjSZ41/I23mgwzG8K
+ 6Rt60JV27RB9tN4X/KBjshjejgKNQ5TeqWs= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 35yw875tv4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 11 Jan 2021 09:38:02 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 11 Jan 2021 09:38:01 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=I7QEqT5qBPjR/oysCAn5KNbMxq8x7XJLZRiURW5eqfneaPqzFegocpx5oCG1Vt/Db9a6L7q5egv5Xh2438mk7kFGXeElD87l5AT3Nb8MoRNCNIXeM1Mz0bXPLAcI0PuhJOpJKo3LdDHiV8xTuSm7RV+2AOL0EKMJdvXDG0UMG6mTNw7gyCaFArtlDMZdrLCGAoMmnx7VG9n3VKFUxyUeyZ0xvcT34R00C+KlwJGiwaRHj5uPqSh2PRGTiPW2IIL3vWgUeF4Ez9JrVBCMHNwIkKfcQ4RaqcAiTal6AyVbCq21f4c1I3N65eGOyzbMVeWj8BHveYSKNpDbqya6wwlrBQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aJar5OssyX25rI8Q1LyGPVqjkcrYqi1OlQgrAFeB+C4=;
+ b=HWM7IUVFqpopb2DbrMtWVqFOrDjewxC6//6uQpzZbvf6gKG+jNDZnlLtDaPqs8vZ572h1DqifoK4PHZeM1ghCPF49BUW+WgkmQJorKPuGTy6puyMsUMCAESWx38ql5vQsUjQzbD7mF3rX7XSNCuEBlDI5QH0L3ST7eEuXrkt1knD4r1mxPYstcK0q8TVorjrmVbaKLlmSYyXrG0vNGo/rCELWa1QUrxDG0LwYXuEMw76v6f+wKOnPMvMxRAok7bb11HCI472Az2Yo7RjisbNO/Te9VuCRb5wh3QB4tt4u5TuXXQXdES6sHaigJ8L7HMcyRTnGlVYE/W5NOPgh03yPg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aJar5OssyX25rI8Q1LyGPVqjkcrYqi1OlQgrAFeB+C4=;
+ b=LnRmHib5wwBHyhE8Si3A0xfrjHSvr4g7iBRcYYzqvBBDkt765f3RQDWDKXWB/KvUhKS0iWhYPn3+Lzuwpd4z7Ki3RV3ATIfV9zUylGy6l5CCL3rFegNaVCzY3mxTXJyRzNxYJ+PXM4Hn6uSk60TEKK1mxitD//HwB5UBizjm3qc=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by BYAPR15MB2775.namprd15.prod.outlook.com (2603:10b6:a03:15a::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.12; Mon, 11 Jan
+ 2021 17:38:00 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3742.012; Mon, 11 Jan 2021
+ 17:38:00 +0000
+Subject: Re: [PATCH bpf-next 3/4] bpf: runqslower: prefer use local vmlinux
+To:     Song Liu <songliubraving@fb.com>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <mingo@redhat.com>, <peterz@infradead.org>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
+        <kernel-team@fb.com>, <haoluo@google.com>
+References: <20210108231950.3844417-1-songliubraving@fb.com>
+ <20210108231950.3844417-4-songliubraving@fb.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <7d999824-eed5-6923-7f4c-236af266e542@fb.com>
+Date:   Mon, 11 Jan 2021 09:37:57 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.0
+In-Reply-To: <20210108231950.3844417-4-songliubraving@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2620:10d:c090:400::5:6450]
+X-ClientProxiedBy: MW4PR03CA0152.namprd03.prod.outlook.com
+ (2603:10b6:303:8d::7) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21c1::1158] (2620:10d:c090:400::5:6450) by MW4PR03CA0152.namprd03.prod.outlook.com (2603:10b6:303:8d::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Mon, 11 Jan 2021 17:37:59 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a10d2a19-0e83-405f-4215-08d8b657a452
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2775:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB27756D25BEB5B068FCD014ADD3AB0@BYAPR15MB2775.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6ByrljkmjY82OxaAolGhzxBLJeaAy2eI8GUR1p3zr0euw5AjdopmtdWW8pUfxulz4lqbMO/o4fpEKyKkiPGvDItg1CZYM/sryVYsuolGkkZ/2o9sPwEZD4CD1baerj43NgMW81/TrqmA/YwjIuDzAwYg+GfN1xlVTbDh2kSCQ+jDhxQly0tafU+OWH0rIKFYBNuEqQY9KrmCHjAE7A08McbewSjf5/+CVFrrBfS5kMuEQe8PmpBSt9i/Vrf1OHl7if46i9ngiloXBV8JthoJI6RmEaZSDRseRAL1j9MQAfq3v8mpykxteRHb1SXNrYHYKkJJhNU1jP7AbWQvuZ4ljiNWyc3j2wlEZ4uoPJ6RGsxwhTbDZiCaJKiE9YZldHTkf/mQD6DLLjMhHEw9u5ITapqmS+kn5i6LzdiU2OYvp/mTa0o4CVHv/MCm/NG+JER1pxiMRzi6AsiggeAAF/f65W48WeSQeDyuOH72kQjeSOI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(136003)(39860400002)(346002)(396003)(52116002)(31686004)(5660300002)(6486002)(31696002)(2616005)(36756003)(478600001)(8936002)(83380400001)(86362001)(66946007)(66476007)(2906002)(16526019)(66556008)(316002)(53546011)(7416002)(8676002)(186003)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?YWc1VWVPbHFGTkNPZUNaTXlOd290eVRvdWZET2FMUjVDZTQwZ2E2UCtKK2Ni?=
+ =?utf-8?B?SE1WWnpRRUEyejc5LzBIVUtJNUJQRHpKK2FDQjMvd24zNzdUTXBHYXd0elA0?=
+ =?utf-8?B?U01sd1JEdkJzT0JFU2ZFWThrU3AyYzJLaWRFMGRUMldjSFFTYmJzR1NpS3hp?=
+ =?utf-8?B?Znh4bVlNemk5S1ljREVQM2dIR0ZjYkJ1S29HSXc0YzRsWUsxRk9ubnU1eU5F?=
+ =?utf-8?B?bHBhQTZHWC9rVEc3cW8zNlNueFZMVVBPbHkwcUR2NkpmYkZ5QTVqOVpqc2FT?=
+ =?utf-8?B?R2E3UFlEdXZNZ1VEWFFjQWlVaFdORER5NktTclNsNnVtNlB3VjNPekZsbUlq?=
+ =?utf-8?B?OGJQUDdVa3hOSW9ybzQzZTg5QzlWTmlsakRvc0dVUWZuNk40NlI1TmZHTWVM?=
+ =?utf-8?B?bjkyZ1R2YXp4M25oa2NQenZZOERpWEhadzRyZFFzT3JGN3A5Uis4Zy85aWpj?=
+ =?utf-8?B?SnY2VUtuNDlBaXp5bmtKOXFVaVAwNUVoanNPb1llTHBKYjdQSDRKL09XNSt0?=
+ =?utf-8?B?OHpXaDVEdis0Wk5hSUtjTVpMTFVOeHF4aGF6V2dpQmppUE1nVmFLZjJaeHEr?=
+ =?utf-8?B?TUxjVUw0M3RGaXRGdEJVVERoM3V2eXBTa0RkczczY2NESllKUnk3Y3orNWdZ?=
+ =?utf-8?B?U0dwWFM3eDZLb21Vc0lGY2Q1d21QNGZSV3FONkRzYTN5UnVSODVpVTNZSUJh?=
+ =?utf-8?B?L0trTmZFNWI4ZXdDbENCNFdrNUFubEFQNDA3OVN4b3Rteld6Z3Y2ck0xejFy?=
+ =?utf-8?B?b2liL2ZuZ1EvZTBndmd6d1dsMTFOSEdVVWR6QkZ4UVI3QjRIeVgxaDI1RGVu?=
+ =?utf-8?B?WlQ3ZTQzWXBpNUduemFPWHdkbUdMZzB1aDJuZDBGakhzTWtYMDhGdWJObUgw?=
+ =?utf-8?B?M3g2N20rMmRua200Z21oU0huRGYwK3M5cGsyOGRSYnNNbldTY1pvZ1gxazBo?=
+ =?utf-8?B?SjJadjZNQnk0cExBREV1S3REUklvWmpTRTI3Uml4empEYzAxMUJEQnNrTWxY?=
+ =?utf-8?B?MEtmenFMWGRTV1JGT29PMkkyRHZXS25sdWt2NE5YODJQRTRoVkxEQnhqOHJV?=
+ =?utf-8?B?c2tRbmJ0bHFEYzlQUDhzODRhM2gzc0JTUUduUUtTSVI2Z3VHZTlIb2RnaFFo?=
+ =?utf-8?B?M09NNTV4OElJdWZtVm5SUzBqOXB2YzFvdjlRWlV0SGlPdFl0eWVuSEc5OG1m?=
+ =?utf-8?B?QXhSNS8yU0Y0RW9NWmF3cys4RDh5OXZxSE1sQ2loN0ltRXh1TE1XQUZIYUpN?=
+ =?utf-8?B?WUJWT2xUSXZNd0lyWGN6UWlSd1NxN2k3UktTbHplaXhDQ2JlT1BlUkhKVjd5?=
+ =?utf-8?B?RWQ2VGp1Q21wUG4rSnpXRWNBdHhaVTFmVVlpWmRFaTh5UmhTaTdRUENHT29I?=
+ =?utf-8?B?WElHNm1aOHdCV3c9PQ==?=
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2021 17:38:00.7649
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-Network-Message-Id: a10d2a19-0e83-405f-4215-08d8b657a452
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9sEysO6IoFvQeDFWboL9IHe7T3+fJoMrI6e09IeGWwr1zhHkviE5y88U/22nLQeu
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2775
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-11_29:2021-01-11,2021-01-11 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ lowpriorityscore=0 adultscore=0 priorityscore=1501 suspectscore=0
+ mlxscore=0 spamscore=0 mlxlogscore=929 bulkscore=0 clxscore=1015
+ impostorscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2101110100
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Test btf__snprintf with various base/kernel types and ensure
-display is as expected; tests are identical to those in snprintf_btf
-test save for the fact these run in userspace rather than BPF program
-context.
 
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
----
- .../selftests/bpf/prog_tests/snprintf_btf_user.c   | 192 +++++++++++++++++++++
- 1 file changed, 192 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/snprintf_btf_user.c
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/snprintf_btf_user.c b/tools/testing/selftests/bpf/prog_tests/snprintf_btf_user.c
-new file mode 100644
-index 0000000..9eb82b2
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/snprintf_btf_user.c
-@@ -0,0 +1,192 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021, Oracle and/or its affiliates. */
-+#include <test_progs.h>
-+#include <linux/bpf.h>
-+#include <bpf/btf.h>
-+
-+#include <stdio.h>
-+#include <string.h>
-+
-+#define STRSIZE			2048
-+#define EXPECTED_STRSIZE	256
-+
-+#ifndef ARRAY_SIZE
-+#define ARRAY_SIZE(x)   (sizeof(x) / sizeof((x)[0]))
-+#endif
-+
-+/* skip "enum "/"struct " prefixes */
-+#define SKIP_PREFIX(_typestr, _prefix)					\
-+	do {								\
-+		if (strstr(_typestr, _prefix) == _typestr)		\
-+			_typestr += strlen(_prefix) + 1;		\
-+	} while (0)
-+
-+#define TEST_BTF(btf, _str, _type, _flags, _expected, ...)		\
-+	do {								\
-+		const char _expectedval[EXPECTED_STRSIZE] = _expected;	\
-+		const char __ptrtype[64] = #_type;			\
-+		char *_ptrtype = (char *)__ptrtype;			\
-+		__u64 _hflags = _flags | BTF_F_COMPACT;			\
-+		static _type _ptrdata = __VA_ARGS__;			\
-+		void *_ptr = &_ptrdata;					\
-+		__s32 _type_id;						\
-+		int _cmp, _ret;						\
-+									\
-+		SKIP_PREFIX(_ptrtype, "enum");				\
-+		SKIP_PREFIX(_ptrtype, "struct");			\
-+		SKIP_PREFIX(_ptrtype, "union");				\
-+		_ptr = &_ptrdata;					\
-+		_type_id = btf__find_by_name(btf, _ptrtype);		\
-+		if (CHECK(_type_id <= 0, "find type id",		\
-+			  "no '%s' in BTF: %d\n", _ptrtype, _type_id))	\
-+			return;						\
-+		_ret = btf__snprintf(btf, _str, STRSIZE, _type_id, _ptr,\
-+				     _hflags);				\
-+		if (CHECK(_ret < 0, "btf snprintf", "failed: %d\n",	\
-+			  _ret))					\
-+			return;						\
-+		_cmp = strncmp(_str, _expectedval, EXPECTED_STRSIZE);	\
-+		if (CHECK(_cmp, "ensure expected/actual match",		\
-+			  "'%s' does not match expected '%s': %d\n",	\
-+			   _str, _expectedval, _cmp))			\
-+			return;						\
-+	} while (0)
-+
-+/* Use where expected data string matches its stringified declaration */
-+#define TEST_BTF_C(btf, _str, _type, _flags, ...)			\
-+	TEST_BTF(btf, _str, _type, _flags, "(" #_type ")" #__VA_ARGS__,	\
-+		 __VA_ARGS__)
-+
-+/* Demonstrate that libbpf btf__snprintf succeeds and that various
-+ * data types are formatted correctly.
-+ */
-+void test_snprintf_btf_user(void)
-+{
-+	struct btf *btf = libbpf_find_kernel_btf();
-+	int duration = 0;
-+	char str[STRSIZE];
-+
-+	if (CHECK(!btf, "get kernel BTF", "no kernel BTF found"))
-+		return;
-+
-+	/* Verify type display for various types. */
-+
-+	/* simple int */
-+	TEST_BTF_C(btf, str, int, 0, 1234);
-+	TEST_BTF(btf, str, int, BTF_F_NONAME, "1234", 1234);
-+
-+	/* zero value should be printed at toplevel */
-+	TEST_BTF(btf, str, int, 0, "(int)0", 0);
-+	TEST_BTF(btf, str, int, BTF_F_NONAME, "0", 0);
-+	TEST_BTF(btf, str, int, BTF_F_ZERO, "(int)0", 0);
-+	TEST_BTF(btf, str, int, BTF_F_NONAME | BTF_F_ZERO, "0", 0);
-+	TEST_BTF_C(btf, str, int, 0, -4567);
-+	TEST_BTF(btf, str, int, BTF_F_NONAME, "-4567", -4567);
-+
-+	/* simple char */
-+	TEST_BTF_C(btf, str, char, 0, 100);
-+	TEST_BTF(btf, str, char, BTF_F_NONAME, "100", 100);
-+	/* zero value should be printed at toplevel */
-+	TEST_BTF(btf, str, char, 0, "(char)0", 0);
-+	TEST_BTF(btf, str, char, BTF_F_NONAME, "0", 0);
-+	TEST_BTF(btf, str, char, BTF_F_ZERO, "(char)0", 0);
-+	TEST_BTF(btf, str, char, BTF_F_NONAME | BTF_F_ZERO, "0", 0);
-+
-+	/* simple typedef */
-+	TEST_BTF_C(btf, str, uint64_t, 0, 100);
-+	TEST_BTF(btf, str, u64, BTF_F_NONAME, "1", 1);
-+	/* zero value should be printed at toplevel */
-+	TEST_BTF(btf, str, u64, 0, "(u64)0", 0);
-+	TEST_BTF(btf, str, u64, BTF_F_NONAME, "0", 0);
-+	TEST_BTF(btf, str, u64, BTF_F_ZERO, "(u64)0", 0);
-+	TEST_BTF(btf, str, u64, BTF_F_NONAME|BTF_F_ZERO, "0", 0);
-+
-+	/* typedef struct */
-+	TEST_BTF_C(btf, str, atomic_t, 0, {.counter = (int)1,});
-+	TEST_BTF(btf, str, atomic_t, BTF_F_NONAME, "{1,}", {.counter = 1,});
-+	/* typedef with 0 value should be printed at toplevel */
-+	TEST_BTF(btf, str, atomic_t, 0, "(atomic_t){}", {.counter = 0,});
-+	TEST_BTF(btf, str, atomic_t, BTF_F_NONAME, "{}", {.counter = 0,});
-+	TEST_BTF(btf,str, atomic_t, BTF_F_ZERO, "(atomic_t){.counter = (int)0,}",
-+		 {.counter = 0,});
-+	TEST_BTF(btf, str, atomic_t, BTF_F_NONAME|BTF_F_ZERO,
-+		 "{0,}", {.counter = 0,});
-+
-+	/* enum where enum value does (and does not) exist */
-+	TEST_BTF_C(btf, str, enum bpf_cmd, 0, BPF_MAP_CREATE);
-+	TEST_BTF(btf, str, enum bpf_cmd, 0, "(enum bpf_cmd)BPF_MAP_CREATE", 0);
-+	TEST_BTF(btf, str, enum bpf_cmd, BTF_F_NONAME, "BPF_MAP_CREATE",
-+		 BPF_MAP_CREATE);
-+	TEST_BTF(btf, str, enum bpf_cmd, BTF_F_NONAME|BTF_F_ZERO,
-+		 "BPF_MAP_CREATE", 0);
-+
-+	TEST_BTF(btf, str, enum bpf_cmd, BTF_F_ZERO,
-+		 "(enum bpf_cmd)BPF_MAP_CREATE",
-+		 BPF_MAP_CREATE);
-+	TEST_BTF(btf, str, enum bpf_cmd, BTF_F_NONAME|BTF_F_ZERO,
-+		 "BPF_MAP_CREATE", BPF_MAP_CREATE);
-+	TEST_BTF_C(btf, str, enum bpf_cmd, 0, 2000);
-+	TEST_BTF(btf, str, enum bpf_cmd, BTF_F_NONAME, "2000", 2000);
-+
-+	/* simple struct */
-+	TEST_BTF_C(btf, str, struct btf_enum, 0,
-+		   {.name_off = (__u32)3,.val = (__s32)-1,});
-+	TEST_BTF(btf, str, struct btf_enum, BTF_F_NONAME, "{3,-1,}",
-+		 { .name_off = 3, .val = -1,});
-+	TEST_BTF(btf, str, struct btf_enum, BTF_F_NONAME, "{-1,}",
-+		 { .name_off = 0, .val = -1,});
-+	TEST_BTF(btf, str, struct btf_enum, BTF_F_NONAME|BTF_F_ZERO, "{0,-1,}",
-+		 { .name_off = 0, .val = -1,});
-+	/* empty struct should be printed */
-+	TEST_BTF(btf, str, struct btf_enum, 0, "(struct btf_enum){}",
-+		 { .name_off = 0, .val = 0,});
-+	TEST_BTF(btf, str, struct btf_enum, BTF_F_NONAME, "{}",
-+		 { .name_off = 0, .val = 0,});
-+	TEST_BTF(btf, str, struct btf_enum, BTF_F_ZERO,
-+		 "(struct btf_enum){.name_off = (__u32)0,.val = (__s32)0,}",
-+		 { .name_off = 0, .val = 0,});
-+
-+	/* struct with pointers */
-+	TEST_BTF(btf, str, struct list_head, BTF_F_PTR_RAW,
-+		 "(struct list_head){.next = (struct list_head *)0x1,}",
-+		 { .next = (struct list_head *)1 });
-+	/* NULL pointer should not be displayed */
-+	TEST_BTF(btf, str, struct list_head, BTF_F_PTR_RAW,
-+		 "(struct list_head){}",
-+		 { .next = (struct list_head *)0 });
-+
-+	/* struct with char array */
-+	TEST_BTF(btf, str, struct bpf_prog_info, 0,
-+		 "(struct bpf_prog_info){.name = (char[])['f','o','o',],}",
-+		 { .name = "foo",});
-+	TEST_BTF(btf, str, struct bpf_prog_info, BTF_F_NONAME,
-+		 "{['f','o','o',],}",
-+		 {.name = "foo",});
-+	/* leading null char means do not display string */
-+	TEST_BTF(btf, str, struct bpf_prog_info, 0,
-+		 "(struct bpf_prog_info){}",
-+		 {.name = {'\0', 'f', 'o', 'o'}});
-+	/* handle non-printable characters */
-+	TEST_BTF(btf, str, struct bpf_prog_info, 0,
-+		 "(struct bpf_prog_info){.name = (char[])[1,2,3,],}",
-+		 { .name = {1, 2, 3, 0}});
-+
-+	/* struct with non-char array */
-+	TEST_BTF(btf, str, struct __sk_buff, 0,
-+		 "(struct __sk_buff){.cb = (__u32[])[1,2,3,4,5,],}",
-+		 { .cb = {1, 2, 3, 4, 5,},});
-+	TEST_BTF(btf, str, struct __sk_buff, BTF_F_NONAME,
-+		 "{[1,2,3,4,5,],}",
-+		 { .cb = { 1, 2, 3, 4, 5},});
-+	/* For non-char, arrays, show non-zero values only */
-+	TEST_BTF(btf, str, struct __sk_buff, 0,
-+		 "(struct __sk_buff){.cb = (__u32[])[1,],}",
-+		 { .cb = { 0, 0, 1, 0, 0},});
-+
-+	/* struct with bitfields */
-+	TEST_BTF_C(btf, str, struct bpf_insn, 0,
-+		   {.code = (__u8)1,.dst_reg = (__u8)0x2,.src_reg = (__u8)0x3,.off = (__s16)4,.imm = (__s32)5,});
-+	TEST_BTF(btf, str, struct bpf_insn, BTF_F_NONAME, "{1,0x2,0x3,4,5,}",
-+		 {.code = 1, .dst_reg = 0x2, .src_reg = 0x3, .off = 4,
-+		  .imm = 5,});
-+}
--- 
-1.8.3.1
+On 1/8/21 3:19 PM, Song Liu wrote:
+> Update the Makefile to prefer using ../../../vmlinux, which has latest
+> definitions for vmlinux.h
+> 
+> Signed-off-by: Song Liu <songliubraving@fb.com>
+> ---
+>   tools/bpf/runqslower/Makefile | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefile
+> index 4d5ca54fcd4c8..306f1ce5a97b2 100644
+> --- a/tools/bpf/runqslower/Makefile
+> +++ b/tools/bpf/runqslower/Makefile
+> @@ -19,7 +19,8 @@ CFLAGS := -g -Wall
+>   
+>   # Try to detect best kernel BTF source
+>   KERNEL_REL := $(shell uname -r)
+> -VMLINUX_BTF_PATHS := /sys/kernel/btf/vmlinux /boot/vmlinux-$(KERNEL_REL)
+> +VMLINUX_BTF_PATHS := ../../../vmlinux /sys/kernel/btf/vmlinux \
+> +	/boot/vmlinux-$(KERNEL_REL)
 
+selftests/bpf Makefile has:
+
+VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmlinux)                            \
+                      $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux)    \
+                      ../../../../vmlinux                                \
+                      /sys/kernel/btf/vmlinux                            \
+                      /boot/vmlinux-$(shell uname -r)
+
+If you intend to add ../../../vmlinux, I think we should also
+add $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux).
+
+>   VMLINUX_BTF_PATH := $(or $(VMLINUX_BTF),$(firstword			       \
+>   					  $(wildcard $(VMLINUX_BTF_PATHS))))
+>   
+> 
