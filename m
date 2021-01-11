@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACA5D2F1E68
-	for <lists+bpf@lfdr.de>; Mon, 11 Jan 2021 20:00:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3622F1E6E
+	for <lists+bpf@lfdr.de>; Mon, 11 Jan 2021 20:01:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390544AbhAKTAk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Jan 2021 14:00:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39618 "EHLO
+        id S1732725AbhAKTBd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Jan 2021 14:01:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732477AbhAKTAk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 Jan 2021 14:00:40 -0500
+        with ESMTP id S1730166AbhAKTBd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Jan 2021 14:01:33 -0500
 Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8457C061786
-        for <bpf@vger.kernel.org>; Mon, 11 Jan 2021 10:59:59 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id x16so1159543ejj.7
-        for <bpf@vger.kernel.org>; Mon, 11 Jan 2021 10:59:59 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D82C061786
+        for <bpf@vger.kernel.org>; Mon, 11 Jan 2021 11:00:52 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id d17so1136107ejy.9
+        for <bpf@vger.kernel.org>; Mon, 11 Jan 2021 11:00:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=3XPYTcSjoUKIc+bAniXDLq14GFcqVPdpfHpciaBIwxE=;
-        b=cYeDkvHqKkQ12t9S/Kx6Hn8ThpSQ3sEL+Tk/uwDM1AXiUKhUEngbIkAzXSOhX0YjHe
-         C1zkxBi6trX9d6mc4SLf5tWY5xWRykip4dimuryQ+jdJlsa0lXdvB8Ku+EwYozMHzwtX
-         Zj5muVZdiY9sXut/FxxWHPpQJLpBxd0wZV82sMYiVBxiwiVxG7g82nYKIZSvL03zgX1p
-         d5J9QO0rn1pWIIpYeeaMVH7YXLWE8mbSN37H+6GpedUlV65Y1dmq071fjEw6k2D18TtX
-         p8xz4EqeEg3eTAZgr9qbk5PIZCXY10Z72Ei6PNltP5R0i+4ahZ2FeLte+XB/heXtWVZ8
-         /VqQ==
+        bh=UAQtzSxGA3+ZigKcaBoyf+oVRyAJV6LvZeoMkFVxqCo=;
+        b=ADxSEU2Xcs7JJQ7HYsB23h3NP6nhLjLwH5UPPSxABsaoHdE/LVWZF+cSickls4ki5I
+         kxE+Kbg42jdxc845ALuahXAteS24KN+GJN0VwpF3oLFAUdrcK9ZOKr4dmtzhQcgTs7tj
+         TXOMfhebzWE1PbsUZINxhW5NePEMVBGYPmQhPWAahb+xfmeJaA6nMccl+kI9FemrjGQA
+         pfD1jOkLdRwBjaEQnHhU4laTI84irMJw2WeKIPptHge5Qo3B+u+zhliUM0tNdIcQwEqm
+         mU3kkSCmjpZxtQS3QgoHE/brKhgB4Ernuz7efZbYNohSlDuGVxXOqHmZBK0YkBuYZ5l4
+         1Sow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=3XPYTcSjoUKIc+bAniXDLq14GFcqVPdpfHpciaBIwxE=;
-        b=b0GCc10/amOLoIM4/Ub/cf+VD9Rva2FONGRL/wjwyYXA2EckyG/Nlavs+Hln3ugWN/
-         YQgfUulkGbgkeR/DtGaOHHcHgzulWMVHWubtQi52IAM9/+P8dBP+KW5Js7dnXDQELVlh
-         FXX8segeNx/FwhcO17RduWqHrxCLEBXGsTieeQWT7Gn9qXJxB6tg14onWf33uDnAXBC2
-         chTaUPh62eZyopzyhmgrkrdMveJydBWedQrGrxbRUtIEGymom9a8njMOh9TGbLzw1m5W
-         4hM4RtjIHF9yfaB/CHLyCNyNdl185AY14G0o4f2noJpZYmWjUGcS+po8mV4qqYZD1fC8
-         Rzzg==
-X-Gm-Message-State: AOAM530HPJZDFaMOe0BydaRO6cdJP6x6K69VSCNqcCISEgrSS6AAk24E
-        h8u5Cbc3Op5LMQvtoyLSsomDrrbNxpJ/TeWaXykAIQ==
-X-Google-Smtp-Source: ABdhPJx/uDGJ2qO+3k/y9KbfWOQ4MgUXjS/lL7dn8aacdxL43x2p8CjBwLzW5gSp80r4A+y9KGPeyUECFrXNkaMIVAY=
-X-Received: by 2002:a17:906:94d4:: with SMTP id d20mr583464ejy.475.1610391598414;
- Mon, 11 Jan 2021 10:59:58 -0800 (PST)
+        bh=UAQtzSxGA3+ZigKcaBoyf+oVRyAJV6LvZeoMkFVxqCo=;
+        b=YQkvJkA3rcLUlUUVp4ot2hiVdQSg41fSAbGky3qIkTI4MXiOf1rzom9+XKcRtVBJeK
+         G68w6z95Ou+FwCSP3MHk/I6UiyuRt36ukGsHGw2QsWzYiE5q9KB/sloP4krhs7bsy/cQ
+         kt/0VMQs36O6E6dv8CyuhFAiySnc/9lVbctjNz60yJpSFjN4fKJag7Xe1gL4iBEG6I3q
+         w5MUmtnDCfTL/I491XBY52rJDSDCQljm9W1GanYU4wRaRV/j5PfV5Rae0yPaP3T8SNul
+         Gpy2ecee5dH9SfN20ipmk3e59M1UwEh/3Bcya8s1ODX3Ix8dVTI/kvuxVEYuZ7eDJlc+
+         dDLw==
+X-Gm-Message-State: AOAM5312KK7jwr+WwZ602yrRgwzNTCDSTlXvsdJf1KN30jnwu/qLaarw
+        naQe/JQiruKtirvFTIiHpE9a5b5jOPJ8V9Lg7x+kQw==
+X-Google-Smtp-Source: ABdhPJxhQG5TtXErzAksyOUEhDTT+CD5yPBqo+gUtvm3FIrn5yRPBTHtRuPLP/1K5hall3gLZPgS1P+qdLG/+FanLIA=
+X-Received: by 2002:a17:906:eb49:: with SMTP id mc9mr565992ejb.487.1610391651162;
+ Mon, 11 Jan 2021 11:00:51 -0800 (PST)
 MIME-Version: 1.0
-References: <20210108220930.482456-1-andrii@kernel.org> <20210108220930.482456-6-andrii@kernel.org>
-In-Reply-To: <20210108220930.482456-6-andrii@kernel.org>
+References: <20210108220930.482456-1-andrii@kernel.org> <20210108220930.482456-7-andrii@kernel.org>
+In-Reply-To: <20210108220930.482456-7-andrii@kernel.org>
 From:   Hao Luo <haoluo@google.com>
-Date:   Mon, 11 Jan 2021 10:59:46 -0800
-Message-ID: <CA+khW7jTso5Jz6D8Scn8-Kf3OtT0B4JP_rJWFCZa8EEmYOO8iw@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 5/7] bpf: support BPF ksym variables in kernel modules
+Date:   Mon, 11 Jan 2021 11:00:39 -0800
+Message-ID: <CA+khW7jWiTRe36Uc5zKzk_bHmC+R_QZ43EBRo0gmPGhZHiOrqA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 6/7] libbpf: support kernel module ksym externs
 To:     Andrii Nakryiko <andrii@kernel.org>
 Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
         Alexei Starovoitov <ast@fb.com>,
@@ -60,74 +60,71 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Acked-by: Hao Luo <haoluo@google.com>, with a suggestion on adding a comment.
+Acked-by: Hao Luo <haoluo@google.com>, with a couple of nits.
 
 On Fri, Jan 8, 2021 at 2:09 PM Andrii Nakryiko <andrii@kernel.org> wrote:
 >
-> Add support for directly accessing kernel module variables from BPF programs
-> using special ldimm64 instructions. This functionality builds upon vmlinux
-> ksym support, but extends ldimm64 with src_reg=BPF_PSEUDO_BTF_ID to allow
-> specifying kernel module BTF's FD in insn[1].imm field.
->
-> During BPF program load time, verifier will resolve FD to BTF object and will
-> take reference on BTF object itself and, for module BTFs, corresponding module
-> as well, to make sure it won't be unloaded from under running BPF program. The
-> mechanism used is similar to how bpf_prog keeps track of used bpf_maps.
->
-> One interesting change is also in how per-CPU variable is determined. The
-> logic is to find .data..percpu data section in provided BTF, but both vmlinux
-> and module each have their own .data..percpu entries in BTF. So for module's
-> case, the search for DATASEC record needs to look at only module's added BTF
-> types. This is implemented with custom search function.
+> Add support for searching for ksym externs not just in vmlinux BTF, but across
+> all module BTFs, similarly to how it's done for CO-RE relocations. Kernels
+> that expose module BTFs through sysfs are assumed to support new ldimm64
+> instruction extension with BTF FD provided in insn[1].imm field, so no extra
+> feature detection is performed.
 >
 > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 > ---
->  include/linux/bpf.h          |  10 +++
->  include/linux/bpf_verifier.h |   3 +
->  include/linux/btf.h          |   3 +
->  kernel/bpf/btf.c             |  31 +++++++-
->  kernel/bpf/core.c            |  23 ++++++
->  kernel/bpf/verifier.c        | 149 ++++++++++++++++++++++++++++-------
->  6 files changed, 189 insertions(+), 30 deletions(-)
-
-[...]
-
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 17270b8404f1..af94c6871ab8 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -9703,6 +9703,31 @@ static int do_check(struct bpf_verifier_env *env)
->         return 0;
->  }
+>  tools/lib/bpf/libbpf.c | 47 +++++++++++++++++++++++++++---------------
+>  1 file changed, 30 insertions(+), 17 deletions(-)
 >
-> +static int find_btf_percpu_datasec(struct btf *btf)
-> +{
-> +       const struct btf_type *t;
-> +       const char *tname;
-> +       int i, n;
-> +
-
-It would be good to add a short comment here explaining the reason why
-the search for DATASEC in the module case needs to skip entries.
-
-> +       n = btf_nr_types(btf);
-> +       if (btf_is_module(btf))
-> +               i = btf_nr_types(btf_vmlinux);
-> +       else
-> +               i = 1;
-> +
-> +       for(; i < n; i++) {
-> +               t = btf_type_by_id(btf, i);
-> +               if (BTF_INFO_KIND(t->info) != BTF_KIND_DATASEC)
-> +                       continue;
-> +
-> +               tname = btf_name_by_offset(btf, t->name_off);
-> +               if (!strcmp(tname, ".data..percpu"))
-> +                       return i;
-> +       }
-> +
-> +       return -ENOENT;
-> +}
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 6ae748f6ea11..57559a71e4de 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
 [...]
+> @@ -7319,7 +7321,8 @@ static int bpf_object__read_kallsyms_file(struct bpf_object *obj)
+>  static int bpf_object__resolve_ksyms_btf_id(struct bpf_object *obj)
+>  {
+>         struct extern_desc *ext;
+> -       int i, id;
+> +       struct btf *btf;
+> +       int i, j, id, btf_fd, err;
+>
+>         for (i = 0; i < obj->nr_extern; i++) {
+>                 const struct btf_type *targ_var, *targ_type;
+> @@ -7331,8 +7334,22 @@ static int bpf_object__resolve_ksyms_btf_id(struct bpf_object *obj)
+>                 if (ext->type != EXT_KSYM || !ext->ksym.type_id)
+>                         continue;
+>
+> -               id = btf__find_by_name_kind(obj->btf_vmlinux, ext->name,
+> -                                           BTF_KIND_VAR);
+> +               btf = obj->btf_vmlinux;
+> +               btf_fd = 0;
+> +               id = btf__find_by_name_kind(btf, ext->name, BTF_KIND_VAR);
+
+Is "if (id <= 0)" better? Just in case, more error code is introduced in future.
+
+> +               if (id == -ENOENT) {
+> +                       err = load_module_btfs(obj);
+> +                       if (err)
+> +                               return err;
+> +
+> +                       for (j = 0; j < obj->btf_module_cnt; j++) {
+> +                               btf = obj->btf_modules[j].btf;
+> +                               btf_fd = obj->btf_modules[j].fd;
+> +                               id = btf__find_by_name_kind(btf, ext->name, BTF_KIND_VAR);
+> +                               if (id != -ENOENT)
+> +                                       break;
+> +                       }
+> +               }
+>                 if (id <= 0) {
+
+Nit: the warning message isn't accurate any more, right? We also
+searched kernel modules' BTF.
+
+>                         pr_warn("extern (ksym) '%s': failed to find BTF ID in vmlinux BTF.\n",
+>                                 ext->name);
+> @@ -7343,24 +7360,19 @@ static int bpf_object__resolve_ksyms_btf_id(struct bpf_object *obj)
+[...]
+
+> --
 > 2.24.1
 >
