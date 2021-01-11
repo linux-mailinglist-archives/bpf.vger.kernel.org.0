@@ -2,183 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9944A2F1D31
-	for <lists+bpf@lfdr.de>; Mon, 11 Jan 2021 18:57:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F7912F1D7D
+	for <lists+bpf@lfdr.de>; Mon, 11 Jan 2021 19:07:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730301AbhAKR5P (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Jan 2021 12:57:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54100 "EHLO
+        id S2390109AbhAKSHc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Jan 2021 13:07:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727658AbhAKR5P (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 Jan 2021 12:57:15 -0500
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28868C061794;
-        Mon, 11 Jan 2021 09:56:35 -0800 (PST)
-Received: by mail-il1-x132.google.com with SMTP id x15so452208ilq.1;
-        Mon, 11 Jan 2021 09:56:35 -0800 (PST)
+        with ESMTP id S2390106AbhAKSHb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Jan 2021 13:07:31 -0500
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC36C0617AB;
+        Mon, 11 Jan 2021 10:06:32 -0800 (PST)
+Received: by mail-qk1-x734.google.com with SMTP id w79so326123qkb.5;
+        Mon, 11 Jan 2021 10:06:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=cEH5d4sSAKnEhpBNXXBVw3jPQh/cz1wtGrgSWX+H6mU=;
-        b=WjNx3F3zs5pFJD1qGm4zfO38ChpEbRUW7XaxQwcOl6jlLsJGNBCS3q5Os7aAIFlSsl
-         6TlnUiwX6jPufm9acYbo+wQ09tKyacufSdpsUMJHFdT5szDnJvnGEElRFXHCUrBxjy8p
-         eoL1TK8DsTuTFsSODDt7XeM/+hpTgeozfwFcro1N4pXipB2gzaxStX5+Mfd9Rh1qmbj9
-         6WM+8pBsEziJOv8Os/XL6OgyWvJ6NEy5Y/tqbYYI5+Y3/JPM/9BCW1vkXT4s086MbsBN
-         2JDZf+TWdleqgalAOkAdjKOpISH2nMWe99mZXxigxSfRFfzOaO3u/5To/ZThesX+dScp
-         Ip+g==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9lp28zoWOKLPGFRTu8+kIhpE6rBiQRtmpdJvXYx3+tY=;
+        b=ez1SefshWrFxr/3XbQrkWZhJIOzAqVAKha8CL5HWT4x+mLivWRS4dkFUm7HwH2jRFj
+         35RyeXAQJ1GHXy0yh6vjr2sd1FmADkpsLwXV73Eqx0FTfyI91aVGSqsGWrpB9hd9Z3Mg
+         5ezoFNrH++EteGshvlRBQEMzZx+t77f48oPDqewSK7fGTUaO1+wWYAP1lq2kt+bn1Lo7
+         yPIll/9SFKumsFKeGZqH0lHOfeaAkKP6HS5T6doHT5QxygwFwC7rcCi24LCEs+p+bCWm
+         ZwBI0MYIGO+4Ti1un1JlgNvYPrrv0JSyPZwmh/nGNhlvBRp/HWBHY90zCUJJ8OpSDcep
+         tUnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=cEH5d4sSAKnEhpBNXXBVw3jPQh/cz1wtGrgSWX+H6mU=;
-        b=e9UvjOsOAk7+G0Mwx4RG//MWe+PdPVZt2Qx2rmU4ExVuiJM9broIa+mkTp7c0ic9ER
-         mCeWgXwwn6v9BLc45uZCX7EYRTvUQU+2jhAY9jZnRr+1bqpFSW3ezfhzxh34O3Ia1nhy
-         ZZwjWCpJf75zoocWQDeVgpDY5F9sjICwh8B6fL+cA+pyGzsS9NSRhp/63PTw2pE3O3E4
-         gGMQVqfc8Uu3oUZGXqlShmKLHg9IHoMGYHJrw8WyKCGD2t1O2mnCdEsy7ByV0Scy77P8
-         ZLraZ92g64n6PTQMRbJo+sGDZHp1kmCDwBE5Pph62JFDvR5hcJxxjE2qiSGLK4smYzYG
-         E/bA==
-X-Gm-Message-State: AOAM5334p8MRYbSazNSW9XiTbjImm/BMegNQqKPZehWTbxavTL4pkxhe
-        b8lmT/r9MYznn0TuJKXf2mwDpnE0Pe6IWGacM8E=
-X-Google-Smtp-Source: ABdhPJydoKJpXHnkEVK9HPmA7WHJ8Nf3o/Zv07gD6MtJLoxi7dkMsRI5eWScePYSO39ig9hrMU/ZABTVuWYbdZ/SCfk=
-X-Received: by 2002:a92:9e57:: with SMTP id q84mr334072ili.112.1610387794410;
- Mon, 11 Jan 2021 09:56:34 -0800 (PST)
-MIME-Version: 1.0
-References: <CA+icZUVuk5PVY4_HoCoY2ymd27UjuDi6kcAmFb_3=dqkvOA_Qw@mail.gmail.com>
- <fa019010-9d7c-206c-d2c6-0893381f5913@fb.com>
-In-Reply-To: <fa019010-9d7c-206c-d2c6-0893381f5913@fb.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Mon, 11 Jan 2021 18:56:22 +0100
-Message-ID: <CA+icZUVm6ZZveqVoS83SVXe1nqkqZVRjLO+SK1_nXHKkgh4yPQ@mail.gmail.com>
-Subject: Re: Check pahole availibity and BPF support of toolchain before
- starting a Linux kernel build
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9lp28zoWOKLPGFRTu8+kIhpE6rBiQRtmpdJvXYx3+tY=;
+        b=nyycVbVBFCA5cHX1K+1kZnz0C8sNAy+zEDr/+r0gwk4Z4bb3CNbRUaOCeNnALPFjDN
+         sL3Gldu4LguphJk61D25g4VCuGhKrUpPqWA/WW0qvn5ro7WKC2a81GQZsavlHGmE3ZaC
+         kv/kHjtCuOjODWrZJL0xoEWJd8VbG82kR/tFTna7G0kd9EQkuoFBKWBDi0O2bX7nGbpA
+         Z+e/VYX0bxoFbWUsO5bAAmKUWGbiXT79Orld+rHngvys+hUI+b+kCW0ON2tq2KsrmEeD
+         EhqDrqpNypsg810lbjNw+KpkF1ryDENlFGxlriMfvviJKaQ/EvrjHK2Z5l7a+GObNENH
+         1leQ==
+X-Gm-Message-State: AOAM5332ukz/6db0jEN5Tx7GdduoONZatvOQX3DnvZVmh/aykDipLygz
+        21Feg/00s6A3mBmyrbK7tB+p4Yg9vI2Cgg==
+X-Google-Smtp-Source: ABdhPJwx8k0tYOOZKUoXq0vInH3wbViiSZCtXbNbqNuIHyl1UktVYK4JCeL9x3IbIOGZ87AlhyDxtg==
+X-Received: by 2002:a37:b94:: with SMTP id 142mr536071qkl.318.1610388391183;
+        Mon, 11 Jan 2021 10:06:31 -0800 (PST)
+Received: from localhost.localdomain ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id g28sm158752qtm.91.2021.01.11.10.06.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 10:06:30 -0800 (PST)
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>, bpf@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, Tom Stellard <tstellar@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Nathan Chancellor <natechancellor@gmail.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>
+Subject: [PATCH] bpf: Hoise pahole version checks into Kconfig
+Date:   Mon, 11 Jan 2021 11:06:09 -0700
+Message-Id: <20210111180609.713998-1-natechancellor@gmail.com>
+X-Mailer: git-send-email 2.30.0
+MIME-Version: 1.0
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 5:05 PM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 1/11/21 4:48 AM, Sedat Dilek wrote:
-> > Hi BPF maintainers and Mashiro,
-> >
-> > Debian started to use CONFIG_DEBUG_INFO_BTF=y.
-> >
-> > My kernel-build fails like this:
-> >
-> > + info BTFIDS vmlinux
-> > + [  != silent_ ]
-> > + printf   %-7s %s\n BTFIDS vmlinux
-> >   BTFIDS  vmlinux
-> > + ./tools/bpf/resolve_btfids/resolve_btfids vmlinux
-> > FAILED: load BTF from vmlinux: Invalid argument
-> >
-> > The root cause is my selfmade LLVM toolchain has no BPF support.
->
-> linux build should depend on LLVM toolchain unless you use LLVM to build
-> kernel.
->
-> >
-> > $ which llc
-> > /home/dileks/src/llvm-toolchain/install/bin/llc
-> >
-> > $ llc --version
-> > LLVM (http://llvm.org/ ):
-> >   LLVM version 11.0.1
-> >   Optimized build.
-> >   Default target: x86_64-unknown-linux-gnu
-> >   Host CPU: sandybridge
-> >
-> >   Registered Targets:
-> >     x86    - 32-bit X86: Pentium-Pro and above
-> >     x86-64 - 64-bit X86: EM64T and AMD64
-> >
-> > Debian's llc-11 shows me BPF support is built-in.
-> >
-> > I see the breakag approx. 3 hours after the start of my kernel-build -
-> > in the stage "vmlinux".
-> > After 2 faulures in my build (2x 3 hours of build-time) I have still
-> > no finished Linux v5.11-rc3 kernel.
-> > This is a bit frustrating.
->
-> You mean "BTFIDS  vmlinux" takes more than 3 hours here?
-> Maybe a bug in resolve_btfids due to somehow different ELF format
-> resolve_btfids need to handle?
->
+After commit da5fb18225b4 ("bpf: Support pre-2.25-binutils objcopy for
+vmlinux BTF"), having CONFIG_DEBUG_INFO_BTF enabled but lacking a valid
+copy of pahole results in a kernel that will fully compile but fail to
+link. The user then has to either install pahole or disable
+CONFIG_DEBUG_INFO_BTF and rebuild the kernel but only after their build
+has failed, which could have been a significant amount of time depending
+on the hardware.
 
-[ CC Tom ]
+Avoid a poor user experience and require pahole to be installed with an
+appropriate version to select and use CONFIG_DEBUG_INFO_BTF, which is
+standard for options that require a specific tools version.
 
-OMG no.
+Suggested-by: Sedat Dilek <sedat.dilek@gmail.com>
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+---
+ MAINTAINERS               |  1 +
+ init/Kconfig              |  4 ++++
+ lib/Kconfig.debug         |  6 ++----
+ scripts/link-vmlinux.sh   | 13 -------------
+ scripts/pahole-version.sh | 16 ++++++++++++++++
+ 5 files changed, 23 insertions(+), 17 deletions(-)
+ create mode 100755 scripts/pahole-version.sh
 
-3 hours up to running scripts/link-vmlinux.sh.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index b8db7637263a..6f6e24285a94 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -3282,6 +3282,7 @@ F:	net/core/filter.c
+ F:	net/sched/act_bpf.c
+ F:	net/sched/cls_bpf.c
+ F:	samples/bpf/
++F:	scripts/pahole-version.sh
+ F:	tools/bpf/
+ F:	tools/lib/bpf/
+ F:	tools/testing/selftests/bpf/
+diff --git a/init/Kconfig b/init/Kconfig
+index b77c60f8b963..872c61b5d204 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -74,6 +74,10 @@ config TOOLS_SUPPORT_RELR
+ config CC_HAS_ASM_INLINE
+ 	def_bool $(success,echo 'void foo(void) { asm inline (""); }' | $(CC) -x c - -c -o /dev/null)
+ 
++config PAHOLE_VERSION
++	int
++	default $(shell,$(srctree)/scripts/pahole-version.sh $(PAHOLE))
++
+ config CONSTRUCTORS
+ 	bool
+ 	depends on !UML
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 7937265ef879..70c446af9664 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -267,6 +267,7 @@ config DEBUG_INFO_DWARF4
+ 
+ config DEBUG_INFO_BTF
+ 	bool "Generate BTF typeinfo"
++	depends on PAHOLE_VERSION >= 116
+ 	depends on !DEBUG_INFO_SPLIT && !DEBUG_INFO_REDUCED
+ 	depends on !GCC_PLUGIN_RANDSTRUCT || COMPILE_TEST
+ 	help
+@@ -274,12 +275,9 @@ config DEBUG_INFO_BTF
+ 	  Turning this on expects presence of pahole tool, which will convert
+ 	  DWARF type info into equivalent deduplicated BTF type info.
+ 
+-config PAHOLE_HAS_SPLIT_BTF
+-	def_bool $(success, test `$(PAHOLE) --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'` -ge "119")
+-
+ config DEBUG_INFO_BTF_MODULES
+ 	def_bool y
+-	depends on DEBUG_INFO_BTF && MODULES && PAHOLE_HAS_SPLIT_BTF
++	depends on DEBUG_INFO_BTF && MODULES && PAHOLE_VERSION >= 119
+ 	help
+ 	  Generate compact split BTF type information for kernel modules.
+ 
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index 6eded325c837..eef40fa9485d 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -139,19 +139,6 @@ vmlinux_link()
+ # ${2} - file to dump raw BTF data into
+ gen_btf()
+ {
+-	local pahole_ver
+-
+-	if ! [ -x "$(command -v ${PAHOLE})" ]; then
+-		echo >&2 "BTF: ${1}: pahole (${PAHOLE}) is not available"
+-		return 1
+-	fi
+-
+-	pahole_ver=$(${PAHOLE} --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/')
+-	if [ "${pahole_ver}" -lt "116" ]; then
+-		echo >&2 "BTF: ${1}: pahole version $(${PAHOLE} --version) is too old, need at least v1.16"
+-		return 1
+-	fi
+-
+ 	vmlinux_link ${1}
+ 
+ 	info "BTF" ${2}
+diff --git a/scripts/pahole-version.sh b/scripts/pahole-version.sh
+new file mode 100755
+index 000000000000..6de6f734a345
+--- /dev/null
++++ b/scripts/pahole-version.sh
+@@ -0,0 +1,16 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0
++#
++# Usage: $ ./scripts/pahole-version.sh pahole
++#
++# Print the pahole version as a three digit string
++# such as `119' for pahole v1.19 etc.
++
++pahole="$*"
++
++if ! [ -x "$(command -v $pahole)" ]; then
++    echo 0
++    exit 1
++fi
++
++$pahole --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'
 
-In the meantime I have built a LLVM toolchain with BPF support.
+base-commit: e22d7f05e445165e58feddb4e40cc9c0f94453bc
+-- 
+2.30.0
 
-$ llc --version
-LLVM (http://llvm.org/):
- LLVM version 11.0.1
- Optimized build.
- Default target: x86_64-unknown-linux-gnu
- Host CPU: sandybridge
-
- Registered Targets:
-   bpf    - BPF (host endian)
-   bpfeb  - BPF (big endian)
-   bpfel  - BPF (little endian)
-   x86    - 32-bit X86: Pentium-Pro and above
-   x86-64 - 64-bit X86: EM64T and AMD64
-
-Tom reported BTF issues with pahole v1.19 (see [2] and [3]):
-"I ran into this same bug trying to build the Fedora kernel. The
-problem is that pahole segfaults at: scripts/link-vmlinux.sh:131. This
-looks to me like a bug in pahole."
-
-pahole ToT (post v1.19) offers some BTF fixes - I have manually build
-and use it.
-
-Building a new Linux-kernel...
-
-- Sedat -
-
-[1] https://git.kernel.org/pub/scm/devel/pahole/pahole.git/
-[2] https://github.com/ClangBuiltLinux/tc-build/issues/129#issuecomment-758026878
-[3] https://github.com/ClangBuiltLinux/tc-build/issues/129#issuecomment-758056553
-
-
-
-> >
-> > What about doing pre-checks - means before doing a single line of
-> > compilation - to check for:
-> > 1. Required binaries
-> > 2. Required support of whatever feature in compiler, linker, toolchain etc.
-> >
-> > Recently, I fell over depmod binary not found in my PATH - in one of
-> > the last steps (modfinal) of the kernel build.
-> >
-> > Any ideas to improve the situation?
-> > ( ...and please no RTFM, see links below. )
-> >
-> > Thanks.
-> >
-> > Regards,
-> > - Sedat -
-> >
-> >
-> > [0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/scripts/link-vmlinux.sh#n144
-> > [1] https://salsa.debian.org/kernel-team/linux/-/commit/929891281c61ce4403ddd869664c949692644a2f
-> > [2] https://www.kernel.org/doc/html/latest/bpf/bpf_devel_QA.html?highlight=pahole#llvm
-> > [3] https://www.kernel.org/doc/html/latest/bpf/btf.html?highlight=pahole#btf-generation
-> >
