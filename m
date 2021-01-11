@@ -2,143 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDAD02F1F92
-	for <lists+bpf@lfdr.de>; Mon, 11 Jan 2021 20:34:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 274412F1FC3
+	for <lists+bpf@lfdr.de>; Mon, 11 Jan 2021 20:49:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391215AbhAKTep (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Jan 2021 14:34:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390813AbhAKTeo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 Jan 2021 14:34:44 -0500
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F4FAC061794;
-        Mon, 11 Jan 2021 11:34:04 -0800 (PST)
-Received: by mail-il1-x12a.google.com with SMTP id x15so341238ilq.1;
-        Mon, 11 Jan 2021 11:34:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5n87tlf//wbzIK0eFiapoMfQ9AN1g8d2FAoAK9a2vxY=;
-        b=Rq4NY83BuV9gdq7ymDniXgE3trbn7AuWPX5XYRuawZOf3jkN7iziyclvuU/QMCUHPU
-         rmMU25jDfrKvPW4ayQTUxpimEJ9WzdPmc245vbt2wq69TSazRKSNXyLQqNADZOWd3xX/
-         +9IKJ92XGDBm8QOYOb84gmTJh5ufYhJHY+PNmZMmdZi4u+4naJWNhVj8pQoB2k+aDf3s
-         wpiwxCk5b5dn7Mij0UywlCyVmBt/t71Dg90yxMnh32+PaYrcklD79sFo7axxUwaG08l/
-         w3X57MW4x9e5qBqVCgzbziPqgge1KEYgiMnnuYUzAlNeN/+/DyCVPfMH8pd/MYgouQja
-         4XYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5n87tlf//wbzIK0eFiapoMfQ9AN1g8d2FAoAK9a2vxY=;
-        b=SZRKpB4Ji+xtK5M3qTyanfb8moB3Z2HmD4gHaHw3Stf1lgn10htTJ94l35hSoBhrlI
-         N/q9Usv1NA0g0nIjxWHMmU0LqlnXmMQPYDzNOWnrNMHmEcvhvKvvVUYUDefBnayIdPHe
-         PssmUwOuEOzmv0c5NKydSRQviWEcdRBkC9OOLSABuKOMksmtvB4mRKahvg0MduJa6Eec
-         03kjC0OoKzHhLNDfnmxGsXMFYu8RZLd+/2iym5phXNPhCb8QFJ8uwkqtSnQsoqZsbUAD
-         2FtoRlsCIqWH1afSsSL9M4fmhts5X93IfljJX8eS3EUHJlu63VAwt+sFEGoBbOEW4E6B
-         q7OQ==
-X-Gm-Message-State: AOAM532wQTwuF9cmXotDlXxsnVR9tj06n7XDeHK9yh+4D+exzqGeY6dz
-        669rQz/wc42Tsng8bgE11+M=
-X-Google-Smtp-Source: ABdhPJxT+GymjMQRiWHQH2hZ/KGPHBJNpw1mPTlAxAfe8CDKz5S50mJKepd4An2jXnXrmp51GhmhlQ==
-X-Received: by 2002:a92:418d:: with SMTP id o135mr649615ila.213.1610393643713;
-        Mon, 11 Jan 2021 11:34:03 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id 17sm360669ilt.15.2021.01.11.11.34.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 11:34:02 -0800 (PST)
-Date:   Mon, 11 Jan 2021 12:34:00 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>
-Subject: Re: [PATCH] bpf: Hoise pahole version checks into Kconfig
-Message-ID: <20210111193400.GA1343746@ubuntu-m3-large-x86>
-References: <20210111180609.713998-1-natechancellor@gmail.com>
- <CAK7LNAQ=38BUi-EG5v2UiuAF-BOsVe5BTd-=jVYHHHPD7ikS5A@mail.gmail.com>
+        id S2391127AbhAKTsb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Jan 2021 14:48:31 -0500
+Received: from mga01.intel.com ([192.55.52.88]:44615 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389057AbhAKTsa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Jan 2021 14:48:30 -0500
+IronPort-SDR: b7LtlNKvu1BW3J0n9seyNlZE9Q81b8eLSYQkZ3o61LBYOxUH83aVJX+i+1oNcXfDfhLHN1F/SD
+ eS5gP5SGnjhg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9861"; a="196536404"
+X-IronPort-AV: E=Sophos;i="5.79,339,1602572400"; 
+   d="scan'208";a="196536404"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 11:47:46 -0800
+IronPort-SDR: vSMvzdE1rybLWHt5j7ZLLDBShm+gQWVX9NjaOc12Dv6FOxAKmjminMevil6uL9PmjVfi1RB//a
+ avVV7JpNQz8Q==
+X-IronPort-AV: E=Sophos;i="5.79,339,1602572400"; 
+   d="scan'208";a="381129269"
+Received: from amburges-mobl1.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.252.40.54])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 11:47:43 -0800
+Subject: Re: [PATCH net] i40e: fix potential NULL pointer dereferencing
+To:     Cristian Dumitrescu <cristian.dumitrescu@intel.com>,
+        intel-wired-lan@lists.osuosl.org
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        magnus.karlsson@intel.com, maciej.fijalkowski@intel.com
+References: <20210111181138.49757-1-cristian.dumitrescu@intel.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Message-ID: <ac36b7b2-bf0e-c58c-754b-d9ab4dbb9cae@intel.com>
+Date:   Mon, 11 Jan 2021 20:47:38 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK7LNAQ=38BUi-EG5v2UiuAF-BOsVe5BTd-=jVYHHHPD7ikS5A@mail.gmail.com>
+In-Reply-To: <20210111181138.49757-1-cristian.dumitrescu@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 04:19:01AM +0900, Masahiro Yamada wrote:
-> On Tue, Jan 12, 2021 at 3:06 AM Nathan Chancellor
-> <natechancellor@gmail.com> wrote:
-> >
-> > After commit da5fb18225b4 ("bpf: Support pre-2.25-binutils objcopy for
-> > vmlinux BTF"), having CONFIG_DEBUG_INFO_BTF enabled but lacking a valid
-> > copy of pahole results in a kernel that will fully compile but fail to
-> > link. The user then has to either install pahole or disable
-> > CONFIG_DEBUG_INFO_BTF and rebuild the kernel but only after their build
-> > has failed, which could have been a significant amount of time depending
-> > on the hardware.
-> >
-> > Avoid a poor user experience and require pahole to be installed with an
-> > appropriate version to select and use CONFIG_DEBUG_INFO_BTF, which is
-> > standard for options that require a specific tools version.
-> >
-> > Suggested-by: Sedat Dilek <sedat.dilek@gmail.com>
-> > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+On 2021-01-11 19:11, Cristian Dumitrescu wrote:
+> Currently, the function i40e_construct_skb_zc only frees the input xdp
+> buffer when the output skb is successfully built. On error, the
+> function i40e_clean_rx_irq_zc does not commit anything for the current
+> packet descriptor and simply exits the packet descriptor processing
+> loop, with the plan to restart the processing of this descriptor on
+> the next invocation. Therefore, on error the ring next-to-clean
+> pointer should not advance, the xdp i.e. *bi buffer should not be
+> freed and the current buffer info should not be invalidated by setting
+> *bi to NULL. Therefore, the *bi should only be set to NULL when the
+> function i40e_construct_skb_zc is successful, otherwise a NULL *bi
+> will be dereferenced when the work for the current descriptor is
+> eventually restarted.
 > 
-> 
-> 
-> I am not sure if this is the right direction.
-> 
-> 
-> I used to believe moving any tool test to the Kconfig
-> was the right thing to do.
-> 
-> For example, I tried to move the libelf test to Kconfig,
-> and make STACK_VALIDATION depend on it.
-> 
-> https://patchwork.kernel.org/project/linux-kbuild/patch/1531186516-15764-1-git-send-email-yamada.masahiro@socionext.com/
-> 
-> It was rejected.
-> 
-> 
-> In my understanding, it is good to test target toolchains
-> in Kconfig (e.g. cc-option, ld-option, etc).
-> 
-> As for host tools, in contrast, it is better to _intentionally_
-> break the build in order to let users know that something needed is missing.
-> Then, they will install necessary tools or libraries.
-> It is just a one-time setup, in most cases,
-> just running 'apt install' or 'dnf install'.
-> 
-> 
-> 
-> Recently, a similar thing happened to GCC_PLUGINS
-> https://patchwork.kernel.org/project/linux-kbuild/patch/20201203125700.161354-1-masahiroy@kernel.org/#23855673
-> 
-> 
-> 
-> 
-> Following this pattern, if a new pahole is not installed,
-> it might be better to break the build instead of hiding
-> the CONFIG option.
-> 
-> In my case, it is just a matter of 'apt install pahole'.
-> On some distributions, the bundled pahole is not new enough,
-> and people may end up with building pahole from the source code.
+> Fixes: 3b4f0b66c2b3 ("i40e, xsk: Migrate to new MEM_TYPE_XSK_BUFF_POOL")
+> Signed-off-by: Cristian Dumitrescu <cristian.dumitrescu@intel.com>
 
-This is fair enough. However, I think that parts of this patch could
-still be salvaged into something that fits this by making it so that if
-pahole is not installed (CONFIG_PAHOLE_VERSION=0) or too old, the build
-errors at the beginning, rather at the end. I am not sure where the best
-place to put that check would be though.
+Thanks for finding and fixing this, Cristian!
 
-Cheers,
-Nathan
+Acked-by: Björn Töpel <bjorn.topel@intel.com>
+
+> ---
+>   drivers/net/ethernet/intel/i40e/i40e_xsk.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+> index 47eb9c584a12..492ce213208d 100644
+> --- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+> +++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+> @@ -348,12 +348,12 @@ int i40e_clean_rx_irq_zc(struct i40e_ring *rx_ring, int budget)
+>   		 * SBP is *not* set in PRT_SBPVSI (default not set).
+>   		 */
+>   		skb = i40e_construct_skb_zc(rx_ring, *bi);
+> -		*bi = NULL;
+>   		if (!skb) {
+>   			rx_ring->rx_stats.alloc_buff_failed++;
+>   			break;
+>   		}
+>   
+> +		*bi = NULL;
+>   		cleaned_count++;
+>   		i40e_inc_ntc(rx_ring);
+>   
+> 
