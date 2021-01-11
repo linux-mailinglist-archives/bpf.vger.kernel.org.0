@@ -2,119 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C18ED2F2129
-	for <lists+bpf@lfdr.de>; Mon, 11 Jan 2021 21:52:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C7AC2F2157
+	for <lists+bpf@lfdr.de>; Mon, 11 Jan 2021 22:02:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726435AbhAKUwJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Jan 2021 15:52:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725917AbhAKUwJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 Jan 2021 15:52:09 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC45C061786;
-        Mon, 11 Jan 2021 12:51:28 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id r63so93947ybf.5;
-        Mon, 11 Jan 2021 12:51:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XBkaYt5WREhWLVNUYKKmCiMEYrqWo6+GrHTKOekyuZs=;
-        b=qlKh1L8FbjHHW9xvlr7/fmEufY/3bamOppWooa6Pz+CSud25F6C4L0eIKuI94pbKNd
-         BIthwYVGW3VxFj1QUNRBD4WCGSG4GwOvZ9L2R5qfLObLSzhV+O0K82xgV7eiN2wxZw1s
-         Wq6rbuFefBopZWGJi39yga1DXX/k2o4BGKQd9u2MK6O0G1rOedMawqNnWLE40H1CDbEx
-         mNkgHXR6P8SdhVWCx+gbgPAxXBqq1AfWsh3FsqxBTCNb5w53Z6aKqlc6W2lBnl2NNQib
-         eoFSbBRfyqgzMgjefrLUlVanCLIfdAjo28TVTK+YmER8rGIocrN8byHQZZu98JafxbPE
-         gjBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XBkaYt5WREhWLVNUYKKmCiMEYrqWo6+GrHTKOekyuZs=;
-        b=MbCpKQC5r42wW0VtEMca7Q81cET/73bnJSktbDm1gJqyEbWFQousFU71yABjFcfpNq
-         j/470CAIXWyAVhI0lMCs1FxLArNGXZcljd5oA664YSCmlTRqRpP7aih5O8nLJvuAJ2az
-         VNCfITcbvQw+TvYS980pAH+m8zTF/2T+gTct/i8BYBl5o54wWC7mTLycF/d7Z0ru7Ar9
-         3Q3bq1wP3DdLoLH40R4y22+bxwT+x7X5k6/O/moXGeSckot2ZRUyeH96Wbn2Qrgs/GvZ
-         C7Us2DVWJpYjWJDrC+EtpjHHLjGjnRm0C7AzSzjOTfqBuL/6o8fbFySNbvNKBTCKwk9T
-         /vTg==
-X-Gm-Message-State: AOAM53146Dbw/Vk72JsHUoUz6rUehI8lzFRI6NO+PT2WrUGdwJDShbCL
-        HhOwilNXvnmc5N0FZkVq955c6Q5iOjcXhOKokMnfN2aEFj8=
-X-Google-Smtp-Source: ABdhPJyQUTAT1d2wXFSbqCke8Uz35fl6+5A2UHF9JDlmOZvptkUnIStHzZYuLZQng2CTIMBapWuwQIuZCsiJMXVnuXs=
-X-Received: by 2002:a25:aea8:: with SMTP id b40mr2291043ybj.347.1610398287941;
- Mon, 11 Jan 2021 12:51:27 -0800 (PST)
+        id S1732738AbhAKVCL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Jan 2021 16:02:11 -0500
+Received: from www62.your-server.de ([213.133.104.62]:41410 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732725AbhAKVCE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Jan 2021 16:02:04 -0500
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kz4JT-0002MR-Hb; Mon, 11 Jan 2021 22:01:19 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kz4JT-0002bd-Ci; Mon, 11 Jan 2021 22:01:19 +0100
+Subject: Re: [PATCH bpf-next 2/2] bpf: extend bind v4/v6 selftests for
+ mark/prio/bindtoifindex
+To:     Yonghong Song <yhs@fb.com>, ast@kernel.org
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org
+References: <9dbbf51e7f6868b3e9c8610a8d49b4493fb1b50f.1610381606.git.daniel@iogearbox.net>
+ <299c73acafd2c20d52624debb8a1e0019d85e6dd.1610381606.git.daniel@iogearbox.net>
+ <1cf3b794-6b84-e6a4-bed3-6b72c480eafa@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <1ba684dd-1fd8-7e71-4798-6abcfbb44eda@iogearbox.net>
+Date:   Mon, 11 Jan 2021 22:01:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20210110070341.1380086-1-andrii@kernel.org> <20210110070341.1380086-2-andrii@kernel.org>
- <e621981d-5c3d-6d92-871b-a98520778363@fb.com>
-In-Reply-To: <e621981d-5c3d-6d92-871b-a98520778363@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 11 Jan 2021 12:51:17 -0800
-Message-ID: <CAEf4BzZhFrHho-F+JyY6wQyWUZ+0cJJLkGv+=DHP4equkkm4iw@mail.gmail.com>
-Subject: Re: [PATCH bpf 2/2] libbpf: allow loading empty BTFs
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Christopher William Snowhill <chris@kode54.net>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1cf3b794-6b84-e6a4-bed3-6b72c480eafa@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26046/Mon Jan 11 13:34:14 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 10:13 AM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 1/9/21 11:03 PM, Andrii Nakryiko wrote:
-> > Empty BTFs do come up (e.g., simple kernel modules with no new types and
-> > strings, compared to the vmlinux BTF) and there is nothing technically wrong
-> > with them. So remove unnecessary check preventing loading empty BTFs.
-> >
-> > Reported-by: Christopher William Snowhill <chris@kode54.net>
-> > Fixes: ("d8123624506c libbpf: Fix BTF data layout checks and allow empty BTF")
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
-> >   tools/lib/bpf/btf.c | 5 -----
-> >   1 file changed, 5 deletions(-)
-> >
-> > diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> > index 3c3f2bc6c652..9970a288dda5 100644
-> > --- a/tools/lib/bpf/btf.c
-> > +++ b/tools/lib/bpf/btf.c
-> > @@ -240,11 +240,6 @@ static int btf_parse_hdr(struct btf *btf)
-> >       }
-> >
-> >       meta_left = btf->raw_size - sizeof(*hdr);
-> > -     if (!meta_left) {
-> > -             pr_debug("BTF has no data\n");
-> > -             return -EINVAL;
-> > -     }
->
-> Previous kernel patch allows empty btf only if that btf is module (not
-> base/vmlinux) btf. Here it seems we allow any empty non-module btf to be
-> loaded into the kernel. In such cases, loading may fail? Maybe we should
-> detect such cases in libbpf and error out instead of going to kernel and
-> get error back?
+On 1/11/21 9:15 PM, Yonghong Song wrote:
+> On 1/11/21 8:17 AM, Daniel Borkmann wrote:
+>> Extend existing cgroup bind4/bind6 tests to add coverage for setting and
+>> retrieving SO_MARK, SO_PRIORITY and SO_BINDTOIFINDEX at the bind hook.
+>>
+>> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> 
+> Ack with a minor comments below.
+> 
+> Acked-by: Yonghong Song <yhs@fb.com>
+> 
+>> ---
+>>   .../testing/selftests/bpf/progs/bind4_prog.c  | 41 +++++++++++++++++--
+>>   .../testing/selftests/bpf/progs/bind6_prog.c  | 41 +++++++++++++++++--
+>>   2 files changed, 74 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/tools/testing/selftests/bpf/progs/bind4_prog.c b/tools/testing/selftests/bpf/progs/bind4_prog.c
+>> index c6520f21f5f5..4479ac27b1d3 100644
+>> --- a/tools/testing/selftests/bpf/progs/bind4_prog.c
+>> +++ b/tools/testing/selftests/bpf/progs/bind4_prog.c
+>> @@ -29,18 +29,47 @@ static __inline int bind_to_device(struct bpf_sock_addr *ctx)
+>>       char veth2[IFNAMSIZ] = "test_sock_addr2";
+>>       char missing[IFNAMSIZ] = "nonexistent_dev";
+>>       char del_bind[IFNAMSIZ] = "";
+>> +    int veth1_idx, veth2_idx;
+>>       if (bpf_setsockopt(ctx, SOL_SOCKET, SO_BINDTODEVICE,
+>> -                &veth1, sizeof(veth1)))
+>> +               &veth1, sizeof(veth1)))
+>> +        return 1;
+>> +    if (bpf_getsockopt(ctx, SOL_SOCKET, SO_BINDTOIFINDEX,
+>> +               &veth1_idx, sizeof(veth1_idx)) || !veth1_idx)
+>>           return 1;
+>>       if (bpf_setsockopt(ctx, SOL_SOCKET, SO_BINDTODEVICE,
+>> -                &veth2, sizeof(veth2)))
+>> +               &veth2, sizeof(veth2)))
+>> +        return 1;
+>> +    if (bpf_getsockopt(ctx, SOL_SOCKET, SO_BINDTOIFINDEX,
+>> +               &veth2_idx, sizeof(veth2_idx)) || !veth2_idx ||
+>> +        veth1_idx == veth2_idx)
+>>           return 1;
+>>       if (bpf_setsockopt(ctx, SOL_SOCKET, SO_BINDTODEVICE,
+>> -                &missing, sizeof(missing)) != -ENODEV)
+>> +               &missing, sizeof(missing)) != -ENODEV)
+>> +        return 1;
+>> +    if (bpf_setsockopt(ctx, SOL_SOCKET, SO_BINDTOIFINDEX,
+>> +               &veth1_idx, sizeof(veth1_idx)))
+>>           return 1;
+>>       if (bpf_setsockopt(ctx, SOL_SOCKET, SO_BINDTODEVICE,
+>> -                &del_bind, sizeof(del_bind)))
+>> +               &del_bind, sizeof(del_bind)))
+>> +        return 1;
+>> +
+>> +    return 0;
+>> +}
+>> +
+>> +static __inline int misc_opts(struct bpf_sock_addr *ctx, int opt)
+>> +{
+>> +    int old, tmp, new = 0xeb9f;
+>> +
+>> +    if (bpf_getsockopt(ctx, SOL_SOCKET, opt, &old, sizeof(old)) ||
+>> +        old == new)
+>> +        return 1;
+> 
+> Here, we assume old never equals to new. it would be good to add
+> a comment to explicitly state this is true. Maybe in the future
+> somebody will try to add more misc_opts which might have conflict
+> here.
 
-I did this consciously. Kernel is more strict, because there is no
-reasonable case when vmlinux BTF or BPF program's BTF can be empty (at
-least not that now we have FUNCs in BTF). But allowing libbpf to load
-empty BTF generically is helpful for bpftool, as one example, for
-inspection. If you do `bpftool btf dump` on empty BTF, it will just
-print nothing and you'll know that it's a valid (from BTF header
-perspective) BTF, just doesn't have any types (besides VOID). If we
-don't allow it, then we'll just get an error and then you'll have to
-do painful hex dumping and decoding to see what's wrong.
+I thought it's obvious, but yes I can add a comment.
 
-In practice, no BPF program's BTF should be empty, but if it is, the
-kernel will rightfully stop you. I don't think it's a common enough
-case for libbpf to handle.
+> Alternatively, you could pass in "new" values
+> from user space with global variables for each option,
+> but that may be an overkill.
 
->
-> > -
-> >       if (meta_left < hdr->str_off + hdr->str_len) {
-> >               pr_debug("Invalid BTF total size:%u\n", btf->raw_size);
-> >               return -EINVAL;
-> >
+Agree, that's overkill.
+
+Thanks,
+Daniel
