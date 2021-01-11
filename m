@@ -2,109 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E85102F0EDF
-	for <lists+bpf@lfdr.de>; Mon, 11 Jan 2021 10:17:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C92492F0FD9
+	for <lists+bpf@lfdr.de>; Mon, 11 Jan 2021 11:15:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728016AbhAKJQw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Jan 2021 04:16:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728300AbhAKJQv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 Jan 2021 04:16:51 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1C30C06179F
-        for <bpf@vger.kernel.org>; Mon, 11 Jan 2021 01:16:10 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id z11so14008904qkj.7
-        for <bpf@vger.kernel.org>; Mon, 11 Jan 2021 01:16:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fU7GH9LhkO3q58rwtJyvkvBoIzpRxN+MgLow1nbzzOs=;
-        b=KV/W4TkVDv1dKMb+PQGRb4AZX/A7K1VuhTBpyuxT4wHjHJisP09LZdYiFhCWYD/dOR
-         3OItl1/pOUZ5jeEvWZcXecEiqlQRDeWr/DcBV13JEckh8dzP0n74k5acinDTieaf/4y/
-         4kNFVyX4Ps/idfQgk9zZF4/ndeXz3r6k5lT3NYqWC1lRsL0/B1I6Wiop5IAmeZ9eiemp
-         xWd6z+xtdazwE+03DJOp+jhaJPsZxxLIBvvkDSYIwjoVGlmWqLdlDC0/vovsapxVKSwm
-         QHzpEzP2J01MTb6wm6kn7HKM3ihdG6WMVzuhvn/jkq30a4vcaXVgdwM2zIsajjB3/jqY
-         V+LQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fU7GH9LhkO3q58rwtJyvkvBoIzpRxN+MgLow1nbzzOs=;
-        b=WKPwiSXOD1j8ZkdAdPJqn2LWpC1lxY9LbOhhAQ1hQ6zM+1BR99QbJdPu9k2knaryrt
-         n9bOLmGAOrGs9P/g6TsgiFKkk5UUgW8rVCR+lOPJvWwizqsY/0BNFaZzzYHa9X83hBah
-         CXuFdUIXfB4y9sP05Df+XMzPXbBr+5q6643HSHImgQkd4iOzp920eqiNKug49hBIKSvy
-         mqGsZX8StEI93PSiqw+aOHWjpil5DiHPOMR1qAugRzrsCm+EZwRUsRmnmlov9GwmSX7v
-         HfmlP5Fosj7PTznQSatV4X4UPtxf1dtYB76DofFvzJAih9gV8ZvBd0y27prTYgdHqRLQ
-         IQNw==
-X-Gm-Message-State: AOAM530MEYR3LuMAB1MisTzUukNYe46NyplT7FwfbXFag+57YZ0LVrXA
-        p9Z/FAUMnVsUNo5RXgNAM7DAJ477TpimTODNdw01aw==
-X-Google-Smtp-Source: ABdhPJwbbIjmwetHH0GCBp0TCjbgD7zj06OWKV6/f1Ysv0jMf+ZhAh+8kUwh/YJDM+J6eaRv2DGqE8kYHyTUtYEm4DY=
-X-Received: by 2002:a05:620a:713:: with SMTP id 19mr15861120qkc.424.1610356569698;
- Mon, 11 Jan 2021 01:16:09 -0800 (PST)
+        id S1729010AbhAKKPg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Jan 2021 05:15:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45496 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729009AbhAKKPg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Jan 2021 05:15:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E41DA22CAE
+        for <bpf@vger.kernel.org>; Mon, 11 Jan 2021 10:14:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610360095;
+        bh=d3oM9Oo6bVko7We/EPWu4QxmYIbJ4zJH2EUzv0RJwUI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=EIknoTTUOA5JOVqZp5FFk/YV11pg/k+grAQhZ9jHYbC7VQ38q+Y2mwEfXoSO+CDwr
+         z4zF6OWN0h94MaPePDFjVC95uGuEcrvkM6BX/INH4LdeJNv7iR47la14Fwc7jhklAq
+         ovujKqNyz8ZpnzBzYfqWvTMnk+AsZp7c7T49+vbN8R07R1VMRhvxThhYSAZIFuNPqy
+         qUBqp91LUrw6YySXszXeWBupXhVW+9X0r3pIckKnHcZzYwmuJAeEhgeUo65nm2pVPz
+         ltXHN345ZslUel2sb4CRG9xC26Y3C4JfVodZPtjfbetEmjtAlR/AbGSHSQhRCqqxn2
+         gq16UzrTIVo2w==
+Received: by mail-lj1-f169.google.com with SMTP id n11so2892935lji.5
+        for <bpf@vger.kernel.org>; Mon, 11 Jan 2021 02:14:54 -0800 (PST)
+X-Gm-Message-State: AOAM532/5MnMpWlREeYeFqVurHZ9hViUXuHD3WSqVtHUjpP0hZRTvhRI
+        DkCV/ebR3ToHUISEgCgIAQnb2GZDqwOUQBx6+xzIsw==
+X-Google-Smtp-Source: ABdhPJxrYgQcEgxWO0GY0HQ/eD89zuEf1GD1o7KXaFoAe6xlgUqy7scB0TPtomJZL4cRNzfuB49GOAnPxY86RG1sMTU=
+X-Received: by 2002:a2e:5018:: with SMTP id e24mr7428302ljb.425.1610360093047;
+ Mon, 11 Jan 2021 02:14:53 -0800 (PST)
 MIME-Version: 1.0
-References: <000000000000588c2c05aa156b2b@google.com> <00000000000087569605b8928ce3@google.com>
-In-Reply-To: <00000000000087569605b8928ce3@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 11 Jan 2021 10:15:58 +0100
-Message-ID: <CACT4Y+a3Xe11dAkRAAewXQ7b=KzK1pk36Arwq=vCR7R-KQy9DQ@mail.gmail.com>
-Subject: Re: kernel BUG at mm/vmalloc.c:LINE! (2)
-To:     syzbot <syzbot+5f326d255ca648131f87@syzkaller.appspotmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, andrii@kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Borislav Petkov <bp@alien8.de>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        jonathan.lemon@gmail.com, Martin KaFai Lau <kafai@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, Andy Lutomirski <luto@kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        marekx.majtyka@intel.com, Ingo Molnar <mingo@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        netdev <netdev@vger.kernel.org>,
+References: <20210108231950.3844417-1-songliubraving@fb.com> <20210108231950.3844417-2-songliubraving@fb.com>
+In-Reply-To: <20210108231950.3844417-2-songliubraving@fb.com>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Mon, 11 Jan 2021 11:14:42 +0100
+X-Gmail-Original-Message-ID: <CACYkzJ6BT8F+75GW=7hLwjMwFccYBqPb3FXV5dVk0SkeNFpurg@mail.gmail.com>
+Message-ID: <CACYkzJ6BT8F+75GW=7hLwjMwFccYBqPb3FXV5dVk0SkeNFpurg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/4] bpf: enable task local storage for tracing programs
+To:     Song Liu <songliubraving@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>, mingo@redhat.com,
         Peter Zijlstra <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Yonghong Song <yhs@fb.com>
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Kernel Team <kernel-team@fb.com>, Hao Luo <haoluo@google.com>,
+        kernel test robot <lkp@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jan 10, 2021 at 10:34 PM syzbot
-<syzbot+5f326d255ca648131f87@syzkaller.appspotmail.com> wrote:
+On Sat, Jan 9, 2021 at 12:35 AM Song Liu <songliubraving@fb.com> wrote:
 >
-> syzbot suspects this issue was fixed by commit:
+> To access per-task data, BPF program typically creates a hash table with
+> pid as the key. This is not ideal because:
+>  1. The use need to estimate requires size of the hash table, with may be
+>     inaccurate;
+>  2. Big hash tables are slow;
+>  3. To clean up the data properly during task terminations, the user need
+>     to write code.
 >
-> commit 537cf4e3cc2f6cc9088dcd6162de573f603adc29
-> Author: Magnus Karlsson <magnus.karlsson@intel.com>
-> Date:   Fri Nov 20 11:53:39 2020 +0000
->
->     xsk: Fix umem cleanup bug at socket destruct
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=139f3dfb500000
-> start commit:   e87d24fc Merge branch 'net-iucv-fixes-2020-11-09'
-> git tree:       net
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=61033507391c77ff
-> dashboard link: https://syzkaller.appspot.com/bug?extid=5f326d255ca648131f87
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10d10006500000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=126c9eaa500000
->
-> If the result looks correct, please mark the issue as fixed by replying with:
->
-> #syz fix: xsk: Fix umem cleanup bug at socket destruct
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> Task local storage overcomes these issues and becomes a better option for
+> these per-task data. Task local storage is only available to BPF_LSM. Now
+> enable it for tracing programs.
 
-FTR, the bisection log looks clean, but this does not look like the
-fix for this. The reproducer does not destroy sockets.
+Also mention here that you change the pointer from being a security blob to a
+dedicated member in the task struct. I assume this is because you want to
+use it without CONFIG_BPF_LSM?
+
+>
+
+Can you also mention the reasons for changing the
+raw_spin_lock_bh to raw_spin_lock_irqsave in the commit log?
+
+
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Song Liu <songliubraving@fb.com>
+> ---
+>  include/linux/bpf.h            |  7 +++++++
+>  include/linux/bpf_lsm.h        | 22 ----------------------
+>  include/linux/bpf_types.h      |  2 +-
+>  include/linux/sched.h          |  5 +++++
+>  kernel/bpf/Makefile            |  3 +--
+>  kernel/bpf/bpf_local_storage.c | 28 +++++++++++++++++-----------
+>  kernel/bpf/bpf_lsm.c           |  4 ----
+>  kernel/bpf/bpf_task_storage.c  | 26 ++++++--------------------
+>  kernel/fork.c                  |  5 +++++
+>  kernel/trace/bpf_trace.c       |  4 ++++
+>  10 files changed, 46 insertions(+), 60 deletions(-)
+>
+
+[...]
