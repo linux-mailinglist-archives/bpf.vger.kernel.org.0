@@ -2,199 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F7912F1D7D
-	for <lists+bpf@lfdr.de>; Mon, 11 Jan 2021 19:07:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FC692F1D9C
+	for <lists+bpf@lfdr.de>; Mon, 11 Jan 2021 19:10:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390109AbhAKSHc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Jan 2021 13:07:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390106AbhAKSHb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 Jan 2021 13:07:31 -0500
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC36C0617AB;
-        Mon, 11 Jan 2021 10:06:32 -0800 (PST)
-Received: by mail-qk1-x734.google.com with SMTP id w79so326123qkb.5;
-        Mon, 11 Jan 2021 10:06:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9lp28zoWOKLPGFRTu8+kIhpE6rBiQRtmpdJvXYx3+tY=;
-        b=ez1SefshWrFxr/3XbQrkWZhJIOzAqVAKha8CL5HWT4x+mLivWRS4dkFUm7HwH2jRFj
-         35RyeXAQJ1GHXy0yh6vjr2sd1FmADkpsLwXV73Eqx0FTfyI91aVGSqsGWrpB9hd9Z3Mg
-         5ezoFNrH++EteGshvlRBQEMzZx+t77f48oPDqewSK7fGTUaO1+wWYAP1lq2kt+bn1Lo7
-         yPIll/9SFKumsFKeGZqH0lHOfeaAkKP6HS5T6doHT5QxygwFwC7rcCi24LCEs+p+bCWm
-         ZwBI0MYIGO+4Ti1un1JlgNvYPrrv0JSyPZwmh/nGNhlvBRp/HWBHY90zCUJJ8OpSDcep
-         tUnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9lp28zoWOKLPGFRTu8+kIhpE6rBiQRtmpdJvXYx3+tY=;
-        b=nyycVbVBFCA5cHX1K+1kZnz0C8sNAy+zEDr/+r0gwk4Z4bb3CNbRUaOCeNnALPFjDN
-         sL3Gldu4LguphJk61D25g4VCuGhKrUpPqWA/WW0qvn5ro7WKC2a81GQZsavlHGmE3ZaC
-         kv/kHjtCuOjODWrZJL0xoEWJd8VbG82kR/tFTna7G0kd9EQkuoFBKWBDi0O2bX7nGbpA
-         Z+e/VYX0bxoFbWUsO5bAAmKUWGbiXT79Orld+rHngvys+hUI+b+kCW0ON2tq2KsrmEeD
-         EhqDrqpNypsg810lbjNw+KpkF1ryDENlFGxlriMfvviJKaQ/EvrjHK2Z5l7a+GObNENH
-         1leQ==
-X-Gm-Message-State: AOAM5332ukz/6db0jEN5Tx7GdduoONZatvOQX3DnvZVmh/aykDipLygz
-        21Feg/00s6A3mBmyrbK7tB+p4Yg9vI2Cgg==
-X-Google-Smtp-Source: ABdhPJwx8k0tYOOZKUoXq0vInH3wbViiSZCtXbNbqNuIHyl1UktVYK4JCeL9x3IbIOGZ87AlhyDxtg==
-X-Received: by 2002:a37:b94:: with SMTP id 142mr536071qkl.318.1610388391183;
-        Mon, 11 Jan 2021 10:06:31 -0800 (PST)
-Received: from localhost.localdomain ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id g28sm158752qtm.91.2021.01.11.10.06.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 10:06:30 -0800 (PST)
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Nathan Chancellor <natechancellor@gmail.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>
-Subject: [PATCH] bpf: Hoise pahole version checks into Kconfig
-Date:   Mon, 11 Jan 2021 11:06:09 -0700
-Message-Id: <20210111180609.713998-1-natechancellor@gmail.com>
-X-Mailer: git-send-email 2.30.0
+        id S2389750AbhAKSJw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Jan 2021 13:09:52 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:12510 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2389957AbhAKSJt (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 11 Jan 2021 13:09:49 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 10BI2rbG016769;
+        Mon, 11 Jan 2021 10:08:53 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=QnXXRNqpkL8HFmSJ517POhlI81LMXAeZmZzhJq3bNeQ=;
+ b=XtuYkXiWYJ5idJQ/PyXupa8VevCol56lqrQVvs5J9zarhLL0mJvhSnsjOrxpBPYk4d7I
+ X9I8zJpEAgO4RqYOeRuyJd4WduJeI5Kl09vn6hiEi8ZIH6AWRT6M815A7cwcilC7Fh4b
+ lEdUZDBorV2lbXRgYGoP3+JVWsYCeCZtctk= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 35y91rs137-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 11 Jan 2021 10:08:53 -0800
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 11 Jan 2021 10:08:52 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IFFFmZwEBezxREuiH6MiKLGB0HyBH0rbFMCl9nB5wy6fq1JSpAEdrAXiHrZKO8yptJxuthiNNpgFGfI1W3y7ET/VZarW8XX/lrkAZ+laEEIxDWXxaP193Od5eemojXZcytPyUGDrOK34LACPB2JfPdRYuovvDwEJ2a89y2zsXq82tMRFifCYm794Qdz0gX0iEpdqpTN8PMPXPHwEi9WO3L6UjGpNgXIZgPJM5xWbSu3pCmqa05r0ic92H7WnJjO6pBR8sHNj2CGPwsCjXmVepn04u3LJJGXpdLBFZFjLPQ1Cq16bzZ124pPd6FdSkdspD/SAJwqp2XuYSt47sH/prA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QnXXRNqpkL8HFmSJ517POhlI81LMXAeZmZzhJq3bNeQ=;
+ b=keYsuOvTzhSfp1rzhH+aDeI+fr63rx6o83iDT/eWQcjVisPVmf8WQg7kRfr7Ax2JSYt5q88KIc2dW+xapLtIeJvagxzJrap0iNGU729eh57XjAqhVnOockHuKfbAQZWSg2WYlSsiktdiMXqMoKUtHgwkn0P4WU5sZ8eXN8duLN7PMErEMOHM8m9INQKcC3LsiiBci0sYgVhXUTtnzpkfsP1kK0/X8BqDIHUJ8UFZNfDq6ktxpLO0aP7f73E+iihXn9Phs3Tr/ZmqWNiWjYJ5BXGuM4y6Jy6d33Z3yNAh381vXpq8CQeNce//V1ymBd6hWKBgCf3NlPw1TW+xxf/ZQg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QnXXRNqpkL8HFmSJ517POhlI81LMXAeZmZzhJq3bNeQ=;
+ b=YKTyskE2oXuL9fdrMp8kUfG3Jwc3AYUkZouPm9w0QD26Q9Hd4YyALwpod0AeStYkU8kepMiQd5ZIj/j7HgBPx48B6MybfMI97hvetsnWMLfqKZ88NTJdo6ivHTdaQUjJyboWziDJBlfc8eoMxIiceQfPL7w8hwZsVdJpT19WMR8=
+Authentication-Results: kode54.net; dkim=none (message not signed)
+ header.d=none;kode54.net; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by BYAPR15MB2455.namprd15.prod.outlook.com (2603:10b6:a02:90::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.8; Mon, 11 Jan
+ 2021 18:08:49 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3742.012; Mon, 11 Jan 2021
+ 18:08:49 +0000
+Subject: Re: [PATCH bpf 1/2] bpf: allow empty module BTFs
+To:     Andrii Nakryiko <andrii@kernel.org>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <ast@fb.com>, <daniel@iogearbox.net>
+CC:     <kernel-team@fb.com>,
+        Christopher William Snowhill <chris@kode54.net>
+References: <20210110070341.1380086-1-andrii@kernel.org>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <baa7ef89-9540-e8e6-34d7-786125afce57@fb.com>
+Date:   Mon, 11 Jan 2021 10:08:46 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.0
+In-Reply-To: <20210110070341.1380086-1-andrii@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2620:10d:c090:400::5:6450]
+X-ClientProxiedBy: MW4PR04CA0195.namprd04.prod.outlook.com
+ (2603:10b6:303:86::20) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21c1::1158] (2620:10d:c090:400::5:6450) by MW4PR04CA0195.namprd04.prod.outlook.com (2603:10b6:303:86::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Mon, 11 Jan 2021 18:08:48 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: fe2f8616-88ab-44e7-e569-08d8b65bf215
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2455:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB24554B84B09DF651F14C7AE0D3AB0@BYAPR15MB2455.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:901;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: W5m7IrnAv1Xjfem3c8M8oa/xcqPMFANv59ND57PKjLr6+OZBwFFo3ObIcNI7YaqnPWxzkGqeWjReHhRy5I5+wNVIyzh+Bt/tXnaMSHHMxgdN5S/ZiU2f3pvhj/LMivYGfzfvKPUf+L+klEfvnQJOfrQF3WUujKZxJbDDl1e0puxat+YZxLDFs13bUpijX/gx/7xzKLfT3JK0uIES+bTssQY/3Y4qE9z4bKfd+euUhFneLRnhkVFuJePsB8BLnXMQ4k8vYUTD9c+7YIjcLvI5+D5QzcE5PfeX/fvmBW+mUXZWPL+uHxhu4r+CmHHJHsoA+Q/guyCttqjMdD9i4G5PJ0LAaxDmfMPMXGiyKXjFag+5BCjr3K5OjLhd9w+wJrkTXJ55znlzWEYW6GpXna4t5kgzr48XstujYqi/bb8TRGFX3ZdCcGjewU/+Uto0607Rf3WjU7S20TNKg/oi4PVliAxrKIBb1xOJ/YI9q+yU5UM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(366004)(396003)(136003)(39860400002)(316002)(83380400001)(16526019)(53546011)(2616005)(86362001)(2906002)(66556008)(478600001)(66946007)(186003)(66476007)(31696002)(6486002)(36756003)(52116002)(5660300002)(8676002)(4326008)(8936002)(31686004)(4744005)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?WVEvSlBESVBRR0pQMnBaeS9mWFJHcmE0cTVVMDg5YWZRRUVLM0RiUFVxMHc0?=
+ =?utf-8?B?OUw0TEthYmlDQXNKZXNjNGFJbmtoVDFZK29rYlIzY1pyN1d3a0pONXM0QmtL?=
+ =?utf-8?B?MWFBQjdCQ3dFbUtzZkI4aVlCUlAvTzBZUkI5STZmMFNrdE80TjhmOHJDYlVP?=
+ =?utf-8?B?bjltZTN0bWw4MVpsbE4reldxbW5jVEtqeFBiby9jUkdYQ2xjMjZiQ053OUNw?=
+ =?utf-8?B?V0NkWTBsQkg4K3NyRmcxVy85N3Zna3Y1cHhBQ09oeWV6T2k2OG43VXFMekRT?=
+ =?utf-8?B?SUlMdmNCdGV3UmUyU0xVa0RJQmJoS3RoTHNBbWt3MzVzR3hvZXlWMUljV0pw?=
+ =?utf-8?B?TmV5a0l1QUxVdEkzT25nK1lDNUFhdWZGaG5wL2JCOERTVDZvaDFiK0xNWWR1?=
+ =?utf-8?B?N0RsWUtwK2lqRGRrQlpDeTZ1bWJKeGhTWnJzc1ovQUhldm5CWnEwSUduVStl?=
+ =?utf-8?B?UGg5MEpXZWI0aEdNQU15MGRTVWcxdUxZSGF0bzVUQjM4alZvNEx1NUFMUXU2?=
+ =?utf-8?B?WlFXRmoxM05tRnJjZVJ0Y3l2VFEweUoyME1CNjdtekdKVGRoeGVpSTd1TXpT?=
+ =?utf-8?B?czBCNjBRb0pKTVF0UHVIT1ZTcVZCSkZtK3crZXhXOE5yd3NGNjhZVjY1STdz?=
+ =?utf-8?B?QWRqdFFjN0U1TnlsdEF4NzZkZWdhNGpOdU5YMk4zc29scXpENVNJT1FLUDQv?=
+ =?utf-8?B?RnRQMDhFaWJuYStlUWZJNGtJNmVya2pxdmQ5S3ZpZGk3TGJGTS9FRHk0d0VY?=
+ =?utf-8?B?ZFhWQnBTQndmMTBzd2ZjMkxDbDZEaWlIcWRUSXorR1h6cWNxNitMU0RpSUpH?=
+ =?utf-8?B?LzRHL281ZGtJc3dLOGdTcE1kL3VLejltVmZIN0tiTkt4ZGVKTEU4aDRoZ0NI?=
+ =?utf-8?B?Z2lrUS84TTg2cGQvK0FSZFNtekxOUVgvb2ZJN1BMNUorYmxMTWpaL1paNFBp?=
+ =?utf-8?B?UFM1bW1QM21ZaTd4S0U4VzB4dmllbTY5bU5BNE5TL0h0UEdXalExZ2drRElT?=
+ =?utf-8?B?WFhPdHlUZ2JqRlR6Wno2Nk5mMmtnYWo1blNLT0lydzBqNUNMYmhoRGFQUnhO?=
+ =?utf-8?B?blIyQmozSXhKR0hva0tyakhjTGNMTEpyUy9KUE1WNjZmcWhqMU9sYUhmc0Ry?=
+ =?utf-8?B?dWs4cEs5SVRFeGNjY0QyM3ZxT1RsNnJRVHN2QUNQM2MvR24rZFpNNHhleG9V?=
+ =?utf-8?B?NlJQNnZMUkJwWlloTHJWdUdrMERTaTNpNWRMc0ExVjVweGM4Ny8ra2ExV2V5?=
+ =?utf-8?B?YncwU3Y1SnBRanpsYzIyeWN4bWRqN3YvZjdTSWxKMXh0VW4yS2pyZGo2ZFpP?=
+ =?utf-8?B?U3BLdXNOQkFMVzhKbXZxK3czVFBrRmlRT0tobHNZekdIQnMyR1ZMbHBpWGFh?=
+ =?utf-8?B?ZThIVDY5Y3lRRVE9PQ==?=
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2021 18:08:49.2345
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-Network-Message-Id: fe2f8616-88ab-44e7-e569-08d8b65bf215
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7DGBfVOo3+sCaV8O/CTd1PZbKcl/nolCgcXu2B+C9wBNoD9YR70y8NCc8kIJ7vTN
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2455
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-11_29:2021-01-11,2021-01-11 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ impostorscore=0 malwarescore=0 priorityscore=1501 adultscore=0
+ phishscore=0 lowpriorityscore=0 clxscore=1011 mlxlogscore=999 mlxscore=0
+ spamscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101110102
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-After commit da5fb18225b4 ("bpf: Support pre-2.25-binutils objcopy for
-vmlinux BTF"), having CONFIG_DEBUG_INFO_BTF enabled but lacking a valid
-copy of pahole results in a kernel that will fully compile but fail to
-link. The user then has to either install pahole or disable
-CONFIG_DEBUG_INFO_BTF and rebuild the kernel but only after their build
-has failed, which could have been a significant amount of time depending
-on the hardware.
 
-Avoid a poor user experience and require pahole to be installed with an
-appropriate version to select and use CONFIG_DEBUG_INFO_BTF, which is
-standard for options that require a specific tools version.
 
-Suggested-by: Sedat Dilek <sedat.dilek@gmail.com>
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
----
- MAINTAINERS               |  1 +
- init/Kconfig              |  4 ++++
- lib/Kconfig.debug         |  6 ++----
- scripts/link-vmlinux.sh   | 13 -------------
- scripts/pahole-version.sh | 16 ++++++++++++++++
- 5 files changed, 23 insertions(+), 17 deletions(-)
- create mode 100755 scripts/pahole-version.sh
+On 1/9/21 11:03 PM, Andrii Nakryiko wrote:
+> Some modules don't declare any new types and end up with an empty BTF,
+> containing only valid BTF header and no types or strings sections. This
+> currently causes BTF validation error. There is nothing wrong with such BTF,
+> so fix the issue by allowing module BTFs with no types or strings.
+> 
+> Reported-by: Christopher William Snowhill <chris@kode54.net>
+> Fixes: 36e68442d1af ("bpf: Load and verify kernel module BTFs")
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b8db7637263a..6f6e24285a94 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3282,6 +3282,7 @@ F:	net/core/filter.c
- F:	net/sched/act_bpf.c
- F:	net/sched/cls_bpf.c
- F:	samples/bpf/
-+F:	scripts/pahole-version.sh
- F:	tools/bpf/
- F:	tools/lib/bpf/
- F:	tools/testing/selftests/bpf/
-diff --git a/init/Kconfig b/init/Kconfig
-index b77c60f8b963..872c61b5d204 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -74,6 +74,10 @@ config TOOLS_SUPPORT_RELR
- config CC_HAS_ASM_INLINE
- 	def_bool $(success,echo 'void foo(void) { asm inline (""); }' | $(CC) -x c - -c -o /dev/null)
- 
-+config PAHOLE_VERSION
-+	int
-+	default $(shell,$(srctree)/scripts/pahole-version.sh $(PAHOLE))
-+
- config CONSTRUCTORS
- 	bool
- 	depends on !UML
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 7937265ef879..70c446af9664 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -267,6 +267,7 @@ config DEBUG_INFO_DWARF4
- 
- config DEBUG_INFO_BTF
- 	bool "Generate BTF typeinfo"
-+	depends on PAHOLE_VERSION >= 116
- 	depends on !DEBUG_INFO_SPLIT && !DEBUG_INFO_REDUCED
- 	depends on !GCC_PLUGIN_RANDSTRUCT || COMPILE_TEST
- 	help
-@@ -274,12 +275,9 @@ config DEBUG_INFO_BTF
- 	  Turning this on expects presence of pahole tool, which will convert
- 	  DWARF type info into equivalent deduplicated BTF type info.
- 
--config PAHOLE_HAS_SPLIT_BTF
--	def_bool $(success, test `$(PAHOLE) --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'` -ge "119")
--
- config DEBUG_INFO_BTF_MODULES
- 	def_bool y
--	depends on DEBUG_INFO_BTF && MODULES && PAHOLE_HAS_SPLIT_BTF
-+	depends on DEBUG_INFO_BTF && MODULES && PAHOLE_VERSION >= 119
- 	help
- 	  Generate compact split BTF type information for kernel modules.
- 
-diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-index 6eded325c837..eef40fa9485d 100755
---- a/scripts/link-vmlinux.sh
-+++ b/scripts/link-vmlinux.sh
-@@ -139,19 +139,6 @@ vmlinux_link()
- # ${2} - file to dump raw BTF data into
- gen_btf()
- {
--	local pahole_ver
--
--	if ! [ -x "$(command -v ${PAHOLE})" ]; then
--		echo >&2 "BTF: ${1}: pahole (${PAHOLE}) is not available"
--		return 1
--	fi
--
--	pahole_ver=$(${PAHOLE} --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/')
--	if [ "${pahole_ver}" -lt "116" ]; then
--		echo >&2 "BTF: ${1}: pahole version $(${PAHOLE} --version) is too old, need at least v1.16"
--		return 1
--	fi
--
- 	vmlinux_link ${1}
- 
- 	info "BTF" ${2}
-diff --git a/scripts/pahole-version.sh b/scripts/pahole-version.sh
-new file mode 100755
-index 000000000000..6de6f734a345
---- /dev/null
-+++ b/scripts/pahole-version.sh
-@@ -0,0 +1,16 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Usage: $ ./scripts/pahole-version.sh pahole
-+#
-+# Print the pahole version as a three digit string
-+# such as `119' for pahole v1.19 etc.
-+
-+pahole="$*"
-+
-+if ! [ -x "$(command -v $pahole)" ]; then
-+    echo 0
-+    exit 1
-+fi
-+
-+$pahole --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'
-
-base-commit: e22d7f05e445165e58feddb4e40cc9c0f94453bc
--- 
-2.30.0
-
+Acked-by: Yonghong Song <yhs@fb.com>
