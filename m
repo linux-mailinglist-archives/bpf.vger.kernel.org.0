@@ -2,122 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EEE42F1292
-	for <lists+bpf@lfdr.de>; Mon, 11 Jan 2021 13:49:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59F0F2F1794
+	for <lists+bpf@lfdr.de>; Mon, 11 Jan 2021 15:09:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727128AbhAKMtm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Jan 2021 07:49:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727071AbhAKMtm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 11 Jan 2021 07:49:42 -0500
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F7FC061786;
-        Mon, 11 Jan 2021 04:49:02 -0800 (PST)
-Received: by mail-il1-x136.google.com with SMTP id x15so18258484ilq.1;
-        Mon, 11 Jan 2021 04:49:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to:cc;
-        bh=Qi5Ue2Fa5K8j/6FFk7i0qA38bcCZMdE6+qZIvP07LIc=;
-        b=p2R0DsNr2I++u6Yf976kLrtM2r39n9rWQ/96pIN4u4njgGH4f3RT7WCB4+rXQ1d/j1
-         5nUmlP5wFuohYWrog+l7FAJgYjw0GVG9RYxdbUk0GYUyBn0qFuof+vk9hYvz/YhzK5wS
-         ZaJRsEvaqVjDa1oR6u8GBrSj9335dEH0ROHNBN5uWOrRaZE5Moo4igHGZk3VyHy7iiiN
-         Xm8WdP0MOblddtTMYYEYA/rbNAfGmtOvOfNgSMvtL1vh5FwxanpBjMEb4AeduBD0T3Oq
-         BrbNXn+yYHsQ2Hb8BMg/68CELcMRXctCtekTMQNULewE4N7JKdnL6+YR2vF09/RGtXyB
-         DEJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=Qi5Ue2Fa5K8j/6FFk7i0qA38bcCZMdE6+qZIvP07LIc=;
-        b=pLcDeAxVvJ2sV5xBiWEDbGlX9IpW1NcQII1FlsZWmCVX8mD0+8u4k66PLYVxnYByRp
-         REVeevbVB3b/tSXz0qchTet3kcansiiVxelJDNX5PknE2PKOQDrSbwPtg0tPEvu3PLJz
-         vCz9ZGo/v1D0eafkMIclssCXTuYEYGQdGDFYc83nlQa4aI26S83VUbUAMjGRo61M3ezc
-         NYZWxR7ZBXc+jBVM1IdF9lsut80GUVkpSRpyJm0B5ihLJChHY4gxfkKDL9RMKQcB1q0K
-         EzvfUB2l5EJ8TTP4Vy5JK45stXdc/ehzJR0wiLI0fhjalUuI6ZtYH8NEf0egAe6qzZCD
-         4dzg==
-X-Gm-Message-State: AOAM533i4md5QlPfjTiWpg+iQyPrMw62dLgx1YPW2Q5lHYrKHrzYxjfl
-        /q/vgrJakE+go19cSog0U34kWDjVlq9KqghZt88=
-X-Google-Smtp-Source: ABdhPJxhxmfVZlitBa9vZVlyXJz3wWgY/HN3CeMF3ZZKfWmc0nq7QlwEJT0fFfHaJwefuSuGRrQxhn9OOQAzt/00Rgk=
-X-Received: by 2002:a92:9e57:: with SMTP id q84mr5529394ili.112.1610369341611;
- Mon, 11 Jan 2021 04:49:01 -0800 (PST)
-MIME-Version: 1.0
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Mon, 11 Jan 2021 13:48:50 +0100
-Message-ID: <CA+icZUVuk5PVY4_HoCoY2ymd27UjuDi6kcAmFb_3=dqkvOA_Qw@mail.gmail.com>
-Subject: Check pahole availibity and BPF support of toolchain before starting
- a Linux kernel build
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        id S2388329AbhAKOHp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Jan 2021 09:07:45 -0500
+Received: from www62.your-server.de ([213.133.104.62]:40704 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730144AbhAKOHo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 11 Jan 2021 09:07:44 -0500
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kyxqW-000Fxo-Tv; Mon, 11 Jan 2021 15:07:00 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kyxqW-0009t5-My; Mon, 11 Jan 2021 15:07:00 +0100
+Subject: Re: [PATCH bpf] bpf: local storage helpers should check nullness of
+ owner ptr passed
+To:     KP Singh <kpsingh@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Gilad Reti <gilad.reti@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     bpf@vger.kernel.org, linux-kbuild@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Martin KaFai Lau <kafai@fb.com>
+References: <20210107173729.2667975-1-kpsingh@kernel.org>
+ <CAEf4BzbxVtR+kaTFyHiH0tz3npr_vnpOidmG=t4sQAtaNE95UA@mail.gmail.com>
+ <CAEf4BzYjSYBTocYAWv1FDiyRFTmy_XqcE-DvZfZw5K2qoL9Z+Q@mail.gmail.com>
+ <CACYkzJ7OCLAfg2OAnvpvexHpaQ8MzntibE79Gf18V++Nc1O0PA@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <281d55ae-984d-5a40-e0be-3a3480564379@iogearbox.net>
+Date:   Mon, 11 Jan 2021 15:06:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <CACYkzJ7OCLAfg2OAnvpvexHpaQ8MzntibE79Gf18V++Nc1O0PA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26046/Mon Jan 11 13:34:14 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi BPF maintainers and Mashiro,
+On 1/7/21 9:25 PM, KP Singh wrote:
+> On Thu, Jan 7, 2021 at 8:15 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+>> On Thu, Jan 7, 2021 at 11:07 AM Andrii Nakryiko
+>> <andrii.nakryiko@gmail.com> wrote:
+>>> On Thu, Jan 7, 2021 at 9:37 AM KP Singh <kpsingh@kernel.org> wrote:
+>>>>
+>>>> The verifier allows ARG_PTR_TO_BTF_ID helper arguments to be NULL, so
+>>>> helper implementations need to check this before dereferencing them.
+>>>> This was already fixed for the socket storage helpers but not for task
+>>>> and inode.
+>>>>
+>>>> The issue can be reproduced by attaching an LSM program to
+>>>> inode_rename hook (called when moving files) which tries to get the
+>>>> inode of the new file without checking for its nullness and then trying
+>>>> to move an existing file to a new path:
+>>>>
+>>>>    mv existing_file new_file_does_not_exist
+>>>
+>>> Seems like it's simple to write a selftest for this then?
+> 
+> Sure, I will send in a separate patch for selftest and also for the typo.
 
-Debian started to use CONFIG_DEBUG_INFO_BTF=y.
+If it's small or trivial to add a selftest for the fix, I'd suggest to add it
+as part of this series for 'ease of logistics' as it would otherwise be a bit
+odd to i) either have a stand-alone patch against bpf tree with just a selftest
+or ii) having to wait until bpf syncs into bpf-next and then send one against
+bpf-next where for the latter there's risk that it gets forgotten in meantime
+as it might take a while.
 
-My kernel-build fails like this:
-
-+ info BTFIDS vmlinux
-+ [  != silent_ ]
-+ printf   %-7s %s\n BTFIDS vmlinux
- BTFIDS  vmlinux
-+ ./tools/bpf/resolve_btfids/resolve_btfids vmlinux
-FAILED: load BTF from vmlinux: Invalid argument
-
-The root cause is my selfmade LLVM toolchain has no BPF support.
-
-$ which llc
-/home/dileks/src/llvm-toolchain/install/bin/llc
-
-$ llc --version
-LLVM (http://llvm.org/):
- LLVM version 11.0.1
- Optimized build.
- Default target: x86_64-unknown-linux-gnu
- Host CPU: sandybridge
-
- Registered Targets:
-   x86    - 32-bit X86: Pentium-Pro and above
-   x86-64 - 64-bit X86: EM64T and AMD64
-
-Debian's llc-11 shows me BPF support is built-in.
-
-I see the breakag approx. 3 hours after the start of my kernel-build -
-in the stage "vmlinux".
-After 2 faulures in my build (2x 3 hours of build-time) I have still
-no finished Linux v5.11-rc3 kernel.
-This is a bit frustrating.
-
-What about doing pre-checks - means before doing a single line of
-compilation - to check for:
-1. Required binaries
-2. Required support of whatever feature in compiler, linker, toolchain etc.
-
-Recently, I fell over depmod binary not found in my PATH - in one of
-the last steps (modfinal) of the kernel build.
-
-Any ideas to improve the situation?
-( ...and please no RTFM, see links below. )
-
-Thanks.
-
-Regards,
-- Sedat -
-
-
-[0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/scripts/link-vmlinux.sh#n144
-[1] https://salsa.debian.org/kernel-team/linux/-/commit/929891281c61ce4403ddd869664c949692644a2f
-[2] https://www.kernel.org/doc/html/latest/bpf/bpf_devel_QA.html?highlight=pahole#llvm
-[3] https://www.kernel.org/doc/html/latest/bpf/btf.html?highlight=pahole#btf-generation
+Thanks,
+Daniel
