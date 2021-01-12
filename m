@@ -2,148 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A49952F38DA
-	for <lists+bpf@lfdr.de>; Tue, 12 Jan 2021 19:28:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5CFC2F390D
+	for <lists+bpf@lfdr.de>; Tue, 12 Jan 2021 19:42:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390350AbhALS1M (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jan 2021 13:27:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35386 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392380AbhALS1L (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jan 2021 13:27:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E137123121;
-        Tue, 12 Jan 2021 18:26:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610475990;
-        bh=Szh6saMLxdZWpYRkTzFvafxw2ceyvrSm3aOiwAK0tA4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SjuMUsC+9VdyuYcMSNo5T+RUMFJ85LkMZ8N+j4eDbW3Uue9RCSfKMRmTxDkxx8FJC
-         bjUP28hZXC2HHZpHcN7yqOAV4vEcTxaxOJv0s/R/+1tbP8Ud1eel4K2URJq0dQ2ar+
-         Ms7X15p9+QE5mhCuUp0P/w7H/10Ypql+jK8xOE7iXUtjcfuj0GQSJvIQ65vukHHWzE
-         UALh0ghOiJ/3qlKXrGwrNHCVdt5b/eB30vH/nCO8nh/ak01Nlb1cScWRLoT3rpO5uZ
-         GkylwG4yNTBslLD6QbSOOb10dxslE38JJ0RueYe5pa+RsGxaiqM2hL9+Nlyt+U4dKG
-         oclAACERusBAw==
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, brouer@redhat.com,
-        lorenzo.bianconi@redhat.com, toshiaki.makita1@gmail.com
-Subject: [PATCH v2 bpf-next 2/2] net: xdp: introduce xdp_build_skb_from_frame utility routine
-Date:   Tue, 12 Jan 2021 19:26:13 +0100
-Message-Id: <94ade9e853162ae1947941965193190da97457bc.1610475660.git.lorenzo@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <cover.1610475660.git.lorenzo@kernel.org>
-References: <cover.1610475660.git.lorenzo@kernel.org>
+        id S2406182AbhALSlB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 12 Jan 2021 13:41:01 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:22835 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2404158AbhALSlB (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 12 Jan 2021 13:41:01 -0500
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-552-TmcvJLZrPHaMclKdPHvBvQ-1; Tue, 12 Jan 2021 13:40:08 -0500
+X-MC-Unique: TmcvJLZrPHaMclKdPHvBvQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 21613107ACF7;
+        Tue, 12 Jan 2021 18:40:07 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.194.156])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E31DF60BE2;
+        Tue, 12 Jan 2021 18:40:04 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     dwarves@vger.kernel.org, bpf@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Hao Luo <haoluo@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Tom Stellard <tstellar@redhat.com>
+Subject: [PATCH] btf_encoder: Add extra checks for symbol names
+Date:   Tue, 12 Jan 2021 19:40:04 +0100
+Message-Id: <20210112184004.1302879-1-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Introduce xdp_build_skb_from_frame utility routine to build the skb
-from xdp_frame. Respect to __xdp_build_skb_from_frame,
-xdp_build_skb_from_frame will allocate the skb object. Rely on
-xdp_build_skb_from_frame in veth driver.
-Introduce missing xdp metadata support in veth_xdp_rcv_one routine.
-Add missing metadata support in veth_xdp_rcv_one().
+When processing kernel image build by clang we can
+find some functions without the name, which causes
+pahole to segfault.
 
-Reviewed-by: Toshiaki Makita <toshiaki.makita1@gmail.com>
-Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Adding extra checks to make sure we always have
+function's name defined before using it.
+
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- drivers/net/veth.c | 18 +++---------------
- include/net/xdp.h  |  2 ++
- net/core/xdp.c     | 15 +++++++++++++++
- 3 files changed, 20 insertions(+), 15 deletions(-)
+ btf_encoder.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index 99caae7d1641..6e03b619c93c 100644
---- a/drivers/net/veth.c
-+++ b/drivers/net/veth.c
-@@ -567,16 +567,10 @@ static struct sk_buff *veth_xdp_rcv_one(struct veth_rq *rq,
- 					struct veth_xdp_tx_bq *bq,
- 					struct veth_stats *stats)
- {
--	void *hard_start = frame->data - frame->headroom;
--	int len = frame->len, delta = 0;
- 	struct xdp_frame orig_frame;
- 	struct bpf_prog *xdp_prog;
--	unsigned int headroom;
- 	struct sk_buff *skb;
+diff --git a/btf_encoder.c b/btf_encoder.c
+index 333973054b61..17f7a14f2ef0 100644
+--- a/btf_encoder.c
++++ b/btf_encoder.c
+@@ -72,6 +72,8 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym)
  
--	/* bpf_xdp_adjust_head() assures BPF cannot access xdp_frame area */
--	hard_start -= sizeof(struct xdp_frame);
--
- 	rcu_read_lock();
- 	xdp_prog = rcu_dereference(rq->xdp_prog);
- 	if (likely(xdp_prog)) {
-@@ -590,8 +584,8 @@ static struct sk_buff *veth_xdp_rcv_one(struct veth_rq *rq,
+ 	if (elf_sym__type(sym) != STT_FUNC)
+ 		return 0;
++	if (!elf_sym__name(sym, btfe->symtab))
++		return 0;
  
- 		switch (act) {
- 		case XDP_PASS:
--			delta = frame->data - xdp.data;
--			len = xdp.data_end - xdp.data;
-+			if (xdp_update_frame_from_buff(&xdp, frame))
-+				goto err_xdp;
- 			break;
- 		case XDP_TX:
- 			orig_frame = *frame;
-@@ -629,18 +623,12 @@ static struct sk_buff *veth_xdp_rcv_one(struct veth_rq *rq,
- 	}
- 	rcu_read_unlock();
+ 	if (functions_cnt == functions_alloc) {
+ 		functions_alloc = max(1000, functions_alloc * 3 / 2);
+@@ -730,9 +732,11 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
+ 		if (!has_arg_names(cu, &fn->proto))
+ 			continue;
+ 		if (functions_cnt) {
+-			struct elf_function *func;
++			const char *name = function__name(fn, cu);
++			struct elf_function *func = NULL;
  
--	headroom = sizeof(struct xdp_frame) + frame->headroom - delta;
--	skb = veth_build_skb(hard_start, headroom, len, frame->frame_sz);
-+	skb = xdp_build_skb_from_frame(frame, rq->dev);
- 	if (!skb) {
- 		xdp_return_frame(frame);
- 		stats->rx_drops++;
--		goto err;
- 	}
- 
--	xdp_release_frame(frame);
--	xdp_scrub_frame(frame);
--	skb->protocol = eth_type_trans(skb, rq->dev);
--err:
- 	return skb;
- err_xdp:
- 	rcu_read_unlock();
-diff --git a/include/net/xdp.h b/include/net/xdp.h
-index 689206dee6de..c4bfdc9a8b79 100644
---- a/include/net/xdp.h
-+++ b/include/net/xdp.h
-@@ -167,6 +167,8 @@ struct xdp_frame *xdp_convert_zc_to_xdp_frame(struct xdp_buff *xdp);
- struct sk_buff *__xdp_build_skb_from_frame(struct xdp_frame *xdpf,
- 					   struct sk_buff *skb,
- 					   struct net_device *dev);
-+struct sk_buff *xdp_build_skb_from_frame(struct xdp_frame *xdpf,
-+					 struct net_device *dev);
- 
- static inline
- void xdp_convert_frame_to_buff(struct xdp_frame *frame, struct xdp_buff *xdp)
-diff --git a/net/core/xdp.c b/net/core/xdp.c
-index aeb09ed0704c..0d2630a35c3e 100644
---- a/net/core/xdp.c
-+++ b/net/core/xdp.c
-@@ -557,3 +557,18 @@ struct sk_buff *__xdp_build_skb_from_frame(struct xdp_frame *xdpf,
- 	return skb;
- }
- EXPORT_SYMBOL_GPL(__xdp_build_skb_from_frame);
-+
-+struct sk_buff *xdp_build_skb_from_frame(struct xdp_frame *xdpf,
-+					 struct net_device *dev)
-+{
-+	struct sk_buff *skb;
-+
-+	skb = kmem_cache_alloc(skbuff_head_cache, GFP_ATOMIC);
-+	if (unlikely(!skb))
-+		return NULL;
-+
-+	memset(skb, 0, offsetof(struct sk_buff, tail));
-+
-+	return __xdp_build_skb_from_frame(xdpf, skb, dev);
-+}
-+EXPORT_SYMBOL_GPL(xdp_build_skb_from_frame);
+-			func = find_function(btfe, function__name(fn, cu));
++			if (name)
++				func = find_function(btfe, name);
+ 			if (!func || func->generated)
+ 				continue;
+ 			func->generated = true;
 -- 
-2.29.2
+2.26.2
 
