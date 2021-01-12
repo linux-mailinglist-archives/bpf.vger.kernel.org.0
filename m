@@ -2,135 +2,196 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F07092F3CFD
+	by mail.lfdr.de (Postfix) with ESMTP id 828892F3CFB
 	for <lists+bpf@lfdr.de>; Wed, 13 Jan 2021 01:43:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436984AbhALVhY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S2437070AbhALVhY (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Tue, 12 Jan 2021 16:37:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35942 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437070AbhALU4A (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jan 2021 15:56:00 -0500
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57954C06179F
-        for <bpf@vger.kernel.org>; Tue, 12 Jan 2021 12:55:20 -0800 (PST)
-Received: by mail-ot1-x32b.google.com with SMTP id o11so3661247ote.4
-        for <bpf@vger.kernel.org>; Tue, 12 Jan 2021 12:55:20 -0800 (PST)
+        with ESMTP id S2437080AbhALU6H (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jan 2021 15:58:07 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74518C061575;
+        Tue, 12 Jan 2021 12:57:26 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id y128so20320ybf.10;
+        Tue, 12 Jan 2021 12:57:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=daynix-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=uD2LwoNsLHO2bQTapcwBrSqoHTZzd1YmNCw2S92ag9Q=;
-        b=Y43uZ7bLVKMqH9GbZ4BYcx2lvxcJ2i103HsmZiv7+g4ZppufN2r5P61wpRmKjQtDm+
-         6Iw5P4Q3jCWLRJntB2VAsKmOyFWepWSPdDNfMwp7rBHOArihxsXGpviAmbLDbLReNp5T
-         1GsQFLXpkPd3O8YBg1d9ys2pl+Y2iRrBcQPXibs/a8PG64RIBsakJm4UbXN4O3AmUBMB
-         LcWcVtFHbgPEspus3oJa8xqqPKE6R8KJiuW56r+SCcE5YMmlzY88EwbtWXVIvz2bjoYL
-         9avkyk50tPvH0NmYp6atvBDNCPwlyY5Wzt+QY/5vlJHqedpwjVB5eQYvs1hgfE8jwBFg
-         z4Cw==
+        bh=n3T3+iaR+AM+V13vdwyxk7vLyUw4UrQqx629+o9EkLI=;
+        b=G/pBptQapRMCZ7Zl4/jCq+ZxJmeau7R/n3EnWa8AS7i7n21nitNz9USFcNcr+GfkHK
+         Uu6QPVM5za2KCyCGqnnHriaJouxhLwUxpLRFb1vL55lVPS6KDYTZBgDuF56W7kqhyjeC
+         +yMCbr1t5H/FcIxjG+FaQ0GKlrVYlk6mwVEZ4Q/A7PWKA2pU8ZmoxzQBnniYiP/yt8c0
+         Fx1CpLIGPuJQxovWvs8vsD/DMxg0rxlGhUniMKJNo7TmkY7+4J0JDo3aCoo0e+Lui73H
+         q9jiXYCh2EOKHcvMQTeWZIdr410HhAxAot6RqrTjEVOQtbYjN7Jkx6JlCdhht6fhx/fB
+         iUjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=uD2LwoNsLHO2bQTapcwBrSqoHTZzd1YmNCw2S92ag9Q=;
-        b=C1bXRDUwCjHdfqe05ozsYyTDBD1aiyzC6n/jNemnRU3o+L4NteINPFj5j0QHBAl93S
-         AmTiwCP2LjB3JHoHXy2aMDFzzzp2JvJfWZNsF7m0rvnCE4ohXyO9Yu/8wnEvw5RnmLiQ
-         PMo6IPwoWwjKmKa48tbISmmuDAMn4Ij6y5XGPnsQnlyI5EEXqp7yUBZrjldvPflnY8Kd
-         /hYvn64fQhH4/yl2ciqH68xtwfdf+ggPIExCjOdnYpSVukpM8Q7sM+8CXMvGRdWwWTEU
-         HEo1dSmHB1Ll7a5mBDcCWsVA7PE92XK9caDY8tLIqMw45j3+kOtIDtoSdP7cFvW9HXIn
-         DBZA==
-X-Gm-Message-State: AOAM533yK0Bo31EFJrVwCgNiw12ZzfaUN0AJtb0/2tdUwJ1JTHNf65OW
-        Q5ZooutGCNnsOksJfuQSIroagc8v5CAO1Nqa5hnh1A==
-X-Google-Smtp-Source: ABdhPJyg8eUeNmxDa4BkruWI0L3XjU5KjUa3gveljnrKGwGHBS2TJW6ZNkMgbXD0kYdCRDnkUgmQJ6NHb8T8kPmTb+c=
-X-Received: by 2002:a05:6830:572:: with SMTP id f18mr874911otc.109.1610484919603;
- Tue, 12 Jan 2021 12:55:19 -0800 (PST)
+        bh=n3T3+iaR+AM+V13vdwyxk7vLyUw4UrQqx629+o9EkLI=;
+        b=pw+hAzUQ8VmZmCaw1aRzsvPoPqWdmtyYN9cykao7ZokeQ3Wvp3U3kqSIwqUL+JtUt1
+         icDJY67tFPEtypppr7wnYjV7/829WKZzfFh0gZJlQfMt443BtJ3xZGq3YNm4VDJRmJxJ
+         HuNWPd8kLi/DrPp4mqsSUQ6ewk8gkHSucXfPxIjKkFr3qTBdAc3uAmsOx994e9Hc9F8G
+         ynMk5QCd5UI+exRlpLbQaXd+8Ro/ZgOxSG67Ktv8oH2dSGhjP7VgT9+LY4OqyCiTdBHs
+         AjQHVYp1s9qzrAghojo/crU915k9Q9mGki/CjtKvOpilJXPBRqmVkaU8KCpHtqeSegIv
+         i/lA==
+X-Gm-Message-State: AOAM530SHqCoZToolFpAAdHcKsggoSrhBwZDEaKdtCEOYqdasgcn/6Vi
+        FrHZS7+qHZrhk/vpKWvI2AV6LZgZJcZDNpNYkfA=
+X-Google-Smtp-Source: ABdhPJyyKjcY1WvrqKi5+JxdrhkUBDQ88XvJlIutwJZySodVGvUsbQvDfQYAiILgA3seYNBOqloaEsdTMaz96+hxjGI=
+X-Received: by 2002:a25:aea8:: with SMTP id b40mr1912496ybj.347.1610485045651;
+ Tue, 12 Jan 2021 12:57:25 -0800 (PST)
 MIME-Version: 1.0
-References: <20210112194143.1494-1-yuri.benditovich@daynix.com>
- <20210112194143.1494-4-yuri.benditovich@daynix.com> <CAOEp5Ocz-xGq5=e=WY0aipEYHEhN-wxekNaAiqAS+HsOF8TcDQ@mail.gmail.com>
-In-Reply-To: <CAOEp5Ocz-xGq5=e=WY0aipEYHEhN-wxekNaAiqAS+HsOF8TcDQ@mail.gmail.com>
-From:   Yuri Benditovich <yuri.benditovich@daynix.com>
-Date:   Tue, 12 Jan 2021 22:55:07 +0200
-Message-ID: <CAOEp5OevYR5FWVMfQ_esmWTKtz9_ddTupbe7FtBFQ=sv2kEt2w@mail.gmail.com>
-Subject: Re: [RFC PATCH 3/7] tun: allow use of BPF_PROG_TYPE_SCHED_CLS program type
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
+References: <20210112135959.649075-1-jean-philippe@linaro.org> <20210112135959.649075-2-jean-philippe@linaro.org>
+In-Reply-To: <20210112135959.649075-2-jean-philippe@linaro.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 12 Jan 2021 12:57:14 -0800
+Message-ID: <CAEf4BzadNOciqNMO_r9i3sVTQWHVQ4m=Yuqx5zaMdvxMS+gJ=A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/5] selftests/bpf: Enable cross-building
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     bpf <bpf@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, rdunlap@infradead.org,
-        willemb@google.com, gustavoars@kernel.org,
-        herbert@gondor.apana.org.au, steffen.klassert@secunet.com,
-        pablo@netfilter.org, decui@microsoft.com, cai@lca.pw,
-        jakub@cloudflare.com, elver@google.com, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        bpf@vger.kernel.org
-Cc:     Yan Vugenfirer <yan@daynix.com>
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 10:40 PM Yuri Benditovich
-<yuri.benditovich@daynix.com> wrote:
+On Tue, Jan 12, 2021 at 6:01 AM Jean-Philippe Brucker
+<jean-philippe@linaro.org> wrote:
 >
-> On Tue, Jan 12, 2021 at 9:42 PM Yuri Benditovich
-> <yuri.benditovich@daynix.com> wrote:
-> >
-> > This program type can set skb hash value. It will be useful
-> > when the tun will support hash reporting feature if virtio-net.
-> >
-> > Signed-off-by: Yuri Benditovich <yuri.benditovich@daynix.com>
-> > ---
-> >  drivers/net/tun.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-> > index 7959b5c2d11f..455f7afc1f36 100644
-> > --- a/drivers/net/tun.c
-> > +++ b/drivers/net/tun.c
-> > @@ -2981,6 +2981,8 @@ static int tun_set_ebpf(struct tun_struct *tun, struct tun_prog __rcu **prog_p,
-> >                 prog = NULL;
-> >         } else {
-> >                 prog = bpf_prog_get_type(fd, BPF_PROG_TYPE_SOCKET_FILTER);
-> > +               if (IS_ERR(prog))
-> > +                       prog = bpf_prog_get_type(fd, BPF_PROG_TYPE_SCHED_CLS);
-> >                 if (IS_ERR(prog))
-> >                         return PTR_ERR(prog);
-> >         }
+> Build bpftool and resolve_btfids using the host toolchain when
+> cross-compiling, since they are executed during build to generate the
+> selftests. Add a host build directory in order to build both host and
+> target version of libbpf. Build host tools using $(HOSTCC) defined in
+> Makefile.include.
 >
-> Comment from Alexei Starovoitov:
-> Patches 1 and 2 are missing for me, so I couldn't review properly,
-> but this diff looks odd.
-> It allows sched_cls prog type to attach to tun.
-> That means everything that sched_cls progs can do will be done from tun hook?
+> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> ---
 
-We do not have an intention to modify the packet in this steering eBPF.
-There is just one function that unavailable for BPF_PROG_TYPE_SOCKET_FILTER
-that the eBPF needs to make possible to deliver the hash to the guest
-VM - it is 'bpf_set_hash'
+Makes sense.
 
-Does it mean that we need to define a new eBPF type for socket filter
-operations + set_hash?
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-Our problem is that the eBPF calculates 32-bit hash, 16-bit queue
-index and 8-bit of hash type.
-But it is able to return only 32-bit integer, so in this set of
-patches the eBPF returns
-queue index and hash type and saves the hash in skb->hash using bpf_set_hash().
-
-If this is unacceptable, can you please recommend a better solution?
-
-> sched_cls assumes l2 and can modify the packet.
-
-The steering eBPF in TUN module also assumes l2.
-
-> I think crashes are inevitable.
+>  tools/testing/selftests/bpf/Makefile | 43 ++++++++++++++++++++++------
+>  1 file changed, 34 insertions(+), 9 deletions(-)
 >
-> > --
-> > 2.17.1
-> >
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index c51df6b91bef..1d85565883ea 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -1,6 +1,7 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  include ../../../../scripts/Kbuild.include
+>  include ../../../scripts/Makefile.arch
+> +include ../../../scripts/Makefile.include
+>
+>  CXX ?= $(CROSS_COMPILE)g++
+>
+> @@ -113,7 +114,20 @@ SCRATCH_DIR := $(OUTPUT)/tools
+>  BUILD_DIR := $(SCRATCH_DIR)/build
+>  INCLUDE_DIR := $(SCRATCH_DIR)/include
+>  BPFOBJ := $(BUILD_DIR)/libbpf/libbpf.a
+> -RESOLVE_BTFIDS := $(BUILD_DIR)/resolve_btfids/resolve_btfids
+> +ifneq ($(CROSS_COMPILE),)
+> +HOST_BUILD_DIR         := $(BUILD_DIR)/host
+> +HOST_SCRATCH_DIR       := $(OUTPUT)/host-tools
+> +else
+> +HOST_BUILD_DIR         := $(BUILD_DIR)
+> +HOST_SCRATCH_DIR       := $(SCRATCH_DIR)
+> +endif
+> +HOST_BPFOBJ := $(HOST_BUILD_DIR)/libbpf/libbpf.a
+> +RESOLVE_BTFIDS := $(HOST_BUILD_DIR)/resolve_btfids/resolve_btfids
+> +
+> +# sort removes libbpf duplicates when not cross-building
+> +MAKE_DIRS := $(sort $(BUILD_DIR)/libbpf $(HOST_BUILD_DIR)/libbpf              \
+> +              $(HOST_BUILD_DIR)/bpftool $(HOST_BUILD_DIR)/resolve_btfids      \
+> +              $(INCLUDE_DIR))
+>
+>  VMLINUX_BTF_PATHS ?= $(if $(O),$(O)/vmlinux)                           \
+>                      $(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux)    \
+> @@ -157,7 +171,7 @@ $(OUTPUT)/test_stub.o: test_stub.c $(BPFOBJ)
+>         $(call msg,CC,,$@)
+>         $(Q)$(CC) -c $(CFLAGS) -o $@ $<
+>
+> -DEFAULT_BPFTOOL := $(SCRATCH_DIR)/sbin/bpftool
+> +DEFAULT_BPFTOOL := $(HOST_SCRATCH_DIR)/sbin/bpftool
+>
+>  $(OUTPUT)/runqslower: $(BPFOBJ) | $(DEFAULT_BPFTOOL)
+>         $(Q)$(MAKE) $(submake_extras) -C $(TOOLSDIR)/bpf/runqslower     \
+> @@ -182,10 +196,11 @@ $(OUTPUT)/test_sysctl: cgroup_helpers.c
+>
+>  BPFTOOL ?= $(DEFAULT_BPFTOOL)
+>  $(DEFAULT_BPFTOOL): $(wildcard $(BPFTOOLDIR)/*.[ch] $(BPFTOOLDIR)/Makefile)    \
+> -                   $(BPFOBJ) | $(BUILD_DIR)/bpftool
+> +                   $(HOST_BPFOBJ) | $(HOST_BUILD_DIR)/bpftool
+>         $(Q)$(MAKE) $(submake_extras)  -C $(BPFTOOLDIR)                        \
+> -                   OUTPUT=$(BUILD_DIR)/bpftool/                               \
+> -                   prefix= DESTDIR=$(SCRATCH_DIR)/ install
+> +                   CC=$(HOSTCC) LD=$(HOSTLD)                                  \
+> +                   OUTPUT=$(HOST_BUILD_DIR)/bpftool/                          \
+> +                   prefix= DESTDIR=$(HOST_SCRATCH_DIR)/ install
+>         $(Q)mkdir -p $(BUILD_DIR)/bpftool/Documentation
+>         $(Q)RST2MAN_OPTS="--exit-status=1" $(MAKE) $(submake_extras)           \
+>                     -C $(BPFTOOLDIR)/Documentation                             \
+> @@ -198,7 +213,16 @@ $(BPFOBJ): $(wildcard $(BPFDIR)/*.[ch] $(BPFDIR)/Makefile)                \
+>         $(Q)$(MAKE) $(submake_extras) -C $(BPFDIR) OUTPUT=$(BUILD_DIR)/libbpf/ \
+>                     DESTDIR=$(SCRATCH_DIR) prefix= all install_headers
+>
+> -$(BUILD_DIR)/libbpf $(BUILD_DIR)/bpftool $(BUILD_DIR)/resolve_btfids $(INCLUDE_DIR):
+> +ifneq ($(BPFOBJ),$(HOST_BPFOBJ))
+> +$(HOST_BPFOBJ): $(wildcard $(BPFDIR)/*.[ch] $(BPFDIR)/Makefile)                \
+> +          ../../../include/uapi/linux/bpf.h                                   \
+> +          | $(INCLUDE_DIR) $(HOST_BUILD_DIR)/libbpf
+> +       $(Q)$(MAKE) $(submake_extras) -C $(BPFDIR)                             \
+> +               OUTPUT=$(HOST_BUILD_DIR)/libbpf/ CC=$(HOSTCC) LD=$(HOSTLD)     \
+> +                   DESTDIR=$(HOST_SCRATCH_DIR)/ prefix= all install_headers
+> +endif
+> +
+> +$(MAKE_DIRS):
+>         $(call msg,MKDIR,,$@)
+>         $(Q)mkdir -p $@
+>
+
+nit: I'd just put this rule right next to MAKE_DIRS definition
+
+
+> @@ -211,7 +235,7 @@ else
+>         $(Q)cp "$(VMLINUX_H)" $@
+>  endif
+>
+> -$(RESOLVE_BTFIDS): $(BPFOBJ) | $(BUILD_DIR)/resolve_btfids     \
+> +$(RESOLVE_BTFIDS): $(HOST_BPFOBJ) | $(HOST_BUILD_DIR)/resolve_btfids   \
+>                        $(TOOLSDIR)/bpf/resolve_btfids/main.c    \
+>                        $(TOOLSDIR)/lib/rbtree.c                 \
+>                        $(TOOLSDIR)/lib/zalloc.c                 \
+> @@ -219,7 +243,8 @@ $(RESOLVE_BTFIDS): $(BPFOBJ) | $(BUILD_DIR)/resolve_btfids  \
+>                        $(TOOLSDIR)/lib/ctype.c                  \
+>                        $(TOOLSDIR)/lib/str_error_r.c
+>         $(Q)$(MAKE) $(submake_extras) -C $(TOOLSDIR)/bpf/resolve_btfids \
+> -               OUTPUT=$(BUILD_DIR)/resolve_btfids/ BPFOBJ=$(BPFOBJ)
+> +               CC=$(HOSTCC) LD=$(HOSTLD) AR=$(HOSTAR) \
+> +               OUTPUT=$(HOST_BUILD_DIR)/resolve_btfids/ BPFOBJ=$(HOST_BPFOBJ)
+>
+>  # Get Clang's default includes on this system, as opposed to those seen by
+>  # '-target bpf'. This fixes "missing" files on some architectures/distros,
+> @@ -450,7 +475,7 @@ $(OUTPUT)/bench: $(OUTPUT)/bench.o $(OUTPUT)/testing_helpers.o \
+>         $(call msg,BINARY,,$@)
+>         $(Q)$(CC) $(LDFLAGS) -o $@ $(filter %.a %.o,$^) $(LDLIBS)
+>
+> -EXTRA_CLEAN := $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR)                     \
+> +EXTRA_CLEAN := $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR) $(HOST_SCRATCH_DIR) \
+>         prog_tests/tests.h map_tests/tests.h verifier/tests.h           \
+>         feature                                                         \
+>         $(addprefix $(OUTPUT)/,*.o *.skel.h no_alu32 bpf_gcc bpf_testmod.ko)
+> --
+> 2.30.0
+>
