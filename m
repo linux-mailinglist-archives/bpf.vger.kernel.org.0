@@ -2,120 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA8792F403D
-	for <lists+bpf@lfdr.de>; Wed, 13 Jan 2021 01:47:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A152F409B
+	for <lists+bpf@lfdr.de>; Wed, 13 Jan 2021 01:56:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388398AbhALXTx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jan 2021 18:19:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388390AbhALXTw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jan 2021 18:19:52 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36444C061575;
-        Tue, 12 Jan 2021 15:19:12 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id o17so5926177lfg.4;
-        Tue, 12 Jan 2021 15:19:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=V2Ayl33U2+jwFSkBY0C2/B0oa+AK3RI49yKP+WjxVhg=;
-        b=LbRWSzUcLdepsLvb8kTLdaLBag4uohB7z/fJT2cFD6Ki5GzDIbtG2UFVLF229snzwV
-         lkLyyGPWwHGgPlB9G+U759uOn7O589qOQ6I1jcn4I75YrN2ry9lKOjoaljOF6Ig9lzVb
-         4Fx2ufDuzu89uKCnRTLV9gLLE2m3wJQNUPeGW9NPiYL8s0E92wYna5rTpcPF5dsm6Wob
-         qXPQk4Wy2IfGMeEONZ/VoWswjrTQvKdq0ZQJI3hsx8kNnb8kqajoih+HRfmClPT52Aqr
-         +UpNl8cwNfYnp0XbyBs4TYrhXO3brpLxEhV0ZUgloIjzXN0pUsSMrGFZ2QiL1ibqoLp7
-         4y6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V2Ayl33U2+jwFSkBY0C2/B0oa+AK3RI49yKP+WjxVhg=;
-        b=UvPbPzjzKpxP6NOBQ4qw1DNNONl3EyFuzAxGnTx39cVwinNdgrxDUA8FLz05eEd3nT
-         40wYSUE2W9N2vn80QuIDxeqxeGsuB34AGOcyimLt7B7enEV36pyd1wL4scI1rLqCxHj6
-         6OspUQv8VZk6/m2zHzMuCAkn8Y/k8yHEF1L1zvUtMFr/NUYHQRpExj2ZhjRl8uLyp1gS
-         ORvOuYlU+g/31AmGSHsUEN/bvtK9H8kxcTDKAP5B+ZEwg5atlBr4Qld3vebCalpVh6QY
-         V6G31pCDf38SwcNNzqrqS4Gt7evT1U6RKesvyjDsIE4plsPDPx1Vqnp+bl9O6DiQ2Zpr
-         3Ffg==
-X-Gm-Message-State: AOAM532l4vFmGm5fCDH0rHhMnsdmFSmjOCWBYM+FlmDqhz5JbOojFnr8
-        i2jT2W7JThyFgtzdWql7e67Wdd4SbBnyK2EZtRC60w+1zgM=
-X-Google-Smtp-Source: ABdhPJxPHixFYs6g/zX3DOUEMOuUb3z06V+hSOSkCimhR9xOiiFqXkeYg79q1wA2oWYnG/qPMpVqVRWkrD1oZkAYNRU=
-X-Received: by 2002:a19:8b83:: with SMTP id n125mr565827lfd.75.1610493550708;
- Tue, 12 Jan 2021 15:19:10 -0800 (PST)
+        id S2404993AbhAMAnA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jan 2021 19:43:00 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:22010 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2391531AbhALXqj (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 12 Jan 2021 18:46:39 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10CNiGQ7012672
+        for <bpf@vger.kernel.org>; Tue, 12 Jan 2021 15:45:58 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=NL2PGNFXKFKSixamVmoVdBmisIyuQtxJt43Z8l9r8iA=;
+ b=d1yj73GusbdukRvQ90g7MTUCegf6ugdaN9HNJb/btbFsIntQCd3IdWbdGmzIuZdOxzCc
+ lguVQh7Qp6XcrH94nbvcTJnyaTVbIPG0UvBaK2okcchxF4oi0zFx6YV51lpT0VFh8fHg
+ mSIYyHNw1UqE1CMmKRg7weL/pst8UXT6y34= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 361fppa7q4-9
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 12 Jan 2021 15:45:58 -0800
+Received: from intmgw003.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 12 Jan 2021 15:45:55 -0800
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id ABA9262E0B5E; Tue, 12 Jan 2021 15:43:03 -0800 (PST)
+From:   Song Liu <songliubraving@fb.com>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
+        <kernel-team@fb.com>, Song Liu <songliubraving@fb.com>,
+        <syzbot+4f98876664c7337a4ae6@syzkaller.appspotmail.com>,
+        <stable@vger.kernel.org>
+Subject: [PATCH bpf-next] bpf: reject too big ctx_size_in for raw_tp test run
+Date:   Tue, 12 Jan 2021 15:42:54 -0800
+Message-ID: <20210112234254.1906829-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <20210112075520.4103414-1-andrii@kernel.org> <20210112075520.4103414-6-andrii@kernel.org>
- <4155ef59-9e5e-f596-f22b-ecd4bde73e85@iogearbox.net>
-In-Reply-To: <4155ef59-9e5e-f596-f22b-ecd4bde73e85@iogearbox.net>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 12 Jan 2021 15:18:59 -0800
-Message-ID: <CAADnVQLjv3iLT3yWyR8tK7kAU8sM1giW_cbMcHHQpDCMigivgQ@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 5/7] bpf: support BPF ksym variables in kernel modules
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Kernel Team <kernel-team@fb.com>, Hao Luo <haoluo@google.com>,
-        Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-12_21:2021-01-12,2021-01-12 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
+ mlxscore=0 phishscore=0 spamscore=0 clxscore=1015 bulkscore=0
+ impostorscore=0 priorityscore=1501 lowpriorityscore=0 suspectscore=0
+ adultscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2101120135
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 8:30 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 1/12/21 8:55 AM, Andrii Nakryiko wrote:
-> > Add support for directly accessing kernel module variables from BPF programs
-> > using special ldimm64 instructions. This functionality builds upon vmlinux
-> > ksym support, but extends ldimm64 with src_reg=BPF_PSEUDO_BTF_ID to allow
-> > specifying kernel module BTF's FD in insn[1].imm field.
-> >
-> > During BPF program load time, verifier will resolve FD to BTF object and will
-> > take reference on BTF object itself and, for module BTFs, corresponding module
-> > as well, to make sure it won't be unloaded from under running BPF program. The
-> > mechanism used is similar to how bpf_prog keeps track of used bpf_maps.
-> >
-> > One interesting change is also in how per-CPU variable is determined. The
-> > logic is to find .data..percpu data section in provided BTF, but both vmlinux
-> > and module each have their own .data..percpu entries in BTF. So for module's
-> > case, the search for DATASEC record needs to look at only module's added BTF
-> > types. This is implemented with custom search function.
-> >
-> > Acked-by: Yonghong Song <yhs@fb.com>
-> > Acked-by: Hao Luo <haoluo@google.com>
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> [...]
-> > +
-> > +struct module *btf_try_get_module(const struct btf *btf)
-> > +{
-> > +     struct module *res = NULL;
-> > +#ifdef CONFIG_DEBUG_INFO_BTF_MODULES
-> > +     struct btf_module *btf_mod, *tmp;
-> > +
-> > +     mutex_lock(&btf_module_mutex);
-> > +     list_for_each_entry_safe(btf_mod, tmp, &btf_modules, list) {
-> > +             if (btf_mod->btf != btf)
-> > +                     continue;
-> > +
-> > +             if (try_module_get(btf_mod->module))
-> > +                     res = btf_mod->module;
->
-> One more thought (follow-up would be okay I'd think) ... when a module references
-> a symbol from another module, it similarly needs to bump the refcount of the module
-> that is owning it and thus disallowing to unload for that other module's lifetime.
-> That usage dependency is visible via /proc/modules however, so if unload doesn't work
-> then lsmod allows a way to introspect that to the user. This seems to be achieved via
-> resolve_symbol() where it records its dependency/usage. Would be great if we could at
-> some point also include the BPF prog name into that list so that this is more obvious.
-> Wdyt?
+syzbot reported a WARNING for allocating too big memory:
 
-I thought about it as well, but plenty of kernel things just grab the ref of ko
-and don't add any way to introspect what piece of kernel is holding ko.
-So this case won't be the first.
-Also if we add it for bpf progs it could be confusing in lsmod.
-Since it currently only shows other ko-s in there.
-Long ago I had an awk script to parse that output to rmmod dependent modules
-before rmmoding the main one. If somebody doing something like this
-bpf prog names in the same place may break things.
-So I think there are more cons than pros.
-That is certainly a follow up if we agree on the direction.
+WARNING: CPU: 1 PID: 8484 at mm/page_alloc.c:4976 __alloc_pages_nodemask+=
+0x5f8/0x730 mm/page_alloc.c:5011
+Modules linked in:
+CPU: 1 PID: 8484 Comm: syz-executor862 Not tainted 5.11.0-rc2-syzkaller #=
+0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
+oogle 01/01/2011
+RIP: 0010:__alloc_pages_nodemask+0x5f8/0x730 mm/page_alloc.c:4976
+Code: 00 00 0c 00 0f 85 a7 00 00 00 8b 3c 24 4c 89 f2 44 89 e6 c6 44 24 7=
+0 00 48 89 6c 24 58 e8 d0 d7 ff ff 49 89 c5 e9 ea fc ff ff <0f> 0b e9 b5 =
+fd ff ff 89 74 24 14 4c 89 4c 24 08 4c 89 74 24 18 e8
+RSP: 0018:ffffc900012efb10 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 1ffff9200025df66 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 0000000000140dc0
+RBP: 0000000000140dc0 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff81b1f7e1 R11: 0000000000000000 R12: 0000000000000014
+R13: 0000000000000014 R14: 0000000000000000 R15: 0000000000000000
+FS:  000000000190c880(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000=
+000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f08b7f316c0 CR3: 0000000012073000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+alloc_pages_current+0x18c/0x2a0 mm/mempolicy.c:2267
+alloc_pages include/linux/gfp.h:547 [inline]
+kmalloc_order+0x2e/0xb0 mm/slab_common.c:837
+kmalloc_order_trace+0x14/0x120 mm/slab_common.c:853
+kmalloc include/linux/slab.h:557 [inline]
+kzalloc include/linux/slab.h:682 [inline]
+bpf_prog_test_run_raw_tp+0x4b5/0x670 net/bpf/test_run.c:282
+bpf_prog_test_run kernel/bpf/syscall.c:3120 [inline]
+__do_sys_bpf+0x1ea9/0x4f10 kernel/bpf/syscall.c:4398
+do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x440499
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f=
+7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 =
+ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffe1f3bfb18 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440499
+RDX: 0000000000000048 RSI: 0000000020000600 RDI: 000000000000000a
+RBP: 00000000006ca018 R08: 0000000000000000 R09: 00000000004002c8
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401ca0
+R13: 0000000000401d30 R14: 0000000000000000 R15: 0000000000000000
+
+This is because we didn't filter out too big ctx_size_in. Fix it by
+rejecting ctx_size_in that are bigger than MAX_BPF_FUNC_ARGS (12) u64
+numbers.
+
+Reported-by: syzbot+4f98876664c7337a4ae6@syzkaller.appspotmail.com
+Fixes: 1b4d60ec162f ("bpf: Enable BPF_PROG_TEST_RUN for raw_tracepoint")
+Cc: stable@vger.kernel.org # v5.10+
+Signed-off-by: Song Liu <songliubraving@fb.com>
+---
+ net/bpf/test_run.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index 23dfb2010ba69..58bcb8c849d54 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -272,7 +272,8 @@ int bpf_prog_test_run_raw_tp(struct bpf_prog *prog,
+ 	    kattr->test.repeat)
+ 		return -EINVAL;
+=20
+-	if (ctx_size_in < prog->aux->max_ctx_offset)
++	if (ctx_size_in < prog->aux->max_ctx_offset ||
++	    ctx_size_in > MAX_BPF_FUNC_ARGS * sizeof(u64))
+ 		return -EINVAL;
+=20
+ 	if ((kattr->test.flags & BPF_F_TEST_RUN_ON_CPU) =3D=3D 0 && cpu !=3D 0)
+--=20
+2.24.1
+
