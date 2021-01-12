@@ -2,96 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1AD72F39D8
-	for <lists+bpf@lfdr.de>; Tue, 12 Jan 2021 20:18:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 710882F39FB
+	for <lists+bpf@lfdr.de>; Tue, 12 Jan 2021 20:24:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727622AbhALTRQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jan 2021 14:17:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42730 "EHLO
+        id S2406659AbhALTVo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jan 2021 14:21:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727474AbhALTRQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jan 2021 14:17:16 -0500
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47E20C061575;
-        Tue, 12 Jan 2021 11:16:36 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id r63so3185868ybf.5;
-        Tue, 12 Jan 2021 11:16:36 -0800 (PST)
+        with ESMTP id S2406339AbhALTVg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jan 2021 14:21:36 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B82C061575;
+        Tue, 12 Jan 2021 11:20:55 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id 18so3212290ybx.2;
+        Tue, 12 Jan 2021 11:20:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=TNPja6jXIGq6+WeUuKATWjnFXyMnNMz8ngrg6c9AKD0=;
-        b=uu1jt8YOQDPTwOiEnroeayfpLf1D92LEYOVacbYjPt7p1jd1Bvcazv++l6w76EcvQl
-         8Ri5Nrg1mP+zTo3mOK1ffdacadGEQc1nX5JwphjAYug/LqWFJLoUugg6g1sxqakQL/7O
-         bnLWHRE7q2JsHX21JKEr7axULwLP33NkO4hGyhKV+cn8k+OsZfydt9jNdAxTlgpgbbLY
-         ul8Kp6VqDzBBeazvgy++vwNbMq91IWBHQMh42KM8BQofGjU5icKldisJjcgvnwhpd4bK
-         PcJ2a21kBGwuq/xtaQSW+lNBX1ZlAua8LTMks2aXJwJaN4wwO9k/9GbBevIsuCad/hKT
-         fEtQ==
+        bh=ZrTMphAgvKGFr3hAFtVF+wajAgM4bFVoddK5qIwsbyc=;
+        b=J6yRObelgfU5yGXUdqTqomuf/z5BR4lUT7iSK6vMilj9Pq5nz9362BCeRX8uLrkKCM
+         Pgr6lxRBB3LsB2aDJmhWIMZxAPT225qnotZnDv/zjUICqsiaqS8MmzgSYlRNP+T80qY1
+         ST9z+qjPe1CJHKlftbvwmWAF4gPdRekb33NdRIMzVr7CwxRdxES4+B6VIQC6t+y6f0mv
+         dSnaYTmK6pDLftjPjcxv+in6ABkqoUbNfk70yQl27kQkU6xP7VJ5wv+Xsqo5a+i5HI6Y
+         nvX3pjkgRDyTee7ZL92iM6xQtZjog/i2I+DH1q7nqCJtppaIJOPAleLWlBNWf5p4dvLJ
+         LeLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=TNPja6jXIGq6+WeUuKATWjnFXyMnNMz8ngrg6c9AKD0=;
-        b=hO9ty3cVPQ2zhtyy2cBn7pVoPlGTse8w3MBixyvpdfCwiQNmtDRoWE4Rz5qR91UEg4
-         D2ZdTYP3kt+VU/MsAFlsEVUpsDQmFlMFNBN5b7l7IBBOI61gCLv30EuNWLS3IpzD40Sa
-         Y+wm1zOwUr1KHGxDBGjcbaHOhtYbYOxMR3SVS7IT6OdnelPqzek6yQtiU0WEl3c/OD0F
-         Xmo3UC7nFa/KANbWRSjrDfbT/oZSFXTZ3q0DedEJ5x+UM5U3qqELinw9pq2t9Fjrxtoc
-         XoE5gZ4SrQSwaAmq2RyphM04OFjijIRyewpDuHR2eC18fRdvUfGkrd1HQ9Hr5RvJ63Pf
-         J1OQ==
-X-Gm-Message-State: AOAM531dOoEz7VE+b0NE5Ojvfn3JJNZNrnM55PMtxcP4uQgVHLSDGLDl
-        7yT2XSKpyIFnL2OBp5A4ThYlTe4DT67ZMQQiIEQ=
-X-Google-Smtp-Source: ABdhPJzTE6XLD/0GklQqhkz7rye4/VfeOf2y6g9GJzivBRrxewispiOrvdTApjZZOWVE9JPafLpEoj49Wa3GkV6FN2c=
-X-Received: by 2002:a25:9882:: with SMTP id l2mr1232712ybo.425.1610478995598;
- Tue, 12 Jan 2021 11:16:35 -0800 (PST)
+        bh=ZrTMphAgvKGFr3hAFtVF+wajAgM4bFVoddK5qIwsbyc=;
+        b=LjJmNzTNXQkvx95Kv6m6qMetM1KP18GAfI6RX9RZoX9NWd2VujfoYLnzXjDmEJPLJr
+         eaHW3NQjvT7DBd+A7J9ihAg76wFwgByPDG2PazdXGLfgxmBKYOmLaaE35kBNU7qZ9m3M
+         k/SV0FJPAsidd549JAN/c6biftVhna2LHy6O3cu4AsbQSm6hOiDVj6pemBDq/nxZRo3a
+         KtLa0tNWz4wvAIVv7eiPjW9KFRVu+s1in0PQ8d2HOgapvLyW5ZFZB/PauNGct+9jZF4l
+         GkUjOyxGGq5JdVHecAcjZxYIZ9innCKv5LzhmQsoOkwPa7S5YsARZnuChplDWwgDLLPk
+         xaMg==
+X-Gm-Message-State: AOAM533T6uCTJ6GEPiw8xJ2UBkdFSVz0q8My7kbl1j/7comE9Bp8KqC4
+        D9/Dk087vz5j+hmwRa+ZlxVKIlj2s4sJVPXnWBI=
+X-Google-Smtp-Source: ABdhPJzAQUHegCWhIDDPhnwHCb0DygblHYglh2gu4mH7P0xO7QvDuAjQ0h/ihd9erYiwJpK9SSyB8u642q8kR6e1Tik=
+X-Received: by 2002:a25:854a:: with SMTP id f10mr1342097ybn.510.1610479255239;
+ Tue, 12 Jan 2021 11:20:55 -0800 (PST)
 MIME-Version: 1.0
-References: <20210112123913.2016804-1-jackmanb@google.com>
-In-Reply-To: <20210112123913.2016804-1-jackmanb@google.com>
+References: <20210112184004.1302879-1-jolsa@kernel.org>
+In-Reply-To: <20210112184004.1302879-1-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 12 Jan 2021 11:16:24 -0800
-Message-ID: <CAEf4BzYoJ4oAH8UL0n4_RWsxCiPiC04KALvf0Gpy+t-AzS26rg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Fix a verifier message for alloc size
- helper arg
-To:     Brendan Jackman <jackmanb@google.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
+Date:   Tue, 12 Jan 2021 11:20:44 -0800
+Message-ID: <CAEf4BzZc0-csgmOP=eAvSP5uVYkKiYROAWtp8hwJcYA1awhVJw@mail.gmail.com>
+Subject: Re: [PATCH] btf_encoder: Add extra checks for symbol names
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Hao Luo <haoluo@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Tom Stellard <tstellar@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 4:39 AM Brendan Jackman <jackmanb@google.com> wrote:
+On Tue, Jan 12, 2021 at 10:43 AM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> The error message here is misleading, the argument will be rejected
-> unless it is a known constant.
+> When processing kernel image build by clang we can
+> find some functions without the name, which causes
+> pahole to segfault.
 >
-> Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> Adding extra checks to make sure we always have
+> function's name defined before using it.
+>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
-
-LGTM.
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
->  kernel/bpf/verifier.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  btf_encoder.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
 >
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 17270b8404f1..5534e667bdb1 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -4319,7 +4319,7 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
->                         err = mark_chain_precision(env, regno);
->         } else if (arg_type_is_alloc_size(arg_type)) {
->                 if (!tnum_is_const(reg->var_off)) {
-> -                       verbose(env, "R%d unbounded size, use 'var &= const' or 'if (var < const)'\n",
-> +                       verbose(env, "R%d is not a known constant'\n",
->                                 regno);
->                         return -EACCES;
->                 }
+> diff --git a/btf_encoder.c b/btf_encoder.c
+> index 333973054b61..17f7a14f2ef0 100644
+> --- a/btf_encoder.c
+> +++ b/btf_encoder.c
+> @@ -72,6 +72,8 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym)
 >
-> base-commit: e22d7f05e445165e58feddb4e40cc9c0f94453bc
+>         if (elf_sym__type(sym) != STT_FUNC)
+>                 return 0;
+> +       if (!elf_sym__name(sym, btfe->symtab))
+> +               return 0;
+
+elf_sym__name() is called below again, so might be better to just use
+local variable to store result?
+
+>
+>         if (functions_cnt == functions_alloc) {
+>                 functions_alloc = max(1000, functions_alloc * 3 / 2);
+> @@ -730,9 +732,11 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
+>                 if (!has_arg_names(cu, &fn->proto))
+>                         continue;
+>                 if (functions_cnt) {
+> -                       struct elf_function *func;
+> +                       const char *name = function__name(fn, cu);
+> +                       struct elf_function *func = NULL;
+>
+> -                       func = find_function(btfe, function__name(fn, cu));
+> +                       if (name)
+> +                               func = find_function(btfe, name);
+
+isn't this a more convoluted way of writing:
+
+name = function__name(fn, cu);
+if (!name)
+    continue;
+
+func = find_function(btfe, name);
+if (!func || func->generated)
+    continue
+
+?
+
+>                         if (!func || func->generated)
+>                                 continue;
+>                         func->generated = true;
 > --
-> 2.30.0.284.gd98b1dd5eaa7-goog
+> 2.26.2
 >
