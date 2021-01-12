@@ -2,61 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60F352F316F
-	for <lists+bpf@lfdr.de>; Tue, 12 Jan 2021 14:26:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 564CB2F325A
+	for <lists+bpf@lfdr.de>; Tue, 12 Jan 2021 15:00:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728166AbhALNTn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jan 2021 08:19:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39356 "EHLO mail.kernel.org"
+        id S2387771AbhALN62 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jan 2021 08:58:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46656 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726259AbhALNTn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jan 2021 08:19:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7718122CAF
-        for <bpf@vger.kernel.org>; Tue, 12 Jan 2021 13:19:02 +0000 (UTC)
+        id S1733040AbhALN62 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jan 2021 08:58:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 64A0F23121
+        for <bpf@vger.kernel.org>; Tue, 12 Jan 2021 13:57:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610457542;
-        bh=QxlCETtS32k+LPaY4zcT2sQ1SLQcnpm7zzvGTTnqbqo=;
+        s=k20201202; t=1610459867;
+        bh=32mjZmvr99YZ2ZjlfD7HsnznEEvDSHHruXjw3VsZ0VQ=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=o1BGpwDgszIQ84SVFvKUiBRPzgymnLd1mZEIV9uBxRv5pn8MVHSU+hWSusJ4TEg4Y
-         KZN8RLZCDCKHWVW1MbRFovNc/unm6SJhYDZrGtwoagT7utSdRiLsJ1SBDStIg52Bya
-         q+rP9XwtkVMuMHB6VhDCAqCmAaEuHXCn0d4bAl5/o/F9QuoOtI/LKEbRgzxXFGiI2t
-         Q0mKnU4n/OIKurtHNlRi0uUcUaVwZp31mAf68rWQq/YcFObjxlhVdyDs5dtkHPRYUh
-         yEQ+jDq5PmCBuW+Ny2kyVJjxR85LFEjb4lkIR1YXByYHccoU5rTmr9Hi7/CAtqZWuN
-         BsrJcYIDdkqKw==
-Received: by mail-lj1-f180.google.com with SMTP id b10so2796976ljp.6
-        for <bpf@vger.kernel.org>; Tue, 12 Jan 2021 05:19:02 -0800 (PST)
-X-Gm-Message-State: AOAM532goL8RZU80CwLi1MWYsSERl77bspTGaj+b/Nr4EShxuAm70SY7
-        3Wqw/WPSsfVQbcJeVBD38Z3Mi3XvxWa+0JaYGJJbSg==
-X-Google-Smtp-Source: ABdhPJxDGMjjn+fCOS2eJetLCjYzgB4ZdWzfeMVxV9oCWbuQAobM2wY6nLdXx6Y05vz40WLfAvac9VF/ZcMI2yCDeOQ=
-X-Received: by 2002:a2e:b5dc:: with SMTP id g28mr2024861ljn.112.1610457540650;
- Tue, 12 Jan 2021 05:19:00 -0800 (PST)
+        b=W2NtxHVPH8MzbUWyPsOnJp3puvcXOx/dsEqpHV97DsvlSIwoKNIHOYUZx1izqavul
+         UfUL8ofomV16jEG6JPaOUbgt6l/yyI8jZz/DTyJUcABQ0XFOpMubWffKaR5ULxv57Q
+         Kw1LTHsLq7x6kerp65fFYGN3cGcqc1ocXHUkQHI1fVUv6Hm1WPDrn/+mLYBf4JrC+G
+         LgU6rqWmBntOgwyK//CNFQgE1sr2HyqHG6YfLAKl5SIBOyfQUfb+qxYH0jqD/s7UK+
+         tYSOyqbOIufD165R4RjS0WTUmEOJfE5p9UIGDC1IBYY1A3vPCKEDo5NBVkUNh2uwY6
+         ep46rgfnvLGCA==
+Received: by mail-lf1-f46.google.com with SMTP id b26so3466789lff.9
+        for <bpf@vger.kernel.org>; Tue, 12 Jan 2021 05:57:47 -0800 (PST)
+X-Gm-Message-State: AOAM533KR63Amf05HP73cNK2tl6j/CC3R/6VtMf3W6YHi8B45Fum1Hl6
+        eUhNaCvIiMLn4/D6FrC8I8nS3kv8+aLPxJpIDEmwgA==
+X-Google-Smtp-Source: ABdhPJxn242iE48rbeSlKPBc7+QElLLFF9RgADzJ2HR6gzm3TEa7ZLEbUM/7xxEqwAfgWRGWf/uGGERze61AzLnI7yo=
+X-Received: by 2002:a19:810:: with SMTP id 16mr2312202lfi.233.1610459865578;
+ Tue, 12 Jan 2021 05:57:45 -0800 (PST)
 MIME-Version: 1.0
-References: <20210112123422.2011234-1-jackmanb@google.com>
-In-Reply-To: <20210112123422.2011234-1-jackmanb@google.com>
+References: <20210112091403.10458-1-gilad.reti@gmail.com>
+In-Reply-To: <20210112091403.10458-1-gilad.reti@gmail.com>
 From:   KP Singh <kpsingh@kernel.org>
-Date:   Tue, 12 Jan 2021 14:18:48 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ55cA5STdeeXuhNEAmNi3QzLznirm1onkXHQyAJqcL_-A@mail.gmail.com>
-Message-ID: <CACYkzJ55cA5STdeeXuhNEAmNi3QzLznirm1onkXHQyAJqcL_-A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Clarify return value of probe str helpers
-To:     Brendan Jackman <jackmanb@google.com>
+Date:   Tue, 12 Jan 2021 14:57:34 +0100
+X-Gmail-Original-Message-ID: <CACYkzJ6DJ0NEm+qTBpMSJNFfgNHBFPZc=Ytj4w+4hY=Co4=0yg@mail.gmail.com>
+Message-ID: <CACYkzJ6DJ0NEm+qTBpMSJNFfgNHBFPZc=Ytj4w+4hY=Co4=0yg@mail.gmail.com>
+Subject: Re: [PATCH bpf 1/2] bpf: support PTR_TO_MEM{,_OR_NULL} register spilling
+To:     Gilad Reti <gilad.reti@gmail.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Florent Revest <revest@chromium.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Networking <netdev@vger.kernel.org>,
         open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 1:34 PM Brendan Jackman <jackmanb@google.com> wrote:
+On Tue, Jan 12, 2021 at 10:14 AM Gilad Reti <gilad.reti@gmail.com> wrote:
 >
-> When the buffer is too small to contain the input string, these
-> helpers return the length of the buffer, not the length of the
-> original string. This tries to make the docs totally clear about
-> that, since "the length of the [copied ]string" could also refer to
-> the length of the input.
+> Add support for pointer to mem register spilling, to allow the verifier
+> to track pointer to valid memory addresses. Such pointers are returned
+
+nit: pointers
+
+> for example by a successful call of the bpf_ringbuf_reserve helper.
 >
-> Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> This patch was suggested as a solution by Yonghong Song.
+
+You can use the "Suggested-by:" tag for this.
+
+>
+> The patch was partially contibuted by CyberArk Software, Inc.
+
+nit: typo *contributed
+
+Also, I was wondering if "partially" here means someone collaborated with you
+on the patch? And, in that case:
+
+"Co-developed-by:" would be a better tag here.
 
 Acked-by: KP Singh <kpsingh@kernel.org>
+
+
+>
+> Fixes: 457f44363a88 ("bpf: Implement BPF ring buffer and verifier
+> support for it")
+> Signed-off-by: Gilad Reti <gilad.reti@gmail.com>
+> ---
+>  kernel/bpf/verifier.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 17270b8404f1..36af69fac591 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -2217,6 +2217,8 @@ static bool is_spillable_regtype(enum bpf_reg_type type)
+>         case PTR_TO_RDWR_BUF:
+>         case PTR_TO_RDWR_BUF_OR_NULL:
+>         case PTR_TO_PERCPU_BTF_ID:
+> +       case PTR_TO_MEM:
+> +       case PTR_TO_MEM_OR_NULL:
+>                 return true;
+>         default:
+>                 return false;
+> --
+> 2.27.0
+>
