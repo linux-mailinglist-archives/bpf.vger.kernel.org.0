@@ -2,71 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A85662F3DCD
-	for <lists+bpf@lfdr.de>; Wed, 13 Jan 2021 01:44:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 585592F3DD8
+	for <lists+bpf@lfdr.de>; Wed, 13 Jan 2021 01:44:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438047AbhALVhT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jan 2021 16:37:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34992 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436897AbhALUUt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jan 2021 15:20:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id C69602311B;
-        Tue, 12 Jan 2021 20:20:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610482808;
-        bh=caIIJgBgqLrq++aVZ/Fjc3uNJEwQtrm6ZhN5o3vkT0k=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=cW4wcx/QQ/WdzP/1IaZoMZEgcyGsOkKPP3JsZkvlg+MdvK3uVZc3vvZQdeaHcWD5h
-         Karomr7NVwb1DgKD3LHXLv5YycdhlJ7THJ9KbaKqk7plcZgfENRVWcnbnyoZmIMd1b
-         pUTvpB5uGR/U0ERZNuuORN8HIb/94FrgV6K61Y8ahgg51EkrQVLxDr6VGS8ZKfBrx9
-         X+1G5qhsHEIKzeg0an6URhuaNS0ocyQwimEHmRIctSdkrH8vaUlvo611BBybfJ15WU
-         d3+reM8pcRjS8FFNjCoSaotbJ+xaf8wHMdCaaCOL8jsFWuaSU1IVXJWzxhOQx/70Mz
-         ItlG2MFQefBXQ==
-Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id B90A460354;
-        Tue, 12 Jan 2021 20:20:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S2436818AbhALVhU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jan 2021 16:37:20 -0500
+Received: from www62.your-server.de ([213.133.104.62]:58750 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436901AbhALUWb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jan 2021 15:22:31 -0500
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kzQAn-00072e-Gt; Tue, 12 Jan 2021 21:21:49 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kzQAn-0009jQ-8E; Tue, 12 Jan 2021 21:21:49 +0100
+Subject: Re: [PATCH bpf 1/2] bpf: support PTR_TO_MEM{,_OR_NULL} register
+ spilling
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Gilad Reti <gilad.reti@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210112091403.10458-1-gilad.reti@gmail.com>
+ <CAEf4BzY2ezxxeUbhMy-kw-zRv974JG2NAQ+2g5_rtVSn8EmNcw@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <c532894e-2934-b6ae-103d-ade0ed5b7792@iogearbox.net>
+Date:   Tue, 12 Jan 2021 21:21:48 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf 1/2] bpf: allow empty module BTFs
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161048280875.1131.14039972740532054006.git-patchwork-notify@kernel.org>
-Date:   Tue, 12 Jan 2021 20:20:08 +0000
-References: <20210110070341.1380086-1-andrii@kernel.org>
-In-Reply-To: <20210110070341.1380086-1-andrii@kernel.org>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
-        daniel@iogearbox.net, kernel-team@fb.com, chris@kode54.net
+In-Reply-To: <CAEf4BzY2ezxxeUbhMy-kw-zRv974JG2NAQ+2g5_rtVSn8EmNcw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26047/Tue Jan 12 13:33:56 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This series was applied to bpf/bpf.git (refs/heads/master):
-
-On Sat, 9 Jan 2021 23:03:40 -0800 you wrote:
-> Some modules don't declare any new types and end up with an empty BTF,
-> containing only valid BTF header and no types or strings sections. This
-> currently causes BTF validation error. There is nothing wrong with such BTF,
-> so fix the issue by allowing module BTFs with no types or strings.
+On 1/12/21 8:46 PM, Andrii Nakryiko wrote:
+> On Tue, Jan 12, 2021 at 1:14 AM Gilad Reti <gilad.reti@gmail.com> wrote:
+>>
+>> Add support for pointer to mem register spilling, to allow the verifier
+>> to track pointer to valid memory addresses. Such pointers are returned
+>> for example by a successful call of the bpf_ringbuf_reserve helper.
+>>
+>> This patch was suggested as a solution by Yonghong Song.
+>>
+>> The patch was partially contibuted by CyberArk Software, Inc.
+>>
+>> Fixes: 457f44363a88 ("bpf: Implement BPF ring buffer and verifier
+>> support for it")
 > 
-> Reported-by: Christopher William Snowhill <chris@kode54.net>
-> Fixes: 36e68442d1af ("bpf: Load and verify kernel module BTFs")
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> 
-> [...]
+> Surprised no one mentioned this yet. Fixes tag should always be on a
+> single unwrapped line, however long it is, please fix.
 
-Here is the summary with links:
-  - [bpf,1/2] bpf: allow empty module BTFs
-    https://git.kernel.org/bpf/bpf/c/bcc5e6162d66
-  - [bpf,2/2] libbpf: allow loading empty BTFs
-    https://git.kernel.org/bpf/bpf/c/b8d52264df85
+Especially for first-time contributors there is usually some luxury that we
+would have fixed this up on the fly while applying. ;) But given a v2 is going
+to be sent anyway it's good to point it out for future reference, agree.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Thanks,
+Daniel
