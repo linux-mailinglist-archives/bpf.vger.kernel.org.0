@@ -2,170 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DA642F2B40
-	for <lists+bpf@lfdr.de>; Tue, 12 Jan 2021 10:28:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E02A2F2D2C
+	for <lists+bpf@lfdr.de>; Tue, 12 Jan 2021 11:49:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390854AbhALJ1L (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jan 2021 04:27:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387783AbhALJ1K (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jan 2021 04:27:10 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 660FFC061575;
-        Tue, 12 Jan 2021 01:26:30 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id a12so1675520wrv.8;
-        Tue, 12 Jan 2021 01:26:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=VVyAtsTvxNsSXVa73xPOsWxQKIdaXYh6NzoQWrP8iMU=;
-        b=Z6Z875hkLRvzgWL/ZzG8QPQhpXx88/gJsvyRDwjO9AWQu8g/E+W0iuQykIMAUPtD1p
-         STKlbyB+ZxdWHbppxBA9ftAwTpxlFUHT8vHZsP0H2KwBxnJrZUX691fHPp2zJUXqU/bg
-         ceuMfaPnD+l/FcYEQ0yv0pKr/efYYsHzbRIg7nVxUi+Hgqt7YY+7jflmlB3P4Rlk75yj
-         xQ2QA4x6XPPY+CJKPc51gRVZLqK2uph8kDUccvm/lC95slKLXdbMgdFDCH1MzaoHCgZm
-         dtQqL4exinLIL0YA4Nj+hA0WCS63SR6LqlKwp6F5qUODeWaUhXkXmYqfskQJPW7LEfd1
-         mP1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=VVyAtsTvxNsSXVa73xPOsWxQKIdaXYh6NzoQWrP8iMU=;
-        b=bE1+XdzDrCXyUnp40r1Gl6fGBfaTZLlLQMwswFpa2EHP5y/n0Sf/5D3Hbx1eNAGwbG
-         Iq8wnQC2STN2tp5Y3XbP/HW8kS4pi85UAR/KrUicPW2a+dWAbnhLvXaSimzp7Abxt5Xk
-         ZWdXAZXIiF+4N+3iudqd3C1pl7+4Tk3kPFQPaJ8+8SKRgZSifdSXlmqvqaET/OyX6QuW
-         ZlWyHR6B6YTGf0b3An/BKDGyahXd0NaXlLsMlUYnqmn+Rj4eAWF1FM+Rf3DsZ7GnFRQC
-         Qpt9j/vjYacObuNCM1tdkND+3QrMbCj76fFKRB23h//L7hjvUmkJXvY2DM5zhNJwKhfX
-         BEoQ==
-X-Gm-Message-State: AOAM530Wx0bvPMKtEC6pA56Sqh16VoMyHE98B+3J34sO/MxVnnH7WJwC
-        O/ZUGIkIsOgGO5Ibu+AtPQTacZbYUEZlDsdy
-X-Google-Smtp-Source: ABdhPJywnImPJAdrTdhAhV+bV31DsHZJC4JdcFEKOo/L7jGJISmPPGX5t9ro50M1zxoNFS4Axiy/tA==
-X-Received: by 2002:a5d:4ad0:: with SMTP id y16mr3205828wrs.424.1610443588953;
-        Tue, 12 Jan 2021 01:26:28 -0800 (PST)
-Received: from ubuntu.localdomain (bzq-233-168-31-62.red.bezeqint.net. [31.168.233.62])
-        by smtp.googlemail.com with ESMTPSA id c6sm3869923wrh.7.2021.01.12.01.26.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 01:26:28 -0800 (PST)
-From:   Gilad Reti <gilad.reti@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     gilad.reti@gmail.com, Shuah Khan <shuah@kernel.org>,
+        id S1727989AbhALKr7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jan 2021 05:47:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55681 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726673AbhALKr7 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 12 Jan 2021 05:47:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610448392;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6UGpP/GOG7p8YqbEduT5rHYPzzcPgvWMqUPnCJMZHE4=;
+        b=AoMaaqefN9VGoU/HuJjntZDRh1rqCJchafms+byG9GaBW2jcfddyHrkCV9x2UGbqPt2YNj
+        wMw1yu8qwKZp8ZiAlOTuRDn1E3/EOfGopHh1ykVz41GnV6CgtsYy4Xuh85wgQWiU5OviJi
+        +uYVw1fNJwJ1arZr4acZqxj7jtiOTHs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-269-JXjMLP_CMCGn8tqskUz6yA-1; Tue, 12 Jan 2021 05:46:29 -0500
+X-MC-Unique: JXjMLP_CMCGn8tqskUz6yA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A602E801B14;
+        Tue, 12 Jan 2021 10:46:26 +0000 (UTC)
+Received: from krava (unknown [10.40.195.50])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 4B7BC77BE1;
+        Tue, 12 Jan 2021 10:46:23 +0000 (UTC)
+Date:   Tue, 12 Jan 2021 11:46:22 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Tom Stellard <tstellar@redhat.com>
+Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>, Yonghong Song <yhs@fb.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Song Liu <songliubraving@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, linux-kselftest@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf 2/2] selftests/bpf: add verifier test for PTR_TO_MEM spill
-Date:   Tue, 12 Jan 2021 11:26:14 +0200
-Message-Id: <20210112092615.10606-1-gilad.reti@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210112091403.10458-1-gilad.reti@gmail.com>
-References: <20210112091403.10458-1-gilad.reti@gmail.com>
+        KP Singh <kpsingh@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Subject: Re: Check pahole availibity and BPF support of toolchain before
+ starting a Linux kernel build
+Message-ID: <20210112104622.GA1283572@krava>
+References: <CA+icZUVuk5PVY4_HoCoY2ymd27UjuDi6kcAmFb_3=dqkvOA_Qw@mail.gmail.com>
+ <fa019010-9d7c-206c-d2c6-0893381f5913@fb.com>
+ <CA+icZUVm6ZZveqVoS83SVXe1nqkqZVRjLO+SK1_nXHKkgh4yPQ@mail.gmail.com>
+ <CAEf4BzaEA5aWeCCvHp7ASo9TdfotcBtqNGexirEynHDSo7ufgg@mail.gmail.com>
+ <CA+icZUVrF_LCVhELbNLA7=FzEZK4=jk3QLD9XT2w5bQNo=nnOA@mail.gmail.com>
+ <20210111223144.GA1250730@krava>
+ <ed779f29-18b9-218f-a937-878328a769fe@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ed779f29-18b9-218f-a937-878328a769fe@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add test to check that the verifier is able to recognize spilling of
-PTR_TO_MEM registers.
+On Mon, Jan 11, 2021 at 02:34:04PM -0800, Tom Stellard wrote:
+> On 1/11/21 2:31 PM, Jiri Olsa wrote:
+> > On Mon, Jan 11, 2021 at 10:30:22PM +0100, Sedat Dilek wrote:
+> > 
+> > SNIP
+> > 
+> > > > > 
+> > > > > Building a new Linux-kernel...
+> > > > > 
+> > > > > - Sedat -
+> > > > > 
+> > > > > [1] https://git.kernel.org/pub/scm/devel/pahole/pahole.git/
+> > > > > [2] https://github.com/ClangBuiltLinux/tc-build/issues/129#issuecomment-758026878
+> > > > > [3] https://github.com/ClangBuiltLinux/tc-build/issues/129#issuecomment-758056553
+> > > > 
+> > > > There are no significant bug fixes between pahole 1.19 and master that
+> > > > would solve this problem, so let's try to repro this.
+> > > > 
+> > > 
+> > > You are right pahole fom latest Git does not solve the issue.
+> > > 
+> > > + info BTFIDS vmlinux
+> > > + [  != silent_ ]
+> > > + printf   %-7s %s\n BTFIDS vmlinux
+> > >   BTFIDS  vmlinux
+> > > + ./tools/bpf/resolve_btfids/resolve_btfids vmlinux
+> > > FAILED: load BTF from vmlinux: Invalid argument
+> > 
+> > hm, is there a .BTF section in vmlinux?
+> > 
+> > is this working over vmlinux:
+> >   $ bpftool btf dump file ./vmlinux
+> > 
+> > do you have a verbose build output? I'd think pahole scream first..
+> > 
+> 
+> It does.  For me, pahole segfaults at scripts/link-vmlinux.sh:131.  This is
+> pretty easy for me to reproduce.  I have logs, what other information would
+> be helpful?  How about a pahole backtrace?
 
-The patch was partially contibuted by CyberArk Software, Inc.
+that'd be great.. I'll try to reproduce, but with the latest clang
+it will take me some time
 
-Signed-off-by: Gilad Reti <gilad.reti@gmail.com>
----
- tools/testing/selftests/bpf/test_verifier.c   | 12 +++++++-
- .../selftests/bpf/verifier/spill_fill.c       | 30 +++++++++++++++++++
- 2 files changed, 41 insertions(+), 1 deletion(-)
+jirka
 
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-index 777a81404fdb..f8569f04064b 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -50,7 +50,7 @@
- #define MAX_INSNS	BPF_MAXINSNS
- #define MAX_TEST_INSNS	1000000
- #define MAX_FIXUPS	8
--#define MAX_NR_MAPS	20
-+#define MAX_NR_MAPS	21
- #define MAX_TEST_RUNS	8
- #define POINTER_VALUE	0xcafe4all
- #define TEST_DATA_LEN	64
-@@ -87,6 +87,7 @@ struct bpf_test {
- 	int fixup_sk_storage_map[MAX_FIXUPS];
- 	int fixup_map_event_output[MAX_FIXUPS];
- 	int fixup_map_reuseport_array[MAX_FIXUPS];
-+	int fixup_map_ringbuf[MAX_FIXUPS];
- 	const char *errstr;
- 	const char *errstr_unpriv;
- 	uint32_t insn_processed;
-@@ -640,6 +641,7 @@ static void do_test_fixup(struct bpf_test *test, enum bpf_prog_type prog_type,
- 	int *fixup_sk_storage_map = test->fixup_sk_storage_map;
- 	int *fixup_map_event_output = test->fixup_map_event_output;
- 	int *fixup_map_reuseport_array = test->fixup_map_reuseport_array;
-+	int *fixup_map_ringbuf = test->fixup_map_ringbuf;
- 
- 	if (test->fill_helper) {
- 		test->fill_insns = calloc(MAX_TEST_INSNS, sizeof(struct bpf_insn));
-@@ -817,6 +819,14 @@ static void do_test_fixup(struct bpf_test *test, enum bpf_prog_type prog_type,
- 			fixup_map_reuseport_array++;
- 		} while (*fixup_map_reuseport_array);
- 	}
-+	if (*fixup_map_ringbuf) {
-+		map_fds[20] = create_map(BPF_MAP_TYPE_RINGBUF, 0,
-+					   0, 4096);
-+		do {
-+			prog[*fixup_map_ringbuf].imm = map_fds[20];
-+			fixup_map_ringbuf++;
-+		} while (*fixup_map_ringbuf);
-+	}
- }
- 
- struct libcap {
-diff --git a/tools/testing/selftests/bpf/verifier/spill_fill.c b/tools/testing/selftests/bpf/verifier/spill_fill.c
-index 45d43bf82f26..1833b6c730dd 100644
---- a/tools/testing/selftests/bpf/verifier/spill_fill.c
-+++ b/tools/testing/selftests/bpf/verifier/spill_fill.c
-@@ -28,6 +28,36 @@
- 	.result = ACCEPT,
- 	.result_unpriv = ACCEPT,
- },
-+{
-+	"check valid spill/fill, ptr to mem",
-+	.insns = {
-+	/* reserve 8 byte ringbuf memory */
-+	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
-+	BPF_LD_MAP_FD(BPF_REG_1, 0),
-+	BPF_MOV64_IMM(BPF_REG_2, 8),
-+	BPF_MOV64_IMM(BPF_REG_3, 0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_ringbuf_reserve),
-+	/* store a pointer to the reserved memory in R6 */
-+	BPF_MOV64_REG(BPF_REG_6, BPF_REG_0),
-+	/* check whether the reservation was successful */
-+	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 6),
-+	/* spill R6(mem) into the stack */
-+	BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_6, -8),
-+	/* fill it back in R7 */
-+	BPF_LDX_MEM(BPF_DW, BPF_REG_7, BPF_REG_10, -8),
-+	/* should be able to access *(R7) = 0 */
-+	BPF_ST_MEM(BPF_DW, BPF_REG_7, 0, 0),
-+	/* submit the reserved rungbuf memory */
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_7),
-+	BPF_MOV64_IMM(BPF_REG_2, 0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_ringbuf_submit),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.fixup_map_ringbuf = { 1 },
-+	.result = ACCEPT,
-+	.result_unpriv = ACCEPT,
-+},
- {
- 	"check corrupted spill/fill",
- 	.insns = {
--- 
-2.27.0
+> 
+> -Tom
+> 
+> > jirka
+> > 
+> 
 
