@@ -2,190 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F992F28E5
-	for <lists+bpf@lfdr.de>; Tue, 12 Jan 2021 08:27:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 635D22F28E8
+	for <lists+bpf@lfdr.de>; Tue, 12 Jan 2021 08:27:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731907AbhALH1P (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jan 2021 02:27:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730416AbhALH1P (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jan 2021 02:27:15 -0500
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DB50C061575;
-        Mon, 11 Jan 2021 23:26:35 -0800 (PST)
-Received: by mail-yb1-xb2b.google.com with SMTP id y4so1305324ybn.3;
-        Mon, 11 Jan 2021 23:26:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vNB71HyThzWfrEJHQ+MLv+jEXvSuEUzrCgPvp58QQ7Y=;
-        b=QA9VaTd7+rSUVgL8EEtAyKJMcg4xlaFA0IrdeST2S8O4QEQ70XOXPR0Y67jRdLmU9S
-         WP8LKoEoA/KriQa0OgCB0V8ZAm70Zr4/739s2TOcjZBJT0HrigP+5N9jiPu/+tsxIdYV
-         mAOzcznFcAJ8Ev2iBH2Brdhqkg9Jfze2bG4R4UsK16NvzT92BnKeYZO5iqIhqkNi2xuP
-         5ZZyjjBx+pqPI3Uxg3HnH3qlLNMzILRxA5yg/qIEjApHz0drPOHBB3YGvUi+Ya77Sb06
-         WJRyFj4uvI2bFyJ8pWteLSpnWmFx94eZWBndgWNytps/sS9APw6UB8EfhyGf/xSoPG+e
-         61Fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vNB71HyThzWfrEJHQ+MLv+jEXvSuEUzrCgPvp58QQ7Y=;
-        b=g4WTg7upHtMqbbv6VXmm7Dd5ci8IplTzdNif2tKwJ3HX5QelvDcS6EIs4U5QOkCF14
-         XH15a2opUindNfJxJol4dX6ZW7pzGUQ4eGvt4Dbi/5aHqcMo9tzZD2q7FD2ciDu8kHjv
-         kLN5x5N6HVLVi6PHFZVhBG9jK3f1LMVnEaLWtdFAF8SsbZH6HNMdi6ssrzTJ3bS+oAZi
-         zVNNHPLEp+2hK9ndoqlStZ1/n5jWocPJ3slmWEk4qfwx1uWEIc1vYr9NXBkp7iRpKKP3
-         XjgTwP+sLzj5lAfKXeKycX3RQ1XVyfF0kOsztgeak4H2yULFPSzOSfji/5XvI2mrw1A4
-         mWRQ==
-X-Gm-Message-State: AOAM5313kal1hjA3xCcY+ZlzGMM1GukaEjNmhuyhgEY8je8FigDAofT8
-        z5L2rc/aKSoshmJCW2xeKT5pxwvnV2I78M88ljE=
-X-Google-Smtp-Source: ABdhPJwmqp7QEpzslEopYGunjgcV5eopLlPZ5tq4kTXLnwarLECTPdzDWovPdcPZA7nzMM4/lmA+aqFeIiKKof51JT0=
-X-Received: by 2002:a25:854a:: with SMTP id f10mr4723037ybn.510.1610436394470;
- Mon, 11 Jan 2021 23:26:34 -0800 (PST)
-MIME-Version: 1.0
-References: <20210111182027.1448538-1-qais.yousef@arm.com> <20210111182027.1448538-3-qais.yousef@arm.com>
-In-Reply-To: <20210111182027.1448538-3-qais.yousef@arm.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 11 Jan 2021 23:26:23 -0800
-Message-ID: <CAEf4BzYwOAHGOiZBUx86yZ1ofwJ1WqCDR3dyRMrTeQa2ZU7ftA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] selftests: bpf: Add a new test for bare tracepoints
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        id S2391968AbhALH1b (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jan 2021 02:27:31 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:62010 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2391943AbhALH1b (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 12 Jan 2021 02:27:31 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 10C7DAFV030699;
+        Mon, 11 Jan 2021 23:26:38 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=J7RfQ5mQOdiBZgHmWumO6ULPqPpph9WTm71KAyiOhsA=;
+ b=b6XnFomNYbRxmpgzgHGw+XeB01JqdurtukA7Uv/m2fZIC1ZqKRu3ZCNUzaHTiKYDnwZv
+ YW4FSKNQZlnk5SB1Cn8CB16EQA+MAW+EpsQTFt1aB1wzyYr9Wsnicgt2LBgr7a1c3Jbl
+ Y0jlMYF/YM43bAduvakKH4ljPzSelZhaPF0= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 35y91rv69p-14
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 11 Jan 2021 23:26:38 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 11 Jan 2021 23:26:34 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IY7f0rAxljmYMQYLWh6pvVuK33HSPOfmNX+SWftm+MXyrbdzhMvcRmBAaHbXyBl5YAIsW+YOLufg+Hsd8a4MNkVqWQVl6BMY8bIAakuplhdzOLbsBqRs4VQ6FmQJZFNJlFyXyihkQ0YLIe5J/qzfDPTOD0MomOFpE0wgMIiEpB6B5cvONhVhLdSQXcPQc4Wu8KYZKlaUB4xSCLh7E1s3ob/X13da0FCmS+9EEjn1E8k6M549GlmD0rjQFwyMu6yz6FF1AcI17ruDik573T1OeHeLCDiUIIx1VYk1WXgG7NQowsfldqM4UDGcJ/RWReNsdQiA5HiH6o5GAC3s7Jn41g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J7RfQ5mQOdiBZgHmWumO6ULPqPpph9WTm71KAyiOhsA=;
+ b=L3lid6w/LYvPKrmB1IZeWn/gX+GZ8JMUJ8axI2WNXxowvohNoC2kLvCccz2WL0lUPG9c8yCuN42WtLW/Z4qElkaM0+I9FG4V9ocgda20YECFMQ40m79LaSh+lXroAgN+0a9ABkzPGm7/x0+rDTVBrCwXjgQQux4/98O5IUJWVDqUagvC0ah0plq496xfeD+sX8uvLWNbo3kx5yeABovYYdiUwlPipA3EyH5d7m3/GtJH3nbRKPHBlv2Xal2mIl7FsYJw2zYsYW11r2BsJEJy2DUb+omFzBlzSf1ZSrNvfzloXUfyUj3KZJ0QaUabdO+UStp3LEulKpzuZ+azWc2slQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=J7RfQ5mQOdiBZgHmWumO6ULPqPpph9WTm71KAyiOhsA=;
+ b=cXSG3TnWswAGUfiLPqoYY2JF72v4BkF5JUGr89zGKYitdSgbPvlBMzvmuG5QyXMsxq7DJZW5XujLnnZnhGmy9dDayi+tgQTyz0zKXQXPguvPXnzKlW0d/WfwGxWca1zxgNE0m3s04L+BCdpgFNWFh7VsSE0rLCEaN+VmdDMnAM4=
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by BYAPR15MB3191.namprd15.prod.outlook.com (2603:10b6:a03:107::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Tue, 12 Jan
+ 2021 07:26:32 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3742.012; Tue, 12 Jan 2021
+ 07:26:32 +0000
+Subject: Re: [PATCH bpf v2 3/3] bpf: Fix typo in bpf_inode_storage.c
+To:     KP Singh <kpsingh@kernel.org>, <bpf@vger.kernel.org>
+CC:     Andrii Nakryiko <andrii@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Martin KaFai Lau <kafai@fb.com>
+References: <20210111212340.86393-1-kpsingh@kernel.org>
+ <20210111212340.86393-4-kpsingh@kernel.org>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <03b9679a-d210-81a7-4aab-4beae626bac2@fb.com>
+Date:   Mon, 11 Jan 2021 23:26:26 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.0
+In-Reply-To: <20210111212340.86393-4-kpsingh@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2620:10d:c090:400::5:4443]
+X-ClientProxiedBy: MW4PR03CA0378.namprd03.prod.outlook.com
+ (2603:10b6:303:114::23) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21e1::190b] (2620:10d:c090:400::5:4443) by MW4PR03CA0378.namprd03.prod.outlook.com (2603:10b6:303:114::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Tue, 12 Jan 2021 07:26:29 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7bde5795-9fa9-42e6-1cdb-08d8b6cb6286
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3191:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB3191BAFBBF092EE79BA873F0D3AA0@BYAPR15MB3191.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:1247;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: MB6xzuT9hVrictvxTOwNwTNCqNUgCg3yCvCBx3aRUHVTspNngV44mr4xpjiBdAi06WkiQ8/guoam7MzOHUiKP9KqSKIQy5O+nrw1UET3jL9OmdI6JqhaUNn1h8cgIx17/c3UgKOPSpxog25O72vccK1vx08ANIPgDnCyNkn11YgI65NcUz2djyeQeVoxiWiw9gSxXQEzkBqjwlIbbZEsR3R+H1hsJbsoPXwPAO5PMh6WvXpmZSER80xA9bo8wuyf/g5coCQYpbB+K49nNJngipgP7bNh2OD4vcdIzA3zlD2wjxXRaAHiYwH3HZjiceC9s/pZUVoiOrDVcQ4Ks6GAud/ijiuLfAlaAjmVWnksBdyBo7ekGAwgUQOw23/Zu18N3S3fbSpz9ghGWDcseaNxtZvTCvtr09U9uI/rxzfp6v+FsfDcNYp9MlARBzTqEdMS71jq1uSsMI58+ZVn9Vh2E+blnAj+PQDpiwvqn0YZSDc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(39860400002)(346002)(366004)(396003)(2906002)(316002)(36756003)(8676002)(66946007)(66476007)(6486002)(53546011)(16526019)(6666004)(186003)(2616005)(66556008)(31696002)(31686004)(54906003)(478600001)(86362001)(8936002)(52116002)(5660300002)(4326008)(558084003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?Q1Vva2lTZUFDUGVralNMc3M4RlBiZlhmcFdnWUlCRndYc2tVVkdLVG10YnBQ?=
+ =?utf-8?B?WW1IYzNzdXVMQjVaN3FOblBWc20zQTdwT1JZakpZQy9HU2hsbkJZNk83MSt6?=
+ =?utf-8?B?SXYveFJnS0M4MmVJOXFuS2dIdG4wdEpvVE93b0hrSUtEWWkvWjg1ZHFlaWo5?=
+ =?utf-8?B?NkRSRTgwRW5HMUc4Y0VzbTB1U1pjME91cGwwVmRvaExMMGt5UFMxVU9pOGMw?=
+ =?utf-8?B?em1RSk9jOXE5TnJHMk9ieGM2R0ZZcHdRUXE2ZnVVeVJleGY2cHJnOVVhdkFV?=
+ =?utf-8?B?bE52OXV4TlBZRFhvamZNV3c0MG16d04yWW51OWpwaTFmSnE0YUxDM2hyV2N1?=
+ =?utf-8?B?RHpJR0FYajd1RmRTSkNlZFBkZ0NTNUN6c2hUM0JFY0JxRFdjUFMxVjB6YTJJ?=
+ =?utf-8?B?S2lvWGxPRnZRUnpIUzNST3JGYjRZd3pqSVdjR21ETnh4cnZmZk1GMjRsbjZ5?=
+ =?utf-8?B?c3NXQkN2SXhBNEVHYWF3RmZrZFhqWmIvWDRDVFh0d25ZaElmOGFQY0VhVDNL?=
+ =?utf-8?B?S0lqaDZVVGxVVXoyNGc5a0tsZGd3bVB4THp3dzhFTlkrNUdsTCtJc3R6VExP?=
+ =?utf-8?B?OWxSQU00VHhiRmhQcUVXY1ZmVzZsLytMc3JFM2pEM2tIMllkclhJNFF4NHhS?=
+ =?utf-8?B?YkJGUitWaGdTOUczZis1WFE1c1h5aGZBanFoMjZCaG5aanFsajB3WEVZWmJq?=
+ =?utf-8?B?SlJGWU5FN2VwSGpYM2tmV3lZa0JrVllBTnNCSlIrVnErdWtmK0c3TndmSmhB?=
+ =?utf-8?B?aml5VnpkZVZueUlwNmYvTEozNkVGbUtwdUhSdHB4ZEt3UDJXZEg1R081QUpn?=
+ =?utf-8?B?dDZaSVBYY20xK3hyK1M3MlJyV1NyQ2toK28yZUtQeml4T0NRSDM5a3hkOE1T?=
+ =?utf-8?B?SUs1MWRMc3hPRlJjbXJvVE1sTFNJdzM4S2ZCYXoya1dHWXBHU2FRcnhNOFlM?=
+ =?utf-8?B?N0prT3V5Sjh5Vy9FbWkrSExBMWNrNEJOYWdxb25IOTA5VFNpN1poKzlWZ1Iz?=
+ =?utf-8?B?bnVZTHQvMHc0NDZBN1lZTzlGdjFPNXpBZXVSczZVNXUrdUYxNExGOUhnZUhU?=
+ =?utf-8?B?NUwxOE9acEFuM1NTbW9BcnAvTGpJS3VuVktBdXlyNmV6UFlJTnJyM0wxMHRH?=
+ =?utf-8?B?ZlgyQmMxTFR1UTBxb2x2dzB5TkJ2bzA1QzVLL0Z6eU85QzhHb3NXOUxBWGhj?=
+ =?utf-8?B?ZkFVUlpiemMreUh3V09nUlRyeXFxa3dVMmQ0MkNRZVlVbmhVYmJKMTVqQ0R0?=
+ =?utf-8?B?NEt3RVNRdWFWQVdHT3RnRURFQ2NQMHMzUGlwR29GTGxISXdwTStjbEcrVUk4?=
+ =?utf-8?B?Z3QxUExBS3drcjF4L1JTd2E3SGJ4d3dIZmU0K3lxMjBaVWhHcklDUmpUZkQ3?=
+ =?utf-8?B?eFdyb2grb0JrWEE9PQ==?=
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2021 07:26:31.9288
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7bde5795-9fa9-42e6-1cdb-08d8b6cb6286
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: SlfcvbpcAI7no8HE+w2MbB3hQ5wg+vwjWxUcQOKlqwFhnAK+Zp9uWwbJXsBdRs4t
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3191
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-12_03:2021-01-11,2021-01-12 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ impostorscore=0 malwarescore=0 priorityscore=1501 adultscore=0
+ phishscore=0 lowpriorityscore=0 clxscore=1015 mlxlogscore=913 mlxscore=0
+ spamscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101120038
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 10:20 AM Qais Yousef <qais.yousef@arm.com> wrote:
->
-> Reuse module_attach infrastructure to add a new bare tracepoint to check
-> we can attach to it as a raw tracepoint.
->
-> Signed-off-by: Qais Yousef <qais.yousef@arm.com>
-> ---
->
-> Andrii
->
-> I was getting the error below when I was trying to run the test.
-> I had to comment out all related fentry* code to be able to test the raw_tp
-> stuff. Not sure something I've done wrong or it's broken for some reason.
-> I was on v5.11-rc2.
-
-Check that you have all the required Kconfig options from
-tools/testing/selftests/bpf/config. And also you will need to build
-pahole from master, 1.19 doesn't have some fixes that add kernel
-module support. I think pahole is the reasons why you have the failure
-below.
-
->
->         $ sudo ./test_progs -v -t module_attach
-
-use -vv when debugging stuff like that with test_progs, it will output
-libbpf detailed logs, that often are very helpful
-
->         bpf_testmod.ko is already unloaded.
->         Loading bpf_testmod.ko...
->         Successfully loaded bpf_testmod.ko.
->         test_module_attach:PASS:skel_open 0 nsec
->         test_module_attach:PASS:set_attach_target 0 nsec
->         test_module_attach:PASS:skel_load 0 nsec
->         libbpf: prog 'handle_fentry': failed to attach: ERROR: strerror_r(-524)=22
->         libbpf: failed to auto-attach program 'handle_fentry': -524
->         test_module_attach:FAIL:skel_attach skeleton attach failed: -524
->         #58 module_attach:FAIL
->         Successfully unloaded bpf_testmod.ko.
->         Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
->
-
-But even apart from test failure, there seems to be kernel build
-failure. See [0] for what fails in kernel-patches CI.
-
-   [0] https://travis-ci.com/github/kernel-patches/bpf/builds/212730017
 
 
->
->  .../selftests/bpf/bpf_testmod/bpf_testmod-events.h     |  6 ++++++
->  tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c  |  2 ++
->  tools/testing/selftests/bpf/prog_tests/module_attach.c |  1 +
->  tools/testing/selftests/bpf/progs/test_module_attach.c | 10 ++++++++++
->  4 files changed, 19 insertions(+)
->
-> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
-> index b83ea448bc79..e1ada753f10c 100644
-> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
-> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
-> @@ -28,6 +28,12 @@ TRACE_EVENT(bpf_testmod_test_read,
->                   __entry->pid, __entry->comm, __entry->off, __entry->len)
->  );
->
-> +/* A bare tracepoint with no event associated with it */
-> +DECLARE_TRACE(bpf_testmod_test_read_bare,
-> +       TP_PROTO(struct task_struct *task, struct bpf_testmod_test_read_ctx *ctx),
-> +       TP_ARGS(task, ctx)
-> +);
-> +
->  #endif /* _BPF_TESTMOD_EVENTS_H */
->
->  #undef TRACE_INCLUDE_PATH
-> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> index 2df19d73ca49..d63cebdaca44 100644
-> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> @@ -22,6 +22,8 @@ bpf_testmod_test_read(struct file *file, struct kobject *kobj,
->         };
->
->         trace_bpf_testmod_test_read(current, &ctx);
-> +       ctx.len++;
-> +       trace_bpf_testmod_test_read_bare(current, &ctx);
+On 1/11/21 1:23 PM, KP Singh wrote:
+> Fix "gurranteed" -> "guaranteed" in bpf_inode_storage.c
+> 
+> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: KP Singh <kpsingh@kernel.org>
 
-It's kind of boring to have two read tracepoints :) Do you mind adding
-a write tracepoint and use bare tracepoint there? You won't need this
-ctx.len++ hack as well. Feel free to add identical
-bpf_testmod_test_write_ctx (renaming it is more of a pain).
-
->
->         return -EIO; /* always fail */
->  }
-> diff --git a/tools/testing/selftests/bpf/prog_tests/module_attach.c b/tools/testing/selftests/bpf/prog_tests/module_attach.c
-> index 50796b651f72..7085a118f38c 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/module_attach.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/module_attach.c
-> @@ -50,6 +50,7 @@ void test_module_attach(void)
->         ASSERT_OK(trigger_module_test_read(READ_SZ), "trigger_read");
->
->         ASSERT_EQ(bss->raw_tp_read_sz, READ_SZ, "raw_tp");
-> +       ASSERT_EQ(bss->raw_tp_bare_read_sz, READ_SZ+1, "raw_tp_bare");
->         ASSERT_EQ(bss->tp_btf_read_sz, READ_SZ, "tp_btf");
->         ASSERT_EQ(bss->fentry_read_sz, READ_SZ, "fentry");
->         ASSERT_EQ(bss->fentry_manual_read_sz, READ_SZ, "fentry_manual");
-> diff --git a/tools/testing/selftests/bpf/progs/test_module_attach.c b/tools/testing/selftests/bpf/progs/test_module_attach.c
-> index efd1e287ac17..08aa157afa1d 100644
-> --- a/tools/testing/selftests/bpf/progs/test_module_attach.c
-> +++ b/tools/testing/selftests/bpf/progs/test_module_attach.c
-> @@ -17,6 +17,16 @@ int BPF_PROG(handle_raw_tp,
->         return 0;
->  }
->
-> +__u32 raw_tp_bare_read_sz = 0;
-> +
-> +SEC("raw_tp/bpf_testmod_test_read_bare")
-> +int BPF_PROG(handle_raw_tp_bare,
-> +            struct task_struct *task, struct bpf_testmod_test_read_ctx *read_ctx)
-> +{
-> +       raw_tp_bare_read_sz = BPF_CORE_READ(read_ctx, len);
-> +       return 0;
-> +}
-> +
->  __u32 tp_btf_read_sz = 0;
->
->  SEC("tp_btf/bpf_testmod_test_read")
-> --
-> 2.25.1
->
+Acked-by: Yonghong Song <yhs@fb.com>
