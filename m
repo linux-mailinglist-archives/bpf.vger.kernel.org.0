@@ -2,103 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 564CB2F325A
-	for <lists+bpf@lfdr.de>; Tue, 12 Jan 2021 15:00:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3339A2F3278
+	for <lists+bpf@lfdr.de>; Tue, 12 Jan 2021 15:02:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387771AbhALN62 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jan 2021 08:58:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46656 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733040AbhALN62 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jan 2021 08:58:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 64A0F23121
-        for <bpf@vger.kernel.org>; Tue, 12 Jan 2021 13:57:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610459867;
-        bh=32mjZmvr99YZ2ZjlfD7HsnznEEvDSHHruXjw3VsZ0VQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=W2NtxHVPH8MzbUWyPsOnJp3puvcXOx/dsEqpHV97DsvlSIwoKNIHOYUZx1izqavul
-         UfUL8ofomV16jEG6JPaOUbgt6l/yyI8jZz/DTyJUcABQ0XFOpMubWffKaR5ULxv57Q
-         Kw1LTHsLq7x6kerp65fFYGN3cGcqc1ocXHUkQHI1fVUv6Hm1WPDrn/+mLYBf4JrC+G
-         LgU6rqWmBntOgwyK//CNFQgE1sr2HyqHG6YfLAKl5SIBOyfQUfb+qxYH0jqD/s7UK+
-         tYSOyqbOIufD165R4RjS0WTUmEOJfE5p9UIGDC1IBYY1A3vPCKEDo5NBVkUNh2uwY6
-         ep46rgfnvLGCA==
-Received: by mail-lf1-f46.google.com with SMTP id b26so3466789lff.9
-        for <bpf@vger.kernel.org>; Tue, 12 Jan 2021 05:57:47 -0800 (PST)
-X-Gm-Message-State: AOAM533KR63Amf05HP73cNK2tl6j/CC3R/6VtMf3W6YHi8B45Fum1Hl6
-        eUhNaCvIiMLn4/D6FrC8I8nS3kv8+aLPxJpIDEmwgA==
-X-Google-Smtp-Source: ABdhPJxn242iE48rbeSlKPBc7+QElLLFF9RgADzJ2HR6gzm3TEa7ZLEbUM/7xxEqwAfgWRGWf/uGGERze61AzLnI7yo=
-X-Received: by 2002:a19:810:: with SMTP id 16mr2312202lfi.233.1610459865578;
- Tue, 12 Jan 2021 05:57:45 -0800 (PST)
+        id S1730437AbhALOCI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jan 2021 09:02:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730124AbhALOCH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jan 2021 09:02:07 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 461EAC061786
+        for <bpf@vger.kernel.org>; Tue, 12 Jan 2021 06:01:27 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id b2so2424652edm.3
+        for <bpf@vger.kernel.org>; Tue, 12 Jan 2021 06:01:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZiuFHB0WsN+gRbC8OTVe9py28UNmf6FiXJPro5M6bjE=;
+        b=qFIiKr5oesh+IVtPeybtrNvfu6BP7U879JZvvxTT1RrVIhAQ2lsHckogDBFKa+UAwv
+         dMyp6yk9roNcBA186JR0pLuDyUxP3rGxCvqTyJRDjvp1zj8e2WoAY+A9qE9OX0pXSCzn
+         GnVbnXALtp9I+P5C9StGAezoOXhMuIy3SOki5JMuf9CF2lR4ek9ADQJlvVs72EOOPpka
+         hNKUyyZcX0pO1aDQpLxocqoCCmbphp0ncrewGQmtaNrbgfmMKt44770GuewpiaSSi7a8
+         JC/iqhra1AIJqlCb83XqUjmeEO1+1ZC0TzjfCWl7NxXavxz4zn/IN/VqlwwmNQtcdywr
+         nSgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZiuFHB0WsN+gRbC8OTVe9py28UNmf6FiXJPro5M6bjE=;
+        b=j6CwGb3RJHogTPw1fQhey1YIHxm15T1hWsNN3mR88ssTKzmcXv73A4bFheOKt+uUrZ
+         g7bLhpob2hctvi2liun64X5jspoGH4O60ywOp6ZQfDicmAz6lQRcJtO5OOLkRkm3jgdN
+         dGHiA/nig06kFV/K9Emioh1cwHQg6ZMS8InzwEe2kWm/LoehpNr76NOGhGo2RDYLx6GG
+         6f8ljEtVmWbGY0d1NBdTgn3bXNPPyuCqQvzSaiOxjsiVXqch08Ys4+AlUG2bqKmt8hAE
+         cWAZfkGmzQZZz7HdUETjKroL4OY9iXaeULBwCRJy6C8+SMvoWOsZeEnYycmQyDpgN+i1
+         PB0A==
+X-Gm-Message-State: AOAM530tTvM2gGwB3AQhckO6CtpYmniYVAaqluvzSdQ9zvmclL0aQjOZ
+        c0zKDDL0U66zb6Rbgxrbqsap6dud7Uzg9Q==
+X-Google-Smtp-Source: ABdhPJxE8DxYmMrrRn9w4FKuoXGyJg1ojDZecw1ZcMFlHVMXoJnleDguzRfx4oKMjSuQW3ko5F2aLw==
+X-Received: by 2002:aa7:dacf:: with SMTP id x15mr3479477eds.134.1610460085481;
+        Tue, 12 Jan 2021 06:01:25 -0800 (PST)
+Received: from localhost.localdomain ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
+        by smtp.gmail.com with ESMTPSA id t19sm1227846ejc.62.2021.01.12.06.01.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 06:01:24 -0800 (PST)
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     bpf@vger.kernel.org
+Cc:     shuah@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+Subject: [PATCH bpf-next 0/5] selftests/bpf: Some build fixes
+Date:   Tue, 12 Jan 2021 14:59:55 +0100
+Message-Id: <20210112135959.649075-1-jean-philippe@linaro.org>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-References: <20210112091403.10458-1-gilad.reti@gmail.com>
-In-Reply-To: <20210112091403.10458-1-gilad.reti@gmail.com>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Tue, 12 Jan 2021 14:57:34 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ6DJ0NEm+qTBpMSJNFfgNHBFPZc=Ytj4w+4hY=Co4=0yg@mail.gmail.com>
-Message-ID: <CACYkzJ6DJ0NEm+qTBpMSJNFfgNHBFPZc=Ytj4w+4hY=Co4=0yg@mail.gmail.com>
-Subject: Re: [PATCH bpf 1/2] bpf: support PTR_TO_MEM{,_OR_NULL} register spilling
-To:     Gilad Reti <gilad.reti@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 10:14 AM Gilad Reti <gilad.reti@gmail.com> wrote:
->
-> Add support for pointer to mem register spilling, to allow the verifier
-> to track pointer to valid memory addresses. Such pointers are returned
+Following the build fixes for bpftool [1], here are a few fixes for
+cross-building the sefltests out of tree. This will enable wider
+automated testing on various Arm hardware.
 
-nit: pointers
+[1] https://lore.kernel.org/bpf/20201110164310.2600671-1-jean-philippe@linaro.org/
 
-> for example by a successful call of the bpf_ringbuf_reserve helper.
->
-> This patch was suggested as a solution by Yonghong Song.
+Jean-Philippe Brucker (5):
+  selftests/bpf: Enable cross-building
+  selftests/bpf: Fix out-of-tree build
+  selftests/bpf: Move generated test files to $(TEST_GEN_FILES)
+  selftests/bpf: Fix installation of urandom_read
+  selftests/bpf: Install btf_dump test cases
 
-You can use the "Suggested-by:" tag for this.
+ tools/testing/selftests/bpf/Makefile | 61 +++++++++++++++++++++-------
+ 1 file changed, 46 insertions(+), 15 deletions(-)
 
->
-> The patch was partially contibuted by CyberArk Software, Inc.
+-- 
+2.30.0
 
-nit: typo *contributed
-
-Also, I was wondering if "partially" here means someone collaborated with you
-on the patch? And, in that case:
-
-"Co-developed-by:" would be a better tag here.
-
-Acked-by: KP Singh <kpsingh@kernel.org>
-
-
->
-> Fixes: 457f44363a88 ("bpf: Implement BPF ring buffer and verifier
-> support for it")
-> Signed-off-by: Gilad Reti <gilad.reti@gmail.com>
-> ---
->  kernel/bpf/verifier.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 17270b8404f1..36af69fac591 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -2217,6 +2217,8 @@ static bool is_spillable_regtype(enum bpf_reg_type type)
->         case PTR_TO_RDWR_BUF:
->         case PTR_TO_RDWR_BUF_OR_NULL:
->         case PTR_TO_PERCPU_BTF_ID:
-> +       case PTR_TO_MEM:
-> +       case PTR_TO_MEM_OR_NULL:
->                 return true;
->         default:
->                 return false;
-> --
-> 2.27.0
->
