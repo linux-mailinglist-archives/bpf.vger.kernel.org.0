@@ -2,140 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75EF22F23A5
-	for <lists+bpf@lfdr.de>; Tue, 12 Jan 2021 01:33:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E8EA2F2531
+	for <lists+bpf@lfdr.de>; Tue, 12 Jan 2021 02:18:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403983AbhALAZz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 11 Jan 2021 19:25:55 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:34252 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2404194AbhAKXqS (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 11 Jan 2021 18:46:18 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 10BNb3FD011617;
-        Mon, 11 Jan 2021 15:45:13 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=92MmxKBpPYyiL7HP9pD3bc6NhWT8Y+mEjh2HAjQVgS4=;
- b=HOP8L0ZRrW1JUjG0nhgOi1QPl14569wLdweet50+YWae7Gx2MMc+Up958uUpcQPo2RPA
- hI3PHkVUWUF7910aQ6R4yJs4ChUKX7KQyk6x0x/3gGgu/6KQg9SzZBPnR5tJ0/He8jAK
- 0lthTaWjewfyUO1UObdGysFgoDaHYVN9X+0= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 35y91rtr1p-1
+        id S1730128AbhALA6v (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 11 Jan 2021 19:58:51 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:45660 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729918AbhALA6u (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 11 Jan 2021 19:58:50 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10C0rbVW020892;
+        Mon, 11 Jan 2021 16:57:54 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=RebCOYrShCa5KjEN04sY7dgqjKhUWnbj/gKkMFodSwQ=;
+ b=h3s+qjxfq4DH9OfFAnRzjuqdCpi9sNk3hyzu8BIZG72DoKBBAYWfsXUXvFY3B+sJk09T
+ wVdRpl669ErW118w+JXPHFtdL3/RpCE70oLmKsyCW32dFaVfpZ5flH4i6oTMqMW8og02
+ cpcrPmUbB6e9QCfAKI7dB9SQLZXuQ9FqEHE= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 35ywp97ynd-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 11 Jan 2021 15:45:13 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
+        Mon, 11 Jan 2021 16:57:54 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 11 Jan 2021 15:45:10 -0800
+ 15.1.1979.3; Mon, 11 Jan 2021 16:57:53 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RnOYWz31Cu4PFN+Lh8mnKRu/oWykqa4hUAvytdxmSQd9YEBumta4u41o9ELQ7QM00C5khHzrO/BVv48MWgjH5wC71HtXV1FPlLldtL9DhhtOZIgM9jf1ELggwI1zq1cinSb/IpwJ5GbDJ21jY4VYB2dPhhqmQRF2Ve4QPKDv3MDh9ZqzVt6eQx4sz/g4Lg58Hix5gVIuyFtFKgw3IfpFiSaGnTYTyq1Y9ikOxOjCV6jFxgb0uk7fL7l21nHuDR819cgVpO33Y0O/Zi3jdFV9RZaYFVwurpyV7UtY2MVexXVr8MzfaZz20Aud9kwKIK6TcSAMafgUcPPbZJZBSnCnWA==
+ b=UUg55eO6BezxV1hmAhfHpZHjxJOPuCD1gmsGQX/4sXsdI4sALvKuPqFxHCB305P14GLwpVecQe1Ioc/FMKXGhJmTSsThiG+pM3My9pgggP4gPOCkYeg0mRSO1ckH5JMNFa3mRD5lBK9/IM1omquM7GViyIrc6FQoN3cGpO9BrMybUC5qXG2Kyk/7q9smVM+0XRg21Nr+jhc1uHO8Bva951P+OHDDFL1qMkUyAK0L+/7z4ZVRSzBvyDUDq1I41XEo5sSXtwDnwLZmNKmnwYxppo0wh1npgkfCQYA6IbOMUP72qic99AGBDMsC6hvHr/xJdPjnYT6kYlgyTUUIEW+qDQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=92MmxKBpPYyiL7HP9pD3bc6NhWT8Y+mEjh2HAjQVgS4=;
- b=eQoRctKMyVGqOJybI5Mo/r4HB/NNeHf6rmmmMo3UhuSTAHarWOy9LDQ8w2FTInWyOKvPdrUUZdVjJM3K/Ax0vA3r/2Uri4qC5TTBt4OoyQB83H/ibDIMUPDPBe2gqIXnGZU7+7TuJCviqS9Vz9luUR4wQ1n1It7pk7dfX93i7wEJ0jwwIwnq+adl0vH7fg8ZQYMyOlrpB2CBk8qXNRk99O2BQ5DlKMVC9E0mtyI+UAVvLhOJKXV7lTbSFb2dqcRqPL9GYSSp0vAKwR7cLVXJeSqSkel1warUZoqh1P3uq5MU3OWmIAy0Yjux516YoPLJZTjxm26oBTK0hP/SDK4NiA==
+ bh=nz19FXml8BqBVlgMKzkG2XgjgQF5k5y1uUJsaUD5ZmU=;
+ b=cz7orbkP0lpLzegM/gtoR5B2od2ubJtKEnI+P6xYXqRipaZNWf2XJCT6Wy6LTyrBNMHYPqlIrV+lpDTkoJjTzd5xON4bZ/gWvXBOrUY9wCfMny8wY0A4jJUuMdeC/nj6MgDW4rVCTGcL0m7uzq5kr67o9LfydgBSNnU28mrjtokL0p2YhriKVgQqDC0ke0458yKiZyS4HR7Zbwe6EE3OF5eIldAIfijC2YRF5MNbH9YOGPcc0NuDznSUTXc+sc43xk0yWf/OhxGWrIIqzozZgtMh9BLLQKaXGfQ+geYZWE7lVpsMSDPhLBr8IOAK9RyiK6/lssh5oocK10nfnVbowQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=92MmxKBpPYyiL7HP9pD3bc6NhWT8Y+mEjh2HAjQVgS4=;
- b=hMpcACyG/S7rjC+0GwcpcoCRW4F/iSP/0ZnFY9z2Sy7HXYoQ68lrBz30+Ceobwyt1Sz3q5r/R4DUQ3GANnBZuM0I6IFBTOkcbTO54S6dsc++uYjTeh2F5zr0EF0wEQbleSxhjwwHNBEmVDYM4N+1R8MLouaVXdSuWLyY2CGRwZ0=
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com (2603:10b6:a03:fa::12)
- by BYAPR15MB2840.namprd15.prod.outlook.com (2603:10b6:a03:b2::25) with
+ bh=nz19FXml8BqBVlgMKzkG2XgjgQF5k5y1uUJsaUD5ZmU=;
+ b=YN1HupkA3rv11IzFTTpDw2XEQ6jPJh8e7dUWhXLNSo8SH7TqkZ2SShs0Dez27V0aEs5N6hNIuKmiYGHXRkcm9OvTodWnOw8MQzOTUmwZVHzTxPknHODnqwuOPKUKXo+aeS3jmT9554n1IAGlF1sk/4eiEf3uL8wt0NjfuvnTaEc=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by BY5PR15MB3716.namprd15.prod.outlook.com (2603:10b6:a03:1b4::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Mon, 11 Jan
- 2021 23:45:08 +0000
-Received: from BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::c97:58e4:ee9:1dc0]) by BYAPR15MB2999.namprd15.prod.outlook.com
- ([fe80::c97:58e4:ee9:1dc0%7]) with mapi id 15.20.3742.012; Mon, 11 Jan 2021
- 23:45:08 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Martin Lau <kafai@fb.com>
-CC:     KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.12; Tue, 12 Jan
+ 2021 00:57:51 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3742.012; Tue, 12 Jan 2021
+ 00:57:51 +0000
+Subject: Re: Check pahole availibity and BPF support of toolchain before
+ starting a Linux kernel build
+To:     <sedat.dilek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Kernel Team <Kernel-team@fb.com>, Hao Luo <haoluo@google.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH bpf-next 1/4] bpf: enable task local storage for tracing
- programs
-Thread-Topic: [PATCH bpf-next 1/4] bpf: enable task local storage for tracing
- programs
-Thread-Index: AQHW5hbxN1bu8adE10+5MJhm5YS4VaoiytsAgAAsZICAAAZZAIAAHdAA
-Date:   Mon, 11 Jan 2021 23:45:08 +0000
-Message-ID: <9FF8CA8D-2D52-4120-99A5-86A68704BF4C@fb.com>
-References: <20210108231950.3844417-1-songliubraving@fb.com>
- <20210108231950.3844417-2-songliubraving@fb.com>
- <20210111185650.hsvfpoqmqc2mj7ci@kafai-mbp.dhcp.thefacebook.com>
- <CACYkzJ4mQrx1=owwrgBtu1Nvy9t0W4qP4=dthEutKpWPHxHrBw@mail.gmail.com>
- <20210111215820.t4z4g4cv66j7piio@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20210111215820.t4z4g4cv66j7piio@kafai-mbp.dhcp.thefacebook.com>
-Accept-Language: en-US
+        KP Singh <kpsingh@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Tom Stellard <tstellar@redhat.com>
+References: <CA+icZUVuk5PVY4_HoCoY2ymd27UjuDi6kcAmFb_3=dqkvOA_Qw@mail.gmail.com>
+ <fa019010-9d7c-206c-d2c6-0893381f5913@fb.com>
+ <CA+icZUVm6ZZveqVoS83SVXe1nqkqZVRjLO+SK1_nXHKkgh4yPQ@mail.gmail.com>
+ <CAEf4BzaEA5aWeCCvHp7ASo9TdfotcBtqNGexirEynHDSo7ufgg@mail.gmail.com>
+ <CA+icZUVrF_LCVhELbNLA7=FzEZK4=jk3QLD9XT2w5bQNo=nnOA@mail.gmail.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <cb37bffa-b2c7-4395-40eb-2d39f5570214@fb.com>
+Date:   Mon, 11 Jan 2021 16:57:47 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.0
+In-Reply-To: <CA+icZUVrF_LCVhELbNLA7=FzEZK4=jk3QLD9XT2w5bQNo=nnOA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3654.40.0.2.32)
-x-originating-ip: [2620:10d:c090:400::5:f14a]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 27fe9898-8847-47f0-d063-08d8b68aee10
-x-ms-traffictypediagnostic: BYAPR15MB2840:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR15MB28404DD0251812356B2A5E8DB3AB0@BYAPR15MB2840.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:5797;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: AB5au2YQ4XdrG8ONG/8BF5hQkA4bXhRQXU5dLp1KaPl5RvSWDcAKIOlx7H06b4nx5sxTOsZE36mF1APzTuQXOh/md0Qn37EiRYnS570nTc33GMSsyXzt1rsCOUPX4/vbsK6eTCWKXrXAkMuXXJjlXMkrGUH8fRTpHY9z4fwRsZ40ayG9XvAbeiTpMLTr1d2dPB1/9zFd7890WfaWuAQybqHElx4ZUBXvIjYgYCfWh3F8Fq3SC5MGUAep9mSmQRCvNGV2e4gCIy1jmhSag6Cq64xhsttV4cNt4AewUsQTESRGJ9RXC9DBR3AdQMB3dtjKZHrkoJiidMtOtbH8nfgJZXThHomT8gFvBnfoT2gmqjV/f9PcGgBIIBYRj4jT0O4Xd4/iYoPwoww5mUMFl17fjKMx48Hl9wPEncGJU96bbZZoxWTQ+tS+NQdiDnVzhcFc
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2999.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(376002)(366004)(346002)(396003)(83380400001)(478600001)(91956017)(6862004)(76116006)(186003)(6636002)(86362001)(6506007)(2906002)(66946007)(53546011)(64756008)(2616005)(8676002)(37006003)(6512007)(8936002)(66446008)(33656002)(6486002)(71200400001)(36756003)(54906003)(66476007)(7416002)(5660300002)(316002)(66556008)(4326008)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?yXLYh3/cDVwY10f7Wv+I8mEkb98YJQ9cP9AsOWyV9MTEgC1nFtS/dlxlJSyx?=
- =?us-ascii?Q?gMEXCaV74PAySgar3adMSxAQDbGjmDv9syh6l8e1o/+P6VsXscXqOxuNl64p?=
- =?us-ascii?Q?U4inO5DoFWuFW2dL3cnx+9Ld6cnNVdbSLLA7FXNNKoWHv7IFjFaec1O/6e8Q?=
- =?us-ascii?Q?T22d6j2G0G76/CMVD21JPWq2mVYCSjKVXZxeKrKDPy8oQ/cBcayg9A9nnsYt?=
- =?us-ascii?Q?CPDzyA6f0amlbjnAxFs2D+JjMHcBGDBsOzHPw3V2pag1TF2WYNUZEVFTDS2i?=
- =?us-ascii?Q?ljCAhpaYuod5Pt8qryQKUhDrlp8BYijQQHI/tMsUU/MA1/tf/rH7kp6mMAWU?=
- =?us-ascii?Q?Gz3N+iWlpAm6EUBhnLaHkq+mYw8yHNJfLCEak6EzoYSyH4NGrlmEcUTTPmaJ?=
- =?us-ascii?Q?L7UBcGxJXHbSAzQCSZ7PWSSOUmA0sDKr7tNgyU8g00oBIpFj9JxaAiSE98Pn?=
- =?us-ascii?Q?CSqBWlf1L2HjFsS4/JVFTcuwJncYhIJmiWpc2w4HdSuo8VorpJwx5kS4u1+F?=
- =?us-ascii?Q?NYjw+AeFlA0zasUr6PpxjhJ0LYmPDwURxoDqKJhebEyVEUF8j/ZmiwPmTg1K?=
- =?us-ascii?Q?pNrE39LUbZ7T7p30OajQ8wK1/JRhsxI3NVF92VFZyl06GYUmIAmdPkaTiEyj?=
- =?us-ascii?Q?3JOCY9s5eXiTaYQyxyMeWl7C0Q8Wlh4ZTnNJn3dmBt/iywyjg2VRSFEg7Eu4?=
- =?us-ascii?Q?DIgv5gZ+1rdiLRUOVJ++BlYdR0sVKrcZLD+XRuS85eWo1QRHLl9jjI5SJwe0?=
- =?us-ascii?Q?pQgcTU4neh/C4DpXNU9i/hdkVn7furclvV9o09yN7RpThi1p/uHjrqOxT/eW?=
- =?us-ascii?Q?g1BJcgSzkSXEQflT1ec2SDOvzSetEKkirmFQWSg+OAc5uD5Pcdf5bkNPynOr?=
- =?us-ascii?Q?jYiIOVhzE+vfE0nJHA6FhS7wC9KF1jxhgW6xqQinjF/Ixm/jXlFs5k7FZdyx?=
- =?us-ascii?Q?KJu/OA2Uyb/tG+jq+txZ4KXoZyb3OSTtrIPD/NTT1bqUcbm0UWuZkkDOZpKf?=
- =?us-ascii?Q?X1YUePi5yqZ5KouCr9B1yPWGg/wcqsMTo5pTtTdHqUeAP4k=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <BFA576BA74F20F4F95BA05FE88566B3C@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+X-Originating-IP: [2620:10d:c090:400::5:7b7c]
+X-ClientProxiedBy: MW4PR04CA0180.namprd04.prod.outlook.com
+ (2603:10b6:303:85::35) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21e1::190b] (2620:10d:c090:400::5:7b7c) by MW4PR04CA0180.namprd04.prod.outlook.com (2603:10b6:303:85::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Tue, 12 Jan 2021 00:57:49 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 174feca5-cfa0-4107-ee21-08d8b695167c
+X-MS-TrafficTypeDiagnostic: BY5PR15MB3716:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY5PR15MB3716A62926A9BA6B742D3C33D3AA0@BY5PR15MB3716.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: MDXGgxWst84wUNjsClDzD/wbPbQYuWwKAcTtDRFuav62+nAymYMB+uQ9bvg9kQWJ6VBQbrJ6b8OuXpHQzZIs+rVV0KXSH49NtWdDtTsl9GqxGk+Ivo7FDBWCXRUw6dZdNbpDpcVr+3q3a8VaE5UztJRa1+HxTwn2TxU47cEF1ypLrHvqmcZPegmtQR7kLu1FFFrdhNFHn/3EIjlaekDjgisy5awST74HcFaS378bubFYWvZiTs9sUl49jvIACh3R+QgJ/vJlKUtR2Xg+PrLBCypplx8k6zWhrQA7bycXyIk+ge9WlpGdQCvLqjTwt2u6E5pZx1rpjISOCmFq8xepypfkAoUC+3kYeKo/Mniz9IvW0G767nzuRmyB1Adtk/J/UNE7OGuSvXSR2fFQ1B2Tc0NxRts244sbtxNi2E55J9P7aspdJbJ9fyrn6ucTsphZVGRwxjHhGU2ghjNNesqgP/HlstND51groF8SUTjAh7KcehS1QWKXo3YKF4//5A2IOiPffJo3xCX1dZnUm4/LE/DAoQKNPL1of5eiawimPoeq9KGN3PkauhwHbC3rZVfH
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(39860400002)(346002)(396003)(366004)(8676002)(52116002)(478600001)(2906002)(966005)(86362001)(8936002)(53546011)(2616005)(4326008)(31696002)(16526019)(316002)(66946007)(186003)(31686004)(66556008)(36756003)(66476007)(5660300002)(6486002)(83380400001)(7416002)(6916009)(54906003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?andrY21iSTIzWHE2dUJ5TDhIekdxTEtGZEY1NTRPRmdYS1BGeDRoZStwVG9p?=
+ =?utf-8?B?aUxRNU1YRnV6QjhaTG5HUHUxYnhTL21TRzB2SVBBdlRhNVFLUEJZalp5a0NG?=
+ =?utf-8?B?T2hxNkErKzlrNjA4R296S0E3S1p0d0hkTGRQdDcwakxYVlRyZGpEdWIvR1hr?=
+ =?utf-8?B?a0lGMHM5S2l4c1M3MHd0MDRhZ3gzWHhld0NxMmMrbUFSVlJSSmlZWmNiWkNq?=
+ =?utf-8?B?bXZJMUZKK1BsMFkxWFkyZTNydXI5bHFxYW0rVTlYb2VodHZYT1JGK1M2em1X?=
+ =?utf-8?B?eG9GNVZzaGFBSVQ2bTJQNGtkem9CbXYrNnhCYzBXR2VubFFIRkhrZlhQTWpW?=
+ =?utf-8?B?VkY0LytZelZORzlzbWhUM3N3TlRNWTlLVXpid1hsbDFJRmI5VUR2ekhkdWNV?=
+ =?utf-8?B?RE9EZEpYaCtMRHN5UWJNRVpCV1prby8xM0YrRVNIeVBHZjcwejNSdWdlK0FD?=
+ =?utf-8?B?UHNJTEZzSVM4QnMxakZ1VG1QY1JxbXB0WjJCd1Jtd1RwZms3aFFybTY0ZVdp?=
+ =?utf-8?B?L25nMjhXWVZ3T2N6UHAzTEY2a3B2a010T2dLYmdpTXBkVER0OVJTTzcwK3Mx?=
+ =?utf-8?B?K0FIcjFjWFdWUjd5bDFqL1BjTDQ5VmVTNGJxd09kTHBLamtBTmtZS0t2enZR?=
+ =?utf-8?B?OXNZeXRPQ2xlMDRzaE9zMXZVdmhYdG1wVm81VW56QkE2YnFZS1ZrTmJvNElo?=
+ =?utf-8?B?dkZlN0RjclhWUVNCbmNNUkdTYWt1Wi9CT2ptdFdCMW8vWXJUT3VrNjhsYzFa?=
+ =?utf-8?B?ZjF2UEw1ZHFRaWVOVW5PQ09DZHNNTWh2WEplT3J2SXZEYmRVZGxYbDZwSThk?=
+ =?utf-8?B?YWttQ2l6eFpsaTV1NHprNkFZTHBKa0xOeDJPb1I5cDczSVFYRE5yM3VSWmE5?=
+ =?utf-8?B?ZVlyZ1hOY28wUGY5UTA4WklVZTgwTWYyZ24zNTZONi9WVTU3UGR6MFVCelNS?=
+ =?utf-8?B?K0VuNDlTT3o1Y0haYUxyWm1VeG1mUHJTcWFqSTFXR25aUWtURHY3bDJrM3hq?=
+ =?utf-8?B?aXQ1bElGUWpOSFJ5cFZVSld6WEdNZTB6TWNaNDdQa3dvVXdocy8xaUhlQ29p?=
+ =?utf-8?B?S1cvZExvWlN5YUYzSkJXTzdYUFhxSWZ1SEJLSkE0b2lYN2JZcmNtbkZBbktr?=
+ =?utf-8?B?RnRzNzNuRHF3NWFJMko3S20zK2hoUmhHZnVybC9vMnRmeU5oMWlRcnJsMU56?=
+ =?utf-8?B?Rk0yOVNCa2NPSTRGdk10TjlJWVA0aHJ6Nm0yUEYxa04weFRIZE53YXFyQlov?=
+ =?utf-8?B?aVhOb1hsWDlyK21GOXBURTdLb0dIZEh5N2p2dHpnVXVJeEdqZDFFSm0xUlNG?=
+ =?utf-8?B?QmR0MnBBYXd0WHdjNFN5S2o5aytJUG9lK1F2YzJZcitPbDJWSTFWY3dsbGZD?=
+ =?utf-8?B?TUNYMi9tTHZUUmc9PQ==?=
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2999.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 27fe9898-8847-47f0-d063-08d8b68aee10
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jan 2021 23:45:08.7637
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2021 00:57:51.5724
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: G/kO6LdDpE5oyuUObwXHW7neFgltSPNnYkvDoAQDUEf/68gfBTj8aB4bzPHvnVNoeywHPtdscWE6r6Zvn4kZIA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2840
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-Network-Message-Id: 174feca5-cfa0-4107-ee21-08d8b695167c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Rti96YQf3/LwTe2ls1gmdZWh0Hu3QvFrOShtChFJjhoHW0WVzBfrHUT1z3+pb3EI
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3716
 X-OriginatorOrg: fb.com
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 3 URL's were un-rewritten
+MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
  definitions=2021-01-11_34:2021-01-11,2021-01-11 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- impostorscore=0 malwarescore=0 priorityscore=1501 adultscore=0
- phishscore=0 lowpriorityscore=0 clxscore=1015 mlxlogscore=999 mlxscore=0
- spamscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101110135
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ priorityscore=1501 suspectscore=0 clxscore=1011 malwarescore=0 bulkscore=0
+ impostorscore=0 lowpriorityscore=0 mlxlogscore=999 adultscore=0
+ spamscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101120001
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -143,99 +152,172 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-> On Jan 11, 2021, at 1:58 PM, Martin Lau <kafai@fb.com> wrote:
->=20
-> On Mon, Jan 11, 2021 at 10:35:43PM +0100, KP Singh wrote:
->> On Mon, Jan 11, 2021 at 7:57 PM Martin KaFai Lau <kafai@fb.com> wrote:
->>>=20
->>> On Fri, Jan 08, 2021 at 03:19:47PM -0800, Song Liu wrote:
->>>=20
->>> [ ... ]
->>>=20
->>>> diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_sto=
-rage.c
->>>> index dd5aedee99e73..9bd47ad2b26f1 100644
->>>> --- a/kernel/bpf/bpf_local_storage.c
->>>> +++ b/kernel/bpf/bpf_local_storage.c
->>>> @@ -140,17 +140,18 @@ static void __bpf_selem_unlink_storage(struct bp=
-f_local_storage_elem *selem)
->>>> {
->>>>      struct bpf_local_storage *local_storage;
->>>>      bool free_local_storage =3D false;
->>>> +     unsigned long flags;
->>>>=20
->>>>      if (unlikely(!selem_linked_to_storage(selem)))
->>>>              /* selem has already been unlinked from sk */
->>>>              return;
->>>>=20
->>>>      local_storage =3D rcu_dereference(selem->local_storage);
->>>> -     raw_spin_lock_bh(&local_storage->lock);
->>>> +     raw_spin_lock_irqsave(&local_storage->lock, flags);
->>> It will be useful to have a few words in commit message on this change
->>> for future reference purpose.
->>>=20
->>> Please also remove the in_irq() check from bpf_sk_storage.c
->>> to avoid confusion in the future.  It probably should
->>> be in a separate patch.
->>>=20
->>> [ ... ]
->>>=20
->>>> diff --git a/kernel/bpf/bpf_task_storage.c b/kernel/bpf/bpf_task_stora=
-ge.c
->>>> index 4ef1959a78f27..f654b56907b69 100644
->>>> diff --git a/kernel/fork.c b/kernel/fork.c
->>>> index 7425b3224891d..3d65c8ebfd594 100644
->>> [ ... ]
->>>=20
->>>> --- a/kernel/fork.c
->>>> +++ b/kernel/fork.c
->>>> @@ -96,6 +96,7 @@
->>>> #include <linux/kasan.h>
->>>> #include <linux/scs.h>
->>>> #include <linux/io_uring.h>
->>>> +#include <linux/bpf.h>
->>>>=20
->>>> #include <asm/pgalloc.h>
->>>> #include <linux/uaccess.h>
->>>> @@ -734,6 +735,7 @@ void __put_task_struct(struct task_struct *tsk)
->>>>      cgroup_free(tsk);
->>>>      task_numa_free(tsk, true);
->>>>      security_task_free(tsk);
->>>> +     bpf_task_storage_free(tsk);
->>>>      exit_creds(tsk);
->>> If exit_creds() is traced by a bpf and this bpf is doing
->>> bpf_task_storage_get(..., BPF_LOCAL_STORAGE_GET_F_CREATE),
->>> new task storage will be created after bpf_task_storage_free().
->>>=20
->>> I recalled there was an earlier discussion with KP and KP mentioned
->>> BPF_LSM will not be called with a task that is going away.
->>> It seems enabling bpf task storage in bpf tracing will break
->>> this assumption and needs to be addressed?
->>=20
->> For tracing programs, I think we will need an allow list where
->> task local storage can be used.
-> Instead of whitelist, can refcount_inc_not_zero(&tsk->usage) be used?
+On 1/11/21 1:30 PM, Sedat Dilek wrote:
+> On Mon, Jan 11, 2021 at 10:03 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+>>
+>> On Mon, Jan 11, 2021 at 9:56 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+>>>
+>>> On Mon, Jan 11, 2021 at 5:05 PM Yonghong Song <yhs@fb.com> wrote:
+>>>>
+>>>>
+>>>>
+>>>> On 1/11/21 4:48 AM, Sedat Dilek wrote:
+>>>>> Hi BPF maintainers and Mashiro,
+>>>>>
+>>>>> Debian started to use CONFIG_DEBUG_INFO_BTF=y.
+>>>>>
+>>>>> My kernel-build fails like this:
+>>>>>
+>>>>> + info BTFIDS vmlinux
+>>>>> + [  != silent_ ]
+>>>>> + printf   %-7s %s\n BTFIDS vmlinux
+>>>>>    BTFIDS  vmlinux
+>>>>> + ./tools/bpf/resolve_btfids/resolve_btfids vmlinux
+>>>>> FAILED: load BTF from vmlinux: Invalid argument
+>>>>>
+>>>>> The root cause is my selfmade LLVM toolchain has no BPF support.
+>>>>
+>>>> linux build should depend on LLVM toolchain unless you use LLVM to build
+>>>> kernel.
+>>>>
+>>>>>
+>>>>> $ which llc
+>>>>> /home/dileks/src/llvm-toolchain/install/bin/llc
+>>>>>
+>>>>> $ llc --version
+>>>>> LLVM (http://llvm.org/  ):
+>>>>>    LLVM version 11.0.1
+>>>>>    Optimized build.
+>>>>>    Default target: x86_64-unknown-linux-gnu
+>>>>>    Host CPU: sandybridge
+>>>>>
+>>>>>    Registered Targets:
+>>>>>      x86    - 32-bit X86: Pentium-Pro and above
+>>>>>      x86-64 - 64-bit X86: EM64T and AMD64
+>>>>>
+>>>>> Debian's llc-11 shows me BPF support is built-in.
+>>>>>
+>>>>> I see the breakag approx. 3 hours after the start of my kernel-build -
+>>>>> in the stage "vmlinux".
+>>>>> After 2 faulures in my build (2x 3 hours of build-time) I have still
+>>>>> no finished Linux v5.11-rc3 kernel.
+>>>>> This is a bit frustrating.
+>>>>
+>>>> You mean "BTFIDS  vmlinux" takes more than 3 hours here?
+>>>> Maybe a bug in resolve_btfids due to somehow different ELF format
+>>>> resolve_btfids need to handle?
+>>>>
+>>>
+>>> [ CC Tom ]
+>>>
+>>> OMG no.
+>>>
+>>> 3 hours up to running scripts/link-vmlinux.sh.
+>>>
+>>> In the meantime I have built a LLVM toolchain with BPF support.
+>>>
+>>> $ llc --version
+>>> LLVM (http://llvm.org/ ):
+>>>   LLVM version 11.0.1
+>>>   Optimized build.
+>>>   Default target: x86_64-unknown-linux-gnu
+>>>   Host CPU: sandybridge
+>>>
+>>>   Registered Targets:
+>>>     bpf    - BPF (host endian)
+>>>     bpfeb  - BPF (big endian)
+>>>     bpfel  - BPF (little endian)
+>>
+>> As Yonghong mentioned, you don't need BPF target support in Clang to
+>> build the kernel, so the issue is elsewhere. It's somewhere between
+>> generated DWARF (we've seen multiple bugs in DWARF over time),
+>> pahole's BTF output and resolve_btfids's handling of that BTF. I've
+>> CC'ed Jiri, who can help with resolve_btfids.
+>>
+>> Meanwhile, if you can provide SHA from which you built Clang, kernel
+>> config you used, and probably exact invocation of the build you used,
+>> it would help reproduce the issue.
+>>
+> 
+> OK, I see I have here DWARF v5 support patchset applied and enabled.
+> 
+> Furthermore: I applied latest clang-cfi.
+> 
+> This is with LLVM v11.0.1 final aka 43ff75f2c3feef64f9d73328230d34dac8832a91.
 
-I think we can put refcount_inc_not_zero() in bpf_task_storage_get, like:
+Did you use llvm to compile kernel? If this is the case, latest pahole 
+will segfault. I am using latest trunk llvm. It is possible that 
+generated dwarf with llvm is different from generated dwarf with gcc
+and pahole did not process it correctly. I did not get time to
+debug this though.
 
-diff --git i/kernel/bpf/bpf_task_storage.c w/kernel/bpf/bpf_task_storage.c
-index f654b56907b69..93d01b0a010e6 100644
---- i/kernel/bpf/bpf_task_storage.c
-+++ w/kernel/bpf/bpf_task_storage.c
-@@ -216,6 +216,9 @@ BPF_CALL_4(bpf_task_storage_get, struct bpf_map *, map,=
- struct task_struct *,
-         * by an RCU read-side critical section.
-         */
-        if (flags & BPF_LOCAL_STORAGE_GET_F_CREATE) {
-+               if (!refcount_inc_not_zero(&task->usage))
-+                       return -EBUSY;
-+
-                sdata =3D bpf_local_storage_update(
-                        task, (struct bpf_local_storage_map *)map, value,
-                        BPF_NOEXIST);
-
-But where shall we add the refcount_dec()? IIUC, we cannot add it to=20
-__put_task_struct().=20
-
-Thanks,
-Song=
+> 
+> My kernel-config is attached.
+> 
+> [1] https://patchwork.kernel.org/project/linux-kbuild/patch/20201204011129.2493105-1-ndesaulniers@google.com/
+> [2] https://patchwork.kernel.org/project/linux-kbuild/patch/20201204011129.2493105-2-ndesaulniers@google.com/
+> [3] https://github.com/samitolvanen/linux/commits/clang-cfi
+> 
+>>>     x86    - 32-bit X86: Pentium-43ff75f2c3feef64f9d73328230d34dac8832a91
+> Pro and above
+>>>     x86-64 - 64-bit X86: EM64T and AMD64
+>>>
+>>> Tom reported BTF issues with pahole v1.19 (see [2] and [3]):
+>>> "I ran into this same bug trying to build the Fedora kBROKEN_5-11-rc3-CONFIG_DEBUG_INFO_BTF-y-FAILED-load-BTF-from-vmlinux.txt
+> ernel. The
+>>> problem is that pahole segfaults at: scripts/link-vmlinux.sh:131. This
+>>> looks to me like a bug in pahole."
+>>>
+>>> pahole ToT (post v1.19) offers some BTF fixes - I have manually build
+>>> and use it.
+>>>
+>>> Building a new Linux-kernel...
+>>>
+>>> - Sedat -
+>>>
+>>> [1] https://git.kernel.org/pub/scm/devel/pahole/pahole.git/
+>>> [2] https://github.com/ClangBuiltLinux/tc-build/issues/129#issuecomment-758026878
+>>> [3] https://github.com/ClangBuiltLinux/tc-build/issues/129#issuecomment-758056553
+>>
+>> There are no significant bug fixes between pahole 1.19 and master that
+>> would solve this problem, so let's try to repro this.
+>>
+> 
+> You are right pahole fom latest Git does not solve the issue.
+> 
+> + info BTFIDS vmlinux
+> + [  != silent_ ]
+> + printf   %-7s %s\n BTFIDS vmlinux
+>   BTFIDS  vmlinux
+> + ./tools/bpf/resolve_btfids/resolve_btfids vmlinux
+> FAILED: load BTF from vmlinux: Invalid argument
+> 
+> - Sedat -
+> 
+>>>
+>>>
+>>>
+>>>>>
+>>>>> What about doing pre-checks - means before doing a single line of
+>>>>> compilation - to check for:
+>>>>> 1. Required binaries
+>>>>> 2. Required support of whatever feature in compiler, linker, toolchain etc.
+>>>>>
+>>>>> Recently, I fell over depmod binary not found in my PATH - in one of
+>>>>> the last steps (modfinal) of the kernel build.
+>>>>>
+>>>>> Any ideas to improve the situation?
+>>>>> ( ...and please no RTFM, see links below. )
+>>>>>
+>>>>> Thanks.
+>>>>>
+>>>>> Regards,
+>>>>> - Sedat -
+>>>>>
+>>>>>
+>>>>> [0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/scripts/link-vmlinux.sh#n144
+>>>>> [1] https://salsa.debian.org/kernel-team/linux/-/commit/929891281c61ce4403ddd869664c949692644a2f
+>>>>> [2] https://www.kernel.org/doc/html/latest/bpf/bpf_devel_QA.html?highlight=pahole#llvm
+>>>>> [3] https://www.kernel.org/doc/html/latest/bpf/btf.html?highlight=pahole#btf-generation
+>>>>>
