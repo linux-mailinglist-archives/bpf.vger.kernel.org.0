@@ -2,58 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 660CF2F3464
-	for <lists+bpf@lfdr.de>; Tue, 12 Jan 2021 16:43:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64ECB2F3466
+	for <lists+bpf@lfdr.de>; Tue, 12 Jan 2021 16:46:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391926AbhALPnX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jan 2021 10:43:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52776 "EHLO
+        id S2390204AbhALPoB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jan 2021 10:44:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391925AbhALPnX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jan 2021 10:43:23 -0500
-Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99F87C061795
-        for <bpf@vger.kernel.org>; Tue, 12 Jan 2021 07:42:42 -0800 (PST)
-Received: by mail-wm1-x34a.google.com with SMTP id w204so640016wmb.1
-        for <bpf@vger.kernel.org>; Tue, 12 Jan 2021 07:42:42 -0800 (PST)
+        with ESMTP id S1727513AbhALPoB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jan 2021 10:44:01 -0500
+Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBDDEC0617A2
+        for <bpf@vger.kernel.org>; Tue, 12 Jan 2021 07:42:44 -0800 (PST)
+Received: by mail-wr1-x449.google.com with SMTP id w8so1319113wrv.18
+        for <bpf@vger.kernel.org>; Tue, 12 Jan 2021 07:42:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=4StJvEPcqpOoMaFQqXp2l4E4gqPLXrwP2qT6WBxKOzM=;
-        b=Alxp/7McXhYTRj4ejJtb24GbL7XVg9SRHlt2G3JYcMOF79DupYcmHMkpMBV3rA26lL
-         /t5W3RV9xFJTYTyzog+0/MA14nHuB+2z8uSslCINuDe4F9Z9NDg4EVm+QjsPIAHL+awx
-         cUJBZs88nezRLWlkujK8fNlx1M5fdL+P/0pU4bJujWoHXzl5x0ZEctucjpdRaytc/ULD
-         V8VivzQI/ByniVMebsIDDdapi5QgQx4tAXA2849ljJ4+913FTp0ftUwgjbZPjdDd74Rt
-         ru5FJctTCCOPTy5xiYvXft5ecFFIUouOM2CVWeAeL+erG+cLh62c++oeysHylF9Wj7z3
-         VQ/w==
+        bh=e3m9lxWPd1akNGwOE664d3Ddb1cr1DVVkpzRKRihJEs=;
+        b=RwUEjOYOfTGhlF9n+6uI36gGPxJutfvmCHnPnbf0DWHdej0SkQVwCzsQfQ6vvbSBM/
+         bqKwKEFzFJYf//XCDtfmzwW0Xn/jjZnnU/dPFeWvewXeuaQim4oYQMOTNTkkCQtIxsw+
+         bdxG2necjEFDvi90OWcee4/y8pL76o9HPf1nhn6vkmzTzoCdgWTCxCMuckYiTsmji01+
+         5YF3VbjKchPFOTQdVRGQt/jJhA5AIY8CTbzJg+G5rtc7olhrHQeGmsf03F4w5wNqZXaJ
+         ZZwsAHe4PzD/GEQJpYQvDJes3l3y+8koO12yWCneVhQpWQR0n1CqqOYgiD4B9tVhBYqL
+         B3CQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=4StJvEPcqpOoMaFQqXp2l4E4gqPLXrwP2qT6WBxKOzM=;
-        b=N3/tG8/uosGiwkILYNJGuypDHH5Qg7FWmVXnGwbf/v4mIj8kFsJNGfh2AudhvgbD5z
-         ImU1q3FKTvkjaP8VZLCei4h1yMNumRh8Tbxq8zVT7ny02IOPXE7BQxZY6xa3wBZvOg1y
-         0R6koNmVBOBDqSXx3OV7kaVXzYmcktL6kbNDMuhK585FrBMZ0DvQX02/aDEeF9PsxhWF
-         mNa/BrEuI8hUY9JrFrNeZTgF8WROnB6p8Q6fA69Ph9v5ygARV3bqvyOxzhAeUZlqSvqP
-         BwZgLk+qgn6XtduURa4GDmwoba9qJUrT10SC/iakhnzPnfYm1NrXUf6lKP+mVHkYUSLv
-         PG5g==
-X-Gm-Message-State: AOAM531JlMKOPvT3k4z7cXdZhdpzGvFJHJzQjsCudybv8M62rHN08xaT
-        k3nsieFVDiVxuTHm0ia8+SNv2bTwSUMMwYUYw21FIA9LtS5UpfKuuwPutlMrkmHuqnTf/gB8ivB
-        b8tOz2QsFg0nyYy6rKfM+WHGQOnUyX4VnfCrSUiL7VlrgPK4NxQaApnN3sTLxCx8=
-X-Google-Smtp-Source: ABdhPJy39n98utrSDxBW1caz3c1idclRUV/R3dDPJK/sQu0zHVoQF3090gJOgJ5v2X5g/AMrnVfOWm5chc32Wg==
+        bh=e3m9lxWPd1akNGwOE664d3Ddb1cr1DVVkpzRKRihJEs=;
+        b=VD8dcJNUC4JcbAdIk5rVhs4jql/IaRtHbzFCdRaEYrnAjFmReyGbYkrFhIz3FMv+N2
+         LuUVMU4XGVOn05DigaWBCeFJ6puPG298P9KQTY6oPW7DSgvGl7eXoGbl1YJDw/Dm7CeF
+         xe2UfmD7wFd6WeyfNVwsP99djGFOQvJQLOoETJmCfwepvWPTgeRora3EpCH/YWDp9p/k
+         /gRZFElRfWVXowbB0QZaTwQxia/7AfOnVPrGwhYBDdVT75LpnCYTM/HEidK3w7WBHohq
+         Z6mYgmgYeu0Tpdi+rhYpd7Nmn8FcpHlFGR2UlITnobDGlNf6N6/TjvVpBo356uLY4aut
+         IkEQ==
+X-Gm-Message-State: AOAM532jXLsLYPP1yjPBfJT2+gjVBIjXsc6oHhFHttrk0pkFK767IGcB
+        ++L2r8ezp3CrmlJ9FalyZWKtRbjs4X6CHKcoztfsYNbir0q0V8Qsh/Rr/2aidUVDa9rObcyODek
+        1BFnk7N3nN6+bcz3exP0YemkL+cRo/rDuSjtqopfV1FsDeu5zLCtJpXLwtThqn/0=
+X-Google-Smtp-Source: ABdhPJzmUbNZVgQEEl9a1+yS6EbVAnyPPnivhSVA6Z3pRfWi9Sq0xYQIeKEiP2FKujS3XJA4Qu/HQD+q4kc6+w==
 Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
 X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
- (user=jackmanb job=sendgmr) by 2002:adf:8290:: with SMTP id
- 16mr4792288wrc.27.1610466161171; Tue, 12 Jan 2021 07:42:41 -0800 (PST)
-Date:   Tue, 12 Jan 2021 15:42:25 +0000
+ (user=jackmanb job=sendgmr) by 2002:adf:fb85:: with SMTP id
+ a5mr4955537wrr.331.1610466163355; Tue, 12 Jan 2021 07:42:43 -0800 (PST)
+Date:   Tue, 12 Jan 2021 15:42:26 +0000
 In-Reply-To: <20210112154235.2192781-1-jackmanb@google.com>
-Message-Id: <20210112154235.2192781-2-jackmanb@google.com>
+Message-Id: <20210112154235.2192781-3-jackmanb@google.com>
 Mime-Version: 1.0
 References: <20210112154235.2192781-1-jackmanb@google.com>
 X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH bpf-next v6 01/11] bpf: x86: Factor out emission of ModR/M for
- *(reg + off)
+Subject: [PATCH bpf-next v6 02/11] bpf: x86: Factor out emission of REX byte
 From:   Brendan Jackman <jackmanb@google.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -71,94 +70,93 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The case for JITing atomics is about to get more complicated. Let's
-factor out some common code to make the review and result more
-readable.
+The JIT case for encoding atomic ops is about to get more
+complicated. In order to make the review & resulting code easier,
+let's factor out some shared helpers.
 
-NB the atomics code doesn't yet use the new helper - a subsequent
-patch will add its use as a side-effect of other changes.
-
-Acked-by: John Fastabend <john.fastabend@gmail.com>
 Signed-off-by: Brendan Jackman <jackmanb@google.com>
+Acked-by: John Fastabend <john.fastabend@gmail.com>
 ---
- arch/x86/net/bpf_jit_comp.c | 43 +++++++++++++++++++++----------------
- 1 file changed, 25 insertions(+), 18 deletions(-)
+ arch/x86/net/bpf_jit_comp.c | 39 ++++++++++++++++++++++---------------
+ 1 file changed, 23 insertions(+), 16 deletions(-)
 
 diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 796506dcfc42..30526776fa78 100644
+index 30526776fa78..f15c93275a18 100644
 --- a/arch/x86/net/bpf_jit_comp.c
 +++ b/arch/x86/net/bpf_jit_comp.c
-@@ -681,6 +681,27 @@ static void emit_mov_reg(u8 **pprog, bool is64, u32 dst_reg, u32 src_reg)
+@@ -702,6 +702,21 @@ static void emit_insn_suffix(u8 **pprog, u32 ptr_reg, u32 val_reg, int off)
  	*pprog = prog;
  }
  
-+/* Emit the suffix (ModR/M etc) for addressing *(ptr_reg + off) and val_reg */
-+static void emit_insn_suffix(u8 **pprog, u32 ptr_reg, u32 val_reg, int off)
++/*
++ * Emit a REX byte if it will be necessary to address these registers
++ */
++static void maybe_emit_mod(u8 **pprog, u32 dst_reg, u32 src_reg, bool is64)
 +{
 +	u8 *prog = *pprog;
 +	int cnt = 0;
 +
-+	if (is_imm8(off)) {
-+		/* 1-byte signed displacement.
-+		 *
-+		 * If off == 0 we could skip this and save one extra byte, but
-+		 * special case of x86 R13 which always needs an offset is not
-+		 * worth the hassle
-+		 */
-+		EMIT2(add_2reg(0x40, ptr_reg, val_reg), off);
-+	} else {
-+		/* 4-byte signed displacement */
-+		EMIT1_off32(add_2reg(0x80, ptr_reg, val_reg), off);
-+	}
++	if (is64)
++		EMIT1(add_2mod(0x48, dst_reg, src_reg));
++	else if (is_ereg(dst_reg) || is_ereg(src_reg))
++		EMIT1(add_2mod(0x40, dst_reg, src_reg));
 +	*pprog = prog;
 +}
 +
  /* LDX: dst_reg = *(u8*)(src_reg + off) */
  static void emit_ldx(u8 **pprog, u32 size, u32 dst_reg, u32 src_reg, int off)
  {
-@@ -708,15 +729,7 @@ static void emit_ldx(u8 **pprog, u32 size, u32 dst_reg, u32 src_reg, int off)
- 		EMIT2(add_2mod(0x48, src_reg, dst_reg), 0x8B);
- 		break;
- 	}
--	/*
--	 * If insn->off == 0 we can save one extra byte, but
--	 * special case of x86 R13 which always needs an offset
--	 * is not worth the hassle
--	 */
--	if (is_imm8(off))
--		EMIT2(add_2reg(0x40, src_reg, dst_reg), off);
--	else
--		EMIT1_off32(add_2reg(0x80, src_reg, dst_reg), off);
-+	emit_insn_suffix(&prog, src_reg, dst_reg, off);
- 	*pprog = prog;
- }
- 
-@@ -751,10 +764,7 @@ static void emit_stx(u8 **pprog, u32 size, u32 dst_reg, u32 src_reg, int off)
- 		EMIT2(add_2mod(0x48, dst_reg, src_reg), 0x89);
- 		break;
- 	}
--	if (is_imm8(off))
--		EMIT2(add_2reg(0x40, dst_reg, src_reg), off);
--	else
--		EMIT1_off32(add_2reg(0x80, dst_reg, src_reg), off);
-+	emit_insn_suffix(&prog, dst_reg, src_reg, off);
- 	*pprog = prog;
- }
- 
-@@ -1240,11 +1250,8 @@ st:			if (is_imm8(insn->off))
- 			goto xadd;
- 		case BPF_STX | BPF_XADD | BPF_DW:
- 			EMIT3(0xF0, add_2mod(0x48, dst_reg, src_reg), 0x01);
--xadd:			if (is_imm8(insn->off))
--				EMIT2(add_2reg(0x40, dst_reg, src_reg), insn->off);
--			else
--				EMIT1_off32(add_2reg(0x80, dst_reg, src_reg),
--					    insn->off);
-+xadd:
-+			emit_modrm_dstoff(&prog, dst_reg, src_reg, insn->off);
+@@ -854,10 +869,8 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image,
+ 			case BPF_OR: b2 = 0x09; break;
+ 			case BPF_XOR: b2 = 0x31; break;
+ 			}
+-			if (BPF_CLASS(insn->code) == BPF_ALU64)
+-				EMIT1(add_2mod(0x48, dst_reg, src_reg));
+-			else if (is_ereg(dst_reg) || is_ereg(src_reg))
+-				EMIT1(add_2mod(0x40, dst_reg, src_reg));
++			maybe_emit_mod(&prog, dst_reg, src_reg,
++				       BPF_CLASS(insn->code) == BPF_ALU64);
+ 			EMIT2(b2, add_2reg(0xC0, dst_reg, src_reg));
  			break;
  
- 			/* call */
+@@ -1302,20 +1315,16 @@ st:			if (is_imm8(insn->off))
+ 		case BPF_JMP32 | BPF_JSGE | BPF_X:
+ 		case BPF_JMP32 | BPF_JSLE | BPF_X:
+ 			/* cmp dst_reg, src_reg */
+-			if (BPF_CLASS(insn->code) == BPF_JMP)
+-				EMIT1(add_2mod(0x48, dst_reg, src_reg));
+-			else if (is_ereg(dst_reg) || is_ereg(src_reg))
+-				EMIT1(add_2mod(0x40, dst_reg, src_reg));
++			maybe_emit_mod(&prog, dst_reg, src_reg,
++				       BPF_CLASS(insn->code) == BPF_JMP);
+ 			EMIT2(0x39, add_2reg(0xC0, dst_reg, src_reg));
+ 			goto emit_cond_jmp;
+ 
+ 		case BPF_JMP | BPF_JSET | BPF_X:
+ 		case BPF_JMP32 | BPF_JSET | BPF_X:
+ 			/* test dst_reg, src_reg */
+-			if (BPF_CLASS(insn->code) == BPF_JMP)
+-				EMIT1(add_2mod(0x48, dst_reg, src_reg));
+-			else if (is_ereg(dst_reg) || is_ereg(src_reg))
+-				EMIT1(add_2mod(0x40, dst_reg, src_reg));
++			maybe_emit_mod(&prog, dst_reg, src_reg,
++				       BPF_CLASS(insn->code) == BPF_JMP);
+ 			EMIT2(0x85, add_2reg(0xC0, dst_reg, src_reg));
+ 			goto emit_cond_jmp;
+ 
+@@ -1351,10 +1360,8 @@ st:			if (is_imm8(insn->off))
+ 		case BPF_JMP32 | BPF_JSLE | BPF_K:
+ 			/* test dst_reg, dst_reg to save one extra byte */
+ 			if (imm32 == 0) {
+-				if (BPF_CLASS(insn->code) == BPF_JMP)
+-					EMIT1(add_2mod(0x48, dst_reg, dst_reg));
+-				else if (is_ereg(dst_reg))
+-					EMIT1(add_2mod(0x40, dst_reg, dst_reg));
++				maybe_emit_mod(&prog, dst_reg, dst_reg,
++					       BPF_CLASS(insn->code) == BPF_JMP);
+ 				EMIT2(0x85, add_2reg(0xC0, dst_reg, dst_reg));
+ 				goto emit_cond_jmp;
+ 			}
 -- 
 2.30.0.284.gd98b1dd5eaa7-goog
 
