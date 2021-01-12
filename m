@@ -2,169 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FE792F359D
-	for <lists+bpf@lfdr.de>; Tue, 12 Jan 2021 17:26:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9988A2F35A5
+	for <lists+bpf@lfdr.de>; Tue, 12 Jan 2021 17:26:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406828AbhALQXh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jan 2021 11:23:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32448 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2406736AbhALQXe (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 12 Jan 2021 11:23:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610468527;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cYzIRpyRb+wLWcBSyowl7QWEaoL4nInBFatkgQBtBh4=;
-        b=OxVhvA1ERDnmKDAHuGFldQWcj6b1QBlUABOd2n4idCqEtq6HKl1WuBsJE7e2WJynY5S55a
-        pOMa7P1t/mRK+D403vab0onMpEby93OjzZ258XMJbeppJ/+lEMRyIz3J8xRc/5IP60ebz2
-        XRKYxV2eFPwMboskM17A4NQbaPf/W10=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-174-DSa7YmmMM0yqM22Ktn6n7g-1; Tue, 12 Jan 2021 11:22:03 -0500
-X-MC-Unique: DSa7YmmMM0yqM22Ktn6n7g-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2B2F7180A0A6;
-        Tue, 12 Jan 2021 16:22:00 +0000 (UTC)
-Received: from krava (unknown [10.40.194.156])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 166C31975F;
-        Tue, 12 Jan 2021 16:21:56 +0000 (UTC)
-Date:   Tue, 12 Jan 2021 17:21:56 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Tom Stellard <tstellar@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>, Yonghong Song <yhs@fb.com>,
+        id S2406840AbhALQZ3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jan 2021 11:25:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406612AbhALQZ3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jan 2021 11:25:29 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D14B1C061786;
+        Tue, 12 Jan 2021 08:24:48 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id b9so4393992ejy.0;
+        Tue, 12 Jan 2021 08:24:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iGUOQadPWSCb+M2tubDadgLJtsAfcFueSrYLY47ldr8=;
+        b=jFtyhe/N9YphvozoOZmONoarlQE9uW7cDoOkO3RjAU9gMzCJ9Kpi7BwzIDbB6e9T2P
+         1vKUmiklLcl49OCk1RkN/iwcZAi4rqb/r3QyJXuwre+hMlljRqgUsOxBsBaRAffg/okn
+         GurzSGm4kNd625gTsIKgH20+bt3sNvs2fwvICKFI8OuxDExSa7o017aiKHjtBWtH4C1I
+         vyxoHlGNTDCP+43F+7zY/HvIsr+eNnWKNVel/FYZdPUlmStBcU4SYRuSWaUh2CzdikTt
+         fFEC0OAs8enBu9lgbEbMdsL0u5I5odyRfsFgIpiggUafnfaCXkdPr4XlfMc0fCtiyfC7
+         QkfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iGUOQadPWSCb+M2tubDadgLJtsAfcFueSrYLY47ldr8=;
+        b=oV3IkrBe+xu17l3vyj+TS67fk1dUqKLyxP63C5ZDGnzZVhcuFE2OJmPJZoHZhjUMDp
+         gVUDIq8wdj/5Q6RBQWem6a8vge6JhW7G5v9BcwCsbKLSkNG0RlBdvx1aIPGLv2C3rWFQ
+         92cG/kS7UuSIS428fO0ph+4nA+5zxdlVEvQjyQARpiH0ZRRJwh8CIKcJZewTQCretkt0
+         oS53vjP7kYQyHenFHQw0mBQLa0ne0ezcRr+CpeAKougFL50warWk0mEShxb4jAmJIryo
+         FBp5JpHKp4xlWA2qDVjWfedKAUysFcWvkp6sU2p8+uLKKcYsMAm7+YaRh9JFq71QpOOU
+         ee+g==
+X-Gm-Message-State: AOAM530xt9X1YCinZP9fywU/P6TzPp2bXHSnzX8hVaHvtldEotrYo+OV
+        UXMDH5NhnArUmmSLMS6vpKqAg1yJM5ebhRtDzQ5uKHuvzJcO/Q==
+X-Google-Smtp-Source: ABdhPJwkdqn1fnrwmiF6iKdduiKpPjfuaV5I7vnjI3QkLS3J7UPKAxKxf2SMMnARybOenEkbUs3URPeL9FYcxlyO1s0=
+X-Received: by 2002:a17:907:3e06:: with SMTP id hp6mr3823290ejc.254.1610468687427;
+ Tue, 12 Jan 2021 08:24:47 -0800 (PST)
+MIME-Version: 1.0
+References: <20210112091545.10535-1-gilad.reti@gmail.com> <CACYkzJ69serkHRymzDEAcQ-_KAdHA+RxP4qpAwzGmppWUxYeQQ@mail.gmail.com>
+ <CANaYP3G_39cWx_L5Xs3tf1k4Vj9JSHcsr+qzNQN-dcY3qvT8Yg@mail.gmail.com>
+ <60034a79-573f-125c-76b0-17e04941a155@iogearbox.net> <CACYkzJ7dK62zbn_z0S=-Xps1=DCEcd1FPYFon-BUeha=N5KnJQ@mail.gmail.com>
+In-Reply-To: <CACYkzJ7dK62zbn_z0S=-Xps1=DCEcd1FPYFon-BUeha=N5KnJQ@mail.gmail.com>
+From:   Gilad Reti <gilad.reti@gmail.com>
+Date:   Tue, 12 Jan 2021 18:24:10 +0200
+Message-ID: <CANaYP3E1o+0+ZXv_VnGZrK00nJ7WgEZs-HXZoYif4HpR7eF+Mg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] selftests/bpf: add verifier test for PTR_TO_MEM spill
+To:     KP Singh <kpsingh@kernel.org>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Subject: Re: Check pahole availibity and BPF support of toolchain before
- starting a Linux kernel build
-Message-ID: <20210112162156.GA1291051@krava>
-References: <CA+icZUVuk5PVY4_HoCoY2ymd27UjuDi6kcAmFb_3=dqkvOA_Qw@mail.gmail.com>
- <fa019010-9d7c-206c-d2c6-0893381f5913@fb.com>
- <CA+icZUVm6ZZveqVoS83SVXe1nqkqZVRjLO+SK1_nXHKkgh4yPQ@mail.gmail.com>
- <CAEf4BzaEA5aWeCCvHp7ASo9TdfotcBtqNGexirEynHDSo7ufgg@mail.gmail.com>
- <CA+icZUVrF_LCVhELbNLA7=FzEZK4=jk3QLD9XT2w5bQNo=nnOA@mail.gmail.com>
- <20210111223144.GA1250730@krava>
- <ed779f29-18b9-218f-a937-878328a769fe@redhat.com>
- <20210112104622.GA1283572@krava>
- <20210112131012.GA1286331@krava>
- <CA+icZUXNEFyW-fKH_hNLd+s7PB3z=o+xe=B=ud7eA5T3SW6QFg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+icZUXNEFyW-fKH_hNLd+s7PB3z=o+xe=B=ud7eA5T3SW6QFg@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        linux-kselftest@vger.kernel.org,
+        Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 05:14:42PM +0100, Sedat Dilek wrote:
-> On Tue, Jan 12, 2021 at 2:10 PM Jiri Olsa <jolsa@redhat.com> wrote:
+On Tue, Jan 12, 2021 at 6:17 PM KP Singh <kpsingh@kernel.org> wrote:
+>
+> On Tue, Jan 12, 2021 at 4:43 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
 > >
-> > On Tue, Jan 12, 2021 at 11:46:22AM +0100, Jiri Olsa wrote:
-> > > On Mon, Jan 11, 2021 at 02:34:04PM -0800, Tom Stellard wrote:
-> > > > On 1/11/21 2:31 PM, Jiri Olsa wrote:
-> > > > > On Mon, Jan 11, 2021 at 10:30:22PM +0100, Sedat Dilek wrote:
-> > > > >
-> > > > > SNIP
-> > > > >
-> > > > > > > >
-> > > > > > > > Building a new Linux-kernel...
-> > > > > > > >
-> > > > > > > > - Sedat -
-> > > > > > > >
-> > > > > > > > [1] https://git.kernel.org/pub/scm/devel/pahole/pahole.git/
-> > > > > > > > [2] https://github.com/ClangBuiltLinux/tc-build/issues/129#issuecomment-758026878
-> > > > > > > > [3] https://github.com/ClangBuiltLinux/tc-build/issues/129#issuecomment-758056553
-> > > > > > >
-> > > > > > > There are no significant bug fixes between pahole 1.19 and master that
-> > > > > > > would solve this problem, so let's try to repro this.
-> > > > > > >
-> > > > > >
-> > > > > > You are right pahole fom latest Git does not solve the issue.
-> > > > > >
-> > > > > > + info BTFIDS vmlinux
-> > > > > > + [  != silent_ ]
-> > > > > > + printf   %-7s %s\n BTFIDS vmlinux
-> > > > > >   BTFIDS  vmlinux
-> > > > > > + ./tools/bpf/resolve_btfids/resolve_btfids vmlinux
-> > > > > > FAILED: load BTF from vmlinux: Invalid argument
-> > > > >
-> > > > > hm, is there a .BTF section in vmlinux?
-> > > > >
-> > > > > is this working over vmlinux:
-> > > > >   $ bpftool btf dump file ./vmlinux
-> > > > >
-> > > > > do you have a verbose build output? I'd think pahole scream first..
-> > > > >
-> > > >
-> > > > It does.  For me, pahole segfaults at scripts/link-vmlinux.sh:131.  This is
-> > > > pretty easy for me to reproduce.  I have logs, what other information would
-> > > > be helpful?  How about a pahole backtrace?
+> > On 1/12/21 4:35 PM, Gilad Reti wrote:
+> > > On Tue, Jan 12, 2021 at 4:56 PM KP Singh <kpsingh@kernel.org> wrote:
+> > >> On Tue, Jan 12, 2021 at 10:16 AM Gilad Reti <gilad.reti@gmail.com> wrote:
+> > >>>
+> > >>> Add test to check that the verifier is able to recognize spilling of
+> > >>> PTR_TO_MEM registers.
+> > >>
+> > >> It would be nice to have some explanation of what the test does to
+> > >> recognize the spilling of the PTR_TO_MEM registers in the commit
+> > >> log as well.
+> > >>
+> > >> Would it be possible to augment an existing test_progs
+> > >> program like tools/testing/selftests/bpf/progs/test_ringbuf.c to test
+> > >> this functionality?
+> >
+> > How would you guarantee that LLVM generates the spill/fill, via inline asm?
+>
+> Yeah, I guess there is no sure-shot way to do it and, adding inline asm would
+> just be doing the same thing as this verifier test. You can ignore me
+> on this one :)
+>
+> It would, however, be nice to have a better description about what the test is
+> actually doing./
+>
+>
+
+I will re-submit the patch tomorrow. Thank you all for your patience.
+
+> >
+> > > It may be possible, but from what I understood from Daniel's comment here
 > > >
-> > > that'd be great.. I'll try to reproduce, but with the latest clang
-> > > it will take me some time
+> > > https://lore.kernel.org/bpf/17629073-4fab-a922-ecc3-25b019960f44@iogearbox.net/
+> > >
+> > > the test should be a part of the verifier tests (which is reasonable
+> > > to me since it is
+> > > a verifier bugfix)
 > >
-> > reproduced, attached pahole patch fixes it for me,
-> >
-> > looks like gcc never left function without name,
-> > which does not seem to be the case for clang
-> >
-> > I'll send full patch later today
-> >
-> 
-> Thanks for the diff.
-> 
-> Unfortunately, it does not apply on latest pahole git.
-> 
-> $ git describe
-> v1.19-7-gb688e3597060
-
-sry wrong master.. how about this one
-
-jirka
-
-
----
-diff --git a/btf_encoder.c b/btf_encoder.c
-index 333973054b61..17f7a14f2ef0 100644
---- a/btf_encoder.c
-+++ b/btf_encoder.c
-@@ -72,6 +72,8 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym)
- 
- 	if (elf_sym__type(sym) != STT_FUNC)
- 		return 0;
-+	if (!elf_sym__name(sym, btfe->symtab))
-+		return 0;
- 
- 	if (functions_cnt == functions_alloc) {
- 		functions_alloc = max(1000, functions_alloc * 3 / 2);
-@@ -730,9 +732,11 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
- 		if (!has_arg_names(cu, &fn->proto))
- 			continue;
- 		if (functions_cnt) {
--			struct elf_function *func;
-+			const char *name = function__name(fn, cu);
-+			struct elf_function *func = NULL;
- 
--			func = find_function(btfe, function__name(fn, cu));
-+			if (name)
-+				func = find_function(btfe, name);
- 			if (!func || func->generated)
- 				continue;
- 			func->generated = true;
--- 
-2.26.2
-
+> > Yeah, the test_verifier case as you have is definitely the most straight
+> > forward way to add coverage in this case.
