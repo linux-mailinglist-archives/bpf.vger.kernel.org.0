@@ -2,134 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 635D22F28E8
-	for <lists+bpf@lfdr.de>; Tue, 12 Jan 2021 08:27:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A912F28F9
+	for <lists+bpf@lfdr.de>; Tue, 12 Jan 2021 08:35:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391968AbhALH1b (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jan 2021 02:27:31 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:62010 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2391943AbhALH1b (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 12 Jan 2021 02:27:31 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 10C7DAFV030699;
-        Mon, 11 Jan 2021 23:26:38 -0800
+        id S1728781AbhALHfF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jan 2021 02:35:05 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:37490 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727959AbhALHfE (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 12 Jan 2021 02:35:04 -0500
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10C7VtcV013439;
+        Mon, 11 Jan 2021 23:33:54 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
  references : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=J7RfQ5mQOdiBZgHmWumO6ULPqPpph9WTm71KAyiOhsA=;
- b=b6XnFomNYbRxmpgzgHGw+XeB01JqdurtukA7Uv/m2fZIC1ZqKRu3ZCNUzaHTiKYDnwZv
- YW4FSKNQZlnk5SB1Cn8CB16EQA+MAW+EpsQTFt1aB1wzyYr9Wsnicgt2LBgr7a1c3Jbl
- Y0jlMYF/YM43bAduvakKH4ljPzSelZhaPF0= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 35y91rv69p-14
+ bh=F7pO5LpJvkFs0eKLBj7V3fRpF6y27PkIoc8ZWScoTFE=;
+ b=anNpXry5y0VsrH1jvoq8PWDBA2pmZAAJM9LdzMvlBEz2XBqRRNe8ncm38VWDEd6xnwij
+ OyPt0wDX9csRxSnM4zN7871z2m9ylRUdIY6Uy0ZS0E7xSm6O+AqFj2hI1ZI0/iIv0jUb
+ 842yYBy0GYdLC0ynEcW1DGVbNSdgYUKEiUA= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 35yw1phbe2-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 11 Jan 2021 23:26:38 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
+        Mon, 11 Jan 2021 23:33:54 -0800
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 11 Jan 2021 23:26:34 -0800
+ 15.1.1979.3; Mon, 11 Jan 2021 23:33:52 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IY7f0rAxljmYMQYLWh6pvVuK33HSPOfmNX+SWftm+MXyrbdzhMvcRmBAaHbXyBl5YAIsW+YOLufg+Hsd8a4MNkVqWQVl6BMY8bIAakuplhdzOLbsBqRs4VQ6FmQJZFNJlFyXyihkQ0YLIe5J/qzfDPTOD0MomOFpE0wgMIiEpB6B5cvONhVhLdSQXcPQc4Wu8KYZKlaUB4xSCLh7E1s3ob/X13da0FCmS+9EEjn1E8k6M549GlmD0rjQFwyMu6yz6FF1AcI17ruDik573T1OeHeLCDiUIIx1VYk1WXgG7NQowsfldqM4UDGcJ/RWReNsdQiA5HiH6o5GAC3s7Jn41g==
+ b=Q3yUhwbB4v1dSOOMUhR2UGa3FM8/3aJU6GTnzgr5+QNMXFQuK5/Fl7NEjkgw4bJihQeFBi2tyJ4C4HU6nBqiu7xN3gw7Kdi+53/qPXTJBtRp7LNkhPgtqxQd0NtqOWHChKD6K3KMoNdbIfFinYFREEd4Pr4hyRyv7PcfJsOJXg47gUff3vkhl1Spq2KaTygbvYF9QHcXbwOcbP+r+YcIS3XXTJdzfiIDw10fsRPIHAFDAw/0BMb0n+mZ1NkYHizAZrURYZgcugSJq4gQpozcU8cOMUcz/6i9SLMABPUJ8paqx8chOal09T/vgLBthqtL0byaa9m14K8ht8la6sCZOg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J7RfQ5mQOdiBZgHmWumO6ULPqPpph9WTm71KAyiOhsA=;
- b=L3lid6w/LYvPKrmB1IZeWn/gX+GZ8JMUJ8axI2WNXxowvohNoC2kLvCccz2WL0lUPG9c8yCuN42WtLW/Z4qElkaM0+I9FG4V9ocgda20YECFMQ40m79LaSh+lXroAgN+0a9ABkzPGm7/x0+rDTVBrCwXjgQQux4/98O5IUJWVDqUagvC0ah0plq496xfeD+sX8uvLWNbo3kx5yeABovYYdiUwlPipA3EyH5d7m3/GtJH3nbRKPHBlv2Xal2mIl7FsYJw2zYsYW11r2BsJEJy2DUb+omFzBlzSf1ZSrNvfzloXUfyUj3KZJ0QaUabdO+UStp3LEulKpzuZ+azWc2slQ==
+ bh=F7pO5LpJvkFs0eKLBj7V3fRpF6y27PkIoc8ZWScoTFE=;
+ b=Vrumhf4Gz0TzEcSYbXG1PXOSPDsVNFzU1tPcrLptuuJ+hlrIN117kLXqOQU5zGrCGSojtP4LB3pbZ+gEr5sPs2w8/UgTdOUbjcjYsM36D1WlL17uYoMb+v9ZW6JTv5eFQxcOm5qCbiVLyPPKZmuOvKB1z0+OCa9r9wulyNoWhVnZFaLW2t08gvsW3MdtoQP1ufwQRPbqx0hjDo1Z14XJGRfKlGoTDED3rQHYYDvD9cWqryGgilvJKaYYmjUT7aXemfnj3yV7vQiCq7v2soZyhO/tOxle+/CGzoew5mWRPIsb6VLUFwD/aTUxaNym/tzSftCu2jgr9yNTLpO7Yl2YIQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J7RfQ5mQOdiBZgHmWumO6ULPqPpph9WTm71KAyiOhsA=;
- b=cXSG3TnWswAGUfiLPqoYY2JF72v4BkF5JUGr89zGKYitdSgbPvlBMzvmuG5QyXMsxq7DJZW5XujLnnZnhGmy9dDayi+tgQTyz0zKXQXPguvPXnzKlW0d/WfwGxWca1zxgNE0m3s04L+BCdpgFNWFh7VsSE0rLCEaN+VmdDMnAM4=
+ bh=F7pO5LpJvkFs0eKLBj7V3fRpF6y27PkIoc8ZWScoTFE=;
+ b=h4vhMqOQjGa7S2wqMKodr7dy/VDKnNlKrzO02m3IgcIBiZvTcb3FdEnv5siN5yUYKjJ80NAWMwyOmL2ggFShaiKdW+HYz4f5lq+zrS86M+VNMU79PYVbaNhNrqwwdrDkyY+4yIZgSd228hjAmBff4w76/cqIilpTUelhk/B7KY4=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
 Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
  by BYAPR15MB3191.namprd15.prod.outlook.com (2603:10b6:a03:107::17) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Tue, 12 Jan
- 2021 07:26:32 +0000
+ 2021 07:33:46 +0000
 Received: from BYAPR15MB4088.namprd15.prod.outlook.com
  ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
  ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3742.012; Tue, 12 Jan 2021
- 07:26:32 +0000
-Subject: Re: [PATCH bpf v2 3/3] bpf: Fix typo in bpf_inode_storage.c
-To:     KP Singh <kpsingh@kernel.org>, <bpf@vger.kernel.org>
-CC:     Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>
-References: <20210111212340.86393-1-kpsingh@kernel.org>
- <20210111212340.86393-4-kpsingh@kernel.org>
+ 07:33:46 +0000
+Subject: Re: [PATCH bpf-next 4/4] bpf: runqslower: use task local storage
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     Song Liu <songliubraving@fb.com>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@chromium.org" <kpsingh@chromium.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        "haoluo@google.com" <haoluo@google.com>
+References: <20210108231950.3844417-1-songliubraving@fb.com>
+ <20210108231950.3844417-5-songliubraving@fb.com>
+ <ad40d69d-9c0f-8205-26df-c5a755778f9e@fb.com>
+ <352FED72-11B3-44F0-9B1C-92552AEB4AE8@fb.com>
+ <e890e08e-99d0-9d81-b835-c3a1b4b8bbbf@fb.com>
+ <CAEf4BzZivGBmDbUxfiDwAC3aFoTWNfyWaiZRA4Vu16ZT9kzE8A@mail.gmail.com>
 From:   Yonghong Song <yhs@fb.com>
-Message-ID: <03b9679a-d210-81a7-4aab-4beae626bac2@fb.com>
-Date:   Mon, 11 Jan 2021 23:26:26 -0800
+Message-ID: <8d9983c4-2842-e2f8-94ce-1676977bb720@fb.com>
+Date:   Mon, 11 Jan 2021 23:33:42 -0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.6.0
-In-Reply-To: <20210111212340.86393-4-kpsingh@kernel.org>
+In-Reply-To: <CAEf4BzZivGBmDbUxfiDwAC3aFoTWNfyWaiZRA4Vu16ZT9kzE8A@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [2620:10d:c090:400::5:4443]
-X-ClientProxiedBy: MW4PR03CA0378.namprd03.prod.outlook.com
- (2603:10b6:303:114::23) To BYAPR15MB4088.namprd15.prod.outlook.com
+X-ClientProxiedBy: MW4PR03CA0234.namprd03.prod.outlook.com
+ (2603:10b6:303:b9::29) To BYAPR15MB4088.namprd15.prod.outlook.com
  (2603:10b6:a02:c3::18)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21e1::190b] (2620:10d:c090:400::5:4443) by MW4PR03CA0378.namprd03.prod.outlook.com (2603:10b6:303:114::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Tue, 12 Jan 2021 07:26:29 +0000
+Received: from [IPv6:2620:10d:c085:21e1::190b] (2620:10d:c090:400::5:4443) by MW4PR03CA0234.namprd03.prod.outlook.com (2603:10b6:303:b9::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Tue, 12 Jan 2021 07:33:45 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7bde5795-9fa9-42e6-1cdb-08d8b6cb6286
+X-MS-Office365-Filtering-Correlation-Id: 08635121-cd66-4d3e-6d53-08d8b6cc65a4
 X-MS-TrafficTypeDiagnostic: BYAPR15MB3191:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB3191BAFBBF092EE79BA873F0D3AA0@BYAPR15MB3191.namprd15.prod.outlook.com>
+X-Microsoft-Antispam-PRVS: <BYAPR15MB3191E04E53250D818AB8E8CDD3AA0@BYAPR15MB3191.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:1247;
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: MB6xzuT9hVrictvxTOwNwTNCqNUgCg3yCvCBx3aRUHVTspNngV44mr4xpjiBdAi06WkiQ8/guoam7MzOHUiKP9KqSKIQy5O+nrw1UET3jL9OmdI6JqhaUNn1h8cgIx17/c3UgKOPSpxog25O72vccK1vx08ANIPgDnCyNkn11YgI65NcUz2djyeQeVoxiWiw9gSxXQEzkBqjwlIbbZEsR3R+H1hsJbsoPXwPAO5PMh6WvXpmZSER80xA9bo8wuyf/g5coCQYpbB+K49nNJngipgP7bNh2OD4vcdIzA3zlD2wjxXRaAHiYwH3HZjiceC9s/pZUVoiOrDVcQ4Ks6GAud/ijiuLfAlaAjmVWnksBdyBo7ekGAwgUQOw23/Zu18N3S3fbSpz9ghGWDcseaNxtZvTCvtr09U9uI/rxzfp6v+FsfDcNYp9MlARBzTqEdMS71jq1uSsMI58+ZVn9Vh2E+blnAj+PQDpiwvqn0YZSDc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(39860400002)(346002)(366004)(396003)(2906002)(316002)(36756003)(8676002)(66946007)(66476007)(6486002)(53546011)(16526019)(6666004)(186003)(2616005)(66556008)(31696002)(31686004)(54906003)(478600001)(86362001)(8936002)(52116002)(5660300002)(4326008)(558084003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?Q1Vva2lTZUFDUGVralNMc3M4RlBiZlhmcFdnWUlCRndYc2tVVkdLVG10YnBQ?=
- =?utf-8?B?WW1IYzNzdXVMQjVaN3FOblBWc20zQTdwT1JZakpZQy9HU2hsbkJZNk83MSt6?=
- =?utf-8?B?SXYveFJnS0M4MmVJOXFuS2dIdG4wdEpvVE93b0hrSUtEWWkvWjg1ZHFlaWo5?=
- =?utf-8?B?NkRSRTgwRW5HMUc4Y0VzbTB1U1pjME91cGwwVmRvaExMMGt5UFMxVU9pOGMw?=
- =?utf-8?B?em1RSk9jOXE5TnJHMk9ieGM2R0ZZcHdRUXE2ZnVVeVJleGY2cHJnOVVhdkFV?=
- =?utf-8?B?bE52OXV4TlBZRFhvamZNV3c0MG16d04yWW51OWpwaTFmSnE0YUxDM2hyV2N1?=
- =?utf-8?B?RHpJR0FYajd1RmRTSkNlZFBkZ0NTNUN6c2hUM0JFY0JxRFdjUFMxVjB6YTJJ?=
- =?utf-8?B?S2lvWGxPRnZRUnpIUzNST3JGYjRZd3pqSVdjR21ETnh4cnZmZk1GMjRsbjZ5?=
- =?utf-8?B?c3NXQkN2SXhBNEVHYWF3RmZrZFhqWmIvWDRDVFh0d25ZaElmOGFQY0VhVDNL?=
- =?utf-8?B?S0lqaDZVVGxVVXoyNGc5a0tsZGd3bVB4THp3dzhFTlkrNUdsTCtJc3R6VExP?=
- =?utf-8?B?OWxSQU00VHhiRmhQcUVXY1ZmVzZsLytMc3JFM2pEM2tIMllkclhJNFF4NHhS?=
- =?utf-8?B?YkJGUitWaGdTOUczZis1WFE1c1h5aGZBanFoMjZCaG5aanFsajB3WEVZWmJq?=
- =?utf-8?B?SlJGWU5FN2VwSGpYM2tmV3lZa0JrVllBTnNCSlIrVnErdWtmK0c3TndmSmhB?=
- =?utf-8?B?aml5VnpkZVZueUlwNmYvTEozNkVGbUtwdUhSdHB4ZEt3UDJXZEg1R081QUpn?=
- =?utf-8?B?dDZaSVBYY20xK3hyK1M3MlJyV1NyQ2toK28yZUtQeml4T0NRSDM5a3hkOE1T?=
- =?utf-8?B?SUs1MWRMc3hPRlJjbXJvVE1sTFNJdzM4S2ZCYXoya1dHWXBHU2FRcnhNOFlM?=
- =?utf-8?B?N0prT3V5Sjh5Vy9FbWkrSExBMWNrNEJOYWdxb25IOTA5VFNpN1poKzlWZ1Iz?=
- =?utf-8?B?bnVZTHQvMHc0NDZBN1lZTzlGdjFPNXpBZXVSczZVNXUrdUYxNExGOUhnZUhU?=
- =?utf-8?B?NUwxOE9acEFuM1NTbW9BcnAvTGpJS3VuVktBdXlyNmV6UFlJTnJyM0wxMHRH?=
- =?utf-8?B?ZlgyQmMxTFR1UTBxb2x2dzB5TkJ2bzA1QzVLL0Z6eU85QzhHb3NXOUxBWGhj?=
- =?utf-8?B?ZkFVUlpiemMreUh3V09nUlRyeXFxa3dVMmQ0MkNRZVlVbmhVYmJKMTVqQ0R0?=
- =?utf-8?B?NEt3RVNRdWFWQVdHT3RnRURFQ2NQMHMzUGlwR29GTGxISXdwTStjbEcrVUk4?=
- =?utf-8?B?Z3QxUExBS3drcjF4L1JTd2E3SGJ4d3dIZmU0K3lxMjBaVWhHcklDUmpUZkQ3?=
- =?utf-8?B?eFdyb2grb0JrWEE9PQ==?=
+X-Microsoft-Antispam-Message-Info: FJNFzMQOjoi4t5V7mDHwU/hdn0N0rUpx/DiKMPPCQbFgrxk8MMoLeLx5lp3NFsWbuEd5q7khmlDcX4f0bd3bZV+zZ8zf81f7webbxjG/9G2O0cfqkXq1OnJIDCw6hqO+NPCJQexAB6+k1eOQD6uXSfB+SLmIB4i6nqndRvh0bAi5FejLE2+zIFGBZdpq3ZjXBILSqvzyh2Hz0UJKJl3F/wVaJgjAlPm+fxvDpUx9ICrzNra2/UAQNSJDVsrcy3txD7pdGOxl3twxqe6Dk2+NiHvC+FwnQydW8xvUNQDNKc3iVD5hDMyIBl46uYNNyPmn+QDJWTVbjIgnIIbs14zpkd5IX8k/MghF+U5vzzPdX7d8BItdhhfu8TtVznbMkKTAzEgJzKPWKID7P12kwjQDaeIUWzZiuJ2Mre6ptkGUXNQi6nr6NrOcKm8LYyLo/Z8XkcRxyStFJG7WF552W1mQydybVGzvLIGMsCUxXQbYtD8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(39860400002)(376002)(136003)(346002)(6666004)(2616005)(186003)(6486002)(66476007)(16526019)(53546011)(8936002)(52116002)(5660300002)(6916009)(4326008)(31696002)(66556008)(31686004)(478600001)(86362001)(54906003)(316002)(2906002)(7416002)(83380400001)(8676002)(66946007)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?MkdROW5MZXdVQzhSRkpWRmp6R2ltWVp4ZXZqdEYzTEJtN3EvbEJXdjNHUnlE?=
+ =?utf-8?B?NnF4ZVo4SXpqT21OV2xBOXFOYnFnVFptNzdycmhCYldHWmhjSFIraU1wclJR?=
+ =?utf-8?B?YzlrNE80TUJiZWpwUytMVit0MEpzR3JIV2lRWWwwaUo3RnNEMnNZajUrUzZW?=
+ =?utf-8?B?Y3JLUW9OTXlhQThoV3dzeFlFMGxielZCa3dBTTRsbG5vdEpXdG5kaXNxVzlW?=
+ =?utf-8?B?Z0xMcHJRRERGYnFPOEw5ZUtxd2RONXVKcUZxMk55ZWJMcGJPaUxHMzNwNGxU?=
+ =?utf-8?B?VU9pbkg2TUU3c1llMlc3QktTRy9GeE5KYVRXQ3FNRGwyWWJkT2tDSVB0REht?=
+ =?utf-8?B?Zk8xUk5EbXFSRXhBVVVHd2tLcDc0d2tEaHRNTVhvL0Fyd2dJMEUrcG5zRitF?=
+ =?utf-8?B?UkJSMDcvdkVqYmZXaXVNWXE2cjUxU1VNb2VyVWtnWUw2MzkvT1dZUmR2VVRw?=
+ =?utf-8?B?dEEzbGhBSDl3NXN0ckN6V1lMbmxWWWNWSXFyY0dsTU9pS3F3REEzbFFraXpU?=
+ =?utf-8?B?MzgybEtzTG9Pb01VSGJaalRML29hVVZrcUMvOTkvUnhzSHRYcHNhVlFWaHp3?=
+ =?utf-8?B?MnZodi90eG1zQ1NvL0ZVV1U1TzMwMU9tMDN1bHkwZGRlZ3NJaEJxWkpTZC9U?=
+ =?utf-8?B?NGdrbUZFdFVkd3ZrY2ZTSG1Ub3dXbzFYbmlTVXg0MDhzZEcvd1I3WDFUV1RW?=
+ =?utf-8?B?Q0ZzZVJrNVF0aTVOV0VBTUhPQURRR0MwdnZLNzljcGc2Y3RxQlhFQ0xPbkdl?=
+ =?utf-8?B?bGREdi9ZYmdacGN3b2tlK0g2TjY4aFNQam1NR3NNcVZtN0J2K0QwS2Z4aHYw?=
+ =?utf-8?B?YTQrUFExekNXdzhDMndRd1MwelRQbkRxS3grMWd2ZzRpdDZYN2tXeFlsK0hV?=
+ =?utf-8?B?S3JNMWJDMnVWelFmQnlNL2gvVVU4VmF1RHZXbG9HYzRIVURaL3RBTEVaell4?=
+ =?utf-8?B?M2h5dnRuQUZRTm50Q01sSHdqVXhmMEN1S3JnOGQzbC9KR2JLU1NGTkh3YzA0?=
+ =?utf-8?B?UXhtZE9TeFl4ZkxaWGFmTDEwelJ2WGpmQVdpSUtiTHZJWlAxcW1ZTFdETWJo?=
+ =?utf-8?B?K1d0WnY4Mmt5Q2l6SmpLeEdVcVBpRC9OL1E5dUtvL1poZklqOHIvT0RIMGVG?=
+ =?utf-8?B?K0g5MzhIZnVUSXQySEtJcjQ3YU1GcmJZRUNjUyt6ZzN3UEc1N2lBM3padWwv?=
+ =?utf-8?B?VGJYamZVTEtEL3Jjb2kvL3ZmM3pTbW1JRUZScEpOUjhOZzdqbk81b3pBMkdW?=
+ =?utf-8?B?YjVlSUg0VHBMSS9IblFaQ0tYeWhtME1ySFAvbWJjSW9qT2ZxMXhGblVhVVBx?=
+ =?utf-8?B?L1gxTHVoWFlrbEZrZmFhZktWUHBwZms1Q2hpUXpQNncwMm5pNnNpQ2Q4ZCtN?=
+ =?utf-8?B?dThtRlY2UFpSbEE9PQ==?=
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2021 07:26:31.9288
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2021 07:33:46.6114
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7bde5795-9fa9-42e6-1cdb-08d8b6cb6286
+X-MS-Exchange-CrossTenant-Network-Message-Id: 08635121-cd66-4d3e-6d53-08d8b6cc65a4
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SlfcvbpcAI7no8HE+w2MbB3hQ5wg+vwjWxUcQOKlqwFhnAK+Zp9uWwbJXsBdRs4t
+X-MS-Exchange-CrossTenant-UserPrincipalName: +M5vEzOdY4FhFBnJWj18S5u+KQdHt9NtWeSCx1Igg7Ogru/HsVuUMD/MNS3SMJ+c
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3191
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
  definitions=2021-01-12_03:2021-01-11,2021-01-12 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- impostorscore=0 malwarescore=0 priorityscore=1501 adultscore=0
- phishscore=0 lowpriorityscore=0 clxscore=1015 mlxlogscore=913 mlxscore=0
- spamscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101120038
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 bulkscore=0
+ phishscore=0 priorityscore=1501 impostorscore=0 adultscore=0
+ malwarescore=0 clxscore=1015 suspectscore=0 mlxlogscore=999 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101120039
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -137,10 +151,132 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 1/11/21 1:23 PM, KP Singh wrote:
-> Fix "gurranteed" -> "guaranteed" in bpf_inode_storage.c
+On 1/11/21 11:14 PM, Andrii Nakryiko wrote:
+> On Mon, Jan 11, 2021 at 7:24 PM Yonghong Song <yhs@fb.com> wrote:
+>>
+>>
+>>
+>> On 1/11/21 2:54 PM, Song Liu wrote:
+>>>
+>>>
+>>>> On Jan 11, 2021, at 9:49 AM, Yonghong Song <yhs@fb.com> wrote:
+>>>>
+>>>>
+>>>>
+>>>> On 1/8/21 3:19 PM, Song Liu wrote:
+>>>>> Replace hashtab with task local storage in runqslower. This improves the
+>>>>> performance of these BPF programs. The following table summarizes average
+>>>>> runtime of these programs, in nanoseconds:
+>>>>>                             task-local   hash-prealloc   hash-no-prealloc
+>>>>> handle__sched_wakeup             125             340               3124
+>>>>> handle__sched_wakeup_new        2812            1510               2998
+>>>>> handle__sched_switch             151             208                991
+>>>>> Note that, task local storage gives better performance than hashtab for
+>>>>> handle__sched_wakeup and handle__sched_switch. On the other hand, for
+>>>>> handle__sched_wakeup_new, task local storage is slower than hashtab with
+>>>>> prealloc. This is because handle__sched_wakeup_new accesses the data for
+>>>>> the first time, so it has to allocate the data for task local storage.
+>>>>> Once the initial allocation is done, subsequent accesses, as those in
+>>>>> handle__sched_wakeup, are much faster with task local storage. If we
+>>>>> disable hashtab prealloc, task local storage is much faster for all 3
+>>>>> functions.
+>>>>> Signed-off-by: Song Liu <songliubraving@fb.com>
+>>>>> ---
+>>>>>    tools/bpf/runqslower/runqslower.bpf.c | 26 +++++++++++++++-----------
+>>>>>    1 file changed, 15 insertions(+), 11 deletions(-)
+>>>>> diff --git a/tools/bpf/runqslower/runqslower.bpf.c b/tools/bpf/runqslower/runqslower.bpf.c
+>>>>> index 1f18a409f0443..c4de4179a0a17 100644
+>>>>> --- a/tools/bpf/runqslower/runqslower.bpf.c
+>>>>> +++ b/tools/bpf/runqslower/runqslower.bpf.c
+>>>>> @@ -11,9 +11,9 @@ const volatile __u64 min_us = 0;
+>>>>>    const volatile pid_t targ_pid = 0;
+>>>>>      struct {
+>>>>> -   __uint(type, BPF_MAP_TYPE_HASH);
+>>>>> -   __uint(max_entries, 10240);
+>>>>> -   __type(key, u32);
+>>>>> +   __uint(type, BPF_MAP_TYPE_TASK_STORAGE);
+>>>>> +   __uint(map_flags, BPF_F_NO_PREALLOC);
+>>>>> +   __type(key, int);
+>>>>>      __type(value, u64);
+>>>>>    } start SEC(".maps");
+>>>>>    @@ -25,15 +25,19 @@ struct {
+>>>>>      /* record enqueue timestamp */
+>>>>>    __always_inline
+>>>>> -static int trace_enqueue(u32 tgid, u32 pid)
+>>>>> +static int trace_enqueue(struct task_struct *t)
+>>>>>    {
+>>>>> -   u64 ts;
+>>>>> +   u32 pid = t->pid;
+>>>>> +   u64 ts, *ptr;
+>>>>>              if (!pid || (targ_pid && targ_pid != pid))
+>>>>>              return 0;
+>>>>>              ts = bpf_ktime_get_ns();
+>>>>> -   bpf_map_update_elem(&start, &pid, &ts, 0);
+>>>>> +   ptr = bpf_task_storage_get(&start, t, 0,
+>>>>> +                              BPF_LOCAL_STORAGE_GET_F_CREATE);
+>>>>> +   if (ptr)
+>>>>> +           *ptr = ts;
+>>>>>      return 0;
+>>>>>    }
+>>>>>    @@ -43,7 +47,7 @@ int handle__sched_wakeup(u64 *ctx)
+>>>>>      /* TP_PROTO(struct task_struct *p) */
+>>>>>      struct task_struct *p = (void *)ctx[0];
+>>>>>    - return trace_enqueue(p->tgid, p->pid);
+>>>>> +   return trace_enqueue(p);
+>>>>>    }
+>>>>>      SEC("tp_btf/sched_wakeup_new")
+>>>>> @@ -52,7 +56,7 @@ int handle__sched_wakeup_new(u64 *ctx)
+>>>>>      /* TP_PROTO(struct task_struct *p) */
+>>>>>      struct task_struct *p = (void *)ctx[0];
+>>>>>    - return trace_enqueue(p->tgid, p->pid);
+>>>>> +   return trace_enqueue(p);
+>>>>>    }
+>>>>>      SEC("tp_btf/sched_switch")
+>>>>> @@ -70,12 +74,12 @@ int handle__sched_switch(u64 *ctx)
+>>>>>              /* ivcsw: treat like an enqueue event and store timestamp */
+>>>>>      if (prev->state == TASK_RUNNING)
+>>>>> -           trace_enqueue(prev->tgid, prev->pid);
+>>>>> +           trace_enqueue(prev);
+>>>>>              pid = next->pid;
+>>>>>              /* fetch timestamp and calculate delta */
+>>>>> -   tsp = bpf_map_lookup_elem(&start, &pid);
+>>>>> +   tsp = bpf_task_storage_get(&start, next, 0, 0);
+>>>>>      if (!tsp)
+>>>>>              return 0;   /* missed enqueue */
+>>>>
+>>>> Previously, hash table may overflow so we may have missed enqueue.
+>>>> Here with task local storage, is it possible to add additional pid
+>>>> filtering in the beginning of handle__sched_switch such that
+>>>> missed enqueue here can be treated as an error?
+>>>
+>>> IIUC, hashtab overflow is not the only reason of missed enqueue. If the
+>>> wakeup (which calls trace_enqueue) happens before runqslower starts, we
+>>> may still get missed enqueue in sched_switch, no?
+>>
+>> the wakeup won't happen before runqslower starts since runqslower needs
+>> to start to do attachment first and then trace_enqueue() can run.
 > 
-> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: KP Singh <kpsingh@kernel.org>
+> I think Song is right. Given wakeup and sched_switch need to be
+> matched, depending at which exact time we attach BPF programs, we can
+> end up missing wakeup, but not missing sched_switch, no? So it's not
+> an error.
 
-Acked-by: Yonghong Song <yhs@fb.com>
+The current approach works fine. What I suggested is to
+tighten sched_switch only for target_pid. wakeup (doing queuing) will
+be more relaxed than sched_switch to ensure task local storage creation
+is always there for target_pid regardless of attachment timing.
+I think it should work, but we have to experiment to see actual
+results...
+
+> 
+>>
+>> For the current implementation trace_enqueue() will happen for any non-0
+>> pid before setting test_progs tgid, and will happen for any non-0 and
+>> test_progs tgid if it is set, so this should be okay if we do filtering
+>> in handle__sched_switch. Maybe you can do an experiment to prove whether
+>> my point is correct or not.
+>>
+>>>
+>>> Thanks,
+>>> Song
+>>>
