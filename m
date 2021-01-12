@@ -2,110 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B48CB2F3CF3
-	for <lists+bpf@lfdr.de>; Wed, 13 Jan 2021 01:43:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F07092F3CFD
+	for <lists+bpf@lfdr.de>; Wed, 13 Jan 2021 01:43:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437043AbhALVhX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jan 2021 16:37:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35914 "EHLO
+        id S2436984AbhALVhY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jan 2021 16:37:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437062AbhALUzy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jan 2021 15:55:54 -0500
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC597C061575;
-        Tue, 12 Jan 2021 12:55:13 -0800 (PST)
-Received: by mail-yb1-xb36.google.com with SMTP id b64so35122ybg.7;
-        Tue, 12 Jan 2021 12:55:13 -0800 (PST)
+        with ESMTP id S2437070AbhALU4A (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jan 2021 15:56:00 -0500
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57954C06179F
+        for <bpf@vger.kernel.org>; Tue, 12 Jan 2021 12:55:20 -0800 (PST)
+Received: by mail-ot1-x32b.google.com with SMTP id o11so3661247ote.4
+        for <bpf@vger.kernel.org>; Tue, 12 Jan 2021 12:55:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=daynix-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=vg273i8HjIy6UymSWnRMKSsemhVKM+di1x5efB62R5Q=;
-        b=K3TWlToJxzXs2LY2H6Eul0mbbzBmW/EqKvU7DEYpWOwWWEOw0B6225/G2MQHl5BtiH
-         H5SaxLbSe3ptqmEKs+i+mRMphFPK9RGv7YHOqfxcUq03AZGOE2sn0kgfHXpkpgVYHZBn
-         GuObjKF7kOiLlLoqdDQli7Vfzh/PESIwW/yPH5ZgdfcGklykX+NGyzFlxjNp+vLiTquN
-         onueuzAxp4DGD/Mnhz5L4UJM81grES6JsHQXUlfDg42U+2/nZRwTlgWt9WLwEYWGdcfa
-         2TDDz+udT02Y7FfHR6CwmVff8gGrER65FckMwHBRsO000/HRgbUxzTMtnN9mvVIZWoIv
-         I8yg==
+        bh=uD2LwoNsLHO2bQTapcwBrSqoHTZzd1YmNCw2S92ag9Q=;
+        b=Y43uZ7bLVKMqH9GbZ4BYcx2lvxcJ2i103HsmZiv7+g4ZppufN2r5P61wpRmKjQtDm+
+         6Iw5P4Q3jCWLRJntB2VAsKmOyFWepWSPdDNfMwp7rBHOArihxsXGpviAmbLDbLReNp5T
+         1GsQFLXpkPd3O8YBg1d9ys2pl+Y2iRrBcQPXibs/a8PG64RIBsakJm4UbXN4O3AmUBMB
+         LcWcVtFHbgPEspus3oJa8xqqPKE6R8KJiuW56r+SCcE5YMmlzY88EwbtWXVIvz2bjoYL
+         9avkyk50tPvH0NmYp6atvBDNCPwlyY5Wzt+QY/5vlJHqedpwjVB5eQYvs1hgfE8jwBFg
+         z4Cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=vg273i8HjIy6UymSWnRMKSsemhVKM+di1x5efB62R5Q=;
-        b=ENjsKgNukbG21Wv2rOoKB7AREYlHl1fJ0FNv9RsahzK6265xSv3Euq6e+nGuBkUTGO
-         amHM1aAN5Gh7HrSln/lIZ5f+lJGc20Pvu+IXdu/y2/WGR6hO26bUz+UaFj0BG5LlDKOQ
-         8JL7vvo57IQxp4f2LSkXdunrqGRp7/ZeqKFwPysbDn+0jSYmgHxugCAlBO5rQXDUnXQL
-         GNAt4LEFGcWiwfO/aOHhkRaZQ//ffhKJ5nv5BUgxBQk0xQkwbAKf2f9iIW2fmTTty8AN
-         NsOOkA6kOrv6ALEe2ddu9P8HclYerHD/T+ADU3G8byAG4Glx0HXvBpkCFZMoletgidEy
-         YhxA==
-X-Gm-Message-State: AOAM530TdPlfKsvS4uDQxnnyd+L67oyGmNT7gJOXu6cMFceu/ZOlWPI6
-        ejvY3YMUpcra5np9tj3mvdMGvHI9DjcFzOCAZ/4=
-X-Google-Smtp-Source: ABdhPJxKDBM4wmn82Ola5dy2FN5qpSAZDdp7cqE9nTsZplPzi5RqNY/evreF5w/rfQ3Sv0csOVISTr44xoe5jVRAi/k=
-X-Received: by 2002:a25:48c7:: with SMTP id v190mr1881370yba.260.1610484913139;
- Tue, 12 Jan 2021 12:55:13 -0800 (PST)
+        bh=uD2LwoNsLHO2bQTapcwBrSqoHTZzd1YmNCw2S92ag9Q=;
+        b=C1bXRDUwCjHdfqe05ozsYyTDBD1aiyzC6n/jNemnRU3o+L4NteINPFj5j0QHBAl93S
+         AmTiwCP2LjB3JHoHXy2aMDFzzzp2JvJfWZNsF7m0rvnCE4ohXyO9Yu/8wnEvw5RnmLiQ
+         PMo6IPwoWwjKmKa48tbISmmuDAMn4Ij6y5XGPnsQnlyI5EEXqp7yUBZrjldvPflnY8Kd
+         /hYvn64fQhH4/yl2ciqH68xtwfdf+ggPIExCjOdnYpSVukpM8Q7sM+8CXMvGRdWwWTEU
+         HEo1dSmHB1Ll7a5mBDcCWsVA7PE92XK9caDY8tLIqMw45j3+kOtIDtoSdP7cFvW9HXIn
+         DBZA==
+X-Gm-Message-State: AOAM533yK0Bo31EFJrVwCgNiw12ZzfaUN0AJtb0/2tdUwJ1JTHNf65OW
+        Q5ZooutGCNnsOksJfuQSIroagc8v5CAO1Nqa5hnh1A==
+X-Google-Smtp-Source: ABdhPJyg8eUeNmxDa4BkruWI0L3XjU5KjUa3gveljnrKGwGHBS2TJW6ZNkMgbXD0kYdCRDnkUgmQJ6NHb8T8kPmTb+c=
+X-Received: by 2002:a05:6830:572:: with SMTP id f18mr874911otc.109.1610484919603;
+ Tue, 12 Jan 2021 12:55:19 -0800 (PST)
 MIME-Version: 1.0
-References: <20210112135959.649075-1-jean-philippe@linaro.org> <20210112135959.649075-6-jean-philippe@linaro.org>
-In-Reply-To: <20210112135959.649075-6-jean-philippe@linaro.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 12 Jan 2021 12:55:02 -0800
-Message-ID: <CAEf4BzZhDut7QAG-M7cxtVxehebM=bge6uckeU_aJ6yp+pSu9w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 5/5] selftests/bpf: Install btf_dump test cases
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     bpf <bpf@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+References: <20210112194143.1494-1-yuri.benditovich@daynix.com>
+ <20210112194143.1494-4-yuri.benditovich@daynix.com> <CAOEp5Ocz-xGq5=e=WY0aipEYHEhN-wxekNaAiqAS+HsOF8TcDQ@mail.gmail.com>
+In-Reply-To: <CAOEp5Ocz-xGq5=e=WY0aipEYHEhN-wxekNaAiqAS+HsOF8TcDQ@mail.gmail.com>
+From:   Yuri Benditovich <yuri.benditovich@daynix.com>
+Date:   Tue, 12 Jan 2021 22:55:07 +0200
+Message-ID: <CAOEp5OevYR5FWVMfQ_esmWTKtz9_ddTupbe7FtBFQ=sv2kEt2w@mail.gmail.com>
+Subject: Re: [RFC PATCH 3/7] tun: allow use of BPF_PROG_TYPE_SCHED_CLS program type
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, rdunlap@infradead.org,
+        willemb@google.com, gustavoars@kernel.org,
+        herbert@gondor.apana.org.au, steffen.klassert@secunet.com,
+        pablo@netfilter.org, decui@microsoft.com, cai@lca.pw,
+        jakub@cloudflare.com, elver@google.com, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        bpf@vger.kernel.org
+Cc:     Yan Vugenfirer <yan@daynix.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 6:01 AM Jean-Philippe Brucker
-<jean-philippe@linaro.org> wrote:
+On Tue, Jan 12, 2021 at 10:40 PM Yuri Benditovich
+<yuri.benditovich@daynix.com> wrote:
 >
-> The btf_dump test cannot access the original source files for comparison
-> when running the selftests out of tree, causing several failures:
+> On Tue, Jan 12, 2021 at 9:42 PM Yuri Benditovich
+> <yuri.benditovich@daynix.com> wrote:
+> >
+> > This program type can set skb hash value. It will be useful
+> > when the tun will support hash reporting feature if virtio-net.
+> >
+> > Signed-off-by: Yuri Benditovich <yuri.benditovich@daynix.com>
+> > ---
+> >  drivers/net/tun.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+> > index 7959b5c2d11f..455f7afc1f36 100644
+> > --- a/drivers/net/tun.c
+> > +++ b/drivers/net/tun.c
+> > @@ -2981,6 +2981,8 @@ static int tun_set_ebpf(struct tun_struct *tun, struct tun_prog __rcu **prog_p,
+> >                 prog = NULL;
+> >         } else {
+> >                 prog = bpf_prog_get_type(fd, BPF_PROG_TYPE_SOCKET_FILTER);
+> > +               if (IS_ERR(prog))
+> > +                       prog = bpf_prog_get_type(fd, BPF_PROG_TYPE_SCHED_CLS);
+> >                 if (IS_ERR(prog))
+> >                         return PTR_ERR(prog);
+> >         }
 >
-> awk: btf_dump_test_case_syntax.c: No such file or directory
-> ...
->
-> Add those files to $(TEST_FILES) to have "make install" pick them up.
->
-> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> ---
->  tools/testing/selftests/bpf/Makefile | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> index bffb4ad59a3d..fb8cddc410c0 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -46,7 +46,14 @@ endif
->
->  TEST_GEN_FILES = test_lwt_ip_encap.o \
->         test_tc_edt.o
-> -TEST_FILES = xsk_prereqs.sh
-> +TEST_FILES = xsk_prereqs.sh \
-> +       progs/btf_dump_test_case_syntax.c \
-> +       progs/btf_dump_test_case_ordering.c \
-> +       progs/btf_dump_test_case_padding.c \
-> +       progs/btf_dump_test_case_packing.c \
-> +       progs/btf_dump_test_case_bitfields.c \
-> +       progs/btf_dump_test_case_multidim.c \
-> +       progs/btf_dump_test_case_namespacing.c
+> Comment from Alexei Starovoitov:
+> Patches 1 and 2 are missing for me, so I couldn't review properly,
+> but this diff looks odd.
+> It allows sched_cls prog type to attach to tun.
+> That means everything that sched_cls progs can do will be done from tun hook?
 
+We do not have an intention to modify the packet in this steering eBPF.
+There is just one function that unavailable for BPF_PROG_TYPE_SOCKET_FILTER
+that the eBPF needs to make possible to deliver the hash to the guest
+VM - it is 'bpf_set_hash'
 
-maybe wildcard(progs/btf_dump_test_case_*) instead? one less thing to
-remember to update, if we ever add another test case
+Does it mean that we need to define a new eBPF type for socket filter
+operations + set_hash?
 
+Our problem is that the eBPF calculates 32-bit hash, 16-bit queue
+index and 8-bit of hash type.
+But it is able to return only 32-bit integer, so in this set of
+patches the eBPF returns
+queue index and hash type and saves the hash in skb->hash using bpf_set_hash().
+
+If this is unacceptable, can you please recommend a better solution?
+
+> sched_cls assumes l2 and can modify the packet.
+
+The steering eBPF in TUN module also assumes l2.
+
+> I think crashes are inevitable.
 >
->  # Order correspond to 'make run_tests' order
->  TEST_PROGS := test_kmod.sh \
-> --
-> 2.30.0
->
+> > --
+> > 2.17.1
+> >
