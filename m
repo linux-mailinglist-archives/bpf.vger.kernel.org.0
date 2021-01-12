@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 350B12F2F2F
-	for <lists+bpf@lfdr.de>; Tue, 12 Jan 2021 13:36:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 748242F2F44
+	for <lists+bpf@lfdr.de>; Tue, 12 Jan 2021 13:40:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727162AbhALMfW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jan 2021 07:35:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40454 "EHLO
+        id S1731614AbhALMj7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jan 2021 07:39:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727096AbhALMfW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jan 2021 07:35:22 -0500
+        with ESMTP id S1726464AbhALMj6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jan 2021 07:39:58 -0500
 Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AA79C061786
-        for <bpf@vger.kernel.org>; Tue, 12 Jan 2021 04:34:42 -0800 (PST)
-Received: by mail-wr1-x44a.google.com with SMTP id g16so1109020wrv.1
-        for <bpf@vger.kernel.org>; Tue, 12 Jan 2021 04:34:41 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66941C061795
+        for <bpf@vger.kernel.org>; Tue, 12 Jan 2021 04:39:18 -0800 (PST)
+Received: by mail-wr1-x44a.google.com with SMTP id q2so1101888wrp.4
+        for <bpf@vger.kernel.org>; Tue, 12 Jan 2021 04:39:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=pU2TD0vHzJMOEXt8gPn4RurzqWNYxl51610uNTFZEgc=;
-        b=FpRsluB+WQNzSpcn2oBDxF4pnB7gSgIte+V69x6+EXwPE9aAwIfjrCtScG7gBxwfuh
-         cC9EZH6eRaOenzBj8p5IvQ8KpokVaV/5rDVvuxgPjh+TtgimAbcZUCDtip1k+YtlCuys
-         51gLgakYwh0MvLiITSMHNI6bOO3wQPKziNYpxfIpYerqK/Zm18mmNScXxi2dxin+rQMr
-         eb2YIeH084l1rvj4OgGWpP3eQ3RZ8uGLlO/LtL8a2fpPhH4YW6bu2isnSYX+482HmpTH
-         pmoOR8z7htAckAZ5wItUZ3PUtNrUvv22bXjYXD9q4Qx++ghRotqEYcRrwIEXwe8bBEJC
-         C84w==
+        bh=cd88PZYioyCzHHKMFonziFg/jnmE70xrn0dgHm2km3k=;
+        b=TzAvlCGGlQ+J9NrqFbrScSC7TakMIWh2ybIIr5nC9dcgjeGuJU53u6b/Jmme6C5JYo
+         0oL/UDqvroaKC1rIFJRwdutaz8EWIaH0vTOpIJqMVxmPAQgV6I2VJ5+bs+7yrd5ysr/3
+         0/mxidw4zwMPHlEIwpEdnAnowFPAPJ+3fVmyMSr5ToXwx4ZgB7iDbPgRAPlnLwaduUfo
+         U2ncMuTnku2hCqYzVdyOfZXsRCaBZwItPDlIGe5f3GBvy6tj79WbJoR55h5zztQfUr+q
+         neLIDh08dAz13aT+vGCjC1W2WjLC1dIb1EdxbqufhGYiqWwUU1U6KTj9qpvz0/uz1GH7
+         bgUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
          :to:cc;
-        bh=pU2TD0vHzJMOEXt8gPn4RurzqWNYxl51610uNTFZEgc=;
-        b=AD9Z2d4KBq5bVgRLTO/xJTyLWtFzv7dDejaHUKlOhvatZDAWrfFbOJVUegr2Dos1aC
-         jCt6/e722g48cakQ1bGuSjGgQCFGV5UO7ghXFccXpDncH4lqQaQwf+Neqdp1KJpO2SFt
-         Qyhtucygemdwrq9Q4XLqJ6X7kr4/P7khtZqIRPWrJDQXECni1RBhGP2qtTHXZhF/xpgX
-         H8oS9L2ps/4IxjuyH549WWy15otOTHPnXhUnffXM75ksGNo2o8LIHStcquDSrKd9FgZu
-         dQH8sslXoNoQ9oJmPSps/uP2kYC0LqOrvTRZoeGDDSH+veNJpuTAf4VtimPxOKPlAigQ
-         aHiQ==
-X-Gm-Message-State: AOAM532d4dMDEMPdC6D1fYaw4WoeEACMr85cxD0+qUeL/TnUYNiMvcya
-        eEEjQUNMiDuWtolhQfp55kY/d/2JWvw2SUTj3Oo+/JDovwBwfD5/qs3ZNU592juu0pFRh80cVZs
-        DqxNnj6rlnBywxxIiTKlmZILFVviJHvxSgrW2kQZAlychvxAskRPLShGCX4hf4zU=
-X-Google-Smtp-Source: ABdhPJyVzH2vHwtrz088JpONtQgIlsJac7eMd4o2O2YP+YmvRQGj35xZOoAbCdLsV1t1496eZLiNRqQ2b1AWWg==
+        bh=cd88PZYioyCzHHKMFonziFg/jnmE70xrn0dgHm2km3k=;
+        b=bYy046u5TPfNJr0e7z+8hmm0SKbuxPMwtGnyxaaIwvU23/q+sc1CWLw9NBm7kP0uE3
+         OIkgRuQEx0I2NLXMC0vvb++JoEIfFsYaMCu2WmGBUUi+e/+40eNNqAPEnYA0y47cEuKg
+         9nLIaSX0eyGYKY4CjOWglLIkmuetHXW9J8prR8M3+5mA4JeJ1gGwwSsbIOk0amLiE96f
+         m4Zf7eMuGsqJqAsJx/XZ6Gzlm58FBTfoGWGEoxSBECfJvOc6nHVyHOe2M+SjYdZaWN/e
+         Ri3R6OjZ9CgIv/GfNAudUfDQpNkbXHQ6uPMtr8MZ68Oje+B0WVL2hrcU/hjsG1KieysR
+         rbsA==
+X-Gm-Message-State: AOAM533T2EUG6avLf8rsnpJFwxCzco/W7yvuqMj5TJUAR24iCITVFxR7
+        Mg8k6UtxRmZlLVsryGBgRGhwmZHSUaayENplcHdXgtszYDq46BAEcLQUWqSHstqmoormCPLfk3L
+        DHnBDyLDITyAvXBfVEJFfZdzang3mAbZnoLpbD9gnDwKs9sRjIANJWUJe1160ipY=
+X-Google-Smtp-Source: ABdhPJxhpPBjKLmukSE9qxCHkBXBmVQtB6aOwBOqS+g2Vy1EUDyFX5XFK0NPQZMSp7n2hvAquvKsZV3JeBGN5g==
 Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
 X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
- (user=jackmanb job=sendgmr) by 2002:a7b:c2e8:: with SMTP id
- e8mr3341182wmk.103.1610454880590; Tue, 12 Jan 2021 04:34:40 -0800 (PST)
-Date:   Tue, 12 Jan 2021 12:34:22 +0000
-Message-Id: <20210112123422.2011234-1-jackmanb@google.com>
+ (user=jackmanb job=sendgmr) by 2002:a1c:cc19:: with SMTP id
+ h25mr3485213wmb.124.1610455156789; Tue, 12 Jan 2021 04:39:16 -0800 (PST)
+Date:   Tue, 12 Jan 2021 12:39:13 +0000
+Message-Id: <20210112123913.2016804-1-jackmanb@google.com>
 Mime-Version: 1.0
 X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH bpf-next] bpf: Clarify return value of probe str helpers
+Subject: [PATCH bpf-next] bpf: Fix a verifier message for alloc size helper arg
 From:   Brendan Jackman <jackmanb@google.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -63,76 +63,29 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When the buffer is too small to contain the input string, these
-helpers return the length of the buffer, not the length of the
-original string. This tries to make the docs totally clear about
-that, since "the length of the [copied ]string" could also refer to
-the length of the input.
+The error message here is misleading, the argument will be rejected
+unless it is a known constant.
 
 Signed-off-by: Brendan Jackman <jackmanb@google.com>
 ---
- include/uapi/linux/bpf.h       | 10 +++++-----
- tools/include/uapi/linux/bpf.h | 10 +++++-----
- 2 files changed, 10 insertions(+), 10 deletions(-)
+ kernel/bpf/verifier.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 77d7c1bb2923..a1ad32456f89 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -2993,10 +2993,10 @@ union bpf_attr {
-  * 		string length is larger than *size*, just *size*-1 bytes are
-  * 		copied and the last byte is set to NUL.
-  *
-- * 		On success, the length of the copied string is returned. This
-- * 		makes this helper useful in tracing programs for reading
-- * 		strings, and more importantly to get its length at runtime. See
-- * 		the following snippet:
-+ * 		On success, returns the number of bytes that were written,
-+ * 		including the terminal NUL. This makes this helper useful in
-+ * 		tracing programs for reading strings, and more importantly to
-+ * 		get its length at runtime. See the following snippet:
-  *
-  * 		::
-  *
-@@ -3024,7 +3024,7 @@ union bpf_attr {
-  * 		**->mm->env_start**: using this helper and the return value,
-  * 		one can quickly iterate at the right offset of the memory area.
-  * 	Return
-- * 		On success, the strictly positive length of the string,
-+ * 		On success, the strictly positive length of the output string,
-  * 		including the trailing NUL character. On error, a negative
-  * 		value.
-  *
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 77d7c1bb2923..a1ad32456f89 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -2993,10 +2993,10 @@ union bpf_attr {
-  * 		string length is larger than *size*, just *size*-1 bytes are
-  * 		copied and the last byte is set to NUL.
-  *
-- * 		On success, the length of the copied string is returned. This
-- * 		makes this helper useful in tracing programs for reading
-- * 		strings, and more importantly to get its length at runtime. See
-- * 		the following snippet:
-+ * 		On success, returns the number of bytes that were written,
-+ * 		including the terminal NUL. This makes this helper useful in
-+ * 		tracing programs for reading strings, and more importantly to
-+ * 		get its length at runtime. See the following snippet:
-  *
-  * 		::
-  *
-@@ -3024,7 +3024,7 @@ union bpf_attr {
-  * 		**->mm->env_start**: using this helper and the return value,
-  * 		one can quickly iterate at the right offset of the memory area.
-  * 	Return
-- * 		On success, the strictly positive length of the string,
-+ * 		On success, the strictly positive length of the output string,
-  * 		including the trailing NUL character. On error, a negative
-  * 		value.
-  *
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 17270b8404f1..5534e667bdb1 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -4319,7 +4319,7 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+ 			err = mark_chain_precision(env, regno);
+ 	} else if (arg_type_is_alloc_size(arg_type)) {
+ 		if (!tnum_is_const(reg->var_off)) {
+-			verbose(env, "R%d unbounded size, use 'var &= const' or 'if (var < const)'\n",
++			verbose(env, "R%d is not a known constant'\n",
+ 				regno);
+ 			return -EACCES;
+ 		}
 
 base-commit: e22d7f05e445165e58feddb4e40cc9c0f94453bc
---
+-- 
 2.30.0.284.gd98b1dd5eaa7-goog
 
