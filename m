@@ -2,115 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA33E2F3DC9
+	by mail.lfdr.de (Postfix) with ESMTP id 43DCD2F3DC7
 	for <lists+bpf@lfdr.de>; Wed, 13 Jan 2021 01:44:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436693AbhALVhS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S2436691AbhALVhS (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Tue, 12 Jan 2021 16:37:18 -0500
-Received: from www62.your-server.de ([213.133.104.62]:53260 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436792AbhALUSQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jan 2021 15:18:16 -0500
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kzQ6b-0006a9-Dd; Tue, 12 Jan 2021 21:17:29 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kzQ6b-000KJk-7W; Tue, 12 Jan 2021 21:17:29 +0100
-Subject: Re: [PATCH bpf 2/2] libbpf: allow loading empty BTFs
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Yonghong Song <yhs@fb.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@fb.com>,
-        Kernel Team <kernel-team@fb.com>,
-        Christopher William Snowhill <chris@kode54.net>
-References: <20210110070341.1380086-1-andrii@kernel.org>
- <20210110070341.1380086-2-andrii@kernel.org>
- <e621981d-5c3d-6d92-871b-a98520778363@fb.com>
- <CAEf4BzZhFrHho-F+JyY6wQyWUZ+0cJJLkGv+=DHP4equkkm4iw@mail.gmail.com>
- <31ebd16f-8218-1457-b4e2-3728ab147747@fb.com>
- <CAEf4BzY0xwwH+yD3dvjSjDG1t_w4ktAeo_gM6WQWw676TghJpQ@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <717c1c8c-4194-0605-3aa3-eb33fdc17711@iogearbox.net>
-Date:   Tue, 12 Jan 2021 21:17:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436794AbhALUSe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jan 2021 15:18:34 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70071C061786;
+        Tue, 12 Jan 2021 12:17:54 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id 81so6735070ioc.13;
+        Tue, 12 Jan 2021 12:17:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=IiemNVOJ6z4FCW3AKrYaQiz7YupFYzlzQ4KW6hI/nfE=;
+        b=fcTuh0xO7QvZVSHJhAlDADaCOSUfYppyuk2R4GoleNoBZ5+7jtNj9Xwdg8SriF51hQ
+         WbUNC4rrYiC2ODV37t67WwZSsYTxVZLILucm0yBLlNwNEGky05ejXnFYXHydK8hIf712
+         4a5pr/gXyHBglBf8iViPeMlu5WUVP219MscMFOgGQg5Y2JWFpIRgH4L81R9uVZsR//Eu
+         ufSr9jUxsxn/4ujEoHbYZgpyJhQewp7sKOqaZVlTF6usiDD/srDXCITQqNdqRn3Thp1M
+         z9Gsi8yl1ju1T0JHrlHf/UnhwjMKXKGIijZQhrzNWIzLZAp/8ZA6wWGv7jjh8DaIyQUb
+         +nMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=IiemNVOJ6z4FCW3AKrYaQiz7YupFYzlzQ4KW6hI/nfE=;
+        b=SGOxdNznY//9IRhPeNAdPRMbErtd72t0cw1Xn2ry4xUiGnyjmy4N9m7WPI+KfRapy/
+         2hHP9P0qa8Hky9P8KShZHMzwPjWfGrxxmiDnGNb5rP+v4nwdvfy1fjCkF7IxOY/EIoko
+         yzTUMMF1bXEO7AwLtKwIUPA3cNFIQU84i3y+w0dMTfyCkH9RUUstW5iXWOocSCG8G3tV
+         IafuobVfFUSPcHlrZqaoiuk4ubUKwoKYRISx3AAzOj6taSIjiqV9GWt5HyXZfo6+I1UF
+         JaUmjN//aZLWcZe4r5mFPrHTTUqPhlLnHFDlC/J7PDcmrMPx9MPZEAlBt62b7NYAWJsT
+         DvVw==
+X-Gm-Message-State: AOAM531V/sfS3Qpibo2ZiaotC4b6LlrX/TO9GZnWxWzyRS6Q6HSwE3be
+        Cct/ziK5+cA1FgAwTzUurIg8OVEoioNCKSnVp9M=
+X-Google-Smtp-Source: ABdhPJwnmhoHa6mqJpu1PhDiSepIzr/Vy3gEoIYMNd2KDWRl0o8yc5I/CeDooA7boJlOQ3ZRtk+eQOxlQCJX+kO7cdE=
+X-Received: by 2002:a92:9e57:: with SMTP id q84mr818073ili.112.1610482673878;
+ Tue, 12 Jan 2021 12:17:53 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzY0xwwH+yD3dvjSjDG1t_w4ktAeo_gM6WQWw676TghJpQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26047/Tue Jan 12 13:33:56 2021)
+References: <20210112184004.1302879-1-jolsa@kernel.org> <CAEf4BzZc0-csgmOP=eAvSP5uVYkKiYROAWtp8hwJcYA1awhVJw@mail.gmail.com>
+ <20210112194724.GB1291051@krava>
+In-Reply-To: <20210112194724.GB1291051@krava>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Tue, 12 Jan 2021 21:17:41 +0100
+Message-ID: <CA+icZUVPNdTb1U5qGDz1Z05NWng+GEhrFtLgev-OVM_zLhzznQ@mail.gmail.com>
+Subject: Re: [PATCH] btf_encoder: Add extra checks for symbol names
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Hao Luo <haoluo@google.com>, Tom Stellard <tstellar@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/12/21 7:41 AM, Andrii Nakryiko wrote:
-> On Mon, Jan 11, 2021 at 5:16 PM Yonghong Song <yhs@fb.com> wrote:
->> On 1/11/21 12:51 PM, Andrii Nakryiko wrote:
->>> On Mon, Jan 11, 2021 at 10:13 AM Yonghong Song <yhs@fb.com> wrote:
->>>> On 1/9/21 11:03 PM, Andrii Nakryiko wrote:
->>>>> Empty BTFs do come up (e.g., simple kernel modules with no new types and
->>>>> strings, compared to the vmlinux BTF) and there is nothing technically wrong
->>>>> with them. So remove unnecessary check preventing loading empty BTFs.
->>>>>
->>>>> Reported-by: Christopher William Snowhill <chris@kode54.net>
->>>>> Fixes: ("d8123624506c libbpf: Fix BTF data layout checks and allow empty BTF")
+On Tue, Jan 12, 2021 at 8:47 PM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Tue, Jan 12, 2021 at 11:20:44AM -0800, Andrii Nakryiko wrote:
+> > On Tue, Jan 12, 2021 at 10:43 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> > >
+> > > When processing kernel image build by clang we can
+> > > find some functions without the name, which causes
+> > > pahole to segfault.
+> > >
+> > > Adding extra checks to make sure we always have
+> > > function's name defined before using it.
+> > >
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> > >  btf_encoder.c | 8 ++++++--
+> > >  1 file changed, 6 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/btf_encoder.c b/btf_encoder.c
+> > > index 333973054b61..17f7a14f2ef0 100644
+> > > --- a/btf_encoder.c
+> > > +++ b/btf_encoder.c
+> > > @@ -72,6 +72,8 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym)
+> > >
+> > >         if (elf_sym__type(sym) != STT_FUNC)
+> > >                 return 0;
+> > > +       if (!elf_sym__name(sym, btfe->symtab))
+> > > +               return 0;
+> >
+> > elf_sym__name() is called below again, so might be better to just use
+> > local variable to store result?
+>
+> right, will add
+>
+> >
+> > >
+> > >         if (functions_cnt == functions_alloc) {
+> > >                 functions_alloc = max(1000, functions_alloc * 3 / 2);
+> > > @@ -730,9 +732,11 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
+> > >                 if (!has_arg_names(cu, &fn->proto))
+> > >                         continue;
+> > >                 if (functions_cnt) {
+> > > -                       struct elf_function *func;
+> > > +                       const char *name = function__name(fn, cu);
+> > > +                       struct elf_function *func = NULL;
+> > >
+> > > -                       func = find_function(btfe, function__name(fn, cu));
+> > > +                       if (name)
+> > > +                               func = find_function(btfe, name);
+> >
+> > isn't this a more convoluted way of writing:
+> >
+> > name = function__name(fn, cu);
+> > if (!name)
+> >     continue;
+> >
+> > func = find_function(btfe, name);
+> > if (!func || func->generated)
+> >     continue
+> >
+> > ?
+>
+> convoluted is my middle name ;-) I'll change it
+>
 
-Fixed up Fixes tag ^^^^^ while applying. ;-)
+OK, a v2 will follow.
 
->>>>> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
->>>>> ---
->>>>>     tools/lib/bpf/btf.c | 5 -----
->>>>>     1 file changed, 5 deletions(-)
->>>>>
->>>>> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
->>>>> index 3c3f2bc6c652..9970a288dda5 100644
->>>>> --- a/tools/lib/bpf/btf.c
->>>>> +++ b/tools/lib/bpf/btf.c
->>>>> @@ -240,11 +240,6 @@ static int btf_parse_hdr(struct btf *btf)
->>>>>         }
->>>>>
->>>>>         meta_left = btf->raw_size - sizeof(*hdr);
->>>>> -     if (!meta_left) {
->>>>> -             pr_debug("BTF has no data\n");
->>>>> -             return -EINVAL;
->>>>> -     }
->>>>
->>>> Previous kernel patch allows empty btf only if that btf is module (not
->>>> base/vmlinux) btf. Here it seems we allow any empty non-module btf to be
->>>> loaded into the kernel. In such cases, loading may fail? Maybe we should
->>>> detect such cases in libbpf and error out instead of going to kernel and
->>>> get error back?
->>>
->>> I did this consciously. Kernel is more strict, because there is no
->>> reasonable case when vmlinux BTF or BPF program's BTF can be empty (at
->>> least not that now we have FUNCs in BTF). But allowing libbpf to load
->>> empty BTF generically is helpful for bpftool, as one example, for
->>> inspection. If you do `bpftool btf dump` on empty BTF, it will just
->>> print nothing and you'll know that it's a valid (from BTF header
->>> perspective) BTF, just doesn't have any types (besides VOID). If we
->>> don't allow it, then we'll just get an error and then you'll have to
->>> do painful hex dumping and decoding to see what's wrong.
->>
->> It is totally okay to allow empty btf in libbpf. I just want to check
->> if this btf is going to be loaded into the kernel, right before it is
->> loading whether libbpf could check whether it is a non-module empty btf
->> or not, if it is, do not go to kernel.
-> 
-> Ok, I see what you are proposing. We can do that, but it's definitely
-> separate from these bug fixes. But, to be honest, I wouldn't bother
-> because libbpf will return BTF verification log with a very readable
-> "No data" message in it.
+Thanks JCO.
 
-Right, seems okay to me for this particular case given the user will be
-able to make some sense of it from the log.
+- sed@ -
 
-Thanks,
-Daniel
+> thanks,
+> jirka
+>
+> >
+> > >                         if (!func || func->generated)
+> > >                                 continue;
+> > >                         func->generated = true;
+> > > --
+> > > 2.26.2
+> > >
+> >
+>
