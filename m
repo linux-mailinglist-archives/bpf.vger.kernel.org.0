@@ -2,130 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C839F2F3B1E
-	for <lists+bpf@lfdr.de>; Tue, 12 Jan 2021 20:51:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D6D52F3B25
+	for <lists+bpf@lfdr.de>; Tue, 12 Jan 2021 20:51:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393150AbhALTtC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jan 2021 14:49:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50088 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2393160AbhALTtC (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 12 Jan 2021 14:49:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610480855;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TS7hPVbCDF9VxQYBBhd7spkgecLYeTiCw/jD7UaMlQk=;
-        b=h2cMn+azXUsJLZjmZfanjCurw+flqZYaL2od3HEKQGigBXHIkTp7OMSlqyaNp4KpjibIFO
-        mLd0OtnO22JCXjNZSKcasddn6v3U/EnR/V9PXgIaiGy/nAkTOBcQd4WHkOqxGeKXG2JpuH
-        NUIvNDEN16N+mQOAOFDzwVu9Ef7NmF0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-582-jRxm4bjfPki1XkhP-Kf4cw-1; Tue, 12 Jan 2021 14:47:29 -0500
-X-MC-Unique: jRxm4bjfPki1XkhP-Kf4cw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 497801006C8D;
-        Tue, 12 Jan 2021 19:47:28 +0000 (UTC)
-Received: from krava (unknown [10.40.194.156])
-        by smtp.corp.redhat.com (Postfix) with SMTP id C0C90101E810;
-        Tue, 12 Jan 2021 19:47:25 +0000 (UTC)
-Date:   Tue, 12 Jan 2021 20:47:24 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Hao Luo <haoluo@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Tom Stellard <tstellar@redhat.com>
-Subject: Re: [PATCH] btf_encoder: Add extra checks for symbol names
-Message-ID: <20210112194724.GB1291051@krava>
-References: <20210112184004.1302879-1-jolsa@kernel.org>
- <CAEf4BzZc0-csgmOP=eAvSP5uVYkKiYROAWtp8hwJcYA1awhVJw@mail.gmail.com>
+        id S2393210AbhALTuP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jan 2021 14:50:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393205AbhALTuP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jan 2021 14:50:15 -0500
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 014E1C061575
+        for <bpf@vger.kernel.org>; Tue, 12 Jan 2021 11:49:35 -0800 (PST)
+Received: by mail-ot1-x329.google.com with SMTP id j12so3450651ota.7
+        for <bpf@vger.kernel.org>; Tue, 12 Jan 2021 11:49:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=daynix-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O7/M6B7YqTGHi7NnZLBVw1iJEATx9VM5xn4jowTooqg=;
+        b=UmdCnOd9p7HTDUpn111xjpsZhlH9Wyagx3fH8hlscE+sSrJz429k6OC+NnvRnFQwpl
+         jqkR0s7AEDLjTJ0tq6hZBObi6DFBJPrI8K29WbKXWEX8kB539YWrgpGJqfy0ojTAcqlX
+         A/8M+eXo7DG43n0QaITT1ZzZkFVJHA1wCZsMP/csUGUiOcYrjXPxCNQbVGHYFk8eZMml
+         PQCZdfIhK5Q8tqATIShbwSMJx30AKk7x9Yiz8gp1FLSc6TkC1TzXRxLv7QIpuV8ow32m
+         QHlWmBmHegqCq8m2hkfA2+d81qT2yKRdtWfqAGHKLt6uQt4tjNbi71loXt7+hIyfFEF8
+         ILCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O7/M6B7YqTGHi7NnZLBVw1iJEATx9VM5xn4jowTooqg=;
+        b=rNlbqjhSAxta8d6ieuyKws9gW5MhuZ540NPb2QlmAt1oWZbWOK6F/A4h+ABLbCdLff
+         ozgzvyIy/YdwyEIMUv/lPtIzblCv7UUPy0qTZZ56yQLrDhKaG6R5lucPzapRGQSPkea2
+         B7VnmbsqOjclJuIElusMPP0U1BubAN4qgQH1W9eKj8CA3I5Hgkh7o9Y/By69g1tkKrnG
+         17jkhA1AC7dKe46i0Zpg2MYricRmQp/60X6GhdR3jyV61x1KoXU1deDbGg93521w+wJh
+         V4dxaJtVscGwDOi5hTXzrbPpL8oUJE0Dp2lYjrA5ymrnAa8pyj6i1S82nDR6Qqi/lsVd
+         7Akw==
+X-Gm-Message-State: AOAM530YdFkLrBPdgEQjSEz4tEtZNgTUlKkhpglYPHnHXT8aIsVCz7Nd
+        sgAoWEDkk3tzDe1Fp+jTTdXa3n3fGEU61rChmk7oOg==
+X-Google-Smtp-Source: ABdhPJzHurposwP0CkbMCdsJQYlpBWAqy5u0b6+ShjXQt+hgxjTlD6eu4NfdkCl4yEwTKKUdzPdbCNayYxSsoybE50Y=
+X-Received: by 2002:a9d:4715:: with SMTP id a21mr734506otf.220.1610480974332;
+ Tue, 12 Jan 2021 11:49:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZc0-csgmOP=eAvSP5uVYkKiYROAWtp8hwJcYA1awhVJw@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <20210112194143.1494-1-yuri.benditovich@daynix.com>
+In-Reply-To: <20210112194143.1494-1-yuri.benditovich@daynix.com>
+From:   Yuri Benditovich <yuri.benditovich@daynix.com>
+Date:   Tue, 12 Jan 2021 21:49:21 +0200
+Message-ID: <CAOEp5OejaX4ZETThrj4-n8_yZoeTZs56CBPHbQqNsR2oni8dWw@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/7] Support for virtio-net hash reporting
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, rdunlap@infradead.org,
+        willemb@google.com, gustavoars@kernel.org,
+        herbert@gondor.apana.org.au, steffen.klassert@secunet.com,
+        nogikh@google.com, pablo@netfilter.org, decui@microsoft.com,
+        cai@lca.pw, jakub@cloudflare.com, elver@google.com,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+Cc:     Yan Vugenfirer <yan@daynix.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 11:20:44AM -0800, Andrii Nakryiko wrote:
-> On Tue, Jan 12, 2021 at 10:43 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > When processing kernel image build by clang we can
-> > find some functions without the name, which causes
-> > pahole to segfault.
-> >
-> > Adding extra checks to make sure we always have
-> > function's name defined before using it.
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  btf_encoder.c | 8 ++++++--
-> >  1 file changed, 6 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/btf_encoder.c b/btf_encoder.c
-> > index 333973054b61..17f7a14f2ef0 100644
-> > --- a/btf_encoder.c
-> > +++ b/btf_encoder.c
-> > @@ -72,6 +72,8 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym)
-> >
-> >         if (elf_sym__type(sym) != STT_FUNC)
-> >                 return 0;
-> > +       if (!elf_sym__name(sym, btfe->symtab))
-> > +               return 0;
-> 
-> elf_sym__name() is called below again, so might be better to just use
-> local variable to store result?
+On Tue, Jan 12, 2021 at 9:41 PM Yuri Benditovich
+<yuri.benditovich@daynix.com> wrote:
+>
+> Existing TUN module is able to use provided "steering eBPF" to
+> calculate per-packet hash and derive the destination queue to
+> place the packet to. The eBPF uses mapped configuration data
+> containing a key for hash calculation and indirection table
+> with array of queues' indices.
+>
+> This series of patches adds support for virtio-net hash reporting
+> feature as defined in virtio specification. It extends the TUN module
+> and the "steering eBPF" as follows:
+>
+> Extended steering eBPF calculates the hash value and hash type, keeps
+> hash value in the skb->hash and returns index of destination virtqueue
+> and the type of the hash. TUN module keeps returned hash type in
+> (currently unused) field of the skb.
+> skb->__unused renamed to 'hash_report_type'.
+>
+> When TUN module is called later to allocate and fill the virtio-net
+> header and push it to destination virtqueue it populates the hash
+> and the hash type into virtio-net header.
+>
+> VHOST driver is made aware of respective virtio-net feature that
+> extends the virtio-net header to report the hash value and hash report
+> type.
 
-right, will add
+Comment from Willem de Bruijn:
 
-> 
-> >
-> >         if (functions_cnt == functions_alloc) {
-> >                 functions_alloc = max(1000, functions_alloc * 3 / 2);
-> > @@ -730,9 +732,11 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
-> >                 if (!has_arg_names(cu, &fn->proto))
-> >                         continue;
-> >                 if (functions_cnt) {
-> > -                       struct elf_function *func;
-> > +                       const char *name = function__name(fn, cu);
-> > +                       struct elf_function *func = NULL;
-> >
-> > -                       func = find_function(btfe, function__name(fn, cu));
-> > +                       if (name)
-> > +                               func = find_function(btfe, name);
-> 
-> isn't this a more convoluted way of writing:
-> 
-> name = function__name(fn, cu);
-> if (!name)
->     continue;
-> 
-> func = find_function(btfe, name);
-> if (!func || func->generated)
->     continue
-> 
-> ?
+Skbuff fields are in short supply. I don't think we need to add one
+just for this narrow path entirely internal to the tun device.
 
-convoluted is my middle name ;-) I'll change it
+Instead, you could just run the flow_dissector in tun_put_user if the
+feature is negotiated. Indeed, the flow dissector seems more apt to me
+than BPF here. Note that the flow dissector internally can be
+overridden by a BPF program if the admin so chooses.
 
-thanks,
-jirka
+This also hits on a deeper point with the choice of hash values, that
+I also noticed in my RFC patchset to implement the inverse [1][2]. It
+is much more detailed than skb->hash + skb->l4_hash currently offers,
+and that can be gotten for free from most hardware. In most practical
+cases, that information suffices. I added less specific fields
+VIRTIO_NET_HASH_REPORT_L4, VIRTIO_NET_HASH_REPORT_OTHER that work
+without explicit flow dissection. I understand that the existing
+fields are part of the standard. Just curious, what is their purpose
+beyond 4-tuple based flow hashing?
 
-> 
-> >                         if (!func || func->generated)
-> >                                 continue;
-> >                         func->generated = true;
-> > --
-> > 2.26.2
-> >
-> 
-
+[1] https://patchwork.kernel.org/project/netdevbpf/list/?series=406859&state=*
+[2] https://github.com/wdebruij/linux/commit/0f77febf22cd6ffc242a575807fa8382a26e511e
+>
+> Yuri Benditovich (7):
+>   skbuff: define field for hash report type
+>   vhost: support for hash report virtio-net feature
+>   tun: allow use of BPF_PROG_TYPE_SCHED_CLS program type
+>   tun: free bpf_program by bpf_prog_put instead of bpf_prog_destroy
+>   tun: add ioctl code TUNSETHASHPOPULATION
+>   tun: populate hash in virtio-net header when needed
+>   tun: report new tun feature IFF_HASH
+>
+>  drivers/net/tun.c           | 43 +++++++++++++++++++++++++++++++------
+>  drivers/vhost/net.c         | 37 ++++++++++++++++++++++++-------
+>  include/linux/skbuff.h      |  7 +++++-
+>  include/uapi/linux/if_tun.h |  2 ++
+>  4 files changed, 74 insertions(+), 15 deletions(-)
+>
+> --
+> 2.17.1
+>
