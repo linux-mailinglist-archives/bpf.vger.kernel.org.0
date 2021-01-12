@@ -2,143 +2,246 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D6D52F3B25
-	for <lists+bpf@lfdr.de>; Tue, 12 Jan 2021 20:51:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DBF62F3DBC
+	for <lists+bpf@lfdr.de>; Wed, 13 Jan 2021 01:44:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393210AbhALTuP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jan 2021 14:50:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50006 "EHLO
+        id S2437010AbhALVhN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jan 2021 16:37:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393205AbhALTuP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jan 2021 14:50:15 -0500
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 014E1C061575
-        for <bpf@vger.kernel.org>; Tue, 12 Jan 2021 11:49:35 -0800 (PST)
-Received: by mail-ot1-x329.google.com with SMTP id j12so3450651ota.7
-        for <bpf@vger.kernel.org>; Tue, 12 Jan 2021 11:49:34 -0800 (PST)
+        with ESMTP id S2436677AbhALUIJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jan 2021 15:08:09 -0500
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74DB7C061575;
+        Tue, 12 Jan 2021 12:07:29 -0800 (PST)
+Received: by mail-yb1-xb34.google.com with SMTP id z1so149185ybr.4;
+        Tue, 12 Jan 2021 12:07:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=daynix-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=O7/M6B7YqTGHi7NnZLBVw1iJEATx9VM5xn4jowTooqg=;
-        b=UmdCnOd9p7HTDUpn111xjpsZhlH9Wyagx3fH8hlscE+sSrJz429k6OC+NnvRnFQwpl
-         jqkR0s7AEDLjTJ0tq6hZBObi6DFBJPrI8K29WbKXWEX8kB539YWrgpGJqfy0ojTAcqlX
-         A/8M+eXo7DG43n0QaITT1ZzZkFVJHA1wCZsMP/csUGUiOcYrjXPxCNQbVGHYFk8eZMml
-         PQCZdfIhK5Q8tqATIShbwSMJx30AKk7x9Yiz8gp1FLSc6TkC1TzXRxLv7QIpuV8ow32m
-         QHlWmBmHegqCq8m2hkfA2+d81qT2yKRdtWfqAGHKLt6uQt4tjNbi71loXt7+hIyfFEF8
-         ILCw==
+        bh=wEHoLQAtxyd4MkQNCrEZv+gmArAk+lXeRqyYttgwwQc=;
+        b=kO0PHLFOKt+6IvDPd2ok0QqB7v8CECKLjwfi0o8uD9phz+84eX28UwoZdmXmHvmshO
+         p2dvlMh/069wi2Qqoug9KRSvKMWiKOcSl+JsMyDmnx3cOhL+hfBND5Sjm79Yuh/6O7n4
+         2I8mtGEuGNhFPfSscinD9MbKP/RjlEhKdRXEw5aDKHEIaa0Uq2RO+1kFEK1xLQUvowtN
+         9DuHbwiLyciN+ySgFfbChzpA7PMSwsU7wq5tyVDMHqgAg3QxL+DBGBiX41n1bNnKj0AA
+         l6IQItOon0Trb/ARJ9gL5vjiTYzwOAWvoSJk0/i4xyErcsYfLmuGh+6p7yG4tLTXloKW
+         7tMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=O7/M6B7YqTGHi7NnZLBVw1iJEATx9VM5xn4jowTooqg=;
-        b=rNlbqjhSAxta8d6ieuyKws9gW5MhuZ540NPb2QlmAt1oWZbWOK6F/A4h+ABLbCdLff
-         ozgzvyIy/YdwyEIMUv/lPtIzblCv7UUPy0qTZZ56yQLrDhKaG6R5lucPzapRGQSPkea2
-         B7VnmbsqOjclJuIElusMPP0U1BubAN4qgQH1W9eKj8CA3I5Hgkh7o9Y/By69g1tkKrnG
-         17jkhA1AC7dKe46i0Zpg2MYricRmQp/60X6GhdR3jyV61x1KoXU1deDbGg93521w+wJh
-         V4dxaJtVscGwDOi5hTXzrbPpL8oUJE0Dp2lYjrA5ymrnAa8pyj6i1S82nDR6Qqi/lsVd
-         7Akw==
-X-Gm-Message-State: AOAM530YdFkLrBPdgEQjSEz4tEtZNgTUlKkhpglYPHnHXT8aIsVCz7Nd
-        sgAoWEDkk3tzDe1Fp+jTTdXa3n3fGEU61rChmk7oOg==
-X-Google-Smtp-Source: ABdhPJzHurposwP0CkbMCdsJQYlpBWAqy5u0b6+ShjXQt+hgxjTlD6eu4NfdkCl4yEwTKKUdzPdbCNayYxSsoybE50Y=
-X-Received: by 2002:a9d:4715:: with SMTP id a21mr734506otf.220.1610480974332;
- Tue, 12 Jan 2021 11:49:34 -0800 (PST)
+        bh=wEHoLQAtxyd4MkQNCrEZv+gmArAk+lXeRqyYttgwwQc=;
+        b=fDx9QDkKNif2a5+CF5sG6sG7mHlV+xGOO2piYKszv2hHf26b+QKB007Ytcc3ooXI+Q
+         A9xkSB/L1Nl51xbgavi+ZRl/ci1MXKJMEzwGOsykjRVmYVUkzpegB/bKDkuvQgmZcZxs
+         Eejm8TRAm83X5lLov6P0B1p5gtHfDDX+VcjALVNBcuaFJsaf7lA9/TmNaelRGFoDeGGr
+         9hyRNOmvwkOzKtBzvP/wIQSvDdHlGXox7fh2yzHvlsXdzJd/7Tk0rFuRoKx5/OeSlbvC
+         F/rESLQ1Qbw5hWv984ElKOrHxwrkPmG41SlED8RUv49VMZ/uSh2BK4BWqchH1MAlfxER
+         5vJQ==
+X-Gm-Message-State: AOAM5300nReXr//NSiyJy0xZC6m1sLYYW6sdZBN/aDNYNwQ2kHpu1n+F
+        d5tAe0RwZgnyxDlludEWk7pz6k1jnkvqsojuSxIdXkDrcNB5DpAa
+X-Google-Smtp-Source: ABdhPJyzzwDUAbM9PTFwre76mMErQbr8tvC/qWopLh5AH4ieHmxvUIYzX3n0dUnaMazbO5p7ENrOo6mzRBibZ94qPyg=
+X-Received: by 2002:a25:9882:: with SMTP id l2mr1512741ybo.425.1610482048689;
+ Tue, 12 Jan 2021 12:07:28 -0800 (PST)
 MIME-Version: 1.0
-References: <20210112194143.1494-1-yuri.benditovich@daynix.com>
-In-Reply-To: <20210112194143.1494-1-yuri.benditovich@daynix.com>
-From:   Yuri Benditovich <yuri.benditovich@daynix.com>
-Date:   Tue, 12 Jan 2021 21:49:21 +0200
-Message-ID: <CAOEp5OejaX4ZETThrj4-n8_yZoeTZs56CBPHbQqNsR2oni8dWw@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/7] Support for virtio-net hash reporting
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
+References: <20210111182027.1448538-1-qais.yousef@arm.com> <20210111182027.1448538-3-qais.yousef@arm.com>
+ <CAEf4BzYwOAHGOiZBUx86yZ1ofwJ1WqCDR3dyRMrTeQa2ZU7ftA@mail.gmail.com> <20210112192729.q47avnmnzl54nekg@e107158-lin>
+In-Reply-To: <20210112192729.q47avnmnzl54nekg@e107158-lin>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 12 Jan 2021 12:07:17 -0800
+Message-ID: <CAEf4BzZiYv1M04FBmuzMH5cxLUXzLthDfpp4nORMEmvkcfzyRQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests: bpf: Add a new test for bare tracepoints
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, rdunlap@infradead.org,
-        willemb@google.com, gustavoars@kernel.org,
-        herbert@gondor.apana.org.au, steffen.klassert@secunet.com,
-        nogikh@google.com, pablo@netfilter.org, decui@microsoft.com,
-        cai@lca.pw, jakub@cloudflare.com, elver@google.com,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-Cc:     Yan Vugenfirer <yan@daynix.com>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 9:41 PM Yuri Benditovich
-<yuri.benditovich@daynix.com> wrote:
+On Tue, Jan 12, 2021 at 11:27 AM Qais Yousef <qais.yousef@arm.com> wrote:
 >
-> Existing TUN module is able to use provided "steering eBPF" to
-> calculate per-packet hash and derive the destination queue to
-> place the packet to. The eBPF uses mapped configuration data
-> containing a key for hash calculation and indirection table
-> with array of queues' indices.
+> On 01/11/21 23:26, Andrii Nakryiko wrote:
+> > On Mon, Jan 11, 2021 at 10:20 AM Qais Yousef <qais.yousef@arm.com> wrote:
+> > >
+> > > Reuse module_attach infrastructure to add a new bare tracepoint to check
+> > > we can attach to it as a raw tracepoint.
+> > >
+> > > Signed-off-by: Qais Yousef <qais.yousef@arm.com>
+> > > ---
+> > >
+> > > Andrii
+> > >
+> > > I was getting the error below when I was trying to run the test.
+> > > I had to comment out all related fentry* code to be able to test the raw_tp
+> > > stuff. Not sure something I've done wrong or it's broken for some reason.
+> > > I was on v5.11-rc2.
+> >
+> > Check that you have all the required Kconfig options from
+> > tools/testing/selftests/bpf/config. And also you will need to build
 >
-> This series of patches adds support for virtio-net hash reporting
-> feature as defined in virtio specification. It extends the TUN module
-> and the "steering eBPF" as follows:
+> Yep I have merged this config snippet using merge_config.sh script.
 >
-> Extended steering eBPF calculates the hash value and hash type, keeps
-> hash value in the skb->hash and returns index of destination virtqueue
-> and the type of the hash. TUN module keeps returned hash type in
-> (currently unused) field of the skb.
-> skb->__unused renamed to 'hash_report_type'.
+> > pahole from master, 1.19 doesn't have some fixes that add kernel
+> > module support. I think pahole is the reasons why you have the failure
+> > below.
 >
-> When TUN module is called later to allocate and fill the virtio-net
-> header and push it to destination virtqueue it populates the hash
-> and the hash type into virtio-net header.
+> I am using pahole 1.19. I have built it from tip of master though.
 >
-> VHOST driver is made aware of respective virtio-net feature that
-> extends the virtio-net header to report the hash value and hash report
-> type.
+> /trying using v1.19 tag
+>
+> Still fails the same.
+>
+> >
+> > >
+> > >         $ sudo ./test_progs -v -t module_attach
+> >
+> > use -vv when debugging stuff like that with test_progs, it will output
+> > libbpf detailed logs, that often are very helpful
+>
+> I tried that but it didn't help me. Full output is here
+>
+>         https://paste.debian.net/1180846
+>
 
-Comment from Willem de Bruijn:
+It did help a bit for me to make sure that you have bpf_testmod
+properly loaded and its BTF was found, so the problem is somewhere
+else. Also, given load succeeded and attach failed with OPNOTSUPP, I
+suspect you are missing some of FTRACE configs, which seems to be
+missing from selftests's config as well. Check that you have
+CONFIG_FTRACE=y and CONFIG_DYNAMIC_FTRACE=y, and you might need some
+more. See [0] for a real config we are using to run all tests in
+libbpf CI. If you figure out what you were missing, please also
+contribute a patch to selftests' config.
 
-Skbuff fields are in short supply. I don't think we need to add one
-just for this narrow path entirely internal to the tun device.
+  [0] https://github.com/libbpf/libbpf/blob/master/travis-ci/vmtest/configs/latest.config
 
-Instead, you could just run the flow_dissector in tun_put_user if the
-feature is negotiated. Indeed, the flow dissector seems more apt to me
-than BPF here. Note that the flow dissector internally can be
-overridden by a BPF program if the admin so chooses.
-
-This also hits on a deeper point with the choice of hash values, that
-I also noticed in my RFC patchset to implement the inverse [1][2]. It
-is much more detailed than skb->hash + skb->l4_hash currently offers,
-and that can be gotten for free from most hardware. In most practical
-cases, that information suffices. I added less specific fields
-VIRTIO_NET_HASH_REPORT_L4, VIRTIO_NET_HASH_REPORT_OTHER that work
-without explicit flow dissection. I understand that the existing
-fields are part of the standard. Just curious, what is their purpose
-beyond 4-tuple based flow hashing?
-
-[1] https://patchwork.kernel.org/project/netdevbpf/list/?series=406859&state=*
-[2] https://github.com/wdebruij/linux/commit/0f77febf22cd6ffc242a575807fa8382a26e511e
+> >
+> > >         bpf_testmod.ko is already unloaded.
+> > >         Loading bpf_testmod.ko...
+> > >         Successfully loaded bpf_testmod.ko.
+> > >         test_module_attach:PASS:skel_open 0 nsec
+> > >         test_module_attach:PASS:set_attach_target 0 nsec
+> > >         test_module_attach:PASS:skel_load 0 nsec
+> > >         libbpf: prog 'handle_fentry': failed to attach: ERROR: strerror_r(-524)=22
+> > >         libbpf: failed to auto-attach program 'handle_fentry': -524
+> > >         test_module_attach:FAIL:skel_attach skeleton attach failed: -524
+> > >         #58 module_attach:FAIL
+> > >         Successfully unloaded bpf_testmod.ko.
+> > >         Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
+> > >
+> >
+> > But even apart from test failure, there seems to be kernel build
+> > failure. See [0] for what fails in kernel-patches CI.
+> >
+> >    [0] https://travis-ci.com/github/kernel-patches/bpf/builds/212730017
 >
-> Yuri Benditovich (7):
->   skbuff: define field for hash report type
->   vhost: support for hash report virtio-net feature
->   tun: allow use of BPF_PROG_TYPE_SCHED_CLS program type
->   tun: free bpf_program by bpf_prog_put instead of bpf_prog_destroy
->   tun: add ioctl code TUNSETHASHPOPULATION
->   tun: populate hash in virtio-net header when needed
->   tun: report new tun feature IFF_HASH
+> Sorry about that. I did a last minute change because of checkpatch.pl error and
+> it seems I either forgot to rebuild or missed that the rebuild failed :/
 >
->  drivers/net/tun.c           | 43 +++++++++++++++++++++++++++++++------
->  drivers/vhost/net.c         | 37 ++++++++++++++++++++++++-------
->  include/linux/skbuff.h      |  7 +++++-
->  include/uapi/linux/if_tun.h |  2 ++
->  4 files changed, 74 insertions(+), 15 deletions(-)
+
+no worries, just fix and re-submit. Good that we have CI that caught
+this early on.
+
+> >
+> >
+> > >
+> > >  .../selftests/bpf/bpf_testmod/bpf_testmod-events.h     |  6 ++++++
+> > >  tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c  |  2 ++
+> > >  tools/testing/selftests/bpf/prog_tests/module_attach.c |  1 +
+> > >  tools/testing/selftests/bpf/progs/test_module_attach.c | 10 ++++++++++
+> > >  4 files changed, 19 insertions(+)
+> > >
+> > > diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
+> > > index b83ea448bc79..e1ada753f10c 100644
+> > > --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
+> > > +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
+> > > @@ -28,6 +28,12 @@ TRACE_EVENT(bpf_testmod_test_read,
+> > >                   __entry->pid, __entry->comm, __entry->off, __entry->len)
+> > >  );
+> > >
+> > > +/* A bare tracepoint with no event associated with it */
+> > > +DECLARE_TRACE(bpf_testmod_test_read_bare,
+> > > +       TP_PROTO(struct task_struct *task, struct bpf_testmod_test_read_ctx *ctx),
+> > > +       TP_ARGS(task, ctx)
+> > > +);
+> > > +
+> > >  #endif /* _BPF_TESTMOD_EVENTS_H */
+> > >
+> > >  #undef TRACE_INCLUDE_PATH
+> > > diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> > > index 2df19d73ca49..d63cebdaca44 100644
+> > > --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> > > +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> > > @@ -22,6 +22,8 @@ bpf_testmod_test_read(struct file *file, struct kobject *kobj,
+> > >         };
+> > >
+> > >         trace_bpf_testmod_test_read(current, &ctx);
+> > > +       ctx.len++;
+> > > +       trace_bpf_testmod_test_read_bare(current, &ctx);
+> >
+> > It's kind of boring to have two read tracepoints :) Do you mind adding
+>
+> Hehe boring is good :p
+>
+> > a write tracepoint and use bare tracepoint there? You won't need this
+> > ctx.len++ hack as well. Feel free to add identical
+> > bpf_testmod_test_write_ctx (renaming it is more of a pain).
+>
+> It was easy to get this done. So I think it should be easy to make it a write
+> too :)
+
+yep, having two tracepoints allow more flexibility over longer term,
+so I think it's good to do (regardless of boring or not ;) )
+
+>
+> Thanks
 >
 > --
-> 2.17.1
+> Qais Yousef
 >
+> >
+> > >
+> > >         return -EIO; /* always fail */
+> > >  }
+> > > diff --git a/tools/testing/selftests/bpf/prog_tests/module_attach.c b/tools/testing/selftests/bpf/prog_tests/module_attach.c
+> > > index 50796b651f72..7085a118f38c 100644
+> > > --- a/tools/testing/selftests/bpf/prog_tests/module_attach.c
+> > > +++ b/tools/testing/selftests/bpf/prog_tests/module_attach.c
+> > > @@ -50,6 +50,7 @@ void test_module_attach(void)
+> > >         ASSERT_OK(trigger_module_test_read(READ_SZ), "trigger_read");
+> > >
+> > >         ASSERT_EQ(bss->raw_tp_read_sz, READ_SZ, "raw_tp");
+> > > +       ASSERT_EQ(bss->raw_tp_bare_read_sz, READ_SZ+1, "raw_tp_bare");
+> > >         ASSERT_EQ(bss->tp_btf_read_sz, READ_SZ, "tp_btf");
+> > >         ASSERT_EQ(bss->fentry_read_sz, READ_SZ, "fentry");
+> > >         ASSERT_EQ(bss->fentry_manual_read_sz, READ_SZ, "fentry_manual");
+> > > diff --git a/tools/testing/selftests/bpf/progs/test_module_attach.c b/tools/testing/selftests/bpf/progs/test_module_attach.c
+> > > index efd1e287ac17..08aa157afa1d 100644
+> > > --- a/tools/testing/selftests/bpf/progs/test_module_attach.c
+> > > +++ b/tools/testing/selftests/bpf/progs/test_module_attach.c
+> > > @@ -17,6 +17,16 @@ int BPF_PROG(handle_raw_tp,
+> > >         return 0;
+> > >  }
+> > >
+> > > +__u32 raw_tp_bare_read_sz = 0;
+> > > +
+> > > +SEC("raw_tp/bpf_testmod_test_read_bare")
+> > > +int BPF_PROG(handle_raw_tp_bare,
+> > > +            struct task_struct *task, struct bpf_testmod_test_read_ctx *read_ctx)
+> > > +{
+> > > +       raw_tp_bare_read_sz = BPF_CORE_READ(read_ctx, len);
+> > > +       return 0;
+> > > +}
+> > > +
+> > >  __u32 tp_btf_read_sz = 0;
+> > >
+> > >  SEC("tp_btf/bpf_testmod_test_read")
+> > > --
+> > > 2.25.1
+> > >
