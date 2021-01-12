@@ -2,135 +2,213 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3A152F409B
-	for <lists+bpf@lfdr.de>; Wed, 13 Jan 2021 01:56:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56F8B2F409C
+	for <lists+bpf@lfdr.de>; Wed, 13 Jan 2021 01:56:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404993AbhAMAnA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S2387559AbhAMAnA (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Tue, 12 Jan 2021 19:43:00 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:22010 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2391531AbhALXqj (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 12 Jan 2021 18:46:39 -0500
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10CNiGQ7012672
-        for <bpf@vger.kernel.org>; Tue, 12 Jan 2021 15:45:58 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=NL2PGNFXKFKSixamVmoVdBmisIyuQtxJt43Z8l9r8iA=;
- b=d1yj73GusbdukRvQ90g7MTUCegf6ugdaN9HNJb/btbFsIntQCd3IdWbdGmzIuZdOxzCc
- lguVQh7Qp6XcrH94nbvcTJnyaTVbIPG0UvBaK2okcchxF4oi0zFx6YV51lpT0VFh8fHg
- mSIYyHNw1UqE1CMmKRg7weL/pst8UXT6y34= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 361fppa7q4-9
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 12 Jan 2021 15:45:58 -0800
-Received: from intmgw003.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 12 Jan 2021 15:45:55 -0800
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id ABA9262E0B5E; Tue, 12 Jan 2021 15:43:03 -0800 (PST)
-From:   Song Liu <songliubraving@fb.com>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
-        <kernel-team@fb.com>, Song Liu <songliubraving@fb.com>,
-        <syzbot+4f98876664c7337a4ae6@syzkaller.appspotmail.com>,
-        <stable@vger.kernel.org>
-Subject: [PATCH bpf-next] bpf: reject too big ctx_size_in for raw_tp test run
-Date:   Tue, 12 Jan 2021 15:42:54 -0800
-Message-ID: <20210112234254.1906829-1-songliubraving@fb.com>
-X-Mailer: git-send-email 2.24.1
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390246AbhALXoe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jan 2021 18:44:34 -0500
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35A56C061795;
+        Tue, 12 Jan 2021 15:43:54 -0800 (PST)
+Received: by mail-io1-xd33.google.com with SMTP id r9so421164ioo.7;
+        Tue, 12 Jan 2021 15:43:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=UjqLWBff2oAK5ITVU1oqIMtLhE5XUJaVTO6IhzmEgyE=;
+        b=EDsfLPV4vrt/W4PZd9DRhmCdwvvtq0w8+LEJLTfx8FZ7u6W+EKIBGr3mNgEXS0fIdt
+         DME307Wmd//3s8MtFDgFZNieHuREheLUMaZpaszuUxowqdlO5186D4oVDy8uBcnwR/E6
+         CGTYOcB6lgTTpv6NsOi9yuzEBg7V7C30GMxqFYjTKlDQmsWcU/vlmnPC1/yZO7/fmEIN
+         ujt4qss+0ZM96XwUYT7vQb2gAhYFXdE7sGIHC9ySdZB1PFO7TAGIlylHRZdsIS8UqVO+
+         YTugWGVwN9RyIAsam1CD990I1dDIVqP/dEnh8ZsHwexc8Sq/aFUtc+RZwPJBu/vDSriF
+         b8zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=UjqLWBff2oAK5ITVU1oqIMtLhE5XUJaVTO6IhzmEgyE=;
+        b=H2EIO6xaSalF47N8qqCqcWzyyTJxwLflfgp6AQJw6W3YkUgxinLybXY4wRq1HLr26y
+         mVMIG3jhXL8+3ei6cEorEnvVyaoIUUoLjrhPkZv50OfxXE3a7WZzLKfrlSjRcIecYLrw
+         cJ3wLRs1BAmmv2AEFuc/CKy3ar8Dg5T7KvyjR4cIbFw2xhX9UKBcw98BnVCUbv4GW7vu
+         8gjbNIS6XQP1KfAbTyjDw0K/RVCBQb97hbY6Lp9VMrj7ixUeSb+5phyLhshOHCHI+Kqo
+         rnVJq0Ki0z/v0mqthfHD+4fo95ZQPGtoau0NP8kmJKEhTZeMyFJlXcQkm5dHjL+Sgo3W
+         D4lw==
+X-Gm-Message-State: AOAM530fVR9ZSfiBVAEhp9hOHtXlc3N00NmFiTNO1xgrXYFXGt8CxW3X
+        8L8LedwKUthCOGiebOdaImj/qCMDiE4hWuzmMnZXtpMcz6eI2g==
+X-Google-Smtp-Source: ABdhPJz5UQydtVFyQkapceVkeXgXLEU2zu+TJjfwekFMpYmQxv1TC9yWVtHQPhujSFXyn2UUDF3SeyLd/mAI0bhV7Ug=
+X-Received: by 2002:a5e:d70e:: with SMTP id v14mr1247099iom.75.1610495033522;
+ Tue, 12 Jan 2021 15:43:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-12_21:2021-01-12,2021-01-12 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
- mlxscore=0 phishscore=0 spamscore=0 clxscore=1015 bulkscore=0
- impostorscore=0 priorityscore=1501 lowpriorityscore=0 suspectscore=0
- adultscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2101120135
-X-FB-Internal: deliver
+References: <20210111180609.713998-1-natechancellor@gmail.com>
+In-Reply-To: <20210111180609.713998-1-natechancellor@gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Wed, 13 Jan 2021 00:43:41 +0100
+Message-ID: <CA+icZUXcsjwXOcoHRL3HSDMbE9thq7G3A9Uvzeg8tbNfLP7dfw@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Hoise pahole version checks into Kconfig
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot reported a WARNING for allocating too big memory:
+On Mon, Jan 11, 2021 at 7:06 PM Nathan Chancellor
+<natechancellor@gmail.com> wrote:
+>
+> After commit da5fb18225b4 ("bpf: Support pre-2.25-binutils objcopy for
+> vmlinux BTF"), having CONFIG_DEBUG_INFO_BTF enabled but lacking a valid
+> copy of pahole results in a kernel that will fully compile but fail to
+> link. The user then has to either install pahole or disable
+> CONFIG_DEBUG_INFO_BTF and rebuild the kernel but only after their build
+> has failed, which could have been a significant amount of time depending
+> on the hardware.
+>
+> Avoid a poor user experience and require pahole to be installed with an
+> appropriate version to select and use CONFIG_DEBUG_INFO_BTF, which is
+> standard for options that require a specific tools version.
+>
+> Suggested-by: Sedat Dilek <sedat.dilek@gmail.com>
+> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
 
-WARNING: CPU: 1 PID: 8484 at mm/page_alloc.c:4976 __alloc_pages_nodemask+=
-0x5f8/0x730 mm/page_alloc.c:5011
-Modules linked in:
-CPU: 1 PID: 8484 Comm: syz-executor862 Not tainted 5.11.0-rc2-syzkaller #=
-0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
-oogle 01/01/2011
-RIP: 0010:__alloc_pages_nodemask+0x5f8/0x730 mm/page_alloc.c:4976
-Code: 00 00 0c 00 0f 85 a7 00 00 00 8b 3c 24 4c 89 f2 44 89 e6 c6 44 24 7=
-0 00 48 89 6c 24 58 e8 d0 d7 ff ff 49 89 c5 e9 ea fc ff ff <0f> 0b e9 b5 =
-fd ff ff 89 74 24 14 4c 89 4c 24 08 4c 89 74 24 18 e8
-RSP: 0018:ffffc900012efb10 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 1ffff9200025df66 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 0000000000140dc0
-RBP: 0000000000140dc0 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff81b1f7e1 R11: 0000000000000000 R12: 0000000000000014
-R13: 0000000000000014 R14: 0000000000000000 R15: 0000000000000000
-FS:  000000000190c880(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000=
-000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f08b7f316c0 CR3: 0000000012073000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
-alloc_pages_current+0x18c/0x2a0 mm/mempolicy.c:2267
-alloc_pages include/linux/gfp.h:547 [inline]
-kmalloc_order+0x2e/0xb0 mm/slab_common.c:837
-kmalloc_order_trace+0x14/0x120 mm/slab_common.c:853
-kmalloc include/linux/slab.h:557 [inline]
-kzalloc include/linux/slab.h:682 [inline]
-bpf_prog_test_run_raw_tp+0x4b5/0x670 net/bpf/test_run.c:282
-bpf_prog_test_run kernel/bpf/syscall.c:3120 [inline]
-__do_sys_bpf+0x1ea9/0x4f10 kernel/bpf/syscall.c:4398
-do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x440499
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f=
-7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 =
-ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffe1f3bfb18 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440499
-RDX: 0000000000000048 RSI: 0000000020000600 RDI: 000000000000000a
-RBP: 00000000006ca018 R08: 0000000000000000 R09: 00000000004002c8
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401ca0
-R13: 0000000000401d30 R14: 0000000000000000 R15: 0000000000000000
+Thanks for the patch, Nathan,
 
-This is because we didn't filter out too big ctx_size_in. Fix it by
-rejecting ctx_size_in that are bigger than MAX_BPF_FUNC_ARGS (12) u64
-numbers.
+Might be good to gave a hint to the user if pahole version does not
+match requirements?
 
-Reported-by: syzbot+4f98876664c7337a4ae6@syzkaller.appspotmail.com
-Fixes: 1b4d60ec162f ("bpf: Enable BPF_PROG_TEST_RUN for raw_tracepoint")
-Cc: stable@vger.kernel.org # v5.10+
-Signed-off-by: Song Liu <songliubraving@fb.com>
----
- net/bpf/test_run.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Feel free to add my:
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index 23dfb2010ba69..58bcb8c849d54 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -272,7 +272,8 @@ int bpf_prog_test_run_raw_tp(struct bpf_prog *prog,
- 	    kattr->test.repeat)
- 		return -EINVAL;
-=20
--	if (ctx_size_in < prog->aux->max_ctx_offset)
-+	if (ctx_size_in < prog->aux->max_ctx_offset ||
-+	    ctx_size_in > MAX_BPF_FUNC_ARGS * sizeof(u64))
- 		return -EINVAL;
-=20
- 	if ((kattr->test.flags & BPF_F_TEST_RUN_ON_CPU) =3D=3D 0 && cpu !=3D 0)
---=20
-2.24.1
+Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
 
+- Sedat -
+
+
+
+> ---
+>  MAINTAINERS               |  1 +
+>  init/Kconfig              |  4 ++++
+>  lib/Kconfig.debug         |  6 ++----
+>  scripts/link-vmlinux.sh   | 13 -------------
+>  scripts/pahole-version.sh | 16 ++++++++++++++++
+>  5 files changed, 23 insertions(+), 17 deletions(-)
+>  create mode 100755 scripts/pahole-version.sh
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index b8db7637263a..6f6e24285a94 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -3282,6 +3282,7 @@ F:        net/core/filter.c
+>  F:     net/sched/act_bpf.c
+>  F:     net/sched/cls_bpf.c
+>  F:     samples/bpf/
+> +F:     scripts/pahole-version.sh
+>  F:     tools/bpf/
+>  F:     tools/lib/bpf/
+>  F:     tools/testing/selftests/bpf/
+> diff --git a/init/Kconfig b/init/Kconfig
+> index b77c60f8b963..872c61b5d204 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -74,6 +74,10 @@ config TOOLS_SUPPORT_RELR
+>  config CC_HAS_ASM_INLINE
+>         def_bool $(success,echo 'void foo(void) { asm inline (""); }' | $(CC) -x c - -c -o /dev/null)
+>
+> +config PAHOLE_VERSION
+> +       int
+> +       default $(shell,$(srctree)/scripts/pahole-version.sh $(PAHOLE))
+> +
+>  config CONSTRUCTORS
+>         bool
+>         depends on !UML
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 7937265ef879..70c446af9664 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -267,6 +267,7 @@ config DEBUG_INFO_DWARF4
+>
+>  config DEBUG_INFO_BTF
+>         bool "Generate BTF typeinfo"
+> +       depends on PAHOLE_VERSION >= 116
+>         depends on !DEBUG_INFO_SPLIT && !DEBUG_INFO_REDUCED
+>         depends on !GCC_PLUGIN_RANDSTRUCT || COMPILE_TEST
+>         help
+> @@ -274,12 +275,9 @@ config DEBUG_INFO_BTF
+>           Turning this on expects presence of pahole tool, which will convert
+>           DWARF type info into equivalent deduplicated BTF type info.
+>
+> -config PAHOLE_HAS_SPLIT_BTF
+> -       def_bool $(success, test `$(PAHOLE) --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'` -ge "119")
+> -
+>  config DEBUG_INFO_BTF_MODULES
+>         def_bool y
+> -       depends on DEBUG_INFO_BTF && MODULES && PAHOLE_HAS_SPLIT_BTF
+> +       depends on DEBUG_INFO_BTF && MODULES && PAHOLE_VERSION >= 119
+>         help
+>           Generate compact split BTF type information for kernel modules.
+>
+> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+> index 6eded325c837..eef40fa9485d 100755
+> --- a/scripts/link-vmlinux.sh
+> +++ b/scripts/link-vmlinux.sh
+> @@ -139,19 +139,6 @@ vmlinux_link()
+>  # ${2} - file to dump raw BTF data into
+>  gen_btf()
+>  {
+> -       local pahole_ver
+> -
+> -       if ! [ -x "$(command -v ${PAHOLE})" ]; then
+> -               echo >&2 "BTF: ${1}: pahole (${PAHOLE}) is not available"
+> -               return 1
+> -       fi
+> -
+> -       pahole_ver=$(${PAHOLE} --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/')
+> -       if [ "${pahole_ver}" -lt "116" ]; then
+> -               echo >&2 "BTF: ${1}: pahole version $(${PAHOLE} --version) is too old, need at least v1.16"
+> -               return 1
+> -       fi
+> -
+>         vmlinux_link ${1}
+>
+>         info "BTF" ${2}
+> diff --git a/scripts/pahole-version.sh b/scripts/pahole-version.sh
+> new file mode 100755
+> index 000000000000..6de6f734a345
+> --- /dev/null
+> +++ b/scripts/pahole-version.sh
+> @@ -0,0 +1,16 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0
+> +#
+> +# Usage: $ ./scripts/pahole-version.sh pahole
+> +#
+> +# Print the pahole version as a three digit string
+> +# such as `119' for pahole v1.19 etc.
+> +
+> +pahole="$*"
+> +
+> +if ! [ -x "$(command -v $pahole)" ]; then
+> +    echo 0
+> +    exit 1
+> +fi
+> +
+> +$pahole --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'
+>
+> base-commit: e22d7f05e445165e58feddb4e40cc9c0f94453bc
+> --
+> 2.30.0
+>
