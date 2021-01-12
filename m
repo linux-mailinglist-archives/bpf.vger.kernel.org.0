@@ -2,125 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 710882F39FB
-	for <lists+bpf@lfdr.de>; Tue, 12 Jan 2021 20:24:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4BB12F3A36
+	for <lists+bpf@lfdr.de>; Tue, 12 Jan 2021 20:29:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406659AbhALTVo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jan 2021 14:21:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43670 "EHLO
+        id S2392985AbhALTY1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jan 2021 14:24:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406339AbhALTVg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jan 2021 14:21:36 -0500
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B82C061575;
-        Tue, 12 Jan 2021 11:20:55 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id 18so3212290ybx.2;
-        Tue, 12 Jan 2021 11:20:55 -0800 (PST)
+        with ESMTP id S2392984AbhALTYZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jan 2021 14:24:25 -0500
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 338DEC061786;
+        Tue, 12 Jan 2021 11:23:45 -0800 (PST)
+Received: by mail-yb1-xb29.google.com with SMTP id r63so3205919ybf.5;
+        Tue, 12 Jan 2021 11:23:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ZrTMphAgvKGFr3hAFtVF+wajAgM4bFVoddK5qIwsbyc=;
-        b=J6yRObelgfU5yGXUdqTqomuf/z5BR4lUT7iSK6vMilj9Pq5nz9362BCeRX8uLrkKCM
-         Pgr6lxRBB3LsB2aDJmhWIMZxAPT225qnotZnDv/zjUICqsiaqS8MmzgSYlRNP+T80qY1
-         ST9z+qjPe1CJHKlftbvwmWAF4gPdRekb33NdRIMzVr7CwxRdxES4+B6VIQC6t+y6f0mv
-         dSnaYTmK6pDLftjPjcxv+in6ABkqoUbNfk70yQl27kQkU6xP7VJ5wv+Xsqo5a+i5HI6Y
-         nvX3pjkgRDyTee7ZL92iM6xQtZjog/i2I+DH1q7nqCJtppaIJOPAleLWlBNWf5p4dvLJ
-         LeLA==
+        bh=gWw4Dda5GiSp13AvM2vk3l+3hQNYmIhj9JeG1aKw79Y=;
+        b=aln0JArqpb7Be8nuLbKkpfI5c/0TUU4Da7OvHFHlkAL06EuOuUS2dV2WuMGxX33IQi
+         a3LRYDDmgnPjFrI7c1HmrRP2KV0TEWbJ0Kj87zZJOtjHEJuxSgHT39ruR0eU69cP5/g5
+         O1JKu4r/yhY0AkK0IjbGGupzNTz8W5xrJjyXyQ/y69hFlFx1Wz4Wgz3u6MwjSXxIE/xC
+         iijZkvo3RBLJZf//I01AoJ3pwxpXA24ioLaDMvt5uydh+ncIyHsaJKMOHVwJ7bfJIiMb
+         UpDRFJGoX2MLE6Z+2Iwv997Ja0rlgpMFs076pBBV2Hr1OYYpVYj5xehUZpj2Pz4e2w4j
+         j0rQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ZrTMphAgvKGFr3hAFtVF+wajAgM4bFVoddK5qIwsbyc=;
-        b=LjJmNzTNXQkvx95Kv6m6qMetM1KP18GAfI6RX9RZoX9NWd2VujfoYLnzXjDmEJPLJr
-         eaHW3NQjvT7DBd+A7J9ihAg76wFwgByPDG2PazdXGLfgxmBKYOmLaaE35kBNU7qZ9m3M
-         k/SV0FJPAsidd549JAN/c6biftVhna2LHy6O3cu4AsbQSm6hOiDVj6pemBDq/nxZRo3a
-         KtLa0tNWz4wvAIVv7eiPjW9KFRVu+s1in0PQ8d2HOgapvLyW5ZFZB/PauNGct+9jZF4l
-         GkUjOyxGGq5JdVHecAcjZxYIZ9innCKv5LzhmQsoOkwPa7S5YsARZnuChplDWwgDLLPk
-         xaMg==
-X-Gm-Message-State: AOAM533T6uCTJ6GEPiw8xJ2UBkdFSVz0q8My7kbl1j/7comE9Bp8KqC4
-        D9/Dk087vz5j+hmwRa+ZlxVKIlj2s4sJVPXnWBI=
-X-Google-Smtp-Source: ABdhPJzAQUHegCWhIDDPhnwHCb0DygblHYglh2gu4mH7P0xO7QvDuAjQ0h/ihd9erYiwJpK9SSyB8u642q8kR6e1Tik=
-X-Received: by 2002:a25:854a:: with SMTP id f10mr1342097ybn.510.1610479255239;
- Tue, 12 Jan 2021 11:20:55 -0800 (PST)
+        bh=gWw4Dda5GiSp13AvM2vk3l+3hQNYmIhj9JeG1aKw79Y=;
+        b=mYWvMtjPGuooYITp9Q37y5PmbCLBGAFyAJqFN43nTo4V8vif3xLj52LyqimYgRemE7
+         RU286HFabQiMUzZ4KEnOb3YRsIO4tdnCNw/WxdpytkWnyLtQUecu8VkSRdEU1UGzexGH
+         TJeb9TulsocC27wvydZRYRTodYEaqkoihyMN83/fg/TiJQbdy00Gw5SnL7gO36Zu0cwD
+         Abw/r3MMLqDebejUo0xVHq0LpG1la07cmG+rhlbDX0fQ2CynS65lXRkfcyz8DDRik9Zl
+         IbkOF2Q+qyhZdeRTbCJQ6UQvh2CoWwRfhWjsSEBmNJbtLWRq4AcN+LyUaucjbJ5oeQna
+         TWgA==
+X-Gm-Message-State: AOAM533NGtuJhKI09zN1ORO1LHk8hXGDv4Z8qk0NF/e4X0P7mCxM4YaB
+        1eoRWtVtwXYJ78d1dMX+m463cOm7XKH8yfK046I=
+X-Google-Smtp-Source: ABdhPJwH6Q/HsjT7/TKnk7Vzr6JskyrBhP82FYuc2i9rCCnHBmGAZjWGeji8hlqUPbjwxq3c/Bdn4RjNltTWPlkqIvk=
+X-Received: by 2002:a25:48c7:: with SMTP id v190mr1396610yba.260.1610479424515;
+ Tue, 12 Jan 2021 11:23:44 -0800 (PST)
 MIME-Version: 1.0
-References: <20210112184004.1302879-1-jolsa@kernel.org>
-In-Reply-To: <20210112184004.1302879-1-jolsa@kernel.org>
+References: <161047346644.4003084.2653117664787086168.stgit@firesoul> <161047352084.4003084.16468571234023057969.stgit@firesoul>
+In-Reply-To: <161047352084.4003084.16468571234023057969.stgit@firesoul>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 12 Jan 2021 11:20:44 -0800
-Message-ID: <CAEf4BzZc0-csgmOP=eAvSP5uVYkKiYROAWtp8hwJcYA1awhVJw@mail.gmail.com>
-Subject: Re: [PATCH] btf_encoder: Add extra checks for symbol names
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Hao Luo <haoluo@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Tom Stellard <tstellar@redhat.com>
+Date:   Tue, 12 Jan 2021 11:23:33 -0800
+Message-ID: <CAEf4Bzb0Z+qeuDTtfz6Ae3ab5hz_iG0vt8ALiry2zYWkgRh2Fw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next V11 4/7] bpf: add BPF-helper for MTU checking
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>,
+        Lorenz Bauer <lmb@cloudflare.com>, shaun@tigera.io,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Marek Majkowski <marek@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
+        colrack@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 10:43 AM Jiri Olsa <jolsa@kernel.org> wrote:
+On Tue, Jan 12, 2021 at 9:49 AM Jesper Dangaard Brouer
+<brouer@redhat.com> wrote:
 >
-> When processing kernel image build by clang we can
-> find some functions without the name, which causes
-> pahole to segfault.
+> This BPF-helper bpf_check_mtu() works for both XDP and TC-BPF programs.
 >
-> Adding extra checks to make sure we always have
-> function's name defined before using it.
+> The SKB object is complex and the skb->len value (accessible from
+> BPF-prog) also include the length of any extra GRO/GSO segments, but
+> without taking into account that these GRO/GSO segments get added
+> transport (L4) and network (L3) headers before being transmitted. Thus,
+> this BPF-helper is created such that the BPF-programmer don't need to
+> handle these details in the BPF-prog.
 >
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> The API is designed to help the BPF-programmer, that want to do packet
+> context size changes, which involves other helpers. These other helpers
+> usually does a delta size adjustment. This helper also support a delta
+> size (len_diff), which allow BPF-programmer to reuse arguments needed by
+> these other helpers, and perform the MTU check prior to doing any actual
+> size adjustment of the packet context.
+>
+> It is on purpose, that we allow the len adjustment to become a negative
+> result, that will pass the MTU check. This might seem weird, but it's not
+> this helpers responsibility to "catch" wrong len_diff adjustments. Other
+> helpers will take care of these checks, if BPF-programmer chooses to do
+> actual size adjustment.
+>
+> V9:
+> - Use dev->hard_header_len (instead of ETH_HLEN)
+> - Annotate with unlikely req from Daniel
+> - Fix logic error using skb_gso_validate_network_len from Daniel
+>
+> V6:
+> - Took John's advice and dropped BPF_MTU_CHK_RELAX
+> - Returned MTU is kept at L3-level (like fib_lookup)
+>
+> V4: Lot of changes
+>  - ifindex 0 now use current netdev for MTU lookup
+>  - rename helper from bpf_mtu_check to bpf_check_mtu
+>  - fix bug for GSO pkt length (as skb->len is total len)
+>  - remove __bpf_len_adj_positive, simply allow negative len adj
+>
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
 > ---
->  btf_encoder.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
+>  include/uapi/linux/bpf.h       |   67 ++++++++++++++++++++++
+>  net/core/filter.c              |  122 ++++++++++++++++++++++++++++++++++++++++
+>  tools/include/uapi/linux/bpf.h |   67 ++++++++++++++++++++++
+>  3 files changed, 256 insertions(+)
 >
-> diff --git a/btf_encoder.c b/btf_encoder.c
-> index 333973054b61..17f7a14f2ef0 100644
-> --- a/btf_encoder.c
-> +++ b/btf_encoder.c
-> @@ -72,6 +72,8 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym)
->
->         if (elf_sym__type(sym) != STT_FUNC)
->                 return 0;
-> +       if (!elf_sym__name(sym, btfe->symtab))
-> +               return 0;
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 649586d656b6..fa2e99351758 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -3833,6 +3833,61 @@ union bpf_attr {
+>   *     Return
+>   *             A pointer to a struct socket on success or NULL if the file is
+>   *             not a socket.
+> + *
+> + * int bpf_check_mtu(void *ctx, u32 ifindex, u32 *mtu_len, s32 len_diff, u64 flags)
 
-elf_sym__name() is called below again, so might be better to just use
-local variable to store result?
+should return long, same as most other helpers
 
->
->         if (functions_cnt == functions_alloc) {
->                 functions_alloc = max(1000, functions_alloc * 3 / 2);
-> @@ -730,9 +732,11 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
->                 if (!has_arg_names(cu, &fn->proto))
->                         continue;
->                 if (functions_cnt) {
-> -                       struct elf_function *func;
-> +                       const char *name = function__name(fn, cu);
-> +                       struct elf_function *func = NULL;
->
-> -                       func = find_function(btfe, function__name(fn, cu));
-> +                       if (name)
-> +                               func = find_function(btfe, name);
+> + *     Description
+> + *             Check ctx packet size against MTU of net device (based on
+> + *             *ifindex*).  This helper will likely be used in combination with
+> + *             helpers that adjust/change the packet size.  The argument
+> + *             *len_diff* can be used for querying with a planned size
+> + *             change. This allows to check MTU prior to changing packet ctx.
+> + *
 
-isn't this a more convoluted way of writing:
-
-name = function__name(fn, cu);
-if (!name)
-    continue;
-
-func = find_function(btfe, name);
-if (!func || func->generated)
-    continue
-
-?
-
->                         if (!func || func->generated)
->                                 continue;
->                         func->generated = true;
-> --
-> 2.26.2
->
+[...]
