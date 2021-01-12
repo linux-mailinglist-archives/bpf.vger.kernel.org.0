@@ -2,508 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F0FC2F378F
-	for <lists+bpf@lfdr.de>; Tue, 12 Jan 2021 18:47:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CFF82F37E6
+	for <lists+bpf@lfdr.de>; Tue, 12 Jan 2021 19:05:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404375AbhALRrM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jan 2021 12:47:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33984 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2404144AbhALRrL (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 12 Jan 2021 12:47:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610473543;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iWnFSQCt+Xqs0qffVzE/WYGFga1MTcFs8hbd73jNxzE=;
-        b=VsttghT+3rqd6cVw+/f7xYbu8+ypt1Qh8SKNOGvLe9QRlrx/H4XaLY26hkUd74czPiksBK
-        nZIZxrF7kxrS/fgYtsf0uWjPk5/8V5zzBwYE0RZwAhSvtqajZKGzL02dfzGicfYRxTAG4n
-        6BzT53JsBZhdw370B1kgdqwTWOnBzdg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-452-FsNvGF-WN_G9OqbALogoZw-1; Tue, 12 Jan 2021 12:45:40 -0500
-X-MC-Unique: FsNvGF-WN_G9OqbALogoZw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C12978144E0;
-        Tue, 12 Jan 2021 17:45:37 +0000 (UTC)
-Received: from firesoul.localdomain (unknown [10.40.208.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 16B685D762;
-        Tue, 12 Jan 2021 17:45:37 +0000 (UTC)
-Received: from [192.168.42.3] (localhost [IPv6:::1])
-        by firesoul.localdomain (Postfix) with ESMTP id 28A6D32138454;
-        Tue, 12 Jan 2021 18:45:36 +0100 (CET)
-Subject: [PATCH bpf-next V11 7/7] bpf/selftests: tests using bpf_check_mtu
- BPF-helper
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
-        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
-        colrack@gmail.com
-Date:   Tue, 12 Jan 2021 18:45:36 +0100
-Message-ID: <161047353609.4003084.8490543345104346164.stgit@firesoul>
-In-Reply-To: <161047346644.4003084.2653117664787086168.stgit@firesoul>
-References: <161047346644.4003084.2653117664787086168.stgit@firesoul>
-User-Agent: StGit/0.19
+        id S1732878AbhALSFK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jan 2021 13:05:10 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:44916 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727219AbhALSFK (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 12 Jan 2021 13:05:10 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10CI3dVg030635;
+        Tue, 12 Jan 2021 10:04:14 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=y2u2aHGb2MjJSbVkb0XjOwA/OR8jKDm4h+pnNA1z8+c=;
+ b=R9RjvRF3iprgt7kNAEkWV2n5HFNHnFOaxWcSd6C1o2BiRPOFA4pz+XVrm8f6yNjGLMzr
+ TaOHt2K8v+jawaBNNnM4uRpOak9cj0ZHYF47wFvZkEe3bO6B+RsSBIgLKS6TNk9bpos7
+ MBu8w0uuXSDNDw+2KT6kC6LG6iy4wQK/AHs= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 361fpb8ef1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 12 Jan 2021 10:04:13 -0800
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 12 Jan 2021 10:04:12 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hEj0jFA52AsHsicqNGICpfrz6KLqKeT4Ep2DBFtl74w0H0VRfoBTNmPMgVll8F8tA+fClT/8ijWnqdJ2gCYdovfDzfuS0unYdAKF7Gp+h995MPb6zAtnnUjMlrPZ+E2CjTJw7Wuu/4doTgz6zPdVWzo6oXmABggtqwJiBNb4CRuyv9hk8jYfrsqAoKYF8mzg/XJxaME104+LfZYxWUU6w7+KlExgtNK7U7QtOFeEGm2QX///n4wuhQPWKW0ggSLrseCXbpq1ure1ZR15bI114SoHC0Dr/tL1CdiC71yOLfYUTUHDg+oyDRbcjJuGGCbbR9kSA65rwu4ea1TdMGMmuw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=y2u2aHGb2MjJSbVkb0XjOwA/OR8jKDm4h+pnNA1z8+c=;
+ b=PD+7obNYX2+aNfIQAtktL3g19JiXYZLvN8JqJn2xtGHw6jkQz0SwJc/8pZM2cNIuNG4fwMUb3YmKNbDjIraxF4h1Z44YRr1+3eeCFqabdyo/Jj52oewI0BOqy6wQeAnmsdY9aOLhBuocU9DCQxayFHfI72wQorl2ai8RNrGq6ABkKuGNwTjpHvm5R0IS7bYp0WJm0uraSQl1ivXxHlQfSL1dFy5LatmpuqrpUKbD/HbkKk0uj0NPFOTT+z3rZLZqJ4UjAE0lYDVvHodPXBhyCuvjkc+bm6kxyV8X4OLI1xLCN7ciWCcxtOdDNVkf3EtoYP0OHgwduI1HytjhRBAapg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=y2u2aHGb2MjJSbVkb0XjOwA/OR8jKDm4h+pnNA1z8+c=;
+ b=j1t+amzNg0pMhcWsAk68jv3MY0jRRJr4yPloLae2Cnc5k1RywBaXbaJykQa5bB8ozvb46uswBqUGallvJf2AUfNrLObsh1MlgYIPqFaTFnTycn7DCRt+qxvLNbkkqPOPxM4ZjLeVpW5NRWK1485zqUYc+7U2Icm2O0k0WOyF42U=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+Received: from CH2PR15MB3573.namprd15.prod.outlook.com (2603:10b6:610:e::28)
+ by CH2PR15MB4294.namprd15.prod.outlook.com (2603:10b6:610:2::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9; Tue, 12 Jan
+ 2021 18:04:11 +0000
+Received: from CH2PR15MB3573.namprd15.prod.outlook.com
+ ([fe80::a875:5b25:a9b4:e84e]) by CH2PR15MB3573.namprd15.prod.outlook.com
+ ([fe80::a875:5b25:a9b4:e84e%7]) with mapi id 15.20.3742.012; Tue, 12 Jan 2021
+ 18:04:11 +0000
+Date:   Tue, 12 Jan 2021 10:04:04 -0800
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Stanislav Fomichev <sdf@google.com>
+CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>, <ast@kernel.org>,
+        <daniel@iogearbox.net>
+Subject: Re: [PATCH bpf v2] bpf: don't leak memory in bpf getsockopt when
+ optlen == 0
+Message-ID: <20210112180404.qkvbvo7tixf5wcv6@kafai-mbp>
+References: <20210112162829.775079-1-sdf@google.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210112162829.775079-1-sdf@google.com>
+X-Originating-IP: [2620:10d:c090:400::5:bc5d]
+X-ClientProxiedBy: MWHPR13CA0041.namprd13.prod.outlook.com
+ (2603:10b6:300:95::27) To CH2PR15MB3573.namprd15.prod.outlook.com
+ (2603:10b6:610:e::28)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp (2620:10d:c090:400::5:bc5d) by MWHPR13CA0041.namprd13.prod.outlook.com (2603:10b6:300:95::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.3 via Frontend Transport; Tue, 12 Jan 2021 18:04:10 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 04d8e09d-a153-459d-3c4c-08d8b72476fd
+X-MS-TrafficTypeDiagnostic: CH2PR15MB4294:
+X-Microsoft-Antispam-PRVS: <CH2PR15MB429483AEA60A29E296995502D5AA0@CH2PR15MB4294.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: x1QmNzX9P4CFgBp34gaX0scPJ7BD5AHydjsOFHCQvoHL1KCC31RrxZDQUmvuNSYMEdQMoi4rMwT/Lgu4eWDbVBotoX3NnC/NZcSpAzEMqJIQ+mBEStcDVm3h4zOX14EKEtR1PnNgjbyu6j+PFiUfxPlzW5CG9nbpo9qTT3PXcoENKQLGIlohJx7fXtKOLcFTKFFshXmsK/yvzJVcRczMA6XESisYwOnLMfaz4TSJbe8vPSusmLg9w7XSsOueFkWvcUvCsNViTmEJY2dYJLcLrvaNuaNjdYcF/cc2yDj2QrLtuNHL9cH1Ry189L3ypVq6R8joRcWcE0kbOiwmc5n7ZEhfrxUeR3CN8PQV0relAutdh8dm7Z5HNfJmo+Z7lEB/OoMPaXjjQbYeYwCLh2Ai5g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR15MB3573.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(366004)(396003)(39850400004)(136003)(4326008)(6916009)(6666004)(33716001)(52116002)(8676002)(6496006)(316002)(558084003)(186003)(16526019)(478600001)(55016002)(9686003)(2906002)(66556008)(1076003)(66946007)(66476007)(86362001)(8936002)(5660300002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Knawh40T3uQDXw0K4aTE9bEtXo8ki+Zk1TihJkgP1YuavWwCF6AiwEuMGa1q?=
+ =?us-ascii?Q?VhokYRBvXu7sikIYYn/XugRSK69PgwiLioySdBjX23m2p5andaHnTiHRI9nu?=
+ =?us-ascii?Q?QzzTx3Y9m0+jC7AGvInPQRBJQnWOVFlX0Ljlfgk1fG1zH+4zkYQLUk4/Tiyn?=
+ =?us-ascii?Q?Km7oqHj0rsOy7k3+mcaMwmwUrb125o2cy/eln4eG2/iz+mvBCl3zJcYFiy5D?=
+ =?us-ascii?Q?moUf8IobpsLo/TDMNYWHxk0BclSF3ai7/uvneIFd+jd7sF+nEMWiNaiwTYcE?=
+ =?us-ascii?Q?WAbBFJZERM2NTpK46sNr/GehN6guuQrMgaQqEmuIwZIR7neeT5Pd79iRp30F?=
+ =?us-ascii?Q?deRS2k30XZKFR9AgXrDaxNSSrkYI0NbMynB5LlqeEBh7KieLS6Cv6SvKcchJ?=
+ =?us-ascii?Q?qQJz76yPp6ThLIcncs/d24PAYLdDxwayxonxekfOre6HyoCbrtCacdbx6+Gs?=
+ =?us-ascii?Q?K6rg2MCQe/V+XIzAvtuN9qEF9rpyN0Va7IM/kqlalexqqX43sHake7uGyvCG?=
+ =?us-ascii?Q?MfShG8at1j/h8QZbAdtnpbqq6o5i91kvfH8X/BeFehPcY35qymfAPI5yr0LW?=
+ =?us-ascii?Q?/DZwDFmCNdwGlXkjZHXXy9zMtSy+bU05LSU1G1AUWn6ysWaUfJXnOB3Jgrue?=
+ =?us-ascii?Q?hSQYHndKkvghzNEq9JkRoodPouvFZsuSfAVv2qN5yOjiLvFAC+L2K8FfMYsM?=
+ =?us-ascii?Q?4ayMQdCeVR1yTjyjJDppzx7+k29679JqcCDGMSrIawDiPq0eOt4Ugzb3TW7c?=
+ =?us-ascii?Q?/p+SE2oSKTNcRTdDkZIIrXXBfmvW/jvHrllXJNzgyNf5wPPXrKDQbu7ERJfV?=
+ =?us-ascii?Q?LqZASVhQbxXShAvPY2P2zfM+9Jp0fM+d50Ujw+PhXGOu8hHbAyt91zJI8zfW?=
+ =?us-ascii?Q?3xLlZZAAaUPhtj2SAzF+xc188vfO2zAUiu5Dwc+CATqpaEF+vVwOgIcJAuxL?=
+ =?us-ascii?Q?JgIWOfxLV7yv3WM/XtnhTh0dxssEiQKDrirtDK3oCBA2XTEcREtVzm4Qlhs4?=
+ =?us-ascii?Q?19M3QQSal+2VMq5Gwmj5d4YCig=3D=3D?=
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR15MB3573.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2021 18:04:11.4998
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-Network-Message-Id: 04d8e09d-a153-459d-3c4c-08d8b72476fd
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: MURbsyVSO2hRIZGikYA29U3HIENRIGnCa5gzbB+2b+T6bhotcTkpNd0YuJY9EICv
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR15MB4294
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-12_12:2021-01-12,2021-01-12 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
+ lowpriorityscore=0 impostorscore=0 suspectscore=0 bulkscore=0
+ priorityscore=1501 phishscore=0 malwarescore=0 mlxscore=0 spamscore=0
+ mlxlogscore=851 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2101120106
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding selftest for BPF-helper bpf_check_mtu(). Making sure
-it can be used from both XDP and TC.
-
-V11:
- - Addresse nitpicks from Andrii Nakryiko
-
-V10:
- - Remove errno non-zero test in CHECK_ATTR()
- - Addresse comments from Andrii Nakryiko
-
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
----
- tools/testing/selftests/bpf/prog_tests/check_mtu.c |  216 ++++++++++++++++++++
- tools/testing/selftests/bpf/progs/test_check_mtu.c |  198 ++++++++++++++++++
- 2 files changed, 414 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/check_mtu.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_check_mtu.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/check_mtu.c b/tools/testing/selftests/bpf/prog_tests/check_mtu.c
-new file mode 100644
-index 000000000000..9e2fd01b7c65
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/check_mtu.c
-@@ -0,0 +1,216 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Jesper Dangaard Brouer */
-+
-+#include <linux/if_link.h> /* before test_progs.h, avoid bpf_util.h redefines */
-+#include <test_progs.h>
-+#include "test_check_mtu.skel.h"
-+#include "network_helpers.h"
-+
-+#include <stdlib.h>
-+#include <inttypes.h>
-+
-+#define IFINDEX_LO 1
-+
-+static __u32 duration; /* Hint: needed for CHECK macro */
-+
-+static int read_mtu_device_lo(void)
-+{
-+	const char *filename = "/sys/class/net/lo/mtu";
-+	char buf[11] = {};
-+	int value, n, fd;
-+
-+	fd = open(filename, 0, O_RDONLY);
-+	if (fd == -1)
-+		return -1;
-+
-+	n = read(fd, buf, sizeof(buf));
-+	close(fd);
-+
-+	if (n == -1)
-+		return -2;
-+
-+	value = strtoimax(buf, NULL, 10);
-+	if (errno == ERANGE)
-+		return -3;
-+
-+	return value;
-+}
-+
-+static void test_check_mtu_xdp_attach()
-+{
-+	struct bpf_link_info link_info;
-+	__u32 link_info_len = sizeof(link_info);
-+	struct test_check_mtu *skel;
-+	struct bpf_program *prog;
-+	struct bpf_link *link;
-+	int err = 0;
-+	int fd;
-+
-+	skel = test_check_mtu__open_and_load();
-+	if (CHECK(!skel, "open and load skel", "failed"))
-+		return; /* Exit if e.g. helper unknown to kernel */
-+
-+	prog = skel->progs.xdp_use_helper_basic;
-+
-+	link = bpf_program__attach_xdp(prog, IFINDEX_LO);
-+	if (CHECK(IS_ERR(link), "link_attach", "failed: %ld\n", PTR_ERR(link)))
-+		goto out;
-+	skel->links.xdp_use_helper_basic = link;
-+
-+	memset(&link_info, 0, sizeof(link_info));
-+	fd = bpf_link__fd(link);
-+	err = bpf_obj_get_info_by_fd(fd, &link_info, &link_info_len);
-+	if (CHECK(err, "link_info", "failed: %d\n", err))
-+		goto out;
-+
-+	CHECK(link_info.type != BPF_LINK_TYPE_XDP, "link_type",
-+	      "got %u != exp %u\n", link_info.type, BPF_LINK_TYPE_XDP);
-+	CHECK(link_info.xdp.ifindex != IFINDEX_LO, "link_ifindex",
-+	      "got %u != exp %u\n", link_info.xdp.ifindex, IFINDEX_LO);
-+
-+	err = bpf_link__detach(link);
-+	CHECK(err, "link_detach", "failed %d\n", err);
-+
-+out:
-+	test_check_mtu__destroy(skel);
-+}
-+
-+static void test_check_mtu_run_xdp(struct test_check_mtu *skel,
-+				   struct bpf_program *prog,
-+				   __u32 mtu_expect)
-+{
-+	const char *prog_name = bpf_program__name(prog);
-+	int retval_expect = XDP_PASS;
-+	__u32 mtu_result = 0;
-+	char buf[256] = {};
-+	int err;
-+	struct bpf_prog_test_run_attr tattr = {
-+		.repeat = 1,
-+		.data_in = &pkt_v4,
-+		.data_size_in = sizeof(pkt_v4),
-+		.data_out = buf,
-+		.data_size_out = sizeof(buf),
-+		.prog_fd = bpf_program__fd(prog),
-+	};
-+
-+	err = bpf_prog_test_run_xattr(&tattr);
-+	CHECK_ATTR(err != 0, "bpf_prog_test_run",
-+		   "prog_name:%s (err %d errno %d retval %d)\n",
-+		   prog_name, err, errno, tattr.retval);
-+
-+	CHECK(tattr.retval != retval_expect, "retval",
-+	      "progname:%s unexpected retval=%d expected=%d\n",
-+	      prog_name, tattr.retval, retval_expect);
-+
-+	/* Extract MTU that BPF-prog got */
-+	mtu_result = skel->bss->global_bpf_mtu_xdp;
-+	ASSERT_EQ(mtu_result, mtu_expect, "MTU-compare-user");
-+}
-+
-+
-+static void test_check_mtu_xdp(__u32 mtu, __u32 ifindex)
-+{
-+	struct test_check_mtu *skel;
-+	int err;
-+
-+	skel = test_check_mtu__open();
-+	if (CHECK(!skel, "skel_open", "failed"))
-+		return;
-+
-+	/* Update "constants" in BPF-prog *BEFORE* libbpf load */
-+	skel->rodata->GLOBAL_USER_MTU = mtu;
-+	skel->rodata->GLOBAL_USER_IFINDEX = ifindex;
-+
-+	err = test_check_mtu__load(skel);
-+	if (CHECK(err, "skel_load", "failed: %d\n", err))
-+		goto cleanup;
-+
-+	test_check_mtu_run_xdp(skel, skel->progs.xdp_use_helper, mtu);
-+	test_check_mtu_run_xdp(skel, skel->progs.xdp_exceed_mtu, mtu);
-+	test_check_mtu_run_xdp(skel, skel->progs.xdp_minus_delta, mtu);
-+
-+cleanup:
-+	test_check_mtu__destroy(skel);
-+}
-+
-+static void test_check_mtu_run_tc(struct test_check_mtu *skel,
-+				  struct bpf_program *prog,
-+				  __u32 mtu_expect)
-+{
-+	const char *prog_name = bpf_program__name(prog);
-+	int retval_expect = BPF_OK;
-+	__u32 mtu_result = 0;
-+	char buf[256] = {};
-+	int err;
-+	struct bpf_prog_test_run_attr tattr = {
-+		.repeat = 1,
-+		.data_in = &pkt_v4,
-+		.data_size_in = sizeof(pkt_v4),
-+		.data_out = buf,
-+		.data_size_out = sizeof(buf),
-+		.prog_fd = bpf_program__fd(prog),
-+	};
-+
-+	err = bpf_prog_test_run_xattr(&tattr);
-+	CHECK_ATTR(err != 0, "bpf_prog_test_run",
-+		   "prog_name:%s (err %d errno %d retval %d)\n",
-+		   prog_name, err, errno, tattr.retval);
-+
-+	CHECK(tattr.retval != retval_expect, "retval",
-+	      "progname:%s unexpected retval=%d expected=%d\n",
-+	      prog_name, tattr.retval, retval_expect);
-+
-+	/* Extract MTU that BPF-prog got */
-+	mtu_result = skel->bss->global_bpf_mtu_tc;
-+	ASSERT_EQ(mtu_result, mtu_expect, "MTU-compare-user");
-+}
-+
-+
-+static void test_check_mtu_tc(__u32 mtu, __u32 ifindex)
-+{
-+	struct test_check_mtu *skel;
-+	int err;
-+
-+	skel = test_check_mtu__open();
-+	if (CHECK(!skel, "skel_open", "failed"))
-+		return;
-+
-+	/* Update "constants" in BPF-prog *BEFORE* libbpf load */
-+	skel->rodata->GLOBAL_USER_MTU = mtu;
-+	skel->rodata->GLOBAL_USER_IFINDEX = ifindex;
-+
-+	err = test_check_mtu__load(skel);
-+	if (CHECK(err, "skel_load", "failed: %d\n", err))
-+		goto cleanup;
-+
-+	test_check_mtu_run_tc(skel, skel->progs.tc_use_helper, mtu);
-+	test_check_mtu_run_tc(skel, skel->progs.tc_exceed_mtu, mtu);
-+	test_check_mtu_run_tc(skel, skel->progs.tc_exceed_mtu_da, mtu);
-+	test_check_mtu_run_tc(skel, skel->progs.tc_minus_delta, mtu);
-+cleanup:
-+	test_check_mtu__destroy(skel);
-+}
-+
-+void test_check_mtu(void)
-+{
-+	__u32 mtu_lo;
-+
-+	if (test__start_subtest("bpf_check_mtu XDP-attach"))
-+		test_check_mtu_xdp_attach();
-+
-+	mtu_lo = read_mtu_device_lo();
-+	if (CHECK(mtu_lo < 0, "reading MTU value", "failed (err:%d)", mtu_lo))
-+		return;
-+
-+	if (test__start_subtest("bpf_check_mtu XDP-run"))
-+		test_check_mtu_xdp(mtu_lo, 0);
-+
-+	if (test__start_subtest("bpf_check_mtu XDP-run ifindex-lookup"))
-+		test_check_mtu_xdp(mtu_lo, IFINDEX_LO);
-+
-+	if (test__start_subtest("bpf_check_mtu TC-run"))
-+		test_check_mtu_tc(mtu_lo, 0);
-+
-+	if (test__start_subtest("bpf_check_mtu TC-run ifindex-lookup"))
-+		test_check_mtu_tc(mtu_lo, IFINDEX_LO);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_check_mtu.c b/tools/testing/selftests/bpf/progs/test_check_mtu.c
-new file mode 100644
-index 000000000000..1b31d5ceb3c7
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_check_mtu.c
-@@ -0,0 +1,198 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Jesper Dangaard Brouer */
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <linux/if_ether.h>
-+
-+#include <stddef.h>
-+#include <stdint.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+/* Userspace will update with MTU it can see on device */
-+static volatile const int GLOBAL_USER_MTU;
-+static volatile const __u32 GLOBAL_USER_IFINDEX;
-+
-+/* BPF-prog will update these with MTU values it can see */
-+__u32 global_bpf_mtu_xdp = 0;
-+__u32 global_bpf_mtu_tc  = 0;
-+
-+SEC("xdp")
-+int xdp_use_helper_basic(struct xdp_md *ctx)
-+{
-+	__u32 mtu_len = 0;
-+
-+	if (bpf_check_mtu(ctx, 0, &mtu_len, 0, 0))
-+		return XDP_ABORTED;
-+
-+	return XDP_PASS;
-+}
-+
-+SEC("xdp")
-+int xdp_use_helper(struct xdp_md *ctx)
-+{
-+	int retval = XDP_PASS; /* Expected retval on successful test */
-+	__u32 mtu_len = 0;
-+	__u32 ifindex = 0;
-+	int delta = 0;
-+
-+	/* When ifindex is zero, save net_device lookup and use ctx netdev */
-+	if (GLOBAL_USER_IFINDEX > 0)
-+		ifindex = GLOBAL_USER_IFINDEX;
-+
-+	if (bpf_check_mtu(ctx, ifindex, &mtu_len, delta, 0)) {
-+		/* mtu_len is also valid when check fail */
-+		retval = XDP_ABORTED;
-+		goto out;
-+	}
-+
-+	if (mtu_len != GLOBAL_USER_MTU)
-+		retval = XDP_DROP;
-+
-+out:
-+	global_bpf_mtu_xdp = mtu_len;
-+	return retval;
-+}
-+
-+SEC("xdp")
-+int xdp_exceed_mtu(struct xdp_md *ctx)
-+{
-+	void *data_end = (void *)(long)ctx->data_end;
-+	void *data = (void *)(long)ctx->data;
-+	__u32 ifindex = GLOBAL_USER_IFINDEX;
-+	__u32 data_len = data_end - data;
-+	int retval = XDP_ABORTED; /* Fail */
-+	__u32 mtu_len = 0;
-+	int delta;
-+	int err;
-+
-+	/* Exceed MTU with 1 via delta adjust */
-+	delta = GLOBAL_USER_MTU - (data_len - ETH_HLEN) + 1;
-+
-+	err = bpf_check_mtu(ctx, ifindex, &mtu_len, delta, 0);
-+	if (err) {
-+		retval = XDP_PASS; /* Success in exceeding MTU check */
-+		if (err != BPF_MTU_CHK_RET_FRAG_NEEDED)
-+			retval = XDP_DROP;
-+	}
-+
-+	global_bpf_mtu_xdp = mtu_len;
-+	return retval;
-+}
-+
-+SEC("xdp")
-+int xdp_minus_delta(struct xdp_md *ctx)
-+{
-+	int retval = XDP_PASS; /* Expected retval on successful test */
-+	void *data_end = (void *)(long)ctx->data_end;
-+	void *data = (void *)(long)ctx->data;
-+	__u32 ifindex = GLOBAL_USER_IFINDEX;
-+	__u32 data_len = data_end - data;
-+	__u32 mtu_len = 0;
-+	int delta;
-+
-+	/* Boarderline test case: Minus delta exceeding packet length allowed */
-+	delta = -((data_len - ETH_HLEN) + 1);
-+
-+	/* Minus length (adjusted via delta) still pass MTU check, other helpers
-+	 * are responsible for catching this, when doing actual size adjust
-+	 */
-+	if (bpf_check_mtu(ctx, ifindex, &mtu_len, delta, 0))
-+		retval = XDP_ABORTED;
-+
-+	global_bpf_mtu_xdp = mtu_len;
-+	return retval;
-+}
-+
-+SEC("classifier")
-+int tc_use_helper(struct __sk_buff *ctx)
-+{
-+	int retval = BPF_OK; /* Expected retval on successful test */
-+	__u32 mtu_len = 0;
-+	int delta = 0;
-+
-+	if (bpf_check_mtu(ctx, 0, &mtu_len, delta, 0)) {
-+		retval = BPF_DROP;
-+		goto out;
-+	}
-+
-+	if (mtu_len != GLOBAL_USER_MTU)
-+		retval = BPF_REDIRECT;
-+out:
-+	global_bpf_mtu_tc = mtu_len;
-+	return retval;
-+}
-+
-+SEC("classifier")
-+int tc_exceed_mtu(struct __sk_buff *ctx)
-+{
-+	__u32 ifindex = GLOBAL_USER_IFINDEX;
-+	int retval = BPF_DROP; /* Fail */
-+	__u32 skb_len = ctx->len;
-+	__u32 mtu_len = 0;
-+	int delta;
-+	int err;
-+
-+	/* Exceed MTU with 1 via delta adjust */
-+	delta = GLOBAL_USER_MTU - (skb_len - ETH_HLEN) + 1;
-+
-+	err = bpf_check_mtu(ctx, ifindex, &mtu_len, delta, 0);
-+	if (err) {
-+		retval = BPF_OK; /* Success in exceeding MTU check */
-+		if (err != BPF_MTU_CHK_RET_FRAG_NEEDED)
-+			retval = BPF_DROP;
-+	}
-+
-+	global_bpf_mtu_tc = mtu_len;
-+	return retval;
-+}
-+
-+SEC("classifier")
-+int tc_exceed_mtu_da(struct __sk_buff *ctx)
-+{
-+	/* SKB Direct-Access variant */
-+	void *data_end = (void *)(long)ctx->data_end;
-+	void *data = (void *)(long)ctx->data;
-+	__u32 ifindex = GLOBAL_USER_IFINDEX;
-+	__u32 data_len = data_end - data;
-+	int retval = BPF_DROP; /* Fail */
-+	__u32 mtu_len = 0;
-+	int delta;
-+	int err;
-+
-+	/* Exceed MTU with 1 via delta adjust */
-+	delta = GLOBAL_USER_MTU - (data_len - ETH_HLEN) + 1;
-+
-+	err = bpf_check_mtu(ctx, ifindex, &mtu_len, delta, 0);
-+	if (err) {
-+		retval = BPF_OK; /* Success in exceeding MTU check */
-+		if (err != BPF_MTU_CHK_RET_FRAG_NEEDED)
-+			retval = BPF_DROP;
-+	}
-+
-+	global_bpf_mtu_tc = mtu_len;
-+	return retval;
-+}
-+
-+SEC("classifier")
-+int tc_minus_delta(struct __sk_buff *ctx)
-+{
-+	int retval = BPF_OK; /* Expected retval on successful test */
-+	__u32 ifindex = GLOBAL_USER_IFINDEX;
-+	__u32 skb_len = ctx->len;
-+	__u32 mtu_len = 0;
-+	int delta;
-+
-+	/* Boarderline test case: Minus delta exceeding packet length allowed */
-+	delta = -((skb_len - ETH_HLEN) + 1);
-+
-+	/* Minus length (adjusted via delta) still pass MTU check, other helpers
-+	 * are responsible for catching this, when doing actual size adjust
-+	 */
-+	if (bpf_check_mtu(ctx, ifindex, &mtu_len, delta, 0))
-+		retval = BPF_DROP;
-+
-+	global_bpf_mtu_xdp = mtu_len;
-+	return retval;
-+}
-
-
+On Tue, Jan 12, 2021 at 08:28:29AM -0800, Stanislav Fomichev wrote:
+> optlen == 0 indicates that the kernel should ignore BPF buffer
+> and use the original one from the user. We, however, forget
+> to free the temporary buffer that we've allocated for BPF.
+Acked-by: Martin KaFai Lau <kafai@fb.com>
