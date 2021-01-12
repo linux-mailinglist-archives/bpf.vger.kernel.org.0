@@ -2,103 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D58D2F3280
-	for <lists+bpf@lfdr.de>; Tue, 12 Jan 2021 15:04:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2C5A2F32E6
+	for <lists+bpf@lfdr.de>; Tue, 12 Jan 2021 15:26:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728021AbhALOCt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 12 Jan 2021 09:02:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59350 "EHLO
+        id S1727203AbhALOY4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 12 Jan 2021 09:24:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728327AbhALOCt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jan 2021 09:02:49 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D255DC0617A9
-        for <bpf@vger.kernel.org>; Tue, 12 Jan 2021 06:01:32 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id d17so3638686ejy.9
-        for <bpf@vger.kernel.org>; Tue, 12 Jan 2021 06:01:32 -0800 (PST)
+        with ESMTP id S1725901AbhALOYz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jan 2021 09:24:55 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10E1BC061786;
+        Tue, 12 Jan 2021 06:24:15 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id jx16so3739987ejb.10;
+        Tue, 12 Jan 2021 06:24:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zvv6LYFe9mpH/hRqRunavAEnNPwum4yHEeubUaepqPU=;
-        b=fn2ddKJCzrB+l+1z5m6+nd4SmL9wKXkYV+xVkkUqLTNa4Gz0Bd7PZagGEkM0+Q7TeY
-         t5XSjayvP+lEzr3klD/WCkA+RDf0RXTd+/MLvozm/DsrzqOZeWQVz870uCBMwCTeM8kQ
-         S3RoufZj7egVsb1Bhu8vN25HMOJ4GFFb0IvssDiwCQ/1siQs5bg265M8zhwwRzszMvZ1
-         ysS6R3KpZeaq8yrZROExzfBJKUToRGL+Ylm7U+s53fIfLwspoTw0NmrSQv4o4ddH2eaC
-         JjGRAxMGu/MZNHleKPa+mP/bvCrKRXtFbw6PxiqVp72wgpHE7LFnyCsf6pmmL9Vb1vXW
-         hvNQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O5/HL8VVGM5tx4Z8dAyAokogpc1Z04/fo1fGs1jUizo=;
+        b=tYMBvZXJbgouAv/74jI0R/AItKNmhSOgh+xASdDYxzc8X7c7KSAwM4ftUkoHfnyYxW
+         y9WzzBCSjsRKZURM1WaLTtme+zOUnSmIRdTkvNMZFd8cPore2leXkWeE+NFnFe3/cmr/
+         daOMwVcCpFOyvBePet7lF5Fr40U+AljLRaY7uI1QIRGPc/a6PUzpnzs3daBP6QU2GDcX
+         QEUrOrB+Y4MW/BOdm59cvUIzoNM8OPeJOxMafGkCd8U/kmt92ij/0V1u3n1T/4GkxcMR
+         YPin4m4Vx77ktlClhtLJZRuZbc4XqK9YOaqYJ+fxtrf8M9/vqIBL7V6BwONF9oRZ4t2o
+         tpjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zvv6LYFe9mpH/hRqRunavAEnNPwum4yHEeubUaepqPU=;
-        b=iX84cyEdQxOW+A6Kl53tf+HfREnp8nuWNbBHAXLq4EuOhG/SE+21Nxfh9oTZFoXFeu
-         BFwOS+BcZWBpfRLNoNFNFbZ8L8G10OFLI4i3GWjXVzZQIPIVK87aftfQ8LeiGd1zNsV5
-         qd2wXexCF/zOP9lwYTdpce+du4qAx/VvQv616jOWC9OfaQFtyVvdy/HqIc7DoMN9U9mi
-         61j92B9ziy869zo4vhjCMxBNxLzL6/H8iU2NHJvqUYV69JfAXuGdRGX5uIuA9BvKKLQk
-         dMFU3S+NqRm+roGXnc0JvHJu/lyvjTEA2b+clJ9efx9kp4pEo0L4/gbaIctYybundBBk
-         +Hwg==
-X-Gm-Message-State: AOAM531adPOY88QGIGLQ6HozjNZHGPL38BBjZY/Pc2z3eZUO23ibrokg
-        wNniN0/K/Z1b0qa6ttKJ8B8dj33rZotjbw==
-X-Google-Smtp-Source: ABdhPJwHhtArJNQO66nuPMhZ8rDohJ7fWuQZz4+N1PD7Jl5K4O463zt25M/pYaw97ww/zijrHaDCvQ==
-X-Received: by 2002:a17:906:d209:: with SMTP id w9mr3259794ejz.211.1610460091282;
-        Tue, 12 Jan 2021 06:01:31 -0800 (PST)
-Received: from localhost.localdomain ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
-        by smtp.gmail.com with ESMTPSA id t19sm1227846ejc.62.2021.01.12.06.01.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 06:01:30 -0800 (PST)
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     bpf@vger.kernel.org
-Cc:     shuah@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-Subject: [PATCH bpf-next 5/5] selftests/bpf: Install btf_dump test cases
-Date:   Tue, 12 Jan 2021 15:00:00 +0100
-Message-Id: <20210112135959.649075-6-jean-philippe@linaro.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210112135959.649075-1-jean-philippe@linaro.org>
-References: <20210112135959.649075-1-jean-philippe@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O5/HL8VVGM5tx4Z8dAyAokogpc1Z04/fo1fGs1jUizo=;
+        b=O3T6jXu+OPkNcNDTlDcdoQmFW/ohX0Uy3P27URq7bfwt15LMuWA8drcwsocAWMlUEG
+         aPHpWKpdR9+6XHcf+2l9u+WavDv6XlTtFezNXFkBA//g3yx3ELuj2M605oSLOUUPyGOY
+         WLK55ABx7jl4OPEmFCz05GzQdP5E3BPmlB3sZvNWMxEJJ18NWle9G0woUPuUYRwJupNi
+         UDiCaTN+UOf8cwOTJi+my6q6ptrwiGuYoqdSB10b6AN2Asgr/TC8YqUtz4326+j1bt4j
+         Dkq46MIVBAHGyTo3mYratZJxRBvfRCi/UQG+CnmSKp+rsrctswDdFn6sC2hc/ywAHGQB
+         bhAw==
+X-Gm-Message-State: AOAM532BikWpSwXhwRNUlYFK6b3PlLuJJWal1t9rAGORDXYLU05wilCZ
+        uz2WYbfJMQnDgP60v/s+LzWUCwIxVJGTJaiGcts=
+X-Google-Smtp-Source: ABdhPJwUicnFgTajXRPkiUNbl2a34Wk/ysj6ZVQx7/4K5mvC1OnJOAdExATWq4YM05B3nzcs8HGowKXT0bzg0tRt3eA=
+X-Received: by 2002:a17:907:1004:: with SMTP id ox4mr3381026ejb.240.1610461453603;
+ Tue, 12 Jan 2021 06:24:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210112091403.10458-1-gilad.reti@gmail.com> <CACYkzJ6DJ0NEm+qTBpMSJNFfgNHBFPZc=Ytj4w+4hY=Co4=0yg@mail.gmail.com>
+In-Reply-To: <CACYkzJ6DJ0NEm+qTBpMSJNFfgNHBFPZc=Ytj4w+4hY=Co4=0yg@mail.gmail.com>
+From:   Gilad Reti <gilad.reti@gmail.com>
+Date:   Tue, 12 Jan 2021 16:23:37 +0200
+Message-ID: <CANaYP3EQhTQ_o6QF_JNffJqHmVWRw6wcc95u8XvDpm+pY8ER3Q@mail.gmail.com>
+Subject: Re: [PATCH bpf 1/2] bpf: support PTR_TO_MEM{,_OR_NULL} register spilling
+To:     KP Singh <kpsingh@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The btf_dump test cannot access the original source files for comparison
-when running the selftests out of tree, causing several failures:
+On Tue, Jan 12, 2021 at 3:57 PM KP Singh <kpsingh@kernel.org> wrote:
+>
+> On Tue, Jan 12, 2021 at 10:14 AM Gilad Reti <gilad.reti@gmail.com> wrote:
+> >
+> > Add support for pointer to mem register spilling, to allow the verifier
+> > to track pointer to valid memory addresses. Such pointers are returned
+>
+> nit: pointers
 
-awk: btf_dump_test_case_syntax.c: No such file or directory
-...
+Thanks
 
-Add those files to $(TEST_FILES) to have "make install" pick them up.
+>
+> > for example by a successful call of the bpf_ringbuf_reserve helper.
+> >
+> > This patch was suggested as a solution by Yonghong Song.
+>
+> You can use the "Suggested-by:" tag for this.
 
-Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
----
- tools/testing/selftests/bpf/Makefile | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+Thanks
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index bffb4ad59a3d..fb8cddc410c0 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -46,7 +46,14 @@ endif
- 
- TEST_GEN_FILES = test_lwt_ip_encap.o \
- 	test_tc_edt.o
--TEST_FILES = xsk_prereqs.sh
-+TEST_FILES = xsk_prereqs.sh \
-+	progs/btf_dump_test_case_syntax.c \
-+	progs/btf_dump_test_case_ordering.c \
-+	progs/btf_dump_test_case_padding.c \
-+	progs/btf_dump_test_case_packing.c \
-+	progs/btf_dump_test_case_bitfields.c \
-+	progs/btf_dump_test_case_multidim.c \
-+	progs/btf_dump_test_case_namespacing.c
- 
- # Order correspond to 'make run_tests' order
- TEST_PROGS := test_kmod.sh \
--- 
-2.30.0
+>
+> >
+> > The patch was partially contibuted by CyberArk Software, Inc.
+>
+> nit: typo *contributed
 
+Thanks. Should I submit a v2 of the patch to correct all of those?
+
+>
+> Also, I was wondering if "partially" here means someone collaborated with you
+> on the patch? And, in that case:
+>
+> "Co-developed-by:" would be a better tag here.
+
+No, I did it alone. I mentioned CyberArk since I work there and did some of the
+coding during my daily work, so they deserve credit.
+
+>
+> Acked-by: KP Singh <kpsingh@kernel.org>
+>
+>
+> >
+> > Fixes: 457f44363a88 ("bpf: Implement BPF ring buffer and verifier
+> > support for it")
+> > Signed-off-by: Gilad Reti <gilad.reti@gmail.com>
+> > ---
+> >  kernel/bpf/verifier.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 17270b8404f1..36af69fac591 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -2217,6 +2217,8 @@ static bool is_spillable_regtype(enum bpf_reg_type type)
+> >         case PTR_TO_RDWR_BUF:
+> >         case PTR_TO_RDWR_BUF_OR_NULL:
+> >         case PTR_TO_PERCPU_BTF_ID:
+> > +       case PTR_TO_MEM:
+> > +       case PTR_TO_MEM_OR_NULL:
+> >                 return true;
+> >         default:
+> >                 return false;
+> > --
+> > 2.27.0
+> >
