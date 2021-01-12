@@ -2,113 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BB482F3CE3
+	by mail.lfdr.de (Postfix) with ESMTP id 886DC2F3CE5
 	for <lists+bpf@lfdr.de>; Wed, 13 Jan 2021 01:43:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438067AbhALVhV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S2436757AbhALVhV (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Tue, 12 Jan 2021 16:37:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59440 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436972AbhALUeC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 12 Jan 2021 15:34:02 -0500
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1857DC061786
-        for <bpf@vger.kernel.org>; Tue, 12 Jan 2021 12:33:22 -0800 (PST)
-Received: by mail-oi1-x22f.google.com with SMTP id d203so3784029oia.0
-        for <bpf@vger.kernel.org>; Tue, 12 Jan 2021 12:33:22 -0800 (PST)
+        with ESMTP id S2436992AbhALUjH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 12 Jan 2021 15:39:07 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D36DC061786;
+        Tue, 12 Jan 2021 12:38:27 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id y4so15697ybn.3;
+        Tue, 12 Jan 2021 12:38:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=daynix-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=KdKAiHHOV0gEOUCHTem1lXmPy7p7WSVRP8s4VyMJD7g=;
-        b=XzdHAZtBLN8jEbpfBFRWzK2HBZHiOO4C9a171JtLYJzvgwtm5uUvQhkGV6EQDILv7m
-         Qea0KfqrqImYYanIVbA0Zv9Afk/EzyUJss9gS9beRgEOOo7K5TeItUwEISEWfbq8xBWF
-         jKvYrpNxTSSxLeVUN+c1aOhyP4jhRc+xVA6IAJ4YBZxfDPzbuXWGDmoNwetn5Cm2CX0X
-         /fn+OQBB4+a2Jq8QWNnbkpzLJWRJo2WBhbjkR1wFfrMkM0kxwu+OP4BJAbDnLEBCtF4k
-         pZvgmkIu56Q5jQcLR36V9SsmR1S4KgCvZyThObq7/0a+u6Fz4cffzjiKnYyHoXUA7PJh
-         3YPQ==
+        bh=FGkjr+ZPHg8gkKHMJ5dVZ/qAAwMPTiEQsQ9NPkLnGsw=;
+        b=jULcu12WaU9v0odTNjin4I1OYOe8T02A7taISfBFOi26DQrCPqobzVqchIkxAhlvL8
+         R5wgzYG3UO3qRqNyzpGRfAa/wkdrkQ995zf8XPgSqEQPkl0zL6m8ZsfxI1TBBnsaiDmh
+         RyCM1s7r1IZyJNy/MlUQcxVESKvnZvn4gI3DUbn7RjNcJ6fZ6Cl2oHnAO7MWDaCNUobs
+         mwhmdeewrmcv3u68Xp0MfBboWFcerxbJ07HIl4ejXomMhxo2jAqc7WUSAUO157iidCdB
+         MwVgWvV2yslpnrPhAzj3L8S+iGfJuZZmiRKIpWcGSeR4gGn73bzD2tA/qoWjKKMFEBMh
+         pfhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=KdKAiHHOV0gEOUCHTem1lXmPy7p7WSVRP8s4VyMJD7g=;
-        b=K/rGrt9pG5w6gDxi6l5obFS+p1qC4TJRFy8POFCBS6HbjmGQRZic64wdIOH8RSGAv1
-         xD3cGzaXRC5aQ9fBGWNpVujFXYKSnIkdNhAQQCJxDbzCxnbX5O4sHN1f0ZIuKXEX2Apq
-         eD3B00d+Qn7zT8TKxSvVYuRNwsS8DSzrf24WWuYXuzOalxqmUHytaPDaSU/sCY2tMpyV
-         cXjjSG2NKv33ZWw89jtSJ1YIeTXNovoePbN2MAaIH+NhNv0eWvjXzlW69r4inmtQtAIv
-         XqoCc1/R+kpxGKOeqzHJOG81B7QHdEyrolDEFdvZNNfpPBaZoSQ3r1yDQ14xSeMO/OXn
-         kN+g==
-X-Gm-Message-State: AOAM531QhiSg1WxaBPEliSdue0fCtR3EmU5BSlbJEMfW1yUkrFkOgDhd
-        o8bz81yzVDCcZtr5/TTS7iJO25WhUd82r0R2gR8J4Q==
-X-Google-Smtp-Source: ABdhPJxkWjYpBEyulD2m3Ij8CK3ZsGgrRo312GFNR95pqEC5fG4bVq8NKft/CBnSXWToT/VzmMXndNmfgHNU8eR/aPg=
-X-Received: by 2002:a05:6808:49a:: with SMTP id z26mr570751oid.137.1610483601498;
- Tue, 12 Jan 2021 12:33:21 -0800 (PST)
+        bh=FGkjr+ZPHg8gkKHMJ5dVZ/qAAwMPTiEQsQ9NPkLnGsw=;
+        b=pwL3dr+y+kOGOmkMirT+yduWzeHIGYNxIOZLQLxiYd1LAAikJsrLLwR7YdUdepjLrS
+         S+vls6ZBj/dcMlr1AwI79vkuzTEbdh9sgOwKM6BxiovKPtSfJMiBr0ZFd6OfFb2fbpcB
+         geUviroqlxUD8vUQMhK+/M31ZFN2Ad5GcfNq94aghs2J5wMhrWF5OQoDp8v18O9NGXO9
+         EbBZCGPaPHLHQz2p9Zn39uvXNt9dCh2hUxEyUKmLekS9hpkEbEjc+fPKJ8LXtBFSKTCa
+         Ny3lqV3Lc1Y4BOmBBcYLXdmepCw1zL+QmykC9248G0DZZDy25yK4OsxsvqwWtq7bt6a9
+         lMmA==
+X-Gm-Message-State: AOAM533T/KSIXtCiSJvz0oCTmDTrjlc9d+3cg8Ww/A87kj4hODIEjb4A
+        gaBzcheHNiWUW1z621gKT+N9zfP4TUVkqf8BYxw=
+X-Google-Smtp-Source: ABdhPJzOss52FqTn1amUQk7+g9gwMXium7+WRElgGVdglKBYIVt9zkPRYqG4/TB6JpZhEugXBz2Iwo/uxk8TARw3kQA=
+X-Received: by 2002:a25:9882:: with SMTP id l2mr1665224ybo.425.1610483906401;
+ Tue, 12 Jan 2021 12:38:26 -0800 (PST)
 MIME-Version: 1.0
-References: <20210112194143.1494-1-yuri.benditovich@daynix.com>
- <20210112194143.1494-4-yuri.benditovich@daynix.com> <CAADnVQ++1_voT2fZ021ExcON0KfHtA8MyHc-WYe-XXJoPTD6ig@mail.gmail.com>
-In-Reply-To: <CAADnVQ++1_voT2fZ021ExcON0KfHtA8MyHc-WYe-XXJoPTD6ig@mail.gmail.com>
-From:   Yuri Benditovich <yuri.benditovich@daynix.com>
-Date:   Tue, 12 Jan 2021 22:33:09 +0200
-Message-ID: <CAOEp5Oca3-Dvm2=nV3ZKsx3Ltgrt1Sm5gzvoG+8LD+yURtJ8bg@mail.gmail.com>
-Subject: Re: [RFC PATCH 3/7] tun: allow use of BPF_PROG_TYPE_SCHED_CLS program type
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Willem de Bruijn <willemb@google.com>, gustavoars@kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>, decui@microsoft.com,
-        cai@lca.pw, Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        bpf <bpf@vger.kernel.org>, Yan Vugenfirer <yan@daynix.com>
+References: <20210112075520.4103414-1-andrii@kernel.org> <20210112075520.4103414-6-andrii@kernel.org>
+ <4155ef59-9e5e-f596-f22b-ecd4bde73e85@iogearbox.net>
+In-Reply-To: <4155ef59-9e5e-f596-f22b-ecd4bde73e85@iogearbox.net>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 12 Jan 2021 12:38:15 -0800
+Message-ID: <CAEf4BzbjuWO68DKNH28wYYN9Bcu8HjWN3_sGnRhoZozvfanJkQ@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 5/7] bpf: support BPF ksym variables in kernel modules
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
+        Kernel Team <kernel-team@fb.com>, Hao Luo <haoluo@google.com>,
+        Yonghong Song <yhs@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 9:46 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Tue, Jan 12, 2021 at 8:27 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
 >
-> On Tue, Jan 12, 2021 at 11:42 AM Yuri Benditovich
-> <yuri.benditovich@daynix.com> wrote:
+> On 1/12/21 8:55 AM, Andrii Nakryiko wrote:
+> > Add support for directly accessing kernel module variables from BPF programs
+> > using special ldimm64 instructions. This functionality builds upon vmlinux
+> > ksym support, but extends ldimm64 with src_reg=BPF_PSEUDO_BTF_ID to allow
+> > specifying kernel module BTF's FD in insn[1].imm field.
 > >
-> > This program type can set skb hash value. It will be useful
-> > when the tun will support hash reporting feature if virtio-net.
+> > During BPF program load time, verifier will resolve FD to BTF object and will
+> > take reference on BTF object itself and, for module BTFs, corresponding module
+> > as well, to make sure it won't be unloaded from under running BPF program. The
+> > mechanism used is similar to how bpf_prog keeps track of used bpf_maps.
 > >
-> > Signed-off-by: Yuri Benditovich <yuri.benditovich@daynix.com>
-> > ---
-> >  drivers/net/tun.c | 2 ++
-> >  1 file changed, 2 insertions(+)
+> > One interesting change is also in how per-CPU variable is determined. The
+> > logic is to find .data..percpu data section in provided BTF, but both vmlinux
+> > and module each have their own .data..percpu entries in BTF. So for module's
+> > case, the search for DATASEC record needs to look at only module's added BTF
+> > types. This is implemented with custom search function.
 > >
-> > diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-> > index 7959b5c2d11f..455f7afc1f36 100644
-> > --- a/drivers/net/tun.c
-> > +++ b/drivers/net/tun.c
-> > @@ -2981,6 +2981,8 @@ static int tun_set_ebpf(struct tun_struct *tun, struct tun_prog __rcu **prog_p,
-> >                 prog = NULL;
-> >         } else {
-> >                 prog = bpf_prog_get_type(fd, BPF_PROG_TYPE_SOCKET_FILTER);
-> > +               if (IS_ERR(prog))
-> > +                       prog = bpf_prog_get_type(fd, BPF_PROG_TYPE_SCHED_CLS);
+> > Acked-by: Yonghong Song <yhs@fb.com>
+> > Acked-by: Hao Luo <haoluo@google.com>
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> [...]
+> > +
+> > +struct module *btf_try_get_module(const struct btf *btf)
+> > +{
+> > +     struct module *res = NULL;
+> > +#ifdef CONFIG_DEBUG_INFO_BTF_MODULES
+> > +     struct btf_module *btf_mod, *tmp;
+> > +
+> > +     mutex_lock(&btf_module_mutex);
+> > +     list_for_each_entry_safe(btf_mod, tmp, &btf_modules, list) {
+> > +             if (btf_mod->btf != btf)
+> > +                     continue;
+> > +
+> > +             if (try_module_get(btf_mod->module))
+> > +                     res = btf_mod->module;
 >
-> You've ignored the feedback and just resend? what for?
+> One more thought (follow-up would be okay I'd think) ... when a module references
+> a symbol from another module, it similarly needs to bump the refcount of the module
+> that is owning it and thus disallowing to unload for that other module's lifetime.
+> That usage dependency is visible via /proc/modules however, so if unload doesn't work
+> then lsmod allows a way to introspect that to the user. This seems to be achieved via
+> resolve_symbol() where it records its dependency/usage. Would be great if we could at
+> some point also include the BPF prog name into that list so that this is more obvious.
+> Wdyt?
+>
 
-No, I do not. Some patches did not reach relevant people at all, so I
-just resent _all_ the patches to all the people.
-I will copy your earlier comment to this patch and will address it in
-the discussion.
-Sorry for misunderstanding and some redundant noise.
+Yeah, it's definitely nice to see dependent bpf progs. There is struct
+module_use, which is used to record these dependencies, but the
+assumption there is that dependencies could be only other modules. So
+one way is to somehow extend that or add another set of bpf_prog
+dependencies. First is a bit intrusive, while the seconds sucks even
+more, IMO.
+
+Alternatively, we can rely on bpf_link info to emit module info, if
+the BPF program is attached to BTF type from the module. Then with
+bpftool it would be easy to see this, but it's not as
+readily-available info as /proc/modules, of course.
+
+Any preferences?
+
+> > +             break;
+> > +     }
+> > +     mutex_unlock(&btf_module_mutex);
+> > +#endif
+> > +
+> > +     return res;
+> > +}
+> > diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> > index 261f8692d0d2..69c3c308de5e 100644
+> > --- a/kernel/bpf/core.c
+> > +++ b/kernel/bpf/core.c
+> > @@ -2119,6 +2119,28 @@ static void bpf_free_used_maps(struct bpf_prog_aux *aux)
+> >       kfree(aux->used_maps);
+> >   }
+> >
+> > +void __bpf_free_used_btfs(struct bpf_prog_aux *aux,
+> > +                       struct btf_mod_pair *used_btfs, u32 len)
+> > +{
+> > +#ifdef CONFIG_BPF_SYSCALL
+> > +     struct btf_mod_pair *btf_mod;
+> > +     u32 i;
+> > +
+> > +     for (i = 0; i < len; i++) {
+> > +             btf_mod = &used_btfs[i];
+> > +             if (btf_mod->module)
+> > +                     module_put(btf_mod->module);
+> > +             btf_put(btf_mod->btf);
+> > +     }
+> > +#endif
+> > +}
