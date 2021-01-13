@@ -2,54 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E102F57AA
+	by mail.lfdr.de (Postfix) with ESMTP id 964012F57AB
 	for <lists+bpf@lfdr.de>; Thu, 14 Jan 2021 04:00:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729190AbhANCET (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        id S1728826AbhANCET (ORCPT <rfc822;lists+bpf@lfdr.de>);
         Wed, 13 Jan 2021 21:04:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57786 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729385AbhAMWg6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Jan 2021 17:36:58 -0500
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ADFDC061794
-        for <bpf@vger.kernel.org>; Wed, 13 Jan 2021 14:36:17 -0800 (PST)
-Received: by mail-pg1-x54a.google.com with SMTP id w4so2346290pgc.7
-        for <bpf@vger.kernel.org>; Wed, 13 Jan 2021 14:36:17 -0800 (PST)
+        with ESMTP id S1729387AbhAMWg7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Jan 2021 17:36:59 -0500
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DDCFC06179F
+        for <bpf@vger.kernel.org>; Wed, 13 Jan 2021 14:36:19 -0800 (PST)
+Received: by mail-qt1-x849.google.com with SMTP id g9so2669509qtv.12
+        for <bpf@vger.kernel.org>; Wed, 13 Jan 2021 14:36:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=RvmtRhkONMmfhKRRv0A/mu12QKo6Pw33tPGzPMsnY7U=;
-        b=eNg+TgZVgGKOKdnt+s9s+B/MNQiswvTMCwgmo8Ii3RPSXI63/n0z2lZa0uLfn6edAe
-         CqelYSNlg/KPvUyYhf+1H/U2Ulf9zF+gH256Rntm3+MEw48hdJACm34mL+qcU+1QgjSn
-         YBhqF6hrnorqu+sZO3j380PcokaYnk0LzyiFjAUBJyuhyOvdf0DCMwsyjKOJ2wMgNroG
-         f8AJqhwiK5daTSrJdQskC2X+vFNAX78I7MABZIYr6BguQ6hN/u8GeUpaw4C+v7kWNO1x
-         ayhVFWgdpJdPlDacSn3uevpU+Qdpduf0rkz1PDStxciqbonDSVJPOoyXwRVrGRN9xz87
-         tg3Q==
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=2NIQ1TwrG95rTm/28dxUdJZ491lS6fXAiyg3+rtP0i0=;
+        b=KylcDwdWWUEUTJhqVOxgSNBrPPoATDupoPunfBGtoclQ6YJ4OUgN6vSg4nbTgkHjZB
+         MnIKPul4jtH9KszyatKBON5g3l6fx82uawDDUKE1k+0Vu4KhSkFw8ai4wgidpEgOGc7H
+         KM+0G4gGx+b4RhVBz68OHNF9VU5PYYC0Zc0is8X5Wy/MQWODETLb/SjVGCRq92M+Qjw7
+         q7U1IRaYxzFLCApilQZLvGNLh/zlkd56fEXHGTIP8ZceEEGholW/PLgPpj73oYEccQfo
+         5y0t7IKwzrsUrRwQmdDLXCK9MYhJRYDrmQMAP4Kd6Iqrf+ufgblHGMqlPlvu3KU7DD1h
+         omvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=RvmtRhkONMmfhKRRv0A/mu12QKo6Pw33tPGzPMsnY7U=;
-        b=CfThVc3PGbvmRSTPIkT1NAiAkw1sHfoMpowK2OpZ+wcz/F2fkH9qa1kIaO8aSjY4vk
-         UCpf6iXFgCHbAkQ2+IoSImzaxuRRv/9/2OIWfCaXuHXTytYV+ZnoPAfJla0oH3czGmSH
-         7mpWFDZWrwUzKkPvF4tHgmttEpq/QRPm7WUbKsXYjGIEwSb08XVIKqmOvY4rt+sjlK5t
-         F6bf9g1lhBlO7dimQrjNRylYsvLkp8ejiysVnta2nuJ3XPCtVeUObftN842TYwjeXPpH
-         U0OQW/3z4be5omtLg4Kb4zlmOmzaiO2/y9eLq+nqTC/9NGfHKrpWaPUMjTsLDmMDKAkz
-         5RMg==
-X-Gm-Message-State: AOAM531sZ2lDoHs9XUS95+8u/I08+4AiiZ5ri+XDE41wgV5Tx4s1VUMQ
-        CnhZ+vvzrr2rMzqiE50LGewLGPJB8Dsx
-X-Google-Smtp-Source: ABdhPJxuT5GN8uIB0Yk80LlDAp87gi4fAKPUBt19+DQuoK0Q2qZEJ//A/7To9qS2YuaQflTY45diDpaAilnm
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=2NIQ1TwrG95rTm/28dxUdJZ491lS6fXAiyg3+rtP0i0=;
+        b=CBJJjJyN5cImwEGrH95OFNMGtCbcro8ufSrt0kluVDIJm4bFzBjpiTrC5G8ERHd1PV
+         7tqlVky7Wy4G6eWpkZFwgfLy8eh0FuHkLUaeySI3CGrIsiRZusWaZM/YrcZD/N+mAxtt
+         CPnWpkkgogD0K9t0k3KXJLsr3ADGOEIXuMxE1NIdS0XQhqZUv/DK6DzV7Ycz/jDyAvdM
+         lUNOIW+sriO+StAzq1YFtWXT0XRcDmsnQj4cZgEGb55Ea4t3GoPDbTsbh3OYXdChQBAZ
+         Tz/tSViYxFcofaLvGl3bfk3YMYxvFD674N/oK/jGfKQtC6RWuL9jRDH3oW32oj8RojKD
+         Pgsg==
+X-Gm-Message-State: AOAM530fHZ40RnHrzAYDrfD/x7P6s8PHb6FMSBPTdv57C+8Z7o4Jymte
+        VNcmy+aPtaNJeFawxRaoCKAv6s3QNi+8
+X-Google-Smtp-Source: ABdhPJwOcLUE1fHN/M+BRjVp35jvvW0TUzFD5zgB0l5RnMBsEvMytvO9oktDPKxLZv7UBzywhS2+TVqVX5Aq
 Sender: "irogers via sendgmr" <irogers@irogers.svl.corp.google.com>
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:f693:9fff:fef4:4583])
- (user=irogers job=sendgmr) by 2002:a17:902:12c:b029:da:e63c:dc92 with SMTP id
- 41-20020a170902012cb02900dae63cdc92mr4528156plb.71.1610577376422; Wed, 13 Jan
- 2021 14:36:16 -0800 (PST)
-Date:   Wed, 13 Jan 2021 14:36:08 -0800
-Message-Id: <20210113223609.3358812-1-irogers@google.com>
+ (user=irogers job=sendgmr) by 2002:a05:6214:80d:: with SMTP id
+ df13mr4757822qvb.10.1610577378483; Wed, 13 Jan 2021 14:36:18 -0800 (PST)
+Date:   Wed, 13 Jan 2021 14:36:09 -0800
+In-Reply-To: <20210113223609.3358812-1-irogers@google.com>
+Message-Id: <20210113223609.3358812-2-irogers@google.com>
 Mime-Version: 1.0
+References: <20210113223609.3358812-1-irogers@google.com>
 X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH 1/2] bpf, libbpf: Avoid unused function warning on bpf_tail_call_static
+Subject: [PATCH 2/2] tools/bpftool: Add -Wall when building BPF programs
 From:   Ian Rogers <irogers@google.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -69,28 +71,27 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add inline to __always_inline making it match the linux/compiler.h.
-Adding this avoids an unused function warning on bpf_tail_call_static
-when compining with -Wall.
+No additional warnings are generated by enabling this, but having it
+enabled will help avoid regressions.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/lib/bpf/bpf_helpers.h | 2 +-
+ tools/bpf/bpftool/Makefile | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-index 72b251110c4d..ae6c975e0b87 100644
---- a/tools/lib/bpf/bpf_helpers.h
-+++ b/tools/lib/bpf/bpf_helpers.h
-@@ -30,7 +30,7 @@
- #define SEC(NAME) __attribute__((section(NAME), used))
+diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+index f897cb5fb12d..45ac2f9e0aa9 100644
+--- a/tools/bpf/bpftool/Makefile
++++ b/tools/bpf/bpftool/Makefile
+@@ -166,7 +166,7 @@ $(OUTPUT)%.bpf.o: skeleton/%.bpf.c $(OUTPUT)vmlinux.h $(LIBBPF)
+ 		-I$(srctree)/tools/include/uapi/ \
+ 		-I$(LIBBPF_PATH) \
+ 		-I$(srctree)/tools/lib \
+-		-g -O2 -target bpf -c $< -o $@ && $(LLVM_STRIP) -g $@
++		-g -O2 -Wall -target bpf -c $< -o $@ && $(LLVM_STRIP) -g $@
  
- #ifndef __always_inline
--#define __always_inline __attribute__((always_inline))
-+#define __always_inline inline __attribute__((always_inline))
- #endif
- #ifndef __noinline
- #define __noinline __attribute__((noinline))
+ $(OUTPUT)%.skel.h: $(OUTPUT)%.bpf.o $(BPFTOOL_BOOTSTRAP)
+ 	$(QUIET_GEN)$(BPFTOOL_BOOTSTRAP) gen skeleton $< > $@
 -- 
 2.30.0.284.gd98b1dd5eaa7-goog
 
