@@ -2,80 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8DAF2F488B
-	for <lists+bpf@lfdr.de>; Wed, 13 Jan 2021 11:23:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DD952F489D
+	for <lists+bpf@lfdr.de>; Wed, 13 Jan 2021 11:27:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727075AbhAMKWV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Jan 2021 05:22:21 -0500
-Received: from foss.arm.com ([217.140.110.172]:33734 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727036AbhAMKWV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Jan 2021 05:22:21 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2CA631042;
-        Wed, 13 Jan 2021 02:21:35 -0800 (PST)
-Received: from e107158-lin (e107158-lin.cambridge.arm.com [10.1.194.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E65913F66E;
-        Wed, 13 Jan 2021 02:21:33 -0800 (PST)
-Date:   Wed, 13 Jan 2021 10:21:31 +0000
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        id S1725924AbhAMK0J convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Wed, 13 Jan 2021 05:26:09 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:59143 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725843AbhAMK0J (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 13 Jan 2021 05:26:09 -0500
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-200-T5eYJ6JSOWGQ4ljXKotyig-1; Wed, 13 Jan 2021 05:25:14 -0500
+X-MC-Unique: T5eYJ6JSOWGQ4ljXKotyig-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0181D180A092;
+        Wed, 13 Jan 2021 10:25:13 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.195.134])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DD4641F0;
+        Wed, 13 Jan 2021 10:25:10 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     dwarves@vger.kernel.org, bpf@vger.kernel.org,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 2/2] selftests: bpf: Add a new test for bare
- tracepoints
-Message-ID: <20210113102131.mjxpqpoi4n6rhbny@e107158-lin>
-References: <20210111182027.1448538-1-qais.yousef@arm.com>
- <20210111182027.1448538-3-qais.yousef@arm.com>
- <CAEf4BzYwOAHGOiZBUx86yZ1ofwJ1WqCDR3dyRMrTeQa2ZU7ftA@mail.gmail.com>
- <20210112192729.q47avnmnzl54nekg@e107158-lin>
- <CAEf4BzZiYv1M04FBmuzMH5cxLUXzLthDfpp4nORMEmvkcfzyRQ@mail.gmail.com>
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Hao Luo <haoluo@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Tom Stellard <tstellar@redhat.com>
+Subject: [PATCHv2] btf_encoder: Add extra checks for symbol names
+Date:   Wed, 13 Jan 2021 11:25:09 +0100
+Message-Id: <20210113102509.1338601-1-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZiYv1M04FBmuzMH5cxLUXzLthDfpp4nORMEmvkcfzyRQ@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 01/12/21 12:07, Andrii Nakryiko wrote:
-> > > >         $ sudo ./test_progs -v -t module_attach
-> > >
-> > > use -vv when debugging stuff like that with test_progs, it will output
-> > > libbpf detailed logs, that often are very helpful
-> >
-> > I tried that but it didn't help me. Full output is here
-> >
-> >         https://paste.debian.net/1180846
-> >
-> 
-> It did help a bit for me to make sure that you have bpf_testmod
-> properly loaded and its BTF was found, so the problem is somewhere
-> else. Also, given load succeeded and attach failed with OPNOTSUPP, I
-> suspect you are missing some of FTRACE configs, which seems to be
-> missing from selftests's config as well. Check that you have
-> CONFIG_FTRACE=y and CONFIG_DYNAMIC_FTRACE=y, and you might need some
-> more. See [0] for a real config we are using to run all tests in
-> libbpf CI. If you figure out what you were missing, please also
-> contribute a patch to selftests' config.
-> 
->   [0] https://github.com/libbpf/libbpf/blob/master/travis-ci/vmtest/configs/latest.config
+When processing kernel image build by clang we can
+find some functions without the name, which causes
+pahole to segfault.
 
-Yeah that occurred to me too. I do have all necessary FTRACE options enabled,
-including DYNAMIC_FTRACE. I think I did try enabling fault injection too just
-in case. I have CONFIG_FAULT_INJECTION=y and CONFIG_FUNCTION_ERROR_INJECTION=y.
+Adding extra checks to make sure we always have
+function's name defined before using it.
 
-I will look at the CI config and see if I can figure it out.
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+  v2 changes:
+    - reorg the code based on Andrii's suggestion
 
-I will likely get a chance to look at all of this and send v2  over the
-weekend.
+ btf_encoder.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-Thanks
+diff --git a/btf_encoder.c b/btf_encoder.c
+index 333973054b61..5557c9efd365 100644
+--- a/btf_encoder.c
++++ b/btf_encoder.c
+@@ -68,10 +68,14 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym)
+ 	struct elf_function *new;
+ 	static GElf_Shdr sh;
+ 	static int last_idx;
++	const char *name;
+ 	int idx;
+ 
+ 	if (elf_sym__type(sym) != STT_FUNC)
+ 		return 0;
++	name = elf_sym__name(sym, btfe->symtab);
++	if (!name)
++		return 0;
+ 
+ 	if (functions_cnt == functions_alloc) {
+ 		functions_alloc = max(1000, functions_alloc * 3 / 2);
+@@ -94,7 +98,7 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym)
+ 		last_idx = idx;
+ 	}
+ 
+-	functions[functions_cnt].name = elf_sym__name(sym, btfe->symtab);
++	functions[functions_cnt].name = name;
+ 	functions[functions_cnt].addr = elf_sym__value(sym);
+ 	functions[functions_cnt].sh_addr = sh.sh_addr;
+ 	functions[functions_cnt].generated = false;
+@@ -731,8 +735,13 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
+ 			continue;
+ 		if (functions_cnt) {
+ 			struct elf_function *func;
++			const char *name;
++
++			name = function__name(fn, cu);
++			if (!name)
++				continue;
+ 
+-			func = find_function(btfe, function__name(fn, cu));
++			func = find_function(btfe, name);
+ 			if (!func || func->generated)
+ 				continue;
+ 			func->generated = true;
+-- 
+2.26.2
 
---
-Qais Yousef
