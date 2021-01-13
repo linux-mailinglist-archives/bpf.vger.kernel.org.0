@@ -2,172 +2,181 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9671E2F4404
-	for <lists+bpf@lfdr.de>; Wed, 13 Jan 2021 06:41:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E9DA2F45FE
+	for <lists+bpf@lfdr.de>; Wed, 13 Jan 2021 09:14:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725969AbhAMFkE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Jan 2021 00:40:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725747AbhAMFkE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Jan 2021 00:40:04 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB4BAC061786;
-        Tue, 12 Jan 2021 21:39:23 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id e25so456765wme.0;
-        Tue, 12 Jan 2021 21:39:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=VCHvXiIuGQ875c0kTwaxEIFmcVQTTJg0T+ykoO628L8=;
-        b=imsqeepHNtkIwu1KJWaElC1no2LyzhkqCyjYiqRWurgvxVtbPY0Z5/K8YytPVLDAfg
-         RJb19fIFjcoqFg7rf3UmbJyLsyeihpd/Lo68ixD/QEoklZ61IsWIJsF6r+5froH4Gs7F
-         Yh1HvU9rzjKQa/mGwAXOjCL9OWbUx4+n0qcBt3pleGpSsckrpnfsHf6vl6wFeKyNeFiO
-         BItASgm6dwjgzDL1yC4FxvMxzro3S1Txf4zF0YSdVEy3azLckLDJePP2z6EpTL7oDRZY
-         LLoGV1p1TgZGc1FYp/Rq02oOkRD9CPLGLwBXJTmE38RIRlfIKErx8vP8ZZly8GNcl+L2
-         RdOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=VCHvXiIuGQ875c0kTwaxEIFmcVQTTJg0T+ykoO628L8=;
-        b=S4BLgeeNjoLGyIe1hAHqBGDajgVqKXYV579Crfh5aAO3Tu9M/rnXZ/o5+KKRvY1ylP
-         7OebC4Br+O/Ozk61nrHK+k7/wYO1CUJia26gNJot9JUeM4LykGsTJ/GisUtQxI1v1FP2
-         aHWfgGNCHlrAv/KGMm4BDTyYcB+o6tGIjzFDAu6vLdyWf/IoIA3jmBSK0eTv+PBy5ntv
-         NN5Yk+j5cJ+Z+DJnU9AtSfU3Y5VJbnog8h9kopAAAoiXzUKw/koMjf4umtdMddH1fFJO
-         Kzp3Ztzi5r3gXXjUSebQVDkKGS0fhInnikFbml9KOaaEz29LyFtdyoARph1b+AxNG7Xv
-         H3Jw==
-X-Gm-Message-State: AOAM532vmXfVn4BvxxGl84XrTYIDexqW7GeqySNUAc7ps0UXrHbtYbeR
-        cTTxr4UR9nbKHvTcuJL+Zcu4VuNpFlG+UvZTr1g=
-X-Google-Smtp-Source: ABdhPJw8OFTbX4DU5UgRAF4DlJ7SoDRl0qo/X2cdqqYOj+i/pCzMlRCLl8miDBEyp3VQl6NMBCGjOg==
-X-Received: by 2002:a1c:f302:: with SMTP id q2mr413847wmq.15.1610516362276;
-        Tue, 12 Jan 2021 21:39:22 -0800 (PST)
-Received: from ubuntu.localdomain (bzq-233-168-31-62.red.bezeqint.net. [31.168.233.62])
-        by smtp.googlemail.com with ESMTPSA id 138sm1136487wma.41.2021.01.12.21.39.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 21:39:21 -0800 (PST)
-From:   Gilad Reti <gilad.reti@gmail.com>
-To:     bpf@vger.kernel.org
-Cc:     gilad.reti@gmail.com, Alexei Starovoitov <ast@kernel.org>,
+        id S1726207AbhAMIK2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Jan 2021 03:10:28 -0500
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:41489 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727089AbhAMIK1 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 13 Jan 2021 03:10:27 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0ULbRoz7_1610525337;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0ULbRoz7_1610525337)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 13 Jan 2021 16:08:58 +0800
+From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To:     netdev@vger.kernel.org
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf v2 2/2] selftests/bpf: add verifier test for PTR_TO_MEM spill
-Date:   Wed, 13 Jan 2021 07:38:08 +0200
-Message-Id: <20210113053810.13518-2-gilad.reti@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210113053810.13518-1-gilad.reti@gmail.com>
-References: <20210113053810.13518-1-gilad.reti@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
+        dust.li@linux.alibaba.com
+Subject: [PATCH netdev] virtio-net: support XDP_TX when not more queues
+Date:   Wed, 13 Jan 2021 16:08:57 +0800
+Message-Id: <81abae33fc8dbec37ef0061ff6f6fd696b484a3e.1610523188.git.xuanzhuo@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a test to check that the verifier is able to recognize spilling of
-PTR_TO_MEM registers, by reserving a ringbuf buffer, forcing the spill
-of a pointer holding the buffer address to the stack, filling it back 
-in from the stack and writing to the memory area pointed by it.
+The number of queues implemented by many virtio backends is limited,
+especially some machines have a large number of CPUs. In this case, it
+is often impossible to allocate a separate queue for XDP_TX.
 
-The patch was partially contributed by CyberArk Software, Inc.
+This patch allows XDP_TX to run by reuse the existing SQ with
+__netif_tx_lock() hold when there are not enough queues.
 
-Signed-off-by: Gilad Reti <gilad.reti@gmail.com>
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
 ---
- tools/testing/selftests/bpf/test_verifier.c   | 12 +++++++-
- .../selftests/bpf/verifier/spill_fill.c       | 30 +++++++++++++++++++
- 2 files changed, 41 insertions(+), 1 deletion(-)
+ drivers/net/virtio_net.c | 47 +++++++++++++++++++++++++++++++++++------------
+ 1 file changed, 35 insertions(+), 12 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-index 777a81404fdb..f8569f04064b 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -50,7 +50,7 @@
- #define MAX_INSNS	BPF_MAXINSNS
- #define MAX_TEST_INSNS	1000000
- #define MAX_FIXUPS	8
--#define MAX_NR_MAPS	20
-+#define MAX_NR_MAPS	21
- #define MAX_TEST_RUNS	8
- #define POINTER_VALUE	0xcafe4all
- #define TEST_DATA_LEN	64
-@@ -87,6 +87,7 @@ struct bpf_test {
- 	int fixup_sk_storage_map[MAX_FIXUPS];
- 	int fixup_map_event_output[MAX_FIXUPS];
- 	int fixup_map_reuseport_array[MAX_FIXUPS];
-+	int fixup_map_ringbuf[MAX_FIXUPS];
- 	const char *errstr;
- 	const char *errstr_unpriv;
- 	uint32_t insn_processed;
-@@ -640,6 +641,7 @@ static void do_test_fixup(struct bpf_test *test, enum bpf_prog_type prog_type,
- 	int *fixup_sk_storage_map = test->fixup_sk_storage_map;
- 	int *fixup_map_event_output = test->fixup_map_event_output;
- 	int *fixup_map_reuseport_array = test->fixup_map_reuseport_array;
-+	int *fixup_map_ringbuf = test->fixup_map_ringbuf;
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index ba8e637..7a3b2a7 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -195,6 +195,9 @@ struct virtnet_info {
+ 	/* # of XDP queue pairs currently used by the driver */
+ 	u16 xdp_queue_pairs;
  
- 	if (test->fill_helper) {
- 		test->fill_insns = calloc(MAX_TEST_INSNS, sizeof(struct bpf_insn));
-@@ -817,6 +819,14 @@ static void do_test_fixup(struct bpf_test *test, enum bpf_prog_type prog_type,
- 			fixup_map_reuseport_array++;
- 		} while (*fixup_map_reuseport_array);
- 	}
-+	if (*fixup_map_ringbuf) {
-+		map_fds[20] = create_map(BPF_MAP_TYPE_RINGBUF, 0,
-+					   0, 4096);
-+		do {
-+			prog[*fixup_map_ringbuf].imm = map_fds[20];
-+			fixup_map_ringbuf++;
-+		} while (*fixup_map_ringbuf);
-+	}
++	/* xdp_queue_pairs may be 0, when xdp is already loaded. So add this. */
++	bool xdp_enabled;
++
+ 	/* I like... big packets and I cannot lie! */
+ 	bool big_packets;
+ 
+@@ -481,14 +484,34 @@ static int __virtnet_xdp_xmit_one(struct virtnet_info *vi,
+ 	return 0;
  }
  
- struct libcap {
-diff --git a/tools/testing/selftests/bpf/verifier/spill_fill.c b/tools/testing/selftests/bpf/verifier/spill_fill.c
-index 45d43bf82f26..0b943897aaf6 100644
---- a/tools/testing/selftests/bpf/verifier/spill_fill.c
-+++ b/tools/testing/selftests/bpf/verifier/spill_fill.c
-@@ -28,6 +28,36 @@
- 	.result = ACCEPT,
- 	.result_unpriv = ACCEPT,
- },
-+{
-+	"check valid spill/fill, ptr to mem",
-+	.insns = {
-+	/* reserve 8 byte ringbuf memory */
-+	BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
-+	BPF_LD_MAP_FD(BPF_REG_1, 0),
-+	BPF_MOV64_IMM(BPF_REG_2, 8),
-+	BPF_MOV64_IMM(BPF_REG_3, 0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_ringbuf_reserve),
-+	/* store a pointer to the reserved memory in R6 */
-+	BPF_MOV64_REG(BPF_REG_6, BPF_REG_0),
-+	/* check whether the reservation was successful */
-+	BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0, 6),
-+	/* spill R6(mem) into the stack */
-+	BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_6, -8),
-+	/* fill it back in R7 */
-+	BPF_LDX_MEM(BPF_DW, BPF_REG_7, BPF_REG_10, -8),
-+	/* should be able to access *(R7) = 0 */
-+	BPF_ST_MEM(BPF_DW, BPF_REG_7, 0, 0),
-+	/* submit the reserved ringbuf memory */
-+	BPF_MOV64_REG(BPF_REG_1, BPF_REG_7),
-+	BPF_MOV64_IMM(BPF_REG_2, 0),
-+	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_ringbuf_submit),
-+	BPF_MOV64_IMM(BPF_REG_0, 0),
-+	BPF_EXIT_INSN(),
-+	},
-+	.fixup_map_ringbuf = { 1 },
-+	.result = ACCEPT,
-+	.result_unpriv = ACCEPT,
-+},
+-static struct send_queue *virtnet_xdp_sq(struct virtnet_info *vi)
++static struct send_queue *virtnet_get_xdp_sq(struct virtnet_info *vi)
  {
- 	"check corrupted spill/fill",
- 	.insns = {
+ 	unsigned int qp;
++	struct netdev_queue *txq;
++
++	if (vi->curr_queue_pairs > nr_cpu_ids) {
++		qp = vi->curr_queue_pairs - vi->xdp_queue_pairs + smp_processor_id();
++	} else {
++		qp = smp_processor_id() % vi->curr_queue_pairs;
++		txq = netdev_get_tx_queue(vi->dev, qp);
++		__netif_tx_lock(txq, raw_smp_processor_id());
++	}
+ 
+-	qp = vi->curr_queue_pairs - vi->xdp_queue_pairs + smp_processor_id();
+ 	return &vi->sq[qp];
+ }
+ 
++static void virtnet_put_xdp_sq(struct virtnet_info *vi)
++{
++	unsigned int qp;
++	struct netdev_queue *txq;
++
++	if (vi->curr_queue_pairs <= nr_cpu_ids) {
++		qp = smp_processor_id() % vi->curr_queue_pairs;
++		txq = netdev_get_tx_queue(vi->dev, qp);
++		__netif_tx_unlock(txq);
++	}
++}
++
+ static int virtnet_xdp_xmit(struct net_device *dev,
+ 			    int n, struct xdp_frame **frames, u32 flags)
+ {
+@@ -512,7 +535,7 @@ static int virtnet_xdp_xmit(struct net_device *dev,
+ 	if (!xdp_prog)
+ 		return -ENXIO;
+ 
+-	sq = virtnet_xdp_sq(vi);
++	sq = virtnet_get_xdp_sq(vi);
+ 
+ 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK)) {
+ 		ret = -EINVAL;
+@@ -560,12 +583,13 @@ static int virtnet_xdp_xmit(struct net_device *dev,
+ 	sq->stats.kicks += kicks;
+ 	u64_stats_update_end(&sq->stats.syncp);
+ 
++	virtnet_put_xdp_sq(vi);
+ 	return ret;
+ }
+ 
+ static unsigned int virtnet_get_headroom(struct virtnet_info *vi)
+ {
+-	return vi->xdp_queue_pairs ? VIRTIO_XDP_HEADROOM : 0;
++	return vi->xdp_enabled ? VIRTIO_XDP_HEADROOM : 0;
+ }
+ 
+ /* We copy the packet for XDP in the following cases:
+@@ -1457,12 +1481,13 @@ static int virtnet_poll(struct napi_struct *napi, int budget)
+ 		xdp_do_flush();
+ 
+ 	if (xdp_xmit & VIRTIO_XDP_TX) {
+-		sq = virtnet_xdp_sq(vi);
++		sq = virtnet_get_xdp_sq(vi);
+ 		if (virtqueue_kick_prepare(sq->vq) && virtqueue_notify(sq->vq)) {
+ 			u64_stats_update_begin(&sq->stats.syncp);
+ 			sq->stats.kicks++;
+ 			u64_stats_update_end(&sq->stats.syncp);
+ 		}
++		virtnet_put_xdp_sq(vi);
+ 	}
+ 
+ 	return received;
+@@ -2416,12 +2441,8 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+ 		xdp_qp = nr_cpu_ids;
+ 
+ 	/* XDP requires extra queues for XDP_TX */
+-	if (curr_qp + xdp_qp > vi->max_queue_pairs) {
+-		NL_SET_ERR_MSG_MOD(extack, "Too few free TX rings available");
+-		netdev_warn(dev, "request %i queues but max is %i\n",
+-			    curr_qp + xdp_qp, vi->max_queue_pairs);
+-		return -ENOMEM;
+-	}
++	if (curr_qp + xdp_qp > vi->max_queue_pairs)
++		xdp_qp = 0;
+ 
+ 	old_prog = rtnl_dereference(vi->rq[0].xdp_prog);
+ 	if (!prog && !old_prog)
+@@ -2453,12 +2474,14 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+ 	netif_set_real_num_rx_queues(dev, curr_qp + xdp_qp);
+ 	vi->xdp_queue_pairs = xdp_qp;
+ 
++	vi->xdp_enabled = false;
+ 	if (prog) {
+ 		for (i = 0; i < vi->max_queue_pairs; i++) {
+ 			rcu_assign_pointer(vi->rq[i].xdp_prog, prog);
+ 			if (i == 0 && !old_prog)
+ 				virtnet_clear_guest_offloads(vi);
+ 		}
++		vi->xdp_enabled = true;
+ 	}
+ 
+ 	for (i = 0; i < vi->max_queue_pairs; i++) {
+@@ -2526,7 +2549,7 @@ static int virtnet_set_features(struct net_device *dev,
+ 	int err;
+ 
+ 	if ((dev->features ^ features) & NETIF_F_LRO) {
+-		if (vi->xdp_queue_pairs)
++		if (vi->xdp_enabled)
+ 			return -EBUSY;
+ 
+ 		if (features & NETIF_F_LRO)
 -- 
-2.27.0
+1.8.3.1
 
