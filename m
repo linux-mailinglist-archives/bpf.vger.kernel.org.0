@@ -2,65 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ACFC2F4874
-	for <lists+bpf@lfdr.de>; Wed, 13 Jan 2021 11:20:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8DAF2F488B
+	for <lists+bpf@lfdr.de>; Wed, 13 Jan 2021 11:23:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726695AbhAMKQ5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 13 Jan 2021 05:16:57 -0500
-Received: from foss.arm.com ([217.140.110.172]:33676 "EHLO foss.arm.com"
+        id S1727075AbhAMKWV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 13 Jan 2021 05:22:21 -0500
+Received: from foss.arm.com ([217.140.110.172]:33734 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725681AbhAMKQ4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 13 Jan 2021 05:16:56 -0500
+        id S1727036AbhAMKWV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 13 Jan 2021 05:22:21 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6BE7D1042;
-        Wed, 13 Jan 2021 02:16:10 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2CA631042;
+        Wed, 13 Jan 2021 02:21:35 -0800 (PST)
 Received: from e107158-lin (e107158-lin.cambridge.arm.com [10.1.194.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 36A343F66E;
-        Wed, 13 Jan 2021 02:16:09 -0800 (PST)
-Date:   Wed, 13 Jan 2021 10:16:06 +0000
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E65913F66E;
+        Wed, 13 Jan 2021 02:21:33 -0800 (PST)
+Date:   Wed, 13 Jan 2021 10:21:31 +0000
 From:   Qais Yousef <qais.yousef@arm.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Steven Rostedt <rostedt@goodmis.org>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next 1/2] trace: bpf: Allow bpf to attach to bare
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 2/2] selftests: bpf: Add a new test for bare
  tracepoints
-Message-ID: <20210113101606.lpsn4scnsecdfxwr@e107158-lin>
+Message-ID: <20210113102131.mjxpqpoi4n6rhbny@e107158-lin>
 References: <20210111182027.1448538-1-qais.yousef@arm.com>
- <20210111182027.1448538-2-qais.yousef@arm.com>
- <8ef6c8e8-c462-a780-b1ab-b7f2e4fa9836@fb.com>
+ <20210111182027.1448538-3-qais.yousef@arm.com>
+ <CAEf4BzYwOAHGOiZBUx86yZ1ofwJ1WqCDR3dyRMrTeQa2ZU7ftA@mail.gmail.com>
+ <20210112192729.q47avnmnzl54nekg@e107158-lin>
+ <CAEf4BzZiYv1M04FBmuzMH5cxLUXzLthDfpp4nORMEmvkcfzyRQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <8ef6c8e8-c462-a780-b1ab-b7f2e4fa9836@fb.com>
+In-Reply-To: <CAEf4BzZiYv1M04FBmuzMH5cxLUXzLthDfpp4nORMEmvkcfzyRQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 01/12/21 12:19, Yonghong Song wrote:
-> I applied the patch to my local bpf-next repo, and got the following
-> compilation error:
-
-[...]
-
+On 01/12/21 12:07, Andrii Nakryiko wrote:
+> > > >         $ sudo ./test_progs -v -t module_attach
+> > >
+> > > use -vv when debugging stuff like that with test_progs, it will output
+> > > libbpf detailed logs, that often are very helpful
+> >
+> > I tried that but it didn't help me. Full output is here
+> >
+> >         https://paste.debian.net/1180846
+> >
 > 
-> I dumped preprecessor result but after macro expansion, the code
-> becomes really complex and I have not figured out why it failed.
-> Do you know what is the possible reason?
+> It did help a bit for me to make sure that you have bpf_testmod
+> properly loaded and its BTF was found, so the problem is somewhere
+> else. Also, given load succeeded and attach failed with OPNOTSUPP, I
+> suspect you are missing some of FTRACE configs, which seems to be
+> missing from selftests's config as well. Check that you have
+> CONFIG_FTRACE=y and CONFIG_DYNAMIC_FTRACE=y, and you might need some
+> more. See [0] for a real config we are using to run all tests in
+> libbpf CI. If you figure out what you were missing, please also
+> contribute a patch to selftests' config.
+> 
+>   [0] https://github.com/libbpf/libbpf/blob/master/travis-ci/vmtest/configs/latest.config
 
-Yeah I did a last minute fix to address a checkpatch.pl error and my
-verification of the change wasn't good enough obviously.
+Yeah that occurred to me too. I do have all necessary FTRACE options enabled,
+including DYNAMIC_FTRACE. I think I did try enabling fault injection too just
+in case. I have CONFIG_FAULT_INJECTION=y and CONFIG_FUNCTION_ERROR_INJECTION=y.
 
-If you're keen to try out I can send you a patch with the fix. I should send v2
-by the weekend too.
+I will look at the CI config and see if I can figure it out.
 
-Thanks for having a look.
+I will likely get a chance to look at all of this and send v2  over the
+weekend.
 
-Cheers
+Thanks
 
 --
 Qais Yousef
