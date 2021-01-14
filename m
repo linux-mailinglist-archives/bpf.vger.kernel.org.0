@@ -2,138 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBEAE2F5C90
-	for <lists+bpf@lfdr.de>; Thu, 14 Jan 2021 09:42:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60B342F5CD4
+	for <lists+bpf@lfdr.de>; Thu, 14 Jan 2021 10:05:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727877AbhANIlh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Jan 2021 03:41:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46444 "EHLO
+        id S1727653AbhANJE0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Jan 2021 04:04:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726893AbhANIlg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Jan 2021 03:41:36 -0500
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A54EAC061794;
-        Thu, 14 Jan 2021 00:40:55 -0800 (PST)
-Received: by mail-lj1-x233.google.com with SMTP id f11so5517226ljm.8;
-        Thu, 14 Jan 2021 00:40:55 -0800 (PST)
+        with ESMTP id S1727634AbhANJEX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Jan 2021 04:04:23 -0500
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E02E6C061575;
+        Thu, 14 Jan 2021 01:03:42 -0800 (PST)
+Received: by mail-ot1-x336.google.com with SMTP id o11so4578406ote.4;
+        Thu, 14 Jan 2021 01:03:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yZyuwqgUBskABVFLYIWGAD2FMF/t9yzwUC2QTWtpxG8=;
-        b=M9TsRLMOYhUEtXeMsks6hjymvFGTAFTtcnSeAioUr1V+e+Ys/w+5+tmqSuQePbJWQN
-         nLX1XzhyCkUuxejX9U0wCBV7ltnfewMSvNOsCBSHvm6lwsiYXfuc7fUQ78au0oc61Jty
-         b86r7TpT/4J5m+IyZw8My3f2eTw/PnR5ILB4rSDdqb7zATPtcCA2ec6OeOPgCj+Lpz3F
-         wDdCpERqEDPy95Q4ktU8XrtwdlPJONjEUnSUHYOPhQYFkg0d3DfV1RUb40UCRj/N8GLN
-         SZG7CNzjeGOBkp4gfx2/FRDLg18C47oM0goFLQC4r41mH/yWXONx4CfJYELM97u6ch54
-         mztw==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=yr/MMAs2Fb11VuHGp9TyeBPIvbzmDxCwMaynvb9fj1c=;
+        b=qXLLo+nH99Djx2egzXgEeUHGgswYvV8wC6i4G5yQIog24gZfejHtbLKr4nV4qPLesr
+         qbZtQKACKYArx78k5TQlnQKUznguBespZdbCSt2hdUcKRAdBWIxtWD7iHXBzncf0lIC2
+         ozoCl4OAgyQqWWIjxTTW7r2t0UNNZblMP1tILFjMRVO0YMNPypasSOtO0J4tyg+4KfWO
+         hrWpcc3R1hw4XG8cp3sO98BpXvCCxeTDf8IWjU9JeakGm6OCCDaQG205ZeOXKZxKOTOv
+         TNCBLrCZyddKOO54AQDI0Qt/ISZfA2t/NsOKK1rIchOGOZ3ho2eaz41ldep2BAa8UIMt
+         C1Gg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=yZyuwqgUBskABVFLYIWGAD2FMF/t9yzwUC2QTWtpxG8=;
-        b=ClvHaL9jKNmU54YObMuqaaVlECsovXYBqaVDD4UMk9zyqDp+qr4i0HPbZarb1uIZfR
-         niEbibsq0LMckibcBL22lN7a2YyjeshuxBkvCT13gn2drCYZgAEtnuW9Zgdm0oF5+9a7
-         yHtQT80UHIIr8R0R4fif7mtcvkO0CLi/425xcvn2WW7sfKuIPFdFE5/3LMauECIltgTC
-         7ld6yoHWgUh68EhvKmkiFhDa30KHbdAxTxjg0IQWMgL11bNA0I6PETMOTNf89LekyMQK
-         Qq01qIdiOito9wuIF1uKPBsDtwJwMDfVmoHPfUETcnSVF5yre6mTlUv1dtAd8x9e/ZH+
-         tKzw==
-X-Gm-Message-State: AOAM533x5ChcCI7G+NwNyX07XPlWKxfW3YTUR2iK+2L8WBqxr1jC1JAq
-        8GS6jvrnabWS/4Rxyszv53gjt4vI53HYbQ==
-X-Google-Smtp-Source: ABdhPJxonLgQGhSHZPoirG03V75YnKFqQQBe+h3FFzullyWpE6EXPydwpEsbUTDijMJvfHPA3qrGbA==
-X-Received: by 2002:a2e:8745:: with SMTP id q5mr2546502ljj.77.1610613654215;
-        Thu, 14 Jan 2021 00:40:54 -0800 (PST)
-Received: from [192.168.1.100] ([178.176.79.115])
-        by smtp.gmail.com with ESMTPSA id p5sm476176lfj.295.2021.01.14.00.40.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Jan 2021 00:40:53 -0800 (PST)
-Subject: Re: [PATCH 2/2] compiler.h: Include asm/rwonce.h under ARM64 and
- ALPHA to fix build errors
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=yr/MMAs2Fb11VuHGp9TyeBPIvbzmDxCwMaynvb9fj1c=;
+        b=O+eJTZY0jdb134CrCm+nBhCqz4GeoHxr9xUrVspOEIEF72/3ejECwpCsDVFSmv2utv
+         zDZhGp4Z+jXfxKrqc3dBUjys3dznyzyWFep/R6P949ogq4JWGlNbuKud7fUuei7ccaHW
+         opBJawIO4H2hZL0DLG7jhvPN+EaXJX0MBNYexBD5k9VIacox2P9JVJzgWhFk9tZHEiNg
+         WnVKvGC2Ox38yNqlTvPGxDQLK5f3p466G1NdalKgzngEQIwEl+Q9B2rB6lJ3pxKEALLd
+         TqhoWnq/1lTlued8VzlFOY4tBxUMlYzR2FwwbsIvBYEuDVWRIoKO7/y4boqVY5Ne4V8W
+         Q6LQ==
+X-Gm-Message-State: AOAM533TA7FQjhvr+zhDsd6HbsdO3D7zwb7iNGJDBTgNTU7CMbwxPgxs
+        4uJi96TMq47+AWGBxsiXTTs=
+X-Google-Smtp-Source: ABdhPJwPTpZNYg199+JfX7XSvWftMDOAhHuoJ57StjLhZgaGtiOFGtX7w68/DWQLOIqrc8levJINaQ==
+X-Received: by 2002:a9d:71c9:: with SMTP id z9mr4180699otj.61.1610615022347;
+        Thu, 14 Jan 2021 01:03:42 -0800 (PST)
+Received: from localhost ([172.243.146.206])
+        by smtp.gmail.com with ESMTPSA id g92sm945326otb.66.2021.01.14.01.03.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 01:03:41 -0800 (PST)
+Date:   Thu, 14 Jan 2021 01:03:33 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>, bpf@vger.kernel.org
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
+        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     linux-sparse@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-References: <1610535453-2352-1-git-send-email-yangtiezhu@loongson.cn>
- <1610535453-2352-3-git-send-email-yangtiezhu@loongson.cn>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <04749e2c-6e80-5316-a575-e4aaf780bb81@gmail.com>
-Date:   Thu, 14 Jan 2021 11:40:39 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-MIME-Version: 1.0
-In-Reply-To: <1610535453-2352-3-git-send-email-yangtiezhu@loongson.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
+        colrack@gmail.com
+Message-ID: <600008e5e2e80_1eeef20852@john-XPS-13-9370.notmuch>
+In-Reply-To: <161047352593.4003084.6778762780747210369.stgit@firesoul>
+References: <161047346644.4003084.2653117664787086168.stgit@firesoul>
+ <161047352593.4003084.6778762780747210369.stgit@firesoul>
+Subject: RE: [PATCH bpf-next V11 5/7] bpf: drop MTU check when doing TC-BPF
+ redirect to ingress
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello!
-
-On 13.01.2021 13:57, Tiezhu Yang wrote:
-
-> When make M=samples/bpf on the Loongson 3A3000 platform which
-> belongs to MIPS arch, there exists many similar build errors
-> about 'asm/rwonce.h' file not found, so include it only under
-> CONFIG_ARM64 and CONFIG_ALPHA due to it exists only in arm64
-> and alpha arch.
+Jesper Dangaard Brouer wrote:
+> The use-case for dropping the MTU check when TC-BPF does redirect to
+> ingress, is described by Eyal Birger in email[0]. The summary is the
+> ability to increase packet size (e.g. with IPv6 headers for NAT64) and
+> ingress redirect packet and let normal netstack fragment packet as needed.
 > 
->    CLANG-bpf  samples/bpf/xdpsock_kern.o
-> In file included from samples/bpf/xdpsock_kern.c:2:
-> In file included from ./include/linux/bpf.h:9:
-> In file included from ./include/linux/workqueue.h:9:
-> In file included from ./include/linux/timer.h:5:
-> In file included from ./include/linux/list.h:9:
-> In file included from ./include/linux/kernel.h:10:
-> ./include/linux/compiler.h:246:10: fatal error: 'asm/rwonce.h' file not found
->           ^~~~~~~~~~~~~~
-> 1 error generated.
+> [0] https://lore.kernel.org/netdev/CAHsH6Gug-hsLGHQ6N0wtixdOa85LDZ3HNRHVd0opR=19Qo4W4Q@mail.gmail.com/
 > 
-> $ find . -name rwonce.h
-> ./include/asm-generic/rwonce.h
-> ./arch/arm64/include/asm/rwonce.h
-> ./arch/alpha/include/asm/rwonce.h
+> V9:
+>  - Make net_device "up" (IFF_UP) check explicit in skb_do_redirect
 > 
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> V4:
+>  - Keep net_device "up" (IFF_UP) check.
+>  - Adjustment to handle bpf_redirect_peer() helper
+> 
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
 > ---
->   include/linux/compiler.h | 6 ++++++
->   1 file changed, 6 insertions(+)
+>  include/linux/netdevice.h |   31 +++++++++++++++++++++++++++++--
+>  net/core/dev.c            |   19 ++-----------------
+>  net/core/filter.c         |   14 +++++++++++---
+>  3 files changed, 42 insertions(+), 22 deletions(-)
 > 
-> diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-> index b8fe0c2..bdbe759 100644
-> --- a/include/linux/compiler.h
-> +++ b/include/linux/compiler.h
-> @@ -243,6 +243,12 @@ static inline void *offset_to_ptr(const int *off)
->    */
->   #define prevent_tail_call_optimization()	mb()
->   
-> +#ifdef CONFIG_ARM64
 
-    Why not #if defined(CONFIG_ALPHA) || defined(CONFIG_ARM64)?
+[...]
 
->   #include <asm/rwonce.h>
-> +#endif
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 3f2e593244ca..1908800b671c 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -2083,13 +2083,21 @@ static const struct bpf_func_proto bpf_csum_level_proto = {
+>  
+>  static inline int __bpf_rx_skb(struct net_device *dev, struct sk_buff *skb)
+>  {
+> -	return dev_forward_skb(dev, skb);
+
+> +	int ret = ____dev_forward_skb(dev, skb, false);
 > +
-> +#ifdef CONFIG_ALPHA
-> +#include <asm/rwonce.h>
-> +#endif
->   
->   #endif /* __LINUX_COMPILER_H */
-> 
+> +	if (likely(!ret)) {
+> +		skb->protocol = eth_type_trans(skb, dev);
+> +		skb_postpull_rcsum(skb, eth_hdr(skb), ETH_HLEN);
+> +		ret = netif_rx(skb);
+> +	}
+> +
+> +	return ret;
 
-MBR, Sergei
+How about putting above block into a dev.c routine call it
+
+ dev_forward_skb_nomtu(...)
+
+or something like that. Then we keep this code next to its pair
+with mtu check, dev_forward_skb().
+
+dev_forward_skb() also uses netif_rx_internal() looks like maybe we should
+just do the same here?
+
+Thanks,
+John
