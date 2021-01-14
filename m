@@ -2,457 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D89D12F6C09
-	for <lists+bpf@lfdr.de>; Thu, 14 Jan 2021 21:28:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F13FF2F6CB5
+	for <lists+bpf@lfdr.de>; Thu, 14 Jan 2021 21:58:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726461AbhANU1m (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Jan 2021 15:27:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725988AbhANU1m (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Jan 2021 15:27:42 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D4BC0613C1;
-        Thu, 14 Jan 2021 12:27:01 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id y187so5835016wmd.3;
-        Thu, 14 Jan 2021 12:27:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YlxuI/i04NvIizUtgMPcZo6k8/UWR0iA/vF7+00yv84=;
-        b=W5n6Fj9hOjpYHK8JYqZ4SaAmJVA3bK6bEHD9e1f7WWjszxIWqd8KO7WdrOgXHxBVN6
-         mk5F/KtjNP6+6rAfngix4FhoisiK+73bd3QQDjBHNYiR14d6+XZraiyZ977XJ81Vux85
-         JPYUIPRxEllahkv6AieOdcL5VrZKuACI0hNwvz7nYuEDIXBszIckzp6dBiX0Hk0XM6qs
-         K2qVfO3PUhYpxgzgza8a33z5n7DDbhGLI4Y/4ajoSadepcBVT+EDJ3SS+kNWCohAOzjY
-         Rh7GTDfk1IkVyOrBkcPjBvKwa1HVzyFQBRFEHWWZFem9Zy7gT587LCfJnRF6pcTeTA5Q
-         dn2g==
+        id S1729490AbhANU5C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Jan 2021 15:57:02 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:37154 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728833AbhANU5C (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Jan 2021 15:57:02 -0500
+Received: by mail-io1-f70.google.com with SMTP id l22so10659161iom.4
+        for <bpf@vger.kernel.org>; Thu, 14 Jan 2021 12:56:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YlxuI/i04NvIizUtgMPcZo6k8/UWR0iA/vF7+00yv84=;
-        b=ChOEWTMkSMkD0KlzZnreXnm2aOZqUn01jcZJh/4GTrjblZ4ITs50kdzyzsPSzcuoS7
-         iK5L+2BUjK32TuhKNuqFqbJ4cwYWAVIyaSyUuOQpPr8c3tPJ3ppZlpC1BNytLrcRX8x9
-         wcLjhCPgdERR5vmZL7AAA/QyrP8oC7aTLok5QPGm60QzrMq2UUj+aFuR5FvpU6EytzjC
-         sUnEJfh0x2XpfRrmyClTSxyjOh310khc4O0ak5HzR/On5ogBuyp+/69Hypt2ZD9xvPfD
-         0zoYvv4PTH2w0y41QncaeGkto7VWWFCos+UUtZrpYK3oLbSf6q1V+buIqf1suXpv1wmJ
-         EPoQ==
-X-Gm-Message-State: AOAM531wv9EIxycVDlti9uGsDmQKLekO81XS6JNX7eAaUP4SLpQiN4iO
-        0PbF4nnGudTMVcPrUz0YSVXUCsFR8KjJTLOO960=
-X-Google-Smtp-Source: ABdhPJzDHvFWvjfQy2UrYjS1w+x210yySc8VZqArHUn3u2wuCfj1Fli4gySN+bVKr+E4vs+qH/4CDQ==
-X-Received: by 2002:a7b:cd91:: with SMTP id y17mr5287868wmj.171.1610656020102;
-        Thu, 14 Jan 2021 12:27:00 -0800 (PST)
-Received: from anparri.mshome.net (host-80-116-1-51.retail.telecomitalia.it. [80.116.1.51])
-        by smtp.gmail.com with ESMTPSA id d7sm2188625wmb.47.2021.01.14.12.26.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 12:26:59 -0800 (PST)
-From:   "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     "K . Y . Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Saruhan Karademir <skarade@microsoft.com>,
-        Juan Vazquez <juvazq@microsoft.com>,
-        linux-hyperv@vger.kernel.org,
-        "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH v2] hv_netvsc: Add (more) validation for untrusted Hyper-V values
-Date:   Thu, 14 Jan 2021 21:26:28 +0100
-Message-Id: <20210114202628.119541-1-parri.andrea@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=gocC/VzkSkkh7+cWU1l2LyVuZ/yknJ3LcOA3JogfWd0=;
+        b=rdItKUAXLMwpZgqbHZZoS3RFMKRTFkkN02aH6cxLt6dPCT4v6dnNNOCmcuC2JiIox3
+         x70cwZkORCSlYq+jyqfQj9K7T5s8TTW/HKJD7zsjY0Sd0cEiZzgHQCuQeqzy6mYM1KXa
+         gFv42P4DNaOLJ64Kyx8HUpg2lEAOZa/cYA9BlUReVIltY5tpaKap8KK4bqzjw1tMS+n+
+         kYhocGTd6enpGGFVmmPiaRsYC4Ypi87eN2eX/b+5ENdw06+iIMOnxYa9bgeRKqHm739m
+         7gGKurvFpYmXtd1GmaRiLu1krw5H3ej3FLlNL5UdZ+lY2ZcsJqEvac78uAZab8Cex+kh
+         0gUw==
+X-Gm-Message-State: AOAM5339K2VbUC7EcmSlJNpHwD/RIk4WUCOJ+rLPRV/CDsLhEc74/Jky
+        IROpTmcx5YyqK2OzomgZNNAFLrf15q2EcDVT1ODtov6sWhoW
+X-Google-Smtp-Source: ABdhPJyra8WB5oJQbElhi/bVLRAsPt99cVwM+t/ngccgVyBHad5ZFZ93DpgRoAQAI6etEx2xqMVqN9XLAaQUQ0HG2iYsk76gFeOi
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a5d:8d94:: with SMTP id b20mr6476396ioj.200.1610657781676;
+ Thu, 14 Jan 2021 12:56:21 -0800 (PST)
+Date:   Thu, 14 Jan 2021 12:56:21 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ee881505b8e27cf2@google.com>
+Subject: general protection fault in xsk_recvmsg
+From:   syzbot <syzbot+b974d32294d1dffbea36@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bjorn.topel@intel.com,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        hawk@kernel.org, johannes.berg@intel.com,
+        johannes@sipsolutions.net, john.fastabend@gmail.com,
+        jonathan.lemon@gmail.com, kafai@fb.com, kpsingh@chromium.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, magnus.karlsson@intel.com,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-For additional robustness in the face of Hyper-V errors or malicious
-behavior, validate all values that originate from packets that Hyper-V
-has sent to the guest.  Ensure that invalid values cannot cause indexing
-off the end of an array, or subvert an existing validation via integer
-overflow.  Ensure that outgoing packets do not have any leftover guest
-memory that has not been zeroed out.
+Hello,
 
-Reported-by: Juan Vazquez <juvazq@microsoft.com>
-Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: KP Singh <kpsingh@kernel.org>
-Cc: netdev@vger.kernel.org
-Cc: bpf@vger.kernel.org
+syzbot found the following issue on:
+
+HEAD commit:    df542285 Merge branch 'xdp-preferred-busy-polling'
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=11426809500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6774dc081604c527
+dashboard link: https://syzkaller.appspot.com/bug?extid=b974d32294d1dffbea36
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1648b0e5500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=125af4ad500000
+
+The issue was bisected to:
+
+commit dcd479e10a0510522a5d88b29b8f79ea3467d501
+Author: Johannes Berg <johannes.berg@intel.com>
+Date:   Fri Oct 9 12:17:11 2020 +0000
+
+    mac80211: always wind down STA state
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12356d1d500000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=11356d1d500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=16356d1d500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b974d32294d1dffbea36@syzkaller.appspotmail.com
+Fixes: dcd479e10a05 ("mac80211: always wind down STA state")
+
+general protection fault, probably for non-canonical address 0xdffffc0000000045: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000228-0x000000000000022f]
+CPU: 1 PID: 8481 Comm: syz-executor119 Not tainted 5.10.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:xsk_recvmsg+0x79/0x5e0 net/xdp/xsk.c:563
+Code: 03 80 3c 02 00 0f 85 00 05 00 00 48 8b 9d c8 04 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d bb 28 02 00 00 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e 9c 04 00 00 8b 9b 28 02 00 00
+RSP: 0018:ffffc9000165fae0 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000040000000
+RDX: 0000000000000045 RSI: ffffffff88a6a995 RDI: 0000000000000228
+RBP: ffff88801a140000 R08: 0000000040000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000040000000
+R13: 0000000040000000 R14: ffffc9000165fe98 R15: 0000000000000000
+FS:  00000000007fd880(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020004880 CR3: 000000001f1bd000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ sock_recvmsg_nosec net/socket.c:885 [inline]
+ sock_recvmsg net/socket.c:903 [inline]
+ sock_recvmsg net/socket.c:899 [inline]
+ ____sys_recvmsg+0x2c4/0x600 net/socket.c:2576
+ ___sys_recvmsg+0x127/0x200 net/socket.c:2618
+ __sys_recvmsg+0xe2/0x1a0 net/socket.c:2654
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x440269
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffdbb92b6c8 EFLAGS: 00000246 ORIG_RAX: 000000000000002f
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440269
+RDX: 0000000040000000 RSI: 0000000020004880 RDI: 0000000000000003
+RBP: 00000000006ca018 R08: 0000000000000000 R09: 00000000004002c8
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401a70
+R13: 0000000000401b00 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+---[ end trace 184efc29c05fd9c5 ]---
+RIP: 0010:xsk_recvmsg+0x79/0x5e0 net/xdp/xsk.c:563
+Code: 03 80 3c 02 00 0f 85 00 05 00 00 48 8b 9d c8 04 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d bb 28 02 00 00 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e 9c 04 00 00 8b 9b 28 02 00 00
+RSP: 0018:ffffc9000165fae0 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000040000000
+RDX: 0000000000000045 RSI: ffffffff88a6a995 RDI: 0000000000000228
+RBP: ffff88801a140000 R08: 0000000040000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000040000000
+R13: 0000000040000000 R14: ffffc9000165fe98 R15: 0000000000000000
+FS:  00000000007fd880(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f66a803d058 CR3: 000000001f1bd000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
 ---
-Applies to 5.11-rc3 (and hyperv-next).
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Changes since v1 (Juan Vazquez):
-  - Improve validation in rndis_set_link_state() and rndis_get_ppi()
-  - Remove memory/skb leak in netvsc_alloc_recv_skb()
-
- drivers/net/hyperv/netvsc.c       |   3 +-
- drivers/net/hyperv/netvsc_bpf.c   |   6 ++
- drivers/net/hyperv/netvsc_drv.c   |  18 +++-
- drivers/net/hyperv/rndis_filter.c | 171 +++++++++++++++++++-----------
- 4 files changed, 136 insertions(+), 62 deletions(-)
-
-diff --git a/drivers/net/hyperv/netvsc.c b/drivers/net/hyperv/netvsc.c
-index 1510a236aa341..d9324961e0d64 100644
---- a/drivers/net/hyperv/netvsc.c
-+++ b/drivers/net/hyperv/netvsc.c
-@@ -887,6 +887,7 @@ static inline int netvsc_send_pkt(
- 	int ret;
- 	u32 ring_avail = hv_get_avail_to_write_percent(&out_channel->outbound);
- 
-+	memset(&nvmsg, 0, sizeof(struct nvsp_message));
- 	nvmsg.hdr.msg_type = NVSP_MSG1_TYPE_SEND_RNDIS_PKT;
- 	if (skb)
- 		rpkt->channel_type = 0;		/* 0 is RMC_DATA */
-@@ -1306,7 +1307,7 @@ static void netvsc_send_table(struct net_device *ndev,
- 			 sizeof(union nvsp_6_message_uber);
- 
- 	/* Boundary check for all versions */
--	if (offset > msglen - count * sizeof(u32)) {
-+	if (msglen < count * sizeof(u32) || offset > msglen - count * sizeof(u32)) {
- 		netdev_err(ndev, "Received send-table offset too big:%u\n",
- 			   offset);
- 		return;
-diff --git a/drivers/net/hyperv/netvsc_bpf.c b/drivers/net/hyperv/netvsc_bpf.c
-index 440486d9c999e..11f0588a88843 100644
---- a/drivers/net/hyperv/netvsc_bpf.c
-+++ b/drivers/net/hyperv/netvsc_bpf.c
-@@ -37,6 +37,12 @@ u32 netvsc_run_xdp(struct net_device *ndev, struct netvsc_channel *nvchan,
- 	if (!prog)
- 		goto out;
- 
-+	/* Ensure that the below memcpy() won't overflow the page buffer. */
-+	if (len > ndev->mtu + ETH_HLEN) {
-+		act = XDP_DROP;
-+		goto out;
-+	}
-+
- 	/* allocate page buffer for data */
- 	page = alloc_page(GFP_ATOMIC);
- 	if (!page) {
-diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
-index f32f28311d573..e5501c1a0cbd4 100644
---- a/drivers/net/hyperv/netvsc_drv.c
-+++ b/drivers/net/hyperv/netvsc_drv.c
-@@ -760,6 +760,16 @@ void netvsc_linkstatus_callback(struct net_device *net,
- 	if (indicate->status == RNDIS_STATUS_LINK_SPEED_CHANGE) {
- 		u32 speed;
- 
-+		/* Validate status_buf_offset */
-+		if (indicate->status_buflen < sizeof(speed) ||
-+		    indicate->status_buf_offset < sizeof(*indicate) ||
-+		    resp->msg_len - RNDIS_HEADER_SIZE < indicate->status_buf_offset ||
-+		    resp->msg_len - RNDIS_HEADER_SIZE - indicate->status_buf_offset
-+				< indicate->status_buflen) {
-+			netdev_err(net, "invalid rndis_indicate_status packet\n");
-+			return;
-+		}
-+
- 		speed = *(u32 *)((void *)indicate
- 				 + indicate->status_buf_offset) / 10000;
- 		ndev_ctx->speed = speed;
-@@ -865,8 +875,14 @@ static struct sk_buff *netvsc_alloc_recv_skb(struct net_device *net,
- 	 */
- 	if (csum_info && csum_info->receive.ip_checksum_value_invalid &&
- 	    csum_info->receive.ip_checksum_succeeded &&
--	    skb->protocol == htons(ETH_P_IP))
-+	    skb->protocol == htons(ETH_P_IP)) {
-+		/* Check that there is enough space to hold the IP header. */
-+		if (skb_headlen(skb) < sizeof(struct iphdr)) {
-+			kfree_skb(skb);
-+			return NULL;
-+		}
- 		netvsc_comp_ipcsum(skb);
-+	}
- 
- 	/* Do L4 checksum offload if enabled and present. */
- 	if (csum_info && (net->features & NETIF_F_RXCSUM)) {
-diff --git a/drivers/net/hyperv/rndis_filter.c b/drivers/net/hyperv/rndis_filter.c
-index 7e6dee2f02a43..68091a9a5070d 100644
---- a/drivers/net/hyperv/rndis_filter.c
-+++ b/drivers/net/hyperv/rndis_filter.c
-@@ -131,66 +131,84 @@ static void dump_rndis_message(struct net_device *netdev,
- {
- 	switch (rndis_msg->ndis_msg_type) {
- 	case RNDIS_MSG_PACKET:
--		netdev_dbg(netdev, "RNDIS_MSG_PACKET (len %u, "
--			   "data offset %u data len %u, # oob %u, "
--			   "oob offset %u, oob len %u, pkt offset %u, "
--			   "pkt len %u\n",
--			   rndis_msg->msg_len,
--			   rndis_msg->msg.pkt.data_offset,
--			   rndis_msg->msg.pkt.data_len,
--			   rndis_msg->msg.pkt.num_oob_data_elements,
--			   rndis_msg->msg.pkt.oob_data_offset,
--			   rndis_msg->msg.pkt.oob_data_len,
--			   rndis_msg->msg.pkt.per_pkt_info_offset,
--			   rndis_msg->msg.pkt.per_pkt_info_len);
-+		if (rndis_msg->msg_len - RNDIS_HEADER_SIZE >= sizeof(struct rndis_packet)) {
-+			const struct rndis_packet *pkt = &rndis_msg->msg.pkt;
-+			netdev_dbg(netdev, "RNDIS_MSG_PACKET (len %u, "
-+				   "data offset %u data len %u, # oob %u, "
-+				   "oob offset %u, oob len %u, pkt offset %u, "
-+				   "pkt len %u\n",
-+				   rndis_msg->msg_len,
-+				   pkt->data_offset,
-+				   pkt->data_len,
-+				   pkt->num_oob_data_elements,
-+				   pkt->oob_data_offset,
-+				   pkt->oob_data_len,
-+				   pkt->per_pkt_info_offset,
-+				   pkt->per_pkt_info_len);
-+		}
- 		break;
- 
- 	case RNDIS_MSG_INIT_C:
--		netdev_dbg(netdev, "RNDIS_MSG_INIT_C "
--			"(len %u, id 0x%x, status 0x%x, major %d, minor %d, "
--			"device flags %d, max xfer size 0x%x, max pkts %u, "
--			"pkt aligned %u)\n",
--			rndis_msg->msg_len,
--			rndis_msg->msg.init_complete.req_id,
--			rndis_msg->msg.init_complete.status,
--			rndis_msg->msg.init_complete.major_ver,
--			rndis_msg->msg.init_complete.minor_ver,
--			rndis_msg->msg.init_complete.dev_flags,
--			rndis_msg->msg.init_complete.max_xfer_size,
--			rndis_msg->msg.init_complete.
--			   max_pkt_per_msg,
--			rndis_msg->msg.init_complete.
--			   pkt_alignment_factor);
-+		if (rndis_msg->msg_len - RNDIS_HEADER_SIZE >=
-+				sizeof(struct rndis_initialize_complete)) {
-+			const struct rndis_initialize_complete *init_complete =
-+				&rndis_msg->msg.init_complete;
-+			netdev_dbg(netdev, "RNDIS_MSG_INIT_C "
-+				"(len %u, id 0x%x, status 0x%x, major %d, minor %d, "
-+				"device flags %d, max xfer size 0x%x, max pkts %u, "
-+				"pkt aligned %u)\n",
-+				rndis_msg->msg_len,
-+				init_complete->req_id,
-+				init_complete->status,
-+				init_complete->major_ver,
-+				init_complete->minor_ver,
-+				init_complete->dev_flags,
-+				init_complete->max_xfer_size,
-+				init_complete->max_pkt_per_msg,
-+				init_complete->pkt_alignment_factor);
-+		}
- 		break;
- 
- 	case RNDIS_MSG_QUERY_C:
--		netdev_dbg(netdev, "RNDIS_MSG_QUERY_C "
--			"(len %u, id 0x%x, status 0x%x, buf len %u, "
--			"buf offset %u)\n",
--			rndis_msg->msg_len,
--			rndis_msg->msg.query_complete.req_id,
--			rndis_msg->msg.query_complete.status,
--			rndis_msg->msg.query_complete.
--			   info_buflen,
--			rndis_msg->msg.query_complete.
--			   info_buf_offset);
-+		if (rndis_msg->msg_len - RNDIS_HEADER_SIZE >=
-+				sizeof(struct rndis_query_complete)) {
-+			const struct rndis_query_complete *query_complete =
-+				&rndis_msg->msg.query_complete;
-+			netdev_dbg(netdev, "RNDIS_MSG_QUERY_C "
-+				"(len %u, id 0x%x, status 0x%x, buf len %u, "
-+				"buf offset %u)\n",
-+				rndis_msg->msg_len,
-+				query_complete->req_id,
-+				query_complete->status,
-+				query_complete->info_buflen,
-+				query_complete->info_buf_offset);
-+		}
- 		break;
- 
- 	case RNDIS_MSG_SET_C:
--		netdev_dbg(netdev,
--			"RNDIS_MSG_SET_C (len %u, id 0x%x, status 0x%x)\n",
--			rndis_msg->msg_len,
--			rndis_msg->msg.set_complete.req_id,
--			rndis_msg->msg.set_complete.status);
-+		if (rndis_msg->msg_len - RNDIS_HEADER_SIZE + sizeof(struct rndis_set_complete)) {
-+			const struct rndis_set_complete *set_complete =
-+				&rndis_msg->msg.set_complete;
-+			netdev_dbg(netdev,
-+				"RNDIS_MSG_SET_C (len %u, id 0x%x, status 0x%x)\n",
-+				rndis_msg->msg_len,
-+				set_complete->req_id,
-+				set_complete->status);
-+		}
- 		break;
- 
- 	case RNDIS_MSG_INDICATE:
--		netdev_dbg(netdev, "RNDIS_MSG_INDICATE "
--			"(len %u, status 0x%x, buf len %u, buf offset %u)\n",
--			rndis_msg->msg_len,
--			rndis_msg->msg.indicate_status.status,
--			rndis_msg->msg.indicate_status.status_buflen,
--			rndis_msg->msg.indicate_status.status_buf_offset);
-+		if (rndis_msg->msg_len - RNDIS_HEADER_SIZE >=
-+				sizeof(struct rndis_indicate_status)) {
-+			const struct rndis_indicate_status *indicate_status =
-+				&rndis_msg->msg.indicate_status;
-+			netdev_dbg(netdev, "RNDIS_MSG_INDICATE "
-+				"(len %u, status 0x%x, buf len %u, buf offset %u)\n",
-+				rndis_msg->msg_len,
-+				indicate_status->status,
-+				indicate_status->status_buflen,
-+				indicate_status->status_buf_offset);
-+		}
- 		break;
- 
- 	default:
-@@ -246,11 +264,20 @@ static void rndis_set_link_state(struct rndis_device *rdev,
- {
- 	u32 link_status;
- 	struct rndis_query_complete *query_complete;
-+	u32 msg_len = request->response_msg.msg_len;
-+
-+	/* Ensure the packet is big enough to access its fields */
-+	if (msg_len - RNDIS_HEADER_SIZE < sizeof(struct rndis_query_complete))
-+		return;
- 
- 	query_complete = &request->response_msg.msg.query_complete;
- 
- 	if (query_complete->status == RNDIS_STATUS_SUCCESS &&
--	    query_complete->info_buflen == sizeof(u32)) {
-+	    query_complete->info_buflen >= sizeof(u32) &&
-+	    query_complete->info_buf_offset >= sizeof(*query_complete) &&
-+	    msg_len - RNDIS_HEADER_SIZE >= query_complete->info_buf_offset &&
-+	    msg_len - RNDIS_HEADER_SIZE - query_complete->info_buf_offset
-+			>= query_complete->info_buflen) {
- 		memcpy(&link_status, (void *)((unsigned long)query_complete +
- 		       query_complete->info_buf_offset), sizeof(u32));
- 		rdev->link_state = link_status != 0;
-@@ -343,7 +370,8 @@ static void rndis_filter_receive_response(struct net_device *ndev,
-  */
- static inline void *rndis_get_ppi(struct net_device *ndev,
- 				  struct rndis_packet *rpkt,
--				  u32 rpkt_len, u32 type, u8 internal)
-+				  u32 rpkt_len, u32 type, u8 internal,
-+				  u32 ppi_size)
- {
- 	struct rndis_per_packet_info *ppi;
- 	int len;
-@@ -359,7 +387,8 @@ static inline void *rndis_get_ppi(struct net_device *ndev,
- 		return NULL;
- 	}
- 
--	if (rpkt->per_pkt_info_len > rpkt_len - rpkt->per_pkt_info_offset) {
-+	if (rpkt->per_pkt_info_len < sizeof(*ppi) ||
-+	    rpkt->per_pkt_info_len > rpkt_len - rpkt->per_pkt_info_offset) {
- 		netdev_err(ndev, "Invalid per_pkt_info_len: %u\n",
- 			   rpkt->per_pkt_info_len);
- 		return NULL;
-@@ -381,8 +410,15 @@ static inline void *rndis_get_ppi(struct net_device *ndev,
- 			continue;
- 		}
- 
--		if (ppi->type == type && ppi->internal == internal)
-+		if (ppi->type == type && ppi->internal == internal) {
-+			/* ppi->size should be big enough to hold the returned object. */
-+			if (ppi->size - ppi->ppi_offset < ppi_size) {
-+				netdev_err(ndev, "Invalid ppi: size %u ppi_offset %u\n",
-+					   ppi->size, ppi->ppi_offset);
-+				continue;
-+			}
- 			return (void *)((ulong)ppi + ppi->ppi_offset);
-+		}
- 		len -= ppi->size;
- 		ppi = (struct rndis_per_packet_info *)((ulong)ppi + ppi->size);
- 	}
-@@ -461,13 +497,16 @@ static int rndis_filter_receive_data(struct net_device *ndev,
- 		return NVSP_STAT_FAIL;
- 	}
- 
--	vlan = rndis_get_ppi(ndev, rndis_pkt, rpkt_len, IEEE_8021Q_INFO, 0);
-+	vlan = rndis_get_ppi(ndev, rndis_pkt, rpkt_len, IEEE_8021Q_INFO, 0, sizeof(*vlan));
- 
--	csum_info = rndis_get_ppi(ndev, rndis_pkt, rpkt_len, TCPIP_CHKSUM_PKTINFO, 0);
-+	csum_info = rndis_get_ppi(ndev, rndis_pkt, rpkt_len, TCPIP_CHKSUM_PKTINFO, 0,
-+				  sizeof(*csum_info));
- 
--	hash_info = rndis_get_ppi(ndev, rndis_pkt, rpkt_len, NBL_HASH_VALUE, 0);
-+	hash_info = rndis_get_ppi(ndev, rndis_pkt, rpkt_len, NBL_HASH_VALUE, 0,
-+				  sizeof(*hash_info));
- 
--	pktinfo_id = rndis_get_ppi(ndev, rndis_pkt, rpkt_len, RNDIS_PKTINFO_ID, 1);
-+	pktinfo_id = rndis_get_ppi(ndev, rndis_pkt, rpkt_len, RNDIS_PKTINFO_ID, 1,
-+				   sizeof(*pktinfo_id));
- 
- 	data = (void *)msg + data_offset;
- 
-@@ -522,9 +561,6 @@ int rndis_filter_receive(struct net_device *ndev,
- 	struct net_device_context *net_device_ctx = netdev_priv(ndev);
- 	struct rndis_message *rndis_msg = data;
- 
--	if (netif_msg_rx_status(net_device_ctx))
--		dump_rndis_message(ndev, rndis_msg);
--
- 	/* Validate incoming rndis_message packet */
- 	if (buflen < RNDIS_HEADER_SIZE || rndis_msg->msg_len < RNDIS_HEADER_SIZE ||
- 	    buflen < rndis_msg->msg_len) {
-@@ -533,6 +569,9 @@ int rndis_filter_receive(struct net_device *ndev,
- 		return NVSP_STAT_FAIL;
- 	}
- 
-+	if (netif_msg_rx_status(net_device_ctx))
-+		dump_rndis_message(ndev, rndis_msg);
-+
- 	switch (rndis_msg->ndis_msg_type) {
- 	case RNDIS_MSG_PACKET:
- 		return rndis_filter_receive_data(ndev, net_dev, nvchan,
-@@ -567,6 +606,7 @@ static int rndis_filter_query_device(struct rndis_device *dev,
- 	u32 inresult_size = *result_size;
- 	struct rndis_query_request *query;
- 	struct rndis_query_complete *query_complete;
-+	u32 msg_len;
- 	int ret = 0;
- 
- 	if (!result)
-@@ -634,8 +674,19 @@ static int rndis_filter_query_device(struct rndis_device *dev,
- 
- 	/* Copy the response back */
- 	query_complete = &request->response_msg.msg.query_complete;
-+	msg_len = request->response_msg.msg_len;
-+
-+	/* Ensure the packet is big enough to access its fields */
-+	if (msg_len - RNDIS_HEADER_SIZE < sizeof(struct rndis_query_complete)) {
-+		ret = -1;
-+		goto cleanup;
-+	}
- 
--	if (query_complete->info_buflen > inresult_size) {
-+	if (query_complete->info_buflen > inresult_size ||
-+	    query_complete->info_buf_offset < sizeof(*query_complete) ||
-+	    msg_len - RNDIS_HEADER_SIZE < query_complete->info_buf_offset ||
-+	    msg_len - RNDIS_HEADER_SIZE - query_complete->info_buf_offset
-+			< query_complete->info_buflen) {
- 		ret = -1;
- 		goto cleanup;
- 	}
--- 
-2.25.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
