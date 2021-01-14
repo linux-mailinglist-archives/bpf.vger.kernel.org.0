@@ -2,137 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6BE72F634E
-	for <lists+bpf@lfdr.de>; Thu, 14 Jan 2021 15:40:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E51D2F6388
+	for <lists+bpf@lfdr.de>; Thu, 14 Jan 2021 15:56:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728550AbhANOjz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Jan 2021 09:39:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728523AbhANOjy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Jan 2021 09:39:54 -0500
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 723ACC061574;
-        Thu, 14 Jan 2021 06:39:14 -0800 (PST)
-Received: by mail-io1-xd36.google.com with SMTP id r9so11526138ioo.7;
-        Thu, 14 Jan 2021 06:39:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=QEZ6JBeaIgDcN7t6oNKQCXdkFzUPqoK0yMQUL2XI0w0=;
-        b=ECICRZs76+7IiAMY/Qtdk8cQZ+lqt1tOroPjKL7jwqc+BY7bbEciJEv8GyMuwrx7j4
-         sW9v9tEyPXV8wsa3QBCAMpeyQDfatA6P0LQmVy7h6U+6/988bUT0z6QgnXExOyf1mWu7
-         XvgVcrjiyiLPLCPkfXJBoHZURJgI9iqATjlM8vRnxWpYcXLRUJeVriU9tt+0z9KaqGfY
-         Y/bPd+u0y9D+fpuutP1TmRtl6E/80QwDHKvC4vV9Ho8odMVqK+lbvj3rbzNaHxfiuTda
-         uKvEY+9UUToMOMYfnzkNCe6le9VO4C89E8s006kCauBBjHtazUqAo0RcZdsZd/RLifm7
-         CEjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=QEZ6JBeaIgDcN7t6oNKQCXdkFzUPqoK0yMQUL2XI0w0=;
-        b=FA1Dl2R2K0p9L7K1BlYOQTUe/0xNju3DDX095d4jveOoBZuvjpbkWFjTge2rYAiCpt
-         HG0oicgV8mPrxA8NbwtuGpLsPVjTco19LzCiMzEC2aKWsfo1kcNAEUvRSQf2tnfNkboe
-         hmbYHbcODOaS3cscxXodOtfQ91+9OUzkPlAxJrtLH/a0zeFZ4Sd/iafS03bE9aydoNDu
-         9+0mb6Xid6q1wGzYkI6Z4ay3bg3GtK8XMTPlnbNrmKKBbpDPVCqZu8CSG8EY/7iVdzNN
-         z0C7KiTfx9kNQzUOCf5ifVoCYta8xz22MCXDRorc8mYifjkMqkh3UsLIOc71A/xbldUx
-         Wvgg==
-X-Gm-Message-State: AOAM531mT3ZP+ImDb1irzXUY66F2Omw3ynaZJxoisKvYQRCRol7aZut6
-        ZJXdb1FfdZlOrCcjzTMXYBxWQ0D7HFr6IOv5B/A=
-X-Google-Smtp-Source: ABdhPJzhEZcTyXB6qgc1PGEKigvgJ/1uLwHzcloVmfcT98OlCfHl4aVr6JXBIAgoFbPyvnSb8tDcbOqBVxZCUSVAnRw=
-X-Received: by 2002:a92:c692:: with SMTP id o18mr7007089ilg.215.1610635153877;
- Thu, 14 Jan 2021 06:39:13 -0800 (PST)
+        id S1728801AbhANOyK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Jan 2021 09:54:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55771 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726236AbhANOyK (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 14 Jan 2021 09:54:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610635963;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hsIohmEQeJszq1jgbSf64ncayWX6iJlFCFcEXl8xGas=;
+        b=XKQLdsPZ5HWPw0qmNBQEzbew9XuDVVJyaZtUMXdQ71/pGaVhoMT70j+YzFbD9QsqeXVw0Y
+        Jn3j9JHkX41n7PZ/SOFvqmJ9Tfm8ajA7AWSyorNPkVr83zmEFZtv39DSiT9tXeH5VbGX02
+        HA1+y+TZnSRjvf2HksD89cHfYrUI3cI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-540-0qM94kpdNo28mpLCWyKb4Q-1; Thu, 14 Jan 2021 09:52:41 -0500
+X-MC-Unique: 0qM94kpdNo28mpLCWyKb4Q-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 98954100A5EF;
+        Thu, 14 Jan 2021 14:52:39 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.51])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3F98A74ABF;
+        Thu, 14 Jan 2021 14:52:28 +0000 (UTC)
+Date:   Thu, 14 Jan 2021 15:52:28 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Maciej =?UTF-8?B?xbtlbmN6eWtvd3NraQ==?= <maze@google.com>,
+        Lorenz Bauer <lmb@cloudflare.com>, shaun@tigera.io,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Marek Majkowski <marek@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
+        colrack@gmail.com, brouer@redhat.com
+Subject: Re: [PATCH bpf-next V11 4/7] bpf: add BPF-helper for MTU checking
+Message-ID: <20210114155228.128457c7@carbon>
+In-Reply-To: <CAEf4Bzb0Z+qeuDTtfz6Ae3ab5hz_iG0vt8ALiry2zYWkgRh2Fw@mail.gmail.com>
+References: <161047346644.4003084.2653117664787086168.stgit@firesoul>
+        <161047352084.4003084.16468571234023057969.stgit@firesoul>
+        <CAEf4Bzb0Z+qeuDTtfz6Ae3ab5hz_iG0vt8ALiry2zYWkgRh2Fw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210112184004.1302879-1-jolsa@kernel.org> <f3790a7d-73bc-d634-5994-d049c7a73eae@redhat.com>
- <CA+icZUV9rdRuswqDa9u=VFcqgHp1x+jmz565QCFi=yC0D7hhVQ@mail.gmail.com> <dae1ec1e-7d19-e4c6-891b-ab774486dbee@redhat.com>
-In-Reply-To: <dae1ec1e-7d19-e4c6-891b-ab774486dbee@redhat.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Thu, 14 Jan 2021 15:39:02 +0100
-Message-ID: <CA+icZUU3mHTbEHg3bVNNQCsiukE-JTepxEWmCF+XadN+-Kcr2A@mail.gmail.com>
-Subject: Re: [PATCH] btf_encoder: Add extra checks for symbol names
-To:     tstellar@redhat.com
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        dwarves@vger.kernel.org, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Hao Luo <haoluo@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 3:33 PM Tom Stellard <tstellar@redhat.com> wrote:
->
-> On 1/13/21 11:50 PM, Sedat Dilek wrote:
-> > On Wed, Jan 13, 2021 at 1:28 AM Tom Stellard <tstellar@redhat.com> wrote:
-> >>
-> >> On 1/12/21 10:40 AM, Jiri Olsa wrote:
-> >>> When processing kernel image build by clang we can
-> >>> find some functions without the name, which causes
-> >>> pahole to segfault.
-> >>>
-> >>> Adding extra checks to make sure we always have
-> >>> function's name defined before using it.
-> >>>
-> >>
-> >> I backported this patch to pahole 1.19, and I can confirm it fixes the
-> >> segfault for me.
-> >>
-> >
-> > Thanks for testing.
-> >
-> > Can you give me Git commit-id of LLVM-12 you tried?
-> >
->
-> I was building with LLVM 11.0.1
->
+On Tue, 12 Jan 2021 11:23:33 -0800
+Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 
-Thanks Tom.
-
-- Sedat -
-
-> -Tom
->
-> > - Sedat -
+> On Tue, Jan 12, 2021 at 9:49 AM Jesper Dangaard Brouer
+> <brouer@redhat.com> wrote:
 > >
-> >> -Tom
-> >>
-> >>> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> >>> ---
-> >>>    btf_encoder.c | 8 ++++++--
-> >>>    1 file changed, 6 insertions(+), 2 deletions(-)
-> >>>
-> >>> diff --git a/btf_encoder.c b/btf_encoder.c
-> >>> index 333973054b61..17f7a14f2ef0 100644
-> >>> --- a/btf_encoder.c
-> >>> +++ b/btf_encoder.c
-> >>> @@ -72,6 +72,8 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym)
-> >>>
-> >>>        if (elf_sym__type(sym) != STT_FUNC)
-> >>>                return 0;
-> >>> +     if (!elf_sym__name(sym, btfe->symtab))
-> >>> +             return 0;
-> >>>
-> >>>        if (functions_cnt == functions_alloc) {
-> >>>                functions_alloc = max(1000, functions_alloc * 3 / 2);
-> >>> @@ -730,9 +732,11 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
-> >>>                if (!has_arg_names(cu, &fn->proto))
-> >>>                        continue;
-> >>>                if (functions_cnt) {
-> >>> -                     struct elf_function *func;
-> >>> +                     const char *name = function__name(fn, cu);
-> >>> +                     struct elf_function *func = NULL;
-> >>>
-> >>> -                     func = find_function(btfe, function__name(fn, cu));
-> >>> +                     if (name)
-> >>> +                             func = find_function(btfe, name);
-> >>>                        if (!func || func->generated)
-> >>>                                continue;
-> >>>                        func->generated = true;
-> >>>
-> >>
+> > This BPF-helper bpf_check_mtu() works for both XDP and TC-BPF programs.
 > >
->
+> > The SKB object is complex and the skb->len value (accessible from
+> > BPF-prog) also include the length of any extra GRO/GSO segments, but
+> > without taking into account that these GRO/GSO segments get added
+> > transport (L4) and network (L3) headers before being transmitted. Thus,
+> > this BPF-helper is created such that the BPF-programmer don't need to
+> > handle these details in the BPF-prog.
+> >
+> > The API is designed to help the BPF-programmer, that want to do packet
+> > context size changes, which involves other helpers. These other helpers
+> > usually does a delta size adjustment. This helper also support a delta
+> > size (len_diff), which allow BPF-programmer to reuse arguments needed by
+> > these other helpers, and perform the MTU check prior to doing any actual
+> > size adjustment of the packet context.
+> >
+> > It is on purpose, that we allow the len adjustment to become a negative
+> > result, that will pass the MTU check. This might seem weird, but it's not
+> > this helpers responsibility to "catch" wrong len_diff adjustments. Other
+> > helpers will take care of these checks, if BPF-programmer chooses to do
+> > actual size adjustment.
+> >
+> > V9:
+> > - Use dev->hard_header_len (instead of ETH_HLEN)
+> > - Annotate with unlikely req from Daniel
+> > - Fix logic error using skb_gso_validate_network_len from Daniel
+> >
+> > V6:
+> > - Took John's advice and dropped BPF_MTU_CHK_RELAX
+> > - Returned MTU is kept at L3-level (like fib_lookup)
+> >
+> > V4: Lot of changes
+> >  - ifindex 0 now use current netdev for MTU lookup
+> >  - rename helper from bpf_mtu_check to bpf_check_mtu
+> >  - fix bug for GSO pkt length (as skb->len is total len)
+> >  - remove __bpf_len_adj_positive, simply allow negative len adj
+> >
+> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> > ---
+> >  include/uapi/linux/bpf.h       |   67 ++++++++++++++++++++++
+> >  net/core/filter.c              |  122 ++++++++++++++++++++++++++++++++++++++++
+> >  tools/include/uapi/linux/bpf.h |   67 ++++++++++++++++++++++
+> >  3 files changed, 256 insertions(+)
+> >
+> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> > index 649586d656b6..fa2e99351758 100644
+> > --- a/include/uapi/linux/bpf.h
+> > +++ b/include/uapi/linux/bpf.h
+> > @@ -3833,6 +3833,61 @@ union bpf_attr {
+> >   *     Return
+> >   *             A pointer to a struct socket on success or NULL if the file is
+> >   *             not a socket.
+> > + *
+> > + * int bpf_check_mtu(void *ctx, u32 ifindex, u32 *mtu_len, s32 len_diff, u64 flags)  
+> 
+> should return long, same as most other helpers
+
+Is it enough to change it here?
+(as this will be used for generating the helpers header file,
+via ./scripts/bpf_helpers_doc.py --header)
+
+Or do I also need to change bpf_func_proto.ret_type ?
+
+> > + *     Description
+> > + *             Check ctx packet size against MTU of net device (based on
+> > + *             *ifindex*).  This helper will likely be used in combination with
+> > + *             helpers that adjust/change the packet size.  The argument
+> > + *             *len_diff* can be used for querying with a planned size
+> > + *             change. This allows to check MTU prior to changing packet ctx.
+> > + *  
+> 
+> [...]
+> 
+
+
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
