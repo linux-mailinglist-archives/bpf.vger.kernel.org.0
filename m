@@ -2,229 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B360F2F64E7
-	for <lists+bpf@lfdr.de>; Thu, 14 Jan 2021 16:41:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34B082F658F
+	for <lists+bpf@lfdr.de>; Thu, 14 Jan 2021 17:19:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727838AbhANPjY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Jan 2021 10:39:24 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:42584 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726810AbhANPjX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Jan 2021 10:39:23 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10EFXv7H135902;
-        Thu, 14 Jan 2021 15:37:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : in-reply-to : message-id : references : mime-version :
- content-type; s=corp-2020-01-29;
- bh=xtyJOIpC3yf4fwfzRoQF6f+Q0gNVE1ikAyQo7SM5oKQ=;
- b=NbzGUEj3eg0fgAgKmoE//IruSmV5dVb0r+K4vf6Fng0MFe9ncJr++Dn8eo8XOYjuewm/
- 1jPzSz5cHMDU6IShrtXg6UgNXkiQIzNgslI4T29G3A6j9Cq4h2uYonlsnWWDKv8hRJ11
- uKVXesHhlJ7Bu4UWCnrsv+5HRIBAQuCw8N1RPenCWNCpALgBuhVksGtYEPqek8/QnT5k
- x9FDusOnf//u1gHC7P5HE9PYlssc/2KjBWFLsuhCxS/GR2zlPvCmrMXQ6ySHYShA2uUJ
- or3W0+ApF6DIfOGwHl7tgd1KtshL94mKUOoXZ95qrTL3U5qvHENy0aMldzl5Ya1zdeAC hQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 360kg20tdv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Jan 2021 15:37:53 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10EFa0IP096057;
-        Thu, 14 Jan 2021 15:37:52 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 360kea2d8d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 14 Jan 2021 15:37:52 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10EFbpfQ008344;
-        Thu, 14 Jan 2021 15:37:51 GMT
-Received: from localhost.localdomain (/95.45.14.174)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 14 Jan 2021 07:37:51 -0800
-Date:   Thu, 14 Jan 2021 15:37:38 +0000 (GMT)
-From:   Alan Maguire <alan.maguire@oracle.com>
-X-X-Sender: alan@localhost
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-cc:     Alan Maguire <alan.maguire@oracle.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>
-Subject: Re: [RFC PATCH bpf-next 1/2] bpf: share BTF "show" implementation
- between kernel and libbpf
-In-Reply-To: <CAEf4BzZu2MuNYs8rpObLo5Z4gkodY4H+8sbraAGYXJwVZC9mfg@mail.gmail.com>
-Message-ID: <alpine.LRH.2.23.451.2101141426320.30025@localhost>
-References: <1610386373-24162-1-git-send-email-alan.maguire@oracle.com> <1610386373-24162-2-git-send-email-alan.maguire@oracle.com> <CAEf4BzZu2MuNYs8rpObLo5Z4gkodY4H+8sbraAGYXJwVZC9mfg@mail.gmail.com>
+        id S1725918AbhANQQL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Jan 2021 11:16:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28123 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726108AbhANQQL (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 14 Jan 2021 11:16:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610640884;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Qee0DcZxR0fVVmjSULZKOay9OvqVZKocCovyVyOW/28=;
+        b=Kujf5xEk8Wk1Raqtgwh7efGZt85bGhfvtGHFRlOivXhoFPrkYvqUaabXDwR2dD085O5kCb
+        +NTOK/5DZT7r/t73F01LeGXWyaVEGQcgOzlfyFsKDCTF+1ShdqYNTMKNmDu6c+H8eqnlPo
+        jbRjN6MQdVqyTcyTtMP+WS7v/RHhgow=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-503-8_NQ3No7MeuV4G2PYUeSRw-1; Thu, 14 Jan 2021 11:14:39 -0500
+X-MC-Unique: 8_NQ3No7MeuV4G2PYUeSRw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 87AA1100C664;
+        Thu, 14 Jan 2021 16:14:37 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.51])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 61BB65C1A3;
+        Thu, 14 Jan 2021 16:14:31 +0000 (UTC)
+Date:   Thu, 14 Jan 2021 17:14:29 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
+        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
+        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
+        colrack@gmail.com, brouer@redhat.com
+Subject: Re: [PATCH bpf-next V11 5/7] bpf: drop MTU check when doing TC-BPF
+ redirect to ingress
+Message-ID: <20210114171429.1402ca3d@carbon>
+In-Reply-To: <600008e5e2e80_1eeef20852@john-XPS-13-9370.notmuch>
+References: <161047346644.4003084.2653117664787086168.stgit@firesoul>
+        <161047352593.4003084.6778762780747210369.stgit@firesoul>
+        <600008e5e2e80_1eeef20852@john-XPS-13-9370.notmuch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9864 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 spamscore=0
- mlxlogscore=999 malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101140090
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9864 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
- clxscore=1015 impostorscore=0 spamscore=0 priorityscore=1501 mlxscore=0
- phishscore=0 mlxlogscore=999 bulkscore=0 adultscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101140090
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 11 Jan 2021, Andrii Nakryiko wrote:
+On Thu, 14 Jan 2021 01:03:33 -0800
+John Fastabend <john.fastabend@gmail.com> wrote:
 
-> On Mon, Jan 11, 2021 at 9:34 AM Alan Maguire <alan.maguire@oracle.com> wrote:
-> > Currently the only "show" function for userspace is to write the
-> > representation of the typed data to a string via
-> >
-> > LIBBPF_API int
-> > btf__snprintf(struct btf *btf, char *buf, int len, __u32 id, void *obj,
-> >               __u64 flags);
-> >
-> > ...but other approaches could be pursued including printf()-based
-> > show, or even a callback mechanism could be supported to allow
-> > user-defined show functions.
-> >
+> Jesper Dangaard Brouer wrote:
+> > The use-case for dropping the MTU check when TC-BPF does redirect to
+> > ingress, is described by Eyal Birger in email[0]. The summary is the
+> > ability to increase packet size (e.g. with IPv6 headers for NAT64) and
+> > ingress redirect packet and let normal netstack fragment packet as needed.
+> > 
+> > [0] https://lore.kernel.org/netdev/CAHsH6Gug-hsLGHQ6N0wtixdOa85LDZ3HNRHVd0opR=19Qo4W4Q@mail.gmail.com/
+> > 
+> > V9:
+> >  - Make net_device "up" (IFF_UP) check explicit in skb_do_redirect
+> > 
+> > V4:
+> >  - Keep net_device "up" (IFF_UP) check.
+> >  - Adjustment to handle bpf_redirect_peer() helper
+> > 
+> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> > ---
+> >  include/linux/netdevice.h |   31 +++++++++++++++++++++++++++++--
+> >  net/core/dev.c            |   19 ++-----------------
+> >  net/core/filter.c         |   14 +++++++++++---
+> >  3 files changed, 42 insertions(+), 22 deletions(-)
+> >   
 > 
-> It's strange that you saw btf_dump APIs, and yet decided to go with
-> this API instead. snprintf() is not a natural "method" of struct btf.
-> Using char buffer as an output is overly restrictive and inconvenient.
-> It's appropriate for kernel and BPF program due to their restrictions,
-> but there is no need to cripple libbpf APIs for that. I think it
-> should follow btf_dump APIs with custom callback so that it's easy to
-> just printf() everything, but also user can create whatever elaborate
-> mechanism they need and that fits their use case.
+> [...]
 > 
-> Code reuse is not the ultimate goal, it should facilitate
-> maintainability, not harm it. There are times where sharing code
-> introduces unnecessary coupling and maintainability issues. And I
-> think this one is a very obvious case of that.
+> > diff --git a/net/core/filter.c b/net/core/filter.c
+> > index 3f2e593244ca..1908800b671c 100644
+> > --- a/net/core/filter.c
+> > +++ b/net/core/filter.c
+> > @@ -2083,13 +2083,21 @@ static const struct bpf_func_proto bpf_csum_level_proto = {
+> >  
+> >  static inline int __bpf_rx_skb(struct net_device *dev, struct sk_buff *skb)
+> >  {
+> > -	return dev_forward_skb(dev, skb);  
 > 
+> > +	int ret = ____dev_forward_skb(dev, skb, false);
+> > +
+> > +	if (likely(!ret)) {
+> > +		skb->protocol = eth_type_trans(skb, dev);
+> > +		skb_postpull_rcsum(skb, eth_hdr(skb), ETH_HLEN);
+> > +		ret = netif_rx(skb);
+> > +	}
+> > +
+> > +	return ret;  
+> 
+> How about putting above block into a dev.c routine call it
+> 
+>  dev_forward_skb_nomtu(...)
+> 
+> or something like that. Then we keep this code next to its pair
+> with mtu check, dev_forward_skb().
+> 
+> dev_forward_skb() also uses netif_rx_internal() looks like maybe we should
+> just do the same here?
 
-Okay, so I've been exploring adding dumper API support.  The initial
-approach I've been using is to provide an API like this:
+I love the idea.  I'm coding it up and it looks much nicer.  And yes we
+obviously can use netif_rx_internal() once the code in core/dev.c
 
-/* match show flags for bpf_show_snprintf() */
-enum {
-        BTF_DUMP_F_COMPACT      =       (1ULL << 0),
-        BTF_DUMP_F_NONAME       =       (1ULL << 1),
-        BTF_DUMP_F_ZERO         =       (1ULL << 3),
-};
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
-struct btf_dump_emit_type_data_opts {
-        /* size of this struct, for forward/backward compatibility */
-        size_t sz;
-        void *data;
-        int indent_level;
-        __u64 flags;
-};
-#define btf_dump_emit_type_data_opts__last_field flags
-
-LIBBPF_API int
-btf_dump__emit_type_data(struct btf_dump *d, __u32 id,
-                         const struct btf_dump_emit_type_data_opts *opts);
-
-
-...so the opts play a similiar role to the struct btf_ptr + flags
-in bpf_snprintf_btf.  I've got this working, but the current 
-implementation is tied to emitting the same C-based syntax as 
-bpf_snprintf_btf(); though of course the printf function is invoked.
-So a use case looks something like this:
-
-        struct btf_dump_emit_type_data_opts opts;
-        char skbufmem[1024], skbufstr[8192];
-        struct btf *btf = libbpf_find_kernel_btf();
-        struct btf_dump *d;
-        __s32 skbid;
-        int indent = 0;
-
-        memset(skbufmem, 0xff, sizeof(skbufmem));
-        opts.data = skbufmem;
-        opts.sz = sizeof(opts);
-        opts.indent_level = indent;
-
-        d = btf_dump__new(btf, NULL, NULL, printffn);
-
-        skbid = btf__find_by_name_kind(btf, "sk_buff", BTF_KIND_STRUCT);
-        if (skbid < 0) {
-                fprintf(stderr, "no skbuff, err %d\n", skbid);
-                exit(1);
-        }
-
-        btf_dump__emit_type_data(d, skbid, &opts);
-
-
-..and we get output of the form
-
-(struct sk_buff){
- (union){
-  (struct){
-   .next = (struct sk_buff *)0xffffffffffffffff,
-   .prev = (struct sk_buff *)0xffffffffffffffff,
-   (union){
-    .dev = (struct net_device *)0xffffffffffffffff,
-    .dev_scratch = (long unsigned int)18446744073709551615,
-   },
-  },
-...
-
-etc.  However it would be nice to find a way to help printf function
-providers emit different formats such as JSON without having to
-parse the data they are provided in the printf function.
-That would remove the need for the output flags, since the printf
-function provider could control display.
-
-If we provided an option to provider a "kind" printf function,
-and ensured that the BTF dumper sets a "kind" prior to each
-_internal_ call to the printf function, we could use that info
-to adapt output in various ways.  For example, consider the case
-where we want to emit C-type output.  We can use the kind
-info to control output for various scenarios:
-
-void c_dump_kind_printf(struct btf_dump *d, enum btf_dump_kind kind,
-			void *ctx, const char *fmt, va_list args)
-{	
-	switch (kind) {
-	case BTF_DUMP_KIND_TYPE_NAME:
-		/* For C, add brackets around the type name string ( ) */
-		btf_dump__printf(d, "(");
-		btf_dump__vprintf(d, fmt, args);
-		btf_dump__printf(d, ")");
-		break;
-	case BTF_DUMP_KIND_MEMBER_NAME:
-		/* for C, prefix a "." to member name, suffix a "=" */
-		btf_dump__printf(d, ".");
-		btf_dump__vprintf(d, fmt, args);
-		btf_dump__printf(d, " = ");
-		break;
-	...
-
-Whenever we internally call btf_dump_kind_printf() - and have
-a kind printf function - it is invoked, and once it's added formatting
-it invokes the printf function.  So there are two layers of callbacks
-
-- the kind callback determines what we print based on the kinds
-  of objects provided (type names, member names, type data, etc); and
-- the printf callback determines _how_ we print (e.g. to a file, stdout,
-  etc).
-
-The above suggests we'd need to add btf_dump__*printf() functions.
-
-This might allow us to refactor bpftool such that the
-type traversal code lived in libbpf, while the specifics of
-how that info is to be dumped live in bpftool.  We'd probably
-need to provide a C-style kind dumper out of the box in libbpf
-as a default mechanism.
-
-What do you think?
-
-Alan
