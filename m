@@ -2,103 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6633D2F6DA4
-	for <lists+bpf@lfdr.de>; Thu, 14 Jan 2021 23:04:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D5232F6DAC
+	for <lists+bpf@lfdr.de>; Thu, 14 Jan 2021 23:07:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726880AbhANWEO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Jan 2021 17:04:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42698 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726239AbhANWEM (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 14 Jan 2021 17:04:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610661766;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fMwPX+DDLgd8G3X//6EUSPXEB+1/G7CVebPJVxT8KLc=;
-        b=Lgfirvh/321uz2eYcai6sdGk05qqsevzZrPOUOR7c57WkShxDYfMFhwHDylz3JbwQEZ8jZ
-        Q554iBuAHbhnCWBL1tK+3JVtSvTHw/Bp9rp1qZm2CwmlJW6RdeABsMJOWboOBtdiNUZjKC
-        w0KYAp1lEpqePBtc1si6DVHuupY7tKM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-173-JNKb26mrOfWSg4KP1xCjRw-1; Thu, 14 Jan 2021 17:02:42 -0500
-X-MC-Unique: JNKb26mrOfWSg4KP1xCjRw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9DFA18066E0;
-        Thu, 14 Jan 2021 22:02:39 +0000 (UTC)
-Received: from krava (unknown [10.40.195.188])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 8C39E5D739;
-        Thu, 14 Jan 2021 22:02:35 +0000 (UTC)
-Date:   Thu, 14 Jan 2021 23:02:34 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        lkml <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH bpf-next 2/3] bpf: Add size arg to build_id_parse function
-Message-ID: <20210114220234.GA1456269@krava>
-References: <20210114134044.1418404-1-jolsa@kernel.org>
- <20210114134044.1418404-3-jolsa@kernel.org>
- <19f16729-96d6-cc8e-5bd5-c3f5940365d4@fb.com>
- <20210114200120.GF1416940@krava>
- <d90fd73f-b9a6-c436-f8ae-0833ce3926ef@fb.com>
+        id S1728726AbhANWGd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Jan 2021 17:06:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727001AbhANWGd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Jan 2021 17:06:33 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5560C061575
+        for <bpf@vger.kernel.org>; Thu, 14 Jan 2021 14:05:52 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id b8so3641285plx.0
+        for <bpf@vger.kernel.org>; Thu, 14 Jan 2021 14:05:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wUgYvY8oKdE3vIqZqcGoJhcy0h+YbWsnar8Vy45H+Zw=;
+        b=Rd9jHYrSVUXCUh5LBL4lAM8F8G8OgyipJPKll16dm2Nq6G7LwGn88bawjaXil2i5kE
+         X1pd4CoND9ovjDGpCGRcVDRv7vZftTtRFH4sVqxN5LVwKye4+EaAsQei8baaweCD/vFW
+         wZXWCB1lXDPn0KTDSGnFwUIdecbEauhaZcviOoJ1UcrqWL1/nJlKNc6ThmYejFQl8vm6
+         EDl2QjvOBqiVr3FBF1t2ZcCNs6RbxWuWLCH4rXMDe6WWC31uRjc+28QaJOUFPHcFq40y
+         /yeVMnbeaU7uWN4k7oYO4zXD1Pn6fFZEUZYuKsR0cYHsxyDOrDt9tue29Z0t0IKx+xoz
+         5ygg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wUgYvY8oKdE3vIqZqcGoJhcy0h+YbWsnar8Vy45H+Zw=;
+        b=HVXFLdKIvG4AX8txtkylwKAC7YVsiY18LHZqLbgyrdb4LMN8cdZhWJQ2u8BS/EAuRp
+         76MXFQJTLWh2M8J8HI+gjeDbsi4SGR3pomSq/BWUD2e0Dl7cf+94Fg81pqfLcJ03wk27
+         rYDkyLAW9V4GNq08VI58L9H8BZV6JibsVP+xNYlH8PlfR7Paq3SLePtfR6JnChTEmUO6
+         cfOtBn5RgALbpb572OAqQ5Laqqx1L7Fhi21jh9DMsohtQYEyHO3E/1drAvgEFVHVSpgV
+         zS5rCS6hP20JsluUSJd0Dq5tFQd1x++YBb4hCNXeaG0hmtjAenGjlWxhsJhWnEpfLhES
+         tsNQ==
+X-Gm-Message-State: AOAM530BtuB6Cbo9lTGwBb7ySe8bHZ8ouL2hFmY8dQtJ8DkDMBPdKQWt
+        8V00GpfEBR7DagKFABC7e+uPoIpLkQQp+Abx6aO+7Q==
+X-Google-Smtp-Source: ABdhPJybc1mnEOSz/+QA7bXuVM7o3AS0QB7BDUZsKrUmopd9KJuholI4kaLK3H5ZWdzv9+8W5KxM7v83TFqY8YlGLeQ=
+X-Received: by 2002:a17:902:26a:b029:da:af47:77c7 with SMTP id
+ 97-20020a170902026ab02900daaf4777c7mr9613780plc.10.1610661952331; Thu, 14 Jan
+ 2021 14:05:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d90fd73f-b9a6-c436-f8ae-0833ce3926ef@fb.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20201204011129.2493105-1-ndesaulniers@google.com>
+ <20201204011129.2493105-3-ndesaulniers@google.com> <CA+icZUVa5rNpXxS7pRsmj-Ys4YpwCxiPKfjc0Cqtg=1GDYR8-w@mail.gmail.com>
+ <CA+icZUW6h4EkOYtEtYy=kUGnyA4RxKKMuX-20p96r9RsFV4LdQ@mail.gmail.com>
+ <CABtf2+RdH0dh3NyARWSOzig8euHK33h+0jL1zsey9V1HjjzB9w@mail.gmail.com>
+ <CA+icZUUtAVBvpU8M0PONnNSiOATgeL9Ym24nYUcRPoWhsQj8Ug@mail.gmail.com>
+ <CAKwvOd=+g88AEDO9JRrV-gwggsqx5p-Ckiqon3=XLcx8L-XaKg@mail.gmail.com>
+ <CAKwvOdnSx+8snm+q=eNMT4A-VFFnwPYxM=uunRkXdzX-AG4s0A@mail.gmail.com>
+ <5707cd3c-03f2-a806-c087-075d4f207bee@fb.com> <CA+icZUXuzJ4SL=AwTaVq_-tCPnSSrF+w_P8gEKYnT56Ln0Zoew@mail.gmail.com>
+ <CA+icZUXQ5bNX0eX7jEhgTMawdctZ4vkmYoRKDgxEMV5ZKp8YaQ@mail.gmail.com>
+In-Reply-To: <CA+icZUXQ5bNX0eX7jEhgTMawdctZ4vkmYoRKDgxEMV5ZKp8YaQ@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 14 Jan 2021 14:05:41 -0800
+Message-ID: <CAKwvOdn98zvjGaEy0O7uCb9AUZdZANCeSYpdti3U3uj4+V4dyQ@mail.gmail.com>
+Subject: Re: [PATCH v3 0/2] Kbuild: DWARF v5 support
+To:     Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Caroline Tice <cmtice@google.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Fangrui Song <maskray@google.com>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Nick Clifton <nickc@redhat.com>, bpf <bpf@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 01:05:33PM -0800, Yonghong Song wrote:
-> 
-> 
-> On 1/14/21 12:01 PM, Jiri Olsa wrote:
-> > On Thu, Jan 14, 2021 at 10:56:33AM -0800, Yonghong Song wrote:
-> > > 
-> > > 
-> > > On 1/14/21 5:40 AM, Jiri Olsa wrote:
-> > > > It's possible to have other build id types (other than default SHA1).
-> > > > Currently there's also ld support for MD5 build id.
-> > > 
-> > > Currently, bpf build_id based stackmap does not returns the size of
-> > > the build_id. Did you see an issue here? I guess user space can check
-> > > the length of non-zero bits of the build id to decide what kind of
-> > > type it is, right?
-> > 
-> > you can have zero bytes in the build id hash, so you need to get the size
-> > 
-> > I never saw MD5 being used in practise just SHA1, but we added the
-> > size to be complete and make sure we'll fit with build id, because
-> > there's only limited space in mmap2 event
-> 
-> I am asking to check whether we should extend uapi struct
-> bpf_stack_build_id to include build_id_size as well. I guess
-> we can delay this until a real use case.
+On Thu, Jan 14, 2021 at 1:52 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+>
+> Today, I have observed and reported (see [1]) bpf/btf/pahole issues
+> with Clang v12 (from apt.llvm.org) and DWARF-4 ("four").
+> Cannot speak for other compilers and its version.
 
-right, we can try make some MD5 build id binaries and check if it
-explodes with some bcc tools, but I don't expect that.. I'll try
-to find some time for that
+If these are not specific to DWARF5, then it sounds like
+CONFIG_DEBUG_INFO_DWARF4 should also be marked as `depends on
+!DEBUG_INFO_BTF`? (or !BTF && CC=clang)
 
-perf tool uses build ids in .debug cache as file links, and we had
-few isues there
-
-jirka
-
+>
+> - Sedat -
+>
+> [1] https://lore.kernel.org/bpf/CA+icZUWb3OyaSQAso8LhsRifZnpxAfDtuRwgB786qEJ3GQ+kRw@mail.gmail.com/T/#m6d05cc6c634e9cee89060b2522abc78c3705ea4c
+-- 
+Thanks,
+~Nick Desaulniers
