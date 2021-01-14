@@ -2,58 +2,57 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E979D2F6952
+	by mail.lfdr.de (Postfix) with ESMTP id 10BE42F6950
 	for <lists+bpf@lfdr.de>; Thu, 14 Jan 2021 19:22:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729677AbhANSTn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Jan 2021 13:19:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58334 "EHLO
+        id S1726625AbhANSTf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Jan 2021 13:19:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729673AbhANSTm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Jan 2021 13:19:42 -0500
-Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C0BEC06179E
-        for <bpf@vger.kernel.org>; Thu, 14 Jan 2021 10:18:25 -0800 (PST)
-Received: by mail-wr1-x44a.google.com with SMTP id g17so2954568wrr.11
-        for <bpf@vger.kernel.org>; Thu, 14 Jan 2021 10:18:25 -0800 (PST)
+        with ESMTP id S1729641AbhANSTc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Jan 2021 13:19:32 -0500
+Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B794C0617A0
+        for <bpf@vger.kernel.org>; Thu, 14 Jan 2021 10:18:27 -0800 (PST)
+Received: by mail-wr1-x449.google.com with SMTP id o12so2932687wrq.13
+        for <bpf@vger.kernel.org>; Thu, 14 Jan 2021 10:18:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=GnGYLZQpXXpyrj8V8AXVE35GZ42ZV37BIth5wG6TAKc=;
-        b=oEFvraAACDuc/sC3rYp4Qpya1srkmm9MPd3Jw/1QVatQwpM6kmtAqVDzDkZPsp9NbI
-         zKE4eBInIo41m/6VCI8A9q2QKj19A9+oh5WWhi24SbKfgG9xO/1rtnjIQR8evUz82HGO
-         LxjGYy/adXmfmehKX9CUBKKhn57pftDgB2OF03qSFHL06KkAyhEmw1mbXnz53sAT4kBv
-         RG+4Nf5IMggCwBkZaUgrfN8FDEKNFU080Wo9sBPQxLyFuh2O9czBfdvkOH+bFaMvQvmn
-         /TROFTg4oo1piDjHQwjkFpcEmNSQftLSskmd7nKRZV3VNR8NKKBMWMFb4ZOIEiGtGUJd
-         YkDA==
+        bh=BPTnTUGlL/60/nJe6EQJ5Pbqps5gGyRjOztg+msYbCQ=;
+        b=ps34WCJpcsuF9coQlcU8YFJEOsLxReH4vsWnEAz84JFs5mSZKRitG41Z5ZGDO//BlH
+         psAilMQ2Z7tYsy7IFPliQ6PJPmROkgXaCDhDzwQb3zTt74NFRB+66AY4+DKPq5lld1dS
+         nt14/T3BJvot19SDrXBWfZUxDIIfs9c6b+I+R71YNeNrwabmRWEQH5xyc1pUAfk3drCY
+         YOSqnfzBpiHGa1FwqD0wI4mpYPDy6VCt2kBY+cA/pJCC/cQX+a15gbi0a6sfe1/SNM6x
+         VqOjTWm/p9BSp7cAofXtObTxnb5MPNMusHcLjQ8KoJ2Y8SzSi9lsq3WFO3sY1pyrI50r
+         WZYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=GnGYLZQpXXpyrj8V8AXVE35GZ42ZV37BIth5wG6TAKc=;
-        b=i1ae4eq7dTiv8WOWZZF+Xp5uq0zD9G0XOO/wUXQne6o1yXqjieKFSDcfOkqzDfI+Lp
-         HzYo0c4VBsmh1pJla13Mqj+nvcfCyG8+N+Ka7jSxWSi6+N0lSCKLcnesYH64TRWvJ7SD
-         3rSc25p0uWAIRQ2l8oPISleUtzflA6LJUmoSF1lMtyKoYYJl2B3SWStcQ79yHC8UT5+6
-         6U6yDwKY23148MxrykjM+KfZPoD6W+rgQiPdVfMTYdUv01BnvkFjfOFk6v8iKnQTOxvC
-         NsNFj6oCCIgJQ61JluFWBYpOABo5WDxnVlvrsXvHx6zDzLQ87GQAWzBwG58YptJUGu1e
-         3Ijw==
-X-Gm-Message-State: AOAM532OhTpezxKnBYmK5zxgZGzhMb2V/U7e3Rsn0X0nq16jMGc01Ert
-        MYvkrOtuo1U9Mjkxs6gwYJ4CvYmR0h724IoyTKQpzqxt4GI851vCZR96tkvcnGiqBDXMHuHFWJr
-        cA7ucTFynDNsi+TTNw6R9iGVqA8gkHkIysCoeAn9H7QWSbqjZokqlmAkEmTFUNro=
-X-Google-Smtp-Source: ABdhPJxqVj/QSoJLjdEgCfWVad9Ku075T8z89lrvlTHoNoZcrsPrKr+wc+tdqTKloVBcyUPiO7+SPtFGYHG1bg==
+        bh=BPTnTUGlL/60/nJe6EQJ5Pbqps5gGyRjOztg+msYbCQ=;
+        b=Exm4H6TbvEzskDeF2UopYuD0jCEc4LZzOHWQGtUhInh6G0xvLk2qSc9r2RW0ezL7K3
+         Xyw9/UQ3e6/3YNvXg0FC2+JSeQnkx3Am/cExq2Hw+79IWugDvGagl7IhCOfdHgXm0X9e
+         8mVu15xGj8M6NIFwevz/OgKqLHiQDLjjva/DGE2mtJrMphu0U/lbZghL6F2rfLp5b261
+         voH/KhQ2gdwkl3useHJrJA4vo6Phd2NwO99ARcz8vO+hCIJBbCUF0Kej45fnBZ7WsBKK
+         TGlOrML9WU0fHsHLkMvgz75divPrx2S+LDeRRjguoBWbqmEk8HE7tnavsUE4nU2gf9uM
+         Y15A==
+X-Gm-Message-State: AOAM530FUoMW5DtVqV/AgaQGkoM3LMZljv42cr4Ir4ig49jaoMw7sb5s
+        vB3y3ByKOLk/PU9xTcMPrckygCDhIE2oADwrYBfpEKblWehC7eIz55wfTU/LeU8/KrG1nHqgcTn
+        4G3jpcQX3ctkEL5rXA9Lbh7kNRst0IVw1Tf9WwzV6JoI/mtN2gM5/JsELEdaOSzk=
+X-Google-Smtp-Source: ABdhPJwWc9d1fdVDAPT21BtZcY8XCp//S1mlojLKr4sSj7XgrtghjfH0keAD90O5p5F90etPP8lpyB+/9nv5IA==
 Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
-X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:11db])
- (user=jackmanb job=sendgmr) by 2002:a1c:2c89:: with SMTP id
- s131mr557023wms.0.1610648303757; Thu, 14 Jan 2021 10:18:23 -0800 (PST)
-Date:   Thu, 14 Jan 2021 18:17:48 +0000
+X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
+ (user=jackmanb job=sendgmr) by 2002:a1c:4645:: with SMTP id
+ t66mr5016960wma.152.1610648306174; Thu, 14 Jan 2021 10:18:26 -0800 (PST)
+Date:   Thu, 14 Jan 2021 18:17:49 +0000
 In-Reply-To: <20210114181751.768687-1-jackmanb@google.com>
-Message-Id: <20210114181751.768687-9-jackmanb@google.com>
+Message-Id: <20210114181751.768687-10-jackmanb@google.com>
 Mime-Version: 1.0
 References: <20210114181751.768687-1-jackmanb@google.com>
 X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH bpf-next v7 08/11] bpf: Pull out a macro for interpreting
- atomic ALU operations
+Subject: [PATCH bpf-next v7 09/11] bpf: Add bitwise atomic instructions
 From:   Brendan Jackman <jackmanb@google.com>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -71,120 +70,213 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Since the atomic operations that are added in subsequent commits are
-all isomorphic with BPF_ADD, pull out a macro to avoid the
-interpreter becoming dominated by lines of atomic-related code.
+This adds instructions for
 
-Note that this sacrificies interpreter performance (combining
-STX_ATOMIC_W and STX_ATOMIC_DW into single switch case means that we
-need an extra conditional branch to differentiate them) in favour of
-compact and (relatively!) simple C code.
+atomic[64]_[fetch_]and
+atomic[64]_[fetch_]or
+atomic[64]_[fetch_]xor
 
-Acked-by: Yonghong Song <yhs@fb.com>
+All these operations are isomorphic enough to implement with the same
+verifier, interpreter, and x86 JIT code, hence being a single commit.
+
+The main interesting thing here is that x86 doesn't directly support
+the fetch_ version these operations, so we need to generate a CMPXCHG
+loop in the JIT. This requires the use of two temporary registers,
+IIUC it's safe to use BPF_REG_AX and x86's AUX_REG for this purpose.
+
 Signed-off-by: Brendan Jackman <jackmanb@google.com>
+Acked-by: Yonghong Song <yhs@fb.com>
 ---
- kernel/bpf/core.c | 80 +++++++++++++++++++++++------------------------
- 1 file changed, 39 insertions(+), 41 deletions(-)
+ arch/x86/net/bpf_jit_comp.c  | 50 +++++++++++++++++++++++++++++++++++-
+ include/linux/filter.h       |  6 +++++
+ kernel/bpf/core.c            |  3 +++
+ kernel/bpf/disasm.c          | 21 ++++++++++++---
+ kernel/bpf/verifier.c        |  6 +++++
+ tools/include/linux/filter.h |  6 +++++
+ 6 files changed, 87 insertions(+), 5 deletions(-)
 
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 308241187582..1d4d50199293 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -808,6 +808,10 @@ static int emit_atomic(u8 **pprog, u8 atomic_op,
+ 	/* emit opcode */
+ 	switch (atomic_op) {
+ 	case BPF_ADD:
++	case BPF_SUB:
++	case BPF_AND:
++	case BPF_OR:
++	case BPF_XOR:
+ 		/* lock *(u32/u64*)(dst_reg + off) <op>= src_reg */
+ 		EMIT1(simple_alu_opcodes[atomic_op]);
+ 		break;
+@@ -1292,8 +1296,52 @@ st:			if (is_imm8(insn->off))
+ 
+ 		case BPF_STX | BPF_ATOMIC | BPF_W:
+ 		case BPF_STX | BPF_ATOMIC | BPF_DW:
++			if (insn->imm == (BPF_AND | BPF_FETCH) ||
++			    insn->imm == (BPF_OR | BPF_FETCH) ||
++			    insn->imm == (BPF_XOR | BPF_FETCH)) {
++				u8 *branch_target;
++				bool is64 = BPF_SIZE(insn->code) == BPF_DW;
++
++				/*
++				 * Can't be implemented with a single x86 insn.
++				 * Need to do a CMPXCHG loop.
++				 */
++
++				/* Will need RAX as a CMPXCHG operand so save R0 */
++				emit_mov_reg(&prog, true, BPF_REG_AX, BPF_REG_0);
++				branch_target = prog;
++				/* Load old value */
++				emit_ldx(&prog, BPF_SIZE(insn->code),
++					 BPF_REG_0, dst_reg, insn->off);
++				/*
++				 * Perform the (commutative) operation locally,
++				 * put the result in the AUX_REG.
++				 */
++				emit_mov_reg(&prog, is64, AUX_REG, BPF_REG_0);
++				maybe_emit_mod(&prog, AUX_REG, src_reg, is64);
++				EMIT2(simple_alu_opcodes[BPF_OP(insn->imm)],
++				      add_2reg(0xC0, AUX_REG, src_reg));
++				/* Attempt to swap in new value */
++				err = emit_atomic(&prog, BPF_CMPXCHG,
++						  dst_reg, AUX_REG, insn->off,
++						  BPF_SIZE(insn->code));
++				if (WARN_ON(err))
++					return err;
++				/*
++				 * ZF tells us whether we won the race. If it's
++				 * cleared we need to try again.
++				 */
++				EMIT2(X86_JNE, -(prog - branch_target) - 2);
++				/* Return the pre-modification value */
++				emit_mov_reg(&prog, is64, src_reg, BPF_REG_0);
++				/* Restore R0 after clobbering RAX */
++				emit_mov_reg(&prog, true, BPF_REG_0, BPF_REG_AX);
++				break;
++
++			}
++
+ 			err = emit_atomic(&prog, insn->imm, dst_reg, src_reg,
+-					  insn->off, BPF_SIZE(insn->code));
++						  insn->off, BPF_SIZE(insn->code));
+ 			if (err)
+ 				return err;
+ 			break;
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index d563820f197d..7fdce5407214 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -264,7 +264,13 @@ static inline bool insn_is_zext(const struct bpf_insn *insn)
+  * Atomic operations:
+  *
+  *   BPF_ADD                  *(uint *) (dst_reg + off16) += src_reg
++ *   BPF_AND                  *(uint *) (dst_reg + off16) &= src_reg
++ *   BPF_OR                   *(uint *) (dst_reg + off16) |= src_reg
++ *   BPF_XOR                  *(uint *) (dst_reg + off16) ^= src_reg
+  *   BPF_ADD | BPF_FETCH      src_reg = atomic_fetch_add(dst_reg + off16, src_reg);
++ *   BPF_AND | BPF_FETCH      src_reg = atomic_fetch_and(dst_reg + off16, src_reg);
++ *   BPF_OR | BPF_FETCH       src_reg = atomic_fetch_or(dst_reg + off16, src_reg);
++ *   BPF_XOR | BPF_FETCH      src_reg = atomic_fetch_xor(dst_reg + off16, src_reg);
+  *   BPF_XCHG                 src_reg = atomic_xchg(dst_reg + off16, src_reg)
+  *   BPF_CMPXCHG              r0 = atomic_cmpxchg(dst_reg + off16, r0, src_reg)
+  */
 diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 4df6daba43ef..8669e685825f 100644
+index 8669e685825f..5bbd4884ff7a 100644
 --- a/kernel/bpf/core.c
 +++ b/kernel/bpf/core.c
-@@ -1618,55 +1618,53 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
- 	LDX_PROBE(DW, 8)
- #undef LDX_PROBE
- 
--	STX_ATOMIC_W:
--		switch (IMM) {
--		case BPF_ADD:
--			/* lock xadd *(u32 *)(dst_reg + off16) += src_reg */
--			atomic_add((u32) SRC, (atomic_t *)(unsigned long)
--				   (DST + insn->off));
--			break;
--		case BPF_ADD | BPF_FETCH:
--			SRC = (u32) atomic_fetch_add(
--				(u32) SRC,
--				(atomic_t *)(unsigned long) (DST + insn->off));
--			break;
--		case BPF_XCHG:
--			SRC = (u32) atomic_xchg(
--				(atomic_t *)(unsigned long) (DST + insn->off),
--				(u32) SRC);
--			break;
--		case BPF_CMPXCHG:
--			BPF_R0 = (u32) atomic_cmpxchg(
--				(atomic_t *)(unsigned long) (DST + insn->off),
--				(u32) BPF_R0, (u32) SRC);
-+#define ATOMIC_ALU_OP(BOP, KOP)						\
-+		case BOP:						\
-+			if (BPF_SIZE(insn->code) == BPF_W)		\
-+				atomic_##KOP((u32) SRC, (atomic_t *)(unsigned long) \
-+					     (DST + insn->off));	\
-+			else						\
-+				atomic64_##KOP((u64) SRC, (atomic64_t *)(unsigned long) \
-+					       (DST + insn->off));	\
-+			break;						\
-+		case BOP | BPF_FETCH:					\
-+			if (BPF_SIZE(insn->code) == BPF_W)		\
-+				SRC = (u32) atomic_fetch_##KOP(		\
-+					(u32) SRC,			\
-+					(atomic_t *)(unsigned long) (DST + insn->off)); \
-+			else						\
-+				SRC = (u64) atomic64_fetch_##KOP(	\
-+					(u64) SRC,			\
-+					(atomic64_t *)(unsigned long) (DST + insn->off)); \
- 			break;
--		default:
--			goto default_label;
--		}
--		CONT;
- 
- 	STX_ATOMIC_DW:
-+	STX_ATOMIC_W:
+@@ -1642,6 +1642,9 @@ static u64 ___bpf_prog_run(u64 *regs, const struct bpf_insn *insn, u64 *stack)
+ 	STX_ATOMIC_W:
  		switch (IMM) {
--		case BPF_ADD:
--			/* lock xadd *(u64 *)(dst_reg + off16) += src_reg */
--			atomic64_add((u64) SRC, (atomic64_t *)(unsigned long)
--				     (DST + insn->off));
--			break;
--		case BPF_ADD | BPF_FETCH:
--			SRC = (u64) atomic64_fetch_add(
--				(u64) SRC,
--				(atomic64_t *)(unsigned long) (DST + insn->off));
--			break;
-+		ATOMIC_ALU_OP(BPF_ADD, add)
-+#undef ATOMIC_ALU_OP
-+
+ 		ATOMIC_ALU_OP(BPF_ADD, add)
++		ATOMIC_ALU_OP(BPF_AND, and)
++		ATOMIC_ALU_OP(BPF_OR, or)
++		ATOMIC_ALU_OP(BPF_XOR, xor)
+ #undef ATOMIC_ALU_OP
+ 
  		case BPF_XCHG:
--			SRC = (u64) atomic64_xchg(
--				(atomic64_t *)(unsigned long) (DST + insn->off),
--				(u64) SRC);
-+			if (BPF_SIZE(insn->code) == BPF_W)
-+				SRC = (u32) atomic_xchg(
-+					(atomic_t *)(unsigned long) (DST + insn->off),
-+					(u32) SRC);
-+			else
-+				SRC = (u64) atomic64_xchg(
-+					(atomic64_t *)(unsigned long) (DST + insn->off),
-+					(u64) SRC);
- 			break;
- 		case BPF_CMPXCHG:
--			BPF_R0 = (u64) atomic64_cmpxchg(
--				(atomic64_t *)(unsigned long) (DST + insn->off),
--				(u64) BPF_R0, (u64) SRC);
-+			if (BPF_SIZE(insn->code) == BPF_W)
-+				BPF_R0 = (u32) atomic_cmpxchg(
-+					(atomic_t *)(unsigned long) (DST + insn->off),
-+					(u32) BPF_R0, (u32) SRC);
-+			else
-+				BPF_R0 = (u64) atomic64_cmpxchg(
-+					(atomic64_t *)(unsigned long) (DST + insn->off),
-+					(u64) BPF_R0, (u64) SRC);
- 			break;
+diff --git a/kernel/bpf/disasm.c b/kernel/bpf/disasm.c
+index ee8d1132767b..19ff8fed7f4b 100644
+--- a/kernel/bpf/disasm.c
++++ b/kernel/bpf/disasm.c
+@@ -80,6 +80,13 @@ const char *const bpf_alu_string[16] = {
+ 	[BPF_END >> 4]  = "endian",
+ };
+ 
++static const char *const bpf_atomic_alu_string[16] = {
++	[BPF_ADD >> 4]  = "add",
++	[BPF_AND >> 4]  = "and",
++	[BPF_OR >> 4]  = "or",
++	[BPF_XOR >> 4]  = "or",
++};
 +
- 		default:
- 			goto default_label;
- 		}
+ static const char *const bpf_ldst_string[] = {
+ 	[BPF_W >> 3]  = "u32",
+ 	[BPF_H >> 3]  = "u16",
+@@ -154,17 +161,23 @@ void print_bpf_insn(const struct bpf_insn_cbs *cbs,
+ 				insn->dst_reg,
+ 				insn->off, insn->src_reg);
+ 		else if (BPF_MODE(insn->code) == BPF_ATOMIC &&
+-			 insn->imm == BPF_ADD) {
+-			verbose(cbs->private_data, "(%02x) lock *(%s *)(r%d %+d) += r%d\n",
++			 (insn->imm == BPF_ADD || insn->imm == BPF_ADD ||
++			  insn->imm == BPF_OR || insn->imm == BPF_XOR)) {
++			verbose(cbs->private_data, "(%02x) lock *(%s *)(r%d %+d) %s r%d\n",
+ 				insn->code,
+ 				bpf_ldst_string[BPF_SIZE(insn->code) >> 3],
+ 				insn->dst_reg, insn->off,
++				bpf_alu_string[BPF_OP(insn->imm) >> 4],
+ 				insn->src_reg);
+ 		} else if (BPF_MODE(insn->code) == BPF_ATOMIC &&
+-			   insn->imm == (BPF_ADD | BPF_FETCH)) {
+-			verbose(cbs->private_data, "(%02x) r%d = atomic%s_fetch_add((%s *)(r%d %+d), r%d)\n",
++			   (insn->imm == (BPF_ADD | BPF_FETCH) ||
++			    insn->imm == (BPF_AND | BPF_FETCH) ||
++			    insn->imm == (BPF_OR | BPF_FETCH) ||
++			    insn->imm == (BPF_XOR | BPF_FETCH))) {
++			verbose(cbs->private_data, "(%02x) r%d = atomic%s_fetch_%s((%s *)(r%d %+d), r%d)\n",
+ 				insn->code, insn->src_reg,
+ 				BPF_SIZE(insn->code) == BPF_DW ? "64" : "",
++				bpf_atomic_alu_string[BPF_OP(insn->imm) >> 4],
+ 				bpf_ldst_string[BPF_SIZE(insn->code) >> 3],
+ 				insn->dst_reg, insn->off, insn->src_reg);
+ 		} else if (BPF_MODE(insn->code) == BPF_ATOMIC &&
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 89a4d154ab37..0f82d5d46e2c 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -3612,6 +3612,12 @@ static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_i
+ 	switch (insn->imm) {
+ 	case BPF_ADD:
+ 	case BPF_ADD | BPF_FETCH:
++	case BPF_AND:
++	case BPF_AND | BPF_FETCH:
++	case BPF_OR:
++	case BPF_OR | BPF_FETCH:
++	case BPF_XOR:
++	case BPF_XOR | BPF_FETCH:
+ 	case BPF_XCHG:
+ 	case BPF_CMPXCHG:
+ 		break;
+diff --git a/tools/include/linux/filter.h b/tools/include/linux/filter.h
+index d75998b0d5ac..736bdeccdfe4 100644
+--- a/tools/include/linux/filter.h
++++ b/tools/include/linux/filter.h
+@@ -173,7 +173,13 @@
+  * Atomic operations:
+  *
+  *   BPF_ADD                  *(uint *) (dst_reg + off16) += src_reg
++ *   BPF_AND                  *(uint *) (dst_reg + off16) &= src_reg
++ *   BPF_OR                   *(uint *) (dst_reg + off16) |= src_reg
++ *   BPF_XOR                  *(uint *) (dst_reg + off16) ^= src_reg
+  *   BPF_ADD | BPF_FETCH      src_reg = atomic_fetch_add(dst_reg + off16, src_reg);
++ *   BPF_AND | BPF_FETCH      src_reg = atomic_fetch_and(dst_reg + off16, src_reg);
++ *   BPF_OR | BPF_FETCH       src_reg = atomic_fetch_or(dst_reg + off16, src_reg);
++ *   BPF_XOR | BPF_FETCH      src_reg = atomic_fetch_xor(dst_reg + off16, src_reg);
+  *   BPF_XCHG                 src_reg = atomic_xchg(dst_reg + off16, src_reg)
+  *   BPF_CMPXCHG              r0 = atomic_cmpxchg(dst_reg + off16, r0, src_reg)
+  */
 -- 
 2.30.0.284.gd98b1dd5eaa7-goog
 
