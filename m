@@ -2,166 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 790AC2F6B93
-	for <lists+bpf@lfdr.de>; Thu, 14 Jan 2021 20:57:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 575762F6BBC
+	for <lists+bpf@lfdr.de>; Thu, 14 Jan 2021 21:05:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730187AbhANTzJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Jan 2021 14:55:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730178AbhANTzH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Jan 2021 14:55:07 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84093C0613C1
-        for <bpf@vger.kernel.org>; Thu, 14 Jan 2021 11:54:27 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id m4so7025388wrx.9
-        for <bpf@vger.kernel.org>; Thu, 14 Jan 2021 11:54:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Jco6OKkBzH2W5YMgKN8CdIkvv1c2tCGRqtwwKgOzoTU=;
-        b=j/heu2munUhWuITG04w2E1rUlnHuKEPX2QcskO7PII2HtxbjLoBk0vUIcYEDq+Wzro
-         YLJmhogwgK7dlTRE23UGZqyCSoOgK1BzwC0fWeASrYRSGQazGVMHHmXW9K9wa+vH4eTp
-         7hJXY4pc3DRmorYpfjoKJWoFz8Uvtjw+DBeVr5OjnyRmzsb+lM9WLIg/+YMqhXwLk5qd
-         RNXYmJFSZxYTOJYA90oJcZWqt6vrrA3MHDsaWY5r8+hnBBr2/7nsrV2TFzYqtCwHCchP
-         4WXaxG6eUxVUnT80m6hPSIQ9Qd9QUYa1vNxPvRIelB9mmyGw38k8IiFKHNclOgN9xw/C
-         ayag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Jco6OKkBzH2W5YMgKN8CdIkvv1c2tCGRqtwwKgOzoTU=;
-        b=FvXCGL4xPVNFREk9ckJq6wZ9EkIy7b7nCl2qmFo3VAtAbxUO1+/b/oYJ6TMHj+OLXT
-         wykHaKGNMfpk21cxhYTRljRJyXogeadZNrJ3O7XCiW5Y8iyiaYsfl1Eom+D9EnGQMJns
-         GdoZIQzIqBjBPH6csD5FMInmwEr7ufYCJdBfypTemaqm1gWErwH6iQpqPBQ4cv0r/RyU
-         IBvoB26WbJYjIOpWJT39LKC2+lKeel1fRmY5nl7WyeW/LrDzWsgHvGsUPQGjTDb9LEkC
-         dF6iwLXF0rWBUl9VRj2w620o+amRnfJpHeiIjhjR4tL1CJPPNgKo/aFl4J26csp4VlWY
-         SMeA==
-X-Gm-Message-State: AOAM532g4rhBpMtmMYjwyMaLNK6VeW4Be8HL0uR0pzIDfpc4XEUsDQia
-        jXdkQXlCTJpRYG8JHwP2XZszUQ==
-X-Google-Smtp-Source: ABdhPJwTAnSC8i9erqyaC2T3bmWeIfWfGjCjtI2qx+TyOz9rMatI0AIgHFfUQq4dPzhL98mW7iEdYA==
-X-Received: by 2002:adf:9d42:: with SMTP id o2mr9465225wre.135.1610654066061;
-        Thu, 14 Jan 2021 11:54:26 -0800 (PST)
-Received: from dell ([91.110.221.178])
-        by smtp.gmail.com with ESMTPSA id b3sm5050877wme.32.2021.01.14.11.54.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 11:54:25 -0800 (PST)
-Date:   Thu, 14 Jan 2021 19:54:22 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        Dany Madden <drt@linux.ibm.com>,
-        Daris A Nevil <dnevil@snmc.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Erik Stahlman <erik@vt.edu>,
-        Geoff Levand <geoff@infradead.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Ishizaki Kou <kou.ishizaki@toshiba.co.jp>,
-        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
-        Jens Osterkamp <Jens.Osterkamp@de.ibm.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Allen <jallen@linux.vnet.ibm.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Lijun Pan <ljp@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org,
-        Michael Ellerman <mpe@ellerman.id.au>, netdev@vger.kernel.org,
-        Nicolas Pitre <nico@fluxnic.net>, Paul Durrant <paul@xen.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Peter Cammaert <pc@denkart.be>,
-        Russell King <rmk@arm.linux.org.uk>,
-        Rusty Russell <rusty@rustcorp.com.au>,
-        Santiago Leon <santi_leon@yahoo.com>,
-        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
-        Thomas Falcon <tlfalcon@linux.vnet.ibm.com>,
-        Utz Bacher <utz.bacher@de.ibm.com>,
-        Wei Liu <wei.liu@kernel.org>, xen-devel@lists.xenproject.org
-Subject: Re: [PATCH v2 0/7] Rid W=1 warnings in Ethernet
-Message-ID: <20210114195422.GB3975472@dell>
-References: <20210113164123.1334116-1-lee.jones@linaro.org>
- <20210113183551.6551a6a2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20210114083349.GI3975472@dell>
- <20210114091453.30177d20@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S1726459AbhANUC7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Jan 2021 15:02:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53519 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726608AbhANUC7 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 14 Jan 2021 15:02:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610654492;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6WLCSpTqHMk8dWcHZMUQNdGxWchRF8lVKGN2TPwAULk=;
+        b=desctzjLFrmlDiYwBsjm472GbXpBL1+ETMxTNAGokVwlcdmK1yVg1b4FFCdBkZKhQ809aP
+        JZ9i8WDCTjvAUnAzTOfoihX0u/LkqflTOlTfPacLDV9kCgyzkbyLWQltwzcm9NB/pUkSYs
+        WGb7zCa4DMUHiKaaA1FvwzFF3rL6amo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-206-q3B-lAhSNWyEFOQOQ-JuSA-1; Thu, 14 Jan 2021 15:01:28 -0500
+X-MC-Unique: q3B-lAhSNWyEFOQOQ-JuSA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D80AF107ACF7;
+        Thu, 14 Jan 2021 20:01:25 +0000 (UTC)
+Received: from krava (unknown [10.40.195.188])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 950BD5D9EF;
+        Thu, 14 Jan 2021 20:01:21 +0000 (UTC)
+Date:   Thu, 14 Jan 2021 21:01:20 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        lkml <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH bpf-next 2/3] bpf: Add size arg to build_id_parse function
+Message-ID: <20210114200120.GF1416940@krava>
+References: <20210114134044.1418404-1-jolsa@kernel.org>
+ <20210114134044.1418404-3-jolsa@kernel.org>
+ <19f16729-96d6-cc8e-5bd5-c3f5940365d4@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210114091453.30177d20@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <19f16729-96d6-cc8e-5bd5-c3f5940365d4@fb.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 14 Jan 2021, Jakub Kicinski wrote:
-
-> On Thu, 14 Jan 2021 08:33:49 +0000 Lee Jones wrote:
-> > On Wed, 13 Jan 2021, Jakub Kicinski wrote:
-> > 
-> > > On Wed, 13 Jan 2021 16:41:16 +0000 Lee Jones wrote:  
-> > > > Resending the stragglers again.                                                                                  
-> > > > 
-> > > > This set is part of a larger effort attempting to clean-up W=1                                                   
-> > > > kernel builds, which are currently overwhelmingly riddled with                                                   
-> > > > niggly little warnings.                                                                                          
-> > > >                                                                                                                  
-> > > > v2:                                                                                                              
-> > > >  - Squashed IBM patches                                                                                      
-> > > >  - Fixed real issue in SMSC
-> > > >  - Added Andrew's Reviewed-by tags on remainder  
-> > > 
-> > > Does not apply, please rebase on net-next/master.  
-> > 
-> > These are based on Tuesday's next/master.
+On Thu, Jan 14, 2021 at 10:56:33AM -0800, Yonghong Song wrote:
 > 
-> What's next/master?
-
-I'm not sure if this is a joke, or not? :)
-
-next/master == Linux Next.  The daily merged repo where all of the
-*-next branches end up to ensure interoperability.  It's also the
-branch that is most heavily tested by the auto-builders to ensure the
-vast majority of issues are ironed out before hitting Mainline.
-
-> This is net-next:
 > 
-> https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/
+> On 1/14/21 5:40 AM, Jiri Olsa wrote:
+> > It's possible to have other build id types (other than default SHA1).
+> > Currently there's also ld support for MD5 build id.
+> 
+> Currently, bpf build_id based stackmap does not returns the size of
+> the build_id. Did you see an issue here? I guess user space can check
+> the length of non-zero bits of the build id to decide what kind of
+> type it is, right?
 
-Looks like net-next gets merged into next/master:
+you can have zero bytes in the build id hash, so you need to get the size
 
-commit 452958f1f3d1c8980a8414f9c37c8c6de24c7d32
-Merge: 1eabba209a17a f50e2f9f79164
-Author: Stephen Rothwell <sfr@canb.auug.org.au>
-Date:   Thu Jan 14 10:35:40 2021 +1100
+I never saw MD5 being used in practise just SHA1, but we added the
+size to be complete and make sure we'll fit with build id, because
+there's only limited space in mmap2 event
 
-    Merge remote-tracking branch 'net-next/master'
+jirka
 
-So I'm not sure what it's conflicting with.
-
-Do you have patches in net-next that didn't make it into next/master
-for some reason?
-
-I'll try to rebase again tomorrow.
-
-Hopefully I am able to reproduce your issue by then.
-
-> > I just rebased them now with no issue.
+> 
 > > 
-> > What conflict are you seeing?
+> > Adding size argument to build_id_parse function, that returns (if defined)
+> > size of the parsed build id, so we can recognize the build id type.
+> > 
+> > Cc: Alexei Starovoitov <ast@kernel.org>
+> > Cc: Song Liu <songliubraving@fb.com>
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >   include/linux/buildid.h |  3 ++-
+> >   kernel/bpf/stackmap.c   |  2 +-
+> >   lib/buildid.c           | 29 +++++++++++++++++++++--------
+> >   3 files changed, 24 insertions(+), 10 deletions(-)
+> > 
+> > diff --git a/include/linux/buildid.h b/include/linux/buildid.h
+> > index 08028a212589..40232f90db6e 100644
+> > --- a/include/linux/buildid.h
+> > +++ b/include/linux/buildid.h
+> > @@ -6,6 +6,7 @@
+> >   #define BUILD_ID_SIZE_MAX 20
+> > -int build_id_parse(struct vm_area_struct *vma, unsigned char *build_id);
+> > +int build_id_parse(struct vm_area_struct *vma, unsigned char *build_id,
+> > +		   __u32 *size);
+> >   #endif
+> > diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+> > index 55d254a59f07..cabaf7db8efc 100644
+> > --- a/kernel/bpf/stackmap.c
+> > +++ b/kernel/bpf/stackmap.c
+> > @@ -189,7 +189,7 @@ static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
+> >   	for (i = 0; i < trace_nr; i++) {
+> >   		vma = find_vma(current->mm, ips[i]);
+> > -		if (!vma || build_id_parse(vma, id_offs[i].build_id)) {
+> > +		if (!vma || build_id_parse(vma, id_offs[i].build_id, NULL)) {
+> >   			/* per entry fall back to ips */
+> >   			id_offs[i].status = BPF_STACK_BUILD_ID_IP;
+> >   			id_offs[i].ip = ips[i];
+> > diff --git a/lib/buildid.c b/lib/buildid.c
+> > index 4a4f520c0e29..6156997c3895 100644
+> > --- a/lib/buildid.c
+> > +++ b/lib/buildid.c
+> > @@ -12,6 +12,7 @@
+> >    */
+> >   static inline int parse_build_id(void *page_addr,
+> >   				 unsigned char *build_id,
+> > +				 __u32 *size,
+> >   				 void *note_start,
+> >   				 Elf32_Word note_size)
+> >   {
+> > @@ -38,6 +39,8 @@ static inline int parse_build_id(void *page_addr,
+> >   			       nhdr->n_descsz);
+> >   			memset(build_id + nhdr->n_descsz, 0,
+> >   			       BUILD_ID_SIZE_MAX - nhdr->n_descsz);
+> > +			if (size)
+> > +				*size = nhdr->n_descsz;
+> >   			return 0;
+> >   		}
+> >   		new_offs = note_offs + sizeof(Elf32_Nhdr) +
+> > @@ -50,7 +53,8 @@ static inline int parse_build_id(void *page_addr,
+> >   }
+> [...]
 > 
-> Applying: net: ethernet: smsc: smc91x: Fix function name in kernel-doc header
-> error: patch failed: drivers/net/ethernet/smsc/smc91x.c:2192
-> error: drivers/net/ethernet/smsc/smc91x.c: patch does not apply
-> Patch failed at 0001 net: ethernet: smsc: smc91x: Fix function name in kernel-doc header
-> hint: Use 'git am --show-current-patch=diff' to see the failed patch
-> When you have resolved this problem, run "git am --continue".
-> If you prefer to skip this patch, run "git am --skip" instead.
-> To restore the original branch and stop patching, run "git am --abort".
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
