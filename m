@@ -2,113 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B1752F710D
-	for <lists+bpf@lfdr.de>; Fri, 15 Jan 2021 04:41:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3C282F7124
+	for <lists+bpf@lfdr.de>; Fri, 15 Jan 2021 04:48:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732513AbhAODkp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Jan 2021 22:40:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37726 "EHLO
+        id S1730719AbhAODsP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Jan 2021 22:48:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732511AbhAODko (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Jan 2021 22:40:44 -0500
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80A99C061575
-        for <bpf@vger.kernel.org>; Thu, 14 Jan 2021 19:40:04 -0800 (PST)
-Received: by mail-qk1-x72c.google.com with SMTP id 19so10545353qkm.8
-        for <bpf@vger.kernel.org>; Thu, 14 Jan 2021 19:40:04 -0800 (PST)
+        with ESMTP id S1728452AbhAODsO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Jan 2021 22:48:14 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C57D6C061575;
+        Thu, 14 Jan 2021 19:47:32 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id a12so11234878lfl.6;
+        Thu, 14 Jan 2021 19:47:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=rfrYO+PzQZa2QgXSwKBu/qFaywy+T6Io8dlHNEUX3yI=;
-        b=n4kETA0UJ2RPfhp5JNojIlpHVNNZficpwIcG6VF6OCwbB6kubdjLD2SR/BJ5DqMcJo
-         k/1ejG49tWV9zHJrLsLNUXWHCpgXUkkRYWqz0ieWz4c8robiPwzsMTVSJop0D0apfwGW
-         sCRApvTXm8DTS0jD126seaO0xdOYe93R5H/jlNo3YxhlboiooQ3T2bJPdgZZ9KPSzbYR
-         C7+HznQpPHl3hR/fP6O7b8Mis9U67mbXWriFKl+nx/KWFhK/ESxJUuJyhNnMEntSmSk4
-         Ws5UAuPVva/LjXZdChHAw6gVLwhrU88AudBfoFGqjQn+INB1jIBlzu/rVX/3hy53F4Sj
-         AZDQ==
+        bh=dUoYG1aQlB7dSe08I8qA9iZwXLLkDAhxs+3M3UA36LE=;
+        b=p8vwErNxhg9GD+Y1AJId3BabuPOkSjgH7fI8yIj9gFI3+0Clgm49cO3/TLYcD3tUt8
+         JUehVjlXRdr1OvEg4cLQa3Fv/5r7wHdlhzubI0aMZE4qV9NmX7WPibnJM7dDfyd3GR5J
+         eJCAS92nKTx8LLWsiHRa4+cAJWJzfZQ4BIOdT90H6o4wOAvnjGrVaJ6NpiAefsuxXNNV
+         CcgtDsK+QrGma6aYsCtXOA3yvb4ccGd/psy7cy/YyAY3JYvQ622ppJEBJHOJNBN10U7t
+         xscya8aWEnI4xDxwoE2LRuwvrXWURhbaG9rAFc4xJPxX6LlwiwfTBq1y0m18v4kKDx+z
+         byaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=rfrYO+PzQZa2QgXSwKBu/qFaywy+T6Io8dlHNEUX3yI=;
-        b=JWqygTdLJYDSN66nEDbmmOXu0uSCXoV0DNvIgberxTGcaHAT1KDgusGTn9ijQgKRZx
-         nfES1ejczWXf3km+6rcJPLE8RhRBaVUI23KrDVS4K6t4qu/+7aeyj/uSvsTfGizdl5Sf
-         6Bj5/gamGGCnDFCC3jTWo/22MqMBXMu8gTJ5xkpnH9ZATMp1r+z63IOMyRrepLoH28NX
-         /Xu8cFTZlUtjHgLCz4wqMvsYn0iGL7kD7gnAzbtorFpqhkCwtpXr+GfkFM4vHK1FOaM+
-         Bv8ucbb9BMnXUErHgPedMWGDYepDwI+i7SOmfYAgb1BKsSuPsaNpEEl+kBIZzqFhTQn5
-         o10Q==
-X-Gm-Message-State: AOAM530JIfsxEpayEGLXfmmlw7MTfBL6iRThlf2PbE06OAKMbOOfQZhG
-        bL8Gg0RfsFIftwZM81sHoLS76ODYhWltuXdKaVfHBg==
-X-Google-Smtp-Source: ABdhPJxXAHrb2NsmvMNmhQMUV91h9BRzJJOWXPngoYyejvZNF3LZUpmlGg9PJfyt2CNYzclJ9nOXtG5fDk8MxCb5GVc=
-X-Received: by 2002:a05:620a:b0f:: with SMTP id t15mr10667659qkg.485.1610682003281;
- Thu, 14 Jan 2021 19:40:03 -0800 (PST)
+        bh=dUoYG1aQlB7dSe08I8qA9iZwXLLkDAhxs+3M3UA36LE=;
+        b=aevP+FBZcOzjoAiW9WhksGRjXmeyAFAvu0fEb3bDH3krO+/66iyxgpTVoM8EY+pros
+         R8lmSdYCwnN30S4wBf9CjVMPYZigZr+J1cocB6EgXw5jY4jUz1nWQHgprLgEAAUsowPp
+         jVthxi1p7WBuOJ3OyjJYRezka633Z7sA4ATOlQwQhCt6KxqRF5v2wTsAA0Sashm2x3CN
+         rQ68G4oGDzv+iN0mJS9g64sL6cuW5FLZEmMLqZ9uBY5kSsihSL4raEVDQ8kpASHD8Mpb
+         mg/xmEvRX9egj+jkpgYj5SjqaAHWI23eomUyqEfcbGuoP67gUipL2Mb5cR+anSMfYBF8
+         rbCQ==
+X-Gm-Message-State: AOAM5332XUb1srrliZlfpaWB7ojCeDbaOuLkOykM/J3ki/2kpRZY/i1z
+        o0D454P67Gqnx/KsNkq4n5+3RZ/R00BWVr5mggI=
+X-Google-Smtp-Source: ABdhPJxaCksTyq4bOT5eEDGSKAlBAo3nsrB6PORL+WNb1G1ykzz7e+2pr07NswDKLFqTuUmfTHjbssII6IV5tq1edMI=
+X-Received: by 2002:ac2:5b1e:: with SMTP id v30mr5129391lfn.540.1610682451359;
+ Thu, 14 Jan 2021 19:47:31 -0800 (PST)
 MIME-Version: 1.0
-References: <20210113213321.2832906-1-sdf@google.com> <20210113213321.2832906-2-sdf@google.com>
- <CAADnVQLssJ4oStg7C4W-nafFKaka1H3-N0DhsBrB3FdmgyUC_A@mail.gmail.com>
-In-Reply-To: <CAADnVQLssJ4oStg7C4W-nafFKaka1H3-N0DhsBrB3FdmgyUC_A@mail.gmail.com>
-From:   Stanislav Fomichev <sdf@google.com>
-Date:   Thu, 14 Jan 2021 19:39:52 -0800
-Message-ID: <CAKH8qBsaZjOkvGZuNCtG=V2M9YfAJgtG+moAejwtBCB6kNJUwA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v8 1/3] bpf: remove extra lock_sock for TCP_ZEROCOPY_RECEIVE
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
+References: <20210114134044.1418404-1-jolsa@kernel.org> <20210114134044.1418404-3-jolsa@kernel.org>
+ <19f16729-96d6-cc8e-5bd5-c3f5940365d4@fb.com> <20210114200120.GF1416940@krava>
+ <d90fd73f-b9a6-c436-f8ae-0833ce3926ef@fb.com> <20210114220234.GA1456269@krava>
+ <5043cef5-eda7-4373-dcb5-546f6192e1a9@fb.com>
+In-Reply-To: <5043cef5-eda7-4373-dcb5-546f6192e1a9@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 14 Jan 2021 19:47:20 -0800
+Message-ID: <CAADnVQLkM7+1+wzg=s8+zdKwYnmBRgvVK7K-qivu_a9mvaK7Yg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] bpf: Add size arg to build_id_parse function
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Song Liu <songliubraving@fb.com>,
-        Eric Dumazet <edumazet@google.com>
+        lkml <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 7:27 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Thu, Jan 14, 2021 at 3:44 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> On Wed, Jan 13, 2021 at 1:33 PM Stanislav Fomichev <sdf@google.com> wrote:
-> >
-> > Add custom implementation of getsockopt hook for TCP_ZEROCOPY_RECEIVE.
-> > We skip generic hooks for TCP_ZEROCOPY_RECEIVE and have a custom
-> > call in do_tcp_getsockopt using the on-stack data. This removes
-> > 3% overhead for locking/unlocking the socket.
-> >
-> > Without this patch:
-> >      3.38%     0.07%  tcp_mmap  [kernel.kallsyms]  [k] __cgroup_bpf_run_filter_getsockopt
-> >             |
-> >              --3.30%--__cgroup_bpf_run_filter_getsockopt
-> >                        |
-> >                         --0.81%--__kmalloc
-> >
-> > With the patch applied:
-> >      0.52%     0.12%  tcp_mmap  [kernel.kallsyms]  [k] __cgroup_bpf_run_filter_getsockopt_kern
-> >
-> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > Cc: Martin KaFai Lau <kafai@fb.com>
-> > Cc: Song Liu <songliubraving@fb.com>
-> > Cc: Eric Dumazet <edumazet@google.com>
-> > Acked-by: Martin KaFai Lau <kafai@fb.com>
 >
-> Few issues in this patch and the patch 2 doesn't apply:
-> Switched to a new branch 'tmp'
-> Applying: bpf: Remove extra lock_sock for TCP_ZEROCOPY_RECEIVE
-> .git/rebase-apply/patch:295: trailing whitespace.
-> #endif
-> .git/rebase-apply/patch:306: trailing whitespace.
-> union tcp_word_hdr {
-> .git/rebase-apply/patch:309: trailing whitespace.
-> };
-> .git/rebase-apply/patch:311: trailing whitespace.
-> #define tcp_flag_word(tp) ( ((union tcp_word_hdr *)(tp))->words [3])
-> .git/rebase-apply/patch:313: trailing whitespace.
-> enum {
-> warning: squelched 1 whitespace error
-> warning: 6 lines add whitespace errors.
-> Applying: bpf: Try to avoid kzalloc in cgroup/{s,g}etsockopt
-> error: patch failed: kernel/bpf/cgroup.c:1390
-> error: kernel/bpf/cgroup.c: patch does not apply
-> Patch failed at 0002 bpf: Try to avoid kzalloc in cgroup/{s,g}etsockopt
-Sorry, I mentioned in the cover letter that the series requires
-4be34f3d0731 ("bpf: Don't leak memory in bpf getsockopt when optlen == 0")
-which is only in the bpf tree. No sure when bpf & bpf-next merge.
-Or are you trying to apply on top of that?
+>
+> On 1/14/21 2:02 PM, Jiri Olsa wrote:
+> > On Thu, Jan 14, 2021 at 01:05:33PM -0800, Yonghong Song wrote:
+> >>
+> >>
+> >> On 1/14/21 12:01 PM, Jiri Olsa wrote:
+> >>> On Thu, Jan 14, 2021 at 10:56:33AM -0800, Yonghong Song wrote:
+> >>>>
+> >>>>
+> >>>> On 1/14/21 5:40 AM, Jiri Olsa wrote:
+> >>>>> It's possible to have other build id types (other than default SHA1).
+> >>>>> Currently there's also ld support for MD5 build id.
+> >>>>
+> >>>> Currently, bpf build_id based stackmap does not returns the size of
+> >>>> the build_id. Did you see an issue here? I guess user space can check
+> >>>> the length of non-zero bits of the build id to decide what kind of
+> >>>> type it is, right?
+> >>>
+> >>> you can have zero bytes in the build id hash, so you need to get the size
+> >>>
+> >>> I never saw MD5 being used in practise just SHA1, but we added the
+> >>> size to be complete and make sure we'll fit with build id, because
+> >>> there's only limited space in mmap2 event
+> >>
+> >> I am asking to check whether we should extend uapi struct
+> >> bpf_stack_build_id to include build_id_size as well. I guess
+> >> we can delay this until a real use case.
+> >
+> > right, we can try make some MD5 build id binaries and check if it
+> > explodes with some bcc tools, but I don't expect that.. I'll try
+> > to find some time for that
+>
+> Thanks. We may have issues on bcc side. For build_id collected in
+> kernel, bcc always generates a length-20 string. But for user
+> binaries, the build_id string length is equal to actual size of
+> the build_id. They may not match (MD5 length is 16).
+> The fix is probably to append '0's (up to length 20) for user
+> binary build_id's.
+>
+> I guess MD5 is very seldom used. I will wait if you can reproduce
+> the issue and then we might fix it.
+
+Indeed.
+Jiri, please check whether md5 is really an issue.
+Sounds like we have to do something on the kernel side.
+Hopefully zero padding will be enough.
+I would prefer to avoid extending uapi struct to cover rare case.
+
+I've applied the series, since this issue sounds orthogonal.
