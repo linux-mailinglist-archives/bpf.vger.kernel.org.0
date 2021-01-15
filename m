@@ -2,115 +2,190 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0BA02F76EA
-	for <lists+bpf@lfdr.de>; Fri, 15 Jan 2021 11:46:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 096112F777B
+	for <lists+bpf@lfdr.de>; Fri, 15 Jan 2021 12:20:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726808AbhAOKoZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Jan 2021 05:44:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43798 "EHLO
+        id S1727417AbhAOLTJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Jan 2021 06:19:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726019AbhAOKoY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Jan 2021 05:44:24 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FBBCC0613D3;
-        Fri, 15 Jan 2021 02:43:44 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id u21so9906556lja.0;
-        Fri, 15 Jan 2021 02:43:44 -0800 (PST)
+        with ESMTP id S1726801AbhAOLTI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Jan 2021 06:19:08 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37721C061757
+        for <bpf@vger.kernel.org>; Fri, 15 Jan 2021 03:18:28 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id m187so736324wme.2
+        for <bpf@vger.kernel.org>; Fri, 15 Jan 2021 03:18:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=q5KthTeXhG9zYR2XUBnXVlinwFDvxSXX3TRUTi/EkJk=;
-        b=eOiVjdCcyHtEZxvGbZBM2F3z2kQX62FWVXnciVmtsxZVQTtZcPEvmQjQANp4fRH4Y0
-         6cRHxPc4YrAj3s+6lm/z3TpwnjIj1kX6ASx1DbHPPR2XHCxscfCBjeDz+gZEejUUXMXS
-         xnLwkHSz0QXcl6Vzu6Qh2I9af3tJslAnrYci06rSCJQE54xeALPCf8+9jlpV3PoXel7D
-         jwmO/o+z2HBmc6kV7Rv6+ECBnZbKIvTe1Dc36tRR718bKLdF+JEbrgcRJbnKKhoyKD8q
-         LjyscSazJQaVi+wqfDSyE96weGhQIJqRxNoGmubtNOudIvVExuadYGU1ueCDEtKZMIia
-         JZDw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=1v0kX8Ej1D5vKbj6l4aBaWcu5DlgLp/Dsh/tnFpcg+Y=;
+        b=q3yaL+9Dr08XGvGA9C6LCEyO8dv4MnZdXyFkQYqmFx0J6077BQyNrC3ZfumRsecp3C
+         jhWw5mwhLJPw0Cs1JbrRKisZLtJwnz1td5U9T0NGKs1Du/ixjp/OJBAzJfzKRI6OcJk7
+         jMEwkkp1Tkj+4L5MV7I56bqhm0b41JzVf87hKjB9+45TNRkOJr4vpR/ubLc/6rtvmcJ5
+         7mCbPO3LDc6oV5qxhdZ2mVZdYUEoFwtOSOsE5jhkTTaKb96r2hJSt5iuNgvxYG8TmgQR
+         6/dS/oeqnNfc5YG3pyRPZOkm06JhrYQzWk/YJrzGR6qgls7QN+s9q82XGRS8f8pSX4Qd
+         is3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=q5KthTeXhG9zYR2XUBnXVlinwFDvxSXX3TRUTi/EkJk=;
-        b=jTytNBtXC1bXTm2sh1E06PNVyGf+sEE35ELKqGQdTkBzPqeYVcVmdUrQRrwmJfqAXP
-         NIwUqDqbmyBcEDGucayH45Rzw1G/1tiHKv0I3uZkzq25EkC2UeaJDnSbhh395nEWU/Bd
-         8AqqD/jHpqUqLSAl2xIZNmLzJxTIZi4NJmBHOC86OJCWS8Lt0Ak9Y9+jlcgDg8In/or4
-         /QX4b7yDlHqUh6l8R0WduN0YLwmlix2JB4XBPVupGGbi+e8rtyJVfoUnNlKsijIMajKH
-         gc5a7avz//QKoe5BwgsKZFFHst7JZoLisXX+JHD5yy8GTVruO6FpB5zp73llJ1+gRqSn
-         JfkA==
-X-Gm-Message-State: AOAM532CcNHdj2vSM6Rb5evdERnQgeMYufO1xITt1RU7psA9SbZV2Dmx
-        NfM8geD1qWRPx5UeRuHRK+M=
-X-Google-Smtp-Source: ABdhPJxHW9y/m+FKwNjJRh6qlv0CDana0YCVPGb3v4OIgQCK1Os++OtGqZ7VIgMhBv60vWc37rBzYg==
-X-Received: by 2002:a2e:7613:: with SMTP id r19mr5371921ljc.284.1610707422639;
-        Fri, 15 Jan 2021 02:43:42 -0800 (PST)
-Received: from btopel-mobl.ger.intel.com (c213-102-90-208.bredband.comhem.se. [213.102.90.208])
-        by smtp.gmail.com with ESMTPSA id c3sm762267ljk.88.2021.01.15.02.43.41
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=1v0kX8Ej1D5vKbj6l4aBaWcu5DlgLp/Dsh/tnFpcg+Y=;
+        b=hOM51mtwQQnNNCVPeIxPXIysHa5AYN2sVWWYVP4n2mPiDXnorp7X2cdD5ndHKlmBmm
+         /OeWg6ymUL+Bc5KT8M/4CAg5w4c+SDqLqahDt0iOdK+0gwYhWy+fbax6I1FGopUwYEo0
+         y2BV3Iik3DUtHgZ9GP+tg7SyADeppG/wmo8yRB9bTye+/1ycdt5ZiFs//Mly32UzcHao
+         iqQBclD6hQUzMTURbWuSOX36EFveZX9pis++3td+cbyMQK9TB7KlOXN6of7zBeicEMq/
+         2poj7/h8DmQ25y76rEth3a/erQ+iA3ZoHny3ifsyhLqeckbtjvqA9V2Us1SAFB6t/Rhh
+         9NEA==
+X-Gm-Message-State: AOAM532iq5hz5oKpFyoN8zHS8Gc9zGENYIZp6OLq5Cbc1yNffSeRbnNi
+        gGNhUN0jFKmeGEY/byVUVDVSkA==
+X-Google-Smtp-Source: ABdhPJy6Ksm7TL3YP23vSBkfPg6+Ma2TEXquqULAQIh92rfS/zIKFK4APldrd16rYZnbmfKF7kRaEA==
+X-Received: by 2002:a05:600c:4417:: with SMTP id u23mr8306553wmn.100.1610709506910;
+        Fri, 15 Jan 2021 03:18:26 -0800 (PST)
+Received: from dell ([91.110.221.158])
+        by smtp.gmail.com with ESMTPSA id i18sm14818507wrp.74.2021.01.15.03.18.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 02:43:41 -0800 (PST)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-        linux-riscv@lists.infradead.org
-Subject: [PATCH bpf] MAINTAINERS: update my email address
-Date:   Fri, 15 Jan 2021 11:43:37 +0100
-Message-Id: <20210115104337.7751-1-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Fri, 15 Jan 2021 03:18:26 -0800 (PST)
+Date:   Fri, 15 Jan 2021 11:18:23 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+        Dany Madden <drt@linux.ibm.com>,
+        Daris A Nevil <dnevil@snmc.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Erik Stahlman <erik@vt.edu>,
+        Geoff Levand <geoff@infradead.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Ishizaki Kou <kou.ishizaki@toshiba.co.jp>,
+        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
+        Jens Osterkamp <Jens.Osterkamp@de.ibm.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Allen <jallen@linux.vnet.ibm.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Lijun Pan <ljp@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org,
+        Michael Ellerman <mpe@ellerman.id.au>, netdev@vger.kernel.org,
+        Nicolas Pitre <nico@fluxnic.net>, Paul Durrant <paul@xen.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Peter Cammaert <pc@denkart.be>,
+        Russell King <rmk@arm.linux.org.uk>,
+        Rusty Russell <rusty@rustcorp.com.au>,
+        Santiago Leon <santi_leon@yahoo.com>,
+        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
+        Thomas Falcon <tlfalcon@linux.vnet.ibm.com>,
+        Utz Bacher <utz.bacher@de.ibm.com>,
+        Wei Liu <wei.liu@kernel.org>, xen-devel@lists.xenproject.org
+Subject: Re: [PATCH v2 0/7] Rid W=1 warnings in Ethernet
+Message-ID: <20210115111823.GH3975472@dell>
+References: <20210113164123.1334116-1-lee.jones@linaro.org>
+ <20210113183551.6551a6a2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20210114083349.GI3975472@dell>
+ <20210114091453.30177d20@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20210114195422.GB3975472@dell>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210114195422.GB3975472@dell>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn@kernel.org>
+On Thu, 14 Jan 2021, Lee Jones wrote:
 
-My Intel email will stop working in a not too distant future. Move my
-MAINTAINERS entries to my kernel.org address.
+> On Thu, 14 Jan 2021, Jakub Kicinski wrote:
+> 
+> > On Thu, 14 Jan 2021 08:33:49 +0000 Lee Jones wrote:
+> > > On Wed, 13 Jan 2021, Jakub Kicinski wrote:
+> > > 
+> > > > On Wed, 13 Jan 2021 16:41:16 +0000 Lee Jones wrote:  
+> > > > > Resending the stragglers again.                                                                                  
+> > > > > 
+> > > > > This set is part of a larger effort attempting to clean-up W=1                                                   
+> > > > > kernel builds, which are currently overwhelmingly riddled with                                                   
+> > > > > niggly little warnings.                                                                                          
+> > > > >                                                                                                                  
+> > > > > v2:                                                                                                              
+> > > > >  - Squashed IBM patches                                                                                      
+> > > > >  - Fixed real issue in SMSC
+> > > > >  - Added Andrew's Reviewed-by tags on remainder  
+> > > > 
+> > > > Does not apply, please rebase on net-next/master.  
+> > > 
+> > > These are based on Tuesday's next/master.
+> > 
+> > What's next/master?
+> 
+> I'm not sure if this is a joke, or not? :)
+> 
+> next/master == Linux Next.  The daily merged repo where all of the
+> *-next branches end up to ensure interoperability.  It's also the
+> branch that is most heavily tested by the auto-builders to ensure the
+> vast majority of issues are ironed out before hitting Mainline.
+> 
+> > This is net-next:
+> > 
+> > https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/
+> 
+> Looks like net-next gets merged into next/master:
+> 
+> commit 452958f1f3d1c8980a8414f9c37c8c6de24c7d32
+> Merge: 1eabba209a17a f50e2f9f79164
+> Author: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date:   Thu Jan 14 10:35:40 2021 +1100
+> 
+>     Merge remote-tracking branch 'net-next/master'
+> 
+> So I'm not sure what it's conflicting with.
+> 
+> Do you have patches in net-next that didn't make it into next/master
+> for some reason?
+> 
+> I'll try to rebase again tomorrow.
+> 
+> Hopefully I am able to reproduce your issue by then.
 
-Signed-off-by: Björn Töpel <bjorn@kernel.org>
----
- .mailmap    | 2 ++
- MAINTAINERS | 4 ++--
- 2 files changed, 4 insertions(+), 2 deletions(-)
+Okay so my development branch rebased again with no issue.
 
-diff --git a/.mailmap b/.mailmap
-index 632700cee55c..b1ab0129c7d6 100644
---- a/.mailmap
-+++ b/.mailmap
-@@ -55,6 +55,8 @@ Bart Van Assche <bvanassche@acm.org> <bart.vanassche@wdc.com>
- Ben Gardner <bgardner@wabtec.com>
- Ben M Cahill <ben.m.cahill@intel.com>
- Björn Steinbrink <B.Steinbrink@gmx.de>
-+Björn Töpel <bjorn@kernel.org> <bjorn.topel@gmail.com>
-+Björn Töpel <bjorn@kernel.org> <bjorn.topel@intel.com>
- Boris Brezillon <bbrezillon@kernel.org> <b.brezillon.dev@gmail.com>
- Boris Brezillon <bbrezillon@kernel.org> <b.brezillon@overkiz.com>
- Boris Brezillon <bbrezillon@kernel.org> <boris.brezillon@bootlin.com>
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b15514a770e3..0dfd1a67d430 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3336,7 +3336,7 @@ F:	arch/riscv/net/
- X:	arch/riscv/net/bpf_jit_comp64.c
- 
- BPF JIT for RISC-V (64-bit)
--M:	Björn Töpel <bjorn.topel@gmail.com>
-+M:	Björn Töpel <bjorn@kernel.org>
- L:	netdev@vger.kernel.org
- L:	bpf@vger.kernel.org
- S:	Maintained
-@@ -19409,7 +19409,7 @@ F:	drivers/net/ethernet/*/*/*xdp*
- K:	(?:\b|_)xdp(?:\b|_)
- 
- XDP SOCKETS (AF_XDP)
--M:	Björn Töpel <bjorn.topel@intel.com>
-+M:	Björn Töpel <bjorn@kernel.org>
- M:	Magnus Karlsson <magnus.karlsson@intel.com>
- R:	Jonathan Lemon <jonathan.lemon@gmail.com>
- L:	netdev@vger.kernel.org
+I also took the liberty to checkout net-next and cherry-pick the
+patches [0], which again didn't cause a problem.
 
-base-commit: 4237e9f4a96228ccc8a7abe5e4b30834323cd353
+I'm not sure what else to suggest.  Is your local copy up-to-date?
+
+[0]
+
+lee@dell:~/projects/linux/kernel [net-next]$ gcp 0cea4b05acd57..924e1f46aba5e
+Auto-merging drivers/net/ethernet/smsc/smc91x.c
+[net-next 19811db3120a2] net: ethernet: smsc: smc91x: Fix function name in kernel-doc header
+ Date: Mon Oct 19 12:47:11 2020 +0100
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+[net-next dc6f4490cb64e] net: xen-netback: xenbus: Demote nonconformant kernel-doc headers
+ Date: Tue Oct 20 08:00:43 2020 +0100
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+[net-next a3363cb09ae59] net: ethernet: ti: am65-cpsw-qos: Demote non-conformant function header
+ Date: Tue Oct 20 09:05:38 2020 +0100
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+[net-next 005462f886c3e] net: ethernet: ti: am65-cpts: Document am65_cpts_rx_enable()'s 'en' parameter
+ Date: Tue Oct 20 09:06:57 2020 +0100
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+Auto-merging drivers/net/xen-netfront.c
+[net-next 9fcc32e395e09] net: ethernet: ibm: ibmvnic: Fix some kernel-doc misdemeanours
+ Date: Tue Oct 20 09:42:19 2020 +0100
+ 2 files changed, 16 insertions(+), 17 deletions(-)
+[net-next 15ba865fef481] net: ethernet: toshiba: ps3_gelic_net: Fix some kernel-doc misdemeanours
+ Date: Tue Oct 20 10:10:14 2020 +0100
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+[net-next f815eb7cbd7f5] net: ethernet: toshiba: spider_net: Document a whole bunch of function parameters
+ Date: Tue Oct 20 10:18:21 2020 +0100
+ 1 file changed, 11 insertions(+), 7 deletions(-)
+
 -- 
-2.27.0
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
