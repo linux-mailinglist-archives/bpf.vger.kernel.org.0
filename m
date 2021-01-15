@@ -2,226 +2,237 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BF2F2F6F16
-	for <lists+bpf@lfdr.de>; Fri, 15 Jan 2021 00:46:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45B4E2F6F5B
+	for <lists+bpf@lfdr.de>; Fri, 15 Jan 2021 01:19:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731007AbhANXqi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Jan 2021 18:46:38 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:45894 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730776AbhANXqh (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 14 Jan 2021 18:46:37 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 10ENhJhq018886;
-        Thu, 14 Jan 2021 15:45:50 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=/jEu2XhKgorHo8uo/NhrgaTgf5uLHICfAQPx1ajaSK8=;
- b=mkMDJOIUnekYuBdCC1CwMwdsICUaF9cSajd+t6SYGVWxLhDMXsHvnEdH17m8XJIfQCCS
- HMdezeKuYj34JXtVT5+WV6LXX+S15YUv2CKcEL2kAsyVCkIBJ3lnGT/XS4vs+79ZE5Xx
- 17VSh2LL9klpdBxvw+xa7eL9v8Oqxqz5sbA= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 361fp3wun1-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 14 Jan 2021 15:45:50 -0800
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 14 Jan 2021 15:45:49 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A1wGP0HypJfbshlhh+5C74idHLHZe2/W7yEJU+C6I4VBEuNuvM43j+2DrzOlFR8nWbfUqYA0Z0UybPf6qA+4NThOUI+Oo6bNQz88e1EV0YrqhNQpJemDhtUZOQD7xTE3SmBS1nfC2rptpem7Cq8XyImvuYdAqknMBwm22wb5gbSgBHprlE6UkO9iiqKX1EYCUn65Pe+6nl5SImooesIoimhGmj4uzeeeY5zAcVesglPAmQuEJsVDpETu5mcBJlamHKaaaRv9W/q5VVLw5d0C7YbgPPcIUYJZzVn9PESQGUWbbSkbzAzlnacRR9GCk9SaAxaRrSASmrhw7RzUmehJWA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/jEu2XhKgorHo8uo/NhrgaTgf5uLHICfAQPx1ajaSK8=;
- b=KYjNRMSueMpwCqNNqRaA+oFfmHhM2mybB+P7G3mRcTIbR1INz2oc2oLkMD+A9APsrsvf14HJlwkdi/Q/u1P5CPddK4CfEHLLeci/x1G7sTyy/GNFodHn8/71qukVY14ea1FirCz/Y9SpNeS9NwdD3uAuXQ7Ah4LVI5hNqnrWWJ/Yvxf333VcImVnfoD4Ub1L6oF7LkPIgTepWzzlnCNwuOmHcZxhbk+kb48kgtrYD35pI7xyuugv+3SbDl6zMBjhHwTeCCHUOXbMETyaWvLmAu8S5oIfcOfTZ2avmumNWPQ9/7aaBBobthDKFj4nchScuj17diq1azNRIAuCU/xAdw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/jEu2XhKgorHo8uo/NhrgaTgf5uLHICfAQPx1ajaSK8=;
- b=LZdFp1pTH0qA0U8raw5ds3Lix3dzXoo209HTsjkls93BilVQolrR7wUp9kt/cHMoc68bZP2DUlrS1Z4F8Aq9neEXMSjfWw5yn3rqOHmrpHBigNNH29YgILXzvEkwf6dcRHRZx3xhQYB6qU9p+t65P1ssd1/IOeiyk2V4UvBlDwA=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB3510.namprd15.prod.outlook.com (2603:10b6:a03:112::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.11; Thu, 14 Jan
- 2021 23:45:48 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3763.011; Thu, 14 Jan 2021
- 23:45:48 +0000
-Subject: Re: [PATCH v3 0/2] Kbuild: DWARF v5 support
-To:     <sedat.dilek@gmail.com>, Nick Desaulniers <ndesaulniers@google.com>
-CC:     Jiri Olsa <jolsa@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Caroline Tice <cmtice@google.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Fangrui Song <maskray@google.com>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Nick Clifton <nickc@redhat.com>, bpf <bpf@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-References: <20201204011129.2493105-1-ndesaulniers@google.com>
- <20201204011129.2493105-3-ndesaulniers@google.com>
- <CA+icZUVa5rNpXxS7pRsmj-Ys4YpwCxiPKfjc0Cqtg=1GDYR8-w@mail.gmail.com>
- <CA+icZUW6h4EkOYtEtYy=kUGnyA4RxKKMuX-20p96r9RsFV4LdQ@mail.gmail.com>
- <CABtf2+RdH0dh3NyARWSOzig8euHK33h+0jL1zsey9V1HjjzB9w@mail.gmail.com>
- <CA+icZUUtAVBvpU8M0PONnNSiOATgeL9Ym24nYUcRPoWhsQj8Ug@mail.gmail.com>
- <CAKwvOd=+g88AEDO9JRrV-gwggsqx5p-Ckiqon3=XLcx8L-XaKg@mail.gmail.com>
- <CAKwvOdnSx+8snm+q=eNMT4A-VFFnwPYxM=uunRkXdzX-AG4s0A@mail.gmail.com>
- <5707cd3c-03f2-a806-c087-075d4f207bee@fb.com>
- <CA+icZUXuzJ4SL=AwTaVq_-tCPnSSrF+w_P8gEKYnT56Ln0Zoew@mail.gmail.com>
- <CA+icZUXQ5bNX0eX7jEhgTMawdctZ4vkmYoRKDgxEMV5ZKp8YaQ@mail.gmail.com>
- <CAKwvOdn98zvjGaEy0O7uCb9AUZdZANCeSYpdti3U3uj4+V4dyQ@mail.gmail.com>
- <CA+icZUUMPwUF7wHir1rqNTGdQEgR1Fo5j646BunhEB6D3aFXsA@mail.gmail.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <02124c07-9411-2356-6288-3bc8c7aba61b@fb.com>
-Date:   Thu, 14 Jan 2021 15:45:45 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.1
-In-Reply-To: <CA+icZUUMPwUF7wHir1rqNTGdQEgR1Fo5j646BunhEB6D3aFXsA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-X-Originating-IP: [2620:10d:c090:400::5:ab59]
-X-ClientProxiedBy: MWHPR2001CA0003.namprd20.prod.outlook.com
- (2603:10b6:301:15::13) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21e1::13f6] (2620:10d:c090:400::5:ab59) by MWHPR2001CA0003.namprd20.prod.outlook.com (2603:10b6:301:15::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9 via Frontend Transport; Thu, 14 Jan 2021 23:45:47 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5ab63abd-5d97-4553-7797-08d8b8e684ce
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3510:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB35100B53C4B3DBE08980FA39D3A80@BYAPR15MB3510.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5gTfclJq++2kXVPAFp20L6zVDWmlhRra6TS+svtBVHu7+GDZDd2fppddIHAPPUN2GcQzk/iIn84twxtmHPp+veS2Ca7+GaeyttqcNV8bm/DKYgRdvE+1rStyhILx+hI3pDIYgvQ7N0pn1nns8BkU2kj9ILGAtjRi13+5J8nXUla3GfLpGY1+7BoFP6pzieCh/ZXwi1XiYj55wd5wwIOmtuKQ0bhDHuYmkqgSpwnL6W7mDP6QszjdEH//Qti63DtbHoT5c8WblLOe0rz+ZGKt5B7YRmAmbrHAoR5iLOBrvDDBHKzr0d0lXjRA1UauPcecosovJ6Ez9xPwZmJuzJSoG7bpgDvocqcP76YoWEG8nPIYE6rgcnwTRDu64k/5wj7tatDQOqcQ/d0n68XjTALUjUmgIj77rKdzGDof8UrxP7g9kijzHRJGwkwNQgzqWa5VZlcU8aD9cJ9mnlk0yCa7GUS/7wySw+MsK5hKrGqIJcRAbfcXUqzAdi6Na3fxntAJZzkjaO9fal0veOKAFf09hmtwBoyDvy+35cHSMULiDew7EGxTJjulVZ6MTFBNc2/V
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(39860400002)(376002)(346002)(366004)(66946007)(2616005)(478600001)(16526019)(31686004)(66556008)(8936002)(2906002)(66476007)(31696002)(316002)(5660300002)(52116002)(54906003)(53546011)(7416002)(186003)(8676002)(36756003)(4326008)(6916009)(966005)(6486002)(86362001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?aHh5NEFiUHJSdFJaVHkyMDJwQWxoT2tQWG5CaDdxUjNWSTJxbG9aV09pOUZ2?=
- =?utf-8?B?SDZwdThOckpBNHE3aXVEVlN5UGtmb2Z6QmZDUlNBRWpIazRjWnBzdldmTXhK?=
- =?utf-8?B?UHpRc1BBV09vWkJxV0NXYzF6dmFKdGRKSUJldjJURGlOdzhyVkFiYkRQV0dB?=
- =?utf-8?B?cTlXUEx3cEVxYVg0OVlwWmlKbFNPRCs5TFpwZDhnN3E4NFJmaE82RVpsRDNr?=
- =?utf-8?B?d3lxSys2Q0I2MFpNRHdjRnI5a0lZNnlVYkdyV21MSUpCSjJyRldFc3JBR1BW?=
- =?utf-8?B?RCt6UkNUdVlrVmlSRFpvMkoyY3F5bUs2V2JuVkk1MGVOUDBVUiszM1RVZGxS?=
- =?utf-8?B?WTFKQVZhZHRFaHNvQXMvZGtZRDFHU3ZhZkpxQktVMXpVQVRuUndOUnhaVW9H?=
- =?utf-8?B?VGZjdFhvcGovYS9LV2UxWWtVZDJSTHp6OFNwRU9aQzJxbDZlM2tCQllDYnpU?=
- =?utf-8?B?aFA1ZzBvZ2NNTHNWN0dQRXhSbmpkcENMTG9YYUdXTXNOeUFZbHlIOCtvOTZS?=
- =?utf-8?B?NnYyUS83ZmNrRzNIQ2VGZXBTQUpFWXhSaVA3alRnN3QycTRyOXNwL2lxeGRz?=
- =?utf-8?B?TE9SR0p6M3ZaUXVET0ZZbVFBY2ZIL0ZoOS9ZWUtNYnR3SGRQbGtKMUNBVzhH?=
- =?utf-8?B?YnhFMGZsSFFrdWtpa1B2TXdTN0RzeCtaVVllVzNwZHZWdE5CclE2Yk9keWlR?=
- =?utf-8?B?VkQ1UFNtR1p1VU5mUmkyOFRmZUlnUHF4K1NBZSt5d3FoR3VYV0FHTEtUOUNq?=
- =?utf-8?B?c3dndUlKaGhnam5VWjg5OVBUV3h5K3RWUUl1aGlvNFUyT3EvUU0vSzl6YUo4?=
- =?utf-8?B?bEpCby9YNjVsY25hVkdmNG5mMVVnelU5azAyWk0rVzVtSEFNQkI4cW82WVZH?=
- =?utf-8?B?TTFCQjBySXhwS2NSSm4zUnRmME0wOE0yOVFLREtFdC9mVXBoUExxdjNEN1R3?=
- =?utf-8?B?VDFxNmdRUmhPb0tHT3lkdk5GR0pLMzFLVE9wQ1NSYzd5NWEweUxUY2JOYjNK?=
- =?utf-8?B?cXVnMEUyU1ZabXdlWmpUblJ0OVZMalZUdDBTeGtLb0xPZk4xSnFGOVJDZ25H?=
- =?utf-8?B?bnRPalZYMzduS2U0c1hEZkh0YVZCWlgyU1orK2xWL1crWmtZM1ZXOGVuZlVa?=
- =?utf-8?B?enIwQ3FkYlN2ZjdSUDdEVVdpUFp1V2kwZkhETWpDNjRGdGxEZTV6d3lGTnZ2?=
- =?utf-8?B?cjh0NGphWXh2Z1VKcmlHUThSdE0rbFkzODdQc20yay9IRnNocVB1aU5peTM0?=
- =?utf-8?B?SzljZVA3elNRaUc2T0NEWjNuRWdUN2FGekVIb1FxS0ZZUHhuOFdGRXpXYVVJ?=
- =?utf-8?B?MUtUYXRRRldFbEV6NlFRS205Z2lLS1RrNkhPenh2T3VGMDFyWWVsQmhFbEhw?=
- =?utf-8?B?b1A4bS96eW1MOXc9PQ==?=
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jan 2021 23:45:48.1748
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5ab63abd-5d97-4553-7797-08d8b8e684ce
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5Uv9MVl4eu6t1CFJP1JVEqRU3u4d3oABoPhbYsezZTep7PfZWTpDayfvt++IVKb5
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3510
-X-OriginatorOrg: fb.com
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-14_10:2021-01-14,2021-01-14 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- mlxlogscore=999 phishscore=0 spamscore=0 priorityscore=1501 bulkscore=0
- clxscore=1015 mlxscore=0 impostorscore=0 adultscore=0 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101140137
-X-FB-Internal: deliver
+        id S1731167AbhAOASH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Jan 2021 19:18:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731122AbhAOASH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Jan 2021 19:18:07 -0500
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DDB1C061757
+        for <bpf@vger.kernel.org>; Thu, 14 Jan 2021 16:17:27 -0800 (PST)
+Received: by mail-qk1-x74a.google.com with SMTP id y187so6114248qke.20
+        for <bpf@vger.kernel.org>; Thu, 14 Jan 2021 16:17:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=ODdspgtKYpLTbgnDdHD8QPVxqFSTF0BpW/GtqLdWnJM=;
+        b=phPmEPnH+o1wpe9w2yI4yEpLM5yOKDWNQCZRecEk4hbDK4CBO3aU0AEoN4TDsnhGeS
+         jfNUcuvjAcbNaYFhdS11U6ftG11bNppGZXGmANzJaeovZXtcz2MAQJQRiuC0VYFDf1Ez
+         nsdiPLRSU6Q6Q1e/TCEWgDG5NYCx05uaN6HxdptrIo94AJbm2JCWGSJSNPgw9JALHXdR
+         g8jH+T3o3jJzrnhuvbGQanvIMr01UDj+uFsZdUAUHSNrhugvAUT8mA4a5XWWmbuqRpOm
+         NvSeZ8zHYgzD55GbMnhapNIF9EdNYF72hr26or/YYyCkOFdz+6V3OKBQa62xpUepeoHP
+         GPFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=ODdspgtKYpLTbgnDdHD8QPVxqFSTF0BpW/GtqLdWnJM=;
+        b=SZp/lep3np8JhlXG4Yn0ZeQfYwx2PoMi/MbUjHbVj+lpaZabEB847KB3evWPaYm70F
+         rHszL1gFzACfIZh70osPM4F7DjLkdI39ny2AZFoy/NyM2AVjDkDLEOLMqdytLTs7Tlqb
+         +ethinuX7MbzI0FstuKUFVDEKl4/QULvVQgl0m5JFuwsqLtFYf/esLAR7HikgLV1KpNi
+         hfyDAjfxNRcFZ5jI481js+RlLBA4Z7yNHvVly8FFxXzIyaamxRPz5FebJw+uwOnsaub0
+         A1qVmIagHwqPzr+8KsLsdrEQnZixqss5cyTQHuascsTVjZAtSqKMXsJWJ6LbC47p3hLq
+         kXxA==
+X-Gm-Message-State: AOAM532iW1rlyQI3kR41qVTiP5B6PIz1LqtCIbaip3yIuW5lKZl+edfS
+        ZUnWErZLRNggzODzUcrv/m0dDlk=
+X-Google-Smtp-Source: ABdhPJz0K8dPcBjfApyvsdDxqqthfAJGWIe5OmafvebVlTexZ+pePn+BjmIB6Q+gdGIaMVKpUw5ClBI=
+Sender: "sdf via sendgmr" <sdf@sdf2.svl.corp.google.com>
+X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:7220:84ff:fe09:7732])
+ (user=sdf job=sendgmr) by 2002:a0c:fe47:: with SMTP id u7mr9697474qvs.4.1610669846124;
+ Thu, 14 Jan 2021 16:17:26 -0800 (PST)
+Date:   Thu, 14 Jan 2021 16:17:24 -0800
+Message-Id: <1627e0f688c7de7fe291b09c524c7fbb55cfe367.1610669653.git.sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+Subject: [RPC PATCH bpf-next] bpf: implement new BPF_CGROUP_INET_SOCK_POST_CONNECT
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+We are playing with doing hybrid conntrack where BPF generates
+connect/disconnect/etc events and puts them into perfbuf (or, later,
+new ringbuf). We can get most of the functionality out of
+existing hooks:
+- BPF_CGROUP_SOCK_OPS fully covers TCP
+- BPF_CGROUP_UDP4_SENDMSG covers unconnected UDP (with sampling, etc)
 
+The only missing bit is connected UDP where we can get some
+information from the existing BPF_CGROUP_INET{4,6}_CONNECT if the caller
+did explicit bind(); otherwise, in an autobind case, we get
+only destination addr/port and no source port because this hook
+triggers prior to that.
 
-On 1/14/21 2:21 PM, Sedat Dilek wrote:
-> On Thu, Jan 14, 2021 at 11:05 PM Nick Desaulniers
-> <ndesaulniers@google.com> wrote:
->>
->> On Thu, Jan 14, 2021 at 1:52 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->>>
->>> Today, I have observed and reported (see [1]) bpf/btf/pahole issues
->>> with Clang v12 (from apt.llvm.org) and DWARF-4 ("four").
->>> Cannot speak for other compilers and its version.
->>
->> If these are not specific to DWARF5, then it sounds like
->> CONFIG_DEBUG_INFO_DWARF4 should also be marked as `depends on
->> !DEBUG_INFO_BTF`? (or !BTF && CC=clang)
->>
-> 
-> My experiments yesterday on Wednesday were with GCC v10.2.1 plus LLVM=1.
-> There were no issues with DWARF v2 and v4 but v5.
-> 
-> Unfortunately, build-time is long here on my systems.
-> 
-> For now, I did CONFIG_DEBUG_INFO_BTF=n.
-> 
-> I have applied attached patch.
-> 
-> Is it possible to re-arrange CC depends?
-> 
-> [ /lib/Kconfig.debug ]
-> 
-> config DEBUG_INFO_DWARF5
->         bool "Generate DWARF Version 5 debuginfo"
-> -       depends on GCC_VERSION >= 50000 || CC_IS_CLANG
-> -       depends on CC_IS_GCC ||
-> $(success,$(srctree)/scripts/test_dwarf5_support.sh $(CC)
-> $(CLANG_FLAGS))
-> +      depends on CC_IS_GCC && GCC_VERSION >= 50000 || CC_IS_CLANG
-> +      depends on $(success,$(srctree)/scripts/test_dwarf5_support.sh
-> $(CC) $(CLANG_FLAGS))
-> +       depends on !DEBUG_INFO_BTF
->         help
->           Generate DWARF v5 debug info. Requires binutils 2.35, gcc 5.0+ (gcc
->           5.0+ accepts the -gdwarf-5 flag but only had partial support for some
-> 
-> And adding text to help concerning DEBUG_INFO_BTF is no good these days.
+We'd really like to avoid the cost of BPF_CGROUP_INET_EGRESS
+and filtering UDP (which covers both connected and unconnected UDP,
+but loses that connect/disconnect pseudo signal).
 
-Thanks, the above change looks good to me as well as the suggestion to 
-add some explanation why disabling DEBUG_INFO_BTF.
+The proposal is to add a new BPF_CGROUP_INET_SOCK_POST_CONNECT which
+triggers right before sys_connect exits in the AF_INET{,6} case.
+The context is bpf_sock which lets BPF examine the socket state.
+There is really no reason for it to trigger for all inet socks,
+I've considered adding BPF_CGROUP_UDP_POST_CONNECT, but decided
+that it might be better to have a generic inet case.
 
-> 
-> BTW, if you do not mind:
-> 
-> Label your patches with "*k*build:" not "*K*build:".
-> 
-> Use "DWARF *v*ersion" not "DWARF *V*ersion" - everywhere.
-> 
-> One patch missed the label "kbuild:" (guess the subject has too many
-> characters).
-> 
->>From what I remember - but these are small nits.
-> 
-> Thanks for DWARF v5 support in Linux.
-> 
-> - Sedat -
-> 
->>>
->>> - Sedat -
->>>
->>> [1] https://lore.kernel.org/bpf/CA+icZUWb3OyaSQAso8LhsRifZnpxAfDtuRwgB786qEJ3GQ+kRw@mail.gmail.com/T/#m6d05cc6c634e9cee89060b2522abc78c3705ea4c
->> --
->> Thanks,
->> ~Nick Desaulniers
+New hook triggers right before sys_connect() returns and gives
+BPF an opportunity to explore source & destination addresses
+as well as ability to return EPERM to the user.
+
+This is somewhat analogous to the existing BPF_CGROUP_INET{4,6}_POST_BIND
+hooks with the intention to log the connection addresses (after autobind).
+
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+Change-Id: I46d0122f93c58b17bfae5ba5040b0b0343908c19
+---
+ include/linux/bpf-cgroup.h | 17 +++++++++++++++++
+ include/uapi/linux/bpf.h   |  1 +
+ kernel/bpf/syscall.c       |  3 +++
+ net/core/filter.c          |  4 ++++
+ net/ipv4/af_inet.c         |  7 ++++++-
+ 5 files changed, 31 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
+index 72e69a0e1e8c..f110935258b9 100644
+--- a/include/linux/bpf-cgroup.h
++++ b/include/linux/bpf-cgroup.h
+@@ -213,12 +213,29 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
+ 	__ret;								       \
+ })
+ 
++#define BPF_CGROUP_RUN_SK_PROG_LOCKED(sk, type)				       \
++({									       \
++	int __ret = 0;							       \
++	if (cgroup_bpf_enabled) {					       \
++		lock_sock(sk);						       \
++		__ret = __cgroup_bpf_run_filter_sk(sk, type);		       \
++		release_sock(sk);					       \
++	}								       \
++	__ret;								       \
++})
++
+ #define BPF_CGROUP_RUN_PROG_INET_SOCK(sk)				       \
+ 	BPF_CGROUP_RUN_SK_PROG(sk, BPF_CGROUP_INET_SOCK_CREATE)
+ 
+ #define BPF_CGROUP_RUN_PROG_INET_SOCK_RELEASE(sk)			       \
+ 	BPF_CGROUP_RUN_SK_PROG(sk, BPF_CGROUP_INET_SOCK_RELEASE)
+ 
++#define BPF_CGROUP_RUN_PROG_INET_SOCK_POST_CONNECT(sk)			       \
++	BPF_CGROUP_RUN_SK_PROG(sk, BPF_CGROUP_INET_SOCK_POST_CONNECT)
++
++#define BPF_CGROUP_RUN_PROG_INET_SOCK_POST_CONNECT_LOCKED(sk)		       \
++	BPF_CGROUP_RUN_SK_PROG_LOCKED(sk, BPF_CGROUP_INET_SOCK_POST_CONNECT)
++
+ #define BPF_CGROUP_RUN_PROG_INET4_POST_BIND(sk)				       \
+ 	BPF_CGROUP_RUN_SK_PROG(sk, BPF_CGROUP_INET4_POST_BIND)
+ 
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index a1ad32456f89..3235f7bd131f 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -241,6 +241,7 @@ enum bpf_attach_type {
+ 	BPF_XDP_CPUMAP,
+ 	BPF_SK_LOOKUP,
+ 	BPF_XDP,
++	BPF_CGROUP_INET_SOCK_POST_CONNECT,
+ 	__MAX_BPF_ATTACH_TYPE
+ };
+ 
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index c3bb03c8371f..7d6fd1e32d22 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -1958,6 +1958,7 @@ bpf_prog_load_check_attach(enum bpf_prog_type prog_type,
+ 		switch (expected_attach_type) {
+ 		case BPF_CGROUP_INET_SOCK_CREATE:
+ 		case BPF_CGROUP_INET_SOCK_RELEASE:
++		case BPF_CGROUP_INET_SOCK_POST_CONNECT:
+ 		case BPF_CGROUP_INET4_POST_BIND:
+ 		case BPF_CGROUP_INET6_POST_BIND:
+ 			return 0;
+@@ -2910,6 +2911,7 @@ attach_type_to_prog_type(enum bpf_attach_type attach_type)
+ 		return BPF_PROG_TYPE_CGROUP_SKB;
+ 	case BPF_CGROUP_INET_SOCK_CREATE:
+ 	case BPF_CGROUP_INET_SOCK_RELEASE:
++	case BPF_CGROUP_INET_SOCK_POST_CONNECT:
+ 	case BPF_CGROUP_INET4_POST_BIND:
+ 	case BPF_CGROUP_INET6_POST_BIND:
+ 		return BPF_PROG_TYPE_CGROUP_SOCK;
+@@ -3063,6 +3065,7 @@ static int bpf_prog_query(const union bpf_attr *attr,
+ 	case BPF_CGROUP_INET_EGRESS:
+ 	case BPF_CGROUP_INET_SOCK_CREATE:
+ 	case BPF_CGROUP_INET_SOCK_RELEASE:
++	case BPF_CGROUP_INET_SOCK_POST_CONNECT:
+ 	case BPF_CGROUP_INET4_BIND:
+ 	case BPF_CGROUP_INET6_BIND:
+ 	case BPF_CGROUP_INET4_POST_BIND:
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 9ab94e90d660..d955321d3415 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -7683,12 +7683,14 @@ static bool __sock_filter_check_attach_type(int off,
+ 		switch (attach_type) {
+ 		case BPF_CGROUP_INET_SOCK_CREATE:
+ 		case BPF_CGROUP_INET_SOCK_RELEASE:
++		case BPF_CGROUP_INET_SOCK_POST_CONNECT:
+ 			goto full_access;
+ 		default:
+ 			return false;
+ 		}
+ 	case bpf_ctx_range(struct bpf_sock, src_ip4):
+ 		switch (attach_type) {
++		case BPF_CGROUP_INET_SOCK_POST_CONNECT:
+ 		case BPF_CGROUP_INET4_POST_BIND:
+ 			goto read_only;
+ 		default:
+@@ -7696,6 +7698,7 @@ static bool __sock_filter_check_attach_type(int off,
+ 		}
+ 	case bpf_ctx_range_till(struct bpf_sock, src_ip6[0], src_ip6[3]):
+ 		switch (attach_type) {
++		case BPF_CGROUP_INET_SOCK_POST_CONNECT:
+ 		case BPF_CGROUP_INET6_POST_BIND:
+ 			goto read_only;
+ 		default:
+@@ -7703,6 +7706,7 @@ static bool __sock_filter_check_attach_type(int off,
+ 		}
+ 	case bpf_ctx_range(struct bpf_sock, src_port):
+ 		switch (attach_type) {
++		case BPF_CGROUP_INET_SOCK_POST_CONNECT:
+ 		case BPF_CGROUP_INET4_POST_BIND:
+ 		case BPF_CGROUP_INET6_POST_BIND:
+ 			goto read_only;
+diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
+index b94fa8eb831b..568654cafa48 100644
+--- a/net/ipv4/af_inet.c
++++ b/net/ipv4/af_inet.c
+@@ -574,7 +574,10 @@ int inet_dgram_connect(struct socket *sock, struct sockaddr *uaddr,
+ 
+ 	if (!inet_sk(sk)->inet_num && inet_autobind(sk))
+ 		return -EAGAIN;
+-	return sk->sk_prot->connect(sk, uaddr, addr_len);
++	err = sk->sk_prot->connect(sk, uaddr, addr_len);
++	if (!err)
++		err = BPF_CGROUP_RUN_PROG_INET_SOCK_POST_CONNECT_LOCKED(sk);
++	return err;
+ }
+ EXPORT_SYMBOL(inet_dgram_connect);
+ 
+@@ -723,6 +726,8 @@ int inet_stream_connect(struct socket *sock, struct sockaddr *uaddr,
+ 
+ 	lock_sock(sock->sk);
+ 	err = __inet_stream_connect(sock, uaddr, addr_len, flags, 0);
++	if (!err)
++		err = BPF_CGROUP_RUN_PROG_INET_SOCK_POST_CONNECT(sock->sk);
+ 	release_sock(sock->sk);
+ 	return err;
+ }
+-- 
+2.30.0.284.gd98b1dd5eaa7-goog
+
