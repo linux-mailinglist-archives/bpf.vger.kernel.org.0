@@ -2,233 +2,204 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 122D02F7CDC
-	for <lists+bpf@lfdr.de>; Fri, 15 Jan 2021 14:40:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5697D2F7DF6
+	for <lists+bpf@lfdr.de>; Fri, 15 Jan 2021 15:19:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731332AbhAONjd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Jan 2021 08:39:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53390 "EHLO
+        id S1729011AbhAOOR7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Jan 2021 09:17:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727716AbhAONjd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 15 Jan 2021 08:39:33 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4C2BC0613C1
-        for <bpf@vger.kernel.org>; Fri, 15 Jan 2021 05:38:52 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id m4so9296578wrx.9
-        for <bpf@vger.kernel.org>; Fri, 15 Jan 2021 05:38:52 -0800 (PST)
+        with ESMTP id S1727335AbhAOOR7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 15 Jan 2021 09:17:59 -0500
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE677C061796
+        for <bpf@vger.kernel.org>; Fri, 15 Jan 2021 06:16:50 -0800 (PST)
+Received: by mail-io1-xd2d.google.com with SMTP id z5so18298914iob.11
+        for <bpf@vger.kernel.org>; Fri, 15 Jan 2021 06:16:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=DswJVhq5oOWqV31Bgiu3EAlzk38txQMCgnjE7KAWjVA=;
-        b=jXZvvwF2rP8IsoXlvyLwXO3x/CSK7EgntdzRZOi5InOS2/t6wE/3wPuCbGPo7PRm7p
-         zYi56lZWwAIjU1O69C65Py54hgRcsKO+6JQsOMv/LIoQeL6X+3v5wc0Y8Zuybd2vLKHN
-         p6WwQJ2tzT3qP2LdcqRUPt/96iLsmVirVebC7xAF+N8WLRNj111UQBlWXOy1P8MKS7Ym
-         J/Ag+ZGSDnNBzU/6C68jLgxGK161s8dHuUWHIlNeiYXXRvWOkKNnP2j2gC5fKqgZC3nb
-         ifpgWmwZmfsidZDX0ntRGiVC1h/GKNueBs/XPjLPdcX+sujI/6zAsKB2Hmz/0D2YtdaM
-         RO/g==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=L6iKe/3mTMg7FO5SdPVi/NG/RVuaa5nifbLr7KD4v9M=;
+        b=JT+GylXyIv/4MuWNokuqUWLsDYG7D2ClOUy8hqi9Ls50nNgAoLhKD4yQ/gX/a7PV3Z
+         fgR3+DKzteNeZt8MJF4tFWFRwZdt+KY6+Laek3XYLPx/4ZDvocQPhU+c16ezD5Xsziht
+         +e0ZkOTTbKs0HTBFdrQ2DY/1CaOzII7WEmCirsRx9D8UuFqTo5N7lrBScLdIH7MihSV6
+         DzZjZHqYRd4sUVnD689CbS4Y3tgDCFPHWXaRIwdR9FdA1aRQ7y2BFAIszowbPVfFgLUO
+         ATWwNX4FtKU8TlgXBpSM7slenms96WmEgQKHvyeB1+qXpRMj0V8aQDZwar0qs4pcG2gf
+         yF5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=DswJVhq5oOWqV31Bgiu3EAlzk38txQMCgnjE7KAWjVA=;
-        b=tTH0yjF61cxUNkF1lWufIpvW5xbCB4krgcKbu3PE+I5BCnMWF0t2DgOTUTSR4UWPH4
-         BeQTpJNmNooWMaZqgPTIv/sNH427E8NVowYELGLZeTDGpMzpDeRAgEm93DvUisq2yEuM
-         748pb/vugxTR9AUoaaVl9HsoK6G5pXJG7rGr+6NoyxgVqi6NMWWb0xRERo/ebFq5zpXj
-         3Xd0lbRHYMl7sOKMhk0kaVnrJkvpvM5lAM+1piBeZkdAa3uj9ryF6Rx5h3GyoPtkTNcS
-         aBLDVu6N2n4kqOCEiRXrJyT20X9TVbkieWm1l+JbYezztqKZv3i7gkCPwx1F/rMZRfad
-         Wq+Q==
-X-Gm-Message-State: AOAM533TmUXypwkHba9CbPT2iqP8vctddejgwix6PEkvqY+BFUCqlhR/
-        mrqr64TwN+CM8SOC+ddKqIO3hg==
-X-Google-Smtp-Source: ABdhPJysZOhfTL14eox4hPGNf3Lqvov2cwR+lXWXy1PG1Q/0jmq6BIg+bkMfA6LBTgWGloBI3Vho+g==
-X-Received: by 2002:adf:f74e:: with SMTP id z14mr13824863wrp.146.1610717931535;
-        Fri, 15 Jan 2021 05:38:51 -0800 (PST)
-Received: from dell ([91.110.221.158])
-        by smtp.gmail.com with ESMTPSA id i11sm11689161wmq.10.2021.01.15.05.38.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 05:38:50 -0800 (PST)
-Date:   Fri, 15 Jan 2021 13:38:48 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Jakub Kicinski <kuba@kernel.org>, Paul Durrant <paul@xen.org>,
-        Kurt Kanzenbach <kurt@linutronix.de>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Peter Cammaert <pc@denkart.be>,
-        Paul Mackerras <paulus@samba.org>,
-        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Santiago Leon <santi_leon@yahoo.com>,
-        xen-devel@lists.xenproject.org,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Thomas Falcon <tlfalcon@linux.vnet.ibm.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Jens Osterkamp <Jens.Osterkamp@de.ibm.com>,
-        Rusty Russell <rusty@rustcorp.com.au>,
-        Daris A Nevil <dnevil@snmc.com>,
-        Lijun Pan <ljp@linux.ibm.com>,
-        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Geoff Levand <geoff@infradead.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Erik Stahlman <erik@vt.edu>,
-        John Allen <jallen@linux.vnet.ibm.com>,
-        Utz Bacher <utz.bacher@de.ibm.com>,
-        Dany Madden <drt@linux.ibm.com>, bpf@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Russell King <rmk@arm.linux.org.uk>
-Subject: Re: [PATCH v2 0/7] Rid W=1 warnings in Ethernet
-Message-ID: <20210115133848.GK3975472@dell>
-References: <20210113164123.1334116-1-lee.jones@linaro.org>
- <20210113183551.6551a6a2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20210114083349.GI3975472@dell>
- <20210114091453.30177d20@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20210114195422.GB3975472@dell>
- <20210115111823.GH3975472@dell>
- <bc775cc3-fda3-0280-5f92-53058996f02f@csgroup.eu>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=L6iKe/3mTMg7FO5SdPVi/NG/RVuaa5nifbLr7KD4v9M=;
+        b=VkEDuNFOYeo1VFMgTGlFEnqYmySRo3/nWRI23KhsX6moBRC0G+b7xoImmaHT6bDac6
+         31kJFo9ge0x2j2p5kS0AFh5jcqHksRA+9iCmA3oYenbtM7YkV5DN32M9wIp/9Lb01yCo
+         AZiNAnsyX+j13tAtX4ORE5RIOGfQvafV+XNq3t9DCv4JhvIhwcPlh64IMOP9epocrCra
+         V79mVc1CG/ehSHFJOXJgQOcF9OA4c1giD1rAJUfTY6QdxNYVPlLOp+Am5RggI+utX5yP
+         /AIcfpTDtDvT9yw5+5nri833wSEtQLS5TT27N76UTqiidmAzaoYZwG0RD97OYUnebFw6
+         Tg1A==
+X-Gm-Message-State: AOAM531e9PPyy9QDRndW3CIt4/esubpcw6HKJIMNlHRv9h51r9HLQJBN
+        pEjk3qdAjc4C3SKnqVmtoHwf3kuC2FGW9LOYVwKIGA==
+X-Google-Smtp-Source: ABdhPJxmJL/jWUoNf2pcPZx9OAXR7chO2G3tmQOdB8Y+HPtxcQbAP+Sk+IqNq0S8Gpv0mqSgCUmpZQZkQKbCoVkyytw=
+X-Received: by 2002:a02:4049:: with SMTP id n70mr2077339jaa.6.1610720209950;
+ Fri, 15 Jan 2021 06:16:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <bc775cc3-fda3-0280-5f92-53058996f02f@csgroup.eu>
+References: <CAFSh4UwMr7t+R9mWUCjdecadJL6=_7jdgagAQK6Y1Yj0+Eu0sg@mail.gmail.com>
+ <CAFSh4UwAmR+sdfbdyxHRDnDr8r+TXxo2bvWtY3gmLAJekWc3Sw@mail.gmail.com>
+ <CAFSh4Uwsj5GfPRUe+oT8h=DBxHppqbE-zsDV8-J5rTK3-xyZFQ@mail.gmail.com> <CAADnVQ+tfm-k1Pz3bGm9oVJzayMgg=prenqhqrPfm3QnaCqL7Q@mail.gmail.com>
+In-Reply-To: <CAADnVQ+tfm-k1Pz3bGm9oVJzayMgg=prenqhqrPfm3QnaCqL7Q@mail.gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Fri, 15 Jan 2021 15:16:37 +0100
+Message-ID: <CANn89iL87E65sYSP0JTa8_WmKsOySM1NQqxg0Ot8+ggZ73F+vg@mail.gmail.com>
+Subject: Re: cBPF socket filters failing - inexplicably?
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Tom Cook <tom.k.cook@gmail.com>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 15 Jan 2021, Christophe Leroy wrote:
+On Fri, Jan 15, 2021 at 7:52 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> Adding appropriate mailing list to cc...
+>
+> My wild guess is that as soon as socket got created:
+> socket(PF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
+> the packets were already queued to it.
+> So later setsockopt() is too late to filter.
+>
+> Eric, thoughts?
 
-> 
-> 
-> Le 15/01/2021 à 12:18, Lee Jones a écrit :
-> > On Thu, 14 Jan 2021, Lee Jones wrote:
-> > 
-> > > On Thu, 14 Jan 2021, Jakub Kicinski wrote:
-> > > 
-> > > > On Thu, 14 Jan 2021 08:33:49 +0000 Lee Jones wrote:
-> > > > > On Wed, 13 Jan 2021, Jakub Kicinski wrote:
-> > > > > 
-> > > > > > On Wed, 13 Jan 2021 16:41:16 +0000 Lee Jones wrote:
-> > > > > > > Resending the stragglers again.
-> > > > > > > 
-> > > > > > > This set is part of a larger effort attempting to clean-up W=1
-> > > > > > > kernel builds, which are currently overwhelmingly riddled with
-> > > > > > > niggly little warnings.
-> > > > > > > v2:
-> > > > > > >   - Squashed IBM patches
-> > > > > > >   - Fixed real issue in SMSC
-> > > > > > >   - Added Andrew's Reviewed-by tags on remainder
-> > > > > > 
-> > > > > > Does not apply, please rebase on net-next/master.
-> > > > > 
-> > > > > These are based on Tuesday's next/master.
-> > > > 
-> > > > What's next/master?
-> > > 
-> > > I'm not sure if this is a joke, or not? :)
-> > > 
-> > > next/master == Linux Next.  The daily merged repo where all of the
-> > > *-next branches end up to ensure interoperability.  It's also the
-> > > branch that is most heavily tested by the auto-builders to ensure the
-> > > vast majority of issues are ironed out before hitting Mainline.
-> > > 
-> > > > This is net-next:
-> > > > 
-> > > > https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/
-> > > 
-> > > Looks like net-next gets merged into next/master:
-> > > 
-> > > commit 452958f1f3d1c8980a8414f9c37c8c6de24c7d32
-> > > Merge: 1eabba209a17a f50e2f9f79164
-> > > Author: Stephen Rothwell <sfr@canb.auug.org.au>
-> > > Date:   Thu Jan 14 10:35:40 2021 +1100
-> > > 
-> > >      Merge remote-tracking branch 'net-next/master'
-> > > 
-> > > So I'm not sure what it's conflicting with.
-> > > 
-> > > Do you have patches in net-next that didn't make it into next/master
-> > > for some reason?
-> > > 
-> > > I'll try to rebase again tomorrow.
-> > > 
-> > > Hopefully I am able to reproduce your issue by then.
-> > 
-> > Okay so my development branch rebased again with no issue.
-> 
-> Rebasing is not same as patches application.
-> 
-> > 
-> > I also took the liberty to checkout net-next and cherry-pick the
-> > patches [0], which again didn't cause a problem.
-> 
-> Also normal, cherry-picking is not the same as applying a patch series.
-> 
-> > 
-> > I'm not sure what else to suggest.  Is your local copy up-to-date?
-> 
-> I guess so, I have the same problem as Jakub, see below. I had to use 'git
-> am -3' to apply you series. As you can see, git falls back to 3 way merge
-> for patch 1, which means your series is close to but not fully in sync with
-> net-next.
-> 
-> 
-> [root@localhost linux-powerpc]# git remote -v
-> net-next	https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git (fetch)
-> net-next	https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git (push)
-> 
-> [root@localhost linux-powerpc]# git checkout net-next/master -b net-next
-> Switched to a new branch 'net-next'
-> 
-> [root@localhost linux-powerpc]# git am /root/Downloads/Rid-W-1-warnings-in-Ethernet.patch
-> Applying: net: ethernet: smsc: smc91x: Fix function name in kernel-doc header
-> error: patch failed: drivers/net/ethernet/smsc/smc91x.c:2192
-> error: drivers/net/ethernet/smsc/smc91x.c: patch does not apply
-> Patch failed at 0001 net: ethernet: smsc: smc91x: Fix function name in kernel-doc header
-> hint: Use 'git am --show-current-patch' to see the failed patch
-> When you have resolved this problem, run "git am --continue".
-> If you prefer to skip this patch, run "git am --skip" instead.
-> To restore the original branch and stop patching, run "git am --abort".
-> 
-> [root@localhost linux-powerpc]# git am --abort
-> 
-> [root@localhost linux-powerpc]# git am -3 /root/Downloads/Rid-W-1-warnings-in-Ethernet.patch
-> Applying: net: ethernet: smsc: smc91x: Fix function name in kernel-doc header
-> Using index info to reconstruct a base tree...
-> M	drivers/net/ethernet/smsc/smc91x.c
-> Falling back to patching base and 3-way merge...
-> Auto-merging drivers/net/ethernet/smsc/smc91x.c
-> Applying: net: xen-netback: xenbus: Demote nonconformant kernel-doc headers
-> Applying: net: ethernet: ti: am65-cpsw-qos: Demote non-conformant function header
-> Applying: net: ethernet: ti: am65-cpts: Document am65_cpts_rx_enable()'s 'en' parameter
-> Applying: net: ethernet: ibm: ibmvnic: Fix some kernel-doc misdemeanours
-> Applying: net: ethernet: toshiba: ps3_gelic_net: Fix some kernel-doc misdemeanours
-> Applying: net: ethernet: toshiba: spider_net: Document a whole bunch of function parameters
+Exactly, this is what happens.
 
-Seeing as you went to all that effort, I thought it was only fair that
-I did the same.  After some digging my tentative conclusion is that
-Linux -next is up-to-date with net-next, but net-next is not
-up-to-date with Linux -next.
+I do not know how tcpdump and other programs deal with this.
 
-I think this patch is conflicting:
+Maybe by setting a small buffer size, or draining the queue.
 
- smc91x: remove GPIOLIB dependency.
-
-Was that taken in via another tree?  If not resolved there is a chance
-that this may cause a conflict when net-next is merged into Mainline.
-
-..
-
-Okay, so what would you like me to do?  Would you like me to re-submit
-the set based only on net-next, or are you happy with your 3-way
-merge?
-
-I'll do as you ask.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+>
+> On Wed, Jan 6, 2021 at 6:55 AM Tom Cook <tom.k.cook@gmail.com> wrote:
+> >
+> > Another factoid to add to this:  I captured all traffic on an
+> > interface while the test program was running using
+> >
+> > tcpdump -i wlo1 -w capture.pcap
+> >
+> > observing that multiple packets got through the filter.  I then built
+> > the bpf_dbg program from the kernel source tree and ran the same
+> > filter and capture file through it:
+> >
+> > $ tools/bpf_dbg
+> > > load bpf 1,6 0 0 0
+> > > load pcap capture.pcap
+> > > run
+> > bpf passes:0 fails:269288
+> >
+> > So bpf_dbg thinks the filter is correct; it's only when the filter is
+> > attached to an actual socket that it fails occasionally.
+> >
+> > Regards,
+> > Tom
+> >
+> > On Wed, Jan 6, 2021 at 10:07 AM Tom Cook <tom.k.cook@gmail.com> wrote:
+> > >
+> > > Just to note I have also reproduced this on a 5.10.0 kernel.
+> > >
+> > > On Tue, Jan 5, 2021 at 1:42 PM Tom Cook <tom.k.cook@gmail.com> wrote:
+> > > >
+> > > > In the course of tracking down a defect in some existing software,
+> > > > I've found the failure demonstrated by the short program below.
+> > > > Essentially, a cBPF program that just rejects every frame (ie always
+> > > > returns zero) and is attached to a socket using setsockopt(SOL_SOCKET,
+> > > > SO_ATTACH_FILTER, ...) still occasionally lets frames through to
+> > > > userspace.
+> > > >
+> > > > The code is based on the first example in
+> > > > Documentation/networking/filter.txt, except that I've changed the
+> > > > content of the filter program and added a timeout on the socket.
+> > > >
+> > > > To reproduce the problem:
+> > > >
+> > > > # gcc test.c -o test
+> > > > # sudo ./test
+> > > > ... and in another console start a large network operation.
+> > > >
+> > > > In my case, I copied a ~300MB core file I had lying around to another
+> > > > host on the LAN.  The test code should print the string "Failed to
+> > > > read from socket" 100 times.  In practice, it produces about 10%
+> > > > "Received packet with ethertype..." messages.
+> > > >
+> > > > I've observed the same result on Ubuntu amd64 glibc system running a
+> > > > 5.9.0 kernel and also on Alpine arm64v8 muslc system running a 4.9.1
+> > > > kernel.  I've written test code in both C and Python.  I'm fairly sure
+> > > > this is not something I'm doing wrong - but very keen to have things
+> > > > thrown at me if it is.
+> > > >
+> > > > Regards,
+> > > > Tom Cook
+> > > >
+> > > >
+> > > > #include <stdio.h>
+> > > > #include <sys/socket.h>
+> > > > #include <sys/types.h>
+> > > > #include <arpa/inet.h>
+> > > > #include <linux/if_ether.h>
+> > > > #include <linux/filter.h>
+> > > > #include <stdint.h>
+> > > > #include <unistd.h>
+> > > >
+> > > > struct sock_filter code[] = {
+> > > >     { 0x06,    0,    0,    0x00 }  /* BPF_RET | BPF_K   0   0   0 */
+> > > > };
+> > > >
+> > > > struct sock_fprog bpf = {
+> > > >     .len = 1,
+> > > >     .filter = code,
+> > > > };
+> > > >
+> > > > void test() {
+> > > >     uint8_t buf[2048];
+> > > >
+> > > >     int sock = socket(PF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
+> > > >     if (sock < 0) {
+> > > >         printf("Failed to open socket\n");
+> > > >         return;
+> > > >     }
+> > > >     int ret = setsockopt(sock, SOL_SOCKET, SO_ATTACH_FILTER, &bpf, sizeof(bpf));
+> > > >     if (ret < 0) {
+> > > >         printf("Failed to set socket filter\n");
+> > > >         return;
+> > > >     }
+> > > >     struct timeval tv = {
+> > > >         .tv_sec = 1
+> > > >     };
+> > > >
+> > > >     ret = setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
+> > > >     if (ret < 0) {
+> > > >         printf("Failed to set socket timeout\n");
+> > > >         return;
+> > > >     }
+> > > >
+> > > >     ssize_t count = recv(sock, buf, 2048, 0);
+> > > >     if (count <= 0) {
+> > > >         printf("Failed to read from socket\n");
+> > > >         return;
+> > > >     }
+> > > >
+> > > >     close(sock);
+> > > >
+> > > >     uint16_t *ethertype = (short*)(buf + 12);
+> > > >     uint8_t *proto = (unsigned char *)(buf + 23);
+> > > >     uint16_t *dport = (uint16_t *)(buf + 14 + 20);
+> > > >
+> > > >     printf("Received packet with ethertype 0x%04hu, protocol 0x%02hhu
+> > > > and dport 0x%04hu\n", *ethertype, *proto, *dport);
+> > > > }
+> > > >
+> > > > int main() {
+> > > >     for (size_t ii = 0; ii < 100; ++ii) {
+> > > >         test();
+> > > >     }
+> > > > }
