@@ -2,237 +2,53 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B4E2F6F5B
-	for <lists+bpf@lfdr.de>; Fri, 15 Jan 2021 01:19:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E02C72F7085
+	for <lists+bpf@lfdr.de>; Fri, 15 Jan 2021 03:23:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731167AbhAOASH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Jan 2021 19:18:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731122AbhAOASH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Jan 2021 19:18:07 -0500
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DDB1C061757
-        for <bpf@vger.kernel.org>; Thu, 14 Jan 2021 16:17:27 -0800 (PST)
-Received: by mail-qk1-x74a.google.com with SMTP id y187so6114248qke.20
-        for <bpf@vger.kernel.org>; Thu, 14 Jan 2021 16:17:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=ODdspgtKYpLTbgnDdHD8QPVxqFSTF0BpW/GtqLdWnJM=;
-        b=phPmEPnH+o1wpe9w2yI4yEpLM5yOKDWNQCZRecEk4hbDK4CBO3aU0AEoN4TDsnhGeS
-         jfNUcuvjAcbNaYFhdS11U6ftG11bNppGZXGmANzJaeovZXtcz2MAQJQRiuC0VYFDf1Ez
-         nsdiPLRSU6Q6Q1e/TCEWgDG5NYCx05uaN6HxdptrIo94AJbm2JCWGSJSNPgw9JALHXdR
-         g8jH+T3o3jJzrnhuvbGQanvIMr01UDj+uFsZdUAUHSNrhugvAUT8mA4a5XWWmbuqRpOm
-         NvSeZ8zHYgzD55GbMnhapNIF9EdNYF72hr26or/YYyCkOFdz+6V3OKBQa62xpUepeoHP
-         GPFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=ODdspgtKYpLTbgnDdHD8QPVxqFSTF0BpW/GtqLdWnJM=;
-        b=SZp/lep3np8JhlXG4Yn0ZeQfYwx2PoMi/MbUjHbVj+lpaZabEB847KB3evWPaYm70F
-         rHszL1gFzACfIZh70osPM4F7DjLkdI39ny2AZFoy/NyM2AVjDkDLEOLMqdytLTs7Tlqb
-         +ethinuX7MbzI0FstuKUFVDEKl4/QULvVQgl0m5JFuwsqLtFYf/esLAR7HikgLV1KpNi
-         hfyDAjfxNRcFZ5jI481js+RlLBA4Z7yNHvVly8FFxXzIyaamxRPz5FebJw+uwOnsaub0
-         A1qVmIagHwqPzr+8KsLsdrEQnZixqss5cyTQHuascsTVjZAtSqKMXsJWJ6LbC47p3hLq
-         kXxA==
-X-Gm-Message-State: AOAM532iW1rlyQI3kR41qVTiP5B6PIz1LqtCIbaip3yIuW5lKZl+edfS
-        ZUnWErZLRNggzODzUcrv/m0dDlk=
-X-Google-Smtp-Source: ABdhPJz0K8dPcBjfApyvsdDxqqthfAJGWIe5OmafvebVlTexZ+pePn+BjmIB6Q+gdGIaMVKpUw5ClBI=
-Sender: "sdf via sendgmr" <sdf@sdf2.svl.corp.google.com>
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:7220:84ff:fe09:7732])
- (user=sdf job=sendgmr) by 2002:a0c:fe47:: with SMTP id u7mr9697474qvs.4.1610669846124;
- Thu, 14 Jan 2021 16:17:26 -0800 (PST)
-Date:   Thu, 14 Jan 2021 16:17:24 -0800
-Message-Id: <1627e0f688c7de7fe291b09c524c7fbb55cfe367.1610669653.git.sdf@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [RPC PATCH bpf-next] bpf: implement new BPF_CGROUP_INET_SOCK_POST_CONNECT
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net,
-        Stanislav Fomichev <sdf@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1730081AbhAOCWh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Jan 2021 21:22:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35302 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726590AbhAOCWg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Jan 2021 21:22:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D0A3C23AC2;
+        Fri, 15 Jan 2021 02:21:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610677316;
+        bh=D1a0q603Sv6OfviKtaDaKW7cbulT/DSIDgzRNV2I2EA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=eoBTiIQl6B9Bq2mcugVz+drlJamc3kSz3K3B3jxEUglygyEWBx1naUZJjrV9bmHsL
+         ccCZv42JPS6n2EwDoemp76GCfzjskHSHuWxci7G2jDCfb1H7PVNxjlfS7SKII2coiq
+         z/xqHzuM/4lZgliXrBUWTSLxwvlRdTsc48zzv/9xOU1pwW3vRR1Hx+a1tGLLpw9Z3h
+         JYJL9cAk/nUvondgp3A+3Z8jSsrF6AoRurl2DwWEPdGhHgbk9M6VKczAgkquyr08Hn
+         UefV7U34TT7O6oi2zLI4MVVyXUjejdSXu+ycW6C1D0EcrGhkO/vWoUT0qT2fKE9h+o
+         kFIDLGA790/bw==
+Date:   Thu, 14 Jan 2021 18:21:54 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     menglong8.dong@gmail.com
+Cc:     ast@kernel.org, davem@davemloft.net, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        Menglong Dong <dong.menglong@zte.com.cn>
+Subject: Re: [PATCH net-next] net: core: use eth_type_vlan in
+ tap_get_user_xdp
+Message-ID: <20210114182154.132a71ea@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210114074436.6268-1-dong.menglong@zte.com.cn>
+References: <20210114074436.6268-1-dong.menglong@zte.com.cn>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-We are playing with doing hybrid conntrack where BPF generates
-connect/disconnect/etc events and puts them into perfbuf (or, later,
-new ringbuf). We can get most of the functionality out of
-existing hooks:
-- BPF_CGROUP_SOCK_OPS fully covers TCP
-- BPF_CGROUP_UDP4_SENDMSG covers unconnected UDP (with sampling, etc)
+On Wed, 13 Jan 2021 23:44:36 -0800 menglong8.dong@gmail.com wrote:
+> From: Menglong Dong <dong.menglong@zte.com.cn>
+> 
+> Replace the check for ETH_P_8021Q and ETH_P_8021AD in
+> tap_get_user_xdp with eth_type_vlan.
+> 
+> Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
 
-The only missing bit is connected UDP where we can get some
-information from the existing BPF_CGROUP_INET{4,6}_CONNECT if the caller
-did explicit bind(); otherwise, in an autobind case, we get
-only destination addr/port and no source port because this hook
-triggers prior to that.
-
-We'd really like to avoid the cost of BPF_CGROUP_INET_EGRESS
-and filtering UDP (which covers both connected and unconnected UDP,
-but loses that connect/disconnect pseudo signal).
-
-The proposal is to add a new BPF_CGROUP_INET_SOCK_POST_CONNECT which
-triggers right before sys_connect exits in the AF_INET{,6} case.
-The context is bpf_sock which lets BPF examine the socket state.
-There is really no reason for it to trigger for all inet socks,
-I've considered adding BPF_CGROUP_UDP_POST_CONNECT, but decided
-that it might be better to have a generic inet case.
-
-New hook triggers right before sys_connect() returns and gives
-BPF an opportunity to explore source & destination addresses
-as well as ability to return EPERM to the user.
-
-This is somewhat analogous to the existing BPF_CGROUP_INET{4,6}_POST_BIND
-hooks with the intention to log the connection addresses (after autobind).
-
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
-Change-Id: I46d0122f93c58b17bfae5ba5040b0b0343908c19
----
- include/linux/bpf-cgroup.h | 17 +++++++++++++++++
- include/uapi/linux/bpf.h   |  1 +
- kernel/bpf/syscall.c       |  3 +++
- net/core/filter.c          |  4 ++++
- net/ipv4/af_inet.c         |  7 ++++++-
- 5 files changed, 31 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
-index 72e69a0e1e8c..f110935258b9 100644
---- a/include/linux/bpf-cgroup.h
-+++ b/include/linux/bpf-cgroup.h
-@@ -213,12 +213,29 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
- 	__ret;								       \
- })
- 
-+#define BPF_CGROUP_RUN_SK_PROG_LOCKED(sk, type)				       \
-+({									       \
-+	int __ret = 0;							       \
-+	if (cgroup_bpf_enabled) {					       \
-+		lock_sock(sk);						       \
-+		__ret = __cgroup_bpf_run_filter_sk(sk, type);		       \
-+		release_sock(sk);					       \
-+	}								       \
-+	__ret;								       \
-+})
-+
- #define BPF_CGROUP_RUN_PROG_INET_SOCK(sk)				       \
- 	BPF_CGROUP_RUN_SK_PROG(sk, BPF_CGROUP_INET_SOCK_CREATE)
- 
- #define BPF_CGROUP_RUN_PROG_INET_SOCK_RELEASE(sk)			       \
- 	BPF_CGROUP_RUN_SK_PROG(sk, BPF_CGROUP_INET_SOCK_RELEASE)
- 
-+#define BPF_CGROUP_RUN_PROG_INET_SOCK_POST_CONNECT(sk)			       \
-+	BPF_CGROUP_RUN_SK_PROG(sk, BPF_CGROUP_INET_SOCK_POST_CONNECT)
-+
-+#define BPF_CGROUP_RUN_PROG_INET_SOCK_POST_CONNECT_LOCKED(sk)		       \
-+	BPF_CGROUP_RUN_SK_PROG_LOCKED(sk, BPF_CGROUP_INET_SOCK_POST_CONNECT)
-+
- #define BPF_CGROUP_RUN_PROG_INET4_POST_BIND(sk)				       \
- 	BPF_CGROUP_RUN_SK_PROG(sk, BPF_CGROUP_INET4_POST_BIND)
- 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index a1ad32456f89..3235f7bd131f 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -241,6 +241,7 @@ enum bpf_attach_type {
- 	BPF_XDP_CPUMAP,
- 	BPF_SK_LOOKUP,
- 	BPF_XDP,
-+	BPF_CGROUP_INET_SOCK_POST_CONNECT,
- 	__MAX_BPF_ATTACH_TYPE
- };
- 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index c3bb03c8371f..7d6fd1e32d22 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -1958,6 +1958,7 @@ bpf_prog_load_check_attach(enum bpf_prog_type prog_type,
- 		switch (expected_attach_type) {
- 		case BPF_CGROUP_INET_SOCK_CREATE:
- 		case BPF_CGROUP_INET_SOCK_RELEASE:
-+		case BPF_CGROUP_INET_SOCK_POST_CONNECT:
- 		case BPF_CGROUP_INET4_POST_BIND:
- 		case BPF_CGROUP_INET6_POST_BIND:
- 			return 0;
-@@ -2910,6 +2911,7 @@ attach_type_to_prog_type(enum bpf_attach_type attach_type)
- 		return BPF_PROG_TYPE_CGROUP_SKB;
- 	case BPF_CGROUP_INET_SOCK_CREATE:
- 	case BPF_CGROUP_INET_SOCK_RELEASE:
-+	case BPF_CGROUP_INET_SOCK_POST_CONNECT:
- 	case BPF_CGROUP_INET4_POST_BIND:
- 	case BPF_CGROUP_INET6_POST_BIND:
- 		return BPF_PROG_TYPE_CGROUP_SOCK;
-@@ -3063,6 +3065,7 @@ static int bpf_prog_query(const union bpf_attr *attr,
- 	case BPF_CGROUP_INET_EGRESS:
- 	case BPF_CGROUP_INET_SOCK_CREATE:
- 	case BPF_CGROUP_INET_SOCK_RELEASE:
-+	case BPF_CGROUP_INET_SOCK_POST_CONNECT:
- 	case BPF_CGROUP_INET4_BIND:
- 	case BPF_CGROUP_INET6_BIND:
- 	case BPF_CGROUP_INET4_POST_BIND:
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 9ab94e90d660..d955321d3415 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -7683,12 +7683,14 @@ static bool __sock_filter_check_attach_type(int off,
- 		switch (attach_type) {
- 		case BPF_CGROUP_INET_SOCK_CREATE:
- 		case BPF_CGROUP_INET_SOCK_RELEASE:
-+		case BPF_CGROUP_INET_SOCK_POST_CONNECT:
- 			goto full_access;
- 		default:
- 			return false;
- 		}
- 	case bpf_ctx_range(struct bpf_sock, src_ip4):
- 		switch (attach_type) {
-+		case BPF_CGROUP_INET_SOCK_POST_CONNECT:
- 		case BPF_CGROUP_INET4_POST_BIND:
- 			goto read_only;
- 		default:
-@@ -7696,6 +7698,7 @@ static bool __sock_filter_check_attach_type(int off,
- 		}
- 	case bpf_ctx_range_till(struct bpf_sock, src_ip6[0], src_ip6[3]):
- 		switch (attach_type) {
-+		case BPF_CGROUP_INET_SOCK_POST_CONNECT:
- 		case BPF_CGROUP_INET6_POST_BIND:
- 			goto read_only;
- 		default:
-@@ -7703,6 +7706,7 @@ static bool __sock_filter_check_attach_type(int off,
- 		}
- 	case bpf_ctx_range(struct bpf_sock, src_port):
- 		switch (attach_type) {
-+		case BPF_CGROUP_INET_SOCK_POST_CONNECT:
- 		case BPF_CGROUP_INET4_POST_BIND:
- 		case BPF_CGROUP_INET6_POST_BIND:
- 			goto read_only;
-diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
-index b94fa8eb831b..568654cafa48 100644
---- a/net/ipv4/af_inet.c
-+++ b/net/ipv4/af_inet.c
-@@ -574,7 +574,10 @@ int inet_dgram_connect(struct socket *sock, struct sockaddr *uaddr,
- 
- 	if (!inet_sk(sk)->inet_num && inet_autobind(sk))
- 		return -EAGAIN;
--	return sk->sk_prot->connect(sk, uaddr, addr_len);
-+	err = sk->sk_prot->connect(sk, uaddr, addr_len);
-+	if (!err)
-+		err = BPF_CGROUP_RUN_PROG_INET_SOCK_POST_CONNECT_LOCKED(sk);
-+	return err;
- }
- EXPORT_SYMBOL(inet_dgram_connect);
- 
-@@ -723,6 +726,8 @@ int inet_stream_connect(struct socket *sock, struct sockaddr *uaddr,
- 
- 	lock_sock(sock->sk);
- 	err = __inet_stream_connect(sock, uaddr, addr_len, flags, 0);
-+	if (!err)
-+		err = BPF_CGROUP_RUN_PROG_INET_SOCK_POST_CONNECT(sock->sk);
- 	release_sock(sock->sk);
- 	return err;
- }
--- 
-2.30.0.284.gd98b1dd5eaa7-goog
-
+Similarly to bridge, please convert all the instances in tap in one
+patch.
