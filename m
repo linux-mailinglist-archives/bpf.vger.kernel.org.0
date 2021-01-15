@@ -2,143 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6287A2F7161
-	for <lists+bpf@lfdr.de>; Fri, 15 Jan 2021 05:08:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6CE62F718E
+	for <lists+bpf@lfdr.de>; Fri, 15 Jan 2021 05:19:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726736AbhAOEIO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Jan 2021 23:08:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43652 "EHLO
+        id S1731374AbhAOESp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Jan 2021 23:18:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726493AbhAOEIN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Jan 2021 23:08:13 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6119DC061575;
-        Thu, 14 Jan 2021 20:07:32 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id x20so11243390lfe.12;
-        Thu, 14 Jan 2021 20:07:32 -0800 (PST)
+        with ESMTP id S1727674AbhAOESo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Jan 2021 23:18:44 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88831C061575;
+        Thu, 14 Jan 2021 20:18:03 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id w2so4666128pfc.13;
+        Thu, 14 Jan 2021 20:18:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4q6zbVh1VNqw6PLsirWC3rxykqBGr0L9ejileG2+Vxk=;
-        b=gJ5u1SvxjRxiYdl8dxSF5xLz16Ddel4gTHFnFw+lq77zhhN3YxWMGqv0T+fzhxxcFY
-         kIfLCMzSDCAw0fCmSJInKUaXM0MfFnO8QiR0LX2+FiHvZalIRyogjfT7rhfw7Xj9l7uW
-         FcdpNsT8Pq9rsXZQyeUEejmokUWn56sgV3PeG5/6wBRFbYf6jpY6JQzgb7S4pz+ResYe
-         TKPBNblXswo8JKkQerU8pV6SUkAtjwTHsisosC1rWwJKCoG4FKo5uRa72ugb64t07NBr
-         BYvRczsoyMqBgDtfDIYRB7gFrd/3ITjT7omMoppBtGdA87zKLLiNXxVc/PV0uuYnJVX2
-         uHcQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0QkIweyTpCRSZetj1iFXQpayDIRewARy2rsiCveZMek=;
+        b=bpwtO89Smj5uy6BkWsN0DlmUNpkRf5wM9WyrbGLQbHyauAIkHchUJs5eUAkGsQwihs
+         jFB+7kcxDfwlTmYcyHPMVlEW742JRN8e4GtPwXiW5bOpAQTKba2G4FOTHLjZiKcbTzzw
+         X5cIMOSSo5o1lndpW91hxD6XB+i+fUQJRHmyfNzqGaEDDC8AuxIAUlBXJL92ONAFYy7E
+         BEhiSDE0f33yPjzQ2/ycvZETwD8IrxMLGHqsc9TdPJZLaQfiCWJq313JtLAz3/kcqIJC
+         reaM4mm6veX96rRcA1dY5ulq9LNkKnEC61lIzFCxE+9CfsVYX7vbUXcC33rCalAZcpXs
+         JGJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4q6zbVh1VNqw6PLsirWC3rxykqBGr0L9ejileG2+Vxk=;
-        b=IKDO2WZA1Na2PiFXi+0o68c1rvavWfoE8V538uis/VxZ3e2tvxSml30MVDl/ZbBgpL
-         MENo8qL8DvudZFiV/p13Ssjk8uKaCXijMHU4/0M3UVYg1D9TeZTTX+N/NWu61aazI4ET
-         5xMDxTO+qP8oLR2kcG70axd5FgDcHBWW7OKucZZuBIxPSd++LYXT12MqaUa33Wd8hx3i
-         C6+uEmPsTpyLfSejM5RqjDh9LeAwZON/bqiAwCzzhlLbgnTu15r6VETV1T/9Wzg/vMg5
-         dK3NLZjjzugil/tDXQ3S7DWCIo/O0uskXLWCdwGEIN+MP8w6wp1c/dVSSumjcI6BJ9UL
-         j9MA==
-X-Gm-Message-State: AOAM532PL7oHxQdbCG6wPzTq7ig/aKSIsqRYga6Gqz1cHQVsM85x8Iit
-        P95/7A7KL7bOIEpEkc9VFepTZ4F5Aw8olcGkcvs=
-X-Google-Smtp-Source: ABdhPJysoxp962Pm6j0dPdurQ/RR36fw3dxjXx8WWoJ0FbqKQB+WAsaaeavHEX4JQrYOw/8fclvWpwQmK9TXMSLgSX4=
-X-Received: by 2002:a05:6512:34c5:: with SMTP id w5mr4839218lfr.214.1610683650956;
- Thu, 14 Jan 2021 20:07:30 -0800 (PST)
-MIME-Version: 1.0
-References: <20210113213321.2832906-1-sdf@google.com> <20210113213321.2832906-2-sdf@google.com>
- <CAADnVQLssJ4oStg7C4W-nafFKaka1H3-N0DhsBrB3FdmgyUC_A@mail.gmail.com>
- <CAKH8qBsaZjOkvGZuNCtG=V2M9YfAJgtG+moAejwtBCB6kNJUwA@mail.gmail.com>
- <CAADnVQ+2MDGVEKRZ+B-q+GcZ8CExN5VfSZpkvntg48dpww3diA@mail.gmail.com> <CAKH8qBuMUj0j7eS+O87=U6jzndXnCPiJ+4RbQ7nAdzbHY7cqAQ@mail.gmail.com>
-In-Reply-To: <CAKH8qBuMUj0j7eS+O87=U6jzndXnCPiJ+4RbQ7nAdzbHY7cqAQ@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 14 Jan 2021 20:07:19 -0800
-Message-ID: <CAADnVQKPj9Yh0nVi0AjHAxo5UaES9gYwLxAEixP+G6_EhdNpOg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v8 1/3] bpf: remove extra lock_sock for TCP_ZEROCOPY_RECEIVE
-To:     Stanislav Fomichev <sdf@google.com>
-Cc:     Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0QkIweyTpCRSZetj1iFXQpayDIRewARy2rsiCveZMek=;
+        b=FMD/71qo1I2ippP/YhV1ZRyYJWFh5kvzLX9fa7BZ3GuY60NZvQkPNr5wruqfkJmJfi
+         mcm0PgsJUbGf3bWoqqtiB3UqKTdrNFq/k0crt+QHBR3+QKwYZHI/iBGR+FlJqWRnDN9K
+         JzFu1OMrdyc36DG4k1FSGvhb8otscCHuL57sGdSPYFdA5pbitv2oHlNIFoihuVBsQ4dF
+         Kslp+UPoGHeSPbTVf5D1D8fovXXNZsuMIX8pYb3ARsTUhzHaGtFqp9PnBQa77jLQ5zsT
+         l9E7JCoduJ2cPJOJhlc1A+QbtAx6pkwEsmYMtamk2LvO/6I4p17Rh7QtFO9Q6Vr/W0vR
+         vGVQ==
+X-Gm-Message-State: AOAM532L2+nj/5TiorUrZpYENKEx3RGY3PwI3cxoWTGS61LhsIK1b4gm
+        1QJPCyURJ2bNnuhb+sbWCV1IKXGJkkw/u7DP
+X-Google-Smtp-Source: ABdhPJw5r0hUtvArF8ft747JXD9wUxTya4A8sSBUvvi43Vbscm+XKrmX9DwpZPVfnyagP8z/LuTNrg==
+X-Received: by 2002:a65:4bc2:: with SMTP id p2mr10769381pgr.169.1610684283125;
+        Thu, 14 Jan 2021 20:18:03 -0800 (PST)
+Received: from Leo-laptop-t470s ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id x14sm6608634pfp.77.2021.01.14.20.17.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 20:18:02 -0800 (PST)
+Date:   Fri, 15 Jan 2021 12:17:51 +0800
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Eric Dumazet <edumazet@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
+Subject: Re: [PATCHv6 bpf-next] samples/bpf: add xdp program on egress for
+ xdp_redirect_map
+Message-ID: <20210115041751.GD1421720@Leo-laptop-t470s>
+References: <20201211024049.1444017-1-liuhangbin@gmail.com>
+ <20210114142732.2595651-1-liuhangbin@gmail.com>
+ <4d9b5846-bd08-09b4-53a2-3cb02a9a1eee@fb.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4d9b5846-bd08-09b4-53a2-3cb02a9a1eee@fb.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 8:05 PM Stanislav Fomichev <sdf@google.com> wrote:
->
-> On Thu, Jan 14, 2021 at 7:57 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Thu, Jan 14, 2021 at 7:40 PM Stanislav Fomichev <sdf@google.com> wrote:
-> > >
-> > > On Thu, Jan 14, 2021 at 7:27 PM Alexei Starovoitov
-> > > <alexei.starovoitov@gmail.com> wrote:
-> > > >
-> > > > On Wed, Jan 13, 2021 at 1:33 PM Stanislav Fomichev <sdf@google.com> wrote:
-> > > > >
-> > > > > Add custom implementation of getsockopt hook for TCP_ZEROCOPY_RECEIVE.
-> > > > > We skip generic hooks for TCP_ZEROCOPY_RECEIVE and have a custom
-> > > > > call in do_tcp_getsockopt using the on-stack data. This removes
-> > > > > 3% overhead for locking/unlocking the socket.
-> > > > >
-> > > > > Without this patch:
-> > > > >      3.38%     0.07%  tcp_mmap  [kernel.kallsyms]  [k] __cgroup_bpf_run_filter_getsockopt
-> > > > >             |
-> > > > >              --3.30%--__cgroup_bpf_run_filter_getsockopt
-> > > > >                        |
-> > > > >                         --0.81%--__kmalloc
-> > > > >
-> > > > > With the patch applied:
-> > > > >      0.52%     0.12%  tcp_mmap  [kernel.kallsyms]  [k] __cgroup_bpf_run_filter_getsockopt_kern
-> > > > >
-> > > > > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > > > > Cc: Martin KaFai Lau <kafai@fb.com>
-> > > > > Cc: Song Liu <songliubraving@fb.com>
-> > > > > Cc: Eric Dumazet <edumazet@google.com>
-> > > > > Acked-by: Martin KaFai Lau <kafai@fb.com>
-> > > >
-> > > > Few issues in this patch and the patch 2 doesn't apply:
-> > > > Switched to a new branch 'tmp'
-> > > > Applying: bpf: Remove extra lock_sock for TCP_ZEROCOPY_RECEIVE
-> > > > .git/rebase-apply/patch:295: trailing whitespace.
-> > > > #endif
-> > > > .git/rebase-apply/patch:306: trailing whitespace.
-> > > > union tcp_word_hdr {
-> > > > .git/rebase-apply/patch:309: trailing whitespace.
-> > > > };
-> > > > .git/rebase-apply/patch:311: trailing whitespace.
-> > > > #define tcp_flag_word(tp) ( ((union tcp_word_hdr *)(tp))->words [3])
-> > > > .git/rebase-apply/patch:313: trailing whitespace.
-> > > > enum {
-> > > > warning: squelched 1 whitespace error
-> > > > warning: 6 lines add whitespace errors.
-> > > > Applying: bpf: Try to avoid kzalloc in cgroup/{s,g}etsockopt
-> > > > error: patch failed: kernel/bpf/cgroup.c:1390
-> > > > error: kernel/bpf/cgroup.c: patch does not apply
-> > > > Patch failed at 0002 bpf: Try to avoid kzalloc in cgroup/{s,g}etsockopt
-> > > Sorry, I mentioned in the cover letter that the series requires
-> > > 4be34f3d0731 ("bpf: Don't leak memory in bpf getsockopt when optlen == 0")
-> > > which is only in the bpf tree. No sure when bpf & bpf-next merge.
-> > > Or are you trying to apply on top of that?
-> >
-> > hmm. It will take a while to wait for the trees to converge.
-> > Ok. I've cherry-picked that bpf commit and applied 3 patches on top,
-> > but the test failed to build:
-> >
-> > progs/sockopt_sk.c:60:47: error: use of undeclared identifier
-> > 'TCP_ZEROCOPY_RECEIVE'
-> >         if (ctx->level == SOL_TCP && ctx->optname == TCP_ZEROCOPY_RECEIVE) {
-> >                                                      ^
-> > progs/sockopt_sk.c:66:16: error: invalid application of 'sizeof' to an
-> > incomplete type 'struct tcp_zerocopy_receive'
-> >                 if (optval + sizeof(struct tcp_zerocopy_receive) > optval_end)
-> >
-> > Looks like copied uapi/tcp.h into tools/ wasn't in the include path.
-> Interesting, let me try to understand where it comes on my system
-> because it did work even without this uapi/tcp.h so I might
-> have messed something up. Thank you!
+Hi Yonghong,
+On Thu, Jan 14, 2021 at 01:01:28PM -0800, Yonghong Song wrote:
+> > +/* map to stroe egress interface mac address */
+> 
+> s/stroe/store
 
-You probably have a newer glibc. Mine is old. I think our CI doesn't
-use glibc and
-is probably missing the newest tcp.h as well.
+Thanks, I will fix it.
+> > -	struct bpf_program *prog, *dummy_prog;
+> > +	struct bpf_program *prog, *dummy_prog, *devmap_prog;
+> > +	int devmap_prog_fd_0 = -1, devmap_prog_fd_1 = -1;
+> 
+> The default value is -1 here. I remembered there was a discussion
+> about the default value here, does default value 0 work here?
+
+I didn't saw the discussion. But 0 should works as in __dev_map_alloc_node
+it only gets the prog when fd > 0.
+
+static struct bpf_dtab_netdev *__dev_map_alloc_node(struct net *net,
+                                                    struct bpf_dtab *dtab,
+                                                    struct bpf_devmap_val *val,
+                                                    unsigned int idx)
+{
+	...
+	if (val->bpf_prog.fd > 0) {
+		prog = bpf_prog_get_type_dev(val->bpf_prog.fd,
+				BPF_PROG_TYPE_XDP, false);
+		if (IS_ERR(prog))
+			goto err_put_dev;
+		if (prog->expected_attach_type != BPF_XDP_DEVMAP)
+			goto err_put_prog;
+	}
+	...
+}
+
+> > +	if (xdp_flags & XDP_FLAGS_SKB_MODE) {
+> > +		prog = bpf_object__find_program_by_title(obj, "xdp_redirect_general");
+> 
+> libbpf supports each section having multiple programs, so
+> bpf_object__find_program_by_title() is not recommended.
+> Could you change to bpf_object__find_program_by_name()?
+
+Thanks for this reminder, I will fix it.
+
+Thanks
+Hangbin
