@@ -2,98 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A1F72F70EC
-	for <lists+bpf@lfdr.de>; Fri, 15 Jan 2021 04:25:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC2E42F70F4
+	for <lists+bpf@lfdr.de>; Fri, 15 Jan 2021 04:29:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726518AbhAODYZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 14 Jan 2021 22:24:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34226 "EHLO
+        id S1732423AbhAOD20 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 14 Jan 2021 22:28:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726405AbhAODYZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 14 Jan 2021 22:24:25 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE59BC061575;
-        Thu, 14 Jan 2021 19:23:44 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id o17so11192810lfg.4;
-        Thu, 14 Jan 2021 19:23:44 -0800 (PST)
+        with ESMTP id S1729971AbhAOD2Z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 14 Jan 2021 22:28:25 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48F9CC061575;
+        Thu, 14 Jan 2021 19:27:45 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id v67so11207519lfa.0;
+        Thu, 14 Jan 2021 19:27:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=8bof/9UT0KgyjHC36RQ3/jNqdyR1Op8Ft0YEcB0dzb8=;
-        b=saGWmQcv7f4npbnhTNj89g/8kMaCmow5jNC6kG6vY7q0X7VjkQ28fjpeAQF+xjL8cK
-         XqPetTGA44jcNTZMTA58sxbVMYQO20r2RZmGTb58yE1zF33Soz3is0FT8Vz+TPzUyBeZ
-         aAWI/8qgRoOqCP0aJqhtjFVrl2EhiW4erVYlH9LoywQOabwaHrmaJHWzI/Judp0LEUCO
-         T5FAMuD/Mm+GsjJ0XlkRcvU80I+e/WTzhFyaOLbn2GKEMTq7xhBqFDt0AEneyuSFvYDB
-         g8SlKsRwbrgEjfBxnHZcU3OjmG7l5nM3s6oZfRrpByux6xGIa7Y+Zdxu383NSet8efnZ
-         Wrpg==
+        bh=SbHv2LM3r1s8rUCMgl3Wtj7WAZ7OpMJFQ0X5VUOU05M=;
+        b=c9FCVA4QsDIcml6UUMpL04H3CTkqDJsOCwjp4LvXEFgeWFuJdNPFYNv+smhvLpGe/2
+         Z5nTLLoNGkxF/z5pK7gwoahgzkl0ks50LKD5vIzdLDIo53NUJShViv6Y8WeUMiqsQo2M
+         jZdRxYFaQVsVXrD7jtN6AWngfa/wf49ck4HEaFnShPxPAGsabsEcX9pLIlGD7xz90p+z
+         N/YIQJ3R3AxsNrJVm0/Zc1l3lzf2TzGLezAReBBLUnNqBF9L8Fvgm3fHC4C0pTy0+NXA
+         FC06HNG534TKnVs8iXoPL/5sxqaZJGHMn6P7PSLlPAA//FtgbgmDDja6rBqm5hi/CfYt
+         fM+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=8bof/9UT0KgyjHC36RQ3/jNqdyR1Op8Ft0YEcB0dzb8=;
-        b=h24OkO7Obj0gfPoik3CpN12fD+Ei3QSMspS+SVOzCu7cqyQaI1oqgSMU7aC04sD5k6
-         ZOwOULwqxK5Vgx8gaKdjeAxxohNibUvF9Jq9e5gtok+gJ6oiq0zuOtrshmONo3EOuypE
-         wh7hihJ02OFcLNpeLmwNAC8hi4BanbNmoXK0467qaKke/cUkV+JR/2wUbVdmI6dOVnOm
-         cjljU7YSidDbagswgghpZjPzHiFqnJo+h+oaA6P4sNxY0LLZZpk2g0D/MtkiW/hoPXSU
-         mYfApH0KwjU4ibou6iSSWTegkZrCCxVetrCdfnlsiy0yPc06OPVidLgZx0w8SsxFH5e2
-         lEng==
-X-Gm-Message-State: AOAM530BvPGFqeeW4DchNx0dLEQXSq08YjuB2U7CaVuLI0BwLNcxNdUW
-        kj/1f8Iho9sim+34j78bgwizkNw0sREHlF7txpg=
-X-Google-Smtp-Source: ABdhPJwLtb8FK71GrQRyVoDSXloI3NLRe5oRlaoEK+WgSH5AKXF2H9nzJfX70g53mufw/iNddSvd9VJsnStxB5c1evw=
-X-Received: by 2002:ac2:5b1e:: with SMTP id v30mr5088387lfn.540.1610681023413;
- Thu, 14 Jan 2021 19:23:43 -0800 (PST)
+        bh=SbHv2LM3r1s8rUCMgl3Wtj7WAZ7OpMJFQ0X5VUOU05M=;
+        b=MlVifLQ8zxnBR/8d7SjLeymXtEGyx5xdqmsOhge1MHkVEyHWENNOmQ+3Noe9gac/1A
+         S+uMQCR2do2O0y+VQq8Vp0pJ4puu3I4POe8uF0X/cOMYlEsMqHlAcDGixhiTZVB7Mmof
+         +zWViFQLi8N/rAFaxgLTHr16/OtWdAsAQslLkyYsMlRvlsuhaHwljghwQKODuYeyNBU3
+         YNMf8cEow4Yp1ybVtieX39bSi0JTfM7En9a9ZFbEGvj2LP3Z35FnFoFgbjy5Mo6F7nJo
+         gzD4WnhPhEWOsHL8KBkmajkbrUayH+Oh0v6zzG5Fy0yT6y+cl+zE631nI3vrzoVBF7he
+         fEJQ==
+X-Gm-Message-State: AOAM530tPPNB6oDZK3sSukZebkdKT4QfF4WFTBW9xh1Nnh3Vyn59EYh6
+        E7mBd4LZC6d3v+LaV7dSVNBQLa7T8cESH8QvR8s=
+X-Google-Smtp-Source: ABdhPJwgxBvWI/kpHi/nIr5mXxkzoZ7w435eUPofVmDa9OnC20BxclD5xDdCuG0tAbisjuB2tZAn73ypfTUdoNNkCbg=
+X-Received: by 2002:a19:acd:: with SMTP id 196mr4770789lfk.539.1610681263751;
+ Thu, 14 Jan 2021 19:27:43 -0800 (PST)
 MIME-Version: 1.0
-References: <20210114181751.768687-1-jackmanb@google.com>
-In-Reply-To: <20210114181751.768687-1-jackmanb@google.com>
+References: <20210113213321.2832906-1-sdf@google.com> <20210113213321.2832906-2-sdf@google.com>
+In-Reply-To: <20210113213321.2832906-2-sdf@google.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 14 Jan 2021 19:23:32 -0800
-Message-ID: <CAADnVQJVvwoZsE1K+6qRxzF7+6CvZNzygnoBW9tZNWJELk5c=Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v7 00/11] Atomics for eBPF
-To:     Brendan Jackman <jackmanb@google.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Date:   Thu, 14 Jan 2021 19:27:32 -0800
+Message-ID: <CAADnVQLssJ4oStg7C4W-nafFKaka1H3-N0DhsBrB3FdmgyUC_A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v8 1/3] bpf: remove extra lock_sock for TCP_ZEROCOPY_RECEIVE
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Yonghong Song <yhs@fb.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Eric Dumazet <edumazet@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 10:18 AM Brendan Jackman <jackmanb@google.com> wrote:
+On Wed, Jan 13, 2021 at 1:33 PM Stanislav Fomichev <sdf@google.com> wrote:
 >
-> There's still one unresolved review comment from John[3] which I
-> will resolve with a followup patch.
+> Add custom implementation of getsockopt hook for TCP_ZEROCOPY_RECEIVE.
+> We skip generic hooks for TCP_ZEROCOPY_RECEIVE and have a custom
+> call in do_tcp_getsockopt using the on-stack data. This removes
+> 3% overhead for locking/unlocking the socket.
 >
-> Differences from v6->v7 [1]:
+> Without this patch:
+>      3.38%     0.07%  tcp_mmap  [kernel.kallsyms]  [k] __cgroup_bpf_run_filter_getsockopt
+>             |
+>              --3.30%--__cgroup_bpf_run_filter_getsockopt
+>                        |
+>                         --0.81%--__kmalloc
 >
-> * Fixed riscv build error detected by 0-day robot.
+> With the patch applied:
+>      0.52%     0.12%  tcp_mmap  [kernel.kallsyms]  [k] __cgroup_bpf_run_filter_getsockopt_kern
+>
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> Cc: Martin KaFai Lau <kafai@fb.com>
+> Cc: Song Liu <songliubraving@fb.com>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Acked-by: Martin KaFai Lau <kafai@fb.com>
 
-Applied.
-Thanks a lot.
-
-Please address John's request in a followup and these few issues:
-
-- rst doesn't look correct. Example:
-rst2man Documentation/networking/filter.rst >/dev/null
-Documentation/networking/filter.rst:1053: (WARNING/2) Inline emphasis
-start-string without end-string.
-
-> Except ``BPF_ADD`` _without_ ``BPF_FETCH`` (for legacy reasons), all 4 byte
-> atomic operations require alu32 mode. Clang enables this mode by default in
-> architecture v3 (``-mcpu=v3``). For older versions it can be enabled with
-> ``-Xclang -target-feature -Xclang +alu32``.
-
-It reads confusing to me.
-I would rephrase 'clang enables this mode by default' into
-'clang can generate new atomic instruction when -mcpu=v3 is enabled'.
-
-'For older versions...'
-This part I didn't get. The users need clang 12 that is capable to
-emit these insns.
-What 'older versions' you're talking about?
+Few issues in this patch and the patch 2 doesn't apply:
+Switched to a new branch 'tmp'
+Applying: bpf: Remove extra lock_sock for TCP_ZEROCOPY_RECEIVE
+.git/rebase-apply/patch:295: trailing whitespace.
+#endif
+.git/rebase-apply/patch:306: trailing whitespace.
+union tcp_word_hdr {
+.git/rebase-apply/patch:309: trailing whitespace.
+};
+.git/rebase-apply/patch:311: trailing whitespace.
+#define tcp_flag_word(tp) ( ((union tcp_word_hdr *)(tp))->words [3])
+.git/rebase-apply/patch:313: trailing whitespace.
+enum {
+warning: squelched 1 whitespace error
+warning: 6 lines add whitespace errors.
+Applying: bpf: Try to avoid kzalloc in cgroup/{s,g}etsockopt
+error: patch failed: kernel/bpf/cgroup.c:1390
+error: kernel/bpf/cgroup.c: patch does not apply
+Patch failed at 0002 bpf: Try to avoid kzalloc in cgroup/{s,g}etsockopt
