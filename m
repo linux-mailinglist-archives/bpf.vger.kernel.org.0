@@ -2,311 +2,308 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E12F12F8A94
-	for <lists+bpf@lfdr.de>; Sat, 16 Jan 2021 02:52:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B406F2F8AD0
+	for <lists+bpf@lfdr.de>; Sat, 16 Jan 2021 03:47:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726194AbhAPBvP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 15 Jan 2021 20:51:15 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:35426 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726059AbhAPBvO (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 15 Jan 2021 20:51:14 -0500
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10G1Sjdm023141;
-        Fri, 15 Jan 2021 17:50:11 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=oaQzAhhlrkNVoNaCMGFdaZIzQAtb10Yx/rNJPWmW8hw=;
- b=LBuoPTzMLdNh40rv2WvTwAZ575uDhVzZZDBB0JkZdb6n7gN3LFzOobCAy0ZmFxyEnHZX
- EwAc3tz0Vke6670Qti8OQ0TUvyeJv2l1UL4iIPP6tbPS+MplL4MTGP5g3TSAcZ+xczWh
- GrneyKhq8rABdb9Fati7yQzDl9Fm6xSSIC4= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 363e4ftnx2-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 15 Jan 2021 17:50:11 -0800
-Received: from NAM04-SN1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 15 Jan 2021 17:50:09 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XDItLRZNEbJ1u9w+lNeVZV4kJx/e8xp4oano1l7gBZ3kiOC2X82S+TDowODzXXbO3taFfxTKamEN6CmM1a+Ehyu8CU1E3IsP4V6zEKaONLwJ+WMzWp1HA6XL24H8TgYVGdACM2CYwiZx1/iaTNt1cu60Q97Zg1luvPQnLK7Paag2YmRb8QxCXnZ3KHQ6DKHFy/q5bQm9q6v8OQMvWJBw/KQz1t2GnXoT0RxaBxv0UXaf722W8dQj6+HuQIvJZcUWeEbQPstfF5+y7KSxu3pcH01bhpVTurL63dotyZ6jKFhnpkCeyLljUWVXh0pCt/AygQqarRaEVNuq+UhLnjtoWA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oaQzAhhlrkNVoNaCMGFdaZIzQAtb10Yx/rNJPWmW8hw=;
- b=bIRdTVGGnxFipJYodKk7JpbKukdIRD7ccBfJm9ui39r1AfMqZljy2dWomuAEedhmy6IG6YLH9w+mUTGjQrd3icqmBRKfNbXCSZly6nLfBratiL3Up56S6aqpy04UQVIWLX13G4Ueb/I9uC1aZ2Yg6MSrf+Y9DJPSZu9WA7C1TSci9UDl4VuDCimQJN2qfq5jWWUbH6xVEQ/V0y7WxZfdUtIT8zD+kiidgNkDyMOuSjezAltnbWtFfAjqFwRTe+IZW5G1RQTwoVBw9JF7whI6LxG8uf2Z7QgvaYiZQ8wh3gTC5yMhLbqQPk060MlnzCHLzM/nyke2CBlZcmBpNrBmyw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oaQzAhhlrkNVoNaCMGFdaZIzQAtb10Yx/rNJPWmW8hw=;
- b=BiyOdHJXeojFtbQcWZ1vbPaqofoB6slrf6bZEt+381j1x58c8Eb3tUIM416SppiI6M9MNWl2LaeIshxsD5eNKvflFCxwu020m+7SMG866v/qc7LCwdEdDjBCyy+tb4wZmEzwhK1kBOvoH3X5UD97TVEmfvA5+KTUpcOJashDqHM=
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB2823.namprd15.prod.outlook.com (2603:10b6:a03:15a::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.12; Sat, 16 Jan
- 2021 01:50:06 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3763.011; Sat, 16 Jan 2021
- 01:50:06 +0000
-Subject: Re: [PATCH bpf-next 1/4] bpf: enable task local storage for tracing
- programs
-To:     Song Liu <songliubraving@fb.com>
-CC:     KP Singh <kpsingh@kernel.org>, Martin Lau <kafai@fb.com>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
+        id S1725923AbhAPCqX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 15 Jan 2021 21:46:23 -0500
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:38516 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725919AbhAPCqW (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 15 Jan 2021 21:46:22 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=30;SR=0;TI=SMTPD_---0ULqwJa7_1610765093;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0ULqwJa7_1610765093)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 16 Jan 2021 10:44:53 +0800
+From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To:     netdev@vger.kernel.org
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        Kernel Team <Kernel-team@fb.com>, Hao Luo <haoluo@google.com>,
-        kernel test robot <lkp@intel.com>
-References: <20210108231950.3844417-1-songliubraving@fb.com>
- <20210108231950.3844417-2-songliubraving@fb.com>
- <20210111185650.hsvfpoqmqc2mj7ci@kafai-mbp.dhcp.thefacebook.com>
- <CACYkzJ4mQrx1=owwrgBtu1Nvy9t0W4qP4=dthEutKpWPHxHrBw@mail.gmail.com>
- <20210111215820.t4z4g4cv66j7piio@kafai-mbp.dhcp.thefacebook.com>
- <9FF8CA8D-2D52-4120-99A5-86A68704BF4C@fb.com>
- <e4002f5c-6c2c-0945-9324-a8dc51125018@fb.com>
- <CACYkzJ64h53iZq9EpL01NukB6Rh+rQ0fupdn+shn-dTQ8NWH=A@mail.gmail.com>
- <A0F77AB9-5C1D-4657-96C9-33B5FDF6DF00@fb.com>
- <72a52715-dcfc-dc0b-ac5b-e14b7540fd31@fb.com>
- <75A2A254-4D51-41F0-9B01-ED2AFA745E03@fb.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <d798d2c0-66da-a3ee-a140-df11cd4ba69b@fb.com>
-Date:   Fri, 15 Jan 2021 17:50:03 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.1
-In-Reply-To: <75A2A254-4D51-41F0-9B01-ED2AFA745E03@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2620:10d:c090:400::5:bb30]
-X-ClientProxiedBy: MWHPR04CA0048.namprd04.prod.outlook.com
- (2603:10b6:300:ee::34) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21c8::1366] (2620:10d:c090:400::5:bb30) by MWHPR04CA0048.namprd04.prod.outlook.com (2603:10b6:300:ee::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9 via Frontend Transport; Sat, 16 Jan 2021 01:50:05 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8f6e9145-0063-4370-dd5e-08d8b9c10caa
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2823:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB282335C38D86C4593E9EAC08D3A60@BYAPR15MB2823.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 73RwfzoHDhuuNNMROsNwSoq5TxzWGfGHQZWyRAE9aSFbEdsAorPTSfSpdyoq6SmfgqLa5vIEp6e8Woj1/tiu1/65K56ZMxuJGMXCf90ryaybuDUfA7Mmi87PHYXJ8+NnWbKI+yZjtBJR7H6FcF0HUOdHE+dU4l1YEIL9SvehbDU9m3KhhfBsvMiWduGYlOhRf5EccuPPf5ZT/XSMJSbk7Im0B+jXo6+AB1nNzYW3apOKGRjyEgKYrJrokyFT1S5hB0V3LIEwDgnrMFIkGtKu2CQ8SmBW2ftBOxB7K6YzfxQvYDdjZ5FwA+qLkwdMdUCsIiCpx7diBwF8aVvvmO+CgIYsS3YjHND7QXhWAOJHixa1GQoQ+lwfscBfGu+h0AOcBBDWzlEcI01NNAavtpKA9Nv9gUtvsjrxae9KwdGehkEbHF6/+JVLYqmXQxY3+7h1q0dZHEYhhSrl12oiiHvELgvCIQ+vnJN21KX8ccuY3nI/xu2flMX5q5ZvaYJlBVzvuq7Xh6CCE/wrjrN6zimlByu9lwVF/5axyA79AfMHAXsSImctcYnAMneHicCLQDz9sOZ9QVg/FcbGxEN5ONVWlm442qxTnN/TyBTlgkZmndc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(39860400002)(136003)(396003)(366004)(16526019)(66476007)(66556008)(7416002)(8936002)(31686004)(2616005)(86362001)(186003)(83380400001)(54906003)(6486002)(53546011)(37006003)(478600001)(36756003)(8676002)(6636002)(5660300002)(52116002)(66946007)(316002)(31696002)(4326008)(6862004)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?QUFZU20zT3l0VTZiQVhkL2Y5Ylc2bFJnQTZOblUxcWw4RVZ3OHNKbytITFlj?=
- =?utf-8?B?WnNTUjhIaEEzd0hVNkQrZEhrV1luSUVtb1M3a096VHpHTk4xNVZMUHFDV0lO?=
- =?utf-8?B?Q283ZjFrN1hHdWVsY3NZbFdpZXVrVng1M0oxWVk3L1I4LzFZU29lTENCaHlz?=
- =?utf-8?B?ZTVHbWVrZGU2ZVllZU1DNlo1d0dLMk1QSjVESGhiSHQ2SW5JUWRTVnhzTndI?=
- =?utf-8?B?clRUakQrTTdZYXpucnJucTBJc0xJcmNVNnVuajQ1UWxVWVF6TGtrd2JDSXVJ?=
- =?utf-8?B?OHczdWRMQkpTdk9oS1d1SVg1dWpaM3B1UGlmbFErYWxWcTJ4b2dSQnRPWC9K?=
- =?utf-8?B?ZU8zd2tJYzg3bmx0SThFOTZtdGpyN05wUXlIdldiL2dZL05wQk5uRzdDbDhh?=
- =?utf-8?B?V0FUL3BlOU45L0x2TEVjbjE3YldDY3hpUnhmZlpOcW5KeWNSc2tNUUdCdEZ4?=
- =?utf-8?B?L0FzZ0taYnkrNmc0WEhqaFJNQTV5Zk9QQlA1b3BHc0dhMmx1ckl4ZWxuSGhr?=
- =?utf-8?B?ak9BVDhyUmJsSXNBemVOeU1ERi8wRWZVMVRKSkpKNWpXRm1CRHhlem11aGYx?=
- =?utf-8?B?b0ZUR1QwNFBYTnhCZ2ZxQURxazFkc1EveDRpUnRsS09COTNxa3YrNjZRY0RC?=
- =?utf-8?B?L3E3SXpIcVMyY2txcjJHcVRNenFpQmtJY0lMTzhqN3lUSzlJL3lhK1o5OFl1?=
- =?utf-8?B?OXoxb1lrb28vUGlaZ1hmdGoxTzBtYXg2aHQwRjlJay9WSVl1MExNQndNRUVK?=
- =?utf-8?B?OUJHcWxtV1ZUL0FpdTBTcVFHcDlPZmxiN1ZZajRCSElHRTY0QVQwTUdwdVhE?=
- =?utf-8?B?aWpQdFFaTG45dE9HZ2FHR1R4QVBsUFhKQ0svclBiVG1mVmZoblV0T1ZkNXpv?=
- =?utf-8?B?eWlsbkErb25LbW5Fa1p1NUZVZjZGc1dIVzdjV1hPTlZQYzJsT25IRks0MXBi?=
- =?utf-8?B?VUtIOWlqK0UrRFYraW9MVGFCSVlCR2N2bFA1Q1VlS0NjdFcwZGlGcGJ0N1Iz?=
- =?utf-8?B?WS9laDF0TlhXbWlnZ2NudWRtQ05hZndaRkhjNEpGRnlnUndKUEg3WWNvbkhC?=
- =?utf-8?B?bjFLaWJZditpc3g3bkk0Qnczak4yeWhHTGFVdzhYQ3dpUnk5TjNQTGhWT3FI?=
- =?utf-8?B?alZqajNUOFRyUEJDQjlhaFJObmUva3lTOFh1T1ZCNWVqbHF3STA2cktsbTRH?=
- =?utf-8?B?Z3hYR1VrUmlpOU5oMllIbTFxeVhiYzlWbXkrQXpKYjF5TDhkVXFmUkUrampZ?=
- =?utf-8?B?NWxLemVtQUtzK1dKcDVaVXJsNWxQRXlLbXJ0MUR6a25XbC9wWWZjWmVvYUZi?=
- =?utf-8?B?eEJaVFp2dEVLMnA4RnNpSUNlMHNwc1g4UXR3QmhzL0tHN1RhNXBmWFFFOHNR?=
- =?utf-8?B?ZUgrNzdkWWxycnc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8f6e9145-0063-4370-dd5e-08d8b9c10caa
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jan 2021 01:50:06.7345
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7maUk4O3J8eJ8Spi0KLSyun3j54BkLJLKJzNTyy9Mj/fiSLizNVhLpOeN+90QpPW
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2823
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-15_15:2021-01-15,2021-01-15 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 clxscore=1015
- malwarescore=0 bulkscore=0 impostorscore=0 phishscore=0 adultscore=0
- lowpriorityscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101160009
-X-FB-Internal: deliver
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Antoine Tenart <atenart@kernel.org>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Meir Lichtinger <meirl@mellanox.com>,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+Subject: [PATCH bpf-next] xsk: build skb by page
+Date:   Sat, 16 Jan 2021 10:44:53 +0800
+Message-Id: <579fa463bba42ac71591540a1811dca41d725350.1610764948.git.xuanzhuo@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+This patch is used to construct skb based on page to save memory copy
+overhead.
 
+This has one problem:
 
-On 1/15/21 5:12 PM, Song Liu wrote:
-> 
-> 
->> On Jan 15, 2021, at 4:55 PM, Yonghong Song <yhs@fb.com> wrote:
->>
->>
->>
->> On 1/15/21 3:34 PM, Song Liu wrote:
->>>> On Jan 12, 2021, at 8:53 AM, KP Singh <kpsingh@kernel.org> wrote:
->>>>
->>>> On Tue, Jan 12, 2021 at 5:32 PM Yonghong Song <yhs@fb.com> wrote:
->>>>>
->>>>>
->>>>>
->>>>> On 1/11/21 3:45 PM, Song Liu wrote:
->>>>>>
->>>>>>
->>>>>>> On Jan 11, 2021, at 1:58 PM, Martin Lau <kafai@fb.com> wrote:
->>>>>>>
->>>>>>> On Mon, Jan 11, 2021 at 10:35:43PM +0100, KP Singh wrote:
->>>>>>>> On Mon, Jan 11, 2021 at 7:57 PM Martin KaFai Lau <kafai@fb.com> wrote:
->>>>>>>>>
->>>>>>>>> On Fri, Jan 08, 2021 at 03:19:47PM -0800, Song Liu wrote:
->>>>>>>>>
->>>>>>>>> [ ... ]
->>>>>>>>>
->>>>>>>>>> diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
->>>>>>>>>> index dd5aedee99e73..9bd47ad2b26f1 100644
->>>>>>>>>> --- a/kernel/bpf/bpf_local_storage.c
->>>>>>>>>> +++ b/kernel/bpf/bpf_local_storage.c
->>>>
->>>> [...]
->>>>
->>>>>>>>>> +#include <linux/bpf.h>
->>>>>>>>>>
->>>>>>>>>> #include <asm/pgalloc.h>
->>>>>>>>>> #include <linux/uaccess.h>
->>>>>>>>>> @@ -734,6 +735,7 @@ void __put_task_struct(struct task_struct *tsk)
->>>>>>>>>>       cgroup_free(tsk);
->>>>>>>>>>       task_numa_free(tsk, true);
->>>>>>>>>>       security_task_free(tsk);
->>>>>>>>>> +     bpf_task_storage_free(tsk);
->>>>>>>>>>       exit_creds(tsk);
->>>>>>>>> If exit_creds() is traced by a bpf and this bpf is doing
->>>>>>>>> bpf_task_storage_get(..., BPF_LOCAL_STORAGE_GET_F_CREATE),
->>>>>>>>> new task storage will be created after bpf_task_storage_free().
->>>>>>>>>
->>>>>>>>> I recalled there was an earlier discussion with KP and KP mentioned
->>>>>>>>> BPF_LSM will not be called with a task that is going away.
->>>>>>>>> It seems enabling bpf task storage in bpf tracing will break
->>>>>>>>> this assumption and needs to be addressed?
->>>>>>>>
->>>>>>>> For tracing programs, I think we will need an allow list where
->>>>>>>> task local storage can be used.
->>>>>>> Instead of whitelist, can refcount_inc_not_zero(&tsk->usage) be used?
->>>>>>
->>>>>> I think we can put refcount_inc_not_zero() in bpf_task_storage_get, like:
->>>>>>
->>>>>> diff --git i/kernel/bpf/bpf_task_storage.c w/kernel/bpf/bpf_task_storage.c
->>>>>> index f654b56907b69..93d01b0a010e6 100644
->>>>>> --- i/kernel/bpf/bpf_task_storage.c
->>>>>> +++ w/kernel/bpf/bpf_task_storage.c
->>>>>> @@ -216,6 +216,9 @@ BPF_CALL_4(bpf_task_storage_get, struct bpf_map *, map, struct task_struct *,
->>>>>>           * by an RCU read-side critical section.
->>>>>>           */
->>>>>>          if (flags & BPF_LOCAL_STORAGE_GET_F_CREATE) {
->>>>>> +               if (!refcount_inc_not_zero(&task->usage))
->>>>>> +                       return -EBUSY;
->>>>>> +
->>>>>>                  sdata = bpf_local_storage_update(
->>>>>>                          task, (struct bpf_local_storage_map *)map, value,
->>>>>>                          BPF_NOEXIST);
->>>>>>
->>>>>> But where shall we add the refcount_dec()? IIUC, we cannot add it to
->>>>>> __put_task_struct().
->>>>>
->>>>> Maybe put_task_struct()?
->>>>
->>>> Yeah, something like, or if you find a more elegant alternative :)
->>>>
->>>> --- a/include/linux/sched/task.h
->>>> +++ b/include/linux/sched/task.h
->>>> @@ -107,13 +107,20 @@ extern void __put_task_struct(struct task_struct *t);
->>>>
->>>> static inline void put_task_struct(struct task_struct *t)
->>>> {
->>>> -       if (refcount_dec_and_test(&t->usage))
->>>> +
->>>> +       if (rcu_access_pointer(t->bpf_storage)) {
->>>> +               if (refcount_sub_and_test(2, &t->usage))
->>>> +                       __put_task_struct(t);
->>>> +       } else if (refcount_dec_and_test(&t->usage))
->>>>                 __put_task_struct(t);
->>>> }
->>>>
->>>> static inline void put_task_struct_many(struct task_struct *t, int nr)
->>>> {
->>>> -       if (refcount_sub_and_test(nr, &t->usage))
->>>> +       if (rcu_access_pointer(t->bpf_storage)) {
->>>> +               if (refcount_sub_and_test(nr + 1, &t->usage))
->>>> +                       __put_task_struct(t);
->>>> +       } else if (refcount_sub_and_test(nr, &t->usage))
->>>>                 __put_task_struct(t);
->>>> }
->>> It is not ideal to leak bpf_storage here. How about we only add the
->>> following:
->>> diff --git i/kernel/bpf/bpf_task_storage.c w/kernel/bpf/bpf_task_storage.c
->>> index f654b56907b69..2811b9fc47233 100644
->>> --- i/kernel/bpf/bpf_task_storage.c
->>> +++ w/kernel/bpf/bpf_task_storage.c
->>> @@ -216,6 +216,10 @@ BPF_CALL_4(bpf_task_storage_get, struct bpf_map *, map, struct task_struct *,
->>>           * by an RCU read-side critical section.
->>>           */
->>>          if (flags & BPF_LOCAL_STORAGE_GET_F_CREATE) {
->>> +               /* the task_struct is being freed, fail over*/
->>> +               if (!refcount_read(&task->usage))
->>> +                       return -EBUSY;
->>
->> This may not work? Even we check here and task->usage is not 0, it could still become 0 immediately after the above refcount_read, right?
-> 
-> We call bpf_task_storage_get() with "task" that has valid BTF, so "task"
-> should not go away during the BPF program? Whatever mechanism that
+We construct the skb by fill the data page as a frag into the skb. In
+this way, the linear space is empty, and the header information is also
+in the frag, not in the linear space, which is not allowed for some
+network cards. For example, Mellanox Technologies MT27710 Family
+[ConnectX-4 Lx] will get the following error message:
 
-Oh, right. this is true. Otherwise, we cannot use task ptr in the helper.
+    mlx5_core 0000:3b:00.1 eth1: Error cqe on cqn 0x817, ci 0x8, qn 0x1dbb, opcode 0xd, syndrome 0x1, vendor syndrome 0x68
+    00000000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+    00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+    00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+    00000030: 00 00 00 00 60 10 68 01 0a 00 1d bb 00 0f 9f d2
+    WQE DUMP: WQ size 1024 WQ cur size 0, WQE index 0xf, len: 64
+    00000000: 00 00 0f 0a 00 1d bb 03 00 00 00 08 00 00 00 00
+    00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+    00000020: 00 00 00 2b 00 08 00 00 00 00 00 05 9e e3 08 00
+    00000030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+    mlx5_core 0000:3b:00.1 eth1: ERR CQE on SQ: 0x1dbb
 
-> triggers the BPF program should either hold a reference to task (usage > 0)
-> or be the only one owning it (usage == 0, in __put_task_struct). Did I miss
-> anything?
+I also tried to use build_skb to construct skb, but because of the
+existence of skb_shinfo, it must be behind the linear space, so this
+method is not working. We can't put skb_shinfo on desc->addr, it will be
+exposed to users, this is not safe.
 
-Sorry. I think you are right. Not sure lsm requirement. There are two
-more possible ways to check task is exiting which happens before 
-__put_task_struct():
-   . check task->exit_state
-   . check task->flags & PF_EXITING (used in bpf_trace.c)
+Finally, I added a feature NETIF_F_SKB_NO_LINEAR to identify whether the
+network card supports the header information of the packet in the frag
+and not in the linear space.
 
-Not sure which condition is the correct one to check.
+---------------- Performance Testing ------------
 
-> 
-> Thanks,
-> Song
-> 
->>
->>> +
->>>                  sdata = bpf_local_storage_update(
->>>                          task, (struct bpf_local_storage_map *)map, value,
->>>                          BPF_NOEXIST);
->>>>
->>>>
->>>> I may be missing something but shouldn't bpf_storage be an __rcu
->>>> member like we have for sk_bpf_storage?
->>> Good catch! I will fix this in v2.
->>> Thanks,
->>> Song
-> 
+The test environment is Aliyun ECS server.
+Test cmd:
+```
+xdpsock -i eth0 -t  -S -s <msg size>
+```
+
+Test result data:
+
+size    64      512     1024    1500
+copy    1916747 1775988 1600203 1440054
+page    1974058 1953655 1945463 1904478
+percent 3.0%    10.0%   21.58%  32.3%
+
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
+---
+ drivers/net/virtio_net.c        |   2 +-
+ include/linux/netdev_features.h |   5 +-
+ net/ethtool/common.c            |   1 +
+ net/xdp/xsk.c                   | 108 +++++++++++++++++++++++++++++++++-------
+ 4 files changed, 97 insertions(+), 19 deletions(-)
+
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index 4ecccb8..841a331 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -2985,7 +2985,7 @@ static int virtnet_probe(struct virtio_device *vdev)
+ 	/* Set up network device as normal. */
+ 	dev->priv_flags |= IFF_UNICAST_FLT | IFF_LIVE_ADDR_CHANGE;
+ 	dev->netdev_ops = &virtnet_netdev;
+-	dev->features = NETIF_F_HIGHDMA;
++	dev->features = NETIF_F_HIGHDMA | NETIF_F_SKB_NO_LINEAR;
+ 
+ 	dev->ethtool_ops = &virtnet_ethtool_ops;
+ 	SET_NETDEV_DEV(dev, &vdev->dev);
+diff --git a/include/linux/netdev_features.h b/include/linux/netdev_features.h
+index 934de56..8dd28e2 100644
+--- a/include/linux/netdev_features.h
++++ b/include/linux/netdev_features.h
+@@ -85,9 +85,11 @@ enum {
+ 
+ 	NETIF_F_HW_MACSEC_BIT,		/* Offload MACsec operations */
+ 
++	NETIF_F_SKB_NO_LINEAR_BIT,	/* Allow skb linear is empty */
++
+ 	/*
+ 	 * Add your fresh new feature above and remember to update
+-	 * netdev_features_strings[] in net/core/ethtool.c and maybe
++	 * netdev_features_strings[] in net/ethtool/common.c and maybe
+ 	 * some feature mask #defines below. Please also describe it
+ 	 * in Documentation/networking/netdev-features.rst.
+ 	 */
+@@ -157,6 +159,7 @@ enum {
+ #define NETIF_F_GRO_FRAGLIST	__NETIF_F(GRO_FRAGLIST)
+ #define NETIF_F_GSO_FRAGLIST	__NETIF_F(GSO_FRAGLIST)
+ #define NETIF_F_HW_MACSEC	__NETIF_F(HW_MACSEC)
++#define NETIF_F_SKB_NO_LINEAR	__NETIF_F(SKB_NO_LINEAR)
+ 
+ /* Finds the next feature with the highest number of the range of start till 0.
+  */
+diff --git a/net/ethtool/common.c b/net/ethtool/common.c
+index 24036e3..2f3d309 100644
+--- a/net/ethtool/common.c
++++ b/net/ethtool/common.c
+@@ -68,6 +68,7 @@
+ 	[NETIF_F_HW_TLS_RX_BIT] =	 "tls-hw-rx-offload",
+ 	[NETIF_F_GRO_FRAGLIST_BIT] =	 "rx-gro-list",
+ 	[NETIF_F_HW_MACSEC_BIT] =	 "macsec-hw-offload",
++	[NETIF_F_SKB_NO_LINEAR_BIT] =	 "skb-no-linear",
+ };
+ 
+ const char
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 8037b04..94d17dc 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -430,6 +430,95 @@ static void xsk_destruct_skb(struct sk_buff *skb)
+ 	sock_wfree(skb);
+ }
+ 
++static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
++					      struct xdp_desc *desc)
++{
++	u32 len, offset, copy, copied;
++	struct sk_buff *skb;
++	struct page *page;
++	char *buffer;
++	int err, i;
++	u64 addr;
++
++	skb = sock_alloc_send_skb(&xs->sk, 0, 1, &err);
++	if (unlikely(!skb))
++		return NULL;
++
++	addr = desc->addr;
++	len = desc->len;
++
++	buffer = xsk_buff_raw_get_data(xs->pool, addr);
++	offset = offset_in_page(buffer);
++	addr = buffer - (char *)xs->pool->addrs;
++
++	for (copied = 0, i = 0; copied < len; ++i) {
++		page = xs->pool->umem->pgs[addr >> PAGE_SHIFT];
++
++		get_page(page);
++
++		copy = min((u32)(PAGE_SIZE - offset), len - copied);
++
++		skb_fill_page_desc(skb, i, page, offset, copy);
++
++		copied += copy;
++		addr += copy;
++		offset = 0;
++	}
++
++	skb->len += len;
++	skb->data_len += len;
++	skb->truesize += len;
++
++	refcount_add(len, &xs->sk.sk_wmem_alloc);
++
++	return skb;
++}
++
++static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
++				     struct xdp_desc *desc, int *err)
++{
++	struct sk_buff *skb;
++
++	if (xs->dev->features & NETIF_F_SKB_NO_LINEAR) {
++		skb = xsk_build_skb_zerocopy(xs, desc);
++		if (unlikely(!skb)) {
++			*err = -ENOMEM;
++			return NULL;
++		}
++	} else {
++		char *buffer;
++		u64 addr;
++		u32 len;
++		int err;
++
++		len = desc->len;
++		skb = sock_alloc_send_skb(&xs->sk, len, 1, &err);
++		if (unlikely(!skb)) {
++			*err = -ENOMEM;
++			return NULL;
++		}
++
++		skb_put(skb, len);
++		addr = desc->addr;
++		buffer = xsk_buff_raw_get_data(xs->pool, desc->addr);
++		err = skb_store_bits(skb, 0, buffer, len);
++
++		if (unlikely(err)) {
++			kfree_skb(skb);
++			*err = -EINVAL;
++			return NULL;
++		}
++	}
++
++	skb->dev = xs->dev;
++	skb->priority = xs->sk.sk_priority;
++	skb->mark = xs->sk.sk_mark;
++	skb_shinfo(skb)->destructor_arg = (void *)(long)desc->addr;
++	skb->destructor = xsk_destruct_skb;
++
++	return skb;
++}
++
+ static int xsk_generic_xmit(struct sock *sk)
+ {
+ 	struct xdp_sock *xs = xdp_sk(sk);
+@@ -446,43 +535,28 @@ static int xsk_generic_xmit(struct sock *sk)
+ 		goto out;
+ 
+ 	while (xskq_cons_peek_desc(xs->tx, &desc, xs->pool)) {
+-		char *buffer;
+-		u64 addr;
+-		u32 len;
+-
+ 		if (max_batch-- == 0) {
+ 			err = -EAGAIN;
+ 			goto out;
+ 		}
+ 
+-		len = desc.len;
+-		skb = sock_alloc_send_skb(sk, len, 1, &err);
++		skb = xsk_build_skb(xs, &desc, &err);
+ 		if (unlikely(!skb))
+ 			goto out;
+ 
+-		skb_put(skb, len);
+-		addr = desc.addr;
+-		buffer = xsk_buff_raw_get_data(xs->pool, addr);
+-		err = skb_store_bits(skb, 0, buffer, len);
+ 		/* This is the backpressure mechanism for the Tx path.
+ 		 * Reserve space in the completion queue and only proceed
+ 		 * if there is space in it. This avoids having to implement
+ 		 * any buffering in the Tx path.
+ 		 */
+ 		spin_lock_irqsave(&xs->pool->cq_lock, flags);
+-		if (unlikely(err) || xskq_prod_reserve(xs->pool->cq)) {
++		if (xskq_prod_reserve(xs->pool->cq)) {
+ 			spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
+ 			kfree_skb(skb);
+ 			goto out;
+ 		}
+ 		spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
+ 
+-		skb->dev = xs->dev;
+-		skb->priority = sk->sk_priority;
+-		skb->mark = sk->sk_mark;
+-		skb_shinfo(skb)->destructor_arg = (void *)(long)desc.addr;
+-		skb->destructor = xsk_destruct_skb;
+-
+ 		err = __dev_direct_xmit(skb, xs->queue_id);
+ 		if  (err == NETDEV_TX_BUSY) {
+ 			/* Tell user-space to retry the send */
+-- 
+1.8.3.1
+
