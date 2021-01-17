@@ -2,296 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2AAF2F9147
-	for <lists+bpf@lfdr.de>; Sun, 17 Jan 2021 09:01:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCE372F934D
+	for <lists+bpf@lfdr.de>; Sun, 17 Jan 2021 16:13:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726203AbhAQH6s (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 17 Jan 2021 02:58:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727480AbhAQH6l (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 17 Jan 2021 02:58:41 -0500
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D84AEC061575
-        for <bpf@vger.kernel.org>; Sat, 16 Jan 2021 23:57:59 -0800 (PST)
-Received: by mail-ot1-x32b.google.com with SMTP id b24so13231781otj.0
-        for <bpf@vger.kernel.org>; Sat, 16 Jan 2021 23:57:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=daynix-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=VESx0q50uHif31i5KEl5hWIvCIRQQNFTAOMGoAM4sHk=;
-        b=dowfzTW23mQmJth/93y3cwCyGyvAl+fFqQcvXECxcGq8jo5zaQkT722+738BfC0A14
-         Bsqd/ozm5BiNtKsHXJ5UDIa7Wfm31hW52j0wVk/7WFwHHDzt1eytW0ilYs1zsM5BMX7s
-         t1nLNTzQDYtxUd/eiOB+foBYE4wfdrR00TKQgH+31X2W7aLhZPfvJR4go5ov7vm4hlh+
-         814jWwD7JM8JKTkGOMTEvwqXRqGSJC9Z16hI/+aYhFdXlqRtovk9JT9kkHGl5VyDVRY2
-         DewWaIsAU0QFt3CgW6rxqv0Qz3cazUlkFC55+YDczF0e0pq3KuAN2Y+g7PvU+9NnN9hd
-         t2zQ==
+        id S1729511AbhAQPLX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 17 Jan 2021 10:11:23 -0500
+Received: from mail-wr1-f54.google.com ([209.85.221.54]:35653 "EHLO
+        mail-wr1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729494AbhAQPLR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 17 Jan 2021 10:11:17 -0500
+Received: by mail-wr1-f54.google.com with SMTP id l12so8824371wry.2;
+        Sun, 17 Jan 2021 07:11:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=VESx0q50uHif31i5KEl5hWIvCIRQQNFTAOMGoAM4sHk=;
-        b=LmHg2mluKYIo5xUVMjjvTvEEcgVYmoyoKWH0e08KCIobe+U3XVLmb9LjaKjRRiDWDY
-         cskk4IdgdDeqSGDxSmD34EteB+oNQ3TBUQF95TvV660gEAXKFZu7QpLnc0/SokE4jWMg
-         /FTF2PGU1KUiQGcFyIEDznWolY6OAgL5yhtNC5g66/csHhHDdmMQt+j+MHECSyGhRCub
-         zxDCeifBV9DHmvmA940wiX0XlGnaSapusBZB5YdcobiW+uVDkfDyh9cpV45OFNZfn9Q3
-         DlOl1Y3ghQ/dAQ3lc2HDZKk/TCFeQCVvqXOIZUCJh+TI5cyT3lnWOXXtaH6ejA6KN7tV
-         oU1A==
-X-Gm-Message-State: AOAM533/+dE+m2Q6MAWLMiORCbGkNj6QVJ8SxefT+Vtz1p5fOS8M8YqE
-        kRwgxWFP82vqdFzivFcW7qrV+vadzmfJUMbeyoZoeg==
-X-Google-Smtp-Source: ABdhPJw72h9Qq08nM/YnqFoYtJLR5CwoCt5GmjOdfecQ7OjxFIthON9NM5A1BUKUsEtaY5OOl0Rzt3RdzKkeCVJhpec=
-X-Received: by 2002:a9d:4715:: with SMTP id a21mr14710269otf.220.1610870278976;
- Sat, 16 Jan 2021 23:57:58 -0800 (PST)
-MIME-Version: 1.0
-References: <20210112194143.1494-1-yuri.benditovich@daynix.com>
- <CAOEp5OejaX4ZETThrj4-n8_yZoeTZs56CBPHbQqNsR2oni8dWw@mail.gmail.com>
- <CAOEp5Oc5qif_krU8oC6qhq6X0xRW-9GpWrBzWgPw0WevyhT8Mg@mail.gmail.com>
- <CA+FuTSfhBZfEf8+LKNUJQpSxt8c5h1wMpARupekqFKuei6YBsA@mail.gmail.com>
- <78bbc518-4b73-4629-68fb-2713250f8967@redhat.com> <CA+FuTSfJJhEYr6gXmjpjjXzg6Xm5wWa-dL1SEV-Zt7RcPXGztg@mail.gmail.com>
- <8ea218a8-a068-1ed9-929d-67ad30111c3c@redhat.com>
-In-Reply-To: <8ea218a8-a068-1ed9-929d-67ad30111c3c@redhat.com>
-From:   Yuri Benditovich <yuri.benditovich@daynix.com>
-Date:   Sun, 17 Jan 2021 09:57:47 +0200
-Message-ID: <CAOEp5OfyHz2rXHmOeojNNE2wvrHMn_z1egr5aGQborEq829TLw@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/7] Support for virtio-net hash reporting
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=yxPKYVAYGFQ1uVQM2y606vIDhx9zjoEHxHnN55EZo98=;
+        b=TUVVHDczSAED4qTERg6ScXVXG6pdSeHnM7xdHdUaGtMng5gn+2Qn/oJLIbS182hc/w
+         f7H5t9ODzo0lZ0HL4YdT84LopIZDUrICwV6Zpvtig0B6zKC7AooH/LNkbPQ7eJKx2fRy
+         k40jkgJ4L1CVQxYRaM2Jj2/U/K1TNbZ7AGO4xBTk+Xp/bcnZWv7WHpC6GpEnQCxy/9/9
+         fDt291EmWIiHN9GSTd7r9Ht6GP9ekW7Qr2vBla3xI0pjKespB4s8fLJ0bcNCO/pYZu0l
+         E55W+ZSsLlluv1OgfilcQlOg+fPv5PiJnKNvVN9BQWiZfaTTcOe/9peE+CtBfSRtHpQP
+         ALZg==
+X-Gm-Message-State: AOAM530jgMI9U6aLeGz5uL3x9oTjKyxzxpm6k0m89sQbvSqUdCwdy9PT
+        y3zFtfwOqU+wvpJtML5wzHY=
+X-Google-Smtp-Source: ABdhPJyJPGTIXOtEZuKjxF9FdiBJ+duV8o5fKkcqf2RskvssZY/hStY35yl3A3IfKiwk8yag1fbfsA==
+X-Received: by 2002:adf:ef51:: with SMTP id c17mr22353048wrp.101.1610896234710;
+        Sun, 17 Jan 2021 07:10:34 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id g1sm24246408wrq.30.2021.01.17.07.10.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Jan 2021 07:10:34 -0800 (PST)
+Date:   Sun, 17 Jan 2021 15:10:32 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Andrea Parri <parri.andrea@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Saruhan Karademir <skarade@microsoft.com>,
+        Juan Vazquez <juvazq@microsoft.com>,
+        linux-hyperv@vger.kernel.org,
         "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>, decui@microsoft.com,
-        cai@lca.pw, Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        bpf <bpf@vger.kernel.org>, Yan Vugenfirer <yan@daynix.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH v2] hv_netvsc: Add (more) validation for untrusted
+ Hyper-V values
+Message-ID: <20210117151032.sbhjryq2hs3ctnlx@liuwe-devbox-debian-v2>
+References: <20210114202628.119541-1-parri.andrea@gmail.com>
+ <20210115203022.7005e66a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20210116130201.GA1579@anparri>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210116130201.GA1579@anparri>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 5:39 AM Jason Wang <jasowang@redhat.com> wrote:
->
->
-> On 2021/1/13 =E4=B8=8B=E5=8D=8810:33, Willem de Bruijn wrote:
-> > On Tue, Jan 12, 2021 at 11:11 PM Jason Wang <jasowang@redhat.com> wrote=
-:
-> >>
-> >> On 2021/1/13 =E4=B8=8A=E5=8D=887:47, Willem de Bruijn wrote:
-> >>> On Tue, Jan 12, 2021 at 3:29 PM Yuri Benditovich
-> >>> <yuri.benditovich@daynix.com> wrote:
-> >>>> On Tue, Jan 12, 2021 at 9:49 PM Yuri Benditovich
-> >>>> <yuri.benditovich@daynix.com> wrote:
-> >>>>> On Tue, Jan 12, 2021 at 9:41 PM Yuri Benditovich
-> >>>>> <yuri.benditovich@daynix.com> wrote:
-> >>>>>> Existing TUN module is able to use provided "steering eBPF" to
-> >>>>>> calculate per-packet hash and derive the destination queue to
-> >>>>>> place the packet to. The eBPF uses mapped configuration data
-> >>>>>> containing a key for hash calculation and indirection table
-> >>>>>> with array of queues' indices.
-> >>>>>>
-> >>>>>> This series of patches adds support for virtio-net hash reporting
-> >>>>>> feature as defined in virtio specification. It extends the TUN mod=
-ule
-> >>>>>> and the "steering eBPF" as follows:
-> >>>>>>
-> >>>>>> Extended steering eBPF calculates the hash value and hash type, ke=
-eps
-> >>>>>> hash value in the skb->hash and returns index of destination virtq=
-ueue
-> >>>>>> and the type of the hash. TUN module keeps returned hash type in
-> >>>>>> (currently unused) field of the skb.
-> >>>>>> skb->__unused renamed to 'hash_report_type'.
-> >>>>>>
-> >>>>>> When TUN module is called later to allocate and fill the virtio-ne=
-t
-> >>>>>> header and push it to destination virtqueue it populates the hash
-> >>>>>> and the hash type into virtio-net header.
-> >>>>>>
-> >>>>>> VHOST driver is made aware of respective virtio-net feature that
-> >>>>>> extends the virtio-net header to report the hash value and hash re=
-port
-> >>>>>> type.
-> >>>>> Comment from Willem de Bruijn:
-> >>>>>
-> >>>>> Skbuff fields are in short supply. I don't think we need to add one
-> >>>>> just for this narrow path entirely internal to the tun device.
-> >>>>>
-> >>>> We understand that and try to minimize the impact by using an alread=
-y
-> >>>> existing unused field of skb.
-> >>> Not anymore. It was repurposed as a flags field very recently.
-> >>>
-> >>> This use case is also very narrow in scope. And a very short path fro=
-m
-> >>> data producer to consumer. So I don't think it needs to claim scarce
-> >>> bits in the skb.
-> >>>
-> >>> tun_ebpf_select_queue stores the field, tun_put_user reads it and
-> >>> converts it to the virtio_net_hdr in the descriptor.
-> >>>
-> >>> tun_ebpf_select_queue is called from .ndo_select_queue.  Storing the
-> >>> field in skb->cb is fragile, as in theory some code could overwrite
-> >>> that between field between ndo_select_queue and
-> >>> ndo_start_xmit/tun_net_xmit, from which point it is fully under tun
-> >>> control again. But in practice, I don't believe anything does.
-> >>>
-> >>> Alternatively an existing skb field that is used only on disjoint
-> >>> datapaths, such as ingress-only, could be viable.
-> >>
-> >> A question here. We had metadata support in XDP for cooperation betwee=
-n
-> >> eBPF programs. Do we have something similar in the skb?
-> >>
-> >> E.g in the RSS, if we want to pass some metadata information between
-> >> eBPF program and the logic that generates the vnet header (either hard
-> >> logic in the kernel or another eBPF program). Is there any way that ca=
-n
-> >> avoid the possible conflicts of qdiscs?
-> > Not that I am aware of. The closest thing is cb[].
-> >
-> > It'll have to aliase a field like that, that is known unused for the gi=
-ven path.
->
->
-> Right, we need to make sure cb is not used by other ones. I'm not sure
-> how hard to achieve that consider Qemu installs the eBPF program but it
-> doesn't deal with networking configurations.
->
->
-> >
-> > One other approach that has been used within linear call stacks is out
-> > of band. Like percpu variables softnet_data.xmit.more and
-> > mirred_rec_level. But that is perhaps a bit overwrought for this use
-> > case.
->
->
-> Yes, and if we go that way then eBPF turns out to be a burden since we
-> need to invent helpers to access those auxiliary data structure. It
-> would be better then to hard-coded the RSS in the kernel.
->
->
-> >
-> >>>>> Instead, you could just run the flow_dissector in tun_put_user if t=
-he
-> >>>>> feature is negotiated. Indeed, the flow dissector seems more apt to=
- me
-> >>>>> than BPF here. Note that the flow dissector internally can be
-> >>>>> overridden by a BPF program if the admin so chooses.
-> >>>>>
-> >>>> When this set of patches is related to hash delivery in the virtio-n=
-et
-> >>>> packet in general,
-> >>>> it was prepared in context of RSS feature implementation as defined =
-in
-> >>>> virtio spec [1]
-> >>>> In case of RSS it is not enough to run the flow_dissector in tun_put=
-_user:
-> >>>> in tun_ebpf_select_queue the TUN calls eBPF to calculate the hash,
-> >>>> hash type and queue index
-> >>>> according to the (mapped) parameters (key, hash types, indirection
-> >>>> table) received from the guest.
-> >>> TUNSETSTEERINGEBPF was added to support more diverse queue selection
-> >>> than the default in case of multiqueue tun. Not sure what the exact
-> >>> use cases are.
-> >>>
-> >>> But RSS is exactly the purpose of the flow dissector. It is used for
-> >>> that purpose in the software variant RPS. The flow dissector
-> >>> implements a superset of the RSS spec, and certainly computes a
-> >>> four-tuple for TCP/IPv6. In the case of RPS, it is skipped if the NIC
-> >>> has already computed a 4-tuple hash.
-> >>>
-> >>> What it does not give is a type indication, such as
-> >>> VIRTIO_NET_HASH_TYPE_TCPv6. I don't understand how this would be used=
-.
-> >>> In datapaths where the NIC has already computed the four-tuple hash
-> >>> and stored it in skb->hash --the common case for servers--, That type
-> >>> field is the only reason to have to compute again.
-> >>
-> >> The problem is there's no guarantee that the packet comes from the NIC=
-,
-> >> it could be a simple VM2VM or host2VM packet.
-> >>
-> >> And even if the packet is coming from the NIC that calculates the hash
-> >> there's no guarantee that it's the has that guest want (guest may use
-> >> different RSS keys).
-> > Ah yes, of course.
-> >
-> > I would still revisit the need to store a detailed hash_type along with
-> > the hash, as as far I can tell that conveys no actionable information
-> > to the guest.
->
->
-> Yes, need to figure out its usage. According to [1], it only mention
-> that storing has type is a charge of driver. Maybe Yuri can answer this.
->
+On Sat, Jan 16, 2021 at 02:02:01PM +0100, Andrea Parri wrote:
+> On Fri, Jan 15, 2021 at 08:30:22PM -0800, Jakub Kicinski wrote:
+> > On Thu, 14 Jan 2021 21:26:28 +0100 Andrea Parri (Microsoft) wrote:
+> > > For additional robustness in the face of Hyper-V errors or malicious
+> > > behavior, validate all values that originate from packets that Hyper-V
+> > > has sent to the guest.  Ensure that invalid values cannot cause indexing
+> > > off the end of an array, or subvert an existing validation via integer
+> > > overflow.  Ensure that outgoing packets do not have any leftover guest
+> > > memory that has not been zeroed out.
+> > > 
+> > > Reported-by: Juan Vazquez <juvazq@microsoft.com>
+> > > Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+> > > Cc: "David S. Miller" <davem@davemloft.net>
+> > > Cc: Jakub Kicinski <kuba@kernel.org>
+> > > Cc: Alexei Starovoitov <ast@kernel.org>
+> > > Cc: Daniel Borkmann <daniel@iogearbox.net>
+> > > Cc: Andrii Nakryiko <andrii@kernel.org>
+> > > Cc: Martin KaFai Lau <kafai@fb.com>
+> > > Cc: Song Liu <songliubraving@fb.com>
+> > > Cc: Yonghong Song <yhs@fb.com>
+> > > Cc: John Fastabend <john.fastabend@gmail.com>
+> > > Cc: KP Singh <kpsingh@kernel.org>
+> > > Cc: netdev@vger.kernel.org
+> > > Cc: bpf@vger.kernel.org
+> > > ---
+> > > Applies to 5.11-rc3 (and hyperv-next).
+> > 
+> > So this is for hyperv-next or should we take it via netdev trees?
+> 
+> No preference, either way is good for me.
 
-For the case of Windows VM we can't know how exactly the network stack
-uses provided hash data (including hash type). But: different releases
-of Windows
-enable different hash types (for example UDP hash is enabled only on
-Server 2016 and up).
+To be clear: There is no dependency on any patch in hyperv-next, right?
 
-Indeed the Windows requires a little more from the network adapter/driver
-than Linux does.
+That's my understanding, but I would like to confirm it.
 
-The addition of RSS support to virtio specification takes in account
-the widest set of
-requirements (i.e. Windows one), our initial impression is that this
-should be enough also for Linux.
+Wei.
 
-The NDIS specification in part of RSS is _mandatory_ and there are
-certification tests
-that check that the driver provides the hash data as expected. All the
-high-performance
-network adapters have such RSS functionality in the hardware.
-With pre-RSS QEMU (i.e. where the virtio-net device does not indicate
-the RSS support)
-the virtio-net driver for Windows does all the job related to RSS:
-- hash calculation
-- hash/hash_type delivery
-- reporting each packet on the correct CPU according to RSS settings
-
-With RSS support in QEMU all the packets always come on a proper CPU and
-the driver never needs to reschedule them. The driver still need to
-calculate the
-hash and report it to Windows. In this case we do the same job twice: the d=
-evice
-(QEMU or eBPF) does calculate the hash and get proper queue/CPU to deliver
-the packet. But the hash is not delivered by the device, so the driver need=
-s to
-recalculate it and report to the Windows.
-
-If we add HASH_REPORT support (current set of patches) and the device
-indicates this
-feature we can avoid hash recalculation in the driver assuming we
-receive the correct hash
-value and hash type. Otherwise the driver can't know which exactly
-hash the device has calculated.
-
-Please let me know if I did not answer the question.
-
-> Thanks
->
-> [1]
-> https://docs.microsoft.com/en-us/windows-hardware/drivers/network/indicat=
-ing-rss-receive-data
->
->
-> >
->
+> 
+> Thanks,
+>   Andrea
