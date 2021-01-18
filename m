@@ -2,206 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 957462FA4AA
-	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 16:29:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30ED32FA4A2
+	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 16:28:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405851AbhARP21 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Jan 2021 10:28:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38360 "EHLO
+        id S2405021AbhARP0y (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jan 2021 10:26:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405840AbhARP2O (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Jan 2021 10:28:14 -0500
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1442C061573
-        for <bpf@vger.kernel.org>; Mon, 18 Jan 2021 07:27:33 -0800 (PST)
-Received: by mail-qk1-x729.google.com with SMTP id h4so18965496qkk.4
-        for <bpf@vger.kernel.org>; Mon, 18 Jan 2021 07:27:33 -0800 (PST)
+        with ESMTP id S2393470AbhARPZC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Jan 2021 10:25:02 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBDE2C061574
+        for <bpf@vger.kernel.org>; Mon, 18 Jan 2021 07:24:21 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id h11so4429808ioh.11
+        for <bpf@vger.kernel.org>; Mon, 18 Jan 2021 07:24:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=F6KA9w3XTyDzR9a/eJiRfa89v7fUgs4kNlqtUAh2eRs=;
-        b=LIhPXBoQ0lqZVjwUYNyS926s6D2uM+E4QTstoVoyx4n/7hogHhwpwSIBj+IPlC8YRN
-         h3oF2QH8WoW7n66iWRccB6P28cnjAoaZFh9Ihuo4M2y2hnwgm269UEf0c7HlVrmhnE+9
-         KJYq1eh3iCo2cSAphPIo6nJjawFJTfFVbF/c7O13aAsmJxFnegxLSNNkU62oqpaWFTiB
-         V89AL0U1zhHAjVLfhYgFjt5j4ESe5y8dRSW3qJC3WKQ7QQ4pcRzH5pRi6LJUi78Ft/Ka
-         uIHf3k+LMjIxLol3HyKVPi8GWfs3cxxk1fX9BduFukj4m0ZBJOyjaKxOf48FB7EvZ4B5
-         EK+A==
+         :cc:content-transfer-encoding;
+        bh=kl7BZu/lbfG/R7qwSgFy/xiRJpEwm0ukP4E7k/6e3JA=;
+        b=oEnQ9LbYzxgy3Qkul3X03Z1WSt6C3z0fEgM98aZ+Xn/O34zwbFxJZ1b1yD4aMGIOEq
+         cDOK8fl4ccMiOwzDKEbRGzhvocCutwU4ueb+tYZCkrqiNAyrS2AlgwAoNDZC0SgFxZLi
+         v+y1eysRn+JqoZcx9CG/USjB7tqh4Zbv+N4Xz5Pq8b4+1fz6VhcM/4e0f3Hxme7j0hKS
+         XehWSn5GSft/AB0IIsnnetbdk4xJtfIrp55T70Qj+zCHba0UI8SWftin8Xh+8x77qg7R
+         bkwiHJhPg6bgPfPiTbSnEIpaTnwbFMthfZJuhXi2D2ORHJSIqBWlvMz80DSIk/ROW3qW
+         iKZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=F6KA9w3XTyDzR9a/eJiRfa89v7fUgs4kNlqtUAh2eRs=;
-        b=YR3B3dAdxiiICAi0oyqrZ+LR/KGJ/kFXm2P9NpVVpawN4tb82J6s+Dy+WgUn1WNx9W
-         poXEvzDS9XzeD/WE7Gs5+RM/NAtWz91Y9fNnxMajTQYh8hraRBtwiIIC7bOUs3elcfsD
-         CNkV6dSX8lgBUm02EbYmWrA6zMbyK4gsep9KCiFFAaMjDLr1Qb1L12aqjq0V/DF8OqJh
-         oGIfdjFyotdhP6HcyaXJFriEIr+i2I6b/gLWYkXTBmYNoomjwg3BIDATTDLGzySmcSQv
-         fX2KXkv70WiDiLOHVGYBTKuseOp0dRTFIif7BqAUydOHmRI4ZVYYqfnrbHZwqLhfTFCy
-         2NjQ==
-X-Gm-Message-State: AOAM532mi+PMFl3uNIFNbID2t8mIlSbi2tE1k7HSLMNXbu9PJZW8zJEz
-        VRhIwhpm6zY9ck6fju+KwSc/ZTrYXbg=
-X-Google-Smtp-Source: ABdhPJwCcq9PBR2wD3L8P9HCTtMKs4O2zF0hbFYQg4iOXrckn2pjU+PFQUCIaqPJ2/MyjPUZUyDTmA==
-X-Received: by 2002:a37:a495:: with SMTP id n143mr129411qke.362.1610983652838;
-        Mon, 18 Jan 2021 07:27:32 -0800 (PST)
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com. [209.85.219.178])
-        by smtp.gmail.com with ESMTPSA id t68sm10971847qkd.35.2021.01.18.07.27.32
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Jan 2021 07:27:32 -0800 (PST)
-Received: by mail-yb1-f178.google.com with SMTP id p185so1816891ybg.8
-        for <bpf@vger.kernel.org>; Mon, 18 Jan 2021 07:27:32 -0800 (PST)
-X-Received: by 2002:ab0:7386:: with SMTP id l6mr17924882uap.141.1610983234282;
- Mon, 18 Jan 2021 07:20:34 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=kl7BZu/lbfG/R7qwSgFy/xiRJpEwm0ukP4E7k/6e3JA=;
+        b=MtT6Dl1KkraOnKrThPprFeEXjHQ1zjblEBIhcbpaSfaBzS47ws2tudVcwVvxn/Mxc6
+         hblAMucoP9GI5aMk1F6ZGrepG1qke+a5JhU9VXu/l7wUhat2Y5hD1qCLhyjPwkFcDVgT
+         dV7A2WK9enD653Z0c77rbyTwF2BHytaxr2JQHvJ4ijZLmF7cM2tlrW76dsb8YVg1cU8m
+         VT/GRk5XwMeAiLpAy3qvvC+rE0A8XDCRuh28wxud/QJ1b5UGreUCXkrXWPw9e/GsCRDi
+         BalWnjVh2XoipHISbAuu60E5v2rNUEelxax9Ap3U7dMZ4dGwIkKr/pA+9fgGYv0KrQSV
+         PJbw==
+X-Gm-Message-State: AOAM53016LLzRg9e2aJGsIutT+z0kXe7moI1SVixQr9sOdtIF6Ly/Pl5
+        lHvfy7V3teYZ0B6BDJxDK0m9rN2M5TVNHaipvPd01w==
+X-Google-Smtp-Source: ABdhPJxV58bfAmS/jY41Uns2ceyjKGDaJPgMXl52CZfjrtFkgtZde98+ncyez8PJdyto/CRVIbTHSSfodRetoOs/u+0=
+X-Received: by 2002:a05:6e02:c0f:: with SMTP id d15mr21389627ile.263.1610983461039;
+ Mon, 18 Jan 2021 07:24:21 -0800 (PST)
 MIME-Version: 1.0
-References: <20210112194143.1494-1-yuri.benditovich@daynix.com>
- <CAOEp5OejaX4ZETThrj4-n8_yZoeTZs56CBPHbQqNsR2oni8dWw@mail.gmail.com>
- <CAOEp5Oc5qif_krU8oC6qhq6X0xRW-9GpWrBzWgPw0WevyhT8Mg@mail.gmail.com>
- <CA+FuTSfhBZfEf8+LKNUJQpSxt8c5h1wMpARupekqFKuei6YBsA@mail.gmail.com>
- <78bbc518-4b73-4629-68fb-2713250f8967@redhat.com> <CA+FuTSfJJhEYr6gXmjpjjXzg6Xm5wWa-dL1SEV-Zt7RcPXGztg@mail.gmail.com>
- <8ea218a8-a068-1ed9-929d-67ad30111c3c@redhat.com> <CAOEp5OfyHz2rXHmOeojNNE2wvrHMn_z1egr5aGQborEq829TLw@mail.gmail.com>
- <65fe1a40-abc0-77ed-56df-3f0a70615016@redhat.com> <CAOEp5Oe4TcOukJa+OGj-ynfMMrZC=_YQDpzSC9_9p+UXSH7hmg@mail.gmail.com>
-In-Reply-To: <CAOEp5Oe4TcOukJa+OGj-ynfMMrZC=_YQDpzSC9_9p+UXSH7hmg@mail.gmail.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Mon, 18 Jan 2021 10:19:57 -0500
-X-Gmail-Original-Message-ID: <CA+FuTSfsFC0DTFhHDwT7dbtWXTmGOWjc=ozt8CgH_qDDn9gejg@mail.gmail.com>
-Message-ID: <CA+FuTSfsFC0DTFhHDwT7dbtWXTmGOWjc=ozt8CgH_qDDn9gejg@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/7] Support for virtio-net hash reporting
-To:     Yuri Benditovich <yuri.benditovich@daynix.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>, decui@microsoft.com,
-        cai@lca.pw, Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        bpf <bpf@vger.kernel.org>, Yan Vugenfirer <yan@daynix.com>
+References: <20210118144101.01a5d410@carbon> <CA+i-1C1Te+c876s3JYSE6o7fw+TaTbC7TnMmyw8kx5Tg1jUxNw@mail.gmail.com>
+ <20210118153745.21b9727e@carbon>
+In-Reply-To: <20210118153745.21b9727e@carbon>
+From:   Brendan Jackman <jackmanb@google.com>
+Date:   Mon, 18 Jan 2021 16:24:10 +0100
+Message-ID: <CA+i-1C1f2UUc=iuhQzus9iVrftHWonyPRB8pZhz2HKfKg6uKuw@mail.gmail.com>
+Subject: Re: Issues compiling selftests XADD - "Invalid usage of the XADD
+ return value"
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        BPF-dev-list <bpf@vger.kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Veronika Kabatova <vkabatov@redhat.com>,
+        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
+        Stanislav Kozina <skozina@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> > >>>>> What it does not give is a type indication, such as
-> > >>>>> VIRTIO_NET_HASH_TYPE_TCPv6. I don't understand how this would be used.
-> > >>>>> In datapaths where the NIC has already computed the four-tuple hash
-> > >>>>> and stored it in skb->hash --the common case for servers--, That type
-> > >>>>> field is the only reason to have to compute again.
-> > >>>> The problem is there's no guarantee that the packet comes from the NIC,
-> > >>>> it could be a simple VM2VM or host2VM packet.
-> > >>>>
-> > >>>> And even if the packet is coming from the NIC that calculates the hash
-> > >>>> there's no guarantee that it's the has that guest want (guest may use
-> > >>>> different RSS keys).
-> > >>> Ah yes, of course.
-> > >>>
-> > >>> I would still revisit the need to store a detailed hash_type along with
-> > >>> the hash, as as far I can tell that conveys no actionable information
-> > >>> to the guest.
-> > >>
-> > >> Yes, need to figure out its usage. According to [1], it only mention
-> > >> that storing has type is a charge of driver. Maybe Yuri can answer this.
-> > >>
-> > > For the case of Windows VM we can't know how exactly the network stack
-> > > uses provided hash data (including hash type). But: different releases
-> > > of Windows
-> > > enable different hash types (for example UDP hash is enabled only on
-> > > Server 2016 and up).
-> > >
-> > > Indeed the Windows requires a little more from the network adapter/driver
-> > > than Linux does.
-> > >
-> > > The addition of RSS support to virtio specification takes in account
-> > > the widest set of
-> > > requirements (i.e. Windows one), our initial impression is that this
-> > > should be enough also for Linux.
-> > >
-> > > The NDIS specification in part of RSS is _mandatory_ and there are
-> > > certification tests
-> > > that check that the driver provides the hash data as expected. All the
-> > > high-performance
-> > > network adapters have such RSS functionality in the hardware.
-
-Thanks for the context.
-
-If Windows requires the driver to pass the hash-type along with the
-hash data, then indeed this will be needed.
-
-If it only requires the device to support a subset of of the possible
-types, chosen at init, that would be different and it would be cheaper
-for the driver to pass this config to the device one time.
-
-> > > With pre-RSS QEMU (i.e. where the virtio-net device does not indicate
-> > > the RSS support)
-> > > the virtio-net driver for Windows does all the job related to RSS:
-> > > - hash calculation
-> > > - hash/hash_type delivery
-> > > - reporting each packet on the correct CPU according to RSS settings
-> > >
-> > > With RSS support in QEMU all the packets always come on a proper CPU and
-> > > the driver never needs to reschedule them. The driver still need to
-> > > calculate the
-> > > hash and report it to Windows. In this case we do the same job twice: the device
-> > > (QEMU or eBPF) does calculate the hash and get proper queue/CPU to deliver
-> > > the packet. But the hash is not delivered by the device, so the driver needs to
-> > > recalculate it and report to the Windows.
-> > >
-> > > If we add HASH_REPORT support (current set of patches) and the device
-> > > indicates this
-> > > feature we can avoid hash recalculation in the driver assuming we
-> > > receive the correct hash
-> > > value and hash type. Otherwise the driver can't know which exactly
-> > > hash the device has calculated.
-> > >
-> > > Please let me know if I did not answer the question.
-> >
-> >
-> > I think I get you. The hash type is also a kind of classification (e.g
-> > TCP or UDP). Any possibility that it can be deduced from the driver? (Or
-> > it could be too expensive to do that).
-> >
-> The driver does it today (when the device does not offer any features)
-> and of course can continue doing it.
-> IMO if the device can't report the data according to the spec it
-> should not indicate support for the respective feature (or fallback to
-> vhost=off).
-> Again, IMO if Linux does not need the exact hash_type we can use (for
-> Linux) the way that Willem de Brujin suggested in his patchset:
-> - just add VIRTIO_NET_HASH_REPORT_L4 to the spec
-> - Linux can use MQ + hash delivery (and use VIRTIO_NET_HASH_REPORT_L4)
-> - Linux can use (if makes sense) RSS with VIRTIO_NET_HASH_REPORT_L4 and eBPF
-> - Windows gets what it needs + eBPF
-> So, everyone has what they need at the respective cost.
+On Mon, 18 Jan 2021 at 15:38, Jesper Dangaard Brouer <brouer@redhat.com> wr=
+ote:
+> I'm compiling from LLVM 'main' branch (commit e6d758de82b6) but it
+> unfortunately fails to compile (see error below).
 >
-> Regarding use of skb->cb for hash type:
-> Currently, if I'm not mistaken, there are 2 bytes at the end of skb->cb:
-> skb->cb is 48 bytes array
-> There is skb_gso_cb (14 bytes) at offset SKB_GSO_CB_OFFSET(32)
-> Is it possible to use one of these 2 bytes for hash_type?
-> If yes, shall we extend the skb_gso_cb and place the 1-bytes hash_type
-> in it or just emit compilation error if the skb_gso_cb grows beyond 15
-> bytes?
+> Any recommended LLVM commit id that works?
 
-Good catch on segmentation taking place between .ndo_select_queue and
-.ndo_start_xmit.
+:(
 
-That also means that whatever field in the skb is used, has to be
-copied to all segments in skb_segment. Which happens for cb. But this
-feature is completely unrelated to the skb_gso_cb type. Perhaps
-another field with a real type is more clear. For instance, an
-extension to the union with napi_id and sender_cpu, as neither is used
-in this egress path with .ndo_select_queue?
+I'm on 6f4ee6f87060 and things are working.
+
+>
+> [...]
+> ../include/llvm/ExecutionEngine/Orc/Shared/RPCUtils.h:1513:27: note: remo=
+ve =E2=80=98std::move=E2=80=99 call
+> ../include/llvm/ExecutionEngine/Orc/Shared/RPCUtils.h:1519:27: warning: m=
+oving a local object in a return statement prevents copy elision [-Wpessimi=
+zing-move]
+>  1519 |       return std::move(Err);
+>       |                           ^
+> ../include/llvm/ExecutionEngine/Orc/Shared/RPCUtils.h:1519:27: note: remo=
+ve =E2=80=98std::move=E2=80=99 call
+> ../include/llvm/ExecutionEngine/Orc/Shared/RPCUtils.h:1526:29: warning: m=
+oving a local object in a return statement prevents copy elision [-Wpessimi=
+zing-move]
+>  1526 |         return std::move(Err);
+>       |                             ^
+> ../include/llvm/ExecutionEngine/Orc/Shared/RPCUtils.h:1526:29: note: remo=
+ve =E2=80=98std::move=E2=80=99 call
+> [2237/3183] Building CXX object tools/clang/lib/ASTMatchers/Dynamic/CMake=
+Files/obj.clangDynamicASTMatchers.dir/Registry.cpp.o
+> FAILED: tools/clang/lib/ASTMatchers/Dynamic/CMakeFiles/obj.clangDynamicAS=
+TMatchers.dir/Registry.cpp.o
+> /usr/lib64/ccache/c++  -DGTEST_HAS_RTTI=3D0 -D_GNU_SOURCE -D__STDC_CONSTA=
+NT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS -Itools/clang/lib/AS=
+TMatchers/Dynamic -I/home/jbrouer/git/llvm-project/clang/lib/ASTMatchers/Dy=
+namic -I/home/jbrouer/git/llvm-project/clang/include -Itools/clang/include =
+-Iinclude -I/home/jbrouer/git/llvm-project/llvm/include -fPIC -fvisibility-=
+inlines-hidden -Werror=3Ddate-time -Wall -Wextra -Wno-unused-parameter -Wwr=
+ite-strings -Wcast-qual -Wno-missing-field-initializers -pedantic -Wno-long=
+-long -Wimplicit-fallthrough -Wno-maybe-uninitialized -Wno-class-memaccess =
+-Wno-redundant-move -Wno-noexcept-type -Wdelete-non-virtual-dtor -Wsuggest-=
+override -Wno-comment -fdiagnostics-color -ffunction-sections -fdata-sectio=
+ns -fno-common -Woverloaded-virtual -fno-strict-aliasing -O2 -DNDEBUG    -f=
+no-exceptions -fno-rtti -std=3Dc++14 -MD -MT tools/clang/lib/ASTMatchers/Dy=
+namic/CMakeFiles/obj.clangDynamicASTMatchers.dir/Registry.cpp.o -MF tools/c=
+lang/lib/ASTMatchers/Dynamic/CMakeFiles/obj.clangDynamicASTMatchers.dir/Reg=
+istry.cpp.o.d -o tools/clang/lib/ASTMatchers/Dynamic/CMakeFiles/obj.clangDy=
+namicASTMatchers.dir/Registry.cpp.o -c /home/jbrouer/git/llvm-project/clang=
+/lib/ASTMatchers/Dynamic/Registry.cpp
+> c++: fatal error: Killed signal terminated program cc1plus
+> compilation terminated.
+>
+> [2255/3183] Building CXX object tools/clang/lib/ASTMatchers/CMakeFiles/ob=
+j.clangASTMatchers.dir/ASTMatchFinder.cpp.o
+>
+> [2262/3183] Building CXX object tools/clang/lib/Sema/CMakeFiles/obj.clang=
+Sema.dir/SemaExpr.cpp.o
+> ninja: build stopped: subcommand failed.
