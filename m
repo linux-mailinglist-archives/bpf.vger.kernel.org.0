@@ -2,170 +2,136 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE6C2FA6EC
-	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 18:01:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 841402FA6F1
+	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 18:03:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406728AbhARRAb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Jan 2021 12:00:31 -0500
-Received: from mga07.intel.com ([134.134.136.100]:2152 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405695AbhARQ6v (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Jan 2021 11:58:51 -0500
-IronPort-SDR: lHcOZTgEwNEaHWd2GYacKO49cvRLGnzfQ9rMgty++nXs8l0UadSUe55ThkQKWqGcypEZoe+ONP
- hySFpfglcRmQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9868"; a="242896180"
-X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
-   d="scan'208";a="242896180"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 08:58:08 -0800
-IronPort-SDR: Q9vwJxnwV3+v84v61N/+zzS4jC6Obtrd+BjwgbFjq3nx3gDYsxrZPHOkw0DHap9FiVkQCQTuVe
- pyupPI3M/19A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
-   d="scan'208";a="402098669"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by fmsmga002.fm.intel.com with ESMTP; 18 Jan 2021 08:58:05 -0800
-Date:   Mon, 18 Jan 2021 17:48:55 +0100
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Eelco Chaudron <echaudro@redhat.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, brouer@redhat.com, bjorn@kernel.org,
-        toke@redhat.com, john.fastabend@gmail.com
-Subject: Re: [PATCH v5 bpf-next 13/14] bpf: add new frame_length field to the
- XDP ctx
-Message-ID: <20210118164855.GA12769@ranger.igk.intel.com>
-References: <cover.1607349924.git.lorenzo@kernel.org>
- <0547d6f752e325f56a8e5f6466b50e81ff29d65f.1607349924.git.lorenzo@kernel.org>
- <20201208221746.GA33399@ranger.igk.intel.com>
- <96C89134-A747-4E05-AA11-CB6EA1420900@redhat.com>
- <20201209111047.GB36812@ranger.igk.intel.com>
- <170BF39B-894D-495F-93E0-820EC7880328@redhat.com>
- <38C60760-4F8C-43AC-A5DE-7FAECB65C310@redhat.com>
- <20201215180638.GB23785@ranger.igk.intel.com>
- <54E66B9D-4677-436F-92A1-E70977E869FA@redhat.com>
- <5A8FDDE5-3022-4FD7-BA71-9ACB4374BDB9@redhat.com>
+        id S2405658AbhARQ4s (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jan 2021 11:56:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50313 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2406591AbhARQzx (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 18 Jan 2021 11:55:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610988866;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gPZFpN+oBirNrqNtbu3XBQMkOtPoKz1KHF5o+KEb6HE=;
+        b=L54IBjN2/cnVNSDZrGN2EhkBQUkN5sMhPdhqwpfFaIUZD5toM+rurSplGsRAf3PUV3F5BU
+        bChuJtiSMZqrDYasH0TzT6d+0wIOm6yXa/HjWNlaxqtevTQDBWmh1YoByP9svaxPuGEz9O
+        ekpONUL9Mlr2pRlnIX/rAzoJ0crKUHM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-53-G5QulZNHML6T7hBu6dv8tQ-1; Mon, 18 Jan 2021 11:54:21 -0500
+X-MC-Unique: G5QulZNHML6T7hBu6dv8tQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B14C4190A7BD;
+        Mon, 18 Jan 2021 16:54:19 +0000 (UTC)
+Received: from firesoul.localdomain (unknown [10.40.208.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C0B901001281;
+        Mon, 18 Jan 2021 16:54:15 +0000 (UTC)
+Received: from [192.168.42.3] (localhost [IPv6:::1])
+        by firesoul.localdomain (Postfix) with ESMTP id E91553223348F;
+        Mon, 18 Jan 2021 17:54:14 +0100 (CET)
+Subject: [PATCH bpf-next V12 1/7] bpf: Remove MTU check in __bpf_skb_max_len
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
+        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
+        colrack@gmail.com
+Date:   Mon, 18 Jan 2021 17:54:14 +0100
+Message-ID: <161098885482.108067.4627340428007777101.stgit@firesoul>
+In-Reply-To: <161098881526.108067.7603213364270807261.stgit@firesoul>
+References: <161098881526.108067.7603213364270807261.stgit@firesoul>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5A8FDDE5-3022-4FD7-BA71-9ACB4374BDB9@redhat.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 05:36:23PM +0100, Eelco Chaudron wrote:
-> 
-> 
-> On 16 Dec 2020, at 15:08, Eelco Chaudron wrote:
-> 
-> > On 15 Dec 2020, at 19:06, Maciej Fijalkowski wrote:
-> > 
-> > > On Tue, Dec 15, 2020 at 02:28:39PM +0100, Eelco Chaudron wrote:
-> > > > 
-> > > > 
-> > > > On 9 Dec 2020, at 13:07, Eelco Chaudron wrote:
-> > > > 
-> > > > > On 9 Dec 2020, at 12:10, Maciej Fijalkowski wrote:
-> > > > 
-> > > > <SNIP>
-> > > > 
-> > > > > > > > > +
-> > > > > > > > > +		ctx_reg = (si->src_reg == si->dst_reg) ? scratch_reg - 1 :
-> > > > > > > > > si->src_reg;
-> > > > > > > > > +		while (dst_reg == ctx_reg || scratch_reg == ctx_reg)
-> > > > > > > > > +			ctx_reg--;
-> > > > > > > > > +
-> > > > > > > > > +		/* Save scratch registers */
-> > > > > > > > > +		if (ctx_reg != si->src_reg) {
-> > > > > > > > > +			*insn++ = BPF_STX_MEM(BPF_DW, si->src_reg, ctx_reg,
-> > > > > > > > > +					      offsetof(struct xdp_buff,
-> > > > > > > > > +						       tmp_reg[1]));
-> > > > > > > > > +
-> > > > > > > > > +			*insn++ = BPF_MOV64_REG(ctx_reg, si->src_reg);
-> > > > > > > > > +		}
-> > > > > > > > > +
-> > > > > > > > > +		*insn++ = BPF_STX_MEM(BPF_DW, ctx_reg, scratch_reg,
-> > > > > > > > > +				      offsetof(struct xdp_buff, tmp_reg[0]));
-> > > > > > > > 
-> > > > > > > > Why don't you push regs to stack, use it and then pop it
-> > > > > > > > back? That way
-> > > > > > > > I
-> > > > > > > > suppose you could avoid polluting xdp_buff with tmp_reg[2].
-> > > > > > > 
-> > > > > > > There is no “real” stack in eBPF, only a read-only frame
-> > > > > > > pointer, and as we
-> > > > > > > are replacing a single instruction, we have no info on what we
-> > > > > > > can use as
-> > > > > > > scratch space.
-> > > > > > 
-> > > > > > Uhm, what? You use R10 for stack operations. Verifier tracks the
-> > > > > > stack
-> > > > > > depth used by programs and then it is passed down to JIT so that
-> > > > > > native
-> > > > > > asm will create a properly sized stack frame.
-> > > > > > 
-> > > > > > From the top of my head I would let know
-> > > > > > xdp_convert_ctx_access of a
-> > > > > > current stack depth and use it for R10 stores, so your
-> > > > > > scratch space
-> > > > > > would
-> > > > > > be R10 + (stack depth + 8), R10 + (stack_depth + 16).
-> > > > > 
-> > > > > Other instances do exactly the same, i.e. put some scratch
-> > > > > registers in
-> > > > > the underlying data structure, so I reused this approach. From the
-> > > > > current information in the callback, I was not able to
-> > > > > determine the
-> > > > > current stack_depth. With "real" stack above, I meant having
-> > > > > a pop/push
-> > > > > like instruction.
-> > > > > 
-> > > > > I do not know the verifier code well enough, but are you
-> > > > > suggesting I
-> > > > > can get the current stack_depth from the verifier in the
-> > > > > xdp_convert_ctx_access() callback? If so any pointers?
-> > > > 
-> > > > Maciej any feedback on the above, i.e. getting the stack_depth in
-> > > > xdp_convert_ctx_access()?
-> > > 
-> > > Sorry. I'll try to get my head around it. If i recall correctly stack
-> > > depth is tracked per subprogram whereas convert_ctx_accesses is
-> > > iterating
-> > > through *all* insns (so a prog that is not chunked onto subprogs),
-> > > but
-> > > maybe we could dig up the subprog based on insn idx.
-> > > 
-> > > But at first, you mentioned that you took the approach from other
-> > > instances, can you point me to them?
-> > 
-> > Quick search found the following two (sure there is one more with two
-> > regs):
-> > 
-> > https://elixir.bootlin.com/linux/v5.10.1/source/kernel/bpf/cgroup.c#L1718
-> > https://elixir.bootlin.com/linux/v5.10.1/source/net/core/filter.c#L8977
-> > 
-> > > I'd also like to hear from Daniel/Alexei/John and others their
-> > > thoughts.
-> > 
-> > Please keep me in the loop…
-> 
-> Any thoughts/update on the above so I can move this patchset forward?
+Multiple BPF-helpers that can manipulate/increase the size of the SKB uses
+__bpf_skb_max_len() as the max-length. This function limit size against
+the current net_device MTU (skb->dev->mtu).
 
-Cc: John, Jesper, Bjorn
+When a BPF-prog grow the packet size, then it should not be limited to the
+MTU. The MTU is a transmit limitation, and software receiving this packet
+should be allowed to increase the size. Further more, current MTU check in
+__bpf_skb_max_len uses the MTU from ingress/current net_device, which in
+case of redirects uses the wrong net_device.
 
-I didn't spend time thinking about it, but I still am against xdp_buff
-extension for the purpose that code within this patch has.
+This patch keeps a sanity max limit of SKB_MAX_ALLOC (16KiB). The real limit
+is elsewhere in the system. Jesper's testing[1] showed it was not possible
+to exceed 8KiB when expanding the SKB size via BPF-helper. The limiting
+factor is the define KMALLOC_MAX_CACHE_SIZE which is 8192 for
+SLUB-allocator (CONFIG_SLUB) in-case PAGE_SIZE is 4096. This define is
+in-effect due to this being called from softirq context see code
+__gfp_pfmemalloc_flags() and __do_kmalloc_node(). Jakub's testing showed
+that frames above 16KiB can cause NICs to reset (but not crash). Keep this
+sanity limit at this level as memory layer can differ based on kernel
+config.
 
-Daniel/Alexei/John/Jesper/Bjorn,
+[1] https://github.com/xdp-project/bpf-examples/tree/master/MTU-tests
 
-any objections for not having the scratch registers but rather use the
-stack and update the stack depth to calculate the frame length?
+Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+---
+ net/core/filter.c |   12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-This seems not trivial so I really would like to have an input from better
-BPF developers than me :)
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 9ab94e90d660..5beadd659091 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -3552,11 +3552,7 @@ static int bpf_skb_net_shrink(struct sk_buff *skb, u32 off, u32 len_diff,
+ 	return 0;
+ }
+ 
+-static u32 __bpf_skb_max_len(const struct sk_buff *skb)
+-{
+-	return skb->dev ? skb->dev->mtu + skb->dev->hard_header_len :
+-			  SKB_MAX_ALLOC;
+-}
++#define BPF_SKB_MAX_LEN SKB_MAX_ALLOC
+ 
+ BPF_CALL_4(sk_skb_adjust_room, struct sk_buff *, skb, s32, len_diff,
+ 	   u32, mode, u64, flags)
+@@ -3605,7 +3601,7 @@ BPF_CALL_4(bpf_skb_adjust_room, struct sk_buff *, skb, s32, len_diff,
+ {
+ 	u32 len_cur, len_diff_abs = abs(len_diff);
+ 	u32 len_min = bpf_skb_net_base_len(skb);
+-	u32 len_max = __bpf_skb_max_len(skb);
++	u32 len_max = BPF_SKB_MAX_LEN;
+ 	__be16 proto = skb->protocol;
+ 	bool shrink = len_diff < 0;
+ 	u32 off;
+@@ -3688,7 +3684,7 @@ static int bpf_skb_trim_rcsum(struct sk_buff *skb, unsigned int new_len)
+ static inline int __bpf_skb_change_tail(struct sk_buff *skb, u32 new_len,
+ 					u64 flags)
+ {
+-	u32 max_len = __bpf_skb_max_len(skb);
++	u32 max_len = BPF_SKB_MAX_LEN;
+ 	u32 min_len = __bpf_skb_min_len(skb);
+ 	int ret;
+ 
+@@ -3764,7 +3760,7 @@ static const struct bpf_func_proto sk_skb_change_tail_proto = {
+ static inline int __bpf_skb_change_head(struct sk_buff *skb, u32 head_room,
+ 					u64 flags)
+ {
+-	u32 max_len = __bpf_skb_max_len(skb);
++	u32 max_len = BPF_SKB_MAX_LEN;
+ 	u32 new_len = skb->len + head_room;
+ 	int ret;
+ 
 
-> 
-> 
+
