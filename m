@@ -2,101 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 974792FA9CB
-	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 20:12:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 297D82FAAA8
+	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 20:54:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437179AbhARTLu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Jan 2021 14:11:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58302 "EHLO
+        id S2437384AbhARTxf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jan 2021 14:53:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437010AbhARTLB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Jan 2021 14:11:01 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 505A0C061573;
-        Mon, 18 Jan 2021 11:10:21 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id md11so10154883pjb.0;
-        Mon, 18 Jan 2021 11:10:21 -0800 (PST)
+        with ESMTP id S2390389AbhARLhj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Jan 2021 06:37:39 -0500
+Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71D77C061575
+        for <bpf@vger.kernel.org>; Mon, 18 Jan 2021 03:36:58 -0800 (PST)
+Received: by mail-wr1-x44a.google.com with SMTP id o17so8154666wra.8
+        for <bpf@vger.kernel.org>; Mon, 18 Jan 2021 03:36:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fIoE9ZSaYkpJGi0GT5QkJHuOj+rXTG6tlaDVABvyvH4=;
-        b=GOxOSdjccLxaxH11f7DKPAiMK55ZGi6KaQJfolquimpTjT8qJIB7Aw2zuA0D0nJimo
-         TjgNqvboJRn/nQLnoUVbnwG0t4p+gRjZHeBnlEgXSLmd13u8YlrFvMMQ1Ptlh1v39m6k
-         QOtby3fg2Ga4yGbYyDk6LnC6+LQMhofUNYRlygM77aB/59jfy2AKYDHncHtZ/SvKjXVt
-         2IbupZPLjT94prnLSFkXr8DMenmpB/jIDwbHfvxYuDM+wjzslz55aiKv7MXgm8Pky9im
-         nLcv5CgtzymL0VGzghLVnwnfB5rdeyq9vST715jc84/Xc/l7dxmf1Pq1NCaQmMgSrW34
-         4glw==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=7VlZADSbyrVyyYmUXQ30hZbrflrNZLEBF2PfK5aqyNc=;
+        b=dtoGcWzQToR89vu/K7XereUaEEAYu9I1Ky5pNZFzRMGMG1COV6q9Zs0hqEtH0Edm4r
+         C88R7SYMAEkbu+moMRWXH1xf72Pzw4MLEp4DLH0ABlKbhkQ31cMTzhmqQqYMVDfM05cd
+         1efL7+7UnXGSuvW7r6q0RhTzF2tvLttIiYwbtUfO5eAE+rij0iOyN+Bs6zyoA+79B63L
+         SOHp+ZnsA+4XsSyL+5pbaOJ0OoKxMBY6ySwt5MXJlWduo46bvS1xUxcB2VnoHGABQGhK
+         86yr5+9CwtoUvsXF3Ghrno6qlw9CrO4+FeXU7KTMvRFCeV7708plHJhtaJRacCOH98lA
+         VCxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fIoE9ZSaYkpJGi0GT5QkJHuOj+rXTG6tlaDVABvyvH4=;
-        b=MtX5V/uUVYMLRe/E66NQcdX+551j1wBD08Psd6bU/0wmeBeCP+OMwCtnVgzJQkZCKP
-         YdsQwqHpPCELvwohrbualSkR9I28A3vuvR+H4R7g2EXYe4+Pq9JIZSgt+UdVuFcLYMfc
-         ldkDgHVi/o8lbf+de0hPUnkUHXfeVlRxDon3W+7KmdA6FzQHn8dzgCLQzlQBHXaIsxCh
-         XbFKwm7bFh9dKembPR1iB155/rCLDl1V4h7SOxzn6MuNGKg2UNvCUIBUXic+fS6Z2ZaT
-         NOKkb8O0nLDFz5NBo3SUx31UtRQosU5d9TDGXBSMyIT1Yu00kRx6CCU5Q+wmbk+TT5BR
-         8V7A==
-X-Gm-Message-State: AOAM531uL46TZ1kMkpWoXHTSxWxj2wBHS7U7KxaqrBRqWxww9FkGYjPu
-        yCehewMKnbRjR5EyFaVSODsJpg7hoDT7TIIG9PMyhnQ9TWA=
-X-Google-Smtp-Source: ABdhPJyJBq0XC4fI/KJeSddzO2kPFjXGg1RVheQiyZciHPF7tKpuRFBZ2x4dLWp1pfsfW9cxsX2qEzgpgkEIFEJdmPk=
-X-Received: by 2002:a17:902:8642:b029:de:2bf1:b061 with SMTP id
- y2-20020a1709028642b02900de2bf1b061mr903082plt.10.1610997020542; Mon, 18 Jan
- 2021 11:10:20 -0800 (PST)
-MIME-Version: 1.0
-References: <20210117042224.17839-1-xiyou.wangcong@gmail.com> <20210117042224.17839-2-xiyou.wangcong@gmail.com>
-In-Reply-To: <20210117042224.17839-2-xiyou.wangcong@gmail.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Mon, 18 Jan 2021 11:10:09 -0800
-Message-ID: <CAM_iQpXha9ZGyszHUR3qs21p+awGtrioEmxba7XOYkpm8dsXGw@mail.gmail.com>
-Subject: Re: [Patch bpf-next v4 1/3] bpf: introduce timeout hash map
-To:     Linux Kernel Network Developers <netdev@vger.kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>, Cong Wang <cong.wang@bytedance.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=7VlZADSbyrVyyYmUXQ30hZbrflrNZLEBF2PfK5aqyNc=;
+        b=Cw1ABXCV/rZqIRW2co8uAVMcFUtW633Z9jMxgSbCuQDixwx8CRPfe1UgSKSXEX4oOX
+         /Ea/j6r4A+KUhCY+ctMaHnsJky8rUnZoTL7+qW1hKQzRBIgIOEx5o5aoat8wEF4wP+TN
+         kjF8mcxD7Ftlp3x7TNmfhKZEi5j8a86A0pGwgI6gb58jF2bp6I2pVMy6Ern5GY6UIF0C
+         rBVnp/icwz7UJCMj6Lb2HAwW3viGDB87K0VZ0ncMoXYSqmU0pl2Nj4VKRX9YSS8XecqD
+         Nyfm08JuKKFzJVsb3ZKGjq2+e85FhFbMqgAb8FDv3uZKCoO4Va/97o390ICyyTQJHypP
+         jhug==
+X-Gm-Message-State: AOAM530A9zw63iMTJHvxlHA83sE9RQcn7V3hGMnmF+AQEqFLl3ojNtm9
+        AyOvR7o13XgOrVKQZI2wbf4Jfe90n6NKO5PuMZ+V3PQSMj+UfsD2EyqNP5UnkEjvkxJFUTMWANL
+        BN4Q/9AHk3Xat/66velFB9b7VmShyefju76QQvg8pZzEsfHw0w4QgjA4dm0JCxRE=
+X-Google-Smtp-Source: ABdhPJzM3Fdf4dsPy9tvb82QM9BMNZIshizqWTmCqkVUz/+oHp0nossQwzrYEPVXi2JP4cPfY74DPxVbnbEfyw==
+Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
+X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
+ (user=jackmanb job=sendgmr) by 2002:a7b:c779:: with SMTP id
+ x25mr457521wmk.138.1610969816926; Mon, 18 Jan 2021 03:36:56 -0800 (PST)
+Date:   Mon, 18 Jan 2021 11:36:43 +0000
+Message-Id: <20210118113643.232579-1-jackmanb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+Subject: [PATCH bpf-next] docs: bpf: Fixup atomics documentation
+From:   Brendan Jackman <jackmanb@google.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Dongdong Wang <wangdongdong.6@bytedance.com>
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Brendan Jackman <jackmanb@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jan 16, 2021 at 8:22 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
-> +static void htab_gc(struct work_struct *work)
-> +{
-> +       struct htab_elem *e, *tmp;
-> +       struct llist_node *lhead;
-> +       struct bpf_htab *htab;
-> +       int i, count;
-> +
-> +       htab = container_of(work, struct bpf_htab, gc_work.work);
-> +       lhead = llist_del_all(&htab->gc_list);
-> +
-> +       llist_for_each_entry_safe(e, tmp, lhead, gc_node) {
-> +               unsigned long flags;
-> +               struct bucket *b;
-> +               u32 hash;
-> +
-> +               hash = e->hash;
-> +               b = __select_bucket(htab, hash);
-> +               if (htab_lock_bucket(htab, b, hash, &flags))
-> +                       continue;
-> +               hlist_nulls_del_rcu(&e->hash_node);
-> +               atomic_set(&e->pending, 0);
-> +               free_htab_elem(htab, e);
-> +               htab_unlock_bucket(htab, b, hash, flags);
-> +
-> +               cond_resched();
-> +       }
-> +
-> +       for (count = 0, i = 0; i < htab->n_buckets; i++) {
+This fixues up the markup to fix a warning, be more consistent with
+use of monospace, and use the correct .rst syntax for <em> (* instead
+of _). It also clarifies the explanation of Clang's -mcpu
+requirements for this feature, Alexei pointed out that use of the
+word "version" was confusing here.
 
-I just realized a followup fix is not folded into this patch, I
-actually added a timestamp check here to avoid scanning the whole
-table more frequently than once per second. It is clearly my mistake
-to miss it when formatting this patchset.
+NB this conflicts with Lukas' patch at [1], here where I've added
+`::` to fix the warning, I also kept the original ':' which appears
+in the output text.
 
-I will send v5 after waiting for other feedback.
+[1] https://lore.kernel.org/bpf/CA+i-1C3cEXqxcXfD4sibQfx+dtmmzvOzruhk8J5pAw3g5v=KgA@mail.gmail.com/T/#t
 
-Thanks!
+Signed-off-by: Brendan Jackman <jackmanb@google.com>
+---
+ Documentation/networking/filter.rst | 30 +++++++++++++++--------------
+ 1 file changed, 16 insertions(+), 14 deletions(-)
+
+diff --git a/Documentation/networking/filter.rst b/Documentation/networking/filter.rst
+index f6d8f90e9a56..ba03e90a9163 100644
+--- a/Documentation/networking/filter.rst
++++ b/Documentation/networking/filter.rst
+@@ -1048,12 +1048,12 @@ Unlike classic BPF instruction set, eBPF has generic load/store operations::
+ Where size is one of: BPF_B or BPF_H or BPF_W or BPF_DW.
+ 
+ It also includes atomic operations, which use the immediate field for extra
+-encoding.
++encoding: ::
+ 
+    .imm = BPF_ADD, .code = BPF_ATOMIC | BPF_W  | BPF_STX: lock xadd *(u32 *)(dst_reg + off16) += src_reg
+    .imm = BPF_ADD, .code = BPF_ATOMIC | BPF_DW | BPF_STX: lock xadd *(u64 *)(dst_reg + off16) += src_reg
+ 
+-The basic atomic operations supported are:
++The basic atomic operations supported are: ::
+ 
+     BPF_ADD
+     BPF_AND
+@@ -1066,12 +1066,12 @@ memory location addresed by ``dst_reg + off`` is atomically modified, with
+ immediate, then these operations also overwrite ``src_reg`` with the
+ value that was in memory before it was modified.
+ 
+-The more special operations are:
++The more special operations are: ::
+ 
+     BPF_XCHG
+ 
+ This atomically exchanges ``src_reg`` with the value addressed by ``dst_reg +
+-off``.
++off``. ::
+ 
+     BPF_CMPXCHG
+ 
+@@ -1081,19 +1081,21 @@ before is loaded back to ``R0``.
+ 
+ Note that 1 and 2 byte atomic operations are not supported.
+ 
+-Except ``BPF_ADD`` _without_ ``BPF_FETCH`` (for legacy reasons), all 4 byte
+-atomic operations require alu32 mode. Clang enables this mode by default in
+-architecture v3 (``-mcpu=v3``). For older versions it can be enabled with
+-``-Xclang -target-feature -Xclang +alu32``.
++Clang can generate atomic instructions when ``-mcpu=v3`` is enabled (this is the
++default). If a lower version for ``-mcpu`` is set, the only atomic instruction
++Clang can generate is ``BPF_ADD`` *without* ``BPF_FETCH``. If you need to
++enable the atomics features, while keeping a lower ``-mcpu`` version, you can
++use ``-Xclang -target-feature -Xclang +alu32``.
+ 
+-You may encounter BPF_XADD - this is a legacy name for BPF_ATOMIC, referring to
+-the exclusive-add operation encoded when the immediate field is zero.
++You may encounter ``BPF_XADD`` - this is a legacy name for ``BPF_ATOMIC``,
++referring to the exclusive-add operation encoded when the immediate field is
++zero.
+ 
+-eBPF has one 16-byte instruction: BPF_LD | BPF_DW | BPF_IMM which consists
++eBPF has one 16-byte instruction: ``BPF_LD | BPF_DW | BPF_IMM`` which consists
+ of two consecutive ``struct bpf_insn`` 8-byte blocks and interpreted as single
+-instruction that loads 64-bit immediate value into a dst_reg.
+-Classic BPF has similar instruction: BPF_LD | BPF_W | BPF_IMM which loads
+-32-bit immediate value into a register.
++instruction that loads 64-bit immediate value into a dst_reg.  Classic BPF has
++similar instruction: ``BPF_LD | BPF_W | BPF_IMM`` which loads 32-bit immediate
++value into a register.
+ 
+ eBPF verifier
+ -------------
+
+base-commit: 232164e041e925a920bfd28e63d5233cfad90b73
+-- 
+2.30.0.284.gd98b1dd5eaa7-goog
+
