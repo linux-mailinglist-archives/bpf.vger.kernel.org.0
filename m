@@ -2,121 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F40402FAB7E
-	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 21:32:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04F8A2FABAC
+	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 21:39:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388651AbhARKka (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Jan 2021 05:40:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43606 "EHLO
+        id S2388355AbhARUiH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jan 2021 15:38:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388567AbhARJSn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Jan 2021 04:18:43 -0500
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3429CC0613CF;
-        Mon, 18 Jan 2021 01:18:03 -0800 (PST)
-Received: by mail-lj1-x232.google.com with SMTP id f17so17390521ljg.12;
-        Mon, 18 Jan 2021 01:18:03 -0800 (PST)
+        with ESMTP id S2387996AbhARKgj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Jan 2021 05:36:39 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 857DBC061757;
+        Mon, 18 Jan 2021 02:35:44 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id c124so13101327wma.5;
+        Mon, 18 Jan 2021 02:35:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cWd8g5iVcYDr1/d29WZEwJSUfqGvaqUZK0TPBalRFYk=;
-        b=qp26NGkff4zxqdeJ57a8MHHIkyESMbNc47KxCMq8CqS5GyMT1oTVfYOKHRGWokT/Er
-         HLcw4kVAZk79J+KfEH56Z7ky0WO1WtMunmcHc1Vt1NM0NoQ4M2zDFnGmuI1J3FLKdiD/
-         DaEer3Mzp6coQQkkCNtXxOEqGhb8HXAjqP2h7OYL3xKs1qMbvlfoL20ghDlORxBR/a7H
-         8yVr9C0JyNrn1AXbUHClP2hMIjyotkO7cB9nQZ/4kwO669yKAu0tqVP6vxaa6lNzfYBB
-         0ZYepYnq2PIpi5gkSNh5YxRJwCRVFw/bQUcx21GGJcQzYKpz7mCvibSpQPeFUV3AiYZA
-         mJpg==
+        h=from:reply-to:to:cc:references:in-reply-to:subject:date:message-id
+         :mime-version:content-transfer-encoding:thread-index
+         :content-language;
+        bh=sdjxudr61Uts0CJPUO0ptlpFH4t8XuWtSUvltKTeu/w=;
+        b=KiBcLdjEMeNXY6KCVUy9KRQrCd+oQFLbB8a3RL9tPKbShfiAw3dOZvnaApZc3dpfwI
+         b0pennEhFkL1nsy15iWZ2iz2UIp+DHObfbhe6zVSAVDs4/KMzDF0cGuA41lPvDwciD+R
+         TDRimv/OgoK44kz8gu94/SvN/OY6w1CnHk+BsXG3puZ+B+BiHlsnk1KYhmn937QV6ALp
+         r1qIer2QAB3dCrH3bTOGCDpmfm8v3PXOCS2ZdP+sBMZHNWQOt/TqSjobwjAigVsImaup
+         I8lHibktyhqQM9gC8bT/zQg/4yCPUx/kEiqqEt9h1tnyKhYdLOb1ukuZNAJjwWKBr4Qu
+         +Tnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cWd8g5iVcYDr1/d29WZEwJSUfqGvaqUZK0TPBalRFYk=;
-        b=oG21bxAXK291Q1TIlnW02ThnuyUXF3y0BPshgw/NhmFEEfmvatZrc8Adao/mwsTSpu
-         0E2SZet51IKqejqP3hC7uWt+izxknvKZSXMWur83Hr9M3vh0bGPwrLqxZSmz0tUnhq8f
-         t6+5aR6zC0FPY6T6GzkJrLt+1T3q8KaQkNfNiUlxVoOD7w+puoCQrPlP145MkbZ2MYeM
-         ZI4jAYn5s7ihobHPorJKu5eWTpEvzPREesThA7ZemNK4H9VIkqo68hfqSsX1CeyLAFOS
-         hGGB1AOzgSZy118VR03XcOyB5Q2Uhjg4qmcGJUQTXtEWjusqUdubfHE5bTnpi6zXFQ8l
-         VSrQ==
-X-Gm-Message-State: AOAM531Aq12MdFOYIzVxsQqN3lUO/eZqWxAlduE2ffDX9cPl9mDN/QnD
-        +f44DMFU5JX505LFkO9Udxz+AFo/7k4/XA==
-X-Google-Smtp-Source: ABdhPJzc3unYISI98MBuo3an4DJeL57OjqfdD4gc0t58gojEKHL4NFayIHjXLKUJN8cX6zTCwS/4lw==
-X-Received: by 2002:a05:651c:1356:: with SMTP id j22mr10242027ljb.237.1610961481772;
-        Mon, 18 Jan 2021 01:18:01 -0800 (PST)
-Received: from btopel-mobl.ger.intel.com (c213-102-90-208.bredband.comhem.se. [213.102.90.208])
-        by smtp.gmail.com with ESMTPSA id v22sm1841514lfd.4.2021.01.18.01.18.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 01:18:00 -0800 (PST)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        magnus.karlsson@intel.com, jackmanb@google.com
-Subject: [PATCH bpf-next] samples/bpf: add BPF_ATOMIC_OP macro for BPF samples
-Date:   Mon, 18 Jan 2021 10:17:53 +0100
-Message-Id: <20210118091753.107572-1-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:from:reply-to:to:cc:references:in-reply-to
+         :subject:date:message-id:mime-version:content-transfer-encoding
+         :thread-index:content-language;
+        bh=sdjxudr61Uts0CJPUO0ptlpFH4t8XuWtSUvltKTeu/w=;
+        b=mcqVOSOByGZ2lbJoWGN9mz9+RRdgA644bj3UG4TaQY1fKyQSUELw0X7w049fMp/ShG
+         46NSq6/kDm3SzGH2hLkYMyf9ziVITf08wY5ekyvRHhvF4Ipg40bHicaoSpAdHB5fc7Ga
+         tIPW5aqudtwjJUTRnT9QIauFibVYxt9GzrXrbRVuVflJ8p2duF22zrWlXD4272W4UqGe
+         bnqLR9Q/spQOwIuRKAShr9FHhqKEuYmEuBf/PUfvBoVAHzYxr63ZwSJkh7ilKW2r9bhr
+         GQW0Q0WQ7trnHxArwJrN76sHdl8yCzdjJC3q5kSjrBKhFPw8aDPz/X5s+rTljmNA7XJU
+         ny7g==
+X-Gm-Message-State: AOAM5311C2kc/OoPS/q+Tayvb8Z8a06caIWEy3w8x8nOKihBUHajbXhd
+        qxwaxmT4y9zwkm5jEEx8/NE=
+X-Google-Smtp-Source: ABdhPJzC0Mvm9IJPrgzjYLI8UEjrhypmUYqZAuikpTgtyFJQL6Un9LpHRADBfIEfqUSzBjI2HuL3Qg==
+X-Received: by 2002:a05:600c:19cc:: with SMTP id u12mr19675937wmq.26.1610966143356;
+        Mon, 18 Jan 2021 02:35:43 -0800 (PST)
+Received: from CBGR90WXYV0 (host86-183-162-242.range86-183.btcentralplus.com. [86.183.162.242])
+        by smtp.gmail.com with ESMTPSA id c20sm24821042wmb.38.2021.01.18.02.35.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 18 Jan 2021 02:35:42 -0800 (PST)
+From:   Paul Durrant <xadimgnik@gmail.com>
+X-Google-Original-From: "Paul Durrant" <paul@xen.org>
+Reply-To: <paul@xen.org>
+To:     "'Lee Jones'" <lee.jones@linaro.org>
+Cc:     <linux-kernel@vger.kernel.org>, "'Wei Liu'" <wei.liu@kernel.org>,
+        "'David S. Miller'" <davem@davemloft.net>,
+        "'Jakub Kicinski'" <kuba@kernel.org>,
+        "'Alexei Starovoitov'" <ast@kernel.org>,
+        "'Daniel Borkmann'" <daniel@iogearbox.net>,
+        "'Jesper Dangaard Brouer'" <hawk@kernel.org>,
+        "'John Fastabend'" <john.fastabend@gmail.com>,
+        "'Rusty Russell'" <rusty@rustcorp.com.au>,
+        <xen-devel@lists.xenproject.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, "'Andrew Lunn'" <andrew@lunn.ch>
+References: <20210115200905.3470941-1-lee.jones@linaro.org> <20210115200905.3470941-3-lee.jones@linaro.org>
+In-Reply-To: <20210115200905.3470941-3-lee.jones@linaro.org>
+Subject: RE: [PATCH 2/7] net: xen-netback: xenbus: Demote nonconformant kernel-doc headers
+Date:   Mon, 18 Jan 2021 10:35:41 -0000
+Message-ID: <00d601d6ed85$ac1d8f60$0458ae20$@xen.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+        charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQGx99OgEkOz45dOTqKA2L+6769RlgFYXaBkqmxYlxA=
+Content-Language: en-gb
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
+> -----Original Message-----
+> From: Lee Jones <lee.jones@linaro.org>
+> Sent: 15 January 2021 20:09
+> To: lee.jones@linaro.org
+> Cc: linux-kernel@vger.kernel.org; Wei Liu <wei.liu@kernel.org>; Paul Durrant <paul@xen.org>; David S.
+> Miller <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>; Alexei Starovoitov <ast@kernel.org>;
+> Daniel Borkmann <daniel@iogearbox.net>; Jesper Dangaard Brouer <hawk@kernel.org>; John Fastabend
+> <john.fastabend@gmail.com>; Rusty Russell <rusty@rustcorp.com.au>; xen-devel@lists.xenproject.org;
+> netdev@vger.kernel.org; bpf@vger.kernel.org; Andrew Lunn <andrew@lunn.ch>
+> Subject: [PATCH 2/7] net: xen-netback: xenbus: Demote nonconformant kernel-doc headers
+> 
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/net/xen-netback/xenbus.c:419: warning: Function parameter or member 'dev' not described in
+> 'frontend_changed'
+>  drivers/net/xen-netback/xenbus.c:419: warning: Function parameter or member 'frontend_state' not
+> described in 'frontend_changed'
+>  drivers/net/xen-netback/xenbus.c:1001: warning: Function parameter or member 'dev' not described in
+> 'netback_probe'
+>  drivers/net/xen-netback/xenbus.c:1001: warning: Function parameter or member 'id' not described in
+> 'netback_probe'
+> 
+> Cc: Wei Liu <wei.liu@kernel.org>
+> Cc: Paul Durrant <paul@xen.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Jesper Dangaard Brouer <hawk@kernel.org>
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: Rusty Russell <rusty@rustcorp.com.au>
+> Cc: xen-devel@lists.xenproject.org
+> Cc: netdev@vger.kernel.org
+> Cc: bpf@vger.kernel.org
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Brendan Jackman added extend atomic operations to the BPF instruction
-set in commit 7064a7341a0d ("Merge branch 'Atomics for eBPF'"), which
-introduces the BPF_ATOMIC_OP macro. However, that macro was missing
-for the BPF samples. Fix that by adding it into bpf_insn.h.
-
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
----
- samples/bpf/bpf_insn.h | 24 ++++++++++++++++++++----
- 1 file changed, 20 insertions(+), 4 deletions(-)
-
-diff --git a/samples/bpf/bpf_insn.h b/samples/bpf/bpf_insn.h
-index db67a2847395..aee04534483a 100644
---- a/samples/bpf/bpf_insn.h
-+++ b/samples/bpf/bpf_insn.h
-@@ -134,15 +134,31 @@ struct bpf_insn;
- 		.off   = OFF,					\
- 		.imm   = 0 })
- 
--/* Atomic memory add, *(uint *)(dst_reg + off16) += src_reg */
--
--#define BPF_STX_XADD(SIZE, DST, SRC, OFF)			\
-+/*
-+ * Atomic operations:
-+ *
-+ *   BPF_ADD                  *(uint *) (dst_reg + off16) += src_reg
-+ *   BPF_AND                  *(uint *) (dst_reg + off16) &= src_reg
-+ *   BPF_OR                   *(uint *) (dst_reg + off16) |= src_reg
-+ *   BPF_XOR                  *(uint *) (dst_reg + off16) ^= src_reg
-+ *   BPF_ADD | BPF_FETCH      src_reg = atomic_fetch_add(dst_reg + off16, src_reg);
-+ *   BPF_AND | BPF_FETCH      src_reg = atomic_fetch_and(dst_reg + off16, src_reg);
-+ *   BPF_OR | BPF_FETCH       src_reg = atomic_fetch_or(dst_reg + off16, src_reg);
-+ *   BPF_XOR | BPF_FETCH      src_reg = atomic_fetch_xor(dst_reg + off16, src_reg);
-+ *   BPF_XCHG                 src_reg = atomic_xchg(dst_reg + off16, src_reg)
-+ *   BPF_CMPXCHG              r0 = atomic_cmpxchg(dst_reg + off16, r0, src_reg)
-+ */
-+
-+#define BPF_ATOMIC_OP(SIZE, OP, DST, SRC, OFF)			\
- 	((struct bpf_insn) {					\
- 		.code  = BPF_STX | BPF_SIZE(SIZE) | BPF_ATOMIC,	\
- 		.dst_reg = DST,					\
- 		.src_reg = SRC,					\
- 		.off   = OFF,					\
--		.imm   = BPF_ADD })
-+		.imm   = OP })
-+
-+/* Legacy alias */
-+#define BPF_STX_XADD(SIZE, DST, SRC, OFF) BPF_ATOMIC_OP(SIZE, BPF_ADD, DST, SRC, OFF)
- 
- /* Memory store, *(uint *) (dst_reg + off16) = imm32 */
- 
-
-base-commit: 232164e041e925a920bfd28e63d5233cfad90b73
--- 
-2.27.0
+Reviewed-by: Paul Durrant <paul@xen.org>
 
