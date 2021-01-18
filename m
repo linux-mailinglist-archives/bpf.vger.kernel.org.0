@@ -2,409 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51EAD2FA2D4
-	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 15:22:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF1692FA2F5
+	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 15:27:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392998AbhAROVP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Jan 2021 09:21:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43884 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392917AbhAROUu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Jan 2021 09:20:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0629522227;
-        Mon, 18 Jan 2021 14:20:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610979608;
-        bh=57UfU7NGLMi7VWnLkdr8dbzFx7vqY00WVs/01Xl2Gis=;
-        h=From:To:Cc:Subject:Date:From;
-        b=oHxBJaMn7Oo+HOkvYZOlOLgAz+diuDlFFc3jIjV1tWvyHNLEFtrNGT1IETxT6CGis
-         dbCmcJ1vFmn9QGIHDJOS0/C7jxMLbFo3Quu7oUaktTSj6B4h1pEvSrrYoFPn9oxLHW
-         x5wr+tLFvR6czJKeCnKnziVs40cFfnqSlSMTVPX9ILHvWq9xtNsBQMWWpDbBnh9eFc
-         7IURZhH1S9RwDnv4BbEmU7o3qKZ/LJs1AjBjMAoWcVpCmLTvDicvilKzj7UmNAfwpF
-         1EmAS8YVmGJ3Kf55f3ABUfSsrl/ugcFPbubN1HUzkkFYD4XznbRMh5f7qaOg9fgiox
-         F6qK+RaUel9ow==
-From:   KP Singh <kpsingh@kernel.org>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>
-Subject: [PATCH bpf-next] bpf: Helper script for running BPF presubmit tests
-Date:   Mon, 18 Jan 2021 14:19:55 +0000
-Message-Id: <20210118141955.2033747-1-kpsingh@kernel.org>
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+        id S2405033AbhAROZ6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jan 2021 09:25:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404946AbhAROZO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Jan 2021 09:25:14 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 708E4C061573
+        for <bpf@vger.kernel.org>; Mon, 18 Jan 2021 06:24:34 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id 7so9400915wrz.0
+        for <bpf@vger.kernel.org>; Mon, 18 Jan 2021 06:24:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=RwHCiPZ3k6rKU9HgYXsJpMTWS3X7HJ6axuJ87Yi9CqQ=;
+        b=N99Yh/Jvy30ktSLQs+FtwuHzvD86WJliq6aK2lYhUSoswxmXzWD5EsBQPvxOPYYFk9
+         ewKURV3TIt2AoF9a4pvYCRBwP6gdsghJy13LR4daGTSR+nV4E85uZMCMN1JWRDA5zQ+S
+         DHbnf+7ptX0RcjeUipYWve3+qhRrdqM6B50QyBDNW6FA5iLc6zk9/N7pEdqaC60skKQ0
+         JyPp3bGr78V8VwWIowllgrktmzPl+LWwahC6/UugNnQJGwRQu2vC2VqJXRGOtz7288ND
+         wMkBEFt243hFHtQ8isJCHQmJK8XATBbM4C7yetIpi+QbrK0reHDCIcLKqsNU69FqfgvT
+         gqYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=RwHCiPZ3k6rKU9HgYXsJpMTWS3X7HJ6axuJ87Yi9CqQ=;
+        b=uGmp5otlAFKS59Itqc7YBP+/vKBlXKvCAf/PmEwp6i4Vo5mieNedfXmK9a8N7o3Dkc
+         BO3BHMjk0fiOvueToZ1yyBFC/scx2kjHVyMk+wLli66vQhvnjBtDcxwZ5tjJ5LOC+S5W
+         sPi2Xiikvum5TWHRd9v17//SPUWy6inPiXg6l0Xw4R97O9cx6WSQfyShfOJkfuu+ieZd
+         Rnoc4nv+mQIaH7bSjnx+42s+qU3fUVxUkDCHJQhJQBd9m/Kuks8/3akD7kYTd9nb6oTx
+         G0RJe2zh1rKCLn6hyzAGqbK87aoueAaFMRab1+IWSfJU05VUFnbxTN/gmZafM9eG13IT
+         C4ZA==
+X-Gm-Message-State: AOAM5314XQmg+qJmbthIqfaM7pqFyn2DW31ZhFLOG7Us9Q0QdMwmC8w/
+        h+rHMQOLSdOLa9vC9I3UNKF9u6jJ3WBdBB+yVec=
+X-Google-Smtp-Source: ABdhPJzQnq4PzH5jturPL+yofvENlkcQ2jc990GymOjlluWTmuTihpVjDHdVhlt8oVRaYr8Tg+DKE9d1Eyfz9MUnDyc=
+X-Received: by 2002:a05:6000:114e:: with SMTP id d14mr25738276wrx.176.1610979873110;
+ Mon, 18 Jan 2021 06:24:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210118144101.01a5d410@carbon> <CA+i-1C1Te+c876s3JYSE6o7fw+TaTbC7TnMmyw8kx5Tg1jUxNw@mail.gmail.com>
+In-Reply-To: <CA+i-1C1Te+c876s3JYSE6o7fw+TaTbC7TnMmyw8kx5Tg1jUxNw@mail.gmail.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Mon, 18 Jan 2021 15:24:21 +0100
+Message-ID: <CAJ+HfNiZY9VSNiJKaqD5LSz7ghEd9xrFzYJUZ3cUk9XJFrtCQw@mail.gmail.com>
+Subject: Re: Issues compiling selftests XADD - "Invalid usage of the XADD
+ return value"
+To:     Brendan Jackman <jackmanb@google.com>
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        BPF-dev-list <bpf@vger.kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Veronika Kabatova <vkabatov@redhat.com>,
+        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
+        Stanislav Kozina <skozina@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The script runs the BPF selftests locally on the same kernel image
-as they would run post submit in the BPF continuous integration
-framework. The goal of the script is to run selftests locally in the
-same environment to check if their changes would end up breaking the
-BPF CI and reduce the back-and-forth between the maintainers and the
-developers.
+On Mon, 18 Jan 2021 at 14:47, Brendan Jackman <jackmanb@google.com> wrote:
+>
+[...]
+>
+> Yes, since bpf-next commit 98d666d05a1d970 ("bpf: Add tests for new
+> BPF atomic operations") you need llvm-project commit 286daafd6512 (was
+> https://reviews.llvm.org/D72184) for the selftests, which will be in
+> Clang 12. You'll need to build LLVM from master.
+>
 
-Signed-off-by: KP Singh <kpsingh@kernel.org>
----
- tools/testing/selftests/bpf/run_in_vm.sh | 346 +++++++++++++++++++++++
- 1 file changed, 346 insertions(+)
- create mode 100755 tools/testing/selftests/bpf/run_in_vm.sh
+I ran into this as well, so a (shameless) plug: for folks running
+Debian derivatives, there's https://apt.llvm.org/ where you can get
+daily Clang snapshot builds.
 
-diff --git a/tools/testing/selftests/bpf/run_in_vm.sh b/tools/testing/selftests/bpf/run_in_vm.sh
-new file mode 100755
-index 000000000000..a4f28f5cdd52
---- /dev/null
-+++ b/tools/testing/selftests/bpf/run_in_vm.sh
-@@ -0,0 +1,346 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+
-+set -u
-+set -e
-+
-+QEMU_BINARY="${QEMU_BINARY:="qemu-system-x86_64"}"
-+X86_BZIMAGE="arch/x86/boot/bzImage"
-+DEFAULT_COMMAND="./test_progs"
-+MOUNT_DIR="mnt"
-+ROOTFS_IMAGE="root.img"
-+OUTPUT_DIR="$HOME/.bpf_selftests"
-+KCONFIG_URL="https://raw.githubusercontent.com/libbpf/libbpf/master/travis-ci/vmtest/configs/latest.config"
-+INDEX_URL="https://raw.githubusercontent.com/libbpf/libbpf/master/travis-ci/vmtest/configs/INDEX"
-+
-+usage()
-+{
-+	cat <<EOF
-+Usage: $0 [-k] [-i] [-d <output_dir>] -- [<command>]
-+
-+<command> is the command you would normally run when you are in
-+tools/testing/selftests/bpf. e.g:
-+
-+	$0 -- ./test_progs -t test_lsm
-+
-+If no command is specified, "${DEFAULT_COMMAND}" will be run by
-+default.
-+
-+If you build your kernel using KBUILD_OUTPUT= or O= options, these
-+can be passed as environment variables to the script:
-+
-+  O=<path_relative_to_cwd> $0 -- ./test_progs -t test_lsm
-+
-+or
-+
-+  KBUILD_OUTPUT=<path_relative_to_cwd> $0 -- ./test_progs -t test_lsm
-+
-+Options:
-+
-+	-k)		Recompile the kernel with the config for selftests.
-+	-i)		Update the rootfs image with a newer version.
-+	-d)		Update the output directory (default: ${OUTPUT_DIR})
-+EOF
-+}
-+
-+unset URLS
-+populate_url_map()
-+{
-+	if ! declare -p URLS &> /dev/null; then
-+		# URLS contain the mapping from file names to URLs where
-+		# those files can be downloaded from.
-+		declare -gA URLS
-+		while IFS=$'\t' read -r name url; do
-+			URLS["$name"]="$url"
-+		done < <(curl -Lsf ${INDEX_URL})
-+	fi
-+	echo "${URLS[*]}"
-+}
-+
-+download()
-+{
-+	local file="$1"
-+
-+	if [[ ! -v URLS[$file] ]]; then
-+		echo "$file not found" >&2
-+		return 1
-+	fi
-+
-+	echo "Downloading $file..." >&2
-+	curl -Lf "${URLS[$file]}" "${@:2}"
-+}
-+
-+newest_rootfs_version()
-+{
-+	{
-+	for file in "${!URLS[@]}"; do
-+		if [[ $file =~ ^libbpf-vmtest-rootfs-(.*)\.tar\.zst$ ]]; then
-+			echo "${BASH_REMATCH[1]}"
-+		fi
-+	done
-+	} | sort -rV | head -1
-+}
-+
-+download_rootfs()
-+{
-+	local rootfsversion="$1"
-+	local dir="$2"
-+
-+	if ! which zstd &> /dev/null; then
-+		echo 'Could not find "zstd" on the system, please install zstd'
-+		exit 1
-+	fi
-+
-+	download "libbpf-vmtest-rootfs-$rootfsversion.tar.zst" |
-+		zstd -d | sudo tar -C "$dir" -x
-+}
-+
-+recompile_kernel()
-+{
-+	local kernel_checkout="$1"
-+	local make_command="$2"
-+
-+	cd "${kernel_checkout}"
-+
-+	${make_command} olddefconfig
-+	${make_command}
-+}
-+
-+mount_image()
-+{
-+	local rootfs_img="${OUTPUT_DIR}/${ROOTFS_IMAGE}"
-+	local mount_dir="${OUTPUT_DIR}/${MOUNT_DIR}"
-+
-+	sudo mount -o loop "${rootfs_img}" "${mount_dir}"
-+}
-+
-+unmount_image()
-+{
-+	local mount_dir="${OUTPUT_DIR}/${MOUNT_DIR}"
-+
-+	sudo umount "${mount_dir}" &> /dev/null
-+}
-+
-+update_selftests()
-+{
-+	local kernel_checkout="$1"
-+	local selftests_dir="${kernel_checkout}/tools/testing/selftests/bpf"
-+
-+	cd "${selftests_dir}"
-+	${make_command}
-+
-+	# Mount the image and copy the selftests to the image.
-+	mount_image
-+	sudo rm -rf "${mount_dir}/root/bpf"
-+	sudo cp -r "${selftests_dir}" "${mount_dir}/root"
-+	unmount_image
-+}
-+
-+update_init_script()
-+{
-+	local init_script_dir="${OUTPUT_DIR}/${MOUNT_DIR}/etc/rcS.d"
-+	local init_script="${init_script_dir}/S50-startup"
-+	local command="$1"
-+	local log_file="$2"
-+
-+	mount_image
-+
-+	if [[ ! -d "${init_script_dir}" ]]; then
-+		cat <<EOF
-+Could not find ${init_script_dir} in the mounted image.
-+This likely indicates a bad rootfs image, Please download
-+a new image by passing "-i" to the script
-+EOF
-+		exit 1
-+
-+	fi
-+
-+	cat <<EOF | sudo tee "${init_script}"
-+#!/bin/sh
-+
-+exec 2>&1
-+
-+cd /root/bpf
-+echo ${command} | tee /root/${log_file}
-+${command} | tee -a /root/${log_file}
-+poweroff -f
-+EOF
-+
-+	sudo chmod a+x "${init_script}"
-+	unmount_image
-+}
-+
-+create_vm_image()
-+{
-+	local rootfs_img="${OUTPUT_DIR}/${ROOTFS_IMAGE}"
-+	local mount_dir="${OUTPUT_DIR}/${MOUNT_DIR}"
-+
-+	rm -rf "${rootfs_img}"
-+	touch "${rootfs_img}"
-+	chattr +C "${rootfs_img}" >/dev/null 2>&1 || true
-+
-+	truncate -s 2G "${rootfs_img}"
-+	mkfs.ext4 -q "${rootfs_img}"
-+
-+	mount_image
-+	download_rootfs "$(newest_rootfs_version)" "${mount_dir}"
-+	unmount_image
-+}
-+
-+run_vm()
-+{
-+	local kernel_bzimage="$1"
-+	local rootfs_img="${OUTPUT_DIR}/${ROOTFS_IMAGE}"
-+
-+	if ! which "${QEMU_BINARY}" &> /dev/null; then
-+		cat <<EOF
-+Could not find ${QEMU_BINARY}
-+Please install qemu or set the QEMU_BINARY environment variable.
-+EOF
-+		exit 1
-+	fi
-+
-+	${QEMU_BINARY} \
-+		-nodefaults \
-+		-display none \
-+		-serial mon:stdio \
-+		-cpu kvm64 \
-+		-enable-kvm \
-+		-smp 4 \
-+		-m 2G \
-+		-drive file="${rootfs_img}",format=raw,index=1,media=disk,if=virtio,cache=none \
-+		-kernel "${kernel_bzimage}" \
-+		-append "root=/dev/vda rw console=ttyS0,115200"
-+}
-+
-+copy_logs()
-+{
-+	local mount_dir="${OUTPUT_DIR}/${MOUNT_DIR}"
-+	local log_file="${mount_dir}/root/$1"
-+
-+	mount_image
-+	sudo cp ${log_file} "${OUTPUT_DIR}"
-+	sudo rm -f ${log_file}
-+	unmount_image
-+}
-+
-+is_rel_path()
-+{
-+	local path="$1"
-+
-+	[[ ${path:0:1} != "/" ]]
-+}
-+
-+main()
-+{
-+	local script_dir="$(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
-+	local kernel_checkout=$(realpath "${script_dir}"/../../../../)
-+	local log_file="$(date +"bpf_selftests.%Y-%m-%d_%H-%M-%S.log")"
-+	# By default the script searches for the kernel in the checkout directory but
-+	# it also obeys environment variables O= and KBUILD_OUTPUT=
-+	local kernel_bzimage="${kernel_checkout}/${X86_BZIMAGE}"
-+	local command="${DEFAULT_COMMAND}"
-+	local kernel_recompile="no"
-+	local update_image="no"
-+
-+	while getopts 'hkid:' opt; do
-+		case ${opt} in
-+		k)
-+			kernel_recompile="yes"
-+			;;
-+		i)
-+			update_image="yes"
-+			;;
-+		d)
-+			OUTPUT_DIR="$OPTARG"
-+			;;
-+		h)
-+			usage
-+			exit 0
-+			;;
-+		\? )
-+			echo "Invalid Option: -$OPTARG"
-+			usage
-+			exit 1
-+			;;
-+      		: )
-+        		echo "Invalid Option: -$OPTARG requires an argument"
-+			usage
-+			exit 1
-+			;;
-+		esac
-+	done
-+	shift $((OPTIND -1))
-+
-+	if [[ $# -eq 0 ]]; then
-+		echo "No command specified, will run ${DEFAULT_COMMAND} in the vm"
-+	else
-+		command="$@"
-+	fi
-+
-+	local kconfig_file="${OUTPUT_DIR}/latest.config"
-+	local make_command="make -j KCONFIG_CONFIG=${kconfig_file}"
-+
-+	# Figure out where the kernel is being built.
-+	# O takes precedence over KBUILD_OUTPUT.
-+	if [[ "${O:=""}" != "" ]]; then
-+		if is_rel_path "${O}"; then
-+			O="$(realpath "${PWD}/${O}")"
-+		fi
-+		kernel_bzimage="${O}/${X86_BZIMAGE}"
-+		make_command="${make_command} O=${O}"
-+	elif [[ "${KBUILD_OUTPUT:=""}" != "" ]]; then
-+		if is_rel_path "${KBUILD_OUTPUT}"; then
-+			KBUILD_OUTPUT="$(realpath "${PWD}/${KBUILD_OUTPUT}")"
-+		fi
-+		kernel_bzimage="${KBUILD_OUTPUT}/${X86_BZIMAGE}"
-+		make_command="${make_command} KBUILD_OUTPUT=${KBUILD_OUTPUT}"
-+	fi
-+
-+	populate_url_map
-+
-+	local rootfs_img="${OUTPUT_DIR}/${ROOTFS_IMAGE}"
-+	local mount_dir="${OUTPUT_DIR}/${MOUNT_DIR}"
-+
-+	echo "Output directory: ${OUTPUT_DIR}"
-+
-+	mkdir -p "${OUTPUT_DIR}"
-+	mkdir -p "${mount_dir}"
-+	curl -Lf "${KCONFIG_URL}" -o "${kconfig_file}"
-+
-+	if [[ "${kernel_recompile}" == "no" && ! -f "${kernel_bzimage}" ]]; then
-+		echo "Kernel image not found in ${kernel_bzimage}, kernel will be recompiled"
-+		kernel_recompile="yes"
-+	fi
-+
-+	if [[ "${kernel_recompile}" == "yes" ]]; then
-+		recompile_kernel "${kernel_checkout}" "${make_command}"
-+	fi
-+
-+	if [[ "${update_image}" == "no" && ! -f "${rootfs_img}" ]]; then
-+		echo "rootfs image not found in ${rootfs_img}"
-+		update_image="yes"
-+	fi
-+
-+	if [[ "${update_image}" == "yes" ]]; then
-+		create_vm_image
-+	fi
-+
-+	update_selftests "${kernel_checkout}" "${make_command}"
-+	update_init_script "${command}" "${log_file}"
-+	run_vm "${kernel_bzimage}"
-+	copy_logs "${log_file}"
-+	echo "Logs saved in ${OUTPUT_DIR}/${log_file}"
-+}
-+
-+catch()
-+{
-+	local exit_code=$1
-+
-+	unmount_image
-+	exit ${exit_code}
-+}
-+
-+trap 'catch "$?"' EXIT
-+
-+main "$@"
--- 
-2.30.0.284.gd98b1dd5eaa7-goog
 
+Bj=C3=B6rn
