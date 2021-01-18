@@ -2,104 +2,224 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C58D22FA8B2
-	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 19:26:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41AA82FA87B
+	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 19:17:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405528AbhARPGv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Jan 2021 10:06:51 -0500
-Received: from mga03.intel.com ([134.134.136.65]:22113 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405394AbhARPGq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Jan 2021 10:06:46 -0500
-IronPort-SDR: XOmiFqWZ3Ggfh+sPXzHS4GKPPI8ojXOz97jXofcJWuw2Ij5WlsXkkST1u9jvczcO5ojw8qvnfH
- a97TorIVYXOQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9867"; a="178900874"
-X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
-   d="scan'208";a="178900874"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 07:05:48 -0800
-IronPort-SDR: 9/ySQoyKlhXlCh12UwUlnaoj3wQ/zMzk5aPrISj82IJE6UEnOp+vd3dfpB0+by0joauKbgArGt
- rpF2dXDSaoYA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
-   d="scan'208";a="383600439"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by orsmga008.jf.intel.com with ESMTP; 18 Jan 2021 07:05:44 -0800
-Date:   Mon, 18 Jan 2021 15:56:35 +0100
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        BPF-dev-list <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jesper Brouer <brouer@redhat.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Saeed Mahameed <saeed@kernel.org>
-Subject: Re: [PATCH v5 bpf-next 2/2] net: xdp: introduce xdp_prepare_buff
- utility routine
-Message-ID: <20210118145635.GA11335@ranger.igk.intel.com>
-References: <cover.1608670965.git.lorenzo@kernel.org>
- <45f46f12295972a97da8ca01990b3e71501e9d89.1608670965.git.lorenzo@kernel.org>
- <63bcde67-4124-121d-e96a-066493542ca9@iogearbox.net>
- <CAJ0CqmVsr=cv+0ndg3g4RDqVmKt=X6qQ7sbArNVrB+98e_3Sag@mail.gmail.com>
- <b76a6fc5-55fa-1ca8-f2b9-ae0332450333@iogearbox.net>
+        id S2406850AbhARSPZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jan 2021 13:15:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49130 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2406793AbhARQ4T (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 18 Jan 2021 11:56:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610988884;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=67wJ/3lY93doSBO8DiUvbJaaboQhcdWtc+KAcQtjz2Y=;
+        b=jUnD/FE5ltuZp4zDqSPFbIuCxllc01mHVcQ/WAlZ9rbPF5hyIiUqS+VXLKwjA610s9J6M2
+        ny+OQqL8Nqdi7cj6spdSMO63k5JXZReNgQ8j3bAt7wrt28nOBO/egntBMHCHPJfEzTEcmb
+        FBTmaYUrIJdhw8aJuwtG9nibHkLbSiM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-553-xK5vqH0vPeSK4Z2z9u-nqQ-1; Mon, 18 Jan 2021 11:54:41 -0500
+X-MC-Unique: xK5vqH0vPeSK4Z2z9u-nqQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A5768190A7A0;
+        Mon, 18 Jan 2021 16:54:39 +0000 (UTC)
+Received: from firesoul.localdomain (unknown [10.40.208.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 576961D7;
+        Mon, 18 Jan 2021 16:54:36 +0000 (UTC)
+Received: from [192.168.42.3] (localhost [IPv6:::1])
+        by firesoul.localdomain (Postfix) with ESMTP id 542353223348F;
+        Mon, 18 Jan 2021 17:54:35 +0100 (CET)
+Subject: [PATCH bpf-next V12 5/7] bpf: drop MTU check when doing TC-BPF
+ redirect to ingress
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
+        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
+        colrack@gmail.com
+Date:   Mon, 18 Jan 2021 17:54:35 +0100
+Message-ID: <161098887527.108067.15650013825701578772.stgit@firesoul>
+In-Reply-To: <161098881526.108067.7603213364270807261.stgit@firesoul>
+References: <161098881526.108067.7603213364270807261.stgit@firesoul>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b76a6fc5-55fa-1ca8-f2b9-ae0332450333@iogearbox.net>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Dec 31, 2020 at 12:16:41AM +0100, Daniel Borkmann wrote:
-> On 12/29/20 7:09 PM, Lorenzo Bianconi wrote:
-> > > > +                     hard_start = page_address(rx_buffer->page) +
-> > > > +                                  rx_buffer->page_offset - offset;
-> > > > +                     xdp_prepare_buff(&xdp, hard_start, offset, size, true);
-> > > >    #if (PAGE_SIZE > 4096)
-> > > >                        /* At larger PAGE_SIZE, frame_sz depend on len size */
-> > > >                        xdp.frame_sz = ixgbevf_rx_frame_truesize(rx_ring, size);
-> > 
-> > Hi Daniel,
-> > 
-> > thx for the review.
-> > 
-> > > [...]
-> > > The design is very similar for most of the Intel drivers. Why the inconsistency on
-> > > ice driver compared to the rest, what's the rationale there to do it in one but not
-> > > the others? Generated code better there?
-> > 
-> > I applied the same logic for the ice driver but the code is just
-> > slightly different.
-> > 
-> > > Couldn't you even move the 'unsigned int offset = xyz_rx_offset(rx_ring)' out of the
-> > > while loop altogether for all of them? (You already use the xyz_rx_offset() implicitly
-> > > for most of them when setting xdp.frame_sz.)
-> > 
-> > We discussed moving "offset = xyz_rx_offset(rx_ring)" out of the while
-> > loop before but Saeed asked to address it in a dedicated series since
-> > it is a little bit out of the scope. I have no strong opinion on it,
-> > do you prefer to address it directly here?
-> 
-> Fair enough, I might have preferred it in this series as part of the overall cleanup,
-> but if you plan to follow up on this then this is also fine by me. Applied the v5 to
-> bpf-next in that case, thanks!
+The use-case for dropping the MTU check when TC-BPF does redirect to
+ingress, is described by Eyal Birger in email[0]. The summary is the
+ability to increase packet size (e.g. with IPv6 headers for NAT64) and
+ingress redirect packet and let normal netstack fragment packet as needed.
 
-I initially pointed out the fact that we could store the output of
-xyz_rx_offset(rx_ring) onto a variable rather than call it per each
-processed buffer because value returned by that func can not change
-throughout the napi execution. It is based on ethtool priv flag which if
-changed, resets the PF (so disables napi, frees irqs, loads different Rx
-mem model, etc).
+[0] https://lore.kernel.org/netdev/CAHsH6Gug-hsLGHQ6N0wtixdOa85LDZ3HNRHVd0opR=19Qo4W4Q@mail.gmail.com/
 
-I realised that there is yet another place where we have unnecessary call
-to xyz_rx_offset() in hot path which is xyz_alloc_mapped_page(), so I
-expanded the idea of this optimization and I store the offset directly
-onto Rx ring and refer to that value.
+V9:
+ - Make net_device "up" (IFF_UP) check explicit in skb_do_redirect
 
-I am including the patches that do what described above onto pending
-series of fixes that I had back in december '20 I suppose.
+V4:
+ - Keep net_device "up" (IFF_UP) check.
+ - Adjustment to handle bpf_redirect_peer() helper
+
+Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+---
+ include/linux/netdevice.h |   32 ++++++++++++++++++++++++++++++--
+ net/core/dev.c            |   32 ++++++++++++++------------------
+ net/core/filter.c         |    6 +++---
+ 3 files changed, 47 insertions(+), 23 deletions(-)
+
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index 5b949076ed23..b7915484369c 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -3926,14 +3926,42 @@ int xdp_umem_query(struct net_device *dev, u16 queue_id);
+ 
+ int __dev_forward_skb(struct net_device *dev, struct sk_buff *skb);
+ int dev_forward_skb(struct net_device *dev, struct sk_buff *skb);
++int dev_forward_skb_nomtu(struct net_device *dev, struct sk_buff *skb);
+ bool is_skb_forwardable(const struct net_device *dev,
+ 			const struct sk_buff *skb);
+ 
++static __always_inline bool __is_skb_forwardable(const struct net_device *dev,
++						 const struct sk_buff *skb,
++						 const bool check_mtu)
++{
++	const u32 vlan_hdr_len = 4; /* VLAN_HLEN */
++	unsigned int len;
++
++	if (!(dev->flags & IFF_UP))
++		return false;
++
++	if (!check_mtu)
++		return true;
++
++	len = dev->mtu + dev->hard_header_len + vlan_hdr_len;
++	if (skb->len <= len)
++		return true;
++
++	/* if TSO is enabled, we don't care about the length as the packet
++	 * could be forwarded without being segmented before
++	 */
++	if (skb_is_gso(skb))
++		return true;
++
++	return false;
++}
++
+ static __always_inline int ____dev_forward_skb(struct net_device *dev,
+-					       struct sk_buff *skb)
++					       struct sk_buff *skb,
++					       const bool check_mtu)
+ {
+ 	if (skb_orphan_frags(skb, GFP_ATOMIC) ||
+-	    unlikely(!is_skb_forwardable(dev, skb))) {
++	    unlikely(!__is_skb_forwardable(dev, skb, check_mtu))) {
+ 		atomic_long_inc(&dev->rx_dropped);
+ 		kfree_skb(skb);
+ 		return NET_RX_DROP;
+diff --git a/net/core/dev.c b/net/core/dev.c
+index bae35c1ae192..87bb2cd62189 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -2194,28 +2194,14 @@ static inline void net_timestamp_set(struct sk_buff *skb)
+ 
+ bool is_skb_forwardable(const struct net_device *dev, const struct sk_buff *skb)
+ {
+-	unsigned int len;
+-
+-	if (!(dev->flags & IFF_UP))
+-		return false;
+-
+-	len = dev->mtu + dev->hard_header_len + VLAN_HLEN;
+-	if (skb->len <= len)
+-		return true;
+-
+-	/* if TSO is enabled, we don't care about the length as the packet
+-	 * could be forwarded without being segmented before
+-	 */
+-	if (skb_is_gso(skb))
+-		return true;
+-
+-	return false;
++	return __is_skb_forwardable(dev, skb, true);
+ }
+ EXPORT_SYMBOL_GPL(is_skb_forwardable);
+ 
+-int __dev_forward_skb(struct net_device *dev, struct sk_buff *skb)
++int __dev_forward_skb2(struct net_device *dev, struct sk_buff *skb,
++		     bool check_mtu)
+ {
+-	int ret = ____dev_forward_skb(dev, skb);
++	int ret = ____dev_forward_skb(dev, skb, check_mtu);
+ 
+ 	if (likely(!ret)) {
+ 		skb->protocol = eth_type_trans(skb, dev);
+@@ -2224,6 +2210,11 @@ int __dev_forward_skb(struct net_device *dev, struct sk_buff *skb)
+ 
+ 	return ret;
+ }
++
++int __dev_forward_skb(struct net_device *dev, struct sk_buff *skb)
++{
++	return __dev_forward_skb2(dev, skb, true);
++}
+ EXPORT_SYMBOL_GPL(__dev_forward_skb);
+ 
+ /**
+@@ -2250,6 +2241,11 @@ int dev_forward_skb(struct net_device *dev, struct sk_buff *skb)
+ }
+ EXPORT_SYMBOL_GPL(dev_forward_skb);
+ 
++int dev_forward_skb_nomtu(struct net_device *dev, struct sk_buff *skb)
++{
++	return __dev_forward_skb2(dev, skb, false) ?: netif_rx_internal(skb);
++}
++
+ static inline int deliver_skb(struct sk_buff *skb,
+ 			      struct packet_type *pt_prev,
+ 			      struct net_device *orig_dev)
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 0be81f499f51..07876e9ab5e3 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -2083,13 +2083,13 @@ static const struct bpf_func_proto bpf_csum_level_proto = {
+ 
+ static inline int __bpf_rx_skb(struct net_device *dev, struct sk_buff *skb)
+ {
+-	return dev_forward_skb(dev, skb);
++	return dev_forward_skb_nomtu(dev, skb);
+ }
+ 
+ static inline int __bpf_rx_skb_no_mac(struct net_device *dev,
+ 				      struct sk_buff *skb)
+ {
+-	int ret = ____dev_forward_skb(dev, skb);
++	int ret = ____dev_forward_skb(dev, skb, false);
+ 
+ 	if (likely(!ret)) {
+ 		skb->dev = dev;
+@@ -2480,7 +2480,7 @@ int skb_do_redirect(struct sk_buff *skb)
+ 			goto out_drop;
+ 		dev = ops->ndo_get_peer_dev(dev);
+ 		if (unlikely(!dev ||
+-			     !is_skb_forwardable(dev, skb) ||
++			     !(dev->flags & IFF_UP) ||
+ 			     net_eq(net, dev_net(dev))))
+ 			goto out_drop;
+ 		skb->dev = dev;
+
+
