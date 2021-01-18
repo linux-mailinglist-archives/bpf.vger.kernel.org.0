@@ -2,155 +2,379 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 297D82FAAA8
-	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 20:54:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1C182FAB7A
+	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 21:32:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437384AbhARTxf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Jan 2021 14:53:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390389AbhARLhj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Jan 2021 06:37:39 -0500
-Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71D77C061575
-        for <bpf@vger.kernel.org>; Mon, 18 Jan 2021 03:36:58 -0800 (PST)
-Received: by mail-wr1-x44a.google.com with SMTP id o17so8154666wra.8
-        for <bpf@vger.kernel.org>; Mon, 18 Jan 2021 03:36:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=7VlZADSbyrVyyYmUXQ30hZbrflrNZLEBF2PfK5aqyNc=;
-        b=dtoGcWzQToR89vu/K7XereUaEEAYu9I1Ky5pNZFzRMGMG1COV6q9Zs0hqEtH0Edm4r
-         C88R7SYMAEkbu+moMRWXH1xf72Pzw4MLEp4DLH0ABlKbhkQ31cMTzhmqQqYMVDfM05cd
-         1efL7+7UnXGSuvW7r6q0RhTzF2tvLttIiYwbtUfO5eAE+rij0iOyN+Bs6zyoA+79B63L
-         SOHp+ZnsA+4XsSyL+5pbaOJ0OoKxMBY6ySwt5MXJlWduo46bvS1xUxcB2VnoHGABQGhK
-         86yr5+9CwtoUvsXF3Ghrno6qlw9CrO4+FeXU7KTMvRFCeV7708plHJhtaJRacCOH98lA
-         VCxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=7VlZADSbyrVyyYmUXQ30hZbrflrNZLEBF2PfK5aqyNc=;
-        b=Cw1ABXCV/rZqIRW2co8uAVMcFUtW633Z9jMxgSbCuQDixwx8CRPfe1UgSKSXEX4oOX
-         /Ea/j6r4A+KUhCY+ctMaHnsJky8rUnZoTL7+qW1hKQzRBIgIOEx5o5aoat8wEF4wP+TN
-         kjF8mcxD7Ftlp3x7TNmfhKZEi5j8a86A0pGwgI6gb58jF2bp6I2pVMy6Ern5GY6UIF0C
-         rBVnp/icwz7UJCMj6Lb2HAwW3viGDB87K0VZ0ncMoXYSqmU0pl2Nj4VKRX9YSS8XecqD
-         Nyfm08JuKKFzJVsb3ZKGjq2+e85FhFbMqgAb8FDv3uZKCoO4Va/97o390ICyyTQJHypP
-         jhug==
-X-Gm-Message-State: AOAM530A9zw63iMTJHvxlHA83sE9RQcn7V3hGMnmF+AQEqFLl3ojNtm9
-        AyOvR7o13XgOrVKQZI2wbf4Jfe90n6NKO5PuMZ+V3PQSMj+UfsD2EyqNP5UnkEjvkxJFUTMWANL
-        BN4Q/9AHk3Xat/66velFB9b7VmShyefju76QQvg8pZzEsfHw0w4QgjA4dm0JCxRE=
-X-Google-Smtp-Source: ABdhPJzM3Fdf4dsPy9tvb82QM9BMNZIshizqWTmCqkVUz/+oHp0nossQwzrYEPVXi2JP4cPfY74DPxVbnbEfyw==
-Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
-X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
- (user=jackmanb job=sendgmr) by 2002:a7b:c779:: with SMTP id
- x25mr457521wmk.138.1610969816926; Mon, 18 Jan 2021 03:36:56 -0800 (PST)
-Date:   Mon, 18 Jan 2021 11:36:43 +0000
-Message-Id: <20210118113643.232579-1-jackmanb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH bpf-next] docs: bpf: Fixup atomics documentation
-From:   Brendan Jackman <jackmanb@google.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S2388503AbhARKkH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jan 2021 05:40:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28850 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388497AbhARJQa (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 18 Jan 2021 04:16:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610961302;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TzTJs4ezB/yY9IJmEJpq3qUpKxULr6PlO/4tkvd75MM=;
+        b=GV6C9agUqtrttnUlSVnjFx+EDDrm2Wa0QhEsseAoeTO5sY2XIxemapu4bzfdzVYOJGwN47
+        WSo7p2/9t9Sxn+PGbnh+C1oNQWpvO38VPyqP39baQ5v/pFOs4vSP0vEfaoNxh2agNGvDRk
+        2tTeKt5XoST8VhkE8K798lIw0teVj3o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-169-uvZskcWSPi6njHAqFZ0WrQ-1; Mon, 18 Jan 2021 04:10:42 -0500
+X-MC-Unique: uvZskcWSPi6njHAqFZ0WrQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E87AF107ACE4;
+        Mon, 18 Jan 2021 09:10:39 +0000 (UTC)
+Received: from [10.72.13.12] (ovpn-13-12.pek2.redhat.com [10.72.13.12])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C579A10013C0;
+        Mon, 18 Jan 2021 09:10:25 +0000 (UTC)
+Subject: Re: [PATCH net-next v2 5/7] virtio-net, xsk: realize the function of
+ xsk packet sending
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>, netdev@vger.kernel.org
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Brendan Jackman <jackmanb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+References: <cover.1609837120.git.xuanzhuo@linux.alibaba.com>
+ <cover.1610765285.git.xuanzhuo@linux.alibaba.com>
+ <9e1f5a4b633887ce1f66e39bc762b8497a379a43.1610765285.git.xuanzhuo@linux.alibaba.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <20e27fa0-c7c3-0cc3-bd27-19d1fe9b7717@redhat.com>
+Date:   Mon, 18 Jan 2021 17:10:24 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <9e1f5a4b633887ce1f66e39bc762b8497a379a43.1610765285.git.xuanzhuo@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This fixues up the markup to fix a warning, be more consistent with
-use of monospace, and use the correct .rst syntax for <em> (* instead
-of _). It also clarifies the explanation of Clang's -mcpu
-requirements for this feature, Alexei pointed out that use of the
-word "version" was confusing here.
 
-NB this conflicts with Lukas' patch at [1], here where I've added
-`::` to fix the warning, I also kept the original ':' which appears
-in the output text.
+On 2021/1/16 上午10:59, Xuan Zhuo wrote:
+> virtnet_xsk_run will be called in the tx interrupt handling function
+> virtnet_poll_tx.
+>
+> The sending process gets desc from the xsk tx queue, and assembles it to
+> send the data.
+>
+> Compared with other drivers, a special place is that the page of the
+> data in xsk is used here instead of the dma address. Because the virtio
+> interface does not use the dma address.
+>
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> ---
+>   drivers/net/virtio_net.c | 200 ++++++++++++++++++++++++++++++++++++++++++++++-
+>   1 file changed, 197 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index a62d456..42aa9ad 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -119,6 +119,8 @@ struct virtnet_xsk_hdr {
+>   	u32 len;
+>   };
+>   
+> +#define VIRTNET_STATE_XSK_WAKEUP 1
+> +
+>   #define VIRTNET_SQ_STAT(m)	offsetof(struct virtnet_sq_stats, m)
+>   #define VIRTNET_RQ_STAT(m)	offsetof(struct virtnet_rq_stats, m)
+>   
+> @@ -163,9 +165,12 @@ struct send_queue {
+>   		struct xsk_buff_pool   __rcu *pool;
+>   		struct virtnet_xsk_hdr __rcu *hdr;
+>   
+> +		unsigned long          state;
+>   		u64                    hdr_con;
+>   		u64                    hdr_pro;
+>   		u64                    hdr_n;
+> +		struct xdp_desc        last_desc;
+> +		bool                   wait_slot;
+>   	} xsk;
+>   };
+>   
+> @@ -284,6 +289,8 @@ static void __free_old_xmit_ptr(struct send_queue *sq, bool in_napi,
+>   				bool xsk_wakeup,
+>   				unsigned int *_packets, unsigned int *_bytes);
+>   static void free_old_xmit_skbs(struct send_queue *sq, bool in_napi);
+> +static int virtnet_xsk_run(struct send_queue *sq,
+> +			   struct xsk_buff_pool *pool, int budget);
+>   
+>   static bool is_xdp_frame(void *ptr)
+>   {
+> @@ -1590,6 +1597,8 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
+>   	struct virtnet_info *vi = sq->vq->vdev->priv;
+>   	unsigned int index = vq2txq(sq->vq);
+>   	struct netdev_queue *txq;
+> +	struct xsk_buff_pool *pool;
+> +	int work = 0;
+>   
+>   	if (unlikely(is_xdp_raw_buffer_queue(vi, index))) {
+>   		/* We don't need to enable cb for XDP */
+> @@ -1599,15 +1608,26 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
+>   
+>   	txq = netdev_get_tx_queue(vi->dev, index);
+>   	__netif_tx_lock(txq, raw_smp_processor_id());
+> -	free_old_xmit_skbs(sq, true);
+> +
+> +	rcu_read_lock();
+> +	pool = rcu_dereference(sq->xsk.pool);
+> +	if (pool) {
+> +		work = virtnet_xsk_run(sq, pool, budget);
+> +		rcu_read_unlock();
+> +	} else {
+> +		rcu_read_unlock();
+> +		free_old_xmit_skbs(sq, true);
+> +	}
+> +
+>   	__netif_tx_unlock(txq);
+>   
+> -	virtqueue_napi_complete(napi, sq->vq, 0);
+> +	if (work < budget)
+> +		virtqueue_napi_complete(napi, sq->vq, 0);
+>   
+>   	if (sq->vq->num_free >= 2 + MAX_SKB_FRAGS)
+>   		netif_tx_wake_queue(txq);
+>   
+> -	return 0;
+> +	return work;
+>   }
+>   
+>   static int xmit_skb(struct send_queue *sq, struct sk_buff *skb)
+> @@ -2647,6 +2667,180 @@ static int virtnet_xdp(struct net_device *dev, struct netdev_bpf *xdp)
+>   	}
+>   }
+>   
+> +static int virtnet_xsk_xmit(struct send_queue *sq, struct xsk_buff_pool *pool,
+> +			    struct xdp_desc *desc)
+> +{
+> +	struct virtnet_info *vi = sq->vq->vdev->priv;
+> +	void *data, *ptr;
+> +	struct page *page;
+> +	struct virtnet_xsk_hdr *xskhdr;
+> +	u32 idx, offset, n, i, copy, copied;
+> +	u64 addr;
+> +	int err, m;
+> +
+> +	addr = desc->addr;
+> +
+> +	data = xsk_buff_raw_get_data(pool, addr);
+> +	offset = offset_in_page(data);
+> +
+> +	/* one for hdr, one for the first page */
+> +	n = 2;
+> +	m = desc->len - (PAGE_SIZE - offset);
+> +	if (m > 0) {
+> +		n += m >> PAGE_SHIFT;
+> +		if (m & PAGE_MASK)
+> +			++n;
+> +
+> +		n = min_t(u32, n, ARRAY_SIZE(sq->sg));
+> +	}
+> +
+> +	idx = sq->xsk.hdr_con % sq->xsk.hdr_n;
 
-[1] https://lore.kernel.org/bpf/CA+i-1C3cEXqxcXfD4sibQfx+dtmmzvOzruhk8J5pAw3g5v=KgA@mail.gmail.com/T/#t
 
-Signed-off-by: Brendan Jackman <jackmanb@google.com>
----
- Documentation/networking/filter.rst | 30 +++++++++++++++--------------
- 1 file changed, 16 insertions(+), 14 deletions(-)
+I don't understand the reason of the hdr array. It looks to me all of 
+them are zero and read only from device.
 
-diff --git a/Documentation/networking/filter.rst b/Documentation/networking/filter.rst
-index f6d8f90e9a56..ba03e90a9163 100644
---- a/Documentation/networking/filter.rst
-+++ b/Documentation/networking/filter.rst
-@@ -1048,12 +1048,12 @@ Unlike classic BPF instruction set, eBPF has generic load/store operations::
- Where size is one of: BPF_B or BPF_H or BPF_W or BPF_DW.
- 
- It also includes atomic operations, which use the immediate field for extra
--encoding.
-+encoding: ::
- 
-    .imm = BPF_ADD, .code = BPF_ATOMIC | BPF_W  | BPF_STX: lock xadd *(u32 *)(dst_reg + off16) += src_reg
-    .imm = BPF_ADD, .code = BPF_ATOMIC | BPF_DW | BPF_STX: lock xadd *(u64 *)(dst_reg + off16) += src_reg
- 
--The basic atomic operations supported are:
-+The basic atomic operations supported are: ::
- 
-     BPF_ADD
-     BPF_AND
-@@ -1066,12 +1066,12 @@ memory location addresed by ``dst_reg + off`` is atomically modified, with
- immediate, then these operations also overwrite ``src_reg`` with the
- value that was in memory before it was modified.
- 
--The more special operations are:
-+The more special operations are: ::
- 
-     BPF_XCHG
- 
- This atomically exchanges ``src_reg`` with the value addressed by ``dst_reg +
--off``.
-+off``. ::
- 
-     BPF_CMPXCHG
- 
-@@ -1081,19 +1081,21 @@ before is loaded back to ``R0``.
- 
- Note that 1 and 2 byte atomic operations are not supported.
- 
--Except ``BPF_ADD`` _without_ ``BPF_FETCH`` (for legacy reasons), all 4 byte
--atomic operations require alu32 mode. Clang enables this mode by default in
--architecture v3 (``-mcpu=v3``). For older versions it can be enabled with
--``-Xclang -target-feature -Xclang +alu32``.
-+Clang can generate atomic instructions when ``-mcpu=v3`` is enabled (this is the
-+default). If a lower version for ``-mcpu`` is set, the only atomic instruction
-+Clang can generate is ``BPF_ADD`` *without* ``BPF_FETCH``. If you need to
-+enable the atomics features, while keeping a lower ``-mcpu`` version, you can
-+use ``-Xclang -target-feature -Xclang +alu32``.
- 
--You may encounter BPF_XADD - this is a legacy name for BPF_ATOMIC, referring to
--the exclusive-add operation encoded when the immediate field is zero.
-+You may encounter ``BPF_XADD`` - this is a legacy name for ``BPF_ATOMIC``,
-+referring to the exclusive-add operation encoded when the immediate field is
-+zero.
- 
--eBPF has one 16-byte instruction: BPF_LD | BPF_DW | BPF_IMM which consists
-+eBPF has one 16-byte instruction: ``BPF_LD | BPF_DW | BPF_IMM`` which consists
- of two consecutive ``struct bpf_insn`` 8-byte blocks and interpreted as single
--instruction that loads 64-bit immediate value into a dst_reg.
--Classic BPF has similar instruction: BPF_LD | BPF_W | BPF_IMM which loads
--32-bit immediate value into a register.
-+instruction that loads 64-bit immediate value into a dst_reg.  Classic BPF has
-+similar instruction: ``BPF_LD | BPF_W | BPF_IMM`` which loads 32-bit immediate
-+value into a register.
- 
- eBPF verifier
- -------------
+Any reason for not reusing a single hdr for all xdp descriptors? Or 
+maybe it's time to introduce VIRTIO_NET_F_NO_HDR.
 
-base-commit: 232164e041e925a920bfd28e63d5233cfad90b73
--- 
-2.30.0.284.gd98b1dd5eaa7-goog
+
+> +	xskhdr = &sq->xsk.hdr[idx];
+> +
+> +	/* xskhdr->hdr has been memset to zero, so not need to clear again */
+> +
+> +	sg_init_table(sq->sg, n);
+> +	sg_set_buf(sq->sg, &xskhdr->hdr, vi->hdr_len);
+> +
+> +	copied = 0;
+> +	for (i = 1; i < n; ++i) {
+> +		copy = min_t(int, desc->len - copied, PAGE_SIZE - offset);
+> +
+> +		page = xsk_buff_raw_get_page(pool, addr + copied);
+> +
+> +		sg_set_page(sq->sg + i, page, copy, offset);
+> +		copied += copy;
+> +		if (offset)
+> +			offset = 0;
+> +	}
+
+
+It looks to me we need to terminate the sg:
+
+**
+  * virtqueue_add_outbuf - expose output buffers to other end
+  * @vq: the struct virtqueue we're talking about.
+  * @sg: scatterlist (must be well-formed and terminated!)
+
+
+> +
+> +	xskhdr->len = desc->len;
+> +	ptr = xdp_to_ptr(&xskhdr->type);
+> +
+> +	err = virtqueue_add_outbuf(sq->vq, sq->sg, n, ptr, GFP_ATOMIC);
+> +	if (unlikely(err))
+> +		sq->xsk.last_desc = *desc;
+> +	else
+> +		sq->xsk.hdr_con++;
+> +
+> +	return err;
+> +}
+> +
+> +static bool virtnet_xsk_dev_is_full(struct send_queue *sq)
+> +{
+> +	if (sq->vq->num_free < 2 + MAX_SKB_FRAGS)
+> +		return true;
+> +
+> +	if (sq->xsk.hdr_con == sq->xsk.hdr_pro)
+> +		return true;
+
+
+Can we really reach here?
+
+
+> +
+> +	return false;
+> +}
+> +
+> +static int virtnet_xsk_xmit_zc(struct send_queue *sq,
+> +			       struct xsk_buff_pool *pool, unsigned int budget)
+> +{
+> +	struct xdp_desc desc;
+> +	int err, packet = 0;
+> +	int ret = -EAGAIN;
+> +
+> +	if (sq->xsk.last_desc.addr) {
+> +		err = virtnet_xsk_xmit(sq, pool, &sq->xsk.last_desc);
+> +		if (unlikely(err))
+> +			return -EBUSY;
+> +
+> +		++packet;
+> +		sq->xsk.last_desc.addr = 0;
+> +	}
+> +
+> +	while (budget-- > 0) {
+> +		if (virtnet_xsk_dev_is_full(sq)) {
+> +			ret = -EBUSY;
+> +			break;
+> +		}
+
+
+It looks to me we will always hit this if userspace is fast. E.g we 
+don't kick until the virtqueue is full ...
+
+
+> +
+> +		if (!xsk_tx_peek_desc(pool, &desc)) {
+> +			/* done */
+> +			ret = 0;
+> +			break;
+> +		}
+> +
+> +		err = virtnet_xsk_xmit(sq, pool, &desc);
+> +		if (unlikely(err)) {
+> +			ret = -EBUSY;
+> +			break;
+> +		}
+> +
+> +		++packet;
+> +	}
+> +
+> +	if (packet) {
+> +		xsk_tx_release(pool);
+> +
+> +		if (virtqueue_kick_prepare(sq->vq) && virtqueue_notify(sq->vq)) {
+> +			u64_stats_update_begin(&sq->stats.syncp);
+> +			sq->stats.kicks++;
+> +			u64_stats_update_end(&sq->stats.syncp);
+> +		}
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static int virtnet_xsk_run(struct send_queue *sq,
+> +			   struct xsk_buff_pool *pool, int budget)
+> +{
+> +	int err, ret = 0;
+> +	unsigned int _packets = 0;
+> +	unsigned int _bytes = 0;
+> +
+> +	sq->xsk.wait_slot = false;
+> +
+> +	__free_old_xmit_ptr(sq, true, false, &_packets, &_bytes);
+> +
+> +	err = virtnet_xsk_xmit_zc(sq, pool, xsk_budget);
+> +	if (!err) {
+> +		struct xdp_desc desc;
+> +
+> +		clear_bit(VIRTNET_STATE_XSK_WAKEUP, &sq->xsk.state);
+> +		xsk_set_tx_need_wakeup(pool);
+> +
+> +		/* Race breaker. If new is coming after last xmit
+> +		 * but before flag change
+> +		 */
+> +
+> +		if (!xsk_tx_peek_desc(pool, &desc))
+> +			goto end;
+> +
+> +		set_bit(VIRTNET_STATE_XSK_WAKEUP, &sq->xsk.state);
+> +		xsk_clear_tx_need_wakeup(pool);
+
+
+How memory ordering is going to work here? Or we don't need to care 
+about that?
+
+
+> +
+> +		sq->xsk.last_desc = desc;
+> +		ret = budget;
+> +		goto end;
+> +	}
+> +
+> +	xsk_clear_tx_need_wakeup(pool);
+> +
+> +	if (err == -EAGAIN) {
+> +		ret = budget;
+> +		goto end;
+> +	}
+> +
+> +	__free_old_xmit_ptr(sq, true, false, &_packets, &_bytes);
+> +
+> +	if (!virtnet_xsk_dev_is_full(sq)) {
+> +		ret = budget;
+> +		goto end;
+> +	}
+> +
+> +	sq->xsk.wait_slot = true;
+> +
+> +	virtnet_sq_stop_check(sq, true);
+> +end:
+> +	return ret;
+> +}
+> +
+>   static int virtnet_get_phys_port_name(struct net_device *dev, char *buf,
+>   				      size_t len)
+>   {
 
