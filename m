@@ -2,141 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C13372FA7FF
-	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 18:55:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3378F2FA805
+	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 18:55:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407088AbhARRhe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Jan 2021 12:37:34 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:11214 "EHLO
+        id S2389885AbhARRvL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jan 2021 12:51:11 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:43272 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2436605AbhARRhX (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 18 Jan 2021 12:37:23 -0500
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 10IHYup4005887;
-        Mon, 18 Jan 2021 09:36:23 -0800
+        by vger.kernel.org with ESMTP id S2436687AbhARRua (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 18 Jan 2021 12:50:30 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 10IHlkOA014101;
+        Mon, 18 Jan 2021 09:48:58 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
  references : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=CjtVkCPiWjULQ5dYgeBSF7lTZHH8LxjK4w5/53+9qh0=;
- b=WLi5x1bRh6tGA/O+89Cz1LwKABLU02H8QmZzWH7ltOHzQ9m+gdBA+mIoArkeD5huyZaD
- xQASW1OXA90I5ta/WhLtzzwoTSQ6/gnWSzR54juUwKHsz5g8oF0ZdgkwgRGQs+5Fyf8K
- dtLqT17EiZgVlU4dDE6/MwbwWSGkbVd9Muo= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 363vh583r9-1
+ bh=E+foa0BM+Hn97lAjt1lUhpr6sx6Ok2/4qYN1STf3sEs=;
+ b=Di1QQ1BrJImYCJ4J98t4kOoziD6GPdSiDMK0Su1nUIUmCWF0e6BYqys5SzYWtrCpXcHz
+ kD/xO3GwyRoPK+NSxX7BUqEbuTHXGOQrmAyE4f9CNg+e3r1kOM+QCYIUlJ8T9JB4pW9n
+ TPoQujApbvWUJ7cA7XUK3u+UVA9nJcwNF8w= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 363vps05b0-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 18 Jan 2021 09:36:22 -0800
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
+        Mon, 18 Jan 2021 09:48:58 -0800
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 18 Jan 2021 09:36:21 -0800
+ 15.1.1979.3; Mon, 18 Jan 2021 09:48:57 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bYdnRcNR5JczfTpQBX6gieHAGGKlvr0eX6Qx5OlYDtv1tdAi8V8lBVn/a6KBSnopC6gpvf34VdEZRnjV8XUIVRMGETXY02GWDxl2Eu03jZX/YEZ+ADkSxvcjgDvJCw5sdrWblViXTtQXW0HxsWRmGECYqtr16v/uGKbuQEwGK1UTxoCJYrwsoZhMBCzAnsUh8yutz6t+9+L8hZjacj+CP69tBx1xKZzoJte8CKn0J6IcDOgGNk4NLNXgCwfE5IQTRePVPw+7XC9qXzq7Kip5mSNkpdK5+eACdJgQmyZqAYAdATQi+ZSUNCDc/hnAcBp+pa7zEd4ymqJFREQCphq7MQ==
+ b=FI9xL8UOkvW1WCDca/VH5aVP7zn0GT3fYgVlx+nRxvCzU6HNKQZKlSFUEWR4+mYE5ITgtg7BPEhTWd1NKCI/4Ct6dQUl0V7qsnkmshv/jJswNR+bFkOasZqQ8Gtum4fAXWzhfeRgg3ZuMEdHbTUHJkeaHLGYTpEZSvfTl85CRBjolRQxhf4kgtCWt5StlOIgFBBm/3ozQ4VS3VSiXXvrvnI/QXD8HxvL627wL/lDqRsshXmEWdOSj5Npnn85qseo1nPCskbfNzdNVysyBARcPgAnDBDK8ag2DlIaDgiHh1VXelUeZN37IS+JzTGg5KFk5SoIirCy1i/aGWiu951hoA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CjtVkCPiWjULQ5dYgeBSF7lTZHH8LxjK4w5/53+9qh0=;
- b=IuDMyj5aqGVVB2t/Nybjsk1hYVXQ396gupE1v/UfvibtO2EkOjVjo8V/ZTTy6Wpk9FxjZr9nv3GTOT1AbtdqJ8NE8HX5C/1oKMICrD3c8E1f45GFeGM5pjM2Agz5Y/V482CO2SF1T0JND/NdkePlhrhYqWeWjND+CcCB0GRbsKxwnDnW0niwepPYAhl/wGlePPMkyFgYaI4GaIV1qVAXnyDIpLhLnfU56ecT60Wnj4MnFzpxHc30D7JlIPV524qUbPT0WDmuH1uZPkfpWbRsfXl4ttlhUp4VF+k6Ni3qI1ZJT841dVxW7F77QJBRs0T8tI0umyGoPTOIf2qU7R/CjA==
+ bh=E+foa0BM+Hn97lAjt1lUhpr6sx6Ok2/4qYN1STf3sEs=;
+ b=HOMw8Sqh1enM82KGSS9MYeUCaThhIbJT/vyZ2MINkaKQ03Qrq8rsVRrci57rfwO3mjf9XTgI8IFVNtT4jjFDv6AlQjiXaQjtNJxz/0vyIic0zUvwmQOwnzSe3ZiMqg4YgP9RYFrD2BaYBTj15CVUg3PqbF+758RQjUJvKPBWRKM+re5cgp8dDqH2fO6bbVqyHV9aEYBDY5r0cmS3NTZowU60uCKTd5tRjvZd/NVjEhFIteiFYLEUwgD4A6V9IGOtVpRMi38AMZR9Ub5IQ5e/gUzYsLIwSWnVVK0lQ/OQUrkpgBitza8BlWZDE7X9xmYBkwvE8M1HLsGigRdPLhLobQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CjtVkCPiWjULQ5dYgeBSF7lTZHH8LxjK4w5/53+9qh0=;
- b=eXEYWsDQtfSZgTc1xmq0D+PB1rcsKbSUHCdXD+kMVMt/zUSaxzHwCqVaL3vxCxQ4QePqm6kZ1WvaWF+ZWoyfRLaSQmWgprwPmvaf1WjIjeUCLXGyiVvNSBxRuFRd3kSaW5y3rUnFJr76mU15xUgWEHl7EfzSuxeixjRufTjWW2E=
-Authentication-Results: lwn.net; dkim=none (message not signed)
- header.d=none;lwn.net; dmarc=none action=none header.from=fb.com;
+ bh=E+foa0BM+Hn97lAjt1lUhpr6sx6Ok2/4qYN1STf3sEs=;
+ b=DM31QlF56LwUlGbT6InvJw54fkNNyWyyVIqFqir5AJ2LwW7VtvaQwEyY/cHfdvFojk3o30Ag50bzCjQMke72zgaNCl1CaTevesD787jFpN5CihKOx6e50AZKhcAQmXA4poFntcH+1JdfR5C97fPX0ABBK/2SXNfX8w/gpDxBolo=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=fb.com;
 Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by SJ0PR15MB4236.namprd15.prod.outlook.com (2603:10b6:a03:2cb::23) with
+ by BYAPR15MB2376.namprd15.prod.outlook.com (2603:10b6:a02:8c::28) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Mon, 18 Jan
- 2021 17:36:20 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.11; Mon, 18 Jan
+ 2021 17:48:56 +0000
 Received: from BYAPR15MB4088.namprd15.prod.outlook.com
  ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
  ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3763.014; Mon, 18 Jan 2021
- 17:36:20 +0000
-Subject: Re: [PATCH bpf-next v2 2/2] docs: bpf: Clarify -mcpu=v3 requirement
- for atomic ops
-To:     Brendan Jackman <jackmanb@google.com>, <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
+ 17:48:56 +0000
+Subject: Re: [PATCH v2 bpf-next 2/2] selftests: bpf: Add a new test for bare
+ tracepoints
+To:     Qais Yousef <qais.yousef@arm.com>
+CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-References: <20210118155735.532663-1-jackmanb@google.com>
- <20210118155735.532663-3-jackmanb@google.com>
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210116182133.2286884-1-qais.yousef@arm.com>
+ <20210116182133.2286884-3-qais.yousef@arm.com>
+ <e9d4b132-288d-594f-308c-132e89fcf63f@fb.com>
+ <20210118121818.muifeogh4hvakfeb@e107158-lin>
 From:   Yonghong Song <yhs@fb.com>
-Message-ID: <4cbd024b-b57e-e7ae-276a-a285c898bb30@fb.com>
-Date:   Mon, 18 Jan 2021 09:36:17 -0800
+Message-ID: <fdda7117-e823-e240-4735-617a3df8a0cc@fb.com>
+Date:   Mon, 18 Jan 2021 09:48:53 -0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.6.1
-In-Reply-To: <20210118155735.532663-3-jackmanb@google.com>
+In-Reply-To: <20210118121818.muifeogh4hvakfeb@e107158-lin>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 X-Originating-IP: [2620:10d:c090:400::5:4199]
-X-ClientProxiedBy: MW4PR03CA0340.namprd03.prod.outlook.com
- (2603:10b6:303:dc::15) To BYAPR15MB4088.namprd15.prod.outlook.com
+X-ClientProxiedBy: MW4PR03CA0126.namprd03.prod.outlook.com
+ (2603:10b6:303:8c::11) To BYAPR15MB4088.namprd15.prod.outlook.com
  (2603:10b6:a02:c3::18)
+MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21d6::10cf] (2620:10d:c090:400::5:4199) by MW4PR03CA0340.namprd03.prod.outlook.com (2603:10b6:303:dc::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9 via Frontend Transport; Mon, 18 Jan 2021 17:36:19 +0000
+Received: from [IPv6:2620:10d:c085:21d6::10cf] (2620:10d:c090:400::5:4199) by MW4PR03CA0126.namprd03.prod.outlook.com (2603:10b6:303:8c::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9 via Frontend Transport; Mon, 18 Jan 2021 17:48:55 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f210539c-bdce-43e6-24be-08d8bbd79134
-X-MS-TrafficTypeDiagnostic: SJ0PR15MB4236:
-X-Microsoft-Antispam-PRVS: <SJ0PR15MB4236B99D40E3C39EABAA29E0D3A40@SJ0PR15MB4236.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: b68ddf80-c5c9-466d-3d0e-08d8bbd953d3
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2376:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB237651DDD7E7D2399C9C76F0D3A40@BYAPR15MB2376.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:1824;
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: H/jIm0B6x2i/HUBgiXb5JvLewRjjD/2Ei5QRIvn3BnzjJcIwkYGESyLuz2ZUaajpEIHVtSP6D+A+DW+lk0Jl0TI8VbVN3Z8SL0i18ulOJjfC3tW9f1qd6OWk3OFqzeBJB3b3ehC8Z6jp8QOlv4G9/gFZvrSrOus2TPL58eXX2RQ2pnvHucLoUearQkQGSL6RQ0Gz8EUFEyadUS4evnTsPPHuz/JcK0RCffQFJV6veD7pDJe6F22aNXIl53dnU9zVDKGsG6VkRvJE75cH1VPY6DKqxZREHxXIgo56t9MYHpWBXaW7sud06h4ej35hTgGciAljZiIRX4SAfUugIWWM4LjjtJLCpF9iLc7aXxxWhMdQP6iLlncGFetngaZZysthytU4QcoXVh8bbfiebJJ0Bh/yIJQLuIIp+PjqOOs6VUb1RA34abCfk9mV7lFgsxS/fdRBq6aIUhHvceNuuV+PBpXPL7n48fjRwv2UTdSNdLI9oyhW1J4XQg7e1m/GMLA9x+0On5Td5WMmaMEtM+aXTxUFkygDLvutIA3hFFB8Y0oA2aU+21LHp2oIS8g6NgYw
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(346002)(136003)(366004)(376002)(4326008)(2616005)(478600001)(66476007)(66556008)(2906002)(66946007)(4744005)(186003)(31696002)(16526019)(5660300002)(36756003)(7416002)(6486002)(316002)(53546011)(54906003)(86362001)(8676002)(52116002)(966005)(31686004)(8936002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ODdWRW9rRXFtZ3VOOG9HdG5PT1RMMXA3Z3BJaUR5RUN1VVA4NjhFemZxMzNG?=
- =?utf-8?B?cytPK1dKdFliNlVOcDEwV3pEVXExWWYvemxZOGNFZmJMVVN1UFdaZFBNQ2dq?=
- =?utf-8?B?Z0pZZnZrOU5DUnB0aXhXR0VWdkwxN3pEOGxNTFhoZXJKQmEyV0Jia2NjajNl?=
- =?utf-8?B?RFFNekJVY1JoT3RReHpmcFZpM3ZoSFB1ck5vekY2UlE0ZlRXbnBSNmNDNU41?=
- =?utf-8?B?bDBpdVgyenZ4cGNwS1ZBc2xuY1NrcUZ2T2wzQXlUcStTVE9LQzVuaktGZXU2?=
- =?utf-8?B?VmtFa3R5ZFE5YzlDYXZTUW9Memw4eHdUZGdlSVRsVzIvQm1ENXY5VjlvYVIx?=
- =?utf-8?B?bjBXN2ttV3pMNXBtbm0zaG9nM2Q1OGRjOVdUSlFZYVUydk5YVGsvVmUxTFRm?=
- =?utf-8?B?dWJwU3FYZ1V6UFNRaHF5Rlc1ZUdQQnRrUWpqV2lBZGo5eTdMR2k3aEFudmZw?=
- =?utf-8?B?b1B6Wk5RR3BSYldib2FKaklPK0prNWw0di9uQUhWcks2MDY3TGVjUW9aVUFL?=
- =?utf-8?B?bHBaL0ZhYk1KM24xVnZ4THpMRkpkYkFSMnYzUGMwNFNLbmZXL1Z1RG5qRmV2?=
- =?utf-8?B?cklqMG00ZkROTHJucUIxME9FVFRwOTd2Z3RGSnpHK2JGVzJLZHQ0T0N1NSta?=
- =?utf-8?B?dEY0bFNUcnZBcmlGT0ZXYUZOMDhyZW8yeFl4MExtVy9DSmRLcVAvRTd0QXZx?=
- =?utf-8?B?VHJsMlIwTDJ0dVo3T3dSeTdwNDBqS1daNWgrWVdYdy9YaTlnd3NPWURTWkN5?=
- =?utf-8?B?cDFpL1MxYjFNdVBNTXNVTHpERG81a1hldFhrYzJmRGlvVHQ2bWR2NTZjZ1pm?=
- =?utf-8?B?M2pWNTZObHJ4dlRrN1gwTUlBU25GS0VnbTM4L0NzR0ZiUXk5eWdOck1TUmZ3?=
- =?utf-8?B?aXpCZVFzTEhIRE8zVHNUcEhNam1Cb1VHQXBuRmxrMVRaZ0I0Vy9RTTVjZmdS?=
- =?utf-8?B?MlFpMTlCVng1Mjh3U3ZQdk9YV2NjN3ovMkFTZkVFNmVpV294QkM1V3psRkt0?=
- =?utf-8?B?RW8rajhpQmlIMjIzTkViaGE1dFVJSzZrQ0lzNGZUTTh0eTYvM29RTkVJZWxh?=
- =?utf-8?B?b2QrUGtReTdyN3lBY2lKNVMrSWJ3TUNsa3dFZjVCYXdvREFxMmthbERUNC9y?=
- =?utf-8?B?T0xwdEFWUHdzczI5cFlZK0Nscnp6M0kzU2J4KzBubktkWnhiT3pYYmJ2eFJ1?=
- =?utf-8?B?WXBmVmdFeC84T1E5UDNkdnJNcmFrUmFleTh2MXRzMzcyaDJud3A4ZWMrcVhV?=
- =?utf-8?B?UVU5OFdETlY3b3FBOGJwaFhPN2hOc2ZaaFFPMFhVdUV6a1dsMlJSbGY5YTZE?=
- =?utf-8?B?R1FpU1YxMzhQeFU5OHRMaUE4V1BvdHFiUFFqbXMrcWI4NlU0TUJ4V2pRZ2k2?=
- =?utf-8?B?UUJJRWNtbldtRGc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: f210539c-bdce-43e6-24be-08d8bbd79134
+X-Microsoft-Antispam-Message-Info: 0biiF8pXsipxwUQKyWqw+TNxg7vxum7/TVkaFgnm/nR8WzUZtT+moB4BJcoEqpuPtiOfMB6R5FfTlG9d8qxAJYdlYx/TloxQgR8+nD0TtlN7PB3khnUs0qUg2liMd38mXBP2QhRzOcOadWDfNuDtN0ONCCFH8Yj7d0tRyquF6xkkBFrShL1JYr+Xgt/er/1wtDohxpR2W/uzTwdu/a+qAr+lC55TS8aLXp/DgvDKfNC4gvH26cF6sF7OrHEdhK8kMGag75KwXfpq/0N3XngGZh1G3ow0OBh8KbhINxYXrvt4RWoXvErA8RfCOug0AKd2xsCGyH0VWflXgAQp52VW2DPVgGnfcBE3eVneO5L11oXg2GwV3jX+ekTG+zyNr2Y+wC0WLKVzsthIx91VfrQ4pN8v2/NjXvz60BgY8SIfYY+HVs/o7qWrCq/zmUNYgQu1BPuCspR/ECzuSf9WiqcfFqOmufk4KM2xlsXKaygtA84=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(366004)(396003)(136003)(346002)(376002)(86362001)(54906003)(4326008)(52116002)(2616005)(66946007)(31696002)(316002)(8936002)(5660300002)(36756003)(66556008)(8676002)(66476007)(478600001)(2906002)(83380400001)(31686004)(53546011)(6916009)(16526019)(186003)(6486002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ckZ4RFhTR3NqOUlqZm9IYVZsbEh0VHd1UjFVYzBMM3VuZEx6aHZGOTVuK0s1?=
+ =?utf-8?B?bHdNUUVaaEZjQkMvaXE4N01FNlY4ejhGUERmWFNIRlJtc0hhNXJtbGg4Y1l2?=
+ =?utf-8?B?SG1aK1NLZVhOZ2dPZ3YrOW5xcm5vdklXaTZ3WHJvTTEzOEc1RjRjL1dsLzJn?=
+ =?utf-8?B?d0lsRTNualJkQy9NUHZvNGU4Z0hQYUhXMkJGOWUvdGhidXVoNmtpQ3JxcW1t?=
+ =?utf-8?B?elBlSW0rWkMwTEVrMkFiRXNTN3FmZXZnZUtYdjdaR0w0RTdnU3kwVzhoU3h2?=
+ =?utf-8?B?YUFEVnpmbWFjMVdLWVhZelgwTmxDY25VU0JLWWNjdWsyQUNSMG1hbVNROWsv?=
+ =?utf-8?B?UHhJM3AzanpCSmlDbGVrdW9ER0ExTzVJdEVTcjJlWlhOS0RRY1dGM1lEcXUr?=
+ =?utf-8?B?dTg2U1lWQXd5bGtnSWNyWGtNR09za05idTlqWnpIU1JBa1JSaWt1UnMxaUg5?=
+ =?utf-8?B?bEZHWm9OdmEyTzAxTkxYZ0dCSkdmQTFKTEQ0aVgyQXU5VGtHMnJCRzdzeHZC?=
+ =?utf-8?B?SWU3OXNOalNGVGswSmlFb0FlbkJrU2hLSkVLYmdLOHVyME5tS1QzQjlFSW9M?=
+ =?utf-8?B?NjhLTXJ0NUlWcjZQZmJwdVdQRU1VZnZCQXRLRW4xa2dYY3lwZG9aMlRyUzRt?=
+ =?utf-8?B?bjBTQ0plZDNPS1lMOU1VZGFuMmtiY1g3V01ncm9vK3hhZG9jUDh0T1BVZ3NI?=
+ =?utf-8?B?NHJGdGZZNEdrM2RxUG9XL0V6VC9QZ3VVaUloNERuLzFTdUJreTBUekRmNFN5?=
+ =?utf-8?B?aTRjN1Btc2MvVGdtYWVYVEVaaGxUVldSMVQ3cjR4ZkY1MnpYWXZhVW5ZSzRL?=
+ =?utf-8?B?RU43SUxIRFVVVmdoOUt4VGVnbkZlaHlyUkZ0SHJVSG13ZzJQS0txdkxDbE85?=
+ =?utf-8?B?R1N6c1haVVVuWHBIOHhHTzAyWGdPK1FJcnFuUTJScUVxZEhoVUVpTnRaZ0Vi?=
+ =?utf-8?B?OEI3em1MUU95aWJqVDNvQ3VtVWNGczZ6YTUvRlpoMzdua0lQcE00SHVTNUl2?=
+ =?utf-8?B?V1BUYWlHbEIyQUc4Z3JFU0JZbEkzN3JwSUdlYUp4SzBKbVNvOTlHOHJBaGds?=
+ =?utf-8?B?N3VWSUIzUlI1SVY3b25ub1p4UzJxODMrM1hFMDU5Q09pdWtyd0JaczRZR0ZY?=
+ =?utf-8?B?N1ZZcHE0akF5YitSeHhDV2RpNUc3SVNGTFN6VEFyc2JRWkZMRytOVndKTWZt?=
+ =?utf-8?B?blNnOTM1ODNlZEtwQ1draHRwbnA4Uml0T0c1cUt3cFFFdFF0OGw2YjZmUFY3?=
+ =?utf-8?B?ZXBIRk5teDJRRUtWaVJ3cEVVUEZ5dnpXRzZFRjBDYlFVY2hDM3RGcTVSUmty?=
+ =?utf-8?B?NGNuWTZLMEltbzVRQllyR20zMmowWWdHdHh5RVFIMGV1ODNQdDc0Q1hhcmg0?=
+ =?utf-8?B?RE9MSlM4YUNFR1E9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: b68ddf80-c5c9-466d-3d0e-08d8bbd953d3
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jan 2021 17:36:20.7308
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jan 2021 17:48:56.2904
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sl7LLcASS2eAnt0qE3eAAciVBZsouExexUK66S86M6cJcduWnlyj7cz7alYJIelr
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4236
+X-MS-Exchange-CrossTenant-UserPrincipalName: vQ24o80dPWWdCP8ya2/tdhgPCm6Gp2qOD2GIZ0hFiK3Gu/hu7+5pYU9eBzAgQsGq
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2376
 X-OriginatorOrg: fb.com
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
  definitions=2021-01-18_13:2021-01-18,2021-01-18 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=927
- lowpriorityscore=0 malwarescore=0 spamscore=0 suspectscore=0 clxscore=1011
- adultscore=0 bulkscore=0 mlxscore=0 phishscore=0 priorityscore=1501
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101180106
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
+ spamscore=0 malwarescore=0 clxscore=1015 impostorscore=0 phishscore=0
+ bulkscore=0 suspectscore=0 lowpriorityscore=0 adultscore=0 mlxscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101180108
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -144,14 +144,196 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 1/18/21 7:57 AM, Brendan Jackman wrote:
-> Alexei pointed out [1] that this wording is pretty confusing. Here's
-> an attempt to be more explicit and clear.
+On 1/18/21 4:18 AM, Qais Yousef wrote:
+> On 01/16/21 18:11, Yonghong Song wrote:
+>>
+>>
+>> On 1/16/21 10:21 AM, Qais Yousef wrote:
+>>> Reuse module_attach infrastructure to add a new bare tracepoint to check
+>>> we can attach to it as a raw tracepoint.
+>>>
+>>> Signed-off-by: Qais Yousef <qais.yousef@arm.com>
+>>> ---
+>>>    .../bpf/bpf_testmod/bpf_testmod-events.h      |  6 +++++
+>>>    .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 21 ++++++++++++++-
+>>>    .../selftests/bpf/bpf_testmod/bpf_testmod.h   |  6 +++++
+>>>    .../selftests/bpf/prog_tests/module_attach.c  | 27 +++++++++++++++++++
+>>>    .../selftests/bpf/progs/test_module_attach.c  | 10 +++++++
+>>>    5 files changed, 69 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
+>>> index b83ea448bc79..89c6d58e5dd6 100644
+>>> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
+>>> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
+>>> @@ -28,6 +28,12 @@ TRACE_EVENT(bpf_testmod_test_read,
+>>>    		  __entry->pid, __entry->comm, __entry->off, __entry->len)
+>>>    );
+>>> +/* A bare tracepoint with no event associated with it */
+>>> +DECLARE_TRACE(bpf_testmod_test_write_bare,
+>>> +	TP_PROTO(struct task_struct *task, struct bpf_testmod_test_write_ctx *ctx),
+>>> +	TP_ARGS(task, ctx)
+>>> +);
+>>> +
+>>>    #endif /* _BPF_TESTMOD_EVENTS_H */
+>>>    #undef TRACE_INCLUDE_PATH
+>>> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+>>> index 2df19d73ca49..e900adad2276 100644
+>>> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+>>> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+>>> @@ -28,9 +28,28 @@ bpf_testmod_test_read(struct file *file, struct kobject *kobj,
+>>>    EXPORT_SYMBOL(bpf_testmod_test_read);
+>>>    ALLOW_ERROR_INJECTION(bpf_testmod_test_read, ERRNO);
+>>> +noinline ssize_t
+>>> +bpf_testmod_test_write(struct file *file, struct kobject *kobj,
+>>> +		      struct bin_attribute *bin_attr,
+>>> +		      char *buf, loff_t off, size_t len)
+>>> +{
+>>> +	struct bpf_testmod_test_write_ctx ctx = {
+>>> +		.buf = buf,
+>>> +		.off = off,
+>>> +		.len = len,
+>>> +	};
+>>> +
+>>> +	trace_bpf_testmod_test_write_bare(current, &ctx);
+>>> +
+>>> +	return -EIO; /* always fail */
+>>> +}
+>>> +EXPORT_SYMBOL(bpf_testmod_test_write);
+>>> +ALLOW_ERROR_INJECTION(bpf_testmod_test_write, ERRNO);
+>>> +
+>>>    static struct bin_attribute bin_attr_bpf_testmod_file __ro_after_init = {
+>>
+>> Do we need to remove __ro_after_init?
 > 
-> [1] https://lore.kernel.org/bpf/CAADnVQJVvwoZsE1K+6qRxzF7+6CvZNzygnoBW9tZNWJELk5c=Q@mail.gmail.com/T/#m07264fc18fdc43af02fc1320968afefcc73d96f4
+> I don't think so. The structure should still remain RO AFAIU.
+
+okay.
+
 > 
-> Signed-off-by: Brendan Jackman <jackmanb@google.com>
+>>
+>>> -	.attr = { .name = "bpf_testmod", .mode = 0444, },
+>>> +	.attr = { .name = "bpf_testmod", .mode = 0666, },
+>>>    	.read = bpf_testmod_test_read,
+>>> +	.write = bpf_testmod_test_write,
+>>>    };
+>>>    static int bpf_testmod_init(void)
+>>> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
+>>> index b81adfedb4f6..b3892dc40111 100644
+>>> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
+>>> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
+>>> @@ -11,4 +11,10 @@ struct bpf_testmod_test_read_ctx {
+>>>    	size_t len;
+>>>    };
+>>> +struct bpf_testmod_test_write_ctx {
+>>> +	char *buf;
+>>> +	loff_t off;
+>>> +	size_t len;
+>>> +};
+>>> +
+>>>    #endif /* _BPF_TESTMOD_H */
+>>> diff --git a/tools/testing/selftests/bpf/prog_tests/module_attach.c b/tools/testing/selftests/bpf/prog_tests/module_attach.c
+>>> index 50796b651f72..e4605c0b5af1 100644
+>>> --- a/tools/testing/selftests/bpf/prog_tests/module_attach.c
+>>> +++ b/tools/testing/selftests/bpf/prog_tests/module_attach.c
+>>> @@ -21,9 +21,34 @@ static int trigger_module_test_read(int read_sz)
+>>>    	return 0;
+>>>    }
+>>> +static int trigger_module_test_write(int write_sz)
+>>> +{
+>>> +	int fd, err;
+>>
+>> Init err = 0?
+> 
+> I don't see what difference this makes.
+> 
+>>
+>>> +	char *buf = malloc(write_sz);
+>>> +
+>>> +	if (!buf)
+>>> +		return -ENOMEM;
+>>
+>> Looks like we already non-negative value, so return ENOMEM?
+> 
+> We already set err=-errno. So shouldn't we return negative too?
 
-Thanks for better description!
+Oh, yes, return -ENOMEM sounds right here.
 
-Acked-by: Yonghong Song <yhs@fb.com>
+> 
+>>
+>>> +
+>>> +	memset(buf, 'a', write_sz);
+>>> +	buf[write_sz-1] = '\0';
+>>> +
+>>> +	fd = open("/sys/kernel/bpf_testmod", O_WRONLY);
+>>> +	err = -errno;
+>>> +	if (CHECK(fd < 0, "testmod_file_open", "failed: %d\n", err))
+>>> +		goto out;
+>>
+>> Change the above to
+>> 	fd = open("/sys/kernel/bpf_testmod", O_WRONLY);
+>> 	if (CHECK(fd < 0, "testmod_file_open", "failed: %d\n", errno)) {
+
+Here it should be ... "failed: %d\n", -errno.
+
+>> 		err = -errno;
+>> 		goto out;
+>> 	}
+> 
+> I kept the code consistent with the definition of trigger_module_test_read().
+
+The original patch code:
+
++static int trigger_module_test_write(int write_sz)
++{
++	int fd, err;
++	char *buf = malloc(write_sz);
++
++	if (!buf)
++		return -ENOMEM;
++
++	memset(buf, 'a', write_sz);
++	buf[write_sz-1] = '\0';
++
++	fd = open("/sys/kernel/bpf_testmod", O_WRONLY);
++	err = -errno;
++	if (CHECK(fd < 0, "testmod_file_open", "failed: %d\n", err))
++		goto out;
++
++	write(fd, buf, write_sz);
++	close(fd);
++out:
++	free(buf);
++
++	return 0;
++}
+
+Even for "fd < 0" case, it "goto out" and "return 0". We should return
+error code here instead of 0.
+
+Second, "err = -errno" is set before checking fd < 0. If fd >= 0, err 
+might inherit an postive errno from previous failure.
+In trigger_module_test_write(), it is okay since the err is only used
+when fd < 0:
+         err = -errno;
+         if (CHECK(fd < 0, "testmod_file_open", "failed: %d\n", err))
+                 return err;
+
+My above rewrite intends to use "err" during final "return" statement,
+so I put assignment of "err = -errno" inside the CHECK branch.
+But there are different ways to implement this properly.
+
+
+> 
+> I'll leave it up to the maintainer to pick up the style changes if they prefer
+> it this way.
+> 
+> Thanks for the ack and for the review.
+
+No problem.
+
+> 
+> Cheers
+> 
+> --
+> Qais Yousef
+> 
