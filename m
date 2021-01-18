@@ -2,509 +2,170 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 379A82FA6D9
-	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 17:58:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE6C2FA6EC
+	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 18:01:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390554AbhARQ5O (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Jan 2021 11:57:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33573 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2406802AbhARQ4Z (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 18 Jan 2021 11:56:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610988896;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nX990ESgk9PBBKnl7aq27G0MRKMzF/63KBf1WTqtQLg=;
-        b=dHRY1OPlQ5oL1ZdUPBQUfVV7YVAjWXCxF94bNcmsXKU9cig6V4druJQdCd4K/QHmZb0/yo
-        9guCTIeu+qT1QhxqZY76KQ7P1f8u56RPN2Rf1tibnc+zp8cghrrJywQAmncf8aMaZcOqws
-        lDRo+ha6RIdgz7eNOdxfsE7xv1JEnkc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-11-nwZ3Gn_BMrunqQDVJZ2HFg-1; Mon, 18 Jan 2021 11:54:52 -0500
-X-MC-Unique: nwZ3Gn_BMrunqQDVJZ2HFg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1C922801817;
-        Mon, 18 Jan 2021 16:54:50 +0000 (UTC)
-Received: from firesoul.localdomain (unknown [10.40.208.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9687360861;
-        Mon, 18 Jan 2021 16:54:46 +0000 (UTC)
-Received: from [192.168.42.3] (localhost [IPv6:::1])
-        by firesoul.localdomain (Postfix) with ESMTP id 808573223348F;
-        Mon, 18 Jan 2021 17:54:45 +0100 (CET)
-Subject: [PATCH bpf-next V12 7/7] bpf/selftests: tests using bpf_check_mtu
- BPF-helper
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
-        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
-        colrack@gmail.com
-Date:   Mon, 18 Jan 2021 17:54:45 +0100
-Message-ID: <161098888542.108067.3212673708592909660.stgit@firesoul>
-In-Reply-To: <161098881526.108067.7603213364270807261.stgit@firesoul>
-References: <161098881526.108067.7603213364270807261.stgit@firesoul>
-User-Agent: StGit/0.19
+        id S2406728AbhARRAb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jan 2021 12:00:31 -0500
+Received: from mga07.intel.com ([134.134.136.100]:2152 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2405695AbhARQ6v (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Jan 2021 11:58:51 -0500
+IronPort-SDR: lHcOZTgEwNEaHWd2GYacKO49cvRLGnzfQ9rMgty++nXs8l0UadSUe55ThkQKWqGcypEZoe+ONP
+ hySFpfglcRmQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9868"; a="242896180"
+X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
+   d="scan'208";a="242896180"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 08:58:08 -0800
+IronPort-SDR: Q9vwJxnwV3+v84v61N/+zzS4jC6Obtrd+BjwgbFjq3nx3gDYsxrZPHOkw0DHap9FiVkQCQTuVe
+ pyupPI3M/19A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
+   d="scan'208";a="402098669"
+Received: from ranger.igk.intel.com ([10.102.21.164])
+  by fmsmga002.fm.intel.com with ESMTP; 18 Jan 2021 08:58:05 -0800
+Date:   Mon, 18 Jan 2021 17:48:55 +0100
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Eelco Chaudron <echaudro@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, brouer@redhat.com, bjorn@kernel.org,
+        toke@redhat.com, john.fastabend@gmail.com
+Subject: Re: [PATCH v5 bpf-next 13/14] bpf: add new frame_length field to the
+ XDP ctx
+Message-ID: <20210118164855.GA12769@ranger.igk.intel.com>
+References: <cover.1607349924.git.lorenzo@kernel.org>
+ <0547d6f752e325f56a8e5f6466b50e81ff29d65f.1607349924.git.lorenzo@kernel.org>
+ <20201208221746.GA33399@ranger.igk.intel.com>
+ <96C89134-A747-4E05-AA11-CB6EA1420900@redhat.com>
+ <20201209111047.GB36812@ranger.igk.intel.com>
+ <170BF39B-894D-495F-93E0-820EC7880328@redhat.com>
+ <38C60760-4F8C-43AC-A5DE-7FAECB65C310@redhat.com>
+ <20201215180638.GB23785@ranger.igk.intel.com>
+ <54E66B9D-4677-436F-92A1-E70977E869FA@redhat.com>
+ <5A8FDDE5-3022-4FD7-BA71-9ACB4374BDB9@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5A8FDDE5-3022-4FD7-BA71-9ACB4374BDB9@redhat.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding selftest for BPF-helper bpf_check_mtu(). Making sure
-it can be used from both XDP and TC.
+On Fri, Jan 15, 2021 at 05:36:23PM +0100, Eelco Chaudron wrote:
+> 
+> 
+> On 16 Dec 2020, at 15:08, Eelco Chaudron wrote:
+> 
+> > On 15 Dec 2020, at 19:06, Maciej Fijalkowski wrote:
+> > 
+> > > On Tue, Dec 15, 2020 at 02:28:39PM +0100, Eelco Chaudron wrote:
+> > > > 
+> > > > 
+> > > > On 9 Dec 2020, at 13:07, Eelco Chaudron wrote:
+> > > > 
+> > > > > On 9 Dec 2020, at 12:10, Maciej Fijalkowski wrote:
+> > > > 
+> > > > <SNIP>
+> > > > 
+> > > > > > > > > +
+> > > > > > > > > +		ctx_reg = (si->src_reg == si->dst_reg) ? scratch_reg - 1 :
+> > > > > > > > > si->src_reg;
+> > > > > > > > > +		while (dst_reg == ctx_reg || scratch_reg == ctx_reg)
+> > > > > > > > > +			ctx_reg--;
+> > > > > > > > > +
+> > > > > > > > > +		/* Save scratch registers */
+> > > > > > > > > +		if (ctx_reg != si->src_reg) {
+> > > > > > > > > +			*insn++ = BPF_STX_MEM(BPF_DW, si->src_reg, ctx_reg,
+> > > > > > > > > +					      offsetof(struct xdp_buff,
+> > > > > > > > > +						       tmp_reg[1]));
+> > > > > > > > > +
+> > > > > > > > > +			*insn++ = BPF_MOV64_REG(ctx_reg, si->src_reg);
+> > > > > > > > > +		}
+> > > > > > > > > +
+> > > > > > > > > +		*insn++ = BPF_STX_MEM(BPF_DW, ctx_reg, scratch_reg,
+> > > > > > > > > +				      offsetof(struct xdp_buff, tmp_reg[0]));
+> > > > > > > > 
+> > > > > > > > Why don't you push regs to stack, use it and then pop it
+> > > > > > > > back? That way
+> > > > > > > > I
+> > > > > > > > suppose you could avoid polluting xdp_buff with tmp_reg[2].
+> > > > > > > 
+> > > > > > > There is no “real” stack in eBPF, only a read-only frame
+> > > > > > > pointer, and as we
+> > > > > > > are replacing a single instruction, we have no info on what we
+> > > > > > > can use as
+> > > > > > > scratch space.
+> > > > > > 
+> > > > > > Uhm, what? You use R10 for stack operations. Verifier tracks the
+> > > > > > stack
+> > > > > > depth used by programs and then it is passed down to JIT so that
+> > > > > > native
+> > > > > > asm will create a properly sized stack frame.
+> > > > > > 
+> > > > > > From the top of my head I would let know
+> > > > > > xdp_convert_ctx_access of a
+> > > > > > current stack depth and use it for R10 stores, so your
+> > > > > > scratch space
+> > > > > > would
+> > > > > > be R10 + (stack depth + 8), R10 + (stack_depth + 16).
+> > > > > 
+> > > > > Other instances do exactly the same, i.e. put some scratch
+> > > > > registers in
+> > > > > the underlying data structure, so I reused this approach. From the
+> > > > > current information in the callback, I was not able to
+> > > > > determine the
+> > > > > current stack_depth. With "real" stack above, I meant having
+> > > > > a pop/push
+> > > > > like instruction.
+> > > > > 
+> > > > > I do not know the verifier code well enough, but are you
+> > > > > suggesting I
+> > > > > can get the current stack_depth from the verifier in the
+> > > > > xdp_convert_ctx_access() callback? If so any pointers?
+> > > > 
+> > > > Maciej any feedback on the above, i.e. getting the stack_depth in
+> > > > xdp_convert_ctx_access()?
+> > > 
+> > > Sorry. I'll try to get my head around it. If i recall correctly stack
+> > > depth is tracked per subprogram whereas convert_ctx_accesses is
+> > > iterating
+> > > through *all* insns (so a prog that is not chunked onto subprogs),
+> > > but
+> > > maybe we could dig up the subprog based on insn idx.
+> > > 
+> > > But at first, you mentioned that you took the approach from other
+> > > instances, can you point me to them?
+> > 
+> > Quick search found the following two (sure there is one more with two
+> > regs):
+> > 
+> > https://elixir.bootlin.com/linux/v5.10.1/source/kernel/bpf/cgroup.c#L1718
+> > https://elixir.bootlin.com/linux/v5.10.1/source/net/core/filter.c#L8977
+> > 
+> > > I'd also like to hear from Daniel/Alexei/John and others their
+> > > thoughts.
+> > 
+> > Please keep me in the loop…
+> 
+> Any thoughts/update on the above so I can move this patchset forward?
 
-V11:
- - Addresse nitpicks from Andrii Nakryiko
+Cc: John, Jesper, Bjorn
 
-V10:
- - Remove errno non-zero test in CHECK_ATTR()
- - Addresse comments from Andrii Nakryiko
+I didn't spend time thinking about it, but I still am against xdp_buff
+extension for the purpose that code within this patch has.
 
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/testing/selftests/bpf/prog_tests/check_mtu.c |  216 ++++++++++++++++++++
- tools/testing/selftests/bpf/progs/test_check_mtu.c |  198 ++++++++++++++++++
- 2 files changed, 414 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/check_mtu.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_check_mtu.c
+Daniel/Alexei/John/Jesper/Bjorn,
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/check_mtu.c b/tools/testing/selftests/bpf/prog_tests/check_mtu.c
-new file mode 100644
-index 000000000000..9e2fd01b7c65
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/check_mtu.c
-@@ -0,0 +1,216 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Jesper Dangaard Brouer */
-+
-+#include <linux/if_link.h> /* before test_progs.h, avoid bpf_util.h redefines */
-+#include <test_progs.h>
-+#include "test_check_mtu.skel.h"
-+#include "network_helpers.h"
-+
-+#include <stdlib.h>
-+#include <inttypes.h>
-+
-+#define IFINDEX_LO 1
-+
-+static __u32 duration; /* Hint: needed for CHECK macro */
-+
-+static int read_mtu_device_lo(void)
-+{
-+	const char *filename = "/sys/class/net/lo/mtu";
-+	char buf[11] = {};
-+	int value, n, fd;
-+
-+	fd = open(filename, 0, O_RDONLY);
-+	if (fd == -1)
-+		return -1;
-+
-+	n = read(fd, buf, sizeof(buf));
-+	close(fd);
-+
-+	if (n == -1)
-+		return -2;
-+
-+	value = strtoimax(buf, NULL, 10);
-+	if (errno == ERANGE)
-+		return -3;
-+
-+	return value;
-+}
-+
-+static void test_check_mtu_xdp_attach()
-+{
-+	struct bpf_link_info link_info;
-+	__u32 link_info_len = sizeof(link_info);
-+	struct test_check_mtu *skel;
-+	struct bpf_program *prog;
-+	struct bpf_link *link;
-+	int err = 0;
-+	int fd;
-+
-+	skel = test_check_mtu__open_and_load();
-+	if (CHECK(!skel, "open and load skel", "failed"))
-+		return; /* Exit if e.g. helper unknown to kernel */
-+
-+	prog = skel->progs.xdp_use_helper_basic;
-+
-+	link = bpf_program__attach_xdp(prog, IFINDEX_LO);
-+	if (CHECK(IS_ERR(link), "link_attach", "failed: %ld\n", PTR_ERR(link)))
-+		goto out;
-+	skel->links.xdp_use_helper_basic = link;
-+
-+	memset(&link_info, 0, sizeof(link_info));
-+	fd = bpf_link__fd(link);
-+	err = bpf_obj_get_info_by_fd(fd, &link_info, &link_info_len);
-+	if (CHECK(err, "link_info", "failed: %d\n", err))
-+		goto out;
-+
-+	CHECK(link_info.type != BPF_LINK_TYPE_XDP, "link_type",
-+	      "got %u != exp %u\n", link_info.type, BPF_LINK_TYPE_XDP);
-+	CHECK(link_info.xdp.ifindex != IFINDEX_LO, "link_ifindex",
-+	      "got %u != exp %u\n", link_info.xdp.ifindex, IFINDEX_LO);
-+
-+	err = bpf_link__detach(link);
-+	CHECK(err, "link_detach", "failed %d\n", err);
-+
-+out:
-+	test_check_mtu__destroy(skel);
-+}
-+
-+static void test_check_mtu_run_xdp(struct test_check_mtu *skel,
-+				   struct bpf_program *prog,
-+				   __u32 mtu_expect)
-+{
-+	const char *prog_name = bpf_program__name(prog);
-+	int retval_expect = XDP_PASS;
-+	__u32 mtu_result = 0;
-+	char buf[256] = {};
-+	int err;
-+	struct bpf_prog_test_run_attr tattr = {
-+		.repeat = 1,
-+		.data_in = &pkt_v4,
-+		.data_size_in = sizeof(pkt_v4),
-+		.data_out = buf,
-+		.data_size_out = sizeof(buf),
-+		.prog_fd = bpf_program__fd(prog),
-+	};
-+
-+	err = bpf_prog_test_run_xattr(&tattr);
-+	CHECK_ATTR(err != 0, "bpf_prog_test_run",
-+		   "prog_name:%s (err %d errno %d retval %d)\n",
-+		   prog_name, err, errno, tattr.retval);
-+
-+	CHECK(tattr.retval != retval_expect, "retval",
-+	      "progname:%s unexpected retval=%d expected=%d\n",
-+	      prog_name, tattr.retval, retval_expect);
-+
-+	/* Extract MTU that BPF-prog got */
-+	mtu_result = skel->bss->global_bpf_mtu_xdp;
-+	ASSERT_EQ(mtu_result, mtu_expect, "MTU-compare-user");
-+}
-+
-+
-+static void test_check_mtu_xdp(__u32 mtu, __u32 ifindex)
-+{
-+	struct test_check_mtu *skel;
-+	int err;
-+
-+	skel = test_check_mtu__open();
-+	if (CHECK(!skel, "skel_open", "failed"))
-+		return;
-+
-+	/* Update "constants" in BPF-prog *BEFORE* libbpf load */
-+	skel->rodata->GLOBAL_USER_MTU = mtu;
-+	skel->rodata->GLOBAL_USER_IFINDEX = ifindex;
-+
-+	err = test_check_mtu__load(skel);
-+	if (CHECK(err, "skel_load", "failed: %d\n", err))
-+		goto cleanup;
-+
-+	test_check_mtu_run_xdp(skel, skel->progs.xdp_use_helper, mtu);
-+	test_check_mtu_run_xdp(skel, skel->progs.xdp_exceed_mtu, mtu);
-+	test_check_mtu_run_xdp(skel, skel->progs.xdp_minus_delta, mtu);
-+
-+cleanup:
-+	test_check_mtu__destroy(skel);
-+}
-+
-+static void test_check_mtu_run_tc(struct test_check_mtu *skel,
-+				  struct bpf_program *prog,
-+				  __u32 mtu_expect)
-+{
-+	const char *prog_name = bpf_program__name(prog);
-+	int retval_expect = BPF_OK;
-+	__u32 mtu_result = 0;
-+	char buf[256] = {};
-+	int err;
-+	struct bpf_prog_test_run_attr tattr = {
-+		.repeat = 1,
-+		.data_in = &pkt_v4,
-+		.data_size_in = sizeof(pkt_v4),
-+		.data_out = buf,
-+		.data_size_out = sizeof(buf),
-+		.prog_fd = bpf_program__fd(prog),
-+	};
-+
-+	err = bpf_prog_test_run_xattr(&tattr);
-+	CHECK_ATTR(err != 0, "bpf_prog_test_run",
-+		   "prog_name:%s (err %d errno %d retval %d)\n",
-+		   prog_name, err, errno, tattr.retval);
-+
-+	CHECK(tattr.retval != retval_expect, "retval",
-+	      "progname:%s unexpected retval=%d expected=%d\n",
-+	      prog_name, tattr.retval, retval_expect);
-+
-+	/* Extract MTU that BPF-prog got */
-+	mtu_result = skel->bss->global_bpf_mtu_tc;
-+	ASSERT_EQ(mtu_result, mtu_expect, "MTU-compare-user");
-+}
-+
-+
-+static void test_check_mtu_tc(__u32 mtu, __u32 ifindex)
-+{
-+	struct test_check_mtu *skel;
-+	int err;
-+
-+	skel = test_check_mtu__open();
-+	if (CHECK(!skel, "skel_open", "failed"))
-+		return;
-+
-+	/* Update "constants" in BPF-prog *BEFORE* libbpf load */
-+	skel->rodata->GLOBAL_USER_MTU = mtu;
-+	skel->rodata->GLOBAL_USER_IFINDEX = ifindex;
-+
-+	err = test_check_mtu__load(skel);
-+	if (CHECK(err, "skel_load", "failed: %d\n", err))
-+		goto cleanup;
-+
-+	test_check_mtu_run_tc(skel, skel->progs.tc_use_helper, mtu);
-+	test_check_mtu_run_tc(skel, skel->progs.tc_exceed_mtu, mtu);
-+	test_check_mtu_run_tc(skel, skel->progs.tc_exceed_mtu_da, mtu);
-+	test_check_mtu_run_tc(skel, skel->progs.tc_minus_delta, mtu);
-+cleanup:
-+	test_check_mtu__destroy(skel);
-+}
-+
-+void test_check_mtu(void)
-+{
-+	__u32 mtu_lo;
-+
-+	if (test__start_subtest("bpf_check_mtu XDP-attach"))
-+		test_check_mtu_xdp_attach();
-+
-+	mtu_lo = read_mtu_device_lo();
-+	if (CHECK(mtu_lo < 0, "reading MTU value", "failed (err:%d)", mtu_lo))
-+		return;
-+
-+	if (test__start_subtest("bpf_check_mtu XDP-run"))
-+		test_check_mtu_xdp(mtu_lo, 0);
-+
-+	if (test__start_subtest("bpf_check_mtu XDP-run ifindex-lookup"))
-+		test_check_mtu_xdp(mtu_lo, IFINDEX_LO);
-+
-+	if (test__start_subtest("bpf_check_mtu TC-run"))
-+		test_check_mtu_tc(mtu_lo, 0);
-+
-+	if (test__start_subtest("bpf_check_mtu TC-run ifindex-lookup"))
-+		test_check_mtu_tc(mtu_lo, IFINDEX_LO);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_check_mtu.c b/tools/testing/selftests/bpf/progs/test_check_mtu.c
-new file mode 100644
-index 000000000000..1b31d5ceb3c7
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_check_mtu.c
-@@ -0,0 +1,198 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Jesper Dangaard Brouer */
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <linux/if_ether.h>
-+
-+#include <stddef.h>
-+#include <stdint.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+/* Userspace will update with MTU it can see on device */
-+static volatile const int GLOBAL_USER_MTU;
-+static volatile const __u32 GLOBAL_USER_IFINDEX;
-+
-+/* BPF-prog will update these with MTU values it can see */
-+__u32 global_bpf_mtu_xdp = 0;
-+__u32 global_bpf_mtu_tc  = 0;
-+
-+SEC("xdp")
-+int xdp_use_helper_basic(struct xdp_md *ctx)
-+{
-+	__u32 mtu_len = 0;
-+
-+	if (bpf_check_mtu(ctx, 0, &mtu_len, 0, 0))
-+		return XDP_ABORTED;
-+
-+	return XDP_PASS;
-+}
-+
-+SEC("xdp")
-+int xdp_use_helper(struct xdp_md *ctx)
-+{
-+	int retval = XDP_PASS; /* Expected retval on successful test */
-+	__u32 mtu_len = 0;
-+	__u32 ifindex = 0;
-+	int delta = 0;
-+
-+	/* When ifindex is zero, save net_device lookup and use ctx netdev */
-+	if (GLOBAL_USER_IFINDEX > 0)
-+		ifindex = GLOBAL_USER_IFINDEX;
-+
-+	if (bpf_check_mtu(ctx, ifindex, &mtu_len, delta, 0)) {
-+		/* mtu_len is also valid when check fail */
-+		retval = XDP_ABORTED;
-+		goto out;
-+	}
-+
-+	if (mtu_len != GLOBAL_USER_MTU)
-+		retval = XDP_DROP;
-+
-+out:
-+	global_bpf_mtu_xdp = mtu_len;
-+	return retval;
-+}
-+
-+SEC("xdp")
-+int xdp_exceed_mtu(struct xdp_md *ctx)
-+{
-+	void *data_end = (void *)(long)ctx->data_end;
-+	void *data = (void *)(long)ctx->data;
-+	__u32 ifindex = GLOBAL_USER_IFINDEX;
-+	__u32 data_len = data_end - data;
-+	int retval = XDP_ABORTED; /* Fail */
-+	__u32 mtu_len = 0;
-+	int delta;
-+	int err;
-+
-+	/* Exceed MTU with 1 via delta adjust */
-+	delta = GLOBAL_USER_MTU - (data_len - ETH_HLEN) + 1;
-+
-+	err = bpf_check_mtu(ctx, ifindex, &mtu_len, delta, 0);
-+	if (err) {
-+		retval = XDP_PASS; /* Success in exceeding MTU check */
-+		if (err != BPF_MTU_CHK_RET_FRAG_NEEDED)
-+			retval = XDP_DROP;
-+	}
-+
-+	global_bpf_mtu_xdp = mtu_len;
-+	return retval;
-+}
-+
-+SEC("xdp")
-+int xdp_minus_delta(struct xdp_md *ctx)
-+{
-+	int retval = XDP_PASS; /* Expected retval on successful test */
-+	void *data_end = (void *)(long)ctx->data_end;
-+	void *data = (void *)(long)ctx->data;
-+	__u32 ifindex = GLOBAL_USER_IFINDEX;
-+	__u32 data_len = data_end - data;
-+	__u32 mtu_len = 0;
-+	int delta;
-+
-+	/* Boarderline test case: Minus delta exceeding packet length allowed */
-+	delta = -((data_len - ETH_HLEN) + 1);
-+
-+	/* Minus length (adjusted via delta) still pass MTU check, other helpers
-+	 * are responsible for catching this, when doing actual size adjust
-+	 */
-+	if (bpf_check_mtu(ctx, ifindex, &mtu_len, delta, 0))
-+		retval = XDP_ABORTED;
-+
-+	global_bpf_mtu_xdp = mtu_len;
-+	return retval;
-+}
-+
-+SEC("classifier")
-+int tc_use_helper(struct __sk_buff *ctx)
-+{
-+	int retval = BPF_OK; /* Expected retval on successful test */
-+	__u32 mtu_len = 0;
-+	int delta = 0;
-+
-+	if (bpf_check_mtu(ctx, 0, &mtu_len, delta, 0)) {
-+		retval = BPF_DROP;
-+		goto out;
-+	}
-+
-+	if (mtu_len != GLOBAL_USER_MTU)
-+		retval = BPF_REDIRECT;
-+out:
-+	global_bpf_mtu_tc = mtu_len;
-+	return retval;
-+}
-+
-+SEC("classifier")
-+int tc_exceed_mtu(struct __sk_buff *ctx)
-+{
-+	__u32 ifindex = GLOBAL_USER_IFINDEX;
-+	int retval = BPF_DROP; /* Fail */
-+	__u32 skb_len = ctx->len;
-+	__u32 mtu_len = 0;
-+	int delta;
-+	int err;
-+
-+	/* Exceed MTU with 1 via delta adjust */
-+	delta = GLOBAL_USER_MTU - (skb_len - ETH_HLEN) + 1;
-+
-+	err = bpf_check_mtu(ctx, ifindex, &mtu_len, delta, 0);
-+	if (err) {
-+		retval = BPF_OK; /* Success in exceeding MTU check */
-+		if (err != BPF_MTU_CHK_RET_FRAG_NEEDED)
-+			retval = BPF_DROP;
-+	}
-+
-+	global_bpf_mtu_tc = mtu_len;
-+	return retval;
-+}
-+
-+SEC("classifier")
-+int tc_exceed_mtu_da(struct __sk_buff *ctx)
-+{
-+	/* SKB Direct-Access variant */
-+	void *data_end = (void *)(long)ctx->data_end;
-+	void *data = (void *)(long)ctx->data;
-+	__u32 ifindex = GLOBAL_USER_IFINDEX;
-+	__u32 data_len = data_end - data;
-+	int retval = BPF_DROP; /* Fail */
-+	__u32 mtu_len = 0;
-+	int delta;
-+	int err;
-+
-+	/* Exceed MTU with 1 via delta adjust */
-+	delta = GLOBAL_USER_MTU - (data_len - ETH_HLEN) + 1;
-+
-+	err = bpf_check_mtu(ctx, ifindex, &mtu_len, delta, 0);
-+	if (err) {
-+		retval = BPF_OK; /* Success in exceeding MTU check */
-+		if (err != BPF_MTU_CHK_RET_FRAG_NEEDED)
-+			retval = BPF_DROP;
-+	}
-+
-+	global_bpf_mtu_tc = mtu_len;
-+	return retval;
-+}
-+
-+SEC("classifier")
-+int tc_minus_delta(struct __sk_buff *ctx)
-+{
-+	int retval = BPF_OK; /* Expected retval on successful test */
-+	__u32 ifindex = GLOBAL_USER_IFINDEX;
-+	__u32 skb_len = ctx->len;
-+	__u32 mtu_len = 0;
-+	int delta;
-+
-+	/* Boarderline test case: Minus delta exceeding packet length allowed */
-+	delta = -((skb_len - ETH_HLEN) + 1);
-+
-+	/* Minus length (adjusted via delta) still pass MTU check, other helpers
-+	 * are responsible for catching this, when doing actual size adjust
-+	 */
-+	if (bpf_check_mtu(ctx, ifindex, &mtu_len, delta, 0))
-+		retval = BPF_DROP;
-+
-+	global_bpf_mtu_xdp = mtu_len;
-+	return retval;
-+}
+any objections for not having the scratch registers but rather use the
+stack and update the stack depth to calculate the frame length?
 
+This seems not trivial so I really would like to have an input from better
+BPF developers than me :)
 
+> 
+> 
