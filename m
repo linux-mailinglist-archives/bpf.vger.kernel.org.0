@@ -2,379 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1C182FAB7A
-	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 21:32:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F40402FAB7E
+	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 21:32:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388503AbhARKkH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Jan 2021 05:40:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28850 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388497AbhARJQa (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 18 Jan 2021 04:16:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610961302;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TzTJs4ezB/yY9IJmEJpq3qUpKxULr6PlO/4tkvd75MM=;
-        b=GV6C9agUqtrttnUlSVnjFx+EDDrm2Wa0QhEsseAoeTO5sY2XIxemapu4bzfdzVYOJGwN47
-        WSo7p2/9t9Sxn+PGbnh+C1oNQWpvO38VPyqP39baQ5v/pFOs4vSP0vEfaoNxh2agNGvDRk
-        2tTeKt5XoST8VhkE8K798lIw0teVj3o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-169-uvZskcWSPi6njHAqFZ0WrQ-1; Mon, 18 Jan 2021 04:10:42 -0500
-X-MC-Unique: uvZskcWSPi6njHAqFZ0WrQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E87AF107ACE4;
-        Mon, 18 Jan 2021 09:10:39 +0000 (UTC)
-Received: from [10.72.13.12] (ovpn-13-12.pek2.redhat.com [10.72.13.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C579A10013C0;
-        Mon, 18 Jan 2021 09:10:25 +0000 (UTC)
-Subject: Re: [PATCH net-next v2 5/7] virtio-net, xsk: realize the function of
- xsk packet sending
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>, netdev@vger.kernel.org
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-References: <cover.1609837120.git.xuanzhuo@linux.alibaba.com>
- <cover.1610765285.git.xuanzhuo@linux.alibaba.com>
- <9e1f5a4b633887ce1f66e39bc762b8497a379a43.1610765285.git.xuanzhuo@linux.alibaba.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <20e27fa0-c7c3-0cc3-bd27-19d1fe9b7717@redhat.com>
-Date:   Mon, 18 Jan 2021 17:10:24 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2388651AbhARKka (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jan 2021 05:40:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388567AbhARJSn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Jan 2021 04:18:43 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3429CC0613CF;
+        Mon, 18 Jan 2021 01:18:03 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id f17so17390521ljg.12;
+        Mon, 18 Jan 2021 01:18:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cWd8g5iVcYDr1/d29WZEwJSUfqGvaqUZK0TPBalRFYk=;
+        b=qp26NGkff4zxqdeJ57a8MHHIkyESMbNc47KxCMq8CqS5GyMT1oTVfYOKHRGWokT/Er
+         HLcw4kVAZk79J+KfEH56Z7ky0WO1WtMunmcHc1Vt1NM0NoQ4M2zDFnGmuI1J3FLKdiD/
+         DaEer3Mzp6coQQkkCNtXxOEqGhb8HXAjqP2h7OYL3xKs1qMbvlfoL20ghDlORxBR/a7H
+         8yVr9C0JyNrn1AXbUHClP2hMIjyotkO7cB9nQZ/4kwO669yKAu0tqVP6vxaa6lNzfYBB
+         0ZYepYnq2PIpi5gkSNh5YxRJwCRVFw/bQUcx21GGJcQzYKpz7mCvibSpQPeFUV3AiYZA
+         mJpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cWd8g5iVcYDr1/d29WZEwJSUfqGvaqUZK0TPBalRFYk=;
+        b=oG21bxAXK291Q1TIlnW02ThnuyUXF3y0BPshgw/NhmFEEfmvatZrc8Adao/mwsTSpu
+         0E2SZet51IKqejqP3hC7uWt+izxknvKZSXMWur83Hr9M3vh0bGPwrLqxZSmz0tUnhq8f
+         t6+5aR6zC0FPY6T6GzkJrLt+1T3q8KaQkNfNiUlxVoOD7w+puoCQrPlP145MkbZ2MYeM
+         ZI4jAYn5s7ihobHPorJKu5eWTpEvzPREesThA7ZemNK4H9VIkqo68hfqSsX1CeyLAFOS
+         hGGB1AOzgSZy118VR03XcOyB5Q2Uhjg4qmcGJUQTXtEWjusqUdubfHE5bTnpi6zXFQ8l
+         VSrQ==
+X-Gm-Message-State: AOAM531Aq12MdFOYIzVxsQqN3lUO/eZqWxAlduE2ffDX9cPl9mDN/QnD
+        +f44DMFU5JX505LFkO9Udxz+AFo/7k4/XA==
+X-Google-Smtp-Source: ABdhPJzc3unYISI98MBuo3an4DJeL57OjqfdD4gc0t58gojEKHL4NFayIHjXLKUJN8cX6zTCwS/4lw==
+X-Received: by 2002:a05:651c:1356:: with SMTP id j22mr10242027ljb.237.1610961481772;
+        Mon, 18 Jan 2021 01:18:01 -0800 (PST)
+Received: from btopel-mobl.ger.intel.com (c213-102-90-208.bredband.comhem.se. [213.102.90.208])
+        by smtp.gmail.com with ESMTPSA id v22sm1841514lfd.4.2021.01.18.01.18.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Jan 2021 01:18:00 -0800 (PST)
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        magnus.karlsson@intel.com, jackmanb@google.com
+Subject: [PATCH bpf-next] samples/bpf: add BPF_ATOMIC_OP macro for BPF samples
+Date:   Mon, 18 Jan 2021 10:17:53 +0100
+Message-Id: <20210118091753.107572-1-bjorn.topel@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <9e1f5a4b633887ce1f66e39bc762b8497a379a43.1610765285.git.xuanzhuo@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+From: Björn Töpel <bjorn.topel@intel.com>
 
-On 2021/1/16 上午10:59, Xuan Zhuo wrote:
-> virtnet_xsk_run will be called in the tx interrupt handling function
-> virtnet_poll_tx.
->
-> The sending process gets desc from the xsk tx queue, and assembles it to
-> send the data.
->
-> Compared with other drivers, a special place is that the page of the
-> data in xsk is used here instead of the dma address. Because the virtio
-> interface does not use the dma address.
->
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> ---
->   drivers/net/virtio_net.c | 200 ++++++++++++++++++++++++++++++++++++++++++++++-
->   1 file changed, 197 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index a62d456..42aa9ad 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -119,6 +119,8 @@ struct virtnet_xsk_hdr {
->   	u32 len;
->   };
->   
-> +#define VIRTNET_STATE_XSK_WAKEUP 1
-> +
->   #define VIRTNET_SQ_STAT(m)	offsetof(struct virtnet_sq_stats, m)
->   #define VIRTNET_RQ_STAT(m)	offsetof(struct virtnet_rq_stats, m)
->   
-> @@ -163,9 +165,12 @@ struct send_queue {
->   		struct xsk_buff_pool   __rcu *pool;
->   		struct virtnet_xsk_hdr __rcu *hdr;
->   
-> +		unsigned long          state;
->   		u64                    hdr_con;
->   		u64                    hdr_pro;
->   		u64                    hdr_n;
-> +		struct xdp_desc        last_desc;
-> +		bool                   wait_slot;
->   	} xsk;
->   };
->   
-> @@ -284,6 +289,8 @@ static void __free_old_xmit_ptr(struct send_queue *sq, bool in_napi,
->   				bool xsk_wakeup,
->   				unsigned int *_packets, unsigned int *_bytes);
->   static void free_old_xmit_skbs(struct send_queue *sq, bool in_napi);
-> +static int virtnet_xsk_run(struct send_queue *sq,
-> +			   struct xsk_buff_pool *pool, int budget);
->   
->   static bool is_xdp_frame(void *ptr)
->   {
-> @@ -1590,6 +1597,8 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
->   	struct virtnet_info *vi = sq->vq->vdev->priv;
->   	unsigned int index = vq2txq(sq->vq);
->   	struct netdev_queue *txq;
-> +	struct xsk_buff_pool *pool;
-> +	int work = 0;
->   
->   	if (unlikely(is_xdp_raw_buffer_queue(vi, index))) {
->   		/* We don't need to enable cb for XDP */
-> @@ -1599,15 +1608,26 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
->   
->   	txq = netdev_get_tx_queue(vi->dev, index);
->   	__netif_tx_lock(txq, raw_smp_processor_id());
-> -	free_old_xmit_skbs(sq, true);
-> +
-> +	rcu_read_lock();
-> +	pool = rcu_dereference(sq->xsk.pool);
-> +	if (pool) {
-> +		work = virtnet_xsk_run(sq, pool, budget);
-> +		rcu_read_unlock();
-> +	} else {
-> +		rcu_read_unlock();
-> +		free_old_xmit_skbs(sq, true);
-> +	}
-> +
->   	__netif_tx_unlock(txq);
->   
-> -	virtqueue_napi_complete(napi, sq->vq, 0);
-> +	if (work < budget)
-> +		virtqueue_napi_complete(napi, sq->vq, 0);
->   
->   	if (sq->vq->num_free >= 2 + MAX_SKB_FRAGS)
->   		netif_tx_wake_queue(txq);
->   
-> -	return 0;
-> +	return work;
->   }
->   
->   static int xmit_skb(struct send_queue *sq, struct sk_buff *skb)
-> @@ -2647,6 +2667,180 @@ static int virtnet_xdp(struct net_device *dev, struct netdev_bpf *xdp)
->   	}
->   }
->   
-> +static int virtnet_xsk_xmit(struct send_queue *sq, struct xsk_buff_pool *pool,
-> +			    struct xdp_desc *desc)
-> +{
-> +	struct virtnet_info *vi = sq->vq->vdev->priv;
-> +	void *data, *ptr;
-> +	struct page *page;
-> +	struct virtnet_xsk_hdr *xskhdr;
-> +	u32 idx, offset, n, i, copy, copied;
-> +	u64 addr;
-> +	int err, m;
-> +
-> +	addr = desc->addr;
-> +
-> +	data = xsk_buff_raw_get_data(pool, addr);
-> +	offset = offset_in_page(data);
-> +
-> +	/* one for hdr, one for the first page */
-> +	n = 2;
-> +	m = desc->len - (PAGE_SIZE - offset);
-> +	if (m > 0) {
-> +		n += m >> PAGE_SHIFT;
-> +		if (m & PAGE_MASK)
-> +			++n;
-> +
-> +		n = min_t(u32, n, ARRAY_SIZE(sq->sg));
-> +	}
-> +
-> +	idx = sq->xsk.hdr_con % sq->xsk.hdr_n;
+Brendan Jackman added extend atomic operations to the BPF instruction
+set in commit 7064a7341a0d ("Merge branch 'Atomics for eBPF'"), which
+introduces the BPF_ATOMIC_OP macro. However, that macro was missing
+for the BPF samples. Fix that by adding it into bpf_insn.h.
 
+Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+---
+ samples/bpf/bpf_insn.h | 24 ++++++++++++++++++++----
+ 1 file changed, 20 insertions(+), 4 deletions(-)
 
-I don't understand the reason of the hdr array. It looks to me all of 
-them are zero and read only from device.
+diff --git a/samples/bpf/bpf_insn.h b/samples/bpf/bpf_insn.h
+index db67a2847395..aee04534483a 100644
+--- a/samples/bpf/bpf_insn.h
++++ b/samples/bpf/bpf_insn.h
+@@ -134,15 +134,31 @@ struct bpf_insn;
+ 		.off   = OFF,					\
+ 		.imm   = 0 })
+ 
+-/* Atomic memory add, *(uint *)(dst_reg + off16) += src_reg */
+-
+-#define BPF_STX_XADD(SIZE, DST, SRC, OFF)			\
++/*
++ * Atomic operations:
++ *
++ *   BPF_ADD                  *(uint *) (dst_reg + off16) += src_reg
++ *   BPF_AND                  *(uint *) (dst_reg + off16) &= src_reg
++ *   BPF_OR                   *(uint *) (dst_reg + off16) |= src_reg
++ *   BPF_XOR                  *(uint *) (dst_reg + off16) ^= src_reg
++ *   BPF_ADD | BPF_FETCH      src_reg = atomic_fetch_add(dst_reg + off16, src_reg);
++ *   BPF_AND | BPF_FETCH      src_reg = atomic_fetch_and(dst_reg + off16, src_reg);
++ *   BPF_OR | BPF_FETCH       src_reg = atomic_fetch_or(dst_reg + off16, src_reg);
++ *   BPF_XOR | BPF_FETCH      src_reg = atomic_fetch_xor(dst_reg + off16, src_reg);
++ *   BPF_XCHG                 src_reg = atomic_xchg(dst_reg + off16, src_reg)
++ *   BPF_CMPXCHG              r0 = atomic_cmpxchg(dst_reg + off16, r0, src_reg)
++ */
++
++#define BPF_ATOMIC_OP(SIZE, OP, DST, SRC, OFF)			\
+ 	((struct bpf_insn) {					\
+ 		.code  = BPF_STX | BPF_SIZE(SIZE) | BPF_ATOMIC,	\
+ 		.dst_reg = DST,					\
+ 		.src_reg = SRC,					\
+ 		.off   = OFF,					\
+-		.imm   = BPF_ADD })
++		.imm   = OP })
++
++/* Legacy alias */
++#define BPF_STX_XADD(SIZE, DST, SRC, OFF) BPF_ATOMIC_OP(SIZE, BPF_ADD, DST, SRC, OFF)
+ 
+ /* Memory store, *(uint *) (dst_reg + off16) = imm32 */
+ 
 
-Any reason for not reusing a single hdr for all xdp descriptors? Or 
-maybe it's time to introduce VIRTIO_NET_F_NO_HDR.
-
-
-> +	xskhdr = &sq->xsk.hdr[idx];
-> +
-> +	/* xskhdr->hdr has been memset to zero, so not need to clear again */
-> +
-> +	sg_init_table(sq->sg, n);
-> +	sg_set_buf(sq->sg, &xskhdr->hdr, vi->hdr_len);
-> +
-> +	copied = 0;
-> +	for (i = 1; i < n; ++i) {
-> +		copy = min_t(int, desc->len - copied, PAGE_SIZE - offset);
-> +
-> +		page = xsk_buff_raw_get_page(pool, addr + copied);
-> +
-> +		sg_set_page(sq->sg + i, page, copy, offset);
-> +		copied += copy;
-> +		if (offset)
-> +			offset = 0;
-> +	}
-
-
-It looks to me we need to terminate the sg:
-
-**
-  * virtqueue_add_outbuf - expose output buffers to other end
-  * @vq: the struct virtqueue we're talking about.
-  * @sg: scatterlist (must be well-formed and terminated!)
-
-
-> +
-> +	xskhdr->len = desc->len;
-> +	ptr = xdp_to_ptr(&xskhdr->type);
-> +
-> +	err = virtqueue_add_outbuf(sq->vq, sq->sg, n, ptr, GFP_ATOMIC);
-> +	if (unlikely(err))
-> +		sq->xsk.last_desc = *desc;
-> +	else
-> +		sq->xsk.hdr_con++;
-> +
-> +	return err;
-> +}
-> +
-> +static bool virtnet_xsk_dev_is_full(struct send_queue *sq)
-> +{
-> +	if (sq->vq->num_free < 2 + MAX_SKB_FRAGS)
-> +		return true;
-> +
-> +	if (sq->xsk.hdr_con == sq->xsk.hdr_pro)
-> +		return true;
-
-
-Can we really reach here?
-
-
-> +
-> +	return false;
-> +}
-> +
-> +static int virtnet_xsk_xmit_zc(struct send_queue *sq,
-> +			       struct xsk_buff_pool *pool, unsigned int budget)
-> +{
-> +	struct xdp_desc desc;
-> +	int err, packet = 0;
-> +	int ret = -EAGAIN;
-> +
-> +	if (sq->xsk.last_desc.addr) {
-> +		err = virtnet_xsk_xmit(sq, pool, &sq->xsk.last_desc);
-> +		if (unlikely(err))
-> +			return -EBUSY;
-> +
-> +		++packet;
-> +		sq->xsk.last_desc.addr = 0;
-> +	}
-> +
-> +	while (budget-- > 0) {
-> +		if (virtnet_xsk_dev_is_full(sq)) {
-> +			ret = -EBUSY;
-> +			break;
-> +		}
-
-
-It looks to me we will always hit this if userspace is fast. E.g we 
-don't kick until the virtqueue is full ...
-
-
-> +
-> +		if (!xsk_tx_peek_desc(pool, &desc)) {
-> +			/* done */
-> +			ret = 0;
-> +			break;
-> +		}
-> +
-> +		err = virtnet_xsk_xmit(sq, pool, &desc);
-> +		if (unlikely(err)) {
-> +			ret = -EBUSY;
-> +			break;
-> +		}
-> +
-> +		++packet;
-> +	}
-> +
-> +	if (packet) {
-> +		xsk_tx_release(pool);
-> +
-> +		if (virtqueue_kick_prepare(sq->vq) && virtqueue_notify(sq->vq)) {
-> +			u64_stats_update_begin(&sq->stats.syncp);
-> +			sq->stats.kicks++;
-> +			u64_stats_update_end(&sq->stats.syncp);
-> +		}
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static int virtnet_xsk_run(struct send_queue *sq,
-> +			   struct xsk_buff_pool *pool, int budget)
-> +{
-> +	int err, ret = 0;
-> +	unsigned int _packets = 0;
-> +	unsigned int _bytes = 0;
-> +
-> +	sq->xsk.wait_slot = false;
-> +
-> +	__free_old_xmit_ptr(sq, true, false, &_packets, &_bytes);
-> +
-> +	err = virtnet_xsk_xmit_zc(sq, pool, xsk_budget);
-> +	if (!err) {
-> +		struct xdp_desc desc;
-> +
-> +		clear_bit(VIRTNET_STATE_XSK_WAKEUP, &sq->xsk.state);
-> +		xsk_set_tx_need_wakeup(pool);
-> +
-> +		/* Race breaker. If new is coming after last xmit
-> +		 * but before flag change
-> +		 */
-> +
-> +		if (!xsk_tx_peek_desc(pool, &desc))
-> +			goto end;
-> +
-> +		set_bit(VIRTNET_STATE_XSK_WAKEUP, &sq->xsk.state);
-> +		xsk_clear_tx_need_wakeup(pool);
-
-
-How memory ordering is going to work here? Or we don't need to care 
-about that?
-
-
-> +
-> +		sq->xsk.last_desc = desc;
-> +		ret = budget;
-> +		goto end;
-> +	}
-> +
-> +	xsk_clear_tx_need_wakeup(pool);
-> +
-> +	if (err == -EAGAIN) {
-> +		ret = budget;
-> +		goto end;
-> +	}
-> +
-> +	__free_old_xmit_ptr(sq, true, false, &_packets, &_bytes);
-> +
-> +	if (!virtnet_xsk_dev_is_full(sq)) {
-> +		ret = budget;
-> +		goto end;
-> +	}
-> +
-> +	sq->xsk.wait_slot = true;
-> +
-> +	virtnet_sq_stop_check(sq, true);
-> +end:
-> +	return ret;
-> +}
-> +
->   static int virtnet_get_phys_port_name(struct net_device *dev, char *buf,
->   				      size_t len)
->   {
+base-commit: 232164e041e925a920bfd28e63d5233cfad90b73
+-- 
+2.27.0
 
