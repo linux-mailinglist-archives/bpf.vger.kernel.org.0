@@ -2,179 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A5782F982D
-	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 04:23:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACAD02F99EE
+	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 07:31:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731516AbhARDXS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 17 Jan 2021 22:23:18 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:52398 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728664AbhARDXR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 17 Jan 2021 22:23:17 -0500
-Received: from [10.130.0.135] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxaL7s_gRgPYQGAA--.10491S3;
-        Mon, 18 Jan 2021 11:22:21 +0800 (CST)
-Subject: Re: [PATCH bpf 1/2] samples/bpf: Set flag __SANE_USERSPACE_TYPES__
- for MIPS to fix build warnings
-To:     Yonghong Song <yhs@fb.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        id S1732443AbhARGal (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jan 2021 01:30:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44936 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732440AbhARGai (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 18 Jan 2021 01:30:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610951342;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IEXqRrmhe5TS1HeLniFVF/d1Z+5aM2lLZ+VPrEdE2SQ=;
+        b=KQgqqX1QWU66JF7IQyMYnkN4ykGEXxH/wDCas9J67OBMoqyx3OX7JTAR3m+bdcYJhfZ0ji
+        xy8TkgROaviTbeiR8TxIXDolM6Cw0TuIbRcyk4L4PSbCiRRg3LOXbhOKljE3rjEfyZqF5i
+        6dPqvD69RTCtH5T7IQWMhqlc0/WOYco=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-203-0UL6bPaDO5iHb8DFFTh7MA-1; Mon, 18 Jan 2021 01:28:58 -0500
+X-MC-Unique: 0UL6bPaDO5iHb8DFFTh7MA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 67F32100F35D;
+        Mon, 18 Jan 2021 06:28:55 +0000 (UTC)
+Received: from [10.72.13.12] (ovpn-13-12.pek2.redhat.com [10.72.13.12])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 94C716D029;
+        Mon, 18 Jan 2021 06:28:44 +0000 (UTC)
+Subject: Re: [PATCH net-next v2 0/7] virtio-net support xdp socket zero copy
+ xmit
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>, netdev@vger.kernel.org
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         KP Singh <kpsingh@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-References: <1610535453-2352-1-git-send-email-yangtiezhu@loongson.cn>
- <1610535453-2352-2-git-send-email-yangtiezhu@loongson.cn>
- <e3eb5919-4573-4576-e6aa-bd8ff56409ed@fb.com>
-Cc:     linux-sparse@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <f077bcae-97be-fc7f-c3fa-c6026bfe25d2@loongson.cn>
-Date:   Mon, 18 Jan 2021 11:22:20 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+References: <cover.1609837120.git.xuanzhuo@linux.alibaba.com>
+ <cover.1610765285.git.xuanzhuo@linux.alibaba.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <b41ab0f0-4537-74b5-d7c3-b20ce082bdd6@redhat.com>
+Date:   Mon, 18 Jan 2021 14:28:43 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <e3eb5919-4573-4576-e6aa-bd8ff56409ed@fb.com>
+In-Reply-To: <cover.1610765285.git.xuanzhuo@linux.alibaba.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9DxaL7s_gRgPYQGAA--.10491S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxAFyfur4fWrW5KF1xZF1rCrg_yoW5uF47pa
-        1vkay8CF4DCry3GFW2yr12vr1fX3yfG34jgFykWryjyF1agas2qr4kGrWa9rn7ur4Iy3y2
-        9FyagFy5AFyrXrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBY14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F
-        4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
-        7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r
-        1j6r4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
-        n2kIc2xKxwCYjI0SjxkI62AI1cAE67vIY487MxkIecxEwVAFwVW8GwCF04k20xvY0x0EwI
-        xGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
-        Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7
-        IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k2
-        6cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-        0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUUCeHPUUUUU==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 01/14/2021 01:12 AM, Yonghong Song wrote:
+
+On 2021/1/16 上午10:59, Xuan Zhuo wrote:
+> XDP socket is an excellent by pass kernel network transmission framework. The
+> zero copy feature of xsk (XDP socket) needs to be supported by the driver. The
+> performance of zero copy is very good. mlx5 and intel ixgbe already support this
+> feature, This patch set allows virtio-net to support xsk's zerocopy xmit
+> feature.
+>
+> And xsk's zerocopy rx has made major changes to virtio-net, and I hope to submit
+> it after this patch set are received.
+>
+> Compared with other drivers, virtio-net does not directly obtain the dma
+> address, so I first obtain the xsk page, and then pass the page to virtio.
+>
+> When recycling the sent packets, we have to distinguish between skb and xdp.
+> Now we have to distinguish between skb, xdp, xsk. So the second patch solves
+> this problem first.
+>
+> The last four patches are used to support xsk zerocopy in virtio-net:
+>
+>   1. support xsk enable/disable
+>   2. realize the function of xsk packet sending
+>   3. implement xsk wakeup callback
+>   4. set xsk completed when packet sent done
 >
 >
-> On 1/13/21 2:57 AM, Tiezhu Yang wrote:
->> MIPS needs __SANE_USERSPACE_TYPES__ before <linux/types.h> to select
->> 'int-ll64.h' in arch/mips/include/uapi/asm/types.h and avoid compile
->> warnings when printing __u64 with %llu, %llx or %lld.
+> ---------------- Performance Testing ------------
 >
-> could you mention which command produces the following warning?
-
-make M=samples/bpf
-
+> The udp package tool implemented by the interface of xsk vs sockperf(kernel udp)
+> for performance testing:
 >
->>
->>      printf("0x%02x : %llu\n", key, value);
->>                       ~~~^          ~~~~~
->>                       %lu
->>     printf("%s/%llx;", sym->name, addr);
->>                ~~~^               ~~~~
->>                %lx
->>    printf(";%s %lld\n", key->waker, count);
->>                ~~~^                 ~~~~~
->>                %ld
->>
->> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
->> ---
->>   samples/bpf/Makefile        | 4 ++++
->>   tools/include/linux/types.h | 3 +++
->>   2 files changed, 7 insertions(+)
->>
->> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
->> index 26fc96c..27de306 100644
->> --- a/samples/bpf/Makefile
->> +++ b/samples/bpf/Makefile
->> @@ -183,6 +183,10 @@ BPF_EXTRA_CFLAGS := $(ARM_ARCH_SELECTOR)
->>   TPROGS_CFLAGS += $(ARM_ARCH_SELECTOR)
->>   endif
->>   +ifeq ($(ARCH), mips)
->> +TPROGS_CFLAGS += -D__SANE_USERSPACE_TYPES__
->> +endif
->> +
->
-> This change looks okay based on description in
-> arch/mips/include/uapi/asm/types.h
->
-> '''
-> /*
->  * We don't use int-l64.h for the kernel anymore but still use it for
->  * userspace to avoid code changes.
->  *
->  * However, some user programs (e.g. perf) may not want this. They can
->  * flag __SANE_USERSPACE_TYPES__ to get int-ll64.h here.
->  */
-> '''
->
->>   TPROGS_CFLAGS += -Wall -O2
->>   TPROGS_CFLAGS += -Wmissing-prototypes
->>   TPROGS_CFLAGS += -Wstrict-prototypes
->> diff --git a/tools/include/linux/types.h b/tools/include/linux/types.h
->> index 154eb4e..e9c5a21 100644
->> --- a/tools/include/linux/types.h
->> +++ b/tools/include/linux/types.h
->> @@ -6,7 +6,10 @@
->>   #include <stddef.h>
->>   #include <stdint.h>
->>   +#ifndef __SANE_USERSPACE_TYPES__
->>   #define __SANE_USERSPACE_TYPES__    /* For PPC64, to get LL64 types */
->> +#endif
->
-> What problem this patch fixed?
+> xsk zero copy in virtio-net:
+> CPU        PPS         MSGSIZE
+> 28.7%      3833857     64
+> 38.5%      3689491     512
+> 38.9%      2787096     1456
 
-If add "TPROGS_CFLAGS += -D__SANE_USERSPACE_TYPES__" in
-samples/bpf/Makefile, it appears the following error:
 
-Auto-detecting system features:
-...                        libelf: [ on  ]
-...                          zlib: [ on  ]
-...                           bpf: [ OFF ]
+Some questions on the results:
 
-BPF API too old
-make[3]: *** [Makefile:293: bpfdep] Error 1
-make[2]: *** [Makefile:156: all] Error 2
+1) What's the setup on the vhost?
+2) What's the setup of the mitigation in both host and guest?
+3) Any analyze on the possible bottleneck via perf or other tools?
 
-With #ifndef __SANE_USERSPACE_TYPES__  in tools/include/linux/types.h,
-the above error has gone.
+Thanks
 
-> If this header is used, you can just
-> change comment from "PPC64" to "PPC64/MIPS", right?
-
-If include <linux/types.h> in the source files which have compile warnings
-when printing __u64 with %llu, %llx or %lld, it has no effect due to 
-actually
-it includes usr/include/linux/types.h instead of 
-tools/include/linux/types.h,
-this is because the include-directories in samples/bpf/Makefile are searched
-in the order, -I./usr/include is in the front of -I./tools/include.
-
-So I think define __SANE_USERSPACE_TYPES__ for MIPS in samples/bpf/Makefile
-is proper, at the same time, add #ifndef __SANE_USERSPACE_TYPES__ in
-tools/include/linux/types.h can avoid build error and have no side effect.
-
-I will send v2 later with mention in the commit message that this is
-mips related.
-
-Thanks,
-Tiezhu
 
 >
->> +
->>   #include <asm/types.h>
->>   #include <asm/posix_types.h>
->>
+> xsk without zero copy in virtio-net:
+> CPU        PPS         MSGSIZE
+> 100%       1916747     64
+> 100%       1775988     512
+> 100%       1440054     1456
+>
+> sockperf:
+> CPU        PPS         MSGSIZE
+> 100%       713274      64
+> 100%       701024      512
+> 100%       695832      1456
+>
+> Xuan Zhuo (7):
+>    xsk: support get page for drv
+>    virtio-net, xsk: distinguish XDP_TX and XSK XMIT ctx
+>    xsk, virtio-net: prepare for support xsk zerocopy xmit
+>    virtio-net, xsk: support xsk enable/disable
+>    virtio-net, xsk: realize the function of xsk packet sending
+>    virtio-net, xsk: implement xsk wakeup callback
+>    virtio-net, xsk: set xsk completed when packet sent done
+>
+>   drivers/net/virtio_net.c    | 559 +++++++++++++++++++++++++++++++++++++++-----
+>   include/linux/netdevice.h   |   1 +
+>   include/net/xdp_sock_drv.h  |  10 +
+>   include/net/xsk_buff_pool.h |   1 +
+>   net/xdp/xsk_buff_pool.c     |  10 +-
+>   5 files changed, 523 insertions(+), 58 deletions(-)
+>
+> --
+> 1.8.3.1
+>
 
