@@ -2,149 +2,206 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D8852FA458
-	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 16:17:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 957462FA4AA
+	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 16:29:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405421AbhARPQI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Jan 2021 10:16:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35662 "EHLO
+        id S2405851AbhARP21 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jan 2021 10:28:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393351AbhARPPr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Jan 2021 10:15:47 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0CEDC0613C1;
-        Mon, 18 Jan 2021 07:15:06 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id q2so31723274iow.13;
-        Mon, 18 Jan 2021 07:15:06 -0800 (PST)
+        with ESMTP id S2405840AbhARP2O (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Jan 2021 10:28:14 -0500
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1442C061573
+        for <bpf@vger.kernel.org>; Mon, 18 Jan 2021 07:27:33 -0800 (PST)
+Received: by mail-qk1-x729.google.com with SMTP id h4so18965496qkk.4
+        for <bpf@vger.kernel.org>; Mon, 18 Jan 2021 07:27:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=Vy0h901KXJHx7zR+QSkwJyxuEtD9TesxvJvHthBNc6c=;
-        b=YeFB265CZOz6TnZub+7S8nMHNsDakM64UfeFP22hmRKcLOcCZKCPiDU3kSHFdab2Vv
-         ZuXC7AAvOi1w0JwFI1t/G5FpK+ckS+CKXoRNCrgpShPCYCakBg41d924KYQDY9GIIlTr
-         XR51YBEJkzijzd4dSDnGjvEjj1w4jLazjhWRW3MDyi7gUPtgkJfQL3Q17AGXumK6pJGd
-         TzMnv+cIn00RAM2+cpSVC+X/PJwUBgeqziSScwyUeULHBfc5n0uAf5ic9A4gFcJIFn/7
-         HaRYIRDKpt6whH+RkqaK/O9efLB/uuJ/J8i2cCGUoF/I333jdqj/45C+5n8tqQssINVV
-         pZOw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=F6KA9w3XTyDzR9a/eJiRfa89v7fUgs4kNlqtUAh2eRs=;
+        b=LIhPXBoQ0lqZVjwUYNyS926s6D2uM+E4QTstoVoyx4n/7hogHhwpwSIBj+IPlC8YRN
+         h3oF2QH8WoW7n66iWRccB6P28cnjAoaZFh9Ihuo4M2y2hnwgm269UEf0c7HlVrmhnE+9
+         KJYq1eh3iCo2cSAphPIo6nJjawFJTfFVbF/c7O13aAsmJxFnegxLSNNkU62oqpaWFTiB
+         V89AL0U1zhHAjVLfhYgFjt5j4ESe5y8dRSW3qJC3WKQ7QQ4pcRzH5pRi6LJUi78Ft/Ka
+         uIHf3k+LMjIxLol3HyKVPi8GWfs3cxxk1fX9BduFukj4m0ZBJOyjaKxOf48FB7EvZ4B5
+         EK+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=Vy0h901KXJHx7zR+QSkwJyxuEtD9TesxvJvHthBNc6c=;
-        b=Oe+FUVCmoEoWrI3/AdDOp54U9QMsHOHKIAwV2qelm3IstisPDlJF+wvxPjav4GQfkN
-         6Bn0rTw4OUGj8AcUAhA3h4Tbyxnjeo6PqnM5oYiq3oIiqET5K/LyUiufasc3S0Gxp3SZ
-         1rHS+P+5sBMCeeYZRNYQi1pQGbRokZJ0swnzNMJgUh96SNKqMuJQe/jJ6Ft44TVK6nFv
-         dVcIBYtpLxD/GW9y5Q4QxpCpZ6uMSnUrMLIYU6kQS5QpjK4/J4THscjgSHj5hjOFBjG3
-         h+7I/fDvQNuuf4iU7aHnF71NO7Rjem4Gz6r7zgkUB4lugneNqIaHpsPIO7F9pEWmfqSO
-         QWAQ==
-X-Gm-Message-State: AOAM531ih+x3ZTm1DHAT3LhDrnKo0VMO48TeOq0mIOz+iEb39gEyFAEF
-        mSXylGaRPTm21Jjw//94PR4z82Nff5pvGA==
-X-Google-Smtp-Source: ABdhPJzoxfcxpWgv+hquOXmJoRuWuIiW8VO2poB3RK52qpCQo1uTNJB+rmAzYEG21ORB8W7yGX26qA==
-X-Received: by 2002:a05:6e02:13ac:: with SMTP id h12mr21732890ilo.159.1610982906105;
-        Mon, 18 Jan 2021 07:15:06 -0800 (PST)
-Received: from localhost ([172.243.146.206])
-        by smtp.gmail.com with ESMTPSA id h14sm270557ilh.63.2021.01.18.07.15.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 07:15:05 -0800 (PST)
-Date:   Mon, 18 Jan 2021 07:14:56 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Hangbin Liu <liuhangbin@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Jiri Benc <jbenc@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=F6KA9w3XTyDzR9a/eJiRfa89v7fUgs4kNlqtUAh2eRs=;
+        b=YR3B3dAdxiiICAi0oyqrZ+LR/KGJ/kFXm2P9NpVVpawN4tb82J6s+Dy+WgUn1WNx9W
+         poXEvzDS9XzeD/WE7Gs5+RM/NAtWz91Y9fNnxMajTQYh8hraRBtwiIIC7bOUs3elcfsD
+         CNkV6dSX8lgBUm02EbYmWrA6zMbyK4gsep9KCiFFAaMjDLr1Qb1L12aqjq0V/DF8OqJh
+         oGIfdjFyotdhP6HcyaXJFriEIr+i2I6b/gLWYkXTBmYNoomjwg3BIDATTDLGzySmcSQv
+         fX2KXkv70WiDiLOHVGYBTKuseOp0dRTFIif7BqAUydOHmRI4ZVYYqfnrbHZwqLhfTFCy
+         2NjQ==
+X-Gm-Message-State: AOAM532mi+PMFl3uNIFNbID2t8mIlSbi2tE1k7HSLMNXbu9PJZW8zJEz
+        VRhIwhpm6zY9ck6fju+KwSc/ZTrYXbg=
+X-Google-Smtp-Source: ABdhPJwCcq9PBR2wD3L8P9HCTtMKs4O2zF0hbFYQg4iOXrckn2pjU+PFQUCIaqPJ2/MyjPUZUyDTmA==
+X-Received: by 2002:a37:a495:: with SMTP id n143mr129411qke.362.1610983652838;
+        Mon, 18 Jan 2021 07:27:32 -0800 (PST)
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com. [209.85.219.178])
+        by smtp.gmail.com with ESMTPSA id t68sm10971847qkd.35.2021.01.18.07.27.32
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Jan 2021 07:27:32 -0800 (PST)
+Received: by mail-yb1-f178.google.com with SMTP id p185so1816891ybg.8
+        for <bpf@vger.kernel.org>; Mon, 18 Jan 2021 07:27:32 -0800 (PST)
+X-Received: by 2002:ab0:7386:: with SMTP id l6mr17924882uap.141.1610983234282;
+ Mon, 18 Jan 2021 07:20:34 -0800 (PST)
+MIME-Version: 1.0
+References: <20210112194143.1494-1-yuri.benditovich@daynix.com>
+ <CAOEp5OejaX4ZETThrj4-n8_yZoeTZs56CBPHbQqNsR2oni8dWw@mail.gmail.com>
+ <CAOEp5Oc5qif_krU8oC6qhq6X0xRW-9GpWrBzWgPw0WevyhT8Mg@mail.gmail.com>
+ <CA+FuTSfhBZfEf8+LKNUJQpSxt8c5h1wMpARupekqFKuei6YBsA@mail.gmail.com>
+ <78bbc518-4b73-4629-68fb-2713250f8967@redhat.com> <CA+FuTSfJJhEYr6gXmjpjjXzg6Xm5wWa-dL1SEV-Zt7RcPXGztg@mail.gmail.com>
+ <8ea218a8-a068-1ed9-929d-67ad30111c3c@redhat.com> <CAOEp5OfyHz2rXHmOeojNNE2wvrHMn_z1egr5aGQborEq829TLw@mail.gmail.com>
+ <65fe1a40-abc0-77ed-56df-3f0a70615016@redhat.com> <CAOEp5Oe4TcOukJa+OGj-ynfMMrZC=_YQDpzSC9_9p+UXSH7hmg@mail.gmail.com>
+In-Reply-To: <CAOEp5Oe4TcOukJa+OGj-ynfMMrZC=_YQDpzSC9_9p+UXSH7hmg@mail.gmail.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Mon, 18 Jan 2021 10:19:57 -0500
+X-Gmail-Original-Message-ID: <CA+FuTSfsFC0DTFhHDwT7dbtWXTmGOWjc=ozt8CgH_qDDn9gejg@mail.gmail.com>
+Message-ID: <CA+FuTSfsFC0DTFhHDwT7dbtWXTmGOWjc=ozt8CgH_qDDn9gejg@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/7] Support for virtio-net hash reporting
+To:     Yuri Benditovich <yuri.benditovich@daynix.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        David Ahern <dsahern@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Message-ID: <6005a5f08de7a_23982089d@john-XPS-13-9370.notmuch>
-In-Reply-To: <871reir06y.fsf@toke.dk>
-References: <20201221123505.1962185-1-liuhangbin@gmail.com>
- <20210114142321.2594697-1-liuhangbin@gmail.com>
- <20210114142321.2594697-4-liuhangbin@gmail.com>
- <6004d200d0d10_266420825@john-XPS-13-9370.notmuch>
- <20210118084455.GE1421720@Leo-laptop-t470s>
- <871reir06y.fsf@toke.dk>
-Subject: Re: [PATCHv14 bpf-next 3/6] xdp: add a new helper for dev map
- multicast support
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>, decui@microsoft.com,
+        cai@lca.pw, Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        bpf <bpf@vger.kernel.org>, Yan Vugenfirer <yan@daynix.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> Hangbin Liu <liuhangbin@gmail.com> writes:
-> =
+> > >>>>> What it does not give is a type indication, such as
+> > >>>>> VIRTIO_NET_HASH_TYPE_TCPv6. I don't understand how this would be used.
+> > >>>>> In datapaths where the NIC has already computed the four-tuple hash
+> > >>>>> and stored it in skb->hash --the common case for servers--, That type
+> > >>>>> field is the only reason to have to compute again.
+> > >>>> The problem is there's no guarantee that the packet comes from the NIC,
+> > >>>> it could be a simple VM2VM or host2VM packet.
+> > >>>>
+> > >>>> And even if the packet is coming from the NIC that calculates the hash
+> > >>>> there's no guarantee that it's the has that guest want (guest may use
+> > >>>> different RSS keys).
+> > >>> Ah yes, of course.
+> > >>>
+> > >>> I would still revisit the need to store a detailed hash_type along with
+> > >>> the hash, as as far I can tell that conveys no actionable information
+> > >>> to the guest.
+> > >>
+> > >> Yes, need to figure out its usage. According to [1], it only mention
+> > >> that storing has type is a charge of driver. Maybe Yuri can answer this.
+> > >>
+> > > For the case of Windows VM we can't know how exactly the network stack
+> > > uses provided hash data (including hash type). But: different releases
+> > > of Windows
+> > > enable different hash types (for example UDP hash is enabled only on
+> > > Server 2016 and up).
+> > >
+> > > Indeed the Windows requires a little more from the network adapter/driver
+> > > than Linux does.
+> > >
+> > > The addition of RSS support to virtio specification takes in account
+> > > the widest set of
+> > > requirements (i.e. Windows one), our initial impression is that this
+> > > should be enough also for Linux.
+> > >
+> > > The NDIS specification in part of RSS is _mandatory_ and there are
+> > > certification tests
+> > > that check that the driver provides the hash data as expected. All the
+> > > high-performance
+> > > network adapters have such RSS functionality in the hardware.
 
-> > Hi John,
+Thanks for the context.
+
+If Windows requires the driver to pass the hash-type along with the
+hash data, then indeed this will be needed.
+
+If it only requires the device to support a subset of of the possible
+types, chosen at init, that would be different and it would be cheaper
+for the driver to pass this config to the device one time.
+
+> > > With pre-RSS QEMU (i.e. where the virtio-net device does not indicate
+> > > the RSS support)
+> > > the virtio-net driver for Windows does all the job related to RSS:
+> > > - hash calculation
+> > > - hash/hash_type delivery
+> > > - reporting each packet on the correct CPU according to RSS settings
+> > >
+> > > With RSS support in QEMU all the packets always come on a proper CPU and
+> > > the driver never needs to reschedule them. The driver still need to
+> > > calculate the
+> > > hash and report it to Windows. In this case we do the same job twice: the device
+> > > (QEMU or eBPF) does calculate the hash and get proper queue/CPU to deliver
+> > > the packet. But the hash is not delivered by the device, so the driver needs to
+> > > recalculate it and report to the Windows.
+> > >
+> > > If we add HASH_REPORT support (current set of patches) and the device
+> > > indicates this
+> > > feature we can avoid hash recalculation in the driver assuming we
+> > > receive the correct hash
+> > > value and hash type. Otherwise the driver can't know which exactly
+> > > hash the device has calculated.
+> > >
+> > > Please let me know if I did not answer the question.
 > >
-> > Thanks for the reviewing.
 > >
-> > On Sun, Jan 17, 2021 at 04:10:40PM -0800, John Fastabend wrote:
-> >> > + * 		The forwarding *map* could be either BPF_MAP_TYPE_DEVMAP or
-> >> > + * 		BPF_MAP_TYPE_DEVMAP_HASH. But the *ex_map* must be
-> >> > + * 		BPF_MAP_TYPE_DEVMAP_HASH to get better performance.
-> >> =
-
-> >> Would be good to add a note ex_map _must_ be keyed by ifindex for th=
-e
-> >> helper to work. Its the obvious way to key a hashmap, but not requir=
-ed
-> >> iirc.
+> > I think I get you. The hash type is also a kind of classification (e.g
+> > TCP or UDP). Any possibility that it can be deduced from the driver? (Or
+> > it could be too expensive to do that).
 > >
-> > OK, I will.
+> The driver does it today (when the device does not offer any features)
+> and of course can continue doing it.
+> IMO if the device can't report the data according to the spec it
+> should not indicate support for the respective feature (or fallback to
+> vhost=off).
+> Again, IMO if Linux does not need the exact hash_type we can use (for
+> Linux) the way that Willem de Brujin suggested in his patchset:
+> - just add VIRTIO_NET_HASH_REPORT_L4 to the spec
+> - Linux can use MQ + hash delivery (and use VIRTIO_NET_HASH_REPORT_L4)
+> - Linux can use (if makes sense) RSS with VIRTIO_NET_HASH_REPORT_L4 and eBPF
+> - Windows gets what it needs + eBPF
+> So, everyone has what they need at the respective cost.
+>
+> Regarding use of skb->cb for hash type:
+> Currently, if I'm not mistaken, there are 2 bytes at the end of skb->cb:
+> skb->cb is 48 bytes array
+> There is skb_gso_cb (14 bytes) at offset SKB_GSO_CB_OFFSET(32)
+> Is it possible to use one of these 2 bytes for hash_type?
+> If yes, shall we extend the skb_gso_cb and place the 1-bytes hash_type
+> in it or just emit compilation error if the skb_gso_cb grows beyond 15
+> bytes?
 
-[...]
+Good catch on segmentation taking place between .ndo_select_queue and
+.ndo_start_xmit.
 
-> >> WRITE_ONCE(ri->ex_map)?
-> >> =
-
-> >> >  	WRITE_ONCE(ri->map, NULL);
-> >> =
-
-> >> So we needed write_once, read_once pairs for ri->map do we also need=
- them in
-> >> the ex_map case?
-> >
-> > Toke said this is no need for this read/write_once as there is alread=
-y one.
-> >
-> > https://lore.kernel.org/bpf/87r1wd2bqu.fsf@toke.dk/
-> =
-
-> And then I corrected that after I figured out the real reason :)
-> =
-
-> https://lore.kernel.org/bpf/878si2h3sb.fsf@toke.dk/ - Quote:
-> =
-
-> > The READ_ONCE() is not needed because the ex_map field is only ever r=
-ead
-> > from or written to by the CPU owning the per-cpu pointer. Whereas the=
-
-> > 'map' field is manipulated by remote CPUs in bpf_clear_redirect_map()=
-.
-> > So you need neither READ_ONCE() nor WRITE_ONCE() on ex_map, just like=
-
-> > there are none on tgt_index and tgt_value.
-> =
-
-> -Toke
-> =
-
-
-Hi Hangbin, please add a comment above that code block to remind us
-why the READ_ONCE/WRITE_ONCE is not needed or add it in the commit
-message so we don't lose it. It seems we've hashed it over already,
-but I forgot after the holidays/break so presumably I'll forget next
-time I read this code as well and commit-msg or comment will help.
-
-Thanks,
-John=
+That also means that whatever field in the skb is used, has to be
+copied to all segments in skb_segment. Which happens for cb. But this
+feature is completely unrelated to the skb_gso_cb type. Perhaps
+another field with a real type is more clear. For instance, an
+extension to the union with napi_id and sender_cpu, as neither is used
+in this egress path with .ndo_select_queue?
