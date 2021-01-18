@@ -2,271 +2,179 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBCCB2F97E8
-	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 03:48:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5782F982D
+	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 04:23:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731009AbhARCs0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 17 Jan 2021 21:48:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48123 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730991AbhARCsY (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 17 Jan 2021 21:48:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610938015;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=x6ekTaCUkKdjepJubjr84NceoQSjqFD24PhaaJLdYi8=;
-        b=aMVoN6U0o46EnXQnB8MQGKivaxdFQPb1Z2FRtEIuLvyk4efZUFP9L67A35HbioX0zlQvvr
-        4r6xRPtmvQ30ejNuws1NejViRIvzM5Hv4kGvkQScNF6JrXT4XOzdR+L1wQVeA6YpQ35gZl
-        IvYLYzMOoUM5EhsZXkDM3fW7E07Odfc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-583-HGDmO5YxNpSzg8ZGWPAqfQ-1; Sun, 17 Jan 2021 21:46:53 -0500
-X-MC-Unique: HGDmO5YxNpSzg8ZGWPAqfQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3B343107ACE3;
-        Mon, 18 Jan 2021 02:46:49 +0000 (UTC)
-Received: from [10.72.13.12] (ovpn-13-12.pek2.redhat.com [10.72.13.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 466675C6AB;
-        Mon, 18 Jan 2021 02:46:33 +0000 (UTC)
-Subject: Re: [RFC PATCH 0/7] Support for virtio-net hash reporting
-To:     Yuri Benditovich <yuri.benditovich@daynix.com>
-Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
+        id S1731516AbhARDXS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 17 Jan 2021 22:23:18 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:52398 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728664AbhARDXR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 17 Jan 2021 22:23:17 -0500
+Received: from [10.130.0.135] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxaL7s_gRgPYQGAA--.10491S3;
+        Mon, 18 Jan 2021 11:22:21 +0800 (CST)
+Subject: Re: [PATCH bpf 1/2] samples/bpf: Set flag __SANE_USERSPACE_TYPES__
+ for MIPS to fix build warnings
+To:     Yonghong Song <yhs@fb.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Song Liu <songliubraving@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Pablo Neira Ayuso <pablo@netfilter.org>, decui@microsoft.com,
-        cai@lca.pw, Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        bpf <bpf@vger.kernel.org>, Yan Vugenfirer <yan@daynix.com>
-References: <20210112194143.1494-1-yuri.benditovich@daynix.com>
- <CAOEp5OejaX4ZETThrj4-n8_yZoeTZs56CBPHbQqNsR2oni8dWw@mail.gmail.com>
- <CAOEp5Oc5qif_krU8oC6qhq6X0xRW-9GpWrBzWgPw0WevyhT8Mg@mail.gmail.com>
- <CA+FuTSfhBZfEf8+LKNUJQpSxt8c5h1wMpARupekqFKuei6YBsA@mail.gmail.com>
- <78bbc518-4b73-4629-68fb-2713250f8967@redhat.com>
- <CA+FuTSfJJhEYr6gXmjpjjXzg6Xm5wWa-dL1SEV-Zt7RcPXGztg@mail.gmail.com>
- <8ea218a8-a068-1ed9-929d-67ad30111c3c@redhat.com>
- <CAOEp5OfyHz2rXHmOeojNNE2wvrHMn_z1egr5aGQborEq829TLw@mail.gmail.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <65fe1a40-abc0-77ed-56df-3f0a70615016@redhat.com>
-Date:   Mon, 18 Jan 2021 10:46:34 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+References: <1610535453-2352-1-git-send-email-yangtiezhu@loongson.cn>
+ <1610535453-2352-2-git-send-email-yangtiezhu@loongson.cn>
+ <e3eb5919-4573-4576-e6aa-bd8ff56409ed@fb.com>
+Cc:     linux-sparse@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <f077bcae-97be-fc7f-c3fa-c6026bfe25d2@loongson.cn>
+Date:   Mon, 18 Jan 2021 11:22:20 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-In-Reply-To: <CAOEp5OfyHz2rXHmOeojNNE2wvrHMn_z1egr5aGQborEq829TLw@mail.gmail.com>
+In-Reply-To: <e3eb5919-4573-4576-e6aa-bd8ff56409ed@fb.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9DxaL7s_gRgPYQGAA--.10491S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxAFyfur4fWrW5KF1xZF1rCrg_yoW5uF47pa
+        1vkay8CF4DCry3GFW2yr12vr1fX3yfG34jgFykWryjyF1agas2qr4kGrWa9rn7ur4Iy3y2
+        9FyagFy5AFyrXrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBY14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F
+        4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
+        7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r
+        1j6r4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+        n2kIc2xKxwCYjI0SjxkI62AI1cAE67vIY487MxkIecxEwVAFwVW8GwCF04k20xvY0x0EwI
+        xGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
+        Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7
+        IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k2
+        6cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
+        0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUUCeHPUUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On 01/14/2021 01:12 AM, Yonghong Song wrote:
+>
+>
+> On 1/13/21 2:57 AM, Tiezhu Yang wrote:
+>> MIPS needs __SANE_USERSPACE_TYPES__ before <linux/types.h> to select
+>> 'int-ll64.h' in arch/mips/include/uapi/asm/types.h and avoid compile
+>> warnings when printing __u64 with %llu, %llx or %lld.
+>
+> could you mention which command produces the following warning?
 
-On 2021/1/17 下午3:57, Yuri Benditovich wrote:
-> On Thu, Jan 14, 2021 at 5:39 AM Jason Wang <jasowang@redhat.com> wrote:
->>
->> On 2021/1/13 下午10:33, Willem de Bruijn wrote:
->>> On Tue, Jan 12, 2021 at 11:11 PM Jason Wang <jasowang@redhat.com> wrote:
->>>> On 2021/1/13 上午7:47, Willem de Bruijn wrote:
->>>>> On Tue, Jan 12, 2021 at 3:29 PM Yuri Benditovich
->>>>> <yuri.benditovich@daynix.com> wrote:
->>>>>> On Tue, Jan 12, 2021 at 9:49 PM Yuri Benditovich
->>>>>> <yuri.benditovich@daynix.com> wrote:
->>>>>>> On Tue, Jan 12, 2021 at 9:41 PM Yuri Benditovich
->>>>>>> <yuri.benditovich@daynix.com> wrote:
->>>>>>>> Existing TUN module is able to use provided "steering eBPF" to
->>>>>>>> calculate per-packet hash and derive the destination queue to
->>>>>>>> place the packet to. The eBPF uses mapped configuration data
->>>>>>>> containing a key for hash calculation and indirection table
->>>>>>>> with array of queues' indices.
->>>>>>>>
->>>>>>>> This series of patches adds support for virtio-net hash reporting
->>>>>>>> feature as defined in virtio specification. It extends the TUN module
->>>>>>>> and the "steering eBPF" as follows:
->>>>>>>>
->>>>>>>> Extended steering eBPF calculates the hash value and hash type, keeps
->>>>>>>> hash value in the skb->hash and returns index of destination virtqueue
->>>>>>>> and the type of the hash. TUN module keeps returned hash type in
->>>>>>>> (currently unused) field of the skb.
->>>>>>>> skb->__unused renamed to 'hash_report_type'.
->>>>>>>>
->>>>>>>> When TUN module is called later to allocate and fill the virtio-net
->>>>>>>> header and push it to destination virtqueue it populates the hash
->>>>>>>> and the hash type into virtio-net header.
->>>>>>>>
->>>>>>>> VHOST driver is made aware of respective virtio-net feature that
->>>>>>>> extends the virtio-net header to report the hash value and hash report
->>>>>>>> type.
->>>>>>> Comment from Willem de Bruijn:
->>>>>>>
->>>>>>> Skbuff fields are in short supply. I don't think we need to add one
->>>>>>> just for this narrow path entirely internal to the tun device.
->>>>>>>
->>>>>> We understand that and try to minimize the impact by using an already
->>>>>> existing unused field of skb.
->>>>> Not anymore. It was repurposed as a flags field very recently.
->>>>>
->>>>> This use case is also very narrow in scope. And a very short path from
->>>>> data producer to consumer. So I don't think it needs to claim scarce
->>>>> bits in the skb.
->>>>>
->>>>> tun_ebpf_select_queue stores the field, tun_put_user reads it and
->>>>> converts it to the virtio_net_hdr in the descriptor.
->>>>>
->>>>> tun_ebpf_select_queue is called from .ndo_select_queue.  Storing the
->>>>> field in skb->cb is fragile, as in theory some code could overwrite
->>>>> that between field between ndo_select_queue and
->>>>> ndo_start_xmit/tun_net_xmit, from which point it is fully under tun
->>>>> control again. But in practice, I don't believe anything does.
->>>>>
->>>>> Alternatively an existing skb field that is used only on disjoint
->>>>> datapaths, such as ingress-only, could be viable.
->>>> A question here. We had metadata support in XDP for cooperation between
->>>> eBPF programs. Do we have something similar in the skb?
->>>>
->>>> E.g in the RSS, if we want to pass some metadata information between
->>>> eBPF program and the logic that generates the vnet header (either hard
->>>> logic in the kernel or another eBPF program). Is there any way that can
->>>> avoid the possible conflicts of qdiscs?
->>> Not that I am aware of. The closest thing is cb[].
->>>
->>> It'll have to aliase a field like that, that is known unused for the given path.
->>
->> Right, we need to make sure cb is not used by other ones. I'm not sure
->> how hard to achieve that consider Qemu installs the eBPF program but it
->> doesn't deal with networking configurations.
->>
->>
->>> One other approach that has been used within linear call stacks is out
->>> of band. Like percpu variables softnet_data.xmit.more and
->>> mirred_rec_level. But that is perhaps a bit overwrought for this use
->>> case.
->>
->> Yes, and if we go that way then eBPF turns out to be a burden since we
->> need to invent helpers to access those auxiliary data structure. It
->> would be better then to hard-coded the RSS in the kernel.
->>
->>
->>>>>>> Instead, you could just run the flow_dissector in tun_put_user if the
->>>>>>> feature is negotiated. Indeed, the flow dissector seems more apt to me
->>>>>>> than BPF here. Note that the flow dissector internally can be
->>>>>>> overridden by a BPF program if the admin so chooses.
->>>>>>>
->>>>>> When this set of patches is related to hash delivery in the virtio-net
->>>>>> packet in general,
->>>>>> it was prepared in context of RSS feature implementation as defined in
->>>>>> virtio spec [1]
->>>>>> In case of RSS it is not enough to run the flow_dissector in tun_put_user:
->>>>>> in tun_ebpf_select_queue the TUN calls eBPF to calculate the hash,
->>>>>> hash type and queue index
->>>>>> according to the (mapped) parameters (key, hash types, indirection
->>>>>> table) received from the guest.
->>>>> TUNSETSTEERINGEBPF was added to support more diverse queue selection
->>>>> than the default in case of multiqueue tun. Not sure what the exact
->>>>> use cases are.
->>>>>
->>>>> But RSS is exactly the purpose of the flow dissector. It is used for
->>>>> that purpose in the software variant RPS. The flow dissector
->>>>> implements a superset of the RSS spec, and certainly computes a
->>>>> four-tuple for TCP/IPv6. In the case of RPS, it is skipped if the NIC
->>>>> has already computed a 4-tuple hash.
->>>>>
->>>>> What it does not give is a type indication, such as
->>>>> VIRTIO_NET_HASH_TYPE_TCPv6. I don't understand how this would be used.
->>>>> In datapaths where the NIC has already computed the four-tuple hash
->>>>> and stored it in skb->hash --the common case for servers--, That type
->>>>> field is the only reason to have to compute again.
->>>> The problem is there's no guarantee that the packet comes from the NIC,
->>>> it could be a simple VM2VM or host2VM packet.
->>>>
->>>> And even if the packet is coming from the NIC that calculates the hash
->>>> there's no guarantee that it's the has that guest want (guest may use
->>>> different RSS keys).
->>> Ah yes, of course.
->>>
->>> I would still revisit the need to store a detailed hash_type along with
->>> the hash, as as far I can tell that conveys no actionable information
->>> to the guest.
->>
->> Yes, need to figure out its usage. According to [1], it only mention
->> that storing has type is a charge of driver. Maybe Yuri can answer this.
->>
-> For the case of Windows VM we can't know how exactly the network stack
-> uses provided hash data (including hash type). But: different releases
-> of Windows
-> enable different hash types (for example UDP hash is enabled only on
-> Server 2016 and up).
->
-> Indeed the Windows requires a little more from the network adapter/driver
-> than Linux does.
->
-> The addition of RSS support to virtio specification takes in account
-> the widest set of
-> requirements (i.e. Windows one), our initial impression is that this
-> should be enough also for Linux.
->
-> The NDIS specification in part of RSS is _mandatory_ and there are
-> certification tests
-> that check that the driver provides the hash data as expected. All the
-> high-performance
-> network adapters have such RSS functionality in the hardware.
-> With pre-RSS QEMU (i.e. where the virtio-net device does not indicate
-> the RSS support)
-> the virtio-net driver for Windows does all the job related to RSS:
-> - hash calculation
-> - hash/hash_type delivery
-> - reporting each packet on the correct CPU according to RSS settings
->
-> With RSS support in QEMU all the packets always come on a proper CPU and
-> the driver never needs to reschedule them. The driver still need to
-> calculate the
-> hash and report it to Windows. In this case we do the same job twice: the device
-> (QEMU or eBPF) does calculate the hash and get proper queue/CPU to deliver
-> the packet. But the hash is not delivered by the device, so the driver needs to
-> recalculate it and report to the Windows.
->
-> If we add HASH_REPORT support (current set of patches) and the device
-> indicates this
-> feature we can avoid hash recalculation in the driver assuming we
-> receive the correct hash
-> value and hash type. Otherwise the driver can't know which exactly
-> hash the device has calculated.
->
-> Please let me know if I did not answer the question.
-
-
-I think I get you. The hash type is also a kind of classification (e.g 
-TCP or UDP). Any possibility that it can be deduced from the driver? (Or 
-it could be too expensive to do that).
-
-Thanks
-
+make M=samples/bpf
 
 >
->> Thanks
 >>
->> [1]
->> https://docs.microsoft.com/en-us/windows-hardware/drivers/network/indicating-rss-receive-data
+>>      printf("0x%02x : %llu\n", key, value);
+>>                       ~~~^          ~~~~~
+>>                       %lu
+>>     printf("%s/%llx;", sym->name, addr);
+>>                ~~~^               ~~~~
+>>                %lx
+>>    printf(";%s %lld\n", key->waker, count);
+>>                ~~~^                 ~~~~~
+>>                %ld
 >>
+>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+>> ---
+>>   samples/bpf/Makefile        | 4 ++++
+>>   tools/include/linux/types.h | 3 +++
+>>   2 files changed, 7 insertions(+)
+>>
+>> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+>> index 26fc96c..27de306 100644
+>> --- a/samples/bpf/Makefile
+>> +++ b/samples/bpf/Makefile
+>> @@ -183,6 +183,10 @@ BPF_EXTRA_CFLAGS := $(ARM_ARCH_SELECTOR)
+>>   TPROGS_CFLAGS += $(ARM_ARCH_SELECTOR)
+>>   endif
+>>   +ifeq ($(ARCH), mips)
+>> +TPROGS_CFLAGS += -D__SANE_USERSPACE_TYPES__
+>> +endif
+>> +
+>
+> This change looks okay based on description in
+> arch/mips/include/uapi/asm/types.h
+>
+> '''
+> /*
+>  * We don't use int-l64.h for the kernel anymore but still use it for
+>  * userspace to avoid code changes.
+>  *
+>  * However, some user programs (e.g. perf) may not want this. They can
+>  * flag __SANE_USERSPACE_TYPES__ to get int-ll64.h here.
+>  */
+> '''
+>
+>>   TPROGS_CFLAGS += -Wall -O2
+>>   TPROGS_CFLAGS += -Wmissing-prototypes
+>>   TPROGS_CFLAGS += -Wstrict-prototypes
+>> diff --git a/tools/include/linux/types.h b/tools/include/linux/types.h
+>> index 154eb4e..e9c5a21 100644
+>> --- a/tools/include/linux/types.h
+>> +++ b/tools/include/linux/types.h
+>> @@ -6,7 +6,10 @@
+>>   #include <stddef.h>
+>>   #include <stdint.h>
+>>   +#ifndef __SANE_USERSPACE_TYPES__
+>>   #define __SANE_USERSPACE_TYPES__    /* For PPC64, to get LL64 types */
+>> +#endif
+>
+> What problem this patch fixed?
+
+If add "TPROGS_CFLAGS += -D__SANE_USERSPACE_TYPES__" in
+samples/bpf/Makefile, it appears the following error:
+
+Auto-detecting system features:
+...                        libelf: [ on  ]
+...                          zlib: [ on  ]
+...                           bpf: [ OFF ]
+
+BPF API too old
+make[3]: *** [Makefile:293: bpfdep] Error 1
+make[2]: *** [Makefile:156: all] Error 2
+
+With #ifndef __SANE_USERSPACE_TYPES__  in tools/include/linux/types.h,
+the above error has gone.
+
+> If this header is used, you can just
+> change comment from "PPC64" to "PPC64/MIPS", right?
+
+If include <linux/types.h> in the source files which have compile warnings
+when printing __u64 with %llu, %llx or %lld, it has no effect due to 
+actually
+it includes usr/include/linux/types.h instead of 
+tools/include/linux/types.h,
+this is because the include-directories in samples/bpf/Makefile are searched
+in the order, -I./usr/include is in the front of -I./tools/include.
+
+So I think define __SANE_USERSPACE_TYPES__ for MIPS in samples/bpf/Makefile
+is proper, at the same time, add #ifndef __SANE_USERSPACE_TYPES__ in
+tools/include/linux/types.h can avoid build error and have no side effect.
+
+I will send v2 later with mention in the commit message that this is
+mips related.
+
+Thanks,
+Tiezhu
+
+>
+>> +
+>>   #include <asm/types.h>
+>>   #include <asm/posix_types.h>
 >>
 
