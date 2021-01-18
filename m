@@ -2,353 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3A4D2FA0A1
-	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 14:02:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F31282FA1EB
+	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 14:43:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726685AbhARNCM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Jan 2021 08:02:12 -0500
-Received: from mail-40136.protonmail.ch ([185.70.40.136]:56964 "EHLO
-        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391981AbhARNBG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Jan 2021 08:01:06 -0500
-Date:   Mon, 18 Jan 2021 13:00:17 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1610974820; bh=/NaeKoU4Q/v51eOBH7d6BpzM6okVuiuPHOFagTI+ZbM=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=O4X6YWp+K5tAMwBPR1h6loJZm9y13TAg7xcV7N8Vd2DsUb9x3U4rBGvo5/sahYnV6
-         mk9Ob7BlYhVrrOGYJK2h6mEfW5vxUR48x6HlrTFWWC4olxd32uGXUYYIIMSYgEO0r9
-         uK1GuQG9gNc97EHtfMumy6C03omSaFo+D3KaG066lfJJBDWqcI3DzzKAhfKjn3BAa/
-         6Lc55u2bfo0SA2YrKT6wzBco3/D61SZ5jPATP+AV2ez1pxLWlgeXVnPa4KGr6xOuKc
-         WikyAXBfjLrTb/qhqRRR13yK0IF1Z9HxG0Iuyh5SL3fS1UhaO4jfEIEQ5VyDAgB7pc
-         IVrPWVx9aUocg==
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, bjorn.topel@intel.com,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Antoine Tenart <atenart@kernel.org>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Meir Lichtinger <meirl@mellanox.com>,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH bpf-next] xsk: build skb by page
-Message-ID: <20210118125937.4088-1-alobakin@pm.me>
-In-Reply-To: <4a4b475b-0e79-6cf6-44f5-44d45b5d85b5@huawei.com>
-References: <579fa463bba42ac71591540a1811dca41d725350.1610764948.git.xuanzhuo@linux.alibaba.com> <4a4b475b-0e79-6cf6-44f5-44d45b5d85b5@huawei.com>
+        id S2404740AbhARNnA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jan 2021 08:43:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49017 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2404728AbhARNmq (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 18 Jan 2021 08:42:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610977279;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=7TPBEwVnqJ79ZnolUqmuqdhs8Wq75X7BO1WvPH5WhcQ=;
+        b=Af6x/HxSa+9uEM65BhJxv2kjx/+zQoGMA9f6sXjifINXXYCyQapn7JTbfoXLDenGAAd3Jn
+        sYQwpEln4f7eq5o5+V/mi86f74KEL8/TohQw9xhH3Q3e1kj+p0DnSqGBbVdf/2T7vmd+Ro
+        vijMPKil7IZsru12OhgVRsuNGOuR080=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-561-cBW4OtNvOVWHQ4nu8cNU6Q-1; Mon, 18 Jan 2021 08:41:15 -0500
+X-MC-Unique: cBW4OtNvOVWHQ4nu8cNU6Q-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F3564190A7BC;
+        Mon, 18 Jan 2021 13:41:13 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0F2836267E;
+        Mon, 18 Jan 2021 13:41:02 +0000 (UTC)
+Date:   Mon, 18 Jan 2021 14:41:01 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Brendan Jackman <jackmanb@google.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     brouer@redhat.com, BPF-dev-list <bpf@vger.kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Veronika Kabatova <vkabatov@redhat.com>,
+        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
+        Stanislav Kozina <skozina@redhat.com>
+Subject: Issues compiling selftests XADD - "Invalid usage of the XADD return
+ value"
+Message-ID: <20210118144101.01a5d410@carbon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Yunsheng Lin <linyunsheng@huawei.com>
-Date: Mon, 18 Jan 2021 20:40:52 +0800
+Hi All,
 
-> On 2021/1/16 10:44, Xuan Zhuo wrote:
->> This patch is used to construct skb based on page to save memory copy
->> overhead.
->>
->> This has one problem:
->>
->> We construct the skb by fill the data page as a frag into the skb. In
->> this way, the linear space is empty, and the header information is also
->> in the frag, not in the linear space, which is not allowed for some
->> network cards. For example, Mellanox Technologies MT27710 Family
->> [ConnectX-4 Lx] will get the following error message:
->>
->>     mlx5_core 0000:3b:00.1 eth1: Error cqe on cqn 0x817, ci 0x8, qn 0x1d=
-bb, opcode 0xd, syndrome 0x1, vendor syndrome 0x68
->>     00000000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->>     00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->>     00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->>     00000030: 00 00 00 00 60 10 68 01 0a 00 1d bb 00 0f 9f d2
->>     WQE DUMP: WQ size 1024 WQ cur size 0, WQE index 0xf, len: 64
->>     00000000: 00 00 0f 0a 00 1d bb 03 00 00 00 08 00 00 00 00
->>     00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->>     00000020: 00 00 00 2b 00 08 00 00 00 00 00 05 9e e3 08 00
->>     00000030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->>     mlx5_core 0000:3b:00.1 eth1: ERR CQE on SQ: 0x1dbb
->>
->> I also tried to use build_skb to construct skb, but because of the
->> existence of skb_shinfo, it must be behind the linear space, so this
->> method is not working. We can't put skb_shinfo on desc->addr, it will be
->> exposed to users, this is not safe.
->>
->> Finally, I added a feature NETIF_F_SKB_NO_LINEAR to identify whether the
->
-> Does it make sense to use ETHTOOL_TX_COPYBREAK tunable in ethtool to
-> configure if the data is copied or not?
+After rebasing (my MTU patchset) to bpf-next (232164e041e925a) I'm
+getting this error when compiling selftests (full error below signature):
 
-As far as I can grep, only mlx4 supports this, and it has a different
-meaning in that driver.
-So I guess a new netdev_feature would be a better solution.
+  "CLNG-BPF [test_maps] atomics.o"
+  "fatal error: error in backend: line 27: Invalid usage of the XADD return value"
+  "PLEASE submit a bug report to https://bugs.llvm.org/ [...]"
 
->> network card supports the header information of the packet in the frag
->> and not in the linear space.
->>
->> ---------------- Performance Testing ------------
->>
->> The test environment is Aliyun ECS server.
->> Test cmd:
->> ```
->> xdpsock -i eth0 -t  -S -s <msg size>
->> ```
->>
->> Test result data:
->>
->> size    64      512     1024    1500
->> copy    1916747 1775988 1600203 1440054
->> page    1974058 1953655 1945463 1904478
->> percent 3.0%    10.0%   21.58%  32.3%
->>
->> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
->> Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
->> ---
->>  drivers/net/virtio_net.c        |   2 +-
->>  include/linux/netdev_features.h |   5 +-
->>  net/ethtool/common.c            |   1 +
->>  net/xdp/xsk.c                   | 108 +++++++++++++++++++++++++++++++++=
--------
->>  4 files changed, 97 insertions(+), 19 deletions(-)
->>=20
->> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
->> index 4ecccb8..841a331 100644
->> --- a/drivers/net/virtio_net.c
->> +++ b/drivers/net/virtio_net.c
->> @@ -2985,7 +2985,7 @@ static int virtnet_probe(struct virtio_device *vde=
-v)
->>  =09/* Set up network device as normal. */
->>  =09dev->priv_flags |=3D IFF_UNICAST_FLT | IFF_LIVE_ADDR_CHANGE;
->>  =09dev->netdev_ops =3D &virtnet_netdev;
->> -=09dev->features =3D NETIF_F_HIGHDMA;
->> +=09dev->features =3D NETIF_F_HIGHDMA | NETIF_F_SKB_NO_LINEAR;
->> =20
->>  =09dev->ethtool_ops =3D &virtnet_ethtool_ops;
->>  =09SET_NETDEV_DEV(dev, &vdev->dev);
->> diff --git a/include/linux/netdev_features.h b/include/linux/netdev_feat=
-ures.h
->> index 934de56..8dd28e2 100644
->> --- a/include/linux/netdev_features.h
->> +++ b/include/linux/netdev_features.h
->> @@ -85,9 +85,11 @@ enum {
->> =20
->>  =09NETIF_F_HW_MACSEC_BIT,=09=09/* Offload MACsec operations */
->> =20
->> +=09NETIF_F_SKB_NO_LINEAR_BIT,=09/* Allow skb linear is empty */
->> +
->>  =09/*
->>  =09 * Add your fresh new feature above and remember to update
->> -=09 * netdev_features_strings[] in net/core/ethtool.c and maybe
->> +=09 * netdev_features_strings[] in net/ethtool/common.c and maybe
->>  =09 * some feature mask #defines below. Please also describe it
->>  =09 * in Documentation/networking/netdev-features.rst.
->>  =09 */
->> @@ -157,6 +159,7 @@ enum {
->>  #define NETIF_F_GRO_FRAGLIST=09__NETIF_F(GRO_FRAGLIST)
->>  #define NETIF_F_GSO_FRAGLIST=09__NETIF_F(GSO_FRAGLIST)
->>  #define NETIF_F_HW_MACSEC=09__NETIF_F(HW_MACSEC)
->> +#define NETIF_F_SKB_NO_LINEAR=09__NETIF_F(SKB_NO_LINEAR)
->> =20
->>  /* Finds the next feature with the highest number of the range of start=
- till 0.
->>   */
->> diff --git a/net/ethtool/common.c b/net/ethtool/common.c
->> index 24036e3..2f3d309 100644
->> --- a/net/ethtool/common.c
->> +++ b/net/ethtool/common.c
->> @@ -68,6 +68,7 @@
->>  =09[NETIF_F_HW_TLS_RX_BIT] =3D=09 "tls-hw-rx-offload",
->>  =09[NETIF_F_GRO_FRAGLIST_BIT] =3D=09 "rx-gro-list",
->>  =09[NETIF_F_HW_MACSEC_BIT] =3D=09 "macsec-hw-offload",
->> +=09[NETIF_F_SKB_NO_LINEAR_BIT] =3D=09 "skb-no-linear",
+It looked like a LLVM bug, so I compiled llvm-11.1.0-rc1, but it still fails.
 
-I completely forgot to add that you'd better to mention in both
-enumeration/feature and its Ethtool string that the feature applies
-to Tx path.
-Smth like:
+I noticed Brendan Jackman changes... could this be related?
 
-NETIF_F_SKB_TX_NO_LINEAR{,_BIT}, "skb-tx-no-linear"
-or
-NETIF_F_TX_SKB_NO_LINEAR{,_BIT}, "tx-skb-no-linear"
+- - 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
-Otherwise, it may be confusing for users and developers.
+ dirs
+ ~/git/kernel/bpf-next/tools/testing/selftests/bpf
 
->>  };
->> =20
->>  const char
->> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
->> index 8037b04..94d17dc 100644
->> --- a/net/xdp/xsk.c
->> +++ b/net/xdp/xsk.c
->> @@ -430,6 +430,95 @@ static void xsk_destruct_skb(struct sk_buff *skb)
->>  =09sock_wfree(skb);
->>  }
->> =20
->> +static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
->> +=09=09=09=09=09      struct xdp_desc *desc)
->> +{
->> +=09u32 len, offset, copy, copied;
->> +=09struct sk_buff *skb;
->> +=09struct page *page;
->> +=09char *buffer;
->> +=09int err, i;
->> +=09u64 addr;
->> +
->> +=09skb =3D sock_alloc_send_skb(&xs->sk, 0, 1, &err);
->> +=09if (unlikely(!skb))
->> +=09=09return NULL;
->> +
->> +=09addr =3D desc->addr;
->> +=09len =3D desc->len;
->> +
->> +=09buffer =3D xsk_buff_raw_get_data(xs->pool, addr);
->> +=09offset =3D offset_in_page(buffer);
->> +=09addr =3D buffer - (char *)xs->pool->addrs;
->> +
->> +=09for (copied =3D 0, i =3D 0; copied < len; ++i) {
->> +=09=09page =3D xs->pool->umem->pgs[addr >> PAGE_SHIFT];
->> +
->> +=09=09get_page(page);
->> +
->> +=09=09copy =3D min((u32)(PAGE_SIZE - offset), len - copied);
->> +
->> +=09=09skb_fill_page_desc(skb, i, page, offset, copy);
->> +
->> +=09=09copied +=3D copy;
->> +=09=09addr +=3D copy;
->> +=09=09offset =3D 0;
->> +=09}
->> +
->> +=09skb->len +=3D len;
->> +=09skb->data_len +=3D len;
->> +=09skb->truesize +=3D len;
->> +
->> +=09refcount_add(len, &xs->sk.sk_wmem_alloc);
->> +
->> +=09return skb;
->> +}
->> +
->> +static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
->> +=09=09=09=09     struct xdp_desc *desc, int *err)
->> +{
->> +=09struct sk_buff *skb;
->> +
->> +=09if (xs->dev->features & NETIF_F_SKB_NO_LINEAR) {
->> +=09=09skb =3D xsk_build_skb_zerocopy(xs, desc);
->> +=09=09if (unlikely(!skb)) {
->> +=09=09=09*err =3D -ENOMEM;
->> +=09=09=09return NULL;
->> +=09=09}
->> +=09} else {
->> +=09=09char *buffer;
->> +=09=09u64 addr;
->> +=09=09u32 len;
->> +=09=09int err;
->> +
->> +=09=09len =3D desc->len;
->> +=09=09skb =3D sock_alloc_send_skb(&xs->sk, len, 1, &err);
->> +=09=09if (unlikely(!skb)) {
->> +=09=09=09*err =3D -ENOMEM;
->> +=09=09=09return NULL;
->> +=09=09}
->> +
->> +=09=09skb_put(skb, len);
->> +=09=09addr =3D desc->addr;
->> +=09=09buffer =3D xsk_buff_raw_get_data(xs->pool, desc->addr);
->> +=09=09err =3D skb_store_bits(skb, 0, buffer, len);
->> +
->> +=09=09if (unlikely(err)) {
->> +=09=09=09kfree_skb(skb);
->> +=09=09=09*err =3D -EINVAL;
->> +=09=09=09return NULL;
->> +=09=09}
->> +=09}
->> +
->> +=09skb->dev =3D xs->dev;
->> +=09skb->priority =3D xs->sk.sk_priority;
->> +=09skb->mark =3D xs->sk.sk_mark;
->> +=09skb_shinfo(skb)->destructor_arg =3D (void *)(long)desc->addr;
->> +=09skb->destructor =3D xsk_destruct_skb;
->> +
->> +=09return skb;
->> +}
->> +
->>  static int xsk_generic_xmit(struct sock *sk)
->>  {
->>  =09struct xdp_sock *xs =3D xdp_sk(sk);
->> @@ -446,43 +535,28 @@ static int xsk_generic_xmit(struct sock *sk)
->>  =09=09goto out;
->> =20
->>  =09while (xskq_cons_peek_desc(xs->tx, &desc, xs->pool)) {
->> -=09=09char *buffer;
->> -=09=09u64 addr;
->> -=09=09u32 len;
->> -
->>  =09=09if (max_batch-- =3D=3D 0) {
->>  =09=09=09err =3D -EAGAIN;
->>  =09=09=09goto out;
->>  =09=09}
->> =20
->> -=09=09len =3D desc.len;
->> -=09=09skb =3D sock_alloc_send_skb(sk, len, 1, &err);
->> +=09=09skb =3D xsk_build_skb(xs, &desc, &err);
->>  =09=09if (unlikely(!skb))
->>  =09=09=09goto out;
->> =20
->> -=09=09skb_put(skb, len);
->> -=09=09addr =3D desc.addr;
->> -=09=09buffer =3D xsk_buff_raw_get_data(xs->pool, addr);
->> -=09=09err =3D skb_store_bits(skb, 0, buffer, len);
->>  =09=09/* This is the backpressure mechanism for the Tx path.
->>  =09=09 * Reserve space in the completion queue and only proceed
->>  =09=09 * if there is space in it. This avoids having to implement
->>  =09=09 * any buffering in the Tx path.
->>  =09=09 */
->>  =09=09spin_lock_irqsave(&xs->pool->cq_lock, flags);
->> -=09=09if (unlikely(err) || xskq_prod_reserve(xs->pool->cq)) {
->> +=09=09if (xskq_prod_reserve(xs->pool->cq)) {
->>  =09=09=09spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
->>  =09=09=09kfree_skb(skb);
->>  =09=09=09goto out;
->>  =09=09}
->>  =09=09spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
->> =20
->> -=09=09skb->dev =3D xs->dev;
->> -=09=09skb->priority =3D sk->sk_priority;
->> -=09=09skb->mark =3D sk->sk_mark;
->> -=09=09skb_shinfo(skb)->destructor_arg =3D (void *)(long)desc.addr;
->> -=09=09skb->destructor =3D xsk_destruct_skb;
->> -
->>  =09=09err =3D __dev_direct_xmit(skb, xs->queue_id);
->>  =09=09if  (err =3D=3D NETDEV_TX_BUSY) {
->>  =09=09=09/* Tell user-space to retry the send */
->>=20
-
-Al
+  CLNG-BPF [test_maps] atomics.o
+fatal error: error in backend: line 27: Invalid usage of the XADD return value
+PLEASE submit a bug report to https://bugs.llvm.org/ and include the crash backtrace, preprocessed source, and associated run script.
+Stack dump:
+0.	Program arguments: /usr/local/bin/clang -g -mlittle-endian -Wno-compare-distinct-pointer-types -O2 -target bpf -mcpu=v3 -fcolor-diagnostics -D__TARGET_ARCH_x86 -I/home/jbrouer/git/kernel/bpf-next/tools/testing/selftests/bpf/tools/include -I/home/jbrouer/git/kernel/bpf-next/tools/testing/selftests/bpf -I/home/jbrouer/git/kernel/bpf-next/tools/include/uapi -I/home/jbrouer/git/kernel/bpf-next/tools/testing/selftests/usr/include -idirafter /usr/local/include -idirafter /usr/local/stow/llvm-11.1.0-rc1-git-9bbcb554cdbf/lib/clang/11.1.0/include -idirafter /usr/include -DENABLE_ATOMICS_TESTS -c -o /home/jbrouer/git/kernel/bpf-next/tools/testing/selftests/bpf/atomics.o progs/atomics.c 
+1.	<eof> parser at end of file
+2.	Code generation
+3.	Running pass 'Function Pass Manager' on module 'progs/atomics.c'.
+4.	Running pass 'BPF PreEmit Checking' on function '@add'
+ #0 0x0000000001969e8a llvm::sys::PrintStackTrace(llvm::raw_ostream&) (/usr/local/bin/clang+0x1969e8a)
+ #1 0x0000000001967f84 llvm::sys::RunSignalHandlers() (/usr/local/bin/clang+0x1967f84)
+ #2 0x0000000001968478 llvm::sys::CleanupOnSignal(unsigned long) (/usr/local/bin/clang+0x1968478)
+ #3 0x00000000018f2b34 llvm::CrashRecoveryContext::HandleExit(int) (/usr/local/bin/clang+0x18f2b34)
+ #4 0x0000000001961ea7 llvm::sys::Process::Exit(int) (/usr/local/bin/clang+0x1961ea7)
+ #5 0x000000000095ca03 LLVMErrorHandler(void*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, bool) (/usr/local/bin/clang+0x95ca03)
+ #6 0x00000000018f7ca5 llvm::report_fatal_error(llvm::Twine const&, bool) (/usr/local/bin/clang+0x18f7ca5)
+ #7 0x00000000018f7dfe (/usr/local/bin/clang+0x18f7dfe)
+ #8 0x000000000096d5d1 (anonymous namespace)::BPFMIPreEmitChecking::runOnMachineFunction(llvm::MachineFunction&) (/usr/local/bin/clang+0x96d5d1)
+ #9 0x0000000000f68484 llvm::MachineFunctionPass::runOnFunction(llvm::Function&) (/usr/local/bin/clang+0xf68484)
+#10 0x0000000001348a68 llvm::FPPassManager::runOnFunction(llvm::Function&) (/usr/local/bin/clang+0x1348a68)
+#11 0x00000000013490e3 llvm::FPPassManager::runOnModule(llvm::Module&) (/usr/local/bin/clang+0x13490e3)
+#12 0x0000000001347dc3 llvm::legacy::PassManagerImpl::run(llvm::Module&) (/usr/local/bin/clang+0x1347dc3)
+#13 0x0000000001bd2514 (anonymous namespace)::EmitAssemblyHelper::EmitAssembly(clang::BackendAction, std::unique_ptr<llvm::raw_pwrite_stream, std::default_delete<llvm::raw_pwrite_stream> >) (/usr/local/bin/clang+0x1bd2514)
+#14 0x0000000001bd32d1 clang::EmitBackendOutput(clang::DiagnosticsEngine&, clang::HeaderSearchOptions const&, clang::CodeGenOptions const&, clang::TargetOptions const&, clang::LangOptions const&, llvm::DataLayout const&, llvm::Module*, clang::BackendAction, std::unique_ptr<llvm::raw_pwrite_stream, std::default_delete<llvm::raw_pwrite_stream> >) (/usr/local/bin/clang+0x1bd32d1)
+#15 0x00000000027798ce clang::BackendConsumer::HandleTranslationUnit(clang::ASTContext&) (/usr/local/bin/clang+0x27798ce)
+#16 0x00000000032c7449 clang::ParseAST(clang::Sema&, bool, bool) (/usr/local/bin/clang+0x32c7449)
+#17 0x0000000002176081 clang::FrontendAction::Execute() (/usr/local/bin/clang+0x2176081)
+#18 0x000000000212e21b clang::CompilerInstance::ExecuteAction(clang::FrontendAction&) (/usr/local/bin/clang+0x212e21b)
+#19 0x00000000022307a0 clang::ExecuteCompilerInvocation(clang::CompilerInstance*) (/usr/local/bin/clang+0x22307a0)
+#20 0x000000000095d153 cc1_main(llvm::ArrayRef<char const*>, char const*, void*) (/usr/local/bin/clang+0x95d153)
+#21 0x000000000095b03b ExecuteCC1Tool(llvm::SmallVectorImpl<char const*>&) (/usr/local/bin/clang+0x95b03b)
+#22 0x0000000002011215 void llvm::function_ref<void ()>::callback_fn<clang::driver::CC1Command::Execute(llvm::ArrayRef<llvm::Optional<llvm::StringRef> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, bool*) const::'lambda'()>(long) (/usr/local/bin/clang+0x2011215)
+#23 0x00000000018f29c3 llvm::CrashRecoveryContext::RunSafely(llvm::function_ref<void ()>) (/usr/local/bin/clang+0x18f29c3)
+#24 0x0000000002011c71 clang::driver::CC1Command::Execute(llvm::ArrayRef<llvm::Optional<llvm::StringRef> >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, bool*) const (.part.0) (/usr/local/bin/clang+0x2011c71)
+#25 0x0000000001fe9d21 clang::driver::Compilation::ExecuteCommand(clang::driver::Command const&, clang::driver::Command const*&) const (/usr/local/bin/clang+0x1fe9d21)
+#26 0x0000000001fea54d clang::driver::Compilation::ExecuteJobs(clang::driver::JobList const&, llvm::SmallVectorImpl<std::pair<int, clang::driver::Command const*> >&) const (/usr/local/bin/clang+0x1fea54d)
+#27 0x0000000001ff571f clang::driver::Driver::ExecuteCompilation(clang::driver::Compilation&, llvm::SmallVectorImpl<std::pair<int, clang::driver::Command const*> >&) (/usr/local/bin/clang+0x1ff571f)
+#28 0x00000000008ee422 main (/usr/local/bin/clang+0x8ee422)
+#29 0x00007f2417f0b1a3 __libc_start_main (/lib64/libc.so.6+0x271a3)
+#30 0x000000000095abee _start (/usr/local/bin/clang+0x95abee)
+make: *** [Makefile:417: /home/jbrouer/git/kernel/bpf-next/tools/testing/selftests/bpf/atomics.o] Error 1
 
