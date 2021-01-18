@@ -2,92 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFD9D2FA581
-	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 17:03:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 381902FA5B5
+	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 17:12:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405918AbhARQCl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Jan 2021 11:02:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406298AbhARQCg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Jan 2021 11:02:36 -0500
-Received: from mail-ed1-x54a.google.com (mail-ed1-x54a.google.com [IPv6:2a00:1450:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5071BC0613ED
-        for <bpf@vger.kernel.org>; Mon, 18 Jan 2021 08:01:56 -0800 (PST)
-Received: by mail-ed1-x54a.google.com with SMTP id a9so8085976edy.8
-        for <bpf@vger.kernel.org>; Mon, 18 Jan 2021 08:01:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=TqkGDF1ta5PCdnxEEvsF8Ma1Lt/vVVNhRWpTG6LTrD8=;
-        b=skeG0dILnijwcANaFRzfFG8rns/gfweOPnEBdnioVj37CH0jabLoyCs8pkSk9UokwC
-         Cq+ktrPAYJ9ABubh9LzgMr/5AZdBTGTaR1Ph8E6xbry2rqtZdl0jYnCPoEBEI6jwtW77
-         DqNVltbUjUHsljLeFb1o7erBKBnYqAARQfPyQK2cXwmmJEg0W23x9HfmxDYW/QJnDuX6
-         fX3FpqMOKfNLQnV9RcX9JqGCfVayXjjyawj6DAn4Sfn/E9DB7/ZFpfcVATHAncOxE8C2
-         gjWmeOyp1sSGA41DwWg4HU10TqQinbYXP5hCupAr6THMXjp7knQlllZVpz7rGh2/6x1H
-         rIhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=TqkGDF1ta5PCdnxEEvsF8Ma1Lt/vVVNhRWpTG6LTrD8=;
-        b=RMidPznPuu2TWsKqVVocxUQuZ5jj49T3rI/LcYTGcJYg+CS2ond834dtBRl0x4ff38
-         lgQZgQFTiRJ2bAdZzlMJDY6iJDfTVUlsSaNtUVV/CQzrRlgzmvWWvBXZV7TvxaQgtsUg
-         vUYsvSDGhiZTlohDfqXuKZcXyqrs2RGwIZH4+T8jyLf38AFQY4RyAHfO00MCeuMmJLNf
-         exUVGjIMa3WZfMV5qtij/XtfbMvkG/f6ua3k4swGE2RQBE9blt/tH2uO/jM8sBrGtjur
-         f2/TNdmVlha5HD5Y3FLxwc4JOUoKjTszAxi09BHu/r40R32u/HQXLN711/VF71YYriBh
-         P41w==
-X-Gm-Message-State: AOAM531rqCXatVMedubhnX8K1pUEYI9eP2VUTDrEzjP7Qt1MyTuWylt9
-        W8tatLYVnVs8Ve4xyFD40/tXJ4RqgiQJHQ==
-X-Google-Smtp-Source: ABdhPJyUWrBT4UlLd93wmvwwr+Ba6wo0Z3mXx1DRRmGWRLYjv9cnrAdfGCj0xvRwKN6BhYXAA17iu5VlIxUdWA==
-Sender: "gprocida via sendgmr" <gprocida@tef.lon.corp.google.com>
-X-Received: from tef.lon.corp.google.com ([2a00:79e0:d:110:a6ae:11ff:fe11:4f04])
- (user=gprocida job=sendgmr) by 2002:a05:6402:158:: with SMTP id
- s24mr119650edu.19.1610985714831; Mon, 18 Jan 2021 08:01:54 -0800 (PST)
-Date:   Mon, 18 Jan 2021 16:01:39 +0000
-In-Reply-To: <20210118160139.1971039-1-gprocida@google.com>
-Message-Id: <20210118160139.1971039-4-gprocida@google.com>
-Mime-Version: 1.0
-References: <20210118160139.1971039-1-gprocida@google.com>
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH 3/3] btf_encoder: Set .BTF section alignment to 16
-From:   Giuliano Procida <gprocida@google.com>
-To:     dwarves@vger.kernel.org
-Cc:     kernel-team@android.com, maennich@google.com, ast@kernel.org,
-        andrii@kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
-        Giuliano Procida <gprocida@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S2390445AbhARQLg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jan 2021 11:11:36 -0500
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:49303 "EHLO
+        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2406180AbhARQEc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Jan 2021 11:04:32 -0500
+Received: from Internal Mail-Server by MTLPINE1 (envelope-from maximmi@mellanox.com)
+        with SMTP; 18 Jan 2021 18:03:33 +0200
+Received: from dev-l-vrt-208.mtl.labs.mlnx (dev-l-vrt-208.mtl.labs.mlnx [10.234.208.1])
+        by labmailer.mlnx (8.13.8/8.13.8) with ESMTP id 10IG3Xpw025103;
+        Mon, 18 Jan 2021 18:03:33 +0200
+From:   Maxim Mikityanskiy <maximmi@mellanox.com>
+To:     Magnus Karlsson <magnus.karlsson@intel.com>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>
+Cc:     Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH bpf] xsk: Clear pool even for inactive queues
+Date:   Mon, 18 Jan 2021 18:03:33 +0200
+Message-Id: <20210118160333.333439-1-maximmi@mellanox.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This is to avoid misaligned access when memory-mapping ELF sections.
+The number of queues can change by other means, rather than ethtool. For
+example, attaching an mqprio qdisc with num_tc > 1 leads to creating
+multiple sets of TX queues, which may be then destroyed when mqprio is
+deleted. If an AF_XDP socket is created while mqprio is active,
+dev->_tx[queue_id].pool will be filled, but then real_num_tx_queues may
+decrease with deletion of mqprio, which will mean that the pool won't be
+NULLed, and a further increase of the number of TX queues may expose a
+dangling pointer.
 
-Signed-off-by: Giuliano Procida <gprocida@google.com>
+To avoid any potential misbehavior, this commit clears pool for RX and
+TX queues, regardless of real_num_*_queues, still taking into
+consideration num_*_queues to avoid overflows.
+
+Fixes: 1c1efc2af158 ("xsk: Create and free buffer pool independently from umem")
+Fixes: a41b4f3c58dd ("xsk: simplify xdp_clear_umem_at_qid implementation")
+Signed-off-by: Maxim Mikityanskiy <maximmi@mellanox.com>
 ---
- libbtf.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ net/xdp/xsk.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/libbtf.c b/libbtf.c
-index 7552d8e..2f12d53 100644
---- a/libbtf.c
-+++ b/libbtf.c
-@@ -797,6 +797,14 @@ static int btf_elf__write(const char *filename, struct btf *btf)
- 			goto unlink;
- 		}
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 8037b04a9edd..4a83117507f5 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -108,9 +108,9 @@ EXPORT_SYMBOL(xsk_get_pool_from_qid);
  
-+		snprintf(cmd, sizeof(cmd), "%s --set-section-alignment .BTF=16 %s",
-+			 llvm_objcopy, filename);
-+		if (system(cmd)) {
-+			/* non-fatal, this is a nice-to-have and it's only supported from LLVM 10 */
-+			fprintf(stderr, "%s: warning: failed to align .BTF section in '%s': %d!\n",
-+				__func__, filename, errno);
-+		}
-+
- 		err = 0;
- 	unlink:
- 		unlink(tmp_fn);
+ void xsk_clear_pool_at_qid(struct net_device *dev, u16 queue_id)
+ {
+-	if (queue_id < dev->real_num_rx_queues)
++	if (queue_id < dev->num_rx_queues)
+ 		dev->_rx[queue_id].pool = NULL;
+-	if (queue_id < dev->real_num_tx_queues)
++	if (queue_id < dev->num_tx_queues)
+ 		dev->_tx[queue_id].pool = NULL;
+ }
+ 
 -- 
-2.30.0.284.gd98b1dd5eaa7-goog
+2.25.1
 
