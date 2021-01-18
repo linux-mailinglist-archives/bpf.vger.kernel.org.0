@@ -2,152 +2,353 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90D662F9CFF
-	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 11:47:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4A7F2F9D00
+	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 11:47:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388497AbhARKkW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Jan 2021 05:40:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43354 "EHLO
+        id S2389010AbhARKlH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jan 2021 05:41:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388557AbhARJRd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Jan 2021 04:17:33 -0500
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602CFC061757
-        for <bpf@vger.kernel.org>; Mon, 18 Jan 2021 01:16:52 -0800 (PST)
-Received: by mail-oo1-xc29.google.com with SMTP id k9so3938440oop.6
-        for <bpf@vger.kernel.org>; Mon, 18 Jan 2021 01:16:52 -0800 (PST)
+        with ESMTP id S2388210AbhARJ1n (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Jan 2021 04:27:43 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CFE8C061574;
+        Mon, 18 Jan 2021 01:25:12 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id f63so2038293pfa.13;
+        Mon, 18 Jan 2021 01:25:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=daynix-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=XSK+lvyQA4uXA5xPhZ/8h6A7IFG5qSuPlS2fMmSK9uE=;
-        b=g0OihKEQp3iql/CK/5EC0JwmqXVTR+AOVENIOuGMPFsGSeHvvkxftBiA9Mu5HHh+Dt
-         yvdAaWFsnRmu/efRdYIFkFNmcwDY8n4XbSXOGUbzF5HMyG2W6010KLYjXpnOvsskibZO
-         41hEyNwNAI1zV/ra54yz7iIQq6oPLY47r80NacYWAAwb5D3RUTBWZXYtnHP66WVTtG6g
-         9MLMjmxBLg1sV9mbRo4JoyerLfkcZl/BKB52D6wLSbFj5QWAETS8bW05NLyQ1eOxD3DM
-         RwBSlkQU9mbctTrNWvRgt1eLrUWZbgF/aXRyp0nsHBbGv+pc8JZJer9XJF9JbSxim1YM
-         0wEw==
+        bh=yJq8sqyWaB50Cy55CtV4P8uJOpwMrwJum8qabe8cu2Q=;
+        b=NyCwwLrDgrSjWayALA1YHj9Hk7bkJAvBnKKGBRSYZ7wF0pcJ3W6Bi9TjJhllwSuWHy
+         U4fIdh3uRPzuuiPZ+V8ZiKWA1E/0SoG3R161NOJtLRS51CGUjuXq67sPfLwQQI3P4cE7
+         d1SWCR41+00LvxFE+oOl5oU95B0A4u9powTNmbIw0SL13hNXqhU5QGhQuR6AsZbCGVIl
+         czFcNvInniR1t4+LXxRDHiGZhbsgc1XYN3KC1nR3AV5ULYGWLjO7AtoQTxwUUqjYU87c
+         kDOduC3MogyYoje3O16JCHvWDGGf7ZPukf/p88z7rnYAiWP+MPCU8P+KLji5r0obaMug
+         BmAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=XSK+lvyQA4uXA5xPhZ/8h6A7IFG5qSuPlS2fMmSK9uE=;
-        b=btmrilEV04SLH0uKqpCq++4OnAlgVb1X/asEXK8B7usFs43gshU5qRYlFnXDOatttv
-         RIzBbcsquIKF8WlLKEuQ1maIZs5WYJb4UCTzrK/j13itBGrbZ3mgJmwErkvwto5A8sn1
-         xXEEPWLCeakM8K3bB6dU9+Hakle/w0vfMJwLSU+/+EudsQv/EBJOkC/c68v2Z5lyWrZ6
-         DVszkxncCVSqt8DB6nwQKmcBI7Fib7M75e8FX6yQRZWfEWUwEf7iJmi+t3hOun7Xsg4w
-         qAcsKjDgkcsDoSmHi//AP84Nsg+L8pEvUdQiRV6ylBnckQL2ZvXmzQDE5Hn+Lguti6hP
-         JHjg==
-X-Gm-Message-State: AOAM5307r6dOYpdjJRjnjbzChUnQOW+VZQC2jYRqd9jEaVNXvIlZ4+lq
-        T7XORxdF7giqr/DbVQk11erGyU+Sks+jxx9C179t5g==
-X-Google-Smtp-Source: ABdhPJzqTOl3MqL0bVrAhDZtCS3mLYK4WgEB46OSUFecnlcwl11ttUt9pEepSbvh3bw3kfb4oCIECDbWZljHghrIAlk=
-X-Received: by 2002:a4a:d396:: with SMTP id i22mr16311455oos.55.1610961411680;
- Mon, 18 Jan 2021 01:16:51 -0800 (PST)
+        bh=yJq8sqyWaB50Cy55CtV4P8uJOpwMrwJum8qabe8cu2Q=;
+        b=lPeIdW+xm+Y1RZvU8hfubPNiF7yFEYREnyQC7tmk9NJnDGM6fGRsq6Gb2Oj71DRY0W
+         touIsszd3bniiYVMn7k+aaD3riTesXJWpYhut+m+MATyMwPWNcQrYdqv0SJGwGZWuhi+
+         IA+ZWswHD5/zJEpcSOrfbkSDlk8dF54a0t7pkgYLkyjzkSQ6UB46I3l1teIOlsjMrb+P
+         FXvadcpcnyyIAxW6lnRQ5fpevoHjSEPhrUdIWODkRAf8vkhs8vpFO/xRxrXMQ7sGrsc4
+         IuyA7vVZ4w/lG63z/fiKcBVqSAP4PIoIRqxLEkFR/y23/uGjgHxuCHzbTf3k0/Rg+Ii1
+         Weqg==
+X-Gm-Message-State: AOAM533bu2GPJR6AAn3oXJuuSNgSSwKghAEmgGGhsNRBogPMA/GrTTRp
+        qElJmkBvth4qMCQkerLBa9rRhK6doOYs5zeBOYY=
+X-Google-Smtp-Source: ABdhPJz8ZOKZhtqLwEVPredCn4dOowe0VLqVHap5x14uUnIB20XZvwuKkRkGkbTcVGF+gwpPpMVLeu0xnLZLz/URYzE=
+X-Received: by 2002:a62:8895:0:b029:19e:92ec:6886 with SMTP id
+ l143-20020a6288950000b029019e92ec6886mr25172986pfd.12.1610961911989; Mon, 18
+ Jan 2021 01:25:11 -0800 (PST)
 MIME-Version: 1.0
-References: <20210112194143.1494-1-yuri.benditovich@daynix.com>
- <20210112194143.1494-4-yuri.benditovich@daynix.com> <CAOEp5Ocz-xGq5=e=WY0aipEYHEhN-wxekNaAiqAS+HsOF8TcDQ@mail.gmail.com>
- <CAOEp5OevYR5FWVMfQ_esmWTKtz9_ddTupbe7FtBFQ=sv2kEt2w@mail.gmail.com>
-In-Reply-To: <CAOEp5OevYR5FWVMfQ_esmWTKtz9_ddTupbe7FtBFQ=sv2kEt2w@mail.gmail.com>
-From:   Yuri Benditovich <yuri.benditovich@daynix.com>
-Date:   Mon, 18 Jan 2021 11:16:40 +0200
-Message-ID: <CAOEp5OeQscazq2bSkT7ocnHZ5q_+ffSUcBqbUZpSz+dVEDcLhg@mail.gmail.com>
-Subject: Re: [RFC PATCH 3/7] tun: allow use of BPF_PROG_TYPE_SCHED_CLS program type
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+References: <579fa463bba42ac71591540a1811dca41d725350.1610764948.git.xuanzhuo@linux.alibaba.com>
+In-Reply-To: <579fa463bba42ac71591540a1811dca41d725350.1610764948.git.xuanzhuo@linux.alibaba.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Mon, 18 Jan 2021 10:25:01 +0100
+Message-ID: <CAJ8uoz3sm+STbhTB+ga+wjeTYyjazzobW13V7m9izVzv0u5RRA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] xsk: build skb by page
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     Network Development <netdev@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Antoine Tenart <atenart@kernel.org>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Meir Lichtinger <meirl@mellanox.com>,
         virtualization@lists.linux-foundation.org,
         bpf <bpf@vger.kernel.org>
-Cc:     Yan Vugenfirer <yan@daynix.com>, Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jason Wang <jasowang@redhat.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Song Liu <songliubraving@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Yonghong Song <yhs@fb.com>,
-        Willem de Bruijn <willemb@google.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Marco Elver <elver@google.com>, decui@microsoft.com,
-        cai@lca.pw, Pablo Neira Ayuso <pablo@netfilter.org>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Paolo Abeni <pabeni@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello Alexei,
+On Sat, Jan 16, 2021 at 3:47 AM Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
+>
+> This patch is used to construct skb based on page to save memory copy
+> overhead.
+>
+> This has one problem:
+>
+> We construct the skb by fill the data page as a frag into the skb. In
+> this way, the linear space is empty, and the header information is also
+> in the frag, not in the linear space, which is not allowed for some
+> network cards. For example, Mellanox Technologies MT27710 Family
+> [ConnectX-4 Lx] will get the following error message:
+>
+>     mlx5_core 0000:3b:00.1 eth1: Error cqe on cqn 0x817, ci 0x8, qn 0x1dbb, opcode 0xd, syndrome 0x1, vendor syndrome 0x68
+>     00000000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>     00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>     00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>     00000030: 00 00 00 00 60 10 68 01 0a 00 1d bb 00 0f 9f d2
+>     WQE DUMP: WQ size 1024 WQ cur size 0, WQE index 0xf, len: 64
+>     00000000: 00 00 0f 0a 00 1d bb 03 00 00 00 08 00 00 00 00
+>     00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>     00000020: 00 00 00 2b 00 08 00 00 00 00 00 05 9e e3 08 00
+>     00000030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>     mlx5_core 0000:3b:00.1 eth1: ERR CQE on SQ: 0x1dbb
+>
+> I also tried to use build_skb to construct skb, but because of the
+> existence of skb_shinfo, it must be behind the linear space, so this
+> method is not working. We can't put skb_shinfo on desc->addr, it will be
+> exposed to users, this is not safe.
+>
+> Finally, I added a feature NETIF_F_SKB_NO_LINEAR to identify whether the
+> network card supports the header information of the packet in the frag
+> and not in the linear space.
 
-Can you please answer the questions in the last email of this thread?
-Your comment will be extremely helpful.
+Could you please break this new feature bit into its own patch and
+produce a patch set. Patch 1 being the NETIF_F_SKB_NO_LINEAR bit
+addition and patch 2 being the xsk part. I can then ack patch 2 since
+I am one of the maintainers of that, and then the owner of the netdev
+bits can ack that part (whoever that is?). The bit addition looks fine
+to me, but I am not the owner of those feature bits, so I would feel
+somewhat awkward to ack that.
 
-Thanks
+Otherwise, good performance boost. I like it. Thank you!
 
-On Tue, Jan 12, 2021 at 10:55 PM Yuri Benditovich
-<yuri.benditovich@daynix.com> wrote:
+> ---------------- Performance Testing ------------
 >
-> On Tue, Jan 12, 2021 at 10:40 PM Yuri Benditovich
-> <yuri.benditovich@daynix.com> wrote:
-> >
-> > On Tue, Jan 12, 2021 at 9:42 PM Yuri Benditovich
-> > <yuri.benditovich@daynix.com> wrote:
-> > >
-> > > This program type can set skb hash value. It will be useful
-> > > when the tun will support hash reporting feature if virtio-net.
-> > >
-> > > Signed-off-by: Yuri Benditovich <yuri.benditovich@daynix.com>
-> > > ---
-> > >  drivers/net/tun.c | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > >
-> > > diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-> > > index 7959b5c2d11f..455f7afc1f36 100644
-> > > --- a/drivers/net/tun.c
-> > > +++ b/drivers/net/tun.c
-> > > @@ -2981,6 +2981,8 @@ static int tun_set_ebpf(struct tun_struct *tun, struct tun_prog __rcu **prog_p,
-> > >                 prog = NULL;
-> > >         } else {
-> > >                 prog = bpf_prog_get_type(fd, BPF_PROG_TYPE_SOCKET_FILTER);
-> > > +               if (IS_ERR(prog))
-> > > +                       prog = bpf_prog_get_type(fd, BPF_PROG_TYPE_SCHED_CLS);
-> > >                 if (IS_ERR(prog))
-> > >                         return PTR_ERR(prog);
-> > >         }
-> >
-> > Comment from Alexei Starovoitov:
-> > Patches 1 and 2 are missing for me, so I couldn't review properly,
-> > but this diff looks odd.
-> > It allows sched_cls prog type to attach to tun.
-> > That means everything that sched_cls progs can do will be done from tun hook?
+> The test environment is Aliyun ECS server.
+> Test cmd:
+> ```
+> xdpsock -i eth0 -t  -S -s <msg size>
+> ```
 >
-> We do not have an intention to modify the packet in this steering eBPF.
-> There is just one function that unavailable for BPF_PROG_TYPE_SOCKET_FILTER
-> that the eBPF needs to make possible to deliver the hash to the guest
-> VM - it is 'bpf_set_hash'
+> Test result data:
 >
-> Does it mean that we need to define a new eBPF type for socket filter
-> operations + set_hash?
+> size    64      512     1024    1500
+> copy    1916747 1775988 1600203 1440054
+> page    1974058 1953655 1945463 1904478
+> percent 3.0%    10.0%   21.58%  32.3%
 >
-> Our problem is that the eBPF calculates 32-bit hash, 16-bit queue
-> index and 8-bit of hash type.
-> But it is able to return only 32-bit integer, so in this set of
-> patches the eBPF returns
-> queue index and hash type and saves the hash in skb->hash using bpf_set_hash().
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
+> ---
+>  drivers/net/virtio_net.c        |   2 +-
+>  include/linux/netdev_features.h |   5 +-
+>  net/ethtool/common.c            |   1 +
+>  net/xdp/xsk.c                   | 108 +++++++++++++++++++++++++++++++++-------
+>  4 files changed, 97 insertions(+), 19 deletions(-)
 >
-> If this is unacceptable, can you please recommend a better solution?
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 4ecccb8..841a331 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -2985,7 +2985,7 @@ static int virtnet_probe(struct virtio_device *vdev)
+>         /* Set up network device as normal. */
+>         dev->priv_flags |= IFF_UNICAST_FLT | IFF_LIVE_ADDR_CHANGE;
+>         dev->netdev_ops = &virtnet_netdev;
+> -       dev->features = NETIF_F_HIGHDMA;
+> +       dev->features = NETIF_F_HIGHDMA | NETIF_F_SKB_NO_LINEAR;
 >
-> > sched_cls assumes l2 and can modify the packet.
+>         dev->ethtool_ops = &virtnet_ethtool_ops;
+>         SET_NETDEV_DEV(dev, &vdev->dev);
+> diff --git a/include/linux/netdev_features.h b/include/linux/netdev_features.h
+> index 934de56..8dd28e2 100644
+> --- a/include/linux/netdev_features.h
+> +++ b/include/linux/netdev_features.h
+> @@ -85,9 +85,11 @@ enum {
 >
-> The steering eBPF in TUN module also assumes l2.
+>         NETIF_F_HW_MACSEC_BIT,          /* Offload MACsec operations */
 >
-> > I think crashes are inevitable.
-> >
-> > > --
-> > > 2.17.1
-> > >
+> +       NETIF_F_SKB_NO_LINEAR_BIT,      /* Allow skb linear is empty */
+> +
+>         /*
+>          * Add your fresh new feature above and remember to update
+> -        * netdev_features_strings[] in net/core/ethtool.c and maybe
+> +        * netdev_features_strings[] in net/ethtool/common.c and maybe
+>          * some feature mask #defines below. Please also describe it
+>          * in Documentation/networking/netdev-features.rst.
+>          */
+> @@ -157,6 +159,7 @@ enum {
+>  #define NETIF_F_GRO_FRAGLIST   __NETIF_F(GRO_FRAGLIST)
+>  #define NETIF_F_GSO_FRAGLIST   __NETIF_F(GSO_FRAGLIST)
+>  #define NETIF_F_HW_MACSEC      __NETIF_F(HW_MACSEC)
+> +#define NETIF_F_SKB_NO_LINEAR  __NETIF_F(SKB_NO_LINEAR)
+>
+>  /* Finds the next feature with the highest number of the range of start till 0.
+>   */
+> diff --git a/net/ethtool/common.c b/net/ethtool/common.c
+> index 24036e3..2f3d309 100644
+> --- a/net/ethtool/common.c
+> +++ b/net/ethtool/common.c
+> @@ -68,6 +68,7 @@
+>         [NETIF_F_HW_TLS_RX_BIT] =        "tls-hw-rx-offload",
+>         [NETIF_F_GRO_FRAGLIST_BIT] =     "rx-gro-list",
+>         [NETIF_F_HW_MACSEC_BIT] =        "macsec-hw-offload",
+> +       [NETIF_F_SKB_NO_LINEAR_BIT] =    "skb-no-linear",
+>  };
+>
+>  const char
+> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> index 8037b04..94d17dc 100644
+> --- a/net/xdp/xsk.c
+> +++ b/net/xdp/xsk.c
+> @@ -430,6 +430,95 @@ static void xsk_destruct_skb(struct sk_buff *skb)
+>         sock_wfree(skb);
+>  }
+>
+> +static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
+> +                                             struct xdp_desc *desc)
+> +{
+> +       u32 len, offset, copy, copied;
+> +       struct sk_buff *skb;
+> +       struct page *page;
+> +       char *buffer;
+> +       int err, i;
+> +       u64 addr;
+> +
+> +       skb = sock_alloc_send_skb(&xs->sk, 0, 1, &err);
+> +       if (unlikely(!skb))
+> +               return NULL;
+> +
+> +       addr = desc->addr;
+> +       len = desc->len;
+> +
+> +       buffer = xsk_buff_raw_get_data(xs->pool, addr);
+> +       offset = offset_in_page(buffer);
+> +       addr = buffer - (char *)xs->pool->addrs;
+> +
+> +       for (copied = 0, i = 0; copied < len; ++i) {
+> +               page = xs->pool->umem->pgs[addr >> PAGE_SHIFT];
+> +
+> +               get_page(page);
+> +
+> +               copy = min((u32)(PAGE_SIZE - offset), len - copied);
+> +
+> +               skb_fill_page_desc(skb, i, page, offset, copy);
+> +
+> +               copied += copy;
+> +               addr += copy;
+> +               offset = 0;
+> +       }
+> +
+> +       skb->len += len;
+> +       skb->data_len += len;
+> +       skb->truesize += len;
+> +
+> +       refcount_add(len, &xs->sk.sk_wmem_alloc);
+> +
+> +       return skb;
+> +}
+> +
+> +static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+> +                                    struct xdp_desc *desc, int *err)
+> +{
+> +       struct sk_buff *skb;
+> +
+> +       if (xs->dev->features & NETIF_F_SKB_NO_LINEAR) {
+> +               skb = xsk_build_skb_zerocopy(xs, desc);
+> +               if (unlikely(!skb)) {
+> +                       *err = -ENOMEM;
+> +                       return NULL;
+> +               }
+> +       } else {
+> +               char *buffer;
+> +               u64 addr;
+> +               u32 len;
+> +               int err;
+> +
+> +               len = desc->len;
+> +               skb = sock_alloc_send_skb(&xs->sk, len, 1, &err);
+> +               if (unlikely(!skb)) {
+> +                       *err = -ENOMEM;
+> +                       return NULL;
+> +               }
+> +
+> +               skb_put(skb, len);
+> +               addr = desc->addr;
+> +               buffer = xsk_buff_raw_get_data(xs->pool, desc->addr);
+> +               err = skb_store_bits(skb, 0, buffer, len);
+> +
+> +               if (unlikely(err)) {
+> +                       kfree_skb(skb);
+> +                       *err = -EINVAL;
+> +                       return NULL;
+> +               }
+> +       }
+> +
+> +       skb->dev = xs->dev;
+> +       skb->priority = xs->sk.sk_priority;
+> +       skb->mark = xs->sk.sk_mark;
+> +       skb_shinfo(skb)->destructor_arg = (void *)(long)desc->addr;
+> +       skb->destructor = xsk_destruct_skb;
+> +
+> +       return skb;
+> +}
+> +
+>  static int xsk_generic_xmit(struct sock *sk)
+>  {
+>         struct xdp_sock *xs = xdp_sk(sk);
+> @@ -446,43 +535,28 @@ static int xsk_generic_xmit(struct sock *sk)
+>                 goto out;
+>
+>         while (xskq_cons_peek_desc(xs->tx, &desc, xs->pool)) {
+> -               char *buffer;
+> -               u64 addr;
+> -               u32 len;
+> -
+>                 if (max_batch-- == 0) {
+>                         err = -EAGAIN;
+>                         goto out;
+>                 }
+>
+> -               len = desc.len;
+> -               skb = sock_alloc_send_skb(sk, len, 1, &err);
+> +               skb = xsk_build_skb(xs, &desc, &err);
+>                 if (unlikely(!skb))
+>                         goto out;
+>
+> -               skb_put(skb, len);
+> -               addr = desc.addr;
+> -               buffer = xsk_buff_raw_get_data(xs->pool, addr);
+> -               err = skb_store_bits(skb, 0, buffer, len);
+>                 /* This is the backpressure mechanism for the Tx path.
+>                  * Reserve space in the completion queue and only proceed
+>                  * if there is space in it. This avoids having to implement
+>                  * any buffering in the Tx path.
+>                  */
+>                 spin_lock_irqsave(&xs->pool->cq_lock, flags);
+> -               if (unlikely(err) || xskq_prod_reserve(xs->pool->cq)) {
+> +               if (xskq_prod_reserve(xs->pool->cq)) {
+>                         spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
+>                         kfree_skb(skb);
+>                         goto out;
+>                 }
+>                 spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
+>
+> -               skb->dev = xs->dev;
+> -               skb->priority = sk->sk_priority;
+> -               skb->mark = sk->sk_mark;
+> -               skb_shinfo(skb)->destructor_arg = (void *)(long)desc.addr;
+> -               skb->destructor = xsk_destruct_skb;
+> -
+>                 err = __dev_direct_xmit(skb, xs->queue_id);
+>                 if  (err == NETDEV_TX_BUSY) {
+>                         /* Tell user-space to retry the send */
+> --
+> 1.8.3.1
+>
