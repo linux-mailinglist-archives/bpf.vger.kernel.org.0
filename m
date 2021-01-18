@@ -2,117 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE6712FA50C
-	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 16:46:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A132FA5D0
+	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 17:17:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728289AbhARPp2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Jan 2021 10:45:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41858 "EHLO
+        id S2406012AbhARQPI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jan 2021 11:15:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393519AbhARPo1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Jan 2021 10:44:27 -0500
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F213C061757
-        for <bpf@vger.kernel.org>; Mon, 18 Jan 2021 07:43:42 -0800 (PST)
-Received: by mail-io1-xd2d.google.com with SMTP id q2so31901834iow.13
-        for <bpf@vger.kernel.org>; Mon, 18 Jan 2021 07:43:42 -0800 (PST)
+        with ESMTP id S2406169AbhARP7u (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Jan 2021 10:59:50 -0500
+Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7BE4C061757
+        for <bpf@vger.kernel.org>; Mon, 18 Jan 2021 07:59:07 -0800 (PST)
+Received: by mail-wr1-x44a.google.com with SMTP id u29so8545042wru.6
+        for <bpf@vger.kernel.org>; Mon, 18 Jan 2021 07:59:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9u33B5kpdx78LRxtPzxqjXDA4O8vMwb9b3mNJEnT53c=;
-        b=K463mC5DkZYkZN1sdYteF8BEn4+WZfjSGyZ5gih+OpCjTeiv7CfmbB92JnSmLU9FFs
-         WvsumAb4sJiygLufQG4CyDBYL1MqkSNOXFBRfJdPw15GypkdbOLgeOBazewURA4xZbgc
-         OlJwCaHx/0dVf6DsYMA07M590tjagAx/wCi6EvhSvYpGCxglYXVTsLpx5erGjXpuTVuP
-         tTzD9CHdzHAL97EYo+9r/C08m99Jknp15513YhRK3BjPfZ5baUlqbOO9xHjUPdJhrkx3
-         wTxc4o0U0caSFtlx4gvKViteDNPHMVexybJXsQrw4574nERjcdFr8nahuQaSBk7vSzXa
-         JJHw==
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=tg+3NwgpjPXKCAU0OOKW/4MEsOw9C1yX+SHheX6GzNo=;
+        b=OeEk33HaH6Hbiu6I+b1Q7FWYeeSPLEzZbksFKDPfTxJvMz2iziNXp8justgb+/qOO2
+         BmCttwyKayBP3uDNYOUfVlj70h4U62BnyWDdecRhbaiNKeULfiq0So6sBAE6CsF/IOtW
+         Yy6TW52Hv4v0RnU27FQzOf6ha3Ey7GE/vNnDFqJaPi1WSwUEzdaiRL3OPPHrEqYbLCDN
+         VK8ebVEgHFqFH7Evop0hPWI/SmRGX0JcRkqwiX6zWXcPQXSI+/ZvW6zcdlux8HW2w5KZ
+         TSdj/4ofx+XLW6B5MF+TKyrhDGKP5C47CVeyVsDxLS9F2b7KXXgQ9l+V6MIxdYtetGu+
+         kzZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9u33B5kpdx78LRxtPzxqjXDA4O8vMwb9b3mNJEnT53c=;
-        b=Dg9zjMZJt46dYckRgL3lW9M8BZRESDsaqLDF+Jxa1TvfrhNHD8FyBFbGl37ea6la1o
-         pUrQD/DKEVQGWC23p83mM74glF1QEusJxp4qFtnsv7sNz824oHGTqz+sY2HcR1B6ll2r
-         Wkf/uA0wLYeXRsSKYmB9HcIe6P3BE3DT8f28LGyPtGWQ1zXbUJrErN5gu3If/eHB6d5A
-         KLsne22Hlg1iyc3fsaaZ7th4GXlGJ95X5fM2GtT39vgJ60V5SGysUPyll2ugh+pL3cuN
-         Q7p6HMxLO46hL9dfwEoUpXqaVdL99NPdPqvGcj7DNRJtTiSWndLlNq5mtq8aMUqTerbZ
-         KlfA==
-X-Gm-Message-State: AOAM532Lsc09Inh7ibxNTHNODqICFWI3oNa5chZDw4aTXbDj3fJU6nGX
-        nK2aXkT23ySUP501gKge8WWlo8r1EDJ7DKPd+ESvFsD26yn+Y6WJ
-X-Google-Smtp-Source: ABdhPJxDyXaADFQRXUGcJ2y43BFgKdVm500B4s+VL7OQwM+f1n0E1PgN7J+UoNfmHAQ0FMFrJjr1R4ZLZ2P8kE6YdBQ=
-X-Received: by 2002:a02:1dca:: with SMTP id 193mr119411jaj.39.1610984621544;
- Mon, 18 Jan 2021 07:43:41 -0800 (PST)
-MIME-Version: 1.0
-References: <20210118113643.232579-1-jackmanb@google.com> <20210118083306.4c16153d@lwn.net>
-In-Reply-To: <20210118083306.4c16153d@lwn.net>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=tg+3NwgpjPXKCAU0OOKW/4MEsOw9C1yX+SHheX6GzNo=;
+        b=HZgmeI7J1bF6jTiE29F9YlSVcQXDNtCZC+GgpFLMUz4OLSdHICCvLGecfa71UmcTCt
+         b/naOokYizSh34fjezKqIP9UqGq0vuHHZaw6r48kWmCp3bh1wTQij33CXcgPuyBs369U
+         2/87Wkv/gk0MW1EJ1xhMn/aK7EJhmPJXujb0NJFgoRi8JtT5zkGUuBbaXsguulNm2ild
+         no+RlIB4Kal98tG9lyd0Nv0lfd9GEhpK37H/hL/EiIWGMDYPS0f/zHJ4I04LRhmpSaBf
+         NxZuGlcOvMD0JwaKXY9BFfghmUmJIQYhFcP63a7zAdDpH8fNnIC7zFAWFro8k+blTske
+         RD6w==
+X-Gm-Message-State: AOAM533YqjMKMUr1NEOg674DbOjf9wIGFiWaRXnGwClAeHvQfrpMVDoJ
+        ietRSbBMvuCnd9Gk7wmjTqKbEJPUdLkTILHeQWk5P/Da450fnm1P63Bhc4jysrEotg9M6n8emiC
+        wbnUZfN+gZeiiJdIpsaJ7CKwxJ4oI4S6ZRpe+9BqHLzP/a4pkBLckaymxkwqEwck=
+X-Google-Smtp-Source: ABdhPJzdYAbwQUMFF8aREpbLcgNopt2loRgSAlU+AdqVByyRoMPeOOxoouLImEHuyt7wAIwdpW2ivErXPiz1Gg==
+Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
+X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
+ (user=jackmanb job=sendgmr) by 2002:a1c:2c89:: with SMTP id
+ s131mr54945wms.0.1610985545503; Mon, 18 Jan 2021 07:59:05 -0800 (PST)
+Date:   Mon, 18 Jan 2021 15:57:33 +0000
+Message-Id: <20210118155735.532663-1-jackmanb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+Subject: [PATCH bpf-next v2 0/2] BPF docs fixups
 From:   Brendan Jackman <jackmanb@google.com>
-Date:   Mon, 18 Jan 2021 16:43:30 +0100
-Message-ID: <CA+i-1C1LVKjfQLBYk6siiqhxfy0jCR7UBcAmJ4jCED0A9aWsxA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] docs: bpf: Fixup atomics documentation
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
         Florent Revest <revest@chromium.org>,
         Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Brendan Jackman <jackmanb@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Thanks for the review :)
+Difference from v1->v2 [1]:
 
-On Mon, 18 Jan 2021 at 16:33, Jonathan Corbet <corbet@lwn.net> wrote:
->
-> On Mon, 18 Jan 2021 11:36:43 +0000
-> Brendan Jackman <jackmanb@google.com> wrote:
->
-> > This fixues up the markup to fix a warning, be more consistent with
-> > use of monospace, and use the correct .rst syntax for <em> (* instead
-> > of _). It also clarifies the explanation of Clang's -mcpu
-> > requirements for this feature, Alexei pointed out that use of the
-> > word "version" was confusing here.
->
-> This starts to sound like material for more than one patch...?
+ * Split into 2 patches
 
-Good point, I'll split the markup fixups and actual content change
-into separate patches.
+ * Avoided unnecessary ': ::' in .rst source
 
-> > NB this conflicts with Lukas' patch at [1], here where I've added
-> > `::` to fix the warning, I also kept the original ':' which appears
-> > in the output text.
->
-> And why did you do that?
+ * Tweaked wording of the -mcpu=v3 bit a little more
 
-Hmm, indeed looks like that isn't necessary as long as there are no
-spaces between the previous character and the '::'.
+[1] https://lore.kernel.org/bpf/CA+i-1C1LVKjfQLBYk6siiqhxfy0jCR7UBcAmJ4jCED0A9aWsxA@mail.gmail.com/T/#t
 
-v2 incoming...
+Brendan Jackman (2):
+  docs: bpf: Fixup atomics markup
+  docs: bpf: Clarify -mcpu=v3 requirement for atomic ops
 
-> > [1] https://lore.kernel.org/bpf/CA+i-1C3cEXqxcXfD4sibQfx+dtmmzvOzruhk8J5pAw3g5v=KgA@mail.gmail.com/T/#t
-> >
-> > Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> > ---
-> >  Documentation/networking/filter.rst | 30 +++++++++++++++--------------
-> >  1 file changed, 16 insertions(+), 14 deletions(-)
-> >
-> > diff --git a/Documentation/networking/filter.rst b/Documentation/networking/filter.rst
-> > index f6d8f90e9a56..ba03e90a9163 100644
-> > --- a/Documentation/networking/filter.rst
-> > +++ b/Documentation/networking/filter.rst
-> > @@ -1048,12 +1048,12 @@ Unlike classic BPF instruction set, eBPF has generic load/store operations::
-> >  Where size is one of: BPF_B or BPF_H or BPF_W or BPF_DW.
-> >
-> >  It also includes atomic operations, which use the immediate field for extra
-> > -encoding.
-> > +encoding: ::
->
-> Things like this read really strangely.  Just say "encoding::" and be done
-> with it, please.
->
-> Thanks,
->
-> jon
+ Documentation/networking/filter.rst | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
+
+
+base-commit: 232164e041e925a920bfd28e63d5233cfad90b73
+--
+2.30.0.284.gd98b1dd5eaa7-goog
+
