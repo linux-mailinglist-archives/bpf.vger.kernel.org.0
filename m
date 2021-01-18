@@ -2,155 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 366BA2F9D3B
-	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 11:54:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07C902F9D5B
+	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 12:00:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388798AbhARKxn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Jan 2021 05:53:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24901 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389373AbhARKtI (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 18 Jan 2021 05:49:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610966858;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/MzfUv9/jKvqEF4ZTmuMYIoQp/fWMlEtFbHKH8C4Hos=;
-        b=FvgZFTGk2TRXMn2XYRBVSp7oFffb5ClM9JSv/vPeORQcOaw7lwShBmxT/pFSyl4T5E0jEw
-        5EoNXh5/HfQ5TNgiVsa+tQM29Jd2nmcLLpl2gEjsmpPXjHd98EygG7iS1eARGB6w3HaZHc
-        DcmMNfklL2CTYxQ0kZ5gr4ujK57QoAA=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-531-7H9ZUQ5tPxCFEDQbtsAz0g-1; Mon, 18 Jan 2021 05:47:36 -0500
-X-MC-Unique: 7H9ZUQ5tPxCFEDQbtsAz0g-1
-Received: by mail-ej1-f72.google.com with SMTP id h18so1717745ejx.17
-        for <bpf@vger.kernel.org>; Mon, 18 Jan 2021 02:47:36 -0800 (PST)
+        id S2389520AbhARK65 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jan 2021 05:58:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389685AbhARK6w (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Jan 2021 05:58:52 -0500
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51A2FC061574
+        for <bpf@vger.kernel.org>; Mon, 18 Jan 2021 02:58:12 -0800 (PST)
+Received: by mail-io1-xd2d.google.com with SMTP id n2so14778615iom.7
+        for <bpf@vger.kernel.org>; Mon, 18 Jan 2021 02:58:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=N0XJonBpSyKApClVc8rxeObW+thdWbkeBXzIT5gyi4Y=;
+        b=uJEJBtOg7muoVHlHZdfnotlFA28g1omo+d9pcxHfeH/+kjkkzvPoIUoPnIthuXA62d
+         WVKnFssY1I4ANlSASkBTGyWUwanQkIXc1D9razDzY7YD9tAHkqdIbH5thtuDn27RAkWa
+         7RRts3PMw+nOIPI6vPRZh6MDc6hhHi1g9XcLJYSLlb3WywC9hlNcRlX7boJTUS5kMfAs
+         EG2xriyIvhFREXgljKtxYGBv6jf9tz7nt/bR5IXq5lQl3rB7reupiPM+ygtkhPraUVly
+         m2+K54ISg9Y+l2QfltmXXfKUVweT9y9jinTMIQy0ohx8ioW7WLdUr1yqr/ywakZ6DDIa
+         Pt+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=/MzfUv9/jKvqEF4ZTmuMYIoQp/fWMlEtFbHKH8C4Hos=;
-        b=bLVk47btAmia3ZoGs5QJfXU+7q+cGBN/2iOcDrRH+ILzaz/lwGHyxjlga0NhD8r5mI
-         zHovIyvSsgOzehFyilsnryPA2HrK8Iq4mqNi/zBjYIwX7jR3F0OUx8ml9HGIEBjfXrab
-         R7wa2iHq/007kmYwDTqsfirfZNzXbsrygpzarnC8/CdQje+zd7rEkBf+laDzIsFQLGnS
-         su5M5DGL7nqVeL4Y6f/52PnGyk/f+r03S97x1yU19EjRjOTxoXC0gYa41JPEpKHGsA18
-         AK9LtmVdffQ1dvucuVylibA7YYW7PnzRsrwYBzYx6oL4bVim7krgICdcb3TVetliEBqF
-         lUmw==
-X-Gm-Message-State: AOAM531TYXO031/DOMyFgyS1TMtrL68ZQnEtDr0Pj4GUn0uCt1f7qMg0
-        SpQf2wMkb30cvZLggvPPzInuBzXq9qJErxBtVPQ9vmX1R16ws0gOH8kfbDpLnh4ImhO3vKkfYBb
-        BsqTBX2CuYuuu
-X-Received: by 2002:a17:906:e28a:: with SMTP id gg10mr16747077ejb.11.1610966855195;
-        Mon, 18 Jan 2021 02:47:35 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzebWqXrhk+OFWqMpUDb3QqjqXHXnEcvT1SZQB/rBbxscv1nFIC3o9RvvQulWamTTGe2/TYFA==
-X-Received: by 2002:a17:906:e28a:: with SMTP id gg10mr16747063ejb.11.1610966854878;
-        Mon, 18 Jan 2021 02:47:34 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id bn21sm9255758ejb.47.2021.01.18.02.47.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Jan 2021 02:47:34 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id B98FE18032D; Mon, 18 Jan 2021 11:47:33 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Hangbin Liu <liuhangbin@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Jiri Benc <jbenc@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        David Ahern <dsahern@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Subject: Re: [PATCHv14 bpf-next 3/6] xdp: add a new helper for dev map
- multicast support
-In-Reply-To: <20210118084455.GE1421720@Leo-laptop-t470s>
-References: <20201221123505.1962185-1-liuhangbin@gmail.com>
- <20210114142321.2594697-1-liuhangbin@gmail.com>
- <20210114142321.2594697-4-liuhangbin@gmail.com>
- <6004d200d0d10_266420825@john-XPS-13-9370.notmuch>
- <20210118084455.GE1421720@Leo-laptop-t470s>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 18 Jan 2021 11:47:33 +0100
-Message-ID: <871reir06y.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=N0XJonBpSyKApClVc8rxeObW+thdWbkeBXzIT5gyi4Y=;
+        b=D37ge6rT9k4l0AgCWYGRRWXylHFS8LOQRbuADnPeAOW60yugsHXJuo0EUMWvSL5fXz
+         dO6KujjMRFMc6acwyaJI+TJmd78j2dSiZQAdGlnUKod3/VLNTLdqUF7g6yr2dWjmGcdk
+         wUMwP2zBBstVy0TiqOUsNOt8UBGAnmZF9PMkinMG7Om9wTFHdM+DiIU7v7IkGBi5zBAz
+         7gfVnCjl3zi4wE9V2Yuz3TGa7SopPKr3gJOtPrkwHj/2sXqPIt2kItjog8rgWe/tHnz/
+         Sri8QYZfFoZmDu5ncZPjHL5cbhczULwF9bwT34a3Qb22RZw6se+nbYI0IwNJB7KtnJrG
+         LVXw==
+X-Gm-Message-State: AOAM532jpXmYwExw6xt+kUVxNwLEEQc69XrbQ80l763JDuIChkPofT2Q
+        jsu0cc9Y/GwQs93r3gqeGZwFaI7NSe5vOgXXG4m/Yg==
+X-Google-Smtp-Source: ABdhPJym0NYTNBaKPq7roem+KfAKnoL7dJJJH20c9N5Z5QxImNW6J0z00eX3PWCrspM1ObNnQmk2OGkGdN2fkNFGENY=
+X-Received: by 2002:a05:6e02:194a:: with SMTP id x10mr20363981ilu.165.1610967491105;
+ Mon, 18 Jan 2021 02:58:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210118091753.107572-1-bjorn.topel@gmail.com>
+In-Reply-To: <20210118091753.107572-1-bjorn.topel@gmail.com>
+From:   Brendan Jackman <jackmanb@google.com>
+Date:   Mon, 18 Jan 2021 11:57:59 +0100
+Message-ID: <CA+i-1C1A6wdv3vh4=qLsc6GoOSiD=Wc_oe=PhWKE6tHZ_NQnsg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] samples/bpf: add BPF_ATOMIC_OP macro for BPF samples
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        magnus.karlsson@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hangbin Liu <liuhangbin@gmail.com> writes:
+I actually deliberately skipped this file, thinking that people were
+unlikely to want to add assembly-based atomics code under samples/
 
-> Hi John,
->
-> Thanks for the reviewing.
->
-> On Sun, Jan 17, 2021 at 04:10:40PM -0800, John Fastabend wrote:
->> > + * 		The forwarding *map* could be either BPF_MAP_TYPE_DEVMAP or
->> > + * 		BPF_MAP_TYPE_DEVMAP_HASH. But the *ex_map* must be
->> > + * 		BPF_MAP_TYPE_DEVMAP_HASH to get better performance.
->> 
->> Would be good to add a note ex_map _must_ be keyed by ifindex for the
->> helper to work. Its the obvious way to key a hashmap, but not required
->> iirc.
->
-> OK, I will.
->> > +		if (!next_obj)
->> > +			last_one = true;
->> > +
->> > +		if (last_one) {
->> > +			bq_enqueue(obj->dev, xdpf, dev_rx, obj->xdp_prog);
->> > +			return 0;
->> > +		}
->> 
->> Just collapse above to
->> 
->>   if (!next_obj) {
->>         bq_enqueue()
->>         return
->>   }
->> 
->> 'last_one' is a bit pointless here.
->
-> Yes, thanks.
->
->> > @@ -3986,12 +3993,14 @@ int xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
->> >  {
->> >  	struct bpf_redirect_info *ri = this_cpu_ptr(&bpf_redirect_info);
->> >  	struct bpf_map *map = READ_ONCE(ri->map);
->> > +	struct bpf_map *ex_map = ri->ex_map;
->> 
->> READ_ONCE(ri->ex_map)?
->> 
->> >  	u32 index = ri->tgt_index;
->> >  	void *fwd = ri->tgt_value;
->> >  	int err;
->> >  
->> >  	ri->tgt_index = 0;
->> >  	ri->tgt_value = NULL;
->> > +	ri->ex_map = NULL;
->> 
->> WRITE_ONCE(ri->ex_map)?
->> 
->> >  	WRITE_ONCE(ri->map, NULL);
->> 
->> So we needed write_once, read_once pairs for ri->map do we also need them in
->> the ex_map case?
->
-> Toke said this is no need for this read/write_once as there is already one.
->
-> https://lore.kernel.org/bpf/87r1wd2bqu.fsf@toke.dk/
+I guess it's nice for people to be able to e.g. move/copy code from
+the selftests.
 
-And then I corrected that after I figured out the real reason :)
+On Mon, 18 Jan 2021 at 10:18, Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com>=
+ wrote:
+>
+> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+>
+> Brendan Jackman added extend atomic operations to the BPF instruction
+> set in commit 7064a7341a0d ("Merge branch 'Atomics for eBPF'"), which
+> introduces the BPF_ATOMIC_OP macro. However, that macro was missing
+> for the BPF samples. Fix that by adding it into bpf_insn.h.
+>
+> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
 
-https://lore.kernel.org/bpf/878si2h3sb.fsf@toke.dk/ - Quote:
+Reviewed-by: Brendan Jackman <jackmanb@google.com>
 
-> The READ_ONCE() is not needed because the ex_map field is only ever read
-> from or written to by the CPU owning the per-cpu pointer. Whereas the
-> 'map' field is manipulated by remote CPUs in bpf_clear_redirect_map().
-> So you need neither READ_ONCE() nor WRITE_ONCE() on ex_map, just like
-> there are none on tgt_index and tgt_value.
-
--Toke
-
+> ---
+>  samples/bpf/bpf_insn.h | 24 ++++++++++++++++++++----
+>  1 file changed, 20 insertions(+), 4 deletions(-)
+>
+> diff --git a/samples/bpf/bpf_insn.h b/samples/bpf/bpf_insn.h
+> index db67a2847395..aee04534483a 100644
+> --- a/samples/bpf/bpf_insn.h
+> +++ b/samples/bpf/bpf_insn.h
+> @@ -134,15 +134,31 @@ struct bpf_insn;
+>                 .off   =3D OFF,                                   \
+>                 .imm   =3D 0 })
+>
+> -/* Atomic memory add, *(uint *)(dst_reg + off16) +=3D src_reg */
+> -
+> -#define BPF_STX_XADD(SIZE, DST, SRC, OFF)                      \
+> +/*
+> + * Atomic operations:
+> + *
+> + *   BPF_ADD                  *(uint *) (dst_reg + off16) +=3D src_reg
+> + *   BPF_AND                  *(uint *) (dst_reg + off16) &=3D src_reg
+> + *   BPF_OR                   *(uint *) (dst_reg + off16) |=3D src_reg
+> + *   BPF_XOR                  *(uint *) (dst_reg + off16) ^=3D src_reg
+> + *   BPF_ADD | BPF_FETCH      src_reg =3D atomic_fetch_add(dst_reg + off=
+16, src_reg);
+> + *   BPF_AND | BPF_FETCH      src_reg =3D atomic_fetch_and(dst_reg + off=
+16, src_reg);
+> + *   BPF_OR | BPF_FETCH       src_reg =3D atomic_fetch_or(dst_reg + off1=
+6, src_reg);
+> + *   BPF_XOR | BPF_FETCH      src_reg =3D atomic_fetch_xor(dst_reg + off=
+16, src_reg);
+> + *   BPF_XCHG                 src_reg =3D atomic_xchg(dst_reg + off16, s=
+rc_reg)
+> + *   BPF_CMPXCHG              r0 =3D atomic_cmpxchg(dst_reg + off16, r0,=
+ src_reg)
+> + */
+> +
+> +#define BPF_ATOMIC_OP(SIZE, OP, DST, SRC, OFF)                 \
+>         ((struct bpf_insn) {                                    \
+>                 .code  =3D BPF_STX | BPF_SIZE(SIZE) | BPF_ATOMIC, \
+>                 .dst_reg =3D DST,                                 \
+>                 .src_reg =3D SRC,                                 \
+>                 .off   =3D OFF,                                   \
+> -               .imm   =3D BPF_ADD })
+> +               .imm   =3D OP })
+> +
+> +/* Legacy alias */
+> +#define BPF_STX_XADD(SIZE, DST, SRC, OFF) BPF_ATOMIC_OP(SIZE, BPF_ADD, D=
+ST, SRC, OFF)
+>
+>  /* Memory store, *(uint *) (dst_reg + off16) =3D imm32 */
+>
+>
+> base-commit: 232164e041e925a920bfd28e63d5233cfad90b73
+> --
+> 2.27.0
+>
