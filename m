@@ -2,126 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30ED32FA4A2
-	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 16:28:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70D132FA541
+	for <lists+bpf@lfdr.de>; Mon, 18 Jan 2021 16:56:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405021AbhARP0y (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 18 Jan 2021 10:26:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393470AbhARPZC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 18 Jan 2021 10:25:02 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBDE2C061574
-        for <bpf@vger.kernel.org>; Mon, 18 Jan 2021 07:24:21 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id h11so4429808ioh.11
-        for <bpf@vger.kernel.org>; Mon, 18 Jan 2021 07:24:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=kl7BZu/lbfG/R7qwSgFy/xiRJpEwm0ukP4E7k/6e3JA=;
-        b=oEnQ9LbYzxgy3Qkul3X03Z1WSt6C3z0fEgM98aZ+Xn/O34zwbFxJZ1b1yD4aMGIOEq
-         cDOK8fl4ccMiOwzDKEbRGzhvocCutwU4ueb+tYZCkrqiNAyrS2AlgwAoNDZC0SgFxZLi
-         v+y1eysRn+JqoZcx9CG/USjB7tqh4Zbv+N4Xz5Pq8b4+1fz6VhcM/4e0f3Hxme7j0hKS
-         XehWSn5GSft/AB0IIsnnetbdk4xJtfIrp55T70Qj+zCHba0UI8SWftin8Xh+8x77qg7R
-         bkwiHJhPg6bgPfPiTbSnEIpaTnwbFMthfZJuhXi2D2ORHJSIqBWlvMz80DSIk/ROW3qW
-         iKZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=kl7BZu/lbfG/R7qwSgFy/xiRJpEwm0ukP4E7k/6e3JA=;
-        b=MtT6Dl1KkraOnKrThPprFeEXjHQ1zjblEBIhcbpaSfaBzS47ws2tudVcwVvxn/Mxc6
-         hblAMucoP9GI5aMk1F6ZGrepG1qke+a5JhU9VXu/l7wUhat2Y5hD1qCLhyjPwkFcDVgT
-         dV7A2WK9enD653Z0c77rbyTwF2BHytaxr2JQHvJ4ijZLmF7cM2tlrW76dsb8YVg1cU8m
-         VT/GRk5XwMeAiLpAy3qvvC+rE0A8XDCRuh28wxud/QJ1b5UGreUCXkrXWPw9e/GsCRDi
-         BalWnjVh2XoipHISbAuu60E5v2rNUEelxax9Ap3U7dMZ4dGwIkKr/pA+9fgGYv0KrQSV
-         PJbw==
-X-Gm-Message-State: AOAM53016LLzRg9e2aJGsIutT+z0kXe7moI1SVixQr9sOdtIF6Ly/Pl5
-        lHvfy7V3teYZ0B6BDJxDK0m9rN2M5TVNHaipvPd01w==
-X-Google-Smtp-Source: ABdhPJxV58bfAmS/jY41Uns2ceyjKGDaJPgMXl52CZfjrtFkgtZde98+ncyez8PJdyto/CRVIbTHSSfodRetoOs/u+0=
-X-Received: by 2002:a05:6e02:c0f:: with SMTP id d15mr21389627ile.263.1610983461039;
- Mon, 18 Jan 2021 07:24:21 -0800 (PST)
+        id S2393435AbhARPYZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 18 Jan 2021 10:24:25 -0500
+Received: from mga02.intel.com ([134.134.136.20]:63476 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2393431AbhARPYW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 18 Jan 2021 10:24:22 -0500
+IronPort-SDR: wCVvfzh0KDuFoouLFXJwC/WHDg9K3otqW2cNrP2LE3yn1vyg7pZQKnN0vPM+1cJcK7XTFL2ZTx
+ tiXV5PyXXV9w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9867"; a="165905514"
+X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
+   d="scan'208";a="165905514"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jan 2021 07:23:03 -0800
+IronPort-SDR: Svm4C2oTnqmgVefwqsvjsAaIAgHNe86gHgU9NshqdyQ8B9QKOBFMAeDZaqmVCTYKL9SNw0uauF
+ ddNBa7QeSp1A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,356,1602572400"; 
+   d="scan'208";a="500676335"
+Received: from ranger.igk.intel.com ([10.102.21.164])
+  by orsmga004.jf.intel.com with ESMTP; 18 Jan 2021 07:23:01 -0800
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     intel-wired-lan@lists.osuosl.org
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        anthony.l.nguyen@intel.com, kuba@kernel.org, bjorn.topel@intel.com,
+        magnus.karlsson@intel.com,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: [PATCH v3 net-next 04/11] ice: simplify ice_run_xdp
+Date:   Mon, 18 Jan 2021 16:13:11 +0100
+Message-Id: <20210118151318.12324-5-maciej.fijalkowski@intel.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210118151318.12324-1-maciej.fijalkowski@intel.com>
+References: <20210118151318.12324-1-maciej.fijalkowski@intel.com>
 MIME-Version: 1.0
-References: <20210118144101.01a5d410@carbon> <CA+i-1C1Te+c876s3JYSE6o7fw+TaTbC7TnMmyw8kx5Tg1jUxNw@mail.gmail.com>
- <20210118153745.21b9727e@carbon>
-In-Reply-To: <20210118153745.21b9727e@carbon>
-From:   Brendan Jackman <jackmanb@google.com>
-Date:   Mon, 18 Jan 2021 16:24:10 +0100
-Message-ID: <CA+i-1C1f2UUc=iuhQzus9iVrftHWonyPRB8pZhz2HKfKg6uKuw@mail.gmail.com>
-Subject: Re: Issues compiling selftests XADD - "Invalid usage of the XADD
- return value"
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        BPF-dev-list <bpf@vger.kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Veronika Kabatova <vkabatov@redhat.com>,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>,
-        Stanislav Kozina <skozina@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 18 Jan 2021 at 15:38, Jesper Dangaard Brouer <brouer@redhat.com> wr=
-ote:
-> I'm compiling from LLVM 'main' branch (commit e6d758de82b6) but it
-> unfortunately fails to compile (see error below).
->
-> Any recommended LLVM commit id that works?
+There's no need for 'result' variable, we can directly return the
+internal status based on action returned by xdp prog.
 
-:(
+Reviewed-by: Björn Töpel <bjorn.topel@intel.com>
+Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+---
+ drivers/net/ethernet/intel/ice/ice_txrx.c | 15 +++++----------
+ 1 file changed, 5 insertions(+), 10 deletions(-)
 
-I'm on 6f4ee6f87060 and things are working.
+diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/ethernet/intel/ice/ice_txrx.c
+index 422f53997c02..dc1ad45eac8d 100644
+--- a/drivers/net/ethernet/intel/ice/ice_txrx.c
++++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
+@@ -537,22 +537,20 @@ static int
+ ice_run_xdp(struct ice_ring *rx_ring, struct xdp_buff *xdp,
+ 	    struct bpf_prog *xdp_prog)
+ {
+-	int err, result = ICE_XDP_PASS;
+ 	struct ice_ring *xdp_ring;
++	int err;
+ 	u32 act;
+ 
+ 	act = bpf_prog_run_xdp(xdp_prog, xdp);
+ 	switch (act) {
+ 	case XDP_PASS:
+-		break;
++		return ICE_XDP_PASS;
+ 	case XDP_TX:
+ 		xdp_ring = rx_ring->vsi->xdp_rings[smp_processor_id()];
+-		result = ice_xmit_xdp_buff(xdp, xdp_ring);
+-		break;
++		return ice_xmit_xdp_buff(xdp, xdp_ring);
+ 	case XDP_REDIRECT:
+ 		err = xdp_do_redirect(rx_ring->netdev, xdp, xdp_prog);
+-		result = !err ? ICE_XDP_REDIR : ICE_XDP_CONSUMED;
+-		break;
++		return !err ? ICE_XDP_REDIR : ICE_XDP_CONSUMED;
+ 	default:
+ 		bpf_warn_invalid_xdp_action(act);
+ 		fallthrough;
+@@ -560,11 +558,8 @@ ice_run_xdp(struct ice_ring *rx_ring, struct xdp_buff *xdp,
+ 		trace_xdp_exception(rx_ring->netdev, xdp_prog, act);
+ 		fallthrough;
+ 	case XDP_DROP:
+-		result = ICE_XDP_CONSUMED;
+-		break;
++		return ICE_XDP_CONSUMED;
+ 	}
+-
+-	return result;
+ }
+ 
+ /**
+-- 
+2.20.1
 
->
-> [...]
-> ../include/llvm/ExecutionEngine/Orc/Shared/RPCUtils.h:1513:27: note: remo=
-ve =E2=80=98std::move=E2=80=99 call
-> ../include/llvm/ExecutionEngine/Orc/Shared/RPCUtils.h:1519:27: warning: m=
-oving a local object in a return statement prevents copy elision [-Wpessimi=
-zing-move]
->  1519 |       return std::move(Err);
->       |                           ^
-> ../include/llvm/ExecutionEngine/Orc/Shared/RPCUtils.h:1519:27: note: remo=
-ve =E2=80=98std::move=E2=80=99 call
-> ../include/llvm/ExecutionEngine/Orc/Shared/RPCUtils.h:1526:29: warning: m=
-oving a local object in a return statement prevents copy elision [-Wpessimi=
-zing-move]
->  1526 |         return std::move(Err);
->       |                             ^
-> ../include/llvm/ExecutionEngine/Orc/Shared/RPCUtils.h:1526:29: note: remo=
-ve =E2=80=98std::move=E2=80=99 call
-> [2237/3183] Building CXX object tools/clang/lib/ASTMatchers/Dynamic/CMake=
-Files/obj.clangDynamicASTMatchers.dir/Registry.cpp.o
-> FAILED: tools/clang/lib/ASTMatchers/Dynamic/CMakeFiles/obj.clangDynamicAS=
-TMatchers.dir/Registry.cpp.o
-> /usr/lib64/ccache/c++  -DGTEST_HAS_RTTI=3D0 -D_GNU_SOURCE -D__STDC_CONSTA=
-NT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS -Itools/clang/lib/AS=
-TMatchers/Dynamic -I/home/jbrouer/git/llvm-project/clang/lib/ASTMatchers/Dy=
-namic -I/home/jbrouer/git/llvm-project/clang/include -Itools/clang/include =
--Iinclude -I/home/jbrouer/git/llvm-project/llvm/include -fPIC -fvisibility-=
-inlines-hidden -Werror=3Ddate-time -Wall -Wextra -Wno-unused-parameter -Wwr=
-ite-strings -Wcast-qual -Wno-missing-field-initializers -pedantic -Wno-long=
--long -Wimplicit-fallthrough -Wno-maybe-uninitialized -Wno-class-memaccess =
--Wno-redundant-move -Wno-noexcept-type -Wdelete-non-virtual-dtor -Wsuggest-=
-override -Wno-comment -fdiagnostics-color -ffunction-sections -fdata-sectio=
-ns -fno-common -Woverloaded-virtual -fno-strict-aliasing -O2 -DNDEBUG    -f=
-no-exceptions -fno-rtti -std=3Dc++14 -MD -MT tools/clang/lib/ASTMatchers/Dy=
-namic/CMakeFiles/obj.clangDynamicASTMatchers.dir/Registry.cpp.o -MF tools/c=
-lang/lib/ASTMatchers/Dynamic/CMakeFiles/obj.clangDynamicASTMatchers.dir/Reg=
-istry.cpp.o.d -o tools/clang/lib/ASTMatchers/Dynamic/CMakeFiles/obj.clangDy=
-namicASTMatchers.dir/Registry.cpp.o -c /home/jbrouer/git/llvm-project/clang=
-/lib/ASTMatchers/Dynamic/Registry.cpp
-> c++: fatal error: Killed signal terminated program cc1plus
-> compilation terminated.
->
-> [2255/3183] Building CXX object tools/clang/lib/ASTMatchers/CMakeFiles/ob=
-j.clangASTMatchers.dir/ASTMatchFinder.cpp.o
->
-> [2262/3183] Building CXX object tools/clang/lib/Sema/CMakeFiles/obj.clang=
-Sema.dir/SemaExpr.cpp.o
-> ninja: build stopped: subcommand failed.
