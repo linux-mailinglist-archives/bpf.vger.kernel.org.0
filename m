@@ -2,108 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FF582FC316
-	for <lists+bpf@lfdr.de>; Tue, 19 Jan 2021 23:14:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE7F12FC41F
+	for <lists+bpf@lfdr.de>; Tue, 19 Jan 2021 23:53:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729576AbhASWNn convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 19 Jan 2021 17:13:43 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:48464 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387688AbhASWNk (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 19 Jan 2021 17:13:40 -0500
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-273-VsBlFKNbPEOzckn92dA08Q-1; Tue, 19 Jan 2021 17:12:43 -0500
-X-MC-Unique: VsBlFKNbPEOzckn92dA08Q-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 32E5A107ACE6;
-        Tue, 19 Jan 2021 22:12:41 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.40.195.212])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 075DA9CA0;
-        Tue, 19 Jan 2021 22:12:37 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        id S1727126AbhASWwO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Jan 2021 17:52:14 -0500
+Received: from mail-40134.protonmail.ch ([185.70.40.134]:25960 "EHLO
+        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404540AbhASO3M (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Jan 2021 09:29:12 -0500
+Date:   Tue, 19 Jan 2021 14:28:06 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1611066490; bh=P38fjPaG9QBqq7nL2IRGN42Iu3wjac94WoOry2utDBM=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=l4Fa1mHECkAkZZ0CFgdT9ywe7ofoL8nHeM9iskoqqPZ5ExFH9EmeinzW+88MIKxmg
+         QaYWlfh4BzZ6rsu/yWFvb10+edslILEVr+ODllqSg5M7IDAymCQ0Vs57yjsOTiv0jQ
+         RdnX2Zy0jou5bIuvA0FVhrerWj2PtThf4JXqrfQ+a9/s+4IMTxAw8zfCuqvTGCirlu
+         CczPZN7ypX8c2o59Sfl85zFF8LgfaX96tkKOOz9Yj8CPy5G1VVnRxWYpeYj3/6GKg0
+         j/Xj320IBrlemkSrNwJgeCT1symzDwFDnBodkVJHmy+FJ3ba0PmozfsPAJJuFWWPgm
+         zwPLUZCtiGB0w==
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, bjorn.topel@intel.com,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Cc:     dwarves@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Yonghong Song <yhs@fb.com>,
-        Hao Luo <haoluo@google.com>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Mark Wielaard <mjw@redhat.com>
-Subject: [PATCH bpf-next 3/3] libbpf: Use string table index from index table if needed
-Date:   Tue, 19 Jan 2021 23:12:20 +0100
-Message-Id: <20210119221220.1745061-4-jolsa@kernel.org>
-In-Reply-To: <20210119221220.1745061-1-jolsa@kernel.org>
-References: <20210119221220.1745061-1-jolsa@kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH bpf-next v2 2/3] virtio-net: support IFF_TX_SKB_NO_LINEAR
+Message-ID: <20210119142726.4970-1-alobakin@pm.me>
+In-Reply-To: <21d2f709140470eb143e3c6c69e2a5dbd20bf2e7.1611048724.git.xuanzhuo@linux.alibaba.com>
+References: <cover.1611048724.git.xuanzhuo@linux.alibaba.com> <21d2f709140470eb143e3c6c69e2a5dbd20bf2e7.1611048724.git.xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=WINDOWS-1252
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-For very large ELF objects (with many sections), we could
-get special value SHN_XINDEX (65535) for elf object's string
-table index - e_shstrndx.
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Date: Tue, 19 Jan 2021 17:45:11 +0800
 
-In such case we need to call elf_getshdrstrndx to get the
-proper string table index.
+> Virtio net supports the case where the skb linear space is empty, so add
+> priv_flags.
+>=20
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> ---
+>  drivers/net/virtio_net.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index ba8e637..80d637f 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -2972,7 +2972,8 @@ static int virtnet_probe(struct virtio_device *vdev=
+)
+>  =09=09return -ENOMEM;
+> =20
+>  =09/* Set up network device as normal. */
+> -=09dev->priv_flags |=3D IFF_UNICAST_FLT | IFF_LIVE_ADDR_CHANGE;
+> +=09dev->priv_flags |=3D IFF_UNICAST_FLT | IFF_LIVE_ADDR_CHANGE |
+> +=09=09IFF_TX_SKB_NO_LINEAR;
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- tools/lib/bpf/btf.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+Please align IFF_TX_SKB_NO_LINEAR to IFF_UNICAST_FLT:
 
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 3c3f2bc6c652..4fe987846bc0 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -863,6 +863,7 @@ static struct btf *btf_parse_elf(const char *path, struct btf *base_btf,
- 	Elf_Scn *scn = NULL;
- 	Elf *elf = NULL;
- 	GElf_Ehdr ehdr;
-+	size_t shstrndx;
- 
- 	if (elf_version(EV_CURRENT) == EV_NONE) {
- 		pr_warn("failed to init libelf for %s\n", path);
-@@ -887,7 +888,16 @@ static struct btf *btf_parse_elf(const char *path, struct btf *base_btf,
- 		pr_warn("failed to get EHDR from %s\n", path);
- 		goto done;
- 	}
--	if (!elf_rawdata(elf_getscn(elf, ehdr.e_shstrndx), NULL)) {
-+
-+	/*
-+	 * Get string table index from extended section index
-+	 * table if needed.
-+	 */
-+	shstrndx = ehdr.e_shstrndx;
-+	if (shstrndx == SHN_XINDEX && elf_getshdrstrndx(elf, &shstrndx))
-+		goto done;
-+
-+	if (!elf_rawdata(elf_getscn(elf, shstrndx), NULL)) {
- 		pr_warn("failed to get e_shstrndx from %s\n", path);
- 		goto done;
- 	}
-@@ -902,7 +912,7 @@ static struct btf *btf_parse_elf(const char *path, struct btf *base_btf,
- 				idx, path);
- 			goto done;
- 		}
--		name = elf_strptr(elf, ehdr.e_shstrndx, sh.sh_name);
-+		name = elf_strptr(elf, shstrndx, sh.sh_name);
- 		if (!name) {
- 			pr_warn("failed to get section(%d) name from %s\n",
- 				idx, path);
--- 
-2.27.0
+=09dev->priv_flags |=3D IFF_UNICAST_FLT | IFF_LIVE_ADDR_CHANGE |
+=09=09=09   IFF_TX_SKB_NO_LINEAR;
+
+>  =09dev->netdev_ops =3D &virtnet_netdev;
+>  =09dev->features =3D NETIF_F_HIGHDMA;
+
+Also, the series you sent is showed up incorrectly on lore.kernel.org
+and patchwork.kernel.org. Seems like you used different To and Cc for
+its parts.
+Please use scripts/get_maintainer.pl to the whole series:
+
+scripts/get_maintainer.pl ../patch-build-skb-by-page/*
+
+And use one list of addresses for every message, so they wouldn't
+lost.
+
+Al
 
