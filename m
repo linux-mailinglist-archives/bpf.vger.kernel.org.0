@@ -2,76 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34AF42FC1BD
-	for <lists+bpf@lfdr.de>; Tue, 19 Jan 2021 22:02:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C77052FC1E9
+	for <lists+bpf@lfdr.de>; Tue, 19 Jan 2021 22:10:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729358AbhASU7R (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Jan 2021 15:59:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51370 "EHLO
+        id S1728654AbhASVHx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Jan 2021 16:07:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727780AbhASUy7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Jan 2021 15:54:59 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A46DC061575;
-        Tue, 19 Jan 2021 12:54:19 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id v24so24420144lfr.7;
-        Tue, 19 Jan 2021 12:54:19 -0800 (PST)
+        with ESMTP id S1729269AbhASVHp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Jan 2021 16:07:45 -0500
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B292C061573;
+        Tue, 19 Jan 2021 13:07:05 -0800 (PST)
+Received: by mail-oi1-x22a.google.com with SMTP id d203so22757605oia.0;
+        Tue, 19 Jan 2021 13:07:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=tq6XGOe+hkhz7vgQz8TvtHNk9IhOBKLE3tUZ5x4o9Xs=;
-        b=LRGbJtSB9JWJKJSjAP+Yw9gAqIxTHG3RYmrD+RZaB2Zuq8Ujh00kZZvrtpyLG2srCC
-         YqTywARBIcanCATZz9fd2+UytoHP3nkQ4OP5GZpjXxKCsuzFJyJiqdTYZQJZovsUm9Xk
-         +PxvQN1FZxb0IpdG22DQ9jBbEdb+q6M4ujGXsFb6c3KmQQeOdCdPvNc42ysreWvuSS9a
-         ASU0BK9SqlNrD+c92MsLvVNeFy7uEcrZH9HhheiCWbvXnF4cAYVzm3Cq8uZj2EIfBrVw
-         FCvQi/CXWQRVksVvg9klEv0MvlcwpYt1qqaQc3W1lgyGsHnuGvN+Ne7qsM8tbXW8Y18Q
-         rN9g==
+        bh=bI9O4gXECEhLzXiXAgFSdcS043puoSoTAoBEYsqI9aU=;
+        b=ZjZ7PtKpisQxNWuNL1Z9j+9dU3KkXBOMLigP4q/hGYf6NbpP5cwrfwcxo6jBZIKREE
+         Md9Yf+DNJ5c8vfMh0Ntp7uKWVRQ65NVycfwpCx1YvkxmzPVC/fuUkbAZUpw7cUqUk5s4
+         YWvIeifAd4efmPIDNsQmQkZKzLioQCzMEkiT8MU51fxwZ87/yXROodLw+TIdwAfTR/jl
+         0l4lLa1M5FCzoyAKTNkUrAP0HqPpXPwkswHoXiI+Kx9wmRjpf8a/TS01Bytzxf1/9TxD
+         k2tUb22p/VvCDj/ymdNdcLQ3WNDXnaf0nxLA/Xgxd1kbXpv+0t9DXXPDt9NexGG9J0nZ
+         VkAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=tq6XGOe+hkhz7vgQz8TvtHNk9IhOBKLE3tUZ5x4o9Xs=;
-        b=qSDb86YrBhPOPhktecnAF4T85PsmSDwGpx+Tit+DXbHVKIYHkjGNTIhFAuAlOnHAJN
-         rh3QR9KVGh2u+jur15B5IgZKJGqTJSdf2+A9t6LUTk7SwdYTX91geWJ00xlrmCcv0Hkj
-         NSQBzSDN6vr3FuEskhDx7uZtOwhv2/Z8vOZRkykmLIblHjXYA68Spt+kgK7pOilPz4P3
-         WkJj7aOVQx1Z9ohWz/FOu7LAxb5TaNM24IS3VEq6eP/RYno/WOpX58RqkINE3UWg2R/f
-         BadX/48/aXvn5Fw0qp8a3b1oGJVBzuuXyPCdE73eaftN8SlFe0xhl1Dn6P6fFYLr8h9M
-         wSwA==
-X-Gm-Message-State: AOAM532eLXx/WTvrzVno8sVopEdfTPqpxeOfTh1qOkC6bVFPU6cAj9gK
-        kYC14hWQh0J4dhXZT3ec23g6O6ypiuq2V0v1XQA=
-X-Google-Smtp-Source: ABdhPJxS/Z+apTdE0WQ6bPYGw6++qlGcLnKdz7x21L/EzsLZbWrHnjX3I5xtwTqUPWm4nP5ujlndUqAZNv9u8jVBwXo=
-X-Received: by 2002:ac2:43c1:: with SMTP id u1mr2721801lfl.38.1611089657945;
- Tue, 19 Jan 2021 12:54:17 -0800 (PST)
+        bh=bI9O4gXECEhLzXiXAgFSdcS043puoSoTAoBEYsqI9aU=;
+        b=bSjKHdt15xfByroLxYUPcKas99qVaEtmy6cLVCDr2X8LSvVroLg8fx1Z9ALb8n9Fzh
+         Uio+kdPI6vaUfQa5AfZQ00tMHey4Pqs2kVblxEf39NO/PVY/SqLJe0ppM2/rwVjxk66l
+         kZOUs7S9+J5DL+6JdMD4WujD+eYN59qLrhJEfNnFqhLgvqLxGQR6cZzatRC15Ep3bFB2
+         yUYSbqaY8lMo5romFpfJHocTdt6bLmDB4/UPKH7bemc05LZAvE7undzhJSNp+sTon51J
+         TrgORwK3XpitBeyRBJ+mYkY3m20Z9dnnFnTZt7ay4qzlMS91ehi9L5tU8Mf8aR9/Yg36
+         o1TA==
+X-Gm-Message-State: AOAM533CqgdN/81meFyrP/ZgQkbBK00ZlylLb2K9szsvNbTcl3iuuPD3
+        6KOWlR3IMs4ge7vk3dYPAxKCfkZhW+9Y2s2mZ6Q=
+X-Google-Smtp-Source: ABdhPJzP8agke9mNUh+M7I02wT86sV46MklTN5fKvkD2sPu5BYLEGSsjobnjjR35YW2jlpeXZtMq+PaezlKIW09AGyo=
+X-Received: by 2002:aca:909:: with SMTP id 9mr1042589oij.69.1611090424693;
+ Tue, 19 Jan 2021 13:07:04 -0800 (PST)
 MIME-Version: 1.0
-References: <20210119102501.511-1-glin@suse.com>
-In-Reply-To: <20210119102501.511-1-glin@suse.com>
+References: <20210119122237.2426878-1-qais.yousef@arm.com>
+In-Reply-To: <20210119122237.2426878-1-qais.yousef@arm.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 19 Jan 2021 12:54:06 -0800
-Message-ID: <CAADnVQLx3cEBNYPHtjE1Hpz393U8R_2xkgzF4Fsm8iNd7GguUw@mail.gmail.com>
-Subject: Re: [PATCH v4 0/3] bpf,x64: implement jump padding in jit
-To:     Gary Lin <glin@suse.com>
+Date:   Tue, 19 Jan 2021 13:06:53 -0800
+Message-ID: <CAADnVQ+6UB42mbWUVPAsPis1DWBP2N=t6yfZZbJqenUNCsd6pg@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 0/2] Allow attaching to bare tracepoints
+To:     Qais Yousef <qais.yousef@arm.com>
 Cc:     Network Development <netdev@vger.kernel.org>,
         bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        andreas.taschner@suse.com
+        Yonghong Song <yhs@fb.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 2:25 AM Gary Lin <glin@suse.com> wrote:
+On Tue, Jan 19, 2021 at 4:22 AM Qais Yousef <qais.yousef@arm.com> wrote:
 >
-> This patch series implements jump padding to x64 jit to cover some
-> corner cases that used to consume more than 20 jit passes and caused
-> failure.
->
-> v4:
->   - Add the detailed comments about the possible padding bytes
->   - Add the second test case which triggers jmp_cond padding and imm32 nop
->     jmp padding.
->   - Add the new test case as another subprog
+> Changes in v3:
+>         * Fix not returning error value correctly in
+>           trigger_module_test_write() (Yonghong)
+>         * Add Yonghong acked-by to patch 1.
 
-Applied. Thanks a ton for all the hard work you put into it.
+Applied. Thanks
