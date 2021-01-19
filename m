@@ -2,273 +2,474 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4078F2FBE11
-	for <lists+bpf@lfdr.de>; Tue, 19 Jan 2021 18:45:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6679D2FBE58
+	for <lists+bpf@lfdr.de>; Tue, 19 Jan 2021 18:57:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732147AbhASPED (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Jan 2021 10:04:03 -0500
-Received: from mail-40134.protonmail.ch ([185.70.40.134]:56469 "EHLO
-        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389227AbhASOoY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Jan 2021 09:44:24 -0500
-Date:   Tue, 19 Jan 2021 14:43:27 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1611067412; bh=hJU3t7jpshkUt0/KD2VNuTu6lnWUQ57cTz2pVJlktr8=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=mmLUNun8OGpBm2R1gKPlGEENYpsNtND6YHumIdxf8Pf+X7Yjvv8PWzUXE9pS0Uu88
-         3kUJ9m1SK64g8zYQarxsP1j5mUswWl2qH8/RoBcpjaw7gb71I3G0d0FbLIyjanseiZ
-         TmA4ky5lrUeLEdP8DBm4BlPZLn4Ul87F8ETSFdtZlEbSM+EyHk0Unj3oRRWcXNpWAR
-         mWhztHtIX9KnuLx+VPMVMjt90ro0egINtFD1xV4LK9ovzISPQcgYa+fdahu2niG5Q1
-         Ngfskb1u+uVDM2PXxi9Ymh4RHrWTMBgHpkDocgac6NRc5rH53/YFjRklSZpVCRwECy
-         q0x2iENCQQfSw==
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, bjorn.topel@intel.com,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S2390432AbhASRx6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Jan 2021 12:53:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43555 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389554AbhASOxQ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 19 Jan 2021 09:53:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611067902;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BKNkpswgF4ho1ugjPpUBFmbhR9aW6QKgYTaaY/T3dEY=;
+        b=WgnxdL3qyZaSE+6MLgAoE5GKKkaLlp4d0E48eIQco/vrMXXflgm9djV3Bm8ez51RjvNzEC
+        eZ8ZCdAhD3ZRE2SoP1dz86QMnEn3QmEu498aZwRkRFxRv9REIOMHs3w1zBV2qDgAivIe3O
+        8FwJANb72R3kdEmGnhtLk4cau3cLMr8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-513-GgdZktNbPGCFnyicnRCr2g-1; Tue, 19 Jan 2021 09:51:40 -0500
+X-MC-Unique: GgdZktNbPGCFnyicnRCr2g-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CE5A3180A092;
+        Tue, 19 Jan 2021 14:51:38 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8715C5D9F8;
+        Tue, 19 Jan 2021 14:51:29 +0000 (UTC)
+Date:   Tue, 19 Jan 2021 15:51:27 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Hangbin Liu <liuhangbin@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH bpf-next v2 3/3] xsk: build skb by page
-Message-ID: <20210119144253.5321-1-alobakin@pm.me>
-In-Reply-To: <017fdff4e061a7e0e779b7bc96ed3b45e07aa006.1611048724.git.xuanzhuo@linux.alibaba.com>
-References: <cover.1611048724.git.xuanzhuo@linux.alibaba.com> <017fdff4e061a7e0e779b7bc96ed3b45e07aa006.1611048724.git.xuanzhuo@linux.alibaba.com>
+        Yonghong Song <yhs@fb.com>,
+        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
+        brouer@redhat.com
+Subject: Re: [PATCHv8 bpf-next] samples/bpf: add xdp program on egress for
+ xdp_redirect_map
+Message-ID: <20210119155127.1f906018@carbon>
+In-Reply-To: <20210119031207.2813215-1-liuhangbin@gmail.com>
+References: <20210115062433.2624893-1-liuhangbin@gmail.com>
+        <20210119031207.2813215-1-liuhangbin@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Date: Tue, 19 Jan 2021 17:45:12 +0800
+On Tue, 19 Jan 2021 11:12:07 +0800
+Hangbin Liu <liuhangbin@gmail.com> wrote:
 
-> This patch is used to construct skb based on page to save memory copy
-> overhead.
->=20
-> This function is implemented based on IFF_TX_SKB_NO_LINEAR. Only the
-> network card priv_flags supports IFF_TX_SKB_NO_LINEAR will use page to
-> directly construct skb. If this feature is not supported, it is still
-> necessary to copy data to construct skb.
->=20
-> ---------------- Performance Testing ------------
->=20
-> The test environment is Aliyun ECS server.
-> Test cmd:
-> ```
-> xdpsock -i eth0 -t  -S -s <msg size>
-> ```
->=20
-> Test result data:
->=20
-> size    64      512     1024    1500
-> copy    1916747 1775988 1600203 1440054
-> page    1974058 1953655 1945463 1904478
-> percent 3.0%    10.0%   21.58%  32.3%
->=20
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
+> This patch add a xdp program on egress to show that we can modify
+> the packet on egress. In this sample we will set the pkt's src
+> mac to egress's mac address. The xdp_prog will be attached when
+> -X option supplied.
+> 
+> Acked-by: Yonghong Song <yhs@fb.com>
+> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+> 
 > ---
->  net/xdp/xsk.c | 112 ++++++++++++++++++++++++++++++++++++++++++++++++----=
-------
->  1 file changed, 94 insertions(+), 18 deletions(-)
->=20
-> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index 8037b04..8c291f8 100644
-> --- a/net/xdp/xsk.c
-> +++ b/net/xdp/xsk.c
-> @@ -430,6 +430,95 @@ static void xsk_destruct_skb(struct sk_buff *skb)
->  =09sock_wfree(skb);
->  }
-> =20
-> +static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
-> +=09=09=09=09=09      struct xdp_desc *desc)
-> +{
-> +=09u32 len, offset, copy, copied;
-> +=09struct sk_buff *skb;
-> +=09struct page *page;
-> +=09char *buffer;
-> +=09int err =3D 0, i;
-> +=09u64 addr;
+> v8: Fix some checkpatch issues.
+> 
+> v7:
+> a) use bpf_object__find_program_by_name() instad of
+>    bpf_object__find_program_by_title()
+> b) set default devmap fd to 0
+> 
+> v6: no code update, only rebase the code on latest bpf-next
+> 
+> v5:
+> a) close fd when err out in get_mac_addr()
+> b) exit program when both -S and -X supplied.
+> 
+> v4:
+> a) Update get_mac_addr socket create
+> b) Load dummy prog regardless of 2nd xdp prog on egress
+> 
+> v3:
+> a) modify the src mac address based on egress mac
+> 
+> v2:
+> a) use pkt counter instead of IP ttl modification on egress program
+> b) make the egress program selectable by option -X
+> ---
+>  samples/bpf/xdp_redirect_map_kern.c |  79 ++++++++++++++--
+>  samples/bpf/xdp_redirect_map_user.c | 140 ++++++++++++++++++++++++----
+>  2 files changed, 193 insertions(+), 26 deletions(-)
+> 
+> diff --git a/samples/bpf/xdp_redirect_map_kern.c b/samples/bpf/xdp_redirect_map_kern.c
+> index 6489352ab7a4..e5c0d07a82d8 100644
+> --- a/samples/bpf/xdp_redirect_map_kern.c
+> +++ b/samples/bpf/xdp_redirect_map_kern.c
+> @@ -19,12 +19,22 @@
+>  #include <linux/ipv6.h>
+>  #include <bpf/bpf_helpers.h>
+>  
+> +/* The 2nd xdp prog on egress does not support skb mode, so we define two
+> + * maps, tx_port_general and tx_port_native.
+> + */
+>  struct {
+>  	__uint(type, BPF_MAP_TYPE_DEVMAP);
+>  	__uint(key_size, sizeof(int));
+>  	__uint(value_size, sizeof(int));
+>  	__uint(max_entries, 100);
+> -} tx_port SEC(".maps");
+> +} tx_port_general SEC(".maps");
 > +
-> +=09skb =3D sock_alloc_send_skb(&xs->sk, 0, 1, &err);
-> +=09if (unlikely(!skb))
-> +=09=09return NULL;
-
-You can propagate err from here to the outer function:
-
-=09if (unlikely(!skb))
-=09=09return ERR_PTR(err);
-
-> +=09addr =3D desc->addr;
-> +=09len =3D desc->len;
+> +struct {
+> +	__uint(type, BPF_MAP_TYPE_DEVMAP);
+> +	__uint(key_size, sizeof(int));
+> +	__uint(value_size, sizeof(struct bpf_devmap_val));
+> +	__uint(max_entries, 100);
+> +} tx_port_native SEC(".maps");
+>  
+>  /* Count RX packets, as XDP bpf_prog doesn't get direct TX-success
+>   * feedback.  Redirect TX errors can be caught via a tracepoint.
+> @@ -36,6 +46,14 @@ struct {
+>  	__uint(max_entries, 1);
+>  } rxcnt SEC(".maps");
+>  
+> +/* map to store egress interface mac address */
+> +struct {
+> +	__uint(type, BPF_MAP_TYPE_ARRAY);
+> +	__type(key, u32);
+> +	__type(value, __be64);
+> +	__uint(max_entries, 1);
+> +} tx_mac SEC(".maps");
 > +
-> +=09buffer =3D xsk_buff_raw_get_data(xs->pool, addr);
-> +=09offset =3D offset_in_page(buffer);
-> +=09addr =3D buffer - (char *)xs->pool->addrs;
-> +
-> +=09for (copied =3D 0, i =3D 0; copied < len; ++i) {
-
-i++ would be less confusing here. You build skb frags from frag 0
-anyway.
-
-> +=09=09page =3D xs->pool->umem->pgs[addr >> PAGE_SHIFT];
-> +
-> +=09=09get_page(page);
-> +
-> +=09=09copy =3D min((u32)(PAGE_SIZE - offset), len - copied);
-
-It's better to use min_t(u32, ...) instead of manual casting.
-
-> +
-> +=09=09skb_fill_page_desc(skb, i, page, offset, copy);
-> +
-> +=09=09copied +=3D copy;
-> +=09=09addr +=3D copy;
-> +=09=09offset =3D 0;
-> +=09}
-> +
-> +=09skb->len +=3D len;
-> +=09skb->data_len +=3D len;
-> +=09skb->truesize +=3D len;
-> +
-> +=09refcount_add(len, &xs->sk.sk_wmem_alloc);
-> +
-> +=09return skb;
-> +}
-> +
-> +static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
-> +=09=09=09=09     struct xdp_desc *desc)
-> +{
-> +=09struct sk_buff *skb =3D NULL;
-> +=09int err =3D -ENOMEM;
-> +
-> +=09if (xs->dev->priv_flags & IFF_TX_SKB_NO_LINEAR) {
-> +=09=09skb =3D xsk_build_skb_zerocopy(xs, desc);
-> +=09=09if (unlikely(!skb))
-> +=09=09=09goto err;
-
-1. You should'n use goto err here, as skb =3D=3D NULL, so kfree_skb(skb)
-   is redundant.
-2. If you would use ERR_PTR() in xsk_build_skb_zerocopy(),
-   the condition should look like:
-
-=09=09if (IS_ERR(skb))
-=09=09=09return PTR_ERR(skb);
-
-> +=09} else {
-> +=09=09char *buffer;
-> +=09=09u64 addr;
-> +=09=09u32 len;
-> +=09=09int err;
-> +
-> +=09=09len =3D desc->len;
-> +=09=09skb =3D sock_alloc_send_skb(&xs->sk, len, 1, &err);
-> +=09=09if (unlikely(!skb))
-> +=09=09=09goto err;
-
-Same here, if skb =3D=3D NULL, just return without calling kfree_skb().
-
-> +=09=09skb_put(skb, len);
-> +=09=09addr =3D desc->addr;
-> +=09=09buffer =3D xsk_buff_raw_get_data(xs->pool, desc->addr);
-> +=09=09err =3D skb_store_bits(skb, 0, buffer, len);
-> +
-> +=09=09if (unlikely(err)) {
-> +=09=09=09err =3D -EINVAL;
-
-You already have errno in err, no need to override it.
-
-> +=09=09=09goto err;
-> +=09=09}
-> +=09}
-> +
-> +=09skb->dev =3D xs->dev;
-> +=09skb->priority =3D xs->sk.sk_priority;
-> +=09skb->mark =3D xs->sk.sk_mark;
-> +=09skb_shinfo(skb)->destructor_arg =3D (void *)(long)desc->addr;
-> +=09skb->destructor =3D xsk_destruct_skb;
-> +
-> +=09return skb;
-> +
-> +err:
-> +=09kfree_skb(skb);
-> +=09return ERR_PTR(err);
-> +}
-> +
->  static int xsk_generic_xmit(struct sock *sk)
+>  static void swap_src_dst_mac(void *data)
 >  {
->  =09struct xdp_sock *xs =3D xdp_sk(sk);
-> @@ -446,43 +535,30 @@ static int xsk_generic_xmit(struct sock *sk)
->  =09=09goto out;
-> =20
->  =09while (xskq_cons_peek_desc(xs->tx, &desc, xs->pool)) {
-> -=09=09char *buffer;
-> -=09=09u64 addr;
-> -=09=09u32 len;
-> -
->  =09=09if (max_batch-- =3D=3D 0) {
->  =09=09=09err =3D -EAGAIN;
->  =09=09=09goto out;
->  =09=09}
-> =20
-> -=09=09len =3D desc.len;
-> -=09=09skb =3D sock_alloc_send_skb(sk, len, 1, &err);
-> -=09=09if (unlikely(!skb))
-> +=09=09skb =3D xsk_build_skb(xs, &desc);
-> +=09=09if (IS_ERR(skb)) {
-> +=09=09=09err =3D PTR_ERR(skb);
->  =09=09=09goto out;
-> +=09=09}
-> =20
-> -=09=09skb_put(skb, len);
-> -=09=09addr =3D desc.addr;
-> -=09=09buffer =3D xsk_buff_raw_get_data(xs->pool, addr);
-> -=09=09err =3D skb_store_bits(skb, 0, buffer, len);
->  =09=09/* This is the backpressure mechanism for the Tx path.
->  =09=09 * Reserve space in the completion queue and only proceed
->  =09=09 * if there is space in it. This avoids having to implement
->  =09=09 * any buffering in the Tx path.
->  =09=09 */
->  =09=09spin_lock_irqsave(&xs->pool->cq_lock, flags);
-> -=09=09if (unlikely(err) || xskq_prod_reserve(xs->pool->cq)) {
-> +=09=09if (xskq_prod_reserve(xs->pool->cq)) {
->  =09=09=09spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
->  =09=09=09kfree_skb(skb);
->  =09=09=09goto out;
->  =09=09}
->  =09=09spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
-> =20
-> -=09=09skb->dev =3D xs->dev;
-> -=09=09skb->priority =3D sk->sk_priority;
-> -=09=09skb->mark =3D sk->sk_mark;
-> -=09=09skb_shinfo(skb)->destructor_arg =3D (void *)(long)desc.addr;
-> -=09=09skb->destructor =3D xsk_destruct_skb;
-> -
->  =09=09err =3D __dev_direct_xmit(skb, xs->queue_id);
->  =09=09if  (err =3D=3D NETDEV_TX_BUSY) {
->  =09=09=09/* Tell user-space to retry the send */
+>  	unsigned short *p = data;
+> @@ -52,17 +70,16 @@ static void swap_src_dst_mac(void *data)
+>  	p[5] = dst[2];
+>  }
+>  
+> -SEC("xdp_redirect_map")
+> -int xdp_redirect_map_prog(struct xdp_md *ctx)
+> +static int xdp_redirect_map(struct xdp_md *ctx, void *redirect_map)
+>  {
+>  	void *data_end = (void *)(long)ctx->data_end;
+>  	void *data = (void *)(long)ctx->data;
+>  	struct ethhdr *eth = data;
+>  	int rc = XDP_DROP;
+> -	int vport, port = 0, m = 0;
+>  	long *value;
+>  	u32 key = 0;
+>  	u64 nh_off;
+> +	int vport;
+>  
+>  	nh_off = sizeof(*eth);
+>  	if (data + nh_off > data_end)
+> @@ -73,13 +90,63 @@ int xdp_redirect_map_prog(struct xdp_md *ctx)
+>  
+>  	/* count packet in global counter */
+>  	value = bpf_map_lookup_elem(&rxcnt, &key);
+> -	if (value)
+> +	if (value) {
+>  		*value += 1;
+> +		if (*value % 2 == 1)
+> +			vport = 1;
 
-So please recheck the code and then retest it, especially error
-paths (you can inject errors manually here to ensure they work).
+This will also change the base behavior of the program, e.g when we are
+not testing the 2nd xdp-prog.  It will become hard to compare the
+performance between xdp_redirect and xdp_redirect_map.
 
-Thanks,
-Al
+It looks like you are populating vport=0 and vport=1 with the same ifindex.
+Thus, this code is basically doing packet reordering, due to the per
+CPU bulking layer (of 16 packets) in devmap.
+Is this the intended behavior?
+
+
+> +	}
+>  
+>  	swap_src_dst_mac(data);
+>  
+>  	/* send packet out physical port */
+> -	return bpf_redirect_map(&tx_port, vport, 0);
+> +	return bpf_redirect_map(redirect_map, vport, 0);
+> +}
+> +
+> +static int xdp_redirect_map_egress(struct xdp_md *ctx, unsigned char *mac)
+> +{
+> +	void *data_end = (void *)(long)ctx->data_end;
+> +	void *data = (void *)(long)ctx->data;
+> +	struct ethhdr *eth = data;
+> +	u32 key = 0;
+> +	u64 nh_off;
+> +
+> +	nh_off = sizeof(*eth);
+> +	if (data + nh_off > data_end)
+> +		return XDP_DROP;
+> +
+> +	__builtin_memcpy(eth->h_source, mac, ETH_ALEN);
+> +
+> +	return XDP_PASS;
+> +}
+> +
+> +SEC("xdp_redirect_general")
+> +int xdp_redirect_map_general(struct xdp_md *ctx)
+> +{
+> +	return xdp_redirect_map(ctx, &tx_port_general);
+> +}
+> +
+> +SEC("xdp_redirect_native")
+> +int xdp_redirect_map_native(struct xdp_md *ctx)
+> +{
+> +	return xdp_redirect_map(ctx, &tx_port_native);
+> +}
+> +
+> +/* This program will set src mac to 00:00:00:00:00:01 */
+> +SEC("xdp_devmap/map_prog_0")
+> +int xdp_redirect_map_egress_0(struct xdp_md *ctx)
+> +{
+> +	unsigned char mac[6] = {0x0, 0x0, 0x0, 0x0, 0x0, 0x1};
+> +
+> +	return xdp_redirect_map_egress(ctx, mac);
+> +}
+> +
+> +/* This program will set src mac to 00:00:00:00:01:01 */
+> +SEC("xdp_devmap/map_prog_1")
+> +int xdp_redirect_map_egress_1(struct xdp_md *ctx)
+> +{
+> +	unsigned char mac[6] = {0x0, 0x0, 0x0, 0x0, 0x1, 0x1};
+> +
+> +	return xdp_redirect_map_egress(ctx, mac);
+>  }
+>  
+>  /* Redirect require an XDP bpf_prog loaded on the TX device */
+> diff --git a/samples/bpf/xdp_redirect_map_user.c b/samples/bpf/xdp_redirect_map_user.c
+> index 31131b6e7782..99c3bdea3e49 100644
+> --- a/samples/bpf/xdp_redirect_map_user.c
+> +++ b/samples/bpf/xdp_redirect_map_user.c
+> @@ -14,6 +14,10 @@
+>  #include <unistd.h>
+>  #include <libgen.h>
+>  #include <sys/resource.h>
+> +#include <sys/ioctl.h>
+> +#include <sys/types.h>
+> +#include <sys/socket.h>
+> +#include <netinet/in.h>
+>  
+>  #include "bpf_util.h"
+>  #include <bpf/bpf.h>
+> @@ -22,6 +26,7 @@
+>  static int ifindex_in;
+>  static int ifindex_out;
+>  static bool ifindex_out_xdp_dummy_attached = true;
+> +static bool xdp_devmap_attached;
+>  static __u32 prog_id;
+>  static __u32 dummy_prog_id;
+>  
+> @@ -83,6 +88,32 @@ static void poll_stats(int interval, int ifindex)
+>  	}
+>  }
+>  
+> +static int get_mac_addr(unsigned int ifindex_out, void *mac_addr)
+> +{
+> +	char ifname[IF_NAMESIZE];
+> +	struct ifreq ifr;
+> +	int fd, ret = -1;
+> +
+> +	fd = socket(AF_INET, SOCK_DGRAM, 0);
+> +	if (fd < 0)
+> +		return ret;
+> +
+> +	if (!if_indextoname(ifindex_out, ifname))
+> +		goto err_out;
+> +
+> +	strcpy(ifr.ifr_name, ifname);
+> +
+> +	if (ioctl(fd, SIOCGIFHWADDR, &ifr) != 0)
+> +		goto err_out;
+> +
+> +	memcpy(mac_addr, ifr.ifr_hwaddr.sa_data, 6 * sizeof(char));
+> +	ret = 0;
+> +
+> +err_out:
+> +	close(fd);
+> +	return ret;
+> +}
+> +
+>  static void usage(const char *prog)
+>  {
+>  	fprintf(stderr,
+> @@ -90,24 +121,27 @@ static void usage(const char *prog)
+>  		"OPTS:\n"
+>  		"    -S    use skb-mode\n"
+>  		"    -N    enforce native mode\n"
+> -		"    -F    force loading prog\n",
+> +		"    -F    force loading prog\n"
+> +		"    -X    load xdp program on egress\n",
+>  		prog);
+>  }
+>  
+>  int main(int argc, char **argv)
+>  {
+>  	struct bpf_prog_load_attr prog_load_attr = {
+> -		.prog_type	= BPF_PROG_TYPE_XDP,
+> +		.prog_type	= BPF_PROG_TYPE_UNSPEC,
+>  	};
+> -	struct bpf_program *prog, *dummy_prog;
+> +	struct bpf_program *prog, *dummy_prog, *devmap_prog;
+> +	int devmap_prog_fd_0 = 0, devmap_prog_fd_1 = 0;
+> +	int prog_fd, dummy_prog_fd;
+> +	int tx_port_map_fd, tx_mac_map_fd;
+> +	struct bpf_devmap_val devmap_val;
+>  	struct bpf_prog_info info = {};
+>  	__u32 info_len = sizeof(info);
+> -	int prog_fd, dummy_prog_fd;
+> -	const char *optstr = "FSN";
+> +	const char *optstr = "FSNX";
+>  	struct bpf_object *obj;
+>  	int ret, opt, key = 0;
+>  	char filename[256];
+> -	int tx_port_map_fd;
+>  
+>  	while ((opt = getopt(argc, argv, optstr)) != -1) {
+>  		switch (opt) {
+> @@ -120,14 +154,21 @@ int main(int argc, char **argv)
+>  		case 'F':
+>  			xdp_flags &= ~XDP_FLAGS_UPDATE_IF_NOEXIST;
+>  			break;
+> +		case 'X':
+> +			xdp_devmap_attached = true;
+> +			break;
+>  		default:
+>  			usage(basename(argv[0]));
+>  			return 1;
+>  		}
+>  	}
+>  
+> -	if (!(xdp_flags & XDP_FLAGS_SKB_MODE))
+> +	if (!(xdp_flags & XDP_FLAGS_SKB_MODE)) {
+>  		xdp_flags |= XDP_FLAGS_DRV_MODE;
+> +	} else if (xdp_devmap_attached) {
+> +		printf("Load xdp program on egress with SKB mode not supported yet\n");
+> +		return 1;
+> +	}
+>  
+>  	if (optind == argc) {
+>  		printf("usage: %s <IFNAME|IFINDEX>_IN <IFNAME|IFINDEX>_OUT\n", argv[0]);
+> @@ -150,24 +191,28 @@ int main(int argc, char **argv)
+>  	if (bpf_prog_load_xattr(&prog_load_attr, &obj, &prog_fd))
+>  		return 1;
+>  
+> -	prog = bpf_program__next(NULL, obj);
+> -	dummy_prog = bpf_program__next(prog, obj);
+> -	if (!prog || !dummy_prog) {
+> -		printf("finding a prog in obj file failed\n");
+> -		return 1;
+> +	if (xdp_flags & XDP_FLAGS_SKB_MODE) {
+> +		prog = bpf_object__find_program_by_name(obj, "xdp_redirect_map_general");
+> +		tx_port_map_fd = bpf_object__find_map_fd_by_name(obj, "tx_port_general");
+> +	} else {
+> +		prog = bpf_object__find_program_by_name(obj, "xdp_redirect_map_native");
+> +		tx_port_map_fd = bpf_object__find_map_fd_by_name(obj, "tx_port_native");
+>  	}
+> -	/* bpf_prog_load_xattr gives us the pointer to first prog's fd,
+> -	 * so we're missing only the fd for dummy prog
+> -	 */
+> +	dummy_prog = bpf_object__find_program_by_name(obj, "xdp_redirect_dummy_prog");
+> +	if (!prog || dummy_prog < 0 || tx_port_map_fd < 0) {
+> +		printf("finding prog/dummy_prog/tx_port_map in obj file failed\n");
+> +		goto out;
+> +	}
+> +	prog_fd = bpf_program__fd(prog);
+>  	dummy_prog_fd = bpf_program__fd(dummy_prog);
+> -	if (prog_fd < 0 || dummy_prog_fd < 0) {
+> +	if (prog_fd < 0 || dummy_prog_fd < 0 || tx_port_map_fd < 0) {
+>  		printf("bpf_prog_load_xattr: %s\n", strerror(errno));
+>  		return 1;
+>  	}
+>  
+> -	tx_port_map_fd = bpf_object__find_map_fd_by_name(obj, "tx_port");
+> +	tx_mac_map_fd = bpf_object__find_map_fd_by_name(obj, "tx_mac");
+>  	rxcnt_map_fd = bpf_object__find_map_fd_by_name(obj, "rxcnt");
+> -	if (tx_port_map_fd < 0 || rxcnt_map_fd < 0) {
+> +	if (tx_mac_map_fd < 0 || rxcnt_map_fd < 0) {
+>  		printf("bpf_object__find_map_fd_by_name failed\n");
+>  		return 1;
+>  	}
+> @@ -199,11 +244,66 @@ int main(int argc, char **argv)
+>  	}
+>  	dummy_prog_id = info.id;
+>  
+> +	/* Load 2nd xdp prog on egress. */
+> +	if (xdp_devmap_attached) {
+> +		unsigned char mac_addr[6];
+> +
+> +		devmap_prog = bpf_object__find_program_by_name(obj, "xdp_redirect_map_egress_0");
+> +		if (!devmap_prog) {
+> +			printf("finding devmap_prog in obj file failed\n");
+> +			goto out;
+> +		}
+> +		devmap_prog_fd_0 = bpf_program__fd(devmap_prog);
+> +		if (devmap_prog_fd_0 < 0) {
+> +			printf("finding devmap_prog fd failed\n");
+> +			goto out;
+> +		}
+> +
+> +		devmap_prog = bpf_object__find_program_by_name(obj, "xdp_redirect_map_egress_1");
+> +		if (!devmap_prog) {
+> +			printf("finding devmap_prog in obj file failed\n");
+> +			goto out;
+> +		}
+> +		devmap_prog_fd_1 = bpf_program__fd(devmap_prog);
+> +		if (devmap_prog_fd_1 < 0) {
+> +			printf("finding devmap_prog fd failed\n");
+> +			goto out;
+> +		}
+> +
+> +		if (get_mac_addr(ifindex_out, mac_addr) < 0) {
+> +			printf("get interface %d mac failed\n", ifindex_out);
+> +			goto out;
+> +		}
+> +
+> +		ret = bpf_map_update_elem(tx_mac_map_fd, &key, mac_addr, 0);
+> +		if (ret) {
+> +			perror("bpf_update_elem tx_mac_map_fd");
+> +			goto out;
+> +		}
+> +	}
+> +
+>  	signal(SIGINT, int_exit);
+>  	signal(SIGTERM, int_exit);
+>  
+> -	/* populate virtual to physical port map */
+> -	ret = bpf_map_update_elem(tx_port_map_fd, &key, &ifindex_out, 0);
+> +	/* devmap prog 0 will set src mac to 00:00:00:00:00:01
+> +	 * if 2nd xdp prog attached on egress
+> +	 */
+> +	key = 0;
+> +	devmap_val.ifindex = ifindex_out;
+
+(ifindex_out same as below)
+
+> +	devmap_val.bpf_prog.fd = devmap_prog_fd_0;
+> +	ret = bpf_map_update_elem(tx_port_map_fd, &key, &devmap_val, 0);
+> +	if (ret) {
+> +		perror("bpf_update_elem");
+> +		goto out;
+> +	}
+> +
+> +	/* devmap prog 1 will set src mac to 00:00:00:00:01:01
+> +	 * if 2nd xdp prog attached on egress
+> +	 */
+> +	key = 1;
+> +	devmap_val.ifindex = ifindex_out;
+
+(ifindex_out same as above)
+
+> +	devmap_val.bpf_prog.fd = devmap_prog_fd_1;
+> +	ret = bpf_map_update_elem(tx_port_map_fd, &key, &devmap_val, 0);
+>  	if (ret) {
+>  		perror("bpf_update_elem");
+>  		goto out;
+
+
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
