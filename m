@@ -2,342 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3A412FBA1D
-	for <lists+bpf@lfdr.de>; Tue, 19 Jan 2021 15:55:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9011B2FBB7B
+	for <lists+bpf@lfdr.de>; Tue, 19 Jan 2021 16:43:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404261AbhASOl4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Jan 2021 09:41:56 -0500
-Received: from mail-03.mail-europe.com ([91.134.188.129]:46652 "EHLO
-        mail-03.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390647AbhASMsd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Jan 2021 07:48:33 -0500
-Date:   Tue, 19 Jan 2021 12:44:57 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1611060302; bh=8i/A0q9OU25J4k8HUwD1TaII3Vs+nnWI9Lml+XDwKug=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=Q+Tt2M51rfYOVO8zl4aB+MTAHUiMcXgCQPEXBySPoWIDSXwsVcOwwjTVNLrE7kPsB
-         QgW3vyoWa2O8oKRH7dvbTp7JOdyQYH4+EQ7gMt+53PalH3nLbq+8t6FHGqD4P5nSXh
-         tWsJyJPki20NVyJavck6trqTvT1OA4fBCXDB6sFMcF4nGP3RmlKJtMGDVVF9uelzOk
-         gi0bhzyqxmgnuDBg2rhZwiEps3VfVFtazEIHlUsTbJSDGnbblzU0EZv/g7LD35KRJi
-         H7JUtkcav7AoTiO/8i2dAYxD1z2pvR68l9N+KeRO7E/u68BmsFZA4x6oisV4nqE0p2
-         E7FJJSqH1OMKQ==
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, bjorn.topel@intel.com,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Antoine Tenart <atenart@kernel.org>,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Meir Lichtinger <meirl@mellanox.com>,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH bpf-next] xsk: build skb by page
-Message-ID: <20210119124406.2895-1-alobakin@pm.me>
-In-Reply-To: <579fa463bba42ac71591540a1811dca41d725350.1610764948.git.xuanzhuo@linux.alibaba.com>
-References: <579fa463bba42ac71591540a1811dca41d725350.1610764948.git.xuanzhuo@linux.alibaba.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S2391111AbhASPnE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Jan 2021 10:43:04 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:9670 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389991AbhASPgJ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 19 Jan 2021 10:36:09 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10JFWx6i010109
+        for <bpf@vger.kernel.org>; Tue, 19 Jan 2021 07:35:22 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=facebook; bh=uVPBmzR+FnTbFvxqeQzOTybg2DWGiKxlEDuUr8uELO0=;
+ b=EAe+9pLJTGGq95+it8IWGOT9/dSGHvSilOJbTbGICcXVXC5nb4oVnF5qxmojsDf2Kp0M
+ bIjFwawTmxpVpk8xCy02xUTqV2/txEm38Bk9Ut3cjQqMEMKmWbONWadMOECn3Jk/K4cz
+ QejosmBLmGZ1QtRoA7/Rm73LLc9+zX0Zz+Y= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 364h3bhnbn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Tue, 19 Jan 2021 07:35:22 -0800
+Received: from intmgw001.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 19 Jan 2021 07:35:20 -0800
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id 0D74C37014B4; Tue, 19 Jan 2021 07:35:19 -0800 (PST)
+From:   Yonghong Song <yhs@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next] bpf: permit size-0 datasec
+Date:   Tue, 19 Jan 2021 07:35:18 -0800
+Message-ID: <20210119153519.3901963-1-yhs@fb.com>
+X-Mailer: git-send-email 2.24.1
+X-FB-Internal: Safe
+Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-19_05:2021-01-18,2021-01-19 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ clxscore=1015 suspectscore=0 spamscore=0 malwarescore=0 impostorscore=0
+ priorityscore=1501 phishscore=0 mlxscore=0 bulkscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101190094
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Date: Sat, 16 Jan 2021 10:44:53 +0800
+llvm patch https://reviews.llvm.org/D84002 permitted
+to emit empty rodata datasec if the elf .rodata section
+contains read-only data from local variables. These
+local variables will be not emitted as BTF_KIND_VARs
+since llvm converted these local variables as
+static variables with private linkage without debuginfo
+types. Such an empty rodata datasec will make
+skeleton code generation easy since for skeleton
+a rodata struct will be generated if there is a
+.rodata elf section. The existence of a rodata
+btf datasec is also consistent with the existence
+of a rodata map created by libbpf.
 
-> This patch is used to construct skb based on page to save memory copy
-> overhead.
->=20
-> This has one problem:
->=20
-> We construct the skb by fill the data page as a frag into the skb. In
-> this way, the linear space is empty, and the header information is also
-> in the frag, not in the linear space, which is not allowed for some
-> network cards. For example, Mellanox Technologies MT27710 Family
-> [ConnectX-4 Lx] will get the following error message:
->=20
->     mlx5_core 0000:3b:00.1 eth1: Error cqe on cqn 0x817, ci 0x8, qn 0x1db=
-b, opcode 0xd, syndrome 0x1, vendor syndrome 0x68
->     00000000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->     00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->     00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->     00000030: 00 00 00 00 60 10 68 01 0a 00 1d bb 00 0f 9f d2
->     WQE DUMP: WQ size 1024 WQ cur size 0, WQE index 0xf, len: 64
->     00000000: 00 00 0f 0a 00 1d bb 03 00 00 00 08 00 00 00 00
->     00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->     00000020: 00 00 00 2b 00 08 00 00 00 00 00 05 9e e3 08 00
->     00000030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->     mlx5_core 0000:3b:00.1 eth1: ERR CQE on SQ: 0x1dbb
->=20
-> I also tried to use build_skb to construct skb, but because of the
-> existence of skb_shinfo, it must be behind the linear space, so this
-> method is not working. We can't put skb_shinfo on desc->addr, it will be
-> exposed to users, this is not safe.
->=20
-> Finally, I added a feature NETIF_F_SKB_NO_LINEAR to identify whether the
-> network card supports the header information of the packet in the frag
-> and not in the linear space.
->=20
-> ---------------- Performance Testing ------------
->=20
-> The test environment is Aliyun ECS server.
-> Test cmd:
-> ```
-> xdpsock -i eth0 -t  -S -s <msg size>
-> ```
->=20
-> Test result data:
->=20
-> size    64      512     1024    1500
-> copy    1916747 1775988 1600203 1440054
-> page    1974058 1953655 1945463 1904478
-> percent 3.0%    10.0%   21.58%  32.3%
->=20
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
-> ---
->  drivers/net/virtio_net.c        |   2 +-
->  include/linux/netdev_features.h |   5 +-
->  net/ethtool/common.c            |   1 +
->  net/xdp/xsk.c                   | 108 +++++++++++++++++++++++++++++++++-=
-------
->  4 files changed, 97 insertions(+), 19 deletions(-)
->=20
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 4ecccb8..841a331 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -2985,7 +2985,7 @@ static int virtnet_probe(struct virtio_device *vdev=
-)
->  =09/* Set up network device as normal. */
->  =09dev->priv_flags |=3D IFF_UNICAST_FLT | IFF_LIVE_ADDR_CHANGE;
->  =09dev->netdev_ops =3D &virtnet_netdev;
-> -=09dev->features =3D NETIF_F_HIGHDMA;
-> +=09dev->features =3D NETIF_F_HIGHDMA | NETIF_F_SKB_NO_LINEAR;
-> =20
->  =09dev->ethtool_ops =3D &virtnet_ethtool_ops;
->  =09SET_NETDEV_DEV(dev, &vdev->dev);
-> diff --git a/include/linux/netdev_features.h b/include/linux/netdev_featu=
-res.h
-> index 934de56..8dd28e2 100644
-> --- a/include/linux/netdev_features.h
-> +++ b/include/linux/netdev_features.h
-> @@ -85,9 +85,11 @@ enum {
-> =20
->  =09NETIF_F_HW_MACSEC_BIT,=09=09/* Offload MACsec operations */
-> =20
-> +=09NETIF_F_SKB_NO_LINEAR_BIT,=09/* Allow skb linear is empty */
-> +
->  =09/*
->  =09 * Add your fresh new feature above and remember to update
-> -=09 * netdev_features_strings[] in net/core/ethtool.c and maybe
-> +=09 * netdev_features_strings[] in net/ethtool/common.c and maybe
->  =09 * some feature mask #defines below. Please also describe it
->  =09 * in Documentation/networking/netdev-features.rst.
->  =09 */
-> @@ -157,6 +159,7 @@ enum {
->  #define NETIF_F_GRO_FRAGLIST=09__NETIF_F(GRO_FRAGLIST)
->  #define NETIF_F_GSO_FRAGLIST=09__NETIF_F(GSO_FRAGLIST)
->  #define NETIF_F_HW_MACSEC=09__NETIF_F(HW_MACSEC)
-> +#define NETIF_F_SKB_NO_LINEAR=09__NETIF_F(SKB_NO_LINEAR)
-> =20
->  /* Finds the next feature with the highest number of the range of start =
-till 0.
->   */
-> diff --git a/net/ethtool/common.c b/net/ethtool/common.c
-> index 24036e3..2f3d309 100644
-> --- a/net/ethtool/common.c
-> +++ b/net/ethtool/common.c
-> @@ -68,6 +68,7 @@
->  =09[NETIF_F_HW_TLS_RX_BIT] =3D=09 "tls-hw-rx-offload",
->  =09[NETIF_F_GRO_FRAGLIST_BIT] =3D=09 "rx-gro-list",
->  =09[NETIF_F_HW_MACSEC_BIT] =3D=09 "macsec-hw-offload",
-> +=09[NETIF_F_SKB_NO_LINEAR_BIT] =3D=09 "skb-no-linear",
->  };
-> =20
->  const char
-> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> index 8037b04..94d17dc 100644
-> --- a/net/xdp/xsk.c
-> +++ b/net/xdp/xsk.c
-> @@ -430,6 +430,95 @@ static void xsk_destruct_skb(struct sk_buff *skb)
->  =09sock_wfree(skb);
->  }
-> =20
-> +static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
-> +=09=09=09=09=09      struct xdp_desc *desc)
-> +{
-> +=09u32 len, offset, copy, copied;
-> +=09struct sk_buff *skb;
-> +=09struct page *page;
-> +=09char *buffer;
-> +=09int err, i;
-> +=09u64 addr;
-> +
-> +=09skb =3D sock_alloc_send_skb(&xs->sk, 0, 1, &err);
-> +=09if (unlikely(!skb))
-> +=09=09return NULL;
-> +
-> +=09addr =3D desc->addr;
-> +=09len =3D desc->len;
-> +
-> +=09buffer =3D xsk_buff_raw_get_data(xs->pool, addr);
-> +=09offset =3D offset_in_page(buffer);
-> +=09addr =3D buffer - (char *)xs->pool->addrs;
-> +
-> +=09for (copied =3D 0, i =3D 0; copied < len; ++i) {
+The btf with such an empty rodata datasec will fail
+in the kernel though as kernel will reject a datasec
+with zero vlen and zero size. For example, for the below code,
+    int sys_enter(void *ctx)
+    {
+       int fmt[6] =3D {1, 2, 3, 4, 5, 6};
+       int dst[6];
 
-Just noticed. i++ would be less confusing here. You start to fill
-skb frags from frag 0 anyway.
+       bpf_probe_read(dst, sizeof(dst), fmt);
+       return 0;
+    }
+We got the below btf (bpftool btf dump ./test.o):
+    [1] PTR '(anon)' type_id=3D0
+    [2] FUNC_PROTO '(anon)' ret_type_id=3D3 vlen=3D1
+            'ctx' type_id=3D1
+    [3] INT 'int' size=3D4 bits_offset=3D0 nr_bits=3D32 encoding=3DSIGNED
+    [4] FUNC 'sys_enter' type_id=3D2 linkage=3Dglobal
+    [5] INT 'char' size=3D1 bits_offset=3D0 nr_bits=3D8 encoding=3DSIGNED
+    [6] ARRAY '(anon)' type_id=3D5 index_type_id=3D7 nr_elems=3D4
+    [7] INT '__ARRAY_SIZE_TYPE__' size=3D4 bits_offset=3D0 nr_bits=3D32 enc=
+oding=3D(none)
+    [8] VAR '_license' type_id=3D6, linkage=3Dglobal-alloc
+    [9] DATASEC '.rodata' size=3D0 vlen=3D0
+    [10] DATASEC 'license' size=3D0 vlen=3D1
+            type_id=3D8 offset=3D0 size=3D4
+When loading the ./test.o to the kernel with bpftool,
+we see the following error:
+    libbpf: Error loading BTF: Invalid argument(22)
+    libbpf: magic: 0xeb9f
+    ...
+    [6] ARRAY (anon) type_id=3D5 index_type_id=3D7 nr_elems=3D4
+    [7] INT __ARRAY_SIZE_TYPE__ size=3D4 bits_offset=3D0 nr_bits=3D32 encod=
+ing=3D(none)
+    [8] VAR _license type_id=3D6 linkage=3D1
+    [9] DATASEC .rodata size=3D24 vlen=3D0 vlen =3D=3D 0
+    libbpf: Error loading .BTF into kernel: -22. BTF is optional, ignoring.
 
-> +=09=09page =3D xs->pool->umem->pgs[addr >> PAGE_SHIFT];
-> +
-> +=09=09get_page(page);
-> +
-> +=09=09copy =3D min((u32)(PAGE_SIZE - offset), len - copied);
+Basically, libbpf changed .rodata datasec size to 24 since elf .rodata
+section size is 24. The kernel then rejected the BTF since vlen =3D 0.
+Note that the above kernel verifier failure can be worked around with
+changing local variable "fmt" to a static or global, optionally const, vari=
+able.
 
-Also. It's better to use min_t() in this case:
+This patch permits a datasec with vlen =3D 0 in kernel.
 
-copy =3D min_t(u32, PAGE_SIZE - offset, len - copied);
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ kernel/bpf/btf.c                             |  5 -----
+ tools/testing/selftests/bpf/prog_tests/btf.c | 21 ++++++++++++++++++++
+ 2 files changed, 21 insertions(+), 5 deletions(-)
 
-instead of manual casting.
-
-> +=09=09skb_fill_page_desc(skb, i, page, offset, copy);
-> +
-> +=09=09copied +=3D copy;
-> +=09=09addr +=3D copy;
-> +=09=09offset =3D 0;
-> +=09}
-> +
-> +=09skb->len +=3D len;
-> +=09skb->data_len +=3D len;
-> +=09skb->truesize +=3D len;
-> +
-> +=09refcount_add(len, &xs->sk.sk_wmem_alloc);
-> +
-> +=09return skb;
-> +}
-> +
-> +static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
-> +=09=09=09=09     struct xdp_desc *desc, int *err)
-> +{
-> +=09struct sk_buff *skb;
-> +
-> +=09if (xs->dev->features & NETIF_F_SKB_NO_LINEAR) {
-> +=09=09skb =3D xsk_build_skb_zerocopy(xs, desc);
-> +=09=09if (unlikely(!skb)) {
-> +=09=09=09*err =3D -ENOMEM;
-> +=09=09=09return NULL;
-> +=09=09}
-> +=09} else {
-> +=09=09char *buffer;
-> +=09=09u64 addr;
-> +=09=09u32 len;
-> +=09=09int err;
-> +
-> +=09=09len =3D desc->len;
-> +=09=09skb =3D sock_alloc_send_skb(&xs->sk, len, 1, &err);
-> +=09=09if (unlikely(!skb)) {
-> +=09=09=09*err =3D -ENOMEM;
-> +=09=09=09return NULL;
-> +=09=09}
-> +
-> +=09=09skb_put(skb, len);
-> +=09=09addr =3D desc->addr;
-> +=09=09buffer =3D xsk_buff_raw_get_data(xs->pool, desc->addr);
-> +=09=09err =3D skb_store_bits(skb, 0, buffer, len);
-> +
-> +=09=09if (unlikely(err)) {
-> +=09=09=09kfree_skb(skb);
-> +=09=09=09*err =3D -EINVAL;
-> +=09=09=09return NULL;
-> +=09=09}
-> +=09}
-> +
-> +=09skb->dev =3D xs->dev;
-> +=09skb->priority =3D xs->sk.sk_priority;
-> +=09skb->mark =3D xs->sk.sk_mark;
-> +=09skb_shinfo(skb)->destructor_arg =3D (void *)(long)desc->addr;
-> +=09skb->destructor =3D xsk_destruct_skb;
-> +
-> +=09return skb;
-> +}
-> +
->  static int xsk_generic_xmit(struct sock *sk)
->  {
->  =09struct xdp_sock *xs =3D xdp_sk(sk);
-> @@ -446,43 +535,28 @@ static int xsk_generic_xmit(struct sock *sk)
->  =09=09goto out;
-> =20
->  =09while (xskq_cons_peek_desc(xs->tx, &desc, xs->pool)) {
-> -=09=09char *buffer;
-> -=09=09u64 addr;
-> -=09=09u32 len;
-> -
->  =09=09if (max_batch-- =3D=3D 0) {
->  =09=09=09err =3D -EAGAIN;
->  =09=09=09goto out;
->  =09=09}
-> =20
-> -=09=09len =3D desc.len;
-> -=09=09skb =3D sock_alloc_send_skb(sk, len, 1, &err);
-> +=09=09skb =3D xsk_build_skb(xs, &desc, &err);
->  =09=09if (unlikely(!skb))
->  =09=09=09goto out;
-> =20
-> -=09=09skb_put(skb, len);
-> -=09=09addr =3D desc.addr;
-> -=09=09buffer =3D xsk_buff_raw_get_data(xs->pool, addr);
-> -=09=09err =3D skb_store_bits(skb, 0, buffer, len);
->  =09=09/* This is the backpressure mechanism for the Tx path.
->  =09=09 * Reserve space in the completion queue and only proceed
->  =09=09 * if there is space in it. This avoids having to implement
->  =09=09 * any buffering in the Tx path.
->  =09=09 */
->  =09=09spin_lock_irqsave(&xs->pool->cq_lock, flags);
-> -=09=09if (unlikely(err) || xskq_prod_reserve(xs->pool->cq)) {
-> +=09=09if (xskq_prod_reserve(xs->pool->cq)) {
->  =09=09=09spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
->  =09=09=09kfree_skb(skb);
->  =09=09=09goto out;
->  =09=09}
->  =09=09spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
-> =20
-> -=09=09skb->dev =3D xs->dev;
-> -=09=09skb->priority =3D sk->sk_priority;
-> -=09=09skb->mark =3D sk->sk_mark;
-> -=09=09skb_shinfo(skb)->destructor_arg =3D (void *)(long)desc.addr;
-> -=09=09skb->destructor =3D xsk_destruct_skb;
-> -
->  =09=09err =3D __dev_direct_xmit(skb, xs->queue_id);
->  =09=09if  (err =3D=3D NETDEV_TX_BUSY) {
->  =09=09=09/* Tell user-space to retry the send */
-> --=20
-> 1.8.3.1
-
-Al
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 7ccc0133723a..71e6c2fa4830 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -3540,11 +3540,6 @@ static s32 btf_datasec_check_meta(struct btf_verifie=
+r_env *env,
+ 		return -EINVAL;
+ 	}
+=20
+-	if (!btf_type_vlen(t)) {
+-		btf_verifier_log_type(env, t, "vlen =3D=3D 0");
+-		return -EINVAL;
+-	}
+-
+ 	if (!t->size) {
+ 		btf_verifier_log_type(env, t, "size =3D=3D 0");
+ 		return -EINVAL;
+diff --git a/tools/testing/selftests/bpf/prog_tests/btf.c b/tools/testing/s=
+elftests/bpf/prog_tests/btf.c
+index 8ae97e2a4b9d..055d2c0486ed 100644
+--- a/tools/testing/selftests/bpf/prog_tests/btf.c
++++ b/tools/testing/selftests/bpf/prog_tests/btf.c
+@@ -3509,6 +3509,27 @@ static struct btf_raw_test raw_tests[] =3D {
+ 	.value_type_id =3D 3 /* arr_t */,
+ 	.max_entries =3D 4,
+ },
++/*
++ * elf .rodata section size 4 and btf .rodata section vlen 0.
++ */
++{
++	.descr =3D "datasec: vlen =3D=3D 0",
++	.raw_types =3D {
++		/* int */
++		BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4),	/* [1] */
++		/* .rodata section */
++		BTF_TYPE_ENC(NAME_NTH(1), BTF_INFO_ENC(BTF_KIND_DATASEC, 0, 0), 4),
++								 /* [2] */
++		BTF_END_RAW,
++	},
++	BTF_STR_SEC("\0.rodata"),
++	.map_type =3D BPF_MAP_TYPE_ARRAY,
++	.key_size =3D sizeof(int),
++	.value_size =3D sizeof(int),
++	.key_type_id =3D 1,
++	.value_type_id =3D 1,
++	.max_entries =3D 1,
++},
+=20
+ }; /* struct btf_raw_test raw_tests[] */
+=20
+--=20
+2.24.1
 
