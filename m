@@ -2,170 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB36E2FC2E5
-	for <lists+bpf@lfdr.de>; Tue, 19 Jan 2021 23:00:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 305432FC2EA
+	for <lists+bpf@lfdr.de>; Tue, 19 Jan 2021 23:03:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728721AbhASV7d (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Jan 2021 16:59:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728419AbhASV7C (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Jan 2021 16:59:02 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A21C8C061575
-        for <bpf@vger.kernel.org>; Tue, 19 Jan 2021 13:58:19 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id n10so13812840pgl.10
-        for <bpf@vger.kernel.org>; Tue, 19 Jan 2021 13:58:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OFfub22SWSVkVrjpbdutuEU3cmHlEtcZeAWzURJZldA=;
-        b=byWAnMtOBUGykkl0kVkQ6CQf0S8r8iH9Dmayu8mQxBp+45awWTtaLWZK+sCctNvNi6
-         OQcM7YzgvoQP7vFoUOPAdHcq0Exc8A5qIltWrORr5GlbQu7OpEUlsRIIsRjOPMNEu8MM
-         KJkJ9h2pBNSl3gpKFS1mHwd4Yh8pSmhLhQ+xsdSRbNG79hRNaoSkn4x7kFpQa70zpOTD
-         2baF8bh7XZpGPB+vYEpB3YYp5CA8M37nZpiDjsHG2HM5Q0fM//zJbXVyQcJhoGFY2/US
-         z2kIqi+reocUHP+UQdZF0D/NV28zsna2hcDSgpI8gW4EXq2SmBmeLi6f+WraBCQVK6ZK
-         87OQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OFfub22SWSVkVrjpbdutuEU3cmHlEtcZeAWzURJZldA=;
-        b=PAPiEwzgXe6fv4w/lmGSCIkRPGcEg6od8S6Ixbi4+aZp5aksjPA5xctS+b8z7nNzhM
-         RBOyQro8k3UK3IyW3tzKGDNfIn+hJ4cgDCEJU/EzDEIy7NIDTpQS+B9siMbK/GLG7LLL
-         sINdA0vj+MjBDYoeZRP/QtL4cOXB9dJkqQqsf54LnIm+H3A9UeWPi5IWwkGHi+hAAHD6
-         w0AHbxkR2rCoL9H4we5+qG85MitYGsdklOsFFzHXkPkiKVpAAy0+fe/SX2sBUEMEXOw1
-         CkaDkVZBlMiUmA0UcCWRXW5I9WXBgCnzpXrhuNIbtLrmD5c3hd95zUvBovSUEEftKkuF
-         Xyhw==
-X-Gm-Message-State: AOAM532c2ycQuxL9BR6n6kNLbTjRJoYiBnwrR8bP7OGu0mDCmUGyqfSq
-        QoHkO9gg4i0Uxt8MKumc2qK8FQ==
-X-Google-Smtp-Source: ABdhPJzExoHgzCqXecb1f0EjKl//W+yhWbxdATLzYoDeYSbylPsBXmpqSv8BG01cnkxtHt/nHoKAEw==
-X-Received: by 2002:a63:1f18:: with SMTP id f24mr6316123pgf.133.1611093499079;
-        Tue, 19 Jan 2021 13:58:19 -0800 (PST)
-Received: from google.com ([2620:15c:2ce:0:a6ae:11ff:fe11:4abb])
-        by smtp.gmail.com with ESMTPSA id z29sm91002pfk.67.2021.01.19.13.58.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 13:58:18 -0800 (PST)
-Date:   Tue, 19 Jan 2021 13:58:15 -0800
-From:   Fangrui Song <maskray@google.com>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH bpf-next v2] samples/bpf: Update README.rst and Makefile
- for manually compiling LLVM and clang
-Message-ID: <20210119215815.efyerbwwq5x2o26q@google.com>
-References: <1611042978-21473-1-git-send-email-yangtiezhu@loongson.cn>
+        id S1728414AbhASWBK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Jan 2021 17:01:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48222 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728980AbhASWAs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Jan 2021 17:00:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 03224230FE;
+        Tue, 19 Jan 2021 22:00:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611093608;
+        bh=vwzqmV+/JrI+lZ0C0St5fU/gOE1dmzOlc9Y/V0+Q0Q8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=IYRPZ+riiTpisTvAuU5S0j2reSlPiRcmNWY/n8+7OuOzsa/Gzflc/UhydOkfTBv94
+         QkXIoJ/J+9iGP/wG8aEfLuWiCP3Y43QP5ILs9/hN63iwecr6MxFoKh38qDs49pZq61
+         mmtkVJCR/tXQe4cf6ub8VgP6rZ3K/LMiWV5j4lFGw+kGu04/pGc2HOFtuMWLgcFWjL
+         xrfHI9njG5WR9rI9pNtYqiEqn1x8/1G+ztDUWgIna1W4FgSPm6s2qGowjivwXLcnDo
+         gKB1SJAe5wg87r8YuKtCmpnIXEUk82V7k2XWhVVozOOn28uJLVBRlNOtCZC1aNVjiq
+         9vI6GW/inYOtA==
+Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id DC15A604FC;
+        Tue, 19 Jan 2021 22:00:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <1611042978-21473-1-git-send-email-yangtiezhu@loongson.cn>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf] xsk: Clear pool even for inactive queues
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161109360789.28449.15236558642649089733.git-patchwork-notify@kernel.org>
+Date:   Tue, 19 Jan 2021 22:00:07 +0000
+References: <20210118160333.333439-1-maximmi@mellanox.com>
+In-Reply-To: <20210118160333.333439-1-maximmi@mellanox.com>
+To:     Maxim Mikityanskiy <maximmi@mellanox.com>
+Cc:     magnus.karlsson@intel.com, bjorn.topel@intel.com,
+        jonathan.lemon@gmail.com, ast@kernel.org, daniel@iogearbox.net,
+        davem@davemloft.net, kuba@kernel.org, hawk@kernel.org,
+        john.fastabend@gmail.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2021-01-19, Tiezhu Yang wrote:
->The current llvm/clang build procedure in samples/bpf/README.rst is
->out of date. See below that the links are not accessible any more.
->
->$ git clone http://llvm.org/git/llvm.git
->Cloning into 'llvm'...
->fatal: unable to access 'http://llvm.org/git/llvm.git/': Maximum (20) redirects followed
->$ git clone --depth 1 http://llvm.org/git/clang.git
->Cloning into 'clang'...
->fatal: unable to access 'http://llvm.org/git/clang.git/': Maximum (20) redirects followed
->
->The llvm community has adopted new ways to build the compiler. There are
->different ways to build llvm/clang, the Clang Getting Started page [1] has
->one way. As Yonghong said, it is better to just copy the build procedure
->in Documentation/bpf/bpf_devel_QA.rst to keep consistent.
->
->I verified the procedure and it is proved to be feasible, so we should
->update README.rst to reflect the reality. At the same time, update the
->related comment in Makefile.
->
->[1] https://clang.llvm.org/get_started.html
->
->Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
->Acked-by: Yonghong Song <yhs@fb.com>
->---
->
->v2: Update the commit message suggested by Yonghong,
->    thank you very much.
->
-> samples/bpf/Makefile   |  2 +-
-> samples/bpf/README.rst | 17 ++++++++++-------
-> 2 files changed, 11 insertions(+), 8 deletions(-)
->
->diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
->index 26fc96c..d061446 100644
->--- a/samples/bpf/Makefile
->+++ b/samples/bpf/Makefile
->@@ -208,7 +208,7 @@ TPROGLDLIBS_xdpsock		+= -pthread -lcap
-> TPROGLDLIBS_xsk_fwd		+= -pthread
->
-> # Allows pointing LLC/CLANG to a LLVM backend with bpf support, redefine on cmdline:
->-#  make M=samples/bpf/ LLC=~/git/llvm/build/bin/llc CLANG=~/git/llvm/build/bin/clang
->+# make M=samples/bpf LLC=~/git/llvm-project/llvm/build/bin/llc CLANG=~/git/llvm-project/llvm/build/bin/clang
-> LLC ?= llc
-> CLANG ?= clang
-> OPT ?= opt
->diff --git a/samples/bpf/README.rst b/samples/bpf/README.rst
->index dd34b2d..d1be438 100644
->--- a/samples/bpf/README.rst
->+++ b/samples/bpf/README.rst
->@@ -65,17 +65,20 @@ To generate a smaller llc binary one can use::
-> Quick sniplet for manually compiling LLVM and clang
-> (build dependencies are cmake and gcc-c++)::
->
->- $ git clone http://llvm.org/git/llvm.git
->- $ cd llvm/tools
->- $ git clone --depth 1 http://llvm.org/git/clang.git
->- $ cd ..; mkdir build; cd build
->- $ cmake .. -DLLVM_TARGETS_TO_BUILD="BPF;X86"
->- $ make -j $(getconf _NPROCESSORS_ONLN)
->+ $ git clone https://github.com/llvm/llvm-project.git
->+ $ mkdir -p llvm-project/llvm/build/install
+Hello:
 
-llvm-project/llvm/build/install is not used.
+This patch was applied to bpf/bpf.git (refs/heads/master):
 
->+ $ cd llvm-project/llvm/build
->+ $ cmake .. -G "Ninja" -DLLVM_TARGETS_TO_BUILD="BPF;X86" \
->+            -DLLVM_ENABLE_PROJECTS="clang"    \
->+            -DBUILD_SHARED_LIBS=OFF           \
+On Mon, 18 Jan 2021 18:03:33 +0200 you wrote:
+> The number of queues can change by other means, rather than ethtool. For
+> example, attaching an mqprio qdisc with num_tc > 1 leads to creating
+> multiple sets of TX queues, which may be then destroyed when mqprio is
+> deleted. If an AF_XDP socket is created while mqprio is active,
+> dev->_tx[queue_id].pool will be filled, but then real_num_tx_queues may
+> decrease with deletion of mqprio, which will mean that the pool won't be
+> NULLed, and a further increase of the number of TX queues may expose a
+> dangling pointer.
+> 
+> [...]
 
--DBUILD_SHARED_LIBS=OFF is the default. It can be omitted.
+Here is the summary with links:
+  - [bpf] xsk: Clear pool even for inactive queues
+    https://git.kernel.org/bpf/bpf/c/b425e24a934e
 
->+            -DCMAKE_BUILD_TYPE=Release        \
->+            -DLLVM_BUILD_RUNTIME=OFF
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
--DLLVM_BUILD_RUNTIME=OFF can be omitted if none of
-compiler-rt/libc++/libc++abi is built.
 
->+ $ ninja
->
-> It is also possible to point make to the newly compiled 'llc' or
-> 'clang' command via redefining LLC or CLANG on the make command line::
->
->- make M=samples/bpf LLC=~/git/llvm/build/bin/llc CLANG=~/git/llvm/build/bin/clang
->+ make M=samples/bpf LLC=~/git/llvm-project/llvm/build/bin/llc CLANG=~/git/llvm-project/llvm/build/bin/clang
->
-> Cross compiling samples
-> -----------------------
->-- 
->2.1.0
->
->-- 
->You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
->To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
->To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/1611042978-21473-1-git-send-email-yangtiezhu%40loongson.cn.
