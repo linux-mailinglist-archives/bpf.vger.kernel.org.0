@@ -2,102 +2,152 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE7F12FC41F
-	for <lists+bpf@lfdr.de>; Tue, 19 Jan 2021 23:53:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C30A72FC4AC
+	for <lists+bpf@lfdr.de>; Wed, 20 Jan 2021 00:23:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727126AbhASWwO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Jan 2021 17:52:14 -0500
-Received: from mail-40134.protonmail.ch ([185.70.40.134]:25960 "EHLO
-        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404540AbhASO3M (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Jan 2021 09:29:12 -0500
-Date:   Tue, 19 Jan 2021 14:28:06 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1611066490; bh=P38fjPaG9QBqq7nL2IRGN42Iu3wjac94WoOry2utDBM=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=l4Fa1mHECkAkZZ0CFgdT9ywe7ofoL8nHeM9iskoqqPZ5ExFH9EmeinzW+88MIKxmg
-         QaYWlfh4BzZ6rsu/yWFvb10+edslILEVr+ODllqSg5M7IDAymCQ0Vs57yjsOTiv0jQ
-         RdnX2Zy0jou5bIuvA0FVhrerWj2PtThf4JXqrfQ+a9/s+4IMTxAw8zfCuqvTGCirlu
-         CczPZN7ypX8c2o59Sfl85zFF8LgfaX96tkKOOz9Yj8CPy5G1VVnRxWYpeYj3/6GKg0
-         j/Xj320IBrlemkSrNwJgeCT1symzDwFDnBodkVJHmy+FJ3ba0PmozfsPAJJuFWWPgm
-         zwPLUZCtiGB0w==
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, bjorn.topel@intel.com,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        id S1727272AbhASXU2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Jan 2021 18:20:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23749 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729209AbhASXTA (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 19 Jan 2021 18:19:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611098251;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=X2pcChHGftd9Kzu4vux4bBucIycf/Pi8Nee8dh6Osj0=;
+        b=NsCF0yk8VqnLeH6rhiMLzPRbvpr3ynMgM8Lg5EYDJCQrcjWRZRnxi5JZom/TPQ3ESOtG4D
+        RBxAoWoql6sphCmP4NgGQIQC8YXz+t0Q0qmCllSwAyNgvV2WEbr3mBqGvuK53bssLqL5rL
+        0aYNBxd+uAFCz63LLYINxj5urQttx4w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-319-AvmReq3dM-mztp_ixXzDhw-1; Tue, 19 Jan 2021 18:17:30 -0500
+X-MC-Unique: AvmReq3dM-mztp_ixXzDhw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 067ED15720;
+        Tue, 19 Jan 2021 23:17:28 +0000 (UTC)
+Received: from redhat.com (ovpn-112-133.rdu2.redhat.com [10.10.112.133])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 978266268F;
+        Tue, 19 Jan 2021 23:17:20 +0000 (UTC)
+Date:   Tue, 19 Jan 2021 18:17:18 -0500
+From:   Joe Lawrence <joe.lawrence@redhat.com>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, dwarves@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Yonghong Song <yhs@fb.com>, Hao Luo <haoluo@google.com>,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH bpf-next v2 2/3] virtio-net: support IFF_TX_SKB_NO_LINEAR
-Message-ID: <20210119142726.4970-1-alobakin@pm.me>
-In-Reply-To: <21d2f709140470eb143e3c6c69e2a5dbd20bf2e7.1611048724.git.xuanzhuo@linux.alibaba.com>
-References: <cover.1611048724.git.xuanzhuo@linux.alibaba.com> <21d2f709140470eb143e3c6c69e2a5dbd20bf2e7.1611048724.git.xuanzhuo@linux.alibaba.com>
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, Mark Wielaard <mjw@redhat.com>
+Subject: Re: [PATCH 0/3] dwarves,libbpf: Add support to use optional extended
+ section index table
+Message-ID: <20210119231718.GA3173@redhat.com>
+References: <20210119221220.1745061-1-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210119221220.1745061-1-jolsa@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Date: Tue, 19 Jan 2021 17:45:11 +0800
+On Tue, Jan 19, 2021 at 11:12:17PM +0100, Jiri Olsa wrote:
+> hi,
+> kpatch guys hit an issue with pahole over their vmlinux, which
+> contains many (over 100000) sections, pahole crashes.
+> 
 
-> Virtio net supports the case where the skb linear space is empty, so add
-> priv_flags.
->=20
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> ---
->  drivers/net/virtio_net.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index ba8e637..80d637f 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -2972,7 +2972,8 @@ static int virtnet_probe(struct virtio_device *vdev=
-)
->  =09=09return -ENOMEM;
-> =20
->  =09/* Set up network device as normal. */
-> -=09dev->priv_flags |=3D IFF_UNICAST_FLT | IFF_LIVE_ADDR_CHANGE;
-> +=09dev->priv_flags |=3D IFF_UNICAST_FLT | IFF_LIVE_ADDR_CHANGE |
-> +=09=09IFF_TX_SKB_NO_LINEAR;
+FWIW this is probably only going to be problem when building the kernel
+with -f[function|data]-sections and tipping over 65536 sections.  We
+only use these option to determine code deltas, but other users
+(FG-ASLR, LTO?) may need to actually build runtime code.
 
-Please align IFF_TX_SKB_NO_LINEAR to IFF_UNICAST_FLT:
+> With so many sections, ELF is using extended section index table,
+> which is used to hold values for some of the indexes and extra
+> code is needed to retrieve them.
+> 
+> This patchset adds the support for pahole to properly read string
+> table index and symbol's section index, which are used in btf_encoder.
+> 
+> This patchset also adds support for libbpf to properly parse .BTF
+> section on such object.
+> 
+> This patchset based on previously posted fix [1].
+> 
 
-=09dev->priv_flags |=3D IFF_UNICAST_FLT | IFF_LIVE_ADDR_CHANGE |
-=09=09=09   IFF_TX_SKB_NO_LINEAR;
+Hi Jiri,
 
->  =09dev->netdev_ops =3D &virtnet_netdev;
->  =09dev->features =3D NETIF_F_HIGHDMA;
+Thanks for posting a potential fix, here's what I saw when running it:
 
-Also, the series you sent is showed up incorrectly on lore.kernel.org
-and patchwork.kernel.org. Seems like you used different To and Cc for
-its parts.
-Please use scripts/get_maintainer.pl to the whole series:
+1-Installed your scratch build:
 
-scripts/get_maintainer.pl ../patch-build-skb-by-page/*
+% rpm -q --whatprovides $(which pahole)
+dwarves-1.19-2.el8.x86_64
 
-And use one list of addresses for every message, so they wouldn't
-lost.
 
-Al
+2-From the kernel build:
+
+  LD      vmlinux.o
+  MODPOST vmlinux.o
+  BTF     .btf.vmlinux.bin.o
+scripts/link-vmlinux.sh: line 127: 1851330 Segmentation fault      (core dumped) LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${1}
+objcopy: --change-section-vma .BTF=0x0000000000000000 never used
+objcopy: --change-section-lma .BTF=0x0000000000000000 never used
+objcopy: error: the input file '.btf.vmlinux.bin' is empty
+Failed to generate BTF for vmlinux
+Try to disable CONFIG_DEBUG_INFO_BTF
+make: *** [Makefile:1050: vmlinux] Error 1
+
+
+3-coredump backtrace:
+...
+Core was generated by `pahole -J .tmp_vmlinux.btf'.
+...
+(gdb) bt
+#0  0x00007fc0e81e31c0 in __memcpy_ssse3 () from /lib64/libc.so.6
+#1  0x00007fc0e8b6700a in memcpy (__len=306248, __src=<optimized out>, __dest=0x7fc0e91a0010) at /usr/include/bits/string_fortified.h:34
+#2  get_vmlinux_addrs (btfe=<optimized out>, pcount=<synthetic pointer>, paddrs=<synthetic pointer>, fl=<synthetic pointer>)
+    at /usr/src/debug/dwarves-1.19-2.el8.x86_64/btf_encoder.c:167
+#3  setup_functions (fl=<synthetic pointer>, btfe=<optimized out>) at /usr/src/debug/dwarves-1.19-2.el8.x86_64/btf_encoder.c:251
+#4  collect_symbols (collect_percpu_vars=<optimized out>, btfe=<optimized out>)
+    at /usr/src/debug/dwarves-1.19-2.el8.x86_64/btf_encoder.c:645
+#5  cu__encode_btf (cu=<optimized out>, verbose=0, force=false, skip_encoding_vars=<optimized out>)
+    at /usr/src/debug/dwarves-1.19-2.el8.x86_64/btf_encoder.c:694
+#6  0x000055eb2e4b6cc5 in pahole_stealer (cu=0x55eb2ecbb920, conf_load=<optimized out>)
+    at /usr/src/debug/dwarves-1.19-2.el8.x86_64/pahole.c:2402
+#7  0x00007fc0e8b6d2db in finalize_cu_immediately (conf=0x55eb2e6bc0e0 <conf_load>, dcu=0x7ffd88fda9d0, cu=0x55eb2ecbb920, 
+    cus=0x55eb2ecbb5d0) at /usr/src/debug/dwarves-1.19-2.el8.x86_64/dwarf_loader.c:2477
+#8  cus__load_module (cus=cus@entry=0x55eb2ecbb5d0, conf=0x55eb2e6bc0e0 <conf_load>, mod=mod@entry=0x55eb2ecbb5f0, dw=0x55eb2ecbe6a0, 
+    elf=elf@entry=0x7fc0ad941010, filename=0x7ffd8905b98d ".tmp_vmlinux.btf")
+    at /usr/src/debug/dwarves-1.19-2.el8.x86_64/dwarf_loader.c:2477
+#9  0x00007fc0e8b6d5c5 in cus__process_dwflmod (dwflmod=0x55eb2ecbb5f0, userdata=<optimized out>, name=<optimized out>, 
+    base=<optimized out>, arg=0x7ffd8905ab00) at /usr/src/debug/dwarves-1.19-2.el8.x86_64/dwarf_loader.c:2522
+#10 0x00007fc0e88f9c71 in dwfl_getmodules () from /lib64/libdw.so.1
+#11 0x00007fc0e8b69cdc in cus__process_file (filename=<optimized out>, fd=5, conf=0x55eb2e6bc0e0 <conf_load>, cus=0x55eb2ecbb5d0)
+    at /usr/src/debug/dwarves-1.19-2.el8.x86_64/dwarf_loader.c:2575
+#12 dwarf__load_file (cus=0x55eb2ecbb5d0, conf=0x55eb2e6bc0e0 <conf_load>, filename=<optimized out>)
+    at /usr/src/debug/dwarves-1.19-2.el8.x86_64/dwarf_loader.c:2592
+#13 0x00007fc0e8b5cb82 in cus__load_file (cus=cus@entry=0x55eb2ecbb5d0, conf=conf@entry=0x55eb2e6bc0e0 <conf_load>, 
+    filename=0x7ffd8905b98d ".tmp_vmlinux.btf") at /usr/src/debug/dwarves-1.19-2.el8.x86_64/dwarves.c:1963
+#14 0x00007fc0e8b5ce29 in cus__load_files (cus=0x55eb2ecbb5d0, conf=0x55eb2e6bc0e0 <conf_load>, filenames=0x7ffd8905aea8)
+    at /usr/src/debug/dwarves-1.19-2.el8.x86_64/dwarves.c:2324
+#15 0x000055eb2e4b371e in main (argc=3, argv=0x7ffd8905ae98) at /usr/src/debug/dwarves-1.19-2.el8.x86_64/pahole.c:2760
+
+
+I uploaded a gzipped core file here:
+http://people.redhat.com/~jolawren/coredump.gz
+
+If it's easier to get you setup on a repro system, let me know and I can
+do that.
+
+Thanks,
+
+-- Joe
 
