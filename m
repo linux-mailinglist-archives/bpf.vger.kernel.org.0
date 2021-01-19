@@ -2,19 +2,19 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B79B92FB9FE
-	for <lists+bpf@lfdr.de>; Tue, 19 Jan 2021 15:55:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E9F12FB9FF
+	for <lists+bpf@lfdr.de>; Tue, 19 Jan 2021 15:55:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388135AbhASOkX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Jan 2021 09:40:23 -0500
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:46361 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388109AbhASJqE (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 19 Jan 2021 04:46:04 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0UMEN45h_1611049512;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0UMEN45h_1611049512)
+        id S2388109AbhASOkZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Jan 2021 09:40:25 -0500
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:59631 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388123AbhASJqL (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 19 Jan 2021 04:46:11 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0UMEAy1E_1611049512;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0UMEAy1E_1611049512)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 19 Jan 2021 17:45:12 +0800
+          Tue, 19 Jan 2021 17:45:13 +0800
 From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To:     netdev@vger.kernel.org
 Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
@@ -33,36 +33,24 @@ Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         KP Singh <kpsingh@kernel.org>,
         virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
-Subject: [PATCH bpf-next v2 0/3] xsk: build skb by page
-Date:   Tue, 19 Jan 2021 17:45:09 +0800
-Message-Id: <cover.1611048724.git.xuanzhuo@linux.alibaba.com>
+Subject: [PATCH bpf-next v2 1/3] net: add priv_flags for allow tx skb without linear
+Date:   Tue, 19 Jan 2021 17:45:10 +0800
+Message-Id: <30ae1c94b5c26919bd90bb251761c526edfbaf56.1611048724.git.xuanzhuo@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <cover.1611048724.git.xuanzhuo@linux.alibaba.com>
+References: <cover.1611048724.git.xuanzhuo@linux.alibaba.com>
+In-Reply-To: <cover.1611048724.git.xuanzhuo@linux.alibaba.com>
+References: <cover.1611048724.git.xuanzhuo@linux.alibaba.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-v2:
-    1. add priv_flags IFF_TX_SKB_NO_LINEAR instead of netdev_feature
-    2. split the patch to three:
-        a. add priv_flags IFF_TX_SKB_NO_LINEAR
-        b. virtio net add priv_flags IFF_TX_SKB_NO_LINEAR
-        c. When there is support this flag, construct skb without linear space
-    3. use ERR_PTR() and PTR_ERR() to handle the err
-
-
-v1 message log:
----------------
-
-This patch is used to construct skb based on page to save memory copy
-overhead.
-
-This has one problem:
-
-We construct the skb by fill the data page as a frag into the skb. In
-this way, the linear space is empty, and the header information is also
-in the frag, not in the linear space, which is not allowed for some
-network cards. For example, Mellanox Technologies MT27710 Family
-[ConnectX-4 Lx] will get the following error message:
+In some cases, we hope to construct skb directly based on the existing
+memory without copying data. In this case, the page will be placed
+directly in the skb, and the linear space of skb is empty. But
+unfortunately, many the network card does not support this operation.
+For example Mellanox Technologies MT27710 Family [ConnectX-4 Lx] will
+get the following error message:
 
     mlx5_core 0000:3b:00.1 eth1: Error cqe on cqn 0x817, ci 0x8, qn 0x1dbb, opcode 0xd, syndrome 0x1, vendor syndrome 0x68
     00000000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
@@ -76,41 +64,43 @@ network cards. For example, Mellanox Technologies MT27710 Family
     00000030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
     mlx5_core 0000:3b:00.1 eth1: ERR CQE on SQ: 0x1dbb
 
-I also tried to use build_skb to construct skb, but because of the
-existence of skb_shinfo, it must be behind the linear space, so this
-method is not working. We can't put skb_shinfo on desc->addr, it will be
-exposed to users, this is not safe.
+So a priv_flag is added here to indicate whether the network card
+supports this feature.
 
-Finally, I added a feature NETIF_F_SKB_NO_LINEAR to identify whether the
-network card supports the header information of the packet in the frag
-and not in the linear space.
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Suggested-by: Alexander Lobakin <alobakin@pm.me>
+---
+ include/linux/netdevice.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
----------------- Performance Testing ------------
-
-The test environment is Aliyun ECS server.
-Test cmd:
-```
-xdpsock -i eth0 -t  -S -s <msg size>
-```
-
-Test result data:
-
-size    64      512     1024    1500
-copy    1916747 1775988 1600203 1440054
-page    1974058 1953655 1945463 1904478
-percent 3.0%    10.0%   21.58%  32.3%
-
-
-Xuan Zhuo (3):
-  net: add priv_flags for allow tx skb without linear
-  virtio-net: support IFF_TX_SKB_NO_LINEAR
-  xsk: build skb by page
-
- drivers/net/virtio_net.c  |   3 +-
- include/linux/netdevice.h |   3 ++
- net/xdp/xsk.c             | 112 ++++++++++++++++++++++++++++++++++++++--------
- 3 files changed, 99 insertions(+), 19 deletions(-)
-
---
+diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+index 02dcef4..54501eb 100644
+--- a/include/linux/netdevice.h
++++ b/include/linux/netdevice.h
+@@ -1525,6 +1525,7 @@ struct net_device_ops {
+  * @IFF_FAILOVER_SLAVE: device is lower dev of a failover master device
+  * @IFF_L3MDEV_RX_HANDLER: only invoke the rx handler of L3 master device
+  * @IFF_LIVE_RENAME_OK: rename is allowed while device is up and running
++ * @IFF_TX_SKB_NO_LINEAR: allow tx skb linear is empty
+  */
+ enum netdev_priv_flags {
+ 	IFF_802_1Q_VLAN			= 1<<0,
+@@ -1558,6 +1559,7 @@ enum netdev_priv_flags {
+ 	IFF_FAILOVER_SLAVE		= 1<<28,
+ 	IFF_L3MDEV_RX_HANDLER		= 1<<29,
+ 	IFF_LIVE_RENAME_OK		= 1<<30,
++	IFF_TX_SKB_NO_LINEAR		= 1<<31,
+ };
+ 
+ #define IFF_802_1Q_VLAN			IFF_802_1Q_VLAN
+@@ -1590,6 +1592,7 @@ enum netdev_priv_flags {
+ #define IFF_FAILOVER_SLAVE		IFF_FAILOVER_SLAVE
+ #define IFF_L3MDEV_RX_HANDLER		IFF_L3MDEV_RX_HANDLER
+ #define IFF_LIVE_RENAME_OK		IFF_LIVE_RENAME_OK
++#define IFF_TX_SKB_NO_LINEAR		IFF_TX_SKB_NO_LINEAR
+ 
+ /**
+  *	struct net_device - The DEVICE structure.
+-- 
 1.8.3.1
 
