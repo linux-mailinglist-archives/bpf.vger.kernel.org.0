@@ -2,191 +2,342 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3C2F2FBA1A
-	for <lists+bpf@lfdr.de>; Tue, 19 Jan 2021 15:55:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A412FBA1D
+	for <lists+bpf@lfdr.de>; Tue, 19 Jan 2021 15:55:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404228AbhASOlx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Jan 2021 09:41:53 -0500
-Received: from foss.arm.com ([217.140.110.172]:54712 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390864AbhASMX5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Jan 2021 07:23:57 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EF6B611D4;
-        Tue, 19 Jan 2021 04:22:50 -0800 (PST)
-Received: from e107158-lin.cambridge.arm.com (unknown [10.1.194.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A074C3F719;
-        Tue, 19 Jan 2021 04:22:49 -0800 (PST)
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        id S2404261AbhASOl4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Jan 2021 09:41:56 -0500
+Received: from mail-03.mail-europe.com ([91.134.188.129]:46652 "EHLO
+        mail-03.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390647AbhASMsd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Jan 2021 07:48:33 -0500
+Date:   Tue, 19 Jan 2021 12:44:57 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1611060302; bh=8i/A0q9OU25J4k8HUwD1TaII3Vs+nnWI9Lml+XDwKug=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=Q+Tt2M51rfYOVO8zl4aB+MTAHUiMcXgCQPEXBySPoWIDSXwsVcOwwjTVNLrE7kPsB
+         QgW3vyoWa2O8oKRH7dvbTp7JOdyQYH4+EQ7gMt+53PalH3nLbq+8t6FHGqD4P5nSXh
+         tWsJyJPki20NVyJavck6trqTvT1OA4fBCXDB6sFMcF4nGP3RmlKJtMGDVVF9uelzOk
+         gi0bhzyqxmgnuDBg2rhZwiEps3VfVFtazEIHlUsTbJSDGnbblzU0EZv/g7LD35KRJi
+         H7JUtkcav7AoTiO/8i2dAYxD1z2pvR68l9N+KeRO7E/u68BmsFZA4x6oisV4nqE0p2
+         E7FJJSqH1OMKQ==
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, bjorn.topel@intel.com,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, Qais Yousef <qais.yousef@arm.com>
-Subject: [PATCH v3 bpf-next 2/2] selftests: bpf: Add a new test for bare tracepoints
-Date:   Tue, 19 Jan 2021 12:22:37 +0000
-Message-Id: <20210119122237.2426878-3-qais.yousef@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210119122237.2426878-1-qais.yousef@arm.com>
-References: <20210119122237.2426878-1-qais.yousef@arm.com>
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Antoine Tenart <atenart@kernel.org>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Meir Lichtinger <meirl@mellanox.com>,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH bpf-next] xsk: build skb by page
+Message-ID: <20210119124406.2895-1-alobakin@pm.me>
+In-Reply-To: <579fa463bba42ac71591540a1811dca41d725350.1610764948.git.xuanzhuo@linux.alibaba.com>
+References: <579fa463bba42ac71591540a1811dca41d725350.1610764948.git.xuanzhuo@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Reuse module_attach infrastructure to add a new bare tracepoint to check
-we can attach to it as a raw tracepoint.
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Date: Sat, 16 Jan 2021 10:44:53 +0800
 
-Signed-off-by: Qais Yousef <qais.yousef@arm.com>
----
- .../bpf/bpf_testmod/bpf_testmod-events.h      |  6 +++++
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 21 ++++++++++++++-
- .../selftests/bpf/bpf_testmod/bpf_testmod.h   |  6 +++++
- .../selftests/bpf/prog_tests/module_attach.c  | 27 +++++++++++++++++++
- .../selftests/bpf/progs/test_module_attach.c  | 10 +++++++
- 5 files changed, 69 insertions(+), 1 deletion(-)
+> This patch is used to construct skb based on page to save memory copy
+> overhead.
+>=20
+> This has one problem:
+>=20
+> We construct the skb by fill the data page as a frag into the skb. In
+> this way, the linear space is empty, and the header information is also
+> in the frag, not in the linear space, which is not allowed for some
+> network cards. For example, Mellanox Technologies MT27710 Family
+> [ConnectX-4 Lx] will get the following error message:
+>=20
+>     mlx5_core 0000:3b:00.1 eth1: Error cqe on cqn 0x817, ci 0x8, qn 0x1db=
+b, opcode 0xd, syndrome 0x1, vendor syndrome 0x68
+>     00000000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>     00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>     00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>     00000030: 00 00 00 00 60 10 68 01 0a 00 1d bb 00 0f 9f d2
+>     WQE DUMP: WQ size 1024 WQ cur size 0, WQE index 0xf, len: 64
+>     00000000: 00 00 0f 0a 00 1d bb 03 00 00 00 08 00 00 00 00
+>     00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>     00000020: 00 00 00 2b 00 08 00 00 00 00 00 05 9e e3 08 00
+>     00000030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>     mlx5_core 0000:3b:00.1 eth1: ERR CQE on SQ: 0x1dbb
+>=20
+> I also tried to use build_skb to construct skb, but because of the
+> existence of skb_shinfo, it must be behind the linear space, so this
+> method is not working. We can't put skb_shinfo on desc->addr, it will be
+> exposed to users, this is not safe.
+>=20
+> Finally, I added a feature NETIF_F_SKB_NO_LINEAR to identify whether the
+> network card supports the header information of the packet in the frag
+> and not in the linear space.
+>=20
+> ---------------- Performance Testing ------------
+>=20
+> The test environment is Aliyun ECS server.
+> Test cmd:
+> ```
+> xdpsock -i eth0 -t  -S -s <msg size>
+> ```
+>=20
+> Test result data:
+>=20
+> size    64      512     1024    1500
+> copy    1916747 1775988 1600203 1440054
+> page    1974058 1953655 1945463 1904478
+> percent 3.0%    10.0%   21.58%  32.3%
+>=20
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
+> ---
+>  drivers/net/virtio_net.c        |   2 +-
+>  include/linux/netdev_features.h |   5 +-
+>  net/ethtool/common.c            |   1 +
+>  net/xdp/xsk.c                   | 108 +++++++++++++++++++++++++++++++++-=
+------
+>  4 files changed, 97 insertions(+), 19 deletions(-)
+>=20
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 4ecccb8..841a331 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -2985,7 +2985,7 @@ static int virtnet_probe(struct virtio_device *vdev=
+)
+>  =09/* Set up network device as normal. */
+>  =09dev->priv_flags |=3D IFF_UNICAST_FLT | IFF_LIVE_ADDR_CHANGE;
+>  =09dev->netdev_ops =3D &virtnet_netdev;
+> -=09dev->features =3D NETIF_F_HIGHDMA;
+> +=09dev->features =3D NETIF_F_HIGHDMA | NETIF_F_SKB_NO_LINEAR;
+> =20
+>  =09dev->ethtool_ops =3D &virtnet_ethtool_ops;
+>  =09SET_NETDEV_DEV(dev, &vdev->dev);
+> diff --git a/include/linux/netdev_features.h b/include/linux/netdev_featu=
+res.h
+> index 934de56..8dd28e2 100644
+> --- a/include/linux/netdev_features.h
+> +++ b/include/linux/netdev_features.h
+> @@ -85,9 +85,11 @@ enum {
+> =20
+>  =09NETIF_F_HW_MACSEC_BIT,=09=09/* Offload MACsec operations */
+> =20
+> +=09NETIF_F_SKB_NO_LINEAR_BIT,=09/* Allow skb linear is empty */
+> +
+>  =09/*
+>  =09 * Add your fresh new feature above and remember to update
+> -=09 * netdev_features_strings[] in net/core/ethtool.c and maybe
+> +=09 * netdev_features_strings[] in net/ethtool/common.c and maybe
+>  =09 * some feature mask #defines below. Please also describe it
+>  =09 * in Documentation/networking/netdev-features.rst.
+>  =09 */
+> @@ -157,6 +159,7 @@ enum {
+>  #define NETIF_F_GRO_FRAGLIST=09__NETIF_F(GRO_FRAGLIST)
+>  #define NETIF_F_GSO_FRAGLIST=09__NETIF_F(GSO_FRAGLIST)
+>  #define NETIF_F_HW_MACSEC=09__NETIF_F(HW_MACSEC)
+> +#define NETIF_F_SKB_NO_LINEAR=09__NETIF_F(SKB_NO_LINEAR)
+> =20
+>  /* Finds the next feature with the highest number of the range of start =
+till 0.
+>   */
+> diff --git a/net/ethtool/common.c b/net/ethtool/common.c
+> index 24036e3..2f3d309 100644
+> --- a/net/ethtool/common.c
+> +++ b/net/ethtool/common.c
+> @@ -68,6 +68,7 @@
+>  =09[NETIF_F_HW_TLS_RX_BIT] =3D=09 "tls-hw-rx-offload",
+>  =09[NETIF_F_GRO_FRAGLIST_BIT] =3D=09 "rx-gro-list",
+>  =09[NETIF_F_HW_MACSEC_BIT] =3D=09 "macsec-hw-offload",
+> +=09[NETIF_F_SKB_NO_LINEAR_BIT] =3D=09 "skb-no-linear",
+>  };
+> =20
+>  const char
+> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> index 8037b04..94d17dc 100644
+> --- a/net/xdp/xsk.c
+> +++ b/net/xdp/xsk.c
+> @@ -430,6 +430,95 @@ static void xsk_destruct_skb(struct sk_buff *skb)
+>  =09sock_wfree(skb);
+>  }
+> =20
+> +static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
+> +=09=09=09=09=09      struct xdp_desc *desc)
+> +{
+> +=09u32 len, offset, copy, copied;
+> +=09struct sk_buff *skb;
+> +=09struct page *page;
+> +=09char *buffer;
+> +=09int err, i;
+> +=09u64 addr;
+> +
+> +=09skb =3D sock_alloc_send_skb(&xs->sk, 0, 1, &err);
+> +=09if (unlikely(!skb))
+> +=09=09return NULL;
+> +
+> +=09addr =3D desc->addr;
+> +=09len =3D desc->len;
+> +
+> +=09buffer =3D xsk_buff_raw_get_data(xs->pool, addr);
+> +=09offset =3D offset_in_page(buffer);
+> +=09addr =3D buffer - (char *)xs->pool->addrs;
+> +
+> +=09for (copied =3D 0, i =3D 0; copied < len; ++i) {
 
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
-index b83ea448bc79..89c6d58e5dd6 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
-@@ -28,6 +28,12 @@ TRACE_EVENT(bpf_testmod_test_read,
- 		  __entry->pid, __entry->comm, __entry->off, __entry->len)
- );
- 
-+/* A bare tracepoint with no event associated with it */
-+DECLARE_TRACE(bpf_testmod_test_write_bare,
-+	TP_PROTO(struct task_struct *task, struct bpf_testmod_test_write_ctx *ctx),
-+	TP_ARGS(task, ctx)
-+);
-+
- #endif /* _BPF_TESTMOD_EVENTS_H */
- 
- #undef TRACE_INCLUDE_PATH
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index 2df19d73ca49..e900adad2276 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -28,9 +28,28 @@ bpf_testmod_test_read(struct file *file, struct kobject *kobj,
- EXPORT_SYMBOL(bpf_testmod_test_read);
- ALLOW_ERROR_INJECTION(bpf_testmod_test_read, ERRNO);
- 
-+noinline ssize_t
-+bpf_testmod_test_write(struct file *file, struct kobject *kobj,
-+		      struct bin_attribute *bin_attr,
-+		      char *buf, loff_t off, size_t len)
-+{
-+	struct bpf_testmod_test_write_ctx ctx = {
-+		.buf = buf,
-+		.off = off,
-+		.len = len,
-+	};
-+
-+	trace_bpf_testmod_test_write_bare(current, &ctx);
-+
-+	return -EIO; /* always fail */
-+}
-+EXPORT_SYMBOL(bpf_testmod_test_write);
-+ALLOW_ERROR_INJECTION(bpf_testmod_test_write, ERRNO);
-+
- static struct bin_attribute bin_attr_bpf_testmod_file __ro_after_init = {
--	.attr = { .name = "bpf_testmod", .mode = 0444, },
-+	.attr = { .name = "bpf_testmod", .mode = 0666, },
- 	.read = bpf_testmod_test_read,
-+	.write = bpf_testmod_test_write,
- };
- 
- static int bpf_testmod_init(void)
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-index b81adfedb4f6..b3892dc40111 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-@@ -11,4 +11,10 @@ struct bpf_testmod_test_read_ctx {
- 	size_t len;
- };
- 
-+struct bpf_testmod_test_write_ctx {
-+	char *buf;
-+	loff_t off;
-+	size_t len;
-+};
-+
- #endif /* _BPF_TESTMOD_H */
-diff --git a/tools/testing/selftests/bpf/prog_tests/module_attach.c b/tools/testing/selftests/bpf/prog_tests/module_attach.c
-index 50796b651f72..5bc53d53d86e 100644
---- a/tools/testing/selftests/bpf/prog_tests/module_attach.c
-+++ b/tools/testing/selftests/bpf/prog_tests/module_attach.c
-@@ -21,9 +21,34 @@ static int trigger_module_test_read(int read_sz)
- 	return 0;
- }
- 
-+static int trigger_module_test_write(int write_sz)
-+{
-+	int fd, err;
-+	char *buf = malloc(write_sz);
-+
-+	if (!buf)
-+		return -ENOMEM;
-+
-+	memset(buf, 'a', write_sz);
-+	buf[write_sz-1] = '\0';
-+
-+	fd = open("/sys/kernel/bpf_testmod", O_WRONLY);
-+	err = -errno;
-+	if (CHECK(fd < 0, "testmod_file_open", "failed: %d\n", err)) {
-+		free(buf);
-+		return err;
-+	}
-+
-+	write(fd, buf, write_sz);
-+	close(fd);
-+	free(buf);
-+	return 0;
-+}
-+
- void test_module_attach(void)
- {
- 	const int READ_SZ = 456;
-+	const int WRITE_SZ = 457;
- 	struct test_module_attach* skel;
- 	struct test_module_attach__bss *bss;
- 	int err;
-@@ -48,8 +73,10 @@ void test_module_attach(void)
- 
- 	/* trigger tracepoint */
- 	ASSERT_OK(trigger_module_test_read(READ_SZ), "trigger_read");
-+	ASSERT_OK(trigger_module_test_write(WRITE_SZ), "trigger_write");
- 
- 	ASSERT_EQ(bss->raw_tp_read_sz, READ_SZ, "raw_tp");
-+	ASSERT_EQ(bss->raw_tp_bare_write_sz, WRITE_SZ, "raw_tp_bare");
- 	ASSERT_EQ(bss->tp_btf_read_sz, READ_SZ, "tp_btf");
- 	ASSERT_EQ(bss->fentry_read_sz, READ_SZ, "fentry");
- 	ASSERT_EQ(bss->fentry_manual_read_sz, READ_SZ, "fentry_manual");
-diff --git a/tools/testing/selftests/bpf/progs/test_module_attach.c b/tools/testing/selftests/bpf/progs/test_module_attach.c
-index efd1e287ac17..bd37ceec5587 100644
---- a/tools/testing/selftests/bpf/progs/test_module_attach.c
-+++ b/tools/testing/selftests/bpf/progs/test_module_attach.c
-@@ -17,6 +17,16 @@ int BPF_PROG(handle_raw_tp,
- 	return 0;
- }
- 
-+__u32 raw_tp_bare_write_sz = 0;
-+
-+SEC("raw_tp/bpf_testmod_test_write_bare")
-+int BPF_PROG(handle_raw_tp_bare,
-+	     struct task_struct *task, struct bpf_testmod_test_write_ctx *write_ctx)
-+{
-+	raw_tp_bare_write_sz = BPF_CORE_READ(write_ctx, len);
-+	return 0;
-+}
-+
- __u32 tp_btf_read_sz = 0;
- 
- SEC("tp_btf/bpf_testmod_test_read")
--- 
-2.25.1
+Just noticed. i++ would be less confusing here. You start to fill
+skb frags from frag 0 anyway.
+
+> +=09=09page =3D xs->pool->umem->pgs[addr >> PAGE_SHIFT];
+> +
+> +=09=09get_page(page);
+> +
+> +=09=09copy =3D min((u32)(PAGE_SIZE - offset), len - copied);
+
+Also. It's better to use min_t() in this case:
+
+copy =3D min_t(u32, PAGE_SIZE - offset, len - copied);
+
+instead of manual casting.
+
+> +=09=09skb_fill_page_desc(skb, i, page, offset, copy);
+> +
+> +=09=09copied +=3D copy;
+> +=09=09addr +=3D copy;
+> +=09=09offset =3D 0;
+> +=09}
+> +
+> +=09skb->len +=3D len;
+> +=09skb->data_len +=3D len;
+> +=09skb->truesize +=3D len;
+> +
+> +=09refcount_add(len, &xs->sk.sk_wmem_alloc);
+> +
+> +=09return skb;
+> +}
+> +
+> +static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
+> +=09=09=09=09     struct xdp_desc *desc, int *err)
+> +{
+> +=09struct sk_buff *skb;
+> +
+> +=09if (xs->dev->features & NETIF_F_SKB_NO_LINEAR) {
+> +=09=09skb =3D xsk_build_skb_zerocopy(xs, desc);
+> +=09=09if (unlikely(!skb)) {
+> +=09=09=09*err =3D -ENOMEM;
+> +=09=09=09return NULL;
+> +=09=09}
+> +=09} else {
+> +=09=09char *buffer;
+> +=09=09u64 addr;
+> +=09=09u32 len;
+> +=09=09int err;
+> +
+> +=09=09len =3D desc->len;
+> +=09=09skb =3D sock_alloc_send_skb(&xs->sk, len, 1, &err);
+> +=09=09if (unlikely(!skb)) {
+> +=09=09=09*err =3D -ENOMEM;
+> +=09=09=09return NULL;
+> +=09=09}
+> +
+> +=09=09skb_put(skb, len);
+> +=09=09addr =3D desc->addr;
+> +=09=09buffer =3D xsk_buff_raw_get_data(xs->pool, desc->addr);
+> +=09=09err =3D skb_store_bits(skb, 0, buffer, len);
+> +
+> +=09=09if (unlikely(err)) {
+> +=09=09=09kfree_skb(skb);
+> +=09=09=09*err =3D -EINVAL;
+> +=09=09=09return NULL;
+> +=09=09}
+> +=09}
+> +
+> +=09skb->dev =3D xs->dev;
+> +=09skb->priority =3D xs->sk.sk_priority;
+> +=09skb->mark =3D xs->sk.sk_mark;
+> +=09skb_shinfo(skb)->destructor_arg =3D (void *)(long)desc->addr;
+> +=09skb->destructor =3D xsk_destruct_skb;
+> +
+> +=09return skb;
+> +}
+> +
+>  static int xsk_generic_xmit(struct sock *sk)
+>  {
+>  =09struct xdp_sock *xs =3D xdp_sk(sk);
+> @@ -446,43 +535,28 @@ static int xsk_generic_xmit(struct sock *sk)
+>  =09=09goto out;
+> =20
+>  =09while (xskq_cons_peek_desc(xs->tx, &desc, xs->pool)) {
+> -=09=09char *buffer;
+> -=09=09u64 addr;
+> -=09=09u32 len;
+> -
+>  =09=09if (max_batch-- =3D=3D 0) {
+>  =09=09=09err =3D -EAGAIN;
+>  =09=09=09goto out;
+>  =09=09}
+> =20
+> -=09=09len =3D desc.len;
+> -=09=09skb =3D sock_alloc_send_skb(sk, len, 1, &err);
+> +=09=09skb =3D xsk_build_skb(xs, &desc, &err);
+>  =09=09if (unlikely(!skb))
+>  =09=09=09goto out;
+> =20
+> -=09=09skb_put(skb, len);
+> -=09=09addr =3D desc.addr;
+> -=09=09buffer =3D xsk_buff_raw_get_data(xs->pool, addr);
+> -=09=09err =3D skb_store_bits(skb, 0, buffer, len);
+>  =09=09/* This is the backpressure mechanism for the Tx path.
+>  =09=09 * Reserve space in the completion queue and only proceed
+>  =09=09 * if there is space in it. This avoids having to implement
+>  =09=09 * any buffering in the Tx path.
+>  =09=09 */
+>  =09=09spin_lock_irqsave(&xs->pool->cq_lock, flags);
+> -=09=09if (unlikely(err) || xskq_prod_reserve(xs->pool->cq)) {
+> +=09=09if (xskq_prod_reserve(xs->pool->cq)) {
+>  =09=09=09spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
+>  =09=09=09kfree_skb(skb);
+>  =09=09=09goto out;
+>  =09=09}
+>  =09=09spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
+> =20
+> -=09=09skb->dev =3D xs->dev;
+> -=09=09skb->priority =3D sk->sk_priority;
+> -=09=09skb->mark =3D sk->sk_mark;
+> -=09=09skb_shinfo(skb)->destructor_arg =3D (void *)(long)desc.addr;
+> -=09=09skb->destructor =3D xsk_destruct_skb;
+> -
+>  =09=09err =3D __dev_direct_xmit(skb, xs->queue_id);
+>  =09=09if  (err =3D=3D NETDEV_TX_BUSY) {
+>  =09=09=09/* Tell user-space to retry the send */
+> --=20
+> 1.8.3.1
+
+Al
 
