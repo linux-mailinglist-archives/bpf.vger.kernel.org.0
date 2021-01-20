@@ -2,87 +2,48 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9363E2FD623
-	for <lists+bpf@lfdr.de>; Wed, 20 Jan 2021 17:55:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0B372FD630
+	for <lists+bpf@lfdr.de>; Wed, 20 Jan 2021 17:55:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730569AbhATQiX (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Jan 2021 11:38:23 -0500
-Received: from www62.your-server.de ([213.133.104.62]:46586 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391326AbhATQf0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Jan 2021 11:35:26 -0500
-Received: from 30.101.7.85.dynamic.wline.res.cust.swisscom.ch ([85.7.101.30] helo=localhost)
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1l2GRM-000FPD-4A; Wed, 20 Jan 2021 17:34:40 +0100
-From:   Daniel Borkmann <daniel@iogearbox.net>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, daniel@iogearbox.net, ast@kernel.org,
-        andrii@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: pull-request: bpf 2021-01-20
-Date:   Wed, 20 Jan 2021 17:34:39 +0100
-Message-Id: <20210120163439.8160-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+        id S2403809AbhATQy5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Jan 2021 11:54:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56154 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2403995AbhATQyu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Jan 2021 11:54:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AEA123358;
+        Wed, 20 Jan 2021 16:54:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611161649;
+        bh=VY6+TEL4SUjdxeBSivIiZY4VKyVq53k8YU99OvFbxSM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=CTuJPsVwqUaIKeUiWxO10Ql9U9pDqCaxkmIbpz2VunXuUxRC52oMQf9SJG2EiBr37
+         Exivg3omBo3qf+akFEdnXT1XdIakAgT5LPHMDeAZ3mqWZLDYQcDoFfpy8zFIw2y4Ck
+         9ZqFuOHVknUq1LOrxaUL1Ve/drM9DNFo2a/yBB3OvyNDaMQWiwI47jvKmlea9GqjMN
+         rVcYT93jtT1ZT/PlVtCHxWsq5cYwEypN4XCc48jpUgF16EsFOIBP41I/pm7C0yXkew
+         8hliEEDm7tX35veOmGrOAvmtg4Xf8PmCwodFGFDsq4lyZ2k4JsSwm4tYCywiKNbKVY
+         0umEtFs5r1p9Q==
+Date:   Wed, 20 Jan 2021 08:54:08 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     davem@davemloft.net, ast@kernel.org, andrii@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: pull-request: bpf 2021-01-20
+Message-ID: <20210120085408.5e074a54@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210120163439.8160-1-daniel@iogearbox.net>
+References: <20210120163439.8160-1-daniel@iogearbox.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26055/Wed Jan 20 13:29:54 2021)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi David, hi Jakub,
+On Wed, 20 Jan 2021 17:34:39 +0100 Daniel Borkmann wrote:
+> 1) Fix wrong bpf_map_peek_elem_proto helper callback, from Mircea Cirjaliu.
+> 
+> 2) Fix signed_{sub,add32}_overflows type truncation, from Daniel Borkmann.
+> 
+> 3) Fix AF_XDP to also clear pools for inactive queues, from Maxim Mikityanskiy.
 
-The following pull-request contains BPF updates for your *net* tree.
-
-We've added 3 non-merge commits during the last 1 day(s) which contain
-a total of 3 files changed, 6 insertions(+), 6 deletions(-).
-
-The main changes are:
-
-1) Fix wrong bpf_map_peek_elem_proto helper callback, from Mircea Cirjaliu.
-
-2) Fix signed_{sub,add32}_overflows type truncation, from Daniel Borkmann.
-
-3) Fix AF_XDP to also clear pools for inactive queues, from Maxim Mikityanskiy.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Alexei Starovoitov, Björn Töpel, De4dCr0w, John Fastabend
-
-----------------------------------------------------------------
-
-The following changes since commit f7b9820dbe1620a3d681991fc82774ae49c2b6d2:
-
-  Merge branch 'sh_eth-fix-reboot-crash' (2021-01-19 12:02:23 -0800)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
-
-for you to fetch changes up to bc895e8b2a64e502fbba72748d59618272052a8b:
-
-  bpf: Fix signed_{sub,add32}_overflows type handling (2021-01-20 17:19:40 +0100)
-
-----------------------------------------------------------------
-Daniel Borkmann (1):
-      bpf: Fix signed_{sub,add32}_overflows type handling
-
-Maxim Mikityanskiy (1):
-      xsk: Clear pool even for inactive queues
-
-Mircea Cirjaliu (1):
-      bpf: Fix helper bpf_map_peek_elem_proto pointing to wrong callback
-
- kernel/bpf/helpers.c  | 2 +-
- kernel/bpf/verifier.c | 6 +++---
- net/xdp/xsk.c         | 4 ++--
- 3 files changed, 6 insertions(+), 6 deletions(-)
+Pulled, thanks!
