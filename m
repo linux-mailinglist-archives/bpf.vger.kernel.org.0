@@ -2,170 +2,252 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC3682FC82E
-	for <lists+bpf@lfdr.de>; Wed, 20 Jan 2021 03:45:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A76B2FC8AF
+	for <lists+bpf@lfdr.de>; Wed, 20 Jan 2021 04:27:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730152AbhATCoe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Jan 2021 21:44:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42434 "EHLO
+        id S1726732AbhATCah (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Jan 2021 21:30:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732772AbhATCo3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Jan 2021 21:44:29 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 710C1C0613D3
-        for <bpf@vger.kernel.org>; Tue, 19 Jan 2021 18:43:49 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id m6so13598425pfk.1
-        for <bpf@vger.kernel.org>; Tue, 19 Jan 2021 18:43:49 -0800 (PST)
+        with ESMTP id S1730420AbhATC2i (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Jan 2021 21:28:38 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34C22C0613D3;
+        Tue, 19 Jan 2021 18:27:58 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id d4so11681025plh.5;
+        Tue, 19 Jan 2021 18:27:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IoAS2iYBLHsRua0ToD9jNwcwJKOxvef2a5weUgRGbk0=;
-        b=payUoMdP99ddV95PcEbXHC19WExfJT6yZ/S4Ppoq/PLGAFbIoNn7Ocr9I+rvAyWbCp
-         vl8P28OthlrC8/YP790veImXuigRJQ+FCsfMuvuUXkcuWlHIm3ORZYgnSOfFBWVqwrsx
-         etQUHaMuNXSZiBSaJug8IAPdQ9Y3kmvOKMD0epVjkDWIzoTugBJ/UJsLq6QRvOCAMGks
-         52gEg7tfjfjS/5IPrbkLmpMxaXgQ8LA6lTT+oUp4pmz1yte+4ljxAX1G0rCyimsvXUrJ
-         kSRn7OSiizNM1UAmaUFSCvMIBFfNTpucrCHH8toBTyzLLoxOk4H4/MXbBVrxQMm75Y9g
-         le8w==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=TtG68j9/DpaUkU+3ur3rV/n/StVq57yJiXEm/LgtaUQ=;
+        b=Vzu06B3RyPwFsGv9gUc09ePMS5bwnKHU/acZM8j2894PKg+Nj/NM4/SgGdgB9+xoqQ
+         cOdFk2ctkrfLbtleFafmy6BZvZdDSNuMj6pSHjD4mL1c1kFjJBkSRJgIsv0RKEfyMcX+
+         p9GlJ/UpEyAPlRFgW5xoUQir3mcrPTlX+gqn7QJbrkkToG/MMLsgH6tFq/dSB9PWDQYF
+         CLH67RLxxBq8CyP1eLJblz+Gi2rCdSWJdLedcgUa+wP7OGBOkZ4oNi59s3Mf5yTV70m3
+         u6TiZidGI+QF0S8NZsVrRJlJu1KNVYRGuYdOYBa0axTSs4e+CxGJ5A/JyGZLzPuYyfVH
+         bxsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IoAS2iYBLHsRua0ToD9jNwcwJKOxvef2a5weUgRGbk0=;
-        b=n2/3GngrA7gJNo9DzY1DrEnKKTVZmEgJy3MxXJEeqRxKSKLcp+V8+IOmKHxwqtDwoG
-         TXehsOhnuL4n3Jtkv3nOI/blZH2QAJjOb8h3/uyoKFPfdy/xv8HZZf23c+6ChU/8coxP
-         ys2BxlEVSzSFN9/qTc+t0ducdNlHnt8pKqCbic3JW+hRDxHpXslcu1qEiesYArI3qQAu
-         8NzWb4kO/gP25Btn7uOC4NCFz2gTYRqPhqgVyl6rFLBSgW1jgzOGk99QqqV9UqetjIHQ
-         OBMvK1viRK7Z9jYWqJfr8y3yPR17+/AHbHcXiSeB94ai7Ehp2oZp4fs1YVuGJ+zrTcEx
-         io1g==
-X-Gm-Message-State: AOAM532CoNAsE3Ns/McIN5MTC8sWQZp4Q4us5mo/3heJ+YF85baPd6M8
-        S7BaTOshX42/SM+SokVEdls4HmXBsR7XKuyHNK6OgQ==
-X-Google-Smtp-Source: ABdhPJyP9xx5n3cq0nmNCglbjFT0ogHH0SdoaQC66nze3RSq1u6CYmEK3xfrrNQ97XJvAtKZ+TGeZvsQyiie386D8S0=
-X-Received: by 2002:a63:1f47:: with SMTP id q7mr7252992pgm.10.1611110628633;
- Tue, 19 Jan 2021 18:43:48 -0800 (PST)
-MIME-Version: 1.0
-References: <1611042978-21473-1-git-send-email-yangtiezhu@loongson.cn>
-In-Reply-To: <1611042978-21473-1-git-send-email-yangtiezhu@loongson.cn>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 19 Jan 2021 18:43:36 -0800
-Message-ID: <CAKwvOdkXGx-WogH0o5iuNnEe07sqRfxMpOg5fEEnTWcOfBrbAQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2] samples/bpf: Update README.rst and Makefile
- for manually compiling LLVM and clang
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=TtG68j9/DpaUkU+3ur3rV/n/StVq57yJiXEm/LgtaUQ=;
+        b=gsWF5RG95iGu3VdwBuilMIvU5d+ScuxIPZB2mkCW/crZrWKtq8XOoP/SSfcCa2JhVm
+         F5jIep7ZwUp4zJSxtGh6TM9yBdqdGiQuqPRhkRO5bvqBUVHGhu0eWY6QAIJC88+9j/b+
+         e4pLTW/1SBJ8yOTssO+V83F0fUDxO23/KZiRM+MryEfQrEvpP+ZOqqqC7wIujqY/2kJ0
+         ascZNO2PYydrih+cUWQ6bZ2VvvWYmHWfEDAL1JzEsQxU4QCykBGlh20dn2FZoSNK+Sg4
+         I073BUHQbp6VW6iCGn8sazR1tLS6Qj+aEjFt8izAhgT0QYmYSkQMvIG4rFFhj/x4/FYp
+         53xg==
+X-Gm-Message-State: AOAM531WrCKOn2VOviYQQzk2FhL4qvFmhONxl4ouq4rlmHgUXwn/t4Uk
+        IA8ZkHqBmdgyAq2/6GDgpLkEqwuj9tBjENbR
+X-Google-Smtp-Source: ABdhPJz9bF5pE4EHs/LwEJ6vZkmEZnstwV96PnfK5s3xNwjC7MPsSHZo44BtGS/0v6+eXI24Klw+aA==
+X-Received: by 2002:a17:90a:a60f:: with SMTP id c15mr3027700pjq.53.1611109677460;
+        Tue, 19 Jan 2021 18:27:57 -0800 (PST)
+Received: from Leo-laptop-t470s.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id 124sm378976pfd.59.2021.01.19.18.27.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 18:27:56 -0800 (PST)
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        David Ahern <dsahern@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Content-Type: text/plain; charset="UTF-8"
+        Hangbin Liu <liuhangbin@gmail.com>
+Subject: [PATCHv15 bpf-next 0/6] xdp: add a new helper for dev map multicast support
+Date:   Wed, 20 Jan 2021 10:25:08 +0800
+Message-Id: <20210120022514.2862872-1-liuhangbin@gmail.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210114142321.2594697-1-liuhangbin@gmail.com>
+References: <20210114142321.2594697-1-liuhangbin@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 11:56 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
->
-> The current llvm/clang build procedure in samples/bpf/README.rst is
-> out of date. See below that the links are not accessible any more.
->
-> $ git clone http://llvm.org/git/llvm.git
-> Cloning into 'llvm'...
-> fatal: unable to access 'http://llvm.org/git/llvm.git/': Maximum (20) redirects followed
-> $ git clone --depth 1 http://llvm.org/git/clang.git
-> Cloning into 'clang'...
-> fatal: unable to access 'http://llvm.org/git/clang.git/': Maximum (20) redirects followed
->
-> The llvm community has adopted new ways to build the compiler. There are
-> different ways to build llvm/clang, the Clang Getting Started page [1] has
-> one way. As Yonghong said, it is better to just copy the build procedure
-> in Documentation/bpf/bpf_devel_QA.rst to keep consistent.
->
-> I verified the procedure and it is proved to be feasible, so we should
-> update README.rst to reflect the reality. At the same time, update the
-> related comment in Makefile.
->
-> [1] https://clang.llvm.org/get_started.html
+This patch is for xdp multicast support. which has been discussed before[0],
+The goal is to be able to implement an OVS-like data plane in XDP, i.e.,
+a software switch that can forward XDP frames to multiple ports.
 
-There's also https://www.kernel.org/doc/html/latest/kbuild/llvm.html#getting-llvm
-(could cross link in rst/sphinx).
+To achieve this, an application needs to specify a group of interfaces
+to forward a packet to. It is also common to want to exclude one or more
+physical interfaces from the forwarding operation - e.g., to forward a
+packet to all interfaces in the multicast group except the interface it
+arrived on. While this could be done simply by adding more groups, this
+quickly leads to a combinatorial explosion in the number of groups an
+application has to maintain.
 
->
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> Acked-by: Yonghong Song <yhs@fb.com>
-> ---
->
-> v2: Update the commit message suggested by Yonghong,
->     thank you very much.
->
->  samples/bpf/Makefile   |  2 +-
->  samples/bpf/README.rst | 17 ++++++++++-------
->  2 files changed, 11 insertions(+), 8 deletions(-)
->
-> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-> index 26fc96c..d061446 100644
-> --- a/samples/bpf/Makefile
-> +++ b/samples/bpf/Makefile
-> @@ -208,7 +208,7 @@ TPROGLDLIBS_xdpsock         += -pthread -lcap
->  TPROGLDLIBS_xsk_fwd            += -pthread
->
->  # Allows pointing LLC/CLANG to a LLVM backend with bpf support, redefine on cmdline:
-> -#  make M=samples/bpf/ LLC=~/git/llvm/build/bin/llc CLANG=~/git/llvm/build/bin/clang
-> +# make M=samples/bpf LLC=~/git/llvm-project/llvm/build/bin/llc CLANG=~/git/llvm-project/llvm/build/bin/clang
->  LLC ?= llc
->  CLANG ?= clang
->  OPT ?= opt
-> diff --git a/samples/bpf/README.rst b/samples/bpf/README.rst
-> index dd34b2d..d1be438 100644
-> --- a/samples/bpf/README.rst
-> +++ b/samples/bpf/README.rst
-> @@ -65,17 +65,20 @@ To generate a smaller llc binary one can use::
->  Quick sniplet for manually compiling LLVM and clang
->  (build dependencies are cmake and gcc-c++)::
->
-> - $ git clone http://llvm.org/git/llvm.git
-> - $ cd llvm/tools
-> - $ git clone --depth 1 http://llvm.org/git/clang.git
-> - $ cd ..; mkdir build; cd build
-> - $ cmake .. -DLLVM_TARGETS_TO_BUILD="BPF;X86"
+To avoid the combinatorial explosion, we propose to include the ability
+to specify an "exclude group" as part of the forwarding operation. This
+needs to be a group (instead of just a single port index), because there
+may have multi interfaces you want to exclude.
 
-Is the BPF target not yet on by default?  I frown upon disabling other backends.
+Thus, the logical forwarding operation becomes a "set difference"
+operation, i.e. "forward to all ports in group A that are not also in
+group B". This series implements such an operation using device maps to
+represent the groups. This means that the XDP program specifies two
+device maps, one containing the list of netdevs to redirect to, and the
+other containing the exclude list.
 
-> - $ make -j $(getconf _NPROCESSORS_ONLN)
-> + $ git clone https://github.com/llvm/llvm-project.git
-> + $ mkdir -p llvm-project/llvm/build/install
-> + $ cd llvm-project/llvm/build
-> + $ cmake .. -G "Ninja" -DLLVM_TARGETS_TO_BUILD="BPF;X86" \
-> +            -DLLVM_ENABLE_PROJECTS="clang"    \
-> +            -DBUILD_SHARED_LIBS=OFF           \
-> +            -DCMAKE_BUILD_TYPE=Release        \
-> +            -DLLVM_BUILD_RUNTIME=OFF
-> + $ ninja
->
->  It is also possible to point make to the newly compiled 'llc' or
->  'clang' command via redefining LLC or CLANG on the make command line::
->
-> - make M=samples/bpf LLC=~/git/llvm/build/bin/llc CLANG=~/git/llvm/build/bin/clang
-> + make M=samples/bpf LLC=~/git/llvm-project/llvm/build/bin/llc CLANG=~/git/llvm-project/llvm/build/bin/clang
->
->  Cross compiling samples
->  -----------------------
-> --
-> 2.1.0
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/1611042978-21473-1-git-send-email-yangtiezhu%40loongson.cn.
+To achieve this, I re-implement a new helper bpf_redirect_map_multi()
+to accept two maps, the forwarding map and exclude map. If user
+don't want to use exclude map and just want simply stop redirecting back
+to ingress device, they can use flag BPF_F_EXCLUDE_INGRESS.
 
+The 1st patch is Jesper's run devmap xdp_prog later in bulking step.
+The 2st patch add a new bpf arg to allow NULL map pointer.
+The 3rd patch add the new bpf_redirect_map_multi() helper.
+The 4-6 patches are for usage sample and testing purpose.
 
+I did same perf tests with the following topo:
+
+---------------------             ---------------------
+| Host A (i40e 10G) |  ---------- | eno1(i40e 10G)    |
+---------------------             |                   |
+                                  |   Host B          |
+---------------------             |                   |
+| Host C (i40e 10G) |  ---------- | eno2(i40e 10G)    |
+---------------------    vlan2    |          -------- |
+                                  | veth1 -- | veth0| |
+                                  |          -------- |
+                                  --------------------|
+On Host A:
+# pktgen/pktgen_sample03_burst_single_flow.sh -i eno1 -d $dst_ip -m $dst_mac -s 64
+
+On Host B(Intel(R) Xeon(R) CPU E5-2690 v3 @ 2.60GHz, 128G Memory):
+Use xdp_redirect_map and xdp_redirect_map_multi in samples/bpf for testing.
+The veth0 in netns load dummy drop program. The forward_map max_entries in
+xdp_redirect_map_multi is modify to 4.
+
+Here is the perf result with 5.10 rc6:
+
+The are about +/- 0.1M deviation for native testing
+Version             | Test                                    | Generic | Native | Native + 2nd
+5.10 rc6            | xdp_redirect_map        i40e->i40e      |    2.0M |   9.1M |  8.0M
+5.10 rc6            | xdp_redirect_map        i40e->veth      |    1.7M |  11.0M |  9.7M
+5.10 rc6 + patch1   | xdp_redirect_map        i40e->i40e      |    2.0M |   9.5M |  7.5M
+5.10 rc6 + patch1   | xdp_redirect_map        i40e->veth      |    1.7M |  11.6M |  9.1M
+5.10 rc6 + patch1-6 | xdp_redirect_map        i40e->i40e      |    2.0M |   9.5M |  7.5M
+5.10 rc6 + patch1-6 | xdp_redirect_map        i40e->veth      |    1.7M |  11.6M |  9.1M
+5.10 rc6 + patch1-6 | xdp_redirect_map_multi  i40e->i40e      |    1.7M |   7.8M |  6.4M
+5.10 rc6 + patch1-6 | xdp_redirect_map_multi  i40e->veth      |    1.4M |   9.3M |  7.5M
+5.10 rc6 + patch1-6 | xdp_redirect_map_multi  i40e->i40e+veth |    1.0M |   3.2M |  2.7M
+
+Last but not least, thanks a lot to Toke, Jesper, Jiri and Eelco for
+suggestions and help on implementation.
+
+[0] https://xdp-project.net/#Handling-multicast
+
+v15:
+Update bq_xmit_all() logic for patch 01.
+Add some comments and remove useless variable for patch 03.
+Use bpf_object__find_program_by_title() for patch 04 and 06.
+
+v14:
+No code update, just rebase the code on latest bpf-next
+
+v13:
+Pass in xdp_prog through __xdp_enqueue() for patch 01. Update related
+code in patch 03.
+
+v12:
+Add Jesper's xdp_prog patch, rebase my works on this and latest bpf-next
+Add 2nd xdp_prog test on the sample and selftests.
+
+v11:
+Fix bpf_redirect_map_multi() helper description typo.
+Add loop limit for devmap_get_next_obj() and dev_map_redirect_multi().
+
+v10:
+Rebase the code to latest bpf-next.
+Update helper bpf_xdp_redirect_map_multi()
+- No need to check map pointer as we will do the check in verifier.
+
+v9:
+Update helper bpf_xdp_redirect_map_multi()
+- Use ARG_CONST_MAP_PTR_OR_NULL for helper arg2
+
+v8:
+a) Update function dev_in_exclude_map():
+   - remove duplicate ex_map map_type check in
+   - lookup the element in dev map by obj dev index directly instead
+     of looping all the map
+
+v7:
+a) Fix helper flag check
+b) Limit the *ex_map* to use DEVMAP_HASH only and update function
+   dev_in_exclude_map() to get better performance.
+
+v6: converted helper return types from int to long
+
+v5:
+a) Check devmap_get_next_key() return value.
+b) Pass through flags to __bpf_tx_xdp_map() instead of bool value.
+c) In function dev_map_enqueue_multi(), consume xdpf for the last
+   obj instead of the first on.
+d) Update helper description and code comments to explain that we
+   use NULL target value to distinguish multicast and unicast
+   forwarding.
+e) Update memory model, memory id and frame_sz in xdpf_clone().
+f) Split the tests from sample and add a bpf kernel selftest patch.
+
+v4: Fix bpf_xdp_redirect_map_multi_proto arg2_type typo
+
+v3: Based on Toke's suggestion, do the following update
+a) Update bpf_redirect_map_multi() description in bpf.h.
+b) Fix exclude_ifindex checking order in dev_in_exclude_map().
+c) Fix one more xdpf clone in dev_map_enqueue_multi().
+d) Go find next one in dev_map_enqueue_multi() if the interface is not
+   able to forward instead of abort the whole loop.
+e) Remove READ_ONCE/WRITE_ONCE for ex_map.
+
+v2: Add new syscall bpf_xdp_redirect_map_multi() which could accept
+include/exclude maps directly.
+
+Hangbin Liu (5):
+  bpf: add a new bpf argument type ARG_CONST_MAP_PTR_OR_NULL
+  xdp: add a new helper for dev map multicast support
+  sample/bpf: add xdp_redirect_map_multicast test
+  selftests/bpf: Add verifier tests for bpf arg
+    ARG_CONST_MAP_PTR_OR_NULL
+  selftests/bpf: add xdp_redirect_multi test
+
+Jesper Dangaard Brouer (1):
+  bpf: run devmap xdp_prog on flush instead of bulk enqueue
+
+ include/linux/bpf.h                           |  21 ++
+ include/linux/filter.h                        |   1 +
+ include/net/xdp.h                             |   1 +
+ include/uapi/linux/bpf.h                      |  28 ++
+ kernel/bpf/devmap.c                           | 232 +++++++++++---
+ kernel/bpf/verifier.c                         |  16 +-
+ net/core/filter.c                             | 124 ++++++-
+ net/core/xdp.c                                |  29 ++
+ samples/bpf/Makefile                          |   3 +
+ samples/bpf/xdp_redirect_map_multi_kern.c     |  87 +++++
+ samples/bpf/xdp_redirect_map_multi_user.c     | 302 ++++++++++++++++++
+ tools/include/uapi/linux/bpf.h                |  28 ++
+ tools/testing/selftests/bpf/Makefile          |   3 +-
+ .../bpf/progs/xdp_redirect_multi_kern.c       | 111 +++++++
+ tools/testing/selftests/bpf/test_verifier.c   |  22 +-
+ .../selftests/bpf/test_xdp_redirect_multi.sh  | 208 ++++++++++++
+ .../testing/selftests/bpf/verifier/map_ptr.c  |  70 ++++
+ .../selftests/bpf/xdp_redirect_multi.c        | 252 +++++++++++++++
+ 18 files changed, 1488 insertions(+), 50 deletions(-)
+ create mode 100644 samples/bpf/xdp_redirect_map_multi_kern.c
+ create mode 100644 samples/bpf/xdp_redirect_map_multi_user.c
+ create mode 100644 tools/testing/selftests/bpf/progs/xdp_redirect_multi_kern.c
+ create mode 100755 tools/testing/selftests/bpf/test_xdp_redirect_multi.sh
+ create mode 100644 tools/testing/selftests/bpf/xdp_redirect_multi.c
 
 -- 
-Thanks,
-~Nick Desaulniers
+2.26.2
+
