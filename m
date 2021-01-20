@@ -2,83 +2,130 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE772FC5D6
-	for <lists+bpf@lfdr.de>; Wed, 20 Jan 2021 01:32:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A1FF2FC660
+	for <lists+bpf@lfdr.de>; Wed, 20 Jan 2021 02:23:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726134AbhATAcf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 19 Jan 2021 19:32:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40240 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725842AbhATAcf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 19 Jan 2021 19:32:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 18CC322D08;
-        Wed, 20 Jan 2021 00:31:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611102714;
-        bh=aFF9UI/rsM5GSTILTWDshvBqpGbrsLyj6qOE8+isKmA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=X9xjczYhWeEpi2AgDfIKnRsra/KPFiOl2/zC8LV8SuOv6zxKzSXqC0FttHfoNueUD
-         gdJOqjQVKAjQIM89QTtq+uwSzQCGEMubIXo4XYMa0xqoHJTaTZvRi/l7+6AYUUDuTw
-         fUHNBGYb451dBq8NEdhqf9jycu9DPooMGqgjxQMocZMiF6ecS+duXsq2mI87f81l5u
-         UvbyxrrCnmDPo5r6TiCGTVkrFQvvV0cUbN03H92Qk+uv6hFi4KtnBTfFMrjXF0/KcV
-         9TjI1VxaUeJiSRHlroMfSQgQ9Z0c4/pMl7R2ojasa1Jl2LNkAaarATqTqUZBwlHOEv
-         DJwiyQ///xusQ==
-Date:   Tue, 19 Jan 2021 16:31:53 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Ivan Babrou <ivan@cloudflare.com>
-Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>, bpf@vger.kernel.org,
-        kernel-team <kernel-team@cloudflare.com>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        id S1726188AbhATBXB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 19 Jan 2021 20:23:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725811AbhATBXA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 19 Jan 2021 20:23:00 -0500
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D703C061573;
+        Tue, 19 Jan 2021 17:22:20 -0800 (PST)
+Received: by mail-yb1-xb2b.google.com with SMTP id p185so6731296ybg.8;
+        Tue, 19 Jan 2021 17:22:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=j3ElYe+i7O8pw4jej0PM4b0x0kTazcaI++/FaEblhCY=;
+        b=ix8yKQeBPvIN+TxWg+ZefuVqMdNihSpIESlQ4WvT70h/gkPWHc07Q2NWWONrbFezzl
+         XseENX3h8+r1AIIBU6k31cp2EayDiuOvMxqnPXVZ7jK5TQlmecdEBLKqOUTGqNuc19ZW
+         Iq0sBh3WKvZdURTdauJkNZKrAiniffWfYcB+nJ+0jf5PSpzBOIuJkf2ejSQsmN9qvszS
+         q/qbbpOK5vEFOq9UOFxeyhQn1W6QKltUXLiibUOQ0equ6AdokmyQYEvruBVWmiUurCvD
+         cjhk5S1si8SmiOI5RrOMSQNasudjJbk0xWlLMVfsilkJy9SJD8vAi41iP6flt38p/o8S
+         PJbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=j3ElYe+i7O8pw4jej0PM4b0x0kTazcaI++/FaEblhCY=;
+        b=eADRGRmQTPVNOn17vOz7WTmLD4Ew4oN0M3V6h6FMv1hMHzJdOS6Y7VY+jRA/OlnFuo
+         hWMz8hqYYBA0Rai/ganud8lH6fG+dh8rqc/KZkK34ITIjMqSI+P3bFhywLcfbBK8u+uh
+         xypuML4STBuHEDuNwnQIXITqX4pUxwk2j1Iko3JfCUMsXGdMsvf8drIkkI6CPiPpN6t7
+         waKNqHlQfxWaBvwH/M9eLMUvRtPjDqPQAJ7GGfIHMDwaOyg7gUsl2sG7GbGkcqZt1CzK
+         gky5kKH2poD9x1teMSbTJfAzsGDJ6aP8QBOIw7Zi4fEqPu0P4RWa++a/Ea2Lq81rQHBy
+         +Drw==
+X-Gm-Message-State: AOAM533ZnqzEe43kSuybJ0j3Y/GDEMdBL7P852G4rF9xZOa/LuyaMLC9
+        9BKRsXCisRlsaiPeGyANBVxBsAeudt5h8/EhiEs=
+X-Google-Smtp-Source: ABdhPJys6J4AT217bLaNLulXMwM8V25cE2+EiRiJPD8J2Dke0qXNwDAw31yqJrfaQXv0TfFPk+eSNzEwkKXR1hpJRLk=
+X-Received: by 2002:a25:d6d0:: with SMTP id n199mr9827301ybg.27.1611105739391;
+ Tue, 19 Jan 2021 17:22:19 -0800 (PST)
+MIME-Version: 1.0
+References: <20210119221220.1745061-1-jolsa@kernel.org> <20210119221220.1745061-4-jolsa@kernel.org>
+In-Reply-To: <20210119221220.1745061-4-jolsa@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 19 Jan 2021 17:22:08 -0800
+Message-ID: <CAEf4BzZNPJZBfz7Ga9MGvGGYge4MCP1O16JVuFjdzu-bCEQFLQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/3] libbpf: Use string table index from index
+ table if needed
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Subject: Re: [PATCH net-next] sfc: reduce the number of requested xdp ev
- queues
-Message-ID: <20210119163153.025d4e44@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <CABWYdi21ntZzrfchif1XEjDZK-RiQKttxu8oT_yRTakNhYYciw@mail.gmail.com>
-References: <20201215012907.3062-1-ivan@cloudflare.com>
-        <20201217101441.3d5085f3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CABWYdi21ntZzrfchif1XEjDZK-RiQKttxu8oT_yRTakNhYYciw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Andrii Nakryiko <andriin@fb.com>, dwarves@vger.kernel.org,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Yonghong Song <yhs@fb.com>, Hao Luo <haoluo@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Mark Wielaard <mjw@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 19 Jan 2021 15:43:43 -0800 Ivan Babrou wrote:
-> On Thu, Dec 17, 2020 at 10:14 AM Jakub Kicinski <kuba@kernel.org> wrote:
-> > On Mon, 14 Dec 2020 17:29:06 -0800 Ivan Babrou wrote:  
-> > > Without this change the driver tries to allocate too many queues,
-> > > breaching the number of available msi-x interrupts on machines
-> > > with many logical cpus and default adapter settings:
-> > >
-> > > Insufficient resources for 12 XDP event queues (24 other channels, max 32)
-> > >
-> > > Which in turn triggers EINVAL on XDP processing:
-> > >
-> > > sfc 0000:86:00.0 ext0: XDP TX failed (-22)
-> > >
-> > > Signed-off-by: Ivan Babrou <ivan@cloudflare.com>  
-> >
-> > Looks like the discussion may have concluded, but we don't take -next
-> > patches during the merge window, so please repost when net-next reopens.
-> >
-> > Thanks!
-> > --
-> > # Form letter - net-next is closed
-> >
-> > We have already sent the networking pull request for 5.11 and therefore
-> > net-next is closed for new drivers, features, code refactoring and
-> > optimizations. We are currently accepting bug fixes only.
-> >
-> > Please repost when net-next reopens after 5.11-rc1 is cut.  
-> 
-> Should I resend my patch now that the window is open or is bumping
-> this thread enough?
+On Tue, Jan 19, 2021 at 2:15 PM Jiri Olsa <jolsa@kernel.org> wrote:
+>
+> For very large ELF objects (with many sections), we could
+> get special value SHN_XINDEX (65535) for elf object's string
+> table index - e_shstrndx.
+>
+> In such case we need to call elf_getshdrstrndx to get the
+> proper string table index.
+>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  tools/lib/bpf/btf.c | 14 ++++++++++++--
+>  1 file changed, 12 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> index 3c3f2bc6c652..4fe987846bc0 100644
+> --- a/tools/lib/bpf/btf.c
+> +++ b/tools/lib/bpf/btf.c
+> @@ -863,6 +863,7 @@ static struct btf *btf_parse_elf(const char *path, struct btf *base_btf,
+>         Elf_Scn *scn = NULL;
+>         Elf *elf = NULL;
+>         GElf_Ehdr ehdr;
+> +       size_t shstrndx;
+>
+>         if (elf_version(EV_CURRENT) == EV_NONE) {
+>                 pr_warn("failed to init libelf for %s\n", path);
+> @@ -887,7 +888,16 @@ static struct btf *btf_parse_elf(const char *path, struct btf *base_btf,
+>                 pr_warn("failed to get EHDR from %s\n", path);
+>                 goto done;
+>         }
+> -       if (!elf_rawdata(elf_getscn(elf, ehdr.e_shstrndx), NULL)) {
+> +
+> +       /*
+> +        * Get string table index from extended section index
+> +        * table if needed.
+> +        */
+> +       shstrndx = ehdr.e_shstrndx;
+> +       if (shstrndx == SHN_XINDEX && elf_getshdrstrndx(elf, &shstrndx))
+> +               goto done;
 
-You need to resend, thanks!
+just use elf_getshdrstrndx() unconditionally, it works for extended
+and non-extended numbering (see libbpf.c).
+
+> +
+> +       if (!elf_rawdata(elf_getscn(elf, shstrndx), NULL)) {
+>                 pr_warn("failed to get e_shstrndx from %s\n", path);
+>                 goto done;
+>         }
+> @@ -902,7 +912,7 @@ static struct btf *btf_parse_elf(const char *path, struct btf *base_btf,
+>                                 idx, path);
+>                         goto done;
+>                 }
+> -               name = elf_strptr(elf, ehdr.e_shstrndx, sh.sh_name);
+> +               name = elf_strptr(elf, shstrndx, sh.sh_name);
+>                 if (!name) {
+>                         pr_warn("failed to get section(%d) name from %s\n",
+>                                 idx, path);
+> --
+> 2.27.0
+>
