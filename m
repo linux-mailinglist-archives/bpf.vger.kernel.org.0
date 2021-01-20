@@ -2,93 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0198E2FDBF0
-	for <lists+bpf@lfdr.de>; Wed, 20 Jan 2021 22:39:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A766F2FDCEE
+	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 00:40:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730994AbhATV3W (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Jan 2021 16:29:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51128 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387540AbhATVLR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Jan 2021 16:11:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EC3F023603
-        for <bpf@vger.kernel.org>; Wed, 20 Jan 2021 21:10:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611177037;
-        bh=FdjJoQjlwlPK5YeYe9dhzVIDHP27es9c4+ZmKd/gF8c=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=JTVYDh5zoSaxansiwcolBVdoVFJOmHopFrvLTluv5dsQK0S27YASPL17iXikx+QFS
-         ISRSio64Kd9SuPniJgNOei+BV04cDz6ZCwUyZzr16M1/ApLJAVBqh30NE0e96Vu9PY
-         kp1Gz38wYwHRaTwiIqJcqrzwlx+ZY9TTVlh6DTSQVaqSn5K/+3l39y/V1A0mYM+k+U
-         ebXmrtd0PHMHuwHvTGjC40UhLVFtJcdRPOzlV5t6xR14RUa/CqIGjM7BhJfOzNVNL6
-         NVvNoBx2hHhjBqFJBJAtzL7RFaf8ttXcSnJ7RURaEbZd/W+e1B9rWc6lW72naYPuQe
-         4F64l/OLP8gjg==
-Received: by mail-lj1-f171.google.com with SMTP id n8so115363ljg.3
-        for <bpf@vger.kernel.org>; Wed, 20 Jan 2021 13:10:36 -0800 (PST)
-X-Gm-Message-State: AOAM53306bucmNrJC1yQl4fwqbo7noAGsDpnrWcCkLJwvziBKMUdzk+9
-        zmbBcb0EnweJID2A3jsIY1fNj/nLct1t8JtWQ0YU1w==
-X-Google-Smtp-Source: ABdhPJzMaH9gaeKVcdbZyNCCSDkKeb84hwunkUzNtm9RVgiEVmMah1g76Zay0YS2b0I/93QAfuyG0alUSve0BmsdbA8=
-X-Received: by 2002:a2e:a377:: with SMTP id i23mr5652583ljn.103.1611177035079;
- Wed, 20 Jan 2021 13:10:35 -0800 (PST)
-MIME-Version: 1.0
-References: <20210119114624.60400-1-bianpan2016@163.com> <CAADnVQJr0idctwt53eD3dFmbZ_upLT6_7jc4raD825aPi640sA@mail.gmail.com>
-In-Reply-To: <CAADnVQJr0idctwt53eD3dFmbZ_upLT6_7jc4raD825aPi640sA@mail.gmail.com>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Wed, 20 Jan 2021 22:10:24 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ4=q6_VtLp4iuf0DCc1vD=v9NbH3WDypH8phFTm5JMDgw@mail.gmail.com>
-Message-ID: <CACYkzJ4=q6_VtLp4iuf0DCc1vD=v9NbH3WDypH8phFTm5JMDgw@mail.gmail.com>
-Subject: Re: [PATCH] bpf: put file handler if no storage found
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Pan Bian <bianpan2016@163.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S1728287AbhATV17 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Jan 2021 16:27:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728478AbhATNlP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Jan 2021 08:41:15 -0500
+Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7B8CC0613D6
+        for <bpf@vger.kernel.org>; Wed, 20 Jan 2021 05:39:53 -0800 (PST)
+Received: by mail-wm1-x34a.google.com with SMTP id f65so575565wmf.2
+        for <bpf@vger.kernel.org>; Wed, 20 Jan 2021 05:39:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=4HuaHnHsq3+9UDKnhuRegf7VhNzlZpKuJ1R6ivtSlOg=;
+        b=RzwwBhI0LFDqKRi3rX8rfrpXZflyXVI8WUwGnh7kHJ3Rle/pz7qDeRwRyRnlJJPqD8
+         AbDOl6ZRZHzI3FdOtQuR5PVuvAF4YuwgUucDI82DRg70lf7PQ85hM5g3qcrL/r9Ci9LP
+         4E4wX5o5GFVFLBTVo18e+aywt/VYrsTcwYihokSuh1rpKBOiBOd6wYW8/eEJTHrIaTzG
+         p/ObA5CGL2n/xo3pYACU0NdLVle/TTdGtxEeWFUsBoQjdYdz0hBfb67exaOcXtXOE504
+         U5/MfbwJNVd2jtfthveCkpFwMRLuiDS0SN5W2OBNZTOseChuxpzulx0V/jtV8eeL+iM1
+         809g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=4HuaHnHsq3+9UDKnhuRegf7VhNzlZpKuJ1R6ivtSlOg=;
+        b=CamZOr60BOZBhZu36Wv219WG3j5/zXAvF5nq+nBx2FqS7RrGpSxs1Nvov66kLm9xfN
+         umoF9mIWDrRHd84CcJSS0B6PZTMdl13/m3DxoZQdZ1ac53ayfxXEIZqZvOQpbyw2236a
+         ozvvc+reyU3bg/AleBZYA0aeukj4kqvz0Gl5Ya4y1Ckd67wpX/nZs/sU+9m2HCMcgqK3
+         9ym8RqivZ0/KCBlFwqoyqawIs8wnHsFEC6pskXblzpEO80SJR4tijSFhXSI4cKc7tFj+
+         xkp0b1p++HJKxoyAx6rD0RtpfJ2bRZNGrjvyl3KbB9x0lDj2mG08lZaCCkkl3xO3p2bQ
+         9zLw==
+X-Gm-Message-State: AOAM533cRHXkhS74Gt3WRqCufQII9D4QSjwenYug8fUgF4fdjnTbgrO0
+        auW1eQhvtucDvAODwGPuGZSWlCx2r4lZhheTpxWGJkPnZXv2dMviqe0CYT6yfIcvwHKZEVEms3g
+        tkhtQOdIKMzTjW9LLzd76EtfZgV3r7qIaYzo9G0BkxQUWY90vQ//CIEkI+/w4Fbw=
+X-Google-Smtp-Source: ABdhPJz9D0nnseUovWpFIZ6H+T0/V01e1hCruHihQvhd66s20FOaGPv8ik7N7xcP/s+yNf1ljx+YYerX46ujqA==
+Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
+X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
+ (user=jackmanb job=sendgmr) by 2002:a7b:cb54:: with SMTP id
+ v20mr4532747wmj.148.1611149992267; Wed, 20 Jan 2021 05:39:52 -0800 (PST)
+Date:   Wed, 20 Jan 2021 13:39:44 +0000
+Message-Id: <20210120133946.2107897-1-jackmanb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+Subject: [PATCH bpf-next v3 0/2] BPF docs fixups
+From:   Brendan Jackman <jackmanb@google.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Brendan Jackman <jackmanb@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 8:23 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Jan 19, 2021 at 4:03 AM Pan Bian <bianpan2016@163.com> wrote:
-> >
-> > Put file f if inode_storage_ptr() returns NULL.
-> >
-> > Signed-off-by: Pan Bian <bianpan2016@163.com>
+Difference from v2->v3 [1]:
 
-Thanks for fixing this! (You can add my ack with the fixes tag when
-you resubmit)
+ * Just fixed a commite message, rebased, and added Lukas' review tag - thanks
+   Lukas!
 
-Fixes: 8ea636848aca ("bpf: Implement bpf_local_storage for inodes")
-Acked-by: KP Singh <kpsingh@kernel.org>
+Difference from v1->v2 [1]:
 
-> > ---
-> >  kernel/bpf/bpf_inode_storage.c | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/bpf/bpf_inode_storage.c b/kernel/bpf/bpf_inode_storage.c
-> > index 6edff97ad594..089d5071d4fc 100644
-> > --- a/kernel/bpf/bpf_inode_storage.c
-> > +++ b/kernel/bpf/bpf_inode_storage.c
-> > @@ -125,8 +125,12 @@ static int bpf_fd_inode_storage_update_elem(struct bpf_map *map, void *key,
-> >
-> >         fd = *(int *)key;
-> >         f = fget_raw(fd);
-> > -       if (!f || !inode_storage_ptr(f->f_inode))
-> > +       if (!f)
-> > +               return -EBADF;
-> > +       if (!inode_storage_ptr(f->f_inode)) {
-> > +               fput(f);
-> >                 return -EBADF;
-> > +       }
->
-> Good catch.
-> Somehow the patch is not in patchwork.
-> Could you please resubmit with Fixes tag and reduce cc list?
-> I guess it's hitting some spam filters in vger.
+ * Split into 2 patches
+
+ * Avoided unnecessary ': ::' in .rst source
+
+ * Tweaked wording of the -mcpu=v3 bit a little more
+
+[1] Previous versions:
+    v1: https://lore.kernel.org/bpf/CA+i-1C1LVKjfQLBYk6siiqhxfy0jCR7UBcAmJ4jCED0A9aWsxA@mail.gmail.com/T/#t
+    v2: https://lore.kernel.org/bpf/20210118155735.532663-1-jackmanb@google.com/T/#t
+
+Brendan Jackman (2):
+  docs: bpf: Fixup atomics markup
+  docs: bpf: Clarify -mcpu=v3 requirement for atomic ops
+
+ Documentation/networking/filter.rst | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
+
+
+base-commit: 8edc0c67d09d6bf441eeb39ae9316fe07478093f
+--
+2.30.0.284.gd98b1dd5eaa7-goog
+
