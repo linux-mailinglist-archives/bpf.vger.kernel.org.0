@@ -2,135 +2,78 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F762FD68F
-	for <lists+bpf@lfdr.de>; Wed, 20 Jan 2021 18:13:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 513BC2FD739
+	for <lists+bpf@lfdr.de>; Wed, 20 Jan 2021 18:42:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391804AbhATRKA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Jan 2021 12:10:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59304 "EHLO mail.kernel.org"
+        id S1732413AbhATReu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Jan 2021 12:34:50 -0500
+Received: from mga17.intel.com ([192.55.52.151]:44636 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391043AbhATRIq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Jan 2021 12:08:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF2962242A
-        for <bpf@vger.kernel.org>; Wed, 20 Jan 2021 17:08:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611162486;
-        bh=6Am6P3ap6VUQy1vl3nzntFQfX3lYi9qaI7SwEtBxFD0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cnTIneAyfJ09wKIolqvaVE6JK5UQ6gwHqz+zHqnLjp72E+ayq6lBBwx47xgMkTUDw
-         JWryQDkWP+DKhjBZtLjbijXb3Cz+5oFdWM0A3a15tb8dq59MG+vS7tHMJUyWSG36g9
-         ucK3DLa+nUyk9bUJM+yC9vgsty8yhZkmlqj6moVkfIG/m9umX0ufRHSyxGjxf1kPZL
-         X70okYsrxamrQING36d9co5KRW7iLClpLtlXtU0xnFYRdV1T/Squrj4m4arvL71l2U
-         qpEk0rLDAgIRJWgpMEoMes2BCAuhhVORHRz8z0Qjx/yPaqztaKy/gUKal6dfXurMh3
-         h8o5YT4Ce+bBw==
-Received: by mail-ej1-f54.google.com with SMTP id gx5so15295656ejb.7
-        for <bpf@vger.kernel.org>; Wed, 20 Jan 2021 09:08:05 -0800 (PST)
-X-Gm-Message-State: AOAM530Pa6Vj9ChQ5y/UaVELkiuXj8h5TU8Fx3jyqNDQ3LnF8ij2pN+F
-        hMNGetSi1c3mX28TyeAPATW7iLq3H/v9+hlnpLfyPA==
-X-Google-Smtp-Source: ABdhPJyLYTTjQmBgXSRzAlaWqoG5zvh2eUjL0fMqRA6Fi0YUQxXH1mQi21xAk/KgG5faNdlS2r9wRurffjvaiPpTs1k=
-X-Received: by 2002:a17:906:4302:: with SMTP id j2mr6747215ejm.217.1611162484245;
- Wed, 20 Jan 2021 09:08:04 -0800 (PST)
+        id S1727717AbhATR2A (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Jan 2021 12:28:00 -0500
+IronPort-SDR: c4Y1yAfWaSfzy6xi4dnXtv0RmxZpKivZrT6DtHF/YkKQsG3A9mz35RLx2I+u8uCSmYTd/MCpbF
+ w8CN4qtvlzYA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9870"; a="158920042"
+X-IronPort-AV: E=Sophos;i="5.79,361,1602572400"; 
+   d="scan'208";a="158920042"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 09:26:36 -0800
+IronPort-SDR: c0DiXwi0jxEJ3f1JM/E3RBGOAU42389H6sGWM//ZuedOqs5nN4SOZPtWNNV0vh36DD8uZWSM00
+ hE+B6Ibb5d5A==
+X-IronPort-AV: E=Sophos;i="5.79,361,1602572400"; 
+   d="scan'208";a="384942904"
+Received: from myegin-mobl1.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.249.42.133])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 09:26:29 -0800
+Subject: Re: [PATCH bpf-next v2 1/8] xdp: restructure redirect actions
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
+        kuba@kernel.org, jonathan.lemon@gmail.com, maximmi@nvidia.com,
+        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
+        ciara.loftus@intel.com, weqaar.a.janjua@intel.com
+References: <20210119155013.154808-1-bjorn.topel@gmail.com>
+ <20210119155013.154808-2-bjorn.topel@gmail.com> <87bldjeq1j.fsf@toke.dk>
+ <996f1ff7-5891-fd4a-ee3e-fefd7e93879d@intel.com> <87mtx34q48.fsf@toke.dk>
+ <0a7d1a0b-de2e-b973-a807-b9377bb89737@intel.com> <87bldj4lm6.fsf@toke.dk>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Message-ID: <559c6eb8-38b3-4719-2368-397f07daf5a5@intel.com>
+Date:   Wed, 20 Jan 2021 18:26:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20210119155953.803818-1-revest@chromium.org> <20210119155953.803818-4-revest@chromium.org>
-In-Reply-To: <20210119155953.803818-4-revest@chromium.org>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Wed, 20 Jan 2021 18:07:52 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ6fNvYCO4cnU2XispQkF-_3yToDGgB=aRRd9m+qy0gpWA@mail.gmail.com>
-Message-ID: <CACYkzJ6fNvYCO4cnU2XispQkF-_3yToDGgB=aRRd9m+qy0gpWA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 4/4] selftests/bpf: Add a selftest for the
- tracing bpf_get_socket_cookie
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87bldj4lm6.fsf@toke.dk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 5:00 PM Florent Revest <revest@chromium.org> wrote:
->
-> This builds up on the existing socket cookie test which checks whether
-> the bpf_get_socket_cookie helpers provide the same value in
-> cgroup/connect6 and sockops programs for a socket created by the
-> userspace part of the test.
->
-> Adding a tracing program to the existing objects requires a different
-> attachment strategy and different headers.
->
-> Signed-off-by: Florent Revest <revest@chromium.org>
+On 2021-01-20 17:30, Toke Høiland-Jørgensen wrote:
+> Björn Töpel <bjorn.topel@intel.com> writes:
+> 
+[...]
+>>
+>> It can't be free'd but, ri->map can be cleared via
+>> bpf_clear_redirect_map(). So, between the helper (setting) and the
+>> tracepoint in xdp_do_redirect() it can be cleared (say if the XDP
+>> program is swapped out, prior running xdp_do_redirect()).
+> 
+> But xdp_do_redirect() should be called on driver flush before exiting
+> the NAPI cycle, so how can the XDP program be swapped out?
+> 
 
-Acked-by: KP Singh <kpsingh@kernel.org>
+To clarify; xdp_do_redirect() is called for each packet in the NAPI poll 
+loop.
 
-(one minor note, doesn't really need fixing as a part of this though)
+Yeah, you're right. The xdp_do_redirect() is within the RCU scope, so
+the program wont be destroyed (but can be swapped though!).
 
-> ---
->  .../selftests/bpf/prog_tests/socket_cookie.c  | 24 +++++++----
->  .../selftests/bpf/progs/socket_cookie_prog.c  | 41 ++++++++++++++++---
->  2 files changed, 52 insertions(+), 13 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/socket_cookie.c b/tools/testing/selftests/bpf/prog_tests/socket_cookie.c
-> index 53d0c44e7907..e5c5e2ea1deb 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/socket_cookie.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/socket_cookie.c
-> @@ -15,8 +15,8 @@ struct socket_cookie {
->
->  void test_socket_cookie(void)
->  {
-> +       struct bpf_link *set_link, *update_sockops_link, *update_tracing_link;
->         socklen_t addr_len = sizeof(struct sockaddr_in6);
-> -       struct bpf_link *set_link, *update_link;
->         int server_fd, client_fd, cgroup_fd;
->         struct socket_cookie_prog *skel;
->         __u32 cookie_expected_value;
-> @@ -39,15 +39,21 @@ void test_socket_cookie(void)
->                   PTR_ERR(set_link)))
->                 goto close_cgroup_fd;
->
-> -       update_link = bpf_program__attach_cgroup(skel->progs.update_cookie,
-> -                                                cgroup_fd);
-> -       if (CHECK(IS_ERR(update_link), "update-link-cg-attach", "err %ld\n",
-> -                 PTR_ERR(update_link)))
-> +       update_sockops_link = bpf_program__attach_cgroup(
-> +               skel->progs.update_cookie_sockops, cgroup_fd);
-> +       if (CHECK(IS_ERR(update_sockops_link), "update-sockops-link-cg-attach",
-> +                 "err %ld\n", PTR_ERR(update_sockops_link)))
->                 goto free_set_link;
->
-> +       update_tracing_link = bpf_program__attach(
-> +               skel->progs.update_cookie_tracing);
-> +       if (CHECK(IS_ERR(update_tracing_link), "update-tracing-link-attach",
-> +                 "err %ld\n", PTR_ERR(update_tracing_link)))
-> +               goto free_update_sockops_link;
-> +
->         server_fd = start_server(AF_INET6, SOCK_STREAM, "::1", 0, 0);
->         if (CHECK(server_fd < 0, "start_server", "errno %d\n", errno))
-> -               goto free_update_link;
-> +               goto free_update_tracing_link;
->
->         client_fd = connect_to_fd(server_fd, 0);
->         if (CHECK(client_fd < 0, "connect_to_fd", "errno %d\n", errno))
-> @@ -71,8 +77,10 @@ void test_socket_cookie(void)
->         close(client_fd);
->  close_server_fd:
->         close(server_fd);
-> -free_update_link:
-> -       bpf_link__destroy(update_link);
-> +free_update_tracing_link:
-> +       bpf_link__destroy(update_tracing_link);
+Hmm, so IOW the bpf_clear_redirect_map() is not needed anymore...
 
-I don't think this need to block submission unless there are other
-issues but the
-bpf_link__destroy can just be called in a single cleanup label because
-it handles null or
-erroneous inputs:
 
-int bpf_link__destroy(struct bpf_link *link)
-{
-    int err = 0;
+Björn
 
-    if (IS_ERR_OR_NULL(link))
-         return 0;
 [...]
