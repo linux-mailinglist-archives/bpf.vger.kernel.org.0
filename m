@@ -2,60 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 246342FD63E
-	for <lists+bpf@lfdr.de>; Wed, 20 Jan 2021 17:59:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FE372FD656
+	for <lists+bpf@lfdr.de>; Wed, 20 Jan 2021 18:02:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391507AbhATQ6I (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Jan 2021 11:58:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56960 "EHLO mail.kernel.org"
+        id S2391616AbhATRBx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Jan 2021 12:01:53 -0500
+Received: from mga04.intel.com ([192.55.52.120]:47811 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391708AbhATQ6C (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Jan 2021 11:58:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F1821233EF
-        for <bpf@vger.kernel.org>; Wed, 20 Jan 2021 16:57:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611161831;
-        bh=sgxg0KRaG8bJzZjpq2ut3g06MpeRf3aA7NcuVdFZ148=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jI7DkmFAMvHXTd7F7JUwVHvA0PxFY7hKHd/ppPeOf1xGCQhifgO6j9my6ilPdYMcg
-         bneOjo1Qb5JYgpPcU6OFs9oIOIBJ/9//q2ic/7eZvUwycMr8z7rMfREe2nCrQDJ4h5
-         CVIdW/g2E7GN2llyyhZWjMAUnmUbt8v9r7QRveqJZXXKf63yWIaxTkSN+atIy1iv66
-         Z9W16CsicEFqaOrMQ9DjtHat8ICojK7tF/IqNt0xa7ZA48GM9C9BPl3L1/4Fw5Iym+
-         XfWHX5Tbm+dRROfvQUMOZvARgfPHo/lMtLM+q2BBsbX7TzhTL8CqkuQnihtk6DDarS
-         zh4YVizn+fxow==
-Received: by mail-lj1-f181.google.com with SMTP id b10so26890032ljp.6
-        for <bpf@vger.kernel.org>; Wed, 20 Jan 2021 08:57:10 -0800 (PST)
-X-Gm-Message-State: AOAM532ojMxauUMv7hTFjM5SCiH/hPCtgxncH/HPZwjBXhwYpHVcceXQ
-        Y0Iw3yLk5Pb3U+erXjiQG68KXVzO291W/tOD63NdwQ==
-X-Google-Smtp-Source: ABdhPJzXDYBw9PcIkOEX6HhjsVsXy86y4A+K/8CU3oGNWcGtFsOHSubaZwXiOHF0TSOd1v3dILiKjmLzJl3bNj1q+gw=
-X-Received: by 2002:a2e:870d:: with SMTP id m13mr4726784lji.136.1611161829317;
- Wed, 20 Jan 2021 08:57:09 -0800 (PST)
+        id S2391051AbhATPuI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Jan 2021 10:50:08 -0500
+IronPort-SDR: rXXFTGtll4N2OzRjaFzg5qeD4nQGy4rehd8mNPodbwK56GynuS0lnJpVuVfzLnxVZwAJ6gq5JQ
+ o+b4wslYT6Ig==
+X-IronPort-AV: E=McAfee;i="6000,8403,9870"; a="176555131"
+X-IronPort-AV: E=Sophos;i="5.79,361,1602572400"; 
+   d="scan'208";a="176555131"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 07:49:34 -0800
+IronPort-SDR: Cy4wyteDgb3xDy5nZdIBsMBAWem7rtiTfA7MlBvkEKezagzqnUbcYbWYuk8/IFID1JTrYFcUOr
+ p8T18IWqvhXw==
+X-IronPort-AV: E=Sophos;i="5.79,361,1602572400"; 
+   d="scan'208";a="384884012"
+Received: from myegin-mobl1.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.249.42.133])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 07:49:28 -0800
+Subject: Re: [PATCH bpf-next v2 1/8] xdp: restructure redirect actions
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
+        kuba@kernel.org, jonathan.lemon@gmail.com, maximmi@nvidia.com,
+        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
+        ciara.loftus@intel.com, weqaar.a.janjua@intel.com
+References: <20210119155013.154808-1-bjorn.topel@gmail.com>
+ <20210119155013.154808-2-bjorn.topel@gmail.com> <87bldjeq1j.fsf@toke.dk>
+ <996f1ff7-5891-fd4a-ee3e-fefd7e93879d@intel.com> <87mtx34q48.fsf@toke.dk>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Message-ID: <0a7d1a0b-de2e-b973-a807-b9377bb89737@intel.com>
+Date:   Wed, 20 Jan 2021 16:49:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20210119155953.803818-1-revest@chromium.org> <20210119155953.803818-2-revest@chromium.org>
-In-Reply-To: <20210119155953.803818-2-revest@chromium.org>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Wed, 20 Jan 2021 17:56:58 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ7ZC1T7kBnjaU0-4=0-dsQ8_3pS_6r7Mb4mjPPhYKZjLw@mail.gmail.com>
-Message-ID: <CACYkzJ7ZC1T7kBnjaU0-4=0-dsQ8_3pS_6r7Mb4mjPPhYKZjLw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 2/4] bpf: Expose bpf_get_socket_cookie to
- tracing programs
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87mtx34q48.fsf@toke.dk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 5:00 PM Florent Revest <revest@chromium.org> wrote:
+On 2021-01-20 15:52, Toke Høiland-Jørgensen wrote:
+> Björn Töpel <bjorn.topel@intel.com> writes:
+> 
+>> On 2021-01-20 13:44, Toke Høiland-Jørgensen wrote:
+>>> Björn Töpel <bjorn.topel@gmail.com> writes:
+>>>
+>>>> From: Björn Töpel <bjorn.topel@intel.com>
+>>>>
+>>>> The XDP_REDIRECT implementations for maps and non-maps are fairly
+>>>> similar, but obviously need to take different code paths depending on
+>>>> if the target is using a map or not. Today, the redirect targets for
+>>>> XDP either uses a map, or is based on ifindex.
+>>>>
+>>>> Future commits will introduce yet another redirect target via the a
+>>>> new helper, bpf_redirect_xsk(). To pave the way for that, we introduce
+>>>> an explicit redirect type to bpf_redirect_info. This makes the code
+>>>> easier to follow, and makes it easier to add new redirect targets.
+>>>>
+>>>> Further, using an explicit type in bpf_redirect_info has a slight
+>>>> positive performance impact by avoiding a pointer indirection for the
+>>>> map type lookup, and instead use the hot cacheline for
+>>>> bpf_redirect_info.
+>>>>
+>>>> The bpf_redirect_info flags member is not used by XDP, and not
+>>>> read/written any more. The map member is only written to when
+>>>> required/used, and not unconditionally.
+>>>
+>>> I like the simplification. However, the handling of map clearing becomes
+>>> a bit murky with this change:
+>>>
+>>> You're not changing anything in bpf_clear_redirect_map(), and you're
+>>> removing most of the reads and writes of ri->map. Instead,
+>>> bpf_xdp_redirect_map() will store the bpf_dtab_netdev pointer in
+>>> ri->tgt_value, which xdp_do_redirect() will just read and use without
+>>> checking. But if the map element (or the entire map) has been freed in
+>>> the meantime that will be a dangling pointer. I *think* the RCU callback
+>>> in dev_map_delete_elem() and the rcu_barrier() in dev_map_free()
+>>> protects against this, but that is by no means obvious. So confirming
+>>> this, and explaining it in a comment would be good.
+>>>
+>>
+>> Yes, *most* of the READ_ONCE(ri->map) are removed, it's pretty much only
+>> the bpf_redirect_map(), and as you write, the tracepoints.
+>>
+>> The content/element of the map is RCU protected, and actually even the
+>> map will be around until the XDP processing is complete. Note the
+>> synchronize_rcu() followed after all bpf_clear_redirect_map() calls.
+>>
+>> I'll try to make it clearer in the commit message! Thanks for pointing
+>> that out!
+>>
+>>> Also, as far as I can tell after this, ri->map is only used for the
+>>> tracepoint. So how about just storing the map ID and getting rid of the
+>>> READ/WRITE_ONCE() entirely?
+>>>
+>>
+>> ...and the bpf_redirect_map() helper. Don't you think the current
+>> READ_ONCE(ri->map) scheme is more obvious/clear?
+> 
+> Yeah, after your patch we WRITE_ONCE() the pointer in
+> bpf_redirect_map(), but the only place it is actually *read* is in the
+> tracepoint. So the only purpose of bpf_clear_redirect_map() is to ensure
+> that an invalid pointer is not read in the tracepoint function. Which
+> seems a bit excessive when we could just store the map ID for direct use
+> in the tracepoint and get rid of bpf_clear_redirect_map() entirely, no?
+> 
+> Besides, from a UX point of view, having the tracepoint display the map
+> ID even if that map ID is no longer valid seems to me like it makes more
+> sense than just displaying a map ID of 0 and leaving it up to the user
+> to figure out that this is because the map was cleared. I mean, at the
+> time the redirect was made, that *was* the map ID that was used...
 >
-> This needs a new helper that:
-> - can work in a sleepable context (using sock_gen_cookie)
-> - takes a struct sock pointer and checks that it's not NULL
->
-> Signed-off-by: Florent Revest <revest@chromium.org>
 
-Acked-by: KP Singh <kpsingh@kernel.org>
+Convinced! Getting rid of bpf_clear_redirect_map() would be good! I'll
+take a stab at this for v3!
+
+
+> Oh, and as you say due to the synchronize_rcu() call in dev_map_free() I
+> think this whole discussion is superfluous anyway, since it can't
+> actually happen that the map gets freed between the setting and reading
+> of ri->map, no?
+>
+
+It can't be free'd but, ri->map can be cleared via
+bpf_clear_redirect_map(). So, between the helper (setting) and the
+tracepoint in xdp_do_redirect() it can be cleared (say if the XDP
+program is swapped out, prior running xdp_do_redirect()).
+
+Moving to the scheme you suggested, does make the discussion
+superfluous. :-)
+
+
+Thanks for the input!
+Björn
+
