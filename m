@@ -2,87 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD162FD431
-	for <lists+bpf@lfdr.de>; Wed, 20 Jan 2021 16:38:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B9BA2FD454
+	for <lists+bpf@lfdr.de>; Wed, 20 Jan 2021 16:48:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731014AbhATPhJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Jan 2021 10:37:09 -0500
-Received: from mga06.intel.com ([134.134.136.31]:63833 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732643AbhATOu7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Jan 2021 09:50:59 -0500
-IronPort-SDR: 0iRRWc3+TjBNYVEDuVkrTWvCNnqXux9Khm0Zv049pcDtq348WCG7tFvN0e/R2hPI0Q+2l2PksA
- tMSKz54+xAxQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="240653458"
-X-IronPort-AV: E=Sophos;i="5.79,361,1602572400"; 
-   d="scan'208";a="240653458"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 06:49:54 -0800
-IronPort-SDR: Cgknxy8wC4GI7dELKyOBMOYTKx0plb+KBBjx9ESmaGcSRhFM9H6B/AfabE8pOM8KB02kDXgYdJ
- NlsyqefErLJQ==
-X-IronPort-AV: E=Sophos;i="5.79,361,1602572400"; 
-   d="scan'208";a="384861257"
-Received: from myegin-mobl1.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.249.42.133])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 06:49:49 -0800
-Subject: Re: [PATCH bpf-next v2 5/8] libbpf, xsk: select AF_XDP BPF program
- based on kernel version
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        id S1732183AbhATPjT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Jan 2021 10:39:19 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24855 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388531AbhATOy0 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 20 Jan 2021 09:54:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611154379;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=X3ef/yWKjHQXxstlBAjxJ4gnAy5LKmoZd+GY3iLVlxo=;
+        b=SY5fdVI4FM7LNGfFqGwuly++QcotL6jrj8o0MCYrKYXZ/QfV/ORAodVs7CTa4pDXIduS65
+        SF62NwtwWoILehpeJlySZGWbC3/+wEz9fa1lcAIisLWk1pskxbQMrMCH48xsw96+SHdSAU
+        WyC5vc8U3CVjLIp4o4fcWYHATXFn6SY=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-60-OygoyQiKOZ-iF_v2OiktTg-1; Wed, 20 Jan 2021 09:52:57 -0500
+X-MC-Unique: OygoyQiKOZ-iF_v2OiktTg-1
+Received: by mail-ej1-f70.google.com with SMTP id k3so7551657ejr.16
+        for <bpf@vger.kernel.org>; Wed, 20 Jan 2021 06:52:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=X3ef/yWKjHQXxstlBAjxJ4gnAy5LKmoZd+GY3iLVlxo=;
+        b=pxNAolXD5AOcTV8M8CP2M6fGZNQhATi6XyJlM6ozwYHAttYXiaxsTJEWiB7W5skTG3
+         79wjRl1tOIcca1rd5tJRysnnaq9VFXbS/k4fbG/qRTixeeCaneuIoqqoIxXQXNXWe3Cv
+         u95SkZKFH6A1MTGK6yw/GA2G0vYM5GG7fXrosVZXrDwlSSVihyHqOJzqD7iv2LAyPT+5
+         IjAwcYHTvJkwwBVsZJuiOjpIdOJFWbmv6PDIS9mGKimom9zaO6WL6D5seihYcRzY2X3R
+         SqkhY4RhYf7DEUjdnpgM11g81su0FHCAB/jSPzbQRNwqDycHHcNM7UDkp3tNTaSeAuxd
+         j9jQ==
+X-Gm-Message-State: AOAM533xuh8vWE5bshEgGa7e8Mpnm/28kW8ziUrKJxGNpIoYh3AE3k/o
+        oo75l7qhsZGGopxcYaqvR4qDrjDknedXVd1Dgg842LNs4eUb/iA2acQb1lQhi5Vvj02cT+iMzkT
+        uPuvjTm8iP4q0
+X-Received: by 2002:a50:d80c:: with SMTP id o12mr7284901edj.338.1611154376376;
+        Wed, 20 Jan 2021 06:52:56 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxG2iPdBowp0p+m+2+XBgbeuH1LGwsO5EHdrCogkKJ6IYhKcRmN6vnlYe9fs7MdUSBC/ngZ6w==
+X-Received: by 2002:a50:d80c:: with SMTP id o12mr7284883edj.338.1611154375961;
+        Wed, 20 Jan 2021 06:52:55 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id z22sm1210969edb.88.2021.01.20.06.52.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Jan 2021 06:52:55 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 10D77180331; Wed, 20 Jan 2021 15:52:55 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
         ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
         bpf@vger.kernel.org
 Cc:     magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
         kuba@kernel.org, jonathan.lemon@gmail.com, maximmi@nvidia.com,
         davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
-        ciara.loftus@intel.com, weqaar.a.janjua@intel.com,
-        Marek Majtyka <alardam@gmail.com>
+        ciara.loftus@intel.com, weqaar.a.janjua@intel.com
+Subject: Re: [PATCH bpf-next v2 1/8] xdp: restructure redirect actions
+In-Reply-To: <996f1ff7-5891-fd4a-ee3e-fefd7e93879d@intel.com>
 References: <20210119155013.154808-1-bjorn.topel@gmail.com>
- <20210119155013.154808-6-bjorn.topel@gmail.com> <875z3repng.fsf@toke.dk>
- <6c7da700-700d-c7f6-fe0a-c42e55e81c8a@intel.com>
-Message-ID: <6cda7383-663e-ed92-45dd-bbf87ca45eef@intel.com>
-Date:   Wed, 20 Jan 2021 15:49:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+ <20210119155013.154808-2-bjorn.topel@gmail.com> <87bldjeq1j.fsf@toke.dk>
+ <996f1ff7-5891-fd4a-ee3e-fefd7e93879d@intel.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 20 Jan 2021 15:52:55 +0100
+Message-ID: <87mtx34q48.fsf@toke.dk>
 MIME-Version: 1.0
-In-Reply-To: <6c7da700-700d-c7f6-fe0a-c42e55e81c8a@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2021-01-20 14:25, Björn Töpel wrote:
-> On 2021-01-20 13:52, Toke Høiland-Jørgensen wrote:
->> Björn Töpel <bjorn.topel@gmail.com> writes:
->>
->>> From: Björn Töpel <bjorn.topel@intel.com>
+Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com> writes:
+
+> On 2021-01-20 13:44, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> writes:
+>>=20
+>>> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
 >>>
->>> Add detection for kernel version, and adapt the BPF program based on
->>> kernel support. This way, users will get the best possible performance
->>> from the BPF program.
+>>> The XDP_REDIRECT implementations for maps and non-maps are fairly
+>>> similar, but obviously need to take different code paths depending on
+>>> if the target is using a map or not. Today, the redirect targets for
+>>> XDP either uses a map, or is based on ifindex.
+>>>
+>>> Future commits will introduce yet another redirect target via the a
+>>> new helper, bpf_redirect_xsk(). To pave the way for that, we introduce
+>>> an explicit redirect type to bpf_redirect_info. This makes the code
+>>> easier to follow, and makes it easier to add new redirect targets.
+>>>
+>>> Further, using an explicit type in bpf_redirect_info has a slight
+>>> positive performance impact by avoiding a pointer indirection for the
+>>> map type lookup, and instead use the hot cacheline for
+>>> bpf_redirect_info.
+>>>
+>>> The bpf_redirect_info flags member is not used by XDP, and not
+>>> read/written any more. The map member is only written to when
+>>> required/used, and not unconditionally.
+>>=20
+>> I like the simplification. However, the handling of map clearing becomes
+>> a bit murky with this change:
+>>=20
+>> You're not changing anything in bpf_clear_redirect_map(), and you're
+>> removing most of the reads and writes of ri->map. Instead,
+>> bpf_xdp_redirect_map() will store the bpf_dtab_netdev pointer in
+>> ri->tgt_value, which xdp_do_redirect() will just read and use without
+>> checking. But if the map element (or the entire map) has been freed in
+>> the meantime that will be a dangling pointer. I *think* the RCU callback
+>> in dev_map_delete_elem() and the rcu_barrier() in dev_map_free()
+>> protects against this, but that is by no means obvious. So confirming
+>> this, and explaining it in a comment would be good.
 >>
->> Please do explicit feature detection instead of relying on the kernel
->> version number; some distro kernels are known to have a creative notion
->> of their own version, which is not really related to the features they
->> actually support (I'm sure you know which one I'm referring to ;)).
->>
-> 
-> Right. For a *new* helper, like bpf_redirect_xsk, we rely on rejection
-> from the verifier to detect support. What about "bpf_redirect_map() now
-> supports passing return value as flags"? Any ideas how to do that in a
-> robust, non-version number-based scheme?
 >
+> Yes, *most* of the READ_ONCE(ri->map) are removed, it's pretty much only=
+=20
+> the bpf_redirect_map(), and as you write, the tracepoints.
+>
+> The content/element of the map is RCU protected, and actually even the
+> map will be around until the XDP processing is complete. Note the
+> synchronize_rcu() followed after all bpf_clear_redirect_map() calls.
+>
+> I'll try to make it clearer in the commit message! Thanks for pointing=20
+> that out!
+>
+>> Also, as far as I can tell after this, ri->map is only used for the
+>> tracepoint. So how about just storing the map ID and getting rid of the
+>> READ/WRITE_ONCE() entirely?
+>>
+>
+> ...and the bpf_redirect_map() helper. Don't you think the current
+> READ_ONCE(ri->map) scheme is more obvious/clear?
 
-Just so that I understand this correctly. Red^WSome distro vendors
-backport the world, and call that franken kernel, say, 3.10. Is that
-interpretation correct? My hope was that wasn't the case. :-(
+Yeah, after your patch we WRITE_ONCE() the pointer in
+bpf_redirect_map(), but the only place it is actually *read* is in the
+tracepoint. So the only purpose of bpf_clear_redirect_map() is to ensure
+that an invalid pointer is not read in the tracepoint function. Which
+seems a bit excessive when we could just store the map ID for direct use
+in the tracepoint and get rid of bpf_clear_redirect_map() entirely, no?
 
-Would it make sense with some kind of BPF-specific "supported features"
-mechanism? Something else with a bigger scope (whole kernel)?
+Besides, from a UX point of view, having the tracepoint display the map
+ID even if that map ID is no longer valid seems to me like it makes more
+sense than just displaying a map ID of 0 and leaving it up to the user
+to figure out that this is because the map was cleared. I mean, at the
+time the redirect was made, that *was* the map ID that was used...
 
+Oh, and as you say due to the synchronize_rcu() call in dev_map_free() I
+think this whole discussion is superfluous anyway, since it can't
+actually happen that the map gets freed between the setting and reading
+of ri->map, no?
 
+>> (Oh, and related to this I think this patch set will conflict with
+>> Hangbin's multi-redirect series, so maybe you two ought to coordinate? :=
+))
+>>
+>
+> Yeah, good idea! I would guess Hangbin's would go in before this, so I
+> would need to adapt.
+>
+>
+> Thanks for taking of look at the series, Toke! Much appreciated!
 
-Cheers,
-Björn
+You're welcome :)
+
+-Toke
 
