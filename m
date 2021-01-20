@@ -2,109 +2,185 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 341552FDA81
-	for <lists+bpf@lfdr.de>; Wed, 20 Jan 2021 21:13:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF56C2FDA95
+	for <lists+bpf@lfdr.de>; Wed, 20 Jan 2021 21:17:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731984AbhATOFp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Jan 2021 09:05:45 -0500
-Received: from mga07.intel.com ([134.134.136.100]:28887 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389747AbhATN2t (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Jan 2021 08:28:49 -0500
-IronPort-SDR: AQ9R1KDJBDBRGNt29msXMURvD1lpft/pQkQZODcZwo3R4qMLfpaBeiaGKWW8LXj4xafR7HxlKt
- 30Azub2RQCxQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9869"; a="243173267"
-X-IronPort-AV: E=Sophos;i="5.79,361,1602572400"; 
-   d="scan'208";a="243173267"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 05:28:05 -0800
-IronPort-SDR: EQJKsnWu5S8VyOtGQnfXye3iZuwRWDWOA69LQJOBOUY7FdvIsNdnTMi1DmJwZllNDfNY2Jnu7I
- h/VpvIlfqP0g==
-X-IronPort-AV: E=Sophos;i="5.79,361,1602572400"; 
-   d="scan'208";a="384834944"
-Received: from myegin-mobl1.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.249.42.133])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jan 2021 05:28:00 -0800
-Subject: Re: [PATCH bpf-next v2 0/8] Introduce bpf_redirect_xsk() helper
-To:     Maxim Mikityanskiy <maximmi@nvidia.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
-        kuba@kernel.org, jonathan.lemon@gmail.com, davem@davemloft.net,
-        hawk@kernel.org, john.fastabend@gmail.com, ciara.loftus@intel.com,
-        weqaar.a.janjua@intel.com
-References: <20210119155013.154808-1-bjorn.topel@gmail.com>
- <7dcee85b-b3ef-947f-f433-03ad7066c5dd@nvidia.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
-Message-ID: <9fd68fd5-6a9f-3c36-1b83-4ba587387f5d@intel.com>
-Date:   Wed, 20 Jan 2021 14:27:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S2388142AbhATUO6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Jan 2021 15:14:58 -0500
+Received: from www62.your-server.de ([213.133.104.62]:33104 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388141AbhATOCD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Jan 2021 09:02:03 -0500
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1l2E2q-0000aV-TP; Wed, 20 Jan 2021 15:01:12 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1l2E2q-000JKx-M2; Wed, 20 Jan 2021 15:01:12 +0100
+Subject: Re: [PATCH bpf-next] bpf: Helper script for running BPF presubmit
+ tests
+To:     KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>
+References: <20210118141955.2033747-1-kpsingh@kernel.org>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <0d577037-769a-35fc-b07f-bba2cf2bd3d2@iogearbox.net>
+Date:   Wed, 20 Jan 2021 15:01:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <7dcee85b-b3ef-947f-f433-03ad7066c5dd@nvidia.com>
+In-Reply-To: <20210118141955.2033747-1-kpsingh@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26055/Wed Jan 20 13:29:54 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2021-01-20 14:15, Maxim Mikityanskiy wrote:
-> On 2021-01-19 17:50, Björn Töpel wrote:
->> This series extends bind() for XDP sockets, so that the bound socket
->> is added to the netdev_rx_queue _rx array in the netdevice. We call
->> this to register the socket. To redirect packets to the registered
->> socket, a new BPF helper is used: bpf_redirect_xsk().
->>
->> For shared XDP sockets, only the first bound socket is
->> registered. Users that need more complex setup has to use XSKMAP and
->> bpf_redirect_map().
->>
->> Now, why would one use bpf_redirect_xsk() over the regular
->> bpf_redirect_map() helper?
->>
->> * Better performance!
->> * Convenience; Most user use one socket per queue. This scenario is
->>    what registered sockets support. There is no need to create an
->>    XSKMAP. This can also reduce complexity from containerized setups,
->>    where users might what to use XDP sockets without CAP_SYS_ADMIN
->>    capabilities.
->>
->> The first patch restructures xdp_do_redirect() a bit, to make it
->> easier to add the new helper. This restructure also give us a slight
->> performance benefit. The following three patches extends bind() and
->> adds the new helper. After that, two libbpf patches that selects XDP
->> program based on what kernel is running. Finally, selftests for the new
->> functionality is added.
->>
->> Note that the libbpf "auto-selection" is based on kernel version, so
->> it is hard coded to the "-next" version (5.12). If you would like to
->> try this is out, you will need to change the libbpf patch locally!
->>
->> Thanks to Maciej and Magnus for the internal review/comments!
->>
->> Performance (rxdrop, zero-copy)
->>
->> Baseline
->> Two cores:                   21.3 Mpps
->> One core:                    24.5 Mpps
+On 1/18/21 3:19 PM, KP Singh wrote:
+> The script runs the BPF selftests locally on the same kernel image
+> as they would run post submit in the BPF continuous integration
+> framework. The goal of the script is to run selftests locally in the
+> same environment to check if their changes would end up breaking the
+> BPF CI and reduce the back-and-forth between the maintainers and the
+> developers.
 > 
-> Two cores is slower? It used to be faster all the time, didn't it?
->
+> Signed-off-by: KP Singh <kpsingh@kernel.org>
 
-Up until busy-polling. Note that I'm using a busy-poll napi budget of 512.
+Looks really nice! I gave it a run, some minor feedback:
 
-
->> Patched
->> Two cores, bpf_redirect_map: 21.7 Mpps + 2%
->> One core, bpf_redirect_map:  24.9 Mpps + 2%
->>
->> Two cores, bpf_redirect_xsk: 24.0 Mpps +13%
+> ---
+>   tools/testing/selftests/bpf/run_in_vm.sh | 346 +++++++++++++++++++++++
+>   1 file changed, 346 insertions(+)
+>   create mode 100755 tools/testing/selftests/bpf/run_in_vm.sh
 > 
-> Nice, impressive improvement!
->
+> diff --git a/tools/testing/selftests/bpf/run_in_vm.sh b/tools/testing/selftests/bpf/run_in_vm.sh
+> new file mode 100755
+> index 000000000000..a4f28f5cdd52
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/run_in_vm.sh
+> @@ -0,0 +1,346 @@
+> +#!/bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +
+> +set -u
+> +set -e
+> +
+> +QEMU_BINARY="${QEMU_BINARY:="qemu-system-x86_64"}"
+> +X86_BZIMAGE="arch/x86/boot/bzImage"
+> +DEFAULT_COMMAND="./test_progs"
+> +MOUNT_DIR="mnt"
+> +ROOTFS_IMAGE="root.img"
+> +OUTPUT_DIR="$HOME/.bpf_selftests"
+> +KCONFIG_URL="https://raw.githubusercontent.com/libbpf/libbpf/master/travis-ci/vmtest/configs/latest.config"
+> +INDEX_URL="https://raw.githubusercontent.com/libbpf/libbpf/master/travis-ci/vmtest/configs/INDEX"
+> +
+> +usage()
+> +{
+> +	cat <<EOF
+> +Usage: $0 [-k] [-i] [-d <output_dir>] -- [<command>]
+> +
+> +<command> is the command you would normally run when you are in
+> +tools/testing/selftests/bpf. e.g:
+> +
+> +	$0 -- ./test_progs -t test_lsm
+> +
+> +If no command is specified, "${DEFAULT_COMMAND}" will be run by
+> +default.
+> +
+> +If you build your kernel using KBUILD_OUTPUT= or O= options, these
+> +can be passed as environment variables to the script:
+> +
+> +  O=<path_relative_to_cwd> $0 -- ./test_progs -t test_lsm
+> +
+> +or
+> +
+> +  KBUILD_OUTPUT=<path_relative_to_cwd> $0 -- ./test_progs -t test_lsm
+> +
+> +Options:
+> +
+> +	-k)		Recompile the kernel with the config for selftests.
+> +	-i)		Update the rootfs image with a newer version.
+> +	-d)		Update the output directory (default: ${OUTPUT_DIR})
 
-Thanks! Getting rid of the queue/netdev checks really payed off!
+Probably best to have a small howto in tools/testing/selftests/bpf/README.rst for
+people to have a 'getting started' point. Initially I forgot the -k, so VM paniced
+on boot, but after that it was working great modulo a small change below.
 
+[...]
+> +main()
+> +{
+> +	local script_dir="$(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+> +	local kernel_checkout=$(realpath "${script_dir}"/../../../../)
+> +	local log_file="$(date +"bpf_selftests.%Y-%m-%d_%H-%M-%S.log")"
+> +	# By default the script searches for the kernel in the checkout directory but
+> +	# it also obeys environment variables O= and KBUILD_OUTPUT=
+> +	local kernel_bzimage="${kernel_checkout}/${X86_BZIMAGE}"
+> +	local command="${DEFAULT_COMMAND}"
+> +	local kernel_recompile="no"
+> +	local update_image="no"
+> +
+> +	while getopts 'hkid:' opt; do
+> +		case ${opt} in
+> +		k)
+> +			kernel_recompile="yes"
+> +			;;
+> +		i)
+> +			update_image="yes"
+> +			;;
+> +		d)
+> +			OUTPUT_DIR="$OPTARG"
+> +			;;
+> +		h)
+> +			usage
+> +			exit 0
+> +			;;
+> +		\? )
+> +			echo "Invalid Option: -$OPTARG"
+> +			usage
+> +			exit 1
+> +			;;
+> +      		: )
+> +        		echo "Invalid Option: -$OPTARG requires an argument"
+> +			usage
+> +			exit 1
+> +			;;
+> +		esac
+> +	done
+> +	shift $((OPTIND -1))
+> +
+> +	if [[ $# -eq 0 ]]; then
+> +		echo "No command specified, will run ${DEFAULT_COMMAND} in the vm"
+> +	else
+> +		command="$@"
+> +	fi
+> +
+> +	local kconfig_file="${OUTPUT_DIR}/latest.config"
+> +	local make_command="make -j KCONFIG_CONFIG=${kconfig_file}"
 
-Björn
+I had to fix/limit this locally to -j <num-cpus> as otherwise this was OOM killing
+my box. make man page says 'if the -j option is given without an argument, make will
+not limit the number of jobs that can run simultaneously.'
+
+> +
+> +	# Figure out where the kernel is being built.
+> +	# O takes precedence over KBUILD_OUTPUT.
+> +	if [[ "${O:=""}" != "" ]]; then
+> +		if is_rel_path "${O}"; then
+> +			O="$(realpath "${PWD}/${O}")"
+> +		fi
+
+For future follow-up, would be amazing to auto-grab nightly build of llvm + pahole
+as well. And even further out maybe also to allow cross-compilation + testing on
+other archs. :)
+
+Thanks,
+Daniel
