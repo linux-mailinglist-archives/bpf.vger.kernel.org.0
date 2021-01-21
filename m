@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47C6D2FE8EF
-	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 12:37:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B8132FE8EC
+	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 12:37:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729363AbhAULgx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Jan 2021 06:36:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43066 "EHLO
+        id S1728676AbhAULgr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jan 2021 06:36:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730421AbhAULgL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Jan 2021 06:36:11 -0500
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89152C061786
-        for <bpf@vger.kernel.org>; Thu, 21 Jan 2021 03:35:28 -0800 (PST)
-Received: by mail-qt1-x84a.google.com with SMTP id s26so1200420qtq.21
-        for <bpf@vger.kernel.org>; Thu, 21 Jan 2021 03:35:28 -0800 (PST)
+        with ESMTP id S1730477AbhAULgN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Jan 2021 06:36:13 -0500
+Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 664E8C061794
+        for <bpf@vger.kernel.org>; Thu, 21 Jan 2021 03:35:31 -0800 (PST)
+Received: by mail-wm1-x34a.google.com with SMTP id q24so412523wmc.1
+        for <bpf@vger.kernel.org>; Thu, 21 Jan 2021 03:35:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=7/SN6szQNLLz010hJwo1UBS9+/YFLEy0oZww8gtGTAU=;
-        b=seF3tjBBjQMRwwhd0avsnTQmHfvFUYS4OYKRdUMscToC4Uu8WRTQYW983GuAV9Wcg8
-         ENe749X+TStHaEzNebOazoh2PuO6m4SVgj5P3qISO08+nD2cKxi22mJsuYMGxqujMZiF
-         H+WuYXaQXSe862t5kLpFcdSyyfGVtsUQSMuaiwxq1ZPMGHKl4L46ujOWZbtMz2y0ZKi+
-         HYb+Q3wiG0kD0Bv6/g1EpdDkwsZh97CRTSfofMh5GC1eYHrQxU6zMohB71irEWSIT0Pb
-         EzjqqaMMltxoUtJqAcn4PwSPjQlXpEPlYsVclPFkYUuNktJGzow/6twND3fltFQd9Jag
-         My9A==
+        bh=tHm4aawgl4upxAANEu6km7IPT8qo7sF57UAGh5jcpEQ=;
+        b=Ds0HNmp+7d57PEygc5eJeuDPMs2K36GpyTgvXuI+sYnvLHDRl4l47t84aX6pqaOUyN
+         M0cqR7DNwQdUFHH+U7RNJYRbRfePFqBPHiKCBVXGiMUt1mPvM3LgLWVDcqqwiTKerhNV
+         yYFLIRDLzcO7VtceJd29Dm1Kyi5aIytZjBpTfHkW+T1wyed2Gvueb08kJqPdQjaDqlHX
+         gwE8jpy9C7X7QxUH2bqooA80qU3E+A3NdGgz15Tf5EKlqB9Hl+JgHnNHnN2XBHvtyaAx
+         g3TiIHdXrlEDWjy8aLL5wdQWKGRWBHYS6XHEZbyrq3JseIowte/ev73FyiyQT1Oh5t0u
+         Vn/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=7/SN6szQNLLz010hJwo1UBS9+/YFLEy0oZww8gtGTAU=;
-        b=PFz8oIXuoOUD0hBayllahPx5/c/eNOMdY5/4qR0JqhdJct0FKKjMQUi9zAy8MH5eye
-         zZmauAOuKLV+t2mLDDe1kFCNz8p/bbN/0xBmpqtzRPpwo2863hIGv38CvVVyuYa20wad
-         hDx6Oh1cawHiaH5j3Ahe5wBBmTevynIz9tEnQMlV+RuVN0RuJc/7YxEjBNNdAX9WPNlj
-         /v8jDc9HCG5UzFc7FJvMrDL8ijHOK5u8452/nnHn546IgB3hcOwxZ/LJi502Ln12nXRX
-         UCDwM2UfdGEN7IH+cBrLy62TlPkAbBfNqlU4K4QGeRnhNV1VIHq3phhEYDPIAmY1HL3q
-         EzyA==
-X-Gm-Message-State: AOAM532aMMPMeT062kYogre8MfleHm/DTFq9TAMTvvhTRX+14uSRoknO
-        R+7cWgqOEjr/VU1xfXMDZEUhQNFzn8KOqA==
-X-Google-Smtp-Source: ABdhPJzthVyDCUNV6p2fUfYujC2TY5GSWxY3hDjK2c2w7JAUffTUcdFFeJpajHn0lFik4BMRSFbdEDISapsCJA==
+        bh=tHm4aawgl4upxAANEu6km7IPT8qo7sF57UAGh5jcpEQ=;
+        b=rBy7gyQAK+dGt5yddKyg4v3fXUz1zW/o6hwN4m1BqDbDU3RYEvfnSjDO23krXJcVpl
+         CBF9Bpcnh7h868GnM21nDfgFyPjmU1HhamE4t5FuowUe7lTnyt7YzvzBkEnleUgB4/6y
+         JRKLmxoVYyQsmJGsER3qrpkgL+WkzQ3aMy8UYIU6qxdSn2S6qpMyn2nP8OEvbYTTfR0a
+         Qlie6zNuClxpq/D7N6tX/jkI0/V8iyjK5cuRuSu4uBeK6vdaVUT9CeQ3lPRKlUQ0uqn7
+         VyF2P8ntgZ8MgAsu3DusNjjVLABmO/s/zbJiuWkc0z2lc2nO2ZTBjkCF+lSY9pXXx73t
+         IIXQ==
+X-Gm-Message-State: AOAM532GbSuhuiqG9bLg6dqkKrpcvUskcFv3e4RX28JSbmi1y1vDClDD
+        aqNbsv0clRU5FcgCkbj/tL1BarZS0stabw==
+X-Google-Smtp-Source: ABdhPJwkT3VH4D3ylEUPgDZEGZQ7ElFObJ8fc1L0AgD7z8Ml7WHUWCN/ZDwWYaaUpj/nBbu9yEwa89ciGUC+dA==
 Sender: "gprocida via sendgmr" <gprocida@tef.lon.corp.google.com>
 X-Received: from tef.lon.corp.google.com ([2a00:79e0:d:110:a6ae:11ff:fe11:4f04])
- (user=gprocida job=sendgmr) by 2002:a05:6214:a03:: with SMTP id
- dw3mr13807575qvb.24.1611228927732; Thu, 21 Jan 2021 03:35:27 -0800 (PST)
-Date:   Thu, 21 Jan 2021 11:35:19 +0000
+ (user=gprocida job=sendgmr) by 2002:a5d:4806:: with SMTP id
+ l6mr11402294wrq.389.1611228930100; Thu, 21 Jan 2021 03:35:30 -0800 (PST)
+Date:   Thu, 21 Jan 2021 11:35:20 +0000
 In-Reply-To: <20210121113520.3603097-1-gprocida@google.com>
-Message-Id: <20210121113520.3603097-3-gprocida@google.com>
+Message-Id: <20210121113520.3603097-4-gprocida@google.com>
 Mime-Version: 1.0
 References: <20210118160139.1971039-1-gprocida@google.com> <20210121113520.3603097-1-gprocida@google.com>
 X-Mailer: git-send-email 2.30.0.296.g2bfb1c46d8-goog
-Subject: [PATCH dwarves v2 2/3] btf_encoder: Improve error-handling around objcopy
+Subject: [PATCH dwarves v2 3/3] btf_encoder: Set .BTF section alignment to 16
 From:   Giuliano Procida <gprocida@google.com>
 To:     dwarves@vger.kernel.org
 Cc:     kernel-team@android.com, maennich@google.com, ast@kernel.org,
@@ -62,42 +62,35 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-* Report the correct filename when objcopy fails.
-* Unlink the temporary file on error.
+NOTE: Do not apply. I will try to eliminate the dependency on objcopy
+instead and achieve what's needed directly using libelf.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+This is to avoid misaligned access when memory-mapping ELF sections.
+
 Signed-off-by: Giuliano Procida <gprocida@google.com>
 ---
- libbtf.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ libbtf.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
 diff --git a/libbtf.c b/libbtf.c
-index 3709087..7552d8e 100644
+index 7552d8e..2f12d53 100644
 --- a/libbtf.c
 +++ b/libbtf.c
-@@ -786,18 +786,19 @@ static int btf_elf__write(const char *filename, struct btf *btf)
- 		if (write(fd, raw_btf_data, raw_btf_size) != raw_btf_size) {
- 			fprintf(stderr, "%s: write of %d bytes to '%s' failed: %d!\n",
- 				__func__, raw_btf_size, tmp_fn, errno);
--			goto out;
-+			goto unlink;
+@@ -797,6 +797,14 @@ static int btf_elf__write(const char *filename, struct btf *btf)
+ 			goto unlink;
  		}
  
- 		snprintf(cmd, sizeof(cmd), "%s --add-section .BTF=%s %s",
- 			 llvm_objcopy, tmp_fn, filename);
- 		if (system(cmd)) {
- 			fprintf(stderr, "%s: failed to add .BTF section to '%s': %d!\n",
--				__func__, tmp_fn, errno);
--			goto out;
++		snprintf(cmd, sizeof(cmd), "%s --set-section-alignment .BTF=16 %s",
++			 llvm_objcopy, filename);
++		if (system(cmd)) {
++			/* non-fatal, this is a nice-to-have and it's only supported from LLVM 10 */
++			fprintf(stderr, "%s: warning: failed to align .BTF section in '%s': %d!\n",
 +				__func__, filename, errno);
-+			goto unlink;
- 		}
- 
++		}
++
  		err = 0;
-+	unlink:
+ 	unlink:
  		unlink(tmp_fn);
- 	}
- 
 -- 
 2.30.0.296.g2bfb1c46d8-goog
 
