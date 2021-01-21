@@ -2,92 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B692FE8E5
-	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 12:36:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B824A2FE8F0
+	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 12:37:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730585AbhAULe6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Jan 2021 06:34:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42694 "EHLO
+        id S1730358AbhAULgz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jan 2021 06:36:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728019AbhAULeh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Jan 2021 06:34:37 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C34B4C061575;
-        Thu, 21 Jan 2021 03:33:49 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id f6so1683034ybq.13;
-        Thu, 21 Jan 2021 03:33:49 -0800 (PST)
+        with ESMTP id S1728535AbhAULgF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Jan 2021 06:36:05 -0500
+Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7A46C0613CF
+        for <bpf@vger.kernel.org>; Thu, 21 Jan 2021 03:35:24 -0800 (PST)
+Received: by mail-wr1-x449.google.com with SMTP id e15so227395wrm.13
+        for <bpf@vger.kernel.org>; Thu, 21 Jan 2021 03:35:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=I+cG4Vp0KOKN+ozIhgZ8d42ujiCT1czKBVqBGfsh21E=;
-        b=QjcSscZscimEm9YXE5dIYpYuqYcpiIxJB+SPAUkEjYLDPYGtuYJyR1e/+YCFiR0qlC
-         pDFpMw5HFKmXcyWysd1FhVkkiwiw7v2DpYdv5H8Un0R46SL6yVpM67dXd67OIZFvtDXY
-         dpW0qo3HPREc7uTvFBrV2HliAUzJOjyhbXreHkpZ5NZFYN9Csb2Q44ryDKdkBdzsyg2Q
-         VoumBKLrxmHUMCdVBuY/16Za7bqRWVO3VlUPwEvpVv0UDSxxSDwErL3NRwzBqW76e0s+
-         zuu9JC1a8X6Oy6MTQX4f5jonI9y7EqxIF9LQv0q6d2eNgRwvrVEBR8JqQdMw10JJcxBZ
-         8o1g==
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=RLqFM69+cwerT+J14ehkQ1TCgXTjDoYcdw/+HxoiLlQ=;
+        b=OVvdRA60rUXQhX6CJUQlmaolg525BpaF89HHflbqA18S9+3NvcKcRzCN7IOOblwSjw
+         fca+MdYSx9unqVHBx2pYooVJLXbQVDH0XVWonlW7ntZwMXS3XE1e4Ziirx0eIoXAIWiu
+         GPrOwsCFzxvBd1xZUvjme8Pgoxcgqst5x/Jf4k5Kirjq1rP2HEYJ0XK5HdaAMaOAmWwF
+         NbmK9IN7kRa3WgTyjeo2lY9kd20o1F98jPxeVCpalApdBhM2NxWozbF4JW2tZu4RHREv
+         ATDSZy1+CKYa1iwfZMvwHffNwH0HfY0BW6tfo3skqwvrJoSRCKrLvWLqi2iVzHcYzh4W
+         Ww1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=I+cG4Vp0KOKN+ozIhgZ8d42ujiCT1czKBVqBGfsh21E=;
-        b=gPNofxltzAEugMNKrOdXE7iawBLU6dHZdTeRcHC+88MnZXjXEmrOh2E8hlwl/fIzqr
-         XUzW0qan3zp9gVtw7KyIy/iLGkX9k+eXtaHJdygoNuMo8ZN4zHA6Hm04e1WMSe0oI297
-         6vlg1rQImp/mXMbxY6RewVihd+y33WAFYv6Zv0YlzaqoBaWz6uYFX5I59ToOKmesXG3W
-         8PvCEQDaBZEXzrOR5SS61nbvoCBfYOe/V1KbRx9ab5HRGPM01l853ZKEZFdpvHz+AfbE
-         sIlwvE2lpj6gq6Yv3i93ZkKY94oM0dC+Qcy75UAQ9rysj7uUKF+Klpehi+CJd6DRZ6U6
-         Ppeg==
-X-Gm-Message-State: AOAM532QcwkZXtM1C5+jou0L2SMAH0oZETSJ7ZYkLoAqlLqYmdIGfFJH
-        +kwiUlUMVOqa3L7BzbNZeb9GzDx4OeKzzL43xkQ=
-X-Google-Smtp-Source: ABdhPJx7CE06Ajx6zuXEJea156D0wq36xdLyL4K/2sS9pM1SZo8RtkpQgK8SOVM4JSKPoJSwnb6ypisyz8pGTv5Q+jY=
-X-Received: by 2002:a25:688c:: with SMTP id d134mr20778186ybc.477.1611228829127;
- Thu, 21 Jan 2021 03:33:49 -0800 (PST)
-MIME-Version: 1.0
-From:   =?UTF-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
-Date:   Thu, 21 Jan 2021 19:33:23 +0800
-Message-ID: <CAD-N9QW6VGmAFPtJDcHahO=OQ=0Cy06-zaQf72mYL0=L_MEc_g@mail.gmail.com>
-Subject: "WARNING in cgroup_finalize_control" and "WARNING in
- cgroup_apply_control_disable" should be duplicate crash reports
-To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        cgroups@vger.kernel.org, christian@brauner.io,
-        Daniel Borkmann <daniel@iogearbox.net>, hannes@cmpxchg.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
-        linux-kernel <linux-kernel@vger.kernel.org>, lizefan@huawei.com,
-        netdev@vger.kernel.org, songliubraving@fb.com, tj@kernel.org,
-        yhs@fb.com
-Cc:     syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        syzkaller <syzkaller@googlegroups.com>
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=RLqFM69+cwerT+J14ehkQ1TCgXTjDoYcdw/+HxoiLlQ=;
+        b=N/afAztNw/Ag77EcDqfujesaS3p//xMFUEaxChBU3poTx3tHRj/5YDN3Wyy3Lxpom3
+         FNnGrqu5IcBw2V7ABtAfaB+c7/iaDoetMny0w7o39N+Iq1GRTtVEzm4p7zqwvXVu3P0H
+         9eZmZOCQkoZFJrldEMXeVxz+5O6HDunnw5zVI8yNdfiKUehqtZoe6+BmmpPaAaURHy2n
+         945erfQ9E2SQgwsnLsRk9XCQzf/NHFEkGqPvvy3pLDS/7eK+a9yAp/UuWWPREPYOjcsv
+         qS/YAEaY6LyQzA2GvOa/tNAKpwahXgZEwKjJ8Yx9Mj/0Z77zuegJHpNgKSlx87bq7VnE
+         IXUg==
+X-Gm-Message-State: AOAM533+ohlLQrOqPB3K0HLbD02mwxOJEscATFssStbFIz/PGwmDWs3F
+        /Z3ZLhB2/M5V1dHfBYSHKutYQGYPecvKMA==
+X-Google-Smtp-Source: ABdhPJxcb2YEyONdJcJDYYnei7dn9V9QxeVjhfQMLAGyFO0bJMsrzSLFcKA54bWAH6eJul5MY0FwzDRVTk+TRQ==
+Sender: "gprocida via sendgmr" <gprocida@tef.lon.corp.google.com>
+X-Received: from tef.lon.corp.google.com ([2a00:79e0:d:110:a6ae:11ff:fe11:4f04])
+ (user=gprocida job=sendgmr) by 2002:a05:600c:2281:: with SMTP id
+ 1mr6419931wmf.150.1611228923361; Thu, 21 Jan 2021 03:35:23 -0800 (PST)
+Date:   Thu, 21 Jan 2021 11:35:17 +0000
+In-Reply-To: <20210118160139.1971039-1-gprocida@google.com>
+Message-Id: <20210121113520.3603097-1-gprocida@google.com>
+Mime-Version: 1.0
+References: <20210118160139.1971039-1-gprocida@google.com>
+X-Mailer: git-send-email 2.30.0.296.g2bfb1c46d8-goog
+Subject: [PATCH dwarves v2 0/3] Small fixes and improvements
+From:   Giuliano Procida <gprocida@google.com>
+To:     dwarves@vger.kernel.org
+Cc:     kernel-team@android.com, maennich@google.com, ast@kernel.org,
+        andrii@kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
+        Giuliano Procida <gprocida@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dear kernel developers,
+Hi.
 
-I found that on the syzbot dashboard, =E2=80=9CWARNING in
-cgroup_finalize_control=E2=80=9D [1] and "WARNING in
-cgroup_apply_control_disable" [2] should share the same root cause.
+1 is a bug fix affecting restrict qualifiers.
+2 avoids leaving debris if objcopy fails.
+3 aligns the BTF section to 16 bytes to avoid misaligned access.
 
-The reasons for the above statement:
-1) the stack trace is the same, and this title difference is due to
-the inline property of "cgroup_apply_control_disable";
-2) their PoCs are the same as each other;
+Note: I think 3 should be in abandoned in favour of using libelf
+directly. I'll give this a go. This would also obsolete 2 in its
+current form.
 
-If you can have any issues with this statement or our information is
-useful to you, please let us know. Thanks very much.
+Regards.
 
-[1] =E2=80=9CWARNING in cgroup_finalize_control=E2=80=9D -
-https://syzkaller.appspot.com/bug?id=3Dfe2fee189f1f8babd95615dcbb57871d6d18=
-920a
+Giuliano Procida (3):
+  btf_encoder: Fix handling of restrict qualifier
+  btf_encoder: Improve error-handling around objcopy
+  btf_encoder: Set .BTF section alignment to 16
 
-[2] =E2=80=9CWARNING in cgroup_apply_control_disable=E2=80=9D -
-https://syzkaller.appspot.com/bug?id=3Dba5a3ed954137643a9337f90782c90e90ba3=
-02ed
+ libbtf.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
---
-My best regards to you.
+-- 
+2.30.0.296.g2bfb1c46d8-goog
 
-     No System Is Safe!
-     Dongliang Mu
