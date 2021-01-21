@@ -2,106 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 564CF2FF5F8
-	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 21:36:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7940F2FF64C
+	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 21:49:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725883AbhAUUe6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 21 Jan 2021 15:34:58 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:57472 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725779AbhAUUXj (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 21 Jan 2021 15:23:39 -0500
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-130-349FNIZ9NPWCxBresCrdnA-1; Thu, 21 Jan 2021 15:22:42 -0500
-X-MC-Unique: 349FNIZ9NPWCxBresCrdnA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1EB64802B40;
-        Thu, 21 Jan 2021 20:22:40 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.40.192.46])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2916A61F55;
-        Thu, 21 Jan 2021 20:22:31 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Cc:     dwarves@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Yonghong Song <yhs@fb.com>,
-        Hao Luo <haoluo@google.com>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Mark Wielaard <mjw@redhat.com>
-Subject: [PATCH bpf-next 3/3] libbpf: Use string table index from index table if needed
-Date:   Thu, 21 Jan 2021 21:22:03 +0100
-Message-Id: <20210121202203.9346-4-jolsa@kernel.org>
-In-Reply-To: <20210121202203.9346-1-jolsa@kernel.org>
-References: <20210121202203.9346-1-jolsa@kernel.org>
+        id S1727264AbhAUUso (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jan 2021 15:48:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727248AbhAUUso (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Jan 2021 15:48:44 -0500
+X-Greylist: delayed 405 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 21 Jan 2021 12:48:03 PST
+Received: from ellomb.netlib.re (unknown [IPv6:2001:912:1480:10::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02848C061756;
+        Thu, 21 Jan 2021 12:48:02 -0800 (PST)
+Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
+        by ellomb.netlib.re (Postfix) with ESMTPA id 0CDC94AC27C9;
+        Thu, 21 Jan 2021 20:40:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mildred.fr; s=dkim;
+        t=1611261621;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=y06bW3Z3IKJotzTvjRUlU+gfqobtqICfSf2t1S+NAoY=;
+        b=Kr+w7c1SNktsPjpd4t5UpDtPXGZwzilVK8xQwO1Jy95Ce0KoByz+dYu94YTeawg3LiPd3k
+        0StO31fcMF/h0NVTG0EtLy4aStY3WphimeGnD27Wd+zvqHYwEhiUxJGx7fSwNT1JdQb0gn
+        r7vPkDnlKXRg1TtOOHbhPjw1JW5T6pI=
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=WINDOWS-1252
+Date:   Thu, 21 Jan 2021 21:40:19 +0100
+From:   Shanti Lombard <shanti@mildred.fr>
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     =?UTF-8?Q?Shanti_Lombard_n=C3=A9e_Bouchez-Mongard=C3=A9?= 
+        <shanti20210120@mildred.fr>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>
+Subject: Re: More flexible BPF socket inet_lookup hooking after listening
+ sockets are dispatched
+In-Reply-To: <87r1me4k4l.fsf@cloudflare.com>
+References: <afb4e544-d081-eee8-e792-a480364a6572@mildred.fr>
+ <CAADnVQJnX-+9u--px_VnhrMTPB=O9Y0LH9T7RJbqzfLchbUFvg@mail.gmail.com>
+ <87r1me4k4l.fsf@cloudflare.com>
+Message-ID: <e1fc896faf4ad913e0372bc30461b849@mildred.fr>
+X-Sender: shanti@mildred.fr
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=mildred.fr;
+        s=dkim; t=1611261621;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=y06bW3Z3IKJotzTvjRUlU+gfqobtqICfSf2t1S+NAoY=;
+        b=FdwPr/m5rtd7l8nJ/G+0HqzOn0UiMdB7VcoqiXkY4uim18WYvqthQMpeyAT5Tl3r6p1iol
+        qj9JPP7ybn0xp0QzS234VrOCRADk82KKI7sL6WxXzPIHiwJRUZIzk4vVGAvnWPGgfd0QzJ
+        lGFdqrgTAbPTgshR561F3Y4ms2lYk8c=
+ARC-Seal: i=1; s=dkim; d=mildred.fr; t=1611261622; a=rsa-sha256; cv=none;
+        b=lOi2zHzJ2Mw8cEAWmqzn10gTCO8SL4mRrvJw3pgzWh7G8u4e1Hy2Z/pOfJL/uRKz0o6iUn
+        SCJ65m9bn2fszv+7oiW7Ys8mf5kHEariixtui2+ikUoBVpgvdXz+3lTYSxDLQ8i/U1A/4i
+        QFt2Bn1XvWwDuk0yx+72B0xnbL4VYxk=
+ARC-Authentication-Results: i=1;
+        ellomb.netlib.re;
+        auth=pass smtp.auth=mildred@mildred.fr smtp.mailfrom=shanti@mildred.fr
+Authentication-Results: ellomb.netlib.re;
+        auth=pass smtp.auth=mildred@mildred.fr smtp.mailfrom=shanti@mildred.fr
+X-Spamd-Bar: /
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-For very large ELF objects (with many sections), we could
-get special value SHN_XINDEX (65535) for elf object's string
-table index - e_shstrndx.
+Le 2021-01-21 12:14, Jakub Sitnicki a écrit :
+> On Wed, Jan 20, 2021 at 10:06 PM CET, Alexei Starovoitov wrote:
+> 
+> There is also documentation in the kernel:
+> 
+> https://www.kernel.org/doc/html/latest/bpf/prog_sk_lookup.html
+> 
 
-Call elf_getshdrstrndx to get the proper string table index,
-instead of reading it directly from ELF header.
+Thank you, I saw it, it's well written and very much explains it all.
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- tools/lib/bpf/btf.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+> 
+> Existing hook is placed before regular listening/unconnected socket
+> lookup to prevent port hijacking on the unprivileged range.
+> 
 
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 9970a288dda5..d9c10830d749 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -858,6 +858,7 @@ static struct btf *btf_parse_elf(const char *path, struct btf *base_btf,
- 	Elf_Scn *scn = NULL;
- 	Elf *elf = NULL;
- 	GElf_Ehdr ehdr;
-+	size_t shstrndx;
- 
- 	if (elf_version(EV_CURRENT) == EV_NONE) {
- 		pr_warn("failed to init libelf for %s\n", path);
-@@ -882,7 +883,14 @@ static struct btf *btf_parse_elf(const char *path, struct btf *base_btf,
- 		pr_warn("failed to get EHDR from %s\n", path);
- 		goto done;
- 	}
--	if (!elf_rawdata(elf_getscn(elf, ehdr.e_shstrndx), NULL)) {
-+
-+	if (elf_getshdrstrndx(elf, &shstrndx)) {
-+		pr_warn("failed to get section names section index for %s\n",
-+			path);
-+		goto done;
-+	}
-+
-+	if (!elf_rawdata(elf_getscn(elf, shstrndx), NULL)) {
- 		pr_warn("failed to get e_shstrndx from %s\n", path);
- 		goto done;
- 	}
-@@ -897,7 +905,7 @@ static struct btf *btf_parse_elf(const char *path, struct btf *base_btf,
- 				idx, path);
- 			goto done;
- 		}
--		name = elf_strptr(elf, ehdr.e_shstrndx, sh.sh_name);
-+		name = elf_strptr(elf, shstrndx, sh.sh_name);
- 		if (!name) {
- 			pr_warn("failed to get section(%d) name from %s\n",
- 				idx, path);
--- 
-2.27.0
+Yes, from the point of view of the BPF program. However from the point 
+of view of a legitimate service listening on a port that might be 
+blocked by the BPF program, BPF is actually hijacking a port bind.
 
+That being said, if you install the BPF filter, you should know what you 
+are doing.
+
+>>> The suggestion above would work for my use case, but there is another
+>>> possibility to make the same use cases possible : implement in BPF 
+>>> (or
+>>> allow BPF to call) the C and E steps above so the BPF program can
+>>> supplant the kernel behavior. I find this solution less elegant and 
+>>> it
+>>> might not work well in case there are multiple inet_lookup BPF 
+>>> programs
+>>> installed.
+> 
+> Having a BPF helper available to BPF sk_lookup programs that looks up a
+> socket by packet 4-tuple and netns ID in tcp/udp hashtables sounds
+> reasonable to me. You gain the flexibility that you describe without
+> adding code on the hot path.
+
+True, if you consider that hot path should not be slowed down. It makes 
+sense. However, for me, it seems the implementation would be more 
+difficult.
+
+Looking at existing BPF helpers 
+<https://man7.org/linux/man-pages/man7/bpf-helpers.7.html> I found 
+bpf_sk_lookup_tcp and bpf_sk_lookup_ucp that should yield a socket from 
+a matching tuple and netns. If that's true and usable from within BPF 
+sk_lookup then it's just a matter of implementing it and the kernel is 
+already ready for such use cases.
+
+Shanti
