@@ -2,109 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B2DF2FECFD
-	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 15:36:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 116012FEE83
+	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 16:26:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731416AbhAUOfi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Jan 2021 09:35:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43277 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731413AbhAUOf1 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 21 Jan 2021 09:35:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611239640;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=srskRK3C1cQychsxFrYDRzsB8wxgSiF9DG6BTtAqebM=;
-        b=Am7qNcOOj6+9IWeP7HpT5QqV9h/9xwBZwqarJq1W7hldUYvwZzTUxMwdbOWY5GfBpsuleA
-        uZ7YQWbhGRCK4HzxLFMJrNHT/TAu/8gyCoT+I0cmuetDRcG9bIR80Ri9Tiqh7vBMz/9c3g
-        ANuS/7gRNyKwh7XY1uylP2qndEO6A90=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-596-v8YB5K79NAm--wR9SIWusA-1; Thu, 21 Jan 2021 09:33:56 -0500
-X-MC-Unique: v8YB5K79NAm--wR9SIWusA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CEB9CCE64B;
-        Thu, 21 Jan 2021 14:33:54 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7E21D6B540;
-        Thu, 21 Jan 2021 14:33:39 +0000 (UTC)
-Date:   Thu, 21 Jan 2021 15:33:38 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Hangbin Liu <liuhangbin@gmail.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org,
-        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
-        Jiri Benc <jbenc@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        David Ahern <dsahern@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        brouer@redhat.com
-Subject: Re: [PATCHv14 bpf-next 1/6] bpf: run devmap xdp_prog on flush
- instead of bulk enqueue
-Message-ID: <20210121153338.187a8fcd@carbon>
-In-Reply-To: <20210118100717.GF1421720@Leo-laptop-t470s>
-References: <20201221123505.1962185-1-liuhangbin@gmail.com>
-        <20210114142321.2594697-1-liuhangbin@gmail.com>
-        <20210114142321.2594697-2-liuhangbin@gmail.com>
-        <6004c0be660fd_2664208e8@john-XPS-13-9370.notmuch>
-        <20210118100717.GF1421720@Leo-laptop-t470s>
+        id S1732608AbhAUPYv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jan 2021 10:24:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40508 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731887AbhAUNYx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Jan 2021 08:24:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA44D206A3;
+        Thu, 21 Jan 2021 13:24:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611235453;
+        bh=JqP2Oo4Z9DKZhCgctkjTNeYNZJSQEIKDv2pP1IWf0zE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VIZSZUvHtcoqJlB/V7JgohFFpEJyjK4uTzSTyizBLQiVxJ5XGovq84oYLyUlIIaX8
+         F3EIw2VXNSHr6AstmAgmwx78xqhpHOq80k2Mvi8RTQflGCXNRSrYIrvDl3U44VEqzt
+         ZKNWVrKWkpTYQCxMeYAwxt5Eg+tdQBklu1UDB1p88df8kvyDoLAmld7Rybv/btQUUO
+         qy56gZsJnEJQkSiKx/6MIOpsTuMbRa7G65YTQzlf4pIBRtZ5DJBEaSOOn+T6o+Gzxo
+         i5GPMzB5JylIcNNVxoiFhdjD16aNwYa/eQK4orimopkbMUQGeeqDchPpcfxIsdmpsn
+         HhibZk1L3gg8A==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id CF3DF40513; Thu, 21 Jan 2021 10:24:10 -0300 (-03)
+Date:   Thu, 21 Jan 2021 10:24:10 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Giuliano Procida <gprocida@google.com>
+Cc:     dwarves@vger.kernel.org, kernel-team@android.com,
+        maennich@google.com, ast@kernel.org, andrii@kernel.org,
+        bpf@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH dwarves v2 2/3] btf_encoder: Improve error-handling
+ around objcopy
+Message-ID: <20210121132410.GZ12699@kernel.org>
+References: <20210118160139.1971039-1-gprocida@google.com>
+ <20210121113520.3603097-1-gprocida@google.com>
+ <20210121113520.3603097-3-gprocida@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210121113520.3603097-3-gprocida@google.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 18 Jan 2021 18:07:17 +0800
-Hangbin Liu <liuhangbin@gmail.com> wrote:
+Em Thu, Jan 21, 2021 at 11:35:19AM +0000, Giuliano Procida escreveu:
+> * Report the correct filename when objcopy fails.
+> * Unlink the temporary file on error.
 
-> On Sun, Jan 17, 2021 at 02:57:02PM -0800, John Fastabend wrote:
-> [...]
-> > It looks like we could embed xdp_buff in xdp_frame and then keep the metadata
-> > at the end.
-> > 
-> > Because you are working performance here wdyt? <- @Jesper as well.  
+Thanks, applied.
+
+- Arnaldo
+
+ 
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Giuliano Procida <gprocida@google.com>
+> ---
+>  libbtf.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
 > 
-> Leave this question to Jesper.
-
-The struct xdp_buff is larger than struct xdp_frame.  The size of
-xdp_frame matters. It is a reserved areas in top of the frame.
-An XDP BPF-program cannot access this area (and limit headroom grow).
-This is why this code works, as afterwards xdp_frame is still valid.
-Looking at the code xdp_update_frame_from_buff() we do seem to update
-more fields than actually needed.
-
-
-> > >  
-> > > -	sent = dev->netdev_ops->ndo_xdp_xmit(dev, bq->count, bq->q, flags);
-> > > +	if (unlikely(bq->xdp_prog)) {  
-> > 
-> > Whats the rational for making above unlikely()? Seems for users its not
-> > unlikely. Can you measure a performance increase/decrease here? I think
-> > its probably fine to just let compiler/prefetcher do its thing here. Or
-> > I'm not reading this right, but seems users of bq->xdp_prog would disagree
-> > on unlikely case?
-> > 
-> > Either way a comment might be nice to give us some insight in 6 months
-> > why we decided this is unlikely.  
+> diff --git a/libbtf.c b/libbtf.c
+> index 3709087..7552d8e 100644
+> --- a/libbtf.c
+> +++ b/libbtf.c
+> @@ -786,18 +786,19 @@ static int btf_elf__write(const char *filename, struct btf *btf)
+>  		if (write(fd, raw_btf_data, raw_btf_size) != raw_btf_size) {
+>  			fprintf(stderr, "%s: write of %d bytes to '%s' failed: %d!\n",
+>  				__func__, raw_btf_size, tmp_fn, errno);
+> -			goto out;
+> +			goto unlink;
+>  		}
+>  
+>  		snprintf(cmd, sizeof(cmd), "%s --add-section .BTF=%s %s",
+>  			 llvm_objcopy, tmp_fn, filename);
+>  		if (system(cmd)) {
+>  			fprintf(stderr, "%s: failed to add .BTF section to '%s': %d!\n",
+> -				__func__, tmp_fn, errno);
+> -			goto out;
+> +				__func__, filename, errno);
+> +			goto unlink;
+>  		}
+>  
+>  		err = 0;
+> +	unlink:
+>  		unlink(tmp_fn);
+>  	}
+>  
+> -- 
+> 2.30.0.296.g2bfb1c46d8-goog
 > 
-> I agree that there is no need to use unlikely() here.
-
-I added the unlikely() to preserve the baseline performance when not
-having the 2nd prog loaded.  But I'm fine with removing that.
 
 -- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
 
+- Arnaldo
