@@ -2,123 +2,156 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7940F2FF64C
-	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 21:49:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 966822FF68C
+	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 21:57:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727264AbhAUUso (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Jan 2021 15:48:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49678 "EHLO
+        id S1726963AbhAUU4Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jan 2021 15:56:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727248AbhAUUso (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Jan 2021 15:48:44 -0500
-X-Greylist: delayed 405 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 21 Jan 2021 12:48:03 PST
-Received: from ellomb.netlib.re (unknown [IPv6:2001:912:1480:10::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02848C061756;
-        Thu, 21 Jan 2021 12:48:02 -0800 (PST)
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by ellomb.netlib.re (Postfix) with ESMTPA id 0CDC94AC27C9;
-        Thu, 21 Jan 2021 20:40:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mildred.fr; s=dkim;
-        t=1611261621;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=y06bW3Z3IKJotzTvjRUlU+gfqobtqICfSf2t1S+NAoY=;
-        b=Kr+w7c1SNktsPjpd4t5UpDtPXGZwzilVK8xQwO1Jy95Ce0KoByz+dYu94YTeawg3LiPd3k
-        0StO31fcMF/h0NVTG0EtLy4aStY3WphimeGnD27Wd+zvqHYwEhiUxJGx7fSwNT1JdQb0gn
-        r7vPkDnlKXRg1TtOOHbhPjw1JW5T6pI=
+        with ESMTP id S1726320AbhAUUzs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Jan 2021 15:55:48 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C32FC0698C0;
+        Thu, 21 Jan 2021 12:53:48 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id z1so3387285ybr.4;
+        Thu, 21 Jan 2021 12:53:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2Nh9i0Rn2q2vM47aLvZ+VSaju+rMHG+d3GINmjhrKpU=;
+        b=sVOeg3A3D3RbLBXWWQ9qSYhy91SASnu0+4QfdNhpqo2lKIBDNM5AuUzHyue2ExtCZF
+         ytQ0iJMRnzsZ0fye3xflgRjMqGfZDUZ4PqF2uanO+xqH++3ePbU4FvXt4ljoQiKRNWds
+         7RmerZu+HlY/JNGRP9QCr4DIyKrb2l98bthlsMpfS4XvulIJTX9AvIrdxOmW+rdroPUo
+         hmjZ2Zpb1M1I9bP0fdceY+s23avVbDntAG3NudhGeylIf0HYls2fZfeThKH+rLAzOaMJ
+         nlnD6BNi29r4eScKy3CV8rrLEurfsyHCzuE09fi4n7hNwJVs1dKPwisuIlbNaiJmH7Iv
+         r7jQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2Nh9i0Rn2q2vM47aLvZ+VSaju+rMHG+d3GINmjhrKpU=;
+        b=CN1/vgjATXPPe+dcJXCUvADZK9i+lvh37g3FlCzd9eYOFJAUs7qR1rwrbXTVwKPppT
+         nNNR/wTdRMc7oYPbqsN0XGMbM+r7h087ubiXEwLsxZqUfvz9H4jVByUHXCIHt042l7KE
+         HScmzMiMk+EQsZK6sYihpRPsa2p/sdJQr+HAeg+v4ZUH/JQvQ65wyW8t1KHX4cKfNGWK
+         lu6KZAJCGoDlW1/wc8XBPuw58MoB0gyH9w9CEvrZWShOjyIzlWi8sYWnjxev6xBHf6v3
+         kvxsYO7GNbqBupfFcAXk8zQZO1zHxcI26r+UesZjbrALWm0PZMvzQkkx86Bh4zga0Qfp
+         +JFA==
+X-Gm-Message-State: AOAM5321t0ebwvbSHysByn5Pmp5Q3PPn4yCHKSUui9XlT/wlDSPUS+OB
+        lv6Xcb4BvNRGVc1lXY4zNnXWnfCIqA6vogBkqtQ=
+X-Google-Smtp-Source: ABdhPJxZKFbQtvIz8521cbPOPBiVn0VBuBUsuoaUH3IJcKihXdakxLSVKeB5ZNBzzA4TQAqCclAfxTmvpVxH2uHQ1lI=
+X-Received: by 2002:a25:b195:: with SMTP id h21mr1706483ybj.347.1611262427414;
+ Thu, 21 Jan 2021 12:53:47 -0800 (PST)
 MIME-Version: 1.0
-Date:   Thu, 21 Jan 2021 21:40:19 +0100
-From:   Shanti Lombard <shanti@mildred.fr>
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     =?UTF-8?Q?Shanti_Lombard_n=C3=A9e_Bouchez-Mongard=C3=A9?= 
-        <shanti20210120@mildred.fr>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>
-Subject: Re: More flexible BPF socket inet_lookup hooking after listening
- sockets are dispatched
-In-Reply-To: <87r1me4k4l.fsf@cloudflare.com>
-References: <afb4e544-d081-eee8-e792-a480364a6572@mildred.fr>
- <CAADnVQJnX-+9u--px_VnhrMTPB=O9Y0LH9T7RJbqzfLchbUFvg@mail.gmail.com>
- <87r1me4k4l.fsf@cloudflare.com>
-Message-ID: <e1fc896faf4ad913e0372bc30461b849@mildred.fr>
-X-Sender: shanti@mildred.fr
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=mildred.fr;
-        s=dkim; t=1611261621;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=y06bW3Z3IKJotzTvjRUlU+gfqobtqICfSf2t1S+NAoY=;
-        b=FdwPr/m5rtd7l8nJ/G+0HqzOn0UiMdB7VcoqiXkY4uim18WYvqthQMpeyAT5Tl3r6p1iol
-        qj9JPP7ybn0xp0QzS234VrOCRADk82KKI7sL6WxXzPIHiwJRUZIzk4vVGAvnWPGgfd0QzJ
-        lGFdqrgTAbPTgshR561F3Y4ms2lYk8c=
-ARC-Seal: i=1; s=dkim; d=mildred.fr; t=1611261622; a=rsa-sha256; cv=none;
-        b=lOi2zHzJ2Mw8cEAWmqzn10gTCO8SL4mRrvJw3pgzWh7G8u4e1Hy2Z/pOfJL/uRKz0o6iUn
-        SCJ65m9bn2fszv+7oiW7Ys8mf5kHEariixtui2+ikUoBVpgvdXz+3lTYSxDLQ8i/U1A/4i
-        QFt2Bn1XvWwDuk0yx+72B0xnbL4VYxk=
-ARC-Authentication-Results: i=1;
-        ellomb.netlib.re;
-        auth=pass smtp.auth=mildred@mildred.fr smtp.mailfrom=shanti@mildred.fr
-Authentication-Results: ellomb.netlib.re;
-        auth=pass smtp.auth=mildred@mildred.fr smtp.mailfrom=shanti@mildred.fr
-X-Spamd-Bar: /
+References: <20210112184004.1302879-1-jolsa@kernel.org> <f3790a7d-73bc-d634-5994-d049c7a73eae@redhat.com>
+ <20210121133825.GB12699@kernel.org> <CA+icZUVsdcTEJjwpB7=05W5-+roKf66qTwP+M6QJKTnuP6TOVQ@mail.gmail.com>
+In-Reply-To: <CA+icZUVsdcTEJjwpB7=05W5-+roKf66qTwP+M6QJKTnuP6TOVQ@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 21 Jan 2021 12:53:36 -0800
+Message-ID: <CAEf4BzaVAp=W47KmMsfpj_wuJR-Gvmav=tdKdoHKAC3AW-976w@mail.gmail.com>
+Subject: Re: [PATCH] btf_encoder: Add extra checks for symbol names
+To:     Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Tom Stellard <tstellar@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>, dwarves@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Hao Luo <haoluo@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Le 2021-01-21 12:14, Jakub Sitnicki a écrit :
-> On Wed, Jan 20, 2021 at 10:06 PM CET, Alexei Starovoitov wrote:
-> 
-> There is also documentation in the kernel:
-> 
-> https://www.kernel.org/doc/html/latest/bpf/prog_sk_lookup.html
-> 
+On Thu, Jan 21, 2021 at 8:09 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+>
+> On Thu, Jan 21, 2021 at 2:38 PM Arnaldo Carvalho de Melo
+> <arnaldo.melo@gmail.com> wrote:
+> >
+> > Em Tue, Jan 12, 2021 at 04:27:59PM -0800, Tom Stellard escreveu:
+> > > On 1/12/21 10:40 AM, Jiri Olsa wrote:
+> > > > When processing kernel image build by clang we can
+> > > > find some functions without the name, which causes
+> > > > pahole to segfault.
+> > > >
+> > > > Adding extra checks to make sure we always have
+> > > > function's name defined before using it.
+> > > >
+> > >
+> > > I backported this patch to pahole 1.19, and I can confirm it fixes the
+> > > segfault for me.
+> >
+> > I'm applying v2 for this patch and based on your above statement I'm
+> > adding a:
+> >
+> > Tested-by: Tom Stellard <tstellar@redhat.com>
+> >
+> > Ok?
+> >
+> > Who originally reported this?
+> >
+>
+> The origin was AFAICS the thread where I asked initially [1].
+>
+> Tom reported in the same thread in [2] that pahole segfaults.
+>
+> Later in the thread Jiri offered a draft of this patch after doing some tests.
+>
+> I have tested all diffs and v1 and v2 of Jiri's patch.
+> ( Anyway, latest pahole ToT plus Jiri's patch did not solve my origin problem. )
 
-Thank you, I saw it, it's well written and very much explains it all.
+Your original problem was with DWARF5 or DWARF4? I think you mentioned
+both at some point, but I remember I couldn't repro DWARF4 problems.
+If you still have problems, can you start a new thread with steps to
+repro (including Kconfig, tooling versions, etc). And one for each
+problem, no all at the same time, please. I honestly lost track of
+what's still not working among those multiple intertwined email
+threads, sorry about that.
 
-> 
-> Existing hook is placed before regular listening/unconnected socket
-> lookup to prevent port hijacking on the unprivileged range.
-> 
-
-Yes, from the point of view of the BPF program. However from the point 
-of view of a legitimate service listening on a port that might be 
-blocked by the BPF program, BPF is actually hijacking a port bind.
-
-That being said, if you install the BPF filter, you should know what you 
-are doing.
-
->>> The suggestion above would work for my use case, but there is another
->>> possibility to make the same use cases possible : implement in BPF 
->>> (or
->>> allow BPF to call) the C and E steps above so the BPF program can
->>> supplant the kernel behavior. I find this solution less elegant and 
->>> it
->>> might not work well in case there are multiple inet_lookup BPF 
->>> programs
->>> installed.
-> 
-> Having a BPF helper available to BPF sk_lookup programs that looks up a
-> socket by packet 4-tuple and netns ID in tcp/udp hashtables sounds
-> reasonable to me. You gain the flexibility that you describe without
-> adding code on the hot path.
-
-True, if you consider that hot path should not be slowed down. It makes 
-sense. However, for me, it seems the implementation would be more 
-difficult.
-
-Looking at existing BPF helpers 
-<https://man7.org/linux/man-pages/man7/bpf-helpers.7.html> I found 
-bpf_sk_lookup_tcp and bpf_sk_lookup_ucp that should yield a socket from 
-a matching tuple and netns. If that's true and usable from within BPF 
-sk_lookup then it's just a matter of implementing it and the kernel is 
-already ready for such use cases.
-
-Shanti
+>
+> So up to you Arnaldo for the credits.
+>
+> - Sedat -
+>
+> [1] https://marc.info/?t=161036949500004&r=1&w=2
+> [2] https://marc.info/?t=161036949500004&r=1&w=2
+>
+> > - Arnaldo
+> >
+> > > -Tom
+> > >
+> > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > > ---
+> > > >   btf_encoder.c | 8 ++++++--
+> > > >   1 file changed, 6 insertions(+), 2 deletions(-)
+> > > >
+> > > > diff --git a/btf_encoder.c b/btf_encoder.c
+> > > > index 333973054b61..17f7a14f2ef0 100644
+> > > > --- a/btf_encoder.c
+> > > > +++ b/btf_encoder.c
+> > > > @@ -72,6 +72,8 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym)
+> > > >     if (elf_sym__type(sym) != STT_FUNC)
+> > > >             return 0;
+> > > > +   if (!elf_sym__name(sym, btfe->symtab))
+> > > > +           return 0;
+> > > >     if (functions_cnt == functions_alloc) {
+> > > >             functions_alloc = max(1000, functions_alloc * 3 / 2);
+> > > > @@ -730,9 +732,11 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
+> > > >             if (!has_arg_names(cu, &fn->proto))
+> > > >                     continue;
+> > > >             if (functions_cnt) {
+> > > > -                   struct elf_function *func;
+> > > > +                   const char *name = function__name(fn, cu);
+> > > > +                   struct elf_function *func = NULL;
+> > > > -                   func = find_function(btfe, function__name(fn, cu));
+> > > > +                   if (name)
+> > > > +                           func = find_function(btfe, name);
+> > > >                     if (!func || func->generated)
+> > > >                             continue;
+> > > >                     func->generated = true;
+> > > >
+> > >
+> >
+> > --
+> >
+> > - Arnaldo
