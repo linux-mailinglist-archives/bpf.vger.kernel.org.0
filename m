@@ -2,109 +2,155 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 786BA2FDD88
-	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 01:02:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03FE22FDE83
+	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 02:12:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727395AbhAUABd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Jan 2021 19:01:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403800AbhATXTM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Jan 2021 18:19:12 -0500
-Received: from mail-io1-xd45.google.com (mail-io1-xd45.google.com [IPv6:2607:f8b0:4864:20::d45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1CCCC061343
-        for <bpf@vger.kernel.org>; Wed, 20 Jan 2021 15:09:24 -0800 (PST)
-Received: by mail-io1-xd45.google.com with SMTP id x189so358050iof.8
-        for <bpf@vger.kernel.org>; Wed, 20 Jan 2021 15:09:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=R7f0wyeTmA8SuzS7SzFRcl7d6pcYrpva5Er826cs0mk=;
-        b=BHNWcyKQCJ0PGY8RTK4gdKDzEGAtZoOiyrVRE+Vm6eiGeRM3rrhdXbllkmeBKJ67/R
-         QSqrlpr30Kv3QkuetMs/xzQ0omkAey48xmNeBw8YnVKLPAFn0fERL/0HJHAWNJBV60Es
-         6vmWox4SaHvRk/ONmMEW1l+61J/94SDYdd6GvTLUjtasvNjWF0JA3xnmeKrqETi4NHRH
-         jHN11soanu3Gu0q2sL1rBPeq9wdBuPx74ZLSw5oSWJ461r2RJ7ttRgo92GfIaB0QxaSH
-         KVideHm8+y1cHxGMf9r/39T1SeZLgKjyU0vpK0MbRGv0SM39eGdoyYMotKPDqiLNW9qM
-         0Q0A==
-X-Gm-Message-State: AOAM533RDb+J8Nc4iQMo0a6YgtJjlO5E4hcX6swubiJE6xUx55k4VoRw
-        kS7mAciAE5PV1YUM3nt8ONYjumM1b/pee9nMe8mgA1MWPC4S
-X-Google-Smtp-Source: ABdhPJxx2Xjf/dKON/ViEpmZc8PUt27XQ8dLVFZm99Cd4bahkiaTQz/OYrK11/5lcTf3YlyNrJDROGRVOWMdRKnpf8k2rzjcSkae
+        id S2392075AbhAUBKQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 20 Jan 2021 20:10:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44934 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729761AbhAUBIC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 20 Jan 2021 20:08:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7ADAC23888
+        for <bpf@vger.kernel.org>; Thu, 21 Jan 2021 01:07:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611191240;
+        bh=3UzDy2nXgtSa6ho90T2qncuWzvoUEPHExPkqD38R4Ew=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=VHDvimbhhqXA2/I2GMVhMse5/t1uSwFYvP+aMOG3CVeJYcacdq3R6PEpEaphB4Den
+         7J/ZYxPBNL6dCm7AY3WZGMPYYGoXnIBVyF28Md9CbKSA0h9FVSZ/fLX7Oo6eB44byI
+         EvRvcuwkuca/xnvl7ILFydLVV2nBe3coNzUV9OTvm7QA9SFAYFsthoKMZ7lDPOzg6l
+         NAWfE8KFwF6Svprhl8CYIqg7VqUKPV03Xr8zSScgey/k4jBCI/IE2UAOnzEi6CD3NY
+         J7Dn4qGHA4zaWCBTA2tw2r976z1vBkY5thMRWFMRY4t+y5+/Zq8XcSBTMpcWzYdK3P
+         Bn+EVvHulibzA==
+Received: by mail-lf1-f41.google.com with SMTP id a8so192706lfi.8
+        for <bpf@vger.kernel.org>; Wed, 20 Jan 2021 17:07:20 -0800 (PST)
+X-Gm-Message-State: AOAM530AqeRyQY1ze+rfpAwv05lHQldvYErTXYgpw0hjgBq1Py0KmYjw
+        suM7vOy73B4d749B9zoi2Tuszosku14cNmFcglmj5w==
+X-Google-Smtp-Source: ABdhPJw5YinYf+6xPQJd0MaHJu40SGVFmoepA+xXrCbImnDMgtwkgZjYJdHOgxHbrRZ4jZdIzkj/6/Kgvz1Dk1NFme0=
+X-Received: by 2002:a05:6512:398e:: with SMTP id j14mr5753976lfu.9.1611191238723;
+ Wed, 20 Jan 2021 17:07:18 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a92:c986:: with SMTP id y6mr10047061iln.125.1611184164069;
- Wed, 20 Jan 2021 15:09:24 -0800 (PST)
-Date:   Wed, 20 Jan 2021 15:09:24 -0800
-In-Reply-To: <000000000000c8dd4a05b828d04c@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c464f805b95d0bb2@google.com>
-Subject: Re: KASAN: vmalloc-out-of-bounds Read in bpf_trace_run7
-From:   syzbot <syzbot+fad5d91c7158ce568634@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org, mingo@redhat.com,
-        netdev@vger.kernel.org, rostedt@goodmis.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
+References: <20210118141955.2033747-1-kpsingh@kernel.org> <0d577037-769a-35fc-b07f-bba2cf2bd3d2@iogearbox.net>
+In-Reply-To: <0d577037-769a-35fc-b07f-bba2cf2bd3d2@iogearbox.net>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Thu, 21 Jan 2021 02:07:08 +0100
+X-Gmail-Original-Message-ID: <CACYkzJ7Ldpcc-2w3j7gPXu_ERZpqA_0sOpEOns6Uc0R8rGAvuA@mail.gmail.com>
+Message-ID: <CACYkzJ7Ldpcc-2w3j7gPXu_ERZpqA_0sOpEOns6Uc0R8rGAvuA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Helper script for running BPF presubmit tests
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Wed, Jan 20, 2021 at 3:01 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> On 1/18/21 3:19 PM, KP Singh wrote:
+> > The script runs the BPF selftests locally on the same kernel image
+> > as they would run post submit in the BPF continuous integration
+> > framework. The goal of the script is to run selftests locally in the
+> > same environment to check if their changes would end up breaking the
+> > BPF CI and reduce the back-and-forth between the maintainers and the
+> > developers.
+> >
+> > Signed-off-by: KP Singh <kpsingh@kernel.org>
+>
+> Looks really nice! I gave it a run, some minor feedback:
 
-HEAD commit:    7d68e382 bpf: Permit size-0 datasec
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1418c3c7500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e0c7843b8af99dff
-dashboard link: https://syzkaller.appspot.com/bug?extid=fad5d91c7158ce568634
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1224daa4d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13dfabd0d00000
+Thanks! :)
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+fad5d91c7158ce568634@syzkaller.appspotmail.com
+>
+> > ---
+> >   tools/testing/selftests/bpf/run_in_vm.sh | 346 +++++++++++++++++++++++
+> >   1 file changed, 346 insertions(+)
+> >   create mode 100755 tools/testing/selftests/bpf/run_in_vm.sh
+> >
+> > diff --git a/tools/testing/selftests/bpf/run_in_vm.sh b/tools/testing/selftests/bpf/run_in_vm.sh
+> > new file mode 100755
+> > index 000000000000..a4f28f5cdd52
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/run_in_vm.sh
+> > @@ -0,0 +1,346 @@
+> > +#!/bin/bash
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +
+> > +set -u
+> > +set -e
 
-==================================================================
-BUG: KASAN: vmalloc-out-of-bounds in __bpf_trace_run kernel/trace/bpf_trace.c:2088 [inline]
-BUG: KASAN: vmalloc-out-of-bounds in bpf_trace_run7+0x411/0x420 kernel/trace/bpf_trace.c:2130
-Read of size 8 at addr ffffc90000e5c030 by task syz-executor460/8508
+[...]
 
-CPU: 1 PID: 8508 Comm: syz-executor460 Not tainted 5.11.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0x5/0x2f8 mm/kasan/report.c:230
- __kasan_report mm/kasan/report.c:396 [inline]
- kasan_report.cold+0x79/0xd5 mm/kasan/report.c:413
- __bpf_trace_run kernel/trace/bpf_trace.c:2088 [inline]
- bpf_trace_run7+0x411/0x420 kernel/trace/bpf_trace.c:2130
- __bpf_trace_percpu_alloc_percpu+0x1dc/0x220 include/trace/events/percpu.h:10
- __traceiter_percpu_alloc_percpu+0x97/0xf0 include/trace/events/percpu.h:10
- trace_percpu_alloc_percpu include/trace/events/percpu.h:10 [inline]
- pcpu_alloc+0xba6/0x16f0 mm/percpu.c:1844
- bpf_prog_alloc+0x78/0x250 kernel/bpf/core.c:117
- bpf_prog_load+0x656/0x1f40 kernel/bpf/syscall.c:2152
- __do_sys_bpf+0x1251/0x4f00 kernel/bpf/syscall.c:4380
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x441659
-Code: e8 ac e8 ff ff 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 8b 09 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffebad746f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000441659
-RDX: 0000000000000078 RSI: 0000000020000200 RDI: 0000000000000005
-RBP: 000000000001191b R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000402470
-R13: 0000000000402500 R14: 0000000000000000 R15: 0000000000000000
+> > +
+> > +  KBUILD_OUTPUT=<path_relative_to_cwd> $0 -- ./test_progs -t test_lsm
+> > +
+> > +Options:
+> > +
+> > +     -k)             Recompile the kernel with the config for selftests.
+> > +     -i)             Update the rootfs image with a newer version.
+> > +     -d)             Update the output directory (default: ${OUTPUT_DIR})
+>
+> Probably best to have a small howto in tools/testing/selftests/bpf/README.rst for
+> people to have a 'getting started' point. Initially I forgot the -k, so VM paniced
+> on boot, but after that it was working great modulo a small change below.
 
+Makes sense, I totally forgot about the case when one already has a
+precompiled kernel
+and it does not work well with the image.
 
-Memory state around the buggy address:
- ffffc90000e5bf00: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
- ffffc90000e5bf80: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
->ffffc90000e5c000: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
-                                     ^
- ffffc90000e5c080: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
- ffffc90000e5c100: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
-==================================================================
+Will update the docs.
 
+>
+> [...]
+> > +main()
+> > +{
+> > +     local script_dir="$(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+> > +     local kernel_checkout=$(realpath "${script_dir}"/../../../../)
+> > +     local log_file="$(date +"bpf_selftests.%Y-%m-%d_%H-%M-%S.log")"
+
+[...]
+
+> > +             esac
+> > +     done
+> > +     shift $((OPTIND -1))
+> > +
+> > +     if [[ $# -eq 0 ]]; then
+> > +             echo "No command specified, will run ${DEFAULT_COMMAND} in the vm"
+> > +     else
+> > +             command="$@"
+> > +     fi
+> > +
+> > +     local kconfig_file="${OUTPUT_DIR}/latest.config"
+> > +     local make_command="make -j KCONFIG_CONFIG=${kconfig_file}"
+>
+> I had to fix/limit this locally to -j <num-cpus> as otherwise this was OOM killing
+> my box. make man page says 'if the -j option is given without an argument, make will
+> not limit the number of jobs that can run simultaneously.'
+
+I thought that -j without an option did something smart. I will update
+it to be -j `<num_cpus>`
+Thanks!
+
+>
+> > +
+> > +     # Figure out where the kernel is being built.
+> > +     # O takes precedence over KBUILD_OUTPUT.
+> > +     if [[ "${O:=""}" != "" ]]; then
+> > +             if is_rel_path "${O}"; then
+> > +                     O="$(realpath "${PWD}/${O}")"
+> > +             fi
+>
+> For future follow-up, would be amazing to auto-grab nightly build of llvm + pahole
+> as well. And even further out maybe also to allow cross-compilation + testing on
+> other archs. :)
+
+Indeed, these are definitely on the radar :)
+
+- KP
+
+>
+> Thanks,
+> Daniel
