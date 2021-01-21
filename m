@@ -2,127 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 951192FF1C8
-	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 18:25:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C9322FF227
+	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 18:40:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388768AbhAURYy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Jan 2021 12:24:54 -0500
-Received: from mga14.intel.com ([192.55.52.115]:57783 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388758AbhAURYo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Jan 2021 12:24:44 -0500
-IronPort-SDR: rtiQ39BNacDDXYG89UWI7VdiF2QCUFdED8Bu9BQv6Ewd6TxWrs9ExSKqroGKEmO59uf0NuHQ+E
- W/k4N0V4h0ag==
-X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="178527918"
-X-IronPort-AV: E=Sophos;i="5.79,364,1602572400"; 
-   d="scan'208";a="178527918"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 09:23:59 -0800
-IronPort-SDR: /OujRDvzmBuHXUOqqf+jMYfr6/R1+gaos5+YvGZEXGrFqFw/f5WG8o4e+tdUU3hg0pRvXlmE/l
- WKRkVu7m5R3A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,364,1602572400"; 
-   d="scan'208";a="366989002"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by orsmga002.jf.intel.com with ESMTP; 21 Jan 2021 09:23:55 -0800
-Date:   Thu, 21 Jan 2021 18:14:23 +0100
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
-Cc:     Ivan Babrou <ivan@cloudflare.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@cloudflare.com, Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>
-Subject: Re: [PATCH net-next] sfc: reduce the number of requested xdp ev
- queues
-Message-ID: <20210121171423.GB44125@ranger.igk.intel.com>
-References: <20210120212759.81548-1-ivan@cloudflare.com>
- <20210121181130.77c06723@carbon>
+        id S2388962AbhAURkC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jan 2021 12:40:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58395 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388679AbhAURjU (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 21 Jan 2021 12:39:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611250674;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=o1FCC9aTTTpRBcA3pp6nQ37fIcYQdAIptoZQSIyVfbI=;
+        b=WKrVfjEDWkFw4dHgOquQKfWxxLzD4O7p1SsSWfLnDkfhK+U4Y5TBQRfyvU6I1Greqy46OJ
+        BiIr8TpxqX29h2jgRihA7OPrisy1dc1Hzurju7PIKHNbO7b+gZwtSD6XmE2Yk9GVIS6L4L
+        lrjRvv++lX3osgG9iYPqBwu/oHPhrcg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-63-ZwFYkS03PIq2IRgjQk-2gg-1; Thu, 21 Jan 2021 12:37:49 -0500
+X-MC-Unique: ZwFYkS03PIq2IRgjQk-2gg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 92DC4190B2A1;
+        Thu, 21 Jan 2021 17:37:47 +0000 (UTC)
+Received: from tstellar.remote.csb (ovpn-114-198.phx2.redhat.com [10.3.114.198])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CCA2239A60;
+        Thu, 21 Jan 2021 17:37:46 +0000 (UTC)
+Reply-To: tstellar@redhat.com
+Subject: Re: [PATCH] btf_encoder: Add extra checks for symbol names
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>, dwarves@vger.kernel.org,
+        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Hao Luo <haoluo@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>
+References: <20210112184004.1302879-1-jolsa@kernel.org>
+ <f3790a7d-73bc-d634-5994-d049c7a73eae@redhat.com>
+ <20210121133825.GB12699@kernel.org>
+From:   Tom Stellard <tstellar@redhat.com>
+Organization: Red Hat
+Message-ID: <9624a879-eed1-5f04-f205-71500f85e6b0@redhat.com>
+Date:   Thu, 21 Jan 2021 09:37:46 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210121181130.77c06723@carbon>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <20210121133825.GB12699@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 06:11:30PM +0100, Jesper Dangaard Brouer wrote:
-> On Wed, 20 Jan 2021 13:27:59 -0800
-> Ivan Babrou <ivan@cloudflare.com> wrote:
+On 1/21/21 5:38 AM, Arnaldo Carvalho de Melo wrote:
+> Em Tue, Jan 12, 2021 at 04:27:59PM -0800, Tom Stellard escreveu:
+>> On 1/12/21 10:40 AM, Jiri Olsa wrote:
+>>> When processing kernel image build by clang we can
+>>> find some functions without the name, which causes
+>>> pahole to segfault.
+>>>
+>>> Adding extra checks to make sure we always have
+>>> function's name defined before using it.
+>>>
+>>
+>> I backported this patch to pahole 1.19, and I can confirm it fixes the
+>> segfault for me.
 > 
-> > Without this change the driver tries to allocate too many queues,
-> > breaching the number of available msi-x interrupts on machines
-> > with many logical cpus and default adapter settings:
-> > 
-> > Insufficient resources for 12 XDP event queues (24 other channels, max 32)
-> > 
-> > Which in turn triggers EINVAL on XDP processing:
-> > 
-> > sfc 0000:86:00.0 ext0: XDP TX failed (-22)
+> I'm applying v2 for this patch and based on your above statement I'm
+> adding a:
+> 
+> Tested-by: Tom Stellard <tstellar@redhat.com>
+> 
+> Ok?
+> 
 
-Please mention in commit message *how* you are addressing/fixing this
-issue.
+Yes, this is fine.  I also backported the v2 patch and tested it and it
+fixed the issue.
 
-> > 
-> > Signed-off-by: Ivan Babrou <ivan@cloudflare.com>
-> > ---
-> 
-> I guess the patch is good in itself due to available msi-x interrupts.
-> 
-> Per earlier discussion: What will happen if a CPU with an ID higher
-> than available XDP TX-queues redirect a packet out this driver?
+-Tom
 
-+1 on that question
+> Who originally reported this?
+> 
+> - Arnaldo
+>   
+>> -Tom
+>>
+>>> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+>>> ---
+>>>    btf_encoder.c | 8 ++++++--
+>>>    1 file changed, 6 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/btf_encoder.c b/btf_encoder.c
+>>> index 333973054b61..17f7a14f2ef0 100644
+>>> --- a/btf_encoder.c
+>>> +++ b/btf_encoder.c
+>>> @@ -72,6 +72,8 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym)
+>>>    	if (elf_sym__type(sym) != STT_FUNC)
+>>>    		return 0;
+>>> +	if (!elf_sym__name(sym, btfe->symtab))
+>>> +		return 0;
+>>>    	if (functions_cnt == functions_alloc) {
+>>>    		functions_alloc = max(1000, functions_alloc * 3 / 2);
+>>> @@ -730,9 +732,11 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
+>>>    		if (!has_arg_names(cu, &fn->proto))
+>>>    			continue;
+>>>    		if (functions_cnt) {
+>>> -			struct elf_function *func;
+>>> +			const char *name = function__name(fn, cu);
+>>> +			struct elf_function *func = NULL;
+>>> -			func = find_function(btfe, function__name(fn, cu));
+>>> +			if (name)
+>>> +				func = find_function(btfe, name);
+>>>    			if (!func || func->generated)
+>>>    				continue;
+>>>    			func->generated = true;
+>>>
+>>
+> 
 
-> 
-> 
-> >  drivers/net/ethernet/sfc/efx_channels.c | 6 ++++--
-> >  1 file changed, 4 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/net/ethernet/sfc/efx_channels.c b/drivers/net/ethernet/sfc/efx_channels.c
-> > index a4a626e9cd9a..1bfeee283ea9 100644
-> > --- a/drivers/net/ethernet/sfc/efx_channels.c
-> > +++ b/drivers/net/ethernet/sfc/efx_channels.c
-> > @@ -17,6 +17,7 @@
-> >  #include "rx_common.h"
-> >  #include "nic.h"
-> >  #include "sriov.h"
-> > +#include "workarounds.h"
-> >  
-> >  /* This is the first interrupt mode to try out of:
-> >   * 0 => MSI-X
-> > @@ -137,6 +138,7 @@ static int efx_allocate_msix_channels(struct efx_nic *efx,
-> >  {
-> >  	unsigned int n_channels = parallelism;
-> >  	int vec_count;
-> > +	int tx_per_ev;
-> >  	int n_xdp_tx;
-> >  	int n_xdp_ev;
-> >  
-> > @@ -149,9 +151,9 @@ static int efx_allocate_msix_channels(struct efx_nic *efx,
-> >  	 * multiple tx queues, assuming tx and ev queues are both
-> >  	 * maximum size.
-> >  	 */
-> > -
-> > +	tx_per_ev = EFX_MAX_EVQ_SIZE / EFX_TXQ_MAX_ENT(efx);
-> >  	n_xdp_tx = num_possible_cpus();
-> > -	n_xdp_ev = DIV_ROUND_UP(n_xdp_tx, EFX_MAX_TXQ_PER_CHANNEL);
-> > +	n_xdp_ev = DIV_ROUND_UP(n_xdp_tx, tx_per_ev);
-> >  
-> >  	vec_count = pci_msix_vec_count(efx->pci_dev);
-> >  	if (vec_count < 0)
-> 
-> 
-> 
-> -- 
-> Best regards,
->   Jesper Dangaard Brouer
->   MSc.CS, Principal Kernel Engineer at Red Hat
->   LinkedIn: http://www.linkedin.com/in/brouer
-> 
