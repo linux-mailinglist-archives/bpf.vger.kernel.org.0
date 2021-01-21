@@ -2,138 +2,198 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE0542FE42F
-	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 08:42:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B96FE2FE4A9
+	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 09:11:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727534AbhAUHkh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Jan 2021 02:40:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48680 "EHLO
+        id S1726580AbhAUIJe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jan 2021 03:09:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727401AbhAUHkQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Jan 2021 02:40:16 -0500
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92F22C061575;
-        Wed, 20 Jan 2021 23:39:36 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id x78so1140512ybe.11;
-        Wed, 20 Jan 2021 23:39:36 -0800 (PST)
+        with ESMTP id S1726540AbhAUIJX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Jan 2021 03:09:23 -0500
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE8F3C061575;
+        Thu, 21 Jan 2021 00:08:42 -0800 (PST)
+Received: by mail-yb1-xb2b.google.com with SMTP id y4so1249026ybn.3;
+        Thu, 21 Jan 2021 00:08:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=8/Qs+LIYozRQBaZzt7plrZI8EEeLdzE+oyXQd9hZHQA=;
-        b=vGcE306V5zNAqKhlLk64OTHHpdU/koNggfFasdYXILHtg7/C/1Tbjpmr2jMOEg0Nzy
-         Yu37YSMkfcNr645mv/TNpJt0hM3Hpw8hz/CussyzRk2tD58cjSc/ypZDEtW6SmlTZnSw
-         T3TTCp9oSkV2G/58hgWeQHYu58RwZms2aIbrxqB93yP7AEsEyRcNegBI24OAU71sI9Dy
-         Xz/d7rKQKjb8VBAPYdFFJdE/u0KEulKf5sb3Q+uFV3ZCoUQqt3P5GqDNd2m1h052YLDA
-         QXZy8pQNWiCBiO3kSPnHt+svMDfmV8Q/YzwNHxnFnaEm40Xl1Mly6REjCZMSYm26Jt9K
-         Hd/g==
+         :cc;
+        bh=oobkTWZTECnkORfzKz+9DkXYOma+YaOrTTEwIwnDNH8=;
+        b=i68+xYFE4asEvnU0olUlCe9tm+PQeJevoOK4wTwadHBtORItM9WdTOu3uY3Bq7VHqv
+         dA7npENVOBzKBYblDVhbIZshaWW517HKXnRNYSo+0qDYCuuzci3PCUNAnNDaUyNXLhGy
+         900VrPprFcyGvqkf30hguRWP7jzA6p97etS34BxEKlDZihKgvjuTIxMycXpnQAVp7Z0J
+         8H0kQdakt7vAwP/MVSocmyPzpQe25pTKe6F2vBpJkcasQu9NqoFX9AyTJZFFSesThba1
+         G84Uf0HoL3ZQE1s13G1OVpBEqrQXNOHpGZnPzu3wy8JukWjWIp3Q3ClcEPZ1BT7EzV5c
+         8tBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=8/Qs+LIYozRQBaZzt7plrZI8EEeLdzE+oyXQd9hZHQA=;
-        b=l91gXYN3sqfxxFdBszO+oVBFwwtPKB1Mm7uJSxBxoje/HI1kXRycYJaMLGZ/jEm+n3
-         MNDkDRcNPVwAF7SGX1YaCdaUDrtiA2GR6cuGcptW/dKBBreqy21vEfjy8egJbVnnHj78
-         hkYsNIj/V98HwtqJWBGuLO0pTMYZnDJ7i8hM+DpvLopH1IS+Xeyu218jh6EbqQrWNAZP
-         +o3XyYnfnErHW9xt00sXJGpyOv2VKcJ7I16MWs/oVT8SGO5Kycavq7gq3KLj1a2geK3E
-         qopBozyr4CgN0ufUMkN9g+TQfWnBFeyArq3bKayNYYKdwUYC5ITvqRk/x/MRGNMYGTSE
-         /A2Q==
-X-Gm-Message-State: AOAM530cH9D+/zkok/S75pUunhuHasLbDV3mR/kcOoUX9MvsPkESAi8s
-        /B7kssvQvQ7M6GCmkkc0CRF1ONDE4WuVjAOoozrm6fJuv6M=
-X-Google-Smtp-Source: ABdhPJzw6UlLjC/wQFMrQ4yJ8ofwrZkM/W9C4rvFWoi7V44Wji1Mj2zUyGqVNOfq86AIRCRAYxumqXX0StoWGdYXbiI=
-X-Received: by 2002:a25:d6d0:: with SMTP id n199mr18707086ybg.27.1611214775780;
- Wed, 20 Jan 2021 23:39:35 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=oobkTWZTECnkORfzKz+9DkXYOma+YaOrTTEwIwnDNH8=;
+        b=PI2tF0luH2xyiElgtPJikueG/slWIqicgT4EOEIggi6QLcEuzP9S3Rwjep3cKq686h
+         lhTAROPxwAfmCz611IptZ3tORL/fOcRv+Jzxi+Q3+5rqlT+JPd7PtbeCVDY9nFaQ5keY
+         UoTWRRCaasA7Xi2REHN5aKhjGlCbIgKyOu9fUyD6AAv+zDQz8RkOb1aT8FKnFr12Kayz
+         djQ5X7eT8Vc4dbTTibAMTppE5689Ub3AfCwX3wNu5EtaXkw+eAvK/S2qjMKB/nchnMY3
+         sRaAzDTGOIkV9j7beaA6A6iFoADoVP3DXtPlUjw9LQKTAn1uO92m3Df8uLODghC/oyde
+         u8PA==
+X-Gm-Message-State: AOAM533VWjZBYMAtXFq4Vh90Uqp5ZwEmVj31ILy2xc3IEsone+Cm5j2Y
+        3aGm4gisbPcItAg0oKx6NMK/MuTVORTQs0o0HZs=
+X-Google-Smtp-Source: ABdhPJxG8Bi2XnJu4M8KQmv8sjAuegcaeBsgG0qbt4gbRNdj6iO5SpOSyz7xInQJefus+Y7leeCfTIfV0h5Sv6CDamg=
+X-Received: by 2002:a25:854a:: with SMTP id f10mr17694912ybn.510.1611216522128;
+ Thu, 21 Jan 2021 00:08:42 -0800 (PST)
 MIME-Version: 1.0
-References: <20210119155013.154808-1-bjorn.topel@gmail.com> <20210119155013.154808-8-bjorn.topel@gmail.com>
-In-Reply-To: <20210119155013.154808-8-bjorn.topel@gmail.com>
+References: <1611206855-22555-1-git-send-email-yangtiezhu@loongson.cn> <20210121053627.GA1680146@ubuntu-m3-large-x86>
+In-Reply-To: <20210121053627.GA1680146@ubuntu-m3-large-x86>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 20 Jan 2021 23:39:25 -0800
-Message-ID: <CAEf4BzYaV+zA8tEX2xVyA7EeDw1_aQMUQHq8_RHNe=ZfnQWTQw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 7/8] selftest/bpf: add XDP socket tests for
- bpf_redirect_{xsk, map}()
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Thu, 21 Jan 2021 00:08:31 -0800
+Message-ID: <CAEf4BzbZxuy8LRmngRzLZ3VTnrDw=Rf70Ghkbu1a5+fNpQud5Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3] samples/bpf: Update build procedure for
+ manually compiling LLVM and Clang
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>, maximmi@nvidia.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        john fastabend <john.fastabend@gmail.com>,
-        ciara.loftus@intel.com, weqaar.a.janjua@intel.com
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Fangrui Song <maskray@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 7:55 AM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.co=
-m> wrote:
+On Wed, Jan 20, 2021 at 9:36 PM Nathan Chancellor
+<natechancellor@gmail.com> wrote:
 >
-> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+> On Thu, Jan 21, 2021 at 01:27:35PM +0800, Tiezhu Yang wrote:
+> > The current LLVM and Clang build procedure in samples/bpf/README.rst is
+> > out of date. See below that the links are not accessible any more.
+> >
+> > $ git clone http://llvm.org/git/llvm.git
+> > Cloning into 'llvm'...
+> > fatal: unable to access 'http://llvm.org/git/llvm.git/': Maximum (20) redirects followed
+> > $ git clone --depth 1 http://llvm.org/git/clang.git
+> > Cloning into 'clang'...
+> > fatal: unable to access 'http://llvm.org/git/clang.git/': Maximum (20) redirects followed
+> >
+> > The LLVM community has adopted new ways to build the compiler. There are
+> > different ways to build LLVM and Clang, the Clang Getting Started page [1]
+> > has one way. As Yonghong said, it is better to copy the build procedure
+> > in Documentation/bpf/bpf_devel_QA.rst to keep consistent.
+> >
+> > I verified the procedure and it is proved to be feasible, so we should
+> > update README.rst to reflect the reality. At the same time, update the
+> > related comment in Makefile.
+> >
+> > Additionally, as Fangrui said, the dir llvm-project/llvm/build/install is
+> > not used, BUILD_SHARED_LIBS=OFF is the default option [2], so also change
+> > Documentation/bpf/bpf_devel_QA.rst together.
+> >
+> > [1] https://clang.llvm.org/get_started.html
+> > [2] https://www.llvm.org/docs/CMake.html
+> >
+> > Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> > Acked-by: Yonghong Song <yhs@fb.com>
 >
-> Add support for externally loaded XDP programs to
-> xdpxceiver/test_xsk.sh, so that bpf_redirect_xsk() and
-> bpf_redirect_map() can be exercised.
+> Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
 >
-> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
-> ---
->  .../selftests/bpf/progs/xdpxceiver_ext1.c     | 15 ++++
->  .../selftests/bpf/progs/xdpxceiver_ext2.c     |  9 +++
->  tools/testing/selftests/bpf/test_xsk.sh       | 48 ++++++++++++
->  tools/testing/selftests/bpf/xdpxceiver.c      | 77 ++++++++++++++++++-
->  tools/testing/selftests/bpf/xdpxceiver.h      |  2 +
->  5 files changed, 147 insertions(+), 4 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/progs/xdpxceiver_ext1.c
->  create mode 100644 tools/testing/selftests/bpf/progs/xdpxceiver_ext2.c
+> Small comment below.
 >
-> diff --git a/tools/testing/selftests/bpf/progs/xdpxceiver_ext1.c b/tools/=
-testing/selftests/bpf/progs/xdpxceiver_ext1.c
-> new file mode 100644
-> index 000000000000..18894040cca6
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/xdpxceiver_ext1.c
-> @@ -0,0 +1,15 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +
-> +struct {
-> +       __uint(type, BPF_MAP_TYPE_XSKMAP);
-> +       __uint(max_entries, 32);
-> +       __uint(key_size, sizeof(int));
-> +       __uint(value_size, sizeof(int));
-> +} xsks_map SEC(".maps");
-> +
-> +SEC("xdp_sock") int xdp_sock_prog(struct xdp_md *ctx)
+> > ---
+> >
+> > v2: Update the commit message suggested by Yonghong,
+> >     thank you very much.
+> >
+> > v3: Remove the default option BUILD_SHARED_LIBS=OFF
+> >     and just mkdir llvm-project/llvm/build suggested
+> >     by Fangrui.
+> >
+> >  Documentation/bpf/bpf_devel_QA.rst |  3 +--
+> >  samples/bpf/Makefile               |  2 +-
+> >  samples/bpf/README.rst             | 16 +++++++++-------
+> >  3 files changed, 11 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/Documentation/bpf/bpf_devel_QA.rst b/Documentation/bpf/bpf_devel_QA.rst
+> > index 5b613d2..18788bb 100644
+> > --- a/Documentation/bpf/bpf_devel_QA.rst
+> > +++ b/Documentation/bpf/bpf_devel_QA.rst
+> > @@ -506,11 +506,10 @@ that set up, proceed with building the latest LLVM and clang version
+> >  from the git repositories::
+> >
+> >       $ git clone https://github.com/llvm/llvm-project.git
+> > -     $ mkdir -p llvm-project/llvm/build/install
+> > +     $ mkdir -p llvm-project/llvm/build
+> >       $ cd llvm-project/llvm/build
+> >       $ cmake .. -G "Ninja" -DLLVM_TARGETS_TO_BUILD="BPF;X86" \
+> >                  -DLLVM_ENABLE_PROJECTS="clang"    \
+> > -                -DBUILD_SHARED_LIBS=OFF           \
+> >                  -DCMAKE_BUILD_TYPE=Release        \
+> >                  -DLLVM_BUILD_RUNTIME=OFF
+> >       $ ninja
+> > diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+> > index 26fc96c..d061446 100644
+> > --- a/samples/bpf/Makefile
+> > +++ b/samples/bpf/Makefile
+> > @@ -208,7 +208,7 @@ TPROGLDLIBS_xdpsock               += -pthread -lcap
+> >  TPROGLDLIBS_xsk_fwd          += -pthread
+> >
+> >  # Allows pointing LLC/CLANG to a LLVM backend with bpf support, redefine on cmdline:
+> > -#  make M=samples/bpf/ LLC=~/git/llvm/build/bin/llc CLANG=~/git/llvm/build/bin/clang
+> > +# make M=samples/bpf LLC=~/git/llvm-project/llvm/build/bin/llc CLANG=~/git/llvm-project/llvm/build/bin/clang
+> >  LLC ?= llc
+> >  CLANG ?= clang
+> >  OPT ?= opt
+> > diff --git a/samples/bpf/README.rst b/samples/bpf/README.rst
+> > index dd34b2d..23006cb 100644
+> > --- a/samples/bpf/README.rst
+> > +++ b/samples/bpf/README.rst
+> > @@ -65,17 +65,19 @@ To generate a smaller llc binary one can use::
+> >  Quick sniplet for manually compiling LLVM and clang
+> >  (build dependencies are cmake and gcc-c++)::
+>
+> Technically, ninja is now a build dependency as well, it might be worth
+> mentioning that here (usually the package is ninja or ninja-build).
 
-hmm.. that's unconventional... please keep SEC() on separate line
+it's possible to generate Makefile by passing `-g "Unix Makefiles"`,
+which would avoid dependency on ninja, no?
 
-> +{
-> +       return bpf_redirect_map(&xsks_map, ctx->rx_queue_index, XDP_DROP)=
-;
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/xdpxceiver_ext2.c b/tools/=
-testing/selftests/bpf/progs/xdpxceiver_ext2.c
-> new file mode 100644
-> index 000000000000..bd239b958c01
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/xdpxceiver_ext2.c
-> @@ -0,0 +1,9 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +
-> +SEC("xdp_sock") int xdp_sock_prog(struct xdp_md *ctx)
-
-same here
-
-> +{
-> +       return bpf_redirect_xsk(ctx, XDP_DROP);
-> +}
-> +
-
-[...]
+>
+> Regardless of whether that is addressed or not (because it is small),
+> feel free to carry forward my tag in any future revisions unless they
+> drastically change.
+>
+> > - $ git clone http://llvm.org/git/llvm.git
+> > - $ cd llvm/tools
+> > - $ git clone --depth 1 http://llvm.org/git/clang.git
+> > - $ cd ..; mkdir build; cd build
+> > - $ cmake .. -DLLVM_TARGETS_TO_BUILD="BPF;X86"
+> > - $ make -j $(getconf _NPROCESSORS_ONLN)
+> > + $ git clone https://github.com/llvm/llvm-project.git
+> > + $ mkdir -p llvm-project/llvm/build
+> > + $ cd llvm-project/llvm/build
+> > + $ cmake .. -G "Ninja" -DLLVM_TARGETS_TO_BUILD="BPF;X86" \
+> > +            -DLLVM_ENABLE_PROJECTS="clang"    \
+> > +            -DCMAKE_BUILD_TYPE=Release        \
+> > +            -DLLVM_BUILD_RUNTIME=OFF
+> > + $ ninja
+> >
+> >  It is also possible to point make to the newly compiled 'llc' or
+> >  'clang' command via redefining LLC or CLANG on the make command line::
+> >
+> > - make M=samples/bpf LLC=~/git/llvm/build/bin/llc CLANG=~/git/llvm/build/bin/clang
+> > + make M=samples/bpf LLC=~/git/llvm-project/llvm/build/bin/llc CLANG=~/git/llvm-project/llvm/build/bin/clang
+> >
+> >  Cross compiling samples
+> >  -----------------------
+> > --
+> > 2.1.0
+> >
