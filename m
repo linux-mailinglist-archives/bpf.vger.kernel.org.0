@@ -2,104 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C719E2FE419
-	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 08:39:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE0542FE42F
+	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 08:42:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726896AbhAUHhg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Jan 2021 02:37:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46594 "EHLO
+        id S1727534AbhAUHkh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jan 2021 02:40:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727485AbhAUHab (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Jan 2021 02:30:31 -0500
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80018C061575
-        for <bpf@vger.kernel.org>; Wed, 20 Jan 2021 23:29:51 -0800 (PST)
-Received: by mail-yb1-xb31.google.com with SMTP id y128so1125356ybf.10
-        for <bpf@vger.kernel.org>; Wed, 20 Jan 2021 23:29:51 -0800 (PST)
+        with ESMTP id S1727401AbhAUHkQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Jan 2021 02:40:16 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92F22C061575;
+        Wed, 20 Jan 2021 23:39:36 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id x78so1140512ybe.11;
+        Wed, 20 Jan 2021 23:39:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U2IIBoec++FArkM6Ylno31PXWIl3x7Y0Tu7x92k8Kbs=;
-        b=T0PV0FLty0LlKSS0BaK+bxdUpvS2DLnjfSgRQKftP3jQgN/q5PmUqWug/iyyDoosun
-         F0Hn9XNpaRaF5nMuGOw4jNoTsyeQo1Rt+at6mooRU0SxfYeXI7qZbmLP4DG0rFa68sCH
-         XGySony2p6DWAEfNhAV39exE6oLvxMoug2jxQyRPXLEzXvrO5sj1K/pXdPlI7X4lLMvM
-         hmUWQFS7BJKzKoQrty1tGICe7Q5m0FlwVcAWMVjLlNKbEG5v8JIwnS/cG4aOXbDFD6WF
-         NyimTikvRR2+HanhOh71hnjRR2ShMMhsQ3H9tsGWJSP94dhSRL5aD90ClMIPfy5RPfcL
-         fBug==
+         :cc:content-transfer-encoding;
+        bh=8/Qs+LIYozRQBaZzt7plrZI8EEeLdzE+oyXQd9hZHQA=;
+        b=vGcE306V5zNAqKhlLk64OTHHpdU/koNggfFasdYXILHtg7/C/1Tbjpmr2jMOEg0Nzy
+         Yu37YSMkfcNr645mv/TNpJt0hM3Hpw8hz/CussyzRk2tD58cjSc/ypZDEtW6SmlTZnSw
+         T3TTCp9oSkV2G/58hgWeQHYu58RwZms2aIbrxqB93yP7AEsEyRcNegBI24OAU71sI9Dy
+         Xz/d7rKQKjb8VBAPYdFFJdE/u0KEulKf5sb3Q+uFV3ZCoUQqt3P5GqDNd2m1h052YLDA
+         QXZy8pQNWiCBiO3kSPnHt+svMDfmV8Q/YzwNHxnFnaEm40Xl1Mly6REjCZMSYm26Jt9K
+         Hd/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U2IIBoec++FArkM6Ylno31PXWIl3x7Y0Tu7x92k8Kbs=;
-        b=NVtg+7teWXzZZZVmJOMWeSyTgb3EFhTWsMxbpY9gpQNy9ccrppu0Cmb+IYeYrvH9tT
-         6Y8lnWUphtOyLafu0lvZDbnOaN+SdOc2bzZsoLPi4udyKJOvij76xWPCbn38MTPyoQAP
-         E1kUwBaoShPqgtYPZxGm4HWANHPCJpY5CdSEbjiyeA2DzI3zXNxjY5g/AB8Ez6wljM0x
-         /z38KakUysWcpX9iBwQtkl7XFp8pukdMHWzYZiga2P6ZuNTWqzQBRiLFZMUvxQHqFXT1
-         gxyp0U3PgTI73QqhPymF4zEvUgVsE77hg8fugX5QpqHw6knepA3oT9Ztp4hvcQTXzHpV
-         ihBw==
-X-Gm-Message-State: AOAM531fS1H5rV5mThPrMWJSXwqd+FufTBwVdgp1t/FKsP2bNGvWdrXF
-        uBv5JNYO+1siO77b/cXjWOyEX5X2+fP7Gl6sC6c=
-X-Google-Smtp-Source: ABdhPJyCZ1f4F22zcIkzr/lSikpWDWBsjb1gQfJh1QfYcibhUg9G7OGo6cNAM/0ydb8THNDTVA1NVj5kIJot6ybu2Sc=
-X-Received: by 2002:a25:a183:: with SMTP id a3mr13997172ybi.459.1611214190863;
- Wed, 20 Jan 2021 23:29:50 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=8/Qs+LIYozRQBaZzt7plrZI8EEeLdzE+oyXQd9hZHQA=;
+        b=l91gXYN3sqfxxFdBszO+oVBFwwtPKB1Mm7uJSxBxoje/HI1kXRycYJaMLGZ/jEm+n3
+         MNDkDRcNPVwAF7SGX1YaCdaUDrtiA2GR6cuGcptW/dKBBreqy21vEfjy8egJbVnnHj78
+         hkYsNIj/V98HwtqJWBGuLO0pTMYZnDJ7i8hM+DpvLopH1IS+Xeyu218jh6EbqQrWNAZP
+         +o3XyYnfnErHW9xt00sXJGpyOv2VKcJ7I16MWs/oVT8SGO5Kycavq7gq3KLj1a2geK3E
+         qopBozyr4CgN0ufUMkN9g+TQfWnBFeyArq3bKayNYYKdwUYC5ITvqRk/x/MRGNMYGTSE
+         /A2Q==
+X-Gm-Message-State: AOAM530cH9D+/zkok/S75pUunhuHasLbDV3mR/kcOoUX9MvsPkESAi8s
+        /B7kssvQvQ7M6GCmkkc0CRF1ONDE4WuVjAOoozrm6fJuv6M=
+X-Google-Smtp-Source: ABdhPJzw6UlLjC/wQFMrQ4yJ8ofwrZkM/W9C4rvFWoi7V44Wji1Mj2zUyGqVNOfq86AIRCRAYxumqXX0StoWGdYXbiI=
+X-Received: by 2002:a25:d6d0:: with SMTP id n199mr18707086ybg.27.1611214775780;
+ Wed, 20 Jan 2021 23:39:35 -0800 (PST)
 MIME-Version: 1.0
-References: <CANaYP3ENW8FV=CsKFmvpqCvbwzz5z2dLmBzrsO9QePVPuyaxXQ@mail.gmail.com>
-In-Reply-To: <CANaYP3ENW8FV=CsKFmvpqCvbwzz5z2dLmBzrsO9QePVPuyaxXQ@mail.gmail.com>
+References: <20210119155013.154808-1-bjorn.topel@gmail.com> <20210119155013.154808-8-bjorn.topel@gmail.com>
+In-Reply-To: <20210119155013.154808-8-bjorn.topel@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 20 Jan 2021 23:29:40 -0800
-Message-ID: <CAEf4Bzbd-_6m=u9m32c0-hZA=JMkNEC2yWgcs_02Nv4fxxmpfQ@mail.gmail.com>
-Subject: Re: libbpf ringbuf manager starvation
-To:     Gilad Reti <gilad.reti@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        assaf.piltzer@cyberark.com
+Date:   Wed, 20 Jan 2021 23:39:25 -0800
+Message-ID: <CAEf4BzYaV+zA8tEX2xVyA7EeDw1_aQMUQHq8_RHNe=ZfnQWTQw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 7/8] selftest/bpf: add XDP socket tests for
+ bpf_redirect_{xsk, map}()
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>, maximmi@nvidia.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        john fastabend <john.fastabend@gmail.com>,
+        ciara.loftus@intel.com, weqaar.a.janjua@intel.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 7:51 AM Gilad Reti <gilad.reti@gmail.com> wrote:
+On Tue, Jan 19, 2021 at 7:55 AM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.co=
+m> wrote:
 >
-> Hello there,
+> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
 >
-
-Hi,
-
-> When playing with the (relatively) new ringbuf api we encountered
-> something that we believe can be an interesting usecase.
-> When registering multiple rinbufs to the same ringbuf manager, one of
-> which is highly active, other ringbufs may starve. Since libbpf
-> (e)polls on all the managed ringbufs at once and then tries to read
-> *as many samples as it can* from ready ringbufs, it may get stuck
-> indefinitely on one of them, not being able to process the other.
-> We know that the current ringbuf api exposes the epoll_fd so that one
-> can implement the epoll logic on his own, but this sounds to us like a
-> not so advanced usecase that may be worth taking care of specifically.
-> Does allowing to specify a maximum number of samples to consume sounds
-> like a reasonable addition to the ringbuf api?
-
-Did you actually run into such a situation in practice? If you have a
-BPF program producing so much data so fast that user-space can't keep
-up, then it sounds like a suboptimal use case for BPF ringbuf.
-
-But nevertheless, my advice for you situation is to use two instances
-of libbpf's ring_buffer: one for super-busy ringbuf, and another for
-everything else. Or you can even have one for each. It's very
-flexible.
-
-As for having this limit, it's not so simple, unfortunately. The
-contract between kernel, epoll, and libbpf is that user-space will
-always consume all the items until it runs out of more items to
-consume. Internally in kernel BPF ringbuf relies on that to skip
-unnecessary epoll notifications. If you consume not all items and will
-attempt to (e)poll again, you'll never get another notification
-(unless you force-notify from your BPF program, that's an advanced use
-case).
-
-We could do a round-robin across all registered ringbufs within the
-ring_buffer instance in ring_buffer__poll()/ring_buffer__consume(),
-but I think it's over-designing for a quite unusual case.
-
-
+> Add support for externally loaded XDP programs to
+> xdpxceiver/test_xsk.sh, so that bpf_redirect_xsk() and
+> bpf_redirect_map() can be exercised.
 >
-> Thanks
+> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+> ---
+>  .../selftests/bpf/progs/xdpxceiver_ext1.c     | 15 ++++
+>  .../selftests/bpf/progs/xdpxceiver_ext2.c     |  9 +++
+>  tools/testing/selftests/bpf/test_xsk.sh       | 48 ++++++++++++
+>  tools/testing/selftests/bpf/xdpxceiver.c      | 77 ++++++++++++++++++-
+>  tools/testing/selftests/bpf/xdpxceiver.h      |  2 +
+>  5 files changed, 147 insertions(+), 4 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/progs/xdpxceiver_ext1.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/xdpxceiver_ext2.c
+>
+> diff --git a/tools/testing/selftests/bpf/progs/xdpxceiver_ext1.c b/tools/=
+testing/selftests/bpf/progs/xdpxceiver_ext1.c
+> new file mode 100644
+> index 000000000000..18894040cca6
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/xdpxceiver_ext1.c
+> @@ -0,0 +1,15 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <linux/bpf.h>
+> +#include <bpf/bpf_helpers.h>
+> +
+> +struct {
+> +       __uint(type, BPF_MAP_TYPE_XSKMAP);
+> +       __uint(max_entries, 32);
+> +       __uint(key_size, sizeof(int));
+> +       __uint(value_size, sizeof(int));
+> +} xsks_map SEC(".maps");
+> +
+> +SEC("xdp_sock") int xdp_sock_prog(struct xdp_md *ctx)
+
+hmm.. that's unconventional... please keep SEC() on separate line
+
+> +{
+> +       return bpf_redirect_map(&xsks_map, ctx->rx_queue_index, XDP_DROP)=
+;
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/xdpxceiver_ext2.c b/tools/=
+testing/selftests/bpf/progs/xdpxceiver_ext2.c
+> new file mode 100644
+> index 000000000000..bd239b958c01
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/xdpxceiver_ext2.c
+> @@ -0,0 +1,9 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <linux/bpf.h>
+> +#include <bpf/bpf_helpers.h>
+> +
+> +SEC("xdp_sock") int xdp_sock_prog(struct xdp_md *ctx)
+
+same here
+
+> +{
+> +       return bpf_redirect_xsk(ctx, XDP_DROP);
+> +}
+> +
+
+[...]
