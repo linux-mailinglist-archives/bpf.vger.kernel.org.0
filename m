@@ -2,95 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B8132FE8EC
-	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 12:37:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06A472FEA29
+	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 13:35:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728676AbhAULgr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Jan 2021 06:36:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43078 "EHLO
+        id S1731178AbhAUMcu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jan 2021 07:32:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730477AbhAULgN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Jan 2021 06:36:13 -0500
-Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 664E8C061794
-        for <bpf@vger.kernel.org>; Thu, 21 Jan 2021 03:35:31 -0800 (PST)
-Received: by mail-wm1-x34a.google.com with SMTP id q24so412523wmc.1
-        for <bpf@vger.kernel.org>; Thu, 21 Jan 2021 03:35:31 -0800 (PST)
+        with ESMTP id S1731266AbhAUMcN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Jan 2021 07:32:13 -0500
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0B46C061757;
+        Thu, 21 Jan 2021 04:31:32 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id q7so1541853wre.13;
+        Thu, 21 Jan 2021 04:31:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=tHm4aawgl4upxAANEu6km7IPT8qo7sF57UAGh5jcpEQ=;
-        b=Ds0HNmp+7d57PEygc5eJeuDPMs2K36GpyTgvXuI+sYnvLHDRl4l47t84aX6pqaOUyN
-         M0cqR7DNwQdUFHH+U7RNJYRbRfePFqBPHiKCBVXGiMUt1mPvM3LgLWVDcqqwiTKerhNV
-         yYFLIRDLzcO7VtceJd29Dm1Kyi5aIytZjBpTfHkW+T1wyed2Gvueb08kJqPdQjaDqlHX
-         gwE8jpy9C7X7QxUH2bqooA80qU3E+A3NdGgz15Tf5EKlqB9Hl+JgHnNHnN2XBHvtyaAx
-         g3TiIHdXrlEDWjy8aLL5wdQWKGRWBHYS6XHEZbyrq3JseIowte/ev73FyiyQT1Oh5t0u
-         Vn/w==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=kxt+8VTbL5P82Zla3+Br2VOk1X53L1SllJ3pQxNFV4I=;
+        b=HHCSo01bXnQgMpwqL52ROhQATVFNzK8PrPjBZ3XmdcTJkUEsPw44HPITYcVTxxJj+9
+         wGLrjT713a8yQayfOYMtZYJQ3fXiJZML7Hs7fD5Gp8kmw9xadkYsmpXoj48Y95oawmev
+         okXtIQyatfInPXPVLT00tsZp8AfadaS0G38n/cb7+NHFDkszX4L1W5LD7i7P4jS0FYIX
+         g4jPoe970r4n3X+CrFvDcNSvyXpsOhSVvEYlnyylfVnE+2+2CCZQ9JGjaQdAXqRjCxA5
+         E7o1YqEElVRcZVcvsFXEz18M5A30YTOfoip2XZNq6b6GdGJPl8tWMY7tygO7ZVTKEV+t
+         9jeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=tHm4aawgl4upxAANEu6km7IPT8qo7sF57UAGh5jcpEQ=;
-        b=rBy7gyQAK+dGt5yddKyg4v3fXUz1zW/o6hwN4m1BqDbDU3RYEvfnSjDO23krXJcVpl
-         CBF9Bpcnh7h868GnM21nDfgFyPjmU1HhamE4t5FuowUe7lTnyt7YzvzBkEnleUgB4/6y
-         JRKLmxoVYyQsmJGsER3qrpkgL+WkzQ3aMy8UYIU6qxdSn2S6qpMyn2nP8OEvbYTTfR0a
-         Qlie6zNuClxpq/D7N6tX/jkI0/V8iyjK5cuRuSu4uBeK6vdaVUT9CeQ3lPRKlUQ0uqn7
-         VyF2P8ntgZ8MgAsu3DusNjjVLABmO/s/zbJiuWkc0z2lc2nO2ZTBjkCF+lSY9pXXx73t
-         IIXQ==
-X-Gm-Message-State: AOAM532GbSuhuiqG9bLg6dqkKrpcvUskcFv3e4RX28JSbmi1y1vDClDD
-        aqNbsv0clRU5FcgCkbj/tL1BarZS0stabw==
-X-Google-Smtp-Source: ABdhPJwkT3VH4D3ylEUPgDZEGZQ7ElFObJ8fc1L0AgD7z8Ml7WHUWCN/ZDwWYaaUpj/nBbu9yEwa89ciGUC+dA==
-Sender: "gprocida via sendgmr" <gprocida@tef.lon.corp.google.com>
-X-Received: from tef.lon.corp.google.com ([2a00:79e0:d:110:a6ae:11ff:fe11:4f04])
- (user=gprocida job=sendgmr) by 2002:a5d:4806:: with SMTP id
- l6mr11402294wrq.389.1611228930100; Thu, 21 Jan 2021 03:35:30 -0800 (PST)
-Date:   Thu, 21 Jan 2021 11:35:20 +0000
-In-Reply-To: <20210121113520.3603097-1-gprocida@google.com>
-Message-Id: <20210121113520.3603097-4-gprocida@google.com>
-Mime-Version: 1.0
-References: <20210118160139.1971039-1-gprocida@google.com> <20210121113520.3603097-1-gprocida@google.com>
-X-Mailer: git-send-email 2.30.0.296.g2bfb1c46d8-goog
-Subject: [PATCH dwarves v2 3/3] btf_encoder: Set .BTF section alignment to 16
-From:   Giuliano Procida <gprocida@google.com>
-To:     dwarves@vger.kernel.org
-Cc:     kernel-team@android.com, maennich@google.com, ast@kernel.org,
-        andrii@kernel.org, bpf@vger.kernel.org, kernel-team@fb.com,
-        Giuliano Procida <gprocida@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=kxt+8VTbL5P82Zla3+Br2VOk1X53L1SllJ3pQxNFV4I=;
+        b=Yyowda1E13QWjVIVEv5MX4793/av7B1IADzc1l4//nDJac6A6ziwM47j4LOvC4tQhL
+         7p0qi14N6Jbu2OwB+HzNei6gh2dPbbSSv0eUMBn3ZcFKw3MY/ht/cKV3WuLrFGQ03/UC
+         +G+nAd1Wfizt18ZD5dpG0glpl5Vkg8UoDxcr9No7lr73rVrMwDvM/vJzYYPMmxeeAR46
+         fBKDhNbPX6OlDoAK7patAcSJyJcMG6xiMGjMh5iKu1bu21wP4O3hwd4/Ns7Pqy2zzawK
+         Fk4QEL+uW4ohaBjeZPA7hKGcqGL3WTFwhlnp9U1Zyydi9SWBbP+6dJ1Tmz7KbiJVjFfY
+         GULg==
+X-Gm-Message-State: AOAM530Fpiw6XuISS8d+F/Rn1FX+PNAmwBoc/dI6dz6UILkNIcZkZBW5
+        xEXjYXnxEb532yVCic9zp3ZZXB0raOrlThfTtPv+qwOtRqw=
+X-Google-Smtp-Source: ABdhPJyd/4byrhV0CV690dVapDuTFQXpp9uzj0cm8+leX8+CKUFCTrAtGs5lAGH/Ra34ViNbkic8xXGBbsSRSEOczIo=
+X-Received: by 2002:adf:bc92:: with SMTP id g18mr13707364wrh.160.1611232291639;
+ Thu, 21 Jan 2021 04:31:31 -0800 (PST)
+MIME-Version: 1.0
+References: <20210119155013.154808-1-bjorn.topel@gmail.com>
+ <20210119155013.154808-8-bjorn.topel@gmail.com> <CAEf4BzYaV+zA8tEX2xVyA7EeDw1_aQMUQHq8_RHNe=ZfnQWTQw@mail.gmail.com>
+In-Reply-To: <CAEf4BzYaV+zA8tEX2xVyA7EeDw1_aQMUQHq8_RHNe=ZfnQWTQw@mail.gmail.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Thu, 21 Jan 2021 13:31:19 +0100
+Message-ID: <CAJ+HfNh0VY2=t80g4HmgWqwZ4Fe09+aD1Vk=p11LJeyayxQxTA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 7/8] selftest/bpf: add XDP socket tests for
+ bpf_redirect_{xsk, map}()
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>, maximmi@nvidia.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        john fastabend <john.fastabend@gmail.com>,
+        Ciara Loftus <ciara.loftus@intel.com>,
+        Weqaar Janjua <weqaar.a.janjua@intel.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-NOTE: Do not apply. I will try to eliminate the dependency on objcopy
-instead and achieve what's needed directly using libelf.
+On Thu, 21 Jan 2021 at 08:39, Andrii Nakryiko <andrii.nakryiko@gmail.com> w=
+rote:
+>
+> On Tue, Jan 19, 2021 at 7:55 AM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.=
+com> wrote:
+> >
+> > From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+> >
+> > Add support for externally loaded XDP programs to
+> > xdpxceiver/test_xsk.sh, so that bpf_redirect_xsk() and
+> > bpf_redirect_map() can be exercised.
+> >
+> > Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+> > ---
+> >  .../selftests/bpf/progs/xdpxceiver_ext1.c     | 15 ++++
+> >  .../selftests/bpf/progs/xdpxceiver_ext2.c     |  9 +++
+> >  tools/testing/selftests/bpf/test_xsk.sh       | 48 ++++++++++++
+> >  tools/testing/selftests/bpf/xdpxceiver.c      | 77 ++++++++++++++++++-
+> >  tools/testing/selftests/bpf/xdpxceiver.h      |  2 +
+> >  5 files changed, 147 insertions(+), 4 deletions(-)
+> >  create mode 100644 tools/testing/selftests/bpf/progs/xdpxceiver_ext1.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/xdpxceiver_ext2.c
+> >
+> > diff --git a/tools/testing/selftests/bpf/progs/xdpxceiver_ext1.c b/tool=
+s/testing/selftests/bpf/progs/xdpxceiver_ext1.c
+> > new file mode 100644
+> > index 000000000000..18894040cca6
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/progs/xdpxceiver_ext1.c
+> > @@ -0,0 +1,15 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +#include <linux/bpf.h>
+> > +#include <bpf/bpf_helpers.h>
+> > +
+> > +struct {
+> > +       __uint(type, BPF_MAP_TYPE_XSKMAP);
+> > +       __uint(max_entries, 32);
+> > +       __uint(key_size, sizeof(int));
+> > +       __uint(value_size, sizeof(int));
+> > +} xsks_map SEC(".maps");
+> > +
+> > +SEC("xdp_sock") int xdp_sock_prog(struct xdp_md *ctx)
+>
+> hmm.. that's unconventional... please keep SEC() on separate line
+>
+> > +{
+> > +       return bpf_redirect_map(&xsks_map, ctx->rx_queue_index, XDP_DRO=
+P);
+> > +}
+> > diff --git a/tools/testing/selftests/bpf/progs/xdpxceiver_ext2.c b/tool=
+s/testing/selftests/bpf/progs/xdpxceiver_ext2.c
+> > new file mode 100644
+> > index 000000000000..bd239b958c01
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/progs/xdpxceiver_ext2.c
+> > @@ -0,0 +1,9 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +#include <linux/bpf.h>
+> > +#include <bpf/bpf_helpers.h>
+> > +
+> > +SEC("xdp_sock") int xdp_sock_prog(struct xdp_md *ctx)
+>
+> same here
+>
 
-This is to avoid misaligned access when memory-mapping ELF sections.
+Thanks Andrii! I'll make sure to have the SECs on separate lines going forw=
+ard!
 
-Signed-off-by: Giuliano Procida <gprocida@google.com>
----
- libbtf.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/libbtf.c b/libbtf.c
-index 7552d8e..2f12d53 100644
---- a/libbtf.c
-+++ b/libbtf.c
-@@ -797,6 +797,14 @@ static int btf_elf__write(const char *filename, struct btf *btf)
- 			goto unlink;
- 		}
- 
-+		snprintf(cmd, sizeof(cmd), "%s --set-section-alignment .BTF=16 %s",
-+			 llvm_objcopy, filename);
-+		if (system(cmd)) {
-+			/* non-fatal, this is a nice-to-have and it's only supported from LLVM 10 */
-+			fprintf(stderr, "%s: warning: failed to align .BTF section in '%s': %d!\n",
-+				__func__, filename, errno);
-+		}
-+
- 		err = 0;
- 	unlink:
- 		unlink(tmp_fn);
--- 
-2.30.0.296.g2bfb1c46d8-goog
-
+Bj=C3=B6rn
