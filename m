@@ -2,145 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 104602FF4BC
-	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 20:38:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E8D02FF51F
+	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 20:52:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727339AbhAUTiF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Jan 2021 14:38:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45878 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726194AbhAUThu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Jan 2021 14:37:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 244F623A3A;
-        Thu, 21 Jan 2021 19:37:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611257829;
-        bh=w7Mf+/YQ7cizKFbhh9DbozTH0EVRXMR4priG6Ci2Prw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ldB52ZcBArYQG4KuBdXkJBLmSmWn+3uuvsH2LwM2HS0we/TpcHHYxrYx6/jnEGvws
-         glpDHOg6NrgfnxKB62Qs4Oh8zrJ84ojXq9hGBR1u4mkDJdf4+PUeH+2VQJUtXo92yp
-         3TpVyL7+eQogDiOeSX5HocSH7kifpaWigCh5AfieZl8kmIHA6twNKBqV46aXjH2RFO
-         +SbanMwFtjXgkxgw2rkV1tjjjzGzrOTTm2rQnEz/HOBVs+x4x97uRWgwM9KGzvrIAe
-         w5Fyf+beFXDnFX5SxNuxOV2zohd/0tfHH4jabopXp0iURDMaiyaUYf0t24TkG5Wgo6
-         1KqKeliqR+zIw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 35A2340513; Thu, 21 Jan 2021 16:37:05 -0300 (-03)
-Date:   Thu, 21 Jan 2021 16:37:05 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Tom Stellard <tstellar@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>, dwarves@vger.kernel.org,
-        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Hao Luo <haoluo@google.com>
-Subject: Re: [PATCH] btf_encoder: Add extra checks for symbol names
-Message-ID: <20210121193705.GA354859@kernel.org>
-References: <20210112184004.1302879-1-jolsa@kernel.org>
- <f3790a7d-73bc-d634-5994-d049c7a73eae@redhat.com>
- <20210121133825.GB12699@kernel.org>
- <CA+icZUVsdcTEJjwpB7=05W5-+roKf66qTwP+M6QJKTnuP6TOVQ@mail.gmail.com>
+        id S1727654AbhAUTwh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jan 2021 14:52:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727683AbhAUTwf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Jan 2021 14:52:35 -0500
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8818C06174A;
+        Thu, 21 Jan 2021 11:51:54 -0800 (PST)
+Received: by mail-yb1-xb2b.google.com with SMTP id r32so3214836ybd.5;
+        Thu, 21 Jan 2021 11:51:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b+ryxI2bZ0j1bhmK50ERwXaK1thGqk3WteUbJ53i1ic=;
+        b=nikmWnXA40vWCwZZVZZ5j0u1OqClkFGXfPfH6h5HRuYzVE4DSuawQF7VqmvpNe8Mtz
+         GDtonQs5pYYLSZxVEMhbHHgFhUVSfmL26s9qp38hCV8nU5aC4ujtDqfAwxAkY3Ml7CAs
+         ikEmVcDOins6/8X8WXmGSQcWU3Asm1ZTjq7o1eyKRO9UXtmn5ovccnC5BcOYEbzh3yhf
+         +b5zl1mxeIFvCL6o6DFXcoBAIuG5UMWKHEhFaj/tCpJUqprd9b5d261pO1cIL0j4XDJe
+         yfQZtUkp5mbXRgVv80J17ja2o0ag9mTZymUyqlQioxYKJnhk44DoOUD/H0lt1bqX2d2W
+         nHjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b+ryxI2bZ0j1bhmK50ERwXaK1thGqk3WteUbJ53i1ic=;
+        b=cUB1OtZFGkPBwcjI03XKRPob/KHA1HSJPQeT/dsbOWfArEMfjbyGgfTfRp6qL/gIa+
+         TEXRU63U+2Cm/Uy8KouO6ovLzEcapXSZX8y/y705p3y6cqwoks70z2psf0tsiSqmbz8M
+         XpAjzqrRAnVZevx9KD7JFOMTLEZVexAF5v4xxm/NobrgkQnrvQMqhJHhjwuCwphRGHEQ
+         /pJJ+qOAHuvhxaxXqbb/oko8i8MzQQy1Wu2U2ElQlaYpQJLuKFs0zyIcoCRLadwIg2Dx
+         aOSEwrqD1ZMPVPoXwTjUqu5hhWJL7+I+3iWZ8wI2PT20FZjxoedtebv769kMgQCWkPcE
+         2asg==
+X-Gm-Message-State: AOAM530WC90lHuge56pQU0fkRs1BIaAe2UlZB3IVhQOleiuEGw47d5Mq
+        biB1MrQ9QRWcRrK/Z8GwWmFaYd/9Q6OUFnsySI28N6Dy+yiiQQ==
+X-Google-Smtp-Source: ABdhPJytes9LDpHx1Bo4tt/+3nzBLErqkMs9KmRH9qNLLMFrQ4ALSFqZyyK7xkNsATVIzwxKb6W2jv+rt1D4z3DKlKM=
+X-Received: by 2002:a25:f40e:: with SMTP id q14mr1431799ybd.230.1611258714152;
+ Thu, 21 Jan 2021 11:51:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+icZUVsdcTEJjwpB7=05W5-+roKf66qTwP+M6QJKTnuP6TOVQ@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+References: <1610921764-7526-1-git-send-email-alan.maguire@oracle.com>
+ <1610921764-7526-4-git-send-email-alan.maguire@oracle.com> <CAEf4BzZ6bYenSTUmwu7jXqQOyD=AG75oLsLE5B=9ycPjm1jOkw@mail.gmail.com>
+In-Reply-To: <CAEf4BzZ6bYenSTUmwu7jXqQOyD=AG75oLsLE5B=9ycPjm1jOkw@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 21 Jan 2021 11:51:42 -0800
+Message-ID: <CAEf4Bzb4z+ZA+taOEo=N9eSGZaCqMALpFxShujm9GahBOFnhvg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 3/4] libbpf: BTF dumper support for typed data
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Bill Wendling <morbo@google.com>,
+        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Thu, Jan 21, 2021 at 05:06:25PM +0100, Sedat Dilek escreveu:
-> On Thu, Jan 21, 2021 at 2:38 PM Arnaldo Carvalho de Melo
-> <arnaldo.melo@gmail.com> wrote:
+On Wed, Jan 20, 2021 at 10:56 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Sun, Jan 17, 2021 at 2:22 PM Alan Maguire <alan.maguire@oracle.com> wrote:
 > >
-> > Em Tue, Jan 12, 2021 at 04:27:59PM -0800, Tom Stellard escreveu:
-> > > On 1/12/21 10:40 AM, Jiri Olsa wrote:
-> > > > When processing kernel image build by clang we can
-> > > > find some functions without the name, which causes
-> > > > pahole to segfault.
-> > > >
-> > > > Adding extra checks to make sure we always have
-> > > > function's name defined before using it.
-> > > >
-> > >
-> > > I backported this patch to pahole 1.19, and I can confirm it fixes the
-> > > segfault for me.
+> > Add a BTF dumper for typed data, so that the user can dump a typed
+> > version of the data provided.
 > >
-> > I'm applying v2 for this patch and based on your above statement I'm
-> > adding a:
+> > The API is
 > >
-> > Tested-by: Tom Stellard <tstellar@redhat.com>
+> > int btf_dump__emit_type_data(struct btf_dump *d, __u32 id,
+> >                              const struct btf_dump_emit_type_data_opts *opts,
+> >                              void *data);
 > >
-> > Ok?
-> >
-> > Who originally reported this?
-> >
-> 
-> The origin was AFAICS the thread where I asked initially [1].
-> 
-> Tom reported in the same thread in [2] that pahole segfaults.
-> 
-> Later in the thread Jiri offered a draft of this patch after doing some tests.
-> 
-> I have tested all diffs and v1 and v2 of Jiri's patch.
-> ( Anyway, latest pahole ToT plus Jiri's patch did not solve my origin problem. )
-> 
-> So up to you Arnaldo for the credits.
 
-Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
-Tested-by: Tom Stellard <tstellar@redhat.com>
+Two more things I realized about this API overnight:
 
-is how I'm going about it.
+1. It's error-prone to specify only the pointer to data without
+specifying the size. If user screws up and scecifies wrong type ID or
+if BTF data is corrupted, then this API would start reading and
+printing memory outside the bounds. I think it's much better to also
+require user to specify the size and bail out with error if we reach
+the end of the allowed memory area.
 
-Thanks for clarifying,
+2. This API would be more useful if it also returns the amount of
+"consumed" bytes. That way users can do more flexible and powerful
+pretty-printing of raw data. So on success we'll have >= 0 number of
+bytes used for dumping given BTF type, or <0 on error. WDYT?
 
-- Arnaldo
- 
-> - Sedat -
-> 
-> [1] https://marc.info/?t=161036949500004&r=1&w=2
-> [2] https://marc.info/?t=161036949500004&r=1&w=2
-> 
-> > - Arnaldo
+> > ...where the id is the BTF id of the data pointed to by the "void *"
+> > argument; for example the BTF id of "struct sk_buff" for a
+> > "struct skb *" data pointer.  Options supported are
 > >
-> > > -Tom
-> > >
-> > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > > ---
-> > > >   btf_encoder.c | 8 ++++++--
-> > > >   1 file changed, 6 insertions(+), 2 deletions(-)
-> > > >
-> > > > diff --git a/btf_encoder.c b/btf_encoder.c
-> > > > index 333973054b61..17f7a14f2ef0 100644
-> > > > --- a/btf_encoder.c
-> > > > +++ b/btf_encoder.c
-> > > > @@ -72,6 +72,8 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym)
-> > > >     if (elf_sym__type(sym) != STT_FUNC)
-> > > >             return 0;
-> > > > +   if (!elf_sym__name(sym, btfe->symtab))
-> > > > +           return 0;
-> > > >     if (functions_cnt == functions_alloc) {
-> > > >             functions_alloc = max(1000, functions_alloc * 3 / 2);
-> > > > @@ -730,9 +732,11 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
-> > > >             if (!has_arg_names(cu, &fn->proto))
-> > > >                     continue;
-> > > >             if (functions_cnt) {
-> > > > -                   struct elf_function *func;
-> > > > +                   const char *name = function__name(fn, cu);
-> > > > +                   struct elf_function *func = NULL;
-> > > > -                   func = find_function(btfe, function__name(fn, cu));
-> > > > +                   if (name)
-> > > > +                           func = find_function(btfe, name);
-> > > >                     if (!func || func->generated)
-> > > >                             continue;
-> > > >                     func->generated = true;
-> > > >
-> > >
+> >  - a starting indent level (indent_lvl)
+> >  - a set of boolean options to control dump display, similar to those
+> >    used for BPF helper bpf_snprintf_btf().  Options are
+> >         - compact : omit newlines and other indentation
+> >         - noname: omit member names
+> >         - zero: show zero-value members
 > >
-> > --
+> > Default output format is identical to that dumped by bpf_snprintf_btf(),
+> > for example a "struct sk_buff" representation would look like this:
 > >
-> > - Arnaldo
+> > struct sk_buff){
+> >  (union){
+> >   (struct){
+>
+> Curious, these explicit anonymous (union) and (struct), is that
+> preferred way for explicitness, or is it just because it makes
+> implementation simpler and thus was chosen? I.e., if the goal was to
+> mimic C-style data initialization, you'd just have plain .next = ...,
+> .prev = ..., .dev = ..., .dev_scratch = ..., all on the same level. So
+> just checking for myself.
+>
+> >    .next = (struct sk_buff *)0xffffffffffffffff,
+> >    .prev = (struct sk_buff *)0xffffffffffffffff,
+> >    (union){
+> >     .dev = (struct net_device *)0xffffffffffffffff,
+> >     .dev_scratch = (long unsigned int)18446744073709551615,
+> >    },
+> >   },
+> > ...
+> >
+> > Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> > ---
+>
 
--- 
-
-- Arnaldo
+[...]
