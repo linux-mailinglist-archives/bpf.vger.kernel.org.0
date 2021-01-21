@@ -2,123 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BC3E2FE0B5
-	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 05:31:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90E332FE1B7
+	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 06:30:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728570AbhAUEay (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 20 Jan 2021 23:30:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726599AbhAUEOY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 20 Jan 2021 23:14:24 -0500
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A9C2C061757;
-        Wed, 20 Jan 2021 20:13:41 -0800 (PST)
-Received: by mail-yb1-xb2c.google.com with SMTP id k4so806133ybp.6;
-        Wed, 20 Jan 2021 20:13:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qdYGbaNQ6RXEEqSgvnErn9aTL2ruB523HmhLn4769P0=;
-        b=Y/wjnmDnqQEicOrIEn5igWesvc6VvkLe6H9gn0MNXrK8Od0OitS4GowYF4fZBPPYQU
-         aw0yU20PJVRA8tRoevm8VV1ZbEtrxk6Zy07mJdq9//Rq1/ub6dOFDxCxo3hEgCA4hOte
-         KP/8aLcT9f5NbXSKYIXEIe31sGI/yzcYnesDXp27vM1RLObprjK5syz6KZ7mtXQ5GrtF
-         XoHnNU+CcQRGdj8I7/F9UDwS9ibTJfJcwFDc5pBC2nn+LtJQ8ByNM1w37YKH1Tvqsoo8
-         VkRL8yFmGOdzvLdAR+SUHLcEd6aUFTvh3eInfHRyXS7mC6ailuxwU3oTpZOONIV6XwXJ
-         umvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qdYGbaNQ6RXEEqSgvnErn9aTL2ruB523HmhLn4769P0=;
-        b=a/p+AMFuKBF2yCuOnbaLzuXQdmA6oJ/qPvzOLk8QI1gEc+aMXEZFCVM+T0OTmIkSVa
-         vQLO9GyI04l1H63Mq+Y/3YLNDKBo/mwWRSPDT7njmOPhJjPLP1IcP7WR4onJiKkLTGk1
-         c/zokrL4UHuUZ1yg4L96HykdnWKg/l7RIAU80vElKfLgslbKvePl2BPjiQOBjRmtkEvR
-         RtJyUEdoctoUNwjcr3zWHFC/J+pyK27ydvGBiGaGOjROhC/LeNRs3oJ5uBLWX220Ncrp
-         xcCqpt4YJWnP5mGBMlHb4Nm+VfYZLLexPtoRPEI+G7SdLQuXOut9H1sUv3ZDgMQevCDr
-         7b9g==
-X-Gm-Message-State: AOAM530gO+WhPdJZQAPH8APCPWKX5ZCNN98XIbhRcN5dYTyt0xIyj71R
-        U4iLBUYV+Ex06jybOMFivy3+90gdhPjIY70ldRQ=
-X-Google-Smtp-Source: ABdhPJyw6udgxJBFQX0Vwqra1a/DaIb34pvGjg38qbZt2xv9lkediK7L08qo1hXvj7SN4BasIaTVpqghIM8fjo3C5sQ=
-X-Received: by 2002:a25:4b86:: with SMTP id y128mr3828051yba.403.1611202420666;
- Wed, 20 Jan 2021 20:13:40 -0800 (PST)
-MIME-Version: 1.0
-References: <1610921764-7526-1-git-send-email-alan.maguire@oracle.com> <1610921764-7526-3-git-send-email-alan.maguire@oracle.com>
-In-Reply-To: <1610921764-7526-3-git-send-email-alan.maguire@oracle.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 20 Jan 2021 20:13:29 -0800
-Message-ID: <CAEf4BzYZNUsdLH=fVqO_zXh2gwK6g325pQ7UeyH1NTK8kxSFmA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 2/4] libbpf: make skip_mods_and_typedefs
- available internally in libbpf
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S1725967AbhAUF3P (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jan 2021 00:29:15 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:46504 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726430AbhAUF25 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Jan 2021 00:28:57 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx2L3TEAlgPXAIAA--.13098S2;
+        Thu, 21 Jan 2021 13:27:49 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, morbo@google.com,
-        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Fangrui Song <maskray@google.com>
+Subject: [PATCH bpf-next v3] samples/bpf: Update build procedure for manually compiling LLVM and Clang
+Date:   Thu, 21 Jan 2021 13:27:35 +0800
+Message-Id: <1611206855-22555-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dx2L3TEAlgPXAIAA--.13098S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWw1Dtr43Jr4xCFWUJFyDAwb_yoWrCw17pw
+        47Ka4S9rZ7Xry3XFWxGF4UXF4furs8Xa4UCa4xJ348Z3WDZrn2gr43t3yfWFW5Wr92yrW3
+        Cr1fKFZ5uF1DXaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+        Y2ka0xkIwI1lc2xSY4AK67AK6r4rMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
+        1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
+        b7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
+        vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI
+        42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWI
+        evJa73UjIFyTuYvjfUeF4iUUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sun, Jan 17, 2021 at 2:20 PM Alan Maguire <alan.maguire@oracle.com> wrote:
->
-> btf_dump.c will need it for type-based data display.
->
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> ---
+The current LLVM and Clang build procedure in samples/bpf/README.rst is
+out of date. See below that the links are not accessible any more.
 
-Given we make it into an internal API, let's call it
-btf_skip_mods_and_typedefs()? Otherwise all ok.
+$ git clone http://llvm.org/git/llvm.git
+Cloning into 'llvm'...
+fatal: unable to access 'http://llvm.org/git/llvm.git/': Maximum (20) redirects followed
+$ git clone --depth 1 http://llvm.org/git/clang.git
+Cloning into 'clang'...
+fatal: unable to access 'http://llvm.org/git/clang.git/': Maximum (20) redirects followed
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+The LLVM community has adopted new ways to build the compiler. There are
+different ways to build LLVM and Clang, the Clang Getting Started page [1]
+has one way. As Yonghong said, it is better to copy the build procedure
+in Documentation/bpf/bpf_devel_QA.rst to keep consistent.
 
->  tools/lib/bpf/libbpf.c          | 4 +---
->  tools/lib/bpf/libbpf_internal.h | 2 ++
->  2 files changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 2abbc38..4ef84e1 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -73,8 +73,6 @@
->  #define __printf(a, b) __attribute__((format(printf, a, b)))
->
->  static struct bpf_map *bpf_object__add_map(struct bpf_object *obj);
-> -static const struct btf_type *
-> -skip_mods_and_typedefs(const struct btf *btf, __u32 id, __u32 *res_id);
->
->  static int __base_pr(enum libbpf_print_level level, const char *format,
->                      va_list args)
-> @@ -1885,7 +1883,7 @@ static int bpf_object__init_user_maps(struct bpf_object *obj, bool strict)
->         return 0;
->  }
->
-> -static const struct btf_type *
-> +const struct btf_type *
->  skip_mods_and_typedefs(const struct btf *btf, __u32 id, __u32 *res_id)
->  {
->         const struct btf_type *t = btf__type_by_id(btf, id);
-> diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-> index 969d0ac..c25d2df 100644
-> --- a/tools/lib/bpf/libbpf_internal.h
-> +++ b/tools/lib/bpf/libbpf_internal.h
-> @@ -108,6 +108,8 @@ static inline void *libbpf_reallocarray(void *ptr, size_t nmemb, size_t size)
->  void *btf_add_mem(void **data, size_t *cap_cnt, size_t elem_sz,
->                   size_t cur_cnt, size_t max_cnt, size_t add_cnt);
->  int btf_ensure_mem(void **data, size_t *cap_cnt, size_t elem_sz, size_t need_cnt);
-> +const struct btf_type *skip_mods_and_typedefs(const struct btf *btf, __u32 id,
-> +                                             __u32 *res_id);
->
->  static inline bool libbpf_validate_opts(const char *opts,
->                                         size_t opts_sz, size_t user_sz,
-> --
-> 1.8.3.1
->
+I verified the procedure and it is proved to be feasible, so we should
+update README.rst to reflect the reality. At the same time, update the
+related comment in Makefile.
+
+Additionally, as Fangrui said, the dir llvm-project/llvm/build/install is
+not used, BUILD_SHARED_LIBS=OFF is the default option [2], so also change
+Documentation/bpf/bpf_devel_QA.rst together.
+
+[1] https://clang.llvm.org/get_started.html
+[2] https://www.llvm.org/docs/CMake.html
+
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Acked-by: Yonghong Song <yhs@fb.com>
+---
+
+v2: Update the commit message suggested by Yonghong,
+    thank you very much.
+
+v3: Remove the default option BUILD_SHARED_LIBS=OFF
+    and just mkdir llvm-project/llvm/build suggested
+    by Fangrui.
+
+ Documentation/bpf/bpf_devel_QA.rst |  3 +--
+ samples/bpf/Makefile               |  2 +-
+ samples/bpf/README.rst             | 16 +++++++++-------
+ 3 files changed, 11 insertions(+), 10 deletions(-)
+
+diff --git a/Documentation/bpf/bpf_devel_QA.rst b/Documentation/bpf/bpf_devel_QA.rst
+index 5b613d2..18788bb 100644
+--- a/Documentation/bpf/bpf_devel_QA.rst
++++ b/Documentation/bpf/bpf_devel_QA.rst
+@@ -506,11 +506,10 @@ that set up, proceed with building the latest LLVM and clang version
+ from the git repositories::
+ 
+      $ git clone https://github.com/llvm/llvm-project.git
+-     $ mkdir -p llvm-project/llvm/build/install
++     $ mkdir -p llvm-project/llvm/build
+      $ cd llvm-project/llvm/build
+      $ cmake .. -G "Ninja" -DLLVM_TARGETS_TO_BUILD="BPF;X86" \
+                 -DLLVM_ENABLE_PROJECTS="clang"    \
+-                -DBUILD_SHARED_LIBS=OFF           \
+                 -DCMAKE_BUILD_TYPE=Release        \
+                 -DLLVM_BUILD_RUNTIME=OFF
+      $ ninja
+diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+index 26fc96c..d061446 100644
+--- a/samples/bpf/Makefile
++++ b/samples/bpf/Makefile
+@@ -208,7 +208,7 @@ TPROGLDLIBS_xdpsock		+= -pthread -lcap
+ TPROGLDLIBS_xsk_fwd		+= -pthread
+ 
+ # Allows pointing LLC/CLANG to a LLVM backend with bpf support, redefine on cmdline:
+-#  make M=samples/bpf/ LLC=~/git/llvm/build/bin/llc CLANG=~/git/llvm/build/bin/clang
++# make M=samples/bpf LLC=~/git/llvm-project/llvm/build/bin/llc CLANG=~/git/llvm-project/llvm/build/bin/clang
+ LLC ?= llc
+ CLANG ?= clang
+ OPT ?= opt
+diff --git a/samples/bpf/README.rst b/samples/bpf/README.rst
+index dd34b2d..23006cb 100644
+--- a/samples/bpf/README.rst
++++ b/samples/bpf/README.rst
+@@ -65,17 +65,19 @@ To generate a smaller llc binary one can use::
+ Quick sniplet for manually compiling LLVM and clang
+ (build dependencies are cmake and gcc-c++)::
+ 
+- $ git clone http://llvm.org/git/llvm.git
+- $ cd llvm/tools
+- $ git clone --depth 1 http://llvm.org/git/clang.git
+- $ cd ..; mkdir build; cd build
+- $ cmake .. -DLLVM_TARGETS_TO_BUILD="BPF;X86"
+- $ make -j $(getconf _NPROCESSORS_ONLN)
++ $ git clone https://github.com/llvm/llvm-project.git
++ $ mkdir -p llvm-project/llvm/build
++ $ cd llvm-project/llvm/build
++ $ cmake .. -G "Ninja" -DLLVM_TARGETS_TO_BUILD="BPF;X86" \
++            -DLLVM_ENABLE_PROJECTS="clang"    \
++            -DCMAKE_BUILD_TYPE=Release        \
++            -DLLVM_BUILD_RUNTIME=OFF
++ $ ninja
+ 
+ It is also possible to point make to the newly compiled 'llc' or
+ 'clang' command via redefining LLC or CLANG on the make command line::
+ 
+- make M=samples/bpf LLC=~/git/llvm/build/bin/llc CLANG=~/git/llvm/build/bin/clang
++ make M=samples/bpf LLC=~/git/llvm-project/llvm/build/bin/llc CLANG=~/git/llvm-project/llvm/build/bin/clang
+ 
+ Cross compiling samples
+ -----------------------
+-- 
+2.1.0
+
