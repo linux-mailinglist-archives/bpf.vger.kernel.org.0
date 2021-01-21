@@ -2,232 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2C852FF849
-	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 23:59:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6C992FF87A
+	for <lists+bpf@lfdr.de>; Fri, 22 Jan 2021 00:12:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726509AbhAUW6x (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Jan 2021 17:58:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49324 "EHLO
+        id S1726442AbhAUXLU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jan 2021 18:11:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727088AbhAUW6t (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Jan 2021 17:58:49 -0500
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4FEDC061793
-        for <bpf@vger.kernel.org>; Thu, 21 Jan 2021 14:57:46 -0800 (PST)
-Received: by mail-qt1-x84a.google.com with SMTP id j1so2467827qtd.13
-        for <bpf@vger.kernel.org>; Thu, 21 Jan 2021 14:57:46 -0800 (PST)
+        with ESMTP id S1726410AbhAUXLR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Jan 2021 18:11:17 -0500
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 069C9C061756;
+        Thu, 21 Jan 2021 15:10:37 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id b11so3697536ybj.9;
+        Thu, 21 Jan 2021 15:10:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=rEs8+RjNlPMDkUBf1H7i/FQ61Cs6J/f8dFWTg7YHb34=;
-        b=N26WO7H/zjK7LmKo9gNIltRKUFFdv8GjmFcwDmtNIEB2bP4tqxfWEsaeb3BoldBcjM
-         mAx8HX7rCovDL8HzBFMdxq6eKlBVej6EScBKxt19AK+PhRfq4k4d/vOfr5sVT67cRaJH
-         AhTpwino5wTh5JTQ9LsVp05VqYC3CK6mzuWImx147MzjWtbBvCRiHXvr7PksfNt6qFB+
-         +Xz6AnDEj3gTwF1ntiyiGKr3jjnMsJ0dikH+ufGo1jnTRpVej7b3tVd69VGM1mRAHiDO
-         CL3ectFMGKwP9fpkE2FiBFOTX8DKJ6pkfd4qxLWS8ddmIEsVS2ZkceBajHFikgCTLiNQ
-         lI6A==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eFFyp0an9z6ceYvBlREfDntyLx+f2WYNnkvqDcimax8=;
+        b=OOIpVw0bE3O1Vq0ocNiUGrrpTs2RhI/CWZ33OFW1vmL7qqs7RDUmcLdQnjsqRZLVTK
+         brlQCK2K1/nMhQUIvwB4e9B1EudfArJJY8Y3qRxFjIvu0IAwZdSb5i2IeeQC7dRM+14x
+         CXP5AFRM7cqGKDOEDCKmCFmCmn/MnFPJ0x/FWa3JxS7akK5Vu3Iq5mvjDr0oJnoc3hg/
+         p28ZtCyQQ0vh8yYluFoMergI9dWbRTrPnS6Od6qxUXVYTcWIB4+3XQyTJ/aJGbxq3vRn
+         n9d12osem3p6B0nlZGY425Io4eOuqbdSE5F6KFWQ+vXf2rM31nMgMBUf+i9YUPlvoYsl
+         0f8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=rEs8+RjNlPMDkUBf1H7i/FQ61Cs6J/f8dFWTg7YHb34=;
-        b=Jq3tcV+/5zgRl1KSKRiaFWwWsyZKBY8KHYI0cYbEKgm5RGn2R038F8c093Kam++Mb0
-         61xIWbPMDF9YhgvVoCTwKO2N7CFvJWsft+4dHuPgTeR7O8B2SiuHUgXosKXSQ2EC1E9E
-         vQ8bYLQuOzJx2DsJ/faQwsoowDHNj96DX0v8ffklX7tsgYKBi3IX8IiikfDsEkVtDkiL
-         ZBe8vZJ9Bbqg6SB2z/CZ1aYrTHuQ0i7KY5tO6VoCbYyBFXXrRPGIVs+HjASSGqXS97Vi
-         QUoaovYP+wse5rvD3arqEjWU8433POoZ1pYMEWvNlRWD5hkB0kwky2ccHTA22jGalid/
-         Gbcg==
-X-Gm-Message-State: AOAM531M3AALaesHAHdfNb27lGxL2vb7aqxYYscX7wWgGLkfFUzWI3z3
-        kgjHt0AHJq5AryX25P8rMzY6OTo=
-X-Google-Smtp-Source: ABdhPJzIkOwKG42KcXxS834I4A3iJwjvPiTo9oGyr0xAgKozY4O/+6Ipn2VjvUyT3PtRxe5nKqjhrH8=
-Sender: "sdf via sendgmr" <sdf@sdf2.svl.corp.google.com>
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:7220:84ff:fe09:7732])
- (user=sdf job=sendgmr) by 2002:ad4:57ab:: with SMTP id g11mr1917054qvx.38.1611269865897;
- Thu, 21 Jan 2021 14:57:45 -0800 (PST)
-Date:   Thu, 21 Jan 2021 14:57:44 -0800
-In-Reply-To: <20210121223330.pyk4ljtjirm2zlay@kafai-mbp>
-Message-Id: <YAoG6K37QtRZGJGy@google.com>
-Mime-Version: 1.0
-References: <20210121012241.2109147-1-sdf@google.com> <20210121012241.2109147-2-sdf@google.com>
- <20210121223330.pyk4ljtjirm2zlay@kafai-mbp>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: verify that rebinding to port
- < 1024 from BPF works
-From:   sdf@google.com
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org,
-        daniel@iogearbox.net
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eFFyp0an9z6ceYvBlREfDntyLx+f2WYNnkvqDcimax8=;
+        b=AYb1/w+U1N/nLMd4PStrdx5s/vznG2C/U1I1zOOgSED/qT1DCANjij6NOuXB0mZuD0
+         Cgd8UNXJ46xctjYmQ4JtshiVx/MEFwphxfNSyHX3esujMyDKqogavjsmOYIbzWeQyPrC
+         8jqHCsv3nFyIchPgdplGxgLdvalxCiwSwgZLTzPvOtDadcT+u1ZlWMrghcN2e28UNoBE
+         eb5Diate4/O86NsJ4jcjUZlWggqJgQrh/BZMab9D9LVpCHPcYUvo7tonLXWVOrRQQPr9
+         D2lomE3jKMZA90KRGA6T/Hf8tWJ48tmtuGeLdIkXJDo+5lB6jL2Y27Q5EiKZZb7cXSdz
+         Nn2g==
+X-Gm-Message-State: AOAM532WVV2jCHNNv/fW39F6Bs4nkE7D5AoD0RzFBmmTQRo3hJjgRap5
+        oojjS5rqY3yxCYVf/Eh8h2g8wz/K1oWSUafpqFY=
+X-Google-Smtp-Source: ABdhPJxfhRYoc3vLG8+s7Id7lMX+MJciTJQ/oIDC+EPjZXW4ghHrOJU9GHpJuAnPsA8+0rzATqEslleQhBFISRr98kE=
+X-Received: by 2002:a25:48c7:: with SMTP id v190mr2434566yba.260.1611270636310;
+ Thu, 21 Jan 2021 15:10:36 -0800 (PST)
+MIME-Version: 1.0
+References: <20210121202203.9346-1-jolsa@kernel.org> <20210121202203.9346-2-jolsa@kernel.org>
+In-Reply-To: <20210121202203.9346-2-jolsa@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 21 Jan 2021 15:10:25 -0800
+Message-ID: <CAEf4BzY5CSNjoe19V4GAbFM1N4o4jM38G6yahAhr5bAaDVcYxA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] elf_symtab: Add support for SHN_XINDEX index to elf_section_by_name
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>, dwarves@vger.kernel.org,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Yonghong Song <yhs@fb.com>, Hao Luo <haoluo@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Mark Wielaard <mjw@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 01/21, Martin KaFai Lau wrote:
-> On Wed, Jan 20, 2021 at 05:22:41PM -0800, Stanislav Fomichev wrote:
-> > BPF rewrites from 111 to 111, but it still should mark the port as
-> > "changed".
-> > We also verify that if port isn't touched by BPF, it's still prohibited.
-> >
-> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
-> > ---
-> >  .../selftests/bpf/prog_tests/bind_perm.c      | 88 +++++++++++++++++++
-> >  tools/testing/selftests/bpf/progs/bind_perm.c | 36 ++++++++
-> >  2 files changed, 124 insertions(+)
-> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/bind_perm.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/bind_perm.c
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/bind_perm.c  
-> b/tools/testing/selftests/bpf/prog_tests/bind_perm.c
-> > new file mode 100644
-> > index 000000000000..840a04ac9042
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/prog_tests/bind_perm.c
-> > @@ -0,0 +1,88 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +#include <test_progs.h>
-> > +#include "bind_perm.skel.h"
-> > +
-> > +#include <sys/types.h>
-> > +#include <sys/socket.h>
-> > +#include <sys/capability.h>
-> > +
-> > +static int duration;
-> > +
-> > +void try_bind(int port, int expected_errno)
-> > +{
-> > +	struct sockaddr_in sin = {};
-> > +	int fd = -1;
-> > +
-> > +	fd = socket(AF_INET, SOCK_STREAM, 0);
-> > +	if (CHECK(fd < 0, "fd", "errno %d", errno))
-> > +		goto close_socket;
-> > +
-> > +	sin.sin_family = AF_INET;
-> > +	sin.sin_port = htons(port);
-> > +
-> > +	errno = 0;
-> > +	bind(fd, (struct sockaddr *)&sin, sizeof(sin));
-> > +	CHECK(errno != expected_errno, "bind", "errno %d, expected %d",
-> > +	      errno, expected_errno);
-> > +
-> > +close_socket:
-> > +	if (fd >= 0)
-> > +		close(fd);
-> > +}
-> > +
-> > +void cap_net_bind_service(cap_flag_value_t flag)
-> > +{
-> > +	const cap_value_t cap_net_bind_service = CAP_NET_BIND_SERVICE;
-> > +	cap_t caps;
-> > +
-> > +	caps = cap_get_proc();
-> > +	if (CHECK(!caps, "cap_get_proc", "errno %d", errno))
-> > +		goto free_caps;
-> > +
-> > +	if (CHECK(cap_set_flag(caps, CAP_EFFECTIVE, 1, &cap_net_bind_service,
-> > +			       CAP_CLEAR),
-> > +		  "cap_set_flag", "errno %d", errno))
-> > +		goto free_caps;
-> > +
-> > +	if (CHECK(cap_set_flag(caps, CAP_EFFECTIVE, 1, &cap_net_bind_service,
-> > +			       CAP_CLEAR),
-> > +		  "cap_set_flag", "errno %d", errno))
-> > +		goto free_caps;
-> > +
-> > +	if (CHECK(cap_set_proc(caps), "cap_set_proc", "errno %d", errno))
-> > +		goto free_caps;
-> > +
-> > +free_caps:
-> > +	if (CHECK(cap_free(caps), "cap_free", "errno %d", errno))
-> > +		goto free_caps;
-> > +}
-> > +
-> > +void test_bind_perm(void)
-> > +{
-> > +	struct bind_perm *skel;
-> > +	int cgroup_fd;
-> > +
-> > +	cgroup_fd = test__join_cgroup("/bind_perm");
-> > +	if (CHECK(cgroup_fd < 0, "cg-join", "errno %d", errno))
-> > +		return;
-> > +
-> > +	skel = bind_perm__open_and_load();
-> > +	if (CHECK(!skel, "skel-load", "errno %d", errno))
-> > +		goto close_cgroup_fd;
-> > +
-> > +	skel->links.bind_v4_prog =  
-> bpf_program__attach_cgroup(skel->progs.bind_v4_prog, cgroup_fd);
-> > +	if (CHECK(IS_ERR(skel->links.bind_v4_prog),
-> > +		  "cg-attach", "bind4 %ld",
-> > +		  PTR_ERR(skel->links.bind_v4_prog)))
-> > +		goto close_skeleton;
-> > +
-> > +	cap_net_bind_service(CAP_CLEAR);
-> > +	try_bind(110, EACCES);
-> > +	try_bind(111, 0);
-> > +	cap_net_bind_service(CAP_SET);
-> > +
-> > +close_skeleton:
-> > +	bind_perm__destroy(skel);
-> > +close_cgroup_fd:
-> > +	close(cgroup_fd);
-> > +}
-> > diff --git a/tools/testing/selftests/bpf/progs/bind_perm.c  
-> b/tools/testing/selftests/bpf/progs/bind_perm.c
-> > new file mode 100644
-> > index 000000000000..2194587ec806
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/bind_perm.c
-> > @@ -0,0 +1,36 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +
-> > +#include <linux/stddef.h>
-> > +#include <linux/bpf.h>
-> > +#include <sys/types.h>
-> > +#include <sys/socket.h>
-> > +#include <bpf/bpf_helpers.h>
-> > +#include <bpf/bpf_endian.h>
-> > +
-> > +SEC("cgroup/bind4")
-> > +int bind_v4_prog(struct bpf_sock_addr *ctx)
-> > +{
-> > +	struct bpf_sock *sk;
-> > +	__u32 user_ip4;
-> > +	__u16 user_port;
-> > +
-> > +	sk = ctx->sk;
-> > +	if (!sk)
-> > +		return 0;
-> > +
-> > +	if (sk->family != AF_INET)
-> > +		return 0;
-> > +
-> > +	if (ctx->type != SOCK_STREAM)
-> > +		return 0;
-> > +
-> > +	/* Rewriting to the same value should still cause
-> > +	 * permission check to be bypassed.
-> > +	 */
-> > +	if (ctx->user_port == bpf_htons(111))
-> > +		ctx->user_port = bpf_htons(111);
-> iiuc, this overwrite is essentially the way to ensure the bind
-> will succeed (override CAP_NET_BIND_SERVICE in this particular case?).
-Correct. The alternative might be to export ignore_perm_check
-via bpf_sock_addr and make it explicit.
+On Thu, Jan 21, 2021 at 12:24 PM Jiri Olsa <jolsa@kernel.org> wrote:
+>
+> In case the elf's header e_shstrndx contains SHN_XINDEX,
+> we need to call elf_getshdrstrndx to get the proper
+> string table index.
+>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  dutil.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+>
+> diff --git a/dutil.c b/dutil.c
+> index 7b667647420f..9e0fdca3ae04 100644
+> --- a/dutil.c
+> +++ b/dutil.c
+> @@ -179,13 +179,17 @@ Elf_Scn *elf_section_by_name(Elf *elf, GElf_Ehdr *ep,
+>  {
+>         Elf_Scn *sec = NULL;
+>         size_t cnt = 1;
+> +       size_t str_idx;
+> +
+> +       if (elf_getshdrstrndx(elf, &str_idx))
+> +               return NULL;
+>
+>         while ((sec = elf_nextscn(elf, sec)) != NULL) {
+>                 char *str;
+>
+>                 gelf_getshdr(sec, shp);
+> -               str = elf_strptr(elf, ep->e_shstrndx, shp->sh_name);
+> -               if (!strcmp(name, str)) {
+> +               str = elf_strptr(elf, str_idx, shp->sh_name);
+> +               if (str && !strcmp(name, str)) {
 
-> It seems to be okay if we consider most of the use cases is rewriting
-> to a different port.
+if (!str) would be an error? should we bail out here?
 
-> However, it is quite un-intuitive to the bpf prog to overwrite with
-> the same user_port just to ensure this port can be binded successfully
-> later.
-I'm testing a corner case here when the address is rewritten to the same
-value, but the intention is to rewrite X to Y < 1024.
-
-> Is user_port the only case? How about other fields in bpf_sock_addr?
-Good question. For our use case only the port matters because
-we rewrite both port and address (and never only address).
-
-It does feel like it should also work when BPF rewrites address only
-(and port happens to be in the privileged range). I guess I can
-apply the same logic to the user_ip4 and user_ip6?
+>                         if (index)
+>                                 *index = cnt;
+>                         break;
+> --
+> 2.27.0
+>
