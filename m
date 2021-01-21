@@ -2,156 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 966822FF68C
-	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 21:57:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE54A2FF784
+	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 22:44:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726963AbhAUU4Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Jan 2021 15:56:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50996 "EHLO
+        id S1726456AbhAUVoW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jan 2021 16:44:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726320AbhAUUzs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Jan 2021 15:55:48 -0500
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C32FC0698C0;
-        Thu, 21 Jan 2021 12:53:48 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id z1so3387285ybr.4;
-        Thu, 21 Jan 2021 12:53:48 -0800 (PST)
+        with ESMTP id S1727855AbhAUVnp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Jan 2021 16:43:45 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD6E1C06174A
+        for <bpf@vger.kernel.org>; Thu, 21 Jan 2021 13:43:04 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id g12so4742591ejf.8
+        for <bpf@vger.kernel.org>; Thu, 21 Jan 2021 13:43:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=2Nh9i0Rn2q2vM47aLvZ+VSaju+rMHG+d3GINmjhrKpU=;
-        b=sVOeg3A3D3RbLBXWWQ9qSYhy91SASnu0+4QfdNhpqo2lKIBDNM5AuUzHyue2ExtCZF
-         ytQ0iJMRnzsZ0fye3xflgRjMqGfZDUZ4PqF2uanO+xqH++3ePbU4FvXt4ljoQiKRNWds
-         7RmerZu+HlY/JNGRP9QCr4DIyKrb2l98bthlsMpfS4XvulIJTX9AvIrdxOmW+rdroPUo
-         hmjZ2Zpb1M1I9bP0fdceY+s23avVbDntAG3NudhGeylIf0HYls2fZfeThKH+rLAzOaMJ
-         nlnD6BNi29r4eScKy3CV8rrLEurfsyHCzuE09fi4n7hNwJVs1dKPwisuIlbNaiJmH7Iv
-         r7jQ==
+        bh=v2RuMyF4jWinUI0yazJhSDdwE9q4Kg4lEKtFudxWm10=;
+        b=cvynqA9FltStjL9Fo3GvH8azLxgNVzGex08j5OrA35hcMScCLYIRdkqPG2y7n793WB
+         B8HaDJh5DZ6ly8xOEpNfNmF9Ddb99sMmFFPr4zWX4iQpxx+2gOm3A3dNpHsUa+upqQk/
+         Cped6Fh1lmP4Q5MSrqdhvGVXfaLBFQKFwo1CYFeIBsNd8wWplv55vAONMs5xy87j/Ajw
+         WF1yCL1TglTLCa6Fbbg8Vs/Eifq7m6VFa+ecr+u6IitN+NERuR0XhPHboAw3rweAN1lt
+         YcVKo3NVwmh7gBCd7IxqCoE32aYZ1OAqF737paR0YL3uTQREsgMQSwdQqB7NQgF76T+F
+         VZ9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2Nh9i0Rn2q2vM47aLvZ+VSaju+rMHG+d3GINmjhrKpU=;
-        b=CN1/vgjATXPPe+dcJXCUvADZK9i+lvh37g3FlCzd9eYOFJAUs7qR1rwrbXTVwKPppT
-         nNNR/wTdRMc7oYPbqsN0XGMbM+r7h087ubiXEwLsxZqUfvz9H4jVByUHXCIHt042l7KE
-         HScmzMiMk+EQsZK6sYihpRPsa2p/sdJQr+HAeg+v4ZUH/JQvQ65wyW8t1KHX4cKfNGWK
-         lu6KZAJCGoDlW1/wc8XBPuw58MoB0gyH9w9CEvrZWShOjyIzlWi8sYWnjxev6xBHf6v3
-         kvxsYO7GNbqBupfFcAXk8zQZO1zHxcI26r+UesZjbrALWm0PZMvzQkkx86Bh4zga0Qfp
-         +JFA==
-X-Gm-Message-State: AOAM5321t0ebwvbSHysByn5Pmp5Q3PPn4yCHKSUui9XlT/wlDSPUS+OB
-        lv6Xcb4BvNRGVc1lXY4zNnXWnfCIqA6vogBkqtQ=
-X-Google-Smtp-Source: ABdhPJxZKFbQtvIz8521cbPOPBiVn0VBuBUsuoaUH3IJcKihXdakxLSVKeB5ZNBzzA4TQAqCclAfxTmvpVxH2uHQ1lI=
-X-Received: by 2002:a25:b195:: with SMTP id h21mr1706483ybj.347.1611262427414;
- Thu, 21 Jan 2021 12:53:47 -0800 (PST)
+        bh=v2RuMyF4jWinUI0yazJhSDdwE9q4Kg4lEKtFudxWm10=;
+        b=J/M9Ai8xXoW5gvaxo1nPGoHg9z/y1SF4F3WUm7U1zUAuh83193Gx2PIb9ArZHCox0B
+         uW0DANESsHFKQkCcUsELZ7rMpmsEub3Ae7xTfXXpra0FR6Rb1O4OA3mdsDNbIrVhkL6u
+         M7p3oyaUffePR74vuk7Z+IZI4ySLdbYz3Zhpb0soh89WDBxy5Gk2O1MLWoRtTdc+edRE
+         BcXf6dom1oeTE50+RxNJIQRMj5LCU4JreuEyR8xhye/w9u/5KAfzKchC7dsPsXpgsEaW
+         mTTNCFu0uhhXX7XpqJ62tG3q0brANWFw+3Y0AQw+6r+de94ZJvcaOsL/AN2HqLwHXxtc
+         9MzQ==
+X-Gm-Message-State: AOAM532giX1V8iXriiyIY9ILd7eO2SZngd+7AQX8E7gwj3HClWk8TB0P
+        QGY680SJ1OC+rcHsGckYUu6L/URSJ3jCGTieES0=
+X-Google-Smtp-Source: ABdhPJyXwlWeV0sTOSfn6NHBA5Ih5L5FyJ8C0pCAQyGvBWsbmjQMFCWSJsarGYBs6CafGOrmr5a33JHxQ6bXhSQBNeE=
+X-Received: by 2002:a17:906:704d:: with SMTP id r13mr953054ejj.43.1611265383363;
+ Thu, 21 Jan 2021 13:43:03 -0800 (PST)
 MIME-Version: 1.0
-References: <20210112184004.1302879-1-jolsa@kernel.org> <f3790a7d-73bc-d634-5994-d049c7a73eae@redhat.com>
- <20210121133825.GB12699@kernel.org> <CA+icZUVsdcTEJjwpB7=05W5-+roKf66qTwP+M6QJKTnuP6TOVQ@mail.gmail.com>
-In-Reply-To: <CA+icZUVsdcTEJjwpB7=05W5-+roKf66qTwP+M6QJKTnuP6TOVQ@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 21 Jan 2021 12:53:36 -0800
-Message-ID: <CAEf4BzaVAp=W47KmMsfpj_wuJR-Gvmav=tdKdoHKAC3AW-976w@mail.gmail.com>
-Subject: Re: [PATCH] btf_encoder: Add extra checks for symbol names
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Tom Stellard <tstellar@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>, dwarves@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Hao Luo <haoluo@google.com>
+References: <CANaYP3ENW8FV=CsKFmvpqCvbwzz5z2dLmBzrsO9QePVPuyaxXQ@mail.gmail.com>
+ <CAEf4Bzbd-_6m=u9m32c0-hZA=JMkNEC2yWgcs_02Nv4fxxmpfQ@mail.gmail.com>
+In-Reply-To: <CAEf4Bzbd-_6m=u9m32c0-hZA=JMkNEC2yWgcs_02Nv4fxxmpfQ@mail.gmail.com>
+From:   Gilad Reti <gilad.reti@gmail.com>
+Date:   Thu, 21 Jan 2021 23:42:25 +0200
+Message-ID: <CANaYP3E5L_Tw3Ra3KDBZr27wr9JAb=KbyGAuwBHDPoKMBHRbQg@mail.gmail.com>
+Subject: Re: libbpf ringbuf manager starvation
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+        assaf.piltzer@cyberark.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 8:09 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+On Thu, Jan 21, 2021 at 9:29 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> On Thu, Jan 21, 2021 at 2:38 PM Arnaldo Carvalho de Melo
-> <arnaldo.melo@gmail.com> wrote:
+> On Tue, Jan 19, 2021 at 7:51 AM Gilad Reti <gilad.reti@gmail.com> wrote:
 > >
-> > Em Tue, Jan 12, 2021 at 04:27:59PM -0800, Tom Stellard escreveu:
-> > > On 1/12/21 10:40 AM, Jiri Olsa wrote:
-> > > > When processing kernel image build by clang we can
-> > > > find some functions without the name, which causes
-> > > > pahole to segfault.
-> > > >
-> > > > Adding extra checks to make sure we always have
-> > > > function's name defined before using it.
-> > > >
-> > >
-> > > I backported this patch to pahole 1.19, and I can confirm it fixes the
-> > > segfault for me.
-> >
-> > I'm applying v2 for this patch and based on your above statement I'm
-> > adding a:
-> >
-> > Tested-by: Tom Stellard <tstellar@redhat.com>
-> >
-> > Ok?
-> >
-> > Who originally reported this?
+> > Hello there,
 > >
 >
-> The origin was AFAICS the thread where I asked initially [1].
+> Hi,
 >
-> Tom reported in the same thread in [2] that pahole segfaults.
+> > When playing with the (relatively) new ringbuf api we encountered
+> > something that we believe can be an interesting usecase.
+> > When registering multiple rinbufs to the same ringbuf manager, one of
+> > which is highly active, other ringbufs may starve. Since libbpf
+> > (e)polls on all the managed ringbufs at once and then tries to read
+> > *as many samples as it can* from ready ringbufs, it may get stuck
+> > indefinitely on one of them, not being able to process the other.
+> > We know that the current ringbuf api exposes the epoll_fd so that one
+> > can implement the epoll logic on his own, but this sounds to us like a
+> > not so advanced usecase that may be worth taking care of specifically.
+> > Does allowing to specify a maximum number of samples to consume sounds
+> > like a reasonable addition to the ringbuf api?
 >
-> Later in the thread Jiri offered a draft of this patch after doing some tests.
->
-> I have tested all diffs and v1 and v2 of Jiri's patch.
-> ( Anyway, latest pahole ToT plus Jiri's patch did not solve my origin problem. )
+> Did you actually run into such a situation in practice? If you have a
+> BPF program producing so much data so fast that user-space can't keep
+> up, then it sounds like a suboptimal use case for BPF ringbuf.
 
-Your original problem was with DWARF5 or DWARF4? I think you mentioned
-both at some point, but I remember I couldn't repro DWARF4 problems.
-If you still have problems, can you start a new thread with steps to
-repro (including Kconfig, tooling versions, etc). And one for each
-problem, no all at the same time, please. I honestly lost track of
-what's still not working among those multiple intertwined email
-threads, sorry about that.
+Yes, we have ran into such a situation. Our userspace is far from
+performance-optimal, but currently that is the best we have.
+
 
 >
-> So up to you Arnaldo for the credits.
+> But nevertheless, my advice for you situation is to use two instances
+> of libbpf's ring_buffer: one for super-busy ringbuf, and another for
+> everything else. Or you can even have one for each. It's very
+> flexible.
 >
-> - Sedat -
+
+Yes, that what we are doing currently as a workaround. thanks.
+
+
+> As for having this limit, it's not so simple, unfortunately. The
+> contract between kernel, epoll, and libbpf is that user-space will
+> always consume all the items until it runs out of more items to
+> consume. Internally in kernel BPF ringbuf relies on that to skip
+> unnecessary epoll notifications. If you consume not all items and will
+> attempt to (e)poll again, you'll never get another notification
+> (unless you force-notify from your BPF program, that's an advanced use
+> case).
 >
-> [1] https://marc.info/?t=161036949500004&r=1&w=2
-> [2] https://marc.info/?t=161036949500004&r=1&w=2
+> We could do a round-robin across all registered ringbufs within the
+> ring_buffer instance in ring_buffer__poll()/ring_buffer__consume(),
+> but I think it's over-designing for a quite unusual case.
 >
-> > - Arnaldo
+
+Yes, I agree it is not worth redesigning the entire ringbuf processing
+implementation for this usecase. but we thought adding another parameter
+will be simpler - thanks for clarifying the difficulties.
+
+>
 > >
-> > > -Tom
-> > >
-> > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > > ---
-> > > >   btf_encoder.c | 8 ++++++--
-> > > >   1 file changed, 6 insertions(+), 2 deletions(-)
-> > > >
-> > > > diff --git a/btf_encoder.c b/btf_encoder.c
-> > > > index 333973054b61..17f7a14f2ef0 100644
-> > > > --- a/btf_encoder.c
-> > > > +++ b/btf_encoder.c
-> > > > @@ -72,6 +72,8 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym)
-> > > >     if (elf_sym__type(sym) != STT_FUNC)
-> > > >             return 0;
-> > > > +   if (!elf_sym__name(sym, btfe->symtab))
-> > > > +           return 0;
-> > > >     if (functions_cnt == functions_alloc) {
-> > > >             functions_alloc = max(1000, functions_alloc * 3 / 2);
-> > > > @@ -730,9 +732,11 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
-> > > >             if (!has_arg_names(cu, &fn->proto))
-> > > >                     continue;
-> > > >             if (functions_cnt) {
-> > > > -                   struct elf_function *func;
-> > > > +                   const char *name = function__name(fn, cu);
-> > > > +                   struct elf_function *func = NULL;
-> > > > -                   func = find_function(btfe, function__name(fn, cu));
-> > > > +                   if (name)
-> > > > +                           func = find_function(btfe, name);
-> > > >                     if (!func || func->generated)
-> > > >                             continue;
-> > > >                     func->generated = true;
-> > > >
-> > >
-> >
-> > --
-> >
-> > - Arnaldo
+> > Thanks
