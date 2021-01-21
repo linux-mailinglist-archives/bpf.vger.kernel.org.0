@@ -2,54 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C992FF87A
-	for <lists+bpf@lfdr.de>; Fri, 22 Jan 2021 00:12:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09D862FF8F5
+	for <lists+bpf@lfdr.de>; Fri, 22 Jan 2021 00:34:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726442AbhAUXLU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Jan 2021 18:11:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52106 "EHLO
+        id S1726507AbhAUXdd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jan 2021 18:33:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726410AbhAUXLR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Jan 2021 18:11:17 -0500
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 069C9C061756;
-        Thu, 21 Jan 2021 15:10:37 -0800 (PST)
-Received: by mail-yb1-xb32.google.com with SMTP id b11so3697536ybj.9;
-        Thu, 21 Jan 2021 15:10:36 -0800 (PST)
+        with ESMTP id S1725829AbhAUXdc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Jan 2021 18:33:32 -0500
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B79CFC06174A;
+        Thu, 21 Jan 2021 15:32:51 -0800 (PST)
+Received: by mail-yb1-xb2b.google.com with SMTP id r32so3754819ybd.5;
+        Thu, 21 Jan 2021 15:32:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=eFFyp0an9z6ceYvBlREfDntyLx+f2WYNnkvqDcimax8=;
-        b=OOIpVw0bE3O1Vq0ocNiUGrrpTs2RhI/CWZ33OFW1vmL7qqs7RDUmcLdQnjsqRZLVTK
-         brlQCK2K1/nMhQUIvwB4e9B1EudfArJJY8Y3qRxFjIvu0IAwZdSb5i2IeeQC7dRM+14x
-         CXP5AFRM7cqGKDOEDCKmCFmCmn/MnFPJ0x/FWa3JxS7akK5Vu3Iq5mvjDr0oJnoc3hg/
-         p28ZtCyQQ0vh8yYluFoMergI9dWbRTrPnS6Od6qxUXVYTcWIB4+3XQyTJ/aJGbxq3vRn
-         n9d12osem3p6B0nlZGY425Io4eOuqbdSE5F6KFWQ+vXf2rM31nMgMBUf+i9YUPlvoYsl
-         0f8A==
+        bh=C35DAsDroDMGIM4MMP/P6qJgJuHQSd/cD+Jb12xBf3g=;
+        b=Apbw0vO93JmJbwU/yJK7bayXp92Nyji3WGiv7dMrDtrmUt4YN7loBbnFKDN2gOItgW
+         /7EMuFaBmhXFPI12sjvc2o0otTB/pbs1kSDOHOe+1AnMoLZKQoGnnpJnbHKj6n3J9Llm
+         B5dhkJ7sMHdDoUQ/FGoUwF3HZzoGa4hGNCN+w1o2We83ZGMQtd31t8RvLgSGldU17NBb
+         XbcPwWaJDEhceclGSf0nKzJktIqxYCJIkalAl/Ugc4aG5fATF2BkahAffOfL6AQ70iH1
+         deeZhFG3+WQ5C+PQbYdAmRkpIQz0S5RnoEmygb8f9lr1ZACYxvt4Ycm8xY1OBfoc7Ym9
+         xYgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=eFFyp0an9z6ceYvBlREfDntyLx+f2WYNnkvqDcimax8=;
-        b=AYb1/w+U1N/nLMd4PStrdx5s/vznG2C/U1I1zOOgSED/qT1DCANjij6NOuXB0mZuD0
-         Cgd8UNXJ46xctjYmQ4JtshiVx/MEFwphxfNSyHX3esujMyDKqogavjsmOYIbzWeQyPrC
-         8jqHCsv3nFyIchPgdplGxgLdvalxCiwSwgZLTzPvOtDadcT+u1ZlWMrghcN2e28UNoBE
-         eb5Diate4/O86NsJ4jcjUZlWggqJgQrh/BZMab9D9LVpCHPcYUvo7tonLXWVOrRQQPr9
-         D2lomE3jKMZA90KRGA6T/Hf8tWJ48tmtuGeLdIkXJDo+5lB6jL2Y27Q5EiKZZb7cXSdz
-         Nn2g==
-X-Gm-Message-State: AOAM532WVV2jCHNNv/fW39F6Bs4nkE7D5AoD0RzFBmmTQRo3hJjgRap5
-        oojjS5rqY3yxCYVf/Eh8h2g8wz/K1oWSUafpqFY=
-X-Google-Smtp-Source: ABdhPJxfhRYoc3vLG8+s7Id7lMX+MJciTJQ/oIDC+EPjZXW4ghHrOJU9GHpJuAnPsA8+0rzATqEslleQhBFISRr98kE=
-X-Received: by 2002:a25:48c7:: with SMTP id v190mr2434566yba.260.1611270636310;
- Thu, 21 Jan 2021 15:10:36 -0800 (PST)
+        bh=C35DAsDroDMGIM4MMP/P6qJgJuHQSd/cD+Jb12xBf3g=;
+        b=ZBiESZofN0Wgu0HNbXGV177MXFRbvLie/z3IeCoadkfvbdqADdfabzi5uVn6N4E21l
+         zGlsAMAT+PR7YedYbTx+1tcfMOimETGOcB76gTlU4z/DVaTMuyRel2H/MlgSfZfXaEah
+         T2x5irWG1hEKpMN9O9LwvgDMvRhrRATcUMJkGG0omCMXnYVvM7TP0iuhRctlcEm7amjQ
+         ZcfbNxzbG66T3tuzES04hvPEucvNU/ZFuBS4SK+AdKEP3o8KoP88rIDun5PzlLE44aj9
+         QzE7Kke2KCOZ2U6mNuDH8NFvh1f0mLYJcAfWRw9EIxt8geLyxKjVg1pW+CMjM7g20/Oy
+         DK+w==
+X-Gm-Message-State: AOAM531CvTCIXCgFIhH0kifkyyq7rxOy9Ka00jOcORR82hCzN4GOJ6LK
+        Q9kx/UDHLYfDxkablYgW0x11RXmpJt1QB7H454I=
+X-Google-Smtp-Source: ABdhPJyL0ewKMDLbSTGtIweOcKpLoQvr2K7sPQXPnxWclNHXupHIeuyAWNeykewGSbIkx1fALMF+s+T4AdnmHAimgHw=
+X-Received: by 2002:a25:d6d0:: with SMTP id n199mr2484251ybg.27.1611271971000;
+ Thu, 21 Jan 2021 15:32:51 -0800 (PST)
 MIME-Version: 1.0
-References: <20210121202203.9346-1-jolsa@kernel.org> <20210121202203.9346-2-jolsa@kernel.org>
-In-Reply-To: <20210121202203.9346-2-jolsa@kernel.org>
+References: <20210121202203.9346-1-jolsa@kernel.org> <20210121202203.9346-3-jolsa@kernel.org>
+In-Reply-To: <20210121202203.9346-3-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 21 Jan 2021 15:10:25 -0800
-Message-ID: <CAEf4BzY5CSNjoe19V4GAbFM1N4o4jM38G6yahAhr5bAaDVcYxA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] elf_symtab: Add support for SHN_XINDEX index to elf_section_by_name
+Date:   Thu, 21 Jan 2021 15:32:40 -0800
+Message-ID: <CAEf4BzZquSn0Th7bpVuM0M4XbTPU5-9jDPPd5RJBS5AH2zqaMA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] bpf_encoder: Translate SHN_XINDEX in symbol's
+ st_shndx values
 To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -68,44 +69,125 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 12:24 PM Jiri Olsa <jolsa@kernel.org> wrote:
+On Thu, Jan 21, 2021 at 12:25 PM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> In case the elf's header e_shstrndx contains SHN_XINDEX,
-> we need to call elf_getshdrstrndx to get the proper
-> string table index.
+> For very large ELF objects (with many sections), we could
+> get special value SHN_XINDEX (65535) for symbol's st_shndx.
+>
+> This patch is adding code to detect the optional extended
+> section index table and use it to resolve symbol's section
+> index.
+>
+> Adding elf_symtab__for_each_symbol_index macro that returns
+> symbol's section index and usign it in collect_symbols function.
 >
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  dutil.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
+
+You missed fixing up collect_function() as well, which is using
+elf_sym__section(), which doesn't know about extended numbering.
+
+>  btf_encoder.c | 36 ++++++++++++++++++++++++++++++++----
+>  elf_symtab.c  | 39 ++++++++++++++++++++++++++++++++++++++-
+>  elf_symtab.h  |  2 ++
+>  3 files changed, 72 insertions(+), 5 deletions(-)
 >
-> diff --git a/dutil.c b/dutil.c
-> index 7b667647420f..9e0fdca3ae04 100644
-> --- a/dutil.c
-> +++ b/dutil.c
-> @@ -179,13 +179,17 @@ Elf_Scn *elf_section_by_name(Elf *elf, GElf_Ehdr *ep,
+> diff --git a/btf_encoder.c b/btf_encoder.c
+> index 5557c9efd365..6e6f22c438ce 100644
+> --- a/btf_encoder.c
+> +++ b/btf_encoder.c
+> @@ -585,12 +585,13 @@ static int collect_percpu_var(struct btf_elf *btfe, GElf_Sym *sym)
+>         return 0;
+>  }
+>
+> -static void collect_symbol(GElf_Sym *sym, struct funcs_layout *fl)
+> +static void collect_symbol(GElf_Sym *sym, struct funcs_layout *fl,
+> +                          Elf32_Word sym_sec_idx)
 >  {
->         Elf_Scn *sec = NULL;
->         size_t cnt = 1;
-> +       size_t str_idx;
+>         if (!fl->mcount_start &&
+>             !strcmp("__start_mcount_loc", elf_sym__name(sym, btfe->symtab))) {
+>                 fl->mcount_start = sym->st_value;
+> -               fl->mcount_sec_idx = sym->st_shndx;
+> +               fl->mcount_sec_idx = sym_sec_idx;
+>         }
+>
+>         if (!fl->mcount_stop &&
+> @@ -598,9 +599,36 @@ static void collect_symbol(GElf_Sym *sym, struct funcs_layout *fl)
+>                 fl->mcount_stop = sym->st_value;
+>  }
+>
+> +static bool elf_sym__get(Elf_Data *syms, Elf_Data *syms_sec_idx_table,
+> +                        int id, GElf_Sym *sym, Elf32_Word *sym_sec_idx)
+> +{
+> +       if (!gelf_getsym(syms, id, sym))
+> +               return false;
 > +
-> +       if (elf_getshdrstrndx(elf, &str_idx))
-> +               return NULL;
->
->         while ((sec = elf_nextscn(elf, sec)) != NULL) {
->                 char *str;
->
->                 gelf_getshdr(sec, shp);
-> -               str = elf_strptr(elf, ep->e_shstrndx, shp->sh_name);
-> -               if (!strcmp(name, str)) {
-> +               str = elf_strptr(elf, str_idx, shp->sh_name);
-> +               if (str && !strcmp(name, str)) {
+> +       *sym_sec_idx = sym->st_shndx;
+> +
+> +       if (sym->st_shndx == SHN_XINDEX) {
+> +               if (!syms_sec_idx_table)
+> +                       return false;
+> +               if (!gelf_getsymshndx(syms, syms_sec_idx_table,
+> +                                     id, sym, sym_sec_idx))
 
-if (!str) would be an error? should we bail out here?
 
->                         if (index)
->                                 *index = cnt;
->                         break;
-> --
-> 2.27.0
+gelf_getsymshndx() is supposed to work even for cases that don't use
+extended numbering, so this should work, right?
+
+if (!gelf_getsymshndx(syms, syms_sec_idx_table, id, sym, sym_sec_idx))
+    return false;
+
+if (sym->st_shndx == SHN_XINDEX)
+  *sym_sec_idx = sym->st_shndx;
+
+return true;
+
+?
+
+> +                       return false;
+> +       }
+> +
+> +       return true;
+> +}
+> +
+> +#define elf_symtab__for_each_symbol_index(symtab, id, sym, sym_sec_idx)                \
+> +       for (id = 0, elf_sym__get(symtab->syms, symtab->syms_sec_idx_table,     \
+> +                                 id, &sym, &sym_sec_idx);                      \
+> +            id < symtab->nr_syms;                                              \
+> +            id++, elf_sym__get(symtab->syms, symtab->syms_sec_idx_table,       \
+> +                               id, &sym, &sym_sec_idx))
+
+what do we want to do if elf_sym__get() returns error (false)? We can
+either stop or ignore that symbol, right? But currently you are
+returning invalid symbol data.
+
+so either
+
+for (id = 0; id < symtab->nr_syms && elf_sym__get(symtab->syms,
+symtab->syms_sec_idx_table, d, &sym, &sym_sec_idx); id++)
+
+or
+
+for (id = 0; id < symtab->nr_syms; id++)
+  if (elf_sym__get(symtab->syms, symtab->syms_sec_idx_table, d, &sym,
+&sym_sec_idx))
+
+
+But the current variant looks broken. Oh, and
+elf_symtab__for_each_symbol() is similarly broken, can you please fix
+that as well?
+
+And this new macro should probably be in elf_symtab.h, along the
+elf_symtab__for_each_symbol.
+
+
+> +
+>  static int collect_symbols(struct btf_elf *btfe, bool collect_percpu_vars)
+>  {
+>         struct funcs_layout fl = { };
+> +       Elf32_Word sym_sec_idx;
+>         uint32_t core_id;
+>         GElf_Sym sym;
 >
+
+[...]
