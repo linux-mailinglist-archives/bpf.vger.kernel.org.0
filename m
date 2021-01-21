@@ -2,122 +2,191 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE54A2FF784
-	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 22:44:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6743F2FF7BC
+	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 23:10:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726456AbhAUVoW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Jan 2021 16:44:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727855AbhAUVnp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Jan 2021 16:43:45 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD6E1C06174A
-        for <bpf@vger.kernel.org>; Thu, 21 Jan 2021 13:43:04 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id g12so4742591ejf.8
-        for <bpf@vger.kernel.org>; Thu, 21 Jan 2021 13:43:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=v2RuMyF4jWinUI0yazJhSDdwE9q4Kg4lEKtFudxWm10=;
-        b=cvynqA9FltStjL9Fo3GvH8azLxgNVzGex08j5OrA35hcMScCLYIRdkqPG2y7n793WB
-         B8HaDJh5DZ6ly8xOEpNfNmF9Ddb99sMmFFPr4zWX4iQpxx+2gOm3A3dNpHsUa+upqQk/
-         Cped6Fh1lmP4Q5MSrqdhvGVXfaLBFQKFwo1CYFeIBsNd8wWplv55vAONMs5xy87j/Ajw
-         WF1yCL1TglTLCa6Fbbg8Vs/Eifq7m6VFa+ecr+u6IitN+NERuR0XhPHboAw3rweAN1lt
-         YcVKo3NVwmh7gBCd7IxqCoE32aYZ1OAqF737paR0YL3uTQREsgMQSwdQqB7NQgF76T+F
-         VZ9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v2RuMyF4jWinUI0yazJhSDdwE9q4Kg4lEKtFudxWm10=;
-        b=J/M9Ai8xXoW5gvaxo1nPGoHg9z/y1SF4F3WUm7U1zUAuh83193Gx2PIb9ArZHCox0B
-         uW0DANESsHFKQkCcUsELZ7rMpmsEub3Ae7xTfXXpra0FR6Rb1O4OA3mdsDNbIrVhkL6u
-         M7p3oyaUffePR74vuk7Z+IZI4ySLdbYz3Zhpb0soh89WDBxy5Gk2O1MLWoRtTdc+edRE
-         BcXf6dom1oeTE50+RxNJIQRMj5LCU4JreuEyR8xhye/w9u/5KAfzKchC7dsPsXpgsEaW
-         mTTNCFu0uhhXX7XpqJ62tG3q0brANWFw+3Y0AQw+6r+de94ZJvcaOsL/AN2HqLwHXxtc
-         9MzQ==
-X-Gm-Message-State: AOAM532giX1V8iXriiyIY9ILd7eO2SZngd+7AQX8E7gwj3HClWk8TB0P
-        QGY680SJ1OC+rcHsGckYUu6L/URSJ3jCGTieES0=
-X-Google-Smtp-Source: ABdhPJyXwlWeV0sTOSfn6NHBA5Ih5L5FyJ8C0pCAQyGvBWsbmjQMFCWSJsarGYBs6CafGOrmr5a33JHxQ6bXhSQBNeE=
-X-Received: by 2002:a17:906:704d:: with SMTP id r13mr953054ejj.43.1611265383363;
- Thu, 21 Jan 2021 13:43:03 -0800 (PST)
+        id S1725967AbhAUWJl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jan 2021 17:09:41 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:4470 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726444AbhAUWJd (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 21 Jan 2021 17:09:33 -0500
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 10LLxMSs004403;
+        Thu, 21 Jan 2021 14:08:44 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=aIQLfYJMXcjSdh0840zMWcZF9MwkhA5uIiP8LC+eryI=;
+ b=YkKK8+f6dyXwUzYrvgyEcDX5603HsHvu6wo+dTJZ19XOApX8JlnaKEb3X/1lIH1vnm3k
+ dQO1qmywQK4Hh5W7rUT4gNTMGHkelpobGrT+KHKgqR2nMePYDhRMfl9ExFbsF0GoZw/s
+ I8iKE0TCo4iIP8eEt/1H2J/GuzDtRJK2Vxg= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net with ESMTP id 3668psdqq0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 21 Jan 2021 14:08:44 -0800
+Received: from NAM04-BN3-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 21 Jan 2021 14:08:43 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FBUcVzgWAPfKLvdDxGAX4daKgrRfLgt3w687bofacDzQvxmMPT5M0R4Ba6poOWzQXRvh/8HZmXdDiTNfXrMfqz7ByceSVMWPmRaZQSQB/vtOGXsbQv69XMVCNTCU5U08grNcicpsxTtKI/6jSy8Yvd1L5J8WhiKTEUpgKSCRiHXD2Ijd8MmRwN/Gu0a9+WMqmGroedIby9sc8MW+yXk48gpSKzAN//8OWshpFhp3f5o5d4xCixkN52vthjwypCaw8gYTuJw4Vgh7dJG1jCFyYs0cuhUyO4wuNFKjWeVugfo5aafU1t7T80X+68YTPF6S8n7+49H8h939em4sI1SQ1w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YMPdQ9vxsl1AO8DtpvwQag3nOuGe56o+FEdpqjs/uXk=;
+ b=RoOnnOV/a/FoQHgF35U4YrOl+s7QJgjRxsMsL28HAiF1weMfmdoRUUBxTo2An+AxJXpGirH7GvSmge6arzs9knNclmjZe1ZhglsUMa0i1iiInCniI7GTcVy9aJSE3tb7dEbyE729jxStnzdClzhETnVPbgM51XRmA2OlFPZECbaKdp9MmLna8gtUpauqwmRe44HSfMTgunGRgtJn+oxQ8fmCQlXJwwSAg9flbESkOC572Jo88bX5Zi1B8qfb4Gr5mF7XEIEJu9Q2W4yPA4kY+WNmJ+43GUG7/3XXcry7eG/jHa/ujX14xf1OEpnjKdc50TXNIuQrzJN0rnQcOTeuJg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YMPdQ9vxsl1AO8DtpvwQag3nOuGe56o+FEdpqjs/uXk=;
+ b=EteuneCMnfLFNDnqw/at5u1kZyD1H6BaPs5cvI05UBi2A40iC+3ljIGVXW2mGYvvxdwZfJS+D9idqh+hDCp5rEACCfbCC2ir9I/cDgQCTouz6VeXCUNA+GDDYGIojzGfCVR36TR+T/q0cDwxxbPTCpmz1AKc5AB7YF+XUmKGHog=
+Authentication-Results: mildred.fr; dkim=none (message not signed)
+ header.d=none;mildred.fr; dmarc=none action=none header.from=fb.com;
+Received: from CH2PR15MB3573.namprd15.prod.outlook.com (2603:10b6:610:e::28)
+ by CH2PR15MB3702.namprd15.prod.outlook.com (2603:10b6:610:e::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.13; Thu, 21 Jan
+ 2021 22:08:40 +0000
+Received: from CH2PR15MB3573.namprd15.prod.outlook.com
+ ([fe80::a875:5b25:a9b4:e84e]) by CH2PR15MB3573.namprd15.prod.outlook.com
+ ([fe80::a875:5b25:a9b4:e84e%7]) with mapi id 15.20.3784.012; Thu, 21 Jan 2021
+ 22:08:40 +0000
+Date:   Thu, 21 Jan 2021 14:08:31 -0800
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Shanti Lombard <shanti@mildred.fr>
+CC:     Jakub Sitnicki <jakub@cloudflare.com>,
+        Shanti Lombard =?utf-8?Q?n=C3=A9e_Bouchez-Mongard=C3=A9?= 
+        <shanti20210120@mildred.fr>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>
+Subject: Re: More flexible BPF socket inet_lookup hooking after listening
+ sockets are dispatched
+Message-ID: <20210121220831.vdzjcn4mpwqicirx@kafai-mbp>
+References: <afb4e544-d081-eee8-e792-a480364a6572@mildred.fr>
+ <CAADnVQJnX-+9u--px_VnhrMTPB=O9Y0LH9T7RJbqzfLchbUFvg@mail.gmail.com>
+ <87r1me4k4l.fsf@cloudflare.com>
+ <e1fc896faf4ad913e0372bc30461b849@mildred.fr>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <e1fc896faf4ad913e0372bc30461b849@mildred.fr>
+X-Originating-IP: [2620:10d:c090:400::5:2363]
+X-ClientProxiedBy: CO2PR04CA0176.namprd04.prod.outlook.com
+ (2603:10b6:104:4::30) To CH2PR15MB3573.namprd15.prod.outlook.com
+ (2603:10b6:610:e::28)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp (2620:10d:c090:400::5:2363) by CO2PR04CA0176.namprd04.prod.outlook.com (2603:10b6:104:4::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.12 via Frontend Transport; Thu, 21 Jan 2021 22:08:39 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 48d11d4a-f3ca-440b-98fe-08d8be591bd0
+X-MS-TrafficTypeDiagnostic: CH2PR15MB3702:
+X-Microsoft-Antispam-PRVS: <CH2PR15MB3702FB30CE69DAB8EE045E77D5A10@CH2PR15MB3702.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: krfcg7lLZh1hJKFNpZwGw2DzLM/9l31zKDv+XG6+Yion0gVlx4ygDaKFdMwpq1eI8bRKZ6K/1nO/b/Nyo1EmQlrw0iCwuNvj3uE2KUM8w7dMNGhETqPbzT3TpLcyHvlbDVHHkPFo8QwAygRh92fK9q1Z4MQ0szeP6QkDyCUYDDdfFHkgDnRiggNqB2BcTrJzLsPIvKCn5JIbFagZmtVKbsvDcwop6jGA86ZBJtbyPgZy5UTkDzJlXeV12eEnWbM+tOMI/J5iAMhnnAYGErwuYVifNOhn2P2y/U6UpKFGi7r3GIbQjV8vZ2fen3fjoXNGO1FiYj81z2JCBGE1MQxwyJhaqdNpLVWXYdAWtw2jX7q3i5OvDUgsp4KRft9FXW15OrQwj/4B8Qb4c54GUXGfvHDD+H5E9Vq75p7JWw8282tG7+UkNZ0GEmUMFnW+S2CN3lstb3HAHr8+udY09gzm7g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR15MB3573.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(376002)(346002)(366004)(396003)(53546011)(66574015)(66946007)(6916009)(966005)(6666004)(55016002)(8936002)(478600001)(8676002)(2906002)(1076003)(316002)(83380400001)(16526019)(33716001)(54906003)(52116002)(86362001)(5660300002)(6496006)(66556008)(4326008)(66476007)(186003)(9686003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?iso-8859-1?Q?z80jhf+2CvchTgOaghogWZItpAALKg+HZjxbyFrI401BmCBVZyRE0eS/8B?=
+ =?iso-8859-1?Q?NyTK3UOQAbQA2tEEHSGv9JUwg+ELNwRnwszBqdwJZmMdIA7+gx8/F8MPPr?=
+ =?iso-8859-1?Q?XG3lw9pU+F0qew0Fm+9NMuIq4CpBWu2KI5QsPqybhwk18Abrom/MLw/TIX?=
+ =?iso-8859-1?Q?RfDnGZOk9EAyFk9pKFWb0la/EKzW0w1G/RHX6Sh0rupXwuF/+dB4wmt1p4?=
+ =?iso-8859-1?Q?+9fjXp9ZkhlHi9PY2JDAk4jJNsOj94PZAM6UkewUUt9W/sDjPp2bc5km49?=
+ =?iso-8859-1?Q?Afyozy+6Pn5EqYXpOmqam5bJ+JvDzL0c5RdCmP+cUDBCX4ZIoxLyFyEEYa?=
+ =?iso-8859-1?Q?Ty/M6TwxkEXjoV5LG6vBaG2zBShTX7y85tfjEYiWil5r+4/aKt/q+D9Qji?=
+ =?iso-8859-1?Q?fNusExos3rh+9UsqzhsHDQe4cTsmL2C75zwpS3PcT0iqJFyKXJs3xA7pXV?=
+ =?iso-8859-1?Q?5lNeIq1wl+5uzdOofQJ6q5+RbW6KgQ+l1kLiBpkDucOeg2SPY/YjD4QKKp?=
+ =?iso-8859-1?Q?yb08DUpBzP8v1x98GgMzpdxYJMzXpN3td3M57xq1AVmMw1LPUVru7C8mdc?=
+ =?iso-8859-1?Q?bRv0UON3HtOcwOsFyYFDrR6wWGe6FZscbCTd/4KoUJD52H1L6Ukolt6LdV?=
+ =?iso-8859-1?Q?YF8YAwCqI/3eFNrTO+kRgwgmzh4RJBwYktqpf13L8YYxMPGasGkqrwodEi?=
+ =?iso-8859-1?Q?qo7PzpoUjUqjLhU/MAum00p31tqlxmPBxaB74P71dG4cbqHRwVwkszQV4+?=
+ =?iso-8859-1?Q?SWE8ZCIbZw+AIxTIYPZ73x+7vOYnroeMsuXVODkN5G2p5H33fAZI4kYlCS?=
+ =?iso-8859-1?Q?l10ioCw27sLE+Hp4i/tk6gRT1ZWZLe3x071lKBNUEIEmy4UoOKPNBLxblN?=
+ =?iso-8859-1?Q?ppRx8g+K7MdCwJo6Si4D4BmHgs+EwrZrNWWNrJSH1BNzzdWtkv7pIqMxSw?=
+ =?iso-8859-1?Q?V1M0zFr44MuzNhP1MOmeRGNATH9pwMgIqs72QJEcOw8b1h4PnC8mptknPd?=
+ =?iso-8859-1?Q?vUjKWD3YUKhi3QFRy3BRZM+BetZnR+XirqW+dHQwOvHszN4jAoC6MKlhR7?=
+ =?iso-8859-1?Q?Qg=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 48d11d4a-f3ca-440b-98fe-08d8be591bd0
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR15MB3573.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2021 22:08:40.3725
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Kt3XqNA+AgBcaWVtGcOg3YjXxObzuwU4af1DdSSGp7Blxg0g7w0EeywCaVhJUhxY
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR15MB3702
+X-OriginatorOrg: fb.com
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 1 URL was un-rewritten
 MIME-Version: 1.0
-References: <CANaYP3ENW8FV=CsKFmvpqCvbwzz5z2dLmBzrsO9QePVPuyaxXQ@mail.gmail.com>
- <CAEf4Bzbd-_6m=u9m32c0-hZA=JMkNEC2yWgcs_02Nv4fxxmpfQ@mail.gmail.com>
-In-Reply-To: <CAEf4Bzbd-_6m=u9m32c0-hZA=JMkNEC2yWgcs_02Nv4fxxmpfQ@mail.gmail.com>
-From:   Gilad Reti <gilad.reti@gmail.com>
-Date:   Thu, 21 Jan 2021 23:42:25 +0200
-Message-ID: <CANaYP3E5L_Tw3Ra3KDBZr27wr9JAb=KbyGAuwBHDPoKMBHRbQg@mail.gmail.com>
-Subject: Re: libbpf ringbuf manager starvation
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        assaf.piltzer@cyberark.com
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-21_10:2021-01-21,2021-01-21 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ priorityscore=1501 lowpriorityscore=0 malwarescore=0 suspectscore=0
+ phishscore=0 bulkscore=0 spamscore=0 adultscore=0 mlxlogscore=999
+ impostorscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2101210112
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 9:29 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Tue, Jan 19, 2021 at 7:51 AM Gilad Reti <gilad.reti@gmail.com> wrote:
-> >
-> > Hello there,
-> >
->
-> Hi,
->
-> > When playing with the (relatively) new ringbuf api we encountered
-> > something that we believe can be an interesting usecase.
-> > When registering multiple rinbufs to the same ringbuf manager, one of
-> > which is highly active, other ringbufs may starve. Since libbpf
-> > (e)polls on all the managed ringbufs at once and then tries to read
-> > *as many samples as it can* from ready ringbufs, it may get stuck
-> > indefinitely on one of them, not being able to process the other.
-> > We know that the current ringbuf api exposes the epoll_fd so that one
-> > can implement the epoll logic on his own, but this sounds to us like a
-> > not so advanced usecase that may be worth taking care of specifically.
-> > Does allowing to specify a maximum number of samples to consume sounds
-> > like a reasonable addition to the ringbuf api?
->
-> Did you actually run into such a situation in practice? If you have a
-> BPF program producing so much data so fast that user-space can't keep
-> up, then it sounds like a suboptimal use case for BPF ringbuf.
+On Thu, Jan 21, 2021 at 09:40:19PM +0100, Shanti Lombard wrote:
+> Le 2021-01-21 12:14, Jakub Sitnicki a écrit :
+> > On Wed, Jan 20, 2021 at 10:06 PM CET, Alexei Starovoitov wrote:
+> > 
+> > There is also documentation in the kernel:
+> > 
+> > https://www.kernel.org/doc/html/latest/bpf/prog_sk_lookup.html
+> > 
+> 
+> Thank you, I saw it, it's well written and very much explains it all.
+> 
+> > 
+> > Existing hook is placed before regular listening/unconnected socket
+> > lookup to prevent port hijacking on the unprivileged range.
+> > 
+> 
+> Yes, from the point of view of the BPF program. However from the point of
+> view of a legitimate service listening on a port that might be blocked by
+> the BPF program, BPF is actually hijacking a port bind.
+> 
+> That being said, if you install the BPF filter, you should know what you are
+> doing.
+> 
+> > > > The suggestion above would work for my use case, but there is another
+> > > > possibility to make the same use cases possible : implement in
+> > > > BPF (or
+> > > > allow BPF to call) the C and E steps above so the BPF program can
+> > > > supplant the kernel behavior. I find this solution less elegant
+> > > > and it
+> > > > might not work well in case there are multiple inet_lookup BPF
+> > > > programs
+> > > > installed.
+> > 
+> > Having a BPF helper available to BPF sk_lookup programs that looks up a
+> > socket by packet 4-tuple and netns ID in tcp/udp hashtables sounds
+> > reasonable to me. You gain the flexibility that you describe without
+> > adding code on the hot path.
+Agree that a helper to lookup the inet_hash is probably a better way.
+There are some existing lookup helper examples as you also pointed out.
 
-Yes, we have ran into such a situation. Our userspace is far from
-performance-optimal, but currently that is the best we have.
+I would avoid adding new hooks doing the same thing.
+The same bpf prog will be called multiple times, the bpf running
+ctx has to be initialized multiple times...etc.
 
-
->
-> But nevertheless, my advice for you situation is to use two instances
-> of libbpf's ring_buffer: one for super-busy ringbuf, and another for
-> everything else. Or you can even have one for each. It's very
-> flexible.
->
-
-Yes, that what we are doing currently as a workaround. thanks.
-
-
-> As for having this limit, it's not so simple, unfortunately. The
-> contract between kernel, epoll, and libbpf is that user-space will
-> always consume all the items until it runs out of more items to
-> consume. Internally in kernel BPF ringbuf relies on that to skip
-> unnecessary epoll notifications. If you consume not all items and will
-> attempt to (e)poll again, you'll never get another notification
-> (unless you force-notify from your BPF program, that's an advanced use
-> case).
->
-> We could do a round-robin across all registered ringbufs within the
-> ring_buffer instance in ring_buffer__poll()/ring_buffer__consume(),
-> but I think it's over-designing for a quite unusual case.
->
-
-Yes, I agree it is not worth redesigning the entire ringbuf processing
-implementation for this usecase. but we thought adding another parameter
-will be simpler - thanks for clarifying the difficulties.
-
->
-> >
-> > Thanks
+> 
+> True, if you consider that hot path should not be slowed down. It makes
+> sense. However, for me, it seems the implementation would be more difficult.
+> 
+> Looking at existing BPF helpers <https://man7.org/linux/man-pages/man7/bpf-helpers.7.html
+> > I found bpf_sk_lookup_tcp and bpf_sk_lookup_ucp that should yield a socket
+> from a matching tuple and netns. If that's true and usable from within BPF
+> sk_lookup then it's just a matter of implementing it and the kernel is
+> already ready for such use cases.
+> 
+> Shanti
