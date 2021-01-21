@@ -2,201 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EE072FEC78
-	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 14:58:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBDD52FEC7B
+	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 14:58:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729271AbhAUN6B (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Jan 2021 08:58:01 -0500
-Received: from mga01.intel.com ([192.55.52.88]:14150 "EHLO mga01.intel.com"
+        id S1726365AbhAUNkF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jan 2021 08:40:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725933AbhAUNqM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Jan 2021 08:46:12 -0500
-IronPort-SDR: WJpd9lMuNW8Uyv8t3KCunDYlvXYQIEoGfm4sDjQeG3pvet+YN1VliaipPXBxoRN0YASHkRxxPb
- 09xR1zGbU+nQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9870"; a="198006144"
-X-IronPort-AV: E=Sophos;i="5.79,364,1602572400"; 
-   d="scan'208";a="198006144"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 05:45:13 -0800
-IronPort-SDR: XRAujAvTTM7ZXgiv33dUPK0lz+XqJ9dlDDZVQkyRGWoDUuqjZkQTbxIGoQaIxSqcwmf2iuS/WR
- qLNQ8kVeClkw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,364,1602572400"; 
-   d="scan'208";a="385313196"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by orsmga008.jf.intel.com with ESMTP; 21 Jan 2021 05:45:09 -0800
-Date:   Thu, 21 Jan 2021 14:35:38 +0100
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Hangbin Liu <liuhangbin@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Jiri Benc <jbenc@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        David Ahern <dsahern@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Subject: Re: [PATCHv15 bpf-next 1/6] bpf: run devmap xdp_prog on flush
- instead of bulk enqueue
-Message-ID: <20210121133538.GA41935@ranger.igk.intel.com>
-References: <20210114142321.2594697-1-liuhangbin@gmail.com>
- <20210120022514.2862872-1-liuhangbin@gmail.com>
- <20210120022514.2862872-2-liuhangbin@gmail.com>
- <20210120224238.GA33532@ranger.igk.intel.com>
- <20210121035424.GK1421720@Leo-laptop-t470s>
+        id S1730597AbhAUNjM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Jan 2021 08:39:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C4ED9239EB;
+        Thu, 21 Jan 2021 13:38:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611236310;
+        bh=ZBJzqWqHWOBxIgOlok6VImUdP65BcvCHCmaZY8P6Pow=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=I2IdEpQsYE5SYLMTIadMkT/FDJ4AswfAx9zDUQWr7As8SKFCtON3STZ83NqoGjrYG
+         U6+NeIlkl1aAeLej3cff+62o5fx8Bte1firgMOTO+wP3kSBlVi35yNlvV5gVFbQITn
+         NB/p+Q6wZP3jBD4HE1OsstluuriuQX0gpCoqXoJSFkIA6fcfKZJJOgwjBIBjnXk3kY
+         gOqBLDLHBTDMjYdU6IsMVN1yJrBd7Vw2xmLqtX5gsE8I3u0BcMlEs8vSXcYK8S0RsE
+         vQCqZQldRCU69nJK2nDlrPbFGuGLlVoEtRSeWHDndYtnEzYn5gxnPmmu6f6Ku9fChj
+         WX6klC6B+tV9w==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id CBA7640513; Thu, 21 Jan 2021 10:38:25 -0300 (-03)
+Date:   Thu, 21 Jan 2021 10:38:25 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Tom Stellard <tstellar@redhat.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, dwarves@vger.kernel.org,
+        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Hao Luo <haoluo@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>
+Subject: Re: [PATCH] btf_encoder: Add extra checks for symbol names
+Message-ID: <20210121133825.GB12699@kernel.org>
+References: <20210112184004.1302879-1-jolsa@kernel.org>
+ <f3790a7d-73bc-d634-5994-d049c7a73eae@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210121035424.GK1421720@Leo-laptop-t470s>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <f3790a7d-73bc-d634-5994-d049c7a73eae@redhat.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 11:54:24AM +0800, Hangbin Liu wrote:
-> Hi Maciej,
-> On Wed, Jan 20, 2021 at 11:42:38PM +0100, Maciej Fijalkowski wrote:
-> > > +static int dev_map_bpf_prog_run(struct bpf_prog *xdp_prog,
-> > > +				struct xdp_frame **frames, int n,
-> > > +				struct net_device *dev)
-> > > +{
-> > > +	struct xdp_txq_info txq = { .dev = dev };
-> > > +	struct xdp_buff xdp;
-> > > +	int i, nframes = 0;
-> > > +
-> > > +	for (i = 0; i < n; i++) {
-> > > +		struct xdp_frame *xdpf = frames[i];
-> > > +		u32 act;
-> > > +		int err;
-> > > +
-> > > +		xdp_convert_frame_to_buff(xdpf, &xdp);
-> > > +		xdp.txq = &txq;
-> > > +
-> > > +		act = bpf_prog_run_xdp(xdp_prog, &xdp);
-> > > +		switch (act) {
-> > > +		case XDP_PASS:
-> > > +			err = xdp_update_frame_from_buff(&xdp, xdpf);
+Em Tue, Jan 12, 2021 at 04:27:59PM -0800, Tom Stellard escreveu:
+> On 1/12/21 10:40 AM, Jiri Olsa wrote:
+> > When processing kernel image build by clang we can
+> > find some functions without the name, which causes
+> > pahole to segfault.
 > > 
-> > Bump on John's question.
+> > Adding extra checks to make sure we always have
+> > function's name defined before using it.
+> > 
 > 
-> Hi Jesper, would you please help answer John's question?
-> > >  
-> > > -	sent = dev->netdev_ops->ndo_xdp_xmit(dev, bq->count, bq->q, flags);
-> > > +	/* Init sent to cnt in case there is no xdp_prog */
-> > > +	sent = cnt;
-> > > +	if (bq->xdp_prog) {
-> > > +		sent = dev_map_bpf_prog_run(bq->xdp_prog, bq->q, cnt, dev);
-> > > +		if (!sent)
-> > > +			goto out;
-> > 
-> > Sorry, but 'sent' is a bit confusing to me, actual sending happens below
-> > via ndo_xdp_xmit, right? This hook will not actually send frames.
-> > Can we do a subtle change to have it in separate variable 'to_send' ?
-> 
-> Makes sense to me.
-> > 
-> > Although I'm a huge goto advocate, I feel like this particular usage could
-> > be simplified. Not sure why we had that in first place.
-> > 
-> > I gave a shot at rewriting/refactoring whole bq_xmit_all and I feel like
-> > it's more readable. I introduced 'to_send' variable and got rid of 'error'
-> > label.
-> > 
-> > Thoughts?
-> > 
-> > I might have missed something, though.
-> > 
-> > static void bq_xmit_all(struct xdp_dev_bulk_queue *bq, u32 flags)
-> > {
-> > 	struct net_device *dev = bq->dev;
-> > 	unsigned int cnt = bq->count;
-> > 	int drops = 0, err = 0;
-> > 	int to_send = 0;
-> 
-> The to_send also need to init to cnt.
+> I backported this patch to pahole 1.19, and I can confirm it fixes the
+> segfault for me.
 
-So I missed something indeed :P you're correct
+I'm applying v2 for this patch and based on your above statement I'm
+adding a:
 
-> 
-> > 	int sent = cnt;
-> > 	int i;
-> > 
-> > 	if (unlikely(!cnt))
-> > 		return;
-> > 
-> > 	for (i = 0; i < cnt; i++) {
-> > 		struct xdp_frame *xdpf = bq->q[i];
-> > 
-> > 		prefetch(xdpf);
-> > 	}
-> > 
-> > 	if (bq->xdp_prog) {
-> > 		to_send = dev_map_bpf_prog_run(bq->xdp_prog, bq->q, cnt, dev);
-> > 		if (!to_send) {
-> > 			sent = 0;
-> > 			goto out;
-> > 		}
-> > 	}
-> > 
-> > 	drops = cnt - to_send;
-> 
-> This line could move in to the xdp_prog brackets to save time when no xdp_prog.
+Tested-by: Tom Stellard <tstellar@redhat.com>
 
-Hmm, looks like we can do it.
-For scenario where there was no bq->xdp_prog and failure of ndo_xdp_xmit,
-we didn't alter the count of frames to be sent, so we would basically free
-all of the frames (as drops is 0, cnt = bq->count). After that we
-recalculate drops and correct value will be reported in tracepoint.
+Ok?
 
-(needed to explain it to myself)
+Who originally reported this?
 
+- Arnaldo
+ 
+> -Tom
 > 
-> 	if (bq->xdp_prog) {
-> 		to_send = ...
-> 		if (!to_send) {
-> 			...
-> 		}
-> 		drops = cnt - to_send;
-> 	}
-> 
-> > 	sent = dev->netdev_ops->ndo_xdp_xmit(dev, to_send, bq->q, flags);
-> 
-> If we don't have xdp_prog, the to_send should be cnt.
-
-Yes, we should init to_send to cnt as you're suggesting above.
-
-> 
-> > 	if (sent < 0) {
-> > 		err = sent;
-> > 		sent = 0;
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >   btf_encoder.c | 8 ++++++--
+> >   1 file changed, 6 insertions(+), 2 deletions(-)
 > > 
-> > 		/* If ndo_xdp_xmit fails with an errno, no frames have been
-> > 		 * xmit'ed and it's our responsibility to them free all.
-> > 		 */
-> > 		for (i = 0; i < cnt - drops; i++) {
-> > 			struct xdp_frame *xdpf = bq->q[i];
+> > diff --git a/btf_encoder.c b/btf_encoder.c
+> > index 333973054b61..17f7a14f2ef0 100644
+> > --- a/btf_encoder.c
+> > +++ b/btf_encoder.c
+> > @@ -72,6 +72,8 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym)
+> >   	if (elf_sym__type(sym) != STT_FUNC)
+> >   		return 0;
+> > +	if (!elf_sym__name(sym, btfe->symtab))
+> > +		return 0;
+> >   	if (functions_cnt == functions_alloc) {
+> >   		functions_alloc = max(1000, functions_alloc * 3 / 2);
+> > @@ -730,9 +732,11 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
+> >   		if (!has_arg_names(cu, &fn->proto))
+> >   			continue;
+> >   		if (functions_cnt) {
+> > -			struct elf_function *func;
+> > +			const char *name = function__name(fn, cu);
+> > +			struct elf_function *func = NULL;
+> > -			func = find_function(btfe, function__name(fn, cu));
+> > +			if (name)
+> > +				func = find_function(btfe, name);
+> >   			if (!func || func->generated)
+> >   				continue;
+> >   			func->generated = true;
 > > 
-> > 			xdp_return_frame_rx_napi(xdpf);
-> > 		}
-> > 	}
-> > out:
-> > 	drops = cnt - sent;
-> > 	bq->count = 0;
-> > 
-> > 	trace_xdp_devmap_xmit(bq->dev_rx, dev, sent, drops, err);
-> > 	bq->dev_rx = NULL;
-> > 	bq->xdp_prog = NULL;
-> > 	__list_del_clearprev(&bq->flush_node);
-> > 
-> > 	return;
-> > }
 > 
-> Thanks for your code, looks much clear now.
 
-Good to hear! I agree on your points as well.
+-- 
 
-> 
-> Hangbin
+- Arnaldo
