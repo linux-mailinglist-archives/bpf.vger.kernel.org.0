@@ -2,90 +2,201 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 837F22FEBBE
-	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 14:27:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EE072FEC78
+	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 14:58:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728162AbhAUNZ6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Jan 2021 08:25:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40384 "EHLO mail.kernel.org"
+        id S1729271AbhAUN6B (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jan 2021 08:58:01 -0500
+Received: from mga01.intel.com ([192.55.52.88]:14150 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731763AbhAUNYl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Jan 2021 08:24:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D1BF22CBE;
-        Thu, 21 Jan 2021 13:24:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611235440;
-        bh=rwJXzhJMIhY1EDpt7GD6ssfobGNKXEQh5N/OFbzgjSI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HPrWRvjx+J8N4N4cImgTruqxZjR3uxg3/GcdWUDhiMYjyndzJEqmvmVwufbSOCzGn
-         yLCbIDvwt2ptEMdKcGFq1R+teXGOuVuHyjN8DOjZMeFqiD/tlRXTOAagHyBMhgP+eH
-         JOphNWq7kMaW/y+E/tzx12XTJb7MKnmi6gO7eDJYmSizEX0aVbR09gq79iuDvJoGT6
-         Ap90DiQ9TqXuB41a471MI2q8Ilt76U+8WHwMHCdVYmV1vSLc/RfyZ4pV8m8EXiFYbz
-         9j7gVqhCt0f7Db0trloxTjpVcE9QV1UcyqOo5Why0X8cr9ecUG378YhNSoFqTshhnP
-         Rw5JgbhjnPPCQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 7365440513; Thu, 21 Jan 2021 10:23:58 -0300 (-03)
-Date:   Thu, 21 Jan 2021 10:23:58 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Giuliano Procida <gprocida@google.com>
-Cc:     dwarves@vger.kernel.org, kernel-team@android.com,
-        maennich@google.com, ast@kernel.org, andrii@kernel.org,
-        bpf@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH dwarves v2 3/3] btf_encoder: Set .BTF section alignment
- to 16
-Message-ID: <20210121132358.GY12699@kernel.org>
-References: <20210118160139.1971039-1-gprocida@google.com>
- <20210121113520.3603097-1-gprocida@google.com>
- <20210121113520.3603097-4-gprocida@google.com>
+        id S1725933AbhAUNqM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Jan 2021 08:46:12 -0500
+IronPort-SDR: WJpd9lMuNW8Uyv8t3KCunDYlvXYQIEoGfm4sDjQeG3pvet+YN1VliaipPXBxoRN0YASHkRxxPb
+ 09xR1zGbU+nQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9870"; a="198006144"
+X-IronPort-AV: E=Sophos;i="5.79,364,1602572400"; 
+   d="scan'208";a="198006144"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2021 05:45:13 -0800
+IronPort-SDR: XRAujAvTTM7ZXgiv33dUPK0lz+XqJ9dlDDZVQkyRGWoDUuqjZkQTbxIGoQaIxSqcwmf2iuS/WR
+ qLNQ8kVeClkw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,364,1602572400"; 
+   d="scan'208";a="385313196"
+Received: from ranger.igk.intel.com ([10.102.21.164])
+  by orsmga008.jf.intel.com with ESMTP; 21 Jan 2021 05:45:09 -0800
+Date:   Thu, 21 Jan 2021 14:35:38 +0100
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Hangbin Liu <liuhangbin@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        David Ahern <dsahern@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Subject: Re: [PATCHv15 bpf-next 1/6] bpf: run devmap xdp_prog on flush
+ instead of bulk enqueue
+Message-ID: <20210121133538.GA41935@ranger.igk.intel.com>
+References: <20210114142321.2594697-1-liuhangbin@gmail.com>
+ <20210120022514.2862872-1-liuhangbin@gmail.com>
+ <20210120022514.2862872-2-liuhangbin@gmail.com>
+ <20210120224238.GA33532@ranger.igk.intel.com>
+ <20210121035424.GK1421720@Leo-laptop-t470s>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210121113520.3603097-4-gprocida@google.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20210121035424.GK1421720@Leo-laptop-t470s>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Thu, Jan 21, 2021 at 11:35:20AM +0000, Giuliano Procida escreveu:
-> NOTE: Do not apply. I will try to eliminate the dependency on objcopy
-> instead and achieve what's needed directly using libelf.
-
-Ok, so I'll wait for the right fix.
-
-Thanks for working on this!
-
-- Arnaldo
- 
-> This is to avoid misaligned access when memory-mapping ELF sections.
+On Thu, Jan 21, 2021 at 11:54:24AM +0800, Hangbin Liu wrote:
+> Hi Maciej,
+> On Wed, Jan 20, 2021 at 11:42:38PM +0100, Maciej Fijalkowski wrote:
+> > > +static int dev_map_bpf_prog_run(struct bpf_prog *xdp_prog,
+> > > +				struct xdp_frame **frames, int n,
+> > > +				struct net_device *dev)
+> > > +{
+> > > +	struct xdp_txq_info txq = { .dev = dev };
+> > > +	struct xdp_buff xdp;
+> > > +	int i, nframes = 0;
+> > > +
+> > > +	for (i = 0; i < n; i++) {
+> > > +		struct xdp_frame *xdpf = frames[i];
+> > > +		u32 act;
+> > > +		int err;
+> > > +
+> > > +		xdp_convert_frame_to_buff(xdpf, &xdp);
+> > > +		xdp.txq = &txq;
+> > > +
+> > > +		act = bpf_prog_run_xdp(xdp_prog, &xdp);
+> > > +		switch (act) {
+> > > +		case XDP_PASS:
+> > > +			err = xdp_update_frame_from_buff(&xdp, xdpf);
+> > 
+> > Bump on John's question.
 > 
-> Signed-off-by: Giuliano Procida <gprocida@google.com>
-> ---
->  libbtf.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
+> Hi Jesper, would you please help answer John's question?
+> > >  
+> > > -	sent = dev->netdev_ops->ndo_xdp_xmit(dev, bq->count, bq->q, flags);
+> > > +	/* Init sent to cnt in case there is no xdp_prog */
+> > > +	sent = cnt;
+> > > +	if (bq->xdp_prog) {
+> > > +		sent = dev_map_bpf_prog_run(bq->xdp_prog, bq->q, cnt, dev);
+> > > +		if (!sent)
+> > > +			goto out;
+> > 
+> > Sorry, but 'sent' is a bit confusing to me, actual sending happens below
+> > via ndo_xdp_xmit, right? This hook will not actually send frames.
+> > Can we do a subtle change to have it in separate variable 'to_send' ?
 > 
-> diff --git a/libbtf.c b/libbtf.c
-> index 7552d8e..2f12d53 100644
-> --- a/libbtf.c
-> +++ b/libbtf.c
-> @@ -797,6 +797,14 @@ static int btf_elf__write(const char *filename, struct btf *btf)
->  			goto unlink;
->  		}
->  
-> +		snprintf(cmd, sizeof(cmd), "%s --set-section-alignment .BTF=16 %s",
-> +			 llvm_objcopy, filename);
-> +		if (system(cmd)) {
-> +			/* non-fatal, this is a nice-to-have and it's only supported from LLVM 10 */
-> +			fprintf(stderr, "%s: warning: failed to align .BTF section in '%s': %d!\n",
-> +				__func__, filename, errno);
-> +		}
-> +
->  		err = 0;
->  	unlink:
->  		unlink(tmp_fn);
-> -- 
-> 2.30.0.296.g2bfb1c46d8-goog
+> Makes sense to me.
+> > 
+> > Although I'm a huge goto advocate, I feel like this particular usage could
+> > be simplified. Not sure why we had that in first place.
+> > 
+> > I gave a shot at rewriting/refactoring whole bq_xmit_all and I feel like
+> > it's more readable. I introduced 'to_send' variable and got rid of 'error'
+> > label.
+> > 
+> > Thoughts?
+> > 
+> > I might have missed something, though.
+> > 
+> > static void bq_xmit_all(struct xdp_dev_bulk_queue *bq, u32 flags)
+> > {
+> > 	struct net_device *dev = bq->dev;
+> > 	unsigned int cnt = bq->count;
+> > 	int drops = 0, err = 0;
+> > 	int to_send = 0;
 > 
+> The to_send also need to init to cnt.
 
--- 
+So I missed something indeed :P you're correct
 
-- Arnaldo
+> 
+> > 	int sent = cnt;
+> > 	int i;
+> > 
+> > 	if (unlikely(!cnt))
+> > 		return;
+> > 
+> > 	for (i = 0; i < cnt; i++) {
+> > 		struct xdp_frame *xdpf = bq->q[i];
+> > 
+> > 		prefetch(xdpf);
+> > 	}
+> > 
+> > 	if (bq->xdp_prog) {
+> > 		to_send = dev_map_bpf_prog_run(bq->xdp_prog, bq->q, cnt, dev);
+> > 		if (!to_send) {
+> > 			sent = 0;
+> > 			goto out;
+> > 		}
+> > 	}
+> > 
+> > 	drops = cnt - to_send;
+> 
+> This line could move in to the xdp_prog brackets to save time when no xdp_prog.
+
+Hmm, looks like we can do it.
+For scenario where there was no bq->xdp_prog and failure of ndo_xdp_xmit,
+we didn't alter the count of frames to be sent, so we would basically free
+all of the frames (as drops is 0, cnt = bq->count). After that we
+recalculate drops and correct value will be reported in tracepoint.
+
+(needed to explain it to myself)
+
+> 
+> 	if (bq->xdp_prog) {
+> 		to_send = ...
+> 		if (!to_send) {
+> 			...
+> 		}
+> 		drops = cnt - to_send;
+> 	}
+> 
+> > 	sent = dev->netdev_ops->ndo_xdp_xmit(dev, to_send, bq->q, flags);
+> 
+> If we don't have xdp_prog, the to_send should be cnt.
+
+Yes, we should init to_send to cnt as you're suggesting above.
+
+> 
+> > 	if (sent < 0) {
+> > 		err = sent;
+> > 		sent = 0;
+> > 
+> > 		/* If ndo_xdp_xmit fails with an errno, no frames have been
+> > 		 * xmit'ed and it's our responsibility to them free all.
+> > 		 */
+> > 		for (i = 0; i < cnt - drops; i++) {
+> > 			struct xdp_frame *xdpf = bq->q[i];
+> > 
+> > 			xdp_return_frame_rx_napi(xdpf);
+> > 		}
+> > 	}
+> > out:
+> > 	drops = cnt - sent;
+> > 	bq->count = 0;
+> > 
+> > 	trace_xdp_devmap_xmit(bq->dev_rx, dev, sent, drops, err);
+> > 	bq->dev_rx = NULL;
+> > 	bq->xdp_prog = NULL;
+> > 	__list_del_clearprev(&bq->flush_node);
+> > 
+> > 	return;
+> > }
+> 
+> Thanks for your code, looks much clear now.
+
+Good to hear! I agree on your points as well.
+
+> 
+> Hangbin
