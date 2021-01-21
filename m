@@ -2,85 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F04E92FF481
-	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 20:32:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 104602FF4BC
+	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 20:38:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726495AbhAUTF6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Jan 2021 14:05:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726422AbhAUTFG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Jan 2021 14:05:06 -0500
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5F06C06174A;
-        Thu, 21 Jan 2021 10:53:59 -0800 (PST)
-Received: from lwn.net (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 11E34615F;
-        Thu, 21 Jan 2021 18:53:59 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 11E34615F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1611255239; bh=e02AiBv2dimHcgaSNPw1CsMyR/DFcOwWiLR7VxxDTe0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=cBTxDQi1SyC4H9VXIO0mGJFeHIsSffbYh0YCxno56GZRq3rNXs9TBHFLaMuvhjyKR
-         ugjkTPIGa8DIpZ62lmc6yaDTbW6whMsL2RAeE4pf6iL0k78G7QQwKDOp0ma3L4+cur
-         renPIoGDNePWkDzv0uoTKmlz1fc1U5BlrqBRSxo076vewczWgnsH9qGRUmrTD7vJQ+
-         76Sd5yAB56TLhELaYTNo0vB+6d2gplDSG3PKaaSAbko904++1l+MiFe46NTy97/1G9
-         G5Ix1MaqCsglf6t5xHsZDvzSlek3mJHNhYEgQZJiKxjQJhPAAXyk6p7mzAklLTdSaD
-         ZV1BIsIQa4nxg==
-Date:   Thu, 21 Jan 2021 11:53:57 -0700
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Brendan Jackman <jackmanb@google.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 0/2] BPF docs fixups
-Message-ID: <20210121115357.31f44f34@lwn.net>
-In-Reply-To: <20210120133946.2107897-1-jackmanb@google.com>
-References: <20210120133946.2107897-1-jackmanb@google.com>
-Organization: LWN.net
+        id S1727339AbhAUTiF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jan 2021 14:38:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45878 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726194AbhAUThu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Jan 2021 14:37:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 244F623A3A;
+        Thu, 21 Jan 2021 19:37:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611257829;
+        bh=w7Mf+/YQ7cizKFbhh9DbozTH0EVRXMR4priG6Ci2Prw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ldB52ZcBArYQG4KuBdXkJBLmSmWn+3uuvsH2LwM2HS0we/TpcHHYxrYx6/jnEGvws
+         glpDHOg6NrgfnxKB62Qs4Oh8zrJ84ojXq9hGBR1u4mkDJdf4+PUeH+2VQJUtXo92yp
+         3TpVyL7+eQogDiOeSX5HocSH7kifpaWigCh5AfieZl8kmIHA6twNKBqV46aXjH2RFO
+         +SbanMwFtjXgkxgw2rkV1tjjjzGzrOTTm2rQnEz/HOBVs+x4x97uRWgwM9KGzvrIAe
+         w5Fyf+beFXDnFX5SxNuxOV2zohd/0tfHH4jabopXp0iURDMaiyaUYf0t24TkG5Wgo6
+         1KqKeliqR+zIw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 35A2340513; Thu, 21 Jan 2021 16:37:05 -0300 (-03)
+Date:   Thu, 21 Jan 2021 16:37:05 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Tom Stellard <tstellar@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>, dwarves@vger.kernel.org,
+        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Hao Luo <haoluo@google.com>
+Subject: Re: [PATCH] btf_encoder: Add extra checks for symbol names
+Message-ID: <20210121193705.GA354859@kernel.org>
+References: <20210112184004.1302879-1-jolsa@kernel.org>
+ <f3790a7d-73bc-d634-5994-d049c7a73eae@redhat.com>
+ <20210121133825.GB12699@kernel.org>
+ <CA+icZUVsdcTEJjwpB7=05W5-+roKf66qTwP+M6QJKTnuP6TOVQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+icZUVsdcTEJjwpB7=05W5-+roKf66qTwP+M6QJKTnuP6TOVQ@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 20 Jan 2021 13:39:44 +0000
-Brendan Jackman <jackmanb@google.com> wrote:
+Em Thu, Jan 21, 2021 at 05:06:25PM +0100, Sedat Dilek escreveu:
+> On Thu, Jan 21, 2021 at 2:38 PM Arnaldo Carvalho de Melo
+> <arnaldo.melo@gmail.com> wrote:
+> >
+> > Em Tue, Jan 12, 2021 at 04:27:59PM -0800, Tom Stellard escreveu:
+> > > On 1/12/21 10:40 AM, Jiri Olsa wrote:
+> > > > When processing kernel image build by clang we can
+> > > > find some functions without the name, which causes
+> > > > pahole to segfault.
+> > > >
+> > > > Adding extra checks to make sure we always have
+> > > > function's name defined before using it.
+> > > >
+> > >
+> > > I backported this patch to pahole 1.19, and I can confirm it fixes the
+> > > segfault for me.
+> >
+> > I'm applying v2 for this patch and based on your above statement I'm
+> > adding a:
+> >
+> > Tested-by: Tom Stellard <tstellar@redhat.com>
+> >
+> > Ok?
+> >
+> > Who originally reported this?
+> >
+> 
+> The origin was AFAICS the thread where I asked initially [1].
+> 
+> Tom reported in the same thread in [2] that pahole segfaults.
+> 
+> Later in the thread Jiri offered a draft of this patch after doing some tests.
+> 
+> I have tested all diffs and v1 and v2 of Jiri's patch.
+> ( Anyway, latest pahole ToT plus Jiri's patch did not solve my origin problem. )
+> 
+> So up to you Arnaldo for the credits.
 
-> Difference from v2->v3 [1]:
-> 
->  * Just fixed a commite message, rebased, and added Lukas' review tag - thanks
->    Lukas!
-> 
-> Difference from v1->v2 [1]:
-> 
->  * Split into 2 patches
-> 
->  * Avoided unnecessary ': ::' in .rst source
-> 
->  * Tweaked wording of the -mcpu=v3 bit a little more
-> 
-> [1] Previous versions:
->     v1: https://lore.kernel.org/bpf/CA+i-1C1LVKjfQLBYk6siiqhxfy0jCR7UBcAmJ4jCED0A9aWsxA@mail.gmail.com/T/#t
->     v2: https://lore.kernel.org/bpf/20210118155735.532663-1-jackmanb@google.com/T/#t
-> 
-> Brendan Jackman (2):
->   docs: bpf: Fixup atomics markup
->   docs: bpf: Clarify -mcpu=v3 requirement for atomic ops
-> 
->  Documentation/networking/filter.rst | 20 +++++++++++---------
->  1 file changed, 11 insertions(+), 9 deletions(-)
+Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
+Tested-by: Tom Stellard <tstellar@redhat.com>
 
-I'm assuming these will go up through the BPF/networking trees; please let
-me know if I should pick them up instead.
+is how I'm going about it.
 
-Thanks,
+Thanks for clarifying,
 
-jon
+- Arnaldo
+ 
+> - Sedat -
+> 
+> [1] https://marc.info/?t=161036949500004&r=1&w=2
+> [2] https://marc.info/?t=161036949500004&r=1&w=2
+> 
+> > - Arnaldo
+> >
+> > > -Tom
+> > >
+> > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > > ---
+> > > >   btf_encoder.c | 8 ++++++--
+> > > >   1 file changed, 6 insertions(+), 2 deletions(-)
+> > > >
+> > > > diff --git a/btf_encoder.c b/btf_encoder.c
+> > > > index 333973054b61..17f7a14f2ef0 100644
+> > > > --- a/btf_encoder.c
+> > > > +++ b/btf_encoder.c
+> > > > @@ -72,6 +72,8 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym)
+> > > >     if (elf_sym__type(sym) != STT_FUNC)
+> > > >             return 0;
+> > > > +   if (!elf_sym__name(sym, btfe->symtab))
+> > > > +           return 0;
+> > > >     if (functions_cnt == functions_alloc) {
+> > > >             functions_alloc = max(1000, functions_alloc * 3 / 2);
+> > > > @@ -730,9 +732,11 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
+> > > >             if (!has_arg_names(cu, &fn->proto))
+> > > >                     continue;
+> > > >             if (functions_cnt) {
+> > > > -                   struct elf_function *func;
+> > > > +                   const char *name = function__name(fn, cu);
+> > > > +                   struct elf_function *func = NULL;
+> > > > -                   func = find_function(btfe, function__name(fn, cu));
+> > > > +                   if (name)
+> > > > +                           func = find_function(btfe, name);
+> > > >                     if (!func || func->generated)
+> > > >                             continue;
+> > > >                     func->generated = true;
+> > > >
+> > >
+> >
+> > --
+> >
+> > - Arnaldo
+
+-- 
+
+- Arnaldo
