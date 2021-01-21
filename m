@@ -2,142 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C75DF2FE88C
-	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 12:19:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51B692FE8E5
+	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 12:36:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726921AbhAULRk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Jan 2021 06:17:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38556 "EHLO
+        id S1730585AbhAULe6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jan 2021 06:34:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730199AbhAULPX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Jan 2021 06:15:23 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B56DDC0613C1
-        for <bpf@vger.kernel.org>; Thu, 21 Jan 2021 03:14:37 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id kg20so1562819ejc.4
-        for <bpf@vger.kernel.org>; Thu, 21 Jan 2021 03:14:37 -0800 (PST)
+        with ESMTP id S1728019AbhAULeh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Jan 2021 06:34:37 -0500
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C34B4C061575;
+        Thu, 21 Jan 2021 03:33:49 -0800 (PST)
+Received: by mail-yb1-xb30.google.com with SMTP id f6so1683034ybq.13;
+        Thu, 21 Jan 2021 03:33:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=nBP2VfV4oa1iJyfM51a4xj6vNn8XwpiH4pVkXS0RoXQ=;
-        b=vpwAMIrSjYdRvxVQWmTm9HbTiDVfGQsfzNDdZ4Bg7xI+evoRc24MEFJu/FJQK0IcX8
-         Q1l2f+5+n62a5UJIdkYDpTHhI22lPuQQY8SuHVFmmHdpeV/vC45zL2mD8U7Q54ThCAbk
-         OvuogOjgfWAZv06wUCeOh7LqVjDqqzwOp4Fpg=
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=I+cG4Vp0KOKN+ozIhgZ8d42ujiCT1czKBVqBGfsh21E=;
+        b=QjcSscZscimEm9YXE5dIYpYuqYcpiIxJB+SPAUkEjYLDPYGtuYJyR1e/+YCFiR0qlC
+         pDFpMw5HFKmXcyWysd1FhVkkiwiw7v2DpYdv5H8Un0R46SL6yVpM67dXd67OIZFvtDXY
+         dpW0qo3HPREc7uTvFBrV2HliAUzJOjyhbXreHkpZ5NZFYN9Csb2Q44ryDKdkBdzsyg2Q
+         VoumBKLrxmHUMCdVBuY/16Za7bqRWVO3VlUPwEvpVv0UDSxxSDwErL3NRwzBqW76e0s+
+         zuu9JC1a8X6Oy6MTQX4f5jonI9y7EqxIF9LQv0q6d2eNgRwvrVEBR8JqQdMw10JJcxBZ
+         8o1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version:content-transfer-encoding;
-        bh=nBP2VfV4oa1iJyfM51a4xj6vNn8XwpiH4pVkXS0RoXQ=;
-        b=qosQPiR6x5Ro+wR0Ns2XRDvtKres1XI4TtB8y9r3ynm6+md1btsH5vh9OXqFEj2DY1
-         PjdJW74fmIBbyfz4op5g4nBDdteW3FWo0SAz8pnOKSBL+I8NmpfA5wIL3sKt3xSeJXx7
-         U2+t7M1dRS80o5UzMjL94rRYAkckfJBo+8FNt4ofe9emBWDnjTfvzG3BQmcCKUJloduz
-         2rc+xjxOvc510kA6epAd94gsfIX4pa50IAoJUOjWIpNeyiuKkPfoVhgJpDyh0b+3Stwd
-         63XqZeHiosc1J30sqp7I0Tc2zr7qHc1T3hIQgvJaZeW04V0v/Tcc3SDaBkLSZy6SvSUy
-         +5Nw==
-X-Gm-Message-State: AOAM53059tr48+6l0CpBJikCSYyK9u0Y8U2v97Lx/ZiRlT8cUvJTq9cC
-        CyLYADMlUgel6apfrJ3Jpk5WFA==
-X-Google-Smtp-Source: ABdhPJydRY8ZoGgatPHI1EQSkuLDcDXfldj8WxypqW3YPCpegsaeG8IVlBQF9dqGCtW2q7a9VdusTw==
-X-Received: by 2002:a17:906:110a:: with SMTP id h10mr4539949eja.190.1611227676443;
-        Thu, 21 Jan 2021 03:14:36 -0800 (PST)
-Received: from cloudflare.com (83.24.5.113.ipv4.supernova.orange.pl. [83.24.5.113])
-        by smtp.gmail.com with ESMTPSA id j25sm2637309edy.13.2021.01.21.03.14.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Jan 2021 03:14:35 -0800 (PST)
-References: <afb4e544-d081-eee8-e792-a480364a6572@mildred.fr>
- <CAADnVQJnX-+9u--px_VnhrMTPB=O9Y0LH9T7RJbqzfLchbUFvg@mail.gmail.com>
-User-agent: mu4e 1.1.0; emacs 27.1
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     Shanti Lombard =?utf-8?Q?n=C3=A9e_Bouchez-Mongard=C3=A9?= 
-        <shanti20210120@mildred.fr>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>
-Subject: Re: More flexible BPF socket inet_lookup hooking after listening
- sockets are dispatched
-In-reply-to: <CAADnVQJnX-+9u--px_VnhrMTPB=O9Y0LH9T7RJbqzfLchbUFvg@mail.gmail.com>
-Date:   Thu, 21 Jan 2021 12:14:34 +0100
-Message-ID: <87r1me4k4l.fsf@cloudflare.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=I+cG4Vp0KOKN+ozIhgZ8d42ujiCT1czKBVqBGfsh21E=;
+        b=gPNofxltzAEugMNKrOdXE7iawBLU6dHZdTeRcHC+88MnZXjXEmrOh2E8hlwl/fIzqr
+         XUzW0qan3zp9gVtw7KyIy/iLGkX9k+eXtaHJdygoNuMo8ZN4zHA6Hm04e1WMSe0oI297
+         6vlg1rQImp/mXMbxY6RewVihd+y33WAFYv6Zv0YlzaqoBaWz6uYFX5I59ToOKmesXG3W
+         8PvCEQDaBZEXzrOR5SS61nbvoCBfYOe/V1KbRx9ab5HRGPM01l853ZKEZFdpvHz+AfbE
+         sIlwvE2lpj6gq6Yv3i93ZkKY94oM0dC+Qcy75UAQ9rysj7uUKF+Klpehi+CJd6DRZ6U6
+         Ppeg==
+X-Gm-Message-State: AOAM532QcwkZXtM1C5+jou0L2SMAH0oZETSJ7ZYkLoAqlLqYmdIGfFJH
+        +kwiUlUMVOqa3L7BzbNZeb9GzDx4OeKzzL43xkQ=
+X-Google-Smtp-Source: ABdhPJx7CE06Ajx6zuXEJea156D0wq36xdLyL4K/2sS9pM1SZo8RtkpQgK8SOVM4JSKPoJSwnb6ypisyz8pGTv5Q+jY=
+X-Received: by 2002:a25:688c:: with SMTP id d134mr20778186ybc.477.1611228829127;
+ Thu, 21 Jan 2021 03:33:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+From:   =?UTF-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
+Date:   Thu, 21 Jan 2021 19:33:23 +0800
+Message-ID: <CAD-N9QW6VGmAFPtJDcHahO=OQ=0Cy06-zaQf72mYL0=L_MEc_g@mail.gmail.com>
+Subject: "WARNING in cgroup_finalize_control" and "WARNING in
+ cgroup_apply_control_disable" should be duplicate crash reports
+To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        cgroups@vger.kernel.org, christian@brauner.io,
+        Daniel Borkmann <daniel@iogearbox.net>, hannes@cmpxchg.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
+        linux-kernel <linux-kernel@vger.kernel.org>, lizefan@huawei.com,
+        netdev@vger.kernel.org, songliubraving@fb.com, tj@kernel.org,
+        yhs@fb.com
+Cc:     syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        syzkaller <syzkaller@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 10:06 PM CET, Alexei Starovoitov wrote:
-> cc-ing the right folks
->
-> On Wed, Jan 20, 2021 at 12:30 PM Shanti Lombard n=C3=A9e Bouchez-Mongard=
-=C3=A9
-> <shanti20210120@mildred.fr> wrote:
->>
->> Hello,
->>
->> I believe this is my first time here, so please excuse me for mistakes.
->> Also, please Cc me on answers.
->>
->> Background : I am currently investigating putting network services on a
->> machine without using network namespace but still keep them isolated. To
->> do that, I allocated a separate IP address (127.0.0.0/8 for IPv4 and ULA
->> prefix below fd00::/8 for IPv6) and those services are forced to listen
->> to this IP address only. For some, I use seccomp with a small utility I
->> wrote at <https://github.com/mildred/force-bind-seccomp>. Now, I still
->> want a few selected services (reverse proxies) to listed for public
->> address but they can't necessarily listen with INADDR_ANY because some
->> other services might listen on the same port on their private IP. It
->> seems SO_REUSEADDR can be used to circumvent this on BSD but not on
->> Linux. After much research, I found Cloudflare recent contribution
->> (explained here <https://blog.cloudflare.com/its-crowded-in-here/>)
->> about inet_lookup BPF programs that could replace INADDR_ANY listening.
+Dear kernel developers,
 
-There is also documentation in the kernel:
+I found that on the syzbot dashboard, =E2=80=9CWARNING in
+cgroup_finalize_control=E2=80=9D [1] and "WARNING in
+cgroup_apply_control_disable" [2] should share the same root cause.
 
-https://www.kernel.org/doc/html/latest/bpf/prog_sk_lookup.html
+The reasons for the above statement:
+1) the stack trace is the same, and this title difference is due to
+the inline property of "cgroup_apply_control_disable";
+2) their PoCs are the same as each other;
 
->> The inet_lookup BPF programs are hooking up in socket selection code for
->> incoming packets after connected packets are dispatched to their
->> respective sockets but before any new connection is dispatched to a
->> listening socket. This is well explained in the blog post.
->>
->> However, I believe that being able to hook up later in the process could
->> have great use cases. With its current position, the BPF program can
->> override any listening socket too easily. It can also be surprising for
->> administrators used to the socket API not understanding why their
->> listening socket does not receives any packet.
->>
->> Socket selection process (in net/ipv4/inet_hashtables.c function
->> __inet_lookup_listener):
->>
->> - A: look for already connected sockets (before __inet_lookup_listener)
->> - B: look for inet_lookup BPF programs
->> - C: look for listening sockets specifying address and port
->> - D: here, provide another inet_lookup BPF hook
->> - E: look for sockets listening using INADDR_ANY
->> - F: here, provide another inet_lookup BPF hook
->>
->> In position D, a BPF program could implement socket listening like
->> INADDR_ANY listening would do but without the limitation that the port
->> must not be listened on by another IP address
->>
->> In position F, a BPF program could redirect new connection attempts to a
->> socket of its choice, allowing any connection attempt to be intercepted
->> if not catched before by an already listening socket.
+If you can have any issues with this statement or our information is
+useful to you, please let us know. Thanks very much.
 
-Existing hook is placed before regular listening/unconnected socket
-lookup to prevent port hijacking on the unprivileged range.
+[1] =E2=80=9CWARNING in cgroup_finalize_control=E2=80=9D -
+https://syzkaller.appspot.com/bug?id=3Dfe2fee189f1f8babd95615dcbb57871d6d18=
+920a
 
->> The suggestion above would work for my use case, but there is another
->> possibility to make the same use cases possible : implement in BPF (or
->> allow BPF to call) the C and E steps above so the BPF program can
->> supplant the kernel behavior. I find this solution less elegant and it
->> might not work well in case there are multiple inet_lookup BPF programs
->> installed.
+[2] =E2=80=9CWARNING in cgroup_apply_control_disable=E2=80=9D -
+https://syzkaller.appspot.com/bug?id=3Dba5a3ed954137643a9337f90782c90e90ba3=
+02ed
 
-Having a BPF helper available to BPF sk_lookup programs that looks up a
-socket by packet 4-tuple and netns ID in tcp/udp hashtables sounds
-reasonable to me. You gain the flexibility that you describe without
-adding code on the hot path.
+--
+My best regards to you.
 
-[...]
+     No System Is Safe!
+     Dongliang Mu
