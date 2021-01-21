@@ -2,108 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBDD52FEC7B
-	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 14:58:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01C912FEC4F
+	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 14:52:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726365AbhAUNkF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Jan 2021 08:40:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43478 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730597AbhAUNjM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Jan 2021 08:39:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C4ED9239EB;
-        Thu, 21 Jan 2021 13:38:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611236310;
-        bh=ZBJzqWqHWOBxIgOlok6VImUdP65BcvCHCmaZY8P6Pow=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I2IdEpQsYE5SYLMTIadMkT/FDJ4AswfAx9zDUQWr7As8SKFCtON3STZ83NqoGjrYG
-         U6+NeIlkl1aAeLej3cff+62o5fx8Bte1firgMOTO+wP3kSBlVi35yNlvV5gVFbQITn
-         NB/p+Q6wZP3jBD4HE1OsstluuriuQX0gpCoqXoJSFkIA6fcfKZJJOgwjBIBjnXk3kY
-         gOqBLDLHBTDMjYdU6IsMVN1yJrBd7Vw2xmLqtX5gsE8I3u0BcMlEs8vSXcYK8S0RsE
-         vQCqZQldRCU69nJK2nDlrPbFGuGLlVoEtRSeWHDndYtnEzYn5gxnPmmu6f6Ku9fChj
-         WX6klC6B+tV9w==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id CBA7640513; Thu, 21 Jan 2021 10:38:25 -0300 (-03)
-Date:   Thu, 21 Jan 2021 10:38:25 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Tom Stellard <tstellar@redhat.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, dwarves@vger.kernel.org,
-        bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Hao Luo <haoluo@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>
-Subject: Re: [PATCH] btf_encoder: Add extra checks for symbol names
-Message-ID: <20210121133825.GB12699@kernel.org>
-References: <20210112184004.1302879-1-jolsa@kernel.org>
- <f3790a7d-73bc-d634-5994-d049c7a73eae@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f3790a7d-73bc-d634-5994-d049c7a73eae@redhat.com>
-X-Url:  http://acmel.wordpress.com
+        id S1727354AbhAUNsF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jan 2021 08:48:05 -0500
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:34882 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727463AbhAUNr6 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 21 Jan 2021 08:47:58 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0UMQySoM_1611236829;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0UMQySoM_1611236829)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 21 Jan 2021 21:47:09 +0800
+From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To:     bpf@vger.kernel.org
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Subject: [PATCH bpf-next v3 0/3] xsk: build skb by page
+Date:   Thu, 21 Jan 2021 21:47:06 +0800
+Message-Id: <cover.1611236588.git.xuanzhuo@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Tue, Jan 12, 2021 at 04:27:59PM -0800, Tom Stellard escreveu:
-> On 1/12/21 10:40 AM, Jiri Olsa wrote:
-> > When processing kernel image build by clang we can
-> > find some functions without the name, which causes
-> > pahole to segfault.
-> > 
-> > Adding extra checks to make sure we always have
-> > function's name defined before using it.
-> > 
-> 
-> I backported this patch to pahole 1.19, and I can confirm it fixes the
-> segfault for me.
+v3:
+    Optimized code
 
-I'm applying v2 for this patch and based on your above statement I'm
-adding a:
+v2:
+    1. add priv_flags IFF_TX_SKB_NO_LINEAR instead of netdev_feature
+    2. split the patch to three:
+        a. add priv_flags IFF_TX_SKB_NO_LINEAR
+        b. virtio net add priv_flags IFF_TX_SKB_NO_LINEAR
+        c. When there is support this flag, construct skb without linear space
+    3. use ERR_PTR() and PTR_ERR() to handle the err
 
-Tested-by: Tom Stellard <tstellar@redhat.com>
+v1 message log:
+---------------
 
-Ok?
+This patch is used to construct skb based on page to save memory copy
+overhead.
 
-Who originally reported this?
+This has one problem:
 
-- Arnaldo
- 
-> -Tom
-> 
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >   btf_encoder.c | 8 ++++++--
-> >   1 file changed, 6 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/btf_encoder.c b/btf_encoder.c
-> > index 333973054b61..17f7a14f2ef0 100644
-> > --- a/btf_encoder.c
-> > +++ b/btf_encoder.c
-> > @@ -72,6 +72,8 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym)
-> >   	if (elf_sym__type(sym) != STT_FUNC)
-> >   		return 0;
-> > +	if (!elf_sym__name(sym, btfe->symtab))
-> > +		return 0;
-> >   	if (functions_cnt == functions_alloc) {
-> >   		functions_alloc = max(1000, functions_alloc * 3 / 2);
-> > @@ -730,9 +732,11 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
-> >   		if (!has_arg_names(cu, &fn->proto))
-> >   			continue;
-> >   		if (functions_cnt) {
-> > -			struct elf_function *func;
-> > +			const char *name = function__name(fn, cu);
-> > +			struct elf_function *func = NULL;
-> > -			func = find_function(btfe, function__name(fn, cu));
-> > +			if (name)
-> > +				func = find_function(btfe, name);
-> >   			if (!func || func->generated)
-> >   				continue;
-> >   			func->generated = true;
-> > 
-> 
+We construct the skb by fill the data page as a frag into the skb. In
+this way, the linear space is empty, and the header information is also
+in the frag, not in the linear space, which is not allowed for some
+network cards. For example, Mellanox Technologies MT27710 Family
+[ConnectX-4 Lx] will get the following error message:
 
--- 
+    mlx5_core 0000:3b:00.1 eth1: Error cqe on cqn 0x817, ci 0x8, qn 0x1dbb, opcode 0xd, syndrome 0x1, vendor syndrome 0x68
+    00000000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+    00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+    00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+    00000030: 00 00 00 00 60 10 68 01 0a 00 1d bb 00 0f 9f d2
+    WQE DUMP: WQ size 1024 WQ cur size 0, WQE index 0xf, len: 64
+    00000000: 00 00 0f 0a 00 1d bb 03 00 00 00 08 00 00 00 00
+    00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+    00000020: 00 00 00 2b 00 08 00 00 00 00 00 05 9e e3 08 00
+    00000030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+    mlx5_core 0000:3b:00.1 eth1: ERR CQE on SQ: 0x1dbb
 
-- Arnaldo
+I also tried to use build_skb to construct skb, but because of the
+existence of skb_shinfo, it must be behind the linear space, so this
+method is not working. We can't put skb_shinfo on desc->addr, it will be
+exposed to users, this is not safe.
+
+Finally, I added a feature NETIF_F_SKB_NO_LINEAR to identify whether the
+network card supports the header information of the packet in the frag
+and not in the linear space.
+
+---------------- Performance Testing ------------
+
+The test environment is Aliyun ECS server.
+Test cmd:
+```
+xdpsock -i eth0 -t  -S -s <msg size>
+```
+
+Test result data:
+
+size    64      512     1024    1500
+copy    1916747 1775988 1600203 1440054
+page    1974058 1953655 1945463 1904478
+percent 3.0%    10.0%   21.58%  32.3%
+
+Xuan Zhuo (3):
+  net: add priv_flags for allow tx skb without linear
+  virtio-net: support IFF_TX_SKB_NO_LINEAR
+  xsk: build skb by page
+
+ drivers/net/virtio_net.c  |   3 +-
+ include/linux/netdevice.h |   3 ++
+ net/xdp/xsk.c             | 104 ++++++++++++++++++++++++++++++++++++++--------
+ 3 files changed, 91 insertions(+), 19 deletions(-)
+
+--
+1.8.3.1
+
