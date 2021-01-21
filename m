@@ -2,229 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C27DE2FE838
-	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 11:58:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C75DF2FE88C
+	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 12:19:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730047AbhAUK5v (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Jan 2021 05:57:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34284 "EHLO
+        id S1726921AbhAULRk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jan 2021 06:17:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730048AbhAUKzT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Jan 2021 05:55:19 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF58DC061575;
-        Thu, 21 Jan 2021 02:54:38 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id y19so3123276iov.2;
-        Thu, 21 Jan 2021 02:54:38 -0800 (PST)
+        with ESMTP id S1730199AbhAULPX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Jan 2021 06:15:23 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B56DDC0613C1
+        for <bpf@vger.kernel.org>; Thu, 21 Jan 2021 03:14:37 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id kg20so1562819ejc.4
+        for <bpf@vger.kernel.org>; Thu, 21 Jan 2021 03:14:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=eHh9bl/LcH3CTdV9ko4oi/XPeB06sWntbeOZiEwFMXM=;
-        b=L1lxUFr/7nt1CWNamLeQTcY5LzLE7yyW3CFHVxulBhN2bN10B1Qh7rP6b6iUW8Jgud
-         xZmfL0kHSwQlsx/rjqOsguvKuzPGwXHcTUlCMN+XuoXUj5Z9/u/02KRub1cNAnYaSaRP
-         yGJYOsIRTxYu6Enzd0r1t0zToX9MMFGeuqpFZx9u5yXyd9qsfVKFE+R5dP0I2RKmG1oS
-         5beb3UXxz35t9V7WbLmMsCgy+pCuhXnc0QrZjADD2q9ls3CieQSV86Vk42F+HDR1AlSi
-         q5BE05JgZ386QFQYR7oVaC6x/19PN4KWUYGn0T1T2PYNQUg7ElzoVFsaHuhg70sLzO83
-         9GAQ==
+        d=cloudflare.com; s=google;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=nBP2VfV4oa1iJyfM51a4xj6vNn8XwpiH4pVkXS0RoXQ=;
+        b=vpwAMIrSjYdRvxVQWmTm9HbTiDVfGQsfzNDdZ4Bg7xI+evoRc24MEFJu/FJQK0IcX8
+         Q1l2f+5+n62a5UJIdkYDpTHhI22lPuQQY8SuHVFmmHdpeV/vC45zL2mD8U7Q54ThCAbk
+         OvuogOjgfWAZv06wUCeOh7LqVjDqqzwOp4Fpg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=eHh9bl/LcH3CTdV9ko4oi/XPeB06sWntbeOZiEwFMXM=;
-        b=mJuC61yVhzeCXK1A1LbDNRmBJt78XQ6sxVvUYUJ1P+SYCKI5wu95ZQ9Q2Qf+7kLOzC
-         8xyz491ubYystZz4Rc9Nil/WD3kQOUXYlV2FudY4KX2Pu+XE4Q5kvWRhbXI263Xp7Dx8
-         sSy+tvtyHX57iGuwSp+HOjiwPxel2/zwBbU4VOAw9MTY8HbvDP4wKXmbcJzmq42q7T+F
-         qFDaomvXRG80HLfNb2ORoabiwLzGPxg5NTHqXH52Hjyki7EGswXqIyR3CkHQ/mbAX+u5
-         A4rtPEGo8JXfQ4dyxOgZ8/T/QzqVn4LFAoMxI2xY1rQN43RUAFHDGRjiSQaSEn7QxcRn
-         RzQQ==
-X-Gm-Message-State: AOAM530gjXeuLXTpAiJYEepp0PXI75IbyRtM1Afg+duq/h2LYn+ZLRnb
-        S3PSiZqJKNxNgXmD0niFHVzgbQQJFbYR8BR1XgU=
-X-Google-Smtp-Source: ABdhPJzP6l+ghGWAyhRMogOVXl11n2XWUvKQhiefdX5n3Xb/IWcHz00KN0qrBHFdHgmHQZ5md7UIJrTGvliDSOheLyE=
-X-Received: by 2002:a6b:6a0e:: with SMTP id x14mr9850452iog.57.1611226478174;
- Thu, 21 Jan 2021 02:54:38 -0800 (PST)
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:date:message-id:mime-version:content-transfer-encoding;
+        bh=nBP2VfV4oa1iJyfM51a4xj6vNn8XwpiH4pVkXS0RoXQ=;
+        b=qosQPiR6x5Ro+wR0Ns2XRDvtKres1XI4TtB8y9r3ynm6+md1btsH5vh9OXqFEj2DY1
+         PjdJW74fmIBbyfz4op5g4nBDdteW3FWo0SAz8pnOKSBL+I8NmpfA5wIL3sKt3xSeJXx7
+         U2+t7M1dRS80o5UzMjL94rRYAkckfJBo+8FNt4ofe9emBWDnjTfvzG3BQmcCKUJloduz
+         2rc+xjxOvc510kA6epAd94gsfIX4pa50IAoJUOjWIpNeyiuKkPfoVhgJpDyh0b+3Stwd
+         63XqZeHiosc1J30sqp7I0Tc2zr7qHc1T3hIQgvJaZeW04V0v/Tcc3SDaBkLSZy6SvSUy
+         +5Nw==
+X-Gm-Message-State: AOAM53059tr48+6l0CpBJikCSYyK9u0Y8U2v97Lx/ZiRlT8cUvJTq9cC
+        CyLYADMlUgel6apfrJ3Jpk5WFA==
+X-Google-Smtp-Source: ABdhPJydRY8ZoGgatPHI1EQSkuLDcDXfldj8WxypqW3YPCpegsaeG8IVlBQF9dqGCtW2q7a9VdusTw==
+X-Received: by 2002:a17:906:110a:: with SMTP id h10mr4539949eja.190.1611227676443;
+        Thu, 21 Jan 2021 03:14:36 -0800 (PST)
+Received: from cloudflare.com (83.24.5.113.ipv4.supernova.orange.pl. [83.24.5.113])
+        by smtp.gmail.com with ESMTPSA id j25sm2637309edy.13.2021.01.21.03.14.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jan 2021 03:14:35 -0800 (PST)
+References: <afb4e544-d081-eee8-e792-a480364a6572@mildred.fr>
+ <CAADnVQJnX-+9u--px_VnhrMTPB=O9Y0LH9T7RJbqzfLchbUFvg@mail.gmail.com>
+User-agent: mu4e 1.1.0; emacs 27.1
+From:   Jakub Sitnicki <jakub@cloudflare.com>
+To:     Shanti Lombard =?utf-8?Q?n=C3=A9e_Bouchez-Mongard=C3=A9?= 
+        <shanti20210120@mildred.fr>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>
+Subject: Re: More flexible BPF socket inet_lookup hooking after listening
+ sockets are dispatched
+In-reply-to: <CAADnVQJnX-+9u--px_VnhrMTPB=O9Y0LH9T7RJbqzfLchbUFvg@mail.gmail.com>
+Date:   Thu, 21 Jan 2021 12:14:34 +0100
+Message-ID: <87r1me4k4l.fsf@cloudflare.com>
 MIME-Version: 1.0
-References: <1611206855-22555-1-git-send-email-yangtiezhu@loongson.cn>
- <20210121053627.GA1680146@ubuntu-m3-large-x86> <CAEf4BzbZxuy8LRmngRzLZ3VTnrDw=Rf70Ghkbu1a5+fNpQud5Q@mail.gmail.com>
- <CA+icZUWNu1JaS+m+Ne1ZB+tCARRUaiVh2KbqarnGEtM46PD1NA@mail.gmail.com>
-In-Reply-To: <CA+icZUWNu1JaS+m+Ne1ZB+tCARRUaiVh2KbqarnGEtM46PD1NA@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Thu, 21 Jan 2021 11:54:26 +0100
-Message-ID: <CA+icZUXD6jsAcd4pnbALYYbOq7-z+TRfvEkNRB+_i0BTgiWOyw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3] samples/bpf: Update build procedure for
- manually compiling LLVM and Clang
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Fangrui Song <maskray@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 9:55 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+On Wed, Jan 20, 2021 at 10:06 PM CET, Alexei Starovoitov wrote:
+> cc-ing the right folks
 >
-> On Thu, Jan 21, 2021 at 9:08 AM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Wed, Jan 20, 2021 at 9:36 PM Nathan Chancellor
-> > <natechancellor@gmail.com> wrote:
-> > >
-> > > On Thu, Jan 21, 2021 at 01:27:35PM +0800, Tiezhu Yang wrote:
-> > > > The current LLVM and Clang build procedure in samples/bpf/README.rst is
-> > > > out of date. See below that the links are not accessible any more.
-> > > >
-> > > > $ git clone http://llvm.org/git/llvm.git
-> > > > Cloning into 'llvm'...
-> > > > fatal: unable to access 'http://llvm.org/git/llvm.git/': Maximum (20) redirects followed
-> > > > $ git clone --depth 1 http://llvm.org/git/clang.git
-> > > > Cloning into 'clang'...
-> > > > fatal: unable to access 'http://llvm.org/git/clang.git/': Maximum (20) redirects followed
-> > > >
-> > > > The LLVM community has adopted new ways to build the compiler. There are
-> > > > different ways to build LLVM and Clang, the Clang Getting Started page [1]
-> > > > has one way. As Yonghong said, it is better to copy the build procedure
-> > > > in Documentation/bpf/bpf_devel_QA.rst to keep consistent.
-> > > >
-> > > > I verified the procedure and it is proved to be feasible, so we should
-> > > > update README.rst to reflect the reality. At the same time, update the
-> > > > related comment in Makefile.
-> > > >
-> > > > Additionally, as Fangrui said, the dir llvm-project/llvm/build/install is
-> > > > not used, BUILD_SHARED_LIBS=OFF is the default option [2], so also change
-> > > > Documentation/bpf/bpf_devel_QA.rst together.
-> > > >
-> > > > [1] https://clang.llvm.org/get_started.html
-> > > > [2] https://www.llvm.org/docs/CMake.html
-> > > >
-> > > > Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> > > > Acked-by: Yonghong Song <yhs@fb.com>
-> > >
-> > > Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-> > >
-> > > Small comment below.
-> > >
-> > > > ---
-> > > >
-> > > > v2: Update the commit message suggested by Yonghong,
-> > > >     thank you very much.
-> > > >
-> > > > v3: Remove the default option BUILD_SHARED_LIBS=OFF
-> > > >     and just mkdir llvm-project/llvm/build suggested
-> > > >     by Fangrui.
-> > > >
-> > > >  Documentation/bpf/bpf_devel_QA.rst |  3 +--
-> > > >  samples/bpf/Makefile               |  2 +-
-> > > >  samples/bpf/README.rst             | 16 +++++++++-------
-> > > >  3 files changed, 11 insertions(+), 10 deletions(-)
-> > > >
-> > > > diff --git a/Documentation/bpf/bpf_devel_QA.rst b/Documentation/bpf/bpf_devel_QA.rst
-> > > > index 5b613d2..18788bb 100644
-> > > > --- a/Documentation/bpf/bpf_devel_QA.rst
-> > > > +++ b/Documentation/bpf/bpf_devel_QA.rst
-> > > > @@ -506,11 +506,10 @@ that set up, proceed with building the latest LLVM and clang version
-> > > >  from the git repositories::
-> > > >
-> > > >       $ git clone https://github.com/llvm/llvm-project.git
-> > > > -     $ mkdir -p llvm-project/llvm/build/install
-> > > > +     $ mkdir -p llvm-project/llvm/build
-> > > >       $ cd llvm-project/llvm/build
-> > > >       $ cmake .. -G "Ninja" -DLLVM_TARGETS_TO_BUILD="BPF;X86" \
-> > > >                  -DLLVM_ENABLE_PROJECTS="clang"    \
-> > > > -                -DBUILD_SHARED_LIBS=OFF           \
-> > > >                  -DCMAKE_BUILD_TYPE=Release        \
-> > > >                  -DLLVM_BUILD_RUNTIME=OFF
-> > > >       $ ninja
-> > > > diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-> > > > index 26fc96c..d061446 100644
-> > > > --- a/samples/bpf/Makefile
-> > > > +++ b/samples/bpf/Makefile
-> > > > @@ -208,7 +208,7 @@ TPROGLDLIBS_xdpsock               += -pthread -lcap
-> > > >  TPROGLDLIBS_xsk_fwd          += -pthread
-> > > >
-> > > >  # Allows pointing LLC/CLANG to a LLVM backend with bpf support, redefine on cmdline:
-> > > > -#  make M=samples/bpf/ LLC=~/git/llvm/build/bin/llc CLANG=~/git/llvm/build/bin/clang
-> > > > +# make M=samples/bpf LLC=~/git/llvm-project/llvm/build/bin/llc CLANG=~/git/llvm-project/llvm/build/bin/clang
-> > > >  LLC ?= llc
-> > > >  CLANG ?= clang
-> > > >  OPT ?= opt
-> > > > diff --git a/samples/bpf/README.rst b/samples/bpf/README.rst
-> > > > index dd34b2d..23006cb 100644
-> > > > --- a/samples/bpf/README.rst
-> > > > +++ b/samples/bpf/README.rst
-> > > > @@ -65,17 +65,19 @@ To generate a smaller llc binary one can use::
-> > > >  Quick sniplet for manually compiling LLVM and clang
-> > > >  (build dependencies are cmake and gcc-c++)::
-> > >
-> > > Technically, ninja is now a build dependency as well, it might be worth
-> > > mentioning that here (usually the package is ninja or ninja-build).
-> >
-> > it's possible to generate Makefile by passing `-g "Unix Makefiles"`,
-> > which would avoid dependency on ninja, no?
-> >
->
-> AFAICS, cmake is now the default and "Unix Makefiles" deprecated with
-> newer versions of LLVM/Clang.
->
+> On Wed, Jan 20, 2021 at 12:30 PM Shanti Lombard n=C3=A9e Bouchez-Mongard=
+=C3=A9
+> <shanti20210120@mildred.fr> wrote:
+>>
+>> Hello,
+>>
+>> I believe this is my first time here, so please excuse me for mistakes.
+>> Also, please Cc me on answers.
+>>
+>> Background : I am currently investigating putting network services on a
+>> machine without using network namespace but still keep them isolated. To
+>> do that, I allocated a separate IP address (127.0.0.0/8 for IPv4 and ULA
+>> prefix below fd00::/8 for IPv6) and those services are forced to listen
+>> to this IP address only. For some, I use seccomp with a small utility I
+>> wrote at <https://github.com/mildred/force-bind-seccomp>. Now, I still
+>> want a few selected services (reverse proxies) to listed for public
+>> address but they can't necessarily listen with INADDR_ANY because some
+>> other services might listen on the same port on their private IP. It
+>> seems SO_REUSEADDR can be used to circumvent this on BSD but not on
+>> Linux. After much research, I found Cloudflare recent contribution
+>> (explained here <https://blog.cloudflare.com/its-crowded-in-here/>)
+>> about inet_lookup BPF programs that could replace INADDR_ANY listening.
 
-Hmm, I mixed it up...
-This is about the cmake-generator (GNU/make was deprecated/abandoned).
-Cannot say I use "ninja" - it's fast.
+There is also documentation in the kernel:
 
-Just as a hint for a fast build of LLVM/Clang:
-Use tc-build together with stage1-only (build and install) options.
+https://www.kernel.org/doc/html/latest/bpf/prog_sk_lookup.html
 
-- Sedat -
+>> The inet_lookup BPF programs are hooking up in socket selection code for
+>> incoming packets after connected packets are dispatched to their
+>> respective sockets but before any new connection is dispatched to a
+>> listening socket. This is well explained in the blog post.
+>>
+>> However, I believe that being able to hook up later in the process could
+>> have great use cases. With its current position, the BPF program can
+>> override any listening socket too easily. It can also be surprising for
+>> administrators used to the socket API not understanding why their
+>> listening socket does not receives any packet.
+>>
+>> Socket selection process (in net/ipv4/inet_hashtables.c function
+>> __inet_lookup_listener):
+>>
+>> - A: look for already connected sockets (before __inet_lookup_listener)
+>> - B: look for inet_lookup BPF programs
+>> - C: look for listening sockets specifying address and port
+>> - D: here, provide another inet_lookup BPF hook
+>> - E: look for sockets listening using INADDR_ANY
+>> - F: here, provide another inet_lookup BPF hook
+>>
+>> In position D, a BPF program could implement socket listening like
+>> INADDR_ANY listening would do but without the limitation that the port
+>> must not be listened on by another IP address
+>>
+>> In position F, a BPF program could redirect new connection attempts to a
+>> socket of its choice, allowing any connection attempt to be intercepted
+>> if not catched before by an already listening socket.
 
-[1] https://github.com/ClangBuiltLinux/tc-build
+Existing hook is placed before regular listening/unconnected socket
+lookup to prevent port hijacking on the unprivileged range.
 
->
-> > >
-> > > Regardless of whether that is addressed or not (because it is small),
-> > > feel free to carry forward my tag in any future revisions unless they
-> > > drastically change.
-> > >
-> > > > - $ git clone http://llvm.org/git/llvm.git
-> > > > - $ cd llvm/tools
-> > > > - $ git clone --depth 1 http://llvm.org/git/clang.git
-> > > > - $ cd ..; mkdir build; cd build
-> > > > - $ cmake .. -DLLVM_TARGETS_TO_BUILD="BPF;X86"
-> > > > - $ make -j $(getconf _NPROCESSORS_ONLN)
-> > > > + $ git clone https://github.com/llvm/llvm-project.git
-> > > > + $ mkdir -p llvm-project/llvm/build
-> > > > + $ cd llvm-project/llvm/build
-> > > > + $ cmake .. -G "Ninja" -DLLVM_TARGETS_TO_BUILD="BPF;X86" \
-> > > > +            -DLLVM_ENABLE_PROJECTS="clang"    \
-> > > > +            -DCMAKE_BUILD_TYPE=Release        \
-> > > > +            -DLLVM_BUILD_RUNTIME=OFF
-> > > > + $ ninja
-> > > >
-> > > >  It is also possible to point make to the newly compiled 'llc' or
-> > > >  'clang' command via redefining LLC or CLANG on the make command line::
-> > > >
-> > > > - make M=samples/bpf LLC=~/git/llvm/build/bin/llc CLANG=~/git/llvm/build/bin/clang
-> > > > + make M=samples/bpf LLC=~/git/llvm-project/llvm/build/bin/llc CLANG=~/git/llvm-project/llvm/build/bin/clang
-> > > >
-> > > >  Cross compiling samples
-> > > >  -----------------------
-> > > > --
-> > > > 2.1.0
-> > > >
-> >
-> > --
-> > You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> > To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> > To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/CAEf4BzbZxuy8LRmngRzLZ3VTnrDw%3DRf70Ghkbu1a5%2BfNpQud5Q%40mail.gmail.com.
+>> The suggestion above would work for my use case, but there is another
+>> possibility to make the same use cases possible : implement in BPF (or
+>> allow BPF to call) the C and E steps above so the BPF program can
+>> supplant the kernel behavior. I find this solution less elegant and it
+>> might not work well in case there are multiple inet_lookup BPF programs
+>> installed.
+
+Having a BPF helper available to BPF sk_lookup programs that looks up a
+socket by packet 4-tuple and netns ID in tcp/udp hashtables sounds
+reasonable to me. You gain the flexibility that you describe without
+adding code on the hot path.
+
+[...]
