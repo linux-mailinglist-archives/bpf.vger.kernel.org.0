@@ -2,191 +2,290 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6743F2FF7BC
-	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 23:10:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB562FF800
+	for <lists+bpf@lfdr.de>; Thu, 21 Jan 2021 23:35:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725967AbhAUWJl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Jan 2021 17:09:41 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:4470 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726444AbhAUWJd (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 21 Jan 2021 17:09:33 -0500
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 10LLxMSs004403;
-        Thu, 21 Jan 2021 14:08:44 -0800
+        id S1725794AbhAUWew (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jan 2021 17:34:52 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:43348 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726000AbhAUWef (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 21 Jan 2021 17:34:35 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10LMSjhp004046;
+        Thu, 21 Jan 2021 14:33:40 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
  subject : message-id : references : content-type : in-reply-to :
- content-transfer-encoding : mime-version; s=facebook;
- bh=aIQLfYJMXcjSdh0840zMWcZF9MwkhA5uIiP8LC+eryI=;
- b=YkKK8+f6dyXwUzYrvgyEcDX5603HsHvu6wo+dTJZ19XOApX8JlnaKEb3X/1lIH1vnm3k
- dQO1qmywQK4Hh5W7rUT4gNTMGHkelpobGrT+KHKgqR2nMePYDhRMfl9ExFbsF0GoZw/s
- I8iKE0TCo4iIP8eEt/1H2J/GuzDtRJK2Vxg= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net with ESMTP id 3668psdqq0-1
+ mime-version; s=facebook; bh=gPrrMXoZdHH1VPh0SVxLFsryFqyIOfqdg2QUWKAbrms=;
+ b=drXFsMRdNu97FB/icdNw5U2wzaDK29KJfarCBNnm5nop39moIPsrj1tfym2NmrchSSiB
+ 8hq8ph7Gty/yFZ+N59rmUt5AsCN2yOdIluL4P3UuyVMCLvr+ogri1I10QzgDBRiDWj1W
+ 5kGnCd5joZV8iEOB7bJxw3WpORZfrGBECjg= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 3668ngww3s-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 21 Jan 2021 14:08:44 -0800
-Received: from NAM04-BN3-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
+        Thu, 21 Jan 2021 14:33:39 -0800
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 21 Jan 2021 14:08:43 -0800
+ 15.1.1979.3; Thu, 21 Jan 2021 14:33:39 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FBUcVzgWAPfKLvdDxGAX4daKgrRfLgt3w687bofacDzQvxmMPT5M0R4Ba6poOWzQXRvh/8HZmXdDiTNfXrMfqz7ByceSVMWPmRaZQSQB/vtOGXsbQv69XMVCNTCU5U08grNcicpsxTtKI/6jSy8Yvd1L5J8WhiKTEUpgKSCRiHXD2Ijd8MmRwN/Gu0a9+WMqmGroedIby9sc8MW+yXk48gpSKzAN//8OWshpFhp3f5o5d4xCixkN52vthjwypCaw8gYTuJw4Vgh7dJG1jCFyYs0cuhUyO4wuNFKjWeVugfo5aafU1t7T80X+68YTPF6S8n7+49H8h939em4sI1SQ1w==
+ b=h1Ma2Z5uvHuEdJmPhSjYsjJx7k0oKZJv4guvUMVFKQ/dhgLqattDxy50H3Ai3Y/3IAx3ToRtn430nC8+3iLYbe9/zPBmYn4wtaYYtuk3FbojDc91BXjzl8oPtY7crrS4IckiozxVU2Tmos8YDOEnN/3B0XxFpUZAa30BKcwIKvrQ+OXMOvvO61aAbiDqXb/nn/YMImKdCC6A4vIgiB34WVoFNyJLMT9nAwE8DMLesgWJelk4Lf/MU7NDd79DKnLDewSothG51AFpBpWd3shskGfYuiN8jNQ0tMUhbFAwRdzk5rEE+az9uxtvGhBf2UblFjVz7cAtcwMKx0wR3g8weg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YMPdQ9vxsl1AO8DtpvwQag3nOuGe56o+FEdpqjs/uXk=;
- b=RoOnnOV/a/FoQHgF35U4YrOl+s7QJgjRxsMsL28HAiF1weMfmdoRUUBxTo2An+AxJXpGirH7GvSmge6arzs9knNclmjZe1ZhglsUMa0i1iiInCniI7GTcVy9aJSE3tb7dEbyE729jxStnzdClzhETnVPbgM51XRmA2OlFPZECbaKdp9MmLna8gtUpauqwmRe44HSfMTgunGRgtJn+oxQ8fmCQlXJwwSAg9flbESkOC572Jo88bX5Zi1B8qfb4Gr5mF7XEIEJu9Q2W4yPA4kY+WNmJ+43GUG7/3XXcry7eG/jHa/ujX14xf1OEpnjKdc50TXNIuQrzJN0rnQcOTeuJg==
+ bh=gPrrMXoZdHH1VPh0SVxLFsryFqyIOfqdg2QUWKAbrms=;
+ b=NEBdLY0+EDajcJi5Is3YH+u9LzhM17dG59D+9YYWOyAikY3jgmpmf6GiaIPJ0UTFJ4aqm5tMQuUaptypqiEe+c2s866nd+YI197kzOJMY1mk7OhdQq4pWq6oz++Vsm5a8oTq8/F6w5UicGxHrKTexQXukHzNUqzwyfVt6V+A25WFAcRINZ3IvmdtE3oDC3LjuLQQKOA4U/brgVVIUr54yqD+gGD3dxzUHVqaVOxSHHY986DDl8caM0BSAYM0WmZKsePdzrLBdK6Vm1Unqt7o9kh2CSQxvK3GSBBGlRWdHB+rnT0NSN4rTx2fu6cEou+yG8aiyG+VY/R/R+M1mfanAA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YMPdQ9vxsl1AO8DtpvwQag3nOuGe56o+FEdpqjs/uXk=;
- b=EteuneCMnfLFNDnqw/at5u1kZyD1H6BaPs5cvI05UBi2A40iC+3ljIGVXW2mGYvvxdwZfJS+D9idqh+hDCp5rEACCfbCC2ir9I/cDgQCTouz6VeXCUNA+GDDYGIojzGfCVR36TR+T/q0cDwxxbPTCpmz1AKc5AB7YF+XUmKGHog=
-Authentication-Results: mildred.fr; dkim=none (message not signed)
- header.d=none;mildred.fr; dmarc=none action=none header.from=fb.com;
+ bh=gPrrMXoZdHH1VPh0SVxLFsryFqyIOfqdg2QUWKAbrms=;
+ b=knrmsRHhGXR6gZKWAqcMwTrTeAWIWIjGmRrHHNLGtFkZikBk5gnavatvSi0X3HQqOSuXOQfm1/3SaMXNYyjEJvmF0yP0F91mJa8MxCdg5lKDtOhjz831ZxDLCilRpkB9V9nklhT3seg8kaW3jPWL1FCd4DYRpect2Xm5lb556tQ=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
 Received: from CH2PR15MB3573.namprd15.prod.outlook.com (2603:10b6:610:e::28)
- by CH2PR15MB3702.namprd15.prod.outlook.com (2603:10b6:610:e::12) with
+ by CH2PR15MB3688.namprd15.prod.outlook.com (2603:10b6:610:d::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.13; Thu, 21 Jan
- 2021 22:08:40 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Thu, 21 Jan
+ 2021 22:33:37 +0000
 Received: from CH2PR15MB3573.namprd15.prod.outlook.com
  ([fe80::a875:5b25:a9b4:e84e]) by CH2PR15MB3573.namprd15.prod.outlook.com
  ([fe80::a875:5b25:a9b4:e84e%7]) with mapi id 15.20.3784.012; Thu, 21 Jan 2021
- 22:08:40 +0000
-Date:   Thu, 21 Jan 2021 14:08:31 -0800
+ 22:33:37 +0000
+Date:   Thu, 21 Jan 2021 14:33:30 -0800
 From:   Martin KaFai Lau <kafai@fb.com>
-To:     Shanti Lombard <shanti@mildred.fr>
-CC:     Jakub Sitnicki <jakub@cloudflare.com>,
-        Shanti Lombard =?utf-8?Q?n=C3=A9e_Bouchez-Mongard=C3=A9?= 
-        <shanti20210120@mildred.fr>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>
-Subject: Re: More flexible BPF socket inet_lookup hooking after listening
- sockets are dispatched
-Message-ID: <20210121220831.vdzjcn4mpwqicirx@kafai-mbp>
-References: <afb4e544-d081-eee8-e792-a480364a6572@mildred.fr>
- <CAADnVQJnX-+9u--px_VnhrMTPB=O9Y0LH9T7RJbqzfLchbUFvg@mail.gmail.com>
- <87r1me4k4l.fsf@cloudflare.com>
- <e1fc896faf4ad913e0372bc30461b849@mildred.fr>
-Content-Type: text/plain; charset=iso-8859-1
+To:     Stanislav Fomichev <sdf@google.com>
+CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>, <ast@kernel.org>,
+        <daniel@iogearbox.net>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: verify that rebinding to
+ port < 1024 from BPF works
+Message-ID: <20210121223330.pyk4ljtjirm2zlay@kafai-mbp>
+References: <20210121012241.2109147-1-sdf@google.com>
+ <20210121012241.2109147-2-sdf@google.com>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e1fc896faf4ad913e0372bc30461b849@mildred.fr>
+In-Reply-To: <20210121012241.2109147-2-sdf@google.com>
 X-Originating-IP: [2620:10d:c090:400::5:2363]
-X-ClientProxiedBy: CO2PR04CA0176.namprd04.prod.outlook.com
- (2603:10b6:104:4::30) To CH2PR15MB3573.namprd15.prod.outlook.com
+X-ClientProxiedBy: SJ0PR03CA0101.namprd03.prod.outlook.com
+ (2603:10b6:a03:333::16) To CH2PR15MB3573.namprd15.prod.outlook.com
  (2603:10b6:610:e::28)
+MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp (2620:10d:c090:400::5:2363) by CO2PR04CA0176.namprd04.prod.outlook.com (2603:10b6:104:4::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.12 via Frontend Transport; Thu, 21 Jan 2021 22:08:39 +0000
+Received: from kafai-mbp (2620:10d:c090:400::5:2363) by SJ0PR03CA0101.namprd03.prod.outlook.com (2603:10b6:a03:333::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.12 via Frontend Transport; Thu, 21 Jan 2021 22:33:36 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 48d11d4a-f3ca-440b-98fe-08d8be591bd0
-X-MS-TrafficTypeDiagnostic: CH2PR15MB3702:
-X-Microsoft-Antispam-PRVS: <CH2PR15MB3702FB30CE69DAB8EE045E77D5A10@CH2PR15MB3702.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 9cb701ed-ecc5-4cbe-9e74-08d8be5c97ea
+X-MS-TrafficTypeDiagnostic: CH2PR15MB3688:
+X-Microsoft-Antispam-PRVS: <CH2PR15MB36886C0CA2E7070765E64C1DD5A19@CH2PR15MB3688.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: krfcg7lLZh1hJKFNpZwGw2DzLM/9l31zKDv+XG6+Yion0gVlx4ygDaKFdMwpq1eI8bRKZ6K/1nO/b/Nyo1EmQlrw0iCwuNvj3uE2KUM8w7dMNGhETqPbzT3TpLcyHvlbDVHHkPFo8QwAygRh92fK9q1Z4MQ0szeP6QkDyCUYDDdfFHkgDnRiggNqB2BcTrJzLsPIvKCn5JIbFagZmtVKbsvDcwop6jGA86ZBJtbyPgZy5UTkDzJlXeV12eEnWbM+tOMI/J5iAMhnnAYGErwuYVifNOhn2P2y/U6UpKFGi7r3GIbQjV8vZ2fen3fjoXNGO1FiYj81z2JCBGE1MQxwyJhaqdNpLVWXYdAWtw2jX7q3i5OvDUgsp4KRft9FXW15OrQwj/4B8Qb4c54GUXGfvHDD+H5E9Vq75p7JWw8282tG7+UkNZ0GEmUMFnW+S2CN3lstb3HAHr8+udY09gzm7g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR15MB3573.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(376002)(346002)(366004)(396003)(53546011)(66574015)(66946007)(6916009)(966005)(6666004)(55016002)(8936002)(478600001)(8676002)(2906002)(1076003)(316002)(83380400001)(16526019)(33716001)(54906003)(52116002)(86362001)(5660300002)(6496006)(66556008)(4326008)(66476007)(186003)(9686003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?iso-8859-1?Q?z80jhf+2CvchTgOaghogWZItpAALKg+HZjxbyFrI401BmCBVZyRE0eS/8B?=
- =?iso-8859-1?Q?NyTK3UOQAbQA2tEEHSGv9JUwg+ELNwRnwszBqdwJZmMdIA7+gx8/F8MPPr?=
- =?iso-8859-1?Q?XG3lw9pU+F0qew0Fm+9NMuIq4CpBWu2KI5QsPqybhwk18Abrom/MLw/TIX?=
- =?iso-8859-1?Q?RfDnGZOk9EAyFk9pKFWb0la/EKzW0w1G/RHX6Sh0rupXwuF/+dB4wmt1p4?=
- =?iso-8859-1?Q?+9fjXp9ZkhlHi9PY2JDAk4jJNsOj94PZAM6UkewUUt9W/sDjPp2bc5km49?=
- =?iso-8859-1?Q?Afyozy+6Pn5EqYXpOmqam5bJ+JvDzL0c5RdCmP+cUDBCX4ZIoxLyFyEEYa?=
- =?iso-8859-1?Q?Ty/M6TwxkEXjoV5LG6vBaG2zBShTX7y85tfjEYiWil5r+4/aKt/q+D9Qji?=
- =?iso-8859-1?Q?fNusExos3rh+9UsqzhsHDQe4cTsmL2C75zwpS3PcT0iqJFyKXJs3xA7pXV?=
- =?iso-8859-1?Q?5lNeIq1wl+5uzdOofQJ6q5+RbW6KgQ+l1kLiBpkDucOeg2SPY/YjD4QKKp?=
- =?iso-8859-1?Q?yb08DUpBzP8v1x98GgMzpdxYJMzXpN3td3M57xq1AVmMw1LPUVru7C8mdc?=
- =?iso-8859-1?Q?bRv0UON3HtOcwOsFyYFDrR6wWGe6FZscbCTd/4KoUJD52H1L6Ukolt6LdV?=
- =?iso-8859-1?Q?YF8YAwCqI/3eFNrTO+kRgwgmzh4RJBwYktqpf13L8YYxMPGasGkqrwodEi?=
- =?iso-8859-1?Q?qo7PzpoUjUqjLhU/MAum00p31tqlxmPBxaB74P71dG4cbqHRwVwkszQV4+?=
- =?iso-8859-1?Q?SWE8ZCIbZw+AIxTIYPZ73x+7vOYnroeMsuXVODkN5G2p5H33fAZI4kYlCS?=
- =?iso-8859-1?Q?l10ioCw27sLE+Hp4i/tk6gRT1ZWZLe3x071lKBNUEIEmy4UoOKPNBLxblN?=
- =?iso-8859-1?Q?ppRx8g+K7MdCwJo6Si4D4BmHgs+EwrZrNWWNrJSH1BNzzdWtkv7pIqMxSw?=
- =?iso-8859-1?Q?V1M0zFr44MuzNhP1MOmeRGNATH9pwMgIqs72QJEcOw8b1h4PnC8mptknPd?=
- =?iso-8859-1?Q?vUjKWD3YUKhi3QFRy3BRZM+BetZnR+XirqW+dHQwOvHszN4jAoC6MKlhR7?=
- =?iso-8859-1?Q?Qg=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 48d11d4a-f3ca-440b-98fe-08d8be591bd0
+X-Microsoft-Antispam-Message-Info: qoKTgmPAeiM2RMzEdJAyVyk4jiAnBuwho0lzP9tFfK/zXUMQLcfonn5vNbEcjrA3XRMsJK42xtjTuTxUGuByT44jw8/uEukZVD4zTcG1MKELCPWYxxSg4WYgtBRVqbm4t/+ZHU3pVRLtdFapg9yru0n+j/2vdyZxBW7DNQUu6DTYlT/2jrJP2y1fCrtPZywIpvyujJlfS92WO5QZNCIr4G/4jVYcZt38BKvbLCR9FpZQyDLXTajaH+NxJBi5DnY7bVzpATcis1+doSpsqs1gDZ1FJAWqF/L15iT4dJQedjmpjPo8GO6C58NL1y90eY8JOp3xiRCbBbijOatMk93gvKhkURY5shegIU33q8vjXZhe7WVCI+1J7rJrppXtmxpw/exT7NoaG2xKKFzGLh8osQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR15MB3573.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(376002)(39860400002)(136003)(346002)(366004)(8676002)(66476007)(55016002)(6666004)(66556008)(66946007)(316002)(6496006)(86362001)(186003)(52116002)(6916009)(16526019)(33716001)(9686003)(5660300002)(15650500001)(4326008)(83380400001)(1076003)(2906002)(8936002)(478600001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?nv4LmQKasCw7MX73e0LTMyYe/z10o73jEF3H3k4Y7giNJSMSJQBwVt1yuBD0?=
+ =?us-ascii?Q?rdUipYveRef7CrFdgFVSaA3e5dC3hI21HX496yJsoTIos/t8jyVPK3KGhBl4?=
+ =?us-ascii?Q?yhRpWMCoF1XCkMLxngZVUg6Zvh5Hk+jfLkqu0FkzKa+EbUfT9UCVqsZH0KrQ?=
+ =?us-ascii?Q?maca+gf93lRv11qVmreqxjto4Saqh1IogJhnJW6jo1uLgrBWL/wBAvHRwPXs?=
+ =?us-ascii?Q?Pr8bZyNDLIzJ33JX2qhsQddW2FJ2RKnYqkUwK8KNixYk8Driqay5OVdyL12h?=
+ =?us-ascii?Q?HPq5l5/FHkBBfWuqFSUc7HGfFDb1GoBehmhMdijWNGqUU0UVn+u6b/dKdw02?=
+ =?us-ascii?Q?w5LHsOmbvcrByKVOi55+1DSYF28kIx9rU6Ax6AywV5mgntWR8SvWcFop14sc?=
+ =?us-ascii?Q?waF1a7MeQUjQSFPOo8qpz9gYwRV8Gx7DYrqlcjzcJsMj/9uBwtElVNq9ISWf?=
+ =?us-ascii?Q?tUUJMGc+CEqo8HBpRI+MaOVK7XUiT9e8X83lNfGal/P6wg+uvt0USGDIjp8O?=
+ =?us-ascii?Q?5UwFpolgJV6TdmETVXf7ZEkXBKygHivyjAwFIX1fL4lipAVJhpjIpsSkOnbe?=
+ =?us-ascii?Q?9EMhOpVSthRVf6/fo7Q5Lcg/zr7toYGHAElVbGEOQdZLfnRijsN2eNVAvRzY?=
+ =?us-ascii?Q?3DD3CchUM+1Vnd+RFlfUHDwOKKbLwmpH2UrYeG8gQkJ9lvAwZUThY2Rm0IOP?=
+ =?us-ascii?Q?z1KtcA/h3GHRNqb6xkeUqHEpTlYEd1BVqh2IXk97rDJmRfVOPQv6NMr9Hatg?=
+ =?us-ascii?Q?I1Vj5cikbJW7C/x9kooWG2UafgALT6jZsMrwWcw7FnRFqANYDPmzReEfoLqt?=
+ =?us-ascii?Q?82BiEgGjG9veqQg5f9dXYtZ5qV63L/CibzXwigv3pF88YlBkdNmeWjWsuZ74?=
+ =?us-ascii?Q?vHnkzPtgHeEKXK2x14rPOrBstBV7CiQ+ImEnTZSCRroo6cMiWzIwmD/VoucS?=
+ =?us-ascii?Q?QUHxBDKSFagfjhi1r1PLO7RjmTkteXPJ2GuXIdZ2CkyloagVi1wIvnTjQM9+?=
+ =?us-ascii?Q?rbsU3CKO8tbYHObqVsBMNnOfZg=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9cb701ed-ecc5-4cbe-9e74-08d8be5c97ea
 X-MS-Exchange-CrossTenant-AuthSource: CH2PR15MB3573.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2021 22:08:40.3725
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jan 2021 22:33:37.0667
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Kt3XqNA+AgBcaWVtGcOg3YjXxObzuwU4af1DdSSGp7Blxg0g7w0EeywCaVhJUhxY
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR15MB3702
+X-MS-Exchange-CrossTenant-UserPrincipalName: sJti+hCpbimJIIJps5nuAYsDacDPOTxVFTfpWcMgSqvymgfY0I1IvVo0JoqSUq/2
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR15MB3688
 X-OriginatorOrg: fb.com
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 1 URL was un-rewritten
-MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
  definitions=2021-01-21_10:2021-01-21,2021-01-21 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
- priorityscore=1501 lowpriorityscore=0 malwarescore=0 suspectscore=0
- phishscore=0 bulkscore=0 spamscore=0 adultscore=0 mlxlogscore=999
- impostorscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2101210112
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 bulkscore=0
+ mlxscore=0 lowpriorityscore=0 priorityscore=1501 impostorscore=0
+ spamscore=0 adultscore=0 malwarescore=0 suspectscore=0 clxscore=1015
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101210115
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 09:40:19PM +0100, Shanti Lombard wrote:
-> Le 2021-01-21 12:14, Jakub Sitnicki a écrit :
-> > On Wed, Jan 20, 2021 at 10:06 PM CET, Alexei Starovoitov wrote:
-> > 
-> > There is also documentation in the kernel:
-> > 
-> > https://www.kernel.org/doc/html/latest/bpf/prog_sk_lookup.html
-> > 
+On Wed, Jan 20, 2021 at 05:22:41PM -0800, Stanislav Fomichev wrote:
+> BPF rewrites from 111 to 111, but it still should mark the port as
+> "changed".
+> We also verify that if port isn't touched by BPF, it's still prohibited.
 > 
-> Thank you, I saw it, it's well written and very much explains it all.
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> ---
+>  .../selftests/bpf/prog_tests/bind_perm.c      | 88 +++++++++++++++++++
+>  tools/testing/selftests/bpf/progs/bind_perm.c | 36 ++++++++
+>  2 files changed, 124 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/bind_perm.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/bind_perm.c
 > 
-> > 
-> > Existing hook is placed before regular listening/unconnected socket
-> > lookup to prevent port hijacking on the unprivileged range.
-> > 
-> 
-> Yes, from the point of view of the BPF program. However from the point of
-> view of a legitimate service listening on a port that might be blocked by
-> the BPF program, BPF is actually hijacking a port bind.
-> 
-> That being said, if you install the BPF filter, you should know what you are
-> doing.
-> 
-> > > > The suggestion above would work for my use case, but there is another
-> > > > possibility to make the same use cases possible : implement in
-> > > > BPF (or
-> > > > allow BPF to call) the C and E steps above so the BPF program can
-> > > > supplant the kernel behavior. I find this solution less elegant
-> > > > and it
-> > > > might not work well in case there are multiple inet_lookup BPF
-> > > > programs
-> > > > installed.
-> > 
-> > Having a BPF helper available to BPF sk_lookup programs that looks up a
-> > socket by packet 4-tuple and netns ID in tcp/udp hashtables sounds
-> > reasonable to me. You gain the flexibility that you describe without
-> > adding code on the hot path.
-Agree that a helper to lookup the inet_hash is probably a better way.
-There are some existing lookup helper examples as you also pointed out.
+> diff --git a/tools/testing/selftests/bpf/prog_tests/bind_perm.c b/tools/testing/selftests/bpf/prog_tests/bind_perm.c
+> new file mode 100644
+> index 000000000000..840a04ac9042
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/bind_perm.c
+> @@ -0,0 +1,88 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <test_progs.h>
+> +#include "bind_perm.skel.h"
+> +
+> +#include <sys/types.h>
+> +#include <sys/socket.h>
+> +#include <sys/capability.h>
+> +
+> +static int duration;
+> +
+> +void try_bind(int port, int expected_errno)
+> +{
+> +	struct sockaddr_in sin = {};
+> +	int fd = -1;
+> +
+> +	fd = socket(AF_INET, SOCK_STREAM, 0);
+> +	if (CHECK(fd < 0, "fd", "errno %d", errno))
+> +		goto close_socket;
+> +
+> +	sin.sin_family = AF_INET;
+> +	sin.sin_port = htons(port);
+> +
+> +	errno = 0;
+> +	bind(fd, (struct sockaddr *)&sin, sizeof(sin));
+> +	CHECK(errno != expected_errno, "bind", "errno %d, expected %d",
+> +	      errno, expected_errno);
+> +
+> +close_socket:
+> +	if (fd >= 0)
+> +		close(fd);
+> +}
+> +
+> +void cap_net_bind_service(cap_flag_value_t flag)
+> +{
+> +	const cap_value_t cap_net_bind_service = CAP_NET_BIND_SERVICE;
+> +	cap_t caps;
+> +
+> +	caps = cap_get_proc();
+> +	if (CHECK(!caps, "cap_get_proc", "errno %d", errno))
+> +		goto free_caps;
+> +
+> +	if (CHECK(cap_set_flag(caps, CAP_EFFECTIVE, 1, &cap_net_bind_service,
+> +			       CAP_CLEAR),
+> +		  "cap_set_flag", "errno %d", errno))
+> +		goto free_caps;
+> +
+> +	if (CHECK(cap_set_flag(caps, CAP_EFFECTIVE, 1, &cap_net_bind_service,
+> +			       CAP_CLEAR),
+> +		  "cap_set_flag", "errno %d", errno))
+> +		goto free_caps;
+> +
+> +	if (CHECK(cap_set_proc(caps), "cap_set_proc", "errno %d", errno))
+> +		goto free_caps;
+> +
+> +free_caps:
+> +	if (CHECK(cap_free(caps), "cap_free", "errno %d", errno))
+> +		goto free_caps;
+> +}
+> +
+> +void test_bind_perm(void)
+> +{
+> +	struct bind_perm *skel;
+> +	int cgroup_fd;
+> +
+> +	cgroup_fd = test__join_cgroup("/bind_perm");
+> +	if (CHECK(cgroup_fd < 0, "cg-join", "errno %d", errno))
+> +		return;
+> +
+> +	skel = bind_perm__open_and_load();
+> +	if (CHECK(!skel, "skel-load", "errno %d", errno))
+> +		goto close_cgroup_fd;
+> +
+> +	skel->links.bind_v4_prog = bpf_program__attach_cgroup(skel->progs.bind_v4_prog, cgroup_fd);
+> +	if (CHECK(IS_ERR(skel->links.bind_v4_prog),
+> +		  "cg-attach", "bind4 %ld",
+> +		  PTR_ERR(skel->links.bind_v4_prog)))
+> +		goto close_skeleton;
+> +
+> +	cap_net_bind_service(CAP_CLEAR);
+> +	try_bind(110, EACCES);
+> +	try_bind(111, 0);
+> +	cap_net_bind_service(CAP_SET);
+> +
+> +close_skeleton:
+> +	bind_perm__destroy(skel);
+> +close_cgroup_fd:
+> +	close(cgroup_fd);
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/bind_perm.c b/tools/testing/selftests/bpf/progs/bind_perm.c
+> new file mode 100644
+> index 000000000000..2194587ec806
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/bind_perm.c
+> @@ -0,0 +1,36 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +#include <linux/stddef.h>
+> +#include <linux/bpf.h>
+> +#include <sys/types.h>
+> +#include <sys/socket.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_endian.h>
+> +
+> +SEC("cgroup/bind4")
+> +int bind_v4_prog(struct bpf_sock_addr *ctx)
+> +{
+> +	struct bpf_sock *sk;
+> +	__u32 user_ip4;
+> +	__u16 user_port;
+> +
+> +	sk = ctx->sk;
+> +	if (!sk)
+> +		return 0;
+> +
+> +	if (sk->family != AF_INET)
+> +		return 0;
+> +
+> +	if (ctx->type != SOCK_STREAM)
+> +		return 0;
+> +
+> +	/* Rewriting to the same value should still cause
+> +	 * permission check to be bypassed.
+> +	 */
+> +	if (ctx->user_port == bpf_htons(111))
+> +		ctx->user_port = bpf_htons(111);
+iiuc, this overwrite is essentially the way to ensure the bind
+will succeed (override CAP_NET_BIND_SERVICE in this particular case?).
 
-I would avoid adding new hooks doing the same thing.
-The same bpf prog will be called multiple times, the bpf running
-ctx has to be initialized multiple times...etc.
+It seems to be okay if we consider most of the use cases is rewriting
+to a different port.
 
+However, it is quite un-intuitive to the bpf prog to overwrite with
+the same user_port just to ensure this port can be binded successfully
+later.
+
+Is user_port the only case? How about other fields in bpf_sock_addr?
+
+> +
+> +	return 1;
+> +}
+> +
+> +char _license[] SEC("license") = "GPL";
+> -- 
+> 2.30.0.284.gd98b1dd5eaa7-goog
 > 
-> True, if you consider that hot path should not be slowed down. It makes
-> sense. However, for me, it seems the implementation would be more difficult.
-> 
-> Looking at existing BPF helpers <https://man7.org/linux/man-pages/man7/bpf-helpers.7.html
-> > I found bpf_sk_lookup_tcp and bpf_sk_lookup_ucp that should yield a socket
-> from a matching tuple and netns. If that's true and usable from within BPF
-> sk_lookup then it's just a matter of implementing it and the kernel is
-> already ready for such use cases.
-> 
-> Shanti
