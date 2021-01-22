@@ -2,88 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C24DC30003B
-	for <lists+bpf@lfdr.de>; Fri, 22 Jan 2021 11:28:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55E09300083
+	for <lists+bpf@lfdr.de>; Fri, 22 Jan 2021 11:41:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727629AbhAVK1B (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Jan 2021 05:27:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47464 "EHLO
+        id S1727483AbhAVKgZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Jan 2021 05:36:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30920 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727628AbhAVJeY (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 22 Jan 2021 04:34:24 -0500
+        by vger.kernel.org with ESMTP id S1728043AbhAVKe0 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 22 Jan 2021 05:34:26 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611307972;
+        s=mimecast20190719; t=1611311565;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=xZnuatSgLpQGoR06zuojtkToZnjixX0n8huY2zeyF+I=;
-        b=RsRUsDQrGWlc0VeNeIK8swGTZFiJncG59TQEcx4WBGdnY5TJihqH+x7zSt0fgv2vHHvuk3
-        yP9jHVNbGapQiAVBnd46a6IDB+qRiq/c4gT6KLdFayUkrQIL/4fKnKV4XmWoQMgi3sXMEL
-        3A6nkJtAjkt3QMfzIuJRzwtEgcFYhTQ=
+        bh=IShh/PB74Qh7ZVtwc2vsohdpK5rU9/+uE6woLaCXjt4=;
+        b=QRs3j9dPPiZ24xXHLJCTWSOt1GsqYmMp6wRPdDus3jlxAvMMvgkh43K+FDmZozt3oytvCh
+        FoWxyx6hw84gQjoayAQtq7w/fWPDWdhUgieFYaMzWihkrLAc8MEdr5Bkmfb/lgbtA9xSqj
+        e00uORx4YPm2fiC+NJryp73FZ+Zc1i0=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-589-ZdVXmGXkN6eS0IqFZpK5Mg-1; Fri, 22 Jan 2021 04:32:48 -0500
-X-MC-Unique: ZdVXmGXkN6eS0IqFZpK5Mg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+ us-mta-319-Jb8oDqr2MC-jVWyfrSMdHw-1; Fri, 22 Jan 2021 05:32:43 -0500
+X-MC-Unique: Jb8oDqr2MC-jVWyfrSMdHw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 32E0A59;
-        Fri, 22 Jan 2021 09:32:46 +0000 (UTC)
-Received: from krava (unknown [10.40.195.32])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 0BCA760BF3;
-        Fri, 22 Jan 2021 09:32:35 +0000 (UTC)
-Date:   Fri, 22 Jan 2021 10:32:34 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9A1EB1005504;
+        Fri, 22 Jan 2021 10:32:41 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7D8E671D55;
+        Fri, 22 Jan 2021 10:32:33 +0000 (UTC)
+Date:   Fri, 22 Jan 2021 11:32:32 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Hangbin Liu <liuhangbin@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>, dwarves@vger.kernel.org,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Yonghong Song <yhs@fb.com>, Hao Luo <haoluo@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Mark Wielaard <mjw@redhat.com>
-Subject: Re: [PATCH 2/3] bpf_encoder: Translate SHN_XINDEX in symbol's
- st_shndx values
-Message-ID: <20210122093234.GA35850@krava>
-References: <20210121202203.9346-1-jolsa@kernel.org>
- <20210121202203.9346-3-jolsa@kernel.org>
- <CAEf4BzZquSn0Th7bpVuM0M4XbTPU5-9jDPPd5RJBS5AH2zqaMA@mail.gmail.com>
+        Yonghong Song <yhs@fb.com>,
+        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
+        brouer@redhat.com
+Subject: Re: [PATCHv10 bpf-next] samples/bpf: add xdp program on egress for
+ xdp_redirect_map
+Message-ID: <20210122113232.70040869@carbon>
+In-Reply-To: <20210122025007.2968381-1-liuhangbin@gmail.com>
+References: <20210121130642.2943811-1-liuhangbin@gmail.com>
+        <20210122025007.2968381-1-liuhangbin@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZquSn0Th7bpVuM0M4XbTPU5-9jDPPd5RJBS5AH2zqaMA@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 03:32:40PM -0800, Andrii Nakryiko wrote:
-> On Thu, Jan 21, 2021 at 12:25 PM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > For very large ELF objects (with many sections), we could
-> > get special value SHN_XINDEX (65535) for symbol's st_shndx.
-> >
-> > This patch is adding code to detect the optional extended
-> > section index table and use it to resolve symbol's section
-> > index.
-> >
-> > Adding elf_symtab__for_each_symbol_index macro that returns
-> > symbol's section index and usign it in collect_symbols function.
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
+On Fri, 22 Jan 2021 10:50:07 +0800
+Hangbin Liu <liuhangbin@gmail.com> wrote:
+
+> This patch add a xdp program on egress to show that we can modify
+> the packet on egress. In this sample we will set the pkt's src
+> mac to egress's mac address. The xdp_prog will be attached when
+> -X option supplied.
 > 
-> You missed fixing up collect_function() as well, which is using
-> elf_sym__section(), which doesn't know about extended numbering.
+> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+> ---
 
-ah right, it's for modules, I guess it's why it did not show up
+I think we have nitpicked this enough ;-)
 
-thanks,
-jirka
+Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+
+> v10:
+> make xdp_redirect_map() always inline.
+> 
+> v9:
+> roll back to just set src mac to egress interface mac on 2nd xdp prog,
+> this could avoid packet reorder introduce in patch v6.
+> 
+> v8: Fix some checkpatch issues.
+> 
+> v7:
+> a) use bpf_object__find_program_by_name() instad of
+>    bpf_object__find_program_by_title()
+> b) set default devmap fd to 0
+> 
+> v6: no code update, only rebase the code on latest bpf-next
+> 
+> v5:
+> a) close fd when err out in get_mac_addr()
+> b) exit program when both -S and -X supplied.
+> 
+> v4:
+> a) Update get_mac_addr socket create
+> b) Load dummy prog regardless of 2nd xdp prog on egress
+> 
+> v3:
+> a) modify the src mac address based on egress mac
+> 
+> v2:
+> a) use pkt counter instead of IP ttl modification on egress program
+> b) make the egress program selectable by option -X
+> ---
+>  samples/bpf/xdp_redirect_map_kern.c |  60 +++++++++++++--
+>  samples/bpf/xdp_redirect_map_user.c | 112 +++++++++++++++++++++++-----
+>  2 files changed, 147 insertions(+), 25 deletions(-)
+ 
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
