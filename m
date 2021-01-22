@@ -2,260 +2,314 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F79300777
-	for <lists+bpf@lfdr.de>; Fri, 22 Jan 2021 16:37:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4CD53007C2
+	for <lists+bpf@lfdr.de>; Fri, 22 Jan 2021 16:50:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728654AbhAVPgV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Jan 2021 10:36:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38092 "EHLO
+        id S1728957AbhAVPtD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Jan 2021 10:49:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729147AbhAVPfd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Jan 2021 10:35:33 -0500
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2B24C0613D6
-        for <bpf@vger.kernel.org>; Fri, 22 Jan 2021 07:34:52 -0800 (PST)
-Received: by mail-io1-xd35.google.com with SMTP id x21so11784127iog.10
-        for <bpf@vger.kernel.org>; Fri, 22 Jan 2021 07:34:52 -0800 (PST)
+        with ESMTP id S1729200AbhAVPsN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Jan 2021 10:48:13 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 968FCC061786;
+        Fri, 22 Jan 2021 07:47:32 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id a8so8135613lfi.8;
+        Fri, 22 Jan 2021 07:47:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CH89oABAyKgBOGkKlkkNpqPl4Z1JdSywlf4azBbyiuE=;
-        b=fl9bq7qm/QInr5k1dz2+w5oP4G2EPwX+IKXksi7hSG8IswQp20sX/GSgorS7tk8buk
-         cwuQxpSNkpGBvYqRgPrPrEY6DSQQlKMt/DVQIzOM+TFYNeJNrMDHDMAzr5LQkZVkX7mM
-         Qp/zHhrzb0V8lh9gn5xtGsqFapXTlf+KybDPM=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=rR70sbxeH3YICr0K6kn+CgDDebNkK3ZMmmvVHIwEsjU=;
+        b=YRDW0rWUkEPiymncPKtxde6E4jSRmSXRFUT+KCB/jwIWjcmx4Q+DYhMkZCpNKCs5rB
+         oJ7mHxRzgG8Z7Sk6crobEAXqvoudMu7VKNXDqnZbgpIadWtdEFyETOg1tvQkrUGr9whN
+         jkKLX7oQihzYrII6nQ13Tva3C153xBHnbeBf8nvNpGuiVY461Kh5zYl7dJm6aSanVCcb
+         eTxYWVYhFR3wlCOrSqsRxKrpW5qhQ3CwLRIhItCoIAPKxCqPCbt+mwOLEAWZYZfOH3+H
+         dkNZZymrbVLcOQnQAv8WszvWvvIAgEbFjXW+0elYx1K/MpY0t4Kuj1dju+odJsH1VyO1
+         xhgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CH89oABAyKgBOGkKlkkNpqPl4Z1JdSywlf4azBbyiuE=;
-        b=WDVVj0uH2VFvWzIjYcXMXOm4H0s8KJ4RniLRKnqtpPfp3d6r2nBcW4l31PcB+R0QgE
-         9o6oBSMnYGeM0mJ8iaGbsODsfMPvZBrAPscou4XI/ijEkpQAC7Jqewh+HkMSS7fiHVmw
-         BRix1/JavQcN5qfBtnviuB7f35U8zv7Rjvi0OV8kZ2jeC0p5Bt6ZEYys4Lq7f/tF2vod
-         3r5x/Om16TdbdBAM88kpG01rja+cCjQZioQyN/S2BftSTcGIHsqBAXxLPMwVkMA7HKeX
-         7DyMK8kWk25ZRhPQ0BXLKEOrTR/P9Bwu8ZLodFK+2FwvhTM7/gHlgDFnIOBp4iDToXqX
-         CiEA==
-X-Gm-Message-State: AOAM532nc4Wj2G9pLcfndh9veQ37snb2SqtiAz/aKXwRXwnct4fiyjbq
-        /6Umpgvbszx6L/yIjQ3cdZh9Na1nkI7g2NHr92M9pA==
-X-Google-Smtp-Source: ABdhPJzCjZF1blad+Bc2MFhE+YOoiHQOaQ81zRJfIowwIkKdTS/+fJOk3YB/VhxBDdxLMFi7LFFYNm2pS7rf9We2eM8=
-X-Received: by 2002:a6b:cc07:: with SMTP id c7mr3918493iog.122.1611329692196;
- Fri, 22 Jan 2021 07:34:52 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=rR70sbxeH3YICr0K6kn+CgDDebNkK3ZMmmvVHIwEsjU=;
+        b=nEmJXonqb1ta3pyZ6lhn/pQCiZrfzxvwe3z4xygXBf3FvLk8q6DLvudEDoKE3jCDZT
+         FCYN0I/Fmux1l07qA0uqn4GRmq0Bu4qTMTyTooCVI0SEwConoI+0I4KA4wpumjbvMTyw
+         x6atMO8arNwpOdob9/s4tmiCa53Vsjb1Kp1XZmqGCcBD6v5XHUlD81xYwmw61I92gobs
+         usJfcWMT1zVCh5al3lP63lqzo43v/N58SvltbAmkMcsJU0t+SOgAVnPf8jHDzexqUBnH
+         YgCpURey9n3XwYmoUji7aEPffTmQi//PB2gBlb3tthYr5xym4SSeyxmw6dAsPaBjd4Bt
+         kIVA==
+X-Gm-Message-State: AOAM533UOpiMl3k4mXdIegsFuoPkOlawDQiCXwm3R+POt7MZDfWBrZXA
+        tYKL/rcabDyTJOgFiq9Wryo=
+X-Google-Smtp-Source: ABdhPJyDmyIdYZKBBHULa9ROT4yqdAXLVvNIzrXwCF7SPjBe42Rh6PmdwPlBKqWXoiJA4GHWKK+egA==
+X-Received: by 2002:ac2:4e85:: with SMTP id o5mr161039lfr.149.1611330451118;
+        Fri, 22 Jan 2021 07:47:31 -0800 (PST)
+Received: from btopel-mobl.ger.intel.com (c213-102-90-208.bredband.comhem.se. [213.102.90.208])
+        by smtp.gmail.com with ESMTPSA id w17sm928589lft.52.2021.01.22.07.47.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Jan 2021 07:47:30 -0800 (PST)
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+        magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
+        ciara.loftus@intel.com, weqaar.a.janjua@intel.com
+Subject: [PATCH bpf-next 01/12] selftests/bpf: remove a lot of ifobject casting
+Date:   Fri, 22 Jan 2021 16:47:14 +0100
+Message-Id: <20210122154725.22140-2-bjorn.topel@gmail.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210122154725.22140-1-bjorn.topel@gmail.com>
+References: <20210122154725.22140-1-bjorn.topel@gmail.com>
 MIME-Version: 1.0
-References: <20210119155953.803818-1-revest@chromium.org> <20210119155953.803818-4-revest@chromium.org>
- <CACYkzJ6fNvYCO4cnU2XispQkF-_3yToDGgB=aRRd9m+qy0gpWA@mail.gmail.com>
- <CAADnVQJqVEvwF3GJyuiazxUUknBUaZ_k7gtt-m18hbBdoVeTGg@mail.gmail.com> <CABRcYmJ1jOgV2Ug6sKxbq4ZnaGFLvGLwCPmhrAYdaRh6oY-o=g@mail.gmail.com>
-In-Reply-To: <CABRcYmJ1jOgV2Ug6sKxbq4ZnaGFLvGLwCPmhrAYdaRh6oY-o=g@mail.gmail.com>
-From:   Florent Revest <revest@chromium.org>
-Date:   Fri, 22 Jan 2021 16:34:41 +0100
-Message-ID: <CABRcYm+cWobt9yd-2k8nx+19wCZVniLszTcQRphq1soxQG0jdg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 4/4] selftests/bpf: Add a selftest for the
- tracing bpf_get_socket_cookie
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 8:06 PM Florent Revest <revest@chromium.org> wrote:
->
-> On Wed, Jan 20, 2021 at 8:04 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Wed, Jan 20, 2021 at 9:08 AM KP Singh <kpsingh@kernel.org> wrote:
-> > >
-> > > On Tue, Jan 19, 2021 at 5:00 PM Florent Revest <revest@chromium.org> wrote:
-> > > >
-> > > > This builds up on the existing socket cookie test which checks whether
-> > > > the bpf_get_socket_cookie helpers provide the same value in
-> > > > cgroup/connect6 and sockops programs for a socket created by the
-> > > > userspace part of the test.
-> > > >
-> > > > Adding a tracing program to the existing objects requires a different
-> > > > attachment strategy and different headers.
-> > > >
-> > > > Signed-off-by: Florent Revest <revest@chromium.org>
-> > >
-> > > Acked-by: KP Singh <kpsingh@kernel.org>
-> > >
-> > > (one minor note, doesn't really need fixing as a part of this though)
-> > >
-> > > > ---
-> > > >  .../selftests/bpf/prog_tests/socket_cookie.c  | 24 +++++++----
-> > > >  .../selftests/bpf/progs/socket_cookie_prog.c  | 41 ++++++++++++++++---
-> > > >  2 files changed, 52 insertions(+), 13 deletions(-)
-> > > >
-> > > > diff --git a/tools/testing/selftests/bpf/prog_tests/socket_cookie.c b/tools/testing/selftests/bpf/prog_tests/socket_cookie.c
-> > > > index 53d0c44e7907..e5c5e2ea1deb 100644
-> > > > --- a/tools/testing/selftests/bpf/prog_tests/socket_cookie.c
-> > > > +++ b/tools/testing/selftests/bpf/prog_tests/socket_cookie.c
-> > > > @@ -15,8 +15,8 @@ struct socket_cookie {
-> > > >
-> > > >  void test_socket_cookie(void)
-> > > >  {
-> > > > +       struct bpf_link *set_link, *update_sockops_link, *update_tracing_link;
-> > > >         socklen_t addr_len = sizeof(struct sockaddr_in6);
-> > > > -       struct bpf_link *set_link, *update_link;
-> > > >         int server_fd, client_fd, cgroup_fd;
-> > > >         struct socket_cookie_prog *skel;
-> > > >         __u32 cookie_expected_value;
-> > > > @@ -39,15 +39,21 @@ void test_socket_cookie(void)
-> > > >                   PTR_ERR(set_link)))
-> > > >                 goto close_cgroup_fd;
-> > > >
-> > > > -       update_link = bpf_program__attach_cgroup(skel->progs.update_cookie,
-> > > > -                                                cgroup_fd);
-> > > > -       if (CHECK(IS_ERR(update_link), "update-link-cg-attach", "err %ld\n",
-> > > > -                 PTR_ERR(update_link)))
-> > > > +       update_sockops_link = bpf_program__attach_cgroup(
-> > > > +               skel->progs.update_cookie_sockops, cgroup_fd);
-> > > > +       if (CHECK(IS_ERR(update_sockops_link), "update-sockops-link-cg-attach",
-> > > > +                 "err %ld\n", PTR_ERR(update_sockops_link)))
-> > > >                 goto free_set_link;
-> > > >
-> > > > +       update_tracing_link = bpf_program__attach(
-> > > > +               skel->progs.update_cookie_tracing);
-> > > > +       if (CHECK(IS_ERR(update_tracing_link), "update-tracing-link-attach",
-> > > > +                 "err %ld\n", PTR_ERR(update_tracing_link)))
-> > > > +               goto free_update_sockops_link;
-> > > > +
-> > > >         server_fd = start_server(AF_INET6, SOCK_STREAM, "::1", 0, 0);
-> > > >         if (CHECK(server_fd < 0, "start_server", "errno %d\n", errno))
-> > > > -               goto free_update_link;
-> > > > +               goto free_update_tracing_link;
-> > > >
-> > > >         client_fd = connect_to_fd(server_fd, 0);
-> > > >         if (CHECK(client_fd < 0, "connect_to_fd", "errno %d\n", errno))
-> > > > @@ -71,8 +77,10 @@ void test_socket_cookie(void)
-> > > >         close(client_fd);
-> > > >  close_server_fd:
-> > > >         close(server_fd);
-> > > > -free_update_link:
-> > > > -       bpf_link__destroy(update_link);
-> > > > +free_update_tracing_link:
-> > > > +       bpf_link__destroy(update_tracing_link);
-> > >
-> > > I don't think this need to block submission unless there are other
-> > > issues but the
-> > > bpf_link__destroy can just be called in a single cleanup label because
-> > > it handles null or
-> > > erroneous inputs:
-> > >
-> > > int bpf_link__destroy(struct bpf_link *link)
-> > > {
-> > >     int err = 0;
-> > >
-> > >     if (IS_ERR_OR_NULL(link))
-> > >          return 0;
-> > > [...]
-> >
-> > +1 to KP's point.
-> >
-> > Also Florent, how did you test it?
-> > This test fails in CI and in my manual run:
-> > ./test_progs -t cook
-> > libbpf: load bpf program failed: Permission denied
-> > libbpf: -- BEGIN DUMP LOG ---
-> > libbpf:
-> > ; int update_cookie_sockops(struct bpf_sock_ops *ctx)
-> > 0: (bf) r6 = r1
-> > ; if (ctx->family != AF_INET6)
-> > 1: (61) r1 = *(u32 *)(r6 +20)
-> > ; if (ctx->family != AF_INET6)
-> > 2: (56) if w1 != 0xa goto pc+21
-> >  R1_w=inv10 R6_w=ctx(id=0,off=0,imm=0) R10=fp0
-> > ; if (ctx->op != BPF_SOCK_OPS_TCP_CONNECT_CB)
-> > 3: (61) r1 = *(u32 *)(r6 +0)
-> > ; if (ctx->op != BPF_SOCK_OPS_TCP_CONNECT_CB)
-> > 4: (56) if w1 != 0x3 goto pc+19
-> >  R1_w=inv3 R6_w=ctx(id=0,off=0,imm=0) R10=fp0
-> > ; if (!ctx->sk)
-> > 5: (79) r1 = *(u64 *)(r6 +184)
-> > ; if (!ctx->sk)
-> > 6: (15) if r1 == 0x0 goto pc+17
-> >  R1_w=sock(id=0,ref_obj_id=0,off=0,imm=0) R6_w=ctx(id=0,off=0,imm=0) R10=fp0
-> > ; p = bpf_sk_storage_get(&socket_cookies, ctx->sk, 0, 0);
-> > 7: (79) r2 = *(u64 *)(r6 +184)
-> > ; p = bpf_sk_storage_get(&socket_cookies, ctx->sk, 0, 0);
-> > 8: (18) r1 = 0xffff888106e41400
-> > 10: (b7) r3 = 0
-> > 11: (b7) r4 = 0
-> > 12: (85) call bpf_sk_storage_get#107
-> > R2 type=sock_or_null expected=sock_common, sock, tcp_sock, xdp_sock, ptr_
-> > processed 12 insns (limit 1000000) max_states_per_insn 0 total_states
-> > 0 peak_states 0 mark_read 0
-> >
-> > libbpf: -- END LOG --
-> > libbpf: failed to load program 'update_cookie_sockops'
-> > libbpf: failed to load object 'socket_cookie_prog'
-> > libbpf: failed to load BPF skeleton 'socket_cookie_prog': -4007
-> > test_socket_cookie:FAIL:socket_cookie_prog__open_and_load skeleton
-> > open_and_load failed
-> > #95 socket_cookie:FAIL
-> > Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
->
-> Oh :| I must have missed something in the rebase, I will fix this and
-> address KP's comment then. Thanks for the review and sorry for the
-> waste of time :)
+From: Björn Töpel <bjorn.topel@intel.com>
 
-So this is actually an interesting one I think. :) The failure was
-triggered by the combination of an LLVM update and this change:
+Instead of passing void * all over the place, let us pass the actual
+type (ifobject) and remove the void-ptr-to-type-ptr casting.
 
--#include <linux/bpf.h>
-+#include "vmlinux.h"
+Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+---
+ tools/testing/selftests/bpf/xdpxceiver.c | 88 ++++++++++++------------
+ 1 file changed, 43 insertions(+), 45 deletions(-)
 
-With an older LLVM, this used to work.
-With a recent LLVM, the change of header causes those 3 lines to get
-compiled differently:
+diff --git a/tools/testing/selftests/bpf/xdpxceiver.c b/tools/testing/selftests/bpf/xdpxceiver.c
+index 1e722ee76b1f..cd1dd2b7458f 100644
+--- a/tools/testing/selftests/bpf/xdpxceiver.c
++++ b/tools/testing/selftests/bpf/xdpxceiver.c
+@@ -224,14 +224,14 @@ static inline u16 udp_csum(u32 saddr, u32 daddr, u32 len, u8 proto, u16 *udp_pkt
+ 	return csum_tcpudp_magic(saddr, daddr, len, proto, csum);
+ }
+ 
+-static void gen_eth_hdr(void *data, struct ethhdr *eth_hdr)
++static void gen_eth_hdr(struct ifobject *ifobject, struct ethhdr *eth_hdr)
+ {
+-	memcpy(eth_hdr->h_dest, ((struct ifobject *)data)->dst_mac, ETH_ALEN);
+-	memcpy(eth_hdr->h_source, ((struct ifobject *)data)->src_mac, ETH_ALEN);
++	memcpy(eth_hdr->h_dest, ifobject->dst_mac, ETH_ALEN);
++	memcpy(eth_hdr->h_source, ifobject->src_mac, ETH_ALEN);
+ 	eth_hdr->h_proto = htons(ETH_P_IP);
+ }
+ 
+-static void gen_ip_hdr(void *data, struct iphdr *ip_hdr)
++static void gen_ip_hdr(struct ifobject *ifobject, struct iphdr *ip_hdr)
+ {
+ 	ip_hdr->version = IP_PKT_VER;
+ 	ip_hdr->ihl = 0x5;
+@@ -241,15 +241,15 @@ static void gen_ip_hdr(void *data, struct iphdr *ip_hdr)
+ 	ip_hdr->frag_off = 0;
+ 	ip_hdr->ttl = IPDEFTTL;
+ 	ip_hdr->protocol = IPPROTO_UDP;
+-	ip_hdr->saddr = ((struct ifobject *)data)->src_ip;
+-	ip_hdr->daddr = ((struct ifobject *)data)->dst_ip;
++	ip_hdr->saddr = ifobject->src_ip;
++	ip_hdr->daddr = ifobject->dst_ip;
+ 	ip_hdr->check = 0;
+ }
+ 
+-static void gen_udp_hdr(void *data, void *arg, struct udphdr *udp_hdr)
++static void gen_udp_hdr(void *data, struct ifobject *ifobject, struct udphdr *udp_hdr)
+ {
+-	udp_hdr->source = htons(((struct ifobject *)arg)->src_port);
+-	udp_hdr->dest = htons(((struct ifobject *)arg)->dst_port);
++	udp_hdr->source = htons(ifobject->src_port);
++	udp_hdr->dest = htons(ifobject->dst_port);
+ 	udp_hdr->len = htons(UDP_PKT_SIZE);
+ 	memset32_htonl(pkt_data + PKT_HDR_SIZE,
+ 		       htonl(((struct generic_data *)data)->seqnum), UDP_PKT_DATA_SIZE);
+@@ -628,28 +628,27 @@ static inline int get_batch_size(int pkt_cnt)
+ 	return opt_pkt_count - pkt_cnt;
+ }
+ 
+-static void complete_tx_only_all(void *arg)
++static void complete_tx_only_all(struct ifobject *ifobject)
+ {
+ 	bool pending;
+ 
+ 	do {
+ 		pending = false;
+-		if (((struct ifobject *)arg)->xsk->outstanding_tx) {
+-			complete_tx_only(((struct ifobject *)
+-					  arg)->xsk, BATCH_SIZE);
+-			pending = !!((struct ifobject *)arg)->xsk->outstanding_tx;
++		if (ifobject->xsk->outstanding_tx) {
++			complete_tx_only(ifobject->xsk, BATCH_SIZE);
++			pending = !!ifobject->xsk->outstanding_tx;
+ 		}
+ 	} while (pending);
+ }
+ 
+-static void tx_only_all(void *arg)
++static void tx_only_all(struct ifobject *ifobject)
+ {
+ 	struct pollfd fds[MAX_SOCKS] = { };
+ 	u32 frame_nb = 0;
+ 	int pkt_cnt = 0;
+ 	int ret;
+ 
+-	fds[0].fd = xsk_socket__fd(((struct ifobject *)arg)->xsk->xsk);
++	fds[0].fd = xsk_socket__fd(ifobject->xsk->xsk);
+ 	fds[0].events = POLLOUT;
+ 
+ 	while ((opt_pkt_count && pkt_cnt < opt_pkt_count) || !opt_pkt_count) {
+@@ -664,12 +663,12 @@ static void tx_only_all(void *arg)
+ 				continue;
+ 		}
+ 
+-		tx_only(((struct ifobject *)arg)->xsk, &frame_nb, batch_size);
++		tx_only(ifobject->xsk, &frame_nb, batch_size);
+ 		pkt_cnt += batch_size;
+ 	}
+ 
+ 	if (opt_pkt_count)
+-		complete_tx_only_all(arg);
++		complete_tx_only_all(ifobject);
+ }
+ 
+ static void worker_pkt_dump(void)
+@@ -780,14 +779,14 @@ static void worker_pkt_validate(void)
+ 	}
+ }
+ 
+-static void thread_common_ops(void *arg, void *bufs, pthread_mutex_t *mutexptr,
++static void thread_common_ops(struct ifobject *ifobject, void *bufs, pthread_mutex_t *mutexptr,
+ 			      atomic_int *spinningptr)
+ {
+ 	int ctr = 0;
+ 	int ret;
+ 
+-	xsk_configure_umem((struct ifobject *)arg, bufs, num_frames * XSK_UMEM__DEFAULT_FRAME_SIZE);
+-	ret = xsk_configure_socket((struct ifobject *)arg);
++	xsk_configure_umem(ifobject, bufs, num_frames * XSK_UMEM__DEFAULT_FRAME_SIZE);
++	ret = xsk_configure_socket(ifobject);
+ 
+ 	/* Retry Create Socket if it fails as xsk_socket__create()
+ 	 * is asynchronous
+@@ -798,9 +797,8 @@ static void thread_common_ops(void *arg, void *bufs, pthread_mutex_t *mutexptr,
+ 	pthread_mutex_lock(mutexptr);
+ 	while (ret && ctr < SOCK_RECONF_CTR) {
+ 		atomic_store(spinningptr, 1);
+-		xsk_configure_umem((struct ifobject *)arg,
+-				   bufs, num_frames * XSK_UMEM__DEFAULT_FRAME_SIZE);
+-		ret = xsk_configure_socket((struct ifobject *)arg);
++		xsk_configure_umem(ifobject, bufs, num_frames * XSK_UMEM__DEFAULT_FRAME_SIZE);
++		ret = xsk_configure_socket(ifobject);
+ 		usleep(USLEEP_MAX);
+ 		ctr++;
+ 	}
+@@ -818,6 +816,7 @@ static void *worker_testapp_validate(void *arg)
+ 	struct generic_data *data = (struct generic_data *)malloc(sizeof(struct generic_data));
+ 	struct iphdr *ip_hdr = (struct iphdr *)(pkt_data + sizeof(struct ethhdr));
+ 	struct ethhdr *eth_hdr = (struct ethhdr *)pkt_data;
++	struct ifobject *ifobject = (struct ifobject *)arg;
+ 	void *bufs = NULL;
+ 
+ 	pthread_attr_setstacksize(&attr, THREAD_STACK);
+@@ -828,49 +827,48 @@ static void *worker_testapp_validate(void *arg)
+ 		if (bufs == MAP_FAILED)
+ 			exit_with_error(errno);
+ 
+-		if (strcmp(((struct ifobject *)arg)->nsname, ""))
+-			switch_namespace(((struct ifobject *)arg)->ifdict_index);
++		if (strcmp(ifobject->nsname, ""))
++			switch_namespace(ifobject->ifdict_index);
+ 	}
+ 
+-	if (((struct ifobject *)arg)->fv.vector == tx) {
++	if (ifobject->fv.vector == tx) {
+ 		int spinningrxctr = 0;
+ 
+ 		if (!bidi_pass)
+-			thread_common_ops(arg, bufs, &sync_mutex_tx, &spinning_tx);
++			thread_common_ops(ifobject, bufs, &sync_mutex_tx, &spinning_tx);
+ 
+ 		while (atomic_load(&spinning_rx) && spinningrxctr < SOCK_RECONF_CTR) {
+ 			spinningrxctr++;
+ 			usleep(USLEEP_MAX);
+ 		}
+ 
+-		ksft_print_msg("Interface [%s] vector [Tx]\n", ((struct ifobject *)arg)->ifname);
++		ksft_print_msg("Interface [%s] vector [Tx]\n", ifobject->ifname);
+ 		for (int i = 0; i < num_frames; i++) {
+ 			/*send EOT frame */
+ 			if (i == (num_frames - 1))
+ 				data->seqnum = -1;
+ 			else
+ 				data->seqnum = i;
+-			gen_udp_hdr((void *)data, (void *)arg, udp_hdr);
+-			gen_ip_hdr((void *)arg, ip_hdr);
++			gen_udp_hdr((void *)data, ifobject, udp_hdr);
++			gen_ip_hdr(ifobject, ip_hdr);
+ 			gen_udp_csum(udp_hdr, ip_hdr);
+-			gen_eth_hdr((void *)arg, eth_hdr);
+-			gen_eth_frame(((struct ifobject *)arg)->umem,
+-				      i * XSK_UMEM__DEFAULT_FRAME_SIZE);
++			gen_eth_hdr(ifobject, eth_hdr);
++			gen_eth_frame(ifobject->umem, i * XSK_UMEM__DEFAULT_FRAME_SIZE);
+ 		}
+ 
+ 		free(data);
+ 		ksft_print_msg("Sending %d packets on interface %s\n",
+-			       (opt_pkt_count - 1), ((struct ifobject *)arg)->ifname);
+-		tx_only_all(arg);
+-	} else if (((struct ifobject *)arg)->fv.vector == rx) {
++			       (opt_pkt_count - 1), ifobject->ifname);
++		tx_only_all(ifobject);
++	} else if (ifobject->fv.vector == rx) {
+ 		struct pollfd fds[MAX_SOCKS] = { };
+ 		int ret;
+ 
+ 		if (!bidi_pass)
+-			thread_common_ops(arg, bufs, &sync_mutex_tx, &spinning_rx);
++			thread_common_ops(ifobject, bufs, &sync_mutex_tx, &spinning_rx);
+ 
+-		ksft_print_msg("Interface [%s] vector [Rx]\n", ((struct ifobject *)arg)->ifname);
+-		xsk_populate_fill_ring(((struct ifobject *)arg)->umem);
++		ksft_print_msg("Interface [%s] vector [Rx]\n", ifobject->ifname);
++		xsk_populate_fill_ring(ifobject->umem);
+ 
+ 		TAILQ_INIT(&head);
+ 		if (debug_pkt_dump) {
+@@ -879,7 +877,7 @@ static void *worker_testapp_validate(void *arg)
+ 				exit_with_error(errno);
+ 		}
+ 
+-		fds[0].fd = xsk_socket__fd(((struct ifobject *)arg)->xsk->xsk);
++		fds[0].fd = xsk_socket__fd(ifobject->xsk->xsk);
+ 		fds[0].events = POLLIN;
+ 
+ 		pthread_mutex_lock(&sync_mutex);
+@@ -892,7 +890,7 @@ static void *worker_testapp_validate(void *arg)
+ 				if (ret <= 0)
+ 					continue;
+ 			}
+-			rx_pkt(((struct ifobject *)arg)->xsk, fds);
++			rx_pkt(ifobject->xsk, fds);
+ 			worker_pkt_validate();
+ 
+ 			if (sigvar)
+@@ -900,15 +898,15 @@ static void *worker_testapp_validate(void *arg)
+ 		}
+ 
+ 		ksft_print_msg("Received %d packets on interface %s\n",
+-			       pkt_counter, ((struct ifobject *)arg)->ifname);
++			       pkt_counter, ifobject->ifname);
+ 
+ 		if (opt_teardown)
+ 			ksft_print_msg("Destroying socket\n");
+ 	}
+ 
+ 	if (!opt_bidi || (opt_bidi && bidi_pass)) {
+-		xsk_socket__delete(((struct ifobject *)arg)->xsk->xsk);
+-		(void)xsk_umem__delete(((struct ifobject *)arg)->umem->umem);
++		xsk_socket__delete(ifobject->xsk->xsk);
++		(void)xsk_umem__delete(ifobject->umem->umem);
+ 	}
+ 	pthread_exit(NULL);
+ }
+-- 
+2.27.0
 
-if (!ctx->sk)
-    return 1;
-p = bpf_sk_storage_get(&socket_cookies, ctx->sk, 0, 0);
-
-When including linux/bpf.h
-; if (!ctx->sk)
-       5: 79 62 b8 00 00 00 00 00 r2 = *(u64 *)(r6 + 184)
-       6: 15 02 10 00 00 00 00 00 if r2 == 0 goto +16 <LBB1_6>
-; p = bpf_sk_storage_get(&socket_cookies, ctx->sk, 0, 0);
-       7: 18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0 ll
-       9: b7 03 00 00 00 00 00 00 r3 = 0
-      10: b7 04 00 00 00 00 00 00 r4 = 0
-      11: 85 00 00 00 6b 00 00 00 call 107
-      12: bf 07 00 00 00 00 00 00 r7 = r0
-
-When including vmlinux.h
-; if (!ctx->sk)
-       5: 79 61 b8 00 00 00 00 00 r1 = *(u64 *)(r6 + 184)
-       6: 15 01 11 00 00 00 00 00 if r1 == 0 goto +17 <LBB1_6>
-; p = bpf_sk_storage_get(&socket_cookies, ctx->sk, 0, 0);
-       7: 79 62 b8 00 00 00 00 00 r2 = *(u64 *)(r6 + 184)
-       8: 18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0 ll
-      10: b7 03 00 00 00 00 00 00 r3 = 0
-      11: b7 04 00 00 00 00 00 00 r4 = 0
-      12: 85 00 00 00 6b 00 00 00 call 107
-      13: bf 07 00 00 00 00 00 00 r7 = r0
-
-Note that ctx->sk gets fetched once in the first case (l5), and twice
-in the second case (l5 and l7).
-I'm assuming that struct bpf_sock_ops gets defined with different
-attributes in vmlinux.h and causes LLVM to assume that ctx->sk could
-have changed between the time of check and the time of use so it
-yields two fetches and the verifier can't track that r2 is non null.
-
-If I save ctx->sk in a temporary variable first:
-
-struct bpf_sock *sk = ctx->sk;
-if (!sk)
-    return 1;
-p = bpf_sk_storage_get(&socket_cookies, sk, 0, 0);
-
-this loads correctly. However, Brendan pointed out that this is also a
-weak guarantee and that LLVM could still decide to compile this into
-two fetches, Brendan suggested that we save sk out of an access to a
-volatile pointer to ctx, what do you think ?
