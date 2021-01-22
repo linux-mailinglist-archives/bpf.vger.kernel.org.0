@@ -2,100 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6D6C3008E6
-	for <lists+bpf@lfdr.de>; Fri, 22 Jan 2021 17:46:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A44BD300900
+	for <lists+bpf@lfdr.de>; Fri, 22 Jan 2021 17:51:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728555AbhAVQlC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 22 Jan 2021 11:41:02 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:31535 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728786AbhAVQkv (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 22 Jan 2021 11:40:51 -0500
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-293-VaGEYQ1jOLC_DYulxn_qRw-1; Fri, 22 Jan 2021 11:39:33 -0500
-X-MC-Unique: VaGEYQ1jOLC_DYulxn_qRw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1729577AbhAVQuL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Jan 2021 11:50:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729390AbhAVQnq (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Jan 2021 11:43:46 -0500
+Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [IPv6:2001:67c:2050::465:102])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA3D6C061797;
+        Fri, 22 Jan 2021 08:43:09 -0800 (PST)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:105:465:1:2:0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EDF2B84A5E1;
-        Fri, 22 Jan 2021 16:39:30 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.40.192.97])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7117971CBF;
-        Fri, 22 Jan 2021 16:39:21 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Cc:     dwarves@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Yonghong Song <yhs@fb.com>,
-        Hao Luo <haoluo@google.com>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Mark Wielaard <mjw@redhat.com>
-Subject: [PATCHv3 0/2] libbpf: Add support to use optional extended section index table
-Date:   Fri, 22 Jan 2021 17:39:18 +0100
-Message-Id: <20210122163920.59177-1-jolsa@kernel.org>
+        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4DMlSB6qB8zQlYw;
+        Fri, 22 Jan 2021 17:43:06 +0100 (CET)
+Authentication-Results: gerste.heinlein-support.de (amavisd-new);
+        dkim=pass (2048-bit key) reason="pass (just generated, assumed good)"
+        header.d=mailbox.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
+        content-transfer-encoding:mime-version:references:in-reply-to
+        :message-id:date:date:subject:subject:from:from:received; s=
+        mail20150812; t=1611333783; bh=EXY5UBekWmdLcrCcU6mcp7T2dzDQIdcDp
+        LiEPkUlz70=; b=tS/5HHjEMv9zxzMEvWCn4JcH1ftjmJL+vAZNfkrBkP3DhjYGt
+        Oj7S8pKnGBt6I6l8GAcKc3txaW/vhylwDnSYvUYHQjxFkIfgK1+gOvrgPAJZBtK5
+        i4rRBbXh2I5PpAQ6a8mU4Moc1AsMBgwAh0DfniazS7tgeQJzxKlUy18Bj5WEY9GP
+        8WiCcJJst3Zwkis5esmfbYJ61QbfaShuyTu/VKYr9GhZYe+crSCSIZe9Lh1e8Q6c
+        664/metpOM9xksdq2Whwp5rjHBsnxhrNUSqNiCdRsFDzR3q3jdMpVKqqocYH+U7Z
+        gYEDFb5nVUDXqSfo9w/pD3r43/AF3gZtMOkXQ==
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp2.mailbox.org ([80.241.60.241])
+        by gerste.heinlein-support.de (gerste.heinlein-support.de [91.198.250.173]) (amavisd-new, port 10030)
+        with ESMTP id KqCf4o-Nc0xX; Fri, 22 Jan 2021 17:43:03 +0100 (CET)
+From:   Loris Reiff <loris.reiff@liblor.ch>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        Loris Reiff <loris.reiff@liblor.ch>
+Subject: [PATCH 2/2] bpf: cgroup: Fix problematic bounds check
+Date:   Fri, 22 Jan 2021 17:42:32 +0100
+Message-Id: <20210122164232.61770-2-loris.reiff@liblor.ch>
+In-Reply-To: <20210122164232.61770-1-loris.reiff@liblor.ch>
+References: <20210122164232.61770-1-loris.reiff@liblor.ch>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: 8bit
+X-MBO-SPAM-Probability: **
+X-Rspamd-Score: 1.80 / 15.00 / 15.00
+X-Rspamd-Queue-Id: DFC9117BA
+X-Rspamd-UID: 65af45
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-hi,
-kpatch guys hit an issue with pahole over their vmlinux, which
-contains many (over 100000) sections, pahole crashes.
+Since ctx.optlen is signed, a larger value than max_value could be
+passed, as it is later on used as unsigned, which causes a WARN_ON_ONCE
+in the copy_to_user.
 
-With so many sections, ELF is using extended section index table,
-which is used to hold values for some of the indexes and extra
-code is needed to retrieve them.
-
-This patchset adds the support for pahole to properly read string
-table index and symbol's section index, which are used in btf_encoder.
-
-This patchset also adds support for libbpf to properly parse .BTF
-section on such object.
-
-This patchset is based on previously posted fix [1].
-
-v3 changes:
-  - directly bail out for !str in elf_section_by_name [Andrii]
-  - use symbol index in collect_function [Andrii] 
-  - use symbol index in collect_percpu_var
-  - change elf_symtab__for_each_symbol_index, move elf_sym__get
-    to for's condition part
-  - libbpf patch got merged
-
-v2 changes:
-  - many variables renames [Andrii]
-  - use elf_getshdrstrndx() unconditionally [Andrii]
-  - add elf_symtab__for_each_symbol_index macro [Andrii]
-  - add more comments [Andrii]
-  - verify that extended symtab section type is SHT_SYMTAB_SHNDX [Andrii]
-  - fix Joe's crash in dwarves build, wrong sym.st_shndx assignment
-
-thanks,
-jirka
-
-
-[1] https://lore.kernel.org/bpf/20210113102509.1338601-1-jolsa@kernel.org/
+Fixes: 0d01da6afc54 ("bpf: implement getsockopt and setsockopt hooks")
+Signed-off-by: Loris Reiff <loris.reiff@liblor.ch>
 ---
-Jiri Olsa (2):
-      elf_symtab: Add support for SHN_XINDEX index to elf_section_by_name
-      bpf_encoder: Translate SHN_XINDEX in symbol's st_shndx values
+ kernel/bpf/cgroup.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- btf_encoder.c | 59 +++++++++++++++++++++++++++++++++++++++++++----------------
- dutil.c       |  8 +++++++-
- elf_symtab.c  | 39 ++++++++++++++++++++++++++++++++++++++-
- elf_symtab.h  |  2 ++
- 4 files changed, 90 insertions(+), 18 deletions(-)
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index 6ec8f02f4..6aa9e10c6 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -1464,7 +1464,7 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
+ 		goto out;
+ 	}
+ 
+-	if (ctx.optlen > max_optlen) {
++	if (ctx.optlen > max_optlen || ctx.optlen < 0) {
+ 		ret = -EFAULT;
+ 		goto out;
+ 	}
+-- 
+2.29.2
 
