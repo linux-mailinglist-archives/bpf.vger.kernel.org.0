@@ -2,91 +2,213 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83EFB300316
-	for <lists+bpf@lfdr.de>; Fri, 22 Jan 2021 13:33:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3977530035C
+	for <lists+bpf@lfdr.de>; Fri, 22 Jan 2021 13:42:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727414AbhAVMcw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Jan 2021 07:32:52 -0500
-Received: from mga11.intel.com ([192.55.52.93]:31333 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727364AbhAVMcj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Jan 2021 07:32:39 -0500
-IronPort-SDR: QRm3okV+xeqptNytfnW0wq+5GGwc8GsK9tX2IZ/mhYULb/K0lnN1o67zBxV4lfUfrVItKRVLuX
- U3no3Bj49qRw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9871"; a="175927663"
-X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
-   d="scan'208";a="175927663"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 04:30:41 -0800
-IronPort-SDR: uBVrSlQRMN/Wxt2zRSFR7E76RsH9hsyGA+ovXv0UiNK4th1b1gegW9JUEYhv/AfBua00CQUTnF
- wVcigEihKHzw==
-X-IronPort-AV: E=Sophos;i="5.79,366,1602572400"; 
-   d="scan'208";a="385741921"
-Received: from rbentoli-mobl1.ger.corp.intel.com (HELO outtakka.ger.corp.intel.com) ([10.251.187.124])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 04:30:12 -0800
-From:   Mikko Ylinen <mikko.ylinen@linux.intel.com>
-To:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kpsingh@google.com, daniel@iogearbox.net
-Subject: [PATCH] bpf: Drop disabled LSM hooks from the sleepable set
-Date:   Fri, 22 Jan 2021 14:30:03 +0200
-Message-Id: <20210122123003.46125-1-mikko.ylinen@linux.intel.com>
-X-Mailer: git-send-email 2.30.0
+        id S1727368AbhAVMk2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Jan 2021 07:40:28 -0500
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:28567 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726515AbhAVMk1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Jan 2021 07:40:27 -0500
+Date:   Fri, 22 Jan 2021 12:39:31 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1611319177; bh=MurfsX/xFc6EJaZnP4aHHBq5FK0oyXI/IchGUo+j9ZM=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=P5QmSyiHLWiyp62ojlSpBj+PHE1FilejDgySIqAe9ggMhdv1NVhIof4xs/N55knKb
+         lYhnbkSzpBVSG7NeKVKCilPmCBlUK9jlPakwiabCSJUR/PM6ZS2gzywSP7DHzKgNjb
+         adi6rBSJEghwHIOB5DdIB89uZ648rDUIclfP0wmc/TQMTg1qmJHGUKAt575ne5q5Jg
+         5ifBiPmbKYmM+hFb1Pw/GudMxMSHsfTL8zpUD+h+qf9iaG4yXQYGf4ay9gFfsVhcuI
+         5xho5xgcUZZYbrg5vdnKdSdOHxxJm+P8rVEYObVh9g400FOY3PL1hcB9NR3UklPPR8
+         jYK62pLW0iOhg==
+To:     Magnus Karlsson <magnus.karlsson@gmail.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Bjorn Topel <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH bpf-next v3 3/3] xsk: build skb by page
+Message-ID: <20210122123909.3603-1-alobakin@pm.me>
+In-Reply-To: <CAJ8uoz0ve9iRmz6zkCTaBMMjckFrD0df43-uVreXVf_wM3mZ1A@mail.gmail.com>
+References: <cover.1611236588.git.xuanzhuo@linux.alibaba.com> <340f1dfa40416dd966a56e08507daba82d633088.1611236588.git.xuanzhuo@linux.alibaba.com> <dcee4592-9fa9-adbb-55ca-58a962076e7a@gmail.com> <20210122114729.1758-1-alobakin@pm.me> <20210122115519.2183-1-alobakin@pm.me> <CAJ8uoz0ve9iRmz6zkCTaBMMjckFrD0df43-uVreXVf_wM3mZ1A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Networking LSM hooks are conditionally enabled and when building the new
-sleepable BPF LSM hooks with the networking LSM hooks disabled, the
-following build error occurs:
+From: Magnus Karlsson <magnus.karlsson@gmail.com>
+Date: Fri, 22 Jan 2021 13:18:47 +0100
 
-BTFIDS  vmlinux
-FAILED unresolved symbol bpf_lsm_socket_socketpair
+> On Fri, Jan 22, 2021 at 12:57 PM Alexander Lobakin <alobakin@pm.me> wrote=
+:
+> >
+> > From: Alexander Lobakin <alobakin@pm.me>
+> > Date: Fri, 22 Jan 2021 11:47:45 +0000
+> >
+> > > From: Eric Dumazet <eric.dumazet@gmail.com>
+> > > Date: Thu, 21 Jan 2021 16:41:33 +0100
+> > >
+> > > > On 1/21/21 2:47 PM, Xuan Zhuo wrote:
+> > > > > This patch is used to construct skb based on page to save memory =
+copy
+> > > > > overhead.
+> > > > >
+> > > > > This function is implemented based on IFF_TX_SKB_NO_LINEAR. Only =
+the
+> > > > > network card priv_flags supports IFF_TX_SKB_NO_LINEAR will use pa=
+ge to
+> > > > > directly construct skb. If this feature is not supported, it is s=
+till
+> > > > > necessary to copy data to construct skb.
+> > > > >
+> > > > > ---------------- Performance Testing ------------
+> > > > >
+> > > > > The test environment is Aliyun ECS server.
+> > > > > Test cmd:
+> > > > > ```
+> > > > > xdpsock -i eth0 -t  -S -s <msg size>
+> > > > > ```
+> > > > >
+> > > > > Test result data:
+> > > > >
+> > > > > size    64      512     1024    1500
+> > > > > copy    1916747 1775988 1600203 1440054
+> > > > > page    1974058 1953655 1945463 1904478
+> > > > > percent 3.0%    10.0%   21.58%  32.3%
+> > > > >
+> > > > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > > > Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
+> > > > > ---
+> > > > >  net/xdp/xsk.c | 104 ++++++++++++++++++++++++++++++++++++++++++++=
+++++----------
+> > > > >  1 file changed, 86 insertions(+), 18 deletions(-)
+> > > > >
+> > > > > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> > > > > index 4a83117..38af7f1 100644
+> > > > > --- a/net/xdp/xsk.c
+> > > > > +++ b/net/xdp/xsk.c
+> > > > > @@ -430,6 +430,87 @@ static void xsk_destruct_skb(struct sk_buff =
+*skb)
+> > > > >   sock_wfree(skb);
+> > > > >  }
+> > > > >
+> > > > > +static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *x=
+s,
+> > > > > +                                       struct xdp_desc *desc)
+> > > > > +{
+> > > > > + u32 len, offset, copy, copied;
+> > > > > + struct sk_buff *skb;
+> > > > > + struct page *page;
+> > > > > + void *buffer;
+> > > > > + int err, i;
+> > > > > + u64 addr;
+> > > > > +
+> > > > > + skb =3D sock_alloc_send_skb(&xs->sk, 0, 1, &err);
+> > > > > + if (unlikely(!skb))
+> > > > > +         return ERR_PTR(err);
+> > > > > +
+> > > > > + addr =3D desc->addr;
+> > > > > + len =3D desc->len;
+> > > > > +
+> > > > > + buffer =3D xsk_buff_raw_get_data(xs->pool, addr);
+> > > > > + offset =3D offset_in_page(buffer);
+> > > > > + addr =3D buffer - xs->pool->addrs;
+> > > > > +
+> > > > > + for (copied =3D 0, i =3D 0; copied < len; i++) {
+> > > > > +         page =3D xs->pool->umem->pgs[addr >> PAGE_SHIFT];
+> > > > > +
+> > > > > +         get_page(page);
+> > > > > +
+> > > > > +         copy =3D min_t(u32, PAGE_SIZE - offset, len - copied);
+> > > > > +
+> > > > > +         skb_fill_page_desc(skb, i, page, offset, copy);
+> > > > > +
+> > > > > +         copied +=3D copy;
+> > > > > +         addr +=3D copy;
+> > > > > +         offset =3D 0;
+> > > > > + }
+> > > > > +
+> > > > > + skb->len +=3D len;
+> > > > > + skb->data_len +=3D len;
+> > > >
+> > > > > + skb->truesize +=3D len;
+> > > >
+> > > > This is not the truesize, unfortunately.
+> > > >
+> > > > We need to account for the number of pages, not number of bytes.
+> > >
+> > > The easiest solution is:
+> > >
+> > >       skb->truesize +=3D PAGE_SIZE * i;
+> > >
+> > > i would be equal to skb_shinfo(skb)->nr_frags after exiting the loop.
+> >
+> > Oops, pls ignore this. I forgot that XSK buffers are not
+> > "one per page".
+> > We need to count the number of pages manually and then do
+> >
+> >         skb->truesize +=3D PAGE_SIZE * npages;
+> >
+> > Right.
+>=20
+> There are two possible packet buffer (chunks) sizes in a umem, 2K and
+> 4K on a system with a PAGE_SIZE of 4K. If I remember correctly, and
+> please correct me if wrong, truesize is used for memory accounting.
+> But in this code, no kernel memory has been allocated (apart from the
+> skb). The page is just a part of the umem that has been already
+> allocated beforehand and by user-space in this case. So what should
+> truesize be in this case? Do we add 0, chunk_size * i, or the
+> complicated case of counting exactly how many 4K pages that are used
+> when the chunk_size is 2K, as two chunks could occupy the same page,
+> or just the upper bound of PAGE_SIZE * i that is likely a good
+> approximation in most cases? Just note that there might be other uses
+> of truesize that I am unaware of that could impact this choice.
 
-To fix the error, conditionally add the networking LSM hooks to the
-sleepable set.
+Truesize is "what amount of memory does this skb occupy with all its
+fragments, linear space and struct sk_buff itself". The closest it
+will be to the actual value, the better.
+In this case, I think adding of chunk_size * i would be enough.
 
-Fixes: 423f16108c9d8 ("bpf: Augment the set of sleepable LSM hooks")
-Signed-off-by: Mikko Ylinen <mikko.ylinen@linux.intel.com>
----
- kernel/bpf/bpf_lsm.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+(PAGE_SIZE * i can be overwhelming when chunk_size is 2K, especially
+for setups with PAGE_SIZE > SZ_4K)
 
-diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
-index 70e5e0b6d69d..5041dd35f2a6 100644
---- a/kernel/bpf/bpf_lsm.c
-+++ b/kernel/bpf/bpf_lsm.c
-@@ -149,7 +149,11 @@ BTF_ID(func, bpf_lsm_file_ioctl)
- BTF_ID(func, bpf_lsm_file_lock)
- BTF_ID(func, bpf_lsm_file_open)
- BTF_ID(func, bpf_lsm_file_receive)
-+
-+#ifdef CONFIG_SECURITY_NETWORK
- BTF_ID(func, bpf_lsm_inet_conn_established)
-+#endif /* CONFIG_SECURITY_NETWORK */
-+
- BTF_ID(func, bpf_lsm_inode_create)
- BTF_ID(func, bpf_lsm_inode_free_security)
- BTF_ID(func, bpf_lsm_inode_getattr)
-@@ -181,6 +185,8 @@ BTF_ID(func, bpf_lsm_sb_show_options)
- BTF_ID(func, bpf_lsm_sb_statfs)
- BTF_ID(func, bpf_lsm_sb_umount)
- BTF_ID(func, bpf_lsm_settime)
-+
-+#ifdef CONFIG_SECURITY_NETWORK
- BTF_ID(func, bpf_lsm_socket_accept)
- BTF_ID(func, bpf_lsm_socket_bind)
- BTF_ID(func, bpf_lsm_socket_connect)
-@@ -195,6 +201,8 @@ BTF_ID(func, bpf_lsm_socket_recvmsg)
- BTF_ID(func, bpf_lsm_socket_sendmsg)
- BTF_ID(func, bpf_lsm_socket_shutdown)
- BTF_ID(func, bpf_lsm_socket_socketpair)
-+#endif /* CONFIG_SECURITY_NETWORK */
-+
- BTF_ID(func, bpf_lsm_syslog)
- BTF_ID(func, bpf_lsm_task_alloc)
- BTF_ID(func, bpf_lsm_task_getsecid)
--- 
-2.17.1
+> > > > > +
+> > > > > + refcount_add(len, &xs->sk.sk_wmem_alloc);
+> > > > > +
+> > > > > + return skb;
+> > > > > +}
+> > > > > +
+> > >
+> > > Al
+> >
+> > Thanks,
+> > Al
+
+Al
 
