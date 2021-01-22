@@ -2,85 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A44BD300900
-	for <lists+bpf@lfdr.de>; Fri, 22 Jan 2021 17:51:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70B0230096A
+	for <lists+bpf@lfdr.de>; Fri, 22 Jan 2021 18:22:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729577AbhAVQuL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Jan 2021 11:50:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52856 "EHLO
+        id S1728950AbhAVPs7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Jan 2021 10:48:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729390AbhAVQnq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Jan 2021 11:43:46 -0500
-Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [IPv6:2001:67c:2050::465:102])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA3D6C061797;
-        Fri, 22 Jan 2021 08:43:09 -0800 (PST)
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:105:465:1:2:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4DMlSB6qB8zQlYw;
-        Fri, 22 Jan 2021 17:43:06 +0100 (CET)
-Authentication-Results: gerste.heinlein-support.de (amavisd-new);
-        dkim=pass (2048-bit key) reason="pass (just generated, assumed good)"
-        header.d=mailbox.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
-        content-transfer-encoding:mime-version:references:in-reply-to
-        :message-id:date:date:subject:subject:from:from:received; s=
-        mail20150812; t=1611333783; bh=EXY5UBekWmdLcrCcU6mcp7T2dzDQIdcDp
-        LiEPkUlz70=; b=tS/5HHjEMv9zxzMEvWCn4JcH1ftjmJL+vAZNfkrBkP3DhjYGt
-        Oj7S8pKnGBt6I6l8GAcKc3txaW/vhylwDnSYvUYHQjxFkIfgK1+gOvrgPAJZBtK5
-        i4rRBbXh2I5PpAQ6a8mU4Moc1AsMBgwAh0DfniazS7tgeQJzxKlUy18Bj5WEY9GP
-        8WiCcJJst3Zwkis5esmfbYJ61QbfaShuyTu/VKYr9GhZYe+crSCSIZe9Lh1e8Q6c
-        664/metpOM9xksdq2Whwp5rjHBsnxhrNUSqNiCdRsFDzR3q3jdMpVKqqocYH+U7Z
-        gYEDFb5nVUDXqSfo9w/pD3r43/AF3gZtMOkXQ==
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp2.mailbox.org ([80.241.60.241])
-        by gerste.heinlein-support.de (gerste.heinlein-support.de [91.198.250.173]) (amavisd-new, port 10030)
-        with ESMTP id KqCf4o-Nc0xX; Fri, 22 Jan 2021 17:43:03 +0100 (CET)
-From:   Loris Reiff <loris.reiff@liblor.ch>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        Loris Reiff <loris.reiff@liblor.ch>
-Subject: [PATCH 2/2] bpf: cgroup: Fix problematic bounds check
-Date:   Fri, 22 Jan 2021 17:42:32 +0100
-Message-Id: <20210122164232.61770-2-loris.reiff@liblor.ch>
-In-Reply-To: <20210122164232.61770-1-loris.reiff@liblor.ch>
-References: <20210122164232.61770-1-loris.reiff@liblor.ch>
+        with ESMTP id S1729117AbhAVPsL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Jan 2021 10:48:11 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E39F4C0613D6;
+        Fri, 22 Jan 2021 07:47:30 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id l12so4490682ljc.3;
+        Fri, 22 Jan 2021 07:47:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9yOdGiSyAKRI4yhC6YNbu6P24qOwaii8uVvkwHJBwqk=;
+        b=jR4rX9PQ7tH8aLb3fb4hBZ80siQswC3DPbeSXhpH8vXi9cBVcAv6u2WLNJIW5IZT/u
+         20NsR/ixi5y+mebRw1clgxxwQFxFoRYbdhY8gQUGahpvMPXhrqyX9EKSNXqfSKXZWbD9
+         9WsNgUbKR6Qco4CN0fx0Yb6qi20dB7ktpJdr7C4D4t20BeBfH6FMFbyoAHr2Z5eFNYev
+         0E+Sv0RM33CwGvyBMO6bWkC2SCIcg9AEJgVGIjfnrfmwc7nYm2BeI7yvylS7UYP/9uGj
+         LyoHmMDyXuD1HTnK38CbcfBHFbD87AWfuq+st8YNcdBpcGa0dfVL+ARKE1GJ8d5KwWDI
+         MKOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9yOdGiSyAKRI4yhC6YNbu6P24qOwaii8uVvkwHJBwqk=;
+        b=OltFUs7I9+xhLwbXX6/njpHHCdGHR56nbayQK57qZDtWd9BbSyf037hvSRqmIEF+/D
+         3E0aTsKklMWlszIbwH22b/U1BylfWVyAV7wox8ROqGxZleqjJM7HZQfH5KEowSMGRY3m
+         Ob+QHcR6pcBSTYKVtjotI1rtWfJckotr2OACP1H/ddwYaa8h1jB4VE8S41z0nd1AaSyU
+         vlQ8YfV6TEgPWMCTbb8+K9XM/ucFUH0K37I3O5CsA2GOzDFU72XQSEl8EMNIqcBODP0U
+         GUPqPxbnkEOY2BrMPY3qcBD6RrtoW8QiE77ItDL+8qck3tJudIq1DbvDQhpf1EB5qwOi
+         VURg==
+X-Gm-Message-State: AOAM532DoxlU6nxtKlxlkVG4xc83AoGOU9EiqCIBx2GYzNWLhJan6dfh
+        +cTs8Rl1JX6TaG/1t6FkoEiOpD+Oso2dLw==
+X-Google-Smtp-Source: ABdhPJx0nuNzic/yAKnqJDW976DZKyzkjhXu/EY03E/192iVgtzBnMKdegTM/kBiXocCJ8lGN551+A==
+X-Received: by 2002:a05:651c:30d:: with SMTP id a13mr435064ljp.238.1611330449484;
+        Fri, 22 Jan 2021 07:47:29 -0800 (PST)
+Received: from btopel-mobl.ger.intel.com (c213-102-90-208.bredband.comhem.se. [213.102.90.208])
+        by smtp.gmail.com with ESMTPSA id w17sm928589lft.52.2021.01.22.07.47.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Jan 2021 07:47:28 -0800 (PST)
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
+        bjorn.topel@intel.com, magnus.karlsson@intel.com,
+        jonathan.lemon@gmail.com, ciara.loftus@intel.com,
+        weqaar.a.janjua@intel.com
+Subject: [PATCH bpf-next 00/12] Various cleanups/fixes for AF_XDP selftests
+Date:   Fri, 22 Jan 2021 16:47:13 +0100
+Message-Id: <20210122154725.22140-1-bjorn.topel@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-MBO-SPAM-Probability: **
-X-Rspamd-Score: 1.80 / 15.00 / 15.00
-X-Rspamd-Queue-Id: DFC9117BA
-X-Rspamd-UID: 65af45
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Since ctx.optlen is signed, a larger value than max_value could be
-passed, as it is later on used as unsigned, which causes a WARN_ON_ONCE
-in the copy_to_user.
+This series is a number of fixes/cleanups, mainly to improve the
+readability of the xdpxceiver selftest application.
 
-Fixes: 0d01da6afc54 ("bpf: implement getsockopt and setsockopt hooks")
-Signed-off-by: Loris Reiff <loris.reiff@liblor.ch>
----
- kernel/bpf/cgroup.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Details in each commit!
 
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index 6ec8f02f4..6aa9e10c6 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -1464,7 +1464,7 @@ int __cgroup_bpf_run_filter_getsockopt(struct sock *sk, int level,
- 		goto out;
- 	}
- 
--	if (ctx.optlen > max_optlen) {
-+	if (ctx.optlen > max_optlen || ctx.optlen < 0) {
- 		ret = -EFAULT;
- 		goto out;
- 	}
+
+Cheers,
+Björn
+
+Björn Töpel (12):
+  selftests/bpf: remove a lot of ifobject casting
+  selftests/bpf: remove unused enums
+  selftests/bpf: fix style warnings
+  selftests/bpf: remove memory leak
+  selftests/bpf: improve readability of xdpxceiver/worker_pkt_validate()
+  selftests/bpf: remove casting by introduce local variable
+  selftests/bpf: change type from void * to struct ifaceconfigobj *
+  selftests/bpf: change type from void * to struct generic_data *
+  selftests/bpf: define local variables at the beginning of a block
+  selftests/bpf: avoid heap allocation
+  selftests/bpf: consistent malloc/calloc usage
+  selftests/bpf: avoid useless void *-casts
+
+ tools/testing/selftests/bpf/xdpxceiver.c | 219 +++++++++++------------
+ tools/testing/selftests/bpf/xdpxceiver.h |   2 -
+ 2 files changed, 105 insertions(+), 116 deletions(-)
+
+
+base-commit: 443edcefb8213155c0da22c4a999f4a49858fa39
 -- 
-2.29.2
+2.27.0
 
