@@ -2,189 +2,180 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12BAD2FFA0A
-	for <lists+bpf@lfdr.de>; Fri, 22 Jan 2021 02:41:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 593DE2FFA4A
+	for <lists+bpf@lfdr.de>; Fri, 22 Jan 2021 03:08:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725823AbhAVBlJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 21 Jan 2021 20:41:09 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:38040 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725775AbhAVBlI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 21 Jan 2021 20:41:08 -0500
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxS+TgLApgnQAJAA--.14315S2;
-        Fri, 22 Jan 2021 09:39:46 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Fangrui Song <maskray@google.com>
-Subject: [PATCH bpf-next v4] samples/bpf: Update build procedure for manually compiling LLVM and Clang
-Date:   Fri, 22 Jan 2021 09:39:44 +0800
-Message-Id: <1611279584-26047-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9DxS+TgLApgnQAJAA--.14315S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxKrWfZFyUAFyktw4xAr4Dtwb_yoW7uryDpw
-        13ta4SgrZ7tryfXFyxGF48XF4fZr4kXa4UCa4xJrykAF1qvwn7Kr43trWrKFW7Jr92kr45
-        Cw1rKay5uF1UXaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxV
-        W8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xf
-        McIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7
-        v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF
-        7I0E8cxan2IY04v7MxkIecxEwVAFwVWkMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
-        AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
-        17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
-        IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
-        3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
-        nIWIevJa73UjIFyTuYvjfUOMKZDUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S1726578AbhAVCIT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 21 Jan 2021 21:08:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726462AbhAVCIS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 21 Jan 2021 21:08:18 -0500
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D10DC06174A;
+        Thu, 21 Jan 2021 18:07:38 -0800 (PST)
+Received: by mail-io1-xd35.google.com with SMTP id e22so8226324iom.5;
+        Thu, 21 Jan 2021 18:07:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=OdNdvLohokUOuia5XaMR5TfQIGTzr9SxkYC3Ls0vPbU=;
+        b=kwdx4G6v68AANGSyBfLCrKw017uEaM6GnJ/a67F5aTZwf6dicBR4KTEPgGzSeksgvu
+         KRrTKZZ0BF0CkXMPztq9D9uIPsJfZnWT7TKR0Tijp/5Z1M9kXbUcUiG+hWp6fx6slWBw
+         Nhht/t15tFGeDwbWS+hOPwoL0UwNe1pb4w2+aY6rVZUY5zc2FWberEwReITFUut7qxc3
+         D3BJBBm48jjSCMpHhKx8Odv/BHHVN5QKBJv7kMqIRrmb/Kb/yg0/ORK406CKRbUMuBmF
+         JrAuEVkydIuRC8AF9rYcIQU7KsUb57+bnlbL7g1cBx+z+b4LlpRGq1v/1EcX3zMTHum3
+         ogNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=OdNdvLohokUOuia5XaMR5TfQIGTzr9SxkYC3Ls0vPbU=;
+        b=NhDGJsNkD+S08GzoHBpH17FD2q32tvUXkwqLPp3d05sxmyzNE5UswKHhF9n2wEyUG4
+         zQA5wb2vcg/7gPiAu+aQBJ7aMwhhqobA4ExAfnBnW1QP6faLFwditfBOjG4zNhMQK3bq
+         vSbkHTnniQ8LcCDIOcgTNpYaVbGznCoAcxZ7veASX3RlseyfYnSFWgj+CahvpV7emSv/
+         uqm3Hb4xHmshH+YTQt82jo6d3Th5Y+5W1m5Zt9Ew8JU+tb8GIu+pg71bnGbMAUNo1nps
+         pEgSG/H8EkjY9pQmYBqAc+Y/2y8mS+JMXrXdpMlFLP143NrewW9h1av1jk285bJ6Rr8n
+         Q3yg==
+X-Gm-Message-State: AOAM530HKe6l5WPu27INFIxLWbvZT5+f0hXBBpvqNy5dvUiYBvZx0tSK
+        Hd2snCSJrjU839+ohWXqAQodRzAOjPiV4SZr7Y4=
+X-Google-Smtp-Source: ABdhPJyCIWtYQh4q6ajXgFMcxIDWrpyJxNYvo8SKpbGP0zv5cXoa0ZmcwWdjISEN1KMRkghEOQflGs/0hAYiXvbrGmk=
+X-Received: by 2002:a92:c5c8:: with SMTP id s8mr2216613ilt.186.1611281257335;
+ Thu, 21 Jan 2021 18:07:37 -0800 (PST)
+MIME-Version: 1.0
+References: <20210112184004.1302879-1-jolsa@kernel.org> <f3790a7d-73bc-d634-5994-d049c7a73eae@redhat.com>
+ <20210121133825.GB12699@kernel.org> <CA+icZUVsdcTEJjwpB7=05W5-+roKf66qTwP+M6QJKTnuP6TOVQ@mail.gmail.com>
+ <CAEf4BzaVAp=W47KmMsfpj_wuJR-Gvmav=tdKdoHKAC3AW-976w@mail.gmail.com>
+In-Reply-To: <CAEf4BzaVAp=W47KmMsfpj_wuJR-Gvmav=tdKdoHKAC3AW-976w@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Fri, 22 Jan 2021 03:07:25 +0100
+Message-ID: <CA+icZUW6g9=sMD3hj5g+ZXOwE_DxfxO3SX2Tb-bFTiWnQLb_EA@mail.gmail.com>
+Subject: Re: [PATCH] btf_encoder: Add extra checks for symbol names
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Tom Stellard <tstellar@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>, dwarves@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Hao Luo <haoluo@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The current LLVM and Clang build procedure in samples/bpf/README.rst is
-out of date. See below that the links are not accessible any more.
+On Thu, Jan 21, 2021 at 9:53 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Thu, Jan 21, 2021 at 8:09 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> >
+> > On Thu, Jan 21, 2021 at 2:38 PM Arnaldo Carvalho de Melo
+> > <arnaldo.melo@gmail.com> wrote:
+> > >
+> > > Em Tue, Jan 12, 2021 at 04:27:59PM -0800, Tom Stellard escreveu:
+> > > > On 1/12/21 10:40 AM, Jiri Olsa wrote:
+> > > > > When processing kernel image build by clang we can
+> > > > > find some functions without the name, which causes
+> > > > > pahole to segfault.
+> > > > >
+> > > > > Adding extra checks to make sure we always have
+> > > > > function's name defined before using it.
+> > > > >
+> > > >
+> > > > I backported this patch to pahole 1.19, and I can confirm it fixes the
+> > > > segfault for me.
+> > >
+> > > I'm applying v2 for this patch and based on your above statement I'm
+> > > adding a:
+> > >
+> > > Tested-by: Tom Stellard <tstellar@redhat.com>
+> > >
+> > > Ok?
+> > >
+> > > Who originally reported this?
+> > >
+> >
+> > The origin was AFAICS the thread where I asked initially [1].
+> >
+> > Tom reported in the same thread in [2] that pahole segfaults.
+> >
+> > Later in the thread Jiri offered a draft of this patch after doing some tests.
+> >
+> > I have tested all diffs and v1 and v2 of Jiri's patch.
+> > ( Anyway, latest pahole ToT plus Jiri's patch did not solve my origin problem. )
+>
+> Your original problem was with DWARF5 or DWARF4? I think you mentioned
+> both at some point, but I remember I couldn't repro DWARF4 problems.
+> If you still have problems, can you start a new thread with steps to
+> repro (including Kconfig, tooling versions, etc). And one for each
+> problem, no all at the same time, please. I honestly lost track of
+> what's still not working among those multiple intertwined email
+> threads, sorry about that.
+>
 
-$ git clone http://llvm.org/git/llvm.git
-Cloning into 'llvm'...
-fatal: unable to access 'http://llvm.org/git/llvm.git/': Maximum (20) redirects followed
-$ git clone --depth 1 http://llvm.org/git/clang.git
-Cloning into 'clang'...
-fatal: unable to access 'http://llvm.org/git/clang.git/': Maximum (20) redirects followed
+I love people saying "I have a (one) problem." :-).
 
-The LLVM community has adopted new ways to build the compiler. There are
-different ways to build LLVM and Clang, the Clang Getting Started page [1]
-has one way. As Yonghong said, it is better to copy the build procedure
-in Documentation/bpf/bpf_devel_QA.rst to keep consistent.
+The origin was Debian kernel-team enabled BTF-debuginfo Kconfig.
 
-I verified the procedure and it is proved to be feasible, so we should
-update README.rst to reflect the reality. At the same time, update the
-related comment in Makefile.
+My main focus is to be as close to Debian's kernel-config and if this
+works well with (experimental) Linux DWARF v5 support I am a happy
+guy.
 
-Additionally, as Fangrui said, the dir llvm-project/llvm/build/install is
-not used, BUILD_SHARED_LIBS=OFF is the default option [2], so also change
-Documentation/bpf/bpf_devel_QA.rst together.
+Do you want Nick's DWARF v5 patch-series as a base?
+Thinking of DWARF-v4?
+Use Nick's patchset or DWARF-v4 what is in Linux upstream means Linux
+v5.11-rc4+?
+What Git tree to use - Linus or one of your BPF/BTF folks?
 
-At last, we recommend that developers who want the fastest incremental
-builds use the Ninja build system [1], you can find it in your system's
-package manager, usually the package is ninja or ninja-build [3], so add
-ninja to build dependencies suggested by Nathan.
+What version of pahole (latest Git) etc.?
 
-[1] https://clang.llvm.org/get_started.html
-[2] https://www.llvm.org/docs/CMake.html
-[3] https://github.com/ninja-build/ninja/wiki/Pre-built-Ninja-packages
+- Sedat -
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-Acked-by: Yonghong Song <yhs@fb.com>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
----
-
-v2: Update the commit message suggested by Yonghong,
-    thank you very much.
-
-v3: Remove the default option BUILD_SHARED_LIBS=OFF
-    and just mkdir llvm-project/llvm/build suggested
-    by Fangrui.
-
-v4: Add some description about ninja suggested by Nathan.
-
- Documentation/bpf/bpf_devel_QA.rst | 11 +++++++----
- samples/bpf/Makefile               |  2 +-
- samples/bpf/README.rst             | 22 ++++++++++++++--------
- 3 files changed, 22 insertions(+), 13 deletions(-)
-
-diff --git a/Documentation/bpf/bpf_devel_QA.rst b/Documentation/bpf/bpf_devel_QA.rst
-index 5b613d2..2ed89ab 100644
---- a/Documentation/bpf/bpf_devel_QA.rst
-+++ b/Documentation/bpf/bpf_devel_QA.rst
-@@ -501,16 +501,19 @@ All LLVM releases can be found at: http://releases.llvm.org/
- 
- Q: Got it, so how do I build LLVM manually anyway?
- --------------------------------------------------
--A: You need cmake and gcc-c++ as build requisites for LLVM. Once you have
--that set up, proceed with building the latest LLVM and clang version
-+A: We recommend that developers who want the fastest incremental builds
-+use the Ninja build system, you can find it in your system's package
-+manager, usually the package is ninja or ninja-build.
-+
-+You need ninja, cmake and gcc-c++ as build requisites for LLVM. Once you
-+have that set up, proceed with building the latest LLVM and clang version
- from the git repositories::
- 
-      $ git clone https://github.com/llvm/llvm-project.git
--     $ mkdir -p llvm-project/llvm/build/install
-+     $ mkdir -p llvm-project/llvm/build
-      $ cd llvm-project/llvm/build
-      $ cmake .. -G "Ninja" -DLLVM_TARGETS_TO_BUILD="BPF;X86" \
-                 -DLLVM_ENABLE_PROJECTS="clang"    \
--                -DBUILD_SHARED_LIBS=OFF           \
-                 -DCMAKE_BUILD_TYPE=Release        \
-                 -DLLVM_BUILD_RUNTIME=OFF
-      $ ninja
-diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-index 26fc96c..d061446 100644
---- a/samples/bpf/Makefile
-+++ b/samples/bpf/Makefile
-@@ -208,7 +208,7 @@ TPROGLDLIBS_xdpsock		+= -pthread -lcap
- TPROGLDLIBS_xsk_fwd		+= -pthread
- 
- # Allows pointing LLC/CLANG to a LLVM backend with bpf support, redefine on cmdline:
--#  make M=samples/bpf/ LLC=~/git/llvm/build/bin/llc CLANG=~/git/llvm/build/bin/clang
-+# make M=samples/bpf LLC=~/git/llvm-project/llvm/build/bin/llc CLANG=~/git/llvm-project/llvm/build/bin/clang
- LLC ?= llc
- CLANG ?= clang
- OPT ?= opt
-diff --git a/samples/bpf/README.rst b/samples/bpf/README.rst
-index dd34b2d..60c6494 100644
---- a/samples/bpf/README.rst
-+++ b/samples/bpf/README.rst
-@@ -62,20 +62,26 @@ To generate a smaller llc binary one can use::
- 
-  -DLLVM_TARGETS_TO_BUILD="BPF"
- 
-+We recommend that developers who want the fastest incremental builds
-+use the Ninja build system, you can find it in your system's package
-+manager, usually the package is ninja or ninja-build.
-+
- Quick sniplet for manually compiling LLVM and clang
--(build dependencies are cmake and gcc-c++)::
-+(build dependencies are ninja, cmake and gcc-c++)::
- 
-- $ git clone http://llvm.org/git/llvm.git
-- $ cd llvm/tools
-- $ git clone --depth 1 http://llvm.org/git/clang.git
-- $ cd ..; mkdir build; cd build
-- $ cmake .. -DLLVM_TARGETS_TO_BUILD="BPF;X86"
-- $ make -j $(getconf _NPROCESSORS_ONLN)
-+ $ git clone https://github.com/llvm/llvm-project.git
-+ $ mkdir -p llvm-project/llvm/build
-+ $ cd llvm-project/llvm/build
-+ $ cmake .. -G "Ninja" -DLLVM_TARGETS_TO_BUILD="BPF;X86" \
-+            -DLLVM_ENABLE_PROJECTS="clang"    \
-+            -DCMAKE_BUILD_TYPE=Release        \
-+            -DLLVM_BUILD_RUNTIME=OFF
-+ $ ninja
- 
- It is also possible to point make to the newly compiled 'llc' or
- 'clang' command via redefining LLC or CLANG on the make command line::
- 
-- make M=samples/bpf LLC=~/git/llvm/build/bin/llc CLANG=~/git/llvm/build/bin/clang
-+ make M=samples/bpf LLC=~/git/llvm-project/llvm/build/bin/llc CLANG=~/git/llvm-project/llvm/build/bin/clang
- 
- Cross compiling samples
- -----------------------
--- 
-2.1.0
-
+> >
+> > So up to you Arnaldo for the credits.
+> >
+> > - Sedat -
+> >
+> > [1] https://marc.info/?t=161036949500004&r=1&w=2
+> > [2] https://marc.info/?t=161036949500004&r=1&w=2
+> >
+> > > - Arnaldo
+> > >
+> > > > -Tom
+> > > >
+> > > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > > > ---
+> > > > >   btf_encoder.c | 8 ++++++--
+> > > > >   1 file changed, 6 insertions(+), 2 deletions(-)
+> > > > >
+> > > > > diff --git a/btf_encoder.c b/btf_encoder.c
+> > > > > index 333973054b61..17f7a14f2ef0 100644
+> > > > > --- a/btf_encoder.c
+> > > > > +++ b/btf_encoder.c
+> > > > > @@ -72,6 +72,8 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym)
+> > > > >     if (elf_sym__type(sym) != STT_FUNC)
+> > > > >             return 0;
+> > > > > +   if (!elf_sym__name(sym, btfe->symtab))
+> > > > > +           return 0;
+> > > > >     if (functions_cnt == functions_alloc) {
+> > > > >             functions_alloc = max(1000, functions_alloc * 3 / 2);
+> > > > > @@ -730,9 +732,11 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
+> > > > >             if (!has_arg_names(cu, &fn->proto))
+> > > > >                     continue;
+> > > > >             if (functions_cnt) {
+> > > > > -                   struct elf_function *func;
+> > > > > +                   const char *name = function__name(fn, cu);
+> > > > > +                   struct elf_function *func = NULL;
+> > > > > -                   func = find_function(btfe, function__name(fn, cu));
+> > > > > +                   if (name)
+> > > > > +                           func = find_function(btfe, name);
+> > > > >                     if (!func || func->generated)
+> > > > >                             continue;
+> > > > >                     func->generated = true;
+> > > > >
+> > > >
+> > >
+> > > --
+> > >
+> > > - Arnaldo
