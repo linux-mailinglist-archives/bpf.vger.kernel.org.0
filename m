@@ -2,48 +2,44 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 039073010AD
-	for <lists+bpf@lfdr.de>; Sat, 23 Jan 2021 00:12:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EDA0301103
+	for <lists+bpf@lfdr.de>; Sat, 23 Jan 2021 00:31:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728945AbhAVXLB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Jan 2021 18:11:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45194 "EHLO mail.kernel.org"
+        id S1728305AbhAVXax (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Jan 2021 18:30:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728549AbhAVXKv (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Jan 2021 18:10:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id B0F4B23B52;
-        Fri, 22 Jan 2021 23:10:09 +0000 (UTC)
+        id S1728281AbhAVXav (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Jan 2021 18:30:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 976A523A3A;
+        Fri, 22 Jan 2021 23:30:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611357009;
-        bh=V2U34p1/NCV5FrfodxFyi0V4q4qOz3sfwuf6/38+ZhI=;
+        s=k20201202; t=1611358209;
+        bh=tXZGZHf5vtWuvhsVs/7oA87OuFC/E+rqKGccMjWHu9I=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=HhzwLyN7nJJeaYVriJ37ZTX3G/e59dCa1S+DwmTOZC+J1ndQ7fFpDQLPYRMJqNDlw
-         LjaO7u/T2s/fS3LrAx+fShYzRrRmTcbBi3JDdvpnnK2u5MqKReUj82DawYCrfoKUh9
-         3Iy98aKQ7tE7K93s4cAtLDTmmWmN7FYqoQvyqd+RT053ckUV7JTEmc/+UaD1RT6fvA
-         Ddyf8OsN6zUrYh12s2Vh28VMrIIc5GfCnPpN/P8Ztg/CLE6OZ0ROqsU+dOXR97V94p
-         wgD/cFIeBfyMUpyvkMvW72PwZ175V6QKjnXYquPIIotyyhPjK0/2DqQ5RQhhB6gvtp
-         A9ujnkfKBpujw==
+        b=a+CyHYAuUc3ZpjJSmRbxg0uCQkNDM3F/91kYe1NT87kRUGXysrNxL0JYjkdiei+Lh
+         NW9UqAz4iRMALznnoKbojyZVwKr9P2TJLEsyjW6vK/l759y/JrueazAu9T+2CLLdB4
+         aOUn/y2YnpM6+7OIeTz//awJoakq9c0YcIWfb2FXh0NVsPrvruj/zFlWuuFWp/doDB
+         BFHLOVKXYVKghW5QPaEEjZ8NrWFsQmQ8bVrs3v05CI0Sug7R43+LbDqItWCqMLTX2+
+         hDWgCbiraUzzuAW5cTKXttSFh6AvNzZjSOHeMSv9lmcTtE5Ti1KQNXapX/6xu3lx1I
+         x94M6T2cpd4yw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9FC32652D9;
-        Fri, 22 Jan 2021 23:10:09 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 89F08652DA;
+        Fri, 22 Jan 2021 23:30:09 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v4] samples/bpf: Update build procedure for manually
- compiling LLVM and Clang
+Subject: Re: [PATCHv10 bpf-next] samples/bpf: add xdp program on egress for
+ xdp_redirect_map
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161135700964.32582.5741971594319443447.git-patchwork-notify@kernel.org>
-Date:   Fri, 22 Jan 2021 23:10:09 +0000
-References: <1611279584-26047-1-git-send-email-yangtiezhu@loongson.cn>
-In-Reply-To: <1611279584-26047-1-git-send-email-yangtiezhu@loongson.cn>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        natechancellor@gmail.com, ndesaulniers@google.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
-        lixuefeng@loongson.cn, maskray@google.com
+Message-Id: <161135820955.8788.2073072556982929124.git-patchwork-notify@kernel.org>
+Date:   Fri, 22 Jan 2021 23:30:09 +0000
+References: <20210122025007.2968381-1-liuhangbin@gmail.com>
+In-Reply-To: <20210122025007.2968381-1-liuhangbin@gmail.com>
+To:     Hangbin Liu <liuhangbin@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, daniel@iogearbox.net,
+        brouer@redhat.com, john.fastabend@gmail.com, yhs@fb.com,
+        toke@redhat.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,22 +48,19 @@ Hello:
 
 This patch was applied to bpf/bpf-next.git (refs/heads/master):
 
-On Fri, 22 Jan 2021 09:39:44 +0800 you wrote:
-> The current LLVM and Clang build procedure in samples/bpf/README.rst is
-> out of date. See below that the links are not accessible any more.
+On Fri, 22 Jan 2021 10:50:07 +0800 you wrote:
+> This patch add a xdp program on egress to show that we can modify
+> the packet on egress. In this sample we will set the pkt's src
+> mac to egress's mac address. The xdp_prog will be attached when
+> -X option supplied.
 > 
-> $ git clone http://llvm.org/git/llvm.git
-> Cloning into 'llvm'...
-> fatal: unable to access 'http://llvm.org/git/llvm.git/': Maximum (20) redirects followed
-> $ git clone --depth 1 http://llvm.org/git/clang.git
-> Cloning into 'clang'...
-> fatal: unable to access 'http://llvm.org/git/clang.git/': Maximum (20) redirects followed
+> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf-next,v4] samples/bpf: Update build procedure for manually compiling LLVM and Clang
-    https://git.kernel.org/bpf/bpf-next/c/628add78b07a
+  - [PATCHv10,bpf-next] samples/bpf: add xdp program on egress for xdp_redirect_map
+    https://git.kernel.org/bpf/bpf-next/c/6e66fbb10597
 
 You are awesome, thank you!
 --
