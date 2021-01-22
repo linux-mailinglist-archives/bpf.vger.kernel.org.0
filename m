@@ -2,196 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92F7F300FBA
-	for <lists+bpf@lfdr.de>; Fri, 22 Jan 2021 23:16:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C1DB300F89
+	for <lists+bpf@lfdr.de>; Fri, 22 Jan 2021 23:03:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729910AbhAVUGI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Jan 2021 15:06:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39958 "EHLO
+        id S1728425AbhAVWAx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Jan 2021 17:00:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729522AbhAVUF7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Jan 2021 15:05:59 -0500
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 066FFC06174A;
-        Fri, 22 Jan 2021 12:05:12 -0800 (PST)
-Received: by mail-yb1-xb31.google.com with SMTP id e67so6590717ybc.12;
-        Fri, 22 Jan 2021 12:05:11 -0800 (PST)
+        with ESMTP id S1730189AbhAVUGW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Jan 2021 15:06:22 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4803C0613D6;
+        Fri, 22 Jan 2021 12:05:40 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id r32so6619378ybd.5;
+        Fri, 22 Jan 2021 12:05:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=L8jS0HzNfqD4thkNxIQ6N1AxEPEUC70ooGhoF1TKbcw=;
-        b=dOQjb7CJ+l5Zdb7DzQ2FVeJa6kN5ropptNySqsHo2wFS3utiWUMlLHfI65VK7YdYM0
-         HwllVkwwytkIptzGyPCUN0sJD+TjHkxBe5ZR6RhnZ04Av0NbppS3rZiHKkuIKRHi3PzH
-         dQQ08wNe0A3CMseHhgdfmohjmL3q4Bts+ghNw7K/I2TfO7HBKMXu1hNthCmErvTWVF+k
-         6LJZmIvjonOLfHMpK53O38uPj5qKRNgT/aJyby/joGnUr+4tPNUSfCt4vKW4Oj5Uc0Gl
-         ukpICjL6HaCUnGqTX6nODBuJYtOikvVEaJOfmuOnjlNBpcTwM5iZEJw7K31D9j2PvlMA
-         LZ3g==
+        bh=yIJeE19Ex412BCh+tXZdyqfHWVAMXMH3ZAW2ZmTwEvs=;
+        b=EHtGF6/TD4BsGrkHJBxIryItSGkMyar7VNULjL950bhJ7Mh2bp2g43eQEkoX80cCjD
+         Jt1sAd7/bb5badTmt81icFDmrkYmgGXtsOUYhX7ytNeVi1ZgdCehzUkSTYJlXfckYPOD
+         9PD0TZPBTGegD1cR+ioo9v5zlxzrqjG3nCK45JgsmfylzMs7HVJfcgzwxTG0wcOER30+
+         +/PvU5KKMLwcW66J++eacO4l5qppcU3C+/7io+An8WGnWHpgFXAI6Q3mEcf/tUyH57b8
+         08bF+7ag+E0cvRsPGtCpkxraJnPU68RRkiNaVjgZfyqdg+KzONT7H0p0UHFNGIztDVd1
+         I8EQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=L8jS0HzNfqD4thkNxIQ6N1AxEPEUC70ooGhoF1TKbcw=;
-        b=FLg1j0IUB1dTZJBSyih0mMe2BerIQc+FyW9C1nspJapNBHHcyo6zhZNNMSOR8uNIA9
-         cc7Vc1P7ptEFZDSixgQZUpJ7G3ghh5KN1oud/aLxxjBYFqB24t3qpDFMbCxEAU/dZnw8
-         OVA41BNNEnBPfXJ/9LjXSgINkvjlp+oGdpc8I8EEg6H09Mszv5y7OVz73mbih57cgc/F
-         hXGvoCESwJAh2ykoT8UQkwodH8xs5arePEnQkGnQz98ASM9BuYNlGaiXQd+aNuYn2kxX
-         MEk2U9280xgpvZKkpmOgBDha/LF86xmJdFr69Dx3A6UbYXavJ9GzzHMprwNflqyDqwPy
-         NYXw==
-X-Gm-Message-State: AOAM5305HPBF9VfOLsWwzbZVxZnPNAfKgKxz3t1ay9HQ18dKGXdIiYKb
-        oHRrdp5D5AXJJ+FnDhbv2uJBiIArcc9IUHWseA8=
-X-Google-Smtp-Source: ABdhPJxj9qW9L/HDufNevNp2GUA1P6i+/BKcIKeMfaeHlJsEEugWD0I923OU79Dqk/W4OG19gN7PLYaWIT2FyhCUOzU=
-X-Received: by 2002:a25:b195:: with SMTP id h21mr8766090ybj.347.1611345911187;
- Fri, 22 Jan 2021 12:05:11 -0800 (PST)
+        bh=yIJeE19Ex412BCh+tXZdyqfHWVAMXMH3ZAW2ZmTwEvs=;
+        b=cAuhSwLhcktQD242baBGY/jrQGheACQvnxXgMm/5uTxM6LemKEYDan2Sd6tL8ch8KZ
+         SrYB2UQCxSEXARljiF1coi4oGOGgHCq+PEFEnWB92oC01JrAYGyK6XGIqNlrmOWumjRw
+         MGMXieRXg6vw/XPDo17x/77YVB5+7rJuMXjxmBfxLOO6RzBeOFa+rAf3GFtDvrlFf6P/
+         W51S6+v6VT7s79k72oY3lBo/XRVb6SRmB4eykvlhvG9k/f5RxiSGv8QWdUBdxVUzXOy+
+         HuCxbxPPxsQ1iyei7WoySc8cxp6C2WFtjgEfa1m+HH4sJKQq6pqOylDJUsXRrVISMJJM
+         R53A==
+X-Gm-Message-State: AOAM5330KYsjkW4u+r3yPjUf8tDIwkMrwxSIQg4g+YFPyboDEUYddytK
+        Co1MvgTy0CfZz6wdex+Mrijt3aVt39YRMTZEqNA=
+X-Google-Smtp-Source: ABdhPJzH9EaAVMjy4oznG8MRXKCsklDSK7xJtJFAv5F51i+auk5rZ05L0WLF6kwCNTlgofr+6K0ySUs/6QM8cBv+MZg=
+X-Received: by 2002:a25:9882:: with SMTP id l2mr8206839ybo.425.1611345940074;
+ Fri, 22 Jan 2021 12:05:40 -0800 (PST)
 MIME-Version: 1.0
-References: <1610921764-7526-1-git-send-email-alan.maguire@oracle.com>
- <1610921764-7526-4-git-send-email-alan.maguire@oracle.com>
- <CAEf4BzZ6bYenSTUmwu7jXqQOyD=AG75oLsLE5B=9ycPjm1jOkw@mail.gmail.com>
- <CAEf4Bzb4z+ZA+taOEo=N9eSGZaCqMALpFxShujm9GahBOFnhvg@mail.gmail.com> <alpine.LRH.2.23.451.2101221612440.12992@localhost>
-In-Reply-To: <alpine.LRH.2.23.451.2101221612440.12992@localhost>
+References: <20210122163920.59177-1-jolsa@kernel.org> <20210122163920.59177-2-jolsa@kernel.org>
+In-Reply-To: <20210122163920.59177-2-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 22 Jan 2021 12:05:00 -0800
-Message-ID: <CAEf4BzZBVjUQnPxG1hyxkoM5HLWyEm2VJjOg0MoogrBdm6QdEQ@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 3/4] libbpf: BTF dumper support for typed data
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Fri, 22 Jan 2021 12:05:28 -0800
+Message-ID: <CAEf4BzZEeuw0LPVHcR_7wvt14jkWZdSa9Rf-cGwpgJ57Rg9qHA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] elf_symtab: Add support for SHN_XINDEX index to elf_section_by_name
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Bill Wendling <morbo@google.com>,
-        Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+        Andrii Nakryiko <andriin@fb.com>, dwarves@vger.kernel.org,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Yonghong Song <yhs@fb.com>, Hao Luo <haoluo@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Mark Wielaard <mjw@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 8:31 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+On Fri, Jan 22, 2021 at 9:22 AM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> On Thu, 21 Jan 2021, Andrii Nakryiko wrote:
+> In case the elf's header e_shstrndx contains SHN_XINDEX,
+> we need to call elf_getshdrstrndx to get the proper
+> string table index.
 >
-> > On Wed, Jan 20, 2021 at 10:56 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Sun, Jan 17, 2021 at 2:22 PM Alan Maguire <alan.maguire@oracle.com> wrote:
-> > > >
-> > > > Add a BTF dumper for typed data, so that the user can dump a typed
-> > > > version of the data provided.
-> > > >
-> > > > The API is
-> > > >
-> > > > int btf_dump__emit_type_data(struct btf_dump *d, __u32 id,
-> > > >                              const struct btf_dump_emit_type_data_opts *opts,
-> > > >                              void *data);
-> > > >
-> >
-> > Two more things I realized about this API overnight:
-> >
-> > 1. It's error-prone to specify only the pointer to data without
-> > specifying the size. If user screws up and scecifies wrong type ID or
-> > if BTF data is corrupted, then this API would start reading and
-> > printing memory outside the bounds. I think it's much better to also
-> > require user to specify the size and bail out with error if we reach
-> > the end of the allowed memory area.
->
-> Yep, good point, especially given in the tracing context we will likely
-> only have a subset of the data (e.g. part of the 16k representing a
-> task_struct).  The way I was approaching this was to return -E2BIG
-> and append a "..." to the dumped data denoting the data provided
-> didn't cover the size needed to fully represent the type. The idea is
-> the structure is too big for the data provided, hence E2BIG, but maybe
-> there's a more intuitive way to do this? See below for more...
->
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
 
-Hm... that's an interesting use case for sure, but seems reasonable to
-support. "..." seems a bit misleading because it can be interpreted as
-"we omitted some output for brevity", no? "<truncated>" or something
-like that might be more obvious, but I'm just bikeshedding :)
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-> >
-> > 2. This API would be more useful if it also returns the amount of
-> > "consumed" bytes. That way users can do more flexible and powerful
-> > pretty-printing of raw data. So on success we'll have >= 0 number of
-> > bytes used for dumping given BTF type, or <0 on error. WDYT?
-> >
+>  dutil.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
 >
-> I like it! So
+> diff --git a/dutil.c b/dutil.c
+> index 7b667647420f..11fb7202049c 100644
+> --- a/dutil.c
+> +++ b/dutil.c
+> @@ -179,12 +179,18 @@ Elf_Scn *elf_section_by_name(Elf *elf, GElf_Ehdr *ep,
+>  {
+>         Elf_Scn *sec = NULL;
+>         size_t cnt = 1;
+> +       size_t str_idx;
+> +
+> +       if (elf_getshdrstrndx(elf, &str_idx))
+> +               return NULL;
 >
-> 1. if a user provides a too-big data object, we return the amount we used; and
-> 2. if a user provides a too-small data object, we append "..." to the dump
->   and return -E2BIG (or whatever error code).
+>         while ((sec = elf_nextscn(elf, sec)) != NULL) {
+>                 char *str;
 >
-> However I wonder for case 2 if it'd be better to use a snprintf()-like
-> semantic rather than an error code, returning the amount we would have
-> used. That way we easily detect case 1 (size passed in > return value),
-> case 2 (size passed in < return value), and errors can be treated separately.
-> Feels to me that dealing with truncated data is going to be sufficiently
-> frequent it might be good not to classify it as an error. Let me know if
-> you think that makes sense.
-
-Hm... Yeah, that would work, I think, and would feel pretty natural.
-On the other hand, it's easy to know the total input size needed by
-calling btf__resolve_size(btf, type_id), so if user expects to provide
-truncated input data and wants to know how much they should have
-provided, they can easily do that.
-
-Basically, I don't have strong preference here, though providing
-truncated input data still feels more like an error, than a normal
-situation... Maybe someone else want to weigh in? And -E2BIG is
-distinctive enough in this case. So both would work fine, but not
-clear which one is less surprising API.
-
+>                 gelf_getshdr(sec, shp);
+> -               str = elf_strptr(elf, ep->e_shstrndx, shp->sh_name);
+> +               str = elf_strptr(elf, str_idx, shp->sh_name);
+> +               if (!str)
+> +                       return NULL;
+>                 if (!strcmp(name, str)) {
+>                         if (index)
+>                                 *index = cnt;
+> --
+> 2.26.2
 >
-> I'm working on v3, and hope to have something early next week, but a quick
-> reply to a question below...
->
-> > > > ...where the id is the BTF id of the data pointed to by the "void *"
-> > > > argument; for example the BTF id of "struct sk_buff" for a
-> > > > "struct skb *" data pointer.  Options supported are
-> > > >
-> > > >  - a starting indent level (indent_lvl)
-> > > >  - a set of boolean options to control dump display, similar to those
-> > > >    used for BPF helper bpf_snprintf_btf().  Options are
-> > > >         - compact : omit newlines and other indentation
-> > > >         - noname: omit member names
-> > > >         - zero: show zero-value members
-> > > >
-> > > > Default output format is identical to that dumped by bpf_snprintf_btf(),
-> > > > for example a "struct sk_buff" representation would look like this:
-> > > >
-> > > > struct sk_buff){
-> > > >  (union){
-> > > >   (struct){
-> > >
-> > > Curious, these explicit anonymous (union) and (struct), is that
-> > > preferred way for explicitness, or is it just because it makes
-> > > implementation simpler and thus was chosen? I.e., if the goal was to
-> > > mimic C-style data initialization, you'd just have plain .next = ...,
-> > > .prev = ..., .dev = ..., .dev_scratch = ..., all on the same level. So
-> > > just checking for myself.
->
-> The idea here is that we want to clarify if we're dealing with
-> an anonymous struct or union.  I wanted to have things work
-> like a C-style initializer as closely as possible, but I
-> realized it's not legit to initialize multiple values in a
-> union, and more importantly when we're trying to visually interpret
-> data, we really want to know if an anonymous container of data is
-> a structure (where all values represent different elements in the
-> structure) or a union (where we're seeing multiple interpretations of
-> the same value).
-
-Yeah, fair enough.
-
->
-> Thanks again for the detailed review!
-
-Of course. But it's not clear if you agree with me on everything, so I
-still hope to get replies later.
-
->
-> Alan
