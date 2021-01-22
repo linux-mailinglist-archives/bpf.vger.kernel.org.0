@@ -2,60 +2,60 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D1153009B1
-	for <lists+bpf@lfdr.de>; Fri, 22 Jan 2021 18:31:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A259300ADC
+	for <lists+bpf@lfdr.de>; Fri, 22 Jan 2021 19:19:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729279AbhAVR03 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Jan 2021 12:26:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41090 "EHLO
+        id S1729325AbhAVRZp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Jan 2021 12:25:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729285AbhAVPt0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Jan 2021 10:49:26 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8AD3C06121E;
-        Fri, 22 Jan 2021 07:47:48 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id p13so7050627ljg.2;
-        Fri, 22 Jan 2021 07:47:48 -0800 (PST)
+        with ESMTP id S1729250AbhAVPsu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Jan 2021 10:48:50 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45722C061353;
+        Fri, 22 Jan 2021 07:47:41 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id p21so3046028lfu.11;
+        Fri, 22 Jan 2021 07:47:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Ej/vX1nAudOHlcsj/wkk0E6CPzhd1z5jtaipD1+YZts=;
-        b=AkAM03jGtCitne0blJcZVBymlpzWFXoPm31Mzrx2LCCOc5n1MrQHXG6IQFknELgqZM
-         twu9eQUgCZi8VZmUx/Sc5BJQhdFLvYcZtJFI2lTYNY+jM3GyxSgZzI/YrNz4nQ4baypd
-         3SwjSRZ6l6egctCX1GJBa3xW7JYseHYKqSAPnoNJQNmSWLdRYQtlXm8Y5+tePhTM5wnW
-         Z6RtDo6NK8Dse50BigHXzARqBEdeSZmZY/SWaAKFx4X2LhfRZNJPrigFG6NeDBbqk6dj
-         Bdq55JYx8h6MrjyGlucerPn6yr/rKWAMuGbU1Z9AXMrNdAMa2jADp+uZqroK1Z+fcTDF
-         8AJw==
+        bh=jMSB2XCCWwNKG8wfylQfgVp3ITrC3cpaG+GY+0LO0PU=;
+        b=KEEaNXrTQp2zANXAAA8as5TO5XyRPWiakvMFCwTdtB3EFh5rLqR3vEsZ/bh7XpMTko
+         pQ+sr6lVjEhub9SWNrACvgQL1ZvQAwoCcwbw92MeLVUjdCg93rGkwi/F3VH02DJsfSh/
+         9urOs06JzAEQgCD6vf9MGWdWk6vo0d+2OnbKtMX7nm51NbTg7vL22FA8oujbj+8YfZXy
+         VlRvGGWvBCE6yp2JhpI72DXxSgBsiCpYp9zyceYfPgFqz1XQktrnFifU8OTGu7NYmgsj
+         hrAiKWXegLDyxt16PK5z0xoe12XHgaIMGW6OezCaHHUCZHoV7tVyr3L92syvhjsCky1F
+         kdXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Ej/vX1nAudOHlcsj/wkk0E6CPzhd1z5jtaipD1+YZts=;
-        b=TyWfagGXMb5USWZv/7buRAGjIvbpaAkoj+pBeFtnusVLF8X2Q9Ck+R5tI4yvttk7Fk
-         5GxAhHY6eiVx3wie9skoTzPTHSg/UhJg1dTyTsQg2QYBJo3BlUg6I7Oc2dp1tBPhUBAy
-         Zpe9QDneEHC/Lp2kjQPwyJoF7u6+duW0wwyDtb31PgkWKaBD8T373xCZUuFR7dhiPFbB
-         SS+LMkB0rl2SEcRzcoysBqFFeZbbEv/jGarS86yuzanO6uIq/4QystkCSJKgQ6i2uNT3
-         IZOvlfWyYTNnomZxnD7nkl74DjXe8r3Ujwt/8mTLcyxGcu2LsBW4gl97hByldxp0x4gr
-         TtEA==
-X-Gm-Message-State: AOAM533+W9a5H7VVhKiVKvv/ett/ZsaKHpFjEOQWfajJ7gvkP0TWYlV1
-        Pxbv+xBYGObBiR3Ob+jd9KIFW2NTHO9HeA==
-X-Google-Smtp-Source: ABdhPJwZNvLfQapELB95eEZieSnJ04GovHOPWXWo1/ZOFCFs+Gp+KvulRs0xlP0jKDHSh1QDyIZ0SQ==
-X-Received: by 2002:a2e:959a:: with SMTP id w26mr564631ljh.113.1611330467334;
-        Fri, 22 Jan 2021 07:47:47 -0800 (PST)
+        bh=jMSB2XCCWwNKG8wfylQfgVp3ITrC3cpaG+GY+0LO0PU=;
+        b=nBSQ8EeIKbRQClQIpqma0bP+H8pYrI1sDwwVosL6WEMQ9cRDn10+H11uT0+etxxTKP
+         5iBThDSJzdwGP7kIFRKu10Y0YBRIgppsHMbuia5lTjXMq7E/hUknab/diDcOh0vYsTJx
+         vp8l93Noh0iC5iTF4TJmYcelj6bY/sn122hDeRsWCE+bQLqS9LuA1LQa8sms67YiMidT
+         g8hOdAL0WPqlnYufowqfVhYmjD3gRjqi169LOfB/XVgka13wXn0kfFfMR95WxUXKrj24
+         0RXlZxSadBtO+GkWYSdtlff5drlOaa03dsc/uSmuNGY2SKPCX6dAnBnfuYlmcd1WHzkv
+         25GA==
+X-Gm-Message-State: AOAM531Bt8trJtzxkkaaOxfQBRDFbfOhw3s9JHfJ/Y0MBtNhIJM5Plhl
+        sRLk2ZyFNBVPI5/hu85sBo4=
+X-Google-Smtp-Source: ABdhPJykkXUMRdMcuwSrXVRYurNf/zOIdp5azOfvUEFE75s28b6RkfCtSV/qDyZ8YfiUGK6eZ8MeBw==
+X-Received: by 2002:ac2:5d4f:: with SMTP id w15mr2473867lfd.321.1611330459835;
+        Fri, 22 Jan 2021 07:47:39 -0800 (PST)
 Received: from btopel-mobl.ger.intel.com (c213-102-90-208.bredband.comhem.se. [213.102.90.208])
-        by smtp.gmail.com with ESMTPSA id w17sm928589lft.52.2021.01.22.07.47.46
+        by smtp.gmail.com with ESMTPSA id w17sm928589lft.52.2021.01.22.07.47.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 07:47:46 -0800 (PST)
+        Fri, 22 Jan 2021 07:47:39 -0800 (PST)
 From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
 To:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
         bpf@vger.kernel.org
 Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
         magnus.karlsson@intel.com, jonathan.lemon@gmail.com,
         ciara.loftus@intel.com, weqaar.a.janjua@intel.com
-Subject: [PATCH bpf-next 12/12] selftests/bpf: avoid useless void *-casts
-Date:   Fri, 22 Jan 2021 16:47:25 +0100
-Message-Id: <20210122154725.22140-13-bjorn.topel@gmail.com>
+Subject: [PATCH bpf-next 07/12] selftests/bpf: change type from void * to struct ifaceconfigobj *
+Date:   Fri, 22 Jan 2021 16:47:20 +0100
+Message-Id: <20210122154725.22140-8-bjorn.topel@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210122154725.22140-1-bjorn.topel@gmail.com>
 References: <20210122154725.22140-1-bjorn.topel@gmail.com>
@@ -68,56 +68,65 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Björn Töpel <bjorn.topel@intel.com>
 
-There is no need to cast to void * when the argument is void *. Avoid
-cluttering of code.
+Instead of casting from void *, let us use the actual type in
+init_iface_config().
 
 Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
 ---
- tools/testing/selftests/bpf/xdpxceiver.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ tools/testing/selftests/bpf/xdpxceiver.c | 28 ++++++++++++------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
 diff --git a/tools/testing/selftests/bpf/xdpxceiver.c b/tools/testing/selftests/bpf/xdpxceiver.c
-index a64e2a929e70..99ea6cf069e6 100644
+index bea006ad8e17..c2cfc0b6d19e 100644
 --- a/tools/testing/selftests/bpf/xdpxceiver.c
 +++ b/tools/testing/selftests/bpf/xdpxceiver.c
-@@ -416,7 +416,7 @@ static int validate_interfaces(void)
- 				exit_with_error(errno);
+@@ -981,25 +981,25 @@ static void testapp_sockets(void)
+ 	print_ksft_result();
+ }
  
- 			targs->idx = i;
--			if (pthread_create(&ns_thread, NULL, nsswitchthread, (void *)targs))
-+			if (pthread_create(&ns_thread, NULL, nsswitchthread, targs))
- 				exit_with_error(errno);
+-static void init_iface_config(void *ifaceconfig)
++static void init_iface_config(struct ifaceconfigobj *ifaceconfig)
+ {
+ 	/*Init interface0 */
+ 	ifdict[0]->fv.vector = tx;
+-	memcpy(ifdict[0]->dst_mac, ((struct ifaceconfigobj *)ifaceconfig)->dst_mac, ETH_ALEN);
+-	memcpy(ifdict[0]->src_mac, ((struct ifaceconfigobj *)ifaceconfig)->src_mac, ETH_ALEN);
+-	ifdict[0]->dst_ip = ((struct ifaceconfigobj *)ifaceconfig)->dst_ip.s_addr;
+-	ifdict[0]->src_ip = ((struct ifaceconfigobj *)ifaceconfig)->src_ip.s_addr;
+-	ifdict[0]->dst_port = ((struct ifaceconfigobj *)ifaceconfig)->dst_port;
+-	ifdict[0]->src_port = ((struct ifaceconfigobj *)ifaceconfig)->src_port;
++	memcpy(ifdict[0]->dst_mac, ifaceconfig->dst_mac, ETH_ALEN);
++	memcpy(ifdict[0]->src_mac, ifaceconfig->src_mac, ETH_ALEN);
++	ifdict[0]->dst_ip = ifaceconfig->dst_ip.s_addr;
++	ifdict[0]->src_ip = ifaceconfig->src_ip.s_addr;
++	ifdict[0]->dst_port = ifaceconfig->dst_port;
++	ifdict[0]->src_port = ifaceconfig->src_port;
  
- 			pthread_join(ns_thread, NULL);
-@@ -923,12 +923,12 @@ static void testapp_validate(void)
+ 	/*Init interface1 */
+ 	ifdict[1]->fv.vector = rx;
+-	memcpy(ifdict[1]->dst_mac, ((struct ifaceconfigobj *)ifaceconfig)->src_mac, ETH_ALEN);
+-	memcpy(ifdict[1]->src_mac, ((struct ifaceconfigobj *)ifaceconfig)->dst_mac, ETH_ALEN);
+-	ifdict[1]->dst_ip = ((struct ifaceconfigobj *)ifaceconfig)->src_ip.s_addr;
+-	ifdict[1]->src_ip = ((struct ifaceconfigobj *)ifaceconfig)->dst_ip.s_addr;
+-	ifdict[1]->dst_port = ((struct ifaceconfigobj *)ifaceconfig)->src_port;
+-	ifdict[1]->src_port = ((struct ifaceconfigobj *)ifaceconfig)->dst_port;
++	memcpy(ifdict[1]->dst_mac, ifaceconfig->src_mac, ETH_ALEN);
++	memcpy(ifdict[1]->src_mac, ifaceconfig->dst_mac, ETH_ALEN);
++	ifdict[1]->dst_ip = ifaceconfig->src_ip.s_addr;
++	ifdict[1]->src_ip = ifaceconfig->dst_ip.s_addr;
++	ifdict[1]->dst_port = ifaceconfig->src_port;
++	ifdict[1]->src_port = ifaceconfig->dst_port;
+ }
  
- 	/*Spawn RX thread */
- 	if (!opt_bidi || (opt_bidi && !bidi_pass)) {
--		if (pthread_create(&t0, &attr, worker_testapp_validate, (void *)ifdict[1]))
-+		if (pthread_create(&t0, &attr, worker_testapp_validate, ifdict[1]))
- 			exit_with_error(errno);
- 	} else if (opt_bidi && bidi_pass) {
- 		/*switch Tx/Rx vectors */
- 		ifdict[0]->fv.vector = rx;
--		if (pthread_create(&t0, &attr, worker_testapp_validate, (void *)ifdict[0]))
-+		if (pthread_create(&t0, &attr, worker_testapp_validate, ifdict[0]))
- 			exit_with_error(errno);
- 	}
+ int main(int argc, char **argv)
+@@ -1038,7 +1038,7 @@ int main(int argc, char **argv)
  
-@@ -943,12 +943,12 @@ static void testapp_validate(void)
+ 	num_frames = ++opt_pkt_count;
  
- 	/*Spawn TX thread */
- 	if (!opt_bidi || (opt_bidi && !bidi_pass)) {
--		if (pthread_create(&t1, &attr, worker_testapp_validate, (void *)ifdict[0]))
-+		if (pthread_create(&t1, &attr, worker_testapp_validate, ifdict[0]))
- 			exit_with_error(errno);
- 	} else if (opt_bidi && bidi_pass) {
- 		/*switch Tx/Rx vectors */
- 		ifdict[1]->fv.vector = tx;
--		if (pthread_create(&t1, &attr, worker_testapp_validate, (void *)ifdict[1]))
-+		if (pthread_create(&t1, &attr, worker_testapp_validate, ifdict[1]))
- 			exit_with_error(errno);
- 	}
+-	init_iface_config((void *)ifaceconfig);
++	init_iface_config(ifaceconfig);
+ 
+ 	pthread_init_mutex();
  
 -- 
 2.27.0
