@@ -2,202 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F3F300237
-	for <lists+bpf@lfdr.de>; Fri, 22 Jan 2021 12:59:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B87A83001F5
+	for <lists+bpf@lfdr.de>; Fri, 22 Jan 2021 12:51:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726578AbhAVL6j (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Jan 2021 06:58:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727724AbhAVK5C (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Jan 2021 05:57:02 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC015C061793;
-        Fri, 22 Jan 2021 02:54:02 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id o13so6945158lfr.3;
-        Fri, 22 Jan 2021 02:54:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Dvl6nZooWLAwBGhT8ta9ggmv3K+yrSjtoMwqodirQJ0=;
-        b=R9HzGvvZESvsn6JfbBWvjmTH623bem2hYyB388ERMFw2gFjbra2GUSd8BH3qyBabN0
-         eW9FN2qfEFE7tZzkAf5nIiHWVkodYErn2MGlg2GcF0WSw2i/ZrDfMtMy0r4l3HjzJTE8
-         McxLWxHtTwKKNXuH/z6/Lb5ElXul5qmB/wg1ndHPCca0NFI9+FByJWBXRzx8V/dpkgt2
-         0v3A3pVrFNjn4q8TaiU9LAsbShqBH0t+Y/udGHVdsMYMut/vsO/m57Dcrm7F+SHJROS3
-         KSvEOz5THWgfFTI1rDnVi12F6thF9mKBgIcD2tvWmNKCrjT5sQxK8dyBCOjgeg0/myiK
-         n0iA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Dvl6nZooWLAwBGhT8ta9ggmv3K+yrSjtoMwqodirQJ0=;
-        b=X7R8Q6GLuWwPtH6pHucRseDHyoTeECCnXkQxnWK7csOrrvhGOtwWrXdxoMKz6uFfxa
-         ugFD8izWflx9Tsg4y8ZdnqaZJgzobYRUIMjhpf8w+aYzdOAlBo4KUmTaNTAh0ogzYuUL
-         3UzMxf3IqbYZ+wrRvF+4/aKpthSpy2swin88IAbXJ1yaKoTah+AExbfbZPBzvM2t/gjN
-         E/3zVH6WlkPLVK7w3TMlG4LmCPVNO5ywTMhVifS29AbPne6OHv7Y1TCJdxsqhEHW8+N2
-         DhBbUQHQdMGTHS2sBgKTUdCGodSBv+OXKI08NMEEycuUHJv9G+2M5r+TTG6eJIfCzIlJ
-         FijA==
-X-Gm-Message-State: AOAM531ex9R7cx0bhzoZp9vlOTnTAcYZZp1wXPjA0yyLChfAZTURV1wu
-        hyAf+xizNzJhBAYYK+QN7ec=
-X-Google-Smtp-Source: ABdhPJwwefbxC2ns0ZGBtL/2096CW5QEUQ4ympc/q562C2lMn80GvMLESbXVDtKSubKzyXMlWD3XcQ==
-X-Received: by 2002:a05:6512:6f:: with SMTP id i15mr548843lfo.426.1611312841251;
-        Fri, 22 Jan 2021 02:54:01 -0800 (PST)
-Received: from btopel-mobl.ger.intel.com (c213-102-90-208.bredband.comhem.se. [213.102.90.208])
-        by smtp.gmail.com with ESMTPSA id g14sm409580lja.120.2021.01.22.02.54.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Jan 2021 02:54:00 -0800 (PST)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
-        kuba@kernel.org, jonathan.lemon@gmail.com, maximmi@nvidia.com,
-        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
-        ciara.loftus@intel.com, weqaar.a.janjua@intel.com,
-        andrii@kernel.org, Marek Majtyka <alardam@gmail.com>
-Subject: [PATCH bpf-next 3/3] libbpf, xsk: select AF_XDP BPF program based on kernel version
-Date:   Fri, 22 Jan 2021 11:53:51 +0100
-Message-Id: <20210122105351.11751-4-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210122105351.11751-1-bjorn.topel@gmail.com>
-References: <20210122105351.11751-1-bjorn.topel@gmail.com>
+        id S1726997AbhAVLuG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Jan 2021 06:50:06 -0500
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:39636 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727744AbhAVLsf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Jan 2021 06:48:35 -0500
+Date:   Fri, 22 Jan 2021 11:47:45 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1611316068; bh=25qDxJLd92A3UCe0EKzxSRMKM/TP8P/UR+NwEW5WA6w=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=Ga1tZXjAsfI2SVVUNdSPKuUuKR8i/NdZCALGZ86SPm6Wu21SBlddyXIttnkimDWNp
+         9m5yzcDI5Dm+GOV05DGVfIJ0ZrG9aV+7J56HTfc0UO+MOEWxVfwBElqeG1oDqLXKOv
+         5glXm+BGSOqmmkY1KesAc7pjnMRJpCvl09loYAa9i+9eQVE+gWIfRi9r2oNMRnRgbN
+         lEQR6E5fOYz8jqvXytwD04J6+Oh1tyrRqc7pXAjU3bV8SYfuBUrAXmxiw+NRwDAG/Q
+         /M58i914HpODoSo78Sj2TqsGZEu7BYthkM7zYcYUoQW0Q2UIm7swQilQRLtH6Otl2B
+         b0YNe/ng+7kJw==
+To:     Eric Dumazet <eric.dumazet@gmail.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH bpf-next v3 3/3] xsk: build skb by page
+Message-ID: <20210122114729.1758-1-alobakin@pm.me>
+In-Reply-To: <dcee4592-9fa9-adbb-55ca-58a962076e7a@gmail.com>
+References: <cover.1611236588.git.xuanzhuo@linux.alibaba.com> <340f1dfa40416dd966a56e08507daba82d633088.1611236588.git.xuanzhuo@linux.alibaba.com> <dcee4592-9fa9-adbb-55ca-58a962076e7a@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
+From: Eric Dumazet <eric.dumazet@gmail.com>
+Date: Thu, 21 Jan 2021 16:41:33 +0100
 
-Add detection for kernel version, and adapt the BPF program based on
-kernel support. This way, users will get the best possible performance
-from the BPF program.
+> On 1/21/21 2:47 PM, Xuan Zhuo wrote:
+> > This patch is used to construct skb based on page to save memory copy
+> > overhead.
+> >=20
+> > This function is implemented based on IFF_TX_SKB_NO_LINEAR. Only the
+> > network card priv_flags supports IFF_TX_SKB_NO_LINEAR will use page to
+> > directly construct skb. If this feature is not supported, it is still
+> > necessary to copy data to construct skb.
+> >=20
+> > ---------------- Performance Testing ------------
+> >=20
+> > The test environment is Aliyun ECS server.
+> > Test cmd:
+> > ```
+> > xdpsock -i eth0 -t  -S -s <msg size>
+> > ```
+> >=20
+> > Test result data:
+> >=20
+> > size    64      512     1024    1500
+> > copy    1916747 1775988 1600203 1440054
+> > page    1974058 1953655 1945463 1904478
+> > percent 3.0%    10.0%   21.58%  32.3%
+> >=20
+> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
+> > ---
+> >  net/xdp/xsk.c | 104 ++++++++++++++++++++++++++++++++++++++++++++++++--=
+--------
+> >  1 file changed, 86 insertions(+), 18 deletions(-)
+> >=20
+> > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> > index 4a83117..38af7f1 100644
+> > --- a/net/xdp/xsk.c
+> > +++ b/net/xdp/xsk.c
+> > @@ -430,6 +430,87 @@ static void xsk_destruct_skb(struct sk_buff *skb)
+> >  =09sock_wfree(skb);
+> >  }
+> > =20
+> > +static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
+> > +=09=09=09=09=09      struct xdp_desc *desc)
+> > +{
+> > +=09u32 len, offset, copy, copied;
+> > +=09struct sk_buff *skb;
+> > +=09struct page *page;
+> > +=09void *buffer;
+> > +=09int err, i;
+> > +=09u64 addr;
+> > +
+> > +=09skb =3D sock_alloc_send_skb(&xs->sk, 0, 1, &err);
+> > +=09if (unlikely(!skb))
+> > +=09=09return ERR_PTR(err);
+> > +
+> > +=09addr =3D desc->addr;
+> > +=09len =3D desc->len;
+> > +
+> > +=09buffer =3D xsk_buff_raw_get_data(xs->pool, addr);
+> > +=09offset =3D offset_in_page(buffer);
+> > +=09addr =3D buffer - xs->pool->addrs;
+> > +
+> > +=09for (copied =3D 0, i =3D 0; copied < len; i++) {
+> > +=09=09page =3D xs->pool->umem->pgs[addr >> PAGE_SHIFT];
+> > +
+> > +=09=09get_page(page);
+> > +
+> > +=09=09copy =3D min_t(u32, PAGE_SIZE - offset, len - copied);
+> > +
+> > +=09=09skb_fill_page_desc(skb, i, page, offset, copy);
+> > +
+> > +=09=09copied +=3D copy;
+> > +=09=09addr +=3D copy;
+> > +=09=09offset =3D 0;
+> > +=09}
+> > +
+> > +=09skb->len +=3D len;
+> > +=09skb->data_len +=3D len;
+>=20
+> > +=09skb->truesize +=3D len;
+>=20
+> This is not the truesize, unfortunately.
+>=20
+> We need to account for the number of pages, not number of bytes.
 
-Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Acked-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
-Signed-off-by: Marek Majtyka  <alardam@gmail.com>
----
- tools/lib/bpf/xsk.c | 82 +++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 79 insertions(+), 3 deletions(-)
+The easiest solution is:
 
-diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
-index e3e41ceeb1bc..1df8c133a5bc 100644
---- a/tools/lib/bpf/xsk.c
-+++ b/tools/lib/bpf/xsk.c
-@@ -46,6 +46,11 @@
-  #define PF_XDP AF_XDP
- #endif
- 
-+enum xsk_prog {
-+	XSK_PROG_FALLBACK,
-+	XSK_PROG_REDIRECT_FLAGS,
-+};
-+
- struct xsk_umem {
- 	struct xsk_ring_prod *fill_save;
- 	struct xsk_ring_cons *comp_save;
-@@ -351,6 +356,55 @@ int xsk_umem__create_v0_0_2(struct xsk_umem **umem_ptr, void *umem_area,
- COMPAT_VERSION(xsk_umem__create_v0_0_2, xsk_umem__create, LIBBPF_0.0.2)
- DEFAULT_VERSION(xsk_umem__create_v0_0_4, xsk_umem__create, LIBBPF_0.0.4)
- 
-+
-+static enum xsk_prog get_xsk_prog(void)
-+{
-+	enum xsk_prog detected = XSK_PROG_FALLBACK;
-+	struct bpf_load_program_attr prog_attr;
-+	struct bpf_create_map_attr map_attr;
-+	__u32 size_out, retval, duration;
-+	char data_in = 0, data_out;
-+	struct bpf_insn insns[] = {
-+		BPF_LD_MAP_FD(BPF_REG_1, 0),
-+		BPF_MOV64_IMM(BPF_REG_2, 0),
-+		BPF_MOV64_IMM(BPF_REG_3, XDP_PASS),
-+		BPF_EMIT_CALL(BPF_FUNC_redirect_map),
-+		BPF_EXIT_INSN(),
-+	};
-+	int prog_fd, map_fd, ret;
-+
-+	memset(&map_attr, 0, sizeof(map_attr));
-+	map_attr.map_type = BPF_MAP_TYPE_XSKMAP;
-+	map_attr.key_size = sizeof(int);
-+	map_attr.value_size = sizeof(int);
-+	map_attr.max_entries = 1;
-+
-+	map_fd = bpf_create_map_xattr(&map_attr);
-+	if (map_fd < 0)
-+		return detected;
-+
-+	insns[0].imm = map_fd;
-+
-+	memset(&prog_attr, 0, sizeof(prog_attr));
-+	prog_attr.prog_type = BPF_PROG_TYPE_XDP;
-+	prog_attr.insns = insns;
-+	prog_attr.insns_cnt = ARRAY_SIZE(insns);
-+	prog_attr.license = "GPL";
-+
-+	prog_fd = bpf_load_program_xattr(&prog_attr, NULL, 0);
-+	if (prog_fd < 0) {
-+		close(map_fd);
-+		return detected;
-+	}
-+
-+	ret = bpf_prog_test_run(prog_fd, 0, &data_in, 1, &data_out, &size_out, &retval, &duration);
-+	if (!ret && retval == XDP_PASS)
-+		detected = XSK_PROG_REDIRECT_FLAGS;
-+	close(prog_fd);
-+	close(map_fd);
-+	return detected;
-+}
-+
- static int xsk_load_xdp_prog(struct xsk_socket *xsk)
- {
- 	static const int log_buf_size = 16 * 1024;
-@@ -358,7 +412,7 @@ static int xsk_load_xdp_prog(struct xsk_socket *xsk)
- 	char log_buf[log_buf_size];
- 	int err, prog_fd;
- 
--	/* This is the C-program:
-+	/* This is the fallback C-program:
- 	 * SEC("xdp_sock") int xdp_sock_prog(struct xdp_md *ctx)
- 	 * {
- 	 *     int ret, index = ctx->rx_queue_index;
-@@ -414,9 +468,31 @@ static int xsk_load_xdp_prog(struct xsk_socket *xsk)
- 		/* The jumps are to this instruction */
- 		BPF_EXIT_INSN(),
- 	};
--	size_t insns_cnt = sizeof(prog) / sizeof(struct bpf_insn);
- 
--	prog_fd = bpf_load_program(BPF_PROG_TYPE_XDP, prog, insns_cnt,
-+	/* This is the post-5.3 kernel C-program:
-+	 * SEC("xdp_sock") int xdp_sock_prog(struct xdp_md *ctx)
-+	 * {
-+	 *     return bpf_redirect_map(&xsks_map, ctx->rx_queue_index, XDP_PASS);
-+	 * }
-+	 */
-+	struct bpf_insn prog_redirect_flags[] = {
-+		/* r2 = *(u32 *)(r1 + 16) */
-+		BPF_LDX_MEM(BPF_W, BPF_REG_2, BPF_REG_1, 16),
-+		/* r1 = xskmap[] */
-+		BPF_LD_MAP_FD(BPF_REG_1, ctx->xsks_map_fd),
-+		/* r3 = XDP_PASS */
-+		BPF_MOV64_IMM(BPF_REG_3, 2),
-+		/* call bpf_redirect_map */
-+		BPF_EMIT_CALL(BPF_FUNC_redirect_map),
-+		BPF_EXIT_INSN(),
-+	};
-+	size_t insns_cnt[] = {sizeof(prog) / sizeof(struct bpf_insn),
-+			      sizeof(prog_redirect_flags) / sizeof(struct bpf_insn),
-+	};
-+	struct bpf_insn *progs[] = {prog, prog_redirect_flags};
-+	enum xsk_prog option = get_xsk_prog();
-+
-+	prog_fd = bpf_load_program(BPF_PROG_TYPE_XDP, progs[option], insns_cnt[option],
- 				   "LGPL-2.1 or BSD-2-Clause", 0, log_buf,
- 				   log_buf_size);
- 	if (prog_fd < 0) {
--- 
-2.27.0
+=09skb->truesize +=3D PAGE_SIZE * i;
+
+i would be equal to skb_shinfo(skb)->nr_frags after exiting the loop.
+
+> > +
+> > +=09refcount_add(len, &xs->sk.sk_wmem_alloc);
+> > +
+> > +=09return skb;
+> > +}
+> > +
+
+Al
 
