@@ -2,152 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1BC5300EBC
-	for <lists+bpf@lfdr.de>; Fri, 22 Jan 2021 22:17:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 093C1300FE5
+	for <lists+bpf@lfdr.de>; Fri, 22 Jan 2021 23:25:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730239AbhAVVRg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Jan 2021 16:17:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59836 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730703AbhAVUsf (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 22 Jan 2021 15:48:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611348428;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fHnt09lcoRBbSJf5TRbRYJh5AydVBQH+pUedPgapcmQ=;
-        b=A4TlaQkwoOrrr0KtR8+RZ+nVQv4oSrW+SlOCiU+UTnYRGoHjUlLUpt6wCR0BOJ+IpHISip
-        +OIb0B96WtiLYWVl63QsHGY5ScZ3FJt7BPBxAdND/cVLAClwnE6sh+EL/RSgOkjQDYLO7a
-        SyVVrvLYqoXstTXhLQ+8nl6Yi8pxquo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-559-Y9wV4EuqNEqpPX5h4BLliw-1; Fri, 22 Jan 2021 15:47:06 -0500
-X-MC-Unique: Y9wV4EuqNEqpPX5h4BLliw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C208F802B40;
-        Fri, 22 Jan 2021 20:47:04 +0000 (UTC)
-Received: from krava (unknown [10.40.192.97])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 904F660C6D;
-        Fri, 22 Jan 2021 20:46:55 +0000 (UTC)
-Date:   Fri, 22 Jan 2021 21:46:54 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>, dwarves@vger.kernel.org,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Yonghong Song <yhs@fb.com>, Hao Luo <haoluo@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Mark Wielaard <mjw@redhat.com>
-Subject: Re: [PATCH 2/3] bpf_encoder: Translate SHN_XINDEX in symbol's
- st_shndx values
-Message-ID: <20210122204654.GB70760@krava>
-References: <20210121202203.9346-1-jolsa@kernel.org>
- <20210121202203.9346-3-jolsa@kernel.org>
- <CAEf4BzZquSn0Th7bpVuM0M4XbTPU5-9jDPPd5RJBS5AH2zqaMA@mail.gmail.com>
+        id S1728403AbhAVWXA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Jan 2021 17:23:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730666AbhAVTyp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Jan 2021 14:54:45 -0500
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0342FC06174A
+        for <bpf@vger.kernel.org>; Fri, 22 Jan 2021 11:54:03 -0800 (PST)
+Received: by mail-qk1-x736.google.com with SMTP id x81so3488874qkb.0
+        for <bpf@vger.kernel.org>; Fri, 22 Jan 2021 11:54:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=o3+2RrVerjMaWuS5/ui/Sx1ksZD77pxsUnMtE6ueQUw=;
+        b=Px2iN2UyfVAQro3oP7tv3xH1JBVH4ZW100K5nazymj8nxitzrw5ztR0doNRZJoGquj
+         4DYiTQQ8R+2lEi7xJbRtYD130dRvsEWCBy5Yyzb5QdAJeZEMWY/59xZ8fJGvxTElDTDC
+         oBI6LEyj4NjF2vb1+5kICsLCvAM0HjeduezoNCkp6Ks0UbtNunNdAwzjoG99itoPkHnv
+         K+JMIobKhFpJNB8kg2pCcFKjjUv4pk635LTHy3HRdxCy4z5Lm6xVq7X/F1A96Ll/SwH9
+         kSfAVhI0JcTT6kXBZrodK7i6rSa3vp7gQGfypHDke/xUU1ap2OHfJ0a4Xy+RruVzERak
+         3K0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=o3+2RrVerjMaWuS5/ui/Sx1ksZD77pxsUnMtE6ueQUw=;
+        b=Vl4Q84JullE5ajG9iQJ4SJifthl1KGm/MqWY5FiRmdxJZF94nNW/mMeJXdgJH67iOK
+         9/lGFqm2+HY5J4blbr330Ax7pE+BouVZet46Esbx4hkWXuFZcW1TqIj4HHHxGL3KH/gQ
+         KEHAAsPZRV3j0Dstm1N8pekU2jiAB/OvwGFwcAw6/Hnm1WtuLxzPdhoAavYGx098NSm/
+         z45CBcUEC/KQDYlPFi3NzCgiHxI16+fsNy7zZMv8uLMxGIN7+zInumpYmJHeamKqYT+/
+         T7R8b1Qlb4/kZ+5O7MtI7HR7+AGsF/+Spa3UAtYz88LOWq9lN9NIZSWe6Yg23OPNlo3/
+         aByA==
+X-Gm-Message-State: AOAM531+FSn7iTEEOPydbRx0vrmiRn4+jpf4fOkzGKKn9F3SbyJfcjrs
+        9eWkK6cddRSstXK00QfQV+eVp1JbmNFtMitrZrtS/A==
+X-Google-Smtp-Source: ABdhPJzSM43NTCuGbPUVg21hUwmPCbZ2cc61t0SNIgR0kc0idNF01oQm06wIsE897ym/NCYi1bXoOgg0zr2YcZnX2B0=
+X-Received: by 2002:a05:620a:22ab:: with SMTP id p11mr6315334qkh.237.1611345241897;
+ Fri, 22 Jan 2021 11:54:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZquSn0Th7bpVuM0M4XbTPU5-9jDPPd5RJBS5AH2zqaMA@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20210121012241.2109147-1-sdf@google.com> <YAspc5rk2sNWojDQ@rdna-mbp.dhcp.thefacebook.com>
+In-Reply-To: <YAspc5rk2sNWojDQ@rdna-mbp.dhcp.thefacebook.com>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Fri, 22 Jan 2021 11:53:51 -0800
+Message-ID: <CAKH8qBumq7cHDeCpvA1T_rJyvY8+9uCUyb--YAhvcAx3p58faw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: allow rewriting to ports under ip_unprivileged_port_start
+To:     Andrey Ignatov <rdna@fb.com>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Netdev <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 03:32:40PM -0800, Andrii Nakryiko wrote:
-
-SNIP
-
-> > @@ -598,9 +599,36 @@ static void collect_symbol(GElf_Sym *sym, struct funcs_layout *fl)
-> >                 fl->mcount_stop = sym->st_value;
-> >  }
+On Fri, Jan 22, 2021 at 11:37 AM Andrey Ignatov <rdna@fb.com> wrote:
+>
+> Stanislav Fomichev <sdf@google.com> [Wed, 2021-01-20 18:09 -0800]:
+> > At the moment, BPF_CGROUP_INET{4,6}_BIND hooks can rewrite user_port
+> > to the privileged ones (< ip_unprivileged_port_start), but it will
+> > be rejected later on in the __inet_bind or __inet6_bind.
 > >
-> > +static bool elf_sym__get(Elf_Data *syms, Elf_Data *syms_sec_idx_table,
-> > +                        int id, GElf_Sym *sym, Elf32_Word *sym_sec_idx)
-> > +{
-> > +       if (!gelf_getsym(syms, id, sym))
-> > +               return false;
-> > +
-> > +       *sym_sec_idx = sym->st_shndx;
-> > +
-> > +       if (sym->st_shndx == SHN_XINDEX) {
-> > +               if (!syms_sec_idx_table)
-> > +                       return false;
-> > +               if (!gelf_getsymshndx(syms, syms_sec_idx_table,
-> > +                                     id, sym, sym_sec_idx))
-> 
-> 
-> gelf_getsymshndx() is supposed to work even for cases that don't use
-> extended numbering, so this should work, right?
-> 
-> if (!gelf_getsymshndx(syms, syms_sec_idx_table, id, sym, sym_sec_idx))
->     return false;
-> 
-
-it seems you're right, gelf_getsymshndx seem to work for
-both cases, I'll check
-
-
-> if (sym->st_shndx == SHN_XINDEX)
->   *sym_sec_idx = sym->st_shndx;
-
-I don't understand this..  gelf_getsymshndx will return both
-symbol and proper index, no? also sym_sec_idx is already
-assigned from previou call
-
-> 
-> return true;
-> 
-> ?
-> 
-> > +                       return false;
-> > +       }
-> > +
-> > +       return true;
-> > +}
-> > +
-> > +#define elf_symtab__for_each_symbol_index(symtab, id, sym, sym_sec_idx)                \
-> > +       for (id = 0, elf_sym__get(symtab->syms, symtab->syms_sec_idx_table,     \
-> > +                                 id, &sym, &sym_sec_idx);                      \
-> > +            id < symtab->nr_syms;                                              \
-> > +            id++, elf_sym__get(symtab->syms, symtab->syms_sec_idx_table,       \
-> > +                               id, &sym, &sym_sec_idx))
-> 
-> what do we want to do if elf_sym__get() returns error (false)? We can
-> either stop or ignore that symbol, right? But currently you are
-> returning invalid symbol data.
-> 
-> so either
-> 
-> for (id = 0; id < symtab->nr_syms && elf_sym__get(symtab->syms,
-> symtab->syms_sec_idx_table, d, &sym, &sym_sec_idx); id++)
-> 
-> or
-> 
-> for (id = 0; id < symtab->nr_syms; id++)
->   if (elf_sym__get(symtab->syms, symtab->syms_sec_idx_table, d, &sym,
-> &sym_sec_idx))
-
-if we go ahead with skipping symbols, this one seems good
-
-> 
-> 
-> But the current variant looks broken. Oh, and
-> elf_symtab__for_each_symbol() is similarly broken, can you please fix
-> that as well?
-> 
-> And this new macro should probably be in elf_symtab.h, along the
-> elf_symtab__for_each_symbol.
-
-thanks,
-jirka
-
+> > Let's export 'port_changed' event from the BPF program and bypass
+> > ip_unprivileged_port_start range check when we've seen that
+> > the program explicitly overrode the port. This is accomplished
+> > by generating instructions to set ctx->port_changed along with
+> > updating ctx->user_port.
+> >
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > ---
+> ...
+> > @@ -244,17 +245,27 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
+> >       if (cgroup_bpf_enabled(type))   {                                      \
+> >               lock_sock(sk);                                                 \
+> >               __ret = __cgroup_bpf_run_filter_sock_addr(sk, uaddr, type,     \
+> > -                                                       t_ctx);              \
+> > +                                                       t_ctx, NULL);        \
+> >               release_sock(sk);                                              \
+> >       }                                                                      \
+> >       __ret;                                                                 \
+> >  })
+> >
+> > -#define BPF_CGROUP_RUN_PROG_INET4_BIND_LOCK(sk, uaddr)                              \
+> > -     BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, BPF_CGROUP_INET4_BIND, NULL)
+> > -
+> > -#define BPF_CGROUP_RUN_PROG_INET6_BIND_LOCK(sk, uaddr)                              \
+> > -     BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, BPF_CGROUP_INET6_BIND, NULL)
+> > +#define BPF_CGROUP_RUN_PROG_INET_BIND_LOCK(sk, uaddr, type, flags)          \
+> > +({                                                                          \
+> > +     bool port_changed = false;                                             \
+>
+> I see the discussion with Martin in [0] on the program overriding the
+> port but setting exactly same value as it already contains. Commenting
+> on this patch since the code is here.
+>
+> From what I understand there is no use-case to support overriding the
+> port w/o changing the value to just bypass the capability. In this case
+> the code can be simplified.
+>
+> Here instead of introducing port_changed you can just remember the
+> original ((struct sockaddr_in *)uaddr)->sin_port or
+> ((struct sockaddr_in6 *)uaddr)->sin6_port (they have same offset/size so
+> it can be simplified same way as in sock_addr_convert_ctx_access() for
+> user_port) ...
+>
+> > +     int __ret = 0;                                                         \
+> > +     if (cgroup_bpf_enabled(type))   {                                      \
+> > +             lock_sock(sk);                                                 \
+> > +             __ret = __cgroup_bpf_run_filter_sock_addr(sk, uaddr, type,     \
+> > +                                                       NULL,                \
+> > +                                                       &port_changed);      \
+> > +             release_sock(sk);                                              \
+> > +             if (port_changed)                                              \
+>
+> ... and then just compare the original and the new ports here.
+>
+> The benefits will be:
+> * no need to introduce port_changed field in struct bpf_sock_addr_kern;
+> * no need to do change program instructions;
+> * no need to think about compiler optimizing out those instructions;
+> * no need to think about multiple programs coordination, the flag will
+>   be set only if port has actually changed what is easy to reason about
+>   from user perspective.
+>
+> wdyt?
+Martin mentioned in another email that we might want to do that when
+we rewrite only the address portion of it.
+I think it makes sense. Imagine doing 1.1.1.1:50 -> 2.2.2.2:50 it
+seems like it should also work, right?
+And in this case, we need to store and compare addresses as well and
+it becomes messy :-/
+It also seems like it would be nice to have this 'bypass
+cap_net_bind_service" without changing the address while we are at it.
