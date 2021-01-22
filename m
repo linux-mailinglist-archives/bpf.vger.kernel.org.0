@@ -2,177 +2,109 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29BA0300225
-	for <lists+bpf@lfdr.de>; Fri, 22 Jan 2021 12:57:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53156300254
+	for <lists+bpf@lfdr.de>; Fri, 22 Jan 2021 13:04:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727437AbhAVL4i (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Jan 2021 06:56:38 -0500
-Received: from mail-40134.protonmail.ch ([185.70.40.134]:33594 "EHLO
-        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727072AbhAVL4g (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Jan 2021 06:56:36 -0500
-Date:   Fri, 22 Jan 2021 11:55:35 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1611316542; bh=7A+bIR8MNPqdhF6YnTCaCIMQNA6knpBQGh4OvqlULpo=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=HLMSAeeApixBhvZ3tpz175dGXj/jgdg89s2NoCXwiW8UeRQIZdClncPD5Y/ZgppNS
-         ou5J0N1hGSSOjRz6fph1o48g6BKu5GEyeaI84QjzCAwUjtVdXD6aAqGIE2E2DiTgnj
-         WYxHKVp7k8ojDiOTtBFJ3KoZtzEaaSS9SPpPrqicxg2LNDacmaN9kgasauoY4VeDoH
-         XoTRQsOPtAk7qfAasCEpEQVW6dtItxjAxwt2oqe0sVg36Mq7jwzzagbhIau6CpAzJS
-         jpDZBgIKl0bOPk5LF3RwvVHJfnvRwFE3tiCe93hnR4+4LozuzZUG1F3ypqY5HMzYg2
-         2gerxDsul37rA==
-To:     Eric Dumazet <eric.dumazet@gmail.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH bpf-next v3 3/3] xsk: build skb by page
-Message-ID: <20210122115519.2183-1-alobakin@pm.me>
-In-Reply-To: <20210122114729.1758-1-alobakin@pm.me>
-References: <cover.1611236588.git.xuanzhuo@linux.alibaba.com> <340f1dfa40416dd966a56e08507daba82d633088.1611236588.git.xuanzhuo@linux.alibaba.com> <dcee4592-9fa9-adbb-55ca-58a962076e7a@gmail.com> <20210122114729.1758-1-alobakin@pm.me>
+        id S1727459AbhAVMCD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Jan 2021 07:02:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727830AbhAVKyj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Jan 2021 05:54:39 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B906C0613D6;
+        Fri, 22 Jan 2021 02:53:58 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id i17so6036026ljn.1;
+        Fri, 22 Jan 2021 02:53:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9ttycuPeReUoQnqmnkr+4N6fpkeVmdnNon7uvunZTO8=;
+        b=WuEt3yTfeYvgeVJCoYXrXDsUKICAOPgOX+y17tpiHQZbk1zETenjgFzBtil3cGKzGA
+         RfOR5uWpd37wQ0Fpzc6zrazlpCf+W28gpeevCx79RmdM4OkzdTKgEju5u7wUum32jlgX
+         a3wCKXcBrjRgrUpsN4VcBXJMI29k1f/ZhDDIzoBwNH8dwPY90m5JuAimIi4bxsgrF4Tk
+         CsueL02jHqBrIB0JWg9S1CKJtcGdgX6jyQXGgqet0/dsT/kATu2NADRbMoCbqc3SxDcm
+         aGd8cgsrH0Rhjap+TfW0Lry4YoQ4zovEeSIAb7IdGv7M1W2DmmtkSpBjoJV+kQ7ut4Iy
+         R6oQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9ttycuPeReUoQnqmnkr+4N6fpkeVmdnNon7uvunZTO8=;
+        b=Aqv/GzWfD409Q2iQLyr9deqD8fuxF/trztUhwZGm6JvtiOGw0Yvj9m1Nx1IuQ6faAF
+         8BKCnc8TzJaO+u9N4AHv5y5bNycFlPITb0S8VQoY7iA2Mvp+cAP+rG4mhLFjg/a0/7nk
+         UuxOErYYmxb/pCDbrK4zT2IByRGfVgizyp6xJuyAZqQXDxaHCa9jKw2IJtzynrWHENtr
+         IIQuJg+eq6quqNk3ZKuou1y8fLr7elI1U52Y4UTQ799cXJZhTsiMmVupzZkJnEMaWIXh
+         zhf/QQBI2JBJaTfkSkDZOvzXhWqVvoGyyQhNFuNxGJLQXAcindYVbM0safNCAYEzozXs
+         K3Tg==
+X-Gm-Message-State: AOAM532OJUNDGPBthEtWBBdbtft4kEONhiqEcUTguOxULy7eyUpH+B57
+        IlUHurLKWR7YRWMzHVontTk=
+X-Google-Smtp-Source: ABdhPJwv8PFdERwSrLORMAKf+sTGW4Bp5YQG4TGx3wXXTLDFKO0s+3xgQOmcTLoptsIvKBxpG4UuCg==
+X-Received: by 2002:a2e:b896:: with SMTP id r22mr207881ljp.234.1611312836769;
+        Fri, 22 Jan 2021 02:53:56 -0800 (PST)
+Received: from btopel-mobl.ger.intel.com (c213-102-90-208.bredband.comhem.se. [213.102.90.208])
+        by smtp.gmail.com with ESMTPSA id g14sm409580lja.120.2021.01.22.02.53.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Jan 2021 02:53:56 -0800 (PST)
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
+        bjorn.topel@intel.com, magnus.karlsson@intel.com,
+        maciej.fijalkowski@intel.com, kuba@kernel.org,
+        jonathan.lemon@gmail.com, maximmi@nvidia.com, davem@davemloft.net,
+        hawk@kernel.org, john.fastabend@gmail.com, ciara.loftus@intel.com,
+        weqaar.a.janjua@intel.com, andrii@kernel.org
+Subject: [PATCH bpf-next 0/3] AF_XDP clean up/perf improvements
+Date:   Fri, 22 Jan 2021 11:53:48 +0100
+Message-Id: <20210122105351.11751-1-bjorn.topel@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Alexander Lobakin <alobakin@pm.me>
-Date: Fri, 22 Jan 2021 11:47:45 +0000
+This series has some clean up/performance improvements for XDP
+sockets.
 
-> From: Eric Dumazet <eric.dumazet@gmail.com>
-> Date: Thu, 21 Jan 2021 16:41:33 +0100
->=20
-> > On 1/21/21 2:47 PM, Xuan Zhuo wrote:
-> > > This patch is used to construct skb based on page to save memory copy
-> > > overhead.
-> > >=20
-> > > This function is implemented based on IFF_TX_SKB_NO_LINEAR. Only the
-> > > network card priv_flags supports IFF_TX_SKB_NO_LINEAR will use page t=
-o
-> > > directly construct skb. If this feature is not supported, it is still
-> > > necessary to copy data to construct skb.
-> > >=20
-> > > ---------------- Performance Testing ------------
-> > >=20
-> > > The test environment is Aliyun ECS server.
-> > > Test cmd:
-> > > ```
-> > > xdpsock -i eth0 -t  -S -s <msg size>
-> > > ```
-> > >=20
-> > > Test result data:
-> > >=20
-> > > size    64      512     1024    1500
-> > > copy    1916747 1775988 1600203 1440054
-> > > page    1974058 1953655 1945463 1904478
-> > > percent 3.0%    10.0%   21.58%  32.3%
-> > >=20
-> > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > > Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
-> > > ---
-> > >  net/xdp/xsk.c | 104 ++++++++++++++++++++++++++++++++++++++++++++++++=
-----------
-> > >  1 file changed, 86 insertions(+), 18 deletions(-)
-> > >=20
-> > > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-> > > index 4a83117..38af7f1 100644
-> > > --- a/net/xdp/xsk.c
-> > > +++ b/net/xdp/xsk.c
-> > > @@ -430,6 +430,87 @@ static void xsk_destruct_skb(struct sk_buff *skb=
-)
-> > >  =09sock_wfree(skb);
-> > >  }
-> > > =20
-> > > +static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
-> > > +=09=09=09=09=09      struct xdp_desc *desc)
-> > > +{
-> > > +=09u32 len, offset, copy, copied;
-> > > +=09struct sk_buff *skb;
-> > > +=09struct page *page;
-> > > +=09void *buffer;
-> > > +=09int err, i;
-> > > +=09u64 addr;
-> > > +
-> > > +=09skb =3D sock_alloc_send_skb(&xs->sk, 0, 1, &err);
-> > > +=09if (unlikely(!skb))
-> > > +=09=09return ERR_PTR(err);
-> > > +
-> > > +=09addr =3D desc->addr;
-> > > +=09len =3D desc->len;
-> > > +
-> > > +=09buffer =3D xsk_buff_raw_get_data(xs->pool, addr);
-> > > +=09offset =3D offset_in_page(buffer);
-> > > +=09addr =3D buffer - xs->pool->addrs;
-> > > +
-> > > +=09for (copied =3D 0, i =3D 0; copied < len; i++) {
-> > > +=09=09page =3D xs->pool->umem->pgs[addr >> PAGE_SHIFT];
-> > > +
-> > > +=09=09get_page(page);
-> > > +
-> > > +=09=09copy =3D min_t(u32, PAGE_SIZE - offset, len - copied);
-> > > +
-> > > +=09=09skb_fill_page_desc(skb, i, page, offset, copy);
-> > > +
-> > > +=09=09copied +=3D copy;
-> > > +=09=09addr +=3D copy;
-> > > +=09=09offset =3D 0;
-> > > +=09}
-> > > +
-> > > +=09skb->len +=3D len;
-> > > +=09skb->data_len +=3D len;
-> >=20
-> > > +=09skb->truesize +=3D len;
-> >=20
-> > This is not the truesize, unfortunately.
-> >=20
-> > We need to account for the number of pages, not number of bytes.
->=20
-> The easiest solution is:
->=20
-> =09skb->truesize +=3D PAGE_SIZE * i;
->=20
-> i would be equal to skb_shinfo(skb)->nr_frags after exiting the loop.
+The first two patches are cleanups for the AF_XDP core, and the
+restructure actually give a little performance boost.
 
-Oops, pls ignore this. I forgot that XSK buffers are not
-"one per page".
-We need to count the number of pages manually and then do
+The last patch adds support for selecting AF_XDP BPF program, based on
+what the running kernel supports.
 
-=09skb->truesize +=3D PAGE_SIZE * npages;
+The patches were earlier part of the bigger "bpf_redirect_xsk()"
+series [1]. I pulled out the non-controversial parts into this series.
 
-Right.
+Thanks to Maciej and Magnus for the internal review/comments!
 
-> > > +
-> > > +=09refcount_add(len, &xs->sk.sk_wmem_alloc);
-> > > +
-> > > +=09return skb;
-> > > +}
-> > > +
->=20
-> Al
+Thanks to Toke, Alexei, and Andrii for the "auto-detection" help;
+Instead of basing it on kernel version, a run-time test is
+performed. Note that I did not add the probing support to libbpf.c,
+where the other probes reside. Instead it's in xsk.c. The reason for
+that is that AF_XDP will be moved out from libbpf post-1.0, to libxdp.
+
 
 Thanks,
-Al
+Björn
+
+[1] https://lore.kernel.org/bpf/20210119155013.154808-1-bjorn.topel@gmail.com/
+
+Björn Töpel (3):
+  xsk: remove explicit_free parameter from __xsk_rcv()
+  xsk: fold xp_assign_dev and __xp_assign_dev
+  libbpf, xsk: select AF_XDP BPF program based on kernel version
+
+ net/xdp/xsk.c           | 47 +++++++++++++++--------
+ net/xdp/xsk_buff_pool.c | 12 ++----
+ tools/lib/bpf/xsk.c     | 82 +++++++++++++++++++++++++++++++++++++++--
+ 3 files changed, 113 insertions(+), 28 deletions(-)
+
+
+base-commit: 443edcefb8213155c0da22c4a999f4a49858fa39
+-- 
+2.27.0
 
