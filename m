@@ -2,107 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93407300DD6
-	for <lists+bpf@lfdr.de>; Fri, 22 Jan 2021 21:37:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7236300E4E
+	for <lists+bpf@lfdr.de>; Fri, 22 Jan 2021 21:56:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729228AbhAVUgB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Jan 2021 15:36:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43544 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728366AbhAVUec (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Jan 2021 15:34:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D8F123B06;
-        Fri, 22 Jan 2021 20:33:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611347631;
-        bh=SyQP41PwpeKLZope/oUux/+VUUA4Mr4nW64xb8MeMJI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=K95RP+AjLtLOhWYLEX9Zga4StevHNyRJbxy2U9Qw40DifgXUAhdKTOu8U/A2jEGjl
-         yP4j+nm9MD/QXRgd7XTcYB4JPLvmolWxr9/pX3/t3czlrGlX7o2RqL1BfShyHTo/X0
-         PmhrlQxqg8GFPD0Kse1XQmKbz/bNCVBWkGDoMSU9DeZQy6CKFbC1OviDiK9AZIhfaV
-         sAazw51LpGYgDNbYev9QTtlvoc1t7qb2SfNgM4N+5TLaAz3CFoMr0YeRk1bO3vEET3
-         scQBVCnReCvuxwUyGXbEvK7gPT+pCUh4eLp9cgSazKmC6ZSQVtlYXl3xfVwu2LCfEG
-         54N7c06dELO6A==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id D2ECA40513; Fri, 22 Jan 2021 17:33:48 -0300 (-03)
-Date:   Fri, 22 Jan 2021 17:33:48 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>, dwarves@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Yonghong Song <yhs@fb.com>, Hao Luo <haoluo@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Mark Wielaard <mjw@redhat.com>,
-        Yulia Kopkova <ykopkova@redhat.com>
-Subject: Re: [PATCH 2/2] bpf_encoder: Translate SHN_XINDEX in symbol's
- st_shndx values
-Message-ID: <20210122203348.GC617095@kernel.org>
-References: <20210122163920.59177-1-jolsa@kernel.org>
- <20210122163920.59177-3-jolsa@kernel.org>
- <20210122195228.GB617095@kernel.org>
- <20210122202403.GC35850@krava>
+        id S1730938AbhAVU4S (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Jan 2021 15:56:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730343AbhAVUzL (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Jan 2021 15:55:11 -0500
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D53F4C06174A;
+        Fri, 22 Jan 2021 12:54:30 -0800 (PST)
+Received: by mail-ot1-x32d.google.com with SMTP id 36so6454759otp.2;
+        Fri, 22 Jan 2021 12:54:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DOVTjNJRZMnM+kceEiLJHqeJw55QWfuw/x9E/sbQ+ws=;
+        b=tsowucZcMrElg3LFFkcBe5NB2AVwbMPq8ozIsRn+8iVFSgNMrkLEJOYPLYSwFGLNIG
+         wwj5leUpJ8um/r3oTocXEbPNP+JwAIcuOhohmUlN1eTqWf59hgQaPVIR4v/rwZ9JF/9P
+         Wtby9GYcEGdDBrZXD6S7THp1Aq4Iu0DXq8KAPaozjrWFxrzU66GoVQFxegcVnCQhc01d
+         ljDuw1PbQj/Ntd7xiKDwLd7WZhVeOVyE162UxDNKx9lpPnp+25tqJdRZJb7DAIeTXWKZ
+         P6Qkp+XpWkccZdkeHkgRzN28GJ7o/Hb44//gADbEtT1DjAxIihM6AE4xGaL57nWQjjeM
+         lT1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DOVTjNJRZMnM+kceEiLJHqeJw55QWfuw/x9E/sbQ+ws=;
+        b=kOMUdR4i1qG6GXfDYrsg2bvablgfZ9dz27vvN5dEYOlaHUtU55yw7fGYL2IQl2MbSf
+         qaxoeTy3tkxcvgX4oaP9lLnwMDIkbNmNV0ALdK5OZvla+H1ViXa1Ypwd3MmPRELLkL3f
+         ntAJgpilyH12tXfxlzeCRz/qjVN8OZfZNxbe4RN46SGMJYcR7ipl9+XGY8QVjU6VChvc
+         vSxc8Fg6lUuFfFsepLmkAhUtTO3H0AecVqFslfcjXivPqQsmXP0nVL0dTWOc8J1E6Ku5
+         /+Ltqch+h3gDsykFUD7h0+GQghEBwBiMxni78Mywc1OGIQ2uKJrTV79FbAys4LshM7kM
+         nTHQ==
+X-Gm-Message-State: AOAM533lzWR3j6KepEIjXbsOP73RWLJ6HGPZyJ2VP3xYRgy7lzy4fYCA
+        dJek39bMGtxyRsbvbU/cbKYhAP5LINYrcg==
+X-Google-Smtp-Source: ABdhPJyUCqTvmyTHgFTrTyMm8d1WftmtHPiqwbInT1YSC4ZjbU8TiM2PZHVVmd5ffREIHYFtOuoNww==
+X-Received: by 2002:a9d:4917:: with SMTP id e23mr2343802otf.143.1611348869858;
+        Fri, 22 Jan 2021 12:54:29 -0800 (PST)
+Received: from unknown.attlocal.net ([2600:1700:65a0:ab60:1c14:d05:b7d:917b])
+        by smtp.gmail.com with ESMTPSA id k18sm1349193otj.36.2021.01.22.12.54.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Jan 2021 12:54:29 -0800 (PST)
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, jhs@mojatatu.com, andrii@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, kafai@fb.com,
+        Cong Wang <cong.wang@bytedance.com>
+Subject: [Patch bpf-next v5 0/3] bpf: introduce timeout hash map
+Date:   Fri, 22 Jan 2021 12:54:12 -0800
+Message-Id: <20210122205415.113822-1-xiyou.wangcong@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210122202403.GC35850@krava>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Fri, Jan 22, 2021 at 09:24:03PM +0100, Jiri Olsa escreveu:
-> On Fri, Jan 22, 2021 at 04:52:28PM -0300, Arnaldo Carvalho de Melo wrote:
-> > Em Fri, Jan 22, 2021 at 05:39:20PM +0100, Jiri Olsa escreveu:
-> > > For very large ELF objects (with many sections), we could
-> > > get special value SHN_XINDEX (65535) for symbol's st_shndx.
-> > > 
-> > > This patch is adding code to detect the optional extended
-> > > section index table and use it to resolve symbol's section
-> > > index.
-> > > 
-> > > Adding elf_symtab__for_each_symbol_index macro that returns
-> > > symbol's section index and usign it in collect functions.
-> > 
-> > From a quick look it seems you addressed Andrii's review comments,
-> > right?
-> 
-> yep, it's described in the cover email
-> 
-> > 
-> > I've merged it locally, but would like to have some detailed set of
-> > steps on how to test this, so that I can add it to a "Committer testing"
-> > section in the cset commit log and probably add it to my local set of
-> > regression tests.
-> 
-> sorry I forgot to mention that:
-> 
-> The test was to run pahole on kernel compiled with:
->   make KCFLAGS="-ffunction-sections -fdata-sections" -j$(nproc) vmlinux
-> 
-> and ensure FUNC records are generated and match normal
-> build (without above KCFLAGS)
-> 
-> Also bpf selftest passed.
+From: Cong Wang <cong.wang@bytedance.com>
 
-Thanks, I'll come up with some shell script to test that.
- 
-> 
-> > 
-> > Who originally reported this? Joe? Also can someone provide a Tested-by:
-> > in addition to mine when I get this detailed set of steps to test?
-> 
-> oops, it was reported by Yulia Kopkova (just cc-ed)
-> 
-> Joe tested the v2 of the patchset, I'll make a dwarves scratch
-> build with v3 and let them test it
+This patchset introduces a new eBPF hash map whose elements have
+timeouts. Patch 1 is the implementation of timeout map, patch 2 adds
+some test cases for timeout map in test_maps, and patch 3 adds a test
+case in map ptr test. This patchset has been tested with the provided
+test cases for hours.
 
-Thanks, and there is a new comment by Andrii that I've found relevant
-about using size_t instead of Elf_something.
+Please check each patch description for more details.
 
-- Arnaldo
+---
+v5: add a lost piece of patch during rebase
+    fix the extra_elems corner case
+    add a stress test case
+
+v4: merge gc_work into gc_idle_work to avoid a nasty race condition
+    fix a potential use-after-free
+    add one more test case
+    improve comments and update changelog
+
+v3: move gc list from bucket to elem
+    reuse lru_node in struct htab_elem
+    drop patches which are no longer necessary
+    fix delete path
+    add a test case for delete path
+    add parallel test cases
+    change timeout to ms
+    drop batch ops
+
+v2: fix hashmap ptr test
+    add a test case in map ptr test
+    factor out htab_timeout_map_alloc()
+
+Cong Wang (3):
+  bpf: introduce timeout hash map
+  selftests/bpf: add test cases for bpf timeout map
+  selftests/bpf: add timeout map check in map_ptr tests
+
+ include/linux/bpf_types.h                     |   1 +
+ include/uapi/linux/bpf.h                      |   5 +-
+ kernel/bpf/hashtab.c                          | 274 +++++++++++++++++-
+ kernel/bpf/syscall.c                          |   3 +-
+ tools/include/uapi/linux/bpf.h                |   1 +
+ .../selftests/bpf/progs/map_ptr_kern.c        |  20 ++
+ tools/testing/selftests/bpf/test_maps.c       |  68 +++++
+ 7 files changed, 357 insertions(+), 15 deletions(-)
+
+-- 
+2.25.1
+
