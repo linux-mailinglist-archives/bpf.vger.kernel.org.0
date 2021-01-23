@@ -2,169 +2,212 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9577D3011F2
-	for <lists+bpf@lfdr.de>; Sat, 23 Jan 2021 02:18:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7126C30120B
+	for <lists+bpf@lfdr.de>; Sat, 23 Jan 2021 02:36:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726563AbhAWBRl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Jan 2021 20:17:41 -0500
-Received: from mga17.intel.com ([192.55.52.151]:10991 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726576AbhAWBRc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Jan 2021 20:17:32 -0500
-IronPort-SDR: DbFnzLy55d0ENZhtJIfZOuefsczDxpLE1bHxJDhlm/ql8YFzzm7KYZltoOaSMTRFrvln2cadIJ
- S4LxvbEzkTNQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9872"; a="159309253"
-X-IronPort-AV: E=Sophos;i="5.79,368,1602572400"; 
-   d="scan'208";a="159309253"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jan 2021 17:16:48 -0800
-IronPort-SDR: nDaIpVV9s4Gpy2yzBXtHePPJAotJVIxQjnM8fcSpdhgPk3cZHwvkmznBzaDxDwnJAZZ0xs29Ly
- DCk7AwMaSMuA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,368,1602572400"; 
-   d="scan'208";a="503255270"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga004.jf.intel.com with ESMTP; 22 Jan 2021 17:16:47 -0800
-Received: from fmsmsx607.amr.corp.intel.com (10.18.126.87) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 22 Jan 2021 17:16:47 -0800
-Received: from fmsmsx609.amr.corp.intel.com (10.18.126.89) by
- fmsmsx607.amr.corp.intel.com (10.18.126.87) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Fri, 22 Jan 2021 17:16:47 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx609.amr.corp.intel.com (10.18.126.89) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Fri, 22 Jan 2021 17:16:46 -0800
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Fri, 22 Jan 2021 17:16:44 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PSwSrJfCO2qZaxbG3UM2NqBYVPajV1M5yvJtFzY5MzHladUDZJiioRjlvfdIdxpk5QqMpVefAhI6tk39OY0IpxkTYqbsXUgy52N9IlwhjXHzmavpkoezirBhV8PDdr6ppOFtlfNx3hnztwK5GE3oFYM183uanFPChCd/ixxy5fDbvPTbsjDkTGUEgLb91NfQ4cDAaKF+m9b9m10OrF543HYTF4KEG1s7e3S+JkaTQdYk5wPhB2WQJUmPMSiUSVpozsH/joGOr+z2lE5IdcgHqM6I6fVEdQzjHwtn3zHOZBxwsf3dAPbZejkrICmteg7AjKAmYcfzAlJGyUKD9TkfqA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CGD/SoiDf0Wbx0BpqIgJb1D26EVf8k8gjpqTRR+Fl+E=;
- b=SMA+KhANoOlzvjjFKQjKqwXoy4yYPC2NuP5+MGtzVasqOigPgha6SPVB+O/rWDMdj56BXYl5nm2eRlyQziiHV2zo+rP954I5YJpP6ldQSHMPKW4RJyFYrf89p+BSluGto/sGgk49/kqV+4pE+hg6nqrevoEhMgCDBUgrKcEE1Fy4ySSvQvG15AHyes3jYgOlBVSTaO3thPmeXaydXwi/2ypekNjvbdKZ51JBLaAP3uGXIRDJxh66SnDmbiCFb/3q13pzTPn3JxvUl6RBTIKcMbpkmf/RIORvRnqtPtxtrEwTw+oeB/DknU9nNP+Q5RZUpKOLF5IWfCo0c5AwSy2rSA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CGD/SoiDf0Wbx0BpqIgJb1D26EVf8k8gjpqTRR+Fl+E=;
- b=aDyVc6f2hYrVH7f84E5neuPeuLheV/MdnfiqRpz3z9R6b+RZ/1EwRt80vF1MFOS44NuNvxl8jGxuC5DgvPWik1DO9CL2F+Knlo5mjTKJky4Ik1Or+UfmI2MvOj26kNwSycGumRY1tFzjADDgGfzpeSDQ1eTKyUwH3+pc7zxDtgY=
-Received: from CO1PR11MB5105.namprd11.prod.outlook.com (2603:10b6:303:9f::7)
- by CO1PR11MB5105.namprd11.prod.outlook.com (2603:10b6:303:9f::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.15; Sat, 23 Jan
- 2021 01:16:43 +0000
-Received: from CO1PR11MB5105.namprd11.prod.outlook.com
- ([fe80::fc66:dd19:b156:7090]) by CO1PR11MB5105.namprd11.prod.outlook.com
- ([fe80::fc66:dd19:b156:7090%6]) with mapi id 15.20.3784.015; Sat, 23 Jan 2021
- 01:16:43 +0000
-From:   "Brelinski, TonyX" <tonyx.brelinski@intel.com>
-To:     "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "Topel, Bjorn" <bjorn.topel@intel.com>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>
-Subject: RE: [Intel-wired-lan] [PATCH v3 net-next 10/11] ice: store the result
- of ice_rx_offset() onto ice_ring
-Thread-Topic: [Intel-wired-lan] [PATCH v3 net-next 10/11] ice: store the
- result of ice_rx_offset() onto ice_ring
-Thread-Index: AQHW7a3nKUko5NEv60KuJs+S3g0UlKo0by9g
-Date:   Sat, 23 Jan 2021 01:16:42 +0000
-Message-ID: <CO1PR11MB51056372C125FC21F669DE4AFABF9@CO1PR11MB5105.namprd11.prod.outlook.com>
-References: <20210118151318.12324-1-maciej.fijalkowski@intel.com>
- <20210118151318.12324-11-maciej.fijalkowski@intel.com>
-In-Reply-To: <20210118151318.12324-11-maciej.fijalkowski@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.6.0.76
-dlp-reaction: no-action
-authentication-results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [71.236.132.75]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 0f9b3c42-47db-4558-02fd-08d8bf3c8b68
-x-ms-traffictypediagnostic: CO1PR11MB5105:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CO1PR11MB5105ED29785080789BA15737FABF9@CO1PR11MB5105.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:619;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: qUq7OPO6iK0ZTybkFKXd3GzXpo5IeHsU2Bj/EEsaEEQhCrhjwtqTfJsZBZdO9RRoxNCdd5jv29kg9M3XYWMVMpbXksgGVB1KLBjsaLL58j6mI1lDJVO3PgLatvSREVuj63I+Y7t261YFc1GSARfQTZ3QtiNjXv6HlOnipos//BYWQIGPQHtKpPIE60LYgTzgcGrjD5iIczUgD3HX35mBTiaKGYUM470HFNTnEu2P+OOmHK8mQeKnBVY2gXVGvYLa9M/mq956aeGaBoWLwr+oJOPjfTKPmwo63f5vTEzn9SJjLQD0U1s7ndBNPkdWiS/OjTLNqHEiXxgNpS6WS2BAb4tpAJZ2zGQeHk2oU1FgbNtVTLJJZ8CeOe7h339Vtum7x6IWuHGlBegYeSpJw6JyeA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5105.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(396003)(136003)(376002)(346002)(64756008)(66476007)(5660300002)(66556008)(316002)(107886003)(2906002)(76116006)(66946007)(54906003)(66446008)(83380400001)(71200400001)(26005)(7696005)(53546011)(86362001)(478600001)(8676002)(9686003)(186003)(8936002)(55016002)(6506007)(110136005)(52536014)(33656002)(4326008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?R0o0QnZmNi80WEpyMHhZZVVKWHdHRnlSSzFrS3h1MjBwcDZSV2xiUVAyQlpJ?=
- =?utf-8?B?M2JaQnBJemwyRmJ5TDFlUTJhNlNwV1hTSUtyVFkyQUNLV3B3NmwwcWE5SDkx?=
- =?utf-8?B?d2M1S3Z6b3dEZUFla0VzNFg3SzdidG5abC9rNHFDbnVucVlNMEpscDhsU2JE?=
- =?utf-8?B?RC8rRlNpcnpHVlhobHhNcmhEMjAzWXRBcWNVczJEQmMzcW41TnZBQklid2pT?=
- =?utf-8?B?NHdJWTJkOWRuMEZXa2tIdktUMFBxdXZsemJDb3NhbzI1Ykk5eDB5NEo4Z1Er?=
- =?utf-8?B?ZUVIanlZZzBETGFtYjBjK0FrNUo3TzJJMHF0MmV2UlBadktUOTEzNXpHcXNC?=
- =?utf-8?B?MDAzUkwveHk5U3lRL1hDZlJrcjdmUGoza1JIeXkyRllSaDVZSEJodXl6WFN4?=
- =?utf-8?B?NGxRZFhlK2ZHTnltbmt4TmtJd1pPek5WRGorNngvTFFUUGNZZCtoTnYyK0RE?=
- =?utf-8?B?Qml0eTRHVWJBdU55cjArek1mc3luN0N3OUdNclNiQzF4WmNzTUlublNEUXc1?=
- =?utf-8?B?YzZycTZUellpQzZzWlI4Q3ZnemRRakhRQjZDcnNlVGdPUnQyY0x0ZlM4MDlP?=
- =?utf-8?B?Y0daMEw0bGUvRnI0WkhIclRmbFJBa0RiNnVMTEZxcHlQMTZicEdXWU1ublVv?=
- =?utf-8?B?OTFnZmpZYkxJUi9JaGMwdFNOdlBZamdoTHFXTHlUMmxkMHA4ak1MMVQvVnNI?=
- =?utf-8?B?MUt5MkYvZmtCTEE5MnJaSEI3eGdxd3NDVnZLUkhZMUtIMVRBZ004VDlOV3VH?=
- =?utf-8?B?NXBNNmJuVUhOTXE5dWEyaTBsaytJU2dYRFF1OW1BSXczdzU1bmZ5WTFsR0N4?=
- =?utf-8?B?QndESWc4K1RuUXYxUTFQdG8xQ1c4UXRJajdTTGh6WGk5ZXFsTHJQT0hueUlI?=
- =?utf-8?B?MGNSd1JTRnRqSXBoV0R0cjJ4Q0FKVkcvaEZXOWdoT3BwVGJmQ0JjeDNyTDhM?=
- =?utf-8?B?b1FGWEdWUkRHUnJCUVo0bXlYR1RraUZOaHdBODY0MWp5LzhYa2Q3MkJMRDBH?=
- =?utf-8?B?N1JCNWRiMWdkZXhqcmUrQmFTQmZpbzhUMndjdFNGWVZvQU5GaE1qOFhWNU9Y?=
- =?utf-8?B?VXBkbGFMVlM3QUlHUG5SWTRReU53NGZBU1BXcEloSm5RcFN1YVV3RURaU0tq?=
- =?utf-8?B?dGRSbis0czJRUEs5UCtDMlQ0aVpTdXFZNWVIVWhBa1VJemhDQW1QZDBsRlNn?=
- =?utf-8?B?a0w4dHR3cTh3RTdrQjRDRUV0c0JCOWNGWW1IZHlxalFrbW5QdlB6azdtQ25h?=
- =?utf-8?B?MjVRYXViY2tPQ2h4dHdGbE9OMXdrN2Y2WWhTeE5kUTVKUEY5Tk9ibi9hUzJI?=
- =?utf-8?Q?7JKxeK+e0WQuM=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726275AbhAWBgh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Jan 2021 20:36:37 -0500
+Received: from www62.your-server.de ([213.133.104.62]:59462 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726059AbhAWBgZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Jan 2021 20:36:25 -0500
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1l37q2-00040d-D8; Sat, 23 Jan 2021 02:35:42 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1l37q2-000SRn-3o; Sat, 23 Jan 2021 02:35:42 +0100
+Subject: Re: [PATCH bpf-next V12 4/7] bpf: add BPF-helper for MTU checking
+To:     Jesper Dangaard Brouer <brouer@redhat.com>, bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
+        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
+        colrack@gmail.com
+References: <161098881526.108067.7603213364270807261.stgit@firesoul>
+ <161098887018.108067.13643446976934084937.stgit@firesoul>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <6772a12b-2a60-bb3b-93df-1d6d6c7c7fd7@iogearbox.net>
+Date:   Sat, 23 Jan 2021 02:35:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5105.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0f9b3c42-47db-4558-02fd-08d8bf3c8b68
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Jan 2021 01:16:42.9274
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: MRGuXCm8aUbpd71I24BH/lSOVj8480hMUOYvu2ABX0T/Dlp4VfPoflmKdkYs+IgUDSUJWPSatONFHamEKrYvSv8QKP3FNtAIepaCek6VHCc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB5105
-X-OriginatorOrg: intel.com
+In-Reply-To: <161098887018.108067.13643446976934084937.stgit@firesoul>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26057/Fri Jan 22 13:30:31 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-RnJvbTogSW50ZWwtd2lyZWQtbGFuIDxpbnRlbC13aXJlZC1sYW4tYm91bmNlc0Bvc3Vvc2wub3Jn
-PiBPbiBCZWhhbGYgT2YgTWFjaWVqIEZpamFsa293c2tpDQpTZW50OiBNb25kYXksIEphbnVhcnkg
-MTgsIDIwMjEgNzoxMyBBTQ0KVG86IGludGVsLXdpcmVkLWxhbkBsaXN0cy5vc3Vvc2wub3JnDQpD
-YzogbmV0ZGV2QHZnZXIua2VybmVsLm9yZzsga3ViYUBrZXJuZWwub3JnOyBicGZAdmdlci5rZXJu
-ZWwub3JnOyBUb3BlbCwgQmpvcm4gPGJqb3JuLnRvcGVsQGludGVsLmNvbT47IEthcmxzc29uLCBN
-YWdudXMgPG1hZ251cy5rYXJsc3NvbkBpbnRlbC5jb20+DQpTdWJqZWN0OiBbSW50ZWwtd2lyZWQt
-bGFuXSBbUEFUQ0ggdjMgbmV0LW5leHQgMTAvMTFdIGljZTogc3RvcmUgdGhlIHJlc3VsdCBvZiBp
-Y2Vfcnhfb2Zmc2V0KCkgb250byBpY2VfcmluZw0KDQpPdXRwdXQgb2YgaWNlX3J4X29mZnNldCgp
-IGlzIGJhc2VkIG9uIGV0aHRvb2wncyBwcml2IGZsYWcgc2V0dGluZywgd2hpY2ggd2hlbiBjaGFu
-Z2VkLCBjYXVzZXMgUEYgcmVzZXQgKGRpc2FibGVzIG5hcGksIGZyZWVzIGlycXMsIGxvYWRzIGRp
-ZmZlcmVudCBSeCBtZW0gbW9kZWwsIGV0Yy4pLiBUaGlzIG1lYW5zIHRoYXQgd2l0aGluIG5hcGkg
-aXRzIHJlc3VsdCBpcyBjb25zdGFudCBhbmQgdGhlcmUgaXMgbm8gcmVhc29uIHRvIGNhbGwgaXQg
-cGVyIGVhY2ggcHJvY2Vzc2VkIGZyYW1lLg0KDQpBZGQgbmV3ICdyeF9vZmZzZXQnIGZpZWxkIHRv
-IGljZV9yaW5nIHRoYXQgaXMgbWVhbnQgdG8gaG9sZCB0aGUNCmljZV9yeF9vZmZzZXQoKSByZXN1
-bHQgYW5kIHVzZSBpdCB3aXRoaW4gaWNlX2NsZWFuX3J4X2lycSgpLg0KRnVydGhlcm1vcmUsIHVz
-ZSBpdCB3aXRoaW4gaWNlX2FsbG9jX21hcHBlZF9wYWdlKCkuDQoNClJldmlld2VkLWJ5OiBCasO2
-cm4gVMO2cGVsIDxiam9ybi50b3BlbEBpbnRlbC5jb20+DQpTaWduZWQtb2ZmLWJ5OiBNYWNpZWog
-RmlqYWxrb3dza2kgPG1hY2llai5maWphbGtvd3NraUBpbnRlbC5jb20+DQotLS0NCiBkcml2ZXJz
-L25ldC9ldGhlcm5ldC9pbnRlbC9pY2UvaWNlX3R4cnguYyB8IDQzICsrKysrKysrKysrKy0tLS0t
-LS0tLS0tICBkcml2ZXJzL25ldC9ldGhlcm5ldC9pbnRlbC9pY2UvaWNlX3R4cnguaCB8ICAxICsN
-CiAyIGZpbGVzIGNoYW5nZWQsIDIzIGluc2VydGlvbnMoKyksIDIxIGRlbGV0aW9ucygtKQ0KDQpU
-ZXN0ZWQtYnk6IFRvbnkgQnJlbGluc2tpIDx0b255eC5icmVsaW5za2lAaW50ZWwuY29tPiBBIENv
-bnRpbmdlbnQgV29ya2VyIGF0IEludGVsDQoNCg0K
+On 1/18/21 5:54 PM, Jesper Dangaard Brouer wrote:
+> This BPF-helper bpf_check_mtu() works for both XDP and TC-BPF programs.
+> 
+> The SKB object is complex and the skb->len value (accessible from
+> BPF-prog) also include the length of any extra GRO/GSO segments, but
+> without taking into account that these GRO/GSO segments get added
+> transport (L4) and network (L3) headers before being transmitted. Thus,
+> this BPF-helper is created such that the BPF-programmer don't need to
+> handle these details in the BPF-prog.
+> 
+> The API is designed to help the BPF-programmer, that want to do packet
+> context size changes, which involves other helpers. These other helpers
+> usually does a delta size adjustment. This helper also support a delta
+> size (len_diff), which allow BPF-programmer to reuse arguments needed by
+> these other helpers, and perform the MTU check prior to doing any actual
+> size adjustment of the packet context.
+> 
+> It is on purpose, that we allow the len adjustment to become a negative
+> result, that will pass the MTU check. This might seem weird, but it's not
+> this helpers responsibility to "catch" wrong len_diff adjustments. Other
+> helpers will take care of these checks, if BPF-programmer chooses to do
+> actual size adjustment.
+> 
+> V12:
+>   - Simplify segment check that calls skb_gso_validate_network_len.
+>   - Helpers should return long
+> 
+> V9:
+> - Use dev->hard_header_len (instead of ETH_HLEN)
+> - Annotate with unlikely req from Daniel
+> - Fix logic error using skb_gso_validate_network_len from Daniel
+> 
+> V6:
+> - Took John's advice and dropped BPF_MTU_CHK_RELAX
+> - Returned MTU is kept at L3-level (like fib_lookup)
+> 
+> V4: Lot of changes
+>   - ifindex 0 now use current netdev for MTU lookup
+>   - rename helper from bpf_mtu_check to bpf_check_mtu
+>   - fix bug for GSO pkt length (as skb->len is total len)
+>   - remove __bpf_len_adj_positive, simply allow negative len adj
+> 
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> ---
+>   include/uapi/linux/bpf.h       |   67 ++++++++++++++++++++++++
+>   net/core/filter.c              |  111 ++++++++++++++++++++++++++++++++++++++++
+>   tools/include/uapi/linux/bpf.h |   67 ++++++++++++++++++++++++
+>   3 files changed, 245 insertions(+)
+> 
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 05bfc8c843dc..f17381a337ec 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -3839,6 +3839,61 @@ union bpf_attr {
+>    *	Return
+>    *		A pointer to a struct socket on success or NULL if the file is
+>    *		not a socket.
+> + *
+> + * long bpf_check_mtu(void *ctx, u32 ifindex, u32 *mtu_len, s32 len_diff, u64 flags)
+> + *	Description
+> + *		Check ctx packet size against MTU of net device (based on
+> + *		*ifindex*).  This helper will likely be used in combination with
+> + *		helpers that adjust/change the packet size.  The argument
+> + *		*len_diff* can be used for querying with a planned size
+> + *		change. This allows to check MTU prior to changing packet ctx.
+> + *
+> + *		Specifying *ifindex* zero means the MTU check is performed
+> + *		against the current net device.  This is practical if this isn't
+> + *		used prior to redirect.
+> + *
+> + *		The Linux kernel route table can configure MTUs on a more
+> + *		specific per route level, which is not provided by this helper.
+> + *		For route level MTU checks use the **bpf_fib_lookup**\ ()
+> + *		helper.
+> + *
+> + *		*ctx* is either **struct xdp_md** for XDP programs or
+> + *		**struct sk_buff** for tc cls_act programs.
+> + *
+> + *		The *flags* argument can be a combination of one or more of the
+> + *		following values:
+> + *
+> + *		**BPF_MTU_CHK_SEGS**
+> + *			This flag will only works for *ctx* **struct sk_buff**.
+> + *			If packet context contains extra packet segment buffers
+> + *			(often knows as GSO skb), then MTU check is harder to
+> + *			check at this point, because in transmit path it is
+> + *			possible for the skb packet to get re-segmented
+> + *			(depending on net device features).  This could still be
+> + *			a MTU violation, so this flag enables performing MTU
+> + *			check against segments, with a different violation
+> + *			return code to tell it apart. Check cannot use len_diff.
+> + *
+> + *		On return *mtu_len* pointer contains the MTU value of the net
+> + *		device.  Remember the net device configured MTU is the L3 size,
+> + *		which is returned here and XDP and TX length operate at L2.
+> + *		Helper take this into account for you, but remember when using
+> + *		MTU value in your BPF-code.  On input *mtu_len* must be a valid
+> + *		pointer and be initialized (to zero), else verifier will reject
+> + *		BPF program.
+> + *
+> + *	Return
+> + *		* 0 on success, and populate MTU value in *mtu_len* pointer.
+> + *
+> + *		* < 0 if any input argument is invalid (*mtu_len* not updated)
+> + *
+> + *		MTU violations return positive values, but also populate MTU
+> + *		value in *mtu_len* pointer, as this can be needed for
+> + *		implementing PMTU handing:
+> + *
+> + *		* **BPF_MTU_CHK_RET_FRAG_NEEDED**
+> + *		* **BPF_MTU_CHK_RET_SEGS_TOOBIG**
+> + *
+>    */
+[...]
+> +BPF_CALL_5(bpf_skb_check_mtu, struct sk_buff *, skb,
+> +	   u32, ifindex, u32 *, mtu_len, s32, len_diff, u64, flags)
+> +{
+> +	int ret = BPF_MTU_CHK_RET_FRAG_NEEDED;
+> +	struct net_device *dev = skb->dev;
+> +	int skb_len, dev_len;
+> +	int mtu;
+> +
+> +	if (unlikely(flags & ~(BPF_MTU_CHK_SEGS)))
+> +		return -EINVAL;
+> +
+> +	dev = __dev_via_ifindex(dev, ifindex);
+> +	if (unlikely(!dev))
+> +		return -ENODEV;
+> +
+> +	mtu = READ_ONCE(dev->mtu);
+> +
+> +	dev_len = mtu + dev->hard_header_len;
+> +	skb_len = skb->len + len_diff; /* minus result pass check */
+> +	if (skb_len <= dev_len) {
+> +		ret = BPF_MTU_CHK_RET_SUCCESS;
+> +		goto out;
+> +	}
+> +	/* At this point, skb->len exceed MTU, but as it include length of all
+> +	 * segments, it can still be below MTU.  The SKB can possibly get
+> +	 * re-segmented in transmit path (see validate_xmit_skb).  Thus, user
+> +	 * must choose if segs are to be MTU checked.
+> +	 */
+> +	if (skb_is_gso(skb)) {
+> +		ret = BPF_MTU_CHK_RET_SUCCESS;
+> +
+> +		if (flags & BPF_MTU_CHK_SEGS &&
+> +		    !skb_gso_validate_network_len(skb, mtu))
+> +			ret = BPF_MTU_CHK_RET_SEGS_TOOBIG;
+
+I think that looks okay overall now. One thing that will easily slip through
+is that in the helper description you mentioned 'Check cannot use len_diff.'
+for BPF_MTU_CHK_SEGS flag. So right now for non-zero len_diff the user
+will still get BPF_MTU_CHK_RET_SUCCESS if the current length check via
+skb_gso_validate_network_len(skb, mtu) passes. If it cannot be checked,
+maybe enforce len_diff == 0 for gso skbs on BPF_MTU_CHK_SEGS?
+
+> +	}
+> +out:
+> +	/* BPF verifier guarantees valid pointer */
+> +	*mtu_len = mtu;
+> +
+> +	return ret;
+> +}
