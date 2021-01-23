@@ -2,58 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90A0B30121E
-	for <lists+bpf@lfdr.de>; Sat, 23 Jan 2021 02:50:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACB843012A0
+	for <lists+bpf@lfdr.de>; Sat, 23 Jan 2021 04:28:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726287AbhAWBuM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 22 Jan 2021 20:50:12 -0500
-Received: from www62.your-server.de ([213.133.104.62]:33392 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726048AbhAWBuL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 22 Jan 2021 20:50:11 -0500
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1l383O-0004yL-0B; Sat, 23 Jan 2021 02:49:30 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1l383N-0005tE-Mx; Sat, 23 Jan 2021 02:49:29 +0100
-Subject: Re: [PATCH bpf-next V12 7/7] bpf/selftests: tests using bpf_check_mtu
- BPF-helper
-To:     Jesper Dangaard Brouer <brouer@redhat.com>, bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
-        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
-        colrack@gmail.com
-References: <161098881526.108067.7603213364270807261.stgit@firesoul>
- <161098888542.108067.3212673708592909660.stgit@firesoul>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <a44f45cf-5c0b-9d59-3368-a1be4b50465d@iogearbox.net>
-Date:   Sat, 23 Jan 2021 02:49:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726587AbhAWD2n (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 22 Jan 2021 22:28:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726597AbhAWD21 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 22 Jan 2021 22:28:27 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E9DC06174A;
+        Fri, 22 Jan 2021 19:27:47 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id 30so5139912pgr.6;
+        Fri, 22 Jan 2021 19:27:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Y63ezxhE9y61i4ONjRBHzW6xiIvx1qUMUf4Z/Rhvgp0=;
+        b=JBiEK2Sr+NPccQrh4kmyjqK1PO9wHEgrQeEE1SIDCJkGCSZ0yraYOoJsGQvf5NVxe7
+         fwhUE4d6jUG3uUncgwndLpglX9gftVNiw9JC9M6L0e+sCbAinWsYPyXzeUR2IVFuZQXS
+         VZpd+pJvaFJGVKrFt1narbL5mIm8dTgAovCEQFFahaVQygOGmCMqnnpO3d1GZRf+rUjh
+         fazrMXNvZJpK51CIkwvg7iUhkoR3vc1Ykod3mbklZCIiwkyrUnpF6AGXpk1z3iOEEPzP
+         WF3/vYGsqaYM02CU5SpXtLltlsZgTuiCxl6Zsg1pS56X1xWMUmoG35ycGBu/TolaHQ5H
+         9XKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Y63ezxhE9y61i4ONjRBHzW6xiIvx1qUMUf4Z/Rhvgp0=;
+        b=HXB1emMJz41O5KkikdE5m+W9hDtnqM+Yu1lC/I5b0v/r421MDPpk4j8yMg/EMdkEtP
+         gbzluP2ZBjp4r+wQPnlDflnPR2BCvRri84LiBVzEI5YVDLJZ0+geawx/EsdGlnhpEp0F
+         OUWkx5r6O2Z5mbTBBJwQ5Eke6DlKOvrHYC0gL84+K83zIKNWnH56g29uJZwdbfx6sn92
+         qcnHrJNF+RA+KveAqopJkdY1jpWfXe3EHdmdgFHwGAV8rRKwYpSFZv+am5urEhes6ed9
+         xCWq/rDUbT2sqoPw8RqaAjq5Q1VoCE0TBnuzsZUWvqZmYq6o8euaPDjadUVtoCDw40hw
+         k//Q==
+X-Gm-Message-State: AOAM533QvY7uOJgXcU6ubjSTTjxOVTYcix1sI8FM/BALjrxqzPN6MZlp
+        PJO9lTKvJVBjBouylvFWONnQ7kMBeu8Uhgqedf8=
+X-Google-Smtp-Source: ABdhPJxvXtRwLuJMLaToEnLo+EFA8YdlaLpxjwRJMr3vlzSIF/5tghE/vDuJ4l0UgbBtQ89IuFYIjiyp1P1GOPZ9cgw=
+X-Received: by 2002:a63:2265:: with SMTP id t37mr387298pgm.336.1611372466644;
+ Fri, 22 Jan 2021 19:27:46 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <161098888542.108067.3212673708592909660.stgit@firesoul>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26057/Fri Jan 22 13:30:31 2021)
+References: <c099ad52-0c2c-b886-bae2-c64bd8626452@ozlabs.ru>
+ <CACT4Y+Z+kwPM=WUzJ-e359PWeLLqmF0w4Yxp1spzZ=+J0ekrag@mail.gmail.com>
+ <6af41136-4344-73da-f821-e831674be473@i-love.sakura.ne.jp>
+ <70d427e8-7281-0aae-c524-813d73eca2d7@ozlabs.ru> <CACT4Y+bqidtwh1HUFFoyyKyVy0jnwrzhVBgqmU+T9sN1yPMO=g@mail.gmail.com>
+ <eb71cc37-afbd-5446-6305-8c7abcc6e91f@i-love.sakura.ne.jp>
+ <6eaafbd8-1c10-75df-75ae-9afa0861f69b@i-love.sakura.ne.jp>
+ <e4767b84-05a4-07c0-811b-b3a08cad2f43@ozlabs.ru> <b9e41542-5c93-9d37-d99d-acde6fb01fa1@i-love.sakura.ne.jp>
+In-Reply-To: <b9e41542-5c93-9d37-d99d-acde6fb01fa1@i-love.sakura.ne.jp>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Fri, 22 Jan 2021 19:27:35 -0800
+Message-ID: <CAM_iQpU3P03+2QL2iDbVQSyqwHb6DXi96eXNEm3kDgFWjqAKHg@mail.gmail.com>
+Subject: Re: BPF: unbounded bpf_map_free_deferred problem
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Dmitry Vyukov <dvyukov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/18/21 5:54 PM, Jesper Dangaard Brouer wrote:
-> Adding selftest for BPF-helper bpf_check_mtu(). Making sure
-> it can be used from both XDP and TC.
-> 
-[...]
+On Fri, Jan 22, 2021 at 4:42 PM Tetsuo Handa
+<penguin-kernel@i-love.sakura.ne.jp> wrote:
+>
+> Hello, BPF developers.
+>
+> Alexey Kardashevskiy is reporting that system_wq gets stuck due to flooding of
+> unbounded bpf_map_free_deferred work. Use of WQ_MEM_RECLAIM | WQ_HIGHPRI | WQ_UNBOUND
+> workqueue did not solve this problem. Is it possible that a refcount leak somewhere
+> preventing bpf_map_free_deferred from completing? Please see
+> https://lkml.kernel.org/r/CACT4Y+Z+kwPM=WUzJ-e359PWeLLqmF0w4Yxp1spzZ=+J0ekrag@mail.gmail.com .
+>
 
-(small nit: your subject lines are mixed up with 'bpf/selftests' vs
-  'selftests/bpf')
+Which map does the reproducer create? And where exactly do
+those work block on?
+
+Different map->ops->map_free() waits for different reasons,
+for example, htab_map_free() waits for flying htab_elem_free_rcu().
+I can't immediately see how they could wait for each other, if this
+is what you meant above.
+
+Thanks.
