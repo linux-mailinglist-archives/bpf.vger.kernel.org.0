@@ -2,106 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 327D9301B3C
-	for <lists+bpf@lfdr.de>; Sun, 24 Jan 2021 11:29:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D16F6301B9E
+	for <lists+bpf@lfdr.de>; Sun, 24 Jan 2021 12:56:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726652AbhAXK3Z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 24 Jan 2021 05:29:25 -0500
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:58047 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726546AbhAXK3Y (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 24 Jan 2021 05:29:24 -0500
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.west.internal (Postfix) with ESMTP id 8E278D3C;
-        Sun, 24 Jan 2021 05:28:17 -0500 (EST)
-Received: from imap6 ([10.202.2.56])
-  by compute2.internal (MEProxy); Sun, 24 Jan 2021 05:28:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kode54.net; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm2; bh=9bTaOq/ywin9K4U2DKZqsyrGf/ZSeUy
-        3tGjtLPYRmSA=; b=FpAaiiiyhZdbkNreOl76L6OmYD40OvOkrOXUXqwWa6mJaSu
-        1G+nTecenF/cNy9DlY10QeTGZtJt9+bM7b3QjYhrCrbK/e3kkj6lePPdyGGN05Gx
-        R/T27MUdw2FPChUhYnDMUqJYTz9PvgCZQbre1s7aF+lyVBFdftk2TIxPXES1IPnM
-        Vuz0vyJY21jq7G4fjFwVcBfYevMvdnyFkI0jyWKmdgt18Al911fPP1BkEivXx6t9
-        WKx6ps8e2+CCOkevyXF95BSNeXVZxXSbqIzHo3ipfSv4+aYtTycHYzc/cjmivK4H
-        T0mXqVUrWErsOpnJFuqj7z/BOwoJXKUhJVYtk1A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=9bTaOq
-        /ywin9K4U2DKZqsyrGf/ZSeUy3tGjtLPYRmSA=; b=rLD7+pFeWTkCJSTwhBlyWR
-        Tr9AnVtSKu38Si0eLsoO94VCMCxAJpBD7rooVx6qURWO20XTKZ1dWqubw49P1+bu
-        FkOj/2KqACbVrc1JzuPG8vihtgLY7l+MEqRQxO4pr1Qy+dyCd6xh+OEOKnk67bcC
-        scenD9EmimbAGeMUSOn0eSw/Db8J4f5YMVj9gjRc3UCk8PR1eVuheZFFe4eMo0a6
-        zhOD+fUo0MzYZlTWytbbZBaOd3zo1M6EsMdqM8Rk5QT+XUPP0F4LSWa+mK4D3LeR
-        8iHUqVpE7wh0MDwWNHvaLsZT850K1nCl4bnwDYCKZyOE55LJyMrumc/Nz/kBZ+Iw
-        ==
-X-ME-Sender: <xms:wEsNYBLG5b0IDrrO9JgOYMq-CYgnshFNBomEcGBCOR9ELTpEm4zPCg>
-    <xme:wEsNYNKdV8ef0jmLmpNv2betINdzDyHlElP-i2RiZAB5gOdtyThQIW6yCTrH1UovE
-    1mJqrB_lry2B64JBj0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvddugddujecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedfvehhrhhi
-    shhtohhphhgvrhcuhghilhhlihgrmhcuufhnohifhhhilhhlfdcuoegthhhrihhssehkoh
-    guvgehgedrnhgvtheqnecuggftrfgrthhtvghrnhepteelueegledvteehveefiefhveev
-    gefhteefiedtveekhfehledvjeffudelgfegnecuffhomhgrihhnpehkvghrnhgvlhdroh
-    hrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegt
-    hhhrihhssehkohguvgehgedrnhgvth
-X-ME-Proxy: <xmx:wEsNYJs2ESlyhDdn7AsvnrvpTIR0DQJ4wyEg_y5nJ3d7OtUeutIbSQ>
-    <xmx:wEsNYCbuKvmVqMuq9igL29QonamWkdrkAQ6MvxgbpXm1t_WCWFxxMw>
-    <xmx:wEsNYIZOiWSU0yu3ouvYoV8Yh8kmUmTbORWhneGyAOECbs1oCKhlUA>
-    <xmx:wUsNYPXSk4o64KhCyXYeSjcMfpeBgxNCEtgeb6b5yZD3-L8mpnubgw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id A864D240408; Sun, 24 Jan 2021 05:28:16 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-78-g36b56e88ef-fm-20210120.001-g36b56e88
-Mime-Version: 1.0
-Message-Id: <4f19b649-a837-48af-90d1-c4692580053d@www.fastmail.com>
-In-Reply-To: <161048280875.1131.14039972740532054006.git-patchwork-notify@kernel.org>
-References: <20210110070341.1380086-1-andrii@kernel.org>
- <161048280875.1131.14039972740532054006.git-patchwork-notify@kernel.org>
-Date:   Sun, 24 Jan 2021 02:27:53 -0800
-From:   "Christopher William Snowhill" <chris@kode54.net>
-To:     patchwork-bot+netdevbpf@kernel.org,
-        "Andrii Nakryiko" <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
-        daniel@iogearbox.net, kernel-team@fb.com
-Subject: Re: [PATCH bpf 1/2] bpf: allow empty module BTFs
-Content-Type: text/plain
+        id S1726924AbhAXLy1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 24 Jan 2021 06:54:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726984AbhAXLxW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 24 Jan 2021 06:53:22 -0500
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2640C06174A
+        for <bpf@vger.kernel.org>; Sun, 24 Jan 2021 03:52:41 -0800 (PST)
+Received: by mail-oo1-xc2b.google.com with SMTP id y14so2589113oom.10
+        for <bpf@vger.kernel.org>; Sun, 24 Jan 2021 03:52:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=daynix-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pu6Zr2Jo68blbhpXwzl9uRs7KbDV3skHPD8u3gz3sVI=;
+        b=hLK0CiEKpK6Efjx+XUatItsaWE/mRmo/IWq/x6fk1BFPF2i7i2bt6e2DFk6OygAPzE
+         skDu0spVWAOL2kvuzdgaIX2Qzsskv8asVzkubHi6iX0Ny6xxFzxJjd3ejJAIKNpcdQmB
+         l2s+Xraztpfd/HTF6ODoGotgqxTnd9XN8vvHZVJfZ2UjfoOC1hS7U8dgydDpnwXWPG3Z
+         KVKPhLqebfmRllhbj66PsU7MRJ0MA6C01kJ1uNo0VpBNMHDFWjksnk6joesUdAeLg94o
+         8DWm9RaNOF0kKvdzaOGdAbgJGAVRkvQey/hZo8Xq3kMC+AYT1hayxKGLfKPk03C3pgXo
+         G36w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pu6Zr2Jo68blbhpXwzl9uRs7KbDV3skHPD8u3gz3sVI=;
+        b=GyCXw1a/M1OSaMwgZXTP5CbqkdEk6gXCO/23yJ2Eqjy3l0rRF22V6KQgdppjtuLtS9
+         5pXQwrkB/rQcSoB/f/OiPtuEz5m+7RnEKXX9a0wyXFLQbA6IPYyPKr67wse29aBFpcs3
+         x9KGWao0GmqJsWP1GKu5Y8vQx6hP/fqfBGhhV3REz8uD1f4KznY3HEmGyaIB7qI4AxUL
+         Qk0U3WrGd3oNfDosMDAJ3JqguztGObFHhJvesuqI3Uo2rIGiOt6ZkEqZq/xZompSgG5C
+         m8KY7brQu5FhfrgRv6VfwykJtYmzuvwqkJXIOJb3sxui5F0oMhkkmLZ+BodQZGgDVYDS
+         CTFQ==
+X-Gm-Message-State: AOAM530EtzZBq/SsLehMR6LFRL6JOfeze+UXRym4w8OA4Nb1AayQdSp4
+        lVjIaEyzzMG4dCY4umBKC1K3geWVkupRP99q9OTQ4Q==
+X-Google-Smtp-Source: ABdhPJwt8xWKLlXxiJG8fjcBaxoKGZnK9ey4WRGE+AXDo7swV/wzVlPEyFF7MT2HJelv6cWoDDRUCoFqXQlbsX91d4E=
+X-Received: by 2002:a4a:7353:: with SMTP id e19mr9268056oof.55.1611489161343;
+ Sun, 24 Jan 2021 03:52:41 -0800 (PST)
+MIME-Version: 1.0
+References: <20210112194143.1494-1-yuri.benditovich@daynix.com>
+ <20210112194143.1494-4-yuri.benditovich@daynix.com> <CAOEp5Ocz-xGq5=e=WY0aipEYHEhN-wxekNaAiqAS+HsOF8TcDQ@mail.gmail.com>
+ <CAOEp5OevYR5FWVMfQ_esmWTKtz9_ddTupbe7FtBFQ=sv2kEt2w@mail.gmail.com> <CAADnVQJLN0sFyKdAmc6Pikv8Ww9OocnK_VXMG=ZLSMONHkqe4Q@mail.gmail.com>
+In-Reply-To: <CAADnVQJLN0sFyKdAmc6Pikv8Ww9OocnK_VXMG=ZLSMONHkqe4Q@mail.gmail.com>
+From:   Yuri Benditovich <yuri.benditovich@daynix.com>
+Date:   Sun, 24 Jan 2021 13:52:29 +0200
+Message-ID: <CAOEp5OeV0y5-vw3Kufe_=rszOu8QPsHPrFjtn-fAM_TJtBTuhA@mail.gmail.com>
+Subject: Re: [RFC PATCH 3/7] tun: allow use of BPF_PROG_TYPE_SCHED_CLS program type
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Willem de Bruijn <willemb@google.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>, decui@microsoft.com,
+        cai@lca.pw, Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        bpf <bpf@vger.kernel.org>, Yan Vugenfirer <yan@daynix.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When is this being applied to an actual kernel? 5.11 is still quite broken without these two patches. Unless you're not using a vfat EFI partition, I guess.
-
-On Tue, Jan 12, 2021, at 12:20 PM, patchwork-bot+netdevbpf@kernel.org wrote:
-> Hello:
-> 
-> This series was applied to bpf/bpf.git (refs/heads/master):
-> 
-> On Sat, 9 Jan 2021 23:03:40 -0800 you wrote:
-> > Some modules don't declare any new types and end up with an empty BTF,
-> > containing only valid BTF header and no types or strings sections. This
-> > currently causes BTF validation error. There is nothing wrong with such BTF,
-> > so fix the issue by allowing module BTFs with no types or strings.
-> > 
-> > Reported-by: Christopher William Snowhill <chris@kode54.net>
-> > Fixes: 36e68442d1af ("bpf: Load and verify kernel module BTFs")
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > 
-> > [...]
-> 
-> Here is the summary with links:
->   - [bpf,1/2] bpf: allow empty module BTFs
->     https://git.kernel.org/bpf/bpf/c/bcc5e6162d66
->   - [bpf,2/2] libbpf: allow loading empty BTFs
->     https://git.kernel.org/bpf/bpf/c/b8d52264df85
-> 
-> You are awesome, thank you!
-> --
-> Deet-doot-dot, I am a bot.
-> https://korg.docs.kernel.org/patchwork/pwbot.html
-> 
-> 
+On Wed, Jan 20, 2021 at 8:45 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
+> On Tue, Jan 12, 2021 at 12:55 PM Yuri Benditovich
+> <yuri.benditovich@daynix.com> wrote:
+> >
+> > On Tue, Jan 12, 2021 at 10:40 PM Yuri Benditovich
+> > <yuri.benditovich@daynix.com> wrote:
+> > >
+> > > On Tue, Jan 12, 2021 at 9:42 PM Yuri Benditovich
+> > > <yuri.benditovich@daynix.com> wrote:
+> > > >
+> > > > This program type can set skb hash value. It will be useful
+> > > > when the tun will support hash reporting feature if virtio-net.
+> > > >
+> > > > Signed-off-by: Yuri Benditovich <yuri.benditovich@daynix.com>
+> > > > ---
+> > > >  drivers/net/tun.c | 2 ++
+> > > >  1 file changed, 2 insertions(+)
+> > > >
+> > > > diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+> > > > index 7959b5c2d11f..455f7afc1f36 100644
+> > > > --- a/drivers/net/tun.c
+> > > > +++ b/drivers/net/tun.c
+> > > > @@ -2981,6 +2981,8 @@ static int tun_set_ebpf(struct tun_struct *tun, struct tun_prog __rcu **prog_p,
+> > > >                 prog = NULL;
+> > > >         } else {
+> > > >                 prog = bpf_prog_get_type(fd, BPF_PROG_TYPE_SOCKET_FILTER);
+> > > > +               if (IS_ERR(prog))
+> > > > +                       prog = bpf_prog_get_type(fd, BPF_PROG_TYPE_SCHED_CLS);
+> > > >                 if (IS_ERR(prog))
+> > > >                         return PTR_ERR(prog);
+> > > >         }
+> > >
+> > > Comment from Alexei Starovoitov:
+> > > Patches 1 and 2 are missing for me, so I couldn't review properly,
+> > > but this diff looks odd.
+> > > It allows sched_cls prog type to attach to tun.
+> > > That means everything that sched_cls progs can do will be done from tun hook?
+> >
+> > We do not have an intention to modify the packet in this steering eBPF.
+>
+> The intent is irrelevant. Using SCHED_CLS here will let users modify the packet
+> and some users will do so. Hence the tun code has to support it.
+>
+> > There is just one function that unavailable for BPF_PROG_TYPE_SOCKET_FILTER
+> > that the eBPF needs to make possible to deliver the hash to the guest
+> > VM - it is 'bpf_set_hash'
+> >
+> > Does it mean that we need to define a new eBPF type for socket filter
+> > operations + set_hash?
+> >
+> > Our problem is that the eBPF calculates 32-bit hash, 16-bit queue
+> > index and 8-bit of hash type.
+> > But it is able to return only 32-bit integer, so in this set of
+> > patches the eBPF returns
+> > queue index and hash type and saves the hash in skb->hash using bpf_set_hash().
+>
+> bpf prog can only return a 32-bit integer. That's true.
+> But the prog can use helpers to set any number of bits and variables.
+> bpf_set_hash_v2() with hash, queue and index arguments could fit this purpose,
+> but if you allow it for SCHED_CLS type,
+
+Do I understand correctly that this means:
+1. Creation of new helper like
+https://lists.linuxfoundation.org/pipermail/bridge/2020-July/013036.html
+2. Validation on tun side that the BPF uses only limited subset of
+helpers available for SCHED_CLS
+
+> tc side of the code should be ready to deal with that too and this extended
+> helper should be meaningful for both tc and tun.
+>
+> In general if the purpose of the prog is to compute three values they better be
+> grouped together. Returned two of them via ORed 32-bit integer and
+> returning 32-bit via bpf_set_hash is an awkward api.
