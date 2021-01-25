@@ -2,214 +2,233 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 942873028D2
-	for <lists+bpf@lfdr.de>; Mon, 25 Jan 2021 18:28:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4B7A302918
+	for <lists+bpf@lfdr.de>; Mon, 25 Jan 2021 18:39:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730591AbhAYR1a (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Jan 2021 12:27:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730981AbhAYR11 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Jan 2021 12:27:27 -0500
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A434C06174A
-        for <bpf@vger.kernel.org>; Mon, 25 Jan 2021 09:26:46 -0800 (PST)
-Received: by mail-qk1-x74a.google.com with SMTP id w204so10448642qka.18
-        for <bpf@vger.kernel.org>; Mon, 25 Jan 2021 09:26:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=j8AGqnKKRD78l3wBrmQ20U2ERtehVbx66klZw1aS8fw=;
-        b=CYdJpeBXtcYzpG1EjpK+dBGBDj+xhl20ZjSiYVDFHBTlY4nlS+e0K1phYbyyZbQUC+
-         DL7fceLgw58RvyP4L4g4gVzNPblbgIiUoCac0qJ1VawigxJb0yHTnL3sWbtnloPD6WP4
-         DRFUNqCYiN/DADEU/BK/EGExbqUtqAwLTVFyYa8V4tMKM2AnrgCly4TTgeR8IGDBcg07
-         di5vJ/uZ89eP5+5bTkq5MyzZ/cANuNlPYfxHpiZR8FjeolicGlwQ9ARTXGcsB7qXwppM
-         nifKj2Ag5BZ/czT3M49R5966gT8kdLqsH3HKjc8cXSxONiELwF5gu0VSLxWzXifKdgp9
-         vs4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=j8AGqnKKRD78l3wBrmQ20U2ERtehVbx66klZw1aS8fw=;
-        b=pd4AwTP4IgSYjdwYhy9sKuZBl0uglVB4S1ahLMjEzauSuxm1UCYrDgO8nrhbdSqDZq
-         FvcsK4DHSiqYNPKAzB39t+7kw+PAEEjiXBICPsQQkBiQVg6Z+qdeC6VrAJVhqmU77LUG
-         WbavAVwPZrMe2sZgqKs1Vt8AfSFUDT4rbXzLutdQKukCjW2x7MmertLgA0sYjHkWWv17
-         wgCdTcAy9vTrkFPiY4nDJU/fRZH6l47Zi4pZeAACY6d6ewufP4jgxClQWZiktf2oLkQC
-         GWenAEuiZ0c/V4LIL2zkVDpzgo1sfoI+leAeMR0Vsk0eAtLUYzn/DX4ZiIT8AykAK0mM
-         ebkA==
-X-Gm-Message-State: AOAM533clFKXHTxbY+zGiFiylI33Gib3dzgtwzmGP57tcJWkO8NuZRMS
-        uo265Jnw9fVpnSiO5RSe/B9Bye0=
-X-Google-Smtp-Source: ABdhPJwLb8Rlc6AkymUL6JDDLL3heBNAIulj1bPeZB0401yriLCGiKY9Xh59QwS+QVmdBo9z7IfEw2o=
-Sender: "sdf via sendgmr" <sdf@sdf2.svl.corp.google.com>
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:7220:84ff:fe09:7732])
- (user=sdf job=sendgmr) by 2002:a0c:fd68:: with SMTP id k8mr1746663qvs.56.1611595605132;
- Mon, 25 Jan 2021 09:26:45 -0800 (PST)
-Date:   Mon, 25 Jan 2021 09:26:41 -0800
-In-Reply-To: <20210125172641.3008234-1-sdf@google.com>
-Message-Id: <20210125172641.3008234-2-sdf@google.com>
-Mime-Version: 1.0
-References: <20210125172641.3008234-1-sdf@google.com>
-X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
-Subject: [PATCH bpf-next v2 2/2] selftests/bpf: verify that rebinding to port
- < 1024 from BPF works
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net,
-        Stanislav Fomichev <sdf@google.com>,
-        Andrey Ignatov <rdna@fb.com>, Martin KaFai Lau <kafai@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1731040AbhAYRiV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Jan 2021 12:38:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35102 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730605AbhAYRiB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Jan 2021 12:38:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A50222583;
+        Mon, 25 Jan 2021 17:37:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611596234;
+        bh=6sAHpexwV3E1wMY3f2ODMH4HeE/GvpgftiTgGfYZgOY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iFHm38L+28trlPkwfAFWJs0EJXo1UIstTLOJZ1R57Lbh1b4bFCQhMFWqEKq1NW9m4
+         e0tYmtMPbc07uh79aMLuHGJHM+gWT4AOMGvmz1tPnesZjT68R9c8/Lppu0dSOT/Hpg
+         toG/Wu0tXExkaz54gha7mgahhCJ6vqZ2CBDVKZqjLgTUEGe0wrgzNW5pd8oBDVfHgG
+         xEvO4GX2Z3xuewhq8fEBKjih/OQuCXFAfcg2dlCMQZO66ezfsS8O4YJXpxBk0W5w1V
+         YgQpRYBBRpG/diUUeh7b/uRLDevuPijqB5tMcGQ/oofpKyG5uOHKH1OHgh5Wu2gyZH
+         IZ7Wgifj8IjFg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 983E740513; Mon, 25 Jan 2021 14:37:11 -0300 (-03)
+Date:   Mon, 25 Jan 2021 14:37:11 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>, dwarves@vger.kernel.org,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Yonghong Song <yhs@fb.com>, Hao Luo <haoluo@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Mark Wielaard <mjw@redhat.com>
+Subject: Re: [PATCH 2/2] bpf_encoder: Translate SHN_XINDEX in symbol's
+ st_shndx values
+Message-ID: <20210125173711.GE617095@kernel.org>
+References: <20210122163920.59177-1-jolsa@kernel.org>
+ <20210122163920.59177-3-jolsa@kernel.org>
+ <CAEf4BzbC-s=27vmcJ1KYLVKgGbns2py1bHny3Q_yr4v3Oe49RQ@mail.gmail.com>
+ <20210122203748.GA70760@krava>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210122203748.GA70760@krava>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-BPF rewrites from 111 to 111, but it still should mark the port as
-"changed".
-We also verify that if port isn't touched by BPF, it's still prohibited.
+Em Fri, Jan 22, 2021 at 09:37:48PM +0100, Jiri Olsa escreveu:
+> On Fri, Jan 22, 2021 at 12:16:42PM -0800, Andrii Nakryiko wrote:
+> > On Fri, Jan 22, 2021 at 8:46 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> > >
+> > > For very large ELF objects (with many sections), we could
+> > > get special value SHN_XINDEX (65535) for symbol's st_shndx.
+> > >
+> > > This patch is adding code to detect the optional extended
+> > > section index table and use it to resolve symbol's section
+> > > index.
+> > >
+> > > Adding elf_symtab__for_each_symbol_index macro that returns
+> > > symbol's section index and usign it in collect functions.
+> > >
+> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > ---
+> > >  btf_encoder.c | 59 +++++++++++++++++++++++++++++++++++++--------------
+> > >  elf_symtab.c  | 39 +++++++++++++++++++++++++++++++++-
+> > >  elf_symtab.h  |  2 ++
+> > >  3 files changed, 83 insertions(+), 17 deletions(-)
+> > >
+> > > diff --git a/btf_encoder.c b/btf_encoder.c
+> > > index 5557c9efd365..56ee55965093 100644
+> > > --- a/btf_encoder.c
+> > > +++ b/btf_encoder.c
+> > > @@ -63,13 +63,13 @@ static void delete_functions(void)
+> > >  #define max(x, y) ((x) < (y) ? (y) : (x))
+> > >  #endif
+> > >
+> > > -static int collect_function(struct btf_elf *btfe, GElf_Sym *sym)
+> > > +static int collect_function(struct btf_elf *btfe, GElf_Sym *sym,
+> > > +                           Elf32_Word sym_sec_idx)
+> > 
+> > nit: we use size_t or int for this, no need for libelf types here, imo
+> 
+> ok
 
-Cc: Andrey Ignatov <rdna@fb.com>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- .../selftests/bpf/prog_tests/bind_perm.c      | 85 +++++++++++++++++++
- tools/testing/selftests/bpf/progs/bind_perm.c | 36 ++++++++
- 2 files changed, 121 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/bind_perm.c
- create mode 100644 tools/testing/selftests/bpf/progs/bind_perm.c
+I think it is because this patch ends up calling 
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bind_perm.c b/tools/testing/selftests/bpf/prog_tests/bind_perm.c
-new file mode 100644
-index 000000000000..61307d4494bf
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/bind_perm.c
-@@ -0,0 +1,85 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include "bind_perm.skel.h"
-+
-+#include <sys/types.h>
-+#include <sys/socket.h>
-+#include <sys/capability.h>
-+
-+static int duration;
-+
-+void try_bind(int port, int expected_errno)
-+{
-+	struct sockaddr_in sin = {};
-+	int fd = -1;
-+
-+	fd = socket(AF_INET, SOCK_STREAM, 0);
-+	if (CHECK(fd < 0, "fd", "errno %d", errno))
-+		goto close_socket;
-+
-+	sin.sin_family = AF_INET;
-+	sin.sin_port = htons(port);
-+
-+	errno = 0;
-+	bind(fd, (struct sockaddr *)&sin, sizeof(sin));
-+	ASSERT_EQ(errno, expected_errno, "bind");
-+
-+close_socket:
-+	if (fd >= 0)
-+		close(fd);
-+}
-+
-+void cap_net_bind_service(cap_flag_value_t flag)
-+{
-+	const cap_value_t cap_net_bind_service = CAP_NET_BIND_SERVICE;
-+	cap_t caps;
-+
-+	caps = cap_get_proc();
-+	if (CHECK(!caps, "cap_get_proc", "errno %d", errno))
-+		goto free_caps;
-+
-+	if (CHECK(cap_set_flag(caps, CAP_EFFECTIVE, 1, &cap_net_bind_service,
-+			       CAP_CLEAR),
-+		  "cap_set_flag", "errno %d", errno))
-+		goto free_caps;
-+
-+	if (CHECK(cap_set_flag(caps, CAP_EFFECTIVE, 1, &cap_net_bind_service,
-+			       CAP_CLEAR),
-+		  "cap_set_flag", "errno %d", errno))
-+		goto free_caps;
-+
-+	if (CHECK(cap_set_proc(caps), "cap_set_proc", "errno %d", errno))
-+		goto free_caps;
-+
-+free_caps:
-+	if (CHECK(cap_free(caps), "cap_free", "errno %d", errno))
-+		goto free_caps;
-+}
-+
-+void test_bind_perm(void)
-+{
-+	struct bind_perm *skel;
-+	int cgroup_fd;
-+
-+	cgroup_fd = test__join_cgroup("/bind_perm");
-+	if (CHECK(cgroup_fd < 0, "cg-join", "errno %d", errno))
-+		return;
-+
-+	skel = bind_perm__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel"))
-+		goto close_cgroup_fd;
-+
-+	skel->links.bind_v4_prog = bpf_program__attach_cgroup(skel->progs.bind_v4_prog, cgroup_fd);
-+	if (!ASSERT_OK_PTR(skel, "bind_v4_prog"))
-+		goto close_skeleton;
-+
-+	cap_net_bind_service(CAP_CLEAR);
-+	try_bind(110, EACCES);
-+	try_bind(111, 0);
-+	cap_net_bind_service(CAP_SET);
-+
-+close_skeleton:
-+	bind_perm__destroy(skel);
-+close_cgroup_fd:
-+	close(cgroup_fd);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/bind_perm.c b/tools/testing/selftests/bpf/progs/bind_perm.c
-new file mode 100644
-index 000000000000..31ae8d599796
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bind_perm.c
-@@ -0,0 +1,36 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/stddef.h>
-+#include <linux/bpf.h>
-+#include <sys/types.h>
-+#include <sys/socket.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_endian.h>
-+
-+SEC("cgroup/bind4")
-+int bind_v4_prog(struct bpf_sock_addr *ctx)
-+{
-+	struct bpf_sock *sk;
-+	__u32 user_ip4;
-+	__u16 user_port;
-+
-+	sk = ctx->sk;
-+	if (!sk)
-+		return 0;
-+
-+	if (sk->family != AF_INET)
-+		return 0;
-+
-+	if (ctx->type != SOCK_STREAM)
-+		return 0;
-+
-+	/* Rewriting to the same value should still cause
-+	 * permission check to be bypassed.
-+	 */
-+	if (ctx->user_port == bpf_htons(111))
-+		return 3;
-+
-+	return 1;
-+}
-+
-+char _license[] SEC("license") = "GPL";
+extern GElf_Sym *gelf_getsymshndx (Elf_Data *__symdata, Elf_Data *__shndxdata,
+                                   int __ndx, GElf_Sym *__sym,
+                                   Elf32_Word *__xshndx);
+
+Which expects a pointer to a Elf32_Word, right Jiri?
+
+Jiri, are you going to submit a new version of this patch? I processed
+the first one, collecting Andrii's Acked-by, if you're busy I can try to
+address the other concerns from Andrii, please let me know.
+
+- Arnaldo
+ 
+> > 
+> > 
+> > 
+> > >  {
+> > >         struct elf_function *new;
+> > >         static GElf_Shdr sh;
+> > > -       static int last_idx;
+> > > +       static Elf32_Word last_idx;
+> > >         const char *name;
+> > > -       int idx;
+> > >
+> > >         if (elf_sym__type(sym) != STT_FUNC)
+> > >                 return 0;
+> > > @@ -90,12 +90,10 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym)
+> > >                 functions = new;
+> > >         }
+> > >
+> > > -       idx = elf_sym__section(sym);
+> > > -
+> > > -       if (idx != last_idx) {
+> > > -               if (!elf_section_by_idx(btfe->elf, &sh, idx))
+> > > +       if (sym_sec_idx != last_idx) {
+> > > +               if (!elf_section_by_idx(btfe->elf, &sh, sym_sec_idx))
+> > >                         return 0;
+> > > -               last_idx = idx;
+> > > +               last_idx = sym_sec_idx;
+> > >         }
+> > >
+> > >         functions[functions_cnt].name = name;
+> > > @@ -542,14 +540,15 @@ static bool percpu_var_exists(uint64_t addr, uint32_t *sz, const char **name)
+> > >         return true;
+> > >  }
+> > >
+> > > -static int collect_percpu_var(struct btf_elf *btfe, GElf_Sym *sym)
+> > > +static int collect_percpu_var(struct btf_elf *btfe, GElf_Sym *sym,
+> > > +                             Elf32_Word sym_sec_idx)
+> > 
+> > nit: same, size_t or just int would be fine
+> > 
+> > >  {
+> > >         const char *sym_name;
+> > >         uint64_t addr;
+> > >         uint32_t size;
+> > >
+> > >         /* compare a symbol's shndx to determine if it's a percpu variable */
+> > > -       if (elf_sym__section(sym) != btfe->percpu_shndx)
+> > > +       if (sym_sec_idx != btfe->percpu_shndx)
+> > >                 return 0;
+> > >         if (elf_sym__type(sym) != STT_OBJECT)
+> > >                 return 0;
+> > > @@ -585,12 +584,13 @@ static int collect_percpu_var(struct btf_elf *btfe, GElf_Sym *sym)
+> > >         return 0;
+> > >  }
+> > >
+> > > -static void collect_symbol(GElf_Sym *sym, struct funcs_layout *fl)
+> > > +static void collect_symbol(GElf_Sym *sym, struct funcs_layout *fl,
+> > > +                          Elf32_Word sym_sec_idx)
+> > >  {
+> > >         if (!fl->mcount_start &&
+> > >             !strcmp("__start_mcount_loc", elf_sym__name(sym, btfe->symtab))) {
+> > >                 fl->mcount_start = sym->st_value;
+> > > -               fl->mcount_sec_idx = sym->st_shndx;
+> > > +               fl->mcount_sec_idx = sym_sec_idx;
+> > >         }
+> > >
+> > >         if (!fl->mcount_stop &&
+> > > @@ -598,9 +598,36 @@ static void collect_symbol(GElf_Sym *sym, struct funcs_layout *fl)
+> > >                 fl->mcount_stop = sym->st_value;
+> > >  }
+> > >
+> > > +static bool elf_sym__get(Elf_Data *syms, Elf_Data *syms_sec_idx_table,
+> > > +                        int id, GElf_Sym *sym, Elf32_Word *sym_sec_idx)
+> > 
+> > This is a generic function, why don't you want to move it into elf_symtab.h?
+> > 
+> > > +{
+> > > +       if (!gelf_getsym(syms, id, sym))
+> > > +               return false;
+> > > +
+> > > +       *sym_sec_idx = sym->st_shndx;
+> > > +
+> > > +       if (sym->st_shndx == SHN_XINDEX) {
+> > > +               if (!syms_sec_idx_table)
+> > > +                       return false;
+> > > +               if (!gelf_getsymshndx(syms, syms_sec_idx_table,
+> > > +                                     id, sym, sym_sec_idx))
+> > > +                       return false;
+> > 
+> > You also ignored my feedback about not fetching symbol twice. Why?
+> 
+> ugh, I did not read your last 2 comments.. let me check that, sry
+> 
+> > 
+> > > +       }
+> > > +
+> > > +       return true;
+> > > +}
+> > > +
+> > > +#define elf_symtab__for_each_symbol_index(symtab, id, sym, sym_sec_idx)                \
+> > > +       for (id = 0;                                                            \
+> > > +            id < symtab->nr_syms &&                                            \
+> > > +            elf_sym__get(symtab->syms, symtab->syms_sec_idx_table,             \
+> > > +                         id, &sym, &sym_sec_idx);                              \
+> > > +            id++)
+> > 
+> > This should be in elf_symtab.h next to elf_symtab__for_each_symbol.
+> > 
+> > And thinking a bit more, the variant with just ignoring symbols that
+> > we failed to get is probably a safer alternative. I.e., currently
+> > there is no way to communicate that we terminated iteration with
+> > error, so it's probably better to skip failed symbols and still get
+> > the rest, no? I was hoping to discuss stuff like this on the previous
+> > version of the patch...
+> 
+> I was thinking of that, but then I thought it's better to fail,
+> than have possibly wrong data in BTF, because the ELF data is
+> possibly damaged? no idea.. so I took the safer way
+> 
+> jirka
+> 
+
 -- 
-2.30.0.280.ga3ce27912f-goog
 
+- Arnaldo
