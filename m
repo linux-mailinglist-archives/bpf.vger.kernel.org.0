@@ -2,441 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 753C8302ED8
-	for <lists+bpf@lfdr.de>; Mon, 25 Jan 2021 23:21:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18FDA302F06
+	for <lists+bpf@lfdr.de>; Mon, 25 Jan 2021 23:29:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731936AbhAYWUo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Jan 2021 17:20:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33271 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726231AbhAYWUj (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 25 Jan 2021 17:20:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611613152;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yOTIpgaoq7PBr93HipP7ulGJ50VGJkvrfnWi4EBDzhA=;
-        b=UarIwrixtmCbGq9dH200gDVs1nY9Ix/+AUXngHPJFZyQeZkkXmRrHOrtPBRzlS4Az6d8cq
-        dVd3f4OmcgEnu4kP96QNAXJd4Twry2NLs250y4Nn0+poKox56wjGQWjwG7y9CAkcA9m+bR
-        mslpclp6NwfMqKUONxcuJYXd+xTtn4o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-347-Sxz1kZAWPo6iYaUrox6Oog-1; Mon, 25 Jan 2021 17:19:09 -0500
-X-MC-Unique: Sxz1kZAWPo6iYaUrox6Oog-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CA582AFA81;
-        Mon, 25 Jan 2021 22:19:07 +0000 (UTC)
-Received: from krava (unknown [10.40.192.94])
-        by smtp.corp.redhat.com (Postfix) with SMTP id EB9EE6315F;
-        Mon, 25 Jan 2021 22:19:05 +0000 (UTC)
-Date:   Mon, 25 Jan 2021 23:19:05 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     KP Singh <kpsingh@kernel.org>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: Helper script for running BPF
- presubmit tests
-Message-ID: <20210125221905.GB9662@krava>
-References: <20210123004445.299149-1-kpsingh@kernel.org>
- <20210123004445.299149-2-kpsingh@kernel.org>
+        id S1732404AbhAYW20 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Jan 2021 17:28:26 -0500
+Received: from www62.your-server.de ([213.133.104.62]:59376 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732127AbhAYW2I (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Jan 2021 17:28:08 -0500
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1l4AKR-0004gm-Qi; Mon, 25 Jan 2021 23:27:23 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1l4AKR-0009UD-Gr; Mon, 25 Jan 2021 23:27:23 +0100
+Subject: Re: [PATCH bpf-next V12 4/7] bpf: add BPF-helper for MTU checking
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
+        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
+        colrack@gmail.com
+References: <161098881526.108067.7603213364270807261.stgit@firesoul>
+ <161098887018.108067.13643446976934084937.stgit@firesoul>
+ <6772a12b-2a60-bb3b-93df-1d6d6c7c7fd7@iogearbox.net>
+ <20210125094148.2b3bb128@carbon>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <3c542e42-2033-aca6-ba0e-4854c24980c2@iogearbox.net>
+Date:   Mon, 25 Jan 2021 23:27:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210123004445.299149-2-kpsingh@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20210125094148.2b3bb128@carbon>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26060/Mon Jan 25 13:28:03 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jan 23, 2021 at 12:44:44AM +0000, KP Singh wrote:
-> The script runs the BPF selftests locally on the same kernel image
-> as they would run post submit in the BPF continuous integration
-> framework.
+On 1/25/21 9:41 AM, Jesper Dangaard Brouer wrote:
+> On Sat, 23 Jan 2021 02:35:41 +0100
+> Daniel Borkmann <daniel@iogearbox.net> wrote:
 > 
-> The goal of the script is to allow contributors to run selftests locally
-> in the same environment to check if their changes would end up breaking
-> the BPF CI and reduce the back-and-forth between the maintainers and the
-> developers.
+>>> + *		The *flags* argument can be a combination of one or more of the
+>>> + *		following values:
+>>> + *
+>>> + *		**BPF_MTU_CHK_SEGS**
+>>> + *			This flag will only works for *ctx* **struct sk_buff**.
+>>> + *			If packet context contains extra packet segment buffers
+>>> + *			(often knows as GSO skb), then MTU check is harder to
+>>> + *			check at this point, because in transmit path it is
+>>> + *			possible for the skb packet to get re-segmented
+>>> + *			(depending on net device features).  This could still be
+>>> + *			a MTU violation, so this flag enables performing MTU
+>>> + *			check against segments, with a different violation
+>>> + *			return code to tell it apart. Check cannot use len_diff.
+>>> + *
+>>> + *		On return *mtu_len* pointer contains the MTU value of the net
+>>> + *		device.  Remember the net device configured MTU is the L3 size,
+>>> + *		which is returned here and XDP and TX length operate at L2.
+>>> + *		Helper take this into account for you, but remember when using
+>>> + *		MTU value in your BPF-code.  On input *mtu_len* must be a valid
+>>> + *		pointer and be initialized (to zero), else verifier will reject
+>>> + *		BPF program.
+>>> + *
+>>> + *	Return
+>>> + *		* 0 on success, and populate MTU value in *mtu_len* pointer.
+>>> + *
+>>> + *		* < 0 if any input argument is invalid (*mtu_len* not updated)
+>>> + *
+>>> + *		MTU violations return positive values, but also populate MTU
+>>> + *		value in *mtu_len* pointer, as this can be needed for
+>>> + *		implementing PMTU handing:
+>>> + *
+>>> + *		* **BPF_MTU_CHK_RET_FRAG_NEEDED**
+>>> + *		* **BPF_MTU_CHK_RET_SEGS_TOOBIG**
+>>> + *
+>>>     */
+>> [...]
+>>> +BPF_CALL_5(bpf_skb_check_mtu, struct sk_buff *, skb,
+>>> +	   u32, ifindex, u32 *, mtu_len, s32, len_diff, u64, flags)
+>>> +{
+>>> +	int ret = BPF_MTU_CHK_RET_FRAG_NEEDED;
+>>> +	struct net_device *dev = skb->dev;
+>>> +	int skb_len, dev_len;
+>>> +	int mtu;
+>>> +
+>>> +	if (unlikely(flags & ~(BPF_MTU_CHK_SEGS)))
+>>> +		return -EINVAL;
+>>> +
+>>> +	dev = __dev_via_ifindex(dev, ifindex);
+>>> +	if (unlikely(!dev))
+>>> +		return -ENODEV;
+>>> +
+>>> +	mtu = READ_ONCE(dev->mtu);
+>>> +
+>>> +	dev_len = mtu + dev->hard_header_len;
+>>> +	skb_len = skb->len + len_diff; /* minus result pass check */
+>>> +	if (skb_len <= dev_len) {
+>>> +		ret = BPF_MTU_CHK_RET_SUCCESS;
+>>> +		goto out;
+>>> +	}
+>>> +	/* At this point, skb->len exceed MTU, but as it include length of all
+>>> +	 * segments, it can still be below MTU.  The SKB can possibly get
+>>> +	 * re-segmented in transmit path (see validate_xmit_skb).  Thus, user
+>>> +	 * must choose if segs are to be MTU checked.
+>>> +	 */
+>>> +	if (skb_is_gso(skb)) {
+>>> +		ret = BPF_MTU_CHK_RET_SUCCESS;
+>>> +
+>>> +		if (flags & BPF_MTU_CHK_SEGS &&
+>>> +		    !skb_gso_validate_network_len(skb, mtu))
+>>> +			ret = BPF_MTU_CHK_RET_SEGS_TOOBIG;
+>>
+>> I think that looks okay overall now. One thing that will easily slip through
+>> is that in the helper description you mentioned 'Check cannot use len_diff.'
+>> for BPF_MTU_CHK_SEGS flag. So right now for non-zero len_diff the user
+>> will still get BPF_MTU_CHK_RET_SUCCESS if the current length check via
+>> skb_gso_validate_network_len(skb, mtu) passes. If it cannot be checked,
+>> maybe enforce len_diff == 0 for gso skbs on BPF_MTU_CHK_SEGS?
 > 
-> Signed-off-by: KP Singh <kpsingh@kernel.org>
+> Ok. Do you want/think this can be enforced by the verifier or are you
+> simply requesting that the helper will return -EINVAL (or another errno)?
 
-great! thanks for this
+Simple -EINVAL should be fine in this case. Generally, we can detect this from
+verifier side but I don't think the extra complexity is worth it especially given
+this is dependent on BPF_MTU_CHK_SEGS and otherwise can be non-zero.
 
-Tested-by: Jiri Olsa <jolsa@redhat.com>
-
-jirka
-
-> ---
->  tools/testing/selftests/bpf/run_in_vm.sh | 353 +++++++++++++++++++++++
->  1 file changed, 353 insertions(+)
->  create mode 100755 tools/testing/selftests/bpf/run_in_vm.sh
-> 
-> diff --git a/tools/testing/selftests/bpf/run_in_vm.sh b/tools/testing/selftests/bpf/run_in_vm.sh
-> new file mode 100755
-> index 000000000000..09bb9705acb3
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/run_in_vm.sh
-> @@ -0,0 +1,353 @@
-> +#!/bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +
-> +set -u
-> +set -e
-> +
-> +QEMU_BINARY="${QEMU_BINARY:="qemu-system-x86_64"}"
-> +X86_BZIMAGE="arch/x86/boot/bzImage"
-> +DEFAULT_COMMAND="./test_progs"
-> +MOUNT_DIR="mnt"
-> +ROOTFS_IMAGE="root.img"
-> +OUTPUT_DIR="$HOME/.bpf_selftests"
-> +KCONFIG_URL="https://raw.githubusercontent.com/libbpf/libbpf/master/travis-ci/vmtest/configs/latest.config"
-> +INDEX_URL="https://raw.githubusercontent.com/libbpf/libbpf/master/travis-ci/vmtest/configs/INDEX"
-> +NUM_COMPILE_JOBS="$(nproc)"
-> +
-> +usage()
-> +{
-> +	cat <<EOF
-> +Usage: $0 [-k] [-i] [-d <output_dir>] -- [<command>]
-> +
-> +<command> is the command you would normally run when you are in
-> +tools/testing/selftests/bpf. e.g:
-> +
-> +	$0 -- ./test_progs -t test_lsm
-> +
-> +If no command is specified, "${DEFAULT_COMMAND}" will be run by
-> +default.
-> +
-> +If you build your kernel using KBUILD_OUTPUT= or O= options, these
-> +can be passed as environment variables to the script:
-> +
-> +  O=<path_relative_to_cwd> $0 -- ./test_progs -t test_lsm
-> +
-> +or
-> +
-> +  KBUILD_OUTPUT=<path_relative_to_cwd> $0 -- ./test_progs -t test_lsm
-> +
-> +Options:
-> +
-> +	-k)		"Keep the kernel", i.e. don't recompile the kernel if it exists.
-> +	-i)		Update the rootfs image with a newer version.
-> +	-d)		Update the output directory (default: ${OUTPUT_DIR})
-> +	-j)		Number of jobs for compilation, similar to -j in make
-> +			(default: ${NUM_COMPILE_JOBS})
-> +EOF
-> +}
-> +
-> +unset URLS
-> +populate_url_map()
-> +{
-> +	if ! declare -p URLS &> /dev/null; then
-> +		# URLS contain the mapping from file names to URLs where
-> +		# those files can be downloaded from.
-> +		declare -gA URLS
-> +		while IFS=$'\t' read -r name url; do
-> +			URLS["$name"]="$url"
-> +		done < <(curl -Lsf ${INDEX_URL})
-> +	fi
-> +	echo "${URLS[*]}"
-> +}
-> +
-> +download()
-> +{
-> +	local file="$1"
-> +
-> +	if [[ ! -v URLS[$file] ]]; then
-> +		echo "$file not found" >&2
-> +		return 1
-> +	fi
-> +
-> +	echo "Downloading $file..." >&2
-> +	curl -Lf "${URLS[$file]}" "${@:2}"
-> +}
-> +
-> +newest_rootfs_version()
-> +{
-> +	{
-> +	for file in "${!URLS[@]}"; do
-> +		if [[ $file =~ ^libbpf-vmtest-rootfs-(.*)\.tar\.zst$ ]]; then
-> +			echo "${BASH_REMATCH[1]}"
-> +		fi
-> +	done
-> +	} | sort -rV | head -1
-> +}
-> +
-> +download_rootfs()
-> +{
-> +	local rootfsversion="$1"
-> +	local dir="$2"
-> +
-> +	if ! which zstd &> /dev/null; then
-> +		echo 'Could not find "zstd" on the system, please install zstd'
-> +		exit 1
-> +	fi
-> +
-> +	download "libbpf-vmtest-rootfs-$rootfsversion.tar.zst" |
-> +		zstd -d | sudo tar -C "$dir" -x
-> +}
-> +
-> +recompile_kernel()
-> +{
-> +	local kernel_checkout="$1"
-> +	local make_command="$2"
-> +
-> +	cd "${kernel_checkout}"
-> +
-> +	${make_command} olddefconfig
-> +	${make_command}
-> +}
-> +
-> +mount_image()
-> +{
-> +	local rootfs_img="${OUTPUT_DIR}/${ROOTFS_IMAGE}"
-> +	local mount_dir="${OUTPUT_DIR}/${MOUNT_DIR}"
-> +
-> +	sudo mount -o loop "${rootfs_img}" "${mount_dir}"
-> +}
-> +
-> +unmount_image()
-> +{
-> +	local mount_dir="${OUTPUT_DIR}/${MOUNT_DIR}"
-> +
-> +	sudo umount "${mount_dir}" &> /dev/null
-> +}
-> +
-> +update_selftests()
-> +{
-> +	local kernel_checkout="$1"
-> +	local selftests_dir="${kernel_checkout}/tools/testing/selftests/bpf"
-> +
-> +	cd "${selftests_dir}"
-> +	${make_command}
-> +
-> +	# Mount the image and copy the selftests to the image.
-> +	mount_image
-> +	sudo rm -rf "${mount_dir}/root/bpf"
-> +	sudo cp -r "${selftests_dir}" "${mount_dir}/root"
-> +	unmount_image
-> +}
-> +
-> +update_init_script()
-> +{
-> +	local init_script_dir="${OUTPUT_DIR}/${MOUNT_DIR}/etc/rcS.d"
-> +	local init_script="${init_script_dir}/S50-startup"
-> +	local command="$1"
-> +	local log_file="$2"
-> +
-> +	mount_image
-> +
-> +	if [[ ! -d "${init_script_dir}" ]]; then
-> +		cat <<EOF
-> +Could not find ${init_script_dir} in the mounted image.
-> +This likely indicates a bad rootfs image, Please download
-> +a new image by passing "-i" to the script
-> +EOF
-> +		exit 1
-> +
-> +	fi
-> +
-> +	cat <<EOF | sudo tee "${init_script}"
-> +#!/bin/bash
-> +
-> +{
-> +
-> +	cd /root/bpf
-> +	echo ${command}
-> +	${command}
-> +} 2>&1 | tee /root/${log_file}
-> +poweroff -f
-> +EOF
-> +
-> +	sudo chmod a+x "${init_script}"
-> +	unmount_image
-> +}
-> +
-> +create_vm_image()
-> +{
-> +	local rootfs_img="${OUTPUT_DIR}/${ROOTFS_IMAGE}"
-> +	local mount_dir="${OUTPUT_DIR}/${MOUNT_DIR}"
-> +
-> +	rm -rf "${rootfs_img}"
-> +	touch "${rootfs_img}"
-> +	chattr +C "${rootfs_img}" >/dev/null 2>&1 || true
-> +
-> +	truncate -s 2G "${rootfs_img}"
-> +	mkfs.ext4 -q "${rootfs_img}"
-> +
-> +	mount_image
-> +	download_rootfs "$(newest_rootfs_version)" "${mount_dir}"
-> +	unmount_image
-> +}
-> +
-> +run_vm()
-> +{
-> +	local kernel_bzimage="$1"
-> +	local rootfs_img="${OUTPUT_DIR}/${ROOTFS_IMAGE}"
-> +
-> +	if ! which "${QEMU_BINARY}" &> /dev/null; then
-> +		cat <<EOF
-> +Could not find ${QEMU_BINARY}
-> +Please install qemu or set the QEMU_BINARY environment variable.
-> +EOF
-> +		exit 1
-> +	fi
-> +
-> +	${QEMU_BINARY} \
-> +		-nodefaults \
-> +		-display none \
-> +		-serial mon:stdio \
-> +		-cpu kvm64 \
-> +		-enable-kvm \
-> +		-smp 4 \
-> +		-m 2G \
-> +		-drive file="${rootfs_img}",format=raw,index=1,media=disk,if=virtio,cache=none \
-> +		-kernel "${kernel_bzimage}" \
-> +		-append "root=/dev/vda rw console=ttyS0,115200"
-> +}
-> +
-> +copy_logs()
-> +{
-> +	local mount_dir="${OUTPUT_DIR}/${MOUNT_DIR}"
-> +	local log_file="${mount_dir}/root/$1"
-> +
-> +	mount_image
-> +	sudo cp ${log_file} "${OUTPUT_DIR}"
-> +	sudo rm -f ${log_file}
-> +	unmount_image
-> +}
-> +
-> +is_rel_path()
-> +{
-> +	local path="$1"
-> +
-> +	[[ ${path:0:1} != "/" ]]
-> +}
-> +
-> +main()
-> +{
-> +	local script_dir="$(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
-> +	local kernel_checkout=$(realpath "${script_dir}"/../../../../)
-> +	local log_file="$(date +"bpf_selftests.%Y-%m-%d_%H-%M-%S.log")"
-> +	# By default the script searches for the kernel in the checkout directory but
-> +	# it also obeys environment variables O= and KBUILD_OUTPUT=
-> +	local kernel_bzimage="${kernel_checkout}/${X86_BZIMAGE}"
-> +	local command="${DEFAULT_COMMAND}"
-> +	local kernel_recompile="yes"
-> +	local update_image="no"
-> +
-> +	while getopts 'hkid:j:' opt; do
-> +		case ${opt} in
-> +		k)
-> +			kernel_recompile="no"
-> +			;;
-> +		i)
-> +			update_image="yes"
-> +			;;
-> +		d)
-> +			OUTPUT_DIR="$OPTARG"
-> +			;;
-> +		j)
-> +			NUM_COMPILE_JOBS="$OPTARG"
-> +			;;
-> +		h)
-> +			usage
-> +			exit 0
-> +			;;
-> +		\? )
-> +			echo "Invalid Option: -$OPTARG"
-> +			usage
-> +			exit 1
-> +			;;
-> +      		: )
-> +        		echo "Invalid Option: -$OPTARG requires an argument"
-> +			usage
-> +			exit 1
-> +			;;
-> +		esac
-> +	done
-> +	shift $((OPTIND -1))
-> +
-> +	if [[ $# -eq 0 ]]; then
-> +		echo "No command specified, will run ${DEFAULT_COMMAND} in the vm"
-> +	else
-> +		command="$@"
-> +	fi
-> +
-> +	local kconfig_file="${OUTPUT_DIR}/latest.config"
-> +	local make_command="make -j ${NUM_COMPILE_JOBS} KCONFIG_CONFIG=${kconfig_file}"
-> +
-> +	# Figure out where the kernel is being built.
-> +	# O takes precedence over KBUILD_OUTPUT.
-> +	if [[ "${O:=""}" != "" ]]; then
-> +		if is_rel_path "${O}"; then
-> +			O="$(realpath "${PWD}/${O}")"
-> +		fi
-> +		kernel_bzimage="${O}/${X86_BZIMAGE}"
-> +		make_command="${make_command} O=${O}"
-> +	elif [[ "${KBUILD_OUTPUT:=""}" != "" ]]; then
-> +		if is_rel_path "${KBUILD_OUTPUT}"; then
-> +			KBUILD_OUTPUT="$(realpath "${PWD}/${KBUILD_OUTPUT}")"
-> +		fi
-> +		kernel_bzimage="${KBUILD_OUTPUT}/${X86_BZIMAGE}"
-> +		make_command="${make_command} KBUILD_OUTPUT=${KBUILD_OUTPUT}"
-> +	fi
-> +
-> +	populate_url_map
-> +
-> +	local rootfs_img="${OUTPUT_DIR}/${ROOTFS_IMAGE}"
-> +	local mount_dir="${OUTPUT_DIR}/${MOUNT_DIR}"
-> +
-> +	echo "Output directory: ${OUTPUT_DIR}"
-> +
-> +	mkdir -p "${OUTPUT_DIR}"
-> +	mkdir -p "${mount_dir}"
-> +	curl -Lf "${KCONFIG_URL}" -o "${kconfig_file}"
-> +
-> +	if [[ "${kernel_recompile}" == "no" && ! -f "${kernel_bzimage}" ]]; then
-> +		echo "Kernel image not found in ${kernel_bzimage}, kernel will be recompiled"
-> +		kernel_recompile="yes"
-> +	fi
-> +
-> +	if [[ "${kernel_recompile}" == "yes" ]]; then
-> +		recompile_kernel "${kernel_checkout}" "${make_command}"
-> +	fi
-> +
-> +	if [[ "${update_image}" == "no" && ! -f "${rootfs_img}" ]]; then
-> +		echo "rootfs image not found in ${rootfs_img}"
-> +		update_image="yes"
-> +	fi
-> +
-> +	if [[ "${update_image}" == "yes" ]]; then
-> +		create_vm_image
-> +	fi
-> +
-> +	update_selftests "${kernel_checkout}" "${make_command}"
-> +	update_init_script "${command}" "${log_file}"
-> +	run_vm "${kernel_bzimage}"
-> +	copy_logs "${log_file}"
-> +	echo "Logs saved in ${OUTPUT_DIR}/${log_file}"
-> +}
-> +
-> +catch()
-> +{
-> +	local exit_code=$1
-> +
-> +	unmount_image
-> +	exit ${exit_code}
-> +}
-> +
-> +trap 'catch "$?"' EXIT
-> +
-> +main "$@"
-> -- 
-> 2.30.0.280.ga3ce27912f-goog
-> 
-
+Thanks,
+Daniel
