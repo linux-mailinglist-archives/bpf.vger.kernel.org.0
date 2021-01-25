@@ -2,54 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1C4330303A
-	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 00:35:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23AA5303058
+	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 00:39:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732910AbhAYXdv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Jan 2021 18:33:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50072 "EHLO
+        id S1732875AbhAYXjA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Jan 2021 18:39:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732724AbhAYXdp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Jan 2021 18:33:45 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DBD6C061574
-        for <bpf@vger.kernel.org>; Mon, 25 Jan 2021 15:33:05 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id l27so3885480qki.9
-        for <bpf@vger.kernel.org>; Mon, 25 Jan 2021 15:33:05 -0800 (PST)
+        with ESMTP id S1732901AbhAYXii (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Jan 2021 18:38:38 -0500
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBA4CC06178C
+        for <bpf@vger.kernel.org>; Mon, 25 Jan 2021 15:37:45 -0800 (PST)
+Received: by mail-qv1-xf32.google.com with SMTP id w11so1120674qvz.12
+        for <bpf@vger.kernel.org>; Mon, 25 Jan 2021 15:37:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ffujdJW+gNhXJKaPHar54gAtdwQyA5xDLj9UsevBGj8=;
-        b=rJwh9QdrSbjo08xID1IF/jShfyQsLX7VG1xAPh+I2oYPsmQmnXrRUI9EVxRTqrux0P
-         EtZVIBiBFpI5WEub7OMf/V2ROo1IRzGwqM2yaWixpuDW4I/3RR7Sd6bGz8qI5cOF90f5
-         ww2KGWFpQYAE0DRzucP95RuksA2XrzzjwdHNQ+8Qt3+HgcbADHhnqpWokpiz00+0XYl+
-         s9cmZkIzA5s8DXDLBa0vvJtguQFTki93JpD7227CHo0F2GMm15r9R2+u2UEHZJIdklZ0
-         jazotqCgamnOPc4DpLy7y7F1jQiq7t/kQRdh6/OboudjCK/gqZjIaFEO0ZsthZgVznmA
-         C+VA==
+        bh=xQCUN625VAgpGUPUXKsLzb9sl6V+DmdN8TP1oPnRPiM=;
+        b=QuIOe7Uty7UBgeM3KwR6M0kBnNb168EYXOal4GAsZu5s+o6XWG3KM2umTQR50IKoFx
+         VFEVeTkbcbL779I57zZbr+swDovwha3emwdbIhRfEByIEqDGggGcnYTcpdcFh82V3sq9
+         KE9jRJTedaLl0HGBp1D1L9GSqOm060FojWjkJevtjFRJXHI3CE354Q1B4oBSyxzVSuwC
+         JOaq3UNdKcJMK4W8sECH1G1jL8t1EOLjggDnDySB7F1muQ1zbVXN91B77JbV7LsWohSp
+         bhN3CxlhzhGjklJyjFDnnJrw8h+5KadfVGFs6brfVjzjbfqObv7FFCtwcvFBCmiHPk7y
+         DPnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ffujdJW+gNhXJKaPHar54gAtdwQyA5xDLj9UsevBGj8=;
-        b=TsnKfBsc//PBXsKsx2W3LP7st4YN/a+T4UGLoHp2N7J4qbMFyxzbCNkSy2e/YyjDww
-         4LQBt/luDyyNXpW8F/VnGLMOk3VOKk2aXTJcMz18r4kxIn5loiuNc34mpUUHbaL8yd65
-         cHdb4wGmVokFI61+x3+GzCHiACF7m4RPNkRNmOhUKA5NjpZMuXT1dPYcL2QnttPmKt7k
-         pdQrd3zaew8lFHUXd7BcHRVw4KjtCfvW6sc2uJzOFzM1+Q2Rz2wH4j1cAYGZ+Zwd/kE4
-         6b6TrFFBuli+9UROQWH6C8CxHmNCh03zv5dn0gZC7Mo976R/7Dx7BWPE1F95w+U9FH21
-         vUpQ==
-X-Gm-Message-State: AOAM532nc1qtKde2HVb9j/uU8k9+hHWZZcIAo44noJvgE6qpJZBvl7OU
-        PuYx3SM1xjo972kfhwIOQJj0hKs3MajJoKc0De4duQ==
-X-Google-Smtp-Source: ABdhPJx7X6KHlOawIJCTzYuFuKF2vPTMMPrfNTXntEOrNaXxw4O8T+c5WmyyPh/liGx82u9lTWyYIxnm0Ktg4ns5/XM=
-X-Received: by 2002:a37:6c81:: with SMTP id h123mr3339689qkc.448.1611617584563;
- Mon, 25 Jan 2021 15:33:04 -0800 (PST)
+        bh=xQCUN625VAgpGUPUXKsLzb9sl6V+DmdN8TP1oPnRPiM=;
+        b=W9fhaktf/StiZipBJ5Qlgj3CZ1Y5qHCbnBvxUM3gTis82IA7YUfGeghx2T79DeiVFL
+         0zgbnY7RhODbxU3MjvSz9zEYi3SKcpkzlOse61iFNFeMQFBLcLQ2ujXuCKdEChJqHJm9
+         qV1GGP709ULF83cqLiSEBGbFO+JRIZPsSJKJKnJJs4cpQuXDI79eBxuahhUrSynGFEad
+         k2V4B6yMONhaDn1V1CeBENGaFlkQOiFVClejo9GbkBrmPvI6TF0RuaiTRwo+9m1vBmf9
+         TvMYfwl8yc/rSEswB43Mmq1rcPSWyKymA6xph/Wo7HRZbLvuyJIZMNeN/jiS37HMYX9W
+         wFRg==
+X-Gm-Message-State: AOAM531zSu6qvLWWJdwppp3pRm2Yt7jwOw3OzkPAdUry6Az104e0H0jX
+        +2lB8uFF1IEUTfZgYfSmkTxt3VVqTbV68J2g7W2P5A==
+X-Google-Smtp-Source: ABdhPJxcyBLLRSQVFwQ2Vionp60H5PIjYkov5j44oew/iGDuiGR6Ix0Q7Bi/M6YJIK3D4ZOm6ipXqNMvdVC0u0MeOvs=
+X-Received: by 2002:ad4:486e:: with SMTP id u14mr3178530qvy.21.1611617864845;
+ Mon, 25 Jan 2021 15:37:44 -0800 (PST)
 MIME-Version: 1.0
-References: <20210125172641.3008234-1-sdf@google.com> <20210125232500.fmb4trbady6jfdfp@kafai-mbp>
-In-Reply-To: <20210125232500.fmb4trbady6jfdfp@kafai-mbp>
+References: <20210125172641.3008234-1-sdf@google.com> <20210125172641.3008234-2-sdf@google.com>
+ <20210125232949.46r26lcc3wyieoaj@kafai-mbp>
+In-Reply-To: <20210125232949.46r26lcc3wyieoaj@kafai-mbp>
 From:   Stanislav Fomichev <sdf@google.com>
-Date:   Mon, 25 Jan 2021 15:32:53 -0800
-Message-ID: <CAKH8qBuz2uVO2oB3rDMqcw41FOWbx5HS0vUPT2KLv_6rhZuyrw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: allow rewriting to ports under ip_unprivileged_port_start
+Date:   Mon, 25 Jan 2021 15:37:34 -0800
+Message-ID: <CAKH8qBuQ8icMgxiozme=HgXcE5Tm937PwNMjFAn0tSAUcMDaYQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: verify that rebinding to
+ port < 1024 from BPF works
 To:     Martin KaFai Lau <kafai@fb.com>
 Cc:     Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -60,72 +62,167 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 3:25 PM Martin KaFai Lau <kafai@fb.com> wrote:
+On Mon, Jan 25, 2021 at 3:30 PM Martin KaFai Lau <kafai@fb.com> wrote:
 >
-> On Mon, Jan 25, 2021 at 09:26:40AM -0800, Stanislav Fomichev wrote:
-> > At the moment, BPF_CGROUP_INET{4,6}_BIND hooks can rewrite user_port
-> > to the privileged ones (< ip_unprivileged_port_start), but it will
-> > be rejected later on in the __inet_bind or __inet6_bind.
-> >
-> > Let's export 'port_changed' event from the BPF program and bypass
-> > ip_unprivileged_port_start range check when we've seen that
-> > the program explicitly overrode the port. This is accomplished
-> > by generating instructions to set ctx->port_changed along with
-> > updating ctx->user_port.
+> On Mon, Jan 25, 2021 at 09:26:41AM -0800, Stanislav Fomichev wrote:
+> > BPF rewrites from 111 to 111, but it still should mark the port as
+> > "changed".
+> > We also verify that if port isn't touched by BPF, it's still prohibited.
 > The description requires an update.
-Ah, sure, will update it.
+Good point, will update this one and the comment!
 
-> [ ... ]
+> >
+> > Cc: Andrey Ignatov <rdna@fb.com>
+> > Cc: Martin KaFai Lau <kafai@fb.com>
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > ---
+> >  .../selftests/bpf/prog_tests/bind_perm.c      | 85 +++++++++++++++++++
+> >  tools/testing/selftests/bpf/progs/bind_perm.c | 36 ++++++++
+> >  2 files changed, 121 insertions(+)
+> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/bind_perm.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/bind_perm.c
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/bind_perm.c b/tools/testing/selftests/bpf/prog_tests/bind_perm.c
+> > new file mode 100644
+> > index 000000000000..61307d4494bf
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/prog_tests/bind_perm.c
+> > @@ -0,0 +1,85 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +#include <test_progs.h>
+> > +#include "bind_perm.skel.h"
+> > +
+> > +#include <sys/types.h>
+> > +#include <sys/socket.h>
+> > +#include <sys/capability.h>
+> > +
+> > +static int duration;
+> > +
+> > +void try_bind(int port, int expected_errno)
+> > +{
+> > +     struct sockaddr_in sin = {};
+> > +     int fd = -1;
+> > +
+> > +     fd = socket(AF_INET, SOCK_STREAM, 0);
+> > +     if (CHECK(fd < 0, "fd", "errno %d", errno))
+> > +             goto close_socket;
+> > +
+> > +     sin.sin_family = AF_INET;
+> > +     sin.sin_port = htons(port);
+> > +
+> > +     errno = 0;
+> > +     bind(fd, (struct sockaddr *)&sin, sizeof(sin));
+> > +     ASSERT_EQ(errno, expected_errno, "bind");
+> > +
+> > +close_socket:
+> > +     if (fd >= 0)
+> > +             close(fd);
+> > +}
+> > +
+> > +void cap_net_bind_service(cap_flag_value_t flag)
+> > +{
+> > +     const cap_value_t cap_net_bind_service = CAP_NET_BIND_SERVICE;
+> > +     cap_t caps;
+> > +
+> > +     caps = cap_get_proc();
+> > +     if (CHECK(!caps, "cap_get_proc", "errno %d", errno))
+> > +             goto free_caps;
+> > +
+> > +     if (CHECK(cap_set_flag(caps, CAP_EFFECTIVE, 1, &cap_net_bind_service,
+> > +                            CAP_CLEAR),
+> > +               "cap_set_flag", "errno %d", errno))
+> > +             goto free_caps;
+> > +
+> > +     if (CHECK(cap_set_flag(caps, CAP_EFFECTIVE, 1, &cap_net_bind_service,
+> > +                            CAP_CLEAR),
+> > +               "cap_set_flag", "errno %d", errno))
+> These two back-to-back cap_set_flag() looks incorrect.
+> Also, the "cap_flag_value_t flag" is unused.
+Ah, true, I never reset back CAP_NET_BIND_SERVICE, will fix, thanks!
+
+> > +             goto free_caps;
+> > +
+> > +     if (CHECK(cap_set_proc(caps), "cap_set_proc", "errno %d", errno))
+> > +             goto free_caps;
+> > +
+> > +free_caps:
+> > +     if (CHECK(cap_free(caps), "cap_free", "errno %d", errno))
+> > +             goto free_caps;
+> There is a loop.
 >
-> > diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-> > index da649f20d6b2..cdf3c7e611d9 100644
-> > --- a/kernel/bpf/cgroup.c
-> > +++ b/kernel/bpf/cgroup.c
-> > @@ -1055,6 +1055,8 @@ EXPORT_SYMBOL(__cgroup_bpf_run_filter_sk);
-> >   * @uaddr: sockaddr struct provided by user
-> >   * @type: The type of program to be exectuted
-> >   * @t_ctx: Pointer to attach type specific context
-> > + * @flags: Pointer to u32 which contains higher bits of BPF program
-> > + *         return value (OR'ed together).
-> >   *
-> >   * socket is expected to be of type INET or INET6.
-> >   *
-> > @@ -1064,7 +1066,8 @@ EXPORT_SYMBOL(__cgroup_bpf_run_filter_sk);
-> >  int __cgroup_bpf_run_filter_sock_addr(struct sock *sk,
-> >                                     struct sockaddr *uaddr,
-> >                                     enum bpf_attach_type type,
-> > -                                   void *t_ctx)
-> > +                                   void *t_ctx,
-> > +                                   u32 *flags)
-> >  {
-> >       struct bpf_sock_addr_kern ctx = {
-> >               .sk = sk,
-> > @@ -1087,7 +1090,8 @@ int __cgroup_bpf_run_filter_sock_addr(struct sock *sk,
-> >       }
+> > +}
+> > +
+> > +void test_bind_perm(void)
+> > +{
+> > +     struct bind_perm *skel;
+> > +     int cgroup_fd;
+> > +
+> > +     cgroup_fd = test__join_cgroup("/bind_perm");
+> > +     if (CHECK(cgroup_fd < 0, "cg-join", "errno %d", errno))
+> > +             return;
+> > +
+> > +     skel = bind_perm__open_and_load();
+> > +     if (!ASSERT_OK_PTR(skel, "skel"))
+> > +             goto close_cgroup_fd;
+> > +
+> > +     skel->links.bind_v4_prog = bpf_program__attach_cgroup(skel->progs.bind_v4_prog, cgroup_fd);
+> > +     if (!ASSERT_OK_PTR(skel, "bind_v4_prog"))
+> > +             goto close_skeleton;
+> > +
+> > +     cap_net_bind_service(CAP_CLEAR);
+> > +     try_bind(110, EACCES);
+> > +     try_bind(111, 0);
+> > +     cap_net_bind_service(CAP_SET);
+> > +
+> > +close_skeleton:
+> > +     bind_perm__destroy(skel);
+> > +close_cgroup_fd:
+> > +     close(cgroup_fd);
+> > +}
+> > diff --git a/tools/testing/selftests/bpf/progs/bind_perm.c b/tools/testing/selftests/bpf/progs/bind_perm.c
+> > new file mode 100644
+> > index 000000000000..31ae8d599796
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/progs/bind_perm.c
+> > @@ -0,0 +1,36 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +
+> > +#include <linux/stddef.h>
+> > +#include <linux/bpf.h>
+> > +#include <sys/types.h>
+> > +#include <sys/socket.h>
+> > +#include <bpf/bpf_helpers.h>
+> > +#include <bpf/bpf_endian.h>
+> > +
+> > +SEC("cgroup/bind4")
+> > +int bind_v4_prog(struct bpf_sock_addr *ctx)
+> > +{
+> > +     struct bpf_sock *sk;
+> > +     __u32 user_ip4;
+> > +     __u16 user_port;
+> > +
+> > +     sk = ctx->sk;
+> > +     if (!sk)
+> > +             return 0;
+> > +
+> > +     if (sk->family != AF_INET)
+> > +             return 0;
+> > +
+> > +     if (ctx->type != SOCK_STREAM)
+> > +             return 0;
+> > +
+> > +     /* Rewriting to the same value should still cause
+> > +      * permission check to be bypassed.
+> > +      */
+> This comment is out dated also.
+>
+> > +     if (ctx->user_port == bpf_htons(111))
+> > +             return 3;
+> > +
+> > +     return 1;
+> > +}
+> > +
+> > +char _license[] SEC("license") = "GPL";
+> > --
+> > 2.30.0.280.ga3ce27912f-goog
 > >
-> >       cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
-> > -     ret = BPF_PROG_RUN_ARRAY(cgrp->bpf.effective[type], &ctx, BPF_PROG_RUN);
-> > +     ret = BPF_PROG_RUN_ARRAY_FLAGS(cgrp->bpf.effective[type], &ctx,
-> > +                                    BPF_PROG_RUN, flags);
-> >
-> >       return ret == 1 ? 0 : -EPERM;
-> >  }
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index d0eae51b31e4..ef7c3ca53214 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -7986,6 +7986,11 @@ static int check_return_code(struct bpf_verifier_env *env)
-> >                   env->prog->expected_attach_type == BPF_CGROUP_INET4_GETSOCKNAME ||
-> >                   env->prog->expected_attach_type == BPF_CGROUP_INET6_GETSOCKNAME)
-> >                       range = tnum_range(1, 1);
-> > +             if (env->prog->expected_attach_type == BPF_CGROUP_INET4_BIND ||
-> > +                 env->prog->expected_attach_type == BPF_CGROUP_INET6_BIND) {
-> > +                     range = tnum_range(0, 3);
-> > +                     enforce_attach_type_range = tnum_range(0, 3);
-> It should be:
->                         enforce_attach_type_range = tnum_range(2, 3);
-Hm, weren't we enforcing attach_type for bind progs from the beginning?
-Also, looking at bpf_prog_attach_check_attach_type, it seems that we
-care only about BPF_PROG_TYPE_CGROUP_SKB for
-prog->enforce_expected_attach_type.
-Am I missing something?
