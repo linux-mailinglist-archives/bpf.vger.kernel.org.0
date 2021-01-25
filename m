@@ -2,103 +2,121 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1410302FE6
-	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 00:14:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81D3A303000
+	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 00:21:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727046AbhAYXOg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Jan 2021 18:14:36 -0500
-Received: from www62.your-server.de ([213.133.104.62]:46376 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732831AbhAYXNW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Jan 2021 18:13:22 -0500
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1l4B2B-0008OG-W5; Tue, 26 Jan 2021 00:12:36 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1l4B2B-000Nj0-L3; Tue, 26 Jan 2021 00:12:35 +0100
-Subject: Re: [PATCH bpf-next 3/3] libbpf, xsk: select AF_XDP BPF program based
- on kernel version
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        ast@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
-        kuba@kernel.org, jonathan.lemon@gmail.com, maximmi@nvidia.com,
-        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
-        ciara.loftus@intel.com, weqaar.a.janjua@intel.com,
-        andrii@kernel.org, Marek Majtyka <alardam@gmail.com>
-References: <20210122105351.11751-1-bjorn.topel@gmail.com>
- <20210122105351.11751-4-bjorn.topel@gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <cafcfa48-ecfd-1dbb-6b3a-220a52b6db16@iogearbox.net>
-Date:   Tue, 26 Jan 2021 00:12:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1732892AbhAYXTZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Jan 2021 18:19:25 -0500
+Received: from conuserg-07.nifty.com ([210.131.2.74]:45862 "EHLO
+        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732660AbhAYXTW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Jan 2021 18:19:22 -0500
+Received: from localhost.localdomain (softbank126026094251.bbtec.net [126.26.94.251]) (authenticated)
+        by conuserg-07.nifty.com with ESMTP id 10PNHDrD029059;
+        Tue, 26 Jan 2021 08:17:13 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 10PNHDrD029059
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1611616634;
+        bh=xwIb0oqMknXVdymXEZ6iq/BFlhwRA9qFCQ7anGrVqGg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=KzyJpXCJXKnGOOfVfP7oeCny6KI2hL5T3EDgyMyAb+lYn3rwWdPjwK9PvjZFtKYcU
+         bA4VVOSCpV8WTjKjxQEu2XIxwqBVLoss4P8n1F5j5agQr+x3v8y6V9dU4MB2Cxoh2p
+         GiSZ2TlgyFpVHkQCSPG8ooIziLm7DWLXMQHUJ6sqPpS2MstSTEjSjOVxoAx5LFvGf9
+         DRJScYKPhBqD1DNmTfsn76fg83DAOIDo+bdUVK3+7miCW5jiWU4HDhXrouMRfzITBe
+         NMDZXItfH4c7BkZSzAio/ps7SEx7YETugX0ZtUyQEs4FT8xlmsyT1R9U43ZW/WzFs2
+         CAaZfTYhldI+w==
+X-Nifty-SrcIP: [126.26.94.251]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     netdev@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        bpf@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/4] net: move CONFIG_NET guard to top Makefile
+Date:   Tue, 26 Jan 2021 08:16:55 +0900
+Message-Id: <20210125231659.106201-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20210122105351.11751-4-bjorn.topel@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26060/Mon Jan 25 13:28:03 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/22/21 11:53 AM, Björn Töpel wrote:
-> From: Björn Töpel <bjorn.topel@intel.com>
-> 
-> Add detection for kernel version, and adapt the BPF program based on
-> kernel support. This way, users will get the best possible performance
-> from the BPF program.
-> 
-> Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> Acked-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
-> Signed-off-by: Marek Majtyka  <alardam@gmail.com>
-> ---
->   tools/lib/bpf/xsk.c | 82 +++++++++++++++++++++++++++++++++++++++++++--
->   1 file changed, 79 insertions(+), 3 deletions(-)
-> 
-> diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
-> index e3e41ceeb1bc..1df8c133a5bc 100644
-> --- a/tools/lib/bpf/xsk.c
-> +++ b/tools/lib/bpf/xsk.c
-> @@ -46,6 +46,11 @@
->    #define PF_XDP AF_XDP
->   #endif
->   
-> +enum xsk_prog {
-> +	XSK_PROG_FALLBACK,
-> +	XSK_PROG_REDIRECT_FLAGS,
-> +};
-> +
->   struct xsk_umem {
->   	struct xsk_ring_prod *fill_save;
->   	struct xsk_ring_cons *comp_save;
-> @@ -351,6 +356,55 @@ int xsk_umem__create_v0_0_2(struct xsk_umem **umem_ptr, void *umem_area,
->   COMPAT_VERSION(xsk_umem__create_v0_0_2, xsk_umem__create, LIBBPF_0.0.2)
->   DEFAULT_VERSION(xsk_umem__create_v0_0_4, xsk_umem__create, LIBBPF_0.0.4)
->   
-> +
+When CONFIG_NET is disabled, nothing under the net/ directory is
+compiled. Move the CONFIG_NET guard to the top Makefile so the net/
+directory is entirely skipped.
 
-Fyi, removed this extra newline when I applied the series, thanks!
+When Kbuild visits net/Makefile, CONFIG_NET is obvioulsy 'y' because
+CONFIG_NET is a bool option. Clean up net/Makefile.
 
-> +static enum xsk_prog get_xsk_prog(void)
-> +{
-> +	enum xsk_prog detected = XSK_PROG_FALLBACK;
-> +	struct bpf_load_program_attr prog_attr;
-> +	struct bpf_create_map_attr map_attr;
-> +	__u32 size_out, retval, duration;
-> +	char data_in = 0, data_out;
-> +	struct bpf_insn insns[] = {
-> +		BPF_LD_MAP_FD(BPF_REG_1, 0),
-> +		BPF_MOV64_IMM(BPF_REG_2, 0),
-> +		BPF_MOV64_IMM(BPF_REG_3, XDP_PASS),
-> +		BPF_EMIT_CALL(BPF_FUNC_redirect_map),
-> +		BPF_EXIT_INSN(),
-[...]
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ Makefile     |  3 ++-
+ net/Makefile | 11 ++++-------
+ 2 files changed, 6 insertions(+), 8 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index b0e4767735dc..61357f7eb55f 100644
+--- a/Makefile
++++ b/Makefile
+@@ -649,7 +649,8 @@ ifeq ($(KBUILD_EXTMOD),)
+ core-y		:= init/ usr/
+ drivers-y	:= drivers/ sound/
+ drivers-$(CONFIG_SAMPLES) += samples/
+-drivers-y	+= net/ virt/
++drivers-$(CONFIG_NET) += net/
++drivers-y	+= virt/
+ libs-y		:= lib/
+ endif # KBUILD_EXTMOD
+ 
+diff --git a/net/Makefile b/net/Makefile
+index d96b0aa8f39f..6fa3b2e26cab 100644
+--- a/net/Makefile
++++ b/net/Makefile
+@@ -6,20 +6,19 @@
+ # Rewritten to use lists instead of if-statements.
+ #
+ 
+-obj-$(CONFIG_NET)		:= devres.o socket.o core/
++obj-y				:= devres.o socket.o core/
+ 
+-tmp-$(CONFIG_COMPAT) 		:= compat.o
+-obj-$(CONFIG_NET)		+= $(tmp-y)
++obj-$(CONFIG_COMPAT)		+= compat.o
+ 
+ # LLC has to be linked before the files in net/802/
+ obj-$(CONFIG_LLC)		+= llc/
+-obj-$(CONFIG_NET)		+= ethernet/ 802/ sched/ netlink/ bpf/ ethtool/
++obj-y				+= ethernet/ 802/ sched/ netlink/ bpf/ ethtool/
+ obj-$(CONFIG_NETFILTER)		+= netfilter/
+ obj-$(CONFIG_INET)		+= ipv4/
+ obj-$(CONFIG_TLS)		+= tls/
+ obj-$(CONFIG_XFRM)		+= xfrm/
+ obj-$(CONFIG_UNIX_SCM)		+= unix/
+-obj-$(CONFIG_NET)		+= ipv6/
++obj-y				+= ipv6/
+ obj-$(CONFIG_BPFILTER)		+= bpfilter/
+ obj-$(CONFIG_PACKET)		+= packet/
+ obj-$(CONFIG_NET_KEY)		+= key/
+@@ -63,9 +62,7 @@ obj-$(CONFIG_6LOWPAN)		+= 6lowpan/
+ obj-$(CONFIG_IEEE802154)	+= ieee802154/
+ obj-$(CONFIG_MAC802154)		+= mac802154/
+ 
+-ifeq ($(CONFIG_NET),y)
+ obj-$(CONFIG_SYSCTL)		+= sysctl_net.o
+-endif
+ obj-$(CONFIG_DNS_RESOLVER)	+= dns_resolver/
+ obj-$(CONFIG_CEPH_LIB)		+= ceph/
+ obj-$(CONFIG_BATMAN_ADV)	+= batman-adv/
+-- 
+2.27.0
+
