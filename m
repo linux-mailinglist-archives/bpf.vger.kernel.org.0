@@ -2,509 +2,355 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C79F1302884
-	for <lists+bpf@lfdr.de>; Mon, 25 Jan 2021 18:11:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CF613028D4
+	for <lists+bpf@lfdr.de>; Mon, 25 Jan 2021 18:28:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730267AbhAYRLh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Jan 2021 12:11:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31076 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729978AbhAYRL3 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 25 Jan 2021 12:11:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611594600;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=O/95Lw7Txt8aVPZGrqa5hMWBxFMssMIZa0dCMHYZkq0=;
-        b=YSfmPrK2U2ZLTMQuIfd0x78rR6ji20JlMgt8PztdB+/yFgK62bkGrcRhLMbHS2zF6trrnR
-        JXfsSiFm83HW9uMPh+wJWI9aPZJMU1UIlTrVT8/Bu6za+5Qop9eRgm2l+OHSV+1MT32GbA
-        /dJcSOa5h7Dj/PE8L+VHvIdCNlA87I0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-310-idIqiHX-Pv2YWh9RUKP0Xw-1; Mon, 25 Jan 2021 12:09:57 -0500
-X-MC-Unique: idIqiHX-Pv2YWh9RUKP0Xw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 48995100F347;
-        Mon, 25 Jan 2021 17:09:55 +0000 (UTC)
-Received: from firesoul.localdomain (unknown [10.40.208.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AE1925E1A4;
-        Mon, 25 Jan 2021 17:09:48 +0000 (UTC)
-Received: from [192.168.42.3] (localhost [IPv6:::1])
-        by firesoul.localdomain (Postfix) with ESMTP id 9FC9532233490;
-        Mon, 25 Jan 2021 18:09:47 +0100 (CET)
-Subject: [PATCH bpf-next V13 7/7] selftests/bpf: tests using bpf_check_mtu
- BPF-helper
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
-        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
-        colrack@gmail.com
-Date:   Mon, 25 Jan 2021 18:09:47 +0100
-Message-ID: <161159458760.321749.4512713874492237529.stgit@firesoul>
-In-Reply-To: <161159451743.321749.17528005626909164523.stgit@firesoul>
-References: <161159451743.321749.17528005626909164523.stgit@firesoul>
-User-Agent: StGit/0.19
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        id S1731017AbhAYR1i (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Jan 2021 12:27:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730960AbhAYR11 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Jan 2021 12:27:27 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA9DAC06178B
+        for <bpf@vger.kernel.org>; Mon, 25 Jan 2021 09:26:43 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id c13so5863028ybg.8
+        for <bpf@vger.kernel.org>; Mon, 25 Jan 2021 09:26:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=KA3LlxQnwkmhXzMgKRGSu/049kauUQh/qhyWcFDQLsw=;
+        b=V6nh5IMS76ftyZlGLqLDoewgIJEdMW2Zra90yrAmvwdaMEN936CBNskkm3q+EgQG5g
+         PhQg0cpS8L6A0wNvabDZ9yMkqfJaP16M3nl5xg0FSF1c7o5E3sVA9ABDpGlocD0h7yk4
+         maKaBdXFLL5JWyfVzsgcHLnHtN3Z3htoKbq93xgSbFhUoElQzVnc8i70KN6aE5pHygB/
+         +Rq9u7ZUtq5ZBvvm+treoM0mDLvNoRtyrwQ1xg2/2cGckE1mtRpS73sDSUxoxqPKf/+N
+         wfzQPSIxBh4Ga5IsluLNLat0faUytbWOnjRLWoE8+CqqbsNVRxGG3jfP4+bVzNJM8WnG
+         +rvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=KA3LlxQnwkmhXzMgKRGSu/049kauUQh/qhyWcFDQLsw=;
+        b=H12r9Cth3UqLQdarOT3BqNgRib7+o7BmX/AgBznyALqsE4AdOpXqC/o9tuTDUbrZ/u
+         NxcbREq0o/CzFkLZLjeZfi2eP+8M3BVIxnkRhEUG/1NX3zu/ysEdWgpb84qo4j+TtM1L
+         ORy2xP0se3EUKooyNp/oJpEvldw8++MeH5INKS/cKkZ14Oy6lX8CP+x4KiZbf4HlG0nZ
+         5sujrzNWGv0dy/43bM0Jp4I9z5wFriLnRtBMiqSfwRsPvGFyzI8AVSCjt14qZUceS0qD
+         Dn3ysuFUd7dBFBJDp6Hz2cwBz1JIb7wm7vnh7BOpJZ7euSe9Fb8nkOl2ZhaXRxKk/5mj
+         DFkA==
+X-Gm-Message-State: AOAM53265adTlA6JxK7uau8q3rxM61zwyVo6hmaRLRTkx7X0Cpplp5s1
+        Gz3uIku54vnS6LrhcBwv6micemM=
+X-Google-Smtp-Source: ABdhPJxz6sdwlX3nPSIQc7dEuiq9f6kR42g502zBcg5N6H9eXE16/Rwg7pVK+TdPJ53ARsEv5P/Q0QY=
+Sender: "sdf via sendgmr" <sdf@sdf2.svl.corp.google.com>
+X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:7220:84ff:fe09:7732])
+ (user=sdf job=sendgmr) by 2002:a25:aba4:: with SMTP id v33mr2483446ybi.388.1611595603151;
+ Mon, 25 Jan 2021 09:26:43 -0800 (PST)
+Date:   Mon, 25 Jan 2021 09:26:40 -0800
+Message-Id: <20210125172641.3008234-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
+Subject: [PATCH bpf-next v2 1/2] bpf: allow rewriting to ports under ip_unprivileged_port_start
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>,
+        Andrey Ignatov <rdna@fb.com>, Martin KaFai Lau <kafai@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding selftest for BPF-helper bpf_check_mtu(). Making sure
-it can be used from both XDP and TC.
+At the moment, BPF_CGROUP_INET{4,6}_BIND hooks can rewrite user_port
+to the privileged ones (< ip_unprivileged_port_start), but it will
+be rejected later on in the __inet_bind or __inet6_bind.
 
-V11:
- - Addresse nitpicks from Andrii Nakryiko
+Let's export 'port_changed' event from the BPF program and bypass
+ip_unprivileged_port_start range check when we've seen that
+the program explicitly overrode the port. This is accomplished
+by generating instructions to set ctx->port_changed along with
+updating ctx->user_port.
 
-V10:
- - Remove errno non-zero test in CHECK_ATTR()
- - Addresse comments from Andrii Nakryiko
-
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Cc: Andrey Ignatov <rdna@fb.com>
+Cc: Martin KaFai Lau <kafai@fb.com>
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- tools/testing/selftests/bpf/prog_tests/check_mtu.c |  216 ++++++++++++++++++++
- tools/testing/selftests/bpf/progs/test_check_mtu.c |  198 ++++++++++++++++++
- 2 files changed, 414 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/check_mtu.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_check_mtu.c
+ include/linux/bpf-cgroup.h | 38 ++++++++++++++++++++++++---------
+ include/linux/bpf.h        | 43 ++++++++++++++++++++++----------------
+ include/net/inet_common.h  |  3 +++
+ kernel/bpf/cgroup.c        |  8 +++++--
+ kernel/bpf/verifier.c      |  5 +++++
+ net/ipv4/af_inet.c         |  9 +++++---
+ net/ipv6/af_inet6.c        |  6 ++++--
+ 7 files changed, 77 insertions(+), 35 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/check_mtu.c b/tools/testing/selftests/bpf/prog_tests/check_mtu.c
-new file mode 100644
-index 000000000000..9e2fd01b7c65
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/check_mtu.c
-@@ -0,0 +1,216 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Jesper Dangaard Brouer */
-+
-+#include <linux/if_link.h> /* before test_progs.h, avoid bpf_util.h redefines */
-+#include <test_progs.h>
-+#include "test_check_mtu.skel.h"
-+#include "network_helpers.h"
-+
-+#include <stdlib.h>
-+#include <inttypes.h>
-+
-+#define IFINDEX_LO 1
-+
-+static __u32 duration; /* Hint: needed for CHECK macro */
-+
-+static int read_mtu_device_lo(void)
-+{
-+	const char *filename = "/sys/class/net/lo/mtu";
-+	char buf[11] = {};
-+	int value, n, fd;
-+
-+	fd = open(filename, 0, O_RDONLY);
-+	if (fd == -1)
-+		return -1;
-+
-+	n = read(fd, buf, sizeof(buf));
-+	close(fd);
-+
-+	if (n == -1)
-+		return -2;
-+
-+	value = strtoimax(buf, NULL, 10);
-+	if (errno == ERANGE)
-+		return -3;
-+
-+	return value;
-+}
-+
-+static void test_check_mtu_xdp_attach()
-+{
-+	struct bpf_link_info link_info;
-+	__u32 link_info_len = sizeof(link_info);
-+	struct test_check_mtu *skel;
-+	struct bpf_program *prog;
-+	struct bpf_link *link;
-+	int err = 0;
-+	int fd;
-+
-+	skel = test_check_mtu__open_and_load();
-+	if (CHECK(!skel, "open and load skel", "failed"))
-+		return; /* Exit if e.g. helper unknown to kernel */
-+
-+	prog = skel->progs.xdp_use_helper_basic;
-+
-+	link = bpf_program__attach_xdp(prog, IFINDEX_LO);
-+	if (CHECK(IS_ERR(link), "link_attach", "failed: %ld\n", PTR_ERR(link)))
-+		goto out;
-+	skel->links.xdp_use_helper_basic = link;
-+
-+	memset(&link_info, 0, sizeof(link_info));
-+	fd = bpf_link__fd(link);
-+	err = bpf_obj_get_info_by_fd(fd, &link_info, &link_info_len);
-+	if (CHECK(err, "link_info", "failed: %d\n", err))
-+		goto out;
-+
-+	CHECK(link_info.type != BPF_LINK_TYPE_XDP, "link_type",
-+	      "got %u != exp %u\n", link_info.type, BPF_LINK_TYPE_XDP);
-+	CHECK(link_info.xdp.ifindex != IFINDEX_LO, "link_ifindex",
-+	      "got %u != exp %u\n", link_info.xdp.ifindex, IFINDEX_LO);
-+
-+	err = bpf_link__detach(link);
-+	CHECK(err, "link_detach", "failed %d\n", err);
-+
-+out:
-+	test_check_mtu__destroy(skel);
-+}
-+
-+static void test_check_mtu_run_xdp(struct test_check_mtu *skel,
-+				   struct bpf_program *prog,
-+				   __u32 mtu_expect)
-+{
-+	const char *prog_name = bpf_program__name(prog);
-+	int retval_expect = XDP_PASS;
-+	__u32 mtu_result = 0;
-+	char buf[256] = {};
-+	int err;
-+	struct bpf_prog_test_run_attr tattr = {
-+		.repeat = 1,
-+		.data_in = &pkt_v4,
-+		.data_size_in = sizeof(pkt_v4),
-+		.data_out = buf,
-+		.data_size_out = sizeof(buf),
-+		.prog_fd = bpf_program__fd(prog),
-+	};
-+
-+	err = bpf_prog_test_run_xattr(&tattr);
-+	CHECK_ATTR(err != 0, "bpf_prog_test_run",
-+		   "prog_name:%s (err %d errno %d retval %d)\n",
-+		   prog_name, err, errno, tattr.retval);
-+
-+	CHECK(tattr.retval != retval_expect, "retval",
-+	      "progname:%s unexpected retval=%d expected=%d\n",
-+	      prog_name, tattr.retval, retval_expect);
-+
-+	/* Extract MTU that BPF-prog got */
-+	mtu_result = skel->bss->global_bpf_mtu_xdp;
-+	ASSERT_EQ(mtu_result, mtu_expect, "MTU-compare-user");
-+}
-+
-+
-+static void test_check_mtu_xdp(__u32 mtu, __u32 ifindex)
-+{
-+	struct test_check_mtu *skel;
-+	int err;
-+
-+	skel = test_check_mtu__open();
-+	if (CHECK(!skel, "skel_open", "failed"))
-+		return;
-+
-+	/* Update "constants" in BPF-prog *BEFORE* libbpf load */
-+	skel->rodata->GLOBAL_USER_MTU = mtu;
-+	skel->rodata->GLOBAL_USER_IFINDEX = ifindex;
-+
-+	err = test_check_mtu__load(skel);
-+	if (CHECK(err, "skel_load", "failed: %d\n", err))
-+		goto cleanup;
-+
-+	test_check_mtu_run_xdp(skel, skel->progs.xdp_use_helper, mtu);
-+	test_check_mtu_run_xdp(skel, skel->progs.xdp_exceed_mtu, mtu);
-+	test_check_mtu_run_xdp(skel, skel->progs.xdp_minus_delta, mtu);
-+
-+cleanup:
-+	test_check_mtu__destroy(skel);
-+}
-+
-+static void test_check_mtu_run_tc(struct test_check_mtu *skel,
-+				  struct bpf_program *prog,
-+				  __u32 mtu_expect)
-+{
-+	const char *prog_name = bpf_program__name(prog);
-+	int retval_expect = BPF_OK;
-+	__u32 mtu_result = 0;
-+	char buf[256] = {};
-+	int err;
-+	struct bpf_prog_test_run_attr tattr = {
-+		.repeat = 1,
-+		.data_in = &pkt_v4,
-+		.data_size_in = sizeof(pkt_v4),
-+		.data_out = buf,
-+		.data_size_out = sizeof(buf),
-+		.prog_fd = bpf_program__fd(prog),
-+	};
-+
-+	err = bpf_prog_test_run_xattr(&tattr);
-+	CHECK_ATTR(err != 0, "bpf_prog_test_run",
-+		   "prog_name:%s (err %d errno %d retval %d)\n",
-+		   prog_name, err, errno, tattr.retval);
-+
-+	CHECK(tattr.retval != retval_expect, "retval",
-+	      "progname:%s unexpected retval=%d expected=%d\n",
-+	      prog_name, tattr.retval, retval_expect);
-+
-+	/* Extract MTU that BPF-prog got */
-+	mtu_result = skel->bss->global_bpf_mtu_tc;
-+	ASSERT_EQ(mtu_result, mtu_expect, "MTU-compare-user");
-+}
-+
-+
-+static void test_check_mtu_tc(__u32 mtu, __u32 ifindex)
-+{
-+	struct test_check_mtu *skel;
-+	int err;
-+
-+	skel = test_check_mtu__open();
-+	if (CHECK(!skel, "skel_open", "failed"))
-+		return;
-+
-+	/* Update "constants" in BPF-prog *BEFORE* libbpf load */
-+	skel->rodata->GLOBAL_USER_MTU = mtu;
-+	skel->rodata->GLOBAL_USER_IFINDEX = ifindex;
-+
-+	err = test_check_mtu__load(skel);
-+	if (CHECK(err, "skel_load", "failed: %d\n", err))
-+		goto cleanup;
-+
-+	test_check_mtu_run_tc(skel, skel->progs.tc_use_helper, mtu);
-+	test_check_mtu_run_tc(skel, skel->progs.tc_exceed_mtu, mtu);
-+	test_check_mtu_run_tc(skel, skel->progs.tc_exceed_mtu_da, mtu);
-+	test_check_mtu_run_tc(skel, skel->progs.tc_minus_delta, mtu);
-+cleanup:
-+	test_check_mtu__destroy(skel);
-+}
-+
-+void test_check_mtu(void)
-+{
-+	__u32 mtu_lo;
-+
-+	if (test__start_subtest("bpf_check_mtu XDP-attach"))
-+		test_check_mtu_xdp_attach();
-+
-+	mtu_lo = read_mtu_device_lo();
-+	if (CHECK(mtu_lo < 0, "reading MTU value", "failed (err:%d)", mtu_lo))
-+		return;
-+
-+	if (test__start_subtest("bpf_check_mtu XDP-run"))
-+		test_check_mtu_xdp(mtu_lo, 0);
-+
-+	if (test__start_subtest("bpf_check_mtu XDP-run ifindex-lookup"))
-+		test_check_mtu_xdp(mtu_lo, IFINDEX_LO);
-+
-+	if (test__start_subtest("bpf_check_mtu TC-run"))
-+		test_check_mtu_tc(mtu_lo, 0);
-+
-+	if (test__start_subtest("bpf_check_mtu TC-run ifindex-lookup"))
-+		test_check_mtu_tc(mtu_lo, IFINDEX_LO);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_check_mtu.c b/tools/testing/selftests/bpf/progs/test_check_mtu.c
-new file mode 100644
-index 000000000000..b7787b43f9db
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_check_mtu.c
-@@ -0,0 +1,198 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Jesper Dangaard Brouer */
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <linux/if_ether.h>
-+
-+#include <stddef.h>
-+#include <stdint.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+/* Userspace will update with MTU it can see on device */
-+static volatile const int GLOBAL_USER_MTU;
-+static volatile const __u32 GLOBAL_USER_IFINDEX;
-+
-+/* BPF-prog will update these with MTU values it can see */
-+__u32 global_bpf_mtu_xdp = 0;
-+__u32 global_bpf_mtu_tc  = 0;
-+
-+SEC("xdp")
-+int xdp_use_helper_basic(struct xdp_md *ctx)
-+{
-+	__u32 mtu_len = 0;
-+
-+	if (bpf_check_mtu(ctx, 0, &mtu_len, 0, 0))
-+		return XDP_ABORTED;
-+
-+	return XDP_PASS;
-+}
-+
-+SEC("xdp")
-+int xdp_use_helper(struct xdp_md *ctx)
-+{
-+	int retval = XDP_PASS; /* Expected retval on successful test */
-+	__u32 mtu_len = 0;
-+	__u32 ifindex = 0;
-+	int delta = 0;
-+
-+	/* When ifindex is zero, save net_device lookup and use ctx netdev */
-+	if (GLOBAL_USER_IFINDEX > 0)
-+		ifindex = GLOBAL_USER_IFINDEX;
-+
-+	if (bpf_check_mtu(ctx, ifindex, &mtu_len, delta, 0)) {
-+		/* mtu_len is also valid when check fail */
-+		retval = XDP_ABORTED;
-+		goto out;
-+	}
-+
-+	if (mtu_len != GLOBAL_USER_MTU)
-+		retval = XDP_DROP;
-+
-+out:
-+	global_bpf_mtu_xdp = mtu_len;
-+	return retval;
-+}
-+
-+SEC("xdp")
-+int xdp_exceed_mtu(struct xdp_md *ctx)
-+{
-+	void *data_end = (void *)(long)ctx->data_end;
-+	void *data = (void *)(long)ctx->data;
-+	__u32 ifindex = GLOBAL_USER_IFINDEX;
-+	__u32 data_len = data_end - data;
-+	int retval = XDP_ABORTED; /* Fail */
-+	__u32 mtu_len = 0;
-+	int delta;
-+	int err;
-+
-+	/* Exceed MTU with 1 via delta adjust */
-+	delta = GLOBAL_USER_MTU - (data_len - ETH_HLEN) + 1;
-+
-+	err = bpf_check_mtu(ctx, ifindex, &mtu_len, delta, 0);
-+	if (err) {
-+		retval = XDP_PASS; /* Success in exceeding MTU check */
-+		if (err != BPF_MTU_CHK_RET_FRAG_NEEDED)
-+			retval = XDP_DROP;
-+	}
-+
-+	global_bpf_mtu_xdp = mtu_len;
-+	return retval;
-+}
-+
-+SEC("xdp")
-+int xdp_minus_delta(struct xdp_md *ctx)
-+{
-+	int retval = XDP_PASS; /* Expected retval on successful test */
-+	void *data_end = (void *)(long)ctx->data_end;
-+	void *data = (void *)(long)ctx->data;
-+	__u32 ifindex = GLOBAL_USER_IFINDEX;
-+	__u32 data_len = data_end - data;
-+	__u32 mtu_len = 0;
-+	int delta;
-+
-+	/* Borderline test case: Minus delta exceeding packet length allowed */
-+	delta = -((data_len - ETH_HLEN) + 1);
-+
-+	/* Minus length (adjusted via delta) still pass MTU check, other helpers
-+	 * are responsible for catching this, when doing actual size adjust
-+	 */
-+	if (bpf_check_mtu(ctx, ifindex, &mtu_len, delta, 0))
-+		retval = XDP_ABORTED;
-+
-+	global_bpf_mtu_xdp = mtu_len;
-+	return retval;
-+}
-+
-+SEC("classifier")
-+int tc_use_helper(struct __sk_buff *ctx)
-+{
-+	int retval = BPF_OK; /* Expected retval on successful test */
-+	__u32 mtu_len = 0;
-+	int delta = 0;
-+
-+	if (bpf_check_mtu(ctx, 0, &mtu_len, delta, 0)) {
-+		retval = BPF_DROP;
-+		goto out;
-+	}
-+
-+	if (mtu_len != GLOBAL_USER_MTU)
-+		retval = BPF_REDIRECT;
-+out:
-+	global_bpf_mtu_tc = mtu_len;
-+	return retval;
-+}
-+
-+SEC("classifier")
-+int tc_exceed_mtu(struct __sk_buff *ctx)
-+{
-+	__u32 ifindex = GLOBAL_USER_IFINDEX;
-+	int retval = BPF_DROP; /* Fail */
-+	__u32 skb_len = ctx->len;
-+	__u32 mtu_len = 0;
-+	int delta;
-+	int err;
-+
-+	/* Exceed MTU with 1 via delta adjust */
-+	delta = GLOBAL_USER_MTU - (skb_len - ETH_HLEN) + 1;
-+
-+	err = bpf_check_mtu(ctx, ifindex, &mtu_len, delta, 0);
-+	if (err) {
-+		retval = BPF_OK; /* Success in exceeding MTU check */
-+		if (err != BPF_MTU_CHK_RET_FRAG_NEEDED)
-+			retval = BPF_DROP;
-+	}
-+
-+	global_bpf_mtu_tc = mtu_len;
-+	return retval;
-+}
-+
-+SEC("classifier")
-+int tc_exceed_mtu_da(struct __sk_buff *ctx)
-+{
-+	/* SKB Direct-Access variant */
-+	void *data_end = (void *)(long)ctx->data_end;
-+	void *data = (void *)(long)ctx->data;
-+	__u32 ifindex = GLOBAL_USER_IFINDEX;
-+	__u32 data_len = data_end - data;
-+	int retval = BPF_DROP; /* Fail */
-+	__u32 mtu_len = 0;
-+	int delta;
-+	int err;
-+
-+	/* Exceed MTU with 1 via delta adjust */
-+	delta = GLOBAL_USER_MTU - (data_len - ETH_HLEN) + 1;
-+
-+	err = bpf_check_mtu(ctx, ifindex, &mtu_len, delta, 0);
-+	if (err) {
-+		retval = BPF_OK; /* Success in exceeding MTU check */
-+		if (err != BPF_MTU_CHK_RET_FRAG_NEEDED)
-+			retval = BPF_DROP;
-+	}
-+
-+	global_bpf_mtu_tc = mtu_len;
-+	return retval;
-+}
-+
-+SEC("classifier")
-+int tc_minus_delta(struct __sk_buff *ctx)
-+{
-+	int retval = BPF_OK; /* Expected retval on successful test */
-+	__u32 ifindex = GLOBAL_USER_IFINDEX;
-+	__u32 skb_len = ctx->len;
-+	__u32 mtu_len = 0;
-+	int delta;
-+
-+	/* Borderline test case: Minus delta exceeding packet length allowed */
-+	delta = -((skb_len - ETH_HLEN) + 1);
-+
-+	/* Minus length (adjusted via delta) still pass MTU check, other helpers
-+	 * are responsible for catching this, when doing actual size adjust
-+	 */
-+	if (bpf_check_mtu(ctx, ifindex, &mtu_len, delta, 0))
-+		retval = BPF_DROP;
-+
-+	global_bpf_mtu_xdp = mtu_len;
-+	return retval;
-+}
-
+diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
+index 0748fd87969e..6232745bae9b 100644
+--- a/include/linux/bpf-cgroup.h
++++ b/include/linux/bpf-cgroup.h
+@@ -125,7 +125,8 @@ int __cgroup_bpf_run_filter_sk(struct sock *sk,
+ int __cgroup_bpf_run_filter_sock_addr(struct sock *sk,
+ 				      struct sockaddr *uaddr,
+ 				      enum bpf_attach_type type,
+-				      void *t_ctx);
++				      void *t_ctx,
++				      u32 *flags);
+ 
+ int __cgroup_bpf_run_filter_sock_ops(struct sock *sk,
+ 				     struct bpf_sock_ops_kern *sock_ops,
+@@ -231,30 +232,48 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
+ 
+ #define BPF_CGROUP_RUN_SA_PROG(sk, uaddr, type)				       \
+ ({									       \
++	u32 __unused_flags;						       \
+ 	int __ret = 0;							       \
+ 	if (cgroup_bpf_enabled(type))					       \
+ 		__ret = __cgroup_bpf_run_filter_sock_addr(sk, uaddr, type,     \
+-							  NULL);	       \
++							  NULL,		       \
++							  &__unused_flags);    \
+ 	__ret;								       \
+ })
+ 
+ #define BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, type, t_ctx)		       \
+ ({									       \
++	u32 __unused_flags;						       \
+ 	int __ret = 0;							       \
+ 	if (cgroup_bpf_enabled(type))	{				       \
+ 		lock_sock(sk);						       \
+ 		__ret = __cgroup_bpf_run_filter_sock_addr(sk, uaddr, type,     \
+-							  t_ctx);	       \
++							  t_ctx,	       \
++							  &__unused_flags);    \
+ 		release_sock(sk);					       \
+ 	}								       \
+ 	__ret;								       \
+ })
+ 
+-#define BPF_CGROUP_RUN_PROG_INET4_BIND_LOCK(sk, uaddr)			       \
+-	BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, BPF_CGROUP_INET4_BIND, NULL)
+-
+-#define BPF_CGROUP_RUN_PROG_INET6_BIND_LOCK(sk, uaddr)			       \
+-	BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, BPF_CGROUP_INET6_BIND, NULL)
++/* BPF_CGROUP_INET4_BIND and BPF_CGROUP_INET6_BIND can return extra flags
++ * via upper bits of return code. The only flag that is supported
++ * (at bit position 0) is to indicate CAP_NET_BIND_SERVICE capability check
++ * should be bypassed.
++ */
++#define BPF_CGROUP_RUN_PROG_INET_BIND_LOCK(sk, uaddr, type, flags)	       \
++({									       \
++	u32 __flags = 0;						       \
++	int __ret = 0;							       \
++	if (cgroup_bpf_enabled(type))	{				       \
++		lock_sock(sk);						       \
++		__ret = __cgroup_bpf_run_filter_sock_addr(sk, uaddr, type,     \
++							  NULL, &__flags);     \
++		release_sock(sk);					       \
++		if (__flags & 1)					       \
++			*flags |= BIND_NO_CAP_NET_BIND_SERVICE;		       \
++	}								       \
++	__ret;								       \
++})
+ 
+ #define BPF_CGROUP_PRE_CONNECT_ENABLED(sk)				       \
+ 	((cgroup_bpf_enabled(BPF_CGROUP_INET4_CONNECT) ||		       \
+@@ -453,8 +472,7 @@ static inline int bpf_percpu_cgroup_storage_update(struct bpf_map *map,
+ #define BPF_CGROUP_RUN_PROG_INET_EGRESS(sk,skb) ({ 0; })
+ #define BPF_CGROUP_RUN_PROG_INET_SOCK(sk) ({ 0; })
+ #define BPF_CGROUP_RUN_PROG_INET_SOCK_RELEASE(sk) ({ 0; })
+-#define BPF_CGROUP_RUN_PROG_INET4_BIND_LOCK(sk, uaddr) ({ 0; })
+-#define BPF_CGROUP_RUN_PROG_INET6_BIND_LOCK(sk, uaddr) ({ 0; })
++#define BPF_CGROUP_RUN_PROG_INET_BIND_LOCK(sk, uaddr, type, flags) ({ 0; })
+ #define BPF_CGROUP_RUN_PROG_INET4_POST_BIND(sk) ({ 0; })
+ #define BPF_CGROUP_RUN_PROG_INET6_POST_BIND(sk) ({ 0; })
+ #define BPF_CGROUP_RUN_PROG_INET4_CONNECT(sk, uaddr) ({ 0; })
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 1aac2af12fed..08eee284d251 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1073,6 +1073,29 @@ int bpf_prog_array_copy(struct bpf_prog_array *old_array,
+ 			struct bpf_prog *include_prog,
+ 			struct bpf_prog_array **new_array);
+ 
++#define BPF_PROG_RUN_ARRAY_FLAGS(array, ctx, func, flags)		\
++	({								\
++		struct bpf_prog_array_item *_item;			\
++		struct bpf_prog *_prog;					\
++		struct bpf_prog_array *_array;				\
++		u32 _ret = 1;						\
++		u32 ret;						\
++		migrate_disable();					\
++		rcu_read_lock();					\
++		_array = rcu_dereference(array);			\
++		_item = &_array->items[0];				\
++		while ((_prog = READ_ONCE(_item->prog))) {		\
++			bpf_cgroup_storage_set(_item->cgroup_storage);	\
++			ret = func(_prog, ctx);				\
++			_ret &= (ret & 1);				\
++			*(flags) |= (ret >> 1);				\
++			_item++;					\
++		}							\
++		rcu_read_unlock();					\
++		migrate_enable();					\
++		_ret;							\
++	 })
++
+ #define __BPF_PROG_RUN_ARRAY(array, ctx, func, check_non_null)	\
+ 	({						\
+ 		struct bpf_prog_array_item *_item;	\
+@@ -1120,25 +1143,9 @@ _out:							\
+  */
+ #define BPF_PROG_CGROUP_INET_EGRESS_RUN_ARRAY(array, ctx, func)		\
+ 	({						\
+-		struct bpf_prog_array_item *_item;	\
+-		struct bpf_prog *_prog;			\
+-		struct bpf_prog_array *_array;		\
+-		u32 ret;				\
+-		u32 _ret = 1;				\
+ 		u32 _cn = 0;				\
+-		migrate_disable();			\
+-		rcu_read_lock();			\
+-		_array = rcu_dereference(array);	\
+-		_item = &_array->items[0];		\
+-		while ((_prog = READ_ONCE(_item->prog))) {		\
+-			bpf_cgroup_storage_set(_item->cgroup_storage);	\
+-			ret = func(_prog, ctx);		\
+-			_ret &= (ret & 1);		\
+-			_cn |= (ret & 2);		\
+-			_item++;			\
+-		}					\
+-		rcu_read_unlock();			\
+-		migrate_enable();			\
++		u32 _ret;				\
++		_ret = BPF_PROG_RUN_ARRAY_FLAGS(array, ctx, func, &_cn); \
+ 		if (_ret)				\
+ 			_ret = (_cn ? NET_XMIT_CN : NET_XMIT_SUCCESS);	\
+ 		else					\
+diff --git a/include/net/inet_common.h b/include/net/inet_common.h
+index cb2818862919..9ba935c15869 100644
+--- a/include/net/inet_common.h
++++ b/include/net/inet_common.h
+@@ -41,6 +41,9 @@ int inet_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len);
+ #define BIND_WITH_LOCK			(1 << 1)
+ /* Called from BPF program. */
+ #define BIND_FROM_BPF			(1 << 2)
++/* Skip CAP_NET_BIND_SERVICE check. */
++#define BIND_NO_CAP_NET_BIND_SERVICE	(1 << 3)
++
+ int __inet_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len,
+ 		u32 flags);
+ int inet_getname(struct socket *sock, struct sockaddr *uaddr,
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index da649f20d6b2..cdf3c7e611d9 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -1055,6 +1055,8 @@ EXPORT_SYMBOL(__cgroup_bpf_run_filter_sk);
+  * @uaddr: sockaddr struct provided by user
+  * @type: The type of program to be exectuted
+  * @t_ctx: Pointer to attach type specific context
++ * @flags: Pointer to u32 which contains higher bits of BPF program
++ *         return value (OR'ed together).
+  *
+  * socket is expected to be of type INET or INET6.
+  *
+@@ -1064,7 +1066,8 @@ EXPORT_SYMBOL(__cgroup_bpf_run_filter_sk);
+ int __cgroup_bpf_run_filter_sock_addr(struct sock *sk,
+ 				      struct sockaddr *uaddr,
+ 				      enum bpf_attach_type type,
+-				      void *t_ctx)
++				      void *t_ctx,
++				      u32 *flags)
+ {
+ 	struct bpf_sock_addr_kern ctx = {
+ 		.sk = sk,
+@@ -1087,7 +1090,8 @@ int __cgroup_bpf_run_filter_sock_addr(struct sock *sk,
+ 	}
+ 
+ 	cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
+-	ret = BPF_PROG_RUN_ARRAY(cgrp->bpf.effective[type], &ctx, BPF_PROG_RUN);
++	ret = BPF_PROG_RUN_ARRAY_FLAGS(cgrp->bpf.effective[type], &ctx,
++				       BPF_PROG_RUN, flags);
+ 
+ 	return ret == 1 ? 0 : -EPERM;
+ }
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index d0eae51b31e4..ef7c3ca53214 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -7986,6 +7986,11 @@ static int check_return_code(struct bpf_verifier_env *env)
+ 		    env->prog->expected_attach_type == BPF_CGROUP_INET4_GETSOCKNAME ||
+ 		    env->prog->expected_attach_type == BPF_CGROUP_INET6_GETSOCKNAME)
+ 			range = tnum_range(1, 1);
++		if (env->prog->expected_attach_type == BPF_CGROUP_INET4_BIND ||
++		    env->prog->expected_attach_type == BPF_CGROUP_INET6_BIND) {
++			range = tnum_range(0, 3);
++			enforce_attach_type_range = tnum_range(0, 3);
++		}
+ 		break;
+ 	case BPF_PROG_TYPE_CGROUP_SKB:
+ 		if (env->prog->expected_attach_type == BPF_CGROUP_INET_EGRESS) {
+diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
+index 6ba2930ff49b..aaa94bea19c3 100644
+--- a/net/ipv4/af_inet.c
++++ b/net/ipv4/af_inet.c
+@@ -438,6 +438,7 @@ EXPORT_SYMBOL(inet_release);
+ int inet_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
+ {
+ 	struct sock *sk = sock->sk;
++	u32 flags = BIND_WITH_LOCK;
+ 	int err;
+ 
+ 	/* If the socket has its own bind function then use it. (RAW) */
+@@ -450,11 +451,12 @@ int inet_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
+ 	/* BPF prog is run before any checks are done so that if the prog
+ 	 * changes context in a wrong way it will be caught.
+ 	 */
+-	err = BPF_CGROUP_RUN_PROG_INET4_BIND_LOCK(sk, uaddr);
++	err = BPF_CGROUP_RUN_PROG_INET_BIND_LOCK(sk, uaddr,
++						 BPF_CGROUP_INET4_BIND, &flags);
+ 	if (err)
+ 		return err;
+ 
+-	return __inet_bind(sk, uaddr, addr_len, BIND_WITH_LOCK);
++	return __inet_bind(sk, uaddr, addr_len, flags);
+ }
+ EXPORT_SYMBOL(inet_bind);
+ 
+@@ -499,7 +501,8 @@ int __inet_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len,
+ 
+ 	snum = ntohs(addr->sin_port);
+ 	err = -EACCES;
+-	if (snum && inet_port_requires_bind_service(net, snum) &&
++	if (!(flags & BIND_NO_CAP_NET_BIND_SERVICE) &&
++	    snum && inet_port_requires_bind_service(net, snum) &&
+ 	    !ns_capable(net->user_ns, CAP_NET_BIND_SERVICE))
+ 		goto out;
+ 
+diff --git a/net/ipv6/af_inet6.c b/net/ipv6/af_inet6.c
+index b9c654836b72..3e523c4f5226 100644
+--- a/net/ipv6/af_inet6.c
++++ b/net/ipv6/af_inet6.c
+@@ -439,6 +439,7 @@ static int __inet6_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len,
+ int inet6_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
+ {
+ 	struct sock *sk = sock->sk;
++	u32 flags = BIND_WITH_LOCK;
+ 	int err = 0;
+ 
+ 	/* If the socket has its own bind function then use it. */
+@@ -451,11 +452,12 @@ int inet6_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
+ 	/* BPF prog is run before any checks are done so that if the prog
+ 	 * changes context in a wrong way it will be caught.
+ 	 */
+-	err = BPF_CGROUP_RUN_PROG_INET6_BIND_LOCK(sk, uaddr);
++	err = BPF_CGROUP_RUN_PROG_INET_BIND_LOCK(sk, uaddr,
++						 BPF_CGROUP_INET6_BIND, &flags);
+ 	if (err)
+ 		return err;
+ 
+-	return __inet6_bind(sk, uaddr, addr_len, BIND_WITH_LOCK);
++	return __inet6_bind(sk, uaddr, addr_len, flags);
+ }
+ EXPORT_SYMBOL(inet6_bind);
+ 
+-- 
+2.30.0.280.ga3ce27912f-goog
 
