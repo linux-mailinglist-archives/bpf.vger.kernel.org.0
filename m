@@ -2,99 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FBF83046E3
-	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 19:46:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27C3A3048F9
+	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 20:46:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387616AbhAZRT0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Jan 2021 12:19:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37133 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390026AbhAZJPH (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 26 Jan 2021 04:15:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611652421;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZQNMLxZXL4V+OpSXDYs3PfwSfoYKXj1zeTe+gx9+fVk=;
-        b=iWljQ9OXM9/cGP5O5HDQkf2WOj6pK9gYQTeYYx1GURxnHQzmJghu2cHAzarvxdYKHyzaDO
-        1QVOnLWKduffzbm9VfJPcxU+xVfSwmk9WRwCuwnGax9BnpJwNjprXvzVpqIzRCR7/7A9ws
-        yCqAod8Cm+4kZ7WxBpLVCdAimVg33s4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-381-Gz-I5AYiO9-Nc9EqgAIqwA-1; Tue, 26 Jan 2021 04:13:36 -0500
-X-MC-Unique: Gz-I5AYiO9-Nc9EqgAIqwA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AE03A10054FF;
-        Tue, 26 Jan 2021 09:13:34 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 391621F0;
-        Tue, 26 Jan 2021 09:13:27 +0000 (UTC)
-Date:   Tue, 26 Jan 2021 10:13:25 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
-        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
-        colrack@gmail.com, brouer@redhat.com
-Subject: Re: [PATCH bpf-next V12 4/7] bpf: add BPF-helper for MTU checking
-Message-ID: <20210126101325.75097ddb@carbon>
-In-Reply-To: <3c542e42-2033-aca6-ba0e-4854c24980c2@iogearbox.net>
-References: <161098881526.108067.7603213364270807261.stgit@firesoul>
-        <161098887018.108067.13643446976934084937.stgit@firesoul>
-        <6772a12b-2a60-bb3b-93df-1d6d6c7c7fd7@iogearbox.net>
-        <20210125094148.2b3bb128@carbon>
-        <3c542e42-2033-aca6-ba0e-4854c24980c2@iogearbox.net>
+        id S1727300AbhAZFfi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Jan 2021 00:35:38 -0500
+Received: from mga09.intel.com ([134.134.136.24]:41202 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726595AbhAYJig (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Jan 2021 04:38:36 -0500
+IronPort-SDR: ASoREU6ukpVF7wfocjwxtsTVudg6TolpaW93z00mK576Dk+BvnAcB0APJSuZpNIY058dMjp+DS
+ wXqyyCIYD0pw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9874"; a="179844612"
+X-IronPort-AV: E=Sophos;i="5.79,373,1602572400"; 
+   d="scan'208";a="179844612"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jan 2021 01:37:15 -0800
+IronPort-SDR: 4Fvt0DGGKPJu5JpC2pAWxs4YEZDmcehtCE/wRF8RGgJ8JjsWrd0V+8Ui6dOinxVsPv9RRmP1vq
+ 0Dmz6yR8P0SQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,373,1602572400"; 
+   d="scan'208";a="577320988"
+Received: from silpixa00399839.ir.intel.com (HELO localhost.localdomain) ([10.237.222.142])
+  by fmsmga005.fm.intel.com with ESMTP; 25 Jan 2021 01:37:14 -0800
+From:   Ciara Loftus <ciara.loftus@intel.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        magnus.karlsson@intel.com, bjorn@kernel.org,
+        weqaar.a.janjua@intel.com
+Cc:     Ciara Loftus <ciara.loftus@intel.com>
+Subject: [PATCH bpf-next 0/6] AF_XDP Packet Drop Tracing
+Date:   Mon, 25 Jan 2021 09:07:33 +0000
+Message-Id: <20210125090739.1045-1-ciara.loftus@intel.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 25 Jan 2021 23:27:22 +0100
-Daniel Borkmann <daniel@iogearbox.net> wrote:
+This series introduces tracing infrastructure for AF_XDP sockets (xsks).
+A trace event 'xsk_packet_drop' is created which can be enabled by toggling
 
-> >>> +	/* At this point, skb->len exceed MTU, but as it include length of all
-> >>> +	 * segments, it can still be below MTU.  The SKB can possibly get
-> >>> +	 * re-segmented in transmit path (see validate_xmit_skb).  Thus, user
-> >>> +	 * must choose if segs are to be MTU checked.
-> >>> +	 */
-> >>> +	if (skb_is_gso(skb)) {
-> >>> +		ret = BPF_MTU_CHK_RET_SUCCESS;
-> >>> +
-> >>> +		if (flags & BPF_MTU_CHK_SEGS &&
-> >>> +		    !skb_gso_validate_network_len(skb, mtu))
-> >>> +			ret = BPF_MTU_CHK_RET_SEGS_TOOBIG;  
-> >>
-> >> I think that looks okay overall now. One thing that will easily slip through
-> >> is that in the helper description you mentioned 'Check cannot use len_diff.'
-> >> for BPF_MTU_CHK_SEGS flag. So right now for non-zero len_diff the user
-> >> will still get BPF_MTU_CHK_RET_SUCCESS if the current length check via
-> >> skb_gso_validate_network_len(skb, mtu) passes. If it cannot be checked,
-> >> maybe enforce len_diff == 0 for gso skbs on BPF_MTU_CHK_SEGS?  
-> > 
-> > Ok. Do you want/think this can be enforced by the verifier or are you
-> > simply requesting that the helper will return -EINVAL (or another errno)?  
-> 
-> Simple -EINVAL should be fine in this case. Generally, we can detect this from
-> verifier side but I don't think the extra complexity is worth it especially given
-> this is dependent on BPF_MTU_CHK_SEGS and otherwise can be non-zero.
+/sys/kernel/debug/tracing/events/xsk/xsk_packet_drop/enable
 
-Luckily this was also my choice in V13 that I've already send out.
+When enabled and packets are dropped in the kernel, traces are generated
+which describe the reason for the packet drop as well as the netdev and
+qid information of the xsk which encountered the drop.
 
-https://lore.kernel.org/netdev/161159457239.321749.9067604476261493815.stgit@firesoul/
+Example traces:
+
+507.588563: xsk_packet_drop: netdev: eth0 qid 0 reason: rxq full
+507.588567: xsk_packet_drop: netdev: eth0 qid 0 reason: packet too big
+507.588568: xsk_packet_drop: netdev: eth0 qid 0 reason: fq empty
+
+The event can also be monitored using perf:
+
+perf stat -a -e xsk:xsk_packet_drop
+
+Three selftests are added which each ensure the appropriate traces are
+generated for the following scenarios:
+* rx queue full
+* packet too big
+* fill queue empty
+
+Ciara Loftus (6):
+  xsk: add tracepoints for packet drops
+  selftests/bpf: restructure setting the packet count
+  selftests/bpf: add framework for xsk selftests
+  selftests/bpf: XSK_TRACE_DROP_RXQ_FULL test
+  selftests/bpf: XSK_TRACE_DROP_PKT_TOO_BIG test
+  selftests/bpf: XSK_TRACE_DROP_FQ_EMPTY test
+
+ MAINTAINERS                                |   1 +
+ include/linux/bpf_trace.h                  |   1 +
+ include/trace/events/xsk.h                 |  45 +++++
+ include/uapi/linux/if_xdp.h                |   8 +
+ kernel/bpf/core.c                          |   1 +
+ net/xdp/xsk.c                              |   5 +
+ net/xdp/xsk_buff_pool.c                    |   8 +-
+ tools/include/uapi/linux/if_xdp.h          |   8 +
+ tools/testing/selftests/bpf/test_xsk.sh    |  90 +++++++++-
+ tools/testing/selftests/bpf/xdpxceiver.c   | 186 +++++++++++++++++++--
+ tools/testing/selftests/bpf/xdpxceiver.h   |  10 ++
+ tools/testing/selftests/bpf/xsk_prereqs.sh |   3 +-
+ 12 files changed, 344 insertions(+), 22 deletions(-)
+ create mode 100644 include/trace/events/xsk.h
+
 -- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+2.17.1
 
