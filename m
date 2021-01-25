@@ -2,143 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18FDA302F06
-	for <lists+bpf@lfdr.de>; Mon, 25 Jan 2021 23:29:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0778B302F46
+	for <lists+bpf@lfdr.de>; Mon, 25 Jan 2021 23:44:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732404AbhAYW20 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Jan 2021 17:28:26 -0500
-Received: from www62.your-server.de ([213.133.104.62]:59376 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732127AbhAYW2I (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Jan 2021 17:28:08 -0500
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1l4AKR-0004gm-Qi; Mon, 25 Jan 2021 23:27:23 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1l4AKR-0009UD-Gr; Mon, 25 Jan 2021 23:27:23 +0100
-Subject: Re: [PATCH bpf-next V12 4/7] bpf: add BPF-helper for MTU checking
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
-        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
-        colrack@gmail.com
-References: <161098881526.108067.7603213364270807261.stgit@firesoul>
- <161098887018.108067.13643446976934084937.stgit@firesoul>
- <6772a12b-2a60-bb3b-93df-1d6d6c7c7fd7@iogearbox.net>
- <20210125094148.2b3bb128@carbon>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <3c542e42-2033-aca6-ba0e-4854c24980c2@iogearbox.net>
-Date:   Mon, 25 Jan 2021 23:27:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1732229AbhAYWnn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Jan 2021 17:43:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732781AbhAYWn3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Jan 2021 17:43:29 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12394C06174A
+        for <bpf@vger.kernel.org>; Mon, 25 Jan 2021 14:42:44 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id f11so17319949ljm.8
+        for <bpf@vger.kernel.org>; Mon, 25 Jan 2021 14:42:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=N/ZLCFpqvvSBK9CS6fYLer3j0rF5eV//tUXfQU1el68=;
+        b=DhT0cPn81bc9ZNXJhjFuhiNkLfOifgAQLJya4ostZuqvLbLPifjxR8oPGgDCHbxS9t
+         FdJrpomkI/NkZGXiTVeAJ+VsY7znYgxPuTmwJRqhK7Wewc2+eSf64xsmnPfPhz0yk+Lu
+         eINws5gJ0ezzzUlECYY+fKaUWrsHxR/Bb20kfGJIwBDwSep7AvlOrbZgq2KocIjOUcj6
+         vNbUIYK1bNC2RuA2N9ZzrGq9vcegf/4+i7MmFvCFAq+YUSdX8vLByJM797HPg3S4WSYp
+         UD4QexUCtSkkt2SGUCfdpqaJ12I2PiU0rsPFsH8OOfHANfYt980cNg87uNqi76TR7PWl
+         /lyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=N/ZLCFpqvvSBK9CS6fYLer3j0rF5eV//tUXfQU1el68=;
+        b=fqKCzHieuwFLXOeHo20dCqqHFyUJTCMiRf1FesH65u5Z9OVMdwqMmfAxehATVtvth/
+         oWERypVNAgICMZEd+82u5gpzSDr9oOttYAwxF/gErxUU8gGm3PphkFQO+zlZH299EGkY
+         pDuQiTRiwqL/XZvJm99Lw3lxrZcREuzaJhq/a3SUhht4ZiC3LjbEWNex4DugnEMKxzgX
+         h9aq4PMILgSnKz7TxFEsJ9qtc88DRA/Db9irgYZxo+JGPTYBhjFuGt+HALLetmkuySak
+         dCIJz8DzrfExz1NMehLv9mr1+689p4DIfN3NkbZsi4B93w+Ka5R4HL4VgE2u3qRVRF5T
+         34sQ==
+X-Gm-Message-State: AOAM5302tXPuoifEo/k2LpENdptQF+dNt9wAMv2rAV1lzmLu58eBahHt
+        46fkS4f0aEs+Ff/sFfV2Z1gJnTieyp/1oCMDxfr+VH87
+X-Google-Smtp-Source: ABdhPJzuNg/c+Ug/qy4rrGdmEiaCTzih/g2gamXGWYzC6quaEROD26nMqs0kXB9niz3FRqyCaibMDjdlRLZUYMsb1qI=
+X-Received: by 2002:a2e:5ca:: with SMTP id 193mr1291771ljf.236.1611614562524;
+ Mon, 25 Jan 2021 14:42:42 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210125094148.2b3bb128@carbon>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26060/Mon Jan 25 13:28:03 2021)
+References: <CAHC9VhQgy959hkpU8fwZnrTqGphVSA+ONF99Yy4ZQFyjQ_030A@mail.gmail.com>
+In-Reply-To: <CAHC9VhQgy959hkpU8fwZnrTqGphVSA+ONF99Yy4ZQFyjQ_030A@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 25 Jan 2021 14:42:31 -0800
+Message-ID: <CAADnVQJaJ0i2L2k-dM+neeT61q+pwEd+F6ASGh4Xbi-ogj0hfQ@mail.gmail.com>
+Subject: Re: selftest/bpf/test_verifier_log fails on v5.11-rc5
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/25/21 9:41 AM, Jesper Dangaard Brouer wrote:
-> On Sat, 23 Jan 2021 02:35:41 +0100
-> Daniel Borkmann <daniel@iogearbox.net> wrote:
-> 
->>> + *		The *flags* argument can be a combination of one or more of the
->>> + *		following values:
->>> + *
->>> + *		**BPF_MTU_CHK_SEGS**
->>> + *			This flag will only works for *ctx* **struct sk_buff**.
->>> + *			If packet context contains extra packet segment buffers
->>> + *			(often knows as GSO skb), then MTU check is harder to
->>> + *			check at this point, because in transmit path it is
->>> + *			possible for the skb packet to get re-segmented
->>> + *			(depending on net device features).  This could still be
->>> + *			a MTU violation, so this flag enables performing MTU
->>> + *			check against segments, with a different violation
->>> + *			return code to tell it apart. Check cannot use len_diff.
->>> + *
->>> + *		On return *mtu_len* pointer contains the MTU value of the net
->>> + *		device.  Remember the net device configured MTU is the L3 size,
->>> + *		which is returned here and XDP and TX length operate at L2.
->>> + *		Helper take this into account for you, but remember when using
->>> + *		MTU value in your BPF-code.  On input *mtu_len* must be a valid
->>> + *		pointer and be initialized (to zero), else verifier will reject
->>> + *		BPF program.
->>> + *
->>> + *	Return
->>> + *		* 0 on success, and populate MTU value in *mtu_len* pointer.
->>> + *
->>> + *		* < 0 if any input argument is invalid (*mtu_len* not updated)
->>> + *
->>> + *		MTU violations return positive values, but also populate MTU
->>> + *		value in *mtu_len* pointer, as this can be needed for
->>> + *		implementing PMTU handing:
->>> + *
->>> + *		* **BPF_MTU_CHK_RET_FRAG_NEEDED**
->>> + *		* **BPF_MTU_CHK_RET_SEGS_TOOBIG**
->>> + *
->>>     */
->> [...]
->>> +BPF_CALL_5(bpf_skb_check_mtu, struct sk_buff *, skb,
->>> +	   u32, ifindex, u32 *, mtu_len, s32, len_diff, u64, flags)
->>> +{
->>> +	int ret = BPF_MTU_CHK_RET_FRAG_NEEDED;
->>> +	struct net_device *dev = skb->dev;
->>> +	int skb_len, dev_len;
->>> +	int mtu;
->>> +
->>> +	if (unlikely(flags & ~(BPF_MTU_CHK_SEGS)))
->>> +		return -EINVAL;
->>> +
->>> +	dev = __dev_via_ifindex(dev, ifindex);
->>> +	if (unlikely(!dev))
->>> +		return -ENODEV;
->>> +
->>> +	mtu = READ_ONCE(dev->mtu);
->>> +
->>> +	dev_len = mtu + dev->hard_header_len;
->>> +	skb_len = skb->len + len_diff; /* minus result pass check */
->>> +	if (skb_len <= dev_len) {
->>> +		ret = BPF_MTU_CHK_RET_SUCCESS;
->>> +		goto out;
->>> +	}
->>> +	/* At this point, skb->len exceed MTU, but as it include length of all
->>> +	 * segments, it can still be below MTU.  The SKB can possibly get
->>> +	 * re-segmented in transmit path (see validate_xmit_skb).  Thus, user
->>> +	 * must choose if segs are to be MTU checked.
->>> +	 */
->>> +	if (skb_is_gso(skb)) {
->>> +		ret = BPF_MTU_CHK_RET_SUCCESS;
->>> +
->>> +		if (flags & BPF_MTU_CHK_SEGS &&
->>> +		    !skb_gso_validate_network_len(skb, mtu))
->>> +			ret = BPF_MTU_CHK_RET_SEGS_TOOBIG;
->>
->> I think that looks okay overall now. One thing that will easily slip through
->> is that in the helper description you mentioned 'Check cannot use len_diff.'
->> for BPF_MTU_CHK_SEGS flag. So right now for non-zero len_diff the user
->> will still get BPF_MTU_CHK_RET_SUCCESS if the current length check via
->> skb_gso_validate_network_len(skb, mtu) passes. If it cannot be checked,
->> maybe enforce len_diff == 0 for gso skbs on BPF_MTU_CHK_SEGS?
-> 
-> Ok. Do you want/think this can be enforced by the verifier or are you
-> simply requesting that the helper will return -EINVAL (or another errno)?
+On Mon, Jan 25, 2021 at 12:54 PM Paul Moore <paul@paul-moore.com> wrote:
+>
+> Hello all,
+>
+> My apologies if this has already been reported, but I didn't see
+> anything obvious with a quick search through the archives.  I have a
+> test program that behaves very similar to the existing
+> selftest/bpf/test_verifier_log test that has started failing this week
+> with v5.11-rc5; it ran without problem last week on v5.11-rc4.  Is
+> this a known problem with a fix already, or is this something new?
+>
+> % uname -r
+> 5.11.0-0.rc5.134.fc34.x86_64
+> % pwd
+> /.../linux/tools/testing/selftests/bpf
+> % git log --oneline | head -n 1
+> 6ee1d745b7c9 Linux 5.11-rc5
+> % make test_verifier_log
+>   ...
+>   BINARY   test_verifier_log
+> % ./test_verifier_log
+> Test log_level 0...
+> Test log_size < 128...
+> Test log_buff = NULL...
+> Test oversized buffer...
+> ERROR: Program load returned: ret:-1/errno:22, expected ret:-1/errno:13
 
-Simple -EINVAL should be fine in this case. Generally, we can detect this from
-verifier side but I don't think the extra complexity is worth it especially given
-this is dependent on BPF_MTU_CHK_SEGS and otherwise can be non-zero.
-
-Thanks,
-Daniel
+Thanks for reporting.
+bpf and bpf-next don't have this issue. Not sure what changed.
