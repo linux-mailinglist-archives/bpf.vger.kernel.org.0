@@ -2,206 +2,306 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B863302535
-	for <lists+bpf@lfdr.de>; Mon, 25 Jan 2021 14:01:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF1FF302716
+	for <lists+bpf@lfdr.de>; Mon, 25 Jan 2021 16:49:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728359AbhAYM4v (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Jan 2021 07:56:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728499AbhAYMyg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Jan 2021 07:54:36 -0500
-Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82410C06174A
-        for <bpf@vger.kernel.org>; Mon, 25 Jan 2021 04:53:54 -0800 (PST)
-Received: by mail-vk1-xa2c.google.com with SMTP id m25so1759401vkk.6
-        for <bpf@vger.kernel.org>; Mon, 25 Jan 2021 04:53:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Axap6NCiq5XBgCk4p9bNwKVuQL6Jpya7zeTo4+Oo+k4=;
-        b=Fcm1rglPsZkUHdzqu88sNVHBYxu30GoPy+oeLZBYrmCpPuv9aLNb37rzt+UZuq3nrn
-         n5e2JsHvf9P96jFkFLYOXLDTgRyW7Bg4dXbi8JTS/TYE6cU/uYDxPFaVmGwr5OkukXRF
-         Qs7EjJ40qsS2Hoeq5YX6v8SyYy2jlaEWGzzXZ7ocsmeN2XvWde8Zi/iAMr1IcMf4Qro1
-         VuW+SiEEjn6bL7kJ18fJj4tw3n89e3NuUIqVOKOeVoNeaqS5EPWG+yUNIVsKHVYDBSEs
-         +n6kN23Aav0yKx+R0TSD8eu2iWNqAnfzAKvUWr/bJS5nDP4wUz4+d0AHtMaPjfUDUyGU
-         F9DQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Axap6NCiq5XBgCk4p9bNwKVuQL6Jpya7zeTo4+Oo+k4=;
-        b=mIEuZVxWOVmvg5VT37B1J4HNI08f9pcSBE50XsKESzAdyBittWDaeeTrHe0+yrtQWb
-         RPjvvH7oevvPfl8x3SDYqsexrparmOVMj1Vo79iUvL12lXgQvGi2oKE7MeUcPgyLbs7Q
-         Vk6/am5mD69ZUptGHk26R0GYfx1xj4TPnFK+a85vElTunVOcyr8W+eDin05rwBMi0KOM
-         FbewFLGh6vQrtG2eh6eo+5Izaf3wptmJbJ4EZ4GZ8cOHJztLJKWtgWGEfyumn64bGFxY
-         b374JqV6C8cTPlz/O9zbtiYWV7r9xL62Y1P/YNrx7guyRT2Wi6mSIZJQiEC4Qih3dQMo
-         w/Xw==
-X-Gm-Message-State: AOAM5309OauSNY7ov8grIMlEqt5wXSMr4oAAkhgtdtVGQmITGV1ynJW5
-        cifPpprIs9ACVzFSaW4iapg5NYewAPge362TVK/V1A==
-X-Google-Smtp-Source: ABdhPJy5U78QxbteNJ+h0p+7a50sUr+JS79ov4wjs5aIS7CxfEgvaTnqeXb3bnoXQSdy7NRjVELUR4Ln6r+NS2TbmqM=
-X-Received: by 2002:a1f:a643:: with SMTP id p64mr185980vke.15.1611579233303;
- Mon, 25 Jan 2021 04:53:53 -0800 (PST)
-MIME-Version: 1.0
-References: <20210118160139.1971039-1-gprocida@google.com> <20210118160139.1971039-4-gprocida@google.com>
- <CAEf4BzazvC9H=K_A9KamGTB3iKtjuNxd4hEvwFOnkPdnszo6Bw@mail.gmail.com>
- <CAGvU0HmE+gs8eNQcXmFrEERHaiGEnMgqxBho4Ny3DLCe6WR55Q@mail.gmail.com> <CAEf4BzZQvLofuVHPqu1ybsTVrM9pFRCRSR5UEFdNJq3Ha8=Luw@mail.gmail.com>
-In-Reply-To: <CAEf4BzZQvLofuVHPqu1ybsTVrM9pFRCRSR5UEFdNJq3Ha8=Luw@mail.gmail.com>
-From:   Giuliano Procida <gprocida@google.com>
-Date:   Mon, 25 Jan 2021 12:53:16 +0000
-Message-ID: <CAGvU0HmsoTSoPP=uJ679i2xH5k9o3iS=NCUyt2eVC63ShzVctw@mail.gmail.com>
-Subject: Re: [PATCH 3/3] btf_encoder: Set .BTF section alignment to 16
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     dwarves@vger.kernel.org, kernel-team@android.com,
-        =?UTF-8?Q?Matthias_M=C3=A4nnich?= <maennich@google.com>,
+        id S1730254AbhAYPmb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Jan 2021 10:42:31 -0500
+Received: from mail-41103.protonmail.ch ([185.70.41.103]:30423 "EHLO
+        mail-41103.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730214AbhAYPmM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Jan 2021 10:42:12 -0500
+Received: from mail-02.mail-europe.com (mail-02.mail-europe.com [51.89.119.103])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail-41103.protonmail.ch (Postfix) with ESMTPS id 6333F20000B6
+        for <bpf@vger.kernel.org>; Mon, 25 Jan 2021 15:09:49 +0000 (UTC)
+Authentication-Results: mail-41103.protonmail.ch;
+        dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b="F91tdGQe"
+Date:   Mon, 25 Jan 2021 15:07:31 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1611587255; bh=6gbNlVdgnHaUiyryohCgZd5ryQzBNr+5hI97WloEzqs=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=F91tdGQeVEguAB9jLIWvfC1BVy1mAQ9X/NTKAZ6x7nxJC5lRm89/zGyXcqtDaiZXy
+         HvhpygRf31tL0n7vzl/bhzMIycIglvExF3T9T3Ui+HmKPlOKMgOHdtUkF1pbjipTPk
+         iRk+KC+zj6Zjo3+alMpgRftCfLAd1P9cef8/U7zH6tscm4Zpf037i/TQIUUIvS+r0d
+         OZ3f2Gx+/eEttGnWiYYqVl1OtYfqCzBU+hXssHhCPTs/WVpdnnJnV7SUTepX32cvDI
+         ijbQ4dJLZdAv+Bq2SFqF9LF95t2dOcmEf4M4lOScZkk4GAkVTtkx1jsLAInkRQ1n62
+         pllGZJfn9dUwA==
+To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, bjorn@kernel.org,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH bpf-next v3 3/3] xsk: build skb by page
+Message-ID: <20210125150705.18376-1-alobakin@pm.me>
+In-Reply-To: <1611586627.1035807-1-xuanzhuo@linux.alibaba.com>
+References: <1611586627.1035807-1-xuanzhuo@linux.alibaba.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi.
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Date: Mon, 25 Jan 2021 22:57:07 +0800
 
-On Thu, 21 Jan 2021 at 20:08, Andrii Nakryiko <andrii.nakryiko@gmail.com> w=
-rote:
->
-> On Thu, Jan 21, 2021 at 3:07 AM Giuliano Procida <gprocida@google.com> wr=
+> On Mon, 25 Jan 2021 13:25:45 +0000, Alexander Lobakin <alobakin@pm.me> wr=
 ote:
+> > From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > Date: Mon, 25 Jan 2021 11:10:43 +0800
 > >
-> > Hi.
+> > > On Fri, 22 Jan 2021 16:24:17 +0000, Alexander Lobakin <alobakin@pm.me=
+> wrote:
+> > > > From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > > Date: Fri, 22 Jan 2021 23:36:29 +0800
+> > > >
+> > > > > On Fri, 22 Jan 2021 12:08:00 +0000, Alexander Lobakin <alobakin@p=
+m.me> wrote:
+> > > > > > From: Alexander Lobakin <alobakin@pm.me>
+> > > > > > Date: Fri, 22 Jan 2021 11:55:35 +0000
+> > > > > >
+> > > > > > > From: Alexander Lobakin <alobakin@pm.me>
+> > > > > > > Date: Fri, 22 Jan 2021 11:47:45 +0000
+> > > > > > >
+> > > > > > > > From: Eric Dumazet <eric.dumazet@gmail.com>
+> > > > > > > > Date: Thu, 21 Jan 2021 16:41:33 +0100
+> > > > > > > >
+> > > > > > > > > On 1/21/21 2:47 PM, Xuan Zhuo wrote:
+> > > > > > > > > > This patch is used to construct skb based on page to sa=
+ve memory copy
+> > > > > > > > > > overhead.
+> > > > > > > > > >
+> > > > > > > > > > This function is implemented based on IFF_TX_SKB_NO_LIN=
+EAR. Only the
+> > > > > > > > > > network card priv_flags supports IFF_TX_SKB_NO_LINEAR w=
+ill use page to
+> > > > > > > > > > directly construct skb. If this feature is not supporte=
+d, it is still
+> > > > > > > > > > necessary to copy data to construct skb.
+> > > > > > > > > >
+> > > > > > > > > > ---------------- Performance Testing ------------
+> > > > > > > > > >
+> > > > > > > > > > The test environment is Aliyun ECS server.
+> > > > > > > > > > Test cmd:
+> > > > > > > > > > ```
+> > > > > > > > > > xdpsock -i eth0 -t  -S -s <msg size>
+> > > > > > > > > > ```
+> > > > > > > > > >
+> > > > > > > > > > Test result data:
+> > > > > > > > > >
+> > > > > > > > > > size    64      512     1024    1500
+> > > > > > > > > > copy    1916747 1775988 1600203 1440054
+> > > > > > > > > > page    1974058 1953655 1945463 1904478
+> > > > > > > > > > percent 3.0%    10.0%   21.58%  32.3%
+> > > > > > > > > >
+> > > > > > > > > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > > > > > > > > Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
+> > > > > > > > > > ---
+> > > > > > > > > >  net/xdp/xsk.c | 104 ++++++++++++++++++++++++++++++++++=
+++++++++++++++----------
+> > > > > > > > > >  1 file changed, 86 insertions(+), 18 deletions(-)
+> > > > > > > > > >
+> > > > > > > > > > diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> > > > > > > > > > index 4a83117..38af7f1 100644
+> > > > > > > > > > --- a/net/xdp/xsk.c
+> > > > > > > > > > +++ b/net/xdp/xsk.c
+> > > > > > > > > > @@ -430,6 +430,87 @@ static void xsk_destruct_skb(struc=
+t sk_buff *skb)
+> > > > > > > > > >  =09sock_wfree(skb);
+> > > > > > > > > >  }
+> > > > > > > > > >
+> > > > > > > > > > +static struct sk_buff *xsk_build_skb_zerocopy(struct x=
+dp_sock *xs,
+> > > > > > > > > > +=09=09=09=09=09      struct xdp_desc *desc)
+> > > > > > > > > > +{
+> > > > > > > > > > +=09u32 len, offset, copy, copied;
+> > > > > > > > > > +=09struct sk_buff *skb;
+> > > > > > > > > > +=09struct page *page;
+> > > > > > > > > > +=09void *buffer;
+> > > > > > > > > > +=09int err, i;
+> > > > > > > > > > +=09u64 addr;
+> > > > > > > > > > +
+> > > > > > > > > > +=09skb =3D sock_alloc_send_skb(&xs->sk, 0, 1, &err);
+> > > > > >
+> > > > > > Also,
+> > > > > > maybe we should allocate it with NET_SKB_PAD so NIC drivers cou=
+ld
+> > > > > > use some reserved space?
+> > > > > >
+> > > > > > =09=09skb =3D sock_alloc_send_skb(&xs->sk, NET_SKB_PAD, 1, &err=
+);
+> > > > > > =09=09...
+> > > > > > =09=09skb_reserve(skb, NET_SKB_PAD);
+> > > > > >
+> > > > > > Eric, what do you think?
+> > > > >
+> > > > > I think you are right. Some space should be added to continuous e=
+quipment. This
+> > > > > space should also be added in the copy mode below. Is LL_RESERVED=
+_SPACE more
+> > > > > appropriate?
+> > > >
+> > > > No. If you look at __netdev_alloc_skb() and __napi_alloc_skb(), the=
+y
+> > > > reserve NET_SKB_PAD at the beginning of linear area. Documentation =
+of
+> > > > __build_skb() also says that driver should reserve NET_SKB_PAD befo=
+re
+> > > > the actual frame, so it is a standartized hardware-independent
+> > > > headroom.
+> > >
+> > > I understand that these scenarios are in the case of receiving packet=
+s, and the
+> > > increased space is used by the protocol stack, especially RPS. I don'=
+t know if
+> > > this also applies to the sending scenario?
+> > >
+> > > > Leaving that space in skb->head will allow developers to implement
+> > > > IFF_TX_SKB_NO_LINEAR in a wider variety of drivers, especially when
+> > > > a driver has to prepend some sort of data before the actual frame.
+> > > > Since it's usually of a size of one cacheline, shouldn't be a big
+> > > > deal.
+> > > >
+> > >
+> > > I agree with this. Some network cards require some space. For example=
+,
+> > > virtio-net needs to add a virtio_net_hdr_mrg_rxbuf before skb->data, =
+so my
+> > > original understanding is used here. When we send the skb to the
+> > > driver, the driver may need a memory space. So I refer to the
+> > > implementation of __ip_append_data, I feel that adding
+> > > LL_RESERVED_SPACE is a suitable solution.
+> > >
+> > > I feel that I may still not understand the use scene you mentioned. C=
+an you
+> > > elaborate on what you understand this space will be used for?
 > >
-> > On Thu, 21 Jan 2021 at 07:16, Andrii Nakryiko <andrii.nakryiko@gmail.co=
-m> wrote:
-> >>
-> >> On Mon, Jan 18, 2021 at 8:01 AM Giuliano Procida <gprocida@google.com>=
- wrote:
-> >> >
-> >> > This is to avoid misaligned access when memory-mapping ELF sections.
-> >> >
-> >> > Signed-off-by: Giuliano Procida <gprocida@google.com>
-> >> > ---
-> >> >  libbtf.c | 8 ++++++++
-> >> >  1 file changed, 8 insertions(+)
-> >> >
-> >> > diff --git a/libbtf.c b/libbtf.c
-> >> > index 7552d8e..2f12d53 100644
-> >> > --- a/libbtf.c
-> >> > +++ b/libbtf.c
-> >> > @@ -797,6 +797,14 @@ static int btf_elf__write(const char *filename,=
- struct btf *btf)
-> >> >                         goto unlink;
-> >> >                 }
-> >> >
-> >> > +               snprintf(cmd, sizeof(cmd), "%s --set-section-alignme=
-nt .BTF=3D16 %s",
-> >> > +                        llvm_objcopy, filename);
-> >>
-> >> does it align inside the ELF file to 16 bytes, or does it request the
-> >> linker to align it at 16 byte alignment in memory? Given .BTF section
-> >> is not loadable, trying to understand the implications.
-> >>
+> > LL_RESERVED_SPACE() consists of L2 header size (Ethernet for the most
+> > cases) and dev->needed_headroom. That is not a value to count on, as:
+> >  - L2 header is already here in XSK buffer;
+> >  - not all drivers set dev->needed_headroom;
+> >  - it's aligned by 16, not L1_CACHE_SIZE.
 > >
-> > We have a tool that loads BTF from ELF files. It uses mmap and "parses"=
- the BTF as structs in memory. The ELF file is mapped with page alignment b=
-ut the BTF section within it has no alignment at all. Using MSAN (IIRC) we =
-get warnings about misaligned accesses. Everything within BTF itself is nat=
-urally aligned, so it makes sense to align the section within ELF as well. =
-There are probably some architectures where this makes the difference betwe=
-en working and SIGBUS.
+> > As this path is XSK generic path, i.e. when driver-side XSK is not
+> > present or not requested, it can be applied to every driver. Many
+> > of them call skb_cow_head() + skb_push() on their xmit path:
+> >  - nearly all virtual drivers (to insert their specific headers);
+> >  - nearly all switch drivers (to insert switch CPU port tags);
+> >  - some enterprise NIC drivers (ChelsIO for LSO, Netronome
+> >    for TLS etc.).
 > >
+> > skb_cow_head() + skb_push() relies on a required NET_SKB_PAD headroom.
+> > In case where there is no enough space (and you allocate an skb with
+> > no headroom at all), skb will be COWed, which is a huge overhead and
+> > will cause slowdowns.
+> > So, adding NET_SKB_PAD would save from almost all, if not all, such
+> > reallocations.
 >
-> Right, ok, thanks for explaining!
->
-> > I did try to get objcopy to set alignment at the point the section is a=
-dded. However, this didn't work.
-> >
-> >>
-> >>
-> >> > +               if (system(cmd)) {
-> >>
-> >> Also curious, if objcopy emits error (saying that
-> >> --set-section-alignment argument is not recognized), will that error
-> >> be shown in stdout? or system() consumes it without redirecting it to
-> >> stdout?
-> >>
-> >
-> > I believe it goes to stderr. I would need to check. system() will not c=
-onsume this. I'm not keen to write stderr (or stdout) post-processing code =
-in plain C.
-> >
->
-> You can use popen() to capture/hide output, this is a better
-> alternative to system() in this case. We don't want "expected
-> warnings" in kernel build process.
->
-> >>
-> >> > +                       /* non-fatal, this is a nice-to-have and it'=
-s only supported from LLVM 10 */
-> >> > +                       fprintf(stderr, "%s: warning: failed to alig=
-n .BTF section in '%s': %d!\n",
-> >> > +                               __func__, filename, errno);
-> >>
-> >> Probably better to emit this warning only in verbose mode, otherwise
-> >> lots of people will start complaining that they get some new warnings
-> >> from pahole.
-> >>
-> >
-> > It may be better to just use POSIX and ELF APIs directly instead of obj=
-copy. This way the section can be added with the right alignment directly. =
-pahole is already linked against libelf and if we could get rid of the exte=
-rnal dependency on objcopy it would be a win in more than one way.
->
-> This would be great, yes. At some point I remember giving it a try,
-> but for some reason I couldn't make libelf flush data and update
-> section headers properly. Maybe you'll have better luck. Though I
-> think I was trying to mark section loadable, and eventually I probably
-> managed to do that, but still abandoned it (it's not enough to mark
-> section loadable, you have to assign it to ELF segment as well, which
-> libelf doesn't allow to do and you need linker support). Anyways, give
-> it a try, it should work.
+> I have learnt so much, thanks to you.
 
-I struggled for a day and a bit and have got this (ELF_F_LAYOUT etc.)
-working. There are some caveats:
+Glad to hear!
 
-1. Laying out only the new / updated sections can leave gaps.
-
-In practice, for vmlinux, it's a very small hole. To fix this, I'd
-need to reposition .strtab as well as .BTF and .shstrtab.
-
-2. vmlinux increases in size as llvm-objcopy was trimming down .strtab.
-
-I know very little about this, but I'd guess that the kernel linker
-scripts are leaving strings in .strtab that are not referenced by
-.symtab.
-
-I'll send a short series out for review soon.
-
-Giuliano.
-
->
+> > > Thanks.
+> > >
+> > > >
+> > > > [ I also had an idea of allocating an skb with a headroom of
+> > > > NET_SKB_PAD + 256 bytes, so nearly all drivers could just call
+> > > > pskb_pull_tail() to support such type of skbuffs without much
+> > > > effort, but I think that it's better to teach drivers to support
+> > > > xmitting of really headless ones. If virtio_net can do it, why
+> > > > shouldn't the others ]
+> > > >
+> > > > > > > > > > +=09if (unlikely(!skb))
+> > > > > > > > > > +=09=09return ERR_PTR(err);
+> > > > > > > > > > +
+> > > > > > > > > > +=09addr =3D desc->addr;
+> > > > > > > > > > +=09len =3D desc->len;
+> > > > > > > > > > +
+> > > > > > > > > > +=09buffer =3D xsk_buff_raw_get_data(xs->pool, addr);
+> > > > > > > > > > +=09offset =3D offset_in_page(buffer);
+> > > > > > > > > > +=09addr =3D buffer - xs->pool->addrs;
+> > > > > > > > > > +
+> > > > > > > > > > +=09for (copied =3D 0, i =3D 0; copied < len; i++) {
+> > > > > > > > > > +=09=09page =3D xs->pool->umem->pgs[addr >> PAGE_SHIFT]=
+;
+> > > > > > > > > > +
+> > > > > > > > > > +=09=09get_page(page);
+> > > > > > > > > > +
+> > > > > > > > > > +=09=09copy =3D min_t(u32, PAGE_SIZE - offset, len - co=
+pied);
+> > > > > > > > > > +
+> > > > > > > > > > +=09=09skb_fill_page_desc(skb, i, page, offset, copy);
+> > > > > > > > > > +
+> > > > > > > > > > +=09=09copied +=3D copy;
+> > > > > > > > > > +=09=09addr +=3D copy;
+> > > > > > > > > > +=09=09offset =3D 0;
+> > > > > > > > > > +=09}
+> > > > > > > > > > +
+> > > > > > > > > > +=09skb->len +=3D len;
+> > > > > > > > > > +=09skb->data_len +=3D len;
+> > > > > > > > >
+> > > > > > > > > > +=09skb->truesize +=3D len;
+> > > > > > > > >
+> > > > > > > > > This is not the truesize, unfortunately.
+> > > > > > > > >
+> > > > > > > > > We need to account for the number of pages, not number of=
+ bytes.
+> > > > > > > >
+> > > > > > > > The easiest solution is:
+> > > > > > > >
+> > > > > > > > =09skb->truesize +=3D PAGE_SIZE * i;
+> > > > > > > >
+> > > > > > > > i would be equal to skb_shinfo(skb)->nr_frags after exiting=
+ the loop.
+> > > > > > >
+> > > > > > > Oops, pls ignore this. I forgot that XSK buffers are not
+> > > > > > > "one per page".
+> > > > > > > We need to count the number of pages manually and then do
+> > > > > > >
+> > > > > > > =09skb->truesize +=3D PAGE_SIZE * npages;
+> > > > > > >
+> > > > > > > Right.
+> > > > > > >
+> > > > > > > > > > +
+> > > > > > > > > > +=09refcount_add(len, &xs->sk.sk_wmem_alloc);
+> > > > > > > > > > +
+> > > > > > > > > > +=09return skb;
+> > > > > > > > > > +}
+> > > > > > > > > > +
+> > > > > > > >
+> > > > > > > > Al
+> > > > > > >
+> > > > > > > Thanks,
+> > > > > > > Al
+> > > > > >
+> > > > > > Al
 > >
-> >>
-> >>
-> >> > +               }
-> >> > +
-> >> >                 err =3D 0;
-> >> >         unlink:
-> >> >                 unlink(tmp_fn);
-> >> > --
-> >> > 2.30.0.284.gd98b1dd5eaa7-goog
-> >> >
-> >
-> >
-> > I'll see if I can spend a little time on this idea instead.
-> >
-> > Regards,
-> > Giuliano.
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to kernel-team+unsubscribe@android.com.
->
+> > Thanks,
+> > Al
+
+Al
+
