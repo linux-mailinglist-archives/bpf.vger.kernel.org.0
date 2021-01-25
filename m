@@ -2,47 +2,42 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EA3830302F
-	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 00:32:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D576303032
+	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 00:33:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732734AbhAYXbE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Jan 2021 18:31:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36722 "EHLO mail.kernel.org"
+        id S1732620AbhAYXa7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Jan 2021 18:30:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36724 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732031AbhAYXav (ORCPT <rfc822;bpf@vger.kernel.org>);
+        id S1732438AbhAYXav (ORCPT <rfc822;bpf@vger.kernel.org>);
         Mon, 25 Jan 2021 18:30:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 68683229EF;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6F6F622A84;
         Mon, 25 Jan 2021 23:30:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1611617410;
-        bh=VZKmqca2RnpnjckPt116sGS2q2z0bBHhRkk3KOgxZPs=;
+        bh=KkMxQ+vHsUYumkAumXkTO1FhHTJql/Il+Pn7iHRzVAg=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=SKVVtj91CRuJCllR7HOOG3YAbqkFV5cQwKBRoVH/3mZnUfeZrO+k/NlW6CdJ6YPWZ
-         rjZBt4enHo30rGbpWyhbPFNurzmf0CLCBg1W3pGgceYUVLslR6hXP0Mkj/qBp9O7aH
-         ko/H2iG8cm0bUtJEh77q1eKAXKgwsxCnUpTzuHPl9XWxrkaB2IwfELpvggebmkD4ar
-         pEQTTYzTBdCLmDWMF+f702X2/ycqUsaJLKQpQ8j8yrcu2fFCjMrUjjUbLeT0jbbODr
-         RbZ0JFZvAxRpj+K4D8huxsQKPajvYBUm4jjtvSeOw8+W80vuAtT5Xg1h7JbU/RFVK4
-         mCYxSrrL5XQsg==
+        b=bPsBywWoSeSEg/dGNt1IAAghtZW9szXkV9fXg/M7vIx2CNkk1Dp+S1NcRYRa//H2U
+         kC7id9lF6gPm9lj+MaG1Yle1yAMgMTyATjFMCl+xtg5b8NQtte9Ups+Xv4+WFjbdwd
+         rAHAn+mufhCHdqMvOIHlWx/Jo1Y4jd1vUZst0iiAa052dDfUPYkxxwZ84PKqoH+pnL
+         Ihk2DSJLGGZMK2w7ldUmfPgVefhSPdcRKTNqCfCMzI87Ka0s7vxq77tpTvqH5GOs4B
+         0CI/xBzqvgaexpFr3XQWruCNzaeLfRRjBM0LdoHLQFEb0ce3hr+ye6C6YiJd0oy1c+
+         W+4nhaCqNPSoQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 55C9361E45;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6072261FBF;
         Mon, 25 Jan 2021 23:30:10 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2] samples/bpf: Set flag __SANE_USERSPACE_TYPES__
- for MIPS to fix build warnings
+Subject: Re: [PATCH bpf-next] tools headers: Sync struct bpf_perf_event_data
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161161741034.15463.7501053480243714931.git-patchwork-notify@kernel.org>
+Message-Id: <161161741038.15463.3231537580662958439.git-patchwork-notify@kernel.org>
 Date:   Mon, 25 Jan 2021 23:30:10 +0000
-References: <1611551146-14052-1-git-send-email-yangtiezhu@loongson.cn>
-In-Reply-To: <1611551146-14052-1-git-send-email-yangtiezhu@loongson.cn>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lixuefeng@loongson.cn
+References: <20210123185221.23946-1-dev@der-flo.net>
+In-Reply-To: <20210123185221.23946-1-dev@der-flo.net>
+To:     Florian Lehner <dev@der-flo.net>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, yhs@fb.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
@@ -51,35 +46,18 @@ Hello:
 
 This patch was applied to bpf/bpf-next.git (refs/heads/master):
 
-On Mon, 25 Jan 2021 13:05:46 +0800 you wrote:
-> There exists many build warnings when make M=samples/bpf on the Loongson
-> platform, this issue is MIPS related, x86 compiles just fine.
+On Sat, 23 Jan 2021 19:52:21 +0100 you wrote:
+> Update struct bpf_perf_event_data with the addr field to match the
+> tools headers with the kernel headers.
 > 
-> Here are some warnings:
-> 
->   CC  samples/bpf/ibumad_user.o
-> samples/bpf/ibumad_user.c: In function ‘dump_counts’:
-> samples/bpf/ibumad_user.c:46:24: warning: format ‘%llu’ expects argument of type ‘long long unsigned int’, but argument 3 has type ‘__u64’ {aka ‘long unsigned int’} [-Wformat=]
->     printf("0x%02x : %llu\n", key, value);
->                      ~~~^          ~~~~~
->                      %lu
->   CC  samples/bpf/offwaketime_user.o
-> samples/bpf/offwaketime_user.c: In function ‘print_ksym’:
-> samples/bpf/offwaketime_user.c:34:17: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 3 has type ‘__u64’ {aka ‘long unsigned int’} [-Wformat=]
->    printf("%s/%llx;", sym->name, addr);
->               ~~~^               ~~~~
->               %lx
-> samples/bpf/offwaketime_user.c: In function ‘print_stack’:
-> samples/bpf/offwaketime_user.c:68:17: warning: format ‘%lld’ expects argument of type ‘long long int’, but argument 3 has type ‘__u64’ {aka ‘long unsigned int’} [-Wformat=]
->   printf(";%s %lld\n", key->waker, count);
->               ~~~^                 ~~~~~
->               %ld
-> 
-> [...]
+> Signed-off-by: Florian Lehner <dev@der-flo.net>
+> ---
+>  tools/include/uapi/linux/bpf_perf_event.h | 1 +
+>  1 file changed, 1 insertion(+)
 
 Here is the summary with links:
-  - [bpf-next,v2] samples/bpf: Set flag __SANE_USERSPACE_TYPES__ for MIPS to fix build warnings
-    https://git.kernel.org/bpf/bpf-next/c/190d1c921ad0
+  - [bpf-next] tools headers: Sync struct bpf_perf_event_data
+    https://git.kernel.org/bpf/bpf-next/c/726bf76fcd09
 
 You are awesome, thank you!
 --
