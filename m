@@ -2,140 +2,206 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 747E0302476
-	for <lists+bpf@lfdr.de>; Mon, 25 Jan 2021 12:51:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B863302535
+	for <lists+bpf@lfdr.de>; Mon, 25 Jan 2021 14:01:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727821AbhAYLq7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Jan 2021 06:46:59 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23278 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727723AbhAYLqe (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 25 Jan 2021 06:46:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611575071;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eHdkSW7IR3/Ta55fw+aNpZ8wmGr6kIeF4oZRSyYjqFc=;
-        b=e3qE8VGL1NcAkRuDzQ3trlWYzkgk1dflnWoazQsYUPAXqK+iI5YS7uY5NqGY0c1JI5ACCi
-        RFRwUMrkWOY0jbQxzX878HTX0aeHqor7ICdjTkD5oh6OfadeI0Gl+4bLk2EQr59FTS+mkd
-        bYLAx7gwZyV3o9t9WqSa3diZKwo0/N4=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-378-If7eiaK4PRW-K6HjonfEwQ-1; Mon, 25 Jan 2021 06:21:28 -0500
-X-MC-Unique: If7eiaK4PRW-K6HjonfEwQ-1
-Received: by mail-ed1-f72.google.com with SMTP id u17so7214533edi.18
-        for <bpf@vger.kernel.org>; Mon, 25 Jan 2021 03:21:28 -0800 (PST)
+        id S1728359AbhAYM4v (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Jan 2021 07:56:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728499AbhAYMyg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Jan 2021 07:54:36 -0500
+Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82410C06174A
+        for <bpf@vger.kernel.org>; Mon, 25 Jan 2021 04:53:54 -0800 (PST)
+Received: by mail-vk1-xa2c.google.com with SMTP id m25so1759401vkk.6
+        for <bpf@vger.kernel.org>; Mon, 25 Jan 2021 04:53:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Axap6NCiq5XBgCk4p9bNwKVuQL6Jpya7zeTo4+Oo+k4=;
+        b=Fcm1rglPsZkUHdzqu88sNVHBYxu30GoPy+oeLZBYrmCpPuv9aLNb37rzt+UZuq3nrn
+         n5e2JsHvf9P96jFkFLYOXLDTgRyW7Bg4dXbi8JTS/TYE6cU/uYDxPFaVmGwr5OkukXRF
+         Qs7EjJ40qsS2Hoeq5YX6v8SyYy2jlaEWGzzXZ7ocsmeN2XvWde8Zi/iAMr1IcMf4Qro1
+         VuW+SiEEjn6bL7kJ18fJj4tw3n89e3NuUIqVOKOeVoNeaqS5EPWG+yUNIVsKHVYDBSEs
+         +n6kN23Aav0yKx+R0TSD8eu2iWNqAnfzAKvUWr/bJS5nDP4wUz4+d0AHtMaPjfUDUyGU
+         F9DQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=eHdkSW7IR3/Ta55fw+aNpZ8wmGr6kIeF4oZRSyYjqFc=;
-        b=hJHtyeFT6UHhcc1UHBxGnuRj4L8RpRJzO6Rjlm9YtEc25K7vddaJgxpipAP1lPicV/
-         lCUix0c2XqOF0aYZkU2vtFp6o2/FPSxqy3jxtMFzgPuJLjdElG3b6hZGN6cZUtxBhtRO
-         l856VMwc9vVzs/KF7KU+UcR4YQxw48RlDIMzisbnlpSNyA68QT49f9qZOJaK6aLkAVn9
-         eEGS7gaKbe5+v8VOAdnC7+Pwqyp4BgY14y/gbYKkALry6B1B+tpBBpZd4n7G5uHUz5KM
-         5OaIBjOYJvwaHh/1Sty74kqrK8XJruVv0oKMZ0fjj4z1lBGJ+xs6YWnHN4MDarfnaF+w
-         bsQA==
-X-Gm-Message-State: AOAM533pIWmk9Io41dmuoYpsCKYj/yXzpExbEVEsh0WEaO1Xh7J0znYb
-        46CPqCTkiLVS7/dmdPhmqwFxtYCDvUoPBTx6qdQdInxUoHVqPy+qCi8JM75VAWA1skCsrCC67T7
-        URxMo5ykMNKm5
-X-Received: by 2002:aa7:c6cc:: with SMTP id b12mr17755eds.67.1611573687237;
-        Mon, 25 Jan 2021 03:21:27 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzGuRwlf5DctnjkbyQm3Qvy9VicrSSSlvYXaqqsPfZLUd+0Y/hLfx+NGJowpHioUtLsi7B0mw==
-X-Received: by 2002:aa7:c6cc:: with SMTP id b12mr17736eds.67.1611573686945;
-        Mon, 25 Jan 2021 03:21:26 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id br6sm6404022ejb.46.2021.01.25.03.21.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Jan 2021 03:21:26 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 29FA418033D; Mon, 25 Jan 2021 12:21:26 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Hangbin Liu <liuhangbin@gmail.com>
-Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Jiri Benc <jbenc@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        David Ahern <dsahern@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Subject: Re: [PATCHv16 bpf-next 1/6] bpf: run devmap xdp_prog on flush
- instead of bulk enqueue
-In-Reply-To: <20210125033025.GL1421720@Leo-laptop-t470s>
-References: <20210120022514.2862872-1-liuhangbin@gmail.com>
- <20210122074652.2981711-1-liuhangbin@gmail.com>
- <20210122074652.2981711-2-liuhangbin@gmail.com>
- <20210122105043.GB52373@ranger.igk.intel.com> <871red6qhr.fsf@toke.dk>
- <20210125033025.GL1421720@Leo-laptop-t470s>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 25 Jan 2021 12:21:26 +0100
-Message-ID: <87r1m9mfd5.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Axap6NCiq5XBgCk4p9bNwKVuQL6Jpya7zeTo4+Oo+k4=;
+        b=mIEuZVxWOVmvg5VT37B1J4HNI08f9pcSBE50XsKESzAdyBittWDaeeTrHe0+yrtQWb
+         RPjvvH7oevvPfl8x3SDYqsexrparmOVMj1Vo79iUvL12lXgQvGi2oKE7MeUcPgyLbs7Q
+         Vk6/am5mD69ZUptGHk26R0GYfx1xj4TPnFK+a85vElTunVOcyr8W+eDin05rwBMi0KOM
+         FbewFLGh6vQrtG2eh6eo+5Izaf3wptmJbJ4EZ4GZ8cOHJztLJKWtgWGEfyumn64bGFxY
+         b374JqV6C8cTPlz/O9zbtiYWV7r9xL62Y1P/YNrx7guyRT2Wi6mSIZJQiEC4Qih3dQMo
+         w/Xw==
+X-Gm-Message-State: AOAM5309OauSNY7ov8grIMlEqt5wXSMr4oAAkhgtdtVGQmITGV1ynJW5
+        cifPpprIs9ACVzFSaW4iapg5NYewAPge362TVK/V1A==
+X-Google-Smtp-Source: ABdhPJy5U78QxbteNJ+h0p+7a50sUr+JS79ov4wjs5aIS7CxfEgvaTnqeXb3bnoXQSdy7NRjVELUR4Ln6r+NS2TbmqM=
+X-Received: by 2002:a1f:a643:: with SMTP id p64mr185980vke.15.1611579233303;
+ Mon, 25 Jan 2021 04:53:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20210118160139.1971039-1-gprocida@google.com> <20210118160139.1971039-4-gprocida@google.com>
+ <CAEf4BzazvC9H=K_A9KamGTB3iKtjuNxd4hEvwFOnkPdnszo6Bw@mail.gmail.com>
+ <CAGvU0HmE+gs8eNQcXmFrEERHaiGEnMgqxBho4Ny3DLCe6WR55Q@mail.gmail.com> <CAEf4BzZQvLofuVHPqu1ybsTVrM9pFRCRSR5UEFdNJq3Ha8=Luw@mail.gmail.com>
+In-Reply-To: <CAEf4BzZQvLofuVHPqu1ybsTVrM9pFRCRSR5UEFdNJq3Ha8=Luw@mail.gmail.com>
+From:   Giuliano Procida <gprocida@google.com>
+Date:   Mon, 25 Jan 2021 12:53:16 +0000
+Message-ID: <CAGvU0HmsoTSoPP=uJ679i2xH5k9o3iS=NCUyt2eVC63ShzVctw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] btf_encoder: Set .BTF section alignment to 16
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     dwarves@vger.kernel.org, kernel-team@android.com,
+        =?UTF-8?Q?Matthias_M=C3=A4nnich?= <maennich@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hangbin Liu <liuhangbin@gmail.com> writes:
+Hi.
 
-> On Fri, Jan 22, 2021 at 02:38:40PM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
->> >>  out:
->> >> +	drops =3D cnt - sent;
->> >>  	bq->count =3D 0;
->> >>=20=20
->> >>  	trace_xdp_devmap_xmit(bq->dev_rx, dev, sent, drops, err);
->> >>  	bq->dev_rx =3D NULL;
->> >> +	bq->xdp_prog =3D NULL;
->> >
->> > One more question, do you really have to do that per each bq_xmit_all
->> > call? Couldn't you clear it in __dev_flush ?
->> >
->> > Or IOW - what's the rationale behind storing xdp_prog in
->> > xdp_dev_bulk_queue. Why can't you propagate the dst->xdp_prog and rely=
- on
->> > that without that local pointer?
->> >
->> > You probably have an answer for that, so maybe include it in commit
->> > message.
->> >
->> > BTW same question for clearing dev_rx. To me this will be the same for=
- all
->> > bq_xmit_all() calls that will happen within same napi.
->>=20
->> I think you're right: When bq_xmit_all() is called from bq_enqueue(),
->> another packet will always be enqueued immediately after, so clearing
->> out all of those things in bq_xmit_all() is redundant. This also
->> includes the list_del on bq->flush_node, BTW.
->>=20
->> And while we're getting into e micro-optimisations: In bq_enqueue() we
->> have two checks:
->>=20
->> 	if (!bq->dev_rx)
->> 		bq->dev_rx =3D dev_rx;
->>=20
->> 	bq->q[bq->count++] =3D xdpf;
->>=20
->> 	if (!bq->flush_node.prev)
->> 		list_add(&bq->flush_node, flush_list);
->>=20
->>=20
->> those two if() checks can be collapsed into one, since the list and the
->> dev_rx field are only ever modified together. This will also be the case
->> for bq->xdp_prog, so putting all three under the same check in
->> bq_enqueue() and only clearing them in __dev_flush() would be a win, I
->> suppose - nice catch! :)
+On Thu, 21 Jan 2021 at 20:08, Andrii Nakryiko <andrii.nakryiko@gmail.com> w=
+rote:
 >
-> Thanks for the advice, so how about modify it like:
+> On Thu, Jan 21, 2021 at 3:07 AM Giuliano Procida <gprocida@google.com> wr=
+ote:
+> >
+> > Hi.
+> >
+> > On Thu, 21 Jan 2021 at 07:16, Andrii Nakryiko <andrii.nakryiko@gmail.co=
+m> wrote:
+> >>
+> >> On Mon, Jan 18, 2021 at 8:01 AM Giuliano Procida <gprocida@google.com>=
+ wrote:
+> >> >
+> >> > This is to avoid misaligned access when memory-mapping ELF sections.
+> >> >
+> >> > Signed-off-by: Giuliano Procida <gprocida@google.com>
+> >> > ---
+> >> >  libbtf.c | 8 ++++++++
+> >> >  1 file changed, 8 insertions(+)
+> >> >
+> >> > diff --git a/libbtf.c b/libbtf.c
+> >> > index 7552d8e..2f12d53 100644
+> >> > --- a/libbtf.c
+> >> > +++ b/libbtf.c
+> >> > @@ -797,6 +797,14 @@ static int btf_elf__write(const char *filename,=
+ struct btf *btf)
+> >> >                         goto unlink;
+> >> >                 }
+> >> >
+> >> > +               snprintf(cmd, sizeof(cmd), "%s --set-section-alignme=
+nt .BTF=3D16 %s",
+> >> > +                        llvm_objcopy, filename);
+> >>
+> >> does it align inside the ELF file to 16 bytes, or does it request the
+> >> linker to align it at 16 byte alignment in memory? Given .BTF section
+> >> is not loadable, trying to understand the implications.
+> >>
+> >
+> > We have a tool that loads BTF from ELF files. It uses mmap and "parses"=
+ the BTF as structs in memory. The ELF file is mapped with page alignment b=
+ut the BTF section within it has no alignment at all. Using MSAN (IIRC) we =
+get warnings about misaligned accesses. Everything within BTF itself is nat=
+urally aligned, so it makes sense to align the section within ELF as well. =
+There are probably some architectures where this makes the difference betwe=
+en working and SIGBUS.
+> >
+>
+> Right, ok, thanks for explaining!
+>
+> > I did try to get objcopy to set alignment at the point the section is a=
+dded. However, this didn't work.
+> >
+> >>
+> >>
+> >> > +               if (system(cmd)) {
+> >>
+> >> Also curious, if objcopy emits error (saying that
+> >> --set-section-alignment argument is not recognized), will that error
+> >> be shown in stdout? or system() consumes it without redirecting it to
+> >> stdout?
+> >>
+> >
+> > I believe it goes to stderr. I would need to check. system() will not c=
+onsume this. I'm not keen to write stderr (or stdout) post-processing code =
+in plain C.
+> >
+>
+> You can use popen() to capture/hide output, this is a better
+> alternative to system() in this case. We don't want "expected
+> warnings" in kernel build process.
+>
+> >>
+> >> > +                       /* non-fatal, this is a nice-to-have and it'=
+s only supported from LLVM 10 */
+> >> > +                       fprintf(stderr, "%s: warning: failed to alig=
+n .BTF section in '%s': %d!\n",
+> >> > +                               __func__, filename, errno);
+> >>
+> >> Probably better to emit this warning only in verbose mode, otherwise
+> >> lots of people will start complaining that they get some new warnings
+> >> from pahole.
+> >>
+> >
+> > It may be better to just use POSIX and ELF APIs directly instead of obj=
+copy. This way the section can be added with the right alignment directly. =
+pahole is already linked against libelf and if we could get rid of the exte=
+rnal dependency on objcopy it would be a win in more than one way.
+>
+> This would be great, yes. At some point I remember giving it a try,
+> but for some reason I couldn't make libelf flush data and update
+> section headers properly. Maybe you'll have better luck. Though I
+> think I was trying to mark section loadable, and eventually I probably
+> managed to do that, but still abandoned it (it's not enough to mark
+> section loadable, you have to assign it to ELF segment as well, which
+> libelf doesn't allow to do and you need linker support). Anyways, give
+> it a try, it should work.
 
-Yup, exactly! :)
+I struggled for a day and a bit and have got this (ELF_F_LAYOUT etc.)
+working. There are some caveats:
 
--Toke
+1. Laying out only the new / updated sections can leave gaps.
 
+In practice, for vmlinux, it's a very small hole. To fix this, I'd
+need to reposition .strtab as well as .BTF and .shstrtab.
+
+2. vmlinux increases in size as llvm-objcopy was trimming down .strtab.
+
+I know very little about this, but I'd guess that the kernel linker
+scripts are leaving strings in .strtab that are not referenced by
+.symtab.
+
+I'll send a short series out for review soon.
+
+Giuliano.
+
+>
+> >
+> >>
+> >>
+> >> > +               }
+> >> > +
+> >> >                 err =3D 0;
+> >> >         unlink:
+> >> >                 unlink(tmp_fn);
+> >> > --
+> >> > 2.30.0.284.gd98b1dd5eaa7-goog
+> >> >
+> >
+> >
+> > I'll see if I can spend a little time on this idea instead.
+> >
+> > Regards,
+> > Giuliano.
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to kernel-team+unsubscribe@android.com.
+>
