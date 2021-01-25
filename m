@@ -2,184 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D1513020D8
-	for <lists+bpf@lfdr.de>; Mon, 25 Jan 2021 04:31:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EBF430218D
+	for <lists+bpf@lfdr.de>; Mon, 25 Jan 2021 06:07:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726791AbhAYDbV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 24 Jan 2021 22:31:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726686AbhAYDbU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 24 Jan 2021 22:31:20 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5784C061573;
-        Sun, 24 Jan 2021 19:30:39 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id lw17so8524028pjb.0;
-        Sun, 24 Jan 2021 19:30:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=u6/r5npCt7ZfnHb6JkAdXtFPfu4l3rDNuEo40yaNlnQ=;
-        b=PD9Yr4I14AfrM+TNrerkEYlNV7BI6+vc9JVaexum/U47l62aaDYUzPtgHuMOgDxhhZ
-         +t51z+MZAwbFn4WggA0FQUsaiLLihXCrhXop7joi6UbFHqkCCDuR8wXuwHVhKwD6Lbg8
-         g6hbNodrhN7E7RtuYoBXQhtF7XNiMnooUlxngo07fmRgf8ZJIYkznOrQO9X9y4xWXTQi
-         +PsgRrTZYtDftobEVAW3/kBNa1aGcuZksFgA7VWO2g+oskEt1uH1VGmSZoxLDZKLrR+N
-         LcPOLr3WmJ5+n+Zp0D+qCkm9QAu8dDvk12oU33TV8JMmvq+evGdO0iHdGnGgLYWlt6BV
-         Guyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=u6/r5npCt7ZfnHb6JkAdXtFPfu4l3rDNuEo40yaNlnQ=;
-        b=FG3OdGN0PIjxw5iYWMKzwVl/eCuC0ofzpXd2vhzlrjIZVZOkF4yyVU9trqQahOC6tW
-         KAssIlWVfIhc6r18WVRvihSigrEtfySszmkBHogm/5J7qpuJ1c9o7+Vtfqgvqoxhik/K
-         HRDEKVM8NX7+RUQSkJ452EDFfKq2WpsSmy6GhWrVkBa4cqIgDGlfVH5V5J1IoKPDfyqr
-         lAKxOVJgTFIs/I76bJ8NYbChDpfjCM5DepICGzU4d3fJWdbO0meAKSCZAUoqQJQRHaD3
-         1g9T1dg34S4tdSwU77ffanVBuRXFhYMA3RwDB7tV1LqxYDNWmYmeIbEyWogFPCeCKFYt
-         2tXQ==
-X-Gm-Message-State: AOAM532xIW34oMBQ9qfMR5ibopUK0dWrT3LhrXX2VQI1gCAB1ojk4oa0
-        mbxV+gc8RyvTCw7ci1YzdCM=
-X-Google-Smtp-Source: ABdhPJyZaHqk3ivZj7oQkO9QBQGs0dY2z9G6/xzgMBFwqE66HMoInN4Vmc/C98847aSk0VrhErj58w==
-X-Received: by 2002:a17:90b:4a03:: with SMTP id kk3mr1332814pjb.206.1611545439441;
-        Sun, 24 Jan 2021 19:30:39 -0800 (PST)
-Received: from Leo-laptop-t470s ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id d128sm4834847pga.87.2021.01.24.19.30.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 24 Jan 2021 19:30:38 -0800 (PST)
-Date:   Mon, 25 Jan 2021 11:30:25 +0800
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>
-Cc:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Jiri Benc <jbenc@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
+        id S1725821AbhAYFGn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Jan 2021 00:06:43 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:36364 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725272AbhAYFGn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Jan 2021 00:06:43 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxSL6qUQ5gvboLAA--.17884S2;
+        Mon, 25 Jan 2021 13:05:47 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        David Ahern <dsahern@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Subject: Re: [PATCHv16 bpf-next 1/6] bpf: run devmap xdp_prog on flush
- instead of bulk enqueue
-Message-ID: <20210125033025.GL1421720@Leo-laptop-t470s>
-References: <20210120022514.2862872-1-liuhangbin@gmail.com>
- <20210122074652.2981711-1-liuhangbin@gmail.com>
- <20210122074652.2981711-2-liuhangbin@gmail.com>
- <20210122105043.GB52373@ranger.igk.intel.com>
- <871red6qhr.fsf@toke.dk>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH bpf-next v2] samples/bpf: Set flag __SANE_USERSPACE_TYPES__ for MIPS to fix build warnings
+Date:   Mon, 25 Jan 2021 13:05:46 +0800
+Message-Id: <1611551146-14052-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <871red6qhr.fsf@toke.dk>
+X-CM-TRANSID: AQAAf9DxSL6qUQ5gvboLAA--.17884S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxZFyDZr1ktrW8ArW5Xw13urg_yoW5KF17pa
+        n29rW7Cr4jvrW3GrW7Cr4I9w1fW398WFyDXFW8WryYv3W2gasYqr4DK3yaqrs5Wrs2va1S
+        vry3KrW5Ja4rXw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+        Y2ka0xkIwI1lc2xSY4AK67AK6r4rMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
+        1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
+        b7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
+        vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI
+        42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWI
+        evJa73UjIFyTuYvjfUeF4iUUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 22, 2021 at 02:38:40PM +0100, Toke H�iland-J�rgensen wrote:
-> >>  out:
-> >> +	drops = cnt - sent;
-> >>  	bq->count = 0;
-> >>  
-> >>  	trace_xdp_devmap_xmit(bq->dev_rx, dev, sent, drops, err);
-> >>  	bq->dev_rx = NULL;
-> >> +	bq->xdp_prog = NULL;
-> >
-> > One more question, do you really have to do that per each bq_xmit_all
-> > call? Couldn't you clear it in __dev_flush ?
-> >
-> > Or IOW - what's the rationale behind storing xdp_prog in
-> > xdp_dev_bulk_queue. Why can't you propagate the dst->xdp_prog and rely on
-> > that without that local pointer?
-> >
-> > You probably have an answer for that, so maybe include it in commit
-> > message.
-> >
-> > BTW same question for clearing dev_rx. To me this will be the same for all
-> > bq_xmit_all() calls that will happen within same napi.
-> 
-> I think you're right: When bq_xmit_all() is called from bq_enqueue(),
-> another packet will always be enqueued immediately after, so clearing
-> out all of those things in bq_xmit_all() is redundant. This also
-> includes the list_del on bq->flush_node, BTW.
-> 
-> And while we're getting into e micro-optimisations: In bq_enqueue() we
-> have two checks:
-> 
-> 	if (!bq->dev_rx)
-> 		bq->dev_rx = dev_rx;
-> 
-> 	bq->q[bq->count++] = xdpf;
-> 
-> 	if (!bq->flush_node.prev)
-> 		list_add(&bq->flush_node, flush_list);
-> 
-> 
-> those two if() checks can be collapsed into one, since the list and the
-> dev_rx field are only ever modified together. This will also be the case
-> for bq->xdp_prog, so putting all three under the same check in
-> bq_enqueue() and only clearing them in __dev_flush() would be a win, I
-> suppose - nice catch! :)
+There exists many build warnings when make M=samples/bpf on the Loongson
+platform, this issue is MIPS related, x86 compiles just fine.
 
-Thanks for the advice, so how about modify it like:
+Here are some warnings:
 
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index bc38f7193149..217e09533097 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -413,9 +413,6 @@ static void bq_xmit_all(struct xdp_dev_bulk_queue *bq, u32 flags)
- 	bq->count = 0;
+  CC  samples/bpf/ibumad_user.o
+samples/bpf/ibumad_user.c: In function ‘dump_counts’:
+samples/bpf/ibumad_user.c:46:24: warning: format ‘%llu’ expects argument of type ‘long long unsigned int’, but argument 3 has type ‘__u64’ {aka ‘long unsigned int’} [-Wformat=]
+    printf("0x%02x : %llu\n", key, value);
+                     ~~~^          ~~~~~
+                     %lu
+  CC  samples/bpf/offwaketime_user.o
+samples/bpf/offwaketime_user.c: In function ‘print_ksym’:
+samples/bpf/offwaketime_user.c:34:17: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 3 has type ‘__u64’ {aka ‘long unsigned int’} [-Wformat=]
+   printf("%s/%llx;", sym->name, addr);
+              ~~~^               ~~~~
+              %lx
+samples/bpf/offwaketime_user.c: In function ‘print_stack’:
+samples/bpf/offwaketime_user.c:68:17: warning: format ‘%lld’ expects argument of type ‘long long int’, but argument 3 has type ‘__u64’ {aka ‘long unsigned int’} [-Wformat=]
+  printf(";%s %lld\n", key->waker, count);
+              ~~~^                 ~~~~~
+              %ld
+
+MIPS needs __SANE_USERSPACE_TYPES__ before <linux/types.h> to select
+'int-ll64.h' in arch/mips/include/uapi/asm/types.h, then it can avoid
+build warnings when printing __u64 with %llu, %llx or %lld.
+
+The header tools/include/linux/types.h defines __SANE_USERSPACE_TYPES__,
+it seems that we can include <linux/types.h> in the source files which
+have build warnings, but it has no effect due to actually it includes
+usr/include/linux/types.h instead of tools/include/linux/types.h, the
+problem is that "usr/include" is preferred first than "tools/include"
+in samples/bpf/Makefile, that sounds like a ugly hack to -Itools/include
+before -Iusr/include.
+
+So define __SANE_USERSPACE_TYPES__ for MIPS in samples/bpf/Makefile
+is proper, if add "TPROGS_CFLAGS += -D__SANE_USERSPACE_TYPES__" in
+samples/bpf/Makefile, it appears the following error:
+
+Auto-detecting system features:
+...                        libelf: [ on  ]
+...                          zlib: [ on  ]
+...                           bpf: [ OFF ]
+
+BPF API too old
+make[3]: *** [Makefile:293: bpfdep] Error 1
+make[2]: *** [Makefile:156: all] Error 2
+
+With #ifndef __SANE_USERSPACE_TYPES__  in tools/include/linux/types.h,
+the above error has gone and this ifndef change does not hurt other
+compilations.
+
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+
+v2: Update the commit message
+
+ samples/bpf/Makefile        | 4 ++++
+ tools/include/linux/types.h | 3 +++
+ 2 files changed, 7 insertions(+)
+
+diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+index 26fc96c..27de306 100644
+--- a/samples/bpf/Makefile
++++ b/samples/bpf/Makefile
+@@ -183,6 +183,10 @@ BPF_EXTRA_CFLAGS := $(ARM_ARCH_SELECTOR)
+ TPROGS_CFLAGS += $(ARM_ARCH_SELECTOR)
+ endif
  
- 	trace_xdp_devmap_xmit(bq->dev_rx, dev, sent, drops, err);
--	bq->dev_rx = NULL;
--	bq->xdp_prog = NULL;
--	__list_del_clearprev(&bq->flush_node);
- 	return;
- }
++ifeq ($(ARCH), mips)
++TPROGS_CFLAGS += -D__SANE_USERSPACE_TYPES__
++endif
++
+ TPROGS_CFLAGS += -Wall -O2
+ TPROGS_CFLAGS += -Wmissing-prototypes
+ TPROGS_CFLAGS += -Wstrict-prototypes
+diff --git a/tools/include/linux/types.h b/tools/include/linux/types.h
+index 154eb4e..e9c5a21 100644
+--- a/tools/include/linux/types.h
++++ b/tools/include/linux/types.h
+@@ -6,7 +6,10 @@
+ #include <stddef.h>
+ #include <stdint.h>
  
-@@ -434,8 +431,12 @@ void __dev_flush(void)
- 	struct list_head *flush_list = this_cpu_ptr(&dev_flush_list);
- 	struct xdp_dev_bulk_queue *bq, *tmp;
++#ifndef __SANE_USERSPACE_TYPES__
+ #define __SANE_USERSPACE_TYPES__	/* For PPC64, to get LL64 types */
++#endif
++
+ #include <asm/types.h>
+ #include <asm/posix_types.h>
  
--	list_for_each_entry_safe(bq, tmp, flush_list, flush_node)
-+	list_for_each_entry_safe(bq, tmp, flush_list, flush_node) {
- 		bq_xmit_all(bq, XDP_XMIT_FLUSH);
-+		bq->dev_rx = NULL;
-+		bq->xdp_prog = NULL;
-+		__list_del_clearprev(&bq->flush_node);
-+	}
- }
- 
- /* rcu_read_lock (from syscall and BPF contexts) ensures that if a delete and/or
-@@ -469,22 +470,17 @@ static void bq_enqueue(struct net_device *dev, struct xdp_frame *xdpf,
- 	/* Ingress dev_rx will be the same for all xdp_frame's in
- 	 * bulk_queue, because bq stored per-CPU and must be flushed
- 	 * from net_device drivers NAPI func end.
-+	 *
-+	 * Do the same with xdp_prog and flush_list since these fields
-+	 * are modified together.
- 	 */
--	if (!bq->dev_rx)
-+	if (!bq->dev_rx) {
- 		bq->dev_rx = dev_rx;
--
--	/* Store (potential) xdp_prog that run before egress to dev as
--	 * part of bulk_queue.  This will be same xdp_prog for all
--	 * xdp_frame's in bulk_queue, because this per-CPU store must
--	 * be flushed from net_device drivers NAPI func end.
--	 */
--	if (!bq->xdp_prog)
- 		bq->xdp_prog = xdp_prog;
-+		list_add(&bq->flush_node, flush_list);
-+	}
- 
- 	bq->q[bq->count++] = xdpf;
--
--	if (!bq->flush_node.prev)
--		list_add(&bq->flush_node, flush_list);
- }
- 
- static inline int __xdp_enqueue(struct net_device *dev, struct xdp_buff *xdp,
+-- 
+2.1.0
+
