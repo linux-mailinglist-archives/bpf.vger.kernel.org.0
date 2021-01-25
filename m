@@ -2,153 +2,202 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4507C302D61
-	for <lists+bpf@lfdr.de>; Mon, 25 Jan 2021 22:15:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C865302E98
+	for <lists+bpf@lfdr.de>; Mon, 25 Jan 2021 23:02:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732421AbhAYVPD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 25 Jan 2021 16:15:03 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:56948 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732451AbhAYVOy (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Jan 2021 16:14:54 -0500
-Received: by mail-io1-f70.google.com with SMTP id m2so21337576iow.23
-        for <bpf@vger.kernel.org>; Mon, 25 Jan 2021 13:14:38 -0800 (PST)
+        id S1733094AbhAYWB5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 25 Jan 2021 17:01:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733098AbhAYWBz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Jan 2021 17:01:55 -0500
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD109C061574
+        for <bpf@vger.kernel.org>; Mon, 25 Jan 2021 14:01:14 -0800 (PST)
+Received: by mail-io1-xd29.google.com with SMTP id q129so29783530iod.0
+        for <bpf@vger.kernel.org>; Mon, 25 Jan 2021 14:01:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pt4uK7+fglRi5mSqUM+0Zo64wDCR3qdBbt9k3yKslD8=;
+        b=axfpFnb5vFhsKKRyt7UL2WEe+Dlta2QbR/1ZinUR8BsFqr4/jOkuHB0Wgc0c71WHhd
+         MLn93dAhJA5BeLIo8Uj8DrJKcSXEfTdB8vhufNuTHrPtHimZ4EjJ+qYldHjXGdv6ye9R
+         AUaY7LzLH40iRCf/65TXPhX/zhZzxCwJuqXZfVI0pB3VyfHLg5eFPzvRnBJnBrqxSm1A
+         pWlOadjqDuTwEMwzT/0n4jiCvhIYhkAqmwLwIrrwa7oDdWhAwWJHjP4IH770SAqqZz9w
+         sqiF2I9cJWr7nLrUJKZNvQAJNth5jxl7QE6onbn+5XQGaFfgRb8sqUQpWP13dHMy2+2o
+         TUkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=5two7q/jQViPfMzjfYYBiWhjgEhntyhQrt/LvBiQkQk=;
-        b=NIEm2ZX0uf1ujOj+hdgUH7bziDcnsdNHTF7h38kD9JwCxtAlv6VekO14tflDKCAyEm
-         eD3xG8W3D77uNmO9B9sC5xZMq3uIH6J+oGvohul0Hs6Y9uf/6vEZuc+kSrpmZIqlnLmq
-         cRgpUD3F3biU0Fgmkx18QKxHD84R2R4w1Mj+rsktH0mIhPelzMpUfBVSqgdyPD1BYRQD
-         STkysid9K9QkOKq/lJMJZUPBQnjnYDpd/FYWNth088PZiAj4sWhckx7V33g/CyE0ZGcj
-         rxgYc/8ruZc/BSC0hdKGmU4qjq71tIqJDAevnR1/AmMkEns6rcRSMIhn3jTnq+9d8Vps
-         WiZw==
-X-Gm-Message-State: AOAM531b8hWq+uzmNzllP5tXYwyOiwgwUMXbftlFE2d8zED0gEgfRSWi
-        dMXRZo6IRV2O8wsZ64gehTDRqaG8UGpCobRLEUBfPGg4K1kw
-X-Google-Smtp-Source: ABdhPJwlNFQz2I94k61tkKqfr745uZD/G0fgwStqqE9WW8YG/sboY77KeUygvfjNF6IenJ8LLnCze65w5v1Te12JARMxmbxghUtm
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pt4uK7+fglRi5mSqUM+0Zo64wDCR3qdBbt9k3yKslD8=;
+        b=a5P37+7DyltnbIFgGiuSefvcIAB9K3AppE/HlVRk/MKcABBblZ/aW3B90fIIqw/R9g
+         simSqw2V21FK7enX1h2bqPQ1rMsd1yT/5rlZLelkLfDLfciUpdWjbP6MHUakvipmcm2d
+         DRBFtUa9f5sBGokOlxoeUFBqSkyJrhwu1qQRNldWzVBMe9k9CoYfSrrzW4natCBFS8nA
+         EfltHzdjanMQGFrj2A972QXdKtZvwWguNVzCbs70eBaO/oTO7TvyJsZn1PJJC+wsvxoX
+         nynLKj/Caw36viMzDrz2aSgorjFYgJ5E3EVzIy5Gzr+kn1/z+UcytbFw3uumJW/qQ7rO
+         c29w==
+X-Gm-Message-State: AOAM532AQOSmMY9t/kNC1owXATwgdU/XxMB1o5c82IYujpsvCgzU/oLY
+        KR6/b3o228A27l+wkp2BduUJWc1+HZElFiuh/q/b1w==
+X-Google-Smtp-Source: ABdhPJxbv+KJl68OGuLDQGZ21cJh5kav4eRWVOWzT1xABymSjAkyc9/0/SfMYctXANPZG7uAUInsnbX+k+F8kqwxNK4=
+X-Received: by 2002:a05:6e02:1d0e:: with SMTP id i14mr2058326ila.69.1611612073822;
+ Mon, 25 Jan 2021 14:01:13 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a92:96c3:: with SMTP id g186mr2054432ilh.180.1611609253204;
- Mon, 25 Jan 2021 13:14:13 -0800 (PST)
-Date:   Mon, 25 Jan 2021 13:14:13 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000dd83d05b9c005cf@google.com>
-Subject: KASAN: global-out-of-bounds Write in record_print_text
-From:   syzbot <syzbot+db1faa35484efb6a54ea@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net,
-        gregkh@linuxfoundation.org, john.fastabend@gmail.com,
-        john.ogness@linutronix.de, kafai@fb.com, kpsingh@chromium.org,
-        kuba@kernel.org, kuznet@ms2.inr.ac.ru,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pmladek@suse.com, rafael@kernel.org, sergey.senozhatsky@gmail.com,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com,
-        yoshfuji@linux-ipv6.org
+References: <0000000000005d4f3205b9ab95f4@google.com> <20210125131252.4e17d3f3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210125131252.4e17d3f3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Mon, 25 Jan 2021 23:01:02 +0100
+Message-ID: <CANn89iK+ckTzYd70CzerWOiCXt6TJfKPok1mBHarDJYBCot-_A@mail.gmail.com>
+Subject: Re: WARNING in pskb_expand_head
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     syzbot <syzbot+a1c17e56a8a62294c714@syzkaller.appspotmail.com>,
+        Alexander Duyck <alexanderduyck@fb.com>, andrii@kernel.org,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>, hawk@kernel.org,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>, kpsingh@kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        netdev <netdev@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Yonghong Song <yhs@fb.com>,
+        Willem de Bruijn <willemb@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    bc085f8f Add linux-next specific files for 20210121
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=17a726a4d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1224bbf217b0bec8
-dashboard link: https://syzkaller.appspot.com/bug?extid=db1faa35484efb6a54ea
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1173b294d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1035c13b500000
-
-The issue was bisected to:
-
-commit f0e386ee0c0b71ea6f7238506a4d0965a2dbef11
-Author: John Ogness <john.ogness@linutronix.de>
-Date:   Thu Jan 14 17:04:12 2021 +0000
-
-    printk: fix buffer overflow potential for print_text()
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11671b84d00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=13671b84d00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=15671b84d00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+db1faa35484efb6a54ea@syzkaller.appspotmail.com
-Fixes: f0e386ee0c0b ("printk: fix buffer overflow potential for print_text()")
-
-netdevsim netdevsim0 netdevsim3 (unregistering): unset [1, 0] type 2 family 0 port 6081 - 0
-==================================================================
-BUG: KASAN: global-out-of-bounds in record_print_text+0x33f/0x380 kernel/printk/printk.c:1401
-Write of size 1 at addr ffffffff8f09f144 by task kworker/u4:0/9
-
-CPU: 1 PID: 9 Comm: kworker/u4:0 Not tainted 5.11.0-rc4-next-20210121-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: netns cleanup_net
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0x5/0x2f8 mm/kasan/report.c:230
- __kasan_report mm/kasan/report.c:397 [inline]
- kasan_report.cold+0x79/0xd5 mm/kasan/report.c:414
- record_print_text+0x33f/0x380 kernel/printk/printk.c:1401
- console_unlock+0x318/0xbb0 kernel/printk/printk.c:2555
- vprintk_emit+0x189/0x490 kernel/printk/printk.c:2092
- dev_vprintk_emit+0x36e/0x3b2 drivers/base/core.c:4358
- dev_printk_emit+0xba/0xf1 drivers/base/core.c:4369
- __netdev_printk+0x1c6/0x27a net/core/dev.c:11073
- netdev_info+0xd7/0x109 net/core/dev.c:11128
- nsim_udp_tunnel_unset_port.cold+0x95/0xb8 drivers/net/netdevsim/udp_tunnels.c:64
- udp_tunnel_nic_device_sync_one net/ipv4/udp_tunnel_nic.c:225 [inline]
- udp_tunnel_nic_device_sync_by_port net/ipv4/udp_tunnel_nic.c:246 [inline]
- __udp_tunnel_nic_device_sync.part.0+0xa4c/0xcb0 net/ipv4/udp_tunnel_nic.c:289
- __udp_tunnel_nic_device_sync net/ipv4/udp_tunnel_nic.c:283 [inline]
- udp_tunnel_nic_flush+0x2b4/0x5e0 net/ipv4/udp_tunnel_nic.c:668
- udp_tunnel_nic_unregister net/ipv4/udp_tunnel_nic.c:869 [inline]
- udp_tunnel_nic_netdevice_event+0x65c/0x19a0 net/ipv4/udp_tunnel_nic.c:909
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2040
- call_netdevice_notifiers_extack net/core/dev.c:2052 [inline]
- call_netdevice_notifiers net/core/dev.c:2066 [inline]
- rollback_registered_many+0x92e/0x14c0 net/core/dev.c:9513
- rollback_registered net/core/dev.c:9558 [inline]
- unregister_netdevice_queue+0x2dd/0x570 net/core/dev.c:10734
- unregister_netdevice include/linux/netdevice.h:2853 [inline]
- nsim_destroy+0x35/0x70 drivers/net/netdevsim/netdev.c:338
- __nsim_dev_port_del+0x144/0x1e0 drivers/net/netdevsim/dev.c:967
- nsim_dev_port_del_all drivers/net/netdevsim/dev.c:980 [inline]
- nsim_dev_reload_destroy+0xff/0x1e0 drivers/net/netdevsim/dev.c:1158
- nsim_dev_reload_down+0x6e/0xd0 drivers/net/netdevsim/dev.c:725
- devlink_reload+0x15a/0x5e0 net/core/devlink.c:3191
- devlink_pernet_pre_exit+0x154/0x220 net/core/devlink.c:10329
- ops_pre_exit_list net/core/net_namespace.c:177 [inline]
- cleanup_net+0x451/0xb10 net/core/net_namespace.c:592
- process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-
-The buggy address belongs to the variable:
- dmesg_restrict+0x24/0x40
-
-Memory state around the buggy address:
- ffffffff8f09f000: f9 f9 f9 f9 01 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
- ffffffff8f09f080: f9 f9 f9 f9 01 f9 f9 f9 f9 f9 f9 f9 00 f9 f9 f9
->ffffffff8f09f100: f9 f9 f9 f9 04 f9 f9 f9 f9 f9 f9 f9 00 00 00 00
-                                           ^
- ffffffff8f09f180: 00 00 00 00 00 00 f9 f9 f9 f9 f9 f9 00 00 00 00
- ffffffff8f09f200: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-==================================================================
+On Mon, Jan 25, 2021 at 10:12 PM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> CC Willem just in case
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+This is an old bug really, tun_napi_alloc_frags() does not make sure
+its @len argument is not too big.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Since __skb_grow() does not use __GFP_NOWARN we end up with this well
+known warning in mm layer.
+
+I would use the following fix :
+
+
+diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+index 62690baa19bc8c4bf52f8b18a092f570e2125fc8..a0740e40a145fa2e175edd2180d369859c5d786b
+100644
+--- a/drivers/net/tun.c
++++ b/drivers/net/tun.c
+@@ -1367,13 +1367,16 @@ static struct sk_buff
+*tun_napi_alloc_frags(struct tun_file *tfile,
+        if (it->nr_segs > MAX_SKB_FRAGS + 1)
+                return ERR_PTR(-EMSGSIZE);
+
++       linear = iov_iter_single_seg_count(it);
++       if (linear > SKB_MAX_ALLOC)
++               return ERR_PTR(-EMSGSIZE);
++
+        local_bh_disable();
+        skb = napi_get_frags(&tfile->napi);
+        local_bh_enable();
+        if (!skb)
+                return ERR_PTR(-ENOMEM);
+
+-       linear = iov_iter_single_seg_count(it);
+        err = __skb_grow(skb, linear);
+        if (err)
+                goto free;
+
+
+>
+> On Sun, 24 Jan 2021 12:51:20 -0800 syzbot wrote:
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    7d68e382 bpf: Permit size-0 datasec
+> > git tree:       bpf-next
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=132567e7500000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=e0c7843b8af99dff
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=a1c17e56a8a62294c714
+> > compiler:       gcc (GCC) 10.1.0-syz 20200507
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17ae23af500000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13856bc7500000
+> >
+> > The issue was bisected to:
+> >
+> > commit 3226b158e67cfaa677fd180152bfb28989cb2fac
+> > Author: Eric Dumazet <edumazet@google.com>
+> > Date:   Wed Jan 13 16:18:19 2021 +0000
+> >
+> >     net: avoid 32 x truesize under-estimation for tiny skbs
+> >
+> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=151a3027500000
+> > final oops:     https://syzkaller.appspot.com/x/report.txt?x=171a3027500000
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=131a3027500000
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+a1c17e56a8a62294c714@syzkaller.appspotmail.com
+> > Fixes: 3226b158e67c ("net: avoid 32 x truesize under-estimation for tiny skbs")
+> >
+> > RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000001bbbbbb
+> > R10: 0000000000000000 R11: 0000000000000246 R12: ffffffffffffffff
+> > R13: 0000000000000004 R14: 0000000000000000 R15: 0000000000000000
+> > ------------[ cut here ]------------
+> > WARNING: CPU: 1 PID: 8703 at mm/page_alloc.c:4976 __alloc_pages_nodemask+0x5f8/0x730 mm/page_alloc.c:5011
+> > Modules linked in:
+> > CPU: 1 PID: 8703 Comm: syz-executor857 Not tainted 5.11.0-rc3-syzkaller #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > RIP: 0010:__alloc_pages_nodemask+0x5f8/0x730 mm/page_alloc.c:4976
+> > Code: 00 00 0c 00 0f 85 a7 00 00 00 8b 3c 24 4c 89 f2 44 89 e6 c6 44 24 70 00 48 89 6c 24 58 e8 d0 d7 ff ff 49 89 c5 e9 ea fc ff ff <0f> 0b e9 b5 fd ff ff 89 74 24 14 4c 89 4c 24 08 4c 89 74 24 18 e8
+> > RSP: 0018:ffffc90001ecf910 EFLAGS: 00010246
+> > RAX: 0000000000000000 RBX: 1ffff920003d9f26 RCX: 0000000000000000
+> > RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 0000000000060a20
+> > RBP: 0000000000020a20 R08: 0000000000000000 R09: 0000000000000001
+> > R10: ffffffff86f1be3c R11: 0000000000000000 R12: 0000000000000012
+> > R13: 0000000020010300 R14: 0000000000060a20 R15: 0000000000000000
+> > FS:  0000000001148880(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 00000000006d5090 CR3: 000000001d414000 CR4: 00000000001506e0
+> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > Call Trace:
+> >  __alloc_pages include/linux/gfp.h:511 [inline]
+> >  __alloc_pages_node include/linux/gfp.h:524 [inline]
+> >  alloc_pages_node include/linux/gfp.h:538 [inline]
+> >  kmalloc_large_node+0x60/0x110 mm/slub.c:3984
+> >  __kmalloc_node_track_caller+0x319/0x3f0 mm/slub.c:4481
+> >  __kmalloc_reserve net/core/skbuff.c:150 [inline]
+> >  pskb_expand_head+0xae9/0x1050 net/core/skbuff.c:1632
+> >  __skb_grow include/linux/skbuff.h:2748 [inline]
+> >  tun_napi_alloc_frags drivers/net/tun.c:1377 [inline]
+> >  tun_get_user+0x1f52/0x3690 drivers/net/tun.c:1730
+> >  tun_chr_write_iter+0xe1/0x1d0 drivers/net/tun.c:1926
+> >  call_write_iter include/linux/fs.h:1901 [inline]
+> >  new_sync_write+0x426/0x650 fs/read_write.c:518
+> >  vfs_write+0x791/0xa30 fs/read_write.c:605
+> >  ksys_write+0x12d/0x250 fs/read_write.c:658
+> >  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+> >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > RIP: 0033:0x4440a9
+> > Code: e8 6c 05 03 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 9b 07 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+> > RSP: 002b:00007fffdb5a8e08 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+> > RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00000000004440a9
+> > RDX: 000000002001016f RSI: 0000000020000380 RDI: 0000000000000003
+> > RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000001bbbbbb
+> > R10: 0000000000000000 R11: 0000000000000246 R12: ffffffffffffffff
+> > R13: 0000000000000004 R14: 0000000000000000 R15: 0000000000000000
+> >
+> >
+> > ---
+> > This report is generated by a bot. It may contain errors.
+> > See https://goo.gl/tpsmEJ for more information about syzbot.
+> > syzbot engineers can be reached at syzkaller@googlegroups.com.
+> >
+> > syzbot will keep track of this issue. See:
+> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> > For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> > syzbot can test patches for this issue, for details see:
+> > https://goo.gl/tpsmEJ#testing-patches
+>
