@@ -2,130 +2,149 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 532A2304CCA
-	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 23:56:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 427FD304CCC
+	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 23:56:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730750AbhAZWzN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Jan 2021 17:55:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40224 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2405696AbhAZUyO (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 26 Jan 2021 15:54:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611694368;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qNmYQghzyEo5Nu0f80VNhQIBJIqh9/mSmZbgpxpbU6s=;
-        b=Fdb4m4AbzOV+iLluL+lCqgEo/eTLtFO+WWO7Qb5cWXwGdAXIDi81KWSnloFfTn/+fIvAJp
-        DtdsVGnuJGF37JCDl6zHe1Nw4clYjNvCPDI+N1CxfyNkuGFw/qOgtoC4LFhvcoz7SVO9/N
-        1h9VAPmmax2eN9MDtyYhpj/iDPK7AII=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-312-sboSZlTcOw63awkb_eqR8Q-1; Tue, 26 Jan 2021 15:52:43 -0500
-X-MC-Unique: sboSZlTcOw63awkb_eqR8Q-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D899A393AE;
-        Tue, 26 Jan 2021 20:52:40 +0000 (UTC)
-Received: from krava (unknown [10.40.192.149])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 248FA10013C0;
-        Tue, 26 Jan 2021 20:52:36 +0000 (UTC)
-Date:   Tue, 26 Jan 2021 21:52:36 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Yonghong Song <yhs@fb.com>, Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        lkml <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH bpf-next 2/3] bpf: Add size arg to build_id_parse function
-Message-ID: <20210126205236.GD120879@krava>
-References: <20210114134044.1418404-1-jolsa@kernel.org>
- <20210114134044.1418404-3-jolsa@kernel.org>
- <19f16729-96d6-cc8e-5bd5-c3f5940365d4@fb.com>
- <20210114200120.GF1416940@krava>
- <d90fd73f-b9a6-c436-f8ae-0833ce3926ef@fb.com>
- <20210114220234.GA1456269@krava>
- <5043cef5-eda7-4373-dcb5-546f6192e1a9@fb.com>
- <CAADnVQLkM7+1+wzg=s8+zdKwYnmBRgvVK7K-qivu_a9mvaK7Yg@mail.gmail.com>
+        id S1730793AbhAZWzW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Jan 2021 17:55:22 -0500
+Received: from www62.your-server.de ([213.133.104.62]:38600 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728175AbhAZWGA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Jan 2021 17:06:00 -0500
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1l4WSI-0007jY-Jj; Tue, 26 Jan 2021 23:04:58 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1l4WSI-000TDX-BY; Tue, 26 Jan 2021 23:04:58 +0100
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Subject: Re: [Patch bpf-next v5 1/3] bpf: introduce timeout hash map
+To:     Cong Wang <xiyou.wangcong@gmail.com>, netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, jhs@mojatatu.com, andrii@kernel.org,
+        ast@kernel.org, kafai@fb.com, Cong Wang <cong.wang@bytedance.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Dongdong Wang <wangdongdong.6@bytedance.com>
+References: <20210122205415.113822-1-xiyou.wangcong@gmail.com>
+ <20210122205415.113822-2-xiyou.wangcong@gmail.com>
+Message-ID: <d69d44ca-206c-d818-1177-c8f14d8be8d1@iogearbox.net>
+Date:   Tue, 26 Jan 2021 23:04:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQLkM7+1+wzg=s8+zdKwYnmBRgvVK7K-qivu_a9mvaK7Yg@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20210122205415.113822-2-xiyou.wangcong@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26061/Tue Jan 26 13:29:51 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 14, 2021 at 07:47:20PM -0800, Alexei Starovoitov wrote:
-> On Thu, Jan 14, 2021 at 3:44 PM Yonghong Song <yhs@fb.com> wrote:
-> >
-> >
-> >
-> > On 1/14/21 2:02 PM, Jiri Olsa wrote:
-> > > On Thu, Jan 14, 2021 at 01:05:33PM -0800, Yonghong Song wrote:
-> > >>
-> > >>
-> > >> On 1/14/21 12:01 PM, Jiri Olsa wrote:
-> > >>> On Thu, Jan 14, 2021 at 10:56:33AM -0800, Yonghong Song wrote:
-> > >>>>
-> > >>>>
-> > >>>> On 1/14/21 5:40 AM, Jiri Olsa wrote:
-> > >>>>> It's possible to have other build id types (other than default SHA1).
-> > >>>>> Currently there's also ld support for MD5 build id.
-> > >>>>
-> > >>>> Currently, bpf build_id based stackmap does not returns the size of
-> > >>>> the build_id. Did you see an issue here? I guess user space can check
-> > >>>> the length of non-zero bits of the build id to decide what kind of
-> > >>>> type it is, right?
-> > >>>
-> > >>> you can have zero bytes in the build id hash, so you need to get the size
-> > >>>
-> > >>> I never saw MD5 being used in practise just SHA1, but we added the
-> > >>> size to be complete and make sure we'll fit with build id, because
-> > >>> there's only limited space in mmap2 event
-> > >>
-> > >> I am asking to check whether we should extend uapi struct
-> > >> bpf_stack_build_id to include build_id_size as well. I guess
-> > >> we can delay this until a real use case.
-> > >
-> > > right, we can try make some MD5 build id binaries and check if it
-> > > explodes with some bcc tools, but I don't expect that.. I'll try
-> > > to find some time for that
-> >
-> > Thanks. We may have issues on bcc side. For build_id collected in
-> > kernel, bcc always generates a length-20 string. But for user
-> > binaries, the build_id string length is equal to actual size of
-> > the build_id. They may not match (MD5 length is 16).
-> > The fix is probably to append '0's (up to length 20) for user
-> > binary build_id's.
-> >
-> > I guess MD5 is very seldom used. I will wait if you can reproduce
-> > the issue and then we might fix it.
+On 1/22/21 9:54 PM, Cong Wang wrote:
+> From: Cong Wang <cong.wang@bytedance.com>
 > 
-> Indeed.
-> Jiri, please check whether md5 is really an issue.
-> Sounds like we have to do something on the kernel side.
-> Hopefully zero padding will be enough.
-> I would prefer to avoid extending uapi struct to cover rare case.
+> This borrows the idea from conntrack and will be used for conntrack in
+> ebpf too. Each element in a timeout map has a user-specified timeout
+> in msecs, after it expires it will be automatically removed from the
+> map. Cilium already does the same thing, it uses a regular map or LRU
+> map to track connections and has its own GC in user-space. This does
+> not scale well when we have millions of connections, as each removal
+> needs a syscall. Even if we could batch the operations, it still needs
+> to copy a lot of data between kernel and user space.
+> 
+> There are two cases to consider here:
+> 
+> 1. When the timeout map is idle, i.e. no one updates or accesses it,
+>     we rely on the delayed work to scan the whole hash table and remove
+>     these expired. The delayed work is scheduled every 1 sec when idle,
+>     which is also what conntrack uses. It is fine to scan the whole
+>     table as we do not actually remove elements during this scan,
+>     instead we simply queue them to the lockless list and defer all the
+>     removals to the next schedule.
+> 
+> 2. When the timeout map is actively accessed, we could reach expired
+>     elements before the idle work automatically scans them, we can
+>     simply skip them and schedule the delayed work immediately to do
+>     the actual removals. We have to avoid taking locks on fast path.
+> 
+> The timeout of an element can be set or updated via bpf_map_update_elem()
+> and we reuse the upper 32-bit of the 64-bit flag for the timeout value,
+> as there are only a few bits are used currently. Note, a zero timeout
+> means to expire immediately.
+> 
+> To avoid adding memory overhead to regular map, we have to reuse some
+> field in struct htab_elem, that is, lru_node. Otherwise we would have
+> to rewrite a lot of code.
+> 
+> For now, batch ops is not supported, we can add it later if needed.
 
-build_id_parse is already doing the zero padding, so we are ok
+Back in earlier conversation [0], I mentioned also LRU map flavors and to look
+into adding a flag, so we wouldn't need new BPF_MAP_TYPE_TIMEOUT_HASH/*LRU types
+that replicate existing types once again just with the timeout in addition, so
+UAPI wise new map type is not great.
 
-I tried several bcc tools over perf bench with md5 buildid and
-the results looked ok
+Given you mention Cilium above, only for kernels where there is no LRU hash map,
+that is < 4.10, we rely on plain hash, everything else LRU + prealloc to mitigate
+ddos by refusing to add new entries when full whereas less active ones will be
+purged instead. Timeout /only/ for plain hash is less useful overall, did you
+sketch a more generic approach in the meantime that would work for all the htab/lru
+flavors (and ideally as non-delayed_work based)?
 
-jirka
+   [0] https://lore.kernel.org/bpf/20201214201118.148126-1-xiyou.wangcong@gmail.com/
 
+[...]
+> @@ -1012,6 +1081,8 @@ static int htab_map_update_elem(struct bpf_map *map, void *key, void *value,
+>   			copy_map_value_locked(map,
+>   					      l_old->key + round_up(key_size, 8),
+>   					      value, false);
+> +			if (timeout_map)
+> +				l_old->expires = msecs_to_expire(timeout);
+>   			return 0;
+>   		}
+>   		/* fall through, grab the bucket lock and lookup again.
+> @@ -1020,6 +1091,7 @@ static int htab_map_update_elem(struct bpf_map *map, void *key, void *value,
+>   		 */
+>   	}
+>   
+> +again:
+>   	ret = htab_lock_bucket(htab, b, hash, &flags);
+>   	if (ret)
+>   		return ret;
+> @@ -1040,26 +1112,41 @@ static int htab_map_update_elem(struct bpf_map *map, void *key, void *value,
+>   		copy_map_value_locked(map,
+>   				      l_old->key + round_up(key_size, 8),
+>   				      value, false);
+> +		if (timeout_map)
+> +			l_old->expires = msecs_to_expire(timeout);
+>   		ret = 0;
+>   		goto err;
+>   	}
+>   
+>   	l_new = alloc_htab_elem(htab, key, value, key_size, hash, false, false,
+> -				l_old);
+> +				timeout_map, l_old);
+>   	if (IS_ERR(l_new)) {
+> -		/* all pre-allocated elements are in use or memory exhausted */
+>   		ret = PTR_ERR(l_new);
+> +		if (ret == -EAGAIN) {
+> +			htab_unlock_bucket(htab, b, hash, flags);
+> +			htab_gc_elem(htab, l_old);
+> +			mod_delayed_work(system_unbound_wq, &htab->gc_work, 0);
+> +			goto again;
+
+Also this one looks rather worrying, so the BPF prog is stalled here, loop-waiting
+in (e.g. XDP) hot path for system_unbound_wq to kick in to make forward progress?
+
+> +		}
+> +		/* all pre-allocated elements are in use or memory exhausted */
+>   		goto err;
+>   	}
+>   
+> +	if (timeout_map)
+> +		l_new->expires = msecs_to_expire(timeout);
+> +
