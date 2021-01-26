@@ -2,91 +2,182 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 635233038D7
-	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 10:23:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AAAE303B90
+	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 12:26:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728630AbhAZJSx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Jan 2021 04:18:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33676 "EHLO
+        id S2404691AbhAZLZm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Jan 2021 06:25:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390893AbhAZJQK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Jan 2021 04:16:10 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15E4BC061573
-        for <bpf@vger.kernel.org>; Tue, 26 Jan 2021 01:15:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Y63ons5ewOFgOkNz2cG2NjkjH4lXzVOR7t94xcBkSh4=; b=s4guv9cFb157VVY7Kk6phzsgVL
-        qfAZasJAd+VJbRnEhvDWAqZM0cqL0syGGIPYinGSThWeCXqJMMkAQpUqCGPnBuJ3Otoseb3dY0HMS
-        dN1nQ+ekQunTokk8vIJww1eOCiipTlMdF7CkHqCmzFCPQS77YNXHizPD7aTrJrbdExxd3iZNlrSMI
-        74TlkX3vGklHTvmHVs0nmP+vrkZQbapzQGSoHM5Vwjlm+8ig+tK63ikWatZkvD23dlaAzzOxYkd/x
-        vT95rV0XLeZV1qD60/qPBjjw7wpz1zw+JRPgPowPyem08HSjtr+7qIzBr1m9XtJwfMonWJj9VtvBH
-        qy40dKyg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l4KRX-0004UY-PP; Tue, 26 Jan 2021 09:15:23 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 50B4F300DB4;
-        Tue, 26 Jan 2021 10:15:22 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3888C209C50F2; Tue, 26 Jan 2021 10:15:22 +0100 (CET)
-Date:   Tue, 26 Jan 2021 10:15:22 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
-        x86@kernel.org, KP Singh <kpsingh@kernel.org>
-Subject: Re: [PATCH bpf] x86/bpf: handle bpf-program-triggered exceptions
- properly
-Message-ID: <YA/dqup/752hHBI4@hirez.programming.kicks-ass.net>
-References: <20210126001219.845816-1-yhs@fb.com>
+        with ESMTP id S2392392AbhAZLZf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Jan 2021 06:25:35 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53DF2C061573
+        for <bpf@vger.kernel.org>; Tue, 26 Jan 2021 03:24:54 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id ox12so22488922ejb.2
+        for <bpf@vger.kernel.org>; Tue, 26 Jan 2021 03:24:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Ehd8dKvshqv096MiiF/4A8h0oTzqB7VPo9idTPblfLk=;
+        b=ukaf2mU19r2MLgtt/uK6CHnuXPt69grvD1TJofxIMCDqRoX7RGjO52L63lyIIfhS4M
+         gJDWm0LQl4sTgZRrNPaVt/hcIFajPnUmpsumr1CPI6NB5jglpyRii/w8ejf/pT0M3fSP
+         +1yPnnoSNeUNqA0GEFFqHBzjzUrTxPi2cwBv68t8MxBZ5WK8SAvD72TBBeiJEUTyB2I3
+         LK+01jQwZdGtKT8pzGkvMoMdpXjApgiO4HSZNiO0eC31LgR2NCqdkgrLiJXsLkIVBw30
+         7kHs/j5WomsxMMI3cMKC8LkZFCp89vzdufb/dSIHgNJoiRmvoK3aByHNnUuX7PYM0Sbk
+         uAgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Ehd8dKvshqv096MiiF/4A8h0oTzqB7VPo9idTPblfLk=;
+        b=Xq2IowUcQf8Pt4tSuKPXxdVdhGM59vy+GnCaF2Ed+Sa+J8xD1sKiqlEN3B6yyIyeBj
+         Z9Aq6NA3UNaoQgzA6NirDcg+xizE3BumN0ZMnQPTCnNXpXbMLM3ivBjgEdUkqfbSwvNd
+         fLhGKoiq+S/ExGoRcsKFDNp7/dE7QDfnw0DIPIlBcq4w+8R/F9MJZZjQSA+lcT78WW6q
+         8zpQUCShqndDGZncGAV4h6ZmfMQabhNSQah06LAhqKOyqWY1y9/29kCbevwAgGOGV56p
+         D5T5UOKuz6seIKpvNUIEbNEjwuOOmwiP0m0/mP3hsz+8mgxG8/oHiXXvhZHivT+yejDY
+         p46A==
+X-Gm-Message-State: AOAM533bHmHqutaq7ydgoMuM5aDYwb2LKJ+e2PfQ0SEyx/DWbGbQ1soJ
+        XavBcLqJs0+ANR0fQKpfDnAiJA==
+X-Google-Smtp-Source: ABdhPJysQtODpS58Gb9O+DO0iyddvPZBOvOCTQklNEK4Aa6djh5ZgkjCqLHvmew57oTyHqq42NbQcA==
+X-Received: by 2002:a17:906:890:: with SMTP id n16mr3044839eje.195.1611660293091;
+        Tue, 26 Jan 2021 03:24:53 -0800 (PST)
+Received: from [192.168.1.12] ([194.35.116.83])
+        by smtp.gmail.com with ESMTPSA id r11sm12222226edt.58.2021.01.26.03.24.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Jan 2021 03:24:52 -0800 (PST)
+Subject: Re: [PATCH] bpf: fix build for BPF preload when $(O) points to a
+ relative path
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        David Gow <davidgow@google.com>
+References: <20210125154938.40504-1-quentin@isovalent.com>
+ <CAEf4BzYKrmMM_9SRKyGA0LNv-DvThpr9cQsNLVtn5h0jEUYtWg@mail.gmail.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+Message-ID: <6a15aa00-5649-42e5-1c97-2e2985891607@isovalent.com>
+Date:   Tue, 26 Jan 2021 11:24:51 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210126001219.845816-1-yhs@fb.com>
+In-Reply-To: <CAEf4BzYKrmMM_9SRKyGA0LNv-DvThpr9cQsNLVtn5h0jEUYtWg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 04:12:19PM -0800, Yonghong Song wrote:
-> When the test is run normally after login prompt, cpu_feature_enabled(X86_FEATURE_SMAP)
-> is true and bad_area_nosemaphore() is called and then fixup_exception() is called,
-> where bpf specific handler is able to fixup the exception.
+2021-01-25 16:32 UTC-0800 ~ Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> On Mon, Jan 25, 2021 at 7:49 AM Quentin Monnet <quentin@isovalent.com> wrote:
+>>
+>> Building the kernel with CONFIG_BPF_PRELOAD, and by providing a relative
+>> path for the output directory, may fail with the following error:
+>>
+>>   $ make O=build bindeb-pkg
+>>   ...
+>>   /.../linux/tools/scripts/Makefile.include:5: *** O=build does not exist.  Stop.
+>>   make[7]: *** [/.../linux/kernel/bpf/preload/Makefile:9: kernel/bpf/preload/libbpf.a] Error 2
+>>   make[6]: *** [/.../linux/scripts/Makefile.build:500: kernel/bpf/preload] Error 2
+>>   make[5]: *** [/.../linux/scripts/Makefile.build:500: kernel/bpf] Error 2
+>>   make[4]: *** [/.../linux/Makefile:1799: kernel] Error 2
+>>   make[4]: *** Waiting for unfinished jobs....
+>>
+>> In the case above, for the "bindeb-pkg" target, the error is produced by
+>> the "dummy" check in Makefile.include, called from libbpf's Makefile.
+>> This check changes directory to $(PWD) before checking for the existence
+>> of $(O). But at this step we have $(PWD) pointing to "/.../linux/build",
+>> and $(O) pointing to "build". So the Makefile.include tries in fact to
+>> assert the existence of a directory named "/.../linux/build/build",
+>> which does not exist.
+>>
+>> By contrast, other tools called from the main Linux Makefile get the
+>> variable set to $(abspath $(objtree)), where $(objtree) is ".". We can
+>> update the Makefile for kernel/bpf/preload to set $(O) to the same
+>> value, to permit compiling with a relative path for output. Note that
+>> apart from the Makefile.include, the variable $(O) is not used in
+>> libbpf's build system.
+>>
+>> Note that the error does not occur for all make targets and
+>> architectures combinations.
+>>
+>> - On x86, "make O=build vmlinux" appears to work fine.
+>>   $(PWD) points to "/.../linux/tools", but $(O) points to the absolute
+>>   path "/.../linux/build" and the test succeeds.
+>> - On UML, it has been reported to fail with a message similar to the
+>>   above (see [0]).
+>> - On x86, "make O=build bindeb-pkg" fails, as described above.
+>>
+>> It is unsure where the different values for $(O) and $(PWD) come from
+>> (likely some recursive make with different arguments at some point), and
+>> because several targets are broken, it feels safer to fix the $(O) value
+>> passed to libbpf rather than to hunt down all changes to the variable.
+>>
+>> David Gow previously posted a slightly different version of this patch
+>> as a RFC [0], two months ago or so.
+>>
+>> [0] https://lore.kernel.org/bpf/20201119085022.3606135-1-davidgow@google.com/t/#u
+>>
+>> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+>> Cc: Brendan Higgins <brendanhiggins@google.com>
+>> Cc: David Gow <davidgow@google.com>
+>> Reported-by: David Gow <davidgow@google.com>
+>> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+>> ---
 > 
-> But when the test is run at /sbin/init time, cpu_feature_enabled(X86_FEATURE_SMAP) is
-> false, the control reaches
+> I still think it would benefit everyone to figure out where this is
+> breaking (given Linux Makefile explicitly tries to handle such
+> relative path situation for O=, I believe), but this is trivial
+> enough, so:
+> 
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-That makes no sense, cpu features should be set in stone long before we
-reach userspace.
+Agreed, I'll try to spend a bit more time on this when I can. But it
+would be nice to have the fix in the meantime. Thanks for the review and
+ack.
 
-> To fix the issue, before the above mmap_read_trylock(), we will check
-> whether fault ip can be served by bpf exception handler or not, if
-> yes, the exception will be fixed up and return.
+> 
+> BTW, you haven't specified which tree you intended it for.
 
+Oops! I _knew_ I was missing something, sorry. This build issue is here
+since eBPF preload was introduced, so I meant to send to the *bpf* tree.
 
+Because it does not concern the major build targets, I was not sure if a
+"Fixes:" tag would be appropriate. If we want one, it should be for
+d71fa5c9763c ("bpf: Add kernel module with user mode driver that
+populates bpffs.")
 
-> diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-> index f1f1b5a0956a..e8182d30bf67 100644
-> --- a/arch/x86/mm/fault.c
-> +++ b/arch/x86/mm/fault.c
-> @@ -1317,6 +1317,15 @@ void do_user_addr_fault(struct pt_regs *regs,
->  		if (emulate_vsyscall(hw_error_code, regs, address))
->  			return;
->  	}
-> +
-> +#ifdef CONFIG_BPF_JIT
-> +	/*
-> +	 * Faults incurred by bpf program might need emulation, i.e.,
-> +	 * clearing the dest register.
-> +	 */
-> +	if (fixup_bpf_exception(regs, X86_TRAP_PF, hw_error_code, address))
-> +		return;
-> +#endif
->  #endif
+> 
+>>  kernel/bpf/preload/Makefile | 5 ++++-
+>>  1 file changed, 4 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/kernel/bpf/preload/Makefile b/kernel/bpf/preload/Makefile
+>> index 23ee310b6eb4..11b9896424c0 100644
+>> --- a/kernel/bpf/preload/Makefile
+>> +++ b/kernel/bpf/preload/Makefile
+>> @@ -4,8 +4,11 @@ LIBBPF_SRCS = $(srctree)/tools/lib/bpf/
+>>  LIBBPF_A = $(obj)/libbpf.a
+>>  LIBBPF_OUT = $(abspath $(obj))
+>>
+>> +# Set $(O) so that the "dummy" test in tools/scripts/Makefile.include, called
+>> +# by libbpf's Makefile, succeeds when building the kernel with $(O) pointing to
+>> +# a relative path, as in "make O=build bindeb-pkg".
+>>  $(LIBBPF_A):
+>> -       $(Q)$(MAKE) -C $(LIBBPF_SRCS) OUTPUT=$(LIBBPF_OUT)/ $(LIBBPF_OUT)/libbpf.a
+>> +       $(Q)$(MAKE) -C $(LIBBPF_SRCS) O=$(abspath .) OUTPUT=$(LIBBPF_OUT)/ $(LIBBPF_OUT)/libbpf.a
+> 
+> why not O=$(LIBBPF_OUT), btw?
 
-NAK, this is broken. You're now disallowing faults that should've gone
-through.
+$(LIBBPF_OUT) points to /.../linux/ZZ_BUILD/build/kernel/bpf/preload.
+This is an absolute path so the "dummy" check should work, too. I
+preferred to align the value on the root Makefile, which has
+"O=$(abspath $(objtree))" for target "tools/%", but no strong opinion
+here. David would simply empty the variable in his patch. I'm fine with
+any of the three versions. Would you prefer me to resend with $(LIBBPF_OUT)?
+
+Thanks,
+Quentin
