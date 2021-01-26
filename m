@@ -2,121 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F833303549
-	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 06:40:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22C0C30354B
+	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 06:40:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731709AbhAZFis (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Jan 2021 00:38:48 -0500
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:37069 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731263AbhAZCSo (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 25 Jan 2021 21:18:44 -0500
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id 0938F5C0176;
-        Mon, 25 Jan 2021 21:17:31 -0500 (EST)
-Received: from imap6 ([10.202.2.56])
-  by compute2.internal (MEProxy); Mon, 25 Jan 2021 21:17:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kode54.net; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm2; bh=735hv4Tvj+thMpNngNIzqfBhcBDwojM
-        fJpUzLTedE6o=; b=pVFpn8v3qAbmr2OoqdKgfWkqjIU6M3vY92pWTxF7InYco3u
-        oa+WorMQNBVhm8ot/xGm5wZ9Sx8RB0/R6YMZk5SgThkH4nX9hH5QdLTddIA6bmQU
-        4BE5pySIXkyzzaMQdsC6NrK6N8F6ca4LyJv/KrYKA/HfRiUfDR2/xoySBJdeJvWO
-        RQA7FG8rmjwEecDMgMKgOH9Fr7EK1irY/Cw8nxLJxmYbD4H8DxBJYatikzBfH+jv
-        Rb2yEx91JB0RH9/0KjhvNVs7PgPN36E9oAr9XCBw9g5x6/bOznuwUJea3TRxUJ9u
-        KZtwoNwrm3lm50A2rKi8P04Yw9zxnW//BFmt63g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=735hv4
-        Tvj+thMpNngNIzqfBhcBDwojMfJpUzLTedE6o=; b=q59W6fQhajGm5T1F9BTP8o
-        L5swcW1MW4L0ts5Y0eNKAkVIe/jbpFMSgsx9FZRuKlY6S45JBuvtSc45vUjA/ciD
-        yMod/gEurcc6QW8JllyS9aUJ7piW/90I1b7yHifkf8if4iqbSt9Mvokl/A03odFQ
-        jXmFQF6dOHrTHNeHvVGvCOZDSNbQtIpSHh4Xj35hrciceHwk7muP5We/+DOVFB4D
-        G2JXqjQ/ZOwStEIEX5WDgDsmVPIKIjkystnT9t4fCqlXobvJXK3XnrHEP27oZ1Qx
-        ZxewuOp8ao++EMo6F1cJanf4ZcrRRgKjbvdUz9sASfdVu/qxTX5JoSxg/9D0oPZA
-        ==
-X-ME-Sender: <xms:unsPYI18mbGmEeU71voby2Ivw1_gMUtEatHJBtbp8gmEZJgUzTJ-Fw>
-    <xme:unsPYDHSMuSWnBEz9kKj5ZMIV9MjAknkXmPebHjONTJbl0V1Eqz37XXM4HJiUPm08
-    yA7wMBmevEJqxUt2Lg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeggdegvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedfvehhrhhi
-    shhtohhphhgvrhcuhghilhhlihgrmhcuufhnohifhhhilhhlfdcuoegthhhrihhssehkoh
-    guvgehgedrnhgvtheqnecuggftrfgrthhtvghrnhepteelueegledvteehveefiefhveev
-    gefhteefiedtveekhfehledvjeffudelgfegnecuffhomhgrihhnpehkvghrnhgvlhdroh
-    hrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegt
-    hhhrihhssehkohguvgehgedrnhgvth
-X-ME-Proxy: <xmx:unsPYA7dBw0ZgwLur30miIuBh9S9UHMSRz631tfRDEDE5uSu0qTtzw>
-    <xmx:unsPYB0fv86tr3hIl-R8OwQ2ganBcVYjh2jd6DlXRNIsjwU35VvZtg>
-    <xmx:unsPYLERVM4cqeat6ZGTQ6xPFOn4ROEcHz-KMR6_8alCSn5JgpNGFw>
-    <xmx:u3sPYMP1y_ttj9Rz0oXdScMp6qjRt1wFssuqhwGAJqVyelN8puwlIg>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id A729924063D; Mon, 25 Jan 2021 21:17:30 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-78-g36b56e88ef-fm-20210120.001-g36b56e88
-Mime-Version: 1.0
-Message-Id: <64ab3a61-1488-4334-8831-60e7052864d7@www.fastmail.com>
-In-Reply-To: <CAEf4BzY4LWhyHfd3OpvrM5DB7qieOemcxzp0GBtqWJTw56PMCg@mail.gmail.com>
-References: <20210110070341.1380086-1-andrii@kernel.org>
- <161048280875.1131.14039972740532054006.git-patchwork-notify@kernel.org>
- <4f19b649-a837-48af-90d1-c4692580053d@www.fastmail.com>
- <CAEf4BzY4LWhyHfd3OpvrM5DB7qieOemcxzp0GBtqWJTw56PMCg@mail.gmail.com>
-Date:   Mon, 25 Jan 2021 18:17:10 -0800
-From:   "Christopher William Snowhill" <chris@kode54.net>
-To:     "Andrii Nakryiko" <andrii.nakryiko@gmail.com>
-Cc:     patchwork-bot+netdevbpf <patchwork-bot+netdevbpf@kernel.org>,
-        "Andrii Nakryiko" <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "Alexei Starovoitov" <ast@fb.com>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        "Kernel Team" <kernel-team@fb.com>
-Subject: Re: [PATCH bpf 1/2] bpf: allow empty module BTFs
-Content-Type: text/plain
+        id S1731263AbhAZFiv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Jan 2021 00:38:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732010AbhAZCeu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Jan 2021 21:34:50 -0500
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C60EC061573
+        for <bpf@vger.kernel.org>; Mon, 25 Jan 2021 18:34:08 -0800 (PST)
+Received: by mail-yb1-xb29.google.com with SMTP id e206so3085073ybh.13
+        for <bpf@vger.kernel.org>; Mon, 25 Jan 2021 18:34:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=g3pjtshA3y0EzC6IGe5deZzOWbI81Aa8oxWCKQUy+JY=;
+        b=ZphAAVdvIBzWIx/Lu1/7Ynjj5kw6jZSJnc30oZZRiXXnq+A9wVSoO/yJZ7+r4PihuY
+         AFx3EdgcZ+Jbr4S+2HnRSLMQ8Q1HgbNixMrem+krfRMcgsI/dUJrdLYxRVi4rG4ZvEuM
+         xQQxT/UXHrK+/wxOqxUPEsF8ZDkWQniUvhKItBJ1njIy/qqhYEOwQr0OwRm0Ry+6IWBP
+         n/4K97CNFtT8YAM1dt2+RhiVcXNOg0jycytlRAGn8Zn0D5jExqP3WB9y3A/mKxNJpFcb
+         BcWjgcWxrK7qlwTtqH3vCIoOUZGo342exXtlNnBcrCvgUpOUyMiyhBP5z+gTs2WhVuEc
+         k/eA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=g3pjtshA3y0EzC6IGe5deZzOWbI81Aa8oxWCKQUy+JY=;
+        b=Yl5GFwluTyBxCPjihd3cgYjBH257GpcwZ5vAiKbBX7jU4zvDf+TQr9V3S8Zusk/wJ7
+         jEm4JS+SPiMAWDYcwBr450fKCZ//zRaUn2mkVwXumZRsX0jFqSwom3FDBTk7ykAB6EXj
+         fo7hK3UZPX8KxpruprhY5S8tYBlx+SgOSq1DRvUTb7rqxlXRXFxQ8Aj4jCojqsIeVFN8
+         kzNKSv1cpiKurBURpSFjg2hX2C2vUNbV/EqcDyrm04ZgnPUyL+1437JhRpbqXLhQml22
+         uVwL1D9Z83+unWjChz+HlsGYiKe9Z1qNkIasTWjRYW0BnhwnAoO59sfsXcuKtQC8EonR
+         DOcg==
+X-Gm-Message-State: AOAM5311cw3ARH+M96MY+AakGpe7KjJ0VvS/4mZf8jxz+ZDKsCxICIFY
+        uMX7+LzcVHKUTX67JRpZ8FEY94XKYuNM7pxmTfc=
+X-Google-Smtp-Source: ABdhPJwABHXfa2uwMuDI1JICdbqnt9NYWTOJmgfLDa2s0Yp+9s+s8E+gQJUnakKRF/Hi3fjBMho8rcHB6rD0TZSi9Qs=
+X-Received: by 2002:a25:548:: with SMTP id 69mr5013514ybf.510.1611628447506;
+ Mon, 25 Jan 2021 18:34:07 -0800 (PST)
+MIME-Version: 1.0
+References: <20210124194909.453844-1-andreimatei1@gmail.com> <20210124194909.453844-5-andreimatei1@gmail.com>
+In-Reply-To: <20210124194909.453844-5-andreimatei1@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 25 Jan 2021 18:33:56 -0800
+Message-ID: <CAEf4BzYncMLH8z0D-TMjzekSp0eAPw963dWg91uaKR+nFiBg8w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 4/5] selftest/bpf: move utility function to
+ tests header
+To:     Andrei Matei <andreimatei1@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Aha, that was just released. Nice. I'll report this to the issue tracker where I had lodged the bpf patches for QoL use when testing rc4 and older.
-
-On Mon, Jan 25, 2021, at 5:26 PM, Andrii Nakryiko wrote:
-> On Sun, Jan 24, 2021 at 2:28 AM Christopher William Snowhill
-> <chris@kode54.net> wrote:
-> >
-> > When is this being applied to an actual kernel? 5.11 is still quite broken without these two patches. Unless you're not using a vfat EFI partition, I guess.
-> >
-> 
-> It's in v5.11-rc5.
-> 
-> > On Tue, Jan 12, 2021, at 12:20 PM, patchwork-bot+netdevbpf@kernel.org wrote:
-> > > Hello:
-> > >
-> > > This series was applied to bpf/bpf.git (refs/heads/master):
-> > >
-> > > On Sat, 9 Jan 2021 23:03:40 -0800 you wrote:
-> > > > Some modules don't declare any new types and end up with an empty BTF,
-> > > > containing only valid BTF header and no types or strings sections. This
-> > > > currently causes BTF validation error. There is nothing wrong with such BTF,
-> > > > so fix the issue by allowing module BTFs with no types or strings.
-> > > >
-> > > > Reported-by: Christopher William Snowhill <chris@kode54.net>
-> > > > Fixes: 36e68442d1af ("bpf: Load and verify kernel module BTFs")
-> > > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > > >
-> > > > [...]
-> > >
-> > > Here is the summary with links:
-> > >   - [bpf,1/2] bpf: allow empty module BTFs
-> > >     https://git.kernel.org/bpf/bpf/c/bcc5e6162d66
-> > >   - [bpf,2/2] libbpf: allow loading empty BTFs
-> > >     https://git.kernel.org/bpf/bpf/c/b8d52264df85
-> > >
-> > > You are awesome, thank you!
-> > > --
-> > > Deet-doot-dot, I am a bot.
-> > > https://korg.docs.kernel.org/patchwork/pwbot.html
-> > >
-> > >
-> > >
+On Sun, Jan 24, 2021 at 11:54 AM Andrei Matei <andreimatei1@gmail.com> wrote:
 >
+> get_base_addr is generally useful for tests attaching uprobes. This
+> patch moves it from one particular test to test_progs.{h,c}. The
+> function will be used by a second test in the next patch.
+>
+> Signed-off-by: Andrei Matei <andreimatei1@gmail.com>
+> ---
+
+trace_helpers.{c,h} seem more appropriate as a destination
+
+>  .../selftests/bpf/prog_tests/attach_probe.c   | 21 ----------------
+>  tools/testing/selftests/bpf/test_progs.c      | 25 +++++++++++++++++++
+>  tools/testing/selftests/bpf/test_progs.h      |  1 +
+>  3 files changed, 26 insertions(+), 21 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+> index a0ee87c8e1ea..3bda8acbbafb 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+> @@ -2,27 +2,6 @@
+>  #include <test_progs.h>
+>  #include "test_attach_probe.skel.h"
+>
+
+[...]
