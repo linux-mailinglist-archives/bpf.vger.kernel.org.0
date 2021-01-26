@@ -2,155 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AE33303FD0
-	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 15:12:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E25003040EF
+	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 15:53:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405745AbhAZOKF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Jan 2021 09:10:05 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:49896 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2391768AbhAZOGi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Jan 2021 09:06:38 -0500
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxRb2nIRBg_DsNAA--.17412S2;
-        Tue, 26 Jan 2021 22:05:28 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        id S1730973AbhAZOwY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Jan 2021 09:52:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391246AbhAZJiA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Jan 2021 04:38:00 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09068C061756
+        for <bpf@vger.kernel.org>; Tue, 26 Jan 2021 01:37:10 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id q12so21843150lfo.12
+        for <bpf@vger.kernel.org>; Tue, 26 Jan 2021 01:37:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fc97bl9y/fOUWfcqC9Hh9udHha7efiEnc5d5nu4VkAU=;
+        b=vd1XuR3gcGy119h75Y1qjivJKBqfMQoxlVfdaFE8OOJ2A7JYfLrSDiKeDDulAHSNrA
+         MclXbRVXfHjAiw06826JQERooCqRYe5tGUyUBFnRcU+r4Fnp+nw+ZgwBLpDl9dzSETIN
+         bHIKEFQ9jPwYKMb17EdGRflrasDgMbTkVP248=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fc97bl9y/fOUWfcqC9Hh9udHha7efiEnc5d5nu4VkAU=;
+        b=CF/crsagXtztoMblXrXQpooD8IDo0IgY7LVY5itn55ewCMKMOpy97G7895WGMlscSi
+         kIZCGzgbhU1/Z/X2Y222m5mST9na3BL1qvV3Z8rmMNFo1xj6bgedC191jzm09RQKtZHG
+         T1WhJYuDryrCDBVvrGNKerfJaaDh56gpN5S4K4SKQyQCd5ZMqcGmCEyz/x/8zko18nz6
+         /8J8G4ECG49N86k8Aua/+SpB+kANfiYD15P55ytorhsI1gJmjhqxx6kRKY6Qr4lHCPce
+         Zi8zlSA1CtgtP7b7w1VYnFAA9XKLDKK/Tohc3RdhiLwsigRunhr49WJvVGNGO7BbXKs5
+         nFAA==
+X-Gm-Message-State: AOAM530NUQjjqPQu6jPIPf9kSHZfION4qBUDh5A1v/AQ68RIsESEr5b4
+        32+OG3V+8XRBj8ulI2Y1c0E91BDR141SzGej3NZ5ig==
+X-Google-Smtp-Source: ABdhPJyCGPCvmzSWUJppoFAjsEUtCf8KWSJC0FJrI/QII7dvxqZrr5XBPR4F3kafupLvwui/f8oqxjIf8OmPtbBhies=
+X-Received: by 2002:a19:c56:: with SMTP id 83mr2467065lfm.325.1611653828443;
+ Tue, 26 Jan 2021 01:37:08 -0800 (PST)
+MIME-Version: 1.0
+References: <20210126082606.3183-1-minhquangbui99@gmail.com>
+In-Reply-To: <20210126082606.3183-1-minhquangbui99@gmail.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Tue, 26 Jan 2021 09:36:57 +0000
+Message-ID: <CACAyw99bEYWJCSGqfLiJ9Jp5YE1ZsZSiJxb4RFUTwbofipf0dA@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Fix integer overflow in argument calculation for bpf_map_area_alloc
+To:     Bui Quang Minh <minhquangbui99@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, hawk@kernel.org,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        clang-built-linux@googlegroups.com, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH bpf-next] samples/bpf: Add include dir for MIPS Loongson64 to fix build errors
-Date:   Tue, 26 Jan 2021 22:05:25 +0800
-Message-Id: <1611669925-25315-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9AxRb2nIRBg_DsNAA--.17412S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxGrW5Aw1UCFy7uFyxAFWUurg_yoWrXFyDpa
-        1Duw1kWF45WryUAFn8Ar1Ik3y3Jw45G3yjvFy5W34jv3ZIgFyfJrsakr15Gr1ktF4qva18
-        Kry3WrWagr1UZw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvK14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-        jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWxJVW8Jr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
-        n2kIc2xKxwCY02Avz4vE14v_Xryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
-        0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
-        17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
-        C0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF
-        0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxh
-        VjvjDU0xZFpf9x0JUWlksUUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        kpsingh@kernel.org, Jakub Sitnicki <jakub@cloudflare.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-There exists many build errors when make M=samples/bpf on the Loongson
-platform, this issue is MIPS related, x86 compiles just fine.
+On Tue, 26 Jan 2021 at 08:26, Bui Quang Minh <minhquangbui99@gmail.com> wrote:
+>
+> In 32-bit architecture, the result of sizeof() is a 32-bit integer so
+> the expression becomes the multiplication between 2 32-bit integer which
+> can potentially leads to integer overflow. As a result,
+> bpf_map_area_alloc() allocates less memory than needed.
+>
+> Fix this by casting 1 operand to u64.
 
-Here are some errors:
+Some quick thoughts:
+* Should this have a Fixes tag?
+* Seems like there are quite a few similar calls scattered around
+(cpumap, etc.). Did you audit these as well?
+* I'd prefer a calloc style version of bpf_map_area_alloc although
+that might conflict with Fixes tag.
 
-  CLANG-bpf  samples/bpf/sockex2_kern.o
-In file included from samples/bpf/sockex2_kern.c:2:
-In file included from ./include/uapi/linux/in.h:24:
-In file included from ./include/linux/socket.h:8:
-In file included from ./include/linux/uio.h:8:
-In file included from ./include/linux/kernel.h:11:
-In file included from ./include/linux/bitops.h:32:
-In file included from ./arch/mips/include/asm/bitops.h:19:
-In file included from ./arch/mips/include/asm/barrier.h:11:
-./arch/mips/include/asm/addrspace.h:13:10: fatal error: 'spaces.h' file not found
-         ^~~~~~~~~~
-1 error generated.
+Lorenz
 
-  CLANG-bpf  samples/bpf/sockex2_kern.o
-In file included from samples/bpf/sockex2_kern.c:2:
-In file included from ./include/uapi/linux/in.h:24:
-In file included from ./include/linux/socket.h:8:
-In file included from ./include/linux/uio.h:8:
-In file included from ./include/linux/kernel.h:11:
-In file included from ./include/linux/bitops.h:32:
-In file included from ./arch/mips/include/asm/bitops.h:22:
-In file included from ./arch/mips/include/asm/cpu-features.h:13:
-In file included from ./arch/mips/include/asm/cpu-info.h:15:
-In file included from ./include/linux/cache.h:6:
-./arch/mips/include/asm/cache.h:12:10: fatal error: 'kmalloc.h' file not found
-         ^~~~~~~~~~~
-1 error generated.
-
-  CLANG-bpf  samples/bpf/sockex2_kern.o
-In file included from samples/bpf/sockex2_kern.c:2:
-In file included from ./include/uapi/linux/in.h:24:
-In file included from ./include/linux/socket.h:8:
-In file included from ./include/linux/uio.h:8:
-In file included from ./include/linux/kernel.h:11:
-In file included from ./include/linux/bitops.h:32:
-In file included from ./arch/mips/include/asm/bitops.h:22:
-./arch/mips/include/asm/cpu-features.h:15:10: fatal error: 'cpu-feature-overrides.h' file not found
-         ^~~~~~~~~~~~~~~~~~~~~~~~~
-1 error generated.
-
-$ find arch/mips/include/asm -name spaces.h | sort
-arch/mips/include/asm/mach-ar7/spaces.h
-...
-arch/mips/include/asm/mach-generic/spaces.h
-...
-arch/mips/include/asm/mach-loongson64/spaces.h
-...
-arch/mips/include/asm/mach-tx49xx/spaces.h
-
-$ find arch/mips/include/asm -name kmalloc.h | sort
-arch/mips/include/asm/mach-generic/kmalloc.h
-arch/mips/include/asm/mach-ip32/kmalloc.h
-arch/mips/include/asm/mach-tx49xx/kmalloc.h
-
-$ find arch/mips/include/asm -name cpu-feature-overrides.h | sort
-arch/mips/include/asm/mach-ath25/cpu-feature-overrides.h
-...
-arch/mips/include/asm/mach-generic/cpu-feature-overrides.h
-...
-arch/mips/include/asm/mach-loongson64/cpu-feature-overrides.h
-...
-arch/mips/include/asm/mach-tx49xx/cpu-feature-overrides.h
-
-In the arch/mips/Makefile, there exists the following board-dependent
-options:
-
-include arch/mips/Kbuild.platforms
-cflags-y += -I$(srctree)/arch/mips/include/asm/mach-generic
-
-So we can do the similar things in samples/bpf/Makefile, just add
-platform specific and generic include dir for MIPS Loongson64 to
-fix the build errors.
-
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- samples/bpf/Makefile | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-index 362f314..45ceca4 100644
---- a/samples/bpf/Makefile
-+++ b/samples/bpf/Makefile
-@@ -185,6 +185,10 @@ endif
- 
- ifeq ($(ARCH), mips)
- TPROGS_CFLAGS += -D__SANE_USERSPACE_TYPES__
-+ifdef CONFIG_MACH_LOONGSON64
-+BPF_EXTRA_CFLAGS += -I$(srctree)/arch/mips/include/asm/mach-loongson64
-+BPF_EXTRA_CFLAGS += -I$(srctree)/arch/mips/include/asm/mach-generic
-+endif
- endif
- 
- TPROGS_CFLAGS += -Wall -O2
 -- 
-2.1.0
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
+www.cloudflare.com
