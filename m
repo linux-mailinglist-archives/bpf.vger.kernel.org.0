@@ -2,281 +2,160 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B44A304CAD
-	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 23:53:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BE0E304CAF
+	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 23:53:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729924AbhAZWwg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Jan 2021 17:52:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393902AbhAZSBO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Jan 2021 13:01:14 -0500
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62E60C0613D6
-        for <bpf@vger.kernel.org>; Tue, 26 Jan 2021 10:00:44 -0800 (PST)
-Received: by mail-io1-xd34.google.com with SMTP id u8so22281306ior.13
-        for <bpf@vger.kernel.org>; Tue, 26 Jan 2021 10:00:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=L6F+uE+UliFGVqs/NDlYnbVdP53TZOrJEQl/d5NWBPk=;
-        b=abofJErBU6FkaNrP5/miR4Lb6l8kBeIt/iUqk5FV+2eP8QyxZulcnmhVa8sX/HbjGq
-         wU2mrWHfaLs9xU3p39iTQpSyxJ7x6Ixary+Uuf+G2I05w2JjTxbyrHmU79eLzLDLHT5o
-         LvyQuokaXm8wHlgbYSbG6B0z2SWKUXuqxxiSY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=L6F+uE+UliFGVqs/NDlYnbVdP53TZOrJEQl/d5NWBPk=;
-        b=RkkFkWrcEN08nYSLiYekEj3XMSEdkE4wVdHxWzwNtS69Bg5SVvhxsuwrfP2qawRBbe
-         xF0SACdd6JF71BPVakBbIpd1kj+cHvM6wbPqcXiqcffxPawrKAhmH/Vye4ruEyWGWXyR
-         q1QDc7n2mSnE3g5RwveD4ZzXtDLHAAEfgPE8GHYy1NFoODGmfkMzb1b5D4FfajyqFyW+
-         zo+VWQ0y/bA1TeL2Yb7ZO92uLTHD+2tUirjDgFLbIOVxbk6mefyxukuK/DWKqtMahwxT
-         pYJI3RFh6nnyT65VMF8huczX8l7JVCfGR4xFkqGaPPwjEcBOt05F9ICaAqHWg7yJ5Plk
-         3+zw==
-X-Gm-Message-State: AOAM530diVrhPFnh9pnxhdVP+24qtpht00X7kUGLfpkL6Pn8jaRniryD
-        pfrNU3uSh0Q7b7Y4po3Wt8shX5sUe3zrxB6Le1MlCA==
-X-Google-Smtp-Source: ABdhPJzJ4PjF8JQW6JMiwtIz6B7VJKm7OdndgrnoeOrbkNK8BRrdhO7OBnG3e4ud1NuWkhAP6g+x7cmHc3FkAb46YnM=
-X-Received: by 2002:a5d:9586:: with SMTP id a6mr5064887ioo.83.1611684043624;
- Tue, 26 Jan 2021 10:00:43 -0800 (PST)
+        id S1727933AbhAZWwo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Jan 2021 17:52:44 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:46618 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2390571AbhAZSCW (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 26 Jan 2021 13:02:22 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10QHxQBn029129;
+        Tue, 26 Jan 2021 10:01:22 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=K5LBys8cEO4cy+XNRAqshoDoZDmNl2DO5kn8fWeUGww=;
+ b=P2JP4BUxnyUXX3E4gaev0cMiXRpmN0Mas4e/7s+7FX7RKKChuRciaXXs5ELeNrigFdLB
+ 8tQhQn7rupwMPcxg0PgeujVupxL1p2uSCQsusfE68pdL7AMfwlG03pPdkr8fgl8T74R4
+ rG2RunYQaJRGlt/uG/zC+beeRx4k5J+GPlM= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 36950a5mg8-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 26 Jan 2021 10:01:22 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 26 Jan 2021 10:01:21 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Umn00u8vvufNmThZGmDkbBV6t54nX1YFTRZFYIRKvJdlVG2hXtrltNtUupAoD9v2cVXI65eJrIIiJhO0J6Pdhx3m3bQ9HbFMieKsyqoefwU76vLFecw8yoNkqztlz8z8Zlu7XopZP9XtM5pkGR9rzsohzuSLO2yTvmpsEmMwT6l4y9FvtUqMQ54EL7UCUF9Odrf+j/wJWxGEOldz6giYKQdP12Ntb/5PLBCCJ9BT2AOxt0QXUucYtk0+dtOF6armL2qqbzHrF0eNG1i6ZfoTGxGXHl70QVGp9muNi0tgFTLl3dCATMIGIV0v1PMPb1ykF/9Ae2mkB+3bKyWi/zMGKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=K5LBys8cEO4cy+XNRAqshoDoZDmNl2DO5kn8fWeUGww=;
+ b=D5938v2YTrfefsNIK0KDSibp5GvOEYx1GdPxOJOERquOlfTA4Nj9SKOxXyDzQCzV4m/VKUSLKZfXyjB2ywp4y/j7gvnaHSniSEg6JB0uMA9x8PldIU1KzF8oCu8Xn+f0/wbJkYYzqXC1fwoHZr3AtV/FSVEDkv940QZ6fe84oVLN8Eia7j/DM1htQC+dynONgSI7Xz3XnC9CbaXMCwWFRVHEk6MYtT8DEVAgYKXgHmLNqiylPMplOc35ytU4FAIgQbk8K5rNYwn2r0aDCERrbQWpToviOHRTyQZfcnW+XHkcTXpfRBHYa/Oqj3+iebII0w2wXn7KyX1TV2cwwFosVQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=K5LBys8cEO4cy+XNRAqshoDoZDmNl2DO5kn8fWeUGww=;
+ b=aIyWc9xt5mwGpw4hmBX7DJ1IPj66lIwcsE3rR/YC7yMsbzZPEqFIDkQ+FVk0I+gKxEwOPWILt0i0wPhaqMwbc0xQKyTjnHSt9+I/f8gj9xdTL0c8lkvolXtEN7poHMV5CaF76IvK6vTNN2SPJILkBSuyWLvshyfP/9aeJk+htjk=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by BYAPR15MB2840.namprd15.prod.outlook.com (2603:10b6:a03:b2::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Tue, 26 Jan
+ 2021 18:01:20 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::d13b:962a:2ba7:9e66]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::d13b:962a:2ba7:9e66%3]) with mapi id 15.20.3784.017; Tue, 26 Jan 2021
+ 18:01:20 +0000
+Date:   Tue, 26 Jan 2021 10:01:11 -0800
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Stanislav Fomichev <sdf@google.com>
+CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, Andrey Ignatov <rdna@fb.com>
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: allow rewriting to ports under
+ ip_unprivileged_port_start
+Message-ID: <20210126180055.a5vg7vnng2u6r7te@kafai-mbp>
+References: <20210126165104.891536-1-sdf@google.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210126165104.891536-1-sdf@google.com>
+X-Originating-IP: [2620:10d:c090:400::5:694d]
+X-ClientProxiedBy: CO2PR07CA0057.namprd07.prod.outlook.com (2603:10b6:100::25)
+ To BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
 MIME-Version: 1.0
-References: <20210119155953.803818-1-revest@chromium.org> <20210119155953.803818-4-revest@chromium.org>
- <CACYkzJ6fNvYCO4cnU2XispQkF-_3yToDGgB=aRRd9m+qy0gpWA@mail.gmail.com>
- <CAADnVQJqVEvwF3GJyuiazxUUknBUaZ_k7gtt-m18hbBdoVeTGg@mail.gmail.com>
- <CABRcYmJ1jOgV2Ug6sKxbq4ZnaGFLvGLwCPmhrAYdaRh6oY-o=g@mail.gmail.com>
- <CABRcYm+cWobt9yd-2k8nx+19wCZVniLszTcQRphq1soxQG0jdg@mail.gmail.com> <93be5434-58ca-1e3b-d7dc-7ae079381104@fb.com>
-In-Reply-To: <93be5434-58ca-1e3b-d7dc-7ae079381104@fb.com>
-From:   Florent Revest <revest@chromium.org>
-Date:   Tue, 26 Jan 2021 19:00:32 +0100
-Message-ID: <CABRcYm+4u3cp3+AbeJEcy9uDvO91YiPeb07-U_qdAmWTogFKbA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 4/4] selftests/bpf: Add a selftest for the
- tracing bpf_get_socket_cookie
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp (2620:10d:c090:400::5:694d) by CO2PR07CA0057.namprd07.prod.outlook.com (2603:10b6:100::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.12 via Frontend Transport; Tue, 26 Jan 2021 18:01:18 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7b082047-1bcf-4df0-58f4-08d8c224621d
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2840:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB28404B675800D113FD09E6B6D5BC9@BYAPR15MB2840.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: tJHry0iKC2FODrM7ql+Dep3FZaT+A9Kd/5/ADS7cL3lJn+mjm9SctChsLOTuwajdYumOYqaaFVB4d6gkhMzYCA54ge4I1/2wl5XeQtS+h4TBhnyH2CzrzjBsOk9wrybgUvOvO2fQpp+PkGcEbQ9l7xxulnJxvt1iGn+Jfesh6mCtIJ4GVzDR1yQMancWFtH9gSSE73BWjDEwyU+Q7F1T1kosUp2yHy6LMn0rAaSzXWSY0PA2XuzIdhJ3sFlNt1c/F16GeHFioOBi46kg9gUl2Lk5joW89noikIWyhRJptyBl7TjcVllFtAnDyO052MQ1JVBzMTIhzn/fLNOQj+Jo0O+sTHOY1AVMK4xEKv0i0guqV33WnkABCZ31cXxcUWJDeJjOQMz6HmSE/U4OYVVtB6UZcOwclVQ9VkqJicaWh/fZiAF+9F8pscu3kBlC0ZiBg2DtErCTy8b4NijolxZOXT4uOHh3KO4MPcoR6/A3adqRfaKnP3HjUvbl/RZ1+v/k4Jon98js+nFnmrX7DoNNDA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(366004)(136003)(376002)(39860400002)(396003)(316002)(478600001)(2906002)(5660300002)(6916009)(86362001)(66476007)(33716001)(66556008)(66946007)(83380400001)(1076003)(186003)(6496006)(9686003)(52116002)(8936002)(6666004)(16526019)(55016002)(8676002)(4326008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?92uqVADZvw0niyIkD3jmVwVqtgdUwHAN4+QFv5C+B13FjBig4iO4vQroBlR9?=
+ =?us-ascii?Q?OzQDxev/8oDJ6hOo5X3exYuk3Z31GZdPN0NNOxZuItfutA7cMHfXpNzhK6Xv?=
+ =?us-ascii?Q?efXBRAeYAHmi2pwUsBjFl3IOCuNwrFZ4FJLbu+oR/6wpc42ZykfdDKrdLWHz?=
+ =?us-ascii?Q?PG/YDHbd8cMdMmStL3ADbqUVduYtE8bRZwO5REYWxsV2vSS/oa+A2F4e58nU?=
+ =?us-ascii?Q?7RfPcU+M/kdB1OHbtIsPSdxRJ5yt+sWOG/Pcdx1w04XHCyqsDhp3Jc9F0jgZ?=
+ =?us-ascii?Q?hQo/5yxN1eE4OqT80qlezBXt4FwJtp4vKi4UUFp5wFnQkEjSCuiG3LQRWOkh?=
+ =?us-ascii?Q?AcQiJH8ESVftza0LdMEAcXsOB7aZiudc5QIUgtJipOZKVju/q+63pfH3Gx7c?=
+ =?us-ascii?Q?n0bsV7iPdmCM48L6r61ndDtjolkYG39Q63la40q/9mnfdaavZOcdpHzsnass?=
+ =?us-ascii?Q?WS0JMYvcAtCX3345AtoBuEhsxBBf0JMurT/jTabix4JZ+FrUUQOgUw4cnp+l?=
+ =?us-ascii?Q?hDlBRAfZYbbYrUw7FYCHFKWDyQHkchGRkXUEhtn32PgM+9pxWqmUvloNjT4i?=
+ =?us-ascii?Q?NBIhQwYGAkLDvufoWPxYUG9nIEOz7Q4lDEmiRrZXHnhhYLahpBUduX7nhZHQ?=
+ =?us-ascii?Q?JFj+fEvhXss8UAJHe9teD4JM2Yi1srt+I2NbgRALn/Noh6jIlSS9/qxK8Te+?=
+ =?us-ascii?Q?jkZLNZUOOLUeSUAiZNnJ+ZMFM4ha/kjMSh0BV7TfSluGq8X+zfulk0QTRiZA?=
+ =?us-ascii?Q?rETHp55vpRixGigZXbaoKTr/24h+zHuqYYzr/it9b2/bGkSBKLS5duKD0T7c?=
+ =?us-ascii?Q?Gw4UU3eYj05ZiLPvaZNqoH4A7nb2BRHpeNIglGS4eCa87HO/1MJayaS9Hvk9?=
+ =?us-ascii?Q?ykAAbx3TNe+Wo5N8DYVOckgnnX7FsoQ9N2p4I05fxElGUUMwxnWigte3swTB?=
+ =?us-ascii?Q?Ef1ir3rbQ4SdjGgZDcSqW0O6N+eU1qvL1hHssGECrx5IayC2rK2jUNXysmm7?=
+ =?us-ascii?Q?oiAnF6d2kKFhA5wZuxiAlCoxWh1RmOdWm+1xdud/ymn6PDOF7vUSJ0S+w+eb?=
+ =?us-ascii?Q?3rF6mt0LvhUzRXIObIg6FagXGkIBAnqZOdKqKPAM1nn5EkS228M=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7b082047-1bcf-4df0-58f4-08d8c224621d
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2021 18:01:19.9663
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: G3yjQaITP2HzFrMuVCeoO5OuWQyACrJZzg460H+XZQ0KomXlyrAk8GiH7azSVECh
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2840
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-26_09:2021-01-26,2021-01-26 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ priorityscore=1501 spamscore=0 clxscore=1015 bulkscore=0 phishscore=0
+ impostorscore=0 lowpriorityscore=0 mlxlogscore=999 mlxscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101260094
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jan 23, 2021 at 9:45 PM Yonghong Song <yhs@fb.com> wrote:
-> On 1/22/21 7:34 AM, Florent Revest wrote:
-> > On Wed, Jan 20, 2021 at 8:06 PM Florent Revest <revest@chromium.org> wrote:
-> >>
-> >> On Wed, Jan 20, 2021 at 8:04 PM Alexei Starovoitov
-> >> <alexei.starovoitov@gmail.com> wrote:
-> >>>
-> >>> On Wed, Jan 20, 2021 at 9:08 AM KP Singh <kpsingh@kernel.org> wrote:
-> >>>>
-> >>>> On Tue, Jan 19, 2021 at 5:00 PM Florent Revest <revest@chromium.org> wrote:
-> >>>>>
-> >>>>> This builds up on the existing socket cookie test which checks whether
-> >>>>> the bpf_get_socket_cookie helpers provide the same value in
-> >>>>> cgroup/connect6 and sockops programs for a socket created by the
-> >>>>> userspace part of the test.
-> >>>>>
-> >>>>> Adding a tracing program to the existing objects requires a different
-> >>>>> attachment strategy and different headers.
-> >>>>>
-> >>>>> Signed-off-by: Florent Revest <revest@chromium.org>
-> >>>>
-> >>>> Acked-by: KP Singh <kpsingh@kernel.org>
-> >>>>
-> >>>> (one minor note, doesn't really need fixing as a part of this though)
-> >>>>
-> >>>>> ---
-> >>>>>   .../selftests/bpf/prog_tests/socket_cookie.c  | 24 +++++++----
-> >>>>>   .../selftests/bpf/progs/socket_cookie_prog.c  | 41 ++++++++++++++++---
-> >>>>>   2 files changed, 52 insertions(+), 13 deletions(-)
-> >>>>>
-> >>>>> diff --git a/tools/testing/selftests/bpf/prog_tests/socket_cookie.c b/tools/testing/selftests/bpf/prog_tests/socket_cookie.c
-> >>>>> index 53d0c44e7907..e5c5e2ea1deb 100644
-> >>>>> --- a/tools/testing/selftests/bpf/prog_tests/socket_cookie.c
-> >>>>> +++ b/tools/testing/selftests/bpf/prog_tests/socket_cookie.c
-> >>>>> @@ -15,8 +15,8 @@ struct socket_cookie {
-> >>>>>
-> >>>>>   void test_socket_cookie(void)
-> >>>>>   {
-> >>>>> +       struct bpf_link *set_link, *update_sockops_link, *update_tracing_link;
-> >>>>>          socklen_t addr_len = sizeof(struct sockaddr_in6);
-> >>>>> -       struct bpf_link *set_link, *update_link;
-> >>>>>          int server_fd, client_fd, cgroup_fd;
-> >>>>>          struct socket_cookie_prog *skel;
-> >>>>>          __u32 cookie_expected_value;
-> >>>>> @@ -39,15 +39,21 @@ void test_socket_cookie(void)
-> >>>>>                    PTR_ERR(set_link)))
-> >>>>>                  goto close_cgroup_fd;
-> >>>>>
-> >>>>> -       update_link = bpf_program__attach_cgroup(skel->progs.update_cookie,
-> >>>>> -                                                cgroup_fd);
-> >>>>> -       if (CHECK(IS_ERR(update_link), "update-link-cg-attach", "err %ld\n",
-> >>>>> -                 PTR_ERR(update_link)))
-> >>>>> +       update_sockops_link = bpf_program__attach_cgroup(
-> >>>>> +               skel->progs.update_cookie_sockops, cgroup_fd);
-> >>>>> +       if (CHECK(IS_ERR(update_sockops_link), "update-sockops-link-cg-attach",
-> >>>>> +                 "err %ld\n", PTR_ERR(update_sockops_link)))
-> >>>>>                  goto free_set_link;
-> >>>>>
-> >>>>> +       update_tracing_link = bpf_program__attach(
-> >>>>> +               skel->progs.update_cookie_tracing);
-> >>>>> +       if (CHECK(IS_ERR(update_tracing_link), "update-tracing-link-attach",
-> >>>>> +                 "err %ld\n", PTR_ERR(update_tracing_link)))
-> >>>>> +               goto free_update_sockops_link;
-> >>>>> +
-> >>>>>          server_fd = start_server(AF_INET6, SOCK_STREAM, "::1", 0, 0);
-> >>>>>          if (CHECK(server_fd < 0, "start_server", "errno %d\n", errno))
-> >>>>> -               goto free_update_link;
-> >>>>> +               goto free_update_tracing_link;
-> >>>>>
-> >>>>>          client_fd = connect_to_fd(server_fd, 0);
-> >>>>>          if (CHECK(client_fd < 0, "connect_to_fd", "errno %d\n", errno))
-> >>>>> @@ -71,8 +77,10 @@ void test_socket_cookie(void)
-> >>>>>          close(client_fd);
-> >>>>>   close_server_fd:
-> >>>>>          close(server_fd);
-> >>>>> -free_update_link:
-> >>>>> -       bpf_link__destroy(update_link);
-> >>>>> +free_update_tracing_link:
-> >>>>> +       bpf_link__destroy(update_tracing_link);
-> >>>>
-> >>>> I don't think this need to block submission unless there are other
-> >>>> issues but the
-> >>>> bpf_link__destroy can just be called in a single cleanup label because
-> >>>> it handles null or
-> >>>> erroneous inputs:
-> >>>>
-> >>>> int bpf_link__destroy(struct bpf_link *link)
-> >>>> {
-> >>>>      int err = 0;
-> >>>>
-> >>>>      if (IS_ERR_OR_NULL(link))
-> >>>>           return 0;
-> >>>> [...]
-> >>>
-> >>> +1 to KP's point.
-> >>>
-> >>> Also Florent, how did you test it?
-> >>> This test fails in CI and in my manual run:
-> >>> ./test_progs -t cook
-> >>> libbpf: load bpf program failed: Permission denied
-> >>> libbpf: -- BEGIN DUMP LOG ---
-> >>> libbpf:
-> >>> ; int update_cookie_sockops(struct bpf_sock_ops *ctx)
-> >>> 0: (bf) r6 = r1
-> >>> ; if (ctx->family != AF_INET6)
-> >>> 1: (61) r1 = *(u32 *)(r6 +20)
-> >>> ; if (ctx->family != AF_INET6)
-> >>> 2: (56) if w1 != 0xa goto pc+21
-> >>>   R1_w=inv10 R6_w=ctx(id=0,off=0,imm=0) R10=fp0
-> >>> ; if (ctx->op != BPF_SOCK_OPS_TCP_CONNECT_CB)
-> >>> 3: (61) r1 = *(u32 *)(r6 +0)
-> >>> ; if (ctx->op != BPF_SOCK_OPS_TCP_CONNECT_CB)
-> >>> 4: (56) if w1 != 0x3 goto pc+19
-> >>>   R1_w=inv3 R6_w=ctx(id=0,off=0,imm=0) R10=fp0
-> >>> ; if (!ctx->sk)
-> >>> 5: (79) r1 = *(u64 *)(r6 +184)
-> >>> ; if (!ctx->sk)
-> >>> 6: (15) if r1 == 0x0 goto pc+17
-> >>>   R1_w=sock(id=0,ref_obj_id=0,off=0,imm=0) R6_w=ctx(id=0,off=0,imm=0) R10=fp0
-> >>> ; p = bpf_sk_storage_get(&socket_cookies, ctx->sk, 0, 0);
-> >>> 7: (79) r2 = *(u64 *)(r6 +184)
-> >>> ; p = bpf_sk_storage_get(&socket_cookies, ctx->sk, 0, 0);
-> >>> 8: (18) r1 = 0xffff888106e41400
-> >>> 10: (b7) r3 = 0
-> >>> 11: (b7) r4 = 0
-> >>> 12: (85) call bpf_sk_storage_get#107
-> >>> R2 type=sock_or_null expected=sock_common, sock, tcp_sock, xdp_sock, ptr_
-> >>> processed 12 insns (limit 1000000) max_states_per_insn 0 total_states
-> >>> 0 peak_states 0 mark_read 0
-> >>>
-> >>> libbpf: -- END LOG --
-> >>> libbpf: failed to load program 'update_cookie_sockops'
-> >>> libbpf: failed to load object 'socket_cookie_prog'
-> >>> libbpf: failed to load BPF skeleton 'socket_cookie_prog': -4007
-> >>> test_socket_cookie:FAIL:socket_cookie_prog__open_and_load skeleton
-> >>> open_and_load failed
-> >>> #95 socket_cookie:FAIL
-> >>> Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
-> >>
-> >> Oh :| I must have missed something in the rebase, I will fix this and
-> >> address KP's comment then. Thanks for the review and sorry for the
-> >> waste of time :)
-> >
-> > So this is actually an interesting one I think. :) The failure was
-> > triggered by the combination of an LLVM update and this change:
-> >
-> > -#include <linux/bpf.h>
-> > +#include "vmlinux.h"
-> >
-> > With an older LLVM, this used to work.
-> > With a recent LLVM, the change of header causes those 3 lines to get
-> > compiled differently:
-> >
-> > if (!ctx->sk)
-> >      return 1;
-> > p = bpf_sk_storage_get(&socket_cookies, ctx->sk, 0, 0);
-> >
-> > When including linux/bpf.h
-> > ; if (!ctx->sk)
-> >         5: 79 62 b8 00 00 00 00 00 r2 = *(u64 *)(r6 + 184)
-> >         6: 15 02 10 00 00 00 00 00 if r2 == 0 goto +16 <LBB1_6>
-> > ; p = bpf_sk_storage_get(&socket_cookies, ctx->sk, 0, 0);
-> >         7: 18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0 ll
-> >         9: b7 03 00 00 00 00 00 00 r3 = 0
-> >        10: b7 04 00 00 00 00 00 00 r4 = 0
-> >        11: 85 00 00 00 6b 00 00 00 call 107
-> >        12: bf 07 00 00 00 00 00 00 r7 = r0
-> >
-> > When including vmlinux.h
-> > ; if (!ctx->sk)
-> >         5: 79 61 b8 00 00 00 00 00 r1 = *(u64 *)(r6 + 184)
-> >         6: 15 01 11 00 00 00 00 00 if r1 == 0 goto +17 <LBB1_6>
-> > ; p = bpf_sk_storage_get(&socket_cookies, ctx->sk, 0, 0);
-> >         7: 79 62 b8 00 00 00 00 00 r2 = *(u64 *)(r6 + 184)
-> >         8: 18 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 r1 = 0 ll
-> >        10: b7 03 00 00 00 00 00 00 r3 = 0
-> >        11: b7 04 00 00 00 00 00 00 r4 = 0
-> >        12: 85 00 00 00 6b 00 00 00 call 107
-> >        13: bf 07 00 00 00 00 00 00 r7 = r0
-> >
-> > Note that ctx->sk gets fetched once in the first case (l5), and twice
-> > in the second case (l5 and l7).
-> > I'm assuming that struct bpf_sock_ops gets defined with different
-> > attributes in vmlinux.h and causes LLVM to assume that ctx->sk could
-> > have changed between the time of check and the time of use so it
-> > yields two fetches and the verifier can't track that r2 is non null.
-> >
-> > If I save ctx->sk in a temporary variable first:
-> >
-> > struct bpf_sock *sk = ctx->sk;
-> > if (!sk)
-> >      return 1;
-> > p = bpf_sk_storage_get(&socket_cookies, sk, 0, 0);
-> >
-> > this loads correctly. However, Brendan pointed out that this is also a
-> > weak guarantee and that LLVM could still decide to compile this into
-> > two fetches, Brendan suggested that we save sk out of an access to a
-> > volatile pointer to ctx, what do you think ?
->
-> Your above workaround should be good. Compiler should not do *bad*
-> optimizations to have two fetches if the source code just has one
-> in the above case. If this happens, it will be a llvm bug.
->
-> The latest llvm trunk can reproduce the above issue. It is due to
-> (1). llvm's partial (not complete) CSE and (2). this partial CSE
-> resulted in llvm BPF backend generating two CORE_MEM operations (for
-> CORE relocations) instead of one. If llvm will do complete cse like the
-> above your code, we will be fine.
->
-> Although fixing llvm CSE is desired, it may take
-> some time. At the same time, please use your above source workaround.
-> Thanks.
+On Tue, Jan 26, 2021 at 08:51:03AM -0800, Stanislav Fomichev wrote:
+> At the moment, BPF_CGROUP_INET{4,6}_BIND hooks can rewrite user_port
+> to the privileged ones (< ip_unprivileged_port_start), but it will
+> be rejected later on in the __inet_bind or __inet6_bind.
+> 
+> Let's add another return value to indicate that CAP_NET_BIND_SERVICE
+> check should be ignored. Use the same idea as we currently use
+> in cgroup/egress where bit #1 indicates CN. Instead, for
+> cgroup/bind{4,6}, bit #1 indicates that CAP_NET_BIND_SERVICE should
+> be bypassed.
+> 
+> v3:
+> - Update description (Martin KaFai Lau)
+> - Fix capability restore in selftest (Martin KaFai Lau)
+> 
+> v2:
+> - Switch to explicit return code (Martin KaFai Lau)
+> 
 
-Good to know! Thank you Yonghong :)
+[ ... ]
+
+> @@ -499,7 +501,8 @@ int __inet_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len,
+>  
+>  	snum = ntohs(addr->sin_port);
+>  	err = -EACCES;
+> -	if (snum && inet_port_requires_bind_service(net, snum) &&
+> +	if (!(flags & BIND_NO_CAP_NET_BIND_SERVICE) &&
+> +	    snum && inet_port_requires_bind_service(net, snum) &&
+The same change needs to be done on __inet6_bind()
+and also adds a test for IPv6 in patch 2.
+
+>  	    !ns_capable(net->user_ns, CAP_NET_BIND_SERVICE))
+>  		goto out;
+>  
