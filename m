@@ -2,149 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 427FD304CCC
+	by mail.lfdr.de (Postfix) with ESMTP id B3AE5304CCD
 	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 23:56:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730793AbhAZWzW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Jan 2021 17:55:22 -0500
-Received: from www62.your-server.de ([213.133.104.62]:38600 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728175AbhAZWGA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Jan 2021 17:06:00 -0500
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1l4WSI-0007jY-Jj; Tue, 26 Jan 2021 23:04:58 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1l4WSI-000TDX-BY; Tue, 26 Jan 2021 23:04:58 +0100
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Subject: Re: [Patch bpf-next v5 1/3] bpf: introduce timeout hash map
-To:     Cong Wang <xiyou.wangcong@gmail.com>, netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, jhs@mojatatu.com, andrii@kernel.org,
-        ast@kernel.org, kafai@fb.com, Cong Wang <cong.wang@bytedance.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Dongdong Wang <wangdongdong.6@bytedance.com>
-References: <20210122205415.113822-1-xiyou.wangcong@gmail.com>
- <20210122205415.113822-2-xiyou.wangcong@gmail.com>
-Message-ID: <d69d44ca-206c-d818-1177-c8f14d8be8d1@iogearbox.net>
-Date:   Tue, 26 Jan 2021 23:04:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1730806AbhAZWzY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Jan 2021 17:55:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51884 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727440AbhAZWUu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Jan 2021 17:20:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id C4F9C20679;
+        Tue, 26 Jan 2021 22:20:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611699609;
+        bh=SXdI3hX81sRjw5CNvfOJjL2uiOE/h4sxjnFi+ilr8WQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=C+c6wuRZ9Glv+6ZLdJu9C9Lkd0EcQIGzdoBRPsVO3X9Y7PKyYwrfbYMx1j+AKH5NX
+         4VGHAoT6WSWzBzZ2/Hj6VJ386KVSR8im2wEt6ZIYfoZFwEn0/ov6jHzF+kEZwTPTIC
+         mzwvVMMNfNuR/Y0HOP6PanMoRpO8FGbet2uRoTaQtIAA/uOTVi2qw4dKdkGElbwrjL
+         x9KhEJDao9pEY52UszcsnfJQUZiLIS1oMWfi4xMXskaSy8R/1DVWyBKTYc70jdg7QQ
+         0ZOcbDo7L6v12rNNeQMA6uq32ExqlDt7Z7zKZ80+p/1Z7Kia/hWKQosUSmEHwTPoPo
+         0hBXzz19yxhfQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B90D761E3F;
+        Tue, 26 Jan 2021 22:20:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210122205415.113822-2-xiyou.wangcong@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26061/Tue Jan 26 13:29:51 2021)
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf v2] bpf: fix build for BPF preload when $(O) points to a
+ relative path
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161169960975.2711.17738606271589282615.git-patchwork-notify@kernel.org>
+Date:   Tue, 26 Jan 2021 22:20:09 +0000
+References: <20210126161320.24561-1-quentin@isovalent.com>
+In-Reply-To: <20210126161320.24561-1-quentin@isovalent.com>
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, andrii.nakryiko@gmail.com,
+        brendanhiggins@google.com, davidgow@google.com,
+        masahiroy@kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/22/21 9:54 PM, Cong Wang wrote:
-> From: Cong Wang <cong.wang@bytedance.com>
-> 
-> This borrows the idea from conntrack and will be used for conntrack in
-> ebpf too. Each element in a timeout map has a user-specified timeout
-> in msecs, after it expires it will be automatically removed from the
-> map. Cilium already does the same thing, it uses a regular map or LRU
-> map to track connections and has its own GC in user-space. This does
-> not scale well when we have millions of connections, as each removal
-> needs a syscall. Even if we could batch the operations, it still needs
-> to copy a lot of data between kernel and user space.
-> 
-> There are two cases to consider here:
-> 
-> 1. When the timeout map is idle, i.e. no one updates or accesses it,
->     we rely on the delayed work to scan the whole hash table and remove
->     these expired. The delayed work is scheduled every 1 sec when idle,
->     which is also what conntrack uses. It is fine to scan the whole
->     table as we do not actually remove elements during this scan,
->     instead we simply queue them to the lockless list and defer all the
->     removals to the next schedule.
-> 
-> 2. When the timeout map is actively accessed, we could reach expired
->     elements before the idle work automatically scans them, we can
->     simply skip them and schedule the delayed work immediately to do
->     the actual removals. We have to avoid taking locks on fast path.
-> 
-> The timeout of an element can be set or updated via bpf_map_update_elem()
-> and we reuse the upper 32-bit of the 64-bit flag for the timeout value,
-> as there are only a few bits are used currently. Note, a zero timeout
-> means to expire immediately.
-> 
-> To avoid adding memory overhead to regular map, we have to reuse some
-> field in struct htab_elem, that is, lru_node. Otherwise we would have
-> to rewrite a lot of code.
-> 
-> For now, batch ops is not supported, we can add it later if needed.
+Hello:
 
-Back in earlier conversation [0], I mentioned also LRU map flavors and to look
-into adding a flag, so we wouldn't need new BPF_MAP_TYPE_TIMEOUT_HASH/*LRU types
-that replicate existing types once again just with the timeout in addition, so
-UAPI wise new map type is not great.
+This patch was applied to bpf/bpf.git (refs/heads/master):
 
-Given you mention Cilium above, only for kernels where there is no LRU hash map,
-that is < 4.10, we rely on plain hash, everything else LRU + prealloc to mitigate
-ddos by refusing to add new entries when full whereas less active ones will be
-purged instead. Timeout /only/ for plain hash is less useful overall, did you
-sketch a more generic approach in the meantime that would work for all the htab/lru
-flavors (and ideally as non-delayed_work based)?
+On Tue, 26 Jan 2021 16:13:20 +0000 you wrote:
+> Building the kernel with CONFIG_BPF_PRELOAD, and by providing a relative
+> path for the output directory, may fail with the following error:
+> 
+>   $ make O=build bindeb-pkg
+>   ...
+>   /.../linux/tools/scripts/Makefile.include:5: *** O=build does not exist.  Stop.
+>   make[7]: *** [/.../linux/kernel/bpf/preload/Makefile:9: kernel/bpf/preload/libbpf.a] Error 2
+>   make[6]: *** [/.../linux/scripts/Makefile.build:500: kernel/bpf/preload] Error 2
+>   make[5]: *** [/.../linux/scripts/Makefile.build:500: kernel/bpf] Error 2
+>   make[4]: *** [/.../linux/Makefile:1799: kernel] Error 2
+>   make[4]: *** Waiting for unfinished jobs....
+> 
+> [...]
 
-   [0] https://lore.kernel.org/bpf/20201214201118.148126-1-xiyou.wangcong@gmail.com/
+Here is the summary with links:
+  - [bpf,v2] bpf: fix build for BPF preload when $(O) points to a relative path
+    https://git.kernel.org/bpf/bpf/c/150a27328b68
 
-[...]
-> @@ -1012,6 +1081,8 @@ static int htab_map_update_elem(struct bpf_map *map, void *key, void *value,
->   			copy_map_value_locked(map,
->   					      l_old->key + round_up(key_size, 8),
->   					      value, false);
-> +			if (timeout_map)
-> +				l_old->expires = msecs_to_expire(timeout);
->   			return 0;
->   		}
->   		/* fall through, grab the bucket lock and lookup again.
-> @@ -1020,6 +1091,7 @@ static int htab_map_update_elem(struct bpf_map *map, void *key, void *value,
->   		 */
->   	}
->   
-> +again:
->   	ret = htab_lock_bucket(htab, b, hash, &flags);
->   	if (ret)
->   		return ret;
-> @@ -1040,26 +1112,41 @@ static int htab_map_update_elem(struct bpf_map *map, void *key, void *value,
->   		copy_map_value_locked(map,
->   				      l_old->key + round_up(key_size, 8),
->   				      value, false);
-> +		if (timeout_map)
-> +			l_old->expires = msecs_to_expire(timeout);
->   		ret = 0;
->   		goto err;
->   	}
->   
->   	l_new = alloc_htab_elem(htab, key, value, key_size, hash, false, false,
-> -				l_old);
-> +				timeout_map, l_old);
->   	if (IS_ERR(l_new)) {
-> -		/* all pre-allocated elements are in use or memory exhausted */
->   		ret = PTR_ERR(l_new);
-> +		if (ret == -EAGAIN) {
-> +			htab_unlock_bucket(htab, b, hash, flags);
-> +			htab_gc_elem(htab, l_old);
-> +			mod_delayed_work(system_unbound_wq, &htab->gc_work, 0);
-> +			goto again;
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Also this one looks rather worrying, so the BPF prog is stalled here, loop-waiting
-in (e.g. XDP) hot path for system_unbound_wq to kick in to make forward progress?
 
-> +		}
-> +		/* all pre-allocated elements are in use or memory exhausted */
->   		goto err;
->   	}
->   
-> +	if (timeout_map)
-> +		l_new->expires = msecs_to_expire(timeout);
-> +
