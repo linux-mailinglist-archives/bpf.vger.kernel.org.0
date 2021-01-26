@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22C0C30354B
-	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 06:40:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0581630354D
+	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 06:40:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731263AbhAZFiv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Jan 2021 00:38:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60682 "EHLO
+        id S2388046AbhAZFix (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Jan 2021 00:38:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732010AbhAZCeu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Jan 2021 21:34:50 -0500
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C60EC061573
-        for <bpf@vger.kernel.org>; Mon, 25 Jan 2021 18:34:08 -0800 (PST)
-Received: by mail-yb1-xb29.google.com with SMTP id e206so3085073ybh.13
-        for <bpf@vger.kernel.org>; Mon, 25 Jan 2021 18:34:08 -0800 (PST)
+        with ESMTP id S1732145AbhAZCi2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Jan 2021 21:38:28 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74360C06174A
+        for <bpf@vger.kernel.org>; Mon, 25 Jan 2021 18:37:47 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id v200so982483ybe.1
+        for <bpf@vger.kernel.org>; Mon, 25 Jan 2021 18:37:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=g3pjtshA3y0EzC6IGe5deZzOWbI81Aa8oxWCKQUy+JY=;
-        b=ZphAAVdvIBzWIx/Lu1/7Ynjj5kw6jZSJnc30oZZRiXXnq+A9wVSoO/yJZ7+r4PihuY
-         AFx3EdgcZ+Jbr4S+2HnRSLMQ8Q1HgbNixMrem+krfRMcgsI/dUJrdLYxRVi4rG4ZvEuM
-         xQQxT/UXHrK+/wxOqxUPEsF8ZDkWQniUvhKItBJ1njIy/qqhYEOwQr0OwRm0Ry+6IWBP
-         n/4K97CNFtT8YAM1dt2+RhiVcXNOg0jycytlRAGn8Zn0D5jExqP3WB9y3A/mKxNJpFcb
-         BcWjgcWxrK7qlwTtqH3vCIoOUZGo342exXtlNnBcrCvgUpOUyMiyhBP5z+gTs2WhVuEc
-         k/eA==
+        bh=9NJe5WK5Sk1NsrlE0JFCIeyxgxOfnhe4uSSalUBLNO8=;
+        b=oF6tFnjblfCY2JD/3DmAI/trsnWHVtioYaTozIn/ZA8xIpG38oh4Bty9XeE+HgKgtI
+         i4Hk4hB5GnUqSPPeYnfOJ9wmWDOu3V/jqpRXCXVD2QmfFntiF+Hpyg1oNyfoAcUDOoxN
+         Gq9PfUKUUgMJDK9a9jbsXNfDtQuOuQ+682hgIkNWr+l0OLX2TpNvnqibiGTD0/nQJt3J
+         Fjw3cmzgdGMl1+7b1IDHKNFF2BdRu/uAriYVxw5OZk76HAg+l86U4Zhjkgnix4KHY4LM
+         ONKNGohyYuN87TQi9uiRMKp6OIjbOtW4k89vtEb310rnt+rAVfSxPlqCF91jM4DisY+5
+         hZRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=g3pjtshA3y0EzC6IGe5deZzOWbI81Aa8oxWCKQUy+JY=;
-        b=Yl5GFwluTyBxCPjihd3cgYjBH257GpcwZ5vAiKbBX7jU4zvDf+TQr9V3S8Zusk/wJ7
-         jEm4JS+SPiMAWDYcwBr450fKCZ//zRaUn2mkVwXumZRsX0jFqSwom3FDBTk7ykAB6EXj
-         fo7hK3UZPX8KxpruprhY5S8tYBlx+SgOSq1DRvUTb7rqxlXRXFxQ8Aj4jCojqsIeVFN8
-         kzNKSv1cpiKurBURpSFjg2hX2C2vUNbV/EqcDyrm04ZgnPUyL+1437JhRpbqXLhQml22
-         uVwL1D9Z83+unWjChz+HlsGYiKe9Z1qNkIasTWjRYW0BnhwnAoO59sfsXcuKtQC8EonR
-         DOcg==
-X-Gm-Message-State: AOAM5311cw3ARH+M96MY+AakGpe7KjJ0VvS/4mZf8jxz+ZDKsCxICIFY
-        uMX7+LzcVHKUTX67JRpZ8FEY94XKYuNM7pxmTfc=
-X-Google-Smtp-Source: ABdhPJwABHXfa2uwMuDI1JICdbqnt9NYWTOJmgfLDa2s0Yp+9s+s8E+gQJUnakKRF/Hi3fjBMho8rcHB6rD0TZSi9Qs=
-X-Received: by 2002:a25:548:: with SMTP id 69mr5013514ybf.510.1611628447506;
- Mon, 25 Jan 2021 18:34:07 -0800 (PST)
+        bh=9NJe5WK5Sk1NsrlE0JFCIeyxgxOfnhe4uSSalUBLNO8=;
+        b=sNBEyghMBvrJhG8LaTa9kHx7AaNBMbFP+K1GUTn2KzSxxMWEtmXwlFRjZaC6++4NEc
+         zn2gMedd865B0+4ZqjarLAco0+20HJUEt9rLlNROpAjoU/jFJDzXuzBeyRQGUa7EGN2F
+         ALuhoCxEWm4TuWTvYOB7WBq8UphvTTLrrF9j1HpX3GWqB/IvTB0bBv7Pyho7++kuExcv
+         kXCue4mBsnmFpsljWQEisR1pKZSwX2spzRTK5p8LRjccCUXnfaZbxcUaWr7bMGmKPQ9y
+         sK8YyRia7hC4YVvp4xdhC4LqmiZ8y1FsN3+ZrMB/p1XbcLighezHFXi6IrvGqEM5CBOA
+         ynXQ==
+X-Gm-Message-State: AOAM533k6M89VSw9Sbqc+btMLPpWxHiTPK9JBAMMa2EeyLk6YgOobIzc
+        8LhwiBictJi3SR8DMNn/3Qo5eqFzUYOBmM76VMI=
+X-Google-Smtp-Source: ABdhPJy34BeIm3BfmLmvrg1gOFr5c/6O5ts+0xEVNE7n6VaVZZ/NJXnKMN+60AJBUz0y4iwGnjMVeECPDAYB1SyIy6M=
+X-Received: by 2002:a25:1287:: with SMTP id 129mr4990392ybs.27.1611628666797;
+ Mon, 25 Jan 2021 18:37:46 -0800 (PST)
 MIME-Version: 1.0
-References: <20210124194909.453844-1-andreimatei1@gmail.com> <20210124194909.453844-5-andreimatei1@gmail.com>
-In-Reply-To: <20210124194909.453844-5-andreimatei1@gmail.com>
+References: <20210124194909.453844-1-andreimatei1@gmail.com> <20210124194909.453844-6-andreimatei1@gmail.com>
+In-Reply-To: <20210124194909.453844-6-andreimatei1@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 25 Jan 2021 18:33:56 -0800
-Message-ID: <CAEf4BzYncMLH8z0D-TMjzekSp0eAPw963dWg91uaKR+nFiBg8w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 4/5] selftest/bpf: move utility function to
- tests header
+Date:   Mon, 25 Jan 2021 18:37:36 -0800
+Message-ID: <CAEf4Bzb3cw1zPfvdpZg2X+N5SS+H-NJJzrsDjW-9xEDFjRKA1g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 5/5] selftest/bpf: add test for var-offset
+ stack access
 To:     Andrei Matei <andreimatei1@gmail.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
@@ -60,27 +60,133 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Sun, Jan 24, 2021 at 11:54 AM Andrei Matei <andreimatei1@gmail.com> wrote:
 >
-> get_base_addr is generally useful for tests attaching uprobes. This
-> patch moves it from one particular test to test_progs.{h,c}. The
-> function will be used by a second test in the next patch.
+> Add a higher-level test (C BPF program) for the new functionality -
+> variable access stack reads and writes.
 >
 > Signed-off-by: Andrei Matei <andreimatei1@gmail.com>
 > ---
-
-trace_helpers.{c,h} seem more appropriate as a destination
-
->  .../selftests/bpf/prog_tests/attach_probe.c   | 21 ----------------
->  tools/testing/selftests/bpf/test_progs.c      | 25 +++++++++++++++++++
->  tools/testing/selftests/bpf/test_progs.h      |  1 +
->  3 files changed, 26 insertions(+), 21 deletions(-)
+>  .../selftests/bpf/prog_tests/stack_var_off.c  | 56 +++++++++++++++++++
+>  .../selftests/bpf/progs/test_stack_var_off.c  | 43 ++++++++++++++
+>  2 files changed, 99 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/stack_var_off.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_stack_var_off.c
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-> index a0ee87c8e1ea..3bda8acbbafb 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
-> @@ -2,27 +2,6 @@
->  #include <test_progs.h>
->  #include "test_attach_probe.skel.h"
->
+> diff --git a/tools/testing/selftests/bpf/prog_tests/stack_var_off.c b/tools/testing/selftests/bpf/prog_tests/stack_var_off.c
+> new file mode 100644
+> index 000000000000..c4c47fb0f0af
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/stack_var_off.c
+> @@ -0,0 +1,56 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <test_progs.h>
+> +#include "test_stack_var_off.skel.h"
+> +
+> +int dummy;
+> +
+> +noinline void uprobed_function(char *s, int len)
+> +{
+> +       /* Do something to keep the compiler from removing the function.
+> +        */
+> +       dummy++;
+> +}
+> +
+> +void test_stack_var_off(void)
+> +{
+> +       int duration = 0;
+> +       struct bpf_link *uprobe_link;
+> +       struct test_stack_var_off *skel;
+> +       size_t uprobe_offset;
+> +       ssize_t base_addr;
+> +       char s[100];
+> +
+> +       base_addr = get_base_addr();
+> +       if (CHECK(base_addr < 0, "get_base_addr",
+> +                 "failed to find base addr: %zd", base_addr))
+> +               return;
+> +       uprobe_offset = (size_t)&uprobed_function - base_addr;
+> +
+> +       skel = test_stack_var_off__open_and_load();
+> +       if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
+> +               return;
+> +       if (CHECK(!skel->bss, "check_bss", ".bss wasn't mmap()-ed\n"))
+> +               goto cleanup;
+> +
+> +       uprobe_link = bpf_program__attach_uprobe(skel->progs.uprobe,
+> +                                                false /* retprobe */,
+> +                                                0 /* self pid */,
+> +                                                "/proc/self/exe",
+> +                                                uprobe_offset);
+> +       if (CHECK(IS_ERR(uprobe_link), "attach_uprobe",
+> +                 "err %ld\n", PTR_ERR(uprobe_link)))
+> +               goto cleanup;
+> +       skel->links.uprobe = uprobe_link;
+> +
+> +       /* trigger uprobe */
+> +       s[0] = 1;
+> +       s[1] = 10;
+> +       uprobed_function(&s[0], 2);
 
-[...]
+I don't think uprobe() is essential to this test and just obscured
+what is being tested. I'd just use a global variable to pass whatever
+input data you need and use usleep(1), just like lots of other tests.
+
+> +
+> +       if (CHECK(skel->bss->uprobe_res != 10, "check_uprobe_res",
+> +                 "wrong uprobe res: %d\n", skel->bss->uprobe_res))
+> +               goto cleanup;
+> +
+> +cleanup:
+> +       test_stack_var_off__destroy(skel);
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/test_stack_var_off.c b/tools/testing/selftests/bpf/progs/test_stack_var_off.c
+> new file mode 100644
+> index 000000000000..44f982684541
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_stack_var_off.c
+> @@ -0,0 +1,43 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +// Copyright (c) 2017 Facebook
+> +
+> +#include <linux/ptrace.h>
+> +#include <linux/bpf.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +
+> +int uprobe_res;
+> +
+> +SEC("uprobe/func")
+> +int BPF_KPROBE(uprobe, char *s, int len)
+> +{
+> +       /* This BPF program performs variable-offset reads and writes on a
+> +        * stack-allocated buffer.
+> +        */
+> +       char buf[16];
+> +       unsigned long idx;
+> +       char out;
+> +
+> +       /* Zero-out the buffer so we can read anywhere inside it. */
+> +       __builtin_memset(&buf, 0, 16);
+> +       /* Copy the contents of s from user-space. */
+> +       len &= 0xf;
+> +       if (bpf_probe_read_user(&buf, len, s)) {
+> +               bpf_printk("error reading user mem\n");
+> +               return 1;
+> +       }
+> +       /* Index into the buffer at an unknown offset that comes from the
+> +        * buffer itself. This is a variable-offset stack read.
+> +        */
+> +       idx = buf[0];
+> +       idx &= 0xf;
+> +       out = buf[idx];
+> +       /* Append something to the buffer. The position where we append it
+> +        * is unknown. This is a variable-offset stack write.
+> +        */
+> +       buf[len] = buf[idx];
+> +       uprobe_res = out;
+> +       return 0;
+> +}
+> +
+> +char _license[] SEC("license") = "GPL";
+> --
+> 2.27.0
+>
