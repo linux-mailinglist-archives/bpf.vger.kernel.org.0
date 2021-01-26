@@ -2,95 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E453046E2
-	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 19:46:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FBF83046E3
+	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 19:46:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390579AbhAZRTZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Jan 2021 12:19:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40600 "EHLO
+        id S2387616AbhAZRT0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Jan 2021 12:19:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37133 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390347AbhAZIqn (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 26 Jan 2021 03:46:43 -0500
+        by vger.kernel.org with ESMTP id S2390026AbhAZJPH (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 26 Jan 2021 04:15:07 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611650717;
+        s=mimecast20190719; t=1611652421;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9gzTd6btxu4Ytm03Yrm00pwQppiXc/JxoltINtOzavM=;
-        b=Gc48h2lmr1GaI5TUFhT4tDzBuMboPdN+DNHVEds8MMu7CWKNxQqLsL8oQtA5bOWka3a8Ki
-        BCfr/1ltWaSdRRV+bACQIEG0WZJGyKzkkcCjJtyOnZzWcqdsG8hrOlieobc+BUkNS+uDtS
-        WtewN5SYt/eyB82uxFfNIkyBYQmKq7M=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-240-iWOmM8b0NYKP-S0E0gCgZg-1; Tue, 26 Jan 2021 03:45:15 -0500
-X-MC-Unique: iWOmM8b0NYKP-S0E0gCgZg-1
-Received: by mail-ej1-f70.google.com with SMTP id z2so4709815ejf.3
-        for <bpf@vger.kernel.org>; Tue, 26 Jan 2021 00:45:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=9gzTd6btxu4Ytm03Yrm00pwQppiXc/JxoltINtOzavM=;
-        b=Nx2DZC3Eu5bMbBQuKeNyM4IfDabPwoU5lbcZ1BYykWVpSnj6FDJBXYkejwH9+x4G1y
-         F2oxQvoluj03uRxEwWRcl1V2roW6Ka3RrVob4gtSW/7y2M41MRmDO/3JmsXj3n+aRscx
-         uPApEQkStkPmy0328KX28REgHdPqj6HBf2CcOK/62DLVxLWq4YEwgWb2lW2sZiQvTT3q
-         a728S58u6o+ozbCLoscP2ssABHwl9XA/Z8xwU8jWxepgohw+i+iCNFWIbNNjKKaeI2gu
-         a13/kx35IScrMfv/jeWoPnKCqv978C0xn7m2KnYFgM5dSFFmFrnTHV0z+0Wy5fyQBowB
-         bx5Q==
-X-Gm-Message-State: AOAM532fq7L3yrwbuTQ4JML8zy7+5ZLX35ydMLUY/J9ZCFEZoifX1gLO
-        DHqJDFLRXvjdf9cV6Ncm0hpZX1QeBK+LiQY+ujtziZPAVcOMf8HTHPXCrwTdsowYExT/3Xe/IMa
-        Nf3M9occGeZjs
-X-Received: by 2002:a17:906:3a13:: with SMTP id z19mr2929236eje.317.1611650714305;
-        Tue, 26 Jan 2021 00:45:14 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx03Mfbqu1LpR8FbZ3JbEqBq8v6YQIBFfG+PF3Y7BTCckd7Z8SXCcUKEb/nMVNSKlNABdcH4w==
-X-Received: by 2002:a17:906:3a13:: with SMTP id z19mr2929218eje.317.1611650713949;
-        Tue, 26 Jan 2021 00:45:13 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id y8sm11850387edd.97.2021.01.26.00.45.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 00:45:13 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id A46B4180349; Tue, 26 Jan 2021 09:45:11 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Ciara Loftus <ciara.loftus@intel.com>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, magnus.karlsson@intel.com, bjorn@kernel.org,
-        weqaar.a.janjua@intel.com
-Cc:     Ciara Loftus <ciara.loftus@intel.com>,
-        Neil Horman <nhorman@tuxdriver.com>
-Subject: Re: [PATCH bpf-next v2 0/6] AF_XDP Packet Drop Tracing
-In-Reply-To: <20210126075239.25378-1-ciara.loftus@intel.com>
-References: <20210126075239.25378-1-ciara.loftus@intel.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 26 Jan 2021 09:45:11 +0100
-Message-ID: <87bldccciw.fsf@toke.dk>
+        bh=ZQNMLxZXL4V+OpSXDYs3PfwSfoYKXj1zeTe+gx9+fVk=;
+        b=iWljQ9OXM9/cGP5O5HDQkf2WOj6pK9gYQTeYYx1GURxnHQzmJghu2cHAzarvxdYKHyzaDO
+        1QVOnLWKduffzbm9VfJPcxU+xVfSwmk9WRwCuwnGax9BnpJwNjprXvzVpqIzRCR7/7A9ws
+        yCqAod8Cm+4kZ7WxBpLVCdAimVg33s4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-381-Gz-I5AYiO9-Nc9EqgAIqwA-1; Tue, 26 Jan 2021 04:13:36 -0500
+X-MC-Unique: Gz-I5AYiO9-Nc9EqgAIqwA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AE03A10054FF;
+        Tue, 26 Jan 2021 09:13:34 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 391621F0;
+        Tue, 26 Jan 2021 09:13:27 +0000 (UTC)
+Date:   Tue, 26 Jan 2021 10:13:25 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
+        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
+        colrack@gmail.com, brouer@redhat.com
+Subject: Re: [PATCH bpf-next V12 4/7] bpf: add BPF-helper for MTU checking
+Message-ID: <20210126101325.75097ddb@carbon>
+In-Reply-To: <3c542e42-2033-aca6-ba0e-4854c24980c2@iogearbox.net>
+References: <161098881526.108067.7603213364270807261.stgit@firesoul>
+        <161098887018.108067.13643446976934084937.stgit@firesoul>
+        <6772a12b-2a60-bb3b-93df-1d6d6c7c7fd7@iogearbox.net>
+        <20210125094148.2b3bb128@carbon>
+        <3c542e42-2033-aca6-ba0e-4854c24980c2@iogearbox.net>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Ciara Loftus <ciara.loftus@intel.com> writes:
+On Mon, 25 Jan 2021 23:27:22 +0100
+Daniel Borkmann <daniel@iogearbox.net> wrote:
 
-> This series introduces tracing infrastructure for AF_XDP sockets (xsks).
-> A trace event 'xsk_packet_drop' is created which can be enabled by toggling
->
-> /sys/kernel/debug/tracing/events/xsk/xsk_packet_drop/enable
->
-> When enabled and packets are dropped in the kernel, traces are generated
-> which describe the reason for the packet drop as well as the netdev and
-> qid information of the xsk which encountered the drop.
->
-> Example traces:
->
-> 507.588563: xsk_packet_drop: netdev: eth0 qid 0 reason: rxq full
-> 507.588567: xsk_packet_drop: netdev: eth0 qid 0 reason: packet too big
-> 507.588568: xsk_packet_drop: netdev: eth0 qid 0 reason: fq empty
->
-> The event can also be monitored using perf:
->
-> perf stat -a -e xsk:xsk_packet_drop
+> >>> +	/* At this point, skb->len exceed MTU, but as it include length of all
+> >>> +	 * segments, it can still be below MTU.  The SKB can possibly get
+> >>> +	 * re-segmented in transmit path (see validate_xmit_skb).  Thus, user
+> >>> +	 * must choose if segs are to be MTU checked.
+> >>> +	 */
+> >>> +	if (skb_is_gso(skb)) {
+> >>> +		ret = BPF_MTU_CHK_RET_SUCCESS;
+> >>> +
+> >>> +		if (flags & BPF_MTU_CHK_SEGS &&
+> >>> +		    !skb_gso_validate_network_len(skb, mtu))
+> >>> +			ret = BPF_MTU_CHK_RET_SEGS_TOOBIG;  
+> >>
+> >> I think that looks okay overall now. One thing that will easily slip through
+> >> is that in the helper description you mentioned 'Check cannot use len_diff.'
+> >> for BPF_MTU_CHK_SEGS flag. So right now for non-zero len_diff the user
+> >> will still get BPF_MTU_CHK_RET_SUCCESS if the current length check via
+> >> skb_gso_validate_network_len(skb, mtu) passes. If it cannot be checked,
+> >> maybe enforce len_diff == 0 for gso skbs on BPF_MTU_CHK_SEGS?  
+> > 
+> > Ok. Do you want/think this can be enforced by the verifier or are you
+> > simply requesting that the helper will return -EINVAL (or another errno)?  
+> 
+> Simple -EINVAL should be fine in this case. Generally, we can detect this from
+> verifier side but I don't think the extra complexity is worth it especially given
+> this is dependent on BPF_MTU_CHK_SEGS and otherwise can be non-zero.
 
-Would it make sense to also hook this up to drop_monitor?
+Luckily this was also my choice in V13 that I've already send out.
 
--Toke
+https://lore.kernel.org/netdev/161159457239.321749.9067604476261493815.stgit@firesoul/
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
