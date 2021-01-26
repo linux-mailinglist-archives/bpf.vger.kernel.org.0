@@ -2,139 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 110243046E0
+	by mail.lfdr.de (Postfix) with ESMTP id F2E453046E2
 	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 19:46:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730041AbhAZRTW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Jan 2021 12:19:22 -0500
-Received: from mga04.intel.com ([192.55.52.120]:61804 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389844AbhAZI26 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Jan 2021 03:28:58 -0500
-IronPort-SDR: c/oUV9WrXBtopzhLZZk586mtofw1KfCnVABZUf8uHdTmSNGP482DN/nEbMIlKBh3p/V36djWwd
- lVwRLSoeZv2A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="177298559"
-X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="177298559"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 00:22:42 -0800
-IronPort-SDR: ZVamXvb4GAa9vt3hDURDumQQtFCWZbRDOEZOkW+9BdTpbXkkfGR0Wg/gIWGGdhyt0m91ooVGJM
- YtfMFpGtJ3vQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
-   d="scan'208";a="361901164"
-Received: from silpixa00399839.ir.intel.com (HELO localhost.localdomain) ([10.237.222.142])
-  by fmsmga008.fm.intel.com with ESMTP; 26 Jan 2021 00:22:34 -0800
-From:   Ciara Loftus <ciara.loftus@intel.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        magnus.karlsson@intel.com, bjorn@kernel.org,
+        id S2390579AbhAZRTZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Jan 2021 12:19:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40600 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2390347AbhAZIqn (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 26 Jan 2021 03:46:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611650717;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9gzTd6btxu4Ytm03Yrm00pwQppiXc/JxoltINtOzavM=;
+        b=Gc48h2lmr1GaI5TUFhT4tDzBuMboPdN+DNHVEds8MMu7CWKNxQqLsL8oQtA5bOWka3a8Ki
+        BCfr/1ltWaSdRRV+bACQIEG0WZJGyKzkkcCjJtyOnZzWcqdsG8hrOlieobc+BUkNS+uDtS
+        WtewN5SYt/eyB82uxFfNIkyBYQmKq7M=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-240-iWOmM8b0NYKP-S0E0gCgZg-1; Tue, 26 Jan 2021 03:45:15 -0500
+X-MC-Unique: iWOmM8b0NYKP-S0E0gCgZg-1
+Received: by mail-ej1-f70.google.com with SMTP id z2so4709815ejf.3
+        for <bpf@vger.kernel.org>; Tue, 26 Jan 2021 00:45:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=9gzTd6btxu4Ytm03Yrm00pwQppiXc/JxoltINtOzavM=;
+        b=Nx2DZC3Eu5bMbBQuKeNyM4IfDabPwoU5lbcZ1BYykWVpSnj6FDJBXYkejwH9+x4G1y
+         F2oxQvoluj03uRxEwWRcl1V2roW6Ka3RrVob4gtSW/7y2M41MRmDO/3JmsXj3n+aRscx
+         uPApEQkStkPmy0328KX28REgHdPqj6HBf2CcOK/62DLVxLWq4YEwgWb2lW2sZiQvTT3q
+         a728S58u6o+ozbCLoscP2ssABHwl9XA/Z8xwU8jWxepgohw+i+iCNFWIbNNjKKaeI2gu
+         a13/kx35IScrMfv/jeWoPnKCqv978C0xn7m2KnYFgM5dSFFmFrnTHV0z+0Wy5fyQBowB
+         bx5Q==
+X-Gm-Message-State: AOAM532fq7L3yrwbuTQ4JML8zy7+5ZLX35ydMLUY/J9ZCFEZoifX1gLO
+        DHqJDFLRXvjdf9cV6Ncm0hpZX1QeBK+LiQY+ujtziZPAVcOMf8HTHPXCrwTdsowYExT/3Xe/IMa
+        Nf3M9occGeZjs
+X-Received: by 2002:a17:906:3a13:: with SMTP id z19mr2929236eje.317.1611650714305;
+        Tue, 26 Jan 2021 00:45:14 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx03Mfbqu1LpR8FbZ3JbEqBq8v6YQIBFfG+PF3Y7BTCckd7Z8SXCcUKEb/nMVNSKlNABdcH4w==
+X-Received: by 2002:a17:906:3a13:: with SMTP id z19mr2929218eje.317.1611650713949;
+        Tue, 26 Jan 2021 00:45:13 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id y8sm11850387edd.97.2021.01.26.00.45.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 00:45:13 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id A46B4180349; Tue, 26 Jan 2021 09:45:11 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Ciara Loftus <ciara.loftus@intel.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, magnus.karlsson@intel.com, bjorn@kernel.org,
         weqaar.a.janjua@intel.com
-Cc:     Ciara Loftus <ciara.loftus@intel.com>
-Subject: [PATCH bpf-next v2 6/6] selftests/bpf: XSK_TRACE_DROP_FQ_EMPTY test
-Date:   Tue, 26 Jan 2021 07:52:39 +0000
-Message-Id: <20210126075239.25378-7-ciara.loftus@intel.com>
-X-Mailer: git-send-email 2.17.1
+Cc:     Ciara Loftus <ciara.loftus@intel.com>,
+        Neil Horman <nhorman@tuxdriver.com>
+Subject: Re: [PATCH bpf-next v2 0/6] AF_XDP Packet Drop Tracing
 In-Reply-To: <20210126075239.25378-1-ciara.loftus@intel.com>
 References: <20210126075239.25378-1-ciara.loftus@intel.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 26 Jan 2021 09:45:11 +0100
+Message-ID: <87bldccciw.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This test skips the populating of the fill queue which
-causes packet drops and traces reporting the drop. The
-test validates that these traces were successfully
-generated.
+Ciara Loftus <ciara.loftus@intel.com> writes:
 
-Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
----
- tools/testing/selftests/bpf/test_xsk.sh  | 24 ++++++++++++++++++++++++
- tools/testing/selftests/bpf/xdpxceiver.c | 13 +++++++++++--
- 2 files changed, 35 insertions(+), 2 deletions(-)
+> This series introduces tracing infrastructure for AF_XDP sockets (xsks).
+> A trace event 'xsk_packet_drop' is created which can be enabled by toggling
+>
+> /sys/kernel/debug/tracing/events/xsk/xsk_packet_drop/enable
+>
+> When enabled and packets are dropped in the kernel, traces are generated
+> which describe the reason for the packet drop as well as the netdev and
+> qid information of the xsk which encountered the drop.
+>
+> Example traces:
+>
+> 507.588563: xsk_packet_drop: netdev: eth0 qid 0 reason: rxq full
+> 507.588567: xsk_packet_drop: netdev: eth0 qid 0 reason: packet too big
+> 507.588568: xsk_packet_drop: netdev: eth0 qid 0 reason: fq empty
+>
+> The event can also be monitored using perf:
+>
+> perf stat -a -e xsk:xsk_packet_drop
 
-diff --git a/tools/testing/selftests/bpf/test_xsk.sh b/tools/testing/selftests/bpf/test_xsk.sh
-index 95ceee151de1..997ba0aa79db 100755
---- a/tools/testing/selftests/bpf/test_xsk.sh
-+++ b/tools/testing/selftests/bpf/test_xsk.sh
-@@ -295,6 +295,30 @@ retval=$?
- test_status $retval "${TEST_NAME}"
- statusList+=($retval)
- 
-+### TEST 14
-+TEST_NAME="SKB TRACE DROP FQ_EMPTY"
-+
-+vethXDPgeneric ${VETH0} ${VETH1} ${NS1}
-+
-+params=("-S" "-t" "2" "-C" "${TRACEPKTS}")
-+execxdpxceiver params
-+
-+retval=$?
-+test_status $retval "${TEST_NAME}"
-+statusList+=($retval)
-+
-+### TEST 15
-+TEST_NAME="DRV TRACE DROP FQ_EMPTY"
-+
-+vethXDPnative ${VETH0} ${VETH1} ${NS1}
-+
-+params=("-N" "-t" "2" "-C" "${TRACEPKTS}")
-+execxdpxceiver params
-+
-+retval=$?
-+test_status $retval "${TEST_NAME}"
-+statusList+=($retval)
-+
- ## END TESTS
- 
- cleanup_exit ${VETH0} ${VETH1} ${NS1}
-diff --git a/tools/testing/selftests/bpf/xdpxceiver.c b/tools/testing/selftests/bpf/xdpxceiver.c
-index bee10bb686fc..49c2d42b5882 100644
---- a/tools/testing/selftests/bpf/xdpxceiver.c
-+++ b/tools/testing/selftests/bpf/xdpxceiver.c
-@@ -37,6 +37,8 @@
-  *       Reduce the RXQ size and do not read from it. Validate traces.
-  *    f. Tracing - XSK_TRACE_DROP_PKT_TOO_BIG
-  *       Increase the headroom size and send packets. Validate traces.
-+ *    g. Tracing - XSK_TRACE_DROP_FQ_EMPTY
-+ *       Do not populate the fill queue and send packets. Validate traces.
-  *
-  * 2. AF_XDP DRV/Native mode
-  *    Works on any netdevice with XDP_REDIRECT support, driver dependent. Processes
-@@ -50,8 +52,9 @@
-  *      zero-copy mode
-  *    e. Tracing - XSK_TRACE_DROP_RXQ_FULL
-  *    f. Tracing - XSK_TRACE_DROP_PKT_TOO_BIG
-+ *    g. Tracing - XSK_TRACE_DROP_FQ_EMPTY
-  *
-- * Total tests: 12
-+ * Total tests: 14
-  *
-  * Flow:
-  * -----
-@@ -981,7 +984,9 @@ static void *worker_testapp_validate(void *arg)
- 			thread_common_ops(ifobject, bufs, &sync_mutex_tx, &spinning_rx);
- 
- 		ksft_print_msg("Interface [%s] vector [Rx]\n", ifobject->ifname);
--		xsk_populate_fill_ring(ifobject->umem);
-+		if (opt_trace_code != XSK_TRACE_DROP_FQ_EMPTY)
-+			xsk_populate_fill_ring(ifobject->umem);
-+
- 
- 		TAILQ_INIT(&head);
- 		if (debug_pkt_dump) {
-@@ -1188,6 +1193,10 @@ int main(int argc, char **argv)
- 			expected_traces = opt_pkt_count;
- 			reason_str = "packet too big";
- 			break;
-+		case XSK_TRACE_DROP_FQ_EMPTY:
-+			expected_traces = opt_pkt_count;
-+			reason_str = "fq empty";
-+			break;
- 		default:
- 			ksft_test_result_fail("ERROR: unsupported trace %i\n",
- 						opt_trace_code);
--- 
-2.17.1
+Would it make sense to also hook this up to drop_monitor?
+
+-Toke
 
