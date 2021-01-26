@@ -2,225 +2,360 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC54305B4D
-	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 13:28:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE9D1305C0A
+	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 13:50:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S314030AbhAZWzQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Jan 2021 17:55:16 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:30892 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730844AbhAZVBQ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 26 Jan 2021 16:01:16 -0500
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10QKxGgu025905;
-        Tue, 26 Jan 2021 13:00:11 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=6lMxe9skVfNPxILBxpT9y3Se+tkkXCyjx1n/iMIl8Rk=;
- b=WbN1/dlGGFijsvMOq2US6xfXJW/0O65ki0lDl1zFCNhUNYdreL++U/l53HNE4zaQZqrn
- Lp/7Bxlhg3eC2dIomjYRUo2YO49ugxRWk9MeExeN2g36aV9GAPFifTgGVcZSTTRF2hsz
- xFNz+XK8qQ4tZvW+NFWieCGsu6Ry6RgvZHE= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 36950a6psa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 26 Jan 2021 13:00:11 -0800
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 26 Jan 2021 13:00:10 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=i+jNdfNMEAvw7/ayZpK5zlRarwQ5OvoKE2z+cW7rG3Rmh+GxPbJE8fiTuhpReCzov5bnErkG4RmqucW7jEQWfYYPqWdyl91yKi4V6bdgF+wjUmGMIWoUAqR1M7DuxOTUZEdyHepHK/PzOv2uv5yXxXSBqun5dQUJbOLUfMDl0v2bwQTxQivwW8rvyH3XqDIrdRWK0jF2lDwt5/aW6+0WiSl3fyuJ60jGfSUnFjIoLjAT+XYcTDDK1hWj80UQW3SGQrcCpuGrbtVv5HqMjyH9L1N9n6PPly/u9/sqxx3QGMoTDrfyUS0jr5oHPFAr7OFxuVKGcbn0C57kwChSpwBe0A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6lMxe9skVfNPxILBxpT9y3Se+tkkXCyjx1n/iMIl8Rk=;
- b=HaXKEcu+D+mjPK4uIp+ogYoKJDUZAjtex7wino6G+1vkPVVhpNljiHG2tOztm3N7Wy925JtI6SWl6RuNK6iGuN7RcKB2C0kuFCs72uav0U9OoyAKXgN/bgB0Z9hlxraTBjNRbt2ePK4x23+CkqmRb9Rh7LMiP97ZoD1hmo+2/y7O1QtfvdYgBuplKHjNFC9iqUaMbDGLlMUK8SU1Oq60Cm63nhP5lhR1KJMwtu4sZBm5YagwFlVKJiTSXU0gk1eDBusy50u5X+HpBs4lKCAlYcGLiC7K8fbelOXsec7mVR5SRp5/CjT5eLeLfL9vd+6wE8DubbTpRuBgDRibgAJJnA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6lMxe9skVfNPxILBxpT9y3Se+tkkXCyjx1n/iMIl8Rk=;
- b=NH1l9wPek6qK9sTjFDl2kDabbeGe0pdqnPYRpsuF4YkDK5dPRPCs9zWB0arE4uba+RRGv61w/DNx/Zb+NBiF+wjD4Q/qEyie4Y2B8SUvAtWSmbHuX6sVVKfh0u0rN1IzJDAUD74rVMljqSTwZQCMF+ijowDIUcOBNfFa9j8Bs8c=
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB2456.namprd15.prod.outlook.com (2603:10b6:a02:82::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.15; Tue, 26 Jan
- 2021 21:00:08 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::61d6:781d:e0:ada5]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::61d6:781d:e0:ada5%5]) with mapi id 15.20.3784.019; Tue, 26 Jan 2021
- 21:00:08 +0000
-Subject: Re: [PATCH bpf-next 2/3] bpf: Add size arg to build_id_parse function
-To:     Jiri Olsa <jolsa@redhat.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-CC:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        lkml <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-References: <20210114134044.1418404-1-jolsa@kernel.org>
- <20210114134044.1418404-3-jolsa@kernel.org>
- <19f16729-96d6-cc8e-5bd5-c3f5940365d4@fb.com>
- <20210114200120.GF1416940@krava>
- <d90fd73f-b9a6-c436-f8ae-0833ce3926ef@fb.com>
- <20210114220234.GA1456269@krava>
- <5043cef5-eda7-4373-dcb5-546f6192e1a9@fb.com>
- <CAADnVQLkM7+1+wzg=s8+zdKwYnmBRgvVK7K-qivu_a9mvaK7Yg@mail.gmail.com>
- <20210126205236.GD120879@krava>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <9490aa32-ad01-4a55-c2a0-e688226ecc71@fb.com>
-Date:   Tue, 26 Jan 2021 13:00:06 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.1
-In-Reply-To: <20210126205236.GD120879@krava>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2620:10d:c090:400::5:c70]
-X-ClientProxiedBy: BYAPR07CA0009.namprd07.prod.outlook.com
- (2603:10b6:a02:bc::22) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21e8::1246] (2620:10d:c090:400::5:c70) by BYAPR07CA0009.namprd07.prod.outlook.com (2603:10b6:a02:bc::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Tue, 26 Jan 2021 21:00:08 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a3d39aa7-3002-48a9-fa40-08d8c23d5d10
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2456:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB245671C2BA720FFC7B26BBD1D3BC9@BYAPR15MB2456.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: sbqDG6ucT6dodlMfeQeZHjW5OxU/4tagAZ06G6Dirz3eP94XLT1bWqpoJKCixGLr5f023qWYmofj8ZCsJGce8wuuBerMQs0WLBZpOF063cBseJ+C0EB9d+aCb6iDEM/aB5Qp73E6qO67Yg5aQAlHj+NdYyZpUBiQrnaKsmeM/qQ0PMDeKOUkyJWMSrau3003EhHkwOxfMVRc3MSneEZG1Nh4SdgpnPngtbmoDvvNn7UpzLbVt5pLOnubKqRAROQcdnn1MmnAazluBFRgaEa0aMlEhgpu/dhGl1yv/0TQZ7j+RkXtIxDYZB1FVr200YJeqMFSEjT9BNwP7l2yqgQwtlsEQ4IGdH0YZfJpslRVcxEc8RZYJ2WzdImw90M7UFT7fVif/lyg46KRkgkCMvyYeEGW4YG5bM1FFPPxygvfpwhinvAp3a6YN13SmpZSGeVH29Qd5NdlGENltR6QsMt0pb+CLuAQRQdUOMItM68p5lf1WEgi9ARLcMnKtoQOcj+wB8j+AcWJLYDyoebsVvhxK75iE6Vd+znwUz6qiM6+p+j4ObrMZSbrcpdEPBANpg4OX0u5wn0NIdw4LpGsVaJhcGBUm/SRBJH9UXi+aPOqde8=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(136003)(396003)(39860400002)(366004)(8936002)(53546011)(4326008)(16526019)(31696002)(2616005)(2906002)(6486002)(31686004)(316002)(186003)(66946007)(110136005)(54906003)(5660300002)(8676002)(52116002)(83380400001)(7416002)(36756003)(86362001)(478600001)(66476007)(66556008)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?QW51YmZhY1JhdWhXNEdKUDBhcHVlN0N6ak5BeUcyRGNtNU51ODRUL2JNSlFl?=
- =?utf-8?B?OVBFRUJKRi96dEJieVdiMzFabjBkQUVPdU92MTZZeHRrRzczeGNYc3QrdGQ1?=
- =?utf-8?B?dnBqNXdlaFA2Y2xqdGRxRGJ4WHQ1eHRtMmkzSmJheS9FQ3lYaEFnVjBIVlBV?=
- =?utf-8?B?bWdneldrTlNzUkN5YTBoSm9KV0pnUWo4UWtnTzRKcUFzNnZrZ3Zja21UcWN3?=
- =?utf-8?B?K2V0bFpBa0lXLzJmVkFVaFNHNFd3WkRMc1NsL1NFS2U1SWkxTVNabkxycVhl?=
- =?utf-8?B?YjFxdnJ5WWZsZlZqb3BzanZSQitiOVdJRDVULzVtQmJYWkZMRHFoWVRuRHo0?=
- =?utf-8?B?aVc5ekwvOVBjTjBiYXByNmlNcldaUjlEN1pwMjVldXF2TVFtTFk0eTlGc1lo?=
- =?utf-8?B?NVVBZytwRkZGN0w2Qk0xQUNpZ1BnUXpZbFpOZkg5QlIwamNYbDBFR1BkNVE3?=
- =?utf-8?B?VGFEZ3JFT2xpcHBZTExlK0M3eU1EbmNMNEhHSUE4VS83ZUVHSTcveTBLNmNr?=
- =?utf-8?B?QmJZSWEzdURHTG50ZVZUUzh5RmJJYlg4N21zWGRBVWpNYzNtNG80QmJhNDFx?=
- =?utf-8?B?NnB3SFRpRE0zOFhaREswd2dPK2NOZVR4TzJjcUQvMW5zdEZpVFZOcmtkbHlP?=
- =?utf-8?B?QjFNU0loa0xndGZPL1N2M2R5NDBGTllZMXM0OFBTRmJHUmZrSGkwNHVsYnJY?=
- =?utf-8?B?QnI0bmdMUTRmZ0FqQ3VVNngvODBSNjVKenVTVkZBbzlCeSs5Z3FmVjRHTUNm?=
- =?utf-8?B?NnB6dWNRU25lVm1PVVRJUWZiTlFqa0ltQVJTT1FQQ2NWQTVkT0RjM1BzdmtD?=
- =?utf-8?B?VythMTNIUW5mblpTdkg5ZGJacW9kZGFMYThmc2svZ1dHdDA0eUdGb05MQ3dq?=
- =?utf-8?B?eFlsbzErYWN0MFpHMG5rNENYVEZ3Yk5qTWlMdm53Y0prSTV4RVZzRXJWbkox?=
- =?utf-8?B?V2VtMUh2NEdpL1htaTJvbVo3dnA2blJmdXF0YzFld3A4eEVrTmFQOTN2UUs1?=
- =?utf-8?B?SThFd2JHWTVuOG1kNW1zTUlSSTRCRmh3b3BSQUVRak56NERnRWdUWWNwRjJU?=
- =?utf-8?B?Mk1tanYvbHZjRlJXdTdmYTRjRHAxbGRrOTRWS2NXUGVGMjRUM0Ivd2V3VHA4?=
- =?utf-8?B?ODlLbWZTZnozMXNQS2h2cCt4TkViRkJwaGhLZ3lCU2V0N1lZQm1Ia3ZlQkhW?=
- =?utf-8?B?bzFaZkxWamVvQXorYmt1S3RxTVRzNFVYTmZBWFpzZDZmbVkzd2JHMWJPZjV2?=
- =?utf-8?B?aVRnRHBUbzVJUW5CdGFhcmVmNStWaHpOS1BKMU1OcVVsRVY2UERoem5CWHdk?=
- =?utf-8?B?ZnJsV2ZsTldzNnA2Z04wOVFPcktYb1FQSDhGTW14Z2hBNS9HbHp6bnFpM2sz?=
- =?utf-8?B?VGRPQVhvcm1yY0xwcXRiaGczVW0rbHJ6ZVFPVjVVdk45WUN2L0pzVkdyUHVJ?=
- =?utf-8?B?azNtcE5tYVNIaWtVd1BadUQ2SVhQdnFaZEdBVWRDMXZkUGRlbFhHUGZGN1lO?=
- =?utf-8?Q?oA2U9Q=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: a3d39aa7-3002-48a9-fa40-08d8c23d5d10
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2021 21:00:08.5231
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7vejVjcmaSj/KQqttAvSPlEYsckGcbupqTy0dAyQR+gGQyoGk39KD06a9T9ryFFo
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2456
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-26_11:2021-01-26,2021-01-26 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- priorityscore=1501 spamscore=0 clxscore=1015 bulkscore=0 phishscore=0
- impostorscore=0 lowpriorityscore=0 mlxlogscore=999 mlxscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101260109
-X-FB-Internal: deliver
+        id S313059AbhAZWvy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Jan 2021 17:51:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729241AbhAZRCm (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Jan 2021 12:02:42 -0500
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D78BCC061A30
+        for <bpf@vger.kernel.org>; Tue, 26 Jan 2021 08:51:06 -0800 (PST)
+Received: by mail-qk1-x74a.google.com with SMTP id 70so3035678qkh.4
+        for <bpf@vger.kernel.org>; Tue, 26 Jan 2021 08:51:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=a7OcG2C0OMyjm05vLD7FX47o5HOb81g2cqEK8uyH68c=;
+        b=E7LiR3sKFmqD5uHIJzSD3bHb5X2qU6qdn3rZXm5pjjCQ94hJ1ASOpGpWn0qkrlVD9n
+         ZfflFf4nnJKKBMDF8F8htUFbIKqhtE2tYRie0nCP00LRPb3K+x7Fhd/lm2OjNPuDEyx5
+         ZbfAxfS6scTqYNKokbEo5JvhrmTWfxLBt1thjeOrsg/ydABSIy791tX85lVLeukfsWos
+         Y/8c4QdU6wAx2Ey7YNfrG++5fH1OjOFWaEIcBjeWUKBQZD6CIhv55SXVa+w0K8vnprDx
+         ZS615O266A6u592rj4aKCskYRYfG5o7uZNJp9m73i+mEEoO3oS6pQLICKg1/Ml5H2wvw
+         zC7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=a7OcG2C0OMyjm05vLD7FX47o5HOb81g2cqEK8uyH68c=;
+        b=TBPHPOXc60M3gTG/p2IRhFxk4dsZWTsUVIG/QbF1jl/bDTI5PsRDNpA3CRE4wU5rVf
+         HC91IhG57ZT0+vHDVF5vOxkzqoENuY3GUiX+7WogiRYy2gVXCST0/JD6nNgG654Clqn0
+         T4ec4niVzcmO4HUkYvY6uNMQ4yFw/p+yvy3wgdhuKhMOlquUmilQDyHmEeuIsEkm/Wnp
+         b1T4+sSAs95Y/EgnlgVr+1nJVPzEKQJEPzLORqQg8njB9lTikoxUn3Ax06ygrUAXzn/w
+         S2skgCn5FzyZIw2OoZtahG/4d64cGYzzzCt5gkgafOpjZ9WI+MMmnFY0aDejwl5UAWcf
+         8zkQ==
+X-Gm-Message-State: AOAM530Yom+UzUM+zpd3ZH4ANdtHNOn//WQNmwtjpn8MTzxji3g8vbHL
+        5TLdVEYSc6Uc/dgAgbq1rotBoBI=
+X-Google-Smtp-Source: ABdhPJzi3UVuDKe0YcORo9iXb1b8cV/43nepWMHAqAGtMiecKCwqMm2q5/wVq7EIsl4DqrSXluD/qdA=
+Sender: "sdf via sendgmr" <sdf@sdf2.svl.corp.google.com>
+X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:7220:84ff:fe09:7732])
+ (user=sdf job=sendgmr) by 2002:a05:6214:913:: with SMTP id
+ dj19mr6275365qvb.33.1611679865958; Tue, 26 Jan 2021 08:51:05 -0800 (PST)
+Date:   Tue, 26 Jan 2021 08:51:03 -0800
+Message-Id: <20210126165104.891536-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
+Subject: [PATCH bpf-next v3 1/2] bpf: allow rewriting to ports under ip_unprivileged_port_start
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>,
+        Andrey Ignatov <rdna@fb.com>, Martin KaFai Lau <kafai@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+At the moment, BPF_CGROUP_INET{4,6}_BIND hooks can rewrite user_port
+to the privileged ones (< ip_unprivileged_port_start), but it will
+be rejected later on in the __inet_bind or __inet6_bind.
 
+Let's add another return value to indicate that CAP_NET_BIND_SERVICE
+check should be ignored. Use the same idea as we currently use
+in cgroup/egress where bit #1 indicates CN. Instead, for
+cgroup/bind{4,6}, bit #1 indicates that CAP_NET_BIND_SERVICE should
+be bypassed.
 
-On 1/26/21 12:52 PM, Jiri Olsa wrote:
-> On Thu, Jan 14, 2021 at 07:47:20PM -0800, Alexei Starovoitov wrote:
->> On Thu, Jan 14, 2021 at 3:44 PM Yonghong Song <yhs@fb.com> wrote:
->>>
->>>
->>>
->>> On 1/14/21 2:02 PM, Jiri Olsa wrote:
->>>> On Thu, Jan 14, 2021 at 01:05:33PM -0800, Yonghong Song wrote:
->>>>>
->>>>>
->>>>> On 1/14/21 12:01 PM, Jiri Olsa wrote:
->>>>>> On Thu, Jan 14, 2021 at 10:56:33AM -0800, Yonghong Song wrote:
->>>>>>>
->>>>>>>
->>>>>>> On 1/14/21 5:40 AM, Jiri Olsa wrote:
->>>>>>>> It's possible to have other build id types (other than default SHA1).
->>>>>>>> Currently there's also ld support for MD5 build id.
->>>>>>>
->>>>>>> Currently, bpf build_id based stackmap does not returns the size of
->>>>>>> the build_id. Did you see an issue here? I guess user space can check
->>>>>>> the length of non-zero bits of the build id to decide what kind of
->>>>>>> type it is, right?
->>>>>>
->>>>>> you can have zero bytes in the build id hash, so you need to get the size
->>>>>>
->>>>>> I never saw MD5 being used in practise just SHA1, but we added the
->>>>>> size to be complete and make sure we'll fit with build id, because
->>>>>> there's only limited space in mmap2 event
->>>>>
->>>>> I am asking to check whether we should extend uapi struct
->>>>> bpf_stack_build_id to include build_id_size as well. I guess
->>>>> we can delay this until a real use case.
->>>>
->>>> right, we can try make some MD5 build id binaries and check if it
->>>> explodes with some bcc tools, but I don't expect that.. I'll try
->>>> to find some time for that
->>>
->>> Thanks. We may have issues on bcc side. For build_id collected in
->>> kernel, bcc always generates a length-20 string. But for user
->>> binaries, the build_id string length is equal to actual size of
->>> the build_id. They may not match (MD5 length is 16).
->>> The fix is probably to append '0's (up to length 20) for user
->>> binary build_id's.
->>>
->>> I guess MD5 is very seldom used. I will wait if you can reproduce
->>> the issue and then we might fix it.
->>
->> Indeed.
->> Jiri, please check whether md5 is really an issue.
->> Sounds like we have to do something on the kernel side.
->> Hopefully zero padding will be enough.
->> I would prefer to avoid extending uapi struct to cover rare case.
-> 
-> build_id_parse is already doing the zero padding, so we are ok
-> 
-> I tried several bcc tools over perf bench with md5 buildid and
-> the results looked ok
+v3:
+- Update description (Martin KaFai Lau)
+- Fix capability restore in selftest (Martin KaFai Lau)
 
-Great. Thanks for confirmation!
+v2:
+- Switch to explicit return code (Martin KaFai Lau)
 
-> 
-> jirka
-> 
+Cc: Andrey Ignatov <rdna@fb.com>
+Cc: Martin KaFai Lau <kafai@fb.com>
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ include/linux/bpf-cgroup.h | 38 ++++++++++++++++++++++++---------
+ include/linux/bpf.h        | 43 ++++++++++++++++++++++----------------
+ include/net/inet_common.h  |  3 +++
+ kernel/bpf/cgroup.c        |  8 +++++--
+ kernel/bpf/verifier.c      |  3 +++
+ net/ipv4/af_inet.c         |  9 +++++---
+ net/ipv6/af_inet6.c        |  6 ++++--
+ 7 files changed, 75 insertions(+), 35 deletions(-)
+
+diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
+index 0748fd87969e..6232745bae9b 100644
+--- a/include/linux/bpf-cgroup.h
++++ b/include/linux/bpf-cgroup.h
+@@ -125,7 +125,8 @@ int __cgroup_bpf_run_filter_sk(struct sock *sk,
+ int __cgroup_bpf_run_filter_sock_addr(struct sock *sk,
+ 				      struct sockaddr *uaddr,
+ 				      enum bpf_attach_type type,
+-				      void *t_ctx);
++				      void *t_ctx,
++				      u32 *flags);
+ 
+ int __cgroup_bpf_run_filter_sock_ops(struct sock *sk,
+ 				     struct bpf_sock_ops_kern *sock_ops,
+@@ -231,30 +232,48 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
+ 
+ #define BPF_CGROUP_RUN_SA_PROG(sk, uaddr, type)				       \
+ ({									       \
++	u32 __unused_flags;						       \
+ 	int __ret = 0;							       \
+ 	if (cgroup_bpf_enabled(type))					       \
+ 		__ret = __cgroup_bpf_run_filter_sock_addr(sk, uaddr, type,     \
+-							  NULL);	       \
++							  NULL,		       \
++							  &__unused_flags);    \
+ 	__ret;								       \
+ })
+ 
+ #define BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, type, t_ctx)		       \
+ ({									       \
++	u32 __unused_flags;						       \
+ 	int __ret = 0;							       \
+ 	if (cgroup_bpf_enabled(type))	{				       \
+ 		lock_sock(sk);						       \
+ 		__ret = __cgroup_bpf_run_filter_sock_addr(sk, uaddr, type,     \
+-							  t_ctx);	       \
++							  t_ctx,	       \
++							  &__unused_flags);    \
+ 		release_sock(sk);					       \
+ 	}								       \
+ 	__ret;								       \
+ })
+ 
+-#define BPF_CGROUP_RUN_PROG_INET4_BIND_LOCK(sk, uaddr)			       \
+-	BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, BPF_CGROUP_INET4_BIND, NULL)
+-
+-#define BPF_CGROUP_RUN_PROG_INET6_BIND_LOCK(sk, uaddr)			       \
+-	BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, BPF_CGROUP_INET6_BIND, NULL)
++/* BPF_CGROUP_INET4_BIND and BPF_CGROUP_INET6_BIND can return extra flags
++ * via upper bits of return code. The only flag that is supported
++ * (at bit position 0) is to indicate CAP_NET_BIND_SERVICE capability check
++ * should be bypassed.
++ */
++#define BPF_CGROUP_RUN_PROG_INET_BIND_LOCK(sk, uaddr, type, flags)	       \
++({									       \
++	u32 __flags = 0;						       \
++	int __ret = 0;							       \
++	if (cgroup_bpf_enabled(type))	{				       \
++		lock_sock(sk);						       \
++		__ret = __cgroup_bpf_run_filter_sock_addr(sk, uaddr, type,     \
++							  NULL, &__flags);     \
++		release_sock(sk);					       \
++		if (__flags & 1)					       \
++			*flags |= BIND_NO_CAP_NET_BIND_SERVICE;		       \
++	}								       \
++	__ret;								       \
++})
+ 
+ #define BPF_CGROUP_PRE_CONNECT_ENABLED(sk)				       \
+ 	((cgroup_bpf_enabled(BPF_CGROUP_INET4_CONNECT) ||		       \
+@@ -453,8 +472,7 @@ static inline int bpf_percpu_cgroup_storage_update(struct bpf_map *map,
+ #define BPF_CGROUP_RUN_PROG_INET_EGRESS(sk,skb) ({ 0; })
+ #define BPF_CGROUP_RUN_PROG_INET_SOCK(sk) ({ 0; })
+ #define BPF_CGROUP_RUN_PROG_INET_SOCK_RELEASE(sk) ({ 0; })
+-#define BPF_CGROUP_RUN_PROG_INET4_BIND_LOCK(sk, uaddr) ({ 0; })
+-#define BPF_CGROUP_RUN_PROG_INET6_BIND_LOCK(sk, uaddr) ({ 0; })
++#define BPF_CGROUP_RUN_PROG_INET_BIND_LOCK(sk, uaddr, type, flags) ({ 0; })
+ #define BPF_CGROUP_RUN_PROG_INET4_POST_BIND(sk) ({ 0; })
+ #define BPF_CGROUP_RUN_PROG_INET6_POST_BIND(sk) ({ 0; })
+ #define BPF_CGROUP_RUN_PROG_INET4_CONNECT(sk, uaddr) ({ 0; })
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 1aac2af12fed..08eee284d251 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1073,6 +1073,29 @@ int bpf_prog_array_copy(struct bpf_prog_array *old_array,
+ 			struct bpf_prog *include_prog,
+ 			struct bpf_prog_array **new_array);
+ 
++#define BPF_PROG_RUN_ARRAY_FLAGS(array, ctx, func, flags)		\
++	({								\
++		struct bpf_prog_array_item *_item;			\
++		struct bpf_prog *_prog;					\
++		struct bpf_prog_array *_array;				\
++		u32 _ret = 1;						\
++		u32 ret;						\
++		migrate_disable();					\
++		rcu_read_lock();					\
++		_array = rcu_dereference(array);			\
++		_item = &_array->items[0];				\
++		while ((_prog = READ_ONCE(_item->prog))) {		\
++			bpf_cgroup_storage_set(_item->cgroup_storage);	\
++			ret = func(_prog, ctx);				\
++			_ret &= (ret & 1);				\
++			*(flags) |= (ret >> 1);				\
++			_item++;					\
++		}							\
++		rcu_read_unlock();					\
++		migrate_enable();					\
++		_ret;							\
++	 })
++
+ #define __BPF_PROG_RUN_ARRAY(array, ctx, func, check_non_null)	\
+ 	({						\
+ 		struct bpf_prog_array_item *_item;	\
+@@ -1120,25 +1143,9 @@ _out:							\
+  */
+ #define BPF_PROG_CGROUP_INET_EGRESS_RUN_ARRAY(array, ctx, func)		\
+ 	({						\
+-		struct bpf_prog_array_item *_item;	\
+-		struct bpf_prog *_prog;			\
+-		struct bpf_prog_array *_array;		\
+-		u32 ret;				\
+-		u32 _ret = 1;				\
+ 		u32 _cn = 0;				\
+-		migrate_disable();			\
+-		rcu_read_lock();			\
+-		_array = rcu_dereference(array);	\
+-		_item = &_array->items[0];		\
+-		while ((_prog = READ_ONCE(_item->prog))) {		\
+-			bpf_cgroup_storage_set(_item->cgroup_storage);	\
+-			ret = func(_prog, ctx);		\
+-			_ret &= (ret & 1);		\
+-			_cn |= (ret & 2);		\
+-			_item++;			\
+-		}					\
+-		rcu_read_unlock();			\
+-		migrate_enable();			\
++		u32 _ret;				\
++		_ret = BPF_PROG_RUN_ARRAY_FLAGS(array, ctx, func, &_cn); \
+ 		if (_ret)				\
+ 			_ret = (_cn ? NET_XMIT_CN : NET_XMIT_SUCCESS);	\
+ 		else					\
+diff --git a/include/net/inet_common.h b/include/net/inet_common.h
+index cb2818862919..9ba935c15869 100644
+--- a/include/net/inet_common.h
++++ b/include/net/inet_common.h
+@@ -41,6 +41,9 @@ int inet_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len);
+ #define BIND_WITH_LOCK			(1 << 1)
+ /* Called from BPF program. */
+ #define BIND_FROM_BPF			(1 << 2)
++/* Skip CAP_NET_BIND_SERVICE check. */
++#define BIND_NO_CAP_NET_BIND_SERVICE	(1 << 3)
++
+ int __inet_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len,
+ 		u32 flags);
+ int inet_getname(struct socket *sock, struct sockaddr *uaddr,
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index da649f20d6b2..cdf3c7e611d9 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -1055,6 +1055,8 @@ EXPORT_SYMBOL(__cgroup_bpf_run_filter_sk);
+  * @uaddr: sockaddr struct provided by user
+  * @type: The type of program to be exectuted
+  * @t_ctx: Pointer to attach type specific context
++ * @flags: Pointer to u32 which contains higher bits of BPF program
++ *         return value (OR'ed together).
+  *
+  * socket is expected to be of type INET or INET6.
+  *
+@@ -1064,7 +1066,8 @@ EXPORT_SYMBOL(__cgroup_bpf_run_filter_sk);
+ int __cgroup_bpf_run_filter_sock_addr(struct sock *sk,
+ 				      struct sockaddr *uaddr,
+ 				      enum bpf_attach_type type,
+-				      void *t_ctx)
++				      void *t_ctx,
++				      u32 *flags)
+ {
+ 	struct bpf_sock_addr_kern ctx = {
+ 		.sk = sk,
+@@ -1087,7 +1090,8 @@ int __cgroup_bpf_run_filter_sock_addr(struct sock *sk,
+ 	}
+ 
+ 	cgrp = sock_cgroup_ptr(&sk->sk_cgrp_data);
+-	ret = BPF_PROG_RUN_ARRAY(cgrp->bpf.effective[type], &ctx, BPF_PROG_RUN);
++	ret = BPF_PROG_RUN_ARRAY_FLAGS(cgrp->bpf.effective[type], &ctx,
++				       BPF_PROG_RUN, flags);
+ 
+ 	return ret == 1 ? 0 : -EPERM;
+ }
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index d0eae51b31e4..972fc38eb62d 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -7986,6 +7986,9 @@ static int check_return_code(struct bpf_verifier_env *env)
+ 		    env->prog->expected_attach_type == BPF_CGROUP_INET4_GETSOCKNAME ||
+ 		    env->prog->expected_attach_type == BPF_CGROUP_INET6_GETSOCKNAME)
+ 			range = tnum_range(1, 1);
++		if (env->prog->expected_attach_type == BPF_CGROUP_INET4_BIND ||
++		    env->prog->expected_attach_type == BPF_CGROUP_INET6_BIND)
++			range = tnum_range(0, 3);
+ 		break;
+ 	case BPF_PROG_TYPE_CGROUP_SKB:
+ 		if (env->prog->expected_attach_type == BPF_CGROUP_INET_EGRESS) {
+diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
+index 6ba2930ff49b..aaa94bea19c3 100644
+--- a/net/ipv4/af_inet.c
++++ b/net/ipv4/af_inet.c
+@@ -438,6 +438,7 @@ EXPORT_SYMBOL(inet_release);
+ int inet_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
+ {
+ 	struct sock *sk = sock->sk;
++	u32 flags = BIND_WITH_LOCK;
+ 	int err;
+ 
+ 	/* If the socket has its own bind function then use it. (RAW) */
+@@ -450,11 +451,12 @@ int inet_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
+ 	/* BPF prog is run before any checks are done so that if the prog
+ 	 * changes context in a wrong way it will be caught.
+ 	 */
+-	err = BPF_CGROUP_RUN_PROG_INET4_BIND_LOCK(sk, uaddr);
++	err = BPF_CGROUP_RUN_PROG_INET_BIND_LOCK(sk, uaddr,
++						 BPF_CGROUP_INET4_BIND, &flags);
+ 	if (err)
+ 		return err;
+ 
+-	return __inet_bind(sk, uaddr, addr_len, BIND_WITH_LOCK);
++	return __inet_bind(sk, uaddr, addr_len, flags);
+ }
+ EXPORT_SYMBOL(inet_bind);
+ 
+@@ -499,7 +501,8 @@ int __inet_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len,
+ 
+ 	snum = ntohs(addr->sin_port);
+ 	err = -EACCES;
+-	if (snum && inet_port_requires_bind_service(net, snum) &&
++	if (!(flags & BIND_NO_CAP_NET_BIND_SERVICE) &&
++	    snum && inet_port_requires_bind_service(net, snum) &&
+ 	    !ns_capable(net->user_ns, CAP_NET_BIND_SERVICE))
+ 		goto out;
+ 
+diff --git a/net/ipv6/af_inet6.c b/net/ipv6/af_inet6.c
+index b9c654836b72..3e523c4f5226 100644
+--- a/net/ipv6/af_inet6.c
++++ b/net/ipv6/af_inet6.c
+@@ -439,6 +439,7 @@ static int __inet6_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len,
+ int inet6_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
+ {
+ 	struct sock *sk = sock->sk;
++	u32 flags = BIND_WITH_LOCK;
+ 	int err = 0;
+ 
+ 	/* If the socket has its own bind function then use it. */
+@@ -451,11 +452,12 @@ int inet6_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
+ 	/* BPF prog is run before any checks are done so that if the prog
+ 	 * changes context in a wrong way it will be caught.
+ 	 */
+-	err = BPF_CGROUP_RUN_PROG_INET6_BIND_LOCK(sk, uaddr);
++	err = BPF_CGROUP_RUN_PROG_INET_BIND_LOCK(sk, uaddr,
++						 BPF_CGROUP_INET6_BIND, &flags);
+ 	if (err)
+ 		return err;
+ 
+-	return __inet6_bind(sk, uaddr, addr_len, BIND_WITH_LOCK);
++	return __inet6_bind(sk, uaddr, addr_len, flags);
+ }
+ EXPORT_SYMBOL(inet6_bind);
+ 
+-- 
+2.30.0.280.ga3ce27912f-goog
+
