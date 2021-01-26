@@ -2,154 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0303B303543
-	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 06:40:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D61830353F
+	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 06:39:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727104AbhAZFi0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Jan 2021 00:38:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51102 "EHLO
+        id S1730016AbhAZFiK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Jan 2021 00:38:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730831AbhAZBuH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 25 Jan 2021 20:50:07 -0500
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 858DEC061351;
-        Mon, 25 Jan 2021 16:32:32 -0800 (PST)
-Received: by mail-yb1-xb32.google.com with SMTP id x78so15090274ybe.11;
-        Mon, 25 Jan 2021 16:32:32 -0800 (PST)
+        with ESMTP id S1731954AbhAZB1P (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Jan 2021 20:27:15 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8A26C0698D4;
+        Mon, 25 Jan 2021 17:26:26 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id e67so15203083ybc.12;
+        Mon, 25 Jan 2021 17:26:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=FL9eji8IEU4GjraOBf+9ed4vg2HJTGgpMF/wdNIdtuU=;
-        b=TEw3S7qjGpwdYpgjgpRdTMZF7C7r4YVMZMyZFnbBCpNfoh3WmnCrepMGKdaOJa6xVz
-         qSyDhJ8znP/2CQ/pDrihjmMQVhlzOuyQuzhw/iBjzTkazDia0w9bQYH5Q9sC5omwiUsQ
-         ciJTVYv0qPkAouh90csi/29BkTyXfF0zmEmPFsyGv/YCjvolv0QoMQR6uoni4vuX2ZfB
-         E8qkn6ZdlPOfqNYztDMgpbTzbg5VsMBJeT0uND3YGMaOsI95nU/drZWQlePr12+oDjnp
-         2tJY8wsGmW8Ss/SVtZrGaz4YQQYc32ehOGKF0kl1qo+hF9hgQz4J7KnQz+M63f9iHhDw
-         z9vA==
+        bh=TJ1MOV1sLhRzD9dsnoNfW9onPTJTHyufrbfsglTYLYQ=;
+        b=EfJnubrvjHb/BqtUfrnZejoWcTf9CKQc0Og7bC1Qegt44CrVRVvWyCj+mpxY3JyQqk
+         fYPnLZcyGJqg1VImtwoi5KWF7G270cHWfxzfe9DvqrtYiUVaF2sQqydLA55F13TGwzWg
+         9CA4KjsskKyLY4SOtQY6jvr5dAF5thLrqC1xCilHbXryaud7WU1XZjpLqyxFpx/jLWRU
+         BgvVfLoZx0WL5Ca6z7K25AMl4G5MKzVOMuGMNJID0m/gC0slR2u6DMb4q4PpyG3ealyg
+         SGTNKV6tqkdv7OHJPB6fhpWzKmpJ5K35iqQUN8/EDdUPWvsCxiMSTabSSPc6Dg2kzgHJ
+         JC6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=FL9eji8IEU4GjraOBf+9ed4vg2HJTGgpMF/wdNIdtuU=;
-        b=jsMSlBkJgXK1cVMEOVR46UbRanUJJG+OzX0NIckkWqxVZCn0V37CN+rNsngY+NHQVQ
-         p4DLIyZa8uJACyE1j4rK89rY3pRjSQEuxrQ5llIeeC7VfN5TaKbNTzM7Gyynlhzk+nfj
-         YXHRg57AK7OMGTxGh3Dk2dr1a+0yfR3QGmnWk4qfwNu58IcqgYGUZrwre8x7936dU+sb
-         8DxL5q06CBndB4K2zHMXCNRwTQOCG+6G5S/uTEMxXeA3mzGdBlYoyPRPW2dWV8dRp7oI
-         fuAE/RBOtlYB5RKGjiMfz3Gsplmxbq9RnTFiIxRMI8cFvcU+0Rp3SQ8qOmCXwrYUtz2v
-         hLbg==
-X-Gm-Message-State: AOAM530SAoy9aUvS71HWlk/fF/yhlNICbyvG4HjO7RksFUJ5Ae0cY1p0
-        7MBf3sKZha6AQFoKhq3gCwysgPxszqwXK2fvXbU=
-X-Google-Smtp-Source: ABdhPJxzxbb1IlWqyhxs9Q6vVoNuZJIX81co+Gh8/YTs8nSKoZF2AtTSunXSnwFyu/S0y9RexUnifVJe9PZsml5oP6E=
-X-Received: by 2002:a25:b195:: with SMTP id h21mr4544979ybj.347.1611621151736;
- Mon, 25 Jan 2021 16:32:31 -0800 (PST)
+        bh=TJ1MOV1sLhRzD9dsnoNfW9onPTJTHyufrbfsglTYLYQ=;
+        b=KSx1B8XM4FiEdzVRwpTqm5FiIifSUVDuV86w6n1JrGukAg+zcKsuC+3EiRFhyo1Z0C
+         2WicrjiPDo/QZ0rjy2BREOC/7lEQU4kmpgkFTWqccVz4kHloM4oSd2Gtq8Jv4PPSUCrl
+         7bUWpDSuyfSzAy44iFeM8ntEQ5GpkJ8LeMygmmwHgvIAr1GP8ENGWD9ph4cc7ZTo3HSa
+         2EJhyQlrBFWk519I1X/p9caVuFN6AXXw+zFtYlMFJZu7sE656t6JOx84aaUrpAwovqBI
+         wRHFTuunREcjXHytqzWUwqUPu5I93p0N3BRzXGy9yx13wQ4Dz2pKj+439qWlkJnaWLsE
+         jIrw==
+X-Gm-Message-State: AOAM530jc3CgNpP1bX6Lj/dTDLoIltBgchc85jS9oaOqSr+0ZHuoH0mF
+        JiU6v//IZuLmdBuXDdYBMtXrWO6WSv0xjWtYMew=
+X-Google-Smtp-Source: ABdhPJx04na/2x4JVJ5DEA6knJaGMhDp8y0R7IZqRkqqcdm2FlMlj1ZM8po33S7jTgUBspPx+yrOMQNV6cTrs6GkENY=
+X-Received: by 2002:a25:a183:: with SMTP id a3mr4771090ybi.459.1611624386074;
+ Mon, 25 Jan 2021 17:26:26 -0800 (PST)
 MIME-Version: 1.0
-References: <20210125154938.40504-1-quentin@isovalent.com>
-In-Reply-To: <20210125154938.40504-1-quentin@isovalent.com>
+References: <20210110070341.1380086-1-andrii@kernel.org> <161048280875.1131.14039972740532054006.git-patchwork-notify@kernel.org>
+ <4f19b649-a837-48af-90d1-c4692580053d@www.fastmail.com>
+In-Reply-To: <4f19b649-a837-48af-90d1-c4692580053d@www.fastmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 25 Jan 2021 16:32:21 -0800
-Message-ID: <CAEf4BzYKrmMM_9SRKyGA0LNv-DvThpr9cQsNLVtn5h0jEUYtWg@mail.gmail.com>
-Subject: Re: [PATCH] bpf: fix build for BPF preload when $(O) points to a
- relative path
-To:     Quentin Monnet <quentin@isovalent.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Mon, 25 Jan 2021 17:26:15 -0800
+Message-ID: <CAEf4BzY4LWhyHfd3OpvrM5DB7qieOemcxzp0GBtqWJTw56PMCg@mail.gmail.com>
+Subject: Re: [PATCH bpf 1/2] bpf: allow empty module BTFs
+To:     Christopher William Snowhill <chris@kode54.net>
+Cc:     patchwork-bot+netdevbpf@kernel.org,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        David Gow <davidgow@google.com>
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 7:49 AM Quentin Monnet <quentin@isovalent.com> wrote:
+On Sun, Jan 24, 2021 at 2:28 AM Christopher William Snowhill
+<chris@kode54.net> wrote:
 >
-> Building the kernel with CONFIG_BPF_PRELOAD, and by providing a relative
-> path for the output directory, may fail with the following error:
+> When is this being applied to an actual kernel? 5.11 is still quite broken without these two patches. Unless you're not using a vfat EFI partition, I guess.
 >
->   $ make O=build bindeb-pkg
->   ...
->   /.../linux/tools/scripts/Makefile.include:5: *** O=build does not exist.  Stop.
->   make[7]: *** [/.../linux/kernel/bpf/preload/Makefile:9: kernel/bpf/preload/libbpf.a] Error 2
->   make[6]: *** [/.../linux/scripts/Makefile.build:500: kernel/bpf/preload] Error 2
->   make[5]: *** [/.../linux/scripts/Makefile.build:500: kernel/bpf] Error 2
->   make[4]: *** [/.../linux/Makefile:1799: kernel] Error 2
->   make[4]: *** Waiting for unfinished jobs....
->
-> In the case above, for the "bindeb-pkg" target, the error is produced by
-> the "dummy" check in Makefile.include, called from libbpf's Makefile.
-> This check changes directory to $(PWD) before checking for the existence
-> of $(O). But at this step we have $(PWD) pointing to "/.../linux/build",
-> and $(O) pointing to "build". So the Makefile.include tries in fact to
-> assert the existence of a directory named "/.../linux/build/build",
-> which does not exist.
->
-> By contrast, other tools called from the main Linux Makefile get the
-> variable set to $(abspath $(objtree)), where $(objtree) is ".". We can
-> update the Makefile for kernel/bpf/preload to set $(O) to the same
-> value, to permit compiling with a relative path for output. Note that
-> apart from the Makefile.include, the variable $(O) is not used in
-> libbpf's build system.
->
-> Note that the error does not occur for all make targets and
-> architectures combinations.
->
-> - On x86, "make O=build vmlinux" appears to work fine.
->   $(PWD) points to "/.../linux/tools", but $(O) points to the absolute
->   path "/.../linux/build" and the test succeeds.
-> - On UML, it has been reported to fail with a message similar to the
->   above (see [0]).
-> - On x86, "make O=build bindeb-pkg" fails, as described above.
->
-> It is unsure where the different values for $(O) and $(PWD) come from
-> (likely some recursive make with different arguments at some point), and
-> because several targets are broken, it feels safer to fix the $(O) value
-> passed to libbpf rather than to hunt down all changes to the variable.
->
-> David Gow previously posted a slightly different version of this patch
-> as a RFC [0], two months ago or so.
->
-> [0] https://lore.kernel.org/bpf/20201119085022.3606135-1-davidgow@google.com/t/#u
->
-> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Cc: Brendan Higgins <brendanhiggins@google.com>
-> Cc: David Gow <davidgow@google.com>
-> Reported-by: David Gow <davidgow@google.com>
-> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
-> ---
 
-I still think it would benefit everyone to figure out where this is
-breaking (given Linux Makefile explicitly tries to handle such
-relative path situation for O=, I believe), but this is trivial
-enough, so:
+It's in v5.11-rc5.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
-BTW, you haven't specified which tree you intended it for.
-
->  kernel/bpf/preload/Makefile | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/bpf/preload/Makefile b/kernel/bpf/preload/Makefile
-> index 23ee310b6eb4..11b9896424c0 100644
-> --- a/kernel/bpf/preload/Makefile
-> +++ b/kernel/bpf/preload/Makefile
-> @@ -4,8 +4,11 @@ LIBBPF_SRCS = $(srctree)/tools/lib/bpf/
->  LIBBPF_A = $(obj)/libbpf.a
->  LIBBPF_OUT = $(abspath $(obj))
->
-> +# Set $(O) so that the "dummy" test in tools/scripts/Makefile.include, called
-> +# by libbpf's Makefile, succeeds when building the kernel with $(O) pointing to
-> +# a relative path, as in "make O=build bindeb-pkg".
->  $(LIBBPF_A):
-> -       $(Q)$(MAKE) -C $(LIBBPF_SRCS) OUTPUT=$(LIBBPF_OUT)/ $(LIBBPF_OUT)/libbpf.a
-> +       $(Q)$(MAKE) -C $(LIBBPF_SRCS) O=$(abspath .) OUTPUT=$(LIBBPF_OUT)/ $(LIBBPF_OUT)/libbpf.a
-
-why not O=$(LIBBPF_OUT), btw?
-
->
->  userccflags += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi \
->         -I $(srctree)/tools/lib/ -Wno-unused-result
-> --
-> 2.25.1
->
+> On Tue, Jan 12, 2021, at 12:20 PM, patchwork-bot+netdevbpf@kernel.org wrote:
+> > Hello:
+> >
+> > This series was applied to bpf/bpf.git (refs/heads/master):
+> >
+> > On Sat, 9 Jan 2021 23:03:40 -0800 you wrote:
+> > > Some modules don't declare any new types and end up with an empty BTF,
+> > > containing only valid BTF header and no types or strings sections. This
+> > > currently causes BTF validation error. There is nothing wrong with such BTF,
+> > > so fix the issue by allowing module BTFs with no types or strings.
+> > >
+> > > Reported-by: Christopher William Snowhill <chris@kode54.net>
+> > > Fixes: 36e68442d1af ("bpf: Load and verify kernel module BTFs")
+> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > >
+> > > [...]
+> >
+> > Here is the summary with links:
+> >   - [bpf,1/2] bpf: allow empty module BTFs
+> >     https://git.kernel.org/bpf/bpf/c/bcc5e6162d66
+> >   - [bpf,2/2] libbpf: allow loading empty BTFs
+> >     https://git.kernel.org/bpf/bpf/c/b8d52264df85
+> >
+> > You are awesome, thank you!
+> > --
+> > Deet-doot-dot, I am a bot.
+> > https://korg.docs.kernel.org/patchwork/pwbot.html
+> >
+> >
+> >
