@@ -2,193 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF7B2305C04
-	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 13:49:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6390B305BFF
+	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 13:48:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S313284AbhAZWwM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Jan 2021 17:52:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28813 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2392964AbhAZRlQ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 26 Jan 2021 12:41:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611682789;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=IFp7XUFQoexvLrbCvUTVH11jM+Rk85sANRL4Qy6Bv6Q=;
-        b=HlmOqqXk3Rlxu07vYMWnoKmCdKskNW2CKXo7rKfDlIOjRTYP+zXS40Og9vDi+DBEcHJ1fz
-        wyLWjJ6xZOJjovMzRIsM1GQdOJmloYsVCYbwmqAAFDu2jyQP9yi+A1OgHq6sx+9epNiy/O
-        msz4SIjeIj8hEXU/es3XMiiVAd0908E=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-117-hxHZCvQ3PWikHu4CPHGlfQ-1; Tue, 26 Jan 2021 12:39:46 -0500
-X-MC-Unique: hxHZCvQ3PWikHu4CPHGlfQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A37241922963;
-        Tue, 26 Jan 2021 17:39:44 +0000 (UTC)
-Received: from firesoul.localdomain (unknown [10.40.208.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2A01C6B8D4;
-        Tue, 26 Jan 2021 17:39:41 +0000 (UTC)
-Received: from [192.168.42.3] (localhost [IPv6:::1])
-        by firesoul.localdomain (Postfix) with ESMTP id E1AF93217DA48;
-        Tue, 26 Jan 2021 18:39:39 +0100 (CET)
-Subject: [PATCH net-next V1] net: adjust net_device layout for cacheline usage
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     David Ahern <dsahern@gmail.com>, netdev@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, bpf@vger.kernel.org,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 26 Jan 2021 18:39:39 +0100
-Message-ID: <161168277983.410784.12401225493601624417.stgit@firesoul>
-User-Agent: StGit/0.19
+        id S313273AbhAZWwz (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Jan 2021 17:52:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731132AbhAZSGY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Jan 2021 13:06:24 -0500
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B46D4C061786
+        for <bpf@vger.kernel.org>; Tue, 26 Jan 2021 10:05:44 -0800 (PST)
+Received: by mail-qt1-x82c.google.com with SMTP id l23so10404279qtq.13
+        for <bpf@vger.kernel.org>; Tue, 26 Jan 2021 10:05:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Fowtb0fVlW00m6SywxoRx2TU/MEIjVOePVjPPtv6l+s=;
+        b=axMYcUusiQOitoa+4p4nJ8Ne56s3qsgPCGXzeddX9d2801UHb9DMw+LB5UYz0h+KzL
+         RNhtZA04Skkkymkqct2GavHKXWLAJMgShwi7fajnWS6OycDDe+HWkp7ybL82qfj+hhFP
+         VsS1KXvyB5ywRGvYaGh2VyXwWexVFAcVPmeSxKTTD51TYEq6vDV4TE+D/YY9+q2TMIzN
+         mMfzWWl4jDj7pzhqIqyxHFRvqRebGNqxPVw/S4j4D65QqYGYg8O/hjLh0kxjyN1u6ehC
+         yUcCC+PuzrMSIUl4y3VAlJg5lnBwK7hgVod856K2X/NGRn1XETCgWhx4hb1jRh+eE/5G
+         bckw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Fowtb0fVlW00m6SywxoRx2TU/MEIjVOePVjPPtv6l+s=;
+        b=sc9yNrPr3K0sTYU2CI5qmw0ESkDvaF5hSE8KX/gbyJpb4Wy+w6jV4YPiVRvgtsKps/
+         eBBtepYmBaOAQViIaCz7xId41ZKqlo0QIdkorIQrBK/aNPwERbqCY266GkgcPJYNwlNI
+         0BZPLrfSR3BNl1E6CGRji4zUKlKVMWXaPdfH2NFnn7JMW11/X+Q9HC969U6Vy8Bn/aZ7
+         4CtQ6GnedevL4hEG4te8MkF5eTeVsJLxEJTLhJv5P4XP6lRT7LwJUaJE43jSy30epyKO
+         +CYDDfxMXxz0eEVlI2dvRfmUFdRLvC/X8dn5zwQgXkLJ1A52HDm1mX42m12/YNYiHfFl
+         Ndvw==
+X-Gm-Message-State: AOAM530H1JcbLijRlnnWMuzjx++f2lczBS3I47pcoVAHLe8yx/VvmFI+
+        QViEby7GRh9gMHm9H1KSpeqrRV5DLMbDQTJFs4RB5A==
+X-Google-Smtp-Source: ABdhPJwSngOso0IVnqNqzAvythTbBQh/Cjfx8RoSiFa3DhxO+lPs4LSY2j0ZXd3hQ9UoBOUfUtmd2YZw7c7CHU+YqCY=
+X-Received: by 2002:ac8:71ca:: with SMTP id i10mr6300016qtp.20.1611684343634;
+ Tue, 26 Jan 2021 10:05:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20210126165104.891536-1-sdf@google.com> <20210126180055.a5vg7vnng2u6r7te@kafai-mbp>
+In-Reply-To: <20210126180055.a5vg7vnng2u6r7te@kafai-mbp>
+From:   Stanislav Fomichev <sdf@google.com>
+Date:   Tue, 26 Jan 2021 10:05:32 -0800
+Message-ID: <CAKH8qBvwQOvfPnJMrkecgRdh+F9Uwk-iijiu=EE_G7_YwR-aPQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: allow rewriting to ports under ip_unprivileged_port_start
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrey Ignatov <rdna@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The current layout of net_device is not optimal for cacheline usage.
-
-The member adj_list.lower linked list is split between cacheline 2 and 3.
-The ifindex is placed together with stats (struct net_device_stats),
-although most modern drivers don't update this stats member.
-
-The members netdev_ops, mtu and hard_header_len are placed on three
-different cachelines. These members are accessed for XDP redirect into
-devmap, which were noticeably with perf tool. When not using the map
-redirect variant (like TC-BPF does), then ifindex is also used, which is
-placed on a separate fourth cacheline. These members are also accessed
-during forwarding with regular network stack. The members priv_flags and
-flags are on fast-path for network stack transmit path in __dev_queue_xmit
-(currently located together with mtu cacheline).
-
-This patch creates a read mostly cacheline, with the purpose of keeping the
-above mentioned members on the same cacheline.
-
-Some netdev_features_t members also becomes part of this cacheline, which is
-on purpose, as function netif_skb_features() is on fast-path via
-validate_xmit_skb().
-
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
----
- include/linux/netdevice.h |   53 +++++++++++++++++++++++----------------------
- 1 file changed, 27 insertions(+), 26 deletions(-)
-
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index b7915484369c..2645f114de54 100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -1855,7 +1855,6 @@ struct net_device {
- 	unsigned long		mem_end;
- 	unsigned long		mem_start;
- 	unsigned long		base_addr;
--	int			irq;
- 
- 	/*
- 	 *	Some hardware also needs these fields (state,dev_list,
-@@ -1877,6 +1876,23 @@ struct net_device {
- 		struct list_head lower;
- 	} adj_list;
- 
-+	/* Read-mostly cache-line for fast-path access */
-+	unsigned int		flags;
-+	unsigned int		priv_flags;
-+	const struct net_device_ops *netdev_ops;
-+	int			ifindex;
-+	unsigned short		gflags;
-+	unsigned short		hard_header_len;
-+
-+	/* Note : dev->mtu is often read without holding a lock.
-+	 * Writers usually hold RTNL.
-+	 * It is recommended to use READ_ONCE() to annotate the reads,
-+	 * and to use WRITE_ONCE() to annotate the writes.
-+	 */
-+	unsigned int		mtu;
-+	unsigned short		needed_headroom;
-+	unsigned short		needed_tailroom;
-+
- 	netdev_features_t	features;
- 	netdev_features_t	hw_features;
- 	netdev_features_t	wanted_features;
-@@ -1885,10 +1901,15 @@ struct net_device {
- 	netdev_features_t	mpls_features;
- 	netdev_features_t	gso_partial_features;
- 
--	int			ifindex;
-+	unsigned int		min_mtu;
-+	unsigned int		max_mtu;
-+	unsigned short		type;
-+	unsigned char		min_header_len;
-+	unsigned char		name_assign_type;
-+
- 	int			group;
- 
--	struct net_device_stats	stats;
-+	struct net_device_stats	stats; /* not used by modern drivers */
- 
- 	atomic_long_t		rx_dropped;
- 	atomic_long_t		tx_dropped;
-@@ -1902,7 +1923,6 @@ struct net_device {
- 	const struct iw_handler_def *wireless_handlers;
- 	struct iw_public_data	*wireless_data;
- #endif
--	const struct net_device_ops *netdev_ops;
- 	const struct ethtool_ops *ethtool_ops;
- #ifdef CONFIG_NET_L3_MASTER_DEV
- 	const struct l3mdev_ops	*l3mdev_ops;
-@@ -1921,34 +1941,12 @@ struct net_device {
- 
- 	const struct header_ops *header_ops;
- 
--	unsigned int		flags;
--	unsigned int		priv_flags;
--
--	unsigned short		gflags;
--	unsigned short		padded;
--
- 	unsigned char		operstate;
- 	unsigned char		link_mode;
- 
- 	unsigned char		if_port;
- 	unsigned char		dma;
- 
--	/* Note : dev->mtu is often read without holding a lock.
--	 * Writers usually hold RTNL.
--	 * It is recommended to use READ_ONCE() to annotate the reads,
--	 * and to use WRITE_ONCE() to annotate the writes.
--	 */
--	unsigned int		mtu;
--	unsigned int		min_mtu;
--	unsigned int		max_mtu;
--	unsigned short		type;
--	unsigned short		hard_header_len;
--	unsigned char		min_header_len;
--	unsigned char		name_assign_type;
--
--	unsigned short		needed_headroom;
--	unsigned short		needed_tailroom;
--
- 	/* Interface address info. */
- 	unsigned char		perm_addr[MAX_ADDR_LEN];
- 	unsigned char		addr_assign_type;
-@@ -1959,7 +1957,10 @@ struct net_device {
- 	unsigned short		neigh_priv_len;
- 	unsigned short          dev_id;
- 	unsigned short          dev_port;
-+	unsigned short		padded;
-+
- 	spinlock_t		addr_list_lock;
-+	int			irq;
- 
- 	struct netdev_hw_addr_list	uc;
- 	struct netdev_hw_addr_list	mc;
-
-
+On Tue, Jan 26, 2021 at 10:01 AM Martin KaFai Lau <kafai@fb.com> wrote:
+>
+> On Tue, Jan 26, 2021 at 08:51:03AM -0800, Stanislav Fomichev wrote:
+> > At the moment, BPF_CGROUP_INET{4,6}_BIND hooks can rewrite user_port
+> > to the privileged ones (< ip_unprivileged_port_start), but it will
+> > be rejected later on in the __inet_bind or __inet6_bind.
+> >
+> > Let's add another return value to indicate that CAP_NET_BIND_SERVICE
+> > check should be ignored. Use the same idea as we currently use
+> > in cgroup/egress where bit #1 indicates CN. Instead, for
+> > cgroup/bind{4,6}, bit #1 indicates that CAP_NET_BIND_SERVICE should
+> > be bypassed.
+> >
+> > v3:
+> > - Update description (Martin KaFai Lau)
+> > - Fix capability restore in selftest (Martin KaFai Lau)
+> >
+> > v2:
+> > - Switch to explicit return code (Martin KaFai Lau)
+> >
+>
+> [ ... ]
+>
+> > @@ -499,7 +501,8 @@ int __inet_bind(struct sock *sk, struct sockaddr *uaddr, int addr_len,
+> >
+> >       snum = ntohs(addr->sin_port);
+> >       err = -EACCES;
+> > -     if (snum && inet_port_requires_bind_service(net, snum) &&
+> > +     if (!(flags & BIND_NO_CAP_NET_BIND_SERVICE) &&
+> > +         snum && inet_port_requires_bind_service(net, snum) &&
+> The same change needs to be done on __inet6_bind()
+> and also adds a test for IPv6 in patch 2.
+Oh, damn, I did add the flag but forgot to handle it. Thanks for
+catching this, will do!
