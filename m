@@ -2,35 +2,35 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C71E305BEB
-	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 13:47:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C7EC305BE8
+	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 13:47:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S313314AbhAZWyM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Jan 2021 17:54:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50870 "EHLO mail.kernel.org"
+        id S313395AbhAZWyU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Jan 2021 17:54:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50922 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390982AbhAZSnJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Jan 2021 13:43:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C7EF722286;
-        Tue, 26 Jan 2021 18:42:26 +0000 (UTC)
+        id S2391756AbhAZSnM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Jan 2021 13:43:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 86D5022A85;
+        Tue, 26 Jan 2021 18:42:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611686548;
-        bh=xsSQgyzTplv0SsBJ7NkFDqsTUF/LqUhSoDlzv91qAGE=;
+        s=k20201202; t=1611686551;
+        bh=9BvhNhDHnU6jsGLFkKZKqL/AxJq7Qp6jP8i0mqzYq3c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aqQRbYeKnONLeoUsAfdvhonLK3yPnIFrpW8jfK8cRiAy48sYd1eSN1wV+7voMPl4q
-         DloUid1zmJnuRwIgSblReW+WI04Bp9u3egFisht/RNFregjA1mzrz5TuTbGZbpMibe
-         P3RSVSNaT24h9/is/CbQSxW7CoTUoEG8yy4++G0mjvwU/315SOcgsfXqAQzOGTzxij
-         us9e13N1oAD8uDdJk8s0Q35HMdydwz0Kpv6bvD0E2kkMBMwautf2sKp0HlZOLoibkQ
-         cwTqdOLuVhWLxtQ2dNV+5KJ8Mm53bmFbvtTs8K5RAF8MMdDZk6Pz+n8nWi1H68tamy
-         1khU1Q1wG5fVA==
+        b=qrjLFmHScoywk1VJO4g9ssCgW/PHsPOp0/bTwlXlkBi0IeJce7Lm0ufplGBOP4H6H
+         Dn/1gjBr81tnbyVdfU204yUtPdfOSghdSJZnioD1fY+OOrPCyGwCR65QLTLBTpTRAs
+         hldKKbM+S27+Kqr0zmyvlzt+Vjhl7FCB1F9LiQenSnYoy7kHQSunE52reDwQQuCBxU
+         3zMknVU1ZY6RUx70ziCF4go/GpIk1zbcaTvwh+vgZgvgL4tQRoaEkTxJJboDelXJKd
+         MSj5bmyfis8gwd3rgK/1RgtC9fsAtHH9nBtLntmhD2xbZrg+h81/ZkyMWKHk7amsEw
+         A6+xidV/s9jIQ==
 From:   Lorenzo Bianconi <lorenzo@kernel.org>
 To:     bpf@vger.kernel.org
 Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
         ast@kernel.org, daniel@iogearbox.net, toshiaki.makita1@gmail.com,
         lorenzo.bianconi@redhat.com, brouer@redhat.com, toke@redhat.com
-Subject: [PATCH bpf-next 1/3] net: veth: introduce bulking for XDP_PASS
-Date:   Tue, 26 Jan 2021 19:41:59 +0100
-Message-Id: <adca75284e30320e9d692d618a6349319d9340f3.1611685778.git.lorenzo@kernel.org>
+Subject: [PATCH bpf-next 2/3] net: xdp: move XDP_BATCH_SIZE in common header
+Date:   Tue, 26 Jan 2021 19:42:00 +0100
+Message-Id: <59195b7a7e53630f43ed7d55eb3b0237b72a9e11.1611685778.git.lorenzo@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1611685778.git.lorenzo@kernel.org>
 References: <cover.1611685778.git.lorenzo@kernel.org>
@@ -40,87 +40,97 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Introduce bulking support for XDP_PASS verdict forwarding skbs to
-the networking stack
+Move CPUMAP_BATCH macro in xdp common header and rename it to
+XDP_BATCH_SIZE in order to be reused in veth driver
 
 Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 ---
- drivers/net/veth.c | 43 ++++++++++++++++++++++++++-----------------
- 1 file changed, 26 insertions(+), 17 deletions(-)
+ drivers/net/veth.c  |  2 +-
+ include/net/xdp.h   |  1 +
+ kernel/bpf/cpumap.c | 13 +++++--------
+ 3 files changed, 7 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index 6e03b619c93c..23137d9966da 100644
+index 23137d9966da..ff77b541e5fc 100644
 --- a/drivers/net/veth.c
 +++ b/drivers/net/veth.c
-@@ -35,6 +35,7 @@
- #define VETH_XDP_HEADROOM	(XDP_PACKET_HEADROOM + NET_IP_ALIGN)
+@@ -793,7 +793,7 @@ static int veth_xdp_rcv(struct veth_rq *rq, int budget,
+ 		int i, n_frame, n_skb = 0;
  
- #define VETH_XDP_TX_BULK_SIZE	16
-+#define VETH_XDP_BATCH		8
- 
- struct veth_stats {
- 	u64	rx_drops;
-@@ -787,27 +788,35 @@ static int veth_xdp_rcv(struct veth_rq *rq, int budget,
- 	int i, done = 0;
- 
- 	for (i = 0; i < budget; i++) {
--		void *ptr = __ptr_ring_consume(&rq->xdp_ring);
--		struct sk_buff *skb;
-+		void *frames[VETH_XDP_BATCH];
-+		void *skbs[VETH_XDP_BATCH];
-+		int i, n_frame, n_skb = 0;
- 
--		if (!ptr)
-+		n_frame = __ptr_ring_consume_batched(&rq->xdp_ring, frames,
-+						     VETH_XDP_BATCH);
-+		if (!n_frame)
+ 		n_frame = __ptr_ring_consume_batched(&rq->xdp_ring, frames,
+-						     VETH_XDP_BATCH);
++						     XDP_BATCH_SIZE);
+ 		if (!n_frame)
  			break;
  
--		if (veth_is_xdp_frame(ptr)) {
--			struct xdp_frame *frame = veth_ptr_to_xdp(ptr);
-+		for (i = 0; i < n_frame; i++) {
-+			void *f = frames[i];
-+			struct sk_buff *skb;
+diff --git a/include/net/xdp.h b/include/net/xdp.h
+index c4bfdc9a8b79..c0e15bcb3a22 100644
+--- a/include/net/xdp.h
++++ b/include/net/xdp.h
+@@ -124,6 +124,7 @@ struct xdp_frame {
+ 	struct net_device *dev_rx; /* used by cpumap */
+ };
  
--			stats->xdp_bytes += frame->len;
--			skb = veth_xdp_rcv_one(rq, frame, bq, stats);
--		} else {
--			skb = ptr;
--			stats->xdp_bytes += skb->len;
--			skb = veth_xdp_rcv_skb(rq, skb, bq, stats);
--		}
--
--		if (skb)
--			napi_gro_receive(&rq->xdp_napi, skb);
-+			if (veth_is_xdp_frame(f)) {
-+				struct xdp_frame *frame = veth_ptr_to_xdp(f);
++#define XDP_BATCH_SIZE		8 /* 8 == one cacheline on 64-bit archs */
+ #define XDP_BULK_QUEUE_SIZE	16
+ struct xdp_frame_bulk {
+ 	int count;
+diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
+index 5d1469de6921..ecda8eadd837 100644
+--- a/kernel/bpf/cpumap.c
++++ b/kernel/bpf/cpumap.c
+@@ -37,12 +37,11 @@
+  * which queue in bpf_cpu_map_entry contains packets.
+  */
  
--		done++;
-+				stats->xdp_bytes += frame->len;
-+				skb = veth_xdp_rcv_one(rq, frame, bq, stats);
-+			} else {
-+				skb = f;
-+				stats->xdp_bytes += skb->len;
-+				skb = veth_xdp_rcv_skb(rq, skb, bq, stats);
-+			}
-+			if (skb)
-+				skbs[n_skb++] = skb;
-+		}
-+		for (i = 0; i < n_skb; i++)
-+			napi_gro_receive(&rq->xdp_napi, skbs[i]);
-+		done += n_frame;
- 	}
+-#define CPU_MAP_BULK_SIZE 8  /* 8 == one cacheline on 64-bit archs */
+ struct bpf_cpu_map_entry;
+ struct bpf_cpu_map;
  
- 	u64_stats_update_begin(&rq->stats.syncp);
-@@ -818,7 +827,7 @@ static int veth_xdp_rcv(struct veth_rq *rq, int budget,
- 	rq->stats.vs.xdp_packets += done;
- 	u64_stats_update_end(&rq->stats.syncp);
- 
--	return done;
-+	return i;
+ struct xdp_bulk_queue {
+-	void *q[CPU_MAP_BULK_SIZE];
++	void *q[XDP_BATCH_SIZE];
+ 	struct list_head flush_node;
+ 	struct bpf_cpu_map_entry *obj;
+ 	unsigned int count;
+@@ -237,8 +236,6 @@ static int cpu_map_bpf_prog_run_xdp(struct bpf_cpu_map_entry *rcpu,
+ 	return nframes;
  }
  
- static int veth_poll(struct napi_struct *napi, int budget)
+-#define CPUMAP_BATCH 8
+-
+ static int cpu_map_kthread_run(void *data)
+ {
+ 	struct bpf_cpu_map_entry *rcpu = data;
+@@ -254,8 +251,8 @@ static int cpu_map_kthread_run(void *data)
+ 		struct xdp_cpumap_stats stats = {}; /* zero stats */
+ 		gfp_t gfp = __GFP_ZERO | GFP_ATOMIC;
+ 		unsigned int drops = 0, sched = 0;
+-		void *frames[CPUMAP_BATCH];
+-		void *skbs[CPUMAP_BATCH];
++		void *frames[XDP_BATCH_SIZE];
++		void *skbs[XDP_BATCH_SIZE];
+ 		int i, n, m, nframes;
+ 
+ 		/* Release CPU reschedule checks */
+@@ -278,7 +275,7 @@ static int cpu_map_kthread_run(void *data)
+ 		 * consume side valid as no-resize allowed of queue.
+ 		 */
+ 		n = __ptr_ring_consume_batched(rcpu->queue, frames,
+-					       CPUMAP_BATCH);
++					       XDP_BATCH_SIZE);
+ 		for (i = 0; i < n; i++) {
+ 			void *f = frames[i];
+ 			struct page *page = virt_to_page(f);
+@@ -656,7 +653,7 @@ static void bq_enqueue(struct bpf_cpu_map_entry *rcpu, struct xdp_frame *xdpf)
+ 	struct list_head *flush_list = this_cpu_ptr(&cpu_map_flush_list);
+ 	struct xdp_bulk_queue *bq = this_cpu_ptr(rcpu->bulkq);
+ 
+-	if (unlikely(bq->count == CPU_MAP_BULK_SIZE))
++	if (unlikely(bq->count == XDP_BATCH_SIZE))
+ 		bq_flush_to_queue(bq);
+ 
+ 	/* Notice, xdp_buff/page MUST be queued here, long enough for
 -- 
 2.29.2
 
