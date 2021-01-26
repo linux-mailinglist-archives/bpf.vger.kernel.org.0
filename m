@@ -2,184 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4A6D304CB1
-	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 23:53:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AF4D304CB3
+	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 23:54:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727065AbhAZWxE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Jan 2021 17:53:04 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:56018 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387970AbhAZSTr (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 26 Jan 2021 13:19:47 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10QIFQ1r032371;
-        Tue, 26 Jan 2021 10:18:48 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=88mLFc56HS4gkcnOGJlavOYMcNHrWbpPxoStL8qNBWw=;
- b=dGel5zWQGdiYWy6c6Xyy4UwHLRUWyAUTkUEAwUH2BTAAklmCI0hwMGYDWwPXBQ9PRjEM
- U7PtTsWVgC54sILwqZhEvWt6FpQ2p7HTO//LDHfCXgUB2JmpRaiOStgA77HEmPPZHT8R
- jfgyDnNhCCJuvAYvh1la9X50SkB5ddWMoTY= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3694quwure-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 26 Jan 2021 10:18:48 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 26 Jan 2021 10:18:47 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OYHz36g/rkmV2F2IvBhQ+X8f2FZqEfID8g6oYiHp0xRp1azx9kfnDQ5A5pnEJtNZ+OOVAu9klAWny66q2el56O1UotlgEftQHRpw0MirOMLu1EJah88z2l7Kr724zIldjieU0cmpuKH/q5BDwunO2NHSOwGuXeTsGLkeqb9u6/kdwwFFg9nHGNxbcKbNGSPEGmJeU9T8QGvbJaJM/LLy34QbVCFOWiEG3akJcaW+zd8pyAfGL9vDNc/udLX2VzrWZUUsLbDo7tLMHK+V9sB6XRWRlV683lbgOSAwbesHAREdsOn+IXCXNTsOcvrN3d9wpbK8emKyrDCB2S0m6sN8OA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=88mLFc56HS4gkcnOGJlavOYMcNHrWbpPxoStL8qNBWw=;
- b=fK6RwKHo0Dqa+ZGBTpinoH/UhyzkizQHmG6+4HtG9lNOKrf726VrX1qZKgydxOiD6HLEv5wh5DdG7wMxwnBeA85VEz5rBFADm6/L0LXc1z1oyJAexq6BQubl2kcBO9fSJcF95n2GaEJjuXBwM6H4nJ8RQSj5zvaIBcAwTwkms6KbXnF0W1jaJABf4oxr43eXJvWVdCtLLfqB4UsvtE+pQwwqpeAT0z96cYlyScJcAIqL0vJx6Ln9OJpABM8Zp/r8YdjsHqoA+Cfxo6pSCB2Kzs9GqnqnFAYMNNHmmJKu25BPPAEAaGq7OsuvrGcoVrrmAb3bNzPuP+I4Ubw3rqlScg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=88mLFc56HS4gkcnOGJlavOYMcNHrWbpPxoStL8qNBWw=;
- b=SBsFYjNQkO61QgOCc9KodE2zdNr8yCQXEV7KvbPz8UEmZ/LyDRRIkpEDmB2ZnzgggOXQoJiLQwX2x9mIGAzavOURyk5AtQRmHriR8YDUKeXtkO6S0OOSAOpwtmQYWdD7TWNsmvc51/NARdGU0LYPV9P3Rvq4TjnSaSA1gyPQoBM=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by BYAPR15MB2693.namprd15.prod.outlook.com (2603:10b6:a03:155::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Tue, 26 Jan
- 2021 18:18:46 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::d13b:962a:2ba7:9e66]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::d13b:962a:2ba7:9e66%3]) with mapi id 15.20.3784.017; Tue, 26 Jan 2021
- 18:18:46 +0000
-Date:   Tue, 26 Jan 2021 10:18:38 -0800
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Stanislav Fomichev <sdf@google.com>
-CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, Andrey Ignatov <rdna@fb.com>
-Subject: Re: [PATCH bpf-next v3 2/2] selftests/bpf: verify that rebinding to
- port < 1024 from BPF works
-Message-ID: <20210126181838.boof6nddaazjrfng@kafai-mbp>
-References: <20210126165104.891536-1-sdf@google.com>
- <20210126165104.891536-2-sdf@google.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210126165104.891536-2-sdf@google.com>
-X-Originating-IP: [2620:10d:c090:400::5:694d]
-X-ClientProxiedBy: MWHPR12CA0063.namprd12.prod.outlook.com
- (2603:10b6:300:103::25) To BY5PR15MB3571.namprd15.prod.outlook.com
- (2603:10b6:a03:1f6::32)
+        id S1727877AbhAZWxT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Jan 2021 17:53:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389662AbhAZSiW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Jan 2021 13:38:22 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9863CC0617AA
+        for <bpf@vger.kernel.org>; Tue, 26 Jan 2021 10:36:08 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id c12so17579477wrc.7
+        for <bpf@vger.kernel.org>; Tue, 26 Jan 2021 10:36:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NmVEUkooFz5Tfz1+fj+rLfrC74ZA/wXoG61R5qDLmbU=;
+        b=DVbwGC8thxi+LMqdMJaD5FDz+72wUPoAX9YrH2g8z65x+Y/7wxfxy+7jVJZ0LnlQfl
+         6TGvJhHAZtPCuzaw9l1U4g2fTEkckLxTLtMIG5qLTq8pL3p66gRZwfPzdrsrYTP6o4bp
+         9C2ZIZVOzaoNja8akpTcC9Rt20vjoG1A512BA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NmVEUkooFz5Tfz1+fj+rLfrC74ZA/wXoG61R5qDLmbU=;
+        b=h7lU4Z2c3+2M3rir4DHw25Crz5vz0gY5gGAgnKu2f3QxGY4Re6lca8fdXYzVcCW0M5
+         JQnAdJ7rojE+AsdNht5LnA1g0ZvK8hIsKaFMu3eCceb+KujHkv1VtsleeNNFmgwSpG5C
+         t3wv0zkFiyBBrT2dpfE4nghOlQq8mEPNIENJAePY/K4N5HkvxQ0dtig30Kztnoqv1rmg
+         EKjSD9a6iYqsPQU4NsaYOz4MbJ5izGNYq3yOINiBVIU5bUbacs71iPqcbs5QPYfJG4dl
+         bGEeoHQlogTDmtvgq9cQ/98+zXpa2exgOgQL04v1xAJ1chCdYlFFyEiMZfO/8BwJT94w
+         QWyA==
+X-Gm-Message-State: AOAM531ducqZojBNHm+l1Jqnr8gfeTdmdUx2kAL3cvjvQn+ZRw3KNnyK
+        t7mE0FOnvfHV9L+5VEWUzREvkjxsEbKoOA==
+X-Google-Smtp-Source: ABdhPJzXdwv/c9GLOmKOtZ+ecBeub/zi4Knq2tTYbBTvcCvgxl0qC5VJ3WgT2IULsq08r4A6ADxHQg==
+X-Received: by 2002:a5d:47a2:: with SMTP id 2mr7499442wrb.393.1611686167020;
+        Tue, 26 Jan 2021 10:36:07 -0800 (PST)
+Received: from revest.zrh.corp.google.com ([2a00:79e0:42:204:deb:d0ec:3143:2380])
+        by smtp.gmail.com with ESMTPSA id d13sm28339354wrx.93.2021.01.26.10.36.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 10:36:06 -0800 (PST)
+From:   Florent Revest <revest@chromium.org>
+To:     bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kpsingh@chromium.org, linux-kernel@vger.kernel.org,
+        Florent Revest <revest@chromium.org>,
+        KP Singh <kpsingh@kernel.org>
+Subject: [PATCH bpf-next v6 1/5] bpf: Be less specific about socket cookies guarantees
+Date:   Tue, 26 Jan 2021 19:35:55 +0100
+Message-Id: <20210126183559.1302406-1-revest@chromium.org>
+X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp (2620:10d:c090:400::5:694d) by MWHPR12CA0063.namprd12.prod.outlook.com (2603:10b6:300:103::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Tue, 26 Jan 2021 18:18:45 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 77fa29ed-4c23-4000-6705-08d8c226d1fd
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2693:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2693E365760023F8D7DF4BD4D5BC9@BYAPR15MB2693.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nczWcZ/nJvemymwtqNgtX+TsMmvCcMeH50rM9QSH9fFYEGxICrJEV0SHjjpg9XoXmy7BIqq/GZADwocWDN68lyyvEVFpMTUjp48Is5tq/YtzZFNz2UyUawxps7Xv7d4SqG34BGk/wWXA0oHnfQke/IsoBaQFPBAHiErYKOEeWQegiZSWG0nt+HUbZmgBmJNJgwI/s2G/x+HlhtHeNorXKARmutxv38UV0I/dB1xJX2tnJ2oLJuXGaJ5lifgC0LCeDA7RWexCj08khyaSxTZlByYFTq8iFNxLXoMj64TNgef8fcoyKnmpDxyHTLSAFNSbkWFQ1CwRQxKQtEeN+sA7T4XPsP0DTSJadMwTivsqRtOEy8ecRkPLN4KlB6axCuDU1FiMofeUgWdpdqfRH7fFRN8R6f+7Jm6addl4UChe7rBbxxDTPbl7TDyCOr6aH9y9e47492avXcMsPGgHYlwcsrL/43wPNEVwaEJEsePH2FlenPGHlfYP7P+rACFiKprOuTq52x38EkyNLPxm6wrtSw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(136003)(396003)(366004)(39860400002)(16526019)(1076003)(5660300002)(186003)(83380400001)(86362001)(66946007)(33716001)(2906002)(8936002)(66556008)(66476007)(4326008)(478600001)(8676002)(9686003)(52116002)(6916009)(6496006)(6666004)(316002)(55016002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?O9Uq+QaQrmApefVPsmMXv4y87WWsenSuQjpkfu9dpxjUBvPl2OH7vLvyknNU?=
- =?us-ascii?Q?uZWc367RIzM/1czye/nYQRXBVpAUClB52z1OAlfiOr5rCkIcT76U9CsYUyZ1?=
- =?us-ascii?Q?J5OD8nzRZNCBfknLLrgo8/Vu9XrEMpjxAAEVfgIAGa0p9SI/fiR0+W6+moTE?=
- =?us-ascii?Q?Y+OaFk3mQyyx6NTHPmNygznZxxWXIKeUGUQOQX3ZDPoUGG4mw7ugetrwBTfm?=
- =?us-ascii?Q?6TMXA/ob6kS7s8iX+NE52ShD9EYK1uzT4bGyrlGWhEWJ8Qc8G4O8SiH/nEbb?=
- =?us-ascii?Q?w7760uRvFdnUwz6lYJ4WrtGzYBH+QteA2tOctQoMVHIeey7pqqBbe8rwsvUn?=
- =?us-ascii?Q?Zlq3y3pY9puWZKur26NbvdoD016tlhxGBl+r3+THFZaqEVv8CYsNv3tSkxf8?=
- =?us-ascii?Q?1OK82lAKWsxPpAB6WHd6zw6oEZ2TaYiaL2PojjwtDRWFsUr3yUFva6ZyIA2O?=
- =?us-ascii?Q?6GtoyoW1ecdlOhzWSS2VDrXe4GUkuyz6+lm6wFj1ozCQXwLMxvTrEKJ6Lbte?=
- =?us-ascii?Q?Dy7JSZ6gYGQqPYyFixQcwmhELhghP3wrv6w3KpP+Zf4UYBvZirH1QiSQ5Y+G?=
- =?us-ascii?Q?fw+Sgt0s0O2qsRXwF8XVKZSFIZxQnW7Z5AEZxMRKi7bL7vPu8vthAe7DCNZW?=
- =?us-ascii?Q?VWfDwvkcN9c0D71WQmbr6bxoo3Kzaa6UVoaczpoO9awDuriqj++DOM9G1uad?=
- =?us-ascii?Q?ng1uLcWUjGqS3jnGsHnvHqRnWxUM5jBjIVSRhk1s/4dd0ZzSPTfdcenKwB9G?=
- =?us-ascii?Q?fiUITk4sBarzL5Y4qtaD9c0zgblPWH6DeDZqqIbysWmYnjnS5akS6jS3UMNe?=
- =?us-ascii?Q?vs4KC5v/1goOa1MV9Wf97qIBVVHxODKfWk+J1Mz1uMS3iwE0L2EqjCYSeXqx?=
- =?us-ascii?Q?fwaEZNTDZlwzoXcKTV/1n5SA+bK3TNPAZ9AKoPaoMYK5G3WuktV8yhUdVlxH?=
- =?us-ascii?Q?6yUbxwANi+pgElxZFA2C18RMPf3A/yyl+tsJdfnakuSNfzxJlqvriMOzz2X7?=
- =?us-ascii?Q?G8KewCB1Ag5I69Ls1L+6H9gk4l/b04XvsZEfGa1lqq6drrptImvgyUylD3xW?=
- =?us-ascii?Q?tMLTIkUHlA1MAAoRv5yNU+v5wgk0qPkxBlNxLPv7vKYQz6ipx2o=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 77fa29ed-4c23-4000-6705-08d8c226d1fd
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jan 2021 18:18:46.2834
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pE1aYCMsvLBtH02yyviTW4Dl0tKlQTZpQadt8LLPHzCQk9md2ET8tJX0VKcVaNHr
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2693
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-26_10:2021-01-26,2021-01-26 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
- priorityscore=1501 suspectscore=0 spamscore=0 malwarescore=0 mlxscore=0
- adultscore=0 phishscore=0 bulkscore=0 lowpriorityscore=0 clxscore=1015
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101260096
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 08:51:04AM -0800, Stanislav Fomichev wrote:
-> Return 3 to indicate that permission check for port 111
-> should be skipped.
-> 
+Since "92acdc58ab11 bpf, net: Rework cookie generator as per-cpu one"
+socket cookies are not guaranteed to be non-decreasing. The
+bpf_get_socket_cookie helper descriptions are currently specifying that
+cookies are non-decreasing but we don't want users to rely on that.
 
-[ ... ]
+Reported-by: Daniel Borkmann <daniel@iogearbox.net>
+Signed-off-by: Florent Revest <revest@chromium.org>
+Acked-by: KP Singh <kpsingh@kernel.org>
+---
+ include/uapi/linux/bpf.h       | 8 ++++----
+ tools/include/uapi/linux/bpf.h | 8 ++++----
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
-> +void cap_net_bind_service(cap_flag_value_t flag)
-> +{
-> +	const cap_value_t cap_net_bind_service = CAP_NET_BIND_SERVICE;
-> +	cap_t caps;
-> +
-> +	caps = cap_get_proc();
-> +	if (CHECK(!caps, "cap_get_proc", "errno %d", errno))
-> +		goto free_caps;
-> +
-> +	if (CHECK(cap_set_flag(caps, CAP_EFFECTIVE, 1, &cap_net_bind_service,
-> +			       flag),
-> +		  "cap_set_flag", "errno %d", errno))
-> +		goto free_caps;
-> +
-> +	if (CHECK(cap_set_proc(caps), "cap_set_proc", "errno %d", errno))
-> +		goto free_caps;
-> +
-> +free_caps:
-> +	if (CHECK(cap_free(caps), "cap_free", "errno %d", errno))
-> +		goto free_caps;
-Also mentioned in v2, there is a loop.
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index c001766adcbc..0b735c2729b2 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1656,22 +1656,22 @@ union bpf_attr {
+  * 		networking traffic statistics as it provides a global socket
+  * 		identifier that can be assumed unique.
+  * 	Return
+- * 		A 8-byte long non-decreasing number on success, or 0 if the
+- * 		socket field is missing inside *skb*.
++ * 		A 8-byte long unique number on success, or 0 if the socket
++ * 		field is missing inside *skb*.
+  *
+  * u64 bpf_get_socket_cookie(struct bpf_sock_addr *ctx)
+  * 	Description
+  * 		Equivalent to bpf_get_socket_cookie() helper that accepts
+  * 		*skb*, but gets socket from **struct bpf_sock_addr** context.
+  * 	Return
+- * 		A 8-byte long non-decreasing number.
++ * 		A 8-byte long unique number.
+  *
+  * u64 bpf_get_socket_cookie(struct bpf_sock_ops *ctx)
+  * 	Description
+  * 		Equivalent to **bpf_get_socket_cookie**\ () helper that accepts
+  * 		*skb*, but gets socket from **struct bpf_sock_ops** context.
+  * 	Return
+- * 		A 8-byte long non-decreasing number.
++ * 		A 8-byte long unique number.
+  *
+  * u32 bpf_get_socket_uid(struct sk_buff *skb)
+  * 	Return
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index c001766adcbc..0b735c2729b2 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -1656,22 +1656,22 @@ union bpf_attr {
+  * 		networking traffic statistics as it provides a global socket
+  * 		identifier that can be assumed unique.
+  * 	Return
+- * 		A 8-byte long non-decreasing number on success, or 0 if the
+- * 		socket field is missing inside *skb*.
++ * 		A 8-byte long unique number on success, or 0 if the socket
++ * 		field is missing inside *skb*.
+  *
+  * u64 bpf_get_socket_cookie(struct bpf_sock_addr *ctx)
+  * 	Description
+  * 		Equivalent to bpf_get_socket_cookie() helper that accepts
+  * 		*skb*, but gets socket from **struct bpf_sock_addr** context.
+  * 	Return
+- * 		A 8-byte long non-decreasing number.
++ * 		A 8-byte long unique number.
+  *
+  * u64 bpf_get_socket_cookie(struct bpf_sock_ops *ctx)
+  * 	Description
+  * 		Equivalent to **bpf_get_socket_cookie**\ () helper that accepts
+  * 		*skb*, but gets socket from **struct bpf_sock_ops** context.
+  * 	Return
+- * 		A 8-byte long non-decreasing number.
++ * 		A 8-byte long unique number.
+  *
+  * u32 bpf_get_socket_uid(struct sk_buff *skb)
+  * 	Return
+-- 
+2.30.0.280.ga3ce27912f-goog
 
-> +}
-> +
-> +void test_bind_perm(void)
-> +{
-> +	struct bind_perm *skel;
-> +	int cgroup_fd;
-> +
-> +	cgroup_fd = test__join_cgroup("/bind_perm");
-> +	if (CHECK(cgroup_fd < 0, "cg-join", "errno %d", errno))
-> +		return;
-> +
-> +	skel = bind_perm__open_and_load();
-> +	if (!ASSERT_OK_PTR(skel, "skel"))
-> +		goto close_cgroup_fd;
-> +
-> +	skel->links.bind_v4_prog = bpf_program__attach_cgroup(skel->progs.bind_v4_prog, cgroup_fd);
-> +	if (!ASSERT_OK_PTR(skel, "bind_v4_prog"))
-> +		goto close_skeleton;
-> +
-> +	cap_net_bind_service(CAP_CLEAR);
-> +	try_bind(110, EACCES);
-> +	try_bind(111, 0);
-> +	cap_net_bind_service(CAP_SET);
-Instead of always CAP_SET at the end of the test,
-it is better to do a cap_get_flag() to save the original value
-at the beginning of the test and restore it at the end
-of the test.
