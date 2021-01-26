@@ -2,66 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C9FD305BEA
-	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 13:47:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C71E305BEB
+	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 13:47:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S313323AbhAZWyG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Jan 2021 17:54:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50846 "EHLO mail.kernel.org"
+        id S313314AbhAZWyM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Jan 2021 17:54:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50870 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390923AbhAZSnE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Jan 2021 13:43:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A194222228;
-        Tue, 26 Jan 2021 18:42:22 +0000 (UTC)
+        id S2390982AbhAZSnJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Jan 2021 13:43:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C7EF722286;
+        Tue, 26 Jan 2021 18:42:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611686544;
-        bh=Hv7tsC8dZLw6fnrXrYNWnEN9C0yyCuMi1XBPJXKs7FU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=u5b0tpyzEUKnTamPV7lwi7RyuVsplCDauqtqiPvT5FNDg0OlYqiuOD8CMWG4yAbkh
-         EUu8qzqcvl6ovz5nG5KhCy6rtvEzOwlGzSZcuI3Gho4E+pGQhzwFPRX43wj1C0KaVJ
-         bJAd3b1fOVrvvJXj8dfZ1imL2HUGELmbODWmBnEjfJadEvsOYymrCvqCWch+hpGBam
-         5+srLJxnpaXCE7cpEMPxNhZVwGGA23Do49PeNlhTnDA3rhGhzY90xnJBrVdezhiA8k
-         yQK1IhABimYTtrAde7e33XgAArcVZTVtQUpIA/OQIxSRXqHHgjIhaLWwAGKAVTTWeV
-         VpLo80RQWaF7w==
+        s=k20201202; t=1611686548;
+        bh=xsSQgyzTplv0SsBJ7NkFDqsTUF/LqUhSoDlzv91qAGE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=aqQRbYeKnONLeoUsAfdvhonLK3yPnIFrpW8jfK8cRiAy48sYd1eSN1wV+7voMPl4q
+         DloUid1zmJnuRwIgSblReW+WI04Bp9u3egFisht/RNFregjA1mzrz5TuTbGZbpMibe
+         P3RSVSNaT24h9/is/CbQSxW7CoTUoEG8yy4++G0mjvwU/315SOcgsfXqAQzOGTzxij
+         us9e13N1oAD8uDdJk8s0Q35HMdydwz0Kpv6bvD0E2kkMBMwautf2sKp0HlZOLoibkQ
+         cwTqdOLuVhWLxtQ2dNV+5KJ8Mm53bmFbvtTs8K5RAF8MMdDZk6Pz+n8nWi1H68tamy
+         1khU1Q1wG5fVA==
 From:   Lorenzo Bianconi <lorenzo@kernel.org>
 To:     bpf@vger.kernel.org
 Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
         ast@kernel.org, daniel@iogearbox.net, toshiaki.makita1@gmail.com,
         lorenzo.bianconi@redhat.com, brouer@redhat.com, toke@redhat.com
-Subject: [PATCH bpf-next 0/3] veth: add skb bulking allocation for XDP_PASS
-Date:   Tue, 26 Jan 2021 19:41:58 +0100
-Message-Id: <cover.1611685778.git.lorenzo@kernel.org>
+Subject: [PATCH bpf-next 1/3] net: veth: introduce bulking for XDP_PASS
+Date:   Tue, 26 Jan 2021 19:41:59 +0100
+Message-Id: <adca75284e30320e9d692d618a6349319d9340f3.1611685778.git.lorenzo@kernel.org>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <cover.1611685778.git.lorenzo@kernel.org>
+References: <cover.1611685778.git.lorenzo@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Introduce bulking skb allocation for XDP_PASS verdict in veth driver.
-The proposed approach has been tested in the following scenario:
+Introduce bulking support for XDP_PASS verdict forwarding skbs to
+the networking stack
 
-eth (ixgbe) --> XDP_REDIRECT --> veth0 --> (remote-ns) veth1 --> XDP_PASS
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+---
+ drivers/net/veth.c | 43 ++++++++++++++++++++++++++-----------------
+ 1 file changed, 26 insertions(+), 17 deletions(-)
 
-XDP_REDIRECT: xdp_redirect_map bpf sample
-XDP_PASS: xdp_rxq_info bpf sample
-
-traffic generator: pkt_gen sending udp traffic on a remote device
-
-bpf-next master: ~3.64Mpps
-bpf-next + skb bulking allocation: ~3.75Mpps
-
-Lorenzo Bianconi (3):
-  net: veth: introduce bulking for XDP_PASS
-  net: xdp: move XDP_BATCH_SIZE in common header
-  net: veth: alloc skb in bulk for ndo_xdp_xmit
-
- drivers/net/veth.c  | 101 ++++++++++++++++++++++++++++++++------------
- include/net/xdp.h   |   2 +
- kernel/bpf/cpumap.c |  13 +++---
- net/core/xdp.c      |  11 +++++
- 4 files changed, 92 insertions(+), 35 deletions(-)
-
+diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+index 6e03b619c93c..23137d9966da 100644
+--- a/drivers/net/veth.c
++++ b/drivers/net/veth.c
+@@ -35,6 +35,7 @@
+ #define VETH_XDP_HEADROOM	(XDP_PACKET_HEADROOM + NET_IP_ALIGN)
+ 
+ #define VETH_XDP_TX_BULK_SIZE	16
++#define VETH_XDP_BATCH		8
+ 
+ struct veth_stats {
+ 	u64	rx_drops;
+@@ -787,27 +788,35 @@ static int veth_xdp_rcv(struct veth_rq *rq, int budget,
+ 	int i, done = 0;
+ 
+ 	for (i = 0; i < budget; i++) {
+-		void *ptr = __ptr_ring_consume(&rq->xdp_ring);
+-		struct sk_buff *skb;
++		void *frames[VETH_XDP_BATCH];
++		void *skbs[VETH_XDP_BATCH];
++		int i, n_frame, n_skb = 0;
+ 
+-		if (!ptr)
++		n_frame = __ptr_ring_consume_batched(&rq->xdp_ring, frames,
++						     VETH_XDP_BATCH);
++		if (!n_frame)
+ 			break;
+ 
+-		if (veth_is_xdp_frame(ptr)) {
+-			struct xdp_frame *frame = veth_ptr_to_xdp(ptr);
++		for (i = 0; i < n_frame; i++) {
++			void *f = frames[i];
++			struct sk_buff *skb;
+ 
+-			stats->xdp_bytes += frame->len;
+-			skb = veth_xdp_rcv_one(rq, frame, bq, stats);
+-		} else {
+-			skb = ptr;
+-			stats->xdp_bytes += skb->len;
+-			skb = veth_xdp_rcv_skb(rq, skb, bq, stats);
+-		}
+-
+-		if (skb)
+-			napi_gro_receive(&rq->xdp_napi, skb);
++			if (veth_is_xdp_frame(f)) {
++				struct xdp_frame *frame = veth_ptr_to_xdp(f);
+ 
+-		done++;
++				stats->xdp_bytes += frame->len;
++				skb = veth_xdp_rcv_one(rq, frame, bq, stats);
++			} else {
++				skb = f;
++				stats->xdp_bytes += skb->len;
++				skb = veth_xdp_rcv_skb(rq, skb, bq, stats);
++			}
++			if (skb)
++				skbs[n_skb++] = skb;
++		}
++		for (i = 0; i < n_skb; i++)
++			napi_gro_receive(&rq->xdp_napi, skbs[i]);
++		done += n_frame;
+ 	}
+ 
+ 	u64_stats_update_begin(&rq->stats.syncp);
+@@ -818,7 +827,7 @@ static int veth_xdp_rcv(struct veth_rq *rq, int budget,
+ 	rq->stats.vs.xdp_packets += done;
+ 	u64_stats_update_end(&rq->stats.syncp);
+ 
+-	return done;
++	return i;
+ }
+ 
+ static int veth_poll(struct napi_struct *napi, int budget)
 -- 
 2.29.2
 
