@@ -2,224 +2,208 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63DB93048DE
-	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 20:42:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC48A3048E1
+	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 20:42:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388018AbhAZFiF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Jan 2021 00:38:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43186 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730016AbhAYRLP (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 25 Jan 2021 12:11:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611594586;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ieqynmdXtkiiwNRkIdK2+xlS6L0xMZqAPeapF5jYW8o=;
-        b=NnX5wpoKK4jVhdmuR6UuOPn/ZoQL08/uscg76dr7+VsqJ5sRdV+dvgp5pWPgiyiRTPgrtB
-        B9KiaETU25IYU2SO31JFa+TTHCrw6FxkknDpiL58KPVQg7zz9rnaAdicn83YROAx2kzVGO
-        h6MWv6wYiwrarFaq87rwe/dTqz1oovw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-570-FImBGE9oPAOJbQONR8wHbw-1; Mon, 25 Jan 2021 12:09:44 -0500
-X-MC-Unique: FImBGE9oPAOJbQONR8wHbw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E544C19251A1;
-        Mon, 25 Jan 2021 17:09:41 +0000 (UTC)
-Received: from firesoul.localdomain (unknown [10.40.208.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8AD3919C78;
-        Mon, 25 Jan 2021 17:09:38 +0000 (UTC)
-Received: from [192.168.42.3] (localhost [IPv6:::1])
-        by firesoul.localdomain (Postfix) with ESMTP id 81E8832233490;
-        Mon, 25 Jan 2021 18:09:37 +0100 (CET)
-Subject: [PATCH bpf-next V13 5/7] bpf: drop MTU check when doing TC-BPF
- redirect to ingress
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
-        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
-        colrack@gmail.com
-Date:   Mon, 25 Jan 2021 18:09:37 +0100
-Message-ID: <161159457746.321749.16725918278187413283.stgit@firesoul>
-In-Reply-To: <161159451743.321749.17528005626909164523.stgit@firesoul>
-References: <161159451743.321749.17528005626909164523.stgit@firesoul>
-User-Agent: StGit/0.19
+        id S2388039AbhAZFip (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Jan 2021 00:38:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731709AbhAZCKl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 25 Jan 2021 21:10:41 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 116D8C061574
+        for <bpf@vger.kernel.org>; Mon, 25 Jan 2021 18:10:00 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id r32so15317837ybd.5
+        for <bpf@vger.kernel.org>; Mon, 25 Jan 2021 18:10:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4gzTH46StfxgzTobR6yoYZoV6c5J1I7aOAZjzCN9JA4=;
+        b=gLN/hWRNS7mzauj4iBEr0QWSkcnHUgTi4UtMzmQR8verpZXdkkK2XbJBOqyNzOtne/
+         3P+yy1r723r/zitHykcrQAtYwiD1OG/Jjpj26J6AC335pb6oce/Xjq7psBL0IzHfeBYP
+         nBY9FnFNXLGx6MJGr+JfWvvBlaDm5zzZD4Z3RuVUBCVnLuWmiaYfgJXNeR7Pw8KxcSyu
+         fb3ltARN8RUukpGQ7bLzvBbH2kK83RHpcSgcIJBx3kvyQihPa/HEfDEjThGjgDPySa0N
+         tPvQIm0daMw34dmsDbgyysNeVBUW6RxLB4gjTfOyf6nU3Oo3PO+ublwL3a85cSIZjSsa
+         1JFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4gzTH46StfxgzTobR6yoYZoV6c5J1I7aOAZjzCN9JA4=;
+        b=C6lTehg2DpYhQOKEN4M7x9w0OqoTAMtSi0boHm/KnnIRUHStfowkF06PEQeUKT1pGx
+         5ZgTCOonWiIH5kG/D1WPl9j0JcPlGoQAEsoqa9faGrWe0jTg9Eiu0Y0/65YK8xk8b+Az
+         vwaD6o9nvghmCdn1v37m448670P/OfCxzFuwztmHSZL2es43gj21sCsinAxIfBX59KGI
+         Jb5Jox+R2qIK/Crkr4eJUJoTnOKv2R2kVVg804i3b/5B5BSTNRBYUHpZS1ikprYhjwph
+         mdJoODvWa5fzSCyOHIr6aLupUAw9PdPTBmtlGWANs3fCiNysMYN/fBHRgWOqhu0Vlc47
+         iyfA==
+X-Gm-Message-State: AOAM532g7mmiD/xmat3ukxOY7hevd2TGXPCkCjRbMmcHCRv/vhFwLmXV
+        Asun1lZIMkfoNOkFWdYi6YDu2b7A5EqUEttWg7xp5FHSIA0VtA==
+X-Google-Smtp-Source: ABdhPJytM1JfDy/sWyKXT+WPItC/vOpILS0BEk15n/s+Uu5csq6tdsDG+JD78xEr9tDc/zcO/aROYfVYsBChC7pvN4A=
+X-Received: by 2002:a25:4b86:: with SMTP id y128mr4980865yba.403.1611626999264;
+ Mon, 25 Jan 2021 18:09:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20210123004445.299149-1-kpsingh@kernel.org> <20210123004445.299149-2-kpsingh@kernel.org>
+In-Reply-To: <20210123004445.299149-2-kpsingh@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 25 Jan 2021 18:09:48 -0800
+Message-ID: <CAEf4BzbvEcE=9uXpz2SHKfw8oTxt7V8cSjUYQpJroP5MyxkA0w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: Helper script for running BPF
+ presubmit tests
+To:     KP Singh <kpsingh@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The use-case for dropping the MTU check when TC-BPF does redirect to
-ingress, is described by Eyal Birger in email[0]. The summary is the
-ability to increase packet size (e.g. with IPv6 headers for NAT64) and
-ingress redirect packet and let normal netstack fragment packet as needed.
+On Fri, Jan 22, 2021 at 4:44 PM KP Singh <kpsingh@kernel.org> wrote:
+>
+> The script runs the BPF selftests locally on the same kernel image
+> as they would run post submit in the BPF continuous integration
+> framework.
+>
+> The goal of the script is to allow contributors to run selftests locally
+> in the same environment to check if their changes would end up breaking
+> the BPF CI and reduce the back-and-forth between the maintainers and the
+> developers.
+>
+> Signed-off-by: KP Singh <kpsingh@kernel.org>
+> ---
 
-[0] https://lore.kernel.org/netdev/CAHsH6Gug-hsLGHQ6N0wtixdOa85LDZ3HNRHVd0opR=19Qo4W4Q@mail.gmail.com/
+This is great, thanks a lot for working on this! This is great
+especially for ad-hoc contributors who don't have qemu workflow setup.
+Below are some comments for the extra polish :)
 
-V9:
- - Make net_device "up" (IFF_UP) check explicit in skb_do_redirect
+1. There is this long list output at the beginning:
 
-V4:
- - Keep net_device "up" (IFF_UP) check.
- - Adjustment to handle bpf_redirect_peer() helper
+https://libbpf-vmtest.s3-us-west-1.amazonaws.com/x86_64/vmlinux-5.5.0.zst
+https://libbpf-vmtest....
 
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
----
- include/linux/netdevice.h |   32 ++++++++++++++++++++++++++++++--
- net/core/dev.c            |   32 ++++++++++++++------------------
- net/core/filter.c         |    6 +++---
- 3 files changed, 47 insertions(+), 23 deletions(-)
+Can we omit that?
 
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index 5b949076ed23..b7915484369c 100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -3926,14 +3926,42 @@ int xdp_umem_query(struct net_device *dev, u16 queue_id);
- 
- int __dev_forward_skb(struct net_device *dev, struct sk_buff *skb);
- int dev_forward_skb(struct net_device *dev, struct sk_buff *skb);
-+int dev_forward_skb_nomtu(struct net_device *dev, struct sk_buff *skb);
- bool is_skb_forwardable(const struct net_device *dev,
- 			const struct sk_buff *skb);
- 
-+static __always_inline bool __is_skb_forwardable(const struct net_device *dev,
-+						 const struct sk_buff *skb,
-+						 const bool check_mtu)
-+{
-+	const u32 vlan_hdr_len = 4; /* VLAN_HLEN */
-+	unsigned int len;
-+
-+	if (!(dev->flags & IFF_UP))
-+		return false;
-+
-+	if (!check_mtu)
-+		return true;
-+
-+	len = dev->mtu + dev->hard_header_len + vlan_hdr_len;
-+	if (skb->len <= len)
-+		return true;
-+
-+	/* if TSO is enabled, we don't care about the length as the packet
-+	 * could be forwarded without being segmented before
-+	 */
-+	if (skb_is_gso(skb))
-+		return true;
-+
-+	return false;
-+}
-+
- static __always_inline int ____dev_forward_skb(struct net_device *dev,
--					       struct sk_buff *skb)
-+					       struct sk_buff *skb,
-+					       const bool check_mtu)
- {
- 	if (skb_orphan_frags(skb, GFP_ATOMIC) ||
--	    unlikely(!is_skb_forwardable(dev, skb))) {
-+	    unlikely(!__is_skb_forwardable(dev, skb, check_mtu))) {
- 		atomic_long_inc(&dev->rx_dropped);
- 		kfree_skb(skb);
- 		return NET_RX_DROP;
-diff --git a/net/core/dev.c b/net/core/dev.c
-index bae35c1ae192..87bb2cd62189 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -2194,28 +2194,14 @@ static inline void net_timestamp_set(struct sk_buff *skb)
- 
- bool is_skb_forwardable(const struct net_device *dev, const struct sk_buff *skb)
- {
--	unsigned int len;
--
--	if (!(dev->flags & IFF_UP))
--		return false;
--
--	len = dev->mtu + dev->hard_header_len + VLAN_HLEN;
--	if (skb->len <= len)
--		return true;
--
--	/* if TSO is enabled, we don't care about the length as the packet
--	 * could be forwarded without being segmented before
--	 */
--	if (skb_is_gso(skb))
--		return true;
--
--	return false;
-+	return __is_skb_forwardable(dev, skb, true);
- }
- EXPORT_SYMBOL_GPL(is_skb_forwardable);
- 
--int __dev_forward_skb(struct net_device *dev, struct sk_buff *skb)
-+int __dev_forward_skb2(struct net_device *dev, struct sk_buff *skb,
-+		     bool check_mtu)
- {
--	int ret = ____dev_forward_skb(dev, skb);
-+	int ret = ____dev_forward_skb(dev, skb, check_mtu);
- 
- 	if (likely(!ret)) {
- 		skb->protocol = eth_type_trans(skb, dev);
-@@ -2224,6 +2210,11 @@ int __dev_forward_skb(struct net_device *dev, struct sk_buff *skb)
- 
- 	return ret;
- }
-+
-+int __dev_forward_skb(struct net_device *dev, struct sk_buff *skb)
-+{
-+	return __dev_forward_skb2(dev, skb, true);
-+}
- EXPORT_SYMBOL_GPL(__dev_forward_skb);
- 
- /**
-@@ -2250,6 +2241,11 @@ int dev_forward_skb(struct net_device *dev, struct sk_buff *skb)
- }
- EXPORT_SYMBOL_GPL(dev_forward_skb);
- 
-+int dev_forward_skb_nomtu(struct net_device *dev, struct sk_buff *skb)
-+{
-+	return __dev_forward_skb2(dev, skb, false) ?: netif_rx_internal(skb);
-+}
-+
- static inline int deliver_skb(struct sk_buff *skb,
- 			      struct packet_type *pt_prev,
- 			      struct net_device *orig_dev)
-diff --git a/net/core/filter.c b/net/core/filter.c
-index f6777e8f9ff7..28735dbb7059 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -2083,13 +2083,13 @@ static const struct bpf_func_proto bpf_csum_level_proto = {
- 
- static inline int __bpf_rx_skb(struct net_device *dev, struct sk_buff *skb)
- {
--	return dev_forward_skb(dev, skb);
-+	return dev_forward_skb_nomtu(dev, skb);
- }
- 
- static inline int __bpf_rx_skb_no_mac(struct net_device *dev,
- 				      struct sk_buff *skb)
- {
--	int ret = ____dev_forward_skb(dev, skb);
-+	int ret = ____dev_forward_skb(dev, skb, false);
- 
- 	if (likely(!ret)) {
- 		skb->dev = dev;
-@@ -2480,7 +2480,7 @@ int skb_do_redirect(struct sk_buff *skb)
- 			goto out_drop;
- 		dev = ops->ndo_get_peer_dev(dev);
- 		if (unlikely(!dev ||
--			     !is_skb_forwardable(dev, skb) ||
-+			     !(dev->flags & IFF_UP) ||
- 			     net_eq(net, dev_net(dev))))
- 			goto out_drop;
- 		skb->dev = dev;
+2. Then something is re-downloaded every single time:
+
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 77713  100 77713    0     0   509k      0 --:--:-- --:--:-- --:--:--  512k
+
+Unless it's to check if something newer appeared in S3, would be nice
+to skip that step.
+
+3. Every single time I run the script it actually rebuilds kernel.
+Somehow Linux Makefile's logic to do nothing if nothing changed in
+Linux source code doesn't kick in, I wonder why? It's quite annoying
+and time-consuming for frequent selftest reruns. What's weird is that
+individual .o's are not re-built, but kernel is still re-linked and
+BTF is re-generated, which is the slow part :(
+
+4. Selftests are re-built from scratch every single time, even if
+nothing changed. Again, strange because they won't do it normally. And
+given there is a fixed re-usable .bpf_selftests "cache directory", we
+should be able to set everything up so that no extra compilation is
+performed, no?
+
+5. Before VM is started there is:
 
 
+#!/bin/bash
+
+{
+
+        cd /root/bpf
+        echo ./test_progs
+        ./test_progs
+} 2>&1 | tee /root/bpf_selftests.2021-01-25_17-56-11.log
+poweroff -f
+
+
+Which is probably useful in rare cases for debugging purposes, but is
+just distracting in common case. Would it be able to have verbose flag
+for your script that would omit output like this by default?
+
+6. Was too lazy to check, but once VM boots and before specified
+command is run, there is a bunch of verbose script echoing:
+
++ for path in /etc/rcS.d/S*
+
+If that's part of libbpf CI's image, let's fix it there. If not, let's
+fix it in your script?
+
+7. Is it just me, or when ./test_progs is run inside VM, it's output
+is somehow heavily buffered and delayed? I get no output for a while,
+and then a whole bunch of lines with already passed tests.  Curious if
+anyone else noticed that as well. When I run the same image locally
+and manually (not through your script), I don't have this issue.
+
+8. I noticed that even if the command succeeds (e.g., ./test_progs in
+my case), the script exits with non-zero error code (32 in my case).
+That's suboptimal, because you can't use that script to detect test
+failures.
+
+But again, it's the polish feedback, great work!
+
+>  tools/testing/selftests/bpf/run_in_vm.sh | 353 +++++++++++++++++++++++
+>  1 file changed, 353 insertions(+)
+>  create mode 100755 tools/testing/selftests/bpf/run_in_vm.sh
+>
+> diff --git a/tools/testing/selftests/bpf/run_in_vm.sh b/tools/testing/selftests/bpf/run_in_vm.sh
+> new file mode 100755
+> index 000000000000..09bb9705acb3
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/run_in_vm.sh
+> @@ -0,0 +1,353 @@
+> +#!/bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +
+> +set -u
+> +set -e
+> +
+> +QEMU_BINARY="${QEMU_BINARY:="qemu-system-x86_64"}"
+> +X86_BZIMAGE="arch/x86/boot/bzImage"
+
+Might be worth it to mention that this only works with x86_64 (due to
+image restrictions at least, right?).
+
+> +DEFAULT_COMMAND="./test_progs"
+> +MOUNT_DIR="mnt"
+> +ROOTFS_IMAGE="root.img"
+> +OUTPUT_DIR="$HOME/.bpf_selftests"
+> +KCONFIG_URL="https://raw.githubusercontent.com/libbpf/libbpf/master/travis-ci/vmtest/configs/latest.config"
+> +INDEX_URL="https://raw.githubusercontent.com/libbpf/libbpf/master/travis-ci/vmtest/configs/INDEX"
+> +NUM_COMPILE_JOBS="$(nproc)"
+> +
+> +usage()
+> +{
+> +       cat <<EOF
+> +Usage: $0 [-k] [-i] [-d <output_dir>] -- [<command>]
+> +
+> +<command> is the command you would normally run when you are in
+> +tools/testing/selftests/bpf. e.g:
+> +
+> +       $0 -- ./test_progs -t test_lsm
+> +
+> +If no command is specified, "${DEFAULT_COMMAND}" will be run by
+> +default.
+> +
+> +If you build your kernel using KBUILD_OUTPUT= or O= options, these
+> +can be passed as environment variables to the script:
+> +
+> +  O=<path_relative_to_cwd> $0 -- ./test_progs -t test_lsm
+
+"relative_to_cwd" is a bit misleading, it could be an absolute path as
+well, I presume. So I'd just say "O=<kernel_build_path>" or something
+along those lines.
+
+> +
+> +or
+> +
+> +  KBUILD_OUTPUT=<path_relative_to_cwd> $0 -- ./test_progs -t test_lsm
+> +
+
+[...]
