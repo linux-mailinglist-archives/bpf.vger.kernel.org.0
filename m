@@ -2,228 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20946303541
-	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 06:39:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0303B303543
+	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 06:40:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388027AbhAZFiS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Jan 2021 00:38:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51106 "EHLO
+        id S1727104AbhAZFi0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Jan 2021 00:38:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730834AbhAZBuH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        with ESMTP id S1730831AbhAZBuH (ORCPT <rfc822;bpf@vger.kernel.org>);
         Mon, 25 Jan 2021 20:50:07 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FA46C0617A9;
-        Mon, 25 Jan 2021 16:28:26 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id b11so15100099ybj.9;
-        Mon, 25 Jan 2021 16:28:26 -0800 (PST)
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 858DEC061351;
+        Mon, 25 Jan 2021 16:32:32 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id x78so15090274ybe.11;
+        Mon, 25 Jan 2021 16:32:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ND23aPy8zpGQ99qhXMXe1prkSdeC2noDocOwnTidYzU=;
-        b=o/ythDK4DuFyaDDje0Lhh+YPdmJYIXXRWa5vD2ise5bX45vQV1ffUkh1Dq4GNneWaf
-         OHiZ0HkGKP44jRoATWP6ESdo4h/ZEMOgAmhkdkWobnaeTRzI634BgqzmMY0cUJnO+SFy
-         o24lD7VeuH6y5tmMJ+jq6KBuu9FMTUa24GvmyOXjAlaZQNR3j3suJPPZJ+0qjPIPxp+3
-         Tjj4CG9Ij7/4uyyibZJT72tnuyRmbnovesKNmWaMwC1pviqo3BEGkbP7vcLkas12M3N/
-         nML/Bzde8WNGe9vfke3wetnRI5rkY7DsC4/VgKsGyhUzlFFNWSMO36G92bbUW3z35A5N
-         w1pA==
+         :cc;
+        bh=FL9eji8IEU4GjraOBf+9ed4vg2HJTGgpMF/wdNIdtuU=;
+        b=TEw3S7qjGpwdYpgjgpRdTMZF7C7r4YVMZMyZFnbBCpNfoh3WmnCrepMGKdaOJa6xVz
+         qSyDhJ8znP/2CQ/pDrihjmMQVhlzOuyQuzhw/iBjzTkazDia0w9bQYH5Q9sC5omwiUsQ
+         ciJTVYv0qPkAouh90csi/29BkTyXfF0zmEmPFsyGv/YCjvolv0QoMQR6uoni4vuX2ZfB
+         E8qkn6ZdlPOfqNYztDMgpbTzbg5VsMBJeT0uND3YGMaOsI95nU/drZWQlePr12+oDjnp
+         2tJY8wsGmW8Ss/SVtZrGaz4YQQYc32ehOGKF0kl1qo+hF9hgQz4J7KnQz+M63f9iHhDw
+         z9vA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ND23aPy8zpGQ99qhXMXe1prkSdeC2noDocOwnTidYzU=;
-        b=FGg41glkCFSahlMTVmYnUkfGemj1p5gocNh8dapc2XFD7dxfjbJkrnvZxAuGhJeUg6
-         QNiVZwPQ9ehPXYwKMoPfwSAtxlHIoMA11IrYQqz/N1eaONGEtvxWjaBKAeP/86ZbOKb4
-         yJEN0/KaVXg9bxn71UCwgVFvbMb46LIxaTKpp+Q0etwCr+sjjTV112dQiYBJ2CQdAjVq
-         ZnNZ+Bvo/6QL4+SHTLxue/GSXc1TV7gzhCfSaSU6w/tCWXVlkbOmOS8fm9Cg2wwP+txC
-         Ho8VRlLTepbmtJwysv1p9nEBGONiVNfK+mJ9k2CmGyr03zbGOeuTmP6JqwwXlmBFoish
-         G0ZA==
-X-Gm-Message-State: AOAM533xm62zXkqVF8MR+uhjT6Xg7dKMTUyJ3PyJKipiaZ/B8SX+ZW92
-        uCf7+G6698DyHGXhdBijJeDbLpkSgeDwBgYhLRA=
-X-Google-Smtp-Source: ABdhPJxBC7znTdaYeDTd9iTlVEm0Wia5u7iSqG3qiL+UZjWU+vb7pIlvv9dGxFiGKCaH6oBZm9+67ffCkukK1b3/U7w=
-X-Received: by 2002:a25:548:: with SMTP id 69mr4443197ybf.510.1611620904937;
- Mon, 25 Jan 2021 16:28:24 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=FL9eji8IEU4GjraOBf+9ed4vg2HJTGgpMF/wdNIdtuU=;
+        b=jsMSlBkJgXK1cVMEOVR46UbRanUJJG+OzX0NIckkWqxVZCn0V37CN+rNsngY+NHQVQ
+         p4DLIyZa8uJACyE1j4rK89rY3pRjSQEuxrQ5llIeeC7VfN5TaKbNTzM7Gyynlhzk+nfj
+         YXHRg57AK7OMGTxGh3Dk2dr1a+0yfR3QGmnWk4qfwNu58IcqgYGUZrwre8x7936dU+sb
+         8DxL5q06CBndB4K2zHMXCNRwTQOCG+6G5S/uTEMxXeA3mzGdBlYoyPRPW2dWV8dRp7oI
+         fuAE/RBOtlYB5RKGjiMfz3Gsplmxbq9RnTFiIxRMI8cFvcU+0Rp3SQ8qOmCXwrYUtz2v
+         hLbg==
+X-Gm-Message-State: AOAM530SAoy9aUvS71HWlk/fF/yhlNICbyvG4HjO7RksFUJ5Ae0cY1p0
+        7MBf3sKZha6AQFoKhq3gCwysgPxszqwXK2fvXbU=
+X-Google-Smtp-Source: ABdhPJxzxbb1IlWqyhxs9Q6vVoNuZJIX81co+Gh8/YTs8nSKoZF2AtTSunXSnwFyu/S0y9RexUnifVJe9PZsml5oP6E=
+X-Received: by 2002:a25:b195:: with SMTP id h21mr4544979ybj.347.1611621151736;
+ Mon, 25 Jan 2021 16:32:31 -0800 (PST)
 MIME-Version: 1.0
-References: <20210118160139.1971039-1-gprocida@google.com> <20210118160139.1971039-4-gprocida@google.com>
- <CAEf4BzazvC9H=K_A9KamGTB3iKtjuNxd4hEvwFOnkPdnszo6Bw@mail.gmail.com>
- <CAGvU0HmE+gs8eNQcXmFrEERHaiGEnMgqxBho4Ny3DLCe6WR55Q@mail.gmail.com>
- <CAEf4BzZQvLofuVHPqu1ybsTVrM9pFRCRSR5UEFdNJq3Ha8=Luw@mail.gmail.com> <CAGvU0HmsoTSoPP=uJ679i2xH5k9o3iS=NCUyt2eVC63ShzVctw@mail.gmail.com>
-In-Reply-To: <CAGvU0HmsoTSoPP=uJ679i2xH5k9o3iS=NCUyt2eVC63ShzVctw@mail.gmail.com>
+References: <20210125154938.40504-1-quentin@isovalent.com>
+In-Reply-To: <20210125154938.40504-1-quentin@isovalent.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 25 Jan 2021 16:28:14 -0800
-Message-ID: <CAEf4BzZPSEsKn6DiFwffTW81iFPVO329RAnA+bm0NPPiBqnqag@mail.gmail.com>
-Subject: Re: [PATCH 3/3] btf_encoder: Set .BTF section alignment to 16
-To:     Giuliano Procida <gprocida@google.com>
-Cc:     dwarves@vger.kernel.org, kernel-team@android.com,
-        =?UTF-8?Q?Matthias_M=C3=A4nnich?= <maennich@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
+Date:   Mon, 25 Jan 2021 16:32:21 -0800
+Message-ID: <CAEf4BzYKrmMM_9SRKyGA0LNv-DvThpr9cQsNLVtn5h0jEUYtWg@mail.gmail.com>
+Subject: Re: [PATCH] bpf: fix build for BPF preload when $(O) points to a
+ relative path
+To:     Quentin Monnet <quentin@isovalent.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        David Gow <davidgow@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 4:53 AM Giuliano Procida <gprocida@google.com> wrot=
-e:
+On Mon, Jan 25, 2021 at 7:49 AM Quentin Monnet <quentin@isovalent.com> wrote:
 >
-> Hi.
+> Building the kernel with CONFIG_BPF_PRELOAD, and by providing a relative
+> path for the output directory, may fail with the following error:
 >
-> On Thu, 21 Jan 2021 at 20:08, Andrii Nakryiko <andrii.nakryiko@gmail.com>=
- wrote:
-> >
-> > On Thu, Jan 21, 2021 at 3:07 AM Giuliano Procida <gprocida@google.com> =
-wrote:
-> > >
-> > > Hi.
-> > >
-> > > On Thu, 21 Jan 2021 at 07:16, Andrii Nakryiko <andrii.nakryiko@gmail.=
-com> wrote:
-> > >>
-> > >> On Mon, Jan 18, 2021 at 8:01 AM Giuliano Procida <gprocida@google.co=
-m> wrote:
-> > >> >
-> > >> > This is to avoid misaligned access when memory-mapping ELF section=
-s.
-> > >> >
-> > >> > Signed-off-by: Giuliano Procida <gprocida@google.com>
-> > >> > ---
-> > >> >  libbtf.c | 8 ++++++++
-> > >> >  1 file changed, 8 insertions(+)
-> > >> >
-> > >> > diff --git a/libbtf.c b/libbtf.c
-> > >> > index 7552d8e..2f12d53 100644
-> > >> > --- a/libbtf.c
-> > >> > +++ b/libbtf.c
-> > >> > @@ -797,6 +797,14 @@ static int btf_elf__write(const char *filenam=
-e, struct btf *btf)
-> > >> >                         goto unlink;
-> > >> >                 }
-> > >> >
-> > >> > +               snprintf(cmd, sizeof(cmd), "%s --set-section-align=
-ment .BTF=3D16 %s",
-> > >> > +                        llvm_objcopy, filename);
-> > >>
-> > >> does it align inside the ELF file to 16 bytes, or does it request th=
-e
-> > >> linker to align it at 16 byte alignment in memory? Given .BTF sectio=
-n
-> > >> is not loadable, trying to understand the implications.
-> > >>
-> > >
-> > > We have a tool that loads BTF from ELF files. It uses mmap and "parse=
-s" the BTF as structs in memory. The ELF file is mapped with page alignment=
- but the BTF section within it has no alignment at all. Using MSAN (IIRC) w=
-e get warnings about misaligned accesses. Everything within BTF itself is n=
-aturally aligned, so it makes sense to align the section within ELF as well=
-. There are probably some architectures where this makes the difference bet=
-ween working and SIGBUS.
-> > >
-> >
-> > Right, ok, thanks for explaining!
-> >
-> > > I did try to get objcopy to set alignment at the point the section is=
- added. However, this didn't work.
-> > >
-> > >>
-> > >>
-> > >> > +               if (system(cmd)) {
-> > >>
-> > >> Also curious, if objcopy emits error (saying that
-> > >> --set-section-alignment argument is not recognized), will that error
-> > >> be shown in stdout? or system() consumes it without redirecting it t=
-o
-> > >> stdout?
-> > >>
-> > >
-> > > I believe it goes to stderr. I would need to check. system() will not=
- consume this. I'm not keen to write stderr (or stdout) post-processing cod=
-e in plain C.
-> > >
-> >
-> > You can use popen() to capture/hide output, this is a better
-> > alternative to system() in this case. We don't want "expected
-> > warnings" in kernel build process.
-> >
-> > >>
-> > >> > +                       /* non-fatal, this is a nice-to-have and i=
-t's only supported from LLVM 10 */
-> > >> > +                       fprintf(stderr, "%s: warning: failed to al=
-ign .BTF section in '%s': %d!\n",
-> > >> > +                               __func__, filename, errno);
-> > >>
-> > >> Probably better to emit this warning only in verbose mode, otherwise
-> > >> lots of people will start complaining that they get some new warning=
-s
-> > >> from pahole.
-> > >>
-> > >
-> > > It may be better to just use POSIX and ELF APIs directly instead of o=
-bjcopy. This way the section can be added with the right alignment directly=
-. pahole is already linked against libelf and if we could get rid of the ex=
-ternal dependency on objcopy it would be a win in more than one way.
-> >
-> > This would be great, yes. At some point I remember giving it a try,
-> > but for some reason I couldn't make libelf flush data and update
-> > section headers properly. Maybe you'll have better luck. Though I
-> > think I was trying to mark section loadable, and eventually I probably
-> > managed to do that, but still abandoned it (it's not enough to mark
-> > section loadable, you have to assign it to ELF segment as well, which
-> > libelf doesn't allow to do and you need linker support). Anyways, give
-> > it a try, it should work.
+>   $ make O=build bindeb-pkg
+>   ...
+>   /.../linux/tools/scripts/Makefile.include:5: *** O=build does not exist.  Stop.
+>   make[7]: *** [/.../linux/kernel/bpf/preload/Makefile:9: kernel/bpf/preload/libbpf.a] Error 2
+>   make[6]: *** [/.../linux/scripts/Makefile.build:500: kernel/bpf/preload] Error 2
+>   make[5]: *** [/.../linux/scripts/Makefile.build:500: kernel/bpf] Error 2
+>   make[4]: *** [/.../linux/Makefile:1799: kernel] Error 2
+>   make[4]: *** Waiting for unfinished jobs....
 >
-> I struggled for a day and a bit and have got this (ELF_F_LAYOUT etc.)
-> working. There are some caveats:
+> In the case above, for the "bindeb-pkg" target, the error is produced by
+> the "dummy" check in Makefile.include, called from libbpf's Makefile.
+> This check changes directory to $(PWD) before checking for the existence
+> of $(O). But at this step we have $(PWD) pointing to "/.../linux/build",
+> and $(O) pointing to "build". So the Makefile.include tries in fact to
+> assert the existence of a directory named "/.../linux/build/build",
+> which does not exist.
 >
-> 1. Laying out only the new / updated sections can leave gaps.
+> By contrast, other tools called from the main Linux Makefile get the
+> variable set to $(abspath $(objtree)), where $(objtree) is ".". We can
+> update the Makefile for kernel/bpf/preload to set $(O) to the same
+> value, to permit compiling with a relative path for output. Note that
+> apart from the Makefile.include, the variable $(O) is not used in
+> libbpf's build system.
 >
-> In practice, for vmlinux, it's a very small hole. To fix this, I'd
-> need to reposition .strtab as well as .BTF and .shstrtab.
+> Note that the error does not occur for all make targets and
+> architectures combinations.
 >
-> 2. vmlinux increases in size as llvm-objcopy was trimming down .strtab.
+> - On x86, "make O=build vmlinux" appears to work fine.
+>   $(PWD) points to "/.../linux/tools", but $(O) points to the absolute
+>   path "/.../linux/build" and the test succeeds.
+> - On UML, it has been reported to fail with a message similar to the
+>   above (see [0]).
+> - On x86, "make O=build bindeb-pkg" fails, as described above.
 >
-> I know very little about this, but I'd guess that the kernel linker
-> scripts are leaving strings in .strtab that are not referenced by
-> .symtab.
+> It is unsure where the different values for $(O) and $(PWD) come from
+> (likely some recursive make with different arguments at some point), and
+> because several targets are broken, it feels safer to fix the $(O) value
+> passed to libbpf rather than to hunt down all changes to the variable.
 >
-> I'll send a short series out for review soon.
+> David Gow previously posted a slightly different version of this patch
+> as a RFC [0], two months ago or so.
+>
+> [0] https://lore.kernel.org/bpf/20201119085022.3606135-1-davidgow@google.com/t/#u
+>
+> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Cc: Brendan Higgins <brendanhiggins@google.com>
+> Cc: David Gow <davidgow@google.com>
+> Reported-by: David Gow <davidgow@google.com>
+> Signed-off-by: Quentin Monnet <quentin@isovalent.com>
+> ---
 
-1. Hm.. I realized I don't get why you need 16-byte alignment. Can you
-comment on why 8 doesn't work?
+I still think it would benefit everyone to figure out where this is
+breaking (given Linux Makefile explicitly tries to handle such
+relative path situation for O=, I believe), but this is trivial
+enough, so:
 
-2. If you care about vmlinux BTF only, I think an easier way to ensure
-proper alignment is to adjust include/asm-generic/vmlinux.lds.h and
-add `. =3D ALIGN(8);` before .BTF (see how we ensure 4-byte alignment
-for .BTF_ids)
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-If you have code ready to get rid of llvm-objcopy requirement for
-pahole, please still post, but we'll need to test it very thoroughly
-to ensure there are no regressions before landing in pahole.
+BTW, you haven't specified which tree you intended it for.
+
+>  kernel/bpf/preload/Makefile | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/bpf/preload/Makefile b/kernel/bpf/preload/Makefile
+> index 23ee310b6eb4..11b9896424c0 100644
+> --- a/kernel/bpf/preload/Makefile
+> +++ b/kernel/bpf/preload/Makefile
+> @@ -4,8 +4,11 @@ LIBBPF_SRCS = $(srctree)/tools/lib/bpf/
+>  LIBBPF_A = $(obj)/libbpf.a
+>  LIBBPF_OUT = $(abspath $(obj))
+>
+> +# Set $(O) so that the "dummy" test in tools/scripts/Makefile.include, called
+> +# by libbpf's Makefile, succeeds when building the kernel with $(O) pointing to
+> +# a relative path, as in "make O=build bindeb-pkg".
+>  $(LIBBPF_A):
+> -       $(Q)$(MAKE) -C $(LIBBPF_SRCS) OUTPUT=$(LIBBPF_OUT)/ $(LIBBPF_OUT)/libbpf.a
+> +       $(Q)$(MAKE) -C $(LIBBPF_SRCS) O=$(abspath .) OUTPUT=$(LIBBPF_OUT)/ $(LIBBPF_OUT)/libbpf.a
+
+why not O=$(LIBBPF_OUT), btw?
 
 >
-> Giuliano.
+>  userccflags += -I $(srctree)/tools/include/ -I $(srctree)/tools/include/uapi \
+>         -I $(srctree)/tools/lib/ -Wno-unused-result
+> --
+> 2.25.1
 >
-> >
-> > >
-> > >>
-> > >>
-> > >> > +               }
-> > >> > +
-> > >> >                 err =3D 0;
-> > >> >         unlink:
-> > >> >                 unlink(tmp_fn);
-> > >> > --
-> > >> > 2.30.0.284.gd98b1dd5eaa7-goog
-> > >> >
-> > >
-> > >
-> > > I'll see if I can spend a little time on this idea instead.
-> > >
-> > > Regards,
-> > > Giuliano.
-> >
-> > --
-> > To unsubscribe from this group and stop receiving emails from it, send =
-an email to kernel-team+unsubscribe@android.com.
-> >
