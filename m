@@ -2,77 +2,212 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D0C3046D8
-	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 19:46:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4650E3046DA
+	for <lists+bpf@lfdr.de>; Tue, 26 Jan 2021 19:46:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728568AbhAZRTN convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Tue, 26 Jan 2021 12:19:13 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:26380 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2388785AbhAZGv3 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 26 Jan 2021 01:51:29 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 10Q6WYRT003232
-        for <bpf@vger.kernel.org>; Mon, 25 Jan 2021 22:50:39 -0800
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 368gbvdxqm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 25 Jan 2021 22:50:39 -0800
-Received: from intmgw001.05.ash7.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 25 Jan 2021 22:50:37 -0800
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id B0C292ECE7B0; Mon, 25 Jan 2021 22:50:27 -0800 (PST)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next] selftests/bpf: don't exit on failed bpf_testmod unload
-Date:   Mon, 25 Jan 2021 22:50:18 -0800
-Message-ID: <20210126065019.1268027-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.24.1
+        id S2388785AbhAZRTQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Jan 2021 12:19:16 -0500
+Received: from mga04.intel.com ([192.55.52.120]:61804 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389988AbhAZI0n (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Jan 2021 03:26:43 -0500
+IronPort-SDR: Up0H1KRzxphEIRzVaBSnbWkW5F6Wgkg8KS1kyZvsjAkgaOqqfkTjzrM3Sb8TiMme7mCxEoYNuQ
+ jaYQoc9/EMBg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9875"; a="177298554"
+X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
+   d="scan'208";a="177298554"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 00:22:41 -0800
+IronPort-SDR: z0Q4rpuirGbg7ekwAxi+DDP34zYDIj4uA3tyOdz4SCjUFKNHKkSzTs6Ckwub7QH+2XEm2sAJYN
+ DQU+yOttRd6g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,375,1602572400"; 
+   d="scan'208";a="361901153"
+Received: from silpixa00399839.ir.intel.com (HELO localhost.localdomain) ([10.237.222.142])
+  by fmsmga008.fm.intel.com with ESMTP; 26 Jan 2021 00:22:28 -0800
+From:   Ciara Loftus <ciara.loftus@intel.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        magnus.karlsson@intel.com, bjorn@kernel.org,
+        weqaar.a.janjua@intel.com
+Cc:     Ciara Loftus <ciara.loftus@intel.com>
+Subject: [PATCH bpf-next v2 3/6] selftests/bpf: add framework for xsk selftests
+Date:   Tue, 26 Jan 2021 07:52:36 +0000
+Message-Id: <20210126075239.25378-4-ciara.loftus@intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210126075239.25378-1-ciara.loftus@intel.com>
+References: <20210126075239.25378-1-ciara.loftus@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-26_04:2021-01-25,2021-01-26 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
- mlxlogscore=920 adultscore=0 priorityscore=1501 impostorscore=0
- malwarescore=0 suspectscore=0 lowpriorityscore=0 bulkscore=0 clxscore=1015
- spamscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101260035
-X-FB-Internal: deliver
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix bug in handling bpf_testmod unloading that will cause test_progs exiting
-prematurely if bpf_testmod unloading failed. This is especially problematic
-when running a subset of test_progs that doesn't require root permissions and
-doesn't rely on bpf_testmod, yet will fail immediately due to exit(1) in
-unload_bpf_testmod().
+This commit introduces framework to the xsk selftests
+for testing the xsk_packet_drop traces. The '-t' or
+'--trace-enable' args enable the trace, and disable
+it on exit unless it was already enabled before the
+test.
 
-Fixes: 9f7fa225894c ("selftests/bpf: Add bpf_testmod kernel module for testing")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
 ---
- tools/testing/selftests/bpf/test_progs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/selftests/bpf/xdpxceiver.c | 65 ++++++++++++++++++++++--
+ tools/testing/selftests/bpf/xdpxceiver.h |  3 ++
+ 2 files changed, 65 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
-index 213628ee721c..6396932b97e2 100644
---- a/tools/testing/selftests/bpf/test_progs.c
-+++ b/tools/testing/selftests/bpf/test_progs.c
-@@ -390,7 +390,7 @@ static void unload_bpf_testmod(void)
- 			return;
- 		}
- 		fprintf(env.stderr, "Failed to unload bpf_testmod.ko from kernel: %d\n", -errno);
--		exit(1);
-+		return;
- 	}
- 	if (env.verbosity > VERBOSE_NONE)
- 		fprintf(stdout, "Successfully unloaded bpf_testmod.ko.\n");
+diff --git a/tools/testing/selftests/bpf/xdpxceiver.c b/tools/testing/selftests/bpf/xdpxceiver.c
+index 99ea6cf069e6..e6e0d42d8074 100644
+--- a/tools/testing/selftests/bpf/xdpxceiver.c
++++ b/tools/testing/selftests/bpf/xdpxceiver.c
+@@ -72,6 +72,7 @@
+ typedef __u16 __sum16;
+ #include <linux/if_link.h>
+ #include <linux/if_ether.h>
++#include <linux/if_xdp.h>
+ #include <linux/ip.h>
+ #include <linux/udp.h>
+ #include <arpa/inet.h>
+@@ -108,7 +109,8 @@ static void __exit_with_error(int error, const char *file, const char *func, int
+ #define print_ksft_result(void)\
+ 	(ksft_test_result_pass("PASS: %s %s %s%s\n", uut ? "DRV" : "SKB", opt_poll ? "POLL" :\
+ 			       "NOPOLL", opt_teardown ? "Socket Teardown" : "",\
+-			       opt_bidi ? "Bi-directional Sockets" : ""))
++			       opt_bidi ? "Bi-directional Sockets" : "",\
++			       opt_trace_enable ? "Trace enabled" : ""))
+ 
+ static void pthread_init_mutex(void)
+ {
+@@ -342,6 +344,7 @@ static struct option long_options[] = {
+ 	{"bidi", optional_argument, 0, 'B'},
+ 	{"debug", optional_argument, 0, 'D'},
+ 	{"tx-pkt-count", optional_argument, 0, 'C'},
++	{"trace-enable", optional_argument, 0, 't'},
+ 	{0, 0, 0, 0}
+ };
+ 
+@@ -359,7 +362,8 @@ static void usage(const char *prog)
+ 	    "  -T, --tear-down      Tear down sockets by repeatedly recreating them\n"
+ 	    "  -B, --bidi           Bi-directional sockets test\n"
+ 	    "  -D, --debug          Debug mode - dump packets L2 - L5\n"
+-	    "  -C, --tx-pkt-count=n Number of packets to send\n";
++	    "  -C, --tx-pkt-count=n Number of packets to send\n"
++	    "  -t, --trace-enable   Enable trace\n";
+ 	ksft_print_msg(str, prog);
+ }
+ 
+@@ -446,7 +450,7 @@ static void parse_command_line(int argc, char **argv)
+ 	opterr = 0;
+ 
+ 	for (;;) {
+-		c = getopt_long(argc, argv, "i:q:pSNcTBDC:", long_options, &option_index);
++		c = getopt_long(argc, argv, "i:q:pSNcTBDC:t", long_options, &option_index);
+ 
+ 		if (c == -1)
+ 			break;
+@@ -497,6 +501,9 @@ static void parse_command_line(int argc, char **argv)
+ 		case 'C':
+ 			opt_pkt_count = atoi(optarg);
+ 			break;
++		case 't':
++			opt_trace_enable = 1;
++			break;
+ 		default:
+ 			usage(basename(argv[0]));
+ 			ksft_exit_xfail();
+@@ -803,6 +810,48 @@ static void thread_common_ops(struct ifobject *ifobject, void *bufs, pthread_mut
+ 		exit_with_error(ret);
+ }
+ 
++static int enable_disable_trace(bool enable)
++{
++	FILE *en_fp;
++	int val;
++	int read, ret = 0;
++
++	en_fp = fopen(TRACE_ENABLE_FILE, "r+");
++	if (en_fp == NULL) {
++		ksft_print_msg("Error opening %s\n", TRACE_ENABLE_FILE);
++		return -1;
++	}
++
++	/* Read current value */
++	read = fscanf(en_fp, "%i", &val);
++	if (read != 1) {
++		ksft_print_msg("Error reading from %s\n", TRACE_ENABLE_FILE);
++		ret = -1;
++		goto out_close;
++	}
++
++	if (val != enable) {
++		char w[2];
++
++		snprintf(w, 2, "%d", enable);
++		if (fputs(w, en_fp) == EOF) {
++			ksft_print_msg("Error writing to %s\n", TRACE_ENABLE_FILE);
++			ret = -1;
++		} else {
++			ksft_print_msg("Trace %s\n", enable == 1 ? "enabled" : "disabled");
++		}
++	}
++
++	/* If we are enabling the trace, flag to restore it to its original state (off) on exit */
++	reset_trace = enable;
++
++out_close:
++	fclose(en_fp);
++
++	return ret;
++}
++
++
+ static void *worker_testapp_validate(void *arg)
+ {
+ 	struct udphdr *udp_hdr =
+@@ -1041,6 +1090,13 @@ int main(int argc, char **argv)
+ 
+ 	init_iface_config(ifaceconfig);
+ 
++	if (opt_trace_enable) {
++		if (enable_disable_trace(1)) {
++			ksft_test_result_fail("ERROR: failed to enable tracing for trace test\n");
++			ksft_exit_xfail();
++		}
++	}
++
+ 	pthread_init_mutex();
+ 
+ 	ksft_set_plan(1);
+@@ -1057,6 +1113,9 @@ int main(int argc, char **argv)
+ 	for (int i = 0; i < MAX_INTERFACES; i++)
+ 		free(ifdict[i]);
+ 
++	if (reset_trace)
++		enable_disable_trace(0);
++
+ 	pthread_destroy_mutex();
+ 
+ 	ksft_exit_pass();
+diff --git a/tools/testing/selftests/bpf/xdpxceiver.h b/tools/testing/selftests/bpf/xdpxceiver.h
+index 0e9f9b7e61c2..5308b501eecc 100644
+--- a/tools/testing/selftests/bpf/xdpxceiver.h
++++ b/tools/testing/selftests/bpf/xdpxceiver.h
+@@ -41,6 +41,7 @@
+ #define BATCH_SIZE 64
+ #define POLL_TMOUT 1000
+ #define NEED_WAKEUP true
++#define TRACE_ENABLE_FILE "/sys/kernel/debug/tracing/events/xsk/xsk_packet_drop/enable"
+ 
+ typedef __u32 u32;
+ typedef __u16 u16;
+@@ -64,6 +65,8 @@ static int opt_poll;
+ static int opt_teardown;
+ static int opt_bidi;
+ static u32 opt_xdp_bind_flags = XDP_USE_NEED_WAKEUP;
++static int opt_trace_enable;
++static int reset_trace;
+ static u8 pkt_data[XSK_UMEM__DEFAULT_FRAME_SIZE];
+ static u32 pkt_counter;
+ static u32 prev_pkt = -1;
 -- 
-2.24.1
+2.17.1
 
