@@ -2,217 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C28F3067DE
-	for <lists+bpf@lfdr.de>; Thu, 28 Jan 2021 00:30:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 436F43067E0
+	for <lists+bpf@lfdr.de>; Thu, 28 Jan 2021 00:30:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235960AbhA0X1J (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Jan 2021 18:27:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22501 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235541AbhA0XYx (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 27 Jan 2021 18:24:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611789806;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XUU+ROeZFNZ36N8KcgUEXmIJUynEXm9qXEZ9l8dah6Y=;
-        b=Myr7qUFJX6Hvx5V7mTb5VKYmxDDYdrBAYuryADObM6TPdlKxp5nFTrAHVqqenxAK8czQ7J
-        7KVBqoBAqcQHXqslGakfoIAdZGLm9jx+tnZ0UwcFk4k0b5yStnB2DiLEctYocdihjwhSBZ
-        LrWMFlZHEjIXq0o0SElkK3hxfkG0fhA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-481-fnZ2riGoNCaO9mMS5b5A7w-1; Wed, 27 Jan 2021 18:23:24 -0500
-X-MC-Unique: fnZ2riGoNCaO9mMS5b5A7w-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D1F8B8017DF;
-        Wed, 27 Jan 2021 23:23:22 +0000 (UTC)
-Received: from krava (ovpn-112-48.ams2.redhat.com [10.36.112.48])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 00E235C1BB;
-        Wed, 27 Jan 2021 23:23:20 +0000 (UTC)
-Date:   Thu, 28 Jan 2021 00:23:20 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Giuliano Procida <gprocida@google.com>
-Cc:     dwarves@vger.kernel.org, acme@kernel.org, andrii@kernel.org,
-        ast@kernel.org, maennich@google.com, kernel-team@android.com,
-        kernel-team@fb.com, bpf@vger.kernel.org
-Subject: Re: [PATCH dwarves 2/4] btf_encoder: Add .BTF section using libelf
-Message-ID: <20210127232320.GA295637@krava>
-References: <20210125130625.2030186-1-gprocida@google.com>
- <20210125130625.2030186-3-gprocida@google.com>
+        id S233798AbhA0X1j (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Jan 2021 18:27:39 -0500
+Received: from www62.your-server.de ([213.133.104.62]:59422 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235767AbhA0XZN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Jan 2021 18:25:13 -0500
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1l4uAp-0000k3-Tq; Thu, 28 Jan 2021 00:24:31 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1l4uAp-000Ma9-Q5; Thu, 28 Jan 2021 00:24:31 +0100
+Subject: Re: [PATCH bpf-next] selftest/bpf: testing for multiple logs on
+ REJECT
+To:     Andrei Matei <andreimatei1@gmail.com>
+Cc:     bpf@vger.kernel.org
+References: <20210124190532.428065-1-andreimatei1@gmail.com>
+ <7d33b412-260f-f4d6-2ed0-b5076dc37179@iogearbox.net>
+ <CABWLset0EgvNF5nCdYHNMaqYFg8MYZfqpHren41EuRP1Azax-w@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <82196381-fcd3-c70d-2df3-1515d2a4dd24@iogearbox.net>
+Date:   Thu, 28 Jan 2021 00:24:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210125130625.2030186-3-gprocida@google.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <CABWLset0EgvNF5nCdYHNMaqYFg8MYZfqpHren41EuRP1Azax-w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26062/Wed Jan 27 13:26:15 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 01:06:23PM +0000, Giuliano Procida wrote:
-> pahole -J uses libelf directly when updating a .BTF section. However,
-> it uses llvm-objcopy to add .BTF sections. This commit switches to
-> using libelf for both cases.
+On 1/27/21 3:31 AM, Andrei Matei wrote:
+> On Tue, Jan 26, 2021 at 6:21 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>> On 1/24/21 8:05 PM, Andrei Matei wrote:
+>>> This patch adds support to verifier tests to check for a succession of
+>>> verifier log messages on program load failure. This makes the
+>>> errstr field work uniformly across REJECT and VERBOSE_ACCEPT checks.
+>>>
+>>> This patch also increases the maximum size of an accepted series of
+>>> messages to test from 80 chars to 200 chars. This is in order to keep
+>>> existing tests working, which sometimes test for messages larger than 80
+>>> chars (which was accepted in the REJECT case, when testing for a single
+>>> message, but ironically not in the VERBOSE_ACCEPT case, when testing for
+>>> possibly multiple messages).
+>>> And example of such a long, checked message is in bounds.c:
+>>> "R1 has unknown scalar with mixed signed bounds, pointer arithmetic with
+>>> it prohibited for !root"
+>>>
+>>> Signed-off-by: Andrei Matei <andreimatei1@gmail.com>
+>>> ---
+>>>    tools/testing/selftests/bpf/test_verifier.c | 15 ++++++++++++---
+>>>    1 file changed, 12 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
+>>> index 59bfa6201d1d..69298bf8ee86 100644
+>>> --- a/tools/testing/selftests/bpf/test_verifier.c
+>>> +++ b/tools/testing/selftests/bpf/test_verifier.c
+>>> @@ -88,6 +88,9 @@ struct bpf_test {
+>>>        int fixup_map_event_output[MAX_FIXUPS];
+>>>        int fixup_map_reuseport_array[MAX_FIXUPS];
+>>>        int fixup_map_ringbuf[MAX_FIXUPS];
+>>> +     /* Expected verifier log output for result REJECT or VERBOSE_ACCEPT. Can be a
+>>> +      * tab-separated sequence of expected strings.
+>>> +      */
+>>>        const char *errstr;
+>>>        const char *errstr_unpriv;
+>>>        uint32_t insn_processed;
+>>> @@ -995,9 +998,11 @@ static int do_prog_test_run(int fd_prog, bool unpriv, uint32_t expected_val,
+>>>        return 0;
+>>>    }
+>>>
+>>> +/* Returns true if every part of exp (tab-separated) appears in log, in order.
+>>> + */
+>>>    static bool cmp_str_seq(const char *log, const char *exp)
+>>>    {
+>>> -     char needle[80];
+>>> +     char needle[200];
+>>>        const char *p, *q;
+>>>        int len;
+>>>
+>>> @@ -1015,7 +1020,7 @@ static bool cmp_str_seq(const char *log, const char *exp)
+>>>                needle[len] = 0;
+>>>                q = strstr(log, needle);
+>>>                if (!q) {
+>>> -                     printf("FAIL\nUnexpected verifier log in successful load!\n"
+>>> +                     printf("FAIL\nUnexpected verifier log!\n"
+>>>                               "EXP: %s\nRES:\n", needle);
+>>>                        return false;
+>>>                }
+>>> @@ -1130,7 +1135,11 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
+>>>                        printf("FAIL\nUnexpected success to load!\n");
+>>>                        goto fail_log;
+>>>                }
+>>> -             if (!expected_err || !strstr(bpf_vlog, expected_err)) {
+>>> +             if (!expected_err) {
+>>> +                     printf("FAIL\nTestcase bug; missing expected_err\n");
+>>> +                     goto fail_log;
+>>
+>> Do we have an in-tree case like this?
 > 
-> This eliminates pahole's dependency on llvm-objcopy. One unfortunate
-> side-effect is that vmlinux actually increases in size. It seems that
-> llvm-objcopy modifies the .strtab section, discarding many strings. I
-> speculate that is it discarding strings not referenced from .symtab
-> and updating the references therein.
+> You're asking if there are tests with expected_res == REJECT and
+> expected_err == NULL?
+> There are no such test cases, and the intention of this "testcase bug"
+> check was to keep it that way.
+> I can simply fold it into the test failure below, as you're suggesting.
+
+Yeah, I would just fold it given such issue would be visible there as well.
+
+>> Given this would also be visible below with 'EXP:'
+>> being (null), I might simplify and just replace the strstr() with cmp_str_seq().
+>>
+>> Also, could you elaborate on which test cases need the cmp_str_seq() conversion?
 > 
-> In this initial version layout is left completely up to libelf which
-> may be OK for non-loadable object files, but is probably no good for
-> things like vmlinux where all the offsets may change. This is
-> addressed in a follow-up commit.
-> 
-> Signed-off-by: Giuliano Procida <gprocida@google.com>
-> ---
->  libbtf.c | 145 ++++++++++++++++++++++++++++++++++++++-----------------
->  1 file changed, 100 insertions(+), 45 deletions(-)
-> 
-> diff --git a/libbtf.c b/libbtf.c
-> index 9f76283..fb8e043 100644
-> --- a/libbtf.c
-> +++ b/libbtf.c
-> @@ -699,6 +699,7 @@ static int btf_elf__write(const char *filename, struct btf *btf)
->  	uint32_t raw_btf_size;
->  	int fd, err = -1;
->  	size_t strndx;
-> +	void *str_table = NULL;
->  
->  	fd = open(filename, O_RDWR);
->  	if (fd < 0) {
-> @@ -741,74 +742,128 @@ static int btf_elf__write(const char *filename, struct btf *btf)
->  	}
->  
->  	/*
-> -	 * First we look if there was already a .BTF section to overwrite.
-> +	 * First we check if there is already a .BTF section present.
->  	 */
-> -
->  	elf_getshdrstrndx(elf, &strndx);
-> +	Elf_Scn *btf_scn = 0;
+> There are VERBOSE_ACCEPT tests that you a tab-separated list of
+> expected messages; see precise.c.
+> There are no such REJECT tests yet. I was about to introduce one in
+> another patch that's inflight, but I ended
+> up not needing to. Still, I figured that unifying the capabilities of
+> .errstr between VERBOSE_ACCEPT and REJECT
+> is a good idea.
+I think unifying seems reasonable, lets do then.
 
-NULL
-
-
-SNIP
-
-> -		const char *llvm_objcopy;
-> -		char tmp_fn[PATH_MAX];
-> -		char cmd[PATH_MAX * 2];
-> -
-> -		llvm_objcopy = getenv("LLVM_OBJCOPY");
-> -		if (!llvm_objcopy)
-> -			llvm_objcopy = "llvm-objcopy";
-> -
-> -		/* Use objcopy to add a .BTF section */
-> -		snprintf(tmp_fn, sizeof(tmp_fn), "%s.btf", filename);
-> -		close(fd);
-> -		fd = creat(tmp_fn, S_IRUSR | S_IWUSR);
-> -		if (fd == -1) {
-> -			fprintf(stderr, "%s: open(%s) failed!\n", __func__,
-> -				tmp_fn);
-> +		/* Add ".BTF" to the section name string table */
-> +		Elf_Data *str_data = elf_getdata(str_scn, NULL);
-> +		if (!str_data) {
-> +			fprintf(stderr, "%s: elf_getdata(str_scn) failed: %s\n",
-> +				__func__, elf_errmsg(elf_errno()));
->  			goto out;
->  		}
-> -
-> -		if (write(fd, raw_btf_data, raw_btf_size) != raw_btf_size) {
-> -			fprintf(stderr, "%s: write of %d bytes to '%s' failed: %d!\n",
-> -				__func__, raw_btf_size, tmp_fn, errno);
-> -			goto unlink;
-> +		dot_btf_offset = str_data->d_size;
-> +		size_t new_str_size = dot_btf_offset + 5;
-> +		str_table = malloc(new_str_size);
-> +		if (!str_table) {
-> +			fprintf(stderr, "%s: malloc(%zu) failed: %s\n", __func__,
-> +				new_str_size, elf_errmsg(elf_errno()));
-> +			goto out;
->  		}
-> +		memcpy(str_table, str_data->d_buf, dot_btf_offset);
-> +		memcpy(str_table + dot_btf_offset, ".BTF", 5);
-
-hum, I wonder this will always copy the final zero byte
-
-> +		str_data->d_buf = str_table;
-> +		str_data->d_size = new_str_size;
-> +		elf_flagdata(str_data, ELF_C_SET, ELF_F_DIRTY);
-> +
-> +		/* Create a new section */
-> +		btf_scn = elf_newscn(elf);
-> +		if (!btf_scn) {
-> +			fprintf(stderr, "%s: elf_newscn failed: %s\n",
-> +			__func__, elf_errmsg(elf_errno()));
-> +			goto out;
-> +		}
-> +		btf_data = elf_newdata(btf_scn);
-> +		if (!btf_data) {
-> +			fprintf(stderr, "%s: elf_newdata failed: %s\n",
-> +			__func__, elf_errmsg(elf_errno()));
-> +			goto out;
-> +		}
-> +	}
->  
-> -		snprintf(cmd, sizeof(cmd), "%s --add-section .BTF=%s %s",
-> -			 llvm_objcopy, tmp_fn, filename);
-> -		if (system(cmd)) {
-> -			fprintf(stderr, "%s: failed to add .BTF section to '%s': %d!\n",
-> -				__func__, filename, errno);
-> -			goto unlink;
-> +	/* (Re)populate the BTF section data */
-> +	raw_btf_data = btf__get_raw_data(btf, &raw_btf_size);
-> +	btf_data->d_buf = (void *)raw_btf_data;
-
-doesn't this potentially leak btf_data->d_buf?
-
-> +	btf_data->d_size = raw_btf_size;
-> +	btf_data->d_type = ELF_T_BYTE;
-> +	btf_data->d_version = EV_CURRENT;
-> +	elf_flagdata(btf_data, ELF_C_SET, ELF_F_DIRTY);
-> +
-> +	/* Update .BTF section in the SHT */
-> +	GElf_Shdr btf_shdr_mem;
-> +	GElf_Shdr *btf_shdr = gelf_getshdr(btf_scn, &btf_shdr_mem);
-> +	if (!btf_shdr) {
-> +		fprintf(stderr, "%s: elf_getshdr(btf_scn) failed: %s\n",
-> +			__func__, elf_errmsg(elf_errno()));
-> +		goto out;
-> +	}
-> +	btf_shdr->sh_entsize = 0;
-> +	btf_shdr->sh_flags = 0;
-> +	if (dot_btf_offset)
-> +		btf_shdr->sh_name = dot_btf_offset;
-> +	btf_shdr->sh_type = SHT_PROGBITS;
-> +	if (!gelf_update_shdr(btf_scn, btf_shdr)) {
-> +		fprintf(stderr, "%s: gelf_update_shdr failed: %s\n",
-> +			__func__, elf_errmsg(elf_errno()));
-> +		goto out;
-> +	}
-> +
-> +	if (elf_update(elf, ELF_C_NULL) < 0) {
-> +		fprintf(stderr, "%s: elf_update (layout) failed: %s\n",
-> +			__func__, elf_errmsg(elf_errno()));
-> +		goto out;
-> +	}
-> +
-> +	size_t phnum = 0;
-> +	if (!elf_getphdrnum(elf, &phnum)) {
-> +		for (size_t ix = 0; ix < phnum; ++ix) {
-> +			GElf_Phdr phdr;
-> +			GElf_Phdr *elf_phdr = gelf_getphdr(elf, ix, &phdr);
-> +			size_t filesz = gelf_fsize(elf, ELF_T_PHDR, 1, EV_CURRENT);
-> +			fprintf(stderr, "type: %d %d\n", elf_phdr->p_type, PT_PHDR);
-> +			fprintf(stderr, "offset: %lu %lu\n", elf_phdr->p_offset, ehdr->e_phoff);
-> +			fprintf(stderr, "filesize: %lu %lu\n", elf_phdr->p_filesz, filesz);
-
-looks like s forgotten debug or you're missing
-btf_elf__verbose check for fprintf calls above
-
-jirka
-
+Thanks,
+Daniel
