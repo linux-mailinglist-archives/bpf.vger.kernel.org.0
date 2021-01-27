@@ -2,104 +2,122 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74878305DE3
-	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 15:09:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE67C305DF6
+	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 15:13:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229636AbhA0OJF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Jan 2021 09:09:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37014 "EHLO mail.kernel.org"
+        id S233622AbhA0OMq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Jan 2021 09:12:46 -0500
+Received: from mga17.intel.com ([192.55.52.151]:3924 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233692AbhA0OGr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Jan 2021 09:06:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14094207FC;
-        Wed, 27 Jan 2021 14:06:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611756366;
-        bh=ylOoQpR7qPT5Nn7i9GFNNmW4Sr130iR6baDWQtgow8Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=izZB8Y18qSgFbXFjGy1oySCI/YhPyK4QOllP/4zOC8J/1hcPDW8xc4lNFQx1RTTSO
-         swxyiGsa4jaNK+clWBeOmcgAdZHoYcyGV/lzvdiRJGGt13Y6eDaAjRvpfp0GtynLag
-         i2Jsq6KpVul2nOYUGzukkhTTMRDLeCPqwkXpMnI1BRefH1h1hP+fia4Q+TkO71ESOY
-         Sn4D/uZwbopMfvceiqH4YtykMkQdn9g1e8VYcc5giWCFy2h1bTc2U/LpEZQvTl6//o
-         Gk8nq915wHZrt0Gyu82vVm4hvj/cdwbBqTllLRZ2lzKRUR9qzMC/vj/bK90AN/BIlb
-         HQY/GJ+MfjkvA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 1967740513; Wed, 27 Jan 2021 11:06:01 -0300 (-03)
-Date:   Wed, 27 Jan 2021 11:06:01 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Giuliano Procida <gprocida@google.com>
-Cc:     dwarves@vger.kernel.org, andrii@kernel.org, ast@kernel.org,
-        maennich@google.com, kernel-team@android.com, kernel-team@fb.com,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH dwarves 0/4] BTF ELF writing changes
-Message-ID: <20210127140601.GA752795@kernel.org>
-References: <20210125130625.2030186-1-gprocida@google.com>
+        id S231749AbhA0OLH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Jan 2021 09:11:07 -0500
+IronPort-SDR: B3/ACi06YIaAtn0EODL14OIUVHNogDMHjAfPDk3f8KGms3C/MSNpcAQZt0KxNmd+2EVeXYlRWT
+ qmBnwokU84QA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9876"; a="159846951"
+X-IronPort-AV: E=Sophos;i="5.79,379,1602572400"; 
+   d="scan'208";a="159846951"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2021 06:10:26 -0800
+IronPort-SDR: zYU26Iw75cM1BFqOJ7ClRIQx8NijzkNAfJ4/gVAVz25SAyAT9fI/RDqQgjVYTinJDTeYonWK8O
+ pTtUukFrBMBQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,379,1602572400"; 
+   d="scan'208";a="351012405"
+Received: from irsmsx605.ger.corp.intel.com ([163.33.146.138])
+  by fmsmga007.fm.intel.com with ESMTP; 27 Jan 2021 06:10:25 -0800
+Received: from irsmsx604.ger.corp.intel.com (163.33.146.137) by
+ IRSMSX605.ger.corp.intel.com (163.33.146.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 27 Jan 2021 14:10:24 +0000
+Received: from irsmsx604.ger.corp.intel.com ([163.33.146.137]) by
+ IRSMSX604.ger.corp.intel.com ([163.33.146.137]) with mapi id 15.01.1713.004;
+ Wed, 27 Jan 2021 14:10:24 +0000
+From:   "Loftus, Ciara" <ciara.loftus@intel.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        "bjorn@kernel.org" <bjorn@kernel.org>,
+        "Janjua, Weqaar A" <weqaar.a.janjua@intel.com>
+Subject: RE: [PATCH bpf-next v2 1/6] xsk: add tracepoints for packet drops
+Thread-Topic: [PATCH bpf-next v2 1/6] xsk: add tracepoints for packet drops
+Thread-Index: AQHW87xsHkD4hpZ27EqaJ6lgGWVOJKo6hDSAgAD+PnA=
+Date:   Wed, 27 Jan 2021 14:10:24 +0000
+Message-ID: <c40e361d0ef2475db93cfb5d007599f2@intel.com>
+References: <20210126075239.25378-1-ciara.loftus@intel.com>
+ <20210126075239.25378-2-ciara.loftus@intel.com>
+ <7100d6c0-8556-4f7e-93e7-5ba6fa549104@iogearbox.net>
+In-Reply-To: <7100d6c0-8556-4f7e-93e7-5ba6fa549104@iogearbox.net>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [163.33.253.164]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210125130625.2030186-1-gprocida@google.com>
-X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Mon, Jan 25, 2021 at 01:06:21PM +0000, Giuliano Procida escreveu:
-> Hi.
-> 
-> This follows on from my change to improve the error handling around
-> llvm-objcopy in libbtf.c.
-> 
-> Note on recipients: Please let me know if I should adjust To or CC.
-> 
-> Note on style: I've generally placed declarations as allowed by C99,
-> closest to point of use. Let me know if you'd prefer otherwise.
-> 
-> 1. Improve ELF error reporting
-
-applied
- 
-> 2. Add .BTF section using libelf
-> 
-> This shows the minimal amount of code needed to drive libelf. However,
-> it leaves layout up to libelf, which is almost certainly not wanted.
-> 
-> As an unexpcted side-effect, vmlinux is larger than before. It seems
-> llvm-objcopy likes to trim down .strtab.
-
-We have to test this thoroughly, I'm adding support to gcc's -gdwarf-5
-DW_AT_data_bit_offset, I think I should get that done and release 1.20,
-if some bug is still left on that new code, we can just fallback to
--gdwarf-4.
-
-Then get back to the last 2 patches in your series, ok?
-
-- Arnaldo
- 
-> 3. Manually lay out updated ELF sections
-> 
-> This does full layout of new and updated ELF sections. If the update
-> ELF sections were not the last ones in the file by offset, then it can
-> leave gaps between sections.
-> 
-> 4. Align .BTF section to 8 bytes
-> 
-> This was my original aim.
-> 
-> Regards.
-> 
-> Giuliano Procida (4):
->   btf_encoder: Improve ELF error reporting
->   btf_encoder: Add .BTF section using libelf
->   btf_encoder: Manually lay out updated ELF sections
->   btf_encoder: Align .BTF section to 8 bytes
-> 
->  libbtf.c | 222 +++++++++++++++++++++++++++++++++++++++++++------------
->  1 file changed, 175 insertions(+), 47 deletions(-)
-> 
-> -- 
-> 2.30.0.280.ga3ce27912f-goog
-> 
-
--- 
-
-- Arnaldo
+PiBPbiAxLzI2LzIxIDg6NTIgQU0sIENpYXJhIExvZnR1cyB3cm90ZToNCj4gPiBUaGlzIGNvbW1p
+dCBpbnRyb2R1Y2VzIHN0YXRpYyBwZXJmIHRyYWNlcG9pbnRzIGZvciBBRl9YRFAgd2hpY2gNCj4g
+PiByZXBvcnQgaW5mb3JtYXRpb24gYWJvdXQgcGFja2V0IGRyb3BzLCBzdWNoIGFzIHRoZSBuZXRk
+ZXYsIHFpZCBhbmQNCj4gPiBoaWdoIGxldmVsIHJlYXNvbiBmb3IgdGhlIGRyb3AuIFRoZSB0cmFj
+ZXBvaW50IGNhbiBiZQ0KPiA+IGVuYWJsZWQvZGlzYWJsZWQgYnkgdG9nZ2xpbmcNCj4gPiAvc3lz
+L2tlcm5lbC9kZWJ1Zy90cmFjaW5nL2V2ZW50cy94c2sveHNrX3BhY2tldF9kcm9wL2VuYWJsZQ0K
+PiANCj4gQ291bGQgeW91IGFkZCBhIHJhdGlvbmFsZSB0byB0aGUgY29tbWl0IGxvZyBvbiB3aHkg
+eHNrIGRpYWcgc3RhdHMgZHVtcA0KPiBpcyBpbnN1ZmZpY2llbnQgaGVyZSBnaXZlbiB5b3UgYWRk
+IHRyYWNlcG9pbnRzIHRvIG1vc3QgbG9jYXRpb25zIHdoZXJlDQo+IHdlIGFsc28gYnVtcCB0aGUg
+Y291bnRlcnMgYWxyZWFkeT8gQW5kIGdpdmVuIGRpYWcgaW5mcmEgYWxzbyBleHBvc2VzIHRoZQ0K
+PiBpZmluZGV4LCBxdWV1ZSBpZCwgZXRjLCB3aHkgdHJvdWJsZXNob290aW5nIHRoZSB4c2sgc29j
+a2V0IHZpYSBzcyB0b29sDQo+IGlzIG5vdCBzdWZmaWNpZW50Pw0KDQpUaGFua3MgZm9yIHlvdXIg
+ZmVlZGJhY2sgRGFuaWVsLg0KDQpUaGUgc3RhdHMgdGVsbCB1cyB0aGF0IHRoZXJlIGlzICphKiBw
+cm9ibGVtIHdoZXJlYXMgdGhlIHRyYWNlcyB3aWxsIHNoZWQNCmxpZ2h0IG9uIHdoYXQgdGhhdCBw
+cm9ibGVtIGlzLiBlZy4gVGhlIFhTS19UUkFDRV9EUk9QX1BLVF9UT09fQklHDQp0cmFjZSB0ZWxs
+cyB1cyB3ZSBkcm9wcGVkIGEgcGFja2V0IG9uIFJYIGR1ZSB0byBpdCBiZWluZyB0b28gYmlnIHZz
+LiBzcw0Kd291bGQganVzdCB0ZWxsIHVzIHRoZSBwYWNrZXQgd2FzIGRyb3BwZWQuDQpJIHdpbGwg
+YWRkIHRoaXMgcmF0aW9uYWxlIGluIHRoZSB2My4NCg0KPiANCj4gWy4uLl0NCj4gPiBkaWZmIC0t
+Z2l0IGEvbmV0L3hkcC94c2suYyBiL25ldC94ZHAveHNrLmMNCj4gPiBpbmRleCA0ZmFhYmQxZWNm
+ZDEuLjliODUwNzE2NjMwYiAxMDA2NDQNCj4gPiAtLS0gYS9uZXQveGRwL3hzay5jDQo+ID4gKysr
+IGIvbmV0L3hkcC94c2suYw0KPiA+IEBAIC0xMSw2ICsxMSw3IEBADQo+ID4NCj4gPiAgICNkZWZp
+bmUgcHJfZm10KGZtdCkgIkFGX1hEUDogJXM6ICIgZm10LCBfX2Z1bmNfXw0KPiA+DQo+ID4gKyNp
+bmNsdWRlIDxsaW51eC9icGZfdHJhY2UuaD4NCj4gPiAgICNpbmNsdWRlIDxsaW51eC9pZl94ZHAu
+aD4NCj4gPiAgICNpbmNsdWRlIDxsaW51eC9pbml0Lmg+DQo+ID4gICAjaW5jbHVkZSA8bGludXgv
+c2NoZWQvbW0uaD4NCj4gPiBAQCAtMTU4LDYgKzE1OSw3IEBAIHN0YXRpYyBpbnQgX194c2tfcmN2
+X3pjKHN0cnVjdCB4ZHBfc29jayAqeHMsIHN0cnVjdA0KPiB4ZHBfYnVmZiAqeGRwLCB1MzIgbGVu
+KQ0KPiA+ICAgCWFkZHIgPSB4cF9nZXRfaGFuZGxlKHhza2IpOw0KPiA+ICAgCWVyciA9IHhza3Ff
+cHJvZF9yZXNlcnZlX2Rlc2MoeHMtPnJ4LCBhZGRyLCBsZW4pOw0KPiA+ICAgCWlmIChlcnIpIHsN
+Cj4gPiArCQl0cmFjZV94c2tfcGFja2V0X2Ryb3AoeHMtPmRldi0+bmFtZSwgeHMtPnF1ZXVlX2lk
+LA0KPiBYU0tfVFJBQ0VfRFJPUF9SWFFfRlVMTCk7DQo+ID4gICAJCXhzLT5yeF9xdWV1ZV9mdWxs
+Kys7DQo+ID4gICAJCXJldHVybiBlcnI7DQo+IA0KPiBJIHByZXN1bWUgaWYgdGhpcyB3aWxsIGJl
+IHRyaWdnZXJlZCB1bmRlciBzdHJlc3MgeW91J2xsIGxpa2VseSBhbHNvIHNwYW0NCj4geW91ciB0
+cmFjZSBldmVudCBsb2cgdy8gcG90ZW50aWFsbHkgbWlvIG9mIG1zZ3MgcGVyIHNlYz8NCg0KWW91
+IGFyZSBjb3JyZWN0LiBBZnRlciBzb21lIGNvbnNpZGVyYXRpb24gSSdtIGdvaW5nIHRvIGRyb3Ag
+dGhpcw0KdHJhY2UgYW5kIHNvbWUgb3RoZXJzIGluIHRoZSBuZXh0IHJldiB3aGljaCBhcmUgbm90
+IHRlY2huaWNhbGx5DQpndWFyYW50ZWVkIGRyb3BzIGFuZCBjb3VsZCBlbmQgdXAgc3BhbW1pbmcg
+dGhlIGxvZyB1bmRlcg0Kc3RyZXNzIGFzIHlvdSBtZW50aW9uZWQuDQoNCj4gDQo+ID4gICAJfQ0K
+PiA+IEBAIC0xOTIsNiArMTk0LDcgQEAgc3RhdGljIGludCBfX3hza19yY3Yoc3RydWN0IHhkcF9z
+b2NrICp4cywgc3RydWN0DQo+IHhkcF9idWZmICp4ZHApDQo+ID4NCj4gPiAgIAlsZW4gPSB4ZHAt
+PmRhdGFfZW5kIC0geGRwLT5kYXRhOw0KPiA+ICAgCWlmIChsZW4gPiB4c2tfcG9vbF9nZXRfcnhf
+ZnJhbWVfc2l6ZSh4cy0+cG9vbCkpIHsNCj4gPiArCQl0cmFjZV94c2tfcGFja2V0X2Ryb3AoeHMt
+PmRldi0+bmFtZSwgeHMtPnF1ZXVlX2lkLA0KPiBYU0tfVFJBQ0VfRFJPUF9QS1RfVE9PX0JJRyk7
+DQo+ID4gICAJCXhzLT5yeF9kcm9wcGVkKys7DQo+ID4gICAJCXJldHVybiAtRU5PU1BDOw0KPiA+
+ICAgCX0NCj4gPiBAQCAtNTE2LDYgKzUxOSw4IEBAIHN0YXRpYyBpbnQgeHNrX2dlbmVyaWNfeG1p
+dChzdHJ1Y3Qgc29jayAqc2spDQo+ID4gICAJCWlmIChlcnIgPT0gTkVUX1hNSVRfRFJPUCkgew0K
+PiA+ICAgCQkJLyogU0tCIGNvbXBsZXRlZCBidXQgbm90IHNlbnQgKi8NCj4gPiAgIAkJCWVyciA9
+IC1FQlVTWTsNCj4gPiArCQkJdHJhY2VfeHNrX3BhY2tldF9kcm9wKHhzLT5kZXYtPm5hbWUsIHhz
+LQ0KPiA+cXVldWVfaWQsDQo+ID4gKwkJCQkJICAgICAgWFNLX1RSQUNFX0RST1BfRFJWX0VSUl9U
+WCk7DQo+IA0KPiBJcyB0aGVyZSBhIHJlYXNvbiB0byBub3QgYnVtcCBlcnJvciBjb3VudGVyIGhl
+cmU/DQoNClRoaXMgdG9vIGZhbGxzIGludG8gdGhlIG5vdC10ZWNobmljYWxseS1hLWRyb3AgY2F0
+ZWdvcnkgYW5kIHdpbGwgYmUNCnJlbW92ZWQgaW4gdGhlIG5leHQgcmV2LiBJIHRoaW5rIGEgc3Rh
+dCB3b3VsZCBiZSB1c2VmdWwgdGhvdWdoLg0KSSdsbCBkcmF3IHVwIGEgc2VwYXJhdGUgcGF0Y2gu
+IFRoYW5rcyBmb3IgdGhlIHN1Z2dlc3Rpb24uDQoNCj4gDQo+ID4gICAJCQlnb3RvIG91dDsNCj4g
+PiAgIAkJfQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL25ldC94ZHAveHNrX2J1ZmZfcG9vbC5jIGIv
+bmV0L3hkcC94c2tfYnVmZl9wb29sLmMNCj4gPiBpbmRleCA4ZGUwMWFhYWM0YTAuLmQzYzFjYTgz
+Yzc1ZCAxMDA2NDQNCj4gPiAtLS0gYS9uZXQveGRwL3hza19idWZmX3Bvb2wuYw0KPiA+ICsrKyBi
+L25ldC94ZHAveHNrX2J1ZmZfcG9vbC5jDQo+ID4gQEAgLTEsNSArMSw2IEBADQo+ID4gICAvLyBT
+UERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMA0KPiA+DQo=
