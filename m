@@ -2,131 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 635A7305BC7
-	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 13:43:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74878305DE3
+	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 15:09:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343674AbhA0Mmj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Jan 2021 07:42:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50272 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343695AbhA0Mkf (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 27 Jan 2021 07:40:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611751149;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FNuG7JoCfAH9Jm56wLn/gL9lO+Td4zBW5kowrH1kfJM=;
-        b=Su117G4Olpfd0FwiV0JJeJI+1vLz54o1ugGhKCVCyWWBdWlk8wY5VwQYkWAUXaD+cgAGmp
-        JBYJBfpYUaq8g1X/jXWG6rZDoBTR/Ip5kcjJQk04W5I/HWABYxwWsJ0kF3ZOFtmdubVOSN
-        dr4LruZjHTE4L/u4m1rPnpRL0kbg0EQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-482-hInXWJ-1P1GHGlv-IPrlGg-1; Wed, 27 Jan 2021 07:39:07 -0500
-X-MC-Unique: hInXWJ-1P1GHGlv-IPrlGg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A1A5510054FF;
-        Wed, 27 Jan 2021 12:39:05 +0000 (UTC)
-Received: from [10.10.112.133] (ovpn-112-133.rdu2.redhat.com [10.10.112.133])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4814C27C23;
-        Wed, 27 Jan 2021 12:38:57 +0000 (UTC)
-Subject: Re: [PATCHv4 0/2] libbpf: Add support to use optional extended
- section index table
-To:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Cc:     dwarves@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Yonghong Song <yhs@fb.com>,
-        Hao Luo <haoluo@google.com>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, Mark Wielaard <mjw@redhat.com>
-References: <20210124221519.219750-1-jolsa@kernel.org>
-From:   Joe Lawrence <joe.lawrence@redhat.com>
-Message-ID: <b1469725-d462-9a6d-3329-f77c9eb6b43f@redhat.com>
-Date:   Wed, 27 Jan 2021 07:38:56 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S229636AbhA0OJF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Jan 2021 09:09:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37014 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233692AbhA0OGr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Jan 2021 09:06:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 14094207FC;
+        Wed, 27 Jan 2021 14:06:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611756366;
+        bh=ylOoQpR7qPT5Nn7i9GFNNmW4Sr130iR6baDWQtgow8Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=izZB8Y18qSgFbXFjGy1oySCI/YhPyK4QOllP/4zOC8J/1hcPDW8xc4lNFQx1RTTSO
+         swxyiGsa4jaNK+clWBeOmcgAdZHoYcyGV/lzvdiRJGGt13Y6eDaAjRvpfp0GtynLag
+         i2Jsq6KpVul2nOYUGzukkhTTMRDLeCPqwkXpMnI1BRefH1h1hP+fia4Q+TkO71ESOY
+         Sn4D/uZwbopMfvceiqH4YtykMkQdn9g1e8VYcc5giWCFy2h1bTc2U/LpEZQvTl6//o
+         Gk8nq915wHZrt0Gyu82vVm4hvj/cdwbBqTllLRZ2lzKRUR9qzMC/vj/bK90AN/BIlb
+         HQY/GJ+MfjkvA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 1967740513; Wed, 27 Jan 2021 11:06:01 -0300 (-03)
+Date:   Wed, 27 Jan 2021 11:06:01 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Giuliano Procida <gprocida@google.com>
+Cc:     dwarves@vger.kernel.org, andrii@kernel.org, ast@kernel.org,
+        maennich@google.com, kernel-team@android.com, kernel-team@fb.com,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH dwarves 0/4] BTF ELF writing changes
+Message-ID: <20210127140601.GA752795@kernel.org>
+References: <20210125130625.2030186-1-gprocida@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210124221519.219750-1-jolsa@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210125130625.2030186-1-gprocida@google.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/24/21 5:15 PM, Jiri Olsa wrote:
-> hi,
-> kpatch guys hit an issue with pahole over their vmlinux, which
-> contains many (over 100000) sections, pahole crashes.
+Em Mon, Jan 25, 2021 at 01:06:21PM +0000, Giuliano Procida escreveu:
+> Hi.
 > 
-> With so many sections, ELF is using extended section index table,
-> which is used to hold values for some of the indexes and extra
-> code is needed to retrieve them.
+> This follows on from my change to improve the error handling around
+> llvm-objcopy in libbtf.c.
 > 
-> This patchset adds the support for pahole to properly read string
-> table index and symbol's section index, which are used in btf_encoder.
+> Note on recipients: Please let me know if I should adjust To or CC.
 > 
-> This patchset also adds support for libbpf to properly parse .BTF
-> section on such object.
+> Note on style: I've generally placed declarations as allowed by C99,
+> closest to point of use. Let me know if you'd prefer otherwise.
 > 
-> This patchset is based on previously posted fix [1].
+> 1. Improve ELF error reporting
+
+applied
+ 
+> 2. Add .BTF section using libelf
 > 
-> v4 changes:
->    - use size_t instead of Elf32_Word [Andrii]
->    - move elf_symtab__for_each_symbol_index and elf_sym__get
->      elf_symtab.h [Andrii]
->    - added ack for patch 1 [Andrii]
->    - changed elf_sym__get to be simpler [Andrii]
->    - changed elf_symtab__for_each_symbol_index to skip bad symbols
->    - use zalloc for struct elf_symtab allocation to get zero
->      initialized members
+> This shows the minimal amount of code needed to drive libelf. However,
+> it leaves layout up to libelf, which is almost certainly not wanted.
 > 
-> v3 changes:
->    - directly bail out for !str in elf_section_by_name [Andrii]
->    - use symbol index in collect_function [Andrii]
->    - use symbol index in collect_percpu_var
->    - change elf_symtab__for_each_symbol_index, move elf_sym__get
->      to for's condition part
->    - libbpf patch got merged
+> As an unexpcted side-effect, vmlinux is larger than before. It seems
+> llvm-objcopy likes to trim down .strtab.
+
+We have to test this thoroughly, I'm adding support to gcc's -gdwarf-5
+DW_AT_data_bit_offset, I think I should get that done and release 1.20,
+if some bug is still left on that new code, we can just fallback to
+-gdwarf-4.
+
+Then get back to the last 2 patches in your series, ok?
+
+- Arnaldo
+ 
+> 3. Manually lay out updated ELF sections
 > 
-> v2 changes:
->    - many variables renames [Andrii]
->    - use elf_getshdrstrndx() unconditionally [Andrii]
->    - add elf_symtab__for_each_symbol_index macro [Andrii]
->    - add more comments [Andrii]
->    - verify that extended symtab section type is SHT_SYMTAB_SHNDX [Andrii]
->    - fix Joe's crash in dwarves build, wrong sym.st_shndx assignment
+> This does full layout of new and updated ELF sections. If the update
+> ELF sections were not the last ones in the file by offset, then it can
+> leave gaps between sections.
 > 
-> thanks,
-> jirka
+> 4. Align .BTF section to 8 bytes
 > 
+> This was my original aim.
 > 
-> [1] https://lore.kernel.org/bpf/20210113102509.1338601-1-jolsa@kernel.org/
-> ---
-> Jiri Olsa (2):
->        elf_symtab: Add support for SHN_XINDEX index to elf_section_by_name
->        bpf_encoder: Translate SHN_XINDEX in symbol's st_shndx values
+> Regards.
 > 
->   btf_encoder.c | 33 +++++++++++++++++----------------
->   dutil.c       |  8 +++++++-
->   elf_symtab.c  | 41 +++++++++++++++++++++++++++++++++++++++--
->   elf_symtab.h  | 29 +++++++++++++++++++++++++++++
->   4 files changed, 92 insertions(+), 19 deletions(-)
+> Giuliano Procida (4):
+>   btf_encoder: Improve ELF error reporting
+>   btf_encoder: Add .BTF section using libelf
+>   btf_encoder: Manually lay out updated ELF sections
+>   btf_encoder: Align .BTF section to 8 bytes
+> 
+>  libbtf.c | 222 +++++++++++++++++++++++++++++++++++++++++++------------
+>  1 file changed, 175 insertions(+), 47 deletions(-)
+> 
+> -- 
+> 2.30.0.280.ga3ce27912f-goog
 > 
 
-For v4 patchset:
+-- 
 
-Tested-by: Joe Lawrence <joe.lawrence@redhat.com>
-
-Thanks Jiri!
-
--- Joe
-
+- Arnaldo
