@@ -2,111 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6001305261
-	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 06:48:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9A30305359
+	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 07:42:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231620AbhA0Fro (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Jan 2021 00:47:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37028 "EHLO
+        id S231639AbhA0Glh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Jan 2021 01:41:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231944AbhA0FKZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Jan 2021 00:10:25 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8D2AC06174A;
-        Tue, 26 Jan 2021 21:09:45 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id e9so391299plh.3;
-        Tue, 26 Jan 2021 21:09:45 -0800 (PST)
+        with ESMTP id S232509AbhA0Gh4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Jan 2021 01:37:56 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDB2BC061574;
+        Tue, 26 Jan 2021 22:37:15 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id o16so917578pgg.5;
+        Tue, 26 Jan 2021 22:37:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=RmgqS7WyjiiRJi9z89KhXde85FYcLyN/Zij0A6xH6Vg=;
-        b=RnKa9K+3TRouGov1X7r8uImWnhCFlAivPGcaKhDgCwaW+BlBYVStKd9X2c+ERdkCqs
-         DiNwcROLJFNuIruXq4aredzwhJEi/BK9aj9OAhe6veI7SNgaZIZNEQ1y7X4x8cPyHy7T
-         gz7nlEbdjXWfKHoRY7QNvcRyBf3mVH98dVF0VZpmlVl02W75rF5JOgy7upQkDB7+R4qd
-         zUsrceiyKSUv/U0vWD/9JABS9rUe31D/KC/uuxiclIrBkDyv+3Hd4VK5lOzi7cllAWul
-         zC7aR11dEAU8YkrSeP7ml4XWuETVDBjyx9KQuZ8m83GGCr7BlqSEY3rOdvSA6f1tilq7
-         Tf/Q==
+        h=from:to:cc:subject:date:message-id;
+        bh=W0uuLo/4/wCey2dN/nEYFd5YvwQZJzT08touWgY4O8w=;
+        b=TUE4PN3EDWJkxwfN/6yW4sXh09Op1ZfGs87T0vPXMo2V2CUoevdBs0ZON/iG+qZZqz
+         Nm+7tnV72tMSF8+lEMdVx9wuVGqcn6rbhUFJPh31xc6R/0sfQV6zjchM0y1DNW8J/s8Q
+         neAWRok4qYmLx9jmUG4OJma0f84V4xDYy4W+F5xN0H7kyLR0OZxgB6/D9BWNxpAbhGMK
+         Gpd+9oYmUvzguvnc2FbUsLpuJ5sio+bZwy+heoV5GnOIjqkxzajuyao/W+oxm0eNAI9Y
+         vzqguRCGWWKF4XJtfqvSTXteaBP3M8p+TxQRSlIENIb1pTvDyj0mghBgYzOZtYT/NTiF
+         QQ6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=RmgqS7WyjiiRJi9z89KhXde85FYcLyN/Zij0A6xH6Vg=;
-        b=oTvBDzOzRbQoNglVh+dhoB+9+Nmsut+3ArGgvDD8j62d7G/aYxZ3RbwxoPvBL9UEuT
-         Ecs3Xri1GHhANUQ4KyndczwP3RK3U3HmDsX0zQDOyT4CtCDsSdoJPCKILxNXzstT/qdl
-         v4U4J647tfpBEETXYBI2bX4Rl5HxOxDBNbg/TeXMtuqZHUaE+i8ml9ndbS7Sw6Sy4qVn
-         Sv5Sep3qAVcpeH0sLK5pqkCUCgsdIt4uty4va5lvrrs7EpUlP355JS1E3Uo3iiiaG+Qy
-         8P771bUoGX3ETwEe/Q263X5tGBiirS9i6UZu+/aXdqs2gixjvYuMpcmoQyoJ12olTUVz
-         TwrQ==
-X-Gm-Message-State: AOAM531BuWanll6E80sv+4MhO1uI2ZJJY5DQdeqbxxjOfVR6/XS+/KHJ
-        A6emeGANbIdV5dm2ko+3hio=
-X-Google-Smtp-Source: ABdhPJz04w59ZhpuFPQyD2C3hPv7JH0+LDqS9Kp6T3W3gIrrQ023rry8zfPBH2RwQVWwj2TsOAfQBw==
-X-Received: by 2002:a17:90b:4c8e:: with SMTP id my14mr3637771pjb.30.1611724185071;
-        Tue, 26 Jan 2021 21:09:45 -0800 (PST)
-Received: from ubuntu ([1.53.255.147])
-        by smtp.gmail.com with ESMTPSA id t129sm746515pfc.16.2021.01.26.21.09.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 26 Jan 2021 21:09:44 -0800 (PST)
-Date:   Wed, 27 Jan 2021 12:09:37 +0700
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=W0uuLo/4/wCey2dN/nEYFd5YvwQZJzT08touWgY4O8w=;
+        b=X9wxGjp/U8RgLolmO0llJFrQNaZav+PkHcJ8LV98VvfofM/ptNnMc60QtsXEsJlGhw
+         uWGdl14lur++1TVBSyIMcizHFPYj1V+1uV8sjkGU1KbHvlx3mY/Jwd9wFOpwjNI7F7KG
+         etLpDMNOvT6teGkPbTfeNTgKra6cbP/035cv4gZ9/wRCpuKUsHYh8YF5mdAMAq1MGORS
+         XDNz0UnX/gOuCFTLjedXn0u7/JaVqlNrgANmqRtgDyNfXIvUh4JcLKSxve68Sv+0tvAJ
+         ZUdaAhKdj+FMpZVrFIYUmDuglkHfxFkuktaPufrv/ycJeDZrqMk9q4T1ZZQubfsF3M4a
+         0/3Q==
+X-Gm-Message-State: AOAM5310abMjhFqpmAnWZJXn2v1lbqNXbm1LCrk5P6AG9sAm9ab7EWoW
+        5qVS1HwVyNqgRfuNjXKGY9u4suzdqlBYoh0n
+X-Google-Smtp-Source: ABdhPJzh1C84Hi+SAxJwm9/lhQAEyp9wdc9QrUhAJj915LWhtVjGpOpzm2MMrtRjVGk88F/LHp2GNg==
+X-Received: by 2002:aa7:8f1c:0:b029:1c0:60c7:f7c5 with SMTP id x28-20020aa78f1c0000b02901c060c7f7c5mr9220246pfr.59.1611729435387;
+        Tue, 26 Jan 2021 22:37:15 -0800 (PST)
+Received: from android.asia-east2-a.c.savvy-summit-295307.internal (204.60.92.34.bc.googleusercontent.com. [34.92.60.204])
+        by smtp.googlemail.com with ESMTPSA id v3sm1038824pff.217.2021.01.26.22.37.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 22:37:14 -0800 (PST)
 From:   Bui Quang Minh <minhquangbui99@gmail.com>
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, hawk@kernel.org,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        kpsingh@kernel.org, Jakub Sitnicki <jakub@cloudflare.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] bpf: Fix integer overflow in argument calculation for
- bpf_map_area_alloc
-Message-ID: <20210127050937.GA5418@ubuntu>
-References: <20210126082606.3183-1-minhquangbui99@gmail.com>
- <CACAyw99bEYWJCSGqfLiJ9Jp5YE1ZsZSiJxb4RFUTwbofipf0dA@mail.gmail.com>
- <20210127042341.GA4948@ubuntu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210127042341.GA4948@ubuntu>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, davem@davemloft.net
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, minhquangbui99@gmail.com
+Subject: [PATCH] bpf: Check for integer overflow when using roundup_pow_of_two()
+Date:   Wed, 27 Jan 2021 06:36:53 +0000
+Message-Id: <20210127063653.3576-1-minhquangbui99@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 11:23:41AM +0700, Bui Quang Minh wrote:
-> > * Seems like there are quite a few similar calls scattered around
-> > (cpumap, etc.). Did you audit these as well?
-> 
-> I spotted another bug after re-auditting. In hashtab, there ares 2 places using
-> the same calls
-> 
-> 	static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
-> 	{
-> 		/* ... snip ... */
-> 		if (htab->n_buckets == 0 ||
-> 		    htab->n_buckets > U32_MAX / sizeof(struct bucket))
-> 			goto free_htab;
-> 
-> 		htab->buckets = bpf_map_area_alloc(htab->n_buckets *
-> 						   sizeof(struct bucket),
-> 						   htab->map.numa_node);
-> 	}
-> 
-> This is safe because of the above check.
-> 
-> 	static int prealloc_init(struct bpf_htab *htab)
-> 	{
-> 		u32 num_entries = htab->map.max_entries;
-> 		htab->elems = bpf_map_area_alloc(htab->elem_size * num_entries,
-> 						 htab->map.numa_node);
-> 	}
-> 
-> This is not safe since there is no limit check in elem_size.
+On 32-bit architecture, roundup_pow_of_two() can return 0 when the argument
+has upper most bit set due to resulting 1UL << 32. Add a check for this
+case.
 
-So sorry but I rechecked and saw this bug in hashtab has been fixed with commit
-e1868b9e36d0ca
+Fixes: d5a3b1f ("bpf: introduce BPF_MAP_TYPE_STACK_TRACE")
+Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
+---
+ kernel/bpf/stackmap.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Thank you,
-Quang Minh.
+diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+index aea96b638473..bfafbf115bf3 100644
+--- a/kernel/bpf/stackmap.c
++++ b/kernel/bpf/stackmap.c
+@@ -115,6 +115,8 @@ static struct bpf_map *stack_map_alloc(union bpf_attr *attr)
+ 
+ 	/* hash table size must be power of 2 */
+ 	n_buckets = roundup_pow_of_two(attr->max_entries);
++	if (!n_buckets)
++		return ERR_PTR(-E2BIG);
+ 
+ 	cost = n_buckets * sizeof(struct stack_map_bucket *) + sizeof(*smap);
+ 	cost += n_buckets * (value_size + sizeof(struct stack_map_bucket));
+-- 
+2.17.1
+
