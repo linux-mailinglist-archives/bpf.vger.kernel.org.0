@@ -2,300 +2,241 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F038D306302
-	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 19:08:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4875306338
+	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 19:25:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235091AbhA0SHt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Jan 2021 13:07:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234684AbhA0SHq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Jan 2021 13:07:46 -0500
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76257C06174A
-        for <bpf@vger.kernel.org>; Wed, 27 Jan 2021 10:07:06 -0800 (PST)
-Received: by mail-vs1-xe32.google.com with SMTP id v19so1604376vsf.9
-        for <bpf@vger.kernel.org>; Wed, 27 Jan 2021 10:07:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=hqU3SVTs41QnYhQTyLtFIkjNA6jv04Ow5LwKWbmjGo8=;
-        b=vKf76odHTiOEKU/8lplOvjX662IVxUA3wySTZy3rlQ5KYKq1JY4On4hzgXbaVzesT5
-         sZFr3hWupgS/AjDwguWZMP/2TUDTI15+oI/dDzPCNoUuzr89fhDkMRDwWdBSHSzZ5gYh
-         c0P5LZwIsTltqz2rjMJrHF6hXwnlQYlynxsfrcmKbn10r1l77Q5bncLY2NW50idHaX6g
-         J4XzNGwQFgTLNome7XbA6tN/b3wilXeWtBxFtAyMx77BwxR2WDHEHtk3KrYpFmueWDyW
-         p4fvA29RxJDDWwOe5dgnRwmXThv7OMdeEDeH6Lz+/T2JQgqcxzwOoK5S65JEIW0btf64
-         1cXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=hqU3SVTs41QnYhQTyLtFIkjNA6jv04Ow5LwKWbmjGo8=;
-        b=hX7Vx6FMwTP1EE7JXUU8uv2VCY+SGufjRpyrdCt6YfYy6WRFId3ZJVuYTT+Yna6QoA
-         g2xMtxRYoKL+9Bn+sPLPrKX9Felwi8B1QkNZNsx6JvsusTBY5PgkVOxi8jMrubCBRYMK
-         FuRFmEIcEXZ26xd0rWhaFkxiW7Cg2Y8Z4rt2jwYkWw6v368alsqVbvHa+AErR8/UBE3/
-         3enZmDEDEZcMDizSgxpMeE7TS3/0fj5+huioqJELzs/oPpFH8+WSHrtHdLSDLtXV7tl/
-         68P/V8jwcoGmhI/1M/pHV5W6IN7tEW3lW072xtSx/Vo7NQeLvLH5p0KnO2WQgQ1tScbx
-         sKuA==
-X-Gm-Message-State: AOAM531t59r9zs/eeP7kPOfL/vdKdzLnGAM7qUInMXfRjlunzq9SUbZX
-        /wy9JNPNT0WzTZqgwPjoEwEbFCi9NNW/f9tpReleLA==
-X-Google-Smtp-Source: ABdhPJwmvsn0S2UFVMjn+TFeFUpGYa7RzoBuiddcX57u7gOkYqkyjQ6kgfITMxtMQwt8SPWk+6YeR+mTQmw4U3vB0fs=
-X-Received: by 2002:a67:7dcb:: with SMTP id y194mr9469792vsc.4.1611770825269;
- Wed, 27 Jan 2021 10:07:05 -0800 (PST)
+        id S1343932AbhA0SZk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Jan 2021 13:25:40 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:42928 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1343918AbhA0SZd (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 27 Jan 2021 13:25:33 -0500
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10RIFTUH018281;
+        Wed, 27 Jan 2021 10:24:35 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=eb5LjODtRqPySZzlDVLd7vp5QeN4OeBiKkynQWTsg1I=;
+ b=NBC/LgMl62xZjfKYUVdISdZ0z177vJxciegbNTSsqHwv/kXkEEMtojmhKGUGpXT92ddc
+ BOdKks8rIfoIzUqDjmk8CsN8kMmy/WvsWU/yzYxRIxuJ5b5hPUu+bJtbcFeMNUdqaGK4
+ g6t7YAehw4589mUrdQIxW1E8/AQra4C66cA= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 36adeu1x3e-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 27 Jan 2021 10:24:35 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 27 Jan 2021 10:24:33 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jVNNoRrLArZO1yv1yINpV1WxpSTr1L1FU2KCr+CLShLPPrLU9ZheF2NGKa4nRX2w5QlMGRSHInL5sc8pXj61iF7YghJbiDFUA8UCLN0sYaFFwhTbUTL0gLZLbXi0e8xuyTErN+v0d2kT0QBl+AZcj0Z019dApkf4Bx9cI8gQFpM4T5dlz0jzYbLiRA7oxlrkVAju1zvILpcP0j03kYfU2Szl0TFsKEQELhSju0/kUkTrhmVd7VLSrNb9mH9SLvxXOPlzixSrGe/cuejn4Xc4ziWpiXJRtOYKC6WqM/qymMWo6xt8I5q9fBCiV1ZE/OoZgOJljrm6X6j3XoW0yAZ+Ew==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eb5LjODtRqPySZzlDVLd7vp5QeN4OeBiKkynQWTsg1I=;
+ b=k8fjGZ3WsBTKkLiaI04wjQTzCuK/kGhm1ArMvZN0xWJq+Qc5DhC00eSBU3+ha4vO6DE+thp0hA/NeOFlxjUFnYFnZdbdwOihT9dUS9UJpFSbDOTNCeBAWtxsMFhpzTccVHLc2UeIKsg3eeH2L7z2lqIULOWAGqQ5zd+U7unxm0/OMEqnrk+oZaRw/6Q8viKVJSYkwfjKvVFcnnRSG3yH5wttolu48MmPGwv57rGlX4KxG4soUW2demq6GGxY9NdEC6DIQiowwOYV263QZ0SCXTvBijISEZXgIvyJFiWPQTGD8w8NSusw+65UsU+H2HEMoZu0dpQ9g+Kfi5s6MasjEg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eb5LjODtRqPySZzlDVLd7vp5QeN4OeBiKkynQWTsg1I=;
+ b=AfhHVWmo/X404uTWfh3DuL0ByJq+iG0oBgbb8sfhNoyStEcMjIE+5C5Bm83huOaUOZypdZ/PLLLULFjFPvnwti99BvmMUy/d+N965vPoxAkYroFhZMJDtI5oqAsp5hg4zA2UOaoh+5zxJda26ElrkpxkgYJxZXqgaXOwU1wDtqk=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4119.namprd15.prod.outlook.com (2603:10b6:a02:cd::20)
+ by BY5PR15MB3620.namprd15.prod.outlook.com (2603:10b6:a03:1f8::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.13; Wed, 27 Jan
+ 2021 18:24:32 +0000
+Received: from BYAPR15MB4119.namprd15.prod.outlook.com
+ ([fe80::2cfe:c26b:fd06:6c26]) by BYAPR15MB4119.namprd15.prod.outlook.com
+ ([fe80::2cfe:c26b:fd06:6c26%6]) with mapi id 15.20.3784.019; Wed, 27 Jan 2021
+ 18:24:32 +0000
+Date:   Wed, 27 Jan 2021 10:24:29 -0800
+From:   Andrey Ignatov <rdna@fb.com>
+To:     Stanislav Fomichev <sdf@google.com>
+CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, Martin KaFai Lau <kafai@fb.com>
+Subject: Re: [PATCH bpf-next v4 1/2] bpf: allow rewriting to ports under
+ ip_unprivileged_port_start
+Message-ID: <YBGv3eYgNQrYBuEl@rdna-mbp.dhcp.thefacebook.com>
+References: <20210126193544.1548503-1-sdf@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210126193544.1548503-1-sdf@google.com>
+X-Originating-IP: [2620:10d:c090:400::5:485e]
+X-ClientProxiedBy: MWHPR18CA0029.namprd18.prod.outlook.com
+ (2603:10b6:320:31::15) To BYAPR15MB4119.namprd15.prod.outlook.com
+ (2603:10b6:a02:cd::20)
 MIME-Version: 1.0
-References: <20210118160139.1971039-1-gprocida@google.com> <20210118160139.1971039-4-gprocida@google.com>
- <CAEf4BzazvC9H=K_A9KamGTB3iKtjuNxd4hEvwFOnkPdnszo6Bw@mail.gmail.com>
- <CAGvU0HmE+gs8eNQcXmFrEERHaiGEnMgqxBho4Ny3DLCe6WR55Q@mail.gmail.com>
- <CAEf4BzZQvLofuVHPqu1ybsTVrM9pFRCRSR5UEFdNJq3Ha8=Luw@mail.gmail.com> <CAGvU0HkuZ_AW_YTjsdsivWV+wF3kf49ugChzMdRjZnrYzwVB3A@mail.gmail.com>
-In-Reply-To: <CAGvU0HkuZ_AW_YTjsdsivWV+wF3kf49ugChzMdRjZnrYzwVB3A@mail.gmail.com>
-From:   Giuliano Procida <gprocida@google.com>
-Date:   Wed, 27 Jan 2021 18:06:27 +0000
-Message-ID: <CAGvU0H=bNJ6QScpsxQWiijCqvqVhBoHctOhN8nZ8vt9CwpA6tQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] btf_encoder: Set .BTF section alignment to 16
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     dwarves@vger.kernel.org, kernel-team@android.com,
-        =?UTF-8?Q?Matthias_M=C3=A4nnich?= <maennich@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (2620:10d:c090:400::5:485e) by MWHPR18CA0029.namprd18.prod.outlook.com (2603:10b6:320:31::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Wed, 27 Jan 2021 18:24:31 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a516a203-1e01-4017-62e3-08d8c2f0ca9e
+X-MS-TrafficTypeDiagnostic: BY5PR15MB3620:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY5PR15MB3620BC68C9042496350A1AF6A8BB9@BY5PR15MB3620.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: d/M87XGiu4dMZWEaEZsQPtpD+bhN7DUBEWX1+G5YT413QRb3fQO/s8zgbQ3nE5Ge3dVxhidtlgSkHYFNS3M/2GIqw2HS3T1TvPaZEggR2cvz1dOGIMqkpNSp+WoSHjfQfk7lMi2Jr2EjI48k4FDlazXo6Pj/+eAMqJuA3IWfVJK2C82g6GNwTw+hy65JcXOlebyQzkRTJXLyjBGPawMSYg5pxpmT8t4uVCLMaCDpfwcobdwb7FU/0ZU73T9zLSc1EokCsgraG2CTr0EMkhQWuNF6AVnn0CllsvTjLYJ/wtNme8Xf70OXS1yb06KMxxDJmAM5T3OyshETlfl1GQ7KCKdkjeyav93PYalM6HKIhfr7i6gTUOaWMqH0qU/BgazkI6xrpQzJzQ0wqmF9s5jTOxusSwBXo470ZRuL/yR7uxowpCPDg1Wb2edbsqO1RffgzhaP78nWWdOpQSCChXB82pArfsoqYMUlnkDQMww+OV6WusVMCqNNgBYFgYS/7BYGykfGKp3TDOkKTVdAUwzXVg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4119.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(39860400002)(346002)(396003)(136003)(16526019)(186003)(9686003)(8936002)(4326008)(66946007)(83380400001)(478600001)(6496006)(8676002)(86362001)(66476007)(316002)(5660300002)(6486002)(2906002)(66556008)(52116002)(6916009);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?amtTTlYweE95cVJTVExIUEt6dHk1VFo2NEUwbWZsL3pENkx0VnVIWGNBSitB?=
+ =?utf-8?B?U1k2U3JJMWxBTWZCS0JvQmF1TW83WmxvM1VMT296N1BKZmV5ZzV6eDdncnNa?=
+ =?utf-8?B?aWRuM2ZZUitZMWt0dlVSN0MyVEFIenlpMDMvcnA1RWhaMzhQN2tkbjdKRmQ0?=
+ =?utf-8?B?RmJrYWtXTnVjN0wvb2RUQitoZlBPdCtRNHZZeWtHczExOTFQbE5kWDhUelRa?=
+ =?utf-8?B?MVVlVGlkOFBDdmlaUVpIVmZuQkxUbEkxL1h2eEZNbGNnRkt2ZHFjcC94OVQr?=
+ =?utf-8?B?aVBNS1EvMDEzQWVqc29pbm1meVRIYmFuWE5YQ1FPRnFRaldUMHlqT3ZvM3l2?=
+ =?utf-8?B?NTluZkRhTFQrWncwY21LWDAwKzhDQ3hoSXlxYkh0QW9kcnloc3RNeWJWMzZ5?=
+ =?utf-8?B?VThjN3c5TksrZlBlQVplaElWNGVnZndxQjgyTmJ3dENuOW1WY3RjTFhRTWtN?=
+ =?utf-8?B?K0hpb1k3Wlk3QWkyclB2ZDBxMHN0MEY5cmErdTM4NXlWMXl5eEhIOXNNcU9v?=
+ =?utf-8?B?S1BJQWNCWTNrUWtKNDQwOUc4a2pOcndLWG9sc2NZU0ZrVDhuVWtYY3dHWFZt?=
+ =?utf-8?B?QllsRmxRZ0pvVkJBV2M4c0lMaTNhRzh4TVlNRldLaVpqcUJOVXd2USthN1M4?=
+ =?utf-8?B?WEtsOGltWGVWSndaNXRjQzhLZXRZSmFTd1BNVGM2bDdoRFUzUG1WdXEvZDV5?=
+ =?utf-8?B?Zi9SSjNnVmZVZXRvSHc2ZVJMcnNhMTJ3UTlJOGdkblNzZ2J0NGdjRGxWNTgr?=
+ =?utf-8?B?aXg4ck5iZmNnR3EvKzg5R2J4ak5pcWs3KzI1THB2cjl4TW9ocEYycEYxbjFV?=
+ =?utf-8?B?Mk4rcWs1WjFZZGdVTC9JTm14dGJOTng0MVZnYWU5SGUzM1Z6MFFnVlNiUktE?=
+ =?utf-8?B?WUhtNFF6NVlJVDhDSzBOVXNjWG9PUW1zWFlXcFM2U3M4QXJremF4QkZpN29S?=
+ =?utf-8?B?Wk41bVl0TmZqQWdFMGd3MHRZTUlPRXU4TGtMdW5NL1J5eDhPOEZTVHRNcjdC?=
+ =?utf-8?B?a1I1QnFuT0RLVC9qaDFuYldNaU1OQ2pWb1ZyTGJ5NlVmcS96R2NhNUcyN0FE?=
+ =?utf-8?B?aU1VWEhGU0lLV2Fkc0gxM2MwSVB0VGlabWtRTlFRWGJUYXhZUi9HdngzVHk5?=
+ =?utf-8?B?UkNiNkNIeTRsQ2JvZDMxbGZIcXFmSmpWUlpwZ2lXS2pEdXVhNjFGb29MSHhq?=
+ =?utf-8?B?eXUyUWZ0YzkwK04wWUQwTkEwQklaeXpnMTgrd2s1OGRaRi9tRnJjRlVRZTRD?=
+ =?utf-8?B?QlhLUGNDMkVvU2NEem9XckN1UGVuL042WDZFUHJhUFB1TmF2S0hoSE95OWs0?=
+ =?utf-8?B?WHduWmdoZFRBbXBTWUNiMm9Bb01uUXZaaDUvRktNclpVL3cxUWMrMlRDKzJa?=
+ =?utf-8?B?UFZzZCtscGUySGI0c3h2N3czdlh4L0p1Zi9KTXpTVzRQeUxCdE1WVDhhSVV4?=
+ =?utf-8?B?cCtUc3FmSnE1OEt1c1VPL1FnbkNSTjg4ZFVhbk5KYmJ6ZHNxL2hFTmxhVjJX?=
+ =?utf-8?Q?IdqiY4=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a516a203-1e01-4017-62e3-08d8c2f0ca9e
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4119.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jan 2021 18:24:32.4120
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /nP+CIXYz9No/PuqhMMFAhCmCYdcBgnRRt4A4QF/XrYNL8uP6TOQYTCQrjIpHyDA
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3620
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-27_06:2021-01-27,2021-01-27 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ priorityscore=1501 mlxscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0
+ lowpriorityscore=0 spamscore=0 impostorscore=0 clxscore=1015 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101270091
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi.
+Stanislav Fomichev <sdf@google.com> [Tue, 2021-01-26 11:36 -0800]:
+> At the moment, BPF_CGROUP_INET{4,6}_BIND hooks can rewrite user_port
+> to the privileged ones (< ip_unprivileged_port_start), but it will
+> be rejected later on in the __inet_bind or __inet6_bind.
+> 
+> Let's add another return value to indicate that CAP_NET_BIND_SERVICE
+> check should be ignored. Use the same idea as we currently use
+> in cgroup/egress where bit #1 indicates CN. Instead, for
+> cgroup/bind{4,6}, bit #1 indicates that CAP_NET_BIND_SERVICE should
+> be bypassed.
+> 
+> v4:
+> - Add missing IPv6 support (Martin KaFai Lau)
+> 
+> v3:
+> - Update description (Martin KaFai Lau)
+> - Fix capability restore in selftest (Martin KaFai Lau)
+> 
+> v2:
+> - Switch to explicit return code (Martin KaFai Lau)
+> 
+> Cc: Andrey Ignatov <rdna@fb.com>
+> Cc: Martin KaFai Lau <kafai@fb.com>
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
 
-On Wed, 27 Jan 2021 at 15:08, Giuliano Procida <gprocida@google.com> wrote:
->
-> Hi Andrii.
->
-> On Thu, 21 Jan 2021 at 20:08, Andrii Nakryiko <andrii.nakryiko@gmail.com>=
- wrote:
-> >
-> > On Thu, Jan 21, 2021 at 3:07 AM Giuliano Procida <gprocida@google.com> =
-wrote:
-> > >
-> > > Hi.
-> > >
-> > > On Thu, 21 Jan 2021 at 07:16, Andrii Nakryiko <andrii.nakryiko@gmail.=
-com> wrote:
-> > >>
-> > >> On Mon, Jan 18, 2021 at 8:01 AM Giuliano Procida <gprocida@google.co=
-m> wrote:
-> > >> >
-> > >> > This is to avoid misaligned access when memory-mapping ELF section=
-s.
-> > >> >
-> > >> > Signed-off-by: Giuliano Procida <gprocida@google.com>
-> > >> > ---
-> > >> >  libbtf.c | 8 ++++++++
-> > >> >  1 file changed, 8 insertions(+)
-> > >> >
-> > >> > diff --git a/libbtf.c b/libbtf.c
-> > >> > index 7552d8e..2f12d53 100644
-> > >> > --- a/libbtf.c
-> > >> > +++ b/libbtf.c
-> > >> > @@ -797,6 +797,14 @@ static int btf_elf__write(const char *filenam=
-e, struct btf *btf)
-> > >> >                         goto unlink;
-> > >> >                 }
-> > >> >
-> > >> > +               snprintf(cmd, sizeof(cmd), "%s --set-section-align=
-ment .BTF=3D16 %s",
-> > >> > +                        llvm_objcopy, filename);
-> > >>
-> > >> does it align inside the ELF file to 16 bytes, or does it request th=
-e
-> > >> linker to align it at 16 byte alignment in memory? Given .BTF sectio=
-n
-> > >> is not loadable, trying to understand the implications.
-> > >>
-> > >
-> > > We have a tool that loads BTF from ELF files. It uses mmap and "parse=
-s" the BTF as structs in memory. The ELF file is mapped with page alignment=
- but the BTF section within it has no alignment at all. Using MSAN (IIRC) w=
-e get warnings about misaligned accesses. Everything within BTF itself is n=
-aturally aligned, so it makes sense to align the section within ELF as well=
-. There are probably some architectures where this makes the difference bet=
-ween working and SIGBUS.
-> > >
-> >
-> > Right, ok, thanks for explaining!
-> >
-> > > I did try to get objcopy to set alignment at the point the section is=
- added. However, this didn't work.
-> > >
-> > >>
-> > >>
-> > >> > +               if (system(cmd)) {
-> > >>
-> > >> Also curious, if objcopy emits error (saying that
-> > >> --set-section-alignment argument is not recognized), will that error
-> > >> be shown in stdout? or system() consumes it without redirecting it t=
-o
-> > >> stdout?
-> > >>
-> > >
-> > > I believe it goes to stderr. I would need to check. system() will not=
- consume this. I'm not keen to write stderr (or stdout) post-processing cod=
-e in plain C.
-> > >
-> >
-> > You can use popen() to capture/hide output, this is a better
-> > alternative to system() in this case. We don't want "expected
-> > warnings" in kernel build process.
-> >
-> > >>
-> > >> > +                       /* non-fatal, this is a nice-to-have and i=
-t's only supported from LLVM 10 */
-> > >> > +                       fprintf(stderr, "%s: warning: failed to al=
-ign .BTF section in '%s': %d!\n",
-> > >> > +                               __func__, filename, errno);
-> > >>
-> > >> Probably better to emit this warning only in verbose mode, otherwise
-> > >> lots of people will start complaining that they get some new warning=
-s
-> > >> from pahole.
-> > >>
-> > >
-> > > It may be better to just use POSIX and ELF APIs directly instead of o=
-bjcopy. This way the section can be added with the right alignment directly=
-. pahole is already linked against libelf and if we could get rid of the ex=
-ternal dependency on objcopy it would be a win in more than one way.
-> >
-> > This would be great, yes. At some point I remember giving it a try,
-> > but for some reason I couldn't make libelf flush data and update
-> > section headers properly. Maybe you'll have better luck. Though I
-> > think I was trying to mark section loadable, and eventually I probably
-> > managed to do that, but still abandoned it (it's not enough to mark
-> > section loadable, you have to assign it to ELF segment as well, which
-> > libelf doesn't allow to do and you need linker support). Anyways, give
-> > it a try, it should work.
-> >
->
-> I found 341dfcf8d78eaa3a2dc96dea06f0392eb2978364 ("btf: expose BTF
-> info through sysfs") and I now see what you mean.
->
-> Alignment of .BTF as produced by the linker script is currently not
-> down to pahole at all. The kernel link script has to add .BTF in a
-> rather roundabout way because it needs to be added as a loadable
-> segment and pahole only adds it as a plain section.
->
-> pahole's does this using llvm-objcopy (which I spotted has some
-> side-effects on our AOSP vmlinux). On vanilla kernels, while
-> llvm-objcopy doesn't rewrite (or at least, resize) .strtab, it does
-> renumber sections so that the offset order is monotonic.
->
-> We're working with .BTF in userspace and haven't needed .BTF as a
-> segment. If I managed to get pahole to make .BTF a loadable segment as
-> well, then the linker scripts could be simplified. I'll see if I can
-> do this part as well.
+Explicit return code looks much cleaner than both what v1 did and what I
+proposed earlier (compare port before/after).
 
-OK...
+Just one nit from me but otherwide looks good.
 
-$ readelf -lW /tmp/vmlinux
+Acked-by: Andrey Ignatov <rdna@fb.com>
 
-Elf file type is EXEC (Executable file)
-Entry point 0x1000000
-There are 5 program headers, starting at offset 64
+...
+> @@ -231,30 +232,48 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
+>  
+>  #define BPF_CGROUP_RUN_SA_PROG(sk, uaddr, type)				       \
+>  ({									       \
+> +	u32 __unused_flags;						       \
+>  	int __ret = 0;							       \
+>  	if (cgroup_bpf_enabled(type))					       \
+>  		__ret = __cgroup_bpf_run_filter_sock_addr(sk, uaddr, type,     \
+> -							  NULL);	       \
+> +							  NULL,		       \
+> +							  &__unused_flags);    \
+>  	__ret;								       \
+>  })
+>  
+>  #define BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, type, t_ctx)		       \
+>  ({									       \
+> +	u32 __unused_flags;						       \
+>  	int __ret = 0;							       \
+>  	if (cgroup_bpf_enabled(type))	{				       \
+>  		lock_sock(sk);						       \
+>  		__ret = __cgroup_bpf_run_filter_sock_addr(sk, uaddr, type,     \
+> -							  t_ctx);	       \
+> +							  t_ctx,	       \
+> +							  &__unused_flags);    \
+>  		release_sock(sk);					       \
+>  	}								       \
+>  	__ret;								       \
+>  })
+>  
+> -#define BPF_CGROUP_RUN_PROG_INET4_BIND_LOCK(sk, uaddr)			       \
+> -	BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, BPF_CGROUP_INET4_BIND, NULL)
+> -
+> -#define BPF_CGROUP_RUN_PROG_INET6_BIND_LOCK(sk, uaddr)			       \
+> -	BPF_CGROUP_RUN_SA_PROG_LOCK(sk, uaddr, BPF_CGROUP_INET6_BIND, NULL)
+> +/* BPF_CGROUP_INET4_BIND and BPF_CGROUP_INET6_BIND can return extra flags
+> + * via upper bits of return code. The only flag that is supported
+> + * (at bit position 0) is to indicate CAP_NET_BIND_SERVICE capability check
+> + * should be bypassed.
+> + */
+> +#define BPF_CGROUP_RUN_PROG_INET_BIND_LOCK(sk, uaddr, type, flags)	       \
+> +({									       \
+> +	u32 __flags = 0;						       \
+> +	int __ret = 0;							       \
+> +	if (cgroup_bpf_enabled(type))	{				       \
+> +		lock_sock(sk);						       \
+> +		__ret = __cgroup_bpf_run_filter_sock_addr(sk, uaddr, type,     \
+> +							  NULL, &__flags);     \
+> +		release_sock(sk);					       \
+> +		if (__flags & 1)					       \
+> +			*flags |= BIND_NO_CAP_NET_BIND_SERVICE;		       \
 
-Program Headers:
-  Type           Offset   VirtAddr           PhysAddr
-FileSiz  MemSiz   Flg Align
-  LOAD           0x200000 0xffffffff81000000 0x0000000001000000
-0x167be37 0x167be37 R E 0x200000
-  LOAD           0x1a00000 0xffffffff82800000 0x0000000002800000
-0x5a6000 0x5a6000 RW  0x200000
-  LOAD           0x2000000 0x0000000000000000 0x0000000002da6000
-0x02a258 0x02a258 RW  0x200000
-  LOAD           0x21d1000 0xffffffff82dd1000 0x0000000002dd1000
-0x104000 0x25b000 RWE 0x200000
-  NOTE           0x152ac30 0xffffffff8232ac30 0x000000000232ac30
-0x00003c 0x00003c     0x4
+Nit: It took me some time to realize that there are two different
+"flags": one to pass to __cgroup_bpf_run_filter_sock_addr() and another
+to pass to __inet{,6}_bind/BPF_CGROUP_RUN_PROG_INET_BIND_LOCK that both carry
+"BIND_NO_CAP_NET_BIND_SERVICE" flag but do it differently:
+* hard-coded 0x1 in the former case;
+* and BIND_NO_CAP_NET_BIND_SERVICE == (1 << 3) in the latter.
 
- Section to Segment mapping:
-  Segment Sections...
-   00     .text .rodata .pci_fixup .tracedata __ksymtab __ksymtab_gpl
-__ksymtab_strings __param __modver __ex_table .notes .BTF
-   01     .data __bug_table .orc_unwind_ip .orc_unwind .orc_lookup .vvar
-   02     .data..percpu
-   03     .init.text .altinstr_aux .init.data .x86_cpu_dev.init
-.altinstructions .altinstr_replacement .iommu_table .apicdrivers
-.exit.text .smp_locks .data_nosave .bss .brk
-   04     .notes
+I'm not sure how to make it more readable: maybe name `flags` and
+`__flags` differently to highlight the difference (`bind_flags` and
+`__flags`?) and add a #define for the "1" here?
 
-This is the end result. The sausage factory (gen_btf / vmlinux_link -
-which I've now read through) actually does:
+In anycase IMO it's not worth a respin and can be addressed by a
+follow-up if you agree.
 
-* link a temporary vmlinux
-* run pahole -J on this
-* dump out the .BTF as a raw file (anything clever pahole does with
-ELF is thrown away here)
-* create an ELF file with arch and format to match vmlinux, containing
-a single .BTF section
-* link this ELF file with the other bits of the kernel.
+> +	}								       \
+> +	__ret;								       \
+> +})
+>  
+>  #define BPF_CGROUP_PRE_CONNECT_ENABLED(sk)				       \
+>  	((cgroup_bpf_enabled(BPF_CGROUP_INET4_CONNECT) ||		       \
 
-As a DWARF to BTF converter, pahole's role is clear. At this point I'd
-like to separate what's useful for the kernel and what's useful in
-terms of generally packaging up .BTF as a kind of debug information
-for general use.
-
-Packaging up BTF as an ELF section or linking this into the kernel is
-a lot of work to do properly in pahole and duplicates the role of the
-linker. If I continue, I'll probably end up creating a disjoint R
-segment just for .BTF and I don't know if that's OK. I'm not sure how
-much more work is needed to get to the point where all the various
-objcopy/objdump can be eliminated or whether this is a worthwhile
-goal. Another way of getting rid of the objcopy/objdump dependencies
-for the kernel would be to just emit an ELF file containing the .BTF
-section only and let the linker do its thing.
-
-For non-kernel use, I'm not sure of the implications of letting libelf
-reorder all the sections, or if we'd ever want the .BTF to be in a
-loadable segment. If anything, I'd advocate for having pahole just
-generate raw BTF output. However, I know there's a big convenience
-factor in having debug (type) info packaged into the ELF.
-
-So I'm not sure if it's worth pursuing the line of work beyond
-eliminating pahole's dependency on llvm-objcopy. In terms of my
-follow-up series, this might mean dropping 3/4 (as preserving existing
-ELF layout in the temporary vmlinux isn't needed) but keeping 4/4 (as
-it's useful to us, even if it's currently useless for the kernel).
-
-If we cannot get libelf to make the right kind of sausage, then I
-agree that vmlinux .BTF alignment should probably follow your earlier
-suggestion of `. =3D ALIGN(8)` in vmlinux.lds.h.
-
-And we haven't even got to discussing modules and merging .BTF info. :-)
-
-Regards,
-Giuliano.
-
-
-> Regards,
-> Giuliano.
->
-> > >
-> > >>
-> > >>
-> > >> > +               }
-> > >> > +
-> > >> >                 err =3D 0;
-> > >> >         unlink:
-> > >> >                 unlink(tmp_fn);
-> > >> > --
-> > >> > 2.30.0.284.gd98b1dd5eaa7-goog
-> > >> >
-> > >
-> > >
-> > > I'll see if I can spend a little time on this idea instead.
-> > >
-> > > Regards,
-> > > Giuliano.
-> >
-> > --
-> > To unsubscribe from this group and stop receiving emails from it, send =
-an email to kernel-team+unsubscribe@android.com.
-> >
+-- 
+Andrey Ignatov
