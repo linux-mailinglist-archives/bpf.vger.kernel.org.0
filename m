@@ -2,198 +2,246 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9429D3053DC
-	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 08:02:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AEC130542C
+	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 08:14:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232770AbhA0HBz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Jan 2021 02:01:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60714 "EHLO
+        id S233285AbhA0HNM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Jan 2021 02:13:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232406AbhA0HAt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Jan 2021 02:00:49 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DD26C061574;
-        Tue, 26 Jan 2021 23:00:09 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id q131so577116pfq.10;
-        Tue, 26 Jan 2021 23:00:09 -0800 (PST)
+        with ESMTP id S232823AbhA0HJY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Jan 2021 02:09:24 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08801C061573
+        for <bpf@vger.kernel.org>; Tue, 26 Jan 2021 23:08:44 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id e9so776794pjj.0
+        for <bpf@vger.kernel.org>; Tue, 26 Jan 2021 23:08:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wfVtUOVdHzNsaNBZDsKRQ5pCa3prKgwyznfp/Vx4Pk0=;
-        b=TGfW5rRNbbytIpi3S+Q7+mjYMd6OMXgnGbfCUTzyrw3FtUZFjQFZ6D38JF4H4UabwW
-         Auwaqrb1bzMGvNB+rYpfzw7xOQqLuczhsqTW1LiClxR9hYtFXj+ZZqG98QUyoJixdtHy
-         qMNEJhg1uPiFJCkFgKbgbdB0oAAeXGgLpPtar/M5I4a/kymB9fxojFfOUU6j+ptE0hvH
-         LnzWuA+WkWzIBB7rj+S4p+lnRknj/IYtFEdH+tbhpvXbuin0fBykAfR0I1h012JmyIv1
-         q4JP473OCk995M28iPK7CyxQdwhvw/+V7b64yQh3Ja3msBHvyLxMaackmUved3kkRhks
-         LNrw==
+        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KvJIrN7dpSbC4mUaeerHgUdiYjp0w1FZlCWyLCYz8BY=;
+        b=bPY8wty7wmMyTe/xjPgUdFU8kOd+VjestEJzdGhbLFZZnD3JFK3wQxL0jhwkEY/y9J
+         PHDJCRZ/CBgJuJvoT5CKO7vWZxRhIC7oDMyil3/FMfo1ZemGer7PmqEJVutgh6wnyWH8
+         tNYvZRfX4859X4FQKlB89ppMetSaWmDQCZMHJ1FlYyxNmyOy+CJp76JjFJg9P8i9h9Uo
+         JMK4Us6f+/55aICxlDrLflrNnowxLDsvQkyReyHAO19TmHWb1nIdP8AlwJ8H30+AJE+k
+         u9U+7oQaLXKHQf/Uk288FWnMKxaiLmuosnvpc+cmDzQjN5aNtQIDWLJMTOOE6M8ybguF
+         ctEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wfVtUOVdHzNsaNBZDsKRQ5pCa3prKgwyznfp/Vx4Pk0=;
-        b=BlpF6m6NbAYTeWMhrO+5T9gURqor9OsO/uBwoULn/A0G5Woj/916zrfqc/JBfNZfes
-         Lixt20+z9kiuIuu2n4hZUlLJXc+X2AFvw/b4QNqfI5Sk1fd7GBSZIe8jTN2jJz8q6pZI
-         4iXqDxQxeTr6X2JWXWLy/kmy/QkAcTEmkf2YsTt2vemd0qxmKuLiaA2JcHYc7F5/5R7d
-         2KQ2lsQ8NtLAMe/hH+Zvwvb9xh3Zy7XWBv+cDJ9XKZkn98f1rfW1ugo3Iq18/s2GEhPw
-         ovOqg7dqMm3yk+lqdYEX/a33+iIwKyxKKI2YHZvttxFFZVMvEYxpzZJP0IQ1VD26+fMs
-         2s9A==
-X-Gm-Message-State: AOAM531jcMOldpyw88FLOXlDhmY77V6saZf7/rqAdRT/wT0mScG6O6UE
-        uV4vSAhrCXX4qH19unITTWfZ3cPwQ/pZblvj7uQ=
-X-Google-Smtp-Source: ABdhPJwUB6v5r8kFfQuLM5k7OwgpWFsDXPWOy2alHN9MmNuqQa4M2/XgsmZGOklg9WIxFTkbBgaTzcpUl7/IOCwTTU0=
-X-Received: by 2002:a63:2265:: with SMTP id t37mr9725379pgm.336.1611730808252;
- Tue, 26 Jan 2021 23:00:08 -0800 (PST)
-MIME-Version: 1.0
-References: <20210122205415.113822-1-xiyou.wangcong@gmail.com>
- <20210122205415.113822-2-xiyou.wangcong@gmail.com> <d69d44ca-206c-d818-1177-c8f14d8be8d1@iogearbox.net>
-In-Reply-To: <d69d44ca-206c-d818-1177-c8f14d8be8d1@iogearbox.net>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Tue, 26 Jan 2021 22:59:57 -0800
-Message-ID: <CAM_iQpW8aeh190G=KVA9UEZ_6+UfenQxgPXuw784oxCaMfXjng@mail.gmail.com>
-Subject: Re: [Patch bpf-next v5 1/3] bpf: introduce timeout hash map
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Jamal Hadi Salim <jhs@mojatatu.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KvJIrN7dpSbC4mUaeerHgUdiYjp0w1FZlCWyLCYz8BY=;
+        b=Y6CKiC24T15I8imoGTAKWht9NPbisYfTVFYOj3c2rJ2HHxslq4UHI2JXlwriBbTko8
+         65IWgA78bSnVsmGrcWkLoKI0hwPDCxGi23RcnjbxQVFrAbBVk87E2DOMvTVAcoWo8+4C
+         FkS7K5CUwepXkeS42atZKMIlV04KBpH+zYEyAXgOhi/MpyuhD5kxJ6fmtcwbgYqOPemC
+         hnN59DAWtnlYJN2ujgHBHWdlkKyqOtC+N5es0vbcRbN1SFUQey1Ud4bMxVXkMgO6SCsz
+         A1LZn9OqUBCUb0/b3kiXcHQZUs+efhjuQmUBogpC2njEVvC9yZZBCID/g1tASwIEoOqs
+         47MQ==
+X-Gm-Message-State: AOAM532Ba2Xn33KxYmFtJCMMGqFwrPwJ2+wiIvv3WAZmCQAOh9CIJjtl
+        IMdscZNSCArPa3ZBoqB4u/qFSg==
+X-Google-Smtp-Source: ABdhPJxf7E8TMdjCREOKDfxVGq51H1oIeHNFvyDpg3tVz9oRQ/Q1abQVbWmKf+uEK9bFnkvTnQBGjw==
+X-Received: by 2002:a17:90a:4209:: with SMTP id o9mr4223181pjg.75.1611731323537;
+        Tue, 26 Jan 2021 23:08:43 -0800 (PST)
+Received: from [192.168.10.23] (124-171-107-241.dyn.iinet.net.au. [124.171.107.241])
+        by smtp.gmail.com with UTF8SMTPSA id 21sm1134342pfh.56.2021.01.26.23.08.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 26 Jan 2021 23:08:42 -0800 (PST)
+Subject: Re: [PATCH v2] tracepoint: Do not fail unregistering a probe due to
+ memory allocation
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Matt Mullins <mmullins@mmlx.us>, paulmck <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
         Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
         Martin KaFai Lau <kafai@fb.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Dongdong Wang <wangdongdong.6@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+References: <20201117211836.54acaef2@oasis.local.home>
+ <CAADnVQJekaejHo0eTnnUp68tOhwUv8t47DpGoOgc9Y+_19PpeA@mail.gmail.com>
+ <20201118074609.20fdf9c4@gandalf.local.home>
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+Message-ID: <5ca3fcc1-b8fb-546e-5e75-3684efb19a6f@ozlabs.ru>
+Date:   Wed, 27 Jan 2021 18:08:34 +1100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
+ Thunderbird/85.0
+MIME-Version: 1.0
+In-Reply-To: <20201118074609.20fdf9c4@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 2:04 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 1/22/21 9:54 PM, Cong Wang wrote:
-> > From: Cong Wang <cong.wang@bytedance.com>
-> >
-> > This borrows the idea from conntrack and will be used for conntrack in
-> > ebpf too. Each element in a timeout map has a user-specified timeout
-> > in msecs, after it expires it will be automatically removed from the
-> > map. Cilium already does the same thing, it uses a regular map or LRU
-> > map to track connections and has its own GC in user-space. This does
-> > not scale well when we have millions of connections, as each removal
-> > needs a syscall. Even if we could batch the operations, it still needs
-> > to copy a lot of data between kernel and user space.
-> >
-> > There are two cases to consider here:
-> >
-> > 1. When the timeout map is idle, i.e. no one updates or accesses it,
-> >     we rely on the delayed work to scan the whole hash table and remove
-> >     these expired. The delayed work is scheduled every 1 sec when idle,
-> >     which is also what conntrack uses. It is fine to scan the whole
-> >     table as we do not actually remove elements during this scan,
-> >     instead we simply queue them to the lockless list and defer all the
-> >     removals to the next schedule.
-> >
-> > 2. When the timeout map is actively accessed, we could reach expired
-> >     elements before the idle work automatically scans them, we can
-> >     simply skip them and schedule the delayed work immediately to do
-> >     the actual removals. We have to avoid taking locks on fast path.
-> >
-> > The timeout of an element can be set or updated via bpf_map_update_elem()
-> > and we reuse the upper 32-bit of the 64-bit flag for the timeout value,
-> > as there are only a few bits are used currently. Note, a zero timeout
-> > means to expire immediately.
-> >
-> > To avoid adding memory overhead to regular map, we have to reuse some
-> > field in struct htab_elem, that is, lru_node. Otherwise we would have
-> > to rewrite a lot of code.
-> >
-> > For now, batch ops is not supported, we can add it later if needed.
->
-> Back in earlier conversation [0], I mentioned also LRU map flavors and to look
-> into adding a flag, so we wouldn't need new BPF_MAP_TYPE_TIMEOUT_HASH/*LRU types
-> that replicate existing types once again just with the timeout in addition, so
-> UAPI wise new map type is not great.
 
-Interestingly, Jamal also brought this flag up to me.
 
-The reason why I don't use a flag is that I don't see any other maps need a
-timeout. Take the LRU map you mentioned as an example, it evicts elements
-based on size, not based on time, I can't think of a case where we need both
-time and size based eviction. Another example is array, there is no way to
-delete an element from an array, so we can't really expire an element.
+On 18/11/2020 23:46, Steven Rostedt wrote:
+> On Tue, 17 Nov 2020 20:54:24 -0800
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> 
+>>>   extern int
+>>> @@ -310,7 +312,12 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>>>                  do {                                                    \
+>>>                          it_func = (it_func_ptr)->func;                  \
+>>>                          __data = (it_func_ptr)->data;                   \
+>>> -                       ((void(*)(void *, proto))(it_func))(__data, args); \
+>>> +                       /*                                              \
+>>> +                        * Removed functions that couldn't be allocated \
+>>> +                        * are replaced with TRACEPOINT_STUB.           \
+>>> +                        */                                             \
+>>> +                       if (likely(it_func != TRACEPOINT_STUB))         \
+>>> +                               ((void(*)(void *, proto))(it_func))(__data, args); \
+>>
+>> I think you're overreacting to the problem.
+> 
+> I will disagree with that.
+> 
+>> Adding run-time check to extremely unlikely problem seems wasteful.
+> 
+> Show me a real benchmark that you can notice a problem here. I bet that
+> check is even within the noise of calling an indirect function. Especially
+> on a machine with retpolines.
+> 
+>> 99.9% of the time allocate_probes() will do kmalloc from slab of small
+>> objects.
+>> If that slab is out of memory it means it cannot allocate a single page.
+>> In such case so many things will be failing to alloc that system
+>> is unlikely operational. oom should have triggered long ago.
+>> Imo Matt's approach to add __GFP_NOFAIL to allocate_probes()
+> 
+> Looking at the GFP_NOFAIL comment:
+> 
+>   * %__GFP_NOFAIL: The VM implementation _must_ retry infinitely: the caller
+>   * cannot handle allocation failures. The allocation could block
+>   * indefinitely but will never return with failure. Testing for
+>   * failure is pointless.
+>   * New users should be evaluated carefully (and the flag should be
+>   * used only when there is no reasonable failure policy) but it is
+>   * definitely preferable to use the flag rather than opencode endless
+>   * loop around allocator.
+> 
+> I realized I made a mistake in my patch for using it, as my patch is a
+> failure policy. It looks like something we want to avoid in general.
+> 
+> Thanks, I'll send a v3 that removes it.
+> 
+>> when it's called from func_remove() is much better.
+>> The error was reported by syzbot that was using
+>> memory fault injections. ENOMEM in allocate_probes() was
+>> never seen in real life and highly unlikely will ever be seen.
+> 
+> And the biggest thing you are missing here, is that if you are running on a
+> machine that has static calls, this code is never hit unless you have more
+> than one callback on a single tracepoint. That's because when there's only
+> one callback, it gets called directly, and this loop is not involved.
 
-Or do you have any use case for a non-regular hash map with timeout?
 
->
-> Given you mention Cilium above, only for kernels where there is no LRU hash map,
-> that is < 4.10, we rely on plain hash, everything else LRU + prealloc to mitigate
-> ddos by refusing to add new entries when full whereas less active ones will be
-> purged instead. Timeout /only/ for plain hash is less useful overall, did you
+I am running syzkaller and the kernel keeps crashing in 
+__traceiter_##_name. This patch makes these crashes happen lot less 
+often (and so did the v1) but the kernel still crashes (examples below 
+but the common thing is that they crash in tracepoints). Disasm points 
+to __DO_TRACE_CALL(name) and this fixes it:
 
-The difference between LRU and a timeout map is whether we should
-drop the least recently used one too when it is full. For conntrack, this is not
-a good idea, because when we have a burst of connections, the least recently
-used might be just 1-s old, so evicting it out is not a good idea.
-With a timeout
-map, we just drop all new connection when it is full and wait for some connect
-to timeout naturally, aligned with the definition of conntrack.
+========================
+--- a/include/linux/tracepoint.h
++++ b/include/linux/tracepoint.h
+@@ -313,6 +313,7 @@ static inline struct tracepoint 
+*tracepoint_ptr_deref(tracepoint_ptr_t *p)
+                                                                         \
+                 it_func_ptr =                                           \
+ 
+rcu_dereference_raw((&__tracepoint_##_name)->funcs); \
++               if (it_func_ptr)                                        \
+                 do {                                                    \
+                         it_func = (it_func_ptr)->func;                  \
+========================
 
-So it should be a good replacement for LRU map too in terms of conntrack.
+I am running on a powerpc box which does not have CONFIG_HAVE_STATIC_CALL.
 
-> sketch a more generic approach in the meantime that would work for all the htab/lru
-> flavors (and ideally as non-delayed_work based)?
+I wonder if it is still the same problem which mentioned v3 might fix or 
+it is something different? Thanks,
 
-If you mean LRU maps may need timeout too, like I explained above, I can't think
-of any such use cases.
 
->
->    [0] https://lore.kernel.org/bpf/20201214201118.148126-1-xiyou.wangcong@gmail.com/
->
-> [...]
-> > @@ -1012,6 +1081,8 @@ static int htab_map_update_elem(struct bpf_map *map, void *key, void *value,
-> >                       copy_map_value_locked(map,
-> >                                             l_old->key + round_up(key_size, 8),
-> >                                             value, false);
-> > +                     if (timeout_map)
-> > +                             l_old->expires = msecs_to_expire(timeout);
-> >                       return 0;
-> >               }
-> >               /* fall through, grab the bucket lock and lookup again.
-> > @@ -1020,6 +1091,7 @@ static int htab_map_update_elem(struct bpf_map *map, void *key, void *value,
-> >                */
-> >       }
-> >
-> > +again:
-> >       ret = htab_lock_bucket(htab, b, hash, &flags);
-> >       if (ret)
-> >               return ret;
-> > @@ -1040,26 +1112,41 @@ static int htab_map_update_elem(struct bpf_map *map, void *key, void *value,
-> >               copy_map_value_locked(map,
-> >                                     l_old->key + round_up(key_size, 8),
-> >                                     value, false);
-> > +             if (timeout_map)
-> > +                     l_old->expires = msecs_to_expire(timeout);
-> >               ret = 0;
-> >               goto err;
-> >       }
-> >
-> >       l_new = alloc_htab_elem(htab, key, value, key_size, hash, false, false,
-> > -                             l_old);
-> > +                             timeout_map, l_old);
-> >       if (IS_ERR(l_new)) {
-> > -             /* all pre-allocated elements are in use or memory exhausted */
-> >               ret = PTR_ERR(l_new);
-> > +             if (ret == -EAGAIN) {
-> > +                     htab_unlock_bucket(htab, b, hash, flags);
-> > +                     htab_gc_elem(htab, l_old);
-> > +                     mod_delayed_work(system_unbound_wq, &htab->gc_work, 0);
-> > +                     goto again;
->
-> Also this one looks rather worrying, so the BPF prog is stalled here, loop-waiting
-> in (e.g. XDP) hot path for system_unbound_wq to kick in to make forward progress?
 
-In this case, the old one is scheduled for removal in GC, we just wait for GC
-to finally remove it. It won't stall unless GC itself or the worker scheduler is
-wrong, both of which should be kernel bugs.
+[  285.072538] Kernel attempted to read user page (0) - exploit attempt? 
+(uid: 0)
+[  285.073657] BUG: Kernel NULL pointer dereference on read at 0x00000000
+[  285.075129] Faulting instruction address: 0xc0000000002edf48
+cpu 0xd: Vector: 300 (Data Access) at [c0000000115db530]
+     pc: c0000000002edf48: lock_acquire+0x2e8/0x5d0
+     lr: c0000000006ee450: step_into+0x940/0xc20
+     sp: c0000000115db7d0
+    msr: 8000000000009033
+    dar: 0
+  dsisr: 40000000
+   current = 0xc0000000115af280
+   paca    = 0xc00000005ff9fe00	 irqmask: 0x03	 irq_happened: 0x01
+     pid   = 182, comm = systemd-journal
+Linux version 5.11.0-rc5-le_syzkaller_a+fstn1 (aik@fstn1-p1) (gcc 
+(Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0, GNU ld (GNU Binutils for Ubuntu) 
+2.30) #65 SMP Wed Jan 27 16:46:46 AEDT 2021
+enter ? for help
+[c0000000115db8c0] c0000000006ee450 step_into+0x940/0xc20
+[c0000000115db950] c0000000006efddc walk_component+0xbc/0x340
+[c0000000115db9d0] c0000000006f0418 link_path_walk.part.29+0x3b8/0x5b0
+[c0000000115dbaa0] c0000000006f0b1c path_openat+0x11c/0x1190
+[c0000000115dbb40] c0000000006f4334 do_filp_open+0xb4/0x180
+[c0000000115dbc80] c0000000006c83cc do_sys_openat2+0x48c/0x610
+[c0000000115dbd20] c0000000006caf9c do_sys_open+0xcc/0x140
+[c0000000115dbdb0] c00000000004ba48 system_call_exception+0x178/0x2b0
+[c0000000115dbe10] c00000000000e060 system_call_common+0xf0/0x27c
+--- Exception: c00 (System Call) at 00007fff7fb3e758
+SP (7ffff28e2900) is in userspace
 
-If we don't do this, users would get a -E2BIG when it is not too big. I don't
-know a better way to handle this sad situation, maybe returning -EBUSY
-to users and let them call again?
 
-Thanks.
+
+
+[   92.747130] FAT-fs (loop7): bogus number of reserved sectors
+[   92.747193] Kernel attempted to read user page (0) - exploit attempt? 
+(uid: 0)
+[   92.748393] FAT-fs (loop7): Can't find a valid FAT filesystem
+[   92.750579] BUG: Kernel NULL pointer dereference on read at 0x00000000
+[   92.751855] Faulting instruction address: 0xc0000000002ed928
+cpu 0xd: Vector: 300 (Data Access) at [c00000001138f5c0]
+     pc: c0000000002ed928: lock_release+0x138/0x470
+     lr: c0000000002e0084: up_write+0x34/0x1e0
+     sp: c00000001138f860
+    msr: 8000000000009033
+    dar: 0
+  dsisr: 40000000
+   current = 0xc00000004fe7b480
+   paca    = 0xc00000005ff9fe00	 irqmask: 0x03	 irq_happened: 0x01
+     pid   = 10670, comm = syz-executor.3
+Linux version 5.11.0-rc5-le_syzkaller_a+fstn1 (aik@fstn1-p1) (gcc 
+(Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0, GNU ld (GNU Binutils for Ubuntu) 
+2.30) #65 SMP Wed Jan 27 16:46:46 AEDT 2021
+enter ? for help
+[c00000001138f910] c0000000002e0084 up_write+0x34/0x1e0
+[c00000001138f980] c0000000006151fc anon_vma_clone+0x1ec/0x370
+[c00000001138f9f0] c00000000060180c __split_vma+0x11c/0x340
+[c00000001138fa40] c000000000601cb0 __do_munmap+0x1c0/0x920
+[c00000001138fad0] c000000000604d20 mmap_region+0x3b0/0xae0
+[c00000001138fbd0] c0000000006059d4 do_mmap+0x584/0x830
+[c00000001138fc60] c0000000005b0f90 vm_mmap_pgoff+0x170/0x260
+[c00000001138fcf0] c000000000600818 ksys_mmap_pgoff+0x198/0x3a0
+[c00000001138fd60] c0000000000155ec sys_mmap+0xcc/0x150
+[c00000001138fdb0] c00000000004ba48 system_call_exception+0x178/0x2b0
+[c00000001138fe10] c00000000000e060 system_call_common+0xf0/0x27c
+--- Exception: c00 (System Call) at 0000000010058ad0
+SP (7fffae45e1c0) is in userspace
+
+
+-- 
+Alexey
