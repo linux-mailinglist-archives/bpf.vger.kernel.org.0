@@ -2,246 +2,311 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AEC130542C
-	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 08:14:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 956933054DA
+	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 08:41:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233285AbhA0HNM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Jan 2021 02:13:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34570 "EHLO
+        id S234301AbhA0Hla (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Jan 2021 02:41:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232823AbhA0HJY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Jan 2021 02:09:24 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08801C061573
-        for <bpf@vger.kernel.org>; Tue, 26 Jan 2021 23:08:44 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id e9so776794pjj.0
-        for <bpf@vger.kernel.org>; Tue, 26 Jan 2021 23:08:44 -0800 (PST)
+        with ESMTP id S233979AbhA0HiW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Jan 2021 02:38:22 -0500
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24662C06174A;
+        Tue, 26 Jan 2021 23:37:42 -0800 (PST)
+Received: by mail-io1-xd31.google.com with SMTP id d81so951547iof.3;
+        Tue, 26 Jan 2021 23:37:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KvJIrN7dpSbC4mUaeerHgUdiYjp0w1FZlCWyLCYz8BY=;
-        b=bPY8wty7wmMyTe/xjPgUdFU8kOd+VjestEJzdGhbLFZZnD3JFK3wQxL0jhwkEY/y9J
-         PHDJCRZ/CBgJuJvoT5CKO7vWZxRhIC7oDMyil3/FMfo1ZemGer7PmqEJVutgh6wnyWH8
-         tNYvZRfX4859X4FQKlB89ppMetSaWmDQCZMHJ1FlYyxNmyOy+CJp76JjFJg9P8i9h9Uo
-         JMK4Us6f+/55aICxlDrLflrNnowxLDsvQkyReyHAO19TmHWb1nIdP8AlwJ8H30+AJE+k
-         u9U+7oQaLXKHQf/Uk288FWnMKxaiLmuosnvpc+cmDzQjN5aNtQIDWLJMTOOE6M8ybguF
-         ctEg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=J/luXJA5XBMYYxnRalHU96ygNZ23KxEs6NNDNp/ohpI=;
+        b=K6rKXwHBNNbeoYDUU0yt2JM0LrLZB/+zCDxsa/FF502vTemO3Isk+sI/HloYlA2AEg
+         mvOPy1Y/rSutQXKpCH0tjDJ2X41ljAUmtvdSqGzC5FkRlOfpm4J59ZRZgYtCMgAT7lNv
+         zWSwZeKrqc5hnONcBsVDs0HXh4lX/eB8xA1XrEeJ0Q1Y3U+Dfx+3oq40hdB62NnQx0zD
+         YIKeeR1CymsrJva6tuhYVoRfF7UNovYrDgpEsc9S5FZNW/Izq6EZGYoS3OarJOLXeg30
+         ryyB7UnLz9CiwwQk6JxLoinyNQP4gu6vq/Y36SofIh5L85/NvurOjpztI+xJrv+AhZ9d
+         yBvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KvJIrN7dpSbC4mUaeerHgUdiYjp0w1FZlCWyLCYz8BY=;
-        b=Y6CKiC24T15I8imoGTAKWht9NPbisYfTVFYOj3c2rJ2HHxslq4UHI2JXlwriBbTko8
-         65IWgA78bSnVsmGrcWkLoKI0hwPDCxGi23RcnjbxQVFrAbBVk87E2DOMvTVAcoWo8+4C
-         FkS7K5CUwepXkeS42atZKMIlV04KBpH+zYEyAXgOhi/MpyuhD5kxJ6fmtcwbgYqOPemC
-         hnN59DAWtnlYJN2ujgHBHWdlkKyqOtC+N5es0vbcRbN1SFUQey1Ud4bMxVXkMgO6SCsz
-         A1LZn9OqUBCUb0/b3kiXcHQZUs+efhjuQmUBogpC2njEVvC9yZZBCID/g1tASwIEoOqs
-         47MQ==
-X-Gm-Message-State: AOAM532Ba2Xn33KxYmFtJCMMGqFwrPwJ2+wiIvv3WAZmCQAOh9CIJjtl
-        IMdscZNSCArPa3ZBoqB4u/qFSg==
-X-Google-Smtp-Source: ABdhPJxf7E8TMdjCREOKDfxVGq51H1oIeHNFvyDpg3tVz9oRQ/Q1abQVbWmKf+uEK9bFnkvTnQBGjw==
-X-Received: by 2002:a17:90a:4209:: with SMTP id o9mr4223181pjg.75.1611731323537;
-        Tue, 26 Jan 2021 23:08:43 -0800 (PST)
-Received: from [192.168.10.23] (124-171-107-241.dyn.iinet.net.au. [124.171.107.241])
-        by smtp.gmail.com with UTF8SMTPSA id 21sm1134342pfh.56.2021.01.26.23.08.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 26 Jan 2021 23:08:42 -0800 (PST)
-Subject: Re: [PATCH v2] tracepoint: Do not fail unregistering a probe due to
- memory allocation
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Matt Mullins <mmullins@mmlx.us>, paulmck <paulmck@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=J/luXJA5XBMYYxnRalHU96ygNZ23KxEs6NNDNp/ohpI=;
+        b=dyp8ehOXRG0AG4cbk3CW9VKBL6Wkhy5LUzrleP5qAjmkFvdia9IW6qhCdKck5M3fOy
+         vPdGKn+0kcEOOVLEAa2xKHk9Cnf9vhqQDlmRZad1nVTAMHwhf7uH3JkbT+G8Llc3HZ3x
+         tInANSmfZcEy/rXFVJbUWZfvGAOv7FEarnuceqH8evBhyaWgXVmqauiSrUyoAOs3hk2C
+         rGaxKO0sz2fRxWMyGZlUFEbZiaA5h6LOMo/N5h8atZhjp9mS6I4vudXnL2lg7HXobmrc
+         F5p1gRieiNBy3ofy164fF7yNIkQdFRiDaYJnbsLn6yifxoJR71f1U/LUDXoAXPn4Vv5d
+         xiHQ==
+X-Gm-Message-State: AOAM531iLj3KoR8jH/zzqEi8wsNtBQZTUPfTUQ+lTdJ1Tc3GACAcCxVG
+        9/zvgL9oX38F1+TTMQuSYlg=
+X-Google-Smtp-Source: ABdhPJyj84DHvkm2hMN4dUiaySgRdyWlSIBKr9AwxQA+YCSX1QWuhDtfKhq+Bdyn0pMfDOW1FpxM+w==
+X-Received: by 2002:a6b:fb09:: with SMTP id h9mr6722212iog.32.1611733061513;
+        Tue, 26 Jan 2021 23:37:41 -0800 (PST)
+Received: from localhost ([172.243.146.206])
+        by smtp.gmail.com with ESMTPSA id l14sm654842ilc.33.2021.01.26.23.37.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 23:37:40 -0800 (PST)
+Date:   Tue, 26 Jan 2021 23:37:33 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Hangbin Liu <liuhangbin@gmail.com>, bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        David Ahern <dsahern@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-References: <20201117211836.54acaef2@oasis.local.home>
- <CAADnVQJekaejHo0eTnnUp68tOhwUv8t47DpGoOgc9Y+_19PpeA@mail.gmail.com>
- <20201118074609.20fdf9c4@gandalf.local.home>
-From:   Alexey Kardashevskiy <aik@ozlabs.ru>
-Message-ID: <5ca3fcc1-b8fb-546e-5e75-3684efb19a6f@ozlabs.ru>
-Date:   Wed, 27 Jan 2021 18:08:34 +1100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
- Thunderbird/85.0
-MIME-Version: 1.0
-In-Reply-To: <20201118074609.20fdf9c4@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Language: en-US
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Hangbin Liu <liuhangbin@gmail.com>
+Message-ID: <6011183d4628_86d69208ba@john-XPS-13-9370.notmuch>
+In-Reply-To: <20210125124516.3098129-2-liuhangbin@gmail.com>
+References: <20210122074652.2981711-1-liuhangbin@gmail.com>
+ <20210125124516.3098129-1-liuhangbin@gmail.com>
+ <20210125124516.3098129-2-liuhangbin@gmail.com>
+Subject: RE: [PATCHv17 bpf-next 1/6] bpf: run devmap xdp_prog on flush instead
+ of bulk enqueue
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 18/11/2020 23:46, Steven Rostedt wrote:
-> On Tue, 17 Nov 2020 20:54:24 -0800
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+Hangbin Liu wrote:
+> From: Jesper Dangaard Brouer <brouer@redhat.com>
 > 
->>>   extern int
->>> @@ -310,7 +312,12 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
->>>                  do {                                                    \
->>>                          it_func = (it_func_ptr)->func;                  \
->>>                          __data = (it_func_ptr)->data;                   \
->>> -                       ((void(*)(void *, proto))(it_func))(__data, args); \
->>> +                       /*                                              \
->>> +                        * Removed functions that couldn't be allocated \
->>> +                        * are replaced with TRACEPOINT_STUB.           \
->>> +                        */                                             \
->>> +                       if (likely(it_func != TRACEPOINT_STUB))         \
->>> +                               ((void(*)(void *, proto))(it_func))(__data, args); \
->>
->> I think you're overreacting to the problem.
+> This changes the devmap XDP program support to run the program when the
+> bulk queue is flushed instead of before the frame is enqueued. This has
+> a couple of benefits:
 > 
-> I will disagree with that.
+> - It "sorts" the packets by destination devmap entry, and then runs the
+>   same BPF program on all the packets in sequence. This ensures that we
+>   keep the XDP program and destination device properties hot in I-cache.
 > 
->> Adding run-time check to extremely unlikely problem seems wasteful.
+> - It makes the multicast implementation simpler because it can just
+>   enqueue packets using bq_enqueue() without having to deal with the
+>   devmap program at all.
 > 
-> Show me a real benchmark that you can notice a problem here. I bet that
-> check is even within the noise of calling an indirect function. Especially
-> on a machine with retpolines.
+> The drawback is that if the devmap program drops the packet, the enqueue
+> step is redundant. However, arguably this is mostly visible in a
+> micro-benchmark, and with more mixed traffic the I-cache benefit should
+> win out. The performance impact of just this patch is as follows:
 > 
->> 99.9% of the time allocate_probes() will do kmalloc from slab of small
->> objects.
->> If that slab is out of memory it means it cannot allocate a single page.
->> In such case so many things will be failing to alloc that system
->> is unlikely operational. oom should have triggered long ago.
->> Imo Matt's approach to add __GFP_NOFAIL to allocate_probes()
+> The bq_xmit_all's logic is also refactored and error label is removed.
+> When bq_xmit_all() is called from bq_enqueue(), another packet will
+> always be enqueued immediately after, so clearing dev_rx, xdp_prog and
+> flush_node in bq_xmit_all() is redundant. Let's move the clear to
+> __dev_flush(), and only check them once in bq_enqueue() since they are
+> all modified together.
 > 
-> Looking at the GFP_NOFAIL comment:
+> By using xdp_redirect_map in sample/bpf and send pkts via pktgen cmd:
+> ./pktgen_sample03_burst_single_flow.sh -i eno1 -d $dst_ip -m $dst_mac -t 10 -s 64
 > 
->   * %__GFP_NOFAIL: The VM implementation _must_ retry infinitely: the caller
->   * cannot handle allocation failures. The allocation could block
->   * indefinitely but will never return with failure. Testing for
->   * failure is pointless.
->   * New users should be evaluated carefully (and the flag should be
->   * used only when there is no reasonable failure policy) but it is
->   * definitely preferable to use the flag rather than opencode endless
->   * loop around allocator.
+> There are about +/- 0.1M deviation for native testing, the performance
+> improved for the base-case, but some drop back with xdp devmap prog attached.
 > 
-> I realized I made a mistake in my patch for using it, as my patch is a
-> failure policy. It looks like something we want to avoid in general.
+> Version          | Test                           | Generic | Native | Native + 2nd xdp_prog
+> 5.10 rc6         | xdp_redirect_map   i40e->i40e  |    2.0M |   9.1M |  8.0M
+> 5.10 rc6         | xdp_redirect_map   i40e->veth  |    1.7M |  11.0M |  9.7M
+> 5.10 rc6 + patch | xdp_redirect_map   i40e->i40e  |    2.0M |   9.5M |  7.5M
+> 5.10 rc6 + patch | xdp_redirect_map   i40e->veth  |    1.7M |  11.6M |  9.1M
 > 
-> Thanks, I'll send a v3 that removes it.
-> 
->> when it's called from func_remove() is much better.
->> The error was reported by syzbot that was using
->> memory fault injections. ENOMEM in allocate_probes() was
->> never seen in real life and highly unlikely will ever be seen.
-> 
-> And the biggest thing you are missing here, is that if you are running on a
-> machine that has static calls, this code is never hit unless you have more
-> than one callback on a single tracepoint. That's because when there's only
-> one callback, it gets called directly, and this loop is not involved.
 
+[...]
 
-I am running syzkaller and the kernel keeps crashing in 
-__traceiter_##_name. This patch makes these crashes happen lot less 
-often (and so did the v1) but the kernel still crashes (examples below 
-but the common thing is that they crash in tracepoints). Disasm points 
-to __DO_TRACE_CALL(name) and this fixes it:
+> +static int dev_map_bpf_prog_run(struct bpf_prog *xdp_prog,
+> +				struct xdp_frame **frames, int n,
+> +				struct net_device *dev)
+> +{
+> +	struct xdp_txq_info txq = { .dev = dev };
+> +	struct xdp_buff xdp;
+> +	int i, nframes = 0;
+> +
+> +	for (i = 0; i < n; i++) {
+> +		struct xdp_frame *xdpf = frames[i];
+> +		u32 act;
+> +		int err;
+> +
+> +		xdp_convert_frame_to_buff(xdpf, &xdp);
+> +		xdp.txq = &txq;
+> +
+> +		act = bpf_prog_run_xdp(xdp_prog, &xdp);
+> +		switch (act) {
+> +		case XDP_PASS:
+> +			err = xdp_update_frame_from_buff(&xdp, xdpf);
+> +			if (unlikely(err < 0))
+> +				xdp_return_frame_rx_napi(xdpf);
+> +			else
+> +				frames[nframes++] = xdpf;
+> +			break;
+> +		default:
+> +			bpf_warn_invalid_xdp_action(act);
+> +			fallthrough;
+> +		case XDP_ABORTED:
+> +			trace_xdp_exception(dev, xdp_prog, act);
+> +			fallthrough;
+> +		case XDP_DROP:
+> +			xdp_return_frame_rx_napi(xdpf);
+> +			break;
+> +		}
+> +	}
+> +	return nframes; /* sent frames count */
+> +}
+> +
+>  static void bq_xmit_all(struct xdp_dev_bulk_queue *bq, u32 flags)
+>  {
+>  	struct net_device *dev = bq->dev;
+> -	int sent = 0, drops = 0, err = 0;
+> +	unsigned int cnt = bq->count;
+> +	int drops = 0, err = 0;
+> +	int to_send = cnt;
+> +	int sent = cnt;
+>  	int i;
+>  
+> -	if (unlikely(!bq->count))
+> +	if (unlikely(!cnt))
+>  		return;
+>  
+> -	for (i = 0; i < bq->count; i++) {
+> +	for (i = 0; i < cnt; i++) {
+>  		struct xdp_frame *xdpf = bq->q[i];
+>  
+>  		prefetch(xdpf);
+>  	}
+>  
+> -	sent = dev->netdev_ops->ndo_xdp_xmit(dev, bq->count, bq->q, flags);
+> +	if (bq->xdp_prog) {
+> +		to_send = dev_map_bpf_prog_run(bq->xdp_prog, bq->q, cnt, dev);
+> +		if (!to_send) {
+> +			sent = 0;
+> +			goto out;
+> +		}
+> +		drops = cnt - to_send;
+> +	}
 
-========================
---- a/include/linux/tracepoint.h
-+++ b/include/linux/tracepoint.h
-@@ -313,6 +313,7 @@ static inline struct tracepoint 
-*tracepoint_ptr_deref(tracepoint_ptr_t *p)
-                                                                         \
-                 it_func_ptr =                                           \
- 
-rcu_dereference_raw((&__tracepoint_##_name)->funcs); \
-+               if (it_func_ptr)                                        \
-                 do {                                                    \
-                         it_func = (it_func_ptr)->func;                  \
-========================
+I might be missing something about how *bq works here. What happens when
+dev_map_bpf_prog_run returns to_send < cnt?
 
-I am running on a powerpc box which does not have CONFIG_HAVE_STATIC_CALL.
+So I read this as it will send [0, to_send] and [to_send, cnt] will be
+dropped? How do we know the bpf prog would have dropped the set,
+[to_send+1, cnt]?
 
-I wonder if it is still the same problem which mentioned v3 might fix or 
-it is something different? Thanks,
+> +
+> +	sent = dev->netdev_ops->ndo_xdp_xmit(dev, to_send, bq->q, flags);
+>  	if (sent < 0) {
+>  		err = sent;
+>  		sent = 0;
+> -		goto error;
+> +
+> +		/* If ndo_xdp_xmit fails with an errno, no frames have been
+> +		 * xmit'ed and it's our responsibility to them free all.
+> +		 */
+> +		for (i = 0; i < cnt - drops; i++) {
+> +			struct xdp_frame *xdpf = bq->q[i];
+> +
+> +			xdp_return_frame_rx_napi(xdpf);
+> +		}
+>  	}
+> -	drops = bq->count - sent;
+>  out:
+> +	drops = cnt - sent;
+>  	bq->count = 0;
+>  
+>  	trace_xdp_devmap_xmit(bq->dev_rx, dev, sent, drops, err);
 
+I gather the remaining [to_send+1, cnt] packets are in fact dropped
+because we set bq->count=0 and trace_xdp_devmap_xmit seems to think
+they are dropped.
 
+Also update the comment in trace_xdp_devmap_xmit,
 
-[  285.072538] Kernel attempted to read user page (0) - exploit attempt? 
-(uid: 0)
-[  285.073657] BUG: Kernel NULL pointer dereference on read at 0x00000000
-[  285.075129] Faulting instruction address: 0xc0000000002edf48
-cpu 0xd: Vector: 300 (Data Access) at [c0000000115db530]
-     pc: c0000000002edf48: lock_acquire+0x2e8/0x5d0
-     lr: c0000000006ee450: step_into+0x940/0xc20
-     sp: c0000000115db7d0
-    msr: 8000000000009033
-    dar: 0
-  dsisr: 40000000
-   current = 0xc0000000115af280
-   paca    = 0xc00000005ff9fe00	 irqmask: 0x03	 irq_happened: 0x01
-     pid   = 182, comm = systemd-journal
-Linux version 5.11.0-rc5-le_syzkaller_a+fstn1 (aik@fstn1-p1) (gcc 
-(Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0, GNU ld (GNU Binutils for Ubuntu) 
-2.30) #65 SMP Wed Jan 27 16:46:46 AEDT 2021
-enter ? for help
-[c0000000115db8c0] c0000000006ee450 step_into+0x940/0xc20
-[c0000000115db950] c0000000006efddc walk_component+0xbc/0x340
-[c0000000115db9d0] c0000000006f0418 link_path_walk.part.29+0x3b8/0x5b0
-[c0000000115dbaa0] c0000000006f0b1c path_openat+0x11c/0x1190
-[c0000000115dbb40] c0000000006f4334 do_filp_open+0xb4/0x180
-[c0000000115dbc80] c0000000006c83cc do_sys_openat2+0x48c/0x610
-[c0000000115dbd20] c0000000006caf9c do_sys_open+0xcc/0x140
-[c0000000115dbdb0] c00000000004ba48 system_call_exception+0x178/0x2b0
-[c0000000115dbe10] c00000000000e060 system_call_common+0xf0/0x27c
---- Exception: c00 (System Call) at 00007fff7fb3e758
-SP (7ffff28e2900) is in userspace
+   /* Catch API error of drv ndo_xdp_xmit sent more than count */
 
+so that it reads to account for devmap progs as well?
 
+> -	bq->dev_rx = NULL;
+> -	__list_del_clearprev(&bq->flush_node);
+>  	return;
+> -error:
+> -	/* If ndo_xdp_xmit fails with an errno, no frames have been
+> -	 * xmit'ed and it's our responsibility to them free all.
+> -	 */
+> -	for (i = 0; i < bq->count; i++) {
+> -		struct xdp_frame *xdpf = bq->q[i];
+> -
+> -		xdp_return_frame_rx_napi(xdpf);
+> -		drops++;
+> -	}
+> -	goto out;
+>  }
 
+[...]
+  
+> -static struct xdp_buff *dev_map_run_prog(struct net_device *dev,
+> -					 struct xdp_buff *xdp,
+> -					 struct bpf_prog *xdp_prog)
+> -{
+> -	struct xdp_txq_info txq = { .dev = dev };
+> -	u32 act;
+> -
+> -	xdp_set_data_meta_invalid(xdp);
+> -	xdp->txq = &txq;
+> -
+> -	act = bpf_prog_run_xdp(xdp_prog, xdp);
+> -	switch (act) {
+> -	case XDP_PASS:
+> -		return xdp;
+> -	case XDP_DROP:
+> -		break;
+> -	default:
+> -		bpf_warn_invalid_xdp_action(act);
+> -		fallthrough;
+> -	case XDP_ABORTED:
+> -		trace_xdp_exception(dev, xdp_prog, act);
+> -		break;
+> -	}
+> -
+> -	xdp_return_buff(xdp);
+> -	return NULL;
+> -}
+> -
+>  int dev_xdp_enqueue(struct net_device *dev, struct xdp_buff *xdp,
+>  		    struct net_device *dev_rx)
+>  {
+> -	return __xdp_enqueue(dev, xdp, dev_rx);
+> +	return __xdp_enqueue(dev, xdp, dev_rx, NULL);
+>  }
+>  
+>  int dev_map_enqueue(struct bpf_dtab_netdev *dst, struct xdp_buff *xdp,
+> @@ -489,12 +516,7 @@ int dev_map_enqueue(struct bpf_dtab_netdev *dst, struct xdp_buff *xdp,
+>  {
+>  	struct net_device *dev = dst->dev;
+>  
+> -	if (dst->xdp_prog) {
+> -		xdp = dev_map_run_prog(dev, xdp, dst->xdp_prog);
+> -		if (!xdp)
+> -			return 0;
 
-[   92.747130] FAT-fs (loop7): bogus number of reserved sectors
-[   92.747193] Kernel attempted to read user page (0) - exploit attempt? 
-(uid: 0)
-[   92.748393] FAT-fs (loop7): Can't find a valid FAT filesystem
-[   92.750579] BUG: Kernel NULL pointer dereference on read at 0x00000000
-[   92.751855] Faulting instruction address: 0xc0000000002ed928
-cpu 0xd: Vector: 300 (Data Access) at [c00000001138f5c0]
-     pc: c0000000002ed928: lock_release+0x138/0x470
-     lr: c0000000002e0084: up_write+0x34/0x1e0
-     sp: c00000001138f860
-    msr: 8000000000009033
-    dar: 0
-  dsisr: 40000000
-   current = 0xc00000004fe7b480
-   paca    = 0xc00000005ff9fe00	 irqmask: 0x03	 irq_happened: 0x01
-     pid   = 10670, comm = syz-executor.3
-Linux version 5.11.0-rc5-le_syzkaller_a+fstn1 (aik@fstn1-p1) (gcc 
-(Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0, GNU ld (GNU Binutils for Ubuntu) 
-2.30) #65 SMP Wed Jan 27 16:46:46 AEDT 2021
-enter ? for help
-[c00000001138f910] c0000000002e0084 up_write+0x34/0x1e0
-[c00000001138f980] c0000000006151fc anon_vma_clone+0x1ec/0x370
-[c00000001138f9f0] c00000000060180c __split_vma+0x11c/0x340
-[c00000001138fa40] c000000000601cb0 __do_munmap+0x1c0/0x920
-[c00000001138fad0] c000000000604d20 mmap_region+0x3b0/0xae0
-[c00000001138fbd0] c0000000006059d4 do_mmap+0x584/0x830
-[c00000001138fc60] c0000000005b0f90 vm_mmap_pgoff+0x170/0x260
-[c00000001138fcf0] c000000000600818 ksys_mmap_pgoff+0x198/0x3a0
-[c00000001138fd60] c0000000000155ec sys_mmap+0xcc/0x150
-[c00000001138fdb0] c00000000004ba48 system_call_exception+0x178/0x2b0
-[c00000001138fe10] c00000000000e060 system_call_common+0xf0/0x27c
---- Exception: c00 (System Call) at 0000000010058ad0
-SP (7fffae45e1c0) is in userspace
+So here it looks like dev_map_run_prog will not drop extra
+packets, but will see every single packet.
 
+Are we changing the semantics subtle here? This looks like
+a problem to me. We should not drop packets in the new case
+unless bpf program tells us to.
 
--- 
-Alexey
+> -	}
+> -	return __xdp_enqueue(dev, xdp, dev_rx);
+> +	return __xdp_enqueue(dev, xdp, dev_rx, dst->xdp_prog);
+>  }
+
+Did I miss something? If not maybe a comment in the commit
+message would help or in the code itself.
+
+Thanks,
+John
