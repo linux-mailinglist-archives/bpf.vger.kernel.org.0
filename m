@@ -2,115 +2,115 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9F92306714
-	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 23:16:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D01E306763
+	for <lists+bpf@lfdr.de>; Thu, 28 Jan 2021 00:01:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232375AbhA0WP6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Jan 2021 17:15:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60130 "EHLO
+        id S232749AbhA0W5d (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Jan 2021 17:57:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231153AbhA0WPw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Jan 2021 17:15:52 -0500
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E62C061573;
-        Wed, 27 Jan 2021 14:15:12 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id d18so3931771oic.3;
-        Wed, 27 Jan 2021 14:15:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Pv2pcU/+/UIa6eojcj2SR6nsmXZahv+O06YIs/Kzafk=;
-        b=lQs4oaiEkF3onn+fDji1VHB0t5ZOhEJld6GYA3N6l6DVUQE5y1YPVZT6CRY9mwIx1N
-         +XzrgNmiqJepvbbwiczkwqhPcsPKqrUsHXaPV61j0eqqTs4GQv5ed8yo6bjUbYWWRWoS
-         Ey9KAZsp9ZML+tjY2ZfyWOyjVY5naE8bWpSYfji9bsrD6XNiIPKfhOtdg2Nupn6ZDau6
-         5qBpus6DhYuPJqMWRgrP7s16cb44J4Sy+DJ6F7JSwtSjDw3FH2QaRnASL+/dC9YOd7M+
-         S7kvjfheCbRYXz2GXVgf7XYsKxTBQNak5RohUmkOkGdRZO3yw3kd9UzctiV9AVARhT7M
-         L2Lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Pv2pcU/+/UIa6eojcj2SR6nsmXZahv+O06YIs/Kzafk=;
-        b=tqTbvn9fmjo+CI7Zy1CMxYCLF/r74ESHfrK4r3SXkyvCeLLbY7n6RRj79KP+wI+/Qg
-         ShA1AwtAK3IgEliOsIWULEwW7RfNaw9/nWFEOX+y9pVQvjZFHJoSaIX/7IzXI8u1NcsY
-         YEVXkupK6/gV5jNmJ/ojD9q8QARUyidCz783k5OLRVBe2Geu+ZjRNsl/mBanVRNsMGK9
-         7Otvgt+oEn73kDr71iaOpetfKPXpqDr4gOInUBiUF9jFKn+d46puOhObFAk+BuhbUvpu
-         Dhh0BmiXEE7EN7EqwSaZF7ZzSRxByCRpSwicNlg0Kc3lUILU3e2Bxk3kPnecIcIdWunl
-         fL2w==
-X-Gm-Message-State: AOAM533LaAI+WAe4NT84cMh+M4zs/QUcxBTh5EOaA2mRwR0YGSdRye8O
-        MG9kTaJy8KI2Mgs1y1uMU8Ea+fQ1FDPgaQ==
-X-Google-Smtp-Source: ABdhPJw9jpL3BiJk1P35bs+zaa3mHhY7lmPeubEjJZ7pUpA0sEmD/ElYDaZTiki8M+1OedbTKBXC3g==
-X-Received: by 2002:aca:5b46:: with SMTP id p67mr4771520oib.179.1611785711399;
-        Wed, 27 Jan 2021 14:15:11 -0800 (PST)
-Received: from unknown.attlocal.net ([2600:1700:65a0:ab60:b17d:dead:8ea2:9775])
-        by smtp.gmail.com with ESMTPSA id w11sm610114otg.58.2021.01.27.14.15.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 14:15:10 -0800 (PST)
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Subject: [Patch bpf-next] skmsg: make sk_psock_destroy() static
-Date:   Wed, 27 Jan 2021 14:15:01 -0800
-Message-Id: <20210127221501.46866-1-xiyou.wangcong@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S231540AbhA0Wzx (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Jan 2021 17:55:53 -0500
+Received: from www62.your-server.de (www62.your-server.de [IPv6:2a01:4f8:d0a:276a::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D273C0617AA;
+        Wed, 27 Jan 2021 14:49:33 -0800 (PST)
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1l4tcF-000CrN-Ho; Wed, 27 Jan 2021 23:48:47 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1l4tcF-000MlJ-9A; Wed, 27 Jan 2021 23:48:47 +0100
+Subject: Re: [Patch bpf-next v5 1/3] bpf: introduce timeout hash map
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Jamal Hadi Salim <jhs@mojatatu.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Dongdong Wang <wangdongdong.6@bytedance.com>, yhs@fb.com
+References: <20210122205415.113822-1-xiyou.wangcong@gmail.com>
+ <20210122205415.113822-2-xiyou.wangcong@gmail.com>
+ <d69d44ca-206c-d818-1177-c8f14d8be8d1@iogearbox.net>
+ <CAM_iQpW8aeh190G=KVA9UEZ_6+UfenQxgPXuw784oxCaMfXjng@mail.gmail.com>
+ <CAADnVQKmNiHj8qy1yqbOrf-OMyhnn8fKm87w6YMfkiDHkBpJVg@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <b646c7b5-be91-79c6-4538-e41a10d4b9ae@iogearbox.net>
+Date:   Wed, 27 Jan 2021 23:48:46 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQKmNiHj8qy1yqbOrf-OMyhnn8fKm87w6YMfkiDHkBpJVg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26062/Wed Jan 27 13:26:15 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Cong Wang <cong.wang@bytedance.com>
+On 1/27/21 7:00 PM, Alexei Starovoitov wrote:
+> On Tue, Jan 26, 2021 at 11:00 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+>>>>                ret = PTR_ERR(l_new);
+>>>> +             if (ret == -EAGAIN) {
+>>>> +                     htab_unlock_bucket(htab, b, hash, flags);
+>>>> +                     htab_gc_elem(htab, l_old);
+>>>> +                     mod_delayed_work(system_unbound_wq, &htab->gc_work, 0);
+>>>> +                     goto again;
+>>>
+>>> Also this one looks rather worrying, so the BPF prog is stalled here, loop-waiting
+>>> in (e.g. XDP) hot path for system_unbound_wq to kick in to make forward progress?
+>>
+>> In this case, the old one is scheduled for removal in GC, we just wait for GC
+>> to finally remove it. It won't stall unless GC itself or the worker scheduler is
+>> wrong, both of which should be kernel bugs.
+>>
+>> If we don't do this, users would get a -E2BIG when it is not too big. I don't
+>> know a better way to handle this sad situation, maybe returning -EBUSY
+>> to users and let them call again?
+> 
+> I think using wq for timers is a non-starter.
+> Tying a hash/lru map with a timer is not a good idea either.
 
-sk_psock_destroy() is a RCU callback, I can't see any reason why
-it could be used outside.
+Thinking some more, given we have jiffies64 helper and atomic ops for BPF by now,
+we would technically only need the ability to delete entries via bpf iter progs
+(d6c4503cc296 ("bpf: Implement bpf iterator for hash maps")) which could then be
+kicked off from user space at e.g. dynamic intervals which would be the equivalent
+for the wq in here. That patch could then be implemented this way. I presume
+the ability to delete map entries from bpf iter progs would be generic and useful
+enough anyway.
 
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Jakub Sitnicki <jakub@cloudflare.com>
-Cc: Lorenz Bauer <lmb@cloudflare.com>
-Signed-off-by: Cong Wang <cong.wang@bytedance.com>
----
- include/linux/skmsg.h | 1 -
- net/core/skmsg.c      | 3 +--
- 2 files changed, 1 insertion(+), 3 deletions(-)
+> I think timers have to be done as independent objects similar to
+> how the kernel uses them.
+> Then there will be no question whether lru or hash map needs it.
+> The bpf prog author will be able to use timers with either.
+> The prog will be able to use timers without hash maps too.
+> 
+> I'm proposing a timer map where each object will go through
+> bpf_timer_setup(timer, callback, flags);
+> where "callback" is a bpf subprogram.
+> Corresponding bpf_del_timer and bpf_mod_timer would work the same way
+> they are in the kernel.
+> The tricky part is kernel style of using from_timer() to access the
+> object with additional info.
 
-diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-index fec0c5ac1c4f..8edbbf5f2f93 100644
---- a/include/linux/skmsg.h
-+++ b/include/linux/skmsg.h
-@@ -390,7 +390,6 @@ static inline struct sk_psock *sk_psock_get(struct sock *sk)
- }
- 
- void sk_psock_stop(struct sock *sk, struct sk_psock *psock);
--void sk_psock_destroy(struct rcu_head *rcu);
- void sk_psock_drop(struct sock *sk, struct sk_psock *psock);
- 
- static inline void sk_psock_put(struct sock *sk, struct sk_psock *psock)
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index 25cdbb20f3a0..1261512d6807 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -669,14 +669,13 @@ static void sk_psock_destroy_deferred(struct work_struct *gc)
- 	kfree(psock);
- }
- 
--void sk_psock_destroy(struct rcu_head *rcu)
-+static void sk_psock_destroy(struct rcu_head *rcu)
- {
- 	struct sk_psock *psock = container_of(rcu, struct sk_psock, rcu);
- 
- 	INIT_WORK(&psock->gc, sk_psock_destroy_deferred);
- 	schedule_work(&psock->gc);
- }
--EXPORT_SYMBOL_GPL(sk_psock_destroy);
- 
- void sk_psock_drop(struct sock *sk, struct sk_psock *psock)
- {
--- 
-2.25.1
+Would this mean N timer objs for N map elems? I presume not given this could be
+racy and would have huge extra mem overhead. Either way, timer obj could work, but
+then at the same time you could probably also solve it with the above; it's not
+like you need the timer to kick in at some /exact/ time, but rather at some point
+to clean up stale entries before the map gets full and worst case refuses updates
+for new entries. (In the ideal case though we wouldn't need the extra effort to
+search deeply for elements w/o penalizing the fast-path lookup costs too much when
+walking the bucket.)
 
+> I think bpf timer map can model it the same way.
+> At map creation time the value_size will specify the amount of extra
+> bytes necessary.
+> Another alternative is to pass an extra data argument to a callback.
