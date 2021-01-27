@@ -2,138 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 436F43067E0
-	for <lists+bpf@lfdr.de>; Thu, 28 Jan 2021 00:30:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90ED53067EB
+	for <lists+bpf@lfdr.de>; Thu, 28 Jan 2021 00:32:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233798AbhA0X1j (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Jan 2021 18:27:39 -0500
-Received: from www62.your-server.de ([213.133.104.62]:59422 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235767AbhA0XZN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Jan 2021 18:25:13 -0500
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1l4uAp-0000k3-Tq; Thu, 28 Jan 2021 00:24:31 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1l4uAp-000Ma9-Q5; Thu, 28 Jan 2021 00:24:31 +0100
-Subject: Re: [PATCH bpf-next] selftest/bpf: testing for multiple logs on
- REJECT
-To:     Andrei Matei <andreimatei1@gmail.com>
-Cc:     bpf@vger.kernel.org
-References: <20210124190532.428065-1-andreimatei1@gmail.com>
- <7d33b412-260f-f4d6-2ed0-b5076dc37179@iogearbox.net>
- <CABWLset0EgvNF5nCdYHNMaqYFg8MYZfqpHren41EuRP1Azax-w@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <82196381-fcd3-c70d-2df3-1515d2a4dd24@iogearbox.net>
-Date:   Thu, 28 Jan 2021 00:24:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <CABWLset0EgvNF5nCdYHNMaqYFg8MYZfqpHren41EuRP1Azax-w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26062/Wed Jan 27 13:26:15 2021)
+        id S231439AbhA0Xav (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Jan 2021 18:30:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229673AbhA0X3g (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Jan 2021 18:29:36 -0500
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE9FC0613D6
+        for <bpf@vger.kernel.org>; Wed, 27 Jan 2021 15:28:55 -0800 (PST)
+Received: by mail-qt1-x84a.google.com with SMTP id b8so2257389qtr.18
+        for <bpf@vger.kernel.org>; Wed, 27 Jan 2021 15:28:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=aV8qow/FlZNu0c81xilee4C+KbHK/rtvK4HJqpkcS4A=;
+        b=VCZP39zYXsZwenkBzMAEwnx+ULlIDbDyV9VqrO2RXlCODqfqoM8m+f2LuS8tbf7V6o
+         XPmuce1SrV+D3Wuk3eV00rY3bi4ISIRmkUmjfButeyBCR1l+GToQDJyaUr/cpR2D04C4
+         L5g5rv7IkxLVU5ZYR765RhqG6v7UPkX5aSZVOctk3vbfmFglMURMkeRyGdw2IgSHQN+r
+         jEIAojqQd7q79xL/M65GyGVJePQSGJTo39wiviUkAm48pPI7PUjuxcFVqHCt8xnGSC3h
+         t3guGwx4K0tnxlMREJAPaYgzpB3hitQxgrhCDkKtHbSuHYt5lhi/IQhgcXZUbzFZtSwl
+         0KRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=aV8qow/FlZNu0c81xilee4C+KbHK/rtvK4HJqpkcS4A=;
+        b=tTfVv6CR0QUSJhLcgYJv/O3pjtlKEegKIWkYzw1lspOujqS/8Fct8t+w9vtBuiO3c/
+         1tfxtJlIpe+TL96WPPaVF8w0GLkgKlzLHYbN+Q+gGDn1/ebgOW5yy1QrRtt48Tbzh4d5
+         CTWhlxGAhMods2KIo4lPiWV/vctTMrHIW9Bun0v/sjVhl4GvejQIWBIMq3ZrFQokkmyX
+         RjaP5647Ky35eLtyJ2TM02z7MTD+EAu1isiD3F7cPqUEOe4E/oQsC7M4MdKHrpFJYXgB
+         4LgR2D3NH3xihN3S3lxIYoe/yjJsFohV1ztVjspwd7AfzSTYRMOLyPfPDo/PAztmnNRp
+         xXpg==
+X-Gm-Message-State: AOAM530uGEMn8M+9nbHXQuDvHVDfFp2feqVBPX5UKsXTZf83L8ZAg48K
+        KvuGO/xSdE/qPzS7jD3ASdNR6Ig=
+X-Google-Smtp-Source: ABdhPJz6V+ya64pFDx3wSNHefGAy0VN+OCOjr0JVgJ7jbCXMNtCj/yuI+U4WnwEEisUsYWxjq1gQmBU=
+Sender: "sdf via sendgmr" <sdf@sdf2.svl.corp.google.com>
+X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:7220:84ff:fe09:7732])
+ (user=sdf job=sendgmr) by 2002:ad4:53ab:: with SMTP id j11mr6120275qvv.1.1611790134978;
+ Wed, 27 Jan 2021 15:28:54 -0800 (PST)
+Date:   Wed, 27 Jan 2021 15:28:49 -0800
+Message-Id: <20210127232853.3753823-1-sdf@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
+Subject: [PATCH bpf-next v2 0/4] bpf: expose bpf_{g,s}etsockopt to more
+ bpf_sock_addr hooks
+From:   Stanislav Fomichev <sdf@google.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     ast@kernel.org, daniel@iogearbox.net,
+        Stanislav Fomichev <sdf@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/27/21 3:31 AM, Andrei Matei wrote:
-> On Tue, Jan 26, 2021 at 6:21 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->> On 1/24/21 8:05 PM, Andrei Matei wrote:
->>> This patch adds support to verifier tests to check for a succession of
->>> verifier log messages on program load failure. This makes the
->>> errstr field work uniformly across REJECT and VERBOSE_ACCEPT checks.
->>>
->>> This patch also increases the maximum size of an accepted series of
->>> messages to test from 80 chars to 200 chars. This is in order to keep
->>> existing tests working, which sometimes test for messages larger than 80
->>> chars (which was accepted in the REJECT case, when testing for a single
->>> message, but ironically not in the VERBOSE_ACCEPT case, when testing for
->>> possibly multiple messages).
->>> And example of such a long, checked message is in bounds.c:
->>> "R1 has unknown scalar with mixed signed bounds, pointer arithmetic with
->>> it prohibited for !root"
->>>
->>> Signed-off-by: Andrei Matei <andreimatei1@gmail.com>
->>> ---
->>>    tools/testing/selftests/bpf/test_verifier.c | 15 ++++++++++++---
->>>    1 file changed, 12 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
->>> index 59bfa6201d1d..69298bf8ee86 100644
->>> --- a/tools/testing/selftests/bpf/test_verifier.c
->>> +++ b/tools/testing/selftests/bpf/test_verifier.c
->>> @@ -88,6 +88,9 @@ struct bpf_test {
->>>        int fixup_map_event_output[MAX_FIXUPS];
->>>        int fixup_map_reuseport_array[MAX_FIXUPS];
->>>        int fixup_map_ringbuf[MAX_FIXUPS];
->>> +     /* Expected verifier log output for result REJECT or VERBOSE_ACCEPT. Can be a
->>> +      * tab-separated sequence of expected strings.
->>> +      */
->>>        const char *errstr;
->>>        const char *errstr_unpriv;
->>>        uint32_t insn_processed;
->>> @@ -995,9 +998,11 @@ static int do_prog_test_run(int fd_prog, bool unpriv, uint32_t expected_val,
->>>        return 0;
->>>    }
->>>
->>> +/* Returns true if every part of exp (tab-separated) appears in log, in order.
->>> + */
->>>    static bool cmp_str_seq(const char *log, const char *exp)
->>>    {
->>> -     char needle[80];
->>> +     char needle[200];
->>>        const char *p, *q;
->>>        int len;
->>>
->>> @@ -1015,7 +1020,7 @@ static bool cmp_str_seq(const char *log, const char *exp)
->>>                needle[len] = 0;
->>>                q = strstr(log, needle);
->>>                if (!q) {
->>> -                     printf("FAIL\nUnexpected verifier log in successful load!\n"
->>> +                     printf("FAIL\nUnexpected verifier log!\n"
->>>                               "EXP: %s\nRES:\n", needle);
->>>                        return false;
->>>                }
->>> @@ -1130,7 +1135,11 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
->>>                        printf("FAIL\nUnexpected success to load!\n");
->>>                        goto fail_log;
->>>                }
->>> -             if (!expected_err || !strstr(bpf_vlog, expected_err)) {
->>> +             if (!expected_err) {
->>> +                     printf("FAIL\nTestcase bug; missing expected_err\n");
->>> +                     goto fail_log;
->>
->> Do we have an in-tree case like this?
-> 
-> You're asking if there are tests with expected_res == REJECT and
-> expected_err == NULL?
-> There are no such test cases, and the intention of this "testcase bug"
-> check was to keep it that way.
-> I can simply fold it into the test failure below, as you're suggesting.
+We'd like to use the SENDMSG ones, Daniel suggested to
+expose to more hooks while are here.
 
-Yeah, I would just fold it given such issue would be visible there as well.
+Stanislav Fomichev (4):
+  bpf: enable bpf_{g,s}etsockopt in BPF_CGROUP_UDP{4,6}_SENDMSG
+  bpf: enable bpf_{g,s}etsockopt in
+    BPF_CGROUP_INET{4,6}_GET{PEER,SOCK}NAME
+  selftests/bpf: rewrite readmsg{4,6} asm progs to c in test_sock_addr
+  bpf: enable bpf_{g,s}etsockopt in BPF_CGROUP_UDP{4,6}_RECVMSG
 
->> Given this would also be visible below with 'EXP:'
->> being (null), I might simplify and just replace the strstr() with cmp_str_seq().
->>
->> Also, could you elaborate on which test cases need the cmp_str_seq() conversion?
-> 
-> There are VERBOSE_ACCEPT tests that you a tab-separated list of
-> expected messages; see precise.c.
-> There are no such REJECT tests yet. I was about to introduce one in
-> another patch that's inflight, but I ended
-> up not needing to. Still, I figured that unifying the capabilities of
-> .errstr between VERBOSE_ACCEPT and REJECT
-> is a good idea.
-I think unifying seems reasonable, lets do then.
+ net/core/filter.c                             | 16 ++++
+ .../selftests/bpf/bpf_sockopt_helpers.h       | 21 +++++
+ .../selftests/bpf/progs/connect_force_port4.c |  8 ++
+ .../selftests/bpf/progs/connect_force_port6.c |  8 ++
+ .../selftests/bpf/progs/recvmsg4_prog.c       | 42 +++++++++
+ .../selftests/bpf/progs/recvmsg6_prog.c       | 48 +++++++++++
+ .../selftests/bpf/progs/sendmsg4_prog.c       |  7 ++
+ .../selftests/bpf/progs/sendmsg6_prog.c       |  5 ++
+ tools/testing/selftests/bpf/test_sock_addr.c  | 86 +++----------------
+ 9 files changed, 167 insertions(+), 74 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/bpf_sockopt_helpers.h
+ create mode 100644 tools/testing/selftests/bpf/progs/recvmsg4_prog.c
+ create mode 100644 tools/testing/selftests/bpf/progs/recvmsg6_prog.c
 
-Thanks,
-Daniel
+-- 
+2.30.0.280.ga3ce27912f-goog
+
