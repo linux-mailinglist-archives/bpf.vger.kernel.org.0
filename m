@@ -2,135 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6EDC305167
-	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 05:49:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93DDB30512D
+	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 05:46:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233129AbhA0EpH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Jan 2021 23:45:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S317670AbhA0BMu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Jan 2021 20:12:50 -0500
-Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B1DEC061573
-        for <bpf@vger.kernel.org>; Tue, 26 Jan 2021 17:11:18 -0800 (PST)
-Received: by mail-ua1-x934.google.com with SMTP id g5so181301uak.10
-        for <bpf@vger.kernel.org>; Tue, 26 Jan 2021 17:11:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sy4DPtbk4kdU94XXdxoQUPQpfIoQqtYk3SL5LWyKtwE=;
-        b=gaZ3K2sJv306H70bkAr+1zdQmm/uw0+A0jGvI8iLti5iMO2s4Q9BXOF1b+GLAG032Z
-         4v+QsLrk4RbZkKB7W+2sXvKecOCWTX0FfDRmtp2VZWX6Jz0NsuP3Sdww2yLXFUsd6qp+
-         mjMaw12WT9jkva+Hq7eSG02jjMyyhc6dqrWwZq1kgn9YwOVcNGpY+x/mYkBgjPbKn5Lj
-         Jw7qlHvsr3Miy2cgYhgyv+3+SCcDB4nNo1CVH4+lqf5KRMjF7doqi14dAJudkru/dV01
-         5B4HdphZRgzIR/SYYagMvv/xUwKOApu7DBoVvjh5pCx0+iwPwU8dTRtr54L0zVK1nhcq
-         02Rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sy4DPtbk4kdU94XXdxoQUPQpfIoQqtYk3SL5LWyKtwE=;
-        b=JgkeHfCOdyM+5G0PBPpVyWNKeBfVGTf15uxIZyWPKPnssN1XN50tlv7jR7vEEotjd7
-         v1phqBcePyf9ktjAQfQBA/+wRcEYPHObicHnbe5AmEMQQTQBZ/qCRk0EIzRwvr4JrkfU
-         CAnFqiXthxbBSVJjvk0vR2/EZImz87B3tVIFGgD58lWVhovLFjrtMMWxeH/4vN7QHsy7
-         cykOigSI+Ge68lNuM9giwwBubjtYcyxXiP4SnyMphwXbH2hNmMl5CMhtLJQMKS+wHaw4
-         x5kAKBQaiZ0QbPgplj8j8CCbFGofjhwwfCEASQXuV0jlRioG8IRk1Y28Y4ze3vkUvCLp
-         qJPA==
-X-Gm-Message-State: AOAM531jAqrnHJWAd88p5IRLyHIGlfdM/3ixEreJM5ta/RjN6llBYfB0
-        LzoQyG5ZoFelYVc/+Dk1gb4oeJoSEuQ7VxiAABE4gQ==
-X-Google-Smtp-Source: ABdhPJz/YC6DfVHyoNFtk2FYryoau+UyvFitsxeyrfgIC/iovFXBUyb7M+DmLlO8RIpgjYOcQiU9C9E3hjRlzAR/IGU=
-X-Received: by 2002:ab0:6654:: with SMTP id b20mr6697997uaq.49.1611709876951;
- Tue, 26 Jan 2021 17:11:16 -0800 (PST)
-MIME-Version: 1.0
-References: <20210125130625.2030186-1-gprocida@google.com> <20210126195542.GB120879@krava>
-In-Reply-To: <20210126195542.GB120879@krava>
-From:   Giuliano Procida <gprocida@google.com>
-Date:   Wed, 27 Jan 2021 01:10:40 +0000
-Message-ID: <CAGvU0H=CFBmGeNx_4zJt9ou8r31knPcq0doOi-3p5JqnaQbp7w@mail.gmail.com>
-Subject: Re: [PATCH dwarves 0/4] BTF ELF writing changes
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     dwarves@vger.kernel.org, acme@kernel.org,
-        Andrii Nakryiko <andrii@kernel.org>,
+        id S234146AbhA0EpJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Jan 2021 23:45:09 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:35288 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2392344AbhA0BmB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Jan 2021 20:42:01 -0500
+Received: from [10.130.0.135] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxS+ShxBBgWooNAA--.21016S3;
+        Wed, 27 Jan 2021 09:40:50 +0800 (CST)
+Subject: Re: [PATCH bpf-next] samples/bpf: Add include dir for MIPS Loongson64
+ to fix build errors
+To:     Daniel Borkmann <daniel@iogearbox.net>,
         Alexei Starovoitov <ast@kernel.org>,
-        =?UTF-8?Q?Matthias_M=C3=A4nnich?= <maennich@google.com>,
-        kernel-team@android.com, Kernel Team <kernel-team@fb.com>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+References: <1611669925-25315-1-git-send-email-yangtiezhu@loongson.cn>
+ <67891f2f-a374-54fb-e6e5-44145190934f@iogearbox.net>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        clang-built-linux@googlegroups.com, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <add50f8c-7592-75ec-ffb2-84c4280f2fc7@loongson.cn>
+Date:   Wed, 27 Jan 2021 09:40:49 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
+MIME-Version: 1.0
+In-Reply-To: <67891f2f-a374-54fb-e6e5-44145190934f@iogearbox.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9DxS+ShxBBgWooNAA--.21016S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxXFyxXrW5ZFW7WFyfWr13XFb_yoW5XrWfpa
+        n3uanrKrWUXry5GayxCryUWr4Yy398G3yYgFWrWr45Aa4qqasagr4ktrW5urZ3GryIya1S
+        yr9xKF98GF1kZ37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBY14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxV
+        WxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
+        Yx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbV
+        WUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+        Y2ka0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCY02Avz4vE14v_KwCF04k20xvY0x0EwI
+        xGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
+        Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7
+        IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k2
+        6cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
+        0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUb9mitUUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi.
-
-On Tue, 26 Jan 2021 at 19:56, Jiri Olsa <jolsa@redhat.com> wrote:
+On 01/27/2021 12:01 AM, Daniel Borkmann wrote:
+> On 1/26/21 3:05 PM, Tiezhu Yang wrote:
+>> There exists many build errors when make M=samples/bpf on the Loongson
+>> platform, this issue is MIPS related, x86 compiles just fine.
+>>
+>> Here are some errors:
+> [...]
+>>
+>> So we can do the similar things in samples/bpf/Makefile, just add
+>> platform specific and generic include dir for MIPS Loongson64 to
+>> fix the build errors.
 >
-> On Mon, Jan 25, 2021 at 01:06:21PM +0000, Giuliano Procida wrote:
-> > Hi.
-> >
-> > This follows on from my change to improve the error handling around
-> > llvm-objcopy in libbtf.c.
-> >
-> > Note on recipients: Please let me know if I should adjust To or CC.
-> >
-> > Note on style: I've generally placed declarations as allowed by C99,
-> > closest to point of use. Let me know if you'd prefer otherwise.
-> >
-> > 1. Improve ELF error reporting
-> >
-> > 2. Add .BTF section using libelf
-> >
-> > This shows the minimal amount of code needed to drive libelf. However,
-> > it leaves layout up to libelf, which is almost certainly not wanted.
-> >
-> > As an unexpcted side-effect, vmlinux is larger than before. It seems
-> > llvm-objcopy likes to trim down .strtab.
-> >
-> > 3. Manually lay out updated ELF sections
-> >
-> > This does full layout of new and updated ELF sections. If the update
-> > ELF sections were not the last ones in the file by offset, then it can
-> > leave gaps between sections.
-> >
-> > 4. Align .BTF section to 8 bytes
-> >
-> > This was my original aim.
-> >
-> > Regards.
-> >
-> > Giuliano Procida (4):
-> >   btf_encoder: Improve ELF error reporting
-> >   btf_encoder: Add .BTF section using libelf
-> >   btf_encoder: Manually lay out updated ELF sections
-> >   btf_encoder: Align .BTF section to 8 bytes
+> Your patch from [0] said ...
 >
-> hi,
-> I can't apply this on dwarves git master, which commit is it based on?
+>   There exists many build warnings when make M=samples/bpf on the 
+> Loongson
+>   platform, this issue is MIPS related, x86 compiles just fine.
 >
-
-It's based on:
-https://www.spinics.net/lists/dwarves/msg00775.html (0/3)
-https://www.spinics.net/lists/dwarves/msg00774.html (1/3, unrelated fix)
-https://www.spinics.net/lists/dwarves/msg00773.html (2/3, this is the
-one you'll need for a clean git am; obsoleted by this new series)
-(3/3 was abandoned)
-
-Arnaldo did say the two commits were applied... but perhaps they
-haven't been pushed to public master yet.
-
-> thanks,
-> jirka
+>   Here are some warnings:
+>   [...]
 >
-
-You're welcome.
-Giuliano.
-
-> >
-> >  libbtf.c | 222 +++++++++++++++++++++++++++++++++++++++++++------------
-> >  1 file changed, 175 insertions(+), 47 deletions(-)
-> >
-> > --
-> > 2.30.0.280.ga3ce27912f-goog
-> >
+>   With #ifndef __SANE_USERSPACE_TYPES__  in tools/include/linux/types.h,
+>   the above error has gone and this ifndef change does not hurt other
+>   compilations.
 >
+> ... which ave the impression that all the issues were fixed. What else
+> is needed aside from this patch here? More samples/bpf fixes coming? If
+> yes, please all submit them as a series instead of individual ones.
+
+Hi Daniel,
+
+Thanks for your reply.
+
+This is the last samples/bpf patch to fix the obvious build issues when
+make M=samples/bpf on the MIPS Loongson64 platform.
+
+There is another MIPS patch to fix the following build error when make
+M=samples/bpf, but it seems a common and known issue when build MIPS
+kernel used with clang [1]:
+
+./arch/mips/include/asm/checksum.h:161:9: error: unsupported inline asm: 
+input with type 'unsigned long' matching output with type '__wsum' (aka 
+'unsigned int')
+         : "0" ((__force unsigned long)daddr),
+                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1 error generated.
+
+Because these two patches are independent, this one is bpf-next related,
+the other one is mips-next related, so I submit them sepearately.
+
+[1] 
+https://lore.kernel.org/linux-mips/CAG_fn=W0JHf8QyUX==+rQMp8PoULHrsQCa9Htffws31ga8k-iw@mail.gmail.com/
+
+Thanks,
+Tiezhu
+
+>
+>  [0] 
+> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=190d1c921ad0862da14807e1670f54020f48e889
+>
+>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+>> ---
+>>   samples/bpf/Makefile | 4 ++++
+>>   1 file changed, 4 insertions(+)
+>>
+>> diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+>> index 362f314..45ceca4 100644
+>> --- a/samples/bpf/Makefile
+>> +++ b/samples/bpf/Makefile
+>> @@ -185,6 +185,10 @@ endif
+>>     ifeq ($(ARCH), mips)
+>>   TPROGS_CFLAGS += -D__SANE_USERSPACE_TYPES__
+>> +ifdef CONFIG_MACH_LOONGSON64
+>> +BPF_EXTRA_CFLAGS += -I$(srctree)/arch/mips/include/asm/mach-loongson64
+>> +BPF_EXTRA_CFLAGS += -I$(srctree)/arch/mips/include/asm/mach-generic
+>> +endif
+>>   endif
+>>     TPROGS_CFLAGS += -Wall -O2
+>>
+
