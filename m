@@ -2,232 +2,189 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31D2E306096
-	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 17:09:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 506E23061A6
+	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 18:14:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343921AbhA0QIM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Jan 2021 11:08:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32537 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343885AbhA0QHE (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 27 Jan 2021 11:07:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611763509;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ymgthTUCmjUlFjWwxIOhiUdaaEE7IEt5beNZN3TBBUk=;
-        b=BzOCWEa7Hzj5lbgpA9R5IDAJNIJ1Hcl/5wgvLj95c+K3uzcGShm1DQ4RRVZnnvur76ltYv
-        7JjQEqjq4bZxpPxn8IQKvq4xVhHSZa3sLrB5MnKM2g4fM0C1LkMVoyYsuknAQUoNjSE3oQ
-        QuflkjpOKAW4+Ktvk6/F6Zv395rcPjk=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-198-zZ8j0ohNNtOsRVU_DM5XLg-1; Wed, 27 Jan 2021 11:05:08 -0500
-X-MC-Unique: zZ8j0ohNNtOsRVU_DM5XLg-1
-Received: by mail-ed1-f69.google.com with SMTP id a24so1586879eda.14
-        for <bpf@vger.kernel.org>; Wed, 27 Jan 2021 08:05:07 -0800 (PST)
+        id S231234AbhA0RO3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Jan 2021 12:14:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233624AbhA0RMh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Jan 2021 12:12:37 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B179C0613D6
+        for <bpf@vger.kernel.org>; Wed, 27 Jan 2021 09:11:57 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id j13so3358446edp.2
+        for <bpf@vger.kernel.org>; Wed, 27 Jan 2021 09:11:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=tEZ9d5CGPHKYoot4+8YCqvx94kyHRm7qbCXqK5obPXk=;
+        b=HN4YGq5HSaQa25DG94t8FLNd44eGMEXFXURHEEumpwlKp5I9ltvOj1ly+iBE6I4Ux3
+         eM7nL6b+s2JBaE9gH+2pAZAPjEghoDASEiqy99hT+H7ytMnoXFPeLtR38rPZyIrjjrBY
+         O/8p/RC+oEs1B/Qnpy+pioC+q0Zr/9Pm0Pp20GHj0eXpjIRlSeVZk/ZkRCz59kuVpgHR
+         jYiH8ksfMZS2lT0TX3sTUk92kwiJyfrEOl4plYbrXdNT3jv2hGnnnmgCyNMbHtxlukF+
+         CUkMtb3ECYR2yJ7ElPhHOALaujqxzHbTeckKwp+xn/NQjTQL9ne236OSyQ1Arobk829L
+         Hq7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=ymgthTUCmjUlFjWwxIOhiUdaaEE7IEt5beNZN3TBBUk=;
-        b=BlQT8PRl0BHikNTQivrZLHwcRuRi31GW+0NjGZA79ugiGd1B/10XmtAHZQI06lGyLO
-         VMHhg4sPE0NpasQOpgJeDpxYbDQ231J649DWFKO8SrPKfe10zSPS844Ac5n34NwpP6sT
-         IEEP9hFU9MEjq36vfdbbvvTVPytgT29DQDARrJ1J9zCI+ndZXHgJpi6rU3sUZ+9aeIUP
-         ZX209QQZENcqQECA0MDU6QSxX+/PMS9zwum45yFO5Xg3JIV6St1dm4OTuYXDXlD5Ev1m
-         1bWDlSV82h80kb+VajcPjqfOuPyz7+6rPTse4S1XFnMrElMVg90anZFsSMIHUwgk9hhK
-         syUA==
-X-Gm-Message-State: AOAM532ML3A5dlf08ft95WOKUE2a4+c8OMiQLBeVn/BY7DUaEBhYoJPN
-        gCaMOy0rMFhz9WOKFNvLyXTLlcKfTYXfbDm8z+I13qdNyHCsZ1uSZ9mHwt5WcyeAiLJeMY577JA
-        cPY8kz1njnX7Y
-X-Received: by 2002:a17:907:20aa:: with SMTP id pw10mr7243367ejb.314.1611763506917;
-        Wed, 27 Jan 2021 08:05:06 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy4WA9iN+PNDapSxs8K8VV9E/BR+D7Ls8wf5HctHLa1BWsn9NBEFGhrvvLaM3fIAsnd/gqAYw==
-X-Received: by 2002:a17:907:20aa:: with SMTP id pw10mr7243321ejb.314.1611763506559;
-        Wed, 27 Jan 2021 08:05:06 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id pw28sm1021929ejb.115.2021.01.27.08.05.05
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=tEZ9d5CGPHKYoot4+8YCqvx94kyHRm7qbCXqK5obPXk=;
+        b=f6f459LAoWW0G5c9s3IXMFoLLeZ/iMl5GKyMx6D6aKGYPsw14jtnmT/goHpbwj90dK
+         fKB5SPz035jQQvnV0R0+z9qBcntedEkS5gpQf8uroSumtTjzCyviMbSuB7zSBMK+yfqF
+         ivujRw3xSW5h+CCijLMqKJNSGqTxpvYzsRwrKCNTlXIgNIZ70LIWETlzxLCXAWxk3h/0
+         vl/pWZtXkicGiBrieOUo7ODVELuqCjvYq5cXuZBKRQs+mzCqd321QBNdUGRBanNESLIR
+         QAhAcdvCdoX4hYnCOlqzZVoG/ISD0UJ1kN/qLVyZlWGw0QzZxndClT+1Hwcpsu/Ebmq8
+         vaFQ==
+X-Gm-Message-State: AOAM5339EtcnLZFXQ2lfkB67HSz3phjBq47oMCank2urw7leRisAqHuH
+        oap+4x03JX7cMM09k3HCo1MpnsXvJKVdx6pgWybfBZsoMh6cVV6+t5b9sk727/2FPo4bfyHwwAk
+        roPXqfrkgxKKqT1jSoNnME20kL6r9vzPwUi8Uf4DYCwh/JdRKlV4HYOO3HLgQaMHHi/W2sR0o
+X-Google-Smtp-Source: ABdhPJygRzklgOMW2KTk8cQR3TNc0BzBal3DKpGHyVrJThtWJGc+8jLWCdPgMyMpM3vud6ivIaVnPQ==
+X-Received: by 2002:a05:6402:35ca:: with SMTP id z10mr10135937edc.174.1611767516118;
+        Wed, 27 Jan 2021 09:11:56 -0800 (PST)
+Received: from gmail.com (93-136-180-151.adsl.net.t-com.hr. [93.136.180.151])
+        by smtp.gmail.com with ESMTPSA id l17sm1116662ejc.60.2021.01.27.09.11.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 08:05:06 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 96D52180349; Wed, 27 Jan 2021 17:05:05 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     John Fastabend <john.fastabend@gmail.com>,
-        Hangbin Liu <liuhangbin@gmail.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Jiri Benc <jbenc@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        David Ahern <dsahern@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        brouer@redhat.com
-Subject: Re: [PATCHv17 bpf-next 1/6] bpf: run devmap xdp_prog on flush
- instead of bulk enqueue
-In-Reply-To: <60118c586000d_9913c208c2@john-XPS-13-9370.notmuch>
-References: <20210122074652.2981711-1-liuhangbin@gmail.com>
- <20210125124516.3098129-1-liuhangbin@gmail.com>
- <20210125124516.3098129-2-liuhangbin@gmail.com>
- <6011183d4628_86d69208ba@john-XPS-13-9370.notmuch>
- <87lfcesomf.fsf@toke.dk> <20210127122050.GA41732@ranger.igk.intel.com>
- <20210127160029.73f22659@carbon>
- <60118c586000d_9913c208c2@john-XPS-13-9370.notmuch>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Wed, 27 Jan 2021 17:05:05 +0100
-Message-ID: <87wnvy4b7y.fsf@toke.dk>
+        Wed, 27 Jan 2021 09:11:55 -0800 (PST)
+Date:   Wed, 27 Jan 2021 18:12:05 +0100
+From:   Denis Salopek <denis.salopek@sartura.hr>
+To:     bpf@vger.kernel.org
+Cc:     luka.perkov@sartura.hr, luka.oreskovic@sartura.hr,
+        juraj.vijtiuk@sartura.hr
+Subject: [PATCH bpf-next] bpf: add lookup_and_delete_elem support to hashtab
+Message-ID: <YBGe5WFzSc3Z8Oh5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-John Fastabend <john.fastabend@gmail.com> writes:
+Extend the existing bpf_map_lookup_and_delete_elem() functionality to
+hashtab maps, in addition to stacks and queues.
+Create a new hashtab bpf_map_ops function that does lookup and deletion
+of the element under the same bucket lock and add the created map_ops to
+bpf.h.
+Add the appropriate test case to 'maps' selftests.
 
-> Jesper Dangaard Brouer wrote:
->> On Wed, 27 Jan 2021 13:20:50 +0100
->> Maciej Fijalkowski <maciej.fijalkowski@intel.com> wrote:
->>=20
->> > On Wed, Jan 27, 2021 at 10:41:44AM +0100, Toke H=C3=B8iland-J=C3=B8rge=
-nsen wrote:
->> > > John Fastabend <john.fastabend@gmail.com> writes:
->> > >=20=20=20
->> > > > Hangbin Liu wrote:=20=20
->> > > >> From: Jesper Dangaard Brouer <brouer@redhat.com>
->> > > >>=20
->> > > >> This changes the devmap XDP program support to run the program wh=
-en the
->> > > >> bulk queue is flushed instead of before the frame is enqueued. Th=
-is has
->> > > >> a couple of benefits:
->> > > >>=20
->> > > >> - It "sorts" the packets by destination devmap entry, and then ru=
-ns the
->> > > >>   same BPF program on all the packets in sequence. This ensures t=
-hat we
->> > > >>   keep the XDP program and destination device properties hot in I=
--cache.
->> > > >>=20
->> > > >> - It makes the multicast implementation simpler because it can ju=
-st
->> > > >>   enqueue packets using bq_enqueue() without having to deal with =
-the
->> > > >>   devmap program at all.
->> > > >>=20
->> > > >> The drawback is that if the devmap program drops the packet, the =
-enqueue
->> > > >> step is redundant. However, arguably this is mostly visible in a
->> > > >> micro-benchmark, and with more mixed traffic the I-cache benefit =
-should
->> > > >> win out. The performance impact of just this patch is as follows:
->> > > >>=20
->> > > >> The bq_xmit_all's logic is also refactored and error label is rem=
-oved.
->> > > >> When bq_xmit_all() is called from bq_enqueue(), another packet wi=
-ll
->> > > >> always be enqueued immediately after, so clearing dev_rx, xdp_pro=
-g and
->> > > >> flush_node in bq_xmit_all() is redundant. Let's move the clear to
->> > > >> __dev_flush(), and only check them once in bq_enqueue() since the=
-y are
->> > > >> all modified together.
->> > > >>=20
->> > > >> By using xdp_redirect_map in sample/bpf and send pkts via pktgen =
-cmd:
->> > > >> ./pktgen_sample03_burst_single_flow.sh -i eno1 -d $dst_ip -m $dst=
-_mac -t 10 -s 64
->> > > >>=20
->> > > >> There are about +/- 0.1M deviation for native testing, the perfor=
-mance
->> > > >> improved for the base-case, but some drop back with xdp devmap pr=
-og attached.
->> > > >>=20
->> > > >> Version          | Test                           | Generic | Nat=
-ive | Native + 2nd xdp_prog
->> > > >> 5.10 rc6         | xdp_redirect_map   i40e->i40e  |    2.0M |   9=
-.1M |  8.0M
->> > > >> 5.10 rc6         | xdp_redirect_map   i40e->veth  |    1.7M |  11=
-.0M |  9.7M
->> > > >> 5.10 rc6 + patch | xdp_redirect_map   i40e->i40e  |    2.0M |   9=
-.5M |  7.5M
->> > > >> 5.10 rc6 + patch | xdp_redirect_map   i40e->veth  |    1.7M |  11=
-.6M |  9.1M
->> > > >>=20=20=20
->> > > >
->> > > > [...]
->
-> Acked-by: John Fastabend <john.fastabend@gmail.com>
->
->> > > >>  static void bq_xmit_all(struct xdp_dev_bulk_queue *bq, u32 flags)
->> > > >>  {
->> > > >>  	struct net_device *dev =3D bq->dev;
->> > > >> -	int sent =3D 0, drops =3D 0, err =3D 0;
->> > > >> +	unsigned int cnt =3D bq->count;
->> > > >> +	int drops =3D 0, err =3D 0;
->> > > >> +	int to_send =3D cnt;
->> > > >> +	int sent =3D cnt;
->> > > >>  	int i;
->> > > >>=20=20
->> > > >> -	if (unlikely(!bq->count))
->> > > >> +	if (unlikely(!cnt))
->> > > >>  		return;
->> > > >>=20=20
->> > > >> -	for (i =3D 0; i < bq->count; i++) {
->> > > >> +	for (i =3D 0; i < cnt; i++) {
->> > > >>  		struct xdp_frame *xdpf =3D bq->q[i];
->> > > >>=20=20
->> > > >>  		prefetch(xdpf);
->> > > >>  	}
->> > > >>=20=20
->> > > >> -	sent =3D dev->netdev_ops->ndo_xdp_xmit(dev, bq->count, bq->q, f=
-lags);
->> > > >> +	if (bq->xdp_prog) {
->> > > >> +		to_send =3D dev_map_bpf_prog_run(bq->xdp_prog, bq->q, cnt, dev=
-);
->> > > >> +		if (!to_send) {
->> > > >> +			sent =3D 0;
->> > > >> +			goto out;
->> > > >> +		}
->> > > >> +		drops =3D cnt - to_send;
->> > > >> +	}=20=20
->> > > >
->> > > > I might be missing something about how *bq works here. What happen=
-s when
->> > > > dev_map_bpf_prog_run returns to_send < cnt?
->> > > >
->> > > > So I read this as it will send [0, to_send] and [to_send, cnt] wil=
-l be
->> > > > dropped? How do we know the bpf prog would have dropped the set,
->> > > > [to_send+1, cnt]?=20=20
->> >=20
->> > You know that via recalculation of 'drops' value after you returned fr=
-om
->> > dev_map_bpf_prog_run() which later on is provided onto trace_xdp_devma=
-p_xmit.
->> >=20
->> > >=20
->> > > Because dev_map_bpf_prog_run() compacts the array:
->> > >=20
->> > > +		case XDP_PASS:
->> > > +			err =3D xdp_update_frame_from_buff(&xdp, xdpf);
->> > > +			if (unlikely(err < 0))
->> > > +				xdp_return_frame_rx_napi(xdpf);
->> > > +			else
->> > > +				frames[nframes++] =3D xdpf;
->> > > +			break;=20=20
->> >=20
->> > To expand this a little, 'frames' array is reused and 'nframes' above =
-is
->> > the value that is returned and we store it onto 'to_send' variable.
->> >=20
->
-> In the morning with coffee looks good to me. Thanks Toke, Jesper.
+Signed-off-by: Denis Salopek <denis.salopek@sartura.hr>
+Cc: Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>
+Cc: Luka Oreskovic <luka.oreskovic@sartura.hr>
+Cc: Luka Perkov <luka.perkov@sartura.hr>
+---
+ include/linux/bpf.h                     |  1 +
+ kernel/bpf/hashtab.c                    | 38 +++++++++++++++++++++++++
+ kernel/bpf/syscall.c                    |  9 ++++++
+ tools/testing/selftests/bpf/test_maps.c |  7 +++++
+ 4 files changed, 55 insertions(+)
 
-Haha, yeah, coffee does tend to help, doesn't it? You're welcome :)
-
--Toke
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 1aac2af12fed..003c1505f0e3 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -77,6 +77,7 @@ struct bpf_map_ops {
+ 
+ 	/* funcs callable from userspace and from eBPF programs */
+ 	void *(*map_lookup_elem)(struct bpf_map *map, void *key);
++	int (*map_lookup_and_delete_elem)(struct bpf_map *map, void *key, void *value);
+ 	int (*map_update_elem)(struct bpf_map *map, void *key, void *value, u64 flags);
+ 	int (*map_delete_elem)(struct bpf_map *map, void *key);
+ 	int (*map_push_elem)(struct bpf_map *map, void *value, u64 flags);
+diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+index c1ac7f964bc9..8d8463e0ea34 100644
+--- a/kernel/bpf/hashtab.c
++++ b/kernel/bpf/hashtab.c
+@@ -973,6 +973,43 @@ static int check_flags(struct bpf_htab *htab, struct htab_elem *l_old,
+ 	return 0;
+ }
+ 
++/* Called from syscall or from eBPF program */
++static int htab_map_lookup_and_delete_elem(struct bpf_map *map, void *key, void *value)
++{
++	struct bpf_htab *htab = container_of(map, struct bpf_htab, map);
++	struct hlist_nulls_head *head;
++	struct bucket *b;
++	struct htab_elem *l;
++	unsigned long flags;
++	u32 hash, key_size;
++	int ret;
++
++	WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_trace_held());
++
++	key_size = map->key_size;
++
++	hash = htab_map_hash(key, key_size, htab->hashrnd);
++	b = __select_bucket(htab, hash);
++	head = &b->head;
++
++	ret = htab_lock_bucket(htab, b, hash, &flags);
++	if (ret)
++		return ret;
++
++	l = lookup_elem_raw(head, hash, key, key_size);
++
++	if (l) {
++		copy_map_value(map, value, l->key + round_up(key_size, 8));
++		hlist_nulls_del_rcu(&l->hash_node);
++		free_htab_elem(htab, l);
++	} else {
++		ret = -ENOENT;
++	}
++
++	htab_unlock_bucket(htab, b, hash, flags);
++	return ret;
++}
++
+ /* Called from syscall or from eBPF program */
+ static int htab_map_update_elem(struct bpf_map *map, void *key, void *value,
+ 				u64 map_flags)
+@@ -1877,6 +1914,7 @@ const struct bpf_map_ops htab_map_ops = {
+ 	.map_free = htab_map_free,
+ 	.map_get_next_key = htab_map_get_next_key,
+ 	.map_lookup_elem = htab_map_lookup_elem,
++	.map_lookup_and_delete_elem = htab_map_lookup_and_delete_elem,
+ 	.map_update_elem = htab_map_update_elem,
+ 	.map_delete_elem = htab_map_delete_elem,
+ 	.map_gen_lookup = htab_map_gen_lookup,
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index e5999d86c76e..4ff45c8d1077 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -1505,6 +1505,15 @@ static int map_lookup_and_delete_elem(union bpf_attr *attr)
+ 	if (map->map_type == BPF_MAP_TYPE_QUEUE ||
+ 	    map->map_type == BPF_MAP_TYPE_STACK) {
+ 		err = map->ops->map_pop_elem(map, value);
++	} else if (map->map_type == BPF_MAP_TYPE_HASH) {
++		if (!bpf_map_is_dev_bound(map)) {
++			bpf_disable_instrumentation();
++			rcu_read_lock();
++			err = map->ops->map_lookup_and_delete_elem(map, key, value);
++			rcu_read_unlock();
++			bpf_enable_instrumentation();
++			maybe_wait_bpf_programs(map);
++		}
+ 	} else {
+ 		err = -ENOTSUPP;
+ 	}
+diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
+index 51adc42b2b40..3e1900e46e1d 100644
+--- a/tools/testing/selftests/bpf/test_maps.c
++++ b/tools/testing/selftests/bpf/test_maps.c
+@@ -65,6 +65,13 @@ static void test_hashmap(unsigned int task, void *data)
+ 	assert(bpf_map_lookup_elem(fd, &key, &value) == 0 && value == 1234);
+ 
+ 	key = 2;
++	value = 1234;
++	/* Insert key=2 element. */
++	assert(bpf_map_update_elem(fd, &key, &value, BPF_ANY) == 0);
++
++	/* Check that key=2 matches the value and delete it */
++	assert(bpf_map_lookup_and_delete_elem(fd, &key, &value) == 0 && value == 1234);
++
+ 	/* Check that key=2 is not found. */
+ 	assert(bpf_map_lookup_elem(fd, &key, &value) == -1 && errno == ENOENT);
+ 
+-- 
+2.26.2
 
