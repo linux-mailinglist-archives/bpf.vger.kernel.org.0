@@ -2,115 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D01E306763
-	for <lists+bpf@lfdr.de>; Thu, 28 Jan 2021 00:01:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27D8430676B
+	for <lists+bpf@lfdr.de>; Thu, 28 Jan 2021 00:03:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232749AbhA0W5d (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Jan 2021 17:57:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40676 "EHLO
+        id S232716AbhA0W52 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Jan 2021 17:57:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231540AbhA0Wzx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Jan 2021 17:55:53 -0500
-Received: from www62.your-server.de (www62.your-server.de [IPv6:2a01:4f8:d0a:276a::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D273C0617AA;
-        Wed, 27 Jan 2021 14:49:33 -0800 (PST)
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1l4tcF-000CrN-Ho; Wed, 27 Jan 2021 23:48:47 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1l4tcF-000MlJ-9A; Wed, 27 Jan 2021 23:48:47 +0100
-Subject: Re: [Patch bpf-next v5 1/3] bpf: introduce timeout hash map
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Jamal Hadi Salim <jhs@mojatatu.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Cong Wang <cong.wang@bytedance.com>,
+        with ESMTP id S231872AbhA0Wz3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Jan 2021 17:55:29 -0500
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E116C061574;
+        Wed, 27 Jan 2021 14:24:55 -0800 (PST)
+Received: by mail-il1-x131.google.com with SMTP id g7so2329707iln.2;
+        Wed, 27 Jan 2021 14:24:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=6AZ5gVqyxhNX7n24kIVcA9NdK4AhKXH76fFkmKApVaA=;
+        b=f/hhdkJRoQShMo7uvCBvZn5GZGB4wsKALxsIa9iyVY6xbydJFVZZSQaoNHBIwXknqz
+         GizvAV0u4AIKk13ia8lepC7LdI9zmD332syZVMq93GkHnBmU4ItSu+NAvNK830Qbvvi3
+         1oqYqKw+G3ccaTrTt7Pv/KbHHsBiWtYWtxUrGfyv1gmMHZU/gGnmY/hrt/YCRYCEVYxy
+         4DfuA/yBD+TyjDcQ+NzsGfP7AXUE4u++BY+8LpGE8PAkF3q/deQLz+W1EBeVlhPt3E6S
+         U6XkVnmB3qGftVmaF+zzs8PgaSxgSDm7X1s+5rVmbJprc1zcOLthyj6zBilGLp1W415f
+         ygwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=6AZ5gVqyxhNX7n24kIVcA9NdK4AhKXH76fFkmKApVaA=;
+        b=j5uPoysu6G8X+BscPZ5MwM5YShtMlUrVRi5DMSqK5E/sDaWq7vYvkP0q5cQ0hN66c7
+         kvCMcsWTglTtV4l6gLnPstSwdeCeiBjuYHki2tsY64e9aZxF957koiYarChFVBwi2htf
+         jfdNH/GUqBGv6mrntViXuCpNAFn/kURsu2JtB/PNsoi3cyqaPsMyTl97Ka8v9BpPq1J9
+         Hey1zBhIZW9jftDXxZhyLHwpaArVLug4oS+MPhkwrHQHd1NggJ9ezOdoB1IbFZ3u92sb
+         MUF6f+xpaIIYE0EYM2jPvOoyqjUEuks1e2GHrnA2S1474Y7sMaJQD/QyM0NVhb5GBEe3
+         wIVA==
+X-Gm-Message-State: AOAM532yHMfRJ+Xa8mjmqHEhoy7DBFKJq0Ct60qPrKcIB7x/6W1RAwgo
+        cFxOLuj21Wdy/sviyvTg0WA=
+X-Google-Smtp-Source: ABdhPJyMbkdKC7UCs19QCIVhxLY5snSraGGgPcyRLe8fzkoo7Vu25V+9qT7c6HgBvEeRSJStpcNECA==
+X-Received: by 2002:a05:6e02:1545:: with SMTP id j5mr10511543ilu.296.1611786295045;
+        Wed, 27 Jan 2021 14:24:55 -0800 (PST)
+Received: from localhost ([172.243.146.206])
+        by smtp.gmail.com with ESMTPSA id f13sm1584980iog.18.2021.01.27.14.24.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Jan 2021 14:24:54 -0800 (PST)
+Date:   Wed, 27 Jan 2021 14:24:47 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Hangbin Liu <liuhangbin@gmail.com>, bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        David Ahern <dsahern@gmail.com>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Dongdong Wang <wangdongdong.6@bytedance.com>, yhs@fb.com
-References: <20210122205415.113822-1-xiyou.wangcong@gmail.com>
- <20210122205415.113822-2-xiyou.wangcong@gmail.com>
- <d69d44ca-206c-d818-1177-c8f14d8be8d1@iogearbox.net>
- <CAM_iQpW8aeh190G=KVA9UEZ_6+UfenQxgPXuw784oxCaMfXjng@mail.gmail.com>
- <CAADnVQKmNiHj8qy1yqbOrf-OMyhnn8fKm87w6YMfkiDHkBpJVg@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <b646c7b5-be91-79c6-4538-e41a10d4b9ae@iogearbox.net>
-Date:   Wed, 27 Jan 2021 23:48:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <CAADnVQKmNiHj8qy1yqbOrf-OMyhnn8fKm87w6YMfkiDHkBpJVg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26062/Wed Jan 27 13:26:15 2021)
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Hangbin Liu <liuhangbin@gmail.com>
+Message-ID: <6011e82feb2_a0fd920881@john-XPS-13-9370.notmuch>
+In-Reply-To: <20210125124516.3098129-6-liuhangbin@gmail.com>
+References: <20210122074652.2981711-1-liuhangbin@gmail.com>
+ <20210125124516.3098129-1-liuhangbin@gmail.com>
+ <20210125124516.3098129-6-liuhangbin@gmail.com>
+Subject: RE: [PATCHv17 bpf-next 5/6] selftests/bpf: Add verifier tests for bpf
+ arg ARG_CONST_MAP_PTR_OR_NULL
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/27/21 7:00 PM, Alexei Starovoitov wrote:
-> On Tue, Jan 26, 2021 at 11:00 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
->>>>                ret = PTR_ERR(l_new);
->>>> +             if (ret == -EAGAIN) {
->>>> +                     htab_unlock_bucket(htab, b, hash, flags);
->>>> +                     htab_gc_elem(htab, l_old);
->>>> +                     mod_delayed_work(system_unbound_wq, &htab->gc_work, 0);
->>>> +                     goto again;
->>>
->>> Also this one looks rather worrying, so the BPF prog is stalled here, loop-waiting
->>> in (e.g. XDP) hot path for system_unbound_wq to kick in to make forward progress?
->>
->> In this case, the old one is scheduled for removal in GC, we just wait for GC
->> to finally remove it. It won't stall unless GC itself or the worker scheduler is
->> wrong, both of which should be kernel bugs.
->>
->> If we don't do this, users would get a -E2BIG when it is not too big. I don't
->> know a better way to handle this sad situation, maybe returning -EBUSY
->> to users and let them call again?
-> 
-> I think using wq for timers is a non-starter.
-> Tying a hash/lru map with a timer is not a good idea either.
+Hangbin Liu wrote:
+> Use helper bpf_redirect_map() and bpf_redirect_map_multi() to test bpf
+> arg ARG_CONST_MAP_PTR and ARG_CONST_MAP_PTR_OR_NULL. Make sure the
+> map arg could be verified correctly when it is NULL or valid map
+> pointer.
+> =
 
-Thinking some more, given we have jiffies64 helper and atomic ops for BPF by now,
-we would technically only need the ability to delete entries via bpf iter progs
-(d6c4503cc296 ("bpf: Implement bpf iterator for hash maps")) which could then be
-kicked off from user space at e.g. dynamic intervals which would be the equivalent
-for the wq in here. That patch could then be implemented this way. I presume
-the ability to delete map entries from bpf iter progs would be generic and useful
-enough anyway.
+> Add devmap and devmap_hash in struct bpf_test due to bpf_redirect_{map,=
 
-> I think timers have to be done as independent objects similar to
-> how the kernel uses them.
-> Then there will be no question whether lru or hash map needs it.
-> The bpf prog author will be able to use timers with either.
-> The prog will be able to use timers without hash maps too.
-> 
-> I'm proposing a timer map where each object will go through
-> bpf_timer_setup(timer, callback, flags);
-> where "callback" is a bpf subprogram.
-> Corresponding bpf_del_timer and bpf_mod_timer would work the same way
-> they are in the kernel.
-> The tricky part is kernel style of using from_timer() to access the
-> object with additional info.
+> map_multi} limit.
+> =
 
-Would this mean N timer objs for N map elems? I presume not given this could be
-racy and would have huge extra mem overhead. Either way, timer obj could work, but
-then at the same time you could probably also solve it with the above; it's not
-like you need the timer to kick in at some /exact/ time, but rather at some point
-to clean up stale entries before the map gets full and worst case refuses updates
-for new entries. (In the ideal case though we wouldn't need the extra effort to
-search deeply for elements w/o penalizing the fast-path lookup costs too much when
-walking the bucket.)
+> Test result:
+>  ]# ./test_verifier 713 716
+>  #713/p ARG_CONST_MAP_PTR: null pointer OK
+>  #714/p ARG_CONST_MAP_PTR: valid map pointer OK
+>  #715/p ARG_CONST_MAP_PTR_OR_NULL: null pointer for ex_map OK
+>  #716/p ARG_CONST_MAP_PTR_OR_NULL: valid map pointer for ex_map OK
+>  Summary: 4 PASSED, 0 SKIPPED, 0 FAILED
+> =
 
-> I think bpf timer map can model it the same way.
-> At map creation time the value_size will specify the amount of extra
-> bytes necessary.
-> Another alternative is to pass an extra data argument to a callback.
+> Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+> ---
+>  tools/testing/selftests/bpf/test_verifier.c   | 22 +++++-
+>  .../testing/selftests/bpf/verifier/map_ptr.c  | 70 +++++++++++++++++++=
+
+>  2 files changed, 91 insertions(+), 1 deletion(-)
+> =
+
+
+[...]
+
+> +{
+> +	"ARG_CONST_MAP_PTR_OR_NULL: null pointer for ex_map",
+> +	.insns =3D {
+> +		BPF_MOV64_IMM(BPF_REG_1, 0),
+> +		/* bpf_redirect_map_multi arg1 (in_map) */
+> +		BPF_LD_MAP_FD(BPF_REG_1, 0),
+> +		/* bpf_redirect_map_multi arg2 (ex_map) */
+> +		BPF_MOV64_IMM(BPF_REG_2, 0),
+> +		/* bpf_redirect_map_multi arg3 (flags) */
+> +		BPF_MOV64_IMM(BPF_REG_3, 0),
+> +		BPF_EMIT_CALL(BPF_FUNC_redirect_map_multi),
+> +		BPF_EXIT_INSN(),
+> +	},
+> +	.fixup_map_devmap =3D { 1 },
+> +	.result =3D ACCEPT,
+> +	.prog_type =3D BPF_PROG_TYPE_XDP,
+> +	.retval =3D 4,
+
+Do we need one more case where this is map_or_null? In above
+ex_map will be scalar tnum_const=3D0 and be exactly a null. This
+will push verifier here,
+
+  meta->map_ptr =3D register_is_null(reg) ? NULL : reg->map_ptr;
+
+In the below case it is known to be not null.
+
+Is it also interesting to have a case where register_is_null(reg)
+check fails and reg->map_ptr is set, but may be null.
+
+> +},
+> +{
+> +	"ARG_CONST_MAP_PTR_OR_NULL: valid map pointer for ex_map",
+> +	.insns =3D {
+> +		BPF_MOV64_IMM(BPF_REG_1, 0),
+> +		/* bpf_redirect_map_multi arg1 (in_map) */
+> +		BPF_LD_MAP_FD(BPF_REG_1, 0),
+> +		/* bpf_redirect_map_multi arg2 (ex_map) */
+> +		BPF_LD_MAP_FD(BPF_REG_2, 1),
+> +		/* bpf_redirect_map_multi arg3 (flags) */
+> +		BPF_MOV64_IMM(BPF_REG_3, 0),
+> +		BPF_EMIT_CALL(BPF_FUNC_redirect_map_multi),
+> +		BPF_EXIT_INSN(),
+> +	},
+> +	.fixup_map_devmap =3D { 1 },
+> +	.fixup_map_devmap_hash =3D { 3 },
+> +	.result =3D ACCEPT,
+> +	.prog_type =3D BPF_PROG_TYPE_XDP,
+> +	.retval =3D 4,
+> +},
+> -- =
+
+> 2.26.2
+> =
+
+
+
