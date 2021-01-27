@@ -2,137 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8D3A306288
-	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 18:49:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACE203062E6
+	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 19:01:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344206AbhA0RsP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Jan 2021 12:48:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59190 "EHLO
+        id S1344007AbhA0SBU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Jan 2021 13:01:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344156AbhA0Rr5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Jan 2021 12:47:57 -0500
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 118EEC061756
-        for <bpf@vger.kernel.org>; Wed, 27 Jan 2021 09:47:17 -0800 (PST)
-Received: by mail-qk1-x74a.google.com with SMTP id w204so2108672qka.18
-        for <bpf@vger.kernel.org>; Wed, 27 Jan 2021 09:47:17 -0800 (PST)
+        with ESMTP id S235091AbhA0SA6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Jan 2021 13:00:58 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4B95C06174A;
+        Wed, 27 Jan 2021 10:00:17 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id p21so3895816lfu.11;
+        Wed, 27 Jan 2021 10:00:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=/9BJiDKQimB7u2fI0qYNm7nXNMZSvHM17U5K5K4mu/4=;
-        b=VpbSLoVFdd9zqO05uHMrLz9n+MOi8NAQR+x5X3LfrMSvXOPSeSFoZur30KcKTY1c05
-         uhrwTMLuPGXxr4EkQCdi6zxVIi+LKfsoV71lZNoRD1p2RykNhZ2FPZQbGs2Hv3W3YTv0
-         LBmdsxrpEYzSKHx8t+M9oug0eidN5nqM1vo+L8IrrotjWlBtqgLcwD+R7HJMxwot0TsM
-         beb0xarNNYrh3p4vmkD8PwWLaUAUioVHbC9J9h48FnG4Kr3ho6d2tXaU3DuWpveTTVfA
-         FcCKAvSnaUHcDW+UXvTmkmr5gk2ll2TKe4tK1YTDkkQK0uFKdbGkZirqKntcvWSnAPp4
-         cECw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AFMN9onqllDx0JO+g/LmIUXKcLoeGQxKuSLE4P7rhPM=;
+        b=HLLxp7nIcFF2FU/CvOE3BlIJCheP75vlctnzmxdx+/wB2+Zgnt7AZoDmAiMDmAE8Lp
+         JZnAmprluMwKHZKPM3fz/1JMYJu9b+jkoRpzxlk2TlnOwsuMVvhrldNd9dHQu5iK6Vwp
+         fXeumtskuhrk3HMOYx8k8MAsbUZAVY+txGFn1RKylVKdWiXvMdkQMV1Ba86EXXkuTdcv
+         ZvubYJtb0/O93HlrSv5VOC8m7AtSZiFitlo1YFZAMuqtsAvb/lmXmqKzEUhMyqhxpWBE
+         fCdB6m2/vQgkPq73Fi/rGsA/DBr0m4COTvaj7q2twKdCoTQG2WcwQN+npEjNPGvEXLYB
+         seXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=/9BJiDKQimB7u2fI0qYNm7nXNMZSvHM17U5K5K4mu/4=;
-        b=kwD59MJGA/KiEX23cXDu5sx32FxnvnF4e+J/g9Hxrx5WrskqwHIcddCOG+1dhiqz0h
-         ac3fznGYNm6m9QvyKmi3mdXyRWxns24+rBrqnyR5UVjVhVt8T5XXoD/HrJxpldUvrsWK
-         62gyyNh0VJrPRfMJFLjVrq8wYGhadzAE4mMP88T/4kuJtwCst6udVqzFeUMhTzTVW0zw
-         Z/+ir1qNT8BxrVm6ieryHbFpwz7RxZfIk+OZVd5AvRGhnBIL09ZQM4CM1jkNIYPVDyas
-         7TxCVLb3rvy0mNaIKPQZ8Z6y5auo4/WmmVcJoxba1Fx3SSJpRkuW8LVccT3u5LtrxsIC
-         JsSw==
-X-Gm-Message-State: AOAM5307R1TpgDcA/8ViJ68bcCcS/AaWLD9U43BNxXC0FYC1iidtUYcu
-        0rtOdk5sORum/5yF4PlFyCE1Qs8=
-X-Google-Smtp-Source: ABdhPJy8yd44Lehs+FonFE4Rkj9dC2gy7LvvGhbzo9Hia4SvMJZ5nqESIVYCb1V/xRRKRqP+QwEUtgg=
-Sender: "sdf via sendgmr" <sdf@sdf2.svl.corp.google.com>
-X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:7220:84ff:fe09:7732])
- (user=sdf job=sendgmr) by 2002:ad4:43ca:: with SMTP id o10mr11579834qvs.25.1611769636244;
- Wed, 27 Jan 2021 09:47:16 -0800 (PST)
-Date:   Wed, 27 Jan 2021 09:47:14 -0800
-Message-Id: <20210127174714.2240395-1-sdf@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
-Subject: [PATCH bpf-next] bpf: enable bpf_{g,s}etsockopt in BPF_CGROUP_UDP{4,6}_SENDMSG
-From:   Stanislav Fomichev <sdf@google.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net,
-        Stanislav Fomichev <sdf@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AFMN9onqllDx0JO+g/LmIUXKcLoeGQxKuSLE4P7rhPM=;
+        b=G9MGn+FvsbKekUnE/rwd4mHiT0/Opy8UR6VFxxkS4vLV7htlIom/606YQ1p9sGxYyG
+         gb+RxiuEB2hdRs/DV/Hs+RqfvKU0hL0OKT22rbXeMEZEUVuGCadGjKA2oz5nX1gk/IhM
+         7V8VnI3iRwWrCn10goRjAUWkAxriKsX7wSDqR3l5RcfC/r9415GSgHntZivG6QpLzJsP
+         /jq61In3GCusFBETxzADdjtlWRbVgVjmX0gOgxlNGecRQdzt1gI1e0jEwkcrMygjNiRZ
+         m3qptej0Xr85GDDkRKB0qudKNPZJH69ewZaQj3Fz82sBk/BBGmgAJEceSy3veT6enn1S
+         3CWQ==
+X-Gm-Message-State: AOAM530jGD2U0r3AhZGnr2GDF0cXtq9Yy/aIOzzY+M687osnEna01/8h
+        O3v7UWNqXIXQsIC+WByPJf97Trx1IAxF6GFTEKs=
+X-Google-Smtp-Source: ABdhPJwnLxauhycV4xuaAfkSvaCO3mPdf39CwZ0FqYZtIlej0RICgFE+W0FesCuKYGXQhJ4LZpNQEvrDsIJKFQ/y2tw=
+X-Received: by 2002:a19:6d07:: with SMTP id i7mr5994244lfc.75.1611770416292;
+ Wed, 27 Jan 2021 10:00:16 -0800 (PST)
+MIME-Version: 1.0
+References: <20210122205415.113822-1-xiyou.wangcong@gmail.com>
+ <20210122205415.113822-2-xiyou.wangcong@gmail.com> <d69d44ca-206c-d818-1177-c8f14d8be8d1@iogearbox.net>
+ <CAM_iQpW8aeh190G=KVA9UEZ_6+UfenQxgPXuw784oxCaMfXjng@mail.gmail.com>
+In-Reply-To: <CAM_iQpW8aeh190G=KVA9UEZ_6+UfenQxgPXuw784oxCaMfXjng@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 27 Jan 2021 10:00:04 -0800
+Message-ID: <CAADnVQKmNiHj8qy1yqbOrf-OMyhnn8fKm87w6YMfkiDHkBpJVg@mail.gmail.com>
+Subject: Re: [Patch bpf-next v5 1/3] bpf: introduce timeout hash map
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Jamal Hadi Salim <jhs@mojatatu.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Dongdong Wang <wangdongdong.6@bytedance.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Can be used to query/modify socket state for unconnected UDP sendmsg.
-Those hooks run as BPF_CGROUP_RUN_SA_PROG_LOCK and operate on
-a locked socket.
+On Tue, Jan 26, 2021 at 11:00 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+> > >               ret = PTR_ERR(l_new);
+> > > +             if (ret == -EAGAIN) {
+> > > +                     htab_unlock_bucket(htab, b, hash, flags);
+> > > +                     htab_gc_elem(htab, l_old);
+> > > +                     mod_delayed_work(system_unbound_wq, &htab->gc_work, 0);
+> > > +                     goto again;
+> >
+> > Also this one looks rather worrying, so the BPF prog is stalled here, loop-waiting
+> > in (e.g. XDP) hot path for system_unbound_wq to kick in to make forward progress?
+>
+> In this case, the old one is scheduled for removal in GC, we just wait for GC
+> to finally remove it. It won't stall unless GC itself or the worker scheduler is
+> wrong, both of which should be kernel bugs.
+>
+> If we don't do this, users would get a -E2BIG when it is not too big. I don't
+> know a better way to handle this sad situation, maybe returning -EBUSY
+> to users and let them call again?
 
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- net/core/filter.c                                 | 4 ++++
- tools/testing/selftests/bpf/progs/sendmsg4_prog.c | 7 +++++++
- tools/testing/selftests/bpf/progs/sendmsg6_prog.c | 7 +++++++
- 3 files changed, 18 insertions(+)
+I think using wq for timers is a non-starter.
+Tying a hash/lru map with a timer is not a good idea either.
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 9ab94e90d660..3d7f78a19565 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -7023,6 +7023,8 @@ sock_addr_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		case BPF_CGROUP_INET6_BIND:
- 		case BPF_CGROUP_INET4_CONNECT:
- 		case BPF_CGROUP_INET6_CONNECT:
-+		case BPF_CGROUP_UDP4_SENDMSG:
-+		case BPF_CGROUP_UDP6_SENDMSG:
- 			return &bpf_sock_addr_setsockopt_proto;
- 		default:
- 			return NULL;
-@@ -7033,6 +7035,8 @@ sock_addr_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		case BPF_CGROUP_INET6_BIND:
- 		case BPF_CGROUP_INET4_CONNECT:
- 		case BPF_CGROUP_INET6_CONNECT:
-+		case BPF_CGROUP_UDP4_SENDMSG:
-+		case BPF_CGROUP_UDP6_SENDMSG:
- 			return &bpf_sock_addr_getsockopt_proto;
- 		default:
- 			return NULL;
-diff --git a/tools/testing/selftests/bpf/progs/sendmsg4_prog.c b/tools/testing/selftests/bpf/progs/sendmsg4_prog.c
-index 092d9da536f3..fcac40a05c3d 100644
---- a/tools/testing/selftests/bpf/progs/sendmsg4_prog.c
-+++ b/tools/testing/selftests/bpf/progs/sendmsg4_prog.c
-@@ -21,9 +21,16 @@ int _version SEC("version") = 1;
- SEC("cgroup/sendmsg4")
- int sendmsg_v4_prog(struct bpf_sock_addr *ctx)
- {
-+	int prio;
-+
- 	if (ctx->type != SOCK_DGRAM)
- 		return 0;
- 
-+	if (bpf_getsockopt(ctx, SOL_SOCKET, SO_PRIORITY, &prio, sizeof(prio)))
-+		return 0;
-+	if (bpf_setsockopt(ctx, SOL_SOCKET, SO_PRIORITY, &prio, sizeof(prio)))
-+		return 0;
-+
- 	/* Rewrite source. */
- 	if (ctx->msg_src_ip4 == bpf_htonl(SRC1_IP4) ||
- 	    ctx->msg_src_ip4 == bpf_htonl(SRC2_IP4)) {
-diff --git a/tools/testing/selftests/bpf/progs/sendmsg6_prog.c b/tools/testing/selftests/bpf/progs/sendmsg6_prog.c
-index 255a432bc163..50b46961d08a 100644
---- a/tools/testing/selftests/bpf/progs/sendmsg6_prog.c
-+++ b/tools/testing/selftests/bpf/progs/sendmsg6_prog.c
-@@ -25,9 +25,16 @@ int _version SEC("version") = 1;
- SEC("cgroup/sendmsg6")
- int sendmsg_v6_prog(struct bpf_sock_addr *ctx)
- {
-+	int prio;
-+
- 	if (ctx->type != SOCK_DGRAM)
- 		return 0;
- 
-+	if (bpf_getsockopt(ctx, SOL_SOCKET, SO_PRIORITY, &prio, sizeof(prio)))
-+		return 0;
-+	if (bpf_setsockopt(ctx, SOL_SOCKET, SO_PRIORITY, &prio, sizeof(prio)))
-+		return 0;
-+
- 	/* Rewrite source. */
- 	if (ctx->msg_src_ip6[3] == bpf_htonl(1) ||
- 	    ctx->msg_src_ip6[3] == bpf_htonl(0)) {
--- 
-2.30.0.280.ga3ce27912f-goog
+I think timers have to be done as independent objects similar to
+how the kernel uses them.
+Then there will be no question whether lru or hash map needs it.
+The bpf prog author will be able to use timers with either.
+The prog will be able to use timers without hash maps too.
 
+I'm proposing a timer map where each object will go through
+bpf_timer_setup(timer, callback, flags);
+where "callback" is a bpf subprogram.
+Corresponding bpf_del_timer and bpf_mod_timer would work the same way
+they are in the kernel.
+The tricky part is kernel style of using from_timer() to access the
+object with additional info.
+I think bpf timer map can model it the same way.
+At map creation time the value_size will specify the amount of extra
+bytes necessary.
+Another alternative is to pass an extra data argument to a callback.
