@@ -2,114 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED2CE3059C4
-	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 12:32:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0373F305A79
+	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 12:57:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236102AbhA0LbB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Jan 2021 06:31:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33366 "EHLO
+        id S237327AbhA0L4q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Jan 2021 06:56:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236758AbhA0L24 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Jan 2021 06:28:56 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F5A8C061352
-        for <bpf@vger.kernel.org>; Wed, 27 Jan 2021 03:26:07 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id d16so1484509wro.11
-        for <bpf@vger.kernel.org>; Wed, 27 Jan 2021 03:26:07 -0800 (PST)
+        with ESMTP id S237259AbhA0Lym (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Jan 2021 06:54:42 -0500
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DE25C06174A
+        for <bpf@vger.kernel.org>; Wed, 27 Jan 2021 03:54:02 -0800 (PST)
+Received: by mail-io1-xd2a.google.com with SMTP id h11so1531855ioh.11
+        for <bpf@vger.kernel.org>; Wed, 27 Jan 2021 03:54:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=svVOUGKG5Fv6t7oAvNImQmC5zwwJ4U0ey/3mhzQtIP4=;
-        b=RQw8287NITYeNqTInH8hwgY4UTwjmsUno9caSnmGOl1zLHuayiE5rJ2fiiEuXSbeP6
-         H5HESNZOpwqyEvLrXVHbZR5HX1tOFS7EsZPHpDvyfzWy8N5wiauKQiVXQmEtu48AvsjU
-         CgyJPy9FrN7NV6nm+d/grtY8TW5/MB4qpL9oid2Y6X9dLinRP43m5MaSOeUJHQMghP65
-         nXOSL1+0338DF+3oxLldc7jf2R3Kv7Sxcsk166jHtfs2e4zBiDuUMhlDIqgzIonbzg8h
-         +qw6+ULYXP6ZLS3liXBN1aJkbO6cM8q4OYjMd8C3sjsfEg/36EHfxpHqG+7YBpZYtJPP
-         CnIw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ai5NdOowrSBakZKJ8eQ5sKDACTNsnhQctY19yYzSJYY=;
+        b=JLI+ILDcY8CgzNx4U5ERNajaQdOSeMWvZ3Fekwavyt5PBFiZjd4jSLQvX08E9G/T5A
+         G30O/ccGCl0WUZRYNM8hk/7y9FEs8wWuyvJcsLEg5Yn2TSIKy0zTL+vxQ3Yxto8t5pxq
+         2ZLkLOXd/E3cMLbrIKP2PO0DHPFBZpTumcsDp1Z4vKIN1/+sM7ktwYmTfB4fUGFl3aWc
+         oOpD7tkk8A2NS5jyL2YvRG5BZ8aK72/DbwcJTagcKHTew4Sc+6IOGlMLd99pDql6fWHP
+         mEATkHZIAGkoby8daAlC5eXxeqQEZb9Oywv3f77Lc/ZQsNYws4qZjVgCUza+speEwiYT
+         2bmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=svVOUGKG5Fv6t7oAvNImQmC5zwwJ4U0ey/3mhzQtIP4=;
-        b=l6wvbWg4TqrP9Bq+8Uv2tEni32p5GsYNH3dBzLVQ3k/m7odr8NIaiNZ2juH4+MqavQ
-         NAn+EmiLdcMXgck2pa/72iPQWm6UxPznfI9O24YL/Rf8g/T/ZQfnp67bM1m8OHPE2n22
-         6l895REQ0mZUPL7zKLpgF0B6P6hhNu41Fen8te8oMUUPhlE15sNMuZvMl7mt4KiF2sSp
-         zDFsqDOUy7s47f7c+E759xj/grDg7pqzQkFtAQQNeBV2cp2TmKufiDgN+2S1TaPV1zGU
-         HwK0ZsOKB4z5dcqyA0aRSq+QoBbMJJm27mtG8xW3AJUy5KUxqA9a36dT3beT3z19qIPE
-         SlNg==
-X-Gm-Message-State: AOAM531s4fAu2u1yE0B+iiNBnhHBiBxceiAScbKjrzgKVpE7ePeo5dBH
-        R/5J8UkbNXcPpEps3o1hshOM7A==
-X-Google-Smtp-Source: ABdhPJwHTzrcFOoZyi1HeP3EtLePMxJE62a7mjl8dfor15nZfkZLeVwADi013e38+v4lDmcaCLfdxw==
-X-Received: by 2002:a5d:4292:: with SMTP id k18mr10798614wrq.218.1611746766164;
-        Wed, 27 Jan 2021 03:26:06 -0800 (PST)
-Received: from dell.default ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id m2sm2040065wml.34.2021.01.27.03.26.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 03:26:05 -0800 (PST)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH 06/12] thunderbolt: xdomain: Fix 'tb_unregister_service_driver()'s 'drv' param
-Date:   Wed, 27 Jan 2021 11:25:48 +0000
-Message-Id: <20210127112554.3770172-7-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210127112554.3770172-1-lee.jones@linaro.org>
-References: <20210127112554.3770172-1-lee.jones@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ai5NdOowrSBakZKJ8eQ5sKDACTNsnhQctY19yYzSJYY=;
+        b=Z83KvDjsXHaRuUw0xeWlvtfZvHjpwpyhBhk1La4ziC7Tv13FE5NmQ8nKy1m0j9D9U6
+         dQHJavFG8DZQPi7Rk1D4oO9dyOVkiXQGFBQxMivlttDV/eeMAWfnDTpD0mTxX6ZldOXY
+         IM7Tu6UyYQczO1eBnuxA7Pi87kyN4yBZwOEsWiIVgMPnNlKHxV+DB1KzlH2sI7L4HqOE
+         ixmqSwEDu9oJdhJjCa8U4YCTwUTlyD3T7n/4uZyPksfeg19fygA0l4TSqzEpc6fn0GGx
+         3LzvUD5/c01tW9idv7mc6PNVjKqCSrRh85xrJOLSL3vbsPYTcHClOhBxgExCyTFJwnA6
+         OOCg==
+X-Gm-Message-State: AOAM5305XN/H2jOomhqs6gNaBrcxEcd80zzSvr/0uKwnyKTpWxqw4kNF
+        HMe1rBmFYdrOjHEDYYbYyOLU21jC7BaWo0ZBFDf3sQ==
+X-Google-Smtp-Source: ABdhPJwhqeLobpvZThrOu+EozN9Ak3JpftpHLK+maCkBfDhICQTfqYMmPN+T7aGmSvO9sads/+l/nDEHdUzoyBMITtE=
+X-Received: by 2002:a05:6638:13c6:: with SMTP id i6mr8628625jaj.141.1611748441673;
+ Wed, 27 Jan 2021 03:54:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210127022507.23674-1-dong.menglong@zte.com.cn>
+In-Reply-To: <20210127022507.23674-1-dong.menglong@zte.com.cn>
+From:   Brendan Jackman <jackmanb@google.com>
+Date:   Wed, 27 Jan 2021 12:53:50 +0100
+Message-ID: <CA+i-1C2sWYB-3b=TT0Sta8TsUJToMUhziUBA7HfwMT9XuBcpnw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: change 'BPF_ADD' to 'BPF_AND' in print_bpf_insn()
+To:     menglong8.dong@gmail.com
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, kafai@fb.com,
+        songliubraving@fb.com, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Menglong Dong <dong.menglong@zte.com.cn>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+Thanks!
 
- drivers/thunderbolt/xdomain.c:678: warning: Function parameter or member 'drv' not described in 'tb_unregister_service_driver'
- drivers/thunderbolt/xdomain.c:678: warning: Excess function parameter 'xdrv' description in 'tb_unregister_service_driver'
+On Wed, 27 Jan 2021 at 03:25, <menglong8.dong@gmail.com> wrote:
+>
+> From: Menglong Dong <dong.menglong@zte.com.cn>
+>
+> This 'BPF_ADD' is duplicated, and I belive it should be 'BPF_AND'.
+>
+> Fixes: 981f94c3e921 ("bpf: Add bitwise atomic instructions")
+> Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
 
-Cc: Andreas Noever <andreas.noever@gmail.com>
-Cc: Michael Jamet <michael.jamet@intel.com>
-Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc: Yehezkel Bernat <YehezkelShB@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: linux-usb@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Cc: bpf@vger.kernel.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/thunderbolt/xdomain.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Acked-by: Brendan Jackman <jackmanb@google.com>
 
-diff --git a/drivers/thunderbolt/xdomain.c b/drivers/thunderbolt/xdomain.c
-index f2d4db1cd84d0..6e8bea6a7d392 100644
---- a/drivers/thunderbolt/xdomain.c
-+++ b/drivers/thunderbolt/xdomain.c
-@@ -670,7 +670,7 @@ EXPORT_SYMBOL_GPL(tb_register_service_driver);
- 
- /**
-  * tb_unregister_service_driver() - Unregister XDomain service driver
-- * @xdrv: Driver to unregister
-+ * @drv: Driver to unregister
-  *
-  * Unregisters XDomain service driver from the bus.
-  */
--- 
-2.25.1
-
+> ---
+>  kernel/bpf/disasm.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/bpf/disasm.c b/kernel/bpf/disasm.c
+> index 19ff8fed7f4b..3acc7e0b6916 100644
+> --- a/kernel/bpf/disasm.c
+> +++ b/kernel/bpf/disasm.c
+> @@ -161,7 +161,7 @@ void print_bpf_insn(const struct bpf_insn_cbs *cbs,
+>                                 insn->dst_reg,
+>                                 insn->off, insn->src_reg);
+>                 else if (BPF_MODE(insn->code) == BPF_ATOMIC &&
+> -                        (insn->imm == BPF_ADD || insn->imm == BPF_ADD ||
+> +                        (insn->imm == BPF_ADD || insn->imm == BPF_AND ||
+>                           insn->imm == BPF_OR || insn->imm == BPF_XOR)) {
+>                         verbose(cbs->private_data, "(%02x) lock *(%s *)(r%d %+d) %s r%d\n",
+>                                 insn->code,
+> --
+> 2.25.1
+>
