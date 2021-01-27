@@ -2,158 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AE83305156
-	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 05:49:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 331CD30525F
+	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 06:48:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234482AbhA0EpN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Jan 2021 23:45:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37158 "EHLO
+        id S229520AbhA0Frk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Jan 2021 00:47:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232154AbhA0DC5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Jan 2021 22:02:57 -0500
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAC37C061351
-        for <bpf@vger.kernel.org>; Tue, 26 Jan 2021 18:31:46 -0800 (PST)
-Received: by mail-io1-xd2d.google.com with SMTP id h11so358458ioh.11
-        for <bpf@vger.kernel.org>; Tue, 26 Jan 2021 18:31:46 -0800 (PST)
+        with ESMTP id S238648AbhA0E1T (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Jan 2021 23:27:19 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D428C061222;
+        Tue, 26 Jan 2021 20:23:49 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id j21so330905pls.7;
+        Tue, 26 Jan 2021 20:23:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ifb0D+1WqBBzNJ8/3rrdcsNeQPMZ9f86icYxJTZY2Tk=;
-        b=m8njW5xDAER3TzGAaksIvhJpZmn2lOmuB8gchvUxH1GVpbz6h2XQRmr7ommg3CM4wK
-         Eo5ll2kQdGUX8UUY0rikyTAbrEk6TLznXlHcScmP2vHz3C2ibwJHWJ6C5D732TwDpd7I
-         M/GXf4DHXwthymIvylsvglnnTJJRsb0AoPeYuIX5Zx29XmFZvpdnvUqlSfu3jx7TuBe3
-         yQ1msQhSYbeSc/XO+He/VdWIXMhKY2mtDWovwJ6ao6rf4oF9iwORyfS/VuN4G18njWhu
-         QGC1NXCYRPiNUYwnXOGX4kPU5Q26SCmiXXas45Ver6C2cck5b3YWGADF3oqgcrwMQux9
-         oRsw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=PKMm5WhbWomId6dxJtacT4f+Nb7CE6/RbR+lQ9lmvb8=;
+        b=UW33n3jIrggYz8eQvlnv9rDrFdzrfgPgGdjalR9v2xllzOnf1kAkZFmJwHc2UdcKPO
+         kQe7jUjYGLp4dApSP0ZRnEavAo2kfz4QSb1BncBDwk0jgM4jOhe8tHNDGdobFRA53syd
+         CNL1uyWHgiEyJsighUHWku3991edDvA+BJ2IoZjZuoHVbxm6znDXQQJpHSDrcSHmqFRg
+         LTfCDVY3+hKudRCtZ2YY6TgyZABOPu3dlmHkjvVQ7bWU/O0v7lznEOyYOQWM0zdl5zSE
+         YHLNeucGEF+A0ZhoUa/2B0YtGvhoBaRPOmGM0GTO3IrJN3LNZ7yOjcSWCk1G9ubFK+dH
+         vkfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ifb0D+1WqBBzNJ8/3rrdcsNeQPMZ9f86icYxJTZY2Tk=;
-        b=hvIlAy9EduwQ8AxA0308FNzQzdsZGDczt0l5BtPOPtkn6BnzWscLoSk0xgtyH8Vd6r
-         V3IWOfHtQ5luQFXiwHY9mIxeW7ft5m/nX8xcBuVretzlMcJzMeltL47cZcnPq+nVF4hx
-         UX3KxPwlJbAoTD1R138k2SPDQZ575tb9yTPXCGu7qubNLLXNa5Ne+FH4PRST+zX5mPWE
-         qNl5PkS/qcBoHIRxu5N1FiwV0Vr7ckFi5e4JhsWc/CyiGcpCpK8z9wHvvz1LI/ABUTaF
-         r++fcvSWnwBsoGKbkKc62VjmeUaf8M9in1GHLkwaOQrNtzR3LM6IjlJl2n36C8PkkSOY
-         wv+Q==
-X-Gm-Message-State: AOAM530r839Vez1RlNHSHQr/yKTE+fIyWvBrau3zBzt5QbG46e0+aPgY
-        9FypPbop0Y9ZY/oAwuBt5vaGXk2Z5YKu0AUXUnym49/o+N4=
-X-Google-Smtp-Source: ABdhPJyczj+qLYBazhpHBIoxXfzQqDGoHbb3V4Bu2VJaeb78N/Z62RDtgcvN/xzk9dM31jqvD8BGQWpkhmXuQLkqY9A=
-X-Received: by 2002:a02:9042:: with SMTP id y2mr7246290jaf.94.1611714705821;
- Tue, 26 Jan 2021 18:31:45 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=PKMm5WhbWomId6dxJtacT4f+Nb7CE6/RbR+lQ9lmvb8=;
+        b=LkXkJQ7Woem6GmnIBAQyz5Sxv0wk+bstjIsgNUqwLfM4w49WvenCx/LK00yMXcKWfu
+         aYBrD5cvXJ0BXs46NrAE6TeI4z79/PyFt8ef3tB5u6GpW0n738kAVhjE2xXMKUlR5hSN
+         YqkY3rjRUQUB3QoKX045CiGuNW/opTjaB1cRsOTLylAZUKxzO8EuCa5XP5kK1fkHtA1z
+         eVS5WMvd4RG6m8U/xFM4of06ZhaJBcwUr2BbOBn/MguX1kB9Iz0ntSKedXXuejAX3nk3
+         91xxzHz1rNODL+DeoaDFjmMcXIQpmE4lXrfKRCgutthLro7u3dU0ig9kdskzUcwRF4Oz
+         ImGw==
+X-Gm-Message-State: AOAM531EH6PTn5ZhavnirS+Rk8MYmYUL3TV1F0sB59ggrFOPuLMx2g1I
+        83y++V5VBhpbeEYRbKnGjC4=
+X-Google-Smtp-Source: ABdhPJyJiZ1xdd00sOoiKgrEjoKuhoY44Kn3r4lbP0vycU+dJuEXzZdcYHq6tuAEpXZUgpmZuBalmA==
+X-Received: by 2002:a17:90a:4a4:: with SMTP id g33mr3330295pjg.221.1611721428398;
+        Tue, 26 Jan 2021 20:23:48 -0800 (PST)
+Received: from ubuntu ([1.53.255.147])
+        by smtp.gmail.com with ESMTPSA id n12sm605264pff.29.2021.01.26.20.23.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 26 Jan 2021 20:23:47 -0800 (PST)
+Date:   Wed, 27 Jan 2021 11:23:41 +0700
+From:   Bui Quang Minh <minhquangbui99@gmail.com>
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, hawk@kernel.org,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        kpsingh@kernel.org, Jakub Sitnicki <jakub@cloudflare.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] bpf: Fix integer overflow in argument calculation for
+ bpf_map_area_alloc
+Message-ID: <20210127042341.GA4948@ubuntu>
+References: <20210126082606.3183-1-minhquangbui99@gmail.com>
+ <CACAyw99bEYWJCSGqfLiJ9Jp5YE1ZsZSiJxb4RFUTwbofipf0dA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210124190532.428065-1-andreimatei1@gmail.com> <7d33b412-260f-f4d6-2ed0-b5076dc37179@iogearbox.net>
-In-Reply-To: <7d33b412-260f-f4d6-2ed0-b5076dc37179@iogearbox.net>
-From:   Andrei Matei <andreimatei1@gmail.com>
-Date:   Tue, 26 Jan 2021 21:31:33 -0500
-Message-ID: <CABWLset0EgvNF5nCdYHNMaqYFg8MYZfqpHren41EuRP1Azax-w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftest/bpf: testing for multiple logs on REJECT
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACAyw99bEYWJCSGqfLiJ9Jp5YE1ZsZSiJxb4RFUTwbofipf0dA@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 6:21 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 1/24/21 8:05 PM, Andrei Matei wrote:
-> > This patch adds support to verifier tests to check for a succession of
-> > verifier log messages on program load failure. This makes the
-> > errstr field work uniformly across REJECT and VERBOSE_ACCEPT checks.
+On Tue, Jan 26, 2021 at 09:36:57AM +0000, Lorenz Bauer wrote:
+> On Tue, 26 Jan 2021 at 08:26, Bui Quang Minh <minhquangbui99@gmail.com> wrote:
 > >
-> > This patch also increases the maximum size of an accepted series of
-> > messages to test from 80 chars to 200 chars. This is in order to keep
-> > existing tests working, which sometimes test for messages larger than 80
-> > chars (which was accepted in the REJECT case, when testing for a single
-> > message, but ironically not in the VERBOSE_ACCEPT case, when testing for
-> > possibly multiple messages).
-> > And example of such a long, checked message is in bounds.c:
-> > "R1 has unknown scalar with mixed signed bounds, pointer arithmetic with
-> > it prohibited for !root"
+> > In 32-bit architecture, the result of sizeof() is a 32-bit integer so
+> > the expression becomes the multiplication between 2 32-bit integer which
+> > can potentially leads to integer overflow. As a result,
+> > bpf_map_area_alloc() allocates less memory than needed.
 > >
-> > Signed-off-by: Andrei Matei <andreimatei1@gmail.com>
-> > ---
-> >   tools/testing/selftests/bpf/test_verifier.c | 15 ++++++++++++---
-> >   1 file changed, 12 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-> > index 59bfa6201d1d..69298bf8ee86 100644
-> > --- a/tools/testing/selftests/bpf/test_verifier.c
-> > +++ b/tools/testing/selftests/bpf/test_verifier.c
-> > @@ -88,6 +88,9 @@ struct bpf_test {
-> >       int fixup_map_event_output[MAX_FIXUPS];
-> >       int fixup_map_reuseport_array[MAX_FIXUPS];
-> >       int fixup_map_ringbuf[MAX_FIXUPS];
-> > +     /* Expected verifier log output for result REJECT or VERBOSE_ACCEPT. Can be a
-> > +      * tab-separated sequence of expected strings.
-> > +      */
-> >       const char *errstr;
-> >       const char *errstr_unpriv;
-> >       uint32_t insn_processed;
-> > @@ -995,9 +998,11 @@ static int do_prog_test_run(int fd_prog, bool unpriv, uint32_t expected_val,
-> >       return 0;
-> >   }
-> >
-> > +/* Returns true if every part of exp (tab-separated) appears in log, in order.
-> > + */
-> >   static bool cmp_str_seq(const char *log, const char *exp)
-> >   {
-> > -     char needle[80];
-> > +     char needle[200];
-> >       const char *p, *q;
-> >       int len;
-> >
-> > @@ -1015,7 +1020,7 @@ static bool cmp_str_seq(const char *log, const char *exp)
-> >               needle[len] = 0;
-> >               q = strstr(log, needle);
-> >               if (!q) {
-> > -                     printf("FAIL\nUnexpected verifier log in successful load!\n"
-> > +                     printf("FAIL\nUnexpected verifier log!\n"
-> >                              "EXP: %s\nRES:\n", needle);
-> >                       return false;
-> >               }
-> > @@ -1130,7 +1135,11 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
-> >                       printf("FAIL\nUnexpected success to load!\n");
-> >                       goto fail_log;
-> >               }
-> > -             if (!expected_err || !strstr(bpf_vlog, expected_err)) {
-> > +             if (!expected_err) {
-> > +                     printf("FAIL\nTestcase bug; missing expected_err\n");
-> > +                     goto fail_log;
->
-> Do we have an in-tree case like this?
+> > Fix this by casting 1 operand to u64.
+> 
+> Some quick thoughts:
+> * Should this have a Fixes tag?
 
-You're asking if there are tests with expected_res == REJECT and
-expected_err == NULL?
-There are no such test cases, and the intention of this "testcase bug"
-check was to keep it that way.
-I can simply fold it into the test failure below, as you're suggesting.
+Ok, I will add Fixes tag in later version patch.
 
-> Given this would also be visible below with 'EXP:'
-> being (null), I might simplify and just replace the strstr() with cmp_str_seq().
->
-> Also, could you elaborate on which test cases need the cmp_str_seq() conversion?
+> * Seems like there are quite a few similar calls scattered around
+> (cpumap, etc.). Did you audit these as well?
 
-There are VERBOSE_ACCEPT tests that you a tab-separated list of
-expected messages; see precise.c.
-There are no such REJECT tests yet. I was about to introduce one in
-another patch that's inflight, but I ended
-up not needing to. Still, I figured that unifying the capabilities of
-.errstr between VERBOSE_ACCEPT and REJECT
-is a good idea. If you don't think so, I'm happy to drop this patch.
+I spotted another bug after re-auditting. In hashtab, there ares 2 places using
+the same calls
 
->
-> > +             }
-> > +             if ((strlen(expected_err) > 0) && !cmp_str_seq(bpf_vlog, expected_err)) {
->
-> (nit: no extra '()' needed, but either way I'd rather opt for '!expected_err ||
-> !cmp_str_seq(bpf_vlog, expected_err)' anyway)
->
-> >                       printf("FAIL\nUnexpected error message!\n\tEXP: %s\n\tRES: %s\n",
-> >                             expected_err, bpf_vlog);
-> >                       goto fail_log;
-> >
->
+	static struct bpf_map *htab_map_alloc(union bpf_attr *attr)
+	{
+		/* ... snip ... */
+		if (htab->n_buckets == 0 ||
+		    htab->n_buckets > U32_MAX / sizeof(struct bucket))
+			goto free_htab;
+
+		htab->buckets = bpf_map_area_alloc(htab->n_buckets *
+						   sizeof(struct bucket),
+						   htab->map.numa_node);
+	}
+
+This is safe because of the above check.
+
+	static int prealloc_init(struct bpf_htab *htab)
+	{
+		u32 num_entries = htab->map.max_entries;
+		htab->elems = bpf_map_area_alloc(htab->elem_size * num_entries,
+						 htab->map.numa_node);
+	}
+
+This is not safe since there is no limit check in elem_size.
+
+In cpumap,
+
+	static struct bpf_map *cpu_map_alloc(union bpf_attr *attr)
+	{
+		cmap->cpu_map = bpf_map_area_alloc(cmap->map.max_entries *
+						   sizeof(struct bpf_cpu_map_entry *),
+						   cmap->map.numa_node);
+	}
+
+I think this is safe because max_entries is not permitted to be larger than NR_CPUS.
+
+In stackmap, there is a place that I'm not very sure about
+
+	static int prealloc_elems_and_freelist(struct bpf_stack_map *smap)
+	{
+		u32 elem_size = sizeof(struct stack_map_bucket) + smap->map.value_size;
+		smap->elems = bpf_map_area_alloc(elem_size * smap->map.max_entries,
+						 smap->map.numa_node);
+	}
+
+This is called after another bpf_map_area_alloc in stack_map_alloc(). In the first
+bpf_map_area_alloc() the argument is calculated in an u64 variable; so if in the second
+one, there is an integer overflow then the first one must be called with size > 4GB. I 
+think the first one will probably fail (I am not sure about the actual limit of vmalloc()),
+so the second one might not be called.
+
+Overall, I think it is error prone in this pattern, maybe we should use typecasting in all
+similar calls or make a comment why we don't use typecasting. As I see typecasting is not so
+expensive and we can typecast the sizeof() operand so this change only affect 32-bit
+architecture.
+
+> * I'd prefer a calloc style version of bpf_map_area_alloc although
+> that might conflict with Fixes tag.
+
+Yes, I think the calloc style will prevent this kind of integer overflow bug.
+
+Thank you,
+Quang Minh.
+
