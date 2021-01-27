@@ -2,144 +2,221 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A47003065A1
-	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 22:09:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 471E53065EB
+	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 22:26:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229667AbhA0VI1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Jan 2021 16:08:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45700 "EHLO
+        id S234079AbhA0VWY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Jan 2021 16:22:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229641AbhA0VI0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Jan 2021 16:08:26 -0500
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 138F2C061573
-        for <bpf@vger.kernel.org>; Wed, 27 Jan 2021 13:07:46 -0800 (PST)
-Received: by mail-yb1-xb2a.google.com with SMTP id s61so107194ybi.4
-        for <bpf@vger.kernel.org>; Wed, 27 Jan 2021 13:07:46 -0800 (PST)
+        with ESMTP id S233903AbhA0VWX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Jan 2021 16:22:23 -0500
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88B38C061573;
+        Wed, 27 Jan 2021 13:21:43 -0800 (PST)
+Received: by mail-yb1-xb2e.google.com with SMTP id w24so3420292ybi.7;
+        Wed, 27 Jan 2021 13:21:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=YYu1ZRYBPKGSolP8R2Pl/pPVRmztWvNeFCWKXWsZruk=;
-        b=GQLclByrw6FVMifNV3N9gY/yFvs4C5ZihOzT1IY4Tkn4UJQVUJs7F7ZVdIsxBclaiW
-         l5ZHXxRlb3tNLFtZzvQaxsKPlXyhqWEfJGmESJfCiqao2NgW0bB7r82su6drA6aYJQSF
-         JXrexueM9Ay5G8pucJ+pzsU1JDiltWK01Ai3QUhJ8TxaZMXTV5VkfHE1piuwzAnxd0vR
-         fLyGOS1ofKKPgxWDNkiIxXxbdKHc1dbMWIr7bBUheHYZw7Cbme/EDpw8k2gHFktaJl6u
-         ULXP3dORbEHBgQDHGVCmDs00aq0VyIWBUSpjrDv34obgdjjDjar1d2hPhoLSHjEDuQDs
-         Hnzw==
+        bh=BRPZ4D+C/ROPLOS9wpCMTb0wBg9l/hdG9nGUxbgvdbE=;
+        b=lxwsnAUBmN7o8FlV9lUT6PX3wvKhLRcwjAhH3Ii6IEfjhlFdz9HUofyVI2OvqXBWiv
+         FDTesI+Y46bNgjfDfytQod9mlarEJnFKOjUMj12xiLuaUNSUup1UMDdLcAK5iaeVnVLc
+         B+8giBnM+zREQJYEEBvx8LdaTpo6Q03tTw/jdvO6VaO92LI9fdO22hRIhRXN+yUcVay7
+         fTTn7qIfaVker9+ujnZBizGOAMAHCPj6cztIJD1A+m243Eo8FDThEOpaQrmViuEk+G9s
+         Bn8Xb3++MEHKSoqhrt6Q9DpEjAI40UagtuSIRdnq5ylX1NZAT7cV6qtHdffcAIyLvDvZ
+         cn4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=YYu1ZRYBPKGSolP8R2Pl/pPVRmztWvNeFCWKXWsZruk=;
-        b=IrhuO4DJ2FWvqc93r0TOh5pU6rb5mWLoGCjsWX7WZv0bd8Zml/CErTgTbF58b+S7Sl
-         VccUlHbAjchs5bnp2RcA0oZQeiLVT4EWf2dlOpPzg623kGdm/TnPEhwkEwUfYbPE2msd
-         /TdEsK8Hzj/QQa4v4AWUfYZ1cnYkVaD2aRSYmafApW7UVuAfT9eOvEBFX3HaAyiOif6Z
-         b8xNBVihTq998jLL/pPf+8CfC0A4Vv87JlnD5JEfAUqHZ+2upVHVux84memhsf9TkLY6
-         2mZpHPF3oYYnTNrj8Yk6XIfx0KeIGDgeg2EhRYErlZxv42jljmqSxzxuf3w3i0GnxRP6
-         0pMQ==
-X-Gm-Message-State: AOAM533l2aVwg7o4KPSrM7HxqNYmxQwI/pPCujK1NH7th53rM4g2nd0g
-        HkpzVx4dpSZENGQ22mHLPxw0kBrrM43RQhR0peo=
-X-Google-Smtp-Source: ABdhPJyqU4lWC1v6rq3eIQBFljL1k6TAFntuMeX1+ONhjq9qf0VcmYr4rR2srMKEDlzFLbv2g1DatJ4zFN/knJGrbLs=
-X-Received: by 2002:a25:9882:: with SMTP id l2mr18164758ybo.425.1611781664308;
- Wed, 27 Jan 2021 13:07:44 -0800 (PST)
+        bh=BRPZ4D+C/ROPLOS9wpCMTb0wBg9l/hdG9nGUxbgvdbE=;
+        b=TcERaMECaP+9bSSdbfaE8DeKA4nvokEe2AfqEifRFKD9OpLXsMAaDlU/IJaEFk/rF6
+         /PIVtT+C5RbHxGvfrhCRdy7uB9PzZgIcJCDiX2ME6PNw9olbohBIQ1aAV7vSG3d9bNMJ
+         vyq2wqLn2eUAHp3sU/NF2KLnP3Rg6J42dRA0QjfN6YINkU34yBwSr7OUn3MTntkfzNgt
+         fLZgvPaKQr/wMXi1hr5MYpco/PGaIxxsaBz3/iElwwPWOb42vAHV/dzOzvqdxylUt20h
+         Hm3Kunli+VhQJrpyjaJHU4j3XL7hRZQ0jUC+JV/iGwaRsQochHxyCoPo0vZ50K5kIJMU
+         R1sQ==
+X-Gm-Message-State: AOAM531WxfSBdkWOycsB81Xp6YOEmeVgqNfViUiNig9O4scvtuXdgqE9
+        6qgo8RWLdJuLVwpQqdbuTaJpFdptjItn06hU5nQ=
+X-Google-Smtp-Source: ABdhPJwtMEg/Ci97Ou+PD/qWyfBeMJH887qqDVU1QDPvaDQxMdmdXAJ37a7H8+au/rMwfg4hAjx7Zq3BsDxEh1C+8BU=
+X-Received: by 2002:a25:9882:: with SMTP id l2mr18227840ybo.425.1611782502851;
+ Wed, 27 Jan 2021 13:21:42 -0800 (PST)
 MIME-Version: 1.0
-References: <20210126001219.845816-1-yhs@fb.com> <YA/dqup/752hHBI4@hirez.programming.kicks-ass.net>
- <66f46df5-8d47-8e4f-a6ab-ab794e57332d@fb.com>
-In-Reply-To: <66f46df5-8d47-8e4f-a6ab-ab794e57332d@fb.com>
+References: <20210126085923.469759-1-songliubraving@fb.com> <20210126085923.469759-3-songliubraving@fb.com>
+In-Reply-To: <20210126085923.469759-3-songliubraving@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 27 Jan 2021 13:07:32 -0800
-Message-ID: <CAEf4BzawfHoU4sxEPMmSHRKgR3jYQUQP6tbYD4fTY2AyxM1ebA@mail.gmail.com>
-Subject: Re: [PATCH bpf] x86/bpf: handle bpf-program-triggered exceptions properly
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, bpf <bpf@vger.kernel.org>,
+Date:   Wed, 27 Jan 2021 13:21:32 -0800
+Message-ID: <CAEf4BzZLJc9=JgZBmvRazHsZg+VLihaRi-3Pt8wrsT9am-eBGg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 2/4] selftests/bpf: add non-BPF_LSM test for
+ task local storage
+To:     Song Liu <songliubraving@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Ziljstra <peterz@infradead.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>, x86@kernel.org,
-        KP Singh <kpsingh@kernel.org>
+        Andrii Nakryiko <andrii@kernel.org>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Kernel Team <kernel-team@fb.com>, Hao Luo <haoluo@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 2:57 PM Yonghong Song <yhs@fb.com> wrote:
+On Tue, Jan 26, 2021 at 1:21 AM Song Liu <songliubraving@fb.com> wrote:
 >
+> Task local storage is enabled for tracing programs. Add two tests for
+> task local storage without CONFIG_BPF_LSM.
 >
+> The first test measures the duration of a syscall by storing sys_enter
+> time in task local storage.
 >
-> On 1/26/21 1:15 AM, Peter Zijlstra wrote:
-> > On Mon, Jan 25, 2021 at 04:12:19PM -0800, Yonghong Song wrote:
-> >> When the test is run normally after login prompt, cpu_feature_enabled(X86_FEATURE_SMAP)
-> >> is true and bad_area_nosemaphore() is called and then fixup_exception() is called,
-> >> where bpf specific handler is able to fixup the exception.
-> >>
-> >> But when the test is run at /sbin/init time, cpu_feature_enabled(X86_FEATURE_SMAP) is
-> >> false, the control reaches
-> >
-> > That makes no sense, cpu features should be set in stone long before we
-> > reach userspace.
+> The second test checks whether the kernel allows allocating task local
+> storage in exit_creds() (which it should not).
 >
-> You are correct. Sorry for misleading description. The reason is I use
-> two qemu script, one from my local environment and the other from ci
-> test since they works respectively. I thought they should have roughly
-> the same kernel setup, but apparently they are not.
+> Signed-off-by: Song Liu <songliubraving@fb.com>
+> ---
+>  .../bpf/prog_tests/task_local_storage.c       | 85 +++++++++++++++++++
+>  .../selftests/bpf/progs/task_local_storage.c  | 56 ++++++++++++
+>  .../bpf/progs/task_local_storage_exit_creds.c | 32 +++++++
+>  3 files changed, 173 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/task_local_storage.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/task_local_storage.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/task_local_storage_exit_creds.c
 >
-> For my local qemu script, I have "-cpu host" option and with this,
-> X86_FEATURE_SMAP is set up probably in function get_cpu_cap(), file
-> arch/x86/kernel/cpu/common.c.
->
-> For CI qemu script (in
-> https://lore.kernel.org/bpf/20210123004445.299149-1-kpsingh@kernel.org/),
-> the "-cpu kvm64" is the qemu argument. This cpu does not
-> enable X86_FEATURE_SMAP, so we will see the kernel warning.
->
-> Changing CI script to use "-cpu host" resolved the issue. I think "-cpu
-> kvm64" may emulate old x86 cpus and ignore X86_FEATURE_SMAP.
->
-> Do we have any x64 cpus which does not support X86_FEATURE_SMAP?
+> diff --git a/tools/testing/selftests/bpf/prog_tests/task_local_storage.c b/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
+> new file mode 100644
+> index 0000000000000..a8e2d3a476145
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
+> @@ -0,0 +1,85 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2021 Facebook */
+> +
+> +#include <sys/types.h>
+> +#include <unistd.h>
+> +#include <test_progs.h>
+> +#include "task_local_storage.skel.h"
+> +#include "task_local_storage_exit_creds.skel.h"
+> +
+> +static unsigned int duration;
+> +
+> +static void check_usleep_duration(struct task_local_storage *skel,
+> +                                 __u64 time_us)
+> +{
+> +       __u64 syscall_duration;
+> +
+> +       usleep(time_us);
+> +
+> +       /* save syscall_duration measure in usleep() */
+> +       syscall_duration = skel->bss->syscall_duration;
+> +
+> +       /* time measured by the BPF program (in nanoseconds) should be
+> +        * within +/- 20% of time_us * 1000.
+> +        */
+> +       CHECK(syscall_duration < 800 * time_us, "syscall_duration",
+> +             "syscall_duration was too small\n");
+> +       CHECK(syscall_duration > 1200 * time_us, "syscall_duration",
+> +             "syscall_duration was too big\n");
 
-We don't control what CPUs are used in our CIs, which is why we didn't
-use "-cpu host". Is there some other way to make necessary features be
-available in qemu for this to work and not emit warnings?
+this is going to be very flaky, especially in Travis CI. Can you
+please use something more stable that doesn't rely on time?
 
-But also, what will happen in this case on CPUs that really don't
-support X86_FEATURE_SMAP? Should that be addressed instead?
+> +}
+> +
+> +static void test_syscall_duration(void)
+> +{
+> +       struct task_local_storage *skel;
+> +       int err;
+> +
+> +       skel = task_local_storage__open_and_load();
+> +       if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
+> +               return;
+> +
+> +       skel->bss->target_pid = getpid();
+
+you are getting process ID, but comparing it with thread ID in BPF
+code. It will stop working properly if/when tests will be run in
+separate threads, so please use gettid() instead.
+
+> +
+> +       err = task_local_storage__attach(skel);
+> +       if (!ASSERT_OK(err, "skel_attach"))
+> +               goto out;
+> +
+> +       check_usleep_duration(skel, 2000);
+> +       check_usleep_duration(skel, 3000);
+> +       check_usleep_duration(skel, 4000);
+> +
+> +out:
+> +       task_local_storage__destroy(skel);
+> +}
+> +
+> +static void test_exit_creds(void)
+> +{
+> +       struct task_local_storage_exit_creds *skel;
+> +       int err;
+> +
+> +       skel = task_local_storage_exit_creds__open_and_load();
+> +       if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
+> +               return;
+> +
+> +       err = task_local_storage_exit_creds__attach(skel);
+> +       if (!ASSERT_OK(err, "skel_attach"))
+> +               goto out;
+> +
+> +       /* trigger at least one exit_creds() */
+> +       if (CHECK_FAIL(system("ls > /dev/null")))
+> +               goto out;
+> +
+> +       /* sync rcu, so the following reads could get latest values */
+> +       kern_sync_rcu();
+
+what are we waiting for here? you don't detach anything... system() is
+definitely going to complete by now, so whatever counter was or was
+not updated will be reflected here. Seems like kern_sync_rcu() is not
+needed?
+
+> +       ASSERT_EQ(skel->bss->valid_ptr_count, 0, "valid_ptr_count");
+> +       ASSERT_NEQ(skel->bss->null_ptr_count, 0, "null_ptr_count");
+> +out:
+> +       task_local_storage_exit_creds__destroy(skel);
+> +}
+> +
+> +void test_task_local_storage(void)
+> +{
+> +       if (test__start_subtest("syscall_duration"))
+> +               test_syscall_duration();
+> +       if (test__start_subtest("exit_creds"))
+> +               test_exit_creds();
+> +}
+
+[...]
+
+> +int valid_ptr_count = 0;
+> +int null_ptr_count = 0;
+> +
+> +SEC("fentry/exit_creds")
+> +int BPF_PROG(trace_exit_creds, struct task_struct *task)
+> +{
+> +       __u64 *ptr;
+> +
+> +       ptr = bpf_task_storage_get(&task_storage, task, 0,
+> +                                  BPF_LOCAL_STORAGE_GET_F_CREATE);
+> +       if (ptr)
+> +               valid_ptr_count++;
+> +       else
+> +               null_ptr_count++;
 
 
+use atomic increments?
+
+> +       return 0;
+> +}
+> --
+> 2.24.1
 >
-> For CI, with "-cpu kvm64" is good as it can specify the number
-> of cores with e.g. "-smp 4" regardless of underlying host # of cores.
-> I think we could change CI to use "-cpu host" by ensuring the CI host
-> having at least 4 cores.
->
-> Thanks.
->
->
-> >
-> >> To fix the issue, before the above mmap_read_trylock(), we will check
-> >> whether fault ip can be served by bpf exception handler or not, if
-> >> yes, the exception will be fixed up and return.
-> >
-> >
-> >
-> >> diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-> >> index f1f1b5a0956a..e8182d30bf67 100644
-> >> --- a/arch/x86/mm/fault.c
-> >> +++ b/arch/x86/mm/fault.c
-> >> @@ -1317,6 +1317,15 @@ void do_user_addr_fault(struct pt_regs *regs,
-> >>              if (emulate_vsyscall(hw_error_code, regs, address))
-> >>                      return;
-> >>      }
-> >> +
-> >> +#ifdef CONFIG_BPF_JIT
-> >> +    /*
-> >> +     * Faults incurred by bpf program might need emulation, i.e.,
-> >> +     * clearing the dest register.
-> >> +     */
-> >> +    if (fixup_bpf_exception(regs, X86_TRAP_PF, hw_error_code, address))
-> >> +            return;
-> >> +#endif
-> >>   #endif
-> >
-> > NAK, this is broken. You're now disallowing faults that should've gone
-> > through.
-> >
