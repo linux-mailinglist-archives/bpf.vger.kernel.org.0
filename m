@@ -2,56 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 188DC3067EC
-	for <lists+bpf@lfdr.de>; Thu, 28 Jan 2021 00:32:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3841E3067F0
+	for <lists+bpf@lfdr.de>; Thu, 28 Jan 2021 00:32:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229673AbhA0Xaw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Jan 2021 18:30:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48004 "EHLO
+        id S233291AbhA0XbN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Jan 2021 18:31:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234718AbhA0XaM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Jan 2021 18:30:12 -0500
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BB2AC06178B
-        for <bpf@vger.kernel.org>; Wed, 27 Jan 2021 15:28:59 -0800 (PST)
-Received: by mail-qv1-xf49.google.com with SMTP id m1so2532951qvp.0
-        for <bpf@vger.kernel.org>; Wed, 27 Jan 2021 15:28:59 -0800 (PST)
+        with ESMTP id S231759AbhA0XaW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Jan 2021 18:30:22 -0500
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02B7AC06178C
+        for <bpf@vger.kernel.org>; Wed, 27 Jan 2021 15:29:01 -0800 (PST)
+Received: by mail-pg1-x549.google.com with SMTP id w15so2540436pgt.13
+        for <bpf@vger.kernel.org>; Wed, 27 Jan 2021 15:29:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=qSwmxdg3a9pT/PW0olMN9Ba8UoPge1k1RGd+0B1erdg=;
-        b=NHiMdDTltQdqd06KHgKOmR9ONnERLHNDNYV+qTbVZWx8Iq+z6evoghqDT/L1COZjOi
-         KSEW7KaukiiqNyqKM0wwAAhkeAXCeC4PQnlVeLM1aqUsFWXMR+oJQoI+D+WxNZapTJpW
-         723bhfCqBsfnpTcQXRH2h4TbRl5RmQ7v8DaAdLj1027bipSKpwZRRVusVbSZIeBmbJVe
-         wE4Mv7lgn5FUN7Cg08FUWHyZ2O1JiWToBhg2oeIUi49VwzPLF9CyQ3STmd2wW14aMpDU
-         MI+vWWdDQSmaj9BWV6+OBgOcNQEfeJCYcgswF/JdoldRRJa2FW3e+GYuyQmirbxiJbBK
-         9pUw==
+        bh=+2brt3U1TLyEUVHvMxOOLD59kv/cc6yh68hbLCWv+N0=;
+        b=Jvyx1+xktzRApPKKrCJEBjvQSD82HEcE+v5xVlmeYkTuk+ni8+XyschODcq0HMdJrk
+         dbAbkXw7Vr837l3rKlVRZVDxJC6lDWkUvZYsAkI7yO4bsBzKvANGDOtbfNScz2FizpS8
+         ZT8V9Vj0K+C6estsRDdx1/ihwXGJVxFoieKm8K6W8rD1iZTSI1fYUyGghiatbo1Es/oR
+         8Obdfy9LFE8ZaR7G5q0XDIB3lgun3zbaYEC8W16+4yhdDA1w74Ljkdca24VTHd/x4D0T
+         jSA3HZy59Om6z8EfyPspIqwvT9AF3MBCPBRklvCGcmSx9p3AJvh3kzXddtnPANuM7yEP
+         Rc5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=qSwmxdg3a9pT/PW0olMN9Ba8UoPge1k1RGd+0B1erdg=;
-        b=hRBRdtwO9PYE6i2BOBFggKxCOlHN5RButgjkNyT9krrpwvLQvjxMpk9YMo7Mr4j2dT
-         GYur1ZKmxvVOdnUpBFlRowaUMkz561tUgtLI7jpDxlMzvuxXuBKLd1bP8PA9cPs0sCw0
-         xknNIUtAQiRL+EMDpcpre/oiryJQod00hnc8a6nfzYvsyhkh/E5GSvAQPnTqniuTMpCt
-         BEm7sqUdm5dmXteTiS+tJLRGwfhMkfyWGhNBeh+ajaOdUlLWs1IclJDSKCboKT3Jj15D
-         3rTw8TsftxiDO2CDZTkhZBRMYMw6yvBnHJgF/ZRZYwR50siyc+azt0W5kXSbEf4ivd7h
-         GgAQ==
-X-Gm-Message-State: AOAM531PXYs2RI2lEh02gZ0cySrMISN4J/niv3Ox+h/0FLvBf5ttP+/u
-        j4E0LzjuHcUqyDD8lD3SBPa9kH4=
-X-Google-Smtp-Source: ABdhPJzpQz/EmRBmodHiEn57QMBjd4e9VRPMEglVEQquynKyuHfV3p3xhZRfWFelZdWt10qCt6YvDBE=
+        bh=+2brt3U1TLyEUVHvMxOOLD59kv/cc6yh68hbLCWv+N0=;
+        b=XTT0W2gL1Qt1Bf2MYxAqGcKeAQPV1XDdUHbvLtTs5e2FOACxXklqfFKNVoUXL/DaYz
+         vqdTNaaCf8pFZqRdp3LkEtx/yBYzfbOMUOgRP+ycqQBcff1cHs3vtH3ghS0NnGBjzdKR
+         FrIB6YLAwp6Cky470D6oOjKayRxzEg13pU2qtz6s2yk2VSvow5zfxjRCas0nV+1ajYqE
+         iRAB95SMJusqgHpRlbaQ8hqLfyQ0g+leMM7h6fOHOr6oijLw3LiGaW+CCbglZ+I8xJNW
+         rxPtz6qN9HoX+veAnTYVCTvEoxX4pNIAurRCdNCUOfhO2QL2NULQeesZIs6m/WXPKAQe
+         cpGw==
+X-Gm-Message-State: AOAM530yiHOi+948BO18qHz2PANCo5icEANe4mz/Qa3ttZUxfAXIbpHn
+        GK1uYky9+j5yAqbf3fXUeQ+sIug=
+X-Google-Smtp-Source: ABdhPJx6kfIMcVZfa8y4i3LveOkcK9q+/vYvCemUKFy8yM3nBdpApWkWM87VBzjfVQd+zwM/14LsgzE=
 Sender: "sdf via sendgmr" <sdf@sdf2.svl.corp.google.com>
 X-Received: from sdf2.svl.corp.google.com ([2620:15c:2c4:1:7220:84ff:fe09:7732])
- (user=sdf job=sendgmr) by 2002:a05:6214:48f:: with SMTP id
- ay15mr12724612qvb.58.1611790138644; Wed, 27 Jan 2021 15:28:58 -0800 (PST)
-Date:   Wed, 27 Jan 2021 15:28:51 -0800
+ (user=sdf job=sendgmr) by 2002:a62:e312:0:b029:1b6:cbbd:63e9 with SMTP id
+ g18-20020a62e3120000b02901b6cbbd63e9mr12862411pfh.35.1611790140533; Wed, 27
+ Jan 2021 15:29:00 -0800 (PST)
+Date:   Wed, 27 Jan 2021 15:28:52 -0800
 In-Reply-To: <20210127232853.3753823-1-sdf@google.com>
-Message-Id: <20210127232853.3753823-3-sdf@google.com>
+Message-Id: <20210127232853.3753823-4-sdf@google.com>
 Mime-Version: 1.0
 References: <20210127232853.3753823-1-sdf@google.com>
 X-Mailer: git-send-email 2.30.0.280.ga3ce27912f-goog
-Subject: [PATCH bpf-next v2 2/4] bpf: enable bpf_{g,s}etsockopt in BPF_CGROUP_INET{4,6}_GET{PEER,SOCK}NAME
+Subject: [PATCH bpf-next v2 3/4] selftests/bpf: rewrite recvmsg{4,6} asm progs
+ to c in test_sock_addr
 From:   Stanislav Fomichev <sdf@google.com>
 To:     netdev@vger.kernel.org, bpf@vger.kernel.org
 Cc:     ast@kernel.org, daniel@iogearbox.net,
@@ -61,108 +63,246 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Those hooks run as BPF_CGROUP_RUN_SA_PROG_LOCK and operate on
-a locked socket.
+I'll extend them in the next patch. It's easier to work with C
+than with asm.
 
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- net/core/filter.c                                       | 8 ++++++++
- tools/testing/selftests/bpf/progs/connect_force_port4.c | 8 ++++++++
- tools/testing/selftests/bpf/progs/connect_force_port6.c | 8 ++++++++
- 3 files changed, 24 insertions(+)
+ .../selftests/bpf/progs/recvmsg4_prog.c       | 37 ++++++++
+ .../selftests/bpf/progs/recvmsg6_prog.c       | 43 ++++++++++
+ tools/testing/selftests/bpf/test_sock_addr.c  | 86 +++----------------
+ 3 files changed, 92 insertions(+), 74 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/recvmsg4_prog.c
+ create mode 100644 tools/testing/selftests/bpf/progs/recvmsg6_prog.c
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 3d7f78a19565..ba436b1d70c2 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -7025,6 +7025,10 @@ sock_addr_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		case BPF_CGROUP_INET6_CONNECT:
- 		case BPF_CGROUP_UDP4_SENDMSG:
- 		case BPF_CGROUP_UDP6_SENDMSG:
-+		case BPF_CGROUP_INET4_GETPEERNAME:
-+		case BPF_CGROUP_INET6_GETPEERNAME:
-+		case BPF_CGROUP_INET4_GETSOCKNAME:
-+		case BPF_CGROUP_INET6_GETSOCKNAME:
- 			return &bpf_sock_addr_setsockopt_proto;
- 		default:
- 			return NULL;
-@@ -7037,6 +7041,10 @@ sock_addr_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 		case BPF_CGROUP_INET6_CONNECT:
- 		case BPF_CGROUP_UDP4_SENDMSG:
- 		case BPF_CGROUP_UDP6_SENDMSG:
-+		case BPF_CGROUP_INET4_GETPEERNAME:
-+		case BPF_CGROUP_INET6_GETPEERNAME:
-+		case BPF_CGROUP_INET4_GETSOCKNAME:
-+		case BPF_CGROUP_INET6_GETSOCKNAME:
- 			return &bpf_sock_addr_getsockopt_proto;
- 		default:
- 			return NULL;
-diff --git a/tools/testing/selftests/bpf/progs/connect_force_port4.c b/tools/testing/selftests/bpf/progs/connect_force_port4.c
-index 7396308677a3..a979aaef2a76 100644
---- a/tools/testing/selftests/bpf/progs/connect_force_port4.c
-+++ b/tools/testing/selftests/bpf/progs/connect_force_port4.c
-@@ -10,6 +10,8 @@
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_endian.h>
- 
-+#include <bpf_sockopt_helpers.h>
+diff --git a/tools/testing/selftests/bpf/progs/recvmsg4_prog.c b/tools/testing/selftests/bpf/progs/recvmsg4_prog.c
+new file mode 100644
+index 000000000000..fc2fe8a952fa
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/recvmsg4_prog.c
+@@ -0,0 +1,37 @@
++// SPDX-License-Identifier: GPL-2.0
 +
- char _license[] SEC("license") = "GPL";
- int _version SEC("version") = 1;
- 
-@@ -58,6 +60,9 @@ int connect4(struct bpf_sock_addr *ctx)
- SEC("cgroup/getsockname4")
- int getsockname4(struct bpf_sock_addr *ctx)
- {
-+	if (!get_set_sk_priority(ctx))
++#include <linux/stddef.h>
++#include <linux/bpf.h>
++#include <linux/in.h>
++#include <sys/socket.h>
++
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_endian.h>
++
++#define SERV4_IP		0xc0a801feU /* 192.168.1.254 */
++#define SERV4_PORT		4040
++
++SEC("cgroup/recvmsg4")
++int recvmsg4_prog(struct bpf_sock_addr *ctx)
++{
++	struct bpf_sock *sk;
++	__u32 user_ip4;
++	__u16 user_port;
++
++	sk = ctx->sk;
++	if (!sk)
 +		return 1;
 +
- 	/* Expose local server as 1.2.3.4:60000 to client. */
- 	if (ctx->user_port == bpf_htons(60123)) {
- 		ctx->user_ip4 = bpf_htonl(0x01020304);
-@@ -71,6 +76,9 @@ int getpeername4(struct bpf_sock_addr *ctx)
- {
- 	struct svc_addr *orig;
- 
-+	if (!get_set_sk_priority(ctx))
++	if (sk->family != AF_INET)
 +		return 1;
 +
- 	/* Expose service 1.2.3.4:60000 as peer instead of backend. */
- 	if (ctx->user_port == bpf_htons(60123)) {
- 		orig = bpf_sk_storage_get(&service_mapping, ctx->sk, 0, 0);
-diff --git a/tools/testing/selftests/bpf/progs/connect_force_port6.c b/tools/testing/selftests/bpf/progs/connect_force_port6.c
-index c1a2b555e9ad..afc8f1c5a9d6 100644
---- a/tools/testing/selftests/bpf/progs/connect_force_port6.c
-+++ b/tools/testing/selftests/bpf/progs/connect_force_port6.c
-@@ -9,6 +9,8 @@
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_endian.h>
- 
-+#include <bpf_sockopt_helpers.h>
-+
- char _license[] SEC("license") = "GPL";
- int _version SEC("version") = 1;
- 
-@@ -63,6 +65,9 @@ int connect6(struct bpf_sock_addr *ctx)
- SEC("cgroup/getsockname6")
- int getsockname6(struct bpf_sock_addr *ctx)
- {
-+	if (!get_set_sk_priority(ctx))
++	if (ctx->type != SOCK_STREAM && ctx->type != SOCK_DGRAM)
 +		return 1;
 +
- 	/* Expose local server as [fc00::1]:60000 to client. */
- 	if (ctx->user_port == bpf_htons(60124)) {
- 		ctx->user_ip6[0] = bpf_htonl(0xfc000000);
-@@ -79,6 +84,9 @@ int getpeername6(struct bpf_sock_addr *ctx)
- {
- 	struct svc_addr *orig;
- 
-+	if (!get_set_sk_priority(ctx))
++	ctx->user_ip4 = bpf_htonl(SERV4_IP);
++	ctx->user_port = bpf_htons(SERV4_PORT);
++
++	return 1;
++}
++
++char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/progs/recvmsg6_prog.c b/tools/testing/selftests/bpf/progs/recvmsg6_prog.c
+new file mode 100644
+index 000000000000..6060fd63324b
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/recvmsg6_prog.c
+@@ -0,0 +1,43 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/stddef.h>
++#include <linux/bpf.h>
++#include <linux/in6.h>
++#include <sys/socket.h>
++
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_endian.h>
++
++#define SERV6_IP_0		0xfaceb00c /* face:b00c:1234:5678::abcd */
++#define SERV6_IP_1		0x12345678
++#define SERV6_IP_2		0x00000000
++#define SERV6_IP_3		0x0000abcd
++#define SERV6_PORT		6060
++
++SEC("cgroup/recvmsg6")
++int recvmsg6_prog(struct bpf_sock_addr *ctx)
++{
++	struct bpf_sock *sk;
++	__u32 user_ip4;
++	__u16 user_port;
++
++	sk = ctx->sk;
++	if (!sk)
 +		return 1;
 +
- 	/* Expose service [fc00::1]:60000 as peer instead of backend. */
- 	if (ctx->user_port == bpf_htons(60124)) {
- 		orig = bpf_sk_storage_get(&service_mapping, ctx->sk, 0, 0);
++	if (sk->family != AF_INET6)
++		return 1;
++
++	if (ctx->type != SOCK_STREAM && ctx->type != SOCK_DGRAM)
++		return 1;
++
++	ctx->user_ip6[0] = bpf_htonl(SERV6_IP_0);
++	ctx->user_ip6[1] = bpf_htonl(SERV6_IP_1);
++	ctx->user_ip6[2] = bpf_htonl(SERV6_IP_2);
++	ctx->user_ip6[3] = bpf_htonl(SERV6_IP_3);
++	ctx->user_port = bpf_htons(SERV6_PORT);
++
++	return 1;
++}
++
++char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/test_sock_addr.c b/tools/testing/selftests/bpf/test_sock_addr.c
+index dcb83ab02919..aa3f185fcb89 100644
+--- a/tools/testing/selftests/bpf/test_sock_addr.c
++++ b/tools/testing/selftests/bpf/test_sock_addr.c
+@@ -31,6 +31,8 @@
+ #define CONNECT6_PROG_PATH	"./connect6_prog.o"
+ #define SENDMSG4_PROG_PATH	"./sendmsg4_prog.o"
+ #define SENDMSG6_PROG_PATH	"./sendmsg6_prog.o"
++#define RECVMSG4_PROG_PATH	"./recvmsg4_prog.o"
++#define RECVMSG6_PROG_PATH	"./recvmsg6_prog.o"
+ #define BIND4_PROG_PATH		"./bind4_prog.o"
+ #define BIND6_PROG_PATH		"./bind6_prog.o"
+ 
+@@ -94,10 +96,10 @@ static int sendmsg_deny_prog_load(const struct sock_addr_test *test);
+ static int recvmsg_allow_prog_load(const struct sock_addr_test *test);
+ static int recvmsg_deny_prog_load(const struct sock_addr_test *test);
+ static int sendmsg4_rw_asm_prog_load(const struct sock_addr_test *test);
+-static int recvmsg4_rw_asm_prog_load(const struct sock_addr_test *test);
++static int recvmsg4_rw_c_prog_load(const struct sock_addr_test *test);
+ static int sendmsg4_rw_c_prog_load(const struct sock_addr_test *test);
+ static int sendmsg6_rw_asm_prog_load(const struct sock_addr_test *test);
+-static int recvmsg6_rw_asm_prog_load(const struct sock_addr_test *test);
++static int recvmsg6_rw_c_prog_load(const struct sock_addr_test *test);
+ static int sendmsg6_rw_c_prog_load(const struct sock_addr_test *test);
+ static int sendmsg6_rw_v4mapped_prog_load(const struct sock_addr_test *test);
+ static int sendmsg6_rw_wildcard_prog_load(const struct sock_addr_test *test);
+@@ -573,8 +575,8 @@ static struct sock_addr_test tests[] = {
+ 		LOAD_REJECT,
+ 	},
+ 	{
+-		"recvmsg4: rewrite IP & port (asm)",
+-		recvmsg4_rw_asm_prog_load,
++		"recvmsg4: rewrite IP & port (C)",
++		recvmsg4_rw_c_prog_load,
+ 		BPF_CGROUP_UDP4_RECVMSG,
+ 		BPF_CGROUP_UDP4_RECVMSG,
+ 		AF_INET,
+@@ -587,8 +589,8 @@ static struct sock_addr_test tests[] = {
+ 		SUCCESS,
+ 	},
+ 	{
+-		"recvmsg6: rewrite IP & port (asm)",
+-		recvmsg6_rw_asm_prog_load,
++		"recvmsg6: rewrite IP & port (C)",
++		recvmsg6_rw_c_prog_load,
+ 		BPF_CGROUP_UDP6_RECVMSG,
+ 		BPF_CGROUP_UDP6_RECVMSG,
+ 		AF_INET6,
+@@ -786,45 +788,9 @@ static int sendmsg4_rw_asm_prog_load(const struct sock_addr_test *test)
+ 	return load_insns(test, insns, sizeof(insns) / sizeof(struct bpf_insn));
+ }
+ 
+-static int recvmsg4_rw_asm_prog_load(const struct sock_addr_test *test)
++static int recvmsg4_rw_c_prog_load(const struct sock_addr_test *test)
+ {
+-	struct sockaddr_in src4_rw_addr;
+-
+-	if (mk_sockaddr(AF_INET, SERV4_IP, SERV4_PORT,
+-			(struct sockaddr *)&src4_rw_addr,
+-			sizeof(src4_rw_addr)) == -1)
+-		return -1;
+-
+-	struct bpf_insn insns[] = {
+-		BPF_MOV64_REG(BPF_REG_6, BPF_REG_1),
+-
+-		/* if (sk.family == AF_INET && */
+-		BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
+-			    offsetof(struct bpf_sock_addr, family)),
+-		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, AF_INET, 6),
+-
+-		/*     sk.type == SOCK_DGRAM)  { */
+-		BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
+-			    offsetof(struct bpf_sock_addr, type)),
+-		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, SOCK_DGRAM, 4),
+-
+-		/*      user_ip4 = src4_rw_addr.sin_addr */
+-		BPF_MOV32_IMM(BPF_REG_7, src4_rw_addr.sin_addr.s_addr),
+-		BPF_STX_MEM(BPF_W, BPF_REG_6, BPF_REG_7,
+-			    offsetof(struct bpf_sock_addr, user_ip4)),
+-
+-		/*      user_port = src4_rw_addr.sin_port */
+-		BPF_MOV32_IMM(BPF_REG_7, src4_rw_addr.sin_port),
+-		BPF_STX_MEM(BPF_W, BPF_REG_6, BPF_REG_7,
+-			    offsetof(struct bpf_sock_addr, user_port)),
+-		/* } */
+-
+-		/* return 1 */
+-		BPF_MOV64_IMM(BPF_REG_0, 1),
+-		BPF_EXIT_INSN(),
+-	};
+-
+-	return load_insns(test, insns, sizeof(insns) / sizeof(struct bpf_insn));
++	return load_path(test, RECVMSG4_PROG_PATH);
+ }
+ 
+ static int sendmsg4_rw_c_prog_load(const struct sock_addr_test *test)
+@@ -890,37 +856,9 @@ static int sendmsg6_rw_asm_prog_load(const struct sock_addr_test *test)
+ 	return sendmsg6_rw_dst_asm_prog_load(test, SERV6_REWRITE_IP);
+ }
+ 
+-static int recvmsg6_rw_asm_prog_load(const struct sock_addr_test *test)
++static int recvmsg6_rw_c_prog_load(const struct sock_addr_test *test)
+ {
+-	struct sockaddr_in6 src6_rw_addr;
+-
+-	if (mk_sockaddr(AF_INET6, SERV6_IP, SERV6_PORT,
+-			(struct sockaddr *)&src6_rw_addr,
+-			sizeof(src6_rw_addr)) == -1)
+-		return -1;
+-
+-	struct bpf_insn insns[] = {
+-		BPF_MOV64_REG(BPF_REG_6, BPF_REG_1),
+-
+-		/* if (sk.family == AF_INET6) { */
+-		BPF_LDX_MEM(BPF_W, BPF_REG_7, BPF_REG_6,
+-			    offsetof(struct bpf_sock_addr, family)),
+-		BPF_JMP_IMM(BPF_JNE, BPF_REG_7, AF_INET6, 10),
+-
+-		STORE_IPV6(user_ip6, src6_rw_addr.sin6_addr.s6_addr32),
+-
+-		/*      user_port = dst6_rw_addr.sin6_port */
+-		BPF_MOV32_IMM(BPF_REG_7, src6_rw_addr.sin6_port),
+-		BPF_STX_MEM(BPF_W, BPF_REG_6, BPF_REG_7,
+-			    offsetof(struct bpf_sock_addr, user_port)),
+-		/* } */
+-
+-		/* return 1 */
+-		BPF_MOV64_IMM(BPF_REG_0, 1),
+-		BPF_EXIT_INSN(),
+-	};
+-
+-	return load_insns(test, insns, sizeof(insns) / sizeof(struct bpf_insn));
++	return load_path(test, RECVMSG6_PROG_PATH);
+ }
+ 
+ static int sendmsg6_rw_v4mapped_prog_load(const struct sock_addr_test *test)
 -- 
 2.30.0.280.ga3ce27912f-goog
 
