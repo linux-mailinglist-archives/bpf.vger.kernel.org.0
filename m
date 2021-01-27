@@ -2,172 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A1DD306595
-	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 22:02:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A47003065A1
+	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 22:09:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232540AbhA0VCM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Jan 2021 16:02:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44378 "EHLO
+        id S229667AbhA0VI1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Jan 2021 16:08:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231676AbhA0VCL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Jan 2021 16:02:11 -0500
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E43C06174A;
-        Wed, 27 Jan 2021 13:01:30 -0800 (PST)
-Received: by mail-yb1-xb36.google.com with SMTP id v200so3403057ybe.1;
-        Wed, 27 Jan 2021 13:01:30 -0800 (PST)
+        with ESMTP id S229641AbhA0VI0 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Jan 2021 16:08:26 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 138F2C061573
+        for <bpf@vger.kernel.org>; Wed, 27 Jan 2021 13:07:46 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id s61so107194ybi.4
+        for <bpf@vger.kernel.org>; Wed, 27 Jan 2021 13:07:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Vy1qnWr8G9KewqKj/7L8TJt0Bxkal0QntRDdb/XRuX4=;
-        b=mCCtnG6sIGTyRrUdohq/badjauCI4GzRWMTnqI/nRxLnRZSPu16lRLIXMlRPghDEfX
-         U1Wc348KQZqVka4gXKYo5Awx80GK7UJnTk9g7KEoTJtgDYxXvD+g3PH7jaxo0dbXbNfF
-         WmSUge2zQbr+Mx0iiR3tyf994wCyAKr0RqDBFrgB7TX9MwB0bQ+LrYJkl+Cl7IWTa/4E
-         FhXeijJk621vpcUxxNTu/Lw/I4hc0axXTGaUHcNgZudnrWYG8OVFA37c9V3LkNDMqz5Q
-         1IWeBnJBUmSt7dphg3SmqpA98rJgOOxR7GRf6KLW9TVpjAeS9QzTmtI2TdKKc/McxcCe
-         W5ww==
+        bh=YYu1ZRYBPKGSolP8R2Pl/pPVRmztWvNeFCWKXWsZruk=;
+        b=GQLclByrw6FVMifNV3N9gY/yFvs4C5ZihOzT1IY4Tkn4UJQVUJs7F7ZVdIsxBclaiW
+         l5ZHXxRlb3tNLFtZzvQaxsKPlXyhqWEfJGmESJfCiqao2NgW0bB7r82su6drA6aYJQSF
+         JXrexueM9Ay5G8pucJ+pzsU1JDiltWK01Ai3QUhJ8TxaZMXTV5VkfHE1piuwzAnxd0vR
+         fLyGOS1ofKKPgxWDNkiIxXxbdKHc1dbMWIr7bBUheHYZw7Cbme/EDpw8k2gHFktaJl6u
+         ULXP3dORbEHBgQDHGVCmDs00aq0VyIWBUSpjrDv34obgdjjDjar1d2hPhoLSHjEDuQDs
+         Hnzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Vy1qnWr8G9KewqKj/7L8TJt0Bxkal0QntRDdb/XRuX4=;
-        b=W9y6LASnNL6frO+JvJStxRDoIzJ9MIXsPinMzBveVVUXY/evUBTxGOEHwBT8cO5wCt
-         AL2hGhfFhKY6kKbh7lNcsYwQNTF+U2YybxCVTkw+Wp5DzID+XhvX+jmc+yLdEBPOov/s
-         ARcBFHycVbs769x4/Pi9Bh2nRsmghwxiencVQ+FTezbcOou3kVXcZ6/TYpTMl/0z/147
-         DrmRgVpawPpdTI6Y8z//ahoQnly0ZAQ2IGQ8xKRlYqbqrBu3MX9pLeZbH7319rXTFHVa
-         B7aG4roMZJG4ag5qXnT4DmbWmsf1LPjC3IjHf11B0goD5YbuvBa+6m8+vPxC0bLThMEh
-         vh1A==
-X-Gm-Message-State: AOAM5314TTPhOSIyYt854doMhtqccbrUGJnXo9GxLo1w23YIyzFm+KNT
-        2iIv8XNYTYNaf9VIAM7wOmGHzWD4Ut36ys+xayNrp8R8dVGA5g==
-X-Google-Smtp-Source: ABdhPJydAK0+KtirHmXenJRJ+RO3ZwDEx3AW3yiIFPd+X1h+yXpGR6dynhP+hQkVj3tsKwRmjbjeY0U3lMvFPdVmwhQ=
-X-Received: by 2002:a25:4b86:: with SMTP id y128mr18507027yba.403.1611781290223;
- Wed, 27 Jan 2021 13:01:30 -0800 (PST)
+        bh=YYu1ZRYBPKGSolP8R2Pl/pPVRmztWvNeFCWKXWsZruk=;
+        b=IrhuO4DJ2FWvqc93r0TOh5pU6rb5mWLoGCjsWX7WZv0bd8Zml/CErTgTbF58b+S7Sl
+         VccUlHbAjchs5bnp2RcA0oZQeiLVT4EWf2dlOpPzg623kGdm/TnPEhwkEwUfYbPE2msd
+         /TdEsK8Hzj/QQa4v4AWUfYZ1cnYkVaD2aRSYmafApW7UVuAfT9eOvEBFX3HaAyiOif6Z
+         b8xNBVihTq998jLL/pPf+8CfC0A4Vv87JlnD5JEfAUqHZ+2upVHVux84memhsf9TkLY6
+         2mZpHPF3oYYnTNrj8Yk6XIfx0KeIGDgeg2EhRYErlZxv42jljmqSxzxuf3w3i0GnxRP6
+         0pMQ==
+X-Gm-Message-State: AOAM533l2aVwg7o4KPSrM7HxqNYmxQwI/pPCujK1NH7th53rM4g2nd0g
+        HkpzVx4dpSZENGQ22mHLPxw0kBrrM43RQhR0peo=
+X-Google-Smtp-Source: ABdhPJyqU4lWC1v6rq3eIQBFljL1k6TAFntuMeX1+ONhjq9qf0VcmYr4rR2srMKEDlzFLbv2g1DatJ4zFN/knJGrbLs=
+X-Received: by 2002:a25:9882:: with SMTP id l2mr18164758ybo.425.1611781664308;
+ Wed, 27 Jan 2021 13:07:44 -0800 (PST)
 MIME-Version: 1.0
-References: <20210126183559.1302406-1-revest@chromium.org> <20210126183559.1302406-2-revest@chromium.org>
-In-Reply-To: <20210126183559.1302406-2-revest@chromium.org>
+References: <20210126001219.845816-1-yhs@fb.com> <YA/dqup/752hHBI4@hirez.programming.kicks-ass.net>
+ <66f46df5-8d47-8e4f-a6ab-ab794e57332d@fb.com>
+In-Reply-To: <66f46df5-8d47-8e4f-a6ab-ab794e57332d@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 27 Jan 2021 13:01:18 -0800
-Message-ID: <CAEf4BzZ9MmdeR9P7bybXEM77MV6C-T=yZPugLOHSFC1ES2e4=g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 2/5] bpf: Expose bpf_get_socket_cookie to
- tracing programs
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Date:   Wed, 27 Jan 2021 13:07:32 -0800
+Message-ID: <CAEf4BzawfHoU4sxEPMmSHRKgR3jYQUQP6tbYD4fTY2AyxM1ebA@mail.gmail.com>
+Subject: Re: [PATCH bpf] x86/bpf: handle bpf-program-triggered exceptions properly
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>, x86@kernel.org,
         KP Singh <kpsingh@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 10:36 AM Florent Revest <revest@chromium.org> wrote:
+On Tue, Jan 26, 2021 at 2:57 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> This needs a new helper that:
-> - can work in a sleepable context (using sock_gen_cookie)
-> - takes a struct sock pointer and checks that it's not NULL
 >
-> Signed-off-by: Florent Revest <revest@chromium.org>
-> Acked-by: KP Singh <kpsingh@kernel.org>
-> ---
->  include/linux/bpf.h            |  1 +
->  include/uapi/linux/bpf.h       |  8 ++++++++
->  kernel/trace/bpf_trace.c       |  2 ++
->  net/core/filter.c              | 12 ++++++++++++
->  tools/include/uapi/linux/bpf.h |  8 ++++++++
->  5 files changed, 31 insertions(+)
 >
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 1aac2af12fed..26219465e1f7 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1874,6 +1874,7 @@ extern const struct bpf_func_proto bpf_per_cpu_ptr_proto;
->  extern const struct bpf_func_proto bpf_this_cpu_ptr_proto;
->  extern const struct bpf_func_proto bpf_ktime_get_coarse_ns_proto;
->  extern const struct bpf_func_proto bpf_sock_from_file_proto;
-> +extern const struct bpf_func_proto bpf_get_socket_ptr_cookie_proto;
+> On 1/26/21 1:15 AM, Peter Zijlstra wrote:
+> > On Mon, Jan 25, 2021 at 04:12:19PM -0800, Yonghong Song wrote:
+> >> When the test is run normally after login prompt, cpu_feature_enabled(X86_FEATURE_SMAP)
+> >> is true and bad_area_nosemaphore() is called and then fixup_exception() is called,
+> >> where bpf specific handler is able to fixup the exception.
+> >>
+> >> But when the test is run at /sbin/init time, cpu_feature_enabled(X86_FEATURE_SMAP) is
+> >> false, the control reaches
+> >
+> > That makes no sense, cpu features should be set in stone long before we
+> > reach userspace.
 >
->  const struct bpf_func_proto *bpf_tracing_func_proto(
->         enum bpf_func_id func_id, const struct bpf_prog *prog);
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 0b735c2729b2..5855c398d685 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -1673,6 +1673,14 @@ union bpf_attr {
->   *     Return
->   *             A 8-byte long unique number.
->   *
-> + * u64 bpf_get_socket_cookie(void *sk)
+> You are correct. Sorry for misleading description. The reason is I use
+> two qemu script, one from my local environment and the other from ci
+> test since they works respectively. I thought they should have roughly
+> the same kernel setup, but apparently they are not.
+>
+> For my local qemu script, I have "-cpu host" option and with this,
+> X86_FEATURE_SMAP is set up probably in function get_cpu_cap(), file
+> arch/x86/kernel/cpu/common.c.
+>
+> For CI qemu script (in
+> https://lore.kernel.org/bpf/20210123004445.299149-1-kpsingh@kernel.org/),
+> the "-cpu kvm64" is the qemu argument. This cpu does not
+> enable X86_FEATURE_SMAP, so we will see the kernel warning.
+>
+> Changing CI script to use "-cpu host" resolved the issue. I think "-cpu
+> kvm64" may emulate old x86 cpus and ignore X86_FEATURE_SMAP.
+>
+> Do we have any x64 cpus which does not support X86_FEATURE_SMAP?
 
-should the type be `struct sock *` then?
+We don't control what CPUs are used in our CIs, which is why we didn't
+use "-cpu host". Is there some other way to make necessary features be
+available in qemu for this to work and not emit warnings?
 
-> + *     Description
-> + *             Equivalent to **bpf_get_socket_cookie**\ () helper that accepts
-> + *             *sk*, but gets socket from a BTF **struct sock**. This helper
-> + *             also works for sleepable programs.
-> + *     Return
-> + *             A 8-byte long unique number or 0 if *sk* is NULL.
-> + *
->   * u32 bpf_get_socket_uid(struct sk_buff *skb)
->   *     Return
->   *             The owner UID of the socket associated to *skb*. If the socket
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 6c0018abe68a..845b2168e006 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -1760,6 +1760,8 @@ tracing_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
->                 return &bpf_sk_storage_delete_tracing_proto;
->         case BPF_FUNC_sock_from_file:
->                 return &bpf_sock_from_file_proto;
-> +       case BPF_FUNC_get_socket_cookie:
-> +               return &bpf_get_socket_ptr_cookie_proto;
->  #endif
->         case BPF_FUNC_seq_printf:
->                 return prog->expected_attach_type == BPF_TRACE_ITER ?
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 9ab94e90d660..606e2b6115ed 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -4631,6 +4631,18 @@ static const struct bpf_func_proto bpf_get_socket_cookie_sock_proto = {
->         .arg1_type      = ARG_PTR_TO_CTX,
->  };
+But also, what will happen in this case on CPUs that really don't
+support X86_FEATURE_SMAP? Should that be addressed instead?
+
+
 >
-> +BPF_CALL_1(bpf_get_socket_ptr_cookie, struct sock *, sk)
-> +{
-> +       return sk ? sock_gen_cookie(sk) : 0;
-> +}
-> +
-> +const struct bpf_func_proto bpf_get_socket_ptr_cookie_proto = {
-> +       .func           = bpf_get_socket_ptr_cookie,
-> +       .gpl_only       = false,
-> +       .ret_type       = RET_INTEGER,
-> +       .arg1_type      = ARG_PTR_TO_BTF_ID_SOCK_COMMON,
-> +};
-> +
->  BPF_CALL_1(bpf_get_socket_cookie_sock_ops, struct bpf_sock_ops_kern *, ctx)
->  {
->         return __sock_gen_cookie(ctx->sk);
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-> index 0b735c2729b2..5855c398d685 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -1673,6 +1673,14 @@ union bpf_attr {
->   *     Return
->   *             A 8-byte long unique number.
->   *
-> + * u64 bpf_get_socket_cookie(void *sk)
-> + *     Description
-> + *             Equivalent to **bpf_get_socket_cookie**\ () helper that accepts
-> + *             *sk*, but gets socket from a BTF **struct sock**. This helper
-> + *             also works for sleepable programs.
-> + *     Return
-> + *             A 8-byte long unique number or 0 if *sk* is NULL.
-> + *
->   * u32 bpf_get_socket_uid(struct sk_buff *skb)
->   *     Return
->   *             The owner UID of the socket associated to *skb*. If the socket
-> --
-> 2.30.0.280.ga3ce27912f-goog
+> For CI, with "-cpu kvm64" is good as it can specify the number
+> of cores with e.g. "-smp 4" regardless of underlying host # of cores.
+> I think we could change CI to use "-cpu host" by ensuring the CI host
+> having at least 4 cores.
 >
+> Thanks.
+>
+>
+> >
+> >> To fix the issue, before the above mmap_read_trylock(), we will check
+> >> whether fault ip can be served by bpf exception handler or not, if
+> >> yes, the exception will be fixed up and return.
+> >
+> >
+> >
+> >> diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+> >> index f1f1b5a0956a..e8182d30bf67 100644
+> >> --- a/arch/x86/mm/fault.c
+> >> +++ b/arch/x86/mm/fault.c
+> >> @@ -1317,6 +1317,15 @@ void do_user_addr_fault(struct pt_regs *regs,
+> >>              if (emulate_vsyscall(hw_error_code, regs, address))
+> >>                      return;
+> >>      }
+> >> +
+> >> +#ifdef CONFIG_BPF_JIT
+> >> +    /*
+> >> +     * Faults incurred by bpf program might need emulation, i.e.,
+> >> +     * clearing the dest register.
+> >> +     */
+> >> +    if (fixup_bpf_exception(regs, X86_TRAP_PF, hw_error_code, address))
+> >> +            return;
+> >> +#endif
+> >>   #endif
+> >
+> > NAK, this is broken. You're now disallowing faults that should've gone
+> > through.
+> >
