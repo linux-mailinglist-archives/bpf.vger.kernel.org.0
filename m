@@ -2,92 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5237C305157
-	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 05:49:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE83305156
+	for <lists+bpf@lfdr.de>; Wed, 27 Jan 2021 05:49:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232154AbhA0EpP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 26 Jan 2021 23:45:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37160 "EHLO
+        id S234482AbhA0EpN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 26 Jan 2021 23:45:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232525AbhA0DEW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 26 Jan 2021 22:04:22 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59D3FC0617A7;
-        Tue, 26 Jan 2021 18:25:20 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id o20so229777pfu.0;
-        Tue, 26 Jan 2021 18:25:20 -0800 (PST)
+        with ESMTP id S232154AbhA0DC5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 26 Jan 2021 22:02:57 -0500
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAC37C061351
+        for <bpf@vger.kernel.org>; Tue, 26 Jan 2021 18:31:46 -0800 (PST)
+Received: by mail-io1-xd2d.google.com with SMTP id h11so358458ioh.11
+        for <bpf@vger.kernel.org>; Tue, 26 Jan 2021 18:31:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=joDhYr4WwYIa6lTFlqLJ0z3vbyBAAz6QSsz7f9MoAT0=;
-        b=IQHJWZYVacOMsK096C8npqb57WhF9GsyIaKrsd2VR5on07xkS3mYrUm7ry3hHTyGzv
-         kslNVsQNyIvsTaXnEpvcqjT3I0LOf1fvW+YbF7eQrE24Ukpd9yvwsQBSS06BGRbnpzpS
-         3hHH/+yHrTpOKYsmdHmgacKwyxYHtnZ1qgP/5A0EQ80DDUt8lYtg3h7iVya/+gZobnEg
-         hoFiXnYo4FCsSH1J8qiNDIzHPjozqgaGT2Jp5UZNNqDQbpmvGk1jA1oyIauCvvy/J9kD
-         iJ8WEGfdX12W8p9LuuOq8AVT57fWZkfATrteTyNcC4yqp0Xv0uz4Yh0KV1+sr+crVQN3
-         8guw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ifb0D+1WqBBzNJ8/3rrdcsNeQPMZ9f86icYxJTZY2Tk=;
+        b=m8njW5xDAER3TzGAaksIvhJpZmn2lOmuB8gchvUxH1GVpbz6h2XQRmr7ommg3CM4wK
+         Eo5ll2kQdGUX8UUY0rikyTAbrEk6TLznXlHcScmP2vHz3C2ibwJHWJ6C5D732TwDpd7I
+         M/GXf4DHXwthymIvylsvglnnTJJRsb0AoPeYuIX5Zx29XmFZvpdnvUqlSfu3jx7TuBe3
+         yQ1msQhSYbeSc/XO+He/VdWIXMhKY2mtDWovwJ6ao6rf4oF9iwORyfS/VuN4G18njWhu
+         QGC1NXCYRPiNUYwnXOGX4kPU5Q26SCmiXXas45Ver6C2cck5b3YWGADF3oqgcrwMQux9
+         oRsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=joDhYr4WwYIa6lTFlqLJ0z3vbyBAAz6QSsz7f9MoAT0=;
-        b=Ch+XYVk2WE5KCkTr4sPAgeU+mZ8kAjapFiElSWOJIS1uwe9NnZPLv6SOVQqWMbP3DN
-         GWLWQ8teEYOgWQjyDBR7BxNajVli1Ymv80n3kbmz7Dw6n+ztJzBks9qVtz1yPb0R4Dkk
-         MXCalG9ggWw2Gf7wThI5t4ykRPgiEMc3XrH1Rxi3Q2gfZDGr+JueM0dAhrDDxhw/RAMm
-         uDJfbpaPOqZY7uF0uNmjlEbP7TCtO4BuY4z4sfMxezsEZcSWOP1tMZkL1G+vi25IKnzq
-         hS0n8wnHqC11I2qkxn+cgVpIfNfwv46fPH2zmduKmlhu5NG6t9FIMoRiTkiFMRCinmaF
-         ew4w==
-X-Gm-Message-State: AOAM5334AnLEdkOQjDZ0TeUEXuWmVeymW52FGqNkFReMg4JHQEAPqmmu
-        2wojYJdUTw8Sk+nDY0pYWgs=
-X-Google-Smtp-Source: ABdhPJzDMD5pkEHDo4gipRdTGkjHcADKE3lHimALyEXvIwt/WyGdyMf+YeCjyYKXgbt2YaEYCVWEuQ==
-X-Received: by 2002:aa7:9ad3:0:b029:1b7:8afc:d9bd with SMTP id x19-20020aa79ad30000b02901b78afcd9bdmr7980137pfp.45.1611714319755;
-        Tue, 26 Jan 2021 18:25:19 -0800 (PST)
-Received: from localhost ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id b21sm390023pfb.45.2021.01.26.18.25.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 18:25:19 -0800 (PST)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: dong.menglong@zte.com.cn
-To:     ast@kernel.org
-Cc:     daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, jackmanb@google.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Menglong Dong <dong.menglong@zte.com.cn>
-Subject: [PATCH bpf-next] bpf: change 'BPF_ADD' to 'BPF_AND' in print_bpf_insn()
-Date:   Tue, 26 Jan 2021 18:25:07 -0800
-Message-Id: <20210127022507.23674-1-dong.menglong@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ifb0D+1WqBBzNJ8/3rrdcsNeQPMZ9f86icYxJTZY2Tk=;
+        b=hvIlAy9EduwQ8AxA0308FNzQzdsZGDczt0l5BtPOPtkn6BnzWscLoSk0xgtyH8Vd6r
+         V3IWOfHtQ5luQFXiwHY9mIxeW7ft5m/nX8xcBuVretzlMcJzMeltL47cZcnPq+nVF4hx
+         UX3KxPwlJbAoTD1R138k2SPDQZ575tb9yTPXCGu7qubNLLXNa5Ne+FH4PRST+zX5mPWE
+         qNl5PkS/qcBoHIRxu5N1FiwV0Vr7ckFi5e4JhsWc/CyiGcpCpK8z9wHvvz1LI/ABUTaF
+         r++fcvSWnwBsoGKbkKc62VjmeUaf8M9in1GHLkwaOQrNtzR3LM6IjlJl2n36C8PkkSOY
+         wv+Q==
+X-Gm-Message-State: AOAM530r839Vez1RlNHSHQr/yKTE+fIyWvBrau3zBzt5QbG46e0+aPgY
+        9FypPbop0Y9ZY/oAwuBt5vaGXk2Z5YKu0AUXUnym49/o+N4=
+X-Google-Smtp-Source: ABdhPJyczj+qLYBazhpHBIoxXfzQqDGoHbb3V4Bu2VJaeb78N/Z62RDtgcvN/xzk9dM31jqvD8BGQWpkhmXuQLkqY9A=
+X-Received: by 2002:a02:9042:: with SMTP id y2mr7246290jaf.94.1611714705821;
+ Tue, 26 Jan 2021 18:31:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210124190532.428065-1-andreimatei1@gmail.com> <7d33b412-260f-f4d6-2ed0-b5076dc37179@iogearbox.net>
+In-Reply-To: <7d33b412-260f-f4d6-2ed0-b5076dc37179@iogearbox.net>
+From:   Andrei Matei <andreimatei1@gmail.com>
+Date:   Tue, 26 Jan 2021 21:31:33 -0500
+Message-ID: <CABWLset0EgvNF5nCdYHNMaqYFg8MYZfqpHren41EuRP1Azax-w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftest/bpf: testing for multiple logs on REJECT
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Menglong Dong <dong.menglong@zte.com.cn>
+On Tue, Jan 26, 2021 at 6:21 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> On 1/24/21 8:05 PM, Andrei Matei wrote:
+> > This patch adds support to verifier tests to check for a succession of
+> > verifier log messages on program load failure. This makes the
+> > errstr field work uniformly across REJECT and VERBOSE_ACCEPT checks.
+> >
+> > This patch also increases the maximum size of an accepted series of
+> > messages to test from 80 chars to 200 chars. This is in order to keep
+> > existing tests working, which sometimes test for messages larger than 80
+> > chars (which was accepted in the REJECT case, when testing for a single
+> > message, but ironically not in the VERBOSE_ACCEPT case, when testing for
+> > possibly multiple messages).
+> > And example of such a long, checked message is in bounds.c:
+> > "R1 has unknown scalar with mixed signed bounds, pointer arithmetic with
+> > it prohibited for !root"
+> >
+> > Signed-off-by: Andrei Matei <andreimatei1@gmail.com>
+> > ---
+> >   tools/testing/selftests/bpf/test_verifier.c | 15 ++++++++++++---
+> >   1 file changed, 12 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
+> > index 59bfa6201d1d..69298bf8ee86 100644
+> > --- a/tools/testing/selftests/bpf/test_verifier.c
+> > +++ b/tools/testing/selftests/bpf/test_verifier.c
+> > @@ -88,6 +88,9 @@ struct bpf_test {
+> >       int fixup_map_event_output[MAX_FIXUPS];
+> >       int fixup_map_reuseport_array[MAX_FIXUPS];
+> >       int fixup_map_ringbuf[MAX_FIXUPS];
+> > +     /* Expected verifier log output for result REJECT or VERBOSE_ACCEPT. Can be a
+> > +      * tab-separated sequence of expected strings.
+> > +      */
+> >       const char *errstr;
+> >       const char *errstr_unpriv;
+> >       uint32_t insn_processed;
+> > @@ -995,9 +998,11 @@ static int do_prog_test_run(int fd_prog, bool unpriv, uint32_t expected_val,
+> >       return 0;
+> >   }
+> >
+> > +/* Returns true if every part of exp (tab-separated) appears in log, in order.
+> > + */
+> >   static bool cmp_str_seq(const char *log, const char *exp)
+> >   {
+> > -     char needle[80];
+> > +     char needle[200];
+> >       const char *p, *q;
+> >       int len;
+> >
+> > @@ -1015,7 +1020,7 @@ static bool cmp_str_seq(const char *log, const char *exp)
+> >               needle[len] = 0;
+> >               q = strstr(log, needle);
+> >               if (!q) {
+> > -                     printf("FAIL\nUnexpected verifier log in successful load!\n"
+> > +                     printf("FAIL\nUnexpected verifier log!\n"
+> >                              "EXP: %s\nRES:\n", needle);
+> >                       return false;
+> >               }
+> > @@ -1130,7 +1135,11 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
+> >                       printf("FAIL\nUnexpected success to load!\n");
+> >                       goto fail_log;
+> >               }
+> > -             if (!expected_err || !strstr(bpf_vlog, expected_err)) {
+> > +             if (!expected_err) {
+> > +                     printf("FAIL\nTestcase bug; missing expected_err\n");
+> > +                     goto fail_log;
+>
+> Do we have an in-tree case like this?
 
-This 'BPF_ADD' is duplicated, and I belive it should be 'BPF_AND'.
+You're asking if there are tests with expected_res == REJECT and
+expected_err == NULL?
+There are no such test cases, and the intention of this "testcase bug"
+check was to keep it that way.
+I can simply fold it into the test failure below, as you're suggesting.
 
-Fixes: 981f94c3e921 ("bpf: Add bitwise atomic instructions")
-Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
----
- kernel/bpf/disasm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Given this would also be visible below with 'EXP:'
+> being (null), I might simplify and just replace the strstr() with cmp_str_seq().
+>
+> Also, could you elaborate on which test cases need the cmp_str_seq() conversion?
 
-diff --git a/kernel/bpf/disasm.c b/kernel/bpf/disasm.c
-index 19ff8fed7f4b..3acc7e0b6916 100644
---- a/kernel/bpf/disasm.c
-+++ b/kernel/bpf/disasm.c
-@@ -161,7 +161,7 @@ void print_bpf_insn(const struct bpf_insn_cbs *cbs,
- 				insn->dst_reg,
- 				insn->off, insn->src_reg);
- 		else if (BPF_MODE(insn->code) == BPF_ATOMIC &&
--			 (insn->imm == BPF_ADD || insn->imm == BPF_ADD ||
-+			 (insn->imm == BPF_ADD || insn->imm == BPF_AND ||
- 			  insn->imm == BPF_OR || insn->imm == BPF_XOR)) {
- 			verbose(cbs->private_data, "(%02x) lock *(%s *)(r%d %+d) %s r%d\n",
- 				insn->code,
--- 
-2.25.1
+There are VERBOSE_ACCEPT tests that you a tab-separated list of
+expected messages; see precise.c.
+There are no such REJECT tests yet. I was about to introduce one in
+another patch that's inflight, but I ended
+up not needing to. Still, I figured that unifying the capabilities of
+.errstr between VERBOSE_ACCEPT and REJECT
+is a good idea. If you don't think so, I'm happy to drop this patch.
 
+>
+> > +             }
+> > +             if ((strlen(expected_err) > 0) && !cmp_str_seq(bpf_vlog, expected_err)) {
+>
+> (nit: no extra '()' needed, but either way I'd rather opt for '!expected_err ||
+> !cmp_str_seq(bpf_vlog, expected_err)' anyway)
+>
+> >                       printf("FAIL\nUnexpected error message!\n\tEXP: %s\n\tRES: %s\n",
+> >                             expected_err, bpf_vlog);
+> >                       goto fail_log;
+> >
+>
