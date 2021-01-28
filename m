@@ -2,178 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEC1330689F
-	for <lists+bpf@lfdr.de>; Thu, 28 Jan 2021 01:25:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8747D3068C3
+	for <lists+bpf@lfdr.de>; Thu, 28 Jan 2021 01:43:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231810AbhA1AYa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Jan 2021 19:24:30 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:18456 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231840AbhA1AVb (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 27 Jan 2021 19:21:31 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10S0FYeD004764
-        for <bpf@vger.kernel.org>; Wed, 27 Jan 2021 16:20:50 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=9MXKxqv+SncBnz5OqxIZYK7jmff9BGIDVI3Ly/9d+n0=;
- b=FNwbL5GpwKsoiBfjo1+KXlfUkUfMaDV7V9HAf4/pZrUNWGasWzx60Z7Gy9H4DFFWctWB
- 2GEK1biaNcYpR9jzZVxowSJ73FRqLWwQ3gxX3ZQHEDJ91HGx/vwUqMrdU4jupdBLKcuk
- HluU0FmO5JKcoFoY1RAj6DuXrKqd/sdLOzA= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 36b7vwkqns-7
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 27 Jan 2021 16:20:50 -0800
-Received: from intmgw002.06.ash9.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 27 Jan 2021 16:20:46 -0800
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id D729462E0B6C; Wed, 27 Jan 2021 16:20:42 -0800 (PST)
-From:   Song Liu <songliubraving@fb.com>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <mingo@redhat.com>, <peterz@infradead.org>, <daniel@iogearbox.net>,
-        <kpsingh@chromium.org>, <kernel-team@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH v3 bpf-next 4/4] bpf: runqslower: use task local storage
-Date:   Wed, 27 Jan 2021 16:19:48 -0800
-Message-ID: <20210128001948.1637901-5-songliubraving@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20210128001948.1637901-1-songliubraving@fb.com>
-References: <20210128001948.1637901-1-songliubraving@fb.com>
+        id S231153AbhA1Amv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Jan 2021 19:42:51 -0500
+Received: from www62.your-server.de ([213.133.104.62]:39700 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231445AbhA1Ama (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Jan 2021 19:42:30 -0500
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1l4vNP-0007JP-Oa; Thu, 28 Jan 2021 01:41:35 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1l4vNP-000Pcf-ET; Thu, 28 Jan 2021 01:41:35 +0100
+Subject: Re: [PATCH] bpf: Fix integer overflow in argument calculation for
+ bpf_map_area_alloc
+To:     Bui Quang Minh <minhquangbui99@gmail.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, hawk@kernel.org,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        kpsingh@kernel.org, Jakub Sitnicki <jakub@cloudflare.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210126082606.3183-1-minhquangbui99@gmail.com>
+ <CACAyw99bEYWJCSGqfLiJ9Jp5YE1ZsZSiJxb4RFUTwbofipf0dA@mail.gmail.com>
+ <20210127042341.GA4948@ubuntu>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <f4d20d92-2370-a8d3-d56c-408819a5f7f4@iogearbox.net>
+Date:   Thu, 28 Jan 2021 01:41:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-27_10:2021-01-27,2021-01-27 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
- suspectscore=0 impostorscore=0 lowpriorityscore=0 mlxscore=0 clxscore=1015
- mlxlogscore=999 spamscore=0 priorityscore=1501 malwarescore=0 phishscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101280000
-X-FB-Internal: deliver
+In-Reply-To: <20210127042341.GA4948@ubuntu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26062/Wed Jan 27 13:26:15 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Replace hashtab with task local storage in runqslower. This improves the
-performance of these BPF programs. The following table summarizes average
-runtime of these programs, in nanoseconds:
+On 1/27/21 5:23 AM, Bui Quang Minh wrote:
+> On Tue, Jan 26, 2021 at 09:36:57AM +0000, Lorenz Bauer wrote:
+>> On Tue, 26 Jan 2021 at 08:26, Bui Quang Minh <minhquangbui99@gmail.com> wrote:
+>>>
+>>> In 32-bit architecture, the result of sizeof() is a 32-bit integer so
+>>> the expression becomes the multiplication between 2 32-bit integer which
+>>> can potentially leads to integer overflow. As a result,
+>>> bpf_map_area_alloc() allocates less memory than needed.
+>>>
+>>> Fix this by casting 1 operand to u64.
+>>
+>> Some quick thoughts:
+>> * Should this have a Fixes tag?
+> 
+> Ok, I will add Fixes tag in later version patch.
+> 
+>> * Seems like there are quite a few similar calls scattered around
+>> (cpumap, etc.). Did you audit these as well?
+> 
+[...]
+> In cpumap,
+> 
+> 	static struct bpf_map *cpu_map_alloc(union bpf_attr *attr)
+> 	{
+> 		cmap->cpu_map = bpf_map_area_alloc(cmap->map.max_entries *
+> 						   sizeof(struct bpf_cpu_map_entry *),
+> 						   cmap->map.numa_node);
+> 	}
+> 
+> I think this is safe because max_entries is not permitted to be larger than NR_CPUS.
 
-                          task-local   hash-prealloc   hash-no-prealloc
-handle__sched_wakeup             125             340               3124
-handle__sched_wakeup_new        2812            1510               2998
-handle__sched_switch             151             208                991
+Yes.
 
-Note that, task local storage gives better performance than hashtab for
-handle__sched_wakeup and handle__sched_switch. On the other hand, for
-handle__sched_wakeup_new, task local storage is slower than hashtab with
-prealloc. This is because handle__sched_wakeup_new accesses the data for
-the first time, so it has to allocate the data for task local storage.
-Once the initial allocation is done, subsequent accesses, as those in
-handle__sched_wakeup, are much faster with task local storage. If we
-disable hashtab prealloc, task local storage is much faster for all 3
-functions.
+> In stackmap, there is a place that I'm not very sure about
+> 
+> 	static int prealloc_elems_and_freelist(struct bpf_stack_map *smap)
+> 	{
+> 		u32 elem_size = sizeof(struct stack_map_bucket) + smap->map.value_size;
+> 		smap->elems = bpf_map_area_alloc(elem_size * smap->map.max_entries,
+> 						 smap->map.numa_node);
+> 	}
+> 
+> This is called after another bpf_map_area_alloc in stack_map_alloc(). In the first
+> bpf_map_area_alloc() the argument is calculated in an u64 variable; so if in the second
+> one, there is an integer overflow then the first one must be called with size > 4GB. I
+> think the first one will probably fail (I am not sure about the actual limit of vmalloc()),
+> so the second one might not be called.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Signed-off-by: Song Liu <songliubraving@fb.com>
----
- tools/bpf/runqslower/runqslower.bpf.c | 33 +++++++++++++++++----------
- 1 file changed, 21 insertions(+), 12 deletions(-)
+I would sanity check this as well. Looks like k*alloc()/v*alloc() call sites typically
+use array_size() which returns SIZE_MAX on overflow, 610b15c50e86 ("overflow.h: Add
+allocation size calculation helpers").
 
-diff --git a/tools/bpf/runqslower/runqslower.bpf.c b/tools/bpf/runqslower=
-/runqslower.bpf.c
-index 1f18a409f0443..645530ca7e985 100644
---- a/tools/bpf/runqslower/runqslower.bpf.c
-+++ b/tools/bpf/runqslower/runqslower.bpf.c
-@@ -11,9 +11,9 @@ const volatile __u64 min_us =3D 0;
- const volatile pid_t targ_pid =3D 0;
-=20
- struct {
--	__uint(type, BPF_MAP_TYPE_HASH);
--	__uint(max_entries, 10240);
--	__type(key, u32);
-+	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
- 	__type(value, u64);
- } start SEC(".maps");
-=20
-@@ -25,15 +25,20 @@ struct {
-=20
- /* record enqueue timestamp */
- __always_inline
--static int trace_enqueue(u32 tgid, u32 pid)
-+static int trace_enqueue(struct task_struct *t)
- {
--	u64 ts;
-+	u32 pid =3D t->pid;
-+	u64 *ptr;
-=20
- 	if (!pid || (targ_pid && targ_pid !=3D pid))
- 		return 0;
-=20
--	ts =3D bpf_ktime_get_ns();
--	bpf_map_update_elem(&start, &pid, &ts, 0);
-+	ptr =3D bpf_task_storage_get(&start, t, 0,
-+				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	if (!ptr)
-+		return 0;
-+
-+	*ptr =3D bpf_ktime_get_ns();
- 	return 0;
- }
-=20
-@@ -43,7 +48,7 @@ int handle__sched_wakeup(u64 *ctx)
- 	/* TP_PROTO(struct task_struct *p) */
- 	struct task_struct *p =3D (void *)ctx[0];
-=20
--	return trace_enqueue(p->tgid, p->pid);
-+	return trace_enqueue(p);
- }
-=20
- SEC("tp_btf/sched_wakeup_new")
-@@ -52,7 +57,7 @@ int handle__sched_wakeup_new(u64 *ctx)
- 	/* TP_PROTO(struct task_struct *p) */
- 	struct task_struct *p =3D (void *)ctx[0];
-=20
--	return trace_enqueue(p->tgid, p->pid);
-+	return trace_enqueue(p);
- }
-=20
- SEC("tp_btf/sched_switch")
-@@ -70,12 +75,16 @@ int handle__sched_switch(u64 *ctx)
-=20
- 	/* ivcsw: treat like an enqueue event and store timestamp */
- 	if (prev->state =3D=3D TASK_RUNNING)
--		trace_enqueue(prev->tgid, prev->pid);
-+		trace_enqueue(prev);
-=20
- 	pid =3D next->pid;
-=20
-+	/* For pid mismatch, save a bpf_task_storage_get */
-+	if (!pid || (targ_pid && targ_pid !=3D pid))
-+		return 0;
-+
- 	/* fetch timestamp and calculate delta */
--	tsp =3D bpf_map_lookup_elem(&start, &pid);
-+	tsp =3D bpf_task_storage_get(&start, next, 0, 0);
- 	if (!tsp)
- 		return 0;   /* missed enqueue */
-=20
-@@ -91,7 +100,7 @@ int handle__sched_switch(u64 *ctx)
- 	bpf_perf_event_output(ctx, &events, BPF_F_CURRENT_CPU,
- 			      &event, sizeof(event));
-=20
--	bpf_map_delete_elem(&start, &pid);
-+	bpf_task_storage_delete(&start, next);
- 	return 0;
- }
-=20
---=20
-2.24.1
-
+Thanks,
+Daniel
