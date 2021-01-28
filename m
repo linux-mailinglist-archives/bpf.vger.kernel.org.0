@@ -2,139 +2,191 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18DE8306D9B
-	for <lists+bpf@lfdr.de>; Thu, 28 Jan 2021 07:29:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEE78307068
+	for <lists+bpf@lfdr.de>; Thu, 28 Jan 2021 08:59:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229545AbhA1G3I (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Jan 2021 01:29:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbhA1G3I (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Jan 2021 01:29:08 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E6A1C061573;
-        Wed, 27 Jan 2021 22:28:27 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id lw17so4252502pjb.0;
-        Wed, 27 Jan 2021 22:28:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DAbNeqn4HrFrwHesm9EjNkW+m3p+6Gw00s2+sHZm0lg=;
-        b=GwVoXgW8/huQGLo9yRdTRNCp+UlxLS5bainwfcCUT0dMAg6pp6hEKZvdxHYZBK1h4P
-         5gRJ6c7QEExmrHQlgT0fMfOWij6wS1EcFt0k0l7F7sLa4aT2Yf/SdyhFoLzw2goqhh+P
-         sYkWkHX/8Fzf/rYc23XArIE3UAcOf9665sqyC6Qw0HWoiU/fh6lqhrX486TQ0hhzt4kA
-         Qey3M3/BtblX9QOGUFGcRoDgXDPq9blgooQeKPaT5rnM5MXlYsuyc5y2dz1j3w4/PYpH
-         0uECw3yrVT1DhXL/OHlTWjGLNYQc4qtkz9UKaDdksAvn5VerdFdAO/ylfvzuSQdOGjCa
-         PLzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DAbNeqn4HrFrwHesm9EjNkW+m3p+6Gw00s2+sHZm0lg=;
-        b=IKd04m9oiM6BTYUgWgzp+JswoCt5ES9NPr724FeSQbluqGURa7wp/vLG3Sb1ikXCsL
-         ptLyT0Tc+rXIVUxQp1gFTSqRysQazcYC/GlrEV1c5fEtjOQOb8lvxVWb6XKUVzXSO6Cy
-         NRhmFkuNOONH8J5BAyzVpBC74QqwioLmeq2eyDzxhxlGRBULYQSeeOMwwGvil3cT3Ew6
-         IWypHTeFvfF4cV74FiEU3EHt2Gg3p7xHhz0WFsmbnyBfzDeEJa+cneVl6Aekushwg8pZ
-         e+SBeLPFsKLKogKmnUTmyvHBAgosbKJEI6lN6maGrJffS2LJmB5/gYyk+R1wXvhFYQ2b
-         1wMg==
-X-Gm-Message-State: AOAM5338t1OfELcFKVvG0/MePFnh+NsF866eXqUYHjQkIKeNR5Ez/BLj
-        cmvUtrIlBpwPBfHapLwOnLiEmMK2dKIW3WYCBuU=
-X-Google-Smtp-Source: ABdhPJzFVvjKbtEKY7g/qQjhsm6z2fa/ElvnLyetxE5toYVafRRG6gYuQflfNb9g3mdeeoRBrcXU6cXgxj3kXZtkRog=
-X-Received: by 2002:a17:902:9d8d:b029:df:e5a6:1ef7 with SMTP id
- c13-20020a1709029d8db02900dfe5a61ef7mr15010646plq.77.1611815306375; Wed, 27
- Jan 2021 22:28:26 -0800 (PST)
+        id S229593AbhA1H5R (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Jan 2021 02:57:17 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49056 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231442AbhA1HMR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Jan 2021 02:12:17 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611817889; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=LF0TWiEee2A6M8Jrr93gVLCepsgtV/MZiSB0Ffw0w40=;
+        b=U/qJPwaUYyf/q2zAIPYwgbKfQCBBw8XI4TFCb7l8XleMQwCiuqBf+j09Me5oCwwiYeyrnJ
+        o2TH9ICpUEllsPM7VS/ob2MNePiXrV9hvlPMNdOAckkFxxPvc3pAZXx9P+DKRSd7YZMkFZ
+        1i2ixMdXwQ2QQEwf8n63oWUTYI36K1c=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D140CAC97;
+        Thu, 28 Jan 2021 07:11:29 +0000 (UTC)
+Subject: Re: kprobes broken since 0d00449c7a28 ("x86: Replace ist_enter() with
+ nmi_enter()")
+To:     Masami Hiramatsu <masami.hiramatsu@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org
+References: <25cd2608-03c2-94b8-7760-9de9935fde64@suse.com>
+ <20210128001353.66e7171b395473ef992d6991@kernel.org>
+ <20210128002452.a79714c236b69ab9acfa986c@kernel.org>
+ <a35a6f15-9ab1-917c-d443-23d3e78f2d73@suse.com>
+ <20210128103415.d90be51ec607bb6123b2843c@kernel.org>
+ <20210128123842.c9e33949e62f504b84bfadf5@gmail.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <b2c41061-1574-46e5-af52-9b1931bd6c6c@suse.com>
+Date:   Thu, 28 Jan 2021 09:11:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210122205415.113822-1-xiyou.wangcong@gmail.com>
- <20210122205415.113822-2-xiyou.wangcong@gmail.com> <d69d44ca-206c-d818-1177-c8f14d8be8d1@iogearbox.net>
- <CAM_iQpW8aeh190G=KVA9UEZ_6+UfenQxgPXuw784oxCaMfXjng@mail.gmail.com> <CAADnVQKmNiHj8qy1yqbOrf-OMyhnn8fKm87w6YMfkiDHkBpJVg@mail.gmail.com>
-In-Reply-To: <CAADnVQKmNiHj8qy1yqbOrf-OMyhnn8fKm87w6YMfkiDHkBpJVg@mail.gmail.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Wed, 27 Jan 2021 22:28:15 -0800
-Message-ID: <CAM_iQpXAQ7AMz34=o5E=81RFGFsQB5jCDTCCaVdHokU6kaJQsQ@mail.gmail.com>
-Subject: Re: [Patch bpf-next v5 1/3] bpf: introduce timeout hash map
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Jamal Hadi Salim <jhs@mojatatu.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Dongdong Wang <wangdongdong.6@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210128123842.c9e33949e62f504b84bfadf5@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 10:00 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Jan 26, 2021 at 11:00 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
-> > > >               ret = PTR_ERR(l_new);
-> > > > +             if (ret == -EAGAIN) {
-> > > > +                     htab_unlock_bucket(htab, b, hash, flags);
-> > > > +                     htab_gc_elem(htab, l_old);
-> > > > +                     mod_delayed_work(system_unbound_wq, &htab->gc_work, 0);
-> > > > +                     goto again;
-> > >
-> > > Also this one looks rather worrying, so the BPF prog is stalled here, loop-waiting
-> > > in (e.g. XDP) hot path for system_unbound_wq to kick in to make forward progress?
-> >
-> > In this case, the old one is scheduled for removal in GC, we just wait for GC
-> > to finally remove it. It won't stall unless GC itself or the worker scheduler is
-> > wrong, both of which should be kernel bugs.
-> >
-> > If we don't do this, users would get a -E2BIG when it is not too big. I don't
-> > know a better way to handle this sad situation, maybe returning -EBUSY
-> > to users and let them call again?
->
-> I think using wq for timers is a non-starter.
-> Tying a hash/lru map with a timer is not a good idea either.
-
-Both xt_hashlimit and nf_conntrack_core use delayed/deferrable
-works, probably since their beginnings. They seem to have started
-well. ;)
-
->
-> I think timers have to be done as independent objects similar to
-> how the kernel uses them.
-> Then there will be no question whether lru or hash map needs it.
-
-Yeah, this probably could make the code easier, but when we have
-millions of entries in a map, millions of timers would certainly bring
-a lot of CPU overhead (timer interrupt storm?).
 
 
-> The bpf prog author will be able to use timers with either.
-> The prog will be able to use timers without hash maps too.
->
-> I'm proposing a timer map where each object will go through
-> bpf_timer_setup(timer, callback, flags);
-> where "callback" is a bpf subprogram.
-> Corresponding bpf_del_timer and bpf_mod_timer would work the same way
-> they are in the kernel.
-> The tricky part is kernel style of using from_timer() to access the
-> object with additional info.
-> I think bpf timer map can model it the same way.
-> At map creation time the value_size will specify the amount of extra
-> bytes necessary.
-> Another alternative is to pass an extra data argument to a callback.
+On 28.01.21 г. 5:38 ч., Masami Hiramatsu wrote:
+> Hi,
+> 
 
-Hmm, this idea is very interesting. I still think arming a timer,
-whether a kernel timer or a bpf timer, for each entry is overkill,
-but we can arm one for each map, something like:
+<snip>
 
-bpf_timer_run(interval, bpf_prog, &any_map);
+> 
+> Yeah, there is. Nikolay, could you try this tentative patch?
+I can confirm that with this patch everything is working. I also applied
+the following diff:
 
-so we run 'bpf_prog' on any map every 'interval', but the 'bpf_prog'
-would have to iterate the whole map during each interval to delete
-the expired ones. This is probably doable: the timestamps can be
-stored either as a part of key or value, and bpf_jiffies64() is already
-available, users would have to discard expired ones after lookup
-when they are faster than the timer GC.
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 6c0018abe68a..cc5a3a18816d 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -96,8 +96,10 @@ unsigned int trace_call_bpf(struct trace_event_call
+*call, void *ctx)
+ {
+        unsigned int ret;
 
-Let me take a deeper look tomorrow.
+-       if (in_nmi()) /* not supported yet */
++       if (in_nmi()) /* not supported yet */ {
++               trace_dump_stack(0);
+                return 1;
++       }
 
-Thanks.
+        cant_sleep();
+
+
+
+And can confirm that the branch is being hit and the following call
+trace is produced:
+
+ => __ftrace_trace_stack
+ => trace_call_bpf
+ => kprobe_perf_func
+ => kprobe_int3_handler
+ => exc_int3
+ => asm_exc_int3
+ => btrfs_sync_file
+ => do_fsync
+ => __x64_sys_fsync
+ => do_syscall_64
+ => entry_SYSCALL_64_after_hwframe
+
+
+> 
+> Of course this just drops the NMI check from the handler, so alternative
+> checker is required. But I'm not sure what the original code concerns.
+> As far as I can see, there seems no re-entrant block flag, nor locks
+> among ebpf programs in runtime.
+> 
+> Alexei, could you tell me what is the concerning situation for bpf?
+> 
+> Thank you,
+> 
+> From c5cd0e5f60ef6494c9e1579ec1b82b7344c41f9a Mon Sep 17 00:00:00 2001
+> From: Masami Hiramatsu <mhiramat@kernel.org>
+> Date: Thu, 28 Jan 2021 12:31:02 +0900
+> Subject: [PATCH] tracing: bpf: Remove in_nmi() check from kprobe handler
+> 
+> Since commit 0d00449c7a28 ("x86: Replace ist_enter() with nmi_enter()") has
+> changed the kprobe handler to run in the NMI context, in_nmi() always returns
+> true. This means the bpf events on kprobes always skipped.
+
+FWIW I'd prefer if in addition to the original commit you also mention:
+
+ba1f2b2eaa2a ("x86/entry: Fix NMI vs IRQ state tracking")
+b6be002bcd1d ("x86/entry: Move nmi entry/exit into common code")
+
+Since they changed the way nmi state is managed in exc_int3 and not in
+the original do_int3. THe latter no longer contains any references to
+nmi-related code.
+
+> 
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> ---
+>  kernel/trace/bpf_trace.c | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 6c0018abe68a..764400260eb6 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -96,9 +96,6 @@ unsigned int trace_call_bpf(struct trace_event_call *call, void *ctx)
+>  {
+>  	unsigned int ret;
+>  
+> -	if (in_nmi()) /* not supported yet */
+> -		return 1;
+> -
+>  	cant_sleep();
+>  
+>  	if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1)) {
+> 
