@@ -2,72 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0872030682D
-	for <lists+bpf@lfdr.de>; Thu, 28 Jan 2021 00:43:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC6BB306897
+	for <lists+bpf@lfdr.de>; Thu, 28 Jan 2021 01:25:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231304AbhA0Xmx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Jan 2021 18:42:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46656 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234736AbhA0Xku (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Jan 2021 18:40:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 6CFD060C40;
-        Wed, 27 Jan 2021 23:40:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611790810;
-        bh=I16cUpBAaYEa6DS/qK/B522UAMTuzAUcdR9IdGGmuNQ=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=CgBCm3sBxAJMREhnrKWTx+voaMTsMBo7TpjYMG2tC9e/Ui0T7PmOSugdgjbSd/oSP
-         ryjDwbUYuxmcIQdZ1if+SZkZzO6NF8S0tPpHyOxXwja8y2jTuuflW1/PxdszeFSVv5
-         JflGa/H3nl0vSO9V+SOL/GJ6ESs0p3T4lP7At0nNVy5kRp7hc2B9kG2L2s5F3HTIfg
-         wNNW4kQ8WTb2U+f2TqQe7+VmCa4zJ5pkdvxpboBGnoe32ZoPSD50kh1we/eI6+KJDX
-         HXuYLvQL+Mkvv0ZMiwMeiKA0eCq+FGndcA3ROVujd5orVDWTefwKMPQ+Qlag5Pme7q
-         lRd8crLAP3GoQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5EF5D613AA;
-        Wed, 27 Jan 2021 23:40:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231847AbhA1AWR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Jan 2021 19:22:17 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:2928 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231622AbhA1AVR (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 27 Jan 2021 19:21:17 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10S0DxiU003231
+        for <bpf@vger.kernel.org>; Wed, 27 Jan 2021 16:20:36 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=qSl0hIbsWjbdFiMIHrNNvB79aitkeKbYCX0qUJKiMOg=;
+ b=nou/auOnrvK9wdWtTh5FEZxMFW7VjSk5o37UsPEVVVMrbMaFs2ra2jomWisZkD8N5R5k
+ LAvgH0u41xtLxsFdICpy/EYM2hSUVYntmvlMOM/9xBJ5wt/BfEYoQ8R5p6058WVxP+EK
+ 5tnnuty3bVWCu/ifefN3foimkCbQDt5Ppbc= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 36awcpp7jw-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 27 Jan 2021 16:20:36 -0800
+Received: from intmgw001.37.frc1.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 27 Jan 2021 16:20:35 -0800
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id 8116762E0B6C; Wed, 27 Jan 2021 16:20:32 -0800 (PST)
+From:   Song Liu <songliubraving@fb.com>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <mingo@redhat.com>, <peterz@infradead.org>, <daniel@iogearbox.net>,
+        <kpsingh@chromium.org>, <kernel-team@fb.com>,
+        Song Liu <songliubraving@fb.com>
+Subject: [PATCH v3 bpf-next 0/4] bpf: enable task local storage for tracing programs
+Date:   Wed, 27 Jan 2021 16:19:44 -0800
+Message-ID: <20210128001948.1637901-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [Patch bpf-next] skmsg: make sk_psock_destroy() static
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161179081038.20439.3619802402559299458.git-patchwork-notify@kernel.org>
-Date:   Wed, 27 Jan 2021 23:40:10 +0000
-References: <20210127221501.46866-1-xiyou.wangcong@gmail.com>
-In-Reply-To: <20210127221501.46866-1-xiyou.wangcong@gmail.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        cong.wang@bytedance.com, john.fastabend@gmail.com,
-        daniel@iogearbox.net, jakub@cloudflare.com, lmb@cloudflare.com
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-27_10:2021-01-27,2021-01-27 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ phishscore=0 bulkscore=0 mlxlogscore=800 priorityscore=1501 spamscore=0
+ impostorscore=0 lowpriorityscore=0 mlxscore=0 adultscore=0 suspectscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101280000
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+This set enables task local storage for non-BPF_LSM programs.
 
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
+It is common for tracing BPF program to access per-task data. Currently,
+these data are stored in hash tables with pid as the key. In
+bcc/libbpftools [1], 9 out of 23 tools use such hash tables. However,
+hash table is not ideal for many use case. Task local storage provides
+better usability and performance for BPF programs. Please refer to 4/4 fo=
+r
+some performance comparison of task local storage vs. hash table.
 
-On Wed, 27 Jan 2021 14:15:01 -0800 you wrote:
-> From: Cong Wang <cong.wang@bytedance.com>
-> 
-> sk_psock_destroy() is a RCU callback, I can't see any reason why
-> it could be used outside.
-> 
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Jakub Sitnicki <jakub@cloudflare.com>
-> Cc: Lorenz Bauer <lmb@cloudflare.com>
-> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
-> 
-> [...]
+Changes v2 =3D> v3:
+1. Make the selftest more robust. (Andrii)
+2. Small changes with runqslower. (Andrii)
+3. Shortern CC list to make it easy for vger.
 
-Here is the summary with links:
-  - [bpf-next] skmsg: make sk_psock_destroy() static
-    https://git.kernel.org/bpf/bpf-next/c/8063e184e490
+Changes v1 =3D> v2:
+1. Do not allocate task local storage when the task is being freed.
+2. Revise the selftest and added a new test for a task being freed.
+3. Minor changes in runqslower.
 
-You are awesome, thank you!
+Song Liu (4):
+  bpf: enable task local storage for tracing programs
+  selftests/bpf: add non-BPF_LSM test for task local storage
+  bpf: runqslower: prefer using local vmlimux to generate vmlinux.h
+  bpf: runqslower: use task local storage
+
+ include/linux/bpf.h                           |  7 ++
+ include/linux/bpf_lsm.h                       | 22 ------
+ include/linux/bpf_types.h                     |  2 +-
+ include/linux/sched.h                         |  5 ++
+ kernel/bpf/Makefile                           |  3 +-
+ kernel/bpf/bpf_local_storage.c                | 28 +++++---
+ kernel/bpf/bpf_lsm.c                          |  4 --
+ kernel/bpf/bpf_task_storage.c                 | 34 +++------
+ kernel/fork.c                                 |  5 ++
+ kernel/trace/bpf_trace.c                      |  4 ++
+ tools/bpf/runqslower/Makefile                 |  5 +-
+ tools/bpf/runqslower/runqslower.bpf.c         | 33 +++++----
+ .../bpf/prog_tests/task_local_storage.c       | 69 +++++++++++++++++++
+ .../selftests/bpf/progs/task_local_storage.c  | 64 +++++++++++++++++
+ .../bpf/progs/task_local_storage_exit_creds.c | 32 +++++++++
+ 15 files changed, 239 insertions(+), 78 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/task_local_sto=
+rage.c
+ create mode 100644 tools/testing/selftests/bpf/progs/task_local_storage.=
+c
+ create mode 100644 tools/testing/selftests/bpf/progs/task_local_storage_=
+exit_creds.c
+
 --
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+2.24.1
