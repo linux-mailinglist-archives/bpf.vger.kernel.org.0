@@ -2,85 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B71FB307271
-	for <lists+bpf@lfdr.de>; Thu, 28 Jan 2021 10:21:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3E8430747D
+	for <lists+bpf@lfdr.de>; Thu, 28 Jan 2021 12:15:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232442AbhA1JQm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Jan 2021 04:16:42 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:56188 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232416AbhA1JOc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Jan 2021 04:14:32 -0500
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx6L01gBJg0l0OAA--.21898S2;
-        Thu, 28 Jan 2021 17:13:25 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Alexei Starovoitov <ast@kernel.org>,
+        id S229722AbhA1LLA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Jan 2021 06:11:00 -0500
+Received: from mga06.intel.com ([134.134.136.31]:58317 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231156AbhA1LK7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Jan 2021 06:10:59 -0500
+IronPort-SDR: DFQBtcOw5+BAGZfTiQ3jiETQcG5ISXr8zLS69GvPIUtBxm+Yaq2gG4GccZBoX0PXI7vMjtBkaq
+ o1+i3iN5PmJQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9877"; a="241742155"
+X-IronPort-AV: E=Sophos;i="5.79,382,1602572400"; 
+   d="scan'208";a="241742155"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 03:09:11 -0800
+IronPort-SDR: oLTOeHJAxZveY+y0cspU8swh3mUykqlmfDB8CBvJ7nLRG4fyjW6mcagPZOo5rs3vUPhbqZP1K6
+ kC7ATHgNjRPw==
+X-IronPort-AV: E=Sophos;i="5.79,382,1602572400"; 
+   d="scan'208";a="473506403"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 03:09:07 -0800
+Received: by lahna (sSMTP sendmail emulation); Thu, 28 Jan 2021 13:09:04 +0200
+Date:   Thu, 28 Jan 2021 13:09:04 +0200
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andreas Noever <andreas.noever@gmail.com>, bpf@vger.kernel.org,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH bpf-next] MAINTAINERS: BPF: Update web-page bpf.io to ebpf.io to avoid redirects
-Date:   Thu, 28 Jan 2021 17:13:24 +0800
-Message-Id: <1611825204-14887-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dx6L01gBJg0l0OAA--.21898S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7XF4rZry7WFWDWFWDJry5Arb_yoWDAFX_Cr
-        4fCrWxX395GF1rua1kGrnayr1rK3yUAFnay3W2gr43Aa4jyr98JrWfK3sayay5Xr1kGrZI
-        qa43Grn8Zr43ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbVAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
-        Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
-        n2kIc2xKxwCY02Avz4vE14v_GFWl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
-        0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
-        17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
-        C0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF
-        0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxh
-        VjvjDU0xZFpf9x0JU4BT5UUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        linux-usb@vger.kernel.org, Michael Jamet <michael.jamet@intel.com>,
+        netdev@vger.kernel.org, Yehezkel Bernat <YehezkelShB@gmail.com>
+Subject: Re: [PATCH 00/12] Rid W=1 warnings from Thunderbolt
+Message-ID: <20210128110904.GR2542@lahna.fi.intel.com>
+References: <20210127112554.3770172-1-lee.jones@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210127112554.3770172-1-lee.jones@linaro.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When I open https://bpf.io/, it seems too slow.
+Hi Lee,
 
-$ curl -s -S -L https://bpf.io/ -o /dev/null -w '%{time_redirect}\n'
-2.373
+On Wed, Jan 27, 2021 at 11:25:42AM +0000, Lee Jones wrote:
+> This set is part of a larger effort attempting to clean-up W=1
+> kernel builds, which are currently overwhelmingly riddled with
+> niggly little warnings.
+> 
+> Only 1 small set required for Thunderbolt.  Pretty good!
+> 
+> Lee Jones (12):
+>   thunderbolt: dma_port: Remove unused variable 'ret'
+>   thunderbolt: cap: Fix kernel-doc formatting issue
+>   thunderbolt: ctl: Demote non-conformant kernel-doc headers
+>   thunderbolt: eeprom: Demote non-conformant kernel-doc headers to
+>     standard comment blocks
+>   thunderbolt: pa: Demote non-conformant kernel-doc headers
+>   thunderbolt: xdomain: Fix 'tb_unregister_service_driver()'s 'drv'
+>     param
+>   thunderbolt: nhi: Demote some non-conformant kernel-doc headers
+>   thunderbolt: tb: Kernel-doc function headers should document their
+>     parameters
+>   thunderbolt: swit: Demote a bunch of non-conformant kernel-doc headers
+>   thunderbolt: icm: Fix a couple of formatting issues
+>   thunderbolt: tunnel: Fix misspelling of 'receive_path'
+>   thunderbolt: swit: Fix function name in the header
 
-$ curl -s -S -L https://bpf.io/ -o /dev/null -w '%{url_effective}\n'
-https://ebpf.io/
+I applied all of the changes that touch static functions. For non-static
+functions I will send a patch set shortly that adds the missing bits for
+the kernel-doc descriptions. I also fixed $subject lines of few patches
+("switch:" instead of "swit:").
 
-$ curl -s -S -L https://ebpf.io/ -o /dev/null -w '%{time_redirect}\n'
-0.000
+Please check that I got everything correct in
 
-So update https://bpf.io/ to https://ebpf.io/ to avoid redirects.
+  git://git.kernel.org/pub/scm/linux/kernel/git/westeri/thunderbolt.git next
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 1df56a3..09314ce 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3260,7 +3260,7 @@ R:	KP Singh <kpsingh@kernel.org>
- L:	netdev@vger.kernel.org
- L:	bpf@vger.kernel.org
- S:	Supported
--W:	https://bpf.io/
-+W:	https://ebpf.io/
- Q:	https://patchwork.kernel.org/project/netdevbpf/list/?delegate=121173
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
--- 
-2.1.0
-
+Thanks!
