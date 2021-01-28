@@ -2,123 +2,255 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9844E306AA9
-	for <lists+bpf@lfdr.de>; Thu, 28 Jan 2021 02:47:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75EB1306ABB
+	for <lists+bpf@lfdr.de>; Thu, 28 Jan 2021 02:53:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231136AbhA1BrK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Jan 2021 20:47:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49082 "EHLO
+        id S229591AbhA1BwS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Jan 2021 20:52:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231137AbhA1BrG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Jan 2021 20:47:06 -0500
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09398C061574
-        for <bpf@vger.kernel.org>; Wed, 27 Jan 2021 17:46:26 -0800 (PST)
-Received: by mail-yb1-xb2f.google.com with SMTP id y128so3937514ybf.10
-        for <bpf@vger.kernel.org>; Wed, 27 Jan 2021 17:46:26 -0800 (PST)
+        with ESMTP id S229732AbhA1BwO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Jan 2021 20:52:14 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92FBDC061574;
+        Wed, 27 Jan 2021 17:51:33 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id kg20so5466396ejc.4;
+        Wed, 27 Jan 2021 17:51:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=shCJg6LSx/ErJstFNURWZk0h4jbY1bIKw8OLMF7mzBY=;
-        b=Hr4LDg/A1JnUsmUck6IiazeIE/QBInF0+ixwcsYG1+tKKiWAsyGlXzmGslaXJZd90D
-         YeBf9udwBCpS4DvNlM61CiwepwMDfmk+oFWLASb+Vs01RYNFL3cYadaqs6dkqribR1H0
-         9Ry0qAEGk6inDqTFIV+sgQF7833+brGlchte2LquzK1wurJJbqy9TU5ZGhJolv4HEGgN
-         rrxD64gR6oVrhfhW2qlsnXOKDq9Ul9DfMR628j8U0TUOAUFDjc/Ae0TJX3pl56in9ZD6
-         HPShwI9CzgC4cHHTzIzLnijap24pht7pq4rX03FbelmI5YDwat5mBizroUd05/XC9aaC
-         AAtw==
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=APM/j64XJ64toEHsmY/3rHQUz6ZGR8j9tLguMFaF1jg=;
+        b=BhtLdpqElIQ4v960FzTsQkjcTWfOx/hJJ573l0QiDZh1y2ViL9KJDWgSvzStSgMbj9
+         hkvQVH0bZWL9P5fxuubMCW7wASm+/x9YZ/FkgkNh+hOypv51sYsmgzBWLP3448O0NKdx
+         kIHJztUnGo9h0WXKFsrGvpU9dMhaZM94etGgallF9tDtdsQ0624l8l2pmQxYdZgwKoZo
+         anmKprjGSCWxJK5zGsmsGklidj1QjYIc6SPdtnkj6XCzpdnYf/Ypq98k0eP0dUIwYobV
+         ehmzQU5YEL3XXlkM3z/IknbFDPOn8Sa0RIKEeoGw55mR05gO7QFhOtdNkv+2DP02yM32
+         DQTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=shCJg6LSx/ErJstFNURWZk0h4jbY1bIKw8OLMF7mzBY=;
-        b=pq6lXi+IoRk0wD6uV9/5ABPlt/8+DxNFsp6jGhRocsZH93hhS630yn+R7yZWm+67LZ
-         iQr23UjT5CkUdHaMmf81a6Cz5QQnSXv1QrrBhUKsE+4V2a+z5WC49EiDC0QVOB5kJw//
-         C3ZwSgGu6jghjIFG8MBZd1kclYQdheqouRtwQFYZTYG19FP0Teu96jHVNPV5rjAS921n
-         nWGyoMVYxhXBLKhML8YceWGRD6J4l1T9BG24v75ZdcbWvY9PGHoGksBOMAkZyGTBAUjB
-         5yvilRS5vt7OMbWcmC4YAStVy05MkW4d98+K+5TdlGna8n27s1PLG1Ta66uJZYLYS9/n
-         7oFg==
-X-Gm-Message-State: AOAM531s/97kdZvAwDla7nAfpV0CHAZdgKKvY9/ZMk28xP+owJ1ZdjZG
-        osThqydDKb5AlDpVcfm1M1pnxlC+4eRoSGtvUqY=
-X-Google-Smtp-Source: ABdhPJw3d9EMLAKGfCxnN5+yCPdPikKYnV/o6ARusSmPJs0ImlvoLyRJe5Lwdh8LMzh+fgscMawD9Wl0E83JLiUTCPM=
-X-Received: by 2002:a25:b195:: with SMTP id h21mr20319844ybj.347.1611798385375;
- Wed, 27 Jan 2021 17:46:25 -0800 (PST)
-MIME-Version: 1.0
-References: <20210112075525.256820-1-kpsingh@kernel.org> <20210112075525.256820-2-kpsingh@kernel.org>
-In-Reply-To: <20210112075525.256820-2-kpsingh@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 27 Jan 2021 17:46:14 -0800
-Message-ID: <CAEf4BzbeWCTSDorWwuC+B9SVw7xGj+5jfAMyw7LzBU_XShk5ZQ@mail.gmail.com>
-Subject: Re: [PATCH bpf v3 1/3] bpf: update local storage test to check
- handling of null ptrs
-To:     KP Singh <kpsingh@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>, Gilad Reti <gilad.reti@gmail.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=APM/j64XJ64toEHsmY/3rHQUz6ZGR8j9tLguMFaF1jg=;
+        b=GG4zgr96dxNwOIIP+S5wOi8Br6PEJq2BxCOwkoEH1z3GOARGyrSd4dmG25pnUCDoHk
+         r7J/ZiOs6QspquEFGTpEteeZQMNlVVRPU/uhSwKtwkFzSAcTorheThuze9QGtXYBR9ow
+         tQdbmUPbR9hsc3jE/rWY7awELpZrGsZ8yk0k0KiZi8nCrIBKQjGKdqcbHvffzeWbpevB
+         gn/qjbeFIUBE7EnPxxhOrCGGNTx5Rz/POFpPfSBlQXqP3qptOvjLFDYUPaW3wfPqKSwx
+         aSgBIxxkp1pZetwev02OwsZimRtryB6uYO0Dl5GndJk0Xp/5WERYNJf0vVzO+7g9qdar
+         qSQw==
+X-Gm-Message-State: AOAM532bFvAlrLBERO57uRwPWSyNLY++QeHdMFw5zpv68wq5SpsZ+i67
+        ux1IB42KVmae6WnwNiWiwDY=
+X-Google-Smtp-Source: ABdhPJwce9SBC+OVGSSnm3XN8ibbrolKNzCaDCbl7vdBiAjsneGheJELpoxTNQxpM+wX8AHmgDJnQg==
+X-Received: by 2002:a17:907:104e:: with SMTP id oy14mr8583617ejb.276.1611798692278;
+        Wed, 27 Jan 2021 17:51:32 -0800 (PST)
+Received: from localhost.localdomain (ip-109-40-66-249.web.vodafone.de. [109.40.66.249])
+        by smtp.gmail.com with ESMTPSA id p10sm1610141ejb.82.2021.01.27.17.51.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Jan 2021 17:51:31 -0800 (PST)
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Tobias Klauser <tklauser@distanz.ch>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Yulia Kartseva <hex@fb.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Stephane Eranian <eranian@google.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Thomas Hebb <tommyhebb@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Davide Caratti <dcaratti@redhat.com>,
+        Briana Oursler <briana.oursler@gmail.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: [PATCH bpf-next] tools: Factor Clang, LLC and LLVM utils definitions
+Date:   Thu, 28 Jan 2021 02:50:58 +0100
+Message-Id: <20210128015117.20515-1-sedat.dilek@gmail.com>
+X-Mailer: git-send-email 2.30.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 11:55 PM KP Singh <kpsingh@kernel.org> wrote:
->
-> It was found in [1] that bpf_inode_storage_get helper did not check
-> the nullness of the passed owner ptr which caused an oops when
-> dereferenced. This change incorporates the example suggested in [1] into
-> the local storage selftest.
->
-> The test is updated to create a temporary directory instead of just
-> using a tempfile. In order to replicate the issue this copied rm binary
-> is renamed tiggering the inode_rename with a null pointer for the
-> new_inode. The logic to verify the setting and deletion of the inode
-> local storage of the old inode is also moved to this LSM hook.
->
-> The change also removes the copy_rm function and simply shells out
-> to copy files and recursively delete directories and consolidates the
-> logic of setting the initial inode storage to the bprm_committed_creds
-> hook and removes the file_open hook.
->
-> [1]: https://lore.kernel.org/bpf/CANaYP3HWkH91SN=3DwTNO9FL_2ztHfqcXKX38SS=
-E-JJ2voh+vssw@mail.gmail.com
->
-> Suggested-by: Gilad Reti <gilad.reti@gmail.com>
-> Acked-by: Yonghong Song <yhs@fb.com>
-> Signed-off-by: KP Singh <kpsingh@kernel.org>
-> ---
+When dealing with BPF/BTF/pahole and DWARF v5 I wanted to build bpftool.
 
-Hi KP,
+While looking into the source code I found duplicate assignments
+in misc tools for the LLVM eco system, e.g. clang and llvm-objcopy.
 
-I'm getting a compilation warning when building selftests. Can you
-please take a look and send a fix? Thanks!
+Move the Clang, LLC and/or LLVM utils definitions to
+tools/scripts/Makefile.include file and add missing
+includes where needed.
+Honestly, I was inspired by commit c8a950d0d3b9
+("tools: Factor HOSTCC, HOSTLD, HOSTAR definitions").
 
-/data/users/andriin/linux/tools/testing/selftests/bpf/prog_tests/test_local=
-_storage.c:
-In function =E2=80=98test_test_local_storage=E2=80=99:
-/data/users/andriin/linux/tools/testing/selftests/bpf/prog_tests/test_local=
-_storage.c:143:52:
-warning: =E2=80=98/copy_of_rm=E2=80=99 directive output may be truncated wr=
-iting 11
-bytes into a region of size between 1 and 64 [-Wformat-truncation=3D]
-  143 |  snprintf(tmp_exec_path, sizeof(tmp_exec_path), "%s/copy_of_rm",
-      |                                                    ^~~~~~~~~~~
-/data/users/andriin/linux/tools/testing/selftests/bpf/prog_tests/test_local=
-_storage.c:143:2:
-note: =E2=80=98snprintf=E2=80=99 output between 12 and 75 bytes into a dest=
-ination of
-size 64
-  143 |  snprintf(tmp_exec_path, sizeof(tmp_exec_path), "%s/copy_of_rm",
-      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  144 |    tmp_dir_path);
-      |    ~~~~~~~~~~~~~
+I tested with bpftool and perf on Debian/testing AMD64 and
+LLVM/Clang v11.1.0-rc1.
 
+Build instructions:
 
->  .../bpf/prog_tests/test_local_storage.c       | 96 +++++--------------
->  .../selftests/bpf/progs/local_storage.c       | 62 ++++++------
->  2 files changed, 61 insertions(+), 97 deletions(-)
->
+[ make and make-options ]
+MAKE="make V=1"
+MAKE_OPTS="HOSTCC=clang HOSTCXX=clang++ HOSTLD=ld.lld CC=clang LD=ld.lld LLVM=1 LLVM_IAS=1"
+MAKE_OPTS="$MAKE_OPTS PAHOLE=/opt/pahole/bin/pahole"
 
-[...]
+[ clean-up ]
+$MAKE $MAKE_OPTS -C tools/ clean
+
+[ bpftool ]
+$MAKE $MAKE_OPTS -C tools/bpf/bpftool/
+
+[ perf ]
+PYTHON=python3 $MAKE $MAKE_OPTS -C tools/perf/
+
+I was careful with respecting the user's wish to override custom compiler,
+linker, GNU/binutils and/or LLVM utils settings.
+
+Some personal notes:
+1. I have NOT tested with cross-toolchain for other archs (cross compiler/linker etc.).
+2. This patch is on top of bpf-next.
+
+CC: bpf@vger.kernel.org
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Jiri Olsa <jolsa@redhat.com> # tools/build and tools/perf
+Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
+---
+ tools/bpf/bpftool/Makefile                  | 2 --
+ tools/bpf/runqslower/Makefile               | 3 ---
+ tools/build/feature/Makefile                | 4 ++--
+ tools/perf/Makefile.perf                    | 1 -
+ tools/scripts/Makefile.include              | 7 +++++++
+ tools/testing/selftests/bpf/Makefile        | 2 --
+ tools/testing/selftests/tc-testing/Makefile | 3 +--
+ 7 files changed, 10 insertions(+), 12 deletions(-)
+
+diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+index 45ac2f9e0aa9..8ced1655fea6 100644
+--- a/tools/bpf/bpftool/Makefile
++++ b/tools/bpf/bpftool/Makefile
+@@ -75,8 +75,6 @@ endif
+ 
+ INSTALL ?= install
+ RM ?= rm -f
+-CLANG ?= clang
+-LLVM_STRIP ?= llvm-strip
+ 
+ FEATURE_USER = .bpftool
+ FEATURE_TESTS = libbfd disassembler-four-args reallocarray zlib libcap \
+diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefile
+index 4d5ca54fcd4c..9d9fb6209be1 100644
+--- a/tools/bpf/runqslower/Makefile
++++ b/tools/bpf/runqslower/Makefile
+@@ -3,9 +3,6 @@ include ../../scripts/Makefile.include
+ 
+ OUTPUT ?= $(abspath .output)/
+ 
+-CLANG ?= clang
+-LLC ?= llc
+-LLVM_STRIP ?= llvm-strip
+ BPFTOOL_OUTPUT := $(OUTPUT)bpftool/
+ DEFAULT_BPFTOOL := $(BPFTOOL_OUTPUT)bpftool
+ BPFTOOL ?= $(DEFAULT_BPFTOOL)
+diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
+index 89ba522e377d..3e55edb3ea54 100644
+--- a/tools/build/feature/Makefile
++++ b/tools/build/feature/Makefile
+@@ -1,4 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
++include ../../scripts/Makefile.include
++
+ FILES=                                          \
+          test-all.bin                           \
+          test-backtrace.bin                     \
+@@ -76,8 +78,6 @@ FILES=                                          \
+ FILES := $(addprefix $(OUTPUT),$(FILES))
+ 
+ PKG_CONFIG ?= $(CROSS_COMPILE)pkg-config
+-LLVM_CONFIG ?= llvm-config
+-CLANG ?= clang
+ 
+ all: $(FILES)
+ 
+diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+index 62f3deb1d3a8..f4df7534026d 100644
+--- a/tools/perf/Makefile.perf
++++ b/tools/perf/Makefile.perf
+@@ -176,7 +176,6 @@ endef
+ LD += $(EXTRA_LDFLAGS)
+ 
+ PKG_CONFIG = $(CROSS_COMPILE)pkg-config
+-LLVM_CONFIG ?= llvm-config
+ 
+ RM      = rm -f
+ LN      = ln -f
+diff --git a/tools/scripts/Makefile.include b/tools/scripts/Makefile.include
+index 1358e89cdf7d..4255e71f72b7 100644
+--- a/tools/scripts/Makefile.include
++++ b/tools/scripts/Makefile.include
+@@ -69,6 +69,13 @@ HOSTCC  ?= gcc
+ HOSTLD  ?= ld
+ endif
+ 
++# Some tools require Clang, LLC and/or LLVM utils
++CLANG		?= clang
++LLC		?= llc
++LLVM_CONFIG	?= llvm-config
++LLVM_OBJCOPY	?= llvm-objcopy
++LLVM_STRIP	?= llvm-strip
++
+ ifeq ($(CC_NO_CLANG), 1)
+ EXTRA_WARNINGS += -Wstrict-aliasing=3
+ endif
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 63d6288e419c..f0674d406f40 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -19,8 +19,6 @@ ifneq ($(wildcard $(GENHDR)),)
+   GENFLAGS := -DHAVE_GENHDR
+ endif
+ 
+-CLANG		?= clang
+-LLVM_OBJCOPY	?= llvm-objcopy
+ BPF_GCC		?= $(shell command -v bpf-gcc;)
+ SAN_CFLAGS	?=
+ CFLAGS += -g -rdynamic -Wall -O2 $(GENFLAGS) $(SAN_CFLAGS)		\
+diff --git a/tools/testing/selftests/tc-testing/Makefile b/tools/testing/selftests/tc-testing/Makefile
+index 91fee5c43274..4d639279f41e 100644
+--- a/tools/testing/selftests/tc-testing/Makefile
++++ b/tools/testing/selftests/tc-testing/Makefile
+@@ -1,4 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0
++include ../../../scripts/Makefile.include
+ 
+ top_srcdir = $(abspath ../../../..)
+ APIDIR := $(top_scrdir)/include/uapi
+@@ -7,8 +8,6 @@ TEST_GEN_FILES = action.o
+ KSFT_KHDR_INSTALL := 1
+ include ../lib.mk
+ 
+-CLANG ?= clang
+-LLC   ?= llc
+ PROBE := $(shell $(LLC) -march=bpf -mcpu=probe -filetype=null /dev/null 2>&1)
+ 
+ ifeq ($(PROBE),)
+-- 
+2.30.0
+
