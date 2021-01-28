@@ -2,116 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CA34306BE0
-	for <lists+bpf@lfdr.de>; Thu, 28 Jan 2021 05:09:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18DE8306D9B
+	for <lists+bpf@lfdr.de>; Thu, 28 Jan 2021 07:29:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231293AbhA1EGf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Jan 2021 23:06:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50404 "EHLO
+        id S229545AbhA1G3I (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Jan 2021 01:29:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231299AbhA1EFc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Jan 2021 23:05:32 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85BC3C0617AB;
-        Wed, 27 Jan 2021 19:53:47 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id cq1so3079965pjb.4;
-        Wed, 27 Jan 2021 19:53:47 -0800 (PST)
+        with ESMTP id S229504AbhA1G3I (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Jan 2021 01:29:08 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E6A1C061573;
+        Wed, 27 Jan 2021 22:28:27 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id lw17so4252502pjb.0;
+        Wed, 27 Jan 2021 22:28:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vL2Ls/K94DeV6njPMNfjB8BEObaZUQsRgrO5DBIVlqM=;
-        b=Q4JbkF8MvUQcA+j2Fl1/8WFHpjVicak5lU39i8WrOCah3GfZrLnhHkSIratFBbWfND
-         FV55Y+d6ifPevS0yp4si2ndwtaksmcOXpCX395FnAMwGtu6I0L2mG5I2QEInhu58snWQ
-         sCZM2+cLYU3kKbaS9N+OyfpNwOIZKqYnSBzRGVB2rjECMlAWxBCyEzhOUCso071oh0oY
-         6UCpKuxoSIyyDMCmmqbX6vH+U8w7XwSbLr15b+IVSfh4gqrqeKhip/tDrlnTAWiS2hJY
-         ZrXbdH9u5jCo2VZ7M7LEJzV0Gdu5AsoYukgGp6YB3g3kou0YFKNOKI2kSLcs7cmY1PPX
-         EY5A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DAbNeqn4HrFrwHesm9EjNkW+m3p+6Gw00s2+sHZm0lg=;
+        b=GwVoXgW8/huQGLo9yRdTRNCp+UlxLS5bainwfcCUT0dMAg6pp6hEKZvdxHYZBK1h4P
+         5gRJ6c7QEExmrHQlgT0fMfOWij6wS1EcFt0k0l7F7sLa4aT2Yf/SdyhFoLzw2goqhh+P
+         sYkWkHX/8Fzf/rYc23XArIE3UAcOf9665sqyC6Qw0HWoiU/fh6lqhrX486TQ0hhzt4kA
+         Qey3M3/BtblX9QOGUFGcRoDgXDPq9blgooQeKPaT5rnM5MXlYsuyc5y2dz1j3w4/PYpH
+         0uECw3yrVT1DhXL/OHlTWjGLNYQc4qtkz9UKaDdksAvn5VerdFdAO/ylfvzuSQdOGjCa
+         PLzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vL2Ls/K94DeV6njPMNfjB8BEObaZUQsRgrO5DBIVlqM=;
-        b=TL36t5dT1LLDLDEdZfMIjfTWABCf8YG95vjNvseQ8UJE2rtjCcr0XRPyy/hpKGGctb
-         kp9qLv1s3bDV774HQBWisvrOU1y/svliQnfdshb6CoBcaMzhyW8OOa35sj0pPd4PKAW/
-         VbAAXrtY3g0DXXbIzqpQyfZpiMuvsvoVFi0RIwt6jgtNqEgtPU/4A27/HKtVv0d9LCnm
-         Fz+kR5XbkuJjji6RTMga99ElOqGK++1xyK9SqNai4c5ypIlECV96J8ur/jN6N/iwkbba
-         cFdGgIf03BYR/phvyrOeUBJF1D6njazxyo36SWLCbWUcQ56ahGiJNcvKjjoRv3hICDoy
-         MlqA==
-X-Gm-Message-State: AOAM530+0Gjq150ZacuXbGuJt8HFTWpcqv8ZzfsBJ2cZy9Vw8qjTIUfA
-        2Tb6FeSbHhy/1bAOuwcIxMk=
-X-Google-Smtp-Source: ABdhPJxvy3q8H2306Ycyakn+l2HhardN2cj2y5jBnKXTt04ZrCDa/tUlj8oyBs0K2Q1TRw+cK4gFXw==
-X-Received: by 2002:a17:90a:1109:: with SMTP id d9mr9152958pja.94.1611806027035;
-        Wed, 27 Jan 2021 19:53:47 -0800 (PST)
-Received: from Leo-laptop-t470s ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id b17sm3603179pfo.151.2021.01.27.19.53.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 19:53:46 -0800 (PST)
-Date:   Thu, 28 Jan 2021 11:53:00 +0800
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Jiri Benc <jbenc@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        David Ahern <dsahern@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Subject: Re: [PATCHv17 bpf-next 5/6] selftests/bpf: Add verifier tests for
- bpf arg ARG_CONST_MAP_PTR_OR_NULL
-Message-ID: <20210128035300.GQ1421720@Leo-laptop-t470s>
-References: <20210122074652.2981711-1-liuhangbin@gmail.com>
- <20210125124516.3098129-1-liuhangbin@gmail.com>
- <20210125124516.3098129-6-liuhangbin@gmail.com>
- <6011e82feb2_a0fd920881@john-XPS-13-9370.notmuch>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DAbNeqn4HrFrwHesm9EjNkW+m3p+6Gw00s2+sHZm0lg=;
+        b=IKd04m9oiM6BTYUgWgzp+JswoCt5ES9NPr724FeSQbluqGURa7wp/vLG3Sb1ikXCsL
+         ptLyT0Tc+rXIVUxQp1gFTSqRysQazcYC/GlrEV1c5fEtjOQOb8lvxVWb6XKUVzXSO6Cy
+         NRhmFkuNOONH8J5BAyzVpBC74QqwioLmeq2eyDzxhxlGRBULYQSeeOMwwGvil3cT3Ew6
+         IWypHTeFvfF4cV74FiEU3EHt2Gg3p7xHhz0WFsmbnyBfzDeEJa+cneVl6Aekushwg8pZ
+         e+SBeLPFsKLKogKmnUTmyvHBAgosbKJEI6lN6maGrJffS2LJmB5/gYyk+R1wXvhFYQ2b
+         1wMg==
+X-Gm-Message-State: AOAM5338t1OfELcFKVvG0/MePFnh+NsF866eXqUYHjQkIKeNR5Ez/BLj
+        cmvUtrIlBpwPBfHapLwOnLiEmMK2dKIW3WYCBuU=
+X-Google-Smtp-Source: ABdhPJzFVvjKbtEKY7g/qQjhsm6z2fa/ElvnLyetxE5toYVafRRG6gYuQflfNb9g3mdeeoRBrcXU6cXgxj3kXZtkRog=
+X-Received: by 2002:a17:902:9d8d:b029:df:e5a6:1ef7 with SMTP id
+ c13-20020a1709029d8db02900dfe5a61ef7mr15010646plq.77.1611815306375; Wed, 27
+ Jan 2021 22:28:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6011e82feb2_a0fd920881@john-XPS-13-9370.notmuch>
+References: <20210122205415.113822-1-xiyou.wangcong@gmail.com>
+ <20210122205415.113822-2-xiyou.wangcong@gmail.com> <d69d44ca-206c-d818-1177-c8f14d8be8d1@iogearbox.net>
+ <CAM_iQpW8aeh190G=KVA9UEZ_6+UfenQxgPXuw784oxCaMfXjng@mail.gmail.com> <CAADnVQKmNiHj8qy1yqbOrf-OMyhnn8fKm87w6YMfkiDHkBpJVg@mail.gmail.com>
+In-Reply-To: <CAADnVQKmNiHj8qy1yqbOrf-OMyhnn8fKm87w6YMfkiDHkBpJVg@mail.gmail.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Wed, 27 Jan 2021 22:28:15 -0800
+Message-ID: <CAM_iQpXAQ7AMz34=o5E=81RFGFsQB5jCDTCCaVdHokU6kaJQsQ@mail.gmail.com>
+Subject: Re: [Patch bpf-next v5 1/3] bpf: introduce timeout hash map
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Jamal Hadi Salim <jhs@mojatatu.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Dongdong Wang <wangdongdong.6@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 02:24:47PM -0800, John Fastabend wrote:
-> [...]
-> 
-> > +{
-> > +	"ARG_CONST_MAP_PTR_OR_NULL: null pointer for ex_map",
-> > +	.insns = {
-> > +		BPF_MOV64_IMM(BPF_REG_1, 0),
-> > +		/* bpf_redirect_map_multi arg1 (in_map) */
-> > +		BPF_LD_MAP_FD(BPF_REG_1, 0),
-> > +		/* bpf_redirect_map_multi arg2 (ex_map) */
-> > +		BPF_MOV64_IMM(BPF_REG_2, 0),
-> > +		/* bpf_redirect_map_multi arg3 (flags) */
-> > +		BPF_MOV64_IMM(BPF_REG_3, 0),
-> > +		BPF_EMIT_CALL(BPF_FUNC_redirect_map_multi),
-> > +		BPF_EXIT_INSN(),
-> > +	},
-> > +	.fixup_map_devmap = { 1 },
-> > +	.result = ACCEPT,
-> > +	.prog_type = BPF_PROG_TYPE_XDP,
-> > +	.retval = 4,
-> 
-> Do we need one more case where this is map_or_null? In above
-> ex_map will be scalar tnum_const=0 and be exactly a null. This
-> will push verifier here,
-> 
->   meta->map_ptr = register_is_null(reg) ? NULL : reg->map_ptr;
-> 
-> In the below case it is known to be not null.
-> 
-> Is it also interesting to have a case where register_is_null(reg)
-> check fails and reg->map_ptr is set, but may be null.
+On Wed, Jan 27, 2021 at 10:00 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Tue, Jan 26, 2021 at 11:00 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+> > > >               ret = PTR_ERR(l_new);
+> > > > +             if (ret == -EAGAIN) {
+> > > > +                     htab_unlock_bucket(htab, b, hash, flags);
+> > > > +                     htab_gc_elem(htab, l_old);
+> > > > +                     mod_delayed_work(system_unbound_wq, &htab->gc_work, 0);
+> > > > +                     goto again;
+> > >
+> > > Also this one looks rather worrying, so the BPF prog is stalled here, loop-waiting
+> > > in (e.g. XDP) hot path for system_unbound_wq to kick in to make forward progress?
+> >
+> > In this case, the old one is scheduled for removal in GC, we just wait for GC
+> > to finally remove it. It won't stall unless GC itself or the worker scheduler is
+> > wrong, both of which should be kernel bugs.
+> >
+> > If we don't do this, users would get a -E2BIG when it is not too big. I don't
+> > know a better way to handle this sad situation, maybe returning -EBUSY
+> > to users and let them call again?
+>
+> I think using wq for timers is a non-starter.
+> Tying a hash/lru map with a timer is not a good idea either.
 
-Hi John,
+Both xt_hashlimit and nf_conntrack_core use delayed/deferrable
+works, probably since their beginnings. They seem to have started
+well. ;)
 
-I'm not familiar with the test_verifier syntax. Doesn't
-BPF_LD_MAP_FD(BPF_REG_1, 0) just assign the register with map NULL?
+>
+> I think timers have to be done as independent objects similar to
+> how the kernel uses them.
+> Then there will be no question whether lru or hash map needs it.
 
-Thanks
-hangbin
+Yeah, this probably could make the code easier, but when we have
+millions of entries in a map, millions of timers would certainly bring
+a lot of CPU overhead (timer interrupt storm?).
+
+
+> The bpf prog author will be able to use timers with either.
+> The prog will be able to use timers without hash maps too.
+>
+> I'm proposing a timer map where each object will go through
+> bpf_timer_setup(timer, callback, flags);
+> where "callback" is a bpf subprogram.
+> Corresponding bpf_del_timer and bpf_mod_timer would work the same way
+> they are in the kernel.
+> The tricky part is kernel style of using from_timer() to access the
+> object with additional info.
+> I think bpf timer map can model it the same way.
+> At map creation time the value_size will specify the amount of extra
+> bytes necessary.
+> Another alternative is to pass an extra data argument to a callback.
+
+Hmm, this idea is very interesting. I still think arming a timer,
+whether a kernel timer or a bpf timer, for each entry is overkill,
+but we can arm one for each map, something like:
+
+bpf_timer_run(interval, bpf_prog, &any_map);
+
+so we run 'bpf_prog' on any map every 'interval', but the 'bpf_prog'
+would have to iterate the whole map during each interval to delete
+the expired ones. This is probably doable: the timestamps can be
+stored either as a part of key or value, and bpf_jiffies64() is already
+available, users would have to discard expired ones after lookup
+when they are faster than the timer GC.
+
+Let me take a deeper look tomorrow.
+
+Thanks.
