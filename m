@@ -2,166 +2,123 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C55D306A94
-	for <lists+bpf@lfdr.de>; Thu, 28 Jan 2021 02:44:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9844E306AA9
+	for <lists+bpf@lfdr.de>; Thu, 28 Jan 2021 02:47:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229830AbhA1BnD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Jan 2021 20:43:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48092 "EHLO
+        id S231136AbhA1BrK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Jan 2021 20:47:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229732AbhA1Bmg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Jan 2021 20:42:36 -0500
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 901FBC061573;
-        Wed, 27 Jan 2021 17:41:54 -0800 (PST)
-Received: by mail-yb1-xb36.google.com with SMTP id b11so3929257ybj.9;
-        Wed, 27 Jan 2021 17:41:54 -0800 (PST)
+        with ESMTP id S231137AbhA1BrG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Jan 2021 20:47:06 -0500
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09398C061574
+        for <bpf@vger.kernel.org>; Wed, 27 Jan 2021 17:46:26 -0800 (PST)
+Received: by mail-yb1-xb2f.google.com with SMTP id y128so3937514ybf.10
+        for <bpf@vger.kernel.org>; Wed, 27 Jan 2021 17:46:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=levWwdmNnK0CrUKkgeazFotHMRfPFFjLuGXoNcWWnk4=;
-        b=Kx6l4kSzTgkuB2jfC0liiJLrDkvg6j0aYZnI1FRXPwCB57JhTXm3++vc7L2IB+SdDE
-         uFQE67X/0Qo6o/5aWXzNddJxoBe4QddNq4k7jqSUSBb22ywardf5+F0cKyiqq6RcG0LP
-         YbT4kP4IHCrNuS08id6KFv6XnGRN6BdFHPnlk4HkAdE5G3X92ebeZNOO3S23pXEpUTyH
-         feMD8aYSCBYYtLiJjBNLo9xF797s9pVENsLMt99bsOMRxB9H8hrU9Rhqt6N1mil9Kx+A
-         kdhnb4XOzxjZKsu4UXaH6eSDjNEsD1SPbUSS043jxNGy/oba6LVnVjDY4NzJoHsrzQEY
-         2Xxg==
+         :cc:content-transfer-encoding;
+        bh=shCJg6LSx/ErJstFNURWZk0h4jbY1bIKw8OLMF7mzBY=;
+        b=Hr4LDg/A1JnUsmUck6IiazeIE/QBInF0+ixwcsYG1+tKKiWAsyGlXzmGslaXJZd90D
+         YeBf9udwBCpS4DvNlM61CiwepwMDfmk+oFWLASb+Vs01RYNFL3cYadaqs6dkqribR1H0
+         9Ry0qAEGk6inDqTFIV+sgQF7833+brGlchte2LquzK1wurJJbqy9TU5ZGhJolv4HEGgN
+         rrxD64gR6oVrhfhW2qlsnXOKDq9Ul9DfMR628j8U0TUOAUFDjc/Ae0TJX3pl56in9ZD6
+         HPShwI9CzgC4cHHTzIzLnijap24pht7pq4rX03FbelmI5YDwat5mBizroUd05/XC9aaC
+         AAtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=levWwdmNnK0CrUKkgeazFotHMRfPFFjLuGXoNcWWnk4=;
-        b=BEjX89qzk8ClfQ9cUiCs83Ogh63257613rgwUSgiqTvTqG4xitL7f6oOcioA5qhP2P
-         ZMXyIvB8w3EDS8+AIvow+1BODiBqTqT9j/A8fSjv6UTdSrDEbitU7BYqc+tQnc/xAZ4/
-         Xj6UB1M/OD9u1Y6Nt7SgW1CQfKjTAbmjztxBRAfbFiKvewpLSQ2sPjnUl4bc79bwv/gv
-         YuFl++RnHLsOjJKvM6QDu5MDTkds8IZ3422uRk+bxtFqGW3o9hZq532cqxqP6tJN//he
-         cT8/K376DKbpqb0e/oyT43md85w9NruZoGM7Ri/++GGbsR+pOarEJg0ENhdF8cknG7U+
-         p7AA==
-X-Gm-Message-State: AOAM5316prbTDXfOTGsO91hrOYMIaibJUd5P5T1cMI8Ev6O4Qo1t4SgL
-        FflvpJIzq4QSFQlu51pxl/m54ruE7oj+hbXhnUE=
-X-Google-Smtp-Source: ABdhPJyI5E67V6EvxOqHQAV1wAtMqjq197vKQpMFslcn3wRVR2OQgtT9elgHLB7afmx0GIdKAJznkY8r2c9kDl76+M4=
-X-Received: by 2002:a25:4605:: with SMTP id t5mr7683661yba.260.1611798113726;
- Wed, 27 Jan 2021 17:41:53 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=shCJg6LSx/ErJstFNURWZk0h4jbY1bIKw8OLMF7mzBY=;
+        b=pq6lXi+IoRk0wD6uV9/5ABPlt/8+DxNFsp6jGhRocsZH93hhS630yn+R7yZWm+67LZ
+         iQr23UjT5CkUdHaMmf81a6Cz5QQnSXv1QrrBhUKsE+4V2a+z5WC49EiDC0QVOB5kJw//
+         C3ZwSgGu6jghjIFG8MBZd1kclYQdheqouRtwQFYZTYG19FP0Teu96jHVNPV5rjAS921n
+         nWGyoMVYxhXBLKhML8YceWGRD6J4l1T9BG24v75ZdcbWvY9PGHoGksBOMAkZyGTBAUjB
+         5yvilRS5vt7OMbWcmC4YAStVy05MkW4d98+K+5TdlGna8n27s1PLG1Ta66uJZYLYS9/n
+         7oFg==
+X-Gm-Message-State: AOAM531s/97kdZvAwDla7nAfpV0CHAZdgKKvY9/ZMk28xP+owJ1ZdjZG
+        osThqydDKb5AlDpVcfm1M1pnxlC+4eRoSGtvUqY=
+X-Google-Smtp-Source: ABdhPJw3d9EMLAKGfCxnN5+yCPdPikKYnV/o6ARusSmPJs0ImlvoLyRJe5Lwdh8LMzh+fgscMawD9Wl0E83JLiUTCPM=
+X-Received: by 2002:a25:b195:: with SMTP id h21mr20319844ybj.347.1611798385375;
+ Wed, 27 Jan 2021 17:46:25 -0800 (PST)
 MIME-Version: 1.0
-References: <20210122003235.77246-1-sedat.dilek@gmail.com> <CAEf4Bzb+fXZy1+337zRFA9v8x+Mt7E3YOZRhG8xnXeRN4_oCRA@mail.gmail.com>
- <CA+icZUWVGHqM00qd7-+Hrb9=rkL6AvEQ7Aj8zBK=VPpEi+LTmg@mail.gmail.com>
-In-Reply-To: <CA+icZUWVGHqM00qd7-+Hrb9=rkL6AvEQ7Aj8zBK=VPpEi+LTmg@mail.gmail.com>
+References: <20210112075525.256820-1-kpsingh@kernel.org> <20210112075525.256820-2-kpsingh@kernel.org>
+In-Reply-To: <20210112075525.256820-2-kpsingh@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 27 Jan 2021 17:41:42 -0800
-Message-ID: <CAEf4BzZ0S-SzVy=Ym0x27Ab2QS8vwA66OzX4KjC88nSg7wD9SQ@mail.gmail.com>
-Subject: Re: [PATCH RFC v2] tools: Factor Clang, LLC and LLVM utils definitions
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+Date:   Wed, 27 Jan 2021 17:46:14 -0800
+Message-ID: <CAEf4BzbeWCTSDorWwuC+B9SVw7xGj+5jfAMyw7LzBU_XShk5ZQ@mail.gmail.com>
+Subject: Re: [PATCH bpf v3 1/3] bpf: update local storage test to check
+ handling of null ptrs
+To:     KP Singh <kpsingh@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Gilad Reti <gilad.reti@gmail.com>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Tobias Klauser <tklauser@distanz.ch>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Andrey Ignatov <rdna@fb.com>,
-        Stephane Eranian <eranian@google.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Thomas Hebb <tommyhebb@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Briana Oursler <briana.oursler@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Davide Caratti <dcaratti@redhat.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
+        Martin KaFai Lau <kafai@fb.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 5:30 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+On Mon, Jan 11, 2021 at 11:55 PM KP Singh <kpsingh@kernel.org> wrote:
 >
-> On Thu, Jan 28, 2021 at 2:27 AM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Thu, Jan 21, 2021 at 4:32 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > >
-> > > When dealing with BPF/BTF/pahole and DWARF v5 I wanted to build bpftool.
-> > >
-> > > While looking into the source code I found duplicate assignments
-> > > in misc tools for the LLVM eco system, e.g. clang and llvm-objcopy.
-> > >
-> > > Move the Clang, LLC and/or LLVM utils definitions to
-> > > tools/scripts/Makefile.include file and add missing
-> > > includes where needed.
-> > > Honestly, I was inspired by commit c8a950d0d3b9
-> > > ("tools: Factor HOSTCC, HOSTLD, HOSTAR definitions").
-> > >
-> > > I tested with bpftool and perf on Debian/testing AMD64 and
-> > > LLVM/Clang v11.1.0-rc1.
-> > >
-> > > Build instructions:
-> > >
-> > > [ make and make-options ]
-> > > MAKE="make V=1"
-> > > MAKE_OPTS="HOSTCC=clang HOSTCXX=clang++ HOSTLD=ld.lld CC=clang LD=ld.lld LLVM=1 LLVM_IAS=1"
-> > > MAKE_OPTS="$MAKE_OPTS PAHOLE=/opt/pahole/bin/pahole"
-> > >
-> > > [ clean-up ]
-> > > $MAKE $MAKE_OPTS -C tools/ clean
-> > >
-> > > [ bpftool ]
-> > > $MAKE $MAKE_OPTS -C tools/bpf/bpftool/
-> > >
-> > > [ perf ]
-> > > PYTHON=python3 $MAKE $MAKE_OPTS -C tools/perf/
-> > >
-> > > I was careful with respecting the user's wish to override custom compiler,
-> > > linker, GNU/binutils and/or LLVM utils settings.
-> > >
-> > > Some personal notes:
-> > > 1. I have NOT tested with cross-toolchain for other archs (cross compiler/linker etc.).
-> > > 2. This patch is on top of Linux v5.11-rc4.
-> > >
-> > > I hope to get some feedback from especially Linux-bpf folks.
-> > >
-> > > Acked-by: Jiri Olsa <jolsa@redhat.com> # tools/build and tools/perf
-> > > Signed-off-by: Sedat Dilek <sedat.dilek@gmail.com>
-> > > ---
-> >
-> > Hi Sedat,
-> >
-> > If no one objects, we'll take this through bpf-next tree. Can you
-> > please re-send this as a non-RFC patch against the bpf-next tree? Feel
-> > free to add my ack. Thanks.
-> >
+> It was found in [1] that bpf_inode_storage_get helper did not check
+> the nullness of the passed owner ptr which caused an oops when
+> dereferenced. This change incorporates the example suggested in [1] into
+> the local storage selftest.
 >
-> I am OK with that and will add your ACK.
-> Is [1] bpf-next Git?
+> The test is updated to create a temporary directory instead of just
+> using a tempfile. In order to replicate the issue this copied rm binary
+> is renamed tiggering the inode_rename with a null pointer for the
+> new_inode. The logic to verify the setting and deletion of the inode
+> local storage of the old inode is also moved to this LSM hook.
+>
+> The change also removes the copy_rm function and simply shells out
+> to copy files and recursively delete directories and consolidates the
+> logic of setting the initial inode storage to the bprm_committed_creds
+> hook and removes the file_open hook.
+>
+> [1]: https://lore.kernel.org/bpf/CANaYP3HWkH91SN=3DwTNO9FL_2ztHfqcXKX38SS=
+E-JJ2voh+vssw@mail.gmail.com
+>
+> Suggested-by: Gilad Reti <gilad.reti@gmail.com>
+> Acked-by: Yonghong Song <yhs@fb.com>
+> Signed-off-by: KP Singh <kpsingh@kernel.org>
+> ---
 
-Yes, please use [PATCH bpf-next] subject prefix and cc
-bpf@vger.kernel.org as well.
+Hi KP,
 
+I'm getting a compilation warning when building selftests. Can you
+please take a look and send a fix? Thanks!
+
+/data/users/andriin/linux/tools/testing/selftests/bpf/prog_tests/test_local=
+_storage.c:
+In function =E2=80=98test_test_local_storage=E2=80=99:
+/data/users/andriin/linux/tools/testing/selftests/bpf/prog_tests/test_local=
+_storage.c:143:52:
+warning: =E2=80=98/copy_of_rm=E2=80=99 directive output may be truncated wr=
+iting 11
+bytes into a region of size between 1 and 64 [-Wformat-truncation=3D]
+  143 |  snprintf(tmp_exec_path, sizeof(tmp_exec_path), "%s/copy_of_rm",
+      |                                                    ^~~~~~~~~~~
+/data/users/andriin/linux/tools/testing/selftests/bpf/prog_tests/test_local=
+_storage.c:143:2:
+note: =E2=80=98snprintf=E2=80=99 output between 12 and 75 bytes into a dest=
+ination of
+size 64
+  143 |  snprintf(tmp_exec_path, sizeof(tmp_exec_path), "%s/copy_of_rm",
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  144 |    tmp_dir_path);
+      |    ~~~~~~~~~~~~~
+
+
+>  .../bpf/prog_tests/test_local_storage.c       | 96 +++++--------------
+>  .../selftests/bpf/progs/local_storage.c       | 62 ++++++------
+>  2 files changed, 61 insertions(+), 97 deletions(-)
 >
-> - Sedat -
->
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/
->
-> > > Changelog RFC v1->v2:
-> > > - Add Jiri's ACK
-> > > - Adapt to fit Linux v5.11-rc4
-> > >
-> >
-> > [...]
+
+[...]
