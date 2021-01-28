@@ -2,218 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04EE1306BF6
-	for <lists+bpf@lfdr.de>; Thu, 28 Jan 2021 05:14:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CA34306BE0
+	for <lists+bpf@lfdr.de>; Thu, 28 Jan 2021 05:09:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231260AbhA1EKY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 27 Jan 2021 23:10:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51406 "EHLO
+        id S231293AbhA1EGf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 27 Jan 2021 23:06:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhA1EKL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 27 Jan 2021 23:10:11 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C26AC061786;
-        Wed, 27 Jan 2021 19:38:48 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id p15so3064465pjv.3;
-        Wed, 27 Jan 2021 19:38:48 -0800 (PST)
+        with ESMTP id S231299AbhA1EFc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 27 Jan 2021 23:05:32 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85BC3C0617AB;
+        Wed, 27 Jan 2021 19:53:47 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id cq1so3079965pjb.4;
+        Wed, 27 Jan 2021 19:53:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=qIUaDsS3TlIZbhKyHx6NwpLW6Nt70ekQtolYf9/XSE4=;
-        b=BfZUONoI/oMuQVqqie1EtCfkpQpGaMMSZeoARnty8VDv46F/l3NNuBkkIqVky+WJYZ
-         K4SO5o8OYNGU4j++oWSeJD26zlvv+X9BS82wXhJJQjP/XGqbqI2U6iyoGSvXs4Uy6+wU
-         BpaLVeKaFoOAdZGIwxL+vCzXAVI6JXKGqz1aO0v19ZCQmVOrcYiK2t6efKS6T1ZU2jJL
-         DgN3+pTBjLiA6eDgWvRX9LFLkvNaWNiGt+F1EIUhqlq1vLuSzElHV8jYh4XJ2fcG415d
-         QfMBfEnT/opAA/kXSBQ/J6FiSqbGDvGDu011VLZc/LhPkZFt/WcuxbMCjqfesiXdobcv
-         cJoQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vL2Ls/K94DeV6njPMNfjB8BEObaZUQsRgrO5DBIVlqM=;
+        b=Q4JbkF8MvUQcA+j2Fl1/8WFHpjVicak5lU39i8WrOCah3GfZrLnhHkSIratFBbWfND
+         FV55Y+d6ifPevS0yp4si2ndwtaksmcOXpCX395FnAMwGtu6I0L2mG5I2QEInhu58snWQ
+         sCZM2+cLYU3kKbaS9N+OyfpNwOIZKqYnSBzRGVB2rjECMlAWxBCyEzhOUCso071oh0oY
+         6UCpKuxoSIyyDMCmmqbX6vH+U8w7XwSbLr15b+IVSfh4gqrqeKhip/tDrlnTAWiS2hJY
+         ZrXbdH9u5jCo2VZ7M7LEJzV0Gdu5AsoYukgGp6YB3g3kou0YFKNOKI2kSLcs7cmY1PPX
+         EY5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=qIUaDsS3TlIZbhKyHx6NwpLW6Nt70ekQtolYf9/XSE4=;
-        b=gMJ3uDlPpAWQ1PHRYIIG0Y0809UbGX2703t9S1qWcrSyGKHtn37Z4xW76wySIXeYD8
-         8oFbBkoYN/9nekEtipg1A98G6ZjcBcSBXBaU6+reDn66JFBR4EQKektypJcJfHa7zMIl
-         inyMWEBOj9OrloSZ4sxbgNR5KDYths0gkLkwFCMM7gaHx62yVf/dXzGRWB8e0uSGXKXg
-         rqipkX7Ru5+JmZzBfZuwGqhvD1jACvBZEYbURbREp2U4JzIL37KWQwMTSYmq8AHOzAyz
-         IpxTy4xpeMEoGkR+XL5z/zeVN+ac9uYgPwprfMvNkqx1emfj3K0O/pbGpnS70qD+qVKb
-         ybMg==
-X-Gm-Message-State: AOAM531DZGbfS9N93ymhwnnVvM/gRv/pYpA6CaZfDFyFAX/YxDve/lMy
-        pcQkFkRGJ/T0/32AjG9vxKWk2XWRM9QvZpPX
-X-Google-Smtp-Source: ABdhPJwE6QB1xC4MSSr4U96XQc8VXCcwYGuhcZ1xBfLcEnYi/8WDOgHRyf6F7Bd8GOI0Kuoo6q3Hbw==
-X-Received: by 2002:a17:902:9049:b029:da:efd6:4c12 with SMTP id w9-20020a1709029049b02900daefd64c12mr14373276plz.12.1611805127489;
-        Wed, 27 Jan 2021 19:38:47 -0800 (PST)
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp. [210.141.244.193])
-        by smtp.gmail.com with ESMTPSA id d21sm3393117pjz.39.2021.01.27.19.38.44
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vL2Ls/K94DeV6njPMNfjB8BEObaZUQsRgrO5DBIVlqM=;
+        b=TL36t5dT1LLDLDEdZfMIjfTWABCf8YG95vjNvseQ8UJE2rtjCcr0XRPyy/hpKGGctb
+         kp9qLv1s3bDV774HQBWisvrOU1y/svliQnfdshb6CoBcaMzhyW8OOa35sj0pPd4PKAW/
+         VbAAXrtY3g0DXXbIzqpQyfZpiMuvsvoVFi0RIwt6jgtNqEgtPU/4A27/HKtVv0d9LCnm
+         Fz+kR5XbkuJjji6RTMga99ElOqGK++1xyK9SqNai4c5ypIlECV96J8ur/jN6N/iwkbba
+         cFdGgIf03BYR/phvyrOeUBJF1D6njazxyo36SWLCbWUcQ56ahGiJNcvKjjoRv3hICDoy
+         MlqA==
+X-Gm-Message-State: AOAM530+0Gjq150ZacuXbGuJt8HFTWpcqv8ZzfsBJ2cZy9Vw8qjTIUfA
+        2Tb6FeSbHhy/1bAOuwcIxMk=
+X-Google-Smtp-Source: ABdhPJxvy3q8H2306Ycyakn+l2HhardN2cj2y5jBnKXTt04ZrCDa/tUlj8oyBs0K2Q1TRw+cK4gFXw==
+X-Received: by 2002:a17:90a:1109:: with SMTP id d9mr9152958pja.94.1611806027035;
+        Wed, 27 Jan 2021 19:53:47 -0800 (PST)
+Received: from Leo-laptop-t470s ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id b17sm3603179pfo.151.2021.01.27.19.53.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Jan 2021 19:38:46 -0800 (PST)
-Date:   Thu, 28 Jan 2021 12:38:42 +0900
-From:   Masami Hiramatsu <masami.hiramatsu@gmail.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Nikolay Borisov <nborisov@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org
-Subject: Re: kprobes broken since 0d00449c7a28
- ("x86: Replace ist_enter() with nmi_enter()")
-Message-Id: <20210128123842.c9e33949e62f504b84bfadf5@gmail.com>
-In-Reply-To: <20210128103415.d90be51ec607bb6123b2843c@kernel.org>
-References: <25cd2608-03c2-94b8-7760-9de9935fde64@suse.com>
-        <20210128001353.66e7171b395473ef992d6991@kernel.org>
-        <20210128002452.a79714c236b69ab9acfa986c@kernel.org>
-        <a35a6f15-9ab1-917c-d443-23d3e78f2d73@suse.com>
-        <20210128103415.d90be51ec607bb6123b2843c@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        Wed, 27 Jan 2021 19:53:46 -0800 (PST)
+Date:   Thu, 28 Jan 2021 11:53:00 +0800
+From:   Hangbin Liu <liuhangbin@gmail.com>
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        David Ahern <dsahern@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: Re: [PATCHv17 bpf-next 5/6] selftests/bpf: Add verifier tests for
+ bpf arg ARG_CONST_MAP_PTR_OR_NULL
+Message-ID: <20210128035300.GQ1421720@Leo-laptop-t470s>
+References: <20210122074652.2981711-1-liuhangbin@gmail.com>
+ <20210125124516.3098129-1-liuhangbin@gmail.com>
+ <20210125124516.3098129-6-liuhangbin@gmail.com>
+ <6011e82feb2_a0fd920881@john-XPS-13-9370.notmuch>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6011e82feb2_a0fd920881@john-XPS-13-9370.notmuch>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
-
-On Thu, 28 Jan 2021 10:34:15 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
-
-> On Wed, 27 Jan 2021 19:57:56 +0200
-> Nikolay Borisov <nborisov@suse.com> wrote:
+On Wed, Jan 27, 2021 at 02:24:47PM -0800, John Fastabend wrote:
+> [...]
 > 
-> > 
-> > 
-> > On 27.01.21 г. 17:24 ч., Masami Hiramatsu wrote:
-> > > On Thu, 28 Jan 2021 00:13:53 +0900
-> > > Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> > > 
-> > >> Hi Nikolay,
-> > >>
-> > >> On Wed, 27 Jan 2021 15:43:29 +0200
-> > >> Nikolay Borisov <nborisov@suse.com> wrote:
-> > >>
-> > >>> Hello,
-> > >>>
-> > >>> I'm currently seeing latest Linus' master being somewhat broken w.r.t
-> > >>> krpobes. In particular I have the following test-case:
-> > >>>
-> > >>> #!/bin/bash
-> > >>>
-> > >>> mkfs.btrfs -f /dev/vdc &> /dev/null
-> > >>> mount /dev/vdc /media/scratch/
-> > >>>
-> > >>> bpftrace -e 'kprobe:btrfs_sync_file {printf("kprobe: %s\n", kstack());}'
-> > >>> &>bpf-output &
-> > >>> bpf_trace_pid=$!
-> > >>>
-> > >>> # force btrfs_sync_file to be called
-> > >>> sleep 2
-> > >>> xfs_io -f -c "pwrite 0 4m" -c "fsync" /media/scratch/file5
-> > >>>
-> > >>> kill $bpf_trace_pid
-> > >>> sleep 1
-> > >>>
-> > >>> grep -q kprobe bpf-output
-> > >>> retval=$?
-> > >>> rm -f bpf-output
-> > >>> umount /media/scratch
-> > >>>
-> > >>> exit $retval
-> > >>>
-> > >>> It traces btrfs_sync_file which is called when fsync is executed on a
-> > >>> btrfs file, however I don't see the stacktrace being printed i.e the
-> > >>> kprobe doesn't fire at all. The following alternative program:
-> > >>>
-> > >>> bpftrace -e 'tracepoint:btrfs:btrfs_sync_file {printf("tracepoint:
-> > >>> %s\n", kstack());} kprobe:btrfs_sync_file {printf("kprobe: %s\n",
-> > >>> kstack());}'
-> > >>>
-> > >>> only prints the stack from the tracepoint and not from the kprobe, given
-> > >>> that the tracepoint is called from the btrfs_sync_file function.
-> > >>
-> > >> Thank you for reporting!
-> > >>
-> > >> If you don't mind, could you confirm it with ftrace (tracefs)?
-> > >> bpftrace etc. involves too many things. It is better to test with
-> > >> simpler way to test it.
-> > >> I'm not familer with the bpftrace, but I think you can check it with
-> > >>
-> > >> # cd /sys/kernel/debug/tracing
-> > >> # echo p:myevent btrfs_sync_file >> kprobe_events
-> > >> # echo stacktrace > events/kprobes/myevent/trigger
-> > >>  (or echo 1 > options/stacktrace , if trigger file doesn't exist)
-> > > 
-> > > Of course, also you have to enable the event.
-> > >  # echo 1 > events/kprobes/myevent/enable
-> > > 
-> > > And check the results
-> > > 
-> > >  # cat trace
-> > > 
-> > > 
-> > >> Could you also share your kernel config, so that we can reproduce it?
-> > > 
-> > 
-> > I've attached the config and indeed with the scenario you proposed it
-> > seems to works. I see:
-> > 
-> >        xfs_io-20280   [000] d.Z.  9900.748633: myevent:
-> > (btrfs_sync_file+0x0/0x580)
-> >           xfs_io-20280   [000] d.Z.  9900.748647: <stack trace>
-> >  => kprobe_trace_func
-> >  => kprobe_dispatcher
-> >  => kprobe_int3_handler
-> >  => exc_int3
-> >  => asm_exc_int3
-> >  => btrfs_sync_file
-> >  => do_fsync
-> >  => __x64_sys_fsync
-> >  => do_syscall_64
-> >  => entry_SYSCALL_64_after_hwframe
+> > +{
+> > +	"ARG_CONST_MAP_PTR_OR_NULL: null pointer for ex_map",
+> > +	.insns = {
+> > +		BPF_MOV64_IMM(BPF_REG_1, 0),
+> > +		/* bpf_redirect_map_multi arg1 (in_map) */
+> > +		BPF_LD_MAP_FD(BPF_REG_1, 0),
+> > +		/* bpf_redirect_map_multi arg2 (ex_map) */
+> > +		BPF_MOV64_IMM(BPF_REG_2, 0),
+> > +		/* bpf_redirect_map_multi arg3 (flags) */
+> > +		BPF_MOV64_IMM(BPF_REG_3, 0),
+> > +		BPF_EMIT_CALL(BPF_FUNC_redirect_map_multi),
+> > +		BPF_EXIT_INSN(),
+> > +	},
+> > +	.fixup_map_devmap = { 1 },
+> > +	.result = ACCEPT,
+> > +	.prog_type = BPF_PROG_TYPE_XDP,
+> > +	.retval = 4,
 > 
-> Hmm, then there might be a problem in bpftrace or ebpf (need more info).
-> At least kprobes itself isn't broken.
-> I guess they check "in_nmi()" and skip such event?
+> Do we need one more case where this is map_or_null? In above
+> ex_map will be scalar tnum_const=0 and be exactly a null. This
+> will push verifier here,
+> 
+>   meta->map_ptr = register_is_null(reg) ? NULL : reg->map_ptr;
+> 
+> In the below case it is known to be not null.
+> 
+> Is it also interesting to have a case where register_is_null(reg)
+> check fails and reg->map_ptr is set, but may be null.
 
-Yeah, there is. Nikolay, could you try this tentative patch?
+Hi John,
 
-Of course this just drops the NMI check from the handler, so alternative
-checker is required. But I'm not sure what the original code concerns.
-As far as I can see, there seems no re-entrant block flag, nor locks
-among ebpf programs in runtime.
+I'm not familiar with the test_verifier syntax. Doesn't
+BPF_LD_MAP_FD(BPF_REG_1, 0) just assign the register with map NULL?
 
-Alexei, could you tell me what is the concerning situation for bpf?
-
-Thank you,
-
-From c5cd0e5f60ef6494c9e1579ec1b82b7344c41f9a Mon Sep 17 00:00:00 2001
-From: Masami Hiramatsu <mhiramat@kernel.org>
-Date: Thu, 28 Jan 2021 12:31:02 +0900
-Subject: [PATCH] tracing: bpf: Remove in_nmi() check from kprobe handler
-
-Since commit 0d00449c7a28 ("x86: Replace ist_enter() with nmi_enter()") has
-changed the kprobe handler to run in the NMI context, in_nmi() always returns
-true. This means the bpf events on kprobes always skipped.
-
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- kernel/trace/bpf_trace.c | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 6c0018abe68a..764400260eb6 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -96,9 +96,6 @@ unsigned int trace_call_bpf(struct trace_event_call *call, void *ctx)
- {
- 	unsigned int ret;
- 
--	if (in_nmi()) /* not supported yet */
--		return 1;
--
- 	cant_sleep();
- 
- 	if (unlikely(__this_cpu_inc_return(bpf_prog_active) != 1)) {
--- 
-2.25.1
-
--- 
-Masami Hiramatsu
+Thanks
+hangbin
