@@ -2,71 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACCC430719E
-	for <lists+bpf@lfdr.de>; Thu, 28 Jan 2021 09:39:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B71FB307271
+	for <lists+bpf@lfdr.de>; Thu, 28 Jan 2021 10:21:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231772AbhA1IhH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Jan 2021 03:37:07 -0500
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:45074 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231561AbhA1Ig2 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 28 Jan 2021 03:36:28 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R471e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0UN7j3SL_1611822913;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UN7j3SL_1611822913)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 28 Jan 2021 16:35:30 +0800
-From:   Abaci Team <abaci-bugfix@linux.alibaba.com>
-To:     peterz@infradead.org
-Cc:     mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Abaci Team <abaci-bugfix@linux.alibaba.com>
-Subject: [PATCH] bpf: Simplify bool conversion
-Date:   Thu, 28 Jan 2021 16:35:12 +0800
-Message-Id: <1611822912-3746-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S232442AbhA1JQm (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Jan 2021 04:16:42 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:56188 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232416AbhA1JOc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Jan 2021 04:14:32 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx6L01gBJg0l0OAA--.21898S2;
+        Thu, 28 Jan 2021 17:13:25 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH bpf-next] MAINTAINERS: BPF: Update web-page bpf.io to ebpf.io to avoid redirects
+Date:   Thu, 28 Jan 2021 17:13:24 +0800
+Message-Id: <1611825204-14887-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dx6L01gBJg0l0OAA--.21898S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7XF4rZry7WFWDWFWDJry5Arb_yoWDAFX_Cr
+        4fCrWxX395GF1rua1kGrnayr1rK3yUAFnay3W2gr43Aa4jyr98JrWfK3sayay5Xr1kGrZI
+        qa43Grn8Zr43ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbVAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+        Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+        n2kIc2xKxwCY02Avz4vE14v_GFWl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
+        0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
+        17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
+        C0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF
+        0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxh
+        VjvjDU0xZFpf9x0JU4BT5UUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix the following coccicheck warning:
-./tools/perf/builtin-script.c:2789:36-41: WARNING: conversion to bool
-not needed here
-./tools/perf/builtin-script.c:3237:48-53: WARNING: conversion to bool
-not needed here
+When I open https://bpf.io/, it seems too slow.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Suggested-by: Yang Li <oswb@linux.alibaba.com>
-Signed-off-by: Abaci Team <abaci-bugfix@linux.alibaba.com>
+$ curl -s -S -L https://bpf.io/ -o /dev/null -w '%{time_redirect}\n'
+2.373
+
+$ curl -s -S -L https://bpf.io/ -o /dev/null -w '%{url_effective}\n'
+https://ebpf.io/
+
+$ curl -s -S -L https://ebpf.io/ -o /dev/null -w '%{time_redirect}\n'
+0.000
+
+So update https://bpf.io/ to https://ebpf.io/ to avoid redirects.
+
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- tools/perf/builtin-script.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-index 42dad4a..3646a1c 100644
---- a/tools/perf/builtin-script.c
-+++ b/tools/perf/builtin-script.c
-@@ -2786,7 +2786,7 @@ static int parse_output_fields(const struct option *opt __maybe_unused,
- 				break;
- 		}
- 		if (i == imax && strcmp(tok, "flags") == 0) {
--			print_flags = change == REMOVE ? false : true;
-+			print_flags = change != REMOVE;
- 			continue;
- 		}
- 		if (i == imax) {
-@@ -3234,7 +3234,7 @@ static char *get_script_path(const char *script_root, const char *suffix)
- 
- static bool is_top_script(const char *script_path)
- {
--	return ends_with(script_path, "top") == NULL ? false : true;
-+	return ends_with(script_path, "top") != NULL;
- }
- 
- static int has_required_arg(char *script_path)
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 1df56a3..09314ce 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -3260,7 +3260,7 @@ R:	KP Singh <kpsingh@kernel.org>
+ L:	netdev@vger.kernel.org
+ L:	bpf@vger.kernel.org
+ S:	Supported
+-W:	https://bpf.io/
++W:	https://ebpf.io/
+ Q:	https://patchwork.kernel.org/project/netdevbpf/list/?delegate=121173
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
 -- 
-1.8.3.1
+2.1.0
 
