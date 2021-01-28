@@ -2,146 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CB3A307B5A
-	for <lists+bpf@lfdr.de>; Thu, 28 Jan 2021 17:52:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4547E307CD4
+	for <lists+bpf@lfdr.de>; Thu, 28 Jan 2021 18:44:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232715AbhA1Qvx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Jan 2021 11:51:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34281 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232692AbhA1Qvv (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 28 Jan 2021 11:51:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611852624;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=r33CpG98rw/mr6rLy4ACeQ8mouSsHQS8jL40ZLPrdjc=;
-        b=UqsO80PUjG/JQlJovlBLZKnbQExo4kuIpRkw52vHTraNLKjfr2pTJtzSzLDp0wjJO1XPhn
-        dQ90NtcX5xh8CxZ+6ILfYzvyFWfAGkx8c8HXbn+ssY23hEZ2i0TFw405QaSksGax1sgO65
-        PRa24tesaXHWOww2K2UT4juP9frmwKI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-486-H4bP6a7rNJaQIZhk8G-ODA-1; Thu, 28 Jan 2021 11:50:20 -0500
-X-MC-Unique: H4bP6a7rNJaQIZhk8G-ODA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9D4DF1081B38;
-        Thu, 28 Jan 2021 16:50:18 +0000 (UTC)
-Received: from treble (ovpn-120-118.rdu2.redhat.com [10.10.120.118])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 967C95C1BB;
-        Thu, 28 Jan 2021 16:50:16 +0000 (UTC)
-Date:   Thu, 28 Jan 2021 10:50:14 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     Masami Hiramatsu <masami.hiramatsu@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: kprobes broken since 0d00449c7a28 ("x86: Replace ist_enter()
- with nmi_enter()")
-Message-ID: <20210128165014.xc77qtun6fl2qfun@treble>
-References: <25cd2608-03c2-94b8-7760-9de9935fde64@suse.com>
- <20210128001353.66e7171b395473ef992d6991@kernel.org>
- <20210128002452.a79714c236b69ab9acfa986c@kernel.org>
- <a35a6f15-9ab1-917c-d443-23d3e78f2d73@suse.com>
- <20210128103415.d90be51ec607bb6123b2843c@kernel.org>
- <20210128123842.c9e33949e62f504b84bfadf5@gmail.com>
- <e8bae974-190b-f247-0d89-6cea4fd4cc39@suse.com>
- <eb1ec6a3-9e11-c769-84a4-228f23dc5e23@suse.com>
+        id S232981AbhA1RmV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Jan 2021 12:42:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57894 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232661AbhA1RmM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Jan 2021 12:42:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 147F464DEB;
+        Thu, 28 Jan 2021 17:41:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611855691;
+        bh=plKrGzqzr3ZDaMZm28y/Ohq7tC6n7IczSOS9OQ96dFc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=N/y5hmsjJEqYeIGA09C3K+2GK/pZX5COB8ydaq7KAuP8CoHbjNcxwUiZdt62JH+zc
+         BksZrIu55cQ4NsdocJtLxEdy3LYaTucSRS5YWYxfDHCgcSoEODp+RJRTFiZO3+tAm6
+         f3AYsBlp8AHrmAo05JLX3IU+9wdR/TA1gGjyeYts4yon1HDTiYwOmtkyWxidM1qRfR
+         FzBAs8r9zPKa6MFFrLbEj7ckNK5D+Z13Zr+wj3OIh7lFPSSFMLIOaeboFHgQsO4IOd
+         lwwCaL3Tpy14kWieKDQ9IsVijgmhbnqsYXSpMA1O6tAwIcFxRkqh8BVo7VH907EWnj
+         PoQQI1b59H+Jw==
+Date:   Thu, 28 Jan 2021 18:41:26 +0100
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     Toshiaki Makita <toshiaki.makita1@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
+        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        lorenzo.bianconi@redhat.com, brouer@redhat.com, toke@redhat.com
+Subject: Re: [PATCH bpf-next 1/3] net: veth: introduce bulking for XDP_PASS
+Message-ID: <20210128174126.GA2965@lore-desk>
+References: <cover.1611685778.git.lorenzo@kernel.org>
+ <adca75284e30320e9d692d618a6349319d9340f3.1611685778.git.lorenzo@kernel.org>
+ <de16aab2-58a5-dd0b-1577-4fa04a6806ce@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="bg08WKrSYDhXBjb5"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <eb1ec6a3-9e11-c769-84a4-228f23dc5e23@suse.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <de16aab2-58a5-dd0b-1577-4fa04a6806ce@gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 06:45:56PM +0200, Nikolay Borisov wrote:
-> On 28.01.21 г. 18:12 ч., Nikolay Borisov wrote:
-> > On 28.01.21 г. 5:38 ч., Masami Hiramatsu wrote:
-> >> Hi,
-> > 
-> > <snip>
-> >>
-> >> Alexei, could you tell me what is the concerning situation for bpf?
-> > 
-> > Another data point masami is that this affects bpf kprobes which are
-> > entered via int3, alternatively if the kprobe is entered via
-> > kprobe_ftrace_handler it works as expected. I haven't been able to
-> > determine why a particular bpf probe won't use ftrace's infrastructure
-> > if it's put at the beginning of the function.  An alternative call chain
-> > is :
-> > 
-> >  => __ftrace_trace_stack
-> >  => trace_call_bpf
-> >  => kprobe_perf_func
-> >  => kprobe_ftrace_handler
-> >  => 0xffffffffc095d0c8
-> >  => btrfs_validate_metadata_buffer
-> >  => end_bio_extent_readpage
-> >  => end_workqueue_fn
-> >  => btrfs_work_helper
-> >  => process_one_work
-> >  => worker_thread
-> >  => kthread
-> >  => ret_from_fork
-> > 
-> >>
-> 
-> I have a working theory why I'm seeing this. My kernel (broken) was
-> compiled with retpolines off and with the gcc that comes with ubuntu
-> (both 9 and 10:
-> gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0
-> gcc-10 (Ubuntu 10.2.0-5ubuntu1~20.04) 10.2.0
-> )
-> 
-> this results in CFI being enabled so functions look like:
-> 0xffffffff81493890 <+0>: endbr64
-> 0xffffffff81493894 <+4>: callq  0xffffffff8104d820 <__fentry__>
-> 
-> i.e fentry's thunk is not the first instruction on the function hence
-> it's not going through the optimized ftrace handler. Instead it's using
-> int3 which is broken as ascertained.
-> 
-> After testing with my testcase I confirm that with cfi off and
-> __fentry__ being the first entry bpf starts working. And indeed, even
-> with CFI turned on if I use a probe like :
-> 
-> bpftrace -e 'kprobe:btrfs_sync_file+4 {printf("kprobe: %s\n",
-> kstack());}' &>bpf-output &
-> 
-> 
-> it would be placed on the __fentry__ (and not endbr64) hence it works.
-> So perhaps a workaround outside of bpf could essentially detect this
-> scenario and adjust the probe to be on the __fentry__ and not preceding
-> instruction if it's detected to be endbr64 ?
 
-For now (and the foreseeable future), CET isn't enabled in the kernel.
-So that endbr64 shouldn't be there in the first place.  I can make a
-proper patch in a bit.
+--bg08WKrSYDhXBjb5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/Makefile b/Makefile
-index e0af7a4a5598..5ccc4cdf1fb5 100644
---- a/Makefile
-+++ b/Makefile
-@@ -948,11 +948,8 @@ KBUILD_CFLAGS   += $(call cc-option,-Werror=designated-init)
- # change __FILE__ to the relative path from the srctree
- KBUILD_CPPFLAGS += $(call cc-option,-fmacro-prefix-map=$(srctree)/=)
- 
--# ensure -fcf-protection is disabled when using retpoline as it is
--# incompatible with -mindirect-branch=thunk-extern
--ifdef CONFIG_RETPOLINE
-+# Intel CET isn't enabled in the kernel
- KBUILD_CFLAGS += $(call cc-option,-fcf-protection=none)
--endif
- 
- # include additional Makefiles when needed
- include-y			:= scripts/Makefile.extrawarn
+> On 2021/01/27 3:41, Lorenzo Bianconi wrote:
+> > Introduce bulking support for XDP_PASS verdict forwarding skbs to
+> > the networking stack
+> >=20
+> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > ---
+> >   drivers/net/veth.c | 43 ++++++++++++++++++++++++++-----------------
+> >   1 file changed, 26 insertions(+), 17 deletions(-)
+> >=20
+> > diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+> > index 6e03b619c93c..23137d9966da 100644
+> > --- a/drivers/net/veth.c
+> > +++ b/drivers/net/veth.c
+> > @@ -35,6 +35,7 @@
+> >   #define VETH_XDP_HEADROOM	(XDP_PACKET_HEADROOM + NET_IP_ALIGN)
+> >   #define VETH_XDP_TX_BULK_SIZE	16
+> > +#define VETH_XDP_BATCH		8
+> >   struct veth_stats {
+> >   	u64	rx_drops;
+> > @@ -787,27 +788,35 @@ static int veth_xdp_rcv(struct veth_rq *rq, int b=
+udget,
+> >   	int i, done =3D 0;
+> >   	for (i =3D 0; i < budget; i++) {
+> > -		void *ptr =3D __ptr_ring_consume(&rq->xdp_ring);
+> > -		struct sk_buff *skb;
+> > +		void *frames[VETH_XDP_BATCH];
+> > +		void *skbs[VETH_XDP_BATCH];
+> > +		int i, n_frame, n_skb =3D 0;
+>=20
+> 'i' is a shadowed variable. I think this may be confusing.
 
+ack, I will fix it in v2
+
+>=20
+> > -		if (!ptr)
+> > +		n_frame =3D __ptr_ring_consume_batched(&rq->xdp_ring, frames,
+> > +						     VETH_XDP_BATCH);
+>=20
+> This apparently exceeds the budget.
+> This will process budget*VETH_XDP_BATCH packets at most.
+> (You are probably aware of this because you return 'i' instead of 'done'?)
+
+right, I will fix it in v2
+
+>=20
+> Also I'm not sure if we need to introduce __ptr_ring_consume_batched() he=
+re.
+> The function just does __ptr_ring_consume() n times.
+>=20
+> IIUC Your final code looks like this:
+>=20
+> for (budget) {
+> 	n_frame =3D __ptr_ring_consume_batched(VETH_XDP_BATCH);
+> 	for (n_frame) {
+> 		if (frame is XDP)
+> 			xdpf[n_xdpf++] =3D to_xdp(frame);
+> 		else
+> 			skbs[n_skb++] =3D frame;
+> 	}
+>=20
+> 	if (n_xdpf)
+> 		veth_xdp_rcv_batch(xdpf);
+>=20
+> 	for (n_skb) {
+> 		skb =3D veth_xdp_rcv_skb(skbs[i]);
+> 		napi_gro_receive(skb);
+> 	}
+> }
+>=20
+> Your code processes VETH_XDP_BATCH packets at a time no matter whether ea=
+ch
+> of them is xdp_frame or skb, but I think you actually want to process
+> VETH_XDP_BATCH xdp_frames at a time?
+> Then, why not doing like this?
+>=20
+> for (budget) {
+> 	ptr =3D __ptr_ring_consume();
+> 	if (ptr is XDP) {
+> 		if (n_xdpf >=3D VETH_XDP_BATCH) {
+> 			veth_xdp_rcv_batch(xdpf);
+> 			n_xdpf =3D 0;
+> 		}
+> 		xdpf[n_xdpf++] =3D to_xdp(ptr);
+> 	} else {
+> 		skb =3D veth_xdp_rcv_skb(ptr);
+> 		napi_gro_receive(skb);
+> 	}
+> }
+> if (n_xdpf)
+> 	veth_xdp_rcv_batch(xdpf);
+
+I agree, the code is more readable. I will fix it in v2.
+I guess we can drop patch 2/3 and squash patch 1/3 and 3/3.
+
+Regards,
+Lorenzo
+
+>=20
+> Toshiaki Makita
+
+--bg08WKrSYDhXBjb5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYBL3RAAKCRA6cBh0uS2t
+rJtSAQDOnXX2KFGKgwevregVHHHp5yCeaOp30L6CidkBz+a+VwD/ctnxA5h1dNvW
+IPBnoZyY5cLPlJ8rj507QKD6c1uejA8=
+=9Apq
+-----END PGP SIGNATURE-----
+
+--bg08WKrSYDhXBjb5--
