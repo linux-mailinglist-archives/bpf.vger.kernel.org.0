@@ -2,151 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F281B308343
-	for <lists+bpf@lfdr.de>; Fri, 29 Jan 2021 02:35:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 031F3308346
+	for <lists+bpf@lfdr.de>; Fri, 29 Jan 2021 02:36:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231149AbhA2Bcb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Jan 2021 20:32:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48360 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231184AbhA2Bc3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Jan 2021 20:32:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 597D164E03
-        for <bpf@vger.kernel.org>; Fri, 29 Jan 2021 01:31:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611883908;
-        bh=7nJ1EsIqbPATpmmcv9ZyZUVEHWOdColjg3IgW0ayZH4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ZYUcH0qaXz1qxbEMztESpvm2K/SMhJNYJCbCA3uYSW5qLvt7BuypYvuW8QuMgGi/j
-         QBaLET8RRIP7z+rG4gwcQKyfTxCzXN0N2bIqdzgoYFrWS0IlLrsdPzsl64AMQsy9da
-         mZhX0/mCPjPYzH8qox/21k8VUlhynG9QMzhay17MbjJn7F+FBQ/YQJ+fK3QPamUht9
-         NmfWkQzXjsb3SlXsxB1/cEB82ULPmUj3dY5kORnSP+VgNA3+rE9XZBXNijv41ZbIzW
-         rYn1y0tMKDbQD4vIRAEsQRr9JuW2FSSZ2ASQk6D309pJ+QRC5H1OwjVssfwd7dQqek
-         6ZUsgIvJwYpOA==
-Received: by mail-ej1-f45.google.com with SMTP id a10so10626695ejg.10
-        for <bpf@vger.kernel.org>; Thu, 28 Jan 2021 17:31:48 -0800 (PST)
-X-Gm-Message-State: AOAM530xdGN3rvdYP0zfXBTKZYwda6h+M3C3ApifBAduJksuwlx+poiA
-        e4n51RDNbglAa7XF8HxKukSwkLpIdn3j8s7GczbVoA==
-X-Google-Smtp-Source: ABdhPJxlSzV+8r8cOGbibJoGcJnw9CB/HY6D3m4iA7cTkhtObdJ0NTCbrTHH5nmseIg4CT6DvYcGe1NAyWWJGgaPAbk=
-X-Received: by 2002:a17:906:5608:: with SMTP id f8mr2267045ejq.101.1611883906809;
- Thu, 28 Jan 2021 17:31:46 -0800 (PST)
+        id S231383AbhA2Bfi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Jan 2021 20:35:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229627AbhA2Bfg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Jan 2021 20:35:36 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F5BC061574;
+        Thu, 28 Jan 2021 17:34:56 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id g3so4392407plp.2;
+        Thu, 28 Jan 2021 17:34:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KAt3Hk/Gb8LcoZvRv5KF3fdtULJAnVajhPJ6RzP37DM=;
+        b=VfM5wrHIqATpQSuV0AhRwziEq1pHorb28/ZaQ87FB4aq06fwkU3RvWk/DcJ1/JZEw4
+         VCvYp4M+9iUKppz9ZKRLyA8yCKmlESyikDjfxdQnQT2JqBvTCAabw0cZ8DNT/juIP0Mx
+         ofsCW0NnBiwbIwJj5MgbmexRJdHbD7Ot2aeRW/JIgaXoJUnYn302sxPhRAwT5e8h/t2Y
+         Z/XaczmTvmF5Zw0vBSkTNTmsbjQUQdM8lsRROfbR+p4TiogC9FEcQgXV+B2Fpf+k2piW
+         cCPO5o8rF8FzyD9yNcMEIg8vZZcH/PHpGB654vBm7avfe41JZiIDpJ34G0i55laclM4+
+         Zo4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KAt3Hk/Gb8LcoZvRv5KF3fdtULJAnVajhPJ6RzP37DM=;
+        b=WZwuqNG/NmGREYR4I6liqVYxEacotxAqhWrntVopYjoN6bHOIggletKd1Fi26g4SpK
+         3VrRJEN4Q4d3I25qYtssnrQNe1t0C37+4Vl4eujjytneV6nkUko5d/B1wGiDGfTc8Czj
+         ZLAa8XnqeHCmXqZLUNesbEg/1NEvddSEfpD77jdkRN0w+Rz4yBwHDEqz+NGAlbkKj4Ai
+         ncmjzsUoyRTGpKh+KSuqIhDbyG70B1+tHEhoHGlMQC69ICNIzWG+aNwKsJXZBw1ZrFB7
+         3xu7+nQz9hvIR+WkomlZqTrc0MDqgzDOtjAupNaxZV/V2/t7/GlexfOr0TfBW/InlMKT
+         28ww==
+X-Gm-Message-State: AOAM532QYp2ftZNSAwk+op4zIeCTfjZNqR7p/xHmde9mbf7FSi2qmZrd
+        dj5eUsc6lfNgCmitAqomWaA=
+X-Google-Smtp-Source: ABdhPJxLZ+kjEBIMZiWiFSZyzY2jPo9djFz/eRnpY8NyJEFhGpT6sPmvYX55yJKF/6CPquwjKNsaDQ==
+X-Received: by 2002:a17:90b:513:: with SMTP id r19mr2175055pjz.38.1611884095994;
+        Thu, 28 Jan 2021 17:34:55 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:8ed])
+        by smtp.gmail.com with ESMTPSA id q79sm7677468pfc.63.2021.01.28.17.34.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Jan 2021 17:34:55 -0800 (PST)
+Date:   Thu, 28 Jan 2021 17:34:52 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Nikolay Borisov <nborisov@suse.com>,
+        Masami Hiramatsu <masami.hiramatsu@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: kprobes broken since 0d00449c7a28 ("x86: Replace ist_enter()
+ with nmi_enter()")
+Message-ID: <20210129013452.njuh3fomws62m4rc@ast-mbp.dhcp.thefacebook.com>
+References: <25cd2608-03c2-94b8-7760-9de9935fde64@suse.com>
+ <20210128001353.66e7171b395473ef992d6991@kernel.org>
+ <20210128002452.a79714c236b69ab9acfa986c@kernel.org>
+ <a35a6f15-9ab1-917c-d443-23d3e78f2d73@suse.com>
+ <20210128103415.d90be51ec607bb6123b2843c@kernel.org>
+ <20210128123842.c9e33949e62f504b84bfadf5@gmail.com>
+ <e8bae974-190b-f247-0d89-6cea4fd4cc39@suse.com>
+ <eb1ec6a3-9e11-c769-84a4-228f23dc5e23@suse.com>
+ <YBMBTsY1uuQb9wCP@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20210126001219.845816-1-yhs@fb.com> <CALCETrX157htkCF81zb+5BBo9C_V39YNdt7yXRcFGGw_SRs02Q@mail.gmail.com>
- <92a66173-6512-f1bc-0f9a-530c6c9a1ef0@fb.com> <CALCETrVZRiG+qQFrf_7NaCZ9o9f2-aUTgLNJgCzBfsswpG7kTA@mail.gmail.com>
- <20210129001130.3mayw2e44achrnbt@ast-mbp.dhcp.thefacebook.com>
- <CALCETrVXdbXUMA_CJj1knMNxsHR2ao67apwk_BTTMPaQGxusag@mail.gmail.com>
- <20210129002642.iqlbssmp267zv7f2@ast-mbp.dhcp.thefacebook.com>
- <CALCETrUQuf6FX9EmuZur7vRwbeZBmoKeSYb9Rvx2ETp76SukOg@mail.gmail.com>
- <20210129004131.wzwnvdwjlio4traw@ast-mbp.dhcp.thefacebook.com>
- <CALCETrXdmdG2o20VY16vBMJ0p5nSuKOv7sTQtboKFDfuQr1nZA@mail.gmail.com> <20210129010441.4gaa4vzruenfb7zf@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20210129010441.4gaa4vzruenfb7zf@ast-mbp.dhcp.thefacebook.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Thu, 28 Jan 2021 17:31:35 -0800
-X-Gmail-Original-Message-ID: <CALCETrXeaEp5Q5UadA2_frxNFiUDyFx643N6SQf3Gy6G+ZtcNA@mail.gmail.com>
-Message-ID: <CALCETrXeaEp5Q5UadA2_frxNFiUDyFx643N6SQf3Gy6G+ZtcNA@mail.gmail.com>
-Subject: Re: [PATCH bpf] x86/bpf: handle bpf-program-triggered exceptions properly
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andy Lutomirski <luto@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Jann Horn <jannh@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        kernel-team <kernel-team@fb.com>, X86 ML <x86@kernel.org>,
-        KP Singh <kpsingh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YBMBTsY1uuQb9wCP@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 5:04 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Thu, Jan 28, 2021 at 04:45:41PM -0800, Andy Lutomirski wrote:
-> > On Thu, Jan 28, 2021 at 4:41 PM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Thu, Jan 28, 2021 at 04:29:51PM -0800, Andy Lutomirski wrote:
-> > > > BPF generated a NULL pointer dereference (where NULL is a user
-> > > > pointer) and expected it to recover cleanly. What exactly am I
-> > > > supposed to debug?  IMO the only thing wrong with the x86 code is that
-> > > > it doesn't complain more loudly.  I will fix that, too.
-> > >
-> > > are you saying that NULL is a _user_ pointer?!
-> > > It's NULL. All zeros.
-> > > probe_read_kernel(NULL) was returning EFAULT on it and should continue doing so.
-> >
-> > probe_read_kernel() does not exist.  get_kernel_nofault() returns -ERANGE.
->
-> That was an old name. bpf_probe_read_kernel() is using copy_from_kernel_nofault() now.
->
-> > And yes, NULL is a user pointer.  I can write you a little Linux
-> > program that maps some real valid data at user address 0.  As I noted
->
-> are you sure? I thought mmap of addr zero was disallowed long ago.
+On Thu, Jan 28, 2021 at 07:24:14PM +0100, Peter Zijlstra wrote:
+> On Thu, Jan 28, 2021 at 06:45:56PM +0200, Nikolay Borisov wrote:
+> > it would be placed on the __fentry__ (and not endbr64) hence it works.
+> > So perhaps a workaround outside of bpf could essentially detect this
+> > scenario and adjust the probe to be on the __fentry__ and not preceding
+> > instruction if it's detected to be endbr64 ?
+> 
+> Arguably the fentry handler should also set the nmi context, it can,
+> after all, interrupt pretty much any other context by construction.
 
-Quite sure.
-
-#define _GNU_SOURCE
-
-#include <stdio.h>
-#include <sys/mman.h>
-#include <err.h>
-
-int main()
-{
-    int *ptr = mmap(0, 4096, PROT_READ | PROT_WRITE, MAP_ANONYMOUS |
-MAP_PRIVATE | MAP_FIXED, -1, 0);
-    if (ptr == MAP_FAILED)
-        err(1, "mmap");
-
-    *ptr = 1;
-    printf("I just wrote %d to %p\n", *ptr, ptr);
-    return 0;
-}
-
-Whether this works or not depends on a complicated combination of
-sysctl settings, process capabilities, and whether SELinux feels like
-adding its own restrictions.  But it does work on current kernels.
-
->
-> > when I first analyzed this bug, because NULL is a user address, bpf is
-> > incorrectly triggering the *user* fault handling code, and that code
-> > is objecting.
-> >
-> > I propose the following fix to the x86 code.  I'll send it as a real
-> > patch tomorrow.
-> >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/luto/linux.git/commit/?h=x86/fixes&id=f61282777772f375bba7130ae39ccbd7e83878b2
->
-> You realize that you propose to panic kernels for all existing tracing users, right?
->
-> Do you have a specific security concern with treating fault on NULL special?
-
-The security concern is probably not that severe because of the
-aforementioned restrictions, but I haven't analyzed it very carefully.
-But I do have a *functionality* concern.  As the original email that
-prompted this whole discussion noted, the current x86 fault code does
-not do what you want it to do if SMAP is off.  The fact that it mostly
-works with SMAP on is luck.  With SMAP off, we will behave erratically
-at best.
-
-What exactly could the fault code even do to fix this up?  Something like:
-
-if (addr == 0 && SMAP off && error_code says it's kernel mode && we
-don't have permission to map NULL) {
-  special care for bpf;
-}
-
-This seems arbitrary and fragile.  And it's not obviously
-implementable safely without taking locks, which we really ought not
-to be doing from inside arbitrary bpf programs.  Keep in mind that, if
-SMAP is unavailable, the fault code literally does not know whether
-the page fault originated form a valid uaccess region.
-
-There's also always the possibility that you simultaneously run bpf
-and something like Wine or DOSEMU2 that actually maps the zero page,
-in which case the effect of the bpf code is going to be quite erratic
-and will depend on which mm is loaded.
-
---Andy
+But that doesn't make it a real nmi.
+nmi can actually interrupt anything. Whereas kprobe via int3 cannot
+do nokprobe and noinstr sections. The exposure is a lot different.
+ftrace is even more contained. It's only at the start of the functions.
+It's even smaller subset of places than kprobes.
+So ftrace < kprobe < nmi.
+Grouping them all into nmi doesn't make sense to me.
+That bpf breaking change came unnoticed mostly because people use
+kprobes in the beginning of the functions only, but there are cases
+where kprobes are in the middle too. People just didn't upgrade kernels
+fast enough to notice.
+imo appropriate solution would be to have some distinction between
+ftrace < kprobe_via_int3 < nmi, so that bpf side can react accordingly.
+That code in trace_call_bpf:
+  if (in_nmi()) /* not supported yet */
+was necessary in the past. Now we have all sorts of protections built in.
+So it's probably ok to just drop it, but I think adding
+called_via_ftrace vs called_via_kprobe_int3 vs called_via_nmi
+is more appropriate solution long term.
