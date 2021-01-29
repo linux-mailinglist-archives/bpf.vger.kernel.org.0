@@ -2,128 +2,114 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 054D03082E0
-	for <lists+bpf@lfdr.de>; Fri, 29 Jan 2021 02:06:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C3FC3082EC
+	for <lists+bpf@lfdr.de>; Fri, 29 Jan 2021 02:11:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229757AbhA2BFn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Jan 2021 20:05:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38208 "EHLO
+        id S231383AbhA2BGl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Jan 2021 20:06:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231766AbhA2BEL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Jan 2021 20:04:11 -0500
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA918C061573
-        for <bpf@vger.kernel.org>; Thu, 28 Jan 2021 17:03:30 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id f19so8636866ljn.5
-        for <bpf@vger.kernel.org>; Thu, 28 Jan 2021 17:03:30 -0800 (PST)
+        with ESMTP id S231256AbhA2BFZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Jan 2021 20:05:25 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BB80C061574
+        for <bpf@vger.kernel.org>; Thu, 28 Jan 2021 17:04:45 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id n10so5488847pgl.10
+        for <bpf@vger.kernel.org>; Thu, 28 Jan 2021 17:04:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZJ334V14gJBVPRQRux7USRa+GGWzhC/PqFRlnZdq4Hg=;
-        b=gi9wFLd9NFdrHBfW3dciGsiIDexQQ1X4+VKF/KnTPZEh0pic2qKBo5fj0njKINNyKD
-         HsyyGzlQpc11ogMf20HaL3Rab4hoTbGfM6JCCSJ8UfoGflY4Zc89uFs7YF5ot1Ljj1+i
-         P8Nk7OWpimkPqhIfcx2+raXOAUx/KXrK5LIL25k+5TS9eXLWH+YBDfxEJ1bWvZ5T2Dn4
-         C08dRqOhDlobpQPpLuJWFRV50lNPUbpFyJrEAdORvm1gkv+NcMdXE5YmYs3bxZaC97U2
-         aQ2UwYmvIh0MsM+JM3LIZHUI6WUnSWvaSjS5uI9V9PAqTn/wOCI7QJlKX7Iw8bi2MtSt
-         C9JQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Kvg+moAcK1B0uyTOCIXheNF9e4qMnKZztZy9w8wlYuk=;
+        b=HBDGwVZHkVQ8s8Vq6s0emFWautDFD07qwBJTYwffkVLO/Ib4G1lgOw3VUHILAhd/6/
+         9YoQJzN8mG0eJA57Z6hagfdmPHJakLeCnXowq9c6vTcVr6YSTD/v16Zwo6su24EbhTKk
+         owiFVqEbfsUppqI8zppMU2gvhrLY3h+CsL7uSDsUrIk7Ogv3Jb62ap4inUxcapNoK0p/
+         9SdbzIXDOqeoY1EjkR8xS4nr/h9XQVgDiNu5waFzylIjpQCcIK/CJ+R2Ilsiylrg67o5
+         C0dm3QFnUVIEEnrrTntc8XXjPpomjqUa/yjrozS34jPVe8kk5HrDrgyZj9drjW4hOdCQ
+         EaAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZJ334V14gJBVPRQRux7USRa+GGWzhC/PqFRlnZdq4Hg=;
-        b=EeIqSgrK06+cbQ+IqWBT0IyCZAW0ZHJIV0TkTpBB/B1RM8XffsoeyNVyuHtbXRnk5l
-         YxFdp4I/Ta61cKRc4AQ1AEN3C57k/eGJIN8eYU5r8UcBe2b4Z96ZnvVhVSP0najM2KJZ
-         VvXLQ61ne5TZXrOdZiXNjkX+gR/K2y1K5gFAD5DRP0EyWTUo6Q3l9/u2b3i5fWAg3ImV
-         KI+27EDGxs0NwkZHIeOAz1e2RSTaXVLbVl+Ld/ftwq89vFbunQn9OyDzp5sy8Kjcpn7e
-         A/Urq3U5oZC/80xakLrkPDuVHZzurdpxY6nqumxGEgPLEsJCzIgjZwYK1CQXpj4uYXhM
-         DJ6w==
-X-Gm-Message-State: AOAM532KM+rhxwylPPMREVdxQEwvXfSm7SxQ3OW8/heukXW9kCvRjCWf
-        OJAACwuE2GMA3To3SXPvgqo9qxEn50it+t4/AVD4bA==
-X-Google-Smtp-Source: ABdhPJwaj/ozZ9SCSkx6Ma6XKnjFR/1sTt06CJm8Z+dkWmF4LBzWUdTLbaQqD0mTQ/ubGcBgIEWSUEAIwAARSjPusu0=
-X-Received: by 2002:a2e:8e8f:: with SMTP id z15mr1047900ljk.385.1611882209108;
- Thu, 28 Jan 2021 17:03:29 -0800 (PST)
-MIME-Version: 1.0
-References: <20210126001219.845816-1-yhs@fb.com> <CALCETrX157htkCF81zb+5BBo9C_V39YNdt7yXRcFGGw_SRs02Q@mail.gmail.com>
- <92a66173-6512-f1bc-0f9a-530c6c9a1ef0@fb.com> <CALCETrVZRiG+qQFrf_7NaCZ9o9f2-aUTgLNJgCzBfsswpG7kTA@mail.gmail.com>
- <20210129001130.3mayw2e44achrnbt@ast-mbp.dhcp.thefacebook.com>
- <CAG48ez0s78q+ujyXb2M9W+EHz7XHZwHJzJzm=Sz8=4XYwgEYUQ@mail.gmail.com> <20210129004305.cwtt3f4c3kq5qyth@ast-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20210129004305.cwtt3f4c3kq5qyth@ast-mbp.dhcp.thefacebook.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Fri, 29 Jan 2021 02:03:02 +0100
-Message-ID: <CAG48ez1zheHXaP47-grB_4VOk0cios0cege=vXhsZd0rMcz5bw@mail.gmail.com>
-Subject: Re: [PATCH bpf] x86/bpf: handle bpf-program-triggered exceptions properly
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Andy Lutomirski <luto@kernel.org>, Yonghong Song <yhs@fb.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Kvg+moAcK1B0uyTOCIXheNF9e4qMnKZztZy9w8wlYuk=;
+        b=i7z0/1m0d6661aygZazZ2rwBM0NiAHoJ6LIwoSjSmVUDnGK3JIM3AlzmRHS5aIjziS
+         tsuxi4ELvMcA0dfpkYQdAl7iR48khfNHcVIfByObRQl+kfFJMek0E36OXMfWcaZPchtP
+         JRWQSJ6HP8D4ag3MYdNRFOIwNsMkbTVWu8jXExq3V/EMEyianvgBjD1BNnlffiw7lW87
+         JwU93WJF5joRCuejEY20X8Kza99kvWhwBfJdKv3xk+Ll+yuNBgF+aLvM+hVJVQYq2lJy
+         wonD8B1X+7Acp5zZoOQM9JrCoMFQT6ySA7AiNPKFC08Jel7HXoJzL6UkAPeBjjdxsHtq
+         cXWA==
+X-Gm-Message-State: AOAM533443+bDeYigdgGDv7KZfWGZIqMn41O50j+0Hmd+np96kjSvDqS
+        w/j7uI0G+DsX+wZBtdpQWNE=
+X-Google-Smtp-Source: ABdhPJwYt3+L47YjMBlza+IegvejZYvvWW3O0kB+kNPaRSmLO2vs/BaFlBa+CuhwK8Slm02dW88kRw==
+X-Received: by 2002:a63:e109:: with SMTP id z9mr2063754pgh.5.1611882285028;
+        Thu, 28 Jan 2021 17:04:45 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:8ed])
+        by smtp.gmail.com with ESMTPSA id fh7sm5996320pjb.43.2021.01.28.17.04.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Jan 2021 17:04:44 -0800 (PST)
+Date:   Thu, 28 Jan 2021 17:04:41 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Yonghong Song <yhs@fb.com>, Jann Horn <jannh@google.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andriin@fb.com>,
         Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         kernel-team <kernel-team@fb.com>, X86 ML <x86@kernel.org>,
         KP Singh <kpsingh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH bpf] x86/bpf: handle bpf-program-triggered exceptions
+ properly
+Message-ID: <20210129010441.4gaa4vzruenfb7zf@ast-mbp.dhcp.thefacebook.com>
+References: <20210126001219.845816-1-yhs@fb.com>
+ <CALCETrX157htkCF81zb+5BBo9C_V39YNdt7yXRcFGGw_SRs02Q@mail.gmail.com>
+ <92a66173-6512-f1bc-0f9a-530c6c9a1ef0@fb.com>
+ <CALCETrVZRiG+qQFrf_7NaCZ9o9f2-aUTgLNJgCzBfsswpG7kTA@mail.gmail.com>
+ <20210129001130.3mayw2e44achrnbt@ast-mbp.dhcp.thefacebook.com>
+ <CALCETrVXdbXUMA_CJj1knMNxsHR2ao67apwk_BTTMPaQGxusag@mail.gmail.com>
+ <20210129002642.iqlbssmp267zv7f2@ast-mbp.dhcp.thefacebook.com>
+ <CALCETrUQuf6FX9EmuZur7vRwbeZBmoKeSYb9Rvx2ETp76SukOg@mail.gmail.com>
+ <20210129004131.wzwnvdwjlio4traw@ast-mbp.dhcp.thefacebook.com>
+ <CALCETrXdmdG2o20VY16vBMJ0p5nSuKOv7sTQtboKFDfuQr1nZA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALCETrXdmdG2o20VY16vBMJ0p5nSuKOv7sTQtboKFDfuQr1nZA@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 1:43 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
-> On Fri, Jan 29, 2021 at 01:35:16AM +0100, Jann Horn wrote:
-> > On Fri, Jan 29, 2021 at 1:11 AM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > > On Thu, Jan 28, 2021 at 03:51:13PM -0800, Andy Lutomirski wrote:
-> > > > Okay, so I guess you're trying to inline probe_read_kernel().  But
-> > > > that means you have to inline a valid implementation.  In particular,
-> > > > you need to check that you're accessing *kernel* memory.  Just like
-> > >
-> > > That check is on the verifier side. It only does it for kernel
-> > > pointers with known types.
-> > > In a sequnce a->b->c the verifier guarantees that 'a' is valid
-> > > kernel pointer and it's also !null. Then it guarantees that offsetof(b)
-> > > points to valid kernel field which is also a pointer.
-> > > What it doesn't check that b != null, so
-> > > that users don't have to write silly code with 'if (p)' after every
-> > > dereference.
+On Thu, Jan 28, 2021 at 04:45:41PM -0800, Andy Lutomirski wrote:
+> On Thu, Jan 28, 2021 at 4:41 PM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
 > >
-> > How is that supposed to work? If I e.g. have a pointer to a
-> > task_struct, and I do something like:
+> > On Thu, Jan 28, 2021 at 04:29:51PM -0800, Andy Lutomirski wrote:
+> > > BPF generated a NULL pointer dereference (where NULL is a user
+> > > pointer) and expected it to recover cleanly. What exactly am I
+> > > supposed to debug?  IMO the only thing wrong with the x86 code is that
+> > > it doesn't complain more loudly.  I will fix that, too.
 > >
-> > task->mm->mmap->vm_file->f_inode
-> >
-> > and another thread concurrently mutates the VMA tree and frees the VMA
-> > that we're traversing here, how can BPF guarantee that
-> > task->mm->mmap->vm_file is a valid pointer and not whatever garbage we
-> > read from freed memory?
->
-> Please read upthread. Every -> is replaced with probe_kernel_read.
-> That's what was kprobes were doing for years. That's what bpf was
-> doing for years.
+> > are you saying that NULL is a _user_ pointer?!
+> > It's NULL. All zeros.
+> > probe_read_kernel(NULL) was returning EFAULT on it and should continue doing so.
+> 
+> probe_read_kernel() does not exist.  get_kernel_nofault() returns -ERANGE.
 
-Uh... but -> on PTR_TO_BTF_ID pointers is not replaced with
-probe_kernel_read() and can be done directly with BPF_LDX, right? And
-dereferencing a PTR_TO_BTF_ID pointer returns another PTR_TO_BTF_ID
-pointer if type information is available, right? (See
-btf_struct_access().) And stuff like BPF LSM programs or some of the
-XDP stuff receives BTF-typed pointers to kernel data structures as
-arguments, right?
+That was an old name. bpf_probe_read_kernel() is using copy_from_kernel_nofault() now.
 
-And as an example, this is visible in
-tools/testing/selftests/bpf/progs/ima.c , which does:
+> And yes, NULL is a user pointer.  I can write you a little Linux
+> program that maps some real valid data at user address 0.  As I noted
 
-SEC("lsm.s/bprm_committed_creds")
-int BPF_PROG(ima, struct linux_binprm *bprm)
-{
-  u32 pid = bpf_get_current_pid_tgid() >> 32;
+are you sure? I thought mmap of addr zero was disallowed long ago.
 
-  if (pid == monitored_pid)
-    ima_hash_ret = bpf_ima_inode_hash(bprm->file->f_inode,
-           &ima_hash, sizeof(ima_hash));
+> when I first analyzed this bug, because NULL is a user address, bpf is
+> incorrectly triggering the *user* fault handling code, and that code
+> is objecting.
+> 
+> I propose the following fix to the x86 code.  I'll send it as a real
+> patch tomorrow.
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/luto/linux.git/commit/?h=x86/fixes&id=f61282777772f375bba7130ae39ccbd7e83878b2
 
-  return 0;
-}
+You realize that you propose to panic kernels for all existing tracing users, right?
 
-As far as I can tell, we are getting a BTF-typed pointer "bprm", doing
-dereferences that again yield BTF-typed pointers, and then pass the
-BTF-typed pointer at the end of it into bpf_ima_inode_hash()?
-
-What am I missing?
+Do you have a specific security concern with treating fault on NULL special?
