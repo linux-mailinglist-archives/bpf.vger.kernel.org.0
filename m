@@ -2,35 +2,37 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A52973085AA
-	for <lists+bpf@lfdr.de>; Fri, 29 Jan 2021 07:24:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5457F3085EF
+	for <lists+bpf@lfdr.de>; Fri, 29 Jan 2021 07:44:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231855AbhA2GYN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Jan 2021 01:24:13 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44508 "EHLO mx2.suse.de"
+        id S232054AbhA2Gh0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Jan 2021 01:37:26 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49918 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229459AbhA2GYM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Jan 2021 01:24:12 -0500
+        id S232101AbhA2GhT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Jan 2021 01:37:19 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611901405; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1611902191; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=x55Ghkb1NGSakCxiseBfr9GEKcsGjHRMccE0zQUExb0=;
-        b=Kqo2SaoBr7vMKdT9ZC0xKlF/TuUvQQtxU7kuYFdaUkUFB+4cRlueU1az7KIA84wsAOr26E
-        uulsVmbtscSVNLwtcRN5EA+sFUxGDTd8oqKvoAhXxIBTw3lRCwcgDk/WTmKLm8XohgyaWS
-        fP/8/VpGk/oxou+u4EtDPdXE6RXuaLk=
+        bh=8F37s10jfkfnMNMslnldnzboL1jtWWJIIBCvXMZ8TU4=;
+        b=SNeQx7gMpI5tYw9adSLw0kz7bFzodBnJPN12hPMI/KyEc4zhHc7UtfT+1e9LRdnPBF5cUA
+        /9pmXSdVTpeYeYjoVXwoaGRS2YkaDJu8j7yEASMTfGnvdKBuHqFzqwot6ZS5Kk58ayPepe
+        H8MDIsuRMG+GOYoDidB7Pmsmf5mKPK4=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 196EAABDA;
-        Fri, 29 Jan 2021 06:23:25 +0000 (UTC)
-Subject: Re: [PATCH] x86: Disable CET instrumentation in the kernel
-To:     Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org
+        by mx2.suse.de (Postfix) with ESMTP id 63C8DAEDB;
+        Fri, 29 Jan 2021 06:36:31 +0000 (UTC)
+Subject: Re: kprobes broken since 0d00449c7a28 ("x86: Replace ist_enter() with
+ nmi_enter()")
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>
 Cc:     Masami Hiramatsu <masami.hiramatsu@gmail.com>,
         Masami Hiramatsu <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
         LKML <linux-kernel@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
         Steven Rostedt <rostedt@goodmis.org>
 References: <25cd2608-03c2-94b8-7760-9de9935fde64@suse.com>
  <20210128001353.66e7171b395473ef992d6991@kernel.org>
@@ -40,8 +42,8 @@ References: <25cd2608-03c2-94b8-7760-9de9935fde64@suse.com>
  <20210128123842.c9e33949e62f504b84bfadf5@gmail.com>
  <e8bae974-190b-f247-0d89-6cea4fd4cc39@suse.com>
  <eb1ec6a3-9e11-c769-84a4-228f23dc5e23@suse.com>
- <20210128165014.xc77qtun6fl2qfun@treble>
- <20210128215219.6kct3h2eiustncws@treble>
+ <YBMBTsY1uuQb9wCP@hirez.programming.kicks-ass.net>
+ <20210129013452.njuh3fomws62m4rc@ast-mbp.dhcp.thefacebook.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -85,12 +87,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <3b24d8c8-a1fe-5b7c-6e96-65a719588f49@suse.com>
-Date:   Fri, 29 Jan 2021 08:23:23 +0200
+Message-ID: <783eafee-681c-45b6-17ef-24473cb33aa1@suse.com>
+Date:   Fri, 29 Jan 2021 08:36:30 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210128215219.6kct3h2eiustncws@treble>
+In-Reply-To: <20210129013452.njuh3fomws62m4rc@ast-mbp.dhcp.thefacebook.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -100,18 +102,40 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 28.01.21 г. 23:52 ч., Josh Poimboeuf wrote:
+On 29.01.21 г. 3:34 ч., Alexei Starovoitov wrote:
+> On Thu, Jan 28, 2021 at 07:24:14PM +0100, Peter Zijlstra wrote:
+>> On Thu, Jan 28, 2021 at 06:45:56PM +0200, Nikolay Borisov wrote:
+>>> it would be placed on the __fentry__ (and not endbr64) hence it works.
+>>> So perhaps a workaround outside of bpf could essentially detect this
+>>> scenario and adjust the probe to be on the __fentry__ and not preceding
+>>> instruction if it's detected to be endbr64 ?
+>>
+>> Arguably the fentry handler should also set the nmi context, it can,
+>> after all, interrupt pretty much any other context by construction.
 > 
-> With retpolines disabled, some configurations of GCC will add Intel CET
-> instrumentation to the kernel by default.  That breaks certain tracing
-> scenarios by adding a superfluous ENDBR64 instruction before the fentry
-> call, for functions which can be called indirectly.
-> 
-> CET instrumentation isn't currently necessary in the kernel, as CET is
-> only supported in user space.  Disable it unconditionally.
-> 
-> Reported-by: Nikolay Borisov <nborisov@suse.com>
-> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> But that doesn't make it a real nmi.
+> nmi can actually interrupt anything. Whereas kprobe via int3 cannot
+> do nokprobe and noinstr sections. The exposure is a lot different.
+> ftrace is even more contained. It's only at the start of the functions.
+> It's even smaller subset of places than kprobes.
+> So ftrace < kprobe < nmi.
+> Grouping them all into nmi doesn't make sense to me.
+> That bpf breaking change came unnoticed mostly because people use
+> kprobes in the beginning of the functions only, but there are cases
+> where kprobes are in the middle too. People just didn't upgrade kernels
+> fast enough to notice.
 
-Tested-by: Nikolay Borisov <nborisov@suse.com>
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+nit: slight correction - I observed while I was putting kprobes at the
+beginning of the function but __fentry__ wasn't the first thing in the
+function's code. The reason why people haven't observed is because
+everyone is running with retpolines enabled which disables CFI/CET.
+
+> imo appropriate solution would be to have some distinction between
+> ftrace < kprobe_via_int3 < nmi, so that bpf side can react accordingly.
+> That code in trace_call_bpf:
+>   if (in_nmi()) /* not supported yet */
+> was necessary in the past. Now we have all sorts of protections built in.
+> So it's probably ok to just drop it, but I think adding
+> called_via_ftrace vs called_via_kprobe_int3 vs called_via_nmi
+> is more appropriate solution long term.
+> 
