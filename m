@@ -2,245 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58EFC308FC3
-	for <lists+bpf@lfdr.de>; Fri, 29 Jan 2021 23:08:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE1AA308FEF
+	for <lists+bpf@lfdr.de>; Fri, 29 Jan 2021 23:23:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232733AbhA2WFC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Jan 2021 17:05:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56392 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232498AbhA2WFB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Jan 2021 17:05:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2938364DDB;
-        Fri, 29 Jan 2021 22:04:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611957855;
-        bh=m3biG8PI/jKfwgFC5WC3EpEhJsNzvntmfxnzlkkDGns=;
-        h=From:To:Cc:Subject:Date:From;
-        b=QL/i993FejutmywW/Z35FllWk1eW0lM3O9ynbXkrZY7k3d8DC3kUgBVJlrM9e6Py8
-         w5aqcElVONUtFDdA8atrVmj8Q+Qx09q3bGw9Q2StVjh0clCcF0kl47L3Q+MaQGKZFa
-         DAhxZdikdwUJnrJqNzjrNCKB3e0NJlSl2u10LDX57nyQl07l6KFBfGhrJKSHiwAlRD
-         aWDXfYwDgFvKpTgodZczLcHPwvU3bwHm37BFFU9slfst9cDM+7XQgeW38rNRmB26Rg
-         N0Ovgk5T9gSwwSPx/oS645hNIYeTwAuQDqhYdTvym04jEcVB+9v0a4ysBKKNOunm+r
-         w2TWuWG1NwtFg==
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, toshiaki.makita1@gmail.com,
-        lorenzo.bianconi@redhat.com, brouer@redhat.com, toke@redhat.com
-Subject: [PATCH v3 bpf-next] net: veth: alloc skb in bulk for ndo_xdp_xmit
-Date:   Fri, 29 Jan 2021 23:04:08 +0100
-Message-Id: <a14a30d3c06fff24e13f836c733d80efc0bd6eb5.1611957532.git.lorenzo@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S232901AbhA2WQU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Jan 2021 17:16:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232848AbhA2WQR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Jan 2021 17:16:17 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F62CC061573
+        for <bpf@vger.kernel.org>; Fri, 29 Jan 2021 14:15:36 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id hs11so15155237ejc.1
+        for <bpf@vger.kernel.org>; Fri, 29 Jan 2021 14:15:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Mq4ASsjX+kVkhvdmQEYh8nWrR6ns9uJZ4+cZaSYQ7VI=;
+        b=WW+uQKJTGenAPj7XJfIOgN0MEmdrH/V+a/c3b5p1/JLw4fkiEFJndNBaB7S0otyrYq
+         p6Wde4HTQEHFEgUMqANyXNhEKlAB89X3CL15jZOvfC56HPrrI/EE47Il8guN33OLUZdC
+         dVCKRw7eOJdAx6Viu3GBgNdzfSpuBsmiVS+izGzKzcJVcAtTJAosgqD8BoWkx6C4w306
+         Dlyf0x7n5ar0kb/6JyRWwWQf/Wul6DE9YgY/eZViMvwNS+aHb1MJP55FfPQh5bltYqxR
+         gLXy/ZbFClipGyrrnrWJp05cVvMyxzrLsBHFbfFdlYtXV8nTYTzfss9wvVT/7/C14EwK
+         k5qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Mq4ASsjX+kVkhvdmQEYh8nWrR6ns9uJZ4+cZaSYQ7VI=;
+        b=sEmR5kKWaOLxw/TAHrFDQ/4Fd1JvkwaSGhDYmkqQTPYkjan9hOlH3WBM2I+x7dHyNx
+         upaIE80poUAS476suvkdsRoFIOCH6+HifxS7+rhGRA6hz3zqdT305ZGCTbV1uZ1jqKlI
+         mIGsJOUGFMr9fyDzptdh+twHZrl2JIRs7JkhqfD85+wA47zshJ4QlLz05ppPNy+KDjQI
+         iY41vmLJR7eXGLS1W5P1ABnYJRViQ1FN5BpsZLFkHlPaS3MqStQXauNS7tZkCMf+AxlB
+         520M+4i3dmVi8RwerIbotcOVfLPWcKqPfzc8+Ml/oNnJ1+uFYyqMU7wNr9lmyPaeQhAV
+         qw+w==
+X-Gm-Message-State: AOAM531BzlVlusJECAqj9tVZPnDrSCv3DyetVPYueqT/mKFIS50r5A/4
+        qouXjZKTD59IUJT5w5P1exRrPjKsUWttjBhKqqwB
+X-Google-Smtp-Source: ABdhPJxR2hVwmKDUZcFOxVE2rUwfoZn7+pqG+iMjKeX3xHEUK4BA8KsFPruinRNREUP9JBOMW765Jjlif/dmcp1szjs=
+X-Received: by 2002:a17:906:48c:: with SMTP id f12mr6519721eja.431.1611958533901;
+ Fri, 29 Jan 2021 14:15:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAHC9VhQgy959hkpU8fwZnrTqGphVSA+ONF99Yy4ZQFyjQ_030A@mail.gmail.com>
+ <CAADnVQJaJ0i2L2k-dM+neeT61q+pwEd+F6ASGh4Xbi-ogj0hfQ@mail.gmail.com>
+In-Reply-To: <CAADnVQJaJ0i2L2k-dM+neeT61q+pwEd+F6ASGh4Xbi-ogj0hfQ@mail.gmail.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Fri, 29 Jan 2021 17:15:22 -0500
+Message-ID: <CAHC9VhSTJ=009hsXm=8jtQ_ZL-n=+tzKPbWj2Cnoa5w3iVNuew@mail.gmail.com>
+Subject: Re: selftest/bpf/test_verifier_log fails on v5.11-rc5
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Ondrej Mosnacek <omosnace@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Split ndo_xdp_xmit and ndo_start_xmit use cases in veth_xdp_rcv routine
-in order to alloc skbs in bulk for XDP_PASS verdict.
-Introduce xdp_alloc_skb_bulk utility routine to alloc skb bulk list.
-The proposed approach has been tested in the following scenario:
+On Mon, Jan 25, 2021 at 5:42 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+> On Mon, Jan 25, 2021 at 12:54 PM Paul Moore <paul@paul-moore.com> wrote:
+> >
+> > Hello all,
+> >
+> > My apologies if this has already been reported, but I didn't see
+> > anything obvious with a quick search through the archives.  I have a
+> > test program that behaves very similar to the existing
+> > selftest/bpf/test_verifier_log test that has started failing this week
+> > with v5.11-rc5; it ran without problem last week on v5.11-rc4.  Is
+> > this a known problem with a fix already, or is this something new?
+> >
+> > % uname -r
+> > 5.11.0-0.rc5.134.fc34.x86_64
+> > % pwd
+> > /.../linux/tools/testing/selftests/bpf
+> > % git log --oneline | head -n 1
+> > 6ee1d745b7c9 Linux 5.11-rc5
+> > % make test_verifier_log
+> >   ...
+> >   BINARY   test_verifier_log
+> > % ./test_verifier_log
+> > Test log_level 0...
+> > Test log_size < 128...
+> > Test log_buff = NULL...
+> > Test oversized buffer...
+> > ERROR: Program load returned: ret:-1/errno:22, expected ret:-1/errno:13
+>
+> Thanks for reporting.
+> bpf and bpf-next don't have this issue. Not sure what changed.
 
-eth (ixgbe) --> XDP_REDIRECT --> veth0 --> (remote-ns) veth1 --> XDP_PASS
+I haven't had a chance to look into this any further, but Ondrej
+Mosnacek (CC'd) found the following today:
 
-XDP_REDIRECT: xdp_redirect_map bpf sample
-XDP_PASS: xdp_rxq_info bpf sample
+"So I was trying to debug this further and I think I've identified what
+triggers the problem. It seems that the BTF debuginfo generation
+became broken with CONFIG_DEBUG_INFO_DWARF4=n somewhere between -rc4
+and -rc5. It also seems to depend on a recent (Fedora Rawhide) version
+of some component of the build system (GCC, probably), because the
+problem disappeared when I tried to build the "bad" kernel in F33
+buildroot instead of Rawhide."
 
-traffic generator: pkt_gen sending udp traffic on a remote device
-
-bpf-next master: ~3.64Mpps
-bpf-next + skb bulking allocation: ~3.79Mpps
-
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
----
-Changes since v2:
-- use __GFP_ZERO flag instead of memset
-- move some veth_xdp_rcv_batch() logic in veth_xdp_rcv_skb()
-
-Changes since v1:
-- drop patch 2/3, squash patch 1/3 and 3/3
-- set VETH_XDP_BATCH to 16
-- rework veth_xdp_rcv to use __ptr_ring_consume
----
- drivers/net/veth.c | 78 ++++++++++++++++++++++++++++++++++------------
- include/net/xdp.h  |  1 +
- net/core/xdp.c     | 11 +++++++
- 3 files changed, 70 insertions(+), 20 deletions(-)
-
-diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index 6e03b619c93c..aa1a66ad2ce5 100644
---- a/drivers/net/veth.c
-+++ b/drivers/net/veth.c
-@@ -35,6 +35,7 @@
- #define VETH_XDP_HEADROOM	(XDP_PACKET_HEADROOM + NET_IP_ALIGN)
- 
- #define VETH_XDP_TX_BULK_SIZE	16
-+#define VETH_XDP_BATCH		16
- 
- struct veth_stats {
- 	u64	rx_drops;
-@@ -562,14 +563,13 @@ static int veth_xdp_tx(struct veth_rq *rq, struct xdp_buff *xdp,
- 	return 0;
- }
- 
--static struct sk_buff *veth_xdp_rcv_one(struct veth_rq *rq,
--					struct xdp_frame *frame,
--					struct veth_xdp_tx_bq *bq,
--					struct veth_stats *stats)
-+static struct xdp_frame *veth_xdp_rcv_one(struct veth_rq *rq,
-+					  struct xdp_frame *frame,
-+					  struct veth_xdp_tx_bq *bq,
-+					  struct veth_stats *stats)
- {
- 	struct xdp_frame orig_frame;
- 	struct bpf_prog *xdp_prog;
--	struct sk_buff *skb;
- 
- 	rcu_read_lock();
- 	xdp_prog = rcu_dereference(rq->xdp_prog);
-@@ -623,13 +623,7 @@ static struct sk_buff *veth_xdp_rcv_one(struct veth_rq *rq,
- 	}
- 	rcu_read_unlock();
- 
--	skb = xdp_build_skb_from_frame(frame, rq->dev);
--	if (!skb) {
--		xdp_return_frame(frame);
--		stats->rx_drops++;
--	}
--
--	return skb;
-+	return frame;
- err_xdp:
- 	rcu_read_unlock();
- 	xdp_return_frame(frame);
-@@ -637,6 +631,37 @@ static struct sk_buff *veth_xdp_rcv_one(struct veth_rq *rq,
- 	return NULL;
- }
- 
-+/* frames array contains VETH_XDP_BATCH at most */
-+static void veth_xdp_rcv_bulk_skb(struct veth_rq *rq, void **frames,
-+				  int n_xdpf, struct veth_xdp_tx_bq *bq,
-+				  struct veth_stats *stats)
-+{
-+	void *skbs[VETH_XDP_BATCH];
-+	int i;
-+
-+	if (xdp_alloc_skb_bulk(skbs, n_xdpf,
-+			       GFP_ATOMIC | __GFP_ZERO) < 0) {
-+		for (i = 0; i < n_xdpf; i++)
-+			xdp_return_frame(frames[i]);
-+		stats->rx_drops += n_xdpf;
-+
-+		return;
-+	}
-+
-+	for (i = 0; i < n_xdpf; i++) {
-+		struct sk_buff *skb = skbs[i];
-+
-+		skb = __xdp_build_skb_from_frame(frames[i], skb,
-+						 rq->dev);
-+		if (!skb) {
-+			xdp_return_frame(frames[i]);
-+			stats->rx_drops++;
-+			continue;
-+		}
-+		napi_gro_receive(&rq->xdp_napi, skb);
-+	}
-+}
-+
- static struct sk_buff *veth_xdp_rcv_skb(struct veth_rq *rq,
- 					struct sk_buff *skb,
- 					struct veth_xdp_tx_bq *bq,
-@@ -784,32 +809,45 @@ static int veth_xdp_rcv(struct veth_rq *rq, int budget,
- 			struct veth_xdp_tx_bq *bq,
- 			struct veth_stats *stats)
- {
--	int i, done = 0;
-+	int i, done = 0, n_xdpf = 0;
-+	void *xdpf[VETH_XDP_BATCH];
- 
- 	for (i = 0; i < budget; i++) {
- 		void *ptr = __ptr_ring_consume(&rq->xdp_ring);
--		struct sk_buff *skb;
- 
- 		if (!ptr)
- 			break;
- 
- 		if (veth_is_xdp_frame(ptr)) {
-+			/* ndo_xdp_xmit */
- 			struct xdp_frame *frame = veth_ptr_to_xdp(ptr);
- 
- 			stats->xdp_bytes += frame->len;
--			skb = veth_xdp_rcv_one(rq, frame, bq, stats);
-+			frame = veth_xdp_rcv_one(rq, frame, bq, stats);
-+			if (frame) {
-+				/* XDP_PASS */
-+				xdpf[n_xdpf++] = frame;
-+				if (n_xdpf == VETH_XDP_BATCH) {
-+					veth_xdp_rcv_bulk_skb(rq, xdpf, n_xdpf,
-+							      bq, stats);
-+					n_xdpf = 0;
-+				}
-+			}
- 		} else {
--			skb = ptr;
-+			/* ndo_start_xmit */
-+			struct sk_buff *skb = ptr;
-+
- 			stats->xdp_bytes += skb->len;
- 			skb = veth_xdp_rcv_skb(rq, skb, bq, stats);
-+			if (skb)
-+				napi_gro_receive(&rq->xdp_napi, skb);
- 		}
--
--		if (skb)
--			napi_gro_receive(&rq->xdp_napi, skb);
--
- 		done++;
- 	}
- 
-+	if (n_xdpf)
-+		veth_xdp_rcv_bulk_skb(rq, xdpf, n_xdpf, bq, stats);
-+
- 	u64_stats_update_begin(&rq->stats.syncp);
- 	rq->stats.vs.xdp_redirect += stats->xdp_redirect;
- 	rq->stats.vs.xdp_bytes += stats->xdp_bytes;
-diff --git a/include/net/xdp.h b/include/net/xdp.h
-index c4bfdc9a8b79..a5bc214a49d9 100644
---- a/include/net/xdp.h
-+++ b/include/net/xdp.h
-@@ -169,6 +169,7 @@ struct sk_buff *__xdp_build_skb_from_frame(struct xdp_frame *xdpf,
- 					   struct net_device *dev);
- struct sk_buff *xdp_build_skb_from_frame(struct xdp_frame *xdpf,
- 					 struct net_device *dev);
-+int xdp_alloc_skb_bulk(void **skbs, int n_skb, gfp_t gfp);
- 
- static inline
- void xdp_convert_frame_to_buff(struct xdp_frame *frame, struct xdp_buff *xdp)
-diff --git a/net/core/xdp.c b/net/core/xdp.c
-index 0d2630a35c3e..05354976c1fc 100644
---- a/net/core/xdp.c
-+++ b/net/core/xdp.c
-@@ -514,6 +514,17 @@ void xdp_warn(const char *msg, const char *func, const int line)
- };
- EXPORT_SYMBOL_GPL(xdp_warn);
- 
-+int xdp_alloc_skb_bulk(void **skbs, int n_skb, gfp_t gfp)
-+{
-+	n_skb = kmem_cache_alloc_bulk(skbuff_head_cache, gfp,
-+				      n_skb, skbs);
-+	if (unlikely(!n_skb))
-+		return -ENOMEM;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(xdp_alloc_skb_bulk);
-+
- struct sk_buff *__xdp_build_skb_from_frame(struct xdp_frame *xdpf,
- 					   struct sk_buff *skb,
- 					   struct net_device *dev)
 -- 
-2.29.2
-
+paul moore
+www.paul-moore.com
