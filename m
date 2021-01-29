@@ -2,105 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE1AA308FEF
-	for <lists+bpf@lfdr.de>; Fri, 29 Jan 2021 23:23:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13E27309078
+	for <lists+bpf@lfdr.de>; Sat, 30 Jan 2021 00:16:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232901AbhA2WQU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Jan 2021 17:16:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56336 "EHLO
+        id S231246AbhA2XNE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Jan 2021 18:13:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232848AbhA2WQR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Jan 2021 17:16:17 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F62CC061573
-        for <bpf@vger.kernel.org>; Fri, 29 Jan 2021 14:15:36 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id hs11so15155237ejc.1
-        for <bpf@vger.kernel.org>; Fri, 29 Jan 2021 14:15:36 -0800 (PST)
+        with ESMTP id S229683AbhA2XNC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Jan 2021 18:13:02 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE722C061573
+        for <bpf@vger.kernel.org>; Fri, 29 Jan 2021 15:11:59 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id h15so6169260pli.8
+        for <bpf@vger.kernel.org>; Fri, 29 Jan 2021 15:11:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Mq4ASsjX+kVkhvdmQEYh8nWrR6ns9uJZ4+cZaSYQ7VI=;
-        b=WW+uQKJTGenAPj7XJfIOgN0MEmdrH/V+a/c3b5p1/JLw4fkiEFJndNBaB7S0otyrYq
-         p6Wde4HTQEHFEgUMqANyXNhEKlAB89X3CL15jZOvfC56HPrrI/EE47Il8guN33OLUZdC
-         dVCKRw7eOJdAx6Viu3GBgNdzfSpuBsmiVS+izGzKzcJVcAtTJAosgqD8BoWkx6C4w306
-         Dlyf0x7n5ar0kb/6JyRWwWQf/Wul6DE9YgY/eZViMvwNS+aHb1MJP55FfPQh5bltYqxR
-         gLXy/ZbFClipGyrrnrWJp05cVvMyxzrLsBHFbfFdlYtXV8nTYTzfss9wvVT/7/C14EwK
-         k5qg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=4wRX6VIirl6dq5DrLqMuQZCMSqdwBWCq9QxSFiKqCwE=;
+        b=C5OxH0Wo+HsLfvNjkXyFjcF+oqsSwpQlDABKbYcMBEVoJvGFkloEz98DUvrNtBJHQP
+         v2ncEr7y1GY+FzRBwv+TU1i1FeJYcq+mrgTmPzYmVW6HOtz8J8sTSTd7uzX/78HI+Xmh
+         39X+gxomig9wCgljDZDvhpI4+szQCrYmThZgzNBUb+/CMAyVax5XwDnAa5Gtd9gRsLjf
+         o+4ORftpjAKFUbz/9c1n2vqOzNhJtTPbQn/IEfWGHMFmXzeJHGi0ClnlRHDODVkh8ul8
+         Fj+69YKXX2wgfkNBBfREwB9ZcsqxEDvvcCVjA6JJDsv87nFSMKopn3NOJQ5sFmR5s28z
+         xhcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Mq4ASsjX+kVkhvdmQEYh8nWrR6ns9uJZ4+cZaSYQ7VI=;
-        b=sEmR5kKWaOLxw/TAHrFDQ/4Fd1JvkwaSGhDYmkqQTPYkjan9hOlH3WBM2I+x7dHyNx
-         upaIE80poUAS476suvkdsRoFIOCH6+HifxS7+rhGRA6hz3zqdT305ZGCTbV1uZ1jqKlI
-         mIGsJOUGFMr9fyDzptdh+twHZrl2JIRs7JkhqfD85+wA47zshJ4QlLz05ppPNy+KDjQI
-         iY41vmLJR7eXGLS1W5P1ABnYJRViQ1FN5BpsZLFkHlPaS3MqStQXauNS7tZkCMf+AxlB
-         520M+4i3dmVi8RwerIbotcOVfLPWcKqPfzc8+Ml/oNnJ1+uFYyqMU7wNr9lmyPaeQhAV
-         qw+w==
-X-Gm-Message-State: AOAM531BzlVlusJECAqj9tVZPnDrSCv3DyetVPYueqT/mKFIS50r5A/4
-        qouXjZKTD59IUJT5w5P1exRrPjKsUWttjBhKqqwB
-X-Google-Smtp-Source: ABdhPJxR2hVwmKDUZcFOxVE2rUwfoZn7+pqG+iMjKeX3xHEUK4BA8KsFPruinRNREUP9JBOMW765Jjlif/dmcp1szjs=
-X-Received: by 2002:a17:906:48c:: with SMTP id f12mr6519721eja.431.1611958533901;
- Fri, 29 Jan 2021 14:15:33 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=4wRX6VIirl6dq5DrLqMuQZCMSqdwBWCq9QxSFiKqCwE=;
+        b=M6S7KB5eS4T1zeAf8bTniArzxXdkVPFja16FbjJ+TH7Ummal2ZJRzUuPSr3zQCVO8S
+         mgPQXsZEtBvi/mLfCSIorqswwVRKn14j4upTckr9fy/Ft/Mk3p0Qhok4pBTFW0qEh8xK
+         +KfY2FUnF+B+/W5k5D4qbV1xG7/k5++4P9Vs5zL9TzBH3wtrUM4Bs0g26QBUq3FiBowW
+         PPL7Z4QMoHxNcCOgmsgiPCz3O/Cu+zVvLhxbRUtT4XIRIMAy4ldggPrBsyHl5bAZpT1S
+         mV9UJwLjhmr894MvijxqfI2H8/Gd+UFh4BkXJUvXnQfZmkJlznISDhezsGkGt4rxArlD
+         ugEA==
+X-Gm-Message-State: AOAM533F9RCH9kozky/H/bAqthwQ8A6v3TwaLNLUPgM1JpGGxv9LOoH1
+        RnHk7NdpmjxTMmMAVEqHwDA=
+X-Google-Smtp-Source: ABdhPJy5XktNAEgIF1INFKU+6FWK/KyZ7DjZ0r8yZcFdLowSIDa4sSKxcdP2kXkHxRotp7YkuaxwfQ==
+X-Received: by 2002:a17:902:7088:b029:e0:612:b092 with SMTP id z8-20020a1709027088b02900e00612b092mr6508878plk.41.1611961919453;
+        Fri, 29 Jan 2021 15:11:59 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:57a4])
+        by smtp.gmail.com with ESMTPSA id q126sm10121904pfb.111.2021.01.29.15.11.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Jan 2021 15:11:58 -0800 (PST)
+Date:   Fri, 29 Jan 2021 15:11:55 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Jann Horn <jannh@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        kernel-team <kernel-team@fb.com>, X86 ML <x86@kernel.org>,
+        KP Singh <kpsingh@kernel.org>
+Subject: Re: [PATCH bpf] x86/bpf: handle bpf-program-triggered exceptions
+ properly
+Message-ID: <20210129231155.mqbp5g675avvm5uq@ast-mbp.dhcp.thefacebook.com>
+References: <YBPToXfWV1ekRo4q@hirez.programming.kicks-ass.net>
+ <97EF0157-F068-4234-B826-C08B7324F356@amacapital.net>
 MIME-Version: 1.0
-References: <CAHC9VhQgy959hkpU8fwZnrTqGphVSA+ONF99Yy4ZQFyjQ_030A@mail.gmail.com>
- <CAADnVQJaJ0i2L2k-dM+neeT61q+pwEd+F6ASGh4Xbi-ogj0hfQ@mail.gmail.com>
-In-Reply-To: <CAADnVQJaJ0i2L2k-dM+neeT61q+pwEd+F6ASGh4Xbi-ogj0hfQ@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Fri, 29 Jan 2021 17:15:22 -0500
-Message-ID: <CAHC9VhSTJ=009hsXm=8jtQ_ZL-n=+tzKPbWj2Cnoa5w3iVNuew@mail.gmail.com>
-Subject: Re: selftest/bpf/test_verifier_log fails on v5.11-rc5
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Ondrej Mosnacek <omosnace@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <97EF0157-F068-4234-B826-C08B7324F356@amacapital.net>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 5:42 PM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
-> On Mon, Jan 25, 2021 at 12:54 PM Paul Moore <paul@paul-moore.com> wrote:
-> >
-> > Hello all,
-> >
-> > My apologies if this has already been reported, but I didn't see
-> > anything obvious with a quick search through the archives.  I have a
-> > test program that behaves very similar to the existing
-> > selftest/bpf/test_verifier_log test that has started failing this week
-> > with v5.11-rc5; it ran without problem last week on v5.11-rc4.  Is
-> > this a known problem with a fix already, or is this something new?
-> >
-> > % uname -r
-> > 5.11.0-0.rc5.134.fc34.x86_64
-> > % pwd
-> > /.../linux/tools/testing/selftests/bpf
-> > % git log --oneline | head -n 1
-> > 6ee1d745b7c9 Linux 5.11-rc5
-> > % make test_verifier_log
-> >   ...
-> >   BINARY   test_verifier_log
-> > % ./test_verifier_log
-> > Test log_level 0...
-> > Test log_size < 128...
-> > Test log_buff = NULL...
-> > Test oversized buffer...
-> > ERROR: Program load returned: ret:-1/errno:22, expected ret:-1/errno:13
->
-> Thanks for reporting.
-> bpf and bpf-next don't have this issue. Not sure what changed.
+On Fri, Jan 29, 2021 at 08:00:57AM -0800, Andy Lutomirski wrote:
+> 
+> > On Jan 29, 2021, at 1:21 AM, Peter Zijlstra <peterz@infradead.org> wrote:
+> > 
+> > ﻿On Thu, Jan 28, 2021 at 04:32:34PM -0800, Andy Lutomirski wrote:
+> > 
+> >> I spoke too soon.  get_kernel_nofault() is just fine.  You have
+> >> inlined something like __get_kernel_nofault(), which is incorrect.
+> >> get_kernel_nofault() would have done the right thing.
+> > 
+> > Correct, the pagefault_disable() is critical.
 
-I haven't had a chance to look into this any further, but Ondrej
-Mosnacek (CC'd) found the following today:
+What specifically are you referring to?
+As far as I can see the current->pagefault_disabled is an artifact of the past.
+It doesn't provide any additional information to the fault handler beyond
+what extable already does. Consider:
 
-"So I was trying to debug this further and I think I've identified what
-triggers the problem. It seems that the BTF debuginfo generation
-became broken with CONFIG_DEBUG_INFO_DWARF4=n somewhere between -rc4
-and -rc5. It also seems to depend on a recent (Fedora Rawhide) version
-of some component of the build system (GCC, probably), because the
-problem disappeared when I tried to build the "bad" kernel in F33
-buildroot instead of Rawhide."
+current->pagefault_disabled++
+some C code
+asm ("load") // with extable annotation
+some other C code
+current->pagefault_disabled--
 
--- 
-paul moore
-www.paul-moore.com
+If there is fault in the C code the fault handler will do the wrong thing,
+since the fault is technically disabled only for asm("load").
+The handler will go into bad_area_nosemaphore() instead of find_vma().
+
+The load instruction is annotated in extable.
+The fault handler instead of:
+  if (faulthandler_disabled) search_exception_tables()
+could do:
+ search_exception_tables()
+right away without sacrificing anything.
+If the fault is on one of the special asm("load") the intent of the code
+is obvious. This is non faulting load that should be fixed up.
+Of course the search of extable should happen before taking mmap lock.
+
+imo pagefault_disabled can be removed.
+
+> Also the _allowed() part. The bounds check is required.
+
+Up-thread I was saying that JIT is inlining copy_from_kernel_nofault().
+That's not quite correct. When the code was written it was inlining
+bpf_probe_read(). Back then _kernel vs _user distinction didn't exist.
+So the bounds check wasn't there. The verifier side was designed
+for kernel pointers and NULL from the beginning. No user pointer
+(aside from NULL) would ever go through this path.
+Today I agree that the range check is necessary.
+The question is where to do this check.
+I see two options:
+- the JIT can emit it
+- fault handler can do it, since %rip clearly says that it's JITed asm load.
+The intent of the code is not ambiguous.
+The intent of the fault is not ambiguous either.
+More so the mmap lock and find_vma should not be done.
+
+I prefer the later approach which can be implemented as:
+diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+index f1f1b5a0956a..7846a95436c1 100644
+--- a/arch/x86/mm/fault.c
++++ b/arch/x86/mm/fault.c
+@@ -1248,6 +1248,12 @@ void do_user_addr_fault(struct pt_regs *regs,
+        if (unlikely(kprobe_page_fault(regs, X86_TRAP_PF)))
+                return;
+
++       if (!address && (e = search_bpf_extables(regs->ip))) {
++               handler = ex_fixup_handler(e);
++               handler(e, regs, trapnr, error_code, fault_addr);
++               return;
++       }
++
+
+Comparing to former option it saves bpf prog cycles.
+
+Consider that users do not write a->b->c just to walk NULL pointers.
+The bpf program authors are not writing junk programs.
+If the program is walking the pointers it expects to read useful data.
+If one of those pointers can be NULL the program author will
+add if (!ptr) check there. The author will use blind a->b->c
+only for cases where these pointers are most likely will be !NULL.
+"Most likely" means that in 99.9% of the situations there will be no faults.
+When people write bpf tracing progs they care about the perf overhead.
+Obviously if prog is causing faults somebody will notice and will
+slap that bpf author for causing a performance regression.
+So faulting on NULL is very rare in practice.
+There is a selftests/bpf for faulting on NULL, but it's a test only.
+If the NULL check is added by JIT it will not be hit 99.9% of the time.
+It will be a pure overhead for program execution.
+Hence my preference for the latter approach.
