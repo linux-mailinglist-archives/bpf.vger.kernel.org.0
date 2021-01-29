@@ -2,71 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAE34308C0F
-	for <lists+bpf@lfdr.de>; Fri, 29 Jan 2021 19:04:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83922308C27
+	for <lists+bpf@lfdr.de>; Fri, 29 Jan 2021 19:10:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232210AbhA2SAi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Jan 2021 13:00:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231408AbhA2SAg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Jan 2021 13:00:36 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A0FC061573;
-        Fri, 29 Jan 2021 09:59:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=PdDq2cdufJEB2VDwv/X3w5XT/JWi/Zx1Ja9u2w6DFT8=; b=Zq2r76xBQPM2w4sz8F1Ic9JdIr
-        K4xDJquC8I8HblnYYrFJxCVsxWYhQYBKY5xyfjJu3C9bJTgiDowyAe/hALM4vu0T5AFbGtyvibPnT
-        V1WjUa2Pn21M8EVbtcefCM7kHNZYCEj164cD3ga0tfq0TMjqoKdQndG4iTUgFH4IqKPjWE8wLmpex
-        JgcQMLE9gpZ+C6ZfT+8z34TIzyz5aW1dPbMC5pXHzpC3CtuQNHrT6ikxivsdjdKChEke8lLPu8Owv
-        zwllq5bNlNS4cH+LjL5DbAvow9XUi3pBeVmHHVx1QMJMxMzNwf7+H6JVhgFBSPlsPWXNoey77/f5h
-        1MlSYgkg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l5Y3b-00A7Kv-MQ; Fri, 29 Jan 2021 17:59:44 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 51EA4981210; Fri, 29 Jan 2021 18:59:43 +0100 (CET)
-Date:   Fri, 29 Jan 2021 18:59:43 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Nikolay Borisov <nborisov@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: kprobes broken since 0d00449c7a28 ("x86: Replace ist_enter()
- with nmi_enter()")
-Message-ID: <20210129175943.GH8912@worktop.programming.kicks-ass.net>
-References: <20210128123842.c9e33949e62f504b84bfadf5@gmail.com>
- <e8bae974-190b-f247-0d89-6cea4fd4cc39@suse.com>
- <eb1ec6a3-9e11-c769-84a4-228f23dc5e23@suse.com>
- <YBMBTsY1uuQb9wCP@hirez.programming.kicks-ass.net>
- <20210129013452.njuh3fomws62m4rc@ast-mbp.dhcp.thefacebook.com>
- <YBPNyRyrkzw2echi@hirez.programming.kicks-ass.net>
- <20210129224011.81bcdb3eba1227c414e69e1f@kernel.org>
- <20210129105952.74dc8464@gandalf.local.home>
- <20210129162438.GC8912@worktop.programming.kicks-ass.net>
- <CAADnVQLMqHpSsZ1OdZRFmKqNWKiRq3dxRxw+y=kvMdmkN7htUw@mail.gmail.com>
+        id S232020AbhA2SIA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Jan 2021 13:08:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25316 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232550AbhA2SHu (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 29 Jan 2021 13:07:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611943582;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=V9wwVs7bE4eUGywhu7/y58AMJb7GSg2J1O0tKjzQHCI=;
+        b=cJkvcNrYX3NBrE5E8WQEfobIeayLBvLe2+F87OrwQQEyDiaRaHraUYfs4awamt5kh482Fr
+        e1lYvceeFlHEyPV4mJfxd5pl7opgUEEjTNlnFc+miY3UVfFQCbRJaq4TwJv/skyiJPMtyN
+        /A2eeIo2yoB7LBBQdpmoXQUMIzwVoW0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-104--BI2lw_SMW2OCKQ8iUs3KQ-1; Fri, 29 Jan 2021 13:06:18 -0500
+X-MC-Unique: -BI2lw_SMW2OCKQ8iUs3KQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5223580DDE1;
+        Fri, 29 Jan 2021 18:06:16 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 96AAA5C1B4;
+        Fri, 29 Jan 2021 18:06:09 +0000 (UTC)
+Date:   Fri, 29 Jan 2021 19:06:06 +0100
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>, maximmi@nvidia.com,
+        David Miller <davem@davemloft.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
+Subject: Re: [RFC PATCH bpf-next] bpf, xdp: per-map bpf_redirect_map
+ functions for XDP
+Message-ID: <20210129190606.33c697cf@carbon>
+In-Reply-To: <CAJ+HfNiFtRd-KKMB1t3Mi3MZ=C+u5TTM5YFnzJFfR4Ruzc7c9Q@mail.gmail.com>
+References: <20210129153215.190888-1-bjorn.topel@gmail.com>
+        <CAJ+HfNiFtRd-KKMB1t3Mi3MZ=C+u5TTM5YFnzJFfR4Ruzc7c9Q@mail.gmail.com>
+Organization: Red Hat Inc.
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQLMqHpSsZ1OdZRFmKqNWKiRq3dxRxw+y=kvMdmkN7htUw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 09:45:48AM -0800, Alexei Starovoitov wrote:
-> Same things apply to bpf side. We can statically prove safety for
-> ftrace and kprobe attaching whereas to deal with NMI situation we
-> have to use run-time checks for recursion prevention, etc.
+On Fri, 29 Jan 2021 16:35:47 +0100
+Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> wrote:
 
-I have no idea what you're saying. You can attach to functions that are
-called with random locks held, you can create kprobes in some very
-sensitive places.
+> On Fri, 29 Jan 2021 at 16:32, Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.co=
+m> wrote:
+> >
+> > From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+> > =20
+> [...]
+> >
+> > For AF_XDP rxdrop this yields +600Mpps. I'll do CPU/DEVMAP
+> > measurements for the patch proper.
+> > =20
+>=20
+> Kpps, not Mpps. :-P
 
-What can you staticlly prove about that?
++600Kpps from 24Mpps to 24.6Mpps I assume.  This corresponds to approx
+1 ns ((1/24-1/24.6)*1000 =3D 1.01626 ns).
+
+This also correlate with saving one function call, which is basically
+what the patch does.
+
+Fresh measurement "Intel(R) Xeon(R) CPU E5-1650 v4 @ 3.60GHz" with [1]:
+ time_bench: Type:funcion_call_cost Per elem: 3 cycles(tsc) 1.053 ns
+ time_bench: Type:func_ptr_call_cost Per elem: 4 cycles(tsc) 1.317 ns
+
+[1] https://github.com/netoptimizer/prototype-kernel/blob/master/kernel/lib=
+/time_bench_sample.c
+--=20
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
