@@ -2,99 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B34A308706
-	for <lists+bpf@lfdr.de>; Fri, 29 Jan 2021 09:29:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDC933088D1
+	for <lists+bpf@lfdr.de>; Fri, 29 Jan 2021 13:05:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232460AbhA2H6d (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Jan 2021 02:58:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60636 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232323AbhA2H6U (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 29 Jan 2021 02:58:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611907099;
+        id S232333AbhA2MEV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Jan 2021 07:04:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232326AbhA2MCR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Jan 2021 07:02:17 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E240C08ECA4;
+        Fri, 29 Jan 2021 02:21:15 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0c9a00c2508fce5f12579a.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:9a00:c250:8fce:5f12:579a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A974D1EC026D;
+        Fri, 29 Jan 2021 11:21:10 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1611915670;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=frWt5ROwdAqhxGSC35VniZUKfzS+yNeowZUQl2ctpUE=;
-        b=LL7WcpH76i95Qk5WgrSqK26ZKCCr8GK662prap6yLUmjcAaktBYKjeamoF7kfpy8wYcVsF
-        fL+82TYy7oImiHL0u4CWOcPqxJOLPpVwhPL3DF0nAQ5aDqIqRwLrABSZjhJ3csm5YFaqie
-        Gq0xWXydmN1CQCWU3jCWj47NAENggQc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-476-ja8k-lrlNzSRSo1R1QwNOQ-1; Fri, 29 Jan 2021 02:58:16 -0500
-X-MC-Unique: ja8k-lrlNzSRSo1R1QwNOQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D13DB180A0A9;
-        Fri, 29 Jan 2021 07:58:14 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8C5C85D9EF;
-        Fri, 29 Jan 2021 07:58:09 +0000 (UTC)
-Date:   Fri, 29 Jan 2021 08:58:08 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     David Ahern <dsahern@gmail.com>
-Cc:     netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, bpf@vger.kernel.org,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        brouer@redhat.com
-Subject: Re: [PATCH net-next V1] net: adjust net_device layout for cacheline
- usage
-Message-ID: <20210129085808.4e023d3f@carbon>
-In-Reply-To: <2836dccc-faa9-3bb6-c4d5-dd60c75b275a@gmail.com>
-References: <161168277983.410784.12401225493601624417.stgit@firesoul>
-        <2836dccc-faa9-3bb6-c4d5-dd60c75b275a@gmail.com>
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=TVLhEv6qFkJVfRGbRCeWnctSeyH/2aF863ezHXsArvw=;
+        b=erNdzR8S0vCkAaDIcWEZuGKQk4j4hHdj0CaAHILELw+fn/JXJlOTzwZ30WCZs/K2z9dGjS
+        24canQOHf8ZnUrv898FXTNxUFjY5Gj1mDjXUdu12OhUgtuR2tSl/HFc4D17HJs1JhQv6Hp
+        yBHs112GHBP977M3ycTPGXi5MsyTmKE=
+Date:   Fri, 29 Jan 2021 11:21:05 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, Masami Hiramatsu <masami.hiramatsu@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Nikolay Borisov <nborisov@suse.com>
+Subject: Re: [PATCH] x86: Disable CET instrumentation in the kernel
+Message-ID: <20210129102105.GA27841@zn.tnic>
+References: <25cd2608-03c2-94b8-7760-9de9935fde64@suse.com>
+ <20210128001353.66e7171b395473ef992d6991@kernel.org>
+ <20210128002452.a79714c236b69ab9acfa986c@kernel.org>
+ <a35a6f15-9ab1-917c-d443-23d3e78f2d73@suse.com>
+ <20210128103415.d90be51ec607bb6123b2843c@kernel.org>
+ <20210128123842.c9e33949e62f504b84bfadf5@gmail.com>
+ <e8bae974-190b-f247-0d89-6cea4fd4cc39@suse.com>
+ <eb1ec6a3-9e11-c769-84a4-228f23dc5e23@suse.com>
+ <20210128165014.xc77qtun6fl2qfun@treble>
+ <20210128215219.6kct3h2eiustncws@treble>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210128215219.6kct3h2eiustncws@treble>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, 28 Jan 2021 20:51:23 -0700
-David Ahern <dsahern@gmail.com> wrote:
-
-> On 1/26/21 10:39 AM, Jesper Dangaard Brouer wrote:
-> > The current layout of net_device is not optimal for cacheline usage.
-> > 
-> > The member adj_list.lower linked list is split between cacheline 2 and 3.
-> > The ifindex is placed together with stats (struct net_device_stats),
-> > although most modern drivers don't update this stats member.
-> > 
-> > The members netdev_ops, mtu and hard_header_len are placed on three
-> > different cachelines. These members are accessed for XDP redirect into
-> > devmap, which were noticeably with perf tool. When not using the map
-> > redirect variant (like TC-BPF does), then ifindex is also used, which is
-> > placed on a separate fourth cacheline. These members are also accessed
-> > during forwarding with regular network stack. The members priv_flags and
-> > flags are on fast-path for network stack transmit path in __dev_queue_xmit
-> > (currently located together with mtu cacheline).
-> > 
-> > This patch creates a read mostly cacheline, with the purpose of keeping the
-> > above mentioned members on the same cacheline.
-> > 
-> > Some netdev_features_t members also becomes part of this cacheline, which is
-> > on purpose, as function netif_skb_features() is on fast-path via
-> > validate_xmit_skb().  
+On Thu, Jan 28, 2021 at 03:52:19PM -0600, Josh Poimboeuf wrote:
 > 
-> A long over due look at the organization of this struct. Do you have
-> performance numbers for the XDP case?
+> With retpolines disabled, some configurations of GCC will add Intel CET
+> instrumentation to the kernel by default.  That breaks certain tracing
+> scenarios by adding a superfluous ENDBR64 instruction before the fentry
+> call, for functions which can be called indirectly.
+> 
+> CET instrumentation isn't currently necessary in the kernel, as CET is
+> only supported in user space.  Disable it unconditionally.
+> 
+> Reported-by: Nikolay Borisov <nborisov@suse.com>
+> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> ---
+>  Makefile          | 6 ------
+>  arch/x86/Makefile | 3 +++
+>  2 files changed, 3 insertions(+), 6 deletions(-)
+> 
+> diff --git a/Makefile b/Makefile
+> index e0af7a4a5598..51c2bf34142d 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -948,12 +948,6 @@ KBUILD_CFLAGS   += $(call cc-option,-Werror=designated-init)
+>  # change __FILE__ to the relative path from the srctree
+>  KBUILD_CPPFLAGS += $(call cc-option,-fmacro-prefix-map=$(srctree)/=)
+>  
+> -# ensure -fcf-protection is disabled when using retpoline as it is
+> -# incompatible with -mindirect-branch=thunk-extern
+> -ifdef CONFIG_RETPOLINE
+> -KBUILD_CFLAGS += $(call cc-option,-fcf-protection=none)
+> -endif
+> -
 
-Yes, my measurements are documented here:
- https://github.com/xdp-project/xdp-project/blob/master/areas/core/xdp_redir01_net_device.org
+Why is that even here, in the main Makefile if this cf-protection thing
+is x86-specific?
 
-Calc improvements of xdp_redirect_map on driver i40e:
- * (1/12115061-1/12906785)*10^9 = 5.06 ns
- * ((12906785/12115061)-1)*100  = 6.54%
+Are we going to move it back there when some other arch gets CET or
+CET-like support?
 
 -- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
