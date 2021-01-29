@@ -2,197 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB9373085A6
-	for <lists+bpf@lfdr.de>; Fri, 29 Jan 2021 07:24:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A52973085AA
+	for <lists+bpf@lfdr.de>; Fri, 29 Jan 2021 07:24:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232053AbhA2GWp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Jan 2021 01:22:45 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:35484 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232059AbhA2GWn (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 29 Jan 2021 01:22:43 -0500
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10T6EGv3024760;
-        Thu, 28 Jan 2021 22:21:41 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=rFUAEl42vHbSDhzYE/z1STAUuJ8Fzqw8SuNmtViDRwA=;
- b=CtBJPQabG8SyhkdK8vI7+uwsgqarhXmgh8k9hDsHr+qI6+xlv99sVdKeL8KY+/a3dPpI
- Wc1oY9+37KQxJLyT2wWwc36jDuO/hwfupbX/+HJfvtBo053IjHQJwXz2bgBD68qcutkP
- kVjN0SdHcb9EA6FzNpzXXNlRTruhc5mcNHg= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 36bb34ag7d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 28 Jan 2021 22:21:41 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 28 Jan 2021 22:21:40 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AXsicUOGfKqFGFc6CWKLKK2dCNWOY/QLhUSBZv2KtTenMskyUPx0y62NItffBr2prXCMmYduECXwd6AfT6SdGk48xwBGtXhwRY4MHMh8hfSPoqlVeeqW+flgW30Um3or759zs3nPpOL4Q/bpMBG3T7Hdlg5ZbpI6GqNKuJQKmAtfW17r/ITITOE8c0TIeIMOJPnU9ud7GEOtVC/yvu+p1aCjtlsZy/AjzC/Nadf72TfGieCxTaM11ESclRpcrHarhnUa97n9fjgacCMh0PuzmpBQS/HiJWC2RcxuGLi3qyCczsgboK4oXqhS56IX0jfVB6Auo4M7/9+SLj5VlfN5eg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rFUAEl42vHbSDhzYE/z1STAUuJ8Fzqw8SuNmtViDRwA=;
- b=DgNMriaJLchblLVQxXZ5ytj9r8kF8Yn48t7tdUzrZd5y99lGnCI4ic8co8yHYWKyfpAYVZoxMAD3uAfPBaQoNT16QsTF5K93aC+Js6sYcIUm+52esGO8pQlvThIK8TJUpGzWmtfCGMRzcgXnCQiSlfN0m02NaWVYlhY8x4mDIe4JH7G2LaX/EETYYEVoZZUojABYrkBzN5j/a7C606wCou9xoguPZiLi1AmWSsx55C6xpZ4rE5q5mVFvIVmZbuW+lvLWbvUheIZ386gs/qBMWROyJj14oLe1iEFW9L1axOMmgceNVXbSP1gTj13LvonkAH+OjSJ41CAII2REofumzA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rFUAEl42vHbSDhzYE/z1STAUuJ8Fzqw8SuNmtViDRwA=;
- b=cmoZdD2JYDzHhPe6ntfkx2qm647wJ7BighuNXDF9lo2rOzUd6Xmr9DFwLnlC/DAaswo9/mlRiN2EJO+axpS3s4Bf2PCNFFGLT3Y/6U5FeAmXVXVrop1uxsFaDXgkegc9kvGtIZ+mkV05gQ1TpWfc2hEjksmVJSdrfjI+TDMlaqw=
-Authentication-Results: bytedance.com; dkim=none (message not signed)
- header.d=none;bytedance.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BY5PR15MB3572.namprd15.prod.outlook.com (2603:10b6:a03:1b2::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.17; Fri, 29 Jan
- 2021 06:21:39 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::61d6:781d:e0:ada5]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::61d6:781d:e0:ada5%5]) with mapi id 15.20.3805.020; Fri, 29 Jan 2021
- 06:21:39 +0000
-Subject: Re: [Patch bpf-next v5 1/3] bpf: introduce timeout hash map
-To:     Cong Wang <xiyou.wangcong@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-CC:     Daniel Borkmann <daniel@iogearbox.net>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Jamal Hadi Salim <jhs@mojatatu.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Dongdong Wang <wangdongdong.6@bytedance.com>
-References: <20210122205415.113822-1-xiyou.wangcong@gmail.com>
- <20210122205415.113822-2-xiyou.wangcong@gmail.com>
- <d69d44ca-206c-d818-1177-c8f14d8be8d1@iogearbox.net>
- <CAM_iQpW8aeh190G=KVA9UEZ_6+UfenQxgPXuw784oxCaMfXjng@mail.gmail.com>
- <CAADnVQKmNiHj8qy1yqbOrf-OMyhnn8fKm87w6YMfkiDHkBpJVg@mail.gmail.com>
- <CAM_iQpXAQ7AMz34=o5E=81RFGFsQB5jCDTCCaVdHokU6kaJQsQ@mail.gmail.com>
- <20210129025435.a34ydsgmwzrnwjlg@ast-mbp.dhcp.thefacebook.com>
- <CAM_iQpU5XSgOjdkKbj01p+-QZ5vUof9eZTWR8c0O_cHkHXVkwg@mail.gmail.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <58649ca3-7a09-f73b-f8fb-0b8595a22b46@fb.com>
-Date:   Thu, 28 Jan 2021 22:21:36 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.0
-In-Reply-To: <CAM_iQpU5XSgOjdkKbj01p+-QZ5vUof9eZTWR8c0O_cHkHXVkwg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2620:10d:c090:400::5:30b5]
-X-ClientProxiedBy: MWHPR22CA0066.namprd22.prod.outlook.com
- (2603:10b6:300:12a::28) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+        id S231855AbhA2GYN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Jan 2021 01:24:13 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44508 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229459AbhA2GYM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Jan 2021 01:24:12 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611901405; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=x55Ghkb1NGSakCxiseBfr9GEKcsGjHRMccE0zQUExb0=;
+        b=Kqo2SaoBr7vMKdT9ZC0xKlF/TuUvQQtxU7kuYFdaUkUFB+4cRlueU1az7KIA84wsAOr26E
+        uulsVmbtscSVNLwtcRN5EA+sFUxGDTd8oqKvoAhXxIBTw3lRCwcgDk/WTmKLm8XohgyaWS
+        fP/8/VpGk/oxou+u4EtDPdXE6RXuaLk=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 196EAABDA;
+        Fri, 29 Jan 2021 06:23:25 +0000 (UTC)
+Subject: Re: [PATCH] x86: Disable CET instrumentation in the kernel
+To:     Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org
+Cc:     Masami Hiramatsu <masami.hiramatsu@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+References: <25cd2608-03c2-94b8-7760-9de9935fde64@suse.com>
+ <20210128001353.66e7171b395473ef992d6991@kernel.org>
+ <20210128002452.a79714c236b69ab9acfa986c@kernel.org>
+ <a35a6f15-9ab1-917c-d443-23d3e78f2d73@suse.com>
+ <20210128103415.d90be51ec607bb6123b2843c@kernel.org>
+ <20210128123842.c9e33949e62f504b84bfadf5@gmail.com>
+ <e8bae974-190b-f247-0d89-6cea4fd4cc39@suse.com>
+ <eb1ec6a3-9e11-c769-84a4-228f23dc5e23@suse.com>
+ <20210128165014.xc77qtun6fl2qfun@treble>
+ <20210128215219.6kct3h2eiustncws@treble>
+From:   Nikolay Borisov <nborisov@suse.com>
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
+ T7g+RbfPFlmQp+EwFWOtABXlKC54zgSf+uulGwx5JAUFVUIRBmnHOYi/lUiE0yhpnb1KCA7f
+ u/W+DkwGerXqhhe9TvQoGwgCKNfzFPZoM+gZrm+kWv03QLUCr210n4cwaCPJ0Nr9Z3c582xc
+ bCUVbsjt7BN0CFa2BByulrx5xD9sDAYIqfLCcZetAqsTRGxM7LD0kh5WlKzOeAXj5r8DOrU2
+ GdZS33uKZI/kZJZVytSmZpswDsKhnGzRN1BANGP8sC+WD4eRXajOmNh2HL4P+meO1TlM3GLl
+ EQd2shHFY0qjEo7wxKZI1RyZZ5AgJnSmehrPCyuIyVY210CbMaIKHUIsTqRgY5GaNME24w7h
+ TyyVCy2qAM8fLJ4Vw5bycM/u5xfWm7gyTb9V1TkZ3o1MTrEsrcqFiRrBY94Rs0oQkZvunqia
+ c+NprYSaOG1Cta14o94eMH271Kka/reEwSZkC7T+o9hZ4zi2CcLcY0DXj0qdId7vUKSJjEep
+ c++s8ncFekh1MPhkOgNj8pk17OAESanmDwksmzh1j12lgA5lTFPrJeRNu6/isC2zyZhTwMWs
+ k3LkcTa8ZXxh0RfWAqgx/ogKPk4ZxOXQEZetkEyTFghbRH2BIwARAQABtCNOaWtvbGF5IEJv
+ cmlzb3YgPG5ib3Jpc292QHN1c2UuY29tPokCOAQTAQIAIgUCWIo48QIbAwYLCQgHAwIGFQgC
+ CQoLBBYCAwECHgECF4AACgkQcb6CRuU/KFc0eg/9GLD3wTQz9iZHMFbjiqTCitD7B6dTLV1C
+ ddZVlC8Hm/TophPts1bWZORAmYIihHHI1EIF19+bfIr46pvfTu0yFrJDLOADMDH+Ufzsfy2v
+ HSqqWV/nOSWGXzh8bgg/ncLwrIdEwBQBN9SDS6aqsglagvwFD91UCg/TshLlRxD5BOnuzfzI
+ Leyx2c6YmH7Oa1R4MX9Jo79SaKwdHt2yRN3SochVtxCyafDlZsE/efp21pMiaK1HoCOZTBp5
+ VzrIP85GATh18pN7YR9CuPxxN0V6IzT7IlhS4Jgj0NXh6vi1DlmKspr+FOevu4RVXqqcNTSS
+ E2rycB2v6cttH21UUdu/0FtMBKh+rv8+yD49FxMYnTi1jwVzr208vDdRU2v7Ij/TxYt/v4O8
+ V+jNRKy5Fevca/1xroQBICXsNoFLr10X5IjmhAhqIH8Atpz/89ItS3+HWuE4BHB6RRLM0gy8
+ T7rN6ja+KegOGikp/VTwBlszhvfLhyoyjXI44Tf3oLSFM+8+qG3B7MNBHOt60CQlMkq0fGXd
+ mm4xENl/SSeHsiomdveeq7cNGpHi6i6ntZK33XJLwvyf00PD7tip/GUj0Dic/ZUsoPSTF/mG
+ EpuQiUZs8X2xjK/AS/l3wa4Kz2tlcOKSKpIpna7V1+CMNkNzaCOlbv7QwprAerKYywPCoOSC
+ 7P25Ag0EWIoHPgEQAMiUqvRBZNvPvki34O/dcTodvLSyOmK/MMBDrzN8Cnk302XfnGlW/YAQ
+ csMWISKKSpStc6tmD+2Y0z9WjyRqFr3EGfH1RXSv9Z1vmfPzU42jsdZn667UxrRcVQXUgoKg
+ QYx055Q2FdUeaZSaivoIBD9WtJq/66UPXRRr4H/+Y5FaUZx+gWNGmBT6a0S/GQnHb9g3nonD
+ jmDKGw+YO4P6aEMxyy3k9PstaoiyBXnzQASzdOi39BgWQuZfIQjN0aW+Dm8kOAfT5i/yk59h
+ VV6v3NLHBjHVw9kHli3jwvsizIX9X2W8tb1SefaVxqvqO1132AO8V9CbE1DcVT8fzICvGi42
+ FoV/k0QOGwq+LmLf0t04Q0csEl+h69ZcqeBSQcIMm/Ir+NorfCr6HjrB6lW7giBkQl6hhomn
+ l1mtDP6MTdbyYzEiBFcwQD4terc7S/8ELRRybWQHQp7sxQM/Lnuhs77MgY/e6c5AVWnMKd/z
+ MKm4ru7A8+8gdHeydrRQSWDaVbfy3Hup0Ia76J9FaolnjB8YLUOJPdhI2vbvNCQ2ipxw3Y3c
+ KhVIpGYqwdvFIiz0Fej7wnJICIrpJs/+XLQHyqcmERn3s/iWwBpeogrx2Lf8AGezqnv9woq7
+ OSoWlwXDJiUdaqPEB/HmGfqoRRN20jx+OOvuaBMPAPb+aKJyle8zABEBAAGJAh8EGAECAAkF
+ AliKBz4CGwwACgkQcb6CRuU/KFdacg/+M3V3Ti9JYZEiIyVhqs+yHb6NMI1R0kkAmzsGQ1jU
+ zSQUz9AVMR6T7v2fIETTT/f5Oout0+Hi9cY8uLpk8CWno9V9eR/B7Ifs2pAA8lh2nW43FFwp
+ IDiSuDbH6oTLmiGCB206IvSuaQCp1fed8U6yuqGFcnf0ZpJm/sILG2ECdFK9RYnMIaeqlNQm
+ iZicBY2lmlYFBEaMXHoy+K7nbOuizPWdUKoKHq+tmZ3iA+qL5s6Qlm4trH28/fPpFuOmgP8P
+ K+7LpYLNSl1oQUr+WlqilPAuLcCo5Vdl7M7VFLMq4xxY/dY99aZx0ZJQYFx0w/6UkbDdFLzN
+ upT7NIN68lZRucImffiWyN7CjH23X3Tni8bS9ubo7OON68NbPz1YIaYaHmnVQCjDyDXkQoKC
+ R82Vf9mf5slj0Vlpf+/Wpsv/TH8X32ajva37oEQTkWNMsDxyw3aPSps6MaMafcN7k60y2Wk/
+ TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
+ RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
+ 5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
+Message-ID: <3b24d8c8-a1fe-5b7c-6e96-65a719588f49@suse.com>
+Date:   Fri, 29 Jan 2021 08:23:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21d6::1965] (2620:10d:c090:400::5:30b5) by MWHPR22CA0066.namprd22.prod.outlook.com (2603:10b6:300:12a::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17 via Frontend Transport; Fri, 29 Jan 2021 06:21:38 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 05e15045-874d-4617-e136-08d8c41e2341
-X-MS-TrafficTypeDiagnostic: BY5PR15MB3572:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR15MB357207A3644746AA6E908414D3B99@BY5PR15MB3572.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mum8GAFVeaJAbQ1Ix3g5+SnFue+FRrhK8+qFC2Rn5OX67F5FyLILd21FNYDDa3Z+DiMPfaDxiFeNd8P/wm2b6hIMedcVGOrm6Yr1W6d4Q5oGiAmP9WclG28Z2XH/X+2k8387VyJzka13nZYESF6PVPqHIw+U7pQhYvGiZwXRVrJzCpiWLpdOppcyV1O9ixamJ0WkSU/fqECcEzgGde+Juxl68DKhk7D3W8Zv8Cg0kOQAhOK7pY7w+4GZlPfEmCTXJ0jpYdarU4dKfoub2Kx6pvPWD4ofCMILTia033hrLZSQEMF/i8fCSFlrDEH7LLJUV/qwYPSdxn1hj11RUfnPt2CjLDQNDupptZLxtyvqUnP8TOz0Z4vFihtQcIF0EOfLIVEh+8l+s0GxqYuRA27nu1eW62xSnVxyxFGAaB8xHLlWoSbL05OX8SwvYm80LSKuJNlP0dLQbpHqFDUsPS1FCTnFbn+XuMzXPCxVNusygwHVtPNuR0C2XyYYrK5YeQgKfK1zzymnVjTkcElP3GfSSi/oxKbL/7cOdi1ORdmeeGx1bXM1Ppvw7IJEcI/fFBuPc4udjjqPWEywbdGBeRXpWeJluYWul/aeqHa2EHdhXbM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(346002)(376002)(136003)(366004)(396003)(16526019)(8936002)(53546011)(110136005)(186003)(7416002)(66476007)(31696002)(54906003)(31686004)(478600001)(8676002)(6486002)(83380400001)(52116002)(66946007)(4326008)(5660300002)(66556008)(316002)(2906002)(86362001)(2616005)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?SXo3UFAycUZ6NGU3ZnNBK0JqRGIzbU5abFEvQm91RVc4R1l1ZUd5NXQxZkhQ?=
- =?utf-8?B?b3dxY29PaTFzZ1RGbVZ0UmQrUmtseHE0bndxRDRyYzM4OE5mR3c4RC9MYzAx?=
- =?utf-8?B?eWEyUWlmNm45QXRmQWpYclFHbzBMckUwWHg2YzRmZnFiV2tSZ0lDWXVvaWhN?=
- =?utf-8?B?MnJab1RseW5CRTdQVzlYQ0FYTTM0SGlBUkFrMEhVRkIyK0tjNGRnaDg4V05X?=
- =?utf-8?B?Z283WWc5VmlLNFdwVHM5djVETGY4NUErYkpaM2FrdHRhNWFOcXB3eEM5Nzd2?=
- =?utf-8?B?aW5tRDkyQzlFS05abm1rdllUbUMvNmIvc3FxaXB3cCt3T212a3duRlVlcWpF?=
- =?utf-8?B?YmNVSFJSdThtVkZ3NVRnLzYrMkJQempPUnpONU5KWEUvYVpiUTJiVk4rT3g3?=
- =?utf-8?B?NU1GRHVkOG41bmIwSithSHlPcE1wNWZnb2VBK3ZaRlFuY3dCM1JpQUJsK1hm?=
- =?utf-8?B?djczU3ZSWi9wTTRSNFF1a3hWMXpjOFo5TGhlN1BxY1VQZjVxZE83Um5kZ3pN?=
- =?utf-8?B?L2pld2ZjNnExTXFQQit6S0JMUXNoYlN4UmMyWXZOcXF1aDgzaUh2N240MWlE?=
- =?utf-8?B?RXRaRDlaM1MzVm5jRFJ0a0xUSkcrZ05Ld3BIeUhWSldYR1M5TkZnYVlBdmd6?=
- =?utf-8?B?V1crd2RJRStDS0dtTXBkZVFWRmFaSm5TdERTL1UwaUhncVRaTXhhbTBFYkYy?=
- =?utf-8?B?NHRtVE95K0FwbGo5QkVpS3VPcXI2bGVGMWpuaTVoUW1QNWlwanc2M1JoV1pS?=
- =?utf-8?B?QUNiVkJpZ29oUHBQNUh0QjNUOW9sNG9pT0Vaa1d1Qy85VEc4N0VnSVVOZ3Bm?=
- =?utf-8?B?V2VjaE1zMkllQnlTN2NrMVlYWWFKZ041TVdBN1Njc0c5OWNYRnJiUzRVNUhy?=
- =?utf-8?B?SWQvOHJJZ04veDdaNSs0cmllakJDaHNnMFNoS1JpNklYNnpYS1hud1dGK3Nr?=
- =?utf-8?B?U0RkVGZIdnNzWWtCSFhBVUZaSTBsZEQzbVlNdERtemoxY3VMZWYrOFlNek0r?=
- =?utf-8?B?cko4ZFl2WU81R0tIY3hNZXNLMFB4b3lyeWNTbE4zRTJ5RkZNdGpwUEh2bXY3?=
- =?utf-8?B?a3ZUUHBDZDZidDFYYjFxUVl1cGpZNU5JUG9RWUFtWDZVVC93QXRRTDJ6MFFk?=
- =?utf-8?B?MjhkanlBR0FEY3JTM09jUFlUSkhCTVVtZUlyZUtpZDhqdUkra1BTb3oyRHI4?=
- =?utf-8?B?cEJZeHpxTkZZRWsvZWtpL01jTGZKMXhQTEp4bk9YdmZ1VGdzWkNzWmJlRTRW?=
- =?utf-8?B?TmswclRVRTVsNmNDQ2pHTGF1blowbk1vOEFod01ZbkZyMjVSdXU3akJPR3Nr?=
- =?utf-8?B?R1E0cGtsN0hWbUlOYzNQS3VESi80NVJLNnRxN3R2U3hZSno2T2N5SERQVWRq?=
- =?utf-8?B?Ykw5V0YyN2JQSThOTHNwZjJHMGk2azc3NXdacWgxVHIrRmRiUzFxcWlDRWVE?=
- =?utf-8?B?U0hTREdjeDh0UWs5VzBoUnNncE4vNERWRUcvWTZpcHQ3eml6cER0VE1NVGRV?=
- =?utf-8?Q?eMYzTk=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 05e15045-874d-4617-e136-08d8c41e2341
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2021 06:21:39.4666
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: h/mxv3DmUl2+UH1jOgqkcXHizwtAX0CUjw/KPSgY8eoGpi5GyMh3WvGBjdpI/PE8
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3572
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-29_02:2021-01-28,2021-01-29 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- priorityscore=1501 impostorscore=0 malwarescore=0 phishscore=0
- mlxlogscore=999 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
- lowpriorityscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2101290033
-X-FB-Internal: deliver
+In-Reply-To: <20210128215219.6kct3h2eiustncws@treble>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 1/28/21 9:57 PM, Cong Wang wrote:
-> On Thu, Jan 28, 2021 at 6:54 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
->>
->> I meant it would look like:
->>
->> noinline per_elem_callback(map, key, value, ...)
->> {
->>    if (value->foo > ...)
->>      bpf_delete_map_elem(map, key);
->> }
->>
->> noinline timer_callback(timer, ctx)
->> {
->>    map = ctx->map;
->>    bpf_for_each_map_elem(map, per_elem_callback, ...);
->> }
->>
->> int main_bpf_prog(skb)
->> {
->>    bpf_timer_setup(my_timer, timer_callback, ...);
->>    bpf_mod_timer(my_timer, HZ);
->> }
->>
->> The bpf_for_each_map_elem() work is already in progress. Expect patches to hit
->> mailing list soon.
+On 28.01.21 г. 23:52 ч., Josh Poimboeuf wrote:
 > 
-> We don't want a per-element timer, we want a per-map timer but that
-> requires a way to iterate the whole map. If you or other can provide
-> bpf_for_each_map_elem(), we can certainly build our timeout map
-> on top of it.
+> With retpolines disabled, some configurations of GCC will add Intel CET
+> instrumentation to the kernel by default.  That breaks certain tracing
+> scenarios by adding a superfluous ENDBR64 instruction before the fentry
+> call, for functions which can be called indirectly.
+> 
+> CET instrumentation isn't currently necessary in the kernel, as CET is
+> only supported in user space.  Disable it unconditionally.
+> 
+> Reported-by: Nikolay Borisov <nborisov@suse.com>
+> Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
 
-I am working on this. Still need a few weeks to post RFC. Will share
-as soon as it is in reasonable shape. Thanks!
-
-> 
->> If you can work on patches for bpf_timer_*() it would be awesome.
-> 
-> Yeah, I will work on this, not only for timeout map, but also possibly for
-> the ebpf qdisc I plan to add soon.
-> 
-> Thanks.
-> 
+Tested-by: Nikolay Borisov <nborisov@suse.com>
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
