@@ -2,49 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E89DC30826A
-	for <lists+bpf@lfdr.de>; Fri, 29 Jan 2021 01:35:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7249030827B
+	for <lists+bpf@lfdr.de>; Fri, 29 Jan 2021 01:38:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231363AbhA2Adr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Jan 2021 19:33:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37108 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231378AbhA2Ada (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Jan 2021 19:33:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0843364E05
-        for <bpf@vger.kernel.org>; Fri, 29 Jan 2021 00:32:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611880369;
-        bh=rA8YMr+vI29dSi96qFrotJQk/WjPY16DWYadSFb3tMs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Y4J77cjNgfF28ouHvcL+7dRYa+WMoup9Ma5ddxRf6dmUkxh5zL2QA2iDhTRmbsa7g
-         OS7yT2BGrUSLbFm1Ur6V/UHPbTYVJYwSl7dRHJNZ+ATyhXXq6Tj/VW3k/v2+g9FIYK
-         PksvnmFM5g1pFPjVw9NuH7NgAEdsgNizaz0il9ofE/MWKmtpJZkkyyzvYlDjDpeM5e
-         ns87/zNA3FJykFionHosygxYXPJs02kOMMMOlaMvP4VGNjf2FD11aTTs2AOEqyeRl2
-         df3pvaCkYAQqCHMu/m9iAYUUgr4VDt70+7eM+ZBH4mWDV64n5QXoh69TMM+xH63Orj
-         +aGHUZ9Dsuwpg==
-Received: by mail-ej1-f53.google.com with SMTP id a10so10474919ejg.10
-        for <bpf@vger.kernel.org>; Thu, 28 Jan 2021 16:32:48 -0800 (PST)
-X-Gm-Message-State: AOAM5324NYL0ZsC+NVU6Oq04yMWXyVRpOtXbMH3kJ8ceOi6lofiCPWdx
-        Jzjvuu4XGBpydSaQFO9TC7MCTf2L2VdvfWyK9OjDag==
-X-Google-Smtp-Source: ABdhPJy/OrvwH5kIXxxxX2kDj1fH0TNxdxJ9H7Is37wHs6OHT7H5VD+Ej6Fv2JMIs/fil4FtL8c3DUYwr222C0S0aoM=
-X-Received: by 2002:a17:906:3f89:: with SMTP id b9mr2021331ejj.204.1611880367359;
- Thu, 28 Jan 2021 16:32:47 -0800 (PST)
+        id S231149AbhA2AhL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Jan 2021 19:37:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231383AbhA2Agc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Jan 2021 19:36:32 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 080F3C061573
+        for <bpf@vger.kernel.org>; Thu, 28 Jan 2021 16:35:46 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id f11so8567710ljm.8
+        for <bpf@vger.kernel.org>; Thu, 28 Jan 2021 16:35:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YVcwPFCBvZCUVf9RXTm7VmIT6xyY6ib1jlEqSV2AeO0=;
+        b=krg0O1c/dtsd9ZW4b+u8AoEJyZvUcT8GNXPWr68z3o4MP1Uv5MqrG0bwjQHrzxKEpx
+         Zwu+tyxwrL1QlODveXkN8WxDJTdqk0jFGrfafH60ZL1bk40hctcO+rheU2sFeiMXJrCV
+         MHch8hlYMrxy3xjgp/WRmyBFCcOFhgKm5JXkBtZHkESnmysE6wYDed8F3ZvD63MExEJ1
+         +IZCj4XKbbrkzL2n4J3n8i0o6NdiB/PyKtbI9FA+mcbYREPtdFWLGsuOKI98lYZAwCoN
+         7Co3LtEUf0F72s3ZK8SpQ/u3xQAa58FSbpoLcOI4OSRMloUmRT71tGf+79rl2pP3qQed
+         VELQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YVcwPFCBvZCUVf9RXTm7VmIT6xyY6ib1jlEqSV2AeO0=;
+        b=k2OhmNvXdi658Z06YfD58ooBmrFnkIkSrSXnIhiugv2XfBG4RiIiA+c3ol3IsbU3qk
+         PJ7/+501kdllEnfQgvHMSgh4XD07H+fztDGYBYYVSDR9WEr7GA/FJxo0zlQKs4PZhpKb
+         DD8AZfL9jkTDNw8PuGkwddz920OeHa8HakF7GrkyjP3VpKD5/j7I6G+w4xRNyFssz1D4
+         MLmqHEXH8LArT68lPSZdNg3TLNUcWliWq8SsrcDqu5aiouHaMTIQQ4BXbet73lzus4LG
+         NgQQIcLC3FwYfdg5UP95UtypWFktXHhIlNSXvnnJ6sGFTysaUglyy+FqfXYgS0RQnFnz
+         yq3A==
+X-Gm-Message-State: AOAM531lWckex/z8qMxGRJpWTe72AghH3XEA/tr0jfX8WOQKO7/Ii5lT
+        FV3qzjhMIrPgLYs7tiDZY61gJmdPx+8z3GMTtE2IEA==
+X-Google-Smtp-Source: ABdhPJyDxKzDpSiPdgfUL87qi1DgR5m7Tcr1f1Urhgi5OlXf4h31+jiOd5L0VbveehUak1Z1l+OULrtVjcqRUofL1AY=
+X-Received: by 2002:a2e:9b45:: with SMTP id o5mr1048445ljj.448.1611880544192;
+ Thu, 28 Jan 2021 16:35:44 -0800 (PST)
 MIME-Version: 1.0
 References: <20210126001219.845816-1-yhs@fb.com> <CALCETrX157htkCF81zb+5BBo9C_V39YNdt7yXRcFGGw_SRs02Q@mail.gmail.com>
  <92a66173-6512-f1bc-0f9a-530c6c9a1ef0@fb.com> <CALCETrVZRiG+qQFrf_7NaCZ9o9f2-aUTgLNJgCzBfsswpG7kTA@mail.gmail.com>
  <20210129001130.3mayw2e44achrnbt@ast-mbp.dhcp.thefacebook.com>
- <CALCETrVXdbXUMA_CJj1knMNxsHR2ao67apwk_BTTMPaQGxusag@mail.gmail.com>
- <20210129002642.iqlbssmp267zv7f2@ast-mbp.dhcp.thefacebook.com> <CALCETrUQuf6FX9EmuZur7vRwbeZBmoKeSYb9Rvx2ETp76SukOg@mail.gmail.com>
-In-Reply-To: <CALCETrUQuf6FX9EmuZur7vRwbeZBmoKeSYb9Rvx2ETp76SukOg@mail.gmail.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Thu, 28 Jan 2021 16:32:34 -0800
-X-Gmail-Original-Message-ID: <CALCETrWhFHpyew=wjaFwYgczGB9ekATgGJYP6Mzxi++DkafyVQ@mail.gmail.com>
-Message-ID: <CALCETrWhFHpyew=wjaFwYgczGB9ekATgGJYP6Mzxi++DkafyVQ@mail.gmail.com>
+In-Reply-To: <20210129001130.3mayw2e44achrnbt@ast-mbp.dhcp.thefacebook.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Fri, 29 Jan 2021 01:35:16 +0100
+Message-ID: <CAG48ez0s78q+ujyXb2M9W+EHz7XHZwHJzJzm=Sz8=4XYwgEYUQ@mail.gmail.com>
 Subject: Re: [PATCH bpf] x86/bpf: handle bpf-program-triggered exceptions properly
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Yonghong Song <yhs@fb.com>, Jann Horn <jannh@google.com>,
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Andy Lutomirski <luto@kernel.org>, Yonghong Song <yhs@fb.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andriin@fb.com>,
         Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
@@ -56,41 +65,28 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 4:29 PM Andy Lutomirski <luto@kernel.org> wrote:
+On Fri, Jan 29, 2021 at 1:11 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+> On Thu, Jan 28, 2021 at 03:51:13PM -0800, Andy Lutomirski wrote:
+> > Okay, so I guess you're trying to inline probe_read_kernel().  But
+> > that means you have to inline a valid implementation.  In particular,
+> > you need to check that you're accessing *kernel* memory.  Just like
 >
-> On Thu, Jan 28, 2021 at 4:26 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Thu, Jan 28, 2021 at 04:18:24PM -0800, Andy Lutomirski wrote:
-> > > On Thu, Jan 28, 2021 at 4:11 PM Alexei Starovoitov
-> > > <alexei.starovoitov@gmail.com> wrote:
-> > > >
-> > > > On Thu, Jan 28, 2021 at 03:51:13PM -0800, Andy Lutomirski wrote:
-> > > > >
-> > > > > Okay, so I guess you're trying to inline probe_read_kernel().  But
-> > > > > that means you have to inline a valid implementation.  In particular,
-> > > > > you need to check that you're accessing *kernel* memory.  Just like
-> > > >
-> > > > That check is on the verifier side. It only does it for kernel
-> > > > pointers with known types.
-> > > > In a sequnce a->b->c the verifier guarantees that 'a' is valid
-> > > > kernel pointer and it's also !null. Then it guarantees that offsetof(b)
-> > > > points to valid kernel field which is also a pointer.
-> > > > What it doesn't check that b != null, so
-> > > > that users don't have to write silly code with 'if (p)' after every
-> > > > dereference.
-> > >
-> > > That sounds like a verifier and/or JIT bug.  If you have a pointer p
-> > > (doesn't matter whether p is what you call a or a->b) and you have not
-> > > confirmed that p points to the kernel range, you may not generate a
-> > > load from that pointer.
-> >
-> > Please read the explanation again. It's an inlined probe_kernel_read.
->
-> Can you point me at the uninlined implementation?  Does it still
-> exist?  I see get_kernel_nofault(), which is currently buggy, and I
-> will fix it.
+> That check is on the verifier side. It only does it for kernel
+> pointers with known types.
+> In a sequnce a->b->c the verifier guarantees that 'a' is valid
+> kernel pointer and it's also !null. Then it guarantees that offsetof(b)
+> points to valid kernel field which is also a pointer.
+> What it doesn't check that b != null, so
+> that users don't have to write silly code with 'if (p)' after every
+> dereference.
 
-I spoke too soon.  get_kernel_nofault() is just fine.  You have
-inlined something like __get_kernel_nofault(), which is incorrect.
-get_kernel_nofault() would have done the right thing.
+How is that supposed to work? If I e.g. have a pointer to a
+task_struct, and I do something like:
+
+task->mm->mmap->vm_file->f_inode
+
+and another thread concurrently mutates the VMA tree and frees the VMA
+that we're traversing here, how can BPF guarantee that
+task->mm->mmap->vm_file is a valid pointer and not whatever garbage we
+read from freed memory?
