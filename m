@@ -2,140 +2,229 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5457F3085EF
-	for <lists+bpf@lfdr.de>; Fri, 29 Jan 2021 07:44:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C75DD30860B
+	for <lists+bpf@lfdr.de>; Fri, 29 Jan 2021 07:55:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232054AbhA2Gh0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Jan 2021 01:37:26 -0500
-Received: from mx2.suse.de ([195.135.220.15]:49918 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232101AbhA2GhT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Jan 2021 01:37:19 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1611902191; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=8F37s10jfkfnMNMslnldnzboL1jtWWJIIBCvXMZ8TU4=;
-        b=SNeQx7gMpI5tYw9adSLw0kz7bFzodBnJPN12hPMI/KyEc4zhHc7UtfT+1e9LRdnPBF5cUA
-        /9pmXSdVTpeYeYjoVXwoaGRS2YkaDJu8j7yEASMTfGnvdKBuHqFzqwot6ZS5Kk58ayPepe
-        H8MDIsuRMG+GOYoDidB7Pmsmf5mKPK4=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 63C8DAEDB;
-        Fri, 29 Jan 2021 06:36:31 +0000 (UTC)
-Subject: Re: kprobes broken since 0d00449c7a28 ("x86: Replace ist_enter() with
- nmi_enter()")
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Masami Hiramatsu <masami.hiramatsu@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-References: <25cd2608-03c2-94b8-7760-9de9935fde64@suse.com>
- <20210128001353.66e7171b395473ef992d6991@kernel.org>
- <20210128002452.a79714c236b69ab9acfa986c@kernel.org>
- <a35a6f15-9ab1-917c-d443-23d3e78f2d73@suse.com>
- <20210128103415.d90be51ec607bb6123b2843c@kernel.org>
- <20210128123842.c9e33949e62f504b84bfadf5@gmail.com>
- <e8bae974-190b-f247-0d89-6cea4fd4cc39@suse.com>
- <eb1ec6a3-9e11-c769-84a4-228f23dc5e23@suse.com>
- <YBMBTsY1uuQb9wCP@hirez.programming.kicks-ass.net>
- <20210129013452.njuh3fomws62m4rc@ast-mbp.dhcp.thefacebook.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
- T7g+RbfPFlmQp+EwFWOtABXlKC54zgSf+uulGwx5JAUFVUIRBmnHOYi/lUiE0yhpnb1KCA7f
- u/W+DkwGerXqhhe9TvQoGwgCKNfzFPZoM+gZrm+kWv03QLUCr210n4cwaCPJ0Nr9Z3c582xc
- bCUVbsjt7BN0CFa2BByulrx5xD9sDAYIqfLCcZetAqsTRGxM7LD0kh5WlKzOeAXj5r8DOrU2
- GdZS33uKZI/kZJZVytSmZpswDsKhnGzRN1BANGP8sC+WD4eRXajOmNh2HL4P+meO1TlM3GLl
- EQd2shHFY0qjEo7wxKZI1RyZZ5AgJnSmehrPCyuIyVY210CbMaIKHUIsTqRgY5GaNME24w7h
- TyyVCy2qAM8fLJ4Vw5bycM/u5xfWm7gyTb9V1TkZ3o1MTrEsrcqFiRrBY94Rs0oQkZvunqia
- c+NprYSaOG1Cta14o94eMH271Kka/reEwSZkC7T+o9hZ4zi2CcLcY0DXj0qdId7vUKSJjEep
- c++s8ncFekh1MPhkOgNj8pk17OAESanmDwksmzh1j12lgA5lTFPrJeRNu6/isC2zyZhTwMWs
- k3LkcTa8ZXxh0RfWAqgx/ogKPk4ZxOXQEZetkEyTFghbRH2BIwARAQABtCNOaWtvbGF5IEJv
- cmlzb3YgPG5ib3Jpc292QHN1c2UuY29tPokCOAQTAQIAIgUCWIo48QIbAwYLCQgHAwIGFQgC
- CQoLBBYCAwECHgECF4AACgkQcb6CRuU/KFc0eg/9GLD3wTQz9iZHMFbjiqTCitD7B6dTLV1C
- ddZVlC8Hm/TophPts1bWZORAmYIihHHI1EIF19+bfIr46pvfTu0yFrJDLOADMDH+Ufzsfy2v
- HSqqWV/nOSWGXzh8bgg/ncLwrIdEwBQBN9SDS6aqsglagvwFD91UCg/TshLlRxD5BOnuzfzI
- Leyx2c6YmH7Oa1R4MX9Jo79SaKwdHt2yRN3SochVtxCyafDlZsE/efp21pMiaK1HoCOZTBp5
- VzrIP85GATh18pN7YR9CuPxxN0V6IzT7IlhS4Jgj0NXh6vi1DlmKspr+FOevu4RVXqqcNTSS
- E2rycB2v6cttH21UUdu/0FtMBKh+rv8+yD49FxMYnTi1jwVzr208vDdRU2v7Ij/TxYt/v4O8
- V+jNRKy5Fevca/1xroQBICXsNoFLr10X5IjmhAhqIH8Atpz/89ItS3+HWuE4BHB6RRLM0gy8
- T7rN6ja+KegOGikp/VTwBlszhvfLhyoyjXI44Tf3oLSFM+8+qG3B7MNBHOt60CQlMkq0fGXd
- mm4xENl/SSeHsiomdveeq7cNGpHi6i6ntZK33XJLwvyf00PD7tip/GUj0Dic/ZUsoPSTF/mG
- EpuQiUZs8X2xjK/AS/l3wa4Kz2tlcOKSKpIpna7V1+CMNkNzaCOlbv7QwprAerKYywPCoOSC
- 7P25Ag0EWIoHPgEQAMiUqvRBZNvPvki34O/dcTodvLSyOmK/MMBDrzN8Cnk302XfnGlW/YAQ
- csMWISKKSpStc6tmD+2Y0z9WjyRqFr3EGfH1RXSv9Z1vmfPzU42jsdZn667UxrRcVQXUgoKg
- QYx055Q2FdUeaZSaivoIBD9WtJq/66UPXRRr4H/+Y5FaUZx+gWNGmBT6a0S/GQnHb9g3nonD
- jmDKGw+YO4P6aEMxyy3k9PstaoiyBXnzQASzdOi39BgWQuZfIQjN0aW+Dm8kOAfT5i/yk59h
- VV6v3NLHBjHVw9kHli3jwvsizIX9X2W8tb1SefaVxqvqO1132AO8V9CbE1DcVT8fzICvGi42
- FoV/k0QOGwq+LmLf0t04Q0csEl+h69ZcqeBSQcIMm/Ir+NorfCr6HjrB6lW7giBkQl6hhomn
- l1mtDP6MTdbyYzEiBFcwQD4terc7S/8ELRRybWQHQp7sxQM/Lnuhs77MgY/e6c5AVWnMKd/z
- MKm4ru7A8+8gdHeydrRQSWDaVbfy3Hup0Ia76J9FaolnjB8YLUOJPdhI2vbvNCQ2ipxw3Y3c
- KhVIpGYqwdvFIiz0Fej7wnJICIrpJs/+XLQHyqcmERn3s/iWwBpeogrx2Lf8AGezqnv9woq7
- OSoWlwXDJiUdaqPEB/HmGfqoRRN20jx+OOvuaBMPAPb+aKJyle8zABEBAAGJAh8EGAECAAkF
- AliKBz4CGwwACgkQcb6CRuU/KFdacg/+M3V3Ti9JYZEiIyVhqs+yHb6NMI1R0kkAmzsGQ1jU
- zSQUz9AVMR6T7v2fIETTT/f5Oout0+Hi9cY8uLpk8CWno9V9eR/B7Ifs2pAA8lh2nW43FFwp
- IDiSuDbH6oTLmiGCB206IvSuaQCp1fed8U6yuqGFcnf0ZpJm/sILG2ECdFK9RYnMIaeqlNQm
- iZicBY2lmlYFBEaMXHoy+K7nbOuizPWdUKoKHq+tmZ3iA+qL5s6Qlm4trH28/fPpFuOmgP8P
- K+7LpYLNSl1oQUr+WlqilPAuLcCo5Vdl7M7VFLMq4xxY/dY99aZx0ZJQYFx0w/6UkbDdFLzN
- upT7NIN68lZRucImffiWyN7CjH23X3Tni8bS9ubo7OON68NbPz1YIaYaHmnVQCjDyDXkQoKC
- R82Vf9mf5slj0Vlpf+/Wpsv/TH8X32ajva37oEQTkWNMsDxyw3aPSps6MaMafcN7k60y2Wk/
- TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
- RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
- 5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <783eafee-681c-45b6-17ef-24473cb33aa1@suse.com>
-Date:   Fri, 29 Jan 2021 08:36:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210129013452.njuh3fomws62m4rc@ast-mbp.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S232059AbhA2GwP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Jan 2021 01:52:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232019AbhA2GwP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Jan 2021 01:52:15 -0500
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3740C061573;
+        Thu, 28 Jan 2021 22:51:34 -0800 (PST)
+Received: by mail-il1-x136.google.com with SMTP id p8so7652422ilg.3;
+        Thu, 28 Jan 2021 22:51:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=lcJw81Q+OKYcd85kLMGnKwMb4stE73hnXSxinSG3wzU=;
+        b=TF7qEdlmERYDBy5+f/Tn0iHDIVyVkna7dU5ZSAiokFioSuatlZjvhNi7mQL80AolWF
+         ctsnr9xzi/1WrAkpIMzVXvDASDELXfIUJo1bfSEaHWPihPjofh7rdml2zGgxEvK+t+yI
+         2XfAcMkFxFX602zqW5GOGN2tjBOPQD/5n2gPgq3vnkzvZWl3dLIeCsgIn7nbejYTpbaX
+         dGUiTJ+/tL8eekEg4Y+A5sRHlU4RiYpwcarqV0P1/s+j69/Rs5Fjdgpmkkx9vUn/JSZe
+         7YFQcsRdpDS680nq4GTF/5+pM4i/Mv+4+5yJDJnQ1uoYMol/YVFhUPWwzcfUzLOICs1f
+         XqXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=lcJw81Q+OKYcd85kLMGnKwMb4stE73hnXSxinSG3wzU=;
+        b=mLrRBKOYCbVBsKCfSlQFJsyQKdlO8CsyH2XXINPs0piAlJriZZ2vAorswzq03HkRhr
+         uN9ZBMis+Zk9pH9pgscRNad69/QTKye+CjrzJ76eQknL3LlsXYkg1zUSPA9wMH5UWcWq
+         hmaPq4H+eVd6ExNkXybuyBLK9FMYzrfLLg8dOc4Lc/C482VC3k5dLNm9wWMyUDCU8FUk
+         JX3VkYHUqyRm6itqm6r+tMpXUA6eNa0HuGZGQcEGEnp0Drv6jQ46nw3UKfKYvPOEZj8x
+         uy8/EV8weUxWXWB5kPs8bwvRH5CNm9kTt7RQaXfUI76nZRfqP5d+ZPbcgTHnKgsXDmbp
+         Z5+Q==
+X-Gm-Message-State: AOAM531/AaIq9Rnp0ZNF1WuqwT6eHHercLCZcNdWAN+JUl0RdT2u0zIr
+        uTtRE+b3gak8UyhnFrVvrSI=
+X-Google-Smtp-Source: ABdhPJwKlQmLrQcePDj3t2mULL692QF/9cp8UvqwpVu94hp3j2+1ZL412DUgzMFQpFwL1NdqvUC51w==
+X-Received: by 2002:a05:6e02:dea:: with SMTP id m10mr2235927ilj.241.1611903094278;
+        Thu, 28 Jan 2021 22:51:34 -0800 (PST)
+Received: from localhost ([172.243.146.206])
+        by smtp.gmail.com with ESMTPSA id 186sm3576466ioc.30.2021.01.28.22.51.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Jan 2021 22:51:33 -0800 (PST)
+Date:   Thu, 28 Jan 2021 22:51:23 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>, bpf@vger.kernel.org
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
+        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
+        colrack@gmail.com
+Message-ID: <6013b06b83ae2_2683c2085d@john-XPS-13-9370.notmuch>
+In-Reply-To: <161159457239.321749.9067604476261493815.stgit@firesoul>
+References: <161159451743.321749.17528005626909164523.stgit@firesoul>
+ <161159457239.321749.9067604476261493815.stgit@firesoul>
+Subject: RE: [PATCH bpf-next V13 4/7] bpf: add BPF-helper for MTU checking
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
-
-On 29.01.21 г. 3:34 ч., Alexei Starovoitov wrote:
-> On Thu, Jan 28, 2021 at 07:24:14PM +0100, Peter Zijlstra wrote:
->> On Thu, Jan 28, 2021 at 06:45:56PM +0200, Nikolay Borisov wrote:
->>> it would be placed on the __fentry__ (and not endbr64) hence it works.
->>> So perhaps a workaround outside of bpf could essentially detect this
->>> scenario and adjust the probe to be on the __fentry__ and not preceding
->>> instruction if it's detected to be endbr64 ?
->>
->> Arguably the fentry handler should also set the nmi context, it can,
->> after all, interrupt pretty much any other context by construction.
+Jesper Dangaard Brouer wrote:
+> This BPF-helper bpf_check_mtu() works for both XDP and TC-BPF programs.
 > 
-> But that doesn't make it a real nmi.
-> nmi can actually interrupt anything. Whereas kprobe via int3 cannot
-> do nokprobe and noinstr sections. The exposure is a lot different.
-> ftrace is even more contained. It's only at the start of the functions.
-> It's even smaller subset of places than kprobes.
-> So ftrace < kprobe < nmi.
-> Grouping them all into nmi doesn't make sense to me.
-> That bpf breaking change came unnoticed mostly because people use
-> kprobes in the beginning of the functions only, but there are cases
-> where kprobes are in the middle too. People just didn't upgrade kernels
-> fast enough to notice.
-
-nit: slight correction - I observed while I was putting kprobes at the
-beginning of the function but __fentry__ wasn't the first thing in the
-function's code. The reason why people haven't observed is because
-everyone is running with retpolines enabled which disables CFI/CET.
-
-> imo appropriate solution would be to have some distinction between
-> ftrace < kprobe_via_int3 < nmi, so that bpf side can react accordingly.
-> That code in trace_call_bpf:
->   if (in_nmi()) /* not supported yet */
-> was necessary in the past. Now we have all sorts of protections built in.
-> So it's probably ok to just drop it, but I think adding
-> called_via_ftrace vs called_via_kprobe_int3 vs called_via_nmi
-> is more appropriate solution long term.
+> The SKB object is complex and the skb->len value (accessible from
+> BPF-prog) also include the length of any extra GRO/GSO segments, but
+> without taking into account that these GRO/GSO segments get added
+> transport (L4) and network (L3) headers before being transmitted. Thus,
+> this BPF-helper is created such that the BPF-programmer don't need to
+> handle these details in the BPF-prog.
 > 
+> The API is designed to help the BPF-programmer, that want to do packet
+> context size changes, which involves other helpers. These other helpers
+> usually does a delta size adjustment. This helper also support a delta
+> size (len_diff), which allow BPF-programmer to reuse arguments needed by
+> these other helpers, and perform the MTU check prior to doing any actual
+> size adjustment of the packet context.
+> 
+> It is on purpose, that we allow the len adjustment to become a negative
+> result, that will pass the MTU check. This might seem weird, but it's not
+> this helpers responsibility to "catch" wrong len_diff adjustments. Other
+> helpers will take care of these checks, if BPF-programmer chooses to do
+> actual size adjustment.
+> 
+> V13:
+>  - Enforce flag BPF_MTU_CHK_SEGS cannot use len_diff.
+> 
+> V12:
+>  - Simplify segment check that calls skb_gso_validate_network_len.
+>  - Helpers should return long
+> 
+> V9:
+> - Use dev->hard_header_len (instead of ETH_HLEN)
+> - Annotate with unlikely req from Daniel
+> - Fix logic error using skb_gso_validate_network_len from Daniel
+> 
+> V6:
+> - Took John's advice and dropped BPF_MTU_CHK_RELAX
+> - Returned MTU is kept at L3-level (like fib_lookup)
+> 
+> V4: Lot of changes
+>  - ifindex 0 now use current netdev for MTU lookup
+>  - rename helper from bpf_mtu_check to bpf_check_mtu
+>  - fix bug for GSO pkt length (as skb->len is total len)
+>  - remove __bpf_len_adj_positive, simply allow negative len adj
+> 
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> ---
+>  include/uapi/linux/bpf.h       |   67 ++++++++++++++++++++++++
+>  net/core/filter.c              |  114 ++++++++++++++++++++++++++++++++++++++++
+>  tools/include/uapi/linux/bpf.h |   67 ++++++++++++++++++++++++
+>  3 files changed, 248 insertions(+)
+> 
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 05bfc8c843dc..f17381a337ec 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -3839,6 +3839,61 @@ union bpf_attr {
+
+[...]
+
+> +
+> +BPF_CALL_5(bpf_skb_check_mtu, struct sk_buff *, skb,
+> +	   u32, ifindex, u32 *, mtu_len, s32, len_diff, u64, flags)
+
+Maybe worth mentioning in description we expect len_diff < skb->len,
+at least I expect that otherwise result may be undefined.
+
+> +{
+> +	int ret = BPF_MTU_CHK_RET_FRAG_NEEDED;
+> +	struct net_device *dev = skb->dev;
+> +	int skb_len, dev_len;
+> +	int mtu;
+
+Perhaps getting a bit nit-picky here but shouldn't skb_len, dev_len
+and mtu all be 'unsigned int'
+
+Then all the types will align. I guess MTUs are small so it
+doesn't really matter, but is easier to read IMO.
+
+> +
+> +	if (unlikely(flags & ~(BPF_MTU_CHK_SEGS)))
+> +		return -EINVAL;
+> +
+> +	if (unlikely(flags & BPF_MTU_CHK_SEGS && len_diff))
+> +		return -EINVAL;
+> +
+> +	dev = __dev_via_ifindex(dev, ifindex);
+> +	if (unlikely(!dev))
+> +		return -ENODEV;
+> +
+> +	mtu = READ_ONCE(dev->mtu);
+> +
+> +	dev_len = mtu + dev->hard_header_len;
+> +	skb_len = skb->len + len_diff; /* minus result pass check */
+> +	if (skb_len <= dev_len) {
+
+If skb_len is unsigned it will be >> dev_len when skb->len < len_diff. I
+think its a good idea to throw an error if skb_len calculation goes
+negative?
+
+> +		ret = BPF_MTU_CHK_RET_SUCCESS;
+> +		goto out;
+> +	}
+> +	/* At this point, skb->len exceed MTU, but as it include length of all
+> +	 * segments, it can still be below MTU.  The SKB can possibly get
+> +	 * re-segmented in transmit path (see validate_xmit_skb).  Thus, user
+> +	 * must choose if segs are to be MTU checked.
+> +	 */
+> +	if (skb_is_gso(skb)) {
+> +		ret = BPF_MTU_CHK_RET_SUCCESS;
+> +
+> +		if (flags & BPF_MTU_CHK_SEGS &&
+> +		    !skb_gso_validate_network_len(skb, mtu))
+> +			ret = BPF_MTU_CHK_RET_SEGS_TOOBIG;
+> +	}
+> +out:
+> +	/* BPF verifier guarantees valid pointer */
+> +	*mtu_len = mtu;
+> +
+> +	return ret;
+> +}
+> +
+> +BPF_CALL_5(bpf_xdp_check_mtu, struct xdp_buff *, xdp,
+> +	   u32, ifindex, u32 *, mtu_len, s32, len_diff, u64, flags)
+> +{
+> +	struct net_device *dev = xdp->rxq->dev;
+> +	int xdp_len = xdp->data_end - xdp->data;
+> +	int ret = BPF_MTU_CHK_RET_SUCCESS;
+> +	int mtu, dev_len;
+
+Same comment about types.
+
+> +
+> +	/* XDP variant doesn't support multi-buffer segment check (yet) */
+> +	if (unlikely(flags))
+> +		return -EINVAL;
+> +
+> +	dev = __dev_via_ifindex(dev, ifindex);
+> +	if (unlikely(!dev))
+> +		return -ENODEV;
+> +
+> +	mtu = READ_ONCE(dev->mtu);
+> +
+> +	/* Add L2-header as dev MTU is L3 size */
+> +	dev_len = mtu + dev->hard_header_len;
+> +
+> +	xdp_len += len_diff; /* minus result pass check */
+> +	if (xdp_len > dev_len)
+> +		ret = BPF_MTU_CHK_RET_FRAG_NEEDED;
+> +
+> +	/* BPF verifier guarantees valid pointer */
+> +	*mtu_len = mtu;
+> +
+> +	return ret;
+> +}
+
+Otherwise LGTM.
