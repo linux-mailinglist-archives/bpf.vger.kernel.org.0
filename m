@@ -2,158 +2,157 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A0E53083DB
-	for <lists+bpf@lfdr.de>; Fri, 29 Jan 2021 03:33:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0CA83083F8
+	for <lists+bpf@lfdr.de>; Fri, 29 Jan 2021 03:55:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229832AbhA2Cdo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 28 Jan 2021 21:33:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57344 "EHLO
+        id S231271AbhA2CzW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 28 Jan 2021 21:55:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbhA2Cdn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 28 Jan 2021 21:33:43 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56851C061573
-        for <bpf@vger.kernel.org>; Thu, 28 Jan 2021 18:33:03 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id s24so4988119pjp.5
-        for <bpf@vger.kernel.org>; Thu, 28 Jan 2021 18:33:03 -0800 (PST)
+        with ESMTP id S231165AbhA2CzW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 28 Jan 2021 21:55:22 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA75FC061573;
+        Thu, 28 Jan 2021 18:54:41 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id s24so5010884pjp.5;
+        Thu, 28 Jan 2021 18:54:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=MG3gII+qeOjWvBYZlsxwaMzFZiXp4DBm0N7pQkjrDDE=;
-        b=oByHlBRN0Oy7Yw4n0YKgh3/ISaLzLN0ZquZ/43BZkHsQr2UK/whff/agPwrLTdabZm
-         RckXC1z4eXapdp89fS9NLqgrWeypN7TT9UOz/kN/fw+CqNF8iCejOlMiVtj6bF/UZcPh
-         qbcMDtj41lqn6lrIJOmaIGReCSS20ScqjkGrgKQ68oDkdVbaAE0tKNR/bOBL8IIkgeB0
-         RsAs0L+wjatFy+bgf5aLCKrb7JKrhQTt00S/nQOsKDKOC75iqi6EAiQkgIyMjqp3to1S
-         zySoojgwzB+VRBPk83euVBDanbH+kdlconZHMAGcvif3CC0uUKfzcR3e1NberQ8sBWnN
-         Kx/w==
+        bh=szSPZD4f9nJJL/ReQL9fvwbRY1tcDEbXe+P5IvdDyVs=;
+        b=btoB28MCHFjNFu/sCLrI4zM3BpbpBe8SHuFg9kzlAEapdssVfmL1PVQXnGXzSFEs3q
+         fPppz+E1jhcNQ9gvtH5LtJMTV2Tg+2MxIaS8X5LJaMZgMTebzb+3zJ3S5rKauVQzGUIc
+         f+woZvqjAvsVs3En4rACFFVk4NV5Dhp0hC9QrU5YwzBsaDghvXuymynfurbHn7Qfdoht
+         XLTV1S1itJ63y+p13O1e1LELJypvQY16dbdfrmG+4XqJWgwk7qN5+Qbegy/kFkXQTKrA
+         hSfc3p9HyYgHw4Y+WPqlgzsu0qHvutnrcbiKPAAxYmFvgo2v1qysgtarI9T68oXwLyMp
+         b6zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=MG3gII+qeOjWvBYZlsxwaMzFZiXp4DBm0N7pQkjrDDE=;
-        b=iaPCHSOJ8GiNidI2/QiVT1B2z4oEI/keU64d89ApTVdlwqj+KXfwYCT3TKki1dPdCq
-         MDktvrDntd77WF0vay3eBdOULDej6Q7iiv+FNFnFbhlI2mpfnHOrQUk2cStRnEjRSbiy
-         bUpx3n2MiWDaxRu4C21tYTD9FiFUT0GXTPt7410XCKnVvA7QZlDaYfC3gNMdLhl9ikh/
-         NT4ihicU5JsR8m+7X6cWz0oduW8Qfon18U0CE1uUNY5Nhdc+hHxSSWEg+cIj/+FOF/Xl
-         hb5Q2Ydchxj3FtnU5AUEMreJ2amqxCuQN2qhWV1M8K8LN0HaNuvatgnNG5l9/bKeQaHH
-         LPBg==
-X-Gm-Message-State: AOAM530rTyC/xAHo4Z73l3vqpfKPI2rjKOPvPc05xl+fC67sCnWDu69o
-        53RetClKfE0KjxS98znZTmg=
-X-Google-Smtp-Source: ABdhPJzb+z4Ne6p/YtDkjGRE+BqG3f9ZDwwYVgUVc0JqdAQkPGOUCqIdRcuVnMFku/1BCzpLaTo6tw==
-X-Received: by 2002:a17:90a:5208:: with SMTP id v8mr2368040pjh.224.1611887582695;
-        Thu, 28 Jan 2021 18:33:02 -0800 (PST)
+        bh=szSPZD4f9nJJL/ReQL9fvwbRY1tcDEbXe+P5IvdDyVs=;
+        b=V+skz8d9H6ieovnEOkrQw5PDU3hWNhdhr/gYEX2F2b37ZuTAIhlbnszoq2VVxKqGVC
+         TEhUtK+9H4FsIf3iBnDGow/eeS+HE0qwFefQ7tOdBm83RhcYQUy4mc1YstV3q+enMyiu
+         SkRJkhMvqcScKWP5CTVsbS8NDypKtascK8O5lANXOBFc0wml582TzymEllSNWYsHcoOu
+         SK882nSZzzivtfVqZHE5Fr3s29Sny9yROIXQXgFP47Jb14K69Nix60VKTQDhEMyrLQ38
+         XY5uQgQFR07MPLL4LCmMeRiTD4REHTsZeKyPyqCeKFCAdFeR0yHVpb4oUYgoByqCdEQQ
+         rm3A==
+X-Gm-Message-State: AOAM5328jNjjuSGs4x0mVuqgFMhp+pmD9+QKT1Aba6Nb6H61FPxuRbVQ
+        XveFC0/IQWMr3B9JSzYFlds=
+X-Google-Smtp-Source: ABdhPJxpVsDS6H2OF14lIxJf2VWY/ReDyYL9RFT4XZGw3IdKDtccm3zv4WuVWT05ylaLwU2DmqxSjw==
+X-Received: by 2002:a17:90a:4209:: with SMTP id o9mr2421513pjg.75.1611888881414;
+        Thu, 28 Jan 2021 18:54:41 -0800 (PST)
 Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:8ed])
-        by smtp.gmail.com with ESMTPSA id s9sm7123449pfd.38.2021.01.28.18.33.00
+        by smtp.gmail.com with ESMTPSA id r194sm7021638pfr.168.2021.01.28.18.54.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 18:33:01 -0800 (PST)
-Date:   Thu, 28 Jan 2021 18:32:59 -0800
+        Thu, 28 Jan 2021 18:54:40 -0800 (PST)
+Date:   Thu, 28 Jan 2021 18:54:35 -0800
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Yonghong Song <yhs@fb.com>, Jann Horn <jannh@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Jamal Hadi Salim <jhs@mojatatu.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        kernel-team <kernel-team@fb.com>, X86 ML <x86@kernel.org>,
-        KP Singh <kpsingh@kernel.org>
-Subject: Re: [PATCH bpf] x86/bpf: handle bpf-program-triggered exceptions
- properly
-Message-ID: <20210129023259.wffchzof4rlw5pvs@ast-mbp.dhcp.thefacebook.com>
-References: <20210129001130.3mayw2e44achrnbt@ast-mbp.dhcp.thefacebook.com>
- <CALCETrVXdbXUMA_CJj1knMNxsHR2ao67apwk_BTTMPaQGxusag@mail.gmail.com>
- <20210129002642.iqlbssmp267zv7f2@ast-mbp.dhcp.thefacebook.com>
- <CALCETrUQuf6FX9EmuZur7vRwbeZBmoKeSYb9Rvx2ETp76SukOg@mail.gmail.com>
- <20210129004131.wzwnvdwjlio4traw@ast-mbp.dhcp.thefacebook.com>
- <CALCETrXdmdG2o20VY16vBMJ0p5nSuKOv7sTQtboKFDfuQr1nZA@mail.gmail.com>
- <20210129010441.4gaa4vzruenfb7zf@ast-mbp.dhcp.thefacebook.com>
- <CALCETrXeaEp5Q5UadA2_frxNFiUDyFx643N6SQf3Gy6G+ZtcNA@mail.gmail.com>
- <20210129015322.wngmsmyyon2ozcj6@ast-mbp.dhcp.thefacebook.com>
- <CALCETrU2pJUufTvr0c9jM2+ymSnYFWJ_mSJnCeEzaAiySkQyiA@mail.gmail.com>
+        Martin KaFai Lau <kafai@fb.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Dongdong Wang <wangdongdong.6@bytedance.com>
+Subject: Re: [Patch bpf-next v5 1/3] bpf: introduce timeout hash map
+Message-ID: <20210129025435.a34ydsgmwzrnwjlg@ast-mbp.dhcp.thefacebook.com>
+References: <20210122205415.113822-1-xiyou.wangcong@gmail.com>
+ <20210122205415.113822-2-xiyou.wangcong@gmail.com>
+ <d69d44ca-206c-d818-1177-c8f14d8be8d1@iogearbox.net>
+ <CAM_iQpW8aeh190G=KVA9UEZ_6+UfenQxgPXuw784oxCaMfXjng@mail.gmail.com>
+ <CAADnVQKmNiHj8qy1yqbOrf-OMyhnn8fKm87w6YMfkiDHkBpJVg@mail.gmail.com>
+ <CAM_iQpXAQ7AMz34=o5E=81RFGFsQB5jCDTCCaVdHokU6kaJQsQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALCETrU2pJUufTvr0c9jM2+ymSnYFWJ_mSJnCeEzaAiySkQyiA@mail.gmail.com>
+In-Reply-To: <CAM_iQpXAQ7AMz34=o5E=81RFGFsQB5jCDTCCaVdHokU6kaJQsQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 06:18:37PM -0800, Andy Lutomirski wrote:
-> On Thu, Jan 28, 2021 at 5:53 PM Alexei Starovoitov
+On Wed, Jan 27, 2021 at 10:28:15PM -0800, Cong Wang wrote:
+> On Wed, Jan 27, 2021 at 10:00 AM Alexei Starovoitov
 > <alexei.starovoitov@gmail.com> wrote:
 > >
-> > On Thu, Jan 28, 2021 at 05:31:35PM -0800, Andy Lutomirski wrote:
+> > On Tue, Jan 26, 2021 at 11:00 PM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+> > > > >               ret = PTR_ERR(l_new);
+> > > > > +             if (ret == -EAGAIN) {
+> > > > > +                     htab_unlock_bucket(htab, b, hash, flags);
+> > > > > +                     htab_gc_elem(htab, l_old);
+> > > > > +                     mod_delayed_work(system_unbound_wq, &htab->gc_work, 0);
+> > > > > +                     goto again;
+> > > >
+> > > > Also this one looks rather worrying, so the BPF prog is stalled here, loop-waiting
+> > > > in (e.g. XDP) hot path for system_unbound_wq to kick in to make forward progress?
 > > >
-> > > What exactly could the fault code even do to fix this up?  Something like:
+> > > In this case, the old one is scheduled for removal in GC, we just wait for GC
+> > > to finally remove it. It won't stall unless GC itself or the worker scheduler is
+> > > wrong, both of which should be kernel bugs.
 > > >
-> > > if (addr == 0 && SMAP off && error_code says it's kernel mode && we
-> > > don't have permission to map NULL) {
-> > >   special care for bpf;
-> > > }
+> > > If we don't do this, users would get a -E2BIG when it is not too big. I don't
+> > > know a better way to handle this sad situation, maybe returning -EBUSY
+> > > to users and let them call again?
 > >
-> > right. where 'special care' is checking extable and skipping single
-> > load instruction.
-> >
-> > > This seems arbitrary and fragile.  And it's not obviously
-> > > implementable safely without taking locks,
-> >
-> > search_bpf_extables() needs rcu_read_lock() only.
-> > Not the locks you're talking about.
+> > I think using wq for timers is a non-starter.
+> > Tying a hash/lru map with a timer is not a good idea either.
 > 
-> I mean the locks in the if statement.  How am I supposed to tell
-> whether this fault is a special bpf fault or a normal page fault
-> without taking a lock to look up the VMA or to do some other hack?
+> Both xt_hashlimit and nf_conntrack_core use delayed/deferrable
+> works, probably since their beginnings. They seem to have started
+> well. ;)
 
-search_bpf_extables() only needs a faulting rip.
-No need to lookup vma.
-if (addr == 0 && search_bpf_extables(regs->ip)...
-is trivial enough and won't penalize page faults in general.
-These conditions are not going to happen in the normal kernel code.
+That code was written when network speed was in Mbits and DDoS abbreviation
+wasn't invented. Things are different now.
 
-> Also, why should BPF get special dispensation to generate a special
-> kind of nonsensical page fault that no other kernel code is allowed to
-> do?
-
-bpf is special, since it cares about performance a lot
-and saving branches in critical path is important.
-
+> > I'm proposing a timer map where each object will go through
+> > bpf_timer_setup(timer, callback, flags);
+> > where "callback" is a bpf subprogram.
+> > Corresponding bpf_del_timer and bpf_mod_timer would work the same way
+> > they are in the kernel.
+> > The tricky part is kernel style of using from_timer() to access the
+> > object with additional info.
+> > I think bpf timer map can model it the same way.
+> > At map creation time the value_size will specify the amount of extra
+> > bytes necessary.
+> > Another alternative is to pass an extra data argument to a callback.
 > 
-> >
-> > > which we really ought not
-> > > to be doing from inside arbitrary bpf programs.
-> >
-> > Not in arbitrary progs. It's only available to progs loaded by root.
-> >
-> > > Keep in mind that, if
-> > > SMAP is unavailable, the fault code literally does not know whether
-> > > the page fault originated form a valid uaccess region.
-> > >
-> > > There's also always the possibility that you simultaneously run bpf
-> > > and something like Wine or DOSEMU2 that actually maps the zero page,
-> > > in which case the effect of the bpf code is going to be quite erratic
-> > > and will depend on which mm is loaded.
-> >
-> > It's tracing. Folks who write those progs accepted the fact that
-> > the data returned by probe_read is not going to be 100% accurate.
+> Hmm, this idea is very interesting. I still think arming a timer,
+> whether a kernel timer or a bpf timer, for each entry is overkill,
+> but we can arm one for each map, something like:
 > 
-> Is this really all tracing or is some of it actual live network code?
-
-Networking bpf progs don't use this. bpf tracing does.
-But I'm not sure why you're asking.
-Tracing has higher performance demands than networking.
-
-> >
-> > bpf jit can insert !null check before every such special load
-> > (since it knows all of them), but it's an obvious performance loss
-> > that would be good to avoid. If fault handler can do this
-> > if (addr == 0 && ...) search_bpf_extables()
-> > at least in some conditions and cpu flags it's already a win.
-> > In all other cases bpf jit will insert !null checks.
+> bpf_timer_run(interval, bpf_prog, &any_map);
 > 
-> Again, there is no guarantee that a page fault is even generated for
-> this.  And it doesn't seem very reasonable for the fault code to have
-> to decide whether a NULL pointer dereference is a special BPF fault or
-> a real user access fault against a VMA at address 9.
+> so we run 'bpf_prog' on any map every 'interval', but the 'bpf_prog'
+> would have to iterate the whole map during each interval to delete
+> the expired ones. This is probably doable: the timestamps can be
+> stored either as a part of key or value, and bpf_jiffies64() is already
+> available, users would have to discard expired ones after lookup
+> when they are faster than the timer GC.
 
-The faulting address and faulting ip will precisely identify this situation.
-There is no guess work.
+I meant it would look like:
+
+noinline per_elem_callback(map, key, value, ...)
+{
+  if (value->foo > ...)
+    bpf_delete_map_elem(map, key);
+}
+
+noinline timer_callback(timer, ctx)
+{
+  map = ctx->map;
+  bpf_for_each_map_elem(map, per_elem_callback, ...);
+}
+
+int main_bpf_prog(skb)
+{
+  bpf_timer_setup(my_timer, timer_callback, ...);
+  bpf_mod_timer(my_timer, HZ);
+}
+
+The bpf_for_each_map_elem() work is already in progress. Expect patches to hit
+mailing list soon.
+If you can work on patches for bpf_timer_*() it would be awesome.
