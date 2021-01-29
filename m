@@ -2,83 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98322308C98
-	for <lists+bpf@lfdr.de>; Fri, 29 Jan 2021 19:36:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 688EB308CF7
+	for <lists+bpf@lfdr.de>; Fri, 29 Jan 2021 20:05:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232596AbhA2Scq (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Jan 2021 13:32:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232365AbhA2Scp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Jan 2021 13:32:45 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7386C061573
-        for <bpf@vger.kernel.org>; Fri, 29 Jan 2021 10:32:04 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id b20so3742538ljo.1
-        for <bpf@vger.kernel.org>; Fri, 29 Jan 2021 10:32:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=uPr/7letPpp/MoMGXTdobcRr1Ru7nn/zsBPkFFXj3ic=;
-        b=ck2krApkXOcxxfbkBdt5Y+YTJP7QaB7FyQMCGy3tTLatn9jSQOT10A2OD9jCytXvPo
-         ZJiBzjoNeigl8Bpi+EmpmazPvwMhZa2BH9peXvdt06Wvbp1M8xl6dP9wp8XMppWpgqb7
-         Yn8TISFFtfjwVLpL7hc502w2UqGfTh+YZ72o8iITKjrVh1OSJq54pnnqb09Pzm7zQh1b
-         PmWXZ1qppTwmOLNfGOAZRFI3RbNpdFU4wFKNCBM5E9wf7Jg454guEHHKC0p6VhK96PGQ
-         cKAZElOiZTjQc+gxtXv+DCu13q99j9pl+6BYCmxM8wOy9mfDSeNoxGHSXYRjaHIa99Tr
-         z4ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=uPr/7letPpp/MoMGXTdobcRr1Ru7nn/zsBPkFFXj3ic=;
-        b=axm7UDPwgDtUWagiHV4jWh05QV5F9/YFyO6UrNFhRT5cCpHYEH/aVnNLyxT8w5Eq6N
-         D9mB+jgG6muxyyTufPwK5/taUrdCit5ILeLhLzBtwV76XGonrds/zGEV+ujVRFMg22I0
-         06DO7bhm1kokNB9gt9C9vSqXThkfjln0IFH6NcXIdqMVRDr9L6KJkfWtHyrCPZpdgTdy
-         zvhrQDmQ9VzueOTaX0Uf+FXhxn/VAm8T+zDWhF8c8kn5dNGLoacJ29D3xPOCx+DT9ypm
-         9YxvU6BJO29QCArg/mMj9N9J/4ICTzM9jln2dH++gNDf3wHsJjTi/SmY+Qc5OoTayHOq
-         RW4w==
-X-Gm-Message-State: AOAM533aySdpqh5W58PXhJs0v2ddr7v5Ne88CXJ/2nuqDOzXwVjWlGXY
-        EfEn+G1UfgsO6nS2v403DOrHbNhJ7GvDa0y3Xmc=
-X-Google-Smtp-Source: ABdhPJzWgclrQpe+op4OpSlY5nyDjWU7Tabqam9HNwfFNCsEKej/iX8q2wKqh+ZhCzbLCunNl9UqBDfT3VAEqR7Kejk=
-X-Received: by 2002:a05:651c:211b:: with SMTP id a27mr2943935ljq.433.1611945122860;
- Fri, 29 Jan 2021 10:32:02 -0800 (PST)
+        id S232827AbhA2TDY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Jan 2021 14:03:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50278 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232896AbhA2TCg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Jan 2021 14:02:36 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 49AED64DE3;
+        Fri, 29 Jan 2021 19:01:05 +0000 (UTC)
+Date:   Fri, 29 Jan 2021 14:01:03 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Nikolay Borisov <nborisov@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: kprobes broken since 0d00449c7a28 ("x86: Replace ist_enter()
+ with nmi_enter()")
+Message-ID: <20210129140103.3ce971b7@gandalf.local.home>
+In-Reply-To: <20210129175943.GH8912@worktop.programming.kicks-ass.net>
+References: <20210128123842.c9e33949e62f504b84bfadf5@gmail.com>
+        <e8bae974-190b-f247-0d89-6cea4fd4cc39@suse.com>
+        <eb1ec6a3-9e11-c769-84a4-228f23dc5e23@suse.com>
+        <YBMBTsY1uuQb9wCP@hirez.programming.kicks-ass.net>
+        <20210129013452.njuh3fomws62m4rc@ast-mbp.dhcp.thefacebook.com>
+        <YBPNyRyrkzw2echi@hirez.programming.kicks-ass.net>
+        <20210129224011.81bcdb3eba1227c414e69e1f@kernel.org>
+        <20210129105952.74dc8464@gandalf.local.home>
+        <20210129162438.GC8912@worktop.programming.kicks-ass.net>
+        <CAADnVQLMqHpSsZ1OdZRFmKqNWKiRq3dxRxw+y=kvMdmkN7htUw@mail.gmail.com>
+        <20210129175943.GH8912@worktop.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Received: by 2002:a05:6520:43c2:b029:ba:5e03:a235 with HTTP; Fri, 29 Jan 2021
- 10:32:02 -0800 (PST)
-Reply-To: musaalomar001@gmail.com
-From:   Musa Alomar <dr.musaalomar@gmail.com>
-Date:   Fri, 29 Jan 2021 18:32:02 +0000
-Message-ID: <CAL7aGhEvNe=rUjrvkNm9Vg7_CcTcx+JuVpfBQ2ZDVf__C011bA@mail.gmail.com>
-Subject: URGENT REPLY
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Dear Friend,
+On Fri, 29 Jan 2021 18:59:43 +0100
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-I'm Mr. Musa Alomar, I know that this mail will come to you as a
-surprise. I am the director in charge of the auditing and accounting
-section of Coris Bank Ouagadougou Burkina Faso in West Africa. I hope
-that you will not expose or betray this trust and confidence that I am
-about to expose to you for the mutual benefit of our both families.
+> On Fri, Jan 29, 2021 at 09:45:48AM -0800, Alexei Starovoitov wrote:
+> > Same things apply to bpf side. We can statically prove safety for
+> > ftrace and kprobe attaching whereas to deal with NMI situation we
+> > have to use run-time checks for recursion prevention, etc.  
+> 
+> I have no idea what you're saying. You can attach to functions that are
+> called with random locks held, you can create kprobes in some very
+> sensitive places.
+> 
+> What can you staticlly prove about that?
 
-I need your urgent assistance in transferring the sum of $18.5 million
-united states dollars immediately to your account. Please we would
-like you to keep this proposal as a top secret and delete it if you
-are not interested. Upon receipt of your reply, I will send you full
-details on how the business will be executed and also note that you
-will have 45% of the above mentioned sum if you agree to transact the
-business.
+I think the main difference is, if you attach a kprobe or ftrace function,
+you can theoretically analyze the location before you do the attachment.
 
-Following information stated below are required:
-1) Your age:
-2) Your full name
-3) Your house address:
-4) Your marital status:
-5) Your occupation/Profession:
-6) Your direct telephone:
+Does, the NMI context mean "in_nmi()" returns true? Because there's cases
+in ftrace callbacks where that is checked (like the stack tracer). And
+having ftrace return true for "in_nmi()" will break a lot of existing
+utilities.
 
-Yours, Sincerely,
-Mr. Musa Alomar.
+-- Steve
