@@ -2,164 +2,297 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13E27309078
-	for <lists+bpf@lfdr.de>; Sat, 30 Jan 2021 00:16:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 380C2309095
+	for <lists+bpf@lfdr.de>; Sat, 30 Jan 2021 00:28:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231246AbhA2XNE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Jan 2021 18:13:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229683AbhA2XNC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Jan 2021 18:13:02 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE722C061573
-        for <bpf@vger.kernel.org>; Fri, 29 Jan 2021 15:11:59 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id h15so6169260pli.8
-        for <bpf@vger.kernel.org>; Fri, 29 Jan 2021 15:11:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=4wRX6VIirl6dq5DrLqMuQZCMSqdwBWCq9QxSFiKqCwE=;
-        b=C5OxH0Wo+HsLfvNjkXyFjcF+oqsSwpQlDABKbYcMBEVoJvGFkloEz98DUvrNtBJHQP
-         v2ncEr7y1GY+FzRBwv+TU1i1FeJYcq+mrgTmPzYmVW6HOtz8J8sTSTd7uzX/78HI+Xmh
-         39X+gxomig9wCgljDZDvhpI4+szQCrYmThZgzNBUb+/CMAyVax5XwDnAa5Gtd9gRsLjf
-         o+4ORftpjAKFUbz/9c1n2vqOzNhJtTPbQn/IEfWGHMFmXzeJHGi0ClnlRHDODVkh8ul8
-         Fj+69YKXX2wgfkNBBfREwB9ZcsqxEDvvcCVjA6JJDsv87nFSMKopn3NOJQ5sFmR5s28z
-         xhcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=4wRX6VIirl6dq5DrLqMuQZCMSqdwBWCq9QxSFiKqCwE=;
-        b=M6S7KB5eS4T1zeAf8bTniArzxXdkVPFja16FbjJ+TH7Ummal2ZJRzUuPSr3zQCVO8S
-         mgPQXsZEtBvi/mLfCSIorqswwVRKn14j4upTckr9fy/Ft/Mk3p0Qhok4pBTFW0qEh8xK
-         +KfY2FUnF+B+/W5k5D4qbV1xG7/k5++4P9Vs5zL9TzBH3wtrUM4Bs0g26QBUq3FiBowW
-         PPL7Z4QMoHxNcCOgmsgiPCz3O/Cu+zVvLhxbRUtT4XIRIMAy4ldggPrBsyHl5bAZpT1S
-         mV9UJwLjhmr894MvijxqfI2H8/Gd+UFh4BkXJUvXnQfZmkJlznISDhezsGkGt4rxArlD
-         ugEA==
-X-Gm-Message-State: AOAM533F9RCH9kozky/H/bAqthwQ8A6v3TwaLNLUPgM1JpGGxv9LOoH1
-        RnHk7NdpmjxTMmMAVEqHwDA=
-X-Google-Smtp-Source: ABdhPJy5XktNAEgIF1INFKU+6FWK/KyZ7DjZ0r8yZcFdLowSIDa4sSKxcdP2kXkHxRotp7YkuaxwfQ==
-X-Received: by 2002:a17:902:7088:b029:e0:612:b092 with SMTP id z8-20020a1709027088b02900e00612b092mr6508878plk.41.1611961919453;
-        Fri, 29 Jan 2021 15:11:59 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:57a4])
-        by smtp.gmail.com with ESMTPSA id q126sm10121904pfb.111.2021.01.29.15.11.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Jan 2021 15:11:58 -0800 (PST)
-Date:   Fri, 29 Jan 2021 15:11:55 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>, Yonghong Song <yhs@fb.com>,
-        Jann Horn <jannh@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
+        id S229866AbhA2X1j (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Jan 2021 18:27:39 -0500
+Received: from mailout3.samsung.com ([203.254.224.33]:64935 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231138AbhA2X1V (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Jan 2021 18:27:21 -0500
+Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210129232634epoutp03629faedafbb474151d17fcdf48b8b7f5~e158PC7SV1645716457epoutp03S
+        for <bpf@vger.kernel.org>; Fri, 29 Jan 2021 23:26:34 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210129232634epoutp03629faedafbb474151d17fcdf48b8b7f5~e158PC7SV1645716457epoutp03S
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1611962794;
+        bh=GpaxTK1PcNel8mKDpotmZm41VFmcjlDIa3AGnoWHghA=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=hQS5TZmVNwFK6e8An+0AO5fBm+7QQgYpdSN60eKjTq/A/SvO0pa4paiYbRT1oPXcY
+         KdNAfGsXjNx9nuFcP2IBh/AIp1M5v0Og3jEiNt6s2Zu9yirX9bVzQiI4wT5/DF354A
+         M8TOzBL1afrZhVvNLLqapcyr+nlc1GgIvvYpAG+I=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+        20210129232634epcas2p4b347ab52a2588725c88a80b401c90d4a~e157i17-t2268122681epcas2p48;
+        Fri, 29 Jan 2021 23:26:34 +0000 (GMT)
+Received: from epsmges2p4.samsung.com (unknown [182.195.40.185]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4DSD4R6b9mz4x9Pv; Fri, 29 Jan
+        2021 23:26:31 +0000 (GMT)
+Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
+        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        55.2A.52511.7A994106; Sat, 30 Jan 2021 08:26:31 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210129232630epcas2p1071e141ef8059c4d5c0e4b28c181a171~e1537gzDt0785907859epcas2p1r;
+        Fri, 29 Jan 2021 23:26:30 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210129232630epsmtrp24acc8d1cef1646c2202b26e46ef1bd04~e15334-872829828298epsmtrp2l;
+        Fri, 29 Jan 2021 23:26:30 +0000 (GMT)
+X-AuditID: b6c32a48-50fff7000000cd1f-91-601499a74854
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        61.61.13470.5A994106; Sat, 30 Jan 2021 08:26:29 +0900 (KST)
+Received: from ubuntu.dsn.sec.samsung.com (unknown [12.36.155.120]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210129232629epsmtip1f215075157cb7462359e1308aeb1dd20~e153o-whJ3062930629epsmtip1M;
+        Fri, 29 Jan 2021 23:26:29 +0000 (GMT)
+From:   Dongseok Yi <dseok.yi@samsung.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Alexander Lobakin <alobakin@pm.me>
+Cc:     namkyu78.kim@samsung.com, Dongseok Yi <dseok.yi@samsung.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        kernel-team <kernel-team@fb.com>, X86 ML <x86@kernel.org>,
-        KP Singh <kpsingh@kernel.org>
-Subject: Re: [PATCH bpf] x86/bpf: handle bpf-program-triggered exceptions
- properly
-Message-ID: <20210129231155.mqbp5g675avvm5uq@ast-mbp.dhcp.thefacebook.com>
-References: <YBPToXfWV1ekRo4q@hirez.programming.kicks-ass.net>
- <97EF0157-F068-4234-B826-C08B7324F356@amacapital.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <97EF0157-F068-4234-B826-C08B7324F356@amacapital.net>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [RESEND PATCH net v4] udp: ipv4: manipulate network header of NATed
+ UDP GRO fraglist
+Date:   Sat, 30 Jan 2021 08:13:27 +0900
+Message-Id: <1611962007-80092-1-git-send-email-dseok.yi@samsung.com>
+X-Mailer: git-send-email 2.7.4
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sf0xTVxTHc997vBZI3UtheEci4tt0YlJswZYroWwZBN/m/sA5Nuc0pYG3
+        0qy0TV9rJpGtq4CA/NSFCVbFUUWIjKwwRBSIpYhulS2uUWAsYxlqQ6CjgD+Ic67lYbb/vuee
+        z/fcc889QlzcQcYKtXoza9KrdTQZQfQMJcglrY3RudKef2So/c9LBHr89CSOlpZ/FaBF9wiJ
+        Ws4+wpH9pxICfdtXiiFvw98A2XovYMg3Pw3Qg4FqDP3cUxOGfumzk8g6eZhE15tj0PKQB0dX
+        Kp4IkL/bLUA+xwmAHvZXEm9GM91t4xhTf9gvYC43/SZgmp0WpnLsNs442ytIpuxOO8YMXx0l
+        mZrudsA4Sx1hzKIzLjtyry6tgFXns6Z4Vp9nyNfqNUp6525VhkqukMoksu0ohY7XqwtZJZ35
+        brYkS6sLvpGOP6DWWYJH2WqOo7emp5kMFjMbX2DgzEqaNebrjDKZMZFTF3IWvSYxz1CYKpNK
+        k+RBMldXMNFdRxrtks9ujZ8hrcC6sRKECyG1DX7vdJOVIEIopnoBrL5xAueDBQDPev/CQ5SY
+        egRgo339C8c5T+2qox/AkR+eAj54AuDMvXFBiCKpzXDQ7wsLJaIpG4ANi24iFOCUh4C3jweI
+        EBVFqeDw3QAIaYLaCFs7HCtuEZUJ7VeGBPx9cXB8tGKlKUhdFcLfBzwYn8iE94+eAbyOgjMj
+        3auGWLjo7w82KAzqL2Dp0X28twpA78A0wTPJsOn+ERBicCoBdvZt5fFXoXtihcCpNbB86JmA
+        PxbB8jIxL2lYv6Tia0Dou3l8tR4Dv/qmH/DD2g+bvzsP6sC6pv/KNwPQDmJYI1eoYbkk47b/
+        f5ITrOztFqYXnJybT3QBTAhcAApxOlo0ZxfnikX56oNFrMmgMll0LOcC8uC06vHYl/MMwcXX
+        m1UyeZJCId0uR3JFEqLXikzSKZWY0qjN7Kcsa2RNL3yYMDzWipX/WHN+s3+2KSJKsrih5Jjo
+        WfgGe6RvGmvLudhj7rE1du0re2D9oFig1Ca/jcGcVselMXIKjzsUKFvQXiueG/NoUgO24uQK
+        X+mX2inuRsbz9LpzyymGHWsvJu58rej6S1WjuS1Z698jHk6ltN7q0nduSrft2lVnlQ87b46K
+        vB9OLrweduHgK47nosh32ua9nhZLxDA38NEn9Uy1uSCnqCFFE8gYG5zS3anSn6Y7rTEf1wb0
+        j+/63/8jpnbCdUjbNrijRJXVpfy8I+HItfnct2rm1uCZl2P33LNJ1n0NZw8osk+lsm90uHaf
+        HliYmaUEe/a2dQ66J/ZrKpaIhvqZydk0muAK1LItuIlT/wtzeOQaQAQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrDLMWRmVeSWpSXmKPExsWy7bCSnO6ymSIJBqsULFY93s5i8f33bGaL
+        Lz9vs1t8PnKczWLxwm/MFnPOt7BYrNvVymRxZdofRoumHSuYLF58eMJo8XxfL5PFhW19rBaX
+        d81hs2i408xmcWyBmMXPw2eYLXZ3/mC3eLflCLvFiyUzGC2+7u1icRDx2LLyJpPHxOZ37B47
+        Z91l91iwqdSj68YlZo9NqzrZPNqurWLyOLrnHJtH35ZVjB6bWpewenzeJBfAHcVlk5Kak1mW
+        WqRvl8CVcWvLBLaCOboVZ2/OZ2tgbFDtYuTkkBAwkVh6pp+ti5GLQ0hgN6PE1sY/zF2MHEAJ
+        CYldm10haoQl7rccYYWo+cYocXraG1aQBJuAhsT+dy/AEiICLUDNRw8ygzjMAvdYJM7s6mQB
+        qRIWiJU4//YumM0ioCqxfO0SdhCbV8BFYs7uw+wQK+Qkbp7rZJ7AyLOAkWEVo2RqQXFuem6x
+        YYFhXmq5XnFibnFpXrpecn7uJkZwBGhp7mDcvuqD3iFGJg7GQ4wSHMxKIrxv5wglCPGmJFZW
+        pRblxxeV5qQWH2KU5mBREue90HUyXkggPbEkNTs1tSC1CCbLxMEp1cAUKzP7/6z91kIJazqs
+        2nljw85MFzPfX+q+t6z2QrII666vQlvEVNxfLFuaHbXuz0knWRu1zqNptjYu9cdv7fBfLVF0
+        /vXSFx+PTP74NfrylOjnU9vj7xf/8L/Q7P3UyaG+M5n1uEdp7+Nv5eYK+ooHPrDoHeub1jHX
+        8LhJ8+zAUJ2uDI2u8oedPEe4ZMvVvl2reex5pfXFzWUqMyMfGSVeFoiS26+4mkk0nmn949MP
+        v/Wdnu++69I7j3tnj37pelMjf2j61KR/P9WMkj6+u6Cm9u5ZtsRcUcPw/ff/vn+0X2BdeVKc
+        qlfq5IualmyeYuefcUw4w7yk4Mrv7hnMIfN2fi/qf/Bn0c3Z6ezKb/SMlFiKMxINtZiLihMB
+        heGvu+8CAAA=
+X-CMS-MailID: 20210129232630epcas2p1071e141ef8059c4d5c0e4b28c181a171
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210129232630epcas2p1071e141ef8059c4d5c0e4b28c181a171
+References: <CGME20210129232630epcas2p1071e141ef8059c4d5c0e4b28c181a171@epcas2p1.samsung.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 08:00:57AM -0800, Andy Lutomirski wrote:
-> 
-> > On Jan 29, 2021, at 1:21 AM, Peter Zijlstra <peterz@infradead.org> wrote:
-> > 
-> > ﻿On Thu, Jan 28, 2021 at 04:32:34PM -0800, Andy Lutomirski wrote:
-> > 
-> >> I spoke too soon.  get_kernel_nofault() is just fine.  You have
-> >> inlined something like __get_kernel_nofault(), which is incorrect.
-> >> get_kernel_nofault() would have done the right thing.
-> > 
-> > Correct, the pagefault_disable() is critical.
+UDP/IP header of UDP GROed frag_skbs are not updated even after NAT
+forwarding. Only the header of head_skb from ip_finish_output_gso ->
+skb_gso_segment is updated but following frag_skbs are not updated.
 
-What specifically are you referring to?
-As far as I can see the current->pagefault_disabled is an artifact of the past.
-It doesn't provide any additional information to the fault handler beyond
-what extable already does. Consider:
+A call path skb_mac_gso_segment -> inet_gso_segment ->
+udp4_ufo_fragment -> __udp_gso_segment -> __udp_gso_segment_list
+does not try to update UDP/IP header of the segment list but copy
+only the MAC header.
 
-current->pagefault_disabled++
-some C code
-asm ("load") // with extable annotation
-some other C code
-current->pagefault_disabled--
+Update port, addr and check of each skb of the segment list in
+__udp_gso_segment_list. It covers both SNAT and DNAT.
 
-If there is fault in the C code the fault handler will do the wrong thing,
-since the fault is technically disabled only for asm("load").
-The handler will go into bad_area_nosemaphore() instead of find_vma().
+Fixes: 9fd1ff5d2ac7 (udp: Support UDP fraglist GRO/GSO.)
+Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
+Acked-by: Steffen Klassert <steffen.klassert@secunet.com>
+---
+v1:
+Steffen Klassert said, there could be 2 options.
+https://lore.kernel.org/patchwork/patch/1362257/
+I was trying to write a quick fix, but it was not easy to forward
+segmented list. Currently, assuming DNAT only.
 
-The load instruction is annotated in extable.
-The fault handler instead of:
-  if (faulthandler_disabled) search_exception_tables()
-could do:
- search_exception_tables()
-right away without sacrificing anything.
-If the fault is on one of the special asm("load") the intent of the code
-is obvious. This is non faulting load that should be fixed up.
-Of course the search of extable should happen before taking mmap lock.
+v2:
+Per Steffen Klassert request, moved the procedure from
+udp4_ufo_fragment to __udp_gso_segment_list and support SNAT.
 
-imo pagefault_disabled can be removed.
+v3:
+Per Steffen Klassert request, applied fast return by comparing seg
+and seg->next at the beginning of __udpv4_gso_segment_list_csum.
 
-> Also the _allowed() part. The bounds check is required.
+Fixed uh->dest = *newport and iph->daddr = *newip to
+*oldport = *newport and *oldip = *newip.
 
-Up-thread I was saying that JIT is inlining copy_from_kernel_nofault().
-That's not quite correct. When the code was written it was inlining
-bpf_probe_read(). Back then _kernel vs _user distinction didn't exist.
-So the bounds check wasn't there. The verifier side was designed
-for kernel pointers and NULL from the beginning. No user pointer
-(aside from NULL) would ever go through this path.
-Today I agree that the range check is necessary.
-The question is where to do this check.
-I see two options:
-- the JIT can emit it
-- fault handler can do it, since %rip clearly says that it's JITed asm load.
-The intent of the code is not ambiguous.
-The intent of the fault is not ambiguous either.
-More so the mmap lock and find_vma should not be done.
+v4:
+Clear "Changes Requested" mark in
+https://patchwork.kernel.org/project/netdevbpf
 
-I prefer the later approach which can be implemented as:
-diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index f1f1b5a0956a..7846a95436c1 100644
---- a/arch/x86/mm/fault.c
-+++ b/arch/x86/mm/fault.c
-@@ -1248,6 +1248,12 @@ void do_user_addr_fault(struct pt_regs *regs,
-        if (unlikely(kprobe_page_fault(regs, X86_TRAP_PF)))
-                return;
+Simplified the return statement in __udp_gso_segment_list.
 
-+       if (!address && (e = search_bpf_extables(regs->ip))) {
-+               handler = ex_fixup_handler(e);
-+               handler(e, regs, trapnr, error_code, fault_addr);
-+               return;
-+       }
+ include/net/udp.h      |  2 +-
+ net/ipv4/udp_offload.c | 69 ++++++++++++++++++++++++++++++++++++++++++++++----
+ net/ipv6/udp_offload.c |  2 +-
+ 3 files changed, 66 insertions(+), 7 deletions(-)
+
+diff --git a/include/net/udp.h b/include/net/udp.h
+index 877832b..01351ba 100644
+--- a/include/net/udp.h
++++ b/include/net/udp.h
+@@ -178,7 +178,7 @@ struct sk_buff *udp_gro_receive(struct list_head *head, struct sk_buff *skb,
+ int udp_gro_complete(struct sk_buff *skb, int nhoff, udp_lookup_t lookup);
+ 
+ struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
+-				  netdev_features_t features);
++				  netdev_features_t features, bool is_ipv6);
+ 
+ static inline struct udphdr *udp_gro_udphdr(struct sk_buff *skb)
+ {
+diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
+index ff39e94..cfc8726 100644
+--- a/net/ipv4/udp_offload.c
++++ b/net/ipv4/udp_offload.c
+@@ -187,8 +187,67 @@ struct sk_buff *skb_udp_tunnel_segment(struct sk_buff *skb,
+ }
+ EXPORT_SYMBOL(skb_udp_tunnel_segment);
+ 
++static void __udpv4_gso_segment_csum(struct sk_buff *seg,
++				     __be32 *oldip, __be32 *newip,
++				     __be16 *oldport, __be16 *newport)
++{
++	struct udphdr *uh;
++	struct iphdr *iph;
 +
++	if (*oldip == *newip && *oldport == *newport)
++		return;
++
++	uh = udp_hdr(seg);
++	iph = ip_hdr(seg);
++
++	if (uh->check) {
++		inet_proto_csum_replace4(&uh->check, seg, *oldip, *newip,
++					 true);
++		inet_proto_csum_replace2(&uh->check, seg, *oldport, *newport,
++					 false);
++		if (!uh->check)
++			uh->check = CSUM_MANGLED_0;
++	}
++	*oldport = *newport;
++
++	csum_replace4(&iph->check, *oldip, *newip);
++	*oldip = *newip;
++}
++
++static struct sk_buff *__udpv4_gso_segment_list_csum(struct sk_buff *segs)
++{
++	struct sk_buff *seg;
++	struct udphdr *uh, *uh2;
++	struct iphdr *iph, *iph2;
++
++	seg = segs;
++	uh = udp_hdr(seg);
++	iph = ip_hdr(seg);
++
++	if ((udp_hdr(seg)->dest == udp_hdr(seg->next)->dest) &&
++	    (udp_hdr(seg)->source == udp_hdr(seg->next)->source) &&
++	    (ip_hdr(seg)->daddr == ip_hdr(seg->next)->daddr) &&
++	    (ip_hdr(seg)->saddr == ip_hdr(seg->next)->saddr))
++		return segs;
++
++	while ((seg = seg->next)) {
++		uh2 = udp_hdr(seg);
++		iph2 = ip_hdr(seg);
++
++		__udpv4_gso_segment_csum(seg,
++					 &iph2->saddr, &iph->saddr,
++					 &uh2->source, &uh->source);
++		__udpv4_gso_segment_csum(seg,
++					 &iph2->daddr, &iph->daddr,
++					 &uh2->dest, &uh->dest);
++	}
++
++	return segs;
++}
++
+ static struct sk_buff *__udp_gso_segment_list(struct sk_buff *skb,
+-					      netdev_features_t features)
++					      netdev_features_t features,
++					      bool is_ipv6)
+ {
+ 	unsigned int mss = skb_shinfo(skb)->gso_size;
+ 
+@@ -198,11 +257,11 @@ static struct sk_buff *__udp_gso_segment_list(struct sk_buff *skb,
+ 
+ 	udp_hdr(skb)->len = htons(sizeof(struct udphdr) + mss);
+ 
+-	return skb;
++	return is_ipv6 ? skb : __udpv4_gso_segment_list_csum(skb);
+ }
+ 
+ struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
+-				  netdev_features_t features)
++				  netdev_features_t features, bool is_ipv6)
+ {
+ 	struct sock *sk = gso_skb->sk;
+ 	unsigned int sum_truesize = 0;
+@@ -214,7 +273,7 @@ struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
+ 	__be16 newlen;
+ 
+ 	if (skb_shinfo(gso_skb)->gso_type & SKB_GSO_FRAGLIST)
+-		return __udp_gso_segment_list(gso_skb, features);
++		return __udp_gso_segment_list(gso_skb, features, is_ipv6);
+ 
+ 	mss = skb_shinfo(gso_skb)->gso_size;
+ 	if (gso_skb->len <= sizeof(*uh) + mss)
+@@ -328,7 +387,7 @@ static struct sk_buff *udp4_ufo_fragment(struct sk_buff *skb,
+ 		goto out;
+ 
+ 	if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4)
+-		return __udp_gso_segment(skb, features);
++		return __udp_gso_segment(skb, features, false);
+ 
+ 	mss = skb_shinfo(skb)->gso_size;
+ 	if (unlikely(skb->len <= mss))
+diff --git a/net/ipv6/udp_offload.c b/net/ipv6/udp_offload.c
+index c7bd7b1..faa823c 100644
+--- a/net/ipv6/udp_offload.c
++++ b/net/ipv6/udp_offload.c
+@@ -42,7 +42,7 @@ static struct sk_buff *udp6_ufo_fragment(struct sk_buff *skb,
+ 			goto out;
+ 
+ 		if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4)
+-			return __udp_gso_segment(skb, features);
++			return __udp_gso_segment(skb, features, true);
+ 
+ 		mss = skb_shinfo(skb)->gso_size;
+ 		if (unlikely(skb->len <= mss))
+-- 
+2.7.4
 
-Comparing to former option it saves bpf prog cycles.
-
-Consider that users do not write a->b->c just to walk NULL pointers.
-The bpf program authors are not writing junk programs.
-If the program is walking the pointers it expects to read useful data.
-If one of those pointers can be NULL the program author will
-add if (!ptr) check there. The author will use blind a->b->c
-only for cases where these pointers are most likely will be !NULL.
-"Most likely" means that in 99.9% of the situations there will be no faults.
-When people write bpf tracing progs they care about the perf overhead.
-Obviously if prog is causing faults somebody will notice and will
-slap that bpf author for causing a performance regression.
-So faulting on NULL is very rare in practice.
-There is a selftests/bpf for faulting on NULL, but it's a test only.
-If the NULL check is added by JIT it will not be hit 99.9% of the time.
-It will be a pure overhead for program execution.
-Hence my preference for the latter approach.
