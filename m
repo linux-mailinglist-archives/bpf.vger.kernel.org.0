@@ -2,90 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77227308F3F
-	for <lists+bpf@lfdr.de>; Fri, 29 Jan 2021 22:26:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F12B308F8B
+	for <lists+bpf@lfdr.de>; Fri, 29 Jan 2021 22:43:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233055AbhA2VZm (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 29 Jan 2021 16:25:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52816 "EHLO mail.kernel.org"
+        id S233106AbhA2VmA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 29 Jan 2021 16:42:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232776AbhA2VZj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Jan 2021 16:25:39 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4F39964E00;
-        Fri, 29 Jan 2021 21:24:56 +0000 (UTC)
-Date:   Fri, 29 Jan 2021 16:24:54 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Nikolay Borisov <nborisov@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: kprobes broken since 0d00449c7a28 ("x86: Replace ist_enter()
- with nmi_enter()")
-Message-ID: <20210129162454.293523c6@gandalf.local.home>
-In-Reply-To: <20210129140103.3ce971b7@gandalf.local.home>
-References: <20210128123842.c9e33949e62f504b84bfadf5@gmail.com>
-        <e8bae974-190b-f247-0d89-6cea4fd4cc39@suse.com>
-        <eb1ec6a3-9e11-c769-84a4-228f23dc5e23@suse.com>
-        <YBMBTsY1uuQb9wCP@hirez.programming.kicks-ass.net>
-        <20210129013452.njuh3fomws62m4rc@ast-mbp.dhcp.thefacebook.com>
-        <YBPNyRyrkzw2echi@hirez.programming.kicks-ass.net>
-        <20210129224011.81bcdb3eba1227c414e69e1f@kernel.org>
-        <20210129105952.74dc8464@gandalf.local.home>
-        <20210129162438.GC8912@worktop.programming.kicks-ass.net>
-        <CAADnVQLMqHpSsZ1OdZRFmKqNWKiRq3dxRxw+y=kvMdmkN7htUw@mail.gmail.com>
-        <20210129175943.GH8912@worktop.programming.kicks-ass.net>
-        <20210129140103.3ce971b7@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233058AbhA2VmA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 29 Jan 2021 16:42:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A74364E0B;
+        Fri, 29 Jan 2021 21:41:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611956479;
+        bh=nxD+Ik51Ft996F6lqxR6jr9zZoSII2q6jCh8WSDdinM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KkfS+IYd4tk5SUF4UzgR5ZvPVi7jfuqyJJrm+bxJ6NRgYIViGlRTI0Q4Ab5tadizG
+         ah+u8kjWq0+btArKq4qNe9blPToPQyQ+bDArjnkQCR7ojlBg2vYUu08Pa7qVHYtvxl
+         SHoXFfEqt8Dkr0jl6++EEn78ARHxPX2RIG/GV9mZCAN3eQwe3nglybQLOyv73GdpO/
+         0Q67lHEvV+KiLoEnlpOd07a3GT1TTcFOTO/36xpOY2u7cI/cuWMxaIggtydlkj37TK
+         FLA1HtAsOrxY7sWIIVf3H1F3NR6BCVGHPNFcecSiV1KblQ2rqlx7ltfabE2mG+Walh
+         NDjN1Jnzxk2Pg==
+Date:   Fri, 29 Jan 2021 22:41:14 +0100
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     Toshiaki Makita <toshiaki.makita1@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
+        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        lorenzo.bianconi@redhat.com, brouer@redhat.com, toke@redhat.com
+Subject: Re: [PATCH v2 bpf-next] net: veth: alloc skb in bulk for ndo_xdp_xmit
+Message-ID: <20210129214114.GA20729@lore-desk>
+References: <415937741661ac331be09c0e59b4ff1eacfee782.1611861943.git.lorenzo@kernel.org>
+ <36298336-72f9-75a5-781e-7cb01dac1702@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="9jxsPFA5p3P2qPhR"
+Content-Disposition: inline
+In-Reply-To: <36298336-72f9-75a5-781e-7cb01dac1702@gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 29 Jan 2021 14:01:03 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
 
-> On Fri, 29 Jan 2021 18:59:43 +0100
-> Peter Zijlstra <peterz@infradead.org> wrote:
-> 
-> > On Fri, Jan 29, 2021 at 09:45:48AM -0800, Alexei Starovoitov wrote:  
-> > > Same things apply to bpf side. We can statically prove safety for
-> > > ftrace and kprobe attaching whereas to deal with NMI situation we
-> > > have to use run-time checks for recursion prevention, etc.    
-> > 
-> > I have no idea what you're saying. You can attach to functions that are
-> > called with random locks held, you can create kprobes in some very
-> > sensitive places.
-> > 
-> > What can you staticlly prove about that?  
-> 
-> I think the main difference is, if you attach a kprobe or ftrace function,
-> you can theoretically analyze the location before you do the attachment.
-> 
-> Does, the NMI context mean "in_nmi()" returns true? Because there's cases
-> in ftrace callbacks where that is checked (like the stack tracer). And
-> having ftrace return true for "in_nmi()" will break a lot of existing
-> utilities.
+--9jxsPFA5p3P2qPhR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Specifically, kprobe and ftrace callbacks may have this:
+> On 2021/01/29 4:41, Lorenzo Bianconi wrote:
+> > Split ndo_xdp_xmit and ndo_start_xmit use cases in veth_xdp_rcv routine
+> > in order to alloc skbs in bulk for XDP_PASS verdict.
+> > Introduce xdp_alloc_skb_bulk utility routine to alloc skb bulk list.
+> > The proposed approach has been tested in the following scenario:
+> >=20
+> > eth (ixgbe) --> XDP_REDIRECT --> veth0 --> (remote-ns) veth1 --> XDP_PA=
+SS
+> >=20
+> > XDP_REDIRECT: xdp_redirect_map bpf sample
+> > XDP_PASS: xdp_rxq_info bpf sample
+> >=20
+> > traffic generator: pkt_gen sending udp traffic on a remote device
+> >=20
+> > bpf-next master: ~3.64Mpps
+> > bpf-next + skb bulking allocation: ~3.75Mpps
+> >=20
+> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > ---
+> ...
+> > +/* frames array contains VETH_XDP_BATCH at most */
+> > +static void veth_xdp_rcv_batch(struct veth_rq *rq, void **frames,
+> > +			       int n_xdpf, struct veth_xdp_tx_bq *bq,
+> > +			       struct veth_stats *stats)
+> > +{
+> > +	void *skbs[VETH_XDP_BATCH];
+> > +	int i, n_skb =3D 0;
+> > +
+> > +	for (i =3D 0; i < n_xdpf; i++) {
+> > +		struct xdp_frame *frame =3D frames[i];
+> > +
+> > +		stats->xdp_bytes +=3D frame->len;
+> > +		frame =3D veth_xdp_rcv_one(rq, frame, bq, stats);
+> > +		if (frame)
+> > +			frames[n_skb++] =3D frame;
+> > +	}
+>=20
+> Maybe we can move this block to veth_xdp_rcv() and make the logic even mo=
+re simple?
+>=20
+> Something like this:
+>=20
+> static int veth_xdp_rcv(struct veth_rq *rq, int budget,
+> 	...
+> 		if (veth_is_xdp_frame(ptr)) {
+> 			struct xdp_frame *frame =3D veth_ptr_to_xdp(ptr);
+>=20
+> 			stats->xdp_bytes +=3D frame->len;
+> 			frame =3D veth_xdp_rcv_one(rq, frame, bq, stats);
+> 			if (frame) {
+> 				xdpf[n_xdpf++] =3D frame;
+> 				if (n_xdpf =3D=3D VETH_XDP_BATCH) {
+> 					veth_xdp_rcv_batch(rq, xdpf, n_xdpf, bq,
+> 							   stats);
+> 					n_xdpf =3D 0;
+> 				}
+> 			}
+>=20
+> Then we can fully make use of skb bulk allocation as xdpf[] does not incl=
+ude
+> frames which may be XDP_TX'ed or XDP_REDIRECT'ed.
+>=20
+> WDYT?
 
-	if (in_nmi())
-		return;
+I gues the code is more readable, I will fix in v3. Thanks.
 
-	raw_spin_lock_irqsave(&lock, flags);
-	[..]
-	raw_spin_unlock_irqrestore(&lock, flags);
+Regards,
+Lorenzo
 
-Which is totally fine to have, but the above only works if "in_nmi()"
-returns true only if you are in a real NMI.
+>=20
+> Toshiaki Makita
 
-The stack tracer code does exactly the above.
+--9jxsPFA5p3P2qPhR
+Content-Type: application/pgp-signature; name="signature.asc"
 
--- Steve
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYBSA+AAKCRA6cBh0uS2t
+rAW1AQDdCdLHZkOmFEgCLdTxAldBYjdijOxC7d+PkRPPZ8YilgD/ZZpQz4cKz2Uk
+tAcAWKNoTqhvIRzOyA774IltFD3Zzwc=
+=eY3D
+-----END PGP SIGNATURE-----
+
+--9jxsPFA5p3P2qPhR--
