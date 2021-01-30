@@ -2,130 +2,257 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFFED309599
-	for <lists+bpf@lfdr.de>; Sat, 30 Jan 2021 14:55:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC06330966B
+	for <lists+bpf@lfdr.de>; Sat, 30 Jan 2021 16:57:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231722AbhA3NxZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 30 Jan 2021 08:53:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34722 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231715AbhA3NxG (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 30 Jan 2021 08:53:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612014692;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aoCtMEaSOyMLjV1GCt7eQQvgQpEqt4qo7aMScA9Bkis=;
-        b=eQ1D6lNqYE01DjKg2XAZ7aWM1whfN4254a6lyb/eZC2H6YeU3F4O07jxgY3Qb/g+Umfz+G
-        CxKXLGWNG0hHOXMjHXbwuTxu2qzQcq8qw2oTdRv/fq4KPZ/dEBJ5DT18tPSGadfb0e86fa
-        QEOdAsCZBvNowup0CQufSjFm8RylyqY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-509-b93pRTlHPZylsV1722MunA-1; Sat, 30 Jan 2021 08:51:29 -0500
-X-MC-Unique: b93pRTlHPZylsV1722MunA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DC13C801AC0;
-        Sat, 30 Jan 2021 13:51:26 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AFEE860CDF;
-        Sat, 30 Jan 2021 13:51:20 +0000 (UTC)
-Date:   Sat, 30 Jan 2021 14:51:19 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
-        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
-        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
-        colrack@gmail.com, brouer@redhat.com
-Subject: Re: [PATCH bpf-next V13 4/7] bpf: add BPF-helper for MTU checking
-Message-ID: <20210130145119.17f876c3@carbon>
-In-Reply-To: <4965401d-c461-15f6-2068-6cefb6c145ba@iogearbox.net>
-References: <161159451743.321749.17528005626909164523.stgit@firesoul>
-        <161159457239.321749.9067604476261493815.stgit@firesoul>
-        <6013b06b83ae2_2683c2085d@john-XPS-13-9370.notmuch>
-        <20210129083654.14f343fa@carbon>
-        <60142eae7cd59_11fd208f1@john-XPS-13-9370.notmuch>
-        <4965401d-c461-15f6-2068-6cefb6c145ba@iogearbox.net>
+        id S232316AbhA3P4r (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 30 Jan 2021 10:56:47 -0500
+Received: from mail-40133.protonmail.ch ([185.70.40.133]:35373 "EHLO
+        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232216AbhA3P40 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 30 Jan 2021 10:56:26 -0500
+Date:   Sat, 30 Jan 2021 15:55:24 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1612022132; bh=FggdhBVUsajUZNHPJ2/uHLJEmlhJc0ygmB55Y9M41h8=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=T/jIdyqw1mxnzW9/WPYrZoyzqI3xjjWHl5O7XcSBWxjVGIU0iJIlQrTEGFLrOB/7b
+         3Ph7asMS7UnxIgQISBnvZmz0ZY+TY5HpOyxKpjaG9jarpweqryWjsxh8gOT8RBGrEB
+         Nc0/CzSJ/xwliTf0TwJpZNRn+Wv8CPrAomQCO2W5mqVVSvcRPiSDS9LW2GfNhG8Yn9
+         HAvjm4ZH5y88+7ELuWG8ltsMlat/d12gsolrOPH6J847+n9Dx6sieZTaeJtz7O4LUV
+         zgZoZiJEuaVvIvXqFLP0a0EPNjKTnvNdtvkENgaaatD1mhZB1siM29nwwp4yT4hE+7
+         uZe2SK5ZGsqqA==
+To:     Dongseok Yi <dseok.yi@samsung.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        "David S. Miller" <davem@davemloft.net>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        namkyu78.kim@samsung.com, Jakub Kicinski <kuba@kernel.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [RESEND PATCH net v4] udp: ipv4: manipulate network header of NATed UDP GRO fraglist
+Message-ID: <20210130155458.8523-1-alobakin@pm.me>
+In-Reply-To: <1611962007-80092-1-git-send-email-dseok.yi@samsung.com>
+References: <CGME20210129232630epcas2p1071e141ef8059c4d5c0e4b28c181a171@epcas2p1.samsung.com> <1611962007-80092-1-git-send-email-dseok.yi@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 30 Jan 2021 01:08:17 +0100
-Daniel Borkmann <daniel@iogearbox.net> wrote:
+From: Dongseok Yi <dseok.yi@samsung.com>
+Date: Sat, 30 Jan 2021 08:13:27 +0900
 
-> On 1/29/21 4:50 PM, John Fastabend wrote:
-> > Jesper Dangaard Brouer wrote:  
-> >> On Thu, 28 Jan 2021 22:51:23 -0800
-> >> John Fastabend <john.fastabend@gmail.com> wrote:  
-> >>> Jesper Dangaard Brouer wrote:  
-> >>>> This BPF-helper bpf_check_mtu() works for both XDP and TC-BPF programs.
-> >>>>
-> >>>> The SKB object is complex and the skb->len value (accessible from
-> >>>> BPF-prog) also include the length of any extra GRO/GSO segments, but
-> >>>> without taking into account that these GRO/GSO segments get added
-> >>>> transport (L4) and network (L3) headers before being transmitted. Thus,
-> >>>> this BPF-helper is created such that the BPF-programmer don't need to
-> >>>> handle these details in the BPF-prog.
-> >>>>
-> >>>> The API is designed to help the BPF-programmer, that want to do packet
-> >>>> context size changes, which involves other helpers. These other helpers
-> >>>> usually does a delta size adjustment. This helper also support a delta
-> >>>> size (len_diff), which allow BPF-programmer to reuse arguments needed by
-> >>>> these other helpers, and perform the MTU check prior to doing any actual
-> >>>> size adjustment of the packet context.
-> >>>>
-> >>>> It is on purpose, that we allow the len adjustment to become a negative
-> >>>> result, that will pass the MTU check. This might seem weird, but it's not
-> >>>> this helpers responsibility to "catch" wrong len_diff adjustments. Other
-> >>>> helpers will take care of these checks, if BPF-programmer chooses to do
-> >>>> actual size adjustment.  
-> >>
-> >> The nitpick below about len adjust can become negative, is on purpose
-> >> and why is described in above.  
-> > 
-> > following up on a nitpick :)
-> > 
-> > What is the use case to allow users to push a negative len_diff with
-> > abs(len_diff) > skb_diff and not throw an error. I would understand if it
-> > was a pain to catch the case, but below is fairly straightforward. Of
-> > course if user really tries to truncate the packet like this later it
-> > will also throw an error, but still missing why we don't throw an error
-> > here.
-> > 
-> > Anyways its undefined if len_diff is truely bogus. Its not really a
-> > problem I guess because garbage in (bogus len_diff) garbage out is OK I
-> > think.  
-> 
-> What's the rationale to not sanity check for it? I just double checked
-> the UAPI helper description comment ... at minimum this behavior would
-> need to be documented there to avoid confusion.
+> UDP/IP header of UDP GROed frag_skbs are not updated even after NAT
+> forwarding. Only the header of head_skb from ip_finish_output_gso ->
+> skb_gso_segment is updated but following frag_skbs are not updated.
+>=20
+> A call path skb_mac_gso_segment -> inet_gso_segment ->
+> udp4_ufo_fragment -> __udp_gso_segment -> __udp_gso_segment_list
+> does not try to update UDP/IP header of the segment list but copy
+> only the MAC header.
+>=20
+> Update port, addr and check of each skb of the segment list in
+> __udp_gso_segment_list. It covers both SNAT and DNAT.
+>=20
+> Fixes: 9fd1ff5d2ac7 (udp: Support UDP fraglist GRO/GSO.)
+> Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
+> Acked-by: Steffen Klassert <steffen.klassert@secunet.com>
+> ---
+> v1:
+> Steffen Klassert said, there could be 2 options.
+> https://lore.kernel.org/patchwork/patch/1362257/
+> I was trying to write a quick fix, but it was not easy to forward
+> segmented list. Currently, assuming DNAT only.
+>=20
+> v2:
+> Per Steffen Klassert request, moved the procedure from
+> udp4_ufo_fragment to __udp_gso_segment_list and support SNAT.
+>=20
+> v3:
+> Per Steffen Klassert request, applied fast return by comparing seg
+> and seg->next at the beginning of __udpv4_gso_segment_list_csum.
+>=20
+> Fixed uh->dest =3D *newport and iph->daddr =3D *newip to
+> *oldport =3D *newport and *oldip =3D *newip.
+>=20
+> v4:
+> Clear "Changes Requested" mark in
+> https://patchwork.kernel.org/project/netdevbpf
+>=20
+> Simplified the return statement in __udp_gso_segment_list.
+>=20
+>  include/net/udp.h      |  2 +-
+>  net/ipv4/udp_offload.c | 69 ++++++++++++++++++++++++++++++++++++++++++++=
+++----
+>  net/ipv6/udp_offload.c |  2 +-
+>  3 files changed, 66 insertions(+), 7 deletions(-)
+>=20
+> diff --git a/include/net/udp.h b/include/net/udp.h
+> index 877832b..01351ba 100644
+> --- a/include/net/udp.h
+> +++ b/include/net/udp.h
+> @@ -178,7 +178,7 @@ struct sk_buff *udp_gro_receive(struct list_head *hea=
+d, struct sk_buff *skb,
+>  int udp_gro_complete(struct sk_buff *skb, int nhoff, udp_lookup_t lookup=
+);
+>=20
+>  struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
+> -=09=09=09=09  netdev_features_t features);
+> +=09=09=09=09  netdev_features_t features, bool is_ipv6);
+>=20
+>  static inline struct udphdr *udp_gro_udphdr(struct sk_buff *skb)
+>  {
+> diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
+> index ff39e94..cfc8726 100644
+> --- a/net/ipv4/udp_offload.c
+> +++ b/net/ipv4/udp_offload.c
+> @@ -187,8 +187,67 @@ struct sk_buff *skb_udp_tunnel_segment(struct sk_buf=
+f *skb,
+>  }
+>  EXPORT_SYMBOL(skb_udp_tunnel_segment);
+>=20
+> +static void __udpv4_gso_segment_csum(struct sk_buff *seg,
+> +=09=09=09=09     __be32 *oldip, __be32 *newip,
+> +=09=09=09=09     __be16 *oldport, __be16 *newport)
+> +{
+> +=09struct udphdr *uh;
+> +=09struct iphdr *iph;
+> +
+> +=09if (*oldip =3D=3D *newip && *oldport =3D=3D *newport)
+> +=09=09return;
+> +
+> +=09uh =3D udp_hdr(seg);
+> +=09iph =3D ip_hdr(seg);
+> +
+> +=09if (uh->check) {
+> +=09=09inet_proto_csum_replace4(&uh->check, seg, *oldip, *newip,
+> +=09=09=09=09=09 true);
+> +=09=09inet_proto_csum_replace2(&uh->check, seg, *oldport, *newport,
+> +=09=09=09=09=09 false);
+> +=09=09if (!uh->check)
+> +=09=09=09uh->check =3D CSUM_MANGLED_0;
+> +=09}
+> +=09*oldport =3D *newport;
+> +
+> +=09csum_replace4(&iph->check, *oldip, *newip);
+> +=09*oldip =3D *newip;
+> +}
+> +
+> +static struct sk_buff *__udpv4_gso_segment_list_csum(struct sk_buff *seg=
+s)
+> +{
+> +=09struct sk_buff *seg;
+> +=09struct udphdr *uh, *uh2;
+> +=09struct iphdr *iph, *iph2;
+> +
+> +=09seg =3D segs;
+> +=09uh =3D udp_hdr(seg);
+> +=09iph =3D ip_hdr(seg);
+> +
+> +=09if ((udp_hdr(seg)->dest =3D=3D udp_hdr(seg->next)->dest) &&
+> +=09    (udp_hdr(seg)->source =3D=3D udp_hdr(seg->next)->source) &&
+> +=09    (ip_hdr(seg)->daddr =3D=3D ip_hdr(seg->next)->daddr) &&
+> +=09    (ip_hdr(seg)->saddr =3D=3D ip_hdr(seg->next)->saddr))
+> +=09=09return segs;
+> +
+> +=09while ((seg =3D seg->next)) {
+> +=09=09uh2 =3D udp_hdr(seg);
+> +=09=09iph2 =3D ip_hdr(seg);
+> +
+> +=09=09__udpv4_gso_segment_csum(seg,
+> +=09=09=09=09=09 &iph2->saddr, &iph->saddr,
+> +=09=09=09=09=09 &uh2->source, &uh->source);
+> +=09=09__udpv4_gso_segment_csum(seg,
+> +=09=09=09=09=09 &iph2->daddr, &iph->daddr,
+> +=09=09=09=09=09 &uh2->dest, &uh->dest);
+> +=09}
+> +
+> +=09return segs;
+> +}
+> +
+>  static struct sk_buff *__udp_gso_segment_list(struct sk_buff *skb,
+> -=09=09=09=09=09      netdev_features_t features)
+> +=09=09=09=09=09      netdev_features_t features,
+> +=09=09=09=09=09      bool is_ipv6)
+>  {
+>  =09unsigned int mss =3D skb_shinfo(skb)->gso_size;
+>=20
+> @@ -198,11 +257,11 @@ static struct sk_buff *__udp_gso_segment_list(struc=
+t sk_buff *skb,
+>=20
+>  =09udp_hdr(skb)->len =3D htons(sizeof(struct udphdr) + mss);
+>=20
+> -=09return skb;
+> +=09return is_ipv6 ? skb : __udpv4_gso_segment_list_csum(skb);
 
-The rationale is that the helper asks if the packet size adjustment
-will exceed the MTU (on the given ifindex).  It is not this helpers
-responsibility to catch if the packet becomes too small.  It the
-responsibility of the helper function that does the size change. The
-use-case for len_diff is testing prior to doing size adjustment.
+I don't think it's okay to fix checksums only for IPv4.
+IPv6 checksum mangling doesn't depend on any code from net/ipv6. Just
+use inet_proto_csum_replace16() for v6 addresses (see nf_nat_proto.c
+for reference). You can guard the path for IPv6 with
+IS_ENABLED(CONFIG_IPV6) to optimize IPv4-only systems a bit.
 
-The code can easily choose not to do the size adjustment.  E.g. when
-parsing the header, and realizing this is not a VXLAN (50 bytes) tunnel
-packet, but instead a (small 42 bytes) ARP packet.
+>  }
+>=20
+>  struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
+> -=09=09=09=09  netdev_features_t features)
+> +=09=09=09=09  netdev_features_t features, bool is_ipv6)
+>  {
+>  =09struct sock *sk =3D gso_skb->sk;
+>  =09unsigned int sum_truesize =3D 0;
+> @@ -214,7 +273,7 @@ struct sk_buff *__udp_gso_segment(struct sk_buff *gso=
+_skb,
+>  =09__be16 newlen;
+>=20
+>  =09if (skb_shinfo(gso_skb)->gso_type & SKB_GSO_FRAGLIST)
+> -=09=09return __udp_gso_segment_list(gso_skb, features);
+> +=09=09return __udp_gso_segment_list(gso_skb, features, is_ipv6);
+>=20
+>  =09mss =3D skb_shinfo(gso_skb)->gso_size;
+>  =09if (gso_skb->len <=3D sizeof(*uh) + mss)
+> @@ -328,7 +387,7 @@ static struct sk_buff *udp4_ufo_fragment(struct sk_bu=
+ff *skb,
+>  =09=09goto out;
+>=20
+>  =09if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4)
+> -=09=09return __udp_gso_segment(skb, features);
+> +=09=09return __udp_gso_segment(skb, features, false);
+>=20
+>  =09mss =3D skb_shinfo(skb)->gso_size;
+>  =09if (unlikely(skb->len <=3D mss))
+> diff --git a/net/ipv6/udp_offload.c b/net/ipv6/udp_offload.c
+> index c7bd7b1..faa823c 100644
+> --- a/net/ipv6/udp_offload.c
+> +++ b/net/ipv6/udp_offload.c
+> @@ -42,7 +42,7 @@ static struct sk_buff *udp6_ufo_fragment(struct sk_buff=
+ *skb,
+>  =09=09=09goto out;
+>=20
+>  =09=09if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4)
+> -=09=09=09return __udp_gso_segment(skb, features);
+> +=09=09=09return __udp_gso_segment(skb, features, true);
+>=20
+>  =09=09mss =3D skb_shinfo(skb)->gso_size;
+>  =09=09if (unlikely(skb->len <=3D mss))
+> --
+> 2.7.4
 
-Sure, I can spin a V14 of the patchset, where I make it more clear for
-the man page that this is the behavior.
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+Thanks,
+Al
 
