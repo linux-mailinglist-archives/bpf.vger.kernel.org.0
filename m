@@ -2,42 +2,34 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 271DE309510
-	for <lists+bpf@lfdr.de>; Sat, 30 Jan 2021 13:11:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD1EC309528
+	for <lists+bpf@lfdr.de>; Sat, 30 Jan 2021 13:49:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229953AbhA3MLJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 30 Jan 2021 07:11:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60136 "EHLO mail.kernel.org"
+        id S229804AbhA3Mo4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 30 Jan 2021 07:44:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229854AbhA3MLJ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 30 Jan 2021 07:11:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7952664DDC;
-        Sat, 30 Jan 2021 12:10:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612008628;
-        bh=p3IJGlMdtX9I1kgadKwx0x2GqQLSItjvV7ppyHSL2/E=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=eWZuYfUnlm3B3qwR+nwqP+w0gYbO9+bUsDyh+xYlwkQ97lly0HU2gEsq2+ALvgDyu
-         bk7uKVZoUzv7USeAxTzux0oY2trIxfTQhUzhuJLL1+sZMsxKs+n+JYfgK4TXfl/fb1
-         V8uwJuxxyhGcWJRySXg1HY1ZfgJpPsFqWMdiDqaHQNajll48gWKIjVh51LAjb/5r2P
-         9SV5iBOLXzUgR6EIN7KIFD0iNrJCXYNFnWDCmdANjRtP8XGd44JGGZdDKPlsnOr1qg
-         P5tMF7Px9hk0uhvZy7tOkDOdYqZ+uqgQY6KG5NkonkLrWDtXRC6ZsdHkulGNhSi95S
-         JdAhhaBRFPJpQ==
-Date:   Sat, 30 Jan 2021 21:10:22 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
+        id S229786AbhA3Mox (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 30 Jan 2021 07:44:53 -0500
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E63E564E09;
+        Sat, 30 Jan 2021 12:44:11 +0000 (UTC)
+Date:   Sat, 30 Jan 2021 07:44:10 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
         Nikolay Borisov <nborisov@suse.com>,
         LKML <linux-kernel@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
         Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: kprobes broken since 0d00449c7a28
- ("x86: Replace ist_enter() with nmi_enter()")
-Message-Id: <20210130211022.d64c4caaf6667ec70a871420@kernel.org>
-In-Reply-To: <20210130030840.hodq2ixpkdoue5jd@ast-mbp.dhcp.thefacebook.com>
-References: <eb1ec6a3-9e11-c769-84a4-228f23dc5e23@suse.com>
-        <YBMBTsY1uuQb9wCP@hirez.programming.kicks-ass.net>
+Subject: Re: kprobes broken since 0d00449c7a28 ("x86: Replace ist_enter()
+ with nmi_enter()")
+Message-ID: <20210130074410.6384c2e2@oasis.local.home>
+In-Reply-To: <YBUYsFlxjsQxuvfB@hirez.programming.kicks-ass.net>
+References: <YBMBTsY1uuQb9wCP@hirez.programming.kicks-ass.net>
         <20210129013452.njuh3fomws62m4rc@ast-mbp.dhcp.thefacebook.com>
         <YBPNyRyrkzw2echi@hirez.programming.kicks-ass.net>
         <20210129224011.81bcdb3eba1227c414e69e1f@kernel.org>
@@ -45,72 +37,61 @@ References: <eb1ec6a3-9e11-c769-84a4-228f23dc5e23@suse.com>
         <20210129162438.GC8912@worktop.programming.kicks-ass.net>
         <CAADnVQLMqHpSsZ1OdZRFmKqNWKiRq3dxRxw+y=kvMdmkN7htUw@mail.gmail.com>
         <20210129175943.GH8912@worktop.programming.kicks-ass.net>
-        <20210130110249.61fdad8f0cfe51a121c72302@kernel.org>
-        <20210130030840.hodq2ixpkdoue5jd@ast-mbp.dhcp.thefacebook.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
+        <20210129140103.3ce971b7@gandalf.local.home>
+        <20210129162454.293523c6@gandalf.local.home>
+        <YBUYsFlxjsQxuvfB@hirez.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 29 Jan 2021 19:08:40 -0800
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+On Sat, 30 Jan 2021 09:28:32 +0100
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-> On Sat, Jan 30, 2021 at 11:02:49AM +0900, Masami Hiramatsu wrote:
-> > On Fri, 29 Jan 2021 18:59:43 +0100
-> > Peter Zijlstra <peterz@infradead.org> wrote:
+> On Fri, Jan 29, 2021 at 04:24:54PM -0500, Steven Rostedt wrote:
+> > Specifically, kprobe and ftrace callbacks may have this:
 > > 
-> > > On Fri, Jan 29, 2021 at 09:45:48AM -0800, Alexei Starovoitov wrote:
-> > > > Same things apply to bpf side. We can statically prove safety for
-> > > > ftrace and kprobe attaching whereas to deal with NMI situation we
-> > > > have to use run-time checks for recursion prevention, etc.
-> > > 
-> > > I have no idea what you're saying. You can attach to functions that are
-> > > called with random locks held, you can create kprobes in some very
-> > > sensitive places.
-> > > 
-> > > What can you staticlly prove about that?
-> > 
-> > For the bpf and the kprobe tracer, if a probe hits in the NMI context,
-> > it can call the handler with another handler processing events.
-> > 
-> > kprobes is carefully avoiding the deadlock by checking recursion
-> > with per-cpu variable. But if the handler is shared with the other events
-> > like tracepoints, it needs to its own recursion cheker too.
-> > 
-> > So, Alexei, maybe you need something like this instead of in_nmi() check.
-> > 
-> > DEFINE_PER_CPU(bool, under_running_bpf);
-> > 
-> > common_handler()
-> > {
-> > 	if (__this_cpu_read(under_running_bpf))
+> > 	if (in_nmi())
 > > 		return;
-> > 	__this_cpu_write(under_running_bpf, true);
-> > 	/* execute bpf prog */
-> > 	__this_cpu_write(under_running_bpf, false);	
-> > }
 > > 
-> > Does this work for you?
+> > 	raw_spin_lock_irqsave(&lock, flags);
+> > 	[..]
+> > 	raw_spin_unlock_irqrestore(&lock, flags);
+> > 
+> > Which is totally fine to have,  
 > 
-> This exactly check is already in trace_call_bpf.
-> Right after if (in_nmi()).
-> See bpf_prog_active. It serves different purpose though.
-> Simply removing if (in_nmi()) from trace_call_bpf is a bit scary.
-> I need to analyze all code paths first.
+> Why? There's a distinct lack of explaining here.
+> 
+> Note that we ripped out all such dodgy locking from kretprobes.
 
-OK, if bpf already avoids its recursion, other considerable case is
-that some resources are shared among bpf_prog and other parts. Since
-asynchronous NMI can occur anywhere, such resource usage can conflict
-with bpf_prog.
+Actually, I think you helped explain the distinction. You mention
+"kretpobes" do you mean the infrastructure of kretprobes or all its
+users?
 
-Kprobes had similar issue, so I set a dummy kprobes to current_kprobes
-for protecting such critical sections.
-See kprobe_busy_begin()/end() and where those are used.
+The infrastructure of ftrace and kprobes can work in any context, it
+does not mean that the callbacks must. Again, these are more like
+exceptions. Why have "in_nmi()"? If anything that can be called by an
+NMI should just work, right? That's basically your argument for having
+ftrace and kprobes set "in_nmi".
 
-Thank you,
+You can have locking in NMIs if the locking is *only* in NMI handlers,
+right? If that's the case, then so should ftrace and kprobe callbacks.
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+The stack tracer checks the size of the stack, compares it to the
+largest recorded size, and if it's bigger, it will save the stack. But
+if this happens on two CPUs at the same time, only one can do the
+recording at the same time. To synchronize this, a spin lock must be
+taken. Similar to spin locks in an NMI.
+
+But the problem here is, the callbacks can also be done from an NMI
+context, so if we are in NMI, we don't want to take any locks, and
+simply don't record the stack traces from NMIs.
+
+The more I think about it, the more I hate the idea that ftrace
+callbacks and kprobes are considered NMIs. Simply because they are not!
+
+-- Steve
+
