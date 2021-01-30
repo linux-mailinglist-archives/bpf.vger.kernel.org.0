@@ -2,257 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC06330966B
-	for <lists+bpf@lfdr.de>; Sat, 30 Jan 2021 16:57:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB1CF30985B
+	for <lists+bpf@lfdr.de>; Sat, 30 Jan 2021 21:50:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232316AbhA3P4r (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 30 Jan 2021 10:56:47 -0500
-Received: from mail-40133.protonmail.ch ([185.70.40.133]:35373 "EHLO
-        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232216AbhA3P40 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 30 Jan 2021 10:56:26 -0500
-Date:   Sat, 30 Jan 2021 15:55:24 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1612022132; bh=FggdhBVUsajUZNHPJ2/uHLJEmlhJc0ygmB55Y9M41h8=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=T/jIdyqw1mxnzW9/WPYrZoyzqI3xjjWHl5O7XcSBWxjVGIU0iJIlQrTEGFLrOB/7b
-         3Ph7asMS7UnxIgQISBnvZmz0ZY+TY5HpOyxKpjaG9jarpweqryWjsxh8gOT8RBGrEB
-         Nc0/CzSJ/xwliTf0TwJpZNRn+Wv8CPrAomQCO2W5mqVVSvcRPiSDS9LW2GfNhG8Yn9
-         HAvjm4ZH5y88+7ELuWG8ltsMlat/d12gsolrOPH6J847+n9Dx6sieZTaeJtz7O4LUV
-         zgZoZiJEuaVvIvXqFLP0a0EPNjKTnvNdtvkENgaaatD1mhZB1siM29nwwp4yT4hE+7
-         uZe2SK5ZGsqqA==
-To:     Dongseok Yi <dseok.yi@samsung.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        "David S. Miller" <davem@davemloft.net>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        namkyu78.kim@samsung.com, Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [RESEND PATCH net v4] udp: ipv4: manipulate network header of NATed UDP GRO fraglist
-Message-ID: <20210130155458.8523-1-alobakin@pm.me>
-In-Reply-To: <1611962007-80092-1-git-send-email-dseok.yi@samsung.com>
-References: <CGME20210129232630epcas2p1071e141ef8059c4d5c0e4b28c181a171@epcas2p1.samsung.com> <1611962007-80092-1-git-send-email-dseok.yi@samsung.com>
+        id S232282AbhA3Utq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 30 Jan 2021 15:49:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22592 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232290AbhA3Utp (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 30 Jan 2021 15:49:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612039698;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VRe6hB7+FjbxOUrs96X+yC7oIpthfG0uqkuDXn9iS2w=;
+        b=PQfyQ7BEwOSRGAD/NRT3RuSp7amzCvYb9hWkpEBDZjZdlVtFAT7196FcmrEPUBpfzBrKdF
+        U78WFp28uC4QvVe2tw+mecKjLNc/qO4gkGYFhoufCrGyhaZzAyiiPlbA+zq7aR0we1KqWC
+        uT8/MKA1hUX5q8fAMt1VYnZLvgoGfuY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-115-Fyto3C7yO3OAQbFcC8GL4w-1; Sat, 30 Jan 2021 15:48:14 -0500
+X-MC-Unique: Fyto3C7yO3OAQbFcC8GL4w-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 53B3D107ACE3;
+        Sat, 30 Jan 2021 20:48:13 +0000 (UTC)
+Received: from krava (unknown [10.40.192.30])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 930F05C1BD;
+        Sat, 30 Jan 2021 20:48:11 +0000 (UTC)
+Date:   Sat, 30 Jan 2021 21:48:10 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Paul Moore <paul@paul-moore.com>, Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Ondrej Mosnacek <omosnace@redhat.com>
+Subject: Re: selftest/bpf/test_verifier_log fails on v5.11-rc5
+Message-ID: <YBXGChWt/E2UDgZc@krava>
+References: <CAHC9VhQgy959hkpU8fwZnrTqGphVSA+ONF99Yy4ZQFyjQ_030A@mail.gmail.com>
+ <CAADnVQJaJ0i2L2k-dM+neeT61q+pwEd+F6ASGh4Xbi-ogj0hfQ@mail.gmail.com>
+ <CAHC9VhSTJ=009hsXm=8jtQ_ZL-n=+tzKPbWj2Cnoa5w3iVNuew@mail.gmail.com>
+ <CAADnVQKbku+Mv++h2TKYZfFN7NjPgaeLHJsw0oFNUhjUZ6ehSQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQKbku+Mv++h2TKYZfFN7NjPgaeLHJsw0oFNUhjUZ6ehSQ@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Dongseok Yi <dseok.yi@samsung.com>
-Date: Sat, 30 Jan 2021 08:13:27 +0900
+On Fri, Jan 29, 2021 at 07:13:21PM -0800, Alexei Starovoitov wrote:
+> On Fri, Jan 29, 2021 at 2:15 PM Paul Moore <paul@paul-moore.com> wrote:
+> >
+> > On Mon, Jan 25, 2021 at 5:42 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > > On Mon, Jan 25, 2021 at 12:54 PM Paul Moore <paul@paul-moore.com> wrote:
+> > > >
+> > > > Hello all,
+> > > >
+> > > > My apologies if this has already been reported, but I didn't see
+> > > > anything obvious with a quick search through the archives.  I have a
+> > > > test program that behaves very similar to the existing
+> > > > selftest/bpf/test_verifier_log test that has started failing this week
+> > > > with v5.11-rc5; it ran without problem last week on v5.11-rc4.  Is
+> > > > this a known problem with a fix already, or is this something new?
+> > > >
+> > > > % uname -r
+> > > > 5.11.0-0.rc5.134.fc34.x86_64
+> > > > % pwd
+> > > > /.../linux/tools/testing/selftests/bpf
+> > > > % git log --oneline | head -n 1
+> > > > 6ee1d745b7c9 Linux 5.11-rc5
+> > > > % make test_verifier_log
+> > > >   ...
+> > > >   BINARY   test_verifier_log
+> > > > % ./test_verifier_log
+> > > > Test log_level 0...
+> > > > Test log_size < 128...
+> > > > Test log_buff = NULL...
+> > > > Test oversized buffer...
+> > > > ERROR: Program load returned: ret:-1/errno:22, expected ret:-1/errno:13
+> > >
+> > > Thanks for reporting.
+> > > bpf and bpf-next don't have this issue. Not sure what changed.
+> >
+> > I haven't had a chance to look into this any further, but Ondrej
+> > Mosnacek (CC'd) found the following today:
+> >
+> > "So I was trying to debug this further and I think I've identified what
+> > triggers the problem. It seems that the BTF debuginfo generation
+> > became broken with CONFIG_DEBUG_INFO_DWARF4=n somewhere between -rc4
+> > and -rc5. It also seems to depend on a recent (Fedora Rawhide) version
+> > of some component of the build system (GCC, probably), because the
+> > problem disappeared when I tried to build the "bad" kernel in F33
+> > buildroot instead of Rawhide."
+> 
+> I see. There were fixes for dwarf and btf, but I lost the track.
+> I believe it was a combination of gcc bug that was worked around in pahole.
+> Arnaldo, Jiri, Andrii,
+> what is the status? Did all fixes land in pahole?
 
-> UDP/IP header of UDP GROed frag_skbs are not updated even after NAT
-> forwarding. Only the header of head_skb from ip_finish_output_gso ->
-> skb_gso_segment is updated but following frag_skbs are not updated.
->=20
-> A call path skb_mac_gso_segment -> inet_gso_segment ->
-> udp4_ufo_fragment -> __udp_gso_segment -> __udp_gso_segment_list
-> does not try to update UDP/IP header of the segment list but copy
-> only the MAC header.
->=20
-> Update port, addr and check of each skb of the segment list in
-> __udp_gso_segment_list. It covers both SNAT and DNAT.
->=20
-> Fixes: 9fd1ff5d2ac7 (udp: Support UDP fraglist GRO/GSO.)
-> Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
-> Acked-by: Steffen Klassert <steffen.klassert@secunet.com>
-> ---
-> v1:
-> Steffen Klassert said, there could be 2 options.
-> https://lore.kernel.org/patchwork/patch/1362257/
-> I was trying to write a quick fix, but it was not easy to forward
-> segmented list. Currently, assuming DNAT only.
->=20
-> v2:
-> Per Steffen Klassert request, moved the procedure from
-> udp4_ufo_fragment to __udp_gso_segment_list and support SNAT.
->=20
-> v3:
-> Per Steffen Klassert request, applied fast return by comparing seg
-> and seg->next at the beginning of __udpv4_gso_segment_list_csum.
->=20
-> Fixed uh->dest =3D *newport and iph->daddr =3D *newip to
-> *oldport =3D *newport and *oldip =3D *newip.
->=20
-> v4:
-> Clear "Changes Requested" mark in
-> https://patchwork.kernel.org/project/netdevbpf
->=20
-> Simplified the return statement in __udp_gso_segment_list.
->=20
->  include/net/udp.h      |  2 +-
->  net/ipv4/udp_offload.c | 69 ++++++++++++++++++++++++++++++++++++++++++++=
-++----
->  net/ipv6/udp_offload.c |  2 +-
->  3 files changed, 66 insertions(+), 7 deletions(-)
->=20
-> diff --git a/include/net/udp.h b/include/net/udp.h
-> index 877832b..01351ba 100644
-> --- a/include/net/udp.h
-> +++ b/include/net/udp.h
-> @@ -178,7 +178,7 @@ struct sk_buff *udp_gro_receive(struct list_head *hea=
-d, struct sk_buff *skb,
->  int udp_gro_complete(struct sk_buff *skb, int nhoff, udp_lookup_t lookup=
-);
->=20
->  struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
-> -=09=09=09=09  netdev_features_t features);
-> +=09=09=09=09  netdev_features_t features, bool is_ipv6);
->=20
->  static inline struct udphdr *udp_gro_udphdr(struct sk_buff *skb)
->  {
-> diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
-> index ff39e94..cfc8726 100644
-> --- a/net/ipv4/udp_offload.c
-> +++ b/net/ipv4/udp_offload.c
-> @@ -187,8 +187,67 @@ struct sk_buff *skb_udp_tunnel_segment(struct sk_buf=
-f *skb,
->  }
->  EXPORT_SYMBOL(skb_udp_tunnel_segment);
->=20
-> +static void __udpv4_gso_segment_csum(struct sk_buff *seg,
-> +=09=09=09=09     __be32 *oldip, __be32 *newip,
-> +=09=09=09=09     __be16 *oldport, __be16 *newport)
-> +{
-> +=09struct udphdr *uh;
-> +=09struct iphdr *iph;
-> +
-> +=09if (*oldip =3D=3D *newip && *oldport =3D=3D *newport)
-> +=09=09return;
-> +
-> +=09uh =3D udp_hdr(seg);
-> +=09iph =3D ip_hdr(seg);
-> +
-> +=09if (uh->check) {
-> +=09=09inet_proto_csum_replace4(&uh->check, seg, *oldip, *newip,
-> +=09=09=09=09=09 true);
-> +=09=09inet_proto_csum_replace2(&uh->check, seg, *oldport, *newport,
-> +=09=09=09=09=09 false);
-> +=09=09if (!uh->check)
-> +=09=09=09uh->check =3D CSUM_MANGLED_0;
-> +=09}
-> +=09*oldport =3D *newport;
-> +
-> +=09csum_replace4(&iph->check, *oldip, *newip);
-> +=09*oldip =3D *newip;
-> +}
-> +
-> +static struct sk_buff *__udpv4_gso_segment_list_csum(struct sk_buff *seg=
-s)
-> +{
-> +=09struct sk_buff *seg;
-> +=09struct udphdr *uh, *uh2;
-> +=09struct iphdr *iph, *iph2;
-> +
-> +=09seg =3D segs;
-> +=09uh =3D udp_hdr(seg);
-> +=09iph =3D ip_hdr(seg);
-> +
-> +=09if ((udp_hdr(seg)->dest =3D=3D udp_hdr(seg->next)->dest) &&
-> +=09    (udp_hdr(seg)->source =3D=3D udp_hdr(seg->next)->source) &&
-> +=09    (ip_hdr(seg)->daddr =3D=3D ip_hdr(seg->next)->daddr) &&
-> +=09    (ip_hdr(seg)->saddr =3D=3D ip_hdr(seg->next)->saddr))
-> +=09=09return segs;
-> +
-> +=09while ((seg =3D seg->next)) {
-> +=09=09uh2 =3D udp_hdr(seg);
-> +=09=09iph2 =3D ip_hdr(seg);
-> +
-> +=09=09__udpv4_gso_segment_csum(seg,
-> +=09=09=09=09=09 &iph2->saddr, &iph->saddr,
-> +=09=09=09=09=09 &uh2->source, &uh->source);
-> +=09=09__udpv4_gso_segment_csum(seg,
-> +=09=09=09=09=09 &iph2->daddr, &iph->daddr,
-> +=09=09=09=09=09 &uh2->dest, &uh->dest);
-> +=09}
-> +
-> +=09return segs;
-> +}
-> +
->  static struct sk_buff *__udp_gso_segment_list(struct sk_buff *skb,
-> -=09=09=09=09=09      netdev_features_t features)
-> +=09=09=09=09=09      netdev_features_t features,
-> +=09=09=09=09=09      bool is_ipv6)
->  {
->  =09unsigned int mss =3D skb_shinfo(skb)->gso_size;
->=20
-> @@ -198,11 +257,11 @@ static struct sk_buff *__udp_gso_segment_list(struc=
-t sk_buff *skb,
->=20
->  =09udp_hdr(skb)->len =3D htons(sizeof(struct udphdr) + mss);
->=20
-> -=09return skb;
-> +=09return is_ipv6 ? skb : __udpv4_gso_segment_list_csum(skb);
+I checked on rawhide and besides many pahole warnings,
+the resulted BTF data have many duplications in core structs
 
-I don't think it's okay to fix checksums only for IPv4.
-IPv6 checksum mangling doesn't depend on any code from net/ipv6. Just
-use inet_proto_csum_replace16() for v6 addresses (see nf_nat_proto.c
-for reference). You can guard the path for IPv6 with
-IS_ENABLED(CONFIG_IPV6) to optimize IPv4-only systems a bit.
+	  BTFIDS  vmlinux
+	WARN: multiple IDs found for 'task_struct': 132, 1247 - using 132
+	WARN: multiple IDs found for 'file': 440, 1349 - using 440
+	WARN: multiple IDs found for 'inode': 698, 1645 - using 698
+	WARN: multiple IDs found for 'path': 729, 1672 - using 729
+	WARN: multiple IDs found for 'task_struct': 132, 2984 - using 132
+	WARN: multiple IDs found for 'task_struct': 132, 3043 - using 132
+	WARN: multiple IDs found for 'file': 440, 3085 - using 440
+	WARN: multiple IDs found for 'seq_file': 1469, 3125 - using 1469
+	WARN: multiple IDs found for 'inode': 698, 3336 - using 698
+	WARN: multiple IDs found for 'path': 729, 3366 - using 729
+	WARN: multiple IDs found for 'task_struct': 132, 5337 - using 132
+	WARN: multiple IDs found for 'inode': 698, 5360 - using 698
+	WARN: multiple IDs found for 'path': 729, 5388 - using 729
+	WARN: multiple IDs found for 'file': 440, 5412 - using 440
+	WARN: multiple IDs found for 'seq_file': 1469, 5639 - using 1469
+	WARN: multiple IDs found for 'task_struct': 132, 6243 - using 132
+	...
 
->  }
->=20
->  struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
-> -=09=09=09=09  netdev_features_t features)
-> +=09=09=09=09  netdev_features_t features, bool is_ipv6)
->  {
->  =09struct sock *sk =3D gso_skb->sk;
->  =09unsigned int sum_truesize =3D 0;
-> @@ -214,7 +273,7 @@ struct sk_buff *__udp_gso_segment(struct sk_buff *gso=
-_skb,
->  =09__be16 newlen;
->=20
->  =09if (skb_shinfo(gso_skb)->gso_type & SKB_GSO_FRAGLIST)
-> -=09=09return __udp_gso_segment_list(gso_skb, features);
-> +=09=09return __udp_gso_segment_list(gso_skb, features, is_ipv6);
->=20
->  =09mss =3D skb_shinfo(gso_skb)->gso_size;
->  =09if (gso_skb->len <=3D sizeof(*uh) + mss)
-> @@ -328,7 +387,7 @@ static struct sk_buff *udp4_ufo_fragment(struct sk_bu=
-ff *skb,
->  =09=09goto out;
->=20
->  =09if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4)
-> -=09=09return __udp_gso_segment(skb, features);
-> +=09=09return __udp_gso_segment(skb, features, false);
->=20
->  =09mss =3D skb_shinfo(skb)->gso_size;
->  =09if (unlikely(skb->len <=3D mss))
-> diff --git a/net/ipv6/udp_offload.c b/net/ipv6/udp_offload.c
-> index c7bd7b1..faa823c 100644
-> --- a/net/ipv6/udp_offload.c
-> +++ b/net/ipv6/udp_offload.c
-> @@ -42,7 +42,7 @@ static struct sk_buff *udp6_ufo_fragment(struct sk_buff=
- *skb,
->  =09=09=09goto out;
->=20
->  =09=09if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4)
-> -=09=09=09return __udp_gso_segment(skb, features);
-> +=09=09=09return __udp_gso_segment(skb, features, true);
->=20
->  =09=09mss =3D skb_shinfo(skb)->gso_size;
->  =09=09if (unlikely(skb->len <=3D mss))
-> --
-> 2.7.4
+	# gcc --version
+	gcc (GCC) 11.0.0 20210123 (Red Hat 11.0.0-0)
 
-Thanks,
-Al
+I'm guessing there are some DWARF changes that screwed BTF
+generation.. I'll check
+
+it's not covered by the fix I posted recently, but I think
+Arnaldo is now fixing some related stuff.. Arnaldo, maybe
+you are seeing same errors?
+
+I uploaded the build log from linking part to:
+  http://people.redhat.com/~jolsa/build.out.gz
+
+jirka
 
