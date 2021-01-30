@@ -2,92 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C82C3092DF
-	for <lists+bpf@lfdr.de>; Sat, 30 Jan 2021 10:08:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C8B309337
+	for <lists+bpf@lfdr.de>; Sat, 30 Jan 2021 10:24:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230256AbhA3JHY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 30 Jan 2021 04:07:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50676 "EHLO
+        id S231503AbhA3JVw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 30 Jan 2021 04:21:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233707AbhA3E0f (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 29 Jan 2021 23:26:35 -0500
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAB65C061797;
-        Fri, 29 Jan 2021 19:15:11 -0800 (PST)
-Received: by mail-lj1-x22c.google.com with SMTP id y14so139588ljn.8;
-        Fri, 29 Jan 2021 19:15:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=doa+5fNckm+U+JQAFdQrZFzGNQq/v41AFTpeJoWLi58=;
-        b=l1B8afdMhvcQfT0XO12ZQnuIcRf/Ys56m0I3+UzFbuEZBdn+uH60ycI9X8eHmi0N8i
-         g/DUg1mw9LCllSHkeio8L1rkBdkefkP90RlZN+Rlh214a2hs7QY4ii8x3pxwikAygKtD
-         DivEXWu0Bx3KZWnbc2QD/HemWCv5RRzB2fibsXUNxZc8eNFPdGdwsTpdw22e6T/HJHt3
-         92uh/2P5ZRKiXqGC2Iq7b4oy3g0L7Wus3fufDo2srA1v6EpJWw4Q0p17OmGjwjqJYC++
-         qV+Z3AFGhnrT/Klgjjk88OpzkDC1yW1pvbW34FGhi5iUQ2KIZfQ+DGB2ehLa6zxdUcrS
-         +b/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=doa+5fNckm+U+JQAFdQrZFzGNQq/v41AFTpeJoWLi58=;
-        b=VP6HFigOooTwM+AKP/qPfxgWI/ebQq3ymkEl6WfFSsTS7k5bNiZnlc6IdfZhIpTsUL
-         /Y5BdfZYbOD2V2824MxibLOu0nyqDwTQFvKuPZWTt9HnK0+yOUFurXzIODlW/4pDcRLa
-         U1RlgoRioT+ya3csdNlE46o5dGy0ceLTfCmjU+a2TBvRVc9koVEOMK0O0wAH22Bz/nxe
-         YY1FmoUxQJJDQZbc1Pj3OderPT79HwdQj3eh5nYb47IIJSnIpuCU5sfnvIlvROp7cYpd
-         i+lONTuK9dsnhNLxr7xU//adww3Oq4EeS7llypS/jj3XH/UwGH0wfZ83VzND5RB5EuQ/
-         UxtA==
-X-Gm-Message-State: AOAM532Bpq536z+EOyV6REg6oKBR7slVQCMrJAAKNLT5UHERcE7bAgUC
-        r9rS8oqhMxIVtPJehFVgiqhaZQdPhs57D5avicc=
-X-Google-Smtp-Source: ABdhPJzbxQ5cN++AtpzAqmD2OePxAlYunYl08IQrwOnRAjlBnqDHd6JRv1cfB7SuatsZUJdpy7K3RVuivCO29rFBzyU=
-X-Received: by 2002:a2e:54d:: with SMTP id 74mr3833166ljf.44.1611976510480;
- Fri, 29 Jan 2021 19:15:10 -0800 (PST)
+        with ESMTP id S231361AbhA3JVh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 30 Jan 2021 04:21:37 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB25C061351;
+        Sat, 30 Jan 2021 00:29:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=aUJjQWq04yfyD9i9zO9j9MoGWuJhNQkIG0RfzLvmCjA=; b=AT4G5Roe61L1QOg1iL8NT3diId
+        42noT2VCN+nZqZwZifNNJEuAKpdH9LFV6XvuCR3Uh2zfpajNaXsXiOg5n76Xq+NBj44mhCd45f4WK
+        eGp6KoJxSAMs2NlxP8XP2d1NYecOYacNLHC9fOVgnRWkpQvgE01aUKSDy2ZaLDGi6ZA4y7e+tmeAx
+        gY80zaBz5B4mvLEBLsYBKTfgPNSZ/XxlzcSK1tVUmDePgWrWCQ2Ujda9G13fGP5YnasTTzKrgMZY0
+        obzMbUh9zhtbhTd2lBIKIv0sQlZnb6eGD+cWnEUCkJAL78Ao5rRa1GFTof64b0Abo37Rk3UDBgmus
+        iKoOBy7Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l5lcQ-00AslN-Dx; Sat, 30 Jan 2021 08:28:37 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 05FD83011E6;
+        Sat, 30 Jan 2021 09:28:32 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E15272DACC7DB; Sat, 30 Jan 2021 09:28:32 +0100 (CET)
+Date:   Sat, 30 Jan 2021 09:28:32 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Nikolay Borisov <nborisov@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: kprobes broken since 0d00449c7a28 ("x86: Replace ist_enter()
+ with nmi_enter()")
+Message-ID: <YBUYsFlxjsQxuvfB@hirez.programming.kicks-ass.net>
+References: <YBMBTsY1uuQb9wCP@hirez.programming.kicks-ass.net>
+ <20210129013452.njuh3fomws62m4rc@ast-mbp.dhcp.thefacebook.com>
+ <YBPNyRyrkzw2echi@hirez.programming.kicks-ass.net>
+ <20210129224011.81bcdb3eba1227c414e69e1f@kernel.org>
+ <20210129105952.74dc8464@gandalf.local.home>
+ <20210129162438.GC8912@worktop.programming.kicks-ass.net>
+ <CAADnVQLMqHpSsZ1OdZRFmKqNWKiRq3dxRxw+y=kvMdmkN7htUw@mail.gmail.com>
+ <20210129175943.GH8912@worktop.programming.kicks-ass.net>
+ <20210129140103.3ce971b7@gandalf.local.home>
+ <20210129162454.293523c6@gandalf.local.home>
 MIME-Version: 1.0
-References: <20210122205415.113822-1-xiyou.wangcong@gmail.com>
- <20210122205415.113822-2-xiyou.wangcong@gmail.com> <d69d44ca-206c-d818-1177-c8f14d8be8d1@iogearbox.net>
- <CAM_iQpW8aeh190G=KVA9UEZ_6+UfenQxgPXuw784oxCaMfXjng@mail.gmail.com>
- <CAADnVQKmNiHj8qy1yqbOrf-OMyhnn8fKm87w6YMfkiDHkBpJVg@mail.gmail.com>
- <CAM_iQpXAQ7AMz34=o5E=81RFGFsQB5jCDTCCaVdHokU6kaJQsQ@mail.gmail.com>
- <20210129025435.a34ydsgmwzrnwjlg@ast-mbp.dhcp.thefacebook.com>
- <f7bc5873-7722-e359-b450-4db7dc3656d6@mojatatu.com> <dc5ddf32-2d65-15a9-9448-5f2d3a10d227@mojatatu.com>
-In-Reply-To: <dc5ddf32-2d65-15a9-9448-5f2d3a10d227@mojatatu.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 29 Jan 2021 19:14:59 -0800
-Message-ID: <CAADnVQJafr__W+oPvBjqisvh2vCRye8QkT9TQTFXH=wsDGtKqA@mail.gmail.com>
-Subject: Re: [Patch bpf-next v5 1/3] bpf: introduce timeout hash map
-To:     Jamal Hadi Salim <jhs@mojatatu.com>
-Cc:     Cong Wang <xiyou.wangcong@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Dongdong Wang <wangdongdong.6@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210129162454.293523c6@gandalf.local.home>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 6:14 AM Jamal Hadi Salim <jhs@mojatatu.com> wrote:
->
-> On 2021-01-29 9:06 a.m., Jamal Hadi Salim wrote:
->
-> > Which leads to:
-> > Why not extend the general feature so one can register for optional
-> > callbacks not just for expire but also add/del/update on specific
-> > entries or table?
-> > add/del/update could be sourced from other kernel programs or user space
-> > and the callback would be invoked before an entry is added/deleted etc.
-> > (just like it is here for expiry).
->
-> Sorry - shouldve read the rest of the thread:
-> Agree with Cong that you want per-map but there are use cases where you
-> want it per entry (eg the add/del/update case).
+On Fri, Jan 29, 2021 at 04:24:54PM -0500, Steven Rostedt wrote:
+> Specifically, kprobe and ftrace callbacks may have this:
+> 
+> 	if (in_nmi())
+> 		return;
+> 
+> 	raw_spin_lock_irqsave(&lock, flags);
+> 	[..]
+> 	raw_spin_unlock_irqrestore(&lock, flags);
+> 
+> Which is totally fine to have,
 
-That was my point as well.
-bpf_timer api should be generic, so that users can do both.
-The program could use bpf_timer one for each flow and bpf_timer for each map.
-And timers without maps.
+Why? There's a distinct lack of explaining here.
+
+Note that we ripped out all such dodgy locking from kretprobes.
