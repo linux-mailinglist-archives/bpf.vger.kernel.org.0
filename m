@@ -2,203 +2,208 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54C92309E73
-	for <lists+bpf@lfdr.de>; Sun, 31 Jan 2021 21:01:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8FFC309E8B
+	for <lists+bpf@lfdr.de>; Sun, 31 Jan 2021 21:06:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231611AbhAaUA4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 31 Jan 2021 15:00:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52050 "EHLO mail.kernel.org"
+        id S230360AbhAaUF2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 31 Jan 2021 15:05:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231651AbhAaTys (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 31 Jan 2021 14:54:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B55F64E1F;
-        Sun, 31 Jan 2021 17:23:45 +0000 (UTC)
+        id S230499AbhAaUBz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 31 Jan 2021 15:01:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F27AC64E50
+        for <bpf@vger.kernel.org>; Sun, 31 Jan 2021 17:32:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612113826;
-        bh=vFfdkI0WiJDOdMAjzbLTF6aHXnWhspQMuMXZ45KA2cs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eSFoE8yEDDveFuoypeKL7ijhxkmdzGFIhLkPxPec9IoXE+H2i6A+yFHhpamS+fqoR
-         eJZq2a5q1o2WwhYJlox5ul3LI8OpFEHf7uUL2CO7i7DnU0tr2hvOZ5YjXkxYQZy5lU
-         ZmO2PIKngs1z8ffSj7v+jirtb+H+yO0C0AYVBDAWFcoo3VlqR20gYz2kz///m8G6Dw
-         NUznad9C41gt7hWmc9WCPpTd0PmBTc2TyG3N6FBWekAi+8S8Lv5/BHmR84uzekolh+
-         vEbGXftpXCAWUBWBW/XgiDr56f7LxiWkmD1Baez4Yj3aBvtphnD5+gzy9G4IkNcsXf
-         RIUcuvz3NfZJA==
-Date:   Sun, 31 Jan 2021 18:23:41 +0100
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, shayagr@amazon.com, john.fastabend@gmail.com,
-        dsahern@kernel.org, brouer@redhat.com, echaudro@redhat.com,
-        jasowang@redhat.com, alexander.duyck@gmail.com, saeed@kernel.org,
-        maciej.fijalkowski@intel.com, sameehj@amazon.com
-Subject: Re: [PATCH v6 bpf-next 0/8] mvneta: introduce XDP multi-buffer
- support
-Message-ID: <20210131172341.GA6003@lore-desk>
-References: <cover.1611086134.git.lorenzo@kernel.org>
- <572556bb-845f-1b4a-8f0a-fb6a4fc286e3@iogearbox.net>
+        s=k20201202; t=1612114374;
+        bh=iRqfNlooEtnaXzWqJGgOyC16V3yHp1mqUzOpPJuG3rQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ax2KUE64aygUzmVYpqmK5dEZILh4pOWVu92Ad7nTYhsi6sa/xjSf1UdBRpkMRWf2H
+         HNKm2CvkExurMmvhj9zgY/qRpWYBi6fq1fWUsWy7FgYeQDIALl3lthWcVtgkJ2zw6D
+         bERmdwBvYIQgG8mQUTbvYBwtE3ZVjBtHX62vcaH/2T2ck/cL4mUfjPdBhbKhAQ9/be
+         HRjQQ7vUarvU7SFlOi6SqIt1XjOuWzIkQ7XlXkQymZwKW2DZEjpXXpNK+E/5Lcl4XX
+         GKajkfrKdeaKTS4kIuOb/s6WXnQeEW2OxfyHcOsHTzEewsWm1ojRbUayVv8qRF7065
+         2ERCk34rF1zKQ==
+Received: by mail-ej1-f49.google.com with SMTP id rv9so20647408ejb.13
+        for <bpf@vger.kernel.org>; Sun, 31 Jan 2021 09:32:53 -0800 (PST)
+X-Gm-Message-State: AOAM533CZ5fz4YXuPXH9AZrfE21v/xe6iTf1glb/Kh7bAA2bZVHGvrO6
+        qaC6lhpjcP940gBegBh+0vQ1H4Btd1rc1t1V9JDTNQ==
+X-Google-Smtp-Source: ABdhPJzkngO3dlypbKaXykOKcYfaWIfth2D2u9Ke9oaJvn1TQUxFywtOwFoboR6fupMktrkjkbBfB3dmKNMat2mlXRc=
+X-Received: by 2002:a17:906:5608:: with SMTP id f8mr13971892ejq.101.1612114372370;
+ Sun, 31 Jan 2021 09:32:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="DocE+STaALJfprDB"
-Content-Disposition: inline
-In-Reply-To: <572556bb-845f-1b4a-8f0a-fb6a4fc286e3@iogearbox.net>
+References: <YBPToXfWV1ekRo4q@hirez.programming.kicks-ass.net>
+ <97EF0157-F068-4234-B826-C08B7324F356@amacapital.net> <20210129231155.mqbp5g675avvm5uq@ast-mbp.dhcp.thefacebook.com>
+ <CALCETrV4JKDPOKiXQfjSnbr2rHzC7O6tj3APYg0fhgUknVDWjw@mail.gmail.com> <20210130025413.sdg3vri3zfovaxtu@ast-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20210130025413.sdg3vri3zfovaxtu@ast-mbp.dhcp.thefacebook.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Sun, 31 Jan 2021 09:32:40 -0800
+X-Gmail-Original-Message-ID: <CALCETrWY=xR9cWWoXji6o2OZak81F-GJjLEdFDJrTbAYJ8xtmg@mail.gmail.com>
+Message-ID: <CALCETrWY=xR9cWWoXji6o2OZak81F-GJjLEdFDJrTbAYJ8xtmg@mail.gmail.com>
+Subject: Re: [PATCH bpf] x86/bpf: handle bpf-program-triggered exceptions properly
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>, Yonghong Song <yhs@fb.com>,
+        Jann Horn <jannh@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        kernel-team <kernel-team@fb.com>, X86 ML <x86@kernel.org>,
+        KP Singh <kpsingh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, Jan 29, 2021 at 6:54 PM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Fri, Jan 29, 2021 at 03:30:39PM -0800, Andy Lutomirski wrote:
+> > On Fri, Jan 29, 2021 at 3:12 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Fri, Jan 29, 2021 at 08:00:57AM -0800, Andy Lutomirski wrote:
+> > > >
+> > > > > On Jan 29, 2021, at 1:21 AM, Peter Zijlstra <peterz@infradead.org=
+> wrote:
+> > > > >
+> > > > > =EF=BB=BFOn Thu, Jan 28, 2021 at 04:32:34PM -0800, Andy Lutomirsk=
+i wrote:
+> > > > >
+> > > > >> I spoke too soon.  get_kernel_nofault() is just fine.  You have
+> > > > >> inlined something like __get_kernel_nofault(), which is incorrec=
+t.
+> > > > >> get_kernel_nofault() would have done the right thing.
+> > > > >
+> > > > > Correct, the pagefault_disable() is critical.
+> > >
+> > > What specifically are you referring to?
+> > > As far as I can see the current->pagefault_disabled is an artifact of=
+ the past.
+> > > It doesn't provide any additional information to the fault handler be=
+yond
+> > > what extable already does. Consider:
+> > >
+> > > current->pagefault_disabled++
+> > > some C code
+> > > asm ("load") // with extable annotation
+> > > some other C code
+> > > current->pagefault_disabled--
+> >
+> > pagefault_disabled is not about providing information to the fault
+> > handler.  It's about changing the semantics of a fault when accessing
+> > a user pointer.  There are two choices of semantics:
+> >
+> > 1. normal (faulthandler_disabled() returns false): accesses to user
+> > memory can sleep, and accesses to valid VMAs are resolved.  exception
+> > handlers for valid memory accesses are not called if the fault is
+> > resolved.
+> >
+> > 2. faulthandler_disabled() returns true: accesses to user memory
+> > cannot sleep.  If actual processing would be needed to resolve the
+> > fault, it's an error instead.
+> >
+> > This is used for two purposes: optimistic locking and best-effort
+> > tracing.  There are code paths that might prefer to access user memory
+> > with locks held.  They can pagefault_disable(), try the access, and
+> > take the slow path involving dropping locks if the first try fails.
+> > And tracing (e.g. perf call stacks) might need to access user memory
+> > in a context in which they cannot sleep.  They can disable pagefaults
+> > and try.  If they fail, then the user gets an incomplete call stack.
+>
+> got it. thanks for the explanation. all makes sense.
+>
+> > This is specifically about user memory access.  Sure, bpf could do
+> > pagefault_disable(), but that makes no sense -- bpf is trying to do a
+> > *kernel* access and is not validating the pointer.
+>
+> right.
+>
+> > On x86, which is a
+> > poor architecture in this regard, the memory access instructions don't
+> > adequately distinguish between user and kernel access, and bounds
+> > checks are necessary.
+> >
+> > >
+> > > If there is fault in the C code the fault handler will do the wrong t=
+hing,
+> > > since the fault is technically disabled only for asm("load").
+> > > The handler will go into bad_area_nosemaphore() instead of find_vma()=
+.
+> > >
+> > > The load instruction is annotated in extable.
+> > > The fault handler instead of:
+> > >   if (faulthandler_disabled) search_exception_tables()
+> > > could do:
+> > >  search_exception_tables()
+> > > right away without sacrificing anything.
+> >
+> > This would sacrifice correctness in the vastly more common case of
+> > get_user() / put_user() / copy_to/from_user(), which wants to sleep,
+> > not return -FAULT.
+>
+> got it. agree.
+>
+> >
+> > > If the fault is on one of the special asm("load") the intent of the c=
+ode
+> > > is obvious. This is non faulting load that should be fixed up.
+> > > Of course the search of extable should happen before taking mmap lock=
+.
+> > >
+> > > imo pagefault_disabled can be removed.
+> > >
+> > > > Also the _allowed() part. The bounds check is required.
+> > >
+> > > Up-thread I was saying that JIT is inlining copy_from_kernel_nofault(=
+).
+> > > That's not quite correct. When the code was written it was inlining
+> > > bpf_probe_read(). Back then _kernel vs _user distinction didn't exist=
+.
+> > > So the bounds check wasn't there. The verifier side was designed
+> > > for kernel pointers and NULL from the beginning. No user pointer
+> > > (aside from NULL) would ever go through this path.
+> > > Today I agree that the range check is necessary.
+> > > The question is where to do this check.
+> > > I see two options:
+> > > - the JIT can emit it
+> > > - fault handler can do it, since %rip clearly says that it's JITed as=
+m load.
+> >
+> > The fault handler *can't* emit it correctly because the zero page
+> > might actually be mapped.
+>
+> Yes. The zero page can be mapped. The fault won't happen
+> and bpf load will read garbage from user's page zero.
+> My understanding that this is extremelly rare. Unpriv users cannot map ze=
+ro.
+> So no security concern for tracing prog accidently stumbling there.
+> You mentioned that "wine" does it? Sure. It won't affect bpf tracing.
+>
+> > Frankly, inlining this at all is a bit bogus, because some day we're
+> > going to improve the range check to check whether the pointer points
+> > to actual memory, and BPF should really do the same thing.  This will
+> > be too big to inline nicely.
+>
+> Inlining of bpf_probe_read_kernel is absolutely critical to performance.
+> Before we added this feature people were reporting that this was the
+> hottest function in tracing progs. The map lookups and prog body
+> itself were 2nd and 3rd.
+> In networking the program has to be fast too. The program authors count
+> every nanosecond to process millions of packets per second.
 
---DocE+STaALJfprDB
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Does the networking case have appropriate locking to make sure you
+don't follow a wild pointer?
 
-> Hi Lorenzo,
+For that matter, even for tracing, you should probably make sure that
+you do real validation
+of any pointers you follow as opposed to just checking for being too
+close to zero.  If a BPF tracing
+program racily follows a wild pointer, it could hit actual mapped user
+memory with complex semantics
+(e.g. userfaultfd, something backed by FUSE, or something backed by a
+filesystem that you are
+busily tracing), and the system will deadlock or worse.
 
-Hi Daniel,
-
-sorry for the delay.
-
->=20
-> On 1/19/21 9:20 PM, Lorenzo Bianconi wrote:
-> > This series introduce XDP multi-buffer support. The mvneta driver is
-> > the first to support these new "non-linear" xdp_{buff,frame}. Reviewers
-> > please focus on how these new types of xdp_{buff,frame} packets
-> > traverse the different layers and the layout design. It is on purpose
-> > that BPF-helpers are kept simple, as we don't want to expose the
-> > internal layout to allow later changes.
-> >=20
-> > For now, to keep the design simple and to maintain performance, the XDP
-> > BPF-prog (still) only have access to the first-buffer. It is left for
-> > later (another patchset) to add payload access across multiple buffers.
->=20
-> I think xmas break has mostly wiped my memory from 2020 ;) so it would be
-> good to describe the sketched out design for how this will look like insi=
-de
-> the cover letter in terms of planned uapi exposure. (Additionally discuss=
-ing
-> api design proposal could also be sth for BPF office hour to move things
-> quicker + posting a summary to the list for transparency of course .. just
-> a thought.)
-
-I guess the main goal of this series is to add the multi-buffer support to =
-the
-xdp core (e.g. in xdp_frame/xdp_buff or in xdp_return_{buff/frame}) and to =
-provide
-the first driver with xdp mult-ibuff support. We tried to make the changes
-independent from eBPF helpers since we do not have defined use cases for th=
-em
-yet and we don't want to expose the internal layout to allow later changes.
-One possible example is bpf_xdp_adjust_mb_header() helper we sent in v2 pat=
-ch 6/9
-[0] to try to address use-case explained by Eric @ NetDev 0x14 [1].
-Anyway I agree there are some missing bits we need to address (e.g. what is=
- the
-behaviour when we redirect a mb xdp_frame to a driver not supporting it?)
-
-Ack, I agree we can discuss about mb eBPF helper APIs in BPF office hour mt=
-g in
-order to speed-up the process.
-
->=20
-> Glancing over the series, while you've addressed the bpf_xdp_adjust_tail()
-> helper API, this series will be breaking one assumption of programs at le=
-ast
-> for the mvneta driver from one kernel to another if you then use the multi
-> buff mode, and that is basically bpf_xdp_event_output() API: the assumpti=
-on
-> is that you can do full packet capture by passing in the xdp buff len that
-> is data_end - data ptr. We use it this way for sampling & others might as=
- well
-> (e.g. xdpcap). But bpf_xdp_copy() would only copy the first buffer today =
-which
-> would break the full pkt visibility assumption. Just walking the frags if
-> xdp->mb bit is set would still need some sort of struct xdp_md exposure so
-> the prog can figure out the actual full size..
-
-ack, thx for pointing this out, I will take a look to it.
-Eelco added xdp_len to xdp_md in the previous series (he is still working on
-it). Another possible approach would be defining a helper, what do you thin=
-k?
-
->=20
-> > This patchset should still allow for these future extensions. The goal
-> > is to lift the XDP MTU restriction that comes with XDP, but maintain
-> > same performance as before.
-> >=20
-> > The main idea for the new multi-buffer layout is to reuse the same
-> > layout used for non-linear SKB. We introduced a "xdp_shared_info" data
-> > structure at the end of the first buffer to link together subsequent bu=
-ffers.
-> > xdp_shared_info will alias skb_shared_info allowing to keep most of the=
- frags
-> > in the same cache-line (while with skb_shared_info only the first fragm=
-ent will
-> > be placed in the first "shared_info" cache-line). Moreover we introduce=
-d some
-> > xdp_shared_info helpers aligned to skb_frag* ones.
-> > Converting xdp_frame to SKB and deliver it to the network stack is show=
-n in
-> > cpumap code (patch 7/8). Building the SKB, the xdp_shared_info structure
-> > will be converted in a skb_shared_info one.
-> >=20
-> > A multi-buffer bit (mb) has been introduced in xdp_{buff,frame} structu=
-re
-> > to notify the bpf/network layer if this is a xdp multi-buffer frame (mb=
- =3D 1)
-> > or not (mb =3D 0).
-> > The mb bit will be set by a xdp multi-buffer capable driver only for
-> > non-linear frames maintaining the capability to receive linear frames
-> > without any extra cost since the xdp_shared_info structure at the end
-> > of the first buffer will be initialized only if mb is set.
-> >=20
-> > Typical use cases for this series are:
-> > - Jumbo-frames
-> > - Packet header split (please see Google=E2=80=99s use-case @ NetDevCon=
-f 0x14, [0])
-> > - TSO
-> >=20
-> > bpf_xdp_adjust_tail helper has been modified to take info account xdp
-> > multi-buff frames.
->=20
-> Also in terms of logistics (I think mentioned earlier already), for the s=
-eries to
-> be merged - as with other networking features spanning core + driver (exa=
-mple
-> af_xdp) - we also need a second driver (ideally mlx5, i40e or ice) implem=
-enting
-> this and ideally be submitted together in the same series for review. For=
- that
-> it probably also makes sense to more cleanly split out the core pieces fr=
-om the
-> driver ones. Either way, how is progress on that side coming along?
-
-I do not have any updated news about it so far, but afaik amazon folks were=
- working
-on adding mb support to ena driver, while intel was planning to add it to a=
-f_xdp.
-Moreover Jason was looking to add it to virtio-net.
-
->=20
-> Thanks,
-> Daniel
-
-Regards,
-Lorenzo
-
-[0] https://patchwork.ozlabs.org/project/netdev/patch/b7475687bb09aac6ec051=
-596a8ccbb311a54cb8a.1599165031.git.lorenzo@kernel.org/
-[1] https://netdevconf.info/0x14/session.html?talk-the-path-to-tcp-4k-mtu-a=
-nd-rx-zerocopy
-
---DocE+STaALJfprDB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYBbnmgAKCRA6cBh0uS2t
-rLeKAQCqcPzVsT+U39JtKEdoTeKIboeFePzf/Y9MyMqonRdZsgD/ZKYv6NcM/sht
-Hxis4torgfvwZAlB78d6UrI9W0o4YQs=
-=55Nb
------END PGP SIGNATURE-----
-
---DocE+STaALJfprDB--
+--Andy
