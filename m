@@ -2,165 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AE83309B28
-	for <lists+bpf@lfdr.de>; Sun, 31 Jan 2021 09:46:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9B38309D78
+	for <lists+bpf@lfdr.de>; Sun, 31 Jan 2021 16:24:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229786AbhAaIo3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 31 Jan 2021 03:44:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44918 "EHLO
+        id S232832AbhAaPXy (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 31 Jan 2021 10:23:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbhAaIns (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 31 Jan 2021 03:43:48 -0500
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC97EC061574
-        for <bpf@vger.kernel.org>; Sun, 31 Jan 2021 00:43:05 -0800 (PST)
-Received: by mail-qt1-x836.google.com with SMTP id c1so10055482qtc.1
-        for <bpf@vger.kernel.org>; Sun, 31 Jan 2021 00:43:05 -0800 (PST)
+        with ESMTP id S231359AbhAaORb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 31 Jan 2021 09:17:31 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A73AAC061574;
+        Sun, 31 Jan 2021 06:16:31 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id lw17so8305628pjb.0;
+        Sun, 31 Jan 2021 06:16:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=34LF0oUAzvA7L0f72J8AccfB18y2J2I07QbXdiR+PSM=;
-        b=GuUbI0El8uD0Q0avPsmpDFyV2+UcVsg+ZmvkY/c6RduCF9r2q2RK9D86bzAp9VtkGI
-         395JShPKndA6Mrq1eHxJE56QV6ipKwKLbwUzaVkma6iMnfrBCNz6tv99Z7DbfXTWshFX
-         PqOXAczmnmwmDeOuFs4wrqV3RvTF24e9vVNLy6r5ofLehziuTu4p163cz5xGS5H423A8
-         lxFG7BPpinN4HMw1e1gEVSoP2eyQNE4gjOsFKWUO0+U457ANQqXDr1MjI0CPaQ0HUOw2
-         OhZRIvJWEe9ru/y14Wl2MR5dTpdqelwfA4D5OX6YfynSif/QTxA1Ww6DGBAUboeV1YN3
-         gdag==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7bGpwFVo7xYMiRiub/f4zLcAqxS1DlusIS6u9BLoh04=;
+        b=RfZVSgFYvlSLZOZgqn6+Jmo50up+5PWoBqg8zlGp+mcUYiCFGB1E9Lc+8buCHXyZL4
+         KHLMreKlIw1q/YgA7diIODYh8rO8HYbEw2ko4uSOe7f9g8BdlSlo0J6Mamu9nMpL5q6F
+         aQC3yIaZT53H8okppNKwZEb76bHLUhGS6sEoSMAnUk2mHzJzNLiCvjWqnBl1ZZsHdVmW
+         tLWm2xFsqCjkHviCuJkJkIbGxyyjTv265vgjmrlAyjI085Vc6ySAgxagQWmOhUVmrLfK
+         kvxXU+a18FWO8KfMhXMd2hG/9ACgwGvEKylYedJI6Ay7HhHmCL5sdSS3Uvl6P2rLpoj0
+         JAZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=34LF0oUAzvA7L0f72J8AccfB18y2J2I07QbXdiR+PSM=;
-        b=U1XrwY4/wr13kew84QUBRwYsYa1keAQcGLc0fG6EwbbnGxQWsxJv5ZjpopD7nKADV4
-         +FFZ28S58dUT0QSwKUcqBFlnEDRBORZZoMnpZ/zOswbTfOi5U38tMrYzlM1BoH9lS1Ny
-         FWei09aP+nt2AkGB29V/uDtCAwu7vklDFEiCKM55f6LvJ7ic7bcTww4ddLZrgtKJaIqh
-         dFLihzKzy7GOMEGpGvsTyQICaeexvCf4hUVSLaaQ1+sFylkwNhi1j5fk5xH+/VkjfaUD
-         r7jXq7g6XMXYVc7ygS+vBX7+bSLq81HDtDtN7IZ0eXACsu1qBrDwbQuwdUNA41dWAbV2
-         5+zg==
-X-Gm-Message-State: AOAM532MW8TbJvV6y695ieO0eIpooUFNorqwXajPvL4VONsHFMI0qozM
-        HjzeHFwn2FqlsCnV66mYAeq55uNpyagpX3eJdQp4Cw==
-X-Google-Smtp-Source: ABdhPJxsJ7PH9FtIyP9C9WAmb997COsD/GLIXO77mK+pUBa8oDOazghml5eT07aVTltA/qksXeFcLtQMN3YGdY+BjLU=
-X-Received: by 2002:ac8:7c82:: with SMTP id y2mr10558143qtv.67.1612082584127;
- Sun, 31 Jan 2021 00:43:04 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7bGpwFVo7xYMiRiub/f4zLcAqxS1DlusIS6u9BLoh04=;
+        b=QZK4G35zqWceH9N1c/7ta5mKCA4A8Ct/9aL3owlYlthlSEX0jUV8r5YBMFZ1dgehyE
+         ZqC83cPSI+4HBxUK8ZMHo8+wAS8aPdEETuvktEP4dYwOPvsrZmgynDJ0qzD67VteHWHA
+         jxGDubkr++Vnm1WYVwy+vZ4JUeVhLEEo7JIXWBLhuKUfgYzvzS8xY8vSFQKoxQSfe8te
+         +QO+fd7wFVfu9NHfvCW1hdy5xsJQPV6Aa0zHyDYwWBvuWhRj4TOeFQVODizjxuByaqLP
+         mVXZ317mn2PkLRrP4g3UaIVBmU4q3FR/fRBOqOMkoXsZX4qmCZGnKG5lXxx/3UVXsRYW
+         j+kA==
+X-Gm-Message-State: AOAM530nJEXJqyLGzSUDkmEutilF6NiQ8mH50yVrgvt/LLs+RaFXBZOB
+        OJ0KTlzMLCge5ugDMPLlS1E=
+X-Google-Smtp-Source: ABdhPJxwr/C+eXE3f8AXrQ5igE5EltGwySO8LWMjbQlFyEF14wSX4wFMJQJmGtsFfgd0u/zP31ESUw==
+X-Received: by 2002:a17:902:fe03:b029:e1:2c46:f3fd with SMTP id g3-20020a170902fe03b02900e12c46f3fdmr8850229plj.62.1612102591241;
+        Sun, 31 Jan 2021 06:16:31 -0800 (PST)
+Received: from [192.168.1.18] (i121-115-229-245.s42.a013.ap.plala.or.jp. [121.115.229.245])
+        by smtp.googlemail.com with ESMTPSA id gb12sm12740132pjb.51.2021.01.31.06.16.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 31 Jan 2021 06:16:29 -0800 (PST)
+Subject: Re: [PATCH v3 bpf-next] net: veth: alloc skb in bulk for ndo_xdp_xmit
+To:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, lorenzo.bianconi@redhat.com,
+        brouer@redhat.com, toke@redhat.com
+References: <a14a30d3c06fff24e13f836c733d80efc0bd6eb5.1611957532.git.lorenzo@kernel.org>
+From:   Toshiaki Makita <toshiaki.makita1@gmail.com>
+Message-ID: <b63d0fb0-319a-3246-f187-4e7ad14ebc75@gmail.com>
+Date:   Sun, 31 Jan 2021 23:16:24 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Sun, 31 Jan 2021 09:42:53 +0100
-Message-ID: <CACT4Y+YJp0t0HA3+wDsAVxgTK4J+Pvht-J4-ENkOtS=C=Fhtzg@mail.gmail.com>
-Subject: corrupted pvqspinlock in htab_map_update_elem
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, andrii@kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <a14a30d3c06fff24e13f836c733d80efc0bd6eb5.1611957532.git.lorenzo@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+On 2021/01/30 7:04, Lorenzo Bianconi wrote:
+> Split ndo_xdp_xmit and ndo_start_xmit use cases in veth_xdp_rcv routine
+> in order to alloc skbs in bulk for XDP_PASS verdict.
+> Introduce xdp_alloc_skb_bulk utility routine to alloc skb bulk list.
+> The proposed approach has been tested in the following scenario:
+> 
+> eth (ixgbe) --> XDP_REDIRECT --> veth0 --> (remote-ns) veth1 --> XDP_PASS
+> 
+> XDP_REDIRECT: xdp_redirect_map bpf sample
+> XDP_PASS: xdp_rxq_info bpf sample
+> 
+> traffic generator: pkt_gen sending udp traffic on a remote device
+> 
+> bpf-next master: ~3.64Mpps
+> bpf-next + skb bulking allocation: ~3.79Mpps
+> 
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 
-I am testing the following the program:
-https://gist.github.com/dvyukov/e5c0a8ef220ef856363c1080b0936a9e
-on the latest upstream 6642d600b541b81931fb1ab0c041b0d68f77be7e and
-getting the following crash. Config is:
-https://gist.github.com/dvyukov/16d9905e5ef35e44285451f1d330ddbc
+Reviewed-by: Toshiaki Makita <toshiaki.makita1@gmail.com>
 
-The program updates a bpf map from a program called on hw breakpoint
-hit. Not sure if it's a bpf issue or a perf issue. This time it is not
-a fuzzer workload, I am trying to do something useful :)
-
-------------[ cut here ]------------
-pvqspinlock: lock 0xffffffff8f371d80 has corrupted value 0x0!
-WARNING: CPU: 3 PID: 8771 at kernel/locking/qspinlock_paravirt.h:498
-__pv_queued_spin_unlock_slowpath+0x22e/0x2b0
-kernel/locking/qspinlock_paravirt.h:498
-Modules linked in:
-CPU: 3 PID: 8771 Comm: a.out Not tainted 5.11.0-rc5+ #71
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
-rel-1.13.0-44-g88ab0c15525c-prebuilt.qemu.org 04/01/2014
-RIP: 0010:__pv_queued_spin_unlock_slowpath+0x22e/0x2b0
-kernel/locking/qspinlock_paravirt.h:498
-Code: ea 03 0f b6 14 02 4c 89 e8 83 e0 07 83 c0 03 38 d0 7c 04 84 d2
-75 62 41 8b 55 00 4c 89 ee 48 c7 c7 20 6b 4c 89 e8 72 d3 5f 07 <0f> 0b
-e9 6cc
-RSP: 0018:fffffe00000c17b0 EFLAGS: 00010086
-RAX: 0000000000000000 RBX: ffffffff8f3b5660 RCX: 0000000000000000
-RDX: ffff8880150222c0 RSI: ffffffff815b624d RDI: fffffbc0000182e8
-RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000000
-R10: ffffffff817de94f R11: 0000000000000000 R12: ffff8880150222c0
-R13: ffffffff8f371d80 R14: ffff8880181fead8 R15: 0000000000000000
-FS:  00007fa5b51f0700(0000) GS:ffff88802cf80000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000002286908 CR3: 0000000015b24000 CR4: 0000000000750ee0
-DR0: 00000000004cb3d4 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
-PKRU: 55555554
-Call Trace:
- <#DB>
- __raw_callee_save___pv_queued_spin_unlock_slowpath+0x11/0x20
- .slowpath+0x9/0xe
- pv_queued_spin_unlock arch/x86/include/asm/paravirt.h:559 [inline]
- queued_spin_unlock arch/x86/include/asm/qspinlock.h:56 [inline]
- lockdep_unlock+0x10e/0x290 kernel/locking/lockdep.c:124
- debug_locks_off_graph_unlock kernel/locking/lockdep.c:165 [inline]
- print_usage_bug kernel/locking/lockdep.c:3710 [inline]
- verify_lock_unused kernel/locking/lockdep.c:5374 [inline]
- lock_acquire kernel/locking/lockdep.c:5433 [inline]
- lock_acquire+0x471/0x720 kernel/locking/lockdep.c:5407
- __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
- _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:159
- htab_lock_bucket kernel/bpf/hashtab.c:175 [inline]
- htab_map_update_elem+0x1f0/0x790 kernel/bpf/hashtab.c:1023
- bpf_prog_60236c52b8017ad1+0x8e/0xab4
- bpf_dispatcher_nop_func include/linux/bpf.h:651 [inline]
- bpf_overflow_handler+0x192/0x5b0 kernel/events/core.c:9755
- __perf_event_overflow+0x13c/0x370 kernel/events/core.c:8979
- perf_swevent_overflow kernel/events/core.c:9055 [inline]
- perf_swevent_event+0x347/0x550 kernel/events/core.c:9083
- perf_bp_event+0x1a2/0x1c0 kernel/events/core.c:9932
- hw_breakpoint_handler arch/x86/kernel/hw_breakpoint.c:535 [inline]
- hw_breakpoint_exceptions_notify+0x18a/0x3b0 arch/x86/kernel/hw_breakpoint.c:567
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- atomic_notifier_call_chain+0x8d/0x170 kernel/notifier.c:217
- notify_die+0xda/0x170 kernel/notifier.c:548
- notify_debug+0x20/0x30 arch/x86/kernel/traps.c:842
- exc_debug_kernel arch/x86/kernel/traps.c:902 [inline]
- exc_debug+0x103/0x140 arch/x86/kernel/traps.c:998
- asm_exc_debug+0x19/0x30 arch/x86/include/asm/idtentry.h:598
-RIP: 0010:copy_user_generic_unrolled+0xa2/0xc0 arch/x86/lib/copy_user_64.S:102
-Code: ff c9 75 b6 89 d1 83 e2 07 c1 e9 03 74 12 4c 8b 06 4c 89 07 48
-8d 76 08 48 8d 7f 08 ff c9 75 ee 21 d2 74 10 89 d1 8a 06 88 07 <48> ff
-c6 484
-RSP: 0018:ffffc90000d67af0 EFLAGS: 00040202
-RAX: 0000000000000001 RBX: 0000000000000001 RCX: 0000000000000001
-RDX: 0000000000000001 RSI: ffff88801341d001 RDI: 00000000004cb3d4
-RBP: 00000000004cb3d4 R08: 0000000000000000 R09: ffff88801341d001
-R10: ffffed1002683a00 R11: 0000000000000000 R12: ffff88801341d001
-R13: 00000000004cb3d5 R14: 0000000000000000 R15: 0000000000000001
- </#DB>
- copy_user_generic arch/x86/include/asm/uaccess_64.h:37 [inline]
- raw_copy_to_user arch/x86/include/asm/uaccess_64.h:58 [inline]
- copyout.part.0+0xe4/0x110 lib/iov_iter.c:148
- copyout lib/iov_iter.c:182 [inline]
- copy_page_to_iter_iovec lib/iov_iter.c:219 [inline]
- copy_page_to_iter+0x416/0xed0 lib/iov_iter.c:926
- pipe_read+0x4a4/0x13a0 fs/pipe.c:290
- call_read_iter include/linux/fs.h:1895 [inline]
- new_sync_read+0x5b7/0x6e0 fs/read_write.c:415
- vfs_read+0x35c/0x570 fs/read_write.c:496
- ksys_read+0x1ee/0x250 fs/read_write.c:634
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x406c1c
-Code: ec 28 48 89 54 24 18 48 89 74 24 10 89 7c 24 08 e8 f9 fc ff ff
-48 8b 54 24 18 48 8b 74 24 10 41 89 c0 8b 7c 24 08 31 c0 0f 05 <48> 3d
-00 f08
-RSP: 002b:00007fa5b51f02d0 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-RAX: ffffffffffffffda RBX: 00000000004cb3d4 RCX: 0000000000406c1c
-RDX: 0000000000000001 RSI: 00000000004cb3d4 RDI: 0000000000000004
-RBP: 00007fa5b51f030c R08: 0000000000000000 R09: 0000000000000000
-R10: 00007fa5b51f0700 R11: 0000000000000246 R12: 00000000004cb3d0
-R13: cccccccccccccccd R14: 00007fa5b51f0400 R15: 0000000000802000
+Thanks,
+Toshiaki Makita
