@@ -2,89 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 029BE309FF3
-	for <lists+bpf@lfdr.de>; Mon,  1 Feb 2021 02:23:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCEC130A206
+	for <lists+bpf@lfdr.de>; Mon,  1 Feb 2021 07:36:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231197AbhBABW3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 31 Jan 2021 20:22:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56084 "EHLO mail.kernel.org"
+        id S232204AbhBAGfr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Feb 2021 01:35:47 -0500
+Received: from mga05.intel.com ([192.55.52.43]:52696 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231149AbhBABVj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 31 Jan 2021 20:21:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C689764E2E
-        for <bpf@vger.kernel.org>; Mon,  1 Feb 2021 01:20:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612142459;
-        bh=3B5tXgdUKMP/kU2hx0a2j+XEtprdSI4NTqN/tYMvOAQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=SGW8/jrqCBICdzyH3qwyuJ21Blyali2BK6NksL70kbxDs+h6+09P8sp4BIvZFO9yl
-         yf1utoJewpfcfNXLicNTmcYi72zLkULNiZzP6XOi3K3OXDZqkE+1On/PeyF/p0puap
-         JFypejveDUDyHz3nUGKbhnBULvWnsXF78WSQmLOECjJuknpZlNjkmZJ/kCjnPgw7wx
-         RCo+VwJ3sG9Eniwi+fuxMPci4U1q5qFi7HM8/huwbPiJ2/JJxa+hVCga10/RiQy5z7
-         eHGnEplUArA8IlvmaCHeE1CLQd3vIsLcpQXlmkorgwg6tiN4X/xCi3HpcV4qsseFp6
-         VoPq12coHLF6Q==
-Received: by mail-lj1-f182.google.com with SMTP id s18so17523009ljg.7
-        for <bpf@vger.kernel.org>; Sun, 31 Jan 2021 17:20:58 -0800 (PST)
-X-Gm-Message-State: AOAM531GCPmtX2/nKZ6qXGXbnnk9psZmpTuQer9i8nbevXQUGCx0Gplr
-        hm0ZWHADp1sdTGCznIz+s7uYwS5LLgZQLt0TvkdV0g==
-X-Google-Smtp-Source: ABdhPJwIJIncC/Oq18m6ce+ZJFI2xIuUS/wzWzDt0DPN0xHeH3UpC5ru89ZhaMxplhSnBvlslmVSQe0TX8XBITTI5ek=
-X-Received: by 2002:a2e:2c11:: with SMTP id s17mr8472300ljs.468.1612142456959;
- Sun, 31 Jan 2021 17:20:56 -0800 (PST)
+        id S229522AbhBAGaW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Feb 2021 01:30:22 -0500
+IronPort-SDR: dmWxVeswQGljKlRxxS2Db4V8ccI3IHW2Ivnvnb6J/FTucxP+Om/T4RxHKBlM/iVzpQaAWKpqR/
+ BOvcGgvrtK1A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9881"; a="265472045"
+X-IronPort-AV: E=Sophos;i="5.79,391,1602572400"; 
+   d="scan'208";a="265472045"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2021 22:28:06 -0800
+IronPort-SDR: Ued2E0AfgI+8f+hQHUk0lZvnb3315tYe0TRO8Q2czcmUqtd4EHKbmEyl16WAxcLG0gL1upHl+Z
+ WCP22mz+Ld1w==
+X-IronPort-AV: E=Sophos;i="5.79,391,1602572400"; 
+   d="scan'208";a="390742799"
+Received: from edesmara-mobl1.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.252.52.104])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2021 22:28:01 -0800
+Subject: Re: [RFC PATCH bpf-next] bpf, xdp: per-map bpf_redirect_map functions
+ for XDP
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
+        kuba@kernel.org, jonathan.lemon@gmail.com, maximmi@nvidia.com,
+        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com
+References: <20210129153215.190888-1-bjorn.topel@gmail.com>
+ <87im7fy9nc.fsf@toke.dk>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Message-ID: <e77f259a-2381-1a6e-6e2c-f5afceb35c51@intel.com>
+Date:   Mon, 1 Feb 2021 07:27:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20210128001948.1637901-1-songliubraving@fb.com> <20210128001948.1637901-2-songliubraving@fb.com>
-In-Reply-To: <20210128001948.1637901-2-songliubraving@fb.com>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Mon, 1 Feb 2021 02:20:46 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ4Ha1r4oqPge7yJjORdBUPg=huHSjER58ka24OEw_4S0A@mail.gmail.com>
-Message-ID: <CACYkzJ4Ha1r4oqPge7yJjORdBUPg=huHSjER58ka24OEw_4S0A@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 1/4] bpf: enable task local storage for
- tracing programs
-To:     Song Liu <songliubraving@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>, mingo@redhat.com,
-        Peter Zijlstra <peterz@infradead.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87im7fy9nc.fsf@toke.dk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 1:20 AM Song Liu <songliubraving@fb.com> wrote:
+On 2021-01-29 17:45, Toke Høiland-Jørgensen wrote:
+> Björn Töpel <bjorn.topel@gmail.com> writes:
+> 
+>> From: Björn Töpel <bjorn.topel@intel.com>
+>>
+>> Currently the bpf_redirect_map() implementation dispatches to the
+>> correct map-lookup function via a switch-statement. To avoid the
+>> dispatching, this change adds one bpf_redirect_map() implementation per
+>> map. Correct function is automatically selected by the BPF verifier.
+>>
+>> Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+>> ---
+>> Hi XDP-folks!
+>>
+>> This is another take on my bpf_redirect_xsk() patch [1]. I figured I
+>> send it as an RFC for some early input. My plan is to include it as
+>> part of the xdp_do_redirect() optimization of [1].
+> 
+> Assuming the maintainers are OK with the special-casing in the verifier,
+> this looks like a neat way to avoid the runtime overhead to me. The
+> macro hackery is not the prettiest; I wonder if the same effect could be
+> achieved by using inline functions? If not, at least a comment
+> explaining the reasoning (and that the verifier will substitute the
+> right function) might be nice? Mostly in relation to this bit:
 >
-> To access per-task data, BPF programs usually creates a hash table with
-> pid as the key. This is not ideal because:
->  1. The user need to estimate the proper size of the hash table, which may
->     be inaccurate;
->  2. Big hash tables are slow;
->  3. To clean up the data properly during task terminations, the user need
->     to write extra logic.
+
+Yeah, I agree with the macro part. I'll replace it with a
+__always_inline function, instead.
+
+
+>>   static const struct bpf_func_proto bpf_xdp_redirect_map_proto = {
+>> -	.func           = bpf_xdp_redirect_map,
+>> +	.func           = bpf_xdp_redirect_devmap,
 >
-> Task local storage overcomes these issues and offers a better option for
-> these per-task data. Task local storage is only available to BPF_LSM. Now
-> enable it for tracing programs.
->
-> Unlike LSM progreams, tracing programs can be called in IRQ contexts.
 
-nit: typo *programs
+I'll try to clean this up as well.
 
-> Helpers that accesses task local storage are updated to use
+Thanks for taking a look!
+Björn
 
-nit: Helpers that access..
 
-> raw_spin_lock_irqsave() instead of raw_spin_lock_bh().
->
-> Tracing programs can attach to functions on the task free path, e.g.
-> exit_creds(). To avoid allocating task local storage after
-> bpf_task_storage_free(). bpf_task_storage_get() is updated to not allocate
-> new storage when the task is not refcounted (task->usage == 0).
->
-> Signed-off-by: Song Liu <songliubraving@fb.com>
-
-Acked-by: KP Singh <kpsingh@kernel.org>
-
-Thanks for adding better commit descriptions :)
-
-I think checking the usage before adding storage should work for the
-task exit path (I could not think of cases where it would break).
-Would also be nice to check with Martin and Hao about this.
+> Ah, if only we were writing the kernel in a language with proper macro
+> support... One can dream! :)
+> 
+>>> For AF_XDP rxdrop this yields +600Mpps. I'll do CPU/DEVMAP
+>>> measurements for the patch proper.
+>>>
+>>
+>> Kpps, not Mpps. :-P
+> 
+> Aww, too bad ;)
+> Still, nice!
+> 
+> -Toke
+> 
