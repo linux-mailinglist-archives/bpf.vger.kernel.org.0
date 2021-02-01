@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B96C530ADC9
+	by mail.lfdr.de (Postfix) with ESMTP id 479EF30ADC8
 	for <lists+bpf@lfdr.de>; Mon,  1 Feb 2021 18:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231599AbhBAR1I (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Feb 2021 12:27:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38646 "EHLO
+        id S231603AbhBAR1H (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Feb 2021 12:27:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231233AbhBAR0o (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Feb 2021 12:26:44 -0500
-Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C577C06178A
-        for <bpf@vger.kernel.org>; Mon,  1 Feb 2021 09:26:04 -0800 (PST)
-Received: by mail-wr1-x449.google.com with SMTP id n14so10807704wru.6
-        for <bpf@vger.kernel.org>; Mon, 01 Feb 2021 09:26:04 -0800 (PST)
+        with ESMTP id S231599AbhBAR0q (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Feb 2021 12:26:46 -0500
+Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A7F8C06178C
+        for <bpf@vger.kernel.org>; Mon,  1 Feb 2021 09:26:07 -0800 (PST)
+Received: by mail-wr1-x44a.google.com with SMTP id j8so10754968wrx.17
+        for <bpf@vger.kernel.org>; Mon, 01 Feb 2021 09:26:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=YDxToULhiLjuBex0deTClM4Ud7mf2JtShhU/pcWFbzY=;
-        b=WNS8a5ZnSlcq7C7ERfxNj7fFFK1TEpNiP9RKtYX3XWZI+KQwmWFBnlnKYMVg2OWRiQ
-         brEM50ab1ooN7wgIBVoE37UqX13dR2N+pE+RAnxNV0ycDxV7a39kC/EgLmM5Mlj6YoUs
-         KNTAW/XWOgSFG5PPf3bOuzN9bxFQ8fxwbVg1gDRErJKWnLupbvdL31IRKRZ9pRlkSHOk
-         UTEAcH4Sqts+sYagSqWVd5XvVo9LqfBKeYnZDEa8wbkTY/L1JWAAGrYjjoIiDa6InNtd
-         6v01jNBfaNYXLGtmyDZPgcGlt/cNLITKvD92mO/gzVDXH3+QbpvNSDQQcxej3XUVRR+Y
-         JN4g==
+        bh=2RQrtF4Yu/7TyUfyq3im7rIOCZ1idrksD+9OKNcN2CM=;
+        b=KN1IiaHpAKfiWqYWp+yXLt0HSXylS1CHtzydscr1Z+p3MKyQ/1bbQuzEDeUKJ1+faG
+         ADX3YTaaoft30bmkGRRv65kb11Y0O/tqyQdD8hjANJkNJLx4cmIyjhXqtBwwBGCsI7H3
+         p6rYN1smuiWDyWhqtRR0M/BSQqJE+ReW6ftnJjh1aCoYud2J0vUPWd6s438Ni4M9gWZT
+         3rb9354DJOZn7Nh7FE7yje+lFPs2bjp9XzYKBaS+qKxmYcZBrlhCGms+YVUeWTDn1+Je
+         ygipHY6YdjONdFHFAmSRCUchgEtmlgoXBY1CQ+9KUGLkmc+RtD9zwBois5Zah1F04qw1
+         0JKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=YDxToULhiLjuBex0deTClM4Ud7mf2JtShhU/pcWFbzY=;
-        b=tGtQaONUcxIafRBDe/b6vWj7fm5IxZmGdBt5D+SFDfwk2PFlyNjCWG30njjnXjAKOk
-         Q5WamQP6RBVDtaOX09UHnhPMKaKHFQhIaybv6oT9sWytbd6ucN+fa7XxwRSokKnQ6TYs
-         7oaLWDthoum7TTCe43U6I3Fdh0ncujuRUR7+o2bL33Un80SYcG8EGkVnqq2GgUvkHgkE
-         nacKhrL7egqgozOEpaH63Yu4Ieq+ZGL/BepPszKJR591qG2BfpIXW1VfX/4zYEWWr+BS
-         j4Fg25+kNiRADS2Cx3IEr8GCSzvjSK5ppXPIugaYgzjx9PZV0DI9h4Fa9TfqrOcu+GRd
-         9B8Q==
-X-Gm-Message-State: AOAM530VJ4P62aakJAhF5BstTGX83UNHciYo+MwyJzSFAfZmyf7F2QHs
-        cifpDCif6DrSJuxc4pSdGwpfnbTtsCvjcw==
-X-Google-Smtp-Source: ABdhPJzrbXIdfE7y90Snjx52gZc+gdOyBkufbbsfFR/XzO3U/FHYpXSbDVsV9ABShiiwSsJ1VO+AQHEXF5RNhA==
+        bh=2RQrtF4Yu/7TyUfyq3im7rIOCZ1idrksD+9OKNcN2CM=;
+        b=JKyLBxP0itvpmxxnMiVcQYhMd446rtMNAh9PnX1LsXHVYiHxupsmIzj0/OaYqpJNUZ
+         HgtvAUdsmdjrXge2agvV9EZKZtHwzPSQnk9c/2BX9vaqfOsXWM9MxXPnzLeF55KlrY2C
+         SSyw3Ihbb5TYMk0whAyuO/HFRgKwXh6BpBSvcXPxQ+IxgOvL5U6lqz4JwDBN5PJDMbj/
+         0F25+067ibFbPxT/OYW6AyKyJbg2XbKkRfnge5LbNwdTqfvXjPSGLDQyOgYYSLvzWmSI
+         2A/ezqx07AosmAip1rxvqtHqpq/TwKCADaOQISRONsk3Dx6bM6as9qJSHlFiEzGCId6m
+         VCBw==
+X-Gm-Message-State: AOAM532wvEl2wYUxHVA3lDmneFv4hBJXqatUXwE2SFhbbPHyvL1ZnYAx
+        e3km6j7v+T08WygVNbe7p3nILwWTNgr9FQ==
+X-Google-Smtp-Source: ABdhPJzK+cSTbTHYsovUlZQ9WWYjGZmtSASuzYrI0Lfjb8GQccezB8Z/Vy72r7WQ5RS4vt7eHQ+xHhlVFkuPjw==
 Sender: "gprocida via sendgmr" <gprocida@tef.lon.corp.google.com>
 X-Received: from tef.lon.corp.google.com ([2a00:79e0:d:210:6893:b158:d9db:277c])
- (user=gprocida job=sendgmr) by 2002:a7b:c044:: with SMTP id
- u4mr87442wmc.1.1612200362886; Mon, 01 Feb 2021 09:26:02 -0800 (PST)
-Date:   Mon,  1 Feb 2021 17:25:28 +0000
+ (user=gprocida job=sendgmr) by 2002:a05:600c:35c9:: with SMTP id
+ r9mr87875wmq.0.1612200365467; Mon, 01 Feb 2021 09:26:05 -0800 (PST)
+Date:   Mon,  1 Feb 2021 17:25:29 +0000
 In-Reply-To: <20210201172530.1141087-1-gprocida@google.com>
-Message-Id: <20210201172530.1141087-3-gprocida@google.com>
+Message-Id: <20210201172530.1141087-4-gprocida@google.com>
 Mime-Version: 1.0
 References: <87a83353155506cc02141e6e4108d89aa4e7d284> <20210201172530.1141087-1-gprocida@google.com>
 X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH dwarves v2 2/4] btf_encoder: Manually lay out updated ELF sections
+Subject: [PATCH dwarves v2 3/4] btf_encoder: Add .BTF as a loadable segment
 From:   Giuliano Procida <gprocida@google.com>
 To:     dwarves@vger.kernel.org
 Cc:     acme@kernel.org, andrii@kernel.org, ast@kernel.org,
@@ -62,155 +62,86 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-pahole -J needs to do the following to an ELF file:
+In addition to adding .BTF to the Section Header Table, we also need
+to add it to the Program Header Table and rewrite the PHT's
+description of itself.
 
-* add or update the ".BTF" section
-* maybe update the section name string table
-* update the Section Header Table (SHT)
-
-libelf either takes full control of layout or requires the user to
-specify offset, size and alignment of all new and updated sections and
-headers.
-
-To avoid libelf moving program segments in particular, we position the
-".BTF" and section name string table (typically named ".shstrtab")
-sections after all others. The SHT always lives at the end of the file.
-
-Note that the last section in an ELF file is normally the section name
-string table and any ".BTF" section will normally be second last.
-However, if these sections appear earlier, then we'll waste some space
-in the ELF file when we rewrite them.
+The segment as loadbale, at address 0 and read-only.
 
 Signed-off-by: Giuliano Procida <gprocida@google.com>
 ---
- libbtf.c | 64 ++++++++++++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 62 insertions(+), 2 deletions(-)
+ libbtf.c | 44 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 44 insertions(+)
 
 diff --git a/libbtf.c b/libbtf.c
-index 5b91d3a..6e06a58 100644
+index 6e06a58..048a873 100644
 --- a/libbtf.c
 +++ b/libbtf.c
-@@ -741,9 +741,28 @@ static int btf_elf__write(const char *filename, struct btf *btf)
- 	}
+@@ -699,6 +699,7 @@ static int btf_elf__write(const char *filename, struct btf *btf)
+ 	int fd, err = -1;
+ 	size_t strndx;
+ 	void *str_table = NULL;
++	GElf_Phdr *pht = NULL;
  
- 	/*
--	 * First we check if there is already a .BTF section present.
-+	 * The SHT is at the very end of the ELF and gets re-written in any case.
-+	 *
-+	 * We'll always add or update the .BTF section and when adding have to
-+	 * re-write the section name string table (usually named .shstrtab). In
-+	 * fact, as good citizens, we'll always leave the string table last, in
-+	 * case someone else wants to add a section.
-+	 *
-+	 * However, if .BTF or the section name string table are followed by
-+	 * further sections, we'll not try to be clever about shuffling
-+	 * everything else in the ELF file, we'll just leave some dead space.
-+	 * This actually happens in practice with vmlinux which has .strtab
-+	 * after .shstrtab, resulting in a (small) hole the size of the original
-+	 * .shstrtab.
-+	 */
-+
-+	/*
-+	 * First we look if there was already a .BTF section present and
-+	 * determine the first usable offset in the ELF (for .BTF and the
-+	 * section name table).
- 	 */
- 	elf_getshdrstrndx(elf, &strndx);
-+	size_t high_water_mark = 0;
- 	Elf_Scn *btf_scn = 0;
- 	while ((scn = elf_nextscn(elf, scn)) != NULL) {
- 		shdr = gelf_getshdr(scn, &shdr_mem);
-@@ -752,7 +771,10 @@ static int btf_elf__write(const char *filename, struct btf *btf)
- 		char *secname = elf_strptr(elf, strndx, shdr->sh_name);
- 		if (strcmp(secname, ".BTF") == 0) {
- 			btf_scn = scn;
--			break;
-+		} else if (elf_ndxscn(scn) != strndx) {
-+			size_t limit = shdr->sh_offset + shdr->sh_size;
-+			if (limit > high_water_mark)
-+				high_water_mark = limit;
- 		}
- 	}
- 
-@@ -761,6 +783,12 @@ static int btf_elf__write(const char *filename, struct btf *btf)
- 		fprintf(stderr, "%s: elf_getscn(strndx) failed\n", __func__);
- 		goto out;
- 	}
-+	GElf_Shdr str_shdr_mem;
-+	GElf_Shdr *str_shdr = gelf_getshdr(str_scn, &str_shdr_mem);
-+	if (!str_shdr) {
-+		fprintf(stderr, "%s: elf_getshdr(str_scn) failed\n", __func__);
-+		goto out;
-+	}
- 
- 	size_t dot_btf_offset = 0;
- 	if (btf_scn) {
-@@ -791,6 +819,7 @@ static int btf_elf__write(const char *filename, struct btf *btf)
- 		str_data->d_buf = str_table;
- 		str_data->d_size = new_str_size;
- 		elf_flagdata(str_data, ELF_C_SET, ELF_F_DIRTY);
-+		str_shdr->sh_size = new_str_size;
- 
- 		/* Create a new section */
- 		btf_scn = elf_newscn(elf);
-@@ -810,12 +839,15 @@ static int btf_elf__write(const char *filename, struct btf *btf)
- 	/* (Re)populate the BTF section data */
- 	raw_btf_data = btf__get_raw_data(btf, &raw_btf_size);
- 	btf_data->d_buf = (void *)raw_btf_data;
-+	btf_data->d_off = 0;
- 	btf_data->d_size = raw_btf_size;
- 	btf_data->d_type = ELF_T_BYTE;
- 	btf_data->d_version = EV_CURRENT;
- 	elf_flagdata(btf_data, ELF_C_SET, ELF_F_DIRTY);
- 
- 	/* Update .BTF section in the SHT */
-+	size_t new_btf_offset = high_water_mark;
-+	size_t new_btf_size = raw_btf_size;
- 	GElf_Shdr btf_shdr_mem;
- 	GElf_Shdr *btf_shdr = gelf_getshdr(btf_scn, &btf_shdr_mem);
- 	if (!btf_shdr) {
-@@ -827,6 +859,8 @@ static int btf_elf__write(const char *filename, struct btf *btf)
- 	btf_shdr->sh_flags = SHF_ALLOC;
- 	if (dot_btf_offset)
- 		btf_shdr->sh_name = dot_btf_offset;
-+	btf_shdr->sh_offset = new_btf_offset;
-+	btf_shdr->sh_size = new_btf_size;
- 	btf_shdr->sh_type = SHT_PROGBITS;
- 	if (!gelf_update_shdr(btf_scn, btf_shdr)) {
- 		fprintf(stderr, "%s: gelf_update_shdr failed: %s\n",
-@@ -834,6 +868,32 @@ static int btf_elf__write(const char *filename, struct btf *btf)
+ 	fd = open(filename, O_RDWR);
+ 	if (fd < 0) {
+@@ -900,6 +901,47 @@ static int btf_elf__write(const char *filename, struct btf *btf)
  		goto out;
  	}
  
-+	/* Update section name string table */
-+	size_t new_str_offset = new_btf_offset + new_btf_size;
-+	str_shdr->sh_offset = new_str_offset;
-+	if (!gelf_update_shdr(str_scn, str_shdr)) {
-+		fprintf(stderr, "gelf_update_shdr failed\n");
-+		goto out;
++	size_t phnum = 0;
++	if (!elf_getphdrnum(elf, &phnum)) {
++		pht = malloc((phnum + 1) * sizeof(GElf_Phdr));
++		if (!pht) {
++			fprintf(stderr, "%s: malloc (PHT) failed\n", __func__);
++			goto out;
++		}
++		for (size_t ix = 0; ix < phnum; ++ix) {
++			if (!gelf_getphdr(elf, ix, &pht[ix])) {
++				fprintf(stderr,
++					"%s: gelf_getphdr(%zu) failed: %s\n",
++					__func__, ix, elf_errmsg(elf_errno()));
++				goto out;
++			}
++			if (pht[ix].p_type == PT_PHDR) {
++				size_t fsize = gelf_fsize(elf, ELF_T_PHDR,
++							  phnum+1, EV_CURRENT);
++				pht[ix].p_memsz = pht[ix].p_filesz = fsize;
++			}
++		}
++		pht[phnum].p_type = PT_LOAD;
++		pht[phnum].p_offset = btf_shdr->sh_offset;
++		pht[phnum].p_memsz = pht[phnum].p_filesz = btf_shdr->sh_size;
++		pht[phnum].p_vaddr = pht[phnum].p_paddr = 0;
++		pht[phnum].p_flags = PF_R;
++		void *phdr = gelf_newphdr(elf, phnum+1);
++		if (!phdr) {
++			fprintf(stderr, "%s: gelf_newphdr failed: %s\n",
++				__func__, elf_errmsg(elf_errno()));
++			goto out;
++		}
++		for (size_t ix = 0; ix < phnum+1; ++ix) {
++			if (!gelf_update_phdr(elf, ix, &pht[ix])) {
++				fprintf(stderr,
++					"%s: gelf_update_phdr(%zu) failed: %s\n",
++					__func__, ix, elf_errmsg(elf_errno()));
++				goto out;
++			}
++		}
 +	}
 +
-+	/* Update SHT, allowing for ELF64 alignment */
-+	size_t sht_offset = roundup(new_str_offset + str_shdr->sh_size, 8);
-+	ehdr->e_shoff = sht_offset;
-+	if (!gelf_update_ehdr(elf, ehdr)) {
-+		fprintf(stderr, "gelf_update_ehdr failed\n");
-+		goto out;
-+	}
-+
-+	if (btf_elf__verbose) {
-+		fprintf(stderr, ".BTF [0x%lx, +0x%lx)\n",
-+			btf_shdr->sh_offset, btf_shdr->sh_size);
-+		fprintf(stderr, ".shstrtab [0x%lx, +0x%lx)\n",
-+			str_shdr->sh_offset, str_shdr->sh_size);
-+		fprintf(stderr, "SHT [0x%lx, +%d*0x%x)\n",
-+			ehdr->e_shoff, ehdr->e_shnum, ehdr->e_shentsize);
-+	}
-+
-+	elf_flagelf(elf, ELF_C_SET, ELF_F_LAYOUT);
- 	if (elf_update(elf, ELF_C_NULL) < 0) {
- 		fprintf(stderr, "%s: elf_update (layout) failed: %s\n",
+ 	if (elf_update(elf, ELF_C_WRITE) < 0) {
+ 		fprintf(stderr, "%s: elf_update (write) failed: %s\n",
  			__func__, elf_errmsg(elf_errno()));
+@@ -908,6 +950,8 @@ static int btf_elf__write(const char *filename, struct btf *btf)
+ 	err = 0;
+ 
+ out:
++	if (pht)
++		free(pht);
+ 	if (str_table)
+ 		free(str_table);
+ 	if (fd != -1)
 -- 
 2.30.0.365.g02bc693789-goog
 
