@@ -2,150 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80C87309FDA
-	for <lists+bpf@lfdr.de>; Mon,  1 Feb 2021 02:10:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 029BE309FF3
+	for <lists+bpf@lfdr.de>; Mon,  1 Feb 2021 02:23:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229535AbhBABK1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 31 Jan 2021 20:10:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54142 "EHLO mail.kernel.org"
+        id S231197AbhBABW3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 31 Jan 2021 20:22:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230439AbhBABKP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 31 Jan 2021 20:10:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B396064E13
-        for <bpf@vger.kernel.org>; Mon,  1 Feb 2021 01:09:34 +0000 (UTC)
+        id S231149AbhBABVj (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 31 Jan 2021 20:21:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C689764E2E
+        for <bpf@vger.kernel.org>; Mon,  1 Feb 2021 01:20:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612141775;
-        bh=v8hdjfkaJeu13zcoLKUsyWOunfGWz6z8ulip8vYEPS4=;
+        s=k20201202; t=1612142459;
+        bh=3B5tXgdUKMP/kU2hx0a2j+XEtprdSI4NTqN/tYMvOAQ=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=oBb6GX01yW5hb4o10cUrCX5ZeTpjs6e1QXKZ2Q/0tsKgESEsFaOi0iZ+DLgNZOI3Z
-         /P4Lh/Ak7Cebx7IsuCSLzJg9RE0jWp0is+5yo+Lq50jWk12ThVanSgmh4EzqAZrTEP
-         3H9z7p2HuqmE93LOay8AeTkh0h6JFhv5Gbmb5PLTV38HEcFuLDj49MIXebBbvvCE4O
-         b6DWFkqUGhZYYPh1pMXG5kdAIRgAtC/n/lF9bpd+PpzmZIP6bIFuP9zOoOWE0CSQa6
-         mHQxrBmgGTQqP4NFG2Vuwxi2aiaPnpyEOc+lCSRmrfHfv2N1/i0VFK2dOgj0PAwCdr
-         6s/P8pv/gn2Ug==
-Received: by mail-lf1-f42.google.com with SMTP id a12so20504024lfb.1
-        for <bpf@vger.kernel.org>; Sun, 31 Jan 2021 17:09:34 -0800 (PST)
-X-Gm-Message-State: AOAM530xcRSY2ivX1qZMcOA/2kb9j4CYGc+TYGXrBG9bX2v8GTgbgcW8
-        z0hSKM+ULhaq63gwhO0+LD2f67vgD9ojpuW667fXRw==
-X-Google-Smtp-Source: ABdhPJytYY1tooBipQaVl4SYjXaYLRba3c4CZvyp1WXmDi/CaC1v6AymipEsxbHpg+y6684OS33AXHSL73gfl7oJzLM=
-X-Received: by 2002:a19:c7c2:: with SMTP id x185mr7630246lff.162.1612141773030;
- Sun, 31 Jan 2021 17:09:33 -0800 (PST)
+        b=SGW8/jrqCBICdzyH3qwyuJ21Blyali2BK6NksL70kbxDs+h6+09P8sp4BIvZFO9yl
+         yf1utoJewpfcfNXLicNTmcYi72zLkULNiZzP6XOi3K3OXDZqkE+1On/PeyF/p0puap
+         JFypejveDUDyHz3nUGKbhnBULvWnsXF78WSQmLOECjJuknpZlNjkmZJ/kCjnPgw7wx
+         RCo+VwJ3sG9Eniwi+fuxMPci4U1q5qFi7HM8/huwbPiJ2/JJxa+hVCga10/RiQy5z7
+         eHGnEplUArA8IlvmaCHeE1CLQd3vIsLcpQXlmkorgwg6tiN4X/xCi3HpcV4qsseFp6
+         VoPq12coHLF6Q==
+Received: by mail-lj1-f182.google.com with SMTP id s18so17523009ljg.7
+        for <bpf@vger.kernel.org>; Sun, 31 Jan 2021 17:20:58 -0800 (PST)
+X-Gm-Message-State: AOAM531GCPmtX2/nKZ6qXGXbnnk9psZmpTuQer9i8nbevXQUGCx0Gplr
+        hm0ZWHADp1sdTGCznIz+s7uYwS5LLgZQLt0TvkdV0g==
+X-Google-Smtp-Source: ABdhPJwIJIncC/Oq18m6ce+ZJFI2xIuUS/wzWzDt0DPN0xHeH3UpC5ru89ZhaMxplhSnBvlslmVSQe0TX8XBITTI5ek=
+X-Received: by 2002:a2e:2c11:: with SMTP id s17mr8472300ljs.468.1612142456959;
+ Sun, 31 Jan 2021 17:20:56 -0800 (PST)
 MIME-Version: 1.0
-References: <20210112075525.256820-1-kpsingh@kernel.org> <20210112075525.256820-2-kpsingh@kernel.org>
- <CAEf4BzbeWCTSDorWwuC+B9SVw7xGj+5jfAMyw7LzBU_XShk5ZQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzbeWCTSDorWwuC+B9SVw7xGj+5jfAMyw7LzBU_XShk5ZQ@mail.gmail.com>
+References: <20210128001948.1637901-1-songliubraving@fb.com> <20210128001948.1637901-2-songliubraving@fb.com>
+In-Reply-To: <20210128001948.1637901-2-songliubraving@fb.com>
 From:   KP Singh <kpsingh@kernel.org>
-Date:   Mon, 1 Feb 2021 02:09:22 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ7-1phMCVR4Ctf6RkTwEs_RZDvs=jUQt72x2Ud_opmT-Q@mail.gmail.com>
-Message-ID: <CACYkzJ7-1phMCVR4Ctf6RkTwEs_RZDvs=jUQt72x2Ud_opmT-Q@mail.gmail.com>
-Subject: Re: [PATCH bpf v3 1/3] bpf: update local storage test to check
- handling of null ptrs
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Gilad Reti <gilad.reti@gmail.com>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+Date:   Mon, 1 Feb 2021 02:20:46 +0100
+X-Gmail-Original-Message-ID: <CACYkzJ4Ha1r4oqPge7yJjORdBUPg=huHSjER58ka24OEw_4S0A@mail.gmail.com>
+Message-ID: <CACYkzJ4Ha1r4oqPge7yJjORdBUPg=huHSjER58ka24OEw_4S0A@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 1/4] bpf: enable task local storage for
+ tracing programs
+To:     Song Liu <songliubraving@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>, mingo@redhat.com,
+        Peter Zijlstra <peterz@infradead.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>
+        Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 2:46 AM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Thu, Jan 28, 2021 at 1:20 AM Song Liu <songliubraving@fb.com> wrote:
 >
-> On Mon, Jan 11, 2021 at 11:55 PM KP Singh <kpsingh@kernel.org> wrote:
-> >
-> > It was found in [1] that bpf_inode_storage_get helper did not check
-> > the nullness of the passed owner ptr which caused an oops when
-> > dereferenced. This change incorporates the example suggested in [1] int=
-o
-> > the local storage selftest.
-> >
-> > The test is updated to create a temporary directory instead of just
-> > using a tempfile. In order to replicate the issue this copied rm binary
-> > is renamed tiggering the inode_rename with a null pointer for the
-> > new_inode. The logic to verify the setting and deletion of the inode
-> > local storage of the old inode is also moved to this LSM hook.
-> >
-> > The change also removes the copy_rm function and simply shells out
-> > to copy files and recursively delete directories and consolidates the
-> > logic of setting the initial inode storage to the bprm_committed_creds
-> > hook and removes the file_open hook.
-> >
-> > [1]: https://lore.kernel.org/bpf/CANaYP3HWkH91SN=3DwTNO9FL_2ztHfqcXKX38=
-SSE-JJ2voh+vssw@mail.gmail.com
-> >
-> > Suggested-by: Gilad Reti <gilad.reti@gmail.com>
-> > Acked-by: Yonghong Song <yhs@fb.com>
-> > Signed-off-by: KP Singh <kpsingh@kernel.org>
-> > ---
+> To access per-task data, BPF programs usually creates a hash table with
+> pid as the key. This is not ideal because:
+>  1. The user need to estimate the proper size of the hash table, which may
+>     be inaccurate;
+>  2. Big hash tables are slow;
+>  3. To clean up the data properly during task terminations, the user need
+>     to write extra logic.
 >
-> Hi KP,
+> Task local storage overcomes these issues and offers a better option for
+> these per-task data. Task local storage is only available to BPF_LSM. Now
+> enable it for tracing programs.
 >
-> I'm getting a compilation warning when building selftests. Can you
-> please take a look and send a fix? Thanks!
+> Unlike LSM progreams, tracing programs can be called in IRQ contexts.
+
+nit: typo *programs
+
+> Helpers that accesses task local storage are updated to use
+
+nit: Helpers that access..
+
+> raw_spin_lock_irqsave() instead of raw_spin_lock_bh().
 >
-> /data/users/andriin/linux/tools/testing/selftests/bpf/prog_tests/test_loc=
-al_storage.c:
-> In function =E2=80=98test_test_local_storage=E2=80=99:
-> /data/users/andriin/linux/tools/testing/selftests/bpf/prog_tests/test_loc=
-al_storage.c:143:52:
-> warning: =E2=80=98/copy_of_rm=E2=80=99 directive output may be truncated =
-writing 11
-> bytes into a region of size between 1 and 64 [-Wformat-truncation=3D]
->   143 |  snprintf(tmp_exec_path, sizeof(tmp_exec_path), "%s/copy_of_rm",
->       |                                                    ^~~~~~~~~~~
-> /data/users/andriin/linux/tools/testing/selftests/bpf/prog_tests/test_loc=
-al_storage.c:143:2:
-> note: =E2=80=98snprintf=E2=80=99 output between 12 and 75 bytes into a de=
-stination of
-> size 64
->   143 |  snprintf(tmp_exec_path, sizeof(tmp_exec_path), "%s/copy_of_rm",
->       |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   144 |    tmp_dir_path);
->       |    ~~~~~~~~~~~~~
+> Tracing programs can attach to functions on the task free path, e.g.
+> exit_creds(). To avoid allocating task local storage after
+> bpf_task_storage_free(). bpf_task_storage_get() is updated to not allocate
+> new storage when the task is not refcounted (task->usage == 0).
 >
+> Signed-off-by: Song Liu <songliubraving@fb.com>
 
-I don't seem to get this warning, so maybe we are using different compilers=
-.
+Acked-by: KP Singh <kpsingh@kernel.org>
 
-Mine is gcc 10.2.1 20201224 (from debian)
+Thanks for adding better commit descriptions :)
 
-That said, I understand why it's complaining, it's for something that
-cannot really happen:
-
-tmp_dir_path cannot be 64 because we actually know its length so the
-tmp_exec_path cannot really overflow 64 bytes.
-
-Can you check if the following patch makes it go away?
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
-b/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
-index 3bfcf00c0a67..d2c16eaae367 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_local_storage.c
-@@ -113,7 +113,7 @@ static bool check_syscall_operations(int map_fd, int ob=
-j_fd)
-
- void test_test_local_storage(void)
- {
--       char tmp_dir_path[64] =3D "/tmp/local_storageXXXXXX";
-+       char tmp_dir_path[] =3D "/tmp/local_storageXXXXXX";
-        int err, serv_sk =3D -1, task_fd =3D -1, rm_fd =3D -1;
-        struct local_storage *skel =3D NULL;
-        char tmp_exec_path[64];
-
-If so, I can send you a fix.
-
-- KP
-
->
-> >  .../bpf/prog_tests/test_local_storage.c       | 96 +++++--------------
-> >  .../selftests/bpf/progs/local_storage.c       | 62 ++++++------
-> >  2 files changed, 61 insertions(+), 97 deletions(-)
-> >
->
-> [...]
+I think checking the usage before adding storage should work for the
+task exit path (I could not think of cases where it would break).
+Would also be nice to check with Martin and Hao about this.
