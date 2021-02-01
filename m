@@ -2,119 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA07D30ADC7
-	for <lists+bpf@lfdr.de>; Mon,  1 Feb 2021 18:28:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4473530AE89
+	for <lists+bpf@lfdr.de>; Mon,  1 Feb 2021 18:56:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231760AbhBAR1H (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Feb 2021 12:27:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231611AbhBAR0s (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Feb 2021 12:26:48 -0500
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE8DC061794
-        for <bpf@vger.kernel.org>; Mon,  1 Feb 2021 09:26:08 -0800 (PST)
-Received: by mail-qv1-xf49.google.com with SMTP id q37so11175265qvf.14
-        for <bpf@vger.kernel.org>; Mon, 01 Feb 2021 09:26:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=SzX/76WK1bIQFSNZsX1p6vCVFi30KIn33vpgS3dU+T4=;
-        b=LgqnBPeuMxz96fcoXG5DtjiqfY9PVITepDTqOVFxBLdnxBITpfBBXmBUSK/htFJHnG
-         bKCJd0W/eJYdHdh2AnWlGmPwWjsJbYyzGLyi1vlxuFT/mY34ToAzjyKnFxVJMPOYQvgF
-         HXjv6vtnMEMvtMqrCoM2KU6O8aBI35VDgKW2axvFXZ8gYSnh8k87bDhG2roNzPvHMY4f
-         pm5f5kGmdHGO5bg5z+LwoQ+zJGATppRQvM9Qilfg9BmuOS1HKbX7O3AWiQ3e4TSZTx+H
-         8sypdPBmmqkhbZ3Aw5j5nfjW8e4EoxFJvnMr4gADe0XZ7/kR6cKEDSq3JlQgR9Rfm9vy
-         O95w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=SzX/76WK1bIQFSNZsX1p6vCVFi30KIn33vpgS3dU+T4=;
-        b=KGIBu6Fu/ZX9XsLho+cUucF5hR1sQGBPwug7tARRhCY8+RdUFAUVndolrwCHo8tma+
-         saxG58QljsnY9329zKiYLIBWYeyUuelj5ezEPEzWf+yV8FlwlyngYfb3sg3gc7I/r0qa
-         GEBo8wBNV1w4B7JW1HqHvIu+tKMkZ1F5VfXwYbParG4lyCFazTI/zhewj/kI4FCqbIhA
-         JSAkyxfPjRttUUBBCJZgb2IaWA7spbV9LcuCBcbLxUTSUtjUZ39mrYeWTAUB8fZrh9co
-         21R7jzf00WNkq6A2XHcw/QpYULApr2U4v3aiJnd2UGBPHoYvyt72lmsnP0hOc/P4Zo+I
-         pepg==
-X-Gm-Message-State: AOAM530EFs8xwc9mZDFzYBp4RSH43rbUDllHIaQ4FQsgK01oq+lhl8Aw
-        /lpT3yrWZFkhpyGbt5Lb1sfUDRQrghgqJQ==
-X-Google-Smtp-Source: ABdhPJz0qDqRzI0ZwKQCmtohyB/H8S7feCG8hVcGtdHRrP+L16/1OtQntX4HRlG2xd8+QNlrmI8qzLWasj94hg==
-Sender: "gprocida via sendgmr" <gprocida@tef.lon.corp.google.com>
-X-Received: from tef.lon.corp.google.com ([2a00:79e0:d:210:6893:b158:d9db:277c])
- (user=gprocida job=sendgmr) by 2002:a05:6214:ce:: with SMTP id
- f14mr12876974qvs.25.1612200367896; Mon, 01 Feb 2021 09:26:07 -0800 (PST)
-Date:   Mon,  1 Feb 2021 17:25:30 +0000
-In-Reply-To: <20210201172530.1141087-1-gprocida@google.com>
-Message-Id: <20210201172530.1141087-5-gprocida@google.com>
-Mime-Version: 1.0
-References: <87a83353155506cc02141e6e4108d89aa4e7d284> <20210201172530.1141087-1-gprocida@google.com>
-X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH dwarves v2 4/4] btf_encoder: Align .BTF section/segment to 8 bytes
-From:   Giuliano Procida <gprocida@google.com>
-To:     dwarves@vger.kernel.org
-Cc:     acme@kernel.org, andrii@kernel.org, ast@kernel.org,
-        gprocida@google.com, maennich@google.com, kernel-team@android.com,
-        kernel-team@fb.com, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S232592AbhBARzh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Feb 2021 12:55:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57209 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232462AbhBARz2 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 1 Feb 2021 12:55:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612202042;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TItgm0+VXZQkzT+vjmzxyshp9Ksb9PzGNBOZr7Z/D5g=;
+        b=VD91VMA73ePM0VNa/pTL1RXnqb8zLSQCoPHQJtqXs/SknU+EEKE1Ifm0UYMNH9Jtoc5+m4
+        +TuzBH+nHXsk3C3UmJrOhcka/7h1LI384Zml7fYwOcmDW9WyOR3TxFrHXq3YXcsLrLlCXX
+        moZYTzbm88ImYeC9bbG/7ALvvAYIysQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-519-TVApnOdZMD-FJdEy0ErIwg-1; Mon, 01 Feb 2021 12:53:57 -0500
+X-MC-Unique: TVApnOdZMD-FJdEy0ErIwg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CAEE259;
+        Mon,  1 Feb 2021 17:53:55 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-118-89.rdu2.redhat.com [10.10.118.89])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 000A419716;
+        Mon,  1 Feb 2021 17:53:53 +0000 (UTC)
+Subject: Re: corrupted pvqspinlock in htab_map_update_elem
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, andrii@kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>
+References: <CACT4Y+YJp0t0HA3+wDsAVxgTK4J+Pvht-J4-ENkOtS=C=Fhtzg@mail.gmail.com>
+ <YBfPAvBa8bbSU2nZ@hirez.programming.kicks-ass.net>
+ <YBfkuyIfB1+VRxXP@hirez.programming.kicks-ass.net>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <5936f4a4-f150-e56e-f07d-1efee06eba16@redhat.com>
+Date:   Mon, 1 Feb 2021 12:53:53 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+MIME-Version: 1.0
+In-Reply-To: <YBfkuyIfB1+VRxXP@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This is to avoid misaligned access to BTF type structs when
-memory-mapping ELF sections.
+On 2/1/21 6:23 AM, Peter Zijlstra wrote:
+> On Mon, Feb 01, 2021 at 10:50:58AM +0100, Peter Zijlstra wrote:
+>
+>>>   queued_spin_unlock arch/x86/include/asm/qspinlock.h:56 [inline]
+>>>   lockdep_unlock+0x10e/0x290 kernel/locking/lockdep.c:124
+>>>   debug_locks_off_graph_unlock kernel/locking/lockdep.c:165 [inline]
+>>>   print_usage_bug kernel/locking/lockdep.c:3710 [inline]
+>> Ha, I think you hit a bug in lockdep.
+> Something like so I suppose.
+>
+> ---
+> Subject: locking/lockdep: Avoid unmatched unlock
+> From: Peter Zijlstra <peterz@infradead.org>
+> Date: Mon Feb 1 11:55:38 CET 2021
+>
+> Commit f6f48e180404 ("lockdep: Teach lockdep about "USED" <- "IN-NMI"
+> inversions") overlooked that print_usage_bug() releases the graph_lock
+> and called it without the graph lock held.
+>
+> Fixes: f6f48e180404 ("lockdep: Teach lockdep about "USED" <- "IN-NMI" inversions")
+> Reported-by: Dmitry Vyukov <dvyukov@google.com>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>   kernel/locking/lockdep.c |    3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> --- a/kernel/locking/lockdep.c
+> +++ b/kernel/locking/lockdep.c
+> @@ -3773,7 +3773,7 @@ static void
+>   print_usage_bug(struct task_struct *curr, struct held_lock *this,
+>   		enum lock_usage_bit prev_bit, enum lock_usage_bit new_bit)
+>   {
+> -	if (!debug_locks_off_graph_unlock() || debug_locks_silent)
+> +	if (!debug_locks_off() || debug_locks_silent)
+>   		return;
+>   
+>   	pr_warn("\n");
+> @@ -3814,6 +3814,7 @@ valid_state(struct task_struct *curr, st
+>   	    enum lock_usage_bit new_bit, enum lock_usage_bit bad_bit)
+>   {
+>   	if (unlikely(hlock_class(this)->usage_mask & (1 << bad_bit))) {
+> +		graph_unlock()
+>   		print_usage_bug(curr, this, bad_bit, new_bit);
+>   		return 0;
+>   	}
 
-Signed-off-by: Giuliano Procida <gprocida@google.com>
----
- libbtf.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+I have also suspected doing unlock without a corresponding lock. This 
+patch looks good to me.
 
-diff --git a/libbtf.c b/libbtf.c
-index 048a873..ae99a93 100644
---- a/libbtf.c
-+++ b/libbtf.c
-@@ -755,7 +755,13 @@ static int btf_elf__write(const char *filename, struct btf *btf)
- 	 * This actually happens in practice with vmlinux which has .strtab
- 	 * after .shstrtab, resulting in a (small) hole the size of the original
- 	 * .shstrtab.
-+	 *
-+	 * We'll align .BTF to 8 bytes to cater for all architectures. It'd be
-+	 * nice if we could fetch this value from somewhere. The BTF
-+	 * specification does not discuss alignment and its trailing string
-+	 * table is not currently padded to any particular alignment.
- 	 */
-+	const size_t btf_alignment = 8;
- 
- 	/*
- 	 * First we look if there was already a .BTF section present and
-@@ -847,8 +853,8 @@ static int btf_elf__write(const char *filename, struct btf *btf)
- 	elf_flagdata(btf_data, ELF_C_SET, ELF_F_DIRTY);
- 
- 	/* Update .BTF section in the SHT */
--	size_t new_btf_offset = high_water_mark;
--	size_t new_btf_size = raw_btf_size;
-+	size_t new_btf_offset = roundup(high_water_mark, btf_alignment);
-+	size_t new_btf_size = roundup(raw_btf_size, btf_alignment);
- 	GElf_Shdr btf_shdr_mem;
- 	GElf_Shdr *btf_shdr = gelf_getshdr(btf_scn, &btf_shdr_mem);
- 	if (!btf_shdr) {
-@@ -856,6 +862,7 @@ static int btf_elf__write(const char *filename, struct btf *btf)
- 			__func__, elf_errmsg(elf_errno()));
- 		goto out;
- 	}
-+	btf_shdr->sh_addralign = btf_alignment;
- 	btf_shdr->sh_entsize = 0;
- 	btf_shdr->sh_flags = SHF_ALLOC;
- 	if (dot_btf_offset)
-@@ -926,6 +933,7 @@ static int btf_elf__write(const char *filename, struct btf *btf)
- 		pht[phnum].p_memsz = pht[phnum].p_filesz = btf_shdr->sh_size;
- 		pht[phnum].p_vaddr = pht[phnum].p_paddr = 0;
- 		pht[phnum].p_flags = PF_R;
-+		pht[phnum].p_align = btf_alignment;
- 		void *phdr = gelf_newphdr(elf, phnum+1);
- 		if (!phdr) {
- 			fprintf(stderr, "%s: gelf_newphdr failed: %s\n",
--- 
-2.30.0.365.g02bc693789-goog
+Acked-by: Waiman Long <longman@redhat.com>
+
+Cheers,
+Longman
 
