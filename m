@@ -2,105 +2,66 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCEC130A206
-	for <lists+bpf@lfdr.de>; Mon,  1 Feb 2021 07:36:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6BA630A44C
+	for <lists+bpf@lfdr.de>; Mon,  1 Feb 2021 10:25:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232204AbhBAGfr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Feb 2021 01:35:47 -0500
-Received: from mga05.intel.com ([192.55.52.43]:52696 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229522AbhBAGaW (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Feb 2021 01:30:22 -0500
-IronPort-SDR: dmWxVeswQGljKlRxxS2Db4V8ccI3IHW2Ivnvnb6J/FTucxP+Om/T4RxHKBlM/iVzpQaAWKpqR/
- BOvcGgvrtK1A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9881"; a="265472045"
-X-IronPort-AV: E=Sophos;i="5.79,391,1602572400"; 
-   d="scan'208";a="265472045"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2021 22:28:06 -0800
-IronPort-SDR: Ued2E0AfgI+8f+hQHUk0lZvnb3315tYe0TRO8Q2czcmUqtd4EHKbmEyl16WAxcLG0gL1upHl+Z
- WCP22mz+Ld1w==
-X-IronPort-AV: E=Sophos;i="5.79,391,1602572400"; 
-   d="scan'208";a="390742799"
-Received: from edesmara-mobl1.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.252.52.104])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2021 22:28:01 -0800
-Subject: Re: [RFC PATCH bpf-next] bpf, xdp: per-map bpf_redirect_map functions
- for XDP
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
-        kuba@kernel.org, jonathan.lemon@gmail.com, maximmi@nvidia.com,
-        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com
-References: <20210129153215.190888-1-bjorn.topel@gmail.com>
- <87im7fy9nc.fsf@toke.dk>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
-Message-ID: <e77f259a-2381-1a6e-6e2c-f5afceb35c51@intel.com>
-Date:   Mon, 1 Feb 2021 07:27:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S232679AbhBAJXh (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Feb 2021 04:23:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232543AbhBAJXh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Feb 2021 04:23:37 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE68CC061574;
+        Mon,  1 Feb 2021 01:22:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=m4R5BkzhKMHXACC3fJ4P7syCDqSSnz8E3Zk8HUxOaOY=; b=yyfRMlS8YY3jQfMNd/jpdcqegH
+        kDZU5/i3dGRzP3LOFsCgPdeDIbNJZ9VK9Y3T+n7UUKo4s46/v1Ucnv/1KnbsiEUR3BZYVwac0LtrU
+        5kADJWX4sKKjCCZgcVnUQBxUWAWRluBx6q6B4/McX72rYhRKuaD/mpT2DrNH57eu001K5Pk5TwCY2
+        65FNTTnuJgJmNbtFk8/WLv5YLM/2uDrO2VgVIWvQrkSxCYrqbrQC4jB33+Rb3HZlZb6D6o2wUrVK7
+        9LxoY6nP5RRV2uN+ZCSSK3F842tM5YxsLcreQFXUSO9jgJFEHWbJODbFZwkdi2NkO/fqW6IClYFAF
+        qEOsehFw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l6VPk-0006UK-Sw; Mon, 01 Feb 2021 09:22:33 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 129BF3011FE;
+        Mon,  1 Feb 2021 10:22:27 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9AE942C10ABC9; Mon,  1 Feb 2021 10:22:27 +0100 (CET)
+Date:   Mon, 1 Feb 2021 10:22:27 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, andrii@kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        David Miller <davem@davemloft.net>, kpsingh@kernel.org,
+        John Fastabend <john.fastabend@gmail.com>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: extended bpf_send_signal_thread with argument
+Message-ID: <YBfIUwtK+QqVlfRt@hirez.programming.kicks-ass.net>
+References: <CACT4Y+a7UBQpAY4vwT8Od0JhwbwcDrbJXZ_ULpPfJZ42Ew-yCQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <87im7fy9nc.fsf@toke.dk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+a7UBQpAY4vwT8Od0JhwbwcDrbJXZ_ULpPfJZ42Ew-yCQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2021-01-29 17:45, Toke Høiland-Jørgensen wrote:
-> Björn Töpel <bjorn.topel@gmail.com> writes:
+On Sun, Jan 31, 2021 at 12:14:02PM +0100, Dmitry Vyukov wrote:
+> Hi,
 > 
->> From: Björn Töpel <bjorn.topel@intel.com>
->>
->> Currently the bpf_redirect_map() implementation dispatches to the
->> correct map-lookup function via a switch-statement. To avoid the
->> dispatching, this change adds one bpf_redirect_map() implementation per
->> map. Correct function is automatically selected by the BPF verifier.
->>
->> Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
->> ---
->> Hi XDP-folks!
->>
->> This is another take on my bpf_redirect_xsk() patch [1]. I figured I
->> send it as an RFC for some early input. My plan is to include it as
->> part of the xdp_do_redirect() optimization of [1].
-> 
-> Assuming the maintainers are OK with the special-casing in the verifier,
-> this looks like a neat way to avoid the runtime overhead to me. The
-> macro hackery is not the prettiest; I wonder if the same effect could be
-> achieved by using inline functions? If not, at least a comment
-> explaining the reasoning (and that the verifier will substitute the
-> right function) might be nice? Mostly in relation to this bit:
->
+> I would like to send a signal from a bpf program invoked from a
+> perf_event. There is:
 
-Yeah, I agree with the macro part. I'll replace it with a
-__always_inline function, instead.
-
-
->>   static const struct bpf_func_proto bpf_xdp_redirect_map_proto = {
->> -	.func           = bpf_xdp_redirect_map,
->> +	.func           = bpf_xdp_redirect_devmap,
->
-
-I'll try to clean this up as well.
-
-Thanks for taking a look!
-Björn
-
-
-> Ah, if only we were writing the kernel in a language with proper macro
-> support... One can dream! :)
-> 
->>> For AF_XDP rxdrop this yields +600Mpps. I'll do CPU/DEVMAP
->>> measurements for the patch proper.
->>>
->>
->> Kpps, not Mpps. :-P
-> 
-> Aww, too bad ;)
-> Still, nice!
-> 
-> -Toke
-> 
+You can't. Sending signals requires sighand lock, and you're not allowed
+to take locks from perf_event context.
