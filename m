@@ -2,166 +2,274 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E94A309F20
-	for <lists+bpf@lfdr.de>; Sun, 31 Jan 2021 22:38:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C88D309FAE
+	for <lists+bpf@lfdr.de>; Mon,  1 Feb 2021 01:23:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229500AbhAaViT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 31 Jan 2021 16:38:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30718 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229474AbhAaViR (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 31 Jan 2021 16:38:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612129009;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WXmAiGiVrKI/wodo6y35m+vSmEPPou9yHdgMgo1Vtek=;
-        b=eM72jZhK3Q+n6j0eMqokKqtymj2xIEp9///PUam4/5uemLe1MVlH6DIh6t3OCMJd+vWDHL
-        ZPahp7Nru0mOyEmm3bq62Z5O1ASfSL7GnjstzkUbVqqrCio7lZ/5arJH2KhMcCXKbkK7dy
-        sJPkrkyXU85W8lolPZiR7KuHensyPxg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-304-YwDm_aU0NlCwjCYCI9XRzA-1; Sun, 31 Jan 2021 16:36:45 -0500
-X-MC-Unique: YwDm_aU0NlCwjCYCI9XRzA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6403110054FF;
-        Sun, 31 Jan 2021 21:36:44 +0000 (UTC)
-Received: from krava (unknown [10.40.192.85])
-        by smtp.corp.redhat.com (Postfix) with SMTP id C51D25D75A;
-        Sun, 31 Jan 2021 21:36:42 +0000 (UTC)
-Date:   Sun, 31 Jan 2021 22:36:41 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Paul Moore <paul@paul-moore.com>, Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Ondrej Mosnacek <omosnace@redhat.com>
-Subject: Re: selftest/bpf/test_verifier_log fails on v5.11-rc5
-Message-ID: <YBci6Y8bNZd6KRdw@krava>
-References: <CAHC9VhQgy959hkpU8fwZnrTqGphVSA+ONF99Yy4ZQFyjQ_030A@mail.gmail.com>
- <CAADnVQJaJ0i2L2k-dM+neeT61q+pwEd+F6ASGh4Xbi-ogj0hfQ@mail.gmail.com>
- <CAHC9VhSTJ=009hsXm=8jtQ_ZL-n=+tzKPbWj2Cnoa5w3iVNuew@mail.gmail.com>
- <CAADnVQKbku+Mv++h2TKYZfFN7NjPgaeLHJsw0oFNUhjUZ6ehSQ@mail.gmail.com>
- <YBXGChWt/E2UDgZc@krava>
+        id S229535AbhBAAXR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 31 Jan 2021 19:23:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48450 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229495AbhBAAXN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 31 Jan 2021 19:23:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9C0164E2A
+        for <bpf@vger.kernel.org>; Mon,  1 Feb 2021 00:22:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612138950;
+        bh=vHfMs31w3AI1A2Qi/m7NUJaM6ZQp/QvFVNE7T1arg4s=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=CbNXM2VOb52C/fiTT9YSllsuLi/I0gBCBcMHNQ9Ss32Ovk7AbYDNYxj6xtDQ40fu8
+         fZagwkAePi5fobiehbf0U8Enx3Vm9hmCVso3LpB1dTcOT+IG9IOKLIocB6a5HWHvXw
+         HZUQ+QvXnxoIqnPQEpHXOlLNz58ACLe55g8NdXYpuqIt32/R2QtP46Rl8SJr28olo+
+         RK35Po+RTj5Z/i69ihOlsDVWI40oXhMs1Q8PPjl+o8HfLWpfbE3QmRVhJ4JkGbj7k5
+         1PuFCVBJu+HJu2tE1r1rXxv2pr9LX6KgGhn6E2CSQlKcZb+wMTYCPNhgKfCwCaVQjN
+         d0rP+E4/AK5OQ==
+Received: by mail-lf1-f47.google.com with SMTP id q12so20382530lfo.12
+        for <bpf@vger.kernel.org>; Sun, 31 Jan 2021 16:22:29 -0800 (PST)
+X-Gm-Message-State: AOAM5307RPALsIrnI9DNd35P6LnjxMd2u3a/Ai4FT46dz8PsqSzcSbiH
+        z0BUdV2IARwQs3mcGCqZ8RdZ0MiMngTH7qZcNt1PfA==
+X-Google-Smtp-Source: ABdhPJwL+8x3n0gVnZPSrjntdYWtMkYbYym8PiamRcOHzsfhrv23vreyO4hSlJ29SMKI8SzwCdTSqiqaf8bhZsXa3pU=
+X-Received: by 2002:ac2:5f5b:: with SMTP id 27mr7172274lfz.375.1612138947926;
+ Sun, 31 Jan 2021 16:22:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YBXGChWt/E2UDgZc@krava>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20210123004445.299149-1-kpsingh@kernel.org> <20210123004445.299149-2-kpsingh@kernel.org>
+ <CAEf4BzbvEcE=9uXpz2SHKfw8oTxt7V8cSjUYQpJroP5MyxkA0w@mail.gmail.com>
+In-Reply-To: <CAEf4BzbvEcE=9uXpz2SHKfw8oTxt7V8cSjUYQpJroP5MyxkA0w@mail.gmail.com>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Mon, 1 Feb 2021 01:22:17 +0100
+X-Gmail-Original-Message-ID: <CACYkzJ7nqXyqBv9px1e4pANyNyYmqt18Dx=cL90otKK1oPYU-g@mail.gmail.com>
+Message-ID: <CACYkzJ7nqXyqBv9px1e4pANyNyYmqt18Dx=cL90otKK1oPYU-g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: Helper script for running BPF
+ presubmit tests
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jan 30, 2021 at 09:48:13PM +0100, Jiri Olsa wrote:
+On Tue, Jan 26, 2021 at 3:10 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Fri, Jan 22, 2021 at 4:44 PM KP Singh <kpsingh@kernel.org> wrote:
+> >
+> > The script runs the BPF selftests locally on the same kernel image
+> > as they would run post submit in the BPF continuous integration
+> > framework.
+> >
+> > The goal of the script is to allow contributors to run selftests locally
+> > in the same environment to check if their changes would end up breaking
+> > the BPF CI and reduce the back-and-forth between the maintainers and the
+> > developers.
+> >
+> > Signed-off-by: KP Singh <kpsingh@kernel.org>
+> > ---
+>
+> This is great, thanks a lot for working on this! This is great
+> especially for ad-hoc contributors who don't have qemu workflow setup.
+> Below are some comments for the extra polish :)
+>
+> 1. There is this long list output at the beginning:
+>
+> https://libbpf-vmtest.s3-us-west-1.amazonaws.com/x86_64/vmlinux-5.5.0.zst
+> https://libbpf-vmtest....
+>
+> Can we omit that?
 
-SNIP
+Sure.
 
-> > > > > % uname -r
-> > > > > 5.11.0-0.rc5.134.fc34.x86_64
-> > > > > % pwd
-> > > > > /.../linux/tools/testing/selftests/bpf
-> > > > > % git log --oneline | head -n 1
-> > > > > 6ee1d745b7c9 Linux 5.11-rc5
-> > > > > % make test_verifier_log
-> > > > >   ...
-> > > > >   BINARY   test_verifier_log
-> > > > > % ./test_verifier_log
-> > > > > Test log_level 0...
-> > > > > Test log_size < 128...
-> > > > > Test log_buff = NULL...
-> > > > > Test oversized buffer...
-> > > > > ERROR: Program load returned: ret:-1/errno:22, expected ret:-1/errno:13
-> > > >
-> > > > Thanks for reporting.
-> > > > bpf and bpf-next don't have this issue. Not sure what changed.
-> > >
-> > > I haven't had a chance to look into this any further, but Ondrej
-> > > Mosnacek (CC'd) found the following today:
-> > >
-> > > "So I was trying to debug this further and I think I've identified what
-> > > triggers the problem. It seems that the BTF debuginfo generation
-> > > became broken with CONFIG_DEBUG_INFO_DWARF4=n somewhere between -rc4
-> > > and -rc5. It also seems to depend on a recent (Fedora Rawhide) version
-> > > of some component of the build system (GCC, probably), because the
-> > > problem disappeared when I tried to build the "bad" kernel in F33
-> > > buildroot instead of Rawhide."
-> > 
-> > I see. There were fixes for dwarf and btf, but I lost the track.
-> > I believe it was a combination of gcc bug that was worked around in pahole.
-> > Arnaldo, Jiri, Andrii,
-> > what is the status? Did all fixes land in pahole?
-> 
-> I checked on rawhide and besides many pahole warnings,
-> the resulted BTF data have many duplications in core structs
-> 
-> 	  BTFIDS  vmlinux
-> 	WARN: multiple IDs found for 'task_struct': 132, 1247 - using 132
-> 	WARN: multiple IDs found for 'file': 440, 1349 - using 440
-> 	WARN: multiple IDs found for 'inode': 698, 1645 - using 698
-> 	WARN: multiple IDs found for 'path': 729, 1672 - using 729
-> 	WARN: multiple IDs found for 'task_struct': 132, 2984 - using 132
-> 	WARN: multiple IDs found for 'task_struct': 132, 3043 - using 132
-> 	WARN: multiple IDs found for 'file': 440, 3085 - using 440
-> 	WARN: multiple IDs found for 'seq_file': 1469, 3125 - using 1469
-> 	WARN: multiple IDs found for 'inode': 698, 3336 - using 698
-> 	WARN: multiple IDs found for 'path': 729, 3366 - using 729
-> 	WARN: multiple IDs found for 'task_struct': 132, 5337 - using 132
-> 	WARN: multiple IDs found for 'inode': 698, 5360 - using 698
-> 	WARN: multiple IDs found for 'path': 729, 5388 - using 729
-> 	WARN: multiple IDs found for 'file': 440, 5412 - using 440
-> 	WARN: multiple IDs found for 'seq_file': 1469, 5639 - using 1469
-> 	WARN: multiple IDs found for 'task_struct': 132, 6243 - using 132
-> 	...
-> 
-> 	# gcc --version
-> 	gcc (GCC) 11.0.0 20210123 (Red Hat 11.0.0-0)
-> 
-> I'm guessing there are some DWARF changes that screwed BTF
-> generation.. I'll check
-> 
-> it's not covered by the fix I posted recently, but I think
-> Arnaldo is now fixing some related stuff.. Arnaldo, maybe
-> you are seeing same errors?
+>
+> 2. Then something is re-downloaded every single time:
+>
+>   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+>                                  Dload  Upload   Total   Spent    Left  Speed
+> 100 77713  100 77713    0     0   509k      0 --:--:-- --:--:-- --:--:--  512k
+>
+> Unless it's to check if something newer appeared in S3, would be nice
+> to skip that step.
 
-with Arnaldo's fixes I see less struct duplications,
-but still there's some
+This is the kernel config. I wonder how we could check if there is something
+new without downloading it, the file is called "latest.config".
 
-> 
-> I uploaded the build log from linking part to:
->   http://people.redhat.com/~jolsa/build.out.gz
+Maybe this is something we can add to the URL index as well in format similar
+ to the image. But since it's just a config file I am not sure
+it's worth the extra effort.
 
-however looks like we don't handle DW_FORM_implicit_const
-when counting the byte offset.. it was used for some struct
-members in my vmlinux, so we got zero for byte offset and
-that created another unique struct
+>
+> 3. Every single time I run the script it actually rebuilds kernel.
+> Somehow Linux Makefile's logic to do nothing if nothing changed in
+> Linux source code doesn't kick in, I wonder why? It's quite annoying
+> and time-consuming for frequent selftest reruns. What's weird is that
+> individual .o's are not re-built, but kernel is still re-linked and
+> BTF is re-generated, which is the slow part :(
 
-with patch below I no longer see any struct duplication,
-also test_verifier_log is working for me, but I could
-not reproduce the error before
+I changed this from not compiling the kernel by default, to compiling it and you
+can "keep your old kernel" with -k. This is because users may run the script,
+not compile the kernel and run into issues with the image not being able to
+mount as the kernel does not have the right config.
 
-I'll post full dwarves patch after some more testing
+The -k is for people who know what they are doing :)
 
-also I wonder we could somehow use btf_check_all_metas
-from kernel after we build BTF data, that'd help to catch
-this earlier/easier ;-) I'll check on this
+so you can always run
 
-jirka
+ ./bpf_presubmit.sh -k
+
+after you have the kernel built once.
+
+>
+> 4. Selftests are re-built from scratch every single time, even if
+> nothing changed. Again, strange because they won't do it normally. And
+> given there is a fixed re-usable .bpf_selftests "cache directory", we
+> should be able to set everything up so that no extra compilation is
+> performed, no?
+>
+> 5. Before VM is started there is:
+>
+>
+> #!/bin/bash
+>
+> {
+>
+>         cd /root/bpf
+>         echo ./test_progs
+>         ./test_progs
+> } 2>&1 | tee /root/bpf_selftests.2021-01-25_17-56-11.log
+> poweroff -f
+>
+>
+> Which is probably useful in rare cases for debugging purposes, but is
+> just distracting in common case. Would it be able to have verbose flag
+> for your script that would omit output like this by default?
+
+Sure. I can omit it for now and submit a subsequent patch that adds verbosity.
+
+>
+> 6. Was too lazy to check, but once VM boots and before specified
+> command is run, there is a bunch of verbose script echoing:
+>
+> + for path in /etc/rcS.d/S*
+>
+> If that's part of libbpf CI's image, let's fix it there. If not, let's
+> fix it in your script?
+
+Nope, this is not from my script so probably something from one of the
+CI init scripts.
+
+>
+> 7. Is it just me, or when ./test_progs is run inside VM, it's output
+> is somehow heavily buffered and delayed? I get no output for a while,
+> and then a whole bunch of lines with already passed tests.  Curious if
+> anyone else noticed that as well. When I run the same image locally
+> and manually (not through your script), I don't have this issue.
+
+I saw this as well but sort of ignored it as it was random for me, but I did
+some digging and found that this could be related to buffering within
+test_progs, so I changed the buffering to per-line and now it does not
+get stuck and dump its output as you and Jiri noticed.
+
+--- a/tools/testing/selftests/bpf/run_in_vm.sh
++++ b/tools/testing/selftests/bpf/run_in_vm.sh
+@@ -165,7 +165,7 @@ EOF
+
+        cd /root/bpf
+        echo ${command}
+-       ${command}
++       stdbuf -oL -eL ${command}
+ } 2>&1 | tee /root/${log_file}
+
+>
+> 8. I noticed that even if the command succeeds (e.g., ./test_progs in
+> my case), the script exits with non-zero error code (32 in my case).
+> That's suboptimal, because you can't use that script to detect test
+> failures.
+
+I found this was because if the unmount command
+in the cleanup block fails
+(when the directory was not mounted or already unmounted)
+we would never get to the exit command.
+
+The snippet below fixes this.
+
+@@ -343,8 +343,10 @@ main()
+ catch()
+ {
+        local exit_code=$1
+-
+-       unmount_image
++       # This is just a cleanup and the directory may
++       # have already been unmounted. So, don't let this
++       # clobber the error code we intend to return.
++       unmount_image || true
+        exit ${exit_code}
+ }
+
+>
+> But again, it's the polish feedback, great work!
+
+Thanks! :)
 
 
----
-diff --git a/dwarf_loader.c b/dwarf_loader.c
-index ac22c1b..e2981a4 100644
---- a/dwarf_loader.c
-+++ b/dwarf_loader.c
-@@ -296,6 +296,7 @@ static Dwarf_Off __attr_offset(Dwarf_Attribute *attr)
- 	Dwarf_Block block;
- 
- 	switch (dwarf_whatform(attr)) {
-+	case DW_FORM_implicit_const:
- 	case DW_FORM_data1:
- 	case DW_FORM_data2:
- 	case DW_FORM_data4:
 
+>
+> >  tools/testing/selftests/bpf/run_in_vm.sh | 353 +++++++++++++++++++++++
+> >  1 file changed, 353 insertions(+)
+> >  create mode 100755 tools/testing/selftests/bpf/run_in_vm.sh
+> >
+> > diff --git a/tools/testing/selftests/bpf/run_in_vm.sh b/tools/testing/selftests/bpf/run_in_vm.sh
+> > new file mode 100755
+> > index 000000000000..09bb9705acb3
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/run_in_vm.sh
+> > @@ -0,0 +1,353 @@
+> > +#!/bin/bash
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +
+> > +set -u
+> > +set -e
+> > +
+> > +QEMU_BINARY="${QEMU_BINARY:="qemu-system-x86_64"}"
+> > +X86_BZIMAGE="arch/x86/boot/bzImage"
+>
+> Might be worth it to mention that this only works with x86_64 (due to
+> image restrictions at least, right?).
+>
+> > +DEFAULT_COMMAND="./test_progs"
+> > +MOUNT_DIR="mnt"
+> > +ROOTFS_IMAGE="root.img"
+> > +OUTPUT_DIR="$HOME/.bpf_selftests"
+> > +KCONFIG_URL="https://raw.githubusercontent.com/libbpf/libbpf/master/travis-ci/vmtest/configs/latest.config"
+> > +INDEX_URL="https://raw.githubusercontent.com/libbpf/libbpf/master/travis-ci/vmtest/configs/INDEX"
+> > +NUM_COMPILE_JOBS="$(nproc)"
+> > +
+> > +usage()
+> > +{
+> > +       cat <<EOF
+> > +Usage: $0 [-k] [-i] [-d <output_dir>] -- [<command>]
+> > +
+> > +<command> is the command you would normally run when you are in
+> > +tools/testing/selftests/bpf. e.g:
+> > +
+> > +       $0 -- ./test_progs -t test_lsm
+> > +
+> > +If no command is specified, "${DEFAULT_COMMAND}" will be run by
+> > +default.
+> > +
+> > +If you build your kernel using KBUILD_OUTPUT= or O= options, these
+> > +can be passed as environment variables to the script:
+> > +
+> > +  O=<path_relative_to_cwd> $0 -- ./test_progs -t test_lsm
+>
+> "relative_to_cwd" is a bit misleading, it could be an absolute path as
+> well, I presume. So I'd just say "O=<kernel_build_path>" or something
+> along those lines.
+>
+> > +
+> > +or
+> > +
+> > +  KBUILD_OUTPUT=<path_relative_to_cwd> $0 -- ./test_progs -t test_lsm
+> > +
+>
+> [...]
