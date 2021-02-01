@@ -2,167 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2811630AB2C
-	for <lists+bpf@lfdr.de>; Mon,  1 Feb 2021 16:25:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D72330AA49
+	for <lists+bpf@lfdr.de>; Mon,  1 Feb 2021 15:54:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231148AbhBAPZi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Feb 2021 10:25:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231381AbhBAOuP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Feb 2021 09:50:15 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75D22C061573
-        for <bpf@vger.kernel.org>; Mon,  1 Feb 2021 06:49:29 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id e15so13414624wme.0
-        for <bpf@vger.kernel.org>; Mon, 01 Feb 2021 06:49:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EGmzCB5chSwq9pe2qQDXhGstL/uSMglbti4AeZbvc9M=;
-        b=T0u0mZ+Z3spqI5csq8199vdWw2F0HEI5De5S85KRWxCdxr+4jQR5HF/ESPI+khBobI
-         0kID6zY387C7nAXsNhluEAdeknIbOqrsZ2D0JaogcRsYEATDQywghJ/9qSSQ5q5A55FI
-         yWsOBfzIjs33oPqk4PuKrYwi8nfXeV5MoJxBo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EGmzCB5chSwq9pe2qQDXhGstL/uSMglbti4AeZbvc9M=;
-        b=VJcwJFjGx4R/LxkeuGhJOEgIzh5G71qwSL/lbcglmFLaHaeIoxRHwKsC/NjjQcoKw4
-         /8ogKcUr7A4KHEPDhARiHrnkyZdOIl50C0Wqdej44ZAbrbZDBad1sdzAYNtZK2V3fS5R
-         I9E9Tb/fZmVGNlmgTLH8PcdUIULBrs9NJ9st+DiCoXUJvNyvIf7Ccv8o+pR86M59P4Bw
-         kOraPOJNuKVgIn0VheHt04+fD1RPMeh8tWsvEPdI085r6NOzsBCYe/xm+pLr/7sFv6qe
-         ynka97UkY0en62xuziBzht5nMYLBq41UpATMWuOX9ydsjeuMrQjezpbo30xODUbUSUFu
-         05/Q==
-X-Gm-Message-State: AOAM533Qc3mwxd77QsmxDh9YBKfBE1WjTYEQo9rOgTqYjvk/C+wxzfQA
-        eWoIaLaV6EaJdr4+nLZxwd/W4g==
-X-Google-Smtp-Source: ABdhPJzB4Q25SCm85fnRZK3Sfm9L/kEowDZQU6EzC3QxehecRfUoCDENb9bS5nw1au+0MSHzKsed+A==
-X-Received: by 2002:a7b:cd97:: with SMTP id y23mr15626961wmj.0.1612190968210;
-        Mon, 01 Feb 2021 06:49:28 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id z18sm26511725wro.91.2021.02.01.06.49.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 06:49:27 -0800 (PST)
-Date:   Mon, 1 Feb 2021 15:49:25 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Dave Airlie <airlied@gmail.com>
-Cc:     Kenny Ho <y2kenny@gmail.com>, Kenny Ho <Kenny.Ho@amd.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Brian Welty <brian.welty@intel.com>
-Subject: Re: [RFC] Add BPF_PROG_TYPE_CGROUP_IOCTL
-Message-ID: <YBgU9Vu0BGV8kCxD@phenom.ffwll.local>
-References: <20201007152355.2446741-1-Kenny.Ho@amd.com>
- <CAOWid-d=a1Q3R92s7GrzxWhXx7_dc8NQvQg7i7RYTVv3+jHxkQ@mail.gmail.com>
- <20201103053244.khibmr66p7lhv7ge@ast-mbp.dhcp.thefacebook.com>
- <CAOWid-eQSPru0nm8+Xo3r6C0pJGq+5r8mzM8BL2dgNn2c9mt2Q@mail.gmail.com>
- <CAADnVQKuoZDB-Xga5STHdGSxvSP=B6jQ40kLdpL1u+J98bv65A@mail.gmail.com>
- <CAOWid-czZphRz6Y-H3OcObKCH=bLLC3=bOZaSB-6YBE56+Qzrg@mail.gmail.com>
- <20201103210418.q7hddyl7rvdplike@ast-mbp.dhcp.thefacebook.com>
- <CAOWid-djQ_NRfCbOTnZQ-A8Pr7jMP7KuZEJDSsvzWkdw7qc=yA@mail.gmail.com>
- <20201103232805.6uq4zg3gdvw2iiki@ast-mbp.dhcp.thefacebook.com>
+        id S229646AbhBAOxL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Feb 2021 09:53:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53358 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229607AbhBAOwU (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 1 Feb 2021 09:52:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612191030;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AoKYJW6+yEyK1BBgOtaAwPcaGYoV02+DXvf9bVAZVPo=;
+        b=Bamg26D4t8VUbL1td3mUd5MbUs4AbbvrLcysaoVqPFBJJ0U7WKvUFsGMEuiVxmTIXeztWn
+        UhFTl57wA44jiNGmKcTkR4q6yU3Vgl+i7yWxEf+Oi656qUQByyNo7z56tfzgI0LBoVZboT
+        ROzXtVZdtWJdsDqiYubpLGRjWftObiE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-358-0wmkledzNFqnexgGamviXA-1; Mon, 01 Feb 2021 09:50:26 -0500
+X-MC-Unique: 0wmkledzNFqnexgGamviXA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 20552801ADA;
+        Mon,  1 Feb 2021 14:50:25 +0000 (UTC)
+Received: from krava (unknown [10.40.195.180])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 5F9B719CB6;
+        Mon,  1 Feb 2021 14:50:23 +0000 (UTC)
+Date:   Mon, 1 Feb 2021 15:50:22 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Paul Moore <paul@paul-moore.com>, Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Ondrej Mosnacek <omosnace@redhat.com>
+Subject: Re: selftest/bpf/test_verifier_log fails on v5.11-rc5
+Message-ID: <YBgVLqNxL++zVkdK@krava>
+References: <CAHC9VhQgy959hkpU8fwZnrTqGphVSA+ONF99Yy4ZQFyjQ_030A@mail.gmail.com>
+ <CAADnVQJaJ0i2L2k-dM+neeT61q+pwEd+F6ASGh4Xbi-ogj0hfQ@mail.gmail.com>
+ <CAHC9VhSTJ=009hsXm=8jtQ_ZL-n=+tzKPbWj2Cnoa5w3iVNuew@mail.gmail.com>
+ <CAADnVQKbku+Mv++h2TKYZfFN7NjPgaeLHJsw0oFNUhjUZ6ehSQ@mail.gmail.com>
+ <YBXGChWt/E2UDgZc@krava>
+ <YBci6Y8bNZd6KRdw@krava>
+ <20210201122532.GE794568@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201103232805.6uq4zg3gdvw2iiki@ast-mbp.dhcp.thefacebook.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+In-Reply-To: <20210201122532.GE794568@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Adding gpu folks.
-
-On Tue, Nov 03, 2020 at 03:28:05PM -0800, Alexei Starovoitov wrote:
-> On Tue, Nov 03, 2020 at 05:57:47PM -0500, Kenny Ho wrote:
-> > On Tue, Nov 3, 2020 at 4:04 PM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Tue, Nov 03, 2020 at 02:19:22PM -0500, Kenny Ho wrote:
-> > > > On Tue, Nov 3, 2020 at 12:43 AM Alexei Starovoitov
-> > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > > On Mon, Nov 2, 2020 at 9:39 PM Kenny Ho <y2kenny@gmail.com> wrote:
-> > >
-> > > Sounds like either bpf_lsm needs to be made aware of cgv2 (which would
-> > > be a great thing to have regardless) or cgroup-bpf needs a drm/gpu specific hook.
-> > > I think generic ioctl hook is too broad for this use case.
-> > > I suspect drm/gpu internal state would be easier to access inside
-> > > bpf program if the hook is next to gpu/drm. At ioctl level there is 'file'.
-> > > It's probably too abstract for the things you want to do.
-> > > Like how VRAM/shader/etc can be accessed through file?
-> > > Probably possible through a bunch of lookups and dereferences, but
-> > > if the hook is custom to GPU that info is likely readily available.
-> > > Then such cgroup-bpf check would be suitable in execution paths where
-> > > ioctl-based hook would be too slow.
-> > Just to clarify, when you say drm specific hook, did you mean just a
-> > unique attach_type or a unique prog_type+attach_type combination?  (I
-> > am still a bit fuzzy on when a new prog type is needed vs a new attach
-> > type.  I think prog type is associated with a unique type of context
-> > that the bpf prog will get but I could be missing some nuances.)
+On Mon, Feb 01, 2021 at 09:25:32AM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Sun, Jan 31, 2021 at 10:36:41PM +0100, Jiri Olsa escreveu:
+> > On Sat, Jan 30, 2021 at 09:48:13PM +0100, Jiri Olsa wrote:
 > > 
-> > When I was thinking of doing an ioctl wide hook, the file would be the
-> > device file and the thinking was to have a helper function provided by
-> > device drivers to further disambiguate.  For our (AMD's) driver, we
-> > have a bunch of ioctls for set/get/create/destroy
-> > (https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/amd/amdkfd/kfd_chardev.c#L1763)
-> > so the bpf prog can make the decision after the disambiguation.  For
-> > example, we have an ioctl called "kfd_ioctl_set_cu_mask."  You can
+> > SNIP
+> > 
+> > > > > > > % uname -r
+> > > > > > > 5.11.0-0.rc5.134.fc34.x86_64
+> > > > > > > % pwd
+> > > > > > > /.../linux/tools/testing/selftests/bpf
+> > > > > > > % git log --oneline | head -n 1
+> > > > > > > 6ee1d745b7c9 Linux 5.11-rc5
+> > > > > > > % make test_verifier_log
+> > > > > > >   ...
+> > > > > > >   BINARY   test_verifier_log
+> > > > > > > % ./test_verifier_log
+> > > > > > > Test log_level 0...
+> > > > > > > Test log_size < 128...
+> > > > > > > Test log_buff = NULL...
+> > > > > > > Test oversized buffer...
+> > > > > > > ERROR: Program load returned: ret:-1/errno:22, expected ret:-1/errno:13
+> > > > > >
+> > > > > > Thanks for reporting.
+> > > > > > bpf and bpf-next don't have this issue. Not sure what changed.
+> > > > >
+> > > > > I haven't had a chance to look into this any further, but Ondrej
+> > > > > Mosnacek (CC'd) found the following today:
+> > > > >
+> > > > > "So I was trying to debug this further and I think I've identified what
+> > > > > triggers the problem. It seems that the BTF debuginfo generation
+> > > > > became broken with CONFIG_DEBUG_INFO_DWARF4=n somewhere between -rc4
+> > > > > and -rc5. It also seems to depend on a recent (Fedora Rawhide) version
+> > > > > of some component of the build system (GCC, probably), because the
+> > > > > problem disappeared when I tried to build the "bad" kernel in F33
+> > > > > buildroot instead of Rawhide."
+> > > > 
+> > > > I see. There were fixes for dwarf and btf, but I lost the track.
+> > > > I believe it was a combination of gcc bug that was worked around in pahole.
+> > > > Arnaldo, Jiri, Andrii,
+> > > > what is the status? Did all fixes land in pahole?
+> > > 
+> > > I checked on rawhide and besides many pahole warnings,
+> > > the resulted BTF data have many duplications in core structs
+> > > 
+> > > 	  BTFIDS  vmlinux
+> > > 	WARN: multiple IDs found for 'task_struct': 132, 1247 - using 132
+> > > 	WARN: multiple IDs found for 'file': 440, 1349 - using 440
+> > > 	WARN: multiple IDs found for 'inode': 698, 1645 - using 698
+> > > 	WARN: multiple IDs found for 'path': 729, 1672 - using 729
+> > > 	WARN: multiple IDs found for 'task_struct': 132, 2984 - using 132
+> > > 	WARN: multiple IDs found for 'task_struct': 132, 3043 - using 132
+> > > 	WARN: multiple IDs found for 'file': 440, 3085 - using 440
+> > > 	WARN: multiple IDs found for 'seq_file': 1469, 3125 - using 1469
+> > > 	WARN: multiple IDs found for 'inode': 698, 3336 - using 698
+> > > 	WARN: multiple IDs found for 'path': 729, 3366 - using 729
+> > > 	WARN: multiple IDs found for 'task_struct': 132, 5337 - using 132
+> > > 	WARN: multiple IDs found for 'inode': 698, 5360 - using 698
+> > > 	WARN: multiple IDs found for 'path': 729, 5388 - using 729
+> > > 	WARN: multiple IDs found for 'file': 440, 5412 - using 440
+> > > 	WARN: multiple IDs found for 'seq_file': 1469, 5639 - using 1469
+> > > 	WARN: multiple IDs found for 'task_struct': 132, 6243 - using 132
+> > > 	...
+> > > 
+> > > 	# gcc --version
+> > > 	gcc (GCC) 11.0.0 20210123 (Red Hat 11.0.0-0)
+> > > 
+> > > I'm guessing there are some DWARF changes that screwed BTF
+> > > generation.. I'll check
+> > > 
+> > > it's not covered by the fix I posted recently, but I think
+> > > Arnaldo is now fixing some related stuff.. Arnaldo, maybe
+> > > you are seeing same errors?
+> > 
+> > with Arnaldo's fixes I see less struct duplications,
+> > but still there's some
+> > 
+> > > 
+> > > I uploaded the build log from linking part to:
+> > >   http://people.redhat.com/~jolsa/build.out.gz
+> > 
+> > however looks like we don't handle DW_FORM_implicit_const
+> > when counting the byte offset.. it was used for some struct
+> > members in my vmlinux, so we got zero for byte offset and
+> > that created another unique struct
+> > 
+> > with patch below I no longer see any struct duplication,
+> > also test_verifier_log is working for me, but I could
+> > not reproduce the error before
+> > 
+> > I'll post full dwarves patch after some more testing
+> > 
+> > also I wonder we could somehow use btf_check_all_metas
+> > from kernel after we build BTF data, that'd help to catch
+> > this earlier/easier ;-) I'll check on this
 > 
-> Thanks for the pointer.
-> That's one monster ioctl. So much copy_from_user.
-> BPF prog would need to be sleepable to able to examine the args in such depth.
-> After quick glance at the code I would put a new hook into
-> kfd_ioctl() right before
-> retcode = func(filep, process, kdata);
-> At this point kdata is already copied from user space 
-> and usize, that is cmd specific, is known.
-> So bpf prog wouldn't need to copy that data again.
-> That will save one copy.
-> To drill into details of kfd_ioctl_set_cu_mask() the prog would
-> need to be sleepable to do second copy_from_user of cu_mask.
-> At least it's not that big.
-> Yes, the attachment point will be amd driver specific,
-> but the program doesn't need to be.
-> It can be generic tracing prog that is agumented to use BTF.
-> Something like writeable tracepoint with BTF support would do.
-> So on the bpf side there will be minimal amount of changes.
-> And in the driver you'll add one or few writeable tracepoints
-> and the result of the tracepoint will gate
-> retcode = func(filep, process, kdata);
-> call in kfd_ioctl().
-> The writeable tracepoint would need to be cgroup-bpf based.
-> So that's the only tricky part. BPF infra doesn't have
-> cgroup+tracepoint scheme. It's probably going to be useful
-> in other cases like this. See trace_nbd_send_request.
+> Seems like a good idea indeed :-)
+> 
+> I'm applying the patch below with your Signed-off-by, etc, ok?
 
+ok, thanks
 
-Yeah I think this proposal doesn't work:
+jirka
 
-- inspecting ioctl arguments that need copying outside of the
-  driver/subsystem doing that copying is fundamentally racy
-
-- there's been a pile of cgroups proposal to manage gpus at the drm
-  subsystem level, some by Kenny, and frankly this at least looks a bit
-  like a quick hack to sidestep the consensus process for that.
-
-So once we push this into drivers it's not going to be a bpf hook anymore
-I think.
-
-Cheers, Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
