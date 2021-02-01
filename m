@@ -2,126 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACF0930A73A
-	for <lists+bpf@lfdr.de>; Mon,  1 Feb 2021 13:08:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D81230A8D0
+	for <lists+bpf@lfdr.de>; Mon,  1 Feb 2021 14:35:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231335AbhBAMGj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Feb 2021 07:06:39 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11997 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231322AbhBAMGd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Feb 2021 07:06:33 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DTmpB4Pl5zjHSs;
-        Mon,  1 Feb 2021 20:04:34 +0800 (CST)
-Received: from huawei.com (10.175.124.27) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Mon, 1 Feb 2021
- 20:05:44 +0800
-From:   wanghongzhe <wanghongzhe@huawei.com>
-To:     <keescook@chromium.org>, <luto@amacapital.net>, <wad@chromium.org>,
-        <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
-        <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-CC:     <wanghongzhe@huawei.com>
-Subject: [PATCH] seccomp: Improve performance by optimizing memory barrier
-Date:   Mon, 1 Feb 2021 20:50:30 +0800
-Message-ID: <1612183830-15506-1-git-send-email-wanghongzhe@huawei.com>
-X-Mailer: git-send-email 1.7.12.4
+        id S231745AbhBANez (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Feb 2021 08:34:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231575AbhBANev (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Feb 2021 08:34:51 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FAB9C06174A;
+        Mon,  1 Feb 2021 05:34:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=eu7VX8JvvszySJwHZVTokupuwHECVWP055L+vUMCliY=; b=kqNV/MnPMGMuePTDqne9Tb7qUx
+        22kFtr3q5TR4oQmDl0ZZCik4Fj0OTwXfR7Qspzv8IOCAruTq8HYub/ibswiukXiTXYCBeDS6Bfqf0
+        LfUvM3DtejdPryUgo+MSS1kt57QBIuXVFjyWM5D/zGTSzGRwfUgnbqsIpOAbTV0YRzqyow2tG1gQr
+        C+AUDpwFDFDkT4WXcAruB3h76YZmIjS1uu2pLracRfrR55pvzTo4gFOpJLbxTMljKXkjW5iB6RgOJ
+        naL8Mtm2Eg7pEMFnuqeZfbc3tCSJPcG6V4Npt3FNWXsSPYYYZyBUxauMeP9F+Uj4teK28TaYq8Nit
+        SvfuAAig==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l6ZKv-00017P-Mk; Mon, 01 Feb 2021 13:33:49 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 15B943011FE;
+        Mon,  1 Feb 2021 14:33:46 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BA97E2B802295; Mon,  1 Feb 2021 14:33:46 +0100 (CET)
+Date:   Mon, 1 Feb 2021 14:33:46 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, andrii@kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        David Miller <davem@davemloft.net>, kpsingh@kernel.org,
+        John Fastabend <john.fastabend@gmail.com>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: extended bpf_send_signal_thread with argument
+Message-ID: <YBgDOnhrYjByjdIb@hirez.programming.kicks-ass.net>
+References: <CACT4Y+a7UBQpAY4vwT8Od0JhwbwcDrbJXZ_ULpPfJZ42Ew-yCQ@mail.gmail.com>
+ <YBfIUwtK+QqVlfRt@hirez.programming.kicks-ass.net>
+ <CACT4Y+Yq69nvj2KZUQrYqtyu+Low+jCCcH++U_vuiHkhezQHGw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.124.27]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+Yq69nvj2KZUQrYqtyu+Low+jCCcH++U_vuiHkhezQHGw@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-If a thread(A)'s TSYNC flag is set from seccomp(), then it will
-synchronize its seccomp filter to other threads(B) in same thread
-group. To avoid race condition, seccomp puts rmb() between
-reading the mode and filter in seccomp check patch(in B thread).
-As a result, every syscall's seccomp check is slowed down by the
-memory barrier.
+On Mon, Feb 01, 2021 at 10:42:47AM +0100, Dmitry Vyukov wrote:
+> On Mon, Feb 1, 2021 at 10:22 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Sun, Jan 31, 2021 at 12:14:02PM +0100, Dmitry Vyukov wrote:
+> > > Hi,
+> > >
+> > > I would like to send a signal from a bpf program invoked from a
+> > > perf_event. There is:
+> >
+> > You can't. Sending signals requires sighand lock, and you're not allowed
+> > to take locks from perf_event context.
+> 
+> 
+> Then we just found a vulnerability because there is
+> bpf_send_signal_thread which can be attached to perf and it passes the
+> verifier :)
+> https://elixir.bootlin.com/linux/v5.11-rc5/source/kernel/trace/bpf_trace.c#L1145
+> 
+> It can defer sending the signal to the exit of irq context:
+> https://elixir.bootlin.com/linux/v5.11-rc5/source/kernel/trace/bpf_trace.c#L1108
+> Perhaps this is what makes it work?
 
-However, we can optimize it by calling rmb() only when filter is
-NULL and reading it again after the barrier, which means the rmb()
-is called only once in thread lifetime.
-
-The 'filter is NULL' conditon means that it is the first time
-attaching filter and is by other thread(A) using TSYNC flag.
-In this case, thread B may read the filter first and mode later
-in CPU out-of-order exection. After this time, the thread B's
-mode is always be set, and there will no race condition with the
-filter/bitmap.
-
-In addtion, we should puts a write memory barrier between writing
-the filter and mode in smp_mb__before_atomic(), to avoid
-the race condition in TSYNC case.
-
-Signed-off-by: wanghongzhe <wanghongzhe@huawei.com>
----
- kernel/seccomp.c | 31 ++++++++++++++++++++++---------
- 1 file changed, 22 insertions(+), 9 deletions(-)
-
-diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-index 952dc1c90229..b944cb2b6b94 100644
---- a/kernel/seccomp.c
-+++ b/kernel/seccomp.c
-@@ -397,8 +397,20 @@ static u32 seccomp_run_filters(const struct seccomp_data *sd,
- 			READ_ONCE(current->seccomp.filter);
- 
- 	/* Ensure unexpected behavior doesn't result in failing open. */
--	if (WARN_ON(f == NULL))
--		return SECCOMP_RET_KILL_PROCESS;
-+	if (WARN_ON(f == NULL)) {
-+		/*
-+		 * Make sure the first filter addtion (from another
-+		 * thread using TSYNC flag) are seen.
-+		 */
-+		rmb();
-+		
-+		/* Read again */
-+		f = READ_ONCE(current->seccomp.filter);
-+
-+		/* Ensure unexpected behavior doesn't result in failing open. */
-+		if (WARN_ON(f == NULL))
-+			return SECCOMP_RET_KILL_PROCESS;
-+	}
- 
- 	if (seccomp_cache_check_allow(f, sd))
- 		return SECCOMP_RET_ALLOW;
-@@ -614,9 +626,16 @@ static inline void seccomp_sync_threads(unsigned long flags)
- 		 * equivalent (see ptrace_may_access), it is safe to
- 		 * allow one thread to transition the other.
- 		 */
--		if (thread->seccomp.mode == SECCOMP_MODE_DISABLED)
-+		if (thread->seccomp.mode == SECCOMP_MODE_DISABLED) {
-+			/*
-+			 * Make sure mode cannot be set before the filter
-+			 * are set.
-+			 */
-+			smp_mb__before_atomic();
-+
- 			seccomp_assign_mode(thread, SECCOMP_MODE_FILTER,
- 					    flags);
-+		}
- 	}
- }
- 
-@@ -1160,12 +1179,6 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
- 	int data;
- 	struct seccomp_data sd_local;
- 
--	/*
--	 * Make sure that any changes to mode from another thread have
--	 * been seen after SYSCALL_WORK_SECCOMP was seen.
--	 */
--	rmb();
--
- 	if (!sd) {
- 		populate_seccomp_data(&sd_local);
- 		sd = &sd_local;
--- 
-2.19.1
-
+Yes.
