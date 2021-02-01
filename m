@@ -2,171 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BE5230A793
-	for <lists+bpf@lfdr.de>; Mon,  1 Feb 2021 13:27:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E236830A72D
+	for <lists+bpf@lfdr.de>; Mon,  1 Feb 2021 13:07:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229842AbhBAM0T (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Feb 2021 07:26:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60304 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229593AbhBAM0R (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Feb 2021 07:26:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5586C64E94;
-        Mon,  1 Feb 2021 12:25:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612182335;
-        bh=e2jG+zzIh5aQTBEtHSs+bfDaoZFcDXPOqEaGKDpMWcE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Tt8YiZFOD+GPqYfQdOQ+i7CpNDkBXZfsSeq2BTpNoWxzicKJXlQE/+w/N+NEu5koN
-         vV34eX3GR+cpOqCc4GTYQhUsb8oJAggIzxvA4AF3fwjxeNfqjePGSGwedoe9UFimlG
-         pTcr6r7f3/CeeqJ7DRfWaTKXxJUl+ma/IeqkUzbwwyD0Acn82xSjZj5wPY3E2v1DrK
-         pZLbviYXcXdDnga5BqlMLMD4PATL5R671uQitjkuHzNTJsbEMyNWjrzyU6A/yMurcw
-         FNgDWooD+Y6pvHYnsqPFw33himDX+N1kdRJKTcHq/a4fTY3XE0EO9oB9AarLXVmum+
-         sHMO5t3clgGgg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id BDB0040513; Mon,  1 Feb 2021 09:25:32 -0300 (-03)
-Date:   Mon, 1 Feb 2021 09:25:32 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Paul Moore <paul@paul-moore.com>, Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Ondrej Mosnacek <omosnace@redhat.com>
-Subject: Re: selftest/bpf/test_verifier_log fails on v5.11-rc5
-Message-ID: <20210201122532.GE794568@kernel.org>
-References: <CAHC9VhQgy959hkpU8fwZnrTqGphVSA+ONF99Yy4ZQFyjQ_030A@mail.gmail.com>
- <CAADnVQJaJ0i2L2k-dM+neeT61q+pwEd+F6ASGh4Xbi-ogj0hfQ@mail.gmail.com>
- <CAHC9VhSTJ=009hsXm=8jtQ_ZL-n=+tzKPbWj2Cnoa5w3iVNuew@mail.gmail.com>
- <CAADnVQKbku+Mv++h2TKYZfFN7NjPgaeLHJsw0oFNUhjUZ6ehSQ@mail.gmail.com>
- <YBXGChWt/E2UDgZc@krava>
- <YBci6Y8bNZd6KRdw@krava>
+        id S231295AbhBAMF4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Feb 2021 07:05:56 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11665 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231226AbhBAMFo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Feb 2021 07:05:44 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DTmmn3R03zlF16;
+        Mon,  1 Feb 2021 20:03:21 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Mon, 1 Feb 2021
+ 20:04:56 +0800
+From:   wanghongzhe <wanghongzhe@huawei.com>
+To:     <keescook@chromium.org>, <luto@amacapital.net>, <wad@chromium.org>,
+        <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+Subject: [PATCH] seccomp: Improve performance by optimizing memory barrier
+Date:   Mon, 1 Feb 2021 20:49:41 +0800
+Message-ID: <1612183781-15469-1-git-send-email-wanghongzhe@huawei.com>
+X-Mailer: git-send-email 1.7.12.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YBci6Y8bNZd6KRdw@krava>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain
+X-Originating-IP: [10.175.124.27]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Sun, Jan 31, 2021 at 10:36:41PM +0100, Jiri Olsa escreveu:
-> On Sat, Jan 30, 2021 at 09:48:13PM +0100, Jiri Olsa wrote:
-> 
-> SNIP
-> 
-> > > > > > % uname -r
-> > > > > > 5.11.0-0.rc5.134.fc34.x86_64
-> > > > > > % pwd
-> > > > > > /.../linux/tools/testing/selftests/bpf
-> > > > > > % git log --oneline | head -n 1
-> > > > > > 6ee1d745b7c9 Linux 5.11-rc5
-> > > > > > % make test_verifier_log
-> > > > > >   ...
-> > > > > >   BINARY   test_verifier_log
-> > > > > > % ./test_verifier_log
-> > > > > > Test log_level 0...
-> > > > > > Test log_size < 128...
-> > > > > > Test log_buff = NULL...
-> > > > > > Test oversized buffer...
-> > > > > > ERROR: Program load returned: ret:-1/errno:22, expected ret:-1/errno:13
-> > > > >
-> > > > > Thanks for reporting.
-> > > > > bpf and bpf-next don't have this issue. Not sure what changed.
-> > > >
-> > > > I haven't had a chance to look into this any further, but Ondrej
-> > > > Mosnacek (CC'd) found the following today:
-> > > >
-> > > > "So I was trying to debug this further and I think I've identified what
-> > > > triggers the problem. It seems that the BTF debuginfo generation
-> > > > became broken with CONFIG_DEBUG_INFO_DWARF4=n somewhere between -rc4
-> > > > and -rc5. It also seems to depend on a recent (Fedora Rawhide) version
-> > > > of some component of the build system (GCC, probably), because the
-> > > > problem disappeared when I tried to build the "bad" kernel in F33
-> > > > buildroot instead of Rawhide."
-> > > 
-> > > I see. There were fixes for dwarf and btf, but I lost the track.
-> > > I believe it was a combination of gcc bug that was worked around in pahole.
-> > > Arnaldo, Jiri, Andrii,
-> > > what is the status? Did all fixes land in pahole?
-> > 
-> > I checked on rawhide and besides many pahole warnings,
-> > the resulted BTF data have many duplications in core structs
-> > 
-> > 	  BTFIDS  vmlinux
-> > 	WARN: multiple IDs found for 'task_struct': 132, 1247 - using 132
-> > 	WARN: multiple IDs found for 'file': 440, 1349 - using 440
-> > 	WARN: multiple IDs found for 'inode': 698, 1645 - using 698
-> > 	WARN: multiple IDs found for 'path': 729, 1672 - using 729
-> > 	WARN: multiple IDs found for 'task_struct': 132, 2984 - using 132
-> > 	WARN: multiple IDs found for 'task_struct': 132, 3043 - using 132
-> > 	WARN: multiple IDs found for 'file': 440, 3085 - using 440
-> > 	WARN: multiple IDs found for 'seq_file': 1469, 3125 - using 1469
-> > 	WARN: multiple IDs found for 'inode': 698, 3336 - using 698
-> > 	WARN: multiple IDs found for 'path': 729, 3366 - using 729
-> > 	WARN: multiple IDs found for 'task_struct': 132, 5337 - using 132
-> > 	WARN: multiple IDs found for 'inode': 698, 5360 - using 698
-> > 	WARN: multiple IDs found for 'path': 729, 5388 - using 729
-> > 	WARN: multiple IDs found for 'file': 440, 5412 - using 440
-> > 	WARN: multiple IDs found for 'seq_file': 1469, 5639 - using 1469
-> > 	WARN: multiple IDs found for 'task_struct': 132, 6243 - using 132
-> > 	...
-> > 
-> > 	# gcc --version
-> > 	gcc (GCC) 11.0.0 20210123 (Red Hat 11.0.0-0)
-> > 
-> > I'm guessing there are some DWARF changes that screwed BTF
-> > generation.. I'll check
-> > 
-> > it's not covered by the fix I posted recently, but I think
-> > Arnaldo is now fixing some related stuff.. Arnaldo, maybe
-> > you are seeing same errors?
-> 
-> with Arnaldo's fixes I see less struct duplications,
-> but still there's some
-> 
-> > 
-> > I uploaded the build log from linking part to:
-> >   http://people.redhat.com/~jolsa/build.out.gz
-> 
-> however looks like we don't handle DW_FORM_implicit_const
-> when counting the byte offset.. it was used for some struct
-> members in my vmlinux, so we got zero for byte offset and
-> that created another unique struct
-> 
-> with patch below I no longer see any struct duplication,
-> also test_verifier_log is working for me, but I could
-> not reproduce the error before
-> 
-> I'll post full dwarves patch after some more testing
-> 
-> also I wonder we could somehow use btf_check_all_metas
-> from kernel after we build BTF data, that'd help to catch
-> this earlier/easier ;-) I'll check on this
+If a thread(A)'s TSYNC flag is set from seccomp(), then it will
+synchronize its seccomp filter to other threads(B) in same thread
+group. To avoid race condition, seccomp puts rmb() between
+reading the mode and filter in seccomp check patch(in B thread).
+As a result, every syscall's seccomp check is slowed down by the
+memory barrier.
 
-Seems like a good idea indeed :-)
+However, we can optimize it by calling rmb() only when filter is
+NULL and reading it again after the barrier, which means the rmb()
+is called only once in thread lifetime.
 
-I'm applying the patch below with your Signed-off-by, etc, ok?
+The 'filter is NULL' conditon means that it is the first time
+attaching filter and is by other thread(A) using TSYNC flag.
+In this case, thread B may read the filter first and mode later
+in CPU out-of-order exection. After this time, the thread B's
+mode is always be set, and there will no race condition with the
+filter/bitmap.
 
-- Arnaldo
+In addtion, we should puts a write memory barrier between writing
+the filter and mode in smp_mb__before_atomic(), to avoid
+the race condition in TSYNC case.
+
+Signed-off-by: wanghongzhe <wanghongzhe@huawei.com>
+---
+ kernel/seccomp.c | 31 ++++++++++++++++++++++---------
+ 1 file changed, 22 insertions(+), 9 deletions(-)
+
+diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+index 952dc1c90229..b944cb2b6b94 100644
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -397,8 +397,20 @@ static u32 seccomp_run_filters(const struct seccomp_data *sd,
+ 			READ_ONCE(current->seccomp.filter);
  
-> jirka
-> 
-> 
-> ---
-> diff --git a/dwarf_loader.c b/dwarf_loader.c
-> index ac22c1b..e2981a4 100644
-> --- a/dwarf_loader.c
-> +++ b/dwarf_loader.c
-> @@ -296,6 +296,7 @@ static Dwarf_Off __attr_offset(Dwarf_Attribute *attr)
->  	Dwarf_Block block;
->  
->  	switch (dwarf_whatform(attr)) {
-> +	case DW_FORM_implicit_const:
->  	case DW_FORM_data1:
->  	case DW_FORM_data2:
->  	case DW_FORM_data4:
-> 
-
+ 	/* Ensure unexpected behavior doesn't result in failing open. */
+-	if (WARN_ON(f == NULL))
+-		return SECCOMP_RET_KILL_PROCESS;
++	if (WARN_ON(f == NULL)) {
++		/*
++		 * Make sure the first filter addtion (from another
++		 * thread using TSYNC flag) are seen.
++		 */
++		rmb();
++		
++		/* Read again */
++		f = READ_ONCE(current->seccomp.filter);
++
++		/* Ensure unexpected behavior doesn't result in failing open. */
++		if (WARN_ON(f == NULL))
++			return SECCOMP_RET_KILL_PROCESS;
++	}
+ 
+ 	if (seccomp_cache_check_allow(f, sd))
+ 		return SECCOMP_RET_ALLOW;
+@@ -614,9 +626,16 @@ static inline void seccomp_sync_threads(unsigned long flags)
+ 		 * equivalent (see ptrace_may_access), it is safe to
+ 		 * allow one thread to transition the other.
+ 		 */
+-		if (thread->seccomp.mode == SECCOMP_MODE_DISABLED)
++		if (thread->seccomp.mode == SECCOMP_MODE_DISABLED) {
++			/*
++			 * Make sure mode cannot be set before the filter
++			 * are set.
++			 */
++			smp_mb__before_atomic();
++
+ 			seccomp_assign_mode(thread, SECCOMP_MODE_FILTER,
+ 					    flags);
++		}
+ 	}
+ }
+ 
+@@ -1160,12 +1179,6 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
+ 	int data;
+ 	struct seccomp_data sd_local;
+ 
+-	/*
+-	 * Make sure that any changes to mode from another thread have
+-	 * been seen after SYSCALL_WORK_SECCOMP was seen.
+-	 */
+-	rmb();
+-
+ 	if (!sd) {
+ 		populate_seccomp_data(&sd_local);
+ 		sd = &sd_local;
 -- 
+2.19.1
 
-- Arnaldo
