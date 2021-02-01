@@ -2,98 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D9F430B391
-	for <lists+bpf@lfdr.de>; Tue,  2 Feb 2021 00:30:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E57C30B3B1
+	for <lists+bpf@lfdr.de>; Tue,  2 Feb 2021 00:50:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbhBAX3d (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Feb 2021 18:29:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbhBAX3a (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Feb 2021 18:29:30 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD48C0613D6
-        for <bpf@vger.kernel.org>; Mon,  1 Feb 2021 15:28:50 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id l9so27086098ejx.3
-        for <bpf@vger.kernel.org>; Mon, 01 Feb 2021 15:28:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VDDDMGeZgeGfLKxau3myPioWv4n074pF5HEIiOPCr8k=;
-        b=1j7hdNeAkSiyAdmcvrt/9HHMNuyxg1M3xl28O0g55cofOmJ+q+yVaf8UFrFb26bldY
-         tj+UeQHttsgWBKK6G1FatDZvsRmThV3sYGDvyr5803f4SapTpAHd3tV1SZgAwSX2HZ8E
-         zUzfHrS2AZOPebslNLxECEnv4pRH9zUFmTNhIOvn62xA+PmzlsFoxRqY0umZHKMU8+R6
-         FYVtr8c5pdmDKTId5/DT2Ji5JW6yngV4HnUPNViSGySw1MXn2bhOdiN/U+WYD/xoV4it
-         A2nkCLsS9Ed9c1g/bpUjuK3E4RDx2BP+fh2rZdM9Jqx2Ei+vkHf09UzmW40gfuyMKgj5
-         ALqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VDDDMGeZgeGfLKxau3myPioWv4n074pF5HEIiOPCr8k=;
-        b=WCEPN2ID9UBu/QE1fmbtMAFLh9UVJVPH/QXjtgOzaACFJGD22wVoLLg8++/MOProUk
-         48QX0I75r/ShpGcfc2+DUeImjn6GAAK6y+kum08rcQBJIGrBBDBwoVkeodZQOi5EWhNj
-         lzlMt2+mbWEkwuG1umBIJ0jOY9oNQk7IDDr+CaxX3rR2t8YUlxW7KMZ+DW5qcOSs4Wmj
-         2ueP8+9NV16zrXWbcbOyjvae84HueF3bK5i6BLtlsywBB00oFyqrp13UlaPx3C0HNmuL
-         nUZTO0/WsuttCxXUt87P5zrxGGtn5ErvVBXJUc/WTyxP3eiEliVLmGHrxx/f4+Eh8VQh
-         ntpQ==
-X-Gm-Message-State: AOAM530H/UK80zzDycQlFmob5lpb0w45pMWmX9uXWkQftoDoBvkl9Gsq
-        Pqdx9bGxgIaoynCxHWjtjCBFFbN8hHncvDmM0Aav
-X-Google-Smtp-Source: ABdhPJxLFutPtdd5HQOynfaFTyLVOpKzvY9yvWT+YQNUX1BQMYX5y1P00/41qsvOL0dkbLmCIJnX+NO7+lHhn967eaU=
-X-Received: by 2002:a17:906:35d9:: with SMTP id p25mr7917656ejb.398.1612222128711;
- Mon, 01 Feb 2021 15:28:48 -0800 (PST)
+        id S230470AbhBAXuU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Feb 2021 18:50:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41364 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229683AbhBAXuK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Feb 2021 18:50:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EEA2B64ECE
+        for <bpf@vger.kernel.org>; Mon,  1 Feb 2021 23:49:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612223370;
+        bh=r9PzWXGDssn9ajMQyOaKD9CX7t0z43ItQhkrbbcrmP8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=QD8fOLv9v5sjqnJ9TFy9nPHibokzPSuX+B/rME4hiDcfLJf/NqEE31YKk1kbPNYum
+         T7Cr2HcT20m04S+mDqvuRJ+D5ynnqWNO4sHKU1BK+xGHfb4WRv23Qy56KSsRcPrXga
+         KvDx9pCwc1jOqr+na69g0iq7odNrG414R+oCLkYvB8miH2UZGG9YWtnlfX0QozNJ+H
+         ojVjUGMYt1j3RISrpMCpjeWw3RpklBsY7DClVCjUsy1yS3T2qUTysi5s5NwIkvTrb7
+         rnkovAgQbK4wn5K9H422a/JjUeshHA07xbnDUUGYhz1K1Ztzp76rk5yRbjGLsBjXKL
+         55/OpndbRCEfg==
+Received: by mail-lf1-f48.google.com with SMTP id m22so25321615lfg.5
+        for <bpf@vger.kernel.org>; Mon, 01 Feb 2021 15:49:29 -0800 (PST)
+X-Gm-Message-State: AOAM533sJBpr2tKZONfxddzp2CpeaTjZBejXki3D9zar0luKqdTlK9zs
+        vdDvQvcwnsL49TqwDbcICu1/g7YWt7j+pPcIXng=
+X-Google-Smtp-Source: ABdhPJyTdpMIYRY7k67uHd2xykTAIMSll0aORzm8NILrAtQlCFHs0QGoOSX3QFigsU+uwiZqHJOauvV8By+shLwQ2qE=
+X-Received: by 2002:a05:6512:b1b:: with SMTP id w27mr9705334lfu.10.1612223368255;
+ Mon, 01 Feb 2021 15:49:28 -0800 (PST)
 MIME-Version: 1.0
-References: <CAHC9VhQgy959hkpU8fwZnrTqGphVSA+ONF99Yy4ZQFyjQ_030A@mail.gmail.com>
- <CAADnVQJaJ0i2L2k-dM+neeT61q+pwEd+F6ASGh4Xbi-ogj0hfQ@mail.gmail.com>
- <CAHC9VhSTJ=009hsXm=8jtQ_ZL-n=+tzKPbWj2Cnoa5w3iVNuew@mail.gmail.com>
- <CAADnVQKbku+Mv++h2TKYZfFN7NjPgaeLHJsw0oFNUhjUZ6ehSQ@mail.gmail.com>
- <YBXGChWt/E2UDgZc@krava> <YBci6Y8bNZd6KRdw@krava> <20210201122532.GE794568@kernel.org>
- <YBgVLqNxL++zVkdK@krava> <YBhjOaoV2NqW3jFI@krava> <CAFqZXNsjzQ-2x4-szW5pBg77bzSK-RmwPvQSN+UaxJXqqZ_2qA@mail.gmail.com>
-In-Reply-To: <CAFqZXNsjzQ-2x4-szW5pBg77bzSK-RmwPvQSN+UaxJXqqZ_2qA@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 1 Feb 2021 18:28:37 -0500
-Message-ID: <CAHC9VhQbt+fQAhnSaf3+wVVK8gy26dTbcvvA8Q=vOUepVd0+tQ@mail.gmail.com>
-Subject: Re: selftest/bpf/test_verifier_log fails on v5.11-rc5
-To:     Ondrej Mosnacek <omosnace@redhat.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
+References: <20210130220150.59305-1-andreimatei1@gmail.com>
+In-Reply-To: <20210130220150.59305-1-andreimatei1@gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Mon, 1 Feb 2021 15:49:17 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW6VFdX8cSYoC1z7bVLRhM1pH1NiRFdj73S+4d=qV80tPg@mail.gmail.com>
+Message-ID: <CAPhsuW6VFdX8cSYoC1z7bVLRhM1pH1NiRFdj73S+4d=qV80tPg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] selftest/bpf: testing for multiple logs on REJECT
+To:     Andrei Matei <andreimatei1@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 5:43 PM Ondrej Mosnacek <omosnace@redhat.com> wrote:
-> On Mon, Feb 1, 2021 at 9:23 PM Jiri Olsa <jolsa@redhat.com> wrote:
-
-...
-
-> > Paul, Ondrej,
-> >
-> > I put all the recent fixes and made a scratch build:
-> >   https://koji.fedoraproject.org/koji/taskinfo?taskID=61049457
-> >
-> > if you have a chance to test and check your issue was resolved,
-> > that'd be great
+On Sat, Jan 30, 2021 at 2:10 PM Andrei Matei <andreimatei1@gmail.com> wrote:
 >
-> I just built the current master branch of dwarves (d783117162c0, which
-> includes Jirka's patch) [1] in COPR [2] and then rebuilt the kernel
-> with it [3]. With the new dwarves, the issue seems to be fixed -
-> /sys/kernel/btf/vmlinux is back to ~4MB and the selinux-testsuite BPF
-> subtest passes.
+> This patch adds support to verifier tests to check for a succession of
+> verifier log messages on program load failure. This makes the
+> errstr field work uniformly across REJECT and VERBOSE_ACCEPT checks.
 >
-> Thanks everyone for getting to the bottom of this! Hoping to see an
-> updated dwarves in rawhide soon ;)
+> This patch also increases the maximum size of a message in the series of
+> messages to test from 80 chars to 200 chars. This is in order to keep
+> existing tests working, which sometimes test for messages larger than 80
+> chars (which was accepted in the REJECT case, when testing for a single
+> message, but not in the VERBOSE_ACCEPT case, when testing for possibly
+> multiple messages).
+> And example of such a long, checked message is in bounds.c:
+> "R1 has unknown scalar with mixed signed bounds, pointer arithmetic with
+> it prohibited for !root"
+>
+> Signed-off-by: Andrei Matei <andreimatei1@gmail.com>
 
-Yes, thanks!
+Acked-by: Song Liu <songliubraving@fb.com>
 
-I've updated my test systems and I'm building a x86_64 and aarch64
-kernel now to test; based on Ondrej's reports I'm sure it will work
-just fine, but I'll report back if I run into any issues.
-
--- 
-paul moore
-www.paul-moore.com
+> ---
+>  tools/testing/selftests/bpf/test_verifier.c | 16 +++++++++++++---
+>  1 file changed, 13 insertions(+), 3 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
+> index 59bfa6201d1d..58b5a349d3ba 100644
+> --- a/tools/testing/selftests/bpf/test_verifier.c
+> +++ b/tools/testing/selftests/bpf/test_verifier.c
+> @@ -88,6 +88,10 @@ struct bpf_test {
+>         int fixup_map_event_output[MAX_FIXUPS];
+>         int fixup_map_reuseport_array[MAX_FIXUPS];
+>         int fixup_map_ringbuf[MAX_FIXUPS];
+> +       /* Expected verifier log output for result REJECT or VERBOSE_ACCEPT.
+> +        * Can be a tab-separated sequence of expected strings. An empty string
+> +        * means no log verification.
+> +        */
+>         const char *errstr;
+>         const char *errstr_unpriv;
+>         uint32_t insn_processed;
+> @@ -995,13 +999,19 @@ static int do_prog_test_run(int fd_prog, bool unpriv, uint32_t expected_val,
+>         return 0;
+>  }
+>
+> +/* Returns true if every part of exp (tab-separated) appears in log, in order.
+> + *
+> + * If exp is an empty string, returns true.
+> + */
+>  static bool cmp_str_seq(const char *log, const char *exp)
+>  {
+> -       char needle[80];
+> +       char needle[200];
+>         const char *p, *q;
+>         int len;
+>
+>         do {
+> +               if (!strlen(exp))
+> +                       break;
+>                 p = strchr(exp, '\t');
+>                 if (!p)
+>                         p = exp + strlen(exp);
+> @@ -1015,7 +1025,7 @@ static bool cmp_str_seq(const char *log, const char *exp)
+>                 needle[len] = 0;
+>                 q = strstr(log, needle);
+>                 if (!q) {
+> -                       printf("FAIL\nUnexpected verifier log in successful load!\n"
+> +                       printf("FAIL\nUnexpected verifier log!\n"
+>                                "EXP: %s\nRES:\n", needle);
+>                         return false;
+>                 }
+> @@ -1130,7 +1140,7 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
+>                         printf("FAIL\nUnexpected success to load!\n");
+>                         goto fail_log;
+>                 }
+> -               if (!expected_err || !strstr(bpf_vlog, expected_err)) {
+> +               if (!expected_err || !cmp_str_seq(bpf_vlog, expected_err)) {
+>                         printf("FAIL\nUnexpected error message!\n\tEXP: %s\n\tRES: %s\n",
+>                               expected_err, bpf_vlog);
+>                         goto fail_log;
+> --
+> 2.27.0
+>
