@@ -2,174 +2,250 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58D3A30C81F
-	for <lists+bpf@lfdr.de>; Tue,  2 Feb 2021 18:44:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B7C730CC70
+	for <lists+bpf@lfdr.de>; Tue,  2 Feb 2021 20:58:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234122AbhBBRlx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Feb 2021 12:41:53 -0500
-Received: from mga06.intel.com ([134.134.136.31]:52438 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233880AbhBBOM0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:12:26 -0500
-IronPort-SDR: 8LvM1ex68N9XoMMpq1w7JCgcE3fEEBvx/Xc/IjV8o9IuZFNrz+L1OhsSbawV6KosoXRjgrN5Rr
- 1G0nERVyLbXw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="242371388"
-X-IronPort-AV: E=Sophos;i="5.79,395,1602572400"; 
-   d="scan'208";a="242371388"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 06:06:53 -0800
-IronPort-SDR: 66qVfS3XKkcWrGwy2+nBdfGzhTnQzjSn9K7uZYKHuSHGUh0Hp2ZMYjFAQGvU5529vAH8lmlzIz
- Y7wQuuohin6A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,395,1602572400"; 
-   d="scan'208";a="479775064"
-Received: from silpixa00399839.ir.intel.com (HELO localhost.localdomain) ([10.237.222.142])
-  by fmsmga001.fm.intel.com with ESMTP; 02 Feb 2021 06:06:51 -0800
-From:   Ciara Loftus <ciara.loftus@intel.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        magnus.karlsson@intel.com, bjorn@kernel.org,
-        weqaar.a.janjua@intel.com
-Cc:     daniel@iogearbox.net, Ciara Loftus <ciara.loftus@intel.com>
-Subject: [PATCH bpf-next v3 6/6] selftests/bpf: XSK_TRACE_INVALID_DESC_TX test
-Date:   Tue,  2 Feb 2021 13:36:42 +0000
-Message-Id: <20210202133642.8562-7-ciara.loftus@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210202133642.8562-1-ciara.loftus@intel.com>
-References: <20210202133642.8562-1-ciara.loftus@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        id S233095AbhBBT43 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Feb 2021 14:56:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233068AbhBBNut (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Feb 2021 08:50:49 -0500
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90108C0613ED
+        for <bpf@vger.kernel.org>; Tue,  2 Feb 2021 05:50:08 -0800 (PST)
+Received: by mail-qk1-x749.google.com with SMTP id o16so4507628qkj.15
+        for <bpf@vger.kernel.org>; Tue, 02 Feb 2021 05:50:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=paDnnRUZgFLJW6O0aJLXVvHItkFJZQG5OI0wx8WFRDk=;
+        b=Qy/q/+H2CEHwHD8Qpqz5e8CzV1q/kaW1SYbvkDYJZA19qB5/8x/cv4GBqG6x13wMVI
+         oycMy0iqViP7WXLLwB7QSyQVboNpLfhZYnNzDD6bA9l1bDcU8RnhEoUwZ5ueCCgXK1Xt
+         MdASwdn1NYJiamDTiGX9c90F5+Jw5P9XmZlO/OQhcTMQOaW+BULPqTFEz8IeLCr78fOk
+         MRA8Ud4qHr08X8YBJJs3puMNEateyTJxjnfDfm5riak1dbiVnqjy1Ip8DuWtN/D7NXdE
+         WsnpZ+d2ksNlN4lBkccTcSk3m2WN9FHY8Vsf5k7kJMVGmPRbqD/hVXlFim4J4ta1xmbn
+         rYjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=paDnnRUZgFLJW6O0aJLXVvHItkFJZQG5OI0wx8WFRDk=;
+        b=pVxyIlNmGdl4uyZYPTbSq0HpRk7X7J6+0SPpcJQwlhxiv41SD1pBURv8v5dtfiEUAT
+         9zLoKGPnnMgLpdzbj06Ei4fcKk4yY6UzfujKk+iPw4bucI3UaO86Yd+oCXqtcK+EvsCy
+         i8GPMb/ycgQR6cKbGUR1kcl0EqtAEOpb8nU7ltnRVEIAAKWYJnLjpm4qp8HotenF6ykX
+         K/L+2248YTDtDJaYzB8XUHoWoubwk0uDbtssu7Yq8VX77IZG3NzNjXyUQ1ZanU8iqQyC
+         exggVVXVd8WRk/t3IDVJN5As6lHl+c1ZIh73/qTATBeOgPxT2A78PtH8XUDnN5tS0pyh
+         8hpA==
+X-Gm-Message-State: AOAM53258ZW4xtSTG9ohxQogvtA4iZrfYPYq8+3opBl5R+YZecWr8s3C
+        9/dQ02ahqqQv3C5MxxUvJT9uKU3SuTvyq5plRe4PGCdNU7yBFMjhPQlp0Gvn9V+aUlHb+I+f70a
+        zybG4RmK4f4RBuol2qniufQKbPj3b7rBkdjVwRiv8avBglJ5DWsdlp6f6fRY6o3s=
+X-Google-Smtp-Source: ABdhPJxdmOVEfHyty+oRjH4/+bJcKQP8dsrF1DlnRj1Cn/OtoNCWi/IlXZqZx13WCUeU8gn2PErBVfv8Xsvs4Q==
+Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
+X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:11db])
+ (user=jackmanb job=sendgmr) by 2002:a0c:c3c9:: with SMTP id
+ p9mr20112733qvi.49.1612273807536; Tue, 02 Feb 2021 05:50:07 -0800 (PST)
+Date:   Tue,  2 Feb 2021 13:50:02 +0000
+Message-Id: <20210202135002.4024825-1-jackmanb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
+Subject: [PATCH bpf-next v3] bpf: Propagate stack bounds to registers in
+ atomics w/ BPF_FETCH
+From:   Brendan Jackman <jackmanb@google.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        linux-kernel@vger.kernel.org, Brendan Jackman <jackmanb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This test sets the length of tx descriptors to an invalid
-value. When the kernel tries to transmit these descriptors,
-error traces are expected which look like so:
+When BPF_FETCH is set, atomic instructions load a value from memory
+into a register. The current verifier code first checks via
+check_mem_access whether we can access the memory, and then checks
+via check_reg_arg whether we can write into the register.
 
-xsk_packet_drop: netdev: ve9266 qid 0 reason: invalid tx desc: \
-  addr 258048 len 4097 options 0
+For loads, check_reg_arg has the side-effect of marking the
+register's value as unkonwn, and check_mem_access has the side effect
+of propagating bounds from memory to the register. This currently only
+takes effect for stack memory.
 
-The test validates that these traces were successfully generated.
+Therefore with the current order, bounds information is thrown away,
+but by simply reversing the order of check_reg_arg
+vs. check_mem_access, we can instead propagate bounds smartly.
 
-Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
+A simple test is added with an infinite loop that can only be proved
+unreachable if this propagation is present. This is implemented both
+with C and directly in test_verifier using assembly.
+
+Suggested-by: John Fastabend <john.fastabend@gmail.com>
+Signed-off-by: Brendan Jackman <jackmanb@google.com>
 ---
- tools/testing/selftests/bpf/test_xsk.sh  | 24 ++++++++++++++++++++++++
- tools/testing/selftests/bpf/xdpxceiver.c | 22 ++++++++++++++++++----
- 2 files changed, 42 insertions(+), 4 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/test_xsk.sh b/tools/testing/selftests/bpf/test_xsk.sh
-index bc026da25d54..4e654eb0a595 100755
---- a/tools/testing/selftests/bpf/test_xsk.sh
-+++ b/tools/testing/selftests/bpf/test_xsk.sh
-@@ -295,6 +295,30 @@ retval=$?
- test_status $retval "${TEST_NAME}"
- statusList+=($retval)
- 
-+### TEST 14
-+TEST_NAME="SKB TRACE INVALID_DESC_TX"
-+
-+vethXDPgeneric ${VETH0} ${VETH1} ${NS1}
-+
-+params=("-S" "-t" "2" "-C" "${TRACEPKTS}")
-+execxdpxceiver params
-+
-+retval=$?
-+test_status $retval "${TEST_NAME}"
-+statusList+=($retval)
-+
-+### TEST 15
-+TEST_NAME="DRV TRACE INVALID_DESC_TX"
-+
-+vethXDPnative ${VETH0} ${VETH1} ${NS1}
-+
-+params=("-N" "-t" "2" "-C" "${TRACEPKTS}")
-+execxdpxceiver params
-+
-+retval=$?
-+test_status $retval "${TEST_NAME}"
-+statusList+=($retval)
-+
- ## END TESTS
- 
- cleanup_exit ${VETH0} ${VETH1} ${NS1}
-diff --git a/tools/testing/selftests/bpf/xdpxceiver.c b/tools/testing/selftests/bpf/xdpxceiver.c
-index e63dc1c228ed..6cf824a33fdc 100644
---- a/tools/testing/selftests/bpf/xdpxceiver.c
-+++ b/tools/testing/selftests/bpf/xdpxceiver.c
-@@ -37,6 +37,8 @@
-  *       Increase the headroom size and send packets. Validate traces.
-  *    f. Tracing - XSK_TRACE_DROP_INVALID_FILLADDR
-  *       Populate the fill queue with invalid addresses. Validate traces.
-+ *    g. Tracing - XSK_TRACE_DROP_INVALID_TXD
-+ *       Populate the tx descriptors with invalid addresses. Validate traces.
-  *
-  * 2. AF_XDP DRV/Native mode
-  *    Works on any netdevice with XDP_REDIRECT support, driver dependent. Processes
-@@ -50,8 +52,9 @@
-  *      zero-copy mode
-  *    e. Tracing - XSK_TRACE_DROP_PKT_TOO_BIG
-  *    f. Tracing - XSK_TRACE_DROP_INVALID_FILLADDR
-+ *    g. Tracing - XSK_TRACE_DROP_INVALID_TXD
-  *
-- * Total tests: 12
-+ * Total tests: 14
-  *
-  * Flow:
-  * -----
-@@ -560,8 +563,11 @@ static inline void complete_tx_only(struct xsk_socket_info *xsk, int batch_size)
- 	if (!xsk->outstanding_tx)
- 		return;
- 
--	if (!NEED_WAKEUP || xsk_ring_prod__needs_wakeup(&xsk->tx))
-+	if (!NEED_WAKEUP || xsk_ring_prod__needs_wakeup(&xsk->tx)) {
- 		kick_tx(xsk);
-+		if (opt_trace_code == XSK_TRACE_DROP_INVALID_TXD)
-+			xsk->outstanding_tx = 0;
-+	}
- 
- 	rcvd = xsk_ring_cons__peek(&xsk->umem->cq, batch_size, &idx);
- 	if (rcvd) {
-@@ -632,6 +638,7 @@ static void tx_only(struct xsk_socket_info *xsk, u32 *frameptr, int batch_size)
- {
- 	u32 idx;
- 	unsigned int i;
-+	bool invalid_tx_test = opt_trace_code == XSK_TRACE_DROP_INVALID_TXD;
- 
- 	while (xsk_ring_prod__reserve(&xsk->tx, batch_size, &idx) < batch_size)
- 		complete_tx_only(xsk, batch_size);
-@@ -640,7 +647,8 @@ static void tx_only(struct xsk_socket_info *xsk, u32 *frameptr, int batch_size)
- 		struct xdp_desc *tx_desc = xsk_ring_prod__tx_desc(&xsk->tx, idx + i);
- 
- 		tx_desc->addr = (*frameptr + i) << XSK_UMEM__DEFAULT_FRAME_SHIFT;
--		tx_desc->len = PKT_SIZE;
-+		tx_desc->len = invalid_tx_test ? XSK_UMEM__DEFAULT_FRAME_SIZE + 1 : PKT_SIZE;
-+
+Difference from v2->v3 [1]:
+
+ * Fixed missing ENABLE_ATOMICS_TESTS check.
+
+Difference from v1->v2:
+
+ * Reworked commit message to clarify this only affects stack memory
+ * Added the Suggested-by
+ * Added a C-based test.
+
+[1]: https://lore.kernel.org/bpf/CA+i-1C2ZWUbGxWJ8kAxbri9rBboyuMaVj_BBhg+2Zf_Su9BOJA@mail.gmail.com/T/#t
+
+ kernel/bpf/verifier.c                         | 32 +++++++++++--------
+ .../selftests/bpf/prog_tests/atomic_bounds.c  | 15 +++++++++
+ .../selftests/bpf/progs/atomic_bounds.c       | 24 ++++++++++++++
+ .../selftests/bpf/verifier/atomic_bounds.c    | 27 ++++++++++++++++
+ 4 files changed, 84 insertions(+), 14 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/atomic_bounds.c
+ create mode 100644 tools/testing/selftests/bpf/progs/atomic_bounds.c
+ create mode 100644 tools/testing/selftests/bpf/verifier/atomic_bounds.c
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 972fc38eb62d..5e09632efddb 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -3665,9 +3665,26 @@ static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_i
+ 		return -EACCES;
  	}
- 
- 	xsk_ring_prod__submit(&xsk->tx, batch_size);
-@@ -1014,7 +1022,10 @@ static void *worker_testapp_validate(void *arg)
- 				rx_pkt(ifobject->xsk, fds);
- 				worker_pkt_validate();
- 			} else {
--				worker_trace_validate(tr_fp, ifobject->ifname);
-+				worker_trace_validate(tr_fp,
-+					opt_trace_code == XSK_TRACE_DROP_INVALID_TXD ?
-+					ifdict[!ifobject->ifdict_index]->ifname :
-+					ifobject->ifname);
- 			}
- 
- 			if (sigvar)
-@@ -1187,6 +1198,9 @@ int main(int argc, char **argv)
- 		case XSK_TRACE_DROP_INVALID_FILLADDR:
- 			reason_str = "invalid fill addr";
- 			break;
-+		case XSK_TRACE_DROP_INVALID_TXD:
-+			reason_str = "invalid tx desc";
-+			break;
- 		default:
- 			ksft_test_result_fail("ERROR: unsupported trace %i\n",
- 						opt_trace_code);
--- 
-2.17.1
+
++	if (insn->imm & BPF_FETCH) {
++		if (insn->imm == BPF_CMPXCHG)
++			load_reg = BPF_REG_0;
++		else
++			load_reg = insn->src_reg;
++
++		/* check and record load of old value */
++		err = check_reg_arg(env, load_reg, DST_OP);
++		if (err)
++			return err;
++	} else {
++		/* This instruction accesses a memory location but doesn't
++		 * actually load it into a register.
++		 */
++		load_reg = -1;
++	}
++
+ 	/* check whether we can read the memory */
+ 	err = check_mem_access(env, insn_idx, insn->dst_reg, insn->off,
+-			       BPF_SIZE(insn->code), BPF_READ, -1, true);
++			       BPF_SIZE(insn->code), BPF_READ, load_reg, true);
+ 	if (err)
+ 		return err;
+
+@@ -3677,19 +3694,6 @@ static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_i
+ 	if (err)
+ 		return err;
+
+-	if (!(insn->imm & BPF_FETCH))
+-		return 0;
+-
+-	if (insn->imm == BPF_CMPXCHG)
+-		load_reg = BPF_REG_0;
+-	else
+-		load_reg = insn->src_reg;
+-
+-	/* check and record load of old value */
+-	err = check_reg_arg(env, load_reg, DST_OP);
+-	if (err)
+-		return err;
+-
+ 	return 0;
+ }
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c b/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c
+new file mode 100644
+index 000000000000..addf127068e4
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <test_progs.h>
++
++#include "atomic_bounds.skel.h"
++
++void test_atomic_bounds(void)
++{
++	struct atomic_bounds *skel;
++	__u32 duration = 0;
++
++	skel = atomic_bounds__open_and_load();
++	if (CHECK(!skel, "skel_load", "couldn't load program\n"))
++		return;
++}
+diff --git a/tools/testing/selftests/bpf/progs/atomic_bounds.c b/tools/testing/selftests/bpf/progs/atomic_bounds.c
+new file mode 100644
+index 000000000000..e5fff7fc7f8f
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/atomic_bounds.c
+@@ -0,0 +1,24 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include <stdbool.h>
++
++#ifdef ENABLE_ATOMICS_TESTS
++bool skip_tests __attribute((__section__(".data"))) = false;
++#else
++bool skip_tests = true;
++#endif
++
++SEC("fentry/bpf_fentry_test1")
++int BPF_PROG(sub, int x)
++{
++#ifdef ENABLE_ATOMICS_TESTS
++	int a = 0;
++	int b = __sync_fetch_and_add(&a, 1);
++	/* b is certainly 0 here. Can the verifier tell? */
++	while (b)
++		continue;
++#endif
++	return 0;
++}
+diff --git a/tools/testing/selftests/bpf/verifier/atomic_bounds.c b/tools/testing/selftests/bpf/verifier/atomic_bounds.c
+new file mode 100644
+index 000000000000..e82183e4914f
+--- /dev/null
++++ b/tools/testing/selftests/bpf/verifier/atomic_bounds.c
+@@ -0,0 +1,27 @@
++{
++	"BPF_ATOMIC bounds propagation, mem->reg",
++	.insns = {
++		/* a = 0; */
++		/*
++		 * Note this is implemented with two separate instructions,
++		 * where you might think one would suffice:
++		 *
++		 * BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
++		 *
++		 * This is because BPF_ST_MEM doesn't seem to set the stack slot
++		 * type to 0 when storing an immediate.
++		 */
++		BPF_MOV64_IMM(BPF_REG_0, 0),
++		BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_0, -8),
++		/* b = atomic_fetch_add(&a, 1); */
++		BPF_MOV64_IMM(BPF_REG_1, 1),
++		BPF_ATOMIC_OP(BPF_DW, BPF_ADD | BPF_FETCH, BPF_REG_10, BPF_REG_1, -8),
++		/* Verifier should be able to tell that this infinite loop isn't reachable. */
++		/* if (b) while (true) continue; */
++		BPF_JMP_IMM(BPF_JNE, BPF_REG_1, 0, -1),
++		BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.result_unpriv = REJECT,
++	.errstr_unpriv = "back-edge",
++},
+
+base-commit: 61ca36c8c4eb3bae35a285b1ae18c514cde65439
+--
+2.30.0.365.g02bc693789-goog
 
