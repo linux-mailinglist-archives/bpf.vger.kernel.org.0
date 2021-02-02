@@ -2,150 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7980730C293
-	for <lists+bpf@lfdr.de>; Tue,  2 Feb 2021 15:56:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC33E30C3B2
+	for <lists+bpf@lfdr.de>; Tue,  2 Feb 2021 16:28:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234771AbhBBOy0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Feb 2021 09:54:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59782 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234099AbhBBOxg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:53:36 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0C30264D99;
-        Tue,  2 Feb 2021 14:52:50 +0000 (UTC)
-Date:   Tue, 2 Feb 2021 09:52:49 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Nikolay Borisov <nborisov@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: kprobes broken since 0d00449c7a28 ("x86: Replace ist_enter()
- with nmi_enter()")
-Message-ID: <20210202095249.5abd6780@gandalf.local.home>
-In-Reply-To: <YBktVT+z7sV/vEPU@hirez.programming.kicks-ass.net>
-References: <YBPNyRyrkzw2echi@hirez.programming.kicks-ass.net>
-        <20210129224011.81bcdb3eba1227c414e69e1f@kernel.org>
-        <20210129105952.74dc8464@gandalf.local.home>
-        <20210129162438.GC8912@worktop.programming.kicks-ass.net>
-        <CAADnVQLMqHpSsZ1OdZRFmKqNWKiRq3dxRxw+y=kvMdmkN7htUw@mail.gmail.com>
-        <20210129175943.GH8912@worktop.programming.kicks-ass.net>
-        <20210129140103.3ce971b7@gandalf.local.home>
-        <20210129162454.293523c6@gandalf.local.home>
-        <YBUYsFlxjsQxuvfB@hirez.programming.kicks-ass.net>
-        <20210130074410.6384c2e2@oasis.local.home>
-        <YBktVT+z7sV/vEPU@hirez.programming.kicks-ass.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S235227AbhBBP01 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Feb 2021 10:26:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235456AbhBBPZZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Feb 2021 10:25:25 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48CBAC061788
+        for <bpf@vger.kernel.org>; Tue,  2 Feb 2021 07:24:44 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id lg21so3241525ejb.3
+        for <bpf@vger.kernel.org>; Tue, 02 Feb 2021 07:24:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rIRz/qmNHPd2tbUMQo4AtdAVZoeVdYva2t3igHKGKl4=;
+        b=QVE5tE4LsL8ixPkCNOFxPaOzvtW5s8i0EZto0/S+SwvmJhGUjdl+pHx3TB+EzdzQFK
+         7SZwBMgQlBy3k+t/+PMIZJa0EOfXzUVUeg+8D+6hVFKnG70fSlU8XmI5l7j5cPoPuoHa
+         /cPWzR3KXGkd7rdhSNaevjvanFh2tL4/r/EGrKv2S3bG56fv8G5+EoDJV+qlDeVUtbTA
+         Cz03wW4XCJqmHOffBNQsSVmDXRYFuHgP7IIaDo100ilx4s3eG5KxPP8J4ZyFUVe0KHLG
+         ExwDF82E+HSc4vaO39alCNFnfe6tkEUX2vZFkIj6Dmhj685XmQhy97nPE0lwufV2DjCE
+         JAGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rIRz/qmNHPd2tbUMQo4AtdAVZoeVdYva2t3igHKGKl4=;
+        b=MX9PNdzDxcuujp2BTpqRFsMyADtQkL44S2Q08gOVD1zODV95GoMJ86DhL5ppy9zSjG
+         3E9bHzO+K9WkUAzBX//7UIO9THybl3aHf0z6oRCc+nzrVKgMwEqSUlhsdaZo7n2479H6
+         eyYMtaKEerb5rWmBB/1slYji35ZSeRZF5Y4mEK2TcKyD5Fefi1nUoTYsmT4Q2azunOxM
+         WPuROwYqijXtq4vEGrkWI/bqrziG30UN4GxUzHuMJStvlvhJyJYa4ERnKbvcsBtw96x1
+         jqNRcPPVd+YWcWtH0S3GpKAsgRxkj0H4HGSPo8bh1ii4LS59FglMv0QySXAeNFG17I+1
+         G+Lg==
+X-Gm-Message-State: AOAM530pEi5/GMS+MvAOpqGeyoQ+MZxCTvHcEJKokpoNe4aCegMYSu4u
+        7kbZ/xF5jDl7ENYCN+YxqjRgStKfkE71hxhinnIUWJ2HJSb5
+X-Google-Smtp-Source: ABdhPJxfceIpUpL9QOzPJiBALgYaPapZrEcVE0SyYa1sSnHb4evF65MHt1+2ZDcMxurEeQsaMP+EC8nkrHixjzn/xOg=
+X-Received: by 2002:a17:906:ff43:: with SMTP id zo3mr22845900ejb.542.1612279482885;
+ Tue, 02 Feb 2021 07:24:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <CAHC9VhQgy959hkpU8fwZnrTqGphVSA+ONF99Yy4ZQFyjQ_030A@mail.gmail.com>
+ <CAADnVQJaJ0i2L2k-dM+neeT61q+pwEd+F6ASGh4Xbi-ogj0hfQ@mail.gmail.com>
+ <CAHC9VhSTJ=009hsXm=8jtQ_ZL-n=+tzKPbWj2Cnoa5w3iVNuew@mail.gmail.com>
+ <CAADnVQKbku+Mv++h2TKYZfFN7NjPgaeLHJsw0oFNUhjUZ6ehSQ@mail.gmail.com>
+ <YBXGChWt/E2UDgZc@krava> <YBci6Y8bNZd6KRdw@krava> <20210201122532.GE794568@kernel.org>
+ <YBgVLqNxL++zVkdK@krava> <YBhjOaoV2NqW3jFI@krava> <CAFqZXNsjzQ-2x4-szW5pBg77bzSK-RmwPvQSN+UaxJXqqZ_2qA@mail.gmail.com>
+ <20210202124306.GA849267@kernel.org>
+In-Reply-To: <20210202124306.GA849267@kernel.org>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Tue, 2 Feb 2021 10:24:31 -0500
+Message-ID: <CAHC9VhT2_3D1MDFEOiStHS_X6=Opop=xmj5Zpv9bEKTQDM6gDA@mail.gmail.com>
+Subject: Re: selftest/bpf/test_verifier_log fails on v5.11-rc5
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Ondrej Mosnacek <omosnace@redhat.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 2 Feb 2021 11:45:41 +0100
-Peter Zijlstra <peterz@infradead.org> wrote:
+On Tue, Feb 2, 2021 at 7:43 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> I've updated a f33 system to rawhide to test all this, fixed up some
+> extra warnings wrt mallinfo(), strndup() error path handling/potential
+> buffer overflow issue and will add a conditional define for
+> DW_FORM_implicit_const found in the libbpf CI tests that Andrii pointed
+> out to me, then go and tag 1.20 and do the rawhide/fedora package update
+> dance.
 
-> > The stack tracer checks the size of the stack, compares it to the
-> > largest recorded size, and if it's bigger, it will save the stack. But
-> > if this happens on two CPUs at the same time, only one can do the
-> > recording at the same time. To synchronize this, a spin lock must be
-> > taken. Similar to spin locks in an NMI.  
-> 
-> That sounds like something cmpxchg() should be able to do.
-> 
-> Have a per-cpu stack trace buffer and a global max one, when cpu local
-> exceeds previous max, cmpxchg the buffer.
-> 
-> > But the problem here is, the callbacks can also be done from an NMI
-> > context, so if we are in NMI, we don't want to take any locks, and
-> > simply don't record the stack traces from NMIs.  
-> 
-> Which is obviously shit :-) The NMI might have interesting stack usage.
+Thanks for taking care of this.  FWIW, it looks like both my x86_64
+and aarch64 test runs with your Rawhide scratch build went through
+without a problem last night.
 
-Actually, it only checks task stacks. It doesn't check IRQ stacks if
-they are different than the task stack, because to do it properly, it
-must know the size of the stack. The tracer currently masks the stack
-pointer with THREAD_SIZE to find the top of the stack.
-
-As other stacks may not be THREAD_SIZE, that won't work. It has been on
-my TODO list (for a long time), to add an arch specific way to quickly find
-the top of the stack.
-
-> 
-> > The more I think about it, the more I hate the idea that ftrace
-> > callbacks and kprobes are considered NMIs. Simply because they are not!  
-> 
-> Yet they happen when IRQs are off, so they are ;-)
-
-But from a handler, you could do:
-
-	if (in_nmi())
-		return;
-	local_irq_save(flags);
-	/* Now you are safe from being re-entrant. */
-
-Where as there's no equivalent in a NMI handler. That's what makes
-kprobe/ftrace handlers different than NMI handlers.
-
-> 
-> Also, given how everything can nest, it had better all be lockless
-> anyway. You can get your regular function trace interrupted, which can
-> hit a #DB, which can function trace, which can #BP which can function
-> trace again which can get #NMI etc.. Many wonderfun nestings possible.
-
-I would call #DB an #BP handlers very special.
-
-Question: Do #DB and #BP set "in_interrupt()"? Because the function tracer
-has infrastructure to prevent recursion in the same context. That is, a
-ftrace handler calls something that gets traced, the recursion protection
-will detect that and prevent the handler from being called again. But the
-recursion protection is interrupt context aware and lets the handler get
-called again if the recursion happens from a different context:
-
-func:
-   call ftrace_caller
-      ftrace_caller:
-          call ftrace_handler
-              ftrace_handler() {
-
-                   if (recursion_test()) <- false
-                       return;
-
-                   some_traced_func() {
-                        call ftrace_caller
-                               call ftrace_handler
-                                    ftrace_handler() {
-                                        if (recursion_test()) <- true
-                                               return
-                                    }
-                    <interrupt>
-                         func
-                            call ftrace_caller
-                                 call ftrace_handler
-                                       ftrace_handler() {
-                                            if (recursion_test()) <- false
-                                                 return;
-                                       /* continue */
-
-
-If #DB and #BP do not change the in_interrupt() context, then the above
-still will protect the ftrace handlers from recursion due to them.
-
-> 
-> And god knows what these handlers end up calling.
-> 
-> The only sane approach is treating it all as NMI and having it all
-> lockless.
-
-That would require refactoring all the code that's been around since 2008.
-
-Worse yet. lockless is much more complex to get right. So this refactoring
-will likely cause more bugs than it solves.
-
--- Steve
+-- 
+paul moore
+www.paul-moore.com
