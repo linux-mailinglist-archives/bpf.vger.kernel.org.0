@@ -2,91 +2,84 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAC3830CE9F
-	for <lists+bpf@lfdr.de>; Tue,  2 Feb 2021 23:19:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B45930CF32
+	for <lists+bpf@lfdr.de>; Tue,  2 Feb 2021 23:42:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233027AbhBBWQt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Feb 2021 17:16:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34502 "EHLO mail.kernel.org"
+        id S235378AbhBBWks (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Feb 2021 17:40:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43216 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233382AbhBBWQq (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Feb 2021 17:16:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E34CA64F93;
-        Tue,  2 Feb 2021 22:16:03 +0000 (UTC)
+        id S235317AbhBBWkr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Feb 2021 17:40:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id F376164F77;
+        Tue,  2 Feb 2021 22:40:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612304165;
-        bh=p07brJnYF/aAoAxaFoUpXky3LTt0oZtOY0Z3uYvab9g=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E0P4lgvkLqkxyydeYv7HJvzMD81S7Xz9qhXB1AD/C+vPhxUkddXjQbApfDSGSCCB6
-         vo+H/AF7YoORPsk2+0L+wPqNsuykO+nZhq6HoY9+eA/zJghNElR58+g0jSCC/yoUuG
-         c+pwIOINN2SSCEn4WVZMvgolTpWpqq75SKYLIxEu4qnUHrVieV/aIxTqzqvzU/mLCm
-         MhshNpud1TC9a+BKUH68MR/mf16FAG7F25RXl9obMvfBX4ydaVf64s1UgvrPW1hGFQ
-         /PjUo5QB6N2gkZy0MEwlRNBb8xy7gvllyvYbb5EgveNsVGxODL/cmvy8oXhE2UG2ov
-         /zyrBk1PtaCmw==
-From:   KP Singh <kpsingh@kernel.org>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>
-Subject: [PATCH bpf-next v4 2/2] bpf/selftests: Add a short note about run_in_vm.sh in README.rst
-Date:   Tue,  2 Feb 2021 22:15:57 +0000
-Message-Id: <20210202221557.2039173-3-kpsingh@kernel.org>
-X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-In-Reply-To: <20210202221557.2039173-1-kpsingh@kernel.org>
-References: <20210202221557.2039173-1-kpsingh@kernel.org>
+        s=k20201202; t=1612305607;
+        bh=kIpNVZMOWYIogyH+CabwMWi2G3OEMriGjSqtRrXODYQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=DZ+HnyW7kjSmLQuVykV9fot0z4Z21QfpSs/VuOK/Yvh4D10DwaU/Ib+3o1hEPEmlA
+         xmKIzNcJDJBNbhg85X10laALUS1aslvc1UCCD8EuTYn2pSEF35mAFffGeZ2Irh/oz/
+         BIPgKZueCiuVYLdu+WSsdiA+qSbBFcoUrbc4IJ7gCwiZsxQVOFdwyx8XxJU/80BLXR
+         f80/YQFDIa7qh9mEbRnYpeu0riunBUnoApUIQ4Pvc+3ny5yWy9RF3j2mGpAAEHbQm4
+         l2X0rSZToUc2nIo/Sm4d6sqeq91Q+N2MO0B9MUZ5wj5eODWZrdxf1f2p4YMF9pYV/U
+         0vn9/KcPmbETQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DEFA5609D7;
+        Tue,  2 Feb 2021 22:40:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] samples/bpf: Add include dir for MIPS Loongson64 to
+ fix build errors
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161230560690.17917.396207762953039292.git-patchwork-notify@kernel.org>
+Date:   Tue, 02 Feb 2021 22:40:06 +0000
+References: <1611669925-25315-1-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <1611669925-25315-1-git-send-email-yangtiezhu@loongson.cn>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        natechancellor@gmail.com, ndesaulniers@google.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        clang-built-linux@googlegroups.com, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lixuefeng@loongson.cn
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a short note to make contributors aware of the existence of the
-script. The documentation does not intentionally document all the
-options of the script to avoid mentioning it in two places (it's
-available in the usage / help message of the script).
+Hello:
 
-Signed-off-by: KP Singh <kpsingh@kernel.org>
----
- tools/testing/selftests/bpf/README.rst | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+This patch was applied to bpf/bpf-next.git (refs/heads/master):
 
-diff --git a/tools/testing/selftests/bpf/README.rst b/tools/testing/selftests/bpf/README.rst
-index ca064180d4d0..80ddcce8df02 100644
---- a/tools/testing/selftests/bpf/README.rst
-+++ b/tools/testing/selftests/bpf/README.rst
-@@ -6,6 +6,30 @@ General instructions on running selftests can be found in
- 
- __ /Documentation/bpf/bpf_devel_QA.rst#q-how-to-run-bpf-selftests
- 
-+=========================
-+Running Selftests in a VM
-+=========================
-+
-+It's now possible to run the selftests using ``tools/testing/selftests/bpf/run_in_vm.sh``.
-+The script tries to ensure that the tests are run with the same environment as they
-+would be run post-submit in the CI used by the Maintainers.
-+
-+This script downloads a suitable Kconfig and VM userspace image from the system used by
-+the CI. It builds the kernel (without overwriting your existing Kconfig), recompiles the
-+bpf selftests, runs them (by default ``tools/testing/selftests/bpf/test_progs``) and
-+saves the resulting output (by default in ``~/.bpf_selftests``).
-+
-+For more information on about using the script, run:
-+
-+.. code-block:: console
-+
-+  $ tools/testing/selftests/bpf/run_in_vm.sh -h
-+
-+.. note:: The script uses pahole and clang based on host environment setting.
-+          If you want to change pahole and llvm, you can change `PATH` environment
-+          variable in the beginning of script.
-+
-+.. note:: The script currently only supports x86_64.
- 
- Additional information about selftest failures are
- documented here.
--- 
-2.30.0.365.g02bc693789-goog
+On Tue, 26 Jan 2021 22:05:25 +0800 you wrote:
+> There exists many build errors when make M=samples/bpf on the Loongson
+> platform, this issue is MIPS related, x86 compiles just fine.
+> 
+> Here are some errors:
+> 
+>   CLANG-bpf  samples/bpf/sockex2_kern.o
+> In file included from samples/bpf/sockex2_kern.c:2:
+> In file included from ./include/uapi/linux/in.h:24:
+> In file included from ./include/linux/socket.h:8:
+> In file included from ./include/linux/uio.h:8:
+> In file included from ./include/linux/kernel.h:11:
+> In file included from ./include/linux/bitops.h:32:
+> In file included from ./arch/mips/include/asm/bitops.h:19:
+> In file included from ./arch/mips/include/asm/barrier.h:11:
+> ./arch/mips/include/asm/addrspace.h:13:10: fatal error: 'spaces.h' file not found
+>          ^~~~~~~~~~
+> 1 error generated.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next] samples/bpf: Add include dir for MIPS Loongson64 to fix build errors
+    https://git.kernel.org/bpf/bpf-next/c/058107abafc7
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
