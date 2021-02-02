@@ -2,83 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC33E30C3B2
-	for <lists+bpf@lfdr.de>; Tue,  2 Feb 2021 16:28:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E22330C5CD
+	for <lists+bpf@lfdr.de>; Tue,  2 Feb 2021 17:33:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235227AbhBBP01 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Feb 2021 10:26:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235456AbhBBPZZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Feb 2021 10:25:25 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48CBAC061788
-        for <bpf@vger.kernel.org>; Tue,  2 Feb 2021 07:24:44 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id lg21so3241525ejb.3
-        for <bpf@vger.kernel.org>; Tue, 02 Feb 2021 07:24:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rIRz/qmNHPd2tbUMQo4AtdAVZoeVdYva2t3igHKGKl4=;
-        b=QVE5tE4LsL8ixPkCNOFxPaOzvtW5s8i0EZto0/S+SwvmJhGUjdl+pHx3TB+EzdzQFK
-         7SZwBMgQlBy3k+t/+PMIZJa0EOfXzUVUeg+8D+6hVFKnG70fSlU8XmI5l7j5cPoPuoHa
-         /cPWzR3KXGkd7rdhSNaevjvanFh2tL4/r/EGrKv2S3bG56fv8G5+EoDJV+qlDeVUtbTA
-         Cz03wW4XCJqmHOffBNQsSVmDXRYFuHgP7IIaDo100ilx4s3eG5KxPP8J4ZyFUVe0KHLG
-         ExwDF82E+HSc4vaO39alCNFnfe6tkEUX2vZFkIj6Dmhj685XmQhy97nPE0lwufV2DjCE
-         JAGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rIRz/qmNHPd2tbUMQo4AtdAVZoeVdYva2t3igHKGKl4=;
-        b=MX9PNdzDxcuujp2BTpqRFsMyADtQkL44S2Q08gOVD1zODV95GoMJ86DhL5ppy9zSjG
-         3E9bHzO+K9WkUAzBX//7UIO9THybl3aHf0z6oRCc+nzrVKgMwEqSUlhsdaZo7n2479H6
-         eyYMtaKEerb5rWmBB/1slYji35ZSeRZF5Y4mEK2TcKyD5Fefi1nUoTYsmT4Q2azunOxM
-         WPuROwYqijXtq4vEGrkWI/bqrziG30UN4GxUzHuMJStvlvhJyJYa4ERnKbvcsBtw96x1
-         jqNRcPPVd+YWcWtH0S3GpKAsgRxkj0H4HGSPo8bh1ii4LS59FglMv0QySXAeNFG17I+1
-         G+Lg==
-X-Gm-Message-State: AOAM530pEi5/GMS+MvAOpqGeyoQ+MZxCTvHcEJKokpoNe4aCegMYSu4u
-        7kbZ/xF5jDl7ENYCN+YxqjRgStKfkE71hxhinnIUWJ2HJSb5
-X-Google-Smtp-Source: ABdhPJxfceIpUpL9QOzPJiBALgYaPapZrEcVE0SyYa1sSnHb4evF65MHt1+2ZDcMxurEeQsaMP+EC8nkrHixjzn/xOg=
-X-Received: by 2002:a17:906:ff43:: with SMTP id zo3mr22845900ejb.542.1612279482885;
- Tue, 02 Feb 2021 07:24:42 -0800 (PST)
-MIME-Version: 1.0
-References: <CAHC9VhQgy959hkpU8fwZnrTqGphVSA+ONF99Yy4ZQFyjQ_030A@mail.gmail.com>
- <CAADnVQJaJ0i2L2k-dM+neeT61q+pwEd+F6ASGh4Xbi-ogj0hfQ@mail.gmail.com>
- <CAHC9VhSTJ=009hsXm=8jtQ_ZL-n=+tzKPbWj2Cnoa5w3iVNuew@mail.gmail.com>
- <CAADnVQKbku+Mv++h2TKYZfFN7NjPgaeLHJsw0oFNUhjUZ6ehSQ@mail.gmail.com>
- <YBXGChWt/E2UDgZc@krava> <YBci6Y8bNZd6KRdw@krava> <20210201122532.GE794568@kernel.org>
- <YBgVLqNxL++zVkdK@krava> <YBhjOaoV2NqW3jFI@krava> <CAFqZXNsjzQ-2x4-szW5pBg77bzSK-RmwPvQSN+UaxJXqqZ_2qA@mail.gmail.com>
- <20210202124306.GA849267@kernel.org>
-In-Reply-To: <20210202124306.GA849267@kernel.org>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 2 Feb 2021 10:24:31 -0500
-Message-ID: <CAHC9VhT2_3D1MDFEOiStHS_X6=Opop=xmj5Zpv9bEKTQDM6gDA@mail.gmail.com>
-Subject: Re: selftest/bpf/test_verifier_log fails on v5.11-rc5
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Ondrej Mosnacek <omosnace@redhat.com>,
-        Jiri Olsa <jolsa@redhat.com>,
+        id S233283AbhBBQbO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Feb 2021 11:31:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20443 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236455AbhBBQ3L (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 2 Feb 2021 11:29:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612283211;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=riikPOW9THCpHvOysxUGq4zrp4gtcum1aUPg9kFK8ME=;
+        b=StUKeGqC4U9QuQdhod2pKXDpmOAlFkEioXBormq3G89T4Pnj31pxQdsU+yOmJcIbwmq8Ay
+        3mkFI+VUywFJfKTQUgVCViW4ydegbeE4A+NQVSTTOAbKlG2agEtJzDVLXeLoUt+iPxm1fy
+        v4aQ/kfKThMuZ+y6yFcF9gq+QV5GXoM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-317-B-L4WQxFPx6mjjB_SON-mA-1; Tue, 02 Feb 2021 11:26:49 -0500
+X-MC-Unique: B-L4WQxFPx6mjjB_SON-mA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0CFA18049C1;
+        Tue,  2 Feb 2021 16:26:47 +0000 (UTC)
+Received: from firesoul.localdomain (unknown [10.40.208.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6F00F60862;
+        Tue,  2 Feb 2021 16:26:43 +0000 (UTC)
+Received: from [192.168.42.3] (localhost [IPv6:::1])
+        by firesoul.localdomain (Postfix) with ESMTP id AB29830736C73;
+        Tue,  2 Feb 2021 17:26:41 +0100 (CET)
+Subject: [PATCH bpf-next V15 0/7] bpf: New approach for BPF MTU handling
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     bpf@vger.kernel.org
+Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
+        Daniel Borkmann <borkmann@iogearbox.net>,
         Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
+        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
+        colrack@gmail.com
+Date:   Tue, 02 Feb 2021 17:26:41 +0100
+Message-ID: <161228314075.576669.15427172810948915572.stgit@firesoul>
+User-Agent: StGit/0.19
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 2, 2021 at 7:43 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> I've updated a f33 system to rawhide to test all this, fixed up some
-> extra warnings wrt mallinfo(), strndup() error path handling/potential
-> buffer overflow issue and will add a conditional define for
-> DW_FORM_implicit_const found in the libbpf CI tests that Andrii pointed
-> out to me, then go and tag 1.20 and do the rawhide/fedora package update
-> dance.
+This patchset drops all the MTU checks in TC BPF-helpers that limits
+growing the packet size. This is done because these BPF-helpers doesn't
+take redirect into account, which can result in their MTU check being done
+against the wrong netdev.
 
-Thanks for taking care of this.  FWIW, it looks like both my x86_64
-and aarch64 test runs with your Rawhide scratch build went through
-without a problem last night.
+The new approach is to give BPF-programs knowledge about the MTU on a
+netdev (via ifindex) and fib route lookup level. Meaning some BPF-helpers
+are added and extended to make it possible to do MTU checks in the
+BPF-code.
 
--- 
-paul moore
-www.paul-moore.com
+If BPF-prog doesn't comply with the MTU then the packet will eventually
+get dropped as some other layer. In some cases the existing kernel MTU
+checks will drop the packet, but there are also cases where BPF can bypass
+these checks. Specifically doing TC-redirect from ingress step
+(sch_handle_ingress) into egress code path (basically calling
+dev_queue_xmit()). It is left up to driver code to handle these kind of
+MTU violations.
+
+One advantage of this approach is that it ingress-to-egress BPF-prog can
+send information via packet data. With the MTU checks removed in the
+helpers, and also not done in skb_do_redirect() call, this allows for an
+ingress BPF-prog to communicate with an egress BPF-prog via packet data,
+as long as egress BPF-prog remove this prior to transmitting packet.
+
+This patchset is primarily focused on TC-BPF, but I've made sure that the
+MTU BPF-helpers also works for XDP BPF-programs.
+
+V2: Change BPF-helper API from lookup to check.
+V3: Drop enforcement of MTU in net-core, leave it to drivers.
+V4: Keep sanity limit + netdev "up" checks + rename BPF-helper.
+V5: Fix uninit variable + name struct output member mtu_result.
+V6: Use bpf_check_mtu() in selftest
+V7: Fix logic using tot_len and add another selftest
+V8: Add better selftests for BPF-helper bpf_check_mtu
+V9: Remove patch that use skb_set_redirected
+V10: Fix selftests and 'tot_len' MTU check like XDP
+V11: Fix nitpicks in selftests
+V12: Adjustments requested by Daniel
+V13: More adjustments requested by Daniel
+V14: Improve man page for BPF-helper bpf_check_mtu
+V15: Missing static for a function declaration
+
+---
+
+Jesper Dangaard Brouer (7):
+      bpf: Remove MTU check in __bpf_skb_max_len
+      bpf: fix bpf_fib_lookup helper MTU check for SKB ctx
+      bpf: bpf_fib_lookup return MTU value as output when looked up
+      bpf: add BPF-helper for MTU checking
+      bpf: drop MTU check when doing TC-BPF redirect to ingress
+      selftests/bpf: use bpf_check_mtu in selftest test_cls_redirect
+      selftests/bpf: tests using bpf_check_mtu BPF-helper
+
+
+ include/linux/netdevice.h                          |   32 +++
+ include/uapi/linux/bpf.h                           |   86 ++++++++
+ net/core/dev.c                                     |   32 +--
+ net/core/filter.c                                  |  204 +++++++++++++++----
+ tools/include/uapi/linux/bpf.h                     |   86 ++++++++
+ tools/testing/selftests/bpf/prog_tests/check_mtu.c |  216 ++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/test_check_mtu.c |  198 ++++++++++++++++++
+ .../selftests/bpf/progs/test_cls_redirect.c        |    7 +
+ 8 files changed, 797 insertions(+), 64 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/check_mtu.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_check_mtu.c
+
+--
+
