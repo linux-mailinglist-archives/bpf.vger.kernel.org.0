@@ -2,182 +2,238 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70BED30B40B
-	for <lists+bpf@lfdr.de>; Tue,  2 Feb 2021 01:24:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F15B630B48E
+	for <lists+bpf@lfdr.de>; Tue,  2 Feb 2021 02:19:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230470AbhBBAXc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Feb 2021 19:23:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbhBBAX2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Feb 2021 19:23:28 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA1A2C061573
-        for <bpf@vger.kernel.org>; Mon,  1 Feb 2021 16:22:48 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id l18so1137392pji.3
-        for <bpf@vger.kernel.org>; Mon, 01 Feb 2021 16:22:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DXSi7YWGTfwDzL22AV7NuYK80KSq9+AiYcTm0VYQDiU=;
-        b=oaNYtJO6cEsy9HEC72AJyOXVoQHHzcpjF9CaOjuDpEXEBbIGhbgcBTkrCiCScMIWc+
-         XCIMbwu+WQXh8gfDOWWk4feGBZL48q3qPoWs4JNksokyCBGkJJgjz/3uIBM+O57cDVkA
-         gizFdvFH1niu0Uw4JsBvby8kAgaAt0YTFPO3YNtyKP+A2BGAL0wlJWRUj7d/mVMiczsX
-         jbsIilZqd5ufSK1GyR4S7Zp9AMTW7HzBQ10m45CpbygeOHJjjSODCLAqnQ0AI+hwCria
-         sOPFKcTng9FHKb6FInRAAE/2O1KV9zK5acZd1oveqKykIJ4lycoHSRwJrXVCGGCiTC6D
-         sH7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DXSi7YWGTfwDzL22AV7NuYK80KSq9+AiYcTm0VYQDiU=;
-        b=q+pnq54FPicE1jeXrwiVZCG4Kot0L37vhW1/kolymtzF0ujPWOU3Jt69UZZSw0X1sR
-         +hq+RZ3jscvCPlA5tZRpc0BmM/6aVtcxU+BUQYxmNTDW1TJ+l+E0YbReAqS3Oi7ASEIM
-         2TNW25ghhwscwNOYCLzqO8ZQGiQc8NoNC/nrNO7tlm4eGNvSbutJ3fZzHgp6dDbp/IKU
-         9SH2T3L5wJUwmjVo9G76XcSlEZNCZ53hMMovXaw+NGrgZyrnXVh4Z4Pj7IQezb5+lKBp
-         ErA938IJcqVypTs2ZQz9c3MsogJdFYJhocO+lAhG00o4b/kgOCR16OHl3t5Y2HwKWQqw
-         12TQ==
-X-Gm-Message-State: AOAM532MxCpT5RWA4a3f/Dyqrw+PlrHm4LgKCHrnf3eiKJPJgEG09yOl
-        o8XSphQREkNOISwL3ROiSLk=
-X-Google-Smtp-Source: ABdhPJz3yfNE2ZRCKCWTQYJYwJJ55aZ776GP5rdO+c9NKfQ0PIlkwk87TGsUSiwrjLXUX4dMHgkUig==
-X-Received: by 2002:a17:902:8f97:b029:e1:230f:5575 with SMTP id z23-20020a1709028f97b02900e1230f5575mr17358965plo.68.1612225368225;
-        Mon, 01 Feb 2021 16:22:48 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:1720])
-        by smtp.gmail.com with ESMTPSA id gz6sm569988pjb.40.2021.02.01.16.22.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 16:22:47 -0800 (PST)
-Date:   Mon, 1 Feb 2021 16:22:43 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Andrei Matei <andreimatei1@gmail.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org
-Subject: Re: [PATCH bpf-next v2 1/5] bpf: allow variable-offset stack access
-Message-ID: <20210202002243.k3d2jeczf6ggiipf@ast-mbp.dhcp.thefacebook.com>
-References: <20210124194909.453844-1-andreimatei1@gmail.com>
- <20210124194909.453844-2-andreimatei1@gmail.com>
- <20210127225818.3uzw3tehbu3qlyd6@ast-mbp.dhcp.thefacebook.com>
- <CABWLsetKoJ033hbaOxGKmv6jsWEvXebr3fpXxj9itW7yP7XqOQ@mail.gmail.com>
+        id S230122AbhBBBSg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Feb 2021 20:18:36 -0500
+Received: from mailout1.samsung.com ([203.254.224.24]:47112 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229787AbhBBBSe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Feb 2021 20:18:34 -0500
+Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210202011750epoutp01d6cd93e2beaeade2b9bb0cf18088cdb3~fyW8G7jbk2846228462epoutp014
+        for <bpf@vger.kernel.org>; Tue,  2 Feb 2021 01:17:50 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210202011750epoutp01d6cd93e2beaeade2b9bb0cf18088cdb3~fyW8G7jbk2846228462epoutp014
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1612228670;
+        bh=i5rADIZ0Sj9wrKQNewc1LdBisv/3fefoGp/S9dd+tMg=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=LLaHMoDhHIAukChdgyxQIXinMarjXkptkFflN3u9i2Ef1UY2NABlsM55/jAApaT2u
+         iU4gakDEIUXoFbDfFTt0d1nyTmKDeFSt9xVO3UGft9IF16kGE9vuQbc07Sn5KRKnVn
+         JrcbyX1DNy2VlNrvkElimzxftpgWBVP7bUrNyyh4=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
+        20210202011749epcas2p3d66e8c65e040f9d6d38468e97dd46745~fyW7mA8fD3022530225epcas2p3v;
+        Tue,  2 Feb 2021 01:17:49 +0000 (GMT)
+Received: from epsmges2p2.samsung.com (unknown [182.195.40.190]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4DV6PR2Phyz4x9QF; Tue,  2 Feb
+        2021 01:17:47 +0000 (GMT)
+Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
+        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        73.69.56312.B38A8106; Tue,  2 Feb 2021 10:17:47 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210202011746epcas2p2a58b8b98e06879185dbf469312e8703a~fyW4vqdF03223432234epcas2p2Y;
+        Tue,  2 Feb 2021 01:17:46 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210202011746epsmtrp1bef97ea754c72a067e4eb6fe627dfa09~fyW4ukgAq0897208972epsmtrp1h;
+        Tue,  2 Feb 2021 01:17:46 +0000 (GMT)
+X-AuditID: b6c32a46-1efff7000000dbf8-4b-6018a83b6b26
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        A0.8E.13470.A38A8106; Tue,  2 Feb 2021 10:17:46 +0900 (KST)
+Received: from KORDO035731 (unknown [12.36.185.47]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210202011746epsmtip154393722742c3b8029f2ed718dfe39d2~fyW4azFO91746717467epsmtip1T;
+        Tue,  2 Feb 2021 01:17:46 +0000 (GMT)
+From:   "Dongseok Yi" <dseok.yi@samsung.com>
+To:     "'Alexander Lobakin'" <alobakin@pm.me>
+Cc:     "'David S. Miller'" <davem@davemloft.net>,
+        "'Steffen Klassert'" <steffen.klassert@secunet.com>,
+        <namkyu78.kim@samsung.com>, "'Jakub Kicinski'" <kuba@kernel.org>,
+        "'Hideaki YOSHIFUJI'" <yoshfuji@linux-ipv6.org>,
+        "'David Ahern'" <dsahern@kernel.org>,
+        "'Alexei Starovoitov'" <ast@kernel.org>,
+        "'Daniel Borkmann'" <daniel@iogearbox.net>,
+        "'Andrii Nakryiko'" <andrii@kernel.org>,
+        "'Martin KaFai Lau'" <kafai@fb.com>,
+        "'Song Liu'" <songliubraving@fb.com>,
+        "'Yonghong Song'" <yhs@fb.com>,
+        "'John Fastabend'" <john.fastabend@gmail.com>,
+        "'KP Singh'" <kpsingh@kernel.org>,
+        "'Willem de Bruijn'" <willemb@google.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+In-Reply-To: <20210130155458.8523-1-alobakin@pm.me>
+Subject: RE: [RESEND PATCH net v4] udp: ipv4: manipulate network header of
+ NATed UDP GRO fraglist
+Date:   Tue, 2 Feb 2021 10:17:46 +0900
+Message-ID: <021c01d6f901$36da2d80$a48e8880$@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABWLsetKoJ033hbaOxGKmv6jsWEvXebr3fpXxj9itW7yP7XqOQ@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQH3UkD7ra4ajhnLvSE7bwMwZ51/XAG/rNSqAaWf2U6p6DEcMA==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Te0xTVxzHd+5tbwsb5q68Tlii3XVsk4XSVstuVYib0tzEbWG6GF2IpSl3
+        FOwrvWCQPcDxbJliFREqm2wjEzodS22Qh+hWGFpZsEqHjo1FM15u8rA8FJGwthcz/vucc77f
+        3+/7u/ccPiqYxGL4Wfoc2qRXaQkslNPStUEWv6URpounqnHS/vdFDvlo8TRKzi78wSNnuq9i
+        5Ldfz6Nk3Y1iDvlDewlCft7aiJDj08OAHLt8BCE9LUe5ZH97HUYW/lmEkT31UeRC168o2WF+
+        zCMnnd08cryhBpBznRbOtnDK2fQ7QlmLJnlUm22IR9U7cinLnVso5bCbMap0wI5Qv1zqw6ij
+        TjugHCUNXGrGsTb1+Q+1WzW0KoM2CWm92pCRpc9MInbuVm5XyhLFkniJnHyTEOpVOjqJ2PFO
+        arwiS+sfjxAeVGlz/VupKoYhEpK3mgy5ObRQY2BykgjamKE1SiRGEaPSMbn6TJHaoNssEYul
+        Mr8yXavxmgcR4zdr8679Ji8E3mgLCOFDfBN84lpGAizAWwF82LbXAkL97AOw5shNwC7mATxZ
+        5uY+c3S5ennsQSeA1WeKUXYxDuCg7wIIqDA8Dj6wlQUdEX5u6lkMlkLxHi7s67RjgYMQfCM8
+        VdeJBjgcV8PaK46ggYO/AmdvWYKaMFwOj1sfIyy/CN21w5wAo/g6eHGiDmUjCeHCyHcrzd6G
+        D58uo6wmAp42lwbTQfxUCJzzLPFYww5Y5StfmScc/nPVubIfA+9XlvqZ7+cCWFKRxnq/ANB7
+        mW0M/aFto2UgoEHxDbC5PYGVr4fdgyvR1sDyrqWVKmGwvFTAIgGts0q2BoTj7hOcY4CwrZrL
+        tmou26r8tv9b1QOOHUTRRkaXSTNSo3T1r3aA4MWPU7SCqolpkQsgfOACkI8SEWHXj0elC8Iy
+        VIfyaZNBacrV0owLyPxf2orGRKoN/pejz1FKZNLERLFcRsoSpSQRHcaI7yoFeKYqhz5A00ba
+        9MyH8ENiCpHojsOaD9bv9+FvbMEkuk1P9v1Y8El72r8pn1ZNkWPqlrxZUcSeDo3n3O7ze5aW
+        NnacH+lOePW+N/vY2XXoaHPfl7c7kuOdP8fuvwf6GgzPWQ5mr7k98LTiTHKj81DFsrw8/FzX
+        0PdMxaJH0ahyX/rqPdfLYNhys6ZWUbH5ZOaiyOXNl/kSeNOxM4u7JhR3rTfuxVU90iW9dl3o
+        ufb+WENltkfuTW+a6x0QCrivR5bWu17SfCbY2Z9nHk4pOrBPI8pXRyre6q+OdB3uKUAenG0L
+        F+6NcvcWjyTP+rApaj5llLpwZ/tHnGZrZWhBT+wL7w5Jf9pFXzFz/4rYlpzmHkoY/RgjOIxG
+        JYlDTYzqPwKoT4KBBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Ra0hTYRzGec85284s6bRZe520xhAtI+e6voaaBcWJvmQf1KzUkSe1nK4d
+        NfVDjLzkllp2d95NRFcJTnM6W5CXUgu1mqWtCDHLKE3RTMmo5gr89oPn9zz84U/iAjshJuMT
+        kxlNojJBxnUhmjtkks27amG0X9l1KTKOmgn042cxjmYX7Dw00/mEi25XzuGopD+LQPWWbAyd
+        b6nF0PjUB4A+PczH0EBzAQe9tJRwkfZtJhc9rliLFjqe4ahNN89Dk02dPDRefQug71Y9ESyk
+        m+qGMbowc5JHtxre8egKUwqtH3qB0yajjkvnvDJidNeDPi5d0GQEtCm7mkPPmCSHVkS4BMQw
+        CfGpjEYeFO0SZ9O9wdRVkrTuQX8tsIn0gE9CahvsaH/K0wMXUkC1ATgzN4npAfk3gNDSuM/p
+        COH7rE6O0/kIoNaWy3UEXMoHfjVc4DjY7S/XPf4JHBJO2Thwtm2acDasANpLs5YsPrUV3iyx
+        4g4WUkrY1Vi5xATlCWdf6JdWXSl/eKVwHnPyathT9IFwME5tgvkj2cDJ66F5ogR3nieFC2M1
+        /67YC6cXf+NOxw0W63Lwy0BoWDZlWDZlWDZlWFapAIQRuDNqVhWrYhVqRSJz1pdVqtiUxFjf
+        E0kqE1j6v8/GFmA2Tvm2A4wE7QCSuMzNtffK2miBa4wyPYPRJEVpUhIYth14kIRM5Dqg74kS
+        ULHKZOY0w6gZzf8UI/liLbazq1f6+vD9wNAMRUQB9Op296vt9OsVzYtzhrpz8spWoosNM9Fr
+        Mp5RkR4D8bWA3h0+ZPHqCVDlVX7fwWlRR97BcO+a0cUTLduvraus8jCPCW9ObyktN3MWpEJF
+        X8jz+xqV+Kq8/OPBY3WcqkGUV98YHrkKX3fhV/qq9MLfIWGByYaR4+S51EVtkW3HmjGv60Op
+        e6eOxIiPjQdY486oWJP/Ac/t4offdHOTkgDseGaQaN9Jbzt/4tKmQHla6IiqdU78SXCAtNqG
+        w07x5RtusKKG1nvN/cGPshQWdanvZ/nEXY/B3NO6XMkeb/cv9rD95sygbmNUWoX0aPH7Ufyq
+        jGDjlAofXMMq/wDJMOn1bgMAAA==
+X-CMS-MailID: 20210202011746epcas2p2a58b8b98e06879185dbf469312e8703a
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210129232630epcas2p1071e141ef8059c4d5c0e4b28c181a171
+References: <CGME20210129232630epcas2p1071e141ef8059c4d5c0e4b28c181a171@epcas2p1.samsung.com>
+        <1611962007-80092-1-git-send-email-dseok.yi@samsung.com>
+        <20210130155458.8523-1-alobakin@pm.me>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Jan 30, 2021 at 05:55:36PM -0500, Andrei Matei wrote:
-> Thanks for reviewing this!
+On 1/31/21 12:55 AM, Alexander Lobakin wrote:
+> From: Dongseok Yi <dseok.yi@samsung.com>
+> Date: Sat, 30 Jan 2021 08:13:27 +0900
 > 
-> On Wed, Jan 27, 2021 at 5:58 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
+> > +static struct sk_buff *__udpv4_gso_segment_list_csum(struct sk_buff *segs)
+> > +{
+> > +	struct sk_buff *seg;
+> > +	struct udphdr *uh, *uh2;
+> > +	struct iphdr *iph, *iph2;
+> > +
+> > +	seg = segs;
+> > +	uh = udp_hdr(seg);
+> > +	iph = ip_hdr(seg);
+> > +
+> > +	if ((udp_hdr(seg)->dest == udp_hdr(seg->next)->dest) &&
+> > +	    (udp_hdr(seg)->source == udp_hdr(seg->next)->source) &&
+> > +	    (ip_hdr(seg)->daddr == ip_hdr(seg->next)->daddr) &&
+> > +	    (ip_hdr(seg)->saddr == ip_hdr(seg->next)->saddr))
+> > +		return segs;
+> > +
+> > +	while ((seg = seg->next)) {
+> > +		uh2 = udp_hdr(seg);
+> > +		iph2 = ip_hdr(seg);
+> > +
+> > +		__udpv4_gso_segment_csum(seg,
+> > +					 &iph2->saddr, &iph->saddr,
+> > +					 &uh2->source, &uh->source);
+> > +		__udpv4_gso_segment_csum(seg,
+> > +					 &iph2->daddr, &iph->daddr,
+> > +					 &uh2->dest, &uh->dest);
+> > +	}
+> > +
+> > +	return segs;
+> > +}
+> > +
+> >  static struct sk_buff *__udp_gso_segment_list(struct sk_buff *skb,
+> > -					      netdev_features_t features)
+> > +					      netdev_features_t features,
+> > +					      bool is_ipv6)
+> >  {
+> >  	unsigned int mss = skb_shinfo(skb)->gso_size;
 > >
-> > On Sun, Jan 24, 2021 at 02:49:05PM -0500, Andrei Matei wrote:
-> > > + *
-> > > + * If some stack slots in range are uninitialized (i.e. STACK_INVALID), the
-> > > + * write is not automatically rejected. However, they are left as
-> > > + * STACK_INVALID, which means that reads with the same variable offset will be
-> > > + * rejected.
-> > ...
-> > > +             /* If the slot is STACK_INVALID, we leave it as such. We can't
-> > > +              * mark the slot as initialized, as the slot might not actually
-> > > +              * be written to (and so marking it as initialized opens the
-> > > +              * door to leaks of uninitialized stack memory.
-> > > +              */
-> > > +             if (*stype != STACK_INVALID)
-> > > +                     *stype = new_type;
+> > @@ -198,11 +257,11 @@ static struct sk_buff *__udp_gso_segment_list(struct sk_buff *skb,
 > >
-> > 'leaks of uninitialized stack memory'...
-> > well that's true, but the way the user would have to deal with this
-> > is to use __builtin_memset(&buf, 0, 16); for the whole buffer
-> > before doing var_off write into it.
-> > In the test in patch 5 would be good to add a read after this write:
-> > buf[len] = buf[idx];
-> > // need to do another read of buf[len] here.
+> >  	udp_hdr(skb)->len = htons(sizeof(struct udphdr) + mss);
 > >
-> > Without memset() it would fail and the user would flame us:
-> > "I just wrote into this stack slot!! Why cannot the verifier figure out
-> > that the read from the same location is safe?... stupid verifier..."
-> >
-> > I think for your use case where you read the whole thing into a stack and
-> > then parse it all locations potentially touched by reads/writes would
-> > be already written via helper, but imo this error is too unpleasant to
-> > explain to users.
-> > Especially since it happens later at a different instruction there is
-> > no good verifier hint we can print.
-> > It would just hit 'invalid read from stack'.
-> >
-> > Currently we don't allow uninit read from stack even for root.
-> > I think we have to sacrifice the perfection of the verification here.
-> > We can either allow reading uninit for _fixed and _var_off
-> > or better yet do unconditional '*stype = new_type' here.
-> > Yes it would mean that following _fixed or _var_off read could be
-> > reading uninited stack. I think we have to do it for the sake
-> > of user friendliness.
-> > The completely buggy uninited reads from stack will still be disallowed.
-> > Only the [min,max] of var_off range in stack will be considered
-> > init, so imo it's a reasonable trade-off between user friendliness
-> > and verifier's perfection.
-> > Wdyt?
+> > -	return skb;
+> > +	return is_ipv6 ? skb : __udpv4_gso_segment_list_csum(skb);
 > 
-> I'm happy to do whatever you tell me. But, I dunno, the verifier
-> currently seems to be paranoid in ways I don't even understand (around
-> speculative execution). In comparison, preventing trivial leaks of
-> uninitialized memory seems relatively important. We're only talking
-> about root here (as you've noted), and other various checks are less
-> paranoid for root, so maybe it's no big deal. Where does the stack
-> memory come from? Can it be *any* previously used kernel memory?
-> A few possible alternatives (without necessarily knowing what I'm
-> talking about):
-> 1) Perhaps it wouldn't be a big deal to zero-initialize all the stack
-> memory (up to 512 bytes) for a program. Is that out of the question?
-> In many cases it'd be less than 512 bytes; the verifier knows the max
-> stack needed. If the stack was always initialized, various verifier
-> checks could go away.
+> I don't think it's okay to fix checksums only for IPv4.
+> IPv6 checksum mangling doesn't depend on any code from net/ipv6. Just
+> use inet_proto_csum_replace16() for v6 addresses (see nf_nat_proto.c
+> for reference). You can guard the path for IPv6 with
+> IS_ENABLED(CONFIG_IPV6) to optimize IPv4-only systems a bit.
 
-Even if stack usage is small, like 64 byte, bzero of it has noticeable
-perf penalty.
+As you can see in __udpv4_gso_segment_list_csum, we compare
+ports and addrs. We should use *struct ipv6hdr* to compare the values
+for IPv6 but I am not sure the struct could be under net/ipv4.
 
-> 2) We could leave this patch as is, and work on improving the error
-> you get on rejected stack reads after var-offset stack writes. I think
-> the verifier could track what stack slots might have or might have not
-> been written to, and when a read to such an uncertain slot is
-> rejected, it could point to the previous var-off write (or one of the
-> possibly many such writes) and suggest a memset. Sounds potentially
-> complicated though.
-
-too complicated imo.
-
-> 3) Perhaps we could augment helper metadata with information about
-> whether each helper promises to overwrite every byte in the buffer
-> it's being passed in. This wouldn't solve the general usability
-> problem we're discussing, but it would make common cases just work.
-> Namely, bpf_probe_read_user() can make the required promise.
-> bpf_probe_read_user_str(), however, could not.
-
-eventually yes. That's orthogonal to this patch set.
+The initial idea was to support both IPv4 and IPv6. Thanks, that's a
+good point. But the supporting IPv6 would be a new feature. I want to
+fix IPv4 first, so the title is restricted to ipv4.
 
 > 
-> But, again, if you think relaxing the verification is OK, I'm very
-> happy to do that.
-
-The tracing progs can read stack with bpf_probe_read_kernel anyway, so
-I would prefer to relax it to improve ease of use.
-Unconditional *stype = new_type; here would do the trick.
-Not for unpriv, of course.
-Probably another 'bool' flag (instead of jumbo allow_ptr_leaks)
-like 'allow_uninit_stack' that is set with perfmon_capable().
-
-> > >
-> > >               tnum_strn(tn_buf, sizeof(tn_buf), reg->var_off);
-> > > -             verbose(env, "variable stack access var_off=%s off=%d size=%d\n",
-> > > +             verbose(env, "var-offset stack reads only permitted to register; var_off=%s off=%d size=%d\n",
+> >  }
 > >
-> > The message is confusing. "read to register"? what is "read to not register" ?
-> > Users won't be able to figure out that it means helpers access.
-> > Also nowadays it means that atomic ops won't be able to use var_off into stack.
-> > I think both limitations are ok for now. Only the message needs to be clear.
+> >  struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
+> > -				  netdev_features_t features)
+> > +				  netdev_features_t features, bool is_ipv6)
+> >  {
+> >  	struct sock *sk = gso_skb->sk;
+> >  	unsigned int sum_truesize = 0;
+> > @@ -214,7 +273,7 @@ struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
+> >  	__be16 newlen;
+> >
+> >  	if (skb_shinfo(gso_skb)->gso_type & SKB_GSO_FRAGLIST)
+> > -		return __udp_gso_segment_list(gso_skb, features);
+> > +		return __udp_gso_segment_list(gso_skb, features, is_ipv6);
+> >
+> >  	mss = skb_shinfo(gso_skb)->gso_size;
+> >  	if (gso_skb->len <= sizeof(*uh) + mss)
+> > @@ -328,7 +387,7 @@ static struct sk_buff *udp4_ufo_fragment(struct sk_buff *skb,
+> >  		goto out;
+> >
+> >  	if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4)
+> > -		return __udp_gso_segment(skb, features);
+> > +		return __udp_gso_segment(skb, features, false);
+> >
+> >  	mss = skb_shinfo(skb)->gso_size;
+> >  	if (unlikely(skb->len <= mss))
+> > diff --git a/net/ipv6/udp_offload.c b/net/ipv6/udp_offload.c
+> > index c7bd7b1..faa823c 100644
+> > --- a/net/ipv6/udp_offload.c
+> > +++ b/net/ipv6/udp_offload.c
+> > @@ -42,7 +42,7 @@ static struct sk_buff *udp6_ufo_fragment(struct sk_buff *skb,
+> >  			goto out;
+> >
+> >  		if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4)
+> > -			return __udp_gso_segment(skb, features);
+> > +			return __udp_gso_segment(skb, features, true);
+> >
+> >  		mss = skb_shinfo(skb)->gso_size;
+> >  		if (unlikely(skb->len <= mss))
+> > --
+> > 2.7.4
 > 
-> What message would you suggest? Would you plumb information about what
-> the read type is (helper vs atomic op)?
+> Thanks,
+> Al
 
-Something like: "variable offset stack pointer cannot be passed into helper functions" ?
+
