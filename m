@@ -2,148 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7427130BE42
-	for <lists+bpf@lfdr.de>; Tue,  2 Feb 2021 13:35:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB7D430BE7F
+	for <lists+bpf@lfdr.de>; Tue,  2 Feb 2021 13:44:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231300AbhBBMeu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Feb 2021 07:34:50 -0500
-Received: from mail-eopbgr70084.outbound.protection.outlook.com ([40.107.7.84]:4069
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229590AbhBBMer (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 2 Feb 2021 07:34:47 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dWB6IHbgaLHloCp37nayhsVPvFfTz47PWixLwoATi+4rF1DJ8wOUIWugjV19i2eOeUNsoEW0HH5qcLz+mQTrxzZEIxfjFiNAd19K5cgYzI4PCWiptZP9wZs4GnUGe79/+eneTqyVj2pCk1DyfQHG7eIRrbcGTHSQdyPbvz7flvKbEUrbJT+h9LjTQHEX7nDLOoXLACv6r7gVG7isAINkoama19XL6B8wtcZ0x+qge23ECRFJL2KFyJAsNCx6cg58dDyLJsVtzjnYKeeOI820JB0V1YFnWv4f7EDVKJa3TSH0apqPa6u02Gd09IX6tO6HrEqCj1Fu+w7PDDPFs+6VpA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XFGohC2cm+7hiKHqBequx4P2SZQOXjJ1FauRcCgjxmA=;
- b=j4xQUDB8jYQhCmbBnhDan6NOMHUqD1yAXw2DtMk/IqDdZLwHdlH1JOvhmv4SI3KV5F4GB66lkSJV0WRIMdaCKPCYEllK7FNnQOBpn+uKZpMpuM/meLn8XfN5XDrwn6WkQkJUD0gjeDPi8vuAGhTegwWIMduNfyvLWoJVuD4JxXR0Qj9PuEgh/aWE1gc4VeJDPDOZP+V7+AMi7Y15J9lLyqrl+aUyEvSwss1hvK92AKYrDsfDpA5E0VC/b1nvq0RmBV63A8+A+xlbLKp2K4QlP8dFPpFwClhoXJdfQQ86YHdzfEyFjr4OMFAy8r+KhJo7MbQMTpCvBaFkFAEoH1UxPA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XFGohC2cm+7hiKHqBequx4P2SZQOXjJ1FauRcCgjxmA=;
- b=cc3nSZ1Csx5fsKN9xbVrm8n8fLdzv2KDhQiW6jJsns0nFbefOXIoQ85MNEvJP7cPsuanl2FRdwNDk04mpeWRjgySDKx/i+MNQFM11qV6LkzZmTFiCVmtKdPCtX1edeLs1dDivy1O5SqwnyxFINOQlri5CpWHxruVLDfPMvxlQdg=
-Received: from VI1PR0402MB3871.eurprd04.prod.outlook.com
- (2603:10a6:803:16::14) by VE1PR04MB6445.eurprd04.prod.outlook.com
- (2603:10a6:803:11c::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.19; Tue, 2 Feb
- 2021 12:33:57 +0000
-Received: from VI1PR0402MB3871.eurprd04.prod.outlook.com
- ([fe80::b0d0:3a81:c999:e88]) by VI1PR0402MB3871.eurprd04.prod.outlook.com
- ([fe80::b0d0:3a81:c999:e88%3]) with mapi id 15.20.3805.028; Tue, 2 Feb 2021
- 12:33:57 +0000
-From:   Ioana Ciornei <ioana.ciornei@nxp.com>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-CC:     Ioana Ciocoi Radulescu <ruxandra.radulescu@nxp.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "kafai@fb.com" <kafai@fb.com>,
-        "songliubraving@fb.com" <songliubraving@fb.com>,
-        "yhs@fb.com" <yhs@fb.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [PATCH] dpaa2-eth: Simplify the calculation of variables
-Thread-Topic: [PATCH] dpaa2-eth: Simplify the calculation of variables
-Thread-Index: AQHW+UqUQ+Vok9fAFUqJqoxZiaDPhqpEzMMA
-Date:   Tue, 2 Feb 2021 12:33:56 +0000
-Message-ID: <20210202123356.ythsfeyfk2uuegcc@skbuf>
-References: <1612260157-128026-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <1612260157-128026-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linux.alibaba.com; dkim=none (message not signed)
- header.d=none;linux.alibaba.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [5.12.227.87]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 38753a5a-bc39-4860-687b-08d8c776cf6e
-x-ms-traffictypediagnostic: VE1PR04MB6445:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VE1PR04MB644541AB6BC376DA6D1C4E81E0B59@VE1PR04MB6445.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: PjgEQVCDTf0LQ/ox119qS9W5piSzRISbtoMzqdCmZpAJMvxd2eaeAQZEC7ku/zgi4bTUFjzzKssnjpikou2mTexQxtUWcS3+lP7iXE228H8yDz7Y1xnZjIxJPKdtWCO2bO8MFKVEC2IAHifK3IRzjkax1LpWnOgRplMatIzu1Wfr5XZWUSDe+x4bhxxHHFkB7kZTJAuF5ogJp+B2E6OERSRYx/bWiHc/WWzij2JygHrpEMcximPc+gboZ7KWPh11WBsape2sYt6N5S+XslivTxo4/nWBNajy9neIhm1/n2Rqwz5oX3S+Q3/MmF/jGbVmXvT9RcI6jZyAbdsCExa6jmEgjJr2oQtx09s7f/EMTxzWccszE2Y2StGYlsEDcTQBvFDsXGlBmnpMxqchkEYa49P4bcCitX91WTT8Pyo8uKmAkETMKPsNDudcX3kQUlAdmbBbEwPXCeUnVgjgB1/98LCx3bs2IzOIk+8vLoV/Wow2zOw6aYivOSiBf4ll8LinH9IoU2U/TJmc+Jtyq4jmhw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3871.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(396003)(39860400002)(136003)(376002)(366004)(346002)(6506007)(8936002)(6512007)(9686003)(2906002)(1076003)(91956017)(7416002)(316002)(6486002)(76116006)(26005)(8676002)(54906003)(44832011)(86362001)(478600001)(186003)(33716001)(6916009)(66556008)(66476007)(66446008)(64756008)(83380400001)(5660300002)(66946007)(71200400001)(4326008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?F52DJbvyfnHKvmmvDRMawPME0hvY3STOBMXydmkn3V2rs3VUYa8IFh0QRtAf?=
- =?us-ascii?Q?NZg1GkBEvoCW1dslXObk+x3DhFG0UZe6w/DOc0LFoMyvz/KR3QmtkD6Dr+TQ?=
- =?us-ascii?Q?8CBQYA1uiRBR8MW7n02clDIMN92zfmgNZ/Pb+bzE8gYHoIYpoceg70+ESJZb?=
- =?us-ascii?Q?0wGo6TrRJ8T23b3fMkOdcY8hLvGx0uvtgxyJ9Lpd1aqRemC40wW+N10uuwvI?=
- =?us-ascii?Q?deZNgeJzCJmgyLE5nHcydqWuzL3OmUVloxohQZ2M4JKPuC9/AxSmrTlSk/d3?=
- =?us-ascii?Q?Jpb62vLrxO94bVKpp+/da7a1CJMN08fFtv7TcS0jiyVj0gKF22uFfFni7DpZ?=
- =?us-ascii?Q?oQhqyQ8wV+zSggz9SJejkmDRDb9tAYWNQP8F1FJtOoLjYq7pESQiLGxJ3fR5?=
- =?us-ascii?Q?v3GArmOdCMUpaL55nQtL8RvoQDht0KoZ6ZjItPgRIYiFlSVXH/BFDkxMP+55?=
- =?us-ascii?Q?xgIFhqA29mcS0jFLdcPajLpH6jctXTffD9SsIthanelkkbHATjusWhvPhLgi?=
- =?us-ascii?Q?TOJcSuP3fO53RuqjNBs3ziE2W2ID1Aolpb+NDdqUq+uMwXOdk1vcN6gbqW2k?=
- =?us-ascii?Q?Kn2WobZGePgk5yEdEXZPV5cz81ioPejK1lvyFx/RKFebIX9fdUsILigMMWoJ?=
- =?us-ascii?Q?fS8QpCvaUg2Y7dtsjqOUrE7IgLv3Ff6qsG7aS04SZq1VBNH86nfHSkbP1o08?=
- =?us-ascii?Q?FQeJtIxoZwatM/tt7EDAatgLjsDprHTLBfNCdW1x2oXolGDfXnl9Sb2MWX2d?=
- =?us-ascii?Q?sm6l0T6zf1kCUo1BtTahfJ296UceUhLQ4YwPla5QpzrlUU/Hl6oKUZ4TpU+b?=
- =?us-ascii?Q?3ZqU/AaxtEtaVMlBnL6cLRZrGnrsftmAJz8FKTiMa+uFasw8CzNJVLc3bGDs?=
- =?us-ascii?Q?H8E1A00E2YQ9rkHXEQD90CRJRoV+Rc7FLgthd0P8ksyi59MkeM13m1yNBMvu?=
- =?us-ascii?Q?3heIOGhWXlt2xb4UbZAC87cbuDpzcet/uQMRnxe3+LU4O5T0KDkiK1b/AClT?=
- =?us-ascii?Q?7nRPGNt2QvyPFFt2N4WlOrJEkziudLN9WXy3L7NyzKVK3XrEX6UxUJ1hMXCd?=
- =?us-ascii?Q?xLp5lVX4?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <28058608A25B884482ECA752160330CC@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S231855AbhBBMoY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Feb 2021 07:44:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49466 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232011AbhBBMnu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Feb 2021 07:43:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8707064F49;
+        Tue,  2 Feb 2021 12:43:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612269789;
+        bh=qZjLe46fKviv2dKt6AecsFVYWc2+42SL2/KPB+XpkEw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ehXCdo9wrJ23/hOnURzKfdfHSkO5BUxIDkGX5dH5p7T+SSHFGxb9ZRn50oOYMeJMI
+         dNbvLmd1gMGAhy+Gq7ribHQCeLOgqAF06JlS+FKbg0ihAJL/hZO9webd773dLQKuKC
+         5RLblxeW/SkKxNd5XOaVumNM0/MAESyp5oYdVSLfwVBciZalau4bNRA6PrNcJwpxzq
+         NyPOD/k0YWnSoioSGDck6cSzsqlCVOb2TK9g6wJ7h6F7aVFv5mntlAk/oTOz0iTvDc
+         LK8tsJTYxm5Kp87yQq2weHp1fiTWR8CjhkSTlboX/pqNwim666gWqPwCVlwL0079Gm
+         fPxiFt4W7XiIA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 4E92340513; Tue,  2 Feb 2021 09:43:06 -0300 (-03)
+Date:   Tue, 2 Feb 2021 09:43:06 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ondrej Mosnacek <omosnace@redhat.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Paul Moore <paul@paul-moore.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: selftest/bpf/test_verifier_log fails on v5.11-rc5
+Message-ID: <20210202124306.GA849267@kernel.org>
+References: <CAHC9VhQgy959hkpU8fwZnrTqGphVSA+ONF99Yy4ZQFyjQ_030A@mail.gmail.com>
+ <CAADnVQJaJ0i2L2k-dM+neeT61q+pwEd+F6ASGh4Xbi-ogj0hfQ@mail.gmail.com>
+ <CAHC9VhSTJ=009hsXm=8jtQ_ZL-n=+tzKPbWj2Cnoa5w3iVNuew@mail.gmail.com>
+ <CAADnVQKbku+Mv++h2TKYZfFN7NjPgaeLHJsw0oFNUhjUZ6ehSQ@mail.gmail.com>
+ <YBXGChWt/E2UDgZc@krava>
+ <YBci6Y8bNZd6KRdw@krava>
+ <20210201122532.GE794568@kernel.org>
+ <YBgVLqNxL++zVkdK@krava>
+ <YBhjOaoV2NqW3jFI@krava>
+ <CAFqZXNsjzQ-2x4-szW5pBg77bzSK-RmwPvQSN+UaxJXqqZ_2qA@mail.gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3871.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 38753a5a-bc39-4860-687b-08d8c776cf6e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Feb 2021 12:33:57.1553
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: AtNWTsV/AZ8j4kInmUjfyqmC3P/tG+LbLpYmyiIOQFokv9fXkbdU9EVTISsPyfVc8rZ96Q19yLjo1KZx92NiVA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6445
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFqZXNsjzQ-2x4-szW5pBg77bzSK-RmwPvQSN+UaxJXqqZ_2qA@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 06:02:37PM +0800, Jiapeng Chong wrote:
-> Fix the following coccicheck warnings:
->=20
-> ./drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c:1651:36-38: WARNING
-> !A || A && B is equivalent to !A || B.
->=20
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Acked-by: Ioana Ciornei <ioana.ciornei@nxp.com>
+Em Mon, Feb 01, 2021 at 11:43:26PM +0100, Ondrej Mosnacek escreveu:
+> On Mon, Feb 1, 2021 at 9:23 PM Jiri Olsa <jolsa@redhat.com> wrote:
+> > On Mon, Feb 01, 2021 at 03:50:22PM +0100, Jiri Olsa wrote:
+> > Paul, Ondrej,
 
-> ---
->  drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c b/drivers/n=
-et/ethernet/freescale/dpaa2/dpaa2-eth.c
-> index fb0bcd1..93f84c9 100644
-> --- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
-> +++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
-> @@ -1648,7 +1648,7 @@ void dpaa2_eth_set_rx_taildrop(struct dpaa2_eth_pri=
-v *priv,
->  	 * CG taildrop threshold, so it won't interfere with it; we also
->  	 * want frames in non-PFC enabled traffic classes to be kept in check)
->  	 */
-> -	td.enable =3D !tx_pause || (tx_pause && pfc);
-> +	td.enable =3D !tx_pause || pfc;
->  	if (priv->rx_cgtd_enabled =3D=3D td.enable)
->  		return;
-> =20
-> --=20
-> 1.8.3.1
-> =
+> > I put all the recent fixes and made a scratch build:
+> >   https://koji.fedoraproject.org/koji/taskinfo?taskID=61049457
+
+> > if you have a chance to test and check your issue was resolved,
+> > that'd be great
+
+> I just built the current master branch of dwarves (d783117162c0, which
+> includes Jirka's patch) [1] in COPR [2] and then rebuilt the kernel
+> with it [3]. With the new dwarves, the issue seems to be fixed -
+> /sys/kernel/btf/vmlinux is back to ~4MB and the selinux-testsuite BPF
+> subtest passes.
+
+> Thanks everyone for getting to the bottom of this! Hoping to see an
+> updated dwarves in rawhide soon ;)
+
+Thanks a lot!
+
+I've updated a f33 system to rawhide to test all this, fixed up some
+extra warnings wrt mallinfo(), strndup() error path handling/potential
+buffer overflow issue and will add a conditional define for
+DW_FORM_implicit_const found in the libbpf CI tests that Andrii pointed
+out to me, then go and tag 1.20 and do the rawhide/fedora package update
+dance.
+
+- Arnaldo
+ 
+> [1] https://github.com/acmel/dwarves/
+> [2] https://copr.fedorainfracloud.org/coprs/omos/kernel-btf-test/build/1930103/
+> [3] https://copr.fedorainfracloud.org/coprs/omos/kernel-btf-test/build/1930104/
