@@ -2,238 +2,124 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F15B630B48E
-	for <lists+bpf@lfdr.de>; Tue,  2 Feb 2021 02:19:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0CDE30B4DA
+	for <lists+bpf@lfdr.de>; Tue,  2 Feb 2021 02:52:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230122AbhBBBSg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Feb 2021 20:18:36 -0500
-Received: from mailout1.samsung.com ([203.254.224.24]:47112 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229787AbhBBBSe (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Feb 2021 20:18:34 -0500
-Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210202011750epoutp01d6cd93e2beaeade2b9bb0cf18088cdb3~fyW8G7jbk2846228462epoutp014
-        for <bpf@vger.kernel.org>; Tue,  2 Feb 2021 01:17:50 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210202011750epoutp01d6cd93e2beaeade2b9bb0cf18088cdb3~fyW8G7jbk2846228462epoutp014
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1612228670;
-        bh=i5rADIZ0Sj9wrKQNewc1LdBisv/3fefoGp/S9dd+tMg=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=LLaHMoDhHIAukChdgyxQIXinMarjXkptkFflN3u9i2Ef1UY2NABlsM55/jAApaT2u
-         iU4gakDEIUXoFbDfFTt0d1nyTmKDeFSt9xVO3UGft9IF16kGE9vuQbc07Sn5KRKnVn
-         JrcbyX1DNy2VlNrvkElimzxftpgWBVP7bUrNyyh4=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
-        20210202011749epcas2p3d66e8c65e040f9d6d38468e97dd46745~fyW7mA8fD3022530225epcas2p3v;
-        Tue,  2 Feb 2021 01:17:49 +0000 (GMT)
-Received: from epsmges2p2.samsung.com (unknown [182.195.40.190]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4DV6PR2Phyz4x9QF; Tue,  2 Feb
-        2021 01:17:47 +0000 (GMT)
-Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
-        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        73.69.56312.B38A8106; Tue,  2 Feb 2021 10:17:47 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210202011746epcas2p2a58b8b98e06879185dbf469312e8703a~fyW4vqdF03223432234epcas2p2Y;
-        Tue,  2 Feb 2021 01:17:46 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210202011746epsmtrp1bef97ea754c72a067e4eb6fe627dfa09~fyW4ukgAq0897208972epsmtrp1h;
-        Tue,  2 Feb 2021 01:17:46 +0000 (GMT)
-X-AuditID: b6c32a46-1efff7000000dbf8-4b-6018a83b6b26
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A0.8E.13470.A38A8106; Tue,  2 Feb 2021 10:17:46 +0900 (KST)
-Received: from KORDO035731 (unknown [12.36.185.47]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210202011746epsmtip154393722742c3b8029f2ed718dfe39d2~fyW4azFO91746717467epsmtip1T;
-        Tue,  2 Feb 2021 01:17:46 +0000 (GMT)
-From:   "Dongseok Yi" <dseok.yi@samsung.com>
-To:     "'Alexander Lobakin'" <alobakin@pm.me>
-Cc:     "'David S. Miller'" <davem@davemloft.net>,
-        "'Steffen Klassert'" <steffen.klassert@secunet.com>,
-        <namkyu78.kim@samsung.com>, "'Jakub Kicinski'" <kuba@kernel.org>,
-        "'Hideaki YOSHIFUJI'" <yoshfuji@linux-ipv6.org>,
-        "'David Ahern'" <dsahern@kernel.org>,
-        "'Alexei Starovoitov'" <ast@kernel.org>,
-        "'Daniel Borkmann'" <daniel@iogearbox.net>,
-        "'Andrii Nakryiko'" <andrii@kernel.org>,
-        "'Martin KaFai Lau'" <kafai@fb.com>,
-        "'Song Liu'" <songliubraving@fb.com>,
-        "'Yonghong Song'" <yhs@fb.com>,
-        "'John Fastabend'" <john.fastabend@gmail.com>,
-        "'KP Singh'" <kpsingh@kernel.org>,
-        "'Willem de Bruijn'" <willemb@google.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-In-Reply-To: <20210130155458.8523-1-alobakin@pm.me>
-Subject: RE: [RESEND PATCH net v4] udp: ipv4: manipulate network header of
- NATed UDP GRO fraglist
-Date:   Tue, 2 Feb 2021 10:17:46 +0900
-Message-ID: <021c01d6f901$36da2d80$a48e8880$@samsung.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQH3UkD7ra4ajhnLvSE7bwMwZ51/XAG/rNSqAaWf2U6p6DEcMA==
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Te0xTVxzHd+5tbwsb5q68Tlii3XVsk4XSVstuVYib0tzEbWG6GF2IpSl3
-        FOwrvWCQPcDxbJliFREqm2wjEzodS22Qh+hWGFpZsEqHjo1FM15u8rA8FJGwthcz/vucc77f
-        3+/7u/ccPiqYxGL4Wfoc2qRXaQkslNPStUEWv6URpounqnHS/vdFDvlo8TRKzi78wSNnuq9i
-        5Ldfz6Nk3Y1iDvlDewlCft7aiJDj08OAHLt8BCE9LUe5ZH97HUYW/lmEkT31UeRC168o2WF+
-        zCMnnd08cryhBpBznRbOtnDK2fQ7QlmLJnlUm22IR9U7cinLnVso5bCbMap0wI5Qv1zqw6ij
-        TjugHCUNXGrGsTb1+Q+1WzW0KoM2CWm92pCRpc9MInbuVm5XyhLFkniJnHyTEOpVOjqJ2PFO
-        arwiS+sfjxAeVGlz/VupKoYhEpK3mgy5ObRQY2BykgjamKE1SiRGEaPSMbn6TJHaoNssEYul
-        Mr8yXavxmgcR4zdr8679Ji8E3mgLCOFDfBN84lpGAizAWwF82LbXAkL97AOw5shNwC7mATxZ
-        5uY+c3S5ennsQSeA1WeKUXYxDuCg7wIIqDA8Dj6wlQUdEX5u6lkMlkLxHi7s67RjgYMQfCM8
-        VdeJBjgcV8PaK46ggYO/AmdvWYKaMFwOj1sfIyy/CN21w5wAo/g6eHGiDmUjCeHCyHcrzd6G
-        D58uo6wmAp42lwbTQfxUCJzzLPFYww5Y5StfmScc/nPVubIfA+9XlvqZ7+cCWFKRxnq/ANB7
-        mW0M/aFto2UgoEHxDbC5PYGVr4fdgyvR1sDyrqWVKmGwvFTAIgGts0q2BoTj7hOcY4CwrZrL
-        tmou26r8tv9b1QOOHUTRRkaXSTNSo3T1r3aA4MWPU7SCqolpkQsgfOACkI8SEWHXj0elC8Iy
-        VIfyaZNBacrV0owLyPxf2orGRKoN/pejz1FKZNLERLFcRsoSpSQRHcaI7yoFeKYqhz5A00ba
-        9MyH8ENiCpHojsOaD9bv9+FvbMEkuk1P9v1Y8El72r8pn1ZNkWPqlrxZUcSeDo3n3O7ze5aW
-        NnacH+lOePW+N/vY2XXoaHPfl7c7kuOdP8fuvwf6GgzPWQ5mr7k98LTiTHKj81DFsrw8/FzX
-        0PdMxaJH0ahyX/rqPdfLYNhys6ZWUbH5ZOaiyOXNl/kSeNOxM4u7JhR3rTfuxVU90iW9dl3o
-        ufb+WENltkfuTW+a6x0QCrivR5bWu17SfCbY2Z9nHk4pOrBPI8pXRyre6q+OdB3uKUAenG0L
-        F+6NcvcWjyTP+rApaj5llLpwZ/tHnGZrZWhBT+wL7w5Jf9pFXzFz/4rYlpzmHkoY/RgjOIxG
-        JYlDTYzqPwKoT4KBBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Ra0hTYRzGec85284s6bRZe520xhAtI+e6voaaBcWJvmQf1KzUkSe1nK4d
-        NfVDjLzkllp2d95NRFcJTnM6W5CXUgu1mqWtCDHLKE3RTMmo5gr89oPn9zz84U/iAjshJuMT
-        kxlNojJBxnUhmjtkks27amG0X9l1KTKOmgn042cxjmYX7Dw00/mEi25XzuGopD+LQPWWbAyd
-        b6nF0PjUB4A+PczH0EBzAQe9tJRwkfZtJhc9rliLFjqe4ahNN89Dk02dPDRefQug71Y9ESyk
-        m+qGMbowc5JHtxre8egKUwqtH3qB0yajjkvnvDJidNeDPi5d0GQEtCm7mkPPmCSHVkS4BMQw
-        CfGpjEYeFO0SZ9O9wdRVkrTuQX8tsIn0gE9CahvsaH/K0wMXUkC1ATgzN4npAfk3gNDSuM/p
-        COH7rE6O0/kIoNaWy3UEXMoHfjVc4DjY7S/XPf4JHBJO2Thwtm2acDasANpLs5YsPrUV3iyx
-        4g4WUkrY1Vi5xATlCWdf6JdWXSl/eKVwHnPyathT9IFwME5tgvkj2cDJ66F5ogR3nieFC2M1
-        /67YC6cXf+NOxw0W63Lwy0BoWDZlWDZlWDZlWFapAIQRuDNqVhWrYhVqRSJz1pdVqtiUxFjf
-        E0kqE1j6v8/GFmA2Tvm2A4wE7QCSuMzNtffK2miBa4wyPYPRJEVpUhIYth14kIRM5Dqg74kS
-        ULHKZOY0w6gZzf8UI/liLbazq1f6+vD9wNAMRUQB9Op296vt9OsVzYtzhrpz8spWoosNM9Fr
-        Mp5RkR4D8bWA3h0+ZPHqCVDlVX7fwWlRR97BcO+a0cUTLduvraus8jCPCW9ObyktN3MWpEJF
-        X8jz+xqV+Kq8/OPBY3WcqkGUV98YHrkKX3fhV/qq9MLfIWGByYaR4+S51EVtkW3HmjGv60Op
-        e6eOxIiPjQdY486oWJP/Ac/t4offdHOTkgDseGaQaN9Jbzt/4tKmQHla6IiqdU78SXCAtNqG
-        w07x5RtusKKG1nvN/cGPshQWdanvZ/nEXY/B3NO6XMkeb/cv9rD95sygbmNUWoX0aPH7Ufyq
-        jGDjlAofXMMq/wDJMOn1bgMAAA==
-X-CMS-MailID: 20210202011746epcas2p2a58b8b98e06879185dbf469312e8703a
-X-Msg-Generator: CA
+        id S229852AbhBBBvE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Feb 2021 20:51:04 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2574 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229633AbhBBBvD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Feb 2021 20:51:03 -0500
+Received: from dggeme708-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4DV74Y4XV4zW3WX;
+        Tue,  2 Feb 2021 09:48:13 +0800 (CST)
+Received: from dggeme758-chm.china.huawei.com (10.3.19.104) by
+ dggeme708-chm.china.huawei.com (10.1.199.104) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Tue, 2 Feb 2021 09:50:18 +0800
+Received: from dggeme758-chm.china.huawei.com ([10.6.80.69]) by
+ dggeme758-chm.china.huawei.com ([10.6.80.69]) with mapi id 15.01.2106.006;
+ Tue, 2 Feb 2021 09:50:18 +0800
+From:   "Wanghongzhe (Hongzhe, EulerOS)" <wanghongzhe@huawei.com>
+To:     Andy Lutomirski <luto@amacapital.net>
+CC:     "keescook@chromium.org" <keescook@chromium.org>,
+        "wad@chromium.org" <wad@chromium.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "kafai@fb.com" <kafai@fb.com>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "yhs@fb.com" <yhs@fb.com>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: RE: [PATCH] seccomp: Improve performance by optimizing memory barrier
+Thread-Topic: [PATCH] seccomp: Improve performance by optimizing memory
+ barrier
+Thread-Index: AQHW+JKVO2If6N9YNUuKsZSbR9a9o6pC6YoAgAEvrUA=
+Date:   Tue, 2 Feb 2021 01:50:18 +0000
+Message-ID: <003c156cf88c4ccd82d50e450c4696ed@huawei.com>
+References: <1612183830-15506-1-git-send-email-wanghongzhe@huawei.com>
+ <B1DC6A42-15AF-4804-B20E-FC6E2BDD1C8E@amacapital.net>
+In-Reply-To: <B1DC6A42-15AF-4804-B20E-FC6E2BDD1C8E@amacapital.net>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.177.164]
 Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210129232630epcas2p1071e141ef8059c4d5c0e4b28c181a171
-References: <CGME20210129232630epcas2p1071e141ef8059c4d5c0e4b28c181a171@epcas2p1.samsung.com>
-        <1611962007-80092-1-git-send-email-dseok.yi@samsung.com>
-        <20210130155458.8523-1-alobakin@pm.me>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/31/21 12:55 AM, Alexander Lobakin wrote:
-> From: Dongseok Yi <dseok.yi@samsung.com>
-> Date: Sat, 30 Jan 2021 08:13:27 +0900
-> 
-> > +static struct sk_buff *__udpv4_gso_segment_list_csum(struct sk_buff *segs)
-> > +{
-> > +	struct sk_buff *seg;
-> > +	struct udphdr *uh, *uh2;
-> > +	struct iphdr *iph, *iph2;
-> > +
-> > +	seg = segs;
-> > +	uh = udp_hdr(seg);
-> > +	iph = ip_hdr(seg);
-> > +
-> > +	if ((udp_hdr(seg)->dest == udp_hdr(seg->next)->dest) &&
-> > +	    (udp_hdr(seg)->source == udp_hdr(seg->next)->source) &&
-> > +	    (ip_hdr(seg)->daddr == ip_hdr(seg->next)->daddr) &&
-> > +	    (ip_hdr(seg)->saddr == ip_hdr(seg->next)->saddr))
-> > +		return segs;
-> > +
-> > +	while ((seg = seg->next)) {
-> > +		uh2 = udp_hdr(seg);
-> > +		iph2 = ip_hdr(seg);
-> > +
-> > +		__udpv4_gso_segment_csum(seg,
-> > +					 &iph2->saddr, &iph->saddr,
-> > +					 &uh2->source, &uh->source);
-> > +		__udpv4_gso_segment_csum(seg,
-> > +					 &iph2->daddr, &iph->daddr,
-> > +					 &uh2->dest, &uh->dest);
-> > +	}
-> > +
-> > +	return segs;
-> > +}
-> > +
-> >  static struct sk_buff *__udp_gso_segment_list(struct sk_buff *skb,
-> > -					      netdev_features_t features)
-> > +					      netdev_features_t features,
-> > +					      bool is_ipv6)
-> >  {
-> >  	unsigned int mss = skb_shinfo(skb)->gso_size;
-> >
-> > @@ -198,11 +257,11 @@ static struct sk_buff *__udp_gso_segment_list(struct sk_buff *skb,
-> >
-> >  	udp_hdr(skb)->len = htons(sizeof(struct udphdr) + mss);
-> >
-> > -	return skb;
-> > +	return is_ipv6 ? skb : __udpv4_gso_segment_list_csum(skb);
-> 
-> I don't think it's okay to fix checksums only for IPv4.
-> IPv6 checksum mangling doesn't depend on any code from net/ipv6. Just
-> use inet_proto_csum_replace16() for v6 addresses (see nf_nat_proto.c
-> for reference). You can guard the path for IPv6 with
-> IS_ENABLED(CONFIG_IPV6) to optimize IPv4-only systems a bit.
-
-As you can see in __udpv4_gso_segment_list_csum, we compare
-ports and addrs. We should use *struct ipv6hdr* to compare the values
-for IPv6 but I am not sure the struct could be under net/ipv4.
-
-The initial idea was to support both IPv4 and IPv6. Thanks, that's a
-good point. But the supporting IPv6 would be a new feature. I want to
-fix IPv4 first, so the title is restricted to ipv4.
-
-> 
-> >  }
-> >
-> >  struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
-> > -				  netdev_features_t features)
-> > +				  netdev_features_t features, bool is_ipv6)
-> >  {
-> >  	struct sock *sk = gso_skb->sk;
-> >  	unsigned int sum_truesize = 0;
-> > @@ -214,7 +273,7 @@ struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
-> >  	__be16 newlen;
-> >
-> >  	if (skb_shinfo(gso_skb)->gso_type & SKB_GSO_FRAGLIST)
-> > -		return __udp_gso_segment_list(gso_skb, features);
-> > +		return __udp_gso_segment_list(gso_skb, features, is_ipv6);
-> >
-> >  	mss = skb_shinfo(gso_skb)->gso_size;
-> >  	if (gso_skb->len <= sizeof(*uh) + mss)
-> > @@ -328,7 +387,7 @@ static struct sk_buff *udp4_ufo_fragment(struct sk_buff *skb,
-> >  		goto out;
-> >
-> >  	if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4)
-> > -		return __udp_gso_segment(skb, features);
-> > +		return __udp_gso_segment(skb, features, false);
-> >
-> >  	mss = skb_shinfo(skb)->gso_size;
-> >  	if (unlikely(skb->len <= mss))
-> > diff --git a/net/ipv6/udp_offload.c b/net/ipv6/udp_offload.c
-> > index c7bd7b1..faa823c 100644
-> > --- a/net/ipv6/udp_offload.c
-> > +++ b/net/ipv6/udp_offload.c
-> > @@ -42,7 +42,7 @@ static struct sk_buff *udp6_ufo_fragment(struct sk_buff *skb,
-> >  			goto out;
-> >
-> >  		if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4)
-> > -			return __udp_gso_segment(skb, features);
-> > +			return __udp_gso_segment(skb, features, true);
-> >
-> >  		mss = skb_shinfo(skb)->gso_size;
-> >  		if (unlikely(skb->len <= mss))
-> > --
-> > 2.7.4
-> 
-> Thanks,
-> Al
-
-
+DQo+PiBPbiBGZWIgMSwgMjAyMSwgYXQgNDowNiBBTSwgd2FuZ2hvbmd6aGUgPHdhbmdob25nemhl
+QGh1YXdlaS5jb20+IHdyb3RlOg0KPj4gDQo+PiDvu79JZiBhIHRocmVhZChBKSdzIFRTWU5DIGZs
+YWcgaXMgc2V0IGZyb20gc2VjY29tcCgpLCB0aGVuIGl0IHdpbGwgDQo+PiBzeW5jaHJvbml6ZSBp
+dHMgc2VjY29tcCBmaWx0ZXIgdG8gb3RoZXIgdGhyZWFkcyhCKSBpbiBzYW1lIHRocmVhZCANCj4+
+IGdyb3VwLiBUbyBhdm9pZCByYWNlIGNvbmRpdGlvbiwgc2VjY29tcCBwdXRzIHJtYigpIGJldHdl
+ZW4gcmVhZGluZyB0aGUgDQo+PiBtb2RlIGFuZCBmaWx0ZXIgaW4gc2VjY29tcCBjaGVjayBwYXRj
+aChpbiBCIHRocmVhZCkuDQo+PiBBcyBhIHJlc3VsdCwgZXZlcnkgc3lzY2FsbCdzIHNlY2NvbXAg
+Y2hlY2sgaXMgc2xvd2VkIGRvd24gYnkgdGhlIA0KPj4gbWVtb3J5IGJhcnJpZXIuDQo+PiANCj4+
+IEhvd2V2ZXIsIHdlIGNhbiBvcHRpbWl6ZSBpdCBieSBjYWxsaW5nIHJtYigpIG9ubHkgd2hlbiBm
+aWx0ZXIgaXMgTlVMTCANCj4+IGFuZCByZWFkaW5nIGl0IGFnYWluIGFmdGVyIHRoZSBiYXJyaWVy
+LCB3aGljaCBtZWFucyB0aGUgcm1iKCkgaXMgDQo+PiBjYWxsZWQgb25seSBvbmNlIGluIHRocmVh
+ZCBsaWZldGltZS4NCj4+IA0KPj4gVGhlICdmaWx0ZXIgaXMgTlVMTCcgY29uZGl0b24gbWVhbnMg
+dGhhdCBpdCBpcyB0aGUgZmlyc3QgdGltZSANCj4+IGF0dGFjaGluZyBmaWx0ZXIgYW5kIGlzIGJ5
+IG90aGVyIHRocmVhZChBKSB1c2luZyBUU1lOQyBmbGFnLg0KPj4gSW4gdGhpcyBjYXNlLCB0aHJl
+YWQgQiBtYXkgcmVhZCB0aGUgZmlsdGVyIGZpcnN0IGFuZCBtb2RlIGxhdGVyIGluIENQVSANCj4+
+IG91dC1vZi1vcmRlciBleGVjdGlvbi4gQWZ0ZXIgdGhpcyB0aW1lLCB0aGUgdGhyZWFkIEIncyBt
+b2RlIGlzIGFsd2F5cyANCj4+IGJlIHNldCwgYW5kIHRoZXJlIHdpbGwgbm8gcmFjZSBjb25kaXRp
+b24gd2l0aCB0aGUgZmlsdGVyL2JpdG1hcC4NCj4+IA0KPj4gSW4gYWRkdGlvbiwgd2Ugc2hvdWxk
+IHB1dHMgYSB3cml0ZSBtZW1vcnkgYmFycmllciBiZXR3ZWVuIHdyaXRpbmcgdGhlIA0KPj4gZmls
+dGVyIGFuZCBtb2RlIGluIHNtcF9tYl9fYmVmb3JlX2F0b21pYygpLCB0byBhdm9pZCB0aGUgcmFj
+ZSANCj4+IGNvbmRpdGlvbiBpbiBUU1lOQyBjYXNlLg0KPg0KPiBJIGhhdmVu4oCZdCBmdWxseSB3
+b3JrZWQgdGhpcyBvdXQsIGJ1dCBybWIoKSBpcyBib2d1cy4gVGhpcyBzaG91bGQgYmUgc21wX3Jt
+YigpLg0KDQpZZXMsIEkgdGhpbmsgeW91IGFyZSByaWdodC5JIHdpbGwgZml4IGl0IGFuZCBzZW5k
+IGFub3RoZXIgcGF0Y2guDQo+PiANCj4+IFNpZ25lZC1vZmYtYnk6IHdhbmdob25nemhlIDx3YW5n
+aG9uZ3poZUBodWF3ZWkuY29tPg0KPj4gLS0tDQo+PiBrZXJuZWwvc2VjY29tcC5jIHwgMzEgKysr
+KysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLQ0KPj4gMSBmaWxlIGNoYW5nZWQsIDIyIGluc2Vy
+dGlvbnMoKyksIDkgZGVsZXRpb25zKC0pDQo+PiANCj4+IGRpZmYgLS1naXQgYS9rZXJuZWwvc2Vj
+Y29tcC5jIGIva2VybmVsL3NlY2NvbXAuYyBpbmRleCANCj4+IDk1MmRjMWM5MDIyOS4uYjk0NGNi
+MmI2Yjk0IDEwMDY0NA0KPj4gLS0tIGEva2VybmVsL3NlY2NvbXAuYw0KPj4gKysrIGIva2VybmVs
+L3NlY2NvbXAuYw0KPj4gQEAgLTM5Nyw4ICszOTcsMjAgQEAgc3RhdGljIHUzMiBzZWNjb21wX3J1
+bl9maWx0ZXJzKGNvbnN0IHN0cnVjdCBzZWNjb21wX2RhdGEgKnNkLA0KPj4gICAgICAgICAgICBS
+RUFEX09OQ0UoY3VycmVudC0+c2VjY29tcC5maWx0ZXIpOw0KPj4gDQo+PiAgICAvKiBFbnN1cmUg
+dW5leHBlY3RlZCBiZWhhdmlvciBkb2Vzbid0IHJlc3VsdCBpbiBmYWlsaW5nIG9wZW4uICovDQo+
+PiAtICAgIGlmIChXQVJOX09OKGYgPT0gTlVMTCkpDQo+PiAtICAgICAgICByZXR1cm4gU0VDQ09N
+UF9SRVRfS0lMTF9QUk9DRVNTOw0KPj4gKyAgICBpZiAoV0FSTl9PTihmID09IE5VTEwpKSB7DQo+
+PiArICAgICAgICAvKg0KPj4gKyAgICAgICAgICogTWFrZSBzdXJlIHRoZSBmaXJzdCBmaWx0ZXIg
+YWRkdGlvbiAoZnJvbSBhbm90aGVyDQo+PiArICAgICAgICAgKiB0aHJlYWQgdXNpbmcgVFNZTkMg
+ZmxhZykgYXJlIHNlZW4uDQo+PiArICAgICAgICAgKi8NCj4+ICsgICAgICAgIHJtYigpOw0KPj4g
+KyAgICAgICAgDQo+PiArICAgICAgICAvKiBSZWFkIGFnYWluICovDQo+PiArICAgICAgICBmID0g
+UkVBRF9PTkNFKGN1cnJlbnQtPnNlY2NvbXAuZmlsdGVyKTsNCj4+ICsNCj4+ICsgICAgICAgIC8q
+IEVuc3VyZSB1bmV4cGVjdGVkIGJlaGF2aW9yIGRvZXNuJ3QgcmVzdWx0IGluIGZhaWxpbmcgb3Bl
+bi4gKi8NCj4+ICsgICAgICAgIGlmIChXQVJOX09OKGYgPT0gTlVMTCkpDQo+PiArICAgICAgICAg
+ICAgcmV0dXJuIFNFQ0NPTVBfUkVUX0tJTExfUFJPQ0VTUzsNCj4+ICsgICAgfQ0KPj4gDQo+PiAg
+ICBpZiAoc2VjY29tcF9jYWNoZV9jaGVja19hbGxvdyhmLCBzZCkpDQo+PiAgICAgICAgcmV0dXJu
+IFNFQ0NPTVBfUkVUX0FMTE9XOw0KPj4gQEAgLTYxNCw5ICs2MjYsMTYgQEAgc3RhdGljIGlubGlu
+ZSB2b2lkIHNlY2NvbXBfc3luY190aHJlYWRzKHVuc2lnbmVkIGxvbmcgZmxhZ3MpDQo+PiAgICAg
+ICAgICogZXF1aXZhbGVudCAoc2VlIHB0cmFjZV9tYXlfYWNjZXNzKSwgaXQgaXMgc2FmZSB0bw0K
+Pj4gICAgICAgICAqIGFsbG93IG9uZSB0aHJlYWQgdG8gdHJhbnNpdGlvbiB0aGUgb3RoZXIuDQo+
+PiAgICAgICAgICovDQo+PiAtICAgICAgICBpZiAodGhyZWFkLT5zZWNjb21wLm1vZGUgPT0gU0VD
+Q09NUF9NT0RFX0RJU0FCTEVEKQ0KPj4gKyAgICAgICAgaWYgKHRocmVhZC0+c2VjY29tcC5tb2Rl
+ID09IFNFQ0NPTVBfTU9ERV9ESVNBQkxFRCkgew0KPj4gKyAgICAgICAgICAgIC8qDQo+PiArICAg
+ICAgICAgICAgICogTWFrZSBzdXJlIG1vZGUgY2Fubm90IGJlIHNldCBiZWZvcmUgdGhlIGZpbHRl
+cg0KPj4gKyAgICAgICAgICAgICAqIGFyZSBzZXQuDQo+PiArICAgICAgICAgICAgICovDQo+PiAr
+ICAgICAgICAgICAgc21wX21iX19iZWZvcmVfYXRvbWljKCk7DQo+PiArDQo+PiAgICAgICAgICAg
+IHNlY2NvbXBfYXNzaWduX21vZGUodGhyZWFkLCBTRUNDT01QX01PREVfRklMVEVSLA0KPj4gICAg
+ICAgICAgICAgICAgICAgICAgICBmbGFncyk7DQo+PiArICAgICAgICB9DQo+PiAgICB9DQo+PiB9
+DQo+PiANCj4+IEBAIC0xMTYwLDEyICsxMTc5LDYgQEAgc3RhdGljIGludCBfX3NlY2NvbXBfZmls
+dGVyKGludCB0aGlzX3N5c2NhbGwsIGNvbnN0IHN0cnVjdCBzZWNjb21wX2RhdGEgKnNkLA0KPj4g
+ICAgaW50IGRhdGE7DQo+PiAgICBzdHJ1Y3Qgc2VjY29tcF9kYXRhIHNkX2xvY2FsOw0KPj4gDQo+
+PiAtICAgIC8qDQo+PiAtICAgICAqIE1ha2Ugc3VyZSB0aGF0IGFueSBjaGFuZ2VzIHRvIG1vZGUg
+ZnJvbSBhbm90aGVyIHRocmVhZCBoYXZlDQo+PiAtICAgICAqIGJlZW4gc2VlbiBhZnRlciBTWVND
+QUxMX1dPUktfU0VDQ09NUCB3YXMgc2Vlbi4NCj4+IC0gICAgICovDQo+PiAtICAgIHJtYigpOw0K
+Pj4gLQ0KPj4gICAgaWYgKCFzZCkgew0KPj4gICAgICAgIHBvcHVsYXRlX3NlY2NvbXBfZGF0YSgm
+c2RfbG9jYWwpOw0KPj4gICAgICAgIHNkID0gJnNkX2xvY2FsOw0KPj4gLS0NCj4+IDIuMTkuMQ0K
+Pj4gDQo=
