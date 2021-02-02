@@ -2,125 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9828830BDB0
-	for <lists+bpf@lfdr.de>; Tue,  2 Feb 2021 13:07:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7427130BE42
+	for <lists+bpf@lfdr.de>; Tue,  2 Feb 2021 13:35:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230114AbhBBMHU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 2 Feb 2021 07:07:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36110 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230139AbhBBMHG (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 2 Feb 2021 07:07:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612267539;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mehHJF+/Hp3KHLeMA4Z0N4YM6ZtdnidDiwvZxW1mKcE=;
-        b=LQ0dQTWzkvEjdSAZP31MoZszEgfvF9aZygIYQpF8bwUAOJKCstK61K+4j+jRxYfNRpqwll
-        K0/+xyMeR5UdW+h7j9DHnOd+sxejCRPNaUF0yBlE0/v9sYzqEgk0w74q5LU4EN5+TmcpkB
-        0CPa+5aSUWScsT+LlK6wXdRR1j9yirc=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-277--qvV3jeqN5uPlVvBHvEBhw-1; Tue, 02 Feb 2021 07:05:37 -0500
-X-MC-Unique: -qvV3jeqN5uPlVvBHvEBhw-1
-Received: by mail-ed1-f69.google.com with SMTP id g6so1635235edy.9
-        for <bpf@vger.kernel.org>; Tue, 02 Feb 2021 04:05:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=mehHJF+/Hp3KHLeMA4Z0N4YM6ZtdnidDiwvZxW1mKcE=;
-        b=BuXw8Zb3QdgVH8VvWKFDBI9GBFVl0muiJFJFT2lyGl1YLY2/VneK/PFRuQ5hR/bbcD
-         c/GNyyLDKSAiI81aJN+m8P5sKqt6ULMl95tWZpK+CEl1yyBPj9xmm++YxQ0V3pZ5lPJF
-         QR3N0Zmwzc2PhsLJmrxjdP1n5w6BCOsJXSbRpkr9OzDXf7Bic3Zi6JtbzgIkum+cFI68
-         ZRyYhFEBw8cfm/6BAZvmcSRBqd3NNyMp6bfiuIvjXpafIhTGQqC4m3lWu2a2XAXvhaVR
-         DR89+KL4GMnfPZUQzD3ZzIYvqZa2hyLrb5HllrrjjMA15rAWCVOwKmcrZ9OuC95Fgo6C
-         g6PA==
-X-Gm-Message-State: AOAM531zJ1JYWGH7BhHY79aW4ON8FyR8Y3UrpGgjkkZ4IVOeBSc/6VcZ
-        /WJwu6RaLYlEkr/lBf1TgaIZA0KTlpu4qggNyqzRdcZRYkUFizz2NzLUm6aVvdzbvgTpMZ7HK4D
-        wW1kHN5ZhSiQU
-X-Received: by 2002:aa7:de19:: with SMTP id h25mr11597075edv.145.1612267536057;
-        Tue, 02 Feb 2021 04:05:36 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz+EBuBoDLfhwAot1dUjDT+O5gyu5qLkpgYj7zLuuSfOh78WjxxwcsOLudJAXo9hfBpiNAvzA==
-X-Received: by 2002:aa7:de19:: with SMTP id h25mr11597042edv.145.1612267535765;
-        Tue, 02 Feb 2021 04:05:35 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id m20sm10416216edj.43.2021.02.02.04.05.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 04:05:35 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 9FBC8180367; Tue,  2 Feb 2021 13:05:34 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Marek Majtyka <alardam@gmail.com>
-Cc:     Saeed Mahameed <saeed@kernel.org>, David Ahern <dsahern@gmail.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, hawk@kernel.org,
-        bpf <bpf@vger.kernel.org>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        jeffrey.t.kirsher@intel.com
-Subject: Re: [PATCH v2 bpf 1/5] net: ethtool: add xdp properties flag set
-In-Reply-To: <CAAOQfrHA+-BsikeQzXYcK_32BZMbm54x5p5YhAiBj==uaZvG1w@mail.gmail.com>
-References: <20201204102901.109709-1-marekx.majtyka@intel.com>
- <20201204102901.109709-2-marekx.majtyka@intel.com>
- <878sad933c.fsf@toke.dk> <20201204124618.GA23696@ranger.igk.intel.com>
- <048bd986-2e05-ee5b-2c03-cd8c473f6636@iogearbox.net>
- <20201207135433.41172202@carbon>
- <5fce960682c41_5a96208e4@john-XPS-13-9370.notmuch>
- <20201207230755.GB27205@ranger.igk.intel.com>
- <5fd068c75b92d_50ce20814@john-XPS-13-9370.notmuch>
- <20201209095454.GA36812@ranger.igk.intel.com>
- <20201209125223.49096d50@carbon>
- <e1573338-17c0-48f4-b4cd-28eeb7ce699a@gmail.com>
- <1e5e044c8382a68a8a547a1892b48fb21d53dbb9.camel@kernel.org>
- <cb6b6f50-7cf1-6519-a87a-6b0750c24029@gmail.com>
- <f4eb614ac91ee7623d13ea77ff3c005f678c512b.camel@kernel.org>
- <d5be0627-6a11-9c1f-8507-cc1a1421dade@gmail.com>
- <6f8c23d4ac60525830399754b4891c12943b63ac.camel@kernel.org>
- <CAAOQfrHN1-oHmbOksDv-BKWv4gDF2zHZ5dTew6R_QTh6s_1abg@mail.gmail.com>
- <87h7mvsr0e.fsf@toke.dk>
- <CAAOQfrHA+-BsikeQzXYcK_32BZMbm54x5p5YhAiBj==uaZvG1w@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 02 Feb 2021 13:05:34 +0100
-Message-ID: <87bld2smi9.fsf@toke.dk>
+        id S231300AbhBBMeu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 2 Feb 2021 07:34:50 -0500
+Received: from mail-eopbgr70084.outbound.protection.outlook.com ([40.107.7.84]:4069
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229590AbhBBMer (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 2 Feb 2021 07:34:47 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dWB6IHbgaLHloCp37nayhsVPvFfTz47PWixLwoATi+4rF1DJ8wOUIWugjV19i2eOeUNsoEW0HH5qcLz+mQTrxzZEIxfjFiNAd19K5cgYzI4PCWiptZP9wZs4GnUGe79/+eneTqyVj2pCk1DyfQHG7eIRrbcGTHSQdyPbvz7flvKbEUrbJT+h9LjTQHEX7nDLOoXLACv6r7gVG7isAINkoama19XL6B8wtcZ0x+qge23ECRFJL2KFyJAsNCx6cg58dDyLJsVtzjnYKeeOI820JB0V1YFnWv4f7EDVKJa3TSH0apqPa6u02Gd09IX6tO6HrEqCj1Fu+w7PDDPFs+6VpA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XFGohC2cm+7hiKHqBequx4P2SZQOXjJ1FauRcCgjxmA=;
+ b=j4xQUDB8jYQhCmbBnhDan6NOMHUqD1yAXw2DtMk/IqDdZLwHdlH1JOvhmv4SI3KV5F4GB66lkSJV0WRIMdaCKPCYEllK7FNnQOBpn+uKZpMpuM/meLn8XfN5XDrwn6WkQkJUD0gjeDPi8vuAGhTegwWIMduNfyvLWoJVuD4JxXR0Qj9PuEgh/aWE1gc4VeJDPDOZP+V7+AMi7Y15J9lLyqrl+aUyEvSwss1hvK92AKYrDsfDpA5E0VC/b1nvq0RmBV63A8+A+xlbLKp2K4QlP8dFPpFwClhoXJdfQQ86YHdzfEyFjr4OMFAy8r+KhJo7MbQMTpCvBaFkFAEoH1UxPA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XFGohC2cm+7hiKHqBequx4P2SZQOXjJ1FauRcCgjxmA=;
+ b=cc3nSZ1Csx5fsKN9xbVrm8n8fLdzv2KDhQiW6jJsns0nFbefOXIoQ85MNEvJP7cPsuanl2FRdwNDk04mpeWRjgySDKx/i+MNQFM11qV6LkzZmTFiCVmtKdPCtX1edeLs1dDivy1O5SqwnyxFINOQlri5CpWHxruVLDfPMvxlQdg=
+Received: from VI1PR0402MB3871.eurprd04.prod.outlook.com
+ (2603:10a6:803:16::14) by VE1PR04MB6445.eurprd04.prod.outlook.com
+ (2603:10a6:803:11c::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.19; Tue, 2 Feb
+ 2021 12:33:57 +0000
+Received: from VI1PR0402MB3871.eurprd04.prod.outlook.com
+ ([fe80::b0d0:3a81:c999:e88]) by VI1PR0402MB3871.eurprd04.prod.outlook.com
+ ([fe80::b0d0:3a81:c999:e88%3]) with mapi id 15.20.3805.028; Tue, 2 Feb 2021
+ 12:33:57 +0000
+From:   Ioana Ciornei <ioana.ciornei@nxp.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+CC:     Ioana Ciocoi Radulescu <ruxandra.radulescu@nxp.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "hawk@kernel.org" <hawk@kernel.org>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "kafai@fb.com" <kafai@fb.com>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "yhs@fb.com" <yhs@fb.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+Subject: Re: [PATCH] dpaa2-eth: Simplify the calculation of variables
+Thread-Topic: [PATCH] dpaa2-eth: Simplify the calculation of variables
+Thread-Index: AQHW+UqUQ+Vok9fAFUqJqoxZiaDPhqpEzMMA
+Date:   Tue, 2 Feb 2021 12:33:56 +0000
+Message-ID: <20210202123356.ythsfeyfk2uuegcc@skbuf>
+References: <1612260157-128026-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <1612260157-128026-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linux.alibaba.com; dkim=none (message not signed)
+ header.d=none;linux.alibaba.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [5.12.227.87]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 38753a5a-bc39-4860-687b-08d8c776cf6e
+x-ms-traffictypediagnostic: VE1PR04MB6445:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VE1PR04MB644541AB6BC376DA6D1C4E81E0B59@VE1PR04MB6445.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: PjgEQVCDTf0LQ/ox119qS9W5piSzRISbtoMzqdCmZpAJMvxd2eaeAQZEC7ku/zgi4bTUFjzzKssnjpikou2mTexQxtUWcS3+lP7iXE228H8yDz7Y1xnZjIxJPKdtWCO2bO8MFKVEC2IAHifK3IRzjkax1LpWnOgRplMatIzu1Wfr5XZWUSDe+x4bhxxHHFkB7kZTJAuF5ogJp+B2E6OERSRYx/bWiHc/WWzij2JygHrpEMcximPc+gboZ7KWPh11WBsape2sYt6N5S+XslivTxo4/nWBNajy9neIhm1/n2Rqwz5oX3S+Q3/MmF/jGbVmXvT9RcI6jZyAbdsCExa6jmEgjJr2oQtx09s7f/EMTxzWccszE2Y2StGYlsEDcTQBvFDsXGlBmnpMxqchkEYa49P4bcCitX91WTT8Pyo8uKmAkETMKPsNDudcX3kQUlAdmbBbEwPXCeUnVgjgB1/98LCx3bs2IzOIk+8vLoV/Wow2zOw6aYivOSiBf4ll8LinH9IoU2U/TJmc+Jtyq4jmhw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3871.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(396003)(39860400002)(136003)(376002)(366004)(346002)(6506007)(8936002)(6512007)(9686003)(2906002)(1076003)(91956017)(7416002)(316002)(6486002)(76116006)(26005)(8676002)(54906003)(44832011)(86362001)(478600001)(186003)(33716001)(6916009)(66556008)(66476007)(66446008)(64756008)(83380400001)(5660300002)(66946007)(71200400001)(4326008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?F52DJbvyfnHKvmmvDRMawPME0hvY3STOBMXydmkn3V2rs3VUYa8IFh0QRtAf?=
+ =?us-ascii?Q?NZg1GkBEvoCW1dslXObk+x3DhFG0UZe6w/DOc0LFoMyvz/KR3QmtkD6Dr+TQ?=
+ =?us-ascii?Q?8CBQYA1uiRBR8MW7n02clDIMN92zfmgNZ/Pb+bzE8gYHoIYpoceg70+ESJZb?=
+ =?us-ascii?Q?0wGo6TrRJ8T23b3fMkOdcY8hLvGx0uvtgxyJ9Lpd1aqRemC40wW+N10uuwvI?=
+ =?us-ascii?Q?deZNgeJzCJmgyLE5nHcydqWuzL3OmUVloxohQZ2M4JKPuC9/AxSmrTlSk/d3?=
+ =?us-ascii?Q?Jpb62vLrxO94bVKpp+/da7a1CJMN08fFtv7TcS0jiyVj0gKF22uFfFni7DpZ?=
+ =?us-ascii?Q?oQhqyQ8wV+zSggz9SJejkmDRDb9tAYWNQP8F1FJtOoLjYq7pESQiLGxJ3fR5?=
+ =?us-ascii?Q?v3GArmOdCMUpaL55nQtL8RvoQDht0KoZ6ZjItPgRIYiFlSVXH/BFDkxMP+55?=
+ =?us-ascii?Q?xgIFhqA29mcS0jFLdcPajLpH6jctXTffD9SsIthanelkkbHATjusWhvPhLgi?=
+ =?us-ascii?Q?TOJcSuP3fO53RuqjNBs3ziE2W2ID1Aolpb+NDdqUq+uMwXOdk1vcN6gbqW2k?=
+ =?us-ascii?Q?Kn2WobZGePgk5yEdEXZPV5cz81ioPejK1lvyFx/RKFebIX9fdUsILigMMWoJ?=
+ =?us-ascii?Q?fS8QpCvaUg2Y7dtsjqOUrE7IgLv3Ff6qsG7aS04SZq1VBNH86nfHSkbP1o08?=
+ =?us-ascii?Q?FQeJtIxoZwatM/tt7EDAatgLjsDprHTLBfNCdW1x2oXolGDfXnl9Sb2MWX2d?=
+ =?us-ascii?Q?sm6l0T6zf1kCUo1BtTahfJ296UceUhLQ4YwPla5QpzrlUU/Hl6oKUZ4TpU+b?=
+ =?us-ascii?Q?3ZqU/AaxtEtaVMlBnL6cLRZrGnrsftmAJz8FKTiMa+uFasw8CzNJVLc3bGDs?=
+ =?us-ascii?Q?H8E1A00E2YQ9rkHXEQD90CRJRoV+Rc7FLgthd0P8ksyi59MkeM13m1yNBMvu?=
+ =?us-ascii?Q?3heIOGhWXlt2xb4UbZAC87cbuDpzcet/uQMRnxe3+LU4O5T0KDkiK1b/AClT?=
+ =?us-ascii?Q?7nRPGNt2QvyPFFt2N4WlOrJEkziudLN9WXy3L7NyzKVK3XrEX6UxUJ1hMXCd?=
+ =?us-ascii?Q?xLp5lVX4?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <28058608A25B884482ECA752160330CC@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3871.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 38753a5a-bc39-4860-687b-08d8c776cf6e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Feb 2021 12:33:57.1553
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: AtNWTsV/AZ8j4kInmUjfyqmC3P/tG+LbLpYmyiIOQFokv9fXkbdU9EVTISsPyfVc8rZ96Q19yLjo1KZx92NiVA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6445
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Marek Majtyka <alardam@gmail.com> writes:
+On Tue, Feb 02, 2021 at 06:02:37PM +0800, Jiapeng Chong wrote:
+> Fix the following coccicheck warnings:
+>=20
+> ./drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c:1651:36-38: WARNING
+> !A || A && B is equivalent to !A || B.
+>=20
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Acked-by: Ioana Ciornei <ioana.ciornei@nxp.com>
 
-> Thanks Toke,
->
-> In fact, I was waiting for a single confirmation, disagreement or
-> comment. I have it now. As there are no more comments, I am getting
-> down to work right away.
-
-Awesome! And sorry for not replying straight away - I hate it when I
-send out something myself and receive no replies, so I suppose I should
-get better at not doing that myself :)
-
-As for the inclusion of the XDP_BASE / XDP_LIMITED_BASE sets (which I
-just realised I didn't reply to), I am fine with defining XDP_BASE as a
-shortcut for TX/ABORTED/PASS/DROP, but think we should skip
-XDP_LIMITED_BASE and instead require all new drivers to implement the
-full XDP_BASE set straight away. As long as we're talking about
-features *implemented* by the driver, at least; i.e., it should still be
-possible to *deactivate* XDP_TX if you don't want to use the HW
-resources, but I don't think there's much benefit from defining the
-LIMITED_BASE set as a shortcut for this mode...
-
--Toke
-
+> ---
+>  drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c b/drivers/n=
+et/ethernet/freescale/dpaa2/dpaa2-eth.c
+> index fb0bcd1..93f84c9 100644
+> --- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
+> +++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
+> @@ -1648,7 +1648,7 @@ void dpaa2_eth_set_rx_taildrop(struct dpaa2_eth_pri=
+v *priv,
+>  	 * CG taildrop threshold, so it won't interfere with it; we also
+>  	 * want frames in non-PFC enabled traffic classes to be kept in check)
+>  	 */
+> -	td.enable =3D !tx_pause || (tx_pause && pfc);
+> +	td.enable =3D !tx_pause || pfc;
+>  	if (priv->rx_cgtd_enabled =3D=3D td.enable)
+>  		return;
+> =20
+> --=20
+> 1.8.3.1
+> =
