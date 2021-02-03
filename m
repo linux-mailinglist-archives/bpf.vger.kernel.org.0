@@ -2,96 +2,111 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6897D30E13D
-	for <lists+bpf@lfdr.de>; Wed,  3 Feb 2021 18:39:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD7DA30E169
+	for <lists+bpf@lfdr.de>; Wed,  3 Feb 2021 18:50:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231363AbhBCRid (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Feb 2021 12:38:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39642 "EHLO
+        id S231627AbhBCRsK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Feb 2021 12:48:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229731AbhBCRia (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Feb 2021 12:38:30 -0500
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A4F4C061573;
-        Wed,  3 Feb 2021 09:37:50 -0800 (PST)
-Received: by mail-lj1-x230.google.com with SMTP id f19so17550ljn.5;
-        Wed, 03 Feb 2021 09:37:50 -0800 (PST)
+        with ESMTP id S232130AbhBCRsE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Feb 2021 12:48:04 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3412C061788
+        for <bpf@vger.kernel.org>; Wed,  3 Feb 2021 09:47:08 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id a17so76928ljq.2
+        for <bpf@vger.kernel.org>; Wed, 03 Feb 2021 09:47:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=cloudflare.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=3q+UPAtENPnhUZTyBdBqprfk1+k/9wHkbmh6uMGkygA=;
-        b=jxbXaerWzmnj9ICX44F5qlZWWt+k0oqRudED27GB+NLY+8bpHekdblE0Mm06JIiy39
-         n11fblEGb6zIi36Ar+UqdblvoUmYtcsHZ4DYA5l0ZkWMJUulXyFh5Z9aKtymUuwppq0q
-         eQLAO1PvKnxj32FslPBOBW1GU8BhzJCrSW1IbYNVk5vDSQSCSp2Oe76E5oY0gMJ9mw2z
-         3Wu3PZXDAH7VRO4GTbBXmzMd+XnkDEIhocex9KaoC868l2CosG0+2AwAOG1fIny55JRs
-         BndCm7XuY2k/Qzxstr2lJ59dXmJSEC3UVY5fr8YXVQUAH1AEPzp/H9WtS/lU58xNRj9/
-         IaTQ==
+        bh=0Sd7lpuzzYzAe84omnrWYz0GYPR/9/jZDwcpOZKoCos=;
+        b=rAHCkrSCSvsO3i942zxFGAk0xb59fBgQ9tJbci20Qr8DGAfbkfFqUS0o0lV+OAJMgn
+         JOSqWMGKZzFwQMVac947lcIMwL6Tc5F0tVcjRhUHs9tzA6STcT7JKCU3wT2IirVckFFg
+         v7A4WB7VsSJXr/haxcAPud+QTaGWwMHaudZig=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=3q+UPAtENPnhUZTyBdBqprfk1+k/9wHkbmh6uMGkygA=;
-        b=ip/WJyMLkUog6eY2K/LpjZAO+wgvAKhPYNqQg1g4MBYgJAUl+4ztDf2WwM1rHtmBhE
-         05v3rCwjr0dvgZQ780lbuJ/P1BRM2nsktb5sNk6Jy4May3I7w2MyxrprPulAmvHMEtdK
-         Q/dM6Y+YTJhY6x+Jhox06BNYxye5RhWMCMOHJhpoUnj2U3O6UT+Bhtv+3+0tie4OP7r7
-         00Eoo513Nd73aVYY1VpBP6hMeLq5fGL4E0jIijhoXItiJQ4z/6k3Vq0tPX6wzjtk2sRT
-         wik+/VGL6CJkLrT18MwvJq+Gno3ZXmNdie4olU3XVbw3jxim03ilCf5mSb+Ev+VxTkUP
-         M1GA==
-X-Gm-Message-State: AOAM533tpu8GOusE2+TMCPcceWsZKmSFFY5jpLhdgyov7PF3Psk1aUBW
-        DiB/qKZuQuMgzxWQZxVI2wfK+0WvSIADadUbwrKLuEzU
-X-Google-Smtp-Source: ABdhPJzoIX1w5qTGwHd+UeZvX+UUlWH/gojsSF/e9+apOZSMSSNxnPr2krku08s19F3iPL2OR7BtZW/BPkBlM2vKxKU=
-X-Received: by 2002:a05:651c:233:: with SMTP id z19mr2272461ljn.486.1612373868842;
- Wed, 03 Feb 2021 09:37:48 -0800 (PST)
+        bh=0Sd7lpuzzYzAe84omnrWYz0GYPR/9/jZDwcpOZKoCos=;
+        b=tLJIibUiP/FY0sa4JomQ63Le1M2qtAsXp0OJzSi01DpQZB4LRkX9etvSZY5vTTX/P/
+         dC8KEasQJTyZnf1XCUo3DPLJP98XSENLHHkQxf+ZNB8tdPXIu55zkuUh+JSBSZTxITPx
+         jRKfux32PNrfMdf4Vu/uqxdgiMHoOSSUOYzDhMs5iHedhCWrwKu6XjC78WpryHF5eOX3
+         c1aqstb1BeMZ/aYfYmTgK3HPzm/8pmCH3LpkYNB9dr8ttWokUj1ps64d9RMBAsNNMqcs
+         Zs9tjSgi/cSt/m5a3Dv5fYHZVS+b319PYD1vEQ/jDYIV32Pa4MwNENsiyz3h8CoOqWoH
+         1oRw==
+X-Gm-Message-State: AOAM532fJVwuwDN7ezApKIsjrC1tNLB7klj+fw44ybT2/a1pBTpI5ono
+        kOdwYMOLTa5ohBNyzhqlrSR4YfxsAFGhHVYtGP3FAQ==
+X-Google-Smtp-Source: ABdhPJzdVb3Jed1F5NgGdDtfAd5oNibLzyOzFOWG4eVNHu9dYMCxEE44x+nn5372HQ8P/nr1dxBBfvSeiQCWg8NBeQU=
+X-Received: by 2002:a2e:9cc8:: with SMTP id g8mr2376414ljj.479.1612374426835;
+ Wed, 03 Feb 2021 09:47:06 -0800 (PST)
 MIME-Version: 1.0
-References: <20210202135002.4024825-1-jackmanb@google.com> <3160ff36-3f5b-e278-0ce8-b5a4aa61417f@fb.com>
-In-Reply-To: <3160ff36-3f5b-e278-0ce8-b5a4aa61417f@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 3 Feb 2021 09:37:37 -0800
-Message-ID: <CAADnVQL4S_XbyNEFrX9+6ew_6wyMZfQXW8t7pHu1eLdY0mgtJQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3] bpf: Propagate stack bounds to registers in
- atomics w/ BPF_FETCH
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Brendan Jackman <jackmanb@google.com>, bpf <bpf@vger.kernel.org>,
+References: <CABWYdi3HjduhY-nQXzy2ezGbiMB1Vk9cnhW2pMypUa+P1OjtzQ@mail.gmail.com>
+ <CABWYdi27baYc3ShHcZExmmXVmxOQXo9sGO+iFhfZLq78k8iaAg@mail.gmail.com> <YBrTaVVfWu2R0Hgw@hirez.programming.kicks-ass.net>
+In-Reply-To: <YBrTaVVfWu2R0Hgw@hirez.programming.kicks-ass.net>
+From:   Ivan Babrou <ivan@cloudflare.com>
+Date:   Wed, 3 Feb 2021 09:46:55 -0800
+Message-ID: <CABWYdi2ephz57BA8bns3reMGjvs5m0hYp82+jBLZ6KD3Ba6zdQ@mail.gmail.com>
+Subject: Re: BUG: KASAN: stack-out-of-bounds in unwind_next_frame+0x1df5/0x2650
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     kernel-team <kernel-team@cloudflare.com>,
+        Ignat Korchagin <ignat@cloudflare.com>,
+        Hailong liu <liu.hailong6@zte.com.cn>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Julien Thierry <jthierry@redhat.com>,
+        Jiri Slaby <jirislaby@kernel.org>, kasan-dev@googlegroups.com,
+        linux-mm@kvack.org, linux-kernel <linux-kernel@vger.kernel.org>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
+        KP Singh <kpsingh@chromium.org>,
+        Robert Richter <rric@kernel.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 3, 2021 at 9:07 AM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 2/2/21 5:50 AM, Brendan Jackman wrote:
-> > When BPF_FETCH is set, atomic instructions load a value from memory
-> > into a register. The current verifier code first checks via
-> > check_mem_access whether we can access the memory, and then checks
-> > via check_reg_arg whether we can write into the register.
-> >
-> > For loads, check_reg_arg has the side-effect of marking the
-> > register's value as unkonwn, and check_mem_access has the side effect
-> > of propagating bounds from memory to the register. This currently only
-> > takes effect for stack memory.
-> >
-> > Therefore with the current order, bounds information is thrown away,
-> > but by simply reversing the order of check_reg_arg
-> > vs. check_mem_access, we can instead propagate bounds smartly.
-> >
-> > A simple test is added with an infinite loop that can only be proved
-> > unreachable if this propagation is present. This is implemented both
-> > with C and directly in test_verifier using assembly.
-> >
-> > Suggested-by: John Fastabend <john.fastabend@gmail.com>
-> > Signed-off-by: Brendan Jackman <jackmanb@google.com>
->
-> Ack with a nit below.
+> Can you pretty please not line-wrap console output? It's unreadable.
 
-Sorry it was already applied yesterday.
-patchbot just didn't send auto-reply.
+GMail doesn't make it easy, I'll send a link to a pastebin next time.
+Let me know if you'd like me to regenerate the decoded stack.
+
+> > edfd9b7838ba5e47f19ad8466d0565aba5c59bf0 is the first bad commit
+> > commit edfd9b7838ba5e47f19ad8466d0565aba5c59bf0
+>
+> Not sure what tree you're on, but that's not the upstream commit.
+
+I mentioned that it's a rebased core-static_call-2020-10-12 tag and
+added a link to the upstream hash right below.
+
+> > Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > Date:   Tue Aug 18 15:57:52 2020 +0200
+> >
+> >     tracepoint: Optimize using static_call()
+> >
+>
+> There's a known issue with that patch, can you try:
+>
+>   http://lkml.kernel.org/r/20210202220121.435051654@goodmis.org
+
+I've tried it on top of core-static_call-2020-10-12 tag rebased on top
+of v5.9 (to make it reproducible), and the patch did not help. Do I
+need to apply the whole series or something else?
