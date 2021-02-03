@@ -2,230 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8001130E502
-	for <lists+bpf@lfdr.de>; Wed,  3 Feb 2021 22:33:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B87AE30E525
+	for <lists+bpf@lfdr.de>; Wed,  3 Feb 2021 22:50:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231873AbhBCVcv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Feb 2021 16:32:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33724 "EHLO
+        id S229959AbhBCVs7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Feb 2021 16:48:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232246AbhBCVco (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Feb 2021 16:32:44 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9479FC061573
-        for <bpf@vger.kernel.org>; Wed,  3 Feb 2021 13:32:04 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id r2so1007024ybk.11
-        for <bpf@vger.kernel.org>; Wed, 03 Feb 2021 13:32:04 -0800 (PST)
+        with ESMTP id S229685AbhBCVs5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Feb 2021 16:48:57 -0500
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50F9AC061573;
+        Wed,  3 Feb 2021 13:48:17 -0800 (PST)
+Received: by mail-io1-xd34.google.com with SMTP id y19so1019826iov.2;
+        Wed, 03 Feb 2021 13:48:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=1ppjQRVfbDWJbfz905RRTNnrKq6a9sSMJAxZAUSu8bI=;
-        b=R+xiQuKT6W2GKAyCGcpAY67AgtxMveW60Wd9nab9ZAKV6immp8JndrpQ2ogNKQ2Dtk
-         kM31m8gyJwglk5XujLlJYiToPzranxmJp2dqxzCCOGx5b2hGkO59XZiWyHhpQgFfZiLK
-         s/VWSecDq/mNDL4dkMS7xOvQWBHCDIUVMI/9C2ksJHbL46nuitSXTa9MYyOFIiWahzWf
-         6j63Awlq4TVkwmRrX7G5UnIJDyJOxmEea0Tmi4Ww9cYqF+1xGTAsPf8B0Wl06IRFyVOd
-         vL1DIBZnoKQP6HtGkrHukVUXPTHS4IeBTZaJE+5itX3W1JU9uLcPRtmC+R6Uk8AGVHDv
-         Mmaw==
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=nTqV+R8t56296c8JuUfgr9lZlT9ZCtRpcpTT3uo8rh4=;
+        b=jxObuLg8vva6iafZBwhHs87KrcR2vrwngkwy8yUGaQLEi85lYUM4CoGeX4rf0Ct8aQ
+         PR4qeR/26U0e84hbjrzROfJntFuRbKqSKLu1MhjrzjJ42tHQur2Lnza6WZCbJg7ShbZ6
+         dwcf4c+5GRfQxgyEdp/2DKqXCehKIRyLkPGVCp22qhJAOhFDM+/k221xdKNzTaeklA94
+         sQAmkfGlVQ4dv901AApreuBVVDFygFLfthNmsTVk8Urq2FObWK7QJdWPd9AgE5L88r/o
+         MHwDSz3j2JmmYnk+e9ZN4ytXNyAFogLlpDK5HGnXqCJGTo5qBXamwUzlc6lxqa8dN1l0
+         2FVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=1ppjQRVfbDWJbfz905RRTNnrKq6a9sSMJAxZAUSu8bI=;
-        b=ripCMou5fDY8VjBdelrKp6h7ibdmJPFCY3pmfVIzWp3h99i1n+PjCclcmh72S7EMWY
-         ASdUOJ+ux6L0oNzZjFuhQrwThnNfnBA8Qn/WqTHrlDbLwKTjaRHSA4QHYkCdw2WjcAPS
-         9bXZVKdI66gp0ZAh4esd8PxN03VwVeCT/YLW6Tou3HH+vqjT3vJ4G+KEhOjdDZ/fhigf
-         wujKCIBHQG41xWdpaniomKGprYuVVVtHs1Q6030uVt2wROwk6pmjzNiv+twxTIGzDrUS
-         5DaMkfvvm9nj7x2+56JhSRapkNHisMS4yicM+5zhZDHsJ3IwiTlpLlUcWhL83PJf4sG8
-         8dbQ==
-X-Gm-Message-State: AOAM533+4orcpYJzNrGXcnCFcYyPZG+S/dU4VN7dvXcRj1apUGrmIsYT
-        LCJf0GkfsF2+EqVAKm3Q7S2JZwBDcexk/yCn2lIVzRYm+M6C0w==
-X-Google-Smtp-Source: ABdhPJyaTEMBNe44WLgqd4s8YaqUTu4hV4BQalgO2Rx4ITOuwt7h0jXJzaGmuqg8YAJL+HFzDZZUB2Mgndu3qE+ADlw=
-X-Received: by 2002:a25:da4d:: with SMTP id n74mr7652544ybf.347.1612387923920;
- Wed, 03 Feb 2021 13:32:03 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=nTqV+R8t56296c8JuUfgr9lZlT9ZCtRpcpTT3uo8rh4=;
+        b=MuLKRR8+ZLBpQuLL5svNMXwynARRzYBSptuq5T+0GnVRboV28loCOPhRXPXL809VD/
+         NbsyBfvXeyabyhRs4LTapy5fQ4w8wJRTkWMe01s3VycQXlngZ0yyp0g27LH7rhDei5iq
+         w+YH3glBo/YNiBSPJ2U7+Q+Xr3Jued2oBw6dJ7smIQWxHHW7gEWurPU/PkY7pwxF+PxS
+         Uq5HHiUUVmWnJkSHkcR/ir7gNmGYMByDNrDcuMVN8PhvlZmJe1EBX5fhGvBXGgveIUFh
+         yLyNq2frIX2keXMwkd/rwI6p8leRnWZGt/UqRdx5jIqPnbrrZsjuiwQsFmEzs3giVxBE
+         wdEg==
+X-Gm-Message-State: AOAM530ygAFbIS6fF1tiFjvKuhnKZ9xiB6093E2cZrcgyi+MSv7OytLL
+        zcukVYCn+n/vh2FOhpZo+NUM9D4ZF2zDf++RQSX87toYExyyow0V
+X-Google-Smtp-Source: ABdhPJyd7+UlFczlni9ZedEUeVecsDW1Xhc5NkEZeHzNb0puu7YTRQYmBM5zmC210b3rC/Y+4MbWPgYt0Dfdcym5QHM=
+X-Received: by 2002:a05:6602:150a:: with SMTP id g10mr4123618iow.75.1612388896722;
+ Wed, 03 Feb 2021 13:48:16 -0800 (PST)
 MIME-Version: 1.0
-References: <8a6894e9-71ef-09e3-64fa-bf6794fc6660@infradead.org>
- <87eehxa06v.fsf@toke.dk> <a6a8fbd6-c610-873e-12e1-b6b0fadb94be@infradead.org>
- <CAEf4Bzb7-jpQLStjtrWm+CvDkLGHR_LiVdb6YcagR2v-Yt42tw@mail.gmail.com>
- <44e6edc6-736e-dadb-c523-eabff8de89c0@infradead.org> <CAEf4BzbZNwHFYRtQZbEZrzqYF+8TenhZA8==N1wLO0nnbmi8Vw@mail.gmail.com>
- <93a6f6b6-167a-a2c6-f0dc-621d5a7bfc20@infradead.org> <CAEf4BzYMbu6X1kpx-oVuwsdrFAF9--_M5KGfFkiZomBPsuYHng@mail.gmail.com>
- <01ffaa2e-c0fd-95a1-a60a-eb90cbf868ad@infradead.org> <CAEf4BzaW-6_xFzD1tfyiU6vTa_02_0As+2RpRix+QpM2rWzUPQ@mail.gmail.com>
- <8c900f52-5fc7-c34d-b045-db6d23c07abf@infradead.org>
-In-Reply-To: <8c900f52-5fc7-c34d-b045-db6d23c07abf@infradead.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 3 Feb 2021 13:31:53 -0800
-Message-ID: <CAEf4BzYPOoqvznyh_Fmwn1qpx3qNZGLPbHSxu8cdr5KTSGuk3w@mail.gmail.com>
-Subject: Re: finding libelf
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        bpf <bpf@vger.kernel.org>
+References: <20210112184004.1302879-1-jolsa@kernel.org> <f3790a7d-73bc-d634-5994-d049c7a73eae@redhat.com>
+ <20210121133825.GB12699@kernel.org> <CA+icZUVsdcTEJjwpB7=05W5-+roKf66qTwP+M6QJKTnuP6TOVQ@mail.gmail.com>
+ <CAEf4BzaVAp=W47KmMsfpj_wuJR-Gvmav=tdKdoHKAC3AW-976w@mail.gmail.com>
+ <CA+icZUW6g9=sMD3hj5g+ZXOwE_DxfxO3SX2Tb-bFTiWnQLb_EA@mail.gmail.com>
+ <CAEf4BzZ-uU3vkMA1RPt1f2HbgaHoenTxeVadyxuLuFGwN9ntyw@mail.gmail.com>
+ <20210128200046.GA794568@kernel.org> <CAEf4BzbXhn2qAwNyDx6Oqaj7+RdBtjnPPLe27=B0-aB9yY+Xmw@mail.gmail.com>
+ <CA+icZUUTddV18rhZjaVif0a6BgpWtpj4mP1pyQ9cfh_e2xxvMQ@mail.gmail.com> <95233b493fd29b613f5bf3f92419528ce3298c14.camel@klomp.org>
+In-Reply-To: <95233b493fd29b613f5bf3f92419528ce3298c14.camel@klomp.org>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Wed, 3 Feb 2021 22:48:05 +0100
+Message-ID: <CA+icZUU+XEMnrwgOSRhAaO1bn2p62P6g1KVKGyJfRqxt_jr0Ew@mail.gmail.com>
+Subject: Re: [RFT] pahole 1.20 RC was Re: [PATCH] btf_encoder: Add extra
+ checks for symbol names
+To:     Mark Wielaard <mark@klomp.org>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Tom Stellard <tstellar@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>, dwarves@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Hao Luo <haoluo@google.com>,
+        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 3, 2021 at 12:57 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+On Wed, Feb 3, 2021 at 11:23 AM Mark Wielaard <mark@klomp.org> wrote:
 >
-> On 2/3/21 12:41 PM, Andrii Nakryiko wrote:
-> > On Wed, Feb 3, 2021 at 12:36 PM Randy Dunlap <rdunlap@infradead.org> wr=
-ote:
-> >>
-> >> On 2/3/21 12:33 PM, Andrii Nakryiko wrote:
-> >>> On Wed, Feb 3, 2021 at 12:15 PM Randy Dunlap <rdunlap@infradead.org> =
-wrote:
-> >>>>
-> >>>> On 2/3/21 12:12 PM, Andrii Nakryiko wrote:
-> >>>>> On Wed, Feb 3, 2021 at 12:09 PM Randy Dunlap <rdunlap@infradead.org=
-> wrote:
-> >>>>>>
-> >>>>>> On 2/3/21 11:39 AM, Andrii Nakryiko wrote:
-> >>>>>>> On Wed, Feb 3, 2021 at 9:22 AM Randy Dunlap <rdunlap@infradead.or=
-g> wrote:
-> >>>>>>>>
-> >>>>>>>> On 2/3/21 2:57 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> >>>>>>>>> Randy Dunlap <rdunlap@infradead.org> writes:
-> >>>>>>>>>
-> >>>>>>>>>> Hi,
-> >>>>>>>>>>
-> >>>>>>>>>> I see this sometimes when building a kernel: (on x86_64,
-> >>>>>>>>>> with today's linux-next 20210202):
-> >>>>>>>>>>
-> >>>>>>>>>>
-> >>>>>>>>>> CONFIG_CGROUP_BPF=3Dy
-> >>>>>>>>>> CONFIG_BPF=3Dy
-> >>>>>>>>>> CONFIG_BPF_SYSCALL=3Dy
-> >>>>>>>>>> CONFIG_ARCH_WANT_DEFAULT_BPF_JIT=3Dy
-> >>>>>>>>>> CONFIG_BPF_PRELOAD=3Dy
-> >>>>>>>>>> CONFIG_BPF_PRELOAD_UMD=3Dm
-> >>>>>>>>>> CONFIG_HAVE_EBPF_JIT=3Dy
-> >>>>>>>>>>
-> >>>>>>>>>>
-> >>>>>>>>>> Auto-detecting system features:
-> >>>>>>>>>> ...                        libelf: [ [31mOFF[m ]
-> >>>>>>>>>> ...                          zlib: [ [31mOFF[m ]
-> >>>>>>>>>> ...                           bpf: [ [31mOFF[m ]
-> >>>>>>>>>>
-> >>>>>>>>>> No libelf found
-> >>>>>>>>>> make[5]: [Makefile:287: elfdep] Error 1 (ignored)
-> >>>>>>>>>> No zlib found
-> >>>>>>>>>> make[5]: [Makefile:290: zdep] Error 1 (ignored)
-> >>>>>>>>>> BPF API too old
-> >>>>>>>>>> make[5]: [Makefile:293: bpfdep] Error 1 (ignored)
-> >>>>>>>>>>
-> >>>>>>>>>>
-> >>>>>>>>>> but pkg-config tells me:
-> >>>>>>>>>>
-> >>>>>>>>>> $ pkg-config --modversion  libelf
-> >>>>>>>>>> 0.168
-> >>>>>>>>>> $ pkg-config --libs  libelf
-> >>>>>>>>>> -lelf
-> >>>>>>>>>>
-> >>>>>>>>>>
-> >>>>>>>>>> Any ideas?
-> >>>>>>>>>
-> >>>>>>>>> This usually happens because there's a stale cache of the featu=
-re
-> >>>>>>>>> detection tests lying around somewhere. Look for a 'feature' di=
-rectory
-> >>>>>>>>> in whatever subdir you got that error. Just removing the featur=
-e
-> >>>>>>>>> directory usually fixes this; I've fixed a couple of places whe=
-re this
-> >>>>>>>>> is not picked up by 'make clean' (see, e.g., 9d9aae53b96d ("bpf=
-/preload:
-> >>>>>>>>> Make sure Makefile cleans up after itself, and add .gitignore")=
-) but I
-> >>>>>>>>> wouldn't be surprised if there are still some that are broken.
-> >>>>>>>>
-> >>>>>>>> Hi,
-> >>>>>>>>
-> >>>>>>>> Thanks for replying.
-> >>>>>>>>
-> >>>>>>>> I removed the feature subdir and still got this build error, so =
-I
-> >>>>>>>> removed everything in BUILDDIR/kernel/bpf/preload and rebuilt --
-> >>>>>>>> and still got the same libelf build error.
-> >>>>>>>
-> >>>>>>> I hate the complexity of feature detection framework to the point=
- that
-> >>>>>>> I'm willing to rip it out from libbpf's Makefile completely. I ju=
-st
-> >>>>>>> spent an hour trying to understand what's going on in a very simi=
-lar
-> >>>>>>> situation. Extremely frustrating.
-> >>>>>>>
-> >>>>>>> In your case, it might be feature detection triggered from
-> >>>>>>> resolve_btfids, so try removing
-> >>>>>>> $(OUTPUT)/tools/bpf/resolve_btfids/{feature/,FEATURE-DUMP.libbpf}=
-.
-> >>>>>>>
-> >>>>>>> It seems like we don't do proper cleanup in resolve_btfids (it sh=
-ould
-> >>>>>>> probably call libbpf's clean as well). And it's beyond me why `ma=
-ke -C
-> >>>>>>> tools/build/feature clean` doesn't clean up FEATURE-DUMP.<use-cas=
-e>
-> >>>>>>> file as well.
-> >>>>>>
-> >>>>>>
-> >>>>>> I don't think it's related to improper cleanup or old files/dirs
-> >>>>>> laying around. I say that because I did a full build in a new outp=
-ut dir.
-> >>>>>> and it still failed in the same way.
-> >>>>>
-> >>>>> If you cd tools/lib/bpf and run make there, does it detect those li=
-braries?
-> >>>>
-> >>>> Yes:
-> >>>>
-> >>>> Auto-detecting system features:
-> >>>> ...                        libelf: [ on  ]
-> >>>> ...                          zlib: [ on  ]
-> >>>> ...                           bpf: [ on  ]
-> >>>>
-> >>>>
-> >>>
-> >>> Sounds exactly like my case. I removed
-> >>> $(O)/tools/bpf/resolve_btfids/{feature/,FEATURE-DUMP.libbpf} and it
-> >>> started working.
-> >>
-> >> I already tried that with no success.
-> >>
-> >> I suppose that it could be related to how I do builds:
-> >>
-> >> make ARCH=3Dx86_64 O=3Dsubdir -j4 all
-> >>
-> >> so subdir is a relative path, not an absolute path.
+> Hi,
+>
+> On Wed, 2021-02-03 at 10:03 +0100, Sedat Dilek wrote:
+> > > It all looks to be working fine on my side. There is a compilation
+> > > error in our libbpf CI when building the latest pahole from sources
+> > > due to DW_FORM_implicit_const being undefined. I'm updating our VMs to
+> > > use Ubuntu Focal 20.04, up from Bionic 18.04, and that should
+> > > hopefully solve the issue due to newer versions of libdw. If you worry
+> > > about breaking others, though, we might want to add #ifndef guards and
+> > > re-define DW_FORM_implicit_const as 0x21 explicitly in pahole source
+> > > code.
+>
+> I think that might be a good idea for older setups. But that also means
+> that the underlying elfutils libdw doesn't support DWARF5, so pahole
+> itself also wouldn't work (the define would only fix the compile time
+> issue, not the runtime issue of not being able to parse
+> DW_FORM_implicit_const). That might not be a problem because such
+> systems also wouldn't have GCC11 defaulting to DWARF5.
+>
+> > > But otherwise, all good from what I can see in my environment.
+> > > Looking
+> > > forward to 1.20 release! I'll let you know if, after updating to
+> > > Ubuntu Focal, any new pahole issues crop up.
+> > >
 > >
-> > so can you confirm this by specifying the absolute path to subdir?
+> > Last weekend I did some testing with
+> > <pahole.git#DW_AT_data_bit_offset> and DWARF-v5 support for the
+> > Linux-kernel.
+> >
+> > The good: I was able to compile :-).
+> > The bad: My build-log grew up to 1.2GiB and I could not boot in QEMU.
+> > The ugly: I killed the archive which had all relevant material.
 >
-> Yes, absolute output path works for libelf, zlib, and bpf:
+> I think the build-log grew so much because of warnings about unknown
+> tags. At least when using GCC11 you'll get a couple of standardized
+> DWARF5 tags instead of the GNU extensions to DWARF4. That should be
+> solved by:
 >
-> Auto-detecting system features:
-> ...                        libelf: [  [32mon [m  ]
-> ...                          zlib: [  [32mon [m  ]
-> ...                           bpf: [  [32mon [m  ]
+>    commit d783117162c0212d4f75f6cea185f493d2f244e1
+>    Author: Mark Wielaard <mark@klomp.org>
+>    Date:   Sun Jan 31 01:27:31 2021 +0100
 >
->
-> Are {feature,FEATURE-DUMP} created in multiple places?
-> I don't see them in $(OUTDIR)/tools -- there is no /bpf/ subdir there
-> at all.
-> I do see them in $(OUTDIR)/kernel/bpf/preload/ -- are those different
-> feature files?
+>        dwarf_loader: Handle DWARF5 DW_TAG_call_site like DW_TAG_GNU_call_site
 >
 
-Yes, they are different. Preload builds its own copy of libbpf, while
-resolve_btfids builds its own.
+I had some conversation with Mark directly as I dropped by accident the CC list.
 
-So it seems like [0] should fix your issue by not using feature
-detection at all.
+With latest pahole from Git and CONFIG_DEBUG_INFO_BTF=y I was not able
+to build with DWARF-v4 and DWARF-v5.
 
-  [0] https://patchwork.kernel.org/project/netdevbpf/patch/20210203203445.3=
-356114-1-andrii@kernel.org/
+Hope it is OK for you Mark when I quote you:
 
->
-> thanks.
-> --
-> ~Randy
->
+> Here I use LLVM/Clang v12.0.0-rc1 with Clang's Integrated Assembler
+> (make LLVM_IAS=1).
+
+Note I haven't personally tested llvm with DWARF5. I know some other
+tools cannot (yet) handle the DWARF5 produced by llvm (for example
+valgrind, rpm debugedit and dwz don't handle all the forms llvm emits
+when it produces DWARF5, which aren't emitted by GCC unless requesting
+split-dwarf). In theory dwarves/pahole should be able to handle it
+because elfutils libdw (at least versions > 0.172) does handle it. But
+I don't know if anybody ever tested that. But I believe llvm will by
+default emit DWARF4, not 5.
+
+More quotes from Mark:
+
+I would try to avoid using clang producing DWARF5. It clearly has some
+incompatibilities with dwarves/pahole. It should work if you don't set
+DEBUG_INFO_DWARF5. Try GCC 11 (which defaults to -gdwarf-5) or an
+earlier version (probably at least GCC 8 or higher) using -gdwarf-5
+explicitly.
+
+What makes me nerves are reports from Red Hat's CKI reporting:
+
+'failed to validate module [something] BTF: -22 '
+
+This is was from ClangBuiltLinux mailing-list.
+
+Looks like CONFIG_DEBUG_INFO_BTF=y makes troubles with LLVM/Clang.
+Can we have a fix for Linux v5.11-rc6+ to avoid a selection of it when
+CC_IS_CLANG=y?
+
+- Sedat -
+
+
+- Sedat -
