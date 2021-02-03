@@ -2,251 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A115D30DF36
-	for <lists+bpf@lfdr.de>; Wed,  3 Feb 2021 17:09:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22B7230DFFE
+	for <lists+bpf@lfdr.de>; Wed,  3 Feb 2021 17:50:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234788AbhBCQIV (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Feb 2021 11:08:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36034 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234926AbhBCQIC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Feb 2021 11:08:02 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        id S230209AbhBCQsT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Feb 2021 11:48:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229683AbhBCQsS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Feb 2021 11:48:18 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDDF7C061573;
+        Wed,  3 Feb 2021 08:47:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=FXQrxdNgWCg9t/vLa4D9ZuZRDMCP+8XGxw4US1HhTog=; b=c/OoSJg12hg6TA08ZMmxC5U9K6
+        OCpV83Oj8NGNClORnhfhbI+dp8Rp3puLSaw1gWZH10ZU8jjt1xRn2fku8g6kCldtIewKCeiEzQpHa
+        FIkmhWmSoPI9iLIVqaoiCBF07qtkda4NJTYCHHF+NHpyMELJEKAw+NmkVRr26TUDkT/M+kbutGnkg
+        sDM2tIeXHKQfOib1zfHstjrnNZ0GKFSLvvOTiCu6Z73ngCe1kPW+PXeFusDNYZ/3DMbOoNhuUbgtB
+        ohbMnefixVQ7LgJJcSpYv4iVSBo2H/YpoFMC9iA8Yx35EoZdMvHxrj1aORXdUHBNR3TWKvrlHqQk4
+        D8XtPzYA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l7LIa-00HCKb-H6; Wed, 03 Feb 2021 16:46:38 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E3C7A64FA5;
-        Wed,  3 Feb 2021 16:05:51 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.94)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1l7Kf8-009JBv-Qz; Wed, 03 Feb 2021 11:05:50 -0500
-Message-ID: <20210203160550.710877069@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Wed, 03 Feb 2021 11:05:31 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A8E0F301A66;
+        Wed,  3 Feb 2021 17:46:33 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 97C5520B4DFEB; Wed,  3 Feb 2021 17:46:33 +0100 (CET)
+Date:   Wed, 3 Feb 2021 17:46:33 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ivan Babrou <ivan@cloudflare.com>
+Cc:     kernel-team <kernel-team@cloudflare.com>,
+        Ignat Korchagin <ignat@cloudflare.com>,
+        Hailong liu <liu.hailong6@zte.com.cn>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Ingo Molnar <mingo@redhat.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Julien Thierry <jthierry@redhat.com>,
+        Jiri Slaby <jirislaby@kernel.org>, kasan-dev@googlegroups.com,
+        linux-mm@kvack.org, linux-kernel <linux-kernel@vger.kernel.org>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         Andrii Nakryiko <andriin@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Florian Weimer <fw@deneb.enyo.de>,
-        syzbot+83aa762ef23b6f0d1991@syzkaller.appspotmail.com,
-        syzbot+d29e58bb557324e55e5e@syzkaller.appspotmail.com,
-        Matt Mullins <mmullins@mmlx.us>
-Subject: [for-next][PATCH 14/15] tracepoint: Do not fail unregistering a probe due to memory failure
-References: <20210203160517.982448432@goodmis.org>
+        Robert Richter <rric@kernel.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf@vger.kernel.org
+Subject: Re: BUG: KASAN: stack-out-of-bounds in
+ unwind_next_frame+0x1df5/0x2650
+Message-ID: <YBrTaVVfWu2R0Hgw@hirez.programming.kicks-ass.net>
+References: <CABWYdi3HjduhY-nQXzy2ezGbiMB1Vk9cnhW2pMypUa+P1OjtzQ@mail.gmail.com>
+ <CABWYdi27baYc3ShHcZExmmXVmxOQXo9sGO+iFhfZLq78k8iaAg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABWYdi27baYc3ShHcZExmmXVmxOQXo9sGO+iFhfZLq78k8iaAg@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+On Tue, Feb 02, 2021 at 07:09:44PM -0800, Ivan Babrou wrote:
+> On Thu, Jan 28, 2021 at 7:35 PM Ivan Babrou <ivan@cloudflare.com> wrote:
 
-The list of tracepoint callbacks is managed by an array that is protected
-by RCU. To update this array, a new array is allocated, the updates are
-copied over to the new array, and then the list of functions for the
-tracepoint is switched over to the new array. After a completion of an RCU
-grace period, the old array is freed.
+> > ==================================================================
+> > [  128.368523][    C0] BUG: KASAN: stack-out-of-bounds in
+> > unwind_next_frame (arch/x86/kernel/unwind_orc.c:371
+> > arch/x86/kernel/unwind_orc.c:544)
+> > [  128.369744][    C0] Read of size 8 at addr ffff88802fceede0 by task
+> > kworker/u2:2/591
 
-This process happens for both adding a callback as well as removing one.
-But on removing a callback, if the new array fails to be allocated, the
-callback is not removed, and may be used after it is freed by the clients
-of the tracepoint.
+Can you pretty please not line-wrap console output? It's unreadable.
 
-There's really no reason to fail if the allocation for a new array fails
-when removing a function. Instead, the function can simply be replaced by a
-stub function that could be cleaned up on the next modification of the
-array. That is, instead of calling the function registered to the
-tracepoint, it would call a stub function in its place.
+> edfd9b7838ba5e47f19ad8466d0565aba5c59bf0 is the first bad commit
+> commit edfd9b7838ba5e47f19ad8466d0565aba5c59bf0
 
-Link: https://lore.kernel.org/r/20201115055256.65625-1-mmullins@mmlx.us
-Link: https://lore.kernel.org/r/20201116175107.02db396d@gandalf.local.home
-Link: https://lore.kernel.org/r/20201117211836.54acaef2@oasis.local.home
-Link: https://lkml.kernel.org/r/20201118093405.7a6d2290@gandalf.local.home
+Not sure what tree you're on, but that's not the upstream commit.
 
-[ Note, this version does use undefined compiler behavior (assuming that
-  a stub function with no parameters or return, can be called by a location
-  that thinks it has parameters but still no return value. Static calls
-  do the same thing, so this trick is not without precedent.
+> Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> Date:   Tue Aug 18 15:57:52 2020 +0200
+> 
+>     tracepoint: Optimize using static_call()
+> 
 
-  There's another solution that uses RCU tricks and is more complex, but
-  can be an alternative if this solution becomes an issue.
+There's a known issue with that patch, can you try:
 
-  Link: https://lore.kernel.org/lkml/20210127170721.58bce7cc@gandalf.local.home/
-]
-
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: Andrii Nakryiko <andriin@fb.com>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: KP Singh <kpsingh@chromium.org>
-Cc: netdev <netdev@vger.kernel.org>
-Cc: bpf <bpf@vger.kernel.org>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Florian Weimer <fw@deneb.enyo.de>
-Fixes: 97e1c18e8d17b ("tracing: Kernel Tracepoints")
-Reported-by: syzbot+83aa762ef23b6f0d1991@syzkaller.appspotmail.com
-Reported-by: syzbot+d29e58bb557324e55e5e@syzkaller.appspotmail.com
-Reported-by: Matt Mullins <mmullins@mmlx.us>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Tested-by: Matt Mullins <mmullins@mmlx.us>
----
- kernel/tracepoint.c | 80 ++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 64 insertions(+), 16 deletions(-)
-
-diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
-index 7261fa0f5e3c..e8f20ae29c18 100644
---- a/kernel/tracepoint.c
-+++ b/kernel/tracepoint.c
-@@ -53,6 +53,12 @@ struct tp_probes {
- 	struct tracepoint_func probes[];
- };
- 
-+/* Called in removal of a func but failed to allocate a new tp_funcs */
-+static void tp_stub_func(void)
-+{
-+	return;
-+}
-+
- static inline void *allocate_probes(int count)
- {
- 	struct tp_probes *p  = kmalloc(struct_size(p, probes, count),
-@@ -131,6 +137,7 @@ func_add(struct tracepoint_func **funcs, struct tracepoint_func *tp_func,
- {
- 	struct tracepoint_func *old, *new;
- 	int nr_probes = 0;
-+	int stub_funcs = 0;
- 	int pos = -1;
- 
- 	if (WARN_ON(!tp_func->func))
-@@ -147,14 +154,34 @@ func_add(struct tracepoint_func **funcs, struct tracepoint_func *tp_func,
- 			if (old[nr_probes].func == tp_func->func &&
- 			    old[nr_probes].data == tp_func->data)
- 				return ERR_PTR(-EEXIST);
-+			if (old[nr_probes].func == tp_stub_func)
-+				stub_funcs++;
- 		}
- 	}
--	/* + 2 : one for new probe, one for NULL func */
--	new = allocate_probes(nr_probes + 2);
-+	/* + 2 : one for new probe, one for NULL func - stub functions */
-+	new = allocate_probes(nr_probes + 2 - stub_funcs);
- 	if (new == NULL)
- 		return ERR_PTR(-ENOMEM);
- 	if (old) {
--		if (pos < 0) {
-+		if (stub_funcs) {
-+			/* Need to copy one at a time to remove stubs */
-+			int probes = 0;
-+
-+			pos = -1;
-+			for (nr_probes = 0; old[nr_probes].func; nr_probes++) {
-+				if (old[nr_probes].func == tp_stub_func)
-+					continue;
-+				if (pos < 0 && old[nr_probes].prio < prio)
-+					pos = probes++;
-+				new[probes++] = old[nr_probes];
-+			}
-+			nr_probes = probes;
-+			if (pos < 0)
-+				pos = probes;
-+			else
-+				nr_probes--; /* Account for insertion */
-+
-+		} else if (pos < 0) {
- 			pos = nr_probes;
- 			memcpy(new, old, nr_probes * sizeof(struct tracepoint_func));
- 		} else {
-@@ -188,8 +215,9 @@ static void *func_remove(struct tracepoint_func **funcs,
- 	/* (N -> M), (N > 1, M >= 0) probes */
- 	if (tp_func->func) {
- 		for (nr_probes = 0; old[nr_probes].func; nr_probes++) {
--			if (old[nr_probes].func == tp_func->func &&
--			     old[nr_probes].data == tp_func->data)
-+			if ((old[nr_probes].func == tp_func->func &&
-+			     old[nr_probes].data == tp_func->data) ||
-+			    old[nr_probes].func == tp_stub_func)
- 				nr_del++;
- 		}
- 	}
-@@ -208,14 +236,32 @@ static void *func_remove(struct tracepoint_func **funcs,
- 		/* N -> M, (N > 1, M > 0) */
- 		/* + 1 for NULL */
- 		new = allocate_probes(nr_probes - nr_del + 1);
--		if (new == NULL)
--			return ERR_PTR(-ENOMEM);
--		for (i = 0; old[i].func; i++)
--			if (old[i].func != tp_func->func
--					|| old[i].data != tp_func->data)
--				new[j++] = old[i];
--		new[nr_probes - nr_del].func = NULL;
--		*funcs = new;
-+		if (new) {
-+			for (i = 0; old[i].func; i++)
-+				if ((old[i].func != tp_func->func
-+				     || old[i].data != tp_func->data)
-+				    && old[i].func != tp_stub_func)
-+					new[j++] = old[i];
-+			new[nr_probes - nr_del].func = NULL;
-+			*funcs = new;
-+		} else {
-+			/*
-+			 * Failed to allocate, replace the old function
-+			 * with calls to tp_stub_func.
-+			 */
-+			for (i = 0; old[i].func; i++)
-+				if (old[i].func == tp_func->func &&
-+				    old[i].data == tp_func->data) {
-+					old[i].func = tp_stub_func;
-+					/* Set the prio to the next event. */
-+					if (old[i + 1].func)
-+						old[i].prio =
-+							old[i + 1].prio;
-+					else
-+						old[i].prio = -1;
-+				}
-+			*funcs = old;
-+		}
- 	}
- 	debug_print_probes(*funcs);
- 	return old;
-@@ -295,10 +341,12 @@ static int tracepoint_remove_func(struct tracepoint *tp,
- 	tp_funcs = rcu_dereference_protected(tp->funcs,
- 			lockdep_is_held(&tracepoints_mutex));
- 	old = func_remove(&tp_funcs, func);
--	if (IS_ERR(old)) {
--		WARN_ON_ONCE(PTR_ERR(old) != -ENOMEM);
-+	if (WARN_ON_ONCE(IS_ERR(old)))
- 		return PTR_ERR(old);
--	}
-+
-+	if (tp_funcs == old)
-+		/* Failed allocating new tp_funcs, replaced func with stub */
-+		return 0;
- 
- 	if (!tp_funcs) {
- 		/* Removed last function */
--- 
-2.29.2
-
-
+  http://lkml.kernel.org/r/20210202220121.435051654@goodmis.org
