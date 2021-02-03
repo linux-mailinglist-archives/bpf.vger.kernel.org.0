@@ -2,174 +2,141 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1340730D4C5
-	for <lists+bpf@lfdr.de>; Wed,  3 Feb 2021 09:13:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E0730D5CD
+	for <lists+bpf@lfdr.de>; Wed,  3 Feb 2021 10:06:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232662AbhBCINK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Feb 2021 03:13:10 -0500
-Received: from mga12.intel.com ([192.55.52.136]:59616 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232665AbhBCIMx (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Feb 2021 03:12:53 -0500
-IronPort-SDR: EbRQ2N+sMA1mrxXdBVJ8I/5fstt0LzQsn1IGBOLvp4kSEezhUAJ8uGgGnB4i2uo3Zn8Qf9QeRj
- 28mFgmPvcqKw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="160170071"
-X-IronPort-AV: E=Sophos;i="5.79,397,1602572400"; 
-   d="scan'208";a="160170071"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2021 00:11:39 -0800
-IronPort-SDR: MnbekqiMe+eUxo/ZJ4Dc6u292w7O6qrXn1Io2/dbR8McIEzzLID6vn0W0pgCK8zbRpctGKi/Hl
- ZwdtdNtMtIyw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,397,1602572400"; 
-   d="scan'208";a="413932488"
-Received: from silpixa00399839.ir.intel.com (HELO localhost.localdomain) ([10.237.222.142])
-  by fmsmga002.fm.intel.com with ESMTP; 03 Feb 2021 00:11:37 -0800
-From:   Ciara Loftus <ciara.loftus@intel.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        magnus.karlsson@intel.com, bjorn@kernel.org,
-        weqaar.a.janjua@intel.com
-Cc:     daniel@iogearbox.net, Ciara Loftus <ciara.loftus@intel.com>
-Subject: [PATCH bpf-next v4 6/6] selftests/bpf: XSK_TRACE_INVALID_DESC_TX test
-Date:   Wed,  3 Feb 2021 07:41:27 +0000
-Message-Id: <20210203074127.8616-7-ciara.loftus@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210203074127.8616-1-ciara.loftus@intel.com>
-References: <20210203074127.8616-1-ciara.loftus@intel.com>
+        id S232670AbhBCJFO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Feb 2021 04:05:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232987AbhBCJE1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Feb 2021 04:04:27 -0500
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA839C06174A;
+        Wed,  3 Feb 2021 01:03:26 -0800 (PST)
+Received: by mail-io1-xd33.google.com with SMTP id h11so24389410ioh.11;
+        Wed, 03 Feb 2021 01:03:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=GT1N6S4n8x+mRUfnTVwXlUkuOTTCD41Iu8c7s1hBBXI=;
+        b=ktZfO7wrQ6G8M6Z+bOeNpjFv/NbjCtZUEPJ9raFI+1YXeJfzSWUy95NAcwj4UM/5AK
+         MiXn65mGd7A4gy9BaoaT2g8Oio4re1E+gQ8Tl+RBzFw82eptmO4YlHgmYilWcoU1TxKf
+         WI4iCIgH5jDebaeLibBSTqvS/MPtIBqVqDxCHJX7M2E/i3M1Wy/PuRVWagsc/41Jws6C
+         Nbsi48uZesdx72xw5UTmrhdrg6YMS/Z9vhiJ7iOIwQPR7i06hlk2PJp7KafSlCJOvPto
+         oIu0v5H48PIymU3bSUIz9FZtWfrtkdHw263FeN5E6mFo0+RzkFmUFmVV5LKpKLS3VNje
+         WbYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=GT1N6S4n8x+mRUfnTVwXlUkuOTTCD41Iu8c7s1hBBXI=;
+        b=Pe7qFN2KuBuhgZuO5txKvPpYffZZJ4cEq0Y1HZ1N/AUA+bjtpCWkDkqP9orBAwLp6C
+         uaNQDe5e37H1cLOE7AaMohtRlduF/LV2z6wzBz8a8+SaYaYpT8ZI49dMbs2pN+eWtIWw
+         RF7qA4/10hroq5XFFRnlVnvPNoe2WvteeLeSsAglDPwDOmLdMcdDfy8q0CPID3dvR7uL
+         xhkDkxhSHieAIdFZiGlSchKAo99EFHyW+ZjNj8x2GNNTSUelmwZTS30OLAQ0dez6lbEz
+         DnVIzHwkvUiJCZ2gywwyexthAz4GsuRlf23w3ZN355sR6BkHSBG3Af6qE2T6rLmqXjze
+         U11Q==
+X-Gm-Message-State: AOAM533qieHzPT2S5f+3+EMitB7UqKmZdOKHBejvDNRIjc25piUiLZh6
+        Q53ht0ZoYKK3tGhZ8AuMPPitl5IsvlfRnS+pfJw=
+X-Google-Smtp-Source: ABdhPJwxLP3jp08JU3bdjoZfvmdMJu/rno6l05UVSnFabFEq5hKMBIvp/nqdI2YjDT3j19SebKBdzT0WnRiLe/watZc=
+X-Received: by 2002:a05:6602:2f93:: with SMTP id u19mr1695272iow.110.1612343006176;
+ Wed, 03 Feb 2021 01:03:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20210112184004.1302879-1-jolsa@kernel.org> <f3790a7d-73bc-d634-5994-d049c7a73eae@redhat.com>
+ <20210121133825.GB12699@kernel.org> <CA+icZUVsdcTEJjwpB7=05W5-+roKf66qTwP+M6QJKTnuP6TOVQ@mail.gmail.com>
+ <CAEf4BzaVAp=W47KmMsfpj_wuJR-Gvmav=tdKdoHKAC3AW-976w@mail.gmail.com>
+ <CA+icZUW6g9=sMD3hj5g+ZXOwE_DxfxO3SX2Tb-bFTiWnQLb_EA@mail.gmail.com>
+ <CAEf4BzZ-uU3vkMA1RPt1f2HbgaHoenTxeVadyxuLuFGwN9ntyw@mail.gmail.com>
+ <20210128200046.GA794568@kernel.org> <CAEf4BzbXhn2qAwNyDx6Oqaj7+RdBtjnPPLe27=B0-aB9yY+Xmw@mail.gmail.com>
+In-Reply-To: <CAEf4BzbXhn2qAwNyDx6Oqaj7+RdBtjnPPLe27=B0-aB9yY+Xmw@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Wed, 3 Feb 2021 10:03:14 +0100
+Message-ID: <CA+icZUUTddV18rhZjaVif0a6BgpWtpj4mP1pyQ9cfh_e2xxvMQ@mail.gmail.com>
+Subject: Re: [RFT] pahole 1.20 RC was Re: [PATCH] btf_encoder: Add extra
+ checks for symbol names
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Tom Stellard <tstellar@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>, dwarves@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Hao Luo <haoluo@google.com>, Mark Wielaard <mark@klomp.org>,
+        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This test sets the length of tx descriptors to an invalid
-value. When the kernel tries to transmit these descriptors,
-error traces are expected which look like so:
+On Tue, Feb 2, 2021 at 8:48 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Thu, Jan 28, 2021 at 12:00 PM Arnaldo Carvalho de Melo
+> <arnaldo.melo@gmail.com> wrote:
+> >
+> > Em Thu, Jan 21, 2021 at 08:11:17PM -0800, Andrii Nakryiko escreveu:
+> > > On Thu, Jan 21, 2021 at 6:07 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> > > > Do you want Nick's DWARF v5 patch-series as a base?
+> >
+> > > Arnaldo was going to figure out the DWARF v5 problem, so I'm leaving
+> > > it up to him. I'm curious about DWARF v4 problems because no one yet
+> > > reported that previously.
+> >
+> > I think I have the reported one fixed, Andrii, can you please do
+> > whatever pre-release tests you can in your environment with what is in:
+> >
+>
+> Hi Arnaldo,
+>
+> Sorry for the delay, just back from a short PTO.
+>
+> It all looks to be working fine on my side. There is a compilation
+> error in our libbpf CI when building the latest pahole from sources
+> due to DW_FORM_implicit_const being undefined. I'm updating our VMs to
+> use Ubuntu Focal 20.04, up from Bionic 18.04, and that should
+> hopefully solve the issue due to newer versions of libdw. If you worry
+> about breaking others, though, we might want to add #ifndef guards and
+> re-define DW_FORM_implicit_const as 0x21 explicitly in pahole source
+> code.
+>
+> But otherwise, all good from what I can see in my environment. Looking
+> forward to 1.20 release! I'll let you know if, after updating to
+> Ubuntu Focal, any new pahole issues crop up.
+>
 
-xsk_packet_drop: netdev: ve9266 qid 0 reason: invalid tx desc: \
-  addr 258048 len 4097 options 0
+Last weekend I did some testing with
+<pahole.git#DW_AT_data_bit_offset> and DWARF-v5 support for the
+Linux-kernel.
 
-The test validates that these traces were successfully generated.
+The good: I was able to compile :-).
+The bad: My build-log grew up to 1.2GiB and I could not boot in QEMU.
+The ugly: I killed the archive which had all relevant material.
 
-Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
----
- tools/testing/selftests/bpf/test_xsk.sh  | 24 ++++++++++++++++++++++++
- tools/testing/selftests/bpf/xdpxceiver.c | 22 ++++++++++++++++++----
- 2 files changed, 42 insertions(+), 4 deletions(-)
+Yesterday, I compiled latest pahole.git:
 
-diff --git a/tools/testing/selftests/bpf/test_xsk.sh b/tools/testing/selftests/bpf/test_xsk.sh
-index bc026da25d54..4e654eb0a595 100755
---- a/tools/testing/selftests/bpf/test_xsk.sh
-+++ b/tools/testing/selftests/bpf/test_xsk.sh
-@@ -295,6 +295,30 @@ retval=$?
- test_status $retval "${TEST_NAME}"
- statusList+=($retval)
- 
-+### TEST 14
-+TEST_NAME="SKB TRACE INVALID_DESC_TX"
-+
-+vethXDPgeneric ${VETH0} ${VETH1} ${NS1}
-+
-+params=("-S" "-t" "2" "-C" "${TRACEPKTS}")
-+execxdpxceiver params
-+
-+retval=$?
-+test_status $retval "${TEST_NAME}"
-+statusList+=($retval)
-+
-+### TEST 15
-+TEST_NAME="DRV TRACE INVALID_DESC_TX"
-+
-+vethXDPnative ${VETH0} ${VETH1} ${NS1}
-+
-+params=("-N" "-t" "2" "-C" "${TRACEPKTS}")
-+execxdpxceiver params
-+
-+retval=$?
-+test_status $retval "${TEST_NAME}"
-+statusList+=($retval)
-+
- ## END TESTS
- 
- cleanup_exit ${VETH0} ${VETH1} ${NS1}
-diff --git a/tools/testing/selftests/bpf/xdpxceiver.c b/tools/testing/selftests/bpf/xdpxceiver.c
-index e63dc1c228ed..6cf824a33fdc 100644
---- a/tools/testing/selftests/bpf/xdpxceiver.c
-+++ b/tools/testing/selftests/bpf/xdpxceiver.c
-@@ -37,6 +37,8 @@
-  *       Increase the headroom size and send packets. Validate traces.
-  *    f. Tracing - XSK_TRACE_DROP_INVALID_FILLADDR
-  *       Populate the fill queue with invalid addresses. Validate traces.
-+ *    g. Tracing - XSK_TRACE_DROP_INVALID_TXD
-+ *       Populate the tx descriptors with invalid addresses. Validate traces.
-  *
-  * 2. AF_XDP DRV/Native mode
-  *    Works on any netdevice with XDP_REDIRECT support, driver dependent. Processes
-@@ -50,8 +52,9 @@
-  *      zero-copy mode
-  *    e. Tracing - XSK_TRACE_DROP_PKT_TOO_BIG
-  *    f. Tracing - XSK_TRACE_DROP_INVALID_FILLADDR
-+ *    g. Tracing - XSK_TRACE_DROP_INVALID_TXD
-  *
-- * Total tests: 12
-+ * Total tests: 14
-  *
-  * Flow:
-  * -----
-@@ -560,8 +563,11 @@ static inline void complete_tx_only(struct xsk_socket_info *xsk, int batch_size)
- 	if (!xsk->outstanding_tx)
- 		return;
- 
--	if (!NEED_WAKEUP || xsk_ring_prod__needs_wakeup(&xsk->tx))
-+	if (!NEED_WAKEUP || xsk_ring_prod__needs_wakeup(&xsk->tx)) {
- 		kick_tx(xsk);
-+		if (opt_trace_code == XSK_TRACE_DROP_INVALID_TXD)
-+			xsk->outstanding_tx = 0;
-+	}
- 
- 	rcvd = xsk_ring_cons__peek(&xsk->umem->cq, batch_size, &idx);
- 	if (rcvd) {
-@@ -632,6 +638,7 @@ static void tx_only(struct xsk_socket_info *xsk, u32 *frameptr, int batch_size)
- {
- 	u32 idx;
- 	unsigned int i;
-+	bool invalid_tx_test = opt_trace_code == XSK_TRACE_DROP_INVALID_TXD;
- 
- 	while (xsk_ring_prod__reserve(&xsk->tx, batch_size, &idx) < batch_size)
- 		complete_tx_only(xsk, batch_size);
-@@ -640,7 +647,8 @@ static void tx_only(struct xsk_socket_info *xsk, u32 *frameptr, int batch_size)
- 		struct xdp_desc *tx_desc = xsk_ring_prod__tx_desc(&xsk->tx, idx + i);
- 
- 		tx_desc->addr = (*frameptr + i) << XSK_UMEM__DEFAULT_FRAME_SHIFT;
--		tx_desc->len = PKT_SIZE;
-+		tx_desc->len = invalid_tx_test ? XSK_UMEM__DEFAULT_FRAME_SIZE + 1 : PKT_SIZE;
-+
- 	}
- 
- 	xsk_ring_prod__submit(&xsk->tx, batch_size);
-@@ -1014,7 +1022,10 @@ static void *worker_testapp_validate(void *arg)
- 				rx_pkt(ifobject->xsk, fds);
- 				worker_pkt_validate();
- 			} else {
--				worker_trace_validate(tr_fp, ifobject->ifname);
-+				worker_trace_validate(tr_fp,
-+					opt_trace_code == XSK_TRACE_DROP_INVALID_TXD ?
-+					ifdict[!ifobject->ifdict_index]->ifname :
-+					ifobject->ifname);
- 			}
- 
- 			if (sigvar)
-@@ -1187,6 +1198,9 @@ int main(int argc, char **argv)
- 		case XSK_TRACE_DROP_INVALID_FILLADDR:
- 			reason_str = "invalid fill addr";
- 			break;
-+		case XSK_TRACE_DROP_INVALID_TXD:
-+			reason_str = "invalid tx desc";
-+			break;
- 		default:
- 			ksft_test_result_fail("ERROR: unsupported trace %i\n",
- 						opt_trace_code);
--- 
-2.17.1
+$ git describe
+v1.19-25-g8d6f06f053a0
 
+$ git log -1 --oneline
+8d6f06f053a0 (HEAD -> master, origin/master, origin/HEAD)
+dwarf_loader: Add conditional DW_FORM_implicit_const definition for
+older system
+
+I cannot promise to test it with Nick Desaulniers' DWARF-v5 patchset
+but the recent DWARF changes within pahole.git look promising.
+
+- Sedat -
+
+>
+> > https://git.kernel.org/pub/scm/devel/pahole/pahole.git/log/?h=DW_AT_data_bit_offset
+> >
+> > ?
+> >
+> > The cset has the tests I performed and the references to the bugzilla
+> > ticket and Daniel has tested as well for his XDR + gcc 11 problem.
+> >
+> > Thanks,
+> >
+> > - Arnaldo
