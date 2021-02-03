@@ -2,180 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F158630E41E
-	for <lists+bpf@lfdr.de>; Wed,  3 Feb 2021 21:36:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C7D130E421
+	for <lists+bpf@lfdr.de>; Wed,  3 Feb 2021 21:37:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232096AbhBCUfd convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 3 Feb 2021 15:35:33 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:1688 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232027AbhBCUfc (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 3 Feb 2021 15:35:32 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 113KX2am026668
-        for <bpf@vger.kernel.org>; Wed, 3 Feb 2021 12:34:51 -0800
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0001303.ppops.net with ESMTP id 36f3ej26mb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 03 Feb 2021 12:34:51 -0800
-Received: from intmgw001.25.frc3.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 3 Feb 2021 12:34:50 -0800
-Received: by devbig012.ftw2.facebook.com (Postfix, from userid 137359)
-        id ECC4F2ECF298; Wed,  3 Feb 2021 12:34:46 -0800 (PST)
-From:   Andrii Nakryiko <andrii@kernel.org>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <ast@fb.com>,
-        <daniel@iogearbox.net>
-CC:     <andrii@kernel.org>, <kernel-team@fb.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH bpf-next] libbpf: stop using feature-detection Makefiles
-Date:   Wed, 3 Feb 2021 12:34:45 -0800
-Message-ID: <20210203203445.3356114-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.24.1
+        id S231609AbhBCUg4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Feb 2021 15:36:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231367AbhBCUg4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Feb 2021 15:36:56 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D7AC061573
+        for <bpf@vger.kernel.org>; Wed,  3 Feb 2021 12:36:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=wFgY3jXhAe1+xmcKIELzuLpd5V8bf0HxvdGA156kpGM=; b=wT7vzrjE3W/MZh6CJXnCbi/NVJ
+        hdKgydM+7n/oB2arI1M6oV5i8yQfTMvfXMnIdsOSgI/p4aubYv7vkx75B5mCQb8tJntzOT/72yScx
+        XNqhGI0KOqO/p9sMxe51DHd1Pk4yte8mLBGC+oTGoioQRXjUn558tF+s4rG3bjL5iGxERurdctQF4
+        96gGsPagL1X65FaH+CA3WWgbphy8tnTiU6ggsrhRpHBTqGsAoOjI3LkWs9Ct0pxztp1EwjPce8UgF
+        D8XKVhIx/YBBaqBgvSXQuKFimljoEk9TNVR/TRAEhiXF9kwoxhrDzb76aR/gfagDWP9fj0HP6KzmY
+        w148CjSA==;
+Received: from [2601:1c0:6280:3f0::aec2]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l7Osn-0005g4-AQ; Wed, 03 Feb 2021 20:36:13 +0000
+Subject: Re: finding libelf
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        bpf <bpf@vger.kernel.org>
+References: <8a6894e9-71ef-09e3-64fa-bf6794fc6660@infradead.org>
+ <87eehxa06v.fsf@toke.dk> <a6a8fbd6-c610-873e-12e1-b6b0fadb94be@infradead.org>
+ <CAEf4Bzb7-jpQLStjtrWm+CvDkLGHR_LiVdb6YcagR2v-Yt42tw@mail.gmail.com>
+ <44e6edc6-736e-dadb-c523-eabff8de89c0@infradead.org>
+ <CAEf4BzbZNwHFYRtQZbEZrzqYF+8TenhZA8==N1wLO0nnbmi8Vw@mail.gmail.com>
+ <93a6f6b6-167a-a2c6-f0dc-621d5a7bfc20@infradead.org>
+ <CAEf4BzYMbu6X1kpx-oVuwsdrFAF9--_M5KGfFkiZomBPsuYHng@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <01ffaa2e-c0fd-95a1-a60a-eb90cbf868ad@infradead.org>
+Date:   Wed, 3 Feb 2021 12:36:10 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-03_08:2021-02-03,2021-02-03 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- spamscore=0 clxscore=1015 adultscore=0 suspectscore=0 mlxlogscore=999
- impostorscore=0 priorityscore=1501 bulkscore=0 phishscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102030122
-X-FB-Internal: deliver
+In-Reply-To: <CAEf4BzYMbu6X1kpx-oVuwsdrFAF9--_M5KGfFkiZomBPsuYHng@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Libbpf's Makefile relies on Linux tools infrastructure's feature detection
-framework, but libbpf's needs are very modest: it detects the presence of
-libelf and libz, both of which are mandatory. So it doesn't benefit much from
-the framework, but pays significant costs in terms of maintainability and
-debugging experience, when something goes wrong. The other feature detector,
-testing for the presernce of minimal BPF API in system headers is long
-obsolete as well, providing no value.
+On 2/3/21 12:33 PM, Andrii Nakryiko wrote:
+> On Wed, Feb 3, 2021 at 12:15 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>
+>> On 2/3/21 12:12 PM, Andrii Nakryiko wrote:
+>>> On Wed, Feb 3, 2021 at 12:09 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>>>
+>>>> On 2/3/21 11:39 AM, Andrii Nakryiko wrote:
+>>>>> On Wed, Feb 3, 2021 at 9:22 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>>>>>
+>>>>>> On 2/3/21 2:57 AM, Toke Høiland-Jørgensen wrote:
+>>>>>>> Randy Dunlap <rdunlap@infradead.org> writes:
+>>>>>>>
+>>>>>>>> Hi,
+>>>>>>>>
+>>>>>>>> I see this sometimes when building a kernel: (on x86_64,
+>>>>>>>> with today's linux-next 20210202):
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> CONFIG_CGROUP_BPF=y
+>>>>>>>> CONFIG_BPF=y
+>>>>>>>> CONFIG_BPF_SYSCALL=y
+>>>>>>>> CONFIG_ARCH_WANT_DEFAULT_BPF_JIT=y
+>>>>>>>> CONFIG_BPF_PRELOAD=y
+>>>>>>>> CONFIG_BPF_PRELOAD_UMD=m
+>>>>>>>> CONFIG_HAVE_EBPF_JIT=y
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> Auto-detecting system features:
+>>>>>>>> ...                        libelf: [ [31mOFF[m ]
+>>>>>>>> ...                          zlib: [ [31mOFF[m ]
+>>>>>>>> ...                           bpf: [ [31mOFF[m ]
+>>>>>>>>
+>>>>>>>> No libelf found
+>>>>>>>> make[5]: [Makefile:287: elfdep] Error 1 (ignored)
+>>>>>>>> No zlib found
+>>>>>>>> make[5]: [Makefile:290: zdep] Error 1 (ignored)
+>>>>>>>> BPF API too old
+>>>>>>>> make[5]: [Makefile:293: bpfdep] Error 1 (ignored)
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> but pkg-config tells me:
+>>>>>>>>
+>>>>>>>> $ pkg-config --modversion  libelf
+>>>>>>>> 0.168
+>>>>>>>> $ pkg-config --libs  libelf
+>>>>>>>> -lelf
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> Any ideas?
+>>>>>>>
+>>>>>>> This usually happens because there's a stale cache of the feature
+>>>>>>> detection tests lying around somewhere. Look for a 'feature' directory
+>>>>>>> in whatever subdir you got that error. Just removing the feature
+>>>>>>> directory usually fixes this; I've fixed a couple of places where this
+>>>>>>> is not picked up by 'make clean' (see, e.g., 9d9aae53b96d ("bpf/preload:
+>>>>>>> Make sure Makefile cleans up after itself, and add .gitignore")) but I
+>>>>>>> wouldn't be surprised if there are still some that are broken.
+>>>>>>
+>>>>>> Hi,
+>>>>>>
+>>>>>> Thanks for replying.
+>>>>>>
+>>>>>> I removed the feature subdir and still got this build error, so I
+>>>>>> removed everything in BUILDDIR/kernel/bpf/preload and rebuilt --
+>>>>>> and still got the same libelf build error.
+>>>>>
+>>>>> I hate the complexity of feature detection framework to the point that
+>>>>> I'm willing to rip it out from libbpf's Makefile completely. I just
+>>>>> spent an hour trying to understand what's going on in a very similar
+>>>>> situation. Extremely frustrating.
+>>>>>
+>>>>> In your case, it might be feature detection triggered from
+>>>>> resolve_btfids, so try removing
+>>>>> $(OUTPUT)/tools/bpf/resolve_btfids/{feature/,FEATURE-DUMP.libbpf}.
+>>>>>
+>>>>> It seems like we don't do proper cleanup in resolve_btfids (it should
+>>>>> probably call libbpf's clean as well). And it's beyond me why `make -C
+>>>>> tools/build/feature clean` doesn't clean up FEATURE-DUMP.<use-case>
+>>>>> file as well.
+>>>>
+>>>>
+>>>> I don't think it's related to improper cleanup or old files/dirs
+>>>> laying around. I say that because I did a full build in a new output dir.
+>>>> and it still failed in the same way.
+>>>
+>>> If you cd tools/lib/bpf and run make there, does it detect those libraries?
+>>
+>> Yes:
+>>
+>> Auto-detecting system features:
+>> ...                        libelf: [ on  ]
+>> ...                          zlib: [ on  ]
+>> ...                           bpf: [ on  ]
+>>
+>>
+> 
+> Sounds exactly like my case. I removed
+> $(O)/tools/bpf/resolve_btfids/{feature/,FEATURE-DUMP.libbpf} and it
+> started working.
 
-So stop using feature detection and just assume the presence of libelf and
-libz during build time. Worst case, user will get a clear and actionable
-linker error, e.g.:
+I already tried that with no success.
 
-  /usr/bin/ld: cannot find -lelf
+I suppose that it could be related to how I do builds:
 
-On the other hand, we completely bypass recurring issues various users
-reported over time with false negatives of feature detection (libelf or libz
-not being detected, while they are actually present in the system).
+make ARCH=x86_64 O=subdir -j4 all
 
-Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/lib/bpf/.gitignore |  1 -
- tools/lib/bpf/Makefile   | 47 ++++------------------------------------
- 2 files changed, 4 insertions(+), 44 deletions(-)
+so subdir is a relative path, not an absolute path.
 
-diff --git a/tools/lib/bpf/.gitignore b/tools/lib/bpf/.gitignore
-index 8a81b3679d2b..5d4cfac671d5 100644
---- a/tools/lib/bpf/.gitignore
-+++ b/tools/lib/bpf/.gitignore
-@@ -1,7 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0-only
- libbpf_version.h
- libbpf.pc
--FEATURE-DUMP.libbpf
- libbpf.so.*
- TAGS
- tags
-diff --git a/tools/lib/bpf/Makefile b/tools/lib/bpf/Makefile
-index 55bd78b3496f..887a494ad5fc 100644
---- a/tools/lib/bpf/Makefile
-+++ b/tools/lib/bpf/Makefile
-@@ -58,28 +58,7 @@ ifndef VERBOSE
-   VERBOSE = 0
- endif
- 
--FEATURE_USER = .libbpf
--FEATURE_TESTS = libelf zlib bpf
--FEATURE_DISPLAY = libelf zlib bpf
--
- INCLUDES = -I. -I$(srctree)/tools/include -I$(srctree)/tools/include/uapi
--FEATURE_CHECK_CFLAGS-bpf = $(INCLUDES)
--
--check_feat := 1
--NON_CHECK_FEAT_TARGETS := clean TAGS tags cscope help
--ifdef MAKECMDGOALS
--ifeq ($(filter-out $(NON_CHECK_FEAT_TARGETS),$(MAKECMDGOALS)),)
--  check_feat := 0
--endif
--endif
--
--ifeq ($(check_feat),1)
--ifeq ($(FEATURES_DUMP),)
--include $(srctree)/tools/build/Makefile.feature
--else
--include $(FEATURES_DUMP)
--endif
--endif
- 
- export prefix libdir src obj
- 
-@@ -157,7 +136,7 @@ all: fixdep
- 
- all_cmd: $(CMD_TARGETS) check
- 
--$(BPF_IN_SHARED): force elfdep zdep bpfdep $(BPF_HELPER_DEFS)
-+$(BPF_IN_SHARED): force $(BPF_HELPER_DEFS)
- 	@(test -f ../../include/uapi/linux/bpf.h -a -f ../../../include/uapi/linux/bpf.h && ( \
- 	(diff -B ../../include/uapi/linux/bpf.h ../../../include/uapi/linux/bpf.h >/dev/null) || \
- 	echo "Warning: Kernel ABI header at 'tools/include/uapi/linux/bpf.h' differs from latest version at 'include/uapi/linux/bpf.h'" >&2 )) || true
-@@ -175,7 +154,7 @@ $(BPF_IN_SHARED): force elfdep zdep bpfdep $(BPF_HELPER_DEFS)
- 	echo "Warning: Kernel ABI header at 'tools/include/uapi/linux/if_xdp.h' differs from latest version at 'include/uapi/linux/if_xdp.h'" >&2 )) || true
- 	$(Q)$(MAKE) $(build)=libbpf OUTPUT=$(SHARED_OBJDIR) CFLAGS="$(CFLAGS) $(SHLIB_FLAGS)"
- 
--$(BPF_IN_STATIC): force elfdep zdep bpfdep $(BPF_HELPER_DEFS)
-+$(BPF_IN_STATIC): force $(BPF_HELPER_DEFS)
- 	$(Q)$(MAKE) $(build)=libbpf OUTPUT=$(STATIC_OBJDIR)
- 
- $(BPF_HELPER_DEFS): $(srctree)/tools/include/uapi/linux/bpf.h
-@@ -264,34 +243,16 @@ install_pkgconfig: $(PC_FILE)
- 
- install: install_lib install_pkgconfig install_headers
- 
--### Cleaning rules
--
--config-clean:
--	$(call QUIET_CLEAN, feature-detect)
--	$(Q)$(MAKE) -C $(srctree)/tools/build/feature/ clean >/dev/null
--
--clean: config-clean
-+clean:
- 	$(call QUIET_CLEAN, libbpf) $(RM) -rf $(CMD_TARGETS)		     \
- 		*~ .*.d .*.cmd LIBBPF-CFLAGS $(BPF_HELPER_DEFS)		     \
- 		$(SHARED_OBJDIR) $(STATIC_OBJDIR)			     \
- 		$(addprefix $(OUTPUT),					     \
- 			    *.o *.a *.so *.so.$(LIBBPF_MAJOR_VERSION) *.pc)
--	$(call QUIET_CLEAN, core-gen) $(RM) $(OUTPUT)FEATURE-DUMP.libbpf
--
--
- 
--PHONY += force elfdep zdep bpfdep cscope tags
-+PHONY += force cscope tags
- force:
- 
--elfdep:
--	@if [ "$(feature-libelf)" != "1" ]; then echo "No libelf found"; exit 1 ; fi
--
--zdep:
--	@if [ "$(feature-zlib)" != "1" ]; then echo "No zlib found"; exit 1 ; fi
--
--bpfdep:
--	@if [ "$(feature-bpf)" != "1" ]; then echo "BPF API too old"; exit 1 ; fi
--
- cscope:
- 	ls *.c *.h > cscope.files
- 	cscope -b -q -I $(srctree)/include -f cscope.out
 -- 
-2.24.1
+~Randy
 
