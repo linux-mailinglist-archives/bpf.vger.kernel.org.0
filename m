@@ -2,73 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32AF730E764
-	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 00:31:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 392F430E765
+	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 00:31:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233440AbhBCXas (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Feb 2021 18:30:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50676 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233353AbhBCXar (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Feb 2021 18:30:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id C196864E49;
-        Wed,  3 Feb 2021 23:30:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612395006;
-        bh=gtcZIzYHKdHLypnVN4aiPuEX1180RcVtHz+AuQNPCW0=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=J7lV4pfT280S1/+P55kRC1mCDABOeMAyVie9FutgV9/tBUNYcq3FhCe10V6dT6w61
-         iB2jsFv2gAg8JEQIxGTSFADCgk/5EK8Zmt5GhLcGnXhVm8z/tdLB+Oaq2Ia99/4W9F
-         RpJ9mx9b1ptvyB2Ct6TkNKLhtcMt555IywBoe2ynn30kn+Km5fEnxghteU8OM1e7bR
-         nsHQQ+VLkdHE3tzjCkPMZcUjhNDnpAFjR848xW7xYuMLG+Xn9UI0jTYdtYG6B3LEJv
-         JjJMSHlc37Qa8iSPDjkj0pY6L+dUv8ycdRG75XV0BZDK1kfb+GkaVvmRXyFv55vu9M
-         BALahYfl8OBRg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B53D9609E3;
-        Wed,  3 Feb 2021 23:30:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S233353AbhBCXbj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Feb 2021 18:31:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232990AbhBCXbi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Feb 2021 18:31:38 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 176B7C0613D6
+        for <bpf@vger.kernel.org>; Wed,  3 Feb 2021 15:30:48 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id e15so1673802lft.13
+        for <bpf@vger.kernel.org>; Wed, 03 Feb 2021 15:30:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hocG39X+tz3ResWtWHRihYuESyyVfrOSMJOVeII1Yr4=;
+        b=B2166ME1KxF1tjOfSskWGSBW8hJ+RS3FE8tEbGM4Lr3PUwGWeSJovyx+hQNe9qBQI9
+         rT7r7WGKmmoaUsz66RLyIyeLDsYSL4yrpDHUMNecfmB3bkhRfiLjReBu7lU0fHABvFHw
+         8ZBL9rWHyJ85CiiAU569/ODbFCVhWqu25t0X0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hocG39X+tz3ResWtWHRihYuESyyVfrOSMJOVeII1Yr4=;
+        b=WLqVnwL6sRk/UOH2jeJiVVoXDM50qe5JdlTEo6s0GVfDym6kTo4/A+OFB6N2b0qIax
+         +McDpjD22GNucBoxHfhhQAUgKexzHjn2yhqt+Uz2E0Xlrs9RYOVXA6Ij9+q3rCixPVpw
+         E08MNJXppPa/SOB17dtYfIWGLPojBMUAbAG5QAEg5KdFXUZoLv4RfsLbm9X5r1R27ZiG
+         iMsQGjbc5a+d2xa0DIB9M4R385HRVZ/tC9D1TjcWMBc+7k3n4qT6Nm4ZiAaG8Y+A49Zx
+         CmbXsWYt8UF5a5O1m6mW3hQy2nGCzQLKpr/uqJqSxDEsXeIYvSF6+G9P7yn7fMdS55+8
+         +1LA==
+X-Gm-Message-State: AOAM531MWzXgFSxP544kgwo2WQoeMondFcT1MRcbRf1rSbOdfbpYOLpw
+        MKfepUGRYq/8Dblz7mugPxAle6tNqYg+CqflWc8KqQ==
+X-Google-Smtp-Source: ABdhPJzbFmqPihDILaKPbxSIRixPFUKsm+fHSPEx84ybzWmcQv7Bntw5LfHY0c2uhOLwPSkdaL1onJaSKOpKqElh5Uo=
+X-Received: by 2002:a05:6512:3904:: with SMTP id a4mr2912750lfu.340.1612395046510;
+ Wed, 03 Feb 2021 15:30:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2] selftest/bpf: testing for multiple logs on REJECT
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161239500673.24728.11168194942696623869.git-patchwork-notify@kernel.org>
-Date:   Wed, 03 Feb 2021 23:30:06 +0000
-References: <20210130220150.59305-1-andreimatei1@gmail.com>
-In-Reply-To: <20210130220150.59305-1-andreimatei1@gmail.com>
-To:     Andrei Matei <andreimatei1@gmail.com>
-Cc:     bpf@vger.kernel.org, daniel@iogearbox.net
+References: <CABWYdi3HjduhY-nQXzy2ezGbiMB1Vk9cnhW2pMypUa+P1OjtzQ@mail.gmail.com>
+ <CABWYdi27baYc3ShHcZExmmXVmxOQXo9sGO+iFhfZLq78k8iaAg@mail.gmail.com>
+ <YBrTaVVfWu2R0Hgw@hirez.programming.kicks-ass.net> <CABWYdi2ephz57BA8bns3reMGjvs5m0hYp82+jBLZ6KD3Ba6zdQ@mail.gmail.com>
+ <20210203190518.nlwghesq75enas6n@treble> <CABWYdi1ya41Ju9SsHMtRQaFQ=s8N23D3ADn6OV6iBwWM6H8=Zw@mail.gmail.com>
+ <20210203232735.nw73kugja56jp4ls@treble>
+In-Reply-To: <20210203232735.nw73kugja56jp4ls@treble>
+From:   Ivan Babrou <ivan@cloudflare.com>
+Date:   Wed, 3 Feb 2021 15:30:35 -0800
+Message-ID: <CABWYdi1zd51Jb35taWeGC-dR9SChq-4ixvyKms3KOKgV0idfPg@mail.gmail.com>
+Subject: Re: BUG: KASAN: stack-out-of-bounds in unwind_next_frame+0x1df5/0x2650
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Ignat Korchagin <ignat@cloudflare.com>,
+        Hailong liu <liu.hailong6@zte.com.cn>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Julien Thierry <jthierry@redhat.com>,
+        Jiri Slaby <jirislaby@kernel.org>, kasan-dev@googlegroups.com,
+        linux-mm@kvack.org, linux-kernel <linux-kernel@vger.kernel.org>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Robert Richter <rric@kernel.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Wed, Feb 3, 2021 at 3:28 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+>
+> On Wed, Feb 03, 2021 at 02:41:53PM -0800, Ivan Babrou wrote:
+> > On Wed, Feb 3, 2021 at 11:05 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> > >
+> > > On Wed, Feb 03, 2021 at 09:46:55AM -0800, Ivan Babrou wrote:
+> > > > > Can you pretty please not line-wrap console output? It's unreadable.
+> > > >
+> > > > GMail doesn't make it easy, I'll send a link to a pastebin next time.
+> > > > Let me know if you'd like me to regenerate the decoded stack.
+> > > >
+> > > > > > edfd9b7838ba5e47f19ad8466d0565aba5c59bf0 is the first bad commit
+> > > > > > commit edfd9b7838ba5e47f19ad8466d0565aba5c59bf0
+> > > > >
+> > > > > Not sure what tree you're on, but that's not the upstream commit.
+> > > >
+> > > > I mentioned that it's a rebased core-static_call-2020-10-12 tag and
+> > > > added a link to the upstream hash right below.
+> > > >
+> > > > > > Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > > > > > Date:   Tue Aug 18 15:57:52 2020 +0200
+> > > > > >
+> > > > > >     tracepoint: Optimize using static_call()
+> > > > > >
+> > > > >
+> > > > > There's a known issue with that patch, can you try:
+> > > > >
+> > > > >   http://lkml.kernel.org/r/20210202220121.435051654@goodmis.org
+> > > >
+> > > > I've tried it on top of core-static_call-2020-10-12 tag rebased on top
+> > > > of v5.9 (to make it reproducible), and the patch did not help. Do I
+> > > > need to apply the whole series or something else?
+> > >
+> > > Can you recreate with this patch, and add "unwind_debug" to the cmdline?
+> > > It will spit out a bunch of stack data.
+> >
+> > Here's the three I'm building:
+> >
+> > * https://github.com/bobrik/linux/tree/ivan/static-call-5.9
+> >
+> > It contains:
+> >
+> > * v5.9 tag as the base
+> > * static_call-2020-10-12 tag
+> > * dm-crypt patches to reproduce the issue with KASAN
+> > * x86/unwind: Add 'unwind_debug' cmdline option
+> > * tracepoint: Fix race between tracing and removing tracepoint
+> >
+> > The very same issue can be reproduced on 5.10.11 with no patches,
+> > but I'm going with 5.9, since it boils down to static call changes.
+> >
+> > Here's the decoded stack from the kernel with unwind debug enabled:
+> >
+> > * https://gist.github.com/bobrik/ed052ac0ae44c880f3170299ad4af56b
+> >
+> > See my first email for the exact commands that trigger this.
+>
+> Thanks.  Do you happen to have the original dmesg, before running it
+> through the post-processing script?
 
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
+Yes, here it is:
 
-On Sat, 30 Jan 2021 17:01:50 -0500 you wrote:
-> This patch adds support to verifier tests to check for a succession of
-> verifier log messages on program load failure. This makes the
-> errstr field work uniformly across REJECT and VERBOSE_ACCEPT checks.
-> 
-> This patch also increases the maximum size of a message in the series of
-> messages to test from 80 chars to 200 chars. This is in order to keep
-> existing tests working, which sometimes test for messages larger than 80
-> chars (which was accepted in the REJECT case, when testing for a single
-> message, but not in the VERBOSE_ACCEPT case, when testing for possibly
-> multiple messages).
-> And example of such a long, checked message is in bounds.c:
-> "R1 has unknown scalar with mixed signed bounds, pointer arithmetic with
-> it prohibited for !root"
-> 
-> [...]
+* https://gist.github.com/bobrik/8c13e6a02555fb21cadabb74cdd6f9ab
 
-Here is the summary with links:
-  - [bpf-next,v2] selftest/bpf: testing for multiple logs on REJECT
-    https://git.kernel.org/bpf/bpf-next/c/060fd1035880
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+> I assume you're using decode_stacktrace.sh?  It could use some
+> improvement, it's stripping the function offset.
+>
+> Also spaces are getting inserted in odd places, messing the alignment.
+>
+> [  137.291837][    C0] ffff88809c409858: d7c4f3ce817a1700 (0xd7c4f3ce817a1700)
+> [  137.291837][    C0] ffff88809c409860: 0000000000000000 (0x0)
+> [  137.291839][    C0] ffff88809c409868: 00000000ffffffff (0xffffffff)
+> [ 137.291841][ C0] ffff88809c409870: ffffffffa4f01a52 unwind_next_frame (arch/x86/kernel/unwind_orc.c:380 arch/x86/kernel/unwind_orc.c:553)
+> [ 137.291843][ C0] ffff88809c409878: ffffffffa4f01a52 unwind_next_frame (arch/x86/kernel/unwind_orc.c:380 arch/x86/kernel/unwind_orc.c:553)
+> [  137.291844][    C0] ffff88809c409880: ffff88809c409ac8 (0xffff88809c409ac8)
+> [  137.291845][    C0] ffff88809c409888: 0000000000000086 (0x86)
+>
+> --
+> Josh
+>
