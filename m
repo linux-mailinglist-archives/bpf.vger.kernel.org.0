@@ -2,27 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C9A130E736
+	by mail.lfdr.de (Postfix) with ESMTP id DDCEB30E737
 	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 00:24:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232733AbhBCXYS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Feb 2021 18:24:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49674 "EHLO mail.kernel.org"
+        id S233019AbhBCXYU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Feb 2021 18:24:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232458AbhBCXYR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Feb 2021 18:24:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EFA3164F43;
-        Wed,  3 Feb 2021 23:23:35 +0000 (UTC)
+        id S232745AbhBCXYT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Feb 2021 18:24:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1E0E64F6A;
+        Wed,  3 Feb 2021 23:23:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612394617;
-        bh=PTVYv7f3q04Ewx0yYuhCee8Xadz6Jy6gdGf4sFC0JDw=;
+        s=k20201202; t=1612394618;
+        bh=MpaONhrn5VtVn0HdkegM124iD8ebw8ZiT81RKUjq1sw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sVhTck0WNMa0115fJMPy6l6yPwSfScJ6e1OWERJwx1/2DR0S/OTOl6bxs7vIX5+7z
-         sQ+SeUXHHVhjh9l1faaNBqwTqyKTzFLMLI+Y2cFXSgtJTJlGGcI8cYnAvYXPQB23rJ
-         fPYGFrX6sd5VqH5WItLgzpGQ+UwyVR3Ye7BefH+SgMSNQrDvrpIWfDO228pVF4Evi5
-         vdefPbszmh2YEOuZgH95RXnb9zyKSJlBBZgRa0qopBp4UKUJCCUhBwLeq1LMt7Y0CE
-         1tN9Sf2lfqqjHJZC6QyipiQWLCGKNqIwTEcFnlYdZuuQ24ytZ/r1RE9JjpmTWcyWdy
-         yhqOkmo7s13YA==
+        b=E1bS9lkC7bdL2NBrFWf1Z+kiSyXaF/SQE+/prlrDwTYAfDFQrflQlG4bNFoKysrKj
+         P0nk80dbvk0NW6+AUf5Hyw4j3uNFiS8ZXKhlXfoOtNYBWhxaU2JBEgXp5xoobakNd9
+         nYVbiLTqNGw+CFmJ1YWYI5Gl9ECVUPx0NJcCQpo3h9o78bpQg9rzMUsjFW1zHaIlBk
+         IeUYkM/8P0xaXYZK0dCjG3oKDGb3ocWe0NyM/Oe/+WhzD+/P0k7KFesVHwzupw7tB4
+         DehxER/Y9YmdagIkxzQVfHDBAeinWCYcyatUVMC7gaEmHo1UaZ5woYdYcbDjm8s6V3
+         C90ebmJY5LRtg==
 From:   KP Singh <kpsingh@kernel.org>
 To:     bpf@vger.kernel.org
 Cc:     Alexei Starovoitov <ast@kernel.org>,
@@ -30,9 +30,9 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
         Florent Revest <revest@chromium.org>,
         Brendan Jackman <jackmanb@chromium.org>
-Subject: [PATCH bpf-next 1/2] bpf: Allow usage of BPF ringbuffer in sleepable programs
-Date:   Wed,  3 Feb 2021 23:23:30 +0000
-Message-Id: <20210203232331.2567162-2-kpsingh@kernel.org>
+Subject: [PATCH bpf-next 2/2] bpf/selftests: Update the IMA test to use BPF ring buffer
+Date:   Wed,  3 Feb 2021 23:23:31 +0000
+Message-Id: <20210203232331.2567162-3-kpsingh@kernel.org>
 X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
 In-Reply-To: <20210203232331.2567162-1-kpsingh@kernel.org>
 References: <20210203232331.2567162-1-kpsingh@kernel.org>
@@ -42,33 +42,125 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The BPF ringbuffer map is pre-allocated and the implementation logic
-does not rely on disabling preemption or per-cpu data structures. Using
-the BPF ringbuffer sleepable LSM and tracing programs does not trigger
-any warnings with DEBUG_ATOMIC_SLEEP, DEBUG_PREEMPT,
-PROVE_RCU and PROVE_LOCKING and LOCKDEP enabled.
-
-This allows helpers like bpf_copy_from_user and bpf_ima_inode_hash to
-write to the BPF ring buffer from sleepable BPF programs.
+Instead of using shared global variables between userspace and BPF, use
+the ring buffer to send the IMA hash on the BPF ring buffer. This helps
+in validating both IMA and the usage of the ringbuffer in sleepable
+programs.
 
 Signed-off-by: KP Singh <kpsingh@kernel.org>
 ---
- kernel/bpf/verifier.c | 2 ++
- 1 file changed, 2 insertions(+)
+ .../selftests/bpf/prog_tests/test_ima.c       | 23 ++++++++++---
+ tools/testing/selftests/bpf/progs/ima.c       | 33 ++++++++++++++-----
+ 2 files changed, 43 insertions(+), 13 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 5e09632efddb..4c33b4840438 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -10024,6 +10024,8 @@ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
- 				return -EINVAL;
- 			}
- 			break;
-+		case BPF_MAP_TYPE_RINGBUF:
-+			break;
- 		default:
- 			verbose(env,
- 				"Sleepable programs can only use array and hash maps\n");
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_ima.c b/tools/testing/selftests/bpf/prog_tests/test_ima.c
+index 61fca681d524..23fb4c9e80d1 100644
+--- a/tools/testing/selftests/bpf/prog_tests/test_ima.c
++++ b/tools/testing/selftests/bpf/prog_tests/test_ima.c
+@@ -9,6 +9,7 @@
+ #include <unistd.h>
+ #include <sys/wait.h>
+ #include <test_progs.h>
++#include <linux/ring_buffer.h>
+ 
+ #include "ima.skel.h"
+ 
+@@ -31,9 +32,18 @@ static int run_measured_process(const char *measured_dir, u32 *monitored_pid)
+ 	return -EINVAL;
+ }
+ 
++static u64 ima_hash_from_bpf;
++
++static int process_sample(void *ctx, void *data, size_t len)
++{
++	ima_hash_from_bpf = *((u64 *)data);
++	return 0;
++}
++
+ void test_test_ima(void)
+ {
+ 	char measured_dir_template[] = "/tmp/ima_measuredXXXXXX";
++	struct ring_buffer *ringbuf;
+ 	const char *measured_dir;
+ 	char cmd[256];
+ 
+@@ -44,6 +54,11 @@ void test_test_ima(void)
+ 	if (CHECK(!skel, "skel_load", "skeleton failed\n"))
+ 		goto close_prog;
+ 
++	ringbuf = ring_buffer__new(bpf_map__fd(skel->maps.ringbuf),
++				   process_sample, NULL, NULL);
++	if (CHECK(!ringbuf, "ringbuf_create", "failed to create ringbuf\n"))
++		goto close_prog;
++
+ 	err = ima__attach(skel);
+ 	if (CHECK(err, "attach", "attach failed: %d\n", err))
+ 		goto close_prog;
+@@ -60,11 +75,9 @@ void test_test_ima(void)
+ 	if (CHECK(err, "run_measured_process", "err = %d\n", err))
+ 		goto close_clean;
+ 
+-	CHECK(skel->data->ima_hash_ret < 0, "ima_hash_ret",
+-	      "ima_hash_ret = %ld\n", skel->data->ima_hash_ret);
+-
+-	CHECK(skel->bss->ima_hash == 0, "ima_hash",
+-	      "ima_hash = %lu\n", skel->bss->ima_hash);
++	err = ring_buffer__poll(ringbuf, 1000);
++	ASSERT_EQ(err, 1, "num_samples_or_err");
++	ASSERT_NEQ(ima_hash_from_bpf, 0, "ima_hash");
+ 
+ close_clean:
+ 	snprintf(cmd, sizeof(cmd), "./ima_setup.sh cleanup %s", measured_dir);
+diff --git a/tools/testing/selftests/bpf/progs/ima.c b/tools/testing/selftests/bpf/progs/ima.c
+index 86b21aff4bc5..dd0792204a21 100644
+--- a/tools/testing/selftests/bpf/progs/ima.c
++++ b/tools/testing/selftests/bpf/progs/ima.c
+@@ -9,20 +9,37 @@
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_tracing.h>
+ 
+-long ima_hash_ret = -1;
+-u64 ima_hash = 0;
+ u32 monitored_pid = 0;
+ 
++struct {
++	__uint(type, BPF_MAP_TYPE_RINGBUF);
++	__uint(max_entries, 1 << 12);
++} ringbuf SEC(".maps");
++
+ char _license[] SEC("license") = "GPL";
+ 
+ SEC("lsm.s/bprm_committed_creds")
+-int BPF_PROG(ima, struct linux_binprm *bprm)
++void BPF_PROG(ima, struct linux_binprm *bprm)
+ {
+-	u32 pid = bpf_get_current_pid_tgid() >> 32;
++	u64 ima_hash = 0;
++	u64 *sample;
++	int ret;
++	u32 pid;
++
++	pid = bpf_get_current_pid_tgid() >> 32;
++	if (pid == monitored_pid) {
++		ret = bpf_ima_inode_hash(bprm->file->f_inode, &ima_hash,
++					 sizeof(ima_hash));
++		if (ret < 0 || ima_hash == 0)
++			return;
++
++		sample = bpf_ringbuf_reserve(&ringbuf, sizeof(u64), 0);
++		if (!sample)
++			return;
+ 
+-	if (pid == monitored_pid)
+-		ima_hash_ret = bpf_ima_inode_hash(bprm->file->f_inode,
+-						  &ima_hash, sizeof(ima_hash));
++		*sample = ima_hash;
++		bpf_ringbuf_submit(sample, BPF_RB_FORCE_WAKEUP);
++	}
+ 
+-	return 0;
++	return;
+ }
 -- 
 2.30.0.365.g02bc693789-goog
 
