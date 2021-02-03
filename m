@@ -2,87 +2,73 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D7D30E760
-	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 00:30:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32AF730E764
+	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 00:31:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233320AbhBCXaA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Feb 2021 18:30:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232880AbhBCX36 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Feb 2021 18:29:58 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA5A4C061573;
-        Wed,  3 Feb 2021 15:29:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=QSMs8iE5sDVKrKhLTidBMmDgBXHbDNDVBvD5m7DqLWs=; b=EPyZqZNsDH73V4t1vdU879zpP0
-        dqT2Wz5F1H4A4RzdOkm5uACEp/AzZ75oSOCkjTXC8fLdHkM4hcPgHEQ/bvb4VHfbllL0/o8VPVdUc
-        3PMd5rXKPihqeQpJpiJC0lae8IagoPQVgBt3nOwh0hVrvMMZQM/1Jt2COiMCXPKQNtKV3jy/iaSV3
-        sXKvr3lX+tPNHIgA0DEy82vhOt39+W6qBypdWcdj7vAIQmpMHprFjBl78K4KKWqPsxqjdwPzsL290
-        Mml57965jztD5Y03zXuzYqvDMwWtDFNKtmo94478lAUxAS7s3I1CmKKwCsyAPFR9lmbNaA5HbibFJ
-        D7ThIOww==;
-Received: from [2601:1c0:6280:3f0::aec2]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l7RaA-0007sD-Jj; Wed, 03 Feb 2021 23:29:11 +0000
-Subject: Re: [PATCH bpf-next] libbpf: stop using feature-detection Makefiles
-To:     Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, ast@fb.com, daniel@iogearbox.net
-Cc:     kernel-team@fb.com, Arnaldo Carvalho de Melo <acme@redhat.com>
-References: <20210203203445.3356114-1-andrii@kernel.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <2127a682-1d78-49a5-26e2-cfda5b35602d@infradead.org>
-Date:   Wed, 3 Feb 2021 15:29:06 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S233440AbhBCXas (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Feb 2021 18:30:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50676 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233353AbhBCXar (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Feb 2021 18:30:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id C196864E49;
+        Wed,  3 Feb 2021 23:30:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612395006;
+        bh=gtcZIzYHKdHLypnVN4aiPuEX1180RcVtHz+AuQNPCW0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=J7lV4pfT280S1/+P55kRC1mCDABOeMAyVie9FutgV9/tBUNYcq3FhCe10V6dT6w61
+         iB2jsFv2gAg8JEQIxGTSFADCgk/5EK8Zmt5GhLcGnXhVm8z/tdLB+Oaq2Ia99/4W9F
+         RpJ9mx9b1ptvyB2Ct6TkNKLhtcMt555IywBoe2ynn30kn+Km5fEnxghteU8OM1e7bR
+         nsHQQ+VLkdHE3tzjCkPMZcUjhNDnpAFjR848xW7xYuMLG+Xn9UI0jTYdtYG6B3LEJv
+         JjJMSHlc37Qa8iSPDjkj0pY6L+dUv8ycdRG75XV0BZDK1kfb+GkaVvmRXyFv55vu9M
+         BALahYfl8OBRg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B53D9609E3;
+        Wed,  3 Feb 2021 23:30:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210203203445.3356114-1-andrii@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v2] selftest/bpf: testing for multiple logs on REJECT
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161239500673.24728.11168194942696623869.git-patchwork-notify@kernel.org>
+Date:   Wed, 03 Feb 2021 23:30:06 +0000
+References: <20210130220150.59305-1-andreimatei1@gmail.com>
+In-Reply-To: <20210130220150.59305-1-andreimatei1@gmail.com>
+To:     Andrei Matei <andreimatei1@gmail.com>
+Cc:     bpf@vger.kernel.org, daniel@iogearbox.net
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/3/21 12:34 PM, Andrii Nakryiko wrote:
-> Libbpf's Makefile relies on Linux tools infrastructure's feature detection
-> framework, but libbpf's needs are very modest: it detects the presence of
-> libelf and libz, both of which are mandatory. So it doesn't benefit much from
-> the framework, but pays significant costs in terms of maintainability and
-> debugging experience, when something goes wrong. The other feature detector,
-> testing for the presernce of minimal BPF API in system headers is long
-> obsolete as well, providing no value.
+Hello:
+
+This patch was applied to bpf/bpf-next.git (refs/heads/master):
+
+On Sat, 30 Jan 2021 17:01:50 -0500 you wrote:
+> This patch adds support to verifier tests to check for a succession of
+> verifier log messages on program load failure. This makes the
+> errstr field work uniformly across REJECT and VERBOSE_ACCEPT checks.
 > 
-> So stop using feature detection and just assume the presence of libelf and
-> libz during build time. Worst case, user will get a clear and actionable
-> linker error, e.g.:
+> This patch also increases the maximum size of a message in the series of
+> messages to test from 80 chars to 200 chars. This is in order to keep
+> existing tests working, which sometimes test for messages larger than 80
+> chars (which was accepted in the REJECT case, when testing for a single
+> message, but not in the VERBOSE_ACCEPT case, when testing for possibly
+> multiple messages).
+> And example of such a long, checked message is in bounds.c:
+> "R1 has unknown scalar with mixed signed bounds, pointer arithmetic with
+> it prohibited for !root"
 > 
->   /usr/bin/ld: cannot find -lelf
-> 
-> On the other hand, we completely bypass recurring issues various users
-> reported over time with false negatives of feature detection (libelf or libz
-> not being detected, while they are actually present in the system).
-> 
-> Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
-> Cc: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->  tools/lib/bpf/.gitignore |  1 -
->  tools/lib/bpf/Makefile   | 47 ++++------------------------------------
->  2 files changed, 4 insertions(+), 44 deletions(-)
+> [...]
 
-Hi Andrii,
+Here is the summary with links:
+  - [bpf-next,v2] selftest/bpf: testing for multiple logs on REJECT
+    https://git.kernel.org/bpf/bpf-next/c/060fd1035880
 
-This does indeed fix the build problems that I was seeing,
-so I can add:
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-but in the long term I think that features/libs/etc. that are
-used should be checked for instead of being used blindly... IMO.
 
-Thanks.
-
--- 
-~Randy
