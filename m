@@ -2,90 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51D0030E62A
-	for <lists+bpf@lfdr.de>; Wed,  3 Feb 2021 23:40:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED40F30E632
+	for <lists+bpf@lfdr.de>; Wed,  3 Feb 2021 23:44:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232718AbhBCWj7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Feb 2021 17:39:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48168 "EHLO
+        id S233077AbhBCWm5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Feb 2021 17:42:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232392AbhBCWj6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Feb 2021 17:39:58 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F17F7C061573
-        for <bpf@vger.kernel.org>; Wed,  3 Feb 2021 14:39:17 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id v15so1186428wrx.4
-        for <bpf@vger.kernel.org>; Wed, 03 Feb 2021 14:39:17 -0800 (PST)
+        with ESMTP id S233058AbhBCWm4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Feb 2021 17:42:56 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA1BFC0613ED
+        for <bpf@vger.kernel.org>; Wed,  3 Feb 2021 14:42:05 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id s18so1011297ljg.7
+        for <bpf@vger.kernel.org>; Wed, 03 Feb 2021 14:42:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        d=cloudflare.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=c2ZXCMlNVDtB/MUW8yHTVMc1E3/PprXus9Gx7blpTUg=;
-        b=RMP9eOZmm8ZMwJY0kPy9gzrfrIRWK5BSgDPmEVFEqNok5pv5tMpGJWrLxeQL40qV81
-         ak6q+kBj6O/+AabUG8oHWAUNVXANo8VNjtaT6xujcyOm96mbXMh1UWRBMC5Th0dinxQa
-         iRuN1wwUfzfz5LXYN9UsBZnbz2aPT5BnP9PewPd3IgAlTIYXx5egcRhEPqAlRikqoYmS
-         BZOgfkvlAop2mHWu6DnlC9933RTXJ086KXsujG1VtaGp0ji8bA5faF0rL1fwmtymCeSi
-         fVtzKWL9c9KSAGwN17y684hx8THzxVYaZoNxNvngMf4WfCFGG/QJ4OJukgJ+YVOWnJoY
-         VrdQ==
+        bh=FumwaWvzHZWVNE5DDIsNdn258CZK4DlZwzfhawRHFFU=;
+        b=BKh7HWRt5QJP2ZHOVPSFF1wrdrwqUM37KNsTjNzom5tGNnPIJ9vw2p0eKaZW9IlCGj
+         PRQAlgqXV+HlNMYI+NXDD4iUgxVBON3yb1Gb7JvZ7Qh7f5vcNjvMQbyHbIbrbLHDsDQK
+         F8FxKVZ0QMQBKcXhm9xzGbFs25ys7XxOURSKs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=c2ZXCMlNVDtB/MUW8yHTVMc1E3/PprXus9Gx7blpTUg=;
-        b=ss5ikViNv2hbRajNGzFbSiluI7R3P0jmOL5cZTxs1QRhoZI9CTs8J/En8/63jWp92A
-         a2luIOUOPwsUNEyXlkEXRmHYekBkLsiFAxGmv4GKCsi0TbtnnHWGWK+nSFzW7qF/HAy7
-         Y5zKxK0yjuGKk8o65S8Jkn26NbWMKOvzCTLMTYHjj5ZZjzlveU820TrpTTV1eFVML6xK
-         v057cu8/O8DJxdSacOJPyNMrJhOvXqBqIOxBcWhBcJfvwcYT/gcUzWRbQAeLH6C9Amb0
-         1saFpNNwrT4mJefTSJogGv7ttQtACSaIXnuA5jhQfVRcdx8wuU1pab5adVhxoiCJm0vd
-         6IqQ==
-X-Gm-Message-State: AOAM530ER5vU4sQRyHwN3i89Bo+1+JerATMCUQGpFVmdftFlaemegXwl
-        vRWVqDLH1AmfjT6lV0gRtxAs3ifY/3NjOn69MxJmTw1tV8a/eZ+v
-X-Google-Smtp-Source: ABdhPJy/zu+SIuCO36g8AKfKqN15KQfh0tkijBDbwQuOXUajM1jQ1zPjo/ZCx+ciBptTHn6U+sCjoy3iC0oE+SmsEYg=
-X-Received: by 2002:adf:83a6:: with SMTP id 35mr5851976wre.274.1612391956721;
- Wed, 03 Feb 2021 14:39:16 -0800 (PST)
+        bh=FumwaWvzHZWVNE5DDIsNdn258CZK4DlZwzfhawRHFFU=;
+        b=qD+AA6AiQQTiTorSbs4V98QU1TloyJBSNHHuqNWlgpz+VSD+DTHouhfOirOQLBWe7X
+         uTDnj6mumzqACAMrBzRnq84jVLKGJbbnJKnD7DZNbjsQ8FILKH+/rxp7IXDLaY/pzdFM
+         1rG898e1//olLKzB8pmot1SfU2XQW+50xH87hFPg/sTT8VgEwvcmfJt+A8vkpntn2NIs
+         KhuCZrjev7pNCPz5/8nJUZ4twLL5HMJDqjSLLTDo5gSQXU+51Z2DvwbHbRJC4mi+sJag
+         Gqq6LiC7OWadE77b2ud6Mchw8dsTxKllSvtgD3BJV86vCKIXHkco/tI8pgW+Bdd0w0Pc
+         jEgg==
+X-Gm-Message-State: AOAM533hTtJjL3QJ/8fWxUivON6BHHyvPc9yh69Q0asrHHxSotvZMo2a
+        eO1HrhbLvPGca/SpfSGwS1/qPxb/h+/NvaZcHXWi2g==
+X-Google-Smtp-Source: ABdhPJwKhpR8sbJ8ZrHXrXvTED9hh5AbNkWxJFB2AjnN5UiHsFQgc7BNpiMd7cHW6zHpZnnJ9JFHzJh6we9lf652od8=
+X-Received: by 2002:a2e:3a18:: with SMTP id h24mr2987085lja.170.1612392124007;
+ Wed, 03 Feb 2021 14:42:04 -0800 (PST)
 MIME-Version: 1.0
-References: <CAJCQCtSQLc0VHqO4BY_-YB2OmCNNmHCS6fNdQKmMWGn2v=Jpdw@mail.gmail.com>
-In-Reply-To: <CAJCQCtSQLc0VHqO4BY_-YB2OmCNNmHCS6fNdQKmMWGn2v=Jpdw@mail.gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Wed, 3 Feb 2021 15:39:00 -0700
-Message-ID: <CAJCQCtRHOidM7Vps1JQSpZA14u+B5fR860FwZB=eb1wYjTpqDw@mail.gmail.com>
-Subject: Re: 5:11: in-kernel BTF is malformed
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     bpf@vger.kernel.org
+References: <CABWYdi3HjduhY-nQXzy2ezGbiMB1Vk9cnhW2pMypUa+P1OjtzQ@mail.gmail.com>
+ <CABWYdi27baYc3ShHcZExmmXVmxOQXo9sGO+iFhfZLq78k8iaAg@mail.gmail.com>
+ <YBrTaVVfWu2R0Hgw@hirez.programming.kicks-ass.net> <CABWYdi2ephz57BA8bns3reMGjvs5m0hYp82+jBLZ6KD3Ba6zdQ@mail.gmail.com>
+ <20210203190518.nlwghesq75enas6n@treble>
+In-Reply-To: <20210203190518.nlwghesq75enas6n@treble>
+From:   Ivan Babrou <ivan@cloudflare.com>
+Date:   Wed, 3 Feb 2021 14:41:53 -0800
+Message-ID: <CABWYdi1ya41Ju9SsHMtRQaFQ=s8N23D3ADn6OV6iBwWM6H8=Zw@mail.gmail.com>
+Subject: Re: BUG: KASAN: stack-out-of-bounds in unwind_next_frame+0x1df5/0x2650
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Ignat Korchagin <ignat@cloudflare.com>,
+        Hailong liu <liu.hailong6@zte.com.cn>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Julien Thierry <jthierry@redhat.com>,
+        Jiri Slaby <jirislaby@kernel.org>, kasan-dev@googlegroups.com,
+        linux-mm@kvack.org, linux-kernel <linux-kernel@vger.kernel.org>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Robert Richter <rric@kernel.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 3, 2021 at 1:26 PM Chris Murphy <lists@colorremedies.com> wrote:
+On Wed, Feb 3, 2021 at 11:05 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
 >
-> qemu-kvm VM starts with kernel 5.10.10 but fails with 5.11.0-rc5.
+> On Wed, Feb 03, 2021 at 09:46:55AM -0800, Ivan Babrou wrote:
+> > > Can you pretty please not line-wrap console output? It's unreadable.
+> >
+> > GMail doesn't make it easy, I'll send a link to a pastebin next time.
+> > Let me know if you'd like me to regenerate the decoded stack.
+> >
+> > > > edfd9b7838ba5e47f19ad8466d0565aba5c59bf0 is the first bad commit
+> > > > commit edfd9b7838ba5e47f19ad8466d0565aba5c59bf0
+> > >
+> > > Not sure what tree you're on, but that's not the upstream commit.
+> >
+> > I mentioned that it's a rebased core-static_call-2020-10-12 tag and
+> > added a link to the upstream hash right below.
+> >
+> > > > Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > > > Date:   Tue Aug 18 15:57:52 2020 +0200
+> > > >
+> > > >     tracepoint: Optimize using static_call()
+> > > >
+> > >
+> > > There's a known issue with that patch, can you try:
+> > >
+> > >   http://lkml.kernel.org/r/20210202220121.435051654@goodmis.org
+> >
+> > I've tried it on top of core-static_call-2020-10-12 tag rebased on top
+> > of v5.9 (to make it reproducible), and the patch did not help. Do I
+> > need to apply the whole series or something else?
 >
-> Libvirt folks think this is a kernel bug, and have attached a
-> reproducer to the downstream bug report.
->
-> "I've managed to reproduce and found that virBPFLoadProg() logs the
-> following message:
->
-> in-kernel BTF is malformed\nprocessed 0 insns (limit 1000000)
-> max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0\n
-> "
->
-> https://bugzilla.redhat.com/show_bug.cgi?id=1920857#c4
+> Can you recreate with this patch, and add "unwind_debug" to the cmdline?
+> It will spit out a bunch of stack data.
 
-Looks like the bug was introduced in 5.11-rc5, the problem doesn't
-happen in rc4. As I mention in the downstream bug, I'm unable to
-compile a working kernel for bisect between rc4 and rc5 to find out
-the exact commit that introduced the problem, due to many messages
-like this:
+Here's the three I'm building:
 
-Feb 03 15:05:47 kernel: failed to validate module [coretemp] BTF: -22
-Feb 03 15:05:47 kernel: failed to validate module [intel_powerclamp] BTF: -22
-Feb 03 15:05:47 kernel: failed to validate module [irqbypass] BTF: -22
-Feb 03 15:05:47 kernel: failed to validate module [intel_powerclamp] BTF: -22
-Feb 03 15:05:47 kernel: failed to validate module
-[x86_pkg_temp_thermal] BTF: -22
+* https://github.com/bobrik/linux/tree/ivan/static-call-5.9
 
+It contains:
 
--- 
-Chris Murphy
+* v5.9 tag as the base
+* static_call-2020-10-12 tag
+* dm-crypt patches to reproduce the issue with KASAN
+* x86/unwind: Add 'unwind_debug' cmdline option
+* tracepoint: Fix race between tracing and removing tracepoint
+
+The very same issue can be reproduced on 5.10.11 with no patches,
+but I'm going with 5.9, since it boils down to static call changes.
+
+Here's the decoded stack from the kernel with unwind debug enabled:
+
+* https://gist.github.com/bobrik/ed052ac0ae44c880f3170299ad4af56b
+
+See my first email for the exact commands that trigger this.
