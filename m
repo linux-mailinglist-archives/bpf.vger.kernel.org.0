@@ -2,77 +2,299 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33F1A30E16C
-	for <lists+bpf@lfdr.de>; Wed,  3 Feb 2021 18:50:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0217830E190
+	for <lists+bpf@lfdr.de>; Wed,  3 Feb 2021 18:58:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231648AbhBCRtc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Feb 2021 12:49:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231145AbhBCRta (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Feb 2021 12:49:30 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7582C061573;
-        Wed,  3 Feb 2021 09:48:49 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id e9so283195plh.3;
-        Wed, 03 Feb 2021 09:48:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=m1LyiYHdemJUR2u45HV2aTv5ozbheynSZ5Ve7rAeRxs=;
-        b=bDtC0yXAAFvXTUqWs+8cxETzTaciPeRTBDoQNHRMoMVI1a7Rbql3moyHQrsrF973Br
-         Si2yR+C9ZXwltmU3gim8Ppm/SvamRt9Ij5WiDC0l6JO+/6xaR+nnu3EzxNK7dXLmx1NF
-         thZfSrHBQZ9g9NkGsFiYkvR/TUqB5UDtV6xsAm9sla24I4KNOC0nyIDYjyhQ1OWZz8Mj
-         xrtkJC66BSBy7EkFrrWJZ+oEF/IKKro9K3bn7thCTVST+PTf+UnpdUTiz2jMmgcz2Jef
-         xfvhwfNqoJp8AvedmRrG66uyrTj6pBJYh9oh3J1j+bqX+c2IJ9wDZVNG7jXFCLXyq+/e
-         3usQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=m1LyiYHdemJUR2u45HV2aTv5ozbheynSZ5Ve7rAeRxs=;
-        b=dNCpA0lUzw+9a7h+XDxZa54UWQiGYICNgc5dUD+tPn+kY3sheOL7AwpLCErgAKI62+
-         y9fSj1htq0jSh5fULwwBbPo8H7FXLQZ/yfy4hMUEjSDWvV5M4Crzpl5Et/Nzo1IdJO/4
-         Eo3dLXMjhUaiB5AX/WaclZxNzxWkq5WyicghZR+TqKTVkr5wtkLA5X4xYZIV0fGt+Op7
-         N6lxtVBSwo1qX1UvxiophrsCfou3Jx6szXEswfOOjs9nXs9pHzuW8yFb7b6T42nsVkfP
-         1+yXH65vLajR65PD5N8/1QOMEfAVV9FULmHU4Nt/4Xtz0kz37JipdWFhSbR8lppwHXJ1
-         JNVg==
-X-Gm-Message-State: AOAM530zINUH6gv1tcWVxU89MlVEQVExXmq5JQKq8O001BIrt1KIhhW6
-        Mn/osuPkqzCofJ3Yd+WneXZwI/IWRTM=
-X-Google-Smtp-Source: ABdhPJyZTiduwwhhycoFBuQqIKKIUY9a3XkNeEBYGPBsBRSt+BjRiebeKf2U+vBEa+efMq+YDwbJGw==
-X-Received: by 2002:a17:902:ea91:b029:e1:8695:c199 with SMTP id x17-20020a170902ea91b02900e18695c199mr4190913plb.6.1612374529389;
-        Wed, 03 Feb 2021 09:48:49 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:75f7])
-        by smtp.gmail.com with ESMTPSA id n3sm3149052pfq.19.2021.02.03.09.48.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 09:48:48 -0800 (PST)
-Date:   Wed, 3 Feb 2021 09:48:46 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        duanxiongchun@bytedance.com, wangdongdong.6@bytedance.com,
-        jiang.wang@bytedance.com, Cong Wang <cong.wang@bytedance.com>
-Subject: Re: [Patch bpf-next 00/19] sock_map: add non-TCP and cross-protocol
- support
-Message-ID: <20210203174846.gvhyv3hlrfnep7xe@ast-mbp.dhcp.thefacebook.com>
-References: <20210203041636.38555-1-xiyou.wangcong@gmail.com>
+        id S230070AbhBCR6L (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Feb 2021 12:58:11 -0500
+Received: from mail.efficios.com ([167.114.26.124]:57748 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231828AbhBCR6K (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Feb 2021 12:58:10 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id EAD922E1B81;
+        Wed,  3 Feb 2021 12:57:25 -0500 (EST)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id Laf33Bz6ph5V; Wed,  3 Feb 2021 12:57:25 -0500 (EST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 3A8F32E1B08;
+        Wed,  3 Feb 2021 12:57:25 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 3A8F32E1B08
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1612375045;
+        bh=+Qap7N2Y/QmVqgqw+bVa1bnoy5TmfjVjhj7na064KEk=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=dOFQGDDKyyE2kjOazY1VDl/JsFGLVRbVBZVoCesYWWf2WNd8aqI3/z32qGsvFO/dK
+         YYIJTVzftkNRZMfQ6Jzaj9Woc9pr7HBCt3n4x7PO1+bQmuhile/fCdlUE0JqRMQAoB
+         vF50DRX+wvWaIrU2/mTrdEnFZOU+GlVyADVPW6CacmpKvL76gDh78fbq6OF7tr7QEq
+         HHTTeNOCatEYjuVJO2m2PHGzyYW6BWDfOeJmn2UuujkISHCzouk79FPheykY5Liv5P
+         E783dsRkSk7uhKiluz2e77C7lhpi4ZqFATE0SSJ+PZTf29SjyUDTVnVyLmQeuG5IQ2
+         8KVPBt6BNyDOQ==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id JOJTxMAyXdTv; Wed,  3 Feb 2021 12:57:25 -0500 (EST)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 0FFD42E1959;
+        Wed,  3 Feb 2021 12:57:25 -0500 (EST)
+Date:   Wed, 3 Feb 2021 12:57:24 -0500 (EST)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Florian Weimer <fw@deneb.enyo.de>,
+        syzbot+83aa762ef23b6f0d1991@syzkaller.appspotmail.com,
+        syzbot+d29e58bb557324e55e5e@syzkaller.appspotmail.com,
+        Matt Mullins <mmullins@mmlx.us>
+Message-ID: <1836191179.6214.1612375044968.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20210203160550.710877069@goodmis.org>
+References: <20210203160517.982448432@goodmis.org> <20210203160550.710877069@goodmis.org>
+Subject: Re: [for-next][PATCH 14/15] tracepoint: Do not fail unregistering a
+ probe due to memory failure
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210203041636.38555-1-xiyou.wangcong@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF84 (Linux)/8.8.15_GA_3996)
+Thread-Topic: tracepoint: Do not fail unregistering a probe due to memory failure
+Thread-Index: GtmxsYito0gcoBg/ByOH+HQKBrh4xA==
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 08:16:17PM -0800, Cong Wang wrote:
-> From: Cong Wang <cong.wang@bytedance.com>
-> 
-> Currently sockmap only fully supports TCP, UDP is partially supported
-> as it is only allowed to add into sockmap. This patch extends sockmap
-> with: 1) full UDP support; 2) full AF_UNIX dgram support; 3) cross
-> protocol support. Our goal is to allow socket splice between AF_UNIX
-> dgram and UDP.
 
-Please expand on the use case. The 'splice between af_unix and udp'
-doesn't tell me much. The selftest doesn't help to understand the scope either.
+
+----- On Feb 3, 2021, at 11:05 AM, rostedt rostedt@goodmis.org wrote:
+
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+> 
+> The list of tracepoint callbacks is managed by an array that is protected
+> by RCU. To update this array, a new array is allocated, the updates are
+> copied over to the new array, and then the list of functions for the
+> tracepoint is switched over to the new array. After a completion of an RCU
+> grace period, the old array is freed.
+> 
+> This process happens for both adding a callback as well as removing one.
+> But on removing a callback, if the new array fails to be allocated, the
+> callback is not removed, and may be used after it is freed by the clients
+> of the tracepoint.
+> 
+> There's really no reason to fail if the allocation for a new array fails
+> when removing a function. Instead, the function can simply be replaced by a
+> stub function that could be cleaned up on the next modification of the
+> array. That is, instead of calling the function registered to the
+> tracepoint, it would call a stub function in its place.
+> 
+> Link: https://lore.kernel.org/r/20201115055256.65625-1-mmullins@mmlx.us
+> Link: https://lore.kernel.org/r/20201116175107.02db396d@gandalf.local.home
+> Link: https://lore.kernel.org/r/20201117211836.54acaef2@oasis.local.home
+> Link: https://lkml.kernel.org/r/20201118093405.7a6d2290@gandalf.local.home
+> 
+> [ Note, this version does use undefined compiler behavior (assuming that
+>  a stub function with no parameters or return, can be called by a location
+>  that thinks it has parameters but still no return value. Static calls
+>  do the same thing, so this trick is not without precedent.
+> 
+>  There's another solution that uses RCU tricks and is more complex, but
+>  can be an alternative if this solution becomes an issue.
+> 
+>  Link: https://lore.kernel.org/lkml/20210127170721.58bce7cc@gandalf.local.home/
+> ]
+> 
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Dmitry Vyukov <dvyukov@google.com>
+> Cc: Martin KaFai Lau <kafai@fb.com>
+> Cc: Song Liu <songliubraving@fb.com>
+> Cc: Yonghong Song <yhs@fb.com>
+> Cc: Andrii Nakryiko <andriin@fb.com>
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: KP Singh <kpsingh@chromium.org>
+> Cc: netdev <netdev@vger.kernel.org>
+> Cc: bpf <bpf@vger.kernel.org>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Florian Weimer <fw@deneb.enyo.de>
+> Fixes: 97e1c18e8d17b ("tracing: Kernel Tracepoints")
+> Reported-by: syzbot+83aa762ef23b6f0d1991@syzkaller.appspotmail.com
+> Reported-by: syzbot+d29e58bb557324e55e5e@syzkaller.appspotmail.com
+> Reported-by: Matt Mullins <mmullins@mmlx.us>
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> Tested-by: Matt Mullins <mmullins@mmlx.us>
+> ---
+> kernel/tracepoint.c | 80 ++++++++++++++++++++++++++++++++++++---------
+> 1 file changed, 64 insertions(+), 16 deletions(-)
+> 
+> diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
+> index 7261fa0f5e3c..e8f20ae29c18 100644
+> --- a/kernel/tracepoint.c
+> +++ b/kernel/tracepoint.c
+> @@ -53,6 +53,12 @@ struct tp_probes {
+> 	struct tracepoint_func probes[];
+> };
+> 
+> +/* Called in removal of a func but failed to allocate a new tp_funcs */
+> +static void tp_stub_func(void)
+> +{
+> +	return;
+> +}
+> +
+> static inline void *allocate_probes(int count)
+> {
+> 	struct tp_probes *p  = kmalloc(struct_size(p, probes, count),
+> @@ -131,6 +137,7 @@ func_add(struct tracepoint_func **funcs, struct
+> tracepoint_func *tp_func,
+> {
+> 	struct tracepoint_func *old, *new;
+> 	int nr_probes = 0;
+> +	int stub_funcs = 0;
+> 	int pos = -1;
+> 
+> 	if (WARN_ON(!tp_func->func))
+> @@ -147,14 +154,34 @@ func_add(struct tracepoint_func **funcs, struct
+> tracepoint_func *tp_func,
+> 			if (old[nr_probes].func == tp_func->func &&
+> 			    old[nr_probes].data == tp_func->data)
+> 				return ERR_PTR(-EEXIST);
+> +			if (old[nr_probes].func == tp_stub_func)
+> +				stub_funcs++;
+> 		}
+> 	}
+> -	/* + 2 : one for new probe, one for NULL func */
+> -	new = allocate_probes(nr_probes + 2);
+> +	/* + 2 : one for new probe, one for NULL func - stub functions */
+> +	new = allocate_probes(nr_probes + 2 - stub_funcs);
+> 	if (new == NULL)
+> 		return ERR_PTR(-ENOMEM);
+> 	if (old) {
+> -		if (pos < 0) {
+> +		if (stub_funcs) {
+
+Considering that we end up implementing a case where we carefully copy over
+each item, I recommend we replace the two "memcpy" branches by a single item-wise
+implementation. It's a slow-path anyway, and reducing the overall complexity
+is a benefit for slow paths. Fewer bugs, less code to review, and it's easier to
+reach a decent testing state-space coverage.
+
+> +			/* Need to copy one at a time to remove stubs */
+> +			int probes = 0;
+> +
+> +			pos = -1;
+> +			for (nr_probes = 0; old[nr_probes].func; nr_probes++) {
+> +				if (old[nr_probes].func == tp_stub_func)
+> +					continue;
+> +				if (pos < 0 && old[nr_probes].prio < prio)
+> +					pos = probes++;
+> +				new[probes++] = old[nr_probes];
+> +			}
+> +			nr_probes = probes;
+
+Repurposing "nr_probes" from accounting for the number of items in the old
+array to counting the number of items in the new array in the middle of the
+function is confusing.
+
+> +			if (pos < 0)
+> +				pos = probes;
+> +			else
+> +				nr_probes--; /* Account for insertion */
+
+This is probably why you need to play tricks with nr_probes here.
+
+> +		} else if (pos < 0) {
+> 			pos = nr_probes;
+> 			memcpy(new, old, nr_probes * sizeof(struct tracepoint_func));
+> 		} else {
+> @@ -188,8 +215,9 @@ static void *func_remove(struct tracepoint_func **funcs,
+> 	/* (N -> M), (N > 1, M >= 0) probes */
+> 	if (tp_func->func) {
+> 		for (nr_probes = 0; old[nr_probes].func; nr_probes++) {
+> -			if (old[nr_probes].func == tp_func->func &&
+> -			     old[nr_probes].data == tp_func->data)
+> +			if ((old[nr_probes].func == tp_func->func &&
+> +			     old[nr_probes].data == tp_func->data) ||
+> +			    old[nr_probes].func == tp_stub_func)
+> 				nr_del++;
+> 		}
+> 	}
+> @@ -208,14 +236,32 @@ static void *func_remove(struct tracepoint_func **funcs,
+> 		/* N -> M, (N > 1, M > 0) */
+> 		/* + 1 for NULL */
+> 		new = allocate_probes(nr_probes - nr_del + 1);
+> -		if (new == NULL)
+> -			return ERR_PTR(-ENOMEM);
+> -		for (i = 0; old[i].func; i++)
+> -			if (old[i].func != tp_func->func
+> -					|| old[i].data != tp_func->data)
+> -				new[j++] = old[i];
+> -		new[nr_probes - nr_del].func = NULL;
+> -		*funcs = new;
+> +		if (new) {
+> +			for (i = 0; old[i].func; i++)
+> +				if ((old[i].func != tp_func->func
+> +				     || old[i].data != tp_func->data)
+> +				    && old[i].func != tp_stub_func)
+> +					new[j++] = old[i];
+> +			new[nr_probes - nr_del].func = NULL;
+> +			*funcs = new;
+> +		} else {
+> +			/*
+> +			 * Failed to allocate, replace the old function
+> +			 * with calls to tp_stub_func.
+> +			 */
+> +			for (i = 0; old[i].func; i++)
+> +				if (old[i].func == tp_func->func &&
+> +				    old[i].data == tp_func->data) {
+> +					old[i].func = tp_stub_func;
+
+This updates "func" while readers are loading it concurrently. I would recommend
+using WRITE_ONCE here paired with READ_ONCE within __traceiter_##_name.
+
+> +					/* Set the prio to the next event. */
+
+I don't get why the priority needs to be changed here. Could it simply stay
+at its original value ? It's already in the correct priority order anyway.
+
+> +					if (old[i + 1].func)
+> +						old[i].prio =
+> +							old[i + 1].prio;
+> +					else
+> +						old[i].prio = -1;
+> +				}
+> +			*funcs = old;
+
+I'm not sure what setting *funcs to old achieves ? Isn't it already pointing
+to old ?
+
+I'll send a patch which applies on top of yours implementing my recommendations.
+It shrinks the code complexity nicely:
+
+ include/linux/tracepoint.h |  2 +-
+ kernel/tracepoint.c        | 80 +++++++++++++-------------------------
+ 2 files changed, 28 insertions(+), 54 deletions(-)
+
+Thanks,
+
+Mathieu
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
