@@ -2,118 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 745F930E411
-	for <lists+bpf@lfdr.de>; Wed,  3 Feb 2021 21:31:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B462630E41A
+	for <lists+bpf@lfdr.de>; Wed,  3 Feb 2021 21:34:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232095AbhBCUau (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Feb 2021 15:30:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48664 "EHLO
+        id S232076AbhBCUeH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Feb 2021 15:34:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231367AbhBCUas (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Feb 2021 15:30:48 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57290C0613ED;
-        Wed,  3 Feb 2021 12:30:08 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id s24so751248iob.6;
-        Wed, 03 Feb 2021 12:30:08 -0800 (PST)
+        with ESMTP id S232184AbhBCUeG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Feb 2021 15:34:06 -0500
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3495FC061573
+        for <bpf@vger.kernel.org>; Wed,  3 Feb 2021 12:33:26 -0800 (PST)
+Received: by mail-yb1-xb34.google.com with SMTP id s61so902272ybi.4
+        for <bpf@vger.kernel.org>; Wed, 03 Feb 2021 12:33:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=wFjeCmd7uwrlvqvLPlufFHfHxqZnxa5Hn6c4hScQlNE=;
-        b=ERktb6XZPwM5K4q6V4fmCKD93UgjapeTUZZiNd+LFMR9EuUUcktlOQsONIrL78EDV7
-         AK0S0gBv9b9y86bNH3bTZ5wu+mjPoERPRq7/D98tIhM2h/liyU8mpkbaLEWkzMG16Jcn
-         U/h3TP8wA65okqC40l5cKADqXgNOIMp8PqTkcnpjjEma+st+1GAZ49Rz3TnfCRUjmpTx
-         4KZkj+8SAEX5M2y2bwJ5y1XVfjywca5mmex4wc03ykqlS4A6IWGTPHc1tB+ncfwnMG+t
-         vBpzXimlAzNZQMo9SaPMsKkp8ATRFoVwKoVg7WTpcPiWaOGyCWB3EDUiN4WPRD5q3YUJ
-         ejxg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=me7HbPDTOW0Xgy0fD84d5Wcywb+vD8AeZDdCyM7+T6s=;
+        b=Sm2W7WSCsAoy0jKk7dyk9IrD9crI1B+XsEQuNWBJUpM9QHvZgrGANZLNuDcIJKNDu+
+         ZU4D1W/76IKAb+uE/0sHPfvMBkuEY9MFffwnklQDWrZT06aIe5Hys292SXkK7Tueqi9U
+         y3M9CabyKZIDp6S3fVdFC5DlJZYSht7hM5pczpudqUywu4IrWq7iC9tYrOBSXeaYJjrV
+         LVOeWEfLE/heohkOL2h41Rbs7g7edtCWxLZdNYNrQtoL+s8MFIxsExHC0AWzNQ/7vmYI
+         U6sJA+33MB5Ia3ZDTFLMbaxommI/xuoYW5rSjMzDtMrbTTyHmr28ez1T+9OH9XQE5XMc
+         ohAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=wFjeCmd7uwrlvqvLPlufFHfHxqZnxa5Hn6c4hScQlNE=;
-        b=AdE+l1MwPC91y2JKoJgWU0x0Y2AG4I/Q5uFgeHpA8crBDyokn9Hii4dIjE2tKudsx1
-         IcPrwLr812NwgyxMaSJflhNOOY4+GzFnSraOCCYEfNavy5EBbWMQx6I50Qr1LJFKGq/A
-         6AVQ9atBE97iZlXoSKwICpLpYAtT+KO6bsw+2B02L3bKP2oi3xau6MXkKa0c886gZfK6
-         wc3wAROwd+NZDSqSwML+usmcBwgsVm2PmcGMXqRbFCiTnhf1Y5O+X/Q8Hq/VXUO/Eh2z
-         yV03B697GggCAnywNtcc1ppiK7oyZ/+Y67nAT2riggMcCW+j4gWJXs1xBtHod/df6slP
-         HF4Q==
-X-Gm-Message-State: AOAM530xneoBu5byu/b4bsrsGtUmyMKJ22uteGJsQ4sU53QA/QJCrsyM
-        D6jwtQ5b/xq7jyWSKq3FmUU=
-X-Google-Smtp-Source: ABdhPJyrBUgQMD7fIy4RqPlhIg8KsMzQ8JD82A5gRi94EvR4XH7id9cNN3L1QJD3SWyPGMHkgZl+rw==
-X-Received: by 2002:a6b:ed0f:: with SMTP id n15mr3896782iog.94.1612384207741;
-        Wed, 03 Feb 2021 12:30:07 -0800 (PST)
-Received: from localhost ([172.243.146.206])
-        by smtp.gmail.com with ESMTPSA id d9sm1473037ilo.20.2021.02.03.12.30.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 12:30:06 -0800 (PST)
-Date:   Wed, 03 Feb 2021 12:29:57 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, duanxiongchun@bytedance.com,
-        Dongdong Wang <wangdongdong.6@bytedance.com>,
-        jiang.wang@bytedance.com, Cong Wang <cong.wang@bytedance.com>
-Message-ID: <601b07c5c8345_4b70c208f2@john-XPS-13-9370.notmuch>
-In-Reply-To: <CAM_iQpX-GDysSZTYr-2WsbqFP4VgG5ivcO1vwLvKVHkJ9hjodg@mail.gmail.com>
-References: <20210203041636.38555-1-xiyou.wangcong@gmail.com>
- <20210203174846.gvhyv3hlrfnep7xe@ast-mbp.dhcp.thefacebook.com>
- <CAM_iQpX-GDysSZTYr-2WsbqFP4VgG5ivcO1vwLvKVHkJ9hjodg@mail.gmail.com>
-Subject: Re: [Patch bpf-next 00/19] sock_map: add non-TCP and cross-protocol
- support
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=me7HbPDTOW0Xgy0fD84d5Wcywb+vD8AeZDdCyM7+T6s=;
+        b=pmu9E3CwnFya4KzfrAXCHLcWtpqgWqDYXwgk4hUjgia6gjp53S/PviDDOtMiihqJ0N
+         /lrorWopZsigI8F/kS761O5Gax54NBq2AOQMpBOWqdpmolJbNXd9HNN08EIDix/Q0XUf
+         XAU9Eey+br6rSlThm+7wutp7opzRsQiRaOl5vBeePVll5iDXABPM2j4tg8vqXaWcNFaR
+         MKbFQ5tBRg6XTlkp/1qhNcH/Kz12QfJAlzDcXxxwftdVRpM9IDynXjLYf5Unuxd9Hc+x
+         56JuqID9Qh6WKHsd0Ngd7W8vAhNz9ckQi2KeZQ059GUCwt22h8xi414yi7eHdZ+mYh34
+         9FrQ==
+X-Gm-Message-State: AOAM532m+vegsFZ509bwBfO5yaqbfMm8bM0ln+tc3dnKQjkotNVm5keP
+        00VCQh5jjPaS4C2M0n8jO3cyRoLqgO7xB6Tg2Cg=
+X-Google-Smtp-Source: ABdhPJywz3zwh6oVw5pfOgnau8CNh1w62zu7L2fzZ3Lmyvbgt8bRsOGvep5NUbJY/znymeiVGMCHtwOewwOCaJJoF60=
+X-Received: by 2002:a25:f40e:: with SMTP id q14mr7143451ybd.230.1612384405432;
+ Wed, 03 Feb 2021 12:33:25 -0800 (PST)
+MIME-Version: 1.0
+References: <8a6894e9-71ef-09e3-64fa-bf6794fc6660@infradead.org>
+ <87eehxa06v.fsf@toke.dk> <a6a8fbd6-c610-873e-12e1-b6b0fadb94be@infradead.org>
+ <CAEf4Bzb7-jpQLStjtrWm+CvDkLGHR_LiVdb6YcagR2v-Yt42tw@mail.gmail.com>
+ <44e6edc6-736e-dadb-c523-eabff8de89c0@infradead.org> <CAEf4BzbZNwHFYRtQZbEZrzqYF+8TenhZA8==N1wLO0nnbmi8Vw@mail.gmail.com>
+ <93a6f6b6-167a-a2c6-f0dc-621d5a7bfc20@infradead.org>
+In-Reply-To: <93a6f6b6-167a-a2c6-f0dc-621d5a7bfc20@infradead.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 3 Feb 2021 12:33:14 -0800
+Message-ID: <CAEf4BzYMbu6X1kpx-oVuwsdrFAF9--_M5KGfFkiZomBPsuYHng@mail.gmail.com>
+Subject: Re: finding libelf
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Cong Wang wrote:
-> On Wed, Feb 3, 2021 at 9:48 AM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
+On Wed, Feb 3, 2021 at 12:15 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> On 2/3/21 12:12 PM, Andrii Nakryiko wrote:
+> > On Wed, Feb 3, 2021 at 12:09 PM Randy Dunlap <rdunlap@infradead.org> wr=
+ote:
+> >>
+> >> On 2/3/21 11:39 AM, Andrii Nakryiko wrote:
+> >>> On Wed, Feb 3, 2021 at 9:22 AM Randy Dunlap <rdunlap@infradead.org> w=
+rote:
+> >>>>
+> >>>> On 2/3/21 2:57 AM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> >>>>> Randy Dunlap <rdunlap@infradead.org> writes:
+> >>>>>
+> >>>>>> Hi,
+> >>>>>>
+> >>>>>> I see this sometimes when building a kernel: (on x86_64,
+> >>>>>> with today's linux-next 20210202):
+> >>>>>>
+> >>>>>>
+> >>>>>> CONFIG_CGROUP_BPF=3Dy
+> >>>>>> CONFIG_BPF=3Dy
+> >>>>>> CONFIG_BPF_SYSCALL=3Dy
+> >>>>>> CONFIG_ARCH_WANT_DEFAULT_BPF_JIT=3Dy
+> >>>>>> CONFIG_BPF_PRELOAD=3Dy
+> >>>>>> CONFIG_BPF_PRELOAD_UMD=3Dm
+> >>>>>> CONFIG_HAVE_EBPF_JIT=3Dy
+> >>>>>>
+> >>>>>>
+> >>>>>> Auto-detecting system features:
+> >>>>>> ...                        libelf: [ [31mOFF[m ]
+> >>>>>> ...                          zlib: [ [31mOFF[m ]
+> >>>>>> ...                           bpf: [ [31mOFF[m ]
+> >>>>>>
+> >>>>>> No libelf found
+> >>>>>> make[5]: [Makefile:287: elfdep] Error 1 (ignored)
+> >>>>>> No zlib found
+> >>>>>> make[5]: [Makefile:290: zdep] Error 1 (ignored)
+> >>>>>> BPF API too old
+> >>>>>> make[5]: [Makefile:293: bpfdep] Error 1 (ignored)
+> >>>>>>
+> >>>>>>
+> >>>>>> but pkg-config tells me:
+> >>>>>>
+> >>>>>> $ pkg-config --modversion  libelf
+> >>>>>> 0.168
+> >>>>>> $ pkg-config --libs  libelf
+> >>>>>> -lelf
+> >>>>>>
+> >>>>>>
+> >>>>>> Any ideas?
+> >>>>>
+> >>>>> This usually happens because there's a stale cache of the feature
+> >>>>> detection tests lying around somewhere. Look for a 'feature' direct=
+ory
+> >>>>> in whatever subdir you got that error. Just removing the feature
+> >>>>> directory usually fixes this; I've fixed a couple of places where t=
+his
+> >>>>> is not picked up by 'make clean' (see, e.g., 9d9aae53b96d ("bpf/pre=
+load:
+> >>>>> Make sure Makefile cleans up after itself, and add .gitignore")) bu=
+t I
+> >>>>> wouldn't be surprised if there are still some that are broken.
+> >>>>
+> >>>> Hi,
+> >>>>
+> >>>> Thanks for replying.
+> >>>>
+> >>>> I removed the feature subdir and still got this build error, so I
+> >>>> removed everything in BUILDDIR/kernel/bpf/preload and rebuilt --
+> >>>> and still got the same libelf build error.
+> >>>
+> >>> I hate the complexity of feature detection framework to the point tha=
+t
+> >>> I'm willing to rip it out from libbpf's Makefile completely. I just
+> >>> spent an hour trying to understand what's going on in a very similar
+> >>> situation. Extremely frustrating.
+> >>>
+> >>> In your case, it might be feature detection triggered from
+> >>> resolve_btfids, so try removing
+> >>> $(OUTPUT)/tools/bpf/resolve_btfids/{feature/,FEATURE-DUMP.libbpf}.
+> >>>
+> >>> It seems like we don't do proper cleanup in resolve_btfids (it should
+> >>> probably call libbpf's clean as well). And it's beyond me why `make -=
+C
+> >>> tools/build/feature clean` doesn't clean up FEATURE-DUMP.<use-case>
+> >>> file as well.
+> >>
+> >>
+> >> I don't think it's related to improper cleanup or old files/dirs
+> >> laying around. I say that because I did a full build in a new output d=
+ir.
+> >> and it still failed in the same way.
 > >
-> > On Tue, Feb 02, 2021 at 08:16:17PM -0800, Cong Wang wrote:
-> > > From: Cong Wang <cong.wang@bytedance.com>
-> > >
-> > > Currently sockmap only fully supports TCP, UDP is partially supported
-> > > as it is only allowed to add into sockmap. This patch extends sockmap
-> > > with: 1) full UDP support; 2) full AF_UNIX dgram support; 3) cross
-> > > protocol support. Our goal is to allow socket splice between AF_UNIX
-> > > dgram and UDP.
-> >
-> > Please expand on the use case. The 'splice between af_unix and udp'
-> > doesn't tell me much. The selftest doesn't help to understand the scope either.
-> 
-> Sure. We have thousands of services connected to a daemon on every host
-> with UNIX dgram sockets, after they are moved into VM, we have to add a proxy
-> to forward these communications from VM to host, because rewriting thousands
-> of them is not practical. This proxy uses a UNIX socket connected to services
-> and uses a UDP socket to connect to the host. It is inefficient because data is
-> copied between kernel space and user space twice, and we can not use
-> splice() which only supports TCP. Therefore, we want to use sockmap to do
-> the splicing without even going to user-space at all (after the initial setup).
+> > If you cd tools/lib/bpf and run make there, does it detect those librar=
+ies?
+>
+> Yes:
+>
+> Auto-detecting system features:
+> ...                        libelf: [ on  ]
+> ...                          zlib: [ on  ]
+> ...                           bpf: [ on  ]
+>
+>
 
-Thanks for the details. We also have a use-case similar to TCP sockets
-to apply policy/redirect to UDP sockets so will want similar semantics to
-how TCP skmsg programs work on egress.
+Sounds exactly like my case. I removed
+$(O)/tools/bpf/resolve_btfids/{feature/,FEATURE-DUMP.libbpf} and it
+started working.
 
-> 
-> My colleague Jiang (already Cc'ed) is working on the sockmap support for
-> vsock so that we can move from UDP to vsock for host-VM communications.
-
-Great. The host-VM channel came up a few times in the initial sockmap work,
-but I never got around to starting.
-
-> 
-> If this is useful, I can add it in this cover letter in the next update.
-> 
-
-Please add to the cover letter. I'll review the series today or
-tomorrow, I have a couple things on the TODO list for today that
-I need to get done first.
-
-> Thanks.
-
-Thanks for doing this work.
+> --
+> ~Randy
+>
