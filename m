@@ -2,135 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AB8F30E0F5
-	for <lists+bpf@lfdr.de>; Wed,  3 Feb 2021 18:27:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6897D30E13D
+	for <lists+bpf@lfdr.de>; Wed,  3 Feb 2021 18:39:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232353AbhBCRZ0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Feb 2021 12:25:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47010 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232301AbhBCRYj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Feb 2021 12:24:39 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CE9B964F86;
-        Wed,  3 Feb 2021 17:23:55 +0000 (UTC)
-Date:   Wed, 3 Feb 2021 12:23:54 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Ingo Molnar <mingo@redhat.com>,
+        id S231363AbhBCRid (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Feb 2021 12:38:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229731AbhBCRia (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Feb 2021 12:38:30 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A4F4C061573;
+        Wed,  3 Feb 2021 09:37:50 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id f19so17550ljn.5;
+        Wed, 03 Feb 2021 09:37:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3q+UPAtENPnhUZTyBdBqprfk1+k/9wHkbmh6uMGkygA=;
+        b=jxbXaerWzmnj9ICX44F5qlZWWt+k0oqRudED27GB+NLY+8bpHekdblE0Mm06JIiy39
+         n11fblEGb6zIi36Ar+UqdblvoUmYtcsHZ4DYA5l0ZkWMJUulXyFh5Z9aKtymUuwppq0q
+         eQLAO1PvKnxj32FslPBOBW1GU8BhzJCrSW1IbYNVk5vDSQSCSp2Oe76E5oY0gMJ9mw2z
+         3Wu3PZXDAH7VRO4GTbBXmzMd+XnkDEIhocex9KaoC868l2CosG0+2AwAOG1fIny55JRs
+         BndCm7XuY2k/Qzxstr2lJ59dXmJSEC3UVY5fr8YXVQUAH1AEPzp/H9WtS/lU58xNRj9/
+         IaTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3q+UPAtENPnhUZTyBdBqprfk1+k/9wHkbmh6uMGkygA=;
+        b=ip/WJyMLkUog6eY2K/LpjZAO+wgvAKhPYNqQg1g4MBYgJAUl+4ztDf2WwM1rHtmBhE
+         05v3rCwjr0dvgZQ780lbuJ/P1BRM2nsktb5sNk6Jy4May3I7w2MyxrprPulAmvHMEtdK
+         Q/dM6Y+YTJhY6x+Jhox06BNYxye5RhWMCMOHJhpoUnj2U3O6UT+Bhtv+3+0tie4OP7r7
+         00Eoo513Nd73aVYY1VpBP6hMeLq5fGL4E0jIijhoXItiJQ4z/6k3Vq0tPX6wzjtk2sRT
+         wik+/VGL6CJkLrT18MwvJq+Gno3ZXmNdie4olU3XVbw3jxim03ilCf5mSb+Ev+VxTkUP
+         M1GA==
+X-Gm-Message-State: AOAM533tpu8GOusE2+TMCPcceWsZKmSFFY5jpLhdgyov7PF3Psk1aUBW
+        DiB/qKZuQuMgzxWQZxVI2wfK+0WvSIADadUbwrKLuEzU
+X-Google-Smtp-Source: ABdhPJzoIX1w5qTGwHd+UeZvX+UUlWH/gojsSF/e9+apOZSMSSNxnPr2krku08s19F3iPL2OR7BtZW/BPkBlM2vKxKU=
+X-Received: by 2002:a05:651c:233:: with SMTP id z19mr2272461ljn.486.1612373868842;
+ Wed, 03 Feb 2021 09:37:48 -0800 (PST)
+MIME-Version: 1.0
+References: <20210202135002.4024825-1-jackmanb@google.com> <3160ff36-3f5b-e278-0ce8-b5a4aa61417f@fb.com>
+In-Reply-To: <3160ff36-3f5b-e278-0ce8-b5a4aa61417f@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 3 Feb 2021 09:37:37 -0800
+Message-ID: <CAADnVQL4S_XbyNEFrX9+6ew_6wyMZfQXW8t7pHu1eLdY0mgtJQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3] bpf: Propagate stack bounds to registers in
+ atomics w/ BPF_FETCH
+To:     Yonghong Song <yhs@fb.com>
+Cc:     Brendan Jackman <jackmanb@google.com>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
         KP Singh <kpsingh@chromium.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Florian Weimer <fw@deneb.enyo.de>,
-        syzbot+83aa762ef23b6f0d1991@syzkaller.appspotmail.com,
-        syzbot+d29e58bb557324e55e5e@syzkaller.appspotmail.com,
-        Matt Mullins <mmullins@mmlx.us>
-Subject: Re: [for-next][PATCH 14/15] tracepoint: Do not fail unregistering a
- probe due to memory failure
-Message-ID: <20210203122354.5da83b21@gandalf.local.home>
-In-Reply-To: <YBrYx3kCqiEH8HEw@hirez.programming.kicks-ass.net>
-References: <20210203160517.982448432@goodmis.org>
-        <20210203160550.710877069@goodmis.org>
-        <YBrYx3kCqiEH8HEw@hirez.programming.kicks-ass.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Florent Revest <revest@chromium.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 3 Feb 2021 18:09:27 +0100
-Peter Zijlstra <peterz@infradead.org> wrote:
+On Wed, Feb 3, 2021 at 9:07 AM Yonghong Song <yhs@fb.com> wrote:
+>
+>
+>
+> On 2/2/21 5:50 AM, Brendan Jackman wrote:
+> > When BPF_FETCH is set, atomic instructions load a value from memory
+> > into a register. The current verifier code first checks via
+> > check_mem_access whether we can access the memory, and then checks
+> > via check_reg_arg whether we can write into the register.
+> >
+> > For loads, check_reg_arg has the side-effect of marking the
+> > register's value as unkonwn, and check_mem_access has the side effect
+> > of propagating bounds from memory to the register. This currently only
+> > takes effect for stack memory.
+> >
+> > Therefore with the current order, bounds information is thrown away,
+> > but by simply reversing the order of check_reg_arg
+> > vs. check_mem_access, we can instead propagate bounds smartly.
+> >
+> > A simple test is added with an infinite loop that can only be proved
+> > unreachable if this propagation is present. This is implemented both
+> > with C and directly in test_verifier using assembly.
+> >
+> > Suggested-by: John Fastabend <john.fastabend@gmail.com>
+> > Signed-off-by: Brendan Jackman <jackmanb@google.com>
+>
+> Ack with a nit below.
 
-> On Wed, Feb 03, 2021 at 11:05:31AM -0500, Steven Rostedt wrote:
-> > +		if (new) {
-> > +			for (i = 0; old[i].func; i++)
-> > +				if ((old[i].func != tp_func->func
-> > +				     || old[i].data != tp_func->data)
-> > +				    && old[i].func != tp_stub_func)  
-> 
-> logical operators go at the end..
-
-Agreed. I just added that "if (new) {" around the original block, didn't
-think about the formatting when doing so.
-
-> 
-> > +					new[j++] = old[i];
-> > +			new[nr_probes - nr_del].func = NULL;
-> > +			*funcs = new;
-> > +		} else {
-> > +			/*
-> > +			 * Failed to allocate, replace the old function
-> > +			 * with calls to tp_stub_func.
-> > +			 */
-> > +			for (i = 0; old[i].func; i++)  
-> 
-> 							{
-> 
-> > +				if (old[i].func == tp_func->func &&
-> > +				    old[i].data == tp_func->data) {  
-> 
-> like here.
-> 
-> > +					old[i].func = tp_stub_func;
-> > +					/* Set the prio to the next event. */
-> > +					if (old[i + 1].func)
-> > +						old[i].prio =
-> > +							old[i + 1].prio;  
-> 
-> multi line demands { }, but in this case just don't line-break.
-
-Sure.
-
-> 
-> > +					else
-> > +						old[i].prio = -1;
-> > +				}  
-> 
-> 			}
-> 
-> > +			*funcs = old;
-> > +		}
-> >  	}
-> >  	debug_print_probes(*funcs);
-> >  	return old;
-> > @@ -295,10 +341,12 @@ static int tracepoint_remove_func(struct tracepoint *tp,
-> >  	tp_funcs = rcu_dereference_protected(tp->funcs,
-> >  			lockdep_is_held(&tracepoints_mutex));
-> >  	old = func_remove(&tp_funcs, func);
-> > -	if (IS_ERR(old)) {
-> > -		WARN_ON_ONCE(PTR_ERR(old) != -ENOMEM);
-> > +	if (WARN_ON_ONCE(IS_ERR(old)))
-> >  		return PTR_ERR(old);
-> > -	}
-> > +
-> > +	if (tp_funcs == old)
-> > +		/* Failed allocating new tp_funcs, replaced func with stub */
-> > +		return 0;  
-> 
-> { }
-
-Even if it's just a comment that causes multiple lines? I could just move
-the comment above the if.
-
-This has already been through my test suite, and since the changes
-requested are just formatting and non-functional, I'll just add a clean up
-patch on top.
-
-Thanks!
-
--- Steve
+Sorry it was already applied yesterday.
+patchbot just didn't send auto-reply.
