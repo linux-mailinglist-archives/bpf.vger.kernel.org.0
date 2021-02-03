@@ -2,164 +2,71 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C7D130E421
-	for <lists+bpf@lfdr.de>; Wed,  3 Feb 2021 21:37:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDCDE30E426
+	for <lists+bpf@lfdr.de>; Wed,  3 Feb 2021 21:41:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231609AbhBCUg4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Feb 2021 15:36:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231367AbhBCUg4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Feb 2021 15:36:56 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D7AC061573
-        for <bpf@vger.kernel.org>; Wed,  3 Feb 2021 12:36:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=wFgY3jXhAe1+xmcKIELzuLpd5V8bf0HxvdGA156kpGM=; b=wT7vzrjE3W/MZh6CJXnCbi/NVJ
-        hdKgydM+7n/oB2arI1M6oV5i8yQfTMvfXMnIdsOSgI/p4aubYv7vkx75B5mCQb8tJntzOT/72yScx
-        XNqhGI0KOqO/p9sMxe51DHd1Pk4yte8mLBGC+oTGoioQRXjUn558tF+s4rG3bjL5iGxERurdctQF4
-        96gGsPagL1X65FaH+CA3WWgbphy8tnTiU6ggsrhRpHBTqGsAoOjI3LkWs9Ct0pxztp1EwjPce8UgF
-        D8XKVhIx/YBBaqBgvSXQuKFimljoEk9TNVR/TRAEhiXF9kwoxhrDzb76aR/gfagDWP9fj0HP6KzmY
-        w148CjSA==;
-Received: from [2601:1c0:6280:3f0::aec2]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l7Osn-0005g4-AQ; Wed, 03 Feb 2021 20:36:13 +0000
-Subject: Re: finding libelf
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        bpf <bpf@vger.kernel.org>
-References: <8a6894e9-71ef-09e3-64fa-bf6794fc6660@infradead.org>
- <87eehxa06v.fsf@toke.dk> <a6a8fbd6-c610-873e-12e1-b6b0fadb94be@infradead.org>
- <CAEf4Bzb7-jpQLStjtrWm+CvDkLGHR_LiVdb6YcagR2v-Yt42tw@mail.gmail.com>
- <44e6edc6-736e-dadb-c523-eabff8de89c0@infradead.org>
- <CAEf4BzbZNwHFYRtQZbEZrzqYF+8TenhZA8==N1wLO0nnbmi8Vw@mail.gmail.com>
- <93a6f6b6-167a-a2c6-f0dc-621d5a7bfc20@infradead.org>
- <CAEf4BzYMbu6X1kpx-oVuwsdrFAF9--_M5KGfFkiZomBPsuYHng@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <01ffaa2e-c0fd-95a1-a60a-eb90cbf868ad@infradead.org>
-Date:   Wed, 3 Feb 2021 12:36:10 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S231215AbhBCUks (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Feb 2021 15:40:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52204 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231194AbhBCUkr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Feb 2021 15:40:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id E97CA64F78;
+        Wed,  3 Feb 2021 20:40:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612384807;
+        bh=bz4sOyMtVkNskXyMxp6RuJLe5H1gv1Qj2cu0tS5PWvI=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=YBCJv+Qz5/unKHx6zvSm5kFDhV3ZOSsrDWdBwiWSVV1vJPiMZGuczR4n10ld/+KTG
+         2ksRYwxmzPg1JltEH3q+434DtNxeHu+OBnc0CXOpPLjbeOITyyf/YAv8+EAB94pFIt
+         r6Qc9Fkp/WL2mZ717OPb8LTrH/5bPBs9iuF56fwn3/7KLvIG4fuWbikzF2PA5PV4qJ
+         5YEI/sPQP7evLEmm6hXcj3yFim8IbhmfxPQsNWtn8nXrygyF8TWsHl8wNZnljCHErK
+         4QaLFA56X2aLH4ocRAe6CKCZEhYc7NeyCFeyu64pIp3ouhqdWjMFmQgf+JQCgtZUyN
+         955MN2z3eMLkg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E1B99609E5;
+        Wed,  3 Feb 2021 20:40:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzYMbu6X1kpx-oVuwsdrFAF9--_M5KGfFkiZomBPsuYHng@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf] bpf: Unbreak BPF_PROG_TYPE_KPROBE when kprobe is called
+ via do_int3
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161238480692.15219.4387858440834485652.git-patchwork-notify@kernel.org>
+Date:   Wed, 03 Feb 2021 20:40:06 +0000
+References: <20210203070636.70926-1-alexei.starovoitov@gmail.com>
+In-Reply-To: <20210203070636.70926-1-alexei.starovoitov@gmail.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     davem@davemloft.net, daniel@iogearbox.net, nborisov@suse.com,
+        peterz@infradead.org, rostedt@goodmis.org, mhiramat@kernel.org,
+        bpf@vger.kernel.org, kernel-team@fb.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/3/21 12:33 PM, Andrii Nakryiko wrote:
-> On Wed, Feb 3, 2021 at 12:15 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->>
->> On 2/3/21 12:12 PM, Andrii Nakryiko wrote:
->>> On Wed, Feb 3, 2021 at 12:09 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->>>>
->>>> On 2/3/21 11:39 AM, Andrii Nakryiko wrote:
->>>>> On Wed, Feb 3, 2021 at 9:22 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->>>>>>
->>>>>> On 2/3/21 2:57 AM, Toke Høiland-Jørgensen wrote:
->>>>>>> Randy Dunlap <rdunlap@infradead.org> writes:
->>>>>>>
->>>>>>>> Hi,
->>>>>>>>
->>>>>>>> I see this sometimes when building a kernel: (on x86_64,
->>>>>>>> with today's linux-next 20210202):
->>>>>>>>
->>>>>>>>
->>>>>>>> CONFIG_CGROUP_BPF=y
->>>>>>>> CONFIG_BPF=y
->>>>>>>> CONFIG_BPF_SYSCALL=y
->>>>>>>> CONFIG_ARCH_WANT_DEFAULT_BPF_JIT=y
->>>>>>>> CONFIG_BPF_PRELOAD=y
->>>>>>>> CONFIG_BPF_PRELOAD_UMD=m
->>>>>>>> CONFIG_HAVE_EBPF_JIT=y
->>>>>>>>
->>>>>>>>
->>>>>>>> Auto-detecting system features:
->>>>>>>> ...                        libelf: [ [31mOFF[m ]
->>>>>>>> ...                          zlib: [ [31mOFF[m ]
->>>>>>>> ...                           bpf: [ [31mOFF[m ]
->>>>>>>>
->>>>>>>> No libelf found
->>>>>>>> make[5]: [Makefile:287: elfdep] Error 1 (ignored)
->>>>>>>> No zlib found
->>>>>>>> make[5]: [Makefile:290: zdep] Error 1 (ignored)
->>>>>>>> BPF API too old
->>>>>>>> make[5]: [Makefile:293: bpfdep] Error 1 (ignored)
->>>>>>>>
->>>>>>>>
->>>>>>>> but pkg-config tells me:
->>>>>>>>
->>>>>>>> $ pkg-config --modversion  libelf
->>>>>>>> 0.168
->>>>>>>> $ pkg-config --libs  libelf
->>>>>>>> -lelf
->>>>>>>>
->>>>>>>>
->>>>>>>> Any ideas?
->>>>>>>
->>>>>>> This usually happens because there's a stale cache of the feature
->>>>>>> detection tests lying around somewhere. Look for a 'feature' directory
->>>>>>> in whatever subdir you got that error. Just removing the feature
->>>>>>> directory usually fixes this; I've fixed a couple of places where this
->>>>>>> is not picked up by 'make clean' (see, e.g., 9d9aae53b96d ("bpf/preload:
->>>>>>> Make sure Makefile cleans up after itself, and add .gitignore")) but I
->>>>>>> wouldn't be surprised if there are still some that are broken.
->>>>>>
->>>>>> Hi,
->>>>>>
->>>>>> Thanks for replying.
->>>>>>
->>>>>> I removed the feature subdir and still got this build error, so I
->>>>>> removed everything in BUILDDIR/kernel/bpf/preload and rebuilt --
->>>>>> and still got the same libelf build error.
->>>>>
->>>>> I hate the complexity of feature detection framework to the point that
->>>>> I'm willing to rip it out from libbpf's Makefile completely. I just
->>>>> spent an hour trying to understand what's going on in a very similar
->>>>> situation. Extremely frustrating.
->>>>>
->>>>> In your case, it might be feature detection triggered from
->>>>> resolve_btfids, so try removing
->>>>> $(OUTPUT)/tools/bpf/resolve_btfids/{feature/,FEATURE-DUMP.libbpf}.
->>>>>
->>>>> It seems like we don't do proper cleanup in resolve_btfids (it should
->>>>> probably call libbpf's clean as well). And it's beyond me why `make -C
->>>>> tools/build/feature clean` doesn't clean up FEATURE-DUMP.<use-case>
->>>>> file as well.
->>>>
->>>>
->>>> I don't think it's related to improper cleanup or old files/dirs
->>>> laying around. I say that because I did a full build in a new output dir.
->>>> and it still failed in the same way.
->>>
->>> If you cd tools/lib/bpf and run make there, does it detect those libraries?
->>
->> Yes:
->>
->> Auto-detecting system features:
->> ...                        libelf: [ on  ]
->> ...                          zlib: [ on  ]
->> ...                           bpf: [ on  ]
->>
->>
+Hello:
+
+This patch was applied to bpf/bpf.git (refs/heads/master):
+
+On Tue,  2 Feb 2021 23:06:36 -0800 you wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
 > 
-> Sounds exactly like my case. I removed
-> $(O)/tools/bpf/resolve_btfids/{feature/,FEATURE-DUMP.libbpf} and it
-> started working.
+> The commit 0d00449c7a28 ("x86: Replace ist_enter() with nmi_enter()")
+> converted do_int3 handler to be "NMI-like".
+> That made old if (in_nmi()) check abort execution of bpf programs
+> attached to kprobe when kprobe is firing via int3
+> (For example when kprobe is placed in the middle of the function).
+> Remove the check to restore user visible behavior.
+> 
+> [...]
 
-I already tried that with no success.
+Here is the summary with links:
+  - [bpf] bpf: Unbreak BPF_PROG_TYPE_KPROBE when kprobe is called via do_int3
+    https://git.kernel.org/bpf/bpf/c/548f1191d86c
 
-I suppose that it could be related to how I do builds:
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-make ARCH=x86_64 O=subdir -j4 all
-
-so subdir is a relative path, not an absolute path.
-
--- 
-~Randy
 
