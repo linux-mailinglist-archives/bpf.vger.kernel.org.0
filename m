@@ -2,140 +2,178 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED40F30E632
-	for <lists+bpf@lfdr.de>; Wed,  3 Feb 2021 23:44:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C629030E735
+	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 00:24:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233077AbhBCWm5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Feb 2021 17:42:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48768 "EHLO
+        id S232880AbhBCXWx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Feb 2021 18:22:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233058AbhBCWm4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Feb 2021 17:42:56 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA1BFC0613ED
-        for <bpf@vger.kernel.org>; Wed,  3 Feb 2021 14:42:05 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id s18so1011297ljg.7
-        for <bpf@vger.kernel.org>; Wed, 03 Feb 2021 14:42:05 -0800 (PST)
+        with ESMTP id S233213AbhBCXWu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Feb 2021 18:22:50 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C786C061786;
+        Wed,  3 Feb 2021 15:22:10 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id i6so1316805ybq.5;
+        Wed, 03 Feb 2021 15:22:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=FumwaWvzHZWVNE5DDIsNdn258CZK4DlZwzfhawRHFFU=;
-        b=BKh7HWRt5QJP2ZHOVPSFF1wrdrwqUM37KNsTjNzom5tGNnPIJ9vw2p0eKaZW9IlCGj
-         PRQAlgqXV+HlNMYI+NXDD4iUgxVBON3yb1Gb7JvZ7Qh7f5vcNjvMQbyHbIbrbLHDsDQK
-         F8FxKVZ0QMQBKcXhm9xzGbFs25ys7XxOURSKs=
+        bh=zr7vSaTWl2UUzsxklXRIHO2cYcnU/+KhZDhjca7ZBiY=;
+        b=F2BLMq1LGvGU4Y/Fa1NxbbMhMNWtMky3X+Lp8w3ynTxFsOgnGCzcfJhJxL/CQR3LGy
+         NfOsT3P5dytcloDaIaD75IxnRm0j4DlgqNXnjULoBrSll1fL/xpmBHUhf3n+fhhr5CZI
+         /LJNpWMuH5O8Mqgz2cvAXvc5ZKkHzX5acjtw4teDnXEDyP4DoyykXl28tybSxt2RnpaY
+         wzPJaLL6HCXF6NOdqycZj9kT80aOFuzK9LhSxSpd5WL2OxL6INvWbGZV+yt+00veyhc3
+         syeh1j7SxEE7HlqL6l5Mr7/f+EP33pOLTt8dMhemutW80VJXnXsKk3mn3Mo67bDba7Me
+         AF6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=FumwaWvzHZWVNE5DDIsNdn258CZK4DlZwzfhawRHFFU=;
-        b=qD+AA6AiQQTiTorSbs4V98QU1TloyJBSNHHuqNWlgpz+VSD+DTHouhfOirOQLBWe7X
-         uTDnj6mumzqACAMrBzRnq84jVLKGJbbnJKnD7DZNbjsQ8FILKH+/rxp7IXDLaY/pzdFM
-         1rG898e1//olLKzB8pmot1SfU2XQW+50xH87hFPg/sTT8VgEwvcmfJt+A8vkpntn2NIs
-         KhuCZrjev7pNCPz5/8nJUZ4twLL5HMJDqjSLLTDo5gSQXU+51Z2DvwbHbRJC4mi+sJag
-         Gqq6LiC7OWadE77b2ud6Mchw8dsTxKllSvtgD3BJV86vCKIXHkco/tI8pgW+Bdd0w0Pc
-         jEgg==
-X-Gm-Message-State: AOAM533hTtJjL3QJ/8fWxUivON6BHHyvPc9yh69Q0asrHHxSotvZMo2a
-        eO1HrhbLvPGca/SpfSGwS1/qPxb/h+/NvaZcHXWi2g==
-X-Google-Smtp-Source: ABdhPJwKhpR8sbJ8ZrHXrXvTED9hh5AbNkWxJFB2AjnN5UiHsFQgc7BNpiMd7cHW6zHpZnnJ9JFHzJh6we9lf652od8=
-X-Received: by 2002:a2e:3a18:: with SMTP id h24mr2987085lja.170.1612392124007;
- Wed, 03 Feb 2021 14:42:04 -0800 (PST)
+        bh=zr7vSaTWl2UUzsxklXRIHO2cYcnU/+KhZDhjca7ZBiY=;
+        b=SdOMcr0Hk/h3uHhdT6VZX+ZZpqXoV2Hn0PMfuL2ojlete2LMpeTiG6igLU79yhPEvc
+         KSDLCB3hJRUjcrbpoDlwnXMTWDEvcE8mUFPdheFE5NtoD3HO+wDMnuQNziUfMnspywPZ
+         PjBC4s9IerP4QvVw9k6Mk1DaeHf1CnSMGA9tVlMG7SOW5ctGYGICWNqIfYK5+Kuj7k6L
+         FafEsDckOMzI0y7Y+hwaf9PHnA9aFCg4QDCUrsPv1C3Y41Md/V4o6gkn8ytIgNQ+IQPh
+         Yy7CZA0zO/aTPAdM8rjH1Nl/eGLFjVYXqBhDwlJlaD2eTokuKVZhOPc9r6IMV5bjY646
+         GwcA==
+X-Gm-Message-State: AOAM530xMdL7JHzfBVvOcYiYCan76HzytwT/xgsPZPq9mkOWDVpPYM1a
+        J6ez4kSXYAJJP0Ln4njG+LxelBBBxN/TrnKln7s=
+X-Google-Smtp-Source: ABdhPJzxR3mH6vEsUhgFX2S4VjMemHcCtXs36xdJY7CR8zcV9RYgTIX8tberKYDFItnQbyIOgbXtSdy2BsZfQvr10K0=
+X-Received: by 2002:a25:4b86:: with SMTP id y128mr7841554yba.403.1612394529417;
+ Wed, 03 Feb 2021 15:22:09 -0800 (PST)
 MIME-Version: 1.0
-References: <CABWYdi3HjduhY-nQXzy2ezGbiMB1Vk9cnhW2pMypUa+P1OjtzQ@mail.gmail.com>
- <CABWYdi27baYc3ShHcZExmmXVmxOQXo9sGO+iFhfZLq78k8iaAg@mail.gmail.com>
- <YBrTaVVfWu2R0Hgw@hirez.programming.kicks-ass.net> <CABWYdi2ephz57BA8bns3reMGjvs5m0hYp82+jBLZ6KD3Ba6zdQ@mail.gmail.com>
- <20210203190518.nlwghesq75enas6n@treble>
-In-Reply-To: <20210203190518.nlwghesq75enas6n@treble>
-From:   Ivan Babrou <ivan@cloudflare.com>
-Date:   Wed, 3 Feb 2021 14:41:53 -0800
-Message-ID: <CABWYdi1ya41Ju9SsHMtRQaFQ=s8N23D3ADn6OV6iBwWM6H8=Zw@mail.gmail.com>
-Subject: Re: BUG: KASAN: stack-out-of-bounds in unwind_next_frame+0x1df5/0x2650
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Ignat Korchagin <ignat@cloudflare.com>,
-        Hailong liu <liu.hailong6@zte.com.cn>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Julien Thierry <jthierry@redhat.com>,
-        Jiri Slaby <jirislaby@kernel.org>, kasan-dev@googlegroups.com,
-        linux-mm@kvack.org, linux-kernel <linux-kernel@vger.kernel.org>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Robert Richter <rric@kernel.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>
+References: <20210112184004.1302879-1-jolsa@kernel.org> <f3790a7d-73bc-d634-5994-d049c7a73eae@redhat.com>
+ <20210121133825.GB12699@kernel.org> <CA+icZUVsdcTEJjwpB7=05W5-+roKf66qTwP+M6QJKTnuP6TOVQ@mail.gmail.com>
+ <CAEf4BzaVAp=W47KmMsfpj_wuJR-Gvmav=tdKdoHKAC3AW-976w@mail.gmail.com>
+ <CA+icZUW6g9=sMD3hj5g+ZXOwE_DxfxO3SX2Tb-bFTiWnQLb_EA@mail.gmail.com>
+ <CAEf4BzZ-uU3vkMA1RPt1f2HbgaHoenTxeVadyxuLuFGwN9ntyw@mail.gmail.com>
+ <20210128200046.GA794568@kernel.org> <CAEf4BzbXhn2qAwNyDx6Oqaj7+RdBtjnPPLe27=B0-aB9yY+Xmw@mail.gmail.com>
+ <CA+icZUUTddV18rhZjaVif0a6BgpWtpj4mP1pyQ9cfh_e2xxvMQ@mail.gmail.com>
+ <95233b493fd29b613f5bf3f92419528ce3298c14.camel@klomp.org> <CA+icZUU+XEMnrwgOSRhAaO1bn2p62P6g1KVKGyJfRqxt_jr0Ew@mail.gmail.com>
+In-Reply-To: <CA+icZUU+XEMnrwgOSRhAaO1bn2p62P6g1KVKGyJfRqxt_jr0Ew@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 3 Feb 2021 15:21:58 -0800
+Message-ID: <CAEf4Bzay-MS9mKc7N9Kc-eQBv1U5DomOY4VoBW=BQZaqs3f0kg@mail.gmail.com>
+Subject: Re: [RFT] pahole 1.20 RC was Re: [PATCH] btf_encoder: Add extra
+ checks for symbol names
+To:     Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     Mark Wielaard <mark@klomp.org>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Tom Stellard <tstellar@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>, dwarves@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Hao Luo <haoluo@google.com>,
+        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 3, 2021 at 11:05 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+On Wed, Feb 3, 2021 at 1:48 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
 >
-> On Wed, Feb 03, 2021 at 09:46:55AM -0800, Ivan Babrou wrote:
-> > > Can you pretty please not line-wrap console output? It's unreadable.
+> On Wed, Feb 3, 2021 at 11:23 AM Mark Wielaard <mark@klomp.org> wrote:
 > >
-> > GMail doesn't make it easy, I'll send a link to a pastebin next time.
-> > Let me know if you'd like me to regenerate the decoded stack.
+> > Hi,
 > >
-> > > > edfd9b7838ba5e47f19ad8466d0565aba5c59bf0 is the first bad commit
-> > > > commit edfd9b7838ba5e47f19ad8466d0565aba5c59bf0
-> > >
-> > > Not sure what tree you're on, but that's not the upstream commit.
+> > On Wed, 2021-02-03 at 10:03 +0100, Sedat Dilek wrote:
+> > > > It all looks to be working fine on my side. There is a compilation
+> > > > error in our libbpf CI when building the latest pahole from sources
+> > > > due to DW_FORM_implicit_const being undefined. I'm updating our VMs to
+> > > > use Ubuntu Focal 20.04, up from Bionic 18.04, and that should
+> > > > hopefully solve the issue due to newer versions of libdw. If you worry
+> > > > about breaking others, though, we might want to add #ifndef guards and
+> > > > re-define DW_FORM_implicit_const as 0x21 explicitly in pahole source
+> > > > code.
 > >
-> > I mentioned that it's a rebased core-static_call-2020-10-12 tag and
-> > added a link to the upstream hash right below.
+> > I think that might be a good idea for older setups. But that also means
+> > that the underlying elfutils libdw doesn't support DWARF5, so pahole
+> > itself also wouldn't work (the define would only fix the compile time
+> > issue, not the runtime issue of not being able to parse
+> > DW_FORM_implicit_const). That might not be a problem because such
+> > systems also wouldn't have GCC11 defaulting to DWARF5.
 > >
-> > > > Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> > > > Date:   Tue Aug 18 15:57:52 2020 +0200
+> > > > But otherwise, all good from what I can see in my environment.
+> > > > Looking
+> > > > forward to 1.20 release! I'll let you know if, after updating to
+> > > > Ubuntu Focal, any new pahole issues crop up.
 > > > >
-> > > >     tracepoint: Optimize using static_call()
-> > > >
 > > >
-> > > There's a known issue with that patch, can you try:
+> > > Last weekend I did some testing with
+> > > <pahole.git#DW_AT_data_bit_offset> and DWARF-v5 support for the
+> > > Linux-kernel.
 > > >
-> > >   http://lkml.kernel.org/r/20210202220121.435051654@goodmis.org
+> > > The good: I was able to compile :-).
+> > > The bad: My build-log grew up to 1.2GiB and I could not boot in QEMU.
+> > > The ugly: I killed the archive which had all relevant material.
 > >
-> > I've tried it on top of core-static_call-2020-10-12 tag rebased on top
-> > of v5.9 (to make it reproducible), and the patch did not help. Do I
-> > need to apply the whole series or something else?
+> > I think the build-log grew so much because of warnings about unknown
+> > tags. At least when using GCC11 you'll get a couple of standardized
+> > DWARF5 tags instead of the GNU extensions to DWARF4. That should be
+> > solved by:
+> >
+> >    commit d783117162c0212d4f75f6cea185f493d2f244e1
+> >    Author: Mark Wielaard <mark@klomp.org>
+> >    Date:   Sun Jan 31 01:27:31 2021 +0100
+> >
+> >        dwarf_loader: Handle DWARF5 DW_TAG_call_site like DW_TAG_GNU_call_site
+> >
 >
-> Can you recreate with this patch, and add "unwind_debug" to the cmdline?
-> It will spit out a bunch of stack data.
+> I had some conversation with Mark directly as I dropped by accident the CC list.
+>
+> With latest pahole from Git and CONFIG_DEBUG_INFO_BTF=y I was not able
+> to build with DWARF-v4 and DWARF-v5.
 
-Here's the three I'm building:
+There is hardly anything actionable without all the extra info I've
+asked you before. What's the issue? What's the kernel config? Tool
+versions?
 
-* https://github.com/bobrik/linux/tree/ivan/static-call-5.9
+>
+> Hope it is OK for you Mark when I quote you:
+>
+> > Here I use LLVM/Clang v12.0.0-rc1 with Clang's Integrated Assembler
+> > (make LLVM_IAS=1).
+>
+> Note I haven't personally tested llvm with DWARF5. I know some other
+> tools cannot (yet) handle the DWARF5 produced by llvm (for example
+> valgrind, rpm debugedit and dwz don't handle all the forms llvm emits
+> when it produces DWARF5, which aren't emitted by GCC unless requesting
+> split-dwarf). In theory dwarves/pahole should be able to handle it
+> because elfutils libdw (at least versions > 0.172) does handle it. But
+> I don't know if anybody ever tested that. But I believe llvm will by
+> default emit DWARF4, not 5.
+>
+> More quotes from Mark:
+>
+> I would try to avoid using clang producing DWARF5. It clearly has some
+> incompatibilities with dwarves/pahole. It should work if you don't set
+> DEBUG_INFO_DWARF5. Try GCC 11 (which defaults to -gdwarf-5) or an
+> earlier version (probably at least GCC 8 or higher) using -gdwarf-5
+> explicitly.
+>
+> What makes me nerves are reports from Red Hat's CKI reporting:
+>
+> 'failed to validate module [something] BTF: -22 '
+>
+> This is was from ClangBuiltLinux mailing-list.
 
-It contains:
+And no link to the issue, of course. If you are hoping for someone to
+try to help and fix issues, please provide extra info. If this is what
+I think it is, that was the problem with kernel rejecting empty BTF
+and it was fixed already in v5.11-fbk6. But who knows, I can only
+guess.
 
-* v5.9 tag as the base
-* static_call-2020-10-12 tag
-* dm-crypt patches to reproduce the issue with KASAN
-* x86/unwind: Add 'unwind_debug' cmdline option
-* tracepoint: Fix race between tracing and removing tracepoint
+>
+> Looks like CONFIG_DEBUG_INFO_BTF=y makes troubles with LLVM/Clang.
+> Can we have a fix for Linux v5.11-rc6+ to avoid a selection of it when
+> CC_IS_CLANG=y?
 
-The very same issue can be reproduced on 5.10.11 with no patches,
-but I'm going with 5.9, since it boils down to static call changes.
+Let's first understand problems and try to fix them, please.
 
-Here's the decoded stack from the kernel with unwind debug enabled:
-
-* https://gist.github.com/bobrik/ed052ac0ae44c880f3170299ad4af56b
-
-See my first email for the exact commands that trigger this.
+>
+> - Sedat -
+>
+>
+> - Sedat -
