@@ -2,165 +2,159 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDCEB30E737
-	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 00:24:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 902F730E75D
+	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 00:30:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233019AbhBCXYU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Feb 2021 18:24:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49686 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232745AbhBCXYT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Feb 2021 18:24:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A1E0E64F6A;
-        Wed,  3 Feb 2021 23:23:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612394618;
-        bh=MpaONhrn5VtVn0HdkegM124iD8ebw8ZiT81RKUjq1sw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E1bS9lkC7bdL2NBrFWf1Z+kiSyXaF/SQE+/prlrDwTYAfDFQrflQlG4bNFoKysrKj
-         P0nk80dbvk0NW6+AUf5Hyw4j3uNFiS8ZXKhlXfoOtNYBWhxaU2JBEgXp5xoobakNd9
-         nYVbiLTqNGw+CFmJ1YWYI5Gl9ECVUPx0NJcCQpo3h9o78bpQg9rzMUsjFW1zHaIlBk
-         IeUYkM/8P0xaXYZK0dCjG3oKDGb3ocWe0NyM/Oe/+WhzD+/P0k7KFesVHwzupw7tB4
-         DehxER/Y9YmdagIkxzQVfHDBAeinWCYcyatUVMC7gaEmHo1UaZ5woYdYcbDjm8s6V3
-         C90ebmJY5LRtg==
-From:   KP Singh <kpsingh@kernel.org>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S233653AbhBCX3d (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Feb 2021 18:29:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37090 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233645AbhBCX3c (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 3 Feb 2021 18:29:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612394884;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qk0MRndwsudTUKG83wO3htOmgtnK5DShnl+yULNhutc=;
+        b=Eazmsv3WGJRWmge5fhdyuOhFf9l/nWodnrm3fBI0ai9xKJli0aJVzLjou3ymW0UShMKBZO
+        h/hI6/Yi7s05wJL3BCua7Ta0QbP/V2jodCxLBS3nUXk2PliZgE/qI7koQUwkmmCOVGu9Re
+        /0SYmPvTQQcATmuWRqlSDVzAzsodLAw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-217-sP3f55tYM9yrX1Mu_6I9qQ-1; Wed, 03 Feb 2021 18:28:00 -0500
+X-MC-Unique: sP3f55tYM9yrX1Mu_6I9qQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EA5B41083E9D;
+        Wed,  3 Feb 2021 23:27:55 +0000 (UTC)
+Received: from treble (ovpn-113-81.rdu2.redhat.com [10.10.113.81])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 27B245C1B4;
+        Wed,  3 Feb 2021 23:27:44 +0000 (UTC)
+Date:   Wed, 3 Feb 2021 17:27:35 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Ivan Babrou <ivan@cloudflare.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Ignat Korchagin <ignat@cloudflare.com>,
+        Hailong liu <liu.hailong6@zte.com.cn>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Julien Thierry <jthierry@redhat.com>,
+        Jiri Slaby <jirislaby@kernel.org>, kasan-dev@googlegroups.com,
+        linux-mm@kvack.org, linux-kernel <linux-kernel@vger.kernel.org>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>
-Subject: [PATCH bpf-next 2/2] bpf/selftests: Update the IMA test to use BPF ring buffer
-Date:   Wed,  3 Feb 2021 23:23:31 +0000
-Message-Id: <20210203232331.2567162-3-kpsingh@kernel.org>
-X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-In-Reply-To: <20210203232331.2567162-1-kpsingh@kernel.org>
-References: <20210203232331.2567162-1-kpsingh@kernel.org>
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Robert Richter <rric@kernel.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>
+Subject: Re: BUG: KASAN: stack-out-of-bounds in
+ unwind_next_frame+0x1df5/0x2650
+Message-ID: <20210203232735.nw73kugja56jp4ls@treble>
+References: <CABWYdi3HjduhY-nQXzy2ezGbiMB1Vk9cnhW2pMypUa+P1OjtzQ@mail.gmail.com>
+ <CABWYdi27baYc3ShHcZExmmXVmxOQXo9sGO+iFhfZLq78k8iaAg@mail.gmail.com>
+ <YBrTaVVfWu2R0Hgw@hirez.programming.kicks-ass.net>
+ <CABWYdi2ephz57BA8bns3reMGjvs5m0hYp82+jBLZ6KD3Ba6zdQ@mail.gmail.com>
+ <20210203190518.nlwghesq75enas6n@treble>
+ <CABWYdi1ya41Ju9SsHMtRQaFQ=s8N23D3ADn6OV6iBwWM6H8=Zw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CABWYdi1ya41Ju9SsHMtRQaFQ=s8N23D3ADn6OV6iBwWM6H8=Zw@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Instead of using shared global variables between userspace and BPF, use
-the ring buffer to send the IMA hash on the BPF ring buffer. This helps
-in validating both IMA and the usage of the ringbuffer in sleepable
-programs.
+On Wed, Feb 03, 2021 at 02:41:53PM -0800, Ivan Babrou wrote:
+> On Wed, Feb 3, 2021 at 11:05 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+> >
+> > On Wed, Feb 03, 2021 at 09:46:55AM -0800, Ivan Babrou wrote:
+> > > > Can you pretty please not line-wrap console output? It's unreadable.
+> > >
+> > > GMail doesn't make it easy, I'll send a link to a pastebin next time.
+> > > Let me know if you'd like me to regenerate the decoded stack.
+> > >
+> > > > > edfd9b7838ba5e47f19ad8466d0565aba5c59bf0 is the first bad commit
+> > > > > commit edfd9b7838ba5e47f19ad8466d0565aba5c59bf0
+> > > >
+> > > > Not sure what tree you're on, but that's not the upstream commit.
+> > >
+> > > I mentioned that it's a rebased core-static_call-2020-10-12 tag and
+> > > added a link to the upstream hash right below.
+> > >
+> > > > > Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > > > > Date:   Tue Aug 18 15:57:52 2020 +0200
+> > > > >
+> > > > >     tracepoint: Optimize using static_call()
+> > > > >
+> > > >
+> > > > There's a known issue with that patch, can you try:
+> > > >
+> > > >   http://lkml.kernel.org/r/20210202220121.435051654@goodmis.org
+> > >
+> > > I've tried it on top of core-static_call-2020-10-12 tag rebased on top
+> > > of v5.9 (to make it reproducible), and the patch did not help. Do I
+> > > need to apply the whole series or something else?
+> >
+> > Can you recreate with this patch, and add "unwind_debug" to the cmdline?
+> > It will spit out a bunch of stack data.
+> 
+> Here's the three I'm building:
+> 
+> * https://github.com/bobrik/linux/tree/ivan/static-call-5.9
+> 
+> It contains:
+> 
+> * v5.9 tag as the base
+> * static_call-2020-10-12 tag
+> * dm-crypt patches to reproduce the issue with KASAN
+> * x86/unwind: Add 'unwind_debug' cmdline option
+> * tracepoint: Fix race between tracing and removing tracepoint
+> 
+> The very same issue can be reproduced on 5.10.11 with no patches,
+> but I'm going with 5.9, since it boils down to static call changes.
+> 
+> Here's the decoded stack from the kernel with unwind debug enabled:
+> 
+> * https://gist.github.com/bobrik/ed052ac0ae44c880f3170299ad4af56b
+> 
+> See my first email for the exact commands that trigger this.
 
-Signed-off-by: KP Singh <kpsingh@kernel.org>
----
- .../selftests/bpf/prog_tests/test_ima.c       | 23 ++++++++++---
- tools/testing/selftests/bpf/progs/ima.c       | 33 ++++++++++++++-----
- 2 files changed, 43 insertions(+), 13 deletions(-)
+Thanks.  Do you happen to have the original dmesg, before running it
+through the post-processing script?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_ima.c b/tools/testing/selftests/bpf/prog_tests/test_ima.c
-index 61fca681d524..23fb4c9e80d1 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_ima.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_ima.c
-@@ -9,6 +9,7 @@
- #include <unistd.h>
- #include <sys/wait.h>
- #include <test_progs.h>
-+#include <linux/ring_buffer.h>
- 
- #include "ima.skel.h"
- 
-@@ -31,9 +32,18 @@ static int run_measured_process(const char *measured_dir, u32 *monitored_pid)
- 	return -EINVAL;
- }
- 
-+static u64 ima_hash_from_bpf;
-+
-+static int process_sample(void *ctx, void *data, size_t len)
-+{
-+	ima_hash_from_bpf = *((u64 *)data);
-+	return 0;
-+}
-+
- void test_test_ima(void)
- {
- 	char measured_dir_template[] = "/tmp/ima_measuredXXXXXX";
-+	struct ring_buffer *ringbuf;
- 	const char *measured_dir;
- 	char cmd[256];
- 
-@@ -44,6 +54,11 @@ void test_test_ima(void)
- 	if (CHECK(!skel, "skel_load", "skeleton failed\n"))
- 		goto close_prog;
- 
-+	ringbuf = ring_buffer__new(bpf_map__fd(skel->maps.ringbuf),
-+				   process_sample, NULL, NULL);
-+	if (CHECK(!ringbuf, "ringbuf_create", "failed to create ringbuf\n"))
-+		goto close_prog;
-+
- 	err = ima__attach(skel);
- 	if (CHECK(err, "attach", "attach failed: %d\n", err))
- 		goto close_prog;
-@@ -60,11 +75,9 @@ void test_test_ima(void)
- 	if (CHECK(err, "run_measured_process", "err = %d\n", err))
- 		goto close_clean;
- 
--	CHECK(skel->data->ima_hash_ret < 0, "ima_hash_ret",
--	      "ima_hash_ret = %ld\n", skel->data->ima_hash_ret);
--
--	CHECK(skel->bss->ima_hash == 0, "ima_hash",
--	      "ima_hash = %lu\n", skel->bss->ima_hash);
-+	err = ring_buffer__poll(ringbuf, 1000);
-+	ASSERT_EQ(err, 1, "num_samples_or_err");
-+	ASSERT_NEQ(ima_hash_from_bpf, 0, "ima_hash");
- 
- close_clean:
- 	snprintf(cmd, sizeof(cmd), "./ima_setup.sh cleanup %s", measured_dir);
-diff --git a/tools/testing/selftests/bpf/progs/ima.c b/tools/testing/selftests/bpf/progs/ima.c
-index 86b21aff4bc5..dd0792204a21 100644
---- a/tools/testing/selftests/bpf/progs/ima.c
-+++ b/tools/testing/selftests/bpf/progs/ima.c
-@@ -9,20 +9,37 @@
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_tracing.h>
- 
--long ima_hash_ret = -1;
--u64 ima_hash = 0;
- u32 monitored_pid = 0;
- 
-+struct {
-+	__uint(type, BPF_MAP_TYPE_RINGBUF);
-+	__uint(max_entries, 1 << 12);
-+} ringbuf SEC(".maps");
-+
- char _license[] SEC("license") = "GPL";
- 
- SEC("lsm.s/bprm_committed_creds")
--int BPF_PROG(ima, struct linux_binprm *bprm)
-+void BPF_PROG(ima, struct linux_binprm *bprm)
- {
--	u32 pid = bpf_get_current_pid_tgid() >> 32;
-+	u64 ima_hash = 0;
-+	u64 *sample;
-+	int ret;
-+	u32 pid;
-+
-+	pid = bpf_get_current_pid_tgid() >> 32;
-+	if (pid == monitored_pid) {
-+		ret = bpf_ima_inode_hash(bprm->file->f_inode, &ima_hash,
-+					 sizeof(ima_hash));
-+		if (ret < 0 || ima_hash == 0)
-+			return;
-+
-+		sample = bpf_ringbuf_reserve(&ringbuf, sizeof(u64), 0);
-+		if (!sample)
-+			return;
- 
--	if (pid == monitored_pid)
--		ima_hash_ret = bpf_ima_inode_hash(bprm->file->f_inode,
--						  &ima_hash, sizeof(ima_hash));
-+		*sample = ima_hash;
-+		bpf_ringbuf_submit(sample, BPF_RB_FORCE_WAKEUP);
-+	}
- 
--	return 0;
-+	return;
- }
+
+I assume you're using decode_stacktrace.sh?  It could use some
+improvement, it's stripping the function offset.
+
+Also spaces are getting inserted in odd places, messing the alignment.
+
+[  137.291837][    C0] ffff88809c409858: d7c4f3ce817a1700 (0xd7c4f3ce817a1700)
+[  137.291837][    C0] ffff88809c409860: 0000000000000000 (0x0)
+[  137.291839][    C0] ffff88809c409868: 00000000ffffffff (0xffffffff)
+[ 137.291841][ C0] ffff88809c409870: ffffffffa4f01a52 unwind_next_frame (arch/x86/kernel/unwind_orc.c:380 arch/x86/kernel/unwind_orc.c:553)
+[ 137.291843][ C0] ffff88809c409878: ffffffffa4f01a52 unwind_next_frame (arch/x86/kernel/unwind_orc.c:380 arch/x86/kernel/unwind_orc.c:553)
+[  137.291844][    C0] ffff88809c409880: ffff88809c409ac8 (0xffff88809c409ac8)
+[  137.291845][    C0] ffff88809c409888: 0000000000000086 (0x86)
+
 -- 
-2.30.0.365.g02bc693789-goog
+Josh
 
