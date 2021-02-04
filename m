@@ -2,110 +2,102 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6709D30EF22
-	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 10:00:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BD2A30EF46
+	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 10:12:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235096AbhBDJAs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Feb 2021 04:00:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234712AbhBDJAr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Feb 2021 04:00:47 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51D3EC0613D6;
-        Thu,  4 Feb 2021 01:00:07 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id u8so2337588ior.13;
-        Thu, 04 Feb 2021 01:00:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=DKhv9NF2UmnAO56AelLaqcZWNnODX+nZTlqSUT21pa0=;
-        b=E25oz5qwcF6KOmf3fgAISjxsTmW5LdAMjmOoD/PbFlXMcZpd496dtOrNrtbVjtIFiX
-         YuvF2Y/AAXmmVLKl+TRI94MNxS6MqF7KC9nOAIJ4hL1e0Mkd3aRF0WcUSh6mFLtIzNyp
-         mXynfFPVILFdpDNbTGlQDIAyJELfKGw/e2KHUOzMPEnrF/eAex5khxD/oSV5gLYYzbO0
-         +B+ModsFT0L8CfiUW0+5H4vHH8PbN85Vj6Dk1f1oURWyPQOSBLm24i2omzh3ZvIK0G3h
-         E2H+SIFilzzTklSlLySl/nKniKQoOO3AFfLNqC2/MA+QlI6ZNMIRszhygkRjvNCnMOk9
-         71kQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=DKhv9NF2UmnAO56AelLaqcZWNnODX+nZTlqSUT21pa0=;
-        b=AzslEqI4PSNnf9ywTqky9jNK3gymDravMJl3cS4dIl7JUJN6N3tM/i1QMeMFPeUEo+
-         ab6Phfl1HDwB/0AjCJTnn9Gsggw6sMkbY+uwQdH/7Tsfz17FuE5AHOi9bap9mFVcmpIr
-         qapqEqanRpeaJZGOWkB3p1neoTQk0CMNAEN+KzJXEHv/RPD5hdAmiY0RPAdfXbH/22JL
-         JJErOJaHgioiXthGYam9uFZYP1lupkzSm5dl5R/94/UirNtV55KxEFO15SPOtVmfHDY2
-         2ccRpiZAaAAD6GqXVJzMGKDBMDicYeoL88M+DU38/opyFSuNWQujlgcHNnx0Wcv1CET4
-         3XNQ==
-X-Gm-Message-State: AOAM5319TmKZKW4I0l39JKWtze6aDeA5+qKCFE3UYp6P6PS4pvaPhsp1
-        2ytWQEPm+EAqzDF27US6ZNWZGg2XpHjj4IaCYNA=
-X-Google-Smtp-Source: ABdhPJyX59d6m2BlHhqPgcB/inYd3R2sbvAArSwzrPdLzkZYgbF/hmpLKY4z6BeKxPSpcRFOcc8Mnyt6XOxtQZVGbzI=
-X-Received: by 2002:a05:6602:1541:: with SMTP id h1mr5821865iow.171.1612429206784;
- Thu, 04 Feb 2021 01:00:06 -0800 (PST)
+        id S234451AbhBDJKa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Feb 2021 04:10:30 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37529 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234967AbhBDJHw (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 4 Feb 2021 04:07:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612429585;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=B3XB7bhuMyDBoFacNy+YTRK/8xPrEseZ54khKHzy2Gk=;
+        b=Q0pBG+0QNMo+QxEXX3R12OftM51yvKifghhQD8u/dvrqdFxY2hJM3gO/NIz9cqEUKZ4Dy2
+        coJVbBzkDO8654rz0ZCTGmUDV89QJt/Eh1+dEIug6NsjWE3JmK0gV0o0vMVKI95qpAM/wj
+        eo8bZRSmpnpEYHBhgAdjkM1yj48AjKg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-453-TCtX5yv2MMaauNfig9HizQ-1; Thu, 04 Feb 2021 04:06:23 -0500
+X-MC-Unique: TCtX5yv2MMaauNfig9HizQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 83C5E100A8EA;
+        Thu,  4 Feb 2021 09:06:21 +0000 (UTC)
+Received: from carbon.lan (unknown [10.36.110.53])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E212B57;
+        Thu,  4 Feb 2021 09:05:59 +0000 (UTC)
+Date:   Thu, 4 Feb 2021 10:05:56 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, toshiaki.makita1@gmail.com,
+        lorenzo.bianconi@redhat.com, toke@redhat.com, brouer@redhat.com,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v3 bpf-next] net: veth: alloc skb in bulk for
+ ndo_xdp_xmit
+Message-ID: <20210204100556.59459549@carbon.lan>
+In-Reply-To: <e2ae0d97-376a-07db-94fb-14f1220acca5@iogearbox.net>
+References: <a14a30d3c06fff24e13f836c733d80efc0bd6eb5.1611957532.git.lorenzo@kernel.org>
+        <e2ae0d97-376a-07db-94fb-14f1220acca5@iogearbox.net>
 MIME-Version: 1.0
-References: <20210115210616.404156-1-ndesaulniers@google.com>
- <CA+icZUVp+JNq89uc_DyWC6zh5=kLtUr7eOxHizfFggnEVGJpqw@mail.gmail.com>
- <7354583d-de40-b6b9-6534-a4f4c038230f@fb.com> <CAKwvOd=5iR0JONwDb6ypD7dzzjOS3Uj0CjcyYqPF48eK4Pi90Q@mail.gmail.com>
- <12b6c2ca-4cf7-4edd-faf2-72e3cb59c00e@fb.com> <20210117201500.GO457607@kernel.org>
- <CAKwvOdmniAMZD0LiFdr5N8eOwHqNFED2Pd=pwOFF2Y8eSRXUHA@mail.gmail.com>
- <CAEf4Bzbn1app3LZ1oah5ARn81j5RMNxRRHPVAkeY3h_0q7+7fg@mail.gmail.com> <CA+icZUW2omV581KN0Qv=nGsk=6a-GG2Cm2OYeRxETrZP_obwEQ@mail.gmail.com>
-In-Reply-To: <CA+icZUW2omV581KN0Qv=nGsk=6a-GG2Cm2OYeRxETrZP_obwEQ@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Thu, 4 Feb 2021 09:59:55 +0100
-Message-ID: <CA+icZUU=p9SP+xFh=RP3d39DTWG-6BsETOucJ7OMJtSbqOO-CA@mail.gmail.com>
-Subject: Re: [PATCH v5 0/3] Kbuild: DWARF v5 support
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>,
-        Nick Clifton <nickc@redhat.com>, dwarves@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 4, 2021 at 9:42 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> On Thu, Feb 4, 2021 at 3:58 AM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> ...
-> >
-> > Is there another (easy) way to get your patch set without the b4 tool?
-> > Is your patch set present in some patchworks instance, so that I can
-> > download it in mbox format, for example?
-> >
->
-> Just to promote the b4 tool - we have some cool wiki in [1].
->
-> Personally, I got in touch with b4 when dealing with the
-> ClangBuiltLinux project.
->
-> Note: Sometimes it takes a bit for the patch(set) to be available from
-> the LORE link.
->
-> - Sedat -
->
-> [1] https://github.com/ClangBuiltLinux/linux/wiki/Command-line-tips-and-tricks#fetching-a-single-patch-or-series-from-lkml
+On Thu, 4 Feb 2021 01:14:56 +0100
+Daniel Borkmann <daniel@iogearbox.net> wrote:
 
-Honestly, when behind a proxy-server I did not find a trick to use b4
-here (DNS resolution problems).
-I tried with proxychains-ng - NOPE.
+> On 1/29/21 11:04 PM, Lorenzo Bianconi wrote:
+> > Split ndo_xdp_xmit and ndo_start_xmit use cases in veth_xdp_rcv routine
+> > in order to alloc skbs in bulk for XDP_PASS verdict.
+> > Introduce xdp_alloc_skb_bulk utility routine to alloc skb bulk list.
+> > The proposed approach has been tested in the following scenario:  
+> [...]
+> > diff --git a/net/core/xdp.c b/net/core/xdp.c
+> > index 0d2630a35c3e..05354976c1fc 100644
+> > --- a/net/core/xdp.c
+> > +++ b/net/core/xdp.c
+> > @@ -514,6 +514,17 @@ void xdp_warn(const char *msg, const char *func, const int line)
+> >   };
+> >   EXPORT_SYMBOL_GPL(xdp_warn);
+> >   
+> > +int xdp_alloc_skb_bulk(void **skbs, int n_skb, gfp_t gfp)
+> > +{
+> > +	n_skb = kmem_cache_alloc_bulk(skbuff_head_cache, gfp,
+> > +				      n_skb, skbs);  
+> 
+> Applied, but one question I was wondering about when reading the kmem_cache_alloc_bulk()
+> code was whether it would be safer to simply test for kmem_cache_alloc_bulk() != n_skb
+> given it could potentially in future also alloc less objs than requested, but I presume
+> if such extension would get implemented then call-sites might need to indicate 'best
+> effort' somehow via flag instead (to handle < n_skb case). Either way all current callers
+> assume for != 0 that everything went well, so lgtm.
 
-In the meantime I updated the CBL-wiki page and added v8 as an example :-).
+It was Andrew (AKPM) that wanted the API to either return the requested
+number of objects or fail. I respected the MM-maintainers request at
+that point, even-though I wanted the other API as there is a small
+performance advantage (not crossing page boundary in SLUB).
 
-- Sedat -
+At that time we discussed it on MM-list, and I see his/the point:
+If API can allocate less objs than requested, then think about how this
+complicated the surrounding code. E.g. in this specific code we already
+have VETH_XDP_BATCH(16) xdp_frame objects, which we need to get 16 SKB
+objects for.  What should the code do if it cannot get 16 SKBs(?).
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
