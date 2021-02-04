@@ -2,201 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BD3730F887
-	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 17:52:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B88E30F90D
+	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 18:07:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237773AbhBDQw0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Feb 2021 11:52:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51806 "EHLO mail.kernel.org"
+        id S238365AbhBDREY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Feb 2021 12:04:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237778AbhBDQvS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Feb 2021 11:51:18 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC1D664F5E;
-        Thu,  4 Feb 2021 16:50:30 +0000 (UTC)
-Date:   Thu, 4 Feb 2021 11:50:29 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
+        id S238214AbhBDREF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 Feb 2021 12:04:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E824764F65;
+        Thu,  4 Feb 2021 17:03:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612458204;
+        bh=IcR+Cua+B8lZ++45Daif1Ue567t+v/+w8V3xe6kLNq8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=topSnfCNi0SGUl8/ZT9sN/s4GW2Wl5ib8cBgG193QxHg9n6cMHfOhmCNCw+o8KhB+
+         WAa9FGnR7cKt6BeAhRf0JxYaeOajiINeA7i+sIpjR3C1xAtz3tgB2fWWd+alQFwbAa
+         xDcGU6rdCNmoZCLa8siRMgmNzfxxNMinFlUshQ2jiA7LJLDWZR1rr995vAvdXSNheC
+         XsuYOIDMWm7ROLa6Kd9TuLRonNDWhIG05NcGLQD0vZVBUlHZCx4/d18Nn/4xWH8ZRS
+         mZv8zTNUVNvvJgWjGq2MAMZY1t61BdwNuY2cRBdXITIBFwtHN7EbNgyYVZGv2oXRJ/
+         8KEMYkXT9C24g==
+Date:   Thu, 4 Feb 2021 09:03:23 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
+Cc:     Hangbin Liu <liuhangbin@gmail.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Florian Weimer <fw@deneb.enyo.de>,
-        syzbot+83aa762ef23b6f0d1991@syzkaller.appspotmail.com,
-        syzbot+d29e58bb557324e55e5e@syzkaller.appspotmail.com,
-        Matt Mullins <mmullins@mmlx.us>
-Subject: Re: [for-next][PATCH 14/15] tracepoint: Do not fail unregistering a
- probe due to memory failure
-Message-ID: <20210204115029.3b707236@gandalf.local.home>
-In-Reply-To: <1836191179.6214.1612375044968.JavaMail.zimbra@efficios.com>
-References: <20210203160517.982448432@goodmis.org>
-        <20210203160550.710877069@goodmis.org>
-        <1836191179.6214.1612375044968.JavaMail.zimbra@efficios.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        netdev@vger.kernel.org, Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
+        bpf@vger.kernel.org,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        David Ahern <dsahern@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: Re: [PATCHv17 bpf-next 0/6] xdp: add a new helper for dev map
+ multicast support
+Message-ID: <20210204090323.14bcbaba@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <87zh0k85de.fsf@toke.dk>
+References: <20210122074652.2981711-1-liuhangbin@gmail.com>
+        <20210125124516.3098129-1-liuhangbin@gmail.com>
+        <20210204001458.GB2900@Leo-laptop-t470s>
+        <601b61a0e4868_194420834@john-XPS-13-9370.notmuch>
+        <20210204031236.GC2900@Leo-laptop-t470s>
+        <87zh0k85de.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 3 Feb 2021 12:57:24 -0500 (EST)
-Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+On Thu, 04 Feb 2021 12:00:29 +0100 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> >> Patchwork is usually the first place to check: =20
+> >
+> > Thanks John for the link. =20
+> >>=20
+> >>  https://patchwork.kernel.org/project/netdevbpf/list/?series=3D421095&=
+state=3D* =20
+> >
+> > Before I sent the email I only checked link
+> > https://patchwork.kernel.org/project/netdevbpf/list/ but can't find my =
+patch.
+> >
+> > How do you get the series number? =20
+>=20
+> If you click the "show patches with" link at the top you can twiddle the
+> filtering; state =3D any + your own name as submitter usually finds
+> things, I've found.
 
-> > @@ -147,14 +154,34 @@ func_add(struct tracepoint_func **funcs, struct
-> > tracepoint_func *tp_func,
-> > 			if (old[nr_probes].func == tp_func->func &&
-> > 			    old[nr_probes].data == tp_func->data)
-> > 				return ERR_PTR(-EEXIST);
-> > +			if (old[nr_probes].func == tp_stub_func)
-> > +				stub_funcs++;
-> > 		}
-> > 	}
-> > -	/* + 2 : one for new probe, one for NULL func */
-> > -	new = allocate_probes(nr_probes + 2);
-> > +	/* + 2 : one for new probe, one for NULL func - stub functions */
-> > +	new = allocate_probes(nr_probes + 2 - stub_funcs);
-> > 	if (new == NULL)
-> > 		return ERR_PTR(-ENOMEM);
-> > 	if (old) {
-> > -		if (pos < 0) {
-> > +		if (stub_funcs) {  
-> 
-> Considering that we end up implementing a case where we carefully copy over
-> each item, I recommend we replace the two "memcpy" branches by a single item-wise
-> implementation. It's a slow-path anyway, and reducing the overall complexity
-> is a benefit for slow paths. Fewer bugs, less code to review, and it's easier to
-> reach a decent testing state-space coverage.
+New patchwork can actually find messages by Message-ID header.
 
-Sure.
+Just slap message ID of one of the patches at the end of:
 
-> 
-> > +			/* Need to copy one at a time to remove stubs */
-> > +			int probes = 0;
-> > +
-> > +			pos = -1;
-> > +			for (nr_probes = 0; old[nr_probes].func; nr_probes++) {
-> > +				if (old[nr_probes].func == tp_stub_func)
-> > +					continue;
-> > +				if (pos < 0 && old[nr_probes].prio < prio)
-> > +					pos = probes++;
-> > +				new[probes++] = old[nr_probes];
-> > +			}
-> > +			nr_probes = probes;  
-> 
-> Repurposing "nr_probes" from accounting for the number of items in the old
-> array to counting the number of items in the new array in the middle of the
-> function is confusing.
-> 
-> > +			if (pos < 0)
-> > +				pos = probes;
-> > +			else
-> > +				nr_probes--; /* Account for insertion */  
-> 
-> This is probably why you need to play tricks with nr_probes here.
-> 
-> > +		} else if (pos < 0) {
-> > 			pos = nr_probes;
-> > 			memcpy(new, old, nr_probes * sizeof(struct tracepoint_func));
-> > 		} else {
-> > @@ -188,8 +215,9 @@ static void *func_remove(struct tracepoint_func **funcs,
-> > 	/* (N -> M), (N > 1, M >= 0) probes */
-> > 	if (tp_func->func) {
-> > 		for (nr_probes = 0; old[nr_probes].func; nr_probes++) {
-> > -			if (old[nr_probes].func == tp_func->func &&
-> > -			     old[nr_probes].data == tp_func->data)
-> > +			if ((old[nr_probes].func == tp_func->func &&
-> > +			     old[nr_probes].data == tp_func->data) ||
-> > +			    old[nr_probes].func == tp_stub_func)
-> > 				nr_del++;
-> > 		}
-> > 	}
-> > @@ -208,14 +236,32 @@ static void *func_remove(struct tracepoint_func **funcs,
-> > 		/* N -> M, (N > 1, M > 0) */
-> > 		/* + 1 for NULL */
-> > 		new = allocate_probes(nr_probes - nr_del + 1);
-> > -		if (new == NULL)
-> > -			return ERR_PTR(-ENOMEM);
-> > -		for (i = 0; old[i].func; i++)
-> > -			if (old[i].func != tp_func->func
-> > -					|| old[i].data != tp_func->data)
-> > -				new[j++] = old[i];
-> > -		new[nr_probes - nr_del].func = NULL;
-> > -		*funcs = new;
-> > +		if (new) {
-> > +			for (i = 0; old[i].func; i++)
-> > +				if ((old[i].func != tp_func->func
-> > +				     || old[i].data != tp_func->data)
-> > +				    && old[i].func != tp_stub_func)
-> > +					new[j++] = old[i];
-> > +			new[nr_probes - nr_del].func = NULL;
-> > +			*funcs = new;
-> > +		} else {
-> > +			/*
-> > +			 * Failed to allocate, replace the old function
-> > +			 * with calls to tp_stub_func.
-> > +			 */
-> > +			for (i = 0; old[i].func; i++)
-> > +				if (old[i].func == tp_func->func &&
-> > +				    old[i].data == tp_func->data) {
-> > +					old[i].func = tp_stub_func;  
-> 
-> This updates "func" while readers are loading it concurrently. I would recommend
-> using WRITE_ONCE here paired with READ_ONCE within __traceiter_##_name.
+https://patchwork.kernel.org/project/netdevbpf/patch/
 
-I'm fine with this change, but it shouldn't make a difference. As we don't
-change the data, it doesn't matter which function the compiler calls.
-Unless you are worried about the compiler tearing the read. It shouldn't,
-but I'm fine with doing things for paranoid sake (especially if it doesn't
-affect the performance).
+And there is a link to entire series there.
 
-> 
-> > +					/* Set the prio to the next event. */  
-> 
-> I don't get why the priority needs to be changed here. Could it simply stay
-> at its original value ? It's already in the correct priority order anyway.
 
-I think it was left over from one of the various changes. As I went to v5,
-and then back to v3, I missed revisiting the code, as I was under the
-assumption that I had cleaned it up :-/
-
-> 
-> > +					if (old[i + 1].func)
-> > +						old[i].prio =
-> > +							old[i + 1].prio;
-> > +					else
-> > +						old[i].prio = -1;
-> > +				}
-> > +			*funcs = old;  
-> 
-> I'm not sure what setting *funcs to old achieves ? Isn't it already pointing
-> to old ?
-
-Again, I think one iteration may have changed it. And I kinda remember
-keeping it just to be consistent (*funcs gets updated in the other paths,
-and figured it was good to be "safe" and updated it again, even though the
-logic has it already set).
-
-> 
-> I'll send a patch which applies on top of yours implementing my recommendations.
-> It shrinks the code complexity nicely:
-
-Looking at it now.
-
-Thanks,
-
--- Steve
+Since I'm speaking, Hangbin I'd discourage posting new version=20
+as a reply to previous posting. It brings out this massive 100+
+message thread and breaks natural ordering of patches to review.
