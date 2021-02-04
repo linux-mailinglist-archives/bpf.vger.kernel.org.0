@@ -2,207 +2,309 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D35BE30FB0C
-	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 19:18:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A3DF30FB83
+	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 19:32:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238788AbhBDSMb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Feb 2021 13:12:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45700 "EHLO
+        id S239154AbhBDSbX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Feb 2021 13:31:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238952AbhBDSMV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:12:21 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51FA4C061788;
-        Thu,  4 Feb 2021 10:11:41 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id n2so4202658iom.7;
-        Thu, 04 Feb 2021 10:11:41 -0800 (PST)
+        with ESMTP id S239155AbhBDSam (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 Feb 2021 13:30:42 -0500
+Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A9DEC061788
+        for <bpf@vger.kernel.org>; Thu,  4 Feb 2021 10:29:51 -0800 (PST)
+Received: by mail-vk1-xa2a.google.com with SMTP id e10so907610vkm.2
+        for <bpf@vger.kernel.org>; Thu, 04 Feb 2021 10:29:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=mX+HVztL7COZOVg08FHszVvmk8CCQMV0ipmWEw65Bsc=;
-        b=II6mxEEra02hOipf+IprgYlfYGMxNWO3p1CvehqKhNyJJFq8mhYc0KZ4gbnmAGYd08
-         O8lfTLDZu4rRBrzpc7wM9ZRERAFYfcgwY4vtQqskffHAA6kgQYe4oBarP1GIZE6PUGpN
-         KsAWjykgkrzSYQHRsKnVRuXwZUFvGpO+XB/ZxOpJovRiEPUNlLK/lQgqNqjtL3HAuSRP
-         M/xwAIVlRs6+tCepphYjZvwUtXwe0Ebbc9h9Dp6QjmerUZleUymSmWZ4/LKwyeG3sbWY
-         pavDpjgZucQ8NvYTH85/EXVmGoNko8pkmb6KNOeKgQHhfsHLFOqnnrTe9AFS1f4get/x
-         vhtQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rrbb+FhQsOP06mKN+FTW39dmrGDoQl/JosYGMhqlToI=;
+        b=Md4d4Ut3RDC/jj65grwMZ/RNflMHO8gKbSyW4kUM/AkseBuBbEzk1TEQ+l6FbmaqEk
+         s1A7TSl3bEP7q62bVGsA0R3p/nbwotZqeDkDGzkZCmeJ/MEYfvE6ZZK9CX/jOopHN9je
+         UoVeDF4GdzpPaKtK1X7ou9r5K8C1R625CGahJ0uOKZnL8hFSes6W++G0jsbszdi/ki1C
+         TrWGxZgscSkIr+d/Rc93MdBjLVGtdN5IIDNDNZ5B/U28U53bH9HvTfD2QJ6gAmFyUR+B
+         SfDxOBgdDTWysadMczJ1i7U5QaCEVrRNWKbPEwpEV6P8hSEnlsWSYd9dSDtBugF2f6uX
+         qxIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=mX+HVztL7COZOVg08FHszVvmk8CCQMV0ipmWEw65Bsc=;
-        b=IGU5aQjIHoqjZTcd+Eo2fpCqVn/zW32VVorqn12/r8emLUkl2sKU3vbfHPZx8zuw4+
-         76Va51qWHEP8x+kKrE4g6mMAO10Gy9+2jHm+KGw8jeLdflB6isky/4/Bkqt4qIFmmyuT
-         RIDcaNjrFrxgSrwqccjorKoqc14STWiX5kEBp8fMuCsb6wMvLcQfHrjuegocCKWaurX8
-         JvdtW0ZedJDb5fGBm3Nq5EZUNPqzlHt2jkmqxPB7p5KkNOccqu1EqRH4oo/yiMq5MswL
-         MEQ976q1sg4qXv8eZ6rikxsiOTeX35uzCU6AZMx0KVWAzafNNdd0gab+4MIGM7PoKUbQ
-         EUwA==
-X-Gm-Message-State: AOAM532hQjDswgzHJIDLd/InRoV7cKDUcMRMOZv++ik+CzTF4Waqxdeu
-        IdZSMa4BkqKIbRPSPPlfrXRFsSv1AyYeELqBnN8=
-X-Google-Smtp-Source: ABdhPJzooRkc7eG40RJB52QRYKk/HMotDMOmGbS0wDPNAKH3EL1UbtP4q3R8P2YVNB7VduLIvGu7VG0HrhDPCa2nz+g=
-X-Received: by 2002:a02:1649:: with SMTP id a70mr724319jaa.97.1612462300646;
- Thu, 04 Feb 2021 10:11:40 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rrbb+FhQsOP06mKN+FTW39dmrGDoQl/JosYGMhqlToI=;
+        b=Af5Xm4ES6Anmge+l1tiOkX0ZFep4dIqWBDh0uRpN5JF7la6GM5j9u7NjHAGcZaQpkE
+         t+N+x3RWcDPCs7ywc7Bs0+2leziB9ZG+Agoqvv8EeA6Vv0A9VsqGRVsl8QLqptln/iIL
+         9+8diHrdKY8izbBrLy7LkqPFEcSzpoLCDWDEgo/IIWBFpRRqCAnvX2DzNeZzdg6Sr+GE
+         D5KJWoN/n5a1wlA7mWsqw9t7oLGAgKsZPMPHEk3UaBvheN3b/BSoB4K74nfCftZ3RFxF
+         X6jefkcGl55ynG9EuCz4+01lGSOaNSre+oCEKr7ORDUPG74dgDJnHuVQ4V8u0y9niGWr
+         HIUQ==
+X-Gm-Message-State: AOAM5332phELGawElk291yTbgbC1TA4q6w853bvC0noNa/+sBHz3Ys0D
+        TgTRenFMj3k3/GQcKB5W9zz35JWmJUjlT4MbayFCBA==
+X-Google-Smtp-Source: ABdhPJwwEwvNC3zQT61ZEauXppJ4DNsiU2g8v5m4grt7ICMaeSDSm/qt9y3Za0rtfLI7Yvlh6yON0sD5rU2yemeiB30=
+X-Received: by 2002:ac5:cf1e:: with SMTP id y30mr490215vke.18.1612463389942;
+ Thu, 04 Feb 2021 10:29:49 -0800 (PST)
 MIME-Version: 1.0
-References: <20210111180609.713998-1-natechancellor@gmail.com>
-In-Reply-To: <20210111180609.713998-1-natechancellor@gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Thu, 4 Feb 2021 19:11:28 +0100
-Message-ID: <CA+icZUXztrp2Ow4VtXa6rwpzVzD71x-rVKd2Y09d-99VdtYV6Q@mail.gmail.com>
-Subject: Re: [PATCH] bpf: Hoise pahole version checks into Kconfig
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+References: <20210201172530.1141087-1-gprocida@google.com> <20210201172530.1141087-2-gprocida@google.com>
+ <CAEf4BzYxfO72ozDtjjXynewfQv_ZLvVEFWrEHwro7J1uwMy-Kw@mail.gmail.com>
+In-Reply-To: <CAEf4BzYxfO72ozDtjjXynewfQv_ZLvVEFWrEHwro7J1uwMy-Kw@mail.gmail.com>
+From:   Giuliano Procida <gprocida@google.com>
+Date:   Thu, 4 Feb 2021 18:29:13 +0000
+Message-ID: <CAGvU0HmL28uARL2NSUGuau=qohamqtCRmPCBOQ9XhoQLOAfwXw@mail.gmail.com>
+Subject: Re: [PATCH dwarves v2 1/4] btf_encoder: Add .BTF section using libelf
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     dwarves@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
+        Alexei Starovoitov <ast@kernel.org>,
+        =?UTF-8?Q?Matthias_M=C3=A4nnich?= <maennich@google.com>,
+        kernel-team@android.com, Kernel Team <kernel-team@fb.com>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 7:06 PM Nathan Chancellor
-<natechancellor@gmail.com> wrote:
->
-> After commit da5fb18225b4 ("bpf: Support pre-2.25-binutils objcopy for
-> vmlinux BTF"), having CONFIG_DEBUG_INFO_BTF enabled but lacking a valid
-> copy of pahole results in a kernel that will fully compile but fail to
-> link. The user then has to either install pahole or disable
-> CONFIG_DEBUG_INFO_BTF and rebuild the kernel but only after their build
-> has failed, which could have been a significant amount of time depending
-> on the hardware.
->
-> Avoid a poor user experience and require pahole to be installed with an
-> appropriate version to select and use CONFIG_DEBUG_INFO_BTF, which is
-> standard for options that require a specific tools version.
->
-> Suggested-by: Sedat Dilek <sedat.dilek@gmail.com>
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> ---
->  MAINTAINERS               |  1 +
->  init/Kconfig              |  4 ++++
->  lib/Kconfig.debug         |  6 ++----
->  scripts/link-vmlinux.sh   | 13 -------------
->  scripts/pahole-version.sh | 16 ++++++++++++++++
->  5 files changed, 23 insertions(+), 17 deletions(-)
->  create mode 100755 scripts/pahole-version.sh
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index b8db7637263a..6f6e24285a94 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -3282,6 +3282,7 @@ F:        net/core/filter.c
->  F:     net/sched/act_bpf.c
->  F:     net/sched/cls_bpf.c
->  F:     samples/bpf/
-> +F:     scripts/pahole-version.sh
->  F:     tools/bpf/
->  F:     tools/lib/bpf/
->  F:     tools/testing/selftests/bpf/
-> diff --git a/init/Kconfig b/init/Kconfig
-> index b77c60f8b963..872c61b5d204 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -74,6 +74,10 @@ config TOOLS_SUPPORT_RELR
->  config CC_HAS_ASM_INLINE
->         def_bool $(success,echo 'void foo(void) { asm inline (""); }' | $(CC) -x c - -c -o /dev/null)
->
-> +config PAHOLE_VERSION
-> +       int
-> +       default $(shell,$(srctree)/scripts/pahole-version.sh $(PAHOLE))
-> +
->  config CONSTRUCTORS
->         bool
->         depends on !UML
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 7937265ef879..70c446af9664 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -267,6 +267,7 @@ config DEBUG_INFO_DWARF4
->
->  config DEBUG_INFO_BTF
->         bool "Generate BTF typeinfo"
-> +       depends on PAHOLE_VERSION >= 116
->         depends on !DEBUG_INFO_SPLIT && !DEBUG_INFO_REDUCED
->         depends on !GCC_PLUGIN_RANDSTRUCT || COMPILE_TEST
->         help
-> @@ -274,12 +275,9 @@ config DEBUG_INFO_BTF
->           Turning this on expects presence of pahole tool, which will convert
->           DWARF type info into equivalent deduplicated BTF type info.
->
-> -config PAHOLE_HAS_SPLIT_BTF
-> -       def_bool $(success, test `$(PAHOLE) --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'` -ge "119")
-> -
->  config DEBUG_INFO_BTF_MODULES
->         def_bool y
-> -       depends on DEBUG_INFO_BTF && MODULES && PAHOLE_HAS_SPLIT_BTF
-> +       depends on DEBUG_INFO_BTF && MODULES && PAHOLE_VERSION >= 119
->         help
->           Generate compact split BTF type information for kernel modules.
->
-> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-> index 6eded325c837..eef40fa9485d 100755
-> --- a/scripts/link-vmlinux.sh
-> +++ b/scripts/link-vmlinux.sh
-> @@ -139,19 +139,6 @@ vmlinux_link()
->  # ${2} - file to dump raw BTF data into
->  gen_btf()
->  {
-> -       local pahole_ver
-> -
-> -       if ! [ -x "$(command -v ${PAHOLE})" ]; then
-> -               echo >&2 "BTF: ${1}: pahole (${PAHOLE}) is not available"
-> -               return 1
-> -       fi
-> -
-> -       pahole_ver=$(${PAHOLE} --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/')
-> -       if [ "${pahole_ver}" -lt "116" ]; then
-> -               echo >&2 "BTF: ${1}: pahole version $(${PAHOLE} --version) is too old, need at least v1.16"
-> -               return 1
-> -       fi
-> -
->         vmlinux_link ${1}
->
->         info "BTF" ${2}
-> diff --git a/scripts/pahole-version.sh b/scripts/pahole-version.sh
-> new file mode 100755
-> index 000000000000..6de6f734a345
-> --- /dev/null
-> +++ b/scripts/pahole-version.sh
-> @@ -0,0 +1,16 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# Usage: $ ./scripts/pahole-version.sh pahole
-> +#
-> +# Print the pahole version as a three digit string
-> +# such as `119' for pahole v1.19 etc.
-> +
-> +pahole="$*"
-> +
-> +if ! [ -x "$(command -v $pahole)" ]; then
-> +    echo 0
-> +    exit 1
-> +fi
-> +
-> +$pahole --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'
+On Thu, 4 Feb 2021 at 04:10, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 >
 
-Cannot say if all supported pahole in the Linux kernel have that feature/option:
+I've addressed all the comments below, except for flag control over
+whether .BTF is loadable, in pending commits.
+I've also moved the simple alignment change to earlier in the series.
+I'll review any other comments and see if I can work out what's wrong
+with the segment creation code or if it's worth preserving. I think
+it's likely that anything involving segments won't survive.
 
-$ /opt/pahole/bin/pahole --numeric_version
-120
+Thanks for reviewing!
 
-- Sedat -
-
-> base-commit: e22d7f05e445165e58feddb4e40cc9c0f94453bc
-> --
-> 2.30.0
+> On Mon, Feb 1, 2021 at 9:26 AM Giuliano Procida <gprocida@google.com> wrote:
+> >
+> > pahole -J uses libelf directly when updating a .BTF section. However,
+> > it uses llvm-objcopy to add .BTF sections. This commit switches to
+> > using libelf for both cases.
+> >
+> > This eliminates pahole's dependency on llvm-objcopy. One unfortunate
+> > side-effect is that vmlinux actually increases in size. It seems that
+> > llvm-objcopy modifies the .strtab section, discarding many strings. I
+> > speculate that is it discarding strings not referenced from .symtab
+> > and updating the references therein.
+> >
+> > In this initial version layout is left completely up to libelf and
+> > indeed offsets of existing sections are likely to change.
+> >
+> > Signed-off-by: Giuliano Procida <gprocida@google.com>
+> > ---
+> >  libbtf.c | 134 ++++++++++++++++++++++++++++++++++++-------------------
+> >  1 file changed, 88 insertions(+), 46 deletions(-)
+> >
+> > diff --git a/libbtf.c b/libbtf.c
+> > index 81b1b36..5b91d3a 100644
+> > --- a/libbtf.c
+> > +++ b/libbtf.c
+> > @@ -698,6 +698,7 @@ static int btf_elf__write(const char *filename, struct btf *btf)
+> >         uint32_t raw_btf_size;
+> >         int fd, err = -1;
+> >         size_t strndx;
+> > +       void *str_table = NULL;
+> >
+> >         fd = open(filename, O_RDWR);
+> >         if (fd < 0) {
+> > @@ -740,74 +741,115 @@ static int btf_elf__write(const char *filename, struct btf *btf)
+> >         }
+> >
+> >         /*
+> > -        * First we look if there was already a .BTF section to overwrite.
+> > +        * First we check if there is already a .BTF section present.
+> >          */
+> > -
+> >         elf_getshdrstrndx(elf, &strndx);
+> > +       Elf_Scn *btf_scn = 0;
 >
+> NULL, not 0
+>
+> >         while ((scn = elf_nextscn(elf, scn)) != NULL) {
+> >                 shdr = gelf_getshdr(scn, &shdr_mem);
+> >                 if (shdr == NULL)
+> >                         continue;
+> >                 char *secname = elf_strptr(elf, strndx, shdr->sh_name);
+> >                 if (strcmp(secname, ".BTF") == 0) {
+> > -                       btf_data = elf_getdata(scn, btf_data);
+> > +                       btf_scn = scn;
+> >                         break;
+> >                 }
+> >         }
+> >
+> > -       raw_btf_data = btf__get_raw_data(btf, &raw_btf_size);
+> > -
+> > -       if (btf_data) {
+> > -               /* Exisiting .BTF section found */
+> > -               btf_data->d_buf = (void *)raw_btf_data;
+> > -               btf_data->d_size = raw_btf_size;
+> > -               elf_flagdata(btf_data, ELF_C_SET, ELF_F_DIRTY);
+> > +       Elf_Scn *str_scn = elf_getscn(elf, strndx);
+> > +       if (!str_scn) {
+> > +               fprintf(stderr, "%s: elf_getscn(strndx) failed\n", __func__);
+>
+> no elf_errmsg(elf_errno()) here? BTW, this form is very common (and a
+> bit verbose), so how about having a local macro that would make this
+> shorter, e.g.:
+>
+> elf_error("elf_getscn(strndx) failed"); ?
+>
+> > +               goto out;
+> > +       }
+> >
+> > -               if (elf_update(elf, ELF_C_NULL) >= 0 &&
+> > -                   elf_update(elf, ELF_C_WRITE) >= 0)
+> > -                       err = 0;
+> > -               else
+> > -                       fprintf(stderr, "%s: elf_update failed: %s.\n",
+> > -                               __func__, elf_errmsg(elf_errno()));
+> > +       size_t dot_btf_offset = 0;
+> > +       if (btf_scn) {
+> > +               /* Existing .BTF section found */
+> > +               btf_data = elf_getdata(btf_scn, NULL);
+> > +               if (!btf_data) {
+> > +                       fprintf(stderr, "%s: elf_getdata failed: %s\n", __func__,
+> > +                               elf_errmsg(elf_errno()));
+> > +                       goto out;
+> > +               }
+> >         } else {
+> > -               const char *llvm_objcopy;
+> > -               char tmp_fn[PATH_MAX];
+> > -               char cmd[PATH_MAX * 2];
+> > -
+> > -               llvm_objcopy = getenv("LLVM_OBJCOPY");
+> > -               if (!llvm_objcopy)
+> > -                       llvm_objcopy = "llvm-objcopy";
+> > -
+> > -               /* Use objcopy to add a .BTF section */
+> > -               snprintf(tmp_fn, sizeof(tmp_fn), "%s.btf", filename);
+> > -               close(fd);
+> > -               fd = creat(tmp_fn, S_IRUSR | S_IWUSR);
+> > -               if (fd == -1) {
+> > -                       fprintf(stderr, "%s: open(%s) failed!\n", __func__,
+> > -                               tmp_fn);
+> > +               /* Add ".BTF" to the section name string table */
+> > +               Elf_Data *str_data = elf_getdata(str_scn, NULL);
+> > +               if (!str_data) {
+> > +                       fprintf(stderr, "%s: elf_getdata(str_scn) failed: %s\n",
+> > +                               __func__, elf_errmsg(elf_errno()));
+> >                         goto out;
+> >                 }
+> > -
+> > -               if (write(fd, raw_btf_data, raw_btf_size) != raw_btf_size) {
+> > -                       fprintf(stderr, "%s: write of %d bytes to '%s' failed: %d!\n",
+> > -                               __func__, raw_btf_size, tmp_fn, errno);
+> > -                       goto unlink;
+> > +               dot_btf_offset = str_data->d_size;
+> > +               size_t new_str_size = dot_btf_offset + 5;
+>
+> 5 is a bit magical, maybe use sizeof(".BTF") or a dedicated constant?
+>
+> > +               str_table = malloc(new_str_size);
+> > +               if (!str_table) {
+> > +                       fprintf(stderr, "%s: malloc (strtab) failed\n", __func__);
+> > +                       goto out;
+> >                 }
+> > -
+> > -               snprintf(cmd, sizeof(cmd), "%s --add-section .BTF=%s %s",
+> > -                        llvm_objcopy, tmp_fn, filename);
+> > -               if (system(cmd)) {
+> > -                       fprintf(stderr, "%s: failed to add .BTF section to '%s': %d!\n",
+> > -                               __func__, filename, errno);
+> > -                       goto unlink;
+> > +               memcpy(str_table, str_data->d_buf, dot_btf_offset);
+> > +               memcpy(str_table + dot_btf_offset, ".BTF", 5);
+>
+> same about magical 5
+>
+> > +               str_data->d_buf = str_table;
+> > +               str_data->d_size = new_str_size;
+> > +               elf_flagdata(str_data, ELF_C_SET, ELF_F_DIRTY);
+> > +
+> > +               /* Create a new section */
+> > +               btf_scn = elf_newscn(elf);
+> > +               if (!btf_scn) {
+> > +                       fprintf(stderr, "%s: elf_newscn failed: %s\n",
+> > +                       __func__, elf_errmsg(elf_errno()));
+> > +                       goto out;
+> > +               }
+> > +               btf_data = elf_newdata(btf_scn);
+> > +               if (!btf_data) {
+> > +                       fprintf(stderr, "%s: elf_newdata failed: %s\n",
+> > +                       __func__, elf_errmsg(elf_errno()));
+> > +                       goto out;
+> >                 }
+> > +       }
+> >
+> > -               err = 0;
+> > -       unlink:
+> > -               unlink(tmp_fn);
+> > +       /* (Re)populate the BTF section data */
+> > +       raw_btf_data = btf__get_raw_data(btf, &raw_btf_size);
+> > +       btf_data->d_buf = (void *)raw_btf_data;
+> > +       btf_data->d_size = raw_btf_size;
+> > +       btf_data->d_type = ELF_T_BYTE;
+> > +       btf_data->d_version = EV_CURRENT;
+> > +       elf_flagdata(btf_data, ELF_C_SET, ELF_F_DIRTY);
+> > +
+> > +       /* Update .BTF section in the SHT */
+> > +       GElf_Shdr btf_shdr_mem;
+> > +       GElf_Shdr *btf_shdr = gelf_getshdr(btf_scn, &btf_shdr_mem);
+> > +       if (!btf_shdr) {
+>
+>
+> btf_shdr just points to btf_shdr_mem, no? This duplication is not
+> pretty, why not:
+>
+> GElf_Shdr btf_shdr;
+> if (!gelf_getshdr(btf_scn, &btf_shdr_mem)) { ... }
+>
+> And then use btf_shdr. everywhere below
+>
+> > +               fprintf(stderr, "%s: elf_getshdr(btf_scn) failed: %s\n",
+> > +                       __func__, elf_errmsg(elf_errno()));
+> > +               goto out;
+> > +       }
+> > +       btf_shdr->sh_entsize = 0;
+> > +       btf_shdr->sh_flags = SHF_ALLOC;
+>
+> this is wrong, making .BTF allocatable should be an opt-in, not all
+> applications need to have a loadable .BTF section. Plus this patch
+> doesn't really make it loadable, so SHF_ALLOC should be updated in the
+> later patch. And I don't think we'll use that for vmlinux BTF or
+> kernel module BTFs either, because there is still going to be linker
+> script involved.
+>
+>
+> > +       if (dot_btf_offset)
+> > +               btf_shdr->sh_name = dot_btf_offset;
+> > +       btf_shdr->sh_type = SHT_PROGBITS;
+> > +       if (!gelf_update_shdr(btf_scn, btf_shdr)) {
+> > +               fprintf(stderr, "%s: gelf_update_shdr failed: %s\n",
+> > +                       __func__, elf_errmsg(elf_errno()));
+> > +               goto out;
+> > +       }
+> > +
+> > +       if (elf_update(elf, ELF_C_NULL) < 0) {
+> > +               fprintf(stderr, "%s: elf_update (layout) failed: %s\n",
+> > +                       __func__, elf_errmsg(elf_errno()));
+> > +               goto out;
+> > +       }
+> > +
+> > +       if (elf_update(elf, ELF_C_WRITE) < 0) {
+> > +               fprintf(stderr, "%s: elf_update (write) failed: %s\n",
+> > +                       __func__, elf_errmsg(elf_errno()));
+> > +               goto out;
+> >         }
+> > +       err = 0;
+> >
+> >  out:
+> > +       if (str_table)
+> > +               free(str_table);
+> >         if (fd != -1)
+> >                 close(fd);
+> >         if (elf)
+> > --
+> > 2.30.0.365.g02bc693789-goog
+> >
