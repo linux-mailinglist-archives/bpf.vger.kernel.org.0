@@ -2,171 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78E9C30FFEE
-	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 23:12:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C109B31007C
+	for <lists+bpf@lfdr.de>; Fri,  5 Feb 2021 00:09:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229681AbhBDWLG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Feb 2021 17:11:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40890 "EHLO
+        id S230051AbhBDXHG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Feb 2021 18:07:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbhBDWLG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Feb 2021 17:11:06 -0500
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5B0CC0613D6;
-        Thu,  4 Feb 2021 14:10:24 -0800 (PST)
-Received: by mail-il1-x12d.google.com with SMTP id m20so4052353ilj.13;
-        Thu, 04 Feb 2021 14:10:24 -0800 (PST)
+        with ESMTP id S230023AbhBDXHF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 Feb 2021 18:07:05 -0500
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60D68C06178B;
+        Thu,  4 Feb 2021 15:06:25 -0800 (PST)
+Received: by mail-yb1-xb2f.google.com with SMTP id s61so4913439ybi.4;
+        Thu, 04 Feb 2021 15:06:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=UoK/jNgPexifBCsM5TeU8UemDOf1tGSYf8Mxoq9PzCc=;
-        b=rill+UGqgq8KXJP+c9/01HDIsyhurADO3vJsaJwKFLTkNwQt1JeyQ5j12JfSEsBbYn
-         Dv3RerOOmgzj5OOytRBLIJVr4iLfMGATbcRlc88+IpD35NUZnrdx++11SZrwnMN9WcnW
-         JN5v1MQBa7eq3vuC9BRbBagxO3CIEdBqx5hL7RUIa+GjHAgTGZOq1Pvsprit07sQLVzn
-         LKZqtakYEQ7lVZSr4nj9L2cgCiFUG2SETBqBKxJPdcirjkXstPtDdKODRv08ydmQsKKU
-         uHoDkE/BE5INEwXxzRpjzoUTaaRcLsn0LQ9HbDeCTYwvSjSrWB9u6AT7NbIVhw77tlHx
-         bVWw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=t2lQIk70QFd6n9YzDSNyVdJpE7exaIuav69xSQ3986U=;
+        b=F/+qM05hj6/LKAW/h4nkFrTSjp7t/fa9KTSi01wfoU67CjDHPI3aN+n77INkrMfhkR
+         72nqjT8mibxrdz/h10iF+5ccbppczfeIvV1tqP6bm9N+D8AiSdwMlUN3y8AhGoe1x/Xk
+         qel5VRyoggHK4MH9mge4A1rR8Ixc0nQKREz2Pc9HZhBchj95mR6BuMZ4cK2Sh0BTctxK
+         grdqWSuz0SOaBJLepLx+8ysHuIK1zrpKl9RaMWWWmWQvzDRal04SEBDxgKnQSmNqIvWs
+         Vxovlga4qbFavXwsweexigJY+FPJtPKNFiXpbTkt8prCjQtfH8zdiY0obv0RS3b+3cWH
+         /kQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=UoK/jNgPexifBCsM5TeU8UemDOf1tGSYf8Mxoq9PzCc=;
-        b=eISIzN2N9824+KPR2vmkeOipPdkwUrf5/TQmjUItLLyUQUr0BmRSxMrYxOjtKtETcR
-         tkddsV4zunFly8quRWYXb5ilBkrMsEYK+0J/pydbWDp3TZA4uDQ5Z68WkKXryuZbQKPm
-         +U1yGcvhoWjRE2i1rAE204piodhfWr2y9HbMUqZf2M88/BxCDjG8HSEYX5DWD6HYf9Kg
-         3NSMWw6EcpeQiFsVi3GlBdV4Ar8XYyV652f6sUs6sX/+Cq/vfjgoahcQyPZp0wECV7uQ
-         B1ggpBI0kidgFfA6/GXbWWbXXdJhmtDfuGvnhHLatmuvlIl2UhG2y5pq+OxG0OHtxA5h
-         SiFg==
-X-Gm-Message-State: AOAM532aBaO6Kf4ZZLFeRC1hUQspPPMM02bFisaJQFN/mfLZwEjN5xDY
-        bvOQzKY869HxvyhVyosSBonxFlhMXa2rIW8YfaLKTzyLW7EWeA==
-X-Google-Smtp-Source: ABdhPJySOE47p7L2PzNh6iIn+aEoZ2w6m1Cj6R1w8KKmUUooUdb8tWcp9p49P9im6qMUC4nhOi6eHpqyH5YYFV9+4Qc=
-X-Received: by 2002:a92:ce46:: with SMTP id a6mr1204547ilr.10.1612476624026;
- Thu, 04 Feb 2021 14:10:24 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=t2lQIk70QFd6n9YzDSNyVdJpE7exaIuav69xSQ3986U=;
+        b=Ju53w3TPuuRiNnsYMKwOYyRxCLCsFRikna3rByQg5rZJp6VApImE0Zpcx+7paKcmZS
+         9ioC/SR+b4gTGrhcTSgkaEE9HwpxinWQe3kgMzM4tUYraBTusj9VvTADkbObkhPKCJPf
+         QC0vuQFQaQvZwjjRnDIf9ahvImtXulQ/f+TgNdJnKNIZ+46i7BjEkFoExtl096mGExNT
+         D50oGdZCodIeMii7IU43fb8Al851UWy6BIY/Ya6d5CkZa4K4NtlvhRJ2o4k/C4Ik9Rr8
+         rr559WW0EH14I8iKxk0X4JOB9IQjquCj0etwHN7+ix93dFlYCn8mPZ18ShTF3EI526gE
+         cB8A==
+X-Gm-Message-State: AOAM531hqdZj+LNlOduAXZ6iWCFS4OzyaAiYSkI4pRjqsLDeZ3j97UXs
+        8PQXsaXnNsr1RV2Qq69qu9ut5hFROJ31orY+yGY=
+X-Google-Smtp-Source: ABdhPJz07sCxdAmM4/eggXhRo/VNPmpJa3Qj+/AtWgfk2ts0KMjSsozs8psaoJxBH/PzLSFVdEBuUm5D4DwEe0LmJCY=
+X-Received: by 2002:a25:d844:: with SMTP id p65mr2113021ybg.27.1612479984732;
+ Thu, 04 Feb 2021 15:06:24 -0800 (PST)
 MIME-Version: 1.0
-References: <20210204220741.GA920417@kernel.org>
-In-Reply-To: <20210204220741.GA920417@kernel.org>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Thu, 4 Feb 2021 23:10:12 +0100
-Message-ID: <CA+icZUXwtrxbZib+nUD8t4mjqR_4r2nxHb4ob2a1KmaNPeTv2g@mail.gmail.com>
-Subject: Re: ANNOUNCE: pahole v1.20 (gcc11 DWARF5's default, lots of ELF
- sections, BTF)
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+References: <20210201172530.1141087-1-gprocida@google.com> <20210201172530.1141087-3-gprocida@google.com>
+ <CAEf4BzY_xk2H1Eh9h_WiXbqP3O-afiZnmpWf=MtCrqdJeNW+ag@mail.gmail.com> <CAGvU0HmHR0AXKT2=LyD6HWdr79JM9kWjLTZhajjUJx+p2QB0tA@mail.gmail.com>
+In-Reply-To: <CAGvU0HmHR0AXKT2=LyD6HWdr79JM9kWjLTZhajjUJx+p2QB0tA@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 4 Feb 2021 15:06:13 -0800
+Message-ID: <CAEf4BzYwNVnT_9d2sRxRtOMihfFuK+R5Adxx87iArDv_Rr7dbg@mail.gmail.com>
+Subject: Re: [PATCH dwarves v2 2/4] btf_encoder: Manually lay out updated ELF sections
+To:     Giuliano Procida <gprocida@google.com>
 Cc:     dwarves@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Domenico Andreoli <cavok@debian.org>,
-        Matthias Schwarzott <zzam@gentoo.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Mark Wieelard <mjw@redhat.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
-        Tom Stellard <tstellar@redhat.com>
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        =?UTF-8?Q?Matthias_M=C3=A4nnich?= <maennich@google.com>,
+        kernel-team@android.com, Kernel Team <kernel-team@fb.com>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 4, 2021 at 11:07 PM Arnaldo Carvalho de Melo
-<arnaldo.melo@gmail.com> wrote:
+On Thu, Feb 4, 2021 at 10:34 AM Giuliano Procida <gprocida@google.com> wrote:
 >
-> Hi,
+> Hi.
 >
->         The v1.20 release of pahole and its friends is out, mostly
-> addressing problems related to gcc 11 defaulting to DWARF5 for -g,
-> available at the usual places:
+> On Thu, 4 Feb 2021 at 04:13, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Mon, Feb 1, 2021 at 9:26 AM Giuliano Procida <gprocida@google.com> wrote:
+> > >
+> > > pahole -J needs to do the following to an ELF file:
+> > >
+> > > * add or update the ".BTF" section
+> > > * maybe update the section name string table
+> > > * update the Section Header Table (SHT)
+> > >
+> > > libelf either takes full control of layout or requires the user to
+> > > specify offset, size and alignment of all new and updated sections and
+> > > headers.
+> > >
+> > > To avoid libelf moving program segments in particular, we position the
+> >
+> > It's not clear to me what's wrong with libelf handling all the layout.
+> > Even if libelf will move program segments around, what's the harm?
+> > Does it break anything if we just let libelf do this?
+> >
 >
+> It doesn't hurt the userspace case I care about. I've no idea what it
+> means in terms of vmlinux.
+>
+> However, I wrote that text before I discovered that pahole -J isn't
+> actually used to modify kernel images.
+>
+> One thing I haven't tried is to try to make .BTF loadable but leave
+> placement to libelf.
 
-Congrats and thanks for v1.20 and to all involved folks.
+I'd concentrate on getting rid of llvm-objcopy dependency first.
+Making .BTF loadable is even riskier change and there is no use case
+that relies on that today, so definitely worth to split that out.
 
-- Sedat -
 
-> Main git repo:
 >
->    git://git.kernel.org/pub/scm/devel/pahole/pahole.git
->
-> Mirror git repo:
->
->    https://github.com/acmel/dwarves.git
->
-> tarball + gpg signature:
->
->    https://fedorapeople.org/~acme/dwarves/dwarves-1.20.tar.xz
->    https://fedorapeople.org/~acme/dwarves/dwarves-1.20.tar.bz2
->    https://fedorapeople.org/~acme/dwarves/dwarves-1.20.tar.sign
->
-> Best Regards,
->
->  - Arnaldo
->
-> v1.20:
->
-> BTF encoder:
->
->   - Improve ELF error reporting using elf_errmsg(elf_errno()).
->
->   - Improve objcopy error handling.
->
->   - Fix handling of 'restrict' qualifier, that was being treated as a 'const'.
->
->   - Support SHN_XINDEX in st_shndx symbol indexes, to handle ELF objects with
->     more than 65534 sections, for instance, which happens with kernels built
->     with 'KCFLAGS="-ffunction-sections -fdata-sections", Other cases may
->     include when using FG-ASLR, LTO.
->
->   - Cope with functions without a name, as seen sometimes when building kernel
->     images with some versions of clang, when a SEGFAULT was taking place.
->
->   - Fix BTF variable generation for kernel modules, not skipping variables at
->     offset zero.
->
->   - Fix address size to match what is in the ELF file being processed, to fix using
->     a 64-bit pahole binary to generate BTF for a 32-bit vmlinux image.
->
->   - Use kernel module ftrace addresses when finding which functions to encode,
->     which increases the number of functions encoded.
->
-> libbpf:
->
->   - Allow use of packaged version, for distros wanting to dynamically link with
->     the system's libbpf package instead of using the libbpf git submodule shipped
->     in pahole's source code.
->
-> DWARF loader:
->
->   - Support DW_AT_data_bit_offset
->
->     This appeared in DWARF4 but is supported only in gcc's -gdwarf-5,
->     support it in a way that makes the output be the same for both cases.
->
->       $ gcc -gdwarf-5 -c examples/dwarf5/bf.c
->       $ pahole bf.o
->       struct pea {
->             long int                   a:1;                  /*     0: 0  8 */
->             long int                   b:1;                  /*     0: 1  8 */
->             long int                   c:1;                  /*     0: 2  8 */
->
->             /* XXX 29 bits hole, try to pack */
->             /* Bitfield combined with next fields */
->
->             int                        after_bitfield;       /*     4     4 */
->
->             /* size: 8, cachelines: 1, members: 4 */
->             /* sum members: 4 */
->             /* sum bitfield members: 3 bits, bit holes: 1, sum bit holes: 29 bits */
->             /* last cacheline: 8 bytes */
->       };
->
->   - DW_FORM_implicit_const in attr_numeric() and attr_offset()
->
->   - Support DW_TAG_GNU_call_site, its the standardized rename of the previously supported
->     DW_TAG_GNU_call_site.
->
-> build:
->
->     - Fix compilation on 32-bit architectures.
->
-> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> > > ".BTF" and section name string table (typically named ".shstrtab")
+> > > sections after all others. The SHT always lives at the end of the file.
+> > >
+> > > Note that the last section in an ELF file is normally the section name
+> > > string table and any ".BTF" section will normally be second last.
+> > > However, if these sections appear earlier, then we'll waste some space
+> > > in the ELF file when we rewrite them.
+> > >
+> > > Signed-off-by: Giuliano Procida <gprocida@google.com>
+> > > ---
+> > >  libbtf.c | 64 ++++++++++++++++++++++++++++++++++++++++++++++++++++++--
+> > >  1 file changed, 62 insertions(+), 2 deletions(-)
+> > >
+> >
+> > [...]
