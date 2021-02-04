@@ -2,108 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3477330E769
-	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 00:33:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13FAC30E850
+	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 01:11:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232322AbhBCXdY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Feb 2021 18:33:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231817AbhBCXdX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Feb 2021 18:33:23 -0500
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0728FC061786
-        for <bpf@vger.kernel.org>; Wed,  3 Feb 2021 15:32:43 -0800 (PST)
-Received: by mail-yb1-xb32.google.com with SMTP id j84so1371636ybg.1
-        for <bpf@vger.kernel.org>; Wed, 03 Feb 2021 15:32:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UMebJTakS0Ke+LXbRio76EZDaorwfOZaoWoKW/e63MU=;
-        b=LfbBUMwPaGZb+00JAaebiz87H+cT+H/1cnOLdBdFHltt6KMDaFryeNoJvRHrFc2bCs
-         dqMoV2FUCjCTCuS32diLy6RqaWJF/aySsS5177Yxynk/AcYRljBUZPx0ibqZKsgTqokY
-         Bn9xCUbyPVgdsxOxuPc/xaNe+8RJtHhW1381KLBj6p+D6fs0K/8pE5pEB8zg6Abg2FSp
-         a2IuvdqIXUS85adscYpiWUEfu7/Jc6ND6zKvH2axquhpnsCv8BMTLxssPdn9Gu5O9Rlq
-         4mZoO+3DzqdKyykCOsUW0YM/2jPw3adNePT200nDTHKLQ+T8pNyWHpZNSH+ow/23vYWm
-         brSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UMebJTakS0Ke+LXbRio76EZDaorwfOZaoWoKW/e63MU=;
-        b=qNqSg3xcXhxiuagbYzEO+92cB4VvrpmaRtX2zvMRVALm0c/AMbWMIwgnKU5Dc1n3fw
-         lDwsLrrP74OeW3KTacLeG5xaxkvaVeSnd9xbkC2IiUP9pOCejAx6fODWbJg2eWj9ekn6
-         ko32bMLz0A6HfVAkvRcozZJK+jw+SOKQUZAMOq2DGTiEpJRGaMFUcbZrEoI6bF8SubW5
-         KfWBHSUg2qMJm8Jifw76nJxRUaCfIwaq55omgJN0ju5ZZ3/V5RBaLUG6ZPvn1pzoKXfZ
-         gFoNORbXEsjhkFIw6EJOvICttbFsunJtO6RIy2DgLjBZGu/ZIj8v+ShTciaxIp5shCUd
-         UVtg==
-X-Gm-Message-State: AOAM531S44gfz7iddjhuV1EhmRhykEFpJ/6MXKz/H8JWlfhuzNWjPw3X
-        XVjRHWZGj3sZ1ZNAXLZolfcV2SgZQArGwnEWy57HaLvafRceuw==
-X-Google-Smtp-Source: ABdhPJyNu7Z16HZYFJcb4R5ULunbTOhTAw5dxh2PHXVXzzkfZvKC4rirdWcNz2ydRZn1jYIwdFWaGsU8qPtiQWi8fsQ=
-X-Received: by 2002:a25:d844:: with SMTP id p65mr7535937ybg.27.1612395162321;
- Wed, 03 Feb 2021 15:32:42 -0800 (PST)
+        id S232867AbhBDAKs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Feb 2021 19:10:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33224 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232762AbhBDAKr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Feb 2021 19:10:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 1374664F4A;
+        Thu,  4 Feb 2021 00:10:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612397407;
+        bh=L3ZfOc3RTF7zQ3JKDq2xAvPeuR5KXD5wzrVNNCSak5E=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=MpvnAeUAiVyjQ1eSUJCLYxfh3m1k40JIDYm50Mhw1bz/ZmaJQ8hdCkh0P8pF54Kq4
+         1IGTiY4SbhFe5CTAjSJEvU7uk9jy/kg3f7FEeXz8cSd7qILaHxK8IOmjb7BNe0l/8U
+         OhoAJxgKI0VytVJ6umJdh6ZlgzjTgZGMEJCZV9R/+X4kpfROURZKviCypek9Qa0PKf
+         igBMUPpHudG6RUZcPdVqCD+rE16i1N6rBn/WG4lPPHB3+YkQI47emJET4PUGkrCrWI
+         8oNGQv3MCY3Afm35brDNHamLFd+RJQnikmjVWHSVU5HCUFunouKB5qhxtu0sPZqaon
+         /01oMxGIxpsoA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 068BD609EC;
+        Thu,  4 Feb 2021 00:10:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <CAJCQCtSQLc0VHqO4BY_-YB2OmCNNmHCS6fNdQKmMWGn2v=Jpdw@mail.gmail.com>
- <CAJCQCtRHOidM7Vps1JQSpZA14u+B5fR860FwZB=eb1wYjTpqDw@mail.gmail.com>
-In-Reply-To: <CAJCQCtRHOidM7Vps1JQSpZA14u+B5fR860FwZB=eb1wYjTpqDw@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 3 Feb 2021 15:32:31 -0800
-Message-ID: <CAEf4BzZ4oTB0-JizHe1VaCk2V+Jb9jJoTznkgh6CjE5VxNVqbg@mail.gmail.com>
-Subject: Re: 5:11: in-kernel BTF is malformed
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v3 bpf-next] net: veth: alloc skb in bulk for ndo_xdp_xmit
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161239740702.9417.6621670773510084819.git-patchwork-notify@kernel.org>
+Date:   Thu, 04 Feb 2021 00:10:07 +0000
+References: <a14a30d3c06fff24e13f836c733d80efc0bd6eb5.1611957532.git.lorenzo@kernel.org>
+In-Reply-To: <a14a30d3c06fff24e13f836c733d80efc0bd6eb5.1611957532.git.lorenzo@kernel.org>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
+        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        toshiaki.makita1@gmail.com, lorenzo.bianconi@redhat.com,
+        brouer@redhat.com, toke@redhat.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 3, 2021 at 2:44 PM Chris Murphy <lists@colorremedies.com> wrote:
->
-> On Wed, Feb 3, 2021 at 1:26 PM Chris Murphy <lists@colorremedies.com> wrote:
-> >
-> > qemu-kvm VM starts with kernel 5.10.10 but fails with 5.11.0-rc5.
-> >
-> > Libvirt folks think this is a kernel bug, and have attached a
-> > reproducer to the downstream bug report.
-> >
-> > "I've managed to reproduce and found that virBPFLoadProg() logs the
-> > following message:
-> >
-> > in-kernel BTF is malformed\nprocessed 0 insns (limit 1000000)
-> > max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0\n
-> > "
-> >
-> > https://bugzilla.redhat.com/show_bug.cgi?id=1920857#c4
->
-> Looks like the bug was introduced in 5.11-rc5, the problem doesn't
-> happen in rc4. As I mention in the downstream bug, I'm unable to
-> compile a working kernel for bisect between rc4 and rc5 to find out
-> the exact commit that introduced the problem, due to many messages
-> like this:
->
-> Feb 03 15:05:47 kernel: failed to validate module [coretemp] BTF: -22
-> Feb 03 15:05:47 kernel: failed to validate module [intel_powerclamp] BTF: -22
-> Feb 03 15:05:47 kernel: failed to validate module [irqbypass] BTF: -22
-> Feb 03 15:05:47 kernel: failed to validate module [intel_powerclamp] BTF: -22
-> Feb 03 15:05:47 kernel: failed to validate module
-> [x86_pkg_temp_thermal] BTF: -22
->
+Hello:
 
-The important and very relevant part from the bugzilla:
+This patch was applied to bpf/bpf-next.git (refs/heads/master):
 
-Feb 03 15:06:26 fmac.local kernel: BPF:        sched_reset_on_fork
-type_id=6 bitfield_size=0 bits_offset=0
-Feb 03 15:06:26 fmac.local kernel: BPF:
-Feb 03 15:06:26 fmac.local kernel: BPF:Invalid member bits_offset
-Feb 03 15:06:26 fmac.local kernel: BPF:
+On Fri, 29 Jan 2021 23:04:08 +0100 you wrote:
+> Split ndo_xdp_xmit and ndo_start_xmit use cases in veth_xdp_rcv routine
+> in order to alloc skbs in bulk for XDP_PASS verdict.
+> Introduce xdp_alloc_skb_bulk utility routine to alloc skb bulk list.
+> The proposed approach has been tested in the following scenario:
+> 
+> eth (ixgbe) --> XDP_REDIRECT --> veth0 --> (remote-ns) veth1 --> XDP_PASS
+> 
+> [...]
 
-Do you have full dmesg with output from the BPF verifier? Also, what's
-the kernel config? Which compiler and what version, etc, etc? Please
-help to reproduce this with as much information as possible. Thanks!
+Here is the summary with links:
+  - [v3,bpf-next] net: veth: alloc skb in bulk for ndo_xdp_xmit
+    https://git.kernel.org/bpf/bpf-next/c/65e6dcf73398
 
-If you can share the vmlinux itself, that would help as well.
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
->
-> --
-> Chris Murphy
+
