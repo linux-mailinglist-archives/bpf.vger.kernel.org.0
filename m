@@ -2,102 +2,205 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 981B330EBB3
-	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 06:04:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC9B430EC8C
+	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 07:38:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229742AbhBDFDS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Feb 2021 00:03:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229711AbhBDFDR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Feb 2021 00:03:17 -0500
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85FC2C061573
-        for <bpf@vger.kernel.org>; Wed,  3 Feb 2021 21:02:37 -0800 (PST)
-Received: by mail-il1-x134.google.com with SMTP id g9so1488662ilc.3
-        for <bpf@vger.kernel.org>; Wed, 03 Feb 2021 21:02:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8fSSQn60vWBaWXLJ61oy8EmRJ7mfSIUVBhzenGVreTM=;
-        b=jB4yFdcDfojgMqRVernkW50mVxDWdlQYV2x0s4qsQ9dSdrFw8miM07fIQmonvuVLuN
-         64VaiDzybc7DQCRdCS/qgNICNykGSHkTDp5jcBtEja8Zr1H13ya2J1czqiPJeCBz5cMk
-         uDtw+HqbI51nIN8zHVeh1ArlBQu3BTexYP84JmWgImIkmFTW6eF7YOcDegLPT5qohk74
-         G/kJkFD5Ga+M2WAsvYhnP1x5GpCkaiN/lbBGS16PYuBVwbxvFpzA8GWr81EYKJzuvZpa
-         6b1dbQSvF9oFVgPz8mNQyzDST1+ob0T50+lEwiwBptGHTq39DxBKJG9gT5W+4lDb8yPb
-         1tTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8fSSQn60vWBaWXLJ61oy8EmRJ7mfSIUVBhzenGVreTM=;
-        b=cY5IK/hWaSCLqUdQ5RYmNvQgPIvB+1x3glM71Mcp4uJRYzm/9EHdNrFpjKx2Sgm72d
-         GeLipP/AZ5eEZQJWoJm+Dc3H4Lut7cG+gRfVq2jllKX2fWhKiVSwquKi+t4ByS28EnxK
-         qkhixckUo1KIhaPkYEnRUF+zs4s4QPvFscaPRttFi5BMdV3L9x09Bhpg19lPEIbSW4rV
-         5vmDDRtEcQyS9fbJ2zQrUR0067zYEL+aBkClmfrOkOC17J4ey8AF/BixXtU5pT1sA+VS
-         pl75Iphxl1dSU7BfBg3ZE7oo02Hsa0fundQCBhC1TBGhNwmGHGqpb6Iuaiah+8s4GOpO
-         Bdzg==
-X-Gm-Message-State: AOAM531IMJjkgG7nOJb5SRchAgfRE6mAbQRRvORLQ/KdQyB/4h6d0u5S
-        IGuqPpTIMICcNxCcH6+FNtVPHlABpGVrbWAkMlM=
-X-Google-Smtp-Source: ABdhPJypz8XhO2m2Nu/XIies4PZ9Ue0sILVUOp22F5EBPg/I1xh8n0a7QJ/4QnoJbsmhugwoebdpMrJzUVqSiuk7KaQ=
-X-Received: by 2002:a92:cd8e:: with SMTP id r14mr5308071ilb.77.1612414956821;
- Wed, 03 Feb 2021 21:02:36 -0800 (PST)
+        id S232632AbhBDGiC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Feb 2021 01:38:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43122 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230311AbhBDGiA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 Feb 2021 01:38:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A71D364E31;
+        Thu,  4 Feb 2021 06:37:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612420640;
+        bh=rr0vW6pTGISMmHI5KV2Xij6A6QnUmMJXU/yXHNMHaTg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=a8QTW6B1BdT927mVxoUAfqMknKsQh9IFm/Gk0tIjjaPf2MwC1LGAE2DsgXCAGlPG0
+         uEDFAfZa9Ga1244a3GnNDSDBpPnIqkPukD/EQA9Eh2Dr0kqeo5cYHkofz3+/UcHjrG
+         wwlXplF0ouex5MOFj/4NYQyOpXt+/v3q1C4yEAFlIEod+f8ZqAl76/+5zG+M/A/51m
+         B0Ko1O9EymxKFuIRYuefBu8dENER7axR7MWbKO+UskfGAjdNRGTXTmV1XRE3FaWHC3
+         aQLqGAmCo692dUfdFO6yTKYWj18tXdarido4jn/6symddi04oKm+Qc23Jm9Fn8JryK
+         Zn3DjKnKwjPWg==
+Received: by mail-lj1-f174.google.com with SMTP id e18so2027187lja.12;
+        Wed, 03 Feb 2021 22:37:19 -0800 (PST)
+X-Gm-Message-State: AOAM532GqBiNjg+rAbzs7CFsh7aFs/DKEGjvBIIGdv5uiT+N0XTHEOaN
+        Z5wSihwTqAN3pZZBKWMxOQQLNgKnOByKai8MXMo=
+X-Google-Smtp-Source: ABdhPJwo9zhXhvDT8N8/k7FD3R/AhDgLztW4q8Ex7mixrFf5PJL7/7kSQ7x6AmuS/dy9dnJpOsCRP8qWg/KrQBDHYDw=
+X-Received: by 2002:a2e:918f:: with SMTP id f15mr3800925ljg.357.1612420637815;
+ Wed, 03 Feb 2021 22:37:17 -0800 (PST)
 MIME-Version: 1.0
-References: <20210203232331.2567162-1-kpsingh@kernel.org> <20210203232331.2567162-2-kpsingh@kernel.org>
-In-Reply-To: <20210203232331.2567162-2-kpsingh@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 3 Feb 2021 21:02:26 -0800
-Message-ID: <CAEf4BzYkUTqTghp0J4qhwaS-fCr=koYwn1f9Jd10412vZF7DUg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Allow usage of BPF ringbuffer in
- sleepable programs
-To:     KP Singh <kpsingh@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Florent Revest <revest@chromium.org>,
-        Brendan Jackman <jackmanb@chromium.org>
+References: <20210203074127.8616-1-ciara.loftus@intel.com> <20210203074127.8616-2-ciara.loftus@intel.com>
+In-Reply-To: <20210203074127.8616-2-ciara.loftus@intel.com>
+From:   Song Liu <song@kernel.org>
+Date:   Wed, 3 Feb 2021 22:37:06 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW7Bat9oWw_3_TRgUzc7y61kUtTDYT9-4r2ZaOW7WTZ59g@mail.gmail.com>
+Message-ID: <CAPhsuW7Bat9oWw_3_TRgUzc7y61kUtTDYT9-4r2ZaOW7WTZ59g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 1/6] xsk: add tracepoints for packet drops
+To:     Ciara Loftus <ciara.loftus@intel.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>, bjorn@kernel.org,
+        weqaar.a.janjua@intel.com, Daniel Borkmann <daniel@iogearbox.net>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 3, 2021 at 3:23 PM KP Singh <kpsingh@kernel.org> wrote:
+On Wed, Feb 3, 2021 at 12:13 AM Ciara Loftus <ciara.loftus@intel.com> wrote:
 >
-> The BPF ringbuffer map is pre-allocated and the implementation logic
-> does not rely on disabling preemption or per-cpu data structures. Using
-> the BPF ringbuffer sleepable LSM and tracing programs does not trigger
-> any warnings with DEBUG_ATOMIC_SLEEP, DEBUG_PREEMPT,
-> PROVE_RCU and PROVE_LOCKING and LOCKDEP enabled.
+> This commit introduces tracing infrastructure for AF_XDP sockets
+> (xsks) and a new trace event called 'xsk_packet_drop'. This trace
+> event is triggered when a packet cannot be processed by the socket
+> due to one of the following issues:
+> (1) packet exceeds the maximum permitted size.
+> (2) invalid fill descriptor address.
+> (3) invalid tx descriptor field.
 >
-> This allows helpers like bpf_copy_from_user and bpf_ima_inode_hash to
-> write to the BPF ring buffer from sleepable BPF programs.
+> The trace provides information about the error to the user. For
+> example the size vs permitted size is provided for (1). For (2)
+> and (3) the relevant descriptor fields are printed. This information
+> should help a user troubleshoot packet drops by providing this extra
+> level of detail which is not available through use of simple counters.
 >
-> Signed-off-by: KP Singh <kpsingh@kernel.org>
+> The tracepoint can be enabled/disabled by toggling
+> /sys/kernel/debug/tracing/events/xsk/xsk_packet_drop/enable
+>
+> Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
 > ---
-
-Yes, I believe ringbuf is ready for sleepable BPF as is. Its commit()
-implementation is racing with other CPUs anyways, so it doesn't matter
-if reserve and commit happen on the same CPU or different ones.
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
->  kernel/bpf/verifier.c | 2 ++
->  1 file changed, 2 insertions(+)
+>  MAINTAINERS                       |  1 +
+>  include/linux/bpf_trace.h         |  1 +
+>  include/trace/events/xsk.h        | 73 +++++++++++++++++++++++++++++++
+>  include/uapi/linux/if_xdp.h       |  6 +++
+>  kernel/bpf/core.c                 |  1 +
+>  net/xdp/xsk.c                     |  7 ++-
+>  net/xdp/xsk_buff_pool.c           |  3 ++
+>  net/xdp/xsk_queue.h               |  4 ++
+>  tools/include/uapi/linux/if_xdp.h |  6 +++
+>  9 files changed, 101 insertions(+), 1 deletion(-)
+>  create mode 100644 include/trace/events/xsk.h
 >
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 5e09632efddb..4c33b4840438 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -10024,6 +10024,8 @@ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
->                                 return -EINVAL;
->                         }
->                         break;
-> +               case BPF_MAP_TYPE_RINGBUF:
-> +                       break;
->                 default:
->                         verbose(env,
->                                 "Sleepable programs can only use array and hash maps\n");
-> --
-> 2.30.0.365.g02bc693789-goog
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 1df56a32d2df..efe6662d4198 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -19440,6 +19440,7 @@ S:      Maintained
+>  F:     Documentation/networking/af_xdp.rst
+>  F:     include/net/xdp_sock*
+>  F:     include/net/xsk_buff_pool.h
+> +F:     include/trace/events/xsk.h
+>  F:     include/uapi/linux/if_xdp.h
+>  F:     include/uapi/linux/xdp_diag.h
+>  F:     include/net/netns/xdp.h
+> diff --git a/include/linux/bpf_trace.h b/include/linux/bpf_trace.h
+> index ddf896abcfb6..477d29b6c2c1 100644
+> --- a/include/linux/bpf_trace.h
+> +++ b/include/linux/bpf_trace.h
+> @@ -3,5 +3,6 @@
+>  #define __LINUX_BPF_TRACE_H__
 >
+>  #include <trace/events/xdp.h>
+> +#include <trace/events/xsk.h>
+>
+>  #endif /* __LINUX_BPF_TRACE_H__ */
+> diff --git a/include/trace/events/xsk.h b/include/trace/events/xsk.h
+> new file mode 100644
+> index 000000000000..e2984fad372c
+> --- /dev/null
+> +++ b/include/trace/events/xsk.h
+> @@ -0,0 +1,73 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/* Copyright(c) 2021 Intel Corporation. */
+> +
+> +#undef TRACE_SYSTEM
+> +#define TRACE_SYSTEM xsk
+> +
+> +#if !defined(_TRACE_XSK_H) || defined(TRACE_HEADER_MULTI_READ)
+> +#define _TRACE_XSK_H
+> +
+> +#include <linux/if_xdp.h>
+> +#include <linux/tracepoint.h>
+> +
+> +#define print_reason(reason) \
+> +       __print_symbolic(reason, \
+> +                       { XSK_TRACE_DROP_PKT_TOO_BIG, "packet too big" }, \
+> +                       { XSK_TRACE_DROP_INVALID_FILLADDR, "invalid fill addr" }, \
+> +                       { XSK_TRACE_DROP_INVALID_TXD, "invalid tx desc" })
+> +
+> +#define print_val1(reason) \
+> +       __print_symbolic(reason, \
+> +                       { XSK_TRACE_DROP_PKT_TOO_BIG, "len" }, \
+> +                       { XSK_TRACE_DROP_INVALID_FILLADDR, "addr" }, \
+> +                       { XSK_TRACE_DROP_INVALID_TXD, "addr" })
+> +
+> +#define print_val2(reason) \
+> +       __print_symbolic(reason, \
+> +                       { XSK_TRACE_DROP_PKT_TOO_BIG, "max" }, \
+> +                       { XSK_TRACE_DROP_INVALID_FILLADDR, "not_used" }, \
+> +                       { XSK_TRACE_DROP_INVALID_TXD, "len" })
+> +
+> +#define print_val3(reason) \
+> +       __print_symbolic(reason, \
+> +                       { XSK_TRACE_DROP_PKT_TOO_BIG, "not_used" }, \
+> +                       { XSK_TRACE_DROP_INVALID_FILLADDR, "not_used" }, \
+> +                       { XSK_TRACE_DROP_INVALID_TXD, "options" })
+> +
+> +
+> +
+
+nit: 3 empty lines.
+
+> +TRACE_EVENT(xsk_packet_drop,
+> +
+> +       TP_PROTO(char *name, u16 queue_id, u32 reason, u64 val1, u64 val2, u64 val3),
+> +
+> +       TP_ARGS(name, queue_id, reason, val1, val2, val3),
+> +
+> +       TP_STRUCT__entry(
+> +               __field(char *, name)
+> +               __field(u16, queue_id)
+> +               __field(u32, reason)
+> +               __field(u64, val1)
+> +               __field(u32, val2)
+> +               __field(u32, val3)
+> +       ),
+> +
+> +       TP_fast_assign(
+> +               __entry->name = name;
+> +               __entry->queue_id = queue_id;
+> +               __entry->reason = reason;
+> +               __entry->val1 = val1;
+> +               __entry->val2 = val2;
+> +               __entry->val3 = val3;
+> +       ),
+> +
+> +       TP_printk("netdev: %s qid %u reason: %s: %s %llu %s %u %s %u",
+> +                 __entry->name, __entry->queue_id, print_reason(__entry->reason),
+> +                 print_val1(__entry->reason), __entry->val1,
+> +                 print_val2(__entry->reason), __entry->val2,
+> +                 print_val3(__entry->reason), __entry->val3
+> +       )
+> +);
+> +
+> +#endif /* _TRACE_XSK_H */
+> +
+> +#include <trace/define_trace.h>
+> diff --git a/include/uapi/linux/if_xdp.h b/include/uapi/linux/if_xdp.h
+> index a78a8096f4ce..d7eb031d2465 100644
+> --- a/include/uapi/linux/if_xdp.h
+> +++ b/include/uapi/linux/if_xdp.h
+> @@ -108,4 +108,10 @@ struct xdp_desc {
+>
+>  /* UMEM descriptor is __u64 */
+>
+> +enum xdp_trace_reasons {
+
+xdp_trace_reasons above, vs. XSK_TRACE_ below. Is this intentional?
+
+> +       XSK_TRACE_DROP_PKT_TOO_BIG,
+> +       XSK_TRACE_DROP_INVALID_FILLADDR,
+> +       XSK_TRACE_DROP_INVALID_TXD,
+> +};
+> +
+
+[...]
