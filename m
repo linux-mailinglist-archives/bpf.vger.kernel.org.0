@@ -2,69 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13FAC30E850
-	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 01:11:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E96D930E860
+	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 01:17:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232867AbhBDAKs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Feb 2021 19:10:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33224 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232762AbhBDAKr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Feb 2021 19:10:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 1374664F4A;
-        Thu,  4 Feb 2021 00:10:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612397407;
-        bh=L3ZfOc3RTF7zQ3JKDq2xAvPeuR5KXD5wzrVNNCSak5E=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=MpvnAeUAiVyjQ1eSUJCLYxfh3m1k40JIDYm50Mhw1bz/ZmaJQ8hdCkh0P8pF54Kq4
-         1IGTiY4SbhFe5CTAjSJEvU7uk9jy/kg3f7FEeXz8cSd7qILaHxK8IOmjb7BNe0l/8U
-         OhoAJxgKI0VytVJ6umJdh6ZlgzjTgZGMEJCZV9R/+X4kpfROURZKviCypek9Qa0PKf
-         igBMUPpHudG6RUZcPdVqCD+rE16i1N6rBn/WG4lPPHB3+YkQI47emJET4PUGkrCrWI
-         8oNGQv3MCY3Afm35brDNHamLFd+RJQnikmjVWHSVU5HCUFunouKB5qhxtu0sPZqaon
-         /01oMxGIxpsoA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 068BD609EC;
-        Thu,  4 Feb 2021 00:10:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S232762AbhBDAPl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Feb 2021 19:15:41 -0500
+Received: from www62.your-server.de ([213.133.104.62]:60410 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231817AbhBDAPk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Feb 2021 19:15:40 -0500
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1l7SIT-0008bJ-Bm; Thu, 04 Feb 2021 01:14:57 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1l7SIT-000EEW-3V; Thu, 04 Feb 2021 01:14:57 +0100
 Subject: Re: [PATCH v3 bpf-next] net: veth: alloc skb in bulk for ndo_xdp_xmit
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161239740702.9417.6621670773510084819.git-patchwork-notify@kernel.org>
-Date:   Thu, 04 Feb 2021 00:10:07 +0000
+To:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, toshiaki.makita1@gmail.com,
+        lorenzo.bianconi@redhat.com, brouer@redhat.com, toke@redhat.com
 References: <a14a30d3c06fff24e13f836c733d80efc0bd6eb5.1611957532.git.lorenzo@kernel.org>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <e2ae0d97-376a-07db-94fb-14f1220acca5@iogearbox.net>
+Date:   Thu, 4 Feb 2021 01:14:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
 In-Reply-To: <a14a30d3c06fff24e13f836c733d80efc0bd6eb5.1611957532.git.lorenzo@kernel.org>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net,
-        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        toshiaki.makita1@gmail.com, lorenzo.bianconi@redhat.com,
-        brouer@redhat.com, toke@redhat.com
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26069/Wed Feb  3 13:23:20 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
-
-On Fri, 29 Jan 2021 23:04:08 +0100 you wrote:
+On 1/29/21 11:04 PM, Lorenzo Bianconi wrote:
 > Split ndo_xdp_xmit and ndo_start_xmit use cases in veth_xdp_rcv routine
 > in order to alloc skbs in bulk for XDP_PASS verdict.
 > Introduce xdp_alloc_skb_bulk utility routine to alloc skb bulk list.
 > The proposed approach has been tested in the following scenario:
+[...]
+> diff --git a/net/core/xdp.c b/net/core/xdp.c
+> index 0d2630a35c3e..05354976c1fc 100644
+> --- a/net/core/xdp.c
+> +++ b/net/core/xdp.c
+> @@ -514,6 +514,17 @@ void xdp_warn(const char *msg, const char *func, const int line)
+>   };
+>   EXPORT_SYMBOL_GPL(xdp_warn);
+>   
+> +int xdp_alloc_skb_bulk(void **skbs, int n_skb, gfp_t gfp)
+> +{
+> +	n_skb = kmem_cache_alloc_bulk(skbuff_head_cache, gfp,
+> +				      n_skb, skbs);
+
+Applied, but one question I was wondering about when reading the kmem_cache_alloc_bulk()
+code was whether it would be safer to simply test for kmem_cache_alloc_bulk() != n_skb
+given it could potentially in future also alloc less objs than requested, but I presume
+if such extension would get implemented then call-sites might need to indicate 'best
+effort' somehow via flag instead (to handle < n_skb case). Either way all current callers
+assume for != 0 that everything went well, so lgtm.
+
+> +	if (unlikely(!n_skb))
+> +		return -ENOMEM;
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(xdp_alloc_skb_bulk);
+> +
+>   struct sk_buff *__xdp_build_skb_from_frame(struct xdp_frame *xdpf,
+>   					   struct sk_buff *skb,
+>   					   struct net_device *dev)
 > 
-> eth (ixgbe) --> XDP_REDIRECT --> veth0 --> (remote-ns) veth1 --> XDP_PASS
-> 
-> [...]
-
-Here is the summary with links:
-  - [v3,bpf-next] net: veth: alloc skb in bulk for ndo_xdp_xmit
-    https://git.kernel.org/bpf/bpf-next/c/65e6dcf73398
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
 
