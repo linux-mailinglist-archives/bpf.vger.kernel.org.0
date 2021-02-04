@@ -2,97 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF0F430EB7D
-	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 05:14:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAFC230EBA1
+	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 05:53:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229957AbhBDEOS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Feb 2021 23:14:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35408 "EHLO
+        id S231259AbhBDExj (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Feb 2021 23:53:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229783AbhBDEOS (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Feb 2021 23:14:18 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F249C0613D6;
-        Wed,  3 Feb 2021 20:13:38 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id x21so1803215iog.10;
-        Wed, 03 Feb 2021 20:13:38 -0800 (PST)
+        with ESMTP id S231177AbhBDExi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Feb 2021 23:53:38 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32FC0C061573
+        for <bpf@vger.kernel.org>; Wed,  3 Feb 2021 20:52:58 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id f67so102749ioa.1
+        for <bpf@vger.kernel.org>; Wed, 03 Feb 2021 20:52:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=AdcB32twqsu89EL3UdkOt2BlFJjgIF2KmPNLuytB5fY=;
-        b=Xqm8gUE5ZNYmuabgd7vz7yifp5ynuWxN3P9EbtuKBfzdRf2DmFLsULl7JrZ5Qa09QO
-         ALbptbNa3pdrsylj00y0h7lbRoXHF4J210fBMA8Y9xmk1Y1dOcETVSSzKlxdgFzgNMnc
-         S9HBwTPVF0AA02AiAwY5Rn0Am4u/mGi8X8G2jJOka775A49uB1VwdF3f6UkYTZ685GsK
-         F06q2qyPhYPJ5j5QF9LNV20VOX/5qu8Gc/J/s63iGKfvDvAlgWs2Ru1GFLT8mAYut8Az
-         8jN4yx6FLnGsgFzN6N7pnlx2Bw42GSOg7UiZ1k/FOj5+nnmBusHBRcR3OkT6f3w76t3Y
-         2/6Q==
+        bh=WvucSWAdUCIefsUybrHb46H1tlgAmeonidtiTJS8fqQ=;
+        b=kZRIHAKKtXd3wemwrWOfviiHp5RvJyh9CHVUmon1H6VxorDkn/W+F0kO32Hm3DNNHu
+         Rm1bDWKHPAzGeiSPXErtx9tkenI42VHFE5ByXgZj5fNllEwS63JXraNRlkWb8mwq9/kR
+         C9KXgxfTo90bDYpO3caHJPe6CNCF9IRE0zEs6X/nJUtY+frvGFWrx9NaGm/nKAj9xHqZ
+         BgEGRWmUsuTY69M2WGKXc3+pvMW+4OFOgZNfUH1/lUou1X+YRNQCHYzfI6FOHtH+2pru
+         gF+vZuhtbaSSEWzk3DJLaABjkjSA82ODbIMdqdy7YWVZNd85EYWA1f2ZOtYccwTafv3n
+         5e2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=AdcB32twqsu89EL3UdkOt2BlFJjgIF2KmPNLuytB5fY=;
-        b=IusKgnsXZ1n/Cj1NAefcA9PevaUIX++xvlLYfEsi+kldYAIWk65Lcn6EUBNAN1pTtx
-         fXAmz/YYFlF8oPlp/pcWWOgztl90UwoOQL8YIFxuMSxZxkAmdxwBDZ+V2ZwlceM8doxM
-         sThhzJib4laBt+vOC8k6R/+Z0WkI8eoSx32LS+B4ad9TfvJBsNBV5CGLLah6SM4Zroie
-         PyOi3XpDYPPbA5c7JeEqh8NahE6Lb/lcLlta8UogMaJiEJwjoZuaoTKExiG/b3PMDnaB
-         8xRTDW/E9qggaszKhpahkAJMbJuMPrNazPE8fFzmspVNPMn8V4l1TRjH9BBqFoOZUM48
-         /q+g==
-X-Gm-Message-State: AOAM530br1cUQtstbhi76zseVxtIJPDYtXGgAC42KMx81ovJuv83pr4x
-        q4yJY236I2/ulTz4yizDHsFEkf4trOinTRIQVm8r7IDWSms=
-X-Google-Smtp-Source: ABdhPJxmi13O6Z6gQu9j4iY3LtNElB9YtHYyJngYTuNzEPHo5XIU5DN5XigqE6AosiNca2R6mCkhMkYSlUo/l1kla+c=
-X-Received: by 2002:a05:6638:138e:: with SMTP id w14mr6083265jad.98.1612412017750;
- Wed, 03 Feb 2021 20:13:37 -0800 (PST)
+        bh=WvucSWAdUCIefsUybrHb46H1tlgAmeonidtiTJS8fqQ=;
+        b=FXWr9xaekV5NZfxb18LDfwzuD7/JD8GRsMi2L3wto5hFp+2Dk6bTNqWxN5K7gM97pE
+         jKaRlqUaYv636wyTb26lX4yhQkEm3zdPFfkgLnug0JUF1YeF64Y5Z3rY3d51Nl8Oz3/f
+         FDoudARrefhXGQAb4OjmjCfFuNX0XMmb6YE4KZiYoqCiYwY++cs5SR+avieR2jYCkRNS
+         4jpZr8PNaW0eOT26qipomE1UD5mGxqPgzhRTsLNqxnZdJGXVCCZeVEfV8HIvpCqkBW56
+         W/Jf/SVk6pG1AxvPZ/hVJg956a3BpYXw4JSQNddKZifEK7YQLz8b3GBui626NjZ8vct3
+         8jdw==
+X-Gm-Message-State: AOAM5306yV1s6BEsXrp5mNfWrIGbWdcmLgi4HYt9hLVpBIvdvBCIQEZ3
+        FCMfrdDVcrnxg1fEkKaIIwUvHSwI3zjuVVFnON8=
+X-Google-Smtp-Source: ABdhPJzHz7ujp1m5SOKvqK06BZAK03mNl8nhhHlHHqO8jW5D0IQsCYNQ9EWMZdUdpKDtrUad7h0SauWkzjgcGtfzVyg=
+X-Received: by 2002:a6b:db0a:: with SMTP id t10mr5431184ioc.158.1612414377405;
+ Wed, 03 Feb 2021 20:52:57 -0800 (PST)
 MIME-Version: 1.0
-References: <20210201172530.1141087-1-gprocida@google.com> <20210201172530.1141087-3-gprocida@google.com>
-In-Reply-To: <20210201172530.1141087-3-gprocida@google.com>
+References: <20210202221557.2039173-1-kpsingh@kernel.org> <20210202221557.2039173-2-kpsingh@kernel.org>
+In-Reply-To: <20210202221557.2039173-2-kpsingh@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 3 Feb 2021 20:13:26 -0800
-Message-ID: <CAEf4BzY_xk2H1Eh9h_WiXbqP3O-afiZnmpWf=MtCrqdJeNW+ag@mail.gmail.com>
-Subject: Re: [PATCH dwarves v2 2/4] btf_encoder: Manually lay out updated ELF sections
-To:     Giuliano Procida <gprocida@google.com>
-Cc:     dwarves@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
+Date:   Wed, 3 Feb 2021 20:52:46 -0800
+Message-ID: <CAEf4BzZtG2WtVcjXP24J9TRJ4=gQE02Tb2fXQ4Tiaf9=bADJBA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 1/2] bpf: Helper script for running BPF
+ presubmit tests
+To:     KP Singh <kpsingh@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Jiri Olsa <jolsa@redhat.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        =?UTF-8?Q?Matthias_M=C3=A4nnich?= <maennich@google.com>,
-        kernel-team@android.com, Kernel Team <kernel-team@fb.com>,
-        bpf <bpf@vger.kernel.org>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 9:26 AM Giuliano Procida <gprocida@google.com> wrote:
+On Tue, Feb 2, 2021 at 2:16 PM KP Singh <kpsingh@kernel.org> wrote:
 >
-> pahole -J needs to do the following to an ELF file:
+> The script runs the BPF selftests locally on the same kernel image
+> as they would run post submit in the BPF continuous integration
+> framework.
 >
-> * add or update the ".BTF" section
-> * maybe update the section name string table
-> * update the Section Header Table (SHT)
+> The goal of the script is to allow contributors to run selftests locally
+> in the same environment to check if their changes would end up breaking
+> the BPF CI and reduce the back-and-forth between the maintainers and the
+> developers.
 >
-> libelf either takes full control of layout or requires the user to
-> specify offset, size and alignment of all new and updated sections and
-> headers.
->
-> To avoid libelf moving program segments in particular, we position the
-
-It's not clear to me what's wrong with libelf handling all the layout.
-Even if libelf will move program segments around, what's the harm?
-Does it break anything if we just let libelf do this?
-
-> ".BTF" and section name string table (typically named ".shstrtab")
-> sections after all others. The SHT always lives at the end of the file.
->
-> Note that the last section in an ELF file is normally the section name
-> string table and any ".BTF" section will normally be second last.
-> However, if these sections appear earlier, then we'll waste some space
-> in the ELF file when we rewrite them.
->
-> Signed-off-by: Giuliano Procida <gprocida@google.com>
+> Tested-by: Jiri Olsa <jolsa@redhat.com>
+> Signed-off-by: KP Singh <kpsingh@kernel.org>
 > ---
->  libbtf.c | 64 ++++++++++++++++++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 62 insertions(+), 2 deletions(-)
+
+I almost applied it :) But found two problems still, which ruins
+experience in my environment, see below.
+
+Also, do you mind renaming the script (and updating the doc in patch
+#2)to vmtest.sh for a shorter name without underscores?
+
+First problem is that it still doesn't propagate exit codes properly.
+Try ./run_in_vm.sh -- false, followed by echo $? It should print 1,
+but currently it prints zero.
+
+>  tools/testing/selftests/bpf/run_in_vm.sh | 368 +++++++++++++++++++++++
+>  1 file changed, 368 insertions(+)
+>  create mode 100755 tools/testing/selftests/bpf/run_in_vm.sh
 >
+
+[...]
+
+> +
+> +update_kconfig()
+> +{
+> +       local kconfig_file="$1"
+> +       local update_command="curl -sLf ${KCONFIG_URL} -o ${kconfig_file}"
+> +       # Github does not return the "last-modified" header when retrieving the
+> +       # raw contents of the file. Use the API call to get the last-modified
+> +       # time of the kernel config and only update the config if it has been
+> +       # updated after the previously cached config was created. This avoids
+> +       # unnecessarily compiling the kernel and selftests.
+> +       if [[ -f "${kconfig_file}" ]]; then
+> +               local last_modified_date="$(curl -sL -D - "${KCONFIG_API_URL}" -o /dev/null | \
+> +                       grep "last-modified" | awk -F ': ' '{print $2}')"
+> +               local remote_modified_timestamp="$(date -d "${last_modified_date}" +"%s")"
+> +               local local_creation_timestamp="$(-c %W "${kconfig_file}")"
+> +
+
+%W breaks the entire experience for me. stat -c %W returns 0 in my
+environment, don't know why. But it's also not clear why %W (file
+creation time) was used instead of %Y (file modification time)? When
+we overwrite latest.config, it will get updated modification time, but
+old creation time, so this whole idea with %W seems wrong?
+
+So, do you mind switching to local_modification_timestamp with %Y? I
+checked locally, it finally allowed to skip rebuilding both the kernel
+and selftests.
+
+> +               if [[ "${remote_modified_timestamp}" -gt "${local_creation_timestamp}" ]]; then
+> +                       ${update_command}
+> +               fi
+> +       else
+> +               ${update_command}
+> +       fi
+> +}
+> +
 
 [...]
