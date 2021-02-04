@@ -2,204 +2,173 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CDDD30F1AA
-	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 12:13:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C67A030F296
+	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 12:43:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235447AbhBDLKQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Feb 2021 06:10:16 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44814 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235462AbhBDLKP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Feb 2021 06:10:15 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612436968; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=L38mQwxRm7OXz1bZGmxvDyR31jH2h3gLbIvIS9II5W8=;
-        b=KD9cRA413tks5HsHfBvnLwfhR8xvvv1jPn5ZWqAu0GVpAgHXvNyVTCk1A0VUALKpupdmNf
-        kwB2LTtNVZn0ICZWt9Vs7dZlm5zgN8RtS4iE1UBHt2Jsj7Eaf5sijLbTy2yzabIgx7JZo0
-        CW6ZJEQ/8UhtHyjBfNN25MbBBsmH9Ww=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DB6B5AC9B;
-        Thu,  4 Feb 2021 11:09:27 +0000 (UTC)
-Subject: Re: [PATCH] drivers: net: xen-netfront: Simplify the calculation of
- variables
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        boris.ostrovsky@oracle.com
-Cc:     sstabellini@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
-        xen-devel@lists.xenproject.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-References: <1612261069-13315-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <9598a7b4-a0f1-3f64-b239-50612cc5caae@suse.com>
-Date:   Thu, 4 Feb 2021 12:09:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <1612261069-13315-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="P6FL2Y36uCwjeFBydgkFMsiTtKLR3rpRp"
+        id S235956AbhBDLkf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Feb 2021 06:40:35 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:48076 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235772AbhBDLkT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 Feb 2021 06:40:19 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9BxLezi3Btg06UEAA--.6894S2;
+        Thu, 04 Feb 2021 19:39:15 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH bpf-next] samples/bpf: Add hello world sample for newbies
+Date:   Thu,  4 Feb 2021 19:39:13 +0800
+Message-Id: <1612438753-30133-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9BxLezi3Btg06UEAA--.6894S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxXF4Utr4DXw1DGFy8tw43KFg_yoW5KFW5p3
+        W5Zr13Gr4qqr17tFW3Wa1jkFWYvw18ury7GFZaqrW5AwnFva4kJrWqgrs8uFs8Jr9rKa93
+        Zr4qkFy3Gr18Xa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+        n2kIc2xKxwCY02Avz4vE14v_Gw4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
+        0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
+        17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
+        C0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI
+        42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWI
+        evJa73UjIFyTuYvjfU0PEfUUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---P6FL2Y36uCwjeFBydgkFMsiTtKLR3rpRp
-Content-Type: multipart/mixed; boundary="BeuoqNxIjP0OuLOIDiBTLrrgbZeZwwxG8";
- protected-headers="v1"
-From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-To: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
- boris.ostrovsky@oracle.com
-Cc: sstabellini@kernel.org, davem@davemloft.net, kuba@kernel.org,
- ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
- john.fastabend@gmail.com, andrii@kernel.org, kafai@fb.com,
- songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
- xen-devel@lists.xenproject.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Message-ID: <9598a7b4-a0f1-3f64-b239-50612cc5caae@suse.com>
-Subject: Re: [PATCH] drivers: net: xen-netfront: Simplify the calculation of
- variables
-References: <1612261069-13315-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <1612261069-13315-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+The program is made in a way that everytime an execve syscall
+is executed it prints Hello, BPF World!
 
---BeuoqNxIjP0OuLOIDiBTLrrgbZeZwwxG8
-Content-Type: multipart/mixed;
- boundary="------------5BC026031DA004FDEC7F39E2"
-Content-Language: en-US
+This is inspired and based on the code example for the book
+Linux Observability with BPF [1], load_bpf_file() has been
+removed after commit ceb5dea56543 ("samples: bpf: Remove
+bpf_load loader completely"), so the old version can not
+work in the latest mainline kernel.
 
-This is a multi-part message in MIME format.
---------------5BC026031DA004FDEC7F39E2
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Since it is very simple and useful for newbies, I think it is
+necessary to be upstreamed.
 
-On 02.02.21 11:17, Jiapeng Chong wrote:
-> Fix the following coccicheck warnings:
->=20
-> ./drivers/net/xen-netfront.c:1816:52-54: WARNING !A || A && B is
-> equivalent to !A || B.
->=20
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+[1] https://github.com/bpftools/linux-observability-with-bpf/tree/master/code/chapter-2/hello_world
 
-Reviewed-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ samples/bpf/Makefile     |  3 +++
+ samples/bpf/hello_kern.c | 14 ++++++++++++++
+ samples/bpf/hello_user.c | 42 ++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 59 insertions(+)
+ create mode 100644 samples/bpf/hello_kern.c
+ create mode 100644 samples/bpf/hello_user.c
 
+diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+index 45ceca4..fd17cbd 100644
+--- a/samples/bpf/Makefile
++++ b/samples/bpf/Makefile
+@@ -55,6 +55,7 @@ tprogs-y += task_fd_query
+ tprogs-y += xdp_sample_pkts
+ tprogs-y += ibumad
+ tprogs-y += hbm
++tprogs-y += hello
+ 
+ # Libbpf dependencies
+ LIBBPF = $(TOOLS_PATH)/lib/bpf/libbpf.a
+@@ -113,6 +114,7 @@ task_fd_query-objs := task_fd_query_user.o $(TRACE_HELPERS)
+ xdp_sample_pkts-objs := xdp_sample_pkts_user.o
+ ibumad-objs := ibumad_user.o
+ hbm-objs := hbm.o $(CGROUP_HELPERS)
++hello-objs := hello_user.o $(TRACE_HELPERS)
+ 
+ # Tell kbuild to always build the programs
+ always-y := $(tprogs-y)
+@@ -174,6 +176,7 @@ always-y += ibumad_kern.o
+ always-y += hbm_out_kern.o
+ always-y += hbm_edt_kern.o
+ always-y += xdpsock_kern.o
++always-y += hello_kern.o
+ 
+ ifeq ($(ARCH), arm)
+ # Strip all except -D__LINUX_ARM_ARCH__ option needed to handle linux
+diff --git a/samples/bpf/hello_kern.c b/samples/bpf/hello_kern.c
+new file mode 100644
+index 0000000..b841029
+--- /dev/null
++++ b/samples/bpf/hello_kern.c
+@@ -0,0 +1,14 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++
++SEC("tracepoint/syscalls/sys_enter_execve")
++int trace_enter_execve(void *ctx)
++{
++	static const char msg[] = "Hello, BPF World!\n";
++
++	bpf_trace_printk(msg, sizeof(msg));
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
+diff --git a/samples/bpf/hello_user.c b/samples/bpf/hello_user.c
+new file mode 100644
+index 0000000..9423bbb
+--- /dev/null
++++ b/samples/bpf/hello_user.c
+@@ -0,0 +1,42 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <stdio.h>
++#include <bpf/libbpf.h>
++#include "trace_helpers.h"
++
++int main(int argc, char **argv)
++{
++	struct bpf_link *link = NULL;
++	struct bpf_program *prog;
++	struct bpf_object *obj;
++
++	obj = bpf_object__open_file("hello_kern.o", NULL);
++	if (libbpf_get_error(obj)) {
++		fprintf(stderr, "ERROR: opening BPF object file failed\n");
++		return 0;
++	}
++
++	if (bpf_object__load(obj)) {
++		fprintf(stderr, "ERROR: loading BPF object file failed\n");
++		goto cleanup;
++	}
++
++	prog = bpf_object__find_program_by_name(obj, "trace_enter_execve");
++	if (!prog) {
++		fprintf(stderr, "ERROR: finding a prog in obj file failed\n");
++		goto cleanup;
++	}
++
++	link = bpf_program__attach(prog);
++	if (libbpf_get_error(link)) {
++		fprintf(stderr, "ERROR: bpf_program__attach failed\n");
++		link = NULL;
++		goto cleanup;
++	}
++
++	read_trace_pipe();
++
++cleanup:
++	bpf_link__destroy(link);
++	bpf_object__close(obj);
++	return 0;
++}
+-- 
+2.1.0
 
-Juergen
-
---------------5BC026031DA004FDEC7F39E2
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------5BC026031DA004FDEC7F39E2--
-
---BeuoqNxIjP0OuLOIDiBTLrrgbZeZwwxG8--
-
---P6FL2Y36uCwjeFBydgkFMsiTtKLR3rpRp
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmAb1eYFAwAAAAAACgkQsN6d1ii/Ey+G
-swf7BiPLhOCdblIHtTfq8JmOqYP0/R82Hcc37LjlclTdT23Zl/WL2nbvw0cA+hQF5/6tJUytXifV
-B93gA0maGsZFbhNH8fo/vTZ2nQjpplhHdRaaLux+Rzmrof/is7H1eu/m4F/D2SOG7bYiS51hdHA/
-Q7ncG5p8rsjyPPLXKTksS+tNnMWMQ0k6a3DPIDzmJHt2cmxs9z5bIEDIc6l4F+AWhviYnJx+HXaW
-E5f576FZhnYCdMV5oIR9E+SfaVEU7Ps+qOAXZNLq3kxzZd2BVKYSxEahmV1+VPcmTaIZMIvgNLHS
-84/zTsja53kecocbbhSMnZEgAJ47Hqv4XqemBdm68g==
-=5Yma
------END PGP SIGNATURE-----
-
---P6FL2Y36uCwjeFBydgkFMsiTtKLR3rpRp--
