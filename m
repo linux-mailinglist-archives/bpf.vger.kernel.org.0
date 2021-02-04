@@ -2,96 +2,126 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6745130F150
-	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 11:56:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 970D430F176
+	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 12:04:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235378AbhBDK4l (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Feb 2021 05:56:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21070 "EHLO
+        id S235332AbhBDLCF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Feb 2021 06:02:05 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35321 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235332AbhBDK4k (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 4 Feb 2021 05:56:40 -0500
+        by vger.kernel.org with ESMTP id S235559AbhBDLCB (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 4 Feb 2021 06:02:01 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612436114;
+        s=mimecast20190719; t=1612436434;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=HsSUJqRpxx1yYgtE08Em8AMXnkOhHSI7H5LXeUE2PZs=;
-        b=XFxZ62QJHgzy8fZmxl+xzEd9LsMOdZbCzVU4LkXy1jmHVVXGNxpqYGbFEaNE1Mtsl0yXAA
-        D0tD1wcCvlUUch/fFAlypSkiLvlTSbA5UH7LB8V9qjiJEC5u27oANwWhFPeVsWipqgHfFR
-        LdwgubNdseqstYztPhSpO8CliO12rbM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-64--7ozrcqyP1OjfwbyxfKV7A-1; Thu, 04 Feb 2021 05:55:12 -0500
-X-MC-Unique: -7ozrcqyP1OjfwbyxfKV7A-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C0790874981;
-        Thu,  4 Feb 2021 10:55:11 +0000 (UTC)
-Received: from krava (unknown [10.40.192.245])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 9446A1FBC5;
-        Thu,  4 Feb 2021 10:55:07 +0000 (UTC)
-Date:   Thu, 4 Feb 2021 11:55:06 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, Jiri Olsa <jolsa@kernel.org>,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        bpf <bpf@vger.kernel.org>
-Subject: Re: finding libelf
-Message-ID: <YBvSiu59XnZQ1em0@krava>
-References: <8a6894e9-71ef-09e3-64fa-bf6794fc6660@infradead.org>
- <87eehxa06v.fsf@toke.dk>
- <a6a8fbd6-c610-873e-12e1-b6b0fadb94be@infradead.org>
- <CAEf4Bzb7-jpQLStjtrWm+CvDkLGHR_LiVdb6YcagR2v-Yt42tw@mail.gmail.com>
- <CAEf4BzbvQPmaDauPeH5FiqgjVjf-TA+kKL6gsN505q02Un6QZA@mail.gmail.com>
+        bh=H9y6jMxzRKWetuvR+vU0kaaq6ZCpRReGAB6FdQSljfk=;
+        b=VLcKRTbXhlCXq1ImKeltK63lzuByrdehCcCN88hpPof2tNim1F5Vm/UVa8TblNiJbucnFi
+        +4enz0h0ZSvhaGuqG/z/rFV2RjRhAcJe98i9fVgvzpLgHCKyN6Iba+WEQmb2PtAcPu2FEY
+        sf169FHr5YpgeT8Pp4lucrZhyogJzoY=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-492-69KZuNqyNrWraSy3tT53XQ-1; Thu, 04 Feb 2021 06:00:32 -0500
+X-MC-Unique: 69KZuNqyNrWraSy3tT53XQ-1
+Received: by mail-ej1-f70.google.com with SMTP id bx12so2404930ejc.15
+        for <bpf@vger.kernel.org>; Thu, 04 Feb 2021 03:00:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=H9y6jMxzRKWetuvR+vU0kaaq6ZCpRReGAB6FdQSljfk=;
+        b=tdTstkuN8i6r9s2mV2QhPu/kdlSe2Ulat5IJDPtEeqE6chlV6V3x8lTW0DcYLoBxb4
+         fSLabvgP7xOzoGfL44J8Xmarniy30qUGFTeDudFKT/XPiM/6naR7BFm88n1f022kb4jr
+         ANMgHwKEHaSYDdSX0Kwv2touLHWo6YXAgzj0G2WxAxutrTNm4E+O3SroDBZSb+nBaX2M
+         DwpUS0BSkPl8rHwkHw53SIwg4X2GeaxaFLQMG2viApGg73ooFXghmqOMDTpvUMjHXMTv
+         bqDEK8rhFKS+yTxECDnwj5eciYhU0cIfBjkvnb9wwglx4ApBGrQPtB34AlBcUeAM9Z4f
+         X5/g==
+X-Gm-Message-State: AOAM530TYe9egwMPsEkMVzBAUAWC4d7dWfGMMAydqFI5pp5+JxaXbkb/
+        JbN9O4I1kpkfMbd/8Ms1AGapvgCYnQosd9mZRBYcYkycBZTl2AAe1mef+lzGc8GoW6TW5EHWe1d
+        v2VkpNPotZV8x
+X-Received: by 2002:a17:906:14d5:: with SMTP id y21mr7489909ejc.410.1612436431214;
+        Thu, 04 Feb 2021 03:00:31 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx9AFLaiKBN4L4JtBuc2eIgCZUJQCDgCeD2bK3ZmOiNs9F+s8O93VbS3roM5Td6lbqmSbq8Zw==
+X-Received: by 2002:a17:906:14d5:: with SMTP id y21mr7489889ejc.410.1612436431039;
+        Thu, 04 Feb 2021 03:00:31 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id r9sm2280579eju.74.2021.02.04.03.00.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 03:00:30 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id DEE9918034E; Thu,  4 Feb 2021 12:00:29 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Hangbin Liu <liuhangbin@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        netdev@vger.kernel.org, Jiri Benc <jbenc@redhat.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
+        bpf@vger.kernel.org,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        David Ahern <dsahern@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: Re: [PATCHv17 bpf-next 0/6] xdp: add a new helper for dev map
+ multicast support
+In-Reply-To: <20210204031236.GC2900@Leo-laptop-t470s>
+References: <20210122074652.2981711-1-liuhangbin@gmail.com>
+ <20210125124516.3098129-1-liuhangbin@gmail.com>
+ <20210204001458.GB2900@Leo-laptop-t470s>
+ <601b61a0e4868_194420834@john-XPS-13-9370.notmuch>
+ <20210204031236.GC2900@Leo-laptop-t470s>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Thu, 04 Feb 2021 12:00:29 +0100
+Message-ID: <87zh0k85de.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzbvQPmaDauPeH5FiqgjVjf-TA+kKL6gsN505q02Un6QZA@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 12:06:10PM -0800, Andrii Nakryiko wrote:
+Hangbin Liu <liuhangbin@gmail.com> writes:
 
-SNIP
+> On Wed, Feb 03, 2021 at 06:53:20PM -0800, John Fastabend wrote:
+>> Hangbin Liu wrote:
+>> > Hi Daniel, Alexei,
+>> > 
+>> > It has been one week after Maciej, Toke, John's review/ack. What should
+>> > I do to make a progress for this patch set?
+>> > 
+>> 
+>> Patchwork is usually the first place to check:
+>
+> Thanks John for the link.
+>> 
+>>  https://patchwork.kernel.org/project/netdevbpf/list/?series=421095&state=*
+>
+> Before I sent the email I only checked link
+> https://patchwork.kernel.org/project/netdevbpf/list/ but can't find my patch.
+>
+> How do you get the series number?
 
-> > > >>
-> > > >> but pkg-config tells me:
-> > > >>
-> > > >> $ pkg-config --modversion  libelf
-> > > >> 0.168
-> > > >> $ pkg-config --libs  libelf
-> > > >> -lelf
-> > > >>
-> > > >>
-> > > >> Any ideas?
-> > > >
-> > > > This usually happens because there's a stale cache of the feature
-> > > > detection tests lying around somewhere. Look for a 'feature' directory
-> > > > in whatever subdir you got that error. Just removing the feature
-> > > > directory usually fixes this; I've fixed a couple of places where this
-> > > > is not picked up by 'make clean' (see, e.g., 9d9aae53b96d ("bpf/preload:
-> > > > Make sure Makefile cleans up after itself, and add .gitignore")) but I
-> > > > wouldn't be surprised if there are still some that are broken.
-> > >
-> > > Hi,
-> > >
-> > > Thanks for replying.
-> > >
-> > > I removed the feature subdir and still got this build error, so I
-> > > removed everything in BUILDDIR/kernel/bpf/preload and rebuilt --
-> > > and still got the same libelf build error.
-> >
-> > I hate the complexity of feature detection framework to the point that
-> > I'm willing to rip it out from libbpf's Makefile completely. I just
-> > spent an hour trying to understand what's going on in a very similar
-> > situation. Extremely frustrating.
+If you click the "show patches with" link at the top you can twiddle the
+filtering; state = any + your own name as submitter usually finds
+things, I've found.
 
-I have plans to rework this and get rid of the make code
-which is the worst part of that for me.. I'll speed it up ;-)
+>> Looks like it was marked changed requested. After this its unlikely
+>> anyone will follow up on it, rightly so given the assumption another
+>> revision is coming.
+>> 
+>> In this case my guess is it was moved into changes requested because
+>> I asked for a change, but then after some discussion you convinced me
+>> the change was not in fact needed.
+>> 
+>> Alexei, Daniel can probably tell you if its easier to just send a v18
+>> or pull in the v17 assuming any final reviews don't kick anything
+>> else up.
+>
+> OK, I will wait for Alexei, Daniel and see if I need to do a rebase.
 
-jirka
+I think I would just resubmit with a rebase + a note in the changelog
+that we concluded no further change was needed :)
+
+-Toke
 
