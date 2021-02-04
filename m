@@ -2,205 +2,204 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC9B430EC8C
-	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 07:38:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C55BB30EC92
+	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 07:41:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232632AbhBDGiC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Feb 2021 01:38:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43122 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230311AbhBDGiA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Feb 2021 01:38:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A71D364E31;
-        Thu,  4 Feb 2021 06:37:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612420640;
-        bh=rr0vW6pTGISMmHI5KV2Xij6A6QnUmMJXU/yXHNMHaTg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=a8QTW6B1BdT927mVxoUAfqMknKsQh9IFm/Gk0tIjjaPf2MwC1LGAE2DsgXCAGlPG0
-         uEDFAfZa9Ga1244a3GnNDSDBpPnIqkPukD/EQA9Eh2Dr0kqeo5cYHkofz3+/UcHjrG
-         wwlXplF0ouex5MOFj/4NYQyOpXt+/v3q1C4yEAFlIEod+f8ZqAl76/+5zG+M/A/51m
-         B0Ko1O9EymxKFuIRYuefBu8dENER7axR7MWbKO+UskfGAjdNRGTXTmV1XRE3FaWHC3
-         aQLqGAmCo692dUfdFO6yTKYWj18tXdarido4jn/6symddi04oKm+Qc23Jm9Fn8JryK
-         Zn3DjKnKwjPWg==
-Received: by mail-lj1-f174.google.com with SMTP id e18so2027187lja.12;
-        Wed, 03 Feb 2021 22:37:19 -0800 (PST)
-X-Gm-Message-State: AOAM532GqBiNjg+rAbzs7CFsh7aFs/DKEGjvBIIGdv5uiT+N0XTHEOaN
-        Z5wSihwTqAN3pZZBKWMxOQQLNgKnOByKai8MXMo=
-X-Google-Smtp-Source: ABdhPJwo9zhXhvDT8N8/k7FD3R/AhDgLztW4q8Ex7mixrFf5PJL7/7kSQ7x6AmuS/dy9dnJpOsCRP8qWg/KrQBDHYDw=
-X-Received: by 2002:a2e:918f:: with SMTP id f15mr3800925ljg.357.1612420637815;
- Wed, 03 Feb 2021 22:37:17 -0800 (PST)
+        id S231592AbhBDGk5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Feb 2021 01:40:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230311AbhBDGk4 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 Feb 2021 01:40:56 -0500
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76CB6C061573;
+        Wed,  3 Feb 2021 22:40:16 -0800 (PST)
+Received: by mail-io1-xd30.google.com with SMTP id f67so294401ioa.1;
+        Wed, 03 Feb 2021 22:40:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=3VNI9tGYEVxD6gbVlYfkwUu1nyjdz0zo7SwnsJNpC9w=;
+        b=pCguadYVXzDK1uWiUP9tIlcU2WZOwpa188xzMbb3F7zAyERtUnUodgRrAvGyVmUgub
+         tC1/HdSks8+pQkBUZrTjr/Em4QoPR5T9ixz+mWcJQ4RRTEeSBzg1NNi10lv5DyhfK8VY
+         diO1Tnv9fJV3fC4w2GPFcya/c2hwv47/Kh7OHABM6SoEC7jACzKA4LXJ9f33VG+5HyNd
+         76SBHXVEp3Ls8Otxe8h15o98AYWq5bXstXSDYlpj1uWtfkBy05wu6I5MoGhXH+BWVNYE
+         VrR3vLpj/try2KUrXWWFUYeYB7potCJh0wShERigIcp+uwRx/9/rSfTHOR5SM/Q1S9qy
+         uv1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=3VNI9tGYEVxD6gbVlYfkwUu1nyjdz0zo7SwnsJNpC9w=;
+        b=OBfXxg7vGkUdGWIgovuavo8PoxXRbZ2mn9+hbuAbxfAroWYRNeRrGrK4ao+JnG3oxD
+         F75f39fGK8niNxC+oh+xhS9PjWRY212cM+73jjsfkJ36GmbpwhX6ssKeRlo3D/XJvNNw
+         EGUm5sIaRYrev+yfUrGD2cvWqmn2WULxWFCvc/bYV7WTfq5JnVAycxjkcDGSHvbP/kcm
+         +Q4SwRgU6rGJjrxDauakwStUJvaOCxdW0LUKCqMnBdxXDiD/sgMD72Awuj2x4B0DOtkM
+         g/qNlqgEJBKrTlCRTTqNN4U+4/phg+ZCPJQDlpESHvCBuS/VThM9HcUhY3g8dyrsV89g
+         VTrQ==
+X-Gm-Message-State: AOAM532uT6zAJgzFxUwr+Qu+1qx+e7+wNxmr3UF4bij7Ti/Mtr3nnKPf
+        jVlhuarXqW1Z9soKJxemYVSm19Bf6ahsvJrTLmU=
+X-Google-Smtp-Source: ABdhPJwd6H00NVHQjCUVmCcWlbp2FAc/99e7JOicrwhlEMJFCcaUbLAsCxNhcvfXa0tSlMNG80u3w+MgNiqAk3r1NKo=
+X-Received: by 2002:a05:6602:2b01:: with SMTP id p1mr5616057iov.156.1612420815856;
+ Wed, 03 Feb 2021 22:40:15 -0800 (PST)
 MIME-Version: 1.0
-References: <20210203074127.8616-1-ciara.loftus@intel.com> <20210203074127.8616-2-ciara.loftus@intel.com>
-In-Reply-To: <20210203074127.8616-2-ciara.loftus@intel.com>
-From:   Song Liu <song@kernel.org>
-Date:   Wed, 3 Feb 2021 22:37:06 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW7Bat9oWw_3_TRgUzc7y61kUtTDYT9-4r2ZaOW7WTZ59g@mail.gmail.com>
-Message-ID: <CAPhsuW7Bat9oWw_3_TRgUzc7y61kUtTDYT9-4r2ZaOW7WTZ59g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 1/6] xsk: add tracepoints for packet drops
-To:     Ciara Loftus <ciara.loftus@intel.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Magnus Karlsson <magnus.karlsson@intel.com>, bjorn@kernel.org,
-        weqaar.a.janjua@intel.com, Daniel Borkmann <daniel@iogearbox.net>
+References: <20210112184004.1302879-1-jolsa@kernel.org> <f3790a7d-73bc-d634-5994-d049c7a73eae@redhat.com>
+ <20210121133825.GB12699@kernel.org> <CA+icZUVsdcTEJjwpB7=05W5-+roKf66qTwP+M6QJKTnuP6TOVQ@mail.gmail.com>
+ <CAEf4BzaVAp=W47KmMsfpj_wuJR-Gvmav=tdKdoHKAC3AW-976w@mail.gmail.com>
+ <CA+icZUW6g9=sMD3hj5g+ZXOwE_DxfxO3SX2Tb-bFTiWnQLb_EA@mail.gmail.com>
+ <CAEf4BzZ-uU3vkMA1RPt1f2HbgaHoenTxeVadyxuLuFGwN9ntyw@mail.gmail.com>
+ <20210128200046.GA794568@kernel.org> <CAEf4BzbXhn2qAwNyDx6Oqaj7+RdBtjnPPLe27=B0-aB9yY+Xmw@mail.gmail.com>
+ <CA+icZUUTddV18rhZjaVif0a6BgpWtpj4mP1pyQ9cfh_e2xxvMQ@mail.gmail.com>
+ <95233b493fd29b613f5bf3f92419528ce3298c14.camel@klomp.org>
+ <CA+icZUU+XEMnrwgOSRhAaO1bn2p62P6g1KVKGyJfRqxt_jr0Ew@mail.gmail.com> <CAEf4Bzay-MS9mKc7N9Kc-eQBv1U5DomOY4VoBW=BQZaqs3f0kg@mail.gmail.com>
+In-Reply-To: <CAEf4Bzay-MS9mKc7N9Kc-eQBv1U5DomOY4VoBW=BQZaqs3f0kg@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Thu, 4 Feb 2021 07:40:04 +0100
+Message-ID: <CA+icZUWz1JYC4h4TewsqVpuC6oMpSFFZsWo6ycd57LOdYPWD6w@mail.gmail.com>
+Subject: Re: [RFT] pahole 1.20 RC was Re: [PATCH] btf_encoder: Add extra
+ checks for symbol names
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Mark Wielaard <mark@klomp.org>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Tom Stellard <tstellar@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>, dwarves@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Hao Luo <haoluo@google.com>,
+        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 3, 2021 at 12:13 AM Ciara Loftus <ciara.loftus@intel.com> wrote:
+On Thu, Feb 4, 2021 at 12:22 AM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> This commit introduces tracing infrastructure for AF_XDP sockets
-> (xsks) and a new trace event called 'xsk_packet_drop'. This trace
-> event is triggered when a packet cannot be processed by the socket
-> due to one of the following issues:
-> (1) packet exceeds the maximum permitted size.
-> (2) invalid fill descriptor address.
-> (3) invalid tx descriptor field.
+> On Wed, Feb 3, 2021 at 1:48 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> >
+> > On Wed, Feb 3, 2021 at 11:23 AM Mark Wielaard <mark@klomp.org> wrote:
+> > >
+> > > Hi,
+> > >
+> > > On Wed, 2021-02-03 at 10:03 +0100, Sedat Dilek wrote:
+> > > > > It all looks to be working fine on my side. There is a compilation
+> > > > > error in our libbpf CI when building the latest pahole from sources
+> > > > > due to DW_FORM_implicit_const being undefined. I'm updating our VMs to
+> > > > > use Ubuntu Focal 20.04, up from Bionic 18.04, and that should
+> > > > > hopefully solve the issue due to newer versions of libdw. If you worry
+> > > > > about breaking others, though, we might want to add #ifndef guards and
+> > > > > re-define DW_FORM_implicit_const as 0x21 explicitly in pahole source
+> > > > > code.
+> > >
+> > > I think that might be a good idea for older setups. But that also means
+> > > that the underlying elfutils libdw doesn't support DWARF5, so pahole
+> > > itself also wouldn't work (the define would only fix the compile time
+> > > issue, not the runtime issue of not being able to parse
+> > > DW_FORM_implicit_const). That might not be a problem because such
+> > > systems also wouldn't have GCC11 defaulting to DWARF5.
+> > >
+> > > > > But otherwise, all good from what I can see in my environment.
+> > > > > Looking
+> > > > > forward to 1.20 release! I'll let you know if, after updating to
+> > > > > Ubuntu Focal, any new pahole issues crop up.
+> > > > >
+> > > >
+> > > > Last weekend I did some testing with
+> > > > <pahole.git#DW_AT_data_bit_offset> and DWARF-v5 support for the
+> > > > Linux-kernel.
+> > > >
+> > > > The good: I was able to compile :-).
+> > > > The bad: My build-log grew up to 1.2GiB and I could not boot in QEMU.
+> > > > The ugly: I killed the archive which had all relevant material.
+> > >
+> > > I think the build-log grew so much because of warnings about unknown
+> > > tags. At least when using GCC11 you'll get a couple of standardized
+> > > DWARF5 tags instead of the GNU extensions to DWARF4. That should be
+> > > solved by:
+> > >
+> > >    commit d783117162c0212d4f75f6cea185f493d2f244e1
+> > >    Author: Mark Wielaard <mark@klomp.org>
+> > >    Date:   Sun Jan 31 01:27:31 2021 +0100
+> > >
+> > >        dwarf_loader: Handle DWARF5 DW_TAG_call_site like DW_TAG_GNU_call_site
+> > >
+> >
+> > I had some conversation with Mark directly as I dropped by accident the CC list.
+> >
+> > With latest pahole from Git and CONFIG_DEBUG_INFO_BTF=y I was not able
+> > to build with DWARF-v4 and DWARF-v5.
 >
-> The trace provides information about the error to the user. For
-> example the size vs permitted size is provided for (1). For (2)
-> and (3) the relevant descriptor fields are printed. This information
-> should help a user troubleshoot packet drops by providing this extra
-> level of detail which is not available through use of simple counters.
+> There is hardly anything actionable without all the extra info I've
+> asked you before. What's the issue? What's the kernel config? Tool
+> versions?
 >
-> The tracepoint can be enabled/disabled by toggling
-> /sys/kernel/debug/tracing/events/xsk/xsk_packet_drop/enable
+> >
+> > Hope it is OK for you Mark when I quote you:
+> >
+> > > Here I use LLVM/Clang v12.0.0-rc1 with Clang's Integrated Assembler
+> > > (make LLVM_IAS=1).
+> >
+> > Note I haven't personally tested llvm with DWARF5. I know some other
+> > tools cannot (yet) handle the DWARF5 produced by llvm (for example
+> > valgrind, rpm debugedit and dwz don't handle all the forms llvm emits
+> > when it produces DWARF5, which aren't emitted by GCC unless requesting
+> > split-dwarf). In theory dwarves/pahole should be able to handle it
+> > because elfutils libdw (at least versions > 0.172) does handle it. But
+> > I don't know if anybody ever tested that. But I believe llvm will by
+> > default emit DWARF4, not 5.
+> >
+> > More quotes from Mark:
+> >
+> > I would try to avoid using clang producing DWARF5. It clearly has some
+> > incompatibilities with dwarves/pahole. It should work if you don't set
+> > DEBUG_INFO_DWARF5. Try GCC 11 (which defaults to -gdwarf-5) or an
+> > earlier version (probably at least GCC 8 or higher) using -gdwarf-5
+> > explicitly.
+> >
+> > What makes me nerves are reports from Red Hat's CKI reporting:
+> >
+> > 'failed to validate module [something] BTF: -22 '
+> >
+> > This is was from ClangBuiltLinux mailing-list.
 >
-> Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
-> ---
->  MAINTAINERS                       |  1 +
->  include/linux/bpf_trace.h         |  1 +
->  include/trace/events/xsk.h        | 73 +++++++++++++++++++++++++++++++
->  include/uapi/linux/if_xdp.h       |  6 +++
->  kernel/bpf/core.c                 |  1 +
->  net/xdp/xsk.c                     |  7 ++-
->  net/xdp/xsk_buff_pool.c           |  3 ++
->  net/xdp/xsk_queue.h               |  4 ++
->  tools/include/uapi/linux/if_xdp.h |  6 +++
->  9 files changed, 101 insertions(+), 1 deletion(-)
->  create mode 100644 include/trace/events/xsk.h
+> And no link to the issue, of course. If you are hoping for someone to
+> try to help and fix issues, please provide extra info. If this is what
+> I think it is, that was the problem with kernel rejecting empty BTF
+> and it was fixed already in v5.11-fbk6. But who knows, I can only
+> guess.
 >
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 1df56a32d2df..efe6662d4198 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -19440,6 +19440,7 @@ S:      Maintained
->  F:     Documentation/networking/af_xdp.rst
->  F:     include/net/xdp_sock*
->  F:     include/net/xsk_buff_pool.h
-> +F:     include/trace/events/xsk.h
->  F:     include/uapi/linux/if_xdp.h
->  F:     include/uapi/linux/xdp_diag.h
->  F:     include/net/netns/xdp.h
-> diff --git a/include/linux/bpf_trace.h b/include/linux/bpf_trace.h
-> index ddf896abcfb6..477d29b6c2c1 100644
-> --- a/include/linux/bpf_trace.h
-> +++ b/include/linux/bpf_trace.h
-> @@ -3,5 +3,6 @@
->  #define __LINUX_BPF_TRACE_H__
->
->  #include <trace/events/xdp.h>
-> +#include <trace/events/xsk.h>
->
->  #endif /* __LINUX_BPF_TRACE_H__ */
-> diff --git a/include/trace/events/xsk.h b/include/trace/events/xsk.h
-> new file mode 100644
-> index 000000000000..e2984fad372c
-> --- /dev/null
-> +++ b/include/trace/events/xsk.h
-> @@ -0,0 +1,73 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/* Copyright(c) 2021 Intel Corporation. */
-> +
-> +#undef TRACE_SYSTEM
-> +#define TRACE_SYSTEM xsk
-> +
-> +#if !defined(_TRACE_XSK_H) || defined(TRACE_HEADER_MULTI_READ)
-> +#define _TRACE_XSK_H
-> +
-> +#include <linux/if_xdp.h>
-> +#include <linux/tracepoint.h>
-> +
-> +#define print_reason(reason) \
-> +       __print_symbolic(reason, \
-> +                       { XSK_TRACE_DROP_PKT_TOO_BIG, "packet too big" }, \
-> +                       { XSK_TRACE_DROP_INVALID_FILLADDR, "invalid fill addr" }, \
-> +                       { XSK_TRACE_DROP_INVALID_TXD, "invalid tx desc" })
-> +
-> +#define print_val1(reason) \
-> +       __print_symbolic(reason, \
-> +                       { XSK_TRACE_DROP_PKT_TOO_BIG, "len" }, \
-> +                       { XSK_TRACE_DROP_INVALID_FILLADDR, "addr" }, \
-> +                       { XSK_TRACE_DROP_INVALID_TXD, "addr" })
-> +
-> +#define print_val2(reason) \
-> +       __print_symbolic(reason, \
-> +                       { XSK_TRACE_DROP_PKT_TOO_BIG, "max" }, \
-> +                       { XSK_TRACE_DROP_INVALID_FILLADDR, "not_used" }, \
-> +                       { XSK_TRACE_DROP_INVALID_TXD, "len" })
-> +
-> +#define print_val3(reason) \
-> +       __print_symbolic(reason, \
-> +                       { XSK_TRACE_DROP_PKT_TOO_BIG, "not_used" }, \
-> +                       { XSK_TRACE_DROP_INVALID_FILLADDR, "not_used" }, \
-> +                       { XSK_TRACE_DROP_INVALID_TXD, "options" })
-> +
-> +
-> +
 
-nit: 3 empty lines.
+"Do one thing and do it well."
+( Unix philosophy )
 
-> +TRACE_EVENT(xsk_packet_drop,
-> +
-> +       TP_PROTO(char *name, u16 queue_id, u32 reason, u64 val1, u64 val2, u64 val3),
-> +
-> +       TP_ARGS(name, queue_id, reason, val1, val2, val3),
-> +
-> +       TP_STRUCT__entry(
-> +               __field(char *, name)
-> +               __field(u16, queue_id)
-> +               __field(u32, reason)
-> +               __field(u64, val1)
-> +               __field(u32, val2)
-> +               __field(u32, val3)
-> +       ),
-> +
-> +       TP_fast_assign(
-> +               __entry->name = name;
-> +               __entry->queue_id = queue_id;
-> +               __entry->reason = reason;
-> +               __entry->val1 = val1;
-> +               __entry->val2 = val2;
-> +               __entry->val3 = val3;
-> +       ),
-> +
-> +       TP_printk("netdev: %s qid %u reason: %s: %s %llu %s %u %s %u",
-> +                 __entry->name, __entry->queue_id, print_reason(__entry->reason),
-> +                 print_val1(__entry->reason), __entry->val1,
-> +                 print_val2(__entry->reason), __entry->val2,
-> +                 print_val3(__entry->reason), __entry->val3
-> +       )
-> +);
-> +
-> +#endif /* _TRACE_XSK_H */
-> +
-> +#include <trace/define_trace.h>
-> diff --git a/include/uapi/linux/if_xdp.h b/include/uapi/linux/if_xdp.h
-> index a78a8096f4ce..d7eb031d2465 100644
-> --- a/include/uapi/linux/if_xdp.h
-> +++ b/include/uapi/linux/if_xdp.h
-> @@ -108,4 +108,10 @@ struct xdp_desc {
+https://en.wikipedia.org/wiki/Unix_philosophy#Do_One_Thing_and_Do_It_Well
+
+Yesterday, I did two things in parallel.
+( I had some other stuff to dig into which is fixed for me. )
+
+As for fun I will do a new test with <pahole.git#tmp.1.20>.
+
+I will attach kernel-config and BTF/pahole warnings.
+
+For the ClangBuiltLinux mailing-list link:
+I have asked on the list to have the links so that people from
+outlands can read them.
+
+"Just for fun" (IMHO that is the title of Linus Torvalds' biographie :-)?)
+
+- Sedat -
+
+> >
+> > Looks like CONFIG_DEBUG_INFO_BTF=y makes troubles with LLVM/Clang.
+> > Can we have a fix for Linux v5.11-rc6+ to avoid a selection of it when
+> > CC_IS_CLANG=y?
 >
->  /* UMEM descriptor is __u64 */
+> Let's first understand problems and try to fix them, please.
 >
-> +enum xdp_trace_reasons {
-
-xdp_trace_reasons above, vs. XSK_TRACE_ below. Is this intentional?
-
-> +       XSK_TRACE_DROP_PKT_TOO_BIG,
-> +       XSK_TRACE_DROP_INVALID_FILLADDR,
-> +       XSK_TRACE_DROP_INVALID_TXD,
-> +};
-> +
-
-[...]
+> >
+> > - Sedat -
+> >
+> >
+> > - Sedat -
