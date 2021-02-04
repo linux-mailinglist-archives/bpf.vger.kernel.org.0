@@ -2,114 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C64530EABC
-	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 04:14:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10DB630EABF
+	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 04:14:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231284AbhBDDNb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Feb 2021 22:13:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50562 "EHLO
+        id S229601AbhBDDOa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Feb 2021 22:14:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229601AbhBDDNa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Feb 2021 22:13:30 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B88C061573;
-        Wed,  3 Feb 2021 19:12:50 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id g3so1002312plp.2;
-        Wed, 03 Feb 2021 19:12:50 -0800 (PST)
+        with ESMTP id S233601AbhBDDOa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Feb 2021 22:14:30 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBA8AC0613ED
+        for <bpf@vger.kernel.org>; Wed,  3 Feb 2021 19:13:49 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id w18so1192014pfu.9
+        for <bpf@vger.kernel.org>; Wed, 03 Feb 2021 19:13:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XhHDayQB6Bi+C4TWSaGKSP5yjJWA2Wx9lGm+oTkaXBI=;
-        b=Byaxvcpx2bWRrGEFfGMPzkBMxleLp6Ax3eF10E0gLScSJsyRHkIAjznCnqUJuf7v8C
-         7Ehkqhlyf3l8UTzVbqYFrt+5N/lpcAhquCKyTQyh9+FiddUIaheCKMKF1s2JRN+zAOyW
-         hwU6HQZomBJCEvcljygZ+hL1gduNUgTx1P7d6ggzpWMwRQaf4UWr8Ky11LWrZEZ3bupt
-         EYWBoVOwvx2ZU4ZuOl5rK3WLBZUWuO3MZfXZ7XZWUbdumWSSnRFo2BpO0jwUMv4Qcc8A
-         h91SrwM55St47zQegY0pBP1LIG851eGxDMk2hzVENeOa9/9snA2W+ineygAk5nh+OfJT
-         403A==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GaD6sGrh13jKf92b5i6r6S0mLTiP02KjIFA6/14apQ4=;
+        b=q3o8eGlIqp5+a/uK8OG6mfLFZt66d5ZgADuOg2NItU1LhvOO5aBYFbKRxeG4pSIQjZ
+         p+/HbdCY46Ir4A8ECIJjeVmLZFLUm07l3eZ34KBQs2zvpykBPJVfbvKJ0CqlMAY+VcIT
+         2Y0B6gzYCY8X/SplzgZT+t0DthmH2ADwzetQGNu+YIzn3/bDOiaSn3N9PT/NTVWydFhK
+         AxTSG+WIjw62xmDpwdICrz2Aj1eVJNovjN0MdNGjpDS/YHkZ90mSGtokL9IVyM7hbgMZ
+         0GrW9bMed2Wm8mucE4MFgNy56dqP00lYiZJrvMxKq+5/ERqj7w0MK7NQWwpxxM5hWJn8
+         VRVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XhHDayQB6Bi+C4TWSaGKSP5yjJWA2Wx9lGm+oTkaXBI=;
-        b=ZlnkMlJoe++oeqdWarQoo5duPlOKUoR/BZWKo9N6tTrpCE6VQh6nFoL5ST872ojqc7
-         k5H0oCVI/k41mY36sRMEyW9k4NTObOd7bPczlm1qVvqTOH/QnuA0zNpIgYhMgg6Meuww
-         Nd6dcNcodpMVjnyx3yrD59UbzaAASUkC3Smme8asN9xusIQOHxMKpG2p+En6KN6PHXBm
-         4qTy2mskOixenoPd54EHn66+Qb+jSN2bplwRjwuSoUSAsPs4oheFLli9KSTgwU8n+/zX
-         AqzYk+oOTnVn1pXZnM3zTqcXIgD/UZbUYQHvsl5qj5KDN8JRp/BgneWocoyHtSX4GUDb
-         Xq0w==
-X-Gm-Message-State: AOAM533qxQIGIbbhFnT8K9EKJ26IgdbIyauJ4/fmutJ0PuRP5rabF+8h
-        fcc8+b5f4ifHVslLFIEcP+c=
-X-Google-Smtp-Source: ABdhPJxdfl+5Ppr1chsWLkRQlVmIlvcQKTrG9Jbx73KMHA5V8Q/2w6RuMK/RC2qtwbuRPTHFC1FxjQ==
-X-Received: by 2002:a17:902:e80c:b029:de:a20b:7a9c with SMTP id u12-20020a170902e80cb02900dea20b7a9cmr6271591plg.12.1612408369905;
-        Wed, 03 Feb 2021 19:12:49 -0800 (PST)
-Received: from Leo-laptop-t470s ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id f22sm3988108pfk.179.2021.02.03.19.12.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Feb 2021 19:12:49 -0800 (PST)
-Date:   Thu, 4 Feb 2021 11:12:36 +0800
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        netdev@vger.kernel.org,
-        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-        Jiri Benc <jbenc@redhat.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Eelco Chaudron <echaudro@redhat.com>, ast@kernel.org,
-        bpf@vger.kernel.org,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        David Ahern <dsahern@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Subject: Re: [PATCHv17 bpf-next 0/6] xdp: add a new helper for dev map
- multicast support
-Message-ID: <20210204031236.GC2900@Leo-laptop-t470s>
-References: <20210122074652.2981711-1-liuhangbin@gmail.com>
- <20210125124516.3098129-1-liuhangbin@gmail.com>
- <20210204001458.GB2900@Leo-laptop-t470s>
- <601b61a0e4868_194420834@john-XPS-13-9370.notmuch>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GaD6sGrh13jKf92b5i6r6S0mLTiP02KjIFA6/14apQ4=;
+        b=qvODRiDkPVLq2YjU96mZHQi6u9G+vrt3MoD1Dd0fqftjCCIH+Gn+sTHXnMen8Az6pA
+         Ta+XeItsMa23AOHEIWswEBQToZ+IAz+nKIyVd3agJmz+HzEUhKwYhUgEd9ODEGMTRPK4
+         dcwyVwCnmpyhLYeKlbOpUphesg+qf/bFyr8SkLIkvYnvFYq3aaXNxW+fbRoLX0ZgKRkR
+         aCTDyobft1IuHVQoi+x3cEuklQVmnEgbrxPjB8YrU80ASSJ10bsGFM9KoUWwLPdLL4Jk
+         EEeyWsGu2MO5Re45xuEYGCQlHQ5GCtYMOrvxueT8hrlHoELqfqKnL10S9J1/GQktYQby
+         HkeQ==
+X-Gm-Message-State: AOAM531QTL259EZGKSj/B9QLRX1E+5sgS3AH+k9ElMHGrPjP5zhxgJmG
+        lkdpuZ564IERLMZEyyHdLdbLaTqTjNb9POT0fHaarw==
+X-Google-Smtp-Source: ABdhPJxw+Ouh0oumywhHaNdIDk3+/XTrZhogFr3Hf/FwMSKTttSmCmHb2KYldu+cjEk6OsgpvXnVx6agqWUPUWR4q5o=
+X-Received: by 2002:a63:7e10:: with SMTP id z16mr6908717pgc.263.1612408429056;
+ Wed, 03 Feb 2021 19:13:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <601b61a0e4868_194420834@john-XPS-13-9370.notmuch>
+References: <20210115210616.404156-1-ndesaulniers@google.com>
+ <CA+icZUVp+JNq89uc_DyWC6zh5=kLtUr7eOxHizfFggnEVGJpqw@mail.gmail.com>
+ <7354583d-de40-b6b9-6534-a4f4c038230f@fb.com> <CAKwvOd=5iR0JONwDb6ypD7dzzjOS3Uj0CjcyYqPF48eK4Pi90Q@mail.gmail.com>
+ <12b6c2ca-4cf7-4edd-faf2-72e3cb59c00e@fb.com> <20210117201500.GO457607@kernel.org>
+ <CAKwvOdmniAMZD0LiFdr5N8eOwHqNFED2Pd=pwOFF2Y8eSRXUHA@mail.gmail.com> <CAEf4Bzbn1app3LZ1oah5ARn81j5RMNxRRHPVAkeY3h_0q7+7fg@mail.gmail.com>
+In-Reply-To: <CAEf4Bzbn1app3LZ1oah5ARn81j5RMNxRRHPVAkeY3h_0q7+7fg@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 3 Feb 2021 19:13:36 -0800
+Message-ID: <CAKwvOdmrVdxbEHdOFA8x+Q2yDWOfChZzBc6nR3rdaM8R3LsxfQ@mail.gmail.com>
+Subject: Re: [PATCH v5 0/3] Kbuild: DWARF v5 support
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Fangrui Song <maskray@google.com>,
+        Caroline Tice <cmtice@google.com>,
+        Nick Clifton <nickc@redhat.com>, dwarves@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 06:53:20PM -0800, John Fastabend wrote:
-> Hangbin Liu wrote:
-> > Hi Daniel, Alexei,
-> > 
-> > It has been one week after Maciej, Toke, John's review/ack. What should
-> > I do to make a progress for this patch set?
-> > 
-> 
-> Patchwork is usually the first place to check:
+On Wed, Feb 3, 2021 at 6:58 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Wed, Feb 3, 2021 at 5:31 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
+> >
+> > On Sun, Jan 17, 2021 at 12:14 PM Arnaldo Carvalho de Melo
+> > <acme@kernel.org> wrote:
+> > >
+> > > Em Fri, Jan 15, 2021 at 03:43:06PM -0800, Yonghong Song escreveu:
+> > > >
+> > > >
+> > > > On 1/15/21 3:34 PM, Nick Desaulniers wrote:
+> > > > > On Fri, Jan 15, 2021 at 3:24 PM Yonghong Song <yhs@fb.com> wrote:
+> > > > > >
+> > > > > >
+> > > > > >
+> > > > > > On 1/15/21 1:53 PM, Sedat Dilek wrote:
+> > > > > > > En plus, I encountered breakage with GCC v10.2.1 and LLVM=1 and
+> > > > > > > CONFIG_DEBUG_INFO_DWARF4.
+> > > > > > > So might be good to add a "depends on !DEBUG_INFO_BTF" in this combination.
+> > > > >
+> > > > > Can you privately send me your configs that repro? Maybe I can isolate
+> > > > > it to a set of configs?
+> > > > >
+> > > > > >
+> > > > > > I suggested not to add !DEBUG_INFO_BTF to CONFIG_DEBUG_INFO_DWARF4.
+> > > > > > It is not there before and adding this may suddenly break some users.
+> > > > > >
+> > > > > > If certain combination of gcc/llvm does not work for
+> > > > > > CONFIG_DEBUG_INFO_DWARF4 with pahole, this is a bug bpf community
+> > > > > > should fix.
+> > > > >
+> > > > > Is there a place I should report bugs?
+> > > >
+> > > > You can send bug report to Arnaldo Carvalho de Melo <acme@kernel.org>,
+> > > > dwarves@vger.kernel.org and bpf@vger.kernel.org.
+> > >
+> > > I'm coming back from vacation, will try to read the messages and see if
+> > > I can fix this.
+> >
+> > IDK about DWARF v4; that seems to work for me.  I was previously observing
+> > https://bugzilla.redhat.com/show_bug.cgi?id=1922698
+> > with DWARF v5.  I just re-pulled the latest pahole, rebuilt, and no
+> > longer see that warning.
+> >
+> > I now observe a different set.  I plan on attending "BPF office hours
+> > tomorrow morning," but if anyone wants a sneak peak of the errors and
+> > how to reproduce:
+> > https://gist.github.com/nickdesaulniers/ae8c9efbe4da69b1cf0dce138c1d2781
+> >
+>
+> Is there another (easy) way to get your patch set without the b4 tool?
+> Is your patch set present in some patchworks instance, so that I can
+> download it in mbox format, for example?
 
-Thanks John for the link.
-> 
->  https://patchwork.kernel.org/project/netdevbpf/list/?series=421095&state=*
+$ wget https://lore.kernel.org/lkml/20210130004401.2528717-2-ndesaulniers@google.com/raw
+-O - | git am
+$ wget https://lore.kernel.org/lkml/20210130004401.2528717-3-ndesaulniers@google.com/raw
+-O - | git am
 
-Before I sent the email I only checked link
-https://patchwork.kernel.org/project/netdevbpf/list/ but can't find my patch.
+If you haven't tried b4 yet, it's quite nice.  Hard to go back.  Lore
+also has mbox.gz links.  Not sure about patchwork.
 
-How do you get the series number?
+>
+> >
+> > (FWIW: some other folks are hitting issues now with kernel's lack of
+> > DWARF v5 support: https://bugzilla.redhat.com/show_bug.cgi?id=1922707)
 
-> 
-> Looks like it was marked changed requested. After this its unlikely
-> anyone will follow up on it, rightly so given the assumption another
-> revision is coming.
-> 
-> In this case my guess is it was moved into changes requested because
-> I asked for a change, but then after some discussion you convinced me
-> the change was not in fact needed.
-> 
-> Alexei, Daniel can probably tell you if its easier to just send a v18
-> or pull in the v17 assuming any final reviews don't kick anything
-> else up.
 
-OK, I will wait for Alexei, Daniel and see if I need to do a rebase.
-
-Thanks
-Hangbin
+-- 
+Thanks,
+~Nick Desaulniers
