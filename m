@@ -2,62 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FF2E30E8E4
-	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 01:49:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C87E630E8FA
+	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 01:54:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234494AbhBDAsa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Feb 2021 19:48:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47536 "EHLO
+        id S232478AbhBDAxx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Feb 2021 19:53:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234537AbhBDArs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Feb 2021 19:47:48 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69853C0613D6
-        for <bpf@vger.kernel.org>; Wed,  3 Feb 2021 16:47:05 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id q7so1401421wre.13
-        for <bpf@vger.kernel.org>; Wed, 03 Feb 2021 16:47:05 -0800 (PST)
+        with ESMTP id S233995AbhBDAxu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Feb 2021 19:53:50 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35DB6C0613ED
+        for <bpf@vger.kernel.org>; Wed,  3 Feb 2021 16:52:55 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id v24so1984264lfr.7
+        for <bpf@vger.kernel.org>; Wed, 03 Feb 2021 16:52:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        d=cloudflare.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=YsUsijAn5uzgVNje1CwhCwQjGSwkDy+N1DNj8t3+1lE=;
-        b=yS462cfzIMlf3BDPWlQzPUncYBQkCPKk25pPmWPVtMO9NSCGPtBu/vvUvWJoo51Vrq
-         MVG+NuovOYbihB+eNbOHlfzWN+vWfy8oLnkfzYEprqquSoztw3XXQSkzM2baoz6RvcbW
-         GyZioxKly+IvOQrqa55jzA9TDen/AYUV7rZIkQzMuF7WuR6mWoAU6oVUMkEd4npBqxP4
-         ewotQFSIKQsIAf+gv4gFccQ9JdBRwQnGRQ9GspmHRzYnoHHSxAtrjqS+My6pDyq1MlYs
-         b61Pc556NmmbqQbDaC5XH6n0IB54RmFuXNTrRpsDx/jzRvyJL4zOpthhjF42oE78vy8i
-         3nQQ==
+        bh=z0j8u/cgjNk63BrE1ROiiO7WIMH6hW9ZaraaxN/GjSE=;
+        b=gVr/bTGSubf6YnOvvpVG//iNim87v02Skx3jR2rMxXBTcD+HF8G3xEAnQQx+0Q+npP
+         pqDCNmdgNk9JsEEyyZ8pGBqPuhB0LWAtXIXpCnbR2QYDJ+XTkBpqezeM0VhEQL870N4F
+         uJkM0MIlJHoRCuuzrpOOrJtOOSiKWEnnBpQbw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=YsUsijAn5uzgVNje1CwhCwQjGSwkDy+N1DNj8t3+1lE=;
-        b=DniAWCxu8AZQrF2Nz72D7c98auL7rV5Ad7jkvYPf52zlNbc/HZqOqhZf4Kqru5z55A
-         8XNEwsxXP9AcNVbE5SY9J+68A1S+GmF4m6ICHpzD6dv2IMuFxfX6jizyC78eIIf19T1O
-         ua98gxNFKVsUpxlqFrKl+xDsDALHNDRRuJcOv0F4u90k5NIr2RRXooNL9Z8IKEgrbSZw
-         xHR1s8KANOJW698EgDe0EkOEfVyfTyJjaRkLLgdkAwRFaAFogbpvoZgU1Dxj5dgNqW+G
-         Z+F/Vz6uSEhd8DxZ+i56byMe5DMnRZlnA2SsVoJd5IbKATVsm6Rn9i5VtK9aPI8L7tHG
-         JxUg==
-X-Gm-Message-State: AOAM531m6yc3swxzPpT5yuMGAs9X1x8s9uaWtGr4eVHq9YtxjhopWutQ
-        O3CaCalIXy5ZRnO3A+aIITNPOvk2lmJXJ+E7vOUmNw==
-X-Google-Smtp-Source: ABdhPJz/l71JnKXpEjHlQUBhpkhX+AfeEt20fOi3627lhpFpY+FFIVBDlLCcrmrzz5TqkMxed2C0VMMEmp3tdC0+FkY=
-X-Received: by 2002:a5d:414f:: with SMTP id c15mr6319496wrq.42.1612399624135;
- Wed, 03 Feb 2021 16:47:04 -0800 (PST)
+        bh=z0j8u/cgjNk63BrE1ROiiO7WIMH6hW9ZaraaxN/GjSE=;
+        b=fFHt+uh2OP9YYohIEYNqi5+7qOpq3tc//EtKVwfq0n1kAEbQMlcEFWIt3JjHGaqtJh
+         Zxo1SGLQmaI+baBvFQVYxPm6884ndoC5Vrv7KjCvBlsWiEoP0T6PzORhJkkUGL84ABxm
+         2fJQ0q/swDgfWTuItbDCcml9jGWmSD80WA1oTGG91IlyJ7tNvQ/Zf3Sy7IzfS4As04kp
+         dh3q0AoH9Ol5ouahuGAOpTaSmBx94EiknTD7W3TaK4Y0P/HrIm3XM9rUNvI/HWAhVgW1
+         pMq1d+W/l/FsjDIXpBjlXKrID0VkG50qTausColxxo6WCf+ySnZw/FCiafgexjbeyAv+
+         ZkLQ==
+X-Gm-Message-State: AOAM5308ohtjGJG6yfxr3BvhiVv5/yXwoS48Jk4pGcxRTMf0+L17uGTq
+        fSubXctTFOxYZjMQHNu8SUFGNg9oWLy7EN+I1CczXw==
+X-Google-Smtp-Source: ABdhPJzSprHSC/hLTMNA1akLup57Be6R1Xs+6lZxUgJvmJt7gToshQ1KQ2TSXBrV4DDz+jJi75zB2VS7Nf0bWHH7qGc=
+X-Received: by 2002:a05:6512:3190:: with SMTP id i16mr3254379lfe.200.1612399973566;
+ Wed, 03 Feb 2021 16:52:53 -0800 (PST)
 MIME-Version: 1.0
-References: <CAJCQCtSQLc0VHqO4BY_-YB2OmCNNmHCS6fNdQKmMWGn2v=Jpdw@mail.gmail.com>
- <CAJCQCtRHOidM7Vps1JQSpZA14u+B5fR860FwZB=eb1wYjTpqDw@mail.gmail.com> <CAEf4BzZ4oTB0-JizHe1VaCk2V+Jb9jJoTznkgh6CjE5VxNVqbg@mail.gmail.com>
-In-Reply-To: <CAEf4BzZ4oTB0-JizHe1VaCk2V+Jb9jJoTznkgh6CjE5VxNVqbg@mail.gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Wed, 3 Feb 2021 17:46:48 -0700
-Message-ID: <CAJCQCtRw6UWGGvjn0x__godYKYQXXmtyQys4efW2Pb84Q5q8Eg@mail.gmail.com>
-Subject: Re: 5:11: in-kernel BTF is malformed
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>
+References: <CABWYdi3HjduhY-nQXzy2ezGbiMB1Vk9cnhW2pMypUa+P1OjtzQ@mail.gmail.com>
+ <CABWYdi27baYc3ShHcZExmmXVmxOQXo9sGO+iFhfZLq78k8iaAg@mail.gmail.com>
+ <YBrTaVVfWu2R0Hgw@hirez.programming.kicks-ass.net> <CABWYdi2ephz57BA8bns3reMGjvs5m0hYp82+jBLZ6KD3Ba6zdQ@mail.gmail.com>
+ <20210203190518.nlwghesq75enas6n@treble> <CABWYdi1ya41Ju9SsHMtRQaFQ=s8N23D3ADn6OV6iBwWM6H8=Zw@mail.gmail.com>
+ <20210203232735.nw73kugja56jp4ls@treble> <CABWYdi1zd51Jb35taWeGC-dR9SChq-4ixvyKms3KOKgV0idfPg@mail.gmail.com>
+ <20210204001700.ry6dpqvavcswyvy7@treble>
+In-Reply-To: <20210204001700.ry6dpqvavcswyvy7@treble>
+From:   Ivan Babrou <ivan@cloudflare.com>
+Date:   Wed, 3 Feb 2021 16:52:42 -0800
+Message-ID: <CABWYdi0p91Y+TDUu38eey-p2GtxL6f=VHicTxS629VCMmrNLpQ@mail.gmail.com>
+Subject: Re: BUG: KASAN: stack-out-of-bounds in unwind_next_frame+0x1df5/0x2650
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Ignat Korchagin <ignat@cloudflare.com>,
+        Hailong liu <liu.hailong6@zte.com.cn>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Julien Thierry <jthierry@redhat.com>,
+        Jiri Slaby <jirislaby@kernel.org>, kasan-dev@googlegroups.com,
+        linux-mm@kvack.org, linux-kernel <linux-kernel@vger.kernel.org>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Robert Richter <rric@kernel.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This is just the vmlinuz-5.11.0-0.rc6.141.fc34.x86_64 file
+On Wed, Feb 3, 2021 at 4:17 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+>
+> On Wed, Feb 03, 2021 at 03:30:35PM -0800, Ivan Babrou wrote:
+> > > > > Can you recreate with this patch, and add "unwind_debug" to the cmdline?
+> > > > > It will spit out a bunch of stack data.
+> > > >
+> > > > Here's the three I'm building:
+> > > >
+> > > > * https://github.com/bobrik/linux/tree/ivan/static-call-5.9
+> > > >
+> > > > It contains:
+> > > >
+> > > > * v5.9 tag as the base
+> > > > * static_call-2020-10-12 tag
+> > > > * dm-crypt patches to reproduce the issue with KASAN
+> > > > * x86/unwind: Add 'unwind_debug' cmdline option
+> > > > * tracepoint: Fix race between tracing and removing tracepoint
+> > > >
+> > > > The very same issue can be reproduced on 5.10.11 with no patches,
+> > > > but I'm going with 5.9, since it boils down to static call changes.
+> > > >
+> > > > Here's the decoded stack from the kernel with unwind debug enabled:
+> > > >
+> > > > * https://gist.github.com/bobrik/ed052ac0ae44c880f3170299ad4af56b
+> > > >
+> > > > See my first email for the exact commands that trigger this.
+> > >
+> > > Thanks.  Do you happen to have the original dmesg, before running it
+> > > through the post-processing script?
+> >
+> > Yes, here it is:
+> >
+> > * https://gist.github.com/bobrik/8c13e6a02555fb21cadabb74cdd6f9ab
+>
+> It appears the unwinder is getting lost in crypto code.  No idea what
+> this has to do with static calls though.  Or maybe you're seeing
+> multiple issues.
+>
+> Does this fix it?
 
-https://drive.google.com/file/d/1G_2qLVRIy-ExaJI1-cTqDssrDu3sWo-m/view?usp=sharing
+It does for the dm-crypt case! But so does the following commit in
+5.11 (and 5.10.12):
+
+* https://github.com/torvalds/linux/commit/ce8f86ee94?w=1
+
+The reason I stuck to dm-crypt reproduction is that it reproduces reliably.
+
+We also have the following stack that doesn't touch any crypto:
+
+* https://gist.github.com/bobrik/40e2559add2f0b26ae39da30dc451f1e
+
+I cannot reproduce this one, and it took 2 days of uptime for it to
+happen. Is there anything I can do to help diagnose it?
+
+My goal is to enable multishot KASAN in our pre-production
+environment, but currently it sometimes starves TX queues on the NIC
+due to multiple reports in a row in an interrupt about
+unwind_next_frame, which disables network interface, which is not
+something we can tolerate.
