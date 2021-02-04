@@ -2,69 +2,62 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6357930E882
-	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 01:31:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FF2E30E8E4
+	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 01:49:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233392AbhBDAav (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 3 Feb 2021 19:30:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35448 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233165AbhBDAau (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 3 Feb 2021 19:30:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id BE40264F68;
-        Thu,  4 Feb 2021 00:30:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612398609;
-        bh=VwFvB77n/PL54AUoVQDyHRx8OHIbHVpC1Cug2BU7Ucc=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=nVmqxXgVi62kSW06vOcJ9RBX8EvDs1wLgvrNFp/pl1/EUqshU1Ol8rL88rIiiH0BT
-         EGyyafVCpQZwKz6rgyHlAsycY6bCNlmN89LvFn0jXYaL5ThHU3uCg7N2u5IDVume0Q
-         AevjuvuRfQvTnPdmepx6/ptjWQuXAqNTzI+GYBNm5H/TY5EsT2mOROexOQfiiTrggo
-         MQz2wSOSsLUHe7LEB+8XrEc8BJl0RoQJrON9uT3ncI/NhkQAgPS/tWUaqAdzUdd3rB
-         IbPNRH9BL2FlmJ7aoyYHxHRWAsSmYaqh19CiUnuM+8yJqBa8VT0arfuWDS7xKdvGmq
-         teyh3wHK2jW9A==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B1487609EB;
-        Thu,  4 Feb 2021 00:30:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S234494AbhBDAsa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 3 Feb 2021 19:48:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234537AbhBDArs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 3 Feb 2021 19:47:48 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69853C0613D6
+        for <bpf@vger.kernel.org>; Wed,  3 Feb 2021 16:47:05 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id q7so1401421wre.13
+        for <bpf@vger.kernel.org>; Wed, 03 Feb 2021 16:47:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YsUsijAn5uzgVNje1CwhCwQjGSwkDy+N1DNj8t3+1lE=;
+        b=yS462cfzIMlf3BDPWlQzPUncYBQkCPKk25pPmWPVtMO9NSCGPtBu/vvUvWJoo51Vrq
+         MVG+NuovOYbihB+eNbOHlfzWN+vWfy8oLnkfzYEprqquSoztw3XXQSkzM2baoz6RvcbW
+         GyZioxKly+IvOQrqa55jzA9TDen/AYUV7rZIkQzMuF7WuR6mWoAU6oVUMkEd4npBqxP4
+         ewotQFSIKQsIAf+gv4gFccQ9JdBRwQnGRQ9GspmHRzYnoHHSxAtrjqS+My6pDyq1MlYs
+         b61Pc556NmmbqQbDaC5XH6n0IB54RmFuXNTrRpsDx/jzRvyJL4zOpthhjF42oE78vy8i
+         3nQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YsUsijAn5uzgVNje1CwhCwQjGSwkDy+N1DNj8t3+1lE=;
+        b=DniAWCxu8AZQrF2Nz72D7c98auL7rV5Ad7jkvYPf52zlNbc/HZqOqhZf4Kqru5z55A
+         8XNEwsxXP9AcNVbE5SY9J+68A1S+GmF4m6ICHpzD6dv2IMuFxfX6jizyC78eIIf19T1O
+         ua98gxNFKVsUpxlqFrKl+xDsDALHNDRRuJcOv0F4u90k5NIr2RRXooNL9Z8IKEgrbSZw
+         xHR1s8KANOJW698EgDe0EkOEfVyfTyJjaRkLLgdkAwRFaAFogbpvoZgU1Dxj5dgNqW+G
+         Z+F/Vz6uSEhd8DxZ+i56byMe5DMnRZlnA2SsVoJd5IbKATVsm6Rn9i5VtK9aPI8L7tHG
+         JxUg==
+X-Gm-Message-State: AOAM531m6yc3swxzPpT5yuMGAs9X1x8s9uaWtGr4eVHq9YtxjhopWutQ
+        O3CaCalIXy5ZRnO3A+aIITNPOvk2lmJXJ+E7vOUmNw==
+X-Google-Smtp-Source: ABdhPJz/l71JnKXpEjHlQUBhpkhX+AfeEt20fOi3627lhpFpY+FFIVBDlLCcrmrzz5TqkMxed2C0VMMEmp3tdC0+FkY=
+X-Received: by 2002:a5d:414f:: with SMTP id c15mr6319496wrq.42.1612399624135;
+ Wed, 03 Feb 2021 16:47:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] libbpf: stop using feature-detection Makefiles
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161239860972.19398.7384749864414744822.git-patchwork-notify@kernel.org>
-Date:   Thu, 04 Feb 2021 00:30:09 +0000
-References: <20210203203445.3356114-1-andrii@kernel.org>
-In-Reply-To: <20210203203445.3356114-1-andrii@kernel.org>
-To:     Andrii Nakryiko <andrii@kernel.org>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, ast@fb.com,
-        daniel@iogearbox.net, kernel-team@fb.com, acme@redhat.com,
-        rdunlap@infradead.org
+References: <CAJCQCtSQLc0VHqO4BY_-YB2OmCNNmHCS6fNdQKmMWGn2v=Jpdw@mail.gmail.com>
+ <CAJCQCtRHOidM7Vps1JQSpZA14u+B5fR860FwZB=eb1wYjTpqDw@mail.gmail.com> <CAEf4BzZ4oTB0-JizHe1VaCk2V+Jb9jJoTznkgh6CjE5VxNVqbg@mail.gmail.com>
+In-Reply-To: <CAEf4BzZ4oTB0-JizHe1VaCk2V+Jb9jJoTznkgh6CjE5VxNVqbg@mail.gmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Wed, 3 Feb 2021 17:46:48 -0700
+Message-ID: <CAJCQCtRw6UWGGvjn0x__godYKYQXXmtyQys4efW2Pb84Q5q8Eg@mail.gmail.com>
+Subject: Re: 5:11: in-kernel BTF is malformed
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+This is just the vmlinuz-5.11.0-0.rc6.141.fc34.x86_64 file
 
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
-
-On Wed, 3 Feb 2021 12:34:45 -0800 you wrote:
-> Libbpf's Makefile relies on Linux tools infrastructure's feature detection
-> framework, but libbpf's needs are very modest: it detects the presence of
-> libelf and libz, both of which are mandatory. So it doesn't benefit much from
-> the framework, but pays significant costs in terms of maintainability and
-> debugging experience, when something goes wrong. The other feature detector,
-> testing for the presernce of minimal BPF API in system headers is long
-> obsolete as well, providing no value.
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next] libbpf: stop using feature-detection Makefiles
-    https://git.kernel.org/bpf/bpf-next/c/5f10c1aac8b2
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+https://drive.google.com/file/d/1G_2qLVRIy-ExaJI1-cTqDssrDu3sWo-m/view?usp=sharing
