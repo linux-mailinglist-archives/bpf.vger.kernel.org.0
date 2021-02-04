@@ -2,130 +2,144 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 276C730FC15
-	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 20:00:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8B2F30FBE8
+	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 19:49:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239305AbhBDS5t (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Feb 2021 13:57:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239291AbhBDSmR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Feb 2021 13:42:17 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31A7EC06178B
-        for <bpf@vger.kernel.org>; Thu,  4 Feb 2021 10:41:32 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id r23so2754885ljh.1
-        for <bpf@vger.kernel.org>; Thu, 04 Feb 2021 10:41:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QilnL1GiLc35zL0JKgGqLLH0jCvxrl7AURnizvwxOrk=;
-        b=wwOS3lN7TXu7QWeoGhYz2RQIaOHUMrxwlkR7ONEgKZc8tcuOjeXZTXB1WKjKgAsbTt
-         yBmSE3VnOWAKWOMUea3DJjb2qXnmzvGek24oz8Rn6MMVgsK6wQrdn+irVG6eFfiwAFAq
-         /d6esWbvjJAsIQ26Ihjbz7XJe2at9o+eKRRE8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QilnL1GiLc35zL0JKgGqLLH0jCvxrl7AURnizvwxOrk=;
-        b=f6n66EfwfOwXZWKNHGPkDjm5tp/UOFjv/2OR8CJXebwALX5j3UpOmSnM6QVsgE9oyt
-         EEwav74hSXHgd1F/FxX3LQ1wSKdMf1sboF0k5/FbyLPD8BLN/sAVPWLWRjCC56uY8zAM
-         AQKAP9duDFCfDs2Cv996eoyHenDh7fDf6s4J8J0ZRN2SQ4YHKpuQJHkBmOLWFOU+zriU
-         iHaB2ylPvRme/6xrB0gfEQSnUhrh7VSdeyiJiNdi5Z5zmkZXfmTQI5DvWOEuwFVqdFqh
-         D8gdxQMR0hBH8sQjqQjM1TbQSn08ENp3gne2vLDaemMXRP3vTfC0tBU/cnhfqS5nlxLG
-         wfQA==
-X-Gm-Message-State: AOAM533QPSFdCksGWqRDStXIiuiQ+OD1sVJMhL7jtKj4ftKG7F38ibnc
-        oghrYjwVyJGlVP0zUAmbf3cDgQfUvQEs/J+SdEMNMg==
-X-Google-Smtp-Source: ABdhPJwJtrhYEdPaQdR6fHW3cU2NP6bOoOiL2TtDHuAX1Y9bu5c2RTiAw480hYJajzznm79yfeZHPAMVBc9ok0h1jMo=
-X-Received: by 2002:a2e:9b57:: with SMTP id o23mr427754ljj.314.1612464090601;
- Thu, 04 Feb 2021 10:41:30 -0800 (PST)
+        id S239391AbhBDStY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Feb 2021 13:49:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48122 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239379AbhBDSrS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 Feb 2021 13:47:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E959864DE1
+        for <bpf@vger.kernel.org>; Thu,  4 Feb 2021 18:46:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612464398;
+        bh=NRJXX8o+eCnGP+XM9ZOS0SkypSiTrsfrfjvK+hiTL7A=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=NBbUlW8r3/g2BBlpshszE40IrEvd3XatpdtBRKzyhDOQQcxgUo1Qr3ZfS0tRE35W3
+         t+EZlbIdE/j8y9oEGP4QxkLaoNzhtwFVVP3Pdh4z8A0CiyFuk/uWl2HXQBD9/dXAFs
+         ZPPZ45MpaN14xawVHt9b0PGEJbDOWJBqm9KTkym6sI+k+BX75vVrGGm/ibXzt2ZgSq
+         HfscYEIvNy4Z8eynVxerDsP3Sym2paDrpvHkL8yUvCZheqloy6Kw0G3CACmLJiYydD
+         Km98YR/+FIIRfimIbx1ZQxXUsh1o74ctra90+DMfN1Gp2TYwUupd0IznmDrgmaxHzN
+         1X4QRvbePkNug==
+Received: by mail-lf1-f44.google.com with SMTP id h12so6065309lfp.9
+        for <bpf@vger.kernel.org>; Thu, 04 Feb 2021 10:46:37 -0800 (PST)
+X-Gm-Message-State: AOAM532BkNNfNFiMFfZirtnialt1QkhwIKZaC55vYh/IZt40PgPpaUyB
+        CFYL/szCo5A5HEXaAsGbDp2flJzGE8b5dR4ZRarKfQ==
+X-Google-Smtp-Source: ABdhPJwah41nVycTmuanZAvtCV+J9vEIOIhxPM9/Kg+PUV2LElyld/e5hNFmhveNeul3aYQoghSC2OauHnuvLLixAMc=
+X-Received: by 2002:ac2:561b:: with SMTP id v27mr403587lfd.233.1612464396189;
+ Thu, 04 Feb 2021 10:46:36 -0800 (PST)
 MIME-Version: 1.0
-References: <CABWYdi3HjduhY-nQXzy2ezGbiMB1Vk9cnhW2pMypUa+P1OjtzQ@mail.gmail.com>
- <CABWYdi27baYc3ShHcZExmmXVmxOQXo9sGO+iFhfZLq78k8iaAg@mail.gmail.com>
- <20210203214448.2703930e@oasis.local.home> <20210204030948.dmsmwyw6fu5kzgey@treble>
-In-Reply-To: <20210204030948.dmsmwyw6fu5kzgey@treble>
-From:   Ivan Babrou <ivan@cloudflare.com>
-Date:   Thu, 4 Feb 2021 10:41:18 -0800
-Message-ID: <CABWYdi15x=-2qenWSdX_ONSha_Pz7GFJrx8axN6CJS5cWxTTSg@mail.gmail.com>
-Subject: Re: BUG: KASAN: stack-out-of-bounds in unwind_next_frame+0x1df5/0x2650
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        kernel-team <kernel-team@cloudflare.com>,
-        Ignat Korchagin <ignat@cloudflare.com>,
-        Hailong liu <liu.hailong6@zte.com.cn>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Julien Thierry <jthierry@redhat.com>,
-        Jiri Slaby <jirislaby@kernel.org>, kasan-dev@googlegroups.com,
-        linux-mm@kvack.org, linux-kernel <linux-kernel@vger.kernel.org>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        Alexei Starovoitov <ast@kernel.org>,
+References: <20210203232331.2567162-1-kpsingh@kernel.org> <20210203232331.2567162-3-kpsingh@kernel.org>
+ <CAEf4Bzb4LzUPkA0SB3W2iri42=4Pv3CveWb+-a6rAJU772HvQA@mail.gmail.com>
+In-Reply-To: <CAEf4Bzb4LzUPkA0SB3W2iri42=4Pv3CveWb+-a6rAJU772HvQA@mail.gmail.com>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Thu, 4 Feb 2021 19:46:24 +0100
+X-Gmail-Original-Message-ID: <CACYkzJ5=uNxnq7XYhZAr-R0_DyTwAbdHFEBZcopnxnodp50sFA@mail.gmail.com>
+Message-ID: <CACYkzJ5=uNxnq7XYhZAr-R0_DyTwAbdHFEBZcopnxnodp50sFA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] bpf/selftests: Update the IMA test to use
+ BPF ring buffer
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Robert Richter <rric@kernel.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf@vger.kernel.org
+        Andrii Nakryiko <andrii@kernel.org>,
+        Florent Revest <revest@chromium.org>,
+        Brendan Jackman <jackmanb@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 3, 2021 at 7:10 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+[...]
 
-> This line gives a big clue:
+> >
+> > @@ -44,6 +54,11 @@ void test_test_ima(void)
+> >         if (CHECK(!skel, "skel_load", "skeleton failed\n"))
+> >                 goto close_prog;
+> >
+> > +       ringbuf = ring_buffer__new(bpf_map__fd(skel->maps.ringbuf),
+> > +                                  process_sample, NULL, NULL);
+> > +       if (CHECK(!ringbuf, "ringbuf_create", "failed to create ringbuf\n"))
+> > +               goto close_prog;
 >
->   [160676.608966][    C4] RIP: 0010:0xffffffffc17d814c
->
-> That address, without a function name, most likely means that it was
-> running in some generated code (mostly likely BPF) when it got
-> interrupted.
+> nit: could have used ASSERT_OK_PTR()
 
-We do have eBPF/XDP in our environment.
+Updated this instance, I can separately clean some of the other places
+to use the
+ASSERT_* macros as well.
 
-> Right now, the ORC unwinder tries to fall back to frame pointers when it
-> encounters generated code:
 >
->         orc = orc_find(state->signal ? state->ip : state->ip - 1);
->         if (!orc)
->                 /*
->                  * As a fallback, try to assume this code uses a frame pointer.
->                  * This is useful for generated code, like BPF, which ORC
->                  * doesn't know about.  This is just a guess, so the rest of
->                  * the unwind is no longer considered reliable.
->                  */
->                 orc = &orc_fp_entry;
->                 state->error = true;
->         }
+> > +
+> >         err = ima__attach(skel);
+> >         if (CHECK(err, "attach", "attach failed: %d\n", err))
+> >                 goto close_prog;
+> > @@ -60,11 +75,9 @@ void test_test_ima(void)
+> >         if (CHECK(err, "run_measured_process", "err = %d\n", err))
+> >                 goto close_clean;
+> >
+> > -       CHECK(skel->data->ima_hash_ret < 0, "ima_hash_ret",
+> > -             "ima_hash_ret = %ld\n", skel->data->ima_hash_ret);
+> > -
+> > -       CHECK(skel->bss->ima_hash == 0, "ima_hash",
+> > -             "ima_hash = %lu\n", skel->bss->ima_hash);
+> > +       err = ring_buffer__poll(ringbuf, 1000);
 >
-> Because the ORC unwinder is guessing from that point onward, it's
-> possible for it to read the KASAN stack redzone, if the generated code
-> hasn't set up frame pointers.  So the best fix may be for the unwinder
-> to just always bypass KASAN when reading the stack.
->
-> The unwinder has a mechanism for detecting and warning about
-> out-of-bounds, and KASAN is short-circuiting that.
->
-> This should hopefully get rid of *all* the KASAN unwinder warnings, both
-> crypto and networking.
+> nit: given data should definitely be available here, could use
+> ring_buffer__consume() instead and fail immediately if data is not
+> there
 
-It definitely worked on my dm-crypt case, and I've tried it without
-your previous AVX related patch. I will apply it to our tree and
-deploy to the staging KASAN environment to see how it fares with
-respect to networking stacks. Feel free to ping me if I don't get back
-to you with the results on Monday.
+Good idea. Done.
 
-Thanks for looking into this!
+>
+> > +       ASSERT_EQ(err, 1, "num_samples_or_err");
+> > +       ASSERT_NEQ(ima_hash_from_bpf, 0, "ima_hash");
+> >
+> >  close_clean:
+> >         snprintf(cmd, sizeof(cmd), "./ima_setup.sh cleanup %s", measured_dir);
+> > diff --git a/tools/testing/selftests/bpf/progs/ima.c b/tools/testing/selftests/bpf/progs/ima.c
+> > index 86b21aff4bc5..dd0792204a21 100644
+> > --- a/tools/testing/selftests/bpf/progs/ima.c
+> > +++ b/tools/testing/selftests/bpf/progs/ima.c
+> > @@ -9,20 +9,37 @@
+> >  #include <bpf/bpf_helpers.h>
+> >  #include <bpf/bpf_tracing.h>
+> >
+> > -long ima_hash_ret = -1;
+> > -u64 ima_hash = 0;
+> >  u32 monitored_pid = 0;
+> >
+> > +struct {
+> > +       __uint(type, BPF_MAP_TYPE_RINGBUF);
+> > +       __uint(max_entries, 1 << 12);
+> > +} ringbuf SEC(".maps");
+
+[...]
+
+> > +               sample = bpf_ringbuf_reserve(&ringbuf, sizeof(u64), 0);
+> > +               if (!sample)
+> > +                       return;
+> >
+> > -       if (pid == monitored_pid)
+> > -               ima_hash_ret = bpf_ima_inode_hash(bprm->file->f_inode,
+> > -                                                 &ima_hash, sizeof(ima_hash));
+> > +               *sample = ima_hash;
+> > +               bpf_ringbuf_submit(sample, BPF_RB_FORCE_WAKEUP);
+>
+> no need for BPF_RB_FORCE_WAKEUP, notification should happen
+> deterministically. And further, if you use ring_buffer__consume() you
+> won't even rely on notifications. Did you see any problems without
+> this?
+
+Yes, it works without BPF_RB_FORCE_WAKEUP too, I thought I had removed it,
+which I clearly didn't :)
+
+>
+> > +       }
+> >
+> > -       return 0;
+> > +       return;
+> >  }
+> > --
+> > 2.30.0.365.g02bc693789-goog
+> >
