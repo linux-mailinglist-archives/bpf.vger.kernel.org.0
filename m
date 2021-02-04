@@ -2,92 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7110230EF99
-	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 10:25:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6745130F150
+	for <lists+bpf@lfdr.de>; Thu,  4 Feb 2021 11:56:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234885AbhBDJYT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Feb 2021 04:24:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234788AbhBDJYQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Feb 2021 04:24:16 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3470DC061573;
-        Thu,  4 Feb 2021 01:23:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=CPyUnilJQ2QKupjj2xtE65PWmSMXgunXFpzexlPe1UE=; b=r0BCCyAZmU54nvsVfBVswXp6aR
-        KLl/ZzNbCFz0c1PR2bOqkBzRMxE/y4Rkk3SF8G2bcePsuQ+ey2Ss36eafH3GW3J/sZRG+xkmX1cdq
-        ladWBhYcO1uafEL2PC/2jWb2OJJ2qTlevwtaaIL1mhGr2B1XdzyK+Jlzrpg7wusl4voVeaGEB3MYk
-        0No9xiLDDGKEyJAgnBtsR4+PqWLhHqYzaC/KXHeD1vsganAlQMBPp+SkHc7avtO/ywZXekiSopdcE
-        1PHNzk8DzB8dcfQgr5G7wJeezVOQY/dWJaxyhhbYRZ/IKYrM4mY+oxURcc+vzjFUqKFjTMyjxm1N8
-        GBgYq4Vw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l7aqj-0008Nd-U9; Thu, 04 Feb 2021 09:22:54 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 385F2301A32;
-        Thu,  4 Feb 2021 10:22:48 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 15BDD213D2E27; Thu,  4 Feb 2021 10:22:48 +0100 (CET)
-Date:   Thu, 4 Feb 2021 10:22:48 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ivan Babrou <ivan@cloudflare.com>
-Cc:     kernel-team <kernel-team@cloudflare.com>,
-        Ignat Korchagin <ignat@cloudflare.com>,
-        Hailong liu <liu.hailong6@zte.com.cn>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Julien Thierry <jthierry@redhat.com>,
-        Jiri Slaby <jirislaby@kernel.org>, kasan-dev@googlegroups.com,
-        linux-mm@kvack.org, linux-kernel <linux-kernel@vger.kernel.org>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Robert Richter <rric@kernel.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>
-Subject: Re: BUG: KASAN: stack-out-of-bounds in
- unwind_next_frame+0x1df5/0x2650
-Message-ID: <YBu86G1ckCckRyim@hirez.programming.kicks-ass.net>
-References: <CABWYdi3HjduhY-nQXzy2ezGbiMB1Vk9cnhW2pMypUa+P1OjtzQ@mail.gmail.com>
- <CABWYdi27baYc3ShHcZExmmXVmxOQXo9sGO+iFhfZLq78k8iaAg@mail.gmail.com>
- <YBrTaVVfWu2R0Hgw@hirez.programming.kicks-ass.net>
- <CABWYdi2ephz57BA8bns3reMGjvs5m0hYp82+jBLZ6KD3Ba6zdQ@mail.gmail.com>
+        id S235378AbhBDK4l (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Feb 2021 05:56:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21070 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235332AbhBDK4k (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 4 Feb 2021 05:56:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612436114;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HsSUJqRpxx1yYgtE08Em8AMXnkOhHSI7H5LXeUE2PZs=;
+        b=XFxZ62QJHgzy8fZmxl+xzEd9LsMOdZbCzVU4LkXy1jmHVVXGNxpqYGbFEaNE1Mtsl0yXAA
+        D0tD1wcCvlUUch/fFAlypSkiLvlTSbA5UH7LB8V9qjiJEC5u27oANwWhFPeVsWipqgHfFR
+        LdwgubNdseqstYztPhSpO8CliO12rbM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-64--7ozrcqyP1OjfwbyxfKV7A-1; Thu, 04 Feb 2021 05:55:12 -0500
+X-MC-Unique: -7ozrcqyP1OjfwbyxfKV7A-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C0790874981;
+        Thu,  4 Feb 2021 10:55:11 +0000 (UTC)
+Received: from krava (unknown [10.40.192.245])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 9446A1FBC5;
+        Thu,  4 Feb 2021 10:55:07 +0000 (UTC)
+Date:   Thu, 4 Feb 2021 11:55:06 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, Jiri Olsa <jolsa@kernel.org>,
+        Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        bpf <bpf@vger.kernel.org>
+Subject: Re: finding libelf
+Message-ID: <YBvSiu59XnZQ1em0@krava>
+References: <8a6894e9-71ef-09e3-64fa-bf6794fc6660@infradead.org>
+ <87eehxa06v.fsf@toke.dk>
+ <a6a8fbd6-c610-873e-12e1-b6b0fadb94be@infradead.org>
+ <CAEf4Bzb7-jpQLStjtrWm+CvDkLGHR_LiVdb6YcagR2v-Yt42tw@mail.gmail.com>
+ <CAEf4BzbvQPmaDauPeH5FiqgjVjf-TA+kKL6gsN505q02Un6QZA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CABWYdi2ephz57BA8bns3reMGjvs5m0hYp82+jBLZ6KD3Ba6zdQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzbvQPmaDauPeH5FiqgjVjf-TA+kKL6gsN505q02Un6QZA@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 03, 2021 at 09:46:55AM -0800, Ivan Babrou wrote:
-> > Can you pretty please not line-wrap console output? It's unreadable.
-> 
-> GMail doesn't make it easy, I'll send a link to a pastebin next time.
-> Let me know if you'd like me to regenerate the decoded stack.
+On Wed, Feb 03, 2021 at 12:06:10PM -0800, Andrii Nakryiko wrote:
 
-Not my problem that you can't use email proper. Links go in the
-bitbucket. Either its in the email or it don't exist.
+SNIP
+
+> > > >>
+> > > >> but pkg-config tells me:
+> > > >>
+> > > >> $ pkg-config --modversion  libelf
+> > > >> 0.168
+> > > >> $ pkg-config --libs  libelf
+> > > >> -lelf
+> > > >>
+> > > >>
+> > > >> Any ideas?
+> > > >
+> > > > This usually happens because there's a stale cache of the feature
+> > > > detection tests lying around somewhere. Look for a 'feature' directory
+> > > > in whatever subdir you got that error. Just removing the feature
+> > > > directory usually fixes this; I've fixed a couple of places where this
+> > > > is not picked up by 'make clean' (see, e.g., 9d9aae53b96d ("bpf/preload:
+> > > > Make sure Makefile cleans up after itself, and add .gitignore")) but I
+> > > > wouldn't be surprised if there are still some that are broken.
+> > >
+> > > Hi,
+> > >
+> > > Thanks for replying.
+> > >
+> > > I removed the feature subdir and still got this build error, so I
+> > > removed everything in BUILDDIR/kernel/bpf/preload and rebuilt --
+> > > and still got the same libelf build error.
+> >
+> > I hate the complexity of feature detection framework to the point that
+> > I'm willing to rip it out from libbpf's Makefile completely. I just
+> > spent an hour trying to understand what's going on in a very similar
+> > situation. Extremely frustrating.
+
+I have plans to rework this and get rid of the make code
+which is the worst part of that for me.. I'll speed it up ;-)
+
+jirka
 
