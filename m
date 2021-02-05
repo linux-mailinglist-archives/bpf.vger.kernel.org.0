@@ -2,267 +2,70 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3725310181
-	for <lists+bpf@lfdr.de>; Fri,  5 Feb 2021 01:19:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A45D93101A5
+	for <lists+bpf@lfdr.de>; Fri,  5 Feb 2021 01:31:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231836AbhBEASr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Feb 2021 19:18:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231814AbhBEAS1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Feb 2021 19:18:27 -0500
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9336FC0613D6
-        for <bpf@vger.kernel.org>; Thu,  4 Feb 2021 16:17:47 -0800 (PST)
-Received: by mail-yb1-xb31.google.com with SMTP id j84so5075884ybg.1
-        for <bpf@vger.kernel.org>; Thu, 04 Feb 2021 16:17:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ckFhZ6j+ffpkEQ1oMJBSYsREswTRxfIcdVWdZkICZM4=;
-        b=SE3CK1Ycf3a9aCcT0MFazZYk7TPR+7Fq067kS2tjfEbyAynGGljHFHxVSqSDhIr8FS
-         cIxEXaMJC9KJQUn12QLFRqyFrZduj4Is3okZV88r1SzNN2YGZtrmVUAPr9h/maLzSBIJ
-         kYDDwZto9XbMsffo37O9DMSWVWp8p71yQ90bXuigyKprRF5VsNNTxFIAARczCXJpmjSp
-         5yaXQhrFwBfvrLSV9wGe14W/wol5pgQULyA7NIX3t+sGnKZ0N3u+hhhKRWyQ/zzstb2f
-         mVEJfC2zj3b7AD4TCtrfbogZLk6S9/1sGkST9G3NrQNCoko7oB6TjAJb1OYtUSYFtzAR
-         LHfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ckFhZ6j+ffpkEQ1oMJBSYsREswTRxfIcdVWdZkICZM4=;
-        b=UvjFClQXYwkEkBABebrX2zgf1k5/6uqprxVLCJKwFKmEDaE3FlCTY2rP0xP5Zp0eTV
-         T5pqKKntc8N4qe+mWCUoGZmRTAm4NQZRnU2llZFiO0TeJlFIQf8gM97f46dlW1YkzNxF
-         /fZKkGRFPjoG/1WTBnmTN5fvI6tfrGNAT+sclzlZwAJuNi4AkGYoIW+I8CA3k4ULimQH
-         lO/uBiS7kIx6dCBr+aLT/GBMxLjMiGsWpygR1EsA2tNxwUK2h4jvxDMTj4CkmTZMfk1r
-         sInUK++4ULh90iEr1MZaIvSdkeQ+G7A3A7FpgKUF3pdxjhwPplwZ9w7ITlAD3mCST0pF
-         wIvA==
-X-Gm-Message-State: AOAM530gYz6ok5y1MX1gn8+cbuADdymMmKNsRbqGf2MBKnPcqG0ISwS/
-        wrcHeNP30MZHrdFowMC04sO+tHkWH4I8y6Te8hI=
-X-Google-Smtp-Source: ABdhPJwgmYUPHRhoSvI+S7kvnTnxT3U3IL/lxTGj8cN6FvmeUwB+GP70KVIE3m7xqJtr0OxcgBY1TxYIxdl+oYGtP0U=
-X-Received: by 2002:a25:da4d:: with SMTP id n74mr2756907ybf.347.1612484266843;
- Thu, 04 Feb 2021 16:17:46 -0800 (PST)
+        id S231919AbhBEAas (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Feb 2021 19:30:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57260 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231721AbhBEAas (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 Feb 2021 19:30:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id C76B364FB0;
+        Fri,  5 Feb 2021 00:30:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612485007;
+        bh=/DKlslXPCHPpLByP3fREj55+OyEglLMYSLXcDXiHGqU=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=X8totJgCo21/Gq6kRQ+MD6oKz65IN6e1Va4u/aQwnriTmwAkHBOtjT8G6xb6mEiS7
+         UIp7Cbk/cV8TUG4Ahfvwsd6riA9UhRoQ1CAZ8k5pLadyVN3k0MX4gHjCAgzsxkR7zH
+         voIDGhpI9Gi9qoaM9C0G7tTlK/DVwIdHEePfB1wUxkw8GdshMMlYbp+lfHPNlkxOGs
+         EU4a8+BBguKBJEPn/u+y9Hw4gfi2nVfF1BgaBxtSrv05eMJyuynGePI9X+RsPDfFFH
+         hjlRUiSToilLb9DI0ZYFf98ZGkYBgF+cyc/vrJ245HlTF8GO6/t6zJroHkuNQ4FH23
+         0BD6pVznqe/EA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A87AA609F1;
+        Fri,  5 Feb 2021 00:30:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210115210616.404156-1-ndesaulniers@google.com>
- <CA+icZUVp+JNq89uc_DyWC6zh5=kLtUr7eOxHizfFggnEVGJpqw@mail.gmail.com>
- <7354583d-de40-b6b9-6534-a4f4c038230f@fb.com> <CAKwvOd=5iR0JONwDb6ypD7dzzjOS3Uj0CjcyYqPF48eK4Pi90Q@mail.gmail.com>
- <12b6c2ca-4cf7-4edd-faf2-72e3cb59c00e@fb.com> <20210117201500.GO457607@kernel.org>
- <CAKwvOdmniAMZD0LiFdr5N8eOwHqNFED2Pd=pwOFF2Y8eSRXUHA@mail.gmail.com>
- <CAEf4Bzbn1app3LZ1oah5ARn81j5RMNxRRHPVAkeY3h_0q7+7fg@mail.gmail.com>
- <CAKwvOdmrVdxbEHdOFA8x+Q2yDWOfChZzBc6nR3rdaM8R3LsxfQ@mail.gmail.com>
- <CAEf4Bzbs5sDTB6w1D4LpKLGjY5sCCUnRUsU84Ccn8DoL352j1g@mail.gmail.com>
- <CAKwvOdk-4_Pt=DKFokDpG8L58xj4J-=PPrgSLEZnYs7VJu1jZA@mail.gmail.com>
- <CAEf4Bza8yrmq5_Crg9XHA6e+fxfQDRQ-tRDGBzPT5ww4YNuhWw@mail.gmail.com> <CAKwvOdk7vkep157q4q4EamkdYWMLYzwM_7PYW1rdy=BFQye66w@mail.gmail.com>
-In-Reply-To: <CAKwvOdk7vkep157q4q4EamkdYWMLYzwM_7PYW1rdy=BFQye66w@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 4 Feb 2021 16:17:35 -0800
-Message-ID: <CAEf4Bzb-dyTkYaQK_hzFdf6akd5SnBCR8Kt-k2ygrXRM1BmwTw@mail.gmail.com>
-Subject: Re: [PATCH v5 0/3] Kbuild: DWARF v5 support
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Fangrui Song <maskray@google.com>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v5 0/2] BPF selftest helper script
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161248500768.20841.13446215833465898316.git-patchwork-notify@kernel.org>
+Date:   Fri, 05 Feb 2021 00:30:07 +0000
+References: <20210204194544.3383814-1-kpsingh@kernel.org>
+In-Reply-To: <20210204194544.3383814-1-kpsingh@kernel.org>
+To:     KP Singh <kpsingh@kernel.org>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, revest@chromium.org, jackmanb@chromium.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 4, 2021 at 4:12 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
->
-> On Thu, Feb 4, 2021 at 4:07 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Thu, Feb 4, 2021 at 4:04 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
-> > >
-> > > Moving a bunch of folks + lists to BCC.
-> > >
-> > > On Thu, Feb 4, 2021 at 3:54 PM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
-> > > >
-> > > > On Wed, Feb 3, 2021 at 7:13 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
-> > > > >
-> > > > > On Wed, Feb 3, 2021 at 6:58 PM Andrii Nakryiko
-> > > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > > >
-> > > > > > On Wed, Feb 3, 2021 at 5:31 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
-> > > > > > >
-> > > > > > > On Sun, Jan 17, 2021 at 12:14 PM Arnaldo Carvalho de Melo
-> > > > > > > <acme@kernel.org> wrote:
-> > > > > > > >
-> > > > > > > > Em Fri, Jan 15, 2021 at 03:43:06PM -0800, Yonghong Song escreveu:
-> > > > > > > > >
-> > > > > > > > >
-> > > > > > > > > On 1/15/21 3:34 PM, Nick Desaulniers wrote:
-> > > > > > > > > > On Fri, Jan 15, 2021 at 3:24 PM Yonghong Song <yhs@fb.com> wrote:
-> > > > > > > > > > >
-> > > > > > > > > > >
-> > > > > > > > > > >
-> > > > > > > > > > > On 1/15/21 1:53 PM, Sedat Dilek wrote:
-> > > > > > > > > > > > En plus, I encountered breakage with GCC v10.2.1 and LLVM=1 and
-> > > > > > > > > > > > CONFIG_DEBUG_INFO_DWARF4.
-> > > > > > > > > > > > So might be good to add a "depends on !DEBUG_INFO_BTF" in this combination.
-> > > > > > > > > >
-> > > > > > > > > > Can you privately send me your configs that repro? Maybe I can isolate
-> > > > > > > > > > it to a set of configs?
-> > > > > > > > > >
-> > > > > > > > > > >
-> > > > > > > > > > > I suggested not to add !DEBUG_INFO_BTF to CONFIG_DEBUG_INFO_DWARF4.
-> > > > > > > > > > > It is not there before and adding this may suddenly break some users.
-> > > > > > > > > > >
-> > > > > > > > > > > If certain combination of gcc/llvm does not work for
-> > > > > > > > > > > CONFIG_DEBUG_INFO_DWARF4 with pahole, this is a bug bpf community
-> > > > > > > > > > > should fix.
-> > > > > > > > > >
-> > > > > > > > > > Is there a place I should report bugs?
-> > > > > > > > >
-> > > > > > > > > You can send bug report to Arnaldo Carvalho de Melo <acme@kernel.org>,
-> > > > > > > > > dwarves@vger.kernel.org and bpf@vger.kernel.org.
-> > > > > > > >
-> > > > > > > > I'm coming back from vacation, will try to read the messages and see if
-> > > > > > > > I can fix this.
-> > > > > > >
-> > > > > > > IDK about DWARF v4; that seems to work for me.  I was previously observing
-> > > > > > > https://bugzilla.redhat.com/show_bug.cgi?id=1922698
-> > > > > > > with DWARF v5.  I just re-pulled the latest pahole, rebuilt, and no
-> > > > > > > longer see that warning.
-> > > > > > >
-> > > > > > > I now observe a different set.  I plan on attending "BPF office hours
-> > > > > > > tomorrow morning," but if anyone wants a sneak peak of the errors and
-> > > > > > > how to reproduce:
-> > > > > > > https://gist.github.com/nickdesaulniers/ae8c9efbe4da69b1cf0dce138c1d2781
-> > > > > > >
-> > > > > >
-> > > > > > Is there another (easy) way to get your patch set without the b4 tool?
-> > > > > > Is your patch set present in some patchworks instance, so that I can
-> > > > > > download it in mbox format, for example?
-> > > > >
-> > > > > $ wget https://lore.kernel.org/lkml/20210130004401.2528717-2-ndesaulniers@google.com/raw
-> > > > > -O - | git am
-> > > > > $ wget https://lore.kernel.org/lkml/20210130004401.2528717-3-ndesaulniers@google.com/raw
-> > > > > -O - | git am
-> > > > >
-> > > > > If you haven't tried b4 yet, it's quite nice.  Hard to go back.  Lore
-> > > > > also has mbox.gz links.  Not sure about patchwork.
-> > > > >
-> > > >
-> > > > Ok, I managed to apply that on linux-next, but I can't get past this:
-> > > >
-> > > > ld.lld: error: undefined symbol: pa_trampoline_start
-> > > > >>> referenced by arch/x86/realmode/rm/header.o:(real_mode_header)
-> > >
-> > > Thanks for testing and the report. Do you have a .config you can send
-> > > me to reproduce?
-> > >
-> >
-> > I followed your steps exactly, used olddefconfig. I've build with both
-> > latest clang master and llvmorg-12.0.0-rc1 tag. This might be
-> > something with my environment, I don't know.
->
-> Perhaps, but "olddefconfig" is not reproducible for anyone else, ever.
-> Please send me your .config that produced the errors.
->
+Hello:
 
-Sorry, I meant defconfig + enable DWARF5 and BTF + then olddefconfig.
-But I can send you config still a bit later.
+This series was applied to bpf/bpf-next.git (refs/heads/master):
 
-> >
-> > > >
-> > > > ld.lld: error: undefined symbol: pa_trampoline_header
-> > > > >>> referenced by arch/x86/realmode/rm/header.o:(real_mode_header)
-> > > >
-> > > > ld.lld: error: undefined symbol: pa_trampoline_pgd
-> > > > >>> referenced by arch/x86/realmode/rm/header.o:(real_mode_header)
-> > > > >>> referenced by trampoline_64.S:142 (/data/users/andriin/linux/arch/x86/realmode/rm/trampoline_64.S:142)
-> > > > >>>               arch/x86/realmode/rm/trampoline_64.o:(startup_32)
-> > > >
-> > > > ld.lld: error: undefined symbol: pa_wakeup_start
-> > > > >>> referenced by arch/x86/realmode/rm/header.o:(real_mode_header)
-> > > >
-> > > > ld.lld: error: undefined symbol: pa_wakeup_header
-> > > > >>> referenced by arch/x86/realmode/rm/header.o:(real_mode_header)
-> > > >
-> > > > ld.lld: error: undefined symbol: pa_machine_real_restart_asm
-> > > > >>> referenced by arch/x86/realmode/rm/header.o:(real_mode_header)
-> > > >
-> > > > ld.lld: error: undefined symbol: pa_startup_32
-> > > > >>> referenced by trampoline_64.S:77 (/data/users/andriin/linux/arch/x86/realmode/rm/trampoline_64.S:77)
-> > > > >>>               arch/x86/realmode/rm/trampoline_64.o:(trampoline_start)
-> > > >
-> > > > ld.lld: error: undefined symbol: pa_tr_flags
-> > > > >>> referenced by trampoline_64.S:124 (/data/users/andriin/linux/arch/x86/realmode/rm/trampoline_64.S:124)
-> > > > >>>               arch/x86/realmode/rm/trampoline_64.o:(startup_32)
-> > > >
-> > > > ld.lld: error: undefined symbol: pa_tr_cr4
-> > > > >>> referenced by trampoline_64.S:138 (/data/users/andriin/linux/arch/x86/realmode/rm/trampoline_64.S:138)
-> > > > >>>               arch/x86/realmode/rm/trampoline_64.o:(startup_32)
-> > > >
-> > > > ld.lld: error: undefined symbol: pa_tr_efer
-> > > > >>> referenced by trampoline_64.S:146 (/data/users/andriin/linux/arch/x86/realmode/rm/trampoline_64.S:146)
-> > > > >>>               arch/x86/realmode/rm/trampoline_64.o:(startup_32)
-> > > > >>> referenced by trampoline_64.S:147 (/data/users/andriin/linux/arch/x86/realmode/rm/trampoline_64.S:147)
-> > > > >>>               arch/x86/realmode/rm/trampoline_64.o:(startup_32)
-> > > >
-> > > > ld.lld: error: undefined symbol: pa_startup_64
-> > > > >>> referenced by trampoline_64.S:161 (/data/users/andriin/linux/arch/x86/realmode/rm/trampoline_64.S:161)
-> > > > >>>               arch/x86/realmode/rm/trampoline_64.o:(startup_32)
-> > > >
-> > > > ld.lld: error: undefined symbol: pa_tr_gdt
-> > > > >>> referenced by arch/x86/realmode/rm/trampoline_64.o:(tr_gdt)
-> > > > >>> referenced by reboot.S:28 (/data/users/andriin/linux/arch/x86/realmode/rm/reboot.S:28)
-> > > > >>>               arch/x86/realmode/rm/reboot.o:(machine_real_restart_asm)
-> > > >
-> > > > ld.lld: error: undefined symbol: pa_machine_real_restart_paging_off
-> > > > >>> referenced by reboot.S:34 (/data/users/andriin/linux/arch/x86/realmode/rm/reboot.S:34)
-> > > > >>>               arch/x86/realmode/rm/reboot.o:(machine_real_restart_asm)
-> > > >
-> > > > ld.lld: error: undefined symbol: pa_machine_real_restart_idt
-> > > > >>> referenced by reboot.S:47 (/data/users/andriin/linux/arch/x86/realmode/rm/reboot.S:47)
-> > > > >>>               arch/x86/realmode/rm/reboot.o:(machine_real_restart_asm)
-> > > >
-> > > > ld.lld: error: undefined symbol: pa_machine_real_restart_gdt
-> > > > >>> referenced by reboot.S:54 (/data/users/andriin/linux/arch/x86/realmode/rm/reboot.S:54)
-> > > > >>>               arch/x86/realmode/rm/reboot.o:(machine_real_restart_asm)
-> > > > >>> referenced by arch/x86/realmode/rm/reboot.o:(machine_real_restart_gdt)
-> > > >
-> > > > ld.lld: error: undefined symbol: pa_wakeup_gdt
-> > > > >>> referenced by arch/x86/realmode/rm/wakeup_asm.o:(wakeup_gdt)
-> > > >   CC      arch/x86/mm/numa_64.o
-> > > >   CC      arch/x86/mm/amdtopology.o
-> > > >   HOSTCC  arch/x86/entry/vdso/vdso2c
-> > > > make[4]: *** [arch/x86/realmode/rm/realmode.elf] Error 1
-> > > > make[3]: *** [arch/x86/realmode/rm/realmode.bin] Error 2
-> > > > make[2]: *** [arch/x86/realmode] Error 2
-> > > > make[2]: *** Waiting for unfinished jobs....
-> > > >
-> > > >
-> > > > Hopefully Arnaldo will have better luck.
-> > > >
-> > > >
-> > > >
-> > > > > >
-> > > > > > >
-> > > > > > > (FWIW: some other folks are hitting issues now with kernel's lack of
-> > > > > > > DWARF v5 support: https://bugzilla.redhat.com/show_bug.cgi?id=1922707)
-> > > > >
-> > > > >
-> > > > > --
-> > > > > Thanks,
-> > > > > ~Nick Desaulniers
-> > >
-> > >
-> > >
-> > > --
-> > > Thanks,
-> > > ~Nick Desaulniers
->
->
->
-> --
-> Thanks,
-> ~Nick Desaulniers
+On Thu,  4 Feb 2021 19:45:42 +0000 you wrote:
+> # v4 -> v5
+> 
+> - Use %Y (modification time) instead of %W (creation time) of the local
+>   copy of the kernel config to check for newer upstream config.
+> - Rename the script to vmtest.sh
+> 
+> # v3 -> v4
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,v5,1/2] bpf: Helper script for running BPF presubmit tests
+    https://git.kernel.org/bpf/bpf-next/c/c9709f52386d
+  - [bpf-next,v5,2/2] bpf/selftests: Add a short note about vmtest.sh in README.rst
+    https://git.kernel.org/bpf/bpf-next/c/881949f770bf
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
