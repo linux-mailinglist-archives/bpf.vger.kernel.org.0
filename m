@@ -2,108 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 218AB311952
-	for <lists+bpf@lfdr.de>; Sat,  6 Feb 2021 04:03:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E64931194E
+	for <lists+bpf@lfdr.de>; Sat,  6 Feb 2021 04:03:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230484AbhBFDCF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Feb 2021 22:02:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42584 "EHLO
+        id S230319AbhBFDB5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Feb 2021 22:01:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232235AbhBFCzl (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:55:41 -0500
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2855C061D7F;
-        Fri,  5 Feb 2021 14:11:55 -0800 (PST)
-Received: by mail-yb1-xb36.google.com with SMTP id s61so8261098ybi.4;
-        Fri, 05 Feb 2021 14:11:55 -0800 (PST)
+        with ESMTP id S232060AbhBFCuv (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Feb 2021 21:50:51 -0500
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E2BC0698C6;
+        Fri,  5 Feb 2021 14:25:16 -0800 (PST)
+Received: by mail-yb1-xb2c.google.com with SMTP id c3so8291979ybi.3;
+        Fri, 05 Feb 2021 14:25:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=2wYH4ZTK5z/flvIckrO5N+ZdlqhzmsEspV7Keq9hUBA=;
-        b=oWBXoCkzXi9LuyQb7q1zAAN1rA68maErUKhE9bEPkXayREl9MQX9apAsK0sg4QAc4R
-         pE8duD7oDXgunoFA/Wainaol5ZambqQh7QRYL1J8fD8FtgpzZFOdE1o7lk51ZWmag/kI
-         /31+5AfLYtrCkFvUqZUFE7hSxjBmuUOS7eNe+aGqHY6ee8aZHgHxPS5kAS6QPw68Zk+k
-         P5voEum08DOx3byVb9607rlojaiOLgPixlFHw7jr1yVexZyR/R1C86jfZnFT5j0Xc7Fv
-         wGbLcFhIasE9FuWdzv14fNzdTyVC0u2n+8nkiCZCN3eP3nhBioij9t/+0IAStRvtZJDb
-         xYYw==
+        bh=hYUg3hUYLhRgtIvFTbD2VmRbiO8E/oS3HEcH+2mdLys=;
+        b=D/3Szo3U0J1VcnkFYVHbqwjGp20STlNB4R1cBtjGpJ3Pe/kU/JgKGkAYcdQFg1oyeH
+         EFwqKYd0FfjGc/aJEK7kezMmBkJOQFoyMbP1X4O7qqFBnTnJB/pv6oWNiehS1ycSK8ZS
+         fO77QvpCHiX42uE03qFBinL40qgQPWhz+r//HGZaSOesmEM3z4UKLJWxQk+Uw9Ow1wLf
+         IOPeAdTfZZi0ohvdCHS4Wo0m9YKvAtkxhytEDe0ZOguQh4S2Lol9v3YgrbyFbTu9Zca0
+         zHwsn7Rmhm660asec3AV/x5tBA56CSt/j/w5FdmBjOYpqQhXf8JLfYG5zgNxnx/DYAMf
+         1PmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2wYH4ZTK5z/flvIckrO5N+ZdlqhzmsEspV7Keq9hUBA=;
-        b=m7z9bn6lt6hMmMwj6mqRX4jptCvZdlKrr1Bz/dy9T3DXt9SiMLy9Jf5DU8KaJOvns5
-         4ZlFVKn8gLdkqZMwjuILRITg+y0irv0hOn5XPenaJClijpxMH62FYr0HN7bVlawCc3ZS
-         8Ky5/ZEpNp2vW7Fjjqx5uKdqukULhQ3lLgh8NziSZdd6ULMqAbGHLrTadl7+UXhe3Kcp
-         aKvn2Qp62Myz0UITTRk9SDnM0xaQL973egde1Jq1CfDZy9MXqqCGprrvXk7JXZ2LTdor
-         2Nl5qE0dmcBin2DDIsVOmvK33LdU8ZQ5QQkvcGfNTWbWiPB7GPC02+EDJYNnPcrJ/hJN
-         LtGA==
-X-Gm-Message-State: AOAM533q8Ri76ioWqhmTYsBZJvFeP4orlKbCHCT2tUgW2/UzOxPQ4ZjS
-        isrhxB+XgKSSXHocGswyVPc+kHhWNaE6GZg8ysq337y/l7LYDA==
-X-Google-Smtp-Source: ABdhPJyYCbGisxBoQhBELxd9IT/XMkHEEAZ56ZRFxuQ9ps6oooojPj6j5F5PwJjPEqTd6RkE4c0FpqD7mTcALl68VW0=
-X-Received: by 2002:a5b:3c4:: with SMTP id t4mr8559145ybp.510.1612563115280;
- Fri, 05 Feb 2021 14:11:55 -0800 (PST)
+        bh=hYUg3hUYLhRgtIvFTbD2VmRbiO8E/oS3HEcH+2mdLys=;
+        b=fbT7IFOTyBDNwxFvNYNEqawfSpazV4xkWGP6WrCCnlxadMPOFP5SVPP+ZPRyG/NLI1
+         E2viHDSDXeDapZwgIjrTteeIiJIcDoyzsmsE/TPnwghvJu2Jc/TnpwzGSIq2pqDo44v9
+         KGZq7/2lGZSRG6dzVERnrFFJO4yGg0ZYEsEwvehCNcemDFUPnf7YqBZ8c2u0mJTQLh6d
+         DmAJeFeQ3PwZUO5BHqCsdWrni6r3t2rQF+LFUIbn099g/l4EvCEj+pz+APjhVD4c+Q1c
+         19ZEGQxiX8ZwyMofvFexkuy/8MU7KsNbpSLeqDrzPnvDX+jItmbfcvODTAI1tk9DgDZe
+         stIA==
+X-Gm-Message-State: AOAM533m3bSw3vMkPWRBU/i+yzHiEBxTItDEwDjlXOJy1useiMtmJHCI
+        QAi1OwKCh8LMYZX3RXCHUptxgsTtN9y/6OyFczk=
+X-Google-Smtp-Source: ABdhPJxPvMF+GPOj/8IjoyGkasonxz/I6RMZw8DMRUyvUJ14OqNyfV/+HbUj0a2/lwXZGicPrAZWNrbkKKSo7ekzHN0=
+X-Received: by 2002:a5b:3c4:: with SMTP id t4mr8617231ybp.510.1612563915723;
+ Fri, 05 Feb 2021 14:25:15 -0800 (PST)
 MIME-Version: 1.0
-References: <20210204220741.GA920417@kernel.org> <CAEf4BzY-RbXXW-Ajcvq4fziOJ=tMtT7O76SUboHQyULNDkhthw@mail.gmail.com>
- <C359F19F-29BC-4F6D-961A-79BFA47F36A7@gmail.com> <CAEf4BzZf_1g13dA1t6rbi1TFttufyGNaU14pPxo9uK-FVArCbQ@mail.gmail.com>
- <BFDC3C1D-F87D-4F82-BDB0-444629C484CE@gmail.com> <20210205162523.GF920417@kernel.org>
-In-Reply-To: <20210205162523.GF920417@kernel.org>
+References: <20210205124020.683286-1-jolsa@kernel.org> <20210205124020.683286-4-jolsa@kernel.org>
+In-Reply-To: <20210205124020.683286-4-jolsa@kernel.org>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 5 Feb 2021 14:11:44 -0800
-Message-ID: <CAEf4BzaXAxOnzkuiOpdMKjQyYHjAN6Td35hDGwbYc9i9aGuj0A@mail.gmail.com>
-Subject: Re: ANNOUNCE: pahole v1.20 (gcc11 DWARF5's default, lots of ELF
- sections, BTF)
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     dwarves@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Domenico Andreoli <cavok@debian.org>,
-        Matthias Schwarzott <zzam@gentoo.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Mark Wieelard <mjw@redhat.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Tom Stellard <tstellar@redhat.com>
+Date:   Fri, 5 Feb 2021 14:25:04 -0800
+Message-ID: <CAEf4BzYPOmS9=cuF9BkUcWv1MNZ0OEyi-bT6KUwm60PxXivS2Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/4] tools/resolve_btfids: Set srctree variable unconditionally
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 8:25 AM Arnaldo Carvalho de Melo
-<arnaldo.melo@gmail.com> wrote:
+On Fri, Feb 5, 2021 at 4:46 AM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Em Fri, Feb 05, 2021 at 06:33:43AM -0300, Arnaldo Carvalho de Melo escreveu:
-> > On February 5, 2021 4:39:47 AM GMT-03:00, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> > >On Thu, Feb 4, 2021 at 8:34 PM Arnaldo Carvalho de Melo ><arnaldo.melo@gmail.com> wrote:
-> > >> On February 4, 2021 9:01:51 PM GMT-03:00, Andrii Nakryiko
-> > ><andrii.nakryiko@gmail.com> wrote:
-> > >> >On Thu, Feb 4, 2021 at 2:09 PM Arnaldo Carvalho de
-> > >Melo><acme@kernel.org> wrote:
-> > >> >>         The v1.20 release of pahole and its friends is out, mostly
-> > >> >> addressing problems related to gcc 11 defaulting to DWARF5 for -g,
-> > >> >> available at the usual places:
+> We want this clean to be called from tree's root Makefile,
+> which defines same srctree variable and that will screw
+> the make setup.
 >
-> > >> >Great, thanks, Arnaldo! Do you plan to build RPMs soon as well?
+> We actually do not use srctree being passed from outside,
+> so we can solve this by setting current srctree value
+> directly.
 >
-> > >> It's in rawhide already, I'll do it for f33, f32 later,
+> Also changing the way how srctree is initialized as suggested
+> by Andrri.
 >
-> > >Do you have a link? I tried to find it, but only see 1.19 so far.
+> Also root Makefile does not define the implicit RM variable,
+> so adding RM initialization.
 >
-> > https://koji.fedoraproject.org/koji/buildinfo?buildID=1703678
->
-> And now for Fedora 33, waiting for karma bumps at:
->
-> https://bodhi.fedoraproject.org/updates/FEDORA-2021-804e7a572c
->
-> fedpkg buidling for f32 now.
->
-> - Arnaldo
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
 
-Ok, imported dwarves-1.20. Had to fix two dates in changelog (in
-spec), day of week didn't match the date, tooling complained about
-that. Also had to undo cmake_build and cmake_install fanciness,
-because apparently we don't have them or the support for it is not
-great. But otherwise everything else looks to be ok.
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+>  tools/bpf/resolve_btfids/Makefile | 7 ++-----
+>  1 file changed, 2 insertions(+), 5 deletions(-)
+>
+> diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
+> index be09ec4f03ff..bb9fa8de7e62 100644
+> --- a/tools/bpf/resolve_btfids/Makefile
+> +++ b/tools/bpf/resolve_btfids/Makefile
+> @@ -2,11 +2,7 @@
+>  include ../../scripts/Makefile.include
+>  include ../../scripts/Makefile.arch
+>
+> -ifeq ($(srctree),)
+> -srctree := $(patsubst %/,%,$(dir $(CURDIR)))
+> -srctree := $(patsubst %/,%,$(dir $(srctree)))
+> -srctree := $(patsubst %/,%,$(dir $(srctree)))
+> -endif
+> +srctree := $(abspath $(CURDIR)/../../../)
+>
+>  ifeq ($(V),1)
+>    Q =
+> @@ -22,6 +18,7 @@ AR       = $(HOSTAR)
+>  CC       = $(HOSTCC)
+>  LD       = $(HOSTLD)
+>  ARCH     = $(HOSTARCH)
+> +RM      ?= rm
+>
+>  OUTPUT ?= $(srctree)/tools/bpf/resolve_btfids/
+>
+> --
+> 2.26.2
+>
