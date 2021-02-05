@@ -2,27 +2,27 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 915FF311657
-	for <lists+bpf@lfdr.de>; Sat,  6 Feb 2021 00:02:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2E09311653
+	for <lists+bpf@lfdr.de>; Sat,  6 Feb 2021 00:02:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230296AbhBEXCE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Fri, 5 Feb 2021 18:02:04 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:57540 "EHLO
+        id S229562AbhBEXB7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 5 Feb 2021 18:01:59 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:24861 "EHLO
         us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232222AbhBEMle (ORCPT
+        by vger.kernel.org with ESMTP id S232047AbhBEMle (ORCPT
         <rfc822;bpf@vger.kernel.org>); Fri, 5 Feb 2021 07:41:34 -0500
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-188-jcChwwVFP-GA3zUkZXIv9w-1; Fri, 05 Feb 2021 07:40:32 -0500
-X-MC-Unique: jcChwwVFP-GA3zUkZXIv9w-1
+ us-mta-514-XY0ZIqP-PDOaXbiuUMEF7g-1; Fri, 05 Feb 2021 07:40:35 -0500
+X-MC-Unique: XY0ZIqP-PDOaXbiuUMEF7g-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 88011100CCC2;
-        Fri,  5 Feb 2021 12:40:30 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 96511C7401;
+        Fri,  5 Feb 2021 12:40:33 +0000 (UTC)
 Received: from krava.cust.in.nbox.cz (unknown [10.40.195.59])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C655660936;
-        Fri,  5 Feb 2021 12:40:27 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D6D8460936;
+        Fri,  5 Feb 2021 12:40:30 +0000 (UTC)
 From:   Jiri Olsa <jolsa@kernel.org>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -35,9 +35,9 @@ Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         Masahiro Yamada <masahiroy@kernel.org>,
         Michal Marek <michal.lkml@markovi.net>,
         linux-kbuild@vger.kernel.org
-Subject: [PATCH bpf-next 2/4] tools/resolve_btfids: Check objects before removing
-Date:   Fri,  5 Feb 2021 13:40:18 +0100
-Message-Id: <20210205124020.683286-3-jolsa@kernel.org>
+Subject: [PATCH bpf-next 3/4] tools/resolve_btfids: Set srctree variable unconditionally
+Date:   Fri,  5 Feb 2021 13:40:19 +0100
+Message-Id: <20210205124020.683286-4-jolsa@kernel.org>
 In-Reply-To: <20210205124020.683286-1-jolsa@kernel.org>
 References: <20210205124020.683286-1-jolsa@kernel.org>
 MIME-Version: 1.0
@@ -52,47 +52,50 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-We want this clean to be called from tree's root clean
-and that one is silent if there's nothing to clean.
+We want this clean to be called from tree's root Makefile,
+which defines same srctree variable and that will screw
+the make setup.
 
-Adding check for all object to clean and display CLEAN
-messages only if there are objects to remove.
+We actually do not use srctree being passed from outside,
+so we can solve this by setting current srctree value
+directly.
+
+Also changing the way how srctree is initialized as suggested
+by Andrri.
+
+Also root Makefile does not define the implicit RM variable,
+so adding RM initialization.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/bpf/resolve_btfids/Makefile | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+ tools/bpf/resolve_btfids/Makefile | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
 diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
-index 1d46a247ec95..be09ec4f03ff 100644
+index be09ec4f03ff..bb9fa8de7e62 100644
 --- a/tools/bpf/resolve_btfids/Makefile
 +++ b/tools/bpf/resolve_btfids/Makefile
-@@ -64,13 +64,20 @@ $(BINARY): $(BPFOBJ) $(SUBCMDOBJ) $(BINARY_IN)
- 	$(call msg,LINK,$@)
- 	$(Q)$(CC) $(BINARY_IN) $(LDFLAGS) -o $@ $(BPFOBJ) $(SUBCMDOBJ) $(LIBS)
+@@ -2,11 +2,7 @@
+ include ../../scripts/Makefile.include
+ include ../../scripts/Makefile.arch
  
-+clean_objects := $(wildcard $(OUTPUT)/*.o                \
-+                            $(OUTPUT)/.*.o.cmd           \
-+                            $(OUTPUT)/.*.o.d             \
-+                            $(OUTPUT)/libbpf             \
-+                            $(OUTPUT)/libsubcmd          \
-+                            $(OUTPUT)/resolve_btfids)
-+
-+ifneq ($(clean_objects),)
- clean: fixdep-clean
- 	$(call msg,CLEAN,$(BINARY))
--	$(Q)$(RM) -f $(BINARY); \
--	$(RM) -rf $(if $(OUTPUT),$(OUTPUT),.)/feature; \
--	$(RM) -rf $(OUTPUT)/libbpf; \
--	$(RM) -rf $(OUTPUT)/libsubcmd; \
--	find $(if $(OUTPUT),$(OUTPUT),.) -name \*.o -or -name \*.o.cmd -or -name \*.o.d | xargs $(RM)
-+	$(Q)$(RM) -rf $(clean_objects)
-+else
-+clean:
-+endif
+-ifeq ($(srctree),)
+-srctree := $(patsubst %/,%,$(dir $(CURDIR)))
+-srctree := $(patsubst %/,%,$(dir $(srctree)))
+-srctree := $(patsubst %/,%,$(dir $(srctree)))
+-endif
++srctree := $(abspath $(CURDIR)/../../../)
  
- tags:
- 	$(call msg,GEN,,tags)
+ ifeq ($(V),1)
+   Q =
+@@ -22,6 +18,7 @@ AR       = $(HOSTAR)
+ CC       = $(HOSTCC)
+ LD       = $(HOSTLD)
+ ARCH     = $(HOSTARCH)
++RM      ?= rm
+ 
+ OUTPUT ?= $(srctree)/tools/bpf/resolve_btfids/
+ 
 -- 
 2.26.2
 
