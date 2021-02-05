@@ -2,116 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FB9F3118DE
-	for <lists+bpf@lfdr.de>; Sat,  6 Feb 2021 03:51:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 218AB311952
+	for <lists+bpf@lfdr.de>; Sat,  6 Feb 2021 04:03:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231557AbhBFCsN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Feb 2021 21:48:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39814 "EHLO
+        id S230484AbhBFDCF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Feb 2021 22:02:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231378AbhBFCm6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:42:58 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A724C08EE23;
-        Fri,  5 Feb 2021 16:36:21 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id d85so8822627qkg.5;
-        Fri, 05 Feb 2021 16:36:21 -0800 (PST)
+        with ESMTP id S232235AbhBFCzl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Feb 2021 21:55:41 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2855C061D7F;
+        Fri,  5 Feb 2021 14:11:55 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id s61so8261098ybi.4;
+        Fri, 05 Feb 2021 14:11:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=soHf/mVkpp4EzKMqVWUbreRz7Dg6N9YiICzzPMnFLgM=;
-        b=Y9A7DrF+GRyVSqLlIWAqpZjRpK1BnR9AU2oy9l86xnICu0C06khdlyvebXTfsufVp3
-         qFSv0lMNhC1k5+7lThnQodAGRE763h5hO88FyePg4nrSXHNeiEfBumRk6AWZPimWkqkx
-         qpucA2uG8pS3xPePjOBfBdzdAh2BRp2r9/sjSEL4yFkSyvjsn8e1T9bGXEaW4RqBpFgW
-         6cak4g6ZOB0CZkxYIVnu68wmId3mTHWLJlx/4HDFfrhCcR4NwZDykcxtCAgmmHgWOix+
-         YTvstD48fvj7uMBiYjruR3sYmtxebP5PUMajHbfyZ8bhIIxnGmXnwwnxKYbXqNrCGHbg
-         YQnA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2wYH4ZTK5z/flvIckrO5N+ZdlqhzmsEspV7Keq9hUBA=;
+        b=oWBXoCkzXi9LuyQb7q1zAAN1rA68maErUKhE9bEPkXayREl9MQX9apAsK0sg4QAc4R
+         pE8duD7oDXgunoFA/Wainaol5ZambqQh7QRYL1J8fD8FtgpzZFOdE1o7lk51ZWmag/kI
+         /31+5AfLYtrCkFvUqZUFE7hSxjBmuUOS7eNe+aGqHY6ee8aZHgHxPS5kAS6QPw68Zk+k
+         P5voEum08DOx3byVb9607rlojaiOLgPixlFHw7jr1yVexZyR/R1C86jfZnFT5j0Xc7Fv
+         wGbLcFhIasE9FuWdzv14fNzdTyVC0u2n+8nkiCZCN3eP3nhBioij9t/+0IAStRvtZJDb
+         xYYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=soHf/mVkpp4EzKMqVWUbreRz7Dg6N9YiICzzPMnFLgM=;
-        b=jgczVR/sUodzDmuXZOWRE/ugDdYr3d6hc/IA7Rzp3BxksOOuYIWFmZ5K0G7D9zpYR+
-         nrUFIyqrlO7cz34+DKy9p9d3bv4JQG45UKjq/+X6DBok0QQQwWvxFhhEweIHqsFjzc7S
-         ymJ4YJqKaJsrlxSQmghrESG0rhemIiPSUtt2f8K7Qwp7tc39Ua6zIlQFwM+qVzcs6xuR
-         5lUDF4ZfebKMSP3a5EqfRqzS09zc4IGGbavsPQgTfjwoD3SBx5xYKGHABw2dw4VGd8E3
-         LR57T9JoNztEHVEUXEKSIZu9JIyjawEw2eO4bAeJKMovNx2NTTW1Zzjpg2N9z1scSDRZ
-         28GA==
-X-Gm-Message-State: AOAM530AJ7gADb9+udc1dqiZvHNxzCzd/rAf47bwdU++gr8lcgpFAdpa
-        MslHOq4YmNV1C9urm6v8Dis=
-X-Google-Smtp-Source: ABdhPJwGuyt+FQ9iasR9NXAGsXzScwo1mYEEWKSB1Fesweuwl/pT6uyUcJFKwh24uzoUC4vYfVxNxw==
-X-Received: by 2002:ae9:ed04:: with SMTP id c4mr6833524qkg.289.1612571780538;
-        Fri, 05 Feb 2021 16:36:20 -0800 (PST)
-Received: from Gentoo ([156.146.58.50])
-        by smtp.gmail.com with ESMTPSA id z23sm6931551qkb.13.2021.02.05.16.36.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 16:36:19 -0800 (PST)
-Date:   Sat, 6 Feb 2021 06:06:46 +0530
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     pmladek@suse.com, sergey.senozhatsky@gmail.com,
-        andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, rdunlap@infradead.org
-Subject: Re: [PATCH] lib:  Replace obscene word with a better one :)
-Message-ID: <YB3knt9yx4CQ5Q+g@Gentoo>
-Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>, pmladek@suse.com,
-        sergey.senozhatsky@gmail.com, andriy.shevchenko@linux.intel.com,
-        linux@rasmusvillemoes.dk, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, rdunlap@infradead.org
-References: <20210205121543.1315285-1-unixbhaskar@gmail.com>
- <20210205145109.24498541@gandalf.local.home>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2wYH4ZTK5z/flvIckrO5N+ZdlqhzmsEspV7Keq9hUBA=;
+        b=m7z9bn6lt6hMmMwj6mqRX4jptCvZdlKrr1Bz/dy9T3DXt9SiMLy9Jf5DU8KaJOvns5
+         4ZlFVKn8gLdkqZMwjuILRITg+y0irv0hOn5XPenaJClijpxMH62FYr0HN7bVlawCc3ZS
+         8Ky5/ZEpNp2vW7Fjjqx5uKdqukULhQ3lLgh8NziSZdd6ULMqAbGHLrTadl7+UXhe3Kcp
+         aKvn2Qp62Myz0UITTRk9SDnM0xaQL973egde1Jq1CfDZy9MXqqCGprrvXk7JXZ2LTdor
+         2Nl5qE0dmcBin2DDIsVOmvK33LdU8ZQ5QQkvcGfNTWbWiPB7GPC02+EDJYNnPcrJ/hJN
+         LtGA==
+X-Gm-Message-State: AOAM533q8Ri76ioWqhmTYsBZJvFeP4orlKbCHCT2tUgW2/UzOxPQ4ZjS
+        isrhxB+XgKSSXHocGswyVPc+kHhWNaE6GZg8ysq337y/l7LYDA==
+X-Google-Smtp-Source: ABdhPJyYCbGisxBoQhBELxd9IT/XMkHEEAZ56ZRFxuQ9ps6oooojPj6j5F5PwJjPEqTd6RkE4c0FpqD7mTcALl68VW0=
+X-Received: by 2002:a5b:3c4:: with SMTP id t4mr8559145ybp.510.1612563115280;
+ Fri, 05 Feb 2021 14:11:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="UxWCXiFroMay8coY"
-Content-Disposition: inline
-In-Reply-To: <20210205145109.24498541@gandalf.local.home>
+References: <20210204220741.GA920417@kernel.org> <CAEf4BzY-RbXXW-Ajcvq4fziOJ=tMtT7O76SUboHQyULNDkhthw@mail.gmail.com>
+ <C359F19F-29BC-4F6D-961A-79BFA47F36A7@gmail.com> <CAEf4BzZf_1g13dA1t6rbi1TFttufyGNaU14pPxo9uK-FVArCbQ@mail.gmail.com>
+ <BFDC3C1D-F87D-4F82-BDB0-444629C484CE@gmail.com> <20210205162523.GF920417@kernel.org>
+In-Reply-To: <20210205162523.GF920417@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 5 Feb 2021 14:11:44 -0800
+Message-ID: <CAEf4BzaXAxOnzkuiOpdMKjQyYHjAN6Td35hDGwbYc9i9aGuj0A@mail.gmail.com>
+Subject: Re: ANNOUNCE: pahole v1.20 (gcc11 DWARF5's default, lots of ELF
+ sections, BTF)
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     dwarves@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Domenico Andreoli <cavok@debian.org>,
+        Matthias Schwarzott <zzam@gentoo.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Mark Wieelard <mjw@redhat.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        Tom Stellard <tstellar@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-
---UxWCXiFroMay8coY
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-
-On 14:51 Fri 05 Feb 2021, Steven Rostedt wrote:
->On Fri,  5 Feb 2021 17:45:43 +0530
->Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
+On Fri, Feb 5, 2021 at 8:25 AM Arnaldo Carvalho de Melo
+<arnaldo.melo@gmail.com> wrote:
 >
->> s/fucked/messed/
+> Em Fri, Feb 05, 2021 at 06:33:43AM -0300, Arnaldo Carvalho de Melo escreveu:
+> > On February 5, 2021 4:39:47 AM GMT-03:00, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> > >On Thu, Feb 4, 2021 at 8:34 PM Arnaldo Carvalho de Melo ><arnaldo.melo@gmail.com> wrote:
+> > >> On February 4, 2021 9:01:51 PM GMT-03:00, Andrii Nakryiko
+> > ><andrii.nakryiko@gmail.com> wrote:
+> > >> >On Thu, Feb 4, 2021 at 2:09 PM Arnaldo Carvalho de
+> > >Melo><acme@kernel.org> wrote:
+> > >> >>         The v1.20 release of pahole and its friends is out, mostly
+> > >> >> addressing problems related to gcc 11 defaulting to DWARF5 for -g,
+> > >> >> available at the usual places:
 >
->Rules about obscene language is about new code coming into the kernel. We
->don't want to encourage people to do sweeping changes of existing code. It
->just causes unwanted churn, and adds noise to the git logs.
+> > >> >Great, thanks, Arnaldo! Do you plan to build RPMs soon as well?
 >
->Sorry, NAK.
+> > >> It's in rawhide already, I'll do it for f33, f32 later,
 >
-You are spot on Steven.Thanks, man!
->-- Steve
+> > >Do you have a link? I tried to find it, but only see 1.19 so far.
+>
+> > https://koji.fedoraproject.org/koji/buildinfo?buildID=1703678
+>
+> And now for Fedora 33, waiting for karma bumps at:
+>
+> https://bodhi.fedoraproject.org/updates/FEDORA-2021-804e7a572c
+>
+> fedpkg buidling for f32 now.
+>
+> - Arnaldo
 
---UxWCXiFroMay8coY
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmAd5JoACgkQsjqdtxFL
-KRVJjwf9HiNq6piH7OOkVeCIFZ612OrZ09mEwQcxP8AN0TtxgI7eNH0k73SM4zMx
-8OsmrJRLv1+2dD5Uuzv825rUldYu7+TBYxdy7/RsLd8diK5y2f7fl5SbfytzkWIG
-DxzPBvwCJAFv1To3AkzA1v4DIPuUhHpYcesaZPgyOr8XVm+R8IlOQ/fkihN4IDxh
-HLhlNCyP0FA/dMjS58ZJ9ZP/pyr7ivf1ufsou5bHTDcswmnsH40/D09wiLxBuQTt
-+n8vON8abYdMtQK2bsvy6EMMZOBQUD7NA/yeszv7A/5za7QrSoj2TEaqx5+uSVod
-pS00qbw3qijXtJlgJwsbloLxM2jyRQ==
-=lyJS
------END PGP SIGNATURE-----
-
---UxWCXiFroMay8coY--
+Ok, imported dwarves-1.20. Had to fix two dates in changelog (in
+spec), day of week didn't match the date, tooling complained about
+that. Also had to undo cmake_build and cmake_install fanciness,
+because apparently we don't have them or the support for it is not
+great. But otherwise everything else looks to be ok.
