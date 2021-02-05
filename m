@@ -2,57 +2,40 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C40C7311948
-	for <lists+bpf@lfdr.de>; Sat,  6 Feb 2021 04:02:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39F2131194D
+	for <lists+bpf@lfdr.de>; Sat,  6 Feb 2021 04:03:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229777AbhBFDBh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Feb 2021 22:01:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230258AbhBFCrf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:47:35 -0500
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A694DC0698D1;
-        Fri,  5 Feb 2021 14:27:19 -0800 (PST)
-Received: by mail-yb1-xb2c.google.com with SMTP id y4so8236892ybk.12;
-        Fri, 05 Feb 2021 14:27:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZF+kVH13+yhFtpWltQEZs61WOnOm+RDU6OENTzqgftM=;
-        b=FX3/yhSYZu2WlKBs037VWu5o38fnwMmwmslev82RnmoXC/UZqo9ACDdvZUW97Gtnvl
-         0B5V4D17NLpQk2wMrYcikSomF4TMY8UpJ2nNtAoqxFavUqUhA/6XBH4Frgg7gUngspo6
-         vvyVoMVsgU6Ei3gs40AlpaBeHMUnHphJ8rJRHAN2O+uj2dNQlkRbdNRNxjQ4S8DaOQ5E
-         gVQl8mNta+J0vxwWCbyuM4Hifbjqo4k4X3NILuewRsOdVKRhaggmTZzLxgLrKMgI8CJW
-         d1L/r7LX5RsH2t71y1Rz+XzqwBOiMN4C+wWAjCvSCFjauAkWYSyelIvu9kxaMAUN/tiE
-         CJ5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZF+kVH13+yhFtpWltQEZs61WOnOm+RDU6OENTzqgftM=;
-        b=b6SZwVGwtB/7LDM/aKntBlr/Fk0OQE3mdTSSqCdjxBZ6j9BCX9xQ4D/atdlt/vZ0Uc
-         uDCMicj9JMUtBpoE7QJX9oE3KfAE8ZfEJqem2bmerZpc5/cLYgEb+AAuR6hYVJkg5gYD
-         aJcOtEMyEKc5mNnneDZCfESJllqfzG4vRpy8iA4ilnownDzkcJWEizIMFqe7xcNt4tOw
-         7Gsf/dDPmltBIiK/yFlO/LAXuS6WpC+Uo8Niau2jqk58PoaFU2rX55u2AzcX1cVHe52D
-         vjtzyDLThI52nyOPfJYQiM4mSUipRsgC5PWlaOGj2Lb0GU2/S0u5PalBhbCUaVxTCZmQ
-         ibtQ==
-X-Gm-Message-State: AOAM532K4s+uFgEh56JD9givHOVFbyXGfGnUam4/5Fwn1dHsCYxNx/z7
-        K0xOvxrndABMSKELK/qOBBRZXyGYgvcbiIystE8=
-X-Google-Smtp-Source: ABdhPJzUq31FJeNv9UnC/OaU7XfN5zJ4gnklBIWPCabLBw0WdzDZ5wjzOiAS8Xcv2r5S/iv+s/2buOiAdnlYtfo59mI=
-X-Received: by 2002:a25:da4d:: with SMTP id n74mr9798106ybf.347.1612564039083;
- Fri, 05 Feb 2021 14:27:19 -0800 (PST)
-MIME-Version: 1.0
-References: <20210205124020.683286-1-jolsa@kernel.org>
-In-Reply-To: <20210205124020.683286-1-jolsa@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 5 Feb 2021 14:27:08 -0800
-Message-ID: <CAEf4Bzao-9wNdHxGu1mMhSie78FyWno-RYJM6_Jay8s=hyUWJg@mail.gmail.com>
-Subject: Re: [PATCHv2 bpf-next 0/4] kbuild/resolve_btfids: Invoke
- resolve_btfids clean in root Makefile
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S229763AbhBFDBn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Feb 2021 22:01:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53261 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231433AbhBFCr5 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 5 Feb 2021 21:47:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612579591;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AYGGDA96ECWqQKM+EqU3BIR3anY2ge6JyymK2JmAKVg=;
+        b=gTlLe4wxsef9J5ZsO4tfhM62MCoSiwIJ5cxeFk0Rg6SQi8nNbEfWvsrMXZBgJ+5dzC1dqr
+        gBiSboR6iR39VCQoI8PgwMwYpX++2C5LuTcp0a4ohr4TgTn76C7klLXBDk/mKt7lhkKDC/
+        a1aWxmaQmVYCTx8AmFCNCAAjOtQmpbI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-309-b4VtmItPNTCb09moGMDoJA-1; Fri, 05 Feb 2021 17:33:00 -0500
+X-MC-Unique: b4VtmItPNTCb09moGMDoJA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AE7F08030B7;
+        Fri,  5 Feb 2021 22:32:57 +0000 (UTC)
+Received: from krava (unknown [10.40.195.59])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 6E42560C9C;
+        Fri,  5 Feb 2021 22:32:54 +0000 (UTC)
+Date:   Fri, 5 Feb 2021 23:32:53 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andriin@fb.com>,
         Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
@@ -63,42 +46,63 @@ Cc:     Alexei Starovoitov <ast@kernel.org>,
         Masahiro Yamada <masahiroy@kernel.org>,
         Michal Marek <michal.lkml@markovi.net>,
         Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCHv2 bpf-next 0/4] kbuild/resolve_btfids: Invoke
+ resolve_btfids clean in root Makefile
+Message-ID: <YB3HlQRKBWKqlYZG@krava>
+References: <20210205124020.683286-1-jolsa@kernel.org>
+ <CAEf4Bzao-9wNdHxGu1mMhSie78FyWno-RYJM6_Jay8s=hyUWJg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4Bzao-9wNdHxGu1mMhSie78FyWno-RYJM6_Jay8s=hyUWJg@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 4:45 AM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> hi,
-> resolve_btfids tool is used during the kernel build,
-> so we should clean it on kernel's make clean.
->
-> v2 changes:
->   - add Song's acks on patches 1 and 4 (others changed) [Song]
->   - add missing / [Andrii]
->   - change srctree variable initialization [Andrii]
->   - shifted ifdef for clean target [Andrii]
->
-> thanks,
-> jirka
->
->
+On Fri, Feb 05, 2021 at 02:27:08PM -0800, Andrii Nakryiko wrote:
+> On Fri, Feb 5, 2021 at 4:45 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > hi,
+> > resolve_btfids tool is used during the kernel build,
+> > so we should clean it on kernel's make clean.
+> >
+> > v2 changes:
+> >   - add Song's acks on patches 1 and 4 (others changed) [Song]
+> >   - add missing / [Andrii]
+> >   - change srctree variable initialization [Andrii]
+> >   - shifted ifdef for clean target [Andrii]
+> >
+> > thanks,
+> > jirka
+> >
+> >
+> 
+> FYI, your patch #2 didn't make it into the mailing list (see [0]). So
+> maybe wait for a bit and if it doesn't arrive, re-submit?
+> 
+>   [0] https://patchwork.kernel.org/user/todo/netdevbpf/?series=428711&delegate=121173&state=*
 
-FYI, your patch #2 didn't make it into the mailing list (see [0]). So
-maybe wait for a bit and if it doesn't arrive, re-submit?
+hum and lore shows just 1 and 4
+  https://lore.kernel.org/bpf/20210205124020.683286-1-jolsa@kernel.org/
 
-  [0] https://patchwork.kernel.org/user/todo/netdevbpf/?series=428711&delegate=121173&state=*
+I'll check and resent later 
 
-> ---
-> Jiri Olsa (4):
->       tools/resolve_btfids: Build libbpf and libsubcmd in separate directories
->       tools/resolve_btfids: Check objects before removing
->       tools/resolve_btfids: Set srctree variable unconditionally
->       kbuild: Add resolve_btfids clean to root clean target
->
->  Makefile                            |  7 ++++++-
->  tools/bpf/resolve_btfids/.gitignore |  2 --
->  tools/bpf/resolve_btfids/Makefile   | 44 ++++++++++++++++++++++----------------------
->  3 files changed, 28 insertions(+), 25 deletions(-)
->
+thanks,
+jirka
+
+> 
+> > ---
+> > Jiri Olsa (4):
+> >       tools/resolve_btfids: Build libbpf and libsubcmd in separate directories
+> >       tools/resolve_btfids: Check objects before removing
+> >       tools/resolve_btfids: Set srctree variable unconditionally
+> >       kbuild: Add resolve_btfids clean to root clean target
+> >
+> >  Makefile                            |  7 ++++++-
+> >  tools/bpf/resolve_btfids/.gitignore |  2 --
+> >  tools/bpf/resolve_btfids/Makefile   | 44 ++++++++++++++++++++++----------------------
+> >  3 files changed, 28 insertions(+), 25 deletions(-)
+> >
+> 
+
