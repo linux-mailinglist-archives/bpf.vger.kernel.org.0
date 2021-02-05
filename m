@@ -2,92 +2,77 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA3C310AFB
-	for <lists+bpf@lfdr.de>; Fri,  5 Feb 2021 13:20:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E10ED310B3C
+	for <lists+bpf@lfdr.de>; Fri,  5 Feb 2021 13:44:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231757AbhBEMTl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Feb 2021 07:19:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231366AbhBEMRP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Feb 2021 07:17:15 -0500
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 091A0C0613D6;
-        Fri,  5 Feb 2021 04:16:35 -0800 (PST)
-Received: by mail-qv1-xf2f.google.com with SMTP id ew18so3297088qvb.4;
-        Fri, 05 Feb 2021 04:16:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2wLorlSLwD8qAK1tCDXh1sGAgsLi9xWf3prmJoyDJAg=;
-        b=PtASXxH3/2jHxOR4T+9fXBgKh9dRfaxFVmefhuS2U4Q/J03Up20YXm1Q1WbKS/f6Fl
-         ErdvsV6Z8Zs2a5TPGfCJZ0K6w/MzQIGZZTKzrQLLYG3LXAh9vJnPckO5Fxn7q44nFmys
-         B8lcjDe7MqcFq9FWZRbvqhT/PWG9071Z31GQdrWw3dRTaKJg/wnugByvWdWnDfsexWhn
-         lQc/1dV0014s0pd5yzXO01iUBfKHQyLMkqQpM/YnkTZp751MjUeCAijz7vA/rkYXDC3c
-         P25LIn7UZMWuU+d0HI3JVKvzwiacvgwER5MnJewt+8tY0alpnlsQO/mLzIW5RuM4uF7z
-         jFog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2wLorlSLwD8qAK1tCDXh1sGAgsLi9xWf3prmJoyDJAg=;
-        b=W/qpFoQcPsholci9KJ8ODwuQIPcCC1wjM5BuhgcPIj4cHchXvB9uFYjQoBz/FAULkJ
-         4u2OQAAwsv9lRtKRTM2BUotC7pU30dwq+8PefPDSzqm5Raset4GbDJPiDXWveVlY0LkO
-         j916Y1RL0znwSUoXBG6JiSjDHpnAn+uVo9IWDQqf1+GZRfIl7OmtLglgWZYjPV5QAn84
-         hAF0NbtZN8F6JSdcXJ40Q2g4lzx1xHwLhZquERBkaRVj2iTmAC/jiFyMGNOGc20Bs2xt
-         xB91qU0bfAIw1Xd/sv7aVvYF0VvR1d1B1l+C16dRG21xTWnIfEGzWOMHnpdxgQ0t0pPx
-         gfZw==
-X-Gm-Message-State: AOAM533Xl+OKFW8vqdG0jkbCfdHi5RGxoL/kJQacUpphWqRuw/01ZCGN
-        pqFotZA3cbEfNWjPa1fN2iY=
-X-Google-Smtp-Source: ABdhPJzA/cKN+AUQw23sLWPv+tFT6LuNDQiBAiKZR/e9S1Hwe+1Fe48tmJVez9MKD1WQQVGrbpfT1g==
-X-Received: by 2002:a05:6214:20a1:: with SMTP id 1mr3848322qvd.30.1612527394045;
-        Fri, 05 Feb 2021 04:16:34 -0800 (PST)
-Received: from localhost.localdomain ([138.199.10.106])
-        by smtp.gmail.com with ESMTPSA id g186sm8760220qke.0.2021.02.05.04.16.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Feb 2021 04:16:33 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, andriy.shevchenko@linux.intel.com,
-        linux@rasmusvillemoes.dk, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] lib:  Replace obscene word with a better one :)
-Date:   Fri,  5 Feb 2021 17:45:43 +0530
-Message-Id: <20210205121543.1315285-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.30.0
+        id S232256AbhBEMnh convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Fri, 5 Feb 2021 07:43:37 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:51124 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232210AbhBEMl3 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 5 Feb 2021 07:41:29 -0500
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-187-ELyE_vpNNOiQyxonvvGvSw-1; Fri, 05 Feb 2021 07:40:26 -0500
+X-MC-Unique: ELyE_vpNNOiQyxonvvGvSw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 389F6804036;
+        Fri,  5 Feb 2021 12:40:24 +0000 (UTC)
+Received: from krava.cust.in.nbox.cz (unknown [10.40.195.59])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 24DAA60936;
+        Fri,  5 Feb 2021 12:40:20 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org
+Subject: [PATCHv2 bpf-next 0/4] kbuild/resolve_btfids: Invoke resolve_btfids clean in root Makefile
+Date:   Fri,  5 Feb 2021 13:40:16 +0100
+Message-Id: <20210205124020.683286-1-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+hi,
+resolve_btfids tool is used during the kernel build,
+so we should clean it on kernel's make clean.
+
+v2 changes:
+  - add Song's acks on patches 1 and 4 (others changed) [Song]
+  - add missing / [Andrii]
+  - change srctree variable initialization [Andrii]
+  - shifted ifdef for clean target [Andrii]
+
+thanks,
+jirka
 
 
-s/fucked/messed/
-
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
 ---
- lib/vsprintf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Jiri Olsa (4):
+      tools/resolve_btfids: Build libbpf and libsubcmd in separate directories
+      tools/resolve_btfids: Check objects before removing
+      tools/resolve_btfids: Set srctree variable unconditionally
+      kbuild: Add resolve_btfids clean to root clean target
 
-diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-index 3b53c73580c5..470805777117 100644
---- a/lib/vsprintf.c
-+++ b/lib/vsprintf.c
-@@ -7,7 +7,7 @@
-
- /* vsprintf.c -- Lars Wirzenius & Linus Torvalds. */
- /*
-- * Wirzenius wrote this portably, Torvalds fucked it up :-)
-+ * Wirzenius wrote this portably, Torvalds messed it up :-)
-  */
-
- /*
---
-2.30.0
+ Makefile                            |  7 ++++++-
+ tools/bpf/resolve_btfids/.gitignore |  2 --
+ tools/bpf/resolve_btfids/Makefile   | 44 ++++++++++++++++++++++----------------------
+ 3 files changed, 28 insertions(+), 25 deletions(-)
 
