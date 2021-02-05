@@ -2,239 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3974310149
-	for <lists+bpf@lfdr.de>; Fri,  5 Feb 2021 01:05:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D45D310154
+	for <lists+bpf@lfdr.de>; Fri,  5 Feb 2021 01:07:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231470AbhBEAFf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Feb 2021 19:05:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37322 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231433AbhBEAFd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Feb 2021 19:05:33 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA857C06178A
-        for <bpf@vger.kernel.org>; Thu,  4 Feb 2021 16:04:53 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id t25so3289441pga.2
-        for <bpf@vger.kernel.org>; Thu, 04 Feb 2021 16:04:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WuuWQCiwdV87iW0z7KxVY5BTEgeNizYr5qdipOfxXnc=;
-        b=hJu87bCSyR1Kv3ijwZbkKNvs01VCINeDtrWjeRxX0TBc8YFS0tk3FKL/zdwi5VP7td
-         PlI3K7mcZso4bJEOtv2rLoBj6TsGxU5HNATT/olyMpUxY4HRuKpdwLeygD5lQ8xJXyOp
-         8asM747S5Mmf6ZQXTnIFYFS2YDOaPVm7uCVnAZHlVeCEVMxQ/t1wP3+dug/EL2QxGaN6
-         venL6y4MmxsBhkB5uiilZ5lgZBP8TP8wJsjgmE9Nxna2IKtbRPWfJKVmMg86FnHWsU3p
-         boUZ8oswAq6lgYMKhYI1r5M8OCCIaXcU2dNcitOPz+jh/6ehx6tlLGeezWQwGD5UU9Ze
-         SQNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WuuWQCiwdV87iW0z7KxVY5BTEgeNizYr5qdipOfxXnc=;
-        b=a9dRMrg+DTw1foQF7Jr0Ntbc+CzPiOjh24N66++bcoobjVETx3iy2ftJFCQ3ddzcxh
-         QT0bK5goP3PbUopyfx6LQ6Q9lkPaUJ7SopzR2GLHWq87FXXcXzRPeRXtYx2J7QFpLC4M
-         vwX/FVqufOvKMV/6qbJMA5TnkEE5fnmUshC7PuycBicaoP5x6Kam5AHiP2CmITPsJgt7
-         rFiAI5NR/eqCi3wmmqI4m2Fi8M3CfZgqWsvUzYLYPst38NKk2LTHST7MI5KhMMUFt5sn
-         dEronW7LQd05c1inNam7/vf/HmEG3fzmcdT6E4lNLePowkDK6qhQIr3fxD4fToz6Hr5E
-         EYgA==
-X-Gm-Message-State: AOAM530UJWywiXQ4CroxLMm+orzaKeT9ODauHmIw8CNksgTCbC3UtlMM
-        pzocpPKxxRvcwu81RMxdCI4kJZylD1DQIvAwru9J/w==
-X-Google-Smtp-Source: ABdhPJxiqPOP+t9zseOEfIyIpqMaTUgdxO3foYKfOGifXc4uOhxBTBoT0OVMHzFKRSkn1upcNYcLbnRumZUT3uow9Yg=
-X-Received: by 2002:a62:838d:0:b029:1ba:9b85:2eac with SMTP id
- h135-20020a62838d0000b02901ba9b852eacmr1917244pfe.36.1612483492832; Thu, 04
- Feb 2021 16:04:52 -0800 (PST)
+        id S231448AbhBEAHW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Feb 2021 19:07:22 -0500
+Received: from www62.your-server.de ([213.133.104.62]:60740 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231366AbhBEAHV (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 Feb 2021 19:07:21 -0500
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1l7odw-000208-RC; Fri, 05 Feb 2021 01:06:36 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1l7odw-000LFw-IN; Fri, 05 Feb 2021 01:06:36 +0100
+Subject: Re: [PATCH bpf-next V15 2/7] bpf: fix bpf_fib_lookup helper MTU check
+ for SKB ctx
+To:     Jesper Dangaard Brouer <brouer@redhat.com>, bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
+        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
+        colrack@gmail.com
+References: <161228314075.576669.15427172810948915572.stgit@firesoul>
+ <161228321177.576669.11521750082473556168.stgit@firesoul>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <ada19e5b-87be-ff39-45ba-ff0025bf1de9@iogearbox.net>
+Date:   Fri, 5 Feb 2021 01:06:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20210115210616.404156-1-ndesaulniers@google.com>
- <CA+icZUVp+JNq89uc_DyWC6zh5=kLtUr7eOxHizfFggnEVGJpqw@mail.gmail.com>
- <7354583d-de40-b6b9-6534-a4f4c038230f@fb.com> <CAKwvOd=5iR0JONwDb6ypD7dzzjOS3Uj0CjcyYqPF48eK4Pi90Q@mail.gmail.com>
- <12b6c2ca-4cf7-4edd-faf2-72e3cb59c00e@fb.com> <20210117201500.GO457607@kernel.org>
- <CAKwvOdmniAMZD0LiFdr5N8eOwHqNFED2Pd=pwOFF2Y8eSRXUHA@mail.gmail.com>
- <CAEf4Bzbn1app3LZ1oah5ARn81j5RMNxRRHPVAkeY3h_0q7+7fg@mail.gmail.com>
- <CAKwvOdmrVdxbEHdOFA8x+Q2yDWOfChZzBc6nR3rdaM8R3LsxfQ@mail.gmail.com> <CAEf4Bzbs5sDTB6w1D4LpKLGjY5sCCUnRUsU84Ccn8DoL352j1g@mail.gmail.com>
-In-Reply-To: <CAEf4Bzbs5sDTB6w1D4LpKLGjY5sCCUnRUsU84Ccn8DoL352j1g@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 4 Feb 2021 16:04:40 -0800
-Message-ID: <CAKwvOdk-4_Pt=DKFokDpG8L58xj4J-=PPrgSLEZnYs7VJu1jZA@mail.gmail.com>
-Subject: Re: [PATCH v5 0/3] Kbuild: DWARF v5 support
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Fangrui Song <maskray@google.com>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <161228321177.576669.11521750082473556168.stgit@firesoul>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26070/Thu Feb  4 13:22:39 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Moving a bunch of folks + lists to BCC.
+On 2/2/21 5:26 PM, Jesper Dangaard Brouer wrote:
+> BPF end-user on Cilium slack-channel (Carlo Carraro) wants to use
+> bpf_fib_lookup for doing MTU-check, but *prior* to extending packet size,
+> by adjusting fib_params 'tot_len' with the packet length plus the expected
+> encap size. (Just like the bpf_check_mtu helper supports). He discovered
+> that for SKB ctx the param->tot_len was not used, instead skb->len was used
+> (via MTU check in is_skb_forwardable() that checks against netdev MTU).
+> 
+> Fix this by using fib_params 'tot_len' for MTU check. If not provided (e.g.
+> zero) then keep existing TC behaviour intact. Notice that 'tot_len' for MTU
+> check is done like XDP code-path, which checks against FIB-dst MTU.
+> 
+> V13:
+> - Only do ifindex lookup one time, calling dev_get_by_index_rcu().
+> 
+> V10:
+> - Use same method as XDP for 'tot_len' MTU check
+> 
+> Fixes: 4c79579b44b1 ("bpf: Change bpf_fib_lookup to return lookup status")
+> Reported-by: Carlo Carraro <colrack@gmail.com>
+> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> Acked-by: John Fastabend <john.fastabend@gmail.com>
+[...]
 
-On Thu, Feb 4, 2021 at 3:54 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Wed, Feb 3, 2021 at 7:13 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
-> >
-> > On Wed, Feb 3, 2021 at 6:58 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Wed, Feb 3, 2021 at 5:31 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
-> > > >
-> > > > On Sun, Jan 17, 2021 at 12:14 PM Arnaldo Carvalho de Melo
-> > > > <acme@kernel.org> wrote:
-> > > > >
-> > > > > Em Fri, Jan 15, 2021 at 03:43:06PM -0800, Yonghong Song escreveu:
-> > > > > >
-> > > > > >
-> > > > > > On 1/15/21 3:34 PM, Nick Desaulniers wrote:
-> > > > > > > On Fri, Jan 15, 2021 at 3:24 PM Yonghong Song <yhs@fb.com> wrote:
-> > > > > > > >
-> > > > > > > >
-> > > > > > > >
-> > > > > > > > On 1/15/21 1:53 PM, Sedat Dilek wrote:
-> > > > > > > > > En plus, I encountered breakage with GCC v10.2.1 and LLVM=1 and
-> > > > > > > > > CONFIG_DEBUG_INFO_DWARF4.
-> > > > > > > > > So might be good to add a "depends on !DEBUG_INFO_BTF" in this combination.
-> > > > > > >
-> > > > > > > Can you privately send me your configs that repro? Maybe I can isolate
-> > > > > > > it to a set of configs?
-> > > > > > >
-> > > > > > > >
-> > > > > > > > I suggested not to add !DEBUG_INFO_BTF to CONFIG_DEBUG_INFO_DWARF4.
-> > > > > > > > It is not there before and adding this may suddenly break some users.
-> > > > > > > >
-> > > > > > > > If certain combination of gcc/llvm does not work for
-> > > > > > > > CONFIG_DEBUG_INFO_DWARF4 with pahole, this is a bug bpf community
-> > > > > > > > should fix.
-> > > > > > >
-> > > > > > > Is there a place I should report bugs?
-> > > > > >
-> > > > > > You can send bug report to Arnaldo Carvalho de Melo <acme@kernel.org>,
-> > > > > > dwarves@vger.kernel.org and bpf@vger.kernel.org.
-> > > > >
-> > > > > I'm coming back from vacation, will try to read the messages and see if
-> > > > > I can fix this.
-> > > >
-> > > > IDK about DWARF v4; that seems to work for me.  I was previously observing
-> > > > https://bugzilla.redhat.com/show_bug.cgi?id=1922698
-> > > > with DWARF v5.  I just re-pulled the latest pahole, rebuilt, and no
-> > > > longer see that warning.
-> > > >
-> > > > I now observe a different set.  I plan on attending "BPF office hours
-> > > > tomorrow morning," but if anyone wants a sneak peak of the errors and
-> > > > how to reproduce:
-> > > > https://gist.github.com/nickdesaulniers/ae8c9efbe4da69b1cf0dce138c1d2781
-> > > >
-> > >
-> > > Is there another (easy) way to get your patch set without the b4 tool?
-> > > Is your patch set present in some patchworks instance, so that I can
-> > > download it in mbox format, for example?
-> >
-> > $ wget https://lore.kernel.org/lkml/20210130004401.2528717-2-ndesaulniers@google.com/raw
-> > -O - | git am
-> > $ wget https://lore.kernel.org/lkml/20210130004401.2528717-3-ndesaulniers@google.com/raw
-> > -O - | git am
-> >
-> > If you haven't tried b4 yet, it's quite nice.  Hard to go back.  Lore
-> > also has mbox.gz links.  Not sure about patchwork.
-> >
->
-> Ok, I managed to apply that on linux-next, but I can't get past this:
->
-> ld.lld: error: undefined symbol: pa_trampoline_start
-> >>> referenced by arch/x86/realmode/rm/header.o:(real_mode_header)
+I was about to apply the series just now, but on a last double check there is
+a subtle logic bug in here that still needs fixing unfortunately. :/ See below:
 
-Thanks for testing and the report. Do you have a .config you can send
-me to reproduce?
+> @@ -5568,7 +5565,9 @@ BPF_CALL_4(bpf_skb_fib_lookup, struct sk_buff *, skb,
+>   	   struct bpf_fib_lookup *, params, int, plen, u32, flags)
+>   {
+>   	struct net *net = dev_net(skb->dev);
+> +	struct net_device *dev;
+>   	int rc = -EAFNOSUPPORT;
+> +	bool check_mtu = false;
+>   
+>   	if (plen < sizeof(*params))
+>   		return -EINVAL;
+> @@ -5576,23 +5575,30 @@ BPF_CALL_4(bpf_skb_fib_lookup, struct sk_buff *, skb,
+>   	if (flags & ~(BPF_FIB_LOOKUP_DIRECT | BPF_FIB_LOOKUP_OUTPUT))
+>   		return -EINVAL;
+>   
+> +	dev = dev_get_by_index_rcu(net, params->ifindex);
+> +	if (unlikely(!dev))
+> +		return -ENODEV;
 
->
-> ld.lld: error: undefined symbol: pa_trampoline_header
-> >>> referenced by arch/x86/realmode/rm/header.o:(real_mode_header)
->
-> ld.lld: error: undefined symbol: pa_trampoline_pgd
-> >>> referenced by arch/x86/realmode/rm/header.o:(real_mode_header)
-> >>> referenced by trampoline_64.S:142 (/data/users/andriin/linux/arch/x86/realmode/rm/trampoline_64.S:142)
-> >>>               arch/x86/realmode/rm/trampoline_64.o:(startup_32)
->
-> ld.lld: error: undefined symbol: pa_wakeup_start
-> >>> referenced by arch/x86/realmode/rm/header.o:(real_mode_header)
->
-> ld.lld: error: undefined symbol: pa_wakeup_header
-> >>> referenced by arch/x86/realmode/rm/header.o:(real_mode_header)
->
-> ld.lld: error: undefined symbol: pa_machine_real_restart_asm
-> >>> referenced by arch/x86/realmode/rm/header.o:(real_mode_header)
->
-> ld.lld: error: undefined symbol: pa_startup_32
-> >>> referenced by trampoline_64.S:77 (/data/users/andriin/linux/arch/x86/realmode/rm/trampoline_64.S:77)
-> >>>               arch/x86/realmode/rm/trampoline_64.o:(trampoline_start)
->
-> ld.lld: error: undefined symbol: pa_tr_flags
-> >>> referenced by trampoline_64.S:124 (/data/users/andriin/linux/arch/x86/realmode/rm/trampoline_64.S:124)
-> >>>               arch/x86/realmode/rm/trampoline_64.o:(startup_32)
->
-> ld.lld: error: undefined symbol: pa_tr_cr4
-> >>> referenced by trampoline_64.S:138 (/data/users/andriin/linux/arch/x86/realmode/rm/trampoline_64.S:138)
-> >>>               arch/x86/realmode/rm/trampoline_64.o:(startup_32)
->
-> ld.lld: error: undefined symbol: pa_tr_efer
-> >>> referenced by trampoline_64.S:146 (/data/users/andriin/linux/arch/x86/realmode/rm/trampoline_64.S:146)
-> >>>               arch/x86/realmode/rm/trampoline_64.o:(startup_32)
-> >>> referenced by trampoline_64.S:147 (/data/users/andriin/linux/arch/x86/realmode/rm/trampoline_64.S:147)
-> >>>               arch/x86/realmode/rm/trampoline_64.o:(startup_32)
->
-> ld.lld: error: undefined symbol: pa_startup_64
-> >>> referenced by trampoline_64.S:161 (/data/users/andriin/linux/arch/x86/realmode/rm/trampoline_64.S:161)
-> >>>               arch/x86/realmode/rm/trampoline_64.o:(startup_32)
->
-> ld.lld: error: undefined symbol: pa_tr_gdt
-> >>> referenced by arch/x86/realmode/rm/trampoline_64.o:(tr_gdt)
-> >>> referenced by reboot.S:28 (/data/users/andriin/linux/arch/x86/realmode/rm/reboot.S:28)
-> >>>               arch/x86/realmode/rm/reboot.o:(machine_real_restart_asm)
->
-> ld.lld: error: undefined symbol: pa_machine_real_restart_paging_off
-> >>> referenced by reboot.S:34 (/data/users/andriin/linux/arch/x86/realmode/rm/reboot.S:34)
-> >>>               arch/x86/realmode/rm/reboot.o:(machine_real_restart_asm)
->
-> ld.lld: error: undefined symbol: pa_machine_real_restart_idt
-> >>> referenced by reboot.S:47 (/data/users/andriin/linux/arch/x86/realmode/rm/reboot.S:47)
-> >>>               arch/x86/realmode/rm/reboot.o:(machine_real_restart_asm)
->
-> ld.lld: error: undefined symbol: pa_machine_real_restart_gdt
-> >>> referenced by reboot.S:54 (/data/users/andriin/linux/arch/x86/realmode/rm/reboot.S:54)
-> >>>               arch/x86/realmode/rm/reboot.o:(machine_real_restart_asm)
-> >>> referenced by arch/x86/realmode/rm/reboot.o:(machine_real_restart_gdt)
->
-> ld.lld: error: undefined symbol: pa_wakeup_gdt
-> >>> referenced by arch/x86/realmode/rm/wakeup_asm.o:(wakeup_gdt)
->   CC      arch/x86/mm/numa_64.o
->   CC      arch/x86/mm/amdtopology.o
->   HOSTCC  arch/x86/entry/vdso/vdso2c
-> make[4]: *** [arch/x86/realmode/rm/realmode.elf] Error 1
-> make[3]: *** [arch/x86/realmode/rm/realmode.bin] Error 2
-> make[2]: *** [arch/x86/realmode] Error 2
-> make[2]: *** Waiting for unfinished jobs....
->
->
-> Hopefully Arnaldo will have better luck.
->
->
->
-> > >
-> > > >
-> > > > (FWIW: some other folks are hitting issues now with kernel's lack of
-> > > > DWARF v5 support: https://bugzilla.redhat.com/show_bug.cgi?id=1922707)
-> >
-> >
-> > --
-> > Thanks,
-> > ~Nick Desaulniers
+Based on your earlier idea, you try to avoid refetching the dev this way, so
+here it's being looked up via params->ifindex provided from the BPF prog ...
 
+> +	if (params->tot_len)
+> +		check_mtu = true;
+> +
+>   	switch (params->family) {
+>   #if IS_ENABLED(CONFIG_INET)
+>   	case AF_INET:
+> -		rc = bpf_ipv4_fib_lookup(net, params, flags, false);
+> +		rc = bpf_ipv4_fib_lookup(net, dev, params, flags, check_mtu);
 
+... however, bpf_ipv{4,6}_fib_lookup() might change params->ifindex here to
+indicate nexthop output dev:
 
--- 
+[...]
+         dev = nhc->nhc_dev;
+
+         params->rt_metric = res.fi->fib_priority;
+         params->ifindex = dev->ifindex;
+[...]
+
+>   		break;
+>   #endif
+>   #if IS_ENABLED(CONFIG_IPV6)
+>   	case AF_INET6:
+> -		rc = bpf_ipv6_fib_lookup(net, params, flags, false);
+> +		rc = bpf_ipv6_fib_lookup(net, dev, params, flags, check_mtu);
+>   		break;
+>   #endif
+>   	}
+>   
+> -	if (!rc) {
+> -		struct net_device *dev;
+> -
+> -		dev = dev_get_by_index_rcu(net, params->ifindex);
+> +	if (rc == BPF_FIB_LKUP_RET_SUCCESS && !check_mtu) {
+> +		/* When tot_len isn't provided by user,
+> +		 * check skb against net_device MTU
+> +		 */
+>   		if (!is_skb_forwardable(dev, skb))
+>   			rc = BPF_FIB_LKUP_RET_FRAG_NEEDED;
+
+... so using old cached dev from above will result in wrong MTU check &
+subsequent passing of wrong params->mtu_result = dev->mtu this way. So one
+way to fix is that we would need to pass &dev to bpf_ipv{4,6}_fib_lookup().
+
+>   	}
+> 
+> 
+
 Thanks,
-~Nick Desaulniers
+Daniel
