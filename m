@@ -2,118 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB64A31022F
-	for <lists+bpf@lfdr.de>; Fri,  5 Feb 2021 02:25:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC010310261
+	for <lists+bpf@lfdr.de>; Fri,  5 Feb 2021 02:48:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232636AbhBEBZh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 4 Feb 2021 20:25:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54534 "EHLO
+        id S232693AbhBEBrw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 4 Feb 2021 20:47:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232391AbhBEBZh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 4 Feb 2021 20:25:37 -0500
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E305C0613D6;
-        Thu,  4 Feb 2021 17:24:56 -0800 (PST)
-Received: by mail-yb1-xb2b.google.com with SMTP id k4so5174260ybp.6;
-        Thu, 04 Feb 2021 17:24:56 -0800 (PST)
+        with ESMTP id S232678AbhBEBrt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 4 Feb 2021 20:47:49 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEE79C0613D6;
+        Thu,  4 Feb 2021 17:47:08 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id q12so7520226lfo.12;
+        Thu, 04 Feb 2021 17:47:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=JU/raeYJR27PicXqCD5E08kik/ZTwMk0wIqJ2cm+620=;
-        b=tZtjzKRq9ihWGI0MjFf/6vxRkHNn6a8AIA0LHZBF1ytmeRl8kOqc+p0p90mEAVDkPV
-         t2t0eZNEEzFk+B+kdXNY7AYhLfH577dAtD/icpsjMzUCaul9UmZVA9MCkjz9PjnB0mi0
-         8LxfypDOSkBZN2LAdcpNg5vIziQYmTyFCTFdpzXWK2SH/Z/5WNdaa0Zu+itYK1mSlAB2
-         xr/Y5Le4q0BPD/Rhlx9EtrNe80MAdUYTjBALI0xh34n0Z69Ac93aYtg8klFpE8V+b9/t
-         6MIAwrcwJTsgznmFal1SLNVIrSw28i/xwkO8cSPpeBZcRvIBrAaE5dtU0LDXdU44Q7jY
-         aGkA==
+        bh=HFUlgfa0yv/MLmEQsXGfPFb3G6FL4A5NprSd5CvPpMk=;
+        b=r0yzv6pS19Vm35q0pMRBx8aAia/+6IDUR1k5NL6AYrf79UDYfw6vMbNRN5ecjSlKmx
+         B6eo54PGuK7/ON0tEVH3reuY0J7Cr5FpKy46tt8coqUGsldoRWyUb4ReUJJjVmJsocPR
+         zkDlzn5a/0VknhuBCwp/GGgkzGNaRoSlzXfLCHFQ+PNs7QdNhGp8iN7JgiP6myAZxJ/9
+         kf8gvqmM3KqpYnAsAUmRPWviV/eaOgNinIsseJtJbmx6ucxLiu8TDWdYX++yoh7KyCvN
+         I4l0yiOJfnll0dJMyRNN9OZpDtXqVm6NjvzBfMy+fkoKnlIuIwxKZ23wmg6z05CvAf3h
+         rc6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=JU/raeYJR27PicXqCD5E08kik/ZTwMk0wIqJ2cm+620=;
-        b=O49AE2/1k5sexo2r/5jsXDKM7uXPAdxd3yWe+fJauQ6NPcwBdW62jQpdJs7MrcyYOf
-         rsxUa+y8w+k39X2pSJAF32LXyXIKW5Yv0B6w7yJXerWnM8uPpxAUuDxN12+PdxQugpjT
-         /Dex7QavbAL/RZ8YseM628G8aseKkbnglM1RmrIxOBrE2t4kIwjPMUyftP58LS3lsNYN
-         IZlqM2TQOz/qLvFckyco98uh7WGTxi6IZvkBPD2v27fJq88Z6D4JCeKxdT+m1CSr/jqu
-         QVQ3SCbC46KWIOu3+VqnQ9AEUlSyrNM/exllmTFyKCV5Pk0z+qxUliWo6bsD7OjEWmeY
-         uQnQ==
-X-Gm-Message-State: AOAM531vYoUZ5w7TrPVN5j9L33uu9tg86VpP6r6HM3bcy3UGPeP2tmAm
-        xLMXwDbnPzxKlcacWUhx5br+UDJYgyIYVripYp1Avsj2+GKE8Apa
-X-Google-Smtp-Source: ABdhPJysn3NHGdFDkd1eSq92GIYy0j8F0yVhlRtC2g/GuR6/L53lWXisihLTp93qt8S6kji1B7T6sfTiPwiATncEJ7o=
-X-Received: by 2002:a25:f40e:: with SMTP id q14mr3097518ybd.230.1612488295518;
- Thu, 04 Feb 2021 17:24:55 -0800 (PST)
+        bh=HFUlgfa0yv/MLmEQsXGfPFb3G6FL4A5NprSd5CvPpMk=;
+        b=AOcw7Dcqq3TaVRoXwuUFyDE7TcmZ1GMPils3GQrRu0RcSPYrz0WOg8xO5qU/Ggky4p
+         8TRe6p+AGktWgS93pLHoEiFFQk+atTIY+44D7QRX9gKVtNh0RtsK1+wU56sHVDGqQ44o
+         UQtaozZfRDMn3Iyp0CJfta9ue/3plu4C13yyzjPlkBOSt6QbzfBBPa81mQagxOktUn1z
+         UaoJ/DF9lKCr0iY8tQvXUDxCBo7fkM1AAdZoIYcTwllLe0E8PtrcT97FmShQT3fQ4E48
+         QCPGMOOBYOCWEIMmai01ipCGxmXmLZFAVVFN26LSPnR/TeFVhgZZ8k1WTvaBx/PNZcU6
+         KPMw==
+X-Gm-Message-State: AOAM53331V6JTF6KgeVVzfdwcypkRxeT/dIVTdreAH14zwCV/JRlPZy8
+        pNcdnsId7pAKiGk6+YoZ6oZdnhNR1aS+7WIm9Kw=
+X-Google-Smtp-Source: ABdhPJzN6nDTfTI5N6Ze/d63acaPTf5IvURc4EmTRMRKa0cicEA0x9aDrF8Vv70X+2ElBIPK216DaYBJuex8iam1x9A=
+X-Received: by 2002:a19:787:: with SMTP id 129mr1276232lfh.540.1612489627417;
+ Thu, 04 Feb 2021 17:47:07 -0800 (PST)
 MIME-Version: 1.0
-References: <20210129134855.195810-1-jolsa@redhat.com> <20210204211825.588160-1-jolsa@kernel.org>
- <20210204211825.588160-4-jolsa@kernel.org>
-In-Reply-To: <20210204211825.588160-4-jolsa@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 4 Feb 2021 17:24:44 -0800
-Message-ID: <CAEf4BzbADQc4H5cW9x2rnZuNmXoj5BbniGngVK1Xv_bOMr-1iQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/4] tools/resolve_btfids: Set srctree variable unconditionally
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+References: <20210205015219.2939361-1-xujia39@huawei.com>
+In-Reply-To: <20210205015219.2939361-1-xujia39@huawei.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 4 Feb 2021 17:46:55 -0800
+Message-ID: <CAADnVQL5NBY2E2iGCYZAeGN5gtcK0uyM1UpDNaZ28Ukrrb8tGA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: clean up for 'const static' in bpf_lsm.c
+To:     Xu Jia <xujia39@huawei.com>
+Cc:     bpf <bpf@vger.kernel.org>, KP Singh <kpsingh@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+        Florent Revest <revest@chromium.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 4, 2021 at 1:21 PM Jiri Olsa <jolsa@kernel.org> wrote:
+On Thu, Feb 4, 2021 at 5:40 PM Xu Jia <xujia39@huawei.com> wrote:
 >
-> We want this clean to be called from tree's root Makefile,
-> which defines same srctree variable and that will screw
-> the make setup.
+> Prefer 'static const' over 'const static' here
 >
-> We actually do not use srctree being passed from outside,
-> so we can solve this by setting current srctree value
-> directly.
->
-> Also root Makefile does not define the implicit RM variable,
-> so adding RM initialization.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> Signed-off-by: Xu Jia <xujia39@huawei.com>
 > ---
->  tools/bpf/resolve_btfids/Makefile | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+>  kernel/bpf/bpf_lsm.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
-> index 3007cfabf5e6..b41fc9a81e83 100644
-> --- a/tools/bpf/resolve_btfids/Makefile
-> +++ b/tools/bpf/resolve_btfids/Makefile
-> @@ -2,11 +2,9 @@
->  include ../../scripts/Makefile.include
->  include ../../scripts/Makefile.arch
+> diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
+> index 1622a44d1617..75b1c678d558 100644
+> --- a/kernel/bpf/bpf_lsm.c
+> +++ b/kernel/bpf/bpf_lsm.c
+> @@ -67,7 +67,7 @@ BPF_CALL_2(bpf_bprm_opts_set, struct linux_binprm *, bprm, u64, flags)
 >
-> -ifeq ($(srctree),)
->  srctree := $(patsubst %/,%,$(dir $(CURDIR)))
->  srctree := $(patsubst %/,%,$(dir $(srctree)))
->  srctree := $(patsubst %/,%,$(dir $(srctree)))
+>  BTF_ID_LIST_SINGLE(bpf_bprm_opts_set_btf_ids, struct, linux_binprm)
+>
+> -const static struct bpf_func_proto bpf_bprm_opts_set_proto = {
+> +static const struct bpf_func_proto bpf_bprm_opts_set_proto = {
 
-Is this just a weird way of doing $(abspath $(CURDIR)/../../../)? Are
-there any advantages compared to a more straightforward way?
-
-> -endif
->
->  ifeq ($(V),1)
->    Q =
-> @@ -22,6 +20,7 @@ AR       = $(HOSTAR)
->  CC       = $(HOSTCC)
->  LD       = $(HOSTLD)
->  ARCH     = $(HOSTARCH)
-> +RM      ?= rm
->
->  OUTPUT ?= $(srctree)/tools/bpf/resolve_btfids/
->
-> --
-> 2.26.2
->
+I totally agree that it's more canonical this way, but I don't think
+such git history noise
+is worth it.
