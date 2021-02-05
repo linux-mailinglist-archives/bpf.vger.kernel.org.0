@@ -2,110 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47B8231080A
-	for <lists+bpf@lfdr.de>; Fri,  5 Feb 2021 10:38:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C4031085F
+	for <lists+bpf@lfdr.de>; Fri,  5 Feb 2021 10:53:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230249AbhBEJhu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Feb 2021 04:37:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230086AbhBEJfj (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Feb 2021 04:35:39 -0500
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 645D9C06178A;
-        Fri,  5 Feb 2021 01:34:58 -0800 (PST)
-Received: by mail-qk1-x731.google.com with SMTP id a19so6289205qka.2;
-        Fri, 05 Feb 2021 01:34:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:user-agent:in-reply-to:references:mime-version
-         :content-transfer-encoding:subject:to:cc:from:message-id;
-        bh=RyOsYdR/cTpzVTwmGomv9xYgS+mZh3bKQ7rv1DKeR6w=;
-        b=Of0I76MkY8mE2TY8W3XTizCoTfJ9YcnTI+sUVrvvYt7zNe2A92zTzfpR2sEB52ust4
-         OqaCUvo9yDaCulFSorXIG2PypR+vS801Nkw+7z+II53UZfV6QoTinsyvDHK7szVPFI8r
-         pfpWO7NIjSdDypDrkJ3S0fvnXGVT8A6oE/pL+PEeUO1ELPhURMlgCo2BPKCIcSjSEn/F
-         NwA/BR6XjoR7NZs64lOeHiHB3RCHNHXuGll1EUAjFxFjW+IAvXKZevVZp9ZpfPLuosZ9
-         ofMJbZgiglpppUz724XnDzl1cZZOVbjfMdgVsSD46UH8oOSue4vjIBx/vuW/iApZxH4o
-         58Eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:user-agent:in-reply-to:references
-         :mime-version:content-transfer-encoding:subject:to:cc:from
-         :message-id;
-        bh=RyOsYdR/cTpzVTwmGomv9xYgS+mZh3bKQ7rv1DKeR6w=;
-        b=jBCuwKW/vs6oSo/n+S/GLeGh0gqfagciiXqlreZfEl0m45ymP6PJ+PdVdQ1aar6il+
-         CS1ViH7R1JhmF0I2FXZPjweqL1+XzYtTyyVqrhAk4JbIo47SLcIqSDOlJeHVhSko17gu
-         ru52VCLWlX4Yz6EdN8Vw4huYrwmnIXruS3PYdb5X8nDndFhLFgMfGkdapxNv0ZRwtcEB
-         IFvGJQHZPAV9SMu0oWqlAO0i/BkrCEeGObOhAI8t85IQn8HfXzUfdxz/hDIMSmTgFn45
-         IQg+oDgIu5uLrJCOS241RN4L9rBCbCkmip4VtOI4D4VGYg0/CABUPluM+rih4If9607H
-         RX1g==
-X-Gm-Message-State: AOAM530MDxDSgIOVDhJ9mSiReRKU+VCZt6YfFAGEpE4Fko8hHSWsAzPq
-        5YQk0axXgY089MuTaqb1ll9a0QGAVGcLqA==
-X-Google-Smtp-Source: ABdhPJxWYuW1W5C5/YDt0DT9CqM9NazHBc5cY6wwlA8DYAi2hTgOqS/lG4Ugj5qaqJRlZRMk8f1J0w==
-X-Received: by 2002:a37:66c2:: with SMTP id a185mr3456630qkc.30.1612517697516;
-        Fri, 05 Feb 2021 01:34:57 -0800 (PST)
-Received: from [192.168.86.198] ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id x62sm3648415qkd.1.2021.02.05.01.34.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Feb 2021 01:34:56 -0800 (PST)
-Date:   Fri, 05 Feb 2021 06:33:43 -0300
-User-Agent: K-9 Mail for Android
-In-Reply-To: <CAEf4BzZf_1g13dA1t6rbi1TFttufyGNaU14pPxo9uK-FVArCbQ@mail.gmail.com>
-References: <20210204220741.GA920417@kernel.org> <CAEf4BzY-RbXXW-Ajcvq4fziOJ=tMtT7O76SUboHQyULNDkhthw@mail.gmail.com> <C359F19F-29BC-4F6D-961A-79BFA47F36A7@gmail.com> <CAEf4BzZf_1g13dA1t6rbi1TFttufyGNaU14pPxo9uK-FVArCbQ@mail.gmail.com>
+        id S229703AbhBEJwS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Feb 2021 04:52:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39870 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229727AbhBEJux (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 5 Feb 2021 04:50:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612518566;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xjgv6TBlt1h4VM26o37et2OrO2gHmNIuStDR6rITBLU=;
+        b=VWT+ZZWhQnfrZCxw9miTwZLEj33u3r7K8qI+7Q9T4x4lGkBnV+kPxSwHkhWpmHpu+PPJqj
+        SL/5EsCJaRZm+841OduoM75plM3CESwwDPIk0N5ZDvv5i9dR5duTPZ91XjBAiqd96Dmi9Q
+        Xnel/OS0YJUzFHWpxBZtsxo3juu5PLE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-597-jTsZft2DNzmCkYcDQddbkQ-1; Fri, 05 Feb 2021 04:49:23 -0500
+X-MC-Unique: jTsZft2DNzmCkYcDQddbkQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 27D6D193410E;
+        Fri,  5 Feb 2021 09:49:20 +0000 (UTC)
+Received: from krava (unknown [10.40.195.59])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 9167160937;
+        Fri,  5 Feb 2021 09:49:15 +0000 (UTC)
+Date:   Fri, 5 Feb 2021 10:49:15 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     peterz@infradead.org, acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, namhyung@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH] perf tools: Simplify the calculation of variables
+Message-ID: <YB0Um9N4rW8fd+oD@krava>
+References: <1612497255-87189-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: ANNOUNCE: pahole v1.20 (gcc11 DWARF5's default, lots of ELF sections, BTF)
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        dwarves@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Domenico Andreoli <cavok@debian.org>,
-        Matthias Schwarzott <zzam@gentoo.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Mark Wieelard <mjw@redhat.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        =?ISO-8859-1?Q?Daniel_P=2E_Berrang=E9?= <berrange@redhat.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Tom Stellard <tstellar@redhat.com>
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Message-ID: <BFDC3C1D-F87D-4F82-BDB0-444629C484CE@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1612497255-87189-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+On Fri, Feb 05, 2021 at 11:54:15AM +0800, Jiapeng Chong wrote:
+> Fix the following coccicheck warnings:
+> 
+> ./tools/perf/util/header.c:3809:18-20: WARNING !A || A && B is
+> equivalent to !A || B.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  tools/perf/util/header.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
+> index c4ed3dc..4fe9e2a 100644
+> --- a/tools/perf/util/header.c
+> +++ b/tools/perf/util/header.c
+> @@ -3806,7 +3806,7 @@ int perf_session__read_header(struct perf_session *session)
+>  	 * check for the pipe header regardless of source.
+>  	 */
+>  	err = perf_header__read_pipe(session);
+> -	if (!err || (err && perf_data__is_pipe(data))) {
+> +	if (!err || perf_data__is_pipe(data)) {
 
+mama mia, thanks
 
-On February 5, 2021 4:39:47 AM GMT-03:00, Andrii Nakryiko <andrii=2Enakryi=
-ko@gmail=2Ecom> wrote:
->On Thu, Feb 4, 2021 at 8:34 PM Arnaldo Carvalho de Melo
-><arnaldo=2Emelo@gmail=2Ecom> wrote:
->>
->>
->>
->> On February 4, 2021 9:01:51 PM GMT-03:00, Andrii Nakryiko
-><andrii=2Enakryiko@gmail=2Ecom> wrote:
->> >On Thu, Feb 4, 2021 at 2:09 PM Arnaldo Carvalho de
->Melo><acme@kernel=2Eorg> wrote:
->> >>         The v1=2E20 release of pahole and its friends is out, mostly
->> >> addressing problems related to gcc 11 defaulting to DWARF5 for -g,
->> >> available at the usual places:
->> >
->> >Great, thanks, Arnaldo! Do you plan to build RPMs soon as well?
->>
->> It's in rawhide already, I'll do it for f33, f32 later,
->>
->
->Do you have a link? I tried to find it, but only see 1=2E19 so far=2E
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
+jirka
 
-https://koji=2Efedoraproject=2Eorg/koji/buildinfo?buildID=3D1703678
+>  		data->is_pipe = true;
+>  		return err;
+>  	}
+> -- 
+> 1.8.3.1
+> 
 
- - Arnaldo
-
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
