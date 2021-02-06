@@ -2,123 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64789311EA3
-	for <lists+bpf@lfdr.de>; Sat,  6 Feb 2021 17:29:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38BF2311EFE
+	for <lists+bpf@lfdr.de>; Sat,  6 Feb 2021 18:04:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230120AbhBFQ0k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 6 Feb 2021 11:26:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46592 "EHLO
+        id S229529AbhBFRE3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 6 Feb 2021 12:04:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbhBFQ0f (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 6 Feb 2021 11:26:35 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C05C061786;
-        Sat,  6 Feb 2021 08:25:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=qn9SKsuN29e/1ymaZOP8h+DprUmvijIyVh8PkwYRC0Q=; b=UsQINfoXzDgjQebAy+d8plz63j
-        FXVUoznhYMHmU/3fKXJ130rA6GWCCgwqwX7txvnrBWJkmpARul0/I8l2Z5vEJa5db4U0mcmtAA+b7
-        BzXCNLqUlE1dN2OOUTDdAgAkaK7L0A2/0Es5lzNrLLcmNUhg7HzvBvEFEairqnL7XUtl4WJt+n8BB
-        w5IQeUjKrfWaw8X9kO5C/ASif3CNdxkR2oyncqP+dB9rkzWYSVDZLO0g5rtKswFHCyygEyoOZXlzd
-        YrROyD+bf12K+I2qIQ1rWOamaSzottXEHFGPLYysdT7nMQwRvNk5DUleMcFhhh1xIC3f9IT+B/rYf
-        7bfKaOvw==;
-Received: from [2601:1c0:6280:3f0::b879]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l8QP6-0005uE-NW; Sat, 06 Feb 2021 16:25:49 +0000
-Subject: Re: [PATCH bpf v2] selftests/bpf: remove bash feature in
- test_xdp_redirect.sh
-To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        u9012063@gmail.com
-References: <20210206092654.155239-1-bjorn.topel@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <4cf38817-15bb-da36-68eb-4e268294b611@infradead.org>
-Date:   Sat, 6 Feb 2021 08:25:43 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <20210206092654.155239-1-bjorn.topel@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        with ESMTP id S229506AbhBFRE1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 6 Feb 2021 12:04:27 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 828A9C06174A
+        for <bpf@vger.kernel.org>; Sat,  6 Feb 2021 09:03:47 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id a16so5168509plh.8
+        for <bpf@vger.kernel.org>; Sat, 06 Feb 2021 09:03:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=H4cezS5QnSNmcJmgECpiNInHGlmR063+pidN+nlfYDY=;
+        b=GZ/868UIkH4D049tXl/mSubZQq/HqGbJvx/pSoAWUfy+TQs4vF0JA1rlDe3+4WV8dE
+         DiAyLF03zyZvTtXN4E6AJMAOllBcaHLJHEdIlXVkREUBqKitNiq/ZWzxNEYUbF6Qk5iq
+         okRGyum7SFwIWlT4PqAyU3/nkkiBEcR2N2PrJOXtx/lXb5d10HcLbYJ/FfIDrUEfssko
+         kisSjL1wWUJcqY3a65S5mihG+gFHsXGl538ePKwUFa9j4sZ5GFNKNz1sbBiWIPJ7UH3a
+         ntrbgYkDBqSLGnxN9pctquzxSodbJ5LuX/XRJRNxZhIgG4eAEKnEZPUSPFuAoYlmhI/p
+         kKng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=H4cezS5QnSNmcJmgECpiNInHGlmR063+pidN+nlfYDY=;
+        b=pzZ44byeMBS4IgJNOw26yIbw6ggjBoXSnxHll/mpPt4YG/juGx3yFGojsi0QP7i3c1
+         1LPHMfon+NTIWCViFXpf7r+SXeVRwBUqiRFhnrAe/a6GhPuKssvNUO596yNICwgZuvZW
+         ZFTPQNNHp1uCF63Wf73vg4Fb0gUh21UbRFuGjhtbYH/O6Vx6NkliyFAOm2qUepQ0bGJE
+         F1UcyobnJKe0SMKa1UN3E/Bxw7VQ6DcyX8lS0TwPa8v/yFf+xU2iEcf32DjlG931e+lY
+         qt0eQgmEptHPxETM0Hc0xvEM3KCRaXvwsFsni6VpbWRgI1U8hBj+GHTqM3u8nyN079RK
+         rk0A==
+X-Gm-Message-State: AOAM533LIEELGnLeIrSR6edfLuzmRWfgf0hnYabQ6NOtTl3VVkWK0B5l
+        aCrSqFrsAbzC+6tUvisJRDg=
+X-Google-Smtp-Source: ABdhPJxo8K8pbyRQLdykA1fgUfTMcukp5D6j29DwLxrd4k6gJZIWu9USxjsJ4lirfBOdosmxZFGqzw==
+X-Received: by 2002:a17:90a:7f8a:: with SMTP id m10mr9262756pjl.102.1612631026937;
+        Sat, 06 Feb 2021 09:03:46 -0800 (PST)
+Received: from ast-mbp.thefacebook.com ([163.114.132.7])
+        by smtp.gmail.com with ESMTPSA id j14sm11149964pjl.35.2021.02.06.09.03.45
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 06 Feb 2021 09:03:46 -0800 (PST)
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     davem@davemloft.net
+Cc:     daniel@iogearbox.net, bpf@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH v2 bpf-next 0/7] bpf: Misc improvements
+Date:   Sat,  6 Feb 2021 09:03:37 -0800
+Message-Id: <20210206170344.78399-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.13.5
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/6/21 1:26 AM, Björn Töpel wrote:
-> From: Björn Töpel <bjorn.topel@intel.com>
-> 
-> The test_xdp_redirect.sh script uses a bash redirect feature,
-> '&>/dev/null'. Use '>/dev/null 2>&1' instead.
-> 
-> Also remove the 'set -e' since the script actually relies on that the
-> return value can be used to determine pass/fail of the test.
-> 
-> Acked-by: William Tu <u9012063@gmail.com>
-> Fixes: 996139e801fd ("selftests: bpf: add a test for XDP redirect")
-> Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+From: Alexei Starovoitov <ast@kernel.org>
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Several improvements:
+- optimize prog stats
+- compute stats for sleepable progs
+- prevent recursion fentry/fexit and sleepable progs
+- allow map-in-map and per-cpu maps in sleepable progs
 
-Thanks.
+Alexei Starovoitov (7):
+  bpf: Optimize program stats
+  bpf: Compute program stats for sleepable programs
+  bpf: Add per-program recursion prevention mechanism
+  selftest/bpf: Add a recursion test
+  bpf: Count the number of times recursion was prevented
+  bpf: Allows per-cpu maps and map-in-map in sleepable programs
+  selftests/bpf: Add a test for map-in-map and per-cpu maps in sleepable
+    progs
 
-> ---
-> William, I kept your Acked-by.
-> 
-> v2: Kept /bin/sh and removed bashisms. (Randy)
-> ---
->  tools/testing/selftests/bpf/test_xdp_redirect.sh | 15 +++++++--------
->  1 file changed, 7 insertions(+), 8 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/test_xdp_redirect.sh b/tools/testing/selftests/bpf/test_xdp_redirect.sh
-> index dd80f0c84afb..4d4887da175c 100755
-> --- a/tools/testing/selftests/bpf/test_xdp_redirect.sh
-> +++ b/tools/testing/selftests/bpf/test_xdp_redirect.sh
-> @@ -46,20 +46,20 @@ test_xdp_redirect()
->  
->  	setup
->  
-> -	ip link set dev veth1 $xdpmode off &> /dev/null
-> +	ip link set dev veth1 $xdpmode off >/dev/null 2>&1
->  	if [ $? -ne 0 ];then
->  		echo "selftests: test_xdp_redirect $xdpmode [SKIP]"
->  		return 0
->  	fi
->  
-> -	ip -n ns1 link set veth11 $xdpmode obj xdp_dummy.o sec xdp_dummy &> /dev/null
-> -	ip -n ns2 link set veth22 $xdpmode obj xdp_dummy.o sec xdp_dummy &> /dev/null
-> -	ip link set dev veth1 $xdpmode obj test_xdp_redirect.o sec redirect_to_222 &> /dev/null
-> -	ip link set dev veth2 $xdpmode obj test_xdp_redirect.o sec redirect_to_111 &> /dev/null
-> +	ip -n ns1 link set veth11 $xdpmode obj xdp_dummy.o sec xdp_dummy >/dev/null 2>&1
-> +	ip -n ns2 link set veth22 $xdpmode obj xdp_dummy.o sec xdp_dummy >/dev/null 2>&1
-> +	ip link set dev veth1 $xdpmode obj test_xdp_redirect.o sec redirect_to_222 >/dev/null 2>&1
-> +	ip link set dev veth2 $xdpmode obj test_xdp_redirect.o sec redirect_to_111 >/dev/null 2>&1
->  
-> -	ip netns exec ns1 ping -c 1 10.1.1.22 &> /dev/null
-> +	ip netns exec ns1 ping -c 1 10.1.1.22 >/dev/null 2>&1
->  	local ret1=$?
-> -	ip netns exec ns2 ping -c 1 10.1.1.11 &> /dev/null
-> +	ip netns exec ns2 ping -c 1 10.1.1.11 >/dev/null 2>&1
->  	local ret2=$?
->  
->  	if [ $ret1 -eq 0 -a $ret2 -eq 0 ]; then
-> @@ -72,7 +72,6 @@ test_xdp_redirect()
->  	cleanup
->  }
->  
-> -set -e
->  trap cleanup 2 3 6 9
->  
->  test_xdp_redirect xdpgeneric
-> 
-> base-commit: 6183f4d3a0a2ad230511987c6c362ca43ec0055f
-> 
-
+ arch/x86/net/bpf_jit_comp.c                   | 46 ++++++++-----
+ include/linux/bpf.h                           | 16 ++---
+ include/linux/filter.h                        | 12 +++-
+ include/uapi/linux/bpf.h                      |  1 +
+ kernel/bpf/core.c                             | 16 +++--
+ kernel/bpf/hashtab.c                          |  4 +-
+ kernel/bpf/syscall.c                          | 16 +++--
+ kernel/bpf/trampoline.c                       | 59 +++++++++++++---
+ kernel/bpf/verifier.c                         |  9 ++-
+ tools/bpf/bpftool/prog.c                      |  5 ++
+ tools/include/uapi/linux/bpf.h                |  1 +
+ .../selftests/bpf/prog_tests/fexit_stress.c   |  2 +-
+ .../selftests/bpf/prog_tests/recursion.c      | 33 +++++++++
+ .../bpf/prog_tests/trampoline_count.c         |  4 +-
+ tools/testing/selftests/bpf/progs/lsm.c       | 69 +++++++++++++++++++
+ tools/testing/selftests/bpf/progs/recursion.c | 46 +++++++++++++
+ 16 files changed, 282 insertions(+), 57 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/recursion.c
+ create mode 100644 tools/testing/selftests/bpf/progs/recursion.c
 
 -- 
-~Randy
+2.24.1
 
