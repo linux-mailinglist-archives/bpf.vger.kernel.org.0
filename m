@@ -2,47 +2,47 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD11D311C67
-	for <lists+bpf@lfdr.de>; Sat,  6 Feb 2021 10:38:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF319311C6B
+	for <lists+bpf@lfdr.de>; Sat,  6 Feb 2021 10:50:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229508AbhBFJi0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 6 Feb 2021 04:38:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43548 "EHLO
+        id S229561AbhBFJtV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 6 Feb 2021 04:49:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbhBFJi0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 6 Feb 2021 04:38:26 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8470C06174A;
-        Sat,  6 Feb 2021 01:37:45 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id e133so9791503iof.8;
-        Sat, 06 Feb 2021 01:37:45 -0800 (PST)
+        with ESMTP id S229507AbhBFJtG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 6 Feb 2021 04:49:06 -0500
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D208C06174A;
+        Sat,  6 Feb 2021 01:48:26 -0800 (PST)
+Received: by mail-il1-x12e.google.com with SMTP id o7so3652898ils.2;
+        Sat, 06 Feb 2021 01:48:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:reply-to:from:date:message-id
          :subject:to:cc;
-        bh=2VaxF2CkV0qAkhm6EAHrg3IcsCKbcK26NcM9VzPCRSg=;
-        b=ZVYmEVt2esiOSt3sdycMDB1sB3UIflqcSdtX7ZpDpiJ39Hwcatd63uWXnUksa6lTVx
-         +YmjeZKqtQytnqRSqpcYVAA6MH3Q+PBiaD7r4rqE7xfNbLYxBBzZ+VrDkEwk7EoMhBxJ
-         0s2UywXm/fhODZU8PzwxppCWNOzV6rcPwDzgMqMXQhaPrKzQtHh94J+kVMcukZkAylW2
-         n9WGCp3xRTLy80TjpJ/jKoix+l28kFa5OKOuMwbKBwB+6M+uqsIpcKVP6cT+6TqapqvD
-         VXS7g8IFOSzAK2hNXOa/hCYG966eeHtyKThXBKcvQA1wxkm7q8+HFJRpGcr7OoNXVjfr
-         GP+g==
+        bh=YT7B7Kmbs88KzIQ6gK0JLVFvmDRBZ96FrA3Wv6zhpPI=;
+        b=rEfrpF6dwgxq9JVZbZl6QU2wZ+X2JK7fm8FlPZg/f2FGVe88dl1WjEiTsDCePeOwr1
+         EIIHFalF+4lmzm2YhIHJbl7GH4MaSMngRKiAKZk9qzyQttA8ky5aurgzPrMuHGif9xRM
+         oWREKc0iMnJbnU7cJRajM4LF7LaCfhqlcaMkxMhY6UZ6ciFndvHTht0FbgH9ex+i/Fjg
+         D/1GU+G0zu1cov2megwZOCw1Z0ejXnxLFI5K7+dKHbO3kRXV4lDfbqxoq7qBh0idoQ1R
+         fIQj7cSjUvXjbdgj1Yn/mrD9zN4zVGKPN8tiJPUroDYX8bdLqARGqsxo8jd/4RXhpKd2
+         J4Tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
          :from:date:message-id:subject:to:cc;
-        bh=2VaxF2CkV0qAkhm6EAHrg3IcsCKbcK26NcM9VzPCRSg=;
-        b=HIoGWJka6TYg8JK6TWHUDU6oRDdBUkQg+VVl7pHZ77yUosksI2HOXizacVpzCXF6Xl
-         ZmaRMgjzC/vTBEfELRx4PjV0X1b46qYvYXoEiZG5PSRRIZECkeXwGzX9P8nIG1rzHkzS
-         nkxLV009cLHK8Brq2eYH01gUw+WYHjYAO/8+tKEjNU8LzwFDoHLcRL9aJbTeRW+P+7ui
-         UL/NVNNdxCPVpFaZSPtCMB72CSbm3RvlyZUlhzFlXjHykdAfAn6BAViEMrHbb5NHrDGC
-         tEbAeVNeL7KZo7P2wwfDyo4sKoeLjSzuB6DEubLAucmzkWhR1VOAZ8xuX6jw39ueRxb0
-         0NWQ==
-X-Gm-Message-State: AOAM532q4sV+XGzxzDTGSN9ONHvIDk1MpB1ab6S09UWXXkwcJob3JqJ8
-        ODcXo6xgVevUsxWBiV41+6pc7TpGiobOSQmLQQE=
-X-Google-Smtp-Source: ABdhPJxtrT0DeK9S4hgS25Iyv8i94ELxidgRv796CtsLB1djggPBgSCgdH/J6QD8T6AgmtWx2PnYWFr9dpJO1E9wT/E=
-X-Received: by 2002:a02:9308:: with SMTP id d8mr104496jah.138.1612604265148;
- Sat, 06 Feb 2021 01:37:45 -0800 (PST)
+        bh=YT7B7Kmbs88KzIQ6gK0JLVFvmDRBZ96FrA3Wv6zhpPI=;
+        b=q+8D9JacCY1UozvKiIS4kPitNkTsecke2+eH4VUYuBYtxoU6ssjxExmZCHcZOGiHBR
+         Ptub6qM6WJK94NAF50ljYVkK5EVzsIxGGbTe7+27ULmGb9Y6XKQsTOUWxuveN09oBnA4
+         PZndDBu3cV2BDD3ITRYwds53nHwwiEajxdUvn8Q7EiHE1v/59Lm0Jdf1VnCFxD7SZlNV
+         /ZkKVI5A1uoR4goREhrMTLPzdHvUW57rzM3X+wxHpnrcDljQaIgI7GMM/bOk+0PJ7YzZ
+         qSnRDgEioP8V9KrWejx/ZERHEbnbPNMqk+CPtYyB3+4ue8NJq30+ulD2QETDIh3Xq3fy
+         0q5Q==
+X-Gm-Message-State: AOAM5317mm0qfuC8603kSmZQpCN+uRbUwN3qc1QpUJhUecP0AD4HcktJ
+        xtqbegkiUdzC/RyYtc7Af03UBKRPJwCQFdVYWLs=
+X-Google-Smtp-Source: ABdhPJw4KsND1G8lhlTKX5BdRcMhgXmuLEsLZdHhCZ0NlOMbgnospTjZbixLYLx07nBwfIhIjlgs5ci3QyIXV131iGo=
+X-Received: by 2002:a92:ce46:: with SMTP id a6mr7925825ilr.10.1612604905444;
+ Sat, 06 Feb 2021 01:48:25 -0800 (PST)
 MIME-Version: 1.0
 References: <20210204220741.GA920417@kernel.org> <CA+icZUVyB3qaqq3pwOyJY_F4V6KU9hdF=AJM_D7iEW4QK4Eo6w@mail.gmail.com>
  <20210205152823.GD920417@kernel.org> <CA+icZUWzMdhuHDkcKMHAd39iMEijk65v2ADcz0=FdODr38sJ4w@mail.gmail.com>
@@ -60,8 +60,8 @@ References: <20210204220741.GA920417@kernel.org> <CA+icZUVyB3qaqq3pwOyJY_F4V6KU9
 In-Reply-To: <CA+icZUU=qnLmZWsjeU2G=R0sTkx9+6qtG6Cni1xit=-p_vG_Pw@mail.gmail.com>
 Reply-To: sedat.dilek@gmail.com
 From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Sat, 6 Feb 2021 10:37:33 +0100
-Message-ID: <CA+icZUU3Qez9QVBDvxhJR6akN4=xB0zCzSfb8ssNqRxK0+MY=w@mail.gmail.com>
+Date:   Sat, 6 Feb 2021 10:48:13 +0100
+Message-ID: <CA+icZUUSTXqACW=0d9k4fC2y8TJEDjQ7WWwnnSR7KxsmC-SJhw@mail.gmail.com>
 Subject: Re: ERROR: INT DW_ATE_unsigned_1 Error emitting BTF type
 To:     Yonghong Song <yhs@fb.com>
 Cc:     Masahiro Yamada <masahiroy@kernel.org>,
@@ -471,9 +471,15 @@ On Sat, Feb 6, 2021 at 10:32 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
 > Will report later if I was able to boot on bare metal.
 >
 
-I uploaded the diff.
+When running scripts/Makefile.modfinal:
 
-Dropbox link:
-https://www.dropbox.com/sh/kvyh8ps7na0r1h5/AABfyNfDZ2bESse_bo4h05fFa?dl=0
+...
+not supported bit_size 160
+Encountered error while encoding BTF.
+...
+make[5]: *** [scripts/Makefile.modfinal:59:
+drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.ko] Error 1
+make[5]: *** Deleting file
+'drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.ko'
 
 - Sedat -
