@@ -2,145 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDDDD311BF7
-	for <lists+bpf@lfdr.de>; Sat,  6 Feb 2021 08:27:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23AB8311C05
+	for <lists+bpf@lfdr.de>; Sat,  6 Feb 2021 08:49:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229548AbhBFH0z (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 6 Feb 2021 02:26:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43878 "EHLO
+        id S229615AbhBFHrv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 6 Feb 2021 02:47:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbhBFH0y (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 6 Feb 2021 02:26:54 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1802AC06174A;
-        Fri,  5 Feb 2021 23:26:14 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id s24so9645122iob.6;
-        Fri, 05 Feb 2021 23:26:14 -0800 (PST)
+        with ESMTP id S229492AbhBFHrt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 6 Feb 2021 02:47:49 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2102BC06174A;
+        Fri,  5 Feb 2021 23:47:09 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id v15so10326415wrx.4;
+        Fri, 05 Feb 2021 23:47:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=WAkpmSceCQpOL9g/nb4W8z+4GPryDFavQAvOKJCZ4ec=;
-        b=NwAb6V1G+IFXjDY2j2EcxBPzs6HFWtDkMW2mZRrYx3hC+p/bXbeP+RdECFiLUGbbQV
-         dgwxhv7stlWzl3ZCYfBvptTMbLJdjgklbAY22It9SJlR67PxOQ9xDrtwAMyNqks19o5m
-         iGsY1xKaN2W3l+FKCqLZENSHycmGH/eUc3WxclUWvT/dJX3V9Uugc9XbVBAzXFTIOBCf
-         rWtViqSegeTtKjDJmtyTW2pgOnEWA9mv25ISVhYBprRJUApAIwwZVQnVDjp6diWfM1AC
-         tIaqESU482JRtGdqPQEjf24k3qcRGRKfoA91Ab3nUvWcqxIafO388gfvdHrdBLP8JeQi
-         cDsQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=8nbbx+2BPpOusI9WdJ1gNR0JQRp9V4wdi++84RYc1q0=;
+        b=hdAaw9ecKAbPrqZDbgx7RoCEPmIuju8UeNUT6H7sis7doWYMdZjAmzAFsA7qrRY9cn
+         acwIVe1OrKnkkUIziPduC9O9ja2VcVpDz/tRxJBf8boM3WIiy4bHWvXdb0oNSluNZj5r
+         95/qP+iETy50rYo94wWiERfRKyxgz6vwGCdhz6NARPVHtpbJ9SeixbrG9pgPfONvpy//
+         4oTfsBB0h0IjJf7jJnRslOPX17/e+9gSQfCcclfua8VbIqapLqOf94owdS8U63/wFZz+
+         StX6ksavDDUuHpmxlvsHjzzlMg5V/TF0Hbs4vKWntVsIFX+k6kASXUDJ15eC73Xo32eD
+         JAMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=WAkpmSceCQpOL9g/nb4W8z+4GPryDFavQAvOKJCZ4ec=;
-        b=W6o/DzpuTNys9wOpjWlnnEsMQu80QZyLbUNT3R12f8gslZFXDcUaRUAASvjCpFguZw
-         RW7hsaeJzXVjGs2we8u6ZpRxO/dqAaBvgFtFwUQ1ohH4S/XunZICyFgi+PANnK4xETON
-         P7h9B51iS9m0VUIzktJ6hGts2dXGaZaQEPayqU0oyhKnrvwV//yU0ynzbkfZJgGEN+J/
-         fLpcU+BvAW6Rj5YNWY+aJZ/vlcoTYU0ATvYQsrgML6GkRQ6aHQBEh4qeVrx4/8yGdskS
-         xxUEJbpdHuZkRkfD3j4fSF4TDikmn+mn0VGRScESTrKW1/Lu4CCK9v2iACVkucjX5QpS
-         Nf/g==
-X-Gm-Message-State: AOAM531nU2g8lnxR+g09b4pBUmc80C/12HOEnpFJOl4jaVF4KSaOQBA+
-        ah4qB7V/sMUHm7wtikDBUhZj7lnEcHrqAbM8wP8=
-X-Google-Smtp-Source: ABdhPJxBD9o8SaZXUd2IGQs70eRnxmjnsa9ro/WLT3SvzYjbuE5LfuJ45b6mWetkQkmLI043G1Ku8Oyjb9KMFs2gvJA=
-X-Received: by 2002:a05:6638:251:: with SMTP id w17mr8479927jaq.138.1612596373526;
- Fri, 05 Feb 2021 23:26:13 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=8nbbx+2BPpOusI9WdJ1gNR0JQRp9V4wdi++84RYc1q0=;
+        b=FXuwtXMa7TaoRgrSsuuh1qE7fKOM44/OSQsWZg/eUZCwU9iECsRGprkxtfvfRZ2AHJ
+         0kub9q3yPyhrEs9eXe3f2m8xy7TYH9eJNp6C4Ka3ZPUy1cU5dV0FJcysOc1NgTx4ntFQ
+         FFjw1adwSox2iNHkPqkrC7xiRTElygF0Q9JjU8nC8+qa0ffdMtcftU9E86wgzRlhrUBw
+         rZ89XnRgO396G1I77VpseYyY12RHQYfBOfGVxFANVr9XLUrvnP8rZI5byZ36Daf5+Cfj
+         +oT2qt73HwDMT/zRHdHYA1XVdCxRU36rMCU+uR1TDyS271Mk0Q9bEYXcO6Z3rpwxr5op
+         kDLw==
+X-Gm-Message-State: AOAM532U3pd9/XQHTqHuXiFnM8FhUfg6yProze3AApFHlFE/Y0WU4xtg
+        klxxZTJpKZ+6FHDUcuSgWkkvTSvAHA+6LP5ZL6c=
+X-Google-Smtp-Source: ABdhPJzh7y1I1nDbBMMNpxZNQaVpI1H0gv0nT0MNTDIHEHj7mB3mfsY2hRWHwa47CugLuO1Md6xqhaNSSxavwkZDNVU=
+X-Received: by 2002:a5d:60c2:: with SMTP id x2mr9336975wrt.248.1612597627691;
+ Fri, 05 Feb 2021 23:47:07 -0800 (PST)
 MIME-Version: 1.0
-References: <20210204220741.GA920417@kernel.org> <CA+icZUVQSojGgnis8Ds5GW-7-PVMZ2w4X5nQKSSkBPf-29NS6Q@mail.gmail.com>
- <CA+icZUU2xmZ=mhVYLRk7nZBRW0+v+YqBzq18ysnd7xN+S7JHyg@mail.gmail.com>
- <CA+icZUVyB3qaqq3pwOyJY_F4V6KU9hdF=AJM_D7iEW4QK4Eo6w@mail.gmail.com>
- <20210205152823.GD920417@kernel.org> <CA+icZUWzMdhuHDkcKMHAd39iMEijk65v2ADcz0=FdODr38sJ4w@mail.gmail.com>
- <CA+icZUXb1j-DrjvFEeeOGuR_pKmD_7_RusxpGQy+Pyhaoa==gA@mail.gmail.com>
- <CA+icZUVZA97V5C3kORqeSiaxRbfGbmzEaxgYf9RUMko4F76=7w@mail.gmail.com>
- <baa7c017-b2cf-b2cd-fbe8-2e021642f2e3@fb.com> <20210205192446.GH920417@kernel.org>
- <cb743ab8-9a66-a311-ed18-ecabf0947440@fb.com>
-In-Reply-To: <cb743ab8-9a66-a311-ed18-ecabf0947440@fb.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Sat, 6 Feb 2021 08:26:02 +0100
-Message-ID: <CA+icZUV98seJrpNcSPvN_Vjc4Znc72zH3czqirnie80BGAQfEQ@mail.gmail.com>
-Subject: Re: ERROR: INT DW_ATE_unsigned_1 Error emitting BTF type
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        dwarves@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Domenico Andreoli <cavok@debian.org>,
-        Matthias Schwarzott <zzam@gentoo.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Mark Wieelard <mjw@redhat.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
-        Tom Stellard <tstellar@redhat.com>
+References: <20210205170950.145042-1-bjorn.topel@gmail.com>
+ <CALDO+SZhgSr5haWT=c1b-+WMpeaPGkDYoxCoWtTaX2+L85WEJA@mail.gmail.com> <b186bc7e-2b0b-58b8-065e-c77255b6aecb@infradead.org>
+In-Reply-To: <b186bc7e-2b0b-58b8-065e-c77255b6aecb@infradead.org>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Sat, 6 Feb 2021 08:46:55 +0100
+Message-ID: <CAJ+HfNgRQ1do=tXhHOia2KdQQ-08CYduXcgdvT6o1XcL--+_yA@mail.gmail.com>
+Subject: Re: [PATCH bpf] selftests/bpf: use bash instead of sh in test_xdp_redirect.sh
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     William Tu <u9012063@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 9:03 PM Yonghong Song <yhs@fb.com> wrote:
+On Fri, 5 Feb 2021 at 18:39, Randy Dunlap <rdunlap@infradead.org> wrote:
 >
+> On 2/5/21 9:30 AM, William Tu wrote:
+> > On Fri, Feb 5, 2021 at 9:09 AM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail=
+.com> wrote:
+> >>
+> >> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+> >>
+> >> The test_xdp_redirect.sh script uses some bash-features, such as
+> >> '&>'. On systems that use dash as the sh implementation this will not
+> >> work as intended. Change the shebang to use bash instead.
 >
->
-> On 2/5/21 11:24 AM, Arnaldo Carvalho de Melo wrote:
-> > Em Fri, Feb 05, 2021 at 11:10:08AM -0800, Yonghong Song escreveu:
-> >> On 2/5/21 11:06 AM, Sedat Dilek wrote:
-> >>> On Fri, Feb 5, 2021 at 7:53 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> >>> Grepping through linux.git/tools I guess some BTF tools/libs need to
-> >>> know what BTF_INT_UNSIGNED is?
-> >
-> >> BTF_INT_UNSIGNED needs kernel support. Maybe to teach pahole to
-> >> ignore this for now until kernel infrastructure is ready.
-> >
-> > Yeah, I thought about doing that.
-> >
-> >> Not sure whether this information will be useful or not
-> >> for BTF. This needs to be discussed separately.
-> >
-> > Maybe search for the rationale for its introduction in DWARF.
->
-> In LLVM, we have:
->    uint8_t BTFEncoding;
->    switch (Encoding) {
->    case dwarf::DW_ATE_boolean:
->      BTFEncoding = BTF::INT_BOOL;
->      break;
->    case dwarf::DW_ATE_signed:
->    case dwarf::DW_ATE_signed_char:
->      BTFEncoding = BTF::INT_SIGNED;
->      break;
->    case dwarf::DW_ATE_unsigned:
->    case dwarf::DW_ATE_unsigned_char:
->      BTFEncoding = 0;
->      break;
->
-> I think DW_ATE_unsigned can be ignored in pahole since
-> the default encoding = 0. A simple comment is enough.
+> Hi,
+> In general we (kernel, maybe not bpf) try to move away from bash to a mor=
+e
+> "standard" sh shell, so things like "&>" would be converted to ">file 2>&=
+1"
+> or whatever is needed.
 >
 
-For the followers (here: LLVM v12.0.0-rc1):
+Ok! I'll respin!
 
-[ llvm/lib/Target/BPF/BTFDebug.cpp ]
-
-BTFTypeInt::BTFTypeInt(uint32_t Encoding, uint32_t SizeInBits,
-                       uint32_t OffsetInBits, StringRef TypeName)
-    : Name(TypeName) {
-  // Translate IR int encoding to BTF int encoding.
-  uint8_t BTFEncoding;
-  switch (Encoding) {
-  case dwarf::DW_ATE_boolean:
-    BTFEncoding = BTF::INT_BOOL;
-    break;
-  case dwarf::DW_ATE_signed:
-  case dwarf::DW_ATE_signed_char:
-    BTFEncoding = BTF::INT_SIGNED;
-    break;
-  case dwarf::DW_ATE_unsigned:
-  case dwarf::DW_ATE_unsigned_char:
-    BTFEncoding = 0;
-    break;
-  default:
-    llvm_unreachable("Unknown BTFTypeInt Encoding");
-  }
-
-- Sedat -
+Bj=C3=B6rn
