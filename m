@@ -2,117 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C2E831183E
-	for <lists+bpf@lfdr.de>; Sat,  6 Feb 2021 03:34:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FB9F3118DE
+	for <lists+bpf@lfdr.de>; Sat,  6 Feb 2021 03:51:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229703AbhBFCb3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 5 Feb 2021 21:31:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37192 "EHLO
+        id S231557AbhBFCsN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 5 Feb 2021 21:48:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhBFCa6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 5 Feb 2021 21:30:58 -0500
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF95CC08ED35;
-        Fri,  5 Feb 2021 15:19:25 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id y128so8336936ybf.10;
-        Fri, 05 Feb 2021 15:19:25 -0800 (PST)
+        with ESMTP id S231378AbhBFCm6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 5 Feb 2021 21:42:58 -0500
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A724C08EE23;
+        Fri,  5 Feb 2021 16:36:21 -0800 (PST)
+Received: by mail-qk1-x735.google.com with SMTP id d85so8822627qkg.5;
+        Fri, 05 Feb 2021 16:36:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eaySnepDzbdWK06t4HWZqmtay2gND6FqJB5mQU1GyNk=;
-        b=A+eCqkjlgp/p4pwaEXRy99LxJWrvSUp2lG8jE+/nw8IYa7DCCx2brl+75YXwf4V1cH
-         GFAMb/Z0ZTwIS+jALWtv6JAOtd5wFxWsmhGZ3T+W7bNhACZo/3f0zmTvYZg2tBWnVH5Y
-         L7WZA3tzmn8iGAfBpejM7y37UgVhHc2hv110IssNLoILQ/xuOB+TOZjVDHvzldnGBLpN
-         Zrd+2FbNsvTUpXhaTNewl9Gofb8jmbx1xN0VgbaQfJ5OChdFnUxlvVukMIW/1iTLXA7L
-         eKLfkqiDvvFwKNHX4ehx5i3BN7IZWr9ezLEwSDOiwLvkUWmW3rdQmNxgq9nDlzBCOmOU
-         vzdQ==
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=soHf/mVkpp4EzKMqVWUbreRz7Dg6N9YiICzzPMnFLgM=;
+        b=Y9A7DrF+GRyVSqLlIWAqpZjRpK1BnR9AU2oy9l86xnICu0C06khdlyvebXTfsufVp3
+         qFSv0lMNhC1k5+7lThnQodAGRE763h5hO88FyePg4nrSXHNeiEfBumRk6AWZPimWkqkx
+         qpucA2uG8pS3xPePjOBfBdzdAh2BRp2r9/sjSEL4yFkSyvjsn8e1T9bGXEaW4RqBpFgW
+         6cak4g6ZOB0CZkxYIVnu68wmId3mTHWLJlx/4HDFfrhCcR4NwZDykcxtCAgmmHgWOix+
+         YTvstD48fvj7uMBiYjruR3sYmtxebP5PUMajHbfyZ8bhIIxnGmXnwwnxKYbXqNrCGHbg
+         YQnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eaySnepDzbdWK06t4HWZqmtay2gND6FqJB5mQU1GyNk=;
-        b=BBNGXepVC50yDuSMYfNidNNJMW5+vAF29Rj4dGTcMsWvP2hK18A4KYXiYpxE5EeJDN
-         fYPoUt5AtzfVur2V1wZOgTpf7zM5ZJdsY9qE+45Qgmdw1YDyb1VvRjmOkssnz3gQzHwZ
-         Oq7Em4SDxCX8ibSXkUyvZ0boqQ6qDlanq6IPtvJQdakeTR/a0ZZjZ8KdJ1vkK2+H+Pfg
-         uBi4rrVWhmDoYc5qY4W856a+ASSsR1w6Yo8OWrwlidPgrcX6VkJvCYg75uSAP+gVU7qT
-         Q/pQFBbRxe0UhZfskofdGdjV3iY6W06goHuFXMhSRNAESnshJbdVo4tn9NktzTgoGGvw
-         7PUg==
-X-Gm-Message-State: AOAM530ugLJ7+4ymPJjStHiNVVtSfRLRnKPGXPxI7Aaz5rrhBMPpY1Vm
-        AWgnnXp2mfsES4zAsThrl2v3xi2CJLw+EXy08AfU+hFv0QFnu3Tf
-X-Google-Smtp-Source: ABdhPJwt7koiechQx56/EbEreAyk9y0MSngpulAsJbBPdaM7f/1PsGrvmYXWqGApF2lrJzzC7RycR83mu192C39uepk=
-X-Received: by 2002:a25:da4d:: with SMTP id n74mr10053150ybf.347.1612567165234;
- Fri, 05 Feb 2021 15:19:25 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=soHf/mVkpp4EzKMqVWUbreRz7Dg6N9YiICzzPMnFLgM=;
+        b=jgczVR/sUodzDmuXZOWRE/ugDdYr3d6hc/IA7Rzp3BxksOOuYIWFmZ5K0G7D9zpYR+
+         nrUFIyqrlO7cz34+DKy9p9d3bv4JQG45UKjq/+X6DBok0QQQwWvxFhhEweIHqsFjzc7S
+         ymJ4YJqKaJsrlxSQmghrESG0rhemIiPSUtt2f8K7Qwp7tc39Ua6zIlQFwM+qVzcs6xuR
+         5lUDF4ZfebKMSP3a5EqfRqzS09zc4IGGbavsPQgTfjwoD3SBx5xYKGHABw2dw4VGd8E3
+         LR57T9JoNztEHVEUXEKSIZu9JIyjawEw2eO4bAeJKMovNx2NTTW1Zzjpg2N9z1scSDRZ
+         28GA==
+X-Gm-Message-State: AOAM530AJ7gADb9+udc1dqiZvHNxzCzd/rAf47bwdU++gr8lcgpFAdpa
+        MslHOq4YmNV1C9urm6v8Dis=
+X-Google-Smtp-Source: ABdhPJwGuyt+FQ9iasR9NXAGsXzScwo1mYEEWKSB1Fesweuwl/pT6uyUcJFKwh24uzoUC4vYfVxNxw==
+X-Received: by 2002:ae9:ed04:: with SMTP id c4mr6833524qkg.289.1612571780538;
+        Fri, 05 Feb 2021 16:36:20 -0800 (PST)
+Received: from Gentoo ([156.146.58.50])
+        by smtp.gmail.com with ESMTPSA id z23sm6931551qkb.13.2021.02.05.16.36.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Feb 2021 16:36:19 -0800 (PST)
+Date:   Sat, 6 Feb 2021 06:06:46 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     pmladek@suse.com, sergey.senozhatsky@gmail.com,
+        andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, rdunlap@infradead.org
+Subject: Re: [PATCH] lib:  Replace obscene word with a better one :)
+Message-ID: <YB3knt9yx4CQ5Q+g@Gentoo>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>, pmladek@suse.com,
+        sergey.senozhatsky@gmail.com, andriy.shevchenko@linux.intel.com,
+        linux@rasmusvillemoes.dk, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, rdunlap@infradead.org
+References: <20210205121543.1315285-1-unixbhaskar@gmail.com>
+ <20210205145109.24498541@gandalf.local.home>
 MIME-Version: 1.0
-References: <20210205124020.683286-1-jolsa@kernel.org> <20210205124020.683286-3-jolsa@kernel.org>
-In-Reply-To: <20210205124020.683286-3-jolsa@kernel.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 5 Feb 2021 15:19:14 -0800
-Message-ID: <CAEf4BzY6aJ5YfErvbY8AwuDztvgs4xrd5dC8y3vkxTZbiMppMA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/4] tools/resolve_btfids: Check objects before removing
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="UxWCXiFroMay8coY"
+Content-Disposition: inline
+In-Reply-To: <20210205145109.24498541@gandalf.local.home>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 2:59 PM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> We want this clean to be called from tree's root clean
-> and that one is silent if there's nothing to clean.
->
-> Adding check for all object to clean and display CLEAN
-> messages only if there are objects to remove.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+--UxWCXiFroMay8coY
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
 
->  tools/bpf/resolve_btfids/Makefile | 17 ++++++++++++-----
->  1 file changed, 12 insertions(+), 5 deletions(-)
+On 14:51 Fri 05 Feb 2021, Steven Rostedt wrote:
+>On Fri,  5 Feb 2021 17:45:43 +0530
+>Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
 >
-> diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
-> index 1d46a247ec95..be09ec4f03ff 100644
-> --- a/tools/bpf/resolve_btfids/Makefile
-> +++ b/tools/bpf/resolve_btfids/Makefile
-> @@ -64,13 +64,20 @@ $(BINARY): $(BPFOBJ) $(SUBCMDOBJ) $(BINARY_IN)
->         $(call msg,LINK,$@)
->         $(Q)$(CC) $(BINARY_IN) $(LDFLAGS) -o $@ $(BPFOBJ) $(SUBCMDOBJ) $(LIBS)
+>> s/fucked/messed/
 >
-> +clean_objects := $(wildcard $(OUTPUT)/*.o                \
-> +                            $(OUTPUT)/.*.o.cmd           \
-> +                            $(OUTPUT)/.*.o.d             \
-> +                            $(OUTPUT)/libbpf             \
-> +                            $(OUTPUT)/libsubcmd          \
-> +                            $(OUTPUT)/resolve_btfids)
-> +
-> +ifneq ($(clean_objects),)
->  clean: fixdep-clean
->         $(call msg,CLEAN,$(BINARY))
-> -       $(Q)$(RM) -f $(BINARY); \
-> -       $(RM) -rf $(if $(OUTPUT),$(OUTPUT),.)/feature; \
-> -       $(RM) -rf $(OUTPUT)/libbpf; \
-> -       $(RM) -rf $(OUTPUT)/libsubcmd; \
-> -       find $(if $(OUTPUT),$(OUTPUT),.) -name \*.o -or -name \*.o.cmd -or -name \*.o.d | xargs $(RM)
-> +       $(Q)$(RM) -rf $(clean_objects)
-> +else
-> +clean:
-> +endif
+>Rules about obscene language is about new code coming into the kernel. We
+>don't want to encourage people to do sweeping changes of existing code. It
+>just causes unwanted churn, and adds noise to the git logs.
 >
->  tags:
->         $(call msg,GEN,,tags)
-> --
-> 2.26.2
+>Sorry, NAK.
 >
+You are spot on Steven.Thanks, man!
+>-- Steve
+
+--UxWCXiFroMay8coY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmAd5JoACgkQsjqdtxFL
+KRVJjwf9HiNq6piH7OOkVeCIFZ612OrZ09mEwQcxP8AN0TtxgI7eNH0k73SM4zMx
+8OsmrJRLv1+2dD5Uuzv825rUldYu7+TBYxdy7/RsLd8diK5y2f7fl5SbfytzkWIG
+DxzPBvwCJAFv1To3AkzA1v4DIPuUhHpYcesaZPgyOr8XVm+R8IlOQ/fkihN4IDxh
+HLhlNCyP0FA/dMjS58ZJ9ZP/pyr7ivf1ufsou5bHTDcswmnsH40/D09wiLxBuQTt
++n8vON8abYdMtQK2bsvy6EMMZOBQUD7NA/yeszv7A/5za7QrSoj2TEaqx5+uSVod
+pS00qbw3qijXtJlgJwsbloLxM2jyRQ==
+=lyJS
+-----END PGP SIGNATURE-----
+
+--UxWCXiFroMay8coY--
