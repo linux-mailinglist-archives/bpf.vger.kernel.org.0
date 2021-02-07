@@ -2,66 +2,88 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB0703123CD
-	for <lists+bpf@lfdr.de>; Sun,  7 Feb 2021 12:37:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E00A3124A6
+	for <lists+bpf@lfdr.de>; Sun,  7 Feb 2021 15:22:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229506AbhBGLhE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 7 Feb 2021 06:37:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbhBGLhE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 7 Feb 2021 06:37:04 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C47CC06174A
-        for <bpf@vger.kernel.org>; Sun,  7 Feb 2021 03:36:23 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id t5so14769362eds.12
-        for <bpf@vger.kernel.org>; Sun, 07 Feb 2021 03:36:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=DigkzbMGtQaTtIkYQrjN6ZN7A1ftuD6nATqfwI+W+q8=;
-        b=h0Lp8ixJRDsOiChgrZQLRG6H3BNmC2mOpU4LMNHi/NpfA0Gx7eo8VPafoKIsb+aA4M
-         q5osUJMMqAQxuEg6ab7HWDOlSGSgAVTYYt9nKwzuzxxkTx9AtZ3C2SAgnulIYSHkPZeI
-         FbsoVnrHDa8NY0iFuEF0dlwmGmWIygH8MafCeKJPNWvl9qBqaUi3EHMxwKDR1rKDBFSV
-         hdIy6VrxJFvUdpKDepH/PeCymQw2DNF/cmHfZk5ReJzQEK29BjkMsDOtwxGj+9fMiowp
-         QcYwZwNY9UXfeoBlYHjR7IgyIaGg1z/wRNyoLtmjJPBxWPw2vgg73KtsMkL1qKcwSHyz
-         z+7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=DigkzbMGtQaTtIkYQrjN6ZN7A1ftuD6nATqfwI+W+q8=;
-        b=YKA+f3qMcNZ9qBIOg3+L08vvneuW0CfUtmQIMt+zelHfbUrrWDqPPvWjfHhifCgzyP
-         rVeHCURiQB+oBUnfNxulzKwYYC/CyYoDGJtU6xzXlRaf8PVggoJTK/0EfeKUDPcgV01C
-         IEzLqLJmsyNXsiOb5h4wHOv6diAcNE1KRcvuwTyVhf/f/qAs8ho0iVM5lPrzwp7MQCuQ
-         J4wiGSrK7IqnXCEZpF6aC9XzWSE0dhLCbTFyELfPk9kLz4c56V9HnroXhQ8edIQDXQoh
-         7VEMHm8U62J6JyPFqDRJXQ7gP4reyg7V0QyOG74I1DfBJM1nKmlnPTGIbJtBKXIxE18X
-         gdCA==
-X-Gm-Message-State: AOAM532KYnY5aI/f7KM8hldMCybT1RHQ9UG11hxZNBQ2QxafZizaFmi4
-        ChEWsAQwXHNLwzXqrdeumyXoz2aG4nz5Mvrra/iindeGgfEfhQ==
-X-Google-Smtp-Source: ABdhPJzRra6TCzhs+yG8nWXL4sXTz9/X2zrYXYXIJ3tnJkdXAyrYp62UyhF6abK/9kTW+LzxAhkPZpv9KE4rku0eXQ4=
-X-Received: by 2002:a05:6402:c91:: with SMTP id cm17mr12647903edb.219.1612697781695;
- Sun, 07 Feb 2021 03:36:21 -0800 (PST)
-MIME-Version: 1.0
-From:   Gilad Reti <gilad.reti@gmail.com>
-Date:   Sun, 7 Feb 2021 13:35:45 +0200
-Message-ID: <CANaYP3G4zZu=d2Y_d+=418f6X9+5b-JFhk0h9VZoQmFFLhu3Ag@mail.gmail.com>
-Subject: libbpf: pinning multiple progs from the same section
-To:     bpf <bpf@vger.kernel.org>
-Cc:     Andrii Nakryiko <andrii@kernel.org>
+        id S229717AbhBGOSs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Sun, 7 Feb 2021 09:18:48 -0500
+Received: from wildebeest.demon.nl ([212.238.236.112]:41384 "EHLO
+        gnu.wildebeest.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229715AbhBGOSr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 7 Feb 2021 09:18:47 -0500
+Received: from tarox.wildebeest.org (tarox.wildebeest.org [172.31.17.39])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by gnu.wildebeest.org (Postfix) with ESMTPSA id 6AF71305EC8F;
+        Sun,  7 Feb 2021 15:18:03 +0100 (CET)
+Received: by tarox.wildebeest.org (Postfix, from userid 1000)
+        id BAA02408F0ED; Sun,  7 Feb 2021 15:18:03 +0100 (CET)
+Message-ID: <a02164334d0e991820eefa45e2df1a8b49f5537e.camel@klomp.org>
+Subject: Re: [PATCH dwarves v2] btf_encoder: sanitize non-regular int base
+ type
+From:   Mark Wielaard <mark@klomp.org>
+To:     Yonghong Song <yhs@fb.com>, acme@kernel.org,
+        dwarves@vger.kernel.org
+Cc:     bpf@vger.kernel.org, andriin@fb.com, ndesaulniers@google.com,
+        sedat.dilek@gmail.com, Andrii Nakryiko <andrii@kernel.org>
+Date:   Sun, 07 Feb 2021 15:18:03 +0100
+In-Reply-To: <20210207071726.3969978-1-yhs@fb.com>
+References: <20210207071726.3969978-1-yhs@fb.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Mailer: Evolution 3.28.5 (3.28.5-10.el7) 
+Mime-Version: 1.0
+X-Spam-Flag: NO
+X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on gnu.wildebeest.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello there,
+Hi,
 
-Last year, libbpf added support for attaching multiple handlers to the
-same event by allowing defining multiple progs in the same elf
-section. However, the pin path for a bpf program is obtained via the
-__bpf_program__pin_name function, which uses an escaped version of the
-elf section name as the pin_name. Thus, trying to pin multiple bpf
-programs defined on the same section fails with "File exists" error,
-since libbpf tries to pin more than one program on a single path.
-Does adding the actual program name to the pin path makes sense?
+On Sat, 2021-02-06 at 23:17 -0800, Yonghong Song wrote:
+> clang with dwarf5 may generate non-regular int base type,
+> i.e., not a signed/unsigned char/short/int/longlong/__int128.
+> Such base types are often used to describe
+> how an actual parameter or variable is generated. For example,
+> 
+> 0x000015cf:   DW_TAG_base_type
+>                 DW_AT_name      ("DW_ATE_unsigned_1")
+>                 DW_AT_encoding  (DW_ATE_unsigned)
+>                 DW_AT_byte_size (0x00)
+> 
+> 0x00010ed9:         DW_TAG_formal_parameter
+>                       DW_AT_location    (DW_OP_lit0,
+>                                          DW_OP_not,
+>                                          DW_OP_convert (0x000015cf) "DW_ATE_unsigned_1",
+>                                          DW_OP_convert (0x000015d4) "DW_ATE_unsigned_8",
+>                                          DW_OP_stack_value)
+>                       DW_AT_abstract_origin     (0x00013984 "branch")
+> 
+> What it does is with a literal "0", did a "not" operation, and the converted to
+> one-bit unsigned int and then 8-bit unsigned int.
 
-Thanks.
+Thanks for tracking this down. Do you have any idea why the clang
+compiler emits this? You might be right that it is intended to do what
+you describe it does (but then it would simply encode an unsigned
+constant 1 char in a very inefficient way). But as implemented it
+doesn't seem to make any sense. What would DW_OP_convert of an zero
+sized base type even mean (if it is intended as a 1 bit sized typed,
+then why is there no DW_AT_bit_size)?
+
+So I do think your patch makes sense. clang clearly is emitting
+something bogus. And so some fixup is needed. But maybe we should at
+least give a warning about it, otherwise it might never get fixed.
+
+BTW. If these bogus base types are only emitted as part of a location
+expression and not as part of an actual function or variable type
+description, then why are we even trying to encode it as a BTF type? It
+might be cheaper to just skip/drop it. But maybe the code setup makes
+it hard to know whether or not such a (bogus) type is actually
+referenced from a function or variable description?
+
+Cheers,
+
+Mark
