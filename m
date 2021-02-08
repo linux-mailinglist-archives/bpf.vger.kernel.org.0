@@ -2,117 +2,228 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16B9931401F
-	for <lists+bpf@lfdr.de>; Mon,  8 Feb 2021 21:16:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6E831409D
+	for <lists+bpf@lfdr.de>; Mon,  8 Feb 2021 21:38:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236598AbhBHUPw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Feb 2021 15:15:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50838 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235728AbhBHUOd (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Feb 2021 15:14:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 72AA764DBD;
-        Mon,  8 Feb 2021 20:13:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612815232;
-        bh=9eiwOuTAuQybZ5MgTtMQsWZbpd4rExiKQ++TQauyoek=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NBzHR2vgevsqVf5FKjDbORTh9MAHPBQBv389JfC+B7IdRXASz+6AsGG14opKR4mx0
-         159ro3C5gKmY8op4VsSERV2jSFZtJ/psn65eOZ3wgwiiW2y7CNYxookeqvE5I5ZUGq
-         hyMuxM0AuovIaE4r20gRA3X6ySI+36qb0DANtGRsHHtaAJkPGsWDuIfwixiJUWlMpt
-         mPE5nzc0Zn50JioLviJ0ZElKlW6TFETl+qx5dMLVDf6DOGxJ+3wTpyLENCkCDxh79/
-         hyfAZoKSWhFnwRGb49zEO/MKFwZ8lzvAvbU0/O6v7WszfOuAKBB+GT3o0YCHrM+aDE
-         kohA/JW0zF5mg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id DB48140513; Mon,  8 Feb 2021 17:13:49 -0300 (-03)
-Date:   Mon, 8 Feb 2021 17:13:49 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Yonghong Song <yhs@fb.com>, dwarves@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andriin@fb.com>,
-        Mark Wielaard <mark@klomp.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH dwarves v2] btf_encoder: sanitize non-regular int base
- type
-Message-ID: <20210208201349.GU920417@kernel.org>
-References: <20210207071726.3969978-1-yhs@fb.com>
- <CAKwvOdm81yoFXg65XPc=PTOC+P7J9TJuFc3ag9TvFkjGW0iGVg@mail.gmail.com>
+        id S230402AbhBHUhO (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Feb 2021 15:37:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230170AbhBHUge (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Feb 2021 15:36:34 -0500
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2454C061786
+        for <bpf@vger.kernel.org>; Mon,  8 Feb 2021 12:35:50 -0800 (PST)
+Received: by mail-yb1-xb2b.google.com with SMTP id m76so15946760ybf.0
+        for <bpf@vger.kernel.org>; Mon, 08 Feb 2021 12:35:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nW2qLv4P+ELaCEQDSEa8aD195GqQR8KeBcLIkVFipd8=;
+        b=YsBkxEoeORqQKHXGWCfNHd4tmqM1ZnNLVo8724axQQN3ExIQiNN6gBnGvofHo0xOHe
+         gNMHjLf/jJzrsqlZIMzXA6QTkCLmh/4aGz8Ye6N4WTMlYj2nquvdkf3Uig/OZaTkhvv1
+         JEzcNpSwzhNR12vd/URMkBbtVT9WIrLAQGpEx3DyXhqTWunUkI2HIn/fvRs4bX4G/m4Z
+         d2Q45Xl8q1s8kvo7m/+vQxTAwG0qb7oxc1rYeNzsfF69Mu9G2daoZAX4y5AqvDjns30Z
+         d2ZOCRe6gRGAnJm2ZrvlJwBMSmCEchapKSy1sglKo7ssibTrmTrK3LGa80ooSJgnMyDU
+         mMKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nW2qLv4P+ELaCEQDSEa8aD195GqQR8KeBcLIkVFipd8=;
+        b=WX5hwBOndEqnulV4gWDEQ85WI/XrZ/W+1qsTkXX6pycDPsCQV0parf10r08bthP5Ti
+         xo3dUJ6lSnH1/XMKI+dUpIl0OoEb12rk3KVHzp5uBSfbSRGJQoQtTjEQx1JKR6j3mj8r
+         WuHpWufJ8J024HPEu0Wz696+JHLdthK5yNvreUQKMR+qGXNLh3fiJUsThHTQhrM0vYKe
+         hP9KGIp0UsfxCU5BlJSdB9lst7MmEAl+pZpIt6nzCJLUhKlZl+V2ik1itwb6b3ZzTFjK
+         QYn33aCguzni/CeEu29pifvnfP4z9OD5AnvMlsuv0T6uXsJSKeanbDkDGo87qjZPJgV+
+         x5qA==
+X-Gm-Message-State: AOAM531rmMitw/RQB2VGhozUKrF58S6lkNu1PzTRhIpBijlHrPj79AaQ
+        i9x9VOAZttXjIth9Q1dxywKL70jiDV9QtWAGlX5pnJpD7hcs4w==
+X-Google-Smtp-Source: ABdhPJwQRClbCXZ0NtL85TZOQQUmKacC+To72plVA6RhMyuoVs19c3TsiS79EZKrMKKrZpF1Tfy6q5cptcXbzHTAEzM=
+X-Received: by 2002:a25:4b86:: with SMTP id y128mr27780915yba.403.1612816550149;
+ Mon, 08 Feb 2021 12:35:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKwvOdm81yoFXg65XPc=PTOC+P7J9TJuFc3ag9TvFkjGW0iGVg@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+References: <20210206170344.78399-1-alexei.starovoitov@gmail.com> <20210206170344.78399-3-alexei.starovoitov@gmail.com>
+In-Reply-To: <20210206170344.78399-3-alexei.starovoitov@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 8 Feb 2021 12:35:39 -0800
+Message-ID: <CAEf4Bzaoqt7ByRRrfdRUXvP+WKmK2bwncCrTVCL+A9bZLEYCWw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 2/7] bpf: Compute program stats for sleepable programs
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Mon, Feb 08, 2021 at 11:22:48AM -0800, Nick Desaulniers escreveu:
-> On Sat, Feb 6, 2021 at 11:17 PM Yonghong Song <yhs@fb.com> wrote:
-> >
-> > clang with dwarf5 may generate non-regular int base type,
-> > i.e., not a signed/unsigned char/short/int/longlong/__int128.
-> > Such base types are often used to describe
-> > how an actual parameter or variable is generated. For example,
-> >
-> > 0x000015cf:   DW_TAG_base_type
-> >                 DW_AT_name      ("DW_ATE_unsigned_1")
-> >                 DW_AT_encoding  (DW_ATE_unsigned)
-> >                 DW_AT_byte_size (0x00)
-> >
-> > 0x00010ed9:         DW_TAG_formal_parameter
-> >                       DW_AT_location    (DW_OP_lit0,
-> >                                          DW_OP_not,
-> >                                          DW_OP_convert (0x000015cf) "DW_ATE_unsigned_1",
-> >                                          DW_OP_convert (0x000015d4) "DW_ATE_unsigned_8",
-> >                                          DW_OP_stack_value)
-> >                       DW_AT_abstract_origin     (0x00013984 "branch")
-> >
-> > What it does is with a literal "0", did a "not" operation, and the converted to
-> > one-bit unsigned int and then 8-bit unsigned int.
-> >
-> > Another example,
-> >
-> > 0x000e97e4:   DW_TAG_base_type
-> >                 DW_AT_name      ("DW_ATE_unsigned_24")
-> >                 DW_AT_encoding  (DW_ATE_unsigned)
-> >                 DW_AT_byte_size (0x03)
-> >
-> > 0x000f88f8:     DW_TAG_variable
-> >                   DW_AT_location        (indexed (0x3c) loclist = 0x00008fb0:
-> >                      [0xffffffff82808812, 0xffffffff82808817):
-> >                          DW_OP_breg0 RAX+0,
-> >                          DW_OP_convert (0x000e97d5) "DW_ATE_unsigned_64",
-> >                          DW_OP_convert (0x000e97df) "DW_ATE_unsigned_8",
-> >                          DW_OP_stack_value,
-> >                          DW_OP_piece 0x1,
-> >                          DW_OP_breg0 RAX+0,
-> >                          DW_OP_convert (0x000e97d5) "DW_ATE_unsigned_64",
-> >                          DW_OP_convert (0x000e97da) "DW_ATE_unsigned_32",
-> >                          DW_OP_lit8,
-> >                          DW_OP_shr,
-> >                          DW_OP_convert (0x000e97da) "DW_ATE_unsigned_32",
-> >                          DW_OP_convert (0x000e97e4) "DW_ATE_unsigned_24",
-> >                          DW_OP_stack_value,
-> >                          DW_OP_piece 0x3
-> >                      ......
-> >
-> > At one point, a right shift by 8 happens and the result is converted to
-> > 32-bit unsigned int and then to 24-bit unsigned int.
-> >
-> > BTF does not need any of these DW_OP_* information and such non-regular int
-> > types will cause libbpf to emit errors.
-> > Let us sanitize them to generate BTF acceptable to libbpf and kernel.
-> >
-> > Cc: Sedat Dilek <sedat.dilek@gmail.com>
-> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> > Signed-off-by: Yonghong Song <yhs@fb.com>
-> 
-> Thanks for the patch!
-> 
-> Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+On Sat, Feb 6, 2021 at 9:05 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> From: Alexei Starovoitov <ast@kernel.org>
+>
+> In older non-RT kernels migrate_disable() was the same as preempt_disable().
+> Since commit 74d862b682f5 ("sched: Make migrate_disable/enable() independent of RT")
+> migrate_disable() is real and doesn't prevent sleeping.
+> Use it to efficiently compute execution stats for sleepable bpf programs.
+> migrate_disable() will also be used to enable per-cpu maps in sleepable programs
+> in the future patches.
+>
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> ---
 
-Thanks for testing and documenting that you tested, added the tag to
-the commit,
+LGTM (see comment about outdated comment).
 
-- Arnaldo
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+>  arch/x86/net/bpf_jit_comp.c | 31 ++++++++++++-------------------
+>  include/linux/bpf.h         |  4 ++--
+>  kernel/bpf/trampoline.c     | 27 +++++++++++++++++++++------
+>  3 files changed, 35 insertions(+), 27 deletions(-)
+>
+> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> index a3dc3bd154ac..d11b9bcebbea 100644
+> --- a/arch/x86/net/bpf_jit_comp.c
+> +++ b/arch/x86/net/bpf_jit_comp.c
+> @@ -1742,15 +1742,12 @@ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
+>         u8 *prog = *pprog;
+>         int cnt = 0;
+>
+> -       if (p->aux->sleepable) {
+> -               if (emit_call(&prog, __bpf_prog_enter_sleepable, prog))
+> +       if (emit_call(&prog,
+> +                     p->aux->sleepable ? __bpf_prog_enter_sleepable :
+> +                     __bpf_prog_enter, prog))
+>                         return -EINVAL;
+> -       } else {
+> -               if (emit_call(&prog, __bpf_prog_enter, prog))
+> -                       return -EINVAL;
+> -               /* remember prog start time returned by __bpf_prog_enter */
+> -               emit_mov_reg(&prog, true, BPF_REG_6, BPF_REG_0);
+> -       }
+> +       /* remember prog start time returned by __bpf_prog_enter */
+> +       emit_mov_reg(&prog, true, BPF_REG_6, BPF_REG_0);
+>
+>         /* arg1: lea rdi, [rbp - stack_size] */
+>         EMIT4(0x48, 0x8D, 0x7D, -stack_size);
+> @@ -1770,18 +1767,14 @@ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
+>         if (mod_ret)
+>                 emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -8);
+>
+> -       if (p->aux->sleepable) {
+> -               if (emit_call(&prog, __bpf_prog_exit_sleepable, prog))
+> +       /* arg1: mov rdi, progs[i] */
+> +       emit_mov_imm64(&prog, BPF_REG_1, (long) p >> 32, (u32) (long) p);
+> +       /* arg2: mov rsi, rbx <- start time in nsec */
+> +       emit_mov_reg(&prog, true, BPF_REG_2, BPF_REG_6);
+> +       if (emit_call(&prog,
+> +                     p->aux->sleepable ? __bpf_prog_exit_sleepable :
+> +                     __bpf_prog_exit, prog))
+>                         return -EINVAL;
+> -       } else {
+> -               /* arg1: mov rdi, progs[i] */
+> -               emit_mov_imm64(&prog, BPF_REG_1, (long) p >> 32,
+> -                              (u32) (long) p);
+> -               /* arg2: mov rsi, rbx <- start time in nsec */
+> -               emit_mov_reg(&prog, true, BPF_REG_2, BPF_REG_6);
+> -               if (emit_call(&prog, __bpf_prog_exit, prog))
+> -                       return -EINVAL;
+> -       }
+>
+>         *pprog = prog;
+>         return 0;
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 026fa8873c5d..2fa48439ef31 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -563,8 +563,8 @@ int arch_prepare_bpf_trampoline(void *image, void *image_end,
+>  /* these two functions are called from generated trampoline */
+>  u64 notrace __bpf_prog_enter(void);
+>  void notrace __bpf_prog_exit(struct bpf_prog *prog, u64 start);
+> -void notrace __bpf_prog_enter_sleepable(void);
+> -void notrace __bpf_prog_exit_sleepable(void);
+> +u64 notrace __bpf_prog_enter_sleepable(void);
+> +void notrace __bpf_prog_exit_sleepable(struct bpf_prog *prog, u64 start);
+>
+>  struct bpf_ksym {
+>         unsigned long            start;
+> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
+> index 5be3beeedd74..b1f567514b7e 100644
+> --- a/kernel/bpf/trampoline.c
+> +++ b/kernel/bpf/trampoline.c
+> @@ -388,10 +388,11 @@ void bpf_trampoline_put(struct bpf_trampoline *tr)
+>   * call prog->bpf_func
+>   * call __bpf_prog_exit
+>   */
+> +#define NO_START_TIME 0
+>  u64 notrace __bpf_prog_enter(void)
+>         __acquires(RCU)
+>  {
+> -       u64 start = 0;
+> +       u64 start = NO_START_TIME;
+>
+>         rcu_read_lock();
+>         migrate_disable();
+> @@ -400,8 +401,8 @@ u64 notrace __bpf_prog_enter(void)
+>         return start;
+>  }
+>
+> -void notrace __bpf_prog_exit(struct bpf_prog *prog, u64 start)
+> -       __releases(RCU)
+> +static void notrace update_prog_stats(struct bpf_prog *prog,
+> +                                     u64 start)
+>  {
+>         struct bpf_prog_stats *stats;
+>
+> @@ -411,25 +412,39 @@ void notrace __bpf_prog_exit(struct bpf_prog *prog, u64 start)
+>              * And vice versa.
+>              * Hence check that 'start' is not zero.
+
+This comment still references __bpf_prog_enter and __bpf_prog_exit
+(only). See for yourself if it needs to be updated.
+
+>              */
+> -           start) {
+> +           start > NO_START_TIME) {
+>                 stats = this_cpu_ptr(prog->stats);
+>                 u64_stats_update_begin(&stats->syncp);
+>                 stats->cnt++;
+>                 stats->nsecs += sched_clock() - start;
+>                 u64_stats_update_end(&stats->syncp);
+>         }
+> +}
+> +
+> +void notrace __bpf_prog_exit(struct bpf_prog *prog, u64 start)
+> +       __releases(RCU)
+> +{
+> +       update_prog_stats(prog, start);
+>         migrate_enable();
+>         rcu_read_unlock();
+>  }
+>
+> -void notrace __bpf_prog_enter_sleepable(void)
+> +u64 notrace __bpf_prog_enter_sleepable(void)
+>  {
+> +       u64 start = NO_START_TIME;
+> +
+>         rcu_read_lock_trace();
+> +       migrate_disable();
+>         might_fault();
+> +       if (static_branch_unlikely(&bpf_stats_enabled_key))
+> +               start = sched_clock();
+> +       return start;
+>  }
+>
+> -void notrace __bpf_prog_exit_sleepable(void)
+> +void notrace __bpf_prog_exit_sleepable(struct bpf_prog *prog, u64 start)
+>  {
+> +       update_prog_stats(prog, start);
+> +       migrate_enable();
+>         rcu_read_unlock_trace();
+>  }
+>
+> --
+> 2.24.1
+>
