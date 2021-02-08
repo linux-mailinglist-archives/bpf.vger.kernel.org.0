@@ -2,175 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 650A231343D
-	for <lists+bpf@lfdr.de>; Mon,  8 Feb 2021 15:02:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB18C313534
+	for <lists+bpf@lfdr.de>; Mon,  8 Feb 2021 15:32:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231388AbhBHOBf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Feb 2021 09:01:35 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20666 "EHLO
+        id S230310AbhBHObG (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Feb 2021 09:31:06 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34437 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232130AbhBHN7A (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 8 Feb 2021 08:59:00 -0500
+        by vger.kernel.org with ESMTP id S231359AbhBHOaB (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 8 Feb 2021 09:30:01 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612792648;
+        s=mimecast20190719; t=1612794515;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=z66ZKmmlAo5XkGXYiEacOsB+4kzMmQWYANVJg2K54PI=;
-        b=Yr2663f23zcuO5lmmPKyWb6ukkGGTCR+tbY5SLzoRDZXZPaLh7OJqIqhlnGJWlvSRXpN02
-        N06l453e1d/suqd4KnYdlAqcfKI9hj8bgz7GG4Bdh7YTnHxf2mp+yFKAkNIQgbhPz3Bxge
-        p8fJj6W67+Uvh0ILkYwekzxaxIHXOvU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-352-VYRHtGkqOx-OcllBatt2PA-1; Mon, 08 Feb 2021 08:57:24 -0500
-X-MC-Unique: VYRHtGkqOx-OcllBatt2PA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DE00A427CC;
-        Mon,  8 Feb 2021 13:57:21 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.45])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CB6091002393;
-        Mon,  8 Feb 2021 13:57:14 +0000 (UTC)
-Date:   Mon, 8 Feb 2021 14:57:13 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
-        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
-        colrack@gmail.com, brouer@redhat.com,
-        David Ahern <dsahern@kernel.org>
-Subject: Re: [PATCH bpf-next V15 2/7] bpf: fix bpf_fib_lookup helper MTU
- check for SKB ctx
-Message-ID: <20210208145713.4ee3e9ba@carbon>
-In-Reply-To: <ada19e5b-87be-ff39-45ba-ff0025bf1de9@iogearbox.net>
-References: <161228314075.576669.15427172810948915572.stgit@firesoul>
-        <161228321177.576669.11521750082473556168.stgit@firesoul>
-        <ada19e5b-87be-ff39-45ba-ff0025bf1de9@iogearbox.net>
+        bh=Pf62NUg5UvMmmKH6/PEIFBen8GZAfIgYKu/i8yxyElw=;
+        b=NbB8e+DEkwUifmhUeHt9RNCfqKcWEMEB/qYDShhtqX21j0tV8nlp/pyJ6QuI7NVvmOJSjz
+        UF6JKkqsRrLzH1RejCjG/v+7TLhzfodhYRC0SC/NBomJqa8hbntMVrK7V8N0j6wMpfN3u8
+        IUMTmIlE04/jaSOnBPWDuW2wQYvtdXw=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-418-Fvfzd44lOQSSdtnllfL5qg-1; Mon, 08 Feb 2021 09:28:30 -0500
+X-MC-Unique: Fvfzd44lOQSSdtnllfL5qg-1
+Received: by mail-ed1-f70.google.com with SMTP id ay16so13412658edb.2
+        for <bpf@vger.kernel.org>; Mon, 08 Feb 2021 06:28:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=Pf62NUg5UvMmmKH6/PEIFBen8GZAfIgYKu/i8yxyElw=;
+        b=DN9iTw8UDUYr13H3dlNnAjgMxcH8/wLBWCZX5IcVzM9BQn+rVbsYWYiuXW0kjXM25M
+         TYgd9OANnJBjgMcl3jXXy2ybxtuWW2bsP5eeiVIC2qGfrqMRiGjxw0UmVUJqUwDa9Je1
+         kEPUlPny+F/L7iwfIwxlS7WC2zAORSzI6t1l6g8NNT/g9tOP8WM5P7DShBcFbPPrfZ/O
+         l/OdhLdrZWy3ZFBoSM5TNDoqxz0ScuEBIatc+zIxDyykcquYDtUPk00lYUGhVulyJVCv
+         Yo5K4QVey8wykf+muSvxEEziDX2J4iE7mMwe/vjH23u9FOQ75XfRzRmIsuI5EhVibEE2
+         UICg==
+X-Gm-Message-State: AOAM532+HWOj1bideKx/F1c3YH5lrHVSOu1DLIDAsJ+wtvhl4VeWTkSN
+        fYMUgcCfpDqnAlRznCoBwQ7c9PWDYzQNFHIDrI2BgBubhfFMeL2Sw0RIKmvhmePYA16Y+rDa+1R
+        o4y+oM7TNSzDz
+X-Received: by 2002:a17:906:dff1:: with SMTP id lc17mr16586727ejc.198.1612794509079;
+        Mon, 08 Feb 2021 06:28:29 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxu3yT8GjiQ9qaNk4TRy9lN4cBtspeccvfdk13+KYHRfsZTJ9zQ4Lrozq3hedbEmF/RgNC40g==
+X-Received: by 2002:a17:906:dff1:: with SMTP id lc17mr16586710ejc.198.1612794508845;
+        Mon, 08 Feb 2021 06:28:28 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id p15sm8686076eja.61.2021.02.08.06.28.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Feb 2021 06:28:28 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id BF6E41804EE; Mon,  8 Feb 2021 15:28:27 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Gilad Reti <gilad.reti@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: libbpf: pinning multiple progs from the same section
+In-Reply-To: <CANaYP3GxKrjuUUTGaAjYGqwPCNzPJBNPQGMMCNaoHT4rfsYUfA@mail.gmail.com>
+References: <CANaYP3G4zZu=d2Y_d+=418f6X9+5b-JFhk0h9VZoQmFFLhu3Ag@mail.gmail.com>
+ <CANaYP3GgBDPBUjrkg0j-NOEzf3WJEOqcqoGU0uVxQ3LsAzz8ow@mail.gmail.com>
+ <87v9b2u6pa.fsf@toke.dk>
+ <CANaYP3GxKrjuUUTGaAjYGqwPCNzPJBNPQGMMCNaoHT4rfsYUfA@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 08 Feb 2021 15:28:27 +0100
+Message-ID: <87mtwetz04.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 5 Feb 2021 01:06:35 +0100
-Daniel Borkmann <daniel@iogearbox.net> wrote:
+Gilad Reti <gilad.reti@gmail.com> writes:
 
-> On 2/2/21 5:26 PM, Jesper Dangaard Brouer wrote:
-> > BPF end-user on Cilium slack-channel (Carlo Carraro) wants to use
-> > bpf_fib_lookup for doing MTU-check, but *prior* to extending packet size,
-> > by adjusting fib_params 'tot_len' with the packet length plus the expected
-> > encap size. (Just like the bpf_check_mtu helper supports). He discovered
-> > that for SKB ctx the param->tot_len was not used, instead skb->len was used
-> > (via MTU check in is_skb_forwardable() that checks against netdev MTU).
-> > 
-> > Fix this by using fib_params 'tot_len' for MTU check. If not provided (e.g.
-> > zero) then keep existing TC behaviour intact. Notice that 'tot_len' for MTU
-> > check is done like XDP code-path, which checks against FIB-dst MTU.
-> > 
-> > V13:
-> > - Only do ifindex lookup one time, calling dev_get_by_index_rcu().
-> > 
-> > V10:
-> > - Use same method as XDP for 'tot_len' MTU check
-> > 
-> > Fixes: 4c79579b44b1 ("bpf: Change bpf_fib_lookup to return lookup status")
-> > Reported-by: Carlo Carraro <colrack@gmail.com>
-> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> > Acked-by: John Fastabend <john.fastabend@gmail.com>  
-> [...]
-> 
-> I was about to apply the series just now, but on a last double check there is
-> a subtle logic bug in here that still needs fixing unfortunately. :/ See below:
-> 
-> > @@ -5568,7 +5565,9 @@ BPF_CALL_4(bpf_skb_fib_lookup, struct sk_buff *, skb,
-> >   	   struct bpf_fib_lookup *, params, int, plen, u32, flags)
-> >   {
-> >   	struct net *net = dev_net(skb->dev);
-> > +	struct net_device *dev;
-> >   	int rc = -EAFNOSUPPORT;
-> > +	bool check_mtu = false;
-> >   
-> >   	if (plen < sizeof(*params))
-> >   		return -EINVAL;
-> > @@ -5576,23 +5575,30 @@ BPF_CALL_4(bpf_skb_fib_lookup, struct sk_buff *, skb,
-> >   	if (flags & ~(BPF_FIB_LOOKUP_DIRECT | BPF_FIB_LOOKUP_OUTPUT))
-> >   		return -EINVAL;
-> >   
-> > +	dev = dev_get_by_index_rcu(net, params->ifindex);
-> > +	if (unlikely(!dev))
-> > +		return -ENODEV;  
-> 
-> Based on your earlier idea, you try to avoid refetching the dev this way, so
-> here it's being looked up via params->ifindex provided from the BPF prog ...
-> 
-> > +	if (params->tot_len)
-> > +		check_mtu = true;
-> > +
-> >   	switch (params->family) {
-> >   #if IS_ENABLED(CONFIG_INET)
-> >   	case AF_INET:
-> > -		rc = bpf_ipv4_fib_lookup(net, params, flags, false);
-> > +		rc = bpf_ipv4_fib_lookup(net, dev, params, flags, check_mtu);  
-> 
-> ... however, bpf_ipv{4,6}_fib_lookup() might change params->ifindex here to
-> indicate nexthop output dev:
-> 
-> [...]
->          dev = nhc->nhc_dev;
-> 
->          params->rt_metric = res.fi->fib_priority;
->          params->ifindex = dev->ifindex;
-> [...]
+> On Mon, Feb 8, 2021 at 1:42 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@red=
+hat.com> wrote:
+>>
+>> Gilad Reti <gilad.reti@gmail.com> writes:
+>>
+>> > Also, is there a way to set the pin path to all maps/programs at once?
+>> > For example, bpf_object__pin_maps pins all maps at a specific path,
+>> > but as far as I was able to find there is no similar function to set
+>> > the pin path for all maps only (without pinning) so that at loading
+>> > time libbpf will try to reuse all maps. The only way to achieve a
+>> > complete reuse of all maps that I could find is to "reverse engineer"
+>> > libbpf's pin path generation algorithm (i.e. <path>/<map_name>) and
+>> > set the pin path on each map before load.
+>>
+>> You can set the 'pinning' attribute in the map definition - add
+>> '__uint(pinning, LIBBPF_PIN_BY_NAME);' to the map struct. By default
+>> this will pin beneath /sys/fs/bpf, but you can customise that by setting
+>> the pin_root_path attribute in bpf_object_open_opts.
+>
+> Yes, I am familiar with that feature, but it has some downsides:
+> 1. I need to set it manually on every map (and in cases that I have
+> only the compiled object file that would be hard).
+> 2. It only works for bpf maps and not bpf programs.
+> 3. It only works for bpf maps that are defined explicitly in the bpf
+> code and not for implicit (inner) bpf maps (bss, rodata, etc).
 
-I want to hear David Ahern, what cases does this cover?
+Ah, right. Well, other than that I don't think there's a way to set pin
+paths in bulk, other than by manually iterating and setting them one at
+a time. But, erm, can't you just do that? :)
 
-
-> >   		break;
-> >   #endif
-> >   #if IS_ENABLED(CONFIG_IPV6)
-> >   	case AF_INET6:
-> > -		rc = bpf_ipv6_fib_lookup(net, params, flags, false);
-> > +		rc = bpf_ipv6_fib_lookup(net, dev, params, flags, check_mtu);
-> >   		break;
-> >   #endif
-> >   	}
-> >   
-> > -	if (!rc) {
-> > -		struct net_device *dev;
-> > -
-> > -		dev = dev_get_by_index_rcu(net, params->ifindex);
-> > +	if (rc == BPF_FIB_LKUP_RET_SUCCESS && !check_mtu) {
-> > +		/* When tot_len isn't provided by user,
-> > +		 * check skb against net_device MTU
-> > +		 */
-> >   		if (!is_skb_forwardable(dev, skb))
-> >   			rc = BPF_FIB_LKUP_RET_FRAG_NEEDED;  
-> 
-> ... so using old cached dev from above will result in wrong MTU check &
-> subsequent passing of wrong params->mtu_result = dev->mtu this way. 
-
-Yes, you are right, params->ifindex have a chance to change in the calls.
-So, our attempt to save an ifindex lookup (dev_get_by_index_rcu) is not
-correct.
-
-> So one
-> way to fix is that we would need to pass &dev to bpf_ipv{4,6}_fib_lookup().
-
-Ok, I will try to code it up, and see how ugly it looks, but I'm no
-longer sure that it is worth saving this ifindex lookup, as it will
-only happen if BPF-prog didn't specify params->tot_len.
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+-Toke
 
