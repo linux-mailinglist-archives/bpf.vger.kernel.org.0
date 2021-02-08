@@ -2,228 +2,235 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C6E831409D
-	for <lists+bpf@lfdr.de>; Mon,  8 Feb 2021 21:38:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC6E3140F1
+	for <lists+bpf@lfdr.de>; Mon,  8 Feb 2021 21:51:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230402AbhBHUhO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Feb 2021 15:37:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37130 "EHLO
+        id S231657AbhBHUvH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Feb 2021 15:51:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230170AbhBHUge (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Feb 2021 15:36:34 -0500
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2454C061786
-        for <bpf@vger.kernel.org>; Mon,  8 Feb 2021 12:35:50 -0800 (PST)
-Received: by mail-yb1-xb2b.google.com with SMTP id m76so15946760ybf.0
-        for <bpf@vger.kernel.org>; Mon, 08 Feb 2021 12:35:50 -0800 (PST)
+        with ESMTP id S233363AbhBHUrO (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Feb 2021 15:47:14 -0500
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02ADAC06178B;
+        Mon,  8 Feb 2021 12:46:34 -0800 (PST)
+Received: by mail-il1-x12b.google.com with SMTP id a16so14073094ilq.5;
+        Mon, 08 Feb 2021 12:46:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nW2qLv4P+ELaCEQDSEa8aD195GqQR8KeBcLIkVFipd8=;
-        b=YsBkxEoeORqQKHXGWCfNHd4tmqM1ZnNLVo8724axQQN3ExIQiNN6gBnGvofHo0xOHe
-         gNMHjLf/jJzrsqlZIMzXA6QTkCLmh/4aGz8Ye6N4WTMlYj2nquvdkf3Uig/OZaTkhvv1
-         JEzcNpSwzhNR12vd/URMkBbtVT9WIrLAQGpEx3DyXhqTWunUkI2HIn/fvRs4bX4G/m4Z
-         d2Q45Xl8q1s8kvo7m/+vQxTAwG0qb7oxc1rYeNzsfF69Mu9G2daoZAX4y5AqvDjns30Z
-         d2ZOCRe6gRGAnJm2ZrvlJwBMSmCEchapKSy1sglKo7ssibTrmTrK3LGa80ooSJgnMyDU
-         mMKA==
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=PS1E8AEgMAcGVJ+aF79pRtZo9rszaNV8ao+bvgc2AIA=;
+        b=d/RY70JfC6ATvaAtPA953DDSQAJ3laYKEVfj/D8xazKFUwX4Ru9gvCKOTVXThzy5vd
+         joq+YxhamWZCu9JtsGoMPrVJLBmBxnZ4+LP4KrtRXHywHTLegFTJxfRucDIYr9p+wgiU
+         +irVaDpu4CnWfe4VW73beYGb3ozyoEC1hO0rMvFFPKRZxj9wyD2lTsjO+gh7g9HE5jJ5
+         ci5VaYxtO6lTKmzeQUN33eN9IBaF01Xf4/pY6VlewhEkf5AB977lxFETqDgdHPXLGl2p
+         twb+VnecGJZVBnm2qMV58za63HcPIyLyjO8mWtZW0U058b6E22HvPVepE3gLVBDYtabe
+         S5vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nW2qLv4P+ELaCEQDSEa8aD195GqQR8KeBcLIkVFipd8=;
-        b=WX5hwBOndEqnulV4gWDEQ85WI/XrZ/W+1qsTkXX6pycDPsCQV0parf10r08bthP5Ti
-         xo3dUJ6lSnH1/XMKI+dUpIl0OoEb12rk3KVHzp5uBSfbSRGJQoQtTjEQx1JKR6j3mj8r
-         WuHpWufJ8J024HPEu0Wz696+JHLdthK5yNvreUQKMR+qGXNLh3fiJUsThHTQhrM0vYKe
-         hP9KGIp0UsfxCU5BlJSdB9lst7MmEAl+pZpIt6nzCJLUhKlZl+V2ik1itwb6b3ZzTFjK
-         QYn33aCguzni/CeEu29pifvnfP4z9OD5AnvMlsuv0T6uXsJSKeanbDkDGo87qjZPJgV+
-         x5qA==
-X-Gm-Message-State: AOAM531rmMitw/RQB2VGhozUKrF58S6lkNu1PzTRhIpBijlHrPj79AaQ
-        i9x9VOAZttXjIth9Q1dxywKL70jiDV9QtWAGlX5pnJpD7hcs4w==
-X-Google-Smtp-Source: ABdhPJwQRClbCXZ0NtL85TZOQQUmKacC+To72plVA6RhMyuoVs19c3TsiS79EZKrMKKrZpF1Tfy6q5cptcXbzHTAEzM=
-X-Received: by 2002:a25:4b86:: with SMTP id y128mr27780915yba.403.1612816550149;
- Mon, 08 Feb 2021 12:35:50 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=PS1E8AEgMAcGVJ+aF79pRtZo9rszaNV8ao+bvgc2AIA=;
+        b=gkqtTWooQPPb9sPQHLh/tkkQHejN/hLTaXBrMZ6i9jn7ySNP4dP1HCPgu0eWgaQO2e
+         wJzMjm8mrOdopk0aab8XZ9FKEAOWHhhVhgfuvAGNEV6s6g7n3UW2pV4Tmw8fvUkj24d9
+         /JSGJz4ReJUn46e+JQCVs5DNYlzNVZFomqyX1IBuzLiH861GEivnpZlTncj5icVKOkVN
+         6r4fQ5v/10hKxUTg5RmXT4qVmgZxGxgCbeIrv+MzuQ4u8A42Jzw8PTq5xD0vDmAEPR7q
+         ay7lEA3WTL1v7TOf9huPtsqvLVvuA+Ge6MaOveFLsOm9ppS4E2ledFoQCSg3u6MrHP3N
+         Katw==
+X-Gm-Message-State: AOAM5305B9n2abeQY5HDgIE+ymsPaqP0kXYp0HMPrYPbiwAx6rBs2FBc
+        JHOsA8P2pY24XJZhvcalHaIMhWpRQuF6uhUP27RenIFe0bO2iA==
+X-Google-Smtp-Source: ABdhPJw7oiI1uFJigeZu/7g/LygK+gEs+L88e80pPh45GOtkAIU7zv3EMt0pg7E4qifRnQwnslErWJvWVPZGSj2jTW0=
+X-Received: by 2002:a92:c5c8:: with SMTP id s8mr17037725ilt.186.1612817193284;
+ Mon, 08 Feb 2021 12:46:33 -0800 (PST)
 MIME-Version: 1.0
-References: <20210206170344.78399-1-alexei.starovoitov@gmail.com> <20210206170344.78399-3-alexei.starovoitov@gmail.com>
-In-Reply-To: <20210206170344.78399-3-alexei.starovoitov@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 8 Feb 2021 12:35:39 -0800
-Message-ID: <CAEf4Bzaoqt7ByRRrfdRUXvP+WKmK2bwncCrTVCL+A9bZLEYCWw@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 2/7] bpf: Compute program stats for sleepable programs
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
+References: <20210207071726.3969978-1-yhs@fb.com> <CA+icZUVwz+OroPfsqtOxAstWGeRxf=KYMUY5LCDPzyPLJFmZmg@mail.gmail.com>
+ <20210208195501.GS920417@kernel.org>
+In-Reply-To: <20210208195501.GS920417@kernel.org>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Mon, 8 Feb 2021 21:46:20 +0100
+Message-ID: <CA+icZUWTzrNXfB1FypgrbSneraY+-9LdqJBNdhWSgGCR-2+Ddg@mail.gmail.com>
+Subject: Re: [PATCH dwarves v2] btf_encoder: sanitize non-regular int base type
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Yonghong Song <yhs@fb.com>, dwarves@vger.kernel.org,
+        bpf@vger.kernel.org, andriin@fb.com, mark@klomp.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andrii Nakryiko <andrii@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Feb 6, 2021 at 9:05 AM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Mon, Feb 8, 2021 at 8:55 PM Arnaldo Carvalho de Melo
+<arnaldo.melo@gmail.com> wrote:
 >
-> From: Alexei Starovoitov <ast@kernel.org>
+> Em Sun, Feb 07, 2021 at 11:32:00AM +0100, Sedat Dilek escreveu:
+> > On Sun, Feb 7, 2021 at 8:17 AM Yonghong Song <yhs@fb.com> wrote:
+> > >
+> > > clang with dwarf5 may generate non-regular int base type,
+> > > i.e., not a signed/unsigned char/short/int/longlong/__int128.
+> > > Such base types are often used to describe
+> > > how an actual parameter or variable is generated. For example,
+> > >
+> > > 0x000015cf:   DW_TAG_base_type
+> > >                 DW_AT_name      ("DW_ATE_unsigned_1")
+> > >                 DW_AT_encoding  (DW_ATE_unsigned)
+> > >                 DW_AT_byte_size (0x00)
+> > >
+> > > 0x00010ed9:         DW_TAG_formal_parameter
+> > >                       DW_AT_location    (DW_OP_lit0,
+> > >                                          DW_OP_not,
+> > >                                          DW_OP_convert (0x000015cf) "DW_ATE_unsigned_1",
+> > >                                          DW_OP_convert (0x000015d4) "DW_ATE_unsigned_8",
+> > >                                          DW_OP_stack_value)
+> > >                       DW_AT_abstract_origin     (0x00013984 "branch")
+> > >
+> > > What it does is with a literal "0", did a "not" operation, and the converted to
+> > > one-bit unsigned int and then 8-bit unsigned int.
+> > >
+> > > Another example,
+> > >
+> > > 0x000e97e4:   DW_TAG_base_type
+> > >                 DW_AT_name      ("DW_ATE_unsigned_24")
+> > >                 DW_AT_encoding  (DW_ATE_unsigned)
+> > >                 DW_AT_byte_size (0x03)
+> > >
+> > > 0x000f88f8:     DW_TAG_variable
+> > >                   DW_AT_location        (indexed (0x3c) loclist = 0x00008fb0:
+> > >                      [0xffffffff82808812, 0xffffffff82808817):
+> > >                          DW_OP_breg0 RAX+0,
+> > >                          DW_OP_convert (0x000e97d5) "DW_ATE_unsigned_64",
+> > >                          DW_OP_convert (0x000e97df) "DW_ATE_unsigned_8",
+> > >                          DW_OP_stack_value,
+> > >                          DW_OP_piece 0x1,
+> > >                          DW_OP_breg0 RAX+0,
+> > >                          DW_OP_convert (0x000e97d5) "DW_ATE_unsigned_64",
+> > >                          DW_OP_convert (0x000e97da) "DW_ATE_unsigned_32",
+> > >                          DW_OP_lit8,
+> > >                          DW_OP_shr,
+> > >                          DW_OP_convert (0x000e97da) "DW_ATE_unsigned_32",
+> > >                          DW_OP_convert (0x000e97e4) "DW_ATE_unsigned_24",
+> > >                          DW_OP_stack_value,
+> > >                          DW_OP_piece 0x3
+> > >                      ......
+> > >
+> > > At one point, a right shift by 8 happens and the result is converted to
+> > > 32-bit unsigned int and then to 24-bit unsigned int.
+> > >
+> > > BTF does not need any of these DW_OP_* information and such non-regular int
+> > > types will cause libbpf to emit errors.
+> > > Let us sanitize them to generate BTF acceptable to libbpf and kernel.
+> > >
+> > > Cc: Sedat Dilek <sedat.dilek@gmail.com>
+> >
+> > Thanks for v2.
+> >
+> > For both v1 and v2:
+> >
+> >    Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+> >    Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
 >
-> In older non-RT kernels migrate_disable() was the same as preempt_disable().
-> Since commit 74d862b682f5 ("sched: Make migrate_disable/enable() independent of RT")
-> migrate_disable() is real and doesn't prevent sleeping.
-> Use it to efficiently compute execution stats for sleepable bpf programs.
-> migrate_disable() will also be used to enable per-cpu maps in sleepable programs
-> in the future patches.
+> Thanks, applied.
 >
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> ---
 
-LGTM (see comment about outdated comment).
+Great.
+I cannot see it yet in [1] or [2].
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+More important to me is is this worth a pahole v1.20.1 release?
+This patch is required to successfully build with BTF and DWARF-5 and Clang-12.
 
->  arch/x86/net/bpf_jit_comp.c | 31 ++++++++++++-------------------
->  include/linux/bpf.h         |  4 ++--
->  kernel/bpf/trampoline.c     | 27 +++++++++++++++++++++------
->  3 files changed, 35 insertions(+), 27 deletions(-)
->
-> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-> index a3dc3bd154ac..d11b9bcebbea 100644
-> --- a/arch/x86/net/bpf_jit_comp.c
-> +++ b/arch/x86/net/bpf_jit_comp.c
-> @@ -1742,15 +1742,12 @@ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
->         u8 *prog = *pprog;
->         int cnt = 0;
->
-> -       if (p->aux->sleepable) {
-> -               if (emit_call(&prog, __bpf_prog_enter_sleepable, prog))
-> +       if (emit_call(&prog,
-> +                     p->aux->sleepable ? __bpf_prog_enter_sleepable :
-> +                     __bpf_prog_enter, prog))
->                         return -EINVAL;
-> -       } else {
-> -               if (emit_call(&prog, __bpf_prog_enter, prog))
-> -                       return -EINVAL;
-> -               /* remember prog start time returned by __bpf_prog_enter */
-> -               emit_mov_reg(&prog, true, BPF_REG_6, BPF_REG_0);
-> -       }
-> +       /* remember prog start time returned by __bpf_prog_enter */
-> +       emit_mov_reg(&prog, true, BPF_REG_6, BPF_REG_0);
->
->         /* arg1: lea rdi, [rbp - stack_size] */
->         EMIT4(0x48, 0x8D, 0x7D, -stack_size);
-> @@ -1770,18 +1767,14 @@ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
->         if (mod_ret)
->                 emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -8);
->
-> -       if (p->aux->sleepable) {
-> -               if (emit_call(&prog, __bpf_prog_exit_sleepable, prog))
-> +       /* arg1: mov rdi, progs[i] */
-> +       emit_mov_imm64(&prog, BPF_REG_1, (long) p >> 32, (u32) (long) p);
-> +       /* arg2: mov rsi, rbx <- start time in nsec */
-> +       emit_mov_reg(&prog, true, BPF_REG_2, BPF_REG_6);
-> +       if (emit_call(&prog,
-> +                     p->aux->sleepable ? __bpf_prog_exit_sleepable :
-> +                     __bpf_prog_exit, prog))
->                         return -EINVAL;
-> -       } else {
-> -               /* arg1: mov rdi, progs[i] */
-> -               emit_mov_imm64(&prog, BPF_REG_1, (long) p >> 32,
-> -                              (u32) (long) p);
-> -               /* arg2: mov rsi, rbx <- start time in nsec */
-> -               emit_mov_reg(&prog, true, BPF_REG_2, BPF_REG_6);
-> -               if (emit_call(&prog, __bpf_prog_exit, prog))
-> -                       return -EINVAL;
-> -       }
->
->         *pprog = prog;
->         return 0;
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 026fa8873c5d..2fa48439ef31 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -563,8 +563,8 @@ int arch_prepare_bpf_trampoline(void *image, void *image_end,
->  /* these two functions are called from generated trampoline */
->  u64 notrace __bpf_prog_enter(void);
->  void notrace __bpf_prog_exit(struct bpf_prog *prog, u64 start);
-> -void notrace __bpf_prog_enter_sleepable(void);
-> -void notrace __bpf_prog_exit_sleepable(void);
-> +u64 notrace __bpf_prog_enter_sleepable(void);
-> +void notrace __bpf_prog_exit_sleepable(struct bpf_prog *prog, u64 start);
->
->  struct bpf_ksym {
->         unsigned long            start;
-> diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-> index 5be3beeedd74..b1f567514b7e 100644
-> --- a/kernel/bpf/trampoline.c
-> +++ b/kernel/bpf/trampoline.c
-> @@ -388,10 +388,11 @@ void bpf_trampoline_put(struct bpf_trampoline *tr)
->   * call prog->bpf_func
->   * call __bpf_prog_exit
->   */
-> +#define NO_START_TIME 0
->  u64 notrace __bpf_prog_enter(void)
->         __acquires(RCU)
->  {
-> -       u64 start = 0;
-> +       u64 start = NO_START_TIME;
->
->         rcu_read_lock();
->         migrate_disable();
-> @@ -400,8 +401,8 @@ u64 notrace __bpf_prog_enter(void)
->         return start;
->  }
->
-> -void notrace __bpf_prog_exit(struct bpf_prog *prog, u64 start)
-> -       __releases(RCU)
-> +static void notrace update_prog_stats(struct bpf_prog *prog,
-> +                                     u64 start)
->  {
->         struct bpf_prog_stats *stats;
->
-> @@ -411,25 +412,39 @@ void notrace __bpf_prog_exit(struct bpf_prog *prog, u64 start)
->              * And vice versa.
->              * Hence check that 'start' is not zero.
+I have Nathan's "bpf: Hoise pahole version checks into Kconfig" patch
+in my custom patchset (together with Nick's DWARF-v5 patchset) which
+makes it easier to do (depends on PAHOLE_VERSION >= 1201) via Kconfig
+for example.
 
-This comment still references __bpf_prog_enter and __bpf_prog_exit
-(only). See for yourself if it needs to be updated.
+- Sedat -
 
->              */
-> -           start) {
-> +           start > NO_START_TIME) {
->                 stats = this_cpu_ptr(prog->stats);
->                 u64_stats_update_begin(&stats->syncp);
->                 stats->cnt++;
->                 stats->nsecs += sched_clock() - start;
->                 u64_stats_update_end(&stats->syncp);
->         }
-> +}
-> +
-> +void notrace __bpf_prog_exit(struct bpf_prog *prog, u64 start)
-> +       __releases(RCU)
-> +{
-> +       update_prog_stats(prog, start);
->         migrate_enable();
->         rcu_read_unlock();
->  }
+[1] https://git.kernel.org/pub/scm/devel/pahole/pahole.git/
+[2] https://github.com/acmel/dwarves/
+
+> - Arnaldo
 >
-> -void notrace __bpf_prog_enter_sleepable(void)
-> +u64 notrace __bpf_prog_enter_sleepable(void)
->  {
-> +       u64 start = NO_START_TIME;
-> +
->         rcu_read_lock_trace();
-> +       migrate_disable();
->         might_fault();
-> +       if (static_branch_unlikely(&bpf_stats_enabled_key))
-> +               start = sched_clock();
-> +       return start;
->  }
->
-> -void notrace __bpf_prog_exit_sleepable(void)
-> +void notrace __bpf_prog_exit_sleepable(struct bpf_prog *prog, u64 start)
->  {
-> +       update_prog_stats(prog, start);
-> +       migrate_enable();
->         rcu_read_unlock_trace();
->  }
+> > My development and testing environment:
+> >
+> > 1. Debian/testing AMD64
+> > 2. Linux v5.11-rc6+ with custom mostly Clang fixes
+> > 3. Debug-Info: BTF + DWARF-v5 enabled
+> > 4. Compiler and tools (incl. Clang's Integrated ASsembler IAS):
+> > LLVM/Clang v12.0.0-rc1 (make LLVM=1 LLVM_IAS=1)
+> >
+> > Build and boot on bare metal.
+> >
+> > - Sedat -
+> >
+> > > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> > > Signed-off-by: Yonghong Song <yhs@fb.com>
+> > > ---
+> > >  libbtf.c | 39 ++++++++++++++++++++++++++++++++++++++-
+> > >  1 file changed, 38 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/libbtf.c b/libbtf.c
+> > > index 9f76283..5843200 100644
+> > > --- a/libbtf.c
+> > > +++ b/libbtf.c
+> > > @@ -373,6 +373,7 @@ int32_t btf_elf__add_base_type(struct btf_elf *btfe, const struct base_type *bt,
+> > >         struct btf *btf = btfe->btf;
+> > >         const struct btf_type *t;
+> > >         uint8_t encoding = 0;
+> > > +       uint16_t byte_sz;
+> > >         int32_t id;
+> > >
+> > >         if (bt->is_signed) {
+> > > @@ -384,7 +385,43 @@ int32_t btf_elf__add_base_type(struct btf_elf *btfe, const struct base_type *bt,
+> > >                 return -1;
+> > >         }
+> > >
+> > > -       id = btf__add_int(btf, name, BITS_ROUNDUP_BYTES(bt->bit_size), encoding);
+> > > +       /* dwarf5 may emit DW_ATE_[un]signed_{num} base types where
+> > > +        * {num} is not power of 2 and may exceed 128. Such attributes
+> > > +        * are mostly used to record operation for an actual parameter
+> > > +        * or variable.
+> > > +        * For example,
+> > > +        *     DW_AT_location        (indexed (0x3c) loclist = 0x00008fb0:
+> > > +        *         [0xffffffff82808812, 0xffffffff82808817):
+> > > +        *             DW_OP_breg0 RAX+0,
+> > > +        *             DW_OP_convert (0x000e97d5) "DW_ATE_unsigned_64",
+> > > +        *             DW_OP_convert (0x000e97df) "DW_ATE_unsigned_8",
+> > > +        *             DW_OP_stack_value,
+> > > +        *             DW_OP_piece 0x1,
+> > > +        *             DW_OP_breg0 RAX+0,
+> > > +        *             DW_OP_convert (0x000e97d5) "DW_ATE_unsigned_64",
+> > > +        *             DW_OP_convert (0x000e97da) "DW_ATE_unsigned_32",
+> > > +        *             DW_OP_lit8,
+> > > +        *             DW_OP_shr,
+> > > +        *             DW_OP_convert (0x000e97da) "DW_ATE_unsigned_32",
+> > > +        *             DW_OP_convert (0x000e97e4) "DW_ATE_unsigned_24",
+> > > +        *             DW_OP_stack_value, DW_OP_piece 0x3
+> > > +        *     DW_AT_name    ("ebx")
+> > > +        *     DW_AT_decl_file       ("/linux/arch/x86/events/intel/core.c")
+> > > +        *
+> > > +        * In the above example, at some point, one unsigned_32 value
+> > > +        * is right shifted by 8 and the result is converted to unsigned_32
+> > > +        * and then unsigned_24.
+> > > +        *
+> > > +        * BTF does not need such DW_OP_* information so let us sanitize
+> > > +        * these non-regular int types to avoid libbpf/kernel complaints.
+> > > +        */
+> > > +       byte_sz = BITS_ROUNDUP_BYTES(bt->bit_size);
+> > > +       if (!byte_sz || (byte_sz & (byte_sz - 1))) {
+> > > +               name = "__SANITIZED_FAKE_INT__";
+> > > +               byte_sz = 4;
+> > > +       }
+> > > +
+> > > +       id = btf__add_int(btf, name, byte_sz, encoding);
+> > >         if (id < 0) {
+> > >                 btf_elf__log_err(btfe, BTF_KIND_INT, name, true, "Error emitting BTF type");
+> > >         } else {
+> > > --
+> > > 2.24.1
+> > >
 >
 > --
-> 2.24.1
 >
+> - Arnaldo
