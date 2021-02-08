@@ -2,89 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECAAB3131A1
-	for <lists+bpf@lfdr.de>; Mon,  8 Feb 2021 13:01:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC9C6313261
+	for <lists+bpf@lfdr.de>; Mon,  8 Feb 2021 13:34:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233296AbhBHMBM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Feb 2021 07:01:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38634 "EHLO
+        id S231905AbhBHMcW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Feb 2021 07:32:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233361AbhBHL7J (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Feb 2021 06:59:09 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76E40C06174A
-        for <bpf@vger.kernel.org>; Mon,  8 Feb 2021 03:58:29 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id bl23so24161637ejb.5
-        for <bpf@vger.kernel.org>; Mon, 08 Feb 2021 03:58:29 -0800 (PST)
+        with ESMTP id S231866AbhBHMcT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Feb 2021 07:32:19 -0500
+Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 423CEC061756
+        for <bpf@vger.kernel.org>; Mon,  8 Feb 2021 04:31:39 -0800 (PST)
+Received: by mail-wr1-x44a.google.com with SMTP id c1so13060872wrx.2
+        for <bpf@vger.kernel.org>; Mon, 08 Feb 2021 04:31:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=LzqefVBsxlS9FvrWIXQWeKK6XX9u3vVW5wQL3trZcNQ=;
-        b=gSxlRX/TOQaRETTRfg9s7ZdEvWb6Zlp+2glITouc6n2yjyMrLbPx+28iSxW9+LnPWA
-         X8aC/Q7cuPm06aKhnFbUf4QdNldY5/4b1Ymgs7PdI4sMmfBz4IT+LtexPHaI3Eogop3b
-         zVmU3smKDJwpkwiECivlU/hhtNhBrb7dssYpvZHiC0/3nOPv5l0iC9Wv4QiwzmvlLAN1
-         IOPlkf41SjCr2z2pSnPtt4Yu5JV4vA8AXCuLnueOz249Y5EBaiEIOzYfWOvptpHGZnv2
-         /tmoGIWkBk0v7OWi8JpG1ZOOaToiigDwEo6hG7U1y9kddYPblAjg3BbugwsBso2LqKha
-         d+hA==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=Tz3EEiGtqhAZQlBh+d9mhoi0ASY5WVHpqxEBNOrbNmA=;
+        b=hn5osd+w4b+f6msnUJ7+kJz24A0jojRgXS2mYqMSj5xpjKVBeGXCXLzCKt8Ftf+lbY
+         qpX4gJ0J1dO4lVRVA79nS9baDTjvoIAoXY//eu52wzA7QQodvWNW6r0xlkSfQq7cA0xZ
+         Wgb8z3+33aVi1AS0syr/5HGj2aXCwlz6yzfbR6yumylmsQVWaySmoDY0pArCp0T5H0/3
+         kNsZG8j22tkEsScalnGkV5qHqthq03zkM+nqh+/KjJRiIlmCQy4QKtmh/ZYPSp5JuBNs
+         SjKDcFhB+25GY/A2MuGmRjCBA5TplWJHyEowV6ZUaHvwP9707N0YcvoFVS7sfJrxGCLi
+         HjQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=LzqefVBsxlS9FvrWIXQWeKK6XX9u3vVW5wQL3trZcNQ=;
-        b=ILPlpxElaLGPMZS0aSNKovImfjmcW3duNlbxbmwuvqrkYMnf7Ys3JHu6zS5x5yx0EF
-         UpM3IG4JO+WBSqVdsNBFkZfNaOvIGN27CnvgL64aeZuH00pyO1LzsRdjZRm+yx2k+K6f
-         sy+corR/luaJiDiWV4O4DJ7YDbURWG7QpCzzTeqBpEv+PIFWnsDkz7uTHJDEhf2Q3kYf
-         fQWEOKhGa2iP5cYt+dfvejvKEmHOx+dxsM50IabHAJAyIa48B5QSigQOxOgu9AeaxHg5
-         U6kn+u4s0h/yaEJtT/hHLACyeKSJwhFlcO0odS354YRQiVZeo+Q0edl5dVRna5KNSF1O
-         0ZOg==
-X-Gm-Message-State: AOAM533WcDws5+9CTv0TDxkWsonAGiPoBBEXvu2rdkWbvpV+nKfgmc0P
-        wGsyhNerwI2gCJHN5A0s7CIWuqJWT1IIiPWXh+Q=
-X-Google-Smtp-Source: ABdhPJyfB0+91Z0gCEwv+lgbNa/eqd1i0WobNP1y/2eU/ue6lQHCf/f7fswXvGPL5Dug8no0OzbWImJs/vUNi5ln7pw=
-X-Received: by 2002:a17:907:3e06:: with SMTP id hp6mr16667339ejc.254.1612785508187;
- Mon, 08 Feb 2021 03:58:28 -0800 (PST)
-MIME-Version: 1.0
-References: <CANaYP3G4zZu=d2Y_d+=418f6X9+5b-JFhk0h9VZoQmFFLhu3Ag@mail.gmail.com>
- <CANaYP3GgBDPBUjrkg0j-NOEzf3WJEOqcqoGU0uVxQ3LsAzz8ow@mail.gmail.com> <87v9b2u6pa.fsf@toke.dk>
-In-Reply-To: <87v9b2u6pa.fsf@toke.dk>
-From:   Gilad Reti <gilad.reti@gmail.com>
-Date:   Mon, 8 Feb 2021 13:57:52 +0200
-Message-ID: <CANaYP3GxKrjuUUTGaAjYGqwPCNzPJBNPQGMMCNaoHT4rfsYUfA@mail.gmail.com>
-Subject: Re: libbpf: pinning multiple progs from the same section
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=Tz3EEiGtqhAZQlBh+d9mhoi0ASY5WVHpqxEBNOrbNmA=;
+        b=Ywqi8fPx2+wlkCTMVugNNPOFjqYCMoRCkhSiTqW14yk3zvPorJY+Rt4db7gPmH6fJE
+         /vT39xfxuN85RWH3T8grQjXJB0D2WtGL0FCAWqihYSassYfgt80zOqgOEs2kSjn007UG
+         fmdZ9n7k9QPKDTvI2D1g8kD2mFdSzyoivjaeKG9muafxUHu5Np8bDqMOAaiEGLenPi6c
+         nk9jY49Ngid/S0s1ExSuJddtGgZoHOD5ys/6m8hd1RYXPO0GlvYUus44HN2mu6vdaZHh
+         g5f8GYBsHHCFYMYmgKtGujwY3/PkbdV/VKUUxEE++KnSzqXiiiYXW0EVjjhOYyQlZwFs
+         RtNw==
+X-Gm-Message-State: AOAM5339JLoZIwImnxmxYjpA3OMQLR18z47J2AStajgpW8TO7YhRQGBR
+        r/EvpH7MIW2e+4iLr+W77mlIwRT27wSs/E7tPsSYOcCRGQsRWqMm0t69hg6ENpkREy83/d21Mlu
+        CoZ+kOUiKmSiWDUx9RsZiCj1F3BgEUo45abgTsKAJOIa0tOy1xfiuNvQngsOGE6I=
+X-Google-Smtp-Source: ABdhPJw3Kbgr6vQqx5hgrlT75XJqxVXpDt3t2CfAv4kQvno+YIfbJIKofJ/HAfi1W8RZlOeCSMfNWpAB9Pomcg==
+Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
+X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:11db])
+ (user=jackmanb job=sendgmr) by 2002:adf:8523:: with SMTP id
+ 32mr6576804wrh.275.1612787497636; Mon, 08 Feb 2021 04:31:37 -0800 (PST)
+Date:   Mon,  8 Feb 2021 12:31:22 +0000
+Message-Id: <20210208123122.956545-1-jackmanb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
+Subject: [PATCH bpf-next] selftests/bpf: Add missing cleanup in atomic_bounds test
+From:   Brendan Jackman <jackmanb@google.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        Yonghong Song <yhs@fb.com>, linux-kernel@vger.kernel.org,
+        Brendan Jackman <jackmanb@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 8, 2021 at 1:42 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
-t.com> wrote:
->
-> Gilad Reti <gilad.reti@gmail.com> writes:
->
-> > Also, is there a way to set the pin path to all maps/programs at once?
-> > For example, bpf_object__pin_maps pins all maps at a specific path,
-> > but as far as I was able to find there is no similar function to set
-> > the pin path for all maps only (without pinning) so that at loading
-> > time libbpf will try to reuse all maps. The only way to achieve a
-> > complete reuse of all maps that I could find is to "reverse engineer"
-> > libbpf's pin path generation algorithm (i.e. <path>/<map_name>) and
-> > set the pin path on each map before load.
->
-> You can set the 'pinning' attribute in the map definition - add
-> '__uint(pinning, LIBBPF_PIN_BY_NAME);' to the map struct. By default
-> this will pin beneath /sys/fs/bpf, but you can customise that by setting
-> the pin_root_path attribute in bpf_object_open_opts.
+Add missing skeleton destroy call.
 
-Yes, I am familiar with that feature, but it has some downsides:
-1. I need to set it manually on every map (and in cases that I have
-only the compiled object file that would be hard).
-2. It only works for bpf maps and not bpf programs.
-3. It only works for bpf maps that are defined explicitly in the bpf
-code and not for implicit (inner) bpf maps (bss, rodata, etc).
+Reported-by: Yonghong Song <yhs@fb.com>
+Fixes: 37086bfdc737 ("bpf: Propagate stack bounds to registers in atomics w/ BPF_FETCH")
+Signed-off-by: Brendan Jackman <jackmanb@google.com>
+---
+ tools/testing/selftests/bpf/prog_tests/atomic_bounds.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
->
-> -Toke
->
+diff --git a/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c b/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c
+index addf127068e4..290506fa1c38 100644
+--- a/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c
++++ b/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c
+@@ -12,4 +12,6 @@ void test_atomic_bounds(void)
+ 	skel = atomic_bounds__open_and_load();
+ 	if (CHECK(!skel, "skel_load", "couldn't load program\n"))
+ 		return;
++
++	atomic_bounds__destroy()
+ }
+
+base-commit: 23a2d70c7a2f28eb1a8f6bc19d68d23968cad0ce
+-- 
+2.30.0.478.g8a0d178c01-goog
+
