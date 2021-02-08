@@ -2,163 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B073C313888
-	for <lists+bpf@lfdr.de>; Mon,  8 Feb 2021 16:52:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1359331396B
+	for <lists+bpf@lfdr.de>; Mon,  8 Feb 2021 17:29:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232677AbhBHPvy (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Feb 2021 10:51:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233495AbhBHPvn (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Feb 2021 10:51:43 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71AA9C06178A
-        for <bpf@vger.kernel.org>; Mon,  8 Feb 2021 07:51:03 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id l25so8271471eja.9
-        for <bpf@vger.kernel.org>; Mon, 08 Feb 2021 07:51:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=J6EbGQERP8fj73dyzJJ72eeYoESE909I3834GkrucOg=;
-        b=grbdIIXd+NTIW5VU+aanhwSob/3XCV8724dFHbl1QYdXZV6x1nKOvWGB0K71Zxac+U
-         vOsF/E2vAnA/oXw593NXsJ8LgoEbuHfbNiF+0G1kGZd21N5SMAaYKm7XPf6QimIvt6kX
-         Ok1WSWxmN6SUDP/9ZcA+vVvi0bE2m3JeMdfhMGyydRTXhKznaSmzdDJOtLjdCYdw/J6M
-         EwdCMKo80wrAhtWmPRCkBQIJB6jub8kzUfEpz8jvVtgaDsyhK9l2QJ6BBnQq47Yg5NCP
-         VjOQ+hoJvSeo9ArwbMiHfwj5Xgq7p/DamkHM29hWZXM+FmSVtllgiDVFKoCt4nhIbtcP
-         zACw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=J6EbGQERP8fj73dyzJJ72eeYoESE909I3834GkrucOg=;
-        b=hyMAwRtav6M05v4FkmWvvQrb2P5DJReaYfrHwLuq0lfpXmg5KPZ9cVior9dIjSXk14
-         V+/ptptkxa/bBM1yscW6K8/eaVroNkpg0Oz+mf3/qEownusjuBxiH4nV0qBXiivxOz2K
-         Mlx3x4YtgWaH0OrcReDRl82TY+KJxVz09x3kd5GkpzDjX9faFc0sdiwNFWpRlrCmprn4
-         rHYywCTUWmAlBCIGic1KKk50Yaaxua266DMQmdugm0m8H8/9ApYw99FBRN70uXF1ZDhe
-         FGIUp2AA2zHRWsQHnmd89F7FHxeHKF/Tfum3opgYDJq/RkEpTuJikMaJiWUM2JKvN8SJ
-         h/GA==
-X-Gm-Message-State: AOAM532XWkpfi/oME3N80dmNxeyLEqtwONu7DxrkGoUGKkSj2mWVkkaa
-        0x0gwTVKX6cDaXgfHJjSe8Yy6TRGHaLjwVRJpa4=
-X-Google-Smtp-Source: ABdhPJz+EBgWhfDlpr068kkcItiU3PI7nlu3GdeE/e7VsSC2Qi3BlYDa0wTBoCIYLYPLfb6qXqAiH9FuSrMfEpmjZVM=
-X-Received: by 2002:a17:907:2705:: with SMTP id w5mr7073331ejk.136.1612799461977;
- Mon, 08 Feb 2021 07:51:01 -0800 (PST)
+        id S234376AbhBHQ3D (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Feb 2021 11:29:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48719 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234162AbhBHQ2u (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 8 Feb 2021 11:28:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612801644;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=K9lNJnNNY1Fz7QWSI+VzlyuLnjOEnPi/oNdJ+JCAbmg=;
+        b=Io/fozKcSDRnWpLhN9sjVOMbh33JzDnnyGOQNPEUnlKFo4CIic4+SenO0DMZXsaDXTCofH
+        NwOaGsE38fpJH9Ok6t/sEszF5i7uxwURDnrwIG5BHPicTtKLqIoTk3aAucjnezoK98noWe
+        +Wmx3elA8oYmyxkdS6iRy++VQWtMMH8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-140-SQ-Af8sWOo6gFa4yt4oVwQ-1; Mon, 08 Feb 2021 11:27:20 -0500
+X-MC-Unique: SQ-Af8sWOo6gFa4yt4oVwQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EFABF79EC0;
+        Mon,  8 Feb 2021 16:27:17 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.45])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2D3F76085D;
+        Mon,  8 Feb 2021 16:27:10 +0000 (UTC)
+Date:   Mon, 8 Feb 2021 17:27:09 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
+        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
+        colrack@gmail.com, David Ahern <dsahern@kernel.org>,
+        brouer@redhat.com
+Subject: Re: [PATCH bpf-next V15 2/7] bpf: fix bpf_fib_lookup helper MTU
+ check for SKB ctx
+Message-ID: <20210208172709.15415a46@carbon>
+In-Reply-To: <547131a3-5125-d419-8e61-0fc675d663a8@iogearbox.net>
+References: <161228314075.576669.15427172810948915572.stgit@firesoul>
+        <161228321177.576669.11521750082473556168.stgit@firesoul>
+        <ada19e5b-87be-ff39-45ba-ff0025bf1de9@iogearbox.net>
+        <20210208145713.4ee3e9ba@carbon>
+        <20210208162056.44b0236e@carbon>
+        <547131a3-5125-d419-8e61-0fc675d663a8@iogearbox.net>
 MIME-Version: 1.0
-References: <CANaYP3G4zZu=d2Y_d+=418f6X9+5b-JFhk0h9VZoQmFFLhu3Ag@mail.gmail.com>
- <CANaYP3GgBDPBUjrkg0j-NOEzf3WJEOqcqoGU0uVxQ3LsAzz8ow@mail.gmail.com>
- <87v9b2u6pa.fsf@toke.dk> <CANaYP3GxKrjuUUTGaAjYGqwPCNzPJBNPQGMMCNaoHT4rfsYUfA@mail.gmail.com>
- <87mtwetz04.fsf@toke.dk> <CANaYP3G4sBrBy3Xsrku4LjW4sFhAb-9HreZUo_aBNe6gCab1Eg@mail.gmail.com>
- <87blcutx3v.fsf@toke.dk>
-In-Reply-To: <87blcutx3v.fsf@toke.dk>
-From:   Gilad Reti <gilad.reti@gmail.com>
-Date:   Mon, 8 Feb 2021 17:50:25 +0200
-Message-ID: <CANaYP3FEheoxSp86sFair0CAQz1-fkdmGp0_zvgGqQr_3P+qdg@mail.gmail.com>
-Subject: Re: libbpf: pinning multiple progs from the same section
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 8, 2021 at 5:09 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
-t.com> wrote:
->
-> Gilad Reti <gilad.reti@gmail.com> writes:
->
-> > On Mon, Feb 8, 2021 at 4:28 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@r=
-edhat.com> wrote:
-> >>
-> >> Gilad Reti <gilad.reti@gmail.com> writes:
-> >>
-> >> > On Mon, Feb 8, 2021 at 1:42 PM Toke H=C3=B8iland-J=C3=B8rgensen <tok=
-e@redhat.com> wrote:
-> >> >>
-> >> >> Gilad Reti <gilad.reti@gmail.com> writes:
-> >> >>
-> >> >> > Also, is there a way to set the pin path to all maps/programs at =
-once?
-> >> >> > For example, bpf_object__pin_maps pins all maps at a specific pat=
-h,
-> >> >> > but as far as I was able to find there is no similar function to =
-set
-> >> >> > the pin path for all maps only (without pinning) so that at loadi=
-ng
-> >> >> > time libbpf will try to reuse all maps. The only way to achieve a
-> >> >> > complete reuse of all maps that I could find is to "reverse engin=
-eer"
-> >> >> > libbpf's pin path generation algorithm (i.e. <path>/<map_name>) a=
-nd
-> >> >> > set the pin path on each map before load.
-> >> >>
-> >> >> You can set the 'pinning' attribute in the map definition - add
-> >> >> '__uint(pinning, LIBBPF_PIN_BY_NAME);' to the map struct. By defaul=
-t
-> >> >> this will pin beneath /sys/fs/bpf, but you can customise that by se=
-tting
-> >> >> the pin_root_path attribute in bpf_object_open_opts.
-> >> >
-> >> > Yes, I am familiar with that feature, but it has some downsides:
-> >> > 1. I need to set it manually on every map (and in cases that I have
-> >> > only the compiled object file that would be hard).
-> >> > 2. It only works for bpf maps and not bpf programs.
-> >> > 3. It only works for bpf maps that are defined explicitly in the bpf
-> >> > code and not for implicit (inner) bpf maps (bss, rodata, etc).
-> >>
-> >> Ah, right. Well, other than that I don't think there's a way to set pi=
-n
-> >> paths in bulk, other than by manually iterating and setting them one a=
-t
-> >> a time. But, erm, can't you just do that? :)
-> >>
-> >
-> > Sure, I can, but I think we should avoid that. As I said this forces
-> > the user to know libbpf's pin path naming algorithm, which is not part
-> > of the libbpf api afaik.
->
-> Why? If you set the pin path from your application, libbpf will also try
-> to reuse the map from that path. So you don't need to know libbpf's
-> algorithm if you just override it with your own paths?
->
+On Mon, 8 Feb 2021 16:41:24 +0100
+Daniel Borkmann <daniel@iogearbox.net> wrote:
 
-If I do bpf_object__pin_maps then libbpf decides where it wants to pin them=
-.
-I can set each path by my own, but then why do we need this function? All
-It does is pinning all the maps at paths that are not part of the api. In t=
-his
-libbpf version it is here, in the next it is there, and user code will need=
- to
-change accordingly. For example, libbpf today uses <path>/<map_name> as
-the pin path, but it is also doing sanitize_pin_pathon each path. This mean=
-s
-that after if use bpf_object__pin_maps I also need to know how libbpf sanit=
-izes
-its paths and mimic that behavior on my side.
+> On 2/8/21 4:20 PM, Jesper Dangaard Brouer wrote:
+> > On Mon, 8 Feb 2021 14:57:13 +0100
+> > Jesper Dangaard Brouer <brouer@redhat.com> wrote:  
+> >> On Fri, 5 Feb 2021 01:06:35 +0100
+> >> Daniel Borkmann <daniel@iogearbox.net> wrote:  
+> >>> On 2/2/21 5:26 PM, Jesper Dangaard Brouer wrote:  
+> >>>> BPF end-user on Cilium slack-channel (Carlo Carraro) wants to use
+> >>>> bpf_fib_lookup for doing MTU-check, but *prior* to extending packet size,
+> >>>> by adjusting fib_params 'tot_len' with the packet length plus the expected
+> >>>> encap size. (Just like the bpf_check_mtu helper supports). He discovered
+> >>>> that for SKB ctx the param->tot_len was not used, instead skb->len was used
+> >>>> (via MTU check in is_skb_forwardable() that checks against netdev MTU).
+> >>>>
+> >>>> Fix this by using fib_params 'tot_len' for MTU check. If not provided (e.g.
+> >>>> zero) then keep existing TC behaviour intact. Notice that 'tot_len' for MTU
+> >>>> check is done like XDP code-path, which checks against FIB-dst MTU.  
+> [...]
+> >>>> -	if (!rc) {
+> >>>> -		struct net_device *dev;
+> >>>> -
+> >>>> -		dev = dev_get_by_index_rcu(net, params->ifindex);
+> >>>> +	if (rc == BPF_FIB_LKUP_RET_SUCCESS && !check_mtu) {
+> >>>> +		/* When tot_len isn't provided by user,
+> >>>> +		 * check skb against net_device MTU
+> >>>> +		 */
+> >>>>    		if (!is_skb_forwardable(dev, skb))
+> >>>>    			rc = BPF_FIB_LKUP_RET_FRAG_NEEDED;  
+> >>>
+> >>> ... so using old cached dev from above will result in wrong MTU check &
+> >>> subsequent passing of wrong params->mtu_result = dev->mtu this way.  
+> >>
+> >> Yes, you are right, params->ifindex have a chance to change in the calls.
+> >> So, our attempt to save an ifindex lookup (dev_get_by_index_rcu) is not
+> >> correct.
+> >>  
+> >>> So one
+> >>> way to fix is that we would need to pass &dev to bpf_ipv{4,6}_fib_lookup().  
+> >>
+> >> Ok, I will try to code it up, and see how ugly it looks, but I'm no
+> >> longer sure that it is worth saving this ifindex lookup, as it will
+> >> only happen if BPF-prog didn't specify params->tot_len.  
+> > 
+> > I guess we can still do this as an "optimization", but the dev/ifindex
+> > will very likely be another at this point.  
+> 
+> I would say for sake of progress, lets ship your series w/o this optimization so
+> it can land, and we revisit this later on independent from here. 
 
-> > I think that if we have a method to pin all maps at a specific path
-> > there should also be a method for reusing them all from this path,
-> > either by exposing the function that builds the pin path, or a
-> > function that sets all the paths from a root path.
->
-> What you're asking for is basically a function
-> bpf_object__set_all_pin_paths(obj, path)
->
-> instead of having to do
->
-> bpf_object__for_each_map(map, obj) {
->   sprintf(path, "path/%s", bpf_map__name(map));
->   bpf_map__set_pin_path(map, path);
-> }
->
-> or? Is that really needed?
->
+I would really really like to make progress for this patchset.  I
+unfortunately finished coding this up (and tested with selftests)
+before I noticed this request (without optimizations).
 
-Yes, that is what I am asking for. Either that or a
-bpf_map__build_pin_path(path, map)
-That will return a pin path that is compatible with libbpf's one, and
-then I can iterate
-over all maps.
+I guess, I can revert my recent work by pulling in V12 of the patch.
+I'll do it tomorrow, as I want to have time to run my tests before
+re-sending patchset.
 
-> -Toke
->
+> Actually DavidA back then acked the old poc patch I posted, so maybe
+> that's worth a revisit as well but needs more testing first.
+
+Yes, we can always revisit this as an optimization.
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
