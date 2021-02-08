@@ -2,157 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A399F3132D8
-	for <lists+bpf@lfdr.de>; Mon,  8 Feb 2021 14:00:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A7FA3132EE
+	for <lists+bpf@lfdr.de>; Mon,  8 Feb 2021 14:09:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230229AbhBHM7Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Feb 2021 07:59:16 -0500
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:37051 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229822AbhBHM7J (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Feb 2021 07:59:09 -0500
-X-Originating-IP: 78.45.89.65
-Received: from [192.168.1.23] (ip-78-45-89-65.net.upcbroadband.cz [78.45.89.65])
-        (Authenticated sender: i.maximets@ovn.org)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id F3873E0004;
-        Mon,  8 Feb 2021 12:58:24 +0000 (UTC)
-Cc:     ovs-dev <ovs-dev@openvswitch.org>, i.maximets@ovn.org,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        bpf@vger.kernel.org
-To:     Toshiaki Makita <toshiaki.makita1@gmail.com>,
-        William Tu <u9012063@gmail.com>,
-        Gregory Rose <gvrose8192@gmail.com>
-References: <1612387304-68681-1-git-send-email-u9012063@gmail.com>
- <d8f4d928-2ee1-234b-c4fe-1d8896b0f338@gmail.com>
- <CALDO+Sa=ohgXUzpY1E2E9CPoYEDZK9AVOTSznZ0WvUD54zEQXA@mail.gmail.com>
- <e3914ec6-ccb5-8d8f-2915-343030e5c7db@gmail.com>
- <CALDO+SabDwkLb85dxAV8R=iRgUyOAy9Q1JKDGXPTVJ+4bCTR9A@mail.gmail.com>
- <ec98f84e-6120-00fc-1a9b-d86e9d371fcc@gmail.com>
-From:   Ilya Maximets <i.maximets@ovn.org>
-Subject: Re: [ovs-dev] [PATCH] netdev-afxdp: Add start qid support.
-Message-ID: <602f7207-23b4-a237-7651-ad8bdb02ed0e@ovn.org>
-Date:   Mon, 8 Feb 2021 13:58:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S230319AbhBHNI2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Feb 2021 08:08:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230310AbhBHNIU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Feb 2021 08:08:20 -0500
+Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3A3BC061788
+        for <bpf@vger.kernel.org>; Mon,  8 Feb 2021 05:07:39 -0800 (PST)
+Received: by mail-vs1-xe2b.google.com with SMTP id u7so2743359vsp.12
+        for <bpf@vger.kernel.org>; Mon, 08 Feb 2021 05:07:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=q9Lnou6eX+Zd+gwTwesC/efPmGOGWWLzMGlqwzv2rt0=;
+        b=oePKnSNfeI0UK4muyPGY/ru0jUlhoYs+j5TVlGjCaYRXsVX+kVQyxqjnC/dwx+VtIG
+         QGx3zO/4twrhLUQSzhQ5Em1+sCforUN8PxIJ9UXTIP/JxSH0FsMvmqEDuohqjPxMWLS1
+         sWFro9vkIq3Ur3ReeY5F4U6sdA4+ex8ydYWli+DdHx0EzMIKmOBSDsYMBCXrOW+oJZQk
+         K0aF0H06loyA1bhgHPAENrCptWQDxnen4qEjbTcrghHsYojYHFlphwoL48XM1vQvr6Ws
+         SoWLm8rizbQpFfKSWT3f1dIr3xOzH+5eye0bqf27FJBMNJtoz68oQzyYVHtLe3FQhXpJ
+         gJTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=q9Lnou6eX+Zd+gwTwesC/efPmGOGWWLzMGlqwzv2rt0=;
+        b=shFOEUoALtxVB5t78MyzG+QnXVmT1pIKwC51UST2cDuFSrNVuThUvaLVx7rsri2Ite
+         F3d4HWZmJgvgZb9bFayVLY3gZinfhywAMAPekKmKpykvF34HhWRt83+AMIvxzrYIDZaO
+         HrpNO/V8hZ5m5aqVJVyzEha4xF5oxTE4Sv91e2WYic+9yn9u3V4XUPIzhjz2gtxztAPR
+         S0DHHFBmcWCEC2+dWibZPE5+1bG+J1G1fuEL4ThF+Ow0hYHhViv9YYU7r4jtHXvzE1zw
+         GCT+8nLoL8PO5d+ifARigUCHZzuBOeFSz8KFz4zvBNJkVdgPNVGPgfob9hHYl3bTj8tL
+         ke3Q==
+X-Gm-Message-State: AOAM533J8/sVY1Zjcxnk/hGO0F/0YBrEPxuQL8pyMwQGqEwVmDuvLzrH
+        3aunP1D+HDojoKsjSrd9++N8eLDqkac=
+X-Google-Smtp-Source: ABdhPJyfpOY32HXljH4W0hsycQhJ70g8JEYFagRZbTq6ZOw/rypelmNnGic62bcFFZnrFzhZr2oAEQ==
+X-Received: by 2002:a67:3194:: with SMTP id x142mr512932vsx.45.1612789658477;
+        Mon, 08 Feb 2021 05:07:38 -0800 (PST)
+Received: from mail-vs1-f50.google.com (mail-vs1-f50.google.com. [209.85.217.50])
+        by smtp.gmail.com with ESMTPSA id r5sm1524964uan.8.2021.02.08.05.07.36
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Feb 2021 05:07:37 -0800 (PST)
+Received: by mail-vs1-f50.google.com with SMTP id o186so7496500vso.1
+        for <bpf@vger.kernel.org>; Mon, 08 Feb 2021 05:07:36 -0800 (PST)
+X-Received: by 2002:a67:581:: with SMTP id 123mr10048669vsf.14.1612789656311;
+ Mon, 08 Feb 2021 05:07:36 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <ec98f84e-6120-00fc-1a9b-d86e9d371fcc@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210208113810.11118-1-hxseverything@gmail.com>
+In-Reply-To: <20210208113810.11118-1-hxseverything@gmail.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Mon, 8 Feb 2021 08:06:59 -0500
+X-Gmail-Original-Message-ID: <CA+FuTScScC2o6uDjua0T3Eucbjt8-YPf65h3xgxMpTtWvgjWmg@mail.gmail.com>
+Message-ID: <CA+FuTScScC2o6uDjua0T3Eucbjt8-YPf65h3xgxMpTtWvgjWmg@mail.gmail.com>
+Subject: Re: [PATCH] bpf: in bpf_skb_adjust_room correct inner protocol for vxlan
+To:     huangxuesen <hxseverything@gmail.com>
+Cc:     David Miller <davem@davemloft.net>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        huangxuesen <huangxuesen@kuaishou.com>,
+        chengzhiyong <chengzhiyong@kuaishou.com>,
+        wangli <wangli09@kuaishou.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/7/21 5:05 PM, Toshiaki Makita wrote:
-> On 2021/02/07 2:00, William Tu wrote:
->> On Fri, Feb 5, 2021 at 1:08 PM Gregory Rose <gvrose8192@gmail.com> wrote:
->>> On 2/4/2021 7:08 PM, William Tu wrote:
->>>> On Thu, Feb 4, 2021 at 3:17 PM Gregory Rose <gvrose8192@gmail.com> wrote:
->>>>> On 2/3/2021 1:21 PM, William Tu wrote:
->>>>>> Mellanox card has different XSK design. It requires users to create
->>>>>> dedicated queues for XSK. Unlike Intel's NIC which loads XDP program
->>>>>> to all queues, Mellanox only loads XDP program to a subset of its queue.
->>>>>>
->>>>>> When OVS uses AF_XDP with mlx5, it doesn't replace the existing RX and TX
->>>>>> queues in the channel with XSK RX and XSK TX queues, but it creates an
->>>>>> additional pair of queues for XSK in that channel. To distinguish
->>>>>> regular and XSK queues, mlx5 uses a different range of qids.
->>>>>> That means, if the card has 24 queues, queues 0..11 correspond to
->>>>>> regular queues, and queues 12..23 are XSK queues.
->>>>>> In this case, we should attach the netdev-afxdp with 'start-qid=12'.
->>>>>>
->>>>>> I tested using Mellanox Connect-X 6Dx, by setting 'start-qid=1', and:
->>>>>>      $ ethtool -L enp2s0f0np0 combined 1
->>>>>>      # queue 0 is for non-XDP traffic, queue 1 is for XSK
->>>>>>      $ ethtool -N enp2s0f0np0 flow-type udp4 action 1
->>>>>> note: we need additionally add flow-redirect rule to queue 1
->>>>>
->>>>> Seems awfully hardware dependent.  Is this just for Mellanox or does
->>>>> it have general usefulness?
->>>>>
->>>> It is just Mellanox's design which requires pre-configure the flow-director.
->>>> I only have cards from Intel and Mellanox so I don't know about other vendors.
->>>>
->>>> Thanks,
->>>> William
->>>>
->>>
->>> I think we need to abstract the HW layer a little bit.  This start-qid
->>> option is specific to a single piece of HW, at least at this point.
->>> We should expect that further HW  specific requirements for
->>> different NIC vendors will come up in the future.  I suggest
->>> adding a hw_options:mellanox:start-qid type hierarchy  so that
->>> as new HW requirements come up we can easily scale.  It will
->>> also make adding new vendors easier in the future.
->>>
->>> Even with NIC vendors you can't always count on each new generation
->>> design to always keep old requirements and methods for feature
->>> enablement.
->>>
->>> What do you think?
->>>
->> Thanks for the feedback.
->> So far I don't know whether other vendors will need this option or not.
-> 
-> FWIU, this api "The lower half of the available amount of RX queues are regular queues, and the upper half are XSK RX queues." is the result of long discussion to support dedicated/isolated XSK rings, which is not meant for a mellanox-specific feature.
-> 
-> https://patchwork.ozlabs.org/project/netdev/cover/20190524093431.20887-1-maximmi@mellanox.com/
-> https://patchwork.ozlabs.org/project/netdev/cover/20190612155605.22450-1-maximmi@mellanox.com/
-> 
-> Toshiaki Makita
+On Mon, Feb 8, 2021 at 7:16 AM huangxuesen <hxseverything@gmail.com> wrote:
+>
+> From: huangxuesen <huangxuesen@kuaishou.com>
+>
+> When pushing vxlan tunnel header, set inner protocol as ETH_P_TEB in skb
+> to avoid HW device disabling udp tunnel segmentation offload, just like
+> vxlan_build_skb does.
+>
+> Drivers for NIC may invoke vxlan_features_check to check the
+> inner_protocol in skb for vxlan packets to decide whether to disable
+> NETIF_F_GSO_MASK. Currently it sets inner_protocol as the original
+> skb->protocol, that will make mlx5_core disable TSO and lead to huge
+> performance degradation.
+>
+> Signed-off-by: huangxuesen <huangxuesen@kuaishou.com>
+> Signed-off-by: chengzhiyong <chengzhiyong@kuaishou.com>
+> Signed-off-by: wangli <wangli09@kuaishou.com>
+> ---
+>  net/core/filter.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+>
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 255aeee72402..f8d3ba3fe10f 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -3466,7 +3466,12 @@ static int bpf_skb_net_grow(struct sk_buff *skb, u32 off, u32 len_diff,
+>                 skb->inner_mac_header = inner_net - inner_mac_len;
+>                 skb->inner_network_header = inner_net;
+>                 skb->inner_transport_header = inner_trans;
+> -               skb_set_inner_protocol(skb, skb->protocol);
+> +
+> +               if (flags & BPF_F_ADJ_ROOM_ENCAP_L4_UDP &&
+> +                   inner_mac_len == ETH_HLEN)
+> +                       skb_set_inner_protocol(skb, htons(ETH_P_TEB));
 
-Thanks for the links.  Very helpful.
+This may be used by vxlan, but it does not imply it.
 
-From what I understand lower half of queues should still work, i.e.
-it should still be possible to attach AF_XDP socket to them.  But
-they will not work in zero-copy mode ("generic" only?).
-William, could you check that?  Does it work and with which mode
-"best-effort" ends up with?  And what kind of errors libbpf returns
-if we're trying to enable zero-copy?
+Adding ETH_HLEN bytes likely means pushing an Ethernet header, but same point.
 
-There are still few unanswered questions in those discussions and
-a clear lack of documentation.  It seems that it's a work-in-progress,
-intermediate step towards some better user API.  However it's unclear
-how this API will look like and when it will be implemented.
+Conversely, pushing an Ethernet header is not limited to UDP encap.
 
-
-For BPF list and maintainers:
-
-Is it possible to have some of this behavior documented?
-How can application determine which netdevs are using this upper/bottom
-half schema for their regular and xsk channels/queues?  How users
-should do that without digging into the kernel code or spending
-few hours googling for presentations from some conferences?
-
-And I actually failed to find any written reference to the fact that
-I have to manually configure redirection of the traffic in order to
-receive it on XSK queues/channels and not on regular ones.  This is
-very confusing and hard to understand, especially for a regular OVS
-user who is not familiar with XDP and kernel internals and just wants
-to utilize faster userspace networking.
-
-> 
->> I think adding another "hw_options" is a little confusing because this
->> is already an option on the device.
->> Looking at AF_XDP driver at DPDK, it also has similar option:
->> see start_queue
->> https://doc.dpdk.org/guides/nics/af_xdp.html
-
-This option for DPDK mainly positioned as a way to utilize multi-queue
-and a way to create different DPDK ports from different ranges of
-queues of the same device, so it's not exactly the same thing.  But
-I see that it likely had a double purpose that wasn't mentioned in a
-commit message or documentation.
-
-I think, for now we can have this option in OVS in a same way, i.e.
-as a way to partition the device or as a way to use particular
-range of queues from the device instead of using it as a whole.
-This way we will not need to have any vendor-specific knobs while
-allowing to use generic knob to utilize vendor-specific restrictions
-at the same time.
-
-BTW, I didn't look at the patch itself yet, will get back with
-the actual review later.
-
-Best regards, Ilya Maximets.
+This probably needs a new explicit BPF_F_ADJ_ROOM_.. flag, rather than
+trying to infer from imprecise heuristics.
