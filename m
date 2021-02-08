@@ -2,117 +2,175 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A7FA3132EE
-	for <lists+bpf@lfdr.de>; Mon,  8 Feb 2021 14:09:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 650A231343D
+	for <lists+bpf@lfdr.de>; Mon,  8 Feb 2021 15:02:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230319AbhBHNI2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Feb 2021 08:08:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230310AbhBHNIU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Feb 2021 08:08:20 -0500
-Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3A3BC061788
-        for <bpf@vger.kernel.org>; Mon,  8 Feb 2021 05:07:39 -0800 (PST)
-Received: by mail-vs1-xe2b.google.com with SMTP id u7so2743359vsp.12
-        for <bpf@vger.kernel.org>; Mon, 08 Feb 2021 05:07:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=q9Lnou6eX+Zd+gwTwesC/efPmGOGWWLzMGlqwzv2rt0=;
-        b=oePKnSNfeI0UK4muyPGY/ru0jUlhoYs+j5TVlGjCaYRXsVX+kVQyxqjnC/dwx+VtIG
-         QGx3zO/4twrhLUQSzhQ5Em1+sCforUN8PxIJ9UXTIP/JxSH0FsMvmqEDuohqjPxMWLS1
-         sWFro9vkIq3Ur3ReeY5F4U6sdA4+ex8ydYWli+DdHx0EzMIKmOBSDsYMBCXrOW+oJZQk
-         K0aF0H06loyA1bhgHPAENrCptWQDxnen4qEjbTcrghHsYojYHFlphwoL48XM1vQvr6Ws
-         SoWLm8rizbQpFfKSWT3f1dIr3xOzH+5eye0bqf27FJBMNJtoz68oQzyYVHtLe3FQhXpJ
-         gJTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q9Lnou6eX+Zd+gwTwesC/efPmGOGWWLzMGlqwzv2rt0=;
-        b=shFOEUoALtxVB5t78MyzG+QnXVmT1pIKwC51UST2cDuFSrNVuThUvaLVx7rsri2Ite
-         F3d4HWZmJgvgZb9bFayVLY3gZinfhywAMAPekKmKpykvF34HhWRt83+AMIvxzrYIDZaO
-         HrpNO/V8hZ5m5aqVJVyzEha4xF5oxTE4Sv91e2WYic+9yn9u3V4XUPIzhjz2gtxztAPR
-         S0DHHFBmcWCEC2+dWibZPE5+1bG+J1G1fuEL4ThF+Ow0hYHhViv9YYU7r4jtHXvzE1zw
-         GCT+8nLoL8PO5d+ifARigUCHZzuBOeFSz8KFz4zvBNJkVdgPNVGPgfob9hHYl3bTj8tL
-         ke3Q==
-X-Gm-Message-State: AOAM533J8/sVY1Zjcxnk/hGO0F/0YBrEPxuQL8pyMwQGqEwVmDuvLzrH
-        3aunP1D+HDojoKsjSrd9++N8eLDqkac=
-X-Google-Smtp-Source: ABdhPJyfpOY32HXljH4W0hsycQhJ70g8JEYFagRZbTq6ZOw/rypelmNnGic62bcFFZnrFzhZr2oAEQ==
-X-Received: by 2002:a67:3194:: with SMTP id x142mr512932vsx.45.1612789658477;
-        Mon, 08 Feb 2021 05:07:38 -0800 (PST)
-Received: from mail-vs1-f50.google.com (mail-vs1-f50.google.com. [209.85.217.50])
-        by smtp.gmail.com with ESMTPSA id r5sm1524964uan.8.2021.02.08.05.07.36
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Feb 2021 05:07:37 -0800 (PST)
-Received: by mail-vs1-f50.google.com with SMTP id o186so7496500vso.1
-        for <bpf@vger.kernel.org>; Mon, 08 Feb 2021 05:07:36 -0800 (PST)
-X-Received: by 2002:a67:581:: with SMTP id 123mr10048669vsf.14.1612789656311;
- Mon, 08 Feb 2021 05:07:36 -0800 (PST)
+        id S231388AbhBHOBf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Feb 2021 09:01:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20666 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232130AbhBHN7A (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 8 Feb 2021 08:59:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612792648;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=z66ZKmmlAo5XkGXYiEacOsB+4kzMmQWYANVJg2K54PI=;
+        b=Yr2663f23zcuO5lmmPKyWb6ukkGGTCR+tbY5SLzoRDZXZPaLh7OJqIqhlnGJWlvSRXpN02
+        N06l453e1d/suqd4KnYdlAqcfKI9hj8bgz7GG4Bdh7YTnHxf2mp+yFKAkNIQgbhPz3Bxge
+        p8fJj6W67+Uvh0ILkYwekzxaxIHXOvU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-352-VYRHtGkqOx-OcllBatt2PA-1; Mon, 08 Feb 2021 08:57:24 -0500
+X-MC-Unique: VYRHtGkqOx-OcllBatt2PA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DE00A427CC;
+        Mon,  8 Feb 2021 13:57:21 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.45])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CB6091002393;
+        Mon,  8 Feb 2021 13:57:14 +0000 (UTC)
+Date:   Mon, 8 Feb 2021 14:57:13 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Daniel Borkmann <borkmann@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
+        Lorenzo Bianconi <lorenzo@kernel.org>, marek@cloudflare.com,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, eyal.birger@gmail.com,
+        colrack@gmail.com, brouer@redhat.com,
+        David Ahern <dsahern@kernel.org>
+Subject: Re: [PATCH bpf-next V15 2/7] bpf: fix bpf_fib_lookup helper MTU
+ check for SKB ctx
+Message-ID: <20210208145713.4ee3e9ba@carbon>
+In-Reply-To: <ada19e5b-87be-ff39-45ba-ff0025bf1de9@iogearbox.net>
+References: <161228314075.576669.15427172810948915572.stgit@firesoul>
+        <161228321177.576669.11521750082473556168.stgit@firesoul>
+        <ada19e5b-87be-ff39-45ba-ff0025bf1de9@iogearbox.net>
 MIME-Version: 1.0
-References: <20210208113810.11118-1-hxseverything@gmail.com>
-In-Reply-To: <20210208113810.11118-1-hxseverything@gmail.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Mon, 8 Feb 2021 08:06:59 -0500
-X-Gmail-Original-Message-ID: <CA+FuTScScC2o6uDjua0T3Eucbjt8-YPf65h3xgxMpTtWvgjWmg@mail.gmail.com>
-Message-ID: <CA+FuTScScC2o6uDjua0T3Eucbjt8-YPf65h3xgxMpTtWvgjWmg@mail.gmail.com>
-Subject: Re: [PATCH] bpf: in bpf_skb_adjust_room correct inner protocol for vxlan
-To:     huangxuesen <hxseverything@gmail.com>
-Cc:     David Miller <davem@davemloft.net>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        huangxuesen <huangxuesen@kuaishou.com>,
-        chengzhiyong <chengzhiyong@kuaishou.com>,
-        wangli <wangli09@kuaishou.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 8, 2021 at 7:16 AM huangxuesen <hxseverything@gmail.com> wrote:
->
-> From: huangxuesen <huangxuesen@kuaishou.com>
->
-> When pushing vxlan tunnel header, set inner protocol as ETH_P_TEB in skb
-> to avoid HW device disabling udp tunnel segmentation offload, just like
-> vxlan_build_skb does.
->
-> Drivers for NIC may invoke vxlan_features_check to check the
-> inner_protocol in skb for vxlan packets to decide whether to disable
-> NETIF_F_GSO_MASK. Currently it sets inner_protocol as the original
-> skb->protocol, that will make mlx5_core disable TSO and lead to huge
-> performance degradation.
->
-> Signed-off-by: huangxuesen <huangxuesen@kuaishou.com>
-> Signed-off-by: chengzhiyong <chengzhiyong@kuaishou.com>
-> Signed-off-by: wangli <wangli09@kuaishou.com>
-> ---
->  net/core/filter.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
->
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 255aeee72402..f8d3ba3fe10f 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -3466,7 +3466,12 @@ static int bpf_skb_net_grow(struct sk_buff *skb, u32 off, u32 len_diff,
->                 skb->inner_mac_header = inner_net - inner_mac_len;
->                 skb->inner_network_header = inner_net;
->                 skb->inner_transport_header = inner_trans;
-> -               skb_set_inner_protocol(skb, skb->protocol);
-> +
-> +               if (flags & BPF_F_ADJ_ROOM_ENCAP_L4_UDP &&
-> +                   inner_mac_len == ETH_HLEN)
-> +                       skb_set_inner_protocol(skb, htons(ETH_P_TEB));
+On Fri, 5 Feb 2021 01:06:35 +0100
+Daniel Borkmann <daniel@iogearbox.net> wrote:
 
-This may be used by vxlan, but it does not imply it.
+> On 2/2/21 5:26 PM, Jesper Dangaard Brouer wrote:
+> > BPF end-user on Cilium slack-channel (Carlo Carraro) wants to use
+> > bpf_fib_lookup for doing MTU-check, but *prior* to extending packet size,
+> > by adjusting fib_params 'tot_len' with the packet length plus the expected
+> > encap size. (Just like the bpf_check_mtu helper supports). He discovered
+> > that for SKB ctx the param->tot_len was not used, instead skb->len was used
+> > (via MTU check in is_skb_forwardable() that checks against netdev MTU).
+> > 
+> > Fix this by using fib_params 'tot_len' for MTU check. If not provided (e.g.
+> > zero) then keep existing TC behaviour intact. Notice that 'tot_len' for MTU
+> > check is done like XDP code-path, which checks against FIB-dst MTU.
+> > 
+> > V13:
+> > - Only do ifindex lookup one time, calling dev_get_by_index_rcu().
+> > 
+> > V10:
+> > - Use same method as XDP for 'tot_len' MTU check
+> > 
+> > Fixes: 4c79579b44b1 ("bpf: Change bpf_fib_lookup to return lookup status")
+> > Reported-by: Carlo Carraro <colrack@gmail.com>
+> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> > Acked-by: John Fastabend <john.fastabend@gmail.com>  
+> [...]
+> 
+> I was about to apply the series just now, but on a last double check there is
+> a subtle logic bug in here that still needs fixing unfortunately. :/ See below:
+> 
+> > @@ -5568,7 +5565,9 @@ BPF_CALL_4(bpf_skb_fib_lookup, struct sk_buff *, skb,
+> >   	   struct bpf_fib_lookup *, params, int, plen, u32, flags)
+> >   {
+> >   	struct net *net = dev_net(skb->dev);
+> > +	struct net_device *dev;
+> >   	int rc = -EAFNOSUPPORT;
+> > +	bool check_mtu = false;
+> >   
+> >   	if (plen < sizeof(*params))
+> >   		return -EINVAL;
+> > @@ -5576,23 +5575,30 @@ BPF_CALL_4(bpf_skb_fib_lookup, struct sk_buff *, skb,
+> >   	if (flags & ~(BPF_FIB_LOOKUP_DIRECT | BPF_FIB_LOOKUP_OUTPUT))
+> >   		return -EINVAL;
+> >   
+> > +	dev = dev_get_by_index_rcu(net, params->ifindex);
+> > +	if (unlikely(!dev))
+> > +		return -ENODEV;  
+> 
+> Based on your earlier idea, you try to avoid refetching the dev this way, so
+> here it's being looked up via params->ifindex provided from the BPF prog ...
+> 
+> > +	if (params->tot_len)
+> > +		check_mtu = true;
+> > +
+> >   	switch (params->family) {
+> >   #if IS_ENABLED(CONFIG_INET)
+> >   	case AF_INET:
+> > -		rc = bpf_ipv4_fib_lookup(net, params, flags, false);
+> > +		rc = bpf_ipv4_fib_lookup(net, dev, params, flags, check_mtu);  
+> 
+> ... however, bpf_ipv{4,6}_fib_lookup() might change params->ifindex here to
+> indicate nexthop output dev:
+> 
+> [...]
+>          dev = nhc->nhc_dev;
+> 
+>          params->rt_metric = res.fi->fib_priority;
+>          params->ifindex = dev->ifindex;
+> [...]
 
-Adding ETH_HLEN bytes likely means pushing an Ethernet header, but same point.
+I want to hear David Ahern, what cases does this cover?
 
-Conversely, pushing an Ethernet header is not limited to UDP encap.
 
-This probably needs a new explicit BPF_F_ADJ_ROOM_.. flag, rather than
-trying to infer from imprecise heuristics.
+> >   		break;
+> >   #endif
+> >   #if IS_ENABLED(CONFIG_IPV6)
+> >   	case AF_INET6:
+> > -		rc = bpf_ipv6_fib_lookup(net, params, flags, false);
+> > +		rc = bpf_ipv6_fib_lookup(net, dev, params, flags, check_mtu);
+> >   		break;
+> >   #endif
+> >   	}
+> >   
+> > -	if (!rc) {
+> > -		struct net_device *dev;
+> > -
+> > -		dev = dev_get_by_index_rcu(net, params->ifindex);
+> > +	if (rc == BPF_FIB_LKUP_RET_SUCCESS && !check_mtu) {
+> > +		/* When tot_len isn't provided by user,
+> > +		 * check skb against net_device MTU
+> > +		 */
+> >   		if (!is_skb_forwardable(dev, skb))
+> >   			rc = BPF_FIB_LKUP_RET_FRAG_NEEDED;  
+> 
+> ... so using old cached dev from above will result in wrong MTU check &
+> subsequent passing of wrong params->mtu_result = dev->mtu this way. 
+
+Yes, you are right, params->ifindex have a chance to change in the calls.
+So, our attempt to save an ifindex lookup (dev_get_by_index_rcu) is not
+correct.
+
+> So one
+> way to fix is that we would need to pass &dev to bpf_ipv{4,6}_fib_lookup().
+
+Ok, I will try to code it up, and see how ugly it looks, but I'm no
+longer sure that it is worth saving this ifindex lookup, as it will
+only happen if BPF-prog didn't specify params->tot_len.
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
