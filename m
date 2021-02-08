@@ -2,54 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CB42314112
-	for <lists+bpf@lfdr.de>; Mon,  8 Feb 2021 21:57:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E78831411F
+	for <lists+bpf@lfdr.de>; Mon,  8 Feb 2021 22:00:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234850AbhBHU5I (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Feb 2021 15:57:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41120 "EHLO
+        id S232784AbhBHVAP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Feb 2021 16:00:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233528AbhBHUzH (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Feb 2021 15:55:07 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 082C6C061786
-        for <bpf@vger.kernel.org>; Mon,  8 Feb 2021 12:54:27 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id v123so15898755yba.13
-        for <bpf@vger.kernel.org>; Mon, 08 Feb 2021 12:54:27 -0800 (PST)
+        with ESMTP id S233088AbhBHU7O (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Feb 2021 15:59:14 -0500
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 032F6C061788
+        for <bpf@vger.kernel.org>; Mon,  8 Feb 2021 12:58:34 -0800 (PST)
+Received: by mail-yb1-xb2e.google.com with SMTP id k4so15972487ybp.6
+        for <bpf@vger.kernel.org>; Mon, 08 Feb 2021 12:58:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=AgvlvcpRDItZKh4j06G9GSofoxMNyUts5zcCe8XyHGc=;
-        b=OwdsZ3nI4U15QOZDfz3nN7ypTXTQ/5Szaz60WtTiWEKT7qpf+tf71DhJhODHQZjPR4
-         KOtCLtQ3qJEVYYtvX+0VR8DWZCHZlbh/L9RH2sO/2p5C1NKsTfm3LTkWNOCkfkQZdM6n
-         3xUZhsQC1mEsB0CM1Ew2TemtCunax9ToNhPfOfcae41T4jqoSfZXA0sgyrUrkaLVjjcH
-         uWLn32rTu/DIk0Ki1BVC/n0Z/UV1zLUYVVHjIBLFoctIEMAD64TUKv9HFM5ZrzgtP4kF
-         7djpmRoHMM6NEGWED7Vyud13ZzFuYMnwgjHCEnlZq37UBcEtnqs75eODrXHV3XxdyTd7
-         cahQ==
+        bh=Li8kfNGbkbac1nRqizFCEUxqYF7c+nIJj3A6cCoJH0E=;
+        b=f0z82HvMsH/c7l3nLRtKM/SyuNSnwZ/x25vPHyXMTvpvJMxperC9hTUyYVetCPiJlM
+         1DQ2RYEcblqk4h5k8uQ/9B6Y7ZWfqg/8Byd5TS+pktjI5MMtDP/n+9A+3uVuMJswq9pu
+         Hh+04AmSBtidY8gv3bHHb1aoPp/BW1to4yWDCp8hw13vSe5ZH1jQx5dZm7FO/GO1Sxaj
+         xC3Tmn99yzummR8PDOJRymMScal4JEfqGcQyA9XAXIViK6GU5/lHnyapDLixOf4e/s5e
+         ZuVSZDc+RJYNH+DpuQkwph28PkKe5XrPy74ceNqD+rRIDwPNGsiZxEt19Rsy1h6KxuSm
+         eTNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=AgvlvcpRDItZKh4j06G9GSofoxMNyUts5zcCe8XyHGc=;
-        b=B16KlcKLOyEfaQeCrLPqznxzml6BX+FV8D9S7tDodi4U8Rl5PmC5yxGWjJiUKN0U0t
-         e93cplJv+nYanrCz0E7D5tggyAq1GYlXjNwSkASP6lRAPh03xT0/JvWssNuUWvegLsUo
-         UM/OniD87VC+6gagI4CD86zfcE7U2FCeDUvi/E/Mg/UZVIB7irgxwhEnDWfqNmXSElpp
-         2coRLJb6pcuoAu74/yz2knpZxmNGe0TKXDznyTSA3J+cCwNT8jxKsL9zPvVDS+1Sf6NM
-         FtU0wUI6eOBI1vgLo6/QBqNdqGrV9JXrK0Qz9tw+6nhGl/6rucUQnyiIyUvhq23y5cPY
-         D0hA==
-X-Gm-Message-State: AOAM531pYQeeVuqtDJdFxZ6Jq+lioV1R1DEEyAdcA3gWrztLjBtwfL6w
-        gEH/7xqDg7t7KrdPlpyMZ9bcQvyan4YX2aTBYx4=
-X-Google-Smtp-Source: ABdhPJyCKRZAT1C3aytAKZKQ8Z76gRL2SVaBVJBhYKpWJvs+ooQ/v52Qm5eV+Vt81sCj6AIRnEWiyyxmkPTkJLqlCJ0=
-X-Received: by 2002:a25:f40e:: with SMTP id q14mr28230274ybd.230.1612817666389;
- Mon, 08 Feb 2021 12:54:26 -0800 (PST)
+        bh=Li8kfNGbkbac1nRqizFCEUxqYF7c+nIJj3A6cCoJH0E=;
+        b=j5Mql0bOYuZF/axqUhF4Mdu1JLhWZiBCInLp1XCD4rGvqvqfOkZB36RdqTmk8rrwkR
+         mP1bnHCsFHSX4Jm01P0BTHVa84zJNVHSGpeazzN26qmlRAAA9q0ZMmJag0GCaGjggENl
+         HuL63X/0Yt7Tw6eDTwGVkHbUzRyL/3EGIZYqvPfnG3C3qqaI1p1UUE/hsu+7KM7SbOoa
+         JjC/j7AzgnMwkAgumBpcCUGe8Aw2K+Bu7G9MNK/x8muNqH6jbx5llUQrykqn54QeS8OI
+         pecLX0tW8Jx7oRWG8zBve1gWaXNnBQRr/IY2dLVU32SFkFz0LcfFNnatn0RrwBM6ibUx
+         XEoQ==
+X-Gm-Message-State: AOAM531yTRuMffIlLFs4nry2cTqaKhayykvTvP0KtBKQWQHwVRyggxPN
+        1eBs/VAIUmCQ8aPog5VBawOuzrxWuSvb+m4s/i4=
+X-Google-Smtp-Source: ABdhPJybzBWEyQE8l/bKA6dlg3FV5Y12kmiTz/dygvvnKgLhTQdk4bCFq40PZpNz8z2Ucg+LTQ5ilaOIWqkjpXjKOgM=
+X-Received: by 2002:a25:4b86:: with SMTP id y128mr27890932yba.403.1612817913333;
+ Mon, 08 Feb 2021 12:58:33 -0800 (PST)
 MIME-Version: 1.0
-References: <20210206170344.78399-1-alexei.starovoitov@gmail.com> <20210206170344.78399-5-alexei.starovoitov@gmail.com>
-In-Reply-To: <20210206170344.78399-5-alexei.starovoitov@gmail.com>
+References: <20210206170344.78399-1-alexei.starovoitov@gmail.com> <20210206170344.78399-6-alexei.starovoitov@gmail.com>
+In-Reply-To: <20210206170344.78399-6-alexei.starovoitov@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 8 Feb 2021 12:54:15 -0800
-Message-ID: <CAEf4BzaprNESjgFRMSs7W1KMcW1Pt9rXU2F9kdEKM966trjO8A@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 4/7] selftest/bpf: Add a recursion test
+Date:   Mon, 8 Feb 2021 12:58:22 -0800
+Message-ID: <CAEf4BzY7RPbVs20p+VyCOC4FZvZYpGpRAXuzmkfPFSOO2BKRbg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 5/7] bpf: Count the number of times recursion
+ was prevented
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -64,22 +65,52 @@ On Sat, Feb 6, 2021 at 9:06 AM Alexei Starovoitov
 >
 > From: Alexei Starovoitov <ast@kernel.org>
 >
-> Add recursive non-sleepable fentry program as a test.
-> All attach points where sleepable progs can execute are non recursive so far.
-> The recursion protection mechanism for sleepable cannot be activated yet.
+> Add per-program counter for number of times recursion prevention mechanism
+> was triggered and expose it via show_fdinfo and bpf_prog_info.
+> Teach bpftool to print it.
 >
 > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 > ---
 
-LGTM.
-
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
->  .../selftests/bpf/prog_tests/recursion.c      | 33 +++++++++++++
->  tools/testing/selftests/bpf/progs/recursion.c | 46 +++++++++++++++++++
->  2 files changed, 79 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/recursion.c
->  create mode 100644 tools/testing/selftests/bpf/progs/recursion.c
+>  include/linux/filter.h         |  1 +
+>  include/uapi/linux/bpf.h       |  1 +
+>  kernel/bpf/syscall.c           | 14 ++++++++++----
+>  kernel/bpf/trampoline.c        | 18 ++++++++++++++++--
+>  tools/bpf/bpftool/prog.c       |  5 +++++
+>  tools/include/uapi/linux/bpf.h |  1 +
+>  6 files changed, 34 insertions(+), 6 deletions(-)
 >
 
 [...]
+
+>  static void print_prog_json(struct bpf_prog_info *info, int fd)
+> @@ -446,6 +448,9 @@ static void print_prog_header_plain(struct bpf_prog_info *info)
+>         if (info->run_time_ns)
+>                 printf(" run_time_ns %lld run_cnt %lld",
+>                        info->run_time_ns, info->run_cnt);
+> +       if (info->recursion_misses)
+> +               printf(" recursion_misses %lld",
+> +                      info->recursion_misses);
+
+no need for wrapping the line
+
+>         printf("\n");
+>  }
+>
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index c001766adcbc..c547ad1ffe43 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -4501,6 +4501,7 @@ struct bpf_prog_info {
+>         __aligned_u64 prog_tags;
+>         __u64 run_time_ns;
+>         __u64 run_cnt;
+> +       __u64 recursion_misses;
+>  } __attribute__((aligned(8)));
+>
+>  struct bpf_map_info {
+> --
+> 2.24.1
+>
