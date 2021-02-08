@@ -2,350 +2,168 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4128E314344
-	for <lists+bpf@lfdr.de>; Mon,  8 Feb 2021 23:54:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2680E31438B
+	for <lists+bpf@lfdr.de>; Tue,  9 Feb 2021 00:13:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231132AbhBHWx5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Feb 2021 17:53:57 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:45496 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230506AbhBHWx4 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 8 Feb 2021 17:53:56 -0500
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 118Mmk2X007170
-        for <bpf@vger.kernel.org>; Mon, 8 Feb 2021 14:53:15 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=5HEIxQdGx8817/0VblkKaqEek28M2uCl9vjHeTElSzQ=;
- b=pwsG8KfV3wnRT+FjMYYChOlD+9nVDddNfZ0qoq4IqcdqCk+kTaRBKpk8kBL5SS5/F1Ca
- 4oGxjhgXegyYxS5QJslG+p1sffWejtrXu9qN/ffI5cgdScDI41X93f9d/cxE9BbdQQ+c
- FauFMgUDak4U0Ym6juiOZA0QhYeGKI6PS4k= 
+        id S230101AbhBHXNR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Feb 2021 18:13:17 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:64678 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229731AbhBHXNP (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 8 Feb 2021 18:13:15 -0500
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 118N3V4Y019444;
+        Mon, 8 Feb 2021 15:12:19 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=zrijGBHNmWMNteFB7pXyHlDFeS0tPeN+LCSZcDN2jKY=;
+ b=Dw8Xj3jTJiV7WITOMGTvg0DKl4IZ8ZTcjkWGenyVBtTNUeXo+I9qamjplTEznfdT7rP3
+ TAiVndms7cDqqNvEhcLcVJ90I6HN4jrnUKAziT+j6Sz2W74dDWZh2flgXAEEsxouTWVx
+ 5nLTTVusPh91Z/ZnWyGf1Drpyz1BNTxU9vE= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 36jca9yg1d-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Mon, 08 Feb 2021 14:53:15 -0800
-Received: from intmgw001.05.ash7.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+        by mx0a-00082601.pphosted.com with ESMTP id 36jc1c7qdr-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 08 Feb 2021 15:12:19 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 8 Feb 2021 14:53:12 -0800
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 6822262E092E; Mon,  8 Feb 2021 14:53:09 -0800 (PST)
-From:   Song Liu <songliubraving@fb.com>
-To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-mm@kvack.org>
+ 15.1.1979.3; Mon, 8 Feb 2021 15:12:18 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CgbSxAYjNjoCPOELV9e2x3Roz3v8gXXmUAZxtyaF4uyVl5Vh1v68q3PdmeynPpPvmMwF+rV54itlp/dxE7vOZc+EmUmc2DG/xrfGyNeXSPAnfz1BppwxxnWjQJDhy27ZYkWh0HGVjW0Kz/4aEcpqnvOC2qf3gYuQ2hTY80hSacZnsnp9ZvTWvgExsvBKK69UgISY2kemMFhN26SLVWjxtwcAIqCkycFvEKwT8r6N9QcIi7D9k5cY4JzlwAGbZA6D10W8TPk3pPrUqlX88hOOv1nhkkt/PFpsOYL5geE/Kqoc0yyeKyyx7tJ1SksVwI3zkrachRVb9ap5qz5zLAFAyQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zrijGBHNmWMNteFB7pXyHlDFeS0tPeN+LCSZcDN2jKY=;
+ b=C88158IzwbhBR30/ZjUofVdvJdiGWm5zJpZtxlzW5hUVhzq+p0RL2orBj3h7goxDR1ILczLrkK+vIoVdjPJppeREF8ol/ENjJqWeNpBXOGffkaU4UVZlOIKXLRjuEtrm6EiY4u8iiQ+Vg1+0hxQl6mcm1SchDS8Y/SKxL2S92mCio7ZaPyr4AhO10jJpdCXm+97hIfHCVdP0dG5452nv5FT4TmPdwfSWFaL32nubqpP1GHm0gJJmHGm8iH0WhNM8YhG6FN3of0KjSN3WvBicdU0P8CE6Olq2dtAJMSEPY6QS6Hb92boTJZ6g6P9HKIV+8YhWs4bU5LObzBYcAPW9Jw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zrijGBHNmWMNteFB7pXyHlDFeS0tPeN+LCSZcDN2jKY=;
+ b=GPW1rtbwSFa+w3ED5X3H5N6G1dQquCyZTS4rObEoAvPVIb31YpydC25cGdeyPqatDIUumI8moIqE4mfdUeDy0XwnOe5Rovz06sTd5o7AmzSV6sIsRvUIeH9t5BDYXG26m6VjSDa/LJM/iz1on6p8/YboNTsyI9+8MMtwL7mOMPQ=
+Authentication-Results: linux-foundation.org; dkim=none (message not signed)
+ header.d=none;linux-foundation.org; dmarc=none action=none
+ header.from=fb.com;
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by BYAPR15MB3254.namprd15.prod.outlook.com (2603:10b6:a03:110::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.17; Mon, 8 Feb
+ 2021 23:12:15 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::61d6:781d:e0:ada5]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::61d6:781d:e0:ada5%5]) with mapi id 15.20.3825.030; Mon, 8 Feb 2021
+ 23:12:15 +0000
+Subject: Re: [PATCH v5 bpf-next 1/4] bpf: introduce task_vma bpf_iter
+To:     Song Liu <songliubraving@fb.com>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-mm@kvack.org>
 CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        <akpm@linux-foundation.org>, Song Liu <songliubraving@fb.com>
-Subject: [PATCH v5 bpf-next 4/4] selftests/bpf: add test for bpf_iter_task_vma
-Date:   Mon, 8 Feb 2021 14:52:55 -0800
-Message-ID: <20210208225255.3089073-5-songliubraving@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20210208225255.3089073-1-songliubraving@fb.com>
+        <akpm@linux-foundation.org>
 References: <20210208225255.3089073-1-songliubraving@fb.com>
+ <20210208225255.3089073-2-songliubraving@fb.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <5286e70d-404d-f968-9694-f090eb8fd064@fb.com>
+Date:   Mon, 8 Feb 2021 15:12:12 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.0
+In-Reply-To: <20210208225255.3089073-2-songliubraving@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2620:10d:c090:400::5:cb47]
+X-ClientProxiedBy: CO2PR06CA0064.namprd06.prod.outlook.com
+ (2603:10b6:104:3::22) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21e1::1698] (2620:10d:c090:400::5:cb47) by CO2PR06CA0064.namprd06.prod.outlook.com (2603:10b6:104:3::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.17 via Frontend Transport; Mon, 8 Feb 2021 23:12:14 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d1962c2c-a84f-4f21-d35e-08d8cc86f91a
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3254:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB3254C28FC6AEE52AAC5195B8D38F9@BYAPR15MB3254.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: QdfK530u5GYYuAzs5ANmiwWs/gqMAp0OxWfo/iwLZTH4HNnBwmASeUyjuYSxlK5pIRTOSdLqVSGwuMdmAVCMLmy3iEMDJG9I5cP5rE344XHLrIDh/cjJXAfg0wfka1piv1LlLFn8TqpHcRAemvyDFNsb5LRamL4dwUjkdto9RsYBZbBXkF8v5sCj0uyRBerpMjvWJ6N/YLa1vTjzU3D2qdcB/v7oMYJxNSjZcfZwSdevm/AOt/wcc/hNxB2FhJull6gjWi53u8E13M2n8s0XSsgRcA3Bm1kBcuDkAyc08ZryXusecHZw/fiqHwZr1N2I6Yh6iaPUM2HhHwNYhEttytymat5+y/CMeHwQ1d2zSWZkT6sjGErWTaNOKnCf06+YOLXerboNh1j4R+T0BP1H2XNf4VUyluV1MZKqoFdO8rdu/LC/tsq4Z7RxqVkYg9XtS2XVQ7dAHK5iyrWFX/NGYoAejhNnlxDmAxSSe7QZOn3Kw9mZMA83U6ugN2G06EwM/0bPeK1P6OgY3gv4OPxbnjUjE0scm+troz+9ULpWTrabcx67EDHG6Y6HEqUvaiHtPU4NxOWbvxavB60SZSOjI6KL1fg2mOEtJ8c+AtjFeNg=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(376002)(136003)(346002)(366004)(83380400001)(478600001)(86362001)(6486002)(66476007)(4326008)(16526019)(5660300002)(52116002)(8936002)(316002)(66946007)(31696002)(31686004)(186003)(53546011)(2906002)(8676002)(36756003)(2616005)(66556008)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?OGNtWllMMkt5QnFuUjRRUjRjQ2pabnF2cUhvSUgrREdvbUlLMTlscVlsYUJF?=
+ =?utf-8?B?TFc2NC85YWZnU3FUMmxwQ3c0ZUM1LzljRDJ3Mk1qMUFsQjdwbm1uWXdXeW0v?=
+ =?utf-8?B?eStMamlGN3ljdVdDWldYWTZpUDhPdENGdDZZTzBWR1FqWUEvTlFKNjIwd1NV?=
+ =?utf-8?B?TkFleXl5bGhYYXVIdmY5UlhxQWFJTDZRTG8xS1ppeWRBZzJmZ3dJNUExSU1M?=
+ =?utf-8?B?L0l4dzNnL3pyOElEUUhZYk9WWVlMVFdmRUlrUGFoZkhFbC9kSFdFQUM0Z1Zr?=
+ =?utf-8?B?NmVwVTZxdzZOWkVzTFdpL1Q0WVdWcEVzeDVDVWRPWTdpNGlLSFpNNlVxd1Vo?=
+ =?utf-8?B?NjI4bTl3QU1ZSkVvQVQ4bDZnQXVLeE5JdVV0TVFQcFFHd21UY3REWklqVEtp?=
+ =?utf-8?B?WnVJc2M1M3BCR0IwREYvT2o2M29pZXdLdG01My84SEpJRklMc09mMlNDWGNG?=
+ =?utf-8?B?QjR2UGJYZzBvSEIyTDU5RjRxWEw0b0pKTzlKeG9hNjBxak5nMEVvbklrVnBR?=
+ =?utf-8?B?WFc3azVTMGZBUjF1M3FadEdYLzZjNWJ2Y0JaRnRpSzlZclphUHdCb2lZSVpZ?=
+ =?utf-8?B?THZaMFBsY2M3QkNSREtrMWZRK1BxOGtQbFE5c0hkOEpjYlBqK1FKOVVpanBm?=
+ =?utf-8?B?MlRzaURhZGpTUXVsM0JicmVISlNrMkdWaTI5aGF0K1Y3SzVGc3BibG4zVHZT?=
+ =?utf-8?B?cnE4bXp1QkZPVGRkR0M3Tk53dzJEL3FYa0ZtK3BLY3dtdkVPbXFKUlQyY2xV?=
+ =?utf-8?B?aUFXMk5CbHdKeEZYTXZqc29hZldYc25RWWNDeGN1elBHNzFRWWZ2UGYySmgx?=
+ =?utf-8?B?bW1mc3dXQXA2WkxncHJEcXJBRi8zYU1OaVdJMUVSUTFuVFlQSnBQMGRtNTUz?=
+ =?utf-8?B?WG5jTnBhVEdsMzV0NWtvK0NBUXh4K2tlaCtXZXA2R1dzSDhDVUU2Q1RoU3RS?=
+ =?utf-8?B?dTNleVpoV29GNlNKN0FOdGlMQjJ2dmUxQVloeXZqeHowbnhDZzVOdGNDOWwr?=
+ =?utf-8?B?R21RUEVnU0xYTXZ3ajZvUFpGNisvZ0hVbVNXV0JoMk1CbXZWa0FWOENuUDlL?=
+ =?utf-8?B?SmpMVGY1SWZzd3I1aDhrOEpnbktqYnUwbFJUTTFtNldCc3ZudyszREFldEZh?=
+ =?utf-8?B?UCtyS0V6K1AyUitGWUQ1VHdtU2h6U0tPcDZ2anpIVS8yWWlsaEMwZ254T2NV?=
+ =?utf-8?B?clo0S2poRVRPbkkvTkgyeC96NGxpSDIyd1QwVUdzUkF3MFdtVUlCbldBYmtq?=
+ =?utf-8?B?OEU3aVcxMXJoeFZPYkdOZjhDRjkxQnFuQ3QxRU1ic1EzaHk3MkhnRjNqbGpw?=
+ =?utf-8?B?T2hmRHBQV1RVNUcvSDhjM2NPeFA1SWZYN1lUMzNHdXdpakcxNkJwY2R1S29u?=
+ =?utf-8?B?ZTBjUC9EUm1abUs5K0FFZE96Sk1WdE0zSEdyZ2hibFR1dlU2ejViK2t3WDhz?=
+ =?utf-8?B?K3lpV3lrL3ZydXoyNitiem4rSk0xQjVBcUtFaVNNQ2NlbVdZNDRveHRKMk01?=
+ =?utf-8?B?MFQxUjIrVDFvcUNHZm9aSGVmV1ozeWxnT1VwWFo4NUJPM3kxMHVqS3VWd0ln?=
+ =?utf-8?B?UCtpUFo0TlZOL1Q3dXlaNDdVV1B4dnQ4MVZlQ2JkQTJ2clJYanlINUs5V29w?=
+ =?utf-8?B?YWlUcFp5WWVNL0tvOHdycFBRL01ROURNWHc5NHJ1UnZBSUNOVnJTYitHUVJD?=
+ =?utf-8?B?VVFlVEtpMkxjOS9NN2xsSmU2NXZkZ2ZRS2ZBTWpwc2o4OGFrS2FKQWFFK2di?=
+ =?utf-8?B?TzU0WjdQYXpudWcrZEpMM3hYY1Jwb0swbzNSaS84UUJna2h2OHIyS1F4OUZP?=
+ =?utf-8?Q?h8TK92hmkAvuYM2ieNXnUgmoW+Msga4zKJs4g=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: d1962c2c-a84f-4f21-d35e-08d8cc86f91a
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Feb 2021 23:12:15.1593
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hrP6VW8aegSA2d5e4nGdtwIyWeBP1lEV7vCnqur3k0/862hoIW3soc7Wt4AlsNr+
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3254
+X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
  definitions=2021-02-08_16:2021-02-08,2021-02-08 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- adultscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999 phishscore=0
- bulkscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0 spamscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102080127
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ lowpriorityscore=0 phishscore=0 clxscore=1015 bulkscore=0 suspectscore=0
+ malwarescore=0 mlxlogscore=999 adultscore=0 spamscore=0 priorityscore=1501
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102080129
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The test dumps information similar to /proc/pid/maps. The first line of
-the output is compared against the /proc file to make sure they match.
 
-Signed-off-by: Song Liu <songliubraving@fb.com>
----
- .../selftests/bpf/prog_tests/bpf_iter.c       | 118 ++++++++++++++++--
- tools/testing/selftests/bpf/progs/bpf_iter.h  |   8 ++
- .../selftests/bpf/progs/bpf_iter_task_vma.c   |  58 +++++++++
- 3 files changed, 174 insertions(+), 10 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_iter_task_vma.c
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/te=
-sting/selftests/bpf/prog_tests/bpf_iter.c
-index 0e586368948dd..74c45d557a2b7 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
-@@ -7,6 +7,7 @@
- #include "bpf_iter_task.skel.h"
- #include "bpf_iter_task_stack.skel.h"
- #include "bpf_iter_task_file.skel.h"
-+#include "bpf_iter_task_vma.skel.h"
- #include "bpf_iter_task_btf.skel.h"
- #include "bpf_iter_tcp4.skel.h"
- #include "bpf_iter_tcp6.skel.h"
-@@ -64,6 +65,22 @@ static void do_dummy_read(struct bpf_program *prog)
- 	bpf_link__destroy(link);
- }
-=20
-+static int read_fd_into_buffer(int fd, char *buf, int size)
-+{
-+	int bufleft =3D size;
-+	int len;
-+
-+	do {
-+		len =3D read(fd, buf, bufleft);
-+		if (len > 0) {
-+			buf +=3D len;
-+			bufleft -=3D len;
-+		}
-+	} while (len > 0);
-+
-+	return len < 0 ? len : size - bufleft;
-+}
-+
- static void test_ipv6_route(void)
- {
- 	struct bpf_iter_ipv6_route *skel;
-@@ -177,7 +194,7 @@ static int do_btf_read(struct bpf_iter_task_btf *skel=
-)
- {
- 	struct bpf_program *prog =3D skel->progs.dump_task_struct;
- 	struct bpf_iter_task_btf__bss *bss =3D skel->bss;
--	int iter_fd =3D -1, len =3D 0, bufleft =3D TASKBUFSZ;
-+	int iter_fd =3D -1, err;
- 	struct bpf_link *link;
- 	char *buf =3D taskbuf;
- 	int ret =3D 0;
-@@ -190,14 +207,7 @@ static int do_btf_read(struct bpf_iter_task_btf *ske=
-l)
- 	if (CHECK(iter_fd < 0, "create_iter", "create_iter failed\n"))
- 		goto free_link;
-=20
--	do {
--		len =3D read(iter_fd, buf, bufleft);
--		if (len > 0) {
--			buf +=3D len;
--			bufleft -=3D len;
--		}
--	} while (len > 0);
--
-+	err =3D read_fd_into_buffer(iter_fd, buf, TASKBUFSZ);
- 	if (bss->skip) {
- 		printf("%s:SKIP:no __builtin_btf_type_id\n", __func__);
- 		ret =3D 1;
-@@ -205,7 +215,7 @@ static int do_btf_read(struct bpf_iter_task_btf *skel=
-)
- 		goto free_link;
- 	}
-=20
--	if (CHECK(len < 0, "read", "read failed: %s\n", strerror(errno)))
-+	if (CHECK(err < 0, "read", "read failed: %s\n", strerror(errno)))
- 		goto free_link;
-=20
- 	CHECK(strstr(taskbuf, "(struct task_struct)") =3D=3D NULL,
-@@ -1133,6 +1143,92 @@ static void test_buf_neg_offset(void)
- 		bpf_iter_test_kern6__destroy(skel);
- }
-=20
-+#define CMP_BUFFER_SIZE 1024
-+static char task_vma_output[CMP_BUFFER_SIZE];
-+static char proc_maps_output[CMP_BUFFER_SIZE];
-+
-+/* remove \0 and \t from str, and only keep the first line */
-+static void str_strip_first_line(char *str)
-+{
-+	char *dst =3D str, *src =3D str;
-+
-+	do {
-+		if (*src =3D=3D ' ' || *src =3D=3D '\t')
-+			src++;
-+		else
-+			*(dst++) =3D *(src++);
-+
-+	} while (*src !=3D '\0' && *src !=3D '\n');
-+
-+	*dst =3D '\0';
-+}
-+
-+#define min(a, b) ((a) < (b) ? (a) : (b))
-+
-+static void test_task_vma(void)
-+{
-+	int err, iter_fd =3D -1, proc_maps_fd =3D -1;
-+	struct bpf_iter_task_vma *skel;
-+	int len, read_size =3D 4;
-+	char maps_path[64];
-+
-+	skel =3D bpf_iter_task_vma__open();
-+	if (CHECK(!skel, "bpf_iter_task_vma__open", "skeleton open failed\n"))
-+		return;
-+
-+	skel->bss->pid =3D getpid();
-+
-+	err =3D bpf_iter_task_vma__load(skel);
-+	if (CHECK(err, "bpf_iter_task_vma__load", "skeleton load failed\n"))
-+		goto out;
-+
-+	skel->links.proc_maps =3D bpf_program__attach_iter(
-+		skel->progs.proc_maps, NULL);
-+
-+	if (CHECK(IS_ERR(skel->links.proc_maps), "bpf_program__attach_iter",
-+		  "attach iterator failed\n")) {
-+		skel->links.proc_maps =3D NULL;
-+		goto out;
-+	}
-+
-+	iter_fd =3D bpf_iter_create(bpf_link__fd(skel->links.proc_maps));
-+	if (CHECK(iter_fd < 0, "create_iter", "create_iter failed\n"))
-+		goto out;
-+
-+	/* Read CMP_BUFFER_SIZE (1kB) from bpf_iter. Read in small chunks
-+	 * to trigger seq_file corner cases. The expected output is much
-+	 * longer than 1kB, so the while loop will terminate.
-+	 */
-+	len =3D 0;
-+	while (len < CMP_BUFFER_SIZE) {
-+		err =3D read_fd_into_buffer(iter_fd, task_vma_output + len,
-+					  min(read_size, CMP_BUFFER_SIZE - len));
-+		if (CHECK(err < 0, "read_iter_fd", "read_iter_fd failed\n"))
-+			goto out;
-+		len +=3D err;
-+	}
-+
-+	/* read CMP_BUFFER_SIZE (1kB) from /proc/pid/maps */
-+	snprintf(maps_path, 64, "/proc/%u/maps", skel->bss->pid);
-+	proc_maps_fd =3D open(maps_path, O_RDONLY);
-+	if (CHECK(proc_maps_fd < 0, "open_proc_maps", "open_proc_maps failed\n"=
-))
-+		goto out;
-+	err =3D read_fd_into_buffer(proc_maps_fd, proc_maps_output, CMP_BUFFER_=
-SIZE);
-+	if (CHECK(err < 0, "read_prog_maps_fd", "read_prog_maps_fd failed\n"))
-+		goto out;
-+
-+	/* strip and compare the first line of the two files */
-+	str_strip_first_line(task_vma_output);
-+	str_strip_first_line(proc_maps_output);
-+
-+	CHECK(strcmp(task_vma_output, proc_maps_output), "compare_output",
-+	      "found mismatch\n");
-+out:
-+	close(proc_maps_fd);
-+	close(iter_fd);
-+	bpf_iter_task_vma__destroy(skel);
-+}
-+
- void test_bpf_iter(void)
- {
- 	if (test__start_subtest("btf_id_or_null"))
-@@ -1149,6 +1245,8 @@ void test_bpf_iter(void)
- 		test_task_stack();
- 	if (test__start_subtest("task_file"))
- 		test_task_file();
-+	if (test__start_subtest("task_vma"))
-+		test_task_vma();
- 	if (test__start_subtest("task_btf"))
- 		test_task_btf();
- 	if (test__start_subtest("tcp4"))
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter.h b/tools/testing=
-/selftests/bpf/progs/bpf_iter.h
-index 6a1255465fd6d..3d83b185c4bcb 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter.h
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter.h
-@@ -7,6 +7,7 @@
- #define bpf_iter__netlink bpf_iter__netlink___not_used
- #define bpf_iter__task bpf_iter__task___not_used
- #define bpf_iter__task_file bpf_iter__task_file___not_used
-+#define bpf_iter__task_vma bpf_iter__task_vma___not_used
- #define bpf_iter__tcp bpf_iter__tcp___not_used
- #define tcp6_sock tcp6_sock___not_used
- #define bpf_iter__udp bpf_iter__udp___not_used
-@@ -26,6 +27,7 @@
- #undef bpf_iter__netlink
- #undef bpf_iter__task
- #undef bpf_iter__task_file
-+#undef bpf_iter__task_vma
- #undef bpf_iter__tcp
- #undef tcp6_sock
- #undef bpf_iter__udp
-@@ -67,6 +69,12 @@ struct bpf_iter__task_file {
- 	struct file *file;
- } __attribute__((preserve_access_index));
-=20
-+struct bpf_iter__task_vma {
-+	struct bpf_iter_meta *meta;
-+	struct task_struct *task;
-+	struct vm_area_struct *vma;
-+} __attribute__((preserve_access_index));
-+
- struct bpf_iter__bpf_map {
- 	struct bpf_iter_meta *meta;
- 	struct bpf_map *map;
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task_vma.c b/tool=
-s/testing/selftests/bpf/progs/bpf_iter_task_vma.c
-new file mode 100644
-index 0000000000000..d789e32cdb16c
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_task_vma.c
-@@ -0,0 +1,58 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020 Facebook */
-+#include "bpf_iter.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+/* Copied from mm.h */
-+#define VM_READ		0x00000001
-+#define VM_WRITE	0x00000002
-+#define VM_EXEC		0x00000004
-+#define VM_MAYSHARE	0x00000080
-+
-+/* Copied from kdev_t.h */
-+#define MINORBITS	20
-+#define MINORMASK	((1U << MINORBITS) - 1)
-+#define MAJOR(dev)	((unsigned int) ((dev) >> MINORBITS))
-+#define MINOR(dev)	((unsigned int) ((dev) & MINORMASK))
-+
-+#define D_PATH_BUF_SIZE 1024
-+char d_path_buf[D_PATH_BUF_SIZE] =3D {};
-+__u32 pid =3D 0;
-+
-+SEC("iter.s/task_vma") int proc_maps(struct bpf_iter__task_vma *ctx)
-+{
-+	struct vm_area_struct *vma =3D ctx->vma;
-+	struct seq_file *seq =3D ctx->meta->seq;
-+	struct task_struct *task =3D ctx->task;
-+	struct file *file;
-+	char perm_str[] =3D "----";
-+
-+	if (task =3D=3D (void *)0 || vma =3D=3D (void *)0)
-+		return 0;
-+
-+	file =3D vma->vm_file;
-+	if (task->tgid !=3D pid)
-+		return 0;
-+	perm_str[0] =3D (vma->vm_flags & VM_READ) ? 'r' : '-';
-+	perm_str[1] =3D (vma->vm_flags & VM_WRITE) ? 'w' : '-';
-+	perm_str[2] =3D (vma->vm_flags & VM_EXEC) ? 'x' : '-';
-+	perm_str[3] =3D (vma->vm_flags & VM_MAYSHARE) ? 's' : 'p';
-+	BPF_SEQ_PRINTF(seq, "%08llx-%08llx %s ", vma->vm_start, vma->vm_end, pe=
-rm_str);
-+
-+	if (file) {
-+		__u32 dev =3D file->f_inode->i_sb->s_dev;
-+
-+		bpf_d_path(&file->f_path, d_path_buf, D_PATH_BUF_SIZE);
-+
-+		BPF_SEQ_PRINTF(seq, "%08llx ", vma->vm_pgoff << 12);
-+		BPF_SEQ_PRINTF(seq, "%02x:%02x %u", MAJOR(dev), MINOR(dev),
-+			       file->f_inode->i_ino);
-+		BPF_SEQ_PRINTF(seq, "\t%s\n", d_path_buf);
-+	} else {
-+		BPF_SEQ_PRINTF(seq, "%08llx 00:00 0\n", 0ULL);
-+	}
-+	return 0;
-+}
---=20
-2.24.1
+On 2/8/21 2:52 PM, Song Liu wrote:
+> Introduce task_vma bpf_iter to print memory information of a process. It
+> can be used to print customized information similar to /proc/<pid>/maps.
+> 
+> Current /proc/<pid>/maps and /proc/<pid>/smaps provide information of
+> vma's of a process. However, these information are not flexible enough to
+> cover all use cases. For example, if a vma cover mixed 2MB pages and 4kB
+> pages (x86_64), there is no easy way to tell which address ranges are
+> backed by 2MB pages. task_vma solves the problem by enabling the user to
+> generate customize information based on the vma (and vma->vm_mm,
+> vma->vm_file, etc.).
+> 
+> To access the vma safely in the BPF program, task_vma iterator holds
+> target mmap_lock while calling the BPF program. If the mmap_lock is
+> contended, task_vma unlocks mmap_lock between iterations to unblock the
+> writer(s). This lock contention avoidance mechanism is similar to the one
+> used in show_smaps_rollup().
+> 
+> Signed-off-by: Song Liu <songliubraving@fb.com>
 
+Acked-by: Yonghong Song <yhs@fb.com>
