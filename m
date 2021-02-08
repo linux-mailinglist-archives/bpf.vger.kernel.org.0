@@ -2,87 +2,205 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8000731327A
-	for <lists+bpf@lfdr.de>; Mon,  8 Feb 2021 13:37:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C63431327E
+	for <lists+bpf@lfdr.de>; Mon,  8 Feb 2021 13:38:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232288AbhBHMhD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Feb 2021 07:37:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46336 "EHLO
+        id S230481AbhBHMii (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Feb 2021 07:38:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232307AbhBHMfA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Feb 2021 07:35:00 -0500
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA8BBC061786
-        for <bpf@vger.kernel.org>; Mon,  8 Feb 2021 04:34:19 -0800 (PST)
-Received: by mail-il1-x136.google.com with SMTP id d6so12542578ilo.6
-        for <bpf@vger.kernel.org>; Mon, 08 Feb 2021 04:34:19 -0800 (PST)
+        with ESMTP id S230356AbhBHMhf (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Feb 2021 07:37:35 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43032C061756;
+        Mon,  8 Feb 2021 04:36:55 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id s24so14768313iob.6;
+        Mon, 08 Feb 2021 04:36:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=liATDNgOLjcQYOYplIfD8sA0QWnd3m+cTXERSjw+MGs=;
-        b=VVCchqmqAm0RYjP4IRkoXAghfoHZjkHKp91LbX+5HJZP3UNpTWIrpa4F+H1PjcjZaf
-         TDIyVXVlQfRH0OxKiZ+M/1i6F/VFfr/7dfcgNyP8LB7aTvErz3u8YHZyw1QLNtIsF+xX
-         gjF7HBE4dQpVO29oPpbXDZCdDWmj4OuyOLept74sxboTG9GDhgjLJtHk32GmExTzymA6
-         A7sa0H1Um92+ven83wysLK9VFbS2QyM494CTuvoxN9B2TrRs3BsOJi9r+d7kFpuz37io
-         hYZO5IFerqRoozG7Lm3ZJpjnyAHkc8YADQTkPg2chjz69o2rVsR85zBawnxfRIKjJ52f
-         4KrQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=XVgkuNO4+jr2vCIL3QHJO3r5ytZj4xYpNO3TrrbQxUI=;
+        b=r3HvRdjnJXQ/1/LSSLo3mL3rHT4DPlo4wNWe3irW/4+lwzKQhlzaS7H+PZpU+UZZZR
+         pmXw8rixFb9R9a26r6XEElcNIniE6cIXlnW27k/QFJwuTefhyzQ5a49PkYX1d8L1ewM4
+         xtiMCyhvtod7kVPbakX7CgCsBHbsky+PzyxhX8DCdEIHDaFA3Pq5+LA+4zUdwFZds8+v
+         MEOy3i634/Zfxf3U+MI1nCcoBNIXqQyauBsWM8qzcoK6ZWdY5rp2RuwzWqOzSYtnvGZG
+         MCpqV9E/8DqQtnJQNviRluYiTZuknrbVkvM86l3m2hQtn6mBPt+Ettyo0BjXCVLoVATZ
+         syIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=liATDNgOLjcQYOYplIfD8sA0QWnd3m+cTXERSjw+MGs=;
-        b=JGA8lfUyrer8fpj485k2SJ0z5VzCVDiemTDDpjZzaj7oQKcXiYrXpGxSAB7z2lfO/B
-         ZlMu1yRO4rbc4NyNPsPiCgZBBEjs+vH0zkRLm1jEPIy1rlPtm+R++j8A0NEfxHuQ/cXi
-         vUmdYBUkoDRFp31zb4fiRa20S2bw0seT7Cw9MCE+u6uuRdFkLz0u9E5UmfCSlQXbtUqh
-         /Fx6Ss/sBeR4Q5/+B327J3+eriPx4nzdae16h3IC2e+GWJ5f/wCfqulFVoZeWlEAjdjf
-         MR7/W7cM84VKseXiuF10Bd2l06QKU3hDfmzl+zg5yZUsOwFjSLLWgXGXS2wbsVxwu90q
-         wzZg==
-X-Gm-Message-State: AOAM533o2T9caSwNIw6BlcNYANVGcBlFMrqQZw4WkuT5PEy8v0Cbv9C4
-        2mH7CL5YiJtPoi8HjSrh9eDvUdHCENfvzPfCPJJQct8+EyT2Kw==
-X-Google-Smtp-Source: ABdhPJz+3kPmXAWo6QjpXqjuswcGIfqAIqq+grnhW1RRNYc7vilebt3qauavmtOQ/YHJydu8FqtN5D1ucZOSS2W3bBs=
-X-Received: by 2002:a92:c24b:: with SMTP id k11mr15527720ilo.276.1612787658828;
- Mon, 08 Feb 2021 04:34:18 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=XVgkuNO4+jr2vCIL3QHJO3r5ytZj4xYpNO3TrrbQxUI=;
+        b=VhBUHjR0BN2bGij8JkEqmyK33LN+v2OWrfOuhJDaFpngON66vFadS3j2HaE2X/FebF
+         bsuqT+eSe7dSnHUhgsH3/a3CFLs9p1e4ClBjQD8zQjWfnO0dAylhbSs/8BnzYRLXET0D
+         vsS4SZJbudmky6o1xFG+kl7Q9gGb0vz/CRCATM4VvosG/3aq7iSYnp4ZmFPuwMlZNQnf
+         Puk/WkRFgZ9TbcDgWfYZ62FyBkWrp/pJ6p8iGQJ1FJ+98/1zrCbuFyAbrrvQgTm70tca
+         3xC9ONylYf95Lgucj3ulF7cEmdjC/Z3GRk+yzBCjprdpXEYh6aOJHx5nTFNcUSzm+k0n
+         7SmA==
+X-Gm-Message-State: AOAM533tjdMQbSZ6e9izp2a27Z1o/Y6p8eHMqyn8tCNFHzhIolmV7DrW
+        lgkD08/Pi8ARUcCqckqTzkYtgSOb/htDhbyx750=
+X-Google-Smtp-Source: ABdhPJwMzS+T/NH5AD/g6WfN6JkDacKQrt/8Mvgbz6m6uqFcNA9UgFPyb//NdriGvqHH4RGua8qZAt3d5nGw2ac4v9E=
+X-Received: by 2002:a05:6602:1541:: with SMTP id h1mr14540632iow.171.1612787814564;
+ Mon, 08 Feb 2021 04:36:54 -0800 (PST)
 MIME-Version: 1.0
-References: <20210208123122.956545-1-jackmanb@google.com>
-In-Reply-To: <20210208123122.956545-1-jackmanb@google.com>
-From:   Brendan Jackman <jackmanb@google.com>
-Date:   Mon, 8 Feb 2021 13:34:07 +0100
-Message-ID: <CA+i-1C10Pn01x5SfxsM14e_-7o0Ot3tj70-3JR7m4uUDdmr8QA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Add missing cleanup in
- atomic_bounds test
-To:     bpf <bpf@vger.kernel.org>
+References: <20210204220741.GA920417@kernel.org> <CA+icZUXngJL2WXRyeWDjTyBYbXc0uC0_C69nBH9bq4sr_TAx5g@mail.gmail.com>
+ <20210208123253.GI920417@kernel.org>
+In-Reply-To: <20210208123253.GI920417@kernel.org>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Mon, 8 Feb 2021 13:36:43 +0100
+Message-ID: <CA+icZUXxRfsm_2siyb-kjPjikJk1uSnbQNzxP_7=3=HyJdkDaQ@mail.gmail.com>
+Subject: Re: ANNOUNCE: pahole v1.20 (gcc11 DWARF5's default, lots of ELF
+ sections, BTF)
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     dwarves@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Domenico Andreoli <cavok@debian.org>,
+        Matthias Schwarzott <zzam@gentoo.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Mark Wieelard <mjw@redhat.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        =?UTF-8?Q?Daniel_P=2E_Berrang=C3=A9?= <berrange@redhat.com>,
+        Tom Stellard <tstellar@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Sorry this is garbage, I edited one tree and then built/tested a
-different one. Please ignore, v2 incoming.
+On Mon, Feb 8, 2021 at 1:32 PM Arnaldo Carvalho de Melo
+<arnaldo.melo@gmail.com> wrote:
+>
+> Em Mon, Feb 08, 2021 at 03:44:54AM +0100, Sedat Dilek escreveu:
+> > On Thu, Feb 4, 2021 at 11:07 PM Arnaldo Carvalho de Melo
+> > <arnaldo.melo@gmail.com> wrote:
+> > >
+> > > Hi,
+> > >
+> > >         The v1.20 release of pahole and its friends is out, mostly
+> > > addressing problems related to gcc 11 defaulting to DWARF5 for -g,
+> > > available at the usual places:
+> > >
+> > > Main git repo:
+> > >
+> > >    git://git.kernel.org/pub/scm/devel/pahole/pahole.git
+> > >
+> > > Mirror git repo:
+> > >
+> > >    https://github.com/acmel/dwarves.git
+> > >
+> > > tarball + gpg signature:
+> > >
+> > >    https://fedorapeople.org/~acme/dwarves/dwarves-1.20.tar.xz
+> > >    https://fedorapeople.org/~acme/dwarves/dwarves-1.20.tar.bz2
+> > >    https://fedorapeople.org/~acme/dwarves/dwarves-1.20.tar.sign
+> > >
+> >
+> > FYI:
+> > Debian now ships dwarves package version 1.20-1 in unstable.
+> >
+> > Just a small nit to this release and its tagging:
+> >
+> > You did:
+> > commit 0d415f68c468b77c5bf8e71965cd08c6efd25fc4 ("pahole: Prep 1.20")
+> >
+> > Is this new?
+> >
+> > The release before:
+> > commit dd15aa4b0a6421295cbb7c3913429142fef8abe0 ("dwarves: Prep v1.19")
+>
+> Its minor but intentional, pahole is by far the most well known tool in
+> dwarves, so using that name more frequently (the git repo is pahole.git
+> , for instance) may help more quickly associate with the tool needed for
+> BTF encoding, data analysis, etc. And since its not about only DWARF,
+> perhaps transitioning to using 'pahole' more widely is interesting.
+>
 
-On Mon, 8 Feb 2021 at 13:31, Brendan Jackman <jackmanb@google.com> wrote:
+I am fine with that, Arnaldo.
+The Git tree is called "pahole" Git, so that makes sense to me.
+
+- Sedat -
+
+> - Arnaldo
 >
-> Add missing skeleton destroy call.
+> > - Sedat -
+> >
+> > > Best Regards,
+> > >
+> > >  - Arnaldo
+> > >
+> > > v1.20:
+> > >
+> > > BTF encoder:
+> > >
+> > >   - Improve ELF error reporting using elf_errmsg(elf_errno()).
+> > >
+> > >   - Improve objcopy error handling.
+> > >
+> > >   - Fix handling of 'restrict' qualifier, that was being treated as a 'const'.
+> > >
+> > >   - Support SHN_XINDEX in st_shndx symbol indexes, to handle ELF objects with
+> > >     more than 65534 sections, for instance, which happens with kernels built
+> > >     with 'KCFLAGS="-ffunction-sections -fdata-sections", Other cases may
+> > >     include when using FG-ASLR, LTO.
+> > >
+> > >   - Cope with functions without a name, as seen sometimes when building kernel
+> > >     images with some versions of clang, when a SEGFAULT was taking place.
+> > >
+> > >   - Fix BTF variable generation for kernel modules, not skipping variables at
+> > >     offset zero.
+> > >
+> > >   - Fix address size to match what is in the ELF file being processed, to fix using
+> > >     a 64-bit pahole binary to generate BTF for a 32-bit vmlinux image.
+> > >
+> > >   - Use kernel module ftrace addresses when finding which functions to encode,
+> > >     which increases the number of functions encoded.
+> > >
+> > > libbpf:
+> > >
+> > >   - Allow use of packaged version, for distros wanting to dynamically link with
+> > >     the system's libbpf package instead of using the libbpf git submodule shipped
+> > >     in pahole's source code.
+> > >
+> > > DWARF loader:
+> > >
+> > >   - Support DW_AT_data_bit_offset
+> > >
+> > >     This appeared in DWARF4 but is supported only in gcc's -gdwarf-5,
+> > >     support it in a way that makes the output be the same for both cases.
+> > >
+> > >       $ gcc -gdwarf-5 -c examples/dwarf5/bf.c
+> > >       $ pahole bf.o
+> > >       struct pea {
+> > >             long int                   a:1;                  /*     0: 0  8 */
+> > >             long int                   b:1;                  /*     0: 1  8 */
+> > >             long int                   c:1;                  /*     0: 2  8 */
+> > >
+> > >             /* XXX 29 bits hole, try to pack */
+> > >             /* Bitfield combined with next fields */
+> > >
+> > >             int                        after_bitfield;       /*     4     4 */
+> > >
+> > >             /* size: 8, cachelines: 1, members: 4 */
+> > >             /* sum members: 4 */
+> > >             /* sum bitfield members: 3 bits, bit holes: 1, sum bit holes: 29 bits */
+> > >             /* last cacheline: 8 bytes */
+> > >       };
+> > >
+> > >   - DW_FORM_implicit_const in attr_numeric() and attr_offset()
+> > >
+> > >   - Support DW_TAG_GNU_call_site, its the standardized rename of the previously supported
+> > >     DW_TAG_GNU_call_site.
+> > >
+> > > build:
+> > >
+> > >     - Fix compilation on 32-bit architectures.
+> > >
+> > > Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 >
-> Reported-by: Yonghong Song <yhs@fb.com>
-> Fixes: 37086bfdc737 ("bpf: Propagate stack bounds to registers in atomics w/ BPF_FETCH")
-> Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> ---
->  tools/testing/selftests/bpf/prog_tests/atomic_bounds.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c b/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c
-> index addf127068e4..290506fa1c38 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c
-> @@ -12,4 +12,6 @@ void test_atomic_bounds(void)
->         skel = atomic_bounds__open_and_load();
->         if (CHECK(!skel, "skel_load", "couldn't load program\n"))
->                 return;
-> +
-> +       atomic_bounds__destroy()
->  }
->
-> base-commit: 23a2d70c7a2f28eb1a8f6bc19d68d23968cad0ce
 > --
-> 2.30.0.478.g8a0d178c01-goog
 >
+> - Arnaldo
