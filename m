@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E78831411F
-	for <lists+bpf@lfdr.de>; Mon,  8 Feb 2021 22:00:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F992314127
+	for <lists+bpf@lfdr.de>; Mon,  8 Feb 2021 22:02:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232784AbhBHVAP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Feb 2021 16:00:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42000 "EHLO
+        id S234014AbhBHVBt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Feb 2021 16:01:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233088AbhBHU7O (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Feb 2021 15:59:14 -0500
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 032F6C061788
-        for <bpf@vger.kernel.org>; Mon,  8 Feb 2021 12:58:34 -0800 (PST)
-Received: by mail-yb1-xb2e.google.com with SMTP id k4so15972487ybp.6
-        for <bpf@vger.kernel.org>; Mon, 08 Feb 2021 12:58:33 -0800 (PST)
+        with ESMTP id S230264AbhBHVBa (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Feb 2021 16:01:30 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A17CC061786
+        for <bpf@vger.kernel.org>; Mon,  8 Feb 2021 13:00:40 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id i71so15976089ybg.7
+        for <bpf@vger.kernel.org>; Mon, 08 Feb 2021 13:00:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Li8kfNGbkbac1nRqizFCEUxqYF7c+nIJj3A6cCoJH0E=;
-        b=f0z82HvMsH/c7l3nLRtKM/SyuNSnwZ/x25vPHyXMTvpvJMxperC9hTUyYVetCPiJlM
-         1DQ2RYEcblqk4h5k8uQ/9B6Y7ZWfqg/8Byd5TS+pktjI5MMtDP/n+9A+3uVuMJswq9pu
-         Hh+04AmSBtidY8gv3bHHb1aoPp/BW1to4yWDCp8hw13vSe5ZH1jQx5dZm7FO/GO1Sxaj
-         xC3Tmn99yzummR8PDOJRymMScal4JEfqGcQyA9XAXIViK6GU5/lHnyapDLixOf4e/s5e
-         ZuVSZDc+RJYNH+DpuQkwph28PkKe5XrPy74ceNqD+rRIDwPNGsiZxEt19Rsy1h6KxuSm
-         eTNg==
+        bh=UJ7D8zrNRbV1x3s1jebH7uco1/OALvok7U18Lk9J6s4=;
+        b=DuFXhgJXYqJN4/S3isLLk8lLNIObjVzlSotrrzCsjQ6ZrUSvrevTHK9npIcZDWI7kf
+         8Bt4bGq6mBUVANV24XFDAr4zwnSpdqihqkaRf8K+nLy8uQlMvl7StafczQ6rsnxIzji1
+         R9Orkj6t4MWFuzyfySxh3U4GI6WtP3EzwvpSXq1HwtFnespbl1i5W3dhwSfIkVVgZLVw
+         ZV7SYingjuxovLxFTSdL11KfANA/DLmTRHKYGpSmUykY3OnTkyVvKD6flB8qb/BXd0pe
+         aSwVoJVZ5WXImDJh+Uc+vGytLEyIEGiGoVzs2OoTA2DMdJi10W/AimKkBZYssoS+Julp
+         PrrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Li8kfNGbkbac1nRqizFCEUxqYF7c+nIJj3A6cCoJH0E=;
-        b=j5Mql0bOYuZF/axqUhF4Mdu1JLhWZiBCInLp1XCD4rGvqvqfOkZB36RdqTmk8rrwkR
-         mP1bnHCsFHSX4Jm01P0BTHVa84zJNVHSGpeazzN26qmlRAAA9q0ZMmJag0GCaGjggENl
-         HuL63X/0Yt7Tw6eDTwGVkHbUzRyL/3EGIZYqvPfnG3C3qqaI1p1UUE/hsu+7KM7SbOoa
-         JjC/j7AzgnMwkAgumBpcCUGe8Aw2K+Bu7G9MNK/x8muNqH6jbx5llUQrykqn54QeS8OI
-         pecLX0tW8Jx7oRWG8zBve1gWaXNnBQRr/IY2dLVU32SFkFz0LcfFNnatn0RrwBM6ibUx
-         XEoQ==
-X-Gm-Message-State: AOAM531yTRuMffIlLFs4nry2cTqaKhayykvTvP0KtBKQWQHwVRyggxPN
-        1eBs/VAIUmCQ8aPog5VBawOuzrxWuSvb+m4s/i4=
-X-Google-Smtp-Source: ABdhPJybzBWEyQE8l/bKA6dlg3FV5Y12kmiTz/dygvvnKgLhTQdk4bCFq40PZpNz8z2Ucg+LTQ5ilaOIWqkjpXjKOgM=
-X-Received: by 2002:a25:4b86:: with SMTP id y128mr27890932yba.403.1612817913333;
- Mon, 08 Feb 2021 12:58:33 -0800 (PST)
+        bh=UJ7D8zrNRbV1x3s1jebH7uco1/OALvok7U18Lk9J6s4=;
+        b=Yf+APyUjSFFSGMkrFGiu/tEIZpNwCt1exLyX0F6Gave6afP/adORUrUL5Sej2VZChO
+         BCHDOz+v8+s0wnvZuT5QIaf4DVayWdX0ytq59cCNohX46DRWHZNWZ3dv0aL9yGML2kqM
+         LVNFuST3EMjILOeDu8P8HaZ+NcN1Qw5CvBA1BOGzxxjWnZF80HDSkFFq3vTl4eMkKYZK
+         BniSHA6DfHXlVApD9lNQZ+OX4yd3+QxROo8TGZkxlMG6XYgo/sRZgIqXfYBtW3CPC+EE
+         6p0GYiaPiRG6vXWmT5OODg9uTHhKphFMJF24nQ6t3GpjsH97m0RHuzrRWpMgpqpetodi
+         2xhQ==
+X-Gm-Message-State: AOAM533Ftx3e6zCnNDfLN6X4pH3h4JkU+dP+kl8DldOq2FzrYqoZQ49u
+        Lt7VbeAdoEbUMXx1f/x2jjaH9fQnjtdvUH7x3jc=
+X-Google-Smtp-Source: ABdhPJzbV64EhOKYM+19S8SMFfeKb/n9AUEm0bHHZUCx2c/L2UjEJvvdNVhO+4tt9khcHX1tjaO+IA90sCFyfZv1ivI=
+X-Received: by 2002:a25:f40e:: with SMTP id q14mr28260663ybd.230.1612818039475;
+ Mon, 08 Feb 2021 13:00:39 -0800 (PST)
 MIME-Version: 1.0
-References: <20210206170344.78399-1-alexei.starovoitov@gmail.com> <20210206170344.78399-6-alexei.starovoitov@gmail.com>
-In-Reply-To: <20210206170344.78399-6-alexei.starovoitov@gmail.com>
+References: <20210206170344.78399-1-alexei.starovoitov@gmail.com> <20210206170344.78399-7-alexei.starovoitov@gmail.com>
+In-Reply-To: <20210206170344.78399-7-alexei.starovoitov@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 8 Feb 2021 12:58:22 -0800
-Message-ID: <CAEf4BzY7RPbVs20p+VyCOC4FZvZYpGpRAXuzmkfPFSOO2BKRbg@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 5/7] bpf: Count the number of times recursion
- was prevented
+Date:   Mon, 8 Feb 2021 13:00:28 -0800
+Message-ID: <CAEf4BzaAvDYU4jD8N=CziaRAXnEsvU1QYSa=-x8Q-Sv7iOTdtw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 6/7] bpf: Allows per-cpu maps and map-in-map
+ in sleepable programs
 To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc:     "David S. Miller" <davem@davemloft.net>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -65,52 +65,70 @@ On Sat, Feb 6, 2021 at 9:06 AM Alexei Starovoitov
 >
 > From: Alexei Starovoitov <ast@kernel.org>
 >
-> Add per-program counter for number of times recursion prevention mechanism
-> was triggered and expose it via show_fdinfo and bpf_prog_info.
-> Teach bpftool to print it.
+> Since sleepable programs are now executing under migrate_disable
+> the per-cpu maps are safe to use.
+> The map-in-map were ok to use in sleepable from the time sleepable
+> progs were introduced.
+>
+> Note that non-preallocated maps are still not safe, since there is
+> no rcu_read_lock yet in sleepable programs and dynamically allocated
+> map elements are relying on rcu protection. The sleepable programs
+> have rcu_read_lock_trace instead. That limitation will be addresses
+> in the future.
 >
 > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 > ---
 
+Great.
+
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
->  include/linux/filter.h         |  1 +
->  include/uapi/linux/bpf.h       |  1 +
->  kernel/bpf/syscall.c           | 14 ++++++++++----
->  kernel/bpf/trampoline.c        | 18 ++++++++++++++++--
->  tools/bpf/bpftool/prog.c       |  5 +++++
->  tools/include/uapi/linux/bpf.h |  1 +
->  6 files changed, 34 insertions(+), 6 deletions(-)
+>  kernel/bpf/hashtab.c  | 4 ++--
+>  kernel/bpf/verifier.c | 7 ++++++-
+>  2 files changed, 8 insertions(+), 3 deletions(-)
 >
-
-[...]
-
->  static void print_prog_json(struct bpf_prog_info *info, int fd)
-> @@ -446,6 +448,9 @@ static void print_prog_header_plain(struct bpf_prog_info *info)
->         if (info->run_time_ns)
->                 printf(" run_time_ns %lld run_cnt %lld",
->                        info->run_time_ns, info->run_cnt);
-> +       if (info->recursion_misses)
-> +               printf(" recursion_misses %lld",
-> +                      info->recursion_misses);
-
-no need for wrapping the line
-
->         printf("\n");
->  }
+> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+> index c1ac7f964bc9..d63912e73ad9 100644
+> --- a/kernel/bpf/hashtab.c
+> +++ b/kernel/bpf/hashtab.c
+> @@ -1148,7 +1148,7 @@ static int __htab_percpu_map_update_elem(struct bpf_map *map, void *key,
+>                 /* unknown flags */
+>                 return -EINVAL;
 >
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-> index c001766adcbc..c547ad1ffe43 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -4501,6 +4501,7 @@ struct bpf_prog_info {
->         __aligned_u64 prog_tags;
->         __u64 run_time_ns;
->         __u64 run_cnt;
-> +       __u64 recursion_misses;
->  } __attribute__((aligned(8)));
+> -       WARN_ON_ONCE(!rcu_read_lock_held());
+> +       WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_trace_held());
 >
->  struct bpf_map_info {
+>         key_size = map->key_size;
+>
+> @@ -1202,7 +1202,7 @@ static int __htab_lru_percpu_map_update_elem(struct bpf_map *map, void *key,
+>                 /* unknown flags */
+>                 return -EINVAL;
+>
+> -       WARN_ON_ONCE(!rcu_read_lock_held());
+> +       WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_trace_held());
+>
+>         key_size = map->key_size;
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 4189edb41b73..9561f2af7710 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -10020,9 +10020,14 @@ static int check_map_prog_compatibility(struct bpf_verifier_env *env,
+>                 case BPF_MAP_TYPE_HASH:
+>                 case BPF_MAP_TYPE_LRU_HASH:
+>                 case BPF_MAP_TYPE_ARRAY:
+> +               case BPF_MAP_TYPE_PERCPU_HASH:
+> +               case BPF_MAP_TYPE_PERCPU_ARRAY:
+> +               case BPF_MAP_TYPE_LRU_PERCPU_HASH:
+> +               case BPF_MAP_TYPE_ARRAY_OF_MAPS:
+> +               case BPF_MAP_TYPE_HASH_OF_MAPS:
+>                         if (!is_preallocated_map(map)) {
+>                                 verbose(env,
+> -                                       "Sleepable programs can only use preallocated hash maps\n");
+> +                                       "Sleepable programs can only use preallocated maps\n");
+>                                 return -EINVAL;
+>                         }
+>                         break;
 > --
 > 2.24.1
 >
