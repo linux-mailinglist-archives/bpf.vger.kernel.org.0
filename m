@@ -2,199 +2,91 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95AED314283
-	for <lists+bpf@lfdr.de>; Mon,  8 Feb 2021 23:04:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 232B53142C4
+	for <lists+bpf@lfdr.de>; Mon,  8 Feb 2021 23:22:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbhBHWEa (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Feb 2021 17:04:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55900 "EHLO
+        id S230031AbhBHWVr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Feb 2021 17:21:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230046AbhBHWER (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Feb 2021 17:04:17 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD24C061786
-        for <bpf@vger.kernel.org>; Mon,  8 Feb 2021 14:03:31 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id p193so2418741yba.4
-        for <bpf@vger.kernel.org>; Mon, 08 Feb 2021 14:03:31 -0800 (PST)
+        with ESMTP id S229750AbhBHWVp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Feb 2021 17:21:45 -0500
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6000EC061786;
+        Mon,  8 Feb 2021 14:21:05 -0800 (PST)
+Received: by mail-yb1-xb2c.google.com with SMTP id l8so3831459ybe.12;
+        Mon, 08 Feb 2021 14:21:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=VvlxNjZ3C61R4ya9ZFRNnaROxPXCPlV0S0x/si9wVyA=;
-        b=aUHf7h3W4Z6sTxb5wOHpty+j0LMdpyq3s1KJxjtz6x0Q9TFzKRlVy7JWijHERiYelW
-         dyOh2dNuMad5tCeoXkIUW4U/PN6mNV75dvxEydbxuGW06FPytxwBlZT8XrGj5UisDbKv
-         WPy4pey/oXCP+f2iTFgvizIUeJqPKz9QBjRGOdXFghfyAZuIrnBqcu2VhnpYSafDTfEH
-         K5muVWmRW9kknIOTyyUWLoHvSUnaC6aeHZKm+sYMpXCNw7RrcfEMAWcGN2iuoyTKXVBV
-         +6cDxxy4+IgTEmqgMH+x/RhCjkx0MeYqN2e8EblyBB3iS7PlI2TvFFbEC2ZcFgkFMgUZ
-         5H5w==
+        bh=UxtA8BPxdjXqTAvlnB/DG2m6D/YD0cTVpAr2uXYiXX8=;
+        b=cxQdZkFTSZEbleDGDp9H07tSUCcz2lcnEGr7vrbkwq0ZZQ0LFh9AzLBv7Twe6HHJ2o
+         EZ9Q1aQ/ivu45OaocZy0aHhwRvB9rWS1ktgvkz5r/WHPVNitQzfpeNkAW+Fbt8BR1/w6
+         hmBQ87tRTzBWHljdD8m2YYkywS3ERkCy+c1EN4eyv5XjRWySqQA6pwJhhSB5VYl+Z7bD
+         C53nr8qf75UK6bzUkixkLsSpS3ckXSN4N3RZVM5RZOnmaHxRZ91noLDBUBXgZJYUjO5S
+         wpqHdNnsBPj/zVOLibdQ6LVrnYdKI1zHtM61aZONkYbzgm1+G+k/3uSk7PIsdHPT17HI
+         Gpuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=VvlxNjZ3C61R4ya9ZFRNnaROxPXCPlV0S0x/si9wVyA=;
-        b=jCa/s27qVk4v8GE0azTAqyVlEfBBg/qmZyxtJqsGbVpoundJW1j9Qq20O3VkQYPyfn
-         ddZB6SuYT7iN+a5pr9R6/mA2oIH4M/QwlGBLO1J0vLv3nxPTGXbE4dm8ftL2bWI5lym7
-         uICachwMWkn4A1u5DW5o48vl1CfJLlS6ryJ/hBi4Nau79Gf6VSYOeoiUqkaMfss4B5S9
-         e5aXqGqcuAFLuqo++oNQOg1pJxn68bpJVG3ITb+P0CTr+YDOkhA1cAtj/AbH59yHmbk8
-         LbQU8NUo2k5cTudrYIlIVRL6qIp4WuiFCekf1jL8Tp84qrcNii0jiwAznzVUrWahUgqV
-         GmGg==
-X-Gm-Message-State: AOAM531mE6IPGIKegeKYXkrQnjgagk/5ykUcW5fDA1hhnQe9WavedQvP
-        4APOzMWF1Ku82EUin9+YgmUJn8ZOyrlEymzsvVs=
-X-Google-Smtp-Source: ABdhPJzAzE1Rf9CW1D/0xcRsseGgO2wizqMCwe8h/tbfUSZ2t3pnvSLfLvF84c+G0ajFfpBeNZpvMDHnUI5hNVcnGCY=
-X-Received: by 2002:a25:a183:: with SMTP id a3mr27823430ybi.459.1612821810517;
- Mon, 08 Feb 2021 14:03:30 -0800 (PST)
+        bh=UxtA8BPxdjXqTAvlnB/DG2m6D/YD0cTVpAr2uXYiXX8=;
+        b=QA4YZrKnk/9nzoTSdktte7m88r8jxBhQuc0DaVAQAo1r+P8czin3cU91FjoM4u+AZ2
+         sKWWSFl1JUBRLaZP+gGBWn0Q0wPQUoUNAUGBZQ03MSU/PoTDX4pUWSy6uAVzcsZZB0ua
+         etIBzHx+3xx9Zyct5FL/Tn+tvNDocdX+BKAL1HzhcCUgUex9nhmib2rPK3R44PRG2Pib
+         wyVhC2utsH7Z8TxkvuTTiOoHkSdEaUeaIcmeS+2sG4pfHiANxrgndcdoKvuJQteH2rCc
+         geowxEBxDm1sxNKLDGA/DfsL17K/jEn3s5Rp+kgzv7RRNwVsfz7mxD4MclsCJhe8wKIg
+         VTOg==
+X-Gm-Message-State: AOAM533P/an8/qSU+IT8/qUKX4EZmUUFS7S80SDCKbxZrusVvGtdcNcA
+        fxqp/q6MHDJblJGz2auK4iy3imAxftAh6yOzIDg=
+X-Google-Smtp-Source: ABdhPJzawkp+O/VG/hVv8oWyfxU+vRtPJiInw7rPaFflKwNfvxrtP7321ZjViTzrhx98oVnVEO2BYFkO+ZlGAD1kZy0=
+X-Received: by 2002:a25:9882:: with SMTP id l2mr26966731ybo.425.1612822864552;
+ Mon, 08 Feb 2021 14:21:04 -0800 (PST)
 MIME-Version: 1.0
-References: <20210207011027.676572-1-andreimatei1@gmail.com> <20210207011027.676572-5-andreimatei1@gmail.com>
-In-Reply-To: <20210207011027.676572-5-andreimatei1@gmail.com>
+References: <20210201172530.1141087-1-gprocida@google.com> <20210205134221.2953163-1-gprocida@google.com>
+ <20210205134221.2953163-2-gprocida@google.com>
+In-Reply-To: <20210205134221.2953163-2-gprocida@google.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 8 Feb 2021 14:03:19 -0800
-Message-ID: <CAEf4BzaTVc61DTgOJk4JcWLMmvsGUAsx9SDHmLxm+3VYZaU=eQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 4/4] selftest/bpf: add test for var-offset
- stack access
-To:     Andrei Matei <andreimatei1@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
+Date:   Mon, 8 Feb 2021 14:20:53 -0800
+Message-ID: <CAEf4BzY5d7roXe4uHuK3D-pedwz5Y4RDVcqQECGZ5XPiqk=v1A@mail.gmail.com>
+Subject: Re: [PATCH dwarves v3 1/5] btf_encoder: Funnel ELF error reporting
+ through a macro
+To:     Giuliano Procida <gprocida@google.com>
+Cc:     dwarves@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        =?UTF-8?Q?Matthias_M=C3=A4nnich?= <maennich@google.com>,
+        kernel-team@android.com, Kernel Team <kernel-team@fb.com>,
+        bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Feb 6, 2021 at 5:11 PM Andrei Matei <andreimatei1@gmail.com> wrote:
+On Fri, Feb 5, 2021 at 5:42 AM Giuliano Procida <gprocida@google.com> wrote:
 >
-> Add a higher-level test (C BPF program) for the new functionality -
-> variable access stack reads and writes.
+> This adds elf_error which prepends error messages with the function
+> and appends a readable ELF error status.
 >
-> Signed-off-by: Andrei Matei <andreimatei1@gmail.com>
+> Also capitalise ELF consistently in error messages.
+>
+> Signed-off-by: Giuliano Procida <gprocida@google.com>
 > ---
->  .../selftests/bpf/prog_tests/stack_var_off.c  | 36 ++++++++++++
->  .../selftests/bpf/progs/test_stack_var_off.c  | 56 +++++++++++++++++++
->  2 files changed, 92 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/stack_var_off.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_stack_var_off.c
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+>  libbtf.c | 34 +++++++++++++++++++---------------
+>  1 file changed, 19 insertions(+), 15 deletions(-)
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/stack_var_off.c b/tools/testing/selftests/bpf/prog_tests/stack_var_off.c
-> new file mode 100644
-> index 000000000000..52e00486b1aa
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/stack_var_off.c
-> @@ -0,0 +1,36 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <test_progs.h>
-> +#include "test_stack_var_off.skel.h"
-> +
-> +/* Test read and writes to the stack performed with offsets that are not
-> + * statically known.
-> + */
-> +void test_stack_var_off(void)
-> +{
-> +       int duration = 0;
-> +       struct test_stack_var_off *skel;
-> +
-> +       skel = test_stack_var_off__open_and_load();
-> +       if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
-> +               return;
-> +       if (CHECK(!skel->bss, "check_bss", ".bss wasn't mmap()-ed\n"))
-> +               goto cleanup;
-
-can't happen, no need to check for !skel->bss
-
-
-> +
-> +       test_stack_var_off__attach(skel);
-
-check errors (ASSERT_OK is good for this)
-
-> +
-> +       /* Give pid to bpf prog so it doesn't trigger for anyone else. */
-> +       skel->bss->test_pid = getpid();
-> +       /* Initialize the probe's input. */
-> +       skel->bss->input[0] = 2;
-> +       skel->bss->input[1] = 42;  /* This will be returned in probe_res. */
-> +
-> +       /* Trigger probe. */
-> +       usleep(1);
-> +
-> +       if (CHECK(skel->bss->probe_res != 42, "check_probe_res",
-> +                 "wrong probe res: %d\n", skel->bss->probe_res))
-> +               goto cleanup;
-> +
-> +cleanup:
-> +       test_stack_var_off__destroy(skel);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/test_stack_var_off.c b/tools/testing/selftests/bpf/progs/test_stack_var_off.c
-> new file mode 100644
-> index 000000000000..bd9c8d86cd91
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_stack_var_off.c
-> @@ -0,0 +1,56 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +// Copyright (c) 2017 Facebook
-
-2021 already :) Facebook isn't right here as well, probably?
-
-> +
-> +#include <linux/ptrace.h>
-
-don't need this
-
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-
-and don't need this as well
-
-> +
-> +int probe_res;
-> +
-> +char input[4] = {};
-> +int test_pid;
-> +
-> +SEC("tracepoint/syscalls/sys_enter_nanosleep")
-> +int probe(void *ctx)
-> +{
-> +       /* This BPF program performs variable-offset reads and writes on a
-> +        * stack-allocated buffer.
-> +        */
-> +       char stack_buf[16];
-> +       unsigned long len;
-> +       unsigned long last;
-> +
-> +       if (test_pid == 0)
-> +               return 0;
-
-can't happen, please remove
-
-> +       if ((bpf_get_current_pid_tgid() >> 32) != test_pid)
-> +               return 0;
-> +
-> +       /* Copy the input to the stack. */
-> +       __builtin_memcpy(stack_buf, input, 4);
-> +
-> +       /* The first byte in the buffer indicates the length. */
-> +       len = stack_buf[0] & 0xf;
-> +       last = (len - 1) & 0xf;
-> +
-> +       /* Append something to the buffer. The offset where we write is not
-> +        * statically known; this is a variable-offset stack write.
-> +        */
-> +       stack_buf[len] = 42;
-> +
-> +       /* Index into the buffer at an unknown offset. This is a
-> +        * variable-offset stack read.
-> +        *
-> +        * Note that if it wasn't for the preceding variable-offset write, this
-> +        * read would be rejected because the stack slot cannot be verified as
-> +        * being initialized. With the preceding variable-offset write, the
-> +        * stack slot still cannot be verified, but the write inhibits the
-> +        * respective check on the reasoning that, if there was a
-> +        * variable-offset to a higher-or-equal spot, we're probably reading
-> +        * what we just wrote.
-> +        */
-> +       probe_res = stack_buf[last];
-> +       return 0;
-> +}
-> +
-> +char _license[] SEC("license") = "GPL";
-> --
-> 2.27.0
+> diff --git a/libbtf.c b/libbtf.c
+> index 9f76283..7bc49ba 100644
+> --- a/libbtf.c
+> +++ b/libbtf.c
+> @@ -27,6 +27,16 @@
+>  #include "dwarves.h"
+>  #include "elf_symtab.h"
 >
+
+[...]
