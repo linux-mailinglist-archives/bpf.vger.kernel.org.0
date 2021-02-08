@@ -2,86 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3022531313B
-	for <lists+bpf@lfdr.de>; Mon,  8 Feb 2021 12:46:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECAAB3131A1
+	for <lists+bpf@lfdr.de>; Mon,  8 Feb 2021 13:01:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233083AbhBHLqL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Feb 2021 06:46:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44005 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233048AbhBHLnl (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 8 Feb 2021 06:43:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612784534;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SZYHP4/VLuvN2DRnNGs4g8F2eM2skx1+3fiYM2APmO8=;
-        b=dem2U8Yb9Bx6wMg+KvzzWvetvwOGeUfoGPG8A51DxjN/oIBHyGEcgpFKH5E63EY8ik888h
-        7AQUAI/NFdqvGyjhtd8f3lCqtjtixt558kGLO8QbsVs6/J1g2l3iJO/CTJ+wdFG0gabk+m
-        2ZqY8XPV1KPoDXJydgGfjN7vUQEkYNQ=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-436-A4d9_PkyN6i6nK4xgmQKLQ-1; Mon, 08 Feb 2021 06:42:13 -0500
-X-MC-Unique: A4d9_PkyN6i6nK4xgmQKLQ-1
-Received: by mail-ej1-f71.google.com with SMTP id ar1so8015091ejc.22
-        for <bpf@vger.kernel.org>; Mon, 08 Feb 2021 03:42:12 -0800 (PST)
+        id S233296AbhBHMBM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Feb 2021 07:01:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233361AbhBHL7J (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Feb 2021 06:59:09 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76E40C06174A
+        for <bpf@vger.kernel.org>; Mon,  8 Feb 2021 03:58:29 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id bl23so24161637ejb.5
+        for <bpf@vger.kernel.org>; Mon, 08 Feb 2021 03:58:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=LzqefVBsxlS9FvrWIXQWeKK6XX9u3vVW5wQL3trZcNQ=;
+        b=gSxlRX/TOQaRETTRfg9s7ZdEvWb6Zlp+2glITouc6n2yjyMrLbPx+28iSxW9+LnPWA
+         X8aC/Q7cuPm06aKhnFbUf4QdNldY5/4b1Ymgs7PdI4sMmfBz4IT+LtexPHaI3Eogop3b
+         zVmU3smKDJwpkwiECivlU/hhtNhBrb7dssYpvZHiC0/3nOPv5l0iC9Wv4QiwzmvlLAN1
+         IOPlkf41SjCr2z2pSnPtt4Yu5JV4vA8AXCuLnueOz249Y5EBaiEIOzYfWOvptpHGZnv2
+         /tmoGIWkBk0v7OWi8JpG1ZOOaToiigDwEo6hG7U1y9kddYPblAjg3BbugwsBso2LqKha
+         d+hA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=SZYHP4/VLuvN2DRnNGs4g8F2eM2skx1+3fiYM2APmO8=;
-        b=fZ6Irro3RwAWdMEx8jLkAkm3lMuSIiS0gBlNfgYaViMZ36A3sYdLOAY6309YyPPLbi
-         eyxmYizzsAZJVFT/qfu5G4jRtsbh7FDGqk5+J/iQZaU+WETbyvYrIEviaZpGR46wUwnP
-         nIKLlEsvyMedF5h/dqKxF8bTndhJqpIjh2zWwKp1nVCoA4djhl5ZkY/K976jxmVqxcEc
-         CJDIzCCpX3mTxL6MpYwqbyuH8cPzro1mZtZ5ND6Sb7AQUHwzTrEx+mOVuMQoZV03YU2w
-         v6gldFL5/1jZixKE9XN2YS6fntHSPB0aMVQd1WkgD54gMfl7dB0Tdo1fBDzqjMxbTnxB
-         hTtQ==
-X-Gm-Message-State: AOAM5320ztT++iE2W9eF2fxvbDwEYHgjKbVApmG4xec992DX8BlJWKAM
-        pVTts6WAcEQOI5/kiYuHD6qn4vrzVyloyzbD0qE3n47rf34xNdd5Pcb7t6vxt4pq1Ch3ghu2izs
-        RejyN4Z5MQFsj
-X-Received: by 2002:a17:906:b055:: with SMTP id bj21mr16796687ejb.355.1612784531800;
-        Mon, 08 Feb 2021 03:42:11 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJysOIPIO5xinDtHUS3eRimPSuvyRO4TY391pRe3Qcb7H3ltucD4bGHjs7qKAZB4+VYNRz48pA==
-X-Received: by 2002:a17:906:b055:: with SMTP id bj21mr16796674ejb.355.1612784531615;
-        Mon, 08 Feb 2021 03:42:11 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id k4sm8480531eji.82.2021.02.08.03.42.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 03:42:11 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id B33101804EE; Mon,  8 Feb 2021 12:42:09 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Gilad Reti <gilad.reti@gmail.com>, bpf <bpf@vger.kernel.org>
-Cc:     Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: libbpf: pinning multiple progs from the same section
-In-Reply-To: <CANaYP3GgBDPBUjrkg0j-NOEzf3WJEOqcqoGU0uVxQ3LsAzz8ow@mail.gmail.com>
-References: <CANaYP3G4zZu=d2Y_d+=418f6X9+5b-JFhk0h9VZoQmFFLhu3Ag@mail.gmail.com>
- <CANaYP3GgBDPBUjrkg0j-NOEzf3WJEOqcqoGU0uVxQ3LsAzz8ow@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 08 Feb 2021 12:42:09 +0100
-Message-ID: <87v9b2u6pa.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=LzqefVBsxlS9FvrWIXQWeKK6XX9u3vVW5wQL3trZcNQ=;
+        b=ILPlpxElaLGPMZS0aSNKovImfjmcW3duNlbxbmwuvqrkYMnf7Ys3JHu6zS5x5yx0EF
+         UpM3IG4JO+WBSqVdsNBFkZfNaOvIGN27CnvgL64aeZuH00pyO1LzsRdjZRm+yx2k+K6f
+         sy+corR/luaJiDiWV4O4DJ7YDbURWG7QpCzzTeqBpEv+PIFWnsDkz7uTHJDEhf2Q3kYf
+         fQWEOKhGa2iP5cYt+dfvejvKEmHOx+dxsM50IabHAJAyIa48B5QSigQOxOgu9AeaxHg5
+         U6kn+u4s0h/yaEJtT/hHLACyeKSJwhFlcO0odS354YRQiVZeo+Q0edl5dVRna5KNSF1O
+         0ZOg==
+X-Gm-Message-State: AOAM533WcDws5+9CTv0TDxkWsonAGiPoBBEXvu2rdkWbvpV+nKfgmc0P
+        wGsyhNerwI2gCJHN5A0s7CIWuqJWT1IIiPWXh+Q=
+X-Google-Smtp-Source: ABdhPJyfB0+91Z0gCEwv+lgbNa/eqd1i0WobNP1y/2eU/ue6lQHCf/f7fswXvGPL5Dug8no0OzbWImJs/vUNi5ln7pw=
+X-Received: by 2002:a17:907:3e06:: with SMTP id hp6mr16667339ejc.254.1612785508187;
+ Mon, 08 Feb 2021 03:58:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <CANaYP3G4zZu=d2Y_d+=418f6X9+5b-JFhk0h9VZoQmFFLhu3Ag@mail.gmail.com>
+ <CANaYP3GgBDPBUjrkg0j-NOEzf3WJEOqcqoGU0uVxQ3LsAzz8ow@mail.gmail.com> <87v9b2u6pa.fsf@toke.dk>
+In-Reply-To: <87v9b2u6pa.fsf@toke.dk>
+From:   Gilad Reti <gilad.reti@gmail.com>
+Date:   Mon, 8 Feb 2021 13:57:52 +0200
+Message-ID: <CANaYP3GxKrjuUUTGaAjYGqwPCNzPJBNPQGMMCNaoHT4rfsYUfA@mail.gmail.com>
+Subject: Re: libbpf: pinning multiple progs from the same section
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Gilad Reti <gilad.reti@gmail.com> writes:
+On Mon, Feb 8, 2021 at 1:42 PM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
+t.com> wrote:
+>
+> Gilad Reti <gilad.reti@gmail.com> writes:
+>
+> > Also, is there a way to set the pin path to all maps/programs at once?
+> > For example, bpf_object__pin_maps pins all maps at a specific path,
+> > but as far as I was able to find there is no similar function to set
+> > the pin path for all maps only (without pinning) so that at loading
+> > time libbpf will try to reuse all maps. The only way to achieve a
+> > complete reuse of all maps that I could find is to "reverse engineer"
+> > libbpf's pin path generation algorithm (i.e. <path>/<map_name>) and
+> > set the pin path on each map before load.
+>
+> You can set the 'pinning' attribute in the map definition - add
+> '__uint(pinning, LIBBPF_PIN_BY_NAME);' to the map struct. By default
+> this will pin beneath /sys/fs/bpf, but you can customise that by setting
+> the pin_root_path attribute in bpf_object_open_opts.
 
-> Also, is there a way to set the pin path to all maps/programs at once?
-> For example, bpf_object__pin_maps pins all maps at a specific path,
-> but as far as I was able to find there is no similar function to set
-> the pin path for all maps only (without pinning) so that at loading
-> time libbpf will try to reuse all maps. The only way to achieve a
-> complete reuse of all maps that I could find is to "reverse engineer"
-> libbpf's pin path generation algorithm (i.e. <path>/<map_name>) and
-> set the pin path on each map before load.
+Yes, I am familiar with that feature, but it has some downsides:
+1. I need to set it manually on every map (and in cases that I have
+only the compiled object file that would be hard).
+2. It only works for bpf maps and not bpf programs.
+3. It only works for bpf maps that are defined explicitly in the bpf
+code and not for implicit (inner) bpf maps (bss, rodata, etc).
 
-You can set the 'pinning' attribute in the map definition - add
-'__uint(pinning, LIBBPF_PIN_BY_NAME);' to the map struct. By default
-this will pin beneath /sys/fs/bpf, but you can customise that by setting
-the pin_root_path attribute in bpf_object_open_opts.
-
--Toke
-
+>
+> -Toke
+>
