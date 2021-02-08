@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 051A8312B96
-	for <lists+bpf@lfdr.de>; Mon,  8 Feb 2021 09:22:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B45AE312BAE
+	for <lists+bpf@lfdr.de>; Mon,  8 Feb 2021 09:28:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229564AbhBHIWE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Feb 2021 03:22:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48314 "EHLO
+        id S229816AbhBHI2R (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Feb 2021 03:28:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbhBHIWD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Feb 2021 03:22:03 -0500
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49384C06174A;
-        Mon,  8 Feb 2021 00:21:23 -0800 (PST)
-Received: by mail-io1-xd32.google.com with SMTP id f6so14080600ioz.5;
-        Mon, 08 Feb 2021 00:21:23 -0800 (PST)
+        with ESMTP id S229717AbhBHI2L (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Feb 2021 03:28:11 -0500
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C31C7C061756;
+        Mon,  8 Feb 2021 00:27:30 -0800 (PST)
+Received: by mail-il1-x132.google.com with SMTP id q5so11961206ilc.10;
+        Mon, 08 Feb 2021 00:27:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=Qbs+ZPZYOplhMksGGYGueYxsgtZWCEBIveGgFou8FGo=;
-        b=FKDdrlcMlEb765ACEyfEfa2AS/UOheZC9GyUADZPKTz0VQ0mez7zDQLTaQnCagiXdH
-         MoovO25p7PLQqf092+46itr3asrDIPXsTSduWmkhFlJC00X2b8KYvUyg4m9iH0bbPEiq
-         SyD9rRQ8HNQjLXxTEN3xgYOjcWBHE6FvIBvzlSFKb00Aujeg+mtXh+s1p5wqZwK54T5b
-         xZpgUPUFTNvukd0hu7rnOXSoytVE2Sn+JcdhT3GQqT4dNztNFJiW0jFviD3gjLNIS9Z7
-         ioRscgpmcv+os3dWbxnl8NM1N5nAfMvfST9GP4lB0IujamCKbKw2WItNaNadgaMX08b5
-         4vcw==
+        bh=IYjYPV5QmtnO79p+zl0S6mt47duqcV21Aa0O+5kiDl0=;
+        b=JHHk9Msx06dv+AG30ZgBzN5s0NCYVkhtyOaGYUFBOh1IpGrCsYIvHgIkjdLumGu4v5
+         zwUEr7EVwJekvaGviyvT+eBY/BLS57LKMOByhyEryFk+iBVyYXPvO91Zxv7K+RuFhMAW
+         VFo543h1RcqGS9bxWbIjgAgU2UJr7fWulbrXugp9KdB1WF5LLeOhUEsxMj0oCY9Yp0Th
+         mzv/s8iIGVo+jRDC8HIxeh03DQp4rj8QHrLjAIENPKNGGdLO5PJkjrDuAwVo/vsB7cdp
+         0ToOx8GN3WDSQUNwFIWV11ovAtF83aM+JVlLuJjJKgyqzukR5r5JEd+q4vctckdkL1XO
+         C3Fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=Qbs+ZPZYOplhMksGGYGueYxsgtZWCEBIveGgFou8FGo=;
-        b=RwyzrkD0VwkJmoMngrmNkA47/AxQhgKNJsr8EFE3O3Q67TV8VzSBs1UwNaC7kPcuDy
-         uR3ELrNc8EKREmRxPmemUHKgNPJ6TJDq9kvKytaflBEH8dtS6XzNu/eXWqd34DQdUTF4
-         MzpRbuWCW21thYfryCXRpL9UTgEi9OlYBKWJA1vxfxiKXxVcNsTKLfIbzOwSrn9m0M7V
-         hydxJjR9UP23IcqtgcjpLjNwb6Zh71gWLnRiMI0KTzG1ZBLMT/l0vd8pdsBw2GQuXVMO
-         G0XQvsY494U821KuYKl8B0OP3hUhyGopd5GGKz4x5QmNaDtWGheUdeTrObCx1gUZLSrW
-         0l5Q==
-X-Gm-Message-State: AOAM530bOM483jlpOwZaPO0rOCAlhX11jT7uv0+oUeFfcpxbBIRlGFOw
-        NSw6G0zpVgPFR6n/UGjm+MY=
-X-Google-Smtp-Source: ABdhPJx6v+YSPQLvBT6Pt8P61K67QZpAjShsnqF1b3PzbBQk28sowIcbvuEkfjD89cH2vWmnN86WNg==
-X-Received: by 2002:a6b:ed02:: with SMTP id n2mr14601498iog.80.1612772482670;
-        Mon, 08 Feb 2021 00:21:22 -0800 (PST)
+        bh=IYjYPV5QmtnO79p+zl0S6mt47duqcV21Aa0O+5kiDl0=;
+        b=ZAnv9V1EhSv4M8dMhDqK69fZKAjvsaOdONkKBqi5g1DPADsxqX5uIpshl47hDzetiX
+         PjITVYWvPxNRlrMFrMO0K0JHNacKMymQNSgdzilOgz6UVy1u/gepdSqcYMqabr2WsOXf
+         4v+jvhfGHkLZd66V9VDVdMIr++aZvHsvUsaqo5/CSTK/ArP/KZmZ3pue/bdC5jPKoaWq
+         /NZ9M6PB/eXjOMuCNxqU6CVErTBfIEoIm09VYvEArLrdMFbpoewEY1QEQ47Fa3gD7+vG
+         UwSoAhycY1YWx09VBLWLQsG8Lsk+dU9eyUwuibhTygsX0K2m33q12PyjEKF72nfRMYNI
+         gRrg==
+X-Gm-Message-State: AOAM5326RHyz0d4B10LMKuyn1Nujf1zp5naBNpkrI1jvSGpFoSw9lAlJ
+        5IYriyDGxLbj5qRRUO11E+M=
+X-Google-Smtp-Source: ABdhPJwJUH3shI1zxtJ+bya2cjgLg6AD2adKDMDZmGK43yH+mMXXgHfoUB201ts8P8S3FPkgfs7dug==
+X-Received: by 2002:a92:cd81:: with SMTP id r1mr14602202ilb.252.1612772850320;
+        Mon, 08 Feb 2021 00:27:30 -0800 (PST)
 Received: from localhost ([172.243.146.206])
-        by smtp.gmail.com with ESMTPSA id g6sm8489729ilf.3.2021.02.08.00.21.19
+        by smtp.gmail.com with ESMTPSA id t6sm3461921ilf.62.2021.02.08.00.27.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Feb 2021 00:21:21 -0800 (PST)
-Date:   Mon, 08 Feb 2021 00:21:13 -0800
+        Mon, 08 Feb 2021 00:27:29 -0800 (PST)
+Date:   Mon, 08 Feb 2021 00:27:22 -0800
 From:   John Fastabend <john.fastabend@gmail.com>
 To:     Cong Wang <xiyou.wangcong@gmail.com>, netdev@vger.kernel.org
 Cc:     bpf@vger.kernel.org, duanxiongchun@bytedance.com,
@@ -57,12 +57,12 @@ Cc:     bpf@vger.kernel.org, duanxiongchun@bytedance.com,
         Daniel Borkmann <daniel@iogearbox.net>,
         Jakub Sitnicki <jakub@cloudflare.com>,
         Lorenz Bauer <lmb@cloudflare.com>
-Message-ID: <6020f4793d9b5_cc86820866@john-XPS-13-9370.notmuch>
-In-Reply-To: <20210203041636.38555-2-xiyou.wangcong@gmail.com>
+Message-ID: <6020f5ea24078_cc8682086e@john-XPS-13-9370.notmuch>
+In-Reply-To: <20210203041636.38555-5-xiyou.wangcong@gmail.com>
 References: <20210203041636.38555-1-xiyou.wangcong@gmail.com>
- <20210203041636.38555-2-xiyou.wangcong@gmail.com>
-Subject: RE: [Patch bpf-next 01/19] bpf: rename BPF_STREAM_PARSER to
- BPF_SOCK_MAP
+ <20210203041636.38555-5-xiyou.wangcong@gmail.com>
+Subject: RE: [Patch bpf-next 04/19] sock_map: rename skb_parser and
+ skb_verdict
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -74,34 +74,17 @@ X-Mailing-List: bpf@vger.kernel.org
 Cong Wang wrote:
 > From: Cong Wang <cong.wang@bytedance.com>
 > 
-> Before we add non-TCP support, it is necessary to rename
-> BPF_STREAM_PARSER as it will be no longer specific to TCP,
-> and it does not have to be a parser either.
-> 
-> This patch renames BPF_STREAM_PARSER to BPF_SOCK_MAP, so
-> that sock_map.c hopefully would be protocol-independent.
-> 
-> Also, improve its Kconfig description to avoid confusion.
+> These two ebpf programs are tied to BPF_SK_SKB_STREAM_PARSER
+> and BPF_SK_SKB_STREAM_VERDICT, rename them to reflect the fact
+> they are currently used for TCP. And save the generic name
+> skb_verdict for general use.
 > 
 > Cc: John Fastabend <john.fastabend@gmail.com>
 > Cc: Daniel Borkmann <daniel@iogearbox.net>
 > Cc: Jakub Sitnicki <jakub@cloudflare.com>
 > Cc: Lorenz Bauer <lmb@cloudflare.com>
 > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
-> ---
 
-The BPF_STREAM_PARSER config was originally added because we need
-the STREAM_PARSER define and wanted a way to get the 'depends on'
-lines in Kconfig correct.
-
-Rather than rename this, lets reduce its scope to just the set
-of actions that need the STREAM_PARSER, this should be just the
-stream parser programs. We probably should have done this sooner,
-but doing it now will be fine.
-
-I can probably draft a quick patch tomorrow if above is not clear.
-It can go into bpf-next outside this series as well to reduce
-the 19 patches a bit.
-
-Thanks,
-John
+We've recently added support for running a verdict without a stream
+parser. But the rename should also be OK, then it will match the
+prog names which is nice.
