@@ -2,174 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A28A312D0E
-	for <lists+bpf@lfdr.de>; Mon,  8 Feb 2021 10:16:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA49E312D71
+	for <lists+bpf@lfdr.de>; Mon,  8 Feb 2021 10:39:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231470AbhBHJQB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Feb 2021 04:16:01 -0500
-Received: from mga09.intel.com ([134.134.136.24]:24622 "EHLO mga09.intel.com"
+        id S231301AbhBHJih (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Feb 2021 04:38:37 -0500
+Received: from mga05.intel.com ([192.55.52.43]:41329 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231448AbhBHJMb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Feb 2021 04:12:31 -0500
-IronPort-SDR: oyoe+dLh1uyZ3NQOwznCuDB+HlNwt0wK76S8obLcvtfJIvJsNOMedmM/D8osLwNLue2apTiuBC
- R+sm8MHIcokQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9888"; a="181829051"
+        id S231429AbhBHJgc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Feb 2021 04:36:32 -0500
+IronPort-SDR: ogewJUfKrzKihuRAnW8W9xmmYEGdU2LwdsvCkKyVJzRmMJdLHcMCzY2zcCva0svxn3lG7zdKdn
+ mIrjA3/Y34DA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9888"; a="266517683"
 X-IronPort-AV: E=Sophos;i="5.81,161,1610438400"; 
-   d="scan'208";a="181829051"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 01:11:47 -0800
-IronPort-SDR: MBUxSNyQwLPUHZJPpyLAUMM8IvfdTPMit0X6YFbn8BH5WQshKCM0+kWHzq9MKPdbWcSAnkTqMQ
- tdloINw/eCEQ==
+   d="scan'208";a="266517683"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2021 01:35:46 -0800
+IronPort-SDR: 52hjOrRsal7QtkEcJ82OZkzYFWqIy2KLzph9zieaHGOCBQ7gp++jF3yrQW+KLgU/bPgOvC2BbQ
+ KO9zttvLEsaA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,161,1610438400"; 
-   d="scan'208";a="577597098"
-Received: from irsmsx602.ger.corp.intel.com ([163.33.146.8])
-  by orsmga005.jf.intel.com with ESMTP; 08 Feb 2021 01:11:46 -0800
-Received: from irsmsx604.ger.corp.intel.com (163.33.146.137) by
- irsmsx602.ger.corp.intel.com (163.33.146.8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 8 Feb 2021 09:11:45 +0000
-Received: from irsmsx604.ger.corp.intel.com ([163.33.146.137]) by
- IRSMSX604.ger.corp.intel.com ([163.33.146.137]) with mapi id 15.01.1713.004;
- Mon, 8 Feb 2021 09:11:45 +0000
-From:   "Loftus, Ciara" <ciara.loftus@intel.com>
-To:     Song Liu <song@kernel.org>
-CC:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        "bjorn@kernel.org" <bjorn@kernel.org>,
-        "Janjua, Weqaar A" <weqaar.a.janjua@intel.com>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Subject: RE: [PATCH bpf-next v4 1/6] xsk: add tracepoints for packet drops
-Thread-Topic: [PATCH bpf-next v4 1/6] xsk: add tracepoints for packet drops
-Thread-Index: AQHW+gQtY6FVIJp7kEmcFgyAhJ+OY6pHjEYAgAZzYrA=
-Date:   Mon, 8 Feb 2021 09:11:45 +0000
-Message-ID: <7bbb5eb6ae5f4a03b1ed60fbef998c2f@intel.com>
-References: <20210203074127.8616-1-ciara.loftus@intel.com>
- <20210203074127.8616-2-ciara.loftus@intel.com>
- <CAPhsuW7Bat9oWw_3_TRgUzc7y61kUtTDYT9-4r2ZaOW7WTZ59g@mail.gmail.com>
-In-Reply-To: <CAPhsuW7Bat9oWw_3_TRgUzc7y61kUtTDYT9-4r2ZaOW7WTZ59g@mail.gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [163.33.253.164]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+   d="scan'208";a="358680828"
+Received: from silpixa00399839.ir.intel.com (HELO localhost.localdomain) ([10.237.222.142])
+  by orsmga003.jf.intel.com with ESMTP; 08 Feb 2021 01:35:43 -0800
+From:   Ciara Loftus <ciara.loftus@intel.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        magnus.karlsson@intel.com, bjorn@kernel.org,
+        weqaar.a.janjua@intel.com
+Cc:     daniel@iogearbox.net, song@kernel.org,
+        Ciara Loftus <ciara.loftus@intel.com>
+Subject: [PATCH bpf-next v5 0/6] AF_XDP Packet Drop Tracing
+Date:   Mon,  8 Feb 2021 09:05:24 +0000
+Message-Id: <20210208090530.5032-1-ciara.loftus@intel.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-PiA+DQo+ID4gVGhpcyBjb21taXQgaW50cm9kdWNlcyB0cmFjaW5nIGluZnJhc3RydWN0dXJlIGZv
-ciBBRl9YRFAgc29ja2V0cw0KPiA+ICh4c2tzKSBhbmQgYSBuZXcgdHJhY2UgZXZlbnQgY2FsbGVk
-ICd4c2tfcGFja2V0X2Ryb3AnLiBUaGlzIHRyYWNlDQo+ID4gZXZlbnQgaXMgdHJpZ2dlcmVkIHdo
-ZW4gYSBwYWNrZXQgY2Fubm90IGJlIHByb2Nlc3NlZCBieSB0aGUgc29ja2V0DQo+ID4gZHVlIHRv
-IG9uZSBvZiB0aGUgZm9sbG93aW5nIGlzc3VlczoNCj4gPiAoMSkgcGFja2V0IGV4Y2VlZHMgdGhl
-IG1heGltdW0gcGVybWl0dGVkIHNpemUuDQo+ID4gKDIpIGludmFsaWQgZmlsbCBkZXNjcmlwdG9y
-IGFkZHJlc3MuDQo+ID4gKDMpIGludmFsaWQgdHggZGVzY3JpcHRvciBmaWVsZC4NCj4gPg0KPiA+
-IFRoZSB0cmFjZSBwcm92aWRlcyBpbmZvcm1hdGlvbiBhYm91dCB0aGUgZXJyb3IgdG8gdGhlIHVz
-ZXIuIEZvcg0KPiA+IGV4YW1wbGUgdGhlIHNpemUgdnMgcGVybWl0dGVkIHNpemUgaXMgcHJvdmlk
-ZWQgZm9yICgxKS4gRm9yICgyKQ0KPiA+IGFuZCAoMykgdGhlIHJlbGV2YW50IGRlc2NyaXB0b3Ig
-ZmllbGRzIGFyZSBwcmludGVkLiBUaGlzIGluZm9ybWF0aW9uDQo+ID4gc2hvdWxkIGhlbHAgYSB1
-c2VyIHRyb3VibGVzaG9vdCBwYWNrZXQgZHJvcHMgYnkgcHJvdmlkaW5nIHRoaXMgZXh0cmENCj4g
-PiBsZXZlbCBvZiBkZXRhaWwgd2hpY2ggaXMgbm90IGF2YWlsYWJsZSB0aHJvdWdoIHVzZSBvZiBz
-aW1wbGUgY291bnRlcnMuDQo+ID4NCj4gPiBUaGUgdHJhY2Vwb2ludCBjYW4gYmUgZW5hYmxlZC9k
-aXNhYmxlZCBieSB0b2dnbGluZw0KPiA+IC9zeXMva2VybmVsL2RlYnVnL3RyYWNpbmcvZXZlbnRz
-L3hzay94c2tfcGFja2V0X2Ryb3AvZW5hYmxlDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBDaWFy
-YSBMb2Z0dXMgPGNpYXJhLmxvZnR1c0BpbnRlbC5jb20+DQo+ID4gLS0tDQo+ID4gIE1BSU5UQUlO
-RVJTICAgICAgICAgICAgICAgICAgICAgICB8ICAxICsNCj4gPiAgaW5jbHVkZS9saW51eC9icGZf
-dHJhY2UuaCAgICAgICAgIHwgIDEgKw0KPiA+ICBpbmNsdWRlL3RyYWNlL2V2ZW50cy94c2suaCAg
-ICAgICAgfCA3Mw0KPiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQo+ID4gIGluY2x1
-ZGUvdWFwaS9saW51eC9pZl94ZHAuaCAgICAgICB8ICA2ICsrKw0KPiA+ICBrZXJuZWwvYnBmL2Nv
-cmUuYyAgICAgICAgICAgICAgICAgfCAgMSArDQo+ID4gIG5ldC94ZHAveHNrLmMgICAgICAgICAg
-ICAgICAgICAgICB8ICA3ICsrLQ0KPiA+ICBuZXQveGRwL3hza19idWZmX3Bvb2wuYyAgICAgICAg
-ICAgfCAgMyArKw0KPiA+ICBuZXQveGRwL3hza19xdWV1ZS5oICAgICAgICAgICAgICAgfCAgNCAr
-Kw0KPiA+ICB0b29scy9pbmNsdWRlL3VhcGkvbGludXgvaWZfeGRwLmggfCAgNiArKysNCj4gPiAg
-OSBmaWxlcyBjaGFuZ2VkLCAxMDEgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPiA+ICBj
-cmVhdGUgbW9kZSAxMDA2NDQgaW5jbHVkZS90cmFjZS9ldmVudHMveHNrLmgNCj4gPg0KPiA+IGRp
-ZmYgLS1naXQgYS9NQUlOVEFJTkVSUyBiL01BSU5UQUlORVJTDQo+ID4gaW5kZXggMWRmNTZhMzJk
-MmRmLi5lZmU2NjYyZDQxOTggMTAwNjQ0DQo+ID4gLS0tIGEvTUFJTlRBSU5FUlMNCj4gPiArKysg
-Yi9NQUlOVEFJTkVSUw0KPiA+IEBAIC0xOTQ0MCw2ICsxOTQ0MCw3IEBAIFM6ICAgICAgTWFpbnRh
-aW5lZA0KPiA+ICBGOiAgICAgRG9jdW1lbnRhdGlvbi9uZXR3b3JraW5nL2FmX3hkcC5yc3QNCj4g
-PiAgRjogICAgIGluY2x1ZGUvbmV0L3hkcF9zb2NrKg0KPiA+ICBGOiAgICAgaW5jbHVkZS9uZXQv
-eHNrX2J1ZmZfcG9vbC5oDQo+ID4gK0Y6ICAgICBpbmNsdWRlL3RyYWNlL2V2ZW50cy94c2suaA0K
-PiA+ICBGOiAgICAgaW5jbHVkZS91YXBpL2xpbnV4L2lmX3hkcC5oDQo+ID4gIEY6ICAgICBpbmNs
-dWRlL3VhcGkvbGludXgveGRwX2RpYWcuaA0KPiA+ICBGOiAgICAgaW5jbHVkZS9uZXQvbmV0bnMv
-eGRwLmgNCj4gPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9icGZfdHJhY2UuaCBiL2luY2x1
-ZGUvbGludXgvYnBmX3RyYWNlLmgNCj4gPiBpbmRleCBkZGY4OTZhYmNmYjYuLjQ3N2QyOWI2YzJj
-MSAxMDA2NDQNCj4gPiAtLS0gYS9pbmNsdWRlL2xpbnV4L2JwZl90cmFjZS5oDQo+ID4gKysrIGIv
-aW5jbHVkZS9saW51eC9icGZfdHJhY2UuaA0KPiA+IEBAIC0zLDUgKzMsNiBAQA0KPiA+ICAjZGVm
-aW5lIF9fTElOVVhfQlBGX1RSQUNFX0hfXw0KPiA+DQo+ID4gICNpbmNsdWRlIDx0cmFjZS9ldmVu
-dHMveGRwLmg+DQo+ID4gKyNpbmNsdWRlIDx0cmFjZS9ldmVudHMveHNrLmg+DQo+ID4NCj4gPiAg
-I2VuZGlmIC8qIF9fTElOVVhfQlBGX1RSQUNFX0hfXyAqLw0KPiA+IGRpZmYgLS1naXQgYS9pbmNs
-dWRlL3RyYWNlL2V2ZW50cy94c2suaCBiL2luY2x1ZGUvdHJhY2UvZXZlbnRzL3hzay5oDQo+ID4g
-bmV3IGZpbGUgbW9kZSAxMDA2NDQNCj4gPiBpbmRleCAwMDAwMDAwMDAwMDAuLmUyOTg0ZmFkMzcy
-Yw0KPiA+IC0tLSAvZGV2L251bGwNCj4gPiArKysgYi9pbmNsdWRlL3RyYWNlL2V2ZW50cy94c2su
-aA0KPiA+IEBAIC0wLDAgKzEsNzMgQEANCj4gPiArLyogU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6
-IEdQTC0yLjAgKi8NCj4gPiArLyogQ29weXJpZ2h0KGMpIDIwMjEgSW50ZWwgQ29ycG9yYXRpb24u
-ICovDQo+ID4gKw0KPiA+ICsjdW5kZWYgVFJBQ0VfU1lTVEVNDQo+ID4gKyNkZWZpbmUgVFJBQ0Vf
-U1lTVEVNIHhzaw0KPiA+ICsNCj4gPiArI2lmICFkZWZpbmVkKF9UUkFDRV9YU0tfSCkgfHwgZGVm
-aW5lZChUUkFDRV9IRUFERVJfTVVMVElfUkVBRCkNCj4gPiArI2RlZmluZSBfVFJBQ0VfWFNLX0gN
-Cj4gPiArDQo+ID4gKyNpbmNsdWRlIDxsaW51eC9pZl94ZHAuaD4NCj4gPiArI2luY2x1ZGUgPGxp
-bnV4L3RyYWNlcG9pbnQuaD4NCj4gPiArDQo+ID4gKyNkZWZpbmUgcHJpbnRfcmVhc29uKHJlYXNv
-bikgXA0KPiA+ICsgICAgICAgX19wcmludF9zeW1ib2xpYyhyZWFzb24sIFwNCj4gPiArICAgICAg
-ICAgICAgICAgICAgICAgICB7IFhTS19UUkFDRV9EUk9QX1BLVF9UT09fQklHLCAicGFja2V0IHRv
-byBiaWciIH0sIFwNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICB7IFhTS19UUkFDRV9EUk9Q
-X0lOVkFMSURfRklMTEFERFIsICJpbnZhbGlkIGZpbGwgYWRkciIgfSwgXA0KPiA+ICsgICAgICAg
-ICAgICAgICAgICAgICAgIHsgWFNLX1RSQUNFX0RST1BfSU5WQUxJRF9UWEQsICJpbnZhbGlkIHR4
-IGRlc2MiIH0pDQo+ID4gKw0KPiA+ICsjZGVmaW5lIHByaW50X3ZhbDEocmVhc29uKSBcDQo+ID4g
-KyAgICAgICBfX3ByaW50X3N5bWJvbGljKHJlYXNvbiwgXA0KPiA+ICsgICAgICAgICAgICAgICAg
-ICAgICAgIHsgWFNLX1RSQUNFX0RST1BfUEtUX1RPT19CSUcsICJsZW4iIH0sIFwNCj4gPiArICAg
-ICAgICAgICAgICAgICAgICAgICB7IFhTS19UUkFDRV9EUk9QX0lOVkFMSURfRklMTEFERFIsICJh
-ZGRyIiB9LCBcDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgeyBYU0tfVFJBQ0VfRFJPUF9J
-TlZBTElEX1RYRCwgImFkZHIiIH0pDQo+ID4gKw0KPiA+ICsjZGVmaW5lIHByaW50X3ZhbDIocmVh
-c29uKSBcDQo+ID4gKyAgICAgICBfX3ByaW50X3N5bWJvbGljKHJlYXNvbiwgXA0KPiA+ICsgICAg
-ICAgICAgICAgICAgICAgICAgIHsgWFNLX1RSQUNFX0RST1BfUEtUX1RPT19CSUcsICJtYXgiIH0s
-IFwNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICB7IFhTS19UUkFDRV9EUk9QX0lOVkFMSURf
-RklMTEFERFIsICJub3RfdXNlZCIgfSwgXA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIHsg
-WFNLX1RSQUNFX0RST1BfSU5WQUxJRF9UWEQsICJsZW4iIH0pDQo+ID4gKw0KPiA+ICsjZGVmaW5l
-IHByaW50X3ZhbDMocmVhc29uKSBcDQo+ID4gKyAgICAgICBfX3ByaW50X3N5bWJvbGljKHJlYXNv
-biwgXA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIHsgWFNLX1RSQUNFX0RST1BfUEtUX1RP
-T19CSUcsICJub3RfdXNlZCIgfSwgXA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIHsgWFNL
-X1RSQUNFX0RST1BfSU5WQUxJRF9GSUxMQUREUiwgIm5vdF91c2VkIiB9LCBcDQo+ID4gKyAgICAg
-ICAgICAgICAgICAgICAgICAgeyBYU0tfVFJBQ0VfRFJPUF9JTlZBTElEX1RYRCwgIm9wdGlvbnMi
-IH0pDQo+ID4gKw0KPiA+ICsNCj4gPiArDQo+IA0KPiBuaXQ6IDMgZW1wdHkgbGluZXMuDQo+IA0K
-PiA+ICtUUkFDRV9FVkVOVCh4c2tfcGFja2V0X2Ryb3AsDQo+ID4gKw0KPiA+ICsgICAgICAgVFBf
-UFJPVE8oY2hhciAqbmFtZSwgdTE2IHF1ZXVlX2lkLCB1MzIgcmVhc29uLCB1NjQgdmFsMSwgdTY0
-IHZhbDIsDQo+IHU2NCB2YWwzKSwNCj4gPiArDQo+ID4gKyAgICAgICBUUF9BUkdTKG5hbWUsIHF1
-ZXVlX2lkLCByZWFzb24sIHZhbDEsIHZhbDIsIHZhbDMpLA0KPiA+ICsNCj4gPiArICAgICAgIFRQ
-X1NUUlVDVF9fZW50cnkoDQo+ID4gKyAgICAgICAgICAgICAgIF9fZmllbGQoY2hhciAqLCBuYW1l
-KQ0KPiA+ICsgICAgICAgICAgICAgICBfX2ZpZWxkKHUxNiwgcXVldWVfaWQpDQo+ID4gKyAgICAg
-ICAgICAgICAgIF9fZmllbGQodTMyLCByZWFzb24pDQo+ID4gKyAgICAgICAgICAgICAgIF9fZmll
-bGQodTY0LCB2YWwxKQ0KPiA+ICsgICAgICAgICAgICAgICBfX2ZpZWxkKHUzMiwgdmFsMikNCj4g
-PiArICAgICAgICAgICAgICAgX19maWVsZCh1MzIsIHZhbDMpDQo+ID4gKyAgICAgICApLA0KPiA+
-ICsNCj4gPiArICAgICAgIFRQX2Zhc3RfYXNzaWduKA0KPiA+ICsgICAgICAgICAgICAgICBfX2Vu
-dHJ5LT5uYW1lID0gbmFtZTsNCj4gPiArICAgICAgICAgICAgICAgX19lbnRyeS0+cXVldWVfaWQg
-PSBxdWV1ZV9pZDsNCj4gPiArICAgICAgICAgICAgICAgX19lbnRyeS0+cmVhc29uID0gcmVhc29u
-Ow0KPiA+ICsgICAgICAgICAgICAgICBfX2VudHJ5LT52YWwxID0gdmFsMTsNCj4gPiArICAgICAg
-ICAgICAgICAgX19lbnRyeS0+dmFsMiA9IHZhbDI7DQo+ID4gKyAgICAgICAgICAgICAgIF9fZW50
-cnktPnZhbDMgPSB2YWwzOw0KPiA+ICsgICAgICAgKSwNCj4gPiArDQo+ID4gKyAgICAgICBUUF9w
-cmludGsoIm5ldGRldjogJXMgcWlkICV1IHJlYXNvbjogJXM6ICVzICVsbHUgJXMgJXUgJXMgJXUi
-LA0KPiA+ICsgICAgICAgICAgICAgICAgIF9fZW50cnktPm5hbWUsIF9fZW50cnktPnF1ZXVlX2lk
-LCBwcmludF9yZWFzb24oX19lbnRyeS0NCj4gPnJlYXNvbiksDQo+ID4gKyAgICAgICAgICAgICAg
-ICAgcHJpbnRfdmFsMShfX2VudHJ5LT5yZWFzb24pLCBfX2VudHJ5LT52YWwxLA0KPiA+ICsgICAg
-ICAgICAgICAgICAgIHByaW50X3ZhbDIoX19lbnRyeS0+cmVhc29uKSwgX19lbnRyeS0+dmFsMiwN
-Cj4gPiArICAgICAgICAgICAgICAgICBwcmludF92YWwzKF9fZW50cnktPnJlYXNvbiksIF9fZW50
-cnktPnZhbDMNCj4gPiArICAgICAgICkNCj4gPiArKTsNCj4gPiArDQo+ID4gKyNlbmRpZiAvKiBf
-VFJBQ0VfWFNLX0ggKi8NCj4gPiArDQo+ID4gKyNpbmNsdWRlIDx0cmFjZS9kZWZpbmVfdHJhY2Uu
-aD4NCj4gPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS91YXBpL2xpbnV4L2lmX3hkcC5oIGIvaW5jbHVk
-ZS91YXBpL2xpbnV4L2lmX3hkcC5oDQo+ID4gaW5kZXggYTc4YTgwOTZmNGNlLi5kN2ViMDMxZDI0
-NjUgMTAwNjQ0DQo+ID4gLS0tIGEvaW5jbHVkZS91YXBpL2xpbnV4L2lmX3hkcC5oDQo+ID4gKysr
-IGIvaW5jbHVkZS91YXBpL2xpbnV4L2lmX3hkcC5oDQo+ID4gQEAgLTEwOCw0ICsxMDgsMTAgQEAg
-c3RydWN0IHhkcF9kZXNjIHsNCj4gPg0KPiA+ICAvKiBVTUVNIGRlc2NyaXB0b3IgaXMgX191NjQg
-Ki8NCj4gPg0KPiA+ICtlbnVtIHhkcF90cmFjZV9yZWFzb25zIHsNCj4gDQo+IHhkcF90cmFjZV9y
-ZWFzb25zIGFib3ZlLCB2cy4gWFNLX1RSQUNFXyBiZWxvdy4gSXMgdGhpcyBpbnRlbnRpb25hbD8N
-Cg0KSXQgbWFrZXMgc2Vuc2UgdG8gY2hhbmdlIGl0IHRvIHhza190cmFjZV9yZWFzb25zLiBJJ2xs
-IHJlc3BpbiB3aXRoIHRoaXMgY2hhbmdlLCBhbmQgYWxzbyByZW1vdmUgdGhlIGVtcHR5IGxpbmVz
-IHlvdSBmb3VuZC4NCg0KVGhhbmtzLA0KQ2lhcmENCg0KPiANCj4gPiArICAgICAgIFhTS19UUkFD
-RV9EUk9QX1BLVF9UT09fQklHLA0KPiA+ICsgICAgICAgWFNLX1RSQUNFX0RST1BfSU5WQUxJRF9G
-SUxMQUREUiwNCj4gPiArICAgICAgIFhTS19UUkFDRV9EUk9QX0lOVkFMSURfVFhELA0KPiA+ICt9
-Ow0KPiA+ICsNCj4gDQo+IFsuLi5dDQo=
+This series introduces tracing infrastructure for AF_XDP sockets (xsk).
+A trace event 'xsk_packet_drop' is created which can be enabled by toggling
+
+/sys/kernel/debug/tracing/events/xsk/xsk_packet_drop/enable
+
+When enabled and packets or empty packet buffers are dropped in the kernel,
+traces are generated which describe the reason for the packet drop, the netdev
+and qid information of the xsk which encountered the drop, and some more
+information depending on what type of drop was encountered that will tell
+the user why the packet was dropped.  This information should help a user
+troubleshoot packet drops by providing an extra level of detail which is not
+available through use of simple counters
+
+Example traces:
+xsk_packet_drop: netdev: ve3213 qid 0 reason: packet too big: len 3000 max 2048 not_used 0
+xsk_packet_drop: netdev: ve3213 qid 0 reason: invalid fill addr: addr 520192 not_used 0 not_used 0
+xsk_packet_drop: netdev: ve9266 qid 0 reason: invalid tx desc: addr 0 len 4097 options 0
+
+It was decided to use a single event 'xsk_packet_drop' to capture these three
+drop types. This means that for some of them, there is some redundant information
+in the trace marked as 'not_used'. An alternative to this would be to introduce 3
+separate event types under xsk, each with their own appropriate trace format.
+Suggestions are welcome on which approach would be better to take.
+
+The event can be monitored using perf:
+perf stat -a -e xsk:xsk_packet_drop
+
+A selftest is added for each drop type. These tests provide the conditions to
+trigger the traces and ensure that the appropriate traces are generated.
+
+v4->v5:
+* Removed whitespace and renamed struct name in if_xdp.h as suggested by Song.
+
+v3->v4:
+* Fixed selftest commits with correct logs
+* Fixed warnings reported by W=1 build: trace argument types and print formatting
+
+v2->v3:
+* Removed some traces which traced events which were not technically drops eg.
+when the rxq is full.
+* Introduced traces for descriptor validation on RX and TX and selftests for both
+
+v1->v2:
+* Rebase on top of Björn's cleanup series.
+* Fixed packet count for trace tests which don't need EOT frame.
+
+This series applies on commit 23a2d70c7a2f28eb1a8f6bc19d68d23968cad0ce
+
+Ciara Loftus (6):
+  xsk: add tracepoints for packet drops
+  selftests/bpf: restructure setting the packet count
+  selftests/bpf: add framework for xsk selftests
+  selftests/bpf: XSK_TRACE_DROP_PKT_TOO_BIG test
+  selftests/bpf: XSK_TRACE_INVALID_FILLADDR test
+  selftests/bpf: XSK_TRACE_INVALID_DESC_TX test
+
+ MAINTAINERS                                |   1 +
+ include/linux/bpf_trace.h                  |   1 +
+ include/trace/events/xsk.h                 |  71 +++++++
+ include/uapi/linux/if_xdp.h                |   6 +
+ kernel/bpf/core.c                          |   1 +
+ net/xdp/xsk.c                              |   7 +-
+ net/xdp/xsk_buff_pool.c                    |   3 +
+ net/xdp/xsk_queue.h                        |   4 +
+ tools/include/uapi/linux/if_xdp.h          |   6 +
+ tools/testing/selftests/bpf/test_xsk.sh    |  90 ++++++++-
+ tools/testing/selftests/bpf/xdpxceiver.c   | 206 +++++++++++++++++++--
+ tools/testing/selftests/bpf/xdpxceiver.h   |   9 +
+ tools/testing/selftests/bpf/xsk_prereqs.sh |   3 +-
+ 13 files changed, 379 insertions(+), 29 deletions(-)
+ create mode 100644 include/trace/events/xsk.h
+
+-- 
+2.17.1
+
