@@ -2,149 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F077314D61
-	for <lists+bpf@lfdr.de>; Tue,  9 Feb 2021 11:48:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54888314DDA
+	for <lists+bpf@lfdr.de>; Tue,  9 Feb 2021 12:08:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231886AbhBIKpp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Feb 2021 05:45:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231971AbhBIKnZ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Feb 2021 05:43:25 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1555FC06178A;
-        Tue,  9 Feb 2021 02:41:47 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id t25so12208435pga.2;
-        Tue, 09 Feb 2021 02:41:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=JvfA/LJIleSb9j0rSYyHAJ/5yGWi0FFleE6u6qbY8iw=;
-        b=u0Yzpsaf7WWHwMAG0+z4czxMu7iL/3xkEr150rmGUrIQWJOYdBPS7h75VXXcso60Kl
-         DPu3VEMZG3kL+WZzup7v3/b5nRMJfmgkoWfV7Y8eI+vyq0GUzN2PqxfR5l9617pL9c5v
-         VMuDSOJ85rFPrdNXDcnLctv9hi/dsO/uoImQg5pjj+DcYF+T9IGATUoKeU5QHMc4SUyx
-         K3Tnw65ZkG7qSJQ6d2VXLWyybotmI6I34lktOQfvWNCM9ECyiSLnhh2/i0BXpsiRziAW
-         uWvCF47P/FbzKUZ7jmRgXkyyudPeUNymBUmKPDlGZWqf+H+LzAhVfE/INJzioyPHeSxK
-         i86w==
+        id S232242AbhBILHF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Feb 2021 06:07:05 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35378 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232249AbhBILFB (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 9 Feb 2021 06:05:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612868609;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lorKAyny8qo8X8PLzFQXMUrLbtZ72KNyEjJSwWTk6UE=;
+        b=cB2YE0UOMf7OLNV6cVa2I3noEIM95KP6gLOtWjXLJmP/1aMUZUlW5nsgCCOpbGFvkbwrW+
+        xWvn/3qUf2bx2uM3PH9dFfkMvOHW5c/Q3NEh7GdfLN57NBZ/6Sg539fRDVht1qijmslHAz
+        PLkljruryEJsBdz/mpjz1zi1Nxpcp40=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-217-yP4e0xfQM06vXOkjK4XI4A-1; Tue, 09 Feb 2021 06:03:27 -0500
+X-MC-Unique: yP4e0xfQM06vXOkjK4XI4A-1
+Received: by mail-ed1-f72.google.com with SMTP id l23so14555538edt.23
+        for <bpf@vger.kernel.org>; Tue, 09 Feb 2021 03:03:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=JvfA/LJIleSb9j0rSYyHAJ/5yGWi0FFleE6u6qbY8iw=;
-        b=DBeVS61gj3gYciQ0cFdz34QmwLop9v7brGOy82HTI5tqBgyAOshDw7NQLqJNG7jkGp
-         8b6ntNihbvYMTzqyd//rPEhUYwovZoxC+AgqqajGxeAXvRXZzE062pRxct1PdbmQX83U
-         7e+tkJwNuzlYi61IU6Rha/g3vCv3SYvBPSJ+TJSvJVDOd38dEr7323Kuvb12DjJySerb
-         tWEGwvj9FaRmrtDVwWwGdByYLbeSJICLNr3GTrC+9hoZGtR7R4x4LOMiSvPeGi1VU1iF
-         GqGhsd28avjBk36ecQIeF6LUQyq6NApjUwJsdYbCNNVBXR9DREVehduAEvu+pqf3Io7R
-         fbRg==
-X-Gm-Message-State: AOAM5318YW4h+jo1h3i53LNzsCRL1UE8Lqshv11PKKzdjLMU3WUPIwXx
-        YaRN5GR/bxoI440nMRwi2sbOiEDE7FNRgg==
-X-Google-Smtp-Source: ABdhPJxLGPjTbaFdsoacNGBPV9gdIeBJbiolzVXTvl1ohN6RUq6ZyUxUVlVfznhzhAknqg6+btBh/Q==
-X-Received: by 2002:a62:8c05:0:b029:1d8:7f36:bcd8 with SMTP id m5-20020a628c050000b02901d87f36bcd8mr19154743pfd.43.1612867306644;
-        Tue, 09 Feb 2021 02:41:46 -0800 (PST)
-Received: from [172.17.32.195] ([122.10.101.134])
-        by smtp.gmail.com with ESMTPSA id c24sm5543375pfo.209.2021.02.09.02.41.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 09 Feb 2021 02:41:45 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
-Subject: Re: [PATCH] bpf: in bpf_skb_adjust_room correct inner protocol for
- vxlan
-From:   =?utf-8?B?6buE5a2m5qOu?= <hxseverything@gmail.com>
-In-Reply-To: <CA+FuTScScC2o6uDjua0T3Eucbjt8-YPf65h3xgxMpTtWvgjWmg@mail.gmail.com>
-Date:   Tue, 9 Feb 2021 18:41:41 +0800
-Cc:     David Miller <davem@davemloft.net>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        chengzhiyong <chengzhiyong@kuaishou.com>,
-        wangli <wangli09@kuaishou.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <8552C5F8-8410-4E81-8AF4-7018878AFCDC@gmail.com>
-References: <20210208113810.11118-1-hxseverything@gmail.com>
- <CA+FuTScScC2o6uDjua0T3Eucbjt8-YPf65h3xgxMpTtWvgjWmg@mail.gmail.com>
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.1)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=lorKAyny8qo8X8PLzFQXMUrLbtZ72KNyEjJSwWTk6UE=;
+        b=DhbRIDVOsRBb+vrxJJo2IVDT7NVvnwPd9swDH7lAMC8E8b94qfFWKo452EHuXew2gv
+         CcpG3FujR11unq1SMLHYkFXC20Pid1v99JwST7PVrWmpA2k+0eEso0bHNYSr5jSMn0mf
+         5haTLJN8K9572CxGJy6F3vxOrLI6Z2qk8r2ErO68DfFVrY72WXu9mutIYVk4Mqy4n5Cb
+         D2ZV0jm4mYI7XhsktgiJJ2LwbZenluixY8vmyJGehxPPtHmr6rSaL5UR1JWgozEFW4F0
+         fX/wNTx6lCvzUO/Cz58fmCoW+QknAYGcnuwcAUISpAVtKMBhPkilXJohKr4KOwxl/IM8
+         o17A==
+X-Gm-Message-State: AOAM531PBeEWauhD9R8TX+eSiiDgoUFc0JeNsDs6sGwwmupjwVq4/5Qe
+        BzqG9OvLTTHT9C7EvB4ai1r6+DHFexupf6El5qmMBU/JK4zkeXBqqUw8BPc80Md3wOCcqB7Jf1n
+        VVSQ5nI+Sg6/h
+X-Received: by 2002:a17:906:d189:: with SMTP id c9mr22164033ejz.36.1612868606243;
+        Tue, 09 Feb 2021 03:03:26 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyVaCW15/oqimd+9o17tkTN+kbxltL7e4b6CkLV/SSP1sb14KXVT+d/0/sIea3FwAFl9AxJmQ==
+X-Received: by 2002:a17:906:d189:: with SMTP id c9mr22164021ejz.36.1612868606071;
+        Tue, 09 Feb 2021 03:03:26 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id a15sm11427727edy.86.2021.02.09.03.03.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 03:03:25 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 15ADA1804EE; Tue,  9 Feb 2021 12:03:25 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Gilad Reti <gilad.reti@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: libbpf: pinning multiple progs from the same section
+In-Reply-To: <CANaYP3G+rtJuMAaTvdxSZCEtA9tSqh00OCkJ0LoeL7L030w0VQ@mail.gmail.com>
+References: <CANaYP3G4zZu=d2Y_d+=418f6X9+5b-JFhk0h9VZoQmFFLhu3Ag@mail.gmail.com>
+ <CANaYP3GgBDPBUjrkg0j-NOEzf3WJEOqcqoGU0uVxQ3LsAzz8ow@mail.gmail.com>
+ <87v9b2u6pa.fsf@toke.dk>
+ <CANaYP3GxKrjuUUTGaAjYGqwPCNzPJBNPQGMMCNaoHT4rfsYUfA@mail.gmail.com>
+ <87mtwetz04.fsf@toke.dk>
+ <CANaYP3G4sBrBy3Xsrku4LjW4sFhAb-9HreZUo_aBNe6gCab1Eg@mail.gmail.com>
+ <87blcutx3v.fsf@toke.dk>
+ <CANaYP3FEheoxSp86sFair0CAQz1-fkdmGp0_zvgGqQr_3P+qdg@mail.gmail.com>
+ <875z32tpel.fsf@toke.dk>
+ <CANaYP3EUOLf=8+ZuKFr4ozPueqgjvzxkEK+O8WEamwY01yATaA@mail.gmail.com>
+ <87zh0es73x.fsf@toke.dk>
+ <CANaYP3G+rtJuMAaTvdxSZCEtA9tSqh00OCkJ0LoeL7L030w0VQ@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 09 Feb 2021 12:03:25 +0100
+Message-ID: <87tuqlsdtu.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Appreciate for your reply Willem!
+Gilad Reti <gilad.reti@gmail.com> writes:
 
-The original intention of this commit is that when we use =
-bpf_skb_adjust_room  to encapsulate=20
-Vxlan packets, we find some powerful device features disabled.=20
+>> > I didn't get this last comment. What I meant is that I want something
+>> > like the bpf_object__pin_maps but that doesn't pin the maps, just
+>> > exposing its naming part.
+>>
+>> Right, OK. Why, though? I can kinda see how it could be convenient to
+>> (basically )make libbpf behave as if all maps has the 'pinning'
+>> attribute set, for map reuse. But I'm not sure I can think any concrete
+>> use cases where this would be needed. What's yours?
+>>
+>
+> I am using the same bpf objects (more specifically, the new skeleton
+> feature) in two different processes that need access to the same
+> maps/programs (for example, they both need access to shared maps).
+> Thus, I want to reuse the entire object in both. Since we already have
+> a way to pin an entire bpf object, I thought it would be convenient to
+> have a way of reusing it entirely (though I am fine with pinning and
+> reusing each one manually).
+> (I cannot set the __uint(pinning, LIBBPF_PIN_BY_NAME) on each since I
+> want to share the bss map too)
 
-Setting the inner_protocol directly as skb->protocol is the root cause.
+Ah, see, now *this* could go under the "missing API" header: having a
+way to make libbpf pin (and reuse) the auto-generated maps, like you can
+do with the 'pinning' attribute.
 
-I understand that it=E2=80=99s not easy to handle all tunnel protocol in =
-one bpf helper function. But for my
-immature idea, when pushing Ethernet header, setting the inner_protocol =
-as ETH_P_TEB may
-be better.
+Andrii, WDYT?
 
-Now the flag BPF_F_ADJ_ROOM_ENCAP_L4_UDP includes many udp tunnel types( =
-e.g.=20
-udp+mpls, geneve, vxlan). Adding an independent flag to represents Vxlan =
-looks a little=20
-reduplicative. What=E2=80=99s your suggestion?
-
-Thanks again for your reply!
-
-
-
-> 2021=E5=B9=B42=E6=9C=888=E6=97=A5 =E4=B8=8B=E5=8D=889:06=EF=BC=8CWillem =
-de Bruijn <willemdebruijn.kernel@gmail.com> =E5=86=99=E9=81=93=EF=BC=9A
->=20
-> On Mon, Feb 8, 2021 at 7:16 AM huangxuesen <hxseverything@gmail.com> =
-wrote:
->>=20
->> From: huangxuesen <huangxuesen@kuaishou.com>
->>=20
->> When pushing vxlan tunnel header, set inner protocol as ETH_P_TEB in =
-skb
->> to avoid HW device disabling udp tunnel segmentation offload, just =
-like
->> vxlan_build_skb does.
->>=20
->> Drivers for NIC may invoke vxlan_features_check to check the
->> inner_protocol in skb for vxlan packets to decide whether to disable
->> NETIF_F_GSO_MASK. Currently it sets inner_protocol as the original
->> skb->protocol, that will make mlx5_core disable TSO and lead to huge
->> performance degradation.
->>=20
->> Signed-off-by: huangxuesen <huangxuesen@kuaishou.com>
->> Signed-off-by: chengzhiyong <chengzhiyong@kuaishou.com>
->> Signed-off-by: wangli <wangli09@kuaishou.com>
->> ---
->> net/core/filter.c | 7 ++++++-
->> 1 file changed, 6 insertions(+), 1 deletion(-)
->>=20
->> diff --git a/net/core/filter.c b/net/core/filter.c
->> index 255aeee72402..f8d3ba3fe10f 100644
->> --- a/net/core/filter.c
->> +++ b/net/core/filter.c
->> @@ -3466,7 +3466,12 @@ static int bpf_skb_net_grow(struct sk_buff =
-*skb, u32 off, u32 len_diff,
->>                skb->inner_mac_header =3D inner_net - inner_mac_len;
->>                skb->inner_network_header =3D inner_net;
->>                skb->inner_transport_header =3D inner_trans;
->> -               skb_set_inner_protocol(skb, skb->protocol);
->> +
->> +               if (flags & BPF_F_ADJ_ROOM_ENCAP_L4_UDP &&
->> +                   inner_mac_len =3D=3D ETH_HLEN)
->> +                       skb_set_inner_protocol(skb, =
-htons(ETH_P_TEB));
->=20
-> This may be used by vxlan, but it does not imply it.
->=20
-> Adding ETH_HLEN bytes likely means pushing an Ethernet header, but =
-same point.
->=20
-> Conversely, pushing an Ethernet header is not limited to UDP encap.
->=20
-> This probably needs a new explicit BPF_F_ADJ_ROOM_.. flag, rather than
-> trying to infer from imprecise heuristics.
+-Toke
 
