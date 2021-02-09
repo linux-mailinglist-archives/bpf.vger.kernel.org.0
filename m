@@ -2,108 +2,119 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54888314DDA
-	for <lists+bpf@lfdr.de>; Tue,  9 Feb 2021 12:08:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C3F9314E39
+	for <lists+bpf@lfdr.de>; Tue,  9 Feb 2021 12:30:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232242AbhBILHF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Feb 2021 06:07:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35378 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232249AbhBILFB (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 9 Feb 2021 06:05:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612868609;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lorKAyny8qo8X8PLzFQXMUrLbtZ72KNyEjJSwWTk6UE=;
-        b=cB2YE0UOMf7OLNV6cVa2I3noEIM95KP6gLOtWjXLJmP/1aMUZUlW5nsgCCOpbGFvkbwrW+
-        xWvn/3qUf2bx2uM3PH9dFfkMvOHW5c/Q3NEh7GdfLN57NBZ/6Sg539fRDVht1qijmslHAz
-        PLkljruryEJsBdz/mpjz1zi1Nxpcp40=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-217-yP4e0xfQM06vXOkjK4XI4A-1; Tue, 09 Feb 2021 06:03:27 -0500
-X-MC-Unique: yP4e0xfQM06vXOkjK4XI4A-1
-Received: by mail-ed1-f72.google.com with SMTP id l23so14555538edt.23
-        for <bpf@vger.kernel.org>; Tue, 09 Feb 2021 03:03:27 -0800 (PST)
+        id S229715AbhBIL2q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Feb 2021 06:28:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229669AbhBIL1w (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Feb 2021 06:27:52 -0500
+Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1567DC061788
+        for <bpf@vger.kernel.org>; Tue,  9 Feb 2021 03:27:12 -0800 (PST)
+Received: by mail-wr1-x44a.google.com with SMTP id u15so16653769wrn.3
+        for <bpf@vger.kernel.org>; Tue, 09 Feb 2021 03:27:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=A5PjxBocm6GkKPxXcYzX2e1AeHxW0gP+W7kFc8REg2E=;
+        b=ofP339Bc5incCy4OVOMtxQ6ESTNMLP3Fc6EZ7VuXFsN0nYTCQuk3+Saa2UBlwztZ04
+         8ZfX/NKW7MwxFkaStBW0GBGHv5nyLJClX5a4HNKpwvY8aZKkDqS18qOB5fmuiBzgx1lx
+         k9IKdZGVfB6c+hJ98cgN3nh35iDKtooVTgyWjrRxFLw76X9Yg3G93wWrLoIHORVj/wj0
+         9isSi7YjzfOrQGavjf96/f69AWde9QdwEmcAULfGVvVM90BSaujuIMkxeAzRh81H4aGE
+         +n/UGB58fR+evj/4F7nqI10mVBlmJZ9H5/m2oUXnCrvGaHiaY6QFyMXllL0MV+R+pFrf
+         4vzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=lorKAyny8qo8X8PLzFQXMUrLbtZ72KNyEjJSwWTk6UE=;
-        b=DhbRIDVOsRBb+vrxJJo2IVDT7NVvnwPd9swDH7lAMC8E8b94qfFWKo452EHuXew2gv
-         CcpG3FujR11unq1SMLHYkFXC20Pid1v99JwST7PVrWmpA2k+0eEso0bHNYSr5jSMn0mf
-         5haTLJN8K9572CxGJy6F3vxOrLI6Z2qk8r2ErO68DfFVrY72WXu9mutIYVk4Mqy4n5Cb
-         D2ZV0jm4mYI7XhsktgiJJ2LwbZenluixY8vmyJGehxPPtHmr6rSaL5UR1JWgozEFW4F0
-         fX/wNTx6lCvzUO/Cz58fmCoW+QknAYGcnuwcAUISpAVtKMBhPkilXJohKr4KOwxl/IM8
-         o17A==
-X-Gm-Message-State: AOAM531PBeEWauhD9R8TX+eSiiDgoUFc0JeNsDs6sGwwmupjwVq4/5Qe
-        BzqG9OvLTTHT9C7EvB4ai1r6+DHFexupf6El5qmMBU/JK4zkeXBqqUw8BPc80Md3wOCcqB7Jf1n
-        VVSQ5nI+Sg6/h
-X-Received: by 2002:a17:906:d189:: with SMTP id c9mr22164033ejz.36.1612868606243;
-        Tue, 09 Feb 2021 03:03:26 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyVaCW15/oqimd+9o17tkTN+kbxltL7e4b6CkLV/SSP1sb14KXVT+d/0/sIea3FwAFl9AxJmQ==
-X-Received: by 2002:a17:906:d189:: with SMTP id c9mr22164021ejz.36.1612868606071;
-        Tue, 09 Feb 2021 03:03:26 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id a15sm11427727edy.86.2021.02.09.03.03.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 03:03:25 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 15ADA1804EE; Tue,  9 Feb 2021 12:03:25 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Gilad Reti <gilad.reti@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: libbpf: pinning multiple progs from the same section
-In-Reply-To: <CANaYP3G+rtJuMAaTvdxSZCEtA9tSqh00OCkJ0LoeL7L030w0VQ@mail.gmail.com>
-References: <CANaYP3G4zZu=d2Y_d+=418f6X9+5b-JFhk0h9VZoQmFFLhu3Ag@mail.gmail.com>
- <CANaYP3GgBDPBUjrkg0j-NOEzf3WJEOqcqoGU0uVxQ3LsAzz8ow@mail.gmail.com>
- <87v9b2u6pa.fsf@toke.dk>
- <CANaYP3GxKrjuUUTGaAjYGqwPCNzPJBNPQGMMCNaoHT4rfsYUfA@mail.gmail.com>
- <87mtwetz04.fsf@toke.dk>
- <CANaYP3G4sBrBy3Xsrku4LjW4sFhAb-9HreZUo_aBNe6gCab1Eg@mail.gmail.com>
- <87blcutx3v.fsf@toke.dk>
- <CANaYP3FEheoxSp86sFair0CAQz1-fkdmGp0_zvgGqQr_3P+qdg@mail.gmail.com>
- <875z32tpel.fsf@toke.dk>
- <CANaYP3EUOLf=8+ZuKFr4ozPueqgjvzxkEK+O8WEamwY01yATaA@mail.gmail.com>
- <87zh0es73x.fsf@toke.dk>
- <CANaYP3G+rtJuMAaTvdxSZCEtA9tSqh00OCkJ0LoeL7L030w0VQ@mail.gmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 09 Feb 2021 12:03:25 +0100
-Message-ID: <87tuqlsdtu.fsf@toke.dk>
-MIME-Version: 1.0
-Content-Type: text/plain
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=A5PjxBocm6GkKPxXcYzX2e1AeHxW0gP+W7kFc8REg2E=;
+        b=rPAIAZb+YYnza3BSHFIk71bIKmBr8jOJuzPOI02ZSQhFRMpBNDRdQWn+jvUcGq1n2i
+         Vpz47tsyM3Q97tpm2DVCSh7FdFAHU3g/K2b+m8FVyYu5kBhoZqMUyU76HKXSYwoMFF5f
+         omcXAeVQyQcpXr/XPHVl+4UII9ulOE6BfazI3S3GVi3B7YDTDdzYqdmeAHg+NjHRDip5
+         oHGR5WykpIDrxrTKG9+rhWIb7lCOzvr/YrC+ZBBfFuH+4gCBsqhN7Qvjs/CaCFg5ytTJ
+         wVllMeE3FMcONWzkvC7MuwWp8POZuTRxXNMes60/VSmz6HQg4bY7bX6L8xp5Ra9BYmMd
+         JfLA==
+X-Gm-Message-State: AOAM531SQoi+qmBmeXUtV1xrxS0Xo2yyhhIaaWV8aOU8izWISFAO0F27
+        6XOiSa5y5UAsldElheTsqSeVcZypSw==
+X-Google-Smtp-Source: ABdhPJy71wYx5F5tGmoACI6FT7+5mPXDTjIjyxo+ykfIRjL5SWm/BBNye+fcUz68j74/ZTvvlLPyboqWrg==
+Sender: "elver via sendgmr" <elver@elver.muc.corp.google.com>
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:51c9:b9a4:3e29:2cd0])
+ (user=elver job=sendgmr) by 2002:a05:600c:35c9:: with SMTP id
+ r9mr396002wmq.0.1612870029964; Tue, 09 Feb 2021 03:27:09 -0800 (PST)
+Date:   Tue,  9 Feb 2021 12:27:01 +0100
+Message-Id: <20210209112701.3341724-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
+Subject: [PATCH] bpf_lru_list: Read double-checked variable once without lock
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     kasan-dev@googlegroups.com, paulmck@kernel.org, dvyukov@google.com,
+        syzbot+3536db46dfa58c573458@syzkaller.appspotmail.com,
+        syzbot+516acdb03d3e27d91bcd@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Gilad Reti <gilad.reti@gmail.com> writes:
+For double-checked locking in bpf_common_lru_push_free(), node->type is
+read outside the critical section and then re-checked under the lock.
+However, concurrent writes to node->type result in data races.
 
->> > I didn't get this last comment. What I meant is that I want something
->> > like the bpf_object__pin_maps but that doesn't pin the maps, just
->> > exposing its naming part.
->>
->> Right, OK. Why, though? I can kinda see how it could be convenient to
->> (basically )make libbpf behave as if all maps has the 'pinning'
->> attribute set, for map reuse. But I'm not sure I can think any concrete
->> use cases where this would be needed. What's yours?
->>
->
-> I am using the same bpf objects (more specifically, the new skeleton
-> feature) in two different processes that need access to the same
-> maps/programs (for example, they both need access to shared maps).
-> Thus, I want to reuse the entire object in both. Since we already have
-> a way to pin an entire bpf object, I thought it would be convenient to
-> have a way of reusing it entirely (though I am fine with pinning and
-> reusing each one manually).
-> (I cannot set the __uint(pinning, LIBBPF_PIN_BY_NAME) on each since I
-> want to share the bss map too)
+For example, the following concurrent access was observed by KCSAN:
 
-Ah, see, now *this* could go under the "missing API" header: having a
-way to make libbpf pin (and reuse) the auto-generated maps, like you can
-do with the 'pinning' attribute.
+  write to 0xffff88801521bc22 of 1 bytes by task 10038 on cpu 1:
+   __bpf_lru_node_move_in        kernel/bpf/bpf_lru_list.c:91
+   __local_list_flush            kernel/bpf/bpf_lru_list.c:298
+   ...
+  read to 0xffff88801521bc22 of 1 bytes by task 10043 on cpu 0:
+   bpf_common_lru_push_free      kernel/bpf/bpf_lru_list.c:507
+   bpf_lru_push_free             kernel/bpf/bpf_lru_list.c:555
+   ...
 
-Andrii, WDYT?
+Fix the data races where node->type is read outside the critical section
+(for double-checked locking) by marking the access with READ_ONCE() as
+well as ensuring the variable is only accessed once.
 
--Toke
+Reported-by: syzbot+3536db46dfa58c573458@syzkaller.appspotmail.com
+Reported-by: syzbot+516acdb03d3e27d91bcd@syzkaller.appspotmail.com
+Signed-off-by: Marco Elver <elver@google.com>
+---
+Detailed reports:
+	https://groups.google.com/g/syzkaller-upstream-moderation/c/PwsoQ7bfi8k/m/NH9Ni2WxAQAJ
+	https://groups.google.com/g/syzkaller-upstream-moderation/c/-fXQO9ehxSM/m/RmQEcI2oAQAJ
+---
+ kernel/bpf/bpf_lru_list.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/bpf/bpf_lru_list.c b/kernel/bpf/bpf_lru_list.c
+index 1b6b9349cb85..d99e89f113c4 100644
+--- a/kernel/bpf/bpf_lru_list.c
++++ b/kernel/bpf/bpf_lru_list.c
+@@ -502,13 +502,14 @@ struct bpf_lru_node *bpf_lru_pop_free(struct bpf_lru *lru, u32 hash)
+ static void bpf_common_lru_push_free(struct bpf_lru *lru,
+ 				     struct bpf_lru_node *node)
+ {
++	u8 node_type = READ_ONCE(node->type);
+ 	unsigned long flags;
+ 
+-	if (WARN_ON_ONCE(node->type == BPF_LRU_LIST_T_FREE) ||
+-	    WARN_ON_ONCE(node->type == BPF_LRU_LOCAL_LIST_T_FREE))
++	if (WARN_ON_ONCE(node_type == BPF_LRU_LIST_T_FREE) ||
++	    WARN_ON_ONCE(node_type == BPF_LRU_LOCAL_LIST_T_FREE))
+ 		return;
+ 
+-	if (node->type == BPF_LRU_LOCAL_LIST_T_PENDING) {
++	if (node_type == BPF_LRU_LOCAL_LIST_T_PENDING) {
+ 		struct bpf_lru_locallist *loc_l;
+ 
+ 		loc_l = per_cpu_ptr(lru->common_lru.local_list, node->cpu);
+-- 
+2.30.0.478.g8a0d178c01-goog
 
