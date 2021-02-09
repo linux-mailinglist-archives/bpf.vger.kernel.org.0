@@ -2,205 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEF0831492F
-	for <lists+bpf@lfdr.de>; Tue,  9 Feb 2021 07:58:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D813F31498C
+	for <lists+bpf@lfdr.de>; Tue,  9 Feb 2021 08:37:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbhBIG5d (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Feb 2021 01:57:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57062 "EHLO
+        id S230171AbhBIHf5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Feb 2021 02:35:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230139AbhBIG5a (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Feb 2021 01:57:30 -0500
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC63CC061786;
-        Mon,  8 Feb 2021 22:56:47 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id w204so17194166ybg.2;
-        Mon, 08 Feb 2021 22:56:47 -0800 (PST)
+        with ESMTP id S229815AbhBIHfy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Feb 2021 02:35:54 -0500
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04BA7C061786
+        for <bpf@vger.kernel.org>; Mon,  8 Feb 2021 23:35:13 -0800 (PST)
+Received: by mail-qt1-x836.google.com with SMTP id n28so5327192qtv.12
+        for <bpf@vger.kernel.org>; Mon, 08 Feb 2021 23:35:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=eZrBOAIpzrTsqK+9+r50BZw7/7rvwYEA9Ha1KB9Yhe8=;
-        b=UgQaVkm3W+BMK/66Uutt2BHmYni8Xv+gX8plwavjE7Y3vaMENKV/KYyxElzJ6EesBQ
-         /ZM+LNLEdEW4ZfArITioqRfmM/s5u8b2pN2NXgIU+c3/Qt6t0JvalTUGvcYDZNdlC5ao
-         lAOISmGuJinIVQkCw0GiyYrxcvTWiWs9A1rkk7wftFswWee2Wgnka/gWEaojY7He5khK
-         8mPPEUS0isX7/5YCTVU9G1AfWLu19P56X97XhLGZ7CNAMslQqScmDE/TIKEo4kfjv5Rf
-         VxC+cyWGYyHBgYoev6UruXp5TfbeIiGnnqnleFkUJIsS4UR5wXiTOmHrrIthpvr7D/Lf
-         suIw==
+        bh=VxU9PMMlm0cJYv5FlM8nWSRQFbnHMT6a6kZn8VAvqmU=;
+        b=RkwthBqL6RxhZjL+2Bz/oYdwFXTyhqhSHIWJz4QpwjiU2TFpBBzoXY1lC0cjAilqJh
+         03Br+jkZCjPMv9aCI42k+zsZs3rfaBovcCaD+bMHKKSTH9xB08bgnnaPjfDLWpemL5ZC
+         1Zjjxzy/BlgXpOrTIV435Dfc0xk278J67zlI9Nirgv15IiGy+LaxLbGzmIwyT73NdhXq
+         IboIGmQBK6sRmnMBCNC+U6cQfdGdEZ1LGRT6TwTRO0dRSTi7DPxAv6jARaYnuaActd7N
+         8iz7xh2r1fEPfix6BEp2XKId+foVpGOpcCsrCeD6txRpGst3CWSVcxS5roiNwhoypSHP
+         C+Jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=eZrBOAIpzrTsqK+9+r50BZw7/7rvwYEA9Ha1KB9Yhe8=;
-        b=olT5wIKkj99vLwSoGILpNKgjAJGL5bFUrk1tg954P7Lg0hlYJqmzyXXaHg/HthANNx
-         Y9pEe1jIQq4LVgew9AvqtH/296Wa788bvGkd3mU0bY66jqMaXKvB6BFWdIlV34A2iXzK
-         8mYzvMbf50VdjJGjPZsbtV3o4HSW/+jssr0m8E6LF/RC0E/V2Roz1Uz8LjzdFv2cg2bU
-         inmpP80WKhqYVECEpfaRHfGdqMQTfLH6zzGMHUbKU+PFvfnr9YqKCD2JafhHlh3cNJoZ
-         tHCbRLhVPVDzy8zw1O4bVYe4exR6xtaiYpkcTBNIlVamf7Xr9uESxK3c8kOMSJmoKdxR
-         1f/A==
-X-Gm-Message-State: AOAM532c2/E9/ePrVZF+Ofimdf5QJDzfYRf1ZgJYMfvxvhjjRe88z4JQ
-        FNj1ppR3cW+Qgsadv7mGy2h2RgcpDnDZrOn64BerSwU36MiHOQ==
-X-Google-Smtp-Source: ABdhPJxUuvzgE1yIN83kQGdVmrKfm1zkQVAFlbFXCyOlvzI2vipH+Ih0tQRav2danOfjyuVZBJ8KbhczcUpe5bvbGdQ=
-X-Received: by 2002:a25:c905:: with SMTP id z5mr31245749ybf.260.1612853807146;
- Mon, 08 Feb 2021 22:56:47 -0800 (PST)
+        bh=VxU9PMMlm0cJYv5FlM8nWSRQFbnHMT6a6kZn8VAvqmU=;
+        b=Xo3PxqxESn3+5mxKGU/IodGmfF2+cvd04w0erdqJBgF7d/dyUSuYUhcpVUdkLFlVV3
+         MXGBntHHno6zZof/0nbg1GqjM7DK/h8oEFM+yp4VizyLGRspc/Wc0038qJ5EBoBBScww
+         88Wh0oQISUohQ1RPrJh4OsPvyFWQIYNJbuMzhQSqvMkBftN/wsme6aBUGNopbj0/7ZrL
+         +5Fsg4d7IJDTAvT6cSI5SY0TQXUcugUTWcAsnTz8q9B6f0yhavwXs9JslttuiPDqUnAR
+         UfjJJbDzKbxiUIAs0gU4pQpbitsl109ljR8NJx7scJt355G3HRrSLglDrDhp8qUMajqr
+         sqkA==
+X-Gm-Message-State: AOAM532dqP+EmU3vttggamISCCppc4T6sqx7SqnDTgfLJy2nqt+Gq6rx
+        TXyl1jk38MhKhJd6ho+EjVJIGHcwu3QGZnoPkA0A2A==
+X-Google-Smtp-Source: ABdhPJzPP9PemfEVryVImDWBPwq7LJJVug/bP7dt4dL1hN5gSqCMzeT4yrB5gi0a36nTdEEmIABs7JmIhDSfBJFd0go=
+X-Received: by 2002:a05:622a:c9:: with SMTP id p9mr18543023qtw.337.1612856112858;
+ Mon, 08 Feb 2021 23:35:12 -0800 (PST)
 MIME-Version: 1.0
-References: <20210209034416.GA1669105@ubuntu-m3-large-x86> <CAEf4BzYnT-eoKRL9_Pu_DEuqXVa+edN5F-s+k2RxBSzcsSTJ1g@mail.gmail.com>
- <20210209052311.GA125918@ubuntu-m3-large-x86> <CAEf4BzZV0-zx6YKUUKmecs=icnQNXJjTokdkSAoexm36za+wdA@mail.gmail.com>
- <CAEf4BzYvri7wzRnGH_qQbavXOx5TfBA0qx4nYVnn=YNGv+vNVw@mail.gmail.com>
-In-Reply-To: <CAEf4BzYvri7wzRnGH_qQbavXOx5TfBA0qx4nYVnn=YNGv+vNVw@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 8 Feb 2021 22:56:36 -0800
-Message-ID: <CAEf4Bzax90hn_5axpnCpW+E6gVc1mtUgCXWqmxV0tJ4Ud7bsaA@mail.gmail.com>
-Subject: Re: FAILED unresolved symbol vfs_truncate on arm64 with LLVM
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
+References: <000000000000364d5505babe13f5@google.com>
+In-Reply-To: <000000000000364d5505babe13f5@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 9 Feb 2021 08:35:00 +0100
+Message-ID: <CACT4Y+aDGsVkzTkQ551XUpT0Z1vuiGTubvtKne+VYjK3zX67kQ@mail.gmail.com>
+Subject: Re: KMSAN: uninit-value in bpf_iter_prog_supported
+To:     syzbot <syzbot+580f4f2a272e452d55cb@syzkaller.appspotmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, andrii@kernel.org,
         Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Veronika Kabatova <vkabatov@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Cc:     Alexander Potapenko <glider@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 8, 2021 at 10:13 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Sun, Feb 7, 2021 at 1:20 PM syzbot
+<syzbot+580f4f2a272e452d55cb@syzkaller.appspotmail.com> wrote:
 >
-> On Mon, Feb 8, 2021 at 10:09 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Mon, Feb 8, 2021 at 9:23 PM Nathan Chancellor <nathan@kernel.org> wrote:
-> > >
-> > > On Mon, Feb 08, 2021 at 08:45:43PM -0800, Andrii Nakryiko wrote:
-> > > > On Mon, Feb 8, 2021 at 7:44 PM Nathan Chancellor <nathan@kernel.org> wrote:
-> > > > >
-> > > > > Hi all,
-> > > > >
-> > > > > Recently, an issue with CONFIG_DEBUG_INFO_BTF was reported for arm64:
-> > > > > https://groups.google.com/g/clang-built-linux/c/de_mNh23FOc/m/E7cu5BwbBAAJ
-> > > > >
-> > > > > $ make -skj"$(nproc)" ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- \
-> > > > >                       LLVM=1 O=build/aarch64 defconfig
-> > > > >
-> > > > > $ scripts/config \
-> > > > >     --file build/aarch64/.config \
-> > > > >     -e BPF_SYSCALL \
-> > > > >     -e DEBUG_INFO_BTF \
-> > > > >     -e FTRACE \
-> > > > >     -e FUNCTION_TRACER
-> > > > >
-> > > > > $ make -skj"$(nproc)" ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- \
-> > > > >                       LLVM=1 O=build/aarch64 olddefconfig all
-> > > > > ...
-> > > > > FAILED unresolved symbol vfs_truncate
-> > > > > ...
-> > > > >
-> > > > > My bisect landed on commit 6e22ab9da793 ("bpf: Add d_path helper")
-> > > > > although that seems obvious given that is what introduced
-> > > > > BTF_ID(func, vfs_truncate).
-> > > > >
-> > > > > I am using the latest pahole v1.20 and LLVM is at
-> > > > > https://github.com/llvm/llvm-project/commit/14da287e18846ea86e45b421dc47f78ecc5aa7cb
-> > > > > although I can reproduce back to LLVM 10.0.1, which is the earliest
-> > > > > version that the kernel supports. I am very unfamiliar with BPF so I
-> > > > > have no idea what is going wrong here. Is this a known issue?
-> > > > >
-> > > >
-> > > > I'll skip the reproduction games this time and will just request the
-> > > > vmlinux image. Please upload somewhere so that we can look at DWARF
-> > > > and see what's going on. Thanks.
-> > > >
-> > >
-> > > Sure thing, let me know if this works. I uploaded in two places to make
-> > > it easier to grab:
-> > >
-> > > zstd compressed:
-> > > https://github.com/nathanchance/bug-files/blob/3b2873751e29311e084ae2c71604a1963f5e1a48/btf-aarch64/vmlinux.zst
-> > >
-> >
-> > Thanks. I clearly see at least one instance of seemingly well-formed
-> > vfs_truncate DWARF declaration. Also there is a proper ELF symbol for
-> > it. Which means it should have been generated in BTF, but it doesn't
-> > appear to be, so it does seem like a pahole bug. I (or someone else
-> > before me) will continue tomorrow.
-> >
-> > $ llvm-dwarfdump vmlinux
-> > ...
-> >
-> > 0x00052e6f:   DW_TAG_subprogram
-> >                 DW_AT_name      ("vfs_truncate")
-> >                 DW_AT_decl_file
-> > ("/home/nathan/cbl/src/linux/include/linux/fs.h")
-> >                 DW_AT_decl_line (2520)
-> >                 DW_AT_prototyped        (true)
-> >                 DW_AT_type      (0x000452cb "long int")
-> >                 DW_AT_declaration       (true)
-> >                 DW_AT_external  (true)
-> >
-> > 0x00052e7b:     DW_TAG_formal_parameter
-> >                   DW_AT_type    (0x00045fc6 "const path*")
-> >
-> > 0x00052e80:     DW_TAG_formal_parameter
-> >                   DW_AT_type    (0x00045213 "long long int")
-> >
-> > ...
-> >
+> Hello,
 >
-> ... and here's the *only* other one (not marked as declaration, but I
-> thought we already handle that, Jiri?):
+> syzbot found the following issue on:
 >
-> 0x01d0da35:   DW_TAG_subprogram
->                 DW_AT_low_pc    (0xffff80001031f430)
->                 DW_AT_high_pc   (0xffff80001031f598)
->                 DW_AT_frame_base        (DW_OP_reg29)
->                 DW_AT_GNU_all_call_sites        (true)
->                 DW_AT_name      ("vfs_truncate")
->                 DW_AT_decl_file ("/home/nathan/cbl/src/linux/fs/open.c")
->                 DW_AT_decl_line (69)
->                 DW_AT_prototyped        (true)
->                 DW_AT_type      (0x01cfdfe4 "long int")
->                 DW_AT_external  (true)
+> HEAD commit:    73d62e81 kmsan: random: prevent boot-time reports in _mix_..
+> git tree:       https://github.com/google/kmsan.git master
+> console output: https://syzkaller.appspot.com/x/log.txt?x=17ac5f64d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=df698232b2ac45c9
+> dashboard link: https://syzkaller.appspot.com/bug?extid=580f4f2a272e452d55cb
+> compiler:       Debian clang version 11.0.1-2
+> userspace arch: i386
 >
+> Unfortunately, I don't have any reproducer for this issue yet.
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+580f4f2a272e452d55cb@syzkaller.appspotmail.com
 
-Ok, the problem appears to be not in DWARF, but in mcount_loc data.
-vfs_truncate's address is not recorded as ftrace-attachable, and thus
-pahole ignores it. I don't know why this happens and it's quite
-strange, given vfs_truncate is just a normal global function.
++BPF maintainers
 
-I'd like to understand this issue before we try to fix it, but there
-is at least one improvement we can make: pahole should check ftrace
-addresses only for static functions, not the global ones (global ones
-should be always attachable, unless they are special, e.g., notrace
-and stuff). We can easily check that by looking at the corresponding
-symbol. But I'd like to verify that vfs_truncate is ftrace-attachable
-for that particular kernel. For that we'll need Nathan's cooperation,
-unless someone else can build an arm64 kernel with the same problem
-and check.
-
+> =====================================================
+> BUG: KMSAN: uninit-value in bpf_iter_prog_supported+0x3dd/0x6a0 syzkaller/managers/upstream-kmsan-gce-386/kernel/kernel/bpf/bpf_iter.c:329
+> CPU: 0 PID: 18494 Comm: bpf_preload Not tainted 5.10.0-rc4-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack syzkaller/managers/upstream-kmsan-gce-386/kernel/lib/dump_stack.c:77 [inline]
+>  dump_stack+0x21c/0x280 syzkaller/managers/upstream-kmsan-gce-386/kernel/lib/dump_stack.c:118
+>  kmsan_report+0xfb/0x1e0 syzkaller/managers/upstream-kmsan-gce-386/kernel/mm/kmsan/kmsan_report.c:118
+>  __msan_warning+0x5f/0xa0 syzkaller/managers/upstream-kmsan-gce-386/kernel/mm/kmsan/kmsan_instr.c:197
+>  bpf_iter_prog_supported+0x3dd/0x6a0 syzkaller/managers/upstream-kmsan-gce-386/kernel/kernel/bpf/bpf_iter.c:329
+>  check_attach_btf_id syzkaller/managers/upstream-kmsan-gce-386/kernel/kernel/bpf/verifier.c:11772 [inline]
+>  bpf_check+0x11872/0x1c380 syzkaller/managers/upstream-kmsan-gce-386/kernel/kernel/bpf/verifier.c:11900
+>  bpf_prog_load syzkaller/managers/upstream-kmsan-gce-386/kernel/kernel/bpf/syscall.c:2210 [inline]
+>  __do_sys_bpf+0x17483/0x1aee0 syzkaller/managers/upstream-kmsan-gce-386/kernel/kernel/bpf/syscall.c:4399
+>  __se_sys_bpf+0x8e/0xa0 syzkaller/managers/upstream-kmsan-gce-386/kernel/kernel/bpf/syscall.c:4357
+>  __x64_sys_bpf+0x4a/0x70 syzkaller/managers/upstream-kmsan-gce-386/kernel/kernel/bpf/syscall.c:4357
+>  do_syscall_64+0x9f/0x140 syzkaller/managers/upstream-kmsan-gce-386/kernel/arch/x86/entry/common.c:48
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x7fb70b5ab469
+> Code: 00 f3 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d ff 49 2b 00 f7 d8 64 89 01 48
+> RSP: 002b:00007ffdbb4cde38 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+> RAX: ffffffffffffffda RBX: 000000000065b110 RCX: 00007fb70b5ab469
+> RDX: 0000000000000078 RSI: 00007ffdbb4cdef0 RDI: 0000000000000005
+> RBP: 00007ffdbb4cdef0 R08: 0000001000000017 R09: 0000000000000000
+> R10: 00007ffdbb4ce0e8 R11: 0000000000000246 R12: 0000000000000000
+> R13: 00007ffdbb4cdf20 R14: 0000000000000000 R15: 0000000000000000
 >
-> > $ llvm-readelf -s vmlinux | rg vfs_truncate
-> >  15013: ffff800011c22418     4 OBJECT  LOCAL  DEFAULT    24
-> > __BTF_ID__func__vfs_truncate__609
-> >  22531: ffff80001189fe0d     0 NOTYPE  LOCAL  DEFAULT    17
-> > __kstrtab_vfs_truncate
-> >  22532: ffff8000118a985b     0 NOTYPE  LOCAL  DEFAULT    17
-> > __kstrtabns_vfs_truncate
-> >  22534: ffff800011873b7c     0 NOTYPE  LOCAL  DEFAULT     8
-> > __ksymtab_vfs_truncate
-> > 176099: ffff80001031f430   360 FUNC    GLOBAL DEFAULT     2 vfs_truncate
-> >
-> > $ bpftool btf dump file vmlinux | rg vfs_truncate
-> > <nothing>
-> >
-> > > uncompressed:
-> > > https://1drv.ms/u/s!AsQNYeB-IEbqjQiUOspbEdXx49o7?e=ipA9Hv
-> > >
-> > > Cheers,
-> > > Nathan
+> Uninit was created at:
+>  kmsan_save_stack_with_flags syzkaller/managers/upstream-kmsan-gce-386/kernel/mm/kmsan/kmsan.c:121 [inline]
+>  kmsan_internal_poison_shadow+0x5c/0xf0 syzkaller/managers/upstream-kmsan-gce-386/kernel/mm/kmsan/kmsan.c:104
+>  kmsan_slab_alloc+0x8d/0xe0 syzkaller/managers/upstream-kmsan-gce-386/kernel/mm/kmsan/kmsan_hooks.c:76
+>  slab_alloc_node syzkaller/managers/upstream-kmsan-gce-386/kernel/mm/slub.c:2906 [inline]
+>  slab_alloc syzkaller/managers/upstream-kmsan-gce-386/kernel/mm/slub.c:2915 [inline]
+>  kmem_cache_alloc_trace+0x893/0x1000 syzkaller/managers/upstream-kmsan-gce-386/kernel/mm/slub.c:2932
+>  kmalloc syzkaller/managers/upstream-kmsan-gce-386/kernel/./include/linux/slab.h:552 [inline]
+>  bpf_iter_reg_target+0x81/0x3f0 syzkaller/managers/upstream-kmsan-gce-386/kernel/kernel/bpf/bpf_iter.c:276
+>  bpf_sk_storage_map_iter_init+0x6a/0x85 syzkaller/managers/upstream-kmsan-gce-386/kernel/net/core/bpf_sk_storage.c:870
+>  do_one_initcall+0x362/0x8d0 syzkaller/managers/upstream-kmsan-gce-386/kernel/init/main.c:1220
+>  do_initcall_level+0x1e7/0x35a syzkaller/managers/upstream-kmsan-gce-386/kernel/init/main.c:1293
+>  do_initcalls+0x127/0x1cb syzkaller/managers/upstream-kmsan-gce-386/kernel/init/main.c:1309
+>  do_basic_setup+0x33/0x36 syzkaller/managers/upstream-kmsan-gce-386/kernel/init/main.c:1329
+>  kernel_init_freeable+0x238/0x38b syzkaller/managers/upstream-kmsan-gce-386/kernel/init/main.c:1529
+>  kernel_init+0x1f/0x840 syzkaller/managers/upstream-kmsan-gce-386/kernel/init/main.c:1418
+>  ret_from_fork+0x1f/0x30 syzkaller/managers/upstream-kmsan-gce-386/kernel/arch/x86/entry/entry_64.S:296
+> =====================================================
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/000000000000364d5505babe13f5%40google.com.
