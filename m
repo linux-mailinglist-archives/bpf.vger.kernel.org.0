@@ -2,92 +2,148 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0A2F31484E
-	for <lists+bpf@lfdr.de>; Tue,  9 Feb 2021 06:46:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03808314861
+	for <lists+bpf@lfdr.de>; Tue,  9 Feb 2021 06:54:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229565AbhBIFpw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Feb 2021 00:45:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41784 "EHLO
+        id S229666AbhBIFxT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Feb 2021 00:53:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbhBIFpw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Feb 2021 00:45:52 -0500
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E987AC061786
-        for <bpf@vger.kernel.org>; Mon,  8 Feb 2021 21:45:11 -0800 (PST)
-Received: by mail-yb1-xb34.google.com with SMTP id r2so17001922ybk.11
-        for <bpf@vger.kernel.org>; Mon, 08 Feb 2021 21:45:11 -0800 (PST)
+        with ESMTP id S229521AbhBIFxT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Feb 2021 00:53:19 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11813C061788;
+        Mon,  8 Feb 2021 21:52:39 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id b187so17011465ybg.9;
+        Mon, 08 Feb 2021 21:52:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fhyYry96duXUtJhovqOjwmvx2/DUOKft4wX5eYMIwDQ=;
-        b=kjHRq3wwQG97iFxdu4L9bopUAR9bd5HgwYt6wl8FD2jCbLnCdVovvQQOVqt02LdsYo
-         xGsspgPFYH7MrhcNA1CSgBCBuvvJnWmD7d1Blv8oAkMXOKimzUTsHervUj+z4RI03+ch
-         i80N8k3zIFN9fNtTdmUo4gLn9+WTSQbh3vwYvj7SJIyraIp153T7k+0m2BfMwmPQ0/TS
-         sE1io3ohyH0a1LV6RayyjYBh8PIJ+dKKzpBme2I1w5AtIcDczAyYuceiMSRBkJ+VosK2
-         PMLfBx8FnVhkUpUqas+6MnM67QgIoR1yzpZzo9znNY15R6Hpi4hhl4mbx8ldTZn/1Std
-         WdeQ==
+         :cc:content-transfer-encoding;
+        bh=bHk+JF1bvYTk+/3qzL9w8Fao5P5tKzNYOWCvFvqbIrY=;
+        b=PykY9irOnLpWserL08/gvwu8oQRBDAUj/XqtE/B6UlQmOUj0IAVpWzs0XDVge5Zzb0
+         htqtJuE1lKQiIJwlyEoCzxYSMbOjGxcafQ10p5Bnq6w4CWyyrRA+WMEY+e76R4UlkLu7
+         mC14yHBNuVwvnXEWnqmdYjXrWXTtFvKe9p//lMNBgbG5/RmZcRQmddT+6wrOkqu5xl0c
+         dCEyY156I1D+Fu6CMyow98V73W/geLLoEwMgYucVCg/2e1g4SG3DQYihDuwFLkuxLBZH
+         tqwh6g8iFCfKKVLlW1Da2TbSU6jm13Yo3J9Gz8DodsoiClO7ADeFaw4gaTYpFJV7zJJk
+         SaJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fhyYry96duXUtJhovqOjwmvx2/DUOKft4wX5eYMIwDQ=;
-        b=egsnkJQeoZgZZV43xHgEsKqdN/gUxXve1kvGCsJ2owoFSgVA6K7ibDflqSaDT0gP5/
-         HhCgWgD9M4ogCL47EamP60cCgmTz/Pjn3tInF4LWxrdbfe0/RG7Le1OtAvWYQ0lp8NSI
-         wi6sWBsz5LVCsJNqHDvhU1nu+MFTYRiFl629tbqzGlwZVMBmhGhEh2dLM8aXwWET82oz
-         mz7IQRc666UcfZdSuQEURqg3rcCIfZAh0ZYFZZpcJhrIzgSyiQTDOQoosmvDd4isGEMf
-         Z9DY8fs5Hu/wLICoKyhtRncYgYPEWEYcoOjihsGRotBsJmiuCBMuGiyvxtqnCvSQ17XR
-         xc1A==
-X-Gm-Message-State: AOAM530niGcXyIZM0ZrDqiFi+qAN2eqvmB4OzL+Y1pei4fPjmTMgNTB7
-        fmXp0/WrZtqiHMe0QvJ2jAduI673RnoMTUADmnmbKsZthwA=
-X-Google-Smtp-Source: ABdhPJwHx295krKFTNVfoavFDnogQ2B5B/tVT5Llht7nvtsbB1qS2caZl5d6WhORcd80kU0e1Uis2TiHiMoIdpkBHyo=
-X-Received: by 2002:a25:a183:: with SMTP id a3mr29665904ybi.459.1612849510483;
- Mon, 08 Feb 2021 21:45:10 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=bHk+JF1bvYTk+/3qzL9w8Fao5P5tKzNYOWCvFvqbIrY=;
+        b=Eiyq9SruKUwfKmPg+kDZ+jJuKzONO9Jk4a33ZcJ654gbNJzWM7KWLfQieA1/Zno3jh
+         /EB3qUSOO+Y7AnZd53UBGzCmn6tSlo2mLmba491kThsxAhP6KL6jzs7VQSE99swb5LDf
+         rO0eGAFWLxO9OkyPC5FRtgZLcw65whU/ei06XGod1fsGO/wXKZlK4Q0SjpNW70qg2i13
+         TCt2fIZJ3ffTs+tRWLfjsUdbo1N92mBQkkn52G0i7MiouNXWcnAvYjrsFyUAQLeOHu6X
+         sHoWm04B6rcBCSi3CqlW3i+S5GMeWE2XHvuM34B1y//Ygn/Pb3ymRDY61z2FGRpzdgrU
+         rw1g==
+X-Gm-Message-State: AOAM53156UskdHpm1p1RLqL/AVX3tgspG3/I5YwMekjrJ29L8gVqOdc4
+        E9TaPEE7IErSndhyedlHrLtX69YeCpqfNTRSOzY=
+X-Google-Smtp-Source: ABdhPJwRNxpqs5K83gjzBipDdtzkV+2RXjnkdXomzPepukrRz7SLN4wiBDkCZf8lfXO7JxfiSm9A8RSKZ1kJZfboP34=
+X-Received: by 2002:a25:3805:: with SMTP id f5mr13327086yba.27.1612849958356;
+ Mon, 08 Feb 2021 21:52:38 -0800 (PST)
 MIME-Version: 1.0
-References: <YBGe5WFzSc3Z8Oh5@gmail.com>
-In-Reply-To: <YBGe5WFzSc3Z8Oh5@gmail.com>
+References: <20210206092654.155239-1-bjorn.topel@gmail.com>
+In-Reply-To: <20210206092654.155239-1-bjorn.topel@gmail.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 8 Feb 2021 21:44:59 -0800
-Message-ID: <CAEf4Bzab4fZm04xR+3DYEHNaxAoaNM+hZFdYWGJ_qk1fNyAitQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: add lookup_and_delete_elem support to hashtab
-To:     Denis Salopek <denis.salopek@sartura.hr>
-Cc:     bpf <bpf@vger.kernel.org>, Luka Perkov <luka.perkov@sartura.hr>,
-        Luka Oreskovic <luka.oreskovic@sartura.hr>,
-        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>
+Date:   Mon, 8 Feb 2021 21:52:27 -0800
+Message-ID: <CAEf4BzZ4aU26HGxYsOg4ma52bq9ghLDMJD03O1oQaRd8q0=ofA@mail.gmail.com>
+Subject: Re: [PATCH bpf v2] selftests/bpf: remove bash feature in test_xdp_redirect.sh
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        u9012063@gmail.com, Randy Dunlap <rdunlap@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 9:15 AM Denis Salopek <denis.salopek@sartura.hr> wrote:
+On Sat, Feb 6, 2021 at 1:29 AM Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com=
+> wrote:
 >
-> Extend the existing bpf_map_lookup_and_delete_elem() functionality to
-> hashtab maps, in addition to stacks and queues.
-> Create a new hashtab bpf_map_ops function that does lookup and deletion
-> of the element under the same bucket lock and add the created map_ops to
-> bpf.h.
-> Add the appropriate test case to 'maps' selftests.
+> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
 >
-> Signed-off-by: Denis Salopek <denis.salopek@sartura.hr>
-> Cc: Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>
-> Cc: Luka Oreskovic <luka.oreskovic@sartura.hr>
-> Cc: Luka Perkov <luka.perkov@sartura.hr>
+> The test_xdp_redirect.sh script uses a bash redirect feature,
+> '&>/dev/null'. Use '>/dev/null 2>&1' instead.
+
+We have plenty of explicit bash uses in selftest scripts, I'm not sure
+it's a good idea to make scripts more verbose.
+
+>
+> Also remove the 'set -e' since the script actually relies on that the
+> return value can be used to determine pass/fail of the test.
+
+This sounds like a dubious decision. The script checks return results
+only of last two commands, for which it's better to write and if
+[<first command>] && [<second command>] check and leave set -e intact.
+
+>
+> Acked-by: William Tu <u9012063@gmail.com>
+> Fixes: 996139e801fd ("selftests: bpf: add a test for XDP redirect")
+> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
 > ---
-
-I think this patch somehow got lost, even though it seems like a good
-addition. I'd recommend rebasing and re-submitting to let people take
-a fresh look at this.
-
-It would also be nice to have a test_progs test added, not just
-test_maps. I'd also look at supporting lookup_and_delete for other
-kinds of hash maps (LRU, per-CPU), so that the support is more
-complete. Thanks!
-
->  include/linux/bpf.h                     |  1 +
->  kernel/bpf/hashtab.c                    | 38 +++++++++++++++++++++++++
->  kernel/bpf/syscall.c                    |  9 ++++++
->  tools/testing/selftests/bpf/test_maps.c |  7 +++++
->  4 files changed, 55 insertions(+)
+> William, I kept your Acked-by.
 >
-
-[...]
+> v2: Kept /bin/sh and removed bashisms. (Randy)
+> ---
+>  tools/testing/selftests/bpf/test_xdp_redirect.sh | 15 +++++++--------
+>  1 file changed, 7 insertions(+), 8 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/test_xdp_redirect.sh b/tools/tes=
+ting/selftests/bpf/test_xdp_redirect.sh
+> index dd80f0c84afb..4d4887da175c 100755
+> --- a/tools/testing/selftests/bpf/test_xdp_redirect.sh
+> +++ b/tools/testing/selftests/bpf/test_xdp_redirect.sh
+> @@ -46,20 +46,20 @@ test_xdp_redirect()
+>
+>         setup
+>
+> -       ip link set dev veth1 $xdpmode off &> /dev/null
+> +       ip link set dev veth1 $xdpmode off >/dev/null 2>&1
+>         if [ $? -ne 0 ];then
+>                 echo "selftests: test_xdp_redirect $xdpmode [SKIP]"
+>                 return 0
+>         fi
+>
+> -       ip -n ns1 link set veth11 $xdpmode obj xdp_dummy.o sec xdp_dummy =
+&> /dev/null
+> -       ip -n ns2 link set veth22 $xdpmode obj xdp_dummy.o sec xdp_dummy =
+&> /dev/null
+> -       ip link set dev veth1 $xdpmode obj test_xdp_redirect.o sec redire=
+ct_to_222 &> /dev/null
+> -       ip link set dev veth2 $xdpmode obj test_xdp_redirect.o sec redire=
+ct_to_111 &> /dev/null
+> +       ip -n ns1 link set veth11 $xdpmode obj xdp_dummy.o sec xdp_dummy =
+>/dev/null 2>&1
+> +       ip -n ns2 link set veth22 $xdpmode obj xdp_dummy.o sec xdp_dummy =
+>/dev/null 2>&1
+> +       ip link set dev veth1 $xdpmode obj test_xdp_redirect.o sec redire=
+ct_to_222 >/dev/null 2>&1
+> +       ip link set dev veth2 $xdpmode obj test_xdp_redirect.o sec redire=
+ct_to_111 >/dev/null 2>&1
+>
+> -       ip netns exec ns1 ping -c 1 10.1.1.22 &> /dev/null
+> +       ip netns exec ns1 ping -c 1 10.1.1.22 >/dev/null 2>&1
+>         local ret1=3D$?
+> -       ip netns exec ns2 ping -c 1 10.1.1.11 &> /dev/null
+> +       ip netns exec ns2 ping -c 1 10.1.1.11 >/dev/null 2>&1
+>         local ret2=3D$?
+>
+>         if [ $ret1 -eq 0 -a $ret2 -eq 0 ]; then
+> @@ -72,7 +72,6 @@ test_xdp_redirect()
+>         cleanup
+>  }
+>
+> -set -e
+>  trap cleanup 2 3 6 9
+>
+>  test_xdp_redirect xdpgeneric
+>
+> base-commit: 6183f4d3a0a2ad230511987c6c362ca43ec0055f
+> --
+> 2.27.0
+>
