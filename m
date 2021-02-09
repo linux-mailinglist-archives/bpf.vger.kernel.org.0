@@ -2,19 +2,19 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B573314A87
-	for <lists+bpf@lfdr.de>; Tue,  9 Feb 2021 09:43:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 884DC314AC7
+	for <lists+bpf@lfdr.de>; Tue,  9 Feb 2021 09:51:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229864AbhBIIkx (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Feb 2021 03:40:53 -0500
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:41615 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229715AbhBIIks (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 9 Feb 2021 03:40:48 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0UOHlriS_1612859989;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UOHlriS_1612859989)
+        id S230101AbhBIItu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Feb 2021 03:49:50 -0500
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:48166 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230034AbhBIIrp (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 9 Feb 2021 03:47:45 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R441e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0UOHZN5R_1612860400;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UOHZN5R_1612860400)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 09 Feb 2021 16:40:02 +0800
+          Tue, 09 Feb 2021 16:46:47 +0800
 From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 To:     ast@kernel.org
 Cc:     daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org,
@@ -23,9 +23,9 @@ Cc:     daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org,
         kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
         linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] selftests/bpf: Simplify the calculation of variables
-Date:   Tue,  9 Feb 2021 16:39:47 +0800
-Message-Id: <1612859987-93923-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH bpf-next] selftests/bpf: Simplify the calculation of variables
+Date:   Tue,  9 Feb 2021 16:46:38 +0800
+Message-Id: <1612860398-102839-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
