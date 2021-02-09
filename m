@@ -2,196 +2,226 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5D5A315A3E
+	by mail.lfdr.de (Postfix) with ESMTP id CEEF6315A3B
 	for <lists+bpf@lfdr.de>; Wed, 10 Feb 2021 00:48:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234523AbhBIXrG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Feb 2021 18:47:06 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:38840 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234618AbhBIXPB (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 9 Feb 2021 18:15:01 -0500
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 119NDwGI009883;
-        Tue, 9 Feb 2021 15:14:06 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=yqMSV0+aBDQLV/zg5rb6oOhTVbwNLbERHZPVaXbbwKg=;
- b=ecIPAT/JdMNvrCHjO75Ece85sK/4++KqAgZ8WDDAw4/LAsBr0HmLNBLXXZ2vQA2Xk9lN
- JwAiOr9WiIbAUVdkLyEbcW5YfM11uHiP4SCPcpYhP9BESrTMC5N038vGPt2w9BdaoHLM
- 3qrc+FD61g4UxUvNR9aJ+mziyb4U+OODcO4= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 36hsgtrv5e-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 09 Feb 2021 15:14:06 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 9 Feb 2021 15:13:27 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hUDxFSj3+yezABuSubgj61i1Cozhf+2qDu+z5zZX9Nx4RZmj4X8Y0wfBsGYrkTBcRJEtOEv/bFUO46yIAQ2bgDhSqAxW2uPIGc0bzUoilBSV5mFwmZCSJoWKyIQq4sq+/hW9/7NYAW16hgodkqHYTFHEyaOStC3k6W0tbO9S6KuXxt8AMdDKBk2Xcd4TLAzwk6rcEncBAGY6JUreFtyuf0+4AgZaxq8mBKZ07gSb5BzeFC+S1V+H4BgULE1ZRiegmNu2KoYgd78sTjLKrkNO1DGBzri9TRNQqYmZsj88IyAM4xLkl17GVj3QreuywsewmclEtx0LJVGQ6vN6PFzV9Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yqMSV0+aBDQLV/zg5rb6oOhTVbwNLbERHZPVaXbbwKg=;
- b=nOccnV8KeTo11+BYucL3t9O/J5f+xZQMn/YmOyvAtbOOd9TVHeA03EXH0rf+l+C6QvovDMoPHWBH6TIUOemMspFtHfWqnhwlgoz+/tC0WwKpqWBj3Nefle76s/zVXnKQDetbaH2SIZ+FprkCj/9hK74J+SCBhZsCfuOgQ+QY9s6SFZN31yMNBPNtRn4h8OPwK/fbECMzBGJ8wW3WmFNqrRLbjDrijRRXaIKHwkEJLgvRd5N9gWf7WR3B8+5dx/6eWAWAoYcF9CA+M1bbEm3eEqwnTAe5ZJmaC+O6d+yZwuAxc1biPxZ/DSQgVgc6WVvHoI3P7b5SCznIKGpwa0SUMw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yqMSV0+aBDQLV/zg5rb6oOhTVbwNLbERHZPVaXbbwKg=;
- b=L3f40eGMC1huY6fnqQWRuR5x+pkjqMRhuIPcpj2EtpCTaqFcprzf016+p6piSOH1uU4iMOwpzt3Wt61h+UJT1yJCtsJ7XZv3sPsImcdhKODdPGbarQPOqIwYSbiSSa/gv0b7pRZoiAk7pOi/ysQpuIrvWofBrRnLBbNy5iFdWf0=
-Received: from BN8PR15MB3282.namprd15.prod.outlook.com (2603:10b6:408:a8::32)
- by BN6PR15MB1729.namprd15.prod.outlook.com (2603:10b6:405:4f::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.24; Tue, 9 Feb
- 2021 23:13:24 +0000
-Received: from BN8PR15MB3282.namprd15.prod.outlook.com
- ([fe80::81bf:9924:c4f1:75cd]) by BN8PR15MB3282.namprd15.prod.outlook.com
- ([fe80::81bf:9924:c4f1:75cd%6]) with mapi id 15.20.3763.019; Tue, 9 Feb 2021
- 23:13:24 +0000
-Subject: Re: [PATCH v3 bpf-next 7/8] bpf: Allows per-cpu maps and map-in-map
- in sleepable programs
-To:     KP Singh <kpsingh@kernel.org>
-CC:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        id S233592AbhBIXrW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Feb 2021 18:47:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40026 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234873AbhBIXPt (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Feb 2021 18:15:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B8ADA64E66;
+        Tue,  9 Feb 2021 23:15:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612912505;
+        bh=GjKtDov2e20s4suAnKPKNoJN30GSYuXcgZ8iZ64nx70=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=unOsqKXOlzacTMQkIgsK9QKX1o69G9sVyuFIZwt4TPMMXePGNOrSw9ct5GntjggOR
+         NipAXvpchcZxIjcoNPr3cnvg1LjR7HCCoLjSbmboasTiAG2Dh2c2zNVlcUAlSya7dm
+         lzwxrm1Nmv2Ue6K6QXKxMLZuPVqlWK8MZZATGSxWrjNDFv0Ke7fDvFnozcJHmzKTGz
+         A2VlZLKLAEZtC94a7uexQryVf2+O98uQ10FbahS5jFMf+cvl1Iu4LAf/38yCEsOO5L
+         9Nc2I62iziHZj39iskNQ8mLjV4djj7GvLGQUJ/JZeVO2VzIk1z4RPjK0H0+NMbFGsB
+         y+hNpR1K+9JSA==
+Date:   Tue, 9 Feb 2021 16:15:03 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
-References: <20210209194856.24269-1-alexei.starovoitov@gmail.com>
- <20210209194856.24269-8-alexei.starovoitov@gmail.com>
- <CACYkzJ66POr0opxbrvRTTTc-T4CsyirHpDPvWRaM3R1bmNvm8w@mail.gmail.com>
- <9a45e856-c464-c6e0-6c26-baf364b6bbe8@fb.com>
- <CACYkzJ4=G45CG+_6wq+xR64PpZ_z1gvQsJWhYFhzKd=2_Y-s1g@mail.gmail.com>
-From:   Alexei Starovoitov <ast@fb.com>
-Message-ID: <61dffef3-ab23-8d9b-70da-3e84caa84fe3@fb.com>
-Date:   Tue, 9 Feb 2021 15:13:21 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.0
-In-Reply-To: <CACYkzJ4=G45CG+_6wq+xR64PpZ_z1gvQsJWhYFhzKd=2_Y-s1g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-X-Originating-IP: [2620:10d:c090:400::5:c01f]
-X-ClientProxiedBy: BY5PR17CA0050.namprd17.prod.outlook.com
- (2603:10b6:a03:167::27) To BN8PR15MB3282.namprd15.prod.outlook.com
- (2603:10b6:408:a8::32)
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:2103:c99:e09d:8a8f:94f0] (2620:10d:c090:400::5:c01f) by BY5PR17CA0050.namprd17.prod.outlook.com (2603:10b6:a03:167::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.26 via Frontend Transport; Tue, 9 Feb 2021 23:13:23 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f3fed342-614a-4d6c-0fd2-08d8cd504ca9
-X-MS-TrafficTypeDiagnostic: BN6PR15MB1729:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BN6PR15MB17293BFEF67F5857B30F700DD78E9@BN6PR15MB1729.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:2000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GsTltGxcb1qhnZZ3zUCBb/xN3XWuNUF8SCjODkbjvwPpFDmACDVBdxfD474NiJok5/a4CmbG5rBytysWJd5yF4/Bh4wLjAZLCjE4Ce0micr8nnd6UQUEGDKdYM3aXXzJPoeEQcnevDpY52+T69CL9Z2OZcQqwQs+ssbxt6QLKwQigo7iXNBDvzbYaAMbbtyINz+bfryTvYPDHumrgWwyZQjUDNi5Rw8RYrxdNmwpic3lt7q4bP5Yco55JO7oiVxdLfUHSjOY20Q+yVaC4IwZjPRHneZR59ldY+y8vlzlCb8f7lWweUGbuqoUKi1cBbULaWpaRXvzrkhcZUjLy4+MD/LoSfUHB8ucMd4rlINzBXg9BTTB9Amr37Rc54h4nnDMkkp3b2bUJ7Xu9Kv9iQtwsL/7J/3ugU4X+D/GWrZQdb79r81q9+aIA2glJj0X6Jdp7/ybzmQNI2GahjrJbGAEFm5txSBsly31cU7g5uoxT12uwiwPIifRlBRWp8QIzdLJ6/KuZMB1zNBewETvwqcYRsj6u8AtpCK5L6mtTUSX0cIXrPgnuh42aumiePQ7wEQvqdUXEOVhydFTgUiMHXocB59teeGuVAPLC8od1BMEb5hrEUHia7pXEGtN/z3C284lMsf/kPnAht7AeqI5bGJhiumUWC8O2yx0rTdXjPlpMqsAt9aOQh0Y4yckxtvS+d9U
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR15MB3282.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(396003)(376002)(346002)(366004)(86362001)(966005)(83380400001)(478600001)(52116002)(31696002)(8936002)(6916009)(2906002)(4326008)(53546011)(66946007)(5660300002)(6486002)(2616005)(31686004)(8676002)(16526019)(36756003)(66476007)(186003)(54906003)(316002)(66556008)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?NzNJWVhYeEM2WjFjUWg0Y0lqOWxPc0RHVjU2MnVtQlZLMllJUU84Q2ppaFlG?=
- =?utf-8?B?WG54ZENsZmRNN0s0bTdWU05DcGhuWEhnZWJZS0FsbVloM3dEdk1xeWlsVkpI?=
- =?utf-8?B?czk5L2xRemN0TTVVZkJaMFVpQ3puaHlobVl5ejl5eVAwL3Z1NjQyRkxxbjZz?=
- =?utf-8?B?SlkyMm44bFp3MDNpTzJ2bGxBMk1YVUdTaGJyTkVKd0hUcmMzeDkxaG5uR3dq?=
- =?utf-8?B?emVCSXcxaUYvRnVFTlNVOGxDTHIveEFaWWJreXpJOEdrUnFpZkFnOWpETkxF?=
- =?utf-8?B?RWpaRG5YZnJRMVdJaWEvYW9XcjlEZW1tQUZOSEU1NVpEWWRCcHpGVXdqanZZ?=
- =?utf-8?B?d3grQ011NnBvUGg5Vko1OGlwSUhQcHd2V25jb0pCTEZoWGZQQkFrV0pQaG0w?=
- =?utf-8?B?eHVPbkpmMUFiVGMrTXJLa2djSndpQnpvVDhUc1htcm9KME9Jemk2UnZ6Z254?=
- =?utf-8?B?MFJSdHpSUzJpTk1PVjh5a2pzZG9yVzdDSWpZbzRHOWg5MENRQmdWdGxHTXFE?=
- =?utf-8?B?ODlQZXlYR1JDejJiQ2RhVExUY2g0NjF1U2QrazVkdHlwaHRxUExaOTFYSFhF?=
- =?utf-8?B?SEdyVlhibE11aEsrUXlNY1JMVEFoZW5COXRiRXVxRlN5VXl2cTMrNjk1QWhN?=
- =?utf-8?B?MXM2RVdaM1VvZlhOQ1pGeEd0ZkZNNnVMc3dmcVhzOHZsVHFUVEw2Y3JQdG93?=
- =?utf-8?B?VVRiRXdoMG84T3BKSmRKdlN6ODh4UFlEMWg1b2hXNXZEeEpxWHFHYS83SzZw?=
- =?utf-8?B?SWpibDYyKzZLTGNYZ1ZGZXkzVVRWMmI1UXk1Um42RTcra2k4UVZIT0N6bHFi?=
- =?utf-8?B?S2gvcEYrbmNlQlNHcGlaOS9abHBSTFZhOHMrVEo2SHBZaWN3d0lvNk9oR0s1?=
- =?utf-8?B?YTRBUzc0ZzczVktKcGtIUUQvRzNvMWlyaUxHNU5pQ2RTdGlpMDJoNEppZ0xi?=
- =?utf-8?B?T2dKZC94ajVSRVUzMkxZS3JnQVJtRWdnNnE3RUluY1JqNHIvOWVORTJNN1JX?=
- =?utf-8?B?VWtLUGlJT3F1elRKUG1uRmpUTTFiQ3dOditGa1ZsNHAydGFnZisvRnpQVUtz?=
- =?utf-8?B?MWhROEIvYjZRalg1TDJ3VG5Ub3QvN0pwVHc4Q3JraEl4Ry8rWmlJeU16bzNi?=
- =?utf-8?B?MjM5bmNZbVJ2eUV5WkV1dXhrYlMyWldBR1hQMFlFWUJTK2pwVXZoWE84eC8r?=
- =?utf-8?B?bmJFOWJ2UlZaVEFVNHpkRVF2UkgwVkRBb3RKbUJrSWRpSlNGWFlhUzl3amVU?=
- =?utf-8?B?bVpCc3RhZVJUTUJVZGVGY0VuZjl4SEJkR04wdmN1Y09uVkhvRmN5cnhuY0FR?=
- =?utf-8?B?cVI0YmN5VyszVERtZEMwV2pldnByTkNrMXVLTmdJcmxONHNGMG1Wek13eWFh?=
- =?utf-8?B?UXAvVS9IU0Z4U2pXaVZ4Yjg1OUZ3WDhhLzFlSWFwMkk0YVFJNUNDbUd6NTA0?=
- =?utf-8?B?WGdNbDJyK3NMaXBWd0xyMGd3bVA1UVNpNytJQTRUV0hOYXo2SjY0NTlzck52?=
- =?utf-8?B?RllJSEtJcnhibDJtTXhERmFQTWVycFpKWWhpakFsTytrQktBYkM4b2puYmdp?=
- =?utf-8?B?QU5OSzJCVk1wTGl6Zmo3L3Q4NUc3dW10YXJUUGxWS0xFbDlzN04yQkpYekww?=
- =?utf-8?B?MmpMaUVVeW54Q0I4VDk2SEl0R2lNdWpTbEs4OFNnTXdsWncrb05XYjRhNXN3?=
- =?utf-8?B?eERuQm4rWGpSK2FxV0dFRmhWWTJTeDVoakRUNzRZb2RMdS9JTUkydHJia3Mw?=
- =?utf-8?B?TEIrTFVvb29lZGFNcmt2dkNyMkNYb1VaOEUyMDNTQ0o1RXVDeUpwMnJXeDVk?=
- =?utf-8?B?N0E4MmI2UlVIU1hxMmhPUT09?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: f3fed342-614a-4d6c-0fd2-08d8cd504ca9
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR15MB3282.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Feb 2021 23:13:24.1919
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UGwhyiJ9GlpYCcxRpsV/7UGyzZcrbRPe1nbGmX3KNpPqTokd7bzUN+cAVMsxa3bH
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR15MB1729
-X-OriginatorOrg: fb.com
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Veronika Kabatova <vkabatov@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Daniel Kiss <daniel.kiss@arm.com>
+Subject: Re: FAILED unresolved symbol vfs_truncate on arm64 with LLVM
+Message-ID: <20210209231503.GA19859@ubuntu-m3-large-x86>
+References: <CAEf4BzYvri7wzRnGH_qQbavXOx5TfBA0qx4nYVnn=YNGv+vNVw@mail.gmail.com>
+ <CAEf4Bzax90hn_5axpnCpW+E6gVc1mtUgCXWqmxV0tJ4Ud7bsaA@mail.gmail.com>
+ <20210209074904.GA286822@ubuntu-m3-large-x86>
+ <YCKB1TF5wz93EIBK@krava>
+ <YCKlrLkTQXc4Cyx7@krava>
+ <YCKwxNDkS9rdr43W@krava>
+ <YCLdJPPC+6QjUsR4@krava>
+ <CAKwvOdnqx5-SsicRf01yhxKOq8mAkYRd+zBScSOmEQ0XJe2mAg@mail.gmail.com>
+ <YCL1qLzuATlvM8Dh@krava>
+ <YCMBmNujLsMg0Q0q@krava>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-09_08:2021-02-09,2021-02-09 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 mlxlogscore=999 spamscore=0 mlxscore=0 clxscore=1015
- adultscore=0 bulkscore=0 phishscore=0 suspectscore=0 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102090120
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YCMBmNujLsMg0Q0q@krava>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/9/21 2:43 PM, KP Singh wrote:
-> On Tue, Feb 9, 2021 at 11:32 PM Alexei Starovoitov <ast@fb.com> wrote:
->>
->> On 2/9/21 1:12 PM, KP Singh wrote:
->>> On Tue, Feb 9, 2021 at 9:57 PM Alexei Starovoitov
->>> <alexei.starovoitov@gmail.com> wrote:
->>>>
->>>> From: Alexei Starovoitov <ast@kernel.org>
->>>>
->>>> Since sleepable programs are now executing under migrate_disable
->>>> the per-cpu maps are safe to use.
->>>> The map-in-map were ok to use in sleepable from the time sleepable
->>>> progs were introduced.
->>>>
->>>> Note that non-preallocated maps are still not safe, since there is
->>>> no rcu_read_lock yet in sleepable programs and dynamically allocated
->>>> map elements are relying on rcu protection. The sleepable programs
->>>> have rcu_read_lock_trace instead. That limitation will be addresses
->>>> in the future.
->>>>
->>>> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
->>>> Acked-by: Andrii Nakryiko <andrii@kernel.org>
->>>
->>> Acked-by: KP Singh <kpsingh@kernel.org>
->>>
->>> Thanks! I actually tested out some of our logic which uses per-cpu maps by
->>> switching the programs to their sleepable counterparts
->>
->> You mean after applying this set, right?
->> migrate_disable is the key.
->> It will be difficult to backport to your kernels though.
->> The bpf change to enable per-cpu is easy, but backporting
->> sched support is a different game.
->>
+On Tue, Feb 09, 2021 at 10:41:44PM +0100, Jiri Olsa wrote:
+> On Tue, Feb 09, 2021 at 09:50:48PM +0100, Jiri Olsa wrote:
+> > On Tue, Feb 09, 2021 at 12:09:31PM -0800, Nick Desaulniers wrote:
+> > > On Tue, Feb 9, 2021 at 11:06 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> > > >
+> > > > On Tue, Feb 09, 2021 at 05:13:42PM +0100, Jiri Olsa wrote:
+> > > > > On Tue, Feb 09, 2021 at 04:09:36PM +0100, Jiri Olsa wrote:
+> > > > >
+> > > > > SNIP
+> > > > >
+> > > > > > > > > >                 DW_AT_prototyped        (true)
+> > > > > > > > > >                 DW_AT_type      (0x01cfdfe4 "long int")
+> > > > > > > > > >                 DW_AT_external  (true)
+> > > > > > > > > >
+> > > > > > > > >
+> > > > > > > > > Ok, the problem appears to be not in DWARF, but in mcount_loc data.
+> > > > > > > > > vfs_truncate's address is not recorded as ftrace-attachable, and thus
+> > > > > > > > > pahole ignores it. I don't know why this happens and it's quite
+> > > > > > > > > strange, given vfs_truncate is just a normal global function.
+> > > > > > >
+> > > > > > > right, I can't see it in mcount adresses.. but it begins with instructions
+> > > > > > > that appears to be nops, which would suggest it's traceable
+> > > > > > >
+> > > > > > >   ffff80001031f430 <vfs_truncate>:
+> > > > > > >   ffff80001031f430: 5f 24 03 d5   hint    #34
+> > > > > > >   ffff80001031f434: 1f 20 03 d5   nop
+> > > > > > >   ffff80001031f438: 1f 20 03 d5   nop
+> > > > > > >   ffff80001031f43c: 3f 23 03 d5   hint    #25
+> > > > > > >
+> > > > > > > > >
+> > > > > > > > > I'd like to understand this issue before we try to fix it, but there
+> > > > > > > > > is at least one improvement we can make: pahole should check ftrace
+> > > > > > > > > addresses only for static functions, not the global ones (global ones
+> > > > > > > > > should be always attachable, unless they are special, e.g., notrace
+> > > > > > > > > and stuff). We can easily check that by looking at the corresponding
+> > > > > > > > > symbol. But I'd like to verify that vfs_truncate is ftrace-attachable
+> > > > > >
+> > > > > > I'm still trying to build the kernel.. however ;-)
+> > > > >
+> > > > > I finally reproduced.. however arm's not using mcount_loc
+> > > > > but some other special section.. so it's new mess for me
+> > > >
+> > > > so ftrace data actualy has vfs_truncate address but with extra 4 bytes:
+> > > >
+> > > >         ffff80001031f434
+> > > >
+> > > > real vfs_truncate address:
+> > > >
+> > > >         ffff80001031f430 g     F .text  0000000000000168 vfs_truncate
+> > > >
+> > > > vfs_truncate disasm:
+> > > >
+> > > >         ffff80001031f430 <vfs_truncate>:
+> > > >         ffff80001031f430: 5f 24 03 d5   hint    #34
+> > > >         ffff80001031f434: 1f 20 03 d5   nop
+> > > >         ffff80001031f438: 1f 20 03 d5   nop
+> > > >         ffff80001031f43c: 3f 23 03 d5   hint    #25
+> > > >
+> > > > thats why we don't match it in pahole.. I checked few other functions
+> > > > and some have the same problem and some match the function boundary
+> > > >
+> > > > those that match don't have that first hint instrucion, like:
+> > > >
+> > > >         ffff800010321e40 <do_faccessat>:
+> > > >         ffff800010321e40: 1f 20 03 d5   nop
+> > > >         ffff800010321e44: 1f 20 03 d5   nop
+> > > >         ffff800010321e48: 3f 23 03 d5   hint    #25
+> > > >
+> > > > any hints about hint instructions? ;-)
+> > > 
+> > > aarch64 makes *some* newer instructions reuse the "hint" ie "nop"
+> > > encoding space to make software backwards compatible on older hardware
+> > > that doesn't support such instructions.  Is this BTI, perhaps? (The
+> > > function is perhaps the destination of an indirect call?)
+> > 
+> > I see, I think we can't take ftrace addresses as start of the function
+> > because there could be extra instruction(s) related to the call before
+> > it like here
+> > 
+> > we need to check ftrace address be within the function/symbol,
+> > not exact start
 > 
-> Yes after applying the whole set.
+> the build with gcc passed only because mcount data are all zeros
+> and pahole falls back to 'not-ftrace' mode
 > 
-> Also, I think I also got it to work on 5.10 by (I am little less sure
-> of this one though)
+> 	$ llvm-objdump -t build/aarch64-gcc/vmlinux | grep mcount
+> 	ffff800011eb4840 g       .init.data     0000000000000000 __stop_mcount_loc
+> 	ffff800011e47d58 g       .init.data     0000000000000000 __start_mcount_loc
 > 
-> -  Backporting https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=12fa97c64dce2f3c2e6eed5dc618bb9046e40bf0
-> -  Backporting https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=74d862b682f51e45d25b95b1ecf212428a4967b0
-> - And, backporting this set (I initially missed
-> https://lore.kernel.org/bpf/20210209194856.24269-3-alexei.starovoitov@gmail.com
-> where you add the
->    calls and ran into issues).
+> 	$ llvm-objdump -s build/aarch64-gcc/vmlinux	
+> 	ffff800011e47d50 00000000 00000000 00000000 00000000  ................
+> 	ffff800011e47d60 00000000 00000000 00000000 00000000  ................
+> 	ffff800011e47d70 00000000 00000000 00000000 00000000  ................
+> 	ffff800011e47d80 00000000 00000000 00000000 00000000  ................
+> 	ffff800011e47d90 00000000 00000000 00000000 00000000  ................
+> 	...
+> 
+> 	we should check on why it's zero
+> 
+> 	Nathan, any chance you could run kernel built with gcc and check on ftrace?
 
-and the whole machinery that it depends on.
+Sure, with GCC 10.2.0:
+
+/ # cat /proc/version
+Linux version 5.11.0-rc7 (nathan@ubuntu-m3-large-x86) (aarch64-linux-gcc (GCC) 10.2.0, GNU ld (GNU Binutils) 2.35) #1 SMP PREEMPT Tue Feb 9 16:04:19 MST 2021
+
+/ # grep vfs_truncate /sys/kernel/debug/tracing/available_filter_functions
+vfs_truncate
+
+/ # zcat /proc/config.gz | grep "DEBUG_INFO_BTF\|FTRACE\|BPF"
+# CONFIG_CGROUP_BPF is not set
+CONFIG_BPF=y
+# CONFIG_BPF_LSM is not set
+CONFIG_BPF_SYSCALL=y
+CONFIG_ARCH_WANT_DEFAULT_BPF_JIT=y
+# CONFIG_BPF_JIT_ALWAYS_ON is not set
+CONFIG_BPF_JIT_DEFAULT_ON=y
+# CONFIG_BPF_PRELOAD is not set
+# CONFIG_NETFILTER_XT_MATCH_BPF is not set
+# CONFIG_BPFILTER is not set
+# CONFIG_NET_CLS_BPF is not set
+# CONFIG_NET_ACT_BPF is not set
+CONFIG_BPF_JIT=y
+CONFIG_HAVE_EBPF_JIT=y
+# CONFIG_PSTORE_FTRACE is not set
+CONFIG_DEBUG_INFO_BTF=y
+CONFIG_DEBUG_INFO_BTF_MODULES=y
+CONFIG_HAVE_DYNAMIC_FTRACE=y
+CONFIG_HAVE_DYNAMIC_FTRACE_WITH_REGS=y
+CONFIG_HAVE_FTRACE_MCOUNT_RECORD=y
+CONFIG_FTRACE=y
+CONFIG_DYNAMIC_FTRACE=y
+CONFIG_DYNAMIC_FTRACE_WITH_REGS=y
+# CONFIG_FTRACE_SYSCALLS is not set
+CONFIG_BPF_EVENTS=y
+CONFIG_FTRACE_MCOUNT_RECORD=y
+# CONFIG_FTRACE_RECORD_RECURSION is not set
+# CONFIG_FTRACE_STARTUP_TEST is not set
+# CONFIG_TEST_BPF is not set
+
+Cheers,
+Nathan
+
+> the build with clang fails because the ftrace data are there,
+> but pahole takes them as 'start' of the function, which is wrong
+> 
+> 	$ llvm-objdump -t build/aarch64/vmlinux | grep mcount
+> 	ffff800011d27d10 g       .init.data     0000000000000000 __start_mcount_loc
+> 	ffff800011d90038 g       .init.data     0000000000000000 __stop_mcount_loc
+> 
+> 	$ llvm-objdump -s build/aarch64-gcc/vmlinux	
+> 	ffff800011d27d10 cc330110 0080ffff 1c340110 0080ffff  .3.......4......
+> 	ffff800011d27d20 6c340110 0080ffff 1004c111 0080ffff  l4..............
+> 	ffff800011d27d30 3804c111 0080ffff 6004c111 0080ffff  8.......`.......
+> 	ffff800011d27d40 8804c111 0080ffff 0405c111 0080ffff  ................
+> 	ffff800011d27d50 3805c111 0080ffff 7c05c111 0080ffff  8.......|.......
+> 	...
+> 
+> I think if we fix pahole to take check the ftrace address is
+> within the processed function, we should be fine.. I'll try to
+> send something soon
+> 
+> jirka
+> 
