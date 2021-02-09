@@ -2,107 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 270313145CA
-	for <lists+bpf@lfdr.de>; Tue,  9 Feb 2021 02:47:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 175D73145FC
+	for <lists+bpf@lfdr.de>; Tue,  9 Feb 2021 03:01:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229704AbhBIBqD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Feb 2021 20:46:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229623AbhBIBqD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Feb 2021 20:46:03 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B753C061786;
-        Mon,  8 Feb 2021 17:45:23 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id t25so11471248pga.2;
-        Mon, 08 Feb 2021 17:45:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ylaceuEa/Vzdn6V3R3jlGmaJ+hDPnSL+OVK3bN0IhUs=;
-        b=Zey/9qn5ESKWUjjG7RQUp7VtO10lHZ/SLCoic2QydlCHqqXEcPwoAJlMGcKawv++Vk
-         u4uO4oMF5Zj2NW76T2absBE+uGcGkOfwQig8sjsrGDDtnJJZStxIJzZzcmv7vR43yuo+
-         RXzEu0dnRnk1PzNl3W/RxKMx46JimtXqMJxf0gDrKXmf07v1jML6ui6LVHyyHhUNNyLO
-         72anuLSdcyq9AXATAMid5OFfDghTnpFrMWv6UjqdIRVO3OOvCyc69upxOV+o5B8lXg6s
-         l40fp5UYvFcp1xdxwhtyLgBHsXfmf5jbEHsJpNrW5W39M2npHoIc17lEwWqj8bPBIdRU
-         8APg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ylaceuEa/Vzdn6V3R3jlGmaJ+hDPnSL+OVK3bN0IhUs=;
-        b=RJbpgdSWo4U0AbaOuCLZf/rNWJV/5GVDKGZndtNDie0ppTvtigdnm1vXLs+WME/U6B
-         N+hhzemj1pxNZtX8o9qP0Qjjjorpsui0hGBxCfejg2nQwRBmsKHLeBazFqS5//kKoHiK
-         kBkiRfUQrNfK4o4iVwuNHBdCY3/KkhehjUjFY4r9ugtxx9dPnqcxFftKExTpBND074Jp
-         IJKz4bJhHf4jmVSQyfa4ySgOV0A+dk4ZCyFWmT8EUZdHLFvNkBxm12I75cUjpyfj4QvG
-         mCwUjz2AG2lpUuu6hX6+NwnDkAVBD2YLd3lFctrdjcCryik5DhtDiOCarJzg5YANwDGJ
-         tXSQ==
-X-Gm-Message-State: AOAM530Dx+hCat1eF+97a+sz4LL8ASWhetHabds0zoNih2rkSbWVlr63
-        64DfUPplDc0Cxo9nXS2Q1z6kFaQIWjYyOayvCbQ=
-X-Google-Smtp-Source: ABdhPJxzqxeb6Ejx+uYYx7LhRgDp4LNTxk9KUbqAXnPNl0hfM9CMHg/rayCNkUD0QcS2ChuPM5jNDgM3PpdITNwCpNo=
-X-Received: by 2002:a62:ed01:0:b029:1c8:c6c:16f0 with SMTP id
- u1-20020a62ed010000b02901c80c6c16f0mr20578967pfh.80.1612835122743; Mon, 08
- Feb 2021 17:45:22 -0800 (PST)
+        id S230302AbhBICAt (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Feb 2021 21:00:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57422 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229975AbhBICAr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Feb 2021 21:00:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 8052064EA1;
+        Tue,  9 Feb 2021 02:00:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612836007;
+        bh=0ES5u6nt4FzG4JbFR8B1V+2/AsLpStrMtudS1wgbnWQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=K8LjBVmQHRImZOHew1ura6hjW2siM2b1iS+k6yKtqjFywYjw8dCSRDYjL2Q8flFl9
+         Is+SPzoVQqjuiftMq57bfOB2Evcl3czQyzvM2VXWbHGw1lM0rcapIXjaYWjgBbuei3
+         bfcfkF5DybjdKH8RqL+nqAgu4tLFUfO0tvbsXi4mH6zpPDiHAHfCj6bkjXMuXuQOL2
+         2ynesvVmzmzPJ+5ZF72ADt4bOfxJcDm9R6m+E8WPCCr6MJoSzfhGC6aH4sJZqWVinh
+         22xSdDNJF53a/xQ3pwoVSSljBBlJgP6YuElwUv3MAoYuvhGquqV7xQLx9VfanWYUtA
+         /LhiX8YYTSxNg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 770BC609D6;
+        Tue,  9 Feb 2021 02:00:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210203041636.38555-1-xiyou.wangcong@gmail.com>
- <20210203041636.38555-2-xiyou.wangcong@gmail.com> <6020f4793d9b5_cc86820866@john-XPS-13-9370.notmuch>
-In-Reply-To: <6020f4793d9b5_cc86820866@john-XPS-13-9370.notmuch>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Mon, 8 Feb 2021 17:45:11 -0800
-Message-ID: <CAM_iQpWu8PMbSTfsifBy9j9BLrMn69H2fFkjdRVpGGtbmUURFw@mail.gmail.com>
-Subject: Re: [Patch bpf-next 01/19] bpf: rename BPF_STREAM_PARSER to BPF_SOCK_MAP
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, duanxiongchun@bytedance.com,
-        Dongdong Wang <wangdongdong.6@bytedance.com>,
-        jiang.wang@bytedance.com, Cong Wang <cong.wang@bytedance.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 bpf-next] selftests/bpf: Add missing cleanup in
+ atomic_bounds test
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161283600748.4994.7610155285282056810.git-patchwork-notify@kernel.org>
+Date:   Tue, 09 Feb 2021 02:00:07 +0000
+References: <20210208123737.963172-1-jackmanb@google.com>
+In-Reply-To: <20210208123737.963172-1-jackmanb@google.com>
+To:     Brendan Jackman <jackmanb@google.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii.nakryiko@gmail.com, kpsingh@chromium.org,
+        revest@chromium.org, yhs@fb.com, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 8, 2021 at 12:21 AM John Fastabend <john.fastabend@gmail.com> wrote:
->
-> Cong Wang wrote:
-> > From: Cong Wang <cong.wang@bytedance.com>
-> >
-> > Before we add non-TCP support, it is necessary to rename
-> > BPF_STREAM_PARSER as it will be no longer specific to TCP,
-> > and it does not have to be a parser either.
-> >
-> > This patch renames BPF_STREAM_PARSER to BPF_SOCK_MAP, so
-> > that sock_map.c hopefully would be protocol-independent.
-> >
-> > Also, improve its Kconfig description to avoid confusion.
-> >
-> > Cc: John Fastabend <john.fastabend@gmail.com>
-> > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > Cc: Jakub Sitnicki <jakub@cloudflare.com>
-> > Cc: Lorenz Bauer <lmb@cloudflare.com>
-> > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
-> > ---
->
-> The BPF_STREAM_PARSER config was originally added because we need
-> the STREAM_PARSER define and wanted a way to get the 'depends on'
-> lines in Kconfig correct.
->
-> Rather than rename this, lets reduce its scope to just the set
-> of actions that need the STREAM_PARSER, this should be just the
-> stream parser programs. We probably should have done this sooner,
-> but doing it now will be fine.
+Hello:
 
-This makes sense, but we still need a Kconfig for the rest sockmap
-code, right? At least for the dependency on NET_SOCK_MSG?
+This patch was applied to bpf/bpf-next.git (refs/heads/master):
 
->
-> I can probably draft a quick patch tomorrow if above is not clear.
-> It can go into bpf-next outside this series as well to reduce
-> the 19 patches a bit.
+On Mon,  8 Feb 2021 12:37:37 +0000 you wrote:
+> Add missing skeleton destroy call.
+> 
+> Reported-by: Yonghong Song <yhs@fb.com>
+> Fixes: 37086bfdc737 ("bpf: Propagate stack bounds to registers in atomics w/ BPF_FETCH")
+> Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> ---
+> 
+> [...]
 
-I can handle it in my next update too, like all other feedbacks.
+Here is the summary with links:
+  - [v2,bpf-next] selftests/bpf: Add missing cleanup in atomic_bounds test
+    https://git.kernel.org/bpf/bpf-next/c/1589a1fa4e38
 
-Thanks.
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
