@@ -2,116 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1ACC3144B6
-	for <lists+bpf@lfdr.de>; Tue,  9 Feb 2021 01:14:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D96F3144C7
+	for <lists+bpf@lfdr.de>; Tue,  9 Feb 2021 01:20:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229729AbhBIAOB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Feb 2021 19:14:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55406 "EHLO
+        id S229729AbhBIAUD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Feb 2021 19:20:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbhBIAN4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Feb 2021 19:13:56 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FD2DC061786
-        for <bpf@vger.kernel.org>; Mon,  8 Feb 2021 16:13:15 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id f20so3450842ioo.10
-        for <bpf@vger.kernel.org>; Mon, 08 Feb 2021 16:13:15 -0800 (PST)
+        with ESMTP id S229554AbhBIAUC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Feb 2021 19:20:02 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA5B4C061786;
+        Mon,  8 Feb 2021 16:19:21 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id t2so601927pjq.2;
+        Mon, 08 Feb 2021 16:19:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Fe+y9pZY3NRHqBpGSHuyrgHsj4ZHTbVB5p2fxahRQWk=;
-        b=Q6DaEqx4A+iBVy7YRMlaUyyXnb+L45lTvR1BvL+b4ESejICeM/vwlwo4HuII997S0M
-         X6BYdHwWYISSV4mLTarvF0jBVCg1JcuUb45eQPTsZ5rX5lhiOF4gJSZlntZfIfAkDJFx
-         s+veA3H9159YWwlkCqjs1s2DW5yvFMcdL1+0Q=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eoH5hUsfk5zo7Noxr8SDfpR7j0komRN7J14ECI09DMw=;
+        b=pll9bdWtNNRvTs5pqN71Tih5XaheYDbVEbatFKdm2dPB7q3QT/T+fVPSWITfpiO/8m
+         Uadlu34LWVHV94ZFGTFPp50za+5L9fcIG7OEgjOx7OgmqUbwk/H2GxEIGD7VdcymtK/f
+         DtlQLWtn6C7/Zgnos4/zCqOckrnUmT5LCKbjK91MV3eyM/UV5MG7wsnaEtHeTaHGJdxM
+         IAar2VcmwdVMsVYe22FFYpSX95F1WKWfjAOC0YE322sWZ5mrke9M1MsALdznaQnb/Bp6
+         fEb7KfqtKUQptI3WQpW274CTC3p48oZI5Xxbx76SzfU5ZZ04qvG7H7iwCWlP8EZlsid/
+         lg8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Fe+y9pZY3NRHqBpGSHuyrgHsj4ZHTbVB5p2fxahRQWk=;
-        b=ZjXTqvIo/ekYQ5YhJN2yWkZyWA8DOLgDwxzmPYJCOiFIzzXLChtBc0vZ5/wuJwz+C2
-         tbrJrZrDVQg5LIJnRDR/aLmB6Fqzs1RF8DHKESP4ArBETALbYVwGbu+aAJp3HZ2AvJNv
-         reS0eilRZd/o2gosrAKCDlAZ4JmpE1EWseF8PmZ9ePP1rW1BRTedpPjnW5+uc3BDyegZ
-         kO8oA6GiCCqjWSiEz6N2KGzLX2TWh11KB7psksEOaZOQ3hqlp/C22ddGzN//qplFoAcz
-         NeaEapB48IdWO43VlSj13f5YZkNN/tXWVfKN5YKfTJmnrHYgCt+v2WNoXFdRW4dhN+Vj
-         KaWA==
-X-Gm-Message-State: AOAM532SVnwWG4CjKIYbbqeefO8OCE+GwTb6hEKzWqF+WFSTwgQBvuFb
-        CO5aPKazrD4okneQlmxT+Sbgdw==
-X-Google-Smtp-Source: ABdhPJwUrZMKcMXsTpO7CvtbHQefSTAqW5Gye4EmU10Oo/d/85AWx/zdCuVC1ggD7yLwc9AcF9FFog==
-X-Received: by 2002:a5d:9717:: with SMTP id h23mr17219731iol.4.1612829594800;
-        Mon, 08 Feb 2021 16:13:14 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id l7sm9655945ilq.26.2021.02.08.16.13.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Feb 2021 16:13:14 -0800 (PST)
-Subject: Re: [PATCH] selftests/seccomp: Accept any valid fd in
- user_notification_addfd
-To:     Seth Forshee <seth.forshee@canonical.com>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210128161721.99150-1-seth.forshee@canonical.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <ff36fb27-5b6c-cecb-7661-fab83fdbf66a@linuxfoundation.org>
-Date:   Mon, 8 Feb 2021 17:13:13 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eoH5hUsfk5zo7Noxr8SDfpR7j0komRN7J14ECI09DMw=;
+        b=AbehOxjuFG+s3Tcq+0punif/lpsm11eAbKHoEV1NSbImNneiVeNGJwBiH4As45zqDg
+         uk0XbjenyW9g06S9W9yKFFgitVU0HyFlHRpTXXlLlnt4qeA+JX/6bICMA8vAlvLs3GMK
+         EfDNt8R9KcmTpuRYjM+IcVdJrylNGp1zrdeVIT418TwIAIeZXXLC9GwbbhiZwSgViYTF
+         NHNbyRvh59yxWltPxrpAscR78YZtGENdFdvlci0wBPBVZ6wAV1HtsboEP4eBK8LgVq6p
+         O3BxuRcmfRVMLI+rE5S+vQsEFCjnZaQj+RYiYj3tVlrzjjLNCfOAsYWI05cdkNjWV4bo
+         3UFQ==
+X-Gm-Message-State: AOAM533FOToTIJik55gRKB7aIzhD74lgdiNWzktArpZol9G5rGEGvOrt
+        DKG+uDTerYaxsBHcQnqmam1x2xR6HZN1VvtlGE8=
+X-Google-Smtp-Source: ABdhPJyZzsmfRbLwpScGGdulYEkVeP0yKwpvx1KbKOfdbHe3te7wDvfrhVuRKjSoueBe5JgJ29Xv+YZD4C/qFmarQlU=
+X-Received: by 2002:a17:902:c3cc:b029:e2:d0cd:4f6e with SMTP id
+ j12-20020a170902c3ccb02900e2d0cd4f6emr9539906plj.77.1612829961201; Mon, 08
+ Feb 2021 16:19:21 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210128161721.99150-1-seth.forshee@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210203041636.38555-1-xiyou.wangcong@gmail.com>
+ <20210203041636.38555-3-xiyou.wangcong@gmail.com> <87ft2a4uz4.fsf@cloudflare.com>
+ <6020f8b616d4_cc8682087d@john-XPS-13-9370.notmuch>
+In-Reply-To: <6020f8b616d4_cc8682087d@john-XPS-13-9370.notmuch>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Mon, 8 Feb 2021 16:19:10 -0800
+Message-ID: <CAM_iQpWK8V4bzv4pK0v45FRb5aG1F=uSN3hrv-Sw92SrttJhQg@mail.gmail.com>
+Subject: Re: [Patch bpf-next 02/19] skmsg: get rid of struct sk_psock_parser
+To:     John Fastabend <john.fastabend@gmail.com>
+Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, duanxiongchun@bytedance.com,
+        Dongdong Wang <wangdongdong.6@bytedance.com>,
+        jiang.wang@bytedance.com, Cong Wang <cong.wang@bytedance.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 1/28/21 9:17 AM, Seth Forshee wrote:
-> This test expects fds to have specific values, which works fine
-> when the test is run standalone. However, the kselftest runner
-> consumes a couple of extra fds for redirection when running
-> tests, so the test fails when run via kselftest.
-> 
-> Change the test to pass on any valid fd number.
-> 
-> Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
-> ---
->   tools/testing/selftests/seccomp/seccomp_bpf.c | 8 ++------
->   1 file changed, 2 insertions(+), 6 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-> index 26c72f2b61b1..9338df6f4ca8 100644
-> --- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-> +++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-> @@ -4019,18 +4019,14 @@ TEST(user_notification_addfd)
->   
->   	/* Verify we can set an arbitrary remote fd */
->   	fd = ioctl(listener, SECCOMP_IOCTL_NOTIF_ADDFD, &addfd);
-> -	/*
-> -	 * The child has fds 0(stdin), 1(stdout), 2(stderr), 3(memfd),
-> -	 * 4(listener), so the newly allocated fd should be 5.
-> -	 */
-> -	EXPECT_EQ(fd, 5);
-> +	EXPECT_GE(fd, 0);
->   	EXPECT_EQ(filecmp(getpid(), pid, memfd, fd), 0);
->   
->   	/* Verify we can set an arbitrary remote fd with large size */
->   	memset(&big, 0x0, sizeof(big));
->   	big.addfd = addfd;
->   	fd = ioctl(listener, SECCOMP_IOCTL_NOTIF_ADDFD_BIG, &big);
-> -	EXPECT_EQ(fd, 6);
-> +	EXPECT_GE(fd, 0);
->   
->   	/* Verify we can set a specific remote fd */
->   	addfd.newfd = 42;
-> 
+On Mon, Feb 8, 2021 at 12:39 AM John Fastabend <john.fastabend@gmail.com> wrote:
+>
+> Jakub Sitnicki wrote:
+> > On Wed, Feb 03, 2021 at 05:16 AM CET, Cong Wang wrote:
+> > > From: Cong Wang <cong.wang@bytedance.com>
+> > >
+> > > struct sk_psock_parser is embedded in sk_psock, it is
+> > > unnecessary as skb verdict also uses ->saved_data_ready.
+> > > We can simply fold these fields into sk_psock.
+> > >
+> > > Cc: John Fastabend <john.fastabend@gmail.com>
+> > > Cc: Daniel Borkmann <daniel@iogearbox.net>
+> > > Cc: Jakub Sitnicki <jakub@cloudflare.com>
+> > > Cc: Lorenz Bauer <lmb@cloudflare.com>
+> > > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> > > ---
+> >
+> > This one looks like a candidate for splitting out of the series, as it
+> > stands on its own, to make the itself series smaller.
+> >
+> > Also, it seems that we always have:
+> >
+> >   parser.enabled/bpf_running == (saved_data_ready != NULL)
+> >
+> > Maybe parser.enabled can be turned into a predicate function.
 
-Here is my Ack if Kees wants to take it through seccomp.
+Yeah, this looks cleaner.
 
-Acked-by: Shuah Khan <skhan@linuxfoundation.org>
+> >
+> > [...]
+>
+> Agree. To speed this along consider breaking it into three
+> series.
+>
+>  - couple cleanup things: this patch, config option, etc.
+>
+>  - udp changes
+>
+>  - af_unix changes.
+>
+> Although if you really think udp changes and af_unix need to go
+> together that is fine imo. I think the basic rule is to try and avoid
+> getting patch counts above 10 or so if at all possible.
+>
+> At least this patch, the renaming patch, and the config patch
+> can get pulled out into their own series so we can get those
+> merged and out of the way.
 
-thanks,
--- Shuah
+Sounds good. Since each patch is already separated, there is no
+extra burden on my side to split the whole patchset as suggested
+above, except adjusting the cover letters.
 
+Thanks.
