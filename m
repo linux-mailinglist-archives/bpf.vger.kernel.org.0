@@ -2,226 +2,85 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEEF6315A3B
+	by mail.lfdr.de (Postfix) with ESMTP id C9809315A38
 	for <lists+bpf@lfdr.de>; Wed, 10 Feb 2021 00:48:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233592AbhBIXrW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Feb 2021 18:47:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40026 "EHLO mail.kernel.org"
+        id S234543AbhBIXro (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Feb 2021 18:47:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54562 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234873AbhBIXPt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Feb 2021 18:15:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B8ADA64E66;
-        Tue,  9 Feb 2021 23:15:04 +0000 (UTC)
+        id S233637AbhBIX05 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Feb 2021 18:26:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A816764E58
+        for <bpf@vger.kernel.org>; Tue,  9 Feb 2021 23:18:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612912505;
-        bh=GjKtDov2e20s4suAnKPKNoJN30GSYuXcgZ8iZ64nx70=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=unOsqKXOlzacTMQkIgsK9QKX1o69G9sVyuFIZwt4TPMMXePGNOrSw9ct5GntjggOR
-         NipAXvpchcZxIjcoNPr3cnvg1LjR7HCCoLjSbmboasTiAG2Dh2c2zNVlcUAlSya7dm
-         lzwxrm1Nmv2Ue6K6QXKxMLZuPVqlWK8MZZATGSxWrjNDFv0Ke7fDvFnozcJHmzKTGz
-         A2VlZLKLAEZtC94a7uexQryVf2+O98uQ10FbahS5jFMf+cvl1Iu4LAf/38yCEsOO5L
-         9Nc2I62iziHZj39iskNQ8mLjV4djj7GvLGQUJ/JZeVO2VzIk1z4RPjK0H0+NMbFGsB
-         y+hNpR1K+9JSA==
-Date:   Tue, 9 Feb 2021 16:15:03 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Veronika Kabatova <vkabatov@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Daniel Kiss <daniel.kiss@arm.com>
-Subject: Re: FAILED unresolved symbol vfs_truncate on arm64 with LLVM
-Message-ID: <20210209231503.GA19859@ubuntu-m3-large-x86>
-References: <CAEf4BzYvri7wzRnGH_qQbavXOx5TfBA0qx4nYVnn=YNGv+vNVw@mail.gmail.com>
- <CAEf4Bzax90hn_5axpnCpW+E6gVc1mtUgCXWqmxV0tJ4Ud7bsaA@mail.gmail.com>
- <20210209074904.GA286822@ubuntu-m3-large-x86>
- <YCKB1TF5wz93EIBK@krava>
- <YCKlrLkTQXc4Cyx7@krava>
- <YCKwxNDkS9rdr43W@krava>
- <YCLdJPPC+6QjUsR4@krava>
- <CAKwvOdnqx5-SsicRf01yhxKOq8mAkYRd+zBScSOmEQ0XJe2mAg@mail.gmail.com>
- <YCL1qLzuATlvM8Dh@krava>
- <YCMBmNujLsMg0Q0q@krava>
+        s=k20201202; t=1612912688;
+        bh=IQVMBwRRYltHyfCyvHJA8tP4vlYOKBDa8u9YKbUoSbY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=H+LTuAYNTzIWk1BW6SMu+neIM11yHixnKUR4zALuSaTBVq7N15hM+XggrE5TNvA68
+         MO8/4m6HO8VnmZQ+aerCM16V5PTDBXa38CdjUigAVMcEYPwLr7s2jwWfTmT4Ar5f67
+         VrOhMris5+UtL4tcZV8f1pWn0GQmjJGiBULB5flN87xi9GfLYKPpltPd2K4b4WC2H/
+         0xU1vREYt8vwCBA6mFMPRIKzQ09FjAoMQumsKJXsoD6sSZWQbhitLpPi7zrz+svVRf
+         SfrWZe8NCe2nXZk9y8DlJr7b4CfhHS8Xm6j0v/r2ELa0lX2L+p7HtBt12aVWuO96j/
+         JLZA2GEo1SJyQ==
+Received: by mail-lj1-f181.google.com with SMTP id f2so368790ljp.11
+        for <bpf@vger.kernel.org>; Tue, 09 Feb 2021 15:18:07 -0800 (PST)
+X-Gm-Message-State: AOAM532HaKtSnzv5YiOY/aHCVnoQpz8F9wxZrV90GYTEawO5q0Ycj50i
+        oJrvEEwKwbAvezbwSvTnVCce7B7A7BTcXIrX3mlB/w==
+X-Google-Smtp-Source: ABdhPJx0FE7vZWfXrS1ig7SjD7GcW5IIqDjCMoZcdPNm3gZSQn5JYieEa2pSo6HYLYnYwStibJPPO55o2f2gQ1zMDgY=
+X-Received: by 2002:a2e:b88b:: with SMTP id r11mr95515ljp.187.1612912685764;
+ Tue, 09 Feb 2021 15:18:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YCMBmNujLsMg0Q0q@krava>
+References: <20210209194856.24269-1-alexei.starovoitov@gmail.com>
+ <20210209194856.24269-3-alexei.starovoitov@gmail.com> <CACYkzJ4skw5x=i-bqWXmo9sH-k=5jQXZ1Jir7hvY_se9fFxOSg@mail.gmail.com>
+ <b7a0125c-79e7-4d3b-12a3-86fe910bd01e@fb.com>
+In-Reply-To: <b7a0125c-79e7-4d3b-12a3-86fe910bd01e@fb.com>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Wed, 10 Feb 2021 00:17:55 +0100
+X-Gmail-Original-Message-ID: <CACYkzJ7nqufL94w1+bvh6HuUszU+KNojbiTAyrJ8mK5VTnrvMg@mail.gmail.com>
+Message-ID: <CACYkzJ7nqufL94w1+bvh6HuUszU+KNojbiTAyrJ8mK5VTnrvMg@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 2/8] bpf: Compute program stats for sleepable programs
+To:     Alexei Starovoitov <ast@fb.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 10:41:44PM +0100, Jiri Olsa wrote:
-> On Tue, Feb 09, 2021 at 09:50:48PM +0100, Jiri Olsa wrote:
-> > On Tue, Feb 09, 2021 at 12:09:31PM -0800, Nick Desaulniers wrote:
-> > > On Tue, Feb 9, 2021 at 11:06 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> > > >
-> > > > On Tue, Feb 09, 2021 at 05:13:42PM +0100, Jiri Olsa wrote:
-> > > > > On Tue, Feb 09, 2021 at 04:09:36PM +0100, Jiri Olsa wrote:
-> > > > >
-> > > > > SNIP
-> > > > >
-> > > > > > > > > >                 DW_AT_prototyped        (true)
-> > > > > > > > > >                 DW_AT_type      (0x01cfdfe4 "long int")
-> > > > > > > > > >                 DW_AT_external  (true)
-> > > > > > > > > >
-> > > > > > > > >
-> > > > > > > > > Ok, the problem appears to be not in DWARF, but in mcount_loc data.
-> > > > > > > > > vfs_truncate's address is not recorded as ftrace-attachable, and thus
-> > > > > > > > > pahole ignores it. I don't know why this happens and it's quite
-> > > > > > > > > strange, given vfs_truncate is just a normal global function.
-> > > > > > >
-> > > > > > > right, I can't see it in mcount adresses.. but it begins with instructions
-> > > > > > > that appears to be nops, which would suggest it's traceable
-> > > > > > >
-> > > > > > >   ffff80001031f430 <vfs_truncate>:
-> > > > > > >   ffff80001031f430: 5f 24 03 d5   hint    #34
-> > > > > > >   ffff80001031f434: 1f 20 03 d5   nop
-> > > > > > >   ffff80001031f438: 1f 20 03 d5   nop
-> > > > > > >   ffff80001031f43c: 3f 23 03 d5   hint    #25
-> > > > > > >
-> > > > > > > > >
-> > > > > > > > > I'd like to understand this issue before we try to fix it, but there
-> > > > > > > > > is at least one improvement we can make: pahole should check ftrace
-> > > > > > > > > addresses only for static functions, not the global ones (global ones
-> > > > > > > > > should be always attachable, unless they are special, e.g., notrace
-> > > > > > > > > and stuff). We can easily check that by looking at the corresponding
-> > > > > > > > > symbol. But I'd like to verify that vfs_truncate is ftrace-attachable
-> > > > > >
-> > > > > > I'm still trying to build the kernel.. however ;-)
-> > > > >
-> > > > > I finally reproduced.. however arm's not using mcount_loc
-> > > > > but some other special section.. so it's new mess for me
-> > > >
-> > > > so ftrace data actualy has vfs_truncate address but with extra 4 bytes:
-> > > >
-> > > >         ffff80001031f434
-> > > >
-> > > > real vfs_truncate address:
-> > > >
-> > > >         ffff80001031f430 g     F .text  0000000000000168 vfs_truncate
-> > > >
-> > > > vfs_truncate disasm:
-> > > >
-> > > >         ffff80001031f430 <vfs_truncate>:
-> > > >         ffff80001031f430: 5f 24 03 d5   hint    #34
-> > > >         ffff80001031f434: 1f 20 03 d5   nop
-> > > >         ffff80001031f438: 1f 20 03 d5   nop
-> > > >         ffff80001031f43c: 3f 23 03 d5   hint    #25
-> > > >
-> > > > thats why we don't match it in pahole.. I checked few other functions
-> > > > and some have the same problem and some match the function boundary
-> > > >
-> > > > those that match don't have that first hint instrucion, like:
-> > > >
-> > > >         ffff800010321e40 <do_faccessat>:
-> > > >         ffff800010321e40: 1f 20 03 d5   nop
-> > > >         ffff800010321e44: 1f 20 03 d5   nop
-> > > >         ffff800010321e48: 3f 23 03 d5   hint    #25
-> > > >
-> > > > any hints about hint instructions? ;-)
-> > > 
-> > > aarch64 makes *some* newer instructions reuse the "hint" ie "nop"
-> > > encoding space to make software backwards compatible on older hardware
-> > > that doesn't support such instructions.  Is this BTI, perhaps? (The
-> > > function is perhaps the destination of an indirect call?)
-> > 
-> > I see, I think we can't take ftrace addresses as start of the function
-> > because there could be extra instruction(s) related to the call before
-> > it like here
-> > 
-> > we need to check ftrace address be within the function/symbol,
-> > not exact start
-> 
-> the build with gcc passed only because mcount data are all zeros
-> and pahole falls back to 'not-ftrace' mode
-> 
-> 	$ llvm-objdump -t build/aarch64-gcc/vmlinux | grep mcount
-> 	ffff800011eb4840 g       .init.data     0000000000000000 __stop_mcount_loc
-> 	ffff800011e47d58 g       .init.data     0000000000000000 __start_mcount_loc
-> 
-> 	$ llvm-objdump -s build/aarch64-gcc/vmlinux	
-> 	ffff800011e47d50 00000000 00000000 00000000 00000000  ................
-> 	ffff800011e47d60 00000000 00000000 00000000 00000000  ................
-> 	ffff800011e47d70 00000000 00000000 00000000 00000000  ................
-> 	ffff800011e47d80 00000000 00000000 00000000 00000000  ................
-> 	ffff800011e47d90 00000000 00000000 00000000 00000000  ................
-> 	...
-> 
-> 	we should check on why it's zero
-> 
-> 	Nathan, any chance you could run kernel built with gcc and check on ftrace?
+On Wed, Feb 10, 2021 at 12:11 AM Alexei Starovoitov <ast@fb.com> wrote:
+>
+> On 2/9/21 2:47 PM, KP Singh wrote:
+> > On Tue, Feb 9, 2021 at 10:01 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> >>
+> >> From: Alexei Starovoitov <ast@kernel.org>
+> >>
+> >> In older non-RT kernels migrate_disable() was the same as preempt_disable().
+> >> Since commit 74d862b682f5 ("sched: Make migrate_disable/enable() independent of RT")
+> >
+> > nit: It would be nice to split out the bit that adds
+> > migrate_disbale/enable into a separate patch
+> > just to make it more explicit.
+>
+> Not following. What is the point of splitting it?
+> Just adding it without using it for anything?
+> That's a bit weird.
+> How would it help anything?
 
-Sure, with GCC 10.2.0:
+The reason why I mentioned this is because you refer to this in the other patch:
 
-/ # cat /proc/version
-Linux version 5.11.0-rc7 (nathan@ubuntu-m3-large-x86) (aarch64-linux-gcc (GCC) 10.2.0, GNU ld (GNU Binutils) 2.35) #1 SMP PREEMPT Tue Feb 9 16:04:19 MST 2021
+https://lore.kernel.org/bpf/20210206170344.78399-1-alexei.starovoitov@gmail.com/T/#m24cdc785b71adc04ac665fe018956c4f25ca06ae
 
-/ # grep vfs_truncate /sys/kernel/debug/tracing/available_filter_functions
-vfs_truncate
+"Since sleepable programs are now executing under migrate_disable
 
-/ # zcat /proc/config.gz | grep "DEBUG_INFO_BTF\|FTRACE\|BPF"
-# CONFIG_CGROUP_BPF is not set
-CONFIG_BPF=y
-# CONFIG_BPF_LSM is not set
-CONFIG_BPF_SYSCALL=y
-CONFIG_ARCH_WANT_DEFAULT_BPF_JIT=y
-# CONFIG_BPF_JIT_ALWAYS_ON is not set
-CONFIG_BPF_JIT_DEFAULT_ON=y
-# CONFIG_BPF_PRELOAD is not set
-# CONFIG_NETFILTER_XT_MATCH_BPF is not set
-# CONFIG_BPFILTER is not set
-# CONFIG_NET_CLS_BPF is not set
-# CONFIG_NET_ACT_BPF is not set
-CONFIG_BPF_JIT=y
-CONFIG_HAVE_EBPF_JIT=y
-# CONFIG_PSTORE_FTRACE is not set
-CONFIG_DEBUG_INFO_BTF=y
-CONFIG_DEBUG_INFO_BTF_MODULES=y
-CONFIG_HAVE_DYNAMIC_FTRACE=y
-CONFIG_HAVE_DYNAMIC_FTRACE_WITH_REGS=y
-CONFIG_HAVE_FTRACE_MCOUNT_RECORD=y
-CONFIG_FTRACE=y
-CONFIG_DYNAMIC_FTRACE=y
-CONFIG_DYNAMIC_FTRACE_WITH_REGS=y
-# CONFIG_FTRACE_SYSCALLS is not set
-CONFIG_BPF_EVENTS=y
-CONFIG_FTRACE_MCOUNT_RECORD=y
-# CONFIG_FTRACE_RECORD_RECURSION is not set
-# CONFIG_FTRACE_STARTUP_TEST is not set
-# CONFIG_TEST_BPF is not set
+the per-cpu maps are safe to use.
+The map-in-map were ok to use in sleepable from the time sleepable
+progs were introduced."
 
-Cheers,
-Nathan
+It's just a tiny bit easier to find the commit that added it. But not
+a big deal if you think it's not useful to split.
 
-> the build with clang fails because the ftrace data are there,
-> but pahole takes them as 'start' of the function, which is wrong
-> 
-> 	$ llvm-objdump -t build/aarch64/vmlinux | grep mcount
-> 	ffff800011d27d10 g       .init.data     0000000000000000 __start_mcount_loc
-> 	ffff800011d90038 g       .init.data     0000000000000000 __stop_mcount_loc
-> 
-> 	$ llvm-objdump -s build/aarch64-gcc/vmlinux	
-> 	ffff800011d27d10 cc330110 0080ffff 1c340110 0080ffff  .3.......4......
-> 	ffff800011d27d20 6c340110 0080ffff 1004c111 0080ffff  l4..............
-> 	ffff800011d27d30 3804c111 0080ffff 6004c111 0080ffff  8.......`.......
-> 	ffff800011d27d40 8804c111 0080ffff 0405c111 0080ffff  ................
-> 	ffff800011d27d50 3805c111 0080ffff 7c05c111 0080ffff  8.......|.......
-> 	...
-> 
-> I think if we fix pahole to take check the ftrace address is
-> within the processed function, we should be fine.. I'll try to
-> send something soon
-> 
-> jirka
-> 
+[...]
