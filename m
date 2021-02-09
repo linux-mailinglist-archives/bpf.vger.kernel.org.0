@@ -2,84 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C122431577F
-	for <lists+bpf@lfdr.de>; Tue,  9 Feb 2021 21:10:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41CA03157C5
+	for <lists+bpf@lfdr.de>; Tue,  9 Feb 2021 21:37:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233632AbhBIUJ4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Feb 2021 15:09:56 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:17590 "EHLO
+        id S233737AbhBIUgs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Feb 2021 15:36:48 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:6014 "EHLO
         mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233796AbhBITyE (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 9 Feb 2021 14:54:04 -0500
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 119JUD7I007759
-        for <bpf@vger.kernel.org>; Tue, 9 Feb 2021 11:31:18 -0800
+        by vger.kernel.org with ESMTP id S233418AbhBIUeR (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 9 Feb 2021 15:34:17 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 119JSsOP009519
+        for <bpf@vger.kernel.org>; Tue, 9 Feb 2021 11:31:10 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=19EH864QtlUC4TumHAyoldBDRjNsmFKrSzCnd31qfTg=;
- b=Gy4HRq5Sw3p4NVPM61MVT7eEMJmb2JAzRC388yameKD7sDoCj3ku3OvDiWTGU23HG2RK
- kuqxaAofi7YsnMy6WCMxtYO2iQHHaupsv0lxfydis28G47aHtgS5p7QWTP8CCRK2JW5Y
- wLuuVtvX/iFfaCfjLhUxgBak+75YpEW/IKg= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 36hsgtqqp1-8
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=qeWMbAqsV2xnsezJY3EKVF37E1MCAJSZfNjLznhKVgU=;
+ b=jSLsvcV6FFo+sCgs4TVhJuYfZfaQU2Tq6CAGrNZlXUGEwOvHetRV8tZk6wF7cK4PEj7N
+ vkEwxxk5SS12teOgxU9Do0l6i0Ma5hPTmm1jNYF03i7tZm5Q4wDcqGYwHFZ3FTrSR6PL
+ VWMULEU1W6xmoBvlGGoWtMHZWyCNC6ooIZs= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 36jcaa518c-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 09 Feb 2021 11:31:18 -0800
-Received: from intmgw002.06.ash9.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Tue, 09 Feb 2021 11:31:09 -0800
+Received: from intmgw006.03.ash8.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 9 Feb 2021 11:31:13 -0800
+ 15.1.1979.3; Tue, 9 Feb 2021 11:31:08 -0800
 Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
-        id 36E8B29408EB; Tue,  9 Feb 2021 11:31:12 -0800 (PST)
+        id EAB8329408EB; Tue,  9 Feb 2021 11:31:05 -0800 (PST)
 From:   Martin KaFai Lau <kafai@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
         <netdev@vger.kernel.org>
-Subject: [PATCH bpf 2/2] bpf: selftests: Add non function pointer test to struct_ops
-Date:   Tue, 9 Feb 2021 11:31:12 -0800
-Message-ID: <20210209193112.1752976-1-kafai@fb.com>
+Subject: [PATCH bpf 1/2] libbpf: Ignore non function pointer member in struct_ops
+Date:   Tue, 9 Feb 2021 11:31:05 -0800
+Message-ID: <20210209193105.1752743-1-kafai@fb.com>
 X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20210209193105.1752743-1-kafai@fb.com>
-References: <20210209193105.1752743-1-kafai@fb.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
  definitions=2021-02-09_06:2021-02-09,2021-02-09 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 mlxlogscore=741 spamscore=0 mlxscore=0 clxscore=1015
- adultscore=0 bulkscore=0 phishscore=0 suspectscore=0 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ adultscore=0 suspectscore=0 mlxscore=0 mlxlogscore=602 phishscore=0
+ bulkscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0 spamscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2009150000 definitions=main-2102090094
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This patch adds a "void *owner" member.  The existing
-bpf_tcp_ca test will ensure the bpf_cubic.o and bpf_dctcp.o
-can be loaded.
+When libbpf initializes the kernel's struct_ops in
+"bpf_map__init_kern_struct_ops()", it enforces all
+pointer types must be a function pointer and rejects
+others.  It turns out to be too strict.  For example,
+when directly using "struct tcp_congestion_ops" from vmlinux.h,
+it has a "struct module *owner" member and it is set to NULL
+in a bpf_tcp_cc.o.
 
+Instead, it only needs to ensure the member is a function
+pointer if it has been set (relocated) to a bpf-prog.
+This patch moves the "btf_is_func_proto(kern_mtype)" check
+after the existing "if (!prog) { continue; }".
+
+The "btf_is_func_proto(mtype)" has already been guaranteed
+in "bpf_object__collect_st_ops_relos()" which has been run
+before "bpf_map__init_kern_struct_ops()".  Thus, this check
+is removed.
+
+Fixes: 590a00888250 ("bpf: libbpf: Add STRUCT_OPS support")
 Signed-off-by: Martin KaFai Lau <kafai@fb.com>
 ---
- tools/testing/selftests/bpf/bpf_tcp_helpers.h | 1 +
- 1 file changed, 1 insertion(+)
+ tools/lib/bpf/libbpf.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/bpf_tcp_helpers.h b/tools/testin=
-g/selftests/bpf/bpf_tcp_helpers.h
-index 6a9053162cf2..91f0fac632f4 100644
---- a/tools/testing/selftests/bpf/bpf_tcp_helpers.h
-+++ b/tools/testing/selftests/bpf/bpf_tcp_helpers.h
-@@ -177,6 +177,7 @@ struct tcp_congestion_ops {
- 	 * after all the ca_state processing. (optional)
- 	 */
- 	void (*cong_control)(struct sock *sk, const struct rate_sample *rs);
-+	void *owner;
- };
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 6ae748f6ea11..b483608ea72a 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -887,12 +887,6 @@ static int bpf_map__init_kern_struct_ops(struct bpf_=
+map *map,
+ 			kern_mtype =3D skip_mods_and_typedefs(kern_btf,
+ 							    kern_mtype->type,
+ 							    &kern_mtype_id);
+-			if (!btf_is_func_proto(mtype) ||
+-			    !btf_is_func_proto(kern_mtype)) {
+-				pr_warn("struct_ops init_kern %s: non func ptr %s is not supported\n=
+",
+-					map->name, mname);
+-				return -ENOTSUP;
+-			}
 =20
- #define min(a, b) ((a) < (b) ? (a) : (b))
+ 			prog =3D st_ops->progs[i];
+ 			if (!prog) {
+@@ -901,6 +895,12 @@ static int bpf_map__init_kern_struct_ops(struct bpf_=
+map *map,
+ 				continue;
+ 			}
+=20
++			if (!btf_is_func_proto(kern_mtype)) {
++				pr_warn("struct_ops init_kern %s: kernel member %s is not a func ptr=
+\n",
++					map->name, mname);
++				return -ENOTSUP;
++			}
++
+ 			prog->attach_btf_id =3D kern_type_id;
+ 			prog->expected_attach_type =3D kern_member_idx;
+=20
 --=20
 2.24.1
 
