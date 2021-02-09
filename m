@@ -2,102 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBD71314808
-	for <lists+bpf@lfdr.de>; Tue,  9 Feb 2021 06:23:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBB0A314847
+	for <lists+bpf@lfdr.de>; Tue,  9 Feb 2021 06:37:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229636AbhBIFX4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Feb 2021 00:23:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58046 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229517AbhBIFXz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Feb 2021 00:23:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F294864EB1;
-        Tue,  9 Feb 2021 05:23:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612848193;
-        bh=cIa4yuE4wgHoWKKtola0MO/gqRhj6bS1TQtpj76aK+o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=u5V645Vj5Aqw4dAPQZAJLzpFwFTgDcQyDNUftu10FbFLbiurnOBaToQLtz1zwmIDZ
-         fnUSUAj+nfDV6Ns9eZiyCyHYOPAcV7wfbQc3lV2hX876bPET7voROaMhChlo75DjGv
-         gS3IqKaUNB5mxUNcXv5EfrB4VlE/4Rqj1Qcd/L26gY53e62SgTHy2aa8hgP1Iz1VNn
-         HB9s7nGKS8eOaoBe3qKH8D3ktnbV7/CCY1yUSTFEpzgt3qKg79ys1JWP5ZCqcVrhqu
-         bZk0ZQvyV1wUfOdgTlmF0vOk/Q7x1e9CXD1HVB+Q+7oSQ/SU4Pvx4TAjGsbP9msrnq
-         Gk50UemfBJrXQ==
-Date:   Mon, 8 Feb 2021 22:23:11 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+        id S229521AbhBIFhg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Feb 2021 00:37:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229517AbhBIFhb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Feb 2021 00:37:31 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0BA0C061786;
+        Mon,  8 Feb 2021 21:36:51 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id b187so16983444ybg.9;
+        Mon, 08 Feb 2021 21:36:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MbDud3Swt6Nxldjl0CSMmeYE9ZrcLgVuLfO+M3p0K2U=;
+        b=F29tNo7QeIIo9Mc8d+Jz8GvV13vdKS1AxyOplmVOoROBYPGCR7aaYUrya1Gk14fJNC
+         XIc8T0ABoabkguGSWl22Y1RQXdYeCYM9U742Iwqi4RC7A1uYlZZzviRJ+f+qT7w9cVNO
+         KTtgixwS055TUcGhAgTQ8gS/zRre6f8+LfrLOt8WNB4PuFsy0RZNCCKscIFoM+pFLU0L
+         diA+ywAXKtlMgX0ZasCQZhXOAbJl4Bv/9Q4AA8+uauItnL8leJUwmDeu1Iak5IZzl36c
+         xK5I24rT0dEIGnIR+n+2d1K9Ck8GN1TC35anDY5x1Q5CdRBB42LNni1kveszCJWP6sPr
+         /rqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MbDud3Swt6Nxldjl0CSMmeYE9ZrcLgVuLfO+M3p0K2U=;
+        b=KqDaTiys4Yt1ic5mBCviqLgMSzU6mNQWXWznofRNMYlSROrnYA9EFKiNn4MCZsclbR
+         s69cSiGy3kzn7SAVtFx7bFj904t8LwxaOMXSqtGmqpjT6LJHqok5MAdW22fLLwyo3PQ2
+         eh7+aP8d2YPQJD/jT7NHjYwqcQhF1YJ4lmEVuTjr0Gi3w2aIN5GY3EQ6Y1bCdn3dqTCB
+         RaEpVvcVzs4Q5OXrARJ9L2ChjwFW2YqRjHLIFC0NCjHv+fgh39HkUri+tca+ClP1xfYr
+         fkuk7Gcz38URnDgCPlhVKMcz08fQM9pkZA8YhRpmPjNWkubsGehuEs5xl10A2WGuBV3v
+         9WrQ==
+X-Gm-Message-State: AOAM530byI9+LvniT3XU+q5r8SydKa+l4R4aqG3HjjdPcZwGw131wCA3
+        5iXRJvtLwqP3Br8X0bes6UkJ1mbI2YNhoSH0/c8=
+X-Google-Smtp-Source: ABdhPJz1W+D0YIFC3g2uGdc+ZyUbc70eko9Kc2xx9F6llrE0xTguh/7CH8ufNEQnxPb4gCtcdN45JDKBM/0ac/WJFhQ=
+X-Received: by 2002:a25:a183:: with SMTP id a3mr29634573ybi.459.1612849011093;
+ Mon, 08 Feb 2021 21:36:51 -0800 (PST)
+MIME-Version: 1.0
+References: <20210205124020.683286-1-jolsa@kernel.org>
+In-Reply-To: <20210205124020.683286-1-jolsa@kernel.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 8 Feb 2021 21:36:40 -0800
+Message-ID: <CAEf4Bza09-H+-iE8Ksd15GjXGArDubOrHorvdwBN=yh9TwTpKA@mail.gmail.com>
+Subject: Re: [PATCHv2 bpf-next 0/4] kbuild/resolve_btfids: Invoke
+ resolve_btfids clean in root Makefile
+To:     Jiri Olsa <jolsa@kernel.org>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Veronika Kabatova <vkabatov@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>
-Subject: Re: FAILED unresolved symbol vfs_truncate on arm64 with LLVM
-Message-ID: <20210209052311.GA125918@ubuntu-m3-large-x86>
-References: <20210209034416.GA1669105@ubuntu-m3-large-x86>
- <CAEf4BzYnT-eoKRL9_Pu_DEuqXVa+edN5F-s+k2RxBSzcsSTJ1g@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzYnT-eoKRL9_Pu_DEuqXVa+edN5F-s+k2RxBSzcsSTJ1g@mail.gmail.com>
+        KP Singh <kpsingh@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 08:45:43PM -0800, Andrii Nakryiko wrote:
-> On Mon, Feb 8, 2021 at 7:44 PM Nathan Chancellor <nathan@kernel.org> wrote:
-> >
-> > Hi all,
-> >
-> > Recently, an issue with CONFIG_DEBUG_INFO_BTF was reported for arm64:
-> > https://groups.google.com/g/clang-built-linux/c/de_mNh23FOc/m/E7cu5BwbBAAJ
-> >
-> > $ make -skj"$(nproc)" ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- \
-> >                       LLVM=1 O=build/aarch64 defconfig
-> >
-> > $ scripts/config \
-> >     --file build/aarch64/.config \
-> >     -e BPF_SYSCALL \
-> >     -e DEBUG_INFO_BTF \
-> >     -e FTRACE \
-> >     -e FUNCTION_TRACER
-> >
-> > $ make -skj"$(nproc)" ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- \
-> >                       LLVM=1 O=build/aarch64 olddefconfig all
-> > ...
-> > FAILED unresolved symbol vfs_truncate
-> > ...
-> >
-> > My bisect landed on commit 6e22ab9da793 ("bpf: Add d_path helper")
-> > although that seems obvious given that is what introduced
-> > BTF_ID(func, vfs_truncate).
-> >
-> > I am using the latest pahole v1.20 and LLVM is at
-> > https://github.com/llvm/llvm-project/commit/14da287e18846ea86e45b421dc47f78ecc5aa7cb
-> > although I can reproduce back to LLVM 10.0.1, which is the earliest
-> > version that the kernel supports. I am very unfamiliar with BPF so I
-> > have no idea what is going wrong here. Is this a known issue?
-> >
-> 
-> I'll skip the reproduction games this time and will just request the
-> vmlinux image. Please upload somewhere so that we can look at DWARF
-> and see what's going on. Thanks.
-> 
+On Fri, Feb 5, 2021 at 4:45 AM Jiri Olsa <jolsa@kernel.org> wrote:
+>
+> hi,
+> resolve_btfids tool is used during the kernel build,
+> so we should clean it on kernel's make clean.
+>
+> v2 changes:
+>   - add Song's acks on patches 1 and 4 (others changed) [Song]
+>   - add missing / [Andrii]
+>   - change srctree variable initialization [Andrii]
+>   - shifted ifdef for clean target [Andrii]
+>
+> thanks,
+> jirka
+>
+>
+> ---
+> Jiri Olsa (4):
+>       tools/resolve_btfids: Build libbpf and libsubcmd in separate directories
+>       tools/resolve_btfids: Check objects before removing
+>       tools/resolve_btfids: Set srctree variable unconditionally
+>       kbuild: Add resolve_btfids clean to root clean target
+>
+>  Makefile                            |  7 ++++++-
+>  tools/bpf/resolve_btfids/.gitignore |  2 --
+>  tools/bpf/resolve_btfids/Makefile   | 44 ++++++++++++++++++++++----------------------
+>  3 files changed, 28 insertions(+), 25 deletions(-)
+>
 
-Sure thing, let me know if this works. I uploaded in two places to make
-it easier to grab:
+I've applied the changes to the bpf-next tree. Thanks.
 
-zstd compressed:
-https://github.com/nathanchance/bug-files/blob/3b2873751e29311e084ae2c71604a1963f5e1a48/btf-aarch64/vmlinux.zst
-
-uncompressed:
-https://1drv.ms/u/s!AsQNYeB-IEbqjQiUOspbEdXx49o7?e=ipA9Hv
-
-Cheers,
-Nathan
+Next time please make sure that each patch in the series has a v2 tag
+in [PATCH] section, it was a bit confusing to figure out which one is
+the actual v2 version. Our tooling (CI) also expects the format [PATCH
+v2 bpf-next], so try not to merge v2 with PATCH.
