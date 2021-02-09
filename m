@@ -2,99 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79F8831460A
-	for <lists+bpf@lfdr.de>; Tue,  9 Feb 2021 03:06:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 535BD314736
+	for <lists+bpf@lfdr.de>; Tue,  9 Feb 2021 04:49:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229706AbhBICGA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Feb 2021 21:06:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbhBICF7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Feb 2021 21:05:59 -0500
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3794C061786;
-        Mon,  8 Feb 2021 18:05:19 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id r2so16617480ybk.11;
-        Mon, 08 Feb 2021 18:05:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JO5qLiF+a+hB9CUaJSVEMzuCKkUN/wHWCBTXp26fOdU=;
-        b=utKJib+zv1hs1MYwf7oH+/3ONJyPZXj1bdWxHKMZLEwUIqA29FNsCybFJ9o2RzgJmA
-         peZ/XXhWFbXRhkApUez+wcwoSx485s0FqQ1RWI0xf1lBQT3B6pRbLWVVph+sHjy1rDLC
-         uqY4dZ4urFYBtGQ764SAnYfTcuTuEBdIlvaPIHoigPYGn3WFEgY8BdOI6yjBVnAIHW76
-         aAteUKPPP0zWhBG+J91lvyN+Q3795aTLWHB+ngITpW2M2gIk7eBjSY6HjCEQGANdaeM/
-         zeg8nsswihteJUNyIasdWVYwcr0Dvv49OhuX7/XfIJjM9pe4o4on7ZLJeppqFPWiSKxF
-         NSBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JO5qLiF+a+hB9CUaJSVEMzuCKkUN/wHWCBTXp26fOdU=;
-        b=BmlHj1Wh/ssoXN+39DMuTf0vb9VB+yJPQiISnn7T6dH1dbYUnQwezYiQTgySZsMT4W
-         xynVDeuhmLlmP44E/39JwhaFU7863YjEW0Q8vdAnu6sV0kEPT+nad08McEAvnJ6CamI7
-         RWCcw7C19n4eqZB37tGvxICi99S/DvhpKndZ92/hZQsPL+vPVrd6A8iSpyS30IpAUVX/
-         bFFos2ctuktetfdABre2GY3m6in5xqe595EEN/Gw+KJU444z9+gvq4fzKjLMTEdnMBz0
-         Gu9gVy1r0QBJxMETYRhyJL4FdZokk7kQ6qL1gvj/yYJPYtpfPS3iMS3s9VzA+RpB431V
-         a9Gg==
-X-Gm-Message-State: AOAM533dsANc/mjVbdnV8TaxKmidpXkzRtO/CsoYsnPHlWQwH+x+N4IB
-        qLCO7vId7ViJ7SgZxCbUBJDwlX/EAdYcrQFWghU=
-X-Google-Smtp-Source: ABdhPJzS8LI/HnORR5Fnz81XjOCMXBAfgvuWJ4Szw+qFQjPrBM35hOyYaLOz+T8bDTPUdV3frgxbvesSokgDED+RMNU=
-X-Received: by 2002:a25:4b86:: with SMTP id y128mr29262047yba.403.1612836318942;
- Mon, 08 Feb 2021 18:05:18 -0800 (PST)
-MIME-Version: 1.0
-References: <1612780213-84583-1-git-send-email-yang.lee@linux.alibaba.com>
-In-Reply-To: <1612780213-84583-1-git-send-email-yang.lee@linux.alibaba.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 8 Feb 2021 18:05:08 -0800
-Message-ID: <CAEf4Bzaugcu=fYrZxkkA+fssZPJooWbwQH4hGJTJReGR63Vkdw@mail.gmail.com>
-Subject: Re: [PATCH] selftests: bpf: remove unneeded semicolon
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        id S229692AbhBIDs6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Feb 2021 22:48:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43590 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229876AbhBIDpo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Feb 2021 22:45:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A53964DC3;
+        Tue,  9 Feb 2021 03:44:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612842258;
+        bh=/w2jiMlzkVdm1RkJJYVUh/o8YnxGktYLR7xd2szI5c4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=PHX+ZK+Arb5cWnNYZpf97OGFqbMtHfXDNCtEC3Lkk1vl8m2CpxFQV0t01ifyCaWeb
+         Ko7L30yurDqYEizZzktwjgKjyWnnMwZ3I3Ew4LP8kN8j3SwapZ7YMUQ7cCj+4OiRog
+         ZS79DXDFKrai15edV/bFwHL5EhD1+TT4ylax5b9R3HALDMI4zIf2wZRhJexM7OmaZl
+         20jiB0sou0wP6o0EMMDDZHdWNVYNemvhGpbMumHj0HmsfPmB8XOoTWShB7HjWbnGfm
+         tygIIMfFLdebhaD+TPcltzamy9aWukk5DQd2C4uSYwUsPUfeW9eUEPOttW5Fr3JLlh
+         iC0feCChgkpoA==
+Date:   Mon, 8 Feb 2021 20:44:16 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Nick Desaulniers <ndesaulniers@google.com>,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Veronika Kabatova <vkabatov@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>
+Subject: FAILED unresolved symbol vfs_truncate on arm64 with LLVM
+Message-ID: <20210209034416.GA1669105@ubuntu-m3-large-x86>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 8, 2021 at 2:30 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
->
-> Eliminate the following coccicheck warning:
-> ./tools/testing/selftests/bpf/test_flow_dissector.c:506:2-3: Unneeded
-> semicolon
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
+Hi all,
 
-Applied to bpf-next, changing subject to have more canonical
-"selftests/bpf: " prefix. Thanks.
+Recently, an issue with CONFIG_DEBUG_INFO_BTF was reported for arm64:
+https://groups.google.com/g/clang-built-linux/c/de_mNh23FOc/m/E7cu5BwbBAAJ
 
->  tools/testing/selftests/bpf/test_flow_dissector.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/bpf/test_flow_dissector.c b/tools/testing/selftests/bpf/test_flow_dissector.c
-> index 01f0c63..571cc07 100644
-> --- a/tools/testing/selftests/bpf/test_flow_dissector.c
-> +++ b/tools/testing/selftests/bpf/test_flow_dissector.c
-> @@ -503,7 +503,7 @@ static int do_rx(int fd)
->                 if (rbuf != cfg_payload_char)
->                         error(1, 0, "recv: payload mismatch");
->                 num++;
-> -       };
-> +       }
->
->         return num;
->  }
-> --
-> 1.8.3.1
->
+$ make -skj"$(nproc)" ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- \
+                      LLVM=1 O=build/aarch64 defconfig
+
+$ scripts/config \
+    --file build/aarch64/.config \
+    -e BPF_SYSCALL \
+    -e DEBUG_INFO_BTF \
+    -e FTRACE \
+    -e FUNCTION_TRACER
+
+$ make -skj"$(nproc)" ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- \
+                      LLVM=1 O=build/aarch64 olddefconfig all
+...
+FAILED unresolved symbol vfs_truncate
+...
+
+My bisect landed on commit 6e22ab9da793 ("bpf: Add d_path helper")
+although that seems obvious given that is what introduced
+BTF_ID(func, vfs_truncate).
+
+I am using the latest pahole v1.20 and LLVM is at
+https://github.com/llvm/llvm-project/commit/14da287e18846ea86e45b421dc47f78ecc5aa7cb
+although I can reproduce back to LLVM 10.0.1, which is the earliest
+version that the kernel supports. I am very unfamiliar with BPF so I
+have no idea what is going wrong here. Is this a known issue?
+
+Cheers,
+Nathan
