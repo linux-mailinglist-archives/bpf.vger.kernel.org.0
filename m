@@ -2,117 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41CA03157C5
-	for <lists+bpf@lfdr.de>; Tue,  9 Feb 2021 21:37:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 106F031582D
+	for <lists+bpf@lfdr.de>; Tue,  9 Feb 2021 22:01:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233737AbhBIUgs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Feb 2021 15:36:48 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:6014 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233418AbhBIUeR (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 9 Feb 2021 15:34:17 -0500
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 119JSsOP009519
-        for <bpf@vger.kernel.org>; Tue, 9 Feb 2021 11:31:10 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=qeWMbAqsV2xnsezJY3EKVF37E1MCAJSZfNjLznhKVgU=;
- b=jSLsvcV6FFo+sCgs4TVhJuYfZfaQU2Tq6CAGrNZlXUGEwOvHetRV8tZk6wF7cK4PEj7N
- vkEwxxk5SS12teOgxU9Do0l6i0Ma5hPTmm1jNYF03i7tZm5Q4wDcqGYwHFZ3FTrSR6PL
- VWMULEU1W6xmoBvlGGoWtMHZWyCNC6ooIZs= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 36jcaa518c-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 09 Feb 2021 11:31:09 -0800
-Received: from intmgw006.03.ash8.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 9 Feb 2021 11:31:08 -0800
-Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
-        id EAB8329408EB; Tue,  9 Feb 2021 11:31:05 -0800 (PST)
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        <netdev@vger.kernel.org>
-Subject: [PATCH bpf 1/2] libbpf: Ignore non function pointer member in struct_ops
-Date:   Tue, 9 Feb 2021 11:31:05 -0800
-Message-ID: <20210209193105.1752743-1-kafai@fb.com>
-X-Mailer: git-send-email 2.24.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-09_06:2021-02-09,2021-02-09 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
- adultscore=0 suspectscore=0 mlxscore=0 mlxlogscore=602 phishscore=0
- bulkscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0 spamscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102090094
-X-FB-Internal: deliver
+        id S234195AbhBIU4i (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Feb 2021 15:56:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233984AbhBIUq7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Feb 2021 15:46:59 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44319C061793
+        for <bpf@vger.kernel.org>; Tue,  9 Feb 2021 11:48:59 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id j11so10345445plt.11
+        for <bpf@vger.kernel.org>; Tue, 09 Feb 2021 11:48:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=65E9QWlOxnsFpuJu25gLN+MB82p4NIaj7h47IO0OcuA=;
+        b=R585lJ1hF46WpwHmF3aKEwzXLrhqbMMFgw+YRcmA6ZR45aG75kWq4aBHYQ8dyHorMq
+         5FmrcHYwpx5bm63M56TpUk9TYCRD0TzQ8GusVOCpJKrY//GkfEVBpf+9BYhEfl6jRk46
+         0buKZTbBZ0/PYqx3RfnlhAdbkIZ0y06yKKGAk3qrFe5lZ7Yix2kKozSuvorJywflS28i
+         pw+6iiDV1G206y+PvfilAf7iswMI4aeuRGdPEsOF2/nk/bvb9nBqEhIt+c7oygS8ymoP
+         CZdnzFwcem1W0cJMOnvZof/fFFSI870PR+X9RHV1yEbCdq8oh35Ue50vEjavibKDNsKj
+         UThQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=65E9QWlOxnsFpuJu25gLN+MB82p4NIaj7h47IO0OcuA=;
+        b=KOm46wXsKIPX0e9L2FVADnmUQCIHJdXxrbVM4rFSH3OZuQ9iTWOV2euvELy3XTrmJC
+         qo9ALCS3huWUvXeh0ei1V+TonexDejras4qCAgcdg/AmFlrm3sRAbpdN1grLc13Um+KR
+         wzCzZeyxLz6zrQsMds5Z0KhWMW/LBjbvoEA4uqtTb/t4OUy6/OcytDHve//z9JtAJaNj
+         QJ9WVrzOZlbewoqs22UeXIX+ls5MluBlk+qilyE7gheIU2z4S4jCDoJu1/eBBK3donOn
+         g8zPgpo/5MJ/HlElY0pjkcevgCbgYgC3aPX2Xk8n5LQHy5bT6HD37XcPJqnDBkcEvjvU
+         RQXQ==
+X-Gm-Message-State: AOAM532JgnhDqQLAa/jRPFZ4Xl4UGpnGK8Kk5+U2VxYCbtVVqVLYsH+t
+        4r3ZVMCMwr7sFDmDC0PAQ7o=
+X-Google-Smtp-Source: ABdhPJx/3T1DsI71X/qtrivWl59uQY9A9+LpUGx48nM44RusD1M6AZVTYBRsn2exMu/9mHYb/TpdHA==
+X-Received: by 2002:a17:902:7c06:b029:e2:cce9:faaf with SMTP id x6-20020a1709027c06b02900e2cce9faafmr14396991pll.83.1612900138870;
+        Tue, 09 Feb 2021 11:48:58 -0800 (PST)
+Received: from ast-mbp.thefacebook.com ([163.114.132.7])
+        by smtp.gmail.com with ESMTPSA id j22sm139123pff.57.2021.02.09.11.48.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 09 Feb 2021 11:48:58 -0800 (PST)
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     davem@davemloft.net
+Cc:     daniel@iogearbox.net, bpf@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH v3 bpf-next 0/8] bpf: Misc improvements
+Date:   Tue,  9 Feb 2021 11:48:48 -0800
+Message-Id: <20210209194856.24269-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.13.5
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-When libbpf initializes the kernel's struct_ops in
-"bpf_map__init_kern_struct_ops()", it enforces all
-pointer types must be a function pointer and rejects
-others.  It turns out to be too strict.  For example,
-when directly using "struct tcp_congestion_ops" from vmlinux.h,
-it has a "struct module *owner" member and it is set to NULL
-in a bpf_tcp_cc.o.
+From: Alexei Starovoitov <ast@kernel.org>
 
-Instead, it only needs to ensure the member is a function
-pointer if it has been set (relocated) to a bpf-prog.
-This patch moves the "btf_is_func_proto(kern_mtype)" check
-after the existing "if (!prog) { continue; }".
+v3:
+- address review comments
+- improve recursion selftest
 
-The "btf_is_func_proto(mtype)" has already been guaranteed
-in "bpf_object__collect_st_ops_relos()" which has been run
-before "bpf_map__init_kern_struct_ops()".  Thus, this check
-is removed.
+Several bpf improvements:
+- optimize prog stats
+- compute stats for sleepable progs
+- prevent recursion fentry/fexit and sleepable progs
+- allow map-in-map and per-cpu maps in sleepable progs
 
-Fixes: 590a00888250 ("bpf: libbpf: Add STRUCT_OPS support")
-Signed-off-by: Martin KaFai Lau <kafai@fb.com>
----
- tools/lib/bpf/libbpf.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+Alexei Starovoitov (8):
+  bpf: Optimize program stats
+  bpf: Compute program stats for sleepable programs
+  bpf: Add per-program recursion prevention mechanism
+  selftest/bpf: Add a recursion test
+  bpf: Count the number of times recursion was prevented
+  selftests/bpf: Improve recursion selftest
+  bpf: Allows per-cpu maps and map-in-map in sleepable programs
+  selftests/bpf: Add a test for map-in-map and per-cpu maps in sleepable
+    progs
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 6ae748f6ea11..b483608ea72a 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -887,12 +887,6 @@ static int bpf_map__init_kern_struct_ops(struct bpf_=
-map *map,
- 			kern_mtype =3D skip_mods_and_typedefs(kern_btf,
- 							    kern_mtype->type,
- 							    &kern_mtype_id);
--			if (!btf_is_func_proto(mtype) ||
--			    !btf_is_func_proto(kern_mtype)) {
--				pr_warn("struct_ops init_kern %s: non func ptr %s is not supported\n=
-",
--					map->name, mname);
--				return -ENOTSUP;
--			}
-=20
- 			prog =3D st_ops->progs[i];
- 			if (!prog) {
-@@ -901,6 +895,12 @@ static int bpf_map__init_kern_struct_ops(struct bpf_=
-map *map,
- 				continue;
- 			}
-=20
-+			if (!btf_is_func_proto(kern_mtype)) {
-+				pr_warn("struct_ops init_kern %s: kernel member %s is not a func ptr=
-\n",
-+					map->name, mname);
-+				return -ENOTSUP;
-+			}
-+
- 			prog->attach_btf_id =3D kern_type_id;
- 			prog->expected_attach_type =3D kern_member_idx;
-=20
---=20
+ arch/x86/net/bpf_jit_comp.c                   | 46 ++++++-----
+ include/linux/bpf.h                           | 16 +---
+ include/linux/filter.h                        | 16 +++-
+ include/uapi/linux/bpf.h                      |  1 +
+ kernel/bpf/core.c                             | 16 +++-
+ kernel/bpf/hashtab.c                          |  4 +-
+ kernel/bpf/syscall.c                          | 16 ++--
+ kernel/bpf/trampoline.c                       | 77 +++++++++++++++----
+ kernel/bpf/verifier.c                         |  9 ++-
+ tools/bpf/bpftool/prog.c                      |  4 +
+ tools/include/uapi/linux/bpf.h                |  1 +
+ .../selftests/bpf/prog_tests/fexit_stress.c   |  4 +-
+ .../selftests/bpf/prog_tests/recursion.c      | 41 ++++++++++
+ .../bpf/prog_tests/trampoline_count.c         |  4 +-
+ tools/testing/selftests/bpf/progs/lsm.c       | 69 +++++++++++++++++
+ tools/testing/selftests/bpf/progs/recursion.c | 46 +++++++++++
+ 16 files changed, 303 insertions(+), 67 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/recursion.c
+ create mode 100644 tools/testing/selftests/bpf/progs/recursion.c
+
+-- 
 2.24.1
 
