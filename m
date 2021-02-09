@@ -2,55 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC51531552C
-	for <lists+bpf@lfdr.de>; Tue,  9 Feb 2021 18:36:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DC09315543
+	for <lists+bpf@lfdr.de>; Tue,  9 Feb 2021 18:41:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233269AbhBIRgI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Feb 2021 12:36:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53246 "EHLO
+        id S233346AbhBIRjL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Feb 2021 12:39:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233062AbhBIRej (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Feb 2021 12:34:39 -0500
+        with ESMTP id S233290AbhBIRhH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Feb 2021 12:37:07 -0500
 Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 076EAC061574
-        for <bpf@vger.kernel.org>; Tue,  9 Feb 2021 09:33:47 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id r2so18937642ybk.11
-        for <bpf@vger.kernel.org>; Tue, 09 Feb 2021 09:33:47 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6418C06174A
+        for <bpf@vger.kernel.org>; Tue,  9 Feb 2021 09:36:52 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id p193so5245481yba.4
+        for <bpf@vger.kernel.org>; Tue, 09 Feb 2021 09:36:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=oIvPGfvzcdeBXGp2LWiv6f772xTLz1x+jHuGyYgVsso=;
-        b=tCN+mgmS/tKZqzDJdl0S0qAngpgJTsYXWi2dJvEdf8SZ26ZhQ0wVDrlRuyuSzTXlW0
-         pkVO2XEbcvEwyYlJlwkXbtXvf7PtQ0QVaaqNzx+fbl+0h+TgZydFPsnIuA7FwDqXhjAX
-         LPG87k6mHUpcP6TIlEYibcdyNTxbIDgv6ecVoBjcQRHY45gO8AOxy5ks+Mp+flznZcNw
-         19Ea3nLrzf3m+1aACQPAQpIEc50pOhHPYE89hcCbvccYRHsQI9AIGRwy1SboD5ozdeJT
-         Opx/J9Skj29tEo4iZBik2qDDfpQjusPxCj7llZf4E7pFRfeCs5wLCnLZFuv1QoglXoxr
-         NA2g==
+        bh=FP+9v6CIJoX8rie5Mv8WzpUloJ56ZNGgXq/dhScy8Ac=;
+        b=DIe0ruG+SDYae9hJ775r9FDhMygUcdGRwKXRok2X942TrANEOFPLGSf1nntZ0Ys/xK
+         r2FF66c7Rm20mR/z5NaW70BYqG60Nb1eeN0TgvOTpYB7G6PGQ6+iDPu0wst5HCf4FTj1
+         vUtYgxOPbHqL28k0BIdtXSi0hT0n3RSkkxixjP/AOlv2wl9zUuIi8iBHbk/br1Q8DEgp
+         DvarbKhgxWRA5rermekho4rKQrIe1KSekuoafClJhVaEfkIkqQiHcelYMS90CrVQ7WMt
+         7RoECmVpoxbRG2jbpxQsiQ10LjiVouzPhekggmNB7HQemsGMYiWowTjyGWGbgxpk/RTy
+         QhqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=oIvPGfvzcdeBXGp2LWiv6f772xTLz1x+jHuGyYgVsso=;
-        b=VMpTIiMfDF/L5uQnepCfH+GL1xQa1YTLAWNFUrubJLneGHi0EIJNh3axzmM8vjF2mv
-         qHh0a1q9DM5dnkodLZWmtGdmJuXHGG4PbQiRs1TDHAgh/0kQ5yEUS0fUPIyOfyajOzhb
-         MZwF+Md+DSYQ926ITOJ2xuwJhjWvU1lV/mcxzBkdG/1r6N2pIET1xkF3NroUGQYn3kIr
-         bA0V0GKd3YYPhaApMWluqVCoFqMcceev3uekrqdcOtd7wgGjGCcl+gfAQ/LIdl91A1JJ
-         BEFSf9x0mudhWQiVwUjsx69gjLS8sCtpqzxUkcppJRw2fnXJBmfURbT5ev0fXoCwUA9m
-         jRzg==
-X-Gm-Message-State: AOAM533Njf5Yax238M5T23yhyAlR40QifOKg7hkLHmA9UYtKYCEPweuj
-        0c1FSXb8dqxIef2S3tY69c/4N0LjeFGy9Kk7tS4=
-X-Google-Smtp-Source: ABdhPJw8tDamnlCSPByuofkW75Dxr8TLCIxGO4WauveUBv5P7oECPyUF9GXsl8YF5YjBcR9GmdDwIHZpvGWlH63qZQE=
-X-Received: by 2002:a25:3805:: with SMTP id f5mr16878391yba.27.1612892026195;
- Tue, 09 Feb 2021 09:33:46 -0800 (PST)
+        bh=FP+9v6CIJoX8rie5Mv8WzpUloJ56ZNGgXq/dhScy8Ac=;
+        b=azZhUc04LzujDermO0zittY9Z45vLu94LjK3opRamTyaj03L5LIWQKhS4jzP9CYc89
+         cHoMDFwsrhChNIi7sMZivAtpY5PwwJz6CfHfOv9O8rJTDAgTQw1mfn1bHAlMLCo06pNw
+         KT/WVr22fcEcs83zAJErrPHS6VQnnsad5W6kl/g/6WWPrb4nza4w3WKqkaUOrv8cpBYi
+         mu0tyd1JTEp2bdlriLbm61GolfC9DIuhOTafMv+dvu1Yqv+YN2u/Ghcj5BnbOjHIdbBk
+         swnmSWYGdvy4jjRgSBbrlzKbhW0nTtb3RidFkHSs08LvV4qDSxJY9nlZk8seTgQfHZkS
+         SZdw==
+X-Gm-Message-State: AOAM533zbFPMHB6WNeLaX+nJU3lUk6OfZFAwJGnji5/xnJEp15oxXzIT
+        E/saKerRtv/O6T1pfHTXqRxH3JJy9la8ikmsLo4=
+X-Google-Smtp-Source: ABdhPJzs7wDcivEMVwywlNvN7vk5iH1dNI5Tpj0Yjr6UXuAjDhCak67wSYjXsFinUF5bvnASs+yMlnBvvz49tsCxKWE=
+X-Received: by 2002:a25:f40e:: with SMTP id q14mr33876197ybd.230.1612892212173;
+ Tue, 09 Feb 2021 09:36:52 -0800 (PST)
 MIME-Version: 1.0
-References: <20210204234827.1628857-1-yhs@fb.com> <20210204234829.1629159-1-yhs@fb.com>
- <CAEf4BzYL5cmWyyHq4RzMdOmCbmicvQSGMKCih-eVdOUM_q_0Rg@mail.gmail.com> <93053744-a41b-c25e-2d4a-5aa03c2339db@fb.com>
-In-Reply-To: <93053744-a41b-c25e-2d4a-5aa03c2339db@fb.com>
+References: <20210204234827.1628857-1-yhs@fb.com> <20210204234835.1629656-1-yhs@fb.com>
+ <CAEf4BzbQBCEarNeB+0B_QmgnNsaeVRxjNt0EC2N5og4Qc-U=Eg@mail.gmail.com> <ce335d12-e81e-e7b9-e54d-804a5f103932@fb.com>
+In-Reply-To: <ce335d12-e81e-e7b9-e54d-804a5f103932@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 9 Feb 2021 09:33:35 -0800
-Message-ID: <CAEf4BzYvDj7cODz6Ybd-Hk188SCKqK4fSc=cfjUR-RCMxPYzBA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/8] bpf: add bpf_for_each_map_elem() helper
+Date:   Tue, 9 Feb 2021 09:36:41 -0800
+Message-ID: <CAEf4BzbvGuH+jWEtvBPW9U6_sNW5XkXP2_oQzk8J2WeupYgH2A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 7/8] selftests/bpf: add hashmap test for
+ bpf_for_each_map_elem() helper
 To:     Yonghong Song <yhs@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Cong Wang <xiyou.wangcong@gmail.com>,
@@ -61,301 +62,128 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 8, 2021 at 10:41 PM Yonghong Song <yhs@fb.com> wrote:
+On Mon, Feb 8, 2021 at 10:46 PM Yonghong Song <yhs@fb.com> wrote:
 >
 >
 >
-> On 2/8/21 10:16 AM, Andrii Nakryiko wrote:
+> On 2/8/21 10:34 AM, Andrii Nakryiko wrote:
 > > On Thu, Feb 4, 2021 at 5:53 PM Yonghong Song <yhs@fb.com> wrote:
 > >>
-> >> The bpf_for_each_map_elem() helper is introduced which
-> >> iterates all map elements with a callback function. The
-> >> helper signature looks like
-> >>    long bpf_for_each_map_elem(map, callback_fn, callback_ctx, flags)
-> >> and for each map element, the callback_fn will be called. For example,
-> >> like hashmap, the callback signature may look like
-> >>    long callback_fn(map, key, val, callback_ctx)
+> >> A test case is added for hashmap and percpu hashmap. The test
+> >> also exercises nested bpf_for_each_map_elem() calls like
+> >>      bpf_prog:
+> >>        bpf_for_each_map_elem(func1)
+> >>      func1:
+> >>        bpf_for_each_map_elem(func2)
+> >>      func2:
 > >>
-> >> There are two known use cases for this. One is from upstream ([1]) where
-> >> a for_each_map_elem helper may help implement a timeout mechanism
-> >> in a more generic way. Another is from our internal discussion
-> >> for a firewall use case where a map contains all the rules. The packet
-> >> data can be compared to all these rules to decide allow or deny
-> >> the packet.
-> >>
-> >> For array maps, users can already use a bounded loop to traverse
-> >> elements. Using this helper can avoid using bounded loop. For other
-> >> type of maps (e.g., hash maps) where bounded loop is hard or
-> >> impossible to use, this helper provides a convenient way to
-> >> operate on all elements.
-> >>
-> >> For callback_fn, besides map and map element, a callback_ctx,
-> >> allocated on caller stack, is also passed to the callback
-> >> function. This callback_ctx argument can provide additional
-> >> input and allow to write to caller stack for output.
-> >>
-> >> If the callback_fn returns 0, the helper will iterate through next
-> >> element if available. If the callback_fn returns 1, the helper
-> >> will stop iterating and returns to the bpf program. Other return
-> >> values are not used for now.
-> >>
-> >> Currently, this helper is only available with jit. It is possible
-> >> to make it work with interpreter with so effort but I leave it
-> >> as the future work.
-> >>
-> >> [1]: https://lore.kernel.org/bpf/20210122205415.113822-1-xiyou.wangcong@gmail.com/
+> >>    $ ./test_progs -n 44
+> >>    #44/1 hash_map:OK
+> >>    #44 for_each:OK
+> >>    Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
 > >>
 > >> Signed-off-by: Yonghong Song <yhs@fb.com>
 > >> ---
-> >
-> > This is a great feature! Few questions and nits below.
-> >
-> >>   include/linux/bpf.h            |  14 ++
-> >>   include/linux/bpf_verifier.h   |   3 +
-> >>   include/uapi/linux/bpf.h       |  28 ++++
-> >>   kernel/bpf/bpf_iter.c          |  16 +++
-> >>   kernel/bpf/helpers.c           |   2 +
-> >>   kernel/bpf/verifier.c          | 251 ++++++++++++++++++++++++++++++---
-> >>   kernel/trace/bpf_trace.c       |   2 +
-> >>   tools/include/uapi/linux/bpf.h |  28 ++++
-> >>   8 files changed, 328 insertions(+), 16 deletions(-)
+> >>   .../selftests/bpf/prog_tests/for_each.c       |  91 ++++++++++++++++
+> >>   .../bpf/progs/for_each_hash_map_elem.c        | 103 ++++++++++++++++++
+> >>   2 files changed, 194 insertions(+)
+> >>   create mode 100644 tools/testing/selftests/bpf/prog_tests/for_each.c
+> >>   create mode 100644 tools/testing/selftests/bpf/progs/for_each_hash_map_elem.c
 > >>
 > >
 > > [...]
 > >
-> >>   const struct bpf_func_proto *bpf_tracing_func_proto(
-> >>          enum bpf_func_id func_id, const struct bpf_prog *prog);
-> >> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-> >> index dfe6f85d97dd..c4366b3da342 100644
-> >> --- a/include/linux/bpf_verifier.h
-> >> +++ b/include/linux/bpf_verifier.h
-> >> @@ -68,6 +68,8 @@ struct bpf_reg_state {
-> >>                          unsigned long raw1;
-> >>                          unsigned long raw2;
-> >>                  } raw;
+> >> +       num_cpus = bpf_num_possible_cpus();
+> >> +       percpu_map_fd = bpf_map__fd(skel->maps.percpu_map);
+> >> +       percpu_valbuf = malloc(sizeof(__u64) * num_cpus);
+> >> +       if (CHECK_FAIL(!percpu_valbuf))
+> >> +               goto out;
 > >> +
-> >> +               u32 subprog; /* for PTR_TO_FUNC */
-> >
-> > is it offset to subprog (in bytes or instructions?) or it's subprog
-> > index? Let's make it clear with a better name or at least a comment.
->
-> This is for subprog number (or index in some subprog related arrays).
-> In verifier.c, subprog or subprogno is used to represent the subprog
-> number. I will use subprogno in the next revision.
->
-
-yeah, that's more clear
-
-> >
-> >>          };
-> >>          /* For PTR_TO_PACKET, used to find other pointers with the same variable
-> >>           * offset, so they can share range knowledge.
-> >> @@ -204,6 +206,7 @@ struct bpf_func_state {
-> >>          int acquired_refs;
-> >>          struct bpf_reference_state *refs;
-> >>          int allocated_stack;
-> >> +       bool with_callback_fn;
-> >>          struct bpf_stack_state *stack;
-> >>   };
-> >>
-> >> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> >> index c001766adcbc..d55bd4557376 100644
-> >> --- a/include/uapi/linux/bpf.h
-> >> +++ b/include/uapi/linux/bpf.h
-> >> @@ -393,6 +393,15 @@ enum bpf_link_type {
-> >>    *                   is struct/union.
-> >>    */
-> >>   #define BPF_PSEUDO_BTF_ID      3
-> >> +/* insn[0].src_reg:  BPF_PSEUDO_FUNC
-> >> + * insn[0].imm:      insn offset to the func
-> >> + * insn[1].imm:      0
-> >> + * insn[0].off:      0
-> >> + * insn[1].off:      0
-> >> + * ldimm64 rewrite:  address of the function
-> >> + * verifier type:    PTR_TO_FUNC.
-> >> + */
-> >> +#define BPF_PSEUDO_FUNC                4
-> >>
-> >>   /* when bpf_call->src_reg == BPF_PSEUDO_CALL, bpf_call->imm == pc-relative
-> >>    * offset to another bpf function
-> >> @@ -3836,6 +3845,24 @@ union bpf_attr {
-> >>    *     Return
-> >>    *             A pointer to a struct socket on success or NULL if the file is
-> >>    *             not a socket.
-> >> + *
-> >> + * long bpf_for_each_map_elem(struct bpf_map *map, void *callback_fn, void *callback_ctx, u64 flags)
-> >
-> > struct bpf_map * here might be problematic. In other instances where
-> > we pass map (bpf_map_update_elem, for example) we specify this as
-> > (void *). Let's do that instead here?
->
-> We should be fine here. bpf_map_lookup_elem etc. all have "struct
-> bpf_map *map", it is rewritten by bpf_helpers_doc.py to "void *map".
-
-ok, cool
-
->
-> >
-> >> + *     Description
-> >> + *             For each element in **map**, call **callback_fn** function with
-> >> + *             **map**, **callback_ctx** and other map-specific parameters.
-> >> + *             For example, for hash and array maps, the callback signature can
-> >> + *             be `u64 callback_fn(map, map_key, map_value, callback_ctx)`.
-> >> + *             The **callback_fn** should be a static function and
-> >> + *             the **callback_ctx** should be a pointer to the stack.
-> >> + *             The **flags** is used to control certain aspects of the helper.
-> >> + *             Currently, the **flags** must be 0.
-> >> + *
-> >> + *             If **callback_fn** return 0, the helper will continue to the next
-> >> + *             element. If return value is 1, the helper will skip the rest of
-> >> + *             elements and return. Other return values are not used now.
-> >> + *     Return
-> >> + *             0 for success, **-EINVAL** for invalid **flags** or unsupported
-> >> + *             **callback_fn** return value.
-> >
-> > just a thought: returning the number of elements *actually* iterated
-> > seems useful (even though I don't have a specific use case right now).
->
-> Good idea. Will change to this in the next revision.
->
-> >
-> >>    */
-> >>   #define __BPF_FUNC_MAPPER(FN)          \
-> >>          FN(unspec),                     \
-> >> @@ -4001,6 +4028,7 @@ union bpf_attr {
-> >>          FN(ktime_get_coarse_ns),        \
-> >>          FN(ima_inode_hash),             \
-> >>          FN(sock_from_file),             \
-> >> +       FN(for_each_map_elem),          \
-> >
-> > to be more in sync with other map operations, can we call this
-> > `bpf_map_for_each_elem`? I think it makes sense and doesn't read
-> > backwards at all.
->
-> I am using for_each prefix as in the future I (or others) may add
-> more for_each_* helpers, e.g., for_each_task, for_each_hlist_rcu, etc.
-> This represents a family of helpers with callback functions. So I
-> would like to stick with for_each_* names.
->
-
-fair enough, not a big deal
-
-> >
-> >>          /* */
-> >>
-> >>   /* integer value in 'imm' field of BPF_CALL instruction selects which helper
-> >> diff --git a/kernel/bpf/bpf_iter.c b/kernel/bpf/bpf_iter.c
-> >> index 5454161407f1..5187f49d3216 100644
-> >> --- a/kernel/bpf/bpf_iter.c
-> >> +++ b/kernel/bpf/bpf_iter.c
-> >> @@ -675,3 +675,19 @@ int bpf_iter_run_prog(struct bpf_prog *prog, void *ctx)
-> >>           */
-> >>          return ret == 0 ? 0 : -EAGAIN;
-> >>   }
+> >> +       key = 1;
+> >> +       for (i = 0; i < num_cpus; i++)
+> >> +               percpu_valbuf[i] = i + 1;
+> >> +       err = bpf_map_update_elem(percpu_map_fd, &key, percpu_valbuf, BPF_ANY);
+> >> +       if (CHECK(err, "percpu_map_update", "map_update failed\n"))
+> >> +               goto out;
 > >> +
-> >> +BPF_CALL_4(bpf_for_each_map_elem, struct bpf_map *, map, void *, callback_fn,
-> >> +          void *, callback_ctx, u64, flags)
-> >> +{
-> >> +       return map->ops->map_for_each_callback(map, callback_fn, callback_ctx, flags);
+> >> +       do_dummy_read(skel->progs.dump_task);
+> >
+> > why use iter/task programs to trigger your test BPF code? This test
+> > doesn't seem to rely on anything iter-specific, so it's much simpler
+> > (and less code) to just use the typical sys_enter approach with
+> > usleep(1) as a trigger function, no?
+>
+> I am aware of this. I did not change this in v1 mainly wanting to
+> get some comments on API and verifier change etc. for v1.
+> I will use bpf_prog_test_run() to call the program in v2.
+>
+> >
+> >> +
+> >> +       ASSERT_EQ(skel->bss->called, 1, "called");
+> >> +       ASSERT_EQ(skel->bss->hashmap_output, 4, "output_val");
+> >> +
+> >> +       key = 1;
+> >> +       err = bpf_map_lookup_elem(hashmap_fd, &key, &val);
+> >> +       ASSERT_ERR(err, "hashmap_lookup");
+> >> +
+> >> +       ASSERT_EQ(skel->bss->percpu_called, 1, "percpu_called");
+> >> +       CHECK_FAIL(skel->bss->cpu >= num_cpus);
+> >
+> > please don't use CHECK_FAIL: use CHECK or one of ASSERT_xxx variants
+>
+> We do not have ASSERT_GE, I may invent one.
+
+Yeah, it has come up multiple times now. It would be great to have all
+the inequality variants so that we can stop adding new CHECK()s which
+has notoriously confusing semantics. Thanks!
+
+>
+> >
+> >> +       ASSERT_EQ(skel->bss->percpu_key, 1, "percpu_key");
+> >> +       ASSERT_EQ(skel->bss->percpu_val, skel->bss->cpu + 1, "percpu_val");
+> >> +       ASSERT_EQ(skel->bss->percpu_output, 100, "percpu_output");
+> >> +out:
+> >> +       free(percpu_valbuf);
+> >> +       for_each_hash_map_elem__destroy(skel);
 > >> +}
 > >> +
-> >> +const struct bpf_func_proto bpf_for_each_map_elem_proto = {
-> >> +       .func           = bpf_for_each_map_elem,
-> >> +       .gpl_only       = false,
-> >> +       .ret_type       = RET_INTEGER,
-> >> +       .arg1_type      = ARG_CONST_MAP_PTR,
-> >> +       .arg2_type      = ARG_PTR_TO_FUNC,
-> >> +       .arg3_type      = ARG_PTR_TO_STACK_OR_NULL,
-> >
-> > I looked through this code just once but haven't noticed anything that
-> > would strictly require that pointer is specifically to stack. Can this
-> > be made into a pointer to any allocated memory? E.g., why can't we
-> > allow passing a pointer to a ringbuf sample, for instance? Or
-> > MAP_VALUE?
->
-> ARG_PTR_TO_STACK_OR_NULL in the most flexible one. For example, if you
-> want to pass map_value or ringbuf sample, you can assign these values
-> to the stack like
->     struct ctx_t {
->        struct map_value_t *map_value;
->        char *ringbuf_mem;
->     } tmp;
->     tmp.map_value = ...;
->     tmp.ringbuf_mem = ...;
->     bpf_for_each_map_elem(map, callback_fn, &tmp, flags);
-> and callback_fn will be able to access map_value/ringbuf_mem
-> with their original register types.
->
-> This does not allow to pass ringbuf/map_value etc. as the
-> first class citizen. But I think this is a good compromise
-> to permit greater flexibility.
-
-Yeah, thanks for the explanation.
-
->
-> >
-> >> +       .arg4_type      = ARG_ANYTHING,
-> >> +};
-> >> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> >> index 308427fe03a3..074800226327 100644
-> >> --- a/kernel/bpf/helpers.c
-> >> +++ b/kernel/bpf/helpers.c
-> >> @@ -708,6 +708,8 @@ bpf_base_func_proto(enum bpf_func_id func_id)
-> >>                  return &bpf_ringbuf_discard_proto;
-> >>          case BPF_FUNC_ringbuf_query:
-> >>                  return &bpf_ringbuf_query_proto;
-> >> +       case BPF_FUNC_for_each_map_elem:
-> >> +               return &bpf_for_each_map_elem_proto;
-> >>          default:
-> >>                  break;
-> >>          }
-> >> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> >> index db294b75d03b..050b067a0be6 100644
-> >> --- a/kernel/bpf/verifier.c
-> >> +++ b/kernel/bpf/verifier.c
-> >> @@ -234,6 +234,12 @@ static bool bpf_pseudo_call(const struct bpf_insn *insn)
-> >>                 insn->src_reg == BPF_PSEUDO_CALL;
-> >>   }
-> >>
+> >> +void test_for_each(void)
+> >> +{
+> >> +       if (test__start_subtest("hash_map"))
+> >> +               test_hash_map();
+> >> +}
 > >
 > > [...]
 > >
-> >>          map = env->used_maps[aux->map_index];
-> >>          mark_reg_known_zero(env, regs, insn->dst_reg);
-> >>          dst_reg->map_ptr = map;
-> >> @@ -8195,9 +8361,23 @@ static int visit_insn(int t, int insn_cnt, struct bpf_verifier_env *env)
-> >>
-> >>          /* All non-branch instructions have a single fall-through edge. */
-> >>          if (BPF_CLASS(insns[t].code) != BPF_JMP &&
-> >> -           BPF_CLASS(insns[t].code) != BPF_JMP32)
-> >> +           BPF_CLASS(insns[t].code) != BPF_JMP32 &&
-> >> +           !bpf_pseudo_func(insns + t))
-> >>                  return push_insn(t, t + 1, FALLTHROUGH, env, false);
-> >>
-> >> +       if (bpf_pseudo_func(insns + t)) {
-> >
-> >
-> > if you check this before above JMP|JMP32 check, you won't need to do
-> > !bpf_pseudo_func, right? I think it's cleaner.
->
-> Agree. will change in v2.
->
-> >
-> >> +               ret = push_insn(t, t + 1, FALLTHROUGH, env, false);
-> >> +               if (ret)
-> >> +                       return ret;
 > >> +
-> >> +               if (t + 1 < insn_cnt)
-> >> +                       init_explored_state(env, t + 1);
-> >> +               init_explored_state(env, t);
-> >> +               ret = push_insn(t, t + insns[t].imm + 1, BRANCH,
-> >> +                               env, false);
-> >> +               return ret;
-> >> +       }
+> >> +__u32 cpu = 0;
+> >> +__u32 percpu_called = 0;
+> >> +__u32 percpu_key = 0;
+> >> +__u64 percpu_val = 0;
 > >> +
-> >>          switch (BPF_OP(insns[t].code)) {
-> >>          case BPF_EXIT:
-> >>                  return DONE_EXPLORING;
+> >> +static __u64
+> >> +check_percpu_elem(struct bpf_map *map, __u32 *key, __u64 *val,
+> >> +                 struct callback_ctx *data)
+> >> +{
+> >> +       percpu_called++;
+> >> +       cpu = bpf_get_smp_processor_id();
+> >
+> > It's a bit counter-intuitive (at least I was confused initially) that
+> > for a per-cpu array for_each() will iterate only current CPU's
+> > elements. I think it's worthwhile to emphasize this in
+> > bpf_for_each_map_elem() documentation (at least), and call out in
+> > corresponding patches adding per-cpu array/hash iteration support.
+>
+> Right. Will emphasize this in uapi bpf.h and also comments in the code.
+>
+> >
+> >> +       percpu_key = *key;
+> >> +       percpu_val = *val;
+> >> +
+> >> +       bpf_for_each_map_elem(&hashmap, check_hash_elem, data, 0);
+> >> +       return 0;
+> >> +}
+> >> +
 > >
 > > [...]
 > >
