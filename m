@@ -2,120 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D96F3144C7
-	for <lists+bpf@lfdr.de>; Tue,  9 Feb 2021 01:20:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A347731451E
+	for <lists+bpf@lfdr.de>; Tue,  9 Feb 2021 01:55:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229729AbhBIAUD (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 8 Feb 2021 19:20:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbhBIAUC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 8 Feb 2021 19:20:02 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA5B4C061786;
-        Mon,  8 Feb 2021 16:19:21 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id t2so601927pjq.2;
-        Mon, 08 Feb 2021 16:19:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eoH5hUsfk5zo7Noxr8SDfpR7j0komRN7J14ECI09DMw=;
-        b=pll9bdWtNNRvTs5pqN71Tih5XaheYDbVEbatFKdm2dPB7q3QT/T+fVPSWITfpiO/8m
-         Uadlu34LWVHV94ZFGTFPp50za+5L9fcIG7OEgjOx7OgmqUbwk/H2GxEIGD7VdcymtK/f
-         DtlQLWtn6C7/Zgnos4/zCqOckrnUmT5LCKbjK91MV3eyM/UV5MG7wsnaEtHeTaHGJdxM
-         IAar2VcmwdVMsVYe22FFYpSX95F1WKWfjAOC0YE322sWZ5mrke9M1MsALdznaQnb/Bp6
-         fEb7KfqtKUQptI3WQpW274CTC3p48oZI5Xxbx76SzfU5ZZ04qvG7H7iwCWlP8EZlsid/
-         lg8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eoH5hUsfk5zo7Noxr8SDfpR7j0komRN7J14ECI09DMw=;
-        b=AbehOxjuFG+s3Tcq+0punif/lpsm11eAbKHoEV1NSbImNneiVeNGJwBiH4As45zqDg
-         uk0XbjenyW9g06S9W9yKFFgitVU0HyFlHRpTXXlLlnt4qeA+JX/6bICMA8vAlvLs3GMK
-         EfDNt8R9KcmTpuRYjM+IcVdJrylNGp1zrdeVIT418TwIAIeZXXLC9GwbbhiZwSgViYTF
-         NHNbyRvh59yxWltPxrpAscR78YZtGENdFdvlci0wBPBVZ6wAV1HtsboEP4eBK8LgVq6p
-         O3BxuRcmfRVMLI+rE5S+vQsEFCjnZaQj+RYiYj3tVlrzjjLNCfOAsYWI05cdkNjWV4bo
-         3UFQ==
-X-Gm-Message-State: AOAM533FOToTIJik55gRKB7aIzhD74lgdiNWzktArpZol9G5rGEGvOrt
-        DKG+uDTerYaxsBHcQnqmam1x2xR6HZN1VvtlGE8=
-X-Google-Smtp-Source: ABdhPJyZzsmfRbLwpScGGdulYEkVeP0yKwpvx1KbKOfdbHe3te7wDvfrhVuRKjSoueBe5JgJ29Xv+YZD4C/qFmarQlU=
-X-Received: by 2002:a17:902:c3cc:b029:e2:d0cd:4f6e with SMTP id
- j12-20020a170902c3ccb02900e2d0cd4f6emr9539906plj.77.1612829961201; Mon, 08
- Feb 2021 16:19:21 -0800 (PST)
+        id S229772AbhBIAyu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 8 Feb 2021 19:54:50 -0500
+Received: from www62.your-server.de ([213.133.104.62]:59190 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229615AbhBIAys (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 8 Feb 2021 19:54:48 -0500
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1l9HHz-000A5j-TM; Tue, 09 Feb 2021 01:53:59 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1l9HHz-000Nu1-Nn; Tue, 09 Feb 2021 01:53:59 +0100
+Subject: Re: [PATCH v2 bpf-next 1/7] bpf: Optimize program stats
+To:     Alexei Starovoitov <ast@fb.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        davem@davemloft.net
+Cc:     bpf@vger.kernel.org, kernel-team@fb.com
+References: <20210206170344.78399-1-alexei.starovoitov@gmail.com>
+ <20210206170344.78399-2-alexei.starovoitov@gmail.com>
+ <ae1b3d4b-59fd-4ad2-1e72-f9d987250757@iogearbox.net>
+ <49f8a832-43a1-74c8-25b4-b66c8a3014be@fb.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <30c74011-4958-985e-cab5-2a5ce56a3866@iogearbox.net>
+Date:   Tue, 9 Feb 2021 01:53:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20210203041636.38555-1-xiyou.wangcong@gmail.com>
- <20210203041636.38555-3-xiyou.wangcong@gmail.com> <87ft2a4uz4.fsf@cloudflare.com>
- <6020f8b616d4_cc8682087d@john-XPS-13-9370.notmuch>
-In-Reply-To: <6020f8b616d4_cc8682087d@john-XPS-13-9370.notmuch>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Mon, 8 Feb 2021 16:19:10 -0800
-Message-ID: <CAM_iQpWK8V4bzv4pK0v45FRb5aG1F=uSN3hrv-Sw92SrttJhQg@mail.gmail.com>
-Subject: Re: [Patch bpf-next 02/19] skmsg: get rid of struct sk_psock_parser
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Jakub Sitnicki <jakub@cloudflare.com>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, duanxiongchun@bytedance.com,
-        Dongdong Wang <wangdongdong.6@bytedance.com>,
-        jiang.wang@bytedance.com, Cong Wang <cong.wang@bytedance.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <49f8a832-43a1-74c8-25b4-b66c8a3014be@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26074/Mon Feb  8 13:20:40 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 8, 2021 at 12:39 AM John Fastabend <john.fastabend@gmail.com> wrote:
->
-> Jakub Sitnicki wrote:
-> > On Wed, Feb 03, 2021 at 05:16 AM CET, Cong Wang wrote:
-> > > From: Cong Wang <cong.wang@bytedance.com>
-> > >
-> > > struct sk_psock_parser is embedded in sk_psock, it is
-> > > unnecessary as skb verdict also uses ->saved_data_ready.
-> > > We can simply fold these fields into sk_psock.
-> > >
-> > > Cc: John Fastabend <john.fastabend@gmail.com>
-> > > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > > Cc: Jakub Sitnicki <jakub@cloudflare.com>
-> > > Cc: Lorenz Bauer <lmb@cloudflare.com>
-> > > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
-> > > ---
-> >
-> > This one looks like a candidate for splitting out of the series, as it
-> > stands on its own, to make the itself series smaller.
-> >
-> > Also, it seems that we always have:
-> >
-> >   parser.enabled/bpf_running == (saved_data_ready != NULL)
-> >
-> > Maybe parser.enabled can be turned into a predicate function.
+On 2/9/21 12:13 AM, Alexei Starovoitov wrote:
+> On 2/8/21 1:28 PM, Daniel Borkmann wrote:
+>> On 2/6/21 6:03 PM, Alexei Starovoitov wrote:
+[...]
+>>> @@ -539,6 +540,12 @@ struct bpf_binary_header {
+>>>       u8 image[] __aligned(BPF_IMAGE_ALIGNMENT);
+>>>   };
+>>> +struct bpf_prog_stats {
+>>> +    u64 cnt;
+>>> +    u64 nsecs;
+>>> +    struct u64_stats_sync syncp;
+>>> +} __aligned(2 * sizeof(u64));
+>>> +
+>>>   struct bpf_prog {
+>>>       u16            pages;        /* Number of allocated pages */
+>>>       u16            jited:1,    /* Is our filter JIT'ed? */
+>>> @@ -559,6 +566,7 @@ struct bpf_prog {
+>>>       u8            tag[BPF_TAG_SIZE];
+>>>       struct bpf_prog_aux    *aux;        /* Auxiliary fields */
+>>>       struct sock_fprog_kern    *orig_prog;    /* Original BPF program */
+>>> +    struct bpf_prog_stats __percpu *stats;
+>>>       unsigned int        (*bpf_func)(const void *ctx,
+>>>                           const struct bpf_insn *insn);
+>>
+>> nit: could we move aux & orig_prog while at it behind bpf_func just to avoid it slipping
+>> into next cacheline by accident when someone extends this again?
+> 
+> I don't understand what moving aux+orig_prog after bpf_func will do.
+> Currently it's this:
+> struct bpf_prog_aux *      aux;                  /*    32     8 */
+> struct sock_fprog_kern *   orig_prog;            /*    40     8 */
+> unsigned int               (*bpf_func)(const void  *, const struct bpf_insn  *); /*    48     8 */
+> 
+> With stats and active pointers the bpf_func goes into 2nd cacheline.
+> In the past the motivation for bpf_func right next to insns were
+> due to interpreter. Now everyone has JIT on. The interpreter
+> is often removed from .text too. So having insn and bpf_func in
+> the same cache line is not important.
 
-Yeah, this looks cleaner.
+Yeah that's not what I meant, the interpreter case is less important.
 
-> >
-> > [...]
->
-> Agree. To speed this along consider breaking it into three
-> series.
->
->  - couple cleanup things: this patch, config option, etc.
->
->  - udp changes
->
->  - af_unix changes.
->
-> Although if you really think udp changes and af_unix need to go
-> together that is fine imo. I think the basic rule is to try and avoid
-> getting patch counts above 10 or so if at all possible.
->
-> At least this patch, the renaming patch, and the config patch
-> can get pulled out into their own series so we can get those
-> merged and out of the way.
+> Whereas having bpf_func with stats and active could be important
+> if stats/active are also used in other places than fexit/fentry.
+> For this patch set bpf_func location is irrelevant, since the
+> prog addr is hardcoded inside bpf trampoline generated asm.
+> For the best speed only stats and active should be close to each other.
+> And they both will be in the 1st.
 
-Sounds good. Since each patch is already separated, there is no
-extra burden on my side to split the whole patchset as suggested
-above, except adjusting the cover letters.
+I meant to say that it's zero effort to move aux/orig_prog behind the
+bpf_func, so stats/active/bpf_func can still be on same cacheline. Yes,
+it's potentially less important with dispatcher being up to 64, but
+still more relevant to fast path than aux/orig_prog. Also for non-x86
+case.
 
-Thanks.
+>>> @@ -249,7 +249,7 @@ void __bpf_prog_free(struct bpf_prog *fp)
+>>>       if (fp->aux) {
+>>>           mutex_destroy(&fp->aux->used_maps_mutex);
+>>>           mutex_destroy(&fp->aux->dst_mutex);
+>>> -        free_percpu(fp->aux->stats);
+>>> +        free_percpu(fp->stats);
+>>
+>> This doesn't look correct, stats is now /not/ tied to fp->aux anymore which this if block
+>> is taking care of freeing. It needs to be moved outside so we don't leak fp->stats.
+> 
+> Great catch. thanks!
+
