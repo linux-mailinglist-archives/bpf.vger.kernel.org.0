@@ -2,86 +2,143 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D8E13156AE
-	for <lists+bpf@lfdr.de>; Tue,  9 Feb 2021 20:26:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1563D3156E0
+	for <lists+bpf@lfdr.de>; Tue,  9 Feb 2021 20:36:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233103AbhBITSS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Feb 2021 14:18:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233562AbhBITQI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Feb 2021 14:16:08 -0500
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA385C061793
-        for <bpf@vger.kernel.org>; Tue,  9 Feb 2021 11:15:15 -0800 (PST)
-Received: by mail-yb1-xb32.google.com with SMTP id l8so6913141ybe.12
-        for <bpf@vger.kernel.org>; Tue, 09 Feb 2021 11:15:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rTRqMOi3xvRmVts20nDIEkhAay9Da1AMjK23W6n1C2c=;
-        b=jQPfV6Fxl9UGWqUyC8NBtyhqNMDeNLD9ipBim+HijpHiwokzUSmPnTDsCzJOJMJwGy
-         M2vN8sdjyvMp8MLFgn4J+OU20bKe1h7mMIAugQ6TXCV96XnMmKgAn7vwf5ggwVGdWg2s
-         KOZOGNgrZOs2j5UYANPTX5wjQG+NkKe14EOjDAknEvWIeG2GBANX7Q6epZ05IOcrE6oi
-         4+j961S5kjpNEfmDeMj8VIzXS0nJ+PilyQqKN/jVBBkAY5zT8vD1rOaMRVJMDfWqwndS
-         pHVF32RVhhfn3oHoNjU941ht0RHaLmwNrtYhuQLHLxCIba+RT198nGksK/xpUiovzt+V
-         26Fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rTRqMOi3xvRmVts20nDIEkhAay9Da1AMjK23W6n1C2c=;
-        b=Xhzx1tVDeQcWYNecYdzUwAqisWYudzh/BOs4/7sfhzx8ysQIhY5DncRQAltzNZTqu5
-         7irhmlnlWv6tEvizbho2FrtLv9VEXnLKihyXcwe7APkPpaDtsgQuoER3FamtkjbzeHiH
-         SZ91pwY2Q5HP46lSONrVrFxKzUyjaKRMSwVF8KK9kht/zFGNmOeegBI4NHnyKcLjNcf0
-         NHkVGDym5cOnGF2d0HSu3OKx0WxuJ4yTYRWvqOWRCHnDiDOEEAlM9hUrS7iVMsWQiFrl
-         GGAh+hD+0rymCx+habv651NINK0KZsgnMFdgWKXGuLX90p31qNXCLP0POxp7B0xw6ezI
-         ex0A==
-X-Gm-Message-State: AOAM530+/NMrHHYTWw+Vw4vZQlTuGVlQSUZce2sljsY8pY8rnIMAxkHd
-        xb75MFOzgMGNmExUtKPG5XgZWoVEVDP1ZqyEjEI=
-X-Google-Smtp-Source: ABdhPJyYDGULsQKfVjvpur4zPiImOHD9UNhbszwNZklREvcPQpyoY4aRTohy17Q8coAPhiMBEwM0nhRQ2lZTzTvEpI4=
-X-Received: by 2002:a25:c905:: with SMTP id z5mr35271415ybf.260.1612898114961;
- Tue, 09 Feb 2021 11:15:14 -0800 (PST)
-MIME-Version: 1.0
-References: <20210206170344.78399-1-alexei.starovoitov@gmail.com>
- <20210206170344.78399-4-alexei.starovoitov@gmail.com> <CAEf4Bzb1D9AzOU2Zn2DkZrP+VYOPuJ-7xFcEF1unTr6SutMSWg@mail.gmail.com>
- <6757a479-cb35-ac3d-9978-71f1c4daf4a9@fb.com>
-In-Reply-To: <6757a479-cb35-ac3d-9978-71f1c4daf4a9@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 9 Feb 2021 11:15:04 -0800
-Message-ID: <CAEf4BzZzRFvUvSbcyvYd7LPzqPUqt6NUDORdMZ_zZDNymhEdTw@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 3/7] bpf: Add per-program recursion prevention mechanism
-To:     Alexei Starovoitov <ast@fb.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        id S233035AbhBITd7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Feb 2021 14:33:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33893 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233595AbhBITYj (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 9 Feb 2021 14:24:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612898537;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Lq3ulMPstfAjyDEy9civCh6EIWyjgx/qxynJZ4PmPe4=;
+        b=CSniu71m1dgZPPxfE4EAEL8dTr81sB/qhp8aAmte5ExKf2fCsbqc7uXBOaF5mT+G5/nxEJ
+        VkLGiHIs0eYSh5mqC15rTSzMR7eZk+8jXPpCR1jIVyOM5ozl5bbs+RJKUAz0DbxndgbYqF
+        gnc28G3JCyT3xbxNDe5N3t8uMjmp5uk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-37-ACA2lMuhOwio1Mglt_UuFw-1; Tue, 09 Feb 2021 14:22:13 -0500
+X-MC-Unique: ACA2lMuhOwio1Mglt_UuFw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B1A4A1005501;
+        Tue,  9 Feb 2021 19:22:09 +0000 (UTC)
+Received: from krava (unknown [10.40.192.77])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 6DAC55D9C0;
+        Tue,  9 Feb 2021 19:22:06 +0000 (UTC)
+Date:   Tue, 9 Feb 2021 20:22:05 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Veronika Kabatova <vkabatov@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: FAILED unresolved symbol vfs_truncate on arm64 with LLVM
+Message-ID: <YCLg3U7fpeigGUG7@krava>
+References: <CAEf4BzYnT-eoKRL9_Pu_DEuqXVa+edN5F-s+k2RxBSzcsSTJ1g@mail.gmail.com>
+ <20210209052311.GA125918@ubuntu-m3-large-x86>
+ <CAEf4BzZV0-zx6YKUUKmecs=icnQNXJjTokdkSAoexm36za+wdA@mail.gmail.com>
+ <CAEf4BzYvri7wzRnGH_qQbavXOx5TfBA0qx4nYVnn=YNGv+vNVw@mail.gmail.com>
+ <CAEf4Bzax90hn_5axpnCpW+E6gVc1mtUgCXWqmxV0tJ4Ud7bsaA@mail.gmail.com>
+ <20210209074904.GA286822@ubuntu-m3-large-x86>
+ <YCKB1TF5wz93EIBK@krava>
+ <YCKlrLkTQXc4Cyx7@krava>
+ <YCKwxNDkS9rdr43W@krava>
+ <YCLdJPPC+6QjUsR4@krava>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YCLdJPPC+6QjUsR4@krava>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 9, 2021 at 11:06 AM Alexei Starovoitov <ast@fb.com> wrote:
->
-> On 2/8/21 12:51 PM, Andrii Nakryiko wrote:
-> >>                  start = sched_clock();
-> >> +               if (unlikely(!start))
-> >> +                       start = NO_START_TIME;
-> >> +       }
-> >>          return start;
-> >
-> >
-> > Oh, and actually, given you have `start > NO_START_TIME` condition in
-> > exit function, you don't need this `if (unlikely(!start))` bit at all,
-> > because you are going to ignore both 0 and 1. So maybe no need for a
-> > new function, but no need for extra if as well.
->
-> This unlikely(!start) is needed for very unlikely case when
-> sched_clock() returns 0. In such case the prog should still be executed.
->
+adding Arnaldo to the loop
 
-oh, right, I forgot we now skip execution when start == 0. Then I
-guess the point of a helper function stands.
->
->
+jirka
+
+On Tue, Feb 09, 2021 at 08:06:16PM +0100, Jiri Olsa wrote:
+> On Tue, Feb 09, 2021 at 05:13:42PM +0100, Jiri Olsa wrote:
+> > On Tue, Feb 09, 2021 at 04:09:36PM +0100, Jiri Olsa wrote:
+> > 
+> > SNIP
+> > 
+> > > > > > >                 DW_AT_prototyped        (true)
+> > > > > > >                 DW_AT_type      (0x01cfdfe4 "long int")
+> > > > > > >                 DW_AT_external  (true)
+> > > > > > >
+> > > > > > 
+> > > > > > Ok, the problem appears to be not in DWARF, but in mcount_loc data.
+> > > > > > vfs_truncate's address is not recorded as ftrace-attachable, and thus
+> > > > > > pahole ignores it. I don't know why this happens and it's quite
+> > > > > > strange, given vfs_truncate is just a normal global function.
+> > > > 
+> > > > right, I can't see it in mcount adresses.. but it begins with instructions
+> > > > that appears to be nops, which would suggest it's traceable
+> > > > 
+> > > > 	ffff80001031f430 <vfs_truncate>:
+> > > > 	ffff80001031f430: 5f 24 03 d5   hint    #34
+> > > > 	ffff80001031f434: 1f 20 03 d5   nop
+> > > > 	ffff80001031f438: 1f 20 03 d5   nop
+> > > > 	ffff80001031f43c: 3f 23 03 d5   hint    #25
+> > > > 
+> > > > > > 
+> > > > > > I'd like to understand this issue before we try to fix it, but there
+> > > > > > is at least one improvement we can make: pahole should check ftrace
+> > > > > > addresses only for static functions, not the global ones (global ones
+> > > > > > should be always attachable, unless they are special, e.g., notrace
+> > > > > > and stuff). We can easily check that by looking at the corresponding
+> > > > > > symbol. But I'd like to verify that vfs_truncate is ftrace-attachable
+> > > 
+> > > I'm still trying to build the kernel.. however ;-)
+> > 
+> > I finally reproduced.. however arm's not using mcount_loc
+> > but some other special section.. so it's new mess for me
+> 
+> so ftrace data actualy has vfs_truncate address but with extra 4 bytes:
+> 
+> 	ffff80001031f434
+> 
+> real vfs_truncate address:
+> 
+> 	ffff80001031f430 g     F .text  0000000000000168 vfs_truncate
+> 
+> vfs_truncate disasm:
+> 
+> 	ffff80001031f430 <vfs_truncate>:
+> 	ffff80001031f430: 5f 24 03 d5   hint    #34
+> 	ffff80001031f434: 1f 20 03 d5   nop
+> 	ffff80001031f438: 1f 20 03 d5   nop
+> 	ffff80001031f43c: 3f 23 03 d5   hint    #25
+> 
+> thats why we don't match it in pahole.. I checked few other functions
+> and some have the same problem and some match the function boundary
+> 
+> those that match don't have that first hint instrucion, like:
+> 
+> 	ffff800010321e40 <do_faccessat>:
+> 	ffff800010321e40: 1f 20 03 d5   nop
+> 	ffff800010321e44: 1f 20 03 d5   nop
+> 	ffff800010321e48: 3f 23 03 d5   hint    #25
+> 
+> any hints about hint instructions? ;-)
+> 
+> jirka
+
