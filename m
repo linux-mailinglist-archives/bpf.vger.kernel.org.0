@@ -2,83 +2,103 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 884DC314AC7
-	for <lists+bpf@lfdr.de>; Tue,  9 Feb 2021 09:51:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7E49314BB4
+	for <lists+bpf@lfdr.de>; Tue,  9 Feb 2021 10:35:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230101AbhBIItu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Feb 2021 03:49:50 -0500
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:48166 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230034AbhBIIrp (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 9 Feb 2021 03:47:45 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R441e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0UOHZN5R_1612860400;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UOHZN5R_1612860400)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 09 Feb 2021 16:46:47 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     ast@kernel.org
-Cc:     daniel@iogearbox.net, davem@davemloft.net, kuba@kernel.org,
-        hawk@kernel.org, john.fastabend@gmail.com, shuah@kernel.org,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        kpsingh@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH bpf-next] selftests/bpf: Simplify the calculation of variables
-Date:   Tue,  9 Feb 2021 16:46:38 +0800
-Message-Id: <1612860398-102839-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S229752AbhBIJey (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Feb 2021 04:34:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50882 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229908AbhBIJcb (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 9 Feb 2021 04:32:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612863064;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=viYH64kE+WC0LkmBd6WghQDv2YxKbctUtjEzyPFmzQQ=;
+        b=QcC0zYeJFTsGR5rXp8W/CP5LalyUONDCyD3/lh5DSQHZoI3ajH2nRHFAeW+3bvw4O1VKmo
+        jaatZpvmyOy9zw2Gy3odOBZAU/p6QcMCZr4iwAPYfNFO0bB+6vakF1V+lIlem9Zdt28U1J
+        4SZfARi1SzAe9FIixjkXaVmb9h8eOkM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-567-AYRTBPTpNaCmWw_qqyDD0A-1; Tue, 09 Feb 2021 04:31:00 -0500
+X-MC-Unique: AYRTBPTpNaCmWw_qqyDD0A-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9EFC63FD6;
+        Tue,  9 Feb 2021 09:30:57 +0000 (UTC)
+Received: from krava (unknown [10.40.195.89])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 9FE0060CCF;
+        Tue,  9 Feb 2021 09:30:53 +0000 (UTC)
+Date:   Tue, 9 Feb 2021 10:30:52 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Subject: Re: [PATCHv2 bpf-next 0/4] kbuild/resolve_btfids: Invoke
+ resolve_btfids clean in root Makefile
+Message-ID: <YCJWTCdAjoc+N70A@krava>
+References: <20210205124020.683286-1-jolsa@kernel.org>
+ <CAEf4Bza09-H+-iE8Ksd15GjXGArDubOrHorvdwBN=yh9TwTpKA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4Bza09-H+-iE8Ksd15GjXGArDubOrHorvdwBN=yh9TwTpKA@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Fix the following coccicheck warnings:
+On Mon, Feb 08, 2021 at 09:36:40PM -0800, Andrii Nakryiko wrote:
+> On Fri, Feb 5, 2021 at 4:45 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > hi,
+> > resolve_btfids tool is used during the kernel build,
+> > so we should clean it on kernel's make clean.
+> >
+> > v2 changes:
+> >   - add Song's acks on patches 1 and 4 (others changed) [Song]
+> >   - add missing / [Andrii]
+> >   - change srctree variable initialization [Andrii]
+> >   - shifted ifdef for clean target [Andrii]
+> >
+> > thanks,
+> > jirka
+> >
+> >
+> > ---
+> > Jiri Olsa (4):
+> >       tools/resolve_btfids: Build libbpf and libsubcmd in separate directories
+> >       tools/resolve_btfids: Check objects before removing
+> >       tools/resolve_btfids: Set srctree variable unconditionally
+> >       kbuild: Add resolve_btfids clean to root clean target
+> >
+> >  Makefile                            |  7 ++++++-
+> >  tools/bpf/resolve_btfids/.gitignore |  2 --
+> >  tools/bpf/resolve_btfids/Makefile   | 44 ++++++++++++++++++++++----------------------
+> >  3 files changed, 28 insertions(+), 25 deletions(-)
+> >
+> 
+> I've applied the changes to the bpf-next tree. Thanks.
+> 
+> Next time please make sure that each patch in the series has a v2 tag
+> in [PATCH] section, it was a bit confusing to figure out which one is
+> the actual v2 version. Our tooling (CI) also expects the format [PATCH
+> v2 bpf-next], so try not to merge v2 with PATCH.
+> 
 
-./tools/testing/selftests/bpf/xdpxceiver.c:954:28-30: WARNING !A || A &&
-B is equivalent to !A || B.
+will do, thanks
 
-./tools/testing/selftests/bpf/xdpxceiver.c:932:28-30: WARNING !A || A &&
-B is equivalent to !A || B.
-
-./tools/testing/selftests/bpf/xdpxceiver.c:909:28-30: WARNING !A || A &&
-B is equivalent to !A || B.
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- tools/testing/selftests/bpf/xdpxceiver.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/xdpxceiver.c b/tools/testing/selftests/bpf/xdpxceiver.c
-index 99ea6cf..f4a96d5 100644
---- a/tools/testing/selftests/bpf/xdpxceiver.c
-+++ b/tools/testing/selftests/bpf/xdpxceiver.c
-@@ -897,7 +897,7 @@ static void *worker_testapp_validate(void *arg)
- 			ksft_print_msg("Destroying socket\n");
- 	}
- 
--	if (!opt_bidi || (opt_bidi && bidi_pass)) {
-+	if (!opt_bidi || bidi_pass) {
- 		xsk_socket__delete(ifobject->xsk->xsk);
- 		(void)xsk_umem__delete(ifobject->umem->umem);
- 	}
-@@ -922,7 +922,7 @@ static void testapp_validate(void)
- 	pthread_mutex_lock(&sync_mutex);
- 
- 	/*Spawn RX thread */
--	if (!opt_bidi || (opt_bidi && !bidi_pass)) {
-+	if (!opt_bidi || !bidi_pass) {
- 		if (pthread_create(&t0, &attr, worker_testapp_validate, ifdict[1]))
- 			exit_with_error(errno);
- 	} else if (opt_bidi && bidi_pass) {
-@@ -942,7 +942,7 @@ static void testapp_validate(void)
- 	pthread_mutex_unlock(&sync_mutex);
- 
- 	/*Spawn TX thread */
--	if (!opt_bidi || (opt_bidi && !bidi_pass)) {
-+	if (!opt_bidi || !bidi_pass) {
- 		if (pthread_create(&t1, &attr, worker_testapp_validate, ifdict[0]))
- 			exit_with_error(errno);
- 	} else if (opt_bidi && bidi_pass) {
--- 
-1.8.3.1
+jirka
 
