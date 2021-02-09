@@ -2,119 +2,238 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C3F9314E39
-	for <lists+bpf@lfdr.de>; Tue,  9 Feb 2021 12:30:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F01C2314F0F
+	for <lists+bpf@lfdr.de>; Tue,  9 Feb 2021 13:38:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229715AbhBIL2q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Feb 2021 06:28:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229669AbhBIL1w (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Feb 2021 06:27:52 -0500
-Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1567DC061788
-        for <bpf@vger.kernel.org>; Tue,  9 Feb 2021 03:27:12 -0800 (PST)
-Received: by mail-wr1-x44a.google.com with SMTP id u15so16653769wrn.3
-        for <bpf@vger.kernel.org>; Tue, 09 Feb 2021 03:27:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=A5PjxBocm6GkKPxXcYzX2e1AeHxW0gP+W7kFc8REg2E=;
-        b=ofP339Bc5incCy4OVOMtxQ6ESTNMLP3Fc6EZ7VuXFsN0nYTCQuk3+Saa2UBlwztZ04
-         8ZfX/NKW7MwxFkaStBW0GBGHv5nyLJClX5a4HNKpwvY8aZKkDqS18qOB5fmuiBzgx1lx
-         k9IKdZGVfB6c+hJ98cgN3nh35iDKtooVTgyWjrRxFLw76X9Yg3G93wWrLoIHORVj/wj0
-         9isSi7YjzfOrQGavjf96/f69AWde9QdwEmcAULfGVvVM90BSaujuIMkxeAzRh81H4aGE
-         +n/UGB58fR+evj/4F7nqI10mVBlmJZ9H5/m2oUXnCrvGaHiaY6QFyMXllL0MV+R+pFrf
-         4vzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=A5PjxBocm6GkKPxXcYzX2e1AeHxW0gP+W7kFc8REg2E=;
-        b=rPAIAZb+YYnza3BSHFIk71bIKmBr8jOJuzPOI02ZSQhFRMpBNDRdQWn+jvUcGq1n2i
-         Vpz47tsyM3Q97tpm2DVCSh7FdFAHU3g/K2b+m8FVyYu5kBhoZqMUyU76HKXSYwoMFF5f
-         omcXAeVQyQcpXr/XPHVl+4UII9ulOE6BfazI3S3GVi3B7YDTDdzYqdmeAHg+NjHRDip5
-         oHGR5WykpIDrxrTKG9+rhWIb7lCOzvr/YrC+ZBBfFuH+4gCBsqhN7Qvjs/CaCFg5ytTJ
-         wVllMeE3FMcONWzkvC7MuwWp8POZuTRxXNMes60/VSmz6HQg4bY7bX6L8xp5Ra9BYmMd
-         JfLA==
-X-Gm-Message-State: AOAM531SQoi+qmBmeXUtV1xrxS0Xo2yyhhIaaWV8aOU8izWISFAO0F27
-        6XOiSa5y5UAsldElheTsqSeVcZypSw==
-X-Google-Smtp-Source: ABdhPJy71wYx5F5tGmoACI6FT7+5mPXDTjIjyxo+ykfIRjL5SWm/BBNye+fcUz68j74/ZTvvlLPyboqWrg==
-Sender: "elver via sendgmr" <elver@elver.muc.corp.google.com>
-X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:51c9:b9a4:3e29:2cd0])
- (user=elver job=sendgmr) by 2002:a05:600c:35c9:: with SMTP id
- r9mr396002wmq.0.1612870029964; Tue, 09 Feb 2021 03:27:09 -0800 (PST)
-Date:   Tue,  9 Feb 2021 12:27:01 +0100
-Message-Id: <20210209112701.3341724-1-elver@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-Subject: [PATCH] bpf_lru_list: Read double-checked variable once without lock
-From:   Marco Elver <elver@google.com>
-To:     elver@google.com, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     kasan-dev@googlegroups.com, paulmck@kernel.org, dvyukov@google.com,
-        syzbot+3536db46dfa58c573458@syzkaller.appspotmail.com,
-        syzbot+516acdb03d3e27d91bcd@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
+        id S230174AbhBIMi0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Feb 2021 07:38:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49096 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229985AbhBIMiV (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 9 Feb 2021 07:38:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612874214;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eulVAMoLgsuddyX2bCd+R+0WX0Ut6HY0WT7Kb2ZLf3w=;
+        b=adlfWkMZovcbsx93esFczYGObrnPjo0mU1ryfkTywaI2odaRtdjYyjW6RAg0Qu+1278nxV
+        qXNe0LUkV6wZSO6nv8hLoVJUsRWPeybedjY5pd+9EmKBD0xkuHcBeGq7nulwLFIlpbM+lE
+        TQfZfcma/9/r/GIT8zcgX0NCWu9BE/g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-340-tNzawCiWNlSngklNyFLHRw-1; Tue, 09 Feb 2021 07:36:43 -0500
+X-MC-Unique: tNzawCiWNlSngklNyFLHRw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B344ABBEED;
+        Tue,  9 Feb 2021 12:36:41 +0000 (UTC)
+Received: from krava (unknown [10.40.196.4])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 4577A5D6D7;
+        Tue,  9 Feb 2021 12:36:38 +0000 (UTC)
+Date:   Tue, 9 Feb 2021 13:36:37 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Veronika Kabatova <vkabatov@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>
+Subject: Re: FAILED unresolved symbol vfs_truncate on arm64 with LLVM
+Message-ID: <YCKB1TF5wz93EIBK@krava>
+References: <20210209034416.GA1669105@ubuntu-m3-large-x86>
+ <CAEf4BzYnT-eoKRL9_Pu_DEuqXVa+edN5F-s+k2RxBSzcsSTJ1g@mail.gmail.com>
+ <20210209052311.GA125918@ubuntu-m3-large-x86>
+ <CAEf4BzZV0-zx6YKUUKmecs=icnQNXJjTokdkSAoexm36za+wdA@mail.gmail.com>
+ <CAEf4BzYvri7wzRnGH_qQbavXOx5TfBA0qx4nYVnn=YNGv+vNVw@mail.gmail.com>
+ <CAEf4Bzax90hn_5axpnCpW+E6gVc1mtUgCXWqmxV0tJ4Ud7bsaA@mail.gmail.com>
+ <20210209074904.GA286822@ubuntu-m3-large-x86>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210209074904.GA286822@ubuntu-m3-large-x86>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-For double-checked locking in bpf_common_lru_push_free(), node->type is
-read outside the critical section and then re-checked under the lock.
-However, concurrent writes to node->type result in data races.
+On Tue, Feb 09, 2021 at 12:49:04AM -0700, Nathan Chancellor wrote:
+> On Mon, Feb 08, 2021 at 10:56:36PM -0800, Andrii Nakryiko wrote:
+> > On Mon, Feb 8, 2021 at 10:13 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Mon, Feb 8, 2021 at 10:09 PM Andrii Nakryiko
+> > > <andrii.nakryiko@gmail.com> wrote:
+> > > >
+> > > > On Mon, Feb 8, 2021 at 9:23 PM Nathan Chancellor <nathan@kernel.org> wrote:
+> > > > >
+> > > > > On Mon, Feb 08, 2021 at 08:45:43PM -0800, Andrii Nakryiko wrote:
+> > > > > > On Mon, Feb 8, 2021 at 7:44 PM Nathan Chancellor <nathan@kernel.org> wrote:
+> > > > > > >
+> > > > > > > Hi all,
+> > > > > > >
+> > > > > > > Recently, an issue with CONFIG_DEBUG_INFO_BTF was reported for arm64:
+> > > > > > > https://groups.google.com/g/clang-built-linux/c/de_mNh23FOc/m/E7cu5BwbBAAJ
+> > > > > > >
+> > > > > > > $ make -skj"$(nproc)" ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- \
+> > > > > > >                       LLVM=1 O=build/aarch64 defconfig
+> > > > > > >
+> > > > > > > $ scripts/config \
+> > > > > > >     --file build/aarch64/.config \
+> > > > > > >     -e BPF_SYSCALL \
+> > > > > > >     -e DEBUG_INFO_BTF \
+> > > > > > >     -e FTRACE \
+> > > > > > >     -e FUNCTION_TRACER
+> > > > > > >
+> > > > > > > $ make -skj"$(nproc)" ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- \
+> > > > > > >                       LLVM=1 O=build/aarch64 olddefconfig all
+> > > > > > > ...
+> > > > > > > FAILED unresolved symbol vfs_truncate
+> > > > > > > ...
+> > > > > > >
+> > > > > > > My bisect landed on commit 6e22ab9da793 ("bpf: Add d_path helper")
+> > > > > > > although that seems obvious given that is what introduced
+> > > > > > > BTF_ID(func, vfs_truncate).
+> > > > > > >
+> > > > > > > I am using the latest pahole v1.20 and LLVM is at
+> > > > > > > https://github.com/llvm/llvm-project/commit/14da287e18846ea86e45b421dc47f78ecc5aa7cb
+> > > > > > > although I can reproduce back to LLVM 10.0.1, which is the earliest
+> > > > > > > version that the kernel supports. I am very unfamiliar with BPF so I
+> > > > > > > have no idea what is going wrong here. Is this a known issue?
+> > > > > > >
+> > > > > >
+> > > > > > I'll skip the reproduction games this time and will just request the
+> > > > > > vmlinux image. Please upload somewhere so that we can look at DWARF
+> > > > > > and see what's going on. Thanks.
+> > > > > >
+> > > > >
+> > > > > Sure thing, let me know if this works. I uploaded in two places to make
+> > > > > it easier to grab:
+> > > > >
+> > > > > zstd compressed:
+> > > > > https://github.com/nathanchance/bug-files/blob/3b2873751e29311e084ae2c71604a1963f5e1a48/btf-aarch64/vmlinux.zst
+> > > > >
+> > > >
+> > > > Thanks. I clearly see at least one instance of seemingly well-formed
+> > > > vfs_truncate DWARF declaration. Also there is a proper ELF symbol for
+> > > > it. Which means it should have been generated in BTF, but it doesn't
+> > > > appear to be, so it does seem like a pahole bug. I (or someone else
+> > > > before me) will continue tomorrow.
+> > > >
+> > > > $ llvm-dwarfdump vmlinux
+> > > > ...
+> > > >
+> > > > 0x00052e6f:   DW_TAG_subprogram
+> > > >                 DW_AT_name      ("vfs_truncate")
+> > > >                 DW_AT_decl_file
+> > > > ("/home/nathan/cbl/src/linux/include/linux/fs.h")
+> > > >                 DW_AT_decl_line (2520)
+> > > >                 DW_AT_prototyped        (true)
+> > > >                 DW_AT_type      (0x000452cb "long int")
+> > > >                 DW_AT_declaration       (true)
+> > > >                 DW_AT_external  (true)
+> > > >
+> > > > 0x00052e7b:     DW_TAG_formal_parameter
+> > > >                   DW_AT_type    (0x00045fc6 "const path*")
+> > > >
+> > > > 0x00052e80:     DW_TAG_formal_parameter
+> > > >                   DW_AT_type    (0x00045213 "long long int")
+> > > >
+> > > > ...
+> > > >
+> > >
+> > > ... and here's the *only* other one (not marked as declaration, but I
+> > > thought we already handle that, Jiri?):
+> > >
+> > > 0x01d0da35:   DW_TAG_subprogram
+> > >                 DW_AT_low_pc    (0xffff80001031f430)
+> > >                 DW_AT_high_pc   (0xffff80001031f598)
+> > >                 DW_AT_frame_base        (DW_OP_reg29)
+> > >                 DW_AT_GNU_all_call_sites        (true)
+> > >                 DW_AT_name      ("vfs_truncate")
+> > >                 DW_AT_decl_file ("/home/nathan/cbl/src/linux/fs/open.c")
+> > >                 DW_AT_decl_line (69)
+> > >                 DW_AT_prototyped        (true)
+> > >                 DW_AT_type      (0x01cfdfe4 "long int")
+> > >                 DW_AT_external  (true)
+> > >
+> > 
+> > Ok, the problem appears to be not in DWARF, but in mcount_loc data.
+> > vfs_truncate's address is not recorded as ftrace-attachable, and thus
+> > pahole ignores it. I don't know why this happens and it's quite
+> > strange, given vfs_truncate is just a normal global function.
 
-For example, the following concurrent access was observed by KCSAN:
+right, I can't see it in mcount adresses.. but it begins with instructions
+that appears to be nops, which would suggest it's traceable
 
-  write to 0xffff88801521bc22 of 1 bytes by task 10038 on cpu 1:
-   __bpf_lru_node_move_in        kernel/bpf/bpf_lru_list.c:91
-   __local_list_flush            kernel/bpf/bpf_lru_list.c:298
-   ...
-  read to 0xffff88801521bc22 of 1 bytes by task 10043 on cpu 0:
-   bpf_common_lru_push_free      kernel/bpf/bpf_lru_list.c:507
-   bpf_lru_push_free             kernel/bpf/bpf_lru_list.c:555
-   ...
+	ffff80001031f430 <vfs_truncate>:
+	ffff80001031f430: 5f 24 03 d5   hint    #34
+	ffff80001031f434: 1f 20 03 d5   nop
+	ffff80001031f438: 1f 20 03 d5   nop
+	ffff80001031f43c: 3f 23 03 d5   hint    #25
 
-Fix the data races where node->type is read outside the critical section
-(for double-checked locking) by marking the access with READ_ONCE() as
-well as ensuring the variable is only accessed once.
+> > 
+> > I'd like to understand this issue before we try to fix it, but there
+> > is at least one improvement we can make: pahole should check ftrace
+> > addresses only for static functions, not the global ones (global ones
+> > should be always attachable, unless they are special, e.g., notrace
+> > and stuff). We can easily check that by looking at the corresponding
+> > symbol. But I'd like to verify that vfs_truncate is ftrace-attachable
+> > for that particular kernel. For that we'll need Nathan's cooperation,
+> > unless someone else can build an arm64 kernel with the same problem
+> > and check.
 
-Reported-by: syzbot+3536db46dfa58c573458@syzkaller.appspotmail.com
-Reported-by: syzbot+516acdb03d3e27d91bcd@syzkaller.appspotmail.com
-Signed-off-by: Marco Elver <elver@google.com>
----
-Detailed reports:
-	https://groups.google.com/g/syzkaller-upstream-moderation/c/PwsoQ7bfi8k/m/NH9Ni2WxAQAJ
-	https://groups.google.com/g/syzkaller-upstream-moderation/c/-fXQO9ehxSM/m/RmQEcI2oAQAJ
----
- kernel/bpf/bpf_lru_list.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+I'm building on arm now, let's see
 
-diff --git a/kernel/bpf/bpf_lru_list.c b/kernel/bpf/bpf_lru_list.c
-index 1b6b9349cb85..d99e89f113c4 100644
---- a/kernel/bpf/bpf_lru_list.c
-+++ b/kernel/bpf/bpf_lru_list.c
-@@ -502,13 +502,14 @@ struct bpf_lru_node *bpf_lru_pop_free(struct bpf_lru *lru, u32 hash)
- static void bpf_common_lru_push_free(struct bpf_lru *lru,
- 				     struct bpf_lru_node *node)
- {
-+	u8 node_type = READ_ONCE(node->type);
- 	unsigned long flags;
- 
--	if (WARN_ON_ONCE(node->type == BPF_LRU_LIST_T_FREE) ||
--	    WARN_ON_ONCE(node->type == BPF_LRU_LOCAL_LIST_T_FREE))
-+	if (WARN_ON_ONCE(node_type == BPF_LRU_LIST_T_FREE) ||
-+	    WARN_ON_ONCE(node_type == BPF_LRU_LOCAL_LIST_T_FREE))
- 		return;
- 
--	if (node->type == BPF_LRU_LOCAL_LIST_T_PENDING) {
-+	if (node_type == BPF_LRU_LOCAL_LIST_T_PENDING) {
- 		struct bpf_lru_locallist *loc_l;
- 
- 		loc_l = per_cpu_ptr(lru->common_lru.local_list, node->cpu);
--- 
-2.30.0.478.g8a0d178c01-goog
+> 
+> Sure, just let me know what I need to do and I can do it!
+
+
+could you please verify that you don't see vfs_truncate in
+available_filter_functions?
+
+ # cat /sys/kernel/debug/tracing/available_filter_functions | grep vfs_truncate
+
+thanks,
+jirka
+
+> 
+> Cheers,
+> Nathan
+> 
+> > >
+> > > > $ llvm-readelf -s vmlinux | rg vfs_truncate
+> > > >  15013: ffff800011c22418     4 OBJECT  LOCAL  DEFAULT    24
+> > > > __BTF_ID__func__vfs_truncate__609
+> > > >  22531: ffff80001189fe0d     0 NOTYPE  LOCAL  DEFAULT    17
+> > > > __kstrtab_vfs_truncate
+> > > >  22532: ffff8000118a985b     0 NOTYPE  LOCAL  DEFAULT    17
+> > > > __kstrtabns_vfs_truncate
+> > > >  22534: ffff800011873b7c     0 NOTYPE  LOCAL  DEFAULT     8
+> > > > __ksymtab_vfs_truncate
+> > > > 176099: ffff80001031f430   360 FUNC    GLOBAL DEFAULT     2 vfs_truncate
+> > > >
+> > > > $ bpftool btf dump file vmlinux | rg vfs_truncate
+> > > > <nothing>
+> > > >
+> > > > > uncompressed:
+> > > > > https://1drv.ms/u/s!AsQNYeB-IEbqjQiUOspbEdXx49o7?e=ipA9Hv
+> > > > >
+> > > > > Cheers,
+> > > > > Nathan
+> > 
+> > -- 
+> > You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> > To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> > To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/CAEf4Bzax90hn_5axpnCpW%2BE6gVc1mtUgCXWqmxV0tJ4Ud7bsaA%40mail.gmail.com.
+> 
 
