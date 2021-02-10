@@ -2,76 +2,362 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64027316EAF
-	for <lists+bpf@lfdr.de>; Wed, 10 Feb 2021 19:30:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E337A316EC8
+	for <lists+bpf@lfdr.de>; Wed, 10 Feb 2021 19:35:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234143AbhBJSa3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Feb 2021 13:30:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36738 "EHLO
+        id S233807AbhBJSfD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Feb 2021 13:35:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234122AbhBJS3W (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Feb 2021 13:29:22 -0500
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4288BC06174A
-        for <bpf@vger.kernel.org>; Wed, 10 Feb 2021 10:28:42 -0800 (PST)
-Received: by mail-il1-x12d.google.com with SMTP id p15so2759754ilq.8
-        for <bpf@vger.kernel.org>; Wed, 10 Feb 2021 10:28:42 -0800 (PST)
+        with ESMTP id S232813AbhBJScM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Feb 2021 13:32:12 -0500
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53AF7C0613D6;
+        Wed, 10 Feb 2021 10:20:32 -0800 (PST)
+Received: by mail-yb1-xb30.google.com with SMTP id q12so809543ybm.8;
+        Wed, 10 Feb 2021 10:20:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=XJYZFGhrBiou1Eqm8bd6lz808exSgkSBgBkBF0GK28w=;
-        b=ojprnOV6IXbl4zKe/t3ktzzv/tvyOsXC+wdYoV6szHfexRyQN+Je2QfofyeAko7vE9
-         LCoYMkD34VRnUq9BvFgDOqYfvmwhMjeLITQ3aKTkFP+rnPYZS9eLK0sOEXRek8X47ucU
-         5MNeVyGoB6LO/vv8S8iy1S6QNOqX/CrZIrUKG1+rxmY7rDj9ta5Ci9cFz4L2IJmy5cu1
-         a/twhpPYK3DFjMLa5ABZboL2UuGiR5ChIWMb0TN8M2YtmyOmE1r/iEflVoW4xwqA4lwL
-         2PVo4GmRayeqS0eP0iH/WdzW8QUt/B/uYIhw4kthFmEioCwH1J5A0730QkEQyb6ZVpU1
-         EyBA==
+        bh=XUbrz/8xxXdqtk8DEEenUBbYYKqni3z7WGyd8h4oZBY=;
+        b=J9eWa3RpkQaebDbcQKNXKnSBZqx9C75YjbJL8V6IyuhI5IBc4sTEyLvG+Nj2s2h1QI
+         jhSEzgvIgVKtaIT4ag2tUySMoC4aVWxS74EsSqS32UDeowmR9ZQEhGxvnfv7QJG6mige
+         RY25Kww5WvRQPeKxDoL20fTVYAAEJTq30YXM+OdQnflpknrIAObdQSWoFn+flzdyrUlg
+         s4H11eYWGl5GQ0L9Cq8kGhJ+3H7t2MJtcbY353U/H38Zg6UvHhwVQeoT+kqAT3EftkrG
+         B/71zNBuxzjdUeqpCYrtFxZ8APFory4XbdMdJRayFbDKGHqodnc/5JAnY5ErdqZUQdzP
+         zPCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=XJYZFGhrBiou1Eqm8bd6lz808exSgkSBgBkBF0GK28w=;
-        b=noMhLsD60ygRwHHpj9CUhSYEco14s0qFkGleZT9+stommCI1n4EXERPeRLdz5i+0mn
-         bOXw1paQvK8aqsm7eBTCWYSYPLjEQFArLNhQRdX1nIhV41iLJRMed1RYMcx5gaNtA4x7
-         +Gg243nAtadauHgYTF5HJsJ6KRxWNrWAJxVvxFG+c65biKiGx0FXIMs77ZQ197b+2gO6
-         W8Em4jHg3Klak/6oFzj//tz/teaaJc853hVVdCj5uxK2ocuMesf6jSXh3mHR9xysltmB
-         AhGVOG2IGwYh9BnPrjcXw130dLF07jNnGTSOzq/jZH7X//pF60koPRHWR33rnfAoeRdr
-         jKGA==
-X-Gm-Message-State: AOAM533y0IUR43E3DeQimCAx0YDS6gwQWb0ov8z35JmT7YKR4HwQbwsA
-        +6NjG+khrVBDpi4b2/qyznqYKatNwXzjaOKa0JJ2eQ==
-X-Google-Smtp-Source: ABdhPJzInfFQHXgxK/mWD8rTMuDdnlOOh1s8zCpmEHyogH+TAKHuPk0WJlWsK4vZWw1giRnIBnTmp0aUDLiRvp4JyNw=
-X-Received: by 2002:a05:6e02:13a5:: with SMTP id h5mr2235782ilo.263.1612981721460;
- Wed, 10 Feb 2021 10:28:41 -0800 (PST)
+        bh=XUbrz/8xxXdqtk8DEEenUBbYYKqni3z7WGyd8h4oZBY=;
+        b=f2kvlMi9zca9fAY0iM5uT2hAa3cq/CJ786hhvxb8j9OTwRzWGCi7Yxnog3JQB5whgW
+         lw1bDZQc9/no2kZ55hA+X7nAreeUx9oN3cP6jbjvPDv/qaMep8qTBg9y2/JHQtGE/hk+
+         Dzkfl2EbWgbC822I4SDkHBwGYrNnFIl/CVub8uHk+vRhmJxiYNoAQ/+afeF9M8ZuQJhJ
+         V6DtHf42RXOeyMJ9SCqIayx21knz5nbl6namVCs7SzooGM9TikafDN7AwjxnnFd/UG4d
+         p6h8w+ApTyTYTzN6SwRJojJj7yHj6sSOwQoUAgXXE8wtO7b5MLqrSm3pfnrhTU7dLfCG
+         bKYA==
+X-Gm-Message-State: AOAM531p2yzc0BzOBrKh9EzVS4F8X4uxSfRQKYzdZCH17ipB2m0MECmM
+        e5gdbZkWCsdQZuF41TcHKqDO4klRNJf8API0NGoLkBCHNUTqaw==
+X-Google-Smtp-Source: ABdhPJzXyCnLbaMkBV2vpG2T7RtKv6hUcKpEzK48FT2v3pKmRsOpbI15DIMcznlQz8LOFKHrvlh+XtO4P2b/cknanIc=
+X-Received: by 2002:a25:c905:: with SMTP id z5mr5909207ybf.260.1612981231520;
+ Wed, 10 Feb 2021 10:20:31 -0800 (PST)
 MIME-Version: 1.0
-References: <b1792bb3c51eb3e94b9d27e67665d3f2209bba7e.camel@linux.ibm.com>
- <CAADnVQJFcFwxEz=wnV=hkie-EDwa8s5JGbBQeFt1TGux1OihJw@mail.gmail.com>
- <5c6501bea0f7ae9dcb9d5f2071441942d5d3dc0f.camel@linux.ibm.com> <CAADnVQ+gnQED7WYAw7Vmm5=omngCKYXnmgU_NqPUfESBerH8gQ@mail.gmail.com>
-In-Reply-To: <CAADnVQ+gnQED7WYAw7Vmm5=omngCKYXnmgU_NqPUfESBerH8gQ@mail.gmail.com>
-From:   Brendan Jackman <jackmanb@google.com>
-Date:   Wed, 10 Feb 2021 19:28:29 +0100
-Message-ID: <CA+i-1C0xbm_+oz2ZyAWvwjLxeD5niAObN0Ya3y2RvHKrC31Mmw@mail.gmail.com>
-Subject: Re: What should BPF_CMPXCHG do when the values match?
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Ilya Leoshkevich <iii@linux.ibm.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
+References: <20210209052311.GA125918@ubuntu-m3-large-x86> <CAEf4BzZV0-zx6YKUUKmecs=icnQNXJjTokdkSAoexm36za+wdA@mail.gmail.com>
+ <CAEf4BzYvri7wzRnGH_qQbavXOx5TfBA0qx4nYVnn=YNGv+vNVw@mail.gmail.com>
+ <CAEf4Bzax90hn_5axpnCpW+E6gVc1mtUgCXWqmxV0tJ4Ud7bsaA@mail.gmail.com>
+ <20210209074904.GA286822@ubuntu-m3-large-x86> <YCKB1TF5wz93EIBK@krava>
+ <YCKlrLkTQXc4Cyx7@krava> <CAEf4BzaL=qsSyDc8OxeN4pr7+Lvv+de4f+hM5a56LY8EABAk3w@mail.gmail.com>
+ <YCMEucGZVPPQuxWw@krava> <CAEf4BzacQrkSMnmeO3sunOs7sfhX1ZoD_Hnk4-cFUK-TpLNqUA@mail.gmail.com>
+ <YCPfEzp3ogCBTBaS@krava>
+In-Reply-To: <YCPfEzp3ogCBTBaS@krava>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 10 Feb 2021 10:20:20 -0800
+Message-ID: <CAEf4BzbzquqsA5=_UqDukScuoGLfDhZiiXs_sgYBuNUvTBuV6w@mail.gmail.com>
+Subject: Re: FAILED unresolved symbol vfs_truncate on arm64 with LLVM
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@fb.com>, bpf <bpf@vger.kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        KP Singh <kpsingh@google.com>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Veronika Kabatova <vkabatov@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Thanks a lot for bringing this up Ilya!
+On Wed, Feb 10, 2021 at 5:26 AM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Tue, Feb 09, 2021 at 02:00:29PM -0800, Andrii Nakryiko wrote:
+>
+> SNIP
+>
+> > > > > I'm still trying to build the kernel.. however ;-)
+> > > > >
+> > > > > patch below adds the ftrace check only for static functions
+> > > > > and lets the externa go through.. but as you said, in this
+> > > > > case we'll need to figure out the 'notrace' and other checks
+> > > > > ftrace is doing
+> > > > >
+> > > > > jirka
+> > > > >
+> > > > >
+> > > > > ---
+> > > > > diff --git a/btf_encoder.c b/btf_encoder.c
+> > > > > index b124ec20a689..4d147406cfa5 100644
+> > > > > --- a/btf_encoder.c
+> > > > > +++ b/btf_encoder.c
+> > > > > @@ -734,7 +734,7 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
+> > > > >                         continue;
+> > > > >                 if (!has_arg_names(cu, &fn->proto))
+> > > > >                         continue;
+> > > > > -               if (functions_cnt) {
+> > > > > +               if (!fn->external && functions_cnt) {
+> > > >
+> > > > I wouldn't trust DWARF, honestly. Wouldn't checking GLOBAL vs LOCAL
+> > > > FUNC ELF symbol be more reliable?
+> > >
+> > > that'd mean extra bsearch on each processed function,
+> > > on the ther hand, we'are already slow ;-) I'll check
+> > > how big the slowdown would be
+> > >
+> >
+> > We currently record addresses and do binary search. Now we need to
+> > record address + size and still do binary search with a slightly
+> > different semantics (find closest entry >= addr). Then just check that
+> > it overlaps, taking into account the length of the function code. It
+> > shouldn't result in a noticeable slowdown. Might be actually faster,
+> > because we might avoid callback function call costs.
+>
+> I'm still not sure how to handle the external check for function via elf,
 
-On Wed, 10 Feb 2021 at 19:08, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
-[...]
-> Brendan,
-> could you please follow up with x64 jit fix to add 'mov eax,eax'  for
-> u32-sized cmpxchg  ?
+I might be missing something, but don't all functions have
+corresponding ELF symbols? And then symbol can have LOCAL or GLOBAL
+type. LOCALs are supposed to be not visible outside respective CUs (so
+correspond to static functions), while GLOBALs are extern-able funcs.
+So if func's symbol is GLOBAL, it should be ok to assume it's
+attachable (not inlined, at least).
 
-Ack, will do.
+> but below is change for checking that ftrace addrs are within elf functions
+>
+> seems to work in my tests, I'll run some more tests and send full patch
+
+It seems unnecessarily convoluted. I was thinking about something like
+this (the diff will totally be screwed up by gmail, and I haven't even
+compiled it):
+
+diff --git a/btf_encoder.c b/btf_encoder.c
+index b124ec20a689..8162b238bd43 100644
+--- a/btf_encoder.c
++++ b/btf_encoder.c
+@@ -236,6 +236,23 @@ get_kmod_addrs(struct btf_elf *btfe, __u64
+**paddrs, __u64 *pcount)
+        return 0;
+ }
+
++struct func_seg { __u64 start; __u64 end; };
++
++static int func_exists(struct func_seg *segs, size_t len, __u64 addr)
++{
++       size_t l = 0, r = len - 1, m;
++
++       while (l < r) {
++               m = l + (r - l + 1) / 2;
++               if (segs[m].start <= addr)
++                       l = m;
++               else
++                       r = m - 1;
++       }
++
++       return segs[l].start <= addr && addr < segs[l].end;
++}
++
+ static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
+ {
+        __u64 *addrs, count, i;
+@@ -286,7 +303,7 @@ static int setup_functions(struct btf_elf *btfe,
+struct funcs_layout *fl)
+                __u64 addr = kmod ? func->addr + func->sh_addr : func->addr;
+
+                /* Make sure function is within ftrace addresses. */
+-               if (bsearch(&addr, addrs, count, sizeof(addrs[0]), addrs_cmp)) {
++               if (func_exists(addrs, count, addr))
+                        /*
+                         * We iterate over sorted array, so we can easily skip
+                         * not valid item and move following valid field into
+
+
+So the idea is to use address segments and check whether there is a
+segment that overlaps with a given address by first binary searching
+for a segment with the largest starting address that is <= addr. And
+then just confirming that segment does overlap with the requested
+address.
+
+WDYT?
+
+>
+> jirka
+>
+>
+> ---
+> diff --git a/btf_encoder.c b/btf_encoder.c
+> index b124ec20a689..548a12847f99 100644
+> --- a/btf_encoder.c
+> +++ b/btf_encoder.c
+> @@ -36,6 +36,7 @@ struct funcs_layout {
+>  struct elf_function {
+>         const char      *name;
+>         unsigned long    addr;
+> +       unsigned long    end;
+>         unsigned long    sh_addr;
+>         bool             generated;
+>  };
+> @@ -44,7 +45,7 @@ static struct elf_function *functions;
+>  static int functions_alloc;
+>  static int functions_cnt;
+>
+> -static int functions_cmp(const void *_a, const void *_b)
+> +static int functions_cmp_name(const void *_a, const void *_b)
+>  {
+>         const struct elf_function *a = _a;
+>         const struct elf_function *b = _b;
+> @@ -52,6 +53,16 @@ static int functions_cmp(const void *_a, const void *_b)
+>         return strcmp(a->name, b->name);
+>  }
+>
+> +static int functions_cmp_addr(const void *_a, const void *_b)
+> +{
+> +       const struct elf_function *a = _a;
+> +       const struct elf_function *b = _b;
+> +
+> +       if (a->addr == b->addr)
+> +               return 0;
+> +       return a->addr < b->addr ? -1 : 1;
+> +}
+> +
+>  static void delete_functions(void)
+>  {
+>         free(functions);
+> @@ -98,6 +109,7 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym,
+>
+>         functions[functions_cnt].name = name;
+>         functions[functions_cnt].addr = elf_sym__value(sym);
+> +       functions[functions_cnt].end = (__u64) -1;
+>         functions[functions_cnt].sh_addr = sh.sh_addr;
+>         functions[functions_cnt].generated = false;
+>         functions_cnt++;
+> @@ -236,9 +248,25 @@ get_kmod_addrs(struct btf_elf *btfe, __u64 **paddrs, __u64 *pcount)
+>         return 0;
+>  }
+>
+> +static bool is_addr_in_func(__u64 addr, struct elf_function *func, bool kmod)
+> +{
+> +       /*
+> +        * For vmlinux image both addrs[x] and functions[x]::addr
+> +        * values are final address and are comparable.
+> +        *
+> +        * For kernel module addrs[x] is final address, but
+> +        * functions[x]::addr is relative address within section
+> +        * and needs to be relocated by adding sh_addr.
+> +        */
+> +       __u64 start = kmod ? func->addr + func->sh_addr : func->addr;
+> +       __u64 end = kmod ? func->end+ func->sh_addr : func->end;
+> +
+> +       return start <= addr && addr < end;
+> +}
+> +
+>  static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
+>  {
+> -       __u64 *addrs, count, i;
+> +       __u64 *addrs, count, i_func, i_addr;
+>         int functions_valid = 0;
+>         bool kmod = false;
+>
+> @@ -266,43 +294,62 @@ static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
+>                 return 0;
+>         }
+>
+> -       qsort(addrs, count, sizeof(addrs[0]), addrs_cmp);
+> -       qsort(functions, functions_cnt, sizeof(functions[0]), functions_cmp);
+> -
+>         /*
+> -        * Let's got through all collected functions and filter
+> -        * out those that are not in ftrace.
+> +        * Sort both functions and addrs so we can iterate
+> +        * both of them simultaneously and found matching
+> +        * func/addr pairs.
+>          */
+> -       for (i = 0; i < functions_cnt; i++) {
+> -               struct elf_function *func = &functions[i];
+> -               /*
+> -                * For vmlinux image both addrs[x] and functions[x]::addr
+> -                * values are final address and are comparable.
+> -                *
+> -                * For kernel module addrs[x] is final address, but
+> -                * functions[x]::addr is relative address within section
+> -                * and needs to be relocated by adding sh_addr.
+> -                */
+> -               __u64 addr = kmod ? func->addr + func->sh_addr : func->addr;
+> +       qsort(addrs, count, sizeof(addrs[0]), addrs_cmp);
+> +       qsort(functions, functions_cnt, sizeof(functions[0]), functions_cmp_addr);
+> +
+> +       for (i_func = 0, i_addr = 0; i_func < functions_cnt; i_func++) {
+> +               struct elf_function *func = &functions[i_func];
+> +
+> +               if (i_func + 1 < functions_cnt)
+> +                       func->end = functions[i_func + 1].addr;
+> +
+> +               for (; i_addr < count; i_addr++) {
+> +                       __u64 addr = addrs[i_addr];
+> +
+> +                       /* Functions are  ahead, catch up with addrs. */
+> +                       if (addr < func->addr)
+> +                               continue;
+> +
+> +                       /* Addr is within function - mark function as valid. */
+> +                       if (is_addr_in_func(addr, func, kmod)) {
+> +                               /*
+> +                                * We iterate over sorted array, so we can easily skip
+> +                                * not valid item and move following valid field into
+> +                                * its place, and still keep the 'new' array sorted.
+> +                                */
+> +                               if (i_func != functions_valid)
+> +                                       functions[functions_valid] = functions[i_func];
+> +                               functions_valid++;
+> +                               i_addr++;
+> +                       }
+>
+> -               /* Make sure function is within ftrace addresses. */
+> -               if (bsearch(&addr, addrs, count, sizeof(addrs[0]), addrs_cmp)) {
+>                         /*
+> -                        * We iterate over sorted array, so we can easily skip
+> -                        * not valid item and move following valid field into
+> -                        * its place, and still keep the 'new' array sorted.
+> +                        * Addrs are ahead, catch up with functions, or we just
+> +                        * found valid function and want to move to another.
+>                          */
+> -                       if (i != functions_valid)
+> -                               functions[functions_valid] = functions[i];
+> -                       functions_valid++;
+> +                       break;
+>                 }
+>         }
+>
+> +       if (btf_elf__verbose) {
+> +               printf("Found %d functions out of %d symbols and %llu ftrace addresses.\n",
+> +                       functions_valid, functions_cnt, count);
+> +       }
+> +
+>         functions_cnt = functions_valid;
+>         free(addrs);
+>
+> -       if (btf_elf__verbose)
+> -               printf("Found %d functions!\n", functions_cnt);
+> +       /*
+> +        * And finaly sort 'valid' functions by name,
+> +        * so find_function can be used.
+> +        */
+> +       qsort(functions, functions_cnt, sizeof(functions[0]), functions_cmp_name);
+> +
+>         return 0;
+>  }
+>
+> @@ -312,7 +359,7 @@ static struct elf_function *find_function(const struct btf_elf *btfe,
+>         struct elf_function key = { .name = name };
+>
+>         return bsearch(&key, functions, functions_cnt, sizeof(functions[0]),
+> -                      functions_cmp);
+> +                      functions_cmp_name);
+>  }
+>
+>  static bool btf_name_char_ok(char c, bool first)
+>
