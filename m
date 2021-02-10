@@ -2,94 +2,80 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C951831715D
-	for <lists+bpf@lfdr.de>; Wed, 10 Feb 2021 21:28:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2B9231715F
+	for <lists+bpf@lfdr.de>; Wed, 10 Feb 2021 21:29:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231626AbhBJU2i (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Feb 2021 15:28:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34184 "EHLO
+        id S232361AbhBJU3V (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Feb 2021 15:29:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233336AbhBJU2b (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Feb 2021 15:28:31 -0500
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88A48C061574;
-        Wed, 10 Feb 2021 12:27:49 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id k4so3341689ybp.6;
-        Wed, 10 Feb 2021 12:27:49 -0800 (PST)
+        with ESMTP id S231948AbhBJU3N (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Feb 2021 15:29:13 -0500
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 097CAC06174A
+        for <bpf@vger.kernel.org>; Wed, 10 Feb 2021 12:28:33 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id b187so3327827ybg.9
+        for <bpf@vger.kernel.org>; Wed, 10 Feb 2021 12:28:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=0Fig8xpbsaW+Bl7CpYvOTWbVnzyDhnErcbBrbtE4md8=;
-        b=mC1zTrBRp7e6tc2p5CkzMoAMGxWerVoGSFpOIEQsvabQtTjUAsyc6/cMDnEp8UtQ5i
-         jaJhYvPARoYpDbhnPQtzKJJG2IMIrmbAfQYXMYKMpeFqa8Qh1+7jlvzr0BC7RM/bwODA
-         jV5XgNqi8LlCGTvOdcQsZFguV5ygj2k2BrIpFMabKZkC3BQPQDsO2J+rLQ+qq43uLMGw
-         e33s9yg5jqSnNuivP/SpUkXPVZaPv/HcJ8VPm0b9eibigG5KL7JOryhA0JBlnsbSK1yQ
-         D9lMgQkFZ1qh8LePy/mZfm2U1MLs/V/ixQf0Hvz8/+ODeHYkWtxQv/2ZyLIQtSxOCEq+
-         0BXg==
+        bh=RjfHmAjUmDnO1YwUmTSiDzhzzBxFTy7C218GxUy7dtw=;
+        b=BCnaDcCrek6IizGB2ukbKGIMHkxpB0TJwuOWNTOfzeBhQfHlL5G3wfyutb2wLCi9C1
+         XT3fKqvPahncoEJDhSE0CkEjG7cS8ES1R5adLCmt3hZmAix0Q9jQC8eb3TfpFx7WoFRj
+         HH4kSsbkkfgFuxsaqA0tOYsa7Ft35tAhHiACuar/ux8bSJuhSdnypcNuWf2yczjmWG6B
+         zRD4uyl8UfMPJSp9k4cyZkPbA6/P2JzaaLcs7xVYDyhCZuPl2zg3oHr2MRp/9uo3IiRA
+         YuHIV0dxWvk/h+q4cdmfoq4anSANxbnVMx6RUnci4m9zWU/22Ijk3u2/DyyZYDonBSWX
+         Lwhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0Fig8xpbsaW+Bl7CpYvOTWbVnzyDhnErcbBrbtE4md8=;
-        b=aiGEy1WmMjGT1JSTAazXMUItbNygayuarh5TwzGytB0oVhHCDkZL++zORIqCp47ins
-         yczQoIkFWDSkCRnIT0ST82zKXmFiE+qL+NIxQl9TsdYQuh8h20YK0l2ama6sVBebxDto
-         6WQujschJTG45nrqnbt3J9gkX53vT2MgGPHjChuer9j3/fngNc6zpH8aJ3TDTjTlXT1b
-         nbW4lbwk5RhY4bLRw6D28PbTC6eU0FNfecJKLrtfkuF2HPs/w3PmOCdbgYzsai1fnsV5
-         2YTGJdmQ58YPuFpuFgHsfRnESKFvR4qHOLwpdGq9/vfu4W25b92YEibor+crZG6bi1hT
-         Tmjg==
-X-Gm-Message-State: AOAM533bUf/ppk0y75QXtHVfEiX/RJjnwauo9Fnj2/gwcYXmlVZC23vz
-        VVkKk7pyBNkTZOI97KCWkT0huYNJX48mgGShmCi4w4pq1FG4Dw==
-X-Google-Smtp-Source: ABdhPJyCFETFmX50Li29uERLQKy0Ge43WuewjW0KIPG1gIPnlvRYh7aRFKsvCsLatnsleTrYyXwZ5ISbcDcwV4wm1JI=
-X-Received: by 2002:a25:c905:: with SMTP id z5mr6617093ybf.260.1612988868917;
- Wed, 10 Feb 2021 12:27:48 -0800 (PST)
+        bh=RjfHmAjUmDnO1YwUmTSiDzhzzBxFTy7C218GxUy7dtw=;
+        b=CMosHYcjRRpMXFGkhtFKjsas0jybXc+k8CUmF8DJ0AHd6nM6xik4IypXteCNeWLnky
+         kpEWO/wAEwLG3wLWJdnSGgqvLZcjT1QnlebR03syJTvI0kRR5XZXoPS9c1G5FY5XA6+f
+         mJehs7Yei9WDFZGF7RnaIqTRMVSbGoRwnru5gH8RmnLe8SJz4j0B8a1f0ZdROUs1NyZi
+         OBj665+Y3WD7u0spTgQq1VaFHioyCq8f8klxKDcXSJirvfXMHiB/4eZnH6azZbAszD8v
+         L/uSevE2hNqAPfl+8A4gGuwLmHz9BzxB8WOaaIfAOT3u4DFyp61xvQAQmNz8Z2oYHs8y
+         860w==
+X-Gm-Message-State: AOAM532TNX6ccKoO+2h4uUDVt8QFlGxTlI339ajcPs7dMIGEGykJYWKM
+        AYGmCDkKJ92I2xkuP1nlePxJIUY0mxMY/9tqkZmcgtcDDOI=
+X-Google-Smtp-Source: ABdhPJxHS68Y0d67z+C/V61wjFVtkdDouQ9vcDjt0SqUQCYcgrctfZexybjvsGjjwu/1VhcI7y3vwZjG+TS03E4em8Y=
+X-Received: by 2002:a25:4b86:: with SMTP id y128mr6459714yba.403.1612988912422;
+ Wed, 10 Feb 2021 12:28:32 -0800 (PST)
 MIME-Version: 1.0
-References: <20210209193105.1752743-1-kafai@fb.com> <20210209193112.1752976-1-kafai@fb.com>
-In-Reply-To: <20210209193112.1752976-1-kafai@fb.com>
+References: <20210210020713.77911-1-iii@linux.ibm.com>
+In-Reply-To: <20210210020713.77911-1-iii@linux.ibm.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 10 Feb 2021 12:27:38 -0800
-Message-ID: <CAEf4BzbZmmezSxYLCOdeeA4zW+vdDvQH57wQ-qpFSKiMcE1tVw@mail.gmail.com>
-Subject: Re: [PATCH bpf 2/2] bpf: selftests: Add non function pointer test to struct_ops
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+Date:   Wed, 10 Feb 2021 12:28:21 -0800
+Message-ID: <CAEf4BzY2xgxU11bKBo-UazPDaC_zZ4=dgLUhQc5AKabwEAGdRw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix endianness issues in atomic tests
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Networking <netdev@vger.kernel.org>
+        bpf <bpf@vger.kernel.org>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 9, 2021 at 12:11 PM Martin KaFai Lau <kafai@fb.com> wrote:
+On Tue, Feb 9, 2021 at 6:11 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
 >
-> This patch adds a "void *owner" member.  The existing
-> bpf_tcp_ca test will ensure the bpf_cubic.o and bpf_dctcp.o
-> can be loaded.
+> Atomic tests store a DW, but then load it back as a W from the same
+> address. This doesn't work on big-endian systems, and since the point
+> of those tests is not testing narrow loads, fix simply by loading a
+> DW.
 >
-> Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> Fixes: 98d666d05a1d ("bpf: Add tests for new BPF atomic operations")
 > ---
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Applied to bpf-next.
 
-What will happen if BPF code initializes such non-func ptr member?
-Will libbpf complain or just ignore those values? Ignoring initialized
-members isn't great.
-
->  tools/testing/selftests/bpf/bpf_tcp_helpers.h | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/tools/testing/selftests/bpf/bpf_tcp_helpers.h b/tools/testing/selftests/bpf/bpf_tcp_helpers.h
-> index 6a9053162cf2..91f0fac632f4 100644
-> --- a/tools/testing/selftests/bpf/bpf_tcp_helpers.h
-> +++ b/tools/testing/selftests/bpf/bpf_tcp_helpers.h
-> @@ -177,6 +177,7 @@ struct tcp_congestion_ops {
->          * after all the ca_state processing. (optional)
->          */
->         void (*cong_control)(struct sock *sk, const struct rate_sample *rs);
-> +       void *owner;
->  };
->
->  #define min(a, b) ((a) < (b) ? (a) : (b))
-> --
-> 2.24.1
+>  tools/testing/selftests/bpf/verifier/atomic_and.c | 2 +-
+>  tools/testing/selftests/bpf/verifier/atomic_or.c  | 2 +-
+>  tools/testing/selftests/bpf/verifier/atomic_xor.c | 2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
 >
