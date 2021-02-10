@@ -2,117 +2,321 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E388F3170E0
-	for <lists+bpf@lfdr.de>; Wed, 10 Feb 2021 21:05:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D349317100
+	for <lists+bpf@lfdr.de>; Wed, 10 Feb 2021 21:16:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232012AbhBJUFH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Feb 2021 15:05:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230229AbhBJUFG (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Feb 2021 15:05:06 -0500
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9799DC061574
-        for <bpf@vger.kernel.org>; Wed, 10 Feb 2021 12:04:25 -0800 (PST)
-Received: by mail-yb1-xb2f.google.com with SMTP id m188so2725976yba.13
-        for <bpf@vger.kernel.org>; Wed, 10 Feb 2021 12:04:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=TDWnbrleUQS+wR5aLHELhNJGINUQVHkwoOgbN/FROfw=;
-        b=I6t6LcJdIE9jSIovjvjAaFu/5mZqdPNpfmWdYBGFrMQAKvGz04UBk7MG0zKE48Ic+c
-         GYkO0k99HTBuRS4CrF9g2pVtZr45alFvbOrDyZLKFBeqKRGCzNwiX1XuB988x9jZNa0e
-         JGLorsFQj2LU7dpyZOGGX8IF5XzaxSrhPaTxhslDslHrK5k3u4T0wzWHnyRkMsB/PUDd
-         c7V/I3I2dFdSCJeLPNQDSkUsQVKJsKett+OKGai4KX+Oony0omO2bJK5STcGwlwdzVZj
-         TeMKzpBhS7T4aiURuMdEd2iD12PJtC3a1mUIt92GdfURLc3NWAqwEcVwl4MsiG8aue6g
-         Ls3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=TDWnbrleUQS+wR5aLHELhNJGINUQVHkwoOgbN/FROfw=;
-        b=uaVIZ4TDVhEBajhUP6QjqggGT9BBvlX0jjNQRzu8dJCs2/0S+FUnTvvHjDGydPi4DC
-         YQ5EfzmBuALIt4RTfPhPQC66WH6fxHnYYGQyKffZdTNY66eWFKJsvbNjXb0asjU/JgN6
-         QKJwMKVPKJRGO22Bzc5clULaMPVfn9093wjbCoLaOyTY+54ALPXxoWUf5+W8oviguT3D
-         RlTPjJHIBN2zRF839t2olIYELyVgvHq6qrNPYaJOMcAz1gMIoKtGu4HJqSViOKQYLKHX
-         fDTCi5F97MO0jvKInVQh1C+hdyVH+46nmq49HYdHttbYUpMgprtj28t7R12MHqb5sgWv
-         hQ+g==
-X-Gm-Message-State: AOAM531QKNi39Zo7N+AAMCcmhlnPUM4FgT9tBrLuuIv9I0LoSgdFm8Y1
-        dgWxunrq/IY0uFLYWlSzJjxlR+4MspUgU1z4VNU=
-X-Google-Smtp-Source: ABdhPJwAmnEAuYN0rYmx+qN+svVMgbbGWQUZ7V6Mnyjq3BOq0ZWTMxCbyK206KLhqblWdzimddfBHSvzb4Xbey6bItc=
-X-Received: by 2002:a25:f40e:: with SMTP id q14mr6271176ybd.230.1612987464944;
- Wed, 10 Feb 2021 12:04:24 -0800 (PST)
+        id S232824AbhBJUPg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Feb 2021 15:15:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36763 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232756AbhBJUPe (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 10 Feb 2021 15:15:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612988034;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=F8qPD5DmBym140GmfNF1grPRmnSGg7P4Xsc0eTmldHE=;
+        b=D5qiBQ48RuO/+Skve4raz4q60NeMfmUluX2UlNyF/5SmbWicPe0pladhAHRoniY+sEU+Xi
+        wIun3JX57dO7X9usAdGzdWQBrMfPlOiwQckIIikFqNJ4eO/5mdehWTkAOfiDcsLqzdj6dq
+        KbenCDLG4VHEJYttushYnkhKpn5g7tU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-575-iC_hdPsLNaufqMXmbgQzow-1; Wed, 10 Feb 2021 15:13:50 -0500
+X-MC-Unique: iC_hdPsLNaufqMXmbgQzow-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D622384E240;
+        Wed, 10 Feb 2021 20:13:47 +0000 (UTC)
+Received: from krava (unknown [10.40.195.206])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 5E5C119D7C;
+        Wed, 10 Feb 2021 20:13:44 +0000 (UTC)
+Date:   Wed, 10 Feb 2021 21:13:43 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Veronika Kabatova <vkabatov@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>
+Subject: Re: FAILED unresolved symbol vfs_truncate on arm64 with LLVM
+Message-ID: <YCQ+d0CVgIclDwng@krava>
+References: <CAEf4BzYvri7wzRnGH_qQbavXOx5TfBA0qx4nYVnn=YNGv+vNVw@mail.gmail.com>
+ <CAEf4Bzax90hn_5axpnCpW+E6gVc1mtUgCXWqmxV0tJ4Ud7bsaA@mail.gmail.com>
+ <20210209074904.GA286822@ubuntu-m3-large-x86>
+ <YCKB1TF5wz93EIBK@krava>
+ <YCKlrLkTQXc4Cyx7@krava>
+ <CAEf4BzaL=qsSyDc8OxeN4pr7+Lvv+de4f+hM5a56LY8EABAk3w@mail.gmail.com>
+ <YCMEucGZVPPQuxWw@krava>
+ <CAEf4BzacQrkSMnmeO3sunOs7sfhX1ZoD_Hnk4-cFUK-TpLNqUA@mail.gmail.com>
+ <YCPfEzp3ogCBTBaS@krava>
+ <CAEf4BzbzquqsA5=_UqDukScuoGLfDhZiiXs_sgYBuNUvTBuV6w@mail.gmail.com>
 MIME-Version: 1.0
-References: <CANaYP3G4zZu=d2Y_d+=418f6X9+5b-JFhk0h9VZoQmFFLhu3Ag@mail.gmail.com>
- <CANaYP3GgBDPBUjrkg0j-NOEzf3WJEOqcqoGU0uVxQ3LsAzz8ow@mail.gmail.com>
- <87v9b2u6pa.fsf@toke.dk> <CANaYP3GxKrjuUUTGaAjYGqwPCNzPJBNPQGMMCNaoHT4rfsYUfA@mail.gmail.com>
- <87mtwetz04.fsf@toke.dk> <CANaYP3G4sBrBy3Xsrku4LjW4sFhAb-9HreZUo_aBNe6gCab1Eg@mail.gmail.com>
- <87blcutx3v.fsf@toke.dk> <CANaYP3FEheoxSp86sFair0CAQz1-fkdmGp0_zvgGqQr_3P+qdg@mail.gmail.com>
- <875z32tpel.fsf@toke.dk> <CANaYP3EUOLf=8+ZuKFr4ozPueqgjvzxkEK+O8WEamwY01yATaA@mail.gmail.com>
- <87zh0es73x.fsf@toke.dk> <CANaYP3G+rtJuMAaTvdxSZCEtA9tSqh00OCkJ0LoeL7L030w0VQ@mail.gmail.com>
- <87tuqlsdtu.fsf@toke.dk>
-In-Reply-To: <87tuqlsdtu.fsf@toke.dk>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 10 Feb 2021 12:04:14 -0800
-Message-ID: <CAEf4BzaUkcnVaGJkMxuc+atqUimxJJQOrZHDkK1Yprysy79hyg@mail.gmail.com>
-Subject: Re: libbpf: pinning multiple progs from the same section
-To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc:     Gilad Reti <gilad.reti@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzbzquqsA5=_UqDukScuoGLfDhZiiXs_sgYBuNUvTBuV6w@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 9, 2021 at 3:03 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redha=
-t.com> wrote:
->
-> Gilad Reti <gilad.reti@gmail.com> writes:
->
-> >> > I didn't get this last comment. What I meant is that I want somethin=
-g
-> >> > like the bpf_object__pin_maps but that doesn't pin the maps, just
-> >> > exposing its naming part.
-> >>
-> >> Right, OK. Why, though? I can kinda see how it could be convenient to
-> >> (basically )make libbpf behave as if all maps has the 'pinning'
-> >> attribute set, for map reuse. But I'm not sure I can think any concret=
-e
-> >> use cases where this would be needed. What's yours?
-> >>
+On Wed, Feb 10, 2021 at 10:20:20AM -0800, Andrii Nakryiko wrote:
+
+SNIP
+
+> > but below is change for checking that ftrace addrs are within elf functions
 > >
-> > I am using the same bpf objects (more specifically, the new skeleton
-> > feature) in two different processes that need access to the same
-> > maps/programs (for example, they both need access to shared maps).
-> > Thus, I want to reuse the entire object in both. Since we already have
-> > a way to pin an entire bpf object, I thought it would be convenient to
-> > have a way of reusing it entirely (though I am fine with pinning and
-> > reusing each one manually).
-> > (I cannot set the __uint(pinning, LIBBPF_PIN_BY_NAME) on each since I
-> > want to share the bss map too)
->
-> Ah, see, now *this* could go under the "missing API" header: having a
-> way to make libbpf pin (and reuse) the auto-generated maps, like you can
-> do with the 'pinning' attribute.
->
-> Andrii, WDYT?
+> > seems to work in my tests, I'll run some more tests and send full patch
+> 
+> It seems unnecessarily convoluted. I was thinking about something like
+> this (the diff will totally be screwed up by gmail, and I haven't even
+> compiled it):
+> 
+> diff --git a/btf_encoder.c b/btf_encoder.c
+> index b124ec20a689..8162b238bd43 100644
+> --- a/btf_encoder.c
+> +++ b/btf_encoder.c
+> @@ -236,6 +236,23 @@ get_kmod_addrs(struct btf_elf *btfe, __u64
+> **paddrs, __u64 *pcount)
+>         return 0;
+>  }
+> 
+> +struct func_seg { __u64 start; __u64 end; };
+> +
+> +static int func_exists(struct func_seg *segs, size_t len, __u64 addr)
+> +{
+> +       size_t l = 0, r = len - 1, m;
+> +
+> +       while (l < r) {
+> +               m = l + (r - l + 1) / 2;
+> +               if (segs[m].start <= addr)
+> +                       l = m;
+> +               else
+> +                       r = m - 1;
+> +       }
+> +
+> +       return segs[l].start <= addr && addr < segs[l].end;
+> +}
+> +
+>  static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
+>  {
+>         __u64 *addrs, count, i;
+> @@ -286,7 +303,7 @@ static int setup_functions(struct btf_elf *btfe,
+> struct funcs_layout *fl)
+>                 __u64 addr = kmod ? func->addr + func->sh_addr : func->addr;
+> 
+>                 /* Make sure function is within ftrace addresses. */
+> -               if (bsearch(&addr, addrs, count, sizeof(addrs[0]), addrs_cmp)) {
+> +               if (func_exists(addrs, count, addr))
 
-I think that the whole pinning handling in libbpf feels a bit ad-hoc.
-It would be good for someone to sit and think through this end-to-end.
-Unfortunately I never had a need for pinning, so I'm not the best
-person to do this.
+you pass addrs in here, but you mean func_seg array
+filled with elf functions start/end values, right?
 
-In this case, you can still do bpf_map__set_pin_path() on internal
-maps (.bss, .data, etc), but you'll need to specify pin path
-explicitly, which is different from what you get with
-LIBBPF_PIN_BY_NAME.
+>                         /*
+>                          * We iterate over sorted array, so we can easily skip
+>                          * not valid item and move following valid field into
+> 
+> 
+> So the idea is to use address segments and check whether there is a
+> segment that overlaps with a given address by first binary searching
+> for a segment with the largest starting address that is <= addr. And
+> then just confirming that segment does overlap with the requested
+> address.
+> 
+> WDYT?
 
-So I think pinning support is not complete, but I'd also like to avoid
-adding new APIs in an ad-hoc manner without a holistic view of how
-pinning should work with libbpf.
+I liked the approach below because it got rid of that bsearch ;-)
 
->
-> -Toke
->
+but yea, yours seems to be less code chage and staighforward
+
+jirka
+
+> 
+> >
+> > jirka
+> >
+> >
+> > ---
+> > diff --git a/btf_encoder.c b/btf_encoder.c
+> > index b124ec20a689..548a12847f99 100644
+> > --- a/btf_encoder.c
+> > +++ b/btf_encoder.c
+> > @@ -36,6 +36,7 @@ struct funcs_layout {
+> >  struct elf_function {
+> >         const char      *name;
+> >         unsigned long    addr;
+> > +       unsigned long    end;
+> >         unsigned long    sh_addr;
+> >         bool             generated;
+> >  };
+> > @@ -44,7 +45,7 @@ static struct elf_function *functions;
+> >  static int functions_alloc;
+> >  static int functions_cnt;
+> >
+> > -static int functions_cmp(const void *_a, const void *_b)
+> > +static int functions_cmp_name(const void *_a, const void *_b)
+> >  {
+> >         const struct elf_function *a = _a;
+> >         const struct elf_function *b = _b;
+> > @@ -52,6 +53,16 @@ static int functions_cmp(const void *_a, const void *_b)
+> >         return strcmp(a->name, b->name);
+> >  }
+> >
+> > +static int functions_cmp_addr(const void *_a, const void *_b)
+> > +{
+> > +       const struct elf_function *a = _a;
+> > +       const struct elf_function *b = _b;
+> > +
+> > +       if (a->addr == b->addr)
+> > +               return 0;
+> > +       return a->addr < b->addr ? -1 : 1;
+> > +}
+> > +
+> >  static void delete_functions(void)
+> >  {
+> >         free(functions);
+> > @@ -98,6 +109,7 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym,
+> >
+> >         functions[functions_cnt].name = name;
+> >         functions[functions_cnt].addr = elf_sym__value(sym);
+> > +       functions[functions_cnt].end = (__u64) -1;
+> >         functions[functions_cnt].sh_addr = sh.sh_addr;
+> >         functions[functions_cnt].generated = false;
+> >         functions_cnt++;
+> > @@ -236,9 +248,25 @@ get_kmod_addrs(struct btf_elf *btfe, __u64 **paddrs, __u64 *pcount)
+> >         return 0;
+> >  }
+> >
+> > +static bool is_addr_in_func(__u64 addr, struct elf_function *func, bool kmod)
+> > +{
+> > +       /*
+> > +        * For vmlinux image both addrs[x] and functions[x]::addr
+> > +        * values are final address and are comparable.
+> > +        *
+> > +        * For kernel module addrs[x] is final address, but
+> > +        * functions[x]::addr is relative address within section
+> > +        * and needs to be relocated by adding sh_addr.
+> > +        */
+> > +       __u64 start = kmod ? func->addr + func->sh_addr : func->addr;
+> > +       __u64 end = kmod ? func->end+ func->sh_addr : func->end;
+> > +
+> > +       return start <= addr && addr < end;
+> > +}
+> > +
+> >  static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
+> >  {
+> > -       __u64 *addrs, count, i;
+> > +       __u64 *addrs, count, i_func, i_addr;
+> >         int functions_valid = 0;
+> >         bool kmod = false;
+> >
+> > @@ -266,43 +294,62 @@ static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
+> >                 return 0;
+> >         }
+> >
+> > -       qsort(addrs, count, sizeof(addrs[0]), addrs_cmp);
+> > -       qsort(functions, functions_cnt, sizeof(functions[0]), functions_cmp);
+> > -
+> >         /*
+> > -        * Let's got through all collected functions and filter
+> > -        * out those that are not in ftrace.
+> > +        * Sort both functions and addrs so we can iterate
+> > +        * both of them simultaneously and found matching
+> > +        * func/addr pairs.
+> >          */
+> > -       for (i = 0; i < functions_cnt; i++) {
+> > -               struct elf_function *func = &functions[i];
+> > -               /*
+> > -                * For vmlinux image both addrs[x] and functions[x]::addr
+> > -                * values are final address and are comparable.
+> > -                *
+> > -                * For kernel module addrs[x] is final address, but
+> > -                * functions[x]::addr is relative address within section
+> > -                * and needs to be relocated by adding sh_addr.
+> > -                */
+> > -               __u64 addr = kmod ? func->addr + func->sh_addr : func->addr;
+> > +       qsort(addrs, count, sizeof(addrs[0]), addrs_cmp);
+> > +       qsort(functions, functions_cnt, sizeof(functions[0]), functions_cmp_addr);
+> > +
+> > +       for (i_func = 0, i_addr = 0; i_func < functions_cnt; i_func++) {
+> > +               struct elf_function *func = &functions[i_func];
+> > +
+> > +               if (i_func + 1 < functions_cnt)
+> > +                       func->end = functions[i_func + 1].addr;
+> > +
+> > +               for (; i_addr < count; i_addr++) {
+> > +                       __u64 addr = addrs[i_addr];
+> > +
+> > +                       /* Functions are  ahead, catch up with addrs. */
+> > +                       if (addr < func->addr)
+> > +                               continue;
+> > +
+> > +                       /* Addr is within function - mark function as valid. */
+> > +                       if (is_addr_in_func(addr, func, kmod)) {
+> > +                               /*
+> > +                                * We iterate over sorted array, so we can easily skip
+> > +                                * not valid item and move following valid field into
+> > +                                * its place, and still keep the 'new' array sorted.
+> > +                                */
+> > +                               if (i_func != functions_valid)
+> > +                                       functions[functions_valid] = functions[i_func];
+> > +                               functions_valid++;
+> > +                               i_addr++;
+> > +                       }
+> >
+> > -               /* Make sure function is within ftrace addresses. */
+> > -               if (bsearch(&addr, addrs, count, sizeof(addrs[0]), addrs_cmp)) {
+> >                         /*
+> > -                        * We iterate over sorted array, so we can easily skip
+> > -                        * not valid item and move following valid field into
+> > -                        * its place, and still keep the 'new' array sorted.
+> > +                        * Addrs are ahead, catch up with functions, or we just
+> > +                        * found valid function and want to move to another.
+> >                          */
+> > -                       if (i != functions_valid)
+> > -                               functions[functions_valid] = functions[i];
+> > -                       functions_valid++;
+> > +                       break;
+> >                 }
+> >         }
+> >
+> > +       if (btf_elf__verbose) {
+> > +               printf("Found %d functions out of %d symbols and %llu ftrace addresses.\n",
+> > +                       functions_valid, functions_cnt, count);
+> > +       }
+> > +
+> >         functions_cnt = functions_valid;
+> >         free(addrs);
+> >
+> > -       if (btf_elf__verbose)
+> > -               printf("Found %d functions!\n", functions_cnt);
+> > +       /*
+> > +        * And finaly sort 'valid' functions by name,
+> > +        * so find_function can be used.
+> > +        */
+> > +       qsort(functions, functions_cnt, sizeof(functions[0]), functions_cmp_name);
+> > +
+> >         return 0;
+> >  }
+> >
+> > @@ -312,7 +359,7 @@ static struct elf_function *find_function(const struct btf_elf *btfe,
+> >         struct elf_function key = { .name = name };
+> >
+> >         return bsearch(&key, functions, functions_cnt, sizeof(functions[0]),
+> > -                      functions_cmp);
+> > +                      functions_cmp_name);
+> >  }
+> >
+> >  static bool btf_name_char_ok(char c, bool first)
+> >
+> 
+
