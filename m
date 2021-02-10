@@ -2,135 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87097316E50
-	for <lists+bpf@lfdr.de>; Wed, 10 Feb 2021 19:19:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F7AF316E8C
+	for <lists+bpf@lfdr.de>; Wed, 10 Feb 2021 19:27:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233156AbhBJSR2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Feb 2021 13:17:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29972 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233906AbhBJSPm (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 10 Feb 2021 13:15:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612980850;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8BHhQnnib6OW3euOQVL0avOgwILgxfcY0AqmDLBpsB4=;
-        b=D9lPHhHa9V54uow5+ETypienItyzaQz0MoCnORd33UgcdiL3XRD7E+2D1my3ouAZGEle+L
-        EN/BcDXCsfn7EmhQO4SURAiv6nBlI1yy7konK+6HnmFFNvBlSVQ95mI7MhBtuUPelEH8O+
-        K600mAIk5Q04+LROfw6A2ntXPBl+Y/4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-10-_F92rimjN8OXypxoHJ_Exg-1; Wed, 10 Feb 2021 13:14:09 -0500
-X-MC-Unique: _F92rimjN8OXypxoHJ_Exg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AC322100CCC0;
-        Wed, 10 Feb 2021 18:14:06 +0000 (UTC)
-Received: from krava (unknown [10.40.195.206])
-        by smtp.corp.redhat.com (Postfix) with SMTP id C0FDB60657;
-        Wed, 10 Feb 2021 18:14:02 +0000 (UTC)
-Date:   Wed, 10 Feb 2021 19:14:01 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S234130AbhBJS02 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Feb 2021 13:26:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231543AbhBJSYX (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Feb 2021 13:24:23 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3728C061788;
+        Wed, 10 Feb 2021 10:23:42 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id o15so834445wmq.5;
+        Wed, 10 Feb 2021 10:23:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=CdBsBnJwl+BS8FihCKmsZbFb/tYHU132d5H7XgeWACY=;
+        b=U15VVGoljDYUQOaU5sDAIVb3uvCVyUMCPSOxjwCb1KzY2CR5gmGquUKhUvNOAtAAna
+         Aag7dF9Gw+ei/FGbq+AImycLgpbKWiPVt7JIToQJCGQzg8E/zvb1EDrCequANh52psHg
+         w0DYl6G8gscntTn7xS9iB0Aiy6irCAM91iEOHHGo2glsnhglGUBpr3VLOuVo4siv3u4W
+         xhLbn1JV6iceK4cduDi38506bm68HQQ3OXxgrhu1w7SzX0FCIVdQi1r44L1Qp7dvYgiN
+         qJw0xeYsja2IcuadajAzqi9gH3ObJpZmsOQ6lEWuEPUJneJE3CBBUn90/XWLbA7rL1oL
+         oEOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CdBsBnJwl+BS8FihCKmsZbFb/tYHU132d5H7XgeWACY=;
+        b=V4yUE3MhTj48pREgn4GrvTpSnT7MrO6r0NHihey7udTx8OU0x0w98jx0uOOlOFhkf3
+         un9rSLMae66KOuPe1rJCJG1eh2Hu5zjuKwJxWOl1iSS07wrGUMEOIdPk5Qz0HxNS2rom
+         dWF/Oqbr8Zus8AUV+5cguhkZq5bjSXjnMSqyYRMv5hYJb74iuvzMiO2bhI6wtxydhNkk
+         cSmvYm65b7a1+Lc6bkp7+5ihK6Ov7frnD2Nn8PsW7mrhnpSmP4E36keExuq9j53dN8E3
+         DF5QLJc47tpsojwwtXU11GkLKZcM3NO6GzoI974yOVlYZwApr8Q0klR29E+DYx0+eH2Y
+         gApQ==
+X-Gm-Message-State: AOAM533Tz39lQDGZbZP1Nmd+N4HEQgTm5/eblRuBzIpaWKEOX7paa812
+        aFINsgosnHVKtrj8/kPNxXY=
+X-Google-Smtp-Source: ABdhPJyEsFslrLF8BdJCt4pySRMF+u9JLA9NjUEN2Q6w7mlB3R/gC1qzGh+mzGZt16qOecGbVo45nQ==
+X-Received: by 2002:a1c:9c06:: with SMTP id f6mr214023wme.72.1612981421607;
+        Wed, 10 Feb 2021 10:23:41 -0800 (PST)
+Received: from [192.168.1.101] ([37.166.86.204])
+        by smtp.gmail.com with ESMTPSA id 13sm3342087wmj.11.2021.02.10.10.23.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Feb 2021 10:23:41 -0800 (PST)
+Subject: Re: KASAN: vmalloc-out-of-bounds Read in bpf_trace_run3
+To:     Yonghong Song <yhs@fb.com>, Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+d29e58bb557324e55e5e@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>, andrii@kernel.org,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        David Miller <davem@davemloft.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
         John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
         KP Singh <kpsingh@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 4/4] kbuild: Add resolve_btfids clean to root
- clean target
-Message-ID: <YCQiaRNQFAq4lw79@krava>
-References: <20210205124020.683286-1-jolsa@kernel.org>
- <20210205124020.683286-5-jolsa@kernel.org>
- <20210210174451.GA1943051@ubuntu-m3-large-x86>
- <CAEf4BzZvz4-STv3OQxyNDiFKkrFM-+GOM-yXURzoDtXiRiuT_g@mail.gmail.com>
+        Jakub Kicinski <kuba@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@elte.hu>,
+        Ingo Molnar <mingo@redhat.com>, mmullins@fb.com,
+        netdev <netdev@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+References: <00000000000004500b05b31e68ce@google.com>
+ <CACT4Y+aBVQ6LKYf9wCV=AUx23xpWmb_6-mBqwkQgeyfXA3SS2A@mail.gmail.com>
+ <20201113053722.7i4xkiyrlymcwebg@hydra.tuxags.com>
+ <c63f89b2-0627-91d8-a609-3f2a3b5b5a2d@fb.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <7b0fe079-bcd3-484d-fda6-12d962f584f8@gmail.com>
+Date:   Wed, 10 Feb 2021 19:23:38 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZvz4-STv3OQxyNDiFKkrFM-+GOM-yXURzoDtXiRiuT_g@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <c63f89b2-0627-91d8-a609-3f2a3b5b5a2d@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 09:52:42AM -0800, Andrii Nakryiko wrote:
-> On Wed, Feb 10, 2021 at 9:47 AM Nathan Chancellor <nathan@kernel.org> wrote:
-> >
-> > On Fri, Feb 05, 2021 at 01:40:20PM +0100, Jiri Olsa wrote:
-> > > The resolve_btfids tool is used during the kernel build,
-> > > so we should clean it on kernel's make clean.
-> > >
-> > > Invoking the the resolve_btfids clean as part of root
-> > > 'make clean'.
-> > >
-> > > Acked-by: Song Liu <songliubraving@fb.com>
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > ---
-> > >  Makefile | 7 ++++++-
-> > >  1 file changed, 6 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/Makefile b/Makefile
-> > > index b0e4767735dc..159d9592b587 100644
-> > > --- a/Makefile
-> > > +++ b/Makefile
-> > > @@ -1086,6 +1086,11 @@ ifdef CONFIG_STACK_VALIDATION
-> > >    endif
-> > >  endif
-> > >
-> > > +PHONY += resolve_btfids_clean
-> > > +
-> > > +resolve_btfids_clean:
-> > > +     $(Q)$(MAKE) -sC $(srctree)/tools/bpf/resolve_btfids O=$(abspath $(objtree))/tools/bpf/resolve_btfids clean
-> > > +
-> > >  ifdef CONFIG_BPF
-> > >  ifdef CONFIG_DEBUG_INFO_BTF
-> > >    ifeq ($(has_libelf),1)
-> > > @@ -1495,7 +1500,7 @@ vmlinuxclean:
-> > >       $(Q)$(CONFIG_SHELL) $(srctree)/scripts/link-vmlinux.sh clean
-> > >       $(Q)$(if $(ARCH_POSTLINK), $(MAKE) -f $(ARCH_POSTLINK) clean)
-> > >
-> > > -clean: archclean vmlinuxclean
-> > > +clean: archclean vmlinuxclean resolve_btfids_clean
-> > >
-> > >  # mrproper - Delete all generated files, including .config
-> > >  #
-> > > --
-> > > 2.26.2
-> > >
-> >
-> > This breaks running distclean on a clean tree (my script just
-> > unconditionally runs distclean regardless of the tree state):
-> >
-> > $ make -s O=build distclean
-> > ../../scripts/Makefile.include:4: *** O=/home/nathan/cbl/src/linux-next/build/tools/bpf/resolve_btfids does not exist.  Stop.
-> >
+
+
+On 11/13/20 5:08 PM, Yonghong Song wrote:
 > 
-> Can't reproduce it. It works in all kinds of variants (relative and
-> absolute O=, clean and not clean trees, etc). Jiri, please check as
-> well.
+> 
+> On 11/12/20 9:37 PM, Matt Mullins wrote:
+>> On Wed, Nov 11, 2020 at 03:57:50PM +0100, Dmitry Vyukov wrote:
+>>> On Mon, Nov 2, 2020 at 12:54 PM syzbot
+>>> <syzbot+d29e58bb557324e55e5e@syzkaller.appspotmail.com> wrote:
+>>>>
+>>>> Hello,
+>>>>
+>>>> syzbot found the following issue on:
+>>>>
+>>>> HEAD commit:    080b6f40 bpf: Don't rely on GCC __attribute__((optimize)) ..
+>>>> git tree:       bpf
+>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=1089d37c500000
+>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=58a4ca757d776bfe
+>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=d29e58bb557324e55e5e
+>>>> compiler:       gcc (GCC) 10.1.0-syz 20200507
+>>>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10f4b032500000
+>>>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1371a47c500000
+>>>>
+>>>> The issue was bisected to:
+>>>>
+>>>> commit 9df1c28bb75217b244257152ab7d788bb2a386d0
+>>>> Author: Matt Mullins <mmullins@fb.com>
+>>>> Date:   Fri Apr 26 18:49:47 2019 +0000
+>>>>
+>>>>      bpf: add writable context for raw tracepoints
+>>>
+>>>
+>>> We have a number of kernel memory corruptions related to bpf_trace_run now:
+>>> https://groups.google.com/g/syzkaller-bugs/search?q=kernel/trace/bpf_trace.c
+>>>
+>>> Can raw tracepoints "legally" corrupt kernel memory (a-la /dev/kmem)?
+>>> Or they shouldn't?
+>>>
+>>> Looking at the description of Matt's commit, it seems that corruptions
+>>> should not be possible (bounded buffer, checked size, etc). Then it
+>>> means it's a real kernel bug?
+>>
+>> This bug doesn't seem to be related to the writability of the
+>> tracepoint; it bisected to that commit simply because it used
+>> BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE for the reproducer and it EINVAL's
+>> before that program type was introduced.  The BPF program it loads is
+>> pretty much a no-op.
+>>
+>> The problem here is a kmalloc failure injection into
+>> tracepoint_probe_unregister, but the error is ignored -- so the bpf
+>> program is freed even though the tracepoint is never unregistered.
+>>
+>> I have a first pass at a patch to pipe through the error code, but it's
+>> pretty ugly.  It's also called from the file_operations ->release(), for
+> 
+> Maybe you can still post the patch, so people can review and make suggestions which may lead to a *better* solution.
 
-I can reproduce if I set O=XXX to directory that does not contain kernel build
 
-	$ mkdir /tmp/krava
-	$ make O=/tmp/krava distclean
-	make[1]: Entering directory '/tmp/krava'
-	../../scripts/Makefile.include:4: *** O=/tmp/krava/tools/bpf/resolve_btfids does not exist.  Stop.
-	make[1]: *** [/home/jolsa/linux/Makefile:1092: resolve_btfids_clean] Error 2
-	make[1]: Leaving directory '/tmp/krava'
-	make: *** [Makefile:185: __sub-make] Error 2
+ping
 
-will check on fix
+This bug is still there.
 
-jirka
 
+> 
+>> which errors are solidly ignored in __fput(), so I'm not sure what the
+>> best way to handle ENOMEM is...
+>>
+>>>
+>>>
+>>>
+>>>> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12b6c4da500000
+>>>> final oops:     https://syzkaller.appspot.com/x/report.txt?x=11b6c4da500000
+>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=16b6c4da500000
+>>>>
+>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>>>> Reported-by: syzbot+d29e58bb557324e55e5e@syzkaller.appspotmail.com
+>>>> Fixes: 9df1c28bb752 ("bpf: add writable context for raw tracepoints")
+>>>>
+>>>> ==================================================================
+>>>> BUG: KASAN: vmalloc-out-of-bounds in __bpf_trace_run kernel/trace/bpf_trace.c:2045 [inline]
+>>>> BUG: KASAN: vmalloc-out-of-bounds in bpf_trace_run3+0x3e0/0x3f0 kernel/trace/bpf_trace.c:2083
+>>>> Read of size 8 at addr ffffc90000e6c030 by task kworker/0:3/3754
+>>>>
+>>>> CPU: 0 PID: 3754 Comm: kworker/0:3 Not tainted 5.9.0-syzkaller #0
+>>>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+>>>> Workqueue:  0x0 (events)
+>>>> Call Trace:
+>>>>   __dump_stack lib/dump_stack.c:77 [inline]
+>>>>   dump_stack+0x107/0x163 lib/dump_stack.c:118
+>>>>   print_address_description.constprop.0.cold+0x5/0x4c8 mm/kasan/report.c:385
+>>>>   __kasan_report mm/kasan/report.c:545 [inline]
+>>>>   kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
+>>>>   __bpf_trace_run kernel/trace/bpf_trace.c:2045 [inline]
+>>>>   bpf_trace_run3+0x3e0/0x3f0 kernel/trace/bpf_trace.c:2083
+>>>>   __bpf_trace_sched_switch+0xdc/0x120 include/trace/events/sched.h:138
+>>>>   __traceiter_sched_switch+0x64/0xb0 include/trace/events/sched.h:138
+>>>>   trace_sched_switch include/trace/events/sched.h:138 [inline]
+>>>>   __schedule+0xeb8/0x2130 kernel/sched/core.c:4520
+>>>>   schedule+0xcf/0x270 kernel/sched/core.c:4601
+>>>>   worker_thread+0x14c/0x1120 kernel/workqueue.c:2439
+>>>>   kthread+0x3af/0x4a0 kernel/kthread.c:292
+>>>>   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+>>>>
+>>>>
+>>>> Memory state around the buggy address:
+>>>>   ffffc90000e6bf00: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+>>>>   ffffc90000e6bf80: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+>>>>> ffffc90000e6c000: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+>>>>                                       ^
+>>>>   ffffc90000e6c080: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+>>>>   ffffc90000e6c100: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+>>>> ==================================================================
+> [...]
