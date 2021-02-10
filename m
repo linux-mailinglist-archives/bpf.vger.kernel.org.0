@@ -2,115 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F2A6315B20
-	for <lists+bpf@lfdr.de>; Wed, 10 Feb 2021 01:30:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 912CF315B24
+	for <lists+bpf@lfdr.de>; Wed, 10 Feb 2021 01:30:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233744AbhBJA0X (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Feb 2021 19:26:23 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:27976 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234594AbhBIXux (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 9 Feb 2021 18:50:53 -0500
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 119LAVr3021125
-        for <bpf@vger.kernel.org>; Tue, 9 Feb 2021 13:20:12 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=l5NPjjc5fr7S4q5RmKxLkUoj3XtehaneaeB3TFQqxGY=;
- b=FB77pqr7qDrfW0XG/vop8kSVOmiT3iblP+yEMG9q2e7T38Wa5XsUoAElrGZcIRFZFtlr
- 0EDb8s63qzvSd96pwie38icmR2pSRAyg2VZsGomWyRf/vHHnD4/bCtKfQFeVdK+HZq2P
- YRYMsPJImCNThTftBzpyUyO3xQ6zMA1VuwM= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 36hsgtraqq-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Tue, 09 Feb 2021 13:20:12 -0800
-Received: from intmgw001.37.frc1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 9 Feb 2021 13:20:11 -0800
-Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id AF45A62E0A50; Tue,  9 Feb 2021 13:20:00 -0800 (PST)
-From:   Song Liu <songliubraving@fb.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     <bpf@vger.kernel.org>, Song Liu <songliubraving@fb.com>,
-        Andy Whitcroft <apw@canonical.com>,
-        Joe Perches <joe@perches.com>
-Subject: [PATCH v4] checkpatch: do not apply "initialise globals to 0" check to BPF progs
-Date:   Tue, 9 Feb 2021 13:19:54 -0800
-Message-ID: <20210209211954.490077-1-songliubraving@fb.com>
-X-Mailer: git-send-email 2.24.1
+        id S234446AbhBJA1q (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Feb 2021 19:27:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59864 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234774AbhBJADk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Feb 2021 19:03:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D94C164E42;
+        Wed, 10 Feb 2021 00:02:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612915379;
+        bh=/9zjf6RObGkGCMF7oOa3KfpvjKGFcmQSd9nZzvEVr00=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vI+C4co13VkpKpF7c4nYz2E3SFgymNijm7IbZTeJDEywSMILm4ZGnLXXjwx2QR1F1
+         Q1WC+7zQFU4UCvX7s+ZmpKgSn6SXD6biDqLFMizzNqSf15pr3QLoqBK6BssNVLnL/d
+         z/VQ1GwurpMYmOJOwLun7ksWBUwkYL7VQXuw6J3cEeTFA446GiEM7bYo39hw2eE6bJ
+         0AoYptCguKDFUSNmVF9oHnzxminkLFsB48TzyYSZrYtIYb17VeW3v2QybFs1+7RV9M
+         8Hwk5o/a5oZuMLjxlWyD8IKJkvC3Jk0+xjF5Mo/BCdUNHgUFfhr/bgN0xvzl1LM6U9
+         kJqV1HteITluw==
+Date:   Tue, 9 Feb 2021 17:02:57 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Veronika Kabatova <vkabatov@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Daniel Kiss <daniel.kiss@arm.com>
+Subject: Re: FAILED unresolved symbol vfs_truncate on arm64 with LLVM
+Message-ID: <20210210000257.GA1683281@ubuntu-m3-large-x86>
+References: <20210209052311.GA125918@ubuntu-m3-large-x86>
+ <CAEf4BzZV0-zx6YKUUKmecs=icnQNXJjTokdkSAoexm36za+wdA@mail.gmail.com>
+ <CAEf4BzYvri7wzRnGH_qQbavXOx5TfBA0qx4nYVnn=YNGv+vNVw@mail.gmail.com>
+ <CAEf4Bzax90hn_5axpnCpW+E6gVc1mtUgCXWqmxV0tJ4Ud7bsaA@mail.gmail.com>
+ <20210209074904.GA286822@ubuntu-m3-large-x86>
+ <YCKB1TF5wz93EIBK@krava>
+ <YCKlrLkTQXc4Cyx7@krava>
+ <YCKwxNDkS9rdr43W@krava>
+ <YCLdJPPC+6QjUsR4@krava>
+ <CAKwvOdnqx5-SsicRf01yhxKOq8mAkYRd+zBScSOmEQ0XJe2mAg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-09_07:2021-02-09,2021-02-09 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 mlxlogscore=798 spamscore=0 mlxscore=0 clxscore=1015
- adultscore=0 bulkscore=0 phishscore=0 suspectscore=0 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102090108
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdnqx5-SsicRf01yhxKOq8mAkYRd+zBScSOmEQ0XJe2mAg@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-BPF programs explicitly initialise global variables to 0 to make sure
-clang (v10 or older) do not put the variables in the common section.
-Skip "initialise globals to 0" check for BPF programs to elimiate error
-messages like:
+On Tue, Feb 09, 2021 at 12:09:31PM -0800, Nick Desaulniers wrote:
+> On Tue, Feb 9, 2021 at 11:06 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > On Tue, Feb 09, 2021 at 05:13:42PM +0100, Jiri Olsa wrote:
+> > > On Tue, Feb 09, 2021 at 04:09:36PM +0100, Jiri Olsa wrote:
+> > >
+> > > SNIP
+> > >
+> > > > > > > >                 DW_AT_prototyped        (true)
+> > > > > > > >                 DW_AT_type      (0x01cfdfe4 "long int")
+> > > > > > > >                 DW_AT_external  (true)
+> > > > > > > >
+> > > > > > >
+> > > > > > > Ok, the problem appears to be not in DWARF, but in mcount_loc data.
+> > > > > > > vfs_truncate's address is not recorded as ftrace-attachable, and thus
+> > > > > > > pahole ignores it. I don't know why this happens and it's quite
+> > > > > > > strange, given vfs_truncate is just a normal global function.
+> > > > >
+> > > > > right, I can't see it in mcount adresses.. but it begins with instructions
+> > > > > that appears to be nops, which would suggest it's traceable
+> > > > >
+> > > > >   ffff80001031f430 <vfs_truncate>:
+> > > > >   ffff80001031f430: 5f 24 03 d5   hint    #34
+> > > > >   ffff80001031f434: 1f 20 03 d5   nop
+> > > > >   ffff80001031f438: 1f 20 03 d5   nop
+> > > > >   ffff80001031f43c: 3f 23 03 d5   hint    #25
+> > > > >
+> > > > > > >
+> > > > > > > I'd like to understand this issue before we try to fix it, but there
+> > > > > > > is at least one improvement we can make: pahole should check ftrace
+> > > > > > > addresses only for static functions, not the global ones (global ones
+> > > > > > > should be always attachable, unless they are special, e.g., notrace
+> > > > > > > and stuff). We can easily check that by looking at the corresponding
+> > > > > > > symbol. But I'd like to verify that vfs_truncate is ftrace-attachable
+> > > >
+> > > > I'm still trying to build the kernel.. however ;-)
+> > >
+> > > I finally reproduced.. however arm's not using mcount_loc
+> > > but some other special section.. so it's new mess for me
+> >
+> > so ftrace data actualy has vfs_truncate address but with extra 4 bytes:
+> >
+> >         ffff80001031f434
+> >
+> > real vfs_truncate address:
+> >
+> >         ffff80001031f430 g     F .text  0000000000000168 vfs_truncate
+> >
+> > vfs_truncate disasm:
+> >
+> >         ffff80001031f430 <vfs_truncate>:
+> >         ffff80001031f430: 5f 24 03 d5   hint    #34
+> >         ffff80001031f434: 1f 20 03 d5   nop
+> >         ffff80001031f438: 1f 20 03 d5   nop
+> >         ffff80001031f43c: 3f 23 03 d5   hint    #25
+> >
+> > thats why we don't match it in pahole.. I checked few other functions
+> > and some have the same problem and some match the function boundary
+> >
+> > those that match don't have that first hint instrucion, like:
+> >
+> >         ffff800010321e40 <do_faccessat>:
+> >         ffff800010321e40: 1f 20 03 d5   nop
+> >         ffff800010321e44: 1f 20 03 d5   nop
+> >         ffff800010321e48: 3f 23 03 d5   hint    #25
+> >
+> > any hints about hint instructions? ;-)
+> 
+> aarch64 makes *some* newer instructions reuse the "hint" ie "nop"
+> encoding space to make software backwards compatible on older hardware
+> that doesn't support such instructions.  Is this BTI, perhaps? (The
+> function is perhaps the destination of an indirect call?)
 
-    ERROR: do not initialise globals to 0
-    #19: FILE: samples/bpf/tracex1_kern.c:21:
+It seems like it. The issue is not reproducible when
+CONFIG_ARM64_BTI_KERNEL is not set.
 
-Cc: Andy Whitcroft <apw@canonical.com>
-Cc: Joe Perches <joe@perches.com>
-Signed-off-by: Song Liu <songliubraving@fb.com>
-
----
-Changes v3 =3D> v4:
-  1. Yet more fixes to regexes.
-Changes v2 =3D> v3:
-  1. Fix regex.
-Changes v1 =3D> v2:
-  1. Add function exclude_global_initialisers() to keep the code clean.
----
- scripts/checkpatch.pl | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 1afe3af1cc097..f5b7ec9170999 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -2428,6 +2428,15 @@ sub get_raw_comment {
- 	return $comment;
- }
-=20
-+sub exclude_global_initialisers {
-+	my ($realfile) =3D @_;
-+
-+	# Do not check for BPF programs (tools/testing/selftests/bpf/progs/*.c,=
- samples/bpf/*_kern.c, *.bpf.c).
-+	return $realfile =3D~ m@^tools/testing/selftests/bpf/progs/.*\.c$@ ||
-+		$realfile =3D~ m@^samples/bpf/.*_kern\.c$@ ||
-+		$realfile =3D~ m@/bpf/.*\.bpf\.c$@;
-+}
-+
- sub process {
- 	my $filename =3D shift;
-=20
-@@ -4323,7 +4332,8 @@ sub process {
- 		}
-=20
- # check for global initialisers.
--		if ($line =3D~ /^\+$Type\s*$Ident(?:\s+$Modifier)*\s*=3D\s*($zero_init=
-ializer)\s*;/) {
-+		if ($line =3D~ /^\+$Type\s*$Ident(?:\s+$Modifier)*\s*=3D\s*($zero_init=
-ializer)\s*;/ &&
-+		    !exclude_global_initialisers($realfile)) {
- 			if (ERROR("GLOBAL_INITIALISERS",
- 				  "do not initialise globals to $1\n" . $herecurr) &&
- 			    $fix) {
---=20
-2.24.1
-
+Cheers,
+Nathan
