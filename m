@@ -2,133 +2,161 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A88A316ED0
-	for <lists+bpf@lfdr.de>; Wed, 10 Feb 2021 19:37:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A6E1316EED
+	for <lists+bpf@lfdr.de>; Wed, 10 Feb 2021 19:41:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234234AbhBJSfw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Feb 2021 13:35:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43254 "EHLO mail.kernel.org"
+        id S234312AbhBJSkI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Feb 2021 13:40:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52624 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234387AbhBJSdY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Feb 2021 13:33:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D002064DE0;
-        Wed, 10 Feb 2021 18:31:36 +0000 (UTC)
+        id S234369AbhBJSiC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Feb 2021 13:38:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AFDA864E0D;
+        Wed, 10 Feb 2021 18:37:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612981897;
-        bh=gYL7BBry8rkU7z7MEWHcDU6eN+kvdSAYABlPSp3KfXU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=UpS9cPxHtExw3QuFkTrbnT7c9U8Eo/DsYNner4QBtzugnojgObCwT5dQ9693Yrbca
-         0yEQYRRU1JO68w1zxtZy1sZKY99wZSd630YZNVv6UI7nWqycUmoDR7ZjUlf8uyCvXK
-         Ll3VEGIupaYfN5OBai6mTyQwt7/t7BdfTg8bF8e/bvwgJG4BfMHqoazdNlJGJ1vcu5
-         Szn4J84FElTBg67Gw8oVt6zRaeI7oZZJJXNmqRfBcb+TimYtGoJ4TmhrygUtGG28bR
-         o5ELIY1jvQbCmXYNnoeLKGNQDFas7QpGhUtisobILuBiUKX8+vLtv81BLFI/qpOR/h
-         WerMv9e8kPhVQ==
-Date:   Wed, 10 Feb 2021 10:31:35 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
-Cc:     Marek Majtyka <alardam@gmail.com>,
-        Saeed Mahameed <saeed@kernel.org>,
-        David Ahern <dsahern@gmail.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        s=k20201202; t=1612982242;
+        bh=54mO/ww9NbxzFeHwlaXWWgMTv9uIHLgqlJhNXIa/PRs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qsbSZJbCOYJJRsGCt29PRIwTKNz8Et8X2fXf4pxOiLwee23RqqXdL2Nlg70t27Plm
+         WjhtxFT7Xo1+KqYUr+fb117rdwBdjJLWlWHMwpdRjwQ80V1K0C8xcGmnYhvX9WvSeu
+         iK7Vm3V1cuyvcOc2smUT2CK7m+617OQxve4REoE3qOg1MPQwPvqFyUpr4fEp38GOtR
+         IvZ1tz5Ksi2g/PfikRNrkIwEEasKPB0awv+mtbTnWWa3Zuhf+fFQdqQK7fZGvjDPyh
+         mLQrk0WubhAFnYpvzDbf7C1X/95jIX3R4V3AnO2Uv3/qKlde7p9Ql98+ey4rwpXWbb
+         mRtCzbvHjSbmg==
+Date:   Wed, 10 Feb 2021 11:37:20 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Jiri Olsa <jolsa@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>, hawk@kernel.org,
-        bpf <bpf@vger.kernel.org>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        jeffrey.t.kirsher@intel.com
-Subject: Re: [PATCH v2 bpf 1/5] net: ethtool: add xdp properties flag set
-Message-ID: <20210210103135.38921f85@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <874kikry66.fsf@toke.dk>
-References: <20201204102901.109709-1-marekx.majtyka@intel.com>
-        <5fd068c75b92d_50ce20814@john-XPS-13-9370.notmuch>
-        <20201209095454.GA36812@ranger.igk.intel.com>
-        <20201209125223.49096d50@carbon>
-        <e1573338-17c0-48f4-b4cd-28eeb7ce699a@gmail.com>
-        <1e5e044c8382a68a8a547a1892b48fb21d53dbb9.camel@kernel.org>
-        <cb6b6f50-7cf1-6519-a87a-6b0750c24029@gmail.com>
-        <f4eb614ac91ee7623d13ea77ff3c005f678c512b.camel@kernel.org>
-        <d5be0627-6a11-9c1f-8507-cc1a1421dade@gmail.com>
-        <6f8c23d4ac60525830399754b4891c12943b63ac.camel@kernel.org>
-        <CAAOQfrHN1-oHmbOksDv-BKWv4gDF2zHZ5dTew6R_QTh6s_1abg@mail.gmail.com>
-        <87h7mvsr0e.fsf@toke.dk>
-        <CAAOQfrHA+-BsikeQzXYcK_32BZMbm54x5p5YhAiBj==uaZvG1w@mail.gmail.com>
-        <87bld2smi9.fsf@toke.dk>
-        <20210202113456.30cfe21e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CAAOQfrGqcsn3wu5oxzHYxtE8iK3=gFdTka5HSh5Fe9Hc6HWRWA@mail.gmail.com>
-        <20210203090232.4a259958@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <874kikry66.fsf@toke.dk>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 4/4] kbuild: Add resolve_btfids clean to root
+ clean target
+Message-ID: <20210210183720.GA4030070@ubuntu-m3-large-x86>
+References: <20210205124020.683286-1-jolsa@kernel.org>
+ <20210205124020.683286-5-jolsa@kernel.org>
+ <20210210174451.GA1943051@ubuntu-m3-large-x86>
+ <CAEf4BzZvz4-STv3OQxyNDiFKkrFM-+GOM-yXURzoDtXiRiuT_g@mail.gmail.com>
+ <20210210180215.GA2374611@ubuntu-m3-large-x86>
+ <YCQmCwBSQuj+bi4q@krava>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YCQmCwBSQuj+bi4q@krava>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 10 Feb 2021 11:53:53 +0100 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> >> I am a bit confused now. Did you mean validation tests of those XDP
-> >> flags, which I am working on or some other validation tests?
-> >> What should these tests verify? Can you please elaborate more on the
-> >> topic, please - just a few sentences how are you see it? =20
-> >
-> > Conformance tests can be written for all features, whether they have=20
-> > an explicit capability in the uAPI or not. But for those that do IMO
-> > the tests should be required.
-> >
-> > Let me give you an example. This set adds a bit that says Intel NICs=20
-> > can do XDP_TX and XDP_REDIRECT, yet we both know of the Tx queue
-> > shenanigans. So can i40e do XDP_REDIRECT or can it not?
-> >
-> > If we have exhaustive conformance tests we can confidently answer that
-> > question. And the answer may not be "yes" or "no", it may actually be
-> > "we need more options because many implementations fall in between".
-> >
-> > I think readable (IOW not written in some insane DSL) tests can also=20
-> > be useful for users who want to check which features their program /
-> > deployment will require. =20
->=20
-> While I do agree that that kind of conformance test would be great, I
-> don't think it has to hold up this series (the perfect being the enemy
-> of the good, and all that). We have a real problem today that userspace
-> can't tell if a given driver implements, say, XDP_REDIRECT, and so
-> people try to use it and spend days wondering which black hole their
-> packets disappear into. And for things like container migration we need
-> to be able to predict whether a given host supports a feature *before*
-> we start the migration and try to use it.
+On Wed, Feb 10, 2021 at 07:29:31PM +0100, Jiri Olsa wrote:
+> On Wed, Feb 10, 2021 at 11:02:15AM -0700, Nathan Chancellor wrote:
+> > On Wed, Feb 10, 2021 at 09:52:42AM -0800, Andrii Nakryiko wrote:
+> > > On Wed, Feb 10, 2021 at 9:47 AM Nathan Chancellor <nathan@kernel.org> wrote:
+> > > >
+> > > > On Fri, Feb 05, 2021 at 01:40:20PM +0100, Jiri Olsa wrote:
+> > > > > The resolve_btfids tool is used during the kernel build,
+> > > > > so we should clean it on kernel's make clean.
+> > > > >
+> > > > > Invoking the the resolve_btfids clean as part of root
+> > > > > 'make clean'.
+> > > > >
+> > > > > Acked-by: Song Liu <songliubraving@fb.com>
+> > > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > > > ---
+> > > > >  Makefile | 7 ++++++-
+> > > > >  1 file changed, 6 insertions(+), 1 deletion(-)
+> > > > >
+> > > > > diff --git a/Makefile b/Makefile
+> > > > > index b0e4767735dc..159d9592b587 100644
+> > > > > --- a/Makefile
+> > > > > +++ b/Makefile
+> > > > > @@ -1086,6 +1086,11 @@ ifdef CONFIG_STACK_VALIDATION
+> > > > >    endif
+> > > > >  endif
+> > > > >
+> > > > > +PHONY += resolve_btfids_clean
+> > > > > +
+> > > > > +resolve_btfids_clean:
+> > > > > +     $(Q)$(MAKE) -sC $(srctree)/tools/bpf/resolve_btfids O=$(abspath $(objtree))/tools/bpf/resolve_btfids clean
+> > > > > +
+> > > > >  ifdef CONFIG_BPF
+> > > > >  ifdef CONFIG_DEBUG_INFO_BTF
+> > > > >    ifeq ($(has_libelf),1)
+> > > > > @@ -1495,7 +1500,7 @@ vmlinuxclean:
+> > > > >       $(Q)$(CONFIG_SHELL) $(srctree)/scripts/link-vmlinux.sh clean
+> > > > >       $(Q)$(if $(ARCH_POSTLINK), $(MAKE) -f $(ARCH_POSTLINK) clean)
+> > > > >
+> > > > > -clean: archclean vmlinuxclean
+> > > > > +clean: archclean vmlinuxclean resolve_btfids_clean
+> > > > >
+> > > > >  # mrproper - Delete all generated files, including .config
+> > > > >  #
+> > > > > --
+> > > > > 2.26.2
+> > > > >
+> > > >
+> > > > This breaks running distclean on a clean tree (my script just
+> > > > unconditionally runs distclean regardless of the tree state):
+> > > >
+> > > > $ make -s O=build distclean
+> > > > ../../scripts/Makefile.include:4: *** O=/home/nathan/cbl/src/linux-next/build/tools/bpf/resolve_btfids does not exist.  Stop.
+> > > >
+> > > 
+> > > Can't reproduce it. It works in all kinds of variants (relative and
+> > > absolute O=, clean and not clean trees, etc). Jiri, please check as
+> > > well.
+> > > 
+> > 
+> > Odd, this reproduces for me on a completely clean checkout of bpf-next:
+> > 
+> > $ git clone --depth=1 https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/
+> > 
+> > $ cd bpf-next
+> > 
+> > $ make -s O=build distclean
+> > ../../scripts/Makefile.include:4: *** O=/tmp/bpf-next/build/tools/bpf/resolve_btfids does not exist.  Stop.
+> > 
+> > I do not really see how this could be environment related. It seems like
+> > this comes from tools/scripts/Makefile.include, where there is no
+> > guarantee that $(O) is created before being used like in the main
+> > Makefile?
+> 
+> right, we need to handle the case where tools/bpf/resolve_btfids
+> does not exist, patch below fixes it for me
+> 
+> jirka
 
-Unless you have a strong definition of what XDP_REDIRECT means the flag
-itself is not worth much. We're not talking about normal ethtool feature
-flags which are primarily stack-driven, XDP is implemented mostly by
-the driver, each vendor can do their own thing. Maybe I've seen one
-vendor incompatibility too many at my day job to hope for the best...
+Yes, this seems to work fine for me as well.
 
-> I view the feature flags as a list of features *implemented* by the
-> driver. Which should be pretty static in a given kernel, but may be
-> different than the features currently *enabled* on a given system (due
-> to, e.g., the TX queue stuff).
+Tested-by: Nathan Chancellor <nathan@kernel.org>
 
-Hm, maybe I'm not being clear enough. The way XDP_REDIRECT (your
-example) is implemented across drivers differs in a meaningful ways.=20
-Hence the need for conformance testing. We don't have a golden SW
-standard to fall back on, like we do with HW offloads.
-
-Also IDK why those tests are considered such a huge ask. As I said most
-vendors probably already have them, and so I'd guess do good distros.
-So let's work together.
-
-> The simple way to expose the latter would be to just have a second set
-> of flags indicating the current configured state; and for that I guess
-> we should at least agree what "enabled" means; and a conformance test
-> would be a way to do this, of course.
->=20
-> I don't see why we can't do this in stages, though; start with the first
-> set of flags ('implemented'), move on to the second one ('enabled'), and
-> then to things like making the kernel react to the flags by rejecting
-> insertion into devmaps for invalid interfaces...
+> ---
+> diff --git a/Makefile b/Makefile
+> index 159d9592b587..ce9685961abe 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -1088,8 +1088,14 @@ endif
+>  
+>  PHONY += resolve_btfids_clean
+>  
+> +resolve_btfids_O = $(abspath $(objtree))/tools/bpf/resolve_btfids
+> +
+> +# tools/bpf/resolve_btfids directory might not exist
+> +# in output directory, skip its clean in that case
+>  resolve_btfids_clean:
+> -	$(Q)$(MAKE) -sC $(srctree)/tools/bpf/resolve_btfids O=$(abspath $(objtree))/tools/bpf/resolve_btfids clean
+> +ifneq (,$(wildcard $(resolve_btfids_O)))
+> +	$(Q)$(MAKE) -sC $(srctree)/tools/bpf/resolve_btfids O=$(resolve_btfids_O) clean
+> +endif
+>  
+>  ifdef CONFIG_BPF
+>  ifdef CONFIG_DEBUG_INFO_BTF
+> 
