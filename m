@@ -2,56 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEDB1315DD7
-	for <lists+bpf@lfdr.de>; Wed, 10 Feb 2021 04:38:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BC95315DD8
+	for <lists+bpf@lfdr.de>; Wed, 10 Feb 2021 04:38:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231250AbhBJDh7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Feb 2021 22:37:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42852 "EHLO
+        id S230283AbhBJDiA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Feb 2021 22:38:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230283AbhBJDh6 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Feb 2021 22:37:58 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00B3AC06178A
-        for <bpf@vger.kernel.org>; Tue,  9 Feb 2021 19:36:46 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id gx20so372659pjb.1
-        for <bpf@vger.kernel.org>; Tue, 09 Feb 2021 19:36:45 -0800 (PST)
+        with ESMTP id S229843AbhBJDh7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Feb 2021 22:37:59 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69338C06178B
+        for <bpf@vger.kernel.org>; Tue,  9 Feb 2021 19:36:47 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id m6so401753pfk.1
+        for <bpf@vger.kernel.org>; Tue, 09 Feb 2021 19:36:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=IKtlYY7iR2yjt3dZ8Xi+Wen7V2BC8t7LgAPTs1+bl/g=;
-        b=bURZyIgdNoHm66fC7WxyW7e04asQ1ggIw7Lo2/GA8ufTmheVySmFldDCrquHowPvun
-         hXS/FxIWe9sdnDg79C+jKmbgyP/M/Gn34GpZx12qFQpjScOdnb9lCxRR95j/zd3Z00Ds
-         huunRSLAdIlAJEUPLCBhMpIF5+DkvG3NRmEZKU0wmbKdbXbVaxIoc4rIufPUsS4CG18B
-         XqD1Cp7Sd1aOzE2lpsEr2DfZvcaAr0jag0x7yqQg55kyJ4eVMySJSqXOIbravNb/pUDe
-         FfZhjnxXBiF/QUh/Tucjh/skYSIdo4GLt1fQRCkGCWSwpfiSDXefWOQvfUGDmSUYFSQZ
-         qa5w==
+        bh=01Exh/2ObMelGUhb994VG5lHlejeefEcqeiEWbL0Xvk=;
+        b=KP8poCIX/DRk2rr8R33udeZ6Fw+VTS20ntjyxl49gkxHj2/wIRQXzLpgGuJJBYs/Rz
+         2foMTibGuJNmaU97XExr9/Xbz9FblARt23DB9kUPsuomD5hYcWHPLnLo1G34hSIslwVb
+         98wUE7ABPRKiXoQpv0QMBBtpADK8agZDx5b4qoytYAe/sU72RV3eXAqu8w2mEptGMoPo
+         wrik0oNfaVkgFIS/JSeJyg6JgmTLcVdQdfl8wfXjBmRMrEKMcXGgqHUxBBmTzbyEWRe1
+         2GMyGg2KG7U/ZicaviiPB6/HsuFzwKNZ4jcbPQ4zgqEUcWK72EILpwWCmx1Y+NzjraK1
+         HBrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=IKtlYY7iR2yjt3dZ8Xi+Wen7V2BC8t7LgAPTs1+bl/g=;
-        b=EAcX9R7PF4sWizc/p2pDi7126EARBrHs95bpdfw8XdzuXHucbHYG55fkpih9Fvn/Zo
-         EqNRWejRGLD3H0OWbVpgoXAgon8touoStL9LGwk2/aEvhG5nWPdd55QmVhNcru600Ix9
-         LLfoD9TzOHkXsf6Mn6leemtGtPKgyv2dbj8qp+QU3waj0E0CycIAcLNDQTirRrsQm4X1
-         aBpNA3FudX/NkdTLdzycY3/DRPI4gjVX5Hn2rCDeEPULdIQNUSEYa3c5YTg9EVm2tpbf
-         J6bFoJzB997j3NEVhjG/klEIEKSPq7FzkrSabZKsv7yESjgX4/tQUxS/Fusa1NbKKyTq
-         Zgtw==
-X-Gm-Message-State: AOAM531+uB+oG0CCOeLnRndkcwEoHBPIjHEcJHxV8FeWuHUZhytyR9Mw
-        /5a943XdpI+bdDH/G1brMvk=
-X-Google-Smtp-Source: ABdhPJzhdAhTmOud1DQILZcSw0vepFEIOCi8PpSLwSjguBZ9W0QPh3C1HlYn9uH4NoEjvNhjVOnNKg==
-X-Received: by 2002:a17:902:ea93:b029:e2:b3fb:ca9f with SMTP id x19-20020a170902ea93b02900e2b3fbca9fmr1091713plb.4.1612928205587;
-        Tue, 09 Feb 2021 19:36:45 -0800 (PST)
+        bh=01Exh/2ObMelGUhb994VG5lHlejeefEcqeiEWbL0Xvk=;
+        b=gMLtwEVdNmpt+ZTEDs+mw753UA9ERiGwQKHf+FitHI4sABYu+OTe7UxWZ2ULCcK64m
+         xyZlm7WizqB8MzwkJM39qBgmtu68pv1DcJznkVNqiSBnYFpV5GDgvF2DLL4TiiNXcbGn
+         lSlgC0jwS2A1h8AP10HGbRtoEqQuTjItpwPGiaj/6tP326w+OFVbp3yAm67nvj0YSsdv
+         rt+iDRKXTA+cgc1hHskVh/fj5vugeqFfHxzdKkxgfDQwCnf/d+aiPtjHNZzP/tZOpRWH
+         St3BFI/FcTOMm7qyE/oPzrw9yGfhsGB5AGKWd0YL5RuB8D8nELAWzLsQM7VsE+rjmijP
+         iplQ==
+X-Gm-Message-State: AOAM5313jqDyIK5gbIuyeyLw5eDp/5m/sQCnUyCAIy9+h2NCBYUd8emw
+        0VIWZF+yNJ6iHTies5JLRp5Fn2PHlak=
+X-Google-Smtp-Source: ABdhPJy1s6TgtIoOJZ6K3fSvKzndgpseLjjitpsaxshqxEkfLqJ/fihabtTr2bPcsq2BnxJ2B3Jz5Q==
+X-Received: by 2002:a05:6a00:80e:b029:1b6:39dd:8b2a with SMTP id m14-20020a056a00080eb02901b639dd8b2amr1022299pfk.23.1612928207015;
+        Tue, 09 Feb 2021 19:36:47 -0800 (PST)
 Received: from ast-mbp.thefacebook.com ([163.114.132.7])
-        by smtp.gmail.com with ESMTPSA id f7sm391099pjh.45.2021.02.09.19.36.44
+        by smtp.gmail.com with ESMTPSA id f7sm391099pjh.45.2021.02.09.19.36.45
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 09 Feb 2021 19:36:45 -0800 (PST)
+        Tue, 09 Feb 2021 19:36:46 -0800 (PST)
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To:     davem@davemloft.net
 Cc:     daniel@iogearbox.net, bpf@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH v4 bpf-next 6/9] bpf: Count the number of times recursion was prevented
-Date:   Tue,  9 Feb 2021 19:36:31 -0800
-Message-Id: <20210210033634.62081-7-alexei.starovoitov@gmail.com>
+Subject: [PATCH v4 bpf-next 7/9] selftests/bpf: Improve recursion selftest
+Date:   Tue,  9 Feb 2021 19:36:32 -0800
+Message-Id: <20210210033634.62081-8-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.13.5
 In-Reply-To: <20210210033634.62081-1-alexei.starovoitov@gmail.com>
 References: <20210210033634.62081-1-alexei.starovoitov@gmail.com>
@@ -61,186 +61,40 @@ X-Mailing-List: bpf@vger.kernel.org
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-Add per-program counter for number of times recursion prevention mechanism
-was triggered and expose it via show_fdinfo and bpf_prog_info.
-Teach bpftool to print it.
+Since recursion_misses counter is available in bpf_prog_info
+improve the selftest to make sure it's counting correctly.
 
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- include/linux/filter.h         |  1 +
- include/uapi/linux/bpf.h       |  1 +
- kernel/bpf/syscall.c           | 14 ++++++++++----
- kernel/bpf/trampoline.c        | 18 ++++++++++++++++--
- tools/bpf/bpftool/prog.c       |  4 ++++
- tools/include/uapi/linux/bpf.h |  1 +
- 6 files changed, 33 insertions(+), 6 deletions(-)
+ tools/testing/selftests/bpf/prog_tests/recursion.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 6a06f3c69f4e..3b00fc906ccd 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -543,6 +543,7 @@ struct bpf_binary_header {
- struct bpf_prog_stats {
- 	u64 cnt;
- 	u64 nsecs;
-+	u64 misses;
- 	struct u64_stats_sync syncp;
- } __aligned(2 * sizeof(u64));
+diff --git a/tools/testing/selftests/bpf/prog_tests/recursion.c b/tools/testing/selftests/bpf/prog_tests/recursion.c
+index 863757461e3f..0e378d63fe18 100644
+--- a/tools/testing/selftests/bpf/prog_tests/recursion.c
++++ b/tools/testing/selftests/bpf/prog_tests/recursion.c
+@@ -5,6 +5,8 @@
  
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index c001766adcbc..c547ad1ffe43 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -4501,6 +4501,7 @@ struct bpf_prog_info {
- 	__aligned_u64 prog_tags;
- 	__u64 run_time_ns;
- 	__u64 run_cnt;
-+	__u64 recursion_misses;
- } __attribute__((aligned(8)));
- 
- struct bpf_map_info {
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index f7df56a704de..c859bc46d06c 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -1731,25 +1731,28 @@ static int bpf_prog_release(struct inode *inode, struct file *filp)
- static void bpf_prog_get_stats(const struct bpf_prog *prog,
- 			       struct bpf_prog_stats *stats)
+ void test_recursion(void)
  {
--	u64 nsecs = 0, cnt = 0;
-+	u64 nsecs = 0, cnt = 0, misses = 0;
- 	int cpu;
- 
- 	for_each_possible_cpu(cpu) {
- 		const struct bpf_prog_stats *st;
- 		unsigned int start;
--		u64 tnsecs, tcnt;
-+		u64 tnsecs, tcnt, tmisses;
- 
- 		st = per_cpu_ptr(prog->stats, cpu);
- 		do {
- 			start = u64_stats_fetch_begin_irq(&st->syncp);
- 			tnsecs = st->nsecs;
- 			tcnt = st->cnt;
-+			tmisses = st->misses;
- 		} while (u64_stats_fetch_retry_irq(&st->syncp, start));
- 		nsecs += tnsecs;
- 		cnt += tcnt;
-+		misses += tmisses;
- 	}
- 	stats->nsecs = nsecs;
- 	stats->cnt = cnt;
-+	stats->misses = misses;
- }
- 
- #ifdef CONFIG_PROC_FS
-@@ -1768,14 +1771,16 @@ static void bpf_prog_show_fdinfo(struct seq_file *m, struct file *filp)
- 		   "memlock:\t%llu\n"
- 		   "prog_id:\t%u\n"
- 		   "run_time_ns:\t%llu\n"
--		   "run_cnt:\t%llu\n",
-+		   "run_cnt:\t%llu\n"
-+		   "recursion_misses:\t%llu\n",
- 		   prog->type,
- 		   prog->jited,
- 		   prog_tag,
- 		   prog->pages * 1ULL << PAGE_SHIFT,
- 		   prog->aux->id,
- 		   stats.nsecs,
--		   stats.cnt);
-+		   stats.cnt,
-+		   stats.misses);
- }
- #endif
- 
-@@ -3438,6 +3443,7 @@ static int bpf_prog_get_info_by_fd(struct file *file,
- 	bpf_prog_get_stats(prog, &stats);
- 	info.run_time_ns = stats.nsecs;
- 	info.run_cnt = stats.cnt;
-+	info.recursion_misses = stats.misses;
- 
- 	if (!bpf_capable()) {
- 		info.jited_prog_len = 0;
-diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index 89ef6320d19b..7bc3b3209224 100644
---- a/kernel/bpf/trampoline.c
-+++ b/kernel/bpf/trampoline.c
-@@ -394,6 +394,16 @@ static u64 notrace bpf_prog_start_time(void)
- 	return start;
- }
- 
-+static void notrace inc_misses_counter(struct bpf_prog *prog)
-+{
-+	struct bpf_prog_stats *stats;
++	struct bpf_prog_info prog_info = {};
++	__u32 prog_info_len = sizeof(prog_info);
+ 	struct recursion *skel;
+ 	int key = 0;
+ 	int err;
+@@ -28,6 +30,12 @@ void test_recursion(void)
+ 	ASSERT_EQ(skel->bss->pass2, 1, "pass2 == 1");
+ 	bpf_map_lookup_elem(bpf_map__fd(skel->maps.hash2), &key, 0);
+ 	ASSERT_EQ(skel->bss->pass2, 2, "pass2 == 2");
 +
-+	stats = this_cpu_ptr(prog->stats);
-+	u64_stats_update_begin(&stats->syncp);
-+	stats->misses++;
-+	u64_stats_update_end(&stats->syncp);
-+}
-+
- /* The logic is similar to BPF_PROG_RUN, but with an explicit
-  * rcu_read_lock() and migrate_disable() which are required
-  * for the trampoline. The macro is split into
-@@ -412,8 +422,10 @@ u64 notrace __bpf_prog_enter(struct bpf_prog *prog)
- {
- 	rcu_read_lock();
- 	migrate_disable();
--	if (unlikely(__this_cpu_inc_return(*(prog->active)) != 1))
-+	if (unlikely(__this_cpu_inc_return(*(prog->active)) != 1)) {
-+		inc_misses_counter(prog);
- 		return 0;
-+	}
- 	return bpf_prog_start_time();
++	err = bpf_obj_get_info_by_fd(bpf_program__fd(skel->progs.on_lookup),
++				     &prog_info, &prog_info_len);
++	if (!ASSERT_OK(err, "get_prog_info"))
++		goto out;
++	ASSERT_EQ(prog_info.recursion_misses, 2, "recursion_misses");
+ out:
+ 	recursion__destroy(skel);
  }
- 
-@@ -451,8 +463,10 @@ u64 notrace __bpf_prog_enter_sleepable(struct bpf_prog *prog)
- 	rcu_read_lock_trace();
- 	migrate_disable();
- 	might_fault();
--	if (unlikely(__this_cpu_inc_return(*(prog->active)) != 1))
-+	if (unlikely(__this_cpu_inc_return(*(prog->active)) != 1)) {
-+		inc_misses_counter(prog);
- 		return 0;
-+	}
- 	return bpf_prog_start_time();
- }
- 
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index 1fe3ba255bad..f2b915b20546 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -368,6 +368,8 @@ static void print_prog_header_json(struct bpf_prog_info *info)
- 		jsonw_uint_field(json_wtr, "run_time_ns", info->run_time_ns);
- 		jsonw_uint_field(json_wtr, "run_cnt", info->run_cnt);
- 	}
-+	if (info->recursion_misses)
-+		jsonw_uint_field(json_wtr, "recursion_misses", info->recursion_misses);
- }
- 
- static void print_prog_json(struct bpf_prog_info *info, int fd)
-@@ -446,6 +448,8 @@ static void print_prog_header_plain(struct bpf_prog_info *info)
- 	if (info->run_time_ns)
- 		printf(" run_time_ns %lld run_cnt %lld",
- 		       info->run_time_ns, info->run_cnt);
-+	if (info->recursion_misses)
-+		printf(" recursion_misses %lld", info->recursion_misses);
- 	printf("\n");
- }
- 
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index c001766adcbc..c547ad1ffe43 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -4501,6 +4501,7 @@ struct bpf_prog_info {
- 	__aligned_u64 prog_tags;
- 	__u64 run_time_ns;
- 	__u64 run_cnt;
-+	__u64 recursion_misses;
- } __attribute__((aligned(8)));
- 
- struct bpf_map_info {
 -- 
 2.24.1
 
