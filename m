@@ -2,108 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13E1C316927
-	for <lists+bpf@lfdr.de>; Wed, 10 Feb 2021 15:30:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 863AB31696E
+	for <lists+bpf@lfdr.de>; Wed, 10 Feb 2021 15:52:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229609AbhBJOaB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Feb 2021 09:30:01 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:42782 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229731AbhBJOaA (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 10 Feb 2021 09:30:00 -0500
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11AE5xh8104183;
-        Wed, 10 Feb 2021 09:29:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=34HdqTq9iA5KB3lZVW5/3RZklfQ5hSoUFuKwcQGazp8=;
- b=ZKfJ96qSd5Ff76bsJMP7gKYjFtunzy99PFErqBmFxYlbRQC+JCKL6GBBxwZVUOXsoHkW
- rVEKsquDh0c+iyfdujnJanK+pjW5YqcMbOBTFTDeRpYFDg/qb5zSd62bl/8p5/grnQqU
- 8CpR8bUK+OWWfsoa8Q33xpr4ovHKHOYY13n5/ZRk+L2YJhWkKFVFuiE369FlLv4cobmC
- wjZj2mTW65zHy12hU6A4UnrIjaGcr43bIM7wa2tvA+PUwAPT0PZerqDv1pnOw0wjbiDm
- ikostY3mU5GalyQYA2417C3JerzF81obmvufXZ10JdnVO0T/7ksOFcDCZya/BpKOP9Kw 2g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36mgtbsaqr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Feb 2021 09:29:06 -0500
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11AE6HPK105884;
-        Wed, 10 Feb 2021 09:29:06 -0500
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36mgtbsanw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Feb 2021 09:29:06 -0500
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11AERReB012271;
-        Wed, 10 Feb 2021 14:29:03 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06fra.de.ibm.com with ESMTP id 36hjch2hdf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 10 Feb 2021 14:29:03 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11AET09q23200090
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 10 Feb 2021 14:29:00 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C6B52A405C;
-        Wed, 10 Feb 2021 14:29:00 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 58ECCA4054;
-        Wed, 10 Feb 2021 14:29:00 +0000 (GMT)
-Received: from vm.lan (unknown [9.171.67.27])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 10 Feb 2021 14:29:00 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Brendan Jackman <jackmanb@google.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH bpf-next] docs: bpf: Clarify BPF_CMPXCHG wording
-Date:   Wed, 10 Feb 2021 15:28:52 +0100
-Message-Id: <20210210142853.82203-1-iii@linux.ibm.com>
-X-Mailer: git-send-email 2.29.2
+        id S231124AbhBJOwD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Feb 2021 09:52:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229934AbhBJOwC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Feb 2021 09:52:02 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17E4DC061574;
+        Wed, 10 Feb 2021 06:51:20 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id i8so4705610ejc.7;
+        Wed, 10 Feb 2021 06:51:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OvXV28pKYZQ6XN2BS9VfvmXTJ0BIn3jo9mdDyBLMsno=;
+        b=JHd97QPXdtdgWBVVFWf5uycI5zboNkqBWl6I7CyXj/rrhhwshsHn7XHwI1B+/vAXjW
+         dnbNILCCJfBL8l7EdB9hJ+rI3wA2aMa4JMYVxGnPVai/J0qsx2YWGh/lQDffC45qYCbd
+         CwNNnJKq0v1EYmIzcBpFOhuMcFCDZZas90G3OLMVxatwtofUqmnxL63wpAY3tRP+Fgks
+         Ch5dN3ZinRZ8Pv+uWje0NfpxbSPlwKOoWh0KRmaUkHBfjLXPSJeAwj+c3butvbzOZUWK
+         0rCryg0nj4BnJXC9n/6xMRk+vn8qV54JeKErlcyPWzDT7GrcJqg8osSpMoYvO/6Gt2sS
+         Y9MQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OvXV28pKYZQ6XN2BS9VfvmXTJ0BIn3jo9mdDyBLMsno=;
+        b=dJCQffqWhSsx4anmgjnqVuWdadP8CykJ3D3H5tGgkS5aD8ztpdStmdBK4syuxjUSnu
+         +zvxq9R0T6txZtihr/3iBZ5encGzoMh63TxKXwp/GNj9RODjm7Gzu3BfNVgGfhhGQATd
+         FLrwlNg/LG1GI1j1xQF2TO/pVMlyskr7sRTw3NykzCTYmvNHkiWlpjA4QmVhY3aH8mEE
+         VIbw3kMkgWQJh6oXXpxhJLSrCrcNJLSvTNXNm9sp4fODTQpMamEVWORBsjYD8R8UHk3i
+         s8kL11fhIAYWNe3cTpRnfw+tRZ0vS0SZP6POQWzXTv2e8PdI02NNqCaePHAsDAF9zRlt
+         +haQ==
+X-Gm-Message-State: AOAM530vRcYALnymEMa5seIZcWt124zz6nv99gtMccITYiRsLxR5B6kG
+        /JiiIRsjeGxEUDVUe0wsSAm+Kc7WNVBwAnOXAfo=
+X-Google-Smtp-Source: ABdhPJzPlyWmeSdVzKHbGdY+4dp+tW+DNd3dY0E3hgFCW24SyIEA3c5b9IvR4dNAHTpoXcfb6xSIpDfL+yN3eh9pTqY=
+X-Received: by 2002:a17:906:fc5:: with SMTP id c5mr3182527ejk.538.1612968678886;
+ Wed, 10 Feb 2021 06:51:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-10_05:2021-02-10,2021-02-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
- malwarescore=0 priorityscore=1501 mlxscore=0 bulkscore=0 phishscore=0
- lowpriorityscore=0 impostorscore=0 clxscore=1015 adultscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102100130
+References: <20210210065925.22614-1-hxseverything@gmail.com>
+In-Reply-To: <20210210065925.22614-1-hxseverything@gmail.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Wed, 10 Feb 2021 09:50:43 -0500
+Message-ID: <CAF=yD-LLzAheej1upLdBOeJc9d0RUXMrL9f9+QVC-4thj1EG5Q@mail.gmail.com>
+Subject: Re: [PATCH/v2] bpf: add bpf_skb_adjust_room flag BPF_F_ADJ_ROOM_ENCAP_L2_ETH
+To:     huangxuesen <hxseverything@gmail.com>
+Cc:     David Miller <davem@davemloft.net>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        huangxuesen <huangxuesen@kuaishou.com>,
+        Willem de Bruijn <willemb@google.com>,
+        chengzhiyong <chengzhiyong@kuaishou.com>,
+        wangli <wangli09@kuaishou.com>,
+        Alan Maguire <alan.maguire@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Based on [1], BPF_CMPXCHG should always load the old value into R0. The
-phrasing in bpf.rst is somewhat ambiguous in this regard, improve it to
-make this aspect crystal clear.
+On Wed, Feb 10, 2021 at 1:59 AM huangxuesen <hxseverything@gmail.com> wrote:
+>
+> From: huangxuesen <huangxuesen@kuaishou.com>
+>
+> bpf_skb_adjust_room sets the inner_protocol as skb->protocol for packets
+> encapsulation. But that is not appropriate when pushing Ethernet header.
+>
+> Add an option to further specify encap L2 type and set the inner_protocol
+> as ETH_P_TEB.
+>
+> Suggested-by: Willem de Bruijn <willemb@google.com>
+> Signed-off-by: huangxuesen <huangxuesen@kuaishou.com>
+> Signed-off-by: chengzhiyong <chengzhiyong@kuaishou.com>
+> Signed-off-by: wangli <wangli09@kuaishou.com>
 
-  [1] https://lore.kernel.org/bpf/CAADnVQJFcFwxEz=wnV=hkie-EDwa8s5JGbBQeFt1TGux1OihJw@mail.gmail.com/
+Thanks, this is exactly what I meant.
 
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
----
- Documentation/networking/filter.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Acked-by: Willem de Bruijn <willemb@google.com>
 
-diff --git a/Documentation/networking/filter.rst b/Documentation/networking/filter.rst
-index b3f457802836..251c6bd73d15 100644
---- a/Documentation/networking/filter.rst
-+++ b/Documentation/networking/filter.rst
-@@ -1076,8 +1076,8 @@ off``. ::
-     BPF_CMPXCHG
- 
- This atomically compares the value addressed by ``dst_reg + off`` with
--``R0``. If they match it is replaced with ``src_reg``, The value that was there
--before is loaded back to ``R0``.
-+``R0``. If they match it is replaced with ``src_reg``. In either case, the
-+value that was there before is zero-extended and loaded back to ``R0``.
- 
- Note that 1 and 2 byte atomic operations are not supported.
- 
--- 
-2.29.2
-
+One small point regarding Signed-off-by: It is customary to capitalize
+family and given names.
