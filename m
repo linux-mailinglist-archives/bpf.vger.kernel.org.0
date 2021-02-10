@@ -2,54 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65677317478
-	for <lists+bpf@lfdr.de>; Thu, 11 Feb 2021 00:35:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A600E3174B4
+	for <lists+bpf@lfdr.de>; Thu, 11 Feb 2021 00:51:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233713AbhBJXdv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Feb 2021 18:33:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46028 "EHLO
+        id S233835AbhBJXuI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Feb 2021 18:50:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233767AbhBJXdp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Feb 2021 18:33:45 -0500
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82272C061756
-        for <bpf@vger.kernel.org>; Wed, 10 Feb 2021 15:33:00 -0800 (PST)
-Received: by mail-yb1-xb31.google.com with SMTP id y128so3792031ybf.10
-        for <bpf@vger.kernel.org>; Wed, 10 Feb 2021 15:33:00 -0800 (PST)
+        with ESMTP id S233744AbhBJXuE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Feb 2021 18:50:04 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1272CC061786
+        for <bpf@vger.kernel.org>; Wed, 10 Feb 2021 15:49:24 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id p186so3850002ybg.2
+        for <bpf@vger.kernel.org>; Wed, 10 Feb 2021 15:49:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=kumzJLcgEbRNPsb0lnhoHksWFGSDEP1PQxRAQ5CRSmA=;
-        b=aURljF9GPidNhabDxamStYgE/Tx8bAdF+Ae5CSTcLRbyZLq6eBNYGNgTJk2uPH/wcl
-         Ope6ZoW6aGc8/ta23ATckP3EyhfX6UVqiBaUjgyIKQ44cmLfo9cpDvMHsFts3Yeo8BKX
-         DVQZ03kHwFdTFz8qb2vc/x9lcvunENGX4upP1NKbjbpQUcX6YryX0DDeQF28pebl5D7q
-         d8hYhxnA89ore3rHMRsSaxy4n9hPH1FEIaXIY0IStxQzMWneQS4niYSxB85TvBitzP9A
-         1ZAnF45Hmqy+mqy/TwZ8X76K832x+TAl91AFuj//HMTM7nSE9I6U3GFRvbAUcI8vHly5
-         P3Ag==
+        bh=4OlxZpnpkUyRvAL357r/Z/95uNeK3Na89678Gk7NPZ0=;
+        b=V/q36nd8KfwLKzWqWJXdQ3cLt+AgqglN9digQGwY134f5nT9+ac58sok7fgypjQ7EL
+         Es20g2T1AsfXXGLhD9h8tUNeor5oOewBf3eK9CK+20/6vIDA8x/bbj9F66okyUo0Scui
+         oXvqi5t+vU4dOzmfkhbmF5Hzry9IUqn0qchEbsiWQcytiqcm3Ck7Hy2bW56/1gHosrqV
+         xgXyjE/WwoxTpdDt3BnUmkhXh+po1WGCz4AbaK8AljQd/xaa/MLTvNfdNr/gFIxRnDzh
+         F2tyKEqgkf7XZWFXgjn6HF/1twJ+T+z+aYf4xtBgZku6U0yPlqj11eu21tDorEVVC1Is
+         unpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=kumzJLcgEbRNPsb0lnhoHksWFGSDEP1PQxRAQ5CRSmA=;
-        b=fIBq+0HNee9vrAynjvq8Y92wFf+LgTiVpMzIzsxlHrVux4WTxxewetUZH1gY2BWvi5
-         g/rvTSxPLz0sHHvTnNyQy/F+T5rGWRTmiolOt206kE55xLblsdfYVv/a//oA5mNhd40j
-         EBLLVjpsyjAmbMiVE+ybbocEcwc5PhImVwdrvGDsQKndd4v9VpIQxXgsHdkZ2t6dCrrZ
-         FJF5jqjKcKsQkjBtW3jDCLaWoT9dUa6PZZks9zXGWU7Ni3csAvH89KghwrOF5QbrvVS5
-         3VAJlzWoWnMAvt40lS62akKAGxQCc/C9XYZ4AB29MMPhr6drd316W2fOWYQ51bIdaHO5
-         3oJg==
-X-Gm-Message-State: AOAM532Xr23I3AYkzHF3Yw0cSHl6Eh6mRU/Btcen4BDyABja8Ono7lLN
-        tgw0c5rGEUn592lI4uocuV/PaJ3qSlt559D8XPQ=
-X-Google-Smtp-Source: ABdhPJw6hfCf+X/t0+q3nA40KHmEeQcJZtu2F0S02s795SEKP9K0Lukp0vilGniXaiMy535YOofDkZa3ykJh4yMk8GQ=
-X-Received: by 2002:a25:a183:: with SMTP id a3mr7726338ybi.459.1612999979746;
- Wed, 10 Feb 2021 15:32:59 -0800 (PST)
+        bh=4OlxZpnpkUyRvAL357r/Z/95uNeK3Na89678Gk7NPZ0=;
+        b=ZuQR9O1T0DntqDli/nsYdKxbiRTXNsPM6G9N3pmrTkFAuVMgB8qU74xbhFzCvs1DhZ
+         ABBsUWKD0fR7ytrymEFOCLZ+2rmybPRdpA/LR4WoDkLyl7GqlzRmwvNQ3BjuBUDe5+FJ
+         7r0uclwRpK2FT3JpMDKRtd9BDQKk+1qtl2sMTPImPQxcxclGPl8VXesZ7OugYtEBEAIg
+         C2IdIz6JwK0XdKoSjwzaXj/BztRPVHbrUJyTjJKUIF3q/pV/E/2fpNUoGVYVxtLRQcpX
+         UGa43HTRmPpUgPNUHxOPfnzEr8PXCGJa0MPgf8XXVcYz5vT6t+aR75bYYNIgUYxznzsk
+         CBvw==
+X-Gm-Message-State: AOAM532sSmZ6lPlGFmj1lai0ZNrN98Vw4jf95dDIokBI6XnEwl7AVGAS
+        42IYFCIBUTO8nFSTB68hZuNmgPooWCg5/9D+zAM=
+X-Google-Smtp-Source: ABdhPJzb3+lq+7ZdkyMzbr38X4q7ybakyaxiv/BnVOR1Ugi99TBvoK4Y0S55A45qra2LhAiMmJ02w5o6VLO7LCe1N+A=
+X-Received: by 2002:a25:3805:: with SMTP id f5mr7556955yba.27.1613000963404;
+ Wed, 10 Feb 2021 15:49:23 -0800 (PST)
 MIME-Version: 1.0
-References: <20210209064421.15222-1-me@ubique.spb.ru> <20210209064421.15222-4-me@ubique.spb.ru>
-In-Reply-To: <20210209064421.15222-4-me@ubique.spb.ru>
+References: <20210209064421.15222-1-me@ubique.spb.ru> <20210209064421.15222-5-me@ubique.spb.ru>
+In-Reply-To: <20210209064421.15222-5-me@ubique.spb.ru>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 10 Feb 2021 15:32:48 -0800
-Message-ID: <CAEf4BzZ8nYbBTagycWLVA5bCAsPfAZ8s=yFe3uScB8w+rwPZSA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 3/4] bpf: Support pointers in global func args
+Date:   Wed, 10 Feb 2021 15:49:12 -0800
+Message-ID: <CAEf4BzYJ0mSOavUVmRMq3XpLfVxfY6sxtahKT8kNL0nrjLZhTA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 4/4] selftests/bpf: Add unit tests for
+ pointers in global functions
 To:     Dmitrii Banshchikov <me@ubique.spb.ru>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -64,167 +65,132 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Mon, Feb 8, 2021 at 10:44 PM Dmitrii Banshchikov <me@ubique.spb.ru> wrote:
 >
-> Add an ability to pass a pointer to a type with known size in arguments
-> of a global function. Such pointers may be used to overcome the limit on
-> the maximum number of arguments, avoid expensive and tricky workarounds
-> and to have multiple output arguments.
+> test_global_func9  - check valid pointer's scenarios
+> test_global_func10 - check that a smaller type cannot be passed as a
+>                      larger one
+> test_global_func11 - check that CTX pointer cannot be passed
+> test_global_func12 - check access to a null pointer
+> test_global_func13 - check access to an arbitrary pointer value
+> test_global_func14 - check that an opaque pointer cannot be passed
+> test_global_func15 - check that a variable has an unknown value after
+>                      it was passed to a global function by pointer
+> test_global_func16 - check access to uninitialized stack memory
 >
-> A referenced type may contain pointers but indirect access through them
-> isn't supported.
->
-> The implementation consists of two parts.  If a global function has an
-> argument that is a pointer to a type with known size then:
->
->   1) In btf_check_func_arg_match(): check that the corresponding
-> register points to NULL or to a valid memory region that is large enough
-> to contain the expected argument's type.
->
->   2) In btf_prepare_func_args(): set the corresponding register type to
-> PTR_TO_MEM_OR_NULL and its size to the size of the expected type.
->
-> A call to a global function may change stack's memory slot type(via
-> check_helper_mem_access) similar to a helper function. That is why new
-> pointer arguments are allowed only for functions with global linkage.
-> Consider a case: stack's memory slot type is changed to STACK_MISC from
-> spilled PTR_TO_PACKET(btf_check_func_arg_match() -> check_mem_reg() ->
-> check_helper_mem_access() -> check_stack_boundary()) after a call to a
-> static function and later verifier cannot infer safety of indirect
-> accesses through the stack memory(check_stack_read() ->
-> __mark_reg_unknown ()). This will break existing code.
-
-Ok, so it took me a while (few attempts and some playing around with
-static subprogs in selftests) to understand what is this paragraph is
-talking about. So let me confirm, and maybe we can use that to
-rephrase this into more clear explanation.
-
-So the problem with allowing any (<type> *) argument for static
-functions is that in such case static function might get successfully
-validated as if it was global (i.e., based on types of its input
-arguments). And in such case, corresponding stack slots in the caller
-program will be marked with MISC types, because in general case we
-can't know what kind of data is stored in the stack.
-
-So here, instead of allowing this for static functions and eventually
-optimistically validating it with STACK_MISC slots, we will fail
-upfront and will rely on verifier to fallback to "inline" validation
-of static functions, which will lead to a proper stack slots marking.
-It will be less efficient validation, but would preserve more
-information. For global we don't have the fallback case, so we'll just
-do our best and will live with MISC slots.
-
-Did I get this right?
-
+> test_global_func_args - check read and write operations through a pointer
 >
 > Signed-off-by: Dmitrii Banshchikov <me@ubique.spb.ru>
 > ---
+> v1 -> v2:
+>  - Test pointer to a global variable, array, enum, int
+>  - Test reading / writing values by pointers in global functions
+>
 
-So apart from the very confusing bit about special global func
-handling here and some concerns about register ID generation, the
-logic looks good, so:
+Some minor needs, but overall it looks great!
 
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-> v1 -> v2:
->  - Allow pointers only for global functions
->  - Add support of any type with known size
->  - Use conventional way to generate reg id
->  - Use boolean true/false instead of int 1/0
->  - Fix formatting
+>  .../bpf/prog_tests/global_func_args.c         |  56 ++++++++
+>  .../bpf/prog_tests/test_global_funcs.c        |   8 ++
+>  .../selftests/bpf/progs/test_global_func10.c  |  29 ++++
+>  .../selftests/bpf/progs/test_global_func11.c  |  19 +++
+>  .../selftests/bpf/progs/test_global_func12.c  |  21 +++
+>  .../selftests/bpf/progs/test_global_func13.c  |  24 ++++
+>  .../selftests/bpf/progs/test_global_func14.c  |  21 +++
+>  .../selftests/bpf/progs/test_global_func15.c  |  22 +++
+>  .../selftests/bpf/progs/test_global_func16.c  |  22 +++
+>  .../selftests/bpf/progs/test_global_func9.c   | 132 ++++++++++++++++++
+>  .../bpf/progs/test_global_func_args.c         |  79 +++++++++++
+>  11 files changed, 433 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/global_func_args.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_global_func10.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_global_func11.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_global_func12.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_global_func13.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_global_func14.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_global_func15.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_global_func16.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_global_func9.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_global_func_args.c
 >
->  include/linux/bpf_verifier.h |  2 ++
->  kernel/bpf/btf.c             | 55 +++++++++++++++++++++++++++++-------
->  kernel/bpf/verifier.c        | 30 ++++++++++++++++++++
->  3 files changed, 77 insertions(+), 10 deletions(-)
->
+> diff --git a/tools/testing/selftests/bpf/prog_tests/global_func_args.c b/tools/testing/selftests/bpf/prog_tests/global_func_args.c
+> new file mode 100644
+> index 000000000000..643355e3358f
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/global_func_args.c
+> @@ -0,0 +1,56 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include "test_progs.h"
+> +#include "network_helpers.h"
+> +
+> +static void test_global_func_args0(struct bpf_object *obj, __u32 duration)
+
+I'd just add a single `static int duration;` at the top of the file
+and forget about it.
+
+> +{
+> +       int err, i, map_fd, actual_value;
+> +
+> +       map_fd = bpf_find_map(__func__, obj, "values");
+> +       if (CHECK_FAIL(map_fd < 0))
+
+no CHECK_FAIL, please use CHECK or ASSERT_XXX variations. CHECK_FAIL
+leaves no trace when debugging, making life unnecessarily hard.
+
+> +               return;
+> +
+> +       struct {
+> +               const char *descr;
+> +               int expected_value;
+> +       } tests[] = {
+> +               {"passing NULL pointer", 0},
+> +               {"returning value", 1},
+> +               {"reading local variable", 100 },
+> +               {"writing local variable", 101 },
+> +               {"reading global variable", 42 },
+> +               {"writing global variable", 43 },
+> +               {"writing to pointer-to-pointer", 1 },
+> +       };
+> +
+> +       for (i = 0; i < ARRAY_SIZE(tests); ++i) {
+> +               const int expected_value = tests[i].expected_value;
+> +
+> +               err = bpf_map_lookup_elem(map_fd, &i, &actual_value);
+> +
+> +               CHECK(err || actual_value != expected_value, tests[i].descr,
+> +                        "err %d result %d expected %d\n", err, actual_value, expected_value);
+> +       }
+> +}
+> +
 
 [...]
 
-> @@ -5470,9 +5488,26 @@ int btf_prepare_func_args(struct bpf_verifier_env *env, int subprog,
->                         reg->type = SCALAR_VALUE;
->                         continue;
->                 }
-> -               if (btf_type_is_ptr(t) &&
-> -                   btf_get_prog_ctx_type(log, btf, t, prog_type, i)) {
-> -                       reg->type = PTR_TO_CTX;
-> +               if (btf_type_is_ptr(t)) {
-> +                       if (btf_get_prog_ctx_type(log, btf, t, prog_type, i)) {
-> +                               reg->type = PTR_TO_CTX;
-> +                               continue;
-> +                       }
+> diff --git a/tools/testing/selftests/bpf/progs/test_global_func_args.c b/tools/testing/selftests/bpf/progs/test_global_func_args.c
+> new file mode 100644
+> index 000000000000..c8e47e120bf6
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_global_func_args.c
+> @@ -0,0 +1,79 @@
+> +// SPDX-License-Identifier: GPL-2.0
 > +
-> +                       t = btf_type_skip_modifiers(btf, t->type, NULL);
+> +#include <linux/bpf.h>
 > +
-> +                       ref_t = btf_resolve_size(btf, t, &reg->mem_size);
-> +                       if (IS_ERR(ref_t)) {
-> +                               bpf_log(log,
-> +                                   "arg#%d reference type('%s %s') size cannot be determined: %ld\n",
-> +                                   i, btf_type_str(t), btf_name_by_offset(btf, t->name_off),
-> +                                       PTR_ERR(ref_t));
-> +                               return -EINVAL;
-> +                       }
+> +#include <bpf/bpf_helpers.h>
 > +
-> +                       reg->type = PTR_TO_MEM_OR_NULL;
-> +                       reg->id = i + 1;
+> +struct S {
+> +       int v;
+> +};
+> +
+> +static struct S global_variable;
 
-I see that in a bunch of other places we use reg->id = ++env->id_gen;
-to generate register IDs, that looks safer and should avoid any
-accidental ID collision. Is there any reason not to do that here?
+this can get optimized away. Just drop `static` to make it global, or
+otherwise you'd need `static volatile`
+
 
 > +
->                         continue;
->                 }
->                 bpf_log(log, "Arg#%d type %s in %s() is not supported yet.\n",
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index d68ea6eb4f9b..fd423af1cc57 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -3942,6 +3942,29 @@ static int check_helper_mem_access(struct bpf_verifier_env *env, int regno,
->         }
->  }
->
-> +int check_mem_reg(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
-> +                  u32 regno, u32 mem_size)
-> +{
-> +       if (register_is_null(reg))
-> +               return 0;
+> +struct {
+> +       __uint(type, BPF_MAP_TYPE_ARRAY);
+> +       __uint(max_entries, 7);
+> +       __type(key, __u32);
+> +       __type(value, int);
+> +} values SEC(".maps");
 > +
-> +       if (reg_type_may_be_null(reg->type)) {
-> +               /* Assuming that the register contains a value check if the memory
-> +                * access is safe. Temorarily save and restore the register's state as
-
-typo: temporarily
-
-> +                * the conversion shouldn't be visible to a caller.
-> +                */
-> +               const struct bpf_reg_state saved_reg = *reg;
-> +               int rv;
-> +
-> +               mark_ptr_not_null_reg(reg);
-> +               rv = check_helper_mem_access(env, regno, mem_size, true, NULL);
-> +               *reg = saved_reg;
-> +               return rv;
-> +       }
-> +
-> +       return check_helper_mem_access(env, regno, mem_size, true, NULL);
-> +}
-> +
->  /* Implementation details:
->   * bpf_map_lookup returns PTR_TO_MAP_VALUE_OR_NULL
->   * Two bpf_map_lookups (even with the same key) will have different reg->id.
-> @@ -11572,6 +11595,13 @@ static int do_check_common(struct bpf_verifier_env *env, int subprog)
->                                 mark_reg_known_zero(env, regs, i);
->                         else if (regs[i].type == SCALAR_VALUE)
->                                 mark_reg_unknown(env, regs, i);
-> +                       else if (regs[i].type == PTR_TO_MEM_OR_NULL) {
-> +                               const u32 mem_size = regs[i].mem_size;
-> +
-> +                               mark_reg_known_zero(env, regs, i);
-> +                               regs[i].mem_size = mem_size;
-> +                               regs[i].id = ++env->id_gen;
-> +                       }
->                 }
->         } else {
->                 /* 1st arg to a function */
-> --
-> 2.25.1
->
