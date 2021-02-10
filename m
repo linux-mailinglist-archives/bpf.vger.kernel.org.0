@@ -2,115 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B96D8316556
-	for <lists+bpf@lfdr.de>; Wed, 10 Feb 2021 12:38:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D87C9316627
+	for <lists+bpf@lfdr.de>; Wed, 10 Feb 2021 13:11:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229910AbhBJLh3 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Wed, 10 Feb 2021 06:37:29 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:46686 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229611AbhBJLgI (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 10 Feb 2021 06:36:08 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-115-a5OTD5OFOq-Owgh4ZRfTyA-1; Wed, 10 Feb 2021 11:34:27 +0000
-X-MC-Unique: a5OTD5OFOq-Owgh4ZRfTyA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Wed, 10 Feb 2021 11:34:25 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Wed, 10 Feb 2021 11:34:25 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Nathan Chancellor' <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-CC:     Jiri Olsa <jolsa@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S231684AbhBJMKs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Feb 2021 07:10:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230034AbhBJMIn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Feb 2021 07:08:43 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BE98C06121D
+        for <bpf@vger.kernel.org>; Wed, 10 Feb 2021 04:04:37 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id l17so70499wmq.2
+        for <bpf@vger.kernel.org>; Wed, 10 Feb 2021 04:04:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+9PeUG6v1r8aFGi6ORK3pCJUjeurz7TuWVSE9CMni0c=;
+        b=vefKpoHHE9JY7wsXqdCVcvzKivbYRTXzF+0dgJaRh4tzwGHJlFAPcT6iyCPjtVk/QO
+         2nbSc5689PqMRWiH0mYBu5uUXuBmmxhvZbfVsxAu4AYbT9KkUXLQ8GUARAWnmp4QnaYC
+         qrzOL4EoDzuwTZWyGC0rpjwwcObKmnDgs1a7A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+9PeUG6v1r8aFGi6ORK3pCJUjeurz7TuWVSE9CMni0c=;
+        b=c1rvqRmwjhm1IUAODYFqIG1eikc4p35PpDtEIY0arLV5bi+9cbRVQ2ycH2ui5ygxT7
+         69mrEiSebOhdl/OOAStHKnHgg8Q1/LfPN42fE/609Zq1L+YkVWaI8cBztWfJR/rVafll
+         uUvzUnwM4wt+8958CjngT0MbGsHJSDOnqjYU3BDE9H1g0+l2p0WrSeBfdeU2PRo5NTAV
+         DxYyFVv+fS4cTkGzI/iGTTSJlcnTBV0PgWkfgvp+7k+dD5dbVecJ5QgTwnEgRFkeerPw
+         dQcvxMp5UsJGdYmf36/zFInBqRcmbX0UXW8REyyX/DmdxxrzR+mUnlSTrxTNKM6xBa4F
+         cC/g==
+X-Gm-Message-State: AOAM533rUo+EXpqRL+jNZWgZIZnbHtNmhtqO7LfzmCjPEOJEK3J51TRi
+        MUppDu+0wiN/B7KaDFMobdg/Og==
+X-Google-Smtp-Source: ABdhPJwpmZw+y59+QzJHB79z4KhJzeSBdFZ5h0S1sHnxAqBTLAPp1GIONJS8JzIW2wEz2gPnFzl8PA==
+X-Received: by 2002:a1c:9851:: with SMTP id a78mr2600203wme.66.1612958676276;
+        Wed, 10 Feb 2021 04:04:36 -0800 (PST)
+Received: from antares.lan (c.3.c.9.d.d.c.e.0.a.6.8.a.9.e.c.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:ce9a:86a0:ecdd:9c3c])
+        by smtp.gmail.com with ESMTPSA id j7sm2837854wrp.72.2021.02.10.04.04.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Feb 2021 04:04:35 -0800 (PST)
+From:   Lorenz Bauer <lmb@cloudflare.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        "Song Liu" <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Veronika Kabatova <vkabatov@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Daniel Kiss <daniel.kiss@arm.com>
-Subject: RE: FAILED unresolved symbol vfs_truncate on arm64 with LLVM
-Thread-Topic: FAILED unresolved symbol vfs_truncate on arm64 with LLVM
-Thread-Index: AQHW/0GRCH7UzKiswkSGiUsyv9cB9qpRQTWg
-Date:   Wed, 10 Feb 2021 11:34:25 +0000
-Message-ID: <67555404a0d449508def1d5be4d1f569@AcuMS.aculab.com>
-References: <20210209052311.GA125918@ubuntu-m3-large-x86>
- <CAEf4BzZV0-zx6YKUUKmecs=icnQNXJjTokdkSAoexm36za+wdA@mail.gmail.com>
- <CAEf4BzYvri7wzRnGH_qQbavXOx5TfBA0qx4nYVnn=YNGv+vNVw@mail.gmail.com>
- <CAEf4Bzax90hn_5axpnCpW+E6gVc1mtUgCXWqmxV0tJ4Ud7bsaA@mail.gmail.com>
- <20210209074904.GA286822@ubuntu-m3-large-x86> <YCKB1TF5wz93EIBK@krava>
- <YCKlrLkTQXc4Cyx7@krava> <YCKwxNDkS9rdr43W@krava> <YCLdJPPC+6QjUsR4@krava>
- <CAKwvOdnqx5-SsicRf01yhxKOq8mAkYRd+zBScSOmEQ0XJe2mAg@mail.gmail.com>
- <20210210000257.GA1683281@ubuntu-m3-large-x86>
-In-Reply-To: <20210210000257.GA1683281@ubuntu-m3-large-x86>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
+        bpf@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, netdev@vger.kernel.org,
+        sparclinux@vger.kernel.org
+Subject: [PATCH bpf 0/4] Expose network namespace cookies to user space
+Date:   Wed, 10 Feb 2021 12:04:21 +0000
+Message-Id: <20210210120425.53438-1-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-> > > vfs_truncate disasm:
-> > >
-> > >         ffff80001031f430 <vfs_truncate>:
-> > >         ffff80001031f430: 5f 24 03 d5   hint    #34
-> > >         ffff80001031f434: 1f 20 03 d5   nop
-> > >         ffff80001031f438: 1f 20 03 d5   nop
-> > >         ffff80001031f43c: 3f 23 03 d5   hint    #25
-> > >
-> > > thats why we don't match it in pahole.. I checked few other functions
-> > > and some have the same problem and some match the function boundary
-> > >
-> > > those that match don't have that first hint instrucion, like:
-> > >
-> > >         ffff800010321e40 <do_faccessat>:
-> > >         ffff800010321e40: 1f 20 03 d5   nop
-> > >         ffff800010321e44: 1f 20 03 d5   nop
-> > >         ffff800010321e48: 3f 23 03 d5   hint    #25
-> > >
-> > > any hints about hint instructions? ;-)
-> >
-> > aarch64 makes *some* newer instructions reuse the "hint" ie "nop"
-> > encoding space to make software backwards compatible on older hardware
-> > that doesn't support such instructions.  Is this BTI, perhaps? (The
-> > function is perhaps the destination of an indirect call?)
-> 
-> It seems like it. The issue is not reproducible when
-> CONFIG_ARM64_BTI_KERNEL is not set.
+We're working on a user space control plane for the BPF sk_lookup
+hook [1]. The hook attaches to a network namespace and allows
+control over which socket receives a new connection / packet.
 
-Is the compiler/linker doing something 'crazy'?
+Roughly, applications can give a socket to our user space component
+to participate in custom bind semantics. This creates an edge case
+where  an application can provide us with a socket that lives in
+a different network namespace than our BPF sk_lookup program.
+We'd like to return an error in this case.
 
-If a function address is taken then the BTI instruction is placed
-before the function body and the symbol moved.
-But non-indirect calls still jump to the original start of the function.
-(In this case the first nop.)
+Additionally, we have some user space state that is tied to the
+network namespace. We currently use the inode of the nsfs entry
+in a directory name, but this is suffers from inode reuse.
 
-This saves the execution time of the BTI instruction for non-indirect
-calls.
+I'm proposing to fix both of these issues by adding a new
+SO_NETNS_COOKIE socket option as well as a NS_GET_COOKIE ioctl.
+Using these we get a stable, unique identifier for a network
+namespace and check whether a socket belongs to the "correct"
+namespace.
 
-	David
+NS_GET_COOKIE could be renamed to NS_GET_NET_COOKIE. I kept the
+name generic because it seems like other namespace types could
+benefit from a cookie as well.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+I'm trying to land this via the bpf tree since this is where the
+netns cookie originated, please let me know if this isn't
+appropriate.
+
+1: https://www.kernel.org/doc/html/latest/bpf/prog_sk_lookup.html
+
+Cc: bpf@vger.kernel.org
+Cc: linux-alpha@vger.kernel.org
+Cc: linux-api@vger.kernel.org
+Cc: linux-arch@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-kselftest@vger.kernel.org
+Cc: linux-mips@vger.kernel.org
+Cc: linux-parisc@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: sparclinux@vger.kernel.org
+
+Lorenz Bauer (4):
+  net: add SO_NETNS_COOKIE socket option
+  nsfs: add an ioctl to discover the network namespace cookie
+  tools/testing: add test for NS_GET_COOKIE
+  tools/testing: add a selftest for SO_NETNS_COOKIE
+
+ arch/alpha/include/uapi/asm/socket.h          |  2 +
+ arch/mips/include/uapi/asm/socket.h           |  2 +
+ arch/parisc/include/uapi/asm/socket.h         |  2 +
+ arch/sparc/include/uapi/asm/socket.h          |  2 +
+ fs/nsfs.c                                     |  9 +++
+ include/linux/sock_diag.h                     | 20 ++++++
+ include/net/net_namespace.h                   | 11 ++++
+ include/uapi/asm-generic/socket.h             |  2 +
+ include/uapi/linux/nsfs.h                     |  2 +
+ net/core/filter.c                             |  9 ++-
+ net/core/sock.c                               |  7 +++
+ tools/testing/selftests/net/.gitignore        |  1 +
+ tools/testing/selftests/net/Makefile          |  2 +-
+ tools/testing/selftests/net/so_netns_cookie.c | 61 +++++++++++++++++++
+ tools/testing/selftests/nsfs/.gitignore       |  1 +
+ tools/testing/selftests/nsfs/Makefile         |  2 +-
+ tools/testing/selftests/nsfs/netns.c          | 57 +++++++++++++++++
+ 17 files changed, 185 insertions(+), 7 deletions(-)
+ create mode 100644 tools/testing/selftests/net/so_netns_cookie.c
+ create mode 100644 tools/testing/selftests/nsfs/netns.c
+
+-- 
+2.27.0
 
