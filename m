@@ -2,140 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 912CF315B24
-	for <lists+bpf@lfdr.de>; Wed, 10 Feb 2021 01:30:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85D18315B62
+	for <lists+bpf@lfdr.de>; Wed, 10 Feb 2021 01:37:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234446AbhBJA1q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Feb 2021 19:27:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59864 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234774AbhBJADk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Feb 2021 19:03:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D94C164E42;
-        Wed, 10 Feb 2021 00:02:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612915379;
-        bh=/9zjf6RObGkGCMF7oOa3KfpvjKGFcmQSd9nZzvEVr00=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vI+C4co13VkpKpF7c4nYz2E3SFgymNijm7IbZTeJDEywSMILm4ZGnLXXjwx2QR1F1
-         Q1WC+7zQFU4UCvX7s+ZmpKgSn6SXD6biDqLFMizzNqSf15pr3QLoqBK6BssNVLnL/d
-         z/VQ1GwurpMYmOJOwLun7ksWBUwkYL7VQXuw6J3cEeTFA446GiEM7bYo39hw2eE6bJ
-         0AoYptCguKDFUSNmVF9oHnzxminkLFsB48TzyYSZrYtIYb17VeW3v2QybFs1+7RV9M
-         8Hwk5o/a5oZuMLjxlWyD8IKJkvC3Jk0+xjF5Mo/BCdUNHgUFfhr/bgN0xvzl1LM6U9
-         kJqV1HteITluw==
-Date:   Tue, 9 Feb 2021 17:02:57 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Veronika Kabatova <vkabatov@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Daniel Kiss <daniel.kiss@arm.com>
-Subject: Re: FAILED unresolved symbol vfs_truncate on arm64 with LLVM
-Message-ID: <20210210000257.GA1683281@ubuntu-m3-large-x86>
-References: <20210209052311.GA125918@ubuntu-m3-large-x86>
- <CAEf4BzZV0-zx6YKUUKmecs=icnQNXJjTokdkSAoexm36za+wdA@mail.gmail.com>
- <CAEf4BzYvri7wzRnGH_qQbavXOx5TfBA0qx4nYVnn=YNGv+vNVw@mail.gmail.com>
- <CAEf4Bzax90hn_5axpnCpW+E6gVc1mtUgCXWqmxV0tJ4Ud7bsaA@mail.gmail.com>
- <20210209074904.GA286822@ubuntu-m3-large-x86>
- <YCKB1TF5wz93EIBK@krava>
- <YCKlrLkTQXc4Cyx7@krava>
- <YCKwxNDkS9rdr43W@krava>
- <YCLdJPPC+6QjUsR4@krava>
- <CAKwvOdnqx5-SsicRf01yhxKOq8mAkYRd+zBScSOmEQ0XJe2mAg@mail.gmail.com>
+        id S233311AbhBJAhW (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Feb 2021 19:37:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233731AbhBJAdw (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Feb 2021 19:33:52 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB8C3C06174A
+        for <bpf@vger.kernel.org>; Tue,  9 Feb 2021 16:33:12 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id x9so248916plb.5
+        for <bpf@vger.kernel.org>; Tue, 09 Feb 2021 16:33:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=W9BJoRdCc8YZnOo7oaJ+mST3GsJkGFlQgGwy1YFljFo=;
+        b=QaMnQciGBp+PwMsVjqHJq1hNWlQ7kaL1APi3yZbWKY3k5Twk/UGPUmX7LfAqVmQ+bx
+         0j7SCOROogYatOy05lCNrI3Bx10ArTee6SMJFPXAlLXxqVlmDVLiW5eTpUGreId95J5E
+         Ng9orIM39lQ8Ml+G8VY8H8j7ACYZ5+Rvh1tMU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=W9BJoRdCc8YZnOo7oaJ+mST3GsJkGFlQgGwy1YFljFo=;
+        b=BAif+LXWfHoZl1dRMryFnbbyOrfH4xOsIRppvS5DdRbAqdjQyuE9dQMLh7R4bjgeju
+         UZNgubbw8mfrpNcgQgPoCkpc08P6bAToCJl+3A6NHDAtEsPblzE7Q/dloWOfudFxJ/mk
+         Jo4nNf3eoMuxrVKuP5Y3P29EwzNu7aDwxRvFjV+lZlM6XOPuLUFHagIBRG3MQ6KBxQ0n
+         jcmX1AIJ9tnaoFPciqCKfCLDdUdme3ikPHT5H+7Jrbqms4LuzdOQdatwS2s+4yLvMvZd
+         cP9TMzo9+GdPiTUgci1nvqe4hNNSfduueNr9j381sk34aHsL0A6DGQf2/VoL5VIqeb8G
+         08PQ==
+X-Gm-Message-State: AOAM530Ad5fs71b2wMSbFE+4muyO1ULtVBEmTegJtK+Tw7U24u9AIepU
+        3qsLefWvYRnupP2hfSfGx1AmxA==
+X-Google-Smtp-Source: ABdhPJx6ORN//J1stbfWGHNujgSBkXvMha9uuYPOQCCAGGQdZIn3a45ciNO1XqWRaiA3FwTI7a00aQ==
+X-Received: by 2002:a17:90a:5403:: with SMTP id z3mr495324pjh.198.1612917192393;
+        Tue, 09 Feb 2021 16:33:12 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id n142sm97479pfd.82.2021.02.09.16.33.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 16:33:11 -0800 (PST)
+Date:   Tue, 9 Feb 2021 16:33:10 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Seth Forshee <seth.forshee@canonical.com>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH] selftests/seccomp: Accept any valid fd in
+ user_notification_addfd
+Message-ID: <202102091632.D5E0100A@keescook>
+References: <20210128161721.99150-1-seth.forshee@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKwvOdnqx5-SsicRf01yhxKOq8mAkYRd+zBScSOmEQ0XJe2mAg@mail.gmail.com>
+In-Reply-To: <20210128161721.99150-1-seth.forshee@canonical.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 12:09:31PM -0800, Nick Desaulniers wrote:
-> On Tue, Feb 9, 2021 at 11:06 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > On Tue, Feb 09, 2021 at 05:13:42PM +0100, Jiri Olsa wrote:
-> > > On Tue, Feb 09, 2021 at 04:09:36PM +0100, Jiri Olsa wrote:
-> > >
-> > > SNIP
-> > >
-> > > > > > > >                 DW_AT_prototyped        (true)
-> > > > > > > >                 DW_AT_type      (0x01cfdfe4 "long int")
-> > > > > > > >                 DW_AT_external  (true)
-> > > > > > > >
-> > > > > > >
-> > > > > > > Ok, the problem appears to be not in DWARF, but in mcount_loc data.
-> > > > > > > vfs_truncate's address is not recorded as ftrace-attachable, and thus
-> > > > > > > pahole ignores it. I don't know why this happens and it's quite
-> > > > > > > strange, given vfs_truncate is just a normal global function.
-> > > > >
-> > > > > right, I can't see it in mcount adresses.. but it begins with instructions
-> > > > > that appears to be nops, which would suggest it's traceable
-> > > > >
-> > > > >   ffff80001031f430 <vfs_truncate>:
-> > > > >   ffff80001031f430: 5f 24 03 d5   hint    #34
-> > > > >   ffff80001031f434: 1f 20 03 d5   nop
-> > > > >   ffff80001031f438: 1f 20 03 d5   nop
-> > > > >   ffff80001031f43c: 3f 23 03 d5   hint    #25
-> > > > >
-> > > > > > >
-> > > > > > > I'd like to understand this issue before we try to fix it, but there
-> > > > > > > is at least one improvement we can make: pahole should check ftrace
-> > > > > > > addresses only for static functions, not the global ones (global ones
-> > > > > > > should be always attachable, unless they are special, e.g., notrace
-> > > > > > > and stuff). We can easily check that by looking at the corresponding
-> > > > > > > symbol. But I'd like to verify that vfs_truncate is ftrace-attachable
-> > > >
-> > > > I'm still trying to build the kernel.. however ;-)
-> > >
-> > > I finally reproduced.. however arm's not using mcount_loc
-> > > but some other special section.. so it's new mess for me
-> >
-> > so ftrace data actualy has vfs_truncate address but with extra 4 bytes:
-> >
-> >         ffff80001031f434
-> >
-> > real vfs_truncate address:
-> >
-> >         ffff80001031f430 g     F .text  0000000000000168 vfs_truncate
-> >
-> > vfs_truncate disasm:
-> >
-> >         ffff80001031f430 <vfs_truncate>:
-> >         ffff80001031f430: 5f 24 03 d5   hint    #34
-> >         ffff80001031f434: 1f 20 03 d5   nop
-> >         ffff80001031f438: 1f 20 03 d5   nop
-> >         ffff80001031f43c: 3f 23 03 d5   hint    #25
-> >
-> > thats why we don't match it in pahole.. I checked few other functions
-> > and some have the same problem and some match the function boundary
-> >
-> > those that match don't have that first hint instrucion, like:
-> >
-> >         ffff800010321e40 <do_faccessat>:
-> >         ffff800010321e40: 1f 20 03 d5   nop
-> >         ffff800010321e44: 1f 20 03 d5   nop
-> >         ffff800010321e48: 3f 23 03 d5   hint    #25
-> >
-> > any hints about hint instructions? ;-)
+On Thu, Jan 28, 2021 at 10:17:21AM -0600, Seth Forshee wrote:
+> This test expects fds to have specific values, which works fine
+> when the test is run standalone. However, the kselftest runner
+> consumes a couple of extra fds for redirection when running
+> tests, so the test fails when run via kselftest.
 > 
-> aarch64 makes *some* newer instructions reuse the "hint" ie "nop"
-> encoding space to make software backwards compatible on older hardware
-> that doesn't support such instructions.  Is this BTI, perhaps? (The
-> function is perhaps the destination of an indirect call?)
+> Change the test to pass on any valid fd number.
+> 
+> Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
 
-It seems like it. The issue is not reproducible when
-CONFIG_ARM64_BTI_KERNEL is not set.
+Thanks!
 
-Cheers,
-Nathan
+Acked-by: Kees Cook <keescook@chromium.org>
+
+I'll snag this if Shuah doesn't first. :)
+
+-Kees
+
+> ---
+>  tools/testing/selftests/seccomp/seccomp_bpf.c | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
+> index 26c72f2b61b1..9338df6f4ca8 100644
+> --- a/tools/testing/selftests/seccomp/seccomp_bpf.c
+> +++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
+> @@ -4019,18 +4019,14 @@ TEST(user_notification_addfd)
+>  
+>  	/* Verify we can set an arbitrary remote fd */
+>  	fd = ioctl(listener, SECCOMP_IOCTL_NOTIF_ADDFD, &addfd);
+> -	/*
+> -	 * The child has fds 0(stdin), 1(stdout), 2(stderr), 3(memfd),
+> -	 * 4(listener), so the newly allocated fd should be 5.
+> -	 */
+> -	EXPECT_EQ(fd, 5);
+> +	EXPECT_GE(fd, 0);
+>  	EXPECT_EQ(filecmp(getpid(), pid, memfd, fd), 0);
+>  
+>  	/* Verify we can set an arbitrary remote fd with large size */
+>  	memset(&big, 0x0, sizeof(big));
+>  	big.addfd = addfd;
+>  	fd = ioctl(listener, SECCOMP_IOCTL_NOTIF_ADDFD_BIG, &big);
+> -	EXPECT_EQ(fd, 6);
+> +	EXPECT_GE(fd, 0);
+>  
+>  	/* Verify we can set a specific remote fd */
+>  	addfd.newfd = 42;
+> -- 
+> 2.29.2
+> 
+
+-- 
+Kees Cook
