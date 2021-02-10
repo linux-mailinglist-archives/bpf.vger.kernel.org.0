@@ -2,116 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85D18315B62
-	for <lists+bpf@lfdr.de>; Wed, 10 Feb 2021 01:37:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 945EB315B6A
+	for <lists+bpf@lfdr.de>; Wed, 10 Feb 2021 01:40:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233311AbhBJAhW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Feb 2021 19:37:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59974 "EHLO
+        id S233326AbhBJAig (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Feb 2021 19:38:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233731AbhBJAdw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 9 Feb 2021 19:33:52 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB8C3C06174A
-        for <bpf@vger.kernel.org>; Tue,  9 Feb 2021 16:33:12 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id x9so248916plb.5
-        for <bpf@vger.kernel.org>; Tue, 09 Feb 2021 16:33:12 -0800 (PST)
+        with ESMTP id S233796AbhBJAgW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Feb 2021 19:36:22 -0500
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F3AFC061788
+        for <bpf@vger.kernel.org>; Tue,  9 Feb 2021 16:35:35 -0800 (PST)
+Received: by mail-ot1-x330.google.com with SMTP id r21so231548otk.13
+        for <bpf@vger.kernel.org>; Tue, 09 Feb 2021 16:35:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=W9BJoRdCc8YZnOo7oaJ+mST3GsJkGFlQgGwy1YFljFo=;
-        b=QaMnQciGBp+PwMsVjqHJq1hNWlQ7kaL1APi3yZbWKY3k5Twk/UGPUmX7LfAqVmQ+bx
-         0j7SCOROogYatOy05lCNrI3Bx10ArTee6SMJFPXAlLXxqVlmDVLiW5eTpUGreId95J5E
-         Ng9orIM39lQ8Ml+G8VY8H8j7ACYZ5+Rvh1tMU=
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=dwOJXb2rZMTXAcXXquhzDrJAGp/ZNEOKDykceMWb28A=;
+        b=Rw1pJIsLmw/sXXx/sFSlp0vuRw6O3I44Akle1rscvR13YwZQWie9HDEgVKQXRG48Dz
+         lukNI5tedUsTmgGXXCVqBb0ADD5F+jmvkT1Z0MeEGT3cIOETNwIWLStepoBj0mz2Dk7Q
+         NNWRUjkd9q6ADQg25Ra0r0+qi7bDGp+MS7WTQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=W9BJoRdCc8YZnOo7oaJ+mST3GsJkGFlQgGwy1YFljFo=;
-        b=BAif+LXWfHoZl1dRMryFnbbyOrfH4xOsIRppvS5DdRbAqdjQyuE9dQMLh7R4bjgeju
-         UZNgubbw8mfrpNcgQgPoCkpc08P6bAToCJl+3A6NHDAtEsPblzE7Q/dloWOfudFxJ/mk
-         Jo4nNf3eoMuxrVKuP5Y3P29EwzNu7aDwxRvFjV+lZlM6XOPuLUFHagIBRG3MQ6KBxQ0n
-         jcmX1AIJ9tnaoFPciqCKfCLDdUdme3ikPHT5H+7Jrbqms4LuzdOQdatwS2s+4yLvMvZd
-         cP9TMzo9+GdPiTUgci1nvqe4hNNSfduueNr9j381sk34aHsL0A6DGQf2/VoL5VIqeb8G
-         08PQ==
-X-Gm-Message-State: AOAM530Ad5fs71b2wMSbFE+4muyO1ULtVBEmTegJtK+Tw7U24u9AIepU
-        3qsLefWvYRnupP2hfSfGx1AmxA==
-X-Google-Smtp-Source: ABdhPJx6ORN//J1stbfWGHNujgSBkXvMha9uuYPOQCCAGGQdZIn3a45ciNO1XqWRaiA3FwTI7a00aQ==
-X-Received: by 2002:a17:90a:5403:: with SMTP id z3mr495324pjh.198.1612917192393;
-        Tue, 09 Feb 2021 16:33:12 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id n142sm97479pfd.82.2021.02.09.16.33.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 16:33:11 -0800 (PST)
-Date:   Tue, 9 Feb 2021 16:33:10 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Seth Forshee <seth.forshee@canonical.com>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dwOJXb2rZMTXAcXXquhzDrJAGp/ZNEOKDykceMWb28A=;
+        b=YzahoFWCzthOQE6R+e9vevCUEH6gf0PLwCBAbuNOFvzltIgpVGNY7WYU3EUrhkZ2q1
+         itH9c0REokVBwW2PhULdBj+RKgZ/RCav9WZ6G4awaRrKvA23mtrNjJ7PFJivlyk98S53
+         5XlkoeF+NwWDouF+GRgRySW4D+Th2Eq5x/Kz+UDN/1DKdDRYAesud6UdIFw4PFAwO0lu
+         Ia1Bm39GM6QaTG28EylgfPqQ5KSkgSUY7SlqXEGyWa+dDUpsPH/hikQdWbUfx6E0Ao6R
+         mlv3Mtqp9LdGUB/D64ajsRLwN/oF6lJqqlSSKUvOryDrYxAV3BVSf7edwFOd480zpk68
+         l3fg==
+X-Gm-Message-State: AOAM533OkquXynihi5iL+UqXHVXekWOi6x6GbRc/olhcG365NlUNxJ8Q
+        70KpPJ42BmsssEgJtynjhAEesg==
+X-Google-Smtp-Source: ABdhPJygWyurf7h0wIY5eUqxpUxgstMHldBRuMtondPeMYIcj+7EVNcjWXuGplid29b/vg6YQs5dbQ==
+X-Received: by 2002:a05:6830:3495:: with SMTP id c21mr223719otu.97.1612917334849;
+        Tue, 09 Feb 2021 16:35:34 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id x187sm102792oig.3.2021.02.09.16.35.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 09 Feb 2021 16:35:34 -0800 (PST)
 Subject: Re: [PATCH] selftests/seccomp: Accept any valid fd in
  user_notification_addfd
-Message-ID: <202102091632.D5E0100A@keescook>
+To:     Kees Cook <keescook@chromium.org>,
+        Seth Forshee <seth.forshee@canonical.com>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
 References: <20210128161721.99150-1-seth.forshee@canonical.com>
+ <202102091632.D5E0100A@keescook>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <89f34e46-17a0-e563-f75f-1206c5318a66@linuxfoundation.org>
+Date:   Tue, 9 Feb 2021 17:35:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210128161721.99150-1-seth.forshee@canonical.com>
+In-Reply-To: <202102091632.D5E0100A@keescook>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 10:17:21AM -0600, Seth Forshee wrote:
-> This test expects fds to have specific values, which works fine
-> when the test is run standalone. However, the kselftest runner
-> consumes a couple of extra fds for redirection when running
-> tests, so the test fails when run via kselftest.
+On 2/9/21 5:33 PM, Kees Cook wrote:
+> On Thu, Jan 28, 2021 at 10:17:21AM -0600, Seth Forshee wrote:
+>> This test expects fds to have specific values, which works fine
+>> when the test is run standalone. However, the kselftest runner
+>> consumes a couple of extra fds for redirection when running
+>> tests, so the test fails when run via kselftest.
+>>
+>> Change the test to pass on any valid fd number.
+>>
+>> Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
 > 
-> Change the test to pass on any valid fd number.
+> Thanks!
 > 
-> Signed-off-by: Seth Forshee <seth.forshee@canonical.com>
-
-Thanks!
-
-Acked-by: Kees Cook <keescook@chromium.org>
-
-I'll snag this if Shuah doesn't first. :)
-
--Kees
-
-> ---
->  tools/testing/selftests/seccomp/seccomp_bpf.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
+> Acked-by: Kees Cook <keescook@chromium.org>
 > 
-> diff --git a/tools/testing/selftests/seccomp/seccomp_bpf.c b/tools/testing/selftests/seccomp/seccomp_bpf.c
-> index 26c72f2b61b1..9338df6f4ca8 100644
-> --- a/tools/testing/selftests/seccomp/seccomp_bpf.c
-> +++ b/tools/testing/selftests/seccomp/seccomp_bpf.c
-> @@ -4019,18 +4019,14 @@ TEST(user_notification_addfd)
->  
->  	/* Verify we can set an arbitrary remote fd */
->  	fd = ioctl(listener, SECCOMP_IOCTL_NOTIF_ADDFD, &addfd);
-> -	/*
-> -	 * The child has fds 0(stdin), 1(stdout), 2(stderr), 3(memfd),
-> -	 * 4(listener), so the newly allocated fd should be 5.
-> -	 */
-> -	EXPECT_EQ(fd, 5);
-> +	EXPECT_GE(fd, 0);
->  	EXPECT_EQ(filecmp(getpid(), pid, memfd, fd), 0);
->  
->  	/* Verify we can set an arbitrary remote fd with large size */
->  	memset(&big, 0x0, sizeof(big));
->  	big.addfd = addfd;
->  	fd = ioctl(listener, SECCOMP_IOCTL_NOTIF_ADDFD_BIG, &big);
-> -	EXPECT_EQ(fd, 6);
-> +	EXPECT_GE(fd, 0);
->  
->  	/* Verify we can set a specific remote fd */
->  	addfd.newfd = 42;
-> -- 
-> 2.29.2
+> I'll snag this if Shuah doesn't first. :)
 > 
 
--- 
-Kees Cook
+I will apply this. I have several queued for 5.12-rc1 anyway.
+
+thanks,
+-- Shuah
