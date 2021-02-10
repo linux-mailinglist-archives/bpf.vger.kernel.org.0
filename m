@@ -2,286 +2,255 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FCFA316DE1
-	for <lists+bpf@lfdr.de>; Wed, 10 Feb 2021 19:07:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C6B8316E25
+	for <lists+bpf@lfdr.de>; Wed, 10 Feb 2021 19:11:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233213AbhBJSG2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Feb 2021 13:06:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54604 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233675AbhBJSDa (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Feb 2021 13:03:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CCDD964ED0;
-        Wed, 10 Feb 2021 18:02:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612980168;
-        bh=uu6W33qzmFaYSa3bAlZILlk0wIgbVfefO1eJRFy9AdQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TV6sz6nPa1Ow4PKqR1KjEWhbvP0l5ISvwzF15lycLuaOF8DQG9LuqigjgLeY2mxdH
-         CBoh/jMF1Yc65f7REr1XlAyYDsEdIcXwSon4M4DElVnZLYPyaycFwhhymIRiy37dzI
-         X3U5GyyQ6qise3HgwcoHqFFxu5A+1DZu0aq4Rip4BzSukrylmQ/0q4H9tR0aweJLwi
-         Dk6cIcy7dxdNuSM3+GjzaI51y0igiQXrQ4YWDdFZcDvGtdolSikf1hq847l0YlF39V
-         lPvm4TbeaNNPN09Gq61TGtWGeDAzfEJDUwHvz+0rsft+5fGGuh0YN9yzmJLlBnyrvd
-         J6MbwDyOAVXHQ==
-Date:   Wed, 10 Feb 2021 11:02:46 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Veronika Kabatova <vkabatov@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>
-Subject: Re: FAILED unresolved symbol vfs_truncate on arm64 with LLVM
-Message-ID: <20210210180246.GA1945861@ubuntu-m3-large-x86>
-References: <CAEf4BzZV0-zx6YKUUKmecs=icnQNXJjTokdkSAoexm36za+wdA@mail.gmail.com>
- <CAEf4BzYvri7wzRnGH_qQbavXOx5TfBA0qx4nYVnn=YNGv+vNVw@mail.gmail.com>
- <CAEf4Bzax90hn_5axpnCpW+E6gVc1mtUgCXWqmxV0tJ4Ud7bsaA@mail.gmail.com>
- <20210209074904.GA286822@ubuntu-m3-large-x86>
- <YCKB1TF5wz93EIBK@krava>
- <YCKlrLkTQXc4Cyx7@krava>
- <CAEf4BzaL=qsSyDc8OxeN4pr7+Lvv+de4f+hM5a56LY8EABAk3w@mail.gmail.com>
- <YCMEucGZVPPQuxWw@krava>
- <CAEf4BzacQrkSMnmeO3sunOs7sfhX1ZoD_Hnk4-cFUK-TpLNqUA@mail.gmail.com>
- <YCPfEzp3ogCBTBaS@krava>
+        id S234017AbhBJSLS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Feb 2021 13:11:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233693AbhBJSJM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Feb 2021 13:09:12 -0500
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC770C06174A
+        for <bpf@vger.kernel.org>; Wed, 10 Feb 2021 10:08:31 -0800 (PST)
+Received: by mail-oi1-x236.google.com with SMTP id y199so3023517oia.4
+        for <bpf@vger.kernel.org>; Wed, 10 Feb 2021 10:08:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Bp3Gpjv6OJluXrw28P9o+O4dQOhUhGs2gAV7zZEjb0U=;
+        b=hiqkg6j8581YLIgBXH+60Oeu1AGifzuF9fdE2ckosYy03AzPYPOcPrIYUw6nkdv/gN
+         lGrkOHGgHVvxbqK9t1jV1WMhJIwg7Y6Q76jP8rumtmEbn+NrEF0IEDBo9qRLgKPXUc4T
+         O2zzRoP72p3LWA/ruB2WsKzvT0xO82Gt0p5dPRF/tbE45iU2KWVxZ4GEBStvYS7Xn9r5
+         m412sS2vqlaykOPAqwebbFT6pwHVYpVNqIryPwqdXyMI1FGqjOL9wKt1ChBZZtSfApDe
+         1NwDsr1GFtKrgU4hf5kTPLAUIZ8+cGA6VpgSoIEP3gxGM/XdkVRpbwrRYPYKIV0g6DlI
+         eAdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Bp3Gpjv6OJluXrw28P9o+O4dQOhUhGs2gAV7zZEjb0U=;
+        b=lzR/yaqH7YtClRJf4g4gRGI3EYu6m9xA2eMHJSK3hkSiw4OEP5XTZIuTTm57PLGS1Z
+         qylvFLhi1u/fhtvYSGnrJdtRX+Hyossq0cvjWcizLlSsNT0HLWB+F8Kwensg8bcEj2Zz
+         a1rnKD77OaoO0RAUTZP7seuAmql3/jAXmLTm6kPzfxl1d32LYqNoMUk9tcxVQxxjbosL
+         u4NNy3U4+/lwUZmcA5wSjFey20EyeceRd3nVF6gxQ3FzWhNqXBlm3fKj5K3gVZh1v+6g
+         pd4YdFrzGqskgpF9pEvHR2qvLECclIICHRlsf9wYqc+JD3r0M3OYhQ6Gt46qwEzpgjDZ
+         6uBA==
+X-Gm-Message-State: AOAM531Rb+UqHu83dJedV19h0Pw+KkdaPotWrtJhDNm6jy2QmO07nz0b
+        16ws0sL1EyfA9HszJx2iJKl3sTxddlWtiEpEPrXEvjqz
+X-Google-Smtp-Source: ABdhPJz5aKReoPMV6sBgzn41LbwLL+DFb2vSsBAm0UP7kaGVq0ch/RYDXRd3xDulsc+RsO7ropBh8hTmQLyMBON9nCI=
+X-Received: by 2002:aca:3b8b:: with SMTP id i133mr129374oia.132.1612980511284;
+ Wed, 10 Feb 2021 10:08:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YCPfEzp3ogCBTBaS@krava>
+References: <b1792bb3c51eb3e94b9d27e67665d3f2209bba7e.camel@linux.ibm.com>
+ <CAADnVQJFcFwxEz=wnV=hkie-EDwa8s5JGbBQeFt1TGux1OihJw@mail.gmail.com> <5c6501bea0f7ae9dcb9d5f2071441942d5d3dc0f.camel@linux.ibm.com>
+In-Reply-To: <5c6501bea0f7ae9dcb9d5f2071441942d5d3dc0f.camel@linux.ibm.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 10 Feb 2021 10:08:20 -0800
+Message-ID: <CAADnVQ+gnQED7WYAw7Vmm5=omngCKYXnmgU_NqPUfESBerH8gQ@mail.gmail.com>
+Subject: Re: What should BPF_CMPXCHG do when the values match?
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Yonghong Song <yhs@fb.com>, Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@fb.com>,
+        Brendan Jackman <jackmanb@google.com>,
+        bpf <bpf@vger.kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        KP Singh <kpsingh@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 02:26:43PM +0100, Jiri Olsa wrote:
-> On Tue, Feb 09, 2021 at 02:00:29PM -0800, Andrii Nakryiko wrote:
-> 
-> SNIP
-> 
-> > > > > I'm still trying to build the kernel.. however ;-)
-> > > > >
-> > > > > patch below adds the ftrace check only for static functions
-> > > > > and lets the externa go through.. but as you said, in this
-> > > > > case we'll need to figure out the 'notrace' and other checks
-> > > > > ftrace is doing
-> > > > >
-> > > > > jirka
-> > > > >
-> > > > >
-> > > > > ---
-> > > > > diff --git a/btf_encoder.c b/btf_encoder.c
-> > > > > index b124ec20a689..4d147406cfa5 100644
-> > > > > --- a/btf_encoder.c
-> > > > > +++ b/btf_encoder.c
-> > > > > @@ -734,7 +734,7 @@ int cu__encode_btf(struct cu *cu, int verbose, bool force,
-> > > > >                         continue;
-> > > > >                 if (!has_arg_names(cu, &fn->proto))
-> > > > >                         continue;
-> > > > > -               if (functions_cnt) {
-> > > > > +               if (!fn->external && functions_cnt) {
-> > > >
-> > > > I wouldn't trust DWARF, honestly. Wouldn't checking GLOBAL vs LOCAL
-> > > > FUNC ELF symbol be more reliable?
+On Wed, Feb 10, 2021 at 5:28 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+>
+> On Tue, 2021-02-09 at 20:14 -0800, Alexei Starovoitov wrote:
+> > On Tue, Feb 9, 2021 at 4:43 PM Ilya Leoshkevich <iii@linux.ibm.com>
+> > wrote:
 > > >
-> > > that'd mean extra bsearch on each processed function,
-> > > on the ther hand, we'are already slow ;-) I'll check
-> > > how big the slowdown would be
+> > > Hi,
 > > >
-> > 
-> > We currently record addresses and do binary search. Now we need to
-> > record address + size and still do binary search with a slightly
-> > different semantics (find closest entry >= addr). Then just check that
-> > it overlaps, taking into account the length of the function code. It
-> > shouldn't result in a noticeable slowdown. Might be actually faster,
-> > because we might avoid callback function call costs.
-> 
-> I'm still not sure how to handle the external check for function via elf,
-> but below is change for checking that ftrace addrs are within elf functions
-> 
-> seems to work in my tests, I'll run some more tests and send full patch
-> 
-> jirka
+> > > I'm implementing BPF_CMPXCHG for the s390x JIT and noticed that the
+> > > doc, the interpreter and the X64 JIT do not agree on what the
+> > > behavior
+> > > should be when the values match.
+> > >
+> > > If the operand size is BPF_W, this matters, because, depending on
+> > > the
+> > > answer, the upper bits of R0 are either zeroed out out or are left
+> > > intact.
+> > >
+> > > I made the experiment based on the following modification to the
+> > > "atomic compare-and-exchange smoketest - 32bit" test on top of
+> > > commit
+> > > ee5cc0363ea0:
+> > >
+> > > --- a/tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c
+> > > +++ b/tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c
+> > > @@ -57,8 +57,8 @@
+> > >                 BPF_MOV32_IMM(BPF_REG_1, 4),
+> > >                 BPF_MOV32_IMM(BPF_REG_0, 3),
+> > >                 BPF_ATOMIC_OP(BPF_W, BPF_CMPXCHG, BPF_REG_10,
+> > > BPF_REG_1, -4),
+> > > -               /* if (old != 3) exit(4); */
+> > > -               BPF_JMP32_IMM(BPF_JEQ, BPF_REG_0, 3, 2),
+> > > +               /* if ((u64)old != 3) exit(4); */
+> > > +               BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 3, 2),
+> > >                 BPF_MOV32_IMM(BPF_REG_0, 4),
+> > >                 BPF_EXIT_INSN(),
+> > >                 /* if (val != 4) exit(5); */
+> > >
+> > > and got the following results:
+> > >
+> > > 1) Documentation: Upper bits of R0 are zeroed out - but it looks as
+> > > if
+> > >    there is a typo and either a period or the word "otherwise" is
+> > >    missing?
+> > >
+> > >    > If they match it is replaced with ``src_reg``, The value that
+> > > was
+> > >    > there before is loaded back to ``R0``.
+> > >
+> > > 2) Interpreter + KVM: Upper bits of R0 are zeroed out (C semantics)
+> > >
+> > > 3) X64 JIT + KVM: Upper bits of R0 are untouched (cmpxchg
+> > > semantics)
+> > >
+> > >    => 0xffffffffc0146bc7: lock cmpxchg %edi,-0x4(%rbp)
+> > >       0xffffffffc0146bcc: cmp $0x3,%rax
+> > >    (gdb) p/x $rax
+> > >    0x6bd5720c00000003
+> > >    (gdb) x/d $rbp-4
+> > >    0xffffc90001263d5c: 3
+> > >
+> > >       0xffffffffc0146bc7: lock cmpxchg %edi,-0x4(%rbp)
+> > >    => 0xffffffffc0146bcc: cmp $0x3,%rax
+> > >    (gdb) p/x $rax
+> > >    0x6bd5720c00000003
+> > >
+> > > 4) X64 JIT + TCG: Upper bits of R0 are zeroed out (qemu bug?)
+> > >
+> > >    => 0xffffffffc01441fc: lock cmpxchg %edi,-0x4(%rbp)
+> > >       0xffffffffc0144201: cmp $0x3,%rax
+> > >    (gdb) p/x $rax
+> > >    0x81776ea600000003
+> > >    (gdb) x/d $rbp-4
+> > >    0xffffc90001117d5c: 3
+> > >
+> > >       0xffffffffc01441fc: lock cmpxchg %edi,-0x4(%rbp)
+> > >    => 0xffffffffc0144201: cmp $0x3,%rax
+> > >    (gdb) p/x $rax
+> > >    $3 = 0x3
+> > >
+> > > So which option is the right one? In my opinion, it would be safer
+> > > to
+> > > follow what the interpreter does and zero out the upper bits.
+> >
+> > Wow. What a find!
+> > I thought that all 32-bit x86 ops zero-extend the dest register.
+>
+> I think that's true, it's just that when the values match, cmpxchg is
+> specified to do nothing.
+>
+> > I agree that it's best to zero upper bits for cmpxchg as well.
+>
+> I will send a doc patch to clarify the wording then.
+>
+> > I wonder whether compilers know about this exceptional behavior.
+>
+> I'm not too familiar with the BPF LLVM backend, but at least CMPXCHG32
+> is defined in a similar way to XFALU32, so it should be fine. Maybe
+> Yonghong can comment on this further.
 
-This passes the build test with the initial problematic configuration
-file and the reduced one that I came up with. That is about the extent
-to which I can verify that it works though :)
+I meant x86 backends in gcc and llvm.
+bpf backend in llvm I've already checked.
 
-> ---
-> diff --git a/btf_encoder.c b/btf_encoder.c
-> index b124ec20a689..548a12847f99 100644
-> --- a/btf_encoder.c
-> +++ b/btf_encoder.c
-> @@ -36,6 +36,7 @@ struct funcs_layout {
->  struct elf_function {
->  	const char	*name;
->  	unsigned long	 addr;
-> +	unsigned long	 end;
->  	unsigned long	 sh_addr;
->  	bool		 generated;
->  };
-> @@ -44,7 +45,7 @@ static struct elf_function *functions;
->  static int functions_alloc;
->  static int functions_cnt;
->  
-> -static int functions_cmp(const void *_a, const void *_b)
-> +static int functions_cmp_name(const void *_a, const void *_b)
->  {
->  	const struct elf_function *a = _a;
->  	const struct elf_function *b = _b;
-> @@ -52,6 +53,16 @@ static int functions_cmp(const void *_a, const void *_b)
->  	return strcmp(a->name, b->name);
->  }
->  
-> +static int functions_cmp_addr(const void *_a, const void *_b)
-> +{
-> +	const struct elf_function *a = _a;
-> +	const struct elf_function *b = _b;
+> > I believe the bpf backend considers full R0 to be used by bpf's
+> > cmpxchg.
+>
+> It's a little bit inconsistent at the moment. I don't know why yet,
+> but on s390 the subreg optimization kicks in and I have to run with the
+> following patch in order to avoid stack pointer zero extension:
+
+makes sense.
+This is needed not only for cmpxchg, but for all bpf_fetch variants, right?
+
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -10588,6 +10588,7 @@ static int opt_subreg_zext_lo32_rnd_hi32(struct
+> bpf_verifier_env *env,
+>         for (i = 0; i < len; i++) {
+>                 int adj_idx = i + delta;
+>                 struct bpf_insn insn;
+> +               u8 load_reg;
+>
+>                 insn = insns[adj_idx];
+>                 if (!aux[adj_idx].zext_dst) {
+> @@ -10630,9 +10631,29 @@ static int
+> opt_subreg_zext_lo32_rnd_hi32(struct bpf_verifier_env *env,
+>                 if (!bpf_jit_needs_zext())
+>                         continue;
+>
+> +               /* zext_dst means that we want to zero-extend whatever
+> register
+> +                * the insn defines, which is dst_reg most of the time,
+> with
+> +                * the notable exception of BPF_STX + BPF_ATOMIC +
+> BPF_FETCH.
+> +                */
+> +               if (BPF_CLASS(insn.code) == BPF_STX &&
+> +                   BPF_MODE(insn.code) == BPF_ATOMIC) {
+> +                       /* BPF_STX + BPF_ATOMIC insns without BPF_FETCH
+> do not
+> +                        * define any registers, therefore zext_dst
+> cannot be
+> +                        * set.
+> +                        */
+> +                       if (WARN_ON_ONCE(!(insn.imm & BPF_FETCH)))
+> +                               return -EINVAL;
+
+warn makes sense.
+
+> +                       if (insn.imm == BPF_CMPXCHG)
+> +                               load_reg = BPF_REG_0;
+> +                       else
+> +                               load_reg = insn.src_reg;
+
+pls use ?:.
+I think it will read easier.
+And submit it as an official patch. Please.
+
+> +               } else {
+> +                       load_reg = insn.dst_reg;
+> +               }
 > +
-> +	if (a->addr == b->addr)
-> +		return 0;
-> +	return a->addr < b->addr ? -1 : 1;
-> +}
-> +
->  static void delete_functions(void)
->  {
->  	free(functions);
-> @@ -98,6 +109,7 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym,
->  
->  	functions[functions_cnt].name = name;
->  	functions[functions_cnt].addr = elf_sym__value(sym);
-> +	functions[functions_cnt].end = (__u64) -1;
->  	functions[functions_cnt].sh_addr = sh.sh_addr;
->  	functions[functions_cnt].generated = false;
->  	functions_cnt++;
-> @@ -236,9 +248,25 @@ get_kmod_addrs(struct btf_elf *btfe, __u64 **paddrs, __u64 *pcount)
->  	return 0;
->  }
->  
-> +static bool is_addr_in_func(__u64 addr, struct elf_function *func, bool kmod)
-> +{
-> +	/*
-> +	 * For vmlinux image both addrs[x] and functions[x]::addr
-> +	 * values are final address and are comparable.
-> +	 *
-> +	 * For kernel module addrs[x] is final address, but
-> +	 * functions[x]::addr is relative address within section
-> +	 * and needs to be relocated by adding sh_addr.
-> +	 */
-> +	__u64 start = kmod ? func->addr + func->sh_addr : func->addr;
-> +	__u64 end = kmod ? func->end+ func->sh_addr : func->end;
-> +
-> +	return start <= addr && addr < end;
-> +}
-> +
->  static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
->  {
-> -	__u64 *addrs, count, i;
-> +	__u64 *addrs, count, i_func, i_addr;
->  	int functions_valid = 0;
->  	bool kmod = false;
->  
-> @@ -266,43 +294,62 @@ static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
->  		return 0;
->  	}
->  
-> -	qsort(addrs, count, sizeof(addrs[0]), addrs_cmp);
-> -	qsort(functions, functions_cnt, sizeof(functions[0]), functions_cmp);
-> -
->  	/*
-> -	 * Let's got through all collected functions and filter
-> -	 * out those that are not in ftrace.
-> +	 * Sort both functions and addrs so we can iterate
-> +	 * both of them simultaneously and found matching
-> +	 * func/addr pairs.
->  	 */
-> -	for (i = 0; i < functions_cnt; i++) {
-> -		struct elf_function *func = &functions[i];
-> -		/*
-> -		 * For vmlinux image both addrs[x] and functions[x]::addr
-> -		 * values are final address and are comparable.
-> -		 *
-> -		 * For kernel module addrs[x] is final address, but
-> -		 * functions[x]::addr is relative address within section
-> -		 * and needs to be relocated by adding sh_addr.
-> -		 */
-> -		__u64 addr = kmod ? func->addr + func->sh_addr : func->addr;
-> +	qsort(addrs, count, sizeof(addrs[0]), addrs_cmp);
-> +	qsort(functions, functions_cnt, sizeof(functions[0]), functions_cmp_addr);
-> +
-> +	for (i_func = 0, i_addr = 0; i_func < functions_cnt; i_func++) {
-> +		struct elf_function *func = &functions[i_func];
-> +
-> +		if (i_func + 1 < functions_cnt)
-> +			func->end = functions[i_func + 1].addr;
-> +
-> +		for (; i_addr < count; i_addr++) {
-> +			__u64 addr = addrs[i_addr];
-> +
-> +			/* Functions are  ahead, catch up with addrs. */
-> +			if (addr < func->addr)
-> +				continue;
-> +
-> +			/* Addr is within function - mark function as valid. */
-> +			if (is_addr_in_func(addr, func, kmod)) {
-> +				/*
-> +				 * We iterate over sorted array, so we can easily skip
-> +				 * not valid item and move following valid field into
-> +				 * its place, and still keep the 'new' array sorted.
-> +				 */
-> +				if (i_func != functions_valid)
-> +					functions[functions_valid] = functions[i_func];
-> +				functions_valid++;
-> +				i_addr++;
-> +			}
->  
-> -		/* Make sure function is within ftrace addresses. */
-> -		if (bsearch(&addr, addrs, count, sizeof(addrs[0]), addrs_cmp)) {
->  			/*
-> -			 * We iterate over sorted array, so we can easily skip
-> -			 * not valid item and move following valid field into
-> -			 * its place, and still keep the 'new' array sorted.
-> +			 * Addrs are ahead, catch up with functions, or we just
-> +			 * found valid function and want to move to another.
->  			 */
-> -			if (i != functions_valid)
-> -				functions[functions_valid] = functions[i];
-> -			functions_valid++;
-> +			break;
->  		}
->  	}
->  
-> +	if (btf_elf__verbose) {
-> +		printf("Found %d functions out of %d symbols and %llu ftrace addresses.\n",
-> +			functions_valid, functions_cnt, count);
-> +	}
-> +
->  	functions_cnt = functions_valid;
->  	free(addrs);
->  
-> -	if (btf_elf__verbose)
-> -		printf("Found %d functions!\n", functions_cnt);
-> +	/*
-> +	 * And finaly sort 'valid' functions by name,
-> +	 * so find_function can be used.
-> +	 */
-> +	qsort(functions, functions_cnt, sizeof(functions[0]), functions_cmp_name);
-> +
->  	return 0;
->  }
->  
-> @@ -312,7 +359,7 @@ static struct elf_function *find_function(const struct btf_elf *btfe,
->  	struct elf_function key = { .name = name };
->  
->  	return bsearch(&key, functions, functions_cnt, sizeof(functions[0]),
-> -		       functions_cmp);
-> +		       functions_cmp_name);
->  }
->  
->  static bool btf_name_char_ok(char c, bool first)
-> 
+>                 zext_patch[0] = insn;
+> -               zext_patch[1].dst_reg = insn.dst_reg;
+> -               zext_patch[1].src_reg = insn.dst_reg;
+> +               zext_patch[1].dst_reg = load_reg;
+> +               zext_patch[1].src_reg = load_reg;
+>                 patch = zext_patch;
+>                 patch_len = 2;
+>  apply_patch_buffer:
+>
+> However, this doesn't seem to affect x86_64.
+
+Right, but it will affect x86-32. It doesn't implement atomics yet,
+but would be good to keep zext correct.
+
+> > Do you know what xchg does on x86? What about arm64 with cas?
+>
+> xchg always zeroes out the upper half.
+> Unlike x86_64's cmpxchg, arm64's cas is specified to always zero out
+> the upper half, even if the values match. I don't have access to arm8.1
+> machine to test this, but at least QEMU does behave this way.
+> s390's cs does not zero out the upper half, we need to use llgfr in
+> addition (which doesn't sound like a big deal to me).
+
+thanks for checking!
+
+Brendan,
+could you please follow up with x64 jit fix to add 'mov eax,eax'  for
+u32-sized cmpxchg  ?
