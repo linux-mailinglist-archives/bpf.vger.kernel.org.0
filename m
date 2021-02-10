@@ -2,184 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37C0F315CFA
-	for <lists+bpf@lfdr.de>; Wed, 10 Feb 2021 03:14:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AE56315D2D
+	for <lists+bpf@lfdr.de>; Wed, 10 Feb 2021 03:25:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235197AbhBJCMf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 9 Feb 2021 21:12:35 -0500
-Received: from smtprelay0111.hostedemail.com ([216.40.44.111]:34784 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S235304AbhBJCLQ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 9 Feb 2021 21:11:16 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 1088312611;
-        Wed, 10 Feb 2021 02:10:25 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:334:355:368:369:379:599:800:960:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1535:1544:1593:1594:1711:1730:1747:1777:1792:2393:2540:2559:2562:2828:2907:3138:3139:3140:3141:3142:3355:3622:3653:3865:3867:3868:3870:3871:3872:3873:3874:4250:4321:4605:5007:6119:6120:6238:7652:7809:7901:7903:7904:8603:9121:9149:10004:10848:11232:11233:11473:11658:11914:12043:12297:12438:12555:12679:12740:12760:12895:12986:13018:13019:13255:13439:13870:14181:14659:14721:21063:21080:21433:21451:21611:21627:21889:21939:21990:30003:30012:30029:30041:30054:30070:30089:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: chin80_570a5ce2760c
-X-Filterd-Recvd-Size: 5662
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf16.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 10 Feb 2021 02:10:24 +0000 (UTC)
-Message-ID: <2b4805f6ca2b44f4195b6fdba4f82d5e90ab1989.camel@perches.com>
-Subject: Re: [PATCH v4] checkpatch: do not apply "initialise globals to 0"
- check to BPF progs
-From:   Joe Perches <joe@perches.com>
-To:     Song Liu <songliubraving@fb.com>, linux-kernel@vger.kernel.org
-Cc:     bpf@vger.kernel.org, Andy Whitcroft <apw@canonical.com>
-Date:   Tue, 09 Feb 2021 18:10:22 -0800
-In-Reply-To: <20210209211954.490077-1-songliubraving@fb.com>
-References: <20210209211954.490077-1-songliubraving@fb.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S234412AbhBJCY5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 9 Feb 2021 21:24:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234612AbhBJCWo (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 9 Feb 2021 21:22:44 -0500
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F4DC061574;
+        Tue,  9 Feb 2021 18:21:56 -0800 (PST)
+Received: by mail-oi1-x22b.google.com with SMTP id 18so405202oiz.7;
+        Tue, 09 Feb 2021 18:21:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AADBsxCjQTEzuZlF5SRkW1qSAc0//NAD9pZiQfkqUg4=;
+        b=SVUPCuc7R16vCK/wpC+Ftop0Is3tTWMa1PP8dHP5lDgYNSquR6Jf+7XSDOSfjgYFhW
+         2dMuQJo3fUjg3Hd1NgA74geKZMi0HovVgkyh3KE/UEHhBckLePl8lJXF8cGGbHHVABtG
+         i8XnmYsvtZ6DbysDyhaAVGq3sMm+8qU58KB5kZbeUsGXafpKeOIQLkhm3R3gYy9Q0K56
+         TVjYnXKsAMAXg15qYFYdCjI/LarTRCD4Kqpo2S56pzIgFej95f5Z9Ngq6nolDYZUF1U3
+         ZGgjwQMHh8gr6zMzE0EWnR3BADN9vwLwm5jpmUo2H9q+gy0vewUque0ryaau87qzTi11
+         juxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AADBsxCjQTEzuZlF5SRkW1qSAc0//NAD9pZiQfkqUg4=;
+        b=QeE2SAGg+nCCm8dbzBWYXIPiZY1GCYdoxsMm9KqqVLXm6gLRtO5WyNXBeqYTRhWJ12
+         2FOiOjcdy/O3BjpPa/V1C96UAiSiiYwQmNM2bkmgN5CKXCUamdathD0ZoK26hBzk8+T2
+         LcaomKsh7rI2tACrRmGcx3jxbNE3sbMRqKfAtdzrVG4G5GGbftIpTGXpVCqyNnzAiPFM
+         d0481+zGsldiGHV2IzkuFxHXB26ncGgB/BsG1Vvbgu/iWtHSiYm3GqME9MEW9qIpx63w
+         +bxt7bqDr7A02B8hp4YYUITBOig5L94ZQGCkWTBW4dYjncglESHNeht8aHtWsD1zP7/g
+         o+Tw==
+X-Gm-Message-State: AOAM533eyBvJuWkiIhOC6tl5tb9SLj/6ws924IVlaYdPYBn6Hu08rJNz
+        BvogtvdDbAq67e4taCjncJ1rNzY0tN4g6w==
+X-Google-Smtp-Source: ABdhPJxzyQfy0VzD8pOu3f9wcTueInn9qZ2HmQIR3SmzEdLAvs0eudDM8g3jutj44ZpfpXDRw1vAqQ==
+X-Received: by 2002:a05:6808:1315:: with SMTP id y21mr585199oiv.112.1612923715907;
+        Tue, 09 Feb 2021 18:21:55 -0800 (PST)
+Received: from unknown.attlocal.net ([2600:1700:65a0:ab60:58b0:eb39:33aa:5355])
+        by smtp.gmail.com with ESMTPSA id z20sm101051oth.55.2021.02.09.18.21.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 18:21:55 -0800 (PST)
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, duanxiongchun@bytedance.com,
+        wangdongdong.6@bytedance.com, jiang.wang@bytedance.com,
+        Cong Wang <cong.wang@bytedance.com>
+Subject: [Patch bpf-next v2 0/5] sock_map: clean up and refactor code for BPF_SK_SKB_VERDICT
+Date:   Tue,  9 Feb 2021 18:21:31 -0800
+Message-Id: <20210210022136.146528-1-xiyou.wangcong@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 2021-02-09 at 13:19 -0800, Song Liu wrote:
-> BPF programs explicitly initialise global variables to 0 to make sure
-> clang (v10 or older) do not put the variables in the common section.
+From: Cong Wang <cong.wang@bytedance.com>
 
-Acked-by: Joe Perches <joe@perches.com>
+This patchset is the first series of patches separated out from
+the original large patchset, to make reviews easier. This patchset
+does not add any new feature but merely cleans up the existing
+sockmap and skmsg code and refactors it, to prepare for the patches
+followed up. This passed all BPF selftests.
 
-So the patch is OK now, but I have a question about the concept:
+The original whole patchset is available on github:
+https://github.com/congwang/linux/tree/sockmap
 
-Do you mean that these initialized to 0 global variables
-should go into bss or another section?
+and this patchset is also available on github:
+https://github.com/congwang/linux/tree/sockmap1
 
-Perhaps it'd be useful to somehow mark variables into specific
-sections rather than bss when initialized to 0 and data when not
-initialized to 0.
+---
+v2: split the original patchset
+    compute data_end with bpf_convert_data_end_access()
+    get rid of psock->bpf_running
+    reduce the scope of CONFIG_BPF_STREAM_PARSER
+    do not add CONFIG_BPF_SOCK_MAP
 
-$ clang --version
-clang version 10.0.0 (git://github.com/llvm/llvm-project.git 305b961f64b75e73110e309341535f6d5a48ed72)
-Target: x86_64-unknown-linux-gnu
-Thread model: posix
+Cong Wang (5):
+  bpf: clean up sockmap related Kconfigs
+  skmsg: get rid of struct sk_psock_parser
+  bpf: compute data_end dynamically with JIT code
+  skmsg: use skb ext instead of TCP_SKB_CB
+  sock_map: rename skb_parser and skb_verdict
 
-$ cat t_common.c
-int a = 0;
-int b = 1;
+ include/linux/bpf.h                           |  20 +-
+ include/linux/bpf_types.h                     |   2 -
+ include/linux/skbuff.h                        |   3 +
+ include/linux/skmsg.h                         |  78 ++++++--
+ include/net/tcp.h                             |  29 +--
+ include/net/udp.h                             |   4 +-
+ init/Kconfig                                  |   1 +
+ net/Kconfig                                   |   7 +-
+ net/core/Makefile                             |   2 +-
+ net/core/filter.c                             |  46 +++--
+ net/core/skbuff.c                             |   7 +
+ net/core/skmsg.c                              | 187 +++++++++---------
+ net/core/sock_map.c                           |  74 +++----
+ net/ipv4/Makefile                             |   2 +-
+ net/ipv4/tcp_bpf.c                            |   2 -
+ .../selftests/bpf/prog_tests/sockmap_listen.c |   8 +-
+ .../selftests/bpf/progs/test_sockmap_listen.c |   4 +-
+ 17 files changed, 252 insertions(+), 224 deletions(-)
 
-int foo_a(void)
-{
-	return a;
-}
-
-int foo_b(void)
-{
-	return b;
-}
-
-$ clang -c -O3 t_common.c
-
-$ objdump -x t_common.o 
-
-t_common.o:     file format elf64-x86-64
-t_common.o
-architecture: i386:x86-64, flags 0x00000011:
-HAS_RELOC, HAS_SYMS
-start address 0x0000000000000000
-
-Sections:
-Idx Name          Size      VMA               LMA               File off  Algn
-  0 .text         00000017  0000000000000000  0000000000000000  00000040  2**4
-                  CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
-  1 .bss          00000004  0000000000000000  0000000000000000  00000058  2**2
-                  ALLOC
-  2 .data         00000004  0000000000000000  0000000000000000  00000058  2**2
-                  CONTENTS, ALLOC, LOAD, DATA
-  3 .comment      00000068  0000000000000000  0000000000000000  0000005c  2**0
-                  CONTENTS, READONLY
-  4 .note.GNU-stack 00000000  0000000000000000  0000000000000000  000000c4  2**0
-                  CONTENTS, READONLY
-  5 .eh_frame     00000040  0000000000000000  0000000000000000  000000c8  2**3
-                  CONTENTS, ALLOC, LOAD, RELOC, READONLY, DATA
-  6 .llvm_addrsig 00000000  0000000000000000  0000000000000000  00000210  2**0
-                  CONTENTS, READONLY, EXCLUDE
-SYMBOL TABLE:
-0000000000000000 l    df *ABS*	0000000000000000 t_common.c
-0000000000000000 l    d  .text	0000000000000000 .text
-0000000000000000 g     O .bss	0000000000000004 a
-0000000000000000 g     O .data	0000000000000004 b
-0000000000000000 g     F .text	0000000000000007 foo_a
-0000000000000010 g     F .text	0000000000000007 foo_b
-
-
-RELOCATION RECORDS FOR [.text]:
-OFFSET           TYPE              VALUE 
-0000000000000002 R_X86_64_PC32     a-0x0000000000000004
-0000000000000012 R_X86_64_PC32     b-0x0000000000000004
-
-
-RELOCATION RECORDS FOR [.eh_frame]:
-OFFSET           TYPE              VALUE 
-0000000000000020 R_X86_64_PC32     .text
-0000000000000034 R_X86_64_PC32     .text+0x0000000000000010
-
-
-Perhaps instead something like:
-
-$ cat t_common_bpf.c
- __attribute__((__section__("bpf"))) int a = 0;
- __attribute__((__section__("bpf"))) int b = 1;
-
-int foo_a(void)
-{
-	return a;
-}
-
-int foo_b(void)
-{
-	return b;
-}
-
-$ clang -c -O3 t_common_bpf.c
-
-$ objdump -x t_common_bpf.o 
-
-t_common_bpf.o:     file format elf64-x86-64
-t_common_bpf.o
-architecture: i386:x86-64, flags 0x00000011:
-HAS_RELOC, HAS_SYMS
-start address 0x0000000000000000
-
-Sections:
-Idx Name          Size      VMA               LMA               File off  Algn
-  0 .text         00000017  0000000000000000  0000000000000000  00000040  2**4
-                  CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
-  1 bpf           00000008  0000000000000000  0000000000000000  00000058  2**2
-                  CONTENTS, ALLOC, LOAD, DATA
-  2 .comment      00000068  0000000000000000  0000000000000000  00000060  2**0
-                  CONTENTS, READONLY
-  3 .note.GNU-stack 00000000  0000000000000000  0000000000000000  000000c8  2**0
-                  CONTENTS, READONLY
-  4 .eh_frame     00000040  0000000000000000  0000000000000000  000000c8  2**3
-                  CONTENTS, ALLOC, LOAD, RELOC, READONLY, DATA
-  5 .llvm_addrsig 00000000  0000000000000000  0000000000000000  00000210  2**0
-                  CONTENTS, READONLY, EXCLUDE
-SYMBOL TABLE:
-0000000000000000 l    df *ABS*	0000000000000000 t_common_bpf.c
-0000000000000000 l    d  .text	0000000000000000 .text
-0000000000000000 g     O bpf	0000000000000004 a
-0000000000000004 g     O bpf	0000000000000004 b
-0000000000000000 g     F .text	0000000000000007 foo_a
-0000000000000010 g     F .text	0000000000000007 foo_b
-
-
-RELOCATION RECORDS FOR [.text]:
-OFFSET           TYPE              VALUE 
-0000000000000002 R_X86_64_PC32     a-0x0000000000000004
-0000000000000012 R_X86_64_PC32     b-0x0000000000000004
-
-
-RELOCATION RECORDS FOR [.eh_frame]:
-OFFSET           TYPE              VALUE 
-0000000000000020 R_X86_64_PC32     .text
-0000000000000034 R_X86_64_PC32     .text+0x0000000000000010
-
-
-
+-- 
+2.25.1
 
