@@ -2,128 +2,132 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDE023174CF
-	for <lists+bpf@lfdr.de>; Thu, 11 Feb 2021 00:58:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F8883174DE
+	for <lists+bpf@lfdr.de>; Thu, 11 Feb 2021 01:00:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233895AbhBJX5k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Feb 2021 18:57:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51242 "EHLO
+        id S233878AbhBKAAl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Feb 2021 19:00:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233231AbhBJX5f (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Feb 2021 18:57:35 -0500
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E3B6C061756;
-        Wed, 10 Feb 2021 15:56:55 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id d184so3875838ybf.1;
-        Wed, 10 Feb 2021 15:56:55 -0800 (PST)
+        with ESMTP id S232565AbhBKAAk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Feb 2021 19:00:40 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B9ABC061574;
+        Wed, 10 Feb 2021 16:00:00 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id b187so3840418ybg.9;
+        Wed, 10 Feb 2021 16:00:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=NlBU/EA5O5TjlAdnlvz/LDwHm49DsW41/c60GtVRT74=;
-        b=pJPqASHZnFoxFqibBPjdXo/RgSRVRvHlFmNeu59Ca28kVCrYAcdIswfPWmlqQNjVLP
-         I185P4VWBPPnru9fZ0q3PeaQieE8i3c7frpGkW4/d9Yh3ugOV5+Jdn5eWXb+b4YIZEKO
-         vb5GEUu1DzI2c5PWg+YXMEb95BHKCYZ25cE5+f1Pk9o8psw0WpNHI+RsJajvPzea5t1o
-         LrN4L9QfVXCEJcQchrpX5ATT4wgA1gM1UJJFK51dlpTAfjMInADIHPVBPkH+uaRmxFs+
-         RTX27vJbvhPBgc0QJyiL/bG6zoLfils4qn0z17w1DhAVgBf5Zx/PnTKTcKaH/rKRUDnI
-         fvSA==
+        bh=09Spi/8UU1p/OELTmxfBTiRNhMO6Zc63FG918GZPQAA=;
+        b=EF+LIGXXYc1EUPopzbnCsxWMLbZfgAQTIuqeQpp3sB8Pyj+OahPnlNb+ZPBnnChnKt
+         c/YD28oE/pwEsKrfQ7Fo6aV5E8P1MAChr2xMPMyWOtlMYaDyIi8bRykAMrVVwwLEmF7K
+         YX426O0D6tOdl3uX9pn6MiPA4ggZWJRukyRC65+35rcLJ2DPetU9oUSpAgD8EMiZ9OPI
+         OvDyjvTUDXg0CZLtM4CbXtmItOBFbbPgTc1Ny3kRE1zr1Bb1RnyZlu4Xsn20KbhZAktU
+         yFV5I1ESYt7mZlS57xX/OqvkGemxR2gXCalMCSBgcbUfgrKYIVF3Kagd9qNvgV67664j
+         ENIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=NlBU/EA5O5TjlAdnlvz/LDwHm49DsW41/c60GtVRT74=;
-        b=paWhb5r8QoVYsWOTwuXV7nivSbrMRlgsnJ5FA5cirN+PziUKryg9RSWzQnrO97fv7j
-         XXfo6KLjF/sTPkxbIt6xFbpyZRIF7zLeEd1/5b8JZ3gMFPkzmO3+90gLhkrjiKjtAFGX
-         Mo18ug28hRmukYRzGHzXTrw4leYnDUuz+vZ0lKPOObPFhwK+cmMmNDyr7XIUNjJ2lVmz
-         nKVt41SEvevRkfGYPnFeu1GT9qKpmbhCdrbIahRjCWuH3lI0LhiukzMxiaVTsCJbtbMP
-         iGeWJQsnyuVMC8CZF9c6lA01y6aSmq9zWx9rQ5K2bcXpPJ39eLjhbzq4dJ25hUmAJbLw
-         e8VQ==
-X-Gm-Message-State: AOAM530lHc60mpYuiIBOgVMrMVgtLh8w7HcaHdU88tEPIWfaKl4kkufK
-        lMCuEcF9xpo0OtZ+5c4govxAI+6jxKPUOUiiFeQ=
-X-Google-Smtp-Source: ABdhPJyFeixNmcUyYnl1vhiuD7S3q9Q222OT+Ynk7lyXjN0oeCH0nvjq2ltCBFS2rgAF2/1eyQOqym4KkYcqqXn/q18=
-X-Received: by 2002:a25:9882:: with SMTP id l2mr7298911ybo.425.1613001414729;
- Wed, 10 Feb 2021 15:56:54 -0800 (PST)
+        bh=09Spi/8UU1p/OELTmxfBTiRNhMO6Zc63FG918GZPQAA=;
+        b=lmazh8GmiANSp4WEIG1SZSGUiyl455wb6CqRvWNBruwIUErCs9Yz4BAlacI/zBXnSy
+         5RHDA6yOWVK79j3WD1vAdLei6FmLAvHKBETY3JnuQekj/6l+r61Vq6JDRmuSXlpSctnF
+         uo9eF9lkevTCnA6l2lMD2N10TA8kFykXcmmQ3Rxdnl67aAkbEStf17dS0yzDMRy+c4SB
+         OdMDgVUJgiOH8qjYBecB5Tkf/Ad5XNvVQJtzQVu4M4e6FAyyOz71MyY1IdImCa6001Y5
+         tpjx5vlelpZzLnQg6I0Rq94kLupk4owVEoa3GAByrcmdi9m6xHQOp+8082huEFfvAzjs
+         sAjA==
+X-Gm-Message-State: AOAM530M96lZSZ3HtQCu/a7vMGD/qQeFWPsPjbF7MrxKrfY/R8jI87Rx
+        g8l101gvTZqpTrPJY9e+WBhcthFk1pn07ltXxlk=
+X-Google-Smtp-Source: ABdhPJy3QQ0g3KgzsSZKy2VIqOQh4kUKd5sut5vteImfeMSz3vaAa9nl3Gw3Lsrm8MinBBIp9VutBxHBGWhdhh2jP4w=
+X-Received: by 2002:a5b:3c4:: with SMTP id t4mr7326726ybp.510.1613001599552;
+ Wed, 10 Feb 2021 15:59:59 -0800 (PST)
 MIME-Version: 1.0
-References: <20210209112701.3341724-1-elver@google.com> <20210210055937.4c2gfs5utfeytoeg@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20210210055937.4c2gfs5utfeytoeg@kafai-mbp.dhcp.thefacebook.com>
+References: <20210210232327.1965876-1-morbo@google.com>
+In-Reply-To: <20210210232327.1965876-1-morbo@google.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 10 Feb 2021 15:56:44 -0800
-Message-ID: <CAEf4BzaO+cR3b-TKb6BBsj1_gmAbWuq1JriGU7C8qMuiHz-5Gg@mail.gmail.com>
-Subject: Re: [PATCH] bpf_lru_list: Read double-checked variable once without lock
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Marco Elver <elver@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        kasan-dev@googlegroups.com,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        syzbot+3536db46dfa58c573458@syzkaller.appspotmail.com,
-        syzbot+516acdb03d3e27d91bcd@syzkaller.appspotmail.com
+Date:   Wed, 10 Feb 2021 15:59:48 -0800
+Message-ID: <CAEf4BzYrWe4N28JjM6na=sNvq5214zs5yHra_fCuE1KA24KQ0A@mail.gmail.com>
+Subject: Re: [PATCH] dwarf_loader: use a better hashing function
+To:     Bill Wendling <morbo@google.com>
+Cc:     dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 9, 2021 at 10:00 PM Martin KaFai Lau <kafai@fb.com> wrote:
+On Wed, Feb 10, 2021 at 3:25 PM Bill Wendling <morbo@google.com> wrote:
 >
-> On Tue, Feb 09, 2021 at 12:27:01PM +0100, Marco Elver wrote:
-> > For double-checked locking in bpf_common_lru_push_free(), node->type is
-> > read outside the critical section and then re-checked under the lock.
-> > However, concurrent writes to node->type result in data races.
-> >
-> > For example, the following concurrent access was observed by KCSAN:
-> >
-> >   write to 0xffff88801521bc22 of 1 bytes by task 10038 on cpu 1:
-> >    __bpf_lru_node_move_in        kernel/bpf/bpf_lru_list.c:91
-> >    __local_list_flush            kernel/bpf/bpf_lru_list.c:298
-> >    ...
-> >   read to 0xffff88801521bc22 of 1 bytes by task 10043 on cpu 0:
-> >    bpf_common_lru_push_free      kernel/bpf/bpf_lru_list.c:507
-> >    bpf_lru_push_free             kernel/bpf/bpf_lru_list.c:555
-> >    ...
-> >
-> > Fix the data races where node->type is read outside the critical section
-> > (for double-checked locking) by marking the access with READ_ONCE() as
-> > well as ensuring the variable is only accessed once.
-> >
-> > Reported-by: syzbot+3536db46dfa58c573458@syzkaller.appspotmail.com
-> > Reported-by: syzbot+516acdb03d3e27d91bcd@syzkaller.appspotmail.com
-> > Signed-off-by: Marco Elver <elver@google.com>
-> > ---
-> > Detailed reports:
-> >       https://groups.google.com/g/syzkaller-upstream-moderation/c/PwsoQ7bfi8k/m/NH9Ni2WxAQAJ
-> >       https://groups.google.com/g/syzkaller-upstream-moderation/c/-fXQO9ehxSM/m/RmQEcI2oAQAJ
-> > ---
-> >  kernel/bpf/bpf_lru_list.c | 7 ++++---
-> >  1 file changed, 4 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/kernel/bpf/bpf_lru_list.c b/kernel/bpf/bpf_lru_list.c
-> > index 1b6b9349cb85..d99e89f113c4 100644
-> > --- a/kernel/bpf/bpf_lru_list.c
-> > +++ b/kernel/bpf/bpf_lru_list.c
-> > @@ -502,13 +502,14 @@ struct bpf_lru_node *bpf_lru_pop_free(struct bpf_lru *lru, u32 hash)
-> >  static void bpf_common_lru_push_free(struct bpf_lru *lru,
-> >                                    struct bpf_lru_node *node)
-> >  {
-> > +     u8 node_type = READ_ONCE(node->type);
-> >       unsigned long flags;
-> >
-> > -     if (WARN_ON_ONCE(node->type == BPF_LRU_LIST_T_FREE) ||
-> > -         WARN_ON_ONCE(node->type == BPF_LRU_LOCAL_LIST_T_FREE))
-> > +     if (WARN_ON_ONCE(node_type == BPF_LRU_LIST_T_FREE) ||
-> > +         WARN_ON_ONCE(node_type == BPF_LRU_LOCAL_LIST_T_FREE))
-> >               return;
-> >
-> > -     if (node->type == BPF_LRU_LOCAL_LIST_T_PENDING) {
-> > +     if (node_type == BPF_LRU_LOCAL_LIST_T_PENDING) {
-> I think this can be bpf-next.
+> This hashing function[1] produces better hash table bucket
+> distributions. The original hashing function always produced zeros in
+> the three least significant bits.
 >
-> Acked-by: Martin KaFai Lau <kafai@fb.com>
+> The new hashing funciton gives a modest performance boost.
+>
+>       Original      New
+>        0:11.41       0:11.38
+>        0:11.36       0:11.34
+>        0:11.35       0:11.26
+>       -----------------------
+>   Avg: 0:11.373      0:11.327
+>
+> for a performance improvement of 0.4%.
+>
+> [1] From Numerical Recipes, 3rd Ed. 7.1.4 Random Hashes and Random Bytes
+>
 
-Added Fixes: 3a08c2fd7634 ("bpf: LRU List") and applied to bpf-next, thanks.
+Can you please also test with the one libbpf uses internally:
+
+return (val * 11400714819323198485llu) >> (64 - bits);
+
+?
+
+Thanks!
+
+> Signed-off-by: Bill Wendling <morbo@google.com>
+> ---
+>  hash.h | 25 ++++++++++---------------
+>  1 file changed, 10 insertions(+), 15 deletions(-)
+>
+> diff --git a/hash.h b/hash.h
+> index d3aa416..ea201ab 100644
+> --- a/hash.h
+> +++ b/hash.h
+> @@ -33,22 +33,17 @@
+>
+>  static inline uint64_t hash_64(const uint64_t val, const unsigned int bits)
+>  {
+> -       uint64_t hash = val;
+> +       uint64_t hash = val * 0x369DEA0F31A53F85UL + 0x255992D382208B61UL;
+>
+> -       /*  Sigh, gcc can't optimise this alone like it does for 32 bits. */
+> -       uint64_t n = hash;
+> -       n <<= 18;
+> -       hash -= n;
+> -       n <<= 33;
+> -       hash -= n;
+> -       n <<= 3;
+> -       hash += n;
+> -       n <<= 3;
+> -       hash -= n;
+> -       n <<= 4;
+> -       hash += n;
+> -       n <<= 2;
+> -       hash += n;
+> +       hash ^= hash >> 21;
+> +       hash ^= hash << 37;
+> +       hash ^= hash >>  4;
+> +
+> +       hash *= 0x422E19E1D95D2F0DUL;
+> +
+> +       hash ^= hash << 20;
+> +       hash ^= hash >> 41;
+> +       hash ^= hash <<  5;
+>
+>         /* High bits are more random, so use them. */
+>         return hash >> (64 - bits);
+> --
+> 2.30.0.478.g8a0d178c01-goog
+>
