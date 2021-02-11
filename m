@@ -2,140 +2,356 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C75319333
-	for <lists+bpf@lfdr.de>; Thu, 11 Feb 2021 20:37:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90C803193C4
+	for <lists+bpf@lfdr.de>; Thu, 11 Feb 2021 21:00:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229705AbhBKThT (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Feb 2021 14:37:19 -0500
-Received: from mail.efficios.com ([167.114.26.124]:58698 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230050AbhBKThT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Feb 2021 14:37:19 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id A7F2C311016;
-        Thu, 11 Feb 2021 14:36:37 -0500 (EST)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 7eMdqTb-xpIR; Thu, 11 Feb 2021 14:36:37 -0500 (EST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 5519E31108D;
-        Thu, 11 Feb 2021 14:36:37 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 5519E31108D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1613072197;
-        bh=jJjUBAbEcdGN3E4oDebELKmHNg8R9P6mQJ6jT1OOAUc=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=AMyB5eBfwUD6WCZ3wC3Wtn70iAPVkcMiiKow/De+yEd7A4IZfal4kBJ8Ha3to9LkW
-         JTVCfA4faSEEruzzs50B5xl137PhwJddpW+oBHOUx4jVr3JiPPluInxh4BAJWXgR0N
-         2sJmdQUW/xt1Sekqd9R+wMHPTaDRxNoh8subWKY6ZLeo50pcC8Pj65ss9DHzYWjcPT
-         qsOpxuYDIycphRUK9jKvH5o5AF+Hqf4Iu6bpaxlAZDTcQ+5kbrrYYVRbzZlO35/Y4G
-         r0EA8cy05xKMGhwL4HhS7ZPi/FXE74Ta+r6GTyJW7KPqKo7dNx9mrPKnIOwIQS63MW
-         IV7Rspa66m4nA==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id gx1bk8xZqs3m; Thu, 11 Feb 2021 14:36:37 -0500 (EST)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 40FE8310D66;
-        Thu, 11 Feb 2021 14:36:37 -0500 (EST)
-Date:   Thu, 11 Feb 2021 14:36:37 -0500 (EST)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Michael Jeanson <mjeanson@efficios.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>, paulmck <paulmck@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, acme <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        bpf <bpf@vger.kernel.org>
-Message-ID: <1087071545.17266.1613072197171.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20201028212350.jj4mbnbk6hdcbymo@ast-mbp.dhcp.thefacebook.com>
-References: <20201023195352.26269-1-mjeanson@efficios.com> <20201023195352.26269-2-mjeanson@efficios.com> <20201026224301.gi4bakmj3pov5zyu@ast-mbp.dhcp.thefacebook.com> <1631556114.38532.1603805828748.JavaMail.zimbra@efficios.com> <20201028212350.jj4mbnbk6hdcbymo@ast-mbp.dhcp.thefacebook.com>
-Subject: Re: [RFC PATCH 1/6] tracing: introduce sleepable tracepoints
+        id S231377AbhBKUAN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Feb 2021 15:00:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231604AbhBKT7z (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Feb 2021 14:59:55 -0500
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A49C061574;
+        Thu, 11 Feb 2021 11:59:14 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id i71so6798335ybg.7;
+        Thu, 11 Feb 2021 11:59:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2hPbSRc+yRT2VXhtKVtD9k+7CT69OWN/HR+DyRaSYA0=;
+        b=YeORjITVFhpK4QDANTfn/sir7PlNKveXr/tz7+BR35vxW5yUj7K2z/H2omhTTP9goz
+         Zb5STTrgRUorksDAMuabStmkgTreK/lUzdANrVu9ff/s/5TPx3p7N9GzP1HS7kn4Kj60
+         UXY9yT3s2M+ev5ZB88hT0hEWG26p4tp04czjlD8RUMz9JpxrqGazj85eA3JGGYKWN99X
+         9QNWJoj5030d6apaSULrDG2gPEzt4nRe7NBbDoVTZbv1A/pgWxrCDEQ9NFoiUFUhO3bc
+         kfEMf5L8m2pDVMyRAzrtqfmBUGmYpqOPvdg8zef+MaVRXjn4GSS2B9U3aZ2q1yRYyTDq
+         ziiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2hPbSRc+yRT2VXhtKVtD9k+7CT69OWN/HR+DyRaSYA0=;
+        b=He+2bu6P/fNy05K1C44/a4DqAeXBaD1zu4FXG3M83p9Tgr2zykCwAiPac52vgdUrl8
+         PL//OM0FnFyKnS2S4yGdnPDu41oC1Y4AT0pxewhuWjtDocQvBWZTllQQmELbqLdBrITH
+         Wv729aC1v7dzREBZZjtI+DTPkPiE69Zb1KJ+3Mtqi8xu8pAcdS6vJFj20EC5HO9TvcUF
+         XSE6aEm50FOj/W5vpTuJfRTpGG8XIoeLB2cGTjhZI7X3uF1Va44oL62l9wy7RMiX7TFc
+         uFfCJfI9mtWpBZjVd+dDiUhjK/cw/1ufoLnooMBG8RTxyvGbnZupi12bmtLUOvc7Vxvz
+         Et/A==
+X-Gm-Message-State: AOAM5310kTRMof4FCJ1XIHPNwQ5L2eVJmv783ROU8yQQcEnBd3iujCwm
+        k+vPix9gzDUMoKnDbXfLfLjDuD0V5lwB1W+Q374=
+X-Google-Smtp-Source: ABdhPJw7UznPJOcOaq25UJGSJ17zvGMiXUNJzZhGVwqpjfi8yU0tBgYj5F6mUpzqFsSgexSYijqUb5oPRwbzL0GKJu0=
+X-Received: by 2002:a25:9882:: with SMTP id l2mr13043250ybo.425.1613073553551;
+ Thu, 11 Feb 2021 11:59:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF85 (Linux)/8.8.15_GA_3996)
-Thread-Topic: tracing: introduce sleepable tracepoints
-Thread-Index: g60dIBLtDp5Cx+xLhMNhEnQdk8O8Vg==
+References: <CAEf4Bzax90hn_5axpnCpW+E6gVc1mtUgCXWqmxV0tJ4Ud7bsaA@mail.gmail.com>
+ <20210209074904.GA286822@ubuntu-m3-large-x86> <YCKB1TF5wz93EIBK@krava>
+ <YCKlrLkTQXc4Cyx7@krava> <CAEf4BzaL=qsSyDc8OxeN4pr7+Lvv+de4f+hM5a56LY8EABAk3w@mail.gmail.com>
+ <YCMEucGZVPPQuxWw@krava> <CAEf4BzacQrkSMnmeO3sunOs7sfhX1ZoD_Hnk4-cFUK-TpLNqUA@mail.gmail.com>
+ <YCPfEzp3ogCBTBaS@krava> <CAEf4BzbzquqsA5=_UqDukScuoGLfDhZiiXs_sgYBuNUvTBuV6w@mail.gmail.com>
+ <YCQ+d0CVgIclDwng@krava> <YCVIWzq0quDQm6bn@krava>
+In-Reply-To: <YCVIWzq0quDQm6bn@krava>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 11 Feb 2021 11:59:02 -0800
+Message-ID: <CAEf4Bzbt2-Mn4+y0c+sSZWUSrP705c_e3SxedjV_xYGPQL79=w@mail.gmail.com>
+Subject: Re: FAILED unresolved symbol vfs_truncate on arm64 with LLVM
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Veronika Kabatova <vkabatov@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
------ On Oct 28, 2020, at 5:23 PM, Alexei Starovoitov alexei.starovoitov@gmail.com wrote:
+On Thu, Feb 11, 2021 at 7:08 AM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Wed, Feb 10, 2021 at 09:13:47PM +0100, Jiri Olsa wrote:
+> > On Wed, Feb 10, 2021 at 10:20:20AM -0800, Andrii Nakryiko wrote:
+> >
+> > SNIP
+> >
+> > > > but below is change for checking that ftrace addrs are within elf functions
+> > > >
+> > > > seems to work in my tests, I'll run some more tests and send full patch
+> > >
+> > > It seems unnecessarily convoluted. I was thinking about something like
+> > > this (the diff will totally be screwed up by gmail, and I haven't even
+> > > compiled it):
+> > >
+> > > diff --git a/btf_encoder.c b/btf_encoder.c
+> > > index b124ec20a689..8162b238bd43 100644
+> > > --- a/btf_encoder.c
+> > > +++ b/btf_encoder.c
+> > > @@ -236,6 +236,23 @@ get_kmod_addrs(struct btf_elf *btfe, __u64
+> > > **paddrs, __u64 *pcount)
+> > >         return 0;
+> > >  }
+> > >
+> > > +struct func_seg { __u64 start; __u64 end; };
+> > > +
+> > > +static int func_exists(struct func_seg *segs, size_t len, __u64 addr)
+> > > +{
+> > > +       size_t l = 0, r = len - 1, m;
+> > > +
+> > > +       while (l < r) {
+> > > +               m = l + (r - l + 1) / 2;
+> > > +               if (segs[m].start <= addr)
+> > > +                       l = m;
+> > > +               else
+> > > +                       r = m - 1;
+> > > +       }
+> > > +
+> > > +       return segs[l].start <= addr && addr < segs[l].end;
+> > > +}
+> > > +
+> > >  static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
+> > >  {
+> > >         __u64 *addrs, count, i;
+> > > @@ -286,7 +303,7 @@ static int setup_functions(struct btf_elf *btfe,
+> > > struct funcs_layout *fl)
+> > >                 __u64 addr = kmod ? func->addr + func->sh_addr : func->addr;
+> > >
+> > >                 /* Make sure function is within ftrace addresses. */
+> > > -               if (bsearch(&addr, addrs, count, sizeof(addrs[0]), addrs_cmp)) {
+> > > +               if (func_exists(addrs, count, addr))
+> >
+> > you pass addrs in here, but you mean func_seg array
+> > filled with elf functions start/end values, right?
+> >
+> > >                         /*
+> > >                          * We iterate over sorted array, so we can easily skip
+> > >                          * not valid item and move following valid field into
+> > >
+> > >
+> > > So the idea is to use address segments and check whether there is a
+> > > segment that overlaps with a given address by first binary searching
+> > > for a segment with the largest starting address that is <= addr. And
+> > > then just confirming that segment does overlap with the requested
+> > > address.
+> > >
+> > > WDYT?
+>
+> heya,
+> with your approach I ended up with change below, it gives me same
+> results as with the previous change
+>
+> I think I'll separate the kmod bool address computation later on,
+> but I did not want to confuse this change for now
+>
+> jirka
+>
+>
+> ---
+> diff --git a/btf_encoder.c b/btf_encoder.c
+> index b124ec20a689..34df08f2fb4e 100644
+> --- a/btf_encoder.c
+> +++ b/btf_encoder.c
+> @@ -36,6 +36,7 @@ struct funcs_layout {
+>  struct elf_function {
+>         const char      *name;
+>         unsigned long    addr;
+> +       unsigned long    end;
+>         unsigned long    sh_addr;
+>         bool             generated;
+>  };
+> @@ -44,7 +45,7 @@ static struct elf_function *functions;
+>  static int functions_alloc;
+>  static int functions_cnt;
+>
+> -static int functions_cmp(const void *_a, const void *_b)
+> +static int functions_cmp_name(const void *_a, const void *_b)
+>  {
+>         const struct elf_function *a = _a;
+>         const struct elf_function *b = _b;
+> @@ -52,6 +53,16 @@ static int functions_cmp(const void *_a, const void *_b)
+>         return strcmp(a->name, b->name);
+>  }
+>
+> +static int functions_cmp_addr(const void *_a, const void *_b)
+> +{
+> +       const struct elf_function *a = _a;
+> +       const struct elf_function *b = _b;
+> +
+> +       if (a->addr == b->addr)
+> +               return 0;
+> +       return a->addr < b->addr ? -1 : 1;
+> +}
+> +
+>  static void delete_functions(void)
+>  {
+>         free(functions);
+> @@ -98,6 +109,7 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym,
+>
+>         functions[functions_cnt].name = name;
+>         functions[functions_cnt].addr = elf_sym__value(sym);
+> +       functions[functions_cnt].end = (__u64) -1;
+>         functions[functions_cnt].sh_addr = sh.sh_addr;
+>         functions[functions_cnt].generated = false;
+>         functions_cnt++;
+> @@ -236,6 +248,40 @@ get_kmod_addrs(struct btf_elf *btfe, __u64 **paddrs, __u64 *pcount)
+>         return 0;
+>  }
+>
+> +static int is_ftrace_func(struct elf_function *func, __u64 *addrs,
 
-> On Tue, Oct 27, 2020 at 09:37:08AM -0400, Mathieu Desnoyers wrote:
->> 
->> ----- On Oct 26, 2020, at 6:43 PM, Alexei Starovoitov
->> alexei.starovoitov@gmail.com wrote:
->> 
->> > On Fri, Oct 23, 2020 at 03:53:47PM -0400, Michael Jeanson wrote:
->> >> -#define __DO_TRACE(tp, proto, args, cond, rcuidle)			\
->> >> +#define __DO_TRACE(tp, proto, args, cond, rcuidle, tp_flags)		\
->> >>  	do {								\
->> >>  		struct tracepoint_func *it_func_ptr;			\
->> >>  		void *it_func;						\
->> >>  		void *__data;						\
->> >>  		int __maybe_unused __idx = 0;				\
->> >> +		bool maysleep = (tp_flags) & TRACEPOINT_MAYSLEEP;	\
->> >>  									\
->> >>  		if (!(cond))						\
->> >>  			return;						\
->> >> @@ -170,8 +178,13 @@ static inline struct tracepoint
->> >> *tracepoint_ptr_deref(tracepoint_ptr_t *p)
->> >>  		/* srcu can't be used from NMI */			\
->> >>  		WARN_ON_ONCE(rcuidle && in_nmi());			\
->> >>  									\
->> >> -		/* keep srcu and sched-rcu usage consistent */		\
->> >> -		preempt_disable_notrace();				\
->> >> +		if (maysleep) {						\
->> >> +			might_sleep();					\
->> > 
->> > The main purpose of the patch set is to access user memory in tracepoints,
->> > right?
->> 
->> Yes, exactly.
->> 
->> > In such case I suggest to use stronger might_fault() here.
->> > We used might_sleep() in sleepable bpf and it wasn't enough to catch
->> > a combination where sleepable hook was invoked while mm->mmap_lock was
->> > taken which may cause a deadlock.
->> 
->> Good point! We will do that for the next round.
->> 
->> By the way, we named this "sleepable" tracepoint (with flag
->> TRACEPOINT_MAYSLEEP),
->> but we are open to a better name. Would TRACEPOINT_MAYFAULT be more descriptive
->> ?
->> (a "faultable" tracepoint sounds weird though)
-> 
-> bpf kept 'sleepable' as a name. 'faultable' is too misleading.
+return bool, not int?
 
-We're working on an updated patchset for those "sleepable tracepoints", and considering
-that those are really "tracepoints allowing page faults", I must admit that I am
-uncomfortable with the confusion between "sleep" and "fault" in the naming here.
+> +                         __u64 count, bool kmod)
+> +{
+> +       /*
+> +        * For vmlinux image both addrs[x] and functions[x]::addr
+> +        * values are final address and are comparable.
+> +        *
+> +        * For kernel module addrs[x] is final address, but
+> +        * functions[x]::addr is relative address within section
+> +        * and needs to be relocated by adding sh_addr.
+> +        */
+> +       __u64 start = kmod ? func->addr + func->sh_addr : func->addr;
+> +       __u64 end   = kmod ? func->end + func->sh_addr : func->end;
+> +
+> +       size_t l = 0, r = count - 1, m;
+> +       __u64 addr = 0;
+> +
+> +       while (l < r) {
+> +               m = l + (r - l + 1) / 2;
+> +               addr = addrs[m];
+> +
+> +               if (start <= addr && addr < end)
+> +                       return true;
 
-I am tempted to do the following changes:
+this extra check on each step shouldn't be necessary
 
-- Change name from "sleepable tracepoints" to a better suited "tracepoints allowing page faults",
-- Use might_fault() rather than might_sleep() in __DO_TRACE(), effectively guaranteeing that all
-  probes connecting to a tracepoint which allows page faults can indeed take page faults.
-- Change TRACEPOINT_MAYSLEEP into TRACEPOINT_MAYFAULT.
+> +
+> +               if (start <= addr)
 
-Any objections ?
+I don't think this is correct, start == addr is actually a good case,
+but you'll do r = m - 1, skipping it. See below about invariants.
 
-Thanks,
+> +                       r = m - 1;
+> +               else
+> +                       l = m;
 
-Mathieu
+So in my previous example I assumed we have address ranges for ftrace
+section, which is exactly the opposite from what we have. So this
+binary search should be a bit different. start <= addr seems wrong
+here as well.
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+The invariant here should be that addr[r] is the smallest address that
+is >= than function start addr, right? Except the corner case where
+there is no such r, but for that we have a final check in the return
+below. If you wanted to use index l, you'd need to change the
+invariant to find the largest addr, such that it is < end, but that
+seems a bit convoluted.
+
+So, with that, I think it should be like this:
+
+size_t l = 0, r = count - 1, m;
+
+/* make sure we don't use invalid r */
+if (count == 0) return false;
+
+while (l < r) {
+    /* note no +1 in this case, it's so that at the end, when you
+     * have, say, l = 0, and r = 1, you try l first, not r.
+     * Otherwise you might end in in the infinite loop when r never == l.
+     */
+    m = l + (r - l) / 2;
+    addr = addrs[m];
+
+    if (addr >= start)
+        /* we satisfy invariant, so tighten r */
+        r = m;
+    else
+        /* m is not good enough as l, maybe m + 1 will be */
+        l = m + 1;
+}
+
+return start <= addrs[r] && addrs[r] < end;
+
+
+So, basically, r is maintained as a valid index always, while we
+constantly try to tighten the l.
+
+Does this make sense?
+
+
+> +       }
+> +
+> +       addr = addrs[l];
+> +       return start <= addr && addr < end;
+> +}
+> +
+>  static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
+>  {
+>         __u64 *addrs, count, i;
+> @@ -267,7 +313,7 @@ static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
+>         }
+>
+>         qsort(addrs, count, sizeof(addrs[0]), addrs_cmp);
+> -       qsort(functions, functions_cnt, sizeof(functions[0]), functions_cmp);
+> +       qsort(functions, functions_cnt, sizeof(functions[0]), functions_cmp_addr);
+
+See below assumptions about function end. If we get it from ELF, you
+don't need to do this extra sort, right?
+
+>
+>         /*
+>          * Let's got through all collected functions and filter
+> @@ -275,18 +321,12 @@ static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
+>          */
+>         for (i = 0; i < functions_cnt; i++) {
+>                 struct elf_function *func = &functions[i];
+> -               /*
+> -                * For vmlinux image both addrs[x] and functions[x]::addr
+> -                * values are final address and are comparable.
+> -                *
+> -                * For kernel module addrs[x] is final address, but
+> -                * functions[x]::addr is relative address within section
+> -                * and needs to be relocated by adding sh_addr.
+> -                */
+> -               __u64 addr = kmod ? func->addr + func->sh_addr : func->addr;
+> +
+> +               if (i + 1 < functions_cnt)
+> +                       func->end = functions[i + 1].addr;
+
+This makes a bunch of unnecessary assumptions about functions layout.
+But why, if we have STT_FUNC symbol with function size, so that we
+know the function end right when we collect function info.
+
+>
+>                 /* Make sure function is within ftrace addresses. */
+> -               if (bsearch(&addr, addrs, count, sizeof(addrs[0]), addrs_cmp)) {
+> +               if (is_ftrace_func(func, addrs, count, kmod)) {
+>                         /*
+>                          * We iterate over sorted array, so we can easily skip
+>                          * not valid item and move following valid field into
+> @@ -303,6 +343,8 @@ static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
+>
+>         if (btf_elf__verbose)
+>                 printf("Found %d functions!\n", functions_cnt);
+> +
+> +       qsort(functions, functions_cnt, sizeof(functions[0]), functions_cmp_name);
+>         return 0;
+>  }
+>
+> @@ -312,7 +354,7 @@ static struct elf_function *find_function(const struct btf_elf *btfe,
+>         struct elf_function key = { .name = name };
+>
+>         return bsearch(&key, functions, functions_cnt, sizeof(functions[0]),
+> -                      functions_cmp);
+> +                      functions_cmp_name);
+>  }
+>
+>  static bool btf_name_char_ok(char c, bool first)
+>
