@@ -2,81 +2,105 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C134F3174DF
-	for <lists+bpf@lfdr.de>; Thu, 11 Feb 2021 01:00:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07EF3318288
+	for <lists+bpf@lfdr.de>; Thu, 11 Feb 2021 01:16:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234062AbhBKAAt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Feb 2021 19:00:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34772 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232565AbhBKAAr (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Feb 2021 19:00:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 3DFD964E16;
-        Thu, 11 Feb 2021 00:00:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613001607;
-        bh=yj20q5kPQi5rfMEAVi/VtRdZVsbRN8a/HB78My4y0nc=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=VPa0Fkt2KHwp3qLX6HMos41sC5cmTrFCOYmvabN5gPyLicNextgZmtJBkcMLGgeVT
-         ulyMZhWmLduVvR3yfvSpEvdQKhqT8y2vFWNrMqF3aHyMiCePQGaLGWOHwltyfb5+Xx
-         dgeBg81XiHSOe4mn2Y9c7RWDAJoqAQRIRHy9BwsV7Y1hAap4nrcP1Ca8Ehleb9/2xv
-         QZr0JVS/tMeNsazScdxdQ3pS1SPddb+fpmwY5rkbDOgZfZheoC3LrTYcSHJ7cT1tbA
-         VnSVLe4KLNwJ6hoZ7Eu1niqItAczpe9+LkI7HJaCaAGiaQCRCeHjpmhXZ4VwznaZ7C
-         D9AXXBOcT9lKw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2945660A0F;
-        Thu, 11 Feb 2021 00:00:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S233150AbhBKAQi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Feb 2021 19:16:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232633AbhBKAQh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Feb 2021 19:16:37 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 722B5C061574
+        for <bpf@vger.kernel.org>; Wed, 10 Feb 2021 16:15:56 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id i71so3883073ybg.7
+        for <bpf@vger.kernel.org>; Wed, 10 Feb 2021 16:15:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vRjRB76p7uasNgk6Y37mc4cxubCNDmg8dRRTITTNkRw=;
+        b=F41QCZhl33ZUPwbcUmJ1VBOPXwQyWB6cGvtiezeeg1HWkN4qQOXZf+I7jkICtJe8Ax
+         aHWypm9xqMYj+4b65QMOqUOg0xx5h/a55n/AryU8EjiHWtUDIrZ/6sRD8rAQM2BENOz+
+         Gb0ErO8PVwgbQBiM2gmd96o9keFzfmgabpsF4VgjxI3kYw3C9Bnnj77IaXH31CsMdk71
+         TAl7xdDZfyLnqqaDQrB9lOozBaRHTFaxSNL8+mdyF1MUb9F74Z+O1hoRRtLeJgyltAYW
+         PPs9/zt3khz65Z8/XAK4CPoQFZEX3aGtp1dsfZkLhEFX4s4lj1npvUVUeKn1UjbdgOis
+         Hu9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vRjRB76p7uasNgk6Y37mc4cxubCNDmg8dRRTITTNkRw=;
+        b=Yaft7HB6OX8kZX5IgINbEeECqq+asKKGZtMeCMh10ZY38yIMjobmXyeTt6DfH2MBft
+         s+wH47G3sLMOWrojQVsWnt7rwrQzcWm35HB1AajEDTIw6gaKTcUU7/Zf5W1Su8VX8ffS
+         n+J3p+UqiXAXCIx/vcnyUmlIjWClLD8IEx2nCLwCfnvqUAO8SGvEsL7chyI4mratnFP7
+         GxMTgGC4pNHzVzxeDJuG4UW7EFFSczWYOYQuQVNZUOIJhxabz9YXom0EPmyWiw+U6B/f
+         9IdiNcveVrr0Ps7qfSgAgUJJtEKa2zdIGlvBV7qv+fMwU5qm+e0OnNJpTDKB1SiQpqO0
+         RoZw==
+X-Gm-Message-State: AOAM532FPoKz6EWc65psYfMbE3jsS1LY8JLeeOIlV1b9nekD6HtpksoC
+        Wb6EfQ5Jc+ogWq3bT9tvLztmkqDLTQmYv7UomF4=
+X-Google-Smtp-Source: ABdhPJzeAPMHqG37eIvrruVYsNbkF7KmjP7Yik1o5q7MIPOG/ofxKxM+q5jamG7wS9pCB7vicnM88PTAhJ3UXbCUaLU=
+X-Received: by 2002:a25:9882:: with SMTP id l2mr7389667ybo.425.1613002555759;
+ Wed, 10 Feb 2021 16:15:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] bpf_lru_list: Read double-checked variable once without lock
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161300160716.412.6891143842651326044.git-patchwork-notify@kernel.org>
-Date:   Thu, 11 Feb 2021 00:00:07 +0000
-References: <20210209112701.3341724-1-elver@google.com>
-In-Reply-To: <20210209112701.3341724-1-elver@google.com>
-To:     Marco Elver <elver@google.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        paulmck@kernel.org, dvyukov@google.com,
-        syzbot+3536db46dfa58c573458@syzkaller.appspotmail.com,
-        syzbot+516acdb03d3e27d91bcd@syzkaller.appspotmail.com
+References: <20210210030317.78820-1-iii@linux.ibm.com> <20210210030317.78820-3-iii@linux.ibm.com>
+In-Reply-To: <20210210030317.78820-3-iii@linux.ibm.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 10 Feb 2021 16:15:45 -0800
+Message-ID: <CAEf4BzbqvvdMRNqEYMuTSZmjndZbCEhOj169tH6o8BFj8OwyxA@mail.gmail.com>
+Subject: Re: [PATCH RFC 2/6] libbpf: Add BTF_KIND_FLOAT support
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        bpf <bpf@vger.kernel.org>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Tue, Feb 9, 2021 at 7:04 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+>
+> The logic follows that of BTF_KIND_INT most of the time, some functions
+> are even unified to work on both. Sanitization replaces BTF_KIND_FLOATs
+> with equally-sized BTF_KIND_INTs on older kernels.
+>
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> ---
+>  tools/lib/bpf/btf.c             | 85 +++++++++++++++++++++++----------
+>  tools/lib/bpf/btf.h             | 13 +++++
+>  tools/lib/bpf/btf_dump.c        |  4 ++
+>  tools/lib/bpf/libbpf.c          | 32 ++++++++++++-
+>  tools/lib/bpf/libbpf.map        |  5 ++
+>  tools/lib/bpf/libbpf_internal.h |  4 ++
+>  6 files changed, 118 insertions(+), 25 deletions(-)
+>
 
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
+[...]
 
-On Tue,  9 Feb 2021 12:27:01 +0100 you wrote:
-> For double-checked locking in bpf_common_lru_push_free(), node->type is
-> read outside the critical section and then re-checked under the lock.
-> However, concurrent writes to node->type result in data races.
-> 
-> For example, the following concurrent access was observed by KCSAN:
-> 
->   write to 0xffff88801521bc22 of 1 bytes by task 10038 on cpu 1:
->    __bpf_lru_node_move_in        kernel/bpf/bpf_lru_list.c:91
->    __local_list_flush            kernel/bpf/bpf_lru_list.c:298
->    ...
->   read to 0xffff88801521bc22 of 1 bytes by task 10043 on cpu 0:
->    bpf_common_lru_push_free      kernel/bpf/bpf_lru_list.c:507
->    bpf_lru_push_free             kernel/bpf/bpf_lru_list.c:555
->    ...
-> 
-> [...]
+> @@ -2445,6 +2450,12 @@ static void bpf_object__sanitize_btf(struct bpf_object *obj, struct btf *btf)
+>                 } else if (!has_func_global && btf_is_func(t)) {
+>                         /* replace BTF_FUNC_GLOBAL with BTF_FUNC_STATIC */
+>                         t->info = BTF_INFO_ENC(BTF_KIND_FUNC, 0, 0);
+> +               } else if (!has_float && btf_is_float(t)) {
+> +                       /* replace FLOAT with INT */
+> +                       __u8 nr_bits = btf_float_bits(t);
+> +
 
-Here is the summary with links:
-  - bpf_lru_list: Read double-checked variable once without lock
-    https://git.kernel.org/bpf/bpf-next/c/6df8fb83301d
+nit: no need for extra variable, just use it inline below
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> +                       t->info = BTF_INFO_ENC(BTF_KIND_INT, 0, 0);
+> +                       *(int *)(t + 1) = BTF_INT_ENC(0, 0, nr_bits);
+>                 }
+>         }
+>  }
+> @@ -3882,6 +3893,18 @@ static int probe_kern_btf_datasec(void)
+>                                              strs, sizeof(strs)));
+>  }
 
-
+[...]
