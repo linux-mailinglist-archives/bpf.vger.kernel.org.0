@@ -2,356 +2,196 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90C803193C4
-	for <lists+bpf@lfdr.de>; Thu, 11 Feb 2021 21:00:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3169319525
+	for <lists+bpf@lfdr.de>; Thu, 11 Feb 2021 22:28:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231377AbhBKUAN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Feb 2021 15:00:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231604AbhBKT7z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Feb 2021 14:59:55 -0500
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A49C061574;
-        Thu, 11 Feb 2021 11:59:14 -0800 (PST)
-Received: by mail-yb1-xb32.google.com with SMTP id i71so6798335ybg.7;
-        Thu, 11 Feb 2021 11:59:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2hPbSRc+yRT2VXhtKVtD9k+7CT69OWN/HR+DyRaSYA0=;
-        b=YeORjITVFhpK4QDANTfn/sir7PlNKveXr/tz7+BR35vxW5yUj7K2z/H2omhTTP9goz
-         Zb5STTrgRUorksDAMuabStmkgTreK/lUzdANrVu9ff/s/5TPx3p7N9GzP1HS7kn4Kj60
-         UXY9yT3s2M+ev5ZB88hT0hEWG26p4tp04czjlD8RUMz9JpxrqGazj85eA3JGGYKWN99X
-         9QNWJoj5030d6apaSULrDG2gPEzt4nRe7NBbDoVTZbv1A/pgWxrCDEQ9NFoiUFUhO3bc
-         kfEMf5L8m2pDVMyRAzrtqfmBUGmYpqOPvdg8zef+MaVRXjn4GSS2B9U3aZ2q1yRYyTDq
-         ziiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2hPbSRc+yRT2VXhtKVtD9k+7CT69OWN/HR+DyRaSYA0=;
-        b=He+2bu6P/fNy05K1C44/a4DqAeXBaD1zu4FXG3M83p9Tgr2zykCwAiPac52vgdUrl8
-         PL//OM0FnFyKnS2S4yGdnPDu41oC1Y4AT0pxewhuWjtDocQvBWZTllQQmELbqLdBrITH
-         Wv729aC1v7dzREBZZjtI+DTPkPiE69Zb1KJ+3Mtqi8xu8pAcdS6vJFj20EC5HO9TvcUF
-         XSE6aEm50FOj/W5vpTuJfRTpGG8XIoeLB2cGTjhZI7X3uF1Va44oL62l9wy7RMiX7TFc
-         uFfCJfI9mtWpBZjVd+dDiUhjK/cw/1ufoLnooMBG8RTxyvGbnZupi12bmtLUOvc7Vxvz
-         Et/A==
-X-Gm-Message-State: AOAM5310kTRMof4FCJ1XIHPNwQ5L2eVJmv783ROU8yQQcEnBd3iujCwm
-        k+vPix9gzDUMoKnDbXfLfLjDuD0V5lwB1W+Q374=
-X-Google-Smtp-Source: ABdhPJw7UznPJOcOaq25UJGSJ17zvGMiXUNJzZhGVwqpjfi8yU0tBgYj5F6mUpzqFsSgexSYijqUb5oPRwbzL0GKJu0=
-X-Received: by 2002:a25:9882:: with SMTP id l2mr13043250ybo.425.1613073553551;
- Thu, 11 Feb 2021 11:59:13 -0800 (PST)
-MIME-Version: 1.0
-References: <CAEf4Bzax90hn_5axpnCpW+E6gVc1mtUgCXWqmxV0tJ4Ud7bsaA@mail.gmail.com>
- <20210209074904.GA286822@ubuntu-m3-large-x86> <YCKB1TF5wz93EIBK@krava>
- <YCKlrLkTQXc4Cyx7@krava> <CAEf4BzaL=qsSyDc8OxeN4pr7+Lvv+de4f+hM5a56LY8EABAk3w@mail.gmail.com>
- <YCMEucGZVPPQuxWw@krava> <CAEf4BzacQrkSMnmeO3sunOs7sfhX1ZoD_Hnk4-cFUK-TpLNqUA@mail.gmail.com>
- <YCPfEzp3ogCBTBaS@krava> <CAEf4BzbzquqsA5=_UqDukScuoGLfDhZiiXs_sgYBuNUvTBuV6w@mail.gmail.com>
- <YCQ+d0CVgIclDwng@krava> <YCVIWzq0quDQm6bn@krava>
-In-Reply-To: <YCVIWzq0quDQm6bn@krava>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 11 Feb 2021 11:59:02 -0800
-Message-ID: <CAEf4Bzbt2-Mn4+y0c+sSZWUSrP705c_e3SxedjV_xYGPQL79=w@mail.gmail.com>
-Subject: Re: FAILED unresolved symbol vfs_truncate on arm64 with LLVM
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
+        id S229746AbhBKV1u (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Feb 2021 16:27:50 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:18142 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229478AbhBKV1n (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 11 Feb 2021 16:27:43 -0500
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11BLD9OW146290;
+        Thu, 11 Feb 2021 16:26:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=sFpCA9Ua7GZoOUdH2JtMLxp8//uUC+qHmRlJGJBx0wo=;
+ b=j4uGxy33VBu7Fso2R8NGFFsZ1pzxWZvE4CXa9zOAOmFd3lMrOxDzN2drB2DJ9xz8vIgg
+ gGfySnyOqG/UF8EXH/DLoYC1LfwSZ/3IGuSBO6O6jqdzWqHEq5V53QW53iElXB84vecu
+ zc93b1Pl6MTniVxQeGL1urTt+TI9kzVqjirSFBWjXuPtvcEobvmepI59DJX69nQlMQnv
+ 6bKImwsl9MbIMvLPRGbUQAOEEWIsxI+/JsLUQkQRs/IVbCOWLZ3Sm0muEMNj81p+75Vt
+ iDsLJHiO0M1R1AZ77lfFOjVqT3Isg+c+EfLZ+3MN6Ju3Gx+c5hU9mrU5HsA1IXdbLlx0 og== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36nca309cm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Feb 2021 16:26:43 -0500
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11BLLh0K031138;
+        Thu, 11 Feb 2021 16:26:43 -0500
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36nca309c3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Feb 2021 16:26:42 -0500
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11BLDILf028010;
+        Thu, 11 Feb 2021 21:26:40 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma04ams.nl.ibm.com with ESMTP id 36hjr8e4av-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 11 Feb 2021 21:26:40 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11BLQc8l34603296
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 11 Feb 2021 21:26:38 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 832BD52051;
+        Thu, 11 Feb 2021 21:26:38 +0000 (GMT)
+Received: from [9.171.67.27] (unknown [9.171.67.27])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 142A65204F;
+        Thu, 11 Feb 2021 21:26:38 +0000 (GMT)
+Message-ID: <bda4c4eb4e9e01a6ecaf4e0cf14e265997520740.camel@linux.ibm.com>
+Subject: Re: [PATCH RFC 1/6] bpf: Add BTF_KIND_FLOAT to uapi
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Veronika Kabatova <vkabatov@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>
+        Yonghong Song <yhs@fb.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        bpf <bpf@vger.kernel.org>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Date:   Thu, 11 Feb 2021 22:26:37 +0100
+In-Reply-To: <CAEf4BzY-SOyP0g-ZHTK3h1mppwRGJ4YH3vKugeuLGTe8Q3-r7Q@mail.gmail.com>
+References: <20210210030317.78820-1-iii@linux.ibm.com>
+         <20210210030317.78820-2-iii@linux.ibm.com>
+         <CAEf4BzY-SOyP0g-ZHTK3h1mppwRGJ4YH3vKugeuLGTe8Q3-r7Q@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3 (3.38.3-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-11_07:2021-02-11,2021-02-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ mlxlogscore=999 spamscore=0 impostorscore=0 suspectscore=0 clxscore=1015
+ adultscore=0 lowpriorityscore=0 phishscore=0 bulkscore=0 mlxscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102110161
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 7:08 AM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Wed, Feb 10, 2021 at 09:13:47PM +0100, Jiri Olsa wrote:
-> > On Wed, Feb 10, 2021 at 10:20:20AM -0800, Andrii Nakryiko wrote:
-> >
-> > SNIP
-> >
-> > > > but below is change for checking that ftrace addrs are within elf functions
-> > > >
-> > > > seems to work in my tests, I'll run some more tests and send full patch
-> > >
-> > > It seems unnecessarily convoluted. I was thinking about something like
-> > > this (the diff will totally be screwed up by gmail, and I haven't even
-> > > compiled it):
-> > >
-> > > diff --git a/btf_encoder.c b/btf_encoder.c
-> > > index b124ec20a689..8162b238bd43 100644
-> > > --- a/btf_encoder.c
-> > > +++ b/btf_encoder.c
-> > > @@ -236,6 +236,23 @@ get_kmod_addrs(struct btf_elf *btfe, __u64
-> > > **paddrs, __u64 *pcount)
-> > >         return 0;
-> > >  }
-> > >
-> > > +struct func_seg { __u64 start; __u64 end; };
-> > > +
-> > > +static int func_exists(struct func_seg *segs, size_t len, __u64 addr)
-> > > +{
-> > > +       size_t l = 0, r = len - 1, m;
-> > > +
-> > > +       while (l < r) {
-> > > +               m = l + (r - l + 1) / 2;
-> > > +               if (segs[m].start <= addr)
-> > > +                       l = m;
-> > > +               else
-> > > +                       r = m - 1;
-> > > +       }
-> > > +
-> > > +       return segs[l].start <= addr && addr < segs[l].end;
-> > > +}
-> > > +
-> > >  static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
-> > >  {
-> > >         __u64 *addrs, count, i;
-> > > @@ -286,7 +303,7 @@ static int setup_functions(struct btf_elf *btfe,
-> > > struct funcs_layout *fl)
-> > >                 __u64 addr = kmod ? func->addr + func->sh_addr : func->addr;
-> > >
-> > >                 /* Make sure function is within ftrace addresses. */
-> > > -               if (bsearch(&addr, addrs, count, sizeof(addrs[0]), addrs_cmp)) {
-> > > +               if (func_exists(addrs, count, addr))
-> >
-> > you pass addrs in here, but you mean func_seg array
-> > filled with elf functions start/end values, right?
-> >
-> > >                         /*
-> > >                          * We iterate over sorted array, so we can easily skip
-> > >                          * not valid item and move following valid field into
-> > >
-> > >
-> > > So the idea is to use address segments and check whether there is a
-> > > segment that overlaps with a given address by first binary searching
-> > > for a segment with the largest starting address that is <= addr. And
-> > > then just confirming that segment does overlap with the requested
-> > > address.
-> > >
-> > > WDYT?
->
-> heya,
-> with your approach I ended up with change below, it gives me same
-> results as with the previous change
->
-> I think I'll separate the kmod bool address computation later on,
-> but I did not want to confuse this change for now
->
-> jirka
->
->
-> ---
-> diff --git a/btf_encoder.c b/btf_encoder.c
-> index b124ec20a689..34df08f2fb4e 100644
-> --- a/btf_encoder.c
-> +++ b/btf_encoder.c
-> @@ -36,6 +36,7 @@ struct funcs_layout {
->  struct elf_function {
->         const char      *name;
->         unsigned long    addr;
-> +       unsigned long    end;
->         unsigned long    sh_addr;
->         bool             generated;
->  };
-> @@ -44,7 +45,7 @@ static struct elf_function *functions;
->  static int functions_alloc;
->  static int functions_cnt;
->
-> -static int functions_cmp(const void *_a, const void *_b)
-> +static int functions_cmp_name(const void *_a, const void *_b)
->  {
->         const struct elf_function *a = _a;
->         const struct elf_function *b = _b;
-> @@ -52,6 +53,16 @@ static int functions_cmp(const void *_a, const void *_b)
->         return strcmp(a->name, b->name);
->  }
->
-> +static int functions_cmp_addr(const void *_a, const void *_b)
-> +{
-> +       const struct elf_function *a = _a;
-> +       const struct elf_function *b = _b;
-> +
-> +       if (a->addr == b->addr)
-> +               return 0;
-> +       return a->addr < b->addr ? -1 : 1;
-> +}
-> +
->  static void delete_functions(void)
->  {
->         free(functions);
-> @@ -98,6 +109,7 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym,
->
->         functions[functions_cnt].name = name;
->         functions[functions_cnt].addr = elf_sym__value(sym);
-> +       functions[functions_cnt].end = (__u64) -1;
->         functions[functions_cnt].sh_addr = sh.sh_addr;
->         functions[functions_cnt].generated = false;
->         functions_cnt++;
-> @@ -236,6 +248,40 @@ get_kmod_addrs(struct btf_elf *btfe, __u64 **paddrs, __u64 *pcount)
->         return 0;
->  }
->
-> +static int is_ftrace_func(struct elf_function *func, __u64 *addrs,
+On Wed, 2021-02-10 at 16:19 -0800, Andrii Nakryiko wrote:
+> On Tue, Feb 9, 2021 at 7:03 PM Ilya Leoshkevich <iii@linux.ibm.com>
+> wrote:
+> > 
+> > Add a new kind value, expand the kind bitfield, add a macro for
+> > parsing the additional u32.
+> > 
+> > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> > ---
+> >  include/uapi/linux/btf.h       | 10 ++++++++--
+> >  tools/include/uapi/linux/btf.h | 10 ++++++++--
+> >  2 files changed, 16 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/include/uapi/linux/btf.h b/include/uapi/linux/btf.h
+> > index 5a667107ad2c..e713430cb033 100644
+> > --- a/include/uapi/linux/btf.h
+> > +++ b/include/uapi/linux/btf.h
+> > @@ -52,7 +52,7 @@ struct btf_type {
+> >         };
+> >  };
+> > 
+> > -#define BTF_INFO_KIND(info)    (((info) >> 24) & 0x0f)
+> > +#define BTF_INFO_KIND(info)    (((info) >> 24) & 0x1f)
+> >  #define BTF_INFO_VLEN(info)    ((info) & 0xffff)
+> >  #define BTF_INFO_KFLAG(info)   ((info) >> 31)
+> > 
+> > @@ -72,7 +72,8 @@ struct btf_type {
+> >  #define BTF_KIND_FUNC_PROTO    13      /* Function Proto       */
+> >  #define BTF_KIND_VAR           14      /* Variable     */
+> >  #define BTF_KIND_DATASEC       15      /* Section      */
+> > -#define BTF_KIND_MAX           BTF_KIND_DATASEC
+> > +#define BTF_KIND_FLOAT         16      /* Floating point       */
+> > +#define BTF_KIND_MAX           BTF_KIND_FLOAT
+> >  #define NR_BTF_KINDS           (BTF_KIND_MAX + 1)
+> > 
+> >  /* For some specific BTF_KIND, "struct btf_type" is immediately
+> > @@ -169,4 +170,9 @@ struct btf_var_secinfo {
+> >         __u32   size;
+> >  };
+> > 
+> > +/* BTF_KIND_FLOAT is followed by a u32 and the following
+> 
+> 
+> what's the point of that u32, if BTF_FLOAT_BITS() is just t->size *
+> 8?
+> Why adding this complexity. BTF_KIND_INT has bits because we had an
+> inconvenient bitfield encoding as a special BTF_KIND_INT types, which
+> we since stopped using in favor of encoding bitfield sizes and
+> offsets
+> inside struct/union fields. I don't think there is any need for that
+> with FLOAT, so why waste space and add complexity and possibility for
+> inconsistencies?
 
-return bool, not int?
+You are right, this is not necessary. I don't think something like a
+floating-point bitfield exists in the first place.
 
-> +                         __u64 count, bool kmod)
-> +{
-> +       /*
-> +        * For vmlinux image both addrs[x] and functions[x]::addr
-> +        * values are final address and are comparable.
-> +        *
-> +        * For kernel module addrs[x] is final address, but
-> +        * functions[x]::addr is relative address within section
-> +        * and needs to be relocated by adding sh_addr.
-> +        */
-> +       __u64 start = kmod ? func->addr + func->sh_addr : func->addr;
-> +       __u64 end   = kmod ? func->end + func->sh_addr : func->end;
-> +
-> +       size_t l = 0, r = count - 1, m;
-> +       __u64 addr = 0;
-> +
-> +       while (l < r) {
-> +               m = l + (r - l + 1) / 2;
-> +               addr = addrs[m];
-> +
-> +               if (start <= addr && addr < end)
-> +                       return true;
+> Disclaimer: I'm in a "just BTF_KIND_INT encoding bit for
+> floating-point numbers" camp.
 
-this extra check on each step shouldn't be necessary
+Despite me being the guy, who sent this series, I like such a simpler
+approach as well. In fact, my first attempt at this was even simpler -
+just a char[] - but this didn't let us distinguish floats from "real"
+byte arrays, which BTF_KIND_INT encoding does. But I think we need to
+convince Alexey that this would be OK? :-) If that helps, I can
+implement the BTF_KIND_INT encoding variant, so that we could compare
+both approaches. What do you think?
 
-> +
-> +               if (start <= addr)
-
-I don't think this is correct, start == addr is actually a good case,
-but you'll do r = m - 1, skipping it. See below about invariants.
-
-> +                       r = m - 1;
-> +               else
-> +                       l = m;
-
-So in my previous example I assumed we have address ranges for ftrace
-section, which is exactly the opposite from what we have. So this
-binary search should be a bit different. start <= addr seems wrong
-here as well.
-
-The invariant here should be that addr[r] is the smallest address that
-is >= than function start addr, right? Except the corner case where
-there is no such r, but for that we have a final check in the return
-below. If you wanted to use index l, you'd need to change the
-invariant to find the largest addr, such that it is < end, but that
-seems a bit convoluted.
-
-So, with that, I think it should be like this:
-
-size_t l = 0, r = count - 1, m;
-
-/* make sure we don't use invalid r */
-if (count == 0) return false;
-
-while (l < r) {
-    /* note no +1 in this case, it's so that at the end, when you
-     * have, say, l = 0, and r = 1, you try l first, not r.
-     * Otherwise you might end in in the infinite loop when r never == l.
-     */
-    m = l + (r - l) / 2;
-    addr = addrs[m];
-
-    if (addr >= start)
-        /* we satisfy invariant, so tighten r */
-        r = m;
-    else
-        /* m is not good enough as l, maybe m + 1 will be */
-        l = m + 1;
-}
-
-return start <= addrs[r] && addrs[r] < end;
+> > + * is the 32 bits arrangement:
+> > + */
+> > +#define BTF_FLOAT_BITS(VAL)    ((VAL)  & 0x000000ff)
+> > +
+> >  #endif /* _UAPI__LINUX_BTF_H__ */
+> > diff --git a/tools/include/uapi/linux/btf.h
+> > b/tools/include/uapi/linux/btf.h
+> > index 5a667107ad2c..e713430cb033 100644
+> > --- a/tools/include/uapi/linux/btf.h
+> > +++ b/tools/include/uapi/linux/btf.h
+> > @@ -52,7 +52,7 @@ struct btf_type {
+> >         };
+> >  };
+> > 
+> > -#define BTF_INFO_KIND(info)    (((info) >> 24) & 0x0f)
+> > +#define BTF_INFO_KIND(info)    (((info) >> 24) & 0x1f)
+> >  #define BTF_INFO_VLEN(info)    ((info) & 0xffff)
+> >  #define BTF_INFO_KFLAG(info)   ((info) >> 31)
+> > 
+> > @@ -72,7 +72,8 @@ struct btf_type {
+> >  #define BTF_KIND_FUNC_PROTO    13      /* Function Proto       */
+> >  #define BTF_KIND_VAR           14      /* Variable     */
+> >  #define BTF_KIND_DATASEC       15      /* Section      */
+> > -#define BTF_KIND_MAX           BTF_KIND_DATASEC
+> > +#define BTF_KIND_FLOAT         16      /* Floating point       */
+> > +#define BTF_KIND_MAX           BTF_KIND_FLOAT
+> >  #define NR_BTF_KINDS           (BTF_KIND_MAX + 1)
+> > 
+> >  /* For some specific BTF_KIND, "struct btf_type" is immediately
+> > @@ -169,4 +170,9 @@ struct btf_var_secinfo {
+> >         __u32   size;
+> >  };
+> > 
+> > +/* BTF_KIND_FLOAT is followed by a u32 and the following
+> > + * is the 32 bits arrangement:
+> > + */
+> > +#define BTF_FLOAT_BITS(VAL)    ((VAL)  & 0x000000ff)
+> > +
+> >  #endif /* _UAPI__LINUX_BTF_H__ */
+> > --
+> > 2.29.2
+> > 
 
 
-So, basically, r is maintained as a valid index always, while we
-constantly try to tighten the l.
-
-Does this make sense?
-
-
-> +       }
-> +
-> +       addr = addrs[l];
-> +       return start <= addr && addr < end;
-> +}
-> +
->  static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
->  {
->         __u64 *addrs, count, i;
-> @@ -267,7 +313,7 @@ static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
->         }
->
->         qsort(addrs, count, sizeof(addrs[0]), addrs_cmp);
-> -       qsort(functions, functions_cnt, sizeof(functions[0]), functions_cmp);
-> +       qsort(functions, functions_cnt, sizeof(functions[0]), functions_cmp_addr);
-
-See below assumptions about function end. If we get it from ELF, you
-don't need to do this extra sort, right?
-
->
->         /*
->          * Let's got through all collected functions and filter
-> @@ -275,18 +321,12 @@ static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
->          */
->         for (i = 0; i < functions_cnt; i++) {
->                 struct elf_function *func = &functions[i];
-> -               /*
-> -                * For vmlinux image both addrs[x] and functions[x]::addr
-> -                * values are final address and are comparable.
-> -                *
-> -                * For kernel module addrs[x] is final address, but
-> -                * functions[x]::addr is relative address within section
-> -                * and needs to be relocated by adding sh_addr.
-> -                */
-> -               __u64 addr = kmod ? func->addr + func->sh_addr : func->addr;
-> +
-> +               if (i + 1 < functions_cnt)
-> +                       func->end = functions[i + 1].addr;
-
-This makes a bunch of unnecessary assumptions about functions layout.
-But why, if we have STT_FUNC symbol with function size, so that we
-know the function end right when we collect function info.
-
->
->                 /* Make sure function is within ftrace addresses. */
-> -               if (bsearch(&addr, addrs, count, sizeof(addrs[0]), addrs_cmp)) {
-> +               if (is_ftrace_func(func, addrs, count, kmod)) {
->                         /*
->                          * We iterate over sorted array, so we can easily skip
->                          * not valid item and move following valid field into
-> @@ -303,6 +343,8 @@ static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
->
->         if (btf_elf__verbose)
->                 printf("Found %d functions!\n", functions_cnt);
-> +
-> +       qsort(functions, functions_cnt, sizeof(functions[0]), functions_cmp_name);
->         return 0;
->  }
->
-> @@ -312,7 +354,7 @@ static struct elf_function *find_function(const struct btf_elf *btfe,
->         struct elf_function key = { .name = name };
->
->         return bsearch(&key, functions, functions_cnt, sizeof(functions[0]),
-> -                      functions_cmp);
-> +                      functions_cmp_name);
->  }
->
->  static bool btf_name_char_ok(char c, bool first)
->
