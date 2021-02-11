@@ -2,94 +2,146 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F445318309
-	for <lists+bpf@lfdr.de>; Thu, 11 Feb 2021 02:25:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5895C318316
+	for <lists+bpf@lfdr.de>; Thu, 11 Feb 2021 02:33:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230335AbhBKBZB (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Feb 2021 20:25:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41754 "EHLO
+        id S230359AbhBKBcF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Feb 2021 20:32:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230307AbhBKBY7 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Feb 2021 20:24:59 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB5EAC0613D6
-        for <bpf@vger.kernel.org>; Wed, 10 Feb 2021 17:24:18 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id i8so7488661ejc.7
-        for <bpf@vger.kernel.org>; Wed, 10 Feb 2021 17:24:18 -0800 (PST)
+        with ESMTP id S229972AbhBKBcF (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Feb 2021 20:32:05 -0500
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63720C061574
+        for <bpf@vger.kernel.org>; Wed, 10 Feb 2021 17:31:25 -0800 (PST)
+Received: by mail-yb1-xb34.google.com with SMTP id v5so4042905ybi.3
+        for <bpf@vger.kernel.org>; Wed, 10 Feb 2021 17:31:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=BEXlHvTyZH7qZYc5/wanJ3+A/tSq4HeD6PPTeuxatvQ=;
-        b=cLnv65VCo0gf7L8/T/AHbaxXsH6azCVGLp+T3O7cWQMoSNJlgbWCX72ExrHMaMQLrZ
-         c+677RaJHFedEBIQTH7iSw6thEpdUn9K2ggCWKXkPUIjApbR0tJeYPVCcA9YiZh/KZdL
-         rJw2qRhBl7QnsNcMoOzdn6l1Y88e/5qC0kzxqejroT4UBgXzYi6CSwQPD+3cB92mOi7X
-         Pti+YQ1nCX/RVYbyeR2FpMB/w74uYffDZm/Uhs1Jf7qXwoys/IzP/he6mVNUesQOHzw5
-         JFZIpqFmfS3YwBoYklrymR4vjpS2cOxMlt6KVkOYqESQOKb/T59qspCMIrLi3h66GVD4
-         Yhvg==
+        bh=TY+5ATDl5HKx695kxNMZo3nbTQY+9CIPIMhhNUTzqAo=;
+        b=MK7xmoXhtOyGF7nm2JTbtcYSN0syON91gA6F6/zEXWfFxmDLluHPaTXFb0x/ZUBSsz
+         IsPW0LXtm81oMsnDjZidLE7NZqShaziANlyNb5w87zXhzsWZOtQYXN/idtLIAg4Ajomy
+         e+544s9RDl5sY97iZMxv4QjqDB3Vui58idE62myo9zVJ0r4POneU8VXMBYy4+S95kcpS
+         vC8ySXA4/IO4uTF8/RUgk4qyDXI6w9eWzD+1TprrMp9kkVPe6mW/Lv63Yh4pG4SKepdB
+         IJbONJbDz9p+k1271hQOJq1sWCAULIrE9Mokf7b1T4DQsscxDkW90YnDdwPWCDcUtsru
+         KzoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=BEXlHvTyZH7qZYc5/wanJ3+A/tSq4HeD6PPTeuxatvQ=;
-        b=Ct4r/iQBrol153yi4Kyo/nA69Jl++uJhVH5WplUF9l3ERTTh3FIf/XmtmGYrWNrMpA
-         fuMgePjReSxhouc1D/EDuittoo9ZTSsFvD/VNwByv9Unm2nB7e7tzlCC0wUbOTUMh6K4
-         iG1TbPNBSrlZpLkWDm3Al+3CkAd45nZPs8/XUX0tP7qiX4ov/J5rFqBVNWPcVaEXnoWv
-         0zdWGyKglfXDWRPmGbqZLrNPcI60CTIqsENbY8PyYAlT4wnxwxjCiOkiLuZcVRs5Uci5
-         QxylTNKxlE4QCq8s0GytASBobAzCNghqQDzzLqhfcuQ8fdEvkeQ8kDiES7K3NTBy3sBv
-         wHZg==
-X-Gm-Message-State: AOAM5320RpW/kcQqlQSD1V54B5qluUGpPrHfdjY92p3yED8Fw34uEx9+
-        HqFiB/RCFU+t2TSHci+ZlQ5jL6n0L51Z6FO1/CEi
-X-Google-Smtp-Source: ABdhPJxQanBnCQHeGmaZqIyjoWVXea2e1I6JlLMEZ4fSc1dg79NNxqhv7Xte+x018jvYraBrDsY7KPHTjndazFlwkTk=
-X-Received: by 2002:a17:906:f24a:: with SMTP id gy10mr5672792ejb.531.1613006657225;
- Wed, 10 Feb 2021 17:24:17 -0800 (PST)
+        bh=TY+5ATDl5HKx695kxNMZo3nbTQY+9CIPIMhhNUTzqAo=;
+        b=e8pjZgf0ugV5Gz6RlgYccXrgWXq73XS9qtwW3Eflgy6mwi+ml0nRIyFRafAkINsaXB
+         8G4c2s013JYKRNLUgNX4AIomNqNro91QSTdwemd7fz44J9Mj1iHNwHZyYBW+868Sbf5d
+         UAhQg+/DQHRuKAy99lAG4hV6vpALEDtTT4DiE8Z180b71ChcM8ZytuUVmBX9JG/NP0fd
+         oo70ZMuCHlVliiuegbcXW37ea7VHOWNZ4fTNPXCOUVk3VLoh8mvYM0avz5LnAyFaB5JC
+         H/6yJjDQuVyqRx32tI65D62lfKDBZqCtZW+fqScyJ1G20MafwgeJchy1N2BiM8dCfw4e
+         vZmw==
+X-Gm-Message-State: AOAM53022QqHuTLRoGTLEsQFExD2ycmSpqQLqG/pv6wSjzDAZ1WxKTdH
+        8BtwP4To5NYxy67FC9V37EFJxrq91/uCFvbparQ=
+X-Google-Smtp-Source: ABdhPJyLYerOmfXktp6am23dtlZNKD0QswNsX9G43iefbGR9vN+AMwkW0/Jam4iAcIe89YMBR1XpnlnXZACftXz2W14=
+X-Received: by 2002:a25:9882:: with SMTP id l2mr7710206ybo.425.1613007084492;
+ Wed, 10 Feb 2021 17:31:24 -0800 (PST)
 MIME-Version: 1.0
-References: <20210210232327.1965876-1-morbo@google.com> <CAEf4BzYrWe4N28JjM6na=sNvq5214zs5yHra_fCuE1KA24KQ0A@mail.gmail.com>
-In-Reply-To: <CAEf4BzYrWe4N28JjM6na=sNvq5214zs5yHra_fCuE1KA24KQ0A@mail.gmail.com>
-From:   Bill Wendling <morbo@google.com>
-Date:   Wed, 10 Feb 2021 17:24:06 -0800
-Message-ID: <CAGG=3QW0zuXUcpkcZqnaZS77EABEshhPtUCTr71dDDMuL1oMZQ@mail.gmail.com>
-Subject: Re: [PATCH] dwarf_loader: use a better hashing function
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+References: <20210210030317.78820-1-iii@linux.ibm.com>
+In-Reply-To: <20210210030317.78820-1-iii@linux.ibm.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 10 Feb 2021 17:31:13 -0800
+Message-ID: <CAEf4BzaUe4_yJMPS2QR0tsCn2av=tMzNrP3S94fKw-Cd77w5SQ@mail.gmail.com>
+Subject: Re: [PATCH RFC 0/6] Add BTF_KIND_FLOAT support
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        bpf <bpf@vger.kernel.org>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 4:00 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Tue, Feb 9, 2021 at 7:03 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
 >
-> On Wed, Feb 10, 2021 at 3:25 PM Bill Wendling <morbo@google.com> wrote:
-> >
-> > This hashing function[1] produces better hash table bucket
-> > distributions. The original hashing function always produced zeros in
-> > the three least significant bits.
-> >
-> > The new hashing funciton gives a modest performance boost.
-> >
-> >       Original      New
-> >        0:11.41       0:11.38
-> >        0:11.36       0:11.34
-> >        0:11.35       0:11.26
-> >       -----------------------
-> >   Avg: 0:11.373      0:11.327
-> >
-> > for a performance improvement of 0.4%.
-> >
-> > [1] From Numerical Recipes, 3rd Ed. 7.1.4 Random Hashes and Random Bytes
-> >
+> Some BPF programs compiled on s390 fail to load, because s390
+> arch-specific linux headers contain float and double types.
 >
-> Can you please also test with the one libbpf uses internally:
+> Introduce support for such types by representing them using the new
+> BTF_KIND_FLOAT. This series deals with libbpf, bpftool, in-kernel BTF
+> parser as well as selftests and documentation.
 >
-> return (val * 11400714819323198485llu) >> (64 - bits);
+> There are also pahole and LLVM parts:
 >
-> ?
+> * https://github.com/iii-i/dwarves/commit/btf-kind-float-v1
+> * https://reviews.llvm.org/D83289
 >
-> Thanks!
+> but they should go in after the libbpf part is integrated.
 >
-It's giving me a running time of ~11.11s, which is even better. Would
-you like me to submit a patch?
+> There is also an open question: should we go forward with
+> BTF_KIND_FLOAT, or should this be merely a BTF_KIND_INT encoding? The
+> argument for BTF_KIND_FLOAT is that it's more explicit and therefore
+> less prone to unintentional mixups. The argument for BTF_KIND_INT
+> encoding is that there would be less code and the overall integration
+> process would be simpler.
 
--bw
+Less code is not the only or main motivation for representing floats
+as just an encoding of BTF_KIND_INT. I think float is not sufficiently
+different from bool and int to warrant its own type (kind). And BTF,
+in general, is pretty good about having only essential types (kinds).
+Float/double is a primitive type, just like bool or char/int/long,
+supported by the compiler natively and it represents some indivisible
+arrangement of bits in memory.
+
+Surely, there are some semantic differences in how compiler and CPU
+are handling such types, but that's none of type system's concern.
+E.g., ABI calling conventions dictating which registers or stack
+locations arguments go into are not described by BTF. Also, consider
+bool. You can treat it as a single byte integer, but it's not just
+that: compiler treats it specially (with the 0 and 1 regularization,
+when converting to integer representation). Similarly for floats, code
+generated for use of floats will be different from integers, but
+that's none of type system's concerns. But when using BTF types to
+describe memory contents, bool, int, and float are exactly the same
+thing: a set of bytes in memory, which are up to interpretation. And
+that's why it leads to less code and overall simpler integration.
+
+The only place I can think of where BPF verifier would care about
+float vs int, is when processing function signature, because (at least
+for some architectures) float will be put in different registers than
+non-floats. But BPF verifier can easily distinguish that case by
+checking the encoding, so I don't buy the "unintentional mixups"
+argument.
+
+
+>
+> Ilya Leoshkevich (6):
+>   bpf: Add BTF_KIND_FLOAT to uapi
+>   libbpf: Add BTF_KIND_FLOAT support
+>   tools/bpftool: Add BTF_KIND_FLOAT support
+>   bpf: Add BTF_KIND_FLOAT support
+>   selftest/bpf: Add BTF_KIND_FLOAT tests
+>   bpf: Document BTF_KIND_FLOAT in btf.rst
+>
+>  Documentation/bpf/btf.rst                    |  19 ++-
+>  include/uapi/linux/btf.h                     |  10 +-
+>  kernel/bpf/btf.c                             | 101 ++++++++++++-
+>  tools/bpf/bpftool/btf.c                      |  13 ++
+>  tools/bpf/bpftool/btf_dumper.c               |   1 +
+>  tools/include/uapi/linux/btf.h               |  10 +-
+>  tools/lib/bpf/btf.c                          |  85 ++++++++---
+>  tools/lib/bpf/btf.h                          |  13 ++
+>  tools/lib/bpf/btf_dump.c                     |   4 +
+>  tools/lib/bpf/libbpf.c                       |  32 +++-
+>  tools/lib/bpf/libbpf.map                     |   5 +
+>  tools/lib/bpf/libbpf_internal.h              |   4 +
+>  tools/testing/selftests/bpf/btf_helpers.c    |   4 +
+>  tools/testing/selftests/bpf/prog_tests/btf.c | 145 +++++++++++++++++++
+>  tools/testing/selftests/bpf/test_btf.h       |   5 +
+>  15 files changed, 418 insertions(+), 33 deletions(-)
+>
+> --
+> 2.29.2
+>
