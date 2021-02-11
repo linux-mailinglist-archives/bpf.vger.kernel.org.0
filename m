@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07EF3318288
-	for <lists+bpf@lfdr.de>; Thu, 11 Feb 2021 01:16:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B91F331828C
+	for <lists+bpf@lfdr.de>; Thu, 11 Feb 2021 01:20:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233150AbhBKAQi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Feb 2021 19:16:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55324 "EHLO
+        id S231897AbhBKAUP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 10 Feb 2021 19:20:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232633AbhBKAQh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 10 Feb 2021 19:16:37 -0500
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 722B5C061574
-        for <bpf@vger.kernel.org>; Wed, 10 Feb 2021 16:15:56 -0800 (PST)
-Received: by mail-yb1-xb36.google.com with SMTP id i71so3883073ybg.7
-        for <bpf@vger.kernel.org>; Wed, 10 Feb 2021 16:15:56 -0800 (PST)
+        with ESMTP id S232318AbhBKAUK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 10 Feb 2021 19:20:10 -0500
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F2D1C061756
+        for <bpf@vger.kernel.org>; Wed, 10 Feb 2021 16:19:30 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id d184so3921561ybf.1
+        for <bpf@vger.kernel.org>; Wed, 10 Feb 2021 16:19:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=vRjRB76p7uasNgk6Y37mc4cxubCNDmg8dRRTITTNkRw=;
-        b=F41QCZhl33ZUPwbcUmJ1VBOPXwQyWB6cGvtiezeeg1HWkN4qQOXZf+I7jkICtJe8Ax
-         aHWypm9xqMYj+4b65QMOqUOg0xx5h/a55n/AryU8EjiHWtUDIrZ/6sRD8rAQM2BENOz+
-         Gb0ErO8PVwgbQBiM2gmd96o9keFzfmgabpsF4VgjxI3kYw3C9Bnnj77IaXH31CsMdk71
-         TAl7xdDZfyLnqqaDQrB9lOozBaRHTFaxSNL8+mdyF1MUb9F74Z+O1hoRRtLeJgyltAYW
-         PPs9/zt3khz65Z8/XAK4CPoQFZEX3aGtp1dsfZkLhEFX4s4lj1npvUVUeKn1UjbdgOis
-         Hu9g==
+        bh=j6A4zYMc59kDIi9TBIBoQ9VlmypYayM4f4YJFCK0j8M=;
+        b=UbLaA0WXznYJWWXk6LCGwrZTuozj3FmZ8UQvNn0K/wdDS3ykePzeWLvcnwiaHW5myd
+         GoWcdtC6PciNKEmgetBQT0wQSwEjdWoXEYPCMyftuRqG3PfX8x1T6fExeqg6eZOdNytj
+         s3JzUwc+LhpdmgJNDW+ct5CrVVLAzPwzLEtiViZ1AAR391zlnezPnCW0Ago5hrCQaHtg
+         YcRZkR1OijrfnhPf9B2t9iIEvyIR0u97e06PjI1+lcnU1juvHVoMD+DpfYWx0eDB7f+K
+         T8bufNkCkR60ZpQe0U5S8JneUr5/98b0G/Wd0/riMgxW3YojADTfd2Kso/FHSaTRpule
+         DSqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=vRjRB76p7uasNgk6Y37mc4cxubCNDmg8dRRTITTNkRw=;
-        b=Yaft7HB6OX8kZX5IgINbEeECqq+asKKGZtMeCMh10ZY38yIMjobmXyeTt6DfH2MBft
-         s+wH47G3sLMOWrojQVsWnt7rwrQzcWm35HB1AajEDTIw6gaKTcUU7/Zf5W1Su8VX8ffS
-         n+J3p+UqiXAXCIx/vcnyUmlIjWClLD8IEx2nCLwCfnvqUAO8SGvEsL7chyI4mratnFP7
-         GxMTgGC4pNHzVzxeDJuG4UW7EFFSczWYOYQuQVNZUOIJhxabz9YXom0EPmyWiw+U6B/f
-         9IdiNcveVrr0Ps7qfSgAgUJJtEKa2zdIGlvBV7qv+fMwU5qm+e0OnNJpTDKB1SiQpqO0
-         RoZw==
-X-Gm-Message-State: AOAM532FPoKz6EWc65psYfMbE3jsS1LY8JLeeOIlV1b9nekD6HtpksoC
-        Wb6EfQ5Jc+ogWq3bT9tvLztmkqDLTQmYv7UomF4=
-X-Google-Smtp-Source: ABdhPJzeAPMHqG37eIvrruVYsNbkF7KmjP7Yik1o5q7MIPOG/ofxKxM+q5jamG7wS9pCB7vicnM88PTAhJ3UXbCUaLU=
-X-Received: by 2002:a25:9882:: with SMTP id l2mr7389667ybo.425.1613002555759;
- Wed, 10 Feb 2021 16:15:55 -0800 (PST)
+        bh=j6A4zYMc59kDIi9TBIBoQ9VlmypYayM4f4YJFCK0j8M=;
+        b=VSEiNy+WElWe0JvQmaznj6uu0uYdLomBaNUYIEa9qbFKlQ1s/UFn0XQQAL5c2R4Qua
+         SkbapGSYNSRucaN87iA1jIRb8HZCdcJ10sPH6AVkrbKJ/4n9kbl2qXvlVr6eiBMXJDQP
+         5z52u6g9jyKyVnO5Vs9GzLoqRl5yj7LZrKhbM/TE9jZLUqyKCG4p3i8gSIqreO/i7qU4
+         CutOY00sFC7EKVXQ8qrPVu12aus36aRSJDj8NX/wmGSlnDBOC3JzV4tG//vDKBeQ0em2
+         j7wgVlUD/g2tzJEz7K135Daw+SBomqoOaFaaevKQG5oP3ZT+FNPjLENcD4gGERW6sFiW
+         WiLg==
+X-Gm-Message-State: AOAM5330q78OVQArOKYCcZybl6szgKlUAhr4zqH2WZLKLYjNK9xTbJhY
+        XeZE3eNi0tc5aunHKjGdYB4HXkQluVbF7Nwv0Cc=
+X-Google-Smtp-Source: ABdhPJy7rGUblm7p8yqqQtiKpIovWTdTZmDfRTqz39C1IYsbmSzoiLT4Ld8GLyCpxX4j3E3gyb+x/hPguw60SthnBEk=
+X-Received: by 2002:a25:37c4:: with SMTP id e187mr8122385yba.347.1613002769991;
+ Wed, 10 Feb 2021 16:19:29 -0800 (PST)
 MIME-Version: 1.0
-References: <20210210030317.78820-1-iii@linux.ibm.com> <20210210030317.78820-3-iii@linux.ibm.com>
-In-Reply-To: <20210210030317.78820-3-iii@linux.ibm.com>
+References: <20210210030317.78820-1-iii@linux.ibm.com> <20210210030317.78820-2-iii@linux.ibm.com>
+In-Reply-To: <20210210030317.78820-2-iii@linux.ibm.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 10 Feb 2021 16:15:45 -0800
-Message-ID: <CAEf4BzbqvvdMRNqEYMuTSZmjndZbCEhOj169tH6o8BFj8OwyxA@mail.gmail.com>
-Subject: Re: [PATCH RFC 2/6] libbpf: Add BTF_KIND_FLOAT support
+Date:   Wed, 10 Feb 2021 16:19:19 -0800
+Message-ID: <CAEf4BzY-SOyP0g-ZHTK3h1mppwRGJ4YH3vKugeuLGTe8Q3-r7Q@mail.gmail.com>
+Subject: Re: [PATCH RFC 1/6] bpf: Add BTF_KIND_FLOAT to uapi
 To:     Ilya Leoshkevich <iii@linux.ibm.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -64,43 +64,96 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 9, 2021 at 7:04 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+On Tue, Feb 9, 2021 at 7:03 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
 >
-> The logic follows that of BTF_KIND_INT most of the time, some functions
-> are even unified to work on both. Sanitization replaces BTF_KIND_FLOATs
-> with equally-sized BTF_KIND_INTs on older kernels.
+> Add a new kind value, expand the kind bitfield, add a macro for
+> parsing the additional u32.
 >
 > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 > ---
->  tools/lib/bpf/btf.c             | 85 +++++++++++++++++++++++----------
->  tools/lib/bpf/btf.h             | 13 +++++
->  tools/lib/bpf/btf_dump.c        |  4 ++
->  tools/lib/bpf/libbpf.c          | 32 ++++++++++++-
->  tools/lib/bpf/libbpf.map        |  5 ++
->  tools/lib/bpf/libbpf_internal.h |  4 ++
->  6 files changed, 118 insertions(+), 25 deletions(-)
+>  include/uapi/linux/btf.h       | 10 ++++++++--
+>  tools/include/uapi/linux/btf.h | 10 ++++++++--
+>  2 files changed, 16 insertions(+), 4 deletions(-)
 >
+> diff --git a/include/uapi/linux/btf.h b/include/uapi/linux/btf.h
+> index 5a667107ad2c..e713430cb033 100644
+> --- a/include/uapi/linux/btf.h
+> +++ b/include/uapi/linux/btf.h
+> @@ -52,7 +52,7 @@ struct btf_type {
+>         };
+>  };
+>
+> -#define BTF_INFO_KIND(info)    (((info) >> 24) & 0x0f)
+> +#define BTF_INFO_KIND(info)    (((info) >> 24) & 0x1f)
+>  #define BTF_INFO_VLEN(info)    ((info) & 0xffff)
+>  #define BTF_INFO_KFLAG(info)   ((info) >> 31)
+>
+> @@ -72,7 +72,8 @@ struct btf_type {
+>  #define BTF_KIND_FUNC_PROTO    13      /* Function Proto       */
+>  #define BTF_KIND_VAR           14      /* Variable     */
+>  #define BTF_KIND_DATASEC       15      /* Section      */
+> -#define BTF_KIND_MAX           BTF_KIND_DATASEC
+> +#define BTF_KIND_FLOAT         16      /* Floating point       */
+> +#define BTF_KIND_MAX           BTF_KIND_FLOAT
+>  #define NR_BTF_KINDS           (BTF_KIND_MAX + 1)
+>
+>  /* For some specific BTF_KIND, "struct btf_type" is immediately
+> @@ -169,4 +170,9 @@ struct btf_var_secinfo {
+>         __u32   size;
+>  };
+>
+> +/* BTF_KIND_FLOAT is followed by a u32 and the following
 
-[...]
 
-> @@ -2445,6 +2450,12 @@ static void bpf_object__sanitize_btf(struct bpf_object *obj, struct btf *btf)
->                 } else if (!has_func_global && btf_is_func(t)) {
->                         /* replace BTF_FUNC_GLOBAL with BTF_FUNC_STATIC */
->                         t->info = BTF_INFO_ENC(BTF_KIND_FUNC, 0, 0);
-> +               } else if (!has_float && btf_is_float(t)) {
-> +                       /* replace FLOAT with INT */
-> +                       __u8 nr_bits = btf_float_bits(t);
+what's the point of that u32, if BTF_FLOAT_BITS() is just t->size * 8?
+Why adding this complexity. BTF_KIND_INT has bits because we had an
+inconvenient bitfield encoding as a special BTF_KIND_INT types, which
+we since stopped using in favor of encoding bitfield sizes and offsets
+inside struct/union fields. I don't think there is any need for that
+with FLOAT, so why waste space and add complexity and possibility for
+inconsistencies?
+
+Disclaimer: I'm in a "just BTF_KIND_INT encoding bit for
+floating-point numbers" camp.
+
+> + * is the 32 bits arrangement:
+> + */
+> +#define BTF_FLOAT_BITS(VAL)    ((VAL)  & 0x000000ff)
 > +
-
-nit: no need for extra variable, just use it inline below
-
-> +                       t->info = BTF_INFO_ENC(BTF_KIND_INT, 0, 0);
-> +                       *(int *)(t + 1) = BTF_INT_ENC(0, 0, nr_bits);
->                 }
->         }
->  }
-> @@ -3882,6 +3893,18 @@ static int probe_kern_btf_datasec(void)
->                                              strs, sizeof(strs)));
->  }
-
-[...]
+>  #endif /* _UAPI__LINUX_BTF_H__ */
+> diff --git a/tools/include/uapi/linux/btf.h b/tools/include/uapi/linux/btf.h
+> index 5a667107ad2c..e713430cb033 100644
+> --- a/tools/include/uapi/linux/btf.h
+> +++ b/tools/include/uapi/linux/btf.h
+> @@ -52,7 +52,7 @@ struct btf_type {
+>         };
+>  };
+>
+> -#define BTF_INFO_KIND(info)    (((info) >> 24) & 0x0f)
+> +#define BTF_INFO_KIND(info)    (((info) >> 24) & 0x1f)
+>  #define BTF_INFO_VLEN(info)    ((info) & 0xffff)
+>  #define BTF_INFO_KFLAG(info)   ((info) >> 31)
+>
+> @@ -72,7 +72,8 @@ struct btf_type {
+>  #define BTF_KIND_FUNC_PROTO    13      /* Function Proto       */
+>  #define BTF_KIND_VAR           14      /* Variable     */
+>  #define BTF_KIND_DATASEC       15      /* Section      */
+> -#define BTF_KIND_MAX           BTF_KIND_DATASEC
+> +#define BTF_KIND_FLOAT         16      /* Floating point       */
+> +#define BTF_KIND_MAX           BTF_KIND_FLOAT
+>  #define NR_BTF_KINDS           (BTF_KIND_MAX + 1)
+>
+>  /* For some specific BTF_KIND, "struct btf_type" is immediately
+> @@ -169,4 +170,9 @@ struct btf_var_secinfo {
+>         __u32   size;
+>  };
+>
+> +/* BTF_KIND_FLOAT is followed by a u32 and the following
+> + * is the 32 bits arrangement:
+> + */
+> +#define BTF_FLOAT_BITS(VAL)    ((VAL)  & 0x000000ff)
+> +
+>  #endif /* _UAPI__LINUX_BTF_H__ */
+> --
+> 2.29.2
+>
