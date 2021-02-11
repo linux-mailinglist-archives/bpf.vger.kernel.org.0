@@ -2,80 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70CDF318EA7
-	for <lists+bpf@lfdr.de>; Thu, 11 Feb 2021 16:32:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F5B318EAE
+	for <lists+bpf@lfdr.de>; Thu, 11 Feb 2021 16:33:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231228AbhBKPb5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Feb 2021 10:31:57 -0500
-Received: from www62.your-server.de ([213.133.104.62]:35602 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230256AbhBKP1w (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Feb 2021 10:27:52 -0500
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lADrf-0005Ul-Ur; Thu, 11 Feb 2021 16:26:43 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lADrf-000J5I-NF; Thu, 11 Feb 2021 16:26:43 +0100
-Subject: Re: [PATCH/v2] bpf: add bpf_skb_adjust_room flag
- BPF_F_ADJ_ROOM_ENCAP_L2_ETH
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        huangxuesen <hxseverything@gmail.com>
-Cc:     David Miller <davem@davemloft.net>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        huangxuesen <huangxuesen@kuaishou.com>,
-        Willem de Bruijn <willemb@google.com>,
-        chengzhiyong <chengzhiyong@kuaishou.com>,
-        wangli <wangli09@kuaishou.com>,
-        Alan Maguire <alan.maguire@oracle.com>
-References: <20210210065925.22614-1-hxseverything@gmail.com>
- <CAF=yD-LLzAheej1upLdBOeJc9d0RUXMrL9f9+QVC-4thj1EG5Q@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <29b5395f-daff-99f2-4a4b-6d462623a9fe@iogearbox.net>
-Date:   Thu, 11 Feb 2021 16:26:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S230465AbhBKPch (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Feb 2021 10:32:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55456 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230090AbhBKPas (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Feb 2021 10:30:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id D121864E08;
+        Thu, 11 Feb 2021 15:30:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613057406;
+        bh=esNDs2TlYczqNDnZSVpIIGwqAN75p1dL3/P370G6BcQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=pxFyZt3qlj7tdMREFz0KVAL5/1JX+XeJXHEyCxF2Mry7KEZs/Jz3in5URYfNnIpRs
+         Claji9U/INgPI5Eb6p1HLvRJ38RVJfOYHriUufUlb56mEyBbS/dZcapm9kc1ovVBBt
+         LHPRKXPCO2cKU6AKkLc17U2tO3o7gvmiUoR8Q6Jrz5SR5W76oWGF/yw3uNzl/FZl0j
+         ym8WWb+IoW05518owpKxPDVWjSOHcrh5L5wqqLdK2iAdwYeKSdZsNjTQK/zvbk5fF6
+         mWvgo9q9Gwd/q3tnXD/NQ95eLeAzjRYZVfEyYlOwN2JKBY+misDFgE4bNWmZhscy5L
+         n/xK/G0ka4CjQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C094260A28;
+        Thu, 11 Feb 2021 15:30:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <CAF=yD-LLzAheej1upLdBOeJc9d0RUXMrL9f9+QVC-4thj1EG5Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26077/Thu Feb 11 13:18:43 2021)
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf v4] selftests/bpf: convert test_xdp_redirect.sh to bash
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161305740678.13437.18186613523777295983.git-patchwork-notify@kernel.org>
+Date:   Thu, 11 Feb 2021 15:30:06 +0000
+References: <20210211082029.1687666-1-bjorn.topel@gmail.com>
+In-Reply-To: <20210211082029.1687666-1-bjorn.topel@gmail.com>
+To:     =?utf-8?b?QmrDtnJuIFTDtnBlbCA8Ympvcm4udG9wZWxAZ21haWwuY29tPg==?=@ci.codeaurora.org
+Cc:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, bjorn.topel@intel.com, u9012063@gmail.com,
+        rdunlap@infradead.org, andrii.nakryiko@gmail.com, andrii@kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/10/21 3:50 PM, Willem de Bruijn wrote:
-> On Wed, Feb 10, 2021 at 1:59 AM huangxuesen <hxseverything@gmail.com> wrote:
->>
->> From: huangxuesen <huangxuesen@kuaishou.com>
->>
->> bpf_skb_adjust_room sets the inner_protocol as skb->protocol for packets
->> encapsulation. But that is not appropriate when pushing Ethernet header.
->>
->> Add an option to further specify encap L2 type and set the inner_protocol
->> as ETH_P_TEB.
->>
->> Suggested-by: Willem de Bruijn <willemb@google.com>
->> Signed-off-by: huangxuesen <huangxuesen@kuaishou.com>
->> Signed-off-by: chengzhiyong <chengzhiyong@kuaishou.com>
->> Signed-off-by: wangli <wangli09@kuaishou.com>
-> 
-> Thanks, this is exactly what I meant.
-> 
-> Acked-by: Willem de Bruijn <willemb@google.com>
-> 
-> One small point regarding Signed-off-by: It is customary to capitalize
-> family and given names.
+Hello:
 
-+1, huangxuesen, would be great if you could resubmit with capitalized names in
-your SoB as well as From (both seem affected).
+This patch was applied to bpf/bpf.git (refs/heads/master):
 
-Thanks,
-Daniel
+On Thu, 11 Feb 2021 09:20:29 +0100 you wrote:
+> From: Björn Töpel <bjorn.topel@intel.com>
+> 
+> The test_xdp_redirect.sh script uses a bash feature, '&>'. On systems,
+> e.g. Debian, where '/bin/sh' is dash, this will not work as
+> expected. Use bash in the shebang to get the expected behavior.
+> 
+> Further, using 'set -e' means that the error of a command cannot be
+> captured without the command being executed with '&&' or '||'. Let us
+> restructure the ping-commands, and use them as an if-expression, so
+> that we can capture the return value.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf,v4] selftests/bpf: convert test_xdp_redirect.sh to bash
+    https://git.kernel.org/bpf/bpf/c/732fa3233066
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
