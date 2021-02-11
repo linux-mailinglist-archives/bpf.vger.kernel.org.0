@@ -2,184 +2,185 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6295A3183A7
-	for <lists+bpf@lfdr.de>; Thu, 11 Feb 2021 03:43:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3BFD31860E
+	for <lists+bpf@lfdr.de>; Thu, 11 Feb 2021 09:05:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229631AbhBKCnG (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 10 Feb 2021 21:43:06 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:31406 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229598AbhBKCnF (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 10 Feb 2021 21:43:05 -0500
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11B2f2Kx009282;
-        Wed, 10 Feb 2021 18:42:11 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=4VejklgIZYTHHTZTTbp3rbHGRH9yRIvn9gmmPBoWGyg=;
- b=rQhHr6wIMPF3Mr2YijOIFCm5LwO2+WTicDF5GZ2nHCri5gZTfAZjiyY6BPFKiIKJ62zD
- 56eL/97lzjca3ToDFemWiFkMHqatSQG+N9FtUaaiz447+GiDpt6+QQhwd8WcUPMY9PvH
- DKQrChCo5rLwWOjcdH4h97zk8UkhmdsHFpM= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 36m6wfeewc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 10 Feb 2021 18:42:11 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 10 Feb 2021 18:42:09 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Guxp5B/gczzwJjZQKv4uBy35fEnamPDAyVDxNR/dBGwdp1EPvmwTw8z9YA6tCcmJidQ7/M4lvHT/jcsd9eCjcWzwuf4g/gDx7WKRBKYkFLULxDqVlLX9JNQe0kfxSkSABH/CBW3G5lyEt1s6JM7yAaVW98iJ6jtonuItSeA6EVhznzjpv1DgJlD4T/TNjGogHnW8R2Fz4cLdY30FmukiI9Qw54zSARLWoSh8p8q4AGpSPKtTOVxnlHZ4QXOFVYmgyHFIqnZyaQ93MQdVgPnoFgmayaxKDSwntFTdKdnO29zoDBbwxOc+m/9mgTpyk3f2Z3OEi0SNzETyayKRnwIpqA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4VejklgIZYTHHTZTTbp3rbHGRH9yRIvn9gmmPBoWGyg=;
- b=GCo26VkP3iCvoG81MEzQOr3vqp5rs0Mi+22d9ojAnLOYzcjpn++h6f6zJLGUNxIgQMMgaXXlORvka1ymL29Jv6ISdzyk00LrZH2RB+e/5zE9K+W/B9fcE2JxuBKU7Xiv6LQ9fZ1o1M2iuMoSkQwAhg8tIFmt1yXmtCK2qxNgIlEPJ5sQXu696u5kXE58i62TqOxkMasVbZcbkhVZS3l/WwkviwkI9hGTAvAOvUbDd0ULBopUfmHxlhb8H2XaLeZdC0hP8bXY/i760FsqfCbUlM3RgDLuHgFvfwNrkS3UiIwztmLnt7QEb+t9jY3Kbj29sBW8XmccwgNiy9Z+fendEQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by BYAPR15MB2456.namprd15.prod.outlook.com (2603:10b6:a02:82::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.30; Thu, 11 Feb
- 2021 02:42:08 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::c585:b877:45fe:4e3f]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::c585:b877:45fe:4e3f%7]) with mapi id 15.20.3825.030; Thu, 11 Feb 2021
- 02:42:08 +0000
-Date:   Wed, 10 Feb 2021 18:42:01 -0800
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Networking <netdev@vger.kernel.org>
-Subject: Re: [PATCH bpf 2/2] bpf: selftests: Add non function pointer test to
- struct_ops
-Message-ID: <20210211024201.3uz4yhxfqdzhqa35@kafai-mbp.dhcp.thefacebook.com>
-References: <20210209193105.1752743-1-kafai@fb.com>
- <20210209193112.1752976-1-kafai@fb.com>
- <CAEf4BzbZmmezSxYLCOdeeA4zW+vdDvQH57wQ-qpFSKiMcE1tVw@mail.gmail.com>
- <20210210211735.4snmhc7gofo6zrp5@kafai-mbp.dhcp.thefacebook.com>
- <CAEf4BzbhBng6k5e_=p0+mFSpQS7=BM_ute9eskViw-VCMTcYYA@mail.gmail.com>
- <20210211015510.zd7tn6efiimfel3v@kafai-mbp.dhcp.thefacebook.com>
- <CAEf4Bza_cNDTuu8jQ3K4qeb3e_nMEasmGqZqePy4B=XJqyXuMg@mail.gmail.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAEf4Bza_cNDTuu8jQ3K4qeb3e_nMEasmGqZqePy4B=XJqyXuMg@mail.gmail.com>
-X-Originating-IP: [2620:10d:c090:400::5:3dd9]
-X-ClientProxiedBy: MWHPR10CA0020.namprd10.prod.outlook.com (2603:10b6:301::30)
- To BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+        id S229729AbhBKIEB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Feb 2021 03:04:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229665AbhBKIDz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Feb 2021 03:03:55 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 563FDC061574;
+        Thu, 11 Feb 2021 00:03:58 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id k13so3203191pfh.13;
+        Thu, 11 Feb 2021 00:03:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Ef/vgaDh7SV+KEY2BjoxfMR0OstqvLzTBvFrn95BsqU=;
+        b=L1mRLpOXIs34YdnDMWovT0RZU3jPUATHTp1N2kTrirEeZvWILq6YF0BU9yNl1+tTSB
+         O7quX1ONTjbZx5r7suaMW003mgWQ4AUVn+fnQQbaaCamgW3yrK+sNVRrVMG3355V9rGN
+         twD1FI4rY4/E680WnhZUA9GrSUSGcbpIb4LKFDSTlOLmm7kQi0Kix3D8A0XQ8SP0Q5AD
+         NXxzlMqk/37wSj4LtwwcSlZZ1lp8vGfqnzfvvhsqvqWttd+kTWlJOVOL+X9xbq0k5boD
+         u9r2q6U3GDH3ZAOOrG8112LQrcsvCaezbaggRgsWCfiN3OypXivOgjqarWPeGGNIpd9W
+         sfpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Ef/vgaDh7SV+KEY2BjoxfMR0OstqvLzTBvFrn95BsqU=;
+        b=JJHwaHxW/vzG/ErbCjkwzZyB3Ev8rLMlAFiZ/NWwkJTJMf9hjtqP3G15IbcX+OeUA1
+         ZXSLSJe4Y+INlDqwy+RIOQ8HnZvmADU7iXMcdCxiNR8vRmep7KpBEhCtik1xg8x8ZZnR
+         qYgqfj2VzamzAVl6es4i+aDg4Nvefou05d8p2DQMwEA0nn/kkPIc5/ZCQl+lanbg0xw+
+         TA3udyDXJ/BnnO7eN8znMH+rq7quE203Eppgj1v5Oxj6JjAA5RHjHOuPizWiwUg4XizJ
+         GNb17ibH0LZ3maF+1aYtcDyiskL7HFRBdQ0UC/8s/+p5Wf6ffxt9heGFERYuzn17LL8B
+         /Rsg==
+X-Gm-Message-State: AOAM532D5loFE8dhw7N2uLmbs6++ObC82N+gAUBEm+c4+iQ0jmcMba4w
+        HyQVy5imSK/LMus9IJo4w5RnocsjqEHAXEy1ckE=
+X-Google-Smtp-Source: ABdhPJwcmt3W1WJKAOOQCK0gCiQ5rWzMs1un0fVK9Hv+X0QnHERY57uhF790LkOi4sxAmgj/Ej3XWjil2zWH8Und4wI=
+X-Received: by 2002:a65:450d:: with SMTP id n13mr7104740pgq.208.1613030637843;
+ Thu, 11 Feb 2021 00:03:57 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:3dd9) by MWHPR10CA0020.namprd10.prod.outlook.com (2603:10b6:301::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25 via Frontend Transport; Thu, 11 Feb 2021 02:42:07 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b121b3b4-b20f-402d-b044-08d8ce369fed
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2456:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB245669EE43CFB0C72E634BDBD58C9@BYAPR15MB2456.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 62MxmMHnSOtveCJe47Pg8hNdaYfD5na37B3vhekx5tmUx9kdcQDwo27JmayAsf3YxB/jzQqx/zqGbGbqDR5URWoq6QUwwdzqHiOxkFAhRF937aWm4hwEsVMWdjUf4IRcAFLInEuNXflhE8WX/McqhiJFvh4uH7iOau/WUH4ZbDse4lDP03k3+/rBANi2SRtNRdosnKsWFvX0oTDI83sTh4qPAS3GIqpuY6CWyhy7RkM8RYkANgQUjJ39zBWSs33PWJcQf9qpCtNkU+a9VFwsQxIqg93vQzzSA79s5kkUFMtfWISHjIQ/kPLvguJMAkCGEqE2bEHtd0Kphts6UndjrrBoYhekRsbEC4U/YtSeK7cMt+X3QiFctwd3YpBkwgbDo9UnUHWqUpt5wV/JPmXOS7nv9UBdHAh4LF9msAAiF2Aawz/K7Ld4zpI9n644drBEIpJlmsuXTjHUyB+a/JZI5KQsfUHtT+mjCB+ETCf6V1yb1gk/vn9yRLcVq9BK7GRWpzP4XHprIZSwlM11n3QwFQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(366004)(376002)(346002)(39860400002)(7696005)(5660300002)(86362001)(478600001)(52116002)(1076003)(186003)(9686003)(6916009)(66946007)(8936002)(55016002)(316002)(16526019)(53546011)(6506007)(8676002)(2906002)(4326008)(6666004)(66556008)(54906003)(66476007)(83380400001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?1EwXZOdix3Iai7dozZmhcH8z1Zq3OByIKmMi6M0WxiIl4Ud7I57rw2ESX2Rf?=
- =?us-ascii?Q?IhCjbJKdpn4baKguhd/2QfLPO27EDZ7tSHlz/pYfQ/VzrbuET0TnG0fGyTk9?=
- =?us-ascii?Q?xhfMXs0UhbNYb8hqH/ACBjATamJEGjo8O4oMqVWrRcTyk1ud4m+0/fkaN7wq?=
- =?us-ascii?Q?VcHhtMUmDJzdViXPeh5oGEODGrkozvSdcRP5Rc0uLQQnFiaCMSGDMVmF/0Iy?=
- =?us-ascii?Q?0FI1v5lMN8K8pP/9CXySw9PiVTkriQ7AG234yr6FyPWNGZbYAR+g5diHbMUZ?=
- =?us-ascii?Q?oaIGwzC9KNjsy+HQXTDZ2FsM7xaDHf5yXdTXmvkDq6crgx3lynrj27Ql+U/S?=
- =?us-ascii?Q?g1UAhG3/okJZiRG84FunWLg9hgL1AGJ6L/pgexNXtjsdl8d0y3yYEv7xWzMn?=
- =?us-ascii?Q?h6WKRHT2X5TUbNFyUphZeui/ZH5W0udNQIKztR7UEKTZf2TGNevyqBk+FD4r?=
- =?us-ascii?Q?yxiPlBCBqQ3puDA3GJ5UkDOYJAAvIfKFcw5oUc/itrsO7vQVYk/qC3Db4If3?=
- =?us-ascii?Q?Tfm4fE+Zsni51qWoS+7fAH7oacykHXbV1upP5ZZJjJq1/Zb8K4IT6FyCkYje?=
- =?us-ascii?Q?czFJPYqebDINkS1ZfO9STQIUKfs+P48JZ+6OgDAK/6FunnZvJL95q3MRqVam?=
- =?us-ascii?Q?DUffhwRq/1y1BZIvdpILBKEaQJJzBkstqv3JqyIpt+YK6kR4EbD/r0gIKplk?=
- =?us-ascii?Q?zntrvRVSYw0m9aUJjciEWmolK3K6+bNtrsXy3Lo4IzNSXBw9h/rCGih2dwzl?=
- =?us-ascii?Q?tbUx3om4SKv52WMQFg7cmsDJ2wmiUCCxib+817R4BkCD0xnJcaQzI8dxNrGb?=
- =?us-ascii?Q?aTcCrqT6p1VrpTvAmgyMQVIO5YWE+RU+6rYV9Sb1ndZKiB0w75x1B31BjMtF?=
- =?us-ascii?Q?an9/BCW1JT/UIzw1JTFygSuEDyvEEHhyKWgz3sinGZHpgb00/r4xe47Ri79n?=
- =?us-ascii?Q?s8u78QfFH8ILRFhS+Z5m0yuGfZCaQHdPXTdK2XHI41PZFbqmQzEX9ZTfHHjo?=
- =?us-ascii?Q?OQJhvl3TfoyJQDx1f8v7R9GECTcUjjYAcgiRyDPgd4+yPl3ut5Rxp/cbyMfa?=
- =?us-ascii?Q?2nqr8lm5ypoFWk36z0RQrWHPyL0og2XKWdKsthHMWyQ8nZEzBj+EA1hAeOho?=
- =?us-ascii?Q?xCFdnMKNkyWDAyNzNvt9M9Ec9WB1bS3jqkdZb6hVzr+ghAcPFEmlVYD3MOwh?=
- =?us-ascii?Q?3tVz5xElRlKI9dWESbRtTSea7Eh3uCjZdbCBl3ImlkVTaiKvoxv/7I4IF1yX?=
- =?us-ascii?Q?MVLwqeiRd0Bz/D2/a2EUsi8FsaBu1vUE4SDERTlZ+THNiT/6nuaShKg55ZRo?=
- =?us-ascii?Q?VFc3lqPC8JlZkqS/+qeDkAR9pIjHDLtcNcM7D3dUHxNkPK5VkZJZH1CbGf0l?=
- =?us-ascii?Q?IDUzZw0=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: b121b3b4-b20f-402d-b044-08d8ce369fed
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Feb 2021 02:42:08.2653
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2UbOVhHCt9ExsK772gUAV4rauX1NQvkMSyCznC+0DulXFGZXBrzn9oV2DBtwkn0x
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2456
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-10_11:2021-02-10,2021-02-10 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=864
- spamscore=0 bulkscore=0 suspectscore=0 malwarescore=0 mlxscore=0
- lowpriorityscore=0 impostorscore=0 clxscore=1015 priorityscore=1501
- adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102110017
-X-FB-Internal: deliver
+References: <20210208090530.5032-1-ciara.loftus@intel.com>
+In-Reply-To: <20210208090530.5032-1-ciara.loftus@intel.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Thu, 11 Feb 2021 09:03:46 +0100
+Message-ID: <CAJ8uoz3xr=SRjvKKhxuoRDSvQ_s4DYPHYT5V0ZOZ7zGWV95=SA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 0/6] AF_XDP Packet Drop Tracing
+To:     Ciara Loftus <ciara.loftus@intel.com>
+Cc:     Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Weqaar Janjua <weqaar.a.janjua@intel.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, song@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 06:07:04PM -0800, Andrii Nakryiko wrote:
-> On Wed, Feb 10, 2021 at 5:55 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> >
-> > On Wed, Feb 10, 2021 at 02:54:40PM -0800, Andrii Nakryiko wrote:
-> > > On Wed, Feb 10, 2021 at 1:17 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> > > >
-> > > > On Wed, Feb 10, 2021 at 12:27:38PM -0800, Andrii Nakryiko wrote:
-> > > > > On Tue, Feb 9, 2021 at 12:11 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> > > > > >
-> > > > > > This patch adds a "void *owner" member.  The existing
-> > > > > > bpf_tcp_ca test will ensure the bpf_cubic.o and bpf_dctcp.o
-> > > > > > can be loaded.
-> > > > > >
-> > > > > > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
-> > > > > > ---
-> > > > >
-> > > > > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> > > > >
-> > > > > What will happen if BPF code initializes such non-func ptr member?
-> > > > > Will libbpf complain or just ignore those values? Ignoring initialized
-> > > > > members isn't great.
-> > > > The latter. libbpf will ignore non-func ptr member.  The non-func ptr
-> > > > member stays zero when it is passed to the kernel.
-> > > >
-> > > > libbpf can be changed to copy this non-func ptr value.
-> > > > The kernel will decide what to do with it.  It will
-> > > > then be consistent with int/array member like ".name"
-> > > > and ".flags" where the kernel will verify the value.
-> > > > I can spin v2 to do that.
-> > >
-> > > I was thinking about erroring out on non-zero fields, but if you think
-> > > it's useful to pass through values, it could be done, but will require
-> > > more and careful code, probably. So, basically, don't feel obligated
-> > > to do this in this patch set.
-> > You meant it needs different handling in copying ptr value
-> > than copying int/char[]?
-> 
-> Hm.. If we are talking about copying pointer values, then I don't see
-> how you can provide a valid kernel pointer from the BPF program?...
-I am thinking the kernel is already rejecting members that is supposed
-to be zero (e.g. non func ptr here), so there is no need to add codes
-to libbpf to do this again.
+On Mon, Feb 8, 2021 at 10:39 AM Ciara Loftus <ciara.loftus@intel.com> wrote=
+:
+>
+> This series introduces tracing infrastructure for AF_XDP sockets (xsk).
+> A trace event 'xsk_packet_drop' is created which can be enabled by toggli=
+ng
+>
+> /sys/kernel/debug/tracing/events/xsk/xsk_packet_drop/enable
+>
+> When enabled and packets or empty packet buffers are dropped in the kerne=
+l,
+> traces are generated which describe the reason for the packet drop, the n=
+etdev
+> and qid information of the xsk which encountered the drop, and some more
+> information depending on what type of drop was encountered that will tell
+> the user why the packet was dropped.  This information should help a user
+> troubleshoot packet drops by providing an extra level of detail which is =
+not
+> available through use of simple counters
+>
+> Example traces:
+> xsk_packet_drop: netdev: ve3213 qid 0 reason: packet too big: len 3000 ma=
+x 2048 not_used 0
+> xsk_packet_drop: netdev: ve3213 qid 0 reason: invalid fill addr: addr 520=
+192 not_used 0 not_used 0
+> xsk_packet_drop: netdev: ve9266 qid 0 reason: invalid tx desc: addr 0 len=
+ 4097 options 0
+>
+> It was decided to use a single event 'xsk_packet_drop' to capture these t=
+hree
+> drop types. This means that for some of them, there is some redundant inf=
+ormation
+> in the trace marked as 'not_used'. An alternative to this would be to int=
+roduce 3
+> separate event types under xsk, each with their own appropriate trace for=
+mat.
+> Suggestions are welcome on which approach would be better to take.
+>
+> The event can be monitored using perf:
+> perf stat -a -e xsk:xsk_packet_drop
+>
+> A selftest is added for each drop type. These tests provide the condition=
+s to
+> trigger the traces and ensure that the appropriate traces are generated.
 
-> But if we are talking about copying field values in general, then
-> you'll need to handle enums, struct/union, etc, no? If int/char[] is
-> supported (I probably missed that it is), that might be the only
-> things you'd need to support. So for non function pointers, I'd just
-> enforce zeroes.
-Sure, we can reject everything else for non zero in libbpf.
-I think we can use a different patch set for that?
+So what you have done now is to remove all the trace points that
+provided no added information on top of the stats counters. The ones
+you have left, provide extra information. The two  XSK_TRACE_INVALID_*
+points provide the reason why the descriptor was dropped and
+XSK_TRACE_DROP_PKT_TOO_BIG provides the size of the packet that was
+dropped.
+
+However, the XSK_TRACE_INVALID checks could be performed from user
+space and the same data could be printed out from there. A developer
+could add this, or we could have a verification mode in the ring
+access functions in libbpf that could be turned on by the developer if
+he sees the error counters in the kernel being increased. That only
+leaves us with XSK_TRACE_DROP_PKT_TOO_BIG which cannot be tested by
+user space since the ingress packet is being dropped by the kernel.
+But this is unfortunately not enough to warrant this trace
+infrastructure on its own, so I think we should drop this patch set.
+
+But I would really like to salvage all your tests, because they are
+needed. Instead of verifying the trace, could you please verify the
+stats counters that are already there? A lot of your code will be
+applicable for that case too. So my suggestion is that you drop this
+patch set and  produce a new one that only focuses on selftests for
+the XDP_STATISTICS getsockopt. You can add some of the tests you had
+in your v2. What do you think?
+
+Thank you.
+
+> v4->v5:
+> * Removed whitespace and renamed struct name in if_xdp.h as suggested by =
+Song.
+>
+> v3->v4:
+> * Fixed selftest commits with correct logs
+> * Fixed warnings reported by W=3D1 build: trace argument types and print =
+formatting
+>
+> v2->v3:
+> * Removed some traces which traced events which were not technically drop=
+s eg.
+> when the rxq is full.
+> * Introduced traces for descriptor validation on RX and TX and selftests =
+for both
+>
+> v1->v2:
+> * Rebase on top of Bj=C3=B6rn's cleanup series.
+> * Fixed packet count for trace tests which don't need EOT frame.
+>
+> This series applies on commit 23a2d70c7a2f28eb1a8f6bc19d68d23968cad0ce
+>
+> Ciara Loftus (6):
+>   xsk: add tracepoints for packet drops
+>   selftests/bpf: restructure setting the packet count
+>   selftests/bpf: add framework for xsk selftests
+>   selftests/bpf: XSK_TRACE_DROP_PKT_TOO_BIG test
+>   selftests/bpf: XSK_TRACE_INVALID_FILLADDR test
+>   selftests/bpf: XSK_TRACE_INVALID_DESC_TX test
+>
+>  MAINTAINERS                                |   1 +
+>  include/linux/bpf_trace.h                  |   1 +
+>  include/trace/events/xsk.h                 |  71 +++++++
+>  include/uapi/linux/if_xdp.h                |   6 +
+>  kernel/bpf/core.c                          |   1 +
+>  net/xdp/xsk.c                              |   7 +-
+>  net/xdp/xsk_buff_pool.c                    |   3 +
+>  net/xdp/xsk_queue.h                        |   4 +
+>  tools/include/uapi/linux/if_xdp.h          |   6 +
+>  tools/testing/selftests/bpf/test_xsk.sh    |  90 ++++++++-
+>  tools/testing/selftests/bpf/xdpxceiver.c   | 206 +++++++++++++++++++--
+>  tools/testing/selftests/bpf/xdpxceiver.h   |   9 +
+>  tools/testing/selftests/bpf/xsk_prereqs.sh |   3 +-
+>  13 files changed, 379 insertions(+), 29 deletions(-)
+>  create mode 100644 include/trace/events/xsk.h
+>
+> --
+> 2.17.1
+>
