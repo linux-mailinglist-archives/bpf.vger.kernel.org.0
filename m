@@ -2,92 +2,82 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C93318B19
-	for <lists+bpf@lfdr.de>; Thu, 11 Feb 2021 13:48:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEB32318B7A
+	for <lists+bpf@lfdr.de>; Thu, 11 Feb 2021 14:05:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231321AbhBKMoy convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+bpf@lfdr.de>); Thu, 11 Feb 2021 07:44:54 -0500
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:50944 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231401AbhBKMlJ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 11 Feb 2021 07:41:09 -0500
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-396-GOMo411QNbWKd0AdzePMTQ-1; Thu, 11 Feb 2021 07:40:11 -0500
-X-MC-Unique: GOMo411QNbWKd0AdzePMTQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 13A59107ACC7;
-        Thu, 11 Feb 2021 12:40:09 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.40.195.165])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B7D9760BF1;
-        Thu, 11 Feb 2021 12:40:05 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org
-Subject: [PATCH bpf-next] kbuild: Do not clean resolve_btfids if the output does not exist
-Date:   Thu, 11 Feb 2021 13:40:04 +0100
-Message-Id: <20210211124004.1144344-1-jolsa@kernel.org>
+        id S231806AbhBKNEg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Feb 2021 08:04:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58646 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231694AbhBKNCW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Feb 2021 08:02:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7399A64E8A;
+        Thu, 11 Feb 2021 13:01:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613048471;
+        bh=zS4avv2o1APlIXmAq0+u1+rFzMMY8p1oVsIzafSjaY4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OV3MXdXHDQQhlnxRu9TUGwa3ZICviaa6YQ1SuXl6y5sa0R+buELx254q5rqFBPocZ
+         Q7SybenYQ/AX4Okt7UJJ4/G66YyZZ+LdpDQfJFNUpW1+OTW/tDdigDWizQs1kJR8UL
+         ecv3VFABzKlGidLPTdPyWfnH02nsfXI7wxxTliglst3nC0pvFjE1CTzh93l/zm+zdw
+         cMTMQ6ig1p38GdVrRGzCJmCglkEP19g0unAnl/1Bnh+liKexSbxkp3rfSzDSQOX4Lw
+         h++9QGjCK5lH80auO4yIsp5q5JrTw22O629ZORdGd4DWW2XkPN5MJAO8UCOo1uH2fX
+         kHu5jAnq0N/Jw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 316B340513; Thu, 11 Feb 2021 10:01:09 -0300 (-03)
+Date:   Thu, 11 Feb 2021 10:01:09 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Bill Wendling <morbo@google.com>, dwarves@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Subject: Re: [PATCH] dwarf_loader: use a better hashing function
+Message-ID: <20210211130109.GD1131885@kernel.org>
+References: <20210210232327.1965876-1-morbo@google.com>
+ <CAEf4BzYrWe4N28JjM6na=sNvq5214zs5yHra_fCuE1KA24KQ0A@mail.gmail.com>
+ <CAGG=3QW0zuXUcpkcZqnaZS77EABEshhPtUCTr71dDDMuL1oMZQ@mail.gmail.com>
+ <CAEf4Bzap_SYhtQdLF8bMwVeag=8CGqpcnRFb=MtZX7CB7FwSYQ@mail.gmail.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=WINDOWS-1252
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4Bzap_SYhtQdLF8bMwVeag=8CGqpcnRFb=MtZX7CB7FwSYQ@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Nathan reported issue with cleaning empty build directory:
+Em Wed, Feb 10, 2021 at 05:31:48PM -0800, Andrii Nakryiko escreveu:
+> On Wed, Feb 10, 2021 at 5:24 PM Bill Wendling <morbo@google.com> wrote:
+> > On Wed, Feb 10, 2021 at 4:00 PM Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> > > On Wed, Feb 10, 2021 at 3:25 PM Bill Wendling <morbo@google.com> wrote:
+> > > > This hashing function[1] produces better hash table bucket
+> > > > distributions. The original hashing function always produced zeros in
+> > > > the three least significant bits.
 
-  $ make -s O=build distclean
-  ../../scripts/Makefile.include:4: *** \
-  O=/ho...build/tools/bpf/resolve_btfids does not exist.  Stop.
+> > > > The new hashing funciton gives a modest performance boost.
 
-The problem that tools scripts require existing output
-directory, otherwise it fails.
+> > > >       Original      New
+> > > >        0:11.41       0:11.38
+> > > >        0:11.36       0:11.34
+> > > >        0:11.35       0:11.26
+> > > >       -----------------------
+> > > >   Avg: 0:11.373      0:11.327
 
-Adding check around the resolve_btfids clean target to
-ensure the output directory is in place.
+> > > > for a performance improvement of 0.4%.
 
-Tested-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- Makefile | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+> > > > [1] From Numerical Recipes, 3rd Ed. 7.1.4 Random Hashes and Random Bytes
 
-diff --git a/Makefile b/Makefile
-index 159d9592b587..b6fa039c18b8 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1088,8 +1088,14 @@ endif
- 
- PHONY += resolve_btfids_clean
- 
-+resolve_btfids_O = $(abspath $(objtree))/tools/bpf/resolve_btfids
-+
-+# tools/bpf/resolve_btfids directory might not exist
-+# in output directory, skip its clean in that case
- resolve_btfids_clean:
--	$(Q)$(MAKE) -sC $(srctree)/tools/bpf/resolve_btfids O=$(abspath $(objtree))/tools/bpf/resolve_btfids clean
-+ifneq ($(wildcard $(resolve_btfids_O)),)
-+	$(Q)$(MAKE) -sC $(srctree)/tools/bpf/resolve_btfids O=$(resolve_btfids_O) clean
-+endif
- 
- ifdef CONFIG_BPF
- ifdef CONFIG_DEBUG_INFO_BTF
--- 
-2.29.2
+> > > Can you please also test with the one libbpf uses internally:
 
+> > > return (val * 11400714819323198485llu) >> (64 - bits);
+
+> > > ?
+
+> > It's giving me a running time of ~11.11s, which is even better. Would
+> > you like me to submit a patch?
+
+> faster is better, so yeah, why not? :)
+
+Yeah, I agree, faster is better, please make it so :-)
+
+- Arnaldo
