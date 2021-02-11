@@ -2,123 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA3F0319326
-	for <lists+bpf@lfdr.de>; Thu, 11 Feb 2021 20:32:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07C75319333
+	for <lists+bpf@lfdr.de>; Thu, 11 Feb 2021 20:37:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230439AbhBKTcL (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Feb 2021 14:32:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230436AbhBKTcK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Feb 2021 14:32:10 -0500
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D08C0613D6;
-        Thu, 11 Feb 2021 11:31:30 -0800 (PST)
-Received: by mail-yb1-xb2e.google.com with SMTP id p186so6746222ybg.2;
-        Thu, 11 Feb 2021 11:31:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B2hqDBYN7cQp7+g4S9dE/2ZF4z47f6o1qL/EGha7wOU=;
-        b=uVhId0RBVVZBUZ1tvS4fZPBSDZuNAmO6t3ieIx5KdOQxjORG4DjfzVRYi/O/DsMiKa
-         KGo+eoduaecDYzAer2tRaDe0QT58Iw2ZHCoWD5a4Jd9D1X5Z2EXoXlk2KvRoG9tHzAfQ
-         GqIvinB9k6RPxjxPS1h27aFiKkMyvjB3sTJTu/EGzB5VPHFvnXq2Bemndp1gyr6nMgZR
-         K3u6CjRLw4oPMscShwUh4e6Y1PhAj5jzLHOdRyYMA0LkAlGz/F3dawGB4IbmRj83sE+z
-         7mARDq/uaTp7HLFYd4yke+qi80Po28FerC/3+7pY7gpx8/B1zj2/eELPNYd9+goPFZX4
-         w+LQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B2hqDBYN7cQp7+g4S9dE/2ZF4z47f6o1qL/EGha7wOU=;
-        b=ZRTQU2HmehU5p3kAaobm7wDQBAHKkmM1qkxlUiwWFQE+as0W6thZWr6TJKrA6fnSjf
-         QJOKkFMZsPwKH7AirWZoKqPzRh3XIQ/pRlJPxapJZaOO80jkOd0fyw0MMHkNa6tFIpul
-         Yz/XEigtNMomevMGusWYCy4vXPQwDAcjtkkyiUVIwsPdT+0DCRv5s4y1A2JeJLJ96mBZ
-         HlLw/hVvL4uRMl5qYqtGc3im1rCo4RLXoVMFwkVZqm6+SrIUjdThkkDYi4KpA6Vg4yan
-         iR6HUnUE4cd9SJuNm0c0wgTjTaHQaSjjSahfTmlyv1sTyJcgY29HHvklN99ONejc9nO0
-         5TAA==
-X-Gm-Message-State: AOAM532b2VyRgULuGofCPsm/7MeeyFtkCrWZVrrvl/mUlthCm9Ka2b9K
-        nCQCXqCaBXtLq6/TpKQdW8OT84G3f9dA7Oevb9RhbvZjJLw=
-X-Google-Smtp-Source: ABdhPJy78OQm4nyMwLkArXdnJ8o62AmyO81Sr2NdyRnwWmktcXYQZew7pk0Yv4UbrTMOgUCxcsakkmJPFvbIUuEhtWY=
-X-Received: by 2002:a25:3805:: with SMTP id f5mr13518485yba.27.1613071889515;
- Thu, 11 Feb 2021 11:31:29 -0800 (PST)
+        id S229705AbhBKThT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Feb 2021 14:37:19 -0500
+Received: from mail.efficios.com ([167.114.26.124]:58698 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230050AbhBKThT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Feb 2021 14:37:19 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id A7F2C311016;
+        Thu, 11 Feb 2021 14:36:37 -0500 (EST)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 7eMdqTb-xpIR; Thu, 11 Feb 2021 14:36:37 -0500 (EST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 5519E31108D;
+        Thu, 11 Feb 2021 14:36:37 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 5519E31108D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1613072197;
+        bh=jJjUBAbEcdGN3E4oDebELKmHNg8R9P6mQJ6jT1OOAUc=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=AMyB5eBfwUD6WCZ3wC3Wtn70iAPVkcMiiKow/De+yEd7A4IZfal4kBJ8Ha3to9LkW
+         JTVCfA4faSEEruzzs50B5xl137PhwJddpW+oBHOUx4jVr3JiPPluInxh4BAJWXgR0N
+         2sJmdQUW/xt1Sekqd9R+wMHPTaDRxNoh8subWKY6ZLeo50pcC8Pj65ss9DHzYWjcPT
+         qsOpxuYDIycphRUK9jKvH5o5AF+Hqf4Iu6bpaxlAZDTcQ+5kbrrYYVRbzZlO35/Y4G
+         r0EA8cy05xKMGhwL4HhS7ZPi/FXE74Ta+r6GTyJW7KPqKo7dNx9mrPKnIOwIQS63MW
+         IV7Rspa66m4nA==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id gx1bk8xZqs3m; Thu, 11 Feb 2021 14:36:37 -0500 (EST)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 40FE8310D66;
+        Thu, 11 Feb 2021 14:36:37 -0500 (EST)
+Date:   Thu, 11 Feb 2021 14:36:37 -0500 (EST)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Michael Jeanson <mjeanson@efficios.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>, paulmck <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, acme <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        bpf <bpf@vger.kernel.org>
+Message-ID: <1087071545.17266.1613072197171.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20201028212350.jj4mbnbk6hdcbymo@ast-mbp.dhcp.thefacebook.com>
+References: <20201023195352.26269-1-mjeanson@efficios.com> <20201023195352.26269-2-mjeanson@efficios.com> <20201026224301.gi4bakmj3pov5zyu@ast-mbp.dhcp.thefacebook.com> <1631556114.38532.1603805828748.JavaMail.zimbra@efficios.com> <20201028212350.jj4mbnbk6hdcbymo@ast-mbp.dhcp.thefacebook.com>
+Subject: Re: [RFC PATCH 1/6] tracing: introduce sleepable tracepoints
 MIME-Version: 1.0
-References: <20210209193105.1752743-1-kafai@fb.com> <20210209193112.1752976-1-kafai@fb.com>
- <CAEf4BzbZmmezSxYLCOdeeA4zW+vdDvQH57wQ-qpFSKiMcE1tVw@mail.gmail.com>
- <20210210211735.4snmhc7gofo6zrp5@kafai-mbp.dhcp.thefacebook.com>
- <CAEf4BzbhBng6k5e_=p0+mFSpQS7=BM_ute9eskViw-VCMTcYYA@mail.gmail.com>
- <20210211015510.zd7tn6efiimfel3v@kafai-mbp.dhcp.thefacebook.com>
- <CAEf4Bza_cNDTuu8jQ3K4qeb3e_nMEasmGqZqePy4B=XJqyXuMg@mail.gmail.com> <20210211024201.3uz4yhxfqdzhqa35@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20210211024201.3uz4yhxfqdzhqa35@kafai-mbp.dhcp.thefacebook.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 11 Feb 2021 11:31:18 -0800
-Message-ID: <CAEf4Bzbw7JT8n1j1hCfH2Z+LWQY=w3fGrXNE4He3LR_X_5qsUw@mail.gmail.com>
-Subject: Re: [PATCH bpf 2/2] bpf: selftests: Add non function pointer test to struct_ops
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Networking <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF85 (Linux)/8.8.15_GA_3996)
+Thread-Topic: tracing: introduce sleepable tracepoints
+Thread-Index: g60dIBLtDp5Cx+xLhMNhEnQdk8O8Vg==
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 6:42 PM Martin KaFai Lau <kafai@fb.com> wrote:
->
-> On Wed, Feb 10, 2021 at 06:07:04PM -0800, Andrii Nakryiko wrote:
-> > On Wed, Feb 10, 2021 at 5:55 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> > >
-> > > On Wed, Feb 10, 2021 at 02:54:40PM -0800, Andrii Nakryiko wrote:
-> > > > On Wed, Feb 10, 2021 at 1:17 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> > > > >
-> > > > > On Wed, Feb 10, 2021 at 12:27:38PM -0800, Andrii Nakryiko wrote:
-> > > > > > On Tue, Feb 9, 2021 at 12:11 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> > > > > > >
-> > > > > > > This patch adds a "void *owner" member.  The existing
-> > > > > > > bpf_tcp_ca test will ensure the bpf_cubic.o and bpf_dctcp.o
-> > > > > > > can be loaded.
-> > > > > > >
-> > > > > > > Signed-off-by: Martin KaFai Lau <kafai@fb.com>
-> > > > > > > ---
-> > > > > >
-> > > > > > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> > > > > >
-> > > > > > What will happen if BPF code initializes such non-func ptr member?
-> > > > > > Will libbpf complain or just ignore those values? Ignoring initialized
-> > > > > > members isn't great.
-> > > > > The latter. libbpf will ignore non-func ptr member.  The non-func ptr
-> > > > > member stays zero when it is passed to the kernel.
-> > > > >
-> > > > > libbpf can be changed to copy this non-func ptr value.
-> > > > > The kernel will decide what to do with it.  It will
-> > > > > then be consistent with int/array member like ".name"
-> > > > > and ".flags" where the kernel will verify the value.
-> > > > > I can spin v2 to do that.
-> > > >
-> > > > I was thinking about erroring out on non-zero fields, but if you think
-> > > > it's useful to pass through values, it could be done, but will require
-> > > > more and careful code, probably. So, basically, don't feel obligated
-> > > > to do this in this patch set.
-> > > You meant it needs different handling in copying ptr value
-> > > than copying int/char[]?
-> >
-> > Hm.. If we are talking about copying pointer values, then I don't see
-> > how you can provide a valid kernel pointer from the BPF program?...
-> I am thinking the kernel is already rejecting members that is supposed
-> to be zero (e.g. non func ptr here), so there is no need to add codes
-> to libbpf to do this again.
->
-> > But if we are talking about copying field values in general, then
-> > you'll need to handle enums, struct/union, etc, no? If int/char[] is
-> > supported (I probably missed that it is), that might be the only
-> > things you'd need to support. So for non function pointers, I'd just
-> > enforce zeroes.
-> Sure, we can reject everything else for non zero in libbpf.
-> I think we can use a different patch set for that?
+----- On Oct 28, 2020, at 5:23 PM, Alexei Starovoitov alexei.starovoitov@gmail.com wrote:
 
-Sure. My original point was that if someone initialized, say, owner
-field with some meaningless number, it would be nice for libbpf to
-reject this with error instead of ignoring. It's unlikely, though, so
-no big deal.
+> On Tue, Oct 27, 2020 at 09:37:08AM -0400, Mathieu Desnoyers wrote:
+>> 
+>> ----- On Oct 26, 2020, at 6:43 PM, Alexei Starovoitov
+>> alexei.starovoitov@gmail.com wrote:
+>> 
+>> > On Fri, Oct 23, 2020 at 03:53:47PM -0400, Michael Jeanson wrote:
+>> >> -#define __DO_TRACE(tp, proto, args, cond, rcuidle)			\
+>> >> +#define __DO_TRACE(tp, proto, args, cond, rcuidle, tp_flags)		\
+>> >>  	do {								\
+>> >>  		struct tracepoint_func *it_func_ptr;			\
+>> >>  		void *it_func;						\
+>> >>  		void *__data;						\
+>> >>  		int __maybe_unused __idx = 0;				\
+>> >> +		bool maysleep = (tp_flags) & TRACEPOINT_MAYSLEEP;	\
+>> >>  									\
+>> >>  		if (!(cond))						\
+>> >>  			return;						\
+>> >> @@ -170,8 +178,13 @@ static inline struct tracepoint
+>> >> *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>> >>  		/* srcu can't be used from NMI */			\
+>> >>  		WARN_ON_ONCE(rcuidle && in_nmi());			\
+>> >>  									\
+>> >> -		/* keep srcu and sched-rcu usage consistent */		\
+>> >> -		preempt_disable_notrace();				\
+>> >> +		if (maysleep) {						\
+>> >> +			might_sleep();					\
+>> > 
+>> > The main purpose of the patch set is to access user memory in tracepoints,
+>> > right?
+>> 
+>> Yes, exactly.
+>> 
+>> > In such case I suggest to use stronger might_fault() here.
+>> > We used might_sleep() in sleepable bpf and it wasn't enough to catch
+>> > a combination where sleepable hook was invoked while mm->mmap_lock was
+>> > taken which may cause a deadlock.
+>> 
+>> Good point! We will do that for the next round.
+>> 
+>> By the way, we named this "sleepable" tracepoint (with flag
+>> TRACEPOINT_MAYSLEEP),
+>> but we are open to a better name. Would TRACEPOINT_MAYFAULT be more descriptive
+>> ?
+>> (a "faultable" tracepoint sounds weird though)
+> 
+> bpf kept 'sleepable' as a name. 'faultable' is too misleading.
+
+We're working on an updated patchset for those "sleepable tracepoints", and considering
+that those are really "tracepoints allowing page faults", I must admit that I am
+uncomfortable with the confusion between "sleep" and "fault" in the naming here.
+
+I am tempted to do the following changes:
+
+- Change name from "sleepable tracepoints" to a better suited "tracepoints allowing page faults",
+- Use might_fault() rather than might_sleep() in __DO_TRACE(), effectively guaranteeing that all
+  probes connecting to a tracepoint which allows page faults can indeed take page faults.
+- Change TRACEPOINT_MAYSLEEP into TRACEPOINT_MAYFAULT.
+
+Any objections ?
+
+Thanks,
+
+Mathieu
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
