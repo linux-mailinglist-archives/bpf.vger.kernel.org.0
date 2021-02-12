@@ -2,112 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E076319AFF
-	for <lists+bpf@lfdr.de>; Fri, 12 Feb 2021 09:03:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E451319BE8
+	for <lists+bpf@lfdr.de>; Fri, 12 Feb 2021 10:33:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229497AbhBLIBw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Feb 2021 03:01:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229598AbhBLIBu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Feb 2021 03:01:50 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 020EFC061574
-        for <bpf@vger.kernel.org>; Fri, 12 Feb 2021 00:01:10 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id g17so6338617ybh.4
-        for <bpf@vger.kernel.org>; Fri, 12 Feb 2021 00:01:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=zXdqgqeTHklZ7KTGuJwW9pxR1YnzWW+n+Qmu5BzDhu4=;
-        b=wT5mACTy/oVsrJi1UF5y1DwMquj2CJuqMvs4P60JKg7/u0YpQZA9cX7drJGNQEV89S
-         AHxbuEQgZNAkcTiz4f0pL4EokmPKMv7ncAvyYycxs0EuqwHnia2OVTzCj1FK8q3gOdyM
-         Bq2G1yxauz0FyEUEKN0xfXMYvkKVMdmg4AsEYH110+3D8p6pELM54XwK/T9dVSq3dRdD
-         EGLXyp7rtGK+LnFN3HWVRBHyzsTq0wHx/Z9CBcaCmQgO64eBUs6NcEs8LqWno9sYIgRs
-         iln7GpIOkDs5kWcgebZ39qGsgCIRpZ1IpvSkSa3P/z7XaM/dLsLl/2ODH1U1dSW/RaA7
-         tUFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=zXdqgqeTHklZ7KTGuJwW9pxR1YnzWW+n+Qmu5BzDhu4=;
-        b=D+QfaaiONCiQiNaKEdZ1rXfFYpLHq2HWCb4hJQ3cSVDD5iCz74WLmvUZZY0YhylNvI
-         ZTIpM++iEFRnwmIpgd30dWFqv5tcwtI8Bz8jhtGshPXLt9J+yXBO1GMNa3wPEKzkJYA0
-         /AvqmlAeSOE5VeBX73pR2Oz4eDTgBXD5HyusSSSowICWYHxaKA7MDUbjst1Pf/aJpwFT
-         Az0kxir3oZ161BhuTDRRUumI12CDkFhvgiyGCyQatqdy7h0v6GJRwx6PuXwc+EeJwoBV
-         Qy1T0iqDR0km47Ljxy4XnA7V/fcE1NrKmn5ZUxNorCo9kNbfuxHok1EGQwj+LyOaxBU2
-         tSDw==
-X-Gm-Message-State: AOAM533vfeIsoEeok2Rea/14KS944mVzyOrfKTRXdDLvQyBnKJomJQwt
-        nFKprN9oZ42XJhojb7Fa2SPoli6W
-X-Google-Smtp-Source: ABdhPJz0bA510VytkRio+NXjxX9p8RPQyTolbyRirlsRjDROxRuIMKDV5HAgSdvkiy8HHVUVGPqcExjkKQ==
-Sender: "morbo via sendgmr" <morbo@fawn.svl.corp.google.com>
-X-Received: from fawn.svl.corp.google.com ([2620:15c:2cd:202:edfe:ab2a:9142:7c33])
- (user=morbo job=sendgmr) by 2002:a25:6d8a:: with SMTP id i132mr2517164ybc.337.1613116869273;
- Fri, 12 Feb 2021 00:01:09 -0800 (PST)
-Date:   Fri, 12 Feb 2021 00:01:04 -0800
-In-Reply-To: <20210210232327.1965876-1-morbo@google.com>
-Message-Id: <20210212080104.2499483-1-morbo@google.com>
-Mime-Version: 1.0
-References: <20210210232327.1965876-1-morbo@google.com>
-X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-Subject: [PATCH v2] dwarf_loader: use a better hashing function
-From:   Bill Wendling <morbo@google.com>
-To:     dwarves@vger.kernel.org, bpf@vger.kernel.org
-Cc:     arnaldo.melo@gmail.com, Bill Wendling <morbo@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S229983AbhBLJc4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Feb 2021 04:32:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44835 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230134AbhBLJcx (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 12 Feb 2021 04:32:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613122286;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fqsCdtA/Qg+W/+yKT3VPOJTrlKvqKYGCCqSKPJdznjo=;
+        b=K/eTiH4Hv5QRalIYSuKPkNSisysnLxFMn3qoMUZxRT7yiuQw2CmlaDKEL2eULkzCWyyOiM
+        WayVYTRw+1V5C0AkYmRvGcV2HRWXQTvl9iDOABc6t7cm0L4KCYTJQ8iz19SI7lbDeUVqng
+        KkWsxylERGuWbkFHpb94Zw2qvF787c0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-313-rzhGTSFdOPuCKcp33Q9j1A-1; Fri, 12 Feb 2021 04:31:24 -0500
+X-MC-Unique: rzhGTSFdOPuCKcp33Q9j1A-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EE1CE1005501;
+        Fri, 12 Feb 2021 09:31:22 +0000 (UTC)
+Received: from astarta.redhat.com (ovpn-112-218.ams2.redhat.com [10.36.112.218])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2045C2A31E;
+        Fri, 12 Feb 2021 09:31:20 +0000 (UTC)
+From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: Re: [PATCH bpf-next] bpf: Clear subreg_def for global function
+ return values
+References: <20210212040408.90109-1-iii@linux.ibm.com>
+Date:   Fri, 12 Feb 2021 11:31:19 +0200
+In-Reply-To: <20210212040408.90109-1-iii@linux.ibm.com> (Ilya Leoshkevich's
+        message of "Fri, 12 Feb 2021 05:04:08 +0100")
+Message-ID: <xunytuqhtyxk.fsf@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This hashing function[1] produces better hash table bucket
-distributions. The original hashing function always produced zeros in
-the three least significant bits. The new hashing function gives a
-modest performance boost:
+Hi, Ilya!
 
-  Original: 0:11.373s
-  New:      0:11.110s
+>>>>> On Fri, 12 Feb 2021 05:04:08 +0100, Ilya Leoshkevich  wrote:
 
-for a performance improvement of ~2%.
+ > test_global_func4 fails on s390 as reported by Yauheni in [1].
+ > The immediate problem is that the zext code includes the instruction,
+ > whose result needs to be zero-extended, into the zero-extension
+ > patchlet, and if this instruction happens to be a branch, then its
+ > delta is not adjusted. As a result, the verifier rejects the program
+ > later.
 
-[1] From the hash function used in libbpf.
+Thank you for addressing that!
 
-Signed-off-by: Bill Wendling <morbo@google.com>
----
- hash.h | 20 +-------------------
- 1 file changed, 1 insertion(+), 19 deletions(-)
+ > However, according to [2], as far as the verifier's algorithm is
+ > concerned and as specified by the insn_no_def() function, branching
+ > insns do not define anything. This includes call insns, even though
+ > one might argue that they define %r0.
 
-diff --git a/hash.h b/hash.h
-index d3aa416..6f952c7 100644
---- a/hash.h
-+++ b/hash.h
-@@ -33,25 +33,7 @@
+I still think that the patching code should be fixed as well,
+even if it's a separate issue.
+
+But I got the attitude.
+
+ > This means that the real problem is that zero extension kicks in at
+ > all. This happens because clear_caller_saved_regs() sets BPF_REG_0's
+ > subreg_def after global function calls. This can be fixed in many
+ > ways; this patch mimics what helper function call handling already
+ > does.
+
+ > [1] https://lore.kernel.org/bpf/20200903140542.156624-1-yauheni.kaliuta@redhat.com/
+ > [2]
+ > https://lore.kernel.org/bpf/CAADnVQ+2RPKcftZw8d+B1UwB35cpBhpF5u3OocNh90D9pETPwg@mail.gmail.com/
+
+ > Fixes: 51c39bb1d5d1 ("bpf: Introduce function-by-function verification")
+ > Reported-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
+ > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+ > ---
+ >  kernel/bpf/verifier.c | 3 ++-
+ >  1 file changed, 2 insertions(+), 1 deletion(-)
+
+ > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+ > index beae700bb56e..183fae996ad0 100644
+ > --- a/kernel/bpf/verifier.c
+ > +++ b/kernel/bpf/verifier.c
+ > @@ -5211,8 +5211,9 @@ static int check_func_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+ >  					subprog);
+ >  			clear_caller_saved_regs(env, caller->regs);
  
- static inline uint64_t hash_64(const uint64_t val, const unsigned int bits)
- {
--	uint64_t hash = val;
--
--	/*  Sigh, gcc can't optimise this alone like it does for 32 bits. */
--	uint64_t n = hash;
--	n <<= 18;
--	hash -= n;
--	n <<= 33;
--	hash -= n;
--	n <<= 3;
--	hash += n;
--	n <<= 3;
--	hash -= n;
--	n <<= 4;
--	hash += n;
--	n <<= 2;
--	hash += n;
--
--	/* High bits are more random, so use them. */
--	return hash >> (64 - bits);
-+	return (val * 11400714819323198485LLU) >> (64 - bits);
- }
+ > -			/* All global functions return SCALAR_VALUE */
+ > +			/* All global functions return a 64-bit SCALAR_VALUE */
+ >  			mark_reg_unknown(env, caller->regs, BPF_REG_0);
+ > +			caller->regs[BPF_REG_0].subreg_def = DEF_NOT_SUBREG;
  
- static inline uint32_t hash_32(uint32_t val, unsigned int bits)
+ >  			/* continue with next insn after call */
+ >  			return 0;
+ > -- 
+
+ > 2.29.2
+
+
 -- 
-2.30.0.478.g8a0d178c01-goog
+WBR,
+Yauheni Kaliuta
 
