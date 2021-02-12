@@ -2,93 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7CB2319EDC
-	for <lists+bpf@lfdr.de>; Fri, 12 Feb 2021 13:43:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26352319FF6
+	for <lists+bpf@lfdr.de>; Fri, 12 Feb 2021 14:38:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231695AbhBLMmj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Feb 2021 07:42:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56620 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231713AbhBLMkf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Feb 2021 07:40:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A5E6860C41;
-        Fri, 12 Feb 2021 12:39:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613133593;
-        bh=1KuuAqnBtSyxF3JZiAL0SdDLRsVF9Rim9RiN+MJxNjg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Fx+Rcss3u7lSPLcFY1KfEunMhoRHtZ1TXAkgZqkq6sV2ZGjQzTybg97UpB6WycZic
-         jhSQBshVAosjEJlTFzdoPa+POYC+uF2C58VTgGskg4B3IB7taAMxkcOgvRJLO+FiCf
-         MB2DNFQpeJ0YEH71OwOvBinFbpldarJCA0Q9UPcA3H3eXFH+R6otx9x0hYIThW1Ql1
-         FYp4A8Zd0P+/E1pe3akbFZ2BZvrAYBJUdr8g4srpck++abIRttlcR2+Z18l09Ot3S8
-         L+8VH/42ZI85nTBIlo7aIqhgWCalisPV+/7uUX1H0X7FKV3ofmc5tR22d5zbD5HtqJ
-         fVODTYrDG8/zw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 9DAB240513; Fri, 12 Feb 2021 09:39:51 -0300 (-03)
-Date:   Fri, 12 Feb 2021 09:39:51 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Bill Wendling <morbo@google.com>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, dwarves@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH v2] dwarf_loader: use a better hashing function
-Message-ID: <20210212123951.GF1398414@kernel.org>
-References: <20210210232327.1965876-1-morbo@google.com>
- <20210212080104.2499483-1-morbo@google.com>
- <20210212123721.GE1398414@kernel.org>
+        id S231347AbhBLNhA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Feb 2021 08:37:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27879 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230360AbhBLNgz (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 12 Feb 2021 08:36:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613136929;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1jHhLaAcfBJzCxQfHqIyt8BMsidiqhhT7lJSyine56A=;
+        b=cUq2utq53ifSG8/ZgOP5GIBOXDYrCbiMIIybgbxoE9zQFVdCmvq8NtiTBc8tG9kdPo0f3/
+        g5iBV9S+HD5gMn4OLPtAx6zeqBOf6lNWXxKEjK0AKour1EFWIttOmjwnZ9vq85dYtcCqP0
+        b+zo2JX7d+oZmZgeylsB5qoDMLnFKKk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-487-UuitoUt1PK-9I8akoSXVmw-1; Fri, 12 Feb 2021 08:35:25 -0500
+X-MC-Unique: UuitoUt1PK-9I8akoSXVmw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 150E4835E3B;
+        Fri, 12 Feb 2021 13:35:23 +0000 (UTC)
+Received: from krava (unknown [10.40.193.141])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 90C1319CB6;
+        Fri, 12 Feb 2021 13:35:19 +0000 (UTC)
+Date:   Fri, 12 Feb 2021 14:35:18 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 4/4] kbuild: Add resolve_btfids clean to root
+ clean target
+Message-ID: <YCaEFgWgNArKfCkQ@krava>
+References: <20210205124020.683286-1-jolsa@kernel.org>
+ <20210205124020.683286-5-jolsa@kernel.org>
+ <20210210174451.GA1943051@ubuntu-m3-large-x86>
+ <CAEf4BzZvz4-STv3OQxyNDiFKkrFM-+GOM-yXURzoDtXiRiuT_g@mail.gmail.com>
+ <20210210180215.GA2374611@ubuntu-m3-large-x86>
+ <YCQmCwBSQuj+bi4q@krava>
+ <CAEf4BzbwwtqerxRrNZ75WLd2aHLdnr7wUrKahfT7_6bjBgJ0xQ@mail.gmail.com>
+ <YCUgUlCDGTS85MCO@krava>
+ <CAK7LNAT8oTvLJ9FRsrRB5GUS2K+y2QY36Wshb9x1YE5d=ZyA5g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210212123721.GE1398414@kernel.org>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <CAK7LNAT8oTvLJ9FRsrRB5GUS2K+y2QY36Wshb9x1YE5d=ZyA5g@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Fri, Feb 12, 2021 at 09:37:22AM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Fri, Feb 12, 2021 at 12:01:04AM -0800, Bill Wendling escreveu:
-> > This hashing function[1] produces better hash table bucket
-> > distributions. The original hashing function always produced zeros in
-> > the three least significant bits. The new hashing function gives a
-> > modest performance boost:
-> 
-> Some tidbits:
-> 
-> You forgot to CC Andrii and also to add this, which I'm doing now:
-> 
-> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> 
-> :-)
+On Fri, Feb 12, 2021 at 12:30:45PM +0900, Masahiro Yamada wrote:
 
-See below the full cset, that will go public after some more tests here.
+SNIP
 
-- Arnaldo
+> 
+> I expected this kind of mess
+> when I saw 33a57ce0a54d498275f432db04850001175dfdfa
+> 
+> 
+> The tools/ directory is a completely different world
+> governed by a different build system
+> (no, not a build system, but a collection of adhoc makefile code)
+> 
+> 
+> All the other programs used during the kernel build
+> are located under scripts/, and can be built with
+> a simple syntax, and cleaned up correctly.
+> It is simple, clean and robust.
+> 
+> objtool is the first alien that opt out Kbuild,
+> and this is the second one.
+> 
+> 
+> It is scary to mix up two different things,
+> which run in different working directories.
 
-commit 9fecc77ed82d429fd3fe49ba275465813228e617 (HEAD -> master)
-Author: Bill Wendling <morbo@google.com>
-Date:   Fri Feb 12 00:01:04 2021 -0800
+would you see any way out? apart from changing resolve_btfids
+to use Kbuild.. there are some dependencies we'd need to change
+as well and they are used by other tools.. probably it'd end up
+with all or nothing scenario
 
-    dwarf_loader: Use a better hashing function, from libbpf
-    
-    This hashing function[1] produces better hash table bucket
-    distributions. The original hashing function always produced zeros in
-    the three least significant bits. The new hashing function gives a
-    modest performance boost:
-    
-      Original: 0:11.373s
-      New:      0:11.110s
-    
-    for a performance improvement of ~2%.
-    
-    [1] From the hash function used in libbpf.
-    
-    Committer notes:
-    
-    Bill found the suboptimality of the hash function being used, Andrii
-    suggested using the libbpf one, which ended up being better.
-    
-    Signed-off-by: Bill Wendling <morbo@google.com>
-    Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-    Cc: bpf@vger.kernel.org
-    Cc: dwarves@vger.kernel.org
-    Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> 
+> See, this is wired up in the top Makefile
+> in an ugly way, and you are struggling
+> in suppressing issues, where you can never
+> do it in the right way.
+
+maybe we could move it out of top makefile into separate one,
+that would handle all the related mess
+
+jirka
 
