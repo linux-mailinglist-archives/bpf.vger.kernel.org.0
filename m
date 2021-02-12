@@ -2,76 +2,94 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 851DF319CFE
-	for <lists+bpf@lfdr.de>; Fri, 12 Feb 2021 12:02:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2274F319E7B
+	for <lists+bpf@lfdr.de>; Fri, 12 Feb 2021 13:38:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230477AbhBLLC0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Feb 2021 06:02:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230399AbhBLLAm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Feb 2021 06:00:42 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D20DFC061756
-        for <bpf@vger.kernel.org>; Fri, 12 Feb 2021 02:59:51 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id j19so12446420lfr.12
-        for <bpf@vger.kernel.org>; Fri, 12 Feb 2021 02:59:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4iJ7UrLQLN4No3RYgCtbCpWKKsSe1h3yHMmFC+swKUY=;
-        b=d1eZenfKTiRbgQJJ6zdV5C0OSq6GTfsNg01uQagm4lF4SB1Be6ClhSNUvePhX/+9FK
-         vBc54GcHwiWzTGhHo+lCLs+BP5M3+LWAV1NClScLT9xrvJgRMzWRn77CL0M1+haPLkCq
-         N4GHs2fZ1pyFWb3ftgNOyJ4VsDmzT7WXgerH8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4iJ7UrLQLN4No3RYgCtbCpWKKsSe1h3yHMmFC+swKUY=;
-        b=X7DYpBEDUHmp/P6MBWwQLYfn9XD3Ofs2V3rQ38tO7l6q470TmA13M+07RdzVRVk54S
-         gg2//3f6iucWAyFeMD6dxiJ6gjsdHKR3TC4iOcY/uNSwTRtGHW/VXHQLZV225ycmtvwF
-         EP3P6fg53eazyi2051xLmmEwecHlCjpuG3gmXHCocmeGalyFo9upcrJ6rAG9TEbbtlJX
-         gKDsnNOKlaqwRIafnd4UQNVWd1VfO9LngUElDndhtBN/WF/FEK8rOzs+Uq7mO4XWSYgS
-         HGaDXf5S6voty/kFtH7Cq0geWzJpSGWgMNX0c0y5AO6B02FFjhk1UxCqoFWIvxsraSyF
-         KD1g==
-X-Gm-Message-State: AOAM532EAZrzZWT+FTfWSYPfxk+JstZ8dexDKP5DsCrZGo1odQmID8GA
-        FItkwYAvh/ycvfIKkuN8Un3Dqcr4g7mPZ8LFDLUh5A==
-X-Google-Smtp-Source: ABdhPJw+Vc1F+sEGJXji5FNptM/paaFzp2SCzk7duc02x9ddP8qenZ6D2heqx+V8E1nXKWtjb9X2DDvWcI80rzHFmrg=
-X-Received: by 2002:ac2:52bc:: with SMTP id r28mr573853lfm.451.1613127590398;
- Fri, 12 Feb 2021 02:59:50 -0800 (PST)
+        id S230336AbhBLMf7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Feb 2021 07:35:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53968 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229965AbhBLMf6 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Feb 2021 07:35:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC0F064DEE;
+        Fri, 12 Feb 2021 12:35:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613133317;
+        bh=PkjiyYDEIIEaUPRoldQ+83sx6Bw5EEIkOQmAxX8EC/c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=F+gSkRdGAno6NoXhrmR/WYXEytwYlMJOGyoTRDR7QkwqlQJKolM9BEDpggi3QkyC3
+         UkGiWMx2z7bdRiD2egr6tEnC0DqVsjgE/ptqAGu4ZAYWyVSyccC1kjSb1KKSbLDTeB
+         BAiqBV0TRKzKJTVOv4uM8aEVIsuSg3LNZs8z+l2vtO7UalxJd7EX8340s1gPi0942T
+         2Ix/99ZfF329/DGmT6ynH06mnwMdEW6aZz6ZbROSXK4jBNtw8sbLgePXsyck+2Feza
+         56/oxdfkaNbZ8YGnu+f0uhAe7G/NeyidzQ1ID6/1USQo+NajlypAR8r7TJaStVSADG
+         YMYr5DhitbIdA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id E99F040513; Fri, 12 Feb 2021 09:35:14 -0300 (-03)
+Date:   Fri, 12 Feb 2021 09:35:14 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Bill Wendling <morbo@google.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Subject: Re: [PATCH] dwarf_loader: use a better hashing function
+Message-ID: <20210212123514.GD1398414@kernel.org>
+References: <20210210232327.1965876-1-morbo@google.com>
+ <CAEf4BzYrWe4N28JjM6na=sNvq5214zs5yHra_fCuE1KA24KQ0A@mail.gmail.com>
+ <CAGG=3QW0zuXUcpkcZqnaZS77EABEshhPtUCTr71dDDMuL1oMZQ@mail.gmail.com>
+ <CAEf4Bzap_SYhtQdLF8bMwVeag=8CGqpcnRFb=MtZX7CB7FwSYQ@mail.gmail.com>
+ <20210211130109.GD1131885@kernel.org>
+ <CAGG=3QWADRX158cM-wMWG4Gf4NxN+bpJTnRNwesV5JPnL9-PWw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210210022136.146528-1-xiyou.wangcong@gmail.com> <20210210022136.146528-6-xiyou.wangcong@gmail.com>
-In-Reply-To: <20210210022136.146528-6-xiyou.wangcong@gmail.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Fri, 12 Feb 2021 10:59:39 +0000
-Message-ID: <CACAyw9_1ETC_-JUb6Z6hjRQGMBDedGDbKRR0jo_Qa+JuJM0uNQ@mail.gmail.com>
-Subject: Re: [Patch bpf-next v2 5/5] sock_map: rename skb_parser and skb_verdict
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        duanxiongchun@bytedance.com, wangdongdong.6@bytedance.com,
-        jiang.wang@bytedance.com, Cong Wang <cong.wang@bytedance.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGG=3QWADRX158cM-wMWG4Gf4NxN+bpJTnRNwesV5JPnL9-PWw@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 10 Feb 2021 at 02:22, Cong Wang <xiyou.wangcong@gmail.com> wrote:
->
-> From: Cong Wang <cong.wang@bytedance.com>
->
-> These two eBPF programs are tied to BPF_SK_SKB_STREAM_PARSER
-> and BPF_SK_SKB_STREAM_VERDICT, rename them to reflect the fact
-> they are only used for TCP. And save the name 'skb_verdict' for
-> general use later.
+Em Thu, Feb 11, 2021 at 10:55:32PM -0800, Bill Wendling escreveu:
+> On Thu, Feb 11, 2021 at 5:01 AM Arnaldo Carvalho de Melo
+> <acme@kernel.org> wrote:
+> >
+> > Em Wed, Feb 10, 2021 at 05:31:48PM -0800, Andrii Nakryiko escreveu:
+> > > On Wed, Feb 10, 2021 at 5:24 PM Bill Wendling <morbo@google.com> wrote:
+> > > > On Wed, Feb 10, 2021 at 4:00 PM Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> > > > > On Wed, Feb 10, 2021 at 3:25 PM Bill Wendling <morbo@google.com> wrote:
+> > > > > > This hashing function[1] produces better hash table bucket
+> > > > > > distributions. The original hashing function always produced zeros in
+> > > > > > the three least significant bits.
+> >
+> > > > > > The new hashing funciton gives a modest performance boost.
+> >
+> > > > > >       Original      New
+> > > > > >        0:11.41       0:11.38
+> > > > > >        0:11.36       0:11.34
+> > > > > >        0:11.35       0:11.26
+> > > > > >       -----------------------
+> > > > > >   Avg: 0:11.373      0:11.327
+> >
+> > > > > > for a performance improvement of 0.4%.
+> >
+> > > > > > [1] From Numerical Recipes, 3rd Ed. 7.1.4 Random Hashes and Random Bytes
+> >
+> > > > > Can you please also test with the one libbpf uses internally:
+> >
+> > > > > return (val * 11400714819323198485llu) >> (64 - bits);
+> >
+> > > > > ?
+> >
+> > > > It's giving me a running time of ~11.11s, which is even better. Would
+> > > > you like me to submit a patch?
+> >
+> > > faster is better, so yeah, why not? :)
+> >
+> > Yeah, I agree, faster is better, please make it so :-)
+> >
+> Your wish is my command! :-) Done.
 
-Reviewed-by: Lorenz Bauer <lmb@cloudflare.com>
+Thanks, looking for the patch and applying!
 
--- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+No go think about something else to make it faster 8-)
 
-www.cloudflare.com
+- Arnaldo
