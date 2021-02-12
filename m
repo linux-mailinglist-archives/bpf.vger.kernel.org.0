@@ -2,114 +2,76 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C4A5319950
-	for <lists+bpf@lfdr.de>; Fri, 12 Feb 2021 05:48:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 404DD3199EC
+	for <lists+bpf@lfdr.de>; Fri, 12 Feb 2021 07:25:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229777AbhBLEsC (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Feb 2021 23:48:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54648 "EHLO
+        id S229675AbhBLGZe (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Feb 2021 01:25:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229617AbhBLEr4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Feb 2021 23:47:56 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93151C061574;
-        Thu, 11 Feb 2021 20:47:16 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id t11so5450750pgu.8;
-        Thu, 11 Feb 2021 20:47:16 -0800 (PST)
+        with ESMTP id S229650AbhBLGZc (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Feb 2021 01:25:32 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B1A3C061574
+        for <bpf@vger.kernel.org>; Thu, 11 Feb 2021 22:24:52 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id e18so10239946lja.12
+        for <bpf@vger.kernel.org>; Thu, 11 Feb 2021 22:24:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qdkQpYGmovlbLm9AjueiZQhJE1B/fzhKTm7VvpE05yU=;
-        b=IWw8PdPLVOs42dU/36xHTH49SKCB/8a/J4SIMQ7yfWRHy+itvKyRi75luKceYVHpbe
-         uaWiv94AqL5RVmKWuQV59fGlRt+6Lxq48RIpi3roRk364wIJTleE811ZG0294XYTo4SR
-         BVDHySQWEXcugFC6i/enHaeRcrwBNPN8OKh5zMMVLmmDx0cspgbwtwjw89SB9ahfDeV3
-         0Z/ns9s4hhGdL3oZOjTkp/nx661zKqpOSkwe8I1AeAaXRFg2meLzkAt8tjdaCNk0OLRW
-         ghKHwbAeFw7Mb1WIetLv1CcrSSVJLHYuuMHceaoAgn0u1GMcPjuyTJiVL/Vdzs53jv6u
-         vAzQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AvyRMHBm9gtXtfvrKVWZYuV4qys6+kM9QiqMsPcCJyU=;
+        b=tATCQlkjRwAG2mWAOoHMat3np5ci1Xy5ytrAq16GOQKTq0H4b02rk1sXWW96TD00ql
+         i3oO1AMhUlsba/jvi4thxu2jV8cgFbv5BOpUnZSbLHsl6WYIJrHnYYceSLtSFoao7zMZ
+         eAmB5jeuOJol2y9CaQjDI4LBpKNmxkL+13Pbh+gpadbuHMqQ3/6FZkTBgldewAFy+kOT
+         mWBrkUN8OO/KtoSXOkfIFRQCh2X6F8UbURN8pu89UdLBxjYuuHm4Fe1mEZWOlUE4nOqH
+         j1FR0t3Vxk8vO87WhbgowNueRQVPnIl6cY/Ep2s4tvw50FRPIEz6JWRVU1Wu0rr/YZLx
+         7LrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qdkQpYGmovlbLm9AjueiZQhJE1B/fzhKTm7VvpE05yU=;
-        b=h3Far7I3L025u6sivxlYM6BhPqD12CSkgstINU51W9w2OlNgfl0S5HUnyY2wtCEWcc
-         gcrMQAyo1TG2yB2wOLsNxoF6J9PBnn4J9496upHhWwAbOOhSg7YmfBhKjGvtAmOAxd67
-         3ZNT6Mip8R5a1LV61ev5uPyuSx5wvbmwBD4YdPTlyIBYoZEedbXWcyGoWTcNPeDOO5Kp
-         4eqGkUic3tmDtj6IOE6+d0Dsok/Z1GYkEUMD9qCqez4AbiE4+I8TFHL4nvgaoqK7uH/R
-         j9hPe17uwM6i8ETjVkgWGyXDWXTnnInlW7m898oOhdiY6l1fm5qNY8mzPAeuiQ6mx7+F
-         bOLg==
-X-Gm-Message-State: AOAM532PGIImPsbUEpC6IEDfTNTu4xivL98JsG78QOJ2N5vbmJwQ/mJd
-        RBgsCgSPlqppG025GqNLU/s=
-X-Google-Smtp-Source: ABdhPJxKpx0BNz43kB6jP006to5mkzB0qD8G6ZTLjuDUPdTSv1dA8UfUvkPAZnHb0TXBS1x09QQlcA==
-X-Received: by 2002:a62:e804:0:b029:1dd:cf18:bdee with SMTP id c4-20020a62e8040000b02901ddcf18bdeemr1444005pfi.63.1613105236077;
-        Thu, 11 Feb 2021 20:47:16 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:31f0])
-        by smtp.gmail.com with ESMTPSA id y20sm7148856pfo.210.2021.02.11.20.47.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Feb 2021 20:47:15 -0800 (PST)
-Date:   Thu, 11 Feb 2021 20:47:13 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org, linux-mm@kvack.org,
-        ast@kernel.org, daniel@iogearbox.net, kernel-team@fb.com,
-        akpm@linux-foundation.org, Yonghong Song <yhs@fb.com>
-Subject: Re: [PATCH v6 bpf-next 1/4] bpf: introduce task_vma bpf_iter
-Message-ID: <20210212044713.ptgvtsnh22vp5axg@ast-mbp.dhcp.thefacebook.com>
-References: <20210212014232.414643-1-songliubraving@fb.com>
- <20210212014232.414643-2-songliubraving@fb.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AvyRMHBm9gtXtfvrKVWZYuV4qys6+kM9QiqMsPcCJyU=;
+        b=adxG+lXu0J32JUgqbOdEyqoFgF9ZzBsKuDfQ/EqII0Lc+vJHo1bVXy0wt0GMQSRvts
+         gsS1pI95rw5ZUdeVcjlYdoqox/QcLgg/qFKUw7/UZt+KsUFHEHwN2Nod0I2aAd7qMw/y
+         uD55Zp/N1p9gpQqnx5Kz6O8qqe6IISIQyil3ltSx7Anfo2PUelCV2Q6oKjic3bRz6JIb
+         Uw6auYKnLGRB32axiU8y6gujWkU5jAFbr8/BYPezlYP48qHBIPJxoM7Kryw1XVWOIadP
+         umhNDX0sF8oEUhT2DFPQeLxplvRKDVUZ0gUOBPgmefKk2XNy/3Tzjm7dfq2UOIWqCfd3
+         H6ew==
+X-Gm-Message-State: AOAM530TsAFmIRcMWuF3ftoIQgA5bKNc7mIF7v7z8gtUmOgRqF4aRx9S
+        ctDB1U9InitAqSd7zKxrleNcFyj0Ar+0C8C9L+4=
+X-Google-Smtp-Source: ABdhPJw/OwK05wZVRujPQ1VM5iq7veXZHQHaWI9fOXM/pnT6zqUNKlfKJ/yyKX0Z6z/SZrlGilAsI5UOYFzfQpRgZJY=
+X-Received: by 2002:a2e:596:: with SMTP id 144mr838537ljf.258.1613111090960;
+ Thu, 11 Feb 2021 22:24:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210212014232.414643-2-songliubraving@fb.com>
+References: <20210210204502.83429-1-iii@linux.ibm.com>
+In-Reply-To: <20210210204502.83429-1-iii@linux.ibm.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 11 Feb 2021 22:24:39 -0800
+Message-ID: <CAADnVQLzyQC4x=yxKDvsdiWHL62BkHZKcYsoiVy-osGmTXP_SQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Fix subreg optimization for BPF_FETCH
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        bpf <bpf@vger.kernel.org>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 05:42:29PM -0800, Song Liu wrote:
-> +static int __task_vma_seq_show(struct seq_file *seq, bool in_stop)
-> +{
-> +	struct bpf_iter_seq_task_vma_info *info = seq->private;
-> +	struct bpf_iter__task_vma ctx;
-> +	struct bpf_iter_meta meta;
-> +	struct bpf_prog *prog;
-> +
-> +	meta.seq = seq;
-> +	prog = bpf_iter_get_info(&meta, in_stop);
-> +	if (!prog)
-> +		return 0;
-> +
-> +	ctx.meta = &meta;
-> +	ctx.task = info->task;
-> +	ctx.vma = info->vma;
-> +	return bpf_iter_run_prog(prog, &ctx);
-> +}
+On Wed, Feb 10, 2021 at 12:45 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+>
+> All 32-bit variants of BPF_FETCH (add, and, or, xor, xchg, cmpxchg)
+> define a 32-bit subreg and thus have zext_dst set. Their encoding,
+> however, uses dst_reg field as a base register, which causes
+> opt_subreg_zext_lo32_rnd_hi32() to zero-extend said base register
+> instead of the one the insn really defines (r0 or src_reg).
+>
+> Fix by properly choosing a register being defined, similar to how
+> check_atomic() already does that.
+>
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 
-That part doesn't match patch 2.
-If it needs to call sleepable prog it should call it differently,
-since bpf_iter_run_prog() is doing rcu_read_lock().
-Try adding the following:
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 845b2168e006..06f65b18bc54 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1159,6 +1159,8 @@ BPF_CALL_3(bpf_d_path, struct path *, path, char *, buf, u32, sz)
-        long len;
-        char *p;
-
-+       might_sleep();
-and you will see a splat from patch 4's task_vma test.
-
-But this might_sleep above is not correct. d_path is not about sleepability.
-It does its locking under rcu_read_lock.
-The bpf_d_path_allowed is confusing, since it checks for lsm sleepable hooks,
-but it's not about sleeping. Those hooks are safe because they don't hold
-any vfs locks. With bpf iterators the situation is the same.
-They all are called from bpf_seq_read. Which runs in user context and
-there are no vfs locks to worry about.
-So it's safe to enable all iterators to access bpf_d_path. No need
-to introduce sleepable iterators.
-The upcoming bpf_for_each_map_elem is kinda an iterator too where
-map elem callback shouldn't be able to call bpf_d_path, but
-it won't have expected_attach_type == BPF_TRACE_ITER, so
-bpf_for_each_map_elem will be fine the way last patches were done.
-So just drop 'prog->aux->sleepable' from patch 2 and delete patch 3.
+Applied. Thanks
