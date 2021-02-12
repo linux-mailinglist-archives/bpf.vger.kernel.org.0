@@ -2,111 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D244C31A6A0
-	for <lists+bpf@lfdr.de>; Fri, 12 Feb 2021 22:17:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C93E931A6A2
+	for <lists+bpf@lfdr.de>; Fri, 12 Feb 2021 22:17:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231289AbhBLVQM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Feb 2021 16:16:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40314 "EHLO
+        id S229497AbhBLVQ7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Feb 2021 16:16:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231200AbhBLVQL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Feb 2021 16:16:11 -0500
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BE8EC061574
-        for <bpf@vger.kernel.org>; Fri, 12 Feb 2021 13:15:31 -0800 (PST)
-Received: by mail-yb1-xb31.google.com with SMTP id k4so798004ybp.6
-        for <bpf@vger.kernel.org>; Fri, 12 Feb 2021 13:15:31 -0800 (PST)
+        with ESMTP id S229583AbhBLVQ5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Feb 2021 16:16:57 -0500
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 699FAC061574
+        for <bpf@vger.kernel.org>; Fri, 12 Feb 2021 13:16:17 -0800 (PST)
+Received: by mail-pg1-x549.google.com with SMTP id p6so735420pgj.11
+        for <bpf@vger.kernel.org>; Fri, 12 Feb 2021 13:16:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=T2NIIJCdgafjz9atc5quiMXbEoxuWSG8948VHKk0SIY=;
-        b=piLHV8rrrm7o2TlPf3cacwyNWf0/xtW4zsPDVaI0HHJ1oXHXvggrRmYb1BCVHfppZP
-         H7++V7v8Cd/kfqoM375hyFnPgbZ/XNTIsRo6unTgSc2PC5R9epWyft6eDDB7q2hpcYOx
-         mMVXJLn8AdR46B/yhMKamRZRVAzSQGWyPRPouDm08RGy6zerRbZdu8m/cYIDxPx9rzM/
-         v0vOSucBhh58s3AevvpTDx6cZWx4tDSO248cKwuoOxe1mFLSkPsP/xLaS0R21By90fJE
-         /sOZ1OT1dYoo/YbiAonOKY5XL04hd7rcE8UovfSUMoQrkac6OF+9VbPGaejTeD6bJtP1
-         v9NQ==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=VOh44KJfmTHWItSbZ6YbzEnX757pkGjSv9K+QdsDUFA=;
+        b=mM46KnR9UD21nsGulWfi58bH2LSH4d7JEw5d7IzN45GZNtkvLhfb1G7qsjJyQ/HXcf
+         CF0atURZNU+WsBH79QVlzMq9F+AFEZW2AmPEOKwiNqLudegkift5o7BkPvStozMFagQ9
+         /vu7hr4lYx3nuJfzuL3/TRIaXeaYcDBb/b1jQkOU9rYb5vbVyEW+kkDequJGiTrgv8AQ
+         7C60tn28Zw9hEwRczuJ43gUUvcpjsh+D7RTqBX89RLx5leSJf5hlH/0+qeH+cSthMC8x
+         oeL+jCP18Ovu5w36gzyGYKTsDolkgTgMAhR+cLMfbDjcc3vniMeMeFkHXzKHa6BDw0F/
+         Lzvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=T2NIIJCdgafjz9atc5quiMXbEoxuWSG8948VHKk0SIY=;
-        b=ue9AGtQiFVbKzA5A1AwOcNceyqMBYZWL3Klbu804rC3pL8HKGPkexeZbjAEgnsV+2v
-         vffnUFcidis/0iWIZ4wd2K+aOJc8xYnM6E8Nd2uvB6vgzydU32DwYIbtz5cLV4f7a/Cn
-         W4UwUycYLY7bxA/Q5nYI5V0HfaO64CJ8+V3XvVsf8XQBHPbDIbzGVqfVzX66UxgU4v/A
-         nKSLZSqDdkk0HfIV3zCtKGoXcFXBO6pXtX195bUlj7CnBH7/dOpq2osTXIaelWXZa3E0
-         LuaNcAANujQPklix6fA/zyaVVOhx1cUs3k2wl5j/2M8vt66tFfj0248ERS+OFoPS2qRm
-         Laww==
-X-Gm-Message-State: AOAM530IWQQJUgWnRb9IYdnlgK9w++Qu4wCJamp1c7suXXWWRXsnzuFG
-        MC/39yUMPuABoV8Qnpk20vigRQMyHtDfxe8v8yc=
-X-Google-Smtp-Source: ABdhPJxf78b3l5mZjYEZmdvPrzqy9I0kxMQEGiVXo1af2fbp65sCVhQ4wN+U7isqmTd8NSf9qA0q76/1jYfTDq1GHQw=
-X-Received: by 2002:a25:f40e:: with SMTP id q14mr6391592ybd.230.1613164530518;
- Fri, 12 Feb 2021 13:15:30 -0800 (PST)
-MIME-Version: 1.0
-References: <20210212205642.620788-1-me@ubique.spb.ru> <20210212205642.620788-5-me@ubique.spb.ru>
-In-Reply-To: <20210212205642.620788-5-me@ubique.spb.ru>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 12 Feb 2021 13:15:19 -0800
-Message-ID: <CAEf4BzYrVCXDSHE=hcZaONnx47Spqu6vypc1qg=Aju5n5HDpHg@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 4/4] selftests/bpf: Add unit tests for
- pointers in global functions
-To:     Dmitrii Banshchikov <me@ubique.spb.ru>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, Andrey Ignatov <rdna@fb.com>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=VOh44KJfmTHWItSbZ6YbzEnX757pkGjSv9K+QdsDUFA=;
+        b=k+gzcmtQ8HXGo33pp4AtQYQq313iS8CG6wfR+Bi67u9S/opTYqSpuiftBzc4SnYKsH
+         M8cLeswI80FGUl6uwM/k/rQ0QBlLkMdyzVDQFdUUtkfw651pidfR5VSywfpwidU5JUHE
+         3oBOCQnbzp3A+1ZbN+fypZQ07KqrQCTkTFaqNO0cc9o6typSv+HrBeWTwwbWI4dE+S+F
+         29nFFMZhhJfUZdTElCw0NQUG9hUa+8ti7HWNRlb/9gjyOazWewhhORklsVisknq2Ujiu
+         TgIKBlsDCOU5esLPqc74w7ajKnrlLhOMjhKO//emSlGrMjxYXoTrwFqgMyDnOykBx0LW
+         WlDQ==
+X-Gm-Message-State: AOAM533p+aZYTw7Dc2fy5RINGnC0CvLSfqWaZXLAI4s5xZlCOE4vE+Gw
+        mUBiJVix5ZLrzoJn0q6fvLiALHfa
+X-Google-Smtp-Source: ABdhPJwjFBYm/SrzWjwdf6KOoyXlDHdExT6QOvlY2l8WLg5cuOgmZ537ZIZ2yxUAmoQWxerAdxvY/ER9eA==
+Sender: "morbo via sendgmr" <morbo@fawn.svl.corp.google.com>
+X-Received: from fawn.svl.corp.google.com ([2620:15c:2cd:202:ed1b:1611:4b90:c2e9])
+ (user=morbo job=sendgmr) by 2002:a17:902:7d8c:b029:e3:1bd0:b20d with SMTP id
+ a12-20020a1709027d8cb02900e31bd0b20dmr4462551plm.63.1613164576881; Fri, 12
+ Feb 2021 13:16:16 -0800 (PST)
+Date:   Fri, 12 Feb 2021 13:16:06 -0800
+Message-Id: <20210212211607.2890660-1-morbo@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
+Subject: [RFC 0/1] Combining CUs into a single hash table
+From:   Bill Wendling <morbo@google.com>
+To:     dwarves@vger.kernel.org, bpf@vger.kernel.org
+Cc:     arnaldo.melo@gmail.com, Bill Wendling <morbo@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 12:57 PM Dmitrii Banshchikov <me@ubique.spb.ru> wrote:
->
-> test_global_func9  - check valid pointer's scenarios
-> test_global_func10 - check that a smaller type cannot be passed as a
->                      larger one
-> test_global_func11 - check that CTX pointer cannot be passed
-> test_global_func12 - check access to a null pointer
-> test_global_func13 - check access to an arbitrary pointer value
-> test_global_func14 - check that an opaque pointer cannot be passed
-> test_global_func15 - check that a variable has an unknown value after
->                      it was passed to a global function by pointer
-> test_global_func16 - check access to uninitialized stack memory
->
-> test_global_func_args - check read and write operations through a pointer
->
-> Signed-off-by: Dmitrii Banshchikov <me@ubique.spb.ru>
-> ---
+Hey gang,
 
-LGTM.
+I would like your feedback on this patch.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+This patch creates one hash table that all CUs share. The impetus for this
+patch is to support clang's LTO (Link-Time Optimizations). Currently, pahole
+can't handle the DWARF data that clang produces, because the CUs may refer to
+tags in other CUs (all of the code having been squozen together).
 
->  .../bpf/prog_tests/global_func_args.c         |  60 ++++++++
->  .../bpf/prog_tests/test_global_funcs.c        |   8 ++
->  .../selftests/bpf/progs/test_global_func10.c  |  29 ++++
->  .../selftests/bpf/progs/test_global_func11.c  |  19 +++
->  .../selftests/bpf/progs/test_global_func12.c  |  21 +++
->  .../selftests/bpf/progs/test_global_func13.c  |  24 ++++
->  .../selftests/bpf/progs/test_global_func14.c  |  21 +++
->  .../selftests/bpf/progs/test_global_func15.c  |  22 +++
->  .../selftests/bpf/progs/test_global_func16.c  |  22 +++
->  .../selftests/bpf/progs/test_global_func9.c   | 132 ++++++++++++++++++
->  .../bpf/progs/test_global_func_args.c         |  91 ++++++++++++
->  11 files changed, 449 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/global_func_args.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_global_func10.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_global_func11.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_global_func12.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_global_func13.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_global_func14.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_global_func15.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_global_func16.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_global_func9.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_global_func_args.c
->
+One solution I found is to process the CUs in two steps:
 
-[...]
+  1. add the CUs into a single hash table, and
+  2. perform the recoding and finalization steps in a a separate step.
+
+The issue I'm facing with this patch is that it balloons the runtime from
+~11.11s to ~14.27s. It looks like the underlying cause is that some (but not
+all) hash buckets have thousands of entries each. I've bumped up the
+HASHTAGS__BITS from 15 to 16, which helped a little. Bumping it up to 17 or
+above causes a failure.
+
+A couple of things I thought of may help. We could increase the number of
+buckets, which would help with distribution. As I mentioned though, that seemed
+to cause a failure. Another option is to store the bucket entries in a
+non-list, e.g. binary search tree.
+
+I wanted to get your opinions before I trod down one of these roads.
+
+Share and enjoy!
+-bw
+
+Bill Wendling (1):
+  dwarf_loader: have all CUs use a single hash table
+
+ dwarf_loader.c | 45 +++++++++++++++++++++++++++++++++------------
+ 1 file changed, 33 insertions(+), 12 deletions(-)
+
+-- 
+2.30.0.478.g8a0d178c01-goog
+
