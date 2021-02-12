@@ -2,102 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B77C319A0B
-	for <lists+bpf@lfdr.de>; Fri, 12 Feb 2021 07:56:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2769319A0E
+	for <lists+bpf@lfdr.de>; Fri, 12 Feb 2021 08:00:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229608AbhBLG40 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Feb 2021 01:56:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53926 "EHLO
+        id S229625AbhBLHAH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Feb 2021 02:00:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbhBLG4Z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Feb 2021 01:56:25 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40575C061756
-        for <bpf@vger.kernel.org>; Thu, 11 Feb 2021 22:55:45 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id df22so9591120edb.1
-        for <bpf@vger.kernel.org>; Thu, 11 Feb 2021 22:55:45 -0800 (PST)
+        with ESMTP id S229457AbhBLHAG (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Feb 2021 02:00:06 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B26B9C061756;
+        Thu, 11 Feb 2021 22:59:25 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id o10so6275wmc.1;
+        Thu, 11 Feb 2021 22:59:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=olnuZnPxo4MYBAlR8KF0+6WYlN+urR4E9H67lh4qAVI=;
-        b=C5BUBZEUgbs/W4RtAfm12B2WIOGRdOLOzialVaKG2L5/xC/Bb9/Gnt9SlWMhqkdTed
-         Dv2CI8uRgsBEwPyKDnPnf8iP+Rh6ietTQLILA54EE/wjd1/wSpCjY1bF3mwE6/fusz4F
-         onAJLGLeagX7JfqM6L+6DWE4/7CioKyMfNSwh30DiHK/p6xDbGdYHpOfa27Hv6GwH70J
-         aq+/DCbsvUCH7QE2+OzEzWOZzimG10sSmnUObMwqyVPyh0nVJFMTI/Mm6vgYP9n4d3oe
-         BAke1n3OuDBTG19VBB2FPbEP9Cziqpw4kFE3XGG1muPwmr+jOs9YZA9nqP2pAL3i+ERU
-         wpWQ==
+         :cc:content-transfer-encoding;
+        bh=qWjrK2qjy+Eam4wEkxiLxJ2hyHOwQ+enLr9C2gKFEms=;
+        b=YyjUnQg5+15zlYa6wLuZx3Ltyc/29fnyMbeVyHRSEDn+zawck0u4xLLMnNntLlBkiT
+         PULZGnSgtjcLpRjDLxIyHhryPCp4lT0GUws4C58XYU/DZiRjbtZ9pVt1WBnM6SHQUAFK
+         +cMalAIYebSOF4y+J1JxDDgAZatrtCczpW3rpaRRBSBcAmn/4CdiX5B7EYIO6n91NQ/I
+         mtWZXfPME8txqO3V0HSAtM4gxshZG+/TiyjatE694QTPb90FgBqomhwUvHH58dAPqkRo
+         ux3bT7R1VRa9UqGpajFyfRdZ/gJ5OCZReqHVZTW4W8V7prSGFBJTg36xginqxOkiLFne
+         qMjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=olnuZnPxo4MYBAlR8KF0+6WYlN+urR4E9H67lh4qAVI=;
-        b=EOVx9F6RCdGopWA1yETkFZkcP+w9wqEtOjhaiAgln7BFMCxfgTv2A7ORktarRrNNvn
-         KzyfVy39R6r64bpWjU6/oCKBdyF5HFHqaqGrazWb/CPt3S+ZLF5S0tKd9GeX/7drF4CF
-         HEKb4KRQRPenSIntiFA0NuZ/dPk/rMSkVEMPPTiMiv936eLw0KRogqeV5HuGR5tzxRei
-         9DaPwMkzY1z+Rj4SfKTsXCF009zOw7wxJmTtrrMUz1hUO3HmlJ8e1YvQYouCpgpo2u5v
-         c5ILtkVO/6GHpRm3sKKpAJkjAbgk3SZvHkRZfrUxSTaB8EMiJsLsrAFywgDlqx1/45Nk
-         IVPA==
-X-Gm-Message-State: AOAM5328Eji/k5hBTYwlTBtO9i8ChWhDy+H0I0C5J/qoc2oaAEUNQA0y
-        4+Kq1XuzVHd5ijlGZ8nl8sg+kp9rkmNMcaT3cM6J
-X-Google-Smtp-Source: ABdhPJzuOU6TrLXiB42lmXYbh6K9nprWXZhC4ZgQ4om667c791OsI9hPqH80QjKvl0MbpxMjIMS7kySIWJCesWTCuFI=
-X-Received: by 2002:a05:6402:202d:: with SMTP id ay13mr1803646edb.335.1613112943617;
- Thu, 11 Feb 2021 22:55:43 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=qWjrK2qjy+Eam4wEkxiLxJ2hyHOwQ+enLr9C2gKFEms=;
+        b=cfkhhxE13GeQNZOjxK2HqEO+ZVD9gEZxaZFXSh6CrWuGNqkAntbL5AzmAtmd2vQvFQ
+         hIdqF5k2pPqx6QngHCQDvko2CLtsSwEShVxiYkjSMHwZvZDkmHlHWcFr9OlVtZ5dcjsy
+         Ewo80jAZE67FFzT8X7ZkCLq03BO2ilw147XvTrn0o8a3327N4ddvxM3fd5xsURf/ngW2
+         Z8f/sXtG6ZNfzixt7VIZHQvTnAUjMiR14SkoevS3WW0w63pv4/VplYzYJJB2dZUrCNKo
+         hfUHnLyOPeTy/ekkgvUwQy7wxcDTHn55WEEzYRLfTXyTd85mZolAmfsp+nxhZjnJgakT
+         Woig==
+X-Gm-Message-State: AOAM530FiqZsHuphGrqIPJJZwN39I1LJXxoYhJWP1sr0sufIN3ASTb1K
+        Xix5CzVeF0gdARnttpV3EF4o+lEmDPbaxshnoyc=
+X-Google-Smtp-Source: ABdhPJy5rjUT9frAQwzqR4FrJaz1+56BlfidWQC5XLJE2EZcfjsW5vnIU4E0nW5DJJJ5BAVD6pEx2yHqnL7qzUe5Z7Y=
+X-Received: by 2002:a7b:c150:: with SMTP id z16mr1330747wmi.30.1613113164428;
+ Thu, 11 Feb 2021 22:59:24 -0800 (PST)
 MIME-Version: 1.0
-References: <20210210232327.1965876-1-morbo@google.com> <CAEf4BzYrWe4N28JjM6na=sNvq5214zs5yHra_fCuE1KA24KQ0A@mail.gmail.com>
- <CAGG=3QW0zuXUcpkcZqnaZS77EABEshhPtUCTr71dDDMuL1oMZQ@mail.gmail.com>
- <CAEf4Bzap_SYhtQdLF8bMwVeag=8CGqpcnRFb=MtZX7CB7FwSYQ@mail.gmail.com> <20210211130109.GD1131885@kernel.org>
-In-Reply-To: <20210211130109.GD1131885@kernel.org>
-From:   Bill Wendling <morbo@google.com>
-Date:   Thu, 11 Feb 2021 22:55:32 -0800
-Message-ID: <CAGG=3QWADRX158cM-wMWG4Gf4NxN+bpJTnRNwesV5JPnL9-PWw@mail.gmail.com>
-Subject: Re: [PATCH] dwarf_loader: use a better hashing function
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+References: <20210209221826.922940-1-sdf@google.com>
+In-Reply-To: <20210209221826.922940-1-sdf@google.com>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>
+Date:   Fri, 12 Feb 2021 07:59:12 +0100
+Message-ID: <CAJ+HfNhtZvvqj0pvEu0bysrwAvxngtC3z-2RUpP1HY3iU7gg5w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: use AF_LOCAL instead of AF_INET in xsk.c
+To:     Stanislav Fomichev <sdf@google.com>
+Cc:     Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 5:01 AM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
+On Tue, 9 Feb 2021 at 23:50, Stanislav Fomichev <sdf@google.com> wrote:
 >
-> Em Wed, Feb 10, 2021 at 05:31:48PM -0800, Andrii Nakryiko escreveu:
-> > On Wed, Feb 10, 2021 at 5:24 PM Bill Wendling <morbo@google.com> wrote:
-> > > On Wed, Feb 10, 2021 at 4:00 PM Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> > > > On Wed, Feb 10, 2021 at 3:25 PM Bill Wendling <morbo@google.com> wrote:
-> > > > > This hashing function[1] produces better hash table bucket
-> > > > > distributions. The original hashing function always produced zeros in
-> > > > > the three least significant bits.
+> We have the environments where usage of AF_INET is prohibited
+> (cgroup/sock_create returns EPERM for AF_INET). Let's use
+> AF_LOCAL instead of AF_INET, it should perfectly work with SIOCETHTOOL.
 >
-> > > > > The new hashing funciton gives a modest performance boost.
->
-> > > > >       Original      New
-> > > > >        0:11.41       0:11.38
-> > > > >        0:11.36       0:11.34
-> > > > >        0:11.35       0:11.26
-> > > > >       -----------------------
-> > > > >   Avg: 0:11.373      0:11.327
->
-> > > > > for a performance improvement of 0.4%.
->
-> > > > > [1] From Numerical Recipes, 3rd Ed. 7.1.4 Random Hashes and Random Bytes
->
-> > > > Can you please also test with the one libbpf uses internally:
->
-> > > > return (val * 11400714819323198485llu) >> (64 - bits);
->
-> > > > ?
->
-> > > It's giving me a running time of ~11.11s, which is even better. Would
-> > > you like me to submit a patch?
->
-> > faster is better, so yeah, why not? :)
->
-> Yeah, I agree, faster is better, please make it so :-)
->
-Your wish is my command! :-) Done.
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
 
--bw
+Stanislav, apologies for the delay!
+
+Tested-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+
+
+Bj=C3=B6rn
+
+> ---
+>  tools/lib/bpf/xsk.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/lib/bpf/xsk.c b/tools/lib/bpf/xsk.c
+> index 20500fb1f17e..ffbb588724d8 100644
+> --- a/tools/lib/bpf/xsk.c
+> +++ b/tools/lib/bpf/xsk.c
+> @@ -517,7 +517,7 @@ static int xsk_get_max_queues(struct xsk_socket *xsk)
+>         struct ifreq ifr =3D {};
+>         int fd, err, ret;
+>
+> -       fd =3D socket(AF_INET, SOCK_DGRAM, 0);
+> +       fd =3D socket(AF_LOCAL, SOCK_DGRAM, 0);
+>         if (fd < 0)
+>                 return -errno;
+>
+> --
+> 2.30.0.478.g8a0d178c01-goog
+>
