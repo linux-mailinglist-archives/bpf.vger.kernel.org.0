@@ -2,135 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8133731A6E8
-	for <lists+bpf@lfdr.de>; Fri, 12 Feb 2021 22:30:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EA3431A6FF
+	for <lists+bpf@lfdr.de>; Fri, 12 Feb 2021 22:40:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231352AbhBLVay (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Feb 2021 16:30:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24414 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229796AbhBLVax (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 12 Feb 2021 16:30:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613165367;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0maAmKJ5LszuYenhjRQmxflXMdoznBGG5sX99MzX/5k=;
-        b=Zm9HwdbULUjvZHQxP3t8/GvQ2Na9CPpNMDKbGaX+g+ptmsmDYmWfrMsjSXbpGdgugTvzmL
-        9TxkGva9XmGpxquaOH7hDe4ylC3vuWdmjgqOIVY/ET+IAD3+Hoz8hHFZa59hZ829hy1eQY
-        A4gOyCpBDGvehZkYfAHbrFy+rilLzmU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-472-tN_QltxJMeq54MN7TIBKnw-1; Fri, 12 Feb 2021 16:29:24 -0500
-X-MC-Unique: tN_QltxJMeq54MN7TIBKnw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 838C0801965;
-        Fri, 12 Feb 2021 21:29:22 +0000 (UTC)
-Received: from krava (unknown [10.40.193.141])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 7298250A8B;
-        Fri, 12 Feb 2021 21:29:19 +0000 (UTC)
-Date:   Fri, 12 Feb 2021 22:29:18 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Veronika Kabatova <vkabatov@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>
-Subject: Re: FAILED unresolved symbol vfs_truncate on arm64 with LLVM
-Message-ID: <YCbzLrtukxH3r4Hf@krava>
-References: <CAEf4BzaL=qsSyDc8OxeN4pr7+Lvv+de4f+hM5a56LY8EABAk3w@mail.gmail.com>
- <YCMEucGZVPPQuxWw@krava>
- <CAEf4BzacQrkSMnmeO3sunOs7sfhX1ZoD_Hnk4-cFUK-TpLNqUA@mail.gmail.com>
- <YCPfEzp3ogCBTBaS@krava>
- <CAEf4BzbzquqsA5=_UqDukScuoGLfDhZiiXs_sgYBuNUvTBuV6w@mail.gmail.com>
- <YCQ+d0CVgIclDwng@krava>
- <YCVIWzq0quDQm6bn@krava>
- <CAEf4Bzbt2-Mn4+y0c+sSZWUSrP705c_e3SxedjV_xYGPQL79=w@mail.gmail.com>
- <YCavItKm0mKxcVQD@krava>
- <CAEf4BzaJkfVYLU+zA6kmJRNd5uqGyk2B8G6BT22pKjMt7RqpSg@mail.gmail.com>
+        id S229796AbhBLVjT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Feb 2021 16:39:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229583AbhBLVjS (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Feb 2021 16:39:18 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE432C061574
+        for <bpf@vger.kernel.org>; Fri, 12 Feb 2021 13:38:37 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id d24so1492867lfs.8
+        for <bpf@vger.kernel.org>; Fri, 12 Feb 2021 13:38:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0okPSkJoE/6mP48kEmED6iGlAPtTo2fCziu9rnYfszY=;
+        b=mgm4veUa4QjDrIdG7ENE50pvfeVJwck315u9s1T6F4RokCZfR9PvYcSLrTVAesEif7
+         4BzWR7kb8i8ZYddWVFFPC4tv8yF13L9CDMJXXs38icgqKLbN7vI95D3u87UPh0tPft/B
+         uym6WDB8XOjsnb/1Y4ykfrd1PoNQUoWqePmtG00zAuOsY9CbvaVo40rmbMi6BUR2/HnI
+         sALsMnmZXI9ENNnYQMWHSrXp30u3Uk6GTEcca+sLrx4hrWUJZvxX4KM2VlJnm1cL+rAv
+         uaRa2kJc4XkRK/J67J0uHJ1r1yW0pBO6viC940DdQk7oSD2q9LhwFirHvzX0SRFNFfms
+         sjPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0okPSkJoE/6mP48kEmED6iGlAPtTo2fCziu9rnYfszY=;
+        b=S7QTLuM6QFVr8G7wwwEUSZKJ/2vyqiAnhAdGRax1QV0OSkXXirAj03MWG36OcJhpiF
+         nMhJnZ1jMdljbwdlxK3N0A1kc1ex9LNJN7abmKqkNnTuuhwwi/0LRVzE5nptlJh6EL2e
+         vsM8fPjiPcIaL0e5V/H/WNwtIbsFBtAZvAA1Z8QvHdSO+LHOCItXHtWBn9KLTkFmmmGH
+         x1A31QxbpF4UXo0g+9VbflZDSN8rERtIe2CH2VbpUJn0FO30/AO25f9D4fY/yZlysyKE
+         vUr/8BObNYIji+bgjuXQY/4IhpDbz+p8ZWVndE8Y/UT+aQahWXp0Pv4nPwxLhTZngLGd
+         XAtg==
+X-Gm-Message-State: AOAM5318eEUfYJLRx1Mt4EkIsSz7lP2dAiF76svlKiq5ktiwpgpgb8e8
+        /9KTZUI6tHtiSYGfJVPBmS8pvm3M9EDoztVHDTk=
+X-Google-Smtp-Source: ABdhPJzkCkLGv7QVPX9mRQo0VvL7eLyRwU4bU8cCAxOc9tFIrBPWj6fbWv4Fr2kxIduPf8yqALVIBAEM/TGlhIeFU40=
+X-Received: by 2002:a19:2344:: with SMTP id j65mr2650054lfj.38.1613165916430;
+ Fri, 12 Feb 2021 13:38:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzaJkfVYLU+zA6kmJRNd5uqGyk2B8G6BT22pKjMt7RqpSg@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <20210212005926.2875002-1-yhs@fb.com>
+In-Reply-To: <20210212005926.2875002-1-yhs@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 12 Feb 2021 13:38:25 -0800
+Message-ID: <CAADnVQKJdKto1pTe8gaZnb9gWu=W_snRjgsWJrE+uc8UoPixeA@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: fix an unitialized value in bpf_iter
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>,
+        syzbot+580f4f2a272e452d55cb@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 11:22:41AM -0800, Andrii Nakryiko wrote:
+On Thu, Feb 11, 2021 at 4:59 PM Yonghong Song <yhs@fb.com> wrote:
+>
+> Commit 15d83c4d7cef ("bpf: Allow loading of a bpf_iter program")
+> cached btf_id in struct bpf_iter_target_info so later on
+> if it can be checked cheaply compared to checking registered names.
+>
+> syzbot found a bug that uninitialized value may occur to
+> bpf_iter_target_info->btf_id. This is because we allocated
+> bpf_iter_target_info structure with kmalloc and never initialized
+> field btf_id afterwards. This uninitialized btf_id is typically
+> compared to a u32 bpf program func proto btf_id, and the chance
+> of being equal is extremely slim.
+>
+> This patch fixed the issue by using kzalloc which will also
+> prevent future likely instances due to adding new fields.
+>
+> Reported-by: syzbot+580f4f2a272e452d55cb@syzkaller.appspotmail.com
+> Fixes: 15d83c4d7cef ("bpf: Allow loading of a bpf_iter program")
+> Signed-off-by: Yonghong Song <yhs@fb.com>
 
-SNIP
-
-> > +static int is_ftrace_func(struct elf_function *func, __u64 *addrs,
-> > +                         __u64 count, bool kmod)
-> > +{
-> > +       /*
-> > +        * For vmlinux image both addrs[x] and functions[x]::addr
-> > +        * values are final address and are comparable.
-> > +        *
-> > +        * For kernel module addrs[x] is final address, but
-> > +        * functions[x]::addr is relative address within section
-> > +        * and needs to be relocated by adding sh_addr.
-> > +        */
-> > +       __u64 start = kmod ? func->addr + func->sh_addr : func->addr;
-> > +       __u64 addr, end = func->addr + func->size;
-> > +
-> > +       /*
-> > +        * The invariant here is addr[r] that is the smallest address
-> > +        * that is >= than function start addr. Except the corner case
-> > +        * where there is no such r, but for that we have a final check
-> > +        * in the return.
-> > +        */
-> > +       size_t l = 0, r = count - 1, m;
-> > +
-> > +       /* make sure we don't use invalid r */
-> > +       if (count == 0)
-> > +               return false;
-> > +
-> > +       while (l < r) {
-> > +               m = l + (r - l) / 2;
-> > +               addr = addrs[m];
-> > +
-> > +               if (addr >= start) {
-> > +                       /* we satisfy invariant, so tighten r */
-> > +                       r = m;
-> > +               } else {
-> > +                       /* m is not good enough as l, maybe m + 1 will be */
-> > +                       l = m + 1;
-> > +               }
-> > +       }
-> > +
-> > +       return start <= addrs[r] && addrs[r] < end;
-> > +}
-> > +
-> >  static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
-> >  {
-> >         __u64 *addrs, count, i;
-> > @@ -267,7 +321,7 @@ static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
-> >         }
-> >
-> >         qsort(addrs, count, sizeof(addrs[0]), addrs_cmp);
-> > -       qsort(functions, functions_cnt, sizeof(functions[0]), functions_cmp);
-> > +       qsort(functions, functions_cnt, sizeof(functions[0]), functions_cmp_addr);
-> 
-> All looks good except this. We don't rely on functions being sorted in
-> ascending start addr order, do we? If not, just drop this, no need to
-> slow down the process.
-
-right, it's not needed when we use st_size for function size
-
-thanks,
-jirka
-
+Though it's a fix it's too late in the cycle.
+I've applied to bpf-next.
