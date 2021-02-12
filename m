@@ -2,54 +2,56 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C93E931A6A2
-	for <lists+bpf@lfdr.de>; Fri, 12 Feb 2021 22:17:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 454EF31A6A3
+	for <lists+bpf@lfdr.de>; Fri, 12 Feb 2021 22:17:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229497AbhBLVQ7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Feb 2021 16:16:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40476 "EHLO
+        id S229796AbhBLVRE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Feb 2021 16:17:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbhBLVQ5 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Feb 2021 16:16:57 -0500
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 699FAC061574
-        for <bpf@vger.kernel.org>; Fri, 12 Feb 2021 13:16:17 -0800 (PST)
-Received: by mail-pg1-x549.google.com with SMTP id p6so735420pgj.11
-        for <bpf@vger.kernel.org>; Fri, 12 Feb 2021 13:16:17 -0800 (PST)
+        with ESMTP id S229583AbhBLVRD (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Feb 2021 16:17:03 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B11A3C0613D6
+        for <bpf@vger.kernel.org>; Fri, 12 Feb 2021 13:16:22 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id 127so899656ybc.19
+        for <bpf@vger.kernel.org>; Fri, 12 Feb 2021 13:16:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=VOh44KJfmTHWItSbZ6YbzEnX757pkGjSv9K+QdsDUFA=;
-        b=mM46KnR9UD21nsGulWfi58bH2LSH4d7JEw5d7IzN45GZNtkvLhfb1G7qsjJyQ/HXcf
-         CF0atURZNU+WsBH79QVlzMq9F+AFEZW2AmPEOKwiNqLudegkift5o7BkPvStozMFagQ9
-         /vu7hr4lYx3nuJfzuL3/TRIaXeaYcDBb/b1jQkOU9rYb5vbVyEW+kkDequJGiTrgv8AQ
-         7C60tn28Zw9hEwRczuJ43gUUvcpjsh+D7RTqBX89RLx5leSJf5hlH/0+qeH+cSthMC8x
-         oeL+jCP18Ovu5w36gzyGYKTsDolkgTgMAhR+cLMfbDjcc3vniMeMeFkHXzKHa6BDw0F/
-         Lzvw==
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=ZEMW0Z2ejWn7QhiizYeAVctQKIuWplEIADwwg0z3zW4=;
+        b=dLlVaK20xbUOQhgD4S9zcRXRu6cwDybcW7l7MSWDTC4qlXJBZBnvpHN4+vRwv1Znen
+         3lR5c3ZK7rJ3/dN20W8oMuCdO1lE7SRV7E6bCmxai9vNWLrOslhWj0+2bRfcXeD2i4ls
+         QGwYlpBcZy+/Ld6ft0yYQxS5vsNcU1pJqxLz19e1b2AWf+a5EDvTmZR6Ov4OZVc9MI8A
+         /jMrTzurHgZk9PiVO6dvtabEW/piBs0tjSJmA5BbHThr7yjN7HGOU8LhFMLaelPvMGXz
+         6wg+57awmV20LWTCYNTemhDhTmWCPIi4HUjQhqgk8KdY3LNbOwTHTw8bdbT/kQ8E6982
+         mJYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=VOh44KJfmTHWItSbZ6YbzEnX757pkGjSv9K+QdsDUFA=;
-        b=k+gzcmtQ8HXGo33pp4AtQYQq313iS8CG6wfR+Bi67u9S/opTYqSpuiftBzc4SnYKsH
-         M8cLeswI80FGUl6uwM/k/rQ0QBlLkMdyzVDQFdUUtkfw651pidfR5VSywfpwidU5JUHE
-         3oBOCQnbzp3A+1ZbN+fypZQ07KqrQCTkTFaqNO0cc9o6typSv+HrBeWTwwbWI4dE+S+F
-         29nFFMZhhJfUZdTElCw0NQUG9hUa+8ti7HWNRlb/9gjyOazWewhhORklsVisknq2Ujiu
-         TgIKBlsDCOU5esLPqc74w7ajKnrlLhOMjhKO//emSlGrMjxYXoTrwFqgMyDnOykBx0LW
-         WlDQ==
-X-Gm-Message-State: AOAM533p+aZYTw7Dc2fy5RINGnC0CvLSfqWaZXLAI4s5xZlCOE4vE+Gw
-        mUBiJVix5ZLrzoJn0q6fvLiALHfa
-X-Google-Smtp-Source: ABdhPJwjFBYm/SrzWjwdf6KOoyXlDHdExT6QOvlY2l8WLg5cuOgmZ537ZIZ2yxUAmoQWxerAdxvY/ER9eA==
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=ZEMW0Z2ejWn7QhiizYeAVctQKIuWplEIADwwg0z3zW4=;
+        b=qH/P9AatBSTKCYo/x95sMhhil7zFchhPn2MPnRg8gAmYuz8YgFCIm7WdDASxTXEf4x
+         wBi2CHHhF6M+FoJv0p0bdAKWV128+86eQu5nzxf/7gjjukGYVQ80nxrL//Kk+EpPzLYO
+         Px5quaBmJCw0EdsgO3OBdCpXXcqCk2PkHIJ2GdfNgIb9EpwAkLB2951kY7NIDM3dqvfv
+         csHVC8xsnwQtR7/WGnQITTXpCbHSSAFcgZwcBDcet1cc4PN66jMkAgzwr9pgIGOmer0u
+         fvdiJb4aurF96BpfCN3LgMYDorhbHxq7RSIChMf/eiVKQJkiJ9fVmhZ36hawPjlnxFs1
+         8pxQ==
+X-Gm-Message-State: AOAM531CmCvakgKeW021P+Sy4n+tM/RPskh7sTUdxUeUuGgKipVyxlVn
+        M/RZBV4hENQ3WDjab3ETFujwrcNh
+X-Google-Smtp-Source: ABdhPJx6GM6dIf3SKO0QQJAu4+rc7JMZ4Yv0ppGEbzLIRcfxe/2nkEad17PnW9hAAqbO7BO7Cq6HUuXJ9A==
 Sender: "morbo via sendgmr" <morbo@fawn.svl.corp.google.com>
 X-Received: from fawn.svl.corp.google.com ([2620:15c:2cd:202:ed1b:1611:4b90:c2e9])
- (user=morbo job=sendgmr) by 2002:a17:902:7d8c:b029:e3:1bd0:b20d with SMTP id
- a12-20020a1709027d8cb02900e31bd0b20dmr4462551plm.63.1613164576881; Fri, 12
- Feb 2021 13:16:16 -0800 (PST)
-Date:   Fri, 12 Feb 2021 13:16:06 -0800
-Message-Id: <20210212211607.2890660-1-morbo@google.com>
+ (user=morbo job=sendgmr) by 2002:a25:9a89:: with SMTP id s9mr6499666ybo.407.1613164581980;
+ Fri, 12 Feb 2021 13:16:21 -0800 (PST)
+Date:   Fri, 12 Feb 2021 13:16:07 -0800
+In-Reply-To: <20210212211607.2890660-1-morbo@google.com>
+Message-Id: <20210212211607.2890660-2-morbo@google.com>
 Mime-Version: 1.0
+References: <20210212211607.2890660-1-morbo@google.com>
 X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-Subject: [RFC 0/1] Combining CUs into a single hash table
+Subject: [RFC PATCH 1/1] dwarf_loader: have all CUs use a single hash table
 From:   Bill Wendling <morbo@google.com>
 To:     dwarves@vger.kernel.org, bpf@vger.kernel.org
 Cc:     arnaldo.melo@gmail.com, Bill Wendling <morbo@google.com>
@@ -58,42 +60,110 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hey gang,
+In some instances, e.g. with clang's LTO, a DWARF compilation units may
+reference tags in other CUs. This presents us with a "chicken and egg"
+problem, where in order to properly process on CU we need access to the
+tags in all CUs.
 
-I would like your feedback on this patch.
+This increases the runtime by ~28% (from 11.11s to 14.27s).
 
-This patch creates one hash table that all CUs share. The impetus for this
-patch is to support clang's LTO (Link-Time Optimizations). Currently, pahole
-can't handle the DWARF data that clang produces, because the CUs may refer to
-tags in other CUs (all of the code having been squozen together).
-
-One solution I found is to process the CUs in two steps:
-
-  1. add the CUs into a single hash table, and
-  2. perform the recoding and finalization steps in a a separate step.
-
-The issue I'm facing with this patch is that it balloons the runtime from
-~11.11s to ~14.27s. It looks like the underlying cause is that some (but not
-all) hash buckets have thousands of entries each. I've bumped up the
-HASHTAGS__BITS from 15 to 16, which helped a little. Bumping it up to 17 or
-above causes a failure.
-
-A couple of things I thought of may help. We could increase the number of
-buckets, which would help with distribution. As I mentioned though, that seemed
-to cause a failure. Another option is to store the bucket entries in a
-non-list, e.g. binary search tree.
-
-I wanted to get your opinions before I trod down one of these roads.
-
-Share and enjoy!
--bw
-
-Bill Wendling (1):
-  dwarf_loader: have all CUs use a single hash table
-
+Signed-off-by: Bill Wendling <morbo@google.com>
+---
  dwarf_loader.c | 45 +++++++++++++++++++++++++++++++++------------
  1 file changed, 33 insertions(+), 12 deletions(-)
 
+diff --git a/dwarf_loader.c b/dwarf_loader.c
+index b73d786..2b0d619 100644
+--- a/dwarf_loader.c
++++ b/dwarf_loader.c
+@@ -102,7 +102,7 @@ static void dwarf_tag__set_spec(struct dwarf_tag *dtag, dwarf_off_ref spec)
+ 	*(dwarf_off_ref *)(dtag + 1) = spec;
+ }
+ 
+-#define HASHTAGS__BITS 15
++#define HASHTAGS__BITS 16
+ #define HASHTAGS__SIZE (1UL << HASHTAGS__BITS)
+ 
+ #define obstack_chunk_alloc malloc
+@@ -117,21 +117,42 @@ static void *obstack_zalloc(struct obstack *obstack, size_t size)
+ 	return o;
+ }
+ 
++/* The tags and types hashes used by all "dwarf_cu" objects. */
++struct dwarf_cu_hash {
++	struct hlist_head tags[HASHTAGS__SIZE];
++	struct hlist_head types[HASHTAGS__SIZE];
++};
++
+ struct dwarf_cu {
+-	struct hlist_head hash_tags[HASHTAGS__SIZE];
+-	struct hlist_head hash_types[HASHTAGS__SIZE];
++	struct dwarf_cu_hash *hashes;
+ 	struct obstack obstack;
+ 	struct cu *cu;
+ 	struct dwarf_cu *type_unit;
+ };
+ 
++static struct dwarf_cu_hash *dwarf_cu__init_hashes(void)
++{
++	static struct dwarf_cu_hash *hashes = NULL;
++
++	if (!hashes) {
++		unsigned int i;
++
++		hashes = malloc(sizeof(struct dwarf_cu_hash));
++		if (!hashes)
++			return NULL;
++
++		for (i = 0; i < HASHTAGS__SIZE; ++i) {
++			INIT_HLIST_HEAD(&hashes->tags[i]);
++			INIT_HLIST_HEAD(&hashes->types[i]);
++		}
++	}
++
++	return hashes;
++}
++
+ static void dwarf_cu__init(struct dwarf_cu *dcu)
+ {
+-	unsigned int i;
+-	for (i = 0; i < HASHTAGS__SIZE; ++i) {
+-		INIT_HLIST_HEAD(&dcu->hash_tags[i]);
+-		INIT_HLIST_HEAD(&dcu->hash_types[i]);
+-	}
++	dcu->hashes = dwarf_cu__init_hashes();
+ 	obstack_init(&dcu->obstack);
+ 	dcu->type_unit = NULL;
+ }
+@@ -166,8 +187,8 @@ static void cu__hash(struct cu *cu, struct tag *tag)
+ {
+ 	struct dwarf_cu *dcu = cu->priv;
+ 	struct hlist_head *hashtable = tag__is_tag_type(tag) ?
+-							dcu->hash_types :
+-							dcu->hash_tags;
++							dcu->hashes->types :
++							dcu->hashes->tags;
+ 	hashtags__hash(hashtable, tag->priv);
+ }
+ 
+@@ -179,7 +200,7 @@ static struct dwarf_tag *dwarf_cu__find_tag_by_ref(const struct dwarf_cu *cu,
+ 	if (ref->from_types) {
+ 		return NULL;
+ 	}
+-	return hashtags__find(cu->hash_tags, ref->off);
++	return hashtags__find(cu->hashes->tags, ref->off);
+ }
+ 
+ static struct dwarf_tag *dwarf_cu__find_type_by_ref(const struct dwarf_cu *dcu,
+@@ -193,7 +214,7 @@ static struct dwarf_tag *dwarf_cu__find_type_by_ref(const struct dwarf_cu *dcu,
+ 			return NULL;
+ 		}
+ 	}
+-	return hashtags__find(dcu->hash_types, ref->off);
++	return hashtags__find(dcu->hashes->types, ref->off);
+ }
+ 
+ extern struct strings *strings;
 -- 
 2.30.0.478.g8a0d178c01-goog
 
