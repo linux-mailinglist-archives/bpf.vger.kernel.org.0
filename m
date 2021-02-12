@@ -2,54 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AADB831A695
-	for <lists+bpf@lfdr.de>; Fri, 12 Feb 2021 22:13:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A27F331A697
+	for <lists+bpf@lfdr.de>; Fri, 12 Feb 2021 22:13:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229796AbhBLVM2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Feb 2021 16:12:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39510 "EHLO
+        id S231175AbhBLVNB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Feb 2021 16:13:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbhBLVM1 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Feb 2021 16:12:27 -0500
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B542CC061756
-        for <bpf@vger.kernel.org>; Fri, 12 Feb 2021 13:11:46 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id x19so836718ybe.0
-        for <bpf@vger.kernel.org>; Fri, 12 Feb 2021 13:11:46 -0800 (PST)
+        with ESMTP id S231649AbhBLVM7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Feb 2021 16:12:59 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40221C0613D6
+        for <bpf@vger.kernel.org>; Fri, 12 Feb 2021 13:12:19 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id y128so761003ybf.10
+        for <bpf@vger.kernel.org>; Fri, 12 Feb 2021 13:12:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=HDNsHCLNcl6f7He29ZUqqGi5aU4IJVWHeOC+yIPRSiA=;
-        b=S/dAN9xK/ueOdK6A43w/nehIxsDdFpYNhrApfIYk/hx2AGIWpPx/hscIXvQ3DQLz2y
-         iCXtIwNG0SEp6Aq055aiUaCjmFg7NWOOvmG3kK4ErStSrRHgkOYDUoh+bCd3A/FyAVGB
-         ys5APBsDWpHhQaLVlcGzlK1208v+Yn/aSzDWRb/IAPkDnwkFzJXgUK8Q4LNZCliih8ac
-         5z6oXo5UE5SF0NJSIgwbSYIlodi3ZjCo0OQhcSVBol/W6nok+9HTkJ0yL9UR2wiHOB6+
-         t7+54ID+tIyvsYmDgPd5J2fYkZgKTSFERMSnvuSAZB4H6qH9LDWFU9jf9dg+u+oZFwMM
-         iNuw==
+        bh=B/RmsJFHHYAYVim6DhSGp3u1F15sA1VLLlFl+rVluV4=;
+        b=DQ5o7njBYKi1kOEaF7cwtpNwf46or2pL9rKfxe6FlwmQXXrNYPGySDeVX/zSAbObxJ
+         AYZ04AZzfP/waSaDaCYo0XOrFlVWPHmJ7GpVuPRNAS8/vmJQKrCMZ8Stb686yOlLkETV
+         6RKia5T6KUfrYaKp9KeTPthji8LdVTJMnkQ/Xzc5/NgtQoXX/ily72u+WyRNpX9oQXWN
+         3cdIWCcpHjKJuAXv7B1TDj2DbzzWKg/6qtAS7U1Eu+ngr2qwXRKN89GO4LiJtS5BtOKk
+         xpEMHODPVKAwbIrHR3fuess3TdASO0rbbWQw//LUeF8qXs7UuMMnYWLRa07iBKKtzLy/
+         Jjkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=HDNsHCLNcl6f7He29ZUqqGi5aU4IJVWHeOC+yIPRSiA=;
-        b=ISpxvdncEG6cSAkqeTHjNkaJ9SGps4G3ZUl1M0pkuB+j6SO1jp/hOkxZQXb9TUnJUX
-         TbAfGWkSfblJh6dFtLO4AV0VwoZOasFGzX1v3mg0+8+Ki3G3Nv294Vz0hxddO6wiOiyz
-         GBDda3G5mwuM0dfwcNz5jaY3LIjtBYtq7ycY6WGY+f3rtJISvfxBhtVWAKk4VWhNLQcx
-         8CtkFH8X1HycQonnQi3KtpQGbdx09cZpwRtJYhSXdy0aRP/SMDXAkJtSAvDXfyC6VAAA
-         qK9DJClzuB8Mt5eRjODzCPZTBVTcqiV7EhNZMHlJ9B+4cQRneF77Le4z4k53HEe4G3pu
-         ImxQ==
-X-Gm-Message-State: AOAM532G7N4+3IYMFiWkK31jPbSxa9VMtl1T1QJRoDRy/DpAFPkMRwZv
-        I25YoUcH7khQiz+JnW/GfEyCHo+HkO1VnrK3H81jHrFEHLLnAQ==
-X-Google-Smtp-Source: ABdhPJzFKufp5kV+dIB+mCe6+tTKrMRtZAIWXU4HiXeIpipDYJRfeEaCI8S9TgnktTlifYh4kk67bXMwtCVKZclkr9s=
-X-Received: by 2002:a25:9882:: with SMTP id l2mr6263282ybo.425.1613164306082;
- Fri, 12 Feb 2021 13:11:46 -0800 (PST)
+        bh=B/RmsJFHHYAYVim6DhSGp3u1F15sA1VLLlFl+rVluV4=;
+        b=Z1wvRv6qSDYRlHNtOGmKP8k6dcaSO1dZRS3+yFQ30fEpASKOW8XavtT+SpslN2EdVq
+         7yoFFAOHzwEf1w3CZwWuiAkVjqQRtNVSxnuVA3JtSr1eqxq6Haunj7glLKMeQ6GDs94b
+         g2ahYTEUrF+8wDfrM+7sai0i5qI9VKx2qZHiA1bx/vS3VDBbIRhlVqbzf9yWDJQKgsh9
+         bZpAPG70B+ddpwYsQvYtxMzAfj0cIQJsgMHxyiPyNbW76s3kxXg+0hhNxJM8Kp5K3J5B
+         bvjdGO+QAW4rwIIALgNUFdxm+J7FQNbTjaYHUapoa7kO4kTI8b1GpjdChXr791Ls6unz
+         rFxQ==
+X-Gm-Message-State: AOAM531LsSDXJ9woYUucidIWaOkabV+VGRY8/iUXizS6EboqH+TyirVx
+        b2KDTNjBU9GFSSBTerzr153PtRp4dHoKrgcZkgc=
+X-Google-Smtp-Source: ABdhPJygYBkPKq4hPImPOch4eDsYMTtdXZ9DPC1VtLjphyLL0NJ/fj46/7+gF5wlsFTOMqWZXI91xkgiyxfL9DXSt+0=
+X-Received: by 2002:a25:a183:: with SMTP id a3mr6584541ybi.459.1613164338586;
+ Fri, 12 Feb 2021 13:12:18 -0800 (PST)
 MIME-Version: 1.0
-References: <20210212205642.620788-1-me@ubique.spb.ru> <20210212205642.620788-2-me@ubique.spb.ru>
-In-Reply-To: <20210212205642.620788-2-me@ubique.spb.ru>
+References: <20210212205642.620788-1-me@ubique.spb.ru> <20210212205642.620788-3-me@ubique.spb.ru>
+In-Reply-To: <20210212205642.620788-3-me@ubique.spb.ru>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 12 Feb 2021 13:11:35 -0800
-Message-ID: <CAEf4BzYu1KdwvJkjEj+TRL7BFf_cA_PutqYcsqqf3QmzzTUb9Q@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 1/4] bpf: Rename bpf_reg_state variables
+Date:   Fri, 12 Feb 2021 13:12:07 -0800
+Message-ID: <CAEf4Bzb0_aTVxZ6+RVLNOO4tiFar+rjR104WH_Uhe-N4oajxcw@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 2/4] bpf: Extract nullable reg type conversion
+ into a helper function
 To:     Dmitrii Banshchikov <me@ubique.spb.ru>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -64,20 +65,16 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Fri, Feb 12, 2021 at 12:57 PM Dmitrii Banshchikov <me@ubique.spb.ru> wrote:
 >
-> Using "reg" for an array of bpf_reg_state and "reg[i + 1]" for an
-> individual bpf_reg_state is error-prone and verbose. Use "regs" for the
-> former and "reg" for the latter as other code nearby does.
+> Extract conversion from a register's nullable type to a type with a
+> value. The helper will be used in mark_ptr_not_null_reg().
 >
 > Signed-off-by: Dmitrii Banshchikov <me@ubique.spb.ru>
 > ---
 
-Please carry over Acked-by and Reviewed-by tags next time (unless you
-made substantial changes to the patch)
-
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
->  kernel/bpf/btf.c | 20 ++++++++++++--------
->  1 file changed, 12 insertions(+), 8 deletions(-)
+>  kernel/bpf/verifier.c | 83 +++++++++++++++++++++++++++----------------
+>  1 file changed, 52 insertions(+), 31 deletions(-)
 >
 
 [...]
