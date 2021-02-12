@@ -2,100 +2,138 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4604C31982F
-	for <lists+bpf@lfdr.de>; Fri, 12 Feb 2021 03:06:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88760319835
+	for <lists+bpf@lfdr.de>; Fri, 12 Feb 2021 03:11:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229684AbhBLCGg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Feb 2021 21:06:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48508 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbhBLCGf (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 11 Feb 2021 21:06:35 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C927DC061574;
-        Thu, 11 Feb 2021 18:05:54 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id q14so9829156ljp.4;
-        Thu, 11 Feb 2021 18:05:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OiSkEcgchNsmSgBtf3fnMQzPIwmJ5tn4k1eUNo1HXyg=;
-        b=ZBl8t/0TZL9DZivfE/IbgOPqpTHjguBG9nvWcvcI2fWez4rQfe6X4x3np/lGkOMV8d
-         HN+C2nPfeG8ecfuKiA3rrSJMCkZuRuXivK6wzi3Gg1B8odvsfCp0DbhDpDAcflj170Yi
-         v9kerAdvli1XESufLDKL5vZ2wJ1/m+MQSUB2Foc29vfhkiQyVxFaGMWyIVjdbMNJPbCC
-         76LEPPhaDLD/2j/Q89DT6FZzt9Cm1JpyOP/Od+RpgNvDOawyVIKewDrnROnlaM6VMwNh
-         t10A6jQDJSON+KrouGv/Eui7AIg9RmChd2KHXa0fucBiKJHEh6TNs7e4xKf7B2z8pizo
-         whCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OiSkEcgchNsmSgBtf3fnMQzPIwmJ5tn4k1eUNo1HXyg=;
-        b=qQS6rxqcfkANpbW6KdgGJpvnhhUpeqnctsH70cOudWeBstGaqFnv5+F0OqWjWpFygm
-         go2Zy4d8n4/FTATLcrKJ5Zh5COyLkRqY7Fv5JSKA2hICNw8JSoK5FRDqlrleby0zOIUo
-         MRYOdDhyBqSnFqW9zKX+WgMnMNVPLIMlL/4hEA47yI2ScuUhYaPZxv/0f5yMRNhTcjmh
-         G9mwDXOHFc2MfpXOFWj4b1ElXZlcWYirpKj7NHGqt+sc5QJybnTarhnpYJ3mV4Ri6jxS
-         i4ixT1kJktc4lWf7gfN2Cev79e14+z0VMUYcN8X32b2cRhvHx/aBd+FJGc6hn27KD383
-         Byvg==
-X-Gm-Message-State: AOAM533kmkDkhCkkLxrwI/Yex9P9IPZt3cc8bkz6wDZXxEn1LEbyxczh
-        B6rgB2wzOGwxXJJPtI22KBLgz/xOI2qrflkMx9nZtMBWU1g=
-X-Google-Smtp-Source: ABdhPJwKXqZN2gQ+HMFhDevuqT9eVhQMLKz5LWoKxPET6Lm95PKNH0TkH+6IOxIe8x5GzJC32PyD42Jith/zeyTT4Wo=
-X-Received: by 2002:a2e:700c:: with SMTP id l12mr371556ljc.236.1613095553180;
- Thu, 11 Feb 2021 18:05:53 -0800 (PST)
+        id S229766AbhBLCLQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Feb 2021 21:11:16 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:3644 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229521AbhBLCLP (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 11 Feb 2021 21:11:15 -0500
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11C2AMqe028270
+        for <bpf@vger.kernel.org>; Thu, 11 Feb 2021 18:10:33 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=n3X+eeKZMDVhWIl1ZrY+U/19oZ27D9nk958D3k7giLk=;
+ b=gKD6Zz7PdIIkVu4PDKRSdtqCd4ss6zLUvdKgHJyqL91mHWIgeLIlxQlFC2HKnZsm56CM
+ zbpQkv389M86lV32GkuL6Mi57B+jnCjQZIrGKYG29jGmhXVlLCwecM+gy8DXKKJ+c6kh
+ IEC89yAGn6D004nKSeh8oQ7EY0OX2uKGGPA= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 36mj9x21gc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 11 Feb 2021 18:10:33 -0800
+Received: from intmgw001.25.frc3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 11 Feb 2021 18:10:32 -0800
+Received: by devbig005.ftw2.facebook.com (Postfix, from userid 6611)
+        id EF4D329425C2; Thu, 11 Feb 2021 18:10:30 -0800 (PST)
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        <netdev@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH v2 bpf 1/2] libbpf: Ignore non function pointer member in struct_ops
+Date:   Thu, 11 Feb 2021 18:10:30 -0800
+Message-ID: <20210212021030.266932-1-kafai@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <20201204102901.109709-1-marekx.majtyka@intel.com>
- <20201209125223.49096d50@carbon> <e1573338-17c0-48f4-b4cd-28eeb7ce699a@gmail.com>
- <1e5e044c8382a68a8a547a1892b48fb21d53dbb9.camel@kernel.org>
- <cb6b6f50-7cf1-6519-a87a-6b0750c24029@gmail.com> <f4eb614ac91ee7623d13ea77ff3c005f678c512b.camel@kernel.org>
- <d5be0627-6a11-9c1f-8507-cc1a1421dade@gmail.com> <6f8c23d4ac60525830399754b4891c12943b63ac.camel@kernel.org>
- <CAAOQfrHN1-oHmbOksDv-BKWv4gDF2zHZ5dTew6R_QTh6s_1abg@mail.gmail.com>
- <87h7mvsr0e.fsf@toke.dk> <CAAOQfrHA+-BsikeQzXYcK_32BZMbm54x5p5YhAiBj==uaZvG1w@mail.gmail.com>
- <87bld2smi9.fsf@toke.dk> <20210202113456.30cfe21e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAAOQfrGqcsn3wu5oxzHYxtE8iK3=gFdTka5HSh5Fe9Hc6HWRWA@mail.gmail.com>
- <20210203090232.4a259958@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <874kikry66.fsf@toke.dk> <20210210103135.38921f85@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <87czx7r0w8.fsf@toke.dk> <20210211172603.17d6a8f6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210211172603.17d6a8f6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 11 Feb 2021 18:05:41 -0800
-Message-ID: <CAADnVQJ_juVMxSKUvHBEsLNQoJ4mvkqyAV8XF4mmz-dO8saUzQ@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf 1/5] net: ethtool: add xdp properties flag set
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        Marek Majtyka <alardam@gmail.com>,
-        Saeed Mahameed <saeed@kernel.org>,
-        David Ahern <dsahern@gmail.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-11_07:2021-02-11,2021-02-11 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ priorityscore=1501 impostorscore=0 suspectscore=0 spamscore=0
+ malwarescore=0 clxscore=1015 mlxscore=0 mlxlogscore=730 adultscore=0
+ lowpriorityscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2102120014
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 5:26 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> Perhaps I had seen one too many vendor incompatibility to trust that
-> adding a driver API without a validation suite will result in something
-> usable in production settings.
+When libbpf initializes the kernel's struct_ops in
+"bpf_map__init_kern_struct_ops()", it enforces all
+pointer types must be a function pointer and rejects
+others.  It turns out to be too strict.  For example,
+when directly using "struct tcp_congestion_ops" from vmlinux.h,
+it has a "struct module *owner" member and it is set to NULL
+in a bpf_tcp_cc.o.
 
-I agree with Jakub. I don't see how extra ethtool reporting will help.
-Anyone who wants to know whether eth0 supports XDP_REDIRECT can already do so:
-ethtool -S eth0 | grep xdp_redirect
+Instead, it only needs to ensure the member is a function
+pointer if it has been set (relocated) to a bpf-prog.
+This patch moves the "btf_is_func_proto(kern_mtype)" check
+after the existing "if (!prog) { continue; }".  The original debug
+message in "if (!prog) { continue; }" is also removed since it is
+no longer valid.  Beside, there is a later debug message to tell
+which function pointer is set.
 
-I think converging on the same stat names across the drivers will make
-the whole thing much more user friendly than new apis.
+The "btf_is_func_proto(mtype)" has already been guaranteed
+in "bpf_object__collect_st_ops_relos()" which has been run
+before "bpf_map__init_kern_struct_ops()".  Thus, this check
+is removed.
+
+v2:
+- Remove outdated debug message (Andrii)
+  Remove because there is a later debug message to tell
+  which function pointer is set.
+- Following mtype->type is no longer needed. Remove:
+  "skip_mods_and_typedefs(btf, mtype->type, &mtype_id)"
+- Do "if (!prog)" test before skip_mods_and_typedefs.
+
+Fixes: 590a00888250 ("bpf: libbpf: Add STRUCT_OPS support")
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Martin KaFai Lau <kafai@fb.com>
+---
+ tools/lib/bpf/libbpf.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 6ae748f6ea11..a0d4fc4de402 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -883,24 +883,24 @@ static int bpf_map__init_kern_struct_ops(struct bpf=
+_map *map,
+ 		if (btf_is_ptr(mtype)) {
+ 			struct bpf_program *prog;
+=20
+-			mtype =3D skip_mods_and_typedefs(btf, mtype->type, &mtype_id);
++			prog =3D st_ops->progs[i];
++			if (!prog)
++				continue;
++
+ 			kern_mtype =3D skip_mods_and_typedefs(kern_btf,
+ 							    kern_mtype->type,
+ 							    &kern_mtype_id);
+-			if (!btf_is_func_proto(mtype) ||
+-			    !btf_is_func_proto(kern_mtype)) {
+-				pr_warn("struct_ops init_kern %s: non func ptr %s is not supported\n=
+",
++
++			/* mtype->type must be a func_proto which was
++			 * guaranteed in bpf_object__collect_st_ops_relos(),
++			 * so only check kern_mtype for func_proto here.
++			 */
++			if (!btf_is_func_proto(kern_mtype)) {
++				pr_warn("struct_ops init_kern %s: kernel member %s is not a func ptr=
+\n",
+ 					map->name, mname);
+ 				return -ENOTSUP;
+ 			}
+=20
+-			prog =3D st_ops->progs[i];
+-			if (!prog) {
+-				pr_debug("struct_ops init_kern %s: func ptr %s is not set\n",
+-					 map->name, mname);
+-				continue;
+-			}
+-
+ 			prog->attach_btf_id =3D kern_type_id;
+ 			prog->expected_attach_type =3D kern_member_idx;
+=20
+--=20
+2.24.1
+
