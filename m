@@ -2,80 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D044631A5E2
-	for <lists+bpf@lfdr.de>; Fri, 12 Feb 2021 21:16:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8A5B31A656
+	for <lists+bpf@lfdr.de>; Fri, 12 Feb 2021 21:58:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230043AbhBLUPn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Feb 2021 15:15:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55588 "EHLO
+        id S231335AbhBLU5s (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Feb 2021 15:57:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229798AbhBLUPm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Feb 2021 15:15:42 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8271C061756
-        for <bpf@vger.kernel.org>; Fri, 12 Feb 2021 12:15:01 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id a9so1218163ejr.2
-        for <bpf@vger.kernel.org>; Fri, 12 Feb 2021 12:15:01 -0800 (PST)
+        with ESMTP id S229583AbhBLU5g (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Feb 2021 15:57:36 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 974B2C061756
+        for <bpf@vger.kernel.org>; Fri, 12 Feb 2021 12:56:55 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id g10so860947wrx.1
+        for <bpf@vger.kernel.org>; Fri, 12 Feb 2021 12:56:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GP+BGOCmcl5vDaPuSGIKIoLlEIFh7CsHpm+wbwTw+H0=;
-        b=QSM9syEdv3i3xsyaviKSUXdkvxqfnDH+YS0+o5NiRfsMk0StqDx/jhb2vER1jJ8ihp
-         7q20MnkxpSOvy+pRHa7gf90Yw5vgZ+iasnraVaLSgxmeUlSmlJcZhpTBmEtHBBA1UTAG
-         2tFJm2w5pxLVYknwGVE69LI/tQA62i3oRy4fiXrfvoef6VJ5yXJ9P1XJvisrN1R7r3G4
-         BO4SyY89OHYJTxpAG0D9WWGUQ7kGQqJu+Ri0GVgG31UG2qo8dq5mUa4+VtVg5CTQ9Z94
-         mpW0K+2cN7+NH/ba50VbzUJczVY5RnGcDqa5oKC0yxgc/ILXBqxapSNa4zUApoU4v16F
-         y2ww==
+        d=ubique-spb-ru.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TEedarlwD3NclrL6XFjnYgr8wVb8QNBfcEB2XUh6NaU=;
+        b=uN+AqnYcR9R9uhktdnze8VdIpb3fFkOfHhpfLqlNEoqUzTwKjOlWzzYRmZUMKxfFTg
+         lEdnxjfSdphEJJiUFdVw7bUZz8R6AkR8yjmGfAQP3X1mWqrGkMhEs7m1jHMN8pKr9G4h
+         /4gzSgjYe4ZC2seyWbtPmUTYVvIZH1rerPOj05N3IKE43fac6mMOT07Bm3CjjPtGaEiL
+         UWNHlyEr1mSh3vapSbZ5tUhm7/uRjACpRY1rIO7K3Cj51R6DhGxmxNs/jRhPmZn2i4K1
+         EOSoXXuomoXTET82pLrGjiWmRsPRM1ivB3OHEnGJsX/OAv2Z6z+lISV0uRhRVP+Ap0aJ
+         Q/qQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GP+BGOCmcl5vDaPuSGIKIoLlEIFh7CsHpm+wbwTw+H0=;
-        b=XCKoD6EyDDKDmr+9h5vCMM3VVGM/eU5FHYImI1aZsNdAntojqmzw0agLKrSaY21R3C
-         pr81KkbRX0I+7NleB94uCgIk6OIo/+my4zOUaHR2VU97yA9ookpzMu77jFeIAgvp1+L6
-         7y1Y2HW7F4sU67F6OCAFoOKFq3aD5Dps/iqK0rZkaxAv8pdtB0mz+3DMUK453Q36zHqL
-         5tztRLnAQoGsVc3KqTVJ3oGCqH+sTX3N+CAZkkv7YoBj6sBO9iytg0jrC4D9FcWckq6r
-         6INQ9e9cbH9IRi8/aNv7ENrcpDfT1ODVNbKadQEdtQ8nBsEiYhFgrQpg42faix3KenZ3
-         CKWw==
-X-Gm-Message-State: AOAM5304Uy9GEL+mTMlG1lpgea29KTT0oTU2CuhIZq9/JgwJ3yGd5xNH
-        ZN6HciiVMEXU2I73ZFpxc/UFVjPu8gUob5tAXsaD
-X-Google-Smtp-Source: ABdhPJxmxXHac3rHfZ27/HnXAc8aIrHOb3zswMYO2B74IhPt91f6jDe8jNA021aRjlhMYHk+prF0IV41VbTZO5v0+Js=
-X-Received: by 2002:a17:906:4712:: with SMTP id y18mr4650363ejq.529.1613160900237;
- Fri, 12 Feb 2021 12:15:00 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TEedarlwD3NclrL6XFjnYgr8wVb8QNBfcEB2XUh6NaU=;
+        b=tpgKFE+LT3oV36j0RgSJ2ecu17M8fjOe24rAulUBt8vBMRE7ZCKBSfOqTrUYiAKCh5
+         6Rf+GvuJa8McxpYiq5EGoBEwagPh1sN1d54z/KHTj3QyMIeZxXhHB3dtfFRsr0OZs2LC
+         htYfpGnJ8zaNNVS01YCBNKjRN4hyYrnGuc4MMnel3NOpDIaOITJrpiRUgDTp9OD+sbbN
+         nMjEpTlQLdf0JXyYdwZ6joZ3EuGwWvXP0K2PLGPvESNBCW4Tb26fydakB1hPGkJ4XGbE
+         2Cr/V0Yd96Eoqa2sDT25NURQNd+aAvYnYeSFStpvYulACKisIP7S/TtZ2HYCEwukDFFH
+         72WA==
+X-Gm-Message-State: AOAM530JEabbutefCH+de9idtMemQyP2EUcrAXwLqkK3cQXTT3cHbrzH
+        Kn2JbJtCOfjHpeZ6e9SuBlU5QzPRKGwV9L2LyoY=
+X-Google-Smtp-Source: ABdhPJwumx0Z/WyeiDSdOjqEqa7j6MIYZLngxsfaXpcOyr/vpywesoZ2odeCRGDHlOveC+vwrnAKGg==
+X-Received: by 2002:adf:e510:: with SMTP id j16mr5471704wrm.153.1613163414107;
+        Fri, 12 Feb 2021 12:56:54 -0800 (PST)
+Received: from localhost ([91.73.148.48])
+        by smtp.gmail.com with ESMTPSA id a5sm7194282wrt.70.2021.02.12.12.56.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Feb 2021 12:56:53 -0800 (PST)
+From:   Dmitrii Banshchikov <me@ubique.spb.ru>
+To:     bpf@vger.kernel.org
+Cc:     Dmitrii Banshchikov <me@ubique.spb.ru>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@chromium.org, rdna@fb.com
+Subject: [PATCH v3 bpf-next 0/4] Add support of pointer to struct in global functions
+Date:   Sat, 13 Feb 2021 00:56:38 +0400
+Message-Id: <20210212205642.620788-1-me@ubique.spb.ru>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210210232327.1965876-1-morbo@google.com> <20210212080104.2499483-1-morbo@google.com>
- <20210212123721.GE1398414@kernel.org>
-In-Reply-To: <20210212123721.GE1398414@kernel.org>
-From:   Bill Wendling <morbo@google.com>
-Date:   Fri, 12 Feb 2021 12:14:49 -0800
-Message-ID: <CAGG=3QXX0Bu_BD6TQXLFLgsnRQceDMmFiiH-_UD9AGt89YU31Q@mail.gmail.com>
-Subject: Re: [PATCH v2] dwarf_loader: use a better hashing function
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Andrii Nakryiko <andrii@kernel.org>, dwarves@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 4:37 AM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> Em Fri, Feb 12, 2021 at 12:01:04AM -0800, Bill Wendling escreveu:
-> > This hashing function[1] produces better hash table bucket
-> > distributions. The original hashing function always produced zeros in
-> > the three least significant bits. The new hashing function gives a
-> > modest performance boost:
->
-> Some tidbits:
->
-> You forgot to CC Andrii and also to add this, which I'm doing now:
->
-> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
->
-> :-)
->
-Doh! You're right. Sorry about that. Thanks for catching it!
+This patchset adds support of pointers to type with known size among
+global function arguments.
 
--bw
+The motivation is to overcome the limit on the maximum number of allowed
+arguments and avoid tricky and unoptimal ways of passing arguments.
+
+A referenced type may contain pointers but access via such pointers
+cannot be veirified currently.
+
+v2 -> v3
+ - Fix reg ID generation
+ - Fix commit description
+ - Fix typo
+ - Fix tests
+
+v1 -> v2:
+ - Allow pointer to any type with known size rather than struct only
+ - Allow pointer in global functions only
+ - Add more tests
+ - Fix wrapping and v1 comments
+
+Dmitrii Banshchikov (4):
+  bpf: Rename bpf_reg_state variables
+  bpf: Extract nullable reg type conversion into a helper function
+  bpf: Support pointers in global func args
+  selftests/bpf: Add unit tests for pointers in global functions
+
+ include/linux/bpf_verifier.h                  |   2 +
+ kernel/bpf/btf.c                              |  71 +++++++---
+ kernel/bpf/verifier.c                         | 113 +++++++++++----
+ .../bpf/prog_tests/global_func_args.c         |  60 ++++++++
+ .../bpf/prog_tests/test_global_funcs.c        |   8 ++
+ .../selftests/bpf/progs/test_global_func10.c  |  29 ++++
+ .../selftests/bpf/progs/test_global_func11.c  |  19 +++
+ .../selftests/bpf/progs/test_global_func12.c  |  21 +++
+ .../selftests/bpf/progs/test_global_func13.c  |  24 ++++
+ .../selftests/bpf/progs/test_global_func14.c  |  21 +++
+ .../selftests/bpf/progs/test_global_func15.c  |  22 +++
+ .../selftests/bpf/progs/test_global_func16.c  |  22 +++
+ .../selftests/bpf/progs/test_global_func9.c   | 132 ++++++++++++++++++
+ .../bpf/progs/test_global_func_args.c         |  91 ++++++++++++
+ 14 files changed, 588 insertions(+), 47 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/global_func_args.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_global_func10.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_global_func11.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_global_func12.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_global_func13.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_global_func14.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_global_func15.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_global_func16.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_global_func9.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_global_func_args.c
+
+-- 
+2.25.1
+
