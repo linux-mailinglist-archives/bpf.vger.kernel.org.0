@@ -2,200 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE0EE3198C1
-	for <lists+bpf@lfdr.de>; Fri, 12 Feb 2021 04:27:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0B033198D2
+	for <lists+bpf@lfdr.de>; Fri, 12 Feb 2021 04:33:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229598AbhBLD1c (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 11 Feb 2021 22:27:32 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:63838 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229587AbhBLD1b (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 11 Feb 2021 22:27:31 -0500
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11C38Won148081;
-        Thu, 11 Feb 2021 22:26:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=yKF+IoiXjp3de2rnBHePtLE9iNRpp4bFwTRErFmMDKM=;
- b=gaeb0/WCw7ODAQsHz24brNpByRnP2a4/EnLDgFvPJ0vylKERKQy84Nq53YKIYaqVlbJ2
- l/CBp80WaVYFD0K2q2QbC2lBjztW7RqEAXmUGfrlBuG0f40d0Wl5DbIImXRYVWkhIuAe
- BBWVBku3lVAfxAZOOifh+I6Px/bj4g776u37JCs0Rl+afJv6ub50lA5KYEz2bzbQ04Ml
- qO/oN5QDgClldUrJqNxr2YTYaiGr0zol0Skx21sLSoqA83Jk6zNUEx/ZP2GWWczBJW+V
- 1T4MRjSUNDoqbfyswgq2VL7+8OWHFCSUGOraYpSwTB30CnK0VuZTiDzBM7/YHnBi1wT/ 4w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36nhgh88fu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Feb 2021 22:26:36 -0500
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11C3KOwB185237;
-        Thu, 11 Feb 2021 22:26:36 -0500
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36nhgh88fe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 11 Feb 2021 22:26:36 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11C3DExr001242;
-        Fri, 12 Feb 2021 03:26:34 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 36j94wnjc4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 12 Feb 2021 03:26:34 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11C3QM9Y37814584
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 12 Feb 2021 03:26:22 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6DD72AE045;
-        Fri, 12 Feb 2021 03:26:32 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1E7E3AE04D;
-        Fri, 12 Feb 2021 03:26:32 +0000 (GMT)
-Received: from [9.171.67.27] (unknown [9.171.67.27])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 12 Feb 2021 03:26:32 +0000 (GMT)
-Message-ID: <1e54f82603c361e7ee1464621a9937c1efb3b254.camel@linux.ibm.com>
-Subject: Re: [PATCH v4 bpf-next 1/9] bpf: Optimize program stats
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        davem@davemloft.net
-Cc:     daniel@iogearbox.net, bpf@vger.kernel.org, kernel-team@fb.com
-Date:   Fri, 12 Feb 2021 04:26:31 +0100
-In-Reply-To: <20210210033634.62081-2-alexei.starovoitov@gmail.com>
-References: <20210210033634.62081-1-alexei.starovoitov@gmail.com>
-         <20210210033634.62081-2-alexei.starovoitov@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3 (3.38.3-1.fc33) 
+        id S229862AbhBLDcc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 11 Feb 2021 22:32:32 -0500
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:43160 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229872AbhBLDc2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 11 Feb 2021 22:32:28 -0500
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 11C3VMuq032592;
+        Fri, 12 Feb 2021 12:31:22 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 11C3VMuq032592
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1613100683;
+        bh=UgXhTmEgG78gZGSkfIhvjRiMvprjydlQULXYBgmgRwY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=huMkwvVBD8rZZGjJgDfZa5Qm+6rA8WYCWlrIa6/dOk3qdbXyHswyd7cmB/gkDddum
+         Ab18lmAwNlHkhZzXurK+ODrtl5znS6XOmfbFuT64KaJHLAtk24mPyeTX+T3A5wCfZN
+         iDSI8e8nnkdEEWa/9X4o7paYgaPE1N0kAK3Z0WX3rjXkoiSaTNXsN6/xTxx6NW1ldi
+         ttxfoMqfo/86LToMCpzwekpawvbmyUb0IPMOa4e67qC1HX4v1sDXPAP3ef8GN9+HSk
+         VF1yfwNK/ny8vlpg3fHZ9ReJGzvLm51aqdPN3qFVrt0GlGYmYaI4X4Tl7j5yWNRCNo
+         opA2GYbyet7vg==
+X-Nifty-SrcIP: [209.85.215.173]
+Received: by mail-pg1-f173.google.com with SMTP id t26so5372451pgv.3;
+        Thu, 11 Feb 2021 19:31:22 -0800 (PST)
+X-Gm-Message-State: AOAM532777x5f8fooT6ruxDCCY29MtfBQf0TcPYFwsPgR/yJ23+QZzsb
+        sPSagyoU+2Fkw7kuR3H1iF9nu7AXkp7qi0Kf9v0=
+X-Google-Smtp-Source: ABdhPJzzPWMVs2TMBJxt0OrXv6GM+B92F7SYM/zwhAicTpz6p2nlB61o0LHKIxVeIwCY/unsmK2MhT1uYOZTlte/LsQ=
+X-Received: by 2002:a63:575e:: with SMTP id h30mr1256230pgm.7.1613100681957;
+ Thu, 11 Feb 2021 19:31:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-11_07:2021-02-11,2021-02-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 mlxlogscore=925 clxscore=1011 spamscore=0 priorityscore=1501
- suspectscore=0 malwarescore=0 phishscore=0 adultscore=0 mlxscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102120018
+References: <20210205124020.683286-1-jolsa@kernel.org> <20210205124020.683286-5-jolsa@kernel.org>
+ <20210210174451.GA1943051@ubuntu-m3-large-x86> <CAEf4BzZvz4-STv3OQxyNDiFKkrFM-+GOM-yXURzoDtXiRiuT_g@mail.gmail.com>
+ <20210210180215.GA2374611@ubuntu-m3-large-x86> <YCQmCwBSQuj+bi4q@krava>
+ <CAEf4BzbwwtqerxRrNZ75WLd2aHLdnr7wUrKahfT7_6bjBgJ0xQ@mail.gmail.com> <YCUgUlCDGTS85MCO@krava>
+In-Reply-To: <YCUgUlCDGTS85MCO@krava>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 12 Feb 2021 12:30:45 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAT8oTvLJ9FRsrRB5GUS2K+y2QY36Wshb9x1YE5d=ZyA5g@mail.gmail.com>
+Message-ID: <CAK7LNAT8oTvLJ9FRsrRB5GUS2K+y2QY36Wshb9x1YE5d=ZyA5g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 4/4] kbuild: Add resolve_btfids clean to root
+ clean target
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 2021-02-09 at 19:36 -0800, Alexei Starovoitov wrote:
-> From: Alexei Starovoitov <ast@kernel.org>
-> 
-> Move bpf_prog_stats from prog->aux into prog to avoid one extra load
-> in critical path of program execution.
-> 
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->  include/linux/bpf.h     |  8 --------
->  include/linux/filter.h  | 14 +++++++++++---
->  kernel/bpf/core.c       |  8 ++++----
->  kernel/bpf/syscall.c    |  2 +-
->  kernel/bpf/trampoline.c |  2 +-
->  kernel/bpf/verifier.c   |  2 +-
->  6 files changed, 18 insertions(+), 18 deletions(-)
+On Thu, Feb 11, 2021 at 9:17 PM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Wed, Feb 10, 2021 at 11:26:28AM -0800, Andrii Nakryiko wrote:
+>
+> SNIP
+>
+> > > > > Can't reproduce it. It works in all kinds of variants (relative and
+> > > > > absolute O=, clean and not clean trees, etc). Jiri, please check as
+> > > > > well.
+> > > > >
+> > > >
+> > > > Odd, this reproduces for me on a completely clean checkout of bpf-next:
+> > > >
+> > > > $ git clone --depth=1 https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/
+> > > >
+> > > > $ cd bpf-next
+> > > >
+> > > > $ make -s O=build distclean
+> > > > ../../scripts/Makefile.include:4: *** O=/tmp/bpf-next/build/tools/bpf/resolve_btfids does not exist.  Stop.
+> > > >
+> > > > I do not really see how this could be environment related. It seems like
+> > > > this comes from tools/scripts/Makefile.include, where there is no
+> > > > guarantee that $(O) is created before being used like in the main
+> > > > Makefile?
+> > >
+> > > right, we need to handle the case where tools/bpf/resolve_btfids
+> > > does not exist, patch below fixes it for me
+> > >
+> > > jirka
+> > >
+> >
+> > Looks good to me, please send it as a proper patch to bpf-next.
+> >
+> > But I'm curious, why is objtool not doing something like that? Is it
+> > not doing clean at all? Or does it do it in some different way?
+>
+> yes, it's not connected to global make clean
+>
+> >
+> > >
+> > > ---
+> > > diff --git a/Makefile b/Makefile
+> > > index 159d9592b587..ce9685961abe 100644
+> > > --- a/Makefile
+> > > +++ b/Makefile
+> > > @@ -1088,8 +1088,14 @@ endif
+> > >
+> > >  PHONY += resolve_btfids_clean
+> > >
+> > > +resolve_btfids_O = $(abspath $(objtree))/tools/bpf/resolve_btfids
+> > > +
+> > > +# tools/bpf/resolve_btfids directory might not exist
+> > > +# in output directory, skip its clean in that case
+> > >  resolve_btfids_clean:
+> > > -       $(Q)$(MAKE) -sC $(srctree)/tools/bpf/resolve_btfids O=$(abspath $(objtree))/tools/bpf/resolve_btfids clean
+> > > +ifneq (,$(wildcard $(resolve_btfids_O)))
+> >
+> > nit: kind of backwards, usually it's in a `ifneq($var,)` form
+>
+> ok
+>
+> thanks,
+> jirka
+>
 
-...
 
-> @@ -249,10 +249,10 @@ void __bpf_prog_free(struct bpf_prog *fp)
->         if (fp->aux) {
->                 mutex_destroy(&fp->aux->used_maps_mutex);
->                 mutex_destroy(&fp->aux->dst_mutex);
-> -               free_percpu(fp->aux->stats);
->                 kfree(fp->aux->poke_tab);
->                 kfree(fp->aux);
->         }
-> +       free_percpu(fp->stats);
+I expected this kind of mess
+when I saw 33a57ce0a54d498275f432db04850001175dfdfa
 
-On s390 this line causes the following in "ld_abs: vlan + abs, test 1"
-with the latest bpf-next:
 
-Unable to handle kernel pointer dereference in virtual kernel address
-space
-Failing address: 0000000000000000 TEID: 0000000000000483
-Fault in home space mode while using kernel ASCE.
-AS:0000000001bd0007 R3:00000001ffff0007 S:00000001ffffd000
-P:000000000000003d 
-Oops: 0004 ilc:2 [#1] SMP 
-Modules linked in:
-CPU: 0 PID: 184 Comm: test_verifier Not tainted 5.11.0-rc4-00952-
-g6fdd671baaf5 #7
-Hardware name: IBM 3906 M03 703 (KVM/Linux)
-Krnl PSW : 0404c00180000000 000000000042707a
-(refill_obj_stock+0x11a/0x1e0)
-           R:0 T:1 IO:0 EX:0 Key:0 M:1 W:0 P:0 AS:3 CC:0 PM:0 RI:0 EA:3
-Krnl GPRS: 0000000000000000 0000000000000000 0000000000000018
-0000000100000000
-           0000000000000000 000000008764ca88 00000000013d3ff8
-000000000141d140
-           0000000000000080 0000000000000000 0000000000000000
-00000001ff61c8f0
-           000000008764c000 00000000012eb678 0000000000427066
-00000380001bb888
-Krnl Code: 0000000000427070: a7380000           lhi     %r3,0
-           0000000000427074: 5810a018           l       %r1,24(%r10)
-          #0000000000427078: 1841               lr      %r4,%r1
-          >000000000042707a: ba432000           cs      %r4,%r3,0(%r2)
-           000000000042707e: a774fffb           brc    
-7,0000000000427074
-           0000000000427082: 1a18               ar      %r1,%r8
-           0000000000427084: 5010b018           st      %r1,24(%r11)
-           0000000000427088: c21f00001000       clfi    %r1,4096
-Call Trace:
- [<000000000042707a>] refill_obj_stock+0x11a/0x1e0 
-([<0000000000427066>] refill_obj_stock+0x106/0x1e0)
- [<000000000039bd86>] free_percpu.part.0+0xd6/0x428 
- [<00000000002ef738>] bpf_prog_realloc+0xa0/0xd8 
- [<00000000002efae8>] bpf_patch_insn_single+0x88/0x208 
- [<000000000030762e>] bpf_patch_insn_data+0x36/0x290 
- [<00000000003086ca>] fixup_bpf_calls+0x572/0xa28 
- [<000000000031045c>] bpf_check+0xb44/0xcb8 
- [<00000000002f747a>] bpf_prog_load+0x5fa/0x968 
- [<00000000002fa25c>] __do_sys_bpf+0x634/0x700 
- [<0000000000a2f3ca>] system_call+0xe2/0x28c 
-INFO: lockdep is turned off.
-Last Breaking-Event-Address:
- [<0000000000203f76>] lock_release+0x6e/0x218
-Kernel panic - not syncing: Fatal exception: panic_on_oops
+The tools/ directory is a completely different world
+governed by a different build system
+(no, not a build system, but a collection of adhoc makefile code)
 
-Here is the better backtrace (line numbers correspond to commit
-6fdd671baaf5):
 
-#0  refill_obj_stock (objcg=objcg@entry=0x0, nr_bytes=<optimized out>)
-at mm/memcontrol.c:3248
-#1  0x0000000000427a08 in obj_cgroup_uncharge (objcg=objcg@entry=0x0,
-size=<optimized out>) at mm/memcontrol.c:3300
-#2  0x000000000039bd86 in pcpu_memcg_free_hook (size=32, off=<optimized
-out>, chunk=0x82d4fa00) at ./include/linux/bitmap.h:400
-#3  free_percpu (ptr=0x3fd813b5960) at mm/percpu.c:2105
-#4  0x000000000039c0ec in free_percpu (ptr=<optimized out>) at
-mm/percpu.c:2089
-#5  0x00000000002ef738 in __bpf_prog_free (fp=0x380001ce000) at
-kernel/bpf/core.c:262
-#6  bpf_prog_realloc (fp_old=fp_old@entry=0x380001ce000, size=249856,
-size@entry=245776, gfp_extra_flags=gfp_extra_flags@entry=1051840) at
-kernel/bpf/core.c:248
-#7  0x00000000002efae8 in bpf_patch_insn_single (prog=0x380001ce000,
-off=off@entry=2205, patch=patch@entry=0x380001bbba0, len=len@entry=6)
-at ./include/linux/filter.h:788
-#8  0x000000000030762e in bpf_patch_insn_data
-(env=env@entry=0x87566000, off=off@entry=2205,
-patch=patch@entry=0x380001bbba0, len=<optimized out>) at
-kernel/bpf/verifier.c:10669
-#9  0x00000000003086ca in fixup_bpf_calls (env=env@entry=0x87566000) at
-kernel/bpf/verifier.c:11539
-#10 0x000000000031045c in bpf_check (prog=prog@entry=0x380001bbda0,
-attr=attr@entry=0x380001bbe80, uattr=uattr@entry=0x3ffe66fe9d0) at
-kernel/bpf/verifier.c:12573
-#11 0x00000000002f747a in bpf_prog_load (attr=attr@entry=0x380001bbe80,
-uattr=uattr@entry=0x3ffe66fe9d0) at kernel/bpf/syscall.c:2209
-#12 0x00000000002fa25c in __do_sys_bpf (cmd=<optimized out>,
-uattr=0x3ffe66fe9d0, size=120) at kernel/bpf/syscall.c:4388
-#13 0x0000000000a2f3ca in system_call () at
-arch/s390/kernel/entry.S:439
+All the other programs used during the kernel build
+are located under scripts/, and can be built with
+a simple syntax, and cleaned up correctly.
+It is simple, clean and robust.
 
-So we end up with objcg=NULL, but I'm not sure why this happens.
-Please let me know if you need more info.
+objtool is the first alien that opt out Kbuild,
+and this is the second one.
 
+
+It is scary to mix up two different things,
+which run in different working directories.
+
+See, this is wired up in the top Makefile
+in an ugly way, and you are struggling
+in suppressing issues, where you can never
+do it in the right way.
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
