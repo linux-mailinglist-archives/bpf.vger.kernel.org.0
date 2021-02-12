@@ -2,117 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E451319BE8
-	for <lists+bpf@lfdr.de>; Fri, 12 Feb 2021 10:33:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48798319CE4
+	for <lists+bpf@lfdr.de>; Fri, 12 Feb 2021 11:58:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229983AbhBLJc4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Feb 2021 04:32:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44835 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230134AbhBLJcx (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 12 Feb 2021 04:32:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613122286;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fqsCdtA/Qg+W/+yKT3VPOJTrlKvqKYGCCqSKPJdznjo=;
-        b=K/eTiH4Hv5QRalIYSuKPkNSisysnLxFMn3qoMUZxRT7yiuQw2CmlaDKEL2eULkzCWyyOiM
-        WayVYTRw+1V5C0AkYmRvGcV2HRWXQTvl9iDOABc6t7cm0L4KCYTJQ8iz19SI7lbDeUVqng
-        KkWsxylERGuWbkFHpb94Zw2qvF787c0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-313-rzhGTSFdOPuCKcp33Q9j1A-1; Fri, 12 Feb 2021 04:31:24 -0500
-X-MC-Unique: rzhGTSFdOPuCKcp33Q9j1A-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EE1CE1005501;
-        Fri, 12 Feb 2021 09:31:22 +0000 (UTC)
-Received: from astarta.redhat.com (ovpn-112-218.ams2.redhat.com [10.36.112.218])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2045C2A31E;
-        Fri, 12 Feb 2021 09:31:20 +0000 (UTC)
-From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: Re: [PATCH bpf-next] bpf: Clear subreg_def for global function
- return values
-References: <20210212040408.90109-1-iii@linux.ibm.com>
-Date:   Fri, 12 Feb 2021 11:31:19 +0200
-In-Reply-To: <20210212040408.90109-1-iii@linux.ibm.com> (Ilya Leoshkevich's
-        message of "Fri, 12 Feb 2021 05:04:08 +0100")
-Message-ID: <xunytuqhtyxk.fsf@redhat.com>
+        id S229959AbhBLK45 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Feb 2021 05:56:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230046AbhBLK4u (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Feb 2021 05:56:50 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CCB4C061756
+        for <bpf@vger.kernel.org>; Fri, 12 Feb 2021 02:56:05 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id d3so12446001lfg.10
+        for <bpf@vger.kernel.org>; Fri, 12 Feb 2021 02:56:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=CAkkLOKngu+Jc3JoTm4wPpx55O5hNhsMoyStJXl6bds=;
+        b=oN7T9aNQmC1TCApEnIUDuMxi9z6UPMfQxolVbn4QymqzC14ZoLAFyIE5287gz3lP0c
+         OMv6NjpK1knSOtxrcUn4tKEISgxIxmaPQljgsyMvXey0+ivZPuoeq4ysDCfjtb62XrF1
+         7JqjsxZq+O5FaYPn/6hu6DOE00G7XAVnqCHDs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=CAkkLOKngu+Jc3JoTm4wPpx55O5hNhsMoyStJXl6bds=;
+        b=PXRXjsJPMXL8Wl1t6X5oSZiKEslHqhX/aLpjqfL/n6eZwGIQO22Qb1IX0CSCfwpn9D
+         B59nR9u5frlB9rTLSD0aJQqTsV2cy40i9wCkJkuLem2X00Ec4atuCoAqEEnhMYv0nC6W
+         wWFpK2UUQA6xD/Ih6L4hrheKCG+YDfpGVbeb/02GPaFTLhNC4iRnruEfZuyi3lnLjUvp
+         e6+76xFZFqRo58bl2K9YL4iUMJhuhvC90vUCXjx1tZDYkAq2yk4AQZqgvBTsLLOCza6j
+         7vcXEuiFiCQZusXm2mzARDRp05vfTpO7qQescVhskJZJBLBSh02AqOduUq0j3J15soc/
+         mpQg==
+X-Gm-Message-State: AOAM532qhdQsyrsAY9mnMr99fNramwWoRr7UBk9LXd2K5KNqoNeSqEHr
+        W7z8UfSwgFQLI2wDbGQq0NiLDkpMQpKQnK5NAsXIiA==
+X-Google-Smtp-Source: ABdhPJx54NF/0vvohURVv6r0D2jQTrSh1ThkawLAat3i3tXEkfvhWL4xmJpm+FdFoTV8SZo6UW4Ri1xj+ViFfT6wn+Y=
+X-Received: by 2002:a19:711e:: with SMTP id m30mr186282lfc.97.1613127363501;
+ Fri, 12 Feb 2021 02:56:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20210210022136.146528-1-xiyou.wangcong@gmail.com> <20210210022136.146528-4-xiyou.wangcong@gmail.com>
+In-Reply-To: <20210210022136.146528-4-xiyou.wangcong@gmail.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Fri, 12 Feb 2021 10:55:52 +0000
+Message-ID: <CACAyw98ABpLzjjw9zMdttgRWvim=oOqAZrDaXrLQ49eYhVsbJQ@mail.gmail.com>
+Subject: Re: [Patch bpf-next v2 3/5] bpf: compute data_end dynamically with
+ JIT code
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        duanxiongchun@bytedance.com, wangdongdong.6@bytedance.com,
+        jiang.wang@bytedance.com, Cong Wang <cong.wang@bytedance.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi, Ilya!
+On Wed, 10 Feb 2021 at 02:22, Cong Wang <xiyou.wangcong@gmail.com> wrote:
+>
+> From: Cong Wang <cong.wang@bytedance.com>
+>
+> Currently, we compute ->data_end with a compile-time constant
+> offset of skb. But as Jakub pointed out, we can actually compute
+> it in eBPF JIT code at run-time, so that we can competely get
+> rid of ->data_end. This is similar to skb_shinfo(skb) computation
+> in bpf_convert_shinfo_access().
+>
+> Suggested-by: Jakub Sitnicki <jakub@cloudflare.com>
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Lorenz Bauer <lmb@cloudflare.com>
+> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
 
->>>>> On Fri, 12 Feb 2021 05:04:08 +0100, Ilya Leoshkevich  wrote:
+...
 
- > test_global_func4 fails on s390 as reported by Yauheni in [1].
- > The immediate problem is that the zext code includes the instruction,
- > whose result needs to be zero-extended, into the zero-extension
- > patchlet, and if this instruction happens to be a branch, then its
- > delta is not adjusted. As a result, the verifier rejects the program
- > later.
+> @@ -9520,6 +9510,29 @@ static u32 sock_ops_convert_ctx_access(enum bpf_ac=
+cess_type type,
+>         return insn - insn_buf;
+>  }
+>
+> +static struct bpf_insn *bpf_convert_data_end_access(const struct bpf_ins=
+n *si,
+> +                                                   struct bpf_insn *insn=
+)
 
-Thank you for addressing that!
+Is it worth adding a reference to this function in skb_headlen(),
+since we're basically open coding that function here?
 
- > However, according to [2], as far as the verifier's algorithm is
- > concerned and as specified by the insn_no_def() function, branching
- > insns do not define anything. This includes call insns, even though
- > one might argue that they define %r0.
+> +{
+> +       /* si->dst_reg =3D skb->data */
+> +       *insn++ =3D BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct sk_buff, data),
+> +                             si->dst_reg, si->src_reg,
+> +                             offsetof(struct sk_buff, data));
+> +       /* AX =3D skb->len */
+> +       *insn++ =3D BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct sk_buff, len),
+> +                             BPF_REG_AX, si->src_reg,
+> +                             offsetof(struct sk_buff, len));
+> +       /* si->dst_reg =3D skb->data + skb->len */
+> +       *insn++ =3D BPF_ALU64_REG(BPF_ADD, si->dst_reg, BPF_REG_AX);
+> +       /* AX =3D skb->data_len */
+> +       *insn++ =3D BPF_LDX_MEM(BPF_FIELD_SIZEOF(struct sk_buff, data_len=
+),
+> +                             BPF_REG_AX, si->src_reg,
+> +                             offsetof(struct sk_buff, data_len));
+> +       /* si->dst_reg =3D skb->data + skb->len - skb->data_len */
+> +       *insn++ =3D BPF_ALU64_REG(BPF_SUB, si->dst_reg, BPF_REG_AX);
+> +
+> +       return insn;
+> +}
+> +
+>  static u32 sk_skb_convert_ctx_access(enum bpf_access_type type,
+>                                      const struct bpf_insn *si,
+>                                      struct bpf_insn *insn_buf,
+> @@ -9530,12 +9543,7 @@ static u32 sk_skb_convert_ctx_access(enum bpf_acce=
+ss_type type,
+>
+>         switch (si->off) {
+>         case offsetof(struct __sk_buff, data_end):
+> -               off  =3D si->off;
+> -               off -=3D offsetof(struct __sk_buff, data_end);
+> -               off +=3D offsetof(struct sk_buff, cb);
+> -               off +=3D offsetof(struct tcp_skb_cb, bpf.data_end);
+> -               *insn++ =3D BPF_LDX_MEM(BPF_SIZEOF(void *), si->dst_reg,
+> -                                     si->src_reg, off);
+> +               insn =3D bpf_convert_data_end_access(si, insn);
 
-I still think that the patching code should be fixed as well,
-even if it's a separate issue.
+This generates a new warning:
 
-But I got the attitude.
+../net/core/filter.c: In function =E2=80=98sk_skb_convert_ctx_access=E2=80=
+=99:
+../net/core/filter.c:9542:6: warning: unused variable =E2=80=98off=E2=80=99=
+ [-Wunused-variable]
+ 9542 |  int off;
+      |      ^~~
 
- > This means that the real problem is that zero extension kicks in at
- > all. This happens because clear_caller_saved_regs() sets BPF_REG_0's
- > subreg_def after global function calls. This can be fixed in many
- > ways; this patch mimics what helper function call handling already
- > does.
+--
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
- > [1] https://lore.kernel.org/bpf/20200903140542.156624-1-yauheni.kaliuta@redhat.com/
- > [2]
- > https://lore.kernel.org/bpf/CAADnVQ+2RPKcftZw8d+B1UwB35cpBhpF5u3OocNh90D9pETPwg@mail.gmail.com/
-
- > Fixes: 51c39bb1d5d1 ("bpf: Introduce function-by-function verification")
- > Reported-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
- > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
- > ---
- >  kernel/bpf/verifier.c | 3 ++-
- >  1 file changed, 2 insertions(+), 1 deletion(-)
-
- > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
- > index beae700bb56e..183fae996ad0 100644
- > --- a/kernel/bpf/verifier.c
- > +++ b/kernel/bpf/verifier.c
- > @@ -5211,8 +5211,9 @@ static int check_func_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
- >  					subprog);
- >  			clear_caller_saved_regs(env, caller->regs);
- 
- > -			/* All global functions return SCALAR_VALUE */
- > +			/* All global functions return a 64-bit SCALAR_VALUE */
- >  			mark_reg_unknown(env, caller->regs, BPF_REG_0);
- > +			caller->regs[BPF_REG_0].subreg_def = DEF_NOT_SUBREG;
- 
- >  			/* continue with next insn after call */
- >  			return 0;
- > -- 
-
- > 2.29.2
-
-
--- 
-WBR,
-Yauheni Kaliuta
-
+www.cloudflare.com
