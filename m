@@ -2,76 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 404DD3199EC
-	for <lists+bpf@lfdr.de>; Fri, 12 Feb 2021 07:25:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31A0E3199ED
+	for <lists+bpf@lfdr.de>; Fri, 12 Feb 2021 07:26:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229675AbhBLGZe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Feb 2021 01:25:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47218 "EHLO
+        id S229691AbhBLGZw (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Feb 2021 01:25:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbhBLGZc (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Feb 2021 01:25:32 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B1A3C061574
-        for <bpf@vger.kernel.org>; Thu, 11 Feb 2021 22:24:52 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id e18so10239946lja.12
-        for <bpf@vger.kernel.org>; Thu, 11 Feb 2021 22:24:52 -0800 (PST)
+        with ESMTP id S229674AbhBLGZu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Feb 2021 01:25:50 -0500
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54D39C061756
+        for <bpf@vger.kernel.org>; Thu, 11 Feb 2021 22:25:10 -0800 (PST)
+Received: by mail-lj1-x22e.google.com with SMTP id g21so3744932ljl.3
+        for <bpf@vger.kernel.org>; Thu, 11 Feb 2021 22:25:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=AvyRMHBm9gtXtfvrKVWZYuV4qys6+kM9QiqMsPcCJyU=;
-        b=tATCQlkjRwAG2mWAOoHMat3np5ci1Xy5ytrAq16GOQKTq0H4b02rk1sXWW96TD00ql
-         i3oO1AMhUlsba/jvi4thxu2jV8cgFbv5BOpUnZSbLHsl6WYIJrHnYYceSLtSFoao7zMZ
-         eAmB5jeuOJol2y9CaQjDI4LBpKNmxkL+13Pbh+gpadbuHMqQ3/6FZkTBgldewAFy+kOT
-         mWBrkUN8OO/KtoSXOkfIFRQCh2X6F8UbURN8pu89UdLBxjYuuHm4Fe1mEZWOlUE4nOqH
-         j1FR0t3Vxk8vO87WhbgowNueRQVPnIl6cY/Ep2s4tvw50FRPIEz6JWRVU1Wu0rr/YZLx
-         7LrQ==
+        bh=zYqt1QM/7f1kV9t9UjXibrj9N0cw2sbo+dJNlMn+sj8=;
+        b=QX4pxLnqmkUriiyLUzyZ4CCyj979uhVgyb/E5SJyNOxd91T5ETXuutn4QpxrZYhhmA
+         xmXzDJZSNtlYGrkcztvPnqKW3vkPXT3DSAHs1HFmwQV6Z2poqHNjN8xPSBzDMTLqonue
+         hs1WrWG+7oeFGGM3Ke1+zcUOTQyLQWHL6zbaOzV6jrEM2Mu4AitTArLIoet9vD3F9Wv0
+         lCC1wwGpQiEmEaopPH0BEuO1eF2zVJGe3zGvLXjUB5ZGYb64bM26foTa10Spv+Zm1rV2
+         V67ZEF4nfHlP1zHlNdMe2XMFcpHpcAwx24eht0F6a3vZx4iEmmFPwYQANvqbp7pS2Sl+
+         bFHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=AvyRMHBm9gtXtfvrKVWZYuV4qys6+kM9QiqMsPcCJyU=;
-        b=adxG+lXu0J32JUgqbOdEyqoFgF9ZzBsKuDfQ/EqII0Lc+vJHo1bVXy0wt0GMQSRvts
-         gsS1pI95rw5ZUdeVcjlYdoqox/QcLgg/qFKUw7/UZt+KsUFHEHwN2Nod0I2aAd7qMw/y
-         uD55Zp/N1p9gpQqnx5Kz6O8qqe6IISIQyil3ltSx7Anfo2PUelCV2Q6oKjic3bRz6JIb
-         Uw6auYKnLGRB32axiU8y6gujWkU5jAFbr8/BYPezlYP48qHBIPJxoM7Kryw1XVWOIadP
-         umhNDX0sF8oEUhT2DFPQeLxplvRKDVUZ0gUOBPgmefKk2XNy/3Tzjm7dfq2UOIWqCfd3
-         H6ew==
-X-Gm-Message-State: AOAM530TsAFmIRcMWuF3ftoIQgA5bKNc7mIF7v7z8gtUmOgRqF4aRx9S
-        ctDB1U9InitAqSd7zKxrleNcFyj0Ar+0C8C9L+4=
-X-Google-Smtp-Source: ABdhPJw/OwK05wZVRujPQ1VM5iq7veXZHQHaWI9fOXM/pnT6zqUNKlfKJ/yyKX0Z6z/SZrlGilAsI5UOYFzfQpRgZJY=
-X-Received: by 2002:a2e:596:: with SMTP id 144mr838537ljf.258.1613111090960;
- Thu, 11 Feb 2021 22:24:50 -0800 (PST)
+        bh=zYqt1QM/7f1kV9t9UjXibrj9N0cw2sbo+dJNlMn+sj8=;
+        b=m5p9bnL8cG1u9d9qGSyZA3H8o04c1aqJQthHdzh0AfKqsGZwrJ8OTMqoPJyrAsVCmY
+         aePqEexx+guMdcMssn75++3+zokebdNgtvrMau03WVoYC2lCk5qa5CYQKPgZqpQ9ul8J
+         u37Hlx9NtPHlEey8pu8X7JJGchCdyDAUpANBry+MNFaDIPOhQxf/s7lohnGql6ueXHdC
+         rkbV6wB01e6En43oaApbvt0VZ6AlQa2x4/X3hbU4acnoNjzd9or0vkXkL3Z4zQ6Loyai
+         qYc+HBgThpYEFmQQ4ShNgBDZwfO+P8MbtDnwTzvsRHe4cIAE280/pM4+IySv6UDrq2M3
+         FEtw==
+X-Gm-Message-State: AOAM533sFJM9DZ6PQvjRXvIUJlaL9ZZvyBuheIiPgaB4xBT7jjqLw7id
+        +hwDKonAXZX7hsakAcQ4rIBx9OmNKB3SoKPsHfE=
+X-Google-Smtp-Source: ABdhPJxHHpza4pQopwXPSJ6nR9l1hsjH0i5neePAVtBnIj483wlyXLz3Gq3PZOF94QTl51yI0BNt2V4JB+C29D7A19k=
+X-Received: by 2002:a2e:700c:: with SMTP id l12mr834641ljc.236.1613111108886;
+ Thu, 11 Feb 2021 22:25:08 -0800 (PST)
 MIME-Version: 1.0
-References: <20210210204502.83429-1-iii@linux.ibm.com>
-In-Reply-To: <20210210204502.83429-1-iii@linux.ibm.com>
+References: <20210210142853.82203-1-iii@linux.ibm.com>
+In-Reply-To: <20210210142853.82203-1-iii@linux.ibm.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 11 Feb 2021 22:24:39 -0800
-Message-ID: <CAADnVQLzyQC4x=yxKDvsdiWHL62BkHZKcYsoiVy-osGmTXP_SQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Fix subreg optimization for BPF_FETCH
+Date:   Thu, 11 Feb 2021 22:24:57 -0800
+Message-ID: <CAADnVQLJ9cdgZw5vryddYU0-f-7ST9JF+crR7HMUmTB7WOdbjg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] docs: bpf: Clarify BPF_CMPXCHG wording
 To:     Ilya Leoshkevich <iii@linux.ibm.com>
 Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         bpf <bpf@vger.kernel.org>,
         Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Brendan Jackman <jackmanb@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 12:45 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+On Wed, Feb 10, 2021 at 6:29 AM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
 >
-> All 32-bit variants of BPF_FETCH (add, and, or, xor, xchg, cmpxchg)
-> define a 32-bit subreg and thus have zext_dst set. Their encoding,
-> however, uses dst_reg field as a base register, which causes
-> opt_subreg_zext_lo32_rnd_hi32() to zero-extend said base register
-> instead of the one the insn really defines (r0 or src_reg).
+> Based on [1], BPF_CMPXCHG should always load the old value into R0. The
+> phrasing in bpf.rst is somewhat ambiguous in this regard, improve it to
+> make this aspect crystal clear.
 >
-> Fix by properly choosing a register being defined, similar to how
-> check_atomic() already does that.
+>   [1] https://lore.kernel.org/bpf/CAADnVQJFcFwxEz=wnV=hkie-EDwa8s5JGbBQeFt1TGux1OihJw@mail.gmail.com/
 >
 > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 
-Applied. Thanks
+Applied.
