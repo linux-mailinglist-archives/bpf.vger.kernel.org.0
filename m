@@ -2,62 +2,81 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D59D131A83C
-	for <lists+bpf@lfdr.de>; Sat, 13 Feb 2021 00:20:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90FEE31A88C
+	for <lists+bpf@lfdr.de>; Sat, 13 Feb 2021 01:04:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231759AbhBLXSZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Feb 2021 18:18:25 -0500
-Received: from www62.your-server.de ([213.133.104.62]:46770 "EHLO
+        id S231946AbhBMADn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Feb 2021 19:03:43 -0500
+Received: from www62.your-server.de ([213.133.104.62]:51490 "EHLO
         www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231359AbhBLXSX (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Feb 2021 18:18:23 -0500
-Received: from sslproxy02.your-server.de ([78.47.166.47])
+        with ESMTP id S231613AbhBMADi (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Feb 2021 19:03:38 -0500
+Received: from 30.101.7.85.dynamic.wline.res.cust.swisscom.ch ([85.7.101.30] helo=localhost)
         by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
         (Exim 4.92.3)
         (envelope-from <daniel@iogearbox.net>)
-        id 1lAhgx-0002Zs-7R; Sat, 13 Feb 2021 00:17:39 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lAhgx-000FsS-1k; Sat, 13 Feb 2021 00:17:39 +0100
-Subject: Re: [PATCH bpf] devmap: Use GFP_KERNEL for xdp bulk queue allocation
-To:     =?UTF-8?B?Tk9NVVJBIEpVTklDSEko6YeO5p2R44CA5rez5LiAKQ==?= 
-        <junichi.nomura@nec.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Cc:     "ast@kernel.org" <ast@kernel.org>,
-        "toke@redhat.com" <toke@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210209082451.GA44021@jeru.linux.bs1.fc.nec.co.jp>
+        id 1lAiOj-0005lt-Rv; Sat, 13 Feb 2021 01:02:54 +0100
 From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <0692ede4-1f1e-2a19-db02-024c47f93202@iogearbox.net>
-Date:   Sat, 13 Feb 2021 00:17:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, daniel@iogearbox.net, ast@kernel.org,
+        andrii@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: pull-request: bpf 2021-02-13
+Date:   Sat, 13 Feb 2021 01:02:53 +0100
+Message-Id: <20210213000253.28706-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <20210209082451.GA44021@jeru.linux.bs1.fc.nec.co.jp>
-Content-Type: text/plain; charset=iso-2022-jp; format=flowed; delsp=yes
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.102.4/26078/Fri Feb 12 13:15:26 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/9/21 9:24 AM, NOMURA JUNICHI($BLnB<!!=_0l(B) wrote:
-> The devmap bulk queue is allocated with GFP_ATOMIC and the allocation may
-> fail if there is no available space in existing percpu pool.
-> 
-> Since commit 75ccae62cb8d42 ("xdp: Move devmap bulk queue into struct net_device")
-> moved the bulk queue allocation to NETDEV_REGISTER callback, whose context
-> is allowed to sleep, use GFP_KERNEL instead of GFP_ATOMIC to let percpu
-> allocator extend the pool when needed and avoid possible failure of netdev
-> registration.
-> 
-> As the required alignment is natural, we can simply use alloc_percpu().
-> 
-> Signed-off-by: Jun'ichi Nomura <junichi.nomura@nec.com>
+Hi David, hi Jakub,
 
-Applied, thanks!
+The following pull-request contains BPF updates for your *net* tree.
+
+We've added 2 non-merge commits during the last 3 day(s) which contain
+a total of 2 files changed, 9 insertions(+), 11 deletions(-).
+
+The main changes are:
+
+1) Fix mod32 truncation handling in verifier, from Daniel Borkmann.
+
+2) Fix XDP redirect tests to explicitly use bash, from Björn Töpel.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Alexei Starovoitov, Andrii Nakryiko, John Fastabend
+
+----------------------------------------------------------------
+
+The following changes since commit 291009f656e8eaebbdfd3a8d99f6b190a9ce9deb:
+
+  Merge tag 'pm-5.11-rc8' of git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm (2021-02-10 12:03:35 -0800)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git 
+
+for you to fetch changes up to 9b00f1b78809309163dda2d044d9e94a3c0248a3:
+
+  bpf: Fix truncation handling for mod32 dst reg wrt zero (2021-02-13 00:53:12 +0100)
+
+----------------------------------------------------------------
+Björn Töpel (1):
+      selftests/bpf: Convert test_xdp_redirect.sh to bash
+
+Daniel Borkmann (1):
+      bpf: Fix truncation handling for mod32 dst reg wrt zero
+
+ kernel/bpf/verifier.c                            | 10 ++++++----
+ tools/testing/selftests/bpf/test_xdp_redirect.sh | 10 +++-------
+ 2 files changed, 9 insertions(+), 11 deletions(-)
