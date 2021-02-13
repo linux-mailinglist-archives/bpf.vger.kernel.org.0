@@ -2,126 +2,199 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12FD231A99E
-	for <lists+bpf@lfdr.de>; Sat, 13 Feb 2021 03:10:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C85D131AD30
+	for <lists+bpf@lfdr.de>; Sat, 13 Feb 2021 17:43:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229718AbhBMCKW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Feb 2021 21:10:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229708AbhBMCKV (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Feb 2021 21:10:21 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E06AEC061574
-        for <bpf@vger.kernel.org>; Fri, 12 Feb 2021 18:09:40 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id z7so764964plk.7
-        for <bpf@vger.kernel.org>; Fri, 12 Feb 2021 18:09:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=g61dSmORtMH1xkaVe49/euCkjNUNspnF3AJsyurmKW0=;
-        b=UbM+69SOcAlEE4iPfdGUNWP1vcKTOA7tetgjDuTh5IkZsgAfI4E1q66teq0w51+T26
-         4GxqFcf6v9oIjz4KPIDcJGCtGgYu6wRMYo4Zx8we3HwtONqqaShMhH3DstTx6N/+6aYm
-         le4htzImL6Grcwg5A19pZjHY5oHILCBMWxrNKUY2fKhkheler4KVstvu+gXMk6eSuWBQ
-         1SMAYstJyrrVcPgCnk+VZqM/BxZdJQDRgoG3Xe7qFwD2fEk83gIaNYv2/WVinEDLjnDa
-         5mBHNYHyxLi9lBZREarZuyrBE+MC/6RA8wFZWC/YvsMliiM0xI5piYLDxM8qcRXondKN
-         96AQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=g61dSmORtMH1xkaVe49/euCkjNUNspnF3AJsyurmKW0=;
-        b=SOtdcxUVi/V6KVJe1z7SWBHQYF7VHj7KdkdxT4Wi42pZWm3Ar8RSI+zI9nzaZKVAdi
-         lmB/MScUSzdZiOK+JgaSiYn+PgqVSnZd+259KsRNtEJurMf9Xth0lUoslw2El17ww4bW
-         V65H07XISgWiWV8IazmPi0O5h4Cq7ZSNPRtBIRawa591+tudzS2TFc6jEL21DWhaqSNf
-         OwlqtbHZwMA7FOuPEn5LSsSEJqLO5WoxjltQ0DyEO5jJIIK70w/NJKJDzRIQtgDFye5P
-         M6d4SRv6PHYjKUaAUV1VBDA2VTVuBIEI0izPhCbrSRdd/vFvO9Ph3DOFiGpM57+QJO7n
-         2x7w==
-X-Gm-Message-State: AOAM532bg1OoSooTOtv6V4F2sGxKRrbh2QPwcsssv1FMfVK+XjxiVKDK
-        YpBvNidFTntRncSlSj5ZX3Q=
-X-Google-Smtp-Source: ABdhPJy4kohaZ8ar2/TuBnl8lglzoiZkLOMQgpUYvvfrbVZQTtpQDyrPxJzNo/z+tT57qhf5sFn23g==
-X-Received: by 2002:a17:90b:4acd:: with SMTP id mh13mr5359974pjb.229.1613182180249;
-        Fri, 12 Feb 2021 18:09:40 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:4ab7])
-        by smtp.gmail.com with ESMTPSA id y24sm9968471pfr.152.2021.02.12.18.09.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Feb 2021 18:09:39 -0800 (PST)
-Date:   Fri, 12 Feb 2021 18:09:37 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Dmitrii Banshchikov <me@ubique.spb.ru>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org, rdna@fb.com
-Subject: Re: [PATCH v3 bpf-next 3/4] bpf: Support pointers in global func args
-Message-ID: <20210213020937.g6lt3pczqbjj5h2u@ast-mbp.dhcp.thefacebook.com>
-References: <20210212205642.620788-1-me@ubique.spb.ru>
- <20210212205642.620788-4-me@ubique.spb.ru>
+        id S229714AbhBMQnX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 13 Feb 2021 11:43:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55882 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229647AbhBMQnV (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sat, 13 Feb 2021 11:43:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613234514;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CFzmDa/KGuuQsQx0DDBef7gqPGBnn8UpPfi1reQ/ou0=;
+        b=BkpcxwhJYdsFUt78QU9E/ygeistdjKLtdA6Tplr6dfM4uZWcPks9AUhIj+09gIycj54TDO
+        6yh0ExbgqrcWJjWHC5PIXd54MkYS60F1qoSNpiBIOjVZISmugo+Ql2esT5LclbFgYJPZed
+        wFBgEQOBbIaIekWCyhI1CoDgIefc9xs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-440-1-ysXB80NOS4IRfp614DVw-1; Sat, 13 Feb 2021 11:41:50 -0500
+X-MC-Unique: 1-ysXB80NOS4IRfp614DVw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 848F1192CC41;
+        Sat, 13 Feb 2021 16:41:48 +0000 (UTC)
+Received: from krava (unknown [10.40.192.50])
+        by smtp.corp.redhat.com (Postfix) with SMTP id DD6B31ABE5;
+        Sat, 13 Feb 2021 16:41:44 +0000 (UTC)
+Date:   Sat, 13 Feb 2021 17:41:43 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>, dwarves@vger.kernel.org,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Yonghong Song <yhs@fb.com>, Hao Luo <haoluo@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>
+Subject: Re: [PATCH] btf_encoder: Match ftrace addresses within elf functions
+Message-ID: <YCgBR6c7UdmhNgwr@krava>
+References: <20210212135427.1250224-1-jolsa@redhat.com>
+ <20210212220420.1289014-1-jolsa@kernel.org>
+ <CAEf4BzYN7FnGjEYMDqQFK1LryUi0+cBTqaFXmPU_kBN1jJ+LLg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210212205642.620788-4-me@ubique.spb.ru>
+In-Reply-To: <CAEf4BzYN7FnGjEYMDqQFK1LryUi0+cBTqaFXmPU_kBN1jJ+LLg@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Feb 13, 2021 at 12:56:41AM +0400, Dmitrii Banshchikov wrote:
-> Add an ability to pass a pointer to a type with known size in arguments
-> of a global function. Such pointers may be used to overcome the limit on
-> the maximum number of arguments, avoid expensive and tricky workarounds
-> and to have multiple output arguments.
+On Fri, Feb 12, 2021 at 02:21:04PM -0800, Andrii Nakryiko wrote:
+> On Fri, Feb 12, 2021 at 2:05 PM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > Currently when processing DWARF function, we check its entrypoint
+> > against ftrace addresses, assuming that the ftrace address matches
+> > with function's entrypoint.
+> >
+> > This is not the case on some architectures as reported by Nathan
+> > when building kernel on arm [1].
+> >
+> > Fixing the check to take into account the whole function not
+> > just the entrypoint.
+> >
+> > Most of the is_ftrace_func code was contributed by Andrii.
+> >
+> > [1] https://lore.kernel.org/bpf/20210209034416.GA1669105@ubuntu-m3-large-x86/
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> 
+> LGTM. But see another suggestion below. In either case:
+> 
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> 
+> >  btf_encoder.c | 55 +++++++++++++++++++++++++++++++++++++++++----------
+> >  1 file changed, 45 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/btf_encoder.c b/btf_encoder.c
+> > index b124ec20a689..03242f04c55d 100644
+> > --- a/btf_encoder.c
+> > +++ b/btf_encoder.c
+> > @@ -36,6 +36,7 @@ struct funcs_layout {
+> >  struct elf_function {
+> >         const char      *name;
+> >         unsigned long    addr;
+> > +       unsigned long    size;
+> >         unsigned long    sh_addr;
+> >         bool             generated;
+> >  };
+> > @@ -98,6 +99,7 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym,
+> >
+> >         functions[functions_cnt].name = name;
+> >         functions[functions_cnt].addr = elf_sym__value(sym);
+> > +       functions[functions_cnt].size = elf_sym__size(sym);
+> >         functions[functions_cnt].sh_addr = sh.sh_addr;
+> >         functions[functions_cnt].generated = false;
+> >         functions_cnt++;
+> > @@ -236,6 +238,48 @@ get_kmod_addrs(struct btf_elf *btfe, __u64 **paddrs, __u64 *pcount)
+> >         return 0;
+> >  }
+> >
+> > +static int is_ftrace_func(struct elf_function *func, __u64 *addrs,
+> > +                         __u64 count, bool kmod)
+> > +{
+> > +       /*
+> > +        * For vmlinux image both addrs[x] and functions[x]::addr
+> > +        * values are final address and are comparable.
+> > +        *
+> > +        * For kernel module addrs[x] is final address, but
+> > +        * functions[x]::addr is relative address within section
+> > +        * and needs to be relocated by adding sh_addr.
+> > +        */
+> > +       __u64 start = kmod ? func->addr + func->sh_addr : func->addr;
+> > +       __u64 addr, end = func->addr + func->size;
+> > +
+> > +       /*
+> > +        * The invariant here is addr[r] that is the smallest address
+> > +        * that is >= than function start addr. Except the corner case
+> > +        * where there is no such r, but for that we have a final check
+> > +        * in the return.
+> > +        */
+> > +       size_t l = 0, r = count - 1, m;
+> > +
+> > +       /* make sure we don't use invalid r */
+> > +       if (count == 0)
+> > +               return false;
+> > +
+> > +       while (l < r) {
+> > +               m = l + (r - l) / 2;
+> > +               addr = addrs[m];
+> > +
+> > +               if (addr >= start) {
+> > +                       /* we satisfy invariant, so tighten r */
+> > +                       r = m;
+> > +               } else {
+> > +                       /* m is not good enough as l, maybe m + 1 will be */
+> > +                       l = m + 1;
+> > +               }
+> > +       }
+> > +
+> > +       return start <= addrs[r] && addrs[r] < end;
+> > +}
+> > +
+> >  static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
+> >  {
+> >         __u64 *addrs, count, i;
+> > @@ -275,18 +319,9 @@ static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
+> >          */
+> >         for (i = 0; i < functions_cnt; i++) {
+> >                 struct elf_function *func = &functions[i];
+> > -               /*
+> > -                * For vmlinux image both addrs[x] and functions[x]::addr
+> > -                * values are final address and are comparable.
+> > -                *
+> > -                * For kernel module addrs[x] is final address, but
+> > -                * functions[x]::addr is relative address within section
+> > -                * and needs to be relocated by adding sh_addr.
+> > -                */
+> > -               __u64 addr = kmod ? func->addr + func->sh_addr : func->addr;
+> 
+> if we just...
+> 
+> if (kmod)
+>     func->addr += func->sh_addr;
+> 
+> ... here, that would make is_ftrace_func() free of kmod knowledge. If
+> there are other places that rely on kmod vs non-kmod address of a
+> function, that would be simplified as well, right?
 
-Thanks a lot for adding this feature and exhaustive tests.
-It's a massive improvement in function-by-function verification.
-Hopefully it will increase its adoption.
-I've applied the set to bpf-next.
+yes, this is the only place for now, I'll make the change
 
-> @@ -5349,10 +5352,6 @@ int btf_check_func_arg_match(struct bpf_verifier_env *env, int subprog,
->  			goto out;
->  		}
->  		if (btf_type_is_ptr(t)) {
-> -			if (reg->type == SCALAR_VALUE) {
-> -				bpf_log(log, "R%d is not a pointer\n", i + 1);
-> -				goto out;
-> -			}
+thanks,
+jirka
 
-Thanks for nuking this annoying warning along the way.
-People complained that the verification log for normal static functions
-contains above inexplicable message.
+> 
+> >
+> >                 /* Make sure function is within ftrace addresses. */
+> > -               if (bsearch(&addr, addrs, count, sizeof(addrs[0]), addrs_cmp)) {
+> > +               if (is_ftrace_func(func, addrs, count, kmod)) {
+> >                         /*
+> >                          * We iterate over sorted array, so we can easily skip
+> >                          * not valid item and move following valid field into
+> > --
+> > 2.29.2
+> >
+> 
 
->  			/* If function expects ctx type in BTF check that caller
->  			 * is passing PTR_TO_CTX.
->  			 */
-> @@ -5367,6 +5366,25 @@ int btf_check_func_arg_match(struct bpf_verifier_env *env, int subprog,
->  					goto out;
->  				continue;
->  			}
-> +
-> +			if (!is_global)
-> +				goto out;
-> +
-> +			t = btf_type_skip_modifiers(btf, t->type, NULL);
-> +
-> +			ref_t = btf_resolve_size(btf, t, &type_size);
-> +			if (IS_ERR(ref_t)) {
-> +				bpf_log(log,
-> +				    "arg#%d reference type('%s %s') size cannot be determined: %ld\n",
-> +				    i, btf_type_str(t), btf_name_by_offset(btf, t->name_off),
-> +					PTR_ERR(ref_t));
-
-Hopefully one annoying message won't get replaced with this annoying message :)
-I think the type size should be known most of the time. So it should be fine.
-
-> +		if (btf_type_is_ptr(t)) {
-> +			if (btf_get_prog_ctx_type(log, btf, t, prog_type, i)) {
-> +				reg->type = PTR_TO_CTX;
-> +				continue;
-> +			}
-
-Do you think it would make sense to nuke another message in btf_get_prog_ctx_type ?
-With this newly gained usability of global function the message
-"arg#0 type is not a struct"
-is not useful.
-It was marginally useful in the past. Because global funcs supported
-ptr_to_ctx only it wasn't seen as often.
-Now this message probably can simply be removed. wdyt?
