@@ -2,85 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57DB031A8BE
-	for <lists+bpf@lfdr.de>; Sat, 13 Feb 2021 01:21:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1FC931A98D
+	for <lists+bpf@lfdr.de>; Sat, 13 Feb 2021 02:59:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229718AbhBMAUv (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 12 Feb 2021 19:20:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54562 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229903AbhBMAUu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 12 Feb 2021 19:20:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 455DD64EA0;
-        Sat, 13 Feb 2021 00:20:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613175609;
-        bh=A4jer86Cc9fL9qc19r8SQiSGOBNrgfoe3WMMmyDsMVg=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=bO6ONXXco2qEOxK+ow7/pa66iZ/5Z/fuwfwbDS/zeWaJi040i6XwW/nUYq7eSEwoS
-         318f2PbOjEyaKVfd678pSCvhT6rfHrQGOZrepy8NQnWbPhB/cfwoHgkN5gJkq9Rcx9
-         750wUYivI00IKn5bSzraSUhuFxC2WPm/yHY+z0bjeFaUSmZa84G81MiSX6FbYTnwhu
-         lC/ZHtysjwzkomB2hBG5BqLi1+YwDumH1DzP5KpAWOHPK+nAe7jSyMC3WPb95EHLzN
-         KUOhOurvDM0TqSynbyNnUhYbokKgeH4F8mUzHwdjdqzDayUk3Xq3iVOhsdB/dZdVmY
-         PF4TBi04AclzA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3784160A2A;
-        Sat, 13 Feb 2021 00:20:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S229798AbhBMB7B (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 12 Feb 2021 20:59:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229708AbhBMB7A (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 12 Feb 2021 20:59:00 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10346C061574;
+        Fri, 12 Feb 2021 17:58:15 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id fa16so604971pjb.1;
+        Fri, 12 Feb 2021 17:58:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KErMRR3I5uhgWEjnDaX5OIYebSwYMq6MDxuhVUaC/h8=;
+        b=N37IdC0jsSvkFeSOJtd1gKzt1fkilAV6WQvQiLG8X+9sw7isRwCQW+OyLyAa57jwN8
+         foTEqAe7tmSmbT4V+OWCyWes4pgcQvBV6H+1bJ1jWcTVzje8o03zzgsYP3O8qE+yyPq6
+         fvnI/q4ERC4Rz7uNCv67E5qqX/BbW+0k6wp7UGD1NE07avW3ZzpJPlh12QyfbpgDjm17
+         FWJJBVJEwgS4N0qnlmdHEtbCa4y/mCq3XFexyUSnpuHhkxlYD2mIyVHvzDd0khyi34x1
+         ncFsfkbxtBEsNFTHGhsmCW/fkzEuZi2UOv+U4VbX2extePGr+Mlm6hF3nZ3ccDFuvBGx
+         R8uA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KErMRR3I5uhgWEjnDaX5OIYebSwYMq6MDxuhVUaC/h8=;
+        b=WpJzV4s50vHa2/9eRNKZ8VWBb6ZfmH9y79Zugzr0NapSt9NJVRqGyTpP5B+tNqnNKM
+         m+Y4Yqjkl7lyuJrNz5c1THV+rEVpYf8ZOO1JsN1SejI/H/zf+x8XCeacXmL5StFqP5/S
+         7p5t1t7bt8pfOZqK/uEMn7FAYxyGAdlZ/LooDGiGj+RnmLZT/NDM4u60UlxeybrhZNhF
+         GUcMWO7c4cmC7atUKbG0/BcWAY+XM5j+7E3QKsOKk00xHI/vBpLMBoNcMN3VOE3R0AH+
+         TM9AYEtZ+iyCKjEN36O0L2/cWLfvePnoDeyX7U3Xh9+Cfomzte5ar++iLjHU/9sN9j6I
+         GLhQ==
+X-Gm-Message-State: AOAM533tdBQJHC6i+O+tXkhgXiSIA7XPBJI4xG2geoN37NHlj0R4B2rX
+        PFNd7dHfJueEuaH7YAR3+LjAzsDIM33b2skU3Mk=
+X-Google-Smtp-Source: ABdhPJwsDe9AQYOLJrUdtwlcgLJFy5E+h3Y85TIZ+w6sK1srJStzBTkyFjfLStk860zQ/vzBQbDgb+EvxMvakkd2ulE=
+X-Received: by 2002:a17:903:114:b029:e2:f8fb:b6a1 with SMTP id
+ y20-20020a1709030114b02900e2f8fbb6a1mr5073239plc.77.1613181494523; Fri, 12
+ Feb 2021 17:58:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next V16 0/7] bpf: New approach for BPF MTU handling
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161317560922.26527.12147444743341964387.git-patchwork-notify@kernel.org>
-Date:   Sat, 13 Feb 2021 00:20:09 +0000
-References: <161287779408.790810.15631860742170694244.stgit@firesoul>
-In-Reply-To: <161287779408.790810.15631860742170694244.stgit@firesoul>
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        borkmann@iogearbox.net, alexei.starovoitov@gmail.com,
-        maze@google.com, lmb@cloudflare.com, shaun@tigera.io,
-        lorenzo@kernel.org, marek@cloudflare.com, john.fastabend@gmail.com,
-        kuba@kernel.org, eyal.birger@gmail.com, colrack@gmail.com
+References: <20210210022136.146528-1-xiyou.wangcong@gmail.com>
+ <20210210022136.146528-3-xiyou.wangcong@gmail.com> <CACAyw98HxkT99rA-PDSGqOyRgSxGoye_LQqR2FmK8M3KwgY+JQ@mail.gmail.com>
+ <CAM_iQpUvaFry3Pj+tWoM9npMrARfQ=O=tmg7SkwC+m54G0T6Yg@mail.gmail.com>
+In-Reply-To: <CAM_iQpUvaFry3Pj+tWoM9npMrARfQ=O=tmg7SkwC+m54G0T6Yg@mail.gmail.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Fri, 12 Feb 2021 17:58:03 -0800
+Message-ID: <CAM_iQpUkNA0D8vokqvjLgH3bv6vkKvNoz4Jg149dDnDjFH+qCA@mail.gmail.com>
+Subject: Re: [Patch bpf-next v2 2/5] skmsg: get rid of struct sk_psock_parser
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        duanxiongchun@bytedance.com,
+        Dongdong Wang <wangdongdong.6@bytedance.com>,
+        jiang.wang@bytedance.com, Cong Wang <cong.wang@bytedance.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
+On Fri, Feb 12, 2021 at 11:09 AM Cong Wang <xiyou.wangcong@gmail.com> wrote:
+>
+> On Fri, Feb 12, 2021 at 2:56 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+> >
+> > On Wed, 10 Feb 2021 at 02:21, Cong Wang <xiyou.wangcong@gmail.com> wrote:
+> > >
+> > > From: Cong Wang <cong.wang@bytedance.com>
+> > >
+> > > struct sk_psock_parser is embedded in sk_psock, it is
+> > > unnecessary as skb verdict also uses ->saved_data_ready.
+> > > We can simply fold these fields into sk_psock, and get rid
+> > > of ->enabled.
+> >
+> > Looks nice, can you use sk_psock_strp_enabled() more? There are a
+> > couple places in sock_map.c which test psock->saved_data_ready
+> > directly.
+>
+> Its name tells it is for stream parser, so not suitable for others.
+>
+> Are you suggesting to rename it to sk_psock_enabled() and use
+> it? Note it still has an additional !psock test, but I think that is fine
+> for slow paths.
 
-This series was applied to bpf/bpf-next.git (refs/heads/master):
+Well, I think it is a bug, sk_psock_strp_enabled() probably means
+to check whether progs.stream_verdict is running, not whether
+any of these progs is running. So, I'd leave this untouched in this
+patchset and if needed a separate bug fix should be sent to -net.
 
-On Tue, 09 Feb 2021 14:38:04 +0100 you wrote:
-> This patchset drops all the MTU checks in TC BPF-helpers that limits
-> growing the packet size. This is done because these BPF-helpers doesn't
-> take redirect into account, which can result in their MTU check being done
-> against the wrong netdev.
-> 
-> The new approach is to give BPF-programs knowledge about the MTU on a
-> netdev (via ifindex) and fib route lookup level. Meaning some BPF-helpers
-> are added and extended to make it possible to do MTU checks in the
-> BPF-code.
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next,V16,1/7] bpf: Remove MTU check in __bpf_skb_max_len
-    https://git.kernel.org/bpf/bpf-next/c/6306c1189e77
-  - [bpf-next,V16,2/7] bpf: fix bpf_fib_lookup helper MTU check for SKB ctx
-    https://git.kernel.org/bpf/bpf-next/c/2c0a10af688c
-  - [bpf-next,V16,3/7] bpf: bpf_fib_lookup return MTU value as output when looked up
-    https://git.kernel.org/bpf/bpf-next/c/e1850ea9bd9e
-  - [bpf-next,V16,4/7] bpf: add BPF-helper for MTU checking
-    https://git.kernel.org/bpf/bpf-next/c/34b2021cc616
-  - [bpf-next,V16,5/7] bpf: drop MTU check when doing TC-BPF redirect to ingress
-    https://git.kernel.org/bpf/bpf-next/c/5f7d57280c19
-  - [bpf-next,V16,6/7] selftests/bpf: use bpf_check_mtu in selftest test_cls_redirect
-    https://git.kernel.org/bpf/bpf-next/c/6b8838be7e21
-  - [bpf-next,V16,7/7] selftests/bpf: tests using bpf_check_mtu BPF-helper
-    https://git.kernel.org/bpf/bpf-next/c/b62eba563229
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Thanks.
