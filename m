@@ -2,188 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67BBC31C038
-	for <lists+bpf@lfdr.de>; Mon, 15 Feb 2021 18:14:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01AD631C0C8
+	for <lists+bpf@lfdr.de>; Mon, 15 Feb 2021 18:41:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230420AbhBORNO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Feb 2021 12:13:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232525AbhBORMz (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Feb 2021 12:12:55 -0500
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3887C061574
-        for <bpf@vger.kernel.org>; Mon, 15 Feb 2021 09:12:15 -0800 (PST)
-Received: by mail-qk1-x74a.google.com with SMTP id b125so2732514qkf.19
-        for <bpf@vger.kernel.org>; Mon, 15 Feb 2021 09:12:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=AdXasaDzn6aBUh486v66coR52m5c40x50FUPTwcwjnk=;
-        b=FmmQSa+QIfOn4nkWJ33Z3+R4n1YzoTHtWGzbrj1oKT1nEdamJAqZ2zlMN1LEmjQwEM
-         3TnCKu0FcC5pl5Ru2XMmF3odwUWOXkE2cPVVUcpBeEFRDKih9AbDzaTv95mQ+p5OmKqD
-         IwizU7pGeo7riIjc8ud6Edq475yY5gxUMRw3SNqQsqlm1KgPlMMfJ6vU/dQL0nCLZutd
-         LgGPeoclBzSLqBmsz1ZXsQl0xQ1h9PA035qzMjOQcEYOnkbWR5FlzUl8+Xq9xkA4fQAR
-         18oaiEbkAye2SdwKmF3lLPKzoSsrltJQJ8AWm46z1jGbNeVZld9iqpIq1/ZgNGBHY6iI
-         Imiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=AdXasaDzn6aBUh486v66coR52m5c40x50FUPTwcwjnk=;
-        b=C411EO5/KlWB0kzuW9LsNZ838FAN06/ZgCoWxKZe+ElR4QQJLlZgzuwMBkgzD0qtOG
-         F1v3rS2igJgFZmVEwEghfmsDy9XaKqj92FnzwqxJnwT48osiZfFaaeuAXtCU5Z1LOe0x
-         hGCYdWJkWOKDvXVp+SjLJtXsr+3YfWaIyJw064JeslgegNTIEPH9j3pPQnmK1v66rPMh
-         vJEJ+xI+TWUCGnStOavC+S4e9mKo2xYeyAMtMUr/JOOd6h5s7V3xCOfrYcWBIOS+1OeS
-         sjLOCGa7myvR3IFERd5WckWLXJduNp6cL7dNvuHnShJvii+FxhuJ5SQZqumsPYZnZKFU
-         tF1Q==
-X-Gm-Message-State: AOAM531aDmVMWePz1c/sqYdl1DmGvKDdgS6gmjpsY/f+hs6NM2vftRgl
-        450V5qOmxgNZFRwEBh52KqDBr7glRcplIjc8ByGAXvunlnHzPlkdzTacYvZ7Yg2GPYzzU0c5shj
-        z3PDCPkJ6y4g240AiwmYSdppbRemw+M4UDubBpK91eCucSPDQzm+sMlwrbTgCgNk=
-X-Google-Smtp-Source: ABdhPJwV/Dt/xFxO4X9kJNyvquI20VIBstxV7L7UEEmAZFpLLrfHlKRhkpRiWM0R54MCf4eXEGICJSdSXmRtZg==
-Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
-X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
- (user=jackmanb job=sendgmr) by 2002:a0c:a282:: with SMTP id
- g2mr4912313qva.14.1613409134928; Mon, 15 Feb 2021 09:12:14 -0800 (PST)
-Date:   Mon, 15 Feb 2021 17:12:08 +0000
-Message-Id: <20210215171208.1181305-1-jackmanb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-Subject: [PATCH bpf-next] bpf: x86: Explicitly zero-extend rax after 32-bit cmpxchg
-From:   Brendan Jackman <jackmanb@google.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Brendan Jackman <jackmanb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S230295AbhBORkb (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Feb 2021 12:40:31 -0500
+Received: from mga14.intel.com ([192.55.52.115]:34425 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231240AbhBORjg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Feb 2021 12:39:36 -0500
+IronPort-SDR: AWpQObXPzsC8UM/KizM5n3ugGdKKyb9lwWsVIGL5tPFLJgiIx10K75j+bokcZyg8/H+iTK940J
+ Ybs5nM+pF8Dg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9896"; a="181951453"
+X-IronPort-AV: E=Sophos;i="5.81,181,1610438400"; 
+   d="scan'208";a="181951453"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2021 09:38:54 -0800
+IronPort-SDR: 5dbHVzqD9yQEYHH+BVSwadyPXMdAfqfFtOchrAcua8vl1oeo3tTMUyhPGch6XAcUuLW1VrcTsU
+ ga5CRXwcC/kg==
+X-IronPort-AV: E=Sophos;i="5.81,181,1610438400"; 
+   d="scan'208";a="399159724"
+Received: from wwantka-mobl2.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.252.54.83])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2021 09:38:51 -0800
+Subject: Re: [PATCH bpf-next 1/3] libbpf: xsk: use bpf_link
+To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        daniel@iogearbox.net, ast@kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     andrii@kernel.org, magnus.karlsson@intel.com,
+        ciara.loftus@intel.com
+References: <20210215154638.4627-1-maciej.fijalkowski@intel.com>
+ <20210215154638.4627-2-maciej.fijalkowski@intel.com> <87eehhcl9x.fsf@toke.dk>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Message-ID: <fe0c957e-d212-4265-a271-ba301c3c5eca@intel.com>
+Date:   Mon, 15 Feb 2021 18:38:46 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+MIME-Version: 1.0
+In-Reply-To: <87eehhcl9x.fsf@toke.dk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-As pointed out by Ilya and explained in the new comment, there's a
-discrepancy between x86 and BPF CMPXCHG semantics: BPF always loads
-the value from memory into r0, while x86 only does so when r0 and the
-value in memory are different.
+On 2021-02-15 18:07, Toke Høiland-Jørgensen wrote:
+> Maciej Fijalkowski <maciej.fijalkowski@intel.com> writes:
+> 
+>> Currently, if there are multiple xdpsock instances running on a single
+>> interface and in case one of the instances is terminated, the rest of
+>> them are left in an inoperable state due to the fact of unloaded XDP
+>> prog from interface.
+>>
+>> To address that, step away from setting bpf prog in favour of bpf_link.
+>> This means that refcounting of BPF resources will be done automatically
+>> by bpf_link itself.
+>>
+>> When setting up BPF resources during xsk socket creation, check whether
+>> bpf_link for a given ifindex already exists via set of calls to
+>> bpf_link_get_next_id -> bpf_link_get_fd_by_id -> bpf_obj_get_info_by_fd
+>> and comparing the ifindexes from bpf_link and xsk socket.
+> 
+> One consideration here is that bpf_link_get_fd_by_id() is a privileged
+> operation (privileged as in CAP_SYS_ADMIN), so this has the side effect
+> of making AF_XDP privileged as well. Is that the intention?
+>
 
-At first this might sound like pure semantics, but it makes a real
-difference when the comparison is 32-bit, since the load will
-zero-extend r0/rax.
+We're already using, e.g., bpf_map_get_fd_by_id() which has that
+as well. So we're assuming that for XDP setup already!
 
-The fix is to explicitly zero-extend rax after doing such a CMPXCHG.
+> Another is that the AF_XDP code is in the process of moving to libxdp
+> (see in-progress PR [0]), and this approach won't carry over as-is to
+> that model, because libxdp has to pin the bpf_link fds.
+>
 
-Note that this doesn't generate totally optimal code: at one of
-emit_atomic's callsites (where BPF_{AND,OR,XOR} | BPF_FETCH are
-implemented), the new mov is superfluous because there's already a
-mov generated afterwards that will zero-extend r0. We could avoid
-this unnecessary mov by just moving the new logic outside of
-emit_atomic. But I think it's simpler to keep emit_atomic as a unit
-of correctness (it generates the correct x86 code for a certain set
-of BPF instructions, no further knowledge is needed to use it
-correctly).
+I was assuming there were two modes of operations for AF_XDP in libxdp.
+One which is with the multi-program support (which AFAIK is why the
+pinning is required), and one "like the current libbpf" one. For the
+latter Maciej's series would be a good fit, no?
 
-Reported-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Fixes: 5ffa25502b5a ("bpf: Add instructions for atomic_[cmp]xchg")
-Signed-off-by: Brendan Jackman <jackmanb@google.com>
----
- arch/x86/net/bpf_jit_comp.c                   | 10 +++++++
- .../selftests/bpf/verifier/atomic_cmpxchg.c   | 25 ++++++++++++++++++
- .../selftests/bpf/verifier/atomic_or.c        | 26 +++++++++++++++++++
- 3 files changed, 61 insertions(+)
+> However, in libxdp we can solve the original problem in a different way,
+> and in fact I already suggested to Magnus that we should do this (see
+> [1]); so one way forward could be to address it during the merge in
+> libxdp? It should be possible to address the original issue (two
+> instances of xdpsock breaking each other when they exit), but
+> applications will still need to do an explicit unload operation before
+> exiting (i.e., the automatic detach on bpf_link fd closure will take
+> more work, and likely require extending the bpf_link kernel support)...
+>
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 79e7a0ec1da5..7919d5c54164 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -834,6 +834,16 @@ static int emit_atomic(u8 **pprog, u8 atomic_op,
- 
- 	emit_insn_suffix(&prog, dst_reg, src_reg, off);
- 
-+	if (atomic_op == BPF_CMPXCHG && bpf_size == BPF_W) {
-+		/*
-+		 * BPF_CMPXCHG unconditionally loads into R0, which means it
-+		 * zero-extends 32-bit values. However x86 CMPXCHG doesn't do a
-+		 * load if the comparison is successful. Therefore zero-extend
-+		 * explicitly.
-+		 */
-+		emit_mov_reg(&prog, false, BPF_REG_0, BPF_REG_0);
-+	}
-+
- 	*pprog = prog;
- 	return 0;
- }
-diff --git a/tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c b/tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c
-index 2efd8bcf57a1..6e52dfc64415 100644
---- a/tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c
-+++ b/tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c
-@@ -94,3 +94,28 @@
- 	.result = REJECT,
- 	.errstr = "invalid read from stack",
- },
-+{
-+	"BPF_W cmpxchg should zero top 32 bits",
-+	.insns = {
-+		/* r0 = U64_MAX; */
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
-+		BPF_ALU64_IMM(BPF_SUB, BPF_REG_0, 1),
-+		/* u64 val = r0; */
-+		BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_0, -8),
-+		/* r0 = (u32)atomic_cmpxchg((u32 *)&val, r0, 1); */
-+		BPF_MOV32_IMM(BPF_REG_1, 1),
-+		BPF_ATOMIC_OP(BPF_W, BPF_CMPXCHG, BPF_REG_10, BPF_REG_1, -8),
-+		/* r1 = 0x00000000FFFFFFFFull; */
-+		BPF_MOV64_IMM(BPF_REG_1, 1),
-+		BPF_ALU64_IMM(BPF_LSH, BPF_REG_1, 32),
-+		BPF_ALU64_IMM(BPF_SUB, BPF_REG_1, 1),
-+		/* if (r0 != r1) exit(1); */
-+		BPF_JMP_REG(BPF_JEQ, BPF_REG_0, BPF_REG_1, 2),
-+		BPF_MOV32_IMM(BPF_REG_0, 1),
-+		BPF_EXIT_INSN(),
-+		/* exit(0); */
-+		BPF_MOV32_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	},
-+	.result = ACCEPT,
-+},
-diff --git a/tools/testing/selftests/bpf/verifier/atomic_or.c b/tools/testing/selftests/bpf/verifier/atomic_or.c
-index 70f982e1f9f0..e0811eb11542 100644
---- a/tools/testing/selftests/bpf/verifier/atomic_or.c
-+++ b/tools/testing/selftests/bpf/verifier/atomic_or.c
-@@ -75,3 +75,29 @@
- 	},
- 	.result = ACCEPT,
- },
-+{
-+	"BPF_W atomic or should zero top 32 bits",
-+	.insns = {
-+		/* r1 = U64_MAX; */
-+		BPF_MOV64_IMM(BPF_REG_1, 0),
-+		BPF_ALU64_IMM(BPF_SUB, BPF_REG_1, 1),
-+		/* u64 val = r0; */
-+		BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_1, -8),
-+		/* r1 = (u32)atomic_sub((u32 *)&val, 1); */
-+		BPF_MOV32_IMM(BPF_REG_1, 2),
-+		BPF_ATOMIC_OP(BPF_W, BPF_OR | BPF_FETCH, BPF_REG_10, BPF_REG_1, -8),
-+		/* r2 = 0x00000000FFFFFFFF; */
-+		BPF_MOV64_IMM(BPF_REG_2, 1),
-+		BPF_ALU64_IMM(BPF_LSH, BPF_REG_2, 32),
-+		BPF_ALU64_IMM(BPF_SUB, BPF_REG_2, 1),
-+		/* if (r2 != r1) exit(1); */
-+		BPF_JMP_REG(BPF_JEQ, BPF_REG_2, BPF_REG_1, 2),
-+		/* BPF_MOV32_IMM(BPF_REG_0, 1), */
-+		BPF_MOV64_REG(BPF_REG_0, BPF_REG_1),
-+		BPF_EXIT_INSN(),
-+		/* exit(0); */
-+		BPF_MOV32_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	},
-+	.result = ACCEPT,
-+},
+I'd say it's depending on the libbpf 1.0/libxdp merge timeframe. If
+we're months ahead, then I'd really like to see this in libbpf until the
+merge. However, I'll leave that for Magnus/you to decide!
 
-base-commit: 5e1d40b75ed85ecd76347273da17e5da195c3e96
--- 
-2.30.0.478.g8a0d178c01-goog
+Bottom line; I'd *really* like bpf_link behavior (process scoped) for
+AF_XDP sooner than later! ;-)
 
+
+Thanks for the input!
+Björn
+
+
+> -Toke
+> 
+> [0] https://github.com/xdp-project/xdp-tools/pull/92
+> [1] https://github.com/xdp-project/xdp-tools/pull/92#discussion_r576204719
+> 
