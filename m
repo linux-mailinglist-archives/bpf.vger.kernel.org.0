@@ -2,92 +2,110 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE7231BE81
-	for <lists+bpf@lfdr.de>; Mon, 15 Feb 2021 17:13:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C03231C028
+	for <lists+bpf@lfdr.de>; Mon, 15 Feb 2021 18:11:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231613AbhBOQMQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Feb 2021 11:12:16 -0500
-Received: from mga01.intel.com ([192.55.52.88]:48700 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232512AbhBOQIm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Feb 2021 11:08:42 -0500
-IronPort-SDR: ZtTs3yYrOlrlZgG/i7nMbvKMubmIVtUANt7jCyJVnecb5Lz7/7NnVyJgv34kmmykJRtBmk6j2v
- t75fjT+Rdmyg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9896"; a="201889627"
-X-IronPort-AV: E=Sophos;i="5.81,181,1610438400"; 
-   d="scan'208";a="201889627"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2021 08:08:01 -0800
-IronPort-SDR: Y5W9vSJkAEp2u3X2x4TzcJh3aaw8ur1VxdtABIAheOyl6FvYV26EmyAWfC7KVtv3QGJvsW4NUc
- kn4mdCvHuoGA==
-X-IronPort-AV: E=Sophos;i="5.81,181,1610438400"; 
-   d="scan'208";a="399129104"
-Received: from wwantka-mobl2.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.252.54.83])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2021 08:07:58 -0800
-Subject: Re: [PATCH bpf-next 0/3] Introduce bpf_link in libbpf's xsk
+        id S231288AbhBORKu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Feb 2021 12:10:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39998 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231804AbhBORIy (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 15 Feb 2021 12:08:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613408848;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VtQLGfCRGP7Cl7zKoEWsA+OESxLic5t9ZlIxij1ea/w=;
+        b=GjGLQbfXDL4xO9VJKjV+j0kmnmw1xLeFDtxFoK5AzAeVbBXi6il68IUkqIkXqSpOswIy83
+        Ry5g68wJvoW3/fte0tw2INvjYG4CJhda3GosaBwXw5rQ8TriM6VLROayS+9q021paYdpl0
+        o1YNl9OkrH5cNdAE87wsACkohnTtoVA=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-37-N86Y4iqoMpSJgmgdWPJtPg-1; Mon, 15 Feb 2021 12:07:24 -0500
+X-MC-Unique: N86Y4iqoMpSJgmgdWPJtPg-1
+Received: by mail-ed1-f69.google.com with SMTP id m16so5566737edd.21
+        for <bpf@vger.kernel.org>; Mon, 15 Feb 2021 09:07:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=VtQLGfCRGP7Cl7zKoEWsA+OESxLic5t9ZlIxij1ea/w=;
+        b=fmYFOpfFeJ6RvaJSlg5V47pIDU1+Hp1ClcF7VC8QW1F1z7xEQWuR2ci/JwrT9dkByO
+         F/ZzPwe2YAFlb3TT3rHmeaArosG7Cks6mSsrgdXSwCQR3yq7qWNpUZOI+opESuppegZC
+         frSl8nZpDpg6dCHKDsUnrQ/ZaX2wATHMLryBAwCRMLrTmu6vmYS71NEkk4qfzcdvQKQD
+         oUZQFbuGV0UKhQJHXNov/8Qk9luVVUVmVbL49xOVub5LPKsMk7VjHJkouvPHY1SVFigb
+         lNMCvvyHI06eCIwVV8esTtqR5jl2VC0QvCG3oqC/JLI9kWtNHWhBEWP7J3FAMiSCXovY
+         V7EQ==
+X-Gm-Message-State: AOAM531Me9LE76GEkRqvEkDB6CAWfbDPhpwU1LjwjK4dsdAovb+Ab7gS
+        n4P2AfuxMOwfNAnIZ0926pLh5fnb6HtY7gGEhGCR4eOwqDp2FiSuf22GxFEF9KwFLTbpfPRDDiW
+        ssfQDUWUPCA9S
+X-Received: by 2002:a17:906:380b:: with SMTP id v11mr4891585ejc.183.1613408843367;
+        Mon, 15 Feb 2021 09:07:23 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwsoqJX27QEBb6nYQEKeQD+kS5OZbm0WHQ2fMNqjw9uc4sKG6SQTeBOimlyS/YdsJs+vThfSw==
+X-Received: by 2002:a17:906:380b:: with SMTP id v11mr4891555ejc.183.1613408843142;
+        Mon, 15 Feb 2021 09:07:23 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id k27sm11100279eje.67.2021.02.15.09.07.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Feb 2021 09:07:22 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 407D51805FB; Mon, 15 Feb 2021 18:07:22 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
         daniel@iogearbox.net, ast@kernel.org, bpf@vger.kernel.org,
         netdev@vger.kernel.org
-Cc:     andrii@kernel.org, toke@redhat.com, magnus.karlsson@intel.com,
-        ciara.loftus@intel.com
+Cc:     andrii@kernel.org, bjorn.topel@intel.com,
+        magnus.karlsson@intel.com, ciara.loftus@intel.com,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: Re: [PATCH bpf-next 1/3] libbpf: xsk: use bpf_link
+In-Reply-To: <20210215154638.4627-2-maciej.fijalkowski@intel.com>
 References: <20210215154638.4627-1-maciej.fijalkowski@intel.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
-Message-ID: <3a625c8b-6dc0-3933-25e5-f747197ae1f4@intel.com>
-Date:   Mon, 15 Feb 2021 17:07:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+ <20210215154638.4627-2-maciej.fijalkowski@intel.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 15 Feb 2021 18:07:22 +0100
+Message-ID: <87eehhcl9x.fsf@toke.dk>
 MIME-Version: 1.0
-In-Reply-To: <20210215154638.4627-1-maciej.fijalkowski@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2021-02-15 16:46, Maciej Fijalkowski wrote:
-> Hi,
-> 
-> This set is another approach towards addressing the below issue:
-> 
-> // load xdp prog and xskmap and add entry to xskmap at idx 10
-> $ sudo ./xdpsock -i ens801f0 -t -q 10
-> 
-> // add entry to xskmap at idx 11
-> $ sudo ./xdpsock -i ens801f0 -t -q 11
-> 
-> terminate one of the processes and another one is unable to work due to
-> the fact that the XDP prog was unloaded from interface.
-> 
-> Previous attempt was, to put it mildly, a bit broken, as there was no
-> synchronization between updates to additional map, as Bjorn pointed out.
-> See https://lore.kernel.org/netdev/20190603131907.13395-5-maciej.fijalkowski@intel.com/
-> 
-> In the meantime bpf_link was introduced and it seems that it can address
-> the issue of refcounting the XDP prog on interface. More info on commit
-> messages.
+Maciej Fijalkowski <maciej.fijalkowski@intel.com> writes:
+
+> Currently, if there are multiple xdpsock instances running on a single
+> interface and in case one of the instances is terminated, the rest of
+> them are left in an inoperable state due to the fact of unloaded XDP
+> prog from interface.
 >
+> To address that, step away from setting bpf prog in favour of bpf_link.
+> This means that refcounting of BPF resources will be done automatically
+> by bpf_link itself.
+>
+> When setting up BPF resources during xsk socket creation, check whether
+> bpf_link for a given ifindex already exists via set of calls to
+> bpf_link_get_next_id -> bpf_link_get_fd_by_id -> bpf_obj_get_info_by_fd
+> and comparing the ifindexes from bpf_link and xsk socket.
 
-For the series:
+One consideration here is that bpf_link_get_fd_by_id() is a privileged
+operation (privileged as in CAP_SYS_ADMIN), so this has the side effect
+of making AF_XDP privileged as well. Is that the intention?
 
-Reviewed-by: Björn Töpel <bjorn.topel@intel.com>
-Acked-by: Björn Töpel <bjorn.topel@intel.com>
+Another is that the AF_XDP code is in the process of moving to libxdp
+(see in-progress PR [0]), and this approach won't carry over as-is to
+that model, because libxdp has to pin the bpf_link fds.
 
-Finally, bpf_link/scoped XDP support! Thanks a lot!
+However, in libxdp we can solve the original problem in a different way,
+and in fact I already suggested to Magnus that we should do this (see
+[1]); so one way forward could be to address it during the merge in
+libxdp? It should be possible to address the original issue (two
+instances of xdpsock breaking each other when they exit), but
+applications will still need to do an explicit unload operation before
+exiting (i.e., the automatic detach on bpf_link fd closure will take
+more work, and likely require extending the bpf_link kernel support)...
 
+-Toke
 
-Björn
+[0] https://github.com/xdp-project/xdp-tools/pull/92
+[1] https://github.com/xdp-project/xdp-tools/pull/92#discussion_r576204719
 
-
-
-> Thanks.
-> 
-> Maciej Fijalkowski (3):
->    libbpf: xsk: use bpf_link
->    libbpf: clear map_info before each bpf_obj_get_info_by_fd
->    samples: bpf: do not unload prog within xdpsock
-> 
->   samples/bpf/xdpsock_user.c |  55 ++++----------
->   tools/lib/bpf/xsk.c        | 147 +++++++++++++++++++++++++++++++------
->   2 files changed, 139 insertions(+), 63 deletions(-)
-> 
