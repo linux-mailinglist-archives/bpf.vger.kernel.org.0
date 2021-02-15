@@ -2,110 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01AD631C0C8
-	for <lists+bpf@lfdr.de>; Mon, 15 Feb 2021 18:41:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6CC31C193
+	for <lists+bpf@lfdr.de>; Mon, 15 Feb 2021 19:35:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230295AbhBORkb (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Feb 2021 12:40:31 -0500
-Received: from mga14.intel.com ([192.55.52.115]:34425 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231240AbhBORjg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Feb 2021 12:39:36 -0500
-IronPort-SDR: AWpQObXPzsC8UM/KizM5n3ugGdKKyb9lwWsVIGL5tPFLJgiIx10K75j+bokcZyg8/H+iTK940J
- Ybs5nM+pF8Dg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9896"; a="181951453"
-X-IronPort-AV: E=Sophos;i="5.81,181,1610438400"; 
-   d="scan'208";a="181951453"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2021 09:38:54 -0800
-IronPort-SDR: 5dbHVzqD9yQEYHH+BVSwadyPXMdAfqfFtOchrAcua8vl1oeo3tTMUyhPGch6XAcUuLW1VrcTsU
- ga5CRXwcC/kg==
-X-IronPort-AV: E=Sophos;i="5.81,181,1610438400"; 
-   d="scan'208";a="399159724"
-Received: from wwantka-mobl2.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.252.54.83])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2021 09:38:51 -0800
-Subject: Re: [PATCH bpf-next 1/3] libbpf: xsk: use bpf_link
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        daniel@iogearbox.net, ast@kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     andrii@kernel.org, magnus.karlsson@intel.com,
-        ciara.loftus@intel.com
-References: <20210215154638.4627-1-maciej.fijalkowski@intel.com>
- <20210215154638.4627-2-maciej.fijalkowski@intel.com> <87eehhcl9x.fsf@toke.dk>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
-Message-ID: <fe0c957e-d212-4265-a271-ba301c3c5eca@intel.com>
-Date:   Mon, 15 Feb 2021 18:38:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-MIME-Version: 1.0
-In-Reply-To: <87eehhcl9x.fsf@toke.dk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S229890AbhBOSf3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Feb 2021 13:35:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229652AbhBOSf1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Feb 2021 13:35:27 -0500
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEF36C061756;
+        Mon, 15 Feb 2021 10:34:46 -0800 (PST)
+Received: by mail-io1-xd31.google.com with SMTP id f20so7672526ioo.10;
+        Mon, 15 Feb 2021 10:34:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=PDRu2nRimj7c7kkm6cdFKBITU7H9b0bg1Z4KO/r0QqE=;
+        b=QUmoOcNZml4sc83izSEbYfLeoYYtDEavvelUe4olcPt24DCGMlVrYsM3NW+XG31SxT
+         uB+otUI3E0S7kv0CtZh3TM379ggUlh7l7J96uDRWpw5VTY0L7rxEYRvwBDTujxLzJNlY
+         8F6x/E0PqcvDw3oyh1TwRwqB5gJRC3vtk+gf3oG8wfyN++09qKT6DB1xE5jlM2/dyHfP
+         V9Dc4VDVHdXj+xvDuYwCP14gOtwq3S1zIGJcblLgyUqt2wkkkvtAnCDKvc0iKm/BBsqX
+         lTFLqY0ylGzYq84/PkHzGwNo7ipSEMaJEnpRklpuAgBOAL8ZF6fNnj+vh31n8Hxf+HYK
+         P3KA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=PDRu2nRimj7c7kkm6cdFKBITU7H9b0bg1Z4KO/r0QqE=;
+        b=dDqy6R/N+ly394ElMzEUfTvptBCZygEQOBvnksg7qVDKamWmbepE58+0ZcKEJjAIXV
+         lxewlVNjn9kD4nQV75NVmx1FE7c+1OJIhcI7aqmO/d7BX8MwrU/8PlnFoc3q61Y94lNa
+         BS8yhcp7ymnPzE80l3XhY4pfk62MZI34bQ9B8X+ngqCGJ4e62t+SCm4lV8IRstWK6Xrz
+         vDHO8PGagow/xdUhwYuPclemksfE9yCQXbjrVeP5GBm/RpOgLrILOvq4XPMR56FP1Skq
+         cqArYz1xDbfxhNFV/mw3MCJBj0qjLXDCjA3p22eAcnq2gyKb7XEA88mZgr7WqUXlbEWb
+         VWRw==
+X-Gm-Message-State: AOAM53367HRoreM0ISJhuTq5bFbSz6cOf8tIx8CiIe1RK8z+US+Y17nW
+        dKdiOKJnUGqFK+zXPw8DIshzJ7i59w0=
+X-Google-Smtp-Source: ABdhPJxZMQ3e9m4xbizmDU2IwF/jlfccFJ3FW/cyjU7N76GqPC+z+zjfpBecdyj70WSS6nefC68IlQ==
+X-Received: by 2002:a5d:939a:: with SMTP id c26mr14178446iol.63.1613414086461;
+        Mon, 15 Feb 2021 10:34:46 -0800 (PST)
+Received: from localhost ([172.243.146.206])
+        by smtp.gmail.com with ESMTPSA id d14sm8254363ilo.18.2021.02.15.10.34.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Feb 2021 10:34:45 -0800 (PST)
+Date:   Mon, 15 Feb 2021 10:34:36 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>, netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, duanxiongchun@bytedance.com,
+        wangdongdong.6@bytedance.com, jiang.wang@bytedance.com,
+        Cong Wang <cong.wang@bytedance.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Message-ID: <602abebc9dd64_3ed4120898@john-XPS-13-9370.notmuch>
+In-Reply-To: <20210213214421.226357-2-xiyou.wangcong@gmail.com>
+References: <20210213214421.226357-1-xiyou.wangcong@gmail.com>
+ <20210213214421.226357-2-xiyou.wangcong@gmail.com>
+Subject: RE: [Patch bpf-next v3 1/5] bpf: clean up sockmap related Kconfigs
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2021-02-15 18:07, Toke Høiland-Jørgensen wrote:
-> Maciej Fijalkowski <maciej.fijalkowski@intel.com> writes:
+Cong Wang wrote:
+> From: Cong Wang <cong.wang@bytedance.com>
 > 
->> Currently, if there are multiple xdpsock instances running on a single
->> interface and in case one of the instances is terminated, the rest of
->> them are left in an inoperable state due to the fact of unloaded XDP
->> prog from interface.
->>
->> To address that, step away from setting bpf prog in favour of bpf_link.
->> This means that refcounting of BPF resources will be done automatically
->> by bpf_link itself.
->>
->> When setting up BPF resources during xsk socket creation, check whether
->> bpf_link for a given ifindex already exists via set of calls to
->> bpf_link_get_next_id -> bpf_link_get_fd_by_id -> bpf_obj_get_info_by_fd
->> and comparing the ifindexes from bpf_link and xsk socket.
+> As suggested by John, clean up sockmap related Kconfigs:
 > 
-> One consideration here is that bpf_link_get_fd_by_id() is a privileged
-> operation (privileged as in CAP_SYS_ADMIN), so this has the side effect
-> of making AF_XDP privileged as well. Is that the intention?
->
-
-We're already using, e.g., bpf_map_get_fd_by_id() which has that
-as well. So we're assuming that for XDP setup already!
-
-> Another is that the AF_XDP code is in the process of moving to libxdp
-> (see in-progress PR [0]), and this approach won't carry over as-is to
-> that model, because libxdp has to pin the bpf_link fds.
->
-
-I was assuming there were two modes of operations for AF_XDP in libxdp.
-One which is with the multi-program support (which AFAIK is why the
-pinning is required), and one "like the current libbpf" one. For the
-latter Maciej's series would be a good fit, no?
-
-> However, in libxdp we can solve the original problem in a different way,
-> and in fact I already suggested to Magnus that we should do this (see
-> [1]); so one way forward could be to address it during the merge in
-> libxdp? It should be possible to address the original issue (two
-> instances of xdpsock breaking each other when they exit), but
-> applications will still need to do an explicit unload operation before
-> exiting (i.e., the automatic detach on bpf_link fd closure will take
-> more work, and likely require extending the bpf_link kernel support)...
->
-
-I'd say it's depending on the libbpf 1.0/libxdp merge timeframe. If
-we're months ahead, then I'd really like to see this in libbpf until the
-merge. However, I'll leave that for Magnus/you to decide!
-
-Bottom line; I'd *really* like bpf_link behavior (process scoped) for
-AF_XDP sooner than later! ;-)
-
-
-Thanks for the input!
-Björn
-
-
-> -Toke
+> Reduce the scope of CONFIG_BPF_STREAM_PARSER down to TCP stream
+> parser, to reflect its name.
 > 
-> [0] https://github.com/xdp-project/xdp-tools/pull/92
-> [1] https://github.com/xdp-project/xdp-tools/pull/92#discussion_r576204719
+> Make the rest sockmap code simply depend on CONFIG_BPF_SYSCALL.
+> And leave CONFIG_NET_SOCK_MSG untouched, as it is used by
+> non-sockmap cases.
 > 
+> Cc: John Fastabend <john.fastabend@gmail.com>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Jakub Sitnicki <jakub@cloudflare.com>
+> Cc: Lorenz Bauer <lmb@cloudflare.com>
+> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> ---
+
+Thanks for doing this.
+
+Acked-by: John Fastabend <john.fastabend@gmail.com>
