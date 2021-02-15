@@ -2,177 +2,160 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEE2631C260
-	for <lists+bpf@lfdr.de>; Mon, 15 Feb 2021 20:21:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E84F031C286
+	for <lists+bpf@lfdr.de>; Mon, 15 Feb 2021 20:37:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbhBOTVH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Feb 2021 14:21:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230106AbhBOTVE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Feb 2021 14:21:04 -0500
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 888A3C061574;
-        Mon, 15 Feb 2021 11:20:23 -0800 (PST)
-Received: by mail-il1-x12e.google.com with SMTP id q9so6396199ilo.1;
-        Mon, 15 Feb 2021 11:20:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=QAju3LaJKwujWvlvDk+izIeIsqjA8sdwLDYNVniZBDo=;
-        b=NhnIOjrqGJWU5I8jYG5SzfqH3oVNlXY1QLGAiJm0z7+cevaJRJIvBlaDRDD0IwWw9W
-         gyJg2W/DcYVzANsaDVq99dSxXffPoN3k8xfb6MPwPuP9XxuqLLINkF+xsKUa5CGXrTyN
-         PnNiIIZyhdDgFwfv1wFo+XPvChLKDznbRbPLQXgm8xHaKGtSwoGZl7JL3sEum1mF9vhq
-         +hOjtCSilN+4Tcf3vnDu8zyu2rG+JZZebqQQz0RG+gKVypNHoqy9GcYRugnz3xCZuFjK
-         oAK+Ka2UMLuiswn6EhkfdKaY7ZZgYmjoUCBfcACO6FlhcXM9+gVnbqCRGVsFGQrbPNKl
-         6Myg==
+        id S229908AbhBOThE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Feb 2021 14:37:04 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60511 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229764AbhBOThC (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 15 Feb 2021 14:37:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613417735;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Px84X68T1yYL++hqo/VdqWtZ5Oe2mN1i1dSBWoxP2vU=;
+        b=KPYXmI2eClPsdCYjL6I95k05k1OTHx60TSHOSp8gqpscVCOi8waC2AUNYZLgA/DlWX19N1
+        eIINzE/X/tuts2GgEGj1EKYD23KPQbshqhOK+7I0CfHCN71YIlXE8oDFy8Ox31BYCHsjLY
+        KHmXesO93mu88Bjno22Ebr6/Zvdb0L0=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-26--MLVzywkPDOoDx1BMaTcPQ-1; Mon, 15 Feb 2021 14:35:32 -0500
+X-MC-Unique: -MLVzywkPDOoDx1BMaTcPQ-1
+Received: by mail-ed1-f69.google.com with SMTP id g5so1530562eds.1
+        for <bpf@vger.kernel.org>; Mon, 15 Feb 2021 11:35:31 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=QAju3LaJKwujWvlvDk+izIeIsqjA8sdwLDYNVniZBDo=;
-        b=BIzRpNo321uJZi3jCUmB85irF9Wjs5OZ7JBZmlIG4sPimo1f+ByphbA92MMVnEdoaY
-         4pgtWOQKPbgD5gfC9U9rjxh++SnCealljo+4cIl4PMiobT1NJtmbdwhUFVlF16PryGlq
-         nRbfseFa+XWGJrYwY6vUTU0KolLRl33oy/0xFXpSxGBOgLelKlRAaqQ2ku6ebKfGPEW0
-         VLi20ooYHKC1+kbKAze5tfa90mb+P3ozk5fCKKv+at1VbGFqu9td1cwJIK9ZWNICRPz1
-         QPXkRbDcdrukq5E1eOzkGjZeDwTMOz257Sd9bXJAc+3mtsUhoz5ELp04RcQISD8gHRVC
-         Bhbw==
-X-Gm-Message-State: AOAM5304fizYpv/CCzuVtkpXamCX/LD/m0MmsQweYygjD+K+x9pplVx9
-        2ax1+JIBPNPAT4x3PPaNxj0cSMqBmvI=
-X-Google-Smtp-Source: ABdhPJzWnjhQ04A6r9rc+DWe/515EIfIt2vKCefm3P5wNmkSOnzucb6ByezXd2eWvqp2yyTXw06+Tw==
-X-Received: by 2002:a05:6e02:154d:: with SMTP id j13mr14312381ilu.153.1613416823082;
-        Mon, 15 Feb 2021 11:20:23 -0800 (PST)
-Received: from localhost ([172.243.146.206])
-        by smtp.gmail.com with ESMTPSA id w3sm9452247ill.80.2021.02.15.11.20.20
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=Px84X68T1yYL++hqo/VdqWtZ5Oe2mN1i1dSBWoxP2vU=;
+        b=niG/Fkn35fIH8j1nw0SdgEXGmKOssuHL9cwPhiHlBOH/TbSpxbPiuU1KI4ffwhMihz
+         RYE4Zks1TOKGQiJZldikdbF66eo8d9O/bbSzy8vpur/Ilgz9ZFlDvakauAx+AsmKzjGo
+         LfZXc+jxR+UtJgHnIWLTVeA0hCDfKZOtyL7YPAIyqH0kq8i9Fwi6zbxuOKUUxk65XGAn
+         T5w1nZbFYklSivLUHhiA6PI3q6o6BZoG9IzZ9HFP+4tNZ0nEGe6LqmOhzSsXCjse9bXA
+         a0ugc/L2QHB2bpaiwAwryu4IXcN0M7ZJH9s/vA7ltGzgss/Qp0XWxHspEMROvJH92CFF
+         1amg==
+X-Gm-Message-State: AOAM5333AQYEL9zj7gGna7LLjkdyYceBipeLDEnQMm3KaPx2swS7Z6st
+        8OctJ0X4jZUyHPo5Btpln4Lasih6VqEctsITwxl2V7YmILdIhf6VcilpAR/coorV1n+5SHijB93
+        Np6th2nhAGDcC
+X-Received: by 2002:a05:6402:b2d:: with SMTP id bo13mr17214452edb.280.1613417730856;
+        Mon, 15 Feb 2021 11:35:30 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx5abSwRO5T8EChIyTrDeuoXq+n7TO62Zr3m7IHU3LXi5TMJU7H8pCYT1A5EtfHw0LhVbp89A==
+X-Received: by 2002:a05:6402:b2d:: with SMTP id bo13mr17214437edb.280.1613417730618;
+        Mon, 15 Feb 2021 11:35:30 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id l4sm4372531edr.50.2021.02.15.11.35.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Feb 2021 11:20:22 -0800 (PST)
-Date:   Mon, 15 Feb 2021 11:20:15 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>, netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, duanxiongchun@bytedance.com,
-        wangdongdong.6@bytedance.com, jiang.wang@bytedance.com,
-        Cong Wang <cong.wang@bytedance.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Message-ID: <602ac96f9e30f_3ed41208b6@john-XPS-13-9370.notmuch>
-In-Reply-To: <20210213214421.226357-5-xiyou.wangcong@gmail.com>
-References: <20210213214421.226357-1-xiyou.wangcong@gmail.com>
- <20210213214421.226357-5-xiyou.wangcong@gmail.com>
-Subject: RE: [Patch bpf-next v3 4/5] skmsg: use skb ext instead of TCP_SKB_CB
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        Mon, 15 Feb 2021 11:35:30 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id EE3EF1805FB; Mon, 15 Feb 2021 20:35:29 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        daniel@iogearbox.net, ast@kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     andrii@kernel.org, magnus.karlsson@intel.com,
+        ciara.loftus@intel.com
+Subject: Re: [PATCH bpf-next 1/3] libbpf: xsk: use bpf_link
+In-Reply-To: <fe0c957e-d212-4265-a271-ba301c3c5eca@intel.com>
+References: <20210215154638.4627-1-maciej.fijalkowski@intel.com>
+ <20210215154638.4627-2-maciej.fijalkowski@intel.com>
+ <87eehhcl9x.fsf@toke.dk> <fe0c957e-d212-4265-a271-ba301c3c5eca@intel.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 15 Feb 2021 20:35:29 +0100
+Message-ID: <875z2tcef2.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Cong Wang wrote:
-> From: Cong Wang <cong.wang@bytedance.com>
-> 
-> Currently TCP_SKB_CB() is hard-coded in skmsg code, it certainly
-> does not work for any other non-TCP protocols. We can move them to
-> skb ext instead of playing with skb cb, which is harder to make
-> correct.
-> 
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Jakub Sitnicki <jakub@cloudflare.com>
-> Reviewed-by: Lorenz Bauer <lmb@cloudflare.com>
-> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
-> ---
+Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com> writes:
 
-I'm not seeing the advantage of doing this at the moment. We can
-continue to use cb[] here, which is simpler IMO and use the ext
-if needed for the other use cases. This is adding a per packet
-alloc cost that we don't have at the moment as I understand it.
+> On 2021-02-15 18:07, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> Maciej Fijalkowski <maciej.fijalkowski@intel.com> writes:
+>>=20
+>>> Currently, if there are multiple xdpsock instances running on a single
+>>> interface and in case one of the instances is terminated, the rest of
+>>> them are left in an inoperable state due to the fact of unloaded XDP
+>>> prog from interface.
+>>>
+>>> To address that, step away from setting bpf prog in favour of bpf_link.
+>>> This means that refcounting of BPF resources will be done automatically
+>>> by bpf_link itself.
+>>>
+>>> When setting up BPF resources during xsk socket creation, check whether
+>>> bpf_link for a given ifindex already exists via set of calls to
+>>> bpf_link_get_next_id -> bpf_link_get_fd_by_id -> bpf_obj_get_info_by_fd
+>>> and comparing the ifindexes from bpf_link and xsk socket.
+>>=20
+>> One consideration here is that bpf_link_get_fd_by_id() is a privileged
+>> operation (privileged as in CAP_SYS_ADMIN), so this has the side effect
+>> of making AF_XDP privileged as well. Is that the intention?
+>>
+>
+> We're already using, e.g., bpf_map_get_fd_by_id() which has that
+> as well. So we're assuming that for XDP setup already!
 
-[...]
+Ah, right, didn't realise that one is CAP_SYS_ADMIN as well; I
+remembered this as being specific to the bpf_link operation.
 
-> diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-> index e3bb712af257..d5c711ef6d4b 100644
-> --- a/include/linux/skmsg.h
-> +++ b/include/linux/skmsg.h
-> @@ -459,4 +459,44 @@ static inline bool sk_psock_strp_enabled(struct sk_psock *psock)
->  		return false;
->  	return !!psock->saved_data_ready;
->  }
-> +
-> +struct skb_bpf_ext {
-> +	__u32 flags;
-> +	struct sock *sk_redir;
-> +};
-> +
-> +#if IS_ENABLED(CONFIG_NET_SOCK_MSG)
-> +static inline
-> +bool skb_bpf_ext_ingress(const struct sk_buff *skb)
-> +{
-> +	struct skb_bpf_ext *ext = skb_ext_find(skb, SKB_EXT_BPF);
-> +
-> +	return ext->flags & BPF_F_INGRESS;
-> +}
-> +
-> +static inline
-> +void skb_bpf_ext_set_ingress(const struct sk_buff *skb)
-> +{
-> +	struct skb_bpf_ext *ext = skb_ext_find(skb, SKB_EXT_BPF);
-> +
-> +	ext->flags |= BPF_F_INGRESS;
-> +}
-> +
-> +static inline
-> +struct sock *skb_bpf_ext_redirect_fetch(struct sk_buff *skb)
-> +{
-> +	struct skb_bpf_ext *ext = skb_ext_find(skb, SKB_EXT_BPF);
-> +
-> +	return ext->sk_redir;
-> +}
-> +
-> +static inline
-> +void skb_bpf_ext_redirect_clear(struct sk_buff *skb)
-> +{
-> +	struct skb_bpf_ext *ext = skb_ext_find(skb, SKB_EXT_BPF);
-> +
-> +	ext->flags = 0;
-> +	ext->sk_redir = NULL;
-> +}
-> +#endif /* CONFIG_NET_SOCK_MSG */
+>> Another is that the AF_XDP code is in the process of moving to libxdp
+>> (see in-progress PR [0]), and this approach won't carry over as-is to
+>> that model, because libxdp has to pin the bpf_link fds.
+>>
+>
+> I was assuming there were two modes of operations for AF_XDP in libxdp.
+> One which is with the multi-program support (which AFAIK is why the
+> pinning is required), and one "like the current libbpf" one. For the
+> latter Maciej's series would be a good fit, no?
 
-So we will have some slight duplication for cb[] variant and ext
-variant above. I'm OK with that to avoid an allocation.
+We haven't added an explicit mode switch for now; libxdp will fall back
+to regular interface attach if the kernel doesn't support the needed
+features for multi-attach, but if it's possible to just have libxdp
+transparently do the right thing I'd much prefer that. So we're still
+exploring that (part of which is that Magnus has promised to run some
+performance tests to see if there's a difference).
 
-[...]
+However, even if there's an explicit mode switch I'd like to avoid
+different *semantics* between the two modes if possible, to keep the two
+as compatible as possible. And since we can't currently do "auto-detach
+on bpf_link fd close" when using multi-prog, introducing this now would
+lead to just such a semantic difference. So my preference would be to do
+it differently... :)
 
-> @@ -1003,11 +1008,17 @@ static int sk_psock_verdict_recv(read_descriptor_t *desc, struct sk_buff *skb,
->  		goto out;
->  	}
->  	skb_set_owner_r(skb, sk);
-> +	if (!skb_ext_add(skb, SKB_EXT_BPF)) {
-> +		len = 0;
-> +		kfree_skb(skb);
-> +		goto out;
-> +	}
-> +
+>> However, in libxdp we can solve the original problem in a different way,
+>> and in fact I already suggested to Magnus that we should do this (see
+>> [1]); so one way forward could be to address it during the merge in
+>> libxdp? It should be possible to address the original issue (two
+>> instances of xdpsock breaking each other when they exit), but
+>> applications will still need to do an explicit unload operation before
+>> exiting (i.e., the automatic detach on bpf_link fd closure will take
+>> more work, and likely require extending the bpf_link kernel support)...
+>>
+>
+> I'd say it's depending on the libbpf 1.0/libxdp merge timeframe. If
+> we're months ahead, then I'd really like to see this in libbpf until the
+> merge. However, I'll leave that for Magnus/you to decide!
 
-per packet cost here. Perhaps you can argue small alloc will usually not be 
-noticable in such a large stack, but once we convert over it will be very
-hard to go back. And I'm looking at optimizing this path now.
+Well, as far as libxdp support goes, the PR I linked is pretty close to
+being mergeable. One of the few outstanding issues is whether we should
+solve just this issue before merging, actually :)
 
->  	prog = READ_ONCE(psock->progs.skb_verdict);
->  	if (likely(prog)) {
-> -		tcp_skb_bpf_redirect_clear(skb);
-> +		skb_bpf_ext_redirect_clear(skb);
->  		ret = sk_psock_bpf_run(psock, prog, skb);
-> -		ret = sk_psock_map_verd(ret, tcp_skb_bpf_redirect_fetch(skb));
-> +		ret = sk_psock_map_verd(ret, skb_bpf_ext_redirect_fetch(skb));
->  	}
->  	sk_psock_verdict_apply(psock, skb, ret);
+Not sure exactly which timeframe Andrii is envisioning for libbpf 1.0,
+but last I heard he'll announce something next week.
 
-Thanks for the series Cong. Drop this patch and resubmit carry ACKs forward
-and then lets revisit this later.
+> Bottom line; I'd *really* like bpf_link behavior (process scoped) for
+> AF_XDP sooner than later! ;-)
 
-Thanks,
-John
+Totally agree that we should solve the multi-process coexistence
+problem! And as I said, I think we can do so in libxdp by using the same
+synchronisation mechanism we use for setting up the multi-prog
+dispatcher. So it doesn't *have* to hold things up :)
+
+-Toke
+
