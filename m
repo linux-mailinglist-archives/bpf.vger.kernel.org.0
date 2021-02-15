@@ -2,200 +2,154 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33EF031BE5A
-	for <lists+bpf@lfdr.de>; Mon, 15 Feb 2021 17:12:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40A6031BE5F
+	for <lists+bpf@lfdr.de>; Mon, 15 Feb 2021 17:12:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232070AbhBOQHh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Feb 2021 11:07:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50729 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231613AbhBOPyu (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 15 Feb 2021 10:54:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613404377;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aJAxoSUC/0di+CQyIl6PRS6rliNMbg9ve438T46WyzU=;
-        b=EpOj2N/XUykHTlJWXQW9zGWlTwTunqdeXdaL69XeWF2MNv85MrCVMUWo1yHIRK83OJMmoS
-        xfLAJn25RxHz+NY+Vwf0asddbIjeTh9BipkTFHaGDlyDjjUujBgQDJ0FIpfOYLDFjEleFS
-        CDBzjWIrArw9cdbZsjDzqR65+QOJhRo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-392-Xn-2oxy2MO6AXcxNUm-reA-1; Mon, 15 Feb 2021 10:52:53 -0500
-X-MC-Unique: Xn-2oxy2MO6AXcxNUm-reA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2AFA11005501;
-        Mon, 15 Feb 2021 15:52:52 +0000 (UTC)
-Received: from firesoul.localdomain (unknown [10.40.208.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C45F15B697;
-        Mon, 15 Feb 2021 15:52:48 +0000 (UTC)
-Received: from [192.168.42.3] (localhost [IPv6:::1])
-        by firesoul.localdomain (Postfix) with ESMTP id D927430736C73;
-        Mon, 15 Feb 2021 16:52:47 +0100 (CET)
-Subject: [PATCH bpf-next V1 2/2] selftests/bpf: Tests using bpf_check_mtu
- BPF-helper input mtu_len param
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
+        id S232155AbhBOQHu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Feb 2021 11:07:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232342AbhBOQBl (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Feb 2021 11:01:41 -0500
+Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D850AC061574
+        for <bpf@vger.kernel.org>; Mon, 15 Feb 2021 08:00:56 -0800 (PST)
+Received: by mail-wm1-x349.google.com with SMTP id s131so7278123wme.7
+        for <bpf@vger.kernel.org>; Mon, 15 Feb 2021 08:00:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=jD2cOif5PsUyf6bKm+J1UlU+7a9Tk3VjHfv1dzww5kg=;
+        b=nfX3aM9meFczvLhTQ17NHT31YXBFRbLIFR5/nunmIpz9rUdLTIUo7fpIPPDnJIOBxU
+         6Cbi9Rr07gfty0+Tuqm6UxOBotpX9E3a8st343e2iGDylCfNvvCL/rxkrOK5KPlreyCf
+         ux8ZKA0N1fkan64IxdNBWdxmcV6vioV2M+1aHzPne0k98nZnE3G3Z/auJXDkBwOgxTPU
+         wB930tZjnXbl8tShdgb9rNoL/14hGzfgdv4aIjjbL1zHCEz19pVFSj9HtcmvVFmu28Bg
+         WvQYqqJeuRFaS1vOt7eZElH4C+P9hds/h4cR6oCSQ4lwl+55k5G2JgonO0pxGlruT1QN
+         5GuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=jD2cOif5PsUyf6bKm+J1UlU+7a9Tk3VjHfv1dzww5kg=;
+        b=hTFHVM/SfKWh/QloP5IfmupU3rhCYEm8OR40U97nZ0+H70qCZKGolRaZQRUMfPbKVj
+         w7aAx1PvCIWMSretEt+OJQrwHQDh1cBMxjVzsYYJCv2ZO4ZcIw/4+EoRuB8HqsWnnPg7
+         Sav7SR9abZVV0rKh5W1vRRatVoNtR3URyo/5KNcChIARmOAZ8WGSJ5I+nFh2+MHQ1P9q
+         bLBrkURt4JPvzt0H6pqfrPS524dC9mgBwp3RFb/yxihGIT732LIvy21U6buQXzXQvVW+
+         8Gw1pvZ2TW0p08NXkzTDUTlHW1TYVySabHr2ya6lQJpnmZEuH/7ESFG7NRiQaHM5nUfT
+         2cog==
+X-Gm-Message-State: AOAM532jlsvd51viuscy6znjUtitIssz1aXU94XpJpkCScanTTK8ArWr
+        wNrc69yxzXVqlI/NcMszt9nuJvBsuBbC9YnHxW5yEtpAJ+LQAuNVrqOVOhCnQ5cbwa6oyRFkfKk
+        oD1wQp7Ddc87I+Q/2fxe3b3T8pfm2WXC9uW37KDj1AZjbhFLjh9OkXMF5tZ4E6dA=
+X-Google-Smtp-Source: ABdhPJwx7H0n0TwoPU4G7aglIjyQ/KE1UqZIkeELHMY0LKrzuXGLVr3FwdDNCbb3jQsbdCnWf0vOUd5x8TzzOA==
+Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
+X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:11db])
+ (user=jackmanb job=sendgmr) by 2002:a7b:ce95:: with SMTP id
+ q21mr14832322wmj.178.1613404855357; Mon, 15 Feb 2021 08:00:55 -0800 (PST)
+Date:   Mon, 15 Feb 2021 16:00:44 +0000
+Message-Id: <20210215160044.1108652-1-jackmanb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
+Subject: [PATCH bpf-next] bpf: x86: Fix BPF_FETCH atomic and/or/xor with r0 as src
+From:   Brendan Jackman <jackmanb@google.com>
 To:     bpf@vger.kernel.org
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>, netdev@vger.kernel.org,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 15 Feb 2021 16:52:47 +0100
-Message-ID: <161340436783.1234345.9794055968782640674.stgit@firesoul>
-In-Reply-To: <161340431558.1234345.9778968378565582031.stgit@firesoul>
-References: <161340431558.1234345.9778968378565582031.stgit@firesoul>
-User-Agent: StGit/0.19
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Brendan Jackman <jackmanb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add tests that use mtu_len as input parameter in BPF-helper
-bpf_check_mtu().
+This code generates a CMPXCHG loop in order to implement atomic_fetch
+bitwise operations. Because CMPXCHG is hard-coded to use rax (which
+holds the BPF r0 value), it saves the _real_ r0 value into the
+internal "ax" temporary register and restores it once the loop is
+complete.
 
-The BPF-helper is avail from both XDP and TC context. Add two tests
-per context, one that tests below MTU and one that exceeds the MTU.
+In the middle of the loop, the actual bitwise operation is performed
+using src_reg. The bug occurs when src_reg is r0: as described above,
+r0 has been clobbered and the real r0 value is in the ax register.
 
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Therefore, perform this operation on the ax register instead, when
+src_reg is r0.
+
+Fixes: 981f94c3e921 ("bpf: Add bitwise atomic instructions")
+Signed-off-by: Brendan Jackman <jackmanb@google.com>
 ---
- tools/testing/selftests/bpf/prog_tests/check_mtu.c |    4 +
- tools/testing/selftests/bpf/progs/test_check_mtu.c |   92 ++++++++++++++++++++
- 2 files changed, 96 insertions(+)
+ arch/x86/net/bpf_jit_comp.c                   |  7 +++---
+ .../selftests/bpf/verifier/atomic_and.c       | 23 +++++++++++++++++++
+ 2 files changed, 27 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/check_mtu.c b/tools/testing/selftests/bpf/prog_tests/check_mtu.c
-index 36af1c138faf..b62a39315336 100644
---- a/tools/testing/selftests/bpf/prog_tests/check_mtu.c
-+++ b/tools/testing/selftests/bpf/prog_tests/check_mtu.c
-@@ -128,6 +128,8 @@ static void test_check_mtu_xdp(__u32 mtu, __u32 ifindex)
- 	test_check_mtu_run_xdp(skel, skel->progs.xdp_use_helper, mtu);
- 	test_check_mtu_run_xdp(skel, skel->progs.xdp_exceed_mtu, mtu);
- 	test_check_mtu_run_xdp(skel, skel->progs.xdp_minus_delta, mtu);
-+	test_check_mtu_run_xdp(skel, skel->progs.xdp_input_len, mtu);
-+	test_check_mtu_run_xdp(skel, skel->progs.xdp_input_len_exceed, mtu);
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 79e7a0ec1da5..0c9edfe42340 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -1349,6 +1349,7 @@ st:			if (is_imm8(insn->off))
+ 			    insn->imm == (BPF_XOR | BPF_FETCH)) {
+ 				u8 *branch_target;
+ 				bool is64 = BPF_SIZE(insn->code) == BPF_DW;
++				u32 real_src_reg = src_reg == BPF_REG_0 ? BPF_REG_AX : src_reg;
  
- cleanup:
- 	test_check_mtu__destroy(skel);
-@@ -187,6 +189,8 @@ static void test_check_mtu_tc(__u32 mtu, __u32 ifindex)
- 	test_check_mtu_run_tc(skel, skel->progs.tc_exceed_mtu, mtu);
- 	test_check_mtu_run_tc(skel, skel->progs.tc_exceed_mtu_da, mtu);
- 	test_check_mtu_run_tc(skel, skel->progs.tc_minus_delta, mtu);
-+	test_check_mtu_run_tc(skel, skel->progs.tc_input_len, mtu);
-+	test_check_mtu_run_tc(skel, skel->progs.tc_input_len_exceed, mtu);
- cleanup:
- 	test_check_mtu__destroy(skel);
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_check_mtu.c b/tools/testing/selftests/bpf/progs/test_check_mtu.c
-index b7787b43f9db..c4a9bae96e75 100644
---- a/tools/testing/selftests/bpf/progs/test_check_mtu.c
-+++ b/tools/testing/selftests/bpf/progs/test_check_mtu.c
-@@ -105,6 +105,54 @@ int xdp_minus_delta(struct xdp_md *ctx)
- 	return retval;
- }
- 
-+SEC("xdp")
-+int xdp_input_len(struct xdp_md *ctx)
+ 				/*
+ 				 * Can't be implemented with a single x86 insn.
+@@ -1366,9 +1367,9 @@ st:			if (is_imm8(insn->off))
+ 				 * put the result in the AUX_REG.
+ 				 */
+ 				emit_mov_reg(&prog, is64, AUX_REG, BPF_REG_0);
+-				maybe_emit_mod(&prog, AUX_REG, src_reg, is64);
++				maybe_emit_mod(&prog, AUX_REG, real_src_reg, is64);
+ 				EMIT2(simple_alu_opcodes[BPF_OP(insn->imm)],
+-				      add_2reg(0xC0, AUX_REG, src_reg));
++				      add_2reg(0xC0, AUX_REG, real_src_reg));
+ 				/* Attempt to swap in new value */
+ 				err = emit_atomic(&prog, BPF_CMPXCHG,
+ 						  dst_reg, AUX_REG, insn->off,
+@@ -1381,7 +1382,7 @@ st:			if (is_imm8(insn->off))
+ 				 */
+ 				EMIT2(X86_JNE, -(prog - branch_target) - 2);
+ 				/* Return the pre-modification value */
+-				emit_mov_reg(&prog, is64, src_reg, BPF_REG_0);
++				emit_mov_reg(&prog, is64, real_src_reg, BPF_REG_0);
+ 				/* Restore R0 after clobbering RAX */
+ 				emit_mov_reg(&prog, true, BPF_REG_0, BPF_REG_AX);
+ 				break;
+diff --git a/tools/testing/selftests/bpf/verifier/atomic_and.c b/tools/testing/selftests/bpf/verifier/atomic_and.c
+index 1bdc8e6684f7..fe4bb70eb9c5 100644
+--- a/tools/testing/selftests/bpf/verifier/atomic_and.c
++++ b/tools/testing/selftests/bpf/verifier/atomic_and.c
+@@ -75,3 +75,26 @@
+ 	},
+ 	.result = ACCEPT,
+ },
 +{
-+	int retval = XDP_PASS; /* Expected retval on successful test */
-+	void *data_end = (void *)(long)ctx->data_end;
-+	void *data = (void *)(long)ctx->data;
-+	__u32 ifindex = GLOBAL_USER_IFINDEX;
-+	__u32 data_len = data_end - data;
-+
-+	/* API allow user give length to check as input via mtu_len param,
-+	 * resulting MTU value is still output in mtu_len param after call.
-+	 *
-+	 * Input len is L3, like MTU and iph->tot_len.
-+	 * Remember XDP data_len is L2.
-+	 */
-+	__u32 mtu_len = data_len - ETH_HLEN;
-+
-+	if (bpf_check_mtu(ctx, ifindex, &mtu_len, 0, 0))
-+		retval = XDP_ABORTED;
-+
-+	global_bpf_mtu_xdp = mtu_len;
-+	return retval;
-+}
-+
-+SEC("xdp")
-+int xdp_input_len_exceed(struct xdp_md *ctx)
-+{
-+	int retval = XDP_ABORTED; /* Fail */
-+	__u32 ifindex = GLOBAL_USER_IFINDEX;
-+	int err;
-+
-+	/* API allow user give length to check as input via mtu_len param,
-+	 * resulting MTU value is still output in mtu_len param after call.
-+	 *
-+	 * Input length value is L3 size like MTU.
-+	 */
-+	__u32 mtu_len = GLOBAL_USER_MTU;
-+
-+	mtu_len += 1; /* Exceed with 1 */
-+
-+	err = bpf_check_mtu(ctx, ifindex, &mtu_len, 0, 0);
-+	if (err == BPF_MTU_CHK_RET_FRAG_NEEDED)
-+		retval = XDP_PASS ; /* Success in exceeding MTU check */
-+
-+	global_bpf_mtu_xdp = mtu_len;
-+	return retval;
-+}
-+
- SEC("classifier")
- int tc_use_helper(struct __sk_buff *ctx)
- {
-@@ -196,3 +244,47 @@ int tc_minus_delta(struct __sk_buff *ctx)
- 	global_bpf_mtu_xdp = mtu_len;
- 	return retval;
- }
-+
-+SEC("classifier")
-+int tc_input_len(struct __sk_buff *ctx)
-+{
-+	int retval = BPF_OK; /* Expected retval on successful test */
-+	__u32 ifindex = GLOBAL_USER_IFINDEX;
-+
-+	/* API allow user give length to check as input via mtu_len param,
-+	 * resulting MTU value is still output in mtu_len param after call.
-+	 *
-+	 * Input length value is L3 size.
-+	 */
-+	__u32 mtu_len = GLOBAL_USER_MTU;
-+
-+	if (bpf_check_mtu(ctx, ifindex, &mtu_len, 0, 0))
-+		retval = BPF_DROP;
-+
-+	global_bpf_mtu_xdp = mtu_len;
-+	return retval;
-+}
-+
-+SEC("classifier")
-+int tc_input_len_exceed(struct __sk_buff *ctx)
-+{
-+	int retval = BPF_DROP; /* Fail */
-+	__u32 ifindex = GLOBAL_USER_IFINDEX;
-+	int err;
-+
-+	/* API allow user give length to check as input via mtu_len param,
-+	 * resulting MTU value is still output in mtu_len param after call.
-+	 *
-+	 * Input length value is L3 size like MTU.
-+	 */
-+	__u32 mtu_len = GLOBAL_USER_MTU;
-+
-+	mtu_len += 1; /* Exceed with 1 */
-+
-+	err = bpf_check_mtu(ctx, ifindex, &mtu_len, 0, 0);
-+	if (err == BPF_MTU_CHK_RET_FRAG_NEEDED)
-+		retval = BPF_OK; /* Success in exceeding MTU check */
-+
-+	global_bpf_mtu_xdp = mtu_len;
-+	return retval;
-+}
++	"BPF_ATOMIC_AND with fetch - r0 as source reg",
++	.insns = {
++		/* val = 0x110; */
++		BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0x110),
++		/* old = atomic_fetch_and(&val, 0x011); */
++		BPF_MOV64_IMM(BPF_REG_0, 0x011),
++		BPF_ATOMIC_OP(BPF_DW, BPF_AND | BPF_FETCH, BPF_REG_10, BPF_REG_0, -8),
++		/* if (old != 0x110) exit(3); */
++		BPF_JMP_IMM(BPF_JEQ, BPF_REG_0, 0x110, 2),
++		BPF_MOV64_IMM(BPF_REG_0, 3),
++		BPF_EXIT_INSN(),
++		/* if (val != 0x010) exit(2); */
++		BPF_LDX_MEM(BPF_DW, BPF_REG_1, BPF_REG_10, -8),
++		BPF_JMP_IMM(BPF_JEQ, BPF_REG_1, 0x010, 2),
++		BPF_MOV64_IMM(BPF_REG_1, 2),
++		BPF_EXIT_INSN(),
++		/* exit(0); */
++		BPF_MOV64_IMM(BPF_REG_0, 0),
++		BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++},
 
+base-commit: 5e1d40b75ed85ecd76347273da17e5da195c3e96
+-- 
+2.30.0.478.g8a0d178c01-goog
 
