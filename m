@@ -2,202 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9396331C336
-	for <lists+bpf@lfdr.de>; Mon, 15 Feb 2021 21:50:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B143431C365
+	for <lists+bpf@lfdr.de>; Mon, 15 Feb 2021 22:06:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229703AbhBOUuR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Feb 2021 15:50:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229670AbhBOUuQ (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Feb 2021 15:50:16 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 861AEC061756;
-        Mon, 15 Feb 2021 12:49:36 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id s24so8055083iob.6;
-        Mon, 15 Feb 2021 12:49:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=YyypyEJ3ccU02KP95llr7s4/01dfMfvBGOccF1Y+hpc=;
-        b=DQAFRaVYv3oNEIvOpvJazi7Mt2O++AEOsL4QfxBt8zS6rJpb9OOPgDi9FibTuTyMZF
-         8cM/WKImGO4KiUibkh3ucHx2lSG88zXEHpfYOa9XL2vJCOeTufWnaDDDHHTIroz3jsfC
-         bgk8bxYtDyQKKH1uq+mZde4lhqBo1n6DiFmKBudhot19Q8LtQH2XjK2ex3iusbPO5BD+
-         XthiL6cwSosI0hJdTiTDillE7p3ioMK+By/uiOvBopRuzebtYxfL+Wu959rCg0jsIah9
-         5mXmw2s1U/lks8BsLT5uaBdxBE4vk8A7XmMoNjuUWbtljlBc5DY+BZBTwVsdvb1ZfNWx
-         mcaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=YyypyEJ3ccU02KP95llr7s4/01dfMfvBGOccF1Y+hpc=;
-        b=rLxRTLLCpqOTL99K43QNfczrfIFjiv0iTT06TMvR73Ih5HVwFkNTXmBHfLxyVRTFy8
-         +A18u0MK6lu6Z/98YVzCH/tMhNJnPLxW1iLiMaSy4WgTNjKFDHDBAfEhtgmn/JfyzPvz
-         vxjGCSrUCX+0zpXnyOt0pCaedpkKk3ll4/zbUOZ2jj8m5YK1I1ku7Ksit+aUaturw61a
-         xBn+QcO9UqQNbVSQvyUAhrrTOhfsR3ML/GMvHy8PlJ20pdvsq+O57itufh711xQ6WBG2
-         VbweNFQ5JoNP015IqynrlQIzuGFoJLtP2GDqaQUjOtKSYT6VcVOqAGtnBbg+9PFyQ2Ev
-         e4/w==
-X-Gm-Message-State: AOAM531MZ8WihxpmNsskOVBiB3goHxTYMVGXWQTD6Axic6TCh4wOGLNx
-        QntzPs0lq/1agNjtwOm51iM=
-X-Google-Smtp-Source: ABdhPJwYm5HdjsHipEqFewCzpW2Rf9CFyr6j4PYyjn19XzxWf+Gv5s3mUk5fKXriwxqzFxozURHNpA==
-X-Received: by 2002:a05:6638:3bc:: with SMTP id z28mr16480141jap.118.1613422176054;
-        Mon, 15 Feb 2021 12:49:36 -0800 (PST)
-Received: from localhost ([172.243.146.206])
-        by smtp.gmail.com with ESMTPSA id y11sm9695569ilv.64.2021.02.15.12.49.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Feb 2021 12:49:35 -0800 (PST)
-Date:   Mon, 15 Feb 2021 12:49:27 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        daniel@iogearbox.net, ast@kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     andrii@kernel.org, toke@redhat.com, bjorn.topel@intel.com,
-        magnus.karlsson@intel.com, ciara.loftus@intel.com,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Message-ID: <602ade57ddb9c_3ed41208a1@john-XPS-13-9370.notmuch>
-In-Reply-To: <20210215154638.4627-2-maciej.fijalkowski@intel.com>
-References: <20210215154638.4627-1-maciej.fijalkowski@intel.com>
- <20210215154638.4627-2-maciej.fijalkowski@intel.com>
-Subject: RE: [PATCH bpf-next 1/3] libbpf: xsk: use bpf_link
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S229703AbhBOVGM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Feb 2021 16:06:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57190 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229675AbhBOVGM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Feb 2021 16:06:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 209D264DEC
+        for <bpf@vger.kernel.org>; Mon, 15 Feb 2021 21:05:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613423131;
+        bh=A20PgnnuCMhnn2Truneu7uwbSyHxh2baTg/cQ48ZEZE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=r4Mgb+czvTDsK6uujmUID8xq6utiaIBdH0lKvcNkL9IgPwhIdb6rq6awsMLAwxCCG
+         Wk5H936k4i2lmafxCFVG/Wndad3PTRHJ1gTSy+DtIBa6mNS6qmvbTb7Iw92a6EDijW
+         plsG/BwB8y7eDBoWb3YGAbxvKu2fp+z2UtfnoIt4XBrQb7secvWoaJFFClcfIo8om5
+         ks4DkT6ToiEaKb/mnGhyhaqerh2uf3Q4P2W6tEb3Q2ODJiVRwJZp20YpCiD0swU0mK
+         Q7z6DsRT8pkxzSIege9r0VwFdlsavn9RtfFlO+iXZOHFbi6qKIKsZsdGn1Onx+qKvo
+         NaStSka3ExWRg==
+Received: by mail-lf1-f54.google.com with SMTP id u25so12661166lfc.2
+        for <bpf@vger.kernel.org>; Mon, 15 Feb 2021 13:05:31 -0800 (PST)
+X-Gm-Message-State: AOAM533n6XBHF/Ux2zQI3fR41p8sP2e2NVxm3b72iVsbzo1yrx/YjxZ/
+        xs8+MET22jB4BmRFEG3iTG5x5mOFS2vL0ZS8MJmjYg==
+X-Google-Smtp-Source: ABdhPJwN0yuMpVrt1WujdmZTZ9oY4OBFDb703sE26vAlASLdTMSQ8pudm+5IvyZpCiR3ODOZp7j4rISNHI6bpI54u9Q=
+X-Received: by 2002:a19:48c2:: with SMTP id v185mr9667287lfa.375.1613423129499;
+ Mon, 15 Feb 2021 13:05:29 -0800 (PST)
+MIME-Version: 1.0
+References: <20210215171208.1181305-1-jackmanb@google.com>
+In-Reply-To: <20210215171208.1181305-1-jackmanb@google.com>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Mon, 15 Feb 2021 22:05:18 +0100
+X-Gmail-Original-Message-ID: <CACYkzJ5GEj7BsGe=s=LkL4ySnvjPP0Sa6P6eEvuQFB+0HDHR8Q@mail.gmail.com>
+Message-ID: <CACYkzJ5GEj7BsGe=s=LkL4ySnvjPP0Sa6P6eEvuQFB+0HDHR8Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: x86: Explicitly zero-extend rax after
+ 32-bit cmpxchg
+To:     Brendan Jackman <jackmanb@google.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Florent Revest <revest@chromium.org>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Maciej Fijalkowski wrote:
-> Currently, if there are multiple xdpsock instances running on a single
-> interface and in case one of the instances is terminated, the rest of
-> them are left in an inoperable state due to the fact of unloaded XDP
-> prog from interface.
-> 
-> To address that, step away from setting bpf prog in favour of bpf_link.
-> This means that refcounting of BPF resources will be done automatically
-> by bpf_link itself.
-> 
-> When setting up BPF resources during xsk socket creation, check whether
-> bpf_link for a given ifindex already exists via set of calls to
-> bpf_link_get_next_id -> bpf_link_get_fd_by_id -> bpf_obj_get_info_by_fd
-> and comparing the ifindexes from bpf_link and xsk socket.
-> 
-> If there's no bpf_link yet, create one for a given XDP prog and unload
-> explicitly existing prog if XDP_FLAGS_UPDATE_IF_NOEXIST is not set.
-> 
-> If bpf_link is already at a given ifindex and underlying program is not
-> AF-XDP one, bail out or update the bpf_link's prog given the presence of
-> XDP_FLAGS_UPDATE_IF_NOEXIST.
-> 
-> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> ---
->  tools/lib/bpf/xsk.c | 143 +++++++++++++++++++++++++++++++++++++-------
->  1 file changed, 122 insertions(+), 21 deletions(-)
+On Mon, Feb 15, 2021 at 6:12 PM Brendan Jackman <jackmanb@google.com> wrote:
+>
+> As pointed out by Ilya and explained in the new comment, there's a
+> discrepancy between x86 and BPF CMPXCHG semantics: BPF always loads
+> the value from memory into r0, while x86 only does so when r0 and the
+> value in memory are different.
+>
+> At first this might sound like pure semantics, but it makes a real
+> difference when the comparison is 32-bit, since the load will
+> zero-extend r0/rax.
+>
+> The fix is to explicitly zero-extend rax after doing such a CMPXCHG.
+>
+> Note that this doesn't generate totally optimal code: at one of
+> emit_atomic's callsites (where BPF_{AND,OR,XOR} | BPF_FETCH are
 
-[...]
+I think this should be okay and was also suggested by Alexei in:
 
-> +static int xsk_create_bpf_link(struct xsk_socket *xsk)
-> +{
-> +	/* bpf_link only accepts XDP_FLAGS_MODES, but xsk->config.xdp_flags
-> +	 * might have set XDP_FLAGS_UPDATE_IF_NOEXIST
-> +	 */
-> +	DECLARE_LIBBPF_OPTS(bpf_link_create_opts, opts,
-> +			    .flags = (xsk->config.xdp_flags & XDP_FLAGS_MODES));
-> +	struct xsk_ctx *ctx = xsk->ctx;
-> +	__u32 prog_id;
-> +	int link_fd;
-> +	int err;
-> +
-> +	/* for !XDP_FLAGS_UPDATE_IF_NOEXIST, unload the program first, if any,
-> +	 * so that bpf_link can be attached
-> +	 */
-> +	if (!(xsk->config.xdp_flags & XDP_FLAGS_UPDATE_IF_NOEXIST)) {
-> +		err = bpf_get_link_xdp_id(ctx->ifindex, &prog_id, xsk->config.xdp_flags);
-> +		if (err) {
-> +			pr_warn("getting XDP prog id failed\n");
-> +			return err;
-> +		}
-> +		if (prog_id) {
-> +			err = bpf_set_link_xdp_fd(ctx->ifindex, -1, 0);
-> +			if (err < 0) {
-> +				pr_warn("detaching XDP prog failed\n");
-> +				return err;
-> +			}
-> +		}
->  	}
->  
-> -	ctx->prog_fd = prog_fd;
-> +	link_fd = bpf_link_create(ctx->prog_fd, xsk->ctx->ifindex, BPF_XDP, &opts);
-> +	if (link_fd < 0) {
-> +		pr_warn("bpf_link_create failed: %s\n", strerror(errno));
-> +		return link_fd;
-> +	}
-> +
+https://lore.kernel.org/bpf/CAADnVQ+gnQED7WYAw7Vmm5=omngCKYXnmgU_NqPUfESBerH8gQ@mail.gmail.com/
 
-This can leave the system in a bad state where it unloaded the XDP program
-above, but then failed to create the link. So we should somehow fix that
-if possible or at minimum put a note somewhere so users can't claim they
-shouldn't know this.
+> implemented), the new mov is superfluous because there's already a
+> mov generated afterwards that will zero-extend r0. We could avoid
+> this unnecessary mov by just moving the new logic outside of
+> emit_atomic. But I think it's simpler to keep emit_atomic as a unit
+> of correctness (it generates the correct x86 code for a certain set
+> of BPF instructions, no further knowledge is needed to use it
+> correctly).
+>
+> Reported-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> Fixes: 5ffa25502b5a ("bpf: Add instructions for atomic_[cmp]xchg")
+> Signed-off-by: Brendan Jackman <jackmanb@google.com>
 
-Also related, its not good for real systems to let XDP program go missing
-for some period of time. I didn't check but we should make
-XDP_FLAGS_UPDATE_IF_NOEXIST the default if its not already.
+Thanks for fixing this!
 
-> +	ctx->link_fd = link_fd;
->  	return 0;
->  }
->  
-
-[...]
-
-> +static int xsk_link_lookup(struct xsk_ctx *ctx, __u32 *prog_id)
-> +{
-> +	__u32 link_len = sizeof(struct bpf_link_info);
-> +	struct bpf_link_info link_info;
-> +	__u32 id = 0;
-> +	int err;
-> +	int fd;
-> +
-> +	while (true) {
-> +		err = bpf_link_get_next_id(id, &id);
-> +		if (err) {
-> +			if (errno == ENOENT)
-> +				break;
-> +			pr_warn("can't get next link: %s\n", strerror(errno));
-> +			break;
-> +		}
-> +
-> +		fd = bpf_link_get_fd_by_id(id);
-> +		if (fd < 0) {
-> +			if (errno == ENOENT)
-> +				continue;
-> +			pr_warn("can't get link by id (%u): %s\n", id, strerror(errno));
-> +			break;
-> +		}
-> +
-> +		memset(&link_info, 0, link_len);
-> +		err = bpf_obj_get_info_by_fd(fd, &link_info, &link_len);
-> +		if (err) {
-> +			pr_warn("can't get link info: %s\n", strerror(errno));
-> +			close(fd);
-> +			break;
-> +		}
-> +		if (link_info.xdp.ifindex == ctx->ifindex) {
-> +			ctx->link_fd = fd;
-> +			*prog_id = link_info.prog_id;
-> +			break;
-> +		}
-> +		close(fd);
-> +	}
-> +
-> +	return errno == ENOENT ? 0 : err;
-
-But, err wont be set in fd < 0 case? I guess we don't want to return 0 if
-bpf_link_get_fd_by_id fails. Although I really don't like the construct
-here that much. I think just `return err` and ensuring err is set correctly
-would be more clear. At least the fd error case needs to be handled
-though.
-
-> +}
-> +
+Acked-by: KP Singh <kpsingh@kernel.org>
