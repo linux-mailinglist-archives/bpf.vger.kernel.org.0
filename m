@@ -2,158 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BABDB31AEC1
-	for <lists+bpf@lfdr.de>; Sun, 14 Feb 2021 03:32:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D473031B560
+	for <lists+bpf@lfdr.de>; Mon, 15 Feb 2021 07:27:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229809AbhBNCbc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 13 Feb 2021 21:31:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40206 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229713AbhBNCbb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 13 Feb 2021 21:31:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E047464E4C;
-        Sun, 14 Feb 2021 02:30:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613269850;
-        bh=2PXUQYLG1xM67okQCRR7lPd88pelhekCZVO3xslW9fQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KZ0/tOiJgQG1T9kkCrE814r8jPeog+VWSDu48ITg6KwEFwRdPFe+jRy9knr1dH4jZ
-         AdXZA2Ee11fUq08fWH7y9Dif4hkCYuZfL5w72y9nB2R+7w56o8LHWVPxKzpG6BaCAt
-         6gPGlDN28T0UkBZ3ARJ1olLY8zQd9JjIeA5juo0qM11qUjFK9mYy0x+NsHsvNF53Db
-         EUSiGglfmEOHhrwCwoRudvB4bdl+/hrh0naWh5zQu5r39BAL7Jez7X//OLHg6vlrSP
-         DzaNQaCpQ28XDhdxBNc7vf44SoHvt53oGLr/YNgK72OYqiyh7XdCYqFctU9ds2PwO0
-         TnQkNeJKocCyw==
-Date:   Sat, 13 Feb 2021 19:30:48 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>, dwarves@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Yonghong Song <yhs@fb.com>, Hao Luo <haoluo@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>
-Subject: Re: [PATCHv2] btf_encoder: Match ftrace addresses within elf
- functions
-Message-ID: <20210214023048.GA12132@24bbad8f3778>
-References: <20210213164648.1322182-1-jolsa@kernel.org>
+        id S229591AbhBOG03 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Feb 2021 01:26:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229578AbhBOG02 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Feb 2021 01:26:28 -0500
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE92DC061574
+        for <bpf@vger.kernel.org>; Sun, 14 Feb 2021 22:25:46 -0800 (PST)
+Received: by mail-lj1-x22e.google.com with SMTP id k22so5788666ljg.3
+        for <bpf@vger.kernel.org>; Sun, 14 Feb 2021 22:25:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ubique-spb-ru.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JjMmoc8f1AYp9UUzdoeBOFgxHhnSHF1enM+t7Wmicds=;
+        b=qL32UQjECIo9aFn6ymRNwC6sohfBP7tyb9J27o+wjiezM/eQUDPn6YzMDHbSzZ8bvx
+         E4p+qikeEQG7oxZisHPRBAcRJVas7v6RYLechAFeWj2qM2PRovVage6dli5hf71DR7/j
+         ZOOe+qbd268Ext06TXh4DT9HjH1S+nKOBoW8ZKU94YwwSBoGBFNYTgxc7nzfQe4GAe29
+         G5ank6TQM/6qEOjBdEG9kSWPySFC4NVMSf8oaWxiqDPQnqj05/ibIb+e53PUada/THbx
+         xpPQiC3zSlJEQIUvASyNG2gPpwKt3PZqzNplyLgujKrrrH/rRnHcfZeAkFt62Fa3Lrk4
+         bFqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JjMmoc8f1AYp9UUzdoeBOFgxHhnSHF1enM+t7Wmicds=;
+        b=eUganCgebV6ZrnqEYpEaOmfZEAcFDcacz2V0iHZkQjl7HgE4oCxXPGIcvc6zKblOxR
+         wXIHK1cQ1mHsdpdcFb+deeOw5FeU/JZZ6zUBdhqc81Bo01Kv5HAmDd3f6KyyGXDitr3/
+         vqwHq6KDWHbkPtq9VsSmxxvCVdmtiv2Spw+quscgxFn1ijGPQk1wFJ59JPIE6Nb1YTXs
+         +lVaL6wuTtlX8cOR+rJylyEsCANWjXSLosGU6fY/MpnZmxLpjdJ54ZsvOi7wfR2OXWdG
+         XZOuI8DuH6xhFxXPtPyvnVhmZPdFc2EJ/h80RnC2NO7ZHAbVUf0H2V02VficdRc+UNKj
+         P3+g==
+X-Gm-Message-State: AOAM531ro+chK/vPjr2HFOF6j+iu8YTLS3cENFUfZaRAoAkf7zh4JWKx
+        5Z5kCcFcaDG6pdr5KGgGOJMP1g==
+X-Google-Smtp-Source: ABdhPJxvsLCKloyIy3vSOQHh9G6aWr+/AJ4pdA0YqjAfgjWAErQUUkw8ob/WbCIxVNtuNa2IvgBPQA==
+X-Received: by 2002:a2e:d11:: with SMTP id 17mr9144558ljn.295.1613370345033;
+        Sun, 14 Feb 2021 22:25:45 -0800 (PST)
+Received: from localhost ([178.252.72.51])
+        by smtp.gmail.com with ESMTPSA id 137sm3501780ljf.110.2021.02.14.22.25.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Feb 2021 22:25:44 -0800 (PST)
+Date:   Mon, 15 Feb 2021 10:25:38 +0400
+From:   Dmitrii Banshchikov <me@ubique.spb.ru>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@chromium.org, rdna@fb.com
+Subject: Re: [PATCH v3 bpf-next 3/4] bpf: Support pointers in global func args
+Message-ID: <20210215062538.gor6viyqlasefphp@amnesia>
+References: <20210212205642.620788-1-me@ubique.spb.ru>
+ <20210212205642.620788-4-me@ubique.spb.ru>
+ <20210213020937.g6lt3pczqbjj5h2u@ast-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210213164648.1322182-1-jolsa@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210213020937.g6lt3pczqbjj5h2u@ast-mbp.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Feb 13, 2021 at 05:46:48PM +0100, Jiri Olsa wrote:
-> Currently when processing DWARF function, we check its entrypoint
-> against ftrace addresses, assuming that the ftrace address matches
-> with function's entrypoint.
+On Fri, Feb 12, 2021 at 06:09:37PM -0800, Alexei Starovoitov wrote:
+> On Sat, Feb 13, 2021 at 12:56:41AM +0400, Dmitrii Banshchikov wrote:
+> > Add an ability to pass a pointer to a type with known size in arguments
+> > of a global function. Such pointers may be used to overcome the limit on
+> > the maximum number of arguments, avoid expensive and tricky workarounds
+> > and to have multiple output arguments.
 > 
-> This is not the case on some architectures as reported by Nathan
-> when building kernel on arm [1].
+> Thanks a lot for adding this feature and exhaustive tests.
+> It's a massive improvement in function-by-function verification.
+> Hopefully it will increase its adoption.
+> I've applied the set to bpf-next.
 > 
-> Fixing the check to take into account the whole function not
-> just the entrypoint.
+> > @@ -5349,10 +5352,6 @@ int btf_check_func_arg_match(struct bpf_verifier_env *env, int subprog,
+> >  			goto out;
+> >  		}
+> >  		if (btf_type_is_ptr(t)) {
+> > -			if (reg->type == SCALAR_VALUE) {
+> > -				bpf_log(log, "R%d is not a pointer\n", i + 1);
+> > -				goto out;
+> > -			}
 > 
-> Most of the is_ftrace_func code was contributed by Andrii.
+> Thanks for nuking this annoying warning along the way.
+> People complained that the verification log for normal static functions
+> contains above inexplicable message.
 > 
-> [1] https://lore.kernel.org/bpf/20210209034416.GA1669105@ubuntu-m3-large-x86/
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> >  			/* If function expects ctx type in BTF check that caller
+> >  			 * is passing PTR_TO_CTX.
+> >  			 */
+> > @@ -5367,6 +5366,25 @@ int btf_check_func_arg_match(struct bpf_verifier_env *env, int subprog,
+> >  					goto out;
+> >  				continue;
+> >  			}
+> > +
+> > +			if (!is_global)
+> > +				goto out;
+> > +
+> > +			t = btf_type_skip_modifiers(btf, t->type, NULL);
+> > +
+> > +			ref_t = btf_resolve_size(btf, t, &type_size);
+> > +			if (IS_ERR(ref_t)) {
+> > +				bpf_log(log,
+> > +				    "arg#%d reference type('%s %s') size cannot be determined: %ld\n",
+> > +				    i, btf_type_str(t), btf_name_by_offset(btf, t->name_off),
+> > +					PTR_ERR(ref_t));
+> 
+> Hopefully one annoying message won't get replaced with this annoying message :)
+> I think the type size should be known most of the time. So it should be fine.
+> 
+> > +		if (btf_type_is_ptr(t)) {
+> > +			if (btf_get_prog_ctx_type(log, btf, t, prog_type, i)) {
+> > +				reg->type = PTR_TO_CTX;
+> > +				continue;
+> > +			}
+> 
+> Do you think it would make sense to nuke another message in btf_get_prog_ctx_type ?
+> With this newly gained usability of global function the message
+> "arg#0 type is not a struct"
+> is not useful.
+> It was marginally useful in the past. Because global funcs supported
+> ptr_to_ctx only it wasn't seen as often.
+> Now this message probably can simply be removed. wdyt?
 
-I did several builds with CONFIG_DEBUG_INFO_BTF enabled (arm64, ppc64le,
-and x86_64) and saw no build errors. I did not do any runtime testing.
+Yes, I hit this log message while was working on the patch and it
+looked confusing but forgot to adjust/remove it.
+I will prepare patch.
+Thank you.
 
-Tested-by: Nathan Chancellor <nathan@kernel.org>
 
-> ---
-> v2 changes:
->   - update functions addr directly [Andrii]
-> 
->  btf_encoder.c | 40 ++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 38 insertions(+), 2 deletions(-)
-> 
-> diff --git a/btf_encoder.c b/btf_encoder.c
-> index b124ec20a689..80e896961d4e 100644
-> --- a/btf_encoder.c
-> +++ b/btf_encoder.c
-> @@ -36,6 +36,7 @@ struct funcs_layout {
->  struct elf_function {
->  	const char	*name;
->  	unsigned long	 addr;
-> +	unsigned long	 size;
->  	unsigned long	 sh_addr;
->  	bool		 generated;
->  };
-> @@ -98,6 +99,7 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym,
->  
->  	functions[functions_cnt].name = name;
->  	functions[functions_cnt].addr = elf_sym__value(sym);
-> +	functions[functions_cnt].size = elf_sym__size(sym);
->  	functions[functions_cnt].sh_addr = sh.sh_addr;
->  	functions[functions_cnt].generated = false;
->  	functions_cnt++;
-> @@ -236,6 +238,39 @@ get_kmod_addrs(struct btf_elf *btfe, __u64 **paddrs, __u64 *pcount)
->  	return 0;
->  }
->  
-> +static int is_ftrace_func(struct elf_function *func, __u64 *addrs, __u64 count)
-> +{
-> +	__u64 start = func->addr;
-> +	__u64 addr, end = func->addr + func->size;
-> +
-> +	/*
-> +	 * The invariant here is addr[r] that is the smallest address
-> +	 * that is >= than function start addr. Except the corner case
-> +	 * where there is no such r, but for that we have a final check
-> +	 * in the return.
-> +	 */
-> +	size_t l = 0, r = count - 1, m;
-> +
-> +	/* make sure we don't use invalid r */
-> +	if (count == 0)
-> +		return false;
-> +
-> +	while (l < r) {
-> +		m = l + (r - l) / 2;
-> +		addr = addrs[m];
-> +
-> +		if (addr >= start) {
-> +			/* we satisfy invariant, so tighten r */
-> +			r = m;
-> +		} else {
-> +			/* m is not good enough as l, maybe m + 1 will be */
-> +			l = m + 1;
-> +		}
-> +	}
-> +
-> +	return start <= addrs[r] && addrs[r] < end;
-> +}
-> +
->  static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
->  {
->  	__u64 *addrs, count, i;
-> @@ -283,10 +318,11 @@ static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
->  		 * functions[x]::addr is relative address within section
->  		 * and needs to be relocated by adding sh_addr.
->  		 */
-> -		__u64 addr = kmod ? func->addr + func->sh_addr : func->addr;
-> +		if (kmod)
-> +			func->addr += func->sh_addr;
->  
->  		/* Make sure function is within ftrace addresses. */
-> -		if (bsearch(&addr, addrs, count, sizeof(addrs[0]), addrs_cmp)) {
-> +		if (is_ftrace_func(func, addrs, count)) {
->  			/*
->  			 * We iterate over sorted array, so we can easily skip
->  			 * not valid item and move following valid field into
-> -- 
-> 2.29.2
-> 
+
+-- 
+
+Dmitrii Banshchikov
