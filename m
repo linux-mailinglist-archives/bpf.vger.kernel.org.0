@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7521731C23A
-	for <lists+bpf@lfdr.de>; Mon, 15 Feb 2021 20:12:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEE2631C260
+	for <lists+bpf@lfdr.de>; Mon, 15 Feb 2021 20:21:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230495AbhBOTKJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Feb 2021 14:10:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57496 "EHLO
+        id S230223AbhBOTVH (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Feb 2021 14:21:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229925AbhBOTKI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Feb 2021 14:10:08 -0500
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FEDEC061574;
-        Mon, 15 Feb 2021 11:09:28 -0800 (PST)
-Received: by mail-io1-xd31.google.com with SMTP id u20so7792197iot.9;
-        Mon, 15 Feb 2021 11:09:28 -0800 (PST)
+        with ESMTP id S230106AbhBOTVE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Feb 2021 14:21:04 -0500
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 888A3C061574;
+        Mon, 15 Feb 2021 11:20:23 -0800 (PST)
+Received: by mail-il1-x12e.google.com with SMTP id q9so6396199ilo.1;
+        Mon, 15 Feb 2021 11:20:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=+iSFnwZDqHzel2EupBWqWFgjxdKdshK6b9ZbgQmOaGs=;
-        b=u4/ZBTN49aQkxbwTEUoyrxiGRfHZ5FQ+//1XPbCI//hL2HqDMbclQxLbW7VP8Do/nt
-         s19WkNFkaVS/GlbNIdkSPBVv1eIxOo9Il2oWIUVQNfkRl8144rt5hQaIIA2anP2BRzwj
-         qa6BPjcRMU25g7Px5pnwM3B+nYxHARVVeHloQM7yj09AVZHScORtE2aEeoG1dPr6H+Kq
-         4At/uBWsna6J2/v87VGpzosw4Li1z+P3ITLQ820/jKy4TUARQxocr+Cnue9asQv2lxas
-         sLsUE7hCxkR3MW5KPeXZNfNyR0VINJQF2+B/lFcKkCCsZglwh7HdX5MOlU2xV7kfpx3q
-         T2Xg==
+        bh=QAju3LaJKwujWvlvDk+izIeIsqjA8sdwLDYNVniZBDo=;
+        b=NhnIOjrqGJWU5I8jYG5SzfqH3oVNlXY1QLGAiJm0z7+cevaJRJIvBlaDRDD0IwWw9W
+         gyJg2W/DcYVzANsaDVq99dSxXffPoN3k8xfb6MPwPuP9XxuqLLINkF+xsKUa5CGXrTyN
+         PnNiIIZyhdDgFwfv1wFo+XPvChLKDznbRbPLQXgm8xHaKGtSwoGZl7JL3sEum1mF9vhq
+         +hOjtCSilN+4Tcf3vnDu8zyu2rG+JZZebqQQz0RG+gKVypNHoqy9GcYRugnz3xCZuFjK
+         oAK+Ka2UMLuiswn6EhkfdKaY7ZZgYmjoUCBfcACO6FlhcXM9+gVnbqCRGVsFGQrbPNKl
+         6Myg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=+iSFnwZDqHzel2EupBWqWFgjxdKdshK6b9ZbgQmOaGs=;
-        b=Iqww9DOKjp7lOtEX61/nB1Y41F8xFpssdHC4NdOHXMVQcltGhm4pHaTB3gQKQdPFDY
-         7EwBoL0rzBXYp3HmpzapuCDh8RWHRhidoknQzm5KWfPMAiqdLXXLKL+tap/pOjp3LvRU
-         fZ6eNuYpWpxO1kW7oI3L9A4K+MMzFowGfh0PxDB1rTwLLfPK+o28KHB3BqTxygTY2MbE
-         +hX1iELaWp6jRGR5PfsZnC0EJ+FuGP3LKJThtd0G+28y+NYlqJV6HiWlPJN00pavAvlb
-         JemDk1vwCaWAIi4E7SsG+OdKOMETi60/Mnt/0VukWWCmjhgupPy/sGPbI4pyHlYcr6DC
-         5nMg==
-X-Gm-Message-State: AOAM5336lts+zmu+34O+7V50ceUfXgAGux9omd/YiLAbAY34yEW7H7ey
-        RQaqHi3mjOjZMfmoa1rKkZ8=
-X-Google-Smtp-Source: ABdhPJyVrRDz+mBKu/VJs65+ygptlSiJPtJq12BsFX/yvWxBP6RuVP7kNbe/zOlasZv4isVCJVXKKA==
-X-Received: by 2002:a6b:b44b:: with SMTP id d72mr12560833iof.55.1613416167604;
-        Mon, 15 Feb 2021 11:09:27 -0800 (PST)
+        bh=QAju3LaJKwujWvlvDk+izIeIsqjA8sdwLDYNVniZBDo=;
+        b=BIzRpNo321uJZi3jCUmB85irF9Wjs5OZ7JBZmlIG4sPimo1f+ByphbA92MMVnEdoaY
+         4pgtWOQKPbgD5gfC9U9rjxh++SnCealljo+4cIl4PMiobT1NJtmbdwhUFVlF16PryGlq
+         nRbfseFa+XWGJrYwY6vUTU0KolLRl33oy/0xFXpSxGBOgLelKlRAaqQ2ku6ebKfGPEW0
+         VLi20ooYHKC1+kbKAze5tfa90mb+P3ozk5fCKKv+at1VbGFqu9td1cwJIK9ZWNICRPz1
+         QPXkRbDcdrukq5E1eOzkGjZeDwTMOz257Sd9bXJAc+3mtsUhoz5ELp04RcQISD8gHRVC
+         Bhbw==
+X-Gm-Message-State: AOAM5304fizYpv/CCzuVtkpXamCX/LD/m0MmsQweYygjD+K+x9pplVx9
+        2ax1+JIBPNPAT4x3PPaNxj0cSMqBmvI=
+X-Google-Smtp-Source: ABdhPJzWnjhQ04A6r9rc+DWe/515EIfIt2vKCefm3P5wNmkSOnzucb6ByezXd2eWvqp2yyTXw06+Tw==
+X-Received: by 2002:a05:6e02:154d:: with SMTP id j13mr14312381ilu.153.1613416823082;
+        Mon, 15 Feb 2021 11:20:23 -0800 (PST)
 Received: from localhost ([172.243.146.206])
-        by smtp.gmail.com with ESMTPSA id s6sm9786664ild.45.2021.02.15.11.09.25
+        by smtp.gmail.com with ESMTPSA id w3sm9452247ill.80.2021.02.15.11.20.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Feb 2021 11:09:27 -0800 (PST)
-Date:   Mon, 15 Feb 2021 11:09:21 -0800
+        Mon, 15 Feb 2021 11:20:22 -0800 (PST)
+Date:   Mon, 15 Feb 2021 11:20:15 -0800
 From:   John Fastabend <john.fastabend@gmail.com>
 To:     Cong Wang <xiyou.wangcong@gmail.com>, netdev@vger.kernel.org
 Cc:     bpf@vger.kernel.org, duanxiongchun@bytedance.com,
@@ -57,12 +57,11 @@ Cc:     bpf@vger.kernel.org, duanxiongchun@bytedance.com,
         Daniel Borkmann <daniel@iogearbox.net>,
         Jakub Sitnicki <jakub@cloudflare.com>,
         Lorenz Bauer <lmb@cloudflare.com>
-Message-ID: <602ac6e11579_3ed41208af@john-XPS-13-9370.notmuch>
-In-Reply-To: <20210213214421.226357-6-xiyou.wangcong@gmail.com>
+Message-ID: <602ac96f9e30f_3ed41208b6@john-XPS-13-9370.notmuch>
+In-Reply-To: <20210213214421.226357-5-xiyou.wangcong@gmail.com>
 References: <20210213214421.226357-1-xiyou.wangcong@gmail.com>
- <20210213214421.226357-6-xiyou.wangcong@gmail.com>
-Subject: RE: [Patch bpf-next v3 5/5] sock_map: rename skb_parser and
- skb_verdict
+ <20210213214421.226357-5-xiyou.wangcong@gmail.com>
+Subject: RE: [Patch bpf-next v3 4/5] skmsg: use skb ext instead of TCP_SKB_CB
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -74,10 +73,10 @@ X-Mailing-List: bpf@vger.kernel.org
 Cong Wang wrote:
 > From: Cong Wang <cong.wang@bytedance.com>
 > 
-> These two eBPF programs are tied to BPF_SK_SKB_STREAM_PARSER
-> and BPF_SK_SKB_STREAM_VERDICT, rename them to reflect the fact
-> they are only used for TCP. And save the name 'skb_verdict' for
-> general use later.
+> Currently TCP_SKB_CB() is hard-coded in skmsg code, it certainly
+> does not work for any other non-TCP protocols. We can move them to
+> skb ext instead of playing with skb cb, which is harder to make
+> correct.
 > 
 > Cc: John Fastabend <john.fastabend@gmail.com>
 > Cc: Daniel Borkmann <daniel@iogearbox.net>
@@ -86,4 +85,94 @@ Cong Wang wrote:
 > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
 > ---
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+I'm not seeing the advantage of doing this at the moment. We can
+continue to use cb[] here, which is simpler IMO and use the ext
+if needed for the other use cases. This is adding a per packet
+alloc cost that we don't have at the moment as I understand it.
+
+[...]
+
+> diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
+> index e3bb712af257..d5c711ef6d4b 100644
+> --- a/include/linux/skmsg.h
+> +++ b/include/linux/skmsg.h
+> @@ -459,4 +459,44 @@ static inline bool sk_psock_strp_enabled(struct sk_psock *psock)
+>  		return false;
+>  	return !!psock->saved_data_ready;
+>  }
+> +
+> +struct skb_bpf_ext {
+> +	__u32 flags;
+> +	struct sock *sk_redir;
+> +};
+> +
+> +#if IS_ENABLED(CONFIG_NET_SOCK_MSG)
+> +static inline
+> +bool skb_bpf_ext_ingress(const struct sk_buff *skb)
+> +{
+> +	struct skb_bpf_ext *ext = skb_ext_find(skb, SKB_EXT_BPF);
+> +
+> +	return ext->flags & BPF_F_INGRESS;
+> +}
+> +
+> +static inline
+> +void skb_bpf_ext_set_ingress(const struct sk_buff *skb)
+> +{
+> +	struct skb_bpf_ext *ext = skb_ext_find(skb, SKB_EXT_BPF);
+> +
+> +	ext->flags |= BPF_F_INGRESS;
+> +}
+> +
+> +static inline
+> +struct sock *skb_bpf_ext_redirect_fetch(struct sk_buff *skb)
+> +{
+> +	struct skb_bpf_ext *ext = skb_ext_find(skb, SKB_EXT_BPF);
+> +
+> +	return ext->sk_redir;
+> +}
+> +
+> +static inline
+> +void skb_bpf_ext_redirect_clear(struct sk_buff *skb)
+> +{
+> +	struct skb_bpf_ext *ext = skb_ext_find(skb, SKB_EXT_BPF);
+> +
+> +	ext->flags = 0;
+> +	ext->sk_redir = NULL;
+> +}
+> +#endif /* CONFIG_NET_SOCK_MSG */
+
+So we will have some slight duplication for cb[] variant and ext
+variant above. I'm OK with that to avoid an allocation.
+
+[...]
+
+> @@ -1003,11 +1008,17 @@ static int sk_psock_verdict_recv(read_descriptor_t *desc, struct sk_buff *skb,
+>  		goto out;
+>  	}
+>  	skb_set_owner_r(skb, sk);
+> +	if (!skb_ext_add(skb, SKB_EXT_BPF)) {
+> +		len = 0;
+> +		kfree_skb(skb);
+> +		goto out;
+> +	}
+> +
+
+per packet cost here. Perhaps you can argue small alloc will usually not be 
+noticable in such a large stack, but once we convert over it will be very
+hard to go back. And I'm looking at optimizing this path now.
+
+>  	prog = READ_ONCE(psock->progs.skb_verdict);
+>  	if (likely(prog)) {
+> -		tcp_skb_bpf_redirect_clear(skb);
+> +		skb_bpf_ext_redirect_clear(skb);
+>  		ret = sk_psock_bpf_run(psock, prog, skb);
+> -		ret = sk_psock_map_verd(ret, tcp_skb_bpf_redirect_fetch(skb));
+> +		ret = sk_psock_map_verd(ret, skb_bpf_ext_redirect_fetch(skb));
+>  	}
+>  	sk_psock_verdict_apply(psock, skb, ret);
+
+Thanks for the series Cong. Drop this patch and resubmit carry ACKs forward
+and then lets revisit this later.
+
+Thanks,
+John
