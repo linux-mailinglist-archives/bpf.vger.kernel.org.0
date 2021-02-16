@@ -2,221 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B9B31CBC2
-	for <lists+bpf@lfdr.de>; Tue, 16 Feb 2021 15:21:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64F1E31CBFB
+	for <lists+bpf@lfdr.de>; Tue, 16 Feb 2021 15:34:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229983AbhBPOUW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Feb 2021 09:20:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230196AbhBPOUM (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Feb 2021 09:20:12 -0500
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48F72C061574
-        for <bpf@vger.kernel.org>; Tue, 16 Feb 2021 06:19:32 -0800 (PST)
-Received: by mail-qt1-x849.google.com with SMTP id n4so7826371qte.11
-        for <bpf@vger.kernel.org>; Tue, 16 Feb 2021 06:19:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=C+z2l1Z8SEwFSvAfHkg3uXhxtmTk3DKZDz4dc2bKtl4=;
-        b=CT8p/H0hPNVOkrHpP24jyvc3W3A8cPyxSFTTSFNf3AhNybMMTc6RNlLYhURB8W9CT8
-         O1GmBHiF07E5BDeOCIkuWUj+vSF6juA9inSU0vrh5A2EE/wLbIF7x5DyByibtMjqj66b
-         s8viy4kuodaGzFb5fab82zAOy62qo95KANgpwWdVsKx6u8EZKUO1jGDjmI1Neo9KCPKL
-         ACy1ViHOHMHlcYQW/QUs7LZYT6whnb0r8yXkSWrfQGfiHeqz+av7QDdxfUiwpKB3MBC9
-         /mWipfyNIMYCyCEszmUX+mdPWlDGdOo/CBQqq5GZzSHKZQ1XnO/LmxuTI7DxlVzm6bEj
-         3lfQ==
+        id S230119AbhBPObn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Feb 2021 09:31:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39072 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230060AbhBPObj (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 16 Feb 2021 09:31:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613485812;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nb9Kqw3jYRHWptfCeEgA2EWrWzfESD8aGU2YzYJvKpI=;
+        b=Lt/1a0HvacWHd6Sd+l26Foei9TTYF58A4XF51/2Y8FX295idSsEVb4L7ZhIdY9D3KuBLxQ
+        u8vyXzhJkWmhy9eSkTmU4U238uLlaZ5TEL47jGiVfVu+pwHSfFRehqW0GTxPCNVUWcsAyw
+        6JQldxLkoGraHvNPR2PwpbP/neGfReY=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-218-TM5hh0wDM5K_LtfBKnURkA-1; Tue, 16 Feb 2021 09:30:10 -0500
+X-MC-Unique: TM5hh0wDM5K_LtfBKnURkA-1
+Received: by mail-ej1-f70.google.com with SMTP id yc4so6304187ejb.2
+        for <bpf@vger.kernel.org>; Tue, 16 Feb 2021 06:30:10 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=C+z2l1Z8SEwFSvAfHkg3uXhxtmTk3DKZDz4dc2bKtl4=;
-        b=GW49gkS6u+UVr63JuM8e7ZbXF4lx0iWdiTZKUL1F9t/+z69wiZ2Dp1jz2mLrIYUX7T
-         nP2aAtZ3xk6JF08G+DBU9j7u2trYbA6dd67T9eTOmmscbtWKs/ReIGAYWw92w2dYWwXY
-         WAaBd+UlOPY9gzYTArjQPURzkIekSC9LIxA4kJPeSMUXv51uKu65MSoKtP9Gh9gWAeas
-         5Dje7Px9mCidjP6ruMDfwFRRwviWLlkVgoPzbWVJNaVvSCNS7hRpPKxkeie5qAwwM8o1
-         5MJJ/X3LbtvzrCI8FOXMOcuMLAFxpQ0sVb0KLJ0ykrZO+XgnIxlBnoemmHhmESIsevZr
-         EUcg==
-X-Gm-Message-State: AOAM532spSi9/MYJzDHwYQsEXZSWyZgv+Jr20NEqg1V1HeszVoBFA6hS
-        hADN6OjInKpWB1ZuA6N6evVc+pqAiX3Kvv2QQOXtDMG9fFZ5y8bjzBayw3DLcx8MeO3GG/NmkzG
-        k6RvOxov+F7NVaI6Kv8hSTyOGkU/SKq/g77oAf2/IWHAUqrFMKXdFul018O2+6fk=
-X-Google-Smtp-Source: ABdhPJyJVA1QK2v5nil6qrTYbcNyWjsTUGhB0HFeGwV7NJTuuTuzDvvnx85v4QOZ3xcE9GN/1zw3wsItqkHRhw==
-Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
-X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
- (user=jackmanb job=sendgmr) by 2002:a05:6214:2022:: with SMTP id
- 2mr10214189qvf.39.1613485171364; Tue, 16 Feb 2021 06:19:31 -0800 (PST)
-Date:   Tue, 16 Feb 2021 14:19:25 +0000
-Message-Id: <20210216141925.1549405-1-jackmanb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-Subject: [PATCH v2 bpf-next] bpf: Explicitly zero-extend R0 after 32-bit cmpxchg
-From:   Brendan Jackman <jackmanb@google.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=nb9Kqw3jYRHWptfCeEgA2EWrWzfESD8aGU2YzYJvKpI=;
+        b=PZHk08jtVig05TCME3K6V5lvlSIh1bIEAsfZTP4CXz9+ZcrM4TRS8bHYwkPSSohEKV
+         EHB9L4Gg8Vzd8ZlDlk5Cp9+ICK9dD7Yu7VrI4miKHh8DElnDCph/giJedqQGutEKdb1U
+         brFN7xJZp3aD3Pn6sUFIbfXJn6ouoecswD0asHMNyDXL+KI2PcqGwLlGAE3SfDxVJmUp
+         BSnbY0/6wsZtJ+kUnzeOmvfbRBcDIN9voQr04HM4iOVlLiQ6RSjBk8y0BfLf1HkUuFOa
+         KAxwRpExspKZgMzSPRchKy8PsOExguSV+9BVdpu0UrpFF7PZlHC6TDtPb+2bePb51+x7
+         jczA==
+X-Gm-Message-State: AOAM530oY81BDx0l22M812unI8lmZ5B9P4N75rguKWwzjzoQ/EOIoACA
+        g9vFbd45xHfisg2HF9c5ckvLl+cC3i5CCNyLKlodS1GInhsRHROL6YbunoSCoOPj8wskt81mYDS
+        g1VXOI3dAsHjA
+X-Received: by 2002:aa7:cd8d:: with SMTP id x13mr20747698edv.286.1613485809054;
+        Tue, 16 Feb 2021 06:30:09 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzPnIbI5zNEUJMUQGdvUemv2Bdqe23PVRQQVPIj0wJyHJ00fcgoDHNUcRSpuNnhIw8rtDHhkg==
+X-Received: by 2002:aa7:cd8d:: with SMTP id x13mr20747652edv.286.1613485808745;
+        Tue, 16 Feb 2021 06:30:08 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id hr3sm12875181ejc.41.2021.02.16.06.30.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Feb 2021 06:30:08 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id BDCAE1805FA; Tue, 16 Feb 2021 15:30:07 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Marek Majtyka <alardam@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Saeed Mahameed <saeed@kernel.org>,
+        David Ahern <dsahern@gmail.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Maciej Fijalkowski <maciejromanfijalkowski@gmail.com>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Brendan Jackman <jackmanb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+Subject: Re: [PATCH v2 bpf 1/5] net: ethtool: add xdp properties flag set
+In-Reply-To: <CAAOQfrHeqKMhZbJoHrdtOtekucuO7K4ASMwT=fS3WTx1XyhjTA@mail.gmail.com>
+References: <20201204102901.109709-1-marekx.majtyka@intel.com>
+ <20201209125223.49096d50@carbon>
+ <e1573338-17c0-48f4-b4cd-28eeb7ce699a@gmail.com>
+ <1e5e044c8382a68a8a547a1892b48fb21d53dbb9.camel@kernel.org>
+ <cb6b6f50-7cf1-6519-a87a-6b0750c24029@gmail.com>
+ <f4eb614ac91ee7623d13ea77ff3c005f678c512b.camel@kernel.org>
+ <d5be0627-6a11-9c1f-8507-cc1a1421dade@gmail.com>
+ <6f8c23d4ac60525830399754b4891c12943b63ac.camel@kernel.org>
+ <CAAOQfrHN1-oHmbOksDv-BKWv4gDF2zHZ5dTew6R_QTh6s_1abg@mail.gmail.com>
+ <87h7mvsr0e.fsf@toke.dk>
+ <CAAOQfrHA+-BsikeQzXYcK_32BZMbm54x5p5YhAiBj==uaZvG1w@mail.gmail.com>
+ <87bld2smi9.fsf@toke.dk>
+ <20210202113456.30cfe21e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAAOQfrGqcsn3wu5oxzHYxtE8iK3=gFdTka5HSh5Fe9Hc6HWRWA@mail.gmail.com>
+ <20210203090232.4a259958@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <874kikry66.fsf@toke.dk>
+ <20210210103135.38921f85@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <87czx7r0w8.fsf@toke.dk>
+ <20210211172603.17d6a8f6@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAADnVQJ_juVMxSKUvHBEsLNQoJ4mvkqyAV8XF4mmz-dO8saUzQ@mail.gmail.com>
+ <CAAOQfrHeqKMhZbJoHrdtOtekucuO7K4ASMwT=fS3WTx1XyhjTA@mail.gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 16 Feb 2021 15:30:07 +0100
+Message-ID: <8735xwaxw0.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-As pointed out by Ilya and explained in the new comment, there's a
-discrepancy between x86 and BPF CMPXCHG semantics: BPF always loads
-the value from memory into r0, while x86 only does so when r0 and the
-value in memory are different. The same issue affects s390.
+Marek Majtyka <alardam@gmail.com> writes:
 
-At first this might sound like pure semantics, but it makes a real
-difference when the comparison is 32-bit, since the load will
-zero-extend r0/rax.
+> On Fri, Feb 12, 2021 at 3:05 AM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+>>
+>> On Thu, Feb 11, 2021 at 5:26 PM Jakub Kicinski <kuba@kernel.org> wrote:
+>> >
+>> > Perhaps I had seen one too many vendor incompatibility to trust that
+>> > adding a driver API without a validation suite will result in something
+>> > usable in production settings.
+>>
+>> I agree with Jakub. I don't see how extra ethtool reporting will help.
+>> Anyone who wants to know whether eth0 supports XDP_REDIRECT can already do so:
+>> ethtool -S eth0 | grep xdp_redirect
+>
+> Doing things right can never be treated as an addition. It is the
+> other way around. Option -S is for statistics and additionally it can
+> show something (AFAIR there wasn't such counter xdp_redirect, it must
+> be something new, thanks for the info). But  nevertheless it cannot
+> cover all needs IMO.
+>
+> Some questions worth to consider:
+> Is this extra reporting function of statistics clearly documented in
+> ethtool? Is this going to be clearly documented? Would it be easier
+> for users/admins to find it?
+> What about zero copy? Can it be available via statistics, too?
+> What about drivers XDP transmit locking flag (latest request from Jesper)?
 
-The fix is to explicitly zero-extend rax after doing such a
-CMPXCHG. Since this problem affects multiple archs, this is done in
-the verifier by patching in a BPF_ZEXT_REG instruction after every
-32-bit cmpxchg. Any archs that don't need such manual zero-extension
-can do a look-ahead with insn_is_zext to skip the unnecessary mov.
 
-Reported-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Fixes: 5ffa25502b5a ("bpf: Add instructions for atomic_[cmp]xchg")
-Signed-off-by: Brendan Jackman <jackmanb@google.com>
----
+There is no way the statistics is enough. And saying "just grep for
+xdp_redirect in ethtool -S" is bordering on active hostility towards
+users.
 
-Difference from v1[1]: Now solved centrally in the verifier instead of
-  specifically for the x86 JIT. Thanks to Ilya and Daniel for the suggestions!
+We need drivers to export explicit features so we can do things like:
 
-[1] https://lore.kernel.org/bpf/d7ebaefb-bfd6-a441-3ff2-2fdfe699b1d2@iogearbox.net/T/#t
+- Explicitly reject attaching a program that tries to do xdp_redirect on
+  an interface that doesn't support it.
 
- kernel/bpf/verifier.c                         | 36 +++++++++++++++++++
- .../selftests/bpf/verifier/atomic_cmpxchg.c   | 25 +++++++++++++
- .../selftests/bpf/verifier/atomic_or.c        | 26 ++++++++++++++
- 3 files changed, 87 insertions(+)
+- Prevent devices that don't implement ndo_xdp_xmit() from being
+  inserted into a devmap (oh, and this is on thing you can't know at all
+  from the statistics, BTW).
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 16ba43352a5f..7f4a83d62acc 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -11889,6 +11889,39 @@ static int fixup_bpf_calls(struct bpf_verifier_env *env)
- 	return 0;
- }
+- Expose the features in a machine-readable format (like the ethtool
+  flags in your patch) so applications can discover in a reliable way
+  what is available and do proper fallback if features are missing.
 
-+/* BPF_CMPXCHG always loads a value into R0, therefore always zero-extends.
-+ * However some archs' equivalent instruction only does this load when the
-+ * comparison is successful. So here we add a BPF_ZEXT_REG after every 32-bit
-+ * CMPXCHG, so that such archs' JITs don't need to deal with the issue. Archs
-+ * that don't face this issue may use insn_is_zext to detect and skip the added
-+ * instruction.
-+ */
-+static int add_zext_after_cmpxchg(struct bpf_verifier_env *env)
-+{
-+	struct bpf_insn zext_patch[2] = { [1] = BPF_ZEXT_REG(BPF_REG_0) };
-+	struct bpf_insn *insn = env->prog->insnsi;
-+	int insn_cnt = env->prog->len;
-+	struct bpf_prog *new_prog;
-+	int delta = 0; /* Number of instructions added */
-+	int i;
-+
-+	for (i = 0; i < insn_cnt; i++, insn++) {
-+		if (insn->code != (BPF_STX | BPF_W | BPF_ATOMIC) || insn->imm != BPF_CMPXCHG)
-+			continue;
-+
-+		zext_patch[0] = *insn;
-+		new_prog = bpf_patch_insn_data(env, i + delta, zext_patch, 2);
-+		if (!new_prog)
-+			return -ENOMEM;
-+
-+		delta++;
-+		env->prog = new_prog;
-+		insn = new_prog->insnsi + i + delta;
-+	}
-+
-+	return 0;
-+}
-+
- static void free_states(struct bpf_verifier_env *env)
- {
- 	struct bpf_verifier_state_list *sl, *sln;
-@@ -12655,6 +12688,9 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr,
- 	if (ret == 0)
- 		ret = fixup_call_args(env);
+I can accept that we need some kind of conformance test to define what
+each flag means (which would be kinda like a selftest for the feature
+flags), but we definitely need the feature flags themselves!
 
-+	if (ret == 0)
-+		ret = add_zext_after_cmpxchg(env);
-+
- 	env->verification_time = ktime_get_ns() - start_time;
- 	print_verification_stats(env);
-
-diff --git a/tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c b/tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c
-index 2efd8bcf57a1..6e52dfc64415 100644
---- a/tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c
-+++ b/tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c
-@@ -94,3 +94,28 @@
- 	.result = REJECT,
- 	.errstr = "invalid read from stack",
- },
-+{
-+	"BPF_W cmpxchg should zero top 32 bits",
-+	.insns = {
-+		/* r0 = U64_MAX; */
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
-+		BPF_ALU64_IMM(BPF_SUB, BPF_REG_0, 1),
-+		/* u64 val = r0; */
-+		BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_0, -8),
-+		/* r0 = (u32)atomic_cmpxchg((u32 *)&val, r0, 1); */
-+		BPF_MOV32_IMM(BPF_REG_1, 1),
-+		BPF_ATOMIC_OP(BPF_W, BPF_CMPXCHG, BPF_REG_10, BPF_REG_1, -8),
-+		/* r1 = 0x00000000FFFFFFFFull; */
-+		BPF_MOV64_IMM(BPF_REG_1, 1),
-+		BPF_ALU64_IMM(BPF_LSH, BPF_REG_1, 32),
-+		BPF_ALU64_IMM(BPF_SUB, BPF_REG_1, 1),
-+		/* if (r0 != r1) exit(1); */
-+		BPF_JMP_REG(BPF_JEQ, BPF_REG_0, BPF_REG_1, 2),
-+		BPF_MOV32_IMM(BPF_REG_0, 1),
-+		BPF_EXIT_INSN(),
-+		/* exit(0); */
-+		BPF_MOV32_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	},
-+	.result = ACCEPT,
-+},
-diff --git a/tools/testing/selftests/bpf/verifier/atomic_or.c b/tools/testing/selftests/bpf/verifier/atomic_or.c
-index 70f982e1f9f0..0a08b99e6ddd 100644
---- a/tools/testing/selftests/bpf/verifier/atomic_or.c
-+++ b/tools/testing/selftests/bpf/verifier/atomic_or.c
-@@ -75,3 +75,29 @@
- 	},
- 	.result = ACCEPT,
- },
-+{
-+	"BPF_W atomic_fetch_or should zero top 32 bits",
-+	.insns = {
-+		/* r1 = U64_MAX; */
-+		BPF_MOV64_IMM(BPF_REG_1, 0),
-+		BPF_ALU64_IMM(BPF_SUB, BPF_REG_1, 1),
-+		/* u64 val = r0; */
-+		BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_1, -8),
-+		/* r1 = (u32)atomic_sub((u32 *)&val, 1); */
-+		BPF_MOV32_IMM(BPF_REG_1, 2),
-+		BPF_ATOMIC_OP(BPF_W, BPF_OR | BPF_FETCH, BPF_REG_10, BPF_REG_1, -8),
-+		/* r2 = 0x00000000FFFFFFFF; */
-+		BPF_MOV64_IMM(BPF_REG_2, 1),
-+		BPF_ALU64_IMM(BPF_LSH, BPF_REG_2, 32),
-+		BPF_ALU64_IMM(BPF_SUB, BPF_REG_2, 1),
-+		/* if (r2 != r1) exit(1); */
-+		BPF_JMP_REG(BPF_JEQ, BPF_REG_2, BPF_REG_1, 2),
-+		/* BPF_MOV32_IMM(BPF_REG_0, 1), */
-+		BPF_MOV64_REG(BPF_REG_0, BPF_REG_1),
-+		BPF_EXIT_INSN(),
-+		/* exit(0); */
-+		BPF_MOV32_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	},
-+	.result = ACCEPT,
-+},
-
-base-commit: 45159b27637b0fef6d5ddb86fc7c46b13c77960f
---
-2.30.0.478.g8a0d178c01-goog
+-Toke
 
