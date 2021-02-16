@@ -2,174 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83BAE31C8FB
-	for <lists+bpf@lfdr.de>; Tue, 16 Feb 2021 11:43:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B84C31C930
+	for <lists+bpf@lfdr.de>; Tue, 16 Feb 2021 12:00:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229942AbhBPKlR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Feb 2021 05:41:17 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38642 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229988AbhBPKlL (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 16 Feb 2021 05:41:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613471984;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+waj5efBfu4Hzhdyq224Jwctdt3cpkb3ziUN6hb7tzM=;
-        b=hiRJAzIb7yC+QmJYJqxRRGQTdMH+Dv0ygpg5iZjfCPJXwz5srOyoB7hhzzTE7Y2Cff9baL
-        wRMkcWjE6INGko/Uj5ZkHyJjM+nogLAMqfxfTUjz/ml1IOPP4unRqAjEZxWIt9uzl1yjK7
-        QWSJa1SuCHMgsrxE9QydiMLfFK4st9o=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-297-PYPadlNsMTebhv7tiOdYFg-1; Tue, 16 Feb 2021 05:39:42 -0500
-X-MC-Unique: PYPadlNsMTebhv7tiOdYFg-1
-Received: by mail-ed1-f72.google.com with SMTP id y6so7076238edc.17
-        for <bpf@vger.kernel.org>; Tue, 16 Feb 2021 02:39:42 -0800 (PST)
+        id S229903AbhBPK7l (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Feb 2021 05:59:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230018AbhBPK7I (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Feb 2021 05:59:08 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 630FFC06174A
+        for <bpf@vger.kernel.org>; Tue, 16 Feb 2021 02:58:17 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id n4so9399090wrx.1
+        for <bpf@vger.kernel.org>; Tue, 16 Feb 2021 02:58:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zXqgmXSGO2OfxbM787pr/fo3adQzSE3XAY09QFycryU=;
+        b=wFr3e5P4VYoR7vnRPBjrDjDE2+e8s3Iprkn/Z9+CCbyTrL+Uv6A/JOKbWhCPo56/I9
+         uUMLI0UQinS4Ybq4s4iz1naybV0LsBr+y/t0enI9OgXQhGRqepIawS/A0dFbdsIOyqJy
+         3m/vOeYBhslEX8d3XChmhtQWGGkiez063rasg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=+waj5efBfu4Hzhdyq224Jwctdt3cpkb3ziUN6hb7tzM=;
-        b=HKOTmsP6lM+r6nYcNpHpCXO5q98VM5lREIBAivh7Zac1T8AAvubqoM+GyIwFcCukp2
-         p5XKRsW/VbTD+sMjowBZrmBvLcdLHyMm3k+8BuaEwqHeV1iq5Oj+92voI2xYSxfVqrCt
-         xcjgv3OTE6niUSD2UVd4uj6Gg+d8RXnZj+iarE0H4wUgBwxHAbhZhIATdQoQrrwxiD+/
-         EMk5F47sjtTaHcV9Y4wBeFazw7stHgIHExr3frq0VRxH3iA9TsdwqAfoTb7WrdyRxzea
-         tdBqQhisSa07LjryLxP7/QbZqppi9GGBAD6iVPsJSal+tk/cpzsyFH03qBRm3/M5fxDX
-         sp4Q==
-X-Gm-Message-State: AOAM530exTSNxVNmHTRdTRzpHAsiP1RwhaHR4M6ZeCSHroe5/KudOOe9
-        ZBEBq1VITFuekNW+/hI3jjxspApk3tzHWxrqBw3hnytcIRr4tas0PMrC3FE294vsQbq3VBSNQ0i
-        Yau7E2txbacuR
-X-Received: by 2002:a50:a402:: with SMTP id u2mr13739747edb.383.1613471981438;
-        Tue, 16 Feb 2021 02:39:41 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz+uOcSqQ3nQi92E2gAYBEb8oLom5+jCtZFMQXQcFgVD5JmaNvvghOLTEbOs7/Mba/ldbzTLw==
-X-Received: by 2002:a50:a402:: with SMTP id u2mr13739733edb.383.1613471981285;
-        Tue, 16 Feb 2021 02:39:41 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id b17sm6640325ejj.9.2021.02.16.02.39.40
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zXqgmXSGO2OfxbM787pr/fo3adQzSE3XAY09QFycryU=;
+        b=ovOaR6ctNMCNXC4MXpYUynzcbH5yN1XL0UUV79VHX/sRzb/Q4kzIxTf/UZ8Rvu9gKq
+         jahtl4VDjcsaMnvC4LuezqSczzFYFUg+jNLgNU8Me3Gd/+8/dVmXYLVkEyM/T3C7rJVy
+         MLyFnfaMoamcFTAOoQL4Lu9Sw3KlBZADKHGFEtZb2MfKQ+8YtBAzSpXIFg5HaXt05bhW
+         166pkuQezCJsHStpzbdaUV2L1G6c7kFztg7rKh1N39pSsn7w+beAE+kRh95Z6JJQu4cR
+         DHUU17sxWPEzBT+pgNfcfh1ez+NCCXQVqlgpV9IQLI9qFiGn/WDIVhVNT2h7tFAFwHWL
+         v7EQ==
+X-Gm-Message-State: AOAM532c47498QwuQf7pmQodHLf0JbwyaeBM7JxSreoRkftYQE7MmG27
+        S9DXgu327Xe01Y/kTBVUVpMMpQ==
+X-Google-Smtp-Source: ABdhPJxPu+mQfUsUJP3uh7BIhcSbMhQoXkDcblnv7J079B+o50BUhyfoTNA5Sj/UMcbowxzYFuKieA==
+X-Received: by 2002:adf:f80e:: with SMTP id s14mr6445421wrp.363.1613473096077;
+        Tue, 16 Feb 2021 02:58:16 -0800 (PST)
+Received: from antares.lan (111.253.187.81.in-addr.arpa. [81.187.253.111])
+        by smtp.gmail.com with ESMTPSA id l1sm2820238wmi.48.2021.02.16.02.58.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Feb 2021 02:39:40 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id A50141805FA; Tue, 16 Feb 2021 11:39:40 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        daniel@iogearbox.net, ast@kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     andrii@kernel.org, magnus.karlsson@intel.com,
-        ciara.loftus@intel.com
-Subject: Re: [PATCH bpf-next 1/3] libbpf: xsk: use bpf_link
-In-Reply-To: <4a52d09a-363b-e69e-41d3-7918f0204901@intel.com>
-References: <20210215154638.4627-1-maciej.fijalkowski@intel.com>
- <20210215154638.4627-2-maciej.fijalkowski@intel.com>
- <602ade57ddb9c_3ed41208a1@john-XPS-13-9370.notmuch>
- <4a52d09a-363b-e69e-41d3-7918f0204901@intel.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 16 Feb 2021 11:39:40 +0100
-Message-ID: <87mtw4b8k3.fsf@toke.dk>
+        Tue, 16 Feb 2021 02:58:15 -0800 (PST)
+From:   Lorenz Bauer <lmb@cloudflare.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        jakub@cloudflare.com
+Cc:     kernel-team@cloudflare.com, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, Lorenz Bauer <lmb@cloudflare.com>
+Subject: [PATCH bpf-next 0/8] PROG_TEST_RUN support for sk_lookup programs
+Date:   Tue, 16 Feb 2021 10:57:05 +0000
+Message-Id: <20210216105713.45052-1-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com> writes:
+We don't have PROG_TEST_RUN support for sk_lookup programs at the
+moment. So far this hasn't been a problem, since we can run our
+tests in a separate network namespace. For benchmarking it's nice
+to have PROG_TEST_RUN, so I've gone and implemented it.
 
-> On 2021-02-15 21:49, John Fastabend wrote:
->> Maciej Fijalkowski wrote:
->>> Currently, if there are multiple xdpsock instances running on a single
->>> interface and in case one of the instances is terminated, the rest of
->>> them are left in an inoperable state due to the fact of unloaded XDP
->>> prog from interface.
->>>
->>> To address that, step away from setting bpf prog in favour of bpf_link.
->>> This means that refcounting of BPF resources will be done automatically
->>> by bpf_link itself.
->>>
->>> When setting up BPF resources during xsk socket creation, check whether
->>> bpf_link for a given ifindex already exists via set of calls to
->>> bpf_link_get_next_id -> bpf_link_get_fd_by_id -> bpf_obj_get_info_by_fd
->>> and comparing the ifindexes from bpf_link and xsk socket.
->>>
->>> If there's no bpf_link yet, create one for a given XDP prog and unload
->>> explicitly existing prog if XDP_FLAGS_UPDATE_IF_NOEXIST is not set.
->>>
->>> If bpf_link is already at a given ifindex and underlying program is not
->>> AF-XDP one, bail out or update the bpf_link's prog given the presence of
->>> XDP_FLAGS_UPDATE_IF_NOEXIST.
->>>
->>> Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
->>> ---
->>>   tools/lib/bpf/xsk.c | 143 +++++++++++++++++++++++++++++++++++++-------
->>>   1 file changed, 122 insertions(+), 21 deletions(-)
->>=20
->> [...]
->>=20
->>> +static int xsk_create_bpf_link(struct xsk_socket *xsk)
->>> +{
->>> +	/* bpf_link only accepts XDP_FLAGS_MODES, but xsk->config.xdp_flags
->>> +	 * might have set XDP_FLAGS_UPDATE_IF_NOEXIST
->>> +	 */
->>> +	DECLARE_LIBBPF_OPTS(bpf_link_create_opts, opts,
->>> +			    .flags =3D (xsk->config.xdp_flags & XDP_FLAGS_MODES));
->>> +	struct xsk_ctx *ctx =3D xsk->ctx;
->>> +	__u32 prog_id;
->>> +	int link_fd;
->>> +	int err;
->>> +
->>> +	/* for !XDP_FLAGS_UPDATE_IF_NOEXIST, unload the program first, if any,
->>> +	 * so that bpf_link can be attached
->>> +	 */
->>> +	if (!(xsk->config.xdp_flags & XDP_FLAGS_UPDATE_IF_NOEXIST)) {
->>> +		err =3D bpf_get_link_xdp_id(ctx->ifindex, &prog_id, xsk->config.xdp_=
-flags);
->>> +		if (err) {
->>> +			pr_warn("getting XDP prog id failed\n");
->>> +			return err;
->>> +		}
->>> +		if (prog_id) {
->>> +			err =3D bpf_set_link_xdp_fd(ctx->ifindex, -1, 0);
->>> +			if (err < 0) {
->>> +				pr_warn("detaching XDP prog failed\n");
->>> +				return err;
->>> +			}
->>> +		}
->>>   	}
->>>=20=20=20
->>> -	ctx->prog_fd =3D prog_fd;
->>> +	link_fd =3D bpf_link_create(ctx->prog_fd, xsk->ctx->ifindex, BPF_XDP,=
- &opts);
->>> +	if (link_fd < 0) {
->>> +		pr_warn("bpf_link_create failed: %s\n", strerror(errno));
->>> +		return link_fd;
->>> +	}
->>> +
->>=20
->> This can leave the system in a bad state where it unloaded the XDP progr=
-am
->> above, but then failed to create the link. So we should somehow fix that
->> if possible or at minimum put a note somewhere so users can't claim they
->> shouldn't know this.
->>=20
->> Also related, its not good for real systems to let XDP program go missing
->> for some period of time. I didn't check but we should make
->> XDP_FLAGS_UPDATE_IF_NOEXIST the default if its not already.
->>
->
-> This is the default for XDP sockets library. The
-> "bpf_set_link_xdp_fd(...-1)" way is only when a user sets it explicitly.
-> One could maybe argue that the "force remove" would be out of scope for
-> AF_XDP; Meaning that if an XDP program is running, attached via netlink,
-> the AF_XDP library simply cannot remove it. The user would need to rely
-> on some other mechanism.
+Multiple sk_lookup programs can be attached at once to the same
+netns. This can't be expressed with the current PROG_TEST_RUN
+API, so I'm proposing to extend it with an array of prog_fd.
 
-Yeah, I'd tend to agree with that. In general, I think the proliferation
-of "just force-remove (or override) the running program" in code and
-instructions has been a mistake; and application should only really be
-adding and removing its own program...
+Patches 1-2 are clean ups. Patches 3-4 add the new UAPI and
+implement PROG_TEST_RUN for sk_lookup. Patch 5 adds a new
+function to libbpf to access multi prog tests. Patches 6-8 add
+tests.
 
--Toke
+Andrii, for patch 4 I decided on the following API:
+
+    int bpf_prog_test_run_array(__u32 *prog_fds, __u32 prog_fds_cnt,
+                                struct bpf_test_run_opts *opts)
+
+To be consistent with the rest of libbpf it would be better
+to take int *prog_fds, but I think then the function would have to
+convert the array to account for platforms where
+
+    sizeof(int) != sizeof(__u32)
+
+Please let me know what your preference is.
+
+Lorenz Bauer (8):
+  bpf: consolidate shared test timing code
+  bpf: add for_each_bpf_prog helper
+  bpf: allow multiple programs in BPF_PROG_TEST_RUN
+  bpf: add PROG_TEST_RUN support for sk_lookup programs
+  tools: libbpf: allow testing program types with multi-prog semantics
+  selftests: bpf: convert sk_lookup multi prog tests to PROG_TEST_RUN
+  selftests: bpf: convert sk_lookup ctx access tests to PROG_TEST_RUN
+  selftests: bpf: check that PROG_TEST_RUN repeats as requested
+
+ include/linux/bpf-netns.h                     |   2 +
+ include/linux/bpf.h                           |  24 +-
+ include/linux/filter.h                        |   4 +-
+ include/uapi/linux/bpf.h                      |  11 +-
+ kernel/bpf/net_namespace.c                    |   2 +-
+ kernel/bpf/syscall.c                          |  73 +++++-
+ net/bpf/test_run.c                            | 230 +++++++++++++-----
+ net/core/filter.c                             |   1 +
+ tools/include/uapi/linux/bpf.h                |  11 +-
+ tools/lib/bpf/bpf.c                           |  16 +-
+ tools/lib/bpf/bpf.h                           |   3 +
+ tools/lib/bpf/libbpf.map                      |   1 +
+ .../selftests/bpf/prog_tests/prog_run_xattr.c |  51 +++-
+ .../selftests/bpf/prog_tests/sk_lookup.c      | 172 +++++++++----
+ .../selftests/bpf/progs/test_sk_lookup.c      |  62 +++--
+ 15 files changed, 499 insertions(+), 164 deletions(-)
+
+-- 
+2.27.0
 
