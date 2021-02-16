@@ -2,108 +2,247 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E421431CFC5
-	for <lists+bpf@lfdr.de>; Tue, 16 Feb 2021 19:01:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC35A31D020
+	for <lists+bpf@lfdr.de>; Tue, 16 Feb 2021 19:20:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230001AbhBPSAu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Feb 2021 13:00:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40452 "EHLO
+        id S229806AbhBPSUJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Feb 2021 13:20:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229845AbhBPSAu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Feb 2021 13:00:50 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9AA0C061574
-        for <bpf@vger.kernel.org>; Tue, 16 Feb 2021 10:00:09 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id q10so13354715edt.7
-        for <bpf@vger.kernel.org>; Tue, 16 Feb 2021 10:00:09 -0800 (PST)
+        with ESMTP id S229628AbhBPSUI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Feb 2021 13:20:08 -0500
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADDC0C061574;
+        Tue, 16 Feb 2021 10:19:28 -0800 (PST)
+Received: by mail-io1-xd2f.google.com with SMTP id u20so11120857iot.9;
+        Tue, 16 Feb 2021 10:19:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VKwvcmRV5QIHqauRrAEAb/Sz46oJ+S2J/UjChJFZd+I=;
-        b=qkjB1vW+QdTdy4UakxQ8+xmnw7cmkCQ7jyc0SE3nDqMv0vFuoRcixDyHo4JldnLry3
-         8FrA58/Vzlcql0fuLuDR2fkKqgjU3nHAraz2gWU29P4rhw/3r9JcqI2smSDwXhT3QLve
-         D7X298535YeD96aQdUNINuA6hkJrrfF0gJ+Ntfa8+vdPQDeZ7vFl2brxg8FLoRVQey/+
-         3GU72GvIJaAzXWMxFMv6RE/pRwdNRzS6KOQbBbQQNkGZWbRcEULCH+EmwSkbk8Y3osjy
-         zyMhV8Q9lnMC9dzDbUyWgzfu22wtQtKcUXq8fub1MiKfxgNF0NDfOHc6v+rRMMNGwlZ7
-         8Npw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=VpiTqBn83H4hDZ98QsVEo+yb76dIGa+EZ9qAOcQg2QU=;
+        b=cw30fOtaElI1xwCTiW5ILgzXynm7x+VYQFUekjYEnKQqYmygWtm6/NqnpTV83ua77q
+         BjCjxK6p5Tc1ntGcnb+/3njyFPbGqI2o/CewZ9DdUKBpfID6wGXJnhHfOxHnr/esbm74
+         rrZMWYhgxU7ZhZ+TM/FVPWdTUuan6SVhNm2CCn5F9iN0Q/aYxV4G/SPRQH7uNd7FzD2W
+         1/xtkix6LdM7hUlpbIOpMf/3Gx1+sO2SengeHLtBBgzVCn77E3pPkFR3SGe2M94C4pWW
+         L9ORuemC8tHO8Te4lM8rwZ6h/NS5lJHQVG6WBvx3RWTaubTgXJobf+B8P5UoK0gWlWny
+         XfjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VKwvcmRV5QIHqauRrAEAb/Sz46oJ+S2J/UjChJFZd+I=;
-        b=hAl3ihR5T4hvT1qcyXT1LkgEr+UZLLQv4XLuQ/NK53X9Yn6tcbCXVDKhnI4xDZd/7S
-         fcsicX86qMOBII18QcVDZS9OBDYGxJRw31jMlOO+fYFNLnyC0xJ5Yn4zeYSvIoFmsXQs
-         2Vy5Mc8lQ7i9Q1rGh2OJXtJL9hkewiMmgoMnkhFp8W86FYYV5H6BE1zqayFTsdeh+0CJ
-         QeNv3Emhd1YFb9Sn95L/YvXXoByzNJ0nYEtZkGznrWCz8J64OrW2IUnAfW9PhF6ZBCnm
-         mBalJlAk7gMfcRJEgoX9kkDREHuJci0H259sG/7mZ2qG4nIbIkEAgZqQIarVHKO6+Rdt
-         gsCA==
-X-Gm-Message-State: AOAM533Y/VJGsenE/Dn8IDVJC8cVpuq70pxw3gS/sV8RpVKkpbXLJfaG
-        ZYHRwbSLlNLPqESVVxcP9rPGUQ==
-X-Google-Smtp-Source: ABdhPJzlKareMpoPJrcoE5eCVFuy3xhgQMaoNFKGM9uGJs3NxGtUnvq8V7MvDhEfK7Oa1kj/LlXFyA==
-X-Received: by 2002:a50:f1c9:: with SMTP id y9mr10737956edl.213.1613498408521;
-        Tue, 16 Feb 2021 10:00:08 -0800 (PST)
-Received: from gmail.com (93-136-108-248.adsl.net.t-com.hr. [93.136.108.248])
-        by smtp.gmail.com with ESMTPSA id bm2sm14107012ejb.87.2021.02.16.10.00.07
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=VpiTqBn83H4hDZ98QsVEo+yb76dIGa+EZ9qAOcQg2QU=;
+        b=SpDS1FT964y9YHt++Wf17Yx1MeFU2SqZYUTSYcyqmsa4znVd05CnIwcoRMCiDgHsGH
+         k9xlhig6EDe0VVbCXpAQp3aly6qRd6Je9rzXLXKgZ6VDR0cnN9cOIDY9CWQY6HcdVuDU
+         LI/1MqTh1WMpPXJNADm5aKL1QfhANad/b3TEclHmgXy/77kVthnalDaT2Kr9DZQTsVL3
+         D+GRGt35yeuWrYaUG694pJUd9r2ZFqgFp/5RG4yBdk1AmctKepEj7h64AqZUS7NhnBTA
+         hr5UP2n/cpQqHXcKpWN5rEHBav468JZWTcJQXXybawLmisx/5idyFUBezGXwJkG7rM0W
+         N2hg==
+X-Gm-Message-State: AOAM532nSqw4Mi6686Y8g79IySxozjIei41I1iyM6xo9Ju4z2KkDntgU
+        xoXcYavkIjzlELDIjV0Xhrj9caXU/1Q=
+X-Google-Smtp-Source: ABdhPJyy/5633hPR6lI3pJLl9exPJK7cSlw+2+mKBTYzGKIQX2zWYrSJWbUIUnQ3x7jLP0HeWq2bGQ==
+X-Received: by 2002:a6b:2cd5:: with SMTP id s204mr18136867ios.39.1613499567815;
+        Tue, 16 Feb 2021 10:19:27 -0800 (PST)
+Received: from localhost ([172.243.146.206])
+        by smtp.gmail.com with ESMTPSA id e1sm10572864iod.17.2021.02.16.10.19.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Feb 2021 10:00:08 -0800 (PST)
-Date:   Tue, 16 Feb 2021 19:00:16 +0100
-From:   Denis Salopek <denis.salopek@sartura.hr>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Luka Perkov <luka.perkov@sartura.hr>,
-        Luka Oreskovic <luka.oreskovic@sartura.hr>,
-        Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>
-Subject: Re: [PATCH bpf-next] bpf: add lookup_and_delete_elem support to
- hashtab
-Message-ID: <YCwIMN3btcpQbIxZ@gmail.com>
-References: <YBGe5WFzSc3Z8Oh5@gmail.com>
- <CAEf4Bzab4fZm04xR+3DYEHNaxAoaNM+hZFdYWGJ_qk1fNyAitQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4Bzab4fZm04xR+3DYEHNaxAoaNM+hZFdYWGJ_qk1fNyAitQ@mail.gmail.com>
+        Tue, 16 Feb 2021 10:19:27 -0800 (PST)
+Date:   Tue, 16 Feb 2021 10:19:17 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     daniel@iogearbox.net, ast@kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, andrii@kernel.org, toke@redhat.com,
+        bjorn.topel@intel.com, magnus.karlsson@intel.com,
+        ciara.loftus@intel.com
+Message-ID: <602c0ca5dc2d6_6b71920830@john-XPS-13-9370.notmuch>
+In-Reply-To: <20210216023833.GD9572@ranger.igk.intel.com>
+References: <20210215154638.4627-1-maciej.fijalkowski@intel.com>
+ <20210215154638.4627-2-maciej.fijalkowski@intel.com>
+ <602ade57ddb9c_3ed41208a1@john-XPS-13-9370.notmuch>
+ <20210216023833.GD9572@ranger.igk.intel.com>
+Subject: Re: [PATCH bpf-next 1/3] libbpf: xsk: use bpf_link
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 09:44:59PM -0800, Andrii Nakryiko wrote:
-> On Wed, Jan 27, 2021 at 9:15 AM Denis Salopek <denis.salopek@sartura.hr> wrote:
-> >
-> > Extend the existing bpf_map_lookup_and_delete_elem() functionality to
-> > hashtab maps, in addition to stacks and queues.
-> > Create a new hashtab bpf_map_ops function that does lookup and deletion
-> > of the element under the same bucket lock and add the created map_ops to
-> > bpf.h.
-> > Add the appropriate test case to 'maps' selftests.
-> >
-> > Signed-off-by: Denis Salopek <denis.salopek@sartura.hr>
-> > Cc: Juraj Vijtiuk <juraj.vijtiuk@sartura.hr>
-> > Cc: Luka Oreskovic <luka.oreskovic@sartura.hr>
-> > Cc: Luka Perkov <luka.perkov@sartura.hr>
-> > ---
+Maciej Fijalkowski wrote:
+> On Mon, Feb 15, 2021 at 12:49:27PM -0800, John Fastabend wrote:
+> > Maciej Fijalkowski wrote:
+> > > Currently, if there are multiple xdpsock instances running on a single
+> > > interface and in case one of the instances is terminated, the rest of
+> > > them are left in an inoperable state due to the fact of unloaded XDP
+> > > prog from interface.
+> > > 
+> > > To address that, step away from setting bpf prog in favour of bpf_link.
+> > > This means that refcounting of BPF resources will be done automatically
+> > > by bpf_link itself.
+> > > 
+> > > When setting up BPF resources during xsk socket creation, check whether
+> > > bpf_link for a given ifindex already exists via set of calls to
+> > > bpf_link_get_next_id -> bpf_link_get_fd_by_id -> bpf_obj_get_info_by_fd
+> > > and comparing the ifindexes from bpf_link and xsk socket.
+> > > 
+> > > If there's no bpf_link yet, create one for a given XDP prog and unload
+> > > explicitly existing prog if XDP_FLAGS_UPDATE_IF_NOEXIST is not set.
+> > > 
+> > > If bpf_link is already at a given ifindex and underlying program is not
+> > > AF-XDP one, bail out or update the bpf_link's prog given the presence of
+> > > XDP_FLAGS_UPDATE_IF_NOEXIST.
+> > > 
+> > > Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> > > ---
+> > >  tools/lib/bpf/xsk.c | 143 +++++++++++++++++++++++++++++++++++++-------
+> > >  1 file changed, 122 insertions(+), 21 deletions(-)
+> > 
+> > [...]
+> > 
+> > > +static int xsk_create_bpf_link(struct xsk_socket *xsk)
+> > > +{
+> > > +	/* bpf_link only accepts XDP_FLAGS_MODES, but xsk->config.xdp_flags
+> > > +	 * might have set XDP_FLAGS_UPDATE_IF_NOEXIST
+> > > +	 */
+> > > +	DECLARE_LIBBPF_OPTS(bpf_link_create_opts, opts,
+> > > +			    .flags = (xsk->config.xdp_flags & XDP_FLAGS_MODES));
+> > > +	struct xsk_ctx *ctx = xsk->ctx;
+> > > +	__u32 prog_id;
+> > > +	int link_fd;
+> > > +	int err;
+> > > +
+> > > +	/* for !XDP_FLAGS_UPDATE_IF_NOEXIST, unload the program first, if any,
+> > > +	 * so that bpf_link can be attached
+> > > +	 */
+> > > +	if (!(xsk->config.xdp_flags & XDP_FLAGS_UPDATE_IF_NOEXIST)) {
+> > > +		err = bpf_get_link_xdp_id(ctx->ifindex, &prog_id, xsk->config.xdp_flags);
+> > > +		if (err) {
+> > > +			pr_warn("getting XDP prog id failed\n");
+> > > +			return err;
+> > > +		}
+> > > +		if (prog_id) {
+> > > +			err = bpf_set_link_xdp_fd(ctx->ifindex, -1, 0);
+> > > +			if (err < 0) {
+> > > +				pr_warn("detaching XDP prog failed\n");
+> > > +				return err;
+> > > +			}
+> > > +		}
+> > >  	}
+> > >  
+> > > -	ctx->prog_fd = prog_fd;
+> > > +	link_fd = bpf_link_create(ctx->prog_fd, xsk->ctx->ifindex, BPF_XDP, &opts);
+> > > +	if (link_fd < 0) {
+> > > +		pr_warn("bpf_link_create failed: %s\n", strerror(errno));
+> > > +		return link_fd;
+> > > +	}
+> > > +
+> > 
+> > This can leave the system in a bad state where it unloaded the XDP program
+> > above, but then failed to create the link. So we should somehow fix that
+> > if possible or at minimum put a note somewhere so users can't claim they
+> > shouldn't know this.
+> > 
+> > Also related, its not good for real systems to let XDP program go missing
+> > for some period of time. I didn't check but we should make
+> > XDP_FLAGS_UPDATE_IF_NOEXIST the default if its not already.
 > 
-> I think this patch somehow got lost, even though it seems like a good
-> addition. I'd recommend rebasing and re-submitting to let people take
-> a fresh look at this.
+> Old way of attaching prog is mutual exclusive with bpf_link, right?
+> What I'm saying is in order to use one of the two, you need to wipe out
+> the current one in favour of the second that you would like to load.
+
+Personally, if I were using above I want the operation to error
+if a XDP program is already attached. Then user is forced to remove the
+XDP program directly if thats even safe to do.
+
+Reusing UPDATE_IF_NOEXIST flag above seems like an abuse of that flag.
+The kernel side does an atomic program swap (or at least it should imo) 
+of the programs when it is set. Atomic here is not exactly right though
+because driver might reset or do other things, but the point is no
+packets are missed without policy. In above some N packets will pass
+through the device without policy being applied. This is going to be
+subtle and buggy if used in real production systems.
+
+The API needs to do a replace operation not a delete/create and if it
+can't do that it needs to error out so the user can figure out what
+to do about it.
+
+Do you really need this automatic behavior for something? It clutters
+up the API with more flags and I can't see how its useful. If it
+errors out just delete the prog using the existing interfaces from the
+API user side.
+
 > 
-> It would also be nice to have a test_progs test added, not just
-> test_maps. I'd also look at supporting lookup_and_delete for other
-> kinds of hash maps (LRU, per-CPU), so that the support is more
-> complete. Thanks!
+> > 
+> > > +	ctx->link_fd = link_fd;
+> > >  	return 0;
+> > >  }
+> > >  
+> > 
+> > [...]
+> > 
+> > > +static int xsk_link_lookup(struct xsk_ctx *ctx, __u32 *prog_id)
+> > > +{
+> > > +	__u32 link_len = sizeof(struct bpf_link_info);
+> > > +	struct bpf_link_info link_info;
+> > > +	__u32 id = 0;
+> > > +	int err;
+> > > +	int fd;
+> > > +
+> > > +	while (true) {
+> > > +		err = bpf_link_get_next_id(id, &id);
+> > > +		if (err) {
+> > > +			if (errno == ENOENT)
+> > > +				break;
+> > > +			pr_warn("can't get next link: %s\n", strerror(errno));
+> > > +			break;
+> > > +		}
+> > > +
+> > > +		fd = bpf_link_get_fd_by_id(id);
+> > > +		if (fd < 0) {
+> > > +			if (errno == ENOENT)
+> > > +				continue;
+> > > +			pr_warn("can't get link by id (%u): %s\n", id, strerror(errno));
+> > > +			break;
+> > > +		}
+> > > +
+> > > +		memset(&link_info, 0, link_len);
+> > > +		err = bpf_obj_get_info_by_fd(fd, &link_info, &link_len);
+> > > +		if (err) {
+> > > +			pr_warn("can't get link info: %s\n", strerror(errno));
+> > > +			close(fd);
+> > > +			break;
+> > > +		}
+> > > +		if (link_info.xdp.ifindex == ctx->ifindex) {
+> > > +			ctx->link_fd = fd;
+> > > +			*prog_id = link_info.prog_id;
+> > > +			break;
+> > > +		}
+> > > +		close(fd);
+> > > +	}
+> > > +
+> > > +	return errno == ENOENT ? 0 : err;
+> > 
+> > But, err wont be set in fd < 0 case? I guess we don't want to return 0 if
+> > bpf_link_get_fd_by_id fails.
 > 
-
-Hi Andrii,
-
-I'll also implement the LRU and per-CPU ones and resubmit. I don't quite
-understand the test_progs, what kind of test(s) exactly should I add there?
-
-Denis
-
-> >  include/linux/bpf.h                     |  1 +
-> >  kernel/bpf/hashtab.c                    | 38 +++++++++++++++++++++++++
-> >  kernel/bpf/syscall.c                    |  9 ++++++
-> >  tools/testing/selftests/bpf/test_maps.c |  7 +++++
-> >  4 files changed, 55 insertions(+)
-> >
+> Good catch!
 > 
-> [...]
+> > Although I really don't like the construct
+> > here that much. I think just `return err` and ensuring err is set correctly
+> > would be more clear. At least the fd error case needs to be handled
+> > though.
+> 
+> FWIW, this was inspired by tools/bpf/bpftool/link.c:do_show()
+
+Sure its not my preference, but as long as the bug is resolved I
+wont complain. If I hadn't seen the bug I wouldn't have said
+anything.
+
+> 
+> > 
+> > > +}
+> > > +
+
+
