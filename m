@@ -2,218 +2,145 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 832B831C8CC
-	for <lists+bpf@lfdr.de>; Tue, 16 Feb 2021 11:29:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B89E31C8E1
+	for <lists+bpf@lfdr.de>; Tue, 16 Feb 2021 11:34:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229626AbhBPK3e (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Feb 2021 05:29:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23435 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229767AbhBPK33 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 16 Feb 2021 05:29:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613471281;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XToqPgDd1iIoF6n+DUtGOrT7LRsJ+LX6wHH+yYB5kVM=;
-        b=boqQcAKftmM4GeVSPbJBxB9LpsQ7/D2O3YdwEfzR9/uvexeF1XU7j3vmw31zCf7WGKRqp8
-        u2gZfxizMj/mT6w37kdPn7OdeYAssMQCFWpBmjHUmSy8qGZozmtEn/f/BDkkFRK4VJJfOO
-        L/cM5zTKJjWDRt9C07ALn8F2yg24hSU=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-4-OJja_FNIMyOMGys8Zryi2g-1; Tue, 16 Feb 2021 05:27:59 -0500
-X-MC-Unique: OJja_FNIMyOMGys8Zryi2g-1
-Received: by mail-ej1-f69.google.com with SMTP id vp21so794210ejb.0
-        for <bpf@vger.kernel.org>; Tue, 16 Feb 2021 02:27:59 -0800 (PST)
+        id S229927AbhBPKeB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Feb 2021 05:34:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230158AbhBPKdy (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Feb 2021 05:33:54 -0500
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE305C061574
+        for <bpf@vger.kernel.org>; Tue, 16 Feb 2021 02:33:13 -0800 (PST)
+Received: by mail-il1-x132.google.com with SMTP id q9so7892598ilo.1
+        for <bpf@vger.kernel.org>; Tue, 16 Feb 2021 02:33:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O+xKbGN45JwLd06eh5o+6Cf0CVKycCicadOHxtEqAOI=;
+        b=dBWAJ/wRuSwmxh6XgdInVhJAxIBUHs0/lVFPyTNrEGKCzwj62LrFvTATMW67isqVBn
+         VI0M1WbJ7zTVMePt1zXCa5bgMlA5seUThyPZlh7QJK8YCLNRhR9KlS0s1GnjQ1a91WRf
+         hF9Qh/18uhDshnAFR3eUkEnpqNPigmt8dU7/wqVeB207wc/jDRZzhMjjr9a8AXHUocHc
+         j8j9GSF6XKHS9Ximue7y0DMniCiBLXr/f151TN2auCLu8eTwj+1jd+Z/IHeW6/LuXLI1
+         t3Xpfp08OWibDuu6tE2Wge54SWQc9KVqBlz/C6UV6+kqBLr5lClJtLoQO3ew4Pr8HqYN
+         8YHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=XToqPgDd1iIoF6n+DUtGOrT7LRsJ+LX6wHH+yYB5kVM=;
-        b=AE0OYgEMXaxvMu92P+x1BJOfZmERKd3UAnQC4vLf+jM/K0etIstbdxF5u6nyAXb1ND
-         +iX7be22ik0goykPv44jHpLROUpVz2YAinNV/FePUeSlvbvouN111COasq3s+R06vl7a
-         3KdBeBiYWzQz4dcqLYIcgIYRPeNJO+GnPRXfWDp4Ka5UgD2P9YI6aKcC6BgyxplbM8ZK
-         Lm870Z7gMejYGiHgAalCJBCJK982e30wSUx2pXXif9VLbaetSY8dyeKV2ziAPV7sxNkk
-         EqKcneeAtiJWjv7JyD14gmBlwBUxA/KK3ifCaBmSwdYckq3y6yaavbFO6a0qv3GwKMlP
-         L/Qg==
-X-Gm-Message-State: AOAM531JI43R6VTbG1dWdlxZL1BpZtMMXYU15Jz9jvq3od6as1RnGadd
-        mwHa/LmofCS5ULouCMWK7Miermn5Dbmmox5Hpl9tKuZ6N6z2aViLG3MS8mKuVvvZwt9f9SXlsHK
-        WNeXpECn/TRys
-X-Received: by 2002:aa7:cb53:: with SMTP id w19mr16050979edt.324.1613471277950;
-        Tue, 16 Feb 2021 02:27:57 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy/egPCVi9iTXdcy8/YmCmqtJE2YosUrYJ6mK1Qx4d7n8rgbnDbhBjGDaVEZsvcyKyPRO3N4A==
-X-Received: by 2002:aa7:cb53:: with SMTP id w19mr16050959edt.324.1613471277678;
-        Tue, 16 Feb 2021 02:27:57 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id x17sm7436700eju.36.2021.02.16.02.27.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Feb 2021 02:27:57 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id A81661805FA; Tue, 16 Feb 2021 11:27:55 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        daniel@iogearbox.net, ast@kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, andrii@kernel.org,
-        magnus.karlsson@intel.com, ciara.loftus@intel.com
-Subject: Re: [PATCH bpf-next 1/3] libbpf: xsk: use bpf_link
-In-Reply-To: <20210216020128.GA9572@ranger.igk.intel.com>
-References: <20210215154638.4627-1-maciej.fijalkowski@intel.com>
- <20210215154638.4627-2-maciej.fijalkowski@intel.com>
- <87eehhcl9x.fsf@toke.dk> <fe0c957e-d212-4265-a271-ba301c3c5eca@intel.com>
- <875z2tcef2.fsf@toke.dk> <20210216020128.GA9572@ranger.igk.intel.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Tue, 16 Feb 2021 11:27:55 +0100
-Message-ID: <87sg5wb93o.fsf@toke.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O+xKbGN45JwLd06eh5o+6Cf0CVKycCicadOHxtEqAOI=;
+        b=RKo78A5cHVArInXfG7TX069hy1CutWS6dRGVz3KVUyjA+8he44HL+HKqD2Lg1T/Rbc
+         GWd6/fIdQSSpQLNFVZI9IKEr/Lzf5Hn0cRpRsjHb3iR+lP8M2+lRr9Q1+12VFRH5xNsZ
+         WmS+6vB9QCzr10z8Y/jhCQEKC/08rbp+7FALyhLuxmDDjpbO7L0RFwNfo80s4qZ6lWIN
+         zyYw9PT+osDeyRjOk6n+D5ri5HmbfJ9eHmFdImV68IEXE1faQaFtxxaVXzJtzI04kCD0
+         XKhLoVZOiU7RxkpMSSfmU8gyDBI+z0+gsTPHnd4VThB++OsQH+Ph4RjADvA8sPRa4QOv
+         k9sQ==
+X-Gm-Message-State: AOAM530QX7Pbcz4XdtXrg5pmIKYCzys9vIvmBqyarUv5f05ExT/ossvd
+        YJ/O4bYMsXAfCG6tbb3DchKxO7TkRo7ME9SLIgrvOw==
+X-Google-Smtp-Source: ABdhPJykGah0UBjiyr061MxaeE0xSF19vYgelzznrg6UV4HN56nY6Fu/eW7zwuRy+CZjmhx/MdWOlR7f2jwM0vUy/Bs=
+X-Received: by 2002:a05:6e02:194a:: with SMTP id x10mr16312938ilu.165.1613471592935;
+ Tue, 16 Feb 2021 02:33:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <20210215160044.1108652-1-jackmanb@google.com> <CACYkzJ6fwJNv6r3CvY7uO5xjZsXDVuuFrkMieLzOKsqQZ_0Jzw@mail.gmail.com>
+In-Reply-To: <CACYkzJ6fwJNv6r3CvY7uO5xjZsXDVuuFrkMieLzOKsqQZ_0Jzw@mail.gmail.com>
+From:   Brendan Jackman <jackmanb@google.com>
+Date:   Tue, 16 Feb 2021 11:33:01 +0100
+Message-ID: <CA+i-1C3guH-jDbSiF03frBsopKhn2RphTsv3zPpXW4tmXmZPdw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: x86: Fix BPF_FETCH atomic and/or/xor with
+ r0 as src
+To:     KP Singh <kpsingh@kernel.org>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Florent Revest <revest@chromium.org>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Maciej Fijalkowski <maciej.fijalkowski@intel.com> writes:
-
-> On Mon, Feb 15, 2021 at 08:35:29PM +0100, Toke H=C3=B8iland-J=C3=B8rgense=
-n wrote:
->> Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com> writes:
->>=20
->> > On 2021-02-15 18:07, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> >> Maciej Fijalkowski <maciej.fijalkowski@intel.com> writes:
->> >>=20
->> >>> Currently, if there are multiple xdpsock instances running on a sing=
-le
->> >>> interface and in case one of the instances is terminated, the rest of
->> >>> them are left in an inoperable state due to the fact of unloaded XDP
->> >>> prog from interface.
->> >>>
->> >>> To address that, step away from setting bpf prog in favour of bpf_li=
-nk.
->> >>> This means that refcounting of BPF resources will be done automatica=
-lly
->> >>> by bpf_link itself.
->> >>>
->> >>> When setting up BPF resources during xsk socket creation, check whet=
-her
->> >>> bpf_link for a given ifindex already exists via set of calls to
->> >>> bpf_link_get_next_id -> bpf_link_get_fd_by_id -> bpf_obj_get_info_by=
-_fd
->> >>> and comparing the ifindexes from bpf_link and xsk socket.
->> >>=20
->> >> One consideration here is that bpf_link_get_fd_by_id() is a privileged
->> >> operation (privileged as in CAP_SYS_ADMIN), so this has the side effe=
-ct
->> >> of making AF_XDP privileged as well. Is that the intention?
->> >>
->> >
->> > We're already using, e.g., bpf_map_get_fd_by_id() which has that
->> > as well. So we're assuming that for XDP setup already!
->>=20
->> Ah, right, didn't realise that one is CAP_SYS_ADMIN as well; I
->> remembered this as being specific to the bpf_link operation.
->>=20
->> >> Another is that the AF_XDP code is in the process of moving to libxdp
->> >> (see in-progress PR [0]), and this approach won't carry over as-is to
->> >> that model, because libxdp has to pin the bpf_link fds.
->> >>
->> >
->> > I was assuming there were two modes of operations for AF_XDP in libxdp.
->> > One which is with the multi-program support (which AFAIK is why the
->> > pinning is required), and one "like the current libbpf" one. For the
->> > latter Maciej's series would be a good fit, no?
->>=20
->> We haven't added an explicit mode switch for now; libxdp will fall back
->> to regular interface attach if the kernel doesn't support the needed
->> features for multi-attach, but if it's possible to just have libxdp
->> transparently do the right thing I'd much prefer that. So we're still
->> exploring that (part of which is that Magnus has promised to run some
->> performance tests to see if there's a difference).
->>=20
->> However, even if there's an explicit mode switch I'd like to avoid
->> different *semantics* between the two modes if possible, to keep the two
->> as compatible as possible. And since we can't currently do "auto-detach
->> on bpf_link fd close" when using multi-prog, introducing this now would
->> lead to just such a semantic difference. So my preference would be to do
->> it differently... :)
->>=20
->> >> However, in libxdp we can solve the original problem in a different w=
-ay,
->> >> and in fact I already suggested to Magnus that we should do this (see
->> >> [1]); so one way forward could be to address it during the merge in
->> >> libxdp? It should be possible to address the original issue (two
->> >> instances of xdpsock breaking each other when they exit), but
->> >> applications will still need to do an explicit unload operation before
->> >> exiting (i.e., the automatic detach on bpf_link fd closure will take
->> >> more work, and likely require extending the bpf_link kernel support).=
-..
->> >>
->> >
->> > I'd say it's depending on the libbpf 1.0/libxdp merge timeframe. If
->> > we're months ahead, then I'd really like to see this in libbpf until t=
-he
->> > merge. However, I'll leave that for Magnus/you to decide!
+On Mon, 15 Feb 2021 at 22:09, KP Singh <kpsingh@kernel.org> wrote:
 >
-> WDYM by libbpf 1.0/libxdp merge? I glanced through thread and I saw that
-> John was also not aware of that. Not sure where it was discussed?
+> On Mon, Feb 15, 2021 at 5:00 PM Brendan Jackman <jackmanb@google.com> wrote:
+> >
+> > This code generates a CMPXCHG loop in order to implement atomic_fetch
+> > bitwise operations. Because CMPXCHG is hard-coded to use rax (which
+> > holds the BPF r0 value), it saves the _real_ r0 value into the
+> > internal "ax" temporary register and restores it once the loop is
+> > complete.
+> >
+> > In the middle of the loop, the actual bitwise operation is performed
+> > using src_reg. The bug occurs when src_reg is r0: as described above,
+> > r0 has been clobbered and the real r0 value is in the ax register.
+> >
+> > Therefore, perform this operation on the ax register instead, when
+> > src_reg is r0.
+> >
+> > Fixes: 981f94c3e921 ("bpf: Add bitwise atomic instructions")
+> > Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> > ---
+> >  arch/x86/net/bpf_jit_comp.c                   |  7 +++---
+> >  .../selftests/bpf/verifier/atomic_and.c       | 23 +++++++++++++++++++
+> >  2 files changed, 27 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> > index 79e7a0ec1da5..0c9edfe42340 100644
+> > --- a/arch/x86/net/bpf_jit_comp.c
+> > +++ b/arch/x86/net/bpf_jit_comp.c
+> > @@ -1349,6 +1349,7 @@ st:                       if (is_imm8(insn->off))
+> >                             insn->imm == (BPF_XOR | BPF_FETCH)) {
+> >                                 u8 *branch_target;
+> >                                 bool is64 = BPF_SIZE(insn->code) == BPF_DW;
+> > +                               u32 real_src_reg = src_reg == BPF_REG_0 ? BPF_REG_AX : src_reg;
 >
-> If you're saying 'merge', then is libxdp going to be a part of kernel or
-> as an AF-XDP related guy I would be forced to include yet another
-> repository in the BPF developer toolchain? :<
-
-As I replied to John, we're trying to do this in as compatible and
-painless a way as possible. In particular, we'll maintain (source) API
-compatibility with the code currently in libbpf. And yeah, currently
-libxdp lives outside the kernel tree. Not sure whether we'll end up
-moving it into the kernel tree, as Bj=C3=B6rn noted up-thread there are
-arguments in both directions :)
-
->> Well, as far as libxdp support goes, the PR I linked is pretty close to
->> being mergeable. One of the few outstanding issues is whether we should
->> solve just this issue before merging, actually :)
->>=20
->> Not sure exactly which timeframe Andrii is envisioning for libbpf 1.0,
->> but last I heard he'll announce something next week.
->>=20
->> > Bottom line; I'd *really* like bpf_link behavior (process scoped) for
->> > AF_XDP sooner than later! ;-)
->>=20
->> Totally agree that we should solve the multi-process coexistence
->> problem! And as I said, I think we can do so in libxdp by using the same
->> synchronisation mechanism we use for setting up the multi-prog
->> dispatcher. So it doesn't *have* to hold things up :)
+> I think it would be more readable as:
 >
-> Am I reading this right or you're trying to reject the fix of the long
-> standing issue due to a PR that is not ready yet on a standalone
-> project/library? :P
+>  u32 real_src_reg =  src_reg;
+>
+> /* Add a comment here why this is needed */
+> if (src_reg == BPF_REG_0)
+>   real_src_reg = BPF_REG_AX;
 
-Haha, no, that is not what I'm saying. As I said up-thread I agree that
-this is something we should fix, obviously. I'm just suggesting we fix
-it in a way that will also be compatible with libxdp and multiprog so we
-won't have to introduce yet-another-flag that users will have to decide
-on.
+Yes good idea - actually if I put it next to the relevant mov:
 
-However, now that I'm looking at your patch again I think my fears may
-have been overblown. I got hung up on the bit in the commit message
-where you said "refcounting of BPF resources will be done automatically
-by bpf_link itself", and wrongly assumed that you were exposing the
-bpf_link fd to the application. But I see now that it's kept in the
-private xsk_ctx structure, and applications still just call
-xsk_socket__delete(). So in libxdp we can just implement the same API
-with a different synchronisation mechanism; that's fine. Apologies for
-jumping to conclusions :/
+  /* Will need RAX as a CMPXCHG operand so save R0 */
+  emit_mov_reg(&prog, true, BPF_REG_AX, BPF_REG_0)
+  if (src_reg == BPF_REG_0)
+        real_src_reg = BPF_REG_AX;
 
-> Once libxdp is the standard way of playing with AF-XDP and there are
-> actual users of that, then I'm happy to work/help on that issue.
+I don't think it even needs a comment - what do you think?
 
-That is good to know, thanks! I opened an issue in the xdp-tools
-repository to track this for the libxdp side (Magnus and I agreed that
-we'll merge the existing code first, then fix this on top):
-https://github.com/xdp-project/xdp-tools/issues/93
-
-As noted above, the mechanism may have to change, but I think it's
-possible to achieve the same thing in a libxdp context :)
-
--Toke
-
+> >
+> >                                 /*
+> >                                  * Can't be implemented with a single x86 insn.
+> > @@ -1366,9 +1367,9 @@ st:                       if (is_imm8(insn->off))
+> >                                  * put the result in the AUX_REG.
+> >                                  */
+> >                                 emit_mov_reg(&prog, is64, AUX_REG, BPF_REG_0);
+> > -                               maybe_emit_mod(&prog, AUX_REG, src_reg, is64);
+> > +                               maybe_emit_mod(&prog, AUX_REG, real_src_reg, is64);
+> >                                 EMIT2(simple_alu_opcodes[BPF_OP(insn->imm)],
+> > -                                     add_2reg(0xC0, AUX_REG, src_reg));
+> > +                                     add_2reg(0xC0, AUX_REG, real_src_reg));
+> >                                 /* Attempt to swap in new value */
+> >                                 err = emit_atomic(&prog, BPF_CMPXCHG,
+> >                                                   dst_reg, AUX_REG, insn->off,
+> > @@ -1381,7 +1382,7 @@ st:                       if (is_imm8(insn->off))
+> >                                  */
+> >                                 EMIT2(X86_JNE, -(prog - branch_target) - 2);
+> >                                 /* Return the pre-modification value */
+> > -                               emit_mov_reg(&prog, is64, src_reg, BPF_REG_0);
+> > +                               emit_mov_reg(&prog, is64, real_src_reg, BPF_REG_0);
+> >                                 /* Restore R0 after clobbering RAX */
+> >                                 emit_mov_reg(&prog, true, BPF_REG_0, BPF_REG_AX);
+>
+> [...]
+>
+> >
+> > base-commit: 5e1d40b75ed85ecd76347273da17e5da195c3e96
+> > --
+> > 2.30.0.478.g8a0d178c01-goog
+> >
