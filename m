@@ -2,97 +2,83 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2CB531C497
-	for <lists+bpf@lfdr.de>; Tue, 16 Feb 2021 01:29:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71D6E31C4AF
+	for <lists+bpf@lfdr.de>; Tue, 16 Feb 2021 01:44:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229731AbhBPA26 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Feb 2021 19:28:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229652AbhBPA2z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Feb 2021 19:28:55 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C77C061574;
-        Mon, 15 Feb 2021 16:28:14 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id r2so4568487plr.10;
-        Mon, 15 Feb 2021 16:28:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EfJMDhxC2JDO2cfLgWN0mUNWvycHxcL6WVpnHJwl1yM=;
-        b=eEtMDGXoiB6IBT5yd2mVS/f0RmZvlVn3p7wEUhdQeP8s8CPg2kqOro/lE+lZz1ytGf
-         BuTO7YIkrDOMK9svJrOKL92Cp9GuAFyo7tS5T8fg//4qk8bKtqRvFZ31RBW/DWKui3yy
-         RHrjMdufbSl7wSJ9sUyaRQ2s6J86bDilHORIeVfN+aWgFW1uuKjXxNf07ZKM3lNFnmhS
-         PH4LiugqmFsOn1oQUwLi0A7bLoL9h93fr5ZlSLcySsYFuzd+0o5LX4hcvHCHcLR6fFYP
-         aUJQBB9Iy944WUNpSJs4u1drFF6MEwYBmwH3y69KNtiI7jHUrEtXkhEmQOrFpPTM0wZS
-         v65g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EfJMDhxC2JDO2cfLgWN0mUNWvycHxcL6WVpnHJwl1yM=;
-        b=dH8iBwjZufs1fGv67eyQqHDsaMtXFu8B0q3JqII5PMUMU5duReTIoxb/0pJT0HMui+
-         /onYxdSUz0SXtr3oDIZzFIla9bZ0+labSBkSTbAHYqUliJWMmE2EWF2ede3pVil5VHL0
-         PXfCSnf6Eh3lfIU0tSvN38phQmL00sQKeqZezbRs3ZAQ8kmexuykCtkg22R1I+xaZt+P
-         LiFKmeCWZBc52A7qgJO/VWRPa2KfrmLOlhfzG0fFgSEH1r2Y6aWGqAfMuYJc3MQsUJP0
-         iKs7SVfOqWz9gFphSmqM7G274INIYDxY1V+jl4kT7B2uMc5bMjXgsWwk+EONEq25W6zO
-         tYPQ==
-X-Gm-Message-State: AOAM533e8yAqndGLHtbdEEe05T9sqKd5SS6sShHQxy+1eWZ3DvvAi07R
-        MZWTBVViwLm4pdbKMNRvFqcGH/y9KfMfTdijr2c=
-X-Google-Smtp-Source: ABdhPJzH83YUFhNv2LTc/HxVEx7I5oOdu/rqC2gmouTGRGlGfmtS0eAfMCir6jAMpKHWVyQcvMr3cQ5dRZe+qOMnNQo=
-X-Received: by 2002:a17:90a:af92:: with SMTP id w18mr1318558pjq.191.1613435294380;
- Mon, 15 Feb 2021 16:28:14 -0800 (PST)
+        id S229710AbhBPAoQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Feb 2021 19:44:16 -0500
+Received: from www62.your-server.de ([213.133.104.62]:32878 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229670AbhBPAoP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Feb 2021 19:44:15 -0500
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lBoSh-0006Jy-NC; Tue, 16 Feb 2021 01:43:31 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lBoSh-000E2g-H2; Tue, 16 Feb 2021 01:43:31 +0100
+Subject: Re: [PATCH bpf-next] bpf: x86: Explicitly zero-extend rax after
+ 32-bit cmpxchg
+To:     KP Singh <kpsingh@kernel.org>, Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Brendan Jackman <jackmanb@google.com>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Florent Revest <revest@chromium.org>
+References: <20210215171208.1181305-1-jackmanb@google.com>
+ <44912664-5c0b-8d95-de01-c87b1e8a846c@iogearbox.net>
+ <b4b116fd53ac14a3006d81ed90069600b3abae4f.camel@linux.ibm.com>
+ <725b73b5-be08-f253-165d-e027ec568691@iogearbox.net>
+ <5f7b836cc07980352215a5ad9a959c7e7c47f1cf.camel@linux.ibm.com>
+ <CACYkzJ7-P4E71G-Ek_Hm5YQmvmYL_--K1dkm8pUZWbChgdjrfg@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <d7ebaefb-bfd6-a441-3ff2-2fdfe699b1d2@iogearbox.net>
+Date:   Tue, 16 Feb 2021 01:43:30 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20210213214421.226357-1-xiyou.wangcong@gmail.com>
- <20210213214421.226357-5-xiyou.wangcong@gmail.com> <602ac96f9e30f_3ed41208b6@john-XPS-13-9370.notmuch>
- <CAM_iQpWufy-YnQnBf_kk_otLaTikK8YxkhgjHh_eiu8MA=0Raw@mail.gmail.com> <602b0a7046969_3ed41208dc@john-XPS-13-9370.notmuch>
-In-Reply-To: <602b0a7046969_3ed41208dc@john-XPS-13-9370.notmuch>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Mon, 15 Feb 2021 16:28:03 -0800
-Message-ID: <CAM_iQpUomzGXdyjdCU8Ox-JZgQc=iZPZqs1UjRo3wxomf67_+A@mail.gmail.com>
-Subject: Re: [Patch bpf-next v3 4/5] skmsg: use skb ext instead of TCP_SKB_CB
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, duanxiongchun@bytedance.com,
-        Dongdong Wang <wangdongdong.6@bytedance.com>,
-        jiang.wang@bytedance.com, Cong Wang <cong.wang@bytedance.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CACYkzJ7-P4E71G-Ek_Hm5YQmvmYL_--K1dkm8pUZWbChgdjrfg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26081/Mon Feb 15 13:19:24 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 3:57 PM John Fastabend <john.fastabend@gmail.com> wrote:
->
-> For TCP case we can continue to use CB and not pay the price. For UDP
-> and AF_UNIX we can do the extra alloc.
+On 2/16/21 12:30 AM, KP Singh wrote:
+> On Mon, Feb 15, 2021 at 11:42 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+>>
+> 
+> [...]
+> 
+>>>>> How does the situation look on other archs when they need to
+>>>>> implement this in future?
+>>>>> Mainly asking whether it would be better to instead to move this
+>>>>> logic into the verifier
+>>>>> instead, so it'll be consistent across all archs.
+>>>>
+>>>> I have exactly the same check in my s390 wip patch.
+>>>> So having a common solution would be great.
+>>>
+>>> We do rewrites for various cases like div/mod handling, perhaps would
+>>> be
+>>> best to emit an explicit BPF_MOV32_REG(insn->dst_reg, insn->dst_reg)
+>>> there,
+>>> see the fixup_bpf_calls().
+> 
+> Agreed, this would be better.
+> 
+>>
+>> How about BPF_ZEXT_REG? Then arches that don't need this (I think
+>> aarch64's instruction always zero-extends) can detect this using
+>> insn_is_zext() and skip such insns.
+>>
+> 
+> +1
 
-I see your point, but specializing TCP case does not give much benefit
-here, the skmsg code would have to check skb->protocol etc. to decide
-whether to use TCP_SKB_CB() or skb_ext:
-
-if (skb->protocol == ...)
-  TCP_SKB_CB(skb) = ...;
-else
-  ext = skb_ext_find(skb);
-
-which looks ugly to me. And I doubt skb->protocol alone is sufficient to
-distinguish TCP, so we may end up having more checks above.
-
-So do you really want to trade code readability with an extra alloc?
-
->
-> The use in tcf_classify_ingress is a miss case so not the common path. If
-> it is/was in the common path I would suggest we rip it out.
->
-
-Excellent point, what about nf_bridge_unshare()? It is a common path
-for bridge netfilter, which is also probably why skb ext was introduced
-(IIRC). secpath_set() seems on a common path for XFRM too.
-
-Are you suggesting to remove them all? ;)
-
-Thanks.
+That would be nicer indeed.
