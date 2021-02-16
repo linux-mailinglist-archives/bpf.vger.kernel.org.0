@@ -2,266 +2,162 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCFFE31CC16
-	for <lists+bpf@lfdr.de>; Tue, 16 Feb 2021 15:36:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FEA531CE16
+	for <lists+bpf@lfdr.de>; Tue, 16 Feb 2021 17:32:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230393AbhBPOgI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Feb 2021 09:36:08 -0500
-Received: from mail2.protonmail.ch ([185.70.40.22]:58141 "EHLO
-        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230383AbhBPOfs (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Feb 2021 09:35:48 -0500
-Date:   Tue, 16 Feb 2021 14:35:02 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1613486103; bh=PUPLXjpwpkpzqk95FTsck/1hnkmAyZsE+RsTIuWPKnY=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=X0KO8Ega8wHesK00ZIwrSYc9iOEoawjMUnAsj2OQVTRXTg3nbl7hhAH6ud7otDGE8
-         lzGC2dkmHnpVwn//C+dT4B2Zl1vM9UqccR2ffC974eWvwuE6V0jzpbkXWuTv7sFaB5
-         /6fIs0IUSb4UhfwKdcR7oLjdACyv5uz4/nIwLeV6HkNQcVPZt+oLVnjCRypUqvlBIz
-         Xn1ogvueiV4Jc0IgofIyv9uy+2lwXhlKxWZMf5QKtdT8GF+zlzzLfnqw7Qzj4rGs/Y
-         rn2npD2AON2S6AvmLgH/054gOofGUgEvEoB8sH+VVE/VG2VWzARUHORXmigLHY37S9
-         oIGeQRjXPqXsg==
-To:     Magnus Karlsson <magnus.karlsson@intel.com>,
-        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Dust Li <dust.li@linux.alibaba.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH v5 bpf-next 6/6] xsk: build skb by page (aka generic zerocopy xmit)
-Message-ID: <20210216143333.5861-7-alobakin@pm.me>
-In-Reply-To: <20210216143333.5861-1-alobakin@pm.me>
-References: <20210216143333.5861-1-alobakin@pm.me>
+        id S229626AbhBPQbq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Feb 2021 11:31:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53684 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229699AbhBPQbp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Feb 2021 11:31:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E059C64DF0
+        for <bpf@vger.kernel.org>; Tue, 16 Feb 2021 16:31:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613493064;
+        bh=iyCU3hpc13jFZh1s9sxw12hiCB7/QrDgeQU2aYpbJCY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=JyTEFAaqN6phYqJmcDEnSXcxnuPjOgdX1pkCgUB7aY9klB5/zQHe0TWSczxnEAkZT
+         mMl8JCZZWJOaqzfeFthQMx79rnuCBJ2uU39eTn9y1TsF4GEw+KOMGKWJjJA9btKzA7
+         evXr+KuWH9gUDWtRD2DP0B2DiFR8/+Fmzm20Al8c+pnu/ocS1vjV5IM/U57ayABdUQ
+         9jf27QQr0WIP97C2Y1tvuGAuENDxKc70q96GB7pik0YxEOOF5VsuhErEcAQBVOBIb0
+         qaVMB9s0s5+ExS6+0v4u6zGNvumIvhro686NEGtSNiKJ4lW6M50WWtpKdAvUE1tcwS
+         snLvu94NNMrJA==
+Received: by mail-lf1-f42.google.com with SMTP id v24so16783605lfr.7
+        for <bpf@vger.kernel.org>; Tue, 16 Feb 2021 08:31:03 -0800 (PST)
+X-Gm-Message-State: AOAM531n9/xOK4cPYOMsX/RKwWO4iyB0JJ5oWAH49RXva2xN+W4yG6mD
+        WuQ5yUNASlBOKr35hkQJCIiHV1/NiLDNhdwFcKrLbA==
+X-Google-Smtp-Source: ABdhPJwcIXrqzTDSzsTTzik9E/Ow81vQBCtmw2BHGwkb4SgxJHuvzvBp/YJBupZNUeJtLe/7+lfrLDh8WkMyF+EelAg=
+X-Received: by 2002:ac2:5452:: with SMTP id d18mr12616872lfn.233.1613493062195;
+ Tue, 16 Feb 2021 08:31:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+References: <20210216141925.1549405-1-jackmanb@google.com>
+In-Reply-To: <20210216141925.1549405-1-jackmanb@google.com>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Tue, 16 Feb 2021 17:30:51 +0100
+X-Gmail-Original-Message-ID: <CACYkzJ6QQcD=47bth4WRtxVO0wYSA-j6i2DNfV0RaW1P8tjawA@mail.gmail.com>
+Message-ID: <CACYkzJ6QQcD=47bth4WRtxVO0wYSA-j6i2DNfV0RaW1P8tjawA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next] bpf: Explicitly zero-extend R0 after 32-bit cmpxchg
+To:     Brendan Jackman <jackmanb@google.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Florent Revest <revest@chromium.org>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+On Tue, Feb 16, 2021 at 3:19 PM Brendan Jackman <jackmanb@google.com> wrote:
+>
+> As pointed out by Ilya and explained in the new comment, there's a
+> discrepancy between x86 and BPF CMPXCHG semantics: BPF always loads
+> the value from memory into r0, while x86 only does so when r0 and the
+> value in memory are different. The same issue affects s390.
+>
+> At first this might sound like pure semantics, but it makes a real
+> difference when the comparison is 32-bit, since the load will
+> zero-extend r0/rax.
+>
+> The fix is to explicitly zero-extend rax after doing such a
+> CMPXCHG. Since this problem affects multiple archs, this is done in
+> the verifier by patching in a BPF_ZEXT_REG instruction after every
+> 32-bit cmpxchg. Any archs that don't need such manual zero-extension
+> can do a look-ahead with insn_is_zext to skip the unnecessary mov.
+>
+> Reported-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> Fixes: 5ffa25502b5a ("bpf: Add instructions for atomic_[cmp]xchg")
+> Signed-off-by: Brendan Jackman <jackmanb@google.com>
 
-This patch is used to construct skb based on page to save memory copy
-overhead.
+Acked-by: KP Singh <kpsingh@kernel.org>
 
-This function is implemented based on IFF_TX_SKB_NO_LINEAR. Only the
-network card priv_flags supports IFF_TX_SKB_NO_LINEAR will use page to
-directly construct skb. If this feature is not supported, it is still
-necessary to copy data to construct skb.
+> ---
+>
+> Difference from v1[1]: Now solved centrally in the verifier instead of
+>   specifically for the x86 JIT. Thanks to Ilya and Daniel for the suggestions!
+>
+> [1] https://lore.kernel.org/bpf/d7ebaefb-bfd6-a441-3ff2-2fdfe699b1d2@iogearbox.net/T/#t
+>
+>  kernel/bpf/verifier.c                         | 36 +++++++++++++++++++
+>  .../selftests/bpf/verifier/atomic_cmpxchg.c   | 25 +++++++++++++
+>  .../selftests/bpf/verifier/atomic_or.c        | 26 ++++++++++++++
+>  3 files changed, 87 insertions(+)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 16ba43352a5f..7f4a83d62acc 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -11889,6 +11889,39 @@ static int fixup_bpf_calls(struct bpf_verifier_env *env)
+>         return 0;
+>  }
+>
+> +/* BPF_CMPXCHG always loads a value into R0, therefore always zero-extends.
+> + * However some archs' equivalent instruction only does this load when the
+> + * comparison is successful. So here we add a BPF_ZEXT_REG after every 32-bit
+> + * CMPXCHG, so that such archs' JITs don't need to deal with the issue. Archs
+> + * that don't face this issue may use insn_is_zext to detect and skip the added
+> + * instruction.
+> + */
+> +static int add_zext_after_cmpxchg(struct bpf_verifier_env *env)
+> +{
+> +       struct bpf_insn zext_patch[2] = { [1] = BPF_ZEXT_REG(BPF_REG_0) };
 
----------------- Performance Testing ------------
+I was initially confused as to why do we have 2 instructions here for the patch.
 
-The test environment is Aliyun ECS server.
-Test cmd:
-```
-xdpsock -i eth0 -t  -S -s <msg size>
-```
+> +       struct bpf_insn *insn = env->prog->insnsi;
+> +       int insn_cnt = env->prog->len;
+> +       struct bpf_prog *new_prog;
+> +       int delta = 0; /* Number of instructions added */
+> +       int i;
+> +
+> +       for (i = 0; i < insn_cnt; i++, insn++) {
+> +               if (insn->code != (BPF_STX | BPF_W | BPF_ATOMIC) || insn->imm != BPF_CMPXCHG)
+> +                       continue;
+> +
+> +               zext_patch[0] = *insn;
 
-Test result data:
-
-size    64      512     1024    1500
-copy    1916747 1775988 1600203 1440054
-page    1974058 1953655 1945463 1904478
-percent 3.0%    10.0%   21.58%  32.3%
-
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
-[ alobakin:
- - expand subject to make it clearer;
- - improve skb->truesize calculation;
- - reserve some headroom in skb for drivers;
- - tailroom is not needed as skb is non-linear ]
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
----
- net/xdp/xsk.c | 119 ++++++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 95 insertions(+), 24 deletions(-)
-
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index 143979ea4165..ff7bd06e1241 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -445,6 +445,96 @@ static void xsk_destruct_skb(struct sk_buff *skb)
- =09sock_wfree(skb);
- }
-=20
-+static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
-+=09=09=09=09=09      struct xdp_desc *desc)
-+{
-+=09struct xsk_buff_pool *pool =3D xs->pool;
-+=09u32 hr, len, offset, copy, copied;
-+=09struct sk_buff *skb;
-+=09struct page *page;
-+=09void *buffer;
-+=09int err, i;
-+=09u64 addr;
-+
-+=09hr =3D max(NET_SKB_PAD, L1_CACHE_ALIGN(xs->dev->needed_headroom));
-+
-+=09skb =3D sock_alloc_send_skb(&xs->sk, hr, 1, &err);
-+=09if (unlikely(!skb))
-+=09=09return ERR_PTR(err);
-+
-+=09skb_reserve(skb, hr);
-+
-+=09addr =3D desc->addr;
-+=09len =3D desc->len;
-+
-+=09buffer =3D xsk_buff_raw_get_data(pool, addr);
-+=09offset =3D offset_in_page(buffer);
-+=09addr =3D buffer - pool->addrs;
-+
-+=09for (copied =3D 0, i =3D 0; copied < len; i++) {
-+=09=09page =3D pool->umem->pgs[addr >> PAGE_SHIFT];
-+=09=09get_page(page);
-+
-+=09=09copy =3D min_t(u32, PAGE_SIZE - offset, len - copied);
-+=09=09skb_fill_page_desc(skb, i, page, offset, copy);
-+
-+=09=09copied +=3D copy;
-+=09=09addr +=3D copy;
-+=09=09offset =3D 0;
-+=09}
-+
-+=09skb->len +=3D len;
-+=09skb->data_len +=3D len;
-+=09skb->truesize +=3D pool->unaligned ? len : pool->chunk_size;
-+
-+=09refcount_add(skb->truesize, &xs->sk.sk_wmem_alloc);
-+
-+=09return skb;
-+}
-+
-+static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
-+=09=09=09=09     struct xdp_desc *desc)
-+{
-+=09struct net_device *dev =3D xs->dev;
-+=09struct sk_buff *skb;
-+
-+=09if (dev->priv_flags & IFF_TX_SKB_NO_LINEAR) {
-+=09=09skb =3D xsk_build_skb_zerocopy(xs, desc);
-+=09=09if (IS_ERR(skb))
-+=09=09=09return skb;
-+=09} else {
-+=09=09u32 hr, tr, len;
-+=09=09void *buffer;
-+=09=09int err;
-+
-+=09=09hr =3D max(NET_SKB_PAD, L1_CACHE_ALIGN(dev->needed_headroom));
-+=09=09tr =3D dev->needed_tailroom;
-+=09=09len =3D desc->len;
-+
-+=09=09skb =3D sock_alloc_send_skb(&xs->sk, hr + len + tr, 1, &err);
-+=09=09if (unlikely(!skb))
-+=09=09=09return ERR_PTR(err);
-+
-+=09=09skb_reserve(skb, hr);
-+=09=09skb_put(skb, len);
-+
-+=09=09buffer =3D xsk_buff_raw_get_data(xs->pool, desc->addr);
-+=09=09err =3D skb_store_bits(skb, 0, buffer, len);
-+=09=09if (unlikely(err)) {
-+=09=09=09kfree_skb(skb);
-+=09=09=09return ERR_PTR(err);
-+=09=09}
-+=09}
-+
-+=09skb->dev =3D dev;
-+=09skb->priority =3D xs->sk.sk_priority;
-+=09skb->mark =3D xs->sk.sk_mark;
-+=09skb_shinfo(skb)->destructor_arg =3D (void *)(long)desc->addr;
-+=09skb->destructor =3D xsk_destruct_skb;
-+
-+=09return skb;
-+}
-+
- static int xsk_generic_xmit(struct sock *sk)
- {
- =09struct xdp_sock *xs =3D xdp_sk(sk);
-@@ -454,56 +544,37 @@ static int xsk_generic_xmit(struct sock *sk)
- =09struct sk_buff *skb;
- =09unsigned long flags;
- =09int err =3D 0;
--=09u32 hr, tr;
-=20
- =09mutex_lock(&xs->mutex);
-=20
- =09if (xs->queue_id >=3D xs->dev->real_num_tx_queues)
- =09=09goto out;
-=20
--=09hr =3D max(NET_SKB_PAD, L1_CACHE_ALIGN(xs->dev->needed_headroom));
--=09tr =3D xs->dev->needed_tailroom;
--
- =09while (xskq_cons_peek_desc(xs->tx, &desc, xs->pool)) {
--=09=09char *buffer;
--=09=09u64 addr;
--=09=09u32 len;
--
- =09=09if (max_batch-- =3D=3D 0) {
- =09=09=09err =3D -EAGAIN;
- =09=09=09goto out;
- =09=09}
-=20
--=09=09len =3D desc.len;
--=09=09skb =3D sock_alloc_send_skb(sk, hr + len + tr, 1, &err);
--=09=09if (unlikely(!skb))
-+=09=09skb =3D xsk_build_skb(xs, &desc);
-+=09=09if (IS_ERR(skb)) {
-+=09=09=09err =3D PTR_ERR(skb);
- =09=09=09goto out;
-+=09=09}
-=20
--=09=09skb_reserve(skb, hr);
--=09=09skb_put(skb, len);
--
--=09=09addr =3D desc.addr;
--=09=09buffer =3D xsk_buff_raw_get_data(xs->pool, addr);
--=09=09err =3D skb_store_bits(skb, 0, buffer, len);
- =09=09/* This is the backpressure mechanism for the Tx path.
- =09=09 * Reserve space in the completion queue and only proceed
- =09=09 * if there is space in it. This avoids having to implement
- =09=09 * any buffering in the Tx path.
- =09=09 */
- =09=09spin_lock_irqsave(&xs->pool->cq_lock, flags);
--=09=09if (unlikely(err) || xskq_prod_reserve(xs->pool->cq)) {
-+=09=09if (xskq_prod_reserve(xs->pool->cq)) {
- =09=09=09spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
- =09=09=09kfree_skb(skb);
- =09=09=09goto out;
- =09=09}
- =09=09spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
-=20
--=09=09skb->dev =3D xs->dev;
--=09=09skb->priority =3D sk->sk_priority;
--=09=09skb->mark =3D sk->sk_mark;
--=09=09skb_shinfo(skb)->destructor_arg =3D (void *)(long)desc.addr;
--=09=09skb->destructor =3D xsk_destruct_skb;
--
- =09=09err =3D __dev_direct_xmit(skb, xs->queue_id);
- =09=09if  (err =3D=3D NETDEV_TX_BUSY) {
- =09=09=09/* Tell user-space to retry the send */
---=20
-2.30.1
+But the patch also needs to have the original instruction, so it makes sense.
 
 
+> +               new_prog = bpf_patch_insn_data(env, i + delta, zext_patch, 2);
+> +               if (!new_prog)
+> +                       return -ENOMEM;
+> +
+> +               delta++;
+> +               env->prog = new_prog;
+> +               insn = new_prog->insnsi + i + delta;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+>  static void free_states(struct bpf_verifier_env *env)
+>  {
+>         struct bpf_verifier_state_list *sl, *sln;
+> @@ -12655,6 +12688,9 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr,
+>         if (ret == 0)
+>                 ret = fixup_call_args(env);
+>
+> +       if (ret == 0)
+> +               ret = add_zext_after_cmpxchg(env);
+> +
+>         env->verification_time = ktime_get_ns() - start_time;
+>         print_verification_stats(env);
+>
+> diff --git a/tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c b/tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c
+> index 2efd8bcf57a1..6e52dfc64415 100644
+> --- a/tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c
+> +++ b/tools/testing/selftests/bpf/verifier/atomic_cmpxchg.c
+> @@ -94,3 +94,28 @@
+>         .result = REJECT,
+>         .errstr = "invalid read from stack",
+>
+
+[...]
+
+>
+> base-commit: 45159b27637b0fef6d5ddb86fc7c46b13c77960f
+> --
+> 2.30.0.478.g8a0d178c01-goog
+>
