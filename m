@@ -2,160 +2,175 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA4D831C945
-	for <lists+bpf@lfdr.de>; Tue, 16 Feb 2021 12:03:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8CF231C9ED
+	for <lists+bpf@lfdr.de>; Tue, 16 Feb 2021 12:41:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230223AbhBPLCp (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Feb 2021 06:02:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230139AbhBPLAk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Feb 2021 06:00:40 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B26E8C06121C
-        for <bpf@vger.kernel.org>; Tue, 16 Feb 2021 02:58:23 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id l12so12412023wry.2
-        for <bpf@vger.kernel.org>; Tue, 16 Feb 2021 02:58:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0cxlavmTIp/zACJRiVyk8HpP0iu1cIzGXAbVh/+DaW8=;
-        b=psWWGXhZG0sX29DCrH5g7znf9h/J9mzSMMEUHll4znSBD2SIgJQg5dnfGiy5AubW15
-         o8x5arIpflHOq2dOaIZoKMUJITZucX0rPHpJ4IXAyiEuVtPnyqUCfPZs4THHNVCe1aga
-         ci3YzzLJXC+o3XwovwZ5iL9Pla+em8PzguanY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0cxlavmTIp/zACJRiVyk8HpP0iu1cIzGXAbVh/+DaW8=;
-        b=JIVav+XlodlIGCpWU9MNcX3z6jBEJ3Jy2Ceb+3CYBM4ut0qYddGUuOLwP8t331ppX7
-         jmsBdJN1/LkfPRjbMo8m32ADQcLseiBoHcCcb8Wh/yQKegaJ0zq1zHjEue0bUEq/U0JM
-         tcM3oYjwxDDpBl0Hph/7JuTj2gc52nuEtmatMqo/FiJRKaYjS9lu3y4RGyIMgriMDnzr
-         jqdDipBK2sHIkNSgHaUvhDe5icO1NS8OZ9Ibv/7WdGjz4bG4lHia1covuhv/5vOrvdzR
-         +bVnv9rFSu2wun5p9REocaC7PksA8lavw/QuXcDseTvzUuoYX0AwGAAqeO+P299wxHuD
-         vURw==
-X-Gm-Message-State: AOAM530xUugCVGRMox5S7Wvp3LHNCOfj9d2qa6ytxDDUn7V3x1UnSsw4
-        Tf5bqNELUmed5T8TThgMYmwgjg==
-X-Google-Smtp-Source: ABdhPJwuZq/E2OsTx9xBGvIw9iUNdaB4ReccTUzvSxX4rEcvZuFONO/HooyK552+zygq5WnUiBCqng==
-X-Received: by 2002:adf:bb54:: with SMTP id x20mr23823050wrg.112.1613473102467;
-        Tue, 16 Feb 2021 02:58:22 -0800 (PST)
-Received: from antares.lan (111.253.187.81.in-addr.arpa. [81.187.253.111])
-        by smtp.gmail.com with ESMTPSA id l1sm2820238wmi.48.2021.02.16.02.58.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Feb 2021 02:58:22 -0800 (PST)
-From:   Lorenz Bauer <lmb@cloudflare.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        jakub@cloudflare.com
-Cc:     kernel-team@cloudflare.com, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, Lorenz Bauer <lmb@cloudflare.com>
-Subject: [PATCH bpf-next 8/8] selftests: bpf: check that PROG_TEST_RUN repeats as requested
-Date:   Tue, 16 Feb 2021 10:57:13 +0000
-Message-Id: <20210216105713.45052-9-lmb@cloudflare.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210216105713.45052-1-lmb@cloudflare.com>
-References: <20210216105713.45052-1-lmb@cloudflare.com>
+        id S230414AbhBPLkF (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Feb 2021 06:40:05 -0500
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:48343 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230378AbhBPLjB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Feb 2021 06:39:01 -0500
+Date:   Tue, 16 Feb 2021 11:38:08 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1613475495; bh=7//j7y6xoZuLy2Ngmv+kjotOmXPJtO9KtcN3PXcUSkQ=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=UR4bFjUVK9exL1LGEM/AUDMtHefnF+AYxkSGYHfIuuTYibotYnneCzbLfSH25ETll
+         3sZ7j8t0yPcz+LQVqbPQgctzQBPqc/xUMQpD44biUTxn68PXOeAasfYoCI/JmDkirJ
+         Ih+TBLt+inppDmtRCBP/XdqR+G3tn2q2OyuyY7WaUiZiqC/DWbSaZpJCh8Vm9hyaqg
+         LQp5EnEkGVNvacnPk8Pu+Y4TrWLo9gD6Oxxc+yeoQDIMxAxGZkS5uIzcsf4rZPSPTm
+         Rpk1Obtl8HfjPqOdHERYtF5qtMEf10jJqEmtupATBMFpFt/t7G3j8qgczwlCJLfdNA
+         iz5yhj+A6ApaA==
+To:     Magnus Karlsson <magnus.karlsson@intel.com>,
+        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Dust Li <dust.li@linux.alibaba.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH v4 bpf-next 0/6] xsk: build skb by page (aka generic zerocopy xmit)
+Message-ID: <20210216113740.62041-1-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Extend a simple prog_run test to check that PROG_TEST_RUN adheres
-to the requested repetitions. Convert it to use BPF skeleton.
+This series introduces XSK generic zerocopy xmit by adding XSK umem
+pages as skb frags instead of copying data to linear space.
+The only requirement for this for drivers is to be able to xmit skbs
+with skb_headlen(skb) =3D=3D 0, i.e. all data including hard headers
+starts from frag 0.
+To indicate whether a particular driver supports this, a new netdev
+priv flag, IFF_TX_SKB_NO_LINEAR, is added (and declared in virtio_net
+as it's already capable of doing it). So consider implementing this
+in your drivers to greatly speed-up generic XSK xmit.
 
-Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
----
- .../selftests/bpf/prog_tests/prog_run_xattr.c | 51 +++++++++++++++----
- 1 file changed, 42 insertions(+), 9 deletions(-)
+The first two bits refactor netdev_priv_flags a bit to harden them
+in terms of bitfield overflow, as IFF_TX_SKB_NO_LINEAR is the last
+one that fits into unsigned int.
+The fifth patch adds headroom and tailroom reservations for the
+allocated skbs on XSK generic xmit path. This ensures there won't
+be any unwanted skb reallocations on fast-path due to headroom and/or
+tailroom driver/device requirements (own headers/descriptors etc.).
+The other three add a new private flag, declare it in virtio_net
+driver and introduce generic XSK zerocopy xmit itself.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/prog_run_xattr.c b/tools/testing/selftests/bpf/prog_tests/prog_run_xattr.c
-index 935a294f049a..131d7f7eeb42 100644
---- a/tools/testing/selftests/bpf/prog_tests/prog_run_xattr.c
-+++ b/tools/testing/selftests/bpf/prog_tests/prog_run_xattr.c
-@@ -2,12 +2,31 @@
- #include <test_progs.h>
- #include <network_helpers.h>
- 
--void test_prog_run_xattr(void)
-+#include "test_pkt_access.skel.h"
-+
-+static const __u32 duration;
-+
-+static void check_run_cnt(int prog_fd, __u64 run_cnt)
- {
--	const char *file = "./test_pkt_access.o";
--	struct bpf_object *obj;
--	char buf[10];
-+	struct bpf_prog_info info = {};
-+	__u32 info_len = sizeof(info);
- 	int err;
-+
-+	err = bpf_obj_get_info_by_fd(prog_fd, &info, &info_len);
-+	if (CHECK(err, "get_prog_info", "failed to get bpf_prog_info for fd %d\n", prog_fd))
-+		return;
-+
-+	CHECK(run_cnt != info.run_cnt, "run_cnt",
-+	      "incorrect number of repetitions, want %llu have %llu\n", run_cnt, info.run_cnt);
-+}
-+
-+void test_prog_run_xattr(void)
-+{
-+	struct test_pkt_access *skel;
-+	int err, stats_fd = -1;
-+	char buf[10] = {};
-+	__u64 run_cnt = 0;
-+
- 	struct bpf_prog_test_run_attr tattr = {
- 		.repeat = 1,
- 		.data_in = &pkt_v4,
-@@ -16,12 +35,15 @@ void test_prog_run_xattr(void)
- 		.data_size_out = 5,
- 	};
- 
--	err = bpf_prog_load(file, BPF_PROG_TYPE_SCHED_CLS, &obj,
--			    &tattr.prog_fd);
--	if (CHECK_ATTR(err, "load", "err %d errno %d\n", err, errno))
-+	stats_fd = bpf_enable_stats(BPF_STATS_RUN_TIME);
-+	if (CHECK_ATTR(stats_fd < 0, "enable_stats", "failed %d\n", errno))
- 		return;
- 
--	memset(buf, 0, sizeof(buf));
-+	skel = test_pkt_access__open_and_load();
-+	if (CHECK_ATTR(!skel, "open_and_load", "failed\n"))
-+		goto cleanup;
-+
-+	tattr.prog_fd = bpf_program__fd(skel->progs.test_pkt_access);
- 
- 	err = bpf_prog_test_run_xattr(&tattr);
- 	CHECK_ATTR(err != -1 || errno != ENOSPC || tattr.retval, "run",
-@@ -34,8 +56,12 @@ void test_prog_run_xattr(void)
- 	CHECK_ATTR(buf[5] != 0, "overflow",
- 	      "BPF_PROG_TEST_RUN ignored size hint\n");
- 
-+	run_cnt += tattr.repeat;
-+	check_run_cnt(tattr.prog_fd, run_cnt);
-+
- 	tattr.data_out = NULL;
- 	tattr.data_size_out = 0;
-+	tattr.repeat = 2;
- 	errno = 0;
- 
- 	err = bpf_prog_test_run_xattr(&tattr);
-@@ -46,5 +72,12 @@ void test_prog_run_xattr(void)
- 	err = bpf_prog_test_run_xattr(&tattr);
- 	CHECK_ATTR(err != -EINVAL, "run_wrong_size_out", "err %d\n", err);
- 
--	bpf_object__close(obj);
-+	run_cnt += tattr.repeat;
-+	check_run_cnt(tattr.prog_fd, run_cnt);
-+
-+cleanup:
-+	if (skel)
-+		test_pkt_access__destroy(skel);
-+	if (stats_fd != -1)
-+		close(stats_fd);
- }
--- 
-2.27.0
+The main body of work is created and done by Xuan Zhuo. His original
+cover letter:
+
+v3:
+    Optimized code
+
+v2:
+    1. add priv_flags IFF_TX_SKB_NO_LINEAR instead of netdev_feature
+    2. split the patch to three:
+        a. add priv_flags IFF_TX_SKB_NO_LINEAR
+        b. virtio net add priv_flags IFF_TX_SKB_NO_LINEAR
+        c. When there is support this flag, construct skb without linear
+           space
+    3. use ERR_PTR() and PTR_ERR() to handle the err
+
+v1 message log:
+---------------
+
+This patch is used to construct skb based on page to save memory copy
+overhead.
+
+This has one problem:
+
+We construct the skb by fill the data page as a frag into the skb. In
+this way, the linear space is empty, and the header information is also
+in the frag, not in the linear space, which is not allowed for some
+network cards. For example, Mellanox Technologies MT27710 Family
+[ConnectX-4 Lx] will get the following error message:
+
+    mlx5_core 0000:3b:00.1 eth1: Error cqe on cqn 0x817, ci 0x8,
+    qn 0x1dbb, opcode 0xd, syndrome 0x1, vendor syndrome 0x68
+    00000000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+    00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+    00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+    00000030: 00 00 00 00 60 10 68 01 0a 00 1d bb 00 0f 9f d2
+    WQE DUMP: WQ size 1024 WQ cur size 0, WQE index 0xf, len: 64
+    00000000: 00 00 0f 0a 00 1d bb 03 00 00 00 08 00 00 00 00
+    00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+    00000020: 00 00 00 2b 00 08 00 00 00 00 00 05 9e e3 08 00
+    00000030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+    mlx5_core 0000:3b:00.1 eth1: ERR CQE on SQ: 0x1dbb
+
+I also tried to use build_skb to construct skb, but because of the
+existence of skb_shinfo, it must be behind the linear space, so this
+method is not working. We can't put skb_shinfo on desc->addr, it will be
+exposed to users, this is not safe.
+
+Finally, I added a feature NETIF_F_SKB_NO_LINEAR to identify whether the
+network card supports the header information of the packet in the frag
+and not in the linear space.
+
+---------------- Performance Testing ------------
+
+The test environment is Aliyun ECS server.
+Test cmd:
+```
+xdpsock -i eth0 -t  -S -s <msg size>
+```
+
+Test result data:
+
+size    64      512     1024    1500
+copy    1916747 1775988 1600203 1440054
+page    1974058 1953655 1945463 1904478
+percent 3.0%    10.0%   21.58%  32.3%
+
+From v3 [0]:
+ - refactor netdev_priv_flags to make it easier to add new ones and
+   prevent bitwidth overflow;
+ - add headroom (both standard and zerocopy) and tailroom (standard)
+   reservation in skb for drivers to avoid potential reallocations;
+ - fix skb->truesize accounting;
+ - misc comment rewords.
+
+[0] https://lore.kernel.org/netdev/cover.1611236588.git.xuanzhuo@linux.alib=
+aba.com
+
+Alexander Lobakin (3):
+  netdev_priv_flags: add missing IFF_PHONY_HEADROOM self-definition
+  netdevice: check for net_device::priv_flags bitfield overflow
+  xsk: respect device's headroom and tailroom on generic xmit path
+
+Xuan Zhuo (3):
+  net: add priv_flags for allow tx skb without linear
+  virtio-net: support IFF_TX_SKB_NO_LINEAR
+  xsk: build skb by page (aka generic zerocopy xmit)
+
+ drivers/net/virtio_net.c  |   3 +-
+ include/linux/netdevice.h | 138 +++++++++++++++++++++-----------------
+ net/xdp/xsk.c             | 113 ++++++++++++++++++++++++++-----
+ 3 files changed, 173 insertions(+), 81 deletions(-)
+
+--=20
+2.30.1
+
 
