@@ -2,83 +2,137 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D6E31C4AF
-	for <lists+bpf@lfdr.de>; Tue, 16 Feb 2021 01:44:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5827531C4B6
+	for <lists+bpf@lfdr.de>; Tue, 16 Feb 2021 01:55:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229710AbhBPAoQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 15 Feb 2021 19:44:16 -0500
-Received: from www62.your-server.de ([213.133.104.62]:32878 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229670AbhBPAoP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 15 Feb 2021 19:44:15 -0500
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lBoSh-0006Jy-NC; Tue, 16 Feb 2021 01:43:31 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lBoSh-000E2g-H2; Tue, 16 Feb 2021 01:43:31 +0100
-Subject: Re: [PATCH bpf-next] bpf: x86: Explicitly zero-extend rax after
- 32-bit cmpxchg
-To:     KP Singh <kpsingh@kernel.org>, Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Brendan Jackman <jackmanb@google.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Florent Revest <revest@chromium.org>
-References: <20210215171208.1181305-1-jackmanb@google.com>
- <44912664-5c0b-8d95-de01-c87b1e8a846c@iogearbox.net>
- <b4b116fd53ac14a3006d81ed90069600b3abae4f.camel@linux.ibm.com>
- <725b73b5-be08-f253-165d-e027ec568691@iogearbox.net>
- <5f7b836cc07980352215a5ad9a959c7e7c47f1cf.camel@linux.ibm.com>
- <CACYkzJ7-P4E71G-Ek_Hm5YQmvmYL_--K1dkm8pUZWbChgdjrfg@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <d7ebaefb-bfd6-a441-3ff2-2fdfe699b1d2@iogearbox.net>
-Date:   Tue, 16 Feb 2021 01:43:30 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <CACYkzJ7-P4E71G-Ek_Hm5YQmvmYL_--K1dkm8pUZWbChgdjrfg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        id S229652AbhBPAy5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 15 Feb 2021 19:54:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhBPAy5 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 15 Feb 2021 19:54:57 -0500
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29FD0C061574;
+        Mon, 15 Feb 2021 16:54:17 -0800 (PST)
+Received: by mail-il1-x135.google.com with SMTP id o7so6993570ils.2;
+        Mon, 15 Feb 2021 16:54:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=ph3mOwHVPpKXEXZYhL56mG1mmUzrL9T3oJOTEWUtwdo=;
+        b=iDzH8yMWgijAdlmH98Yb5n1DTfRleSNgV0jWDwd4HIC9Fwwx41+5sxC8dDXs7HMpc5
+         2QElIhdWyEpff5E5bZfO+dDWlge7avf634PA2NXdvmKRlukykzCoNoMHAi+k3fom6C2z
+         TMgOIJpiDYFJlCLXnsREqNmovs06hBwll0qUx5xz6EuBCc8apHCkQ3AFfQ9MA2p99kMp
+         e6Jfh7p+4zm7iXZ13mcT4q+LRqSt3aBHZQx3Qn7CMKHVQ8mdY90dPYmsnOOd7jKi+e6U
+         /fZ3e4wU7zyMveys4g+bhXIbaP1jr5K/6XhiXolLPr0CmHhBxBHAGTABfFg9Cra4waH/
+         bQNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=ph3mOwHVPpKXEXZYhL56mG1mmUzrL9T3oJOTEWUtwdo=;
+        b=n3EI+1uxoRkbrGOdgIEgw+k5P9AtmbNiKfF/2744/T0LDh3tA6QgG15/iqMbVuRmLY
+         10dM3Am1J8w5cGEwXHx9rTngrTvFg7cMkZ3OK9SWz+gC0Jgvcq6RUqhpduXlNE+npfPO
+         EomUmGqB49EjRefAGZ2X9+m+4ESAlGlGRIlOZ6FqdICht6R5nEHXb5bo+3pJconAADHV
+         zAItAY8byhDEnkUK1z6yLMPf3iYBGmyn2GkoU/wB3AB3vOfYMme0fOY82DR1xDZrl1Q7
+         2udjwkR0e68HVOZ2TY6lVG02PrJmu8PfcvCwPfFeTapmg/3jeI2w/crkkQ5eiTnHN6Vc
+         USuQ==
+X-Gm-Message-State: AOAM531vRWaY2eT74CgMxYb7bLG/CTRIYravfDc7xBo2nuNUxkJdPcMr
+        pfY04GAvPgvOhTFY09aNKNs=
+X-Google-Smtp-Source: ABdhPJzRYTiQJiPh49EZTMUPugBscyAJd4Hu8AkMIT5PYmcRxWdJxytNpA2xHQcbPYQy1DFu5q/whg==
+X-Received: by 2002:a92:c7c7:: with SMTP id g7mr16310533ilk.304.1613436856514;
+        Mon, 15 Feb 2021 16:54:16 -0800 (PST)
+Received: from localhost ([172.243.146.206])
+        by smtp.gmail.com with ESMTPSA id k4sm32459ion.29.2021.02.15.16.54.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Feb 2021 16:54:15 -0800 (PST)
+Date:   Mon, 15 Feb 2021 16:54:08 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, duanxiongchun@bytedance.com,
+        Dongdong Wang <wangdongdong.6@bytedance.com>,
+        jiang.wang@bytedance.com, Cong Wang <cong.wang@bytedance.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Message-ID: <602b17b0492a8_3ed41208f2@john-XPS-13-9370.notmuch>
+In-Reply-To: <CAM_iQpUomzGXdyjdCU8Ox-JZgQc=iZPZqs1UjRo3wxomf67_+A@mail.gmail.com>
+References: <20210213214421.226357-1-xiyou.wangcong@gmail.com>
+ <20210213214421.226357-5-xiyou.wangcong@gmail.com>
+ <602ac96f9e30f_3ed41208b6@john-XPS-13-9370.notmuch>
+ <CAM_iQpWufy-YnQnBf_kk_otLaTikK8YxkhgjHh_eiu8MA=0Raw@mail.gmail.com>
+ <602b0a7046969_3ed41208dc@john-XPS-13-9370.notmuch>
+ <CAM_iQpUomzGXdyjdCU8Ox-JZgQc=iZPZqs1UjRo3wxomf67_+A@mail.gmail.com>
+Subject: Re: [Patch bpf-next v3 4/5] skmsg: use skb ext instead of TCP_SKB_CB
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26081/Mon Feb 15 13:19:24 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/16/21 12:30 AM, KP Singh wrote:
-> On Mon, Feb 15, 2021 at 11:42 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
->>
+Cong Wang wrote:
+> On Mon, Feb 15, 2021 at 3:57 PM John Fastabend <john.fastabend@gmail.com> wrote:
+> >
+> > For TCP case we can continue to use CB and not pay the price. For UDP
+> > and AF_UNIX we can do the extra alloc.
 > 
-> [...]
+> I see your point, but specializing TCP case does not give much benefit
+> here, the skmsg code would have to check skb->protocol etc. to decide
+> whether to use TCP_SKB_CB() or skb_ext:
 > 
->>>>> How does the situation look on other archs when they need to
->>>>> implement this in future?
->>>>> Mainly asking whether it would be better to instead to move this
->>>>> logic into the verifier
->>>>> instead, so it'll be consistent across all archs.
->>>>
->>>> I have exactly the same check in my s390 wip patch.
->>>> So having a common solution would be great.
->>>
->>> We do rewrites for various cases like div/mod handling, perhaps would
->>> be
->>> best to emit an explicit BPF_MOV32_REG(insn->dst_reg, insn->dst_reg)
->>> there,
->>> see the fixup_bpf_calls().
+> if (skb->protocol == ...)
+>   TCP_SKB_CB(skb) = ...;
+> else
+>   ext = skb_ext_find(skb);
 > 
-> Agreed, this would be better.
+> which looks ugly to me. And I doubt skb->protocol alone is sufficient to
+> distinguish TCP, so we may end up having more checks above.
 > 
->>
->> How about BPF_ZEXT_REG? Then arches that don't need this (I think
->> aarch64's instruction always zero-extends) can detect this using
->> insn_is_zext() and skip such insns.
->>
-> 
-> +1
+> So do you really want to trade code readability with an extra alloc?
 
-That would be nicer indeed.
+Above is ugly. So I look at where the patch replaces things,
+
+sk_psock_tls_strp_read(), this is TLS specific read hook so can't really
+work in generic case anyways.
+
+sk_psock_strp_read(), will you have UDP, AF_UNIX stream parsers? Do these
+even work outside TCP cases.
+
+For these ones: sk_psock_verdict_apply(), sk_psock_verdict_recv(),
+sk_psock_backlog(), can't we just do some refactoring around their
+hook points so we know the context. For example sk_psock_tls_verdict_apply
+is calling sk_psock_skb_redirect(). Why not have a sk_psock_unix_redirect()
+and a sk_psock_udp_redirect(). There are likely some optimizations we can
+deploy this way. We've already don this for tls and sk_msg types for example.
+
+Then the helpers will know their types by program type, just use the right
+variants.
+
+So not suggestiong if/else the checks so much as having per type hooks.
+
+> 
+> >
+> > The use in tcf_classify_ingress is a miss case so not the common path. If
+> > it is/was in the common path I would suggest we rip it out.
+> >
+> 
+> Excellent point, what about nf_bridge_unshare()? It is a common path
+> for bridge netfilter, which is also probably why skb ext was introduced
+> (IIRC). secpath_set() seems on a common path for XFRM too.
+
+Yeah not nice, but we don't use nf_bridge so doesn't bother me.
+
+> 
+> Are you suggesting to remove them all? ;)
+
+From the hotpath where I care about perfromance yes. 
+
+> 
+> Thanks.
+
+
