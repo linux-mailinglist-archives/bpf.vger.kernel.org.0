@@ -2,129 +2,129 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32C8431E158
-	for <lists+bpf@lfdr.de>; Wed, 17 Feb 2021 22:30:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73FAF31E173
+	for <lists+bpf@lfdr.de>; Wed, 17 Feb 2021 22:35:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230315AbhBQV3b (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Feb 2021 16:29:31 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:49766 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232021AbhBQV3M (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 17 Feb 2021 16:29:12 -0500
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11HL33tT041911;
-        Wed, 17 Feb 2021 16:28:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=RqoBzeBi1v8dd1+zZNLrneVRi1hRB8xpwxGwObv3byU=;
- b=SPbUeziQ8xdH6QVmvam9L4WIXWUhrWJX9h0Q0EDuUgA7xk6IAnfsGj49o5GoreNRIxiJ
- uzsKfdYLblgXE3/yEy+1JVRBy7lIqF8fQbn87TQHx/JJCPQpcTu8sv4Tv4G2i2q5a81y
- H0hoaPG4Xr10gU7Oy/+MQnCwyKdRX4IcfhKCDsM6b9VfmTJAiI8U950lisb4UqiRGw4g
- GGYA8UlBChj+QhoigJm7cQYX2Zn3x0+7kficXbOLRqIsyQIooOeKVWQMTU3SOLQD4uTD
- x10iMMkTCDd/tbx79TK1lmCJIYiwAMf5H/TDD9c0CHJC/J80fLrgC4Wqs6cszQ6Dktsl gw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36saqg0nna-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Feb 2021 16:28:18 -0500
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11HLM93U137686;
-        Wed, 17 Feb 2021 16:28:17 -0500
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36saqg0nmq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Feb 2021 16:28:17 -0500
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11HLNX2k006882;
-        Wed, 17 Feb 2021 21:28:16 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma01fra.de.ibm.com with ESMTP id 36p6d8a3ka-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Feb 2021 21:28:15 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11HLSDSP32506332
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 Feb 2021 21:28:13 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7E8AC42042;
-        Wed, 17 Feb 2021 21:28:13 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1612C42045;
-        Wed, 17 Feb 2021 21:28:13 +0000 (GMT)
-Received: from [9.171.64.123] (unknown [9.171.64.123])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 17 Feb 2021 21:28:13 +0000 (GMT)
-Message-ID: <fe6133e6e997b9eca7d9b3e0802642498812b3b5.camel@linux.ibm.com>
-Subject: Re: [PATCH bpf-next 2/6] libbpf: Add BTF_KIND_FLOAT support
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc:     bpf@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Date:   Wed, 17 Feb 2021 22:28:12 +0100
-In-Reply-To: <602d86a63e754_fc54208eb@john-XPS-13-9370.notmuch>
-References: <20210216011216.3168-1-iii@linux.ibm.com>
-         <20210216011216.3168-3-iii@linux.ibm.com>
-         <602d83616c9f1_ddd2208dd@john-XPS-13-9370.notmuch>
-         <602d86a63e754_fc54208eb@john-XPS-13-9370.notmuch>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3 (3.38.3-1.fc33) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-17_16:2021-02-16,2021-02-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
- bulkscore=0 impostorscore=0 spamscore=0 malwarescore=0 priorityscore=1501
- clxscore=1015 lowpriorityscore=0 mlxlogscore=999 mlxscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102170153
+        id S230292AbhBQVei (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Feb 2021 16:34:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230488AbhBQVeb (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Feb 2021 16:34:31 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D1E7C061574;
+        Wed, 17 Feb 2021 13:33:51 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id f6so2159723iop.11;
+        Wed, 17 Feb 2021 13:33:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=nL4HYnGjONDXKQ51tM0lMmG8I39shd1VRmw7Uv8Si0c=;
+        b=IHICk4CxG+4ulTaddDa8xdQVJKoY+R/yJQiusQV3zKvIO2Ep/eHFiD/DSUAun+DYta
+         cZd1Wk3kc13WqHt/K7Goz9CIR1OjUTRC0Dy1x10qnqnxZvyrZA4jgnqlZGT/rAWw9VfK
+         55/TTAJfZ92vMKs/LNsg6UkRucRgqN8TcktlfJrwALuHunV4Hkkx+o1hWJ+kjC8SlLhJ
+         fs182QVhZw61ODF+H6Q7uJBTNEsoSid7CKUHUZ5+AfORBfdWeaDHmpIO6oGIVTcaO8k+
+         NaQ72RKLQAOVzU8ftSCF+qP7rpXp5sXpk0Xyi9VRUJiybCu3m12DIT9g4YSDEF0SmgHU
+         ss1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=nL4HYnGjONDXKQ51tM0lMmG8I39shd1VRmw7Uv8Si0c=;
+        b=tSaxFdKgTJ7v5y4F8QpKg+PQZaxdjPRxD8X7XMHs3lMINRzdTgylmDRerX/Lvj+362
+         m+wgMt+Q8FVNKHXcwm5yd+lBXZtc9iJt8zqJuILOCmdNl2eMbkJ7VfoPx8M7mT55z1+7
+         z2XNd7gqEAG94jgm2zjqyLCtXmcap18TWPQZioM1gvwUOk7yb45hnuX/EUwx0yRPLVLL
+         2N267xQfhaagNswFksOGKspLGyTC4+8zSKyQA8YclxnQIEYIVM3w0aavCoXcBvL9HLZ9
+         MfJN0WvkIm44y8HbVqS1PRP35OuFdLIk748xOe16kCmrb/KuDRTUpFKyzUrcjj/TBH33
+         KGwg==
+X-Gm-Message-State: AOAM533KmTQkpaEScv5U8R3rY8klGRrPhkCCdpby+4s2kkQdUJjXjnap
+        CmNkw7ukJY/z05yxHe0PIdA=
+X-Google-Smtp-Source: ABdhPJwlPh6RUUGh1uhNa2wINWo+tk93eANljBYrDf7LUpNrjNkxUGwh5+z5o5GEq2Cf9+8KCVIHew==
+X-Received: by 2002:a05:6602:26cb:: with SMTP id g11mr848121ioo.180.1613597631003;
+        Wed, 17 Feb 2021 13:33:51 -0800 (PST)
+Received: from localhost ([172.243.146.206])
+        by smtp.gmail.com with ESMTPSA id d2sm1943769ilr.66.2021.02.17.13.33.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Feb 2021 13:33:50 -0800 (PST)
+Date:   Wed, 17 Feb 2021 13:33:44 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Cong Wang <xiyou.wangcong@gmail.com>, netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
+        Jiang Wang <jiang.wang@bytedance.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Message-ID: <602d8bb8bfd98_fc5420880@john-XPS-13-9370.notmuch>
+In-Reply-To: <20210217035844.53746-1-xiyou.wangcong@gmail.com>
+References: <20210217035844.53746-1-xiyou.wangcong@gmail.com>
+Subject: RE: [Patch bpf-next] bpf: clear per_cpu pointers in
+ bpf_prog_clone_create()
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 2021-02-17 at 13:12 -0800, John Fastabend wrote:
-> John Fastabend wrote:
-> > Ilya Leoshkevich wrote:
-> > > The logic follows that of BTF_KIND_INT most of the time.
-> > > Sanitization
-> > > replaces BTF_KIND_FLOATs with equally-sized BTF_KIND_INTs on
-> > > older
-> >                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> > Does this match the code though?
-> > 
-> > > kernels.
-> > > 
-> > > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> > > ---
-> > 
-> > [...]
-> > 
-> > 
-> > > @@ -2445,6 +2450,9 @@ static void bpf_object__sanitize_btf(struct
-> > > bpf_object *obj, struct btf *btf)
-> > >                 } else if (!has_func_global && btf_is_func(t)) {
-> > >                         /* replace BTF_FUNC_GLOBAL with
-> > > BTF_FUNC_STATIC */
-> > >                         t->info = BTF_INFO_ENC(BTF_KIND_FUNC, 0,
-> > > 0);
-> > > +               } else if (!has_float && btf_is_float(t)) {
-> > > +                       /* replace FLOAT with INT */
-> > > +                       t->info = BTF_INFO_ENC(BTF_KIND_FLOAT, 0,
-> > > 0);
-> > 
-> > Do we also need to encode the vlen here?
-> 
-> Sorry typo on my side, 't->size = ?' is what I was trying to point
-> out.
-> Looks like its set in the other case where we replace VAR with INT.
+Cong Wang wrote:
+> From: Cong Wang <cong.wang@bytedance.com>
+> =
 
-The idea is to have the size of the INT equal to the size of the FLOAT
-that it replaces. I guess we can't do the same for VARs, because they
-don't have the size field, and if we don't have DATASECs, then we can't
-find the size of a VAR at all.
+> Pretty much similar to commit 1336c662474e
+> ("bpf: Clear per_cpu pointers during bpf_prog_realloc") we also need to=
 
+> clear these two percpu pointers in bpf_prog_clone_create(), otherwise
+> would get a double free:
+> =
+
+>  BUG: kernel NULL pointer dereference, address: 0000000000000000
+>  #PF: supervisor read access in kernel mode
+>  #PF: error_code(0x0000) - not-present page
+>  PGD 0 P4D 0
+>  Oops: 0000 [#1] SMP PTI
+>  CPU: 13 PID: 8140 Comm: kworker/13:247 Kdump: loaded Tainted: G=E2=80=86=
+ =E2=80=86 =E2=80=86 =E2=80=86 =E2=80=86 =E2=80=86 =E2=80=86 =E2=80=86 W=E2=
+=80=86 =E2=80=86 OE
+> =E2=80=86 5.11.0-rc4.bm.1-amd64+ #1
+>  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1 0=
+4/01/2014
+>  test_bpf: #1 TXA
+>  Workqueue: events bpf_prog_free_deferred
+>  RIP: 0010:percpu_ref_get_many.constprop.97+0x42/0xf0
+>  Code: [...]
+>  RSP: 0018:ffffa6bce1f9bda0 EFLAGS: 00010002
+>  RAX: 0000000000000001 RBX: 0000000000000000 RCX: 00000000021dfc7b
+>  RDX: ffffffffae2eeb90 RSI: 867f92637e338da5 RDI: 0000000000000046
+>  RBP: ffffa6bce1f9bda8 R08: 0000000000000000 R09: 0000000000000001
+>  R10: 0000000000000046 R11: 0000000000000000 R12: 0000000000000280
+>  R13: 0000000000000000 R14: 0000000000000000 R15: ffff9b5f3ffdedc0
+>  FS:=E2=80=86 =E2=80=86 0000000000000000(0000) GS:ffff9b5f2fb40000(0000=
+) knlGS:0000000000000000
+>  CS:=E2=80=86 =E2=80=86 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>  CR2: 0000000000000000 CR3: 000000027c36c002 CR4: 00000000003706e0
+>  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>  Call Trace:
+> =E2=80=86 =E2=80=86 refill_obj_stock+0x5e/0xd0
+> =E2=80=86 =E2=80=86 free_percpu+0xee/0x550
+> =E2=80=86 =E2=80=86 __bpf_prog_free+0x4d/0x60
+> =E2=80=86 =E2=80=86 process_one_work+0x26a/0x590
+> =E2=80=86 =E2=80=86 worker_thread+0x3c/0x390
+> =E2=80=86 =E2=80=86 ? process_one_work+0x590/0x590
+> =E2=80=86 =E2=80=86 kthread+0x130/0x150
+> =E2=80=86 =E2=80=86 ? kthread_park+0x80/0x80
+> =E2=80=86 =E2=80=86 ret_from_fork+0x1f/0x30
+> =
+
+> This bug is 100% reproducible with test_kmod.sh.
+> =
+
+> Reported-by: Jiang Wang <jiang.wang@bytedance.com>
+> Fixes: 700d4796ef59 ("bpf: Optimize program stats")
+> Fixes: ca06f55b9002 ("bpf: Add per-program recursion prevention mechani=
+sm")
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> ---
+
+Acked-by: John Fastabend <john.fastabend@gmail.com>=
