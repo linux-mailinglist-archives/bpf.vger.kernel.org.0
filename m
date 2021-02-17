@@ -2,142 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 942AE31E2F4
-	for <lists+bpf@lfdr.de>; Thu, 18 Feb 2021 00:13:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D05D31E2F5
+	for <lists+bpf@lfdr.de>; Thu, 18 Feb 2021 00:14:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231978AbhBQXNO (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Feb 2021 18:13:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45338 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231462AbhBQXNN (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Feb 2021 18:13:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CB8F64E58
-        for <bpf@vger.kernel.org>; Wed, 17 Feb 2021 23:12:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613603551;
-        bh=WNUZwBJ2Lg5EGkpXxIuc7t6hqOC3xm2TIvY/sblQlPY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=neITDwE/uRZ63bdI+oSLjiXc89+ZnobMnRMYN1m4gmTCy2IGmww+bi2xJuSJ+0jqE
-         fy/WWBxR/q2XKfbr5N87msMLTCWHQr0R4G2XCa1UOKdMwQghdTpq0ZFI1DHKBNDf8q
-         PwVG2mwkW7IHqJchZKfNwGqyrt9RMCnLa1kj8E9m24yrC4w104pSOlQE562mDRrvyY
-         Jhx/wKuPTWyWOvI/SMEuoaWb0b7o327BbSREjlh+K9xZpKMXQP9TrZH3pREmOXaslK
-         mKlJY8QpAlwXFhQuZYJUfVeGaPMQQ4MdowIBlW4wCKRHSvUsIZy3lPZNduSg61/Rf1
-         W6MQChB7ETMpw==
-Received: by mail-lj1-f172.google.com with SMTP id b16so19098652lji.13
-        for <bpf@vger.kernel.org>; Wed, 17 Feb 2021 15:12:31 -0800 (PST)
-X-Gm-Message-State: AOAM530NKYERt/BbioGpJciUZUyGhJWjN+iNms/AYHw13+Va7Xqac4zM
-        XKHy9RE21kX8wgHTWrhB1JN2rpdlFzIfNSBSX0tgaQ==
-X-Google-Smtp-Source: ABdhPJxu2TYejMpM2mmH72WB9X9sleCFkj+yAzw4rdCCS/S9ece5v8LkohEw4KYb/faD9UZGBNNP9dmw/RetglDhRyE=
-X-Received: by 2002:a2e:2c09:: with SMTP id s9mr906029ljs.136.1613603549574;
- Wed, 17 Feb 2021 15:12:29 -0800 (PST)
+        id S229874AbhBQXOk (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Feb 2021 18:14:40 -0500
+Received: from www62.your-server.de ([213.133.104.62]:34654 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229707AbhBQXOk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Feb 2021 18:14:40 -0500
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lCW17-0007mH-65; Thu, 18 Feb 2021 00:13:57 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lCW16-000QzQ-VM; Thu, 18 Feb 2021 00:13:57 +0100
+Subject: Re: [Patch bpf-next] bpf: clear per_cpu pointers in
+ bpf_prog_clone_create()
+To:     Cong Wang <xiyou.wangcong@gmail.com>
+Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Cong Wang <cong.wang@bytedance.com>,
+        Jiang Wang <jiang.wang@bytedance.com>,
+        Alexei Starovoitov <ast@kernel.org>
+References: <20210217035844.53746-1-xiyou.wangcong@gmail.com>
+ <c24360ab-f4b3-db61-4c83-9fb941520304@iogearbox.net>
+ <CAM_iQpX1GLG5SW7z5GRTntXTj0-Zvh84BKaOV_5r1akx9rGEOg@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <585ce6bc-b95b-28b1-14a5-3cfdce76e1e7@iogearbox.net>
+Date:   Thu, 18 Feb 2021 00:13:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <20210217092831.2366396-1-jackmanb@google.com> <c20a494cfeb112093dcefe45838c63f62d781621.camel@linux.ibm.com>
-In-Reply-To: <c20a494cfeb112093dcefe45838c63f62d781621.camel@linux.ibm.com>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Thu, 18 Feb 2021 00:12:18 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ4DAzE1QZ9aioi6rAu9zZdNBa6rJ+FapZMXzwqDb5pehA@mail.gmail.com>
-Message-ID: <CACYkzJ4DAzE1QZ9aioi6rAu9zZdNBa6rJ+FapZMXzwqDb5pehA@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next] bpf: Explicitly zero-extend R0 after 32-bit cmpxchg
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Brendan Jackman <jackmanb@google.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Florent Revest <revest@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAM_iQpX1GLG5SW7z5GRTntXTj0-Zvh84BKaOV_5r1akx9rGEOg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26083/Wed Feb 17 13:11:33 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 7:30 PM Ilya Leoshkevich <iii@linux.ibm.com> wrote:
->
-> On Wed, 2021-02-17 at 09:28 +0000, Brendan Jackman wrote:
-> > As pointed out by Ilya and explained in the new comment, there's a
-> > discrepancy between x86 and BPF CMPXCHG semantics: BPF always loads
-> > the value from memory into r0, while x86 only does so when r0 and the
-> > value in memory are different. The same issue affects s390.
-> >
-> > At first this might sound like pure semantics, but it makes a real
-> > difference when the comparison is 32-bit, since the load will
-> > zero-extend r0/rax.
-> >
-> > The fix is to explicitly zero-extend rax after doing such a
-> > CMPXCHG. Since this problem affects multiple archs, this is done in
-> > the verifier by patching in a BPF_ZEXT_REG instruction after every
-> > 32-bit cmpxchg. Any archs that don't need such manual zero-extension
-> > can do a look-ahead with insn_is_zext to skip the unnecessary mov.
-> >
-> > Reported-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> > Fixes: 5ffa25502b5a ("bpf: Add instructions for atomic_[cmp]xchg")
-> > Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> > ---
-> >
-> > Differences v2->v3[1]:
-> >  - Moved patching into fixup_bpf_calls (patch incoming to rename this
-> > function)
-> >  - Added extra commentary on bpf_jit_needs_zext
-> >  - Added check to avoid adding a pointless zext(r0) if there's
-> > already one there.
-> >
-> > Difference v1->v2[1]: Now solved centrally in the verifier instead of
-> >   specifically for the x86 JIT. Thanks to Ilya and Daniel for the
-> > suggestions!
-> >
-> > [1] v2:
-> > https://lore.kernel.org/bpf/08669818-c99d-0d30-e1db-53160c063611@iogearbox.net/T/#t
-> >     v1:
-> > https://lore.kernel.org/bpf/d7ebaefb-bfd6-a441-3ff2-2fdfe699b1d2@iogearbox.net/T/#t
-> >
-> >  kernel/bpf/core.c                             |  4 +++
-> >  kernel/bpf/verifier.c                         | 26
-> > +++++++++++++++++++
-> >  .../selftests/bpf/verifier/atomic_cmpxchg.c   | 25
-> > ++++++++++++++++++
-> >  .../selftests/bpf/verifier/atomic_or.c        | 26
-> > +++++++++++++++++++
-> >  4 files changed, 81 insertions(+)
->
-> [...]
->
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 16ba43352a5f..a0d19be13558 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -11662,6 +11662,32 @@ static int fixup_bpf_calls(struct
-> > bpf_verifier_env *env)
-> >                         continue;
-> >                 }
-> >
-> > +               /* BPF_CMPXCHG always loads a value into R0,
-> > therefore always
-> > +                * zero-extends. However some archs' equivalent
-> > instruction only
-> > +                * does this load when the comparison is successful.
-> > So here we
-> > +                * add a BPF_ZEXT_REG after every 32-bit CMPXCHG, so
-> > that such
-> > +                * archs' JITs don't need to deal with the issue.
-> > Archs that
-> > +                * don't face this issue may use insn_is_zext to
-> > detect and skip
-> > +                * the added instruction.
-> > +                */
-> > +               if (insn->code == (BPF_STX | BPF_W | BPF_ATOMIC) &&
-> > insn->imm == BPF_CMPXCHG) {
-> > +                       struct bpf_insn zext_patch[2] = { [1] =
-> > BPF_ZEXT_REG(BPF_REG_0) };
-> > +
-> > +                       if (!memcmp(&insn[1], &zext_patch[1],
-> > sizeof(struct bpf_insn)))
-> > +                               /* Probably done by
-> > opt_subreg_zext_lo32_rnd_hi32. */
-> > +                               continue;
-> > +
->
-> Isn't opt_subreg_zext_lo32_rnd_hi32() called after fixup_bpf_calls()?
+On 2/17/21 11:46 PM, Cong Wang wrote:
+> On Wed, Feb 17, 2021 at 2:01 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>> On 2/17/21 4:58 AM, Cong Wang wrote:
+>>> From: Cong Wang <cong.wang@bytedance.com>
+>>>
+>>> Pretty much similar to commit 1336c662474e
+>>> ("bpf: Clear per_cpu pointers during bpf_prog_realloc") we also need to
+>>> clear these two percpu pointers in bpf_prog_clone_create(), otherwise
+>>> would get a double free:
+>>>
+>>>    BUG: kernel NULL pointer dereference, address: 0000000000000000
+>>>    #PF: supervisor read access in kernel mode
+>>>    #PF: error_code(0x0000) - not-present page
+>>>    PGD 0 P4D 0
+>>>    Oops: 0000 [#1] SMP PTI
+>>>    CPU: 13 PID: 8140 Comm: kworker/13:247 Kdump: loaded Tainted: G         W   OE
+>>>   5.11.0-rc4.bm.1-amd64+ #1
+>>>    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1 04/01/2014
+>>>    test_bpf: #1 TXA
+>>>    Workqueue: events bpf_prog_free_deferred
+>>>    RIP: 0010:percpu_ref_get_many.constprop.97+0x42/0xf0
+>>>    Code: [...]
+>>>    RSP: 0018:ffffa6bce1f9bda0 EFLAGS: 00010002
+>>>    RAX: 0000000000000001 RBX: 0000000000000000 RCX: 00000000021dfc7b
+>>>    RDX: ffffffffae2eeb90 RSI: 867f92637e338da5 RDI: 0000000000000046
+>>>    RBP: ffffa6bce1f9bda8 R08: 0000000000000000 R09: 0000000000000001
+>>>    R10: 0000000000000046 R11: 0000000000000000 R12: 0000000000000280
+>>>    R13: 0000000000000000 R14: 0000000000000000 R15: ffff9b5f3ffdedc0
+>>>    FS:   0000000000000000(0000) GS:ffff9b5f2fb40000(0000) knlGS:0000000000000000
+>>>    CS:   0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>>    CR2: 0000000000000000 CR3: 000000027c36c002 CR4: 00000000003706e0
+>>>    DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>>>    DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>>>    Call Trace:
+>>>    refill_obj_stock+0x5e/0xd0
+>>>    free_percpu+0xee/0x550
+>>>    __bpf_prog_free+0x4d/0x60
+>>>    process_one_work+0x26a/0x590
+>>>    worker_thread+0x3c/0x390
+>>>    ? process_one_work+0x590/0x590
+>>>    kthread+0x130/0x150
+>>>    ? kthread_park+0x80/0x80
+>>>    ret_from_fork+0x1f/0x30
+>>>
+>>> This bug is 100% reproducible with test_kmod.sh.
+>>>
+>>> Reported-by: Jiang Wang <jiang.wang@bytedance.com>
+>>> Fixes: 700d4796ef59 ("bpf: Optimize program stats")
+>>> Fixes: ca06f55b9002 ("bpf: Add per-program recursion prevention mechanism")
+>>> Cc: Alexei Starovoitov <ast@kernel.org>
+>>> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+>>> ---
+>>>    kernel/bpf/core.c | 2 ++
+>>>    1 file changed, 2 insertions(+)
+>>>
+>>> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+>>> index 0ae015ad1e05..b0c11532e535 100644
+>>> --- a/kernel/bpf/core.c
+>>> +++ b/kernel/bpf/core.c
+>>> @@ -1103,6 +1103,8 @@ static struct bpf_prog *bpf_prog_clone_create(struct bpf_prog *fp_other,
+>>>                 * this still needs to be adapted.
+>>>                 */
+>>>                memcpy(fp, fp_other, fp_other->pages * PAGE_SIZE);
+>>> +             fp_other->stats = NULL;
+>>> +             fp_other->active = NULL;
+>>>        }
+>>>
+>>>        return fp;
+>>
+>> This is not correct. I presume if you enable blinding and stats, then this will still
+> 
+> Well, at least I ran all BPF selftests and found no crash. (Before my patch, the
+> crash happened 100%.)
+> 
+>> crash. The proper way to fix it is to NULL these pointers in bpf_prog_clone_free()
+>> since the clone can be promoted as the actual prog and the prog ptr released instead.
+> 
+> Not sure if I understand your point, but what I cleared is fp_other,
+> which is the original, not the clone. And of course, the original would
+> be overriden:
+> 
+>          tmp = bpf_jit_blind_constants(prog);
+>          if (IS_ERR(tmp))
+>                  return orig_prog;
+>          if (tmp != prog) {
+>                  tmp_blinded = true;
+>                  prog = tmp;  // <=== HERE
+>          }
+> 
+> I think this is precisely why the crash does not happen after my patch.
+> 
+> However, it does seem to me patching bpf_prog_clone_free() is better,
+> as there would be no assumption on using the original. All I want to
+> say here is that both ways could fix the crash, which one is better is
+> arguable.
 
-Indeed, this check should not be needed.
+The problem is that at the time of bpf_prog_clone_create() we don't know whether
+the original prog or the clone will be used eventually. If the original (fp_other)
+will in-fact be used, then stats/active there is NULL. And if the bpf_stats_enabled_key
+static key is active, then __BPF_PROG_RUN() will just try to update stats and trigger
+a NULL ptr deref, but it won't if done in bpf_prog_clone_free(). So the latter really
+is necessary.
 
->
-> [...]
->
+Thanks,
+Daniel
