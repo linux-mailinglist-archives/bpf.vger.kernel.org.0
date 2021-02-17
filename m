@@ -2,125 +2,99 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C631331D3D5
-	for <lists+bpf@lfdr.de>; Wed, 17 Feb 2021 02:44:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CAF231D3EC
+	for <lists+bpf@lfdr.de>; Wed, 17 Feb 2021 03:24:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229787AbhBQBoQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Feb 2021 20:44:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41646 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229480AbhBQBoO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Feb 2021 20:44:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 678AD64E76
-        for <bpf@vger.kernel.org>; Wed, 17 Feb 2021 01:43:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613526213;
-        bh=k+plf038UNY3MR6fs/9HhnmAqatc7hJExiF9OlSvZI0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=fVvGNRlBQOp+wIAyBoHDQ/8WeCfQwUHGmwJpmZ+X8hj7E/7Av7YPNNnTlFZ5cIliQ
-         Jp6dRSyFxS8VV0pZ2YpOCpYZCkCrxCOWiAuMwYB912Ogs2erpo5jPLnjBJcln4bZUQ
-         i7Slpp15rhkbhpukG1BzA1xQ1mZXpBAAozQUcdPhJQ/3p5MVdw25ZtdZMiOx28cay9
-         FfrmCIHz3OI5cBg4yG96TZbydjsjnxEIQ3GzjkXw14ujZZYXpdFxUMGh4Snj/pifup
-         yxHcveLyIq/jf9nTVxb9zZVlUNxjmnH++FXe5KVzEzNe0Kyxfcf1zpNayi1Ypu/3kk
-         jiPpoycluI9aA==
-Received: by mail-lj1-f181.google.com with SMTP id a22so14218064ljp.10
-        for <bpf@vger.kernel.org>; Tue, 16 Feb 2021 17:43:33 -0800 (PST)
-X-Gm-Message-State: AOAM533AhqovClySulCaL+DtwnnMxgA0sDcv2Qt+pFAXeO9lzWTjz6vB
-        KHrqYa82Su5l9bSALyFgpfidhBk83CkT/ilp2+Iz3A==
-X-Google-Smtp-Source: ABdhPJzeQYzsWb4i0XOubWYWXtPOGtvop+c6WNMnGZbnu1vL3XYqTtdbIaDSDxn46m/rmLU6ofTdChA2n3mWQOHaMGk=
-X-Received: by 2002:a2e:8ecc:: with SMTP id e12mr14363327ljl.103.1613526211685;
- Tue, 16 Feb 2021 17:43:31 -0800 (PST)
-MIME-Version: 1.0
-References: <20210216141925.1549405-1-jackmanb@google.com> <80228f01-c43c-f121-0b80-bb368b530111@iogearbox.net>
-In-Reply-To: <80228f01-c43c-f121-0b80-bb368b530111@iogearbox.net>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Wed, 17 Feb 2021 02:43:20 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ4-QSevoMuPZ_xtYP2WK1_2MKVC1op6Y1+wTtmP_FnOaw@mail.gmail.com>
-Message-ID: <CACYkzJ4-QSevoMuPZ_xtYP2WK1_2MKVC1op6Y1+wTtmP_FnOaw@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next] bpf: Explicitly zero-extend R0 after 32-bit cmpxchg
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Brendan Jackman <jackmanb@google.com>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Florent Revest <revest@chromium.org>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
+        id S229700AbhBQCXo (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 16 Feb 2021 21:23:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229678AbhBQCXn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 16 Feb 2021 21:23:43 -0500
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C258C06174A
+        for <bpf@vger.kernel.org>; Tue, 16 Feb 2021 18:23:03 -0800 (PST)
+Received: by mail-io1-xd2f.google.com with SMTP id f20so12263949ioo.10
+        for <bpf@vger.kernel.org>; Tue, 16 Feb 2021 18:23:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=coverfire.com; s=google;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=8Tk6Lc5M6fxG2/59xM5tXWmV7yWj9hsPMxluvpH1XPc=;
+        b=BHfMW29Fk9+hgceGBtimjIQ7b0lZCL4lnJ106M6MNfUn6NT4/sUFB+sioG5TwUXpv4
+         beAyKUSVlzf1HvqbeXxELv1vf7UQAz+1oMVoBvWAlNtQgdP42YKrz7cWvow7wYDv9KTB
+         4mwt54F2QVOeGWrw1KvcJ0wlZMGf6ZvaFXQcqi3AisG85GObBRXD2y2lRDIsAG968uye
+         5uSDqsGy2XbJs5oWT6rTr5JyUEANPkvBPqQ3Qq6vd+iCuqXh5Fb1P4s/XHets8DwZ4VA
+         LvM+UcGtnAkQZzISgOaZi6M414m5PBl8q+KyaKaGKa6LILjRjvfODqvqabmrhjEZqPHe
+         FDNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=8Tk6Lc5M6fxG2/59xM5tXWmV7yWj9hsPMxluvpH1XPc=;
+        b=mb74DyRLqfSgVBYTMOWgsruELjM9ZUvCc+CLDUf8jRJzcA12kczw1VIGXzi46tIGb3
+         uO1gKF0QwIW31UlMl+LvxYpqXv3qBGM0rO0G8GPMZRZGfnTpruRvxU/JQT0lTQWKnJ7W
+         7WUoUaxEMwfMrjRR3p8In9bf1NO48L7tJGaNEaZZziA2jTiec5YwSIp5L3VFSK46K6Dc
+         ZPFf39nhutncw4zB5gGgfuUtskfsEoDqP9stnypIouxxEnRT1npOAtTyQ2zV4nJcbnwD
+         DFsLwvrbuxNNjNj9pg5Sp623YrOBmnac7i8EXxLgUDrCcMZ9WmmRjkPdoHeYSVsABbh+
+         oYyw==
+X-Gm-Message-State: AOAM531owzTRB4u0SEt/jHTScZCbxlHVhLKdgAefuGrDDasK8Nomc+ib
+        Ka5Gu01+ao/diiIdwsyNStHIow==
+X-Google-Smtp-Source: ABdhPJyFIFyWff/4XKxieWV3eQ9EuPIOL89Y7/k21CNIHkqtlJb6hCFe8Xb9MpbZBVu68hltBO85ew==
+X-Received: by 2002:a6b:f714:: with SMTP id k20mr18812501iog.70.1613528582328;
+        Tue, 16 Feb 2021 18:23:02 -0800 (PST)
+Received: from ?IPv6:2607:f2c0:e56e:28c:5524:727c:ba55:9558? ([2607:f2c0:e56e:28c:5524:727c:ba55:9558])
+        by smtp.gmail.com with ESMTPSA id o5sm404700iob.45.2021.02.16.18.23.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Feb 2021 18:23:01 -0800 (PST)
+Message-ID: <6e9842b289ff2c54e528eb89d69a9b4f678c65da.camel@coverfire.com>
+Subject: Re: [PATCH bpf-next 1/3] libbpf: xsk: use bpf_link
+From:   Dan Siemon <dan@coverfire.com>
+To:     Toke =?ISO-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        =?ISO-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        daniel@iogearbox.net, ast@kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, magnus.karlsson@intel.com
+Cc:     andrii@kernel.org, ciara.loftus@intel.com
+Date:   Tue, 16 Feb 2021 21:23:00 -0500
+In-Reply-To: <8735xxc8pf.fsf@toke.dk>
+References: <20210215154638.4627-1-maciej.fijalkowski@intel.com>
+         <20210215154638.4627-2-maciej.fijalkowski@intel.com>
+         <87eehhcl9x.fsf@toke.dk> <fe0c957e-d212-4265-a271-ba301c3c5eca@intel.com>
+         <602ad80c566ea_3ed4120871@john-XPS-13-9370.notmuch>
+         <8735xxc8pf.fsf@toke.dk>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3 (3.38.3-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 1:50 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 2/16/21 3:19 PM, Brendan Jackman wrote:
-> > As pointed out by Ilya and explained in the new comment, there's a
-> > discrepancy between x86 and BPF CMPXCHG semantics: BPF always loads
-> > the value from memory into r0, while x86 only does so when r0 and the
-> > value in memory are different. The same issue affects s390.
-> >
-> > At first this might sound like pure semantics, but it makes a real
-> > difference when the comparison is 32-bit, since the load will
-> > zero-extend r0/rax.
-> >
-> > The fix is to explicitly zero-extend rax after doing such a
-> > CMPXCHG. Since this problem affects multiple archs, this is done in
-> > the verifier by patching in a BPF_ZEXT_REG instruction after every
-> > 32-bit cmpxchg. Any archs that don't need such manual zero-extension
-> > can do a look-ahead with insn_is_zext to skip the unnecessary mov.
-> >
-> > Reported-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> > Fixes: 5ffa25502b5a ("bpf: Add instructions for atomic_[cmp]xchg")
-> > Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> [...]
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 16ba43352a5f..7f4a83d62acc 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -11889,6 +11889,39 @@ static int fixup_bpf_calls(struct bpf_verifier_env *env)
-> >       return 0;
-> >   }
-> >
-> > +/* BPF_CMPXCHG always loads a value into R0, therefore always zero-extends.
-> > + * However some archs' equivalent instruction only does this load when the
-> > + * comparison is successful. So here we add a BPF_ZEXT_REG after every 32-bit
-> > + * CMPXCHG, so that such archs' JITs don't need to deal with the issue. Archs
-> > + * that don't face this issue may use insn_is_zext to detect and skip the added
-> > + * instruction.
-> > + */
-> > +static int add_zext_after_cmpxchg(struct bpf_verifier_env *env)
-> > +{
-> > +     struct bpf_insn zext_patch[2] = { [1] = BPF_ZEXT_REG(BPF_REG_0) };
-> > +     struct bpf_insn *insn = env->prog->insnsi;
-> > +     int insn_cnt = env->prog->len;
-> > +     struct bpf_prog *new_prog;
-> > +     int delta = 0; /* Number of instructions added */
-> > +     int i;
-> > +
-> > +     for (i = 0; i < insn_cnt; i++, insn++) {
-> > +             if (insn->code != (BPF_STX | BPF_W | BPF_ATOMIC) || insn->imm != BPF_CMPXCHG)
-> > +                     continue;
-> > +
-> > +             zext_patch[0] = *insn;
-> > +             new_prog = bpf_patch_insn_data(env, i + delta, zext_patch, 2);
-> > +             if (!new_prog)
-> > +                     return -ENOMEM;
-> > +
-> > +             delta++;
-> > +             env->prog = new_prog;
-> > +             insn = new_prog->insnsi + i + delta;
-> > +     }
->
-> Looks good overall, one small nit ... is it possible to move this into fixup_bpf_calls()
-> where we walk the prog insns & handle most of the rewrites already?
+On Mon, 2021-02-15 at 22:38 +0100, Toke Høiland-Jørgensen wrote:
+> The idea is to keep libbpf focused on bpf, and move the AF_XDP stuff
+> to
+> libxdp (so the socket stuff in xsk.h). We're adding the existing code
+> wholesale, and keeping API compatibility during the move, so all
+> that's
+> needed is adding -lxdp when compiling. And obviously the existing
+> libbpf
+> code isn't going anywhere until such a time as there's a general
+> backwards compatibility-breaking deprecation in libbpf (which I
+> believe
+> Andrii is planning to do in an upcoming and as-of-yet unannounced
+> v1.0
+> release).
 
-Ah, so I thought fixup_bpf_calls was for "calls" but now looking at
-the function it does
-more than just fixing up calls. I guess we could also rename it and
-update the comment
-on the function.
+I maintain a Rust binding to the AF_XDP parts of libbpf [1][2]. On the
+chance that more significant changes can be entertained in the switch
+to libxdp... The fact that many required functions like the ring access
+functions exist only in xsk.h makes building a binding more difficult
+because we need to wrap it with an extra C function [3]. From that
+perspective, it would be great if those could move to xsk.c.
 
-- KP
+[1] - https://github.com/aterlo/afxdp-rs
+[2] - https://github.com/alexforster/libbpf-sys
+[3] - https://github.com/alexforster/libbpf-sys/blob/master/bindings.c
 
->
-> > +
-> > +     return 0;
-> > +}
