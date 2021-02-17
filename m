@@ -2,267 +2,266 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFCB631D90D
-	for <lists+bpf@lfdr.de>; Wed, 17 Feb 2021 13:05:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0052431D92F
+	for <lists+bpf@lfdr.de>; Wed, 17 Feb 2021 13:10:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232578AbhBQMDg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Feb 2021 07:03:36 -0500
-Received: from mail-40133.protonmail.ch ([185.70.40.133]:15758 "EHLO
-        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232582AbhBQMDB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Feb 2021 07:03:01 -0500
-Date:   Wed, 17 Feb 2021 12:01:59 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1613563321; bh=OZJJvVw+aRM0kcaqH3GC0aHgPjhIDjrz+ohzOH7Tkpo=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=nxV/mreQyJ0mA1F1uMARWnnjx0RJUHWn0diaIFMDwZp+bGv6ro71Qk4osWyxON1xF
-         ZeZ4ZAGw1PQgQBoKsynpJ5Ii5tiwsxNv7fYB7jq6zXD0VOS78kLyEqrs0Od/NQMXTA
-         Vf9bxDUZpZlqji7PdQ8eX+LdaAolvBBWqUdxTicuwYMk0q0999/5vuTAeM7VUc5ibN
-         OhuboFRaGtaY/1Iq0HAiFhSAri0YB3LTLo7v1AA8vZ2p71smZl8DPKXTZLyDQ5i6bl
-         M5Uca3ra83D08IGXAo+KCWVnz6yd1GVx3yTZpu5Eg07sVaTibaZsDcbmqwQ5oqg42d
-         FojfMjd0qfZqQ==
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Magnus Karlsson <magnus.karlsson@intel.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Dust Li <dust.li@linux.alibaba.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH v7 bpf-next 6/6] xsk: build skb by page (aka generic zerocopy xmit)
-Message-ID: <20210217120003.7938-7-alobakin@pm.me>
-In-Reply-To: <20210217120003.7938-1-alobakin@pm.me>
-References: <20210217120003.7938-1-alobakin@pm.me>
+        id S232651AbhBQMJ0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Feb 2021 07:09:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232664AbhBQMJK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Feb 2021 07:09:10 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9200C061756;
+        Wed, 17 Feb 2021 04:08:29 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id s11so16101512edd.5;
+        Wed, 17 Feb 2021 04:08:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wCiprttcJrxg36K7+oZp1ekp7sHvdrxJrdrMsQnuA4I=;
+        b=TU4RgbOYRInkGvV+4PQ14uKZwd/i64yZaEV+4i3DVwQOhlkahCyMImCDYghB3xW3zG
+         DKoZ/TIyBu1hSAg9oxDC2t97PGUa0zAobJ+wBL/Q4Q4IuCqVuk5kWkuWv3fifkwgFpZ2
+         0JSS1C5eNo8ceCuY6Dg+0yF9G2hy64Sc7AI1ZV7Yl2e8FnwFkRLr3vFaPVg4UCuj9u2x
+         7DRnxaPaHpZSwZQUSK6x36sTRBV8LuHb+WumkHnGpeoXjvAgn9LpHoCMERB3ZNuWSu9E
+         r3QN7SgH5a6DVvs7OOaV4VUu52OuqD+y98/ZoqAMF1ARP6tIiERIi/JedP2RVGgPzQrV
+         Y3ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=wCiprttcJrxg36K7+oZp1ekp7sHvdrxJrdrMsQnuA4I=;
+        b=I8vKeWFjbh0Qt+RhUUwDeKi83XfPDY+y6a60AYxBYSyIivdz/pjuKoiZ6S64Yvatoa
+         gzQ8MSJckLQaq52xv/Bxuhr0g++ESXND7Krjy/EF+dwlZ+abif9vbZaXGn04ZYv/mtHH
+         NPM9xZTkull+/jNCZdist+UmsUIeOt84QsRQaXJgM/MEfIQxyVPco6KejNX0Psu4GUWA
+         Ij+ll0PdrUg+9Tl1k1ZTpSZR6P47zedeplBNhSkF8yMUZRcXcXCciUwta9zmt1nz4Rh/
+         tRYkelu5PbkrVq4diczPhQK2CaKJPfHGWAVZFBLHMywlsi2FlsdIu8P4WWOVBN/jDfCu
+         iRig==
+X-Gm-Message-State: AOAM532FwuPx8NfqmnSqUWq6RX2oA5nZIedvRcV3GA58ayq4ttNSvBT8
+        n5qfg3BwFDarGfxr+QtqaUM=
+X-Google-Smtp-Source: ABdhPJzUvyFHPz/a/dERWGi/qD53dMGA76GDrWPaNOGriRcbeImOwfvwwv6emN5wUEr416BQDhhthg==
+X-Received: by 2002:a05:6402:4312:: with SMTP id m18mr25916678edc.99.1613563708584;
+        Wed, 17 Feb 2021 04:08:28 -0800 (PST)
+Received: from m4.love (tor-exit-6.zbau.f3netze.de. [2a0b:f4c0:16c:6::1])
+        by smtp.gmail.com with ESMTPSA id lj13sm425377ejb.123.2021.02.17.04.08.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Feb 2021 04:08:27 -0800 (PST)
+Sender: Domenico Andreoli <domenico.andreoli.it@gmail.com>
+Received: from cavok by m4.love with local (Exim 4.94)
+        (envelope-from <cavok@m4>)
+        id 1lCLd1-00066Y-Ih; Wed, 17 Feb 2021 13:08:23 +0100
+Date:   Wed, 17 Feb 2021 13:08:23 +0100
+From:   Domenico Andreoli <cavok@debian.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Sedat Dilek <sedat.dilek@gmail.com>, dwarves@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Matthias Schwarzott <zzam@gentoo.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Mark Wieelard <mjw@redhat.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Daniel =?iso-8859-1?Q?P=2E_Berrang=E9?= <berrange@redhat.com>,
+        Tom Stellard <tstellar@redhat.com>, 705969@bugs.debian.org
+Subject: Re: ANNOUNCE: pahole v1.20 (gcc11 DWARF5's default, lots of ELF
+ sections, BTF)
+Message-ID: <YC0HN+0Tva0lOPIt@m4>
+References: <20210204220741.GA920417@kernel.org>
+ <CA+icZUXngJL2WXRyeWDjTyBYbXc0uC0_C69nBH9bq4sr_TAx5g@mail.gmail.com>
+ <20210208123253.GI920417@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="gIYVh1ASy4tAHzNX"
+Content-Disposition: inline
+In-Reply-To: <20210208123253.GI920417@kernel.org>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 
-This patch is used to construct skb based on page to save memory copy
-overhead.
+--gIYVh1ASy4tAHzNX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This function is implemented based on IFF_TX_SKB_NO_LINEAR. Only the
-network card priv_flags supports IFF_TX_SKB_NO_LINEAR will use page to
-directly construct skb. If this feature is not supported, it is still
-necessary to copy data to construct skb.
+On Mon, Feb 08, 2021 at 09:32:53AM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Mon, Feb 08, 2021 at 03:44:54AM +0100, Sedat Dilek escreveu:
+> > On Thu, Feb 4, 2021 at 11:07 PM Arnaldo Carvalho de Melo
+> > <arnaldo.melo@gmail.com> wrote:
+> > >
+> > > Hi,
+> > >
+> > >         The v1.20 release of pahole and its friends is out, mostly
+> > > addressing problems related to gcc 11 defaulting to DWARF5 for -g,
+> > > available at the usual places:
+> > >
+> > > Main git repo:
+> > >
+> > >    git://git.kernel.org/pub/scm/devel/pahole/pahole.git
+> > >
+> > > Mirror git repo:
+> > >
+> > >    https://github.com/acmel/dwarves.git
+> > >
+> > > tarball + gpg signature:
+> > >
+> > >    https://fedorapeople.org/~acme/dwarves/dwarves-1.20.tar.xz
+> > >    https://fedorapeople.org/~acme/dwarves/dwarves-1.20.tar.bz2
+> > >    https://fedorapeople.org/~acme/dwarves/dwarves-1.20.tar.sign
+> > >
+> >=20
+> > FYI:
+> > Debian now ships dwarves package version 1.20-1 in unstable.
+> >=20
+> > Just a small nit to this release and its tagging:
+> >=20
+> > You did:
+> > commit 0d415f68c468b77c5bf8e71965cd08c6efd25fc4 ("pahole: Prep 1.20")
+> >=20
+> > Is this new?
+> >=20
+> > The release before:
+> > commit dd15aa4b0a6421295cbb7c3913429142fef8abe0 ("dwarves: Prep v1.19")
+>=20
+> Its minor but intentional, pahole is by far the most well known tool in
+> dwarves, so using that name more frequently (the git repo is pahole.git
+> , for instance) may help more quickly associate with the tool needed for
+> BTF encoding, data analysis, etc. And since its not about only DWARF,
+> perhaps transitioning to using 'pahole' more widely is interesting.
 
----------------- Performance Testing ------------
+Any plan to switch also the release tarball name?
 
-The test environment is Aliyun ECS server.
-Test cmd:
-```
-xdpsock -i eth0 -t  -S -s <msg size>
-```
+We are planning to rename the Debian package once the Bullseye is
+released, currently it's dwarves-dfsg for legacy/unclear reasons.
 
-Test result data:
+Would it be a good idea to switch directly to pahole then?
 
-size    64      512     1024    1500
-copy    1916747 1775988 1600203 1440054
-page    1974058 1953655 1945463 1904478
-percent 3.0%    10.0%   21.58%  32.3%
+Dom
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
-[ alobakin:
- - expand subject to make it clearer;
- - improve skb->truesize calculation;
- - reserve some headroom in skb for drivers;
- - tailroom is not needed as skb is non-linear ]
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
----
- net/xdp/xsk.c | 120 ++++++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 96 insertions(+), 24 deletions(-)
+>=20
+> - Arnaldo
+> =20
+> > - Sedat -
+> >=20
+> > > Best Regards,
+> > >
+> > >  - Arnaldo
+> > >
+> > > v1.20:
+> > >
+> > > BTF encoder:
+> > >
+> > >   - Improve ELF error reporting using elf_errmsg(elf_errno()).
+> > >
+> > >   - Improve objcopy error handling.
+> > >
+> > >   - Fix handling of 'restrict' qualifier, that was being treated as a=
+ 'const'.
+> > >
+> > >   - Support SHN_XINDEX in st_shndx symbol indexes, to handle ELF obje=
+cts with
+> > >     more than 65534 sections, for instance, which happens with kernel=
+s built
+> > >     with 'KCFLAGS=3D"-ffunction-sections -fdata-sections", Other case=
+s may
+> > >     include when using FG-ASLR, LTO.
+> > >
+> > >   - Cope with functions without a name, as seen sometimes when buildi=
+ng kernel
+> > >     images with some versions of clang, when a SEGFAULT was taking pl=
+ace.
+> > >
+> > >   - Fix BTF variable generation for kernel modules, not skipping vari=
+ables at
+> > >     offset zero.
+> > >
+> > >   - Fix address size to match what is in the ELF file being processed=
+, to fix using
+> > >     a 64-bit pahole binary to generate BTF for a 32-bit vmlinux image.
+> > >
+> > >   - Use kernel module ftrace addresses when finding which functions t=
+o encode,
+> > >     which increases the number of functions encoded.
+> > >
+> > > libbpf:
+> > >
+> > >   - Allow use of packaged version, for distros wanting to dynamically=
+ link with
+> > >     the system's libbpf package instead of using the libbpf git submo=
+dule shipped
+> > >     in pahole's source code.
+> > >
+> > > DWARF loader:
+> > >
+> > >   - Support DW_AT_data_bit_offset
+> > >
+> > >     This appeared in DWARF4 but is supported only in gcc's -gdwarf-5,
+> > >     support it in a way that makes the output be the same for both ca=
+ses.
+> > >
+> > >       $ gcc -gdwarf-5 -c examples/dwarf5/bf.c
+> > >       $ pahole bf.o
+> > >       struct pea {
+> > >             long int                   a:1;                  /*     0=
+: 0  8 */
+> > >             long int                   b:1;                  /*     0=
+: 1  8 */
+> > >             long int                   c:1;                  /*     0=
+: 2  8 */
+> > >
+> > >             /* XXX 29 bits hole, try to pack */
+> > >             /* Bitfield combined with next fields */
+> > >
+> > >             int                        after_bitfield;       /*     4=
+     4 */
+> > >
+> > >             /* size: 8, cachelines: 1, members: 4 */
+> > >             /* sum members: 4 */
+> > >             /* sum bitfield members: 3 bits, bit holes: 1, sum bit ho=
+les: 29 bits */
+> > >             /* last cacheline: 8 bytes */
+> > >       };
+> > >
+> > >   - DW_FORM_implicit_const in attr_numeric() and attr_offset()
+> > >
+> > >   - Support DW_TAG_GNU_call_site, its the standardized rename of the =
+previously supported
+> > >     DW_TAG_GNU_call_site.
+> > >
+> > > build:
+> > >
+> > >     - Fix compilation on 32-bit architectures.
+> > >
+> > > Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+>=20
+> --=20
+>=20
+> - Arnaldo
 
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index 143979ea4165..a71ed664da0a 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -445,6 +445,97 @@ static void xsk_destruct_skb(struct sk_buff *skb)
- =09sock_wfree(skb);
- }
-=20
-+static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
-+=09=09=09=09=09      struct xdp_desc *desc)
-+{
-+=09struct xsk_buff_pool *pool =3D xs->pool;
-+=09u32 hr, len, ts, offset, copy, copied;
-+=09struct sk_buff *skb;
-+=09struct page *page;
-+=09void *buffer;
-+=09int err, i;
-+=09u64 addr;
-+
-+=09hr =3D max(NET_SKB_PAD, L1_CACHE_ALIGN(xs->dev->needed_headroom));
-+
-+=09skb =3D sock_alloc_send_skb(&xs->sk, hr, 1, &err);
-+=09if (unlikely(!skb))
-+=09=09return ERR_PTR(err);
-+
-+=09skb_reserve(skb, hr);
-+
-+=09addr =3D desc->addr;
-+=09len =3D desc->len;
-+=09ts =3D pool->unaligned ? len : pool->chunk_size;
-+
-+=09buffer =3D xsk_buff_raw_get_data(pool, addr);
-+=09offset =3D offset_in_page(buffer);
-+=09addr =3D buffer - pool->addrs;
-+
-+=09for (copied =3D 0, i =3D 0; copied < len; i++) {
-+=09=09page =3D pool->umem->pgs[addr >> PAGE_SHIFT];
-+=09=09get_page(page);
-+
-+=09=09copy =3D min_t(u32, PAGE_SIZE - offset, len - copied);
-+=09=09skb_fill_page_desc(skb, i, page, offset, copy);
-+
-+=09=09copied +=3D copy;
-+=09=09addr +=3D copy;
-+=09=09offset =3D 0;
-+=09}
-+
-+=09skb->len +=3D len;
-+=09skb->data_len +=3D len;
-+=09skb->truesize +=3D ts;
-+
-+=09refcount_add(ts, &xs->sk.sk_wmem_alloc);
-+
-+=09return skb;
-+}
-+
-+static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
-+=09=09=09=09     struct xdp_desc *desc)
-+{
-+=09struct net_device *dev =3D xs->dev;
-+=09struct sk_buff *skb;
-+
-+=09if (dev->priv_flags & IFF_TX_SKB_NO_LINEAR) {
-+=09=09skb =3D xsk_build_skb_zerocopy(xs, desc);
-+=09=09if (IS_ERR(skb))
-+=09=09=09return skb;
-+=09} else {
-+=09=09u32 hr, tr, len;
-+=09=09void *buffer;
-+=09=09int err;
-+
-+=09=09hr =3D max(NET_SKB_PAD, L1_CACHE_ALIGN(dev->needed_headroom));
-+=09=09tr =3D dev->needed_tailroom;
-+=09=09len =3D desc->len;
-+
-+=09=09skb =3D sock_alloc_send_skb(&xs->sk, hr + len + tr, 1, &err);
-+=09=09if (unlikely(!skb))
-+=09=09=09return ERR_PTR(err);
-+
-+=09=09skb_reserve(skb, hr);
-+=09=09skb_put(skb, len);
-+
-+=09=09buffer =3D xsk_buff_raw_get_data(xs->pool, desc->addr);
-+=09=09err =3D skb_store_bits(skb, 0, buffer, len);
-+=09=09if (unlikely(err)) {
-+=09=09=09kfree_skb(skb);
-+=09=09=09return ERR_PTR(err);
-+=09=09}
-+=09}
-+
-+=09skb->dev =3D dev;
-+=09skb->priority =3D xs->sk.sk_priority;
-+=09skb->mark =3D xs->sk.sk_mark;
-+=09skb_shinfo(skb)->destructor_arg =3D (void *)(long)desc->addr;
-+=09skb->destructor =3D xsk_destruct_skb;
-+
-+=09return skb;
-+}
-+
- static int xsk_generic_xmit(struct sock *sk)
- {
- =09struct xdp_sock *xs =3D xdp_sk(sk);
-@@ -454,56 +545,37 @@ static int xsk_generic_xmit(struct sock *sk)
- =09struct sk_buff *skb;
- =09unsigned long flags;
- =09int err =3D 0;
--=09u32 hr, tr;
-=20
- =09mutex_lock(&xs->mutex);
-=20
- =09if (xs->queue_id >=3D xs->dev->real_num_tx_queues)
- =09=09goto out;
-=20
--=09hr =3D max(NET_SKB_PAD, L1_CACHE_ALIGN(xs->dev->needed_headroom));
--=09tr =3D xs->dev->needed_tailroom;
--
- =09while (xskq_cons_peek_desc(xs->tx, &desc, xs->pool)) {
--=09=09char *buffer;
--=09=09u64 addr;
--=09=09u32 len;
--
- =09=09if (max_batch-- =3D=3D 0) {
- =09=09=09err =3D -EAGAIN;
- =09=09=09goto out;
- =09=09}
-=20
--=09=09len =3D desc.len;
--=09=09skb =3D sock_alloc_send_skb(sk, hr + len + tr, 1, &err);
--=09=09if (unlikely(!skb))
-+=09=09skb =3D xsk_build_skb(xs, &desc);
-+=09=09if (IS_ERR(skb)) {
-+=09=09=09err =3D PTR_ERR(skb);
- =09=09=09goto out;
-+=09=09}
-=20
--=09=09skb_reserve(skb, hr);
--=09=09skb_put(skb, len);
--
--=09=09addr =3D desc.addr;
--=09=09buffer =3D xsk_buff_raw_get_data(xs->pool, addr);
--=09=09err =3D skb_store_bits(skb, 0, buffer, len);
- =09=09/* This is the backpressure mechanism for the Tx path.
- =09=09 * Reserve space in the completion queue and only proceed
- =09=09 * if there is space in it. This avoids having to implement
- =09=09 * any buffering in the Tx path.
- =09=09 */
- =09=09spin_lock_irqsave(&xs->pool->cq_lock, flags);
--=09=09if (unlikely(err) || xskq_prod_reserve(xs->pool->cq)) {
-+=09=09if (xskq_prod_reserve(xs->pool->cq)) {
- =09=09=09spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
- =09=09=09kfree_skb(skb);
- =09=09=09goto out;
- =09=09}
- =09=09spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
-=20
--=09=09skb->dev =3D xs->dev;
--=09=09skb->priority =3D sk->sk_priority;
--=09=09skb->mark =3D sk->sk_mark;
--=09=09skb_shinfo(skb)->destructor_arg =3D (void *)(long)desc.addr;
--=09=09skb->destructor =3D xsk_destruct_skb;
--
- =09=09err =3D __dev_direct_xmit(skb, xs->queue_id);
- =09=09if  (err =3D=3D NETDEV_TX_BUSY) {
- =09=09=09/* Tell user-space to retry the send */
 --=20
-2.30.1
+rsa4096: 3B10 0CA1 8674 ACBA B4FE  FCD2 CE5B CF17 9960 DE13
+ed25519: FFB4 0CC3 7F2E 091D F7DA  356E CC79 2832 ED38 CB05
 
+--gIYVh1ASy4tAHzNX
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE0znebYyV6RAN/q8htwRzp/vsqYEFAmAtBzMACgkQtwRzp/vs
+qYFwaQ//cmKhFeLG2+gdsqQq4giRbZXq2lnrUpPV/WHtlMQ/VHjwicMP80GqHZ1h
+7SUDggas/62cxXZ2+9ffyQYUbgvpNwk5MVPsAUOzCJF6EQ/1SDMQEsS2lGEU6SVc
+qtYXB7YTaKCxFNBeh6mcNqpPZnJ4qwezVs52e36Rk0tiYJNneHrhOmXrox16vI1/
+X5q7NaGvfmsB/WpyWiecw7MpuI3aoZq+D7Y5rOoEgCML4s/13rUuybJlAYnsuww5
+9OZomNOWypQpPTmdGBd2APBsK/VaGZkoYtGVGMXqg+XqiYh/1aUlmo95blbsFMuB
+sRKTRoHkY6Hf4JjalAKgUfYAsHnBxBxMdV3nmLypEeEX9YPROBj6e3c7HlkgsWbb
+oxL7WpqxWrVNPl5FtchzMaBD9xt+tWgzhTFLnKNsEbprHAuLzp/p8fPC91HCf7c7
+Ox1gVR2UY0Lju+aByffZlRxJ/pbSYZpTYtKZUXrTw/pGoAqKer4ntNBiRfl4vG97
+PbMKV49faixLwpkTQr1VuS7RpE2nkrnT9mRMVZk4aFxGq5sgpfLWfXmvOtVX6Zq0
+/kyoan585ro4qtlQ5Wxq2TcSU5QNcLCtI4N89wqENyzTbFqZjU4LE/jhtoSYpYOO
+fBf5WybiqIKJSHOArgCXKWQvg7DAfGCP5pkTS2zCye0r3J2MGx8=
+=aQcl
+-----END PGP SIGNATURE-----
+
+--gIYVh1ASy4tAHzNX--
