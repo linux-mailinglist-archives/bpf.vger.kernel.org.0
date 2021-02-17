@@ -2,350 +2,133 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A310031DD70
-	for <lists+bpf@lfdr.de>; Wed, 17 Feb 2021 17:35:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CEA831DE30
+	for <lists+bpf@lfdr.de>; Wed, 17 Feb 2021 18:33:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234179AbhBQQei (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Feb 2021 11:34:38 -0500
-Received: from mga03.intel.com ([134.134.136.65]:47635 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234239AbhBQQeD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Feb 2021 11:34:03 -0500
-IronPort-SDR: 7/WX80gCgPOuSUtjrh/D9EeNlKwRGutz59HKoZVZimou8JQUGo/ZKLRv0kTqeDJhCBGndvPRs4
- kUjf62AWCLEQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="183315356"
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
-   d="scan'208";a="183315356"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 08:33:08 -0800
-IronPort-SDR: cxMMofQVgtJ+cJrS0z0o7dD00PT8y1OWsWRo2CSXwV3L0SwFNLzmoM3pAFLEfklEktcux53gY/
- Gu6PKe4XYW5g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
-   d="scan'208";a="494184900"
-Received: from silpixa00399839.ir.intel.com (HELO localhost.localdomain) ([10.237.222.142])
-  by fmsmga001.fm.intel.com with ESMTP; 17 Feb 2021 08:33:06 -0800
-From:   Ciara Loftus <ciara.loftus@intel.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        magnus.karlsson@intel.com, bjorn@kernel.org,
-        weqaar.a.janjua@intel.com
-Cc:     Ciara Loftus <ciara.loftus@intel.com>
-Subject: [PATCH bpf-next 4/4] selftests/bpf: introduce xsk statistics tests
-Date:   Wed, 17 Feb 2021 16:02:14 +0000
-Message-Id: <20210217160214.7869-5-ciara.loftus@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210217160214.7869-1-ciara.loftus@intel.com>
-References: <20210217160214.7869-1-ciara.loftus@intel.com>
+        id S232190AbhBQRbI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Feb 2021 12:31:08 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:47622 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231855AbhBQRbE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Feb 2021 12:31:04 -0500
+Received: by mail-il1-f200.google.com with SMTP id y12so10937898ilu.14
+        for <bpf@vger.kernel.org>; Wed, 17 Feb 2021 09:30:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=ng4f56rdZrboj8s7V22fLP2ZtUe40ciRTAHqfc+10Pw=;
+        b=OIX+QbPZUFXVLwc9aL2+9NkOsldCvkHv/Axn5uSrIlzByKXQqL46SlGBjdbGIThj8Y
+         mSAYdiVmUhfCvg1KnzvYS50M+qgkJ4k/a3PKMmmJKVC1LbRKLWYrrZtnmL3UiHjCDqFR
+         lI/BaBtgttIkMC5a35qKtnpvjXol9jNxBqUYxRgz8aHeNUBoX7whMh9evhfKRUh9mrs3
+         fDRnAPVWhEbTfoGSjGUBBEcW12kZHSDT1jOIpb2ACbEHk+sc3G66DWxIKowDEHVL48Df
+         JSlxv9Pgzw0wf10hqST1wWgiCK7V4K3kTRsQWg/sx4N7Lv1MIFdFrZjZ6WSfeKb8FT8T
+         oYNg==
+X-Gm-Message-State: AOAM530yeftZUwHsTh8EcvrAQT1u0RvJogeqZHNziwQlVNfpoPN3nMa1
+        +phLWPERGKdoHcZpLz32B3CWGGQW0cvePfaL2/kcPvad1TVQ
+X-Google-Smtp-Source: ABdhPJwajKIm/Bpm7iHcZvMeAuQJj7PJl5lBC55CsYbEBU3UiNS2OgtFUs/pwpFJATqqmro0aba+HWRPLcWsCeqRBLgMCoBUHIqn
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a6b:6519:: with SMTP id z25mr74557iob.147.1613583023008;
+ Wed, 17 Feb 2021 09:30:23 -0800 (PST)
+Date:   Wed, 17 Feb 2021 09:30:23 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e6f01f05bb8b9268@google.com>
+Subject: possible deadlock in inet_stream_connect
+From:   syzbot <syzbot+b0f5178b61ed7f3bbb46@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, dsahern@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This commit introduces a range of tests to the xsk testsuite
-for validating xsk statistics.
+Hello,
 
-A new test type called 'stats' is added. Within it there are
-four sub-tests which test the following statistics:
-1. rx dropped
-2. tx invalid
-3. rx ring full
-4. fill queue empty
+syzbot found the following issue on:
 
-Each test configures a scenario which should trigger the given
-error statistic. The test passes if the statistic is successfully
-incremented.
+HEAD commit:    9ec5eea5 lib/parman: Delete newline
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=11380d24d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=dbc1ca9e55dc1f9f
+dashboard link: https://syzkaller.appspot.com/bug?extid=b0f5178b61ed7f3bbb46
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=177a6d14d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10caeb02d00000
 
-Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b0f5178b61ed7f3bbb46@syzkaller.appspotmail.com
+
+============================================
+WARNING: possible recursive locking detected
+5.11.0-rc7-syzkaller #0 Not tainted
+--------------------------------------------
+syz-executor845/10119 is trying to acquire lock:
+ffff888021e6e320 (sk_lock-AF_INET6){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1598 [inline]
+ffff888021e6e320 (sk_lock-AF_INET6){+.+.}-{0:0}, at: inet_stream_connect+0x3f/0xa0 net/ipv4/af_inet.c:724
+
+but task is already holding lock:
+ffff888022c1a520 (sk_lock-AF_INET6){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1598 [inline]
+ffff888022c1a520 (sk_lock-AF_INET6){+.+.}-{0:0}, at: mptcp_stream_connect+0x85/0x800 net/mptcp/protocol.c:3171
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(sk_lock-AF_INET6);
+  lock(sk_lock-AF_INET6);
+
+ *** DEADLOCK ***
+
+ May be due to missing lock nesting notation
+
+1 lock held by syz-executor845/10119:
+ #0: ffff888022c1a520 (sk_lock-AF_INET6){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1598 [inline]
+ #0: ffff888022c1a520 (sk_lock-AF_INET6){+.+.}-{0:0}, at: mptcp_stream_connect+0x85/0x800 net/mptcp/protocol.c:3171
+
+stack backtrace:
+CPU: 0 PID: 10119 Comm: syz-executor845 Not tainted 5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ print_deadlock_bug kernel/locking/lockdep.c:2761 [inline]
+ check_deadlock kernel/locking/lockdep.c:2804 [inline]
+ validate_chain kernel/locking/lockdep.c:3595 [inline]
+ __lock_acquire.cold+0x114/0x39e kernel/locking/lockdep.c:4832
+ lock_acquire kernel/locking/lockdep.c:5442 [inline]
+ lock_acquire+0x1a8/0x720 kernel/locking/lockdep.c:5407
+ lock_sock_nested+0xc5/0x110 net/core/sock.c:3071
+ lock_sock include/net/sock.h:1598 [inline]
+ inet_stream_connect+0x3f/0xa0 net/ipv4/af_inet.c:724
+ mptcp_stream_connect+0x156/0x800 net/mptcp/protocol.c:3200
+ __sys_connect_file+0x155/0x1a0 net/socket.c:1835
+ __sys_connect+0x161/0x190 net/socket.c:1852
+ __do_sys_connect net/socket.c:1862 [inline]
+ __se_sys_connect net/socket.c:1859 [inline]
+ __x64_sys_connect+0x6f/0xb0 net/socket.c:1859
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x443ce9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 a1 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff5f9324e8 EFLAGS: 00000246 ORIG_RAX: 000000000000002a
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000443ce9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000003
+RBP: 0000000000000000 R08: 000000a800000000 R09: 000000a800000000
+R10: 000000a800000000 R11: 0000000000000246 R12: 00007fff5f932500
+R13: 00007fff5f932510 R14: 0000000000014e11 R15: 00007fff5f9324f0
+
+
 ---
- tools/testing/selftests/bpf/xdpxceiver.c | 130 ++++++++++++++++++++---
- tools/testing/selftests/bpf/xdpxceiver.h |  13 +++
- 2 files changed, 130 insertions(+), 13 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/tools/testing/selftests/bpf/xdpxceiver.c b/tools/testing/selftests/bpf/xdpxceiver.c
-index 7cb4a13597d0..4647c89b2019 100644
---- a/tools/testing/selftests/bpf/xdpxceiver.c
-+++ b/tools/testing/selftests/bpf/xdpxceiver.c
-@@ -28,8 +28,11 @@
-  *       Configure sockets as bi-directional tx/rx sockets, sets up fill and
-  *       completion rings on each socket, tx/rx in both directions. Only nopoll
-  *       mode is used
-+ *    e. Statistics
-+ *       Trigger some error conditions and ensure that the appropriate statistics
-+ *       are incremented.
-  *
-- * Total tests: 8
-+ * Total tests: 10
-  *
-  * Flow:
-  * -----
-@@ -90,10 +93,11 @@ static void __exit_with_error(int error, const char *file, const char *func, int
- #define exit_with_error(error) __exit_with_error(error, __FILE__, __func__, __LINE__)
- 
- #define print_ksft_result(void)\
--	(ksft_test_result_pass("PASS: %s %s %s%s\n", uut ? "DRV" : "SKB",\
-+	(ksft_test_result_pass("PASS: %s %s %s%s%s\n", uut ? "DRV" : "SKB",\
- 			       test_type == TEST_TYPE_POLL ? "POLL" : "NOPOLL",\
- 			       test_type == TEST_TYPE_TEARDOWN ? "Socket Teardown" : "",\
--			       test_type == TEST_TYPE_BIDI ? "Bi-directional Sockets" : ""))
-+			       test_type == TEST_TYPE_BIDI ? "Bi-directional Sockets" : "",\
-+			       test_type == TEST_TYPE_STATS ? "Stats" : ""))
- 
- static void pthread_init_mutex(void)
- {
-@@ -255,13 +259,20 @@ static void gen_eth_frame(struct xsk_umem_info *umem, u64 addr)
- static void xsk_configure_umem(struct ifobject *data, void *buffer, u64 size)
- {
- 	int ret;
-+	struct xsk_umem_config cfg = {
-+		.fill_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
-+		.comp_size = XSK_RING_CONS__DEFAULT_NUM_DESCS,
-+		.frame_size = XSK_UMEM__DEFAULT_FRAME_SIZE,
-+		.frame_headroom = frame_headroom,
-+		.flags = XSK_UMEM__DEFAULT_FLAGS
-+	};
- 
- 	data->umem = calloc(1, sizeof(struct xsk_umem_info));
- 	if (!data->umem)
- 		exit_with_error(errno);
- 
- 	ret = xsk_umem__create(&data->umem->umem, buffer, size,
--			       &data->umem->fq, &data->umem->cq, NULL);
-+			       &data->umem->fq, &data->umem->cq, &cfg);
- 	if (ret)
- 		exit_with_error(ret);
- 
-@@ -293,7 +304,7 @@ static int xsk_configure_socket(struct ifobject *ifobject)
- 		exit_with_error(errno);
- 
- 	ifobject->xsk->umem = ifobject->umem;
--	cfg.rx_size = XSK_RING_CONS__DEFAULT_NUM_DESCS;
-+	cfg.rx_size = rxqsize;
- 	cfg.tx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS;
- 	cfg.libbpf_flags = 0;
- 	cfg.xdp_flags = xdp_flags;
-@@ -555,6 +566,8 @@ static void tx_only(struct xsk_socket_info *xsk, u32 *frameptr, int batch_size)
- {
- 	u32 idx;
- 	unsigned int i;
-+	bool tx_invalid_test = stat_test_type == STAT_TEST_TX_INVALID;
-+	u32 len = tx_invalid_test ? XSK_UMEM__DEFAULT_FRAME_SIZE + 1 : PKT_SIZE;
- 
- 	while (xsk_ring_prod__reserve(&xsk->tx, batch_size, &idx) < batch_size)
- 		complete_tx_only(xsk, batch_size);
-@@ -563,11 +576,16 @@ static void tx_only(struct xsk_socket_info *xsk, u32 *frameptr, int batch_size)
- 		struct xdp_desc *tx_desc = xsk_ring_prod__tx_desc(&xsk->tx, idx + i);
- 
- 		tx_desc->addr = (*frameptr + i) << XSK_UMEM__DEFAULT_FRAME_SHIFT;
--		tx_desc->len = PKT_SIZE;
-+		tx_desc->len = len;
- 	}
- 
- 	xsk_ring_prod__submit(&xsk->tx, batch_size);
--	xsk->outstanding_tx += batch_size;
-+	if (!tx_invalid_test) {
-+		xsk->outstanding_tx += batch_size;
-+	} else {
-+		if (!NEED_WAKEUP || xsk_ring_prod__needs_wakeup(&xsk->tx))
-+			kick_tx(xsk);
-+	}
- 	*frameptr += batch_size;
- 	*frameptr %= num_frames;
- 	complete_tx_only(xsk, batch_size);
-@@ -679,6 +697,48 @@ static void worker_pkt_dump(void)
- 	}
- }
- 
-+static void worker_stats_validate(struct ifobject *ifobject)
-+{
-+	struct xdp_statistics stats;
-+	socklen_t optlen;
-+	int err;
-+	struct xsk_socket *xsk = stat_test_type == STAT_TEST_TX_INVALID ?
-+							ifdict[!ifobject->ifdict_index]->xsk->xsk :
-+							ifobject->xsk->xsk;
-+	int fd = xsk_socket__fd(xsk);
-+	unsigned long xsk_stat = 0, expected_stat = opt_pkt_count;
-+
-+	sigvar = 0;
-+
-+	optlen = sizeof(stats);
-+	err = getsockopt(fd, SOL_XDP, XDP_STATISTICS, &stats, &optlen);
-+	if (err)
-+		return;
-+
-+	if (optlen == sizeof(struct xdp_statistics)) {
-+		switch (stat_test_type) {
-+		case STAT_TEST_RX_DROPPED:
-+			xsk_stat = stats.rx_dropped;
-+			break;
-+		case STAT_TEST_TX_INVALID:
-+			xsk_stat = stats.tx_invalid_descs;
-+			break;
-+		case STAT_TEST_RX_FULL:
-+			xsk_stat = stats.rx_ring_full;
-+			expected_stat -= RX_FULL_RXQSIZE;
-+			break;
-+		case STAT_TEST_RX_FILL_EMPTY:
-+			xsk_stat = stats.rx_fill_ring_empty_descs;
-+			break;
-+		default:
-+			break;
-+		}
-+
-+		if (xsk_stat == expected_stat)
-+			sigvar = 1;
-+	}
-+}
-+
- static void worker_pkt_validate(void)
- {
- 	u32 payloadseqnum = -2;
-@@ -817,7 +877,8 @@ static void *worker_testapp_validate(void *arg)
- 			thread_common_ops(ifobject, bufs, &sync_mutex_tx, &spinning_rx);
- 
- 		print_verbose("Interface [%s] vector [Rx]\n", ifobject->ifname);
--		xsk_populate_fill_ring(ifobject->umem);
-+		if (stat_test_type != STAT_TEST_RX_FILL_EMPTY)
-+			xsk_populate_fill_ring(ifobject->umem);
- 
- 		TAILQ_INIT(&head);
- 		if (debug_pkt_dump) {
-@@ -839,15 +900,21 @@ static void *worker_testapp_validate(void *arg)
- 				if (ret <= 0)
- 					continue;
- 			}
--			rx_pkt(ifobject->xsk, fds);
--			worker_pkt_validate();
-+
-+			if (test_type != TEST_TYPE_STATS) {
-+				rx_pkt(ifobject->xsk, fds);
-+				worker_pkt_validate();
-+			} else {
-+				worker_stats_validate(ifobject);
-+			}
- 
- 			if (sigvar)
- 				break;
- 		}
- 
--		print_verbose("Received %d packets on interface %s\n",
--			       pkt_counter, ifobject->ifname);
-+		if (test_type != TEST_TYPE_STATS)
-+			print_verbose("Received %d packets on interface %s\n",
-+				pkt_counter, ifobject->ifname);
- 
- 		if (test_type == TEST_TYPE_TEARDOWN)
- 			print_verbose("Destroying socket\n");
-@@ -921,7 +988,7 @@ static void testapp_validate(void)
- 		free(pkt_buf);
- 	}
- 
--	if (!(test_type == TEST_TYPE_TEARDOWN) && !bidi)
-+	if (!(test_type == TEST_TYPE_TEARDOWN) && !bidi && !(test_type == TEST_TYPE_STATS))
- 		print_ksft_result();
- }
- 
-@@ -940,6 +1007,34 @@ static void testapp_sockets(void)
- 	print_ksft_result();
- }
- 
-+static void testapp_stats(void)
-+{
-+	for (int i = 0; i < STAT_TEST_TYPE_MAX; i++) {
-+		stat_test_type = i;
-+
-+		/* reset defaults */
-+		rxqsize = XSK_RING_CONS__DEFAULT_NUM_DESCS;
-+		frame_headroom = XSK_UMEM__DEFAULT_FRAME_HEADROOM;
-+
-+		switch (stat_test_type) {
-+		case STAT_TEST_RX_DROPPED:
-+			frame_headroom = XSK_UMEM__DEFAULT_FRAME_SIZE -
-+						XDP_PACKET_HEADROOM - 1;
-+			break;
-+		case STAT_TEST_RX_FULL:
-+			rxqsize = RX_FULL_RXQSIZE;
-+			break;
-+		default:
-+			break;
-+		}
-+		pthread_init_mutex();
-+		testapp_validate();
-+		pthread_destroy_mutex();
-+	}
-+
-+	print_ksft_result();
-+}
-+
- static void init_iface_config(struct ifaceconfigobj *ifaceconfig)
- {
- 	/*Init interface0 */
-@@ -1021,6 +1116,10 @@ static void run_pkt_test(int mode, int type)
- 	prev_pkt = -1;
- 	ifdict[0]->fv.vector = tx;
- 	ifdict[1]->fv.vector = rx;
-+	sigvar = 0;
-+	stat_test_type = -1;
-+	rxqsize = XSK_RING_CONS__DEFAULT_NUM_DESCS;
-+	frame_headroom = XSK_UMEM__DEFAULT_FRAME_HEADROOM;
- 
- 	switch (mode) {
- 	case (TEST_MODE_SKB):
-@@ -1039,6 +1138,11 @@ static void run_pkt_test(int mode, int type)
- 		break;
- 	}
- 
-+	if (test_type == TEST_TYPE_STATS) {
-+		testapp_stats();
-+		return;
-+	}
-+
- 	pthread_init_mutex();
- 
- 	if ((test_type != TEST_TYPE_TEARDOWN) && (test_type != TEST_TYPE_BIDI))
-diff --git a/tools/testing/selftests/bpf/xdpxceiver.h b/tools/testing/selftests/bpf/xdpxceiver.h
-index 1127a396d5d0..4d0a80dbfef0 100644
---- a/tools/testing/selftests/bpf/xdpxceiver.h
-+++ b/tools/testing/selftests/bpf/xdpxceiver.h
-@@ -41,6 +41,7 @@
- #define BATCH_SIZE 64
- #define POLL_TMOUT 1000
- #define NEED_WAKEUP true
-+#define RX_FULL_RXQSIZE 32
- 
- #define print_verbose(x...) do { if (opt_verbose) ksft_print_msg(x); } while (0)
- 
-@@ -59,9 +60,18 @@ enum TEST_TYPES {
- 	TEST_TYPE_POLL,
- 	TEST_TYPE_TEARDOWN,
- 	TEST_TYPE_BIDI,
-+	TEST_TYPE_STATS,
- 	TEST_TYPE_MAX
- };
- 
-+enum STAT_TEST_TYPES {
-+	STAT_TEST_RX_DROPPED,
-+	STAT_TEST_TX_INVALID,
-+	STAT_TEST_RX_FULL,
-+	STAT_TEST_RX_FILL_EMPTY,
-+	STAT_TEST_TYPE_MAX
-+};
-+
- static u8 uut;
- static u8 debug_pkt_dump;
- static u32 num_frames;
-@@ -80,6 +90,9 @@ static u8 pkt_data[XSK_UMEM__DEFAULT_FRAME_SIZE];
- static u32 pkt_counter;
- static long prev_pkt = -1;
- static int sigvar;
-+static int stat_test_type;
-+static u32 rxqsize;
-+static u32 frame_headroom;
- 
- struct xsk_umem_info {
- 	struct xsk_ring_prod fq;
--- 
-2.17.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
