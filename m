@@ -2,132 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 483E831D458
-	for <lists+bpf@lfdr.de>; Wed, 17 Feb 2021 05:00:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98EEC31D5A9
+	for <lists+bpf@lfdr.de>; Wed, 17 Feb 2021 08:19:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230042AbhBQD7o (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 16 Feb 2021 22:59:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55434 "EHLO
+        id S231462AbhBQHRI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Feb 2021 02:17:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbhBQD7n (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 16 Feb 2021 22:59:43 -0500
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A03CAC061574;
-        Tue, 16 Feb 2021 19:59:03 -0800 (PST)
-Received: by mail-oi1-x235.google.com with SMTP id j5so1435206oie.1;
-        Tue, 16 Feb 2021 19:59:03 -0800 (PST)
+        with ESMTP id S231444AbhBQHRI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Feb 2021 02:17:08 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEC80C061574;
+        Tue, 16 Feb 2021 23:16:27 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id fy5so955625pjb.5;
+        Tue, 16 Feb 2021 23:16:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AY8ombUPMk1cvNC/PKFtk7SgwFEagvcrvmHWjWPulWw=;
-        b=rPDeGPGnqFNQogk9sS4KbskCsEl4kV+jiOr2b6zGfv4gC4oDo4ExjX1ovb2y2T17AP
-         RRr7kE0u6w64+DykEA3VC9PEETfu6z74ufOQvLChCrz5KVobeKea8H1X7/759UJ2YdFx
-         dE8HBI6G/y9yryLeLWTB2qG+4KD+uPXAf6YJrJTaTA1Af0J39IfgHKMkhg/Bz+95DYqm
-         uflGb9Fr5WH7dl5pvO0U5CpeHXIONNzXbrRLiA2XmitqKSfcPRUiugh/wKQM222s0G8u
-         MNdqE+tY+qxM0eeZa73IfwlmQJ67FuhCAw+74ONEV+80JGsH3fjPKrrgat0i1uUbIjgY
-         1oGQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=XmdW6hN3Wr8myofU5b7ngzG7W30Qvrk/F+0xoCB8yfg=;
+        b=p0Z2GN9X3CnMAIR5isVvw/v8HH3Ak40s+4U+9VMBG6X1c/NAIsv9FjyttQNAMKjwRO
+         e60Qy/vpEn3NSGQKZ2LFGi36YW4YRSuVUq65nIhz50Lag6xclcDN96YGWxjINp9O0SKx
+         xKDIP9o8fno3WKS+jPtfRvabmtHfcLPsnOySA6JQTLL684AtYTTxtOUhlvLd7TJs9dNc
+         bgG1Q8oi5iZI0+sgdIVLVTZjYiiUZ1HQSTkA531ZVzytHbFWKMVYS6Dql8ArK5Rjo0q/
+         9zYLry/YGA5YoQJ35dvkSqjlLDUSmtzaHs10GQU0eAvwjf5hEBW6cFHnloZmtj+hpHRM
+         fEkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AY8ombUPMk1cvNC/PKFtk7SgwFEagvcrvmHWjWPulWw=;
-        b=ZZuM8UAVH3owqyiivAGo77iIEgZ1H8fIEz2vRMdrpMvBXcwnBdsr7OdXy0IqBr+dMR
-         AkJ52o9ck0C4ruIO3FfdySIV7/vcFFPs/WlwYJhDiXBxTJmXqM3Bd5CS2Id1tXQGqXOP
-         nlfat3a7lBQSEE+E+4uhaIKvikeKtOd6ickX2IB7QoILvIk+efwyekJilX2BemXHspBj
-         r3OiKRWvjZZYS/jG6//UrTj8HcS0eJEDuogNqoE1z97HCQkFjEjMlz2wBCjtuFG2PuG/
-         DJZ7YV9NiymKtQCbkW8TcmsEQKGM6w9OqQNanUQwVHT0Ni1FjGgVmSB1/Nfwwkjfp8F1
-         MNfQ==
-X-Gm-Message-State: AOAM531e4C/z8BegrDhVLtYN/jSM1HmEeOh2XrhaQmjIr/LR/lf268H2
-        yefYVWVFQvksl+pDk/JwLTWFupe1u5t6vg==
-X-Google-Smtp-Source: ABdhPJw5IZraKvC3o1qp08dJu1Yo7WrKD57vKlxpQNOTaGSKP4MEobSvgowVZ33fvIJBJwZdvqcUgg==
-X-Received: by 2002:a05:6808:8ec:: with SMTP id d12mr4645118oic.54.1613534342767;
-        Tue, 16 Feb 2021 19:59:02 -0800 (PST)
-Received: from unknown.attlocal.net ([2600:1700:65a0:ab60:1d72:18:7c76:92e4])
-        by smtp.gmail.com with ESMTPSA id l110sm185511otc.25.2021.02.16.19.59.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Feb 2021 19:59:02 -0800 (PST)
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
-        Jiang Wang <jiang.wang@bytedance.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: [Patch bpf-next] bpf: clear per_cpu pointers in bpf_prog_clone_create()
-Date:   Tue, 16 Feb 2021 19:58:44 -0800
-Message-Id: <20210217035844.53746-1-xiyou.wangcong@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=XmdW6hN3Wr8myofU5b7ngzG7W30Qvrk/F+0xoCB8yfg=;
+        b=tGPqDNYBEis6IzgyLSw+Wwoks+tUEV3zZXNiK+QF75Mp5H3JhQV2y6MkX2LFKZvPee
+         8CFq6v1Fk3LXbSgxDme3z56G53C7GmjOIbvtX+Kut8JUK0Q+rSnvXK3+v4HtDxjS6sOM
+         pNBKRn1P2AEJ4ik7RIQYrsitQCt639+mjgYh5/cCMW6uqshcSHi6tgDMp/PrgvLqZdCr
+         dDL0qF1BJUuUDMcFkwaxnqxwOT5h85UDGx8/LELUSeFkEBc1WgL/4JFMvY05ZTEtJviI
+         /gqvWeh2ZVWMuz8uatt9NMzd8mKIw2L0Ml/OZcIPMHpe5t4zEXsSLNHgTwFxcxbJPHMq
+         Sszg==
+X-Gm-Message-State: AOAM532WTRBbPU/tJ8WcMjdFnjDOgGsQNjl6c4LgRsQx9NoqJbmSaDgn
+        m4yJvY/xfyG7E1Bw+tRPEXfNirj2mjl24AIvYf0=
+X-Google-Smtp-Source: ABdhPJzyQOrpF7QDaoiHGBOj+vO1IrcZz4kng8inBMGwJVaA5QN6Y3iK6LJ9BydJQfcn17c7E9ayNXsHY4qqeKOa9MU=
+X-Received: by 2002:a17:90a:7286:: with SMTP id e6mr1240029pjg.117.1613546187415;
+ Tue, 16 Feb 2021 23:16:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210215154638.4627-1-maciej.fijalkowski@intel.com>
+ <20210215154638.4627-2-maciej.fijalkowski@intel.com> <87eehhcl9x.fsf@toke.dk>
+ <fe0c957e-d212-4265-a271-ba301c3c5eca@intel.com> <602ad80c566ea_3ed4120871@john-XPS-13-9370.notmuch>
+ <8735xxc8pf.fsf@toke.dk> <6e9842b289ff2c54e528eb89d69a9b4f678c65da.camel@coverfire.com>
+In-Reply-To: <6e9842b289ff2c54e528eb89d69a9b4f678c65da.camel@coverfire.com>
+From:   Magnus Karlsson <magnus.karlsson@gmail.com>
+Date:   Wed, 17 Feb 2021 08:16:15 +0100
+Message-ID: <CAJ8uoz0QqR97qEYYK=VVCE9A=V=k2tKnH6wNM48jeak2RAmL0A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/3] libbpf: xsk: use bpf_link
+To:     Dan Siemon <dan@coverfire.com>
+Cc:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Ciara Loftus <ciara.loftus@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Cong Wang <cong.wang@bytedance.com>
+On Wed, Feb 17, 2021 at 3:26 AM Dan Siemon <dan@coverfire.com> wrote:
+>
+> On Mon, 2021-02-15 at 22:38 +0100, Toke H=C3=B8iland-J=C3=B8rgensen wrote=
+:
+> > The idea is to keep libbpf focused on bpf, and move the AF_XDP stuff
+> > to
+> > libxdp (so the socket stuff in xsk.h). We're adding the existing code
+> > wholesale, and keeping API compatibility during the move, so all
+> > that's
+> > needed is adding -lxdp when compiling. And obviously the existing
+> > libbpf
+> > code isn't going anywhere until such a time as there's a general
+> > backwards compatibility-breaking deprecation in libbpf (which I
+> > believe
+> > Andrii is planning to do in an upcoming and as-of-yet unannounced
+> > v1.0
+> > release).
+>
+> I maintain a Rust binding to the AF_XDP parts of libbpf [1][2]. On the
+> chance that more significant changes can be entertained in the switch
+> to libxdp... The fact that many required functions like the ring access
+> functions exist only in xsk.h makes building a binding more difficult
+> because we need to wrap it with an extra C function [3]. From that
+> perspective, it would be great if those could move to xsk.c.
 
-Pretty much similar to commit 1336c662474e
-("bpf: Clear per_cpu pointers during bpf_prog_realloc") we also need to
-clear these two percpu pointers in bpf_prog_clone_create(), otherwise
-would get a double free:
+The only reason they were put in xsk.h is performance. But with LTO
+(link-time optimizations) being present in most C-compilers these
+days, it might not be a valid argument anymore. I will perform some
+experiments and let you know. As you say, it would be much nicer to
+hide away these functions in the library proper and make your life
+easier.
 
- BUG: kernel NULL pointer dereference, address: 0000000000000000
- #PF: supervisor read access in kernel mode
- #PF: error_code(0x0000) - not-present page
- PGD 0 P4D 0
- Oops: 0000 [#1] SMP PTI
- CPU: 13 PID: 8140 Comm: kworker/13:247 Kdump: loaded Tainted: G                W    OE
-  5.11.0-rc4.bm.1-amd64+ #1
- Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1 04/01/2014
- test_bpf: #1 TXA
- Workqueue: events bpf_prog_free_deferred
- RIP: 0010:percpu_ref_get_many.constprop.97+0x42/0xf0
- Code: [...]
- RSP: 0018:ffffa6bce1f9bda0 EFLAGS: 00010002
- RAX: 0000000000000001 RBX: 0000000000000000 RCX: 00000000021dfc7b
- RDX: ffffffffae2eeb90 RSI: 867f92637e338da5 RDI: 0000000000000046
- RBP: ffffa6bce1f9bda8 R08: 0000000000000000 R09: 0000000000000001
- R10: 0000000000000046 R11: 0000000000000000 R12: 0000000000000280
- R13: 0000000000000000 R14: 0000000000000000 R15: ffff9b5f3ffdedc0
- FS:    0000000000000000(0000) GS:ffff9b5f2fb40000(0000) knlGS:0000000000000000
- CS:    0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 0000000000000000 CR3: 000000027c36c002 CR4: 00000000003706e0
- DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
- DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
- Call Trace:
-    refill_obj_stock+0x5e/0xd0
-    free_percpu+0xee/0x550
-    __bpf_prog_free+0x4d/0x60
-    process_one_work+0x26a/0x590
-    worker_thread+0x3c/0x390
-    ? process_one_work+0x590/0x590
-    kthread+0x130/0x150
-    ? kthread_park+0x80/0x80
-    ret_from_fork+0x1f/0x30
-
-This bug is 100% reproducible with test_kmod.sh.
-
-Reported-by: Jiang Wang <jiang.wang@bytedance.com>
-Fixes: 700d4796ef59 ("bpf: Optimize program stats")
-Fixes: ca06f55b9002 ("bpf: Add per-program recursion prevention mechanism")
-Cc: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Cong Wang <cong.wang@bytedance.com>
----
- kernel/bpf/core.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 0ae015ad1e05..b0c11532e535 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -1103,6 +1103,8 @@ static struct bpf_prog *bpf_prog_clone_create(struct bpf_prog *fp_other,
- 		 * this still needs to be adapted.
- 		 */
- 		memcpy(fp, fp_other, fp_other->pages * PAGE_SIZE);
-+		fp_other->stats = NULL;
-+		fp_other->active = NULL;
- 	}
- 
- 	return fp;
--- 
-2.25.1
-
+> [1] - https://github.com/aterlo/afxdp-rs
+> [2] - https://github.com/alexforster/libbpf-sys
+> [3] - https://github.com/alexforster/libbpf-sys/blob/master/bindings.c
+>
