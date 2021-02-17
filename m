@@ -2,103 +2,120 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB6E231D5DE
-	for <lists+bpf@lfdr.de>; Wed, 17 Feb 2021 08:47:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BCCD31D5E4
+	for <lists+bpf@lfdr.de>; Wed, 17 Feb 2021 08:53:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230221AbhBQHqi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Feb 2021 02:46:38 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:51454 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229885AbhBQHqi (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Feb 2021 02:46:38 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11H7i1t8188011;
-        Wed, 17 Feb 2021 07:45:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type : in-reply-to;
- s=corp-2020-01-29; bh=/pArH5tMaRMpY8eyf0TKcZn37e4pAHh3sJz76jbmFIs=;
- b=PtVGR3+vE3kCGQqYlmKtn9cimXF3HCZjE1UB9g3TaQ6P4wfrMuojSQ2rxJ57/Pcd1CIN
- NtbDETgTvFZCg372A8PJ6qvzI30xAk+aIvI+okwGRemsCQbGEIEwvLuKpElUtryJN3SK
- Qi3aw2I1W+eKKtvUmWRd/KSgNcccLgAxilfuF86bxWuyOBjptMUpXTCOi5dRkrGNVgJo
- XZESmyg0EsJFwn1m6K1vWO7cjEeYuyHClto+7LajRacM/s4LqBkSLWQ+jA7chRAQFEro
- Okr9JcrZPQglQM0TjkxZMezh9meOaWbp0JNlSGQmPw0rT2FbIrrBo68MVPKYMJUTNSbs 3w== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 36pd9a8ur0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 Feb 2021 07:45:40 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11H7jYGn059452;
-        Wed, 17 Feb 2021 07:45:38 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 36prhsj3br-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 Feb 2021 07:45:38 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 11H7jY5s018703;
-        Wed, 17 Feb 2021 07:45:34 GMT
-Received: from mwanda (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 17 Feb 2021 07:45:34 +0000
-Date:   Wed, 17 Feb 2021 10:45:25 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Alexei Starovoitov <ast@kernel.org>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Dmitrii Banshchikov <me@ubique.spb.ru>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH v2 bpf-next] bpf: fix a warning message in
- mark_ptr_not_null_reg()
-Message-ID: <YCzJlV3hnF/t1Pk4@mwanda>
+        id S229553AbhBQHww (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Feb 2021 02:52:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231239AbhBQHwu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Feb 2021 02:52:50 -0500
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC39C061574
+        for <bpf@vger.kernel.org>; Tue, 16 Feb 2021 23:52:04 -0800 (PST)
+Received: by mail-il1-x134.google.com with SMTP id y15so10482345ilj.11
+        for <bpf@vger.kernel.org>; Tue, 16 Feb 2021 23:52:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QCP2pMlxw/m8K2kxtjw9v1AkINyw4fBxpsjibYuDB9A=;
+        b=Di+mD5IGMbgNQVafBwIEMK35LYDTbNP/21Ru6SLubzeQck8NvDzuT87cKm31rKUR1k
+         0zKVXC+aL68RulfCCpFOBbriCY2be4zQvdyVvwTQ/CE5P4u9kvmlqW/j9ZGbISjPiDaD
+         CZX44QxYtqfqmgrsrlO3G83vICNB9ooJ6y807aESFh0bRWh4uZhU5QN2YDldZnLrCrPZ
+         r87c4tItY3wD1RZ48DtXKH3gxfygy6SX7H9uJDhLrcKvErQgko04S/cv28CDpnaL4EUX
+         nE3EzuRdY1QmXIryAdi+0ZGyWkuKiU2QIacGO4q/R06+TsvQS+PTcAswQDY3fkvatJR0
+         fYqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QCP2pMlxw/m8K2kxtjw9v1AkINyw4fBxpsjibYuDB9A=;
+        b=pB5+bR4Cb9gun7B7vtGrAVnorlh+OZKcw9x3bSK210vcXO9URbWMt1VTfQo8ZIY0EX
+         SM7ZBwetH84uAvKS385sEbeq6DGeaSY3QDz8O5Fb8KhvB7y8CM1E2KKlrV3nWiFzj9Ig
+         U6ZlcLIbIT8dQWRQeWp7+euKZFCL0YsgY6SYlxfwGu8TDq2+qcKR/Zazyn4FGgqf/p5+
+         t43gArykRLi6KC9kOU/1Q4E7ZTUXshhm2btwEfDX8Ycz2p0m+JdSYMKOedYKqsiLi6Vu
+         XB2cpmtmYXCt4FxYfjPp2hbUNkFUHLQfu6BGHsdydX2eO0aPeZTUhH5MCWnnENdBYq3r
+         fQHQ==
+X-Gm-Message-State: AOAM531NEa2G9cBTyocXyQnH40yIhPehBTgt+Q7IUDLAeQCImhZa25P4
+        Q8yhvvSE8fa3WakaajDwbjik3rRNoASli3buO9iIQA==
+X-Google-Smtp-Source: ABdhPJyhqLBcKIYzBqsZD/kMT8jCtpevgsSv2DLyDd//IaABYCiBa/rcDOnY0UyaiAefJ9Bh84VmQcU/DJpW2IeLXbM=
+X-Received: by 2002:a92:d245:: with SMTP id v5mr19597975ilg.52.1613548323231;
+ Tue, 16 Feb 2021 23:52:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <04c60ed2-1a96-2835-9ae1-0ba84f482362@iogearbox.net>
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9897 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0 mlxscore=0
- bulkscore=0 suspectscore=0 malwarescore=0 spamscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102170056
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9897 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 impostorscore=0
- mlxscore=0 phishscore=0 mlxlogscore=999 spamscore=0 bulkscore=0
- priorityscore=1501 malwarescore=0 suspectscore=0 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102170056
+References: <20210216141925.1549405-1-jackmanb@google.com> <7bcfe4bfd5a2c4768fb07908b709e10ec089903b.camel@linux.ibm.com>
+In-Reply-To: <7bcfe4bfd5a2c4768fb07908b709e10ec089903b.camel@linux.ibm.com>
+From:   Brendan Jackman <jackmanb@google.com>
+Date:   Wed, 17 Feb 2021 08:51:52 +0100
+Message-ID: <CA+i-1C2SFnR6=qEazJ66NkhgNYMaSCa3YTRqj6vdvEyMgjEg+A@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next] bpf: Explicitly zero-extend R0 after 32-bit cmpxchg
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The WARN_ON() argument is a condition, not an error message.  So this
-code will print a stack trace but will not print the warning message.
-Fix that and also change it to only WARN_ONCE().
+On Tue, 16 Feb 2021 at 20:55, Ilya Leoshkevich <iii@linux.ibm.com> wrote:
+>
+> On Tue, 2021-02-16 at 14:19 +0000, Brendan Jackman wrote:
+> > As pointed out by Ilya and explained in the new comment, there's a
+> > discrepancy between x86 and BPF CMPXCHG semantics: BPF always loads
+> > the value from memory into r0, while x86 only does so when r0 and the
+> > value in memory are different. The same issue affects s390.
+> >
+> > At first this might sound like pure semantics, but it makes a real
+> > difference when the comparison is 32-bit, since the load will
+> > zero-extend r0/rax.
+> >
+> > The fix is to explicitly zero-extend rax after doing such a
+> > CMPXCHG. Since this problem affects multiple archs, this is done in
+> > the verifier by patching in a BPF_ZEXT_REG instruction after every
+> > 32-bit cmpxchg. Any archs that don't need such manual zero-extension
+> > can do a look-ahead with insn_is_zext to skip the unnecessary mov.
+> >
+> > Reported-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> > Fixes: 5ffa25502b5a ("bpf: Add instructions for atomic_[cmp]xchg")
+> > Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> > ---
+> >
+> > Difference from v1[1]: Now solved centrally in the verifier instead
+> > of
+> >   specifically for the x86 JIT. Thanks to Ilya and Daniel for the
+> > suggestions!
+> >
+> > [1]
+> > https://lore.kernel.org/bpf/d7ebaefb-bfd6-a441-3ff2-2fdfe699b1d2@iogearbox.net/T/#t
+> >
+> >  kernel/bpf/verifier.c                         | 36
+> > +++++++++++++++++++
+> >  .../selftests/bpf/verifier/atomic_cmpxchg.c   | 25 +++++++++++++
+> >  .../selftests/bpf/verifier/atomic_or.c        | 26 ++++++++++++++
+> >  3 files changed, 87 insertions(+)
+>
+> I tried this with my s390 atomics patch, and it's working, thanks!
+>
+> I was thinking whether this could go through the existing zext_dst
+> flag infrastructure, but it probably won't play too nicely with the
+> x86_64 JIT, which doesn't override bpf_jit_needs_zext().
 
-Fixes: 4ddb74165ae5 ("bpf: Extract nullable reg type conversion into a helper function")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
-v2:  Use WARN_ONCE().
+Ah right, I actually didn't understand what the
+opt_subreg_zext_lo32_rnd_hi32 was doing until now so didn't consider
+this.
 
- kernel/bpf/verifier.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+But yeah I think cmpxchg is properly special here because the zext is
+sometimes (e.g. on x86_64) needed even on architectures that don't
+_generally_ need explicit zext.
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 1dda9d81f12c..3d34ba492d46 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -1120,7 +1120,7 @@ static void mark_ptr_not_null_reg(struct bpf_reg_state *reg)
- 		reg->type = PTR_TO_RDWR_BUF;
- 		break;
- 	default:
--		WARN_ON("unknown nullable register type");
-+		WARN_ONCE(1, "unknown nullable register type");
- 	}
- }
- 
--- 
-2.30.0
+I think I'll update some comments to reflect these learnings, thanks.
 
+> Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> Tested-by: Ilya Leoshkevich <iii@linux.ibm.com>
+>
+> [...]
+>
