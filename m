@@ -2,139 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1E5031DEBF
-	for <lists+bpf@lfdr.de>; Wed, 17 Feb 2021 19:04:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2AA631DEF9
+	for <lists+bpf@lfdr.de>; Wed, 17 Feb 2021 19:19:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234661AbhBQSD1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Feb 2021 13:03:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231856AbhBQSDT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Feb 2021 13:03:19 -0500
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 836AAC061574;
-        Wed, 17 Feb 2021 10:02:38 -0800 (PST)
-Received: by mail-il1-x129.google.com with SMTP id q5so12072540ilc.10;
-        Wed, 17 Feb 2021 10:02:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=9phedVN9F6tsus8Z4OUiJzjoyd9QAwQ4EHDKpiG4l0s=;
-        b=fnCxuZNZZIc6MC70hCzch7AYMD5h3GIFy0f1Gs9xp8P06zb3/8axvzz97Ws7pDrH32
-         N71jDEdH0lz8uqNIWEQ9NnOoaCNeC4vcPop2FJwSSkAtYD/fwMJRdkhNVBuv6Hb9n5MI
-         DVzUoS7yDybYsKCPEzBjQtEDqzxT+CjaNFXpWKWMABN4AerE05dTWspLJLW2+rkEoh8V
-         /3n9uByJo5YZAKcEw9AAP9Zm7CD8o2zCez18CLNKyU3eaefi/DsxTBmUTo3m8mSu+iTI
-         /afWQTHKzohD54Ev53cZgU04qB2pLPCoUrUPQltwTBT5EkmgOciGAraq51s7M5qufBi0
-         vovg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=9phedVN9F6tsus8Z4OUiJzjoyd9QAwQ4EHDKpiG4l0s=;
-        b=UwcDK9vqOI9Vjz4Ny2NHeMc1qLwETvELA6fIcbyV3lwSG6tlSN6VA1el3GFVyIuBg2
-         NMRPot2MLNgkuOGBb7HydIJMTDDsO59NigNc+mTWBO7nRkejSaTftZeEyqsFDHBtoBQh
-         gzyxkoZZWHyLNN9cLO7wUaBRa2jj9GjSwxKVW9y+fDQT1mwYF1pGUC6y9MgPGM4k64G0
-         uwQKHssHXFwMhCsfFpQT1tu7RKjKgon1e/GmX6hTPBQ9buScH1sSIZ70QaXNohMS2b5L
-         FJZsQlDr+RbHAbjbDFC/36vFMSaxef6kaKH/aR13eVUerPjYSuSkp/WXLpc4a+QBPgnf
-         NE2g==
-X-Gm-Message-State: AOAM533eccWz63Suy7rSJLEry/b/7V85FrDcu+Mq5rTGmI2h1lIwMNy7
-        cnl75wWU7y+8t7gJ64lcTDCxcyanOQB9x0r/W20=
-X-Google-Smtp-Source: ABdhPJwQKEnLco30SxSgg73i0bPN5PocjhgmOHX6ErxX1rDT9y7StNtXtxFR7NIi4J4VsFr0wO7fq+ekk9ttWnlMwkw=
-X-Received: by 2002:a92:d8c5:: with SMTP id l5mr210279ilo.209.1613584957842;
- Wed, 17 Feb 2021 10:02:37 -0800 (PST)
+        id S234780AbhBQSSu (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Feb 2021 13:18:50 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:63556 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233242AbhBQSSs (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 17 Feb 2021 13:18:48 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11HIAaFm030130
+        for <bpf@vger.kernel.org>; Wed, 17 Feb 2021 10:18:06 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=facebook;
+ bh=LcuGGa/lkzOvpYxibHJMNVvdqU5Wh69DWSoECG6gv54=;
+ b=jlxJMUDAbUT4ZtVJ6B3cSSeP+vsvuExCDLJIenGRYvAt8Di1SQBOqwsamoGylLGWNC/C
+ 73i020N3OJk2ZYhMKH5tztAsac/1B3DHxfAaPn7DTAkyrhBLTPKx8teJeLoX6EG+iAbi
+ q7Nim/gbfNb090aiecY1z65/yQC5BguNXS4= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 36s10tasdd-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Wed, 17 Feb 2021 10:18:06 -0800
+Received: from intmgw001.25.frc3.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 17 Feb 2021 10:18:05 -0800
+Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
+        id CC0DA370502B; Wed, 17 Feb 2021 10:18:03 -0800 (PST)
+From:   Yonghong Song <yhs@fb.com>
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
+Subject: [PATCH bpf-next v2 01/11] bpf: factor out visit_func_call_insn() in check_cfg()
+Date:   Wed, 17 Feb 2021 10:18:03 -0800
+Message-ID: <20210217181803.3189758-1-yhs@fb.com>
+X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20210217181803.3189437-1-yhs@fb.com>
+References: <20210217181803.3189437-1-yhs@fb.com>
 MIME-Version: 1.0
-References: <20210213164648.1322182-1-jolsa@kernel.org> <YC0Pmn0uwhHROsQd@kernel.org>
- <CA+icZUWBfwJ0WKQi7AO_dhcMpFWmo6riwszpmsZLfn1BwH_kyw@mail.gmail.com> <AA8690FE-7C57-4791-881A-DE06B337DF45@gmail.com>
-In-Reply-To: <AA8690FE-7C57-4791-881A-DE06B337DF45@gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Wed, 17 Feb 2021 19:02:26 +0100
-Message-ID: <CA+icZUWC-OuV1dJv6PsmbjU7fMSY02RFa8X1LLmJB3xh=W0O_A@mail.gmail.com>
-Subject: Re: [PATCHv2] btf_encoder: Match ftrace addresses within elf functions
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>, dwarves@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Yonghong Song <yhs@fb.com>, Hao Luo <haoluo@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-17_13:2021-02-16,2021-02-17 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 clxscore=1015
+ phishscore=0 suspectscore=0 impostorscore=0 lowpriorityscore=0
+ mlxlogscore=815 bulkscore=0 malwarescore=0 spamscore=0 priorityscore=1501
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102170133
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 2:56 PM Arnaldo Carvalho de Melo
-<arnaldo.melo@gmail.com> wrote:
->
->
->
-> On February 17, 2021 10:40:43 AM GMT-03:00, Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> >On Wed, Feb 17, 2021 at 1:44 PM Arnaldo Carvalho de Melo
-> ><arnaldo.melo@gmail.com> wrote:
-> >>
-> >> Em Sat, Feb 13, 2021 at 05:46:48PM +0100, Jiri Olsa escreveu:
-> >> > Currently when processing DWARF function, we check its entrypoint
-> >> > against ftrace addresses, assuming that the ftrace address matches
-> >> > with function's entrypoint.
-> >> >
-> >> > This is not the case on some architectures as reported by Nathan
-> >> > when building kernel on arm [1].
-> >> >
-> >> > Fixing the check to take into account the whole function not
-> >> > just the entrypoint.
-> >> >
-> >> > Most of the is_ftrace_func code was contributed by Andrii.
-> >>
-> >> Applied locally, will go out after tests,
-> >>
-> >
-> >Hi Arnaldo,
-> >
-> >Is it possible to have a pahole version 1.21 with this patch and the
-> >one from Yonghong Son?
-> >
-> >From my local pahole Git:
-> >
-> >$ git log --oneline --no-merges v1.20..
-> >2f83aefdbddf (for-1.20/btf_encoder-ftrace_elf-clang-jolsa-v2)
-> >btf_encoder: Match ftrace addresses within elf functions
-> >f21eafdfc877 (for-1.20/btf_encoder-sanitized_int-clang-yhs-v2)
-> >btf_encoder: sanitize non-regular int base type
-> >
-> >Both patches fixes all issues seen so far with LLVM/Clang >=
-> >12.0.0-rc1 and DWARF-v5 and BTF (debug-info) and pahole on
-> >Linux/x86_64 and according to Nathan on Linux/arm64.
-> >Yesterday, I tried with LLVM/Clang 13-git from <apt.llvm.org>.
-> >
-> >BTW, Nick's DWARF-v5 patches are pending in <kbuild.git#kbuild> (see
-> >[1]).
-> >
-> >Personally, I can wait until [1] is in Linus Git.
-> >
-> >Please, let me/us know what you are planning.
-> >( I know it is Linux v5.12 merge-window. )
->
-> Sure, next week.
->
+During verifier check_cfg(), all instructions are
+visited to ensure verifier can handle program control flows.
+This patch factored out function visit_func_call_insn()
+so it can be reused in later patch to visit callback function
+calls. There is no functionality change for this patch.
 
-That's OK with me.
+Signed-off-by: Yonghong Song <yhs@fb.com>
+---
+ kernel/bpf/verifier.c | 35 +++++++++++++++++++++++------------
+ 1 file changed, 23 insertions(+), 12 deletions(-)
 
-- Sedat -
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 11a242932a2c..e3149239b346 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -8591,6 +8591,27 @@ static int push_insn(int t, int w, int e, struct b=
+pf_verifier_env *env,
+ 	return DONE_EXPLORING;
+ }
+=20
++static int visit_func_call_insn(int t, int insn_cnt,
++				struct bpf_insn *insns,
++				struct bpf_verifier_env *env,
++				bool visit_callee)
++{
++	int ret;
++
++	ret =3D push_insn(t, t + 1, FALLTHROUGH, env, false);
++	if (ret)
++		return ret;
++
++	if (t + 1 < insn_cnt)
++		init_explored_state(env, t + 1);
++	if (visit_callee) {
++		init_explored_state(env, t);
++		ret =3D push_insn(t, t + insns[t].imm + 1, BRANCH,
++				env, false);
++	}
++	return ret;
++}
++
+ /* Visits the instruction at index t and returns one of the following:
+  *  < 0 - an error occurred
+  *  DONE_EXPLORING - the instruction was fully explored
+@@ -8611,18 +8632,8 @@ static int visit_insn(int t, int insn_cnt, struct =
+bpf_verifier_env *env)
+ 		return DONE_EXPLORING;
+=20
+ 	case BPF_CALL:
+-		ret =3D push_insn(t, t + 1, FALLTHROUGH, env, false);
+-		if (ret)
+-			return ret;
+-
+-		if (t + 1 < insn_cnt)
+-			init_explored_state(env, t + 1);
+-		if (insns[t].src_reg =3D=3D BPF_PSEUDO_CALL) {
+-			init_explored_state(env, t);
+-			ret =3D push_insn(t, t + insns[t].imm + 1, BRANCH,
+-					env, false);
+-		}
+-		return ret;
++		return visit_func_call_insn(t, insn_cnt, insns, env,
++					    insns[t].src_reg =3D=3D BPF_PSEUDO_CALL);
+=20
+ 	case BPF_JA:
+ 		if (BPF_SRC(insns[t].code) !=3D BPF_K)
+--=20
+2.24.1
 
-> - Arnaldo
->
-> >
-> >Regards,
-> >- Sedat -
-> >
-> >[1]
-> >https://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git/log/?h=kbuild
->
-> --
-> Sent from my Android device with K-9 Mail. Please excuse my brevity.
