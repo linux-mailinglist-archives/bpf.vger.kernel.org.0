@@ -2,168 +2,208 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5844131D9B8
-	for <lists+bpf@lfdr.de>; Wed, 17 Feb 2021 13:47:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D66C631D9C1
+	for <lists+bpf@lfdr.de>; Wed, 17 Feb 2021 13:50:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232773AbhBQMqn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Feb 2021 07:46:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54722 "EHLO mail.kernel.org"
+        id S232220AbhBQMtd (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Feb 2021 07:49:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232688AbhBQMqm (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Feb 2021 07:46:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 44E7264E45;
-        Wed, 17 Feb 2021 12:46:01 +0000 (UTC)
+        id S232062AbhBQMtd (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Feb 2021 07:49:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 039C664D7F;
+        Wed, 17 Feb 2021 12:48:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613565961;
-        bh=i4wEVtEtZfNOcsQo3Vb11/Sk+XObvw/m+UYrVSmr96Q=;
+        s=k20201202; t=1613566131;
+        bh=5d2W/63Jxfiiw0sNrlo+Kx8fUzAfX4DZdK8EvI+meqg=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FOOlyIsoQRzz7g5o3TQGhYUOHIzAGa1faERXXP90D+p7/W9z6BXPcE8Ft/Hi5G5gj
-         PQlEU5G9HoNBA4yb6eN8mLh2acTfSU1Aoi5NYGnqRvC8KDyIxWs3wjIH8osn3rzI4h
-         V5M+Z4f4WQcUf1X+YvLxK4RalsjsCzOIB52MCCvGxPprGI/qCuKk+RyvoMuvOxOxku
-         SyvrKXYikVVqZ3IbI0cQuCFrgshof7Dds85sDyqMVCd04miGAdvX8B/k3mJydftiu1
-         bzWGbcUnHHL2vEt/W/Gxrr5hSw9LuC9iWAhBpoaD4+jrnXHik7G6iEI/ZhXpYlDOtp
-         tKQk4I8+HhnRQ==
+        b=GZKs5uCBl58HCXDZQjCwW8JQ+Aihu1zdAmXS92GwOl4r0TMQ284t40eKf+OG5Eon/
+         usCO/UPZyd02QlYjBma4G/bMnMplKZFGjoFZjq1miMhWut3n8Z9FGIyFOBKcvqYaw+
+         6Y2XL1fw1nx2phPuHGg2VsyfKrpd2wryt6rwxa95UjZmT4UTX7wKWg9vj2T0iU+utM
+         osJ7ZArQLJXrS5bQt+cCZkEnZhSXl0/VpIkFNqfP2YTHRRDWqi/kdBP1vTNfZ9lPkO
+         yYHKXvUkMjxBiiTTMBEpCCi1o+BTrBWlU/z8xS2f93Hn9QfPhk8i7fjqNxwVaFWc5V
+         NUHqvkq5IHRdw==
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 5233440CD9; Wed, 17 Feb 2021 09:45:59 -0300 (-03)
-Date:   Wed, 17 Feb 2021 09:45:59 -0300
+        id CBC7E40CD9; Wed, 17 Feb 2021 09:48:48 -0300 (-03)
+Date:   Wed, 17 Feb 2021 09:48:48 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>, dwarves@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Yonghong Song <yhs@fb.com>, Hao Luo <haoluo@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>
-Subject: Re: [PATCHv2] btf_encoder: Match ftrace addresses within elf
- functions
-Message-ID: <YC0QB75zOKf1mqB+@kernel.org>
-References: <20210213164648.1322182-1-jolsa@kernel.org>
- <20210214023048.GA12132@24bbad8f3778>
+To:     Domenico Andreoli <cavok@debian.org>
+Cc:     Sedat Dilek <sedat.dilek@gmail.com>, dwarves@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Jan Engelhardt <jengelh@inai.de>,
+        Matthias Schwarzott <zzam@gentoo.org>,
+        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
+        Mark Wieelard <mjw@redhat.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Ondrej Mosnacek <omosnace@redhat.com>,
+        Daniel =?iso-8859-1?Q?P=2E_Berrang=E9?= <berrange@redhat.com>,
+        Tom Stellard <tstellar@redhat.com>, 705969@bugs.debian.org
+Subject: Re: ANNOUNCE: pahole v1.20 (gcc11 DWARF5's default, lots of ELF
+ sections, BTF)
+Message-ID: <YC0QsIprcCwxc+jK@kernel.org>
+References: <20210204220741.GA920417@kernel.org>
+ <CA+icZUXngJL2WXRyeWDjTyBYbXc0uC0_C69nBH9bq4sr_TAx5g@mail.gmail.com>
+ <20210208123253.GI920417@kernel.org>
+ <YC0HN+0Tva0lOPIt@m4>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210214023048.GA12132@24bbad8f3778>
+In-Reply-To: <YC0HN+0Tva0lOPIt@m4>
 X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Em Sat, Feb 13, 2021 at 07:30:48PM -0700, Nathan Chancellor escreveu:
-> On Sat, Feb 13, 2021 at 05:46:48PM +0100, Jiri Olsa wrote:
-> > Currently when processing DWARF function, we check its entrypoint
-> > against ftrace addresses, assuming that the ftrace address matches
-> > with function's entrypoint.
+Em Wed, Feb 17, 2021 at 01:08:23PM +0100, Domenico Andreoli escreveu:
+> On Mon, Feb 08, 2021 at 09:32:53AM -0300, Arnaldo Carvalho de Melo wrote:
+> > Em Mon, Feb 08, 2021 at 03:44:54AM +0100, Sedat Dilek escreveu:
+> > > On Thu, Feb 4, 2021 at 11:07 PM Arnaldo Carvalho de Melo
+> > > <arnaldo.melo@gmail.com> wrote:
+> > > >
+> > > > Hi,
+> > > >
+> > > >         The v1.20 release of pahole and its friends is out, mostly
+> > > > addressing problems related to gcc 11 defaulting to DWARF5 for -g,
+> > > > available at the usual places:
+> > > >
+> > > > Main git repo:
+> > > >
+> > > >    git://git.kernel.org/pub/scm/devel/pahole/pahole.git
+> > > >
+> > > > Mirror git repo:
+> > > >
+> > > >    https://github.com/acmel/dwarves.git
+> > > >
+> > > > tarball + gpg signature:
+> > > >
+> > > >    https://fedorapeople.org/~acme/dwarves/dwarves-1.20.tar.xz
+> > > >    https://fedorapeople.org/~acme/dwarves/dwarves-1.20.tar.bz2
+> > > >    https://fedorapeople.org/~acme/dwarves/dwarves-1.20.tar.sign
+> > > >
+> > > 
+> > > FYI:
+> > > Debian now ships dwarves package version 1.20-1 in unstable.
+> > > 
+> > > Just a small nit to this release and its tagging:
+> > > 
+> > > You did:
+> > > commit 0d415f68c468b77c5bf8e71965cd08c6efd25fc4 ("pahole: Prep 1.20")
+> > > 
+> > > Is this new?
+> > > 
+> > > The release before:
+> > > commit dd15aa4b0a6421295cbb7c3913429142fef8abe0 ("dwarves: Prep v1.19")
 > > 
-> > This is not the case on some architectures as reported by Nathan
-> > when building kernel on arm [1].
-> > 
-> > Fixing the check to take into account the whole function not
-> > just the entrypoint.
-> > 
-> > Most of the is_ftrace_func code was contributed by Andrii.
-> > 
-> > [1] https://lore.kernel.org/bpf/20210209034416.GA1669105@ubuntu-m3-large-x86/
-> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> 
-> I did several builds with CONFIG_DEBUG_INFO_BTF enabled (arm64, ppc64le,
-> and x86_64) and saw no build errors. I did not do any runtime testing.
-> 
-> Tested-by: Nathan Chancellor <nathan@kernel.org>
+> > Its minor but intentional, pahole is by far the most well known tool in
+> > dwarves, so using that name more frequently (the git repo is pahole.git
+> > , for instance) may help more quickly associate with the tool needed for
+> > BTF encoding, data analysis, etc. And since its not about only DWARF,
+> > perhaps transitioning to using 'pahole' more widely is interesting.
+ 
+> Any plan to switch also the release tarball name?
+ 
+> We are planning to rename the Debian package once the Bullseye is
+> released, currently it's dwarves-dfsg for legacy/unclear reasons.
+ 
+> Would it be a good idea to switch directly to pahole then?
 
-Thanks, added to the cset,
+Yeah, I think it is, I'll check what are the bureaucratic steps to do
+that rename on Fedora and RHEL, but then, no need for all distros to do
+it at once if that is something that requires long term planning or
+whatever.
 
 - Arnaldo
  
-> > ---
-> > v2 changes:
-> >   - update functions addr directly [Andrii]
+> Dom
+> 
 > > 
-> >  btf_encoder.c | 40 ++++++++++++++++++++++++++++++++++++++--
-> >  1 file changed, 38 insertions(+), 2 deletions(-)
+> > - Arnaldo
+> >  
+> > > - Sedat -
+> > > 
+> > > > Best Regards,
+> > > >
+> > > >  - Arnaldo
+> > > >
+> > > > v1.20:
+> > > >
+> > > > BTF encoder:
+> > > >
+> > > >   - Improve ELF error reporting using elf_errmsg(elf_errno()).
+> > > >
+> > > >   - Improve objcopy error handling.
+> > > >
+> > > >   - Fix handling of 'restrict' qualifier, that was being treated as a 'const'.
+> > > >
+> > > >   - Support SHN_XINDEX in st_shndx symbol indexes, to handle ELF objects with
+> > > >     more than 65534 sections, for instance, which happens with kernels built
+> > > >     with 'KCFLAGS="-ffunction-sections -fdata-sections", Other cases may
+> > > >     include when using FG-ASLR, LTO.
+> > > >
+> > > >   - Cope with functions without a name, as seen sometimes when building kernel
+> > > >     images with some versions of clang, when a SEGFAULT was taking place.
+> > > >
+> > > >   - Fix BTF variable generation for kernel modules, not skipping variables at
+> > > >     offset zero.
+> > > >
+> > > >   - Fix address size to match what is in the ELF file being processed, to fix using
+> > > >     a 64-bit pahole binary to generate BTF for a 32-bit vmlinux image.
+> > > >
+> > > >   - Use kernel module ftrace addresses when finding which functions to encode,
+> > > >     which increases the number of functions encoded.
+> > > >
+> > > > libbpf:
+> > > >
+> > > >   - Allow use of packaged version, for distros wanting to dynamically link with
+> > > >     the system's libbpf package instead of using the libbpf git submodule shipped
+> > > >     in pahole's source code.
+> > > >
+> > > > DWARF loader:
+> > > >
+> > > >   - Support DW_AT_data_bit_offset
+> > > >
+> > > >     This appeared in DWARF4 but is supported only in gcc's -gdwarf-5,
+> > > >     support it in a way that makes the output be the same for both cases.
+> > > >
+> > > >       $ gcc -gdwarf-5 -c examples/dwarf5/bf.c
+> > > >       $ pahole bf.o
+> > > >       struct pea {
+> > > >             long int                   a:1;                  /*     0: 0  8 */
+> > > >             long int                   b:1;                  /*     0: 1  8 */
+> > > >             long int                   c:1;                  /*     0: 2  8 */
+> > > >
+> > > >             /* XXX 29 bits hole, try to pack */
+> > > >             /* Bitfield combined with next fields */
+> > > >
+> > > >             int                        after_bitfield;       /*     4     4 */
+> > > >
+> > > >             /* size: 8, cachelines: 1, members: 4 */
+> > > >             /* sum members: 4 */
+> > > >             /* sum bitfield members: 3 bits, bit holes: 1, sum bit holes: 29 bits */
+> > > >             /* last cacheline: 8 bytes */
+> > > >       };
+> > > >
+> > > >   - DW_FORM_implicit_const in attr_numeric() and attr_offset()
+> > > >
+> > > >   - Support DW_TAG_GNU_call_site, its the standardized rename of the previously supported
+> > > >     DW_TAG_GNU_call_site.
+> > > >
+> > > > build:
+> > > >
+> > > >     - Fix compilation on 32-bit architectures.
+> > > >
+> > > > Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 > > 
-> > diff --git a/btf_encoder.c b/btf_encoder.c
-> > index b124ec20a689..80e896961d4e 100644
-> > --- a/btf_encoder.c
-> > +++ b/btf_encoder.c
-> > @@ -36,6 +36,7 @@ struct funcs_layout {
-> >  struct elf_function {
-> >  	const char	*name;
-> >  	unsigned long	 addr;
-> > +	unsigned long	 size;
-> >  	unsigned long	 sh_addr;
-> >  	bool		 generated;
-> >  };
-> > @@ -98,6 +99,7 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym,
-> >  
-> >  	functions[functions_cnt].name = name;
-> >  	functions[functions_cnt].addr = elf_sym__value(sym);
-> > +	functions[functions_cnt].size = elf_sym__size(sym);
-> >  	functions[functions_cnt].sh_addr = sh.sh_addr;
-> >  	functions[functions_cnt].generated = false;
-> >  	functions_cnt++;
-> > @@ -236,6 +238,39 @@ get_kmod_addrs(struct btf_elf *btfe, __u64 **paddrs, __u64 *pcount)
-> >  	return 0;
-> >  }
-> >  
-> > +static int is_ftrace_func(struct elf_function *func, __u64 *addrs, __u64 count)
-> > +{
-> > +	__u64 start = func->addr;
-> > +	__u64 addr, end = func->addr + func->size;
-> > +
-> > +	/*
-> > +	 * The invariant here is addr[r] that is the smallest address
-> > +	 * that is >= than function start addr. Except the corner case
-> > +	 * where there is no such r, but for that we have a final check
-> > +	 * in the return.
-> > +	 */
-> > +	size_t l = 0, r = count - 1, m;
-> > +
-> > +	/* make sure we don't use invalid r */
-> > +	if (count == 0)
-> > +		return false;
-> > +
-> > +	while (l < r) {
-> > +		m = l + (r - l) / 2;
-> > +		addr = addrs[m];
-> > +
-> > +		if (addr >= start) {
-> > +			/* we satisfy invariant, so tighten r */
-> > +			r = m;
-> > +		} else {
-> > +			/* m is not good enough as l, maybe m + 1 will be */
-> > +			l = m + 1;
-> > +		}
-> > +	}
-> > +
-> > +	return start <= addrs[r] && addrs[r] < end;
-> > +}
-> > +
-> >  static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
-> >  {
-> >  	__u64 *addrs, count, i;
-> > @@ -283,10 +318,11 @@ static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
-> >  		 * functions[x]::addr is relative address within section
-> >  		 * and needs to be relocated by adding sh_addr.
-> >  		 */
-> > -		__u64 addr = kmod ? func->addr + func->sh_addr : func->addr;
-> > +		if (kmod)
-> > +			func->addr += func->sh_addr;
-> >  
-> >  		/* Make sure function is within ftrace addresses. */
-> > -		if (bsearch(&addr, addrs, count, sizeof(addrs[0]), addrs_cmp)) {
-> > +		if (is_ftrace_func(func, addrs, count)) {
-> >  			/*
-> >  			 * We iterate over sorted array, so we can easily skip
-> >  			 * not valid item and move following valid field into
 > > -- 
-> > 2.29.2
 > > 
+> > - Arnaldo
+> 
+> -- 
+> rsa4096: 3B10 0CA1 8674 ACBA B4FE  FCD2 CE5B CF17 9960 DE13
+> ed25519: FFB4 0CC3 7F2E 091D F7DA  356E CC79 2832 ED38 CB05
+
+
 
 -- 
 
