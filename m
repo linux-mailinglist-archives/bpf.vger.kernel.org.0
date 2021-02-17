@@ -2,1044 +2,209 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B845F31DB0C
-	for <lists+bpf@lfdr.de>; Wed, 17 Feb 2021 14:59:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45A6631DC6F
+	for <lists+bpf@lfdr.de>; Wed, 17 Feb 2021 16:37:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232812AbhBQN5V (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Feb 2021 08:57:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40340 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233182AbhBQN5F (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Feb 2021 08:57:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9540664E0F;
-        Wed, 17 Feb 2021 13:56:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613570181;
-        bh=BzetxzCebjrSci6Xj8L7xFQedreOjfG3DhIsy3/gayI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=jio7QocZ0ydAGt7Fh/53zmoHeIn+HgugHasjLgk91hje1HvsZz5Xi2GkC9pWm3nba
-         c6Jwa41nqmdas9V+r8i4CzzXHQQvUdJ1GHhFAj8ETmmr7yt+vMWHBaT127vClq3Drm
-         npc0wGC8MO+cNF02UTmjjZxW+EgVaS2RI7UMxs0iWBr9K47Ep/g84S3p3/kHVFtc7B
-         48Qtv82oMZAyMBeFkRXOfyOa5xslOSgTTXadX+VB+iqGfVdvnU93q5+7KFT+H+q8Es
-         oLi/KzMqsNyERkdVv0ZL0FvInUjp0VbUiApVD6OVTRTZHPRVrxXiGHJEaEv35N+9Hp
-         XoAO8dRlzK2NA==
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, lorenzo.bianconi@redhat.com,
-        brouer@redhat.com, toke@redhat.com, freysteinn.alfredsson@kau.se
-Subject: [PATCH bpf-next] bpf: devmap: move drop error path to devmap for XDP_REDIRECT
-Date:   Wed, 17 Feb 2021 14:56:03 +0100
-Message-Id: <76469732237ce6d6cc6344c9500f9e32a123a56e.1613569803.git.lorenzo@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S233840AbhBQPhg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Feb 2021 10:37:36 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:40888 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233796AbhBQPhC (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Feb 2021 10:37:02 -0500
+Received: by mail-il1-f197.google.com with SMTP id j7so10667888ilu.7
+        for <bpf@vger.kernel.org>; Wed, 17 Feb 2021 07:36:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=V4Slvj7ntItWb8LzbQuB3PGx+xGHcyKbdozov7Qt7lI=;
+        b=MF1+Eo9xbxuhOHFI+uQesr0Dyfc4nipcvbBSDiDXDcAvYzC6ipC0ABS3Ze+X1Yndeg
+         uMObCR1DxiKnlbk3+WC5kIQ0e/KWyKHziFqPhwA4Uqaiav+vPMfiAVUuy1m4d/VQzLin
+         qO+UBTY5JD30tyLWcKHkxh3E+ycrB7EJcqGG6BWtTjAx0Kq7q/ANl8Q0RZWmXKaxIi98
+         h8LI1trlVfxuGYPV653Tmu4Uaq6YRtaIDuz34QtDSQjfTlIaX8Ej1YVQHREX0k6FtPbY
+         0txwf8Bss4RLfg7XNF+k4HWnoGGjS+MS5RyhRfLXMgeUdoznePh2+eseftwDg7y4dyrg
+         GAsw==
+X-Gm-Message-State: AOAM531app/KKJYiW3hskIgHYGYN5F6ltfASXrKhDjqGbeHnv+rpxig9
+        A0NvYP4Ec/aFlRmL6gk4SP7KgswPMd/lf2jFECRs64cnsUZK
+X-Google-Smtp-Source: ABdhPJwgAEC7qF6eNYsfvsTmw4p7UvOxm9s2KQY08Zb+4hyEMst1uTKC/KKT6eRjBQ69wihPAg1MZbbH8J1+s6n6maFipQ/EyQbK
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:8711:: with SMTP id m17mr20639780ild.48.1613576181017;
+ Wed, 17 Feb 2021 07:36:21 -0800 (PST)
+Date:   Wed, 17 Feb 2021 07:36:21 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000016715505bb89fb93@google.com>
+Subject: KASAN: use-after-free Read in tcp_current_mss
+From:   syzbot <syzbot+ea948c9d0dedf6ff57b1@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, dsahern@kernel.org,
+        edumazet@google.com, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-We want to change the current ndo_xdp_xmit drop semantics because
-it will allow us to implement better queue overflow handling.
-This is working towards the larger goal of a XDP TX queue-hook.
-Move XDP_REDIRECT error path handling from each XDP ethernet driver to
-devmap code. According to the new APIs, the driver running the
-ndo_xdp_xmit pointer, will break tx loop whenever the hw reports a tx
-error and it will just return to devmap caller the number of successfully
-transmitted frames. It will be devmap responsability to free dropped frames.
-Move each XDP ndo_xdp_xmit capable driver to the new APIs:
-- veth
-- virtio-net
-- mvneta
-- mvpp2
-- socionext
-- amazon ena
-- bnxt
-- freescale (dpaa2, dpaa)
-- xen-frontend
-- qede
-- ice
-- igb
-- ixgbe
-- i40e
-- mlx5
-- ti (cpsw, cpsw-new)
-- tun
-- sfc
+Hello,
 
-More details about the new ndo_xdp_xmit design can be found here [0].
+syzbot found the following issue on:
 
-[0] https://github.com/xdp-project/xdp-project/blob/master/areas/core/redesign01_ndo_xdp_xmit.org
+HEAD commit:    773dc50d Merge branch 'Xilinx-axienet-updates'
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=13460822d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=dbc1ca9e55dc1f9f
+dashboard link: https://syzkaller.appspot.com/bug?extid=ea948c9d0dedf6ff57b1
 
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ea948c9d0dedf6ff57b1@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: use-after-free in dst_mtu include/net/dst.h:201 [inline]
+BUG: KASAN: use-after-free in tcp_current_mss+0x358/0x360 net/ipv4/tcp_output.c:1835
+Read of size 8 at addr ffff88802943db08 by task syz-executor.2/11568
+
+CPU: 0 PID: 11568 Comm: syz-executor.2 Not tainted 5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:230
+ __kasan_report mm/kasan/report.c:396 [inline]
+ kasan_report.cold+0x79/0xd5 mm/kasan/report.c:413
+ dst_mtu include/net/dst.h:201 [inline]
+ tcp_current_mss+0x358/0x360 net/ipv4/tcp_output.c:1835
+ tcp_send_mss+0x28/0x2b0 net/ipv4/tcp.c:943
+ mptcp_sendmsg_frag+0x13b/0x1220 net/mptcp/protocol.c:1266
+ mptcp_push_pending+0x2cc/0x650 net/mptcp/protocol.c:1477
+ mptcp_sendmsg+0x1ffb/0x2830 net/mptcp/protocol.c:1692
+ inet6_sendmsg+0x99/0xe0 net/ipv6/af_inet6.c:638
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:672
+ sock_write_iter+0x289/0x3c0 net/socket.c:999
+ call_write_iter include/linux/fs.h:1901 [inline]
+ new_sync_write+0x426/0x650 fs/read_write.c:518
+ vfs_write+0x791/0xa30 fs/read_write.c:605
+ ksys_write+0x1ee/0x250 fs/read_write.c:658
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x465d99
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fc692d89188 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 000000000056c0b0 RCX: 0000000000465d99
+RDX: 0000000000000001 RSI: 0000000020000000 RDI: 0000000000000003
+RBP: 00000000004bcf27 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c0b0
+R13: 00007ffc258487df R14: 00007fc692d89300 R15: 0000000000022000
+
+Allocated by task 11558:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:401 [inline]
+ ____kasan_kmalloc.constprop.0+0x82/0xa0 mm/kasan/common.c:429
+ kasan_slab_alloc include/linux/kasan.h:209 [inline]
+ slab_post_alloc_hook mm/slab.h:512 [inline]
+ slab_alloc_node mm/slub.c:2892 [inline]
+ slab_alloc mm/slub.c:2900 [inline]
+ kmem_cache_alloc+0x1c6/0x440 mm/slub.c:2905
+ dst_alloc+0x9e/0x650 net/core/dst.c:93
+ rt_dst_alloc+0x73/0x430 net/ipv4/route.c:1642
+ __mkroute_output net/ipv4/route.c:2457 [inline]
+ ip_route_output_key_hash_rcu+0x955/0x2ce0 net/ipv4/route.c:2684
+ ip_route_output_key_hash+0x1a4/0x2f0 net/ipv4/route.c:2512
+ __ip_route_output_key include/net/route.h:126 [inline]
+ ip_route_output_flow+0x23/0x150 net/ipv4/route.c:2773
+ ip_route_newports include/net/route.h:342 [inline]
+ tcp_v4_connect+0x12d7/0x1c40 net/ipv4/tcp_ipv4.c:281
+ tcp_v6_connect+0x733/0x1df0 net/ipv6/tcp_ipv6.c:248
+ __inet_stream_connect+0x8c5/0xee0 net/ipv4/af_inet.c:661
+ inet_stream_connect+0x53/0xa0 net/ipv4/af_inet.c:725
+ mptcp_stream_connect+0x156/0x800 net/mptcp/protocol.c:3200
+ __sys_connect_file+0x155/0x1a0 net/socket.c:1835
+ __sys_connect+0x161/0x190 net/socket.c:1852
+ __do_sys_connect net/socket.c:1862 [inline]
+ __se_sys_connect net/socket.c:1859 [inline]
+ __x64_sys_connect+0x6f/0xb0 net/socket.c:1859
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 11559:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+ kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:356
+ ____kasan_slab_free+0xe1/0x110 mm/kasan/common.c:362
+ kasan_slab_free include/linux/kasan.h:192 [inline]
+ slab_free_hook mm/slub.c:1547 [inline]
+ slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1580
+ slab_free mm/slub.c:3143 [inline]
+ kmem_cache_free+0x82/0x350 mm/slub.c:3159
+ dst_destroy+0x2bc/0x3c0 net/core/dst.c:129
+ rcu_do_batch kernel/rcu/tree.c:2489 [inline]
+ rcu_core+0x5eb/0xf00 kernel/rcu/tree.c:2723
+ __do_softirq+0x29b/0x9f6 kernel/softirq.c:343
+
+Last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xc5/0xf0 mm/kasan/generic.c:344
+ __call_rcu kernel/rcu/tree.c:2965 [inline]
+ call_rcu+0xbb/0x700 kernel/rcu/tree.c:3038
+ dst_release net/core/dst.c:179 [inline]
+ dst_release+0x79/0xe0 net/core/dst.c:169
+ tcp_disconnect+0xc26/0x1ec0 net/ipv4/tcp.c:3003
+ __tcp_close+0x486/0x1170 net/ipv4/tcp.c:2745
+ tcp_close+0x29/0xc0 net/ipv4/tcp.c:2867
+ inet_release+0x12e/0x280 net/ipv4/af_inet.c:431
+ inet6_release+0x4c/0x70 net/ipv6/af_inet6.c:475
+ __sock_release net/socket.c:597 [inline]
+ sock_release+0x87/0x1b0 net/socket.c:625
+ rds_tcp_accept_one+0x5fc/0xc10 net/rds/tcp_listen.c:220
+ rds_tcp_accept_worker+0x50/0x80 net/rds/tcp.c:515
+ process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+Second to last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xc5/0xf0 mm/kasan/generic.c:344
+ __call_rcu kernel/rcu/tree.c:2965 [inline]
+ call_rcu+0xbb/0x700 kernel/rcu/tree.c:3038
+ dst_release net/core/dst.c:179 [inline]
+ dst_release+0x79/0xe0 net/core/dst.c:169
+ inet_sock_destruct+0x600/0x830 net/ipv4/af_inet.c:160
+ __sk_destruct+0x4b/0x900 net/core/sock.c:1795
+ rcu_do_batch kernel/rcu/tree.c:2489 [inline]
+ rcu_core+0x5eb/0xf00 kernel/rcu/tree.c:2723
+ __do_softirq+0x29b/0x9f6 kernel/softirq.c:343
+
+The buggy address belongs to the object at ffff88802943db00
+ which belongs to the cache ip_dst_cache of size 176
+The buggy address is located 8 bytes inside of
+ 176-byte region [ffff88802943db00, ffff88802943dbb0)
+The buggy address belongs to the page:
+page:0000000019369b4d refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x2943d
+flags: 0xfff00000000200(slab)
+raw: 00fff00000000200 dead000000000100 dead000000000122 ffff888141745a00
+raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff88802943da00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88802943da80: fb fb fb fb fb fb fc fc fc fc fc fc fc fc fc fc
+>ffff88802943db00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                      ^
+ ffff88802943db80: fb fb fb fb fb fb fc fc fc fc fc fc fc fc fc fc
+ ffff88802943dc00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+==================================================================
+
+
 ---
- drivers/net/ethernet/amazon/ena/ena_netdev.c  | 18 ++++++-------
- drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c | 20 ++++++--------
- .../net/ethernet/freescale/dpaa/dpaa_eth.c    | 12 ++++-----
- .../net/ethernet/freescale/dpaa2/dpaa2-eth.c  |  2 --
- drivers/net/ethernet/intel/i40e/i40e_txrx.c   | 15 +++++------
- drivers/net/ethernet/intel/ice/ice_txrx.c     | 15 +++++------
- drivers/net/ethernet/intel/igb/igb_main.c     | 11 ++++----
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 11 ++++----
- drivers/net/ethernet/marvell/mvneta.c         | 13 +++++----
- .../net/ethernet/marvell/mvpp2/mvpp2_main.c   | 13 +++++----
- .../net/ethernet/mellanox/mlx5/core/en/xdp.c  | 15 +++++------
- drivers/net/ethernet/qlogic/qede/qede_fp.c    | 19 +++++--------
- drivers/net/ethernet/sfc/tx.c                 | 15 +----------
- drivers/net/ethernet/socionext/netsec.c       | 16 +++++------
- drivers/net/ethernet/ti/cpsw.c                | 14 +++++-----
- drivers/net/ethernet/ti/cpsw_new.c            | 14 +++++-----
- drivers/net/ethernet/ti/cpsw_priv.c           | 11 +++-----
- drivers/net/tun.c                             | 15 ++++++-----
- drivers/net/veth.c                            | 27 ++++++++++---------
- drivers/net/virtio_net.c                      | 25 ++++++++---------
- drivers/net/xen-netfront.c                    | 18 ++++++-------
- kernel/bpf/devmap.c                           | 27 +++++++++----------
- 22 files changed, 153 insertions(+), 193 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.c b/drivers/net/ethernet/amazon/ena/ena_netdev.c
-index 102f2c91fdb8..7ad0557dedbd 100644
---- a/drivers/net/ethernet/amazon/ena/ena_netdev.c
-+++ b/drivers/net/ethernet/amazon/ena/ena_netdev.c
-@@ -300,7 +300,7 @@ static int ena_xdp_xmit_frame(struct ena_ring *xdp_ring,
- 
- 	rc = ena_xdp_tx_map_frame(xdp_ring, tx_info, xdpf, &push_hdr, &push_len);
- 	if (unlikely(rc))
--		goto error_drop_packet;
-+		return rc;
- 
- 	ena_tx_ctx.ena_bufs = tx_info->bufs;
- 	ena_tx_ctx.push_header = push_hdr;
-@@ -330,8 +330,6 @@ static int ena_xdp_xmit_frame(struct ena_ring *xdp_ring,
- error_unmap_dma:
- 	ena_unmap_tx_buff(xdp_ring, tx_info);
- 	tx_info->xdpf = NULL;
--error_drop_packet:
--	xdp_return_frame(xdpf);
- 	return rc;
- }
- 
-@@ -339,8 +337,8 @@ static int ena_xdp_xmit(struct net_device *dev, int n,
- 			struct xdp_frame **frames, u32 flags)
- {
- 	struct ena_adapter *adapter = netdev_priv(dev);
--	int qid, i, err, drops = 0;
- 	struct ena_ring *xdp_ring;
-+	int qid, i, nxmit = 0;
- 
- 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
- 		return -EINVAL;
-@@ -360,12 +358,12 @@ static int ena_xdp_xmit(struct net_device *dev, int n,
- 	spin_lock(&xdp_ring->xdp_tx_lock);
- 
- 	for (i = 0; i < n; i++) {
--		err = ena_xdp_xmit_frame(xdp_ring, dev, frames[i], 0);
- 		/* The descriptor is freed by ena_xdp_xmit_frame in case
- 		 * of an error.
- 		 */
--		if (err)
--			drops++;
-+		if (ena_xdp_xmit_frame(xdp_ring, dev, frames[i], 0))
-+			break;
-+		nxmit++;
- 	}
- 
- 	/* Ring doorbell to make device aware of the packets */
-@@ -378,7 +376,7 @@ static int ena_xdp_xmit(struct net_device *dev, int n,
- 	spin_unlock(&xdp_ring->xdp_tx_lock);
- 
- 	/* Return number of packets sent */
--	return n - drops;
-+	return nxmit;
- }
- 
- static int ena_xdp_execute(struct ena_ring *rx_ring, struct xdp_buff *xdp)
-@@ -415,7 +413,9 @@ static int ena_xdp_execute(struct ena_ring *rx_ring, struct xdp_buff *xdp)
- 		/* The XDP queues are shared between XDP_TX and XDP_REDIRECT */
- 		spin_lock(&xdp_ring->xdp_tx_lock);
- 
--		ena_xdp_xmit_frame(xdp_ring, rx_ring->netdev, xdpf, XDP_XMIT_FLUSH);
-+		if (ena_xdp_xmit_frame(xdp_ring, rx_ring->netdev, xdpf,
-+				       XDP_XMIT_FLUSH))
-+			xdp_return_frame(xdpf);
- 
- 		spin_unlock(&xdp_ring->xdp_tx_lock);
- 		xdp_stat = &rx_ring->rx_stats.xdp_tx;
-diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
-index 641303894341..ec9564e584e0 100644
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
-@@ -217,7 +217,7 @@ int bnxt_xdp_xmit(struct net_device *dev, int num_frames,
- 	struct pci_dev *pdev = bp->pdev;
- 	struct bnxt_tx_ring_info *txr;
- 	dma_addr_t mapping;
--	int drops = 0;
-+	int nxmit = 0;
- 	int ring;
- 	int i;
- 
-@@ -233,21 +233,17 @@ int bnxt_xdp_xmit(struct net_device *dev, int num_frames,
- 		struct xdp_frame *xdp = frames[i];
- 
- 		if (!txr || !bnxt_tx_avail(bp, txr) ||
--		    !(bp->bnapi[ring]->flags & BNXT_NAPI_FLAG_XDP)) {
--			xdp_return_frame_rx_napi(xdp);
--			drops++;
--			continue;
--		}
-+		    !(bp->bnapi[ring]->flags & BNXT_NAPI_FLAG_XDP))
-+			break;
- 
- 		mapping = dma_map_single(&pdev->dev, xdp->data, xdp->len,
- 					 DMA_TO_DEVICE);
- 
--		if (dma_mapping_error(&pdev->dev, mapping)) {
--			xdp_return_frame_rx_napi(xdp);
--			drops++;
--			continue;
--		}
-+		if (dma_mapping_error(&pdev->dev, mapping))
-+			break;
-+
- 		__bnxt_xmit_xdp_redirect(bp, txr, mapping, xdp->len, xdp);
-+		nxmit++;
- 	}
- 
- 	if (flags & XDP_XMIT_FLUSH) {
-@@ -256,7 +252,7 @@ int bnxt_xdp_xmit(struct net_device *dev, int num_frames,
- 		bnxt_db_write(bp, &txr->tx_db, txr->tx_prod);
- 	}
- 
--	return num_frames - drops;
-+	return nxmit;
- }
- 
- /* Under rtnl_lock */
-diff --git a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
-index ccfe52a50a66..d5ef6cc911f3 100644
---- a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
-+++ b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
-@@ -3081,7 +3081,7 @@ static int dpaa_xdp_xmit(struct net_device *net_dev, int n,
- 			 struct xdp_frame **frames, u32 flags)
- {
- 	struct xdp_frame *xdpf;
--	int i, err, drops = 0;
-+	int i, nxmit = 0;
- 
- 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
- 		return -EINVAL;
-@@ -3091,14 +3091,12 @@ static int dpaa_xdp_xmit(struct net_device *net_dev, int n,
- 
- 	for (i = 0; i < n; i++) {
- 		xdpf = frames[i];
--		err = dpaa_xdp_xmit_frame(net_dev, xdpf);
--		if (err) {
--			xdp_return_frame_rx_napi(xdpf);
--			drops++;
--		}
-+		if (dpaa_xdp_xmit_frame(net_dev, xdpf))
-+			break;
-+		nxmit++;
- 	}
- 
--	return n - drops;
-+	return nxmit;
- }
- 
- static int dpaa_ts_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
-diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
-index 492943bb9c48..fc0eb82cdd6a 100644
---- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
-+++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
-@@ -2431,8 +2431,6 @@ static int dpaa2_eth_xdp_xmit(struct net_device *net_dev, int n,
- 	percpu_stats->tx_packets += enqueued;
- 	for (i = 0; i < enqueued; i++)
- 		percpu_stats->tx_bytes += dpaa2_fd_get_len(&fds[i]);
--	for (i = enqueued; i < n; i++)
--		xdp_return_frame_rx_napi(frames[i]);
- 
- 	return enqueued;
- }
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-index f6f1af94cca0..834b55816a62 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
-@@ -3844,8 +3844,8 @@ netdev_tx_t i40e_lan_xmit_frame(struct sk_buff *skb, struct net_device *netdev)
-  * @frames: array of XDP buffer pointers
-  * @flags: XDP extra info
-  *
-- * Returns number of frames successfully sent. Frames that fail are
-- * free'ed via XDP return API.
-+ * Returns number of frames successfully sent. Failed frames
-+ * will be free'ed by XDP core.
-  *
-  * For error cases, a negative errno code is returned and no-frames
-  * are transmitted (caller must handle freeing frames).
-@@ -3858,7 +3858,7 @@ int i40e_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
- 	struct i40e_vsi *vsi = np->vsi;
- 	struct i40e_pf *pf = vsi->back;
- 	struct i40e_ring *xdp_ring;
--	int drops = 0;
-+	int nxmit = 0;
- 	int i;
- 
- 	if (test_bit(__I40E_VSI_DOWN, vsi->state))
-@@ -3878,14 +3878,13 @@ int i40e_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
- 		int err;
- 
- 		err = i40e_xmit_xdp_ring(xdpf, xdp_ring);
--		if (err != I40E_XDP_TX) {
--			xdp_return_frame_rx_napi(xdpf);
--			drops++;
--		}
-+		if (err != I40E_XDP_TX)
-+			break;
-+		nxmit++;
- 	}
- 
- 	if (unlikely(flags & XDP_XMIT_FLUSH))
- 		i40e_xdp_ring_update_tail(xdp_ring);
- 
--	return n - drops;
-+	return nxmit;
- }
-diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/ethernet/intel/ice/ice_txrx.c
-index b7dc25da1202..d4bfa7905652 100644
---- a/drivers/net/ethernet/intel/ice/ice_txrx.c
-+++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
-@@ -571,8 +571,8 @@ ice_run_xdp(struct ice_ring *rx_ring, struct xdp_buff *xdp,
-  * @frames: XDP frames to be transmitted
-  * @flags: transmit flags
-  *
-- * Returns number of frames successfully sent. Frames that fail are
-- * free'ed via XDP return API.
-+ * Returns number of frames successfully sent. Failed frames
-+ * will be free'ed by XDP core.
-  * For error cases, a negative errno code is returned and no-frames
-  * are transmitted (caller must handle freeing frames).
-  */
-@@ -584,7 +584,7 @@ ice_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
- 	unsigned int queue_index = smp_processor_id();
- 	struct ice_vsi *vsi = np->vsi;
- 	struct ice_ring *xdp_ring;
--	int drops = 0, i;
-+	int nxmit = 0, i;
- 
- 	if (test_bit(__ICE_DOWN, vsi->state))
- 		return -ENETDOWN;
-@@ -601,16 +601,15 @@ ice_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
- 		int err;
- 
- 		err = ice_xmit_xdp_ring(xdpf->data, xdpf->len, xdp_ring);
--		if (err != ICE_XDP_TX) {
--			xdp_return_frame_rx_napi(xdpf);
--			drops++;
--		}
-+		if (err != ICE_XDP_TX)
-+			break;
-+		nxmit++;
- 	}
- 
- 	if (unlikely(flags & XDP_XMIT_FLUSH))
- 		ice_xdp_ring_update_tail(xdp_ring);
- 
--	return n - drops;
-+	return nxmit;
- }
- 
- /**
-diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
-index 878b31d534ec..cb0d07ff2492 100644
---- a/drivers/net/ethernet/intel/igb/igb_main.c
-+++ b/drivers/net/ethernet/intel/igb/igb_main.c
-@@ -2934,7 +2934,7 @@ static int igb_xdp_xmit(struct net_device *dev, int n,
- 	int cpu = smp_processor_id();
- 	struct igb_ring *tx_ring;
- 	struct netdev_queue *nq;
--	int drops = 0;
-+	int nxmit = 0;
- 	int i;
- 
- 	if (unlikely(test_bit(__IGB_DOWN, &adapter->state)))
-@@ -2961,10 +2961,9 @@ static int igb_xdp_xmit(struct net_device *dev, int n,
- 		int err;
- 
- 		err = igb_xmit_xdp_ring(adapter, tx_ring, xdpf);
--		if (err != IGB_XDP_TX) {
--			xdp_return_frame_rx_napi(xdpf);
--			drops++;
--		}
-+		if (err != IGB_XDP_TX)
-+			break;
-+		nxmit++;
- 	}
- 
- 	__netif_tx_unlock(nq);
-@@ -2972,7 +2971,7 @@ static int igb_xdp_xmit(struct net_device *dev, int n,
- 	if (unlikely(flags & XDP_XMIT_FLUSH))
- 		igb_xdp_ring_update_tail(tx_ring);
- 
--	return n - drops;
-+	return nxmit;
- }
- 
- static const struct net_device_ops igb_netdev_ops = {
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-index fae84202d870..c54b58cfe7b3 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-@@ -10186,7 +10186,7 @@ static int ixgbe_xdp_xmit(struct net_device *dev, int n,
- {
- 	struct ixgbe_adapter *adapter = netdev_priv(dev);
- 	struct ixgbe_ring *ring;
--	int drops = 0;
-+	int nxmit = 0;
- 	int i;
- 
- 	if (unlikely(test_bit(__IXGBE_DOWN, &adapter->state)))
-@@ -10210,16 +10210,15 @@ static int ixgbe_xdp_xmit(struct net_device *dev, int n,
- 		int err;
- 
- 		err = ixgbe_xmit_xdp_ring(adapter, xdpf);
--		if (err != IXGBE_XDP_TX) {
--			xdp_return_frame_rx_napi(xdpf);
--			drops++;
--		}
-+		if (err != IXGBE_XDP_TX)
-+			break;
-+		nxmit++;
- 	}
- 
- 	if (unlikely(flags & XDP_XMIT_FLUSH))
- 		ixgbe_xdp_ring_update_tail(ring);
- 
--	return n - drops;
-+	return nxmit;
- }
- 
- static const struct net_device_ops ixgbe_netdev_ops = {
-diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
-index a635cf84608a..20307eec8988 100644
---- a/drivers/net/ethernet/marvell/mvneta.c
-+++ b/drivers/net/ethernet/marvell/mvneta.c
-@@ -2137,7 +2137,7 @@ mvneta_xdp_xmit(struct net_device *dev, int num_frame,
- {
- 	struct mvneta_port *pp = netdev_priv(dev);
- 	struct mvneta_pcpu_stats *stats = this_cpu_ptr(pp->stats);
--	int i, nxmit_byte = 0, nxmit = num_frame;
-+	int i, nxmit_byte = 0, nxmit = 0;
- 	int cpu = smp_processor_id();
- 	struct mvneta_tx_queue *txq;
- 	struct netdev_queue *nq;
-@@ -2155,12 +2155,11 @@ mvneta_xdp_xmit(struct net_device *dev, int num_frame,
- 	__netif_tx_lock(nq, cpu);
- 	for (i = 0; i < num_frame; i++) {
- 		ret = mvneta_xdp_submit_frame(pp, txq, frames[i], true);
--		if (ret == MVNETA_XDP_TX) {
--			nxmit_byte += frames[i]->len;
--		} else {
--			xdp_return_frame_rx_napi(frames[i]);
--			nxmit--;
--		}
-+		if (ret != MVNETA_XDP_TX)
-+			break;
-+
-+		nxmit_byte += frames[i]->len;
-+		nxmit++;
- 	}
- 
- 	if (unlikely(flags & XDP_XMIT_FLUSH))
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-index 0507369bb54d..4ac6e43aab96 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -3744,7 +3744,7 @@ mvpp2_xdp_xmit(struct net_device *dev, int num_frame,
- 	       struct xdp_frame **frames, u32 flags)
- {
- 	struct mvpp2_port *port = netdev_priv(dev);
--	int i, nxmit_byte = 0, nxmit = num_frame;
-+	int i, nxmit_byte = 0, nxmit = 0;
- 	struct mvpp2_pcpu_stats *stats;
- 	u16 txq_id;
- 	u32 ret;
-@@ -3762,12 +3762,11 @@ mvpp2_xdp_xmit(struct net_device *dev, int num_frame,
- 
- 	for (i = 0; i < num_frame; i++) {
- 		ret = mvpp2_xdp_submit_frame(port, txq_id, frames[i], true);
--		if (ret == MVPP2_XDP_TX) {
--			nxmit_byte += frames[i]->len;
--		} else {
--			xdp_return_frame_rx_napi(frames[i]);
--			nxmit--;
--		}
-+		if (ret != MVPP2_XDP_TX)
-+			break;
-+
-+		nxmit_byte += frames[i]->len;
-+		nxmit++;
- 	}
- 
- 	if (likely(nxmit > 0))
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-index 2e3e78b0f333..2f0df5cc1a2d 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-@@ -500,7 +500,7 @@ int mlx5e_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
- {
- 	struct mlx5e_priv *priv = netdev_priv(dev);
- 	struct mlx5e_xdpsq *sq;
--	int drops = 0;
-+	int nxmit = 0;
- 	int sq_num;
- 	int i;
- 
-@@ -529,11 +529,8 @@ int mlx5e_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
- 		xdptxd.dma_addr = dma_map_single(sq->pdev, xdptxd.data,
- 						 xdptxd.len, DMA_TO_DEVICE);
- 
--		if (unlikely(dma_mapping_error(sq->pdev, xdptxd.dma_addr))) {
--			xdp_return_frame_rx_napi(xdpf);
--			drops++;
--			continue;
--		}
-+		if (unlikely(dma_mapping_error(sq->pdev, xdptxd.dma_addr)))
-+			break;
- 
- 		xdpi.mode           = MLX5E_XDP_XMIT_MODE_FRAME;
- 		xdpi.frame.xdpf     = xdpf;
-@@ -544,9 +541,9 @@ int mlx5e_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
- 		if (unlikely(!ret)) {
- 			dma_unmap_single(sq->pdev, xdptxd.dma_addr,
- 					 xdptxd.len, DMA_TO_DEVICE);
--			xdp_return_frame_rx_napi(xdpf);
--			drops++;
-+			break;
- 		}
-+		nxmit++;
- 	}
- 
- 	if (flags & XDP_XMIT_FLUSH) {
-@@ -555,7 +552,7 @@ int mlx5e_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
- 		mlx5e_xmit_xdp_doorbell(sq);
- 	}
- 
--	return n - drops;
-+	return nxmit;
- }
- 
- void mlx5e_xdp_rx_poll_complete(struct mlx5e_rq *rq)
-diff --git a/drivers/net/ethernet/qlogic/qede/qede_fp.c b/drivers/net/ethernet/qlogic/qede/qede_fp.c
-index 8c47a9d2a965..102d0e0808d5 100644
---- a/drivers/net/ethernet/qlogic/qede/qede_fp.c
-+++ b/drivers/net/ethernet/qlogic/qede/qede_fp.c
-@@ -345,7 +345,7 @@ int qede_xdp_transmit(struct net_device *dev, int n_frames,
- 	struct qede_tx_queue *xdp_tx;
- 	struct xdp_frame *xdpf;
- 	dma_addr_t mapping;
--	int i, drops = 0;
-+	int i, nxmit = 0;
- 	u16 xdp_prod;
- 
- 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
-@@ -364,18 +364,13 @@ int qede_xdp_transmit(struct net_device *dev, int n_frames,
- 
- 		mapping = dma_map_single(dmadev, xdpf->data, xdpf->len,
- 					 DMA_TO_DEVICE);
--		if (unlikely(dma_mapping_error(dmadev, mapping))) {
--			xdp_return_frame_rx_napi(xdpf);
--			drops++;
--
--			continue;
--		}
-+		if (unlikely(dma_mapping_error(dmadev, mapping)))
-+			break;
- 
- 		if (unlikely(qede_xdp_xmit(xdp_tx, mapping, 0, xdpf->len,
--					   NULL, xdpf))) {
--			xdp_return_frame_rx_napi(xdpf);
--			drops++;
--		}
-+					   NULL, xdpf)))
-+			break;
-+		nxmit++;
- 	}
- 
- 	if (flags & XDP_XMIT_FLUSH) {
-@@ -387,7 +382,7 @@ int qede_xdp_transmit(struct net_device *dev, int n_frames,
- 
- 	spin_unlock(&xdp_tx->xdp_tx_lock);
- 
--	return n_frames - drops;
-+	return nxmit;
- }
- 
- int qede_txq_has_work(struct qede_tx_queue *txq)
-diff --git a/drivers/net/ethernet/sfc/tx.c b/drivers/net/ethernet/sfc/tx.c
-index 1665529a7271..0c6650d2e239 100644
---- a/drivers/net/ethernet/sfc/tx.c
-+++ b/drivers/net/ethernet/sfc/tx.c
-@@ -412,14 +412,6 @@ netdev_tx_t __efx_enqueue_skb(struct efx_tx_queue *tx_queue, struct sk_buff *skb
- 	return NETDEV_TX_OK;
- }
- 
--static void efx_xdp_return_frames(int n,  struct xdp_frame **xdpfs)
--{
--	int i;
--
--	for (i = 0; i < n; i++)
--		xdp_return_frame_rx_napi(xdpfs[i]);
--}
--
- /* Transmit a packet from an XDP buffer
-  *
-  * Returns number of packets sent on success, error code otherwise.
-@@ -492,12 +484,7 @@ int efx_xdp_tx_buffers(struct efx_nic *efx, int n, struct xdp_frame **xdpfs,
- 	if (flush && i > 0)
- 		efx_nic_push_buffers(tx_queue);
- 
--	if (i == 0)
--		return -EIO;
--
--	efx_xdp_return_frames(n - i, xdpfs + i);
--
--	return i;
-+	return i == 0 ? -EIO : i;
- }
- 
- /* Initiate a packet transmission.  We use one channel per CPU
-diff --git a/drivers/net/ethernet/socionext/netsec.c b/drivers/net/ethernet/socionext/netsec.c
-index 3c53051bdacf..b9449cf36e31 100644
---- a/drivers/net/ethernet/socionext/netsec.c
-+++ b/drivers/net/ethernet/socionext/netsec.c
-@@ -1757,8 +1757,7 @@ static int netsec_xdp_xmit(struct net_device *ndev, int n,
- {
- 	struct netsec_priv *priv = netdev_priv(ndev);
- 	struct netsec_desc_ring *tx_ring = &priv->desc_ring[NETSEC_RING_TX];
--	int drops = 0;
--	int i;
-+	int i, nxmit = 0;
- 
- 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
- 		return -EINVAL;
-@@ -1769,12 +1768,11 @@ static int netsec_xdp_xmit(struct net_device *ndev, int n,
- 		int err;
- 
- 		err = netsec_xdp_queue_one(priv, xdpf, true);
--		if (err != NETSEC_XDP_TX) {
--			xdp_return_frame_rx_napi(xdpf);
--			drops++;
--		} else {
--			tx_ring->xdp_xmit++;
--		}
-+		if (err != NETSEC_XDP_TX)
-+			break;
-+
-+		tx_ring->xdp_xmit++;
-+		nxmit++;
- 	}
- 	spin_unlock(&tx_ring->lock);
- 
-@@ -1783,7 +1781,7 @@ static int netsec_xdp_xmit(struct net_device *ndev, int n,
- 		tx_ring->xdp_xmit = 0;
- 	}
- 
--	return n - drops;
-+	return nxmit;
- }
- 
- static int netsec_xdp_setup(struct netsec_priv *priv, struct bpf_prog *prog,
-diff --git a/drivers/net/ethernet/ti/cpsw.c b/drivers/net/ethernet/ti/cpsw.c
-index fd966567464c..074702af3dc6 100644
---- a/drivers/net/ethernet/ti/cpsw.c
-+++ b/drivers/net/ethernet/ti/cpsw.c
-@@ -1123,25 +1123,23 @@ static int cpsw_ndo_xdp_xmit(struct net_device *ndev, int n,
- 	struct cpsw_priv *priv = netdev_priv(ndev);
- 	struct cpsw_common *cpsw = priv->cpsw;
- 	struct xdp_frame *xdpf;
--	int i, drops = 0, port;
-+	int i, nxmit = 0, port;
- 
- 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
- 		return -EINVAL;
- 
- 	for (i = 0; i < n; i++) {
- 		xdpf = frames[i];
--		if (xdpf->len < CPSW_MIN_PACKET_SIZE) {
--			xdp_return_frame_rx_napi(xdpf);
--			drops++;
--			continue;
--		}
-+		if (xdpf->len < CPSW_MIN_PACKET_SIZE)
-+			break;
- 
- 		port = priv->emac_port + cpsw->data.dual_emac;
- 		if (cpsw_xdp_tx_frame(priv, xdpf, NULL, port))
--			drops++;
-+			break;
-+		nxmit++;
- 	}
- 
--	return n - drops;
-+	return nxmit;
- }
- 
- #ifdef CONFIG_NET_POLL_CONTROLLER
-diff --git a/drivers/net/ethernet/ti/cpsw_new.c b/drivers/net/ethernet/ti/cpsw_new.c
-index 58a64313ac00..0751f77de2c7 100644
---- a/drivers/net/ethernet/ti/cpsw_new.c
-+++ b/drivers/net/ethernet/ti/cpsw_new.c
-@@ -1093,24 +1093,22 @@ static int cpsw_ndo_xdp_xmit(struct net_device *ndev, int n,
- {
- 	struct cpsw_priv *priv = netdev_priv(ndev);
- 	struct xdp_frame *xdpf;
--	int i, drops = 0;
-+	int i, nxmit = 0;
- 
- 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
- 		return -EINVAL;
- 
- 	for (i = 0; i < n; i++) {
- 		xdpf = frames[i];
--		if (xdpf->len < CPSW_MIN_PACKET_SIZE) {
--			xdp_return_frame_rx_napi(xdpf);
--			drops++;
--			continue;
--		}
-+		if (xdpf->len < CPSW_MIN_PACKET_SIZE)
-+			break;
- 
- 		if (cpsw_xdp_tx_frame(priv, xdpf, NULL, priv->emac_port))
--			drops++;
-+			break;
-+		nxmit++;
- 	}
- 
--	return n - drops;
-+	return nxmit;
- }
- 
- static int cpsw_get_port_parent_id(struct net_device *ndev,
-diff --git a/drivers/net/ethernet/ti/cpsw_priv.c b/drivers/net/ethernet/ti/cpsw_priv.c
-index bb59e768915e..5862f0a4a975 100644
---- a/drivers/net/ethernet/ti/cpsw_priv.c
-+++ b/drivers/net/ethernet/ti/cpsw_priv.c
-@@ -1305,19 +1305,15 @@ int cpsw_xdp_tx_frame(struct cpsw_priv *priv, struct xdp_frame *xdpf,
- 		ret = cpdma_chan_submit_mapped(txch, cpsw_xdpf_to_handle(xdpf),
- 					       dma, xdpf->len, port);
- 	} else {
--		if (sizeof(*xmeta) > xdpf->headroom) {
--			xdp_return_frame_rx_napi(xdpf);
-+		if (sizeof(*xmeta) > xdpf->headroom)
- 			return -EINVAL;
--		}
- 
- 		ret = cpdma_chan_submit(txch, cpsw_xdpf_to_handle(xdpf),
- 					xdpf->data, xdpf->len, port);
- 	}
- 
--	if (ret) {
-+	if (ret)
- 		priv->ndev->stats.tx_dropped++;
--		xdp_return_frame_rx_napi(xdpf);
--	}
- 
- 	return ret;
- }
-@@ -1353,7 +1349,8 @@ int cpsw_run_xdp(struct cpsw_priv *priv, int ch, struct xdp_buff *xdp,
- 		if (unlikely(!xdpf))
- 			goto drop;
- 
--		cpsw_xdp_tx_frame(priv, xdpf, page, port);
-+		if (cpsw_xdp_tx_frame(priv, xdpf, page, port))
-+			xdp_return_frame_rx_napi(xdpf);
- 		break;
- 	case XDP_REDIRECT:
- 		if (xdp_do_redirect(ndev, xdp, prog))
-diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-index fc86da7f1628..6e55697315de 100644
---- a/drivers/net/tun.c
-+++ b/drivers/net/tun.c
-@@ -1181,8 +1181,7 @@ static int tun_xdp_xmit(struct net_device *dev, int n,
- 	struct tun_struct *tun = netdev_priv(dev);
- 	struct tun_file *tfile;
- 	u32 numqueues;
--	int drops = 0;
--	int cnt = n;
-+	int nxmit = 0;
- 	int i;
- 
- 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
-@@ -1212,9 +1211,9 @@ static int tun_xdp_xmit(struct net_device *dev, int n,
- 
- 		if (__ptr_ring_produce(&tfile->tx_ring, frame)) {
- 			atomic_long_inc(&dev->tx_dropped);
--			xdp_return_frame_rx_napi(xdp);
--			drops++;
-+			break;
- 		}
-+		nxmit++;
- 	}
- 	spin_unlock(&tfile->tx_ring.producer_lock);
- 
-@@ -1222,17 +1221,21 @@ static int tun_xdp_xmit(struct net_device *dev, int n,
- 		__tun_xdp_flush_tfile(tfile);
- 
- 	rcu_read_unlock();
--	return cnt - drops;
-+	return nxmit;
- }
- 
- static int tun_xdp_tx(struct net_device *dev, struct xdp_buff *xdp)
- {
- 	struct xdp_frame *frame = xdp_convert_buff_to_frame(xdp);
-+	int nxmit;
- 
- 	if (unlikely(!frame))
- 		return -EOVERFLOW;
- 
--	return tun_xdp_xmit(dev, 1, &frame, XDP_XMIT_FLUSH);
-+	nxmit = tun_xdp_xmit(dev, 1, &frame, XDP_XMIT_FLUSH);
-+	if (!nxmit)
-+		xdp_return_frame_rx_napi(frame);
-+	return nxmit;
- }
- 
- static const struct net_device_ops tap_netdev_ops = {
-diff --git a/drivers/net/veth.c b/drivers/net/veth.c
-index aa1a66ad2ce5..36293a2c3618 100644
---- a/drivers/net/veth.c
-+++ b/drivers/net/veth.c
-@@ -434,7 +434,7 @@ static int veth_xdp_xmit(struct net_device *dev, int n,
- 			 u32 flags, bool ndo_xmit)
- {
- 	struct veth_priv *rcv_priv, *priv = netdev_priv(dev);
--	int i, ret = -ENXIO, drops = 0;
-+	int i, ret = -ENXIO, nxmit = 0;
- 	struct net_device *rcv;
- 	unsigned int max_len;
- 	struct veth_rq *rq;
-@@ -464,21 +464,20 @@ static int veth_xdp_xmit(struct net_device *dev, int n,
- 		void *ptr = veth_xdp_to_ptr(frame);
- 
- 		if (unlikely(frame->len > max_len ||
--			     __ptr_ring_produce(&rq->xdp_ring, ptr))) {
--			xdp_return_frame_rx_napi(frame);
--			drops++;
--		}
-+			     __ptr_ring_produce(&rq->xdp_ring, ptr)))
-+			break;
-+		nxmit++;
- 	}
- 	spin_unlock(&rq->xdp_ring.producer_lock);
- 
- 	if (flags & XDP_XMIT_FLUSH)
- 		__veth_xdp_flush(rq);
- 
--	ret = n - drops;
-+	ret = nxmit;
- 	if (ndo_xmit) {
- 		u64_stats_update_begin(&rq->stats.syncp);
--		rq->stats.vs.peer_tq_xdp_xmit += n - drops;
--		rq->stats.vs.peer_tq_xdp_xmit_err += drops;
-+		rq->stats.vs.peer_tq_xdp_xmit += nxmit;
-+		rq->stats.vs.peer_tq_xdp_xmit_err += n - nxmit;
- 		u64_stats_update_end(&rq->stats.syncp);
- 	}
- 
-@@ -505,20 +504,24 @@ static int veth_ndo_xdp_xmit(struct net_device *dev, int n,
- 
- static void veth_xdp_flush_bq(struct veth_rq *rq, struct veth_xdp_tx_bq *bq)
- {
--	int sent, i, err = 0;
-+	int sent, i, err = 0, drops;
- 
- 	sent = veth_xdp_xmit(rq->dev, bq->count, bq->q, 0, false);
- 	if (sent < 0) {
- 		err = sent;
- 		sent = 0;
--		for (i = 0; i < bq->count; i++)
-+	}
-+
-+	drops = bq->count - sent;
-+	if (unlikely(drops > 0)) {
-+		for (i = sent; i < bq->count; i++)
- 			xdp_return_frame(bq->q[i]);
- 	}
--	trace_xdp_bulk_tx(rq->dev, sent, bq->count - sent, err);
-+	trace_xdp_bulk_tx(rq->dev, sent, drops, err);
- 
- 	u64_stats_update_begin(&rq->stats.syncp);
- 	rq->stats.vs.xdp_tx += sent;
--	rq->stats.vs.xdp_tx_err += bq->count - sent;
-+	rq->stats.vs.xdp_tx_err += drops;
- 	u64_stats_update_end(&rq->stats.syncp);
- 
- 	bq->count = 0;
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index ba8e63792549..ea87830f21d2 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -499,10 +499,10 @@ static int virtnet_xdp_xmit(struct net_device *dev,
- 	unsigned int len;
- 	int packets = 0;
- 	int bytes = 0;
--	int drops = 0;
-+	int nxmit = 0;
- 	int kicks = 0;
--	int ret, err;
- 	void *ptr;
-+	int ret;
- 	int i;
- 
- 	/* Only allow ndo_xdp_xmit if XDP is loaded on dev, as this
-@@ -516,7 +516,6 @@ static int virtnet_xdp_xmit(struct net_device *dev,
- 
- 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK)) {
- 		ret = -EINVAL;
--		drops = n;
- 		goto out;
- 	}
- 
-@@ -539,13 +538,11 @@ static int virtnet_xdp_xmit(struct net_device *dev,
- 	for (i = 0; i < n; i++) {
- 		struct xdp_frame *xdpf = frames[i];
- 
--		err = __virtnet_xdp_xmit_one(vi, sq, xdpf);
--		if (err) {
--			xdp_return_frame_rx_napi(xdpf);
--			drops++;
--		}
-+		if (__virtnet_xdp_xmit_one(vi, sq, xdpf))
-+			break;
-+		nxmit++;
- 	}
--	ret = n - drops;
-+	ret = nxmit;
- 
- 	if (flags & XDP_XMIT_FLUSH) {
- 		if (virtqueue_kick_prepare(sq->vq) && virtqueue_notify(sq->vq))
-@@ -556,7 +553,7 @@ static int virtnet_xdp_xmit(struct net_device *dev,
- 	sq->stats.bytes += bytes;
- 	sq->stats.packets += packets;
- 	sq->stats.xdp_tx += n;
--	sq->stats.xdp_tx_drops += drops;
-+	sq->stats.xdp_tx_drops += n - nxmit;
- 	sq->stats.kicks += kicks;
- 	u64_stats_update_end(&sq->stats.syncp);
- 
-@@ -709,7 +706,9 @@ static struct sk_buff *receive_small(struct net_device *dev,
- 			if (unlikely(!xdpf))
- 				goto err_xdp;
- 			err = virtnet_xdp_xmit(dev, 1, &xdpf, 0);
--			if (unlikely(err < 0)) {
-+			if (unlikely(!err)) {
-+				xdp_return_frame_rx_napi(xdpf);
-+			} else if (unlikely(err < 0)) {
- 				trace_xdp_exception(vi->dev, xdp_prog, act);
- 				goto err_xdp;
- 			}
-@@ -895,7 +894,9 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
- 			if (unlikely(!xdpf))
- 				goto err_xdp;
- 			err = virtnet_xdp_xmit(dev, 1, &xdpf, 0);
--			if (unlikely(err < 0)) {
-+			if (unlikely(!err)) {
-+				xdp_return_frame_rx_napi(xdpf);
-+			} else if (unlikely(err < 0)) {
- 				trace_xdp_exception(vi->dev, xdp_prog, act);
- 				if (unlikely(xdp_page != page))
- 					put_page(xdp_page);
-diff --git a/drivers/net/xen-netfront.c b/drivers/net/xen-netfront.c
-index cc19cd9203da..44275908d61a 100644
---- a/drivers/net/xen-netfront.c
-+++ b/drivers/net/xen-netfront.c
-@@ -608,8 +608,8 @@ static int xennet_xdp_xmit(struct net_device *dev, int n,
- 	struct netfront_info *np = netdev_priv(dev);
- 	struct netfront_queue *queue = NULL;
- 	unsigned long irq_flags;
--	int drops = 0;
--	int i, err;
-+	int nxmit = 0;
-+	int i;
- 
- 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
- 		return -EINVAL;
-@@ -622,15 +622,13 @@ static int xennet_xdp_xmit(struct net_device *dev, int n,
- 
- 		if (!xdpf)
- 			continue;
--		err = xennet_xdp_xmit_one(dev, queue, xdpf);
--		if (err) {
--			xdp_return_frame_rx_napi(xdpf);
--			drops++;
--		}
-+		if (xennet_xdp_xmit_one(dev, queue, xdpf))
-+			break;
-+		nxmit++;
- 	}
- 	spin_unlock_irqrestore(&queue->tx_lock, irq_flags);
- 
--	return n - drops;
-+	return nxmit;
- }
- 
- 
-@@ -875,7 +873,9 @@ static u32 xennet_run_xdp(struct netfront_queue *queue, struct page *pdata,
- 		get_page(pdata);
- 		xdpf = xdp_convert_buff_to_frame(xdp);
- 		err = xennet_xdp_xmit(queue->info->netdev, 1, &xdpf, 0);
--		if (unlikely(err < 0))
-+		if (unlikely(!err))
-+			xdp_return_frame_rx_napi(xdpf);
-+		else if (unlikely(err < 0))
- 			trace_xdp_exception(queue->info->netdev, prog, act);
- 		break;
- 	case XDP_REDIRECT:
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index 85d9d1b72a33..9f158b3862df 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -344,29 +344,26 @@ static void bq_xmit_all(struct xdp_dev_bulk_queue *bq, u32 flags)
- 
- 	sent = dev->netdev_ops->ndo_xdp_xmit(dev, bq->count, bq->q, flags);
- 	if (sent < 0) {
-+		/* If ndo_xdp_xmit fails with an errno, no frames have
-+		 * been xmit'ed.
-+		 */
- 		err = sent;
- 		sent = 0;
--		goto error;
- 	}
-+
- 	drops = bq->count - sent;
--out:
--	bq->count = 0;
-+	if (unlikely(drops > 0)) {
-+		/* If not all frames have been transmitted, it is our
-+		 * responsibility to free them
-+		 */
-+		for (i = sent; i < bq->count; i++)
-+			xdp_return_frame_rx_napi(bq->q[i]);
-+	}
- 
-+	bq->count = 0;
- 	trace_xdp_devmap_xmit(bq->dev_rx, dev, sent, drops, err);
- 	bq->dev_rx = NULL;
- 	__list_del_clearprev(&bq->flush_node);
--	return;
--error:
--	/* If ndo_xdp_xmit fails with an errno, no frames have been
--	 * xmit'ed and it's our responsibility to them free all.
--	 */
--	for (i = 0; i < bq->count; i++) {
--		struct xdp_frame *xdpf = bq->q[i];
--
--		xdp_return_frame_rx_napi(xdpf);
--		drops++;
--	}
--	goto out;
- }
- 
- /* __dev_flush is called from xdp_do_flush() which _must_ be signaled
--- 
-2.29.2
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
