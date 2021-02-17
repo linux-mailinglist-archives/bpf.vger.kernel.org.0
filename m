@@ -2,209 +2,303 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45A6631DC6F
-	for <lists+bpf@lfdr.de>; Wed, 17 Feb 2021 16:37:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59FAF31DCC3
+	for <lists+bpf@lfdr.de>; Wed, 17 Feb 2021 16:56:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233840AbhBQPhg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Feb 2021 10:37:36 -0500
-Received: from mail-il1-f197.google.com ([209.85.166.197]:40888 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233796AbhBQPhC (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Feb 2021 10:37:02 -0500
-Received: by mail-il1-f197.google.com with SMTP id j7so10667888ilu.7
-        for <bpf@vger.kernel.org>; Wed, 17 Feb 2021 07:36:46 -0800 (PST)
+        id S233634AbhBQPys (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Feb 2021 10:54:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52002 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233740AbhBQPyq (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 17 Feb 2021 10:54:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613577197;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=D2uZWoamDdnnAA1lSTQTDOMHFQAWhI+7kdRpmcN+2qY=;
+        b=aXu8/aaSg9DokCeiurcFfcEfTDd5A76oIRpcYZ/gFh0XT1mfSN18kt9oKgYclV9v+LSC8c
+        71RkTvdgR+o82JmbjgUugx6/FWEH9NkN+hmYFMzpdQS9C+DK2Iy0BiAAL4hnOpwosP14fY
+        59+hcv37WJ6LmWxd9rJFwt2XljIHe1Y=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-392-v4Ff9LMsMxGiBhDHjlFYiw-1; Wed, 17 Feb 2021 10:53:15 -0500
+X-MC-Unique: v4Ff9LMsMxGiBhDHjlFYiw-1
+Received: by mail-ed1-f72.google.com with SMTP id l23so10657300edt.23
+        for <bpf@vger.kernel.org>; Wed, 17 Feb 2021 07:53:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=V4Slvj7ntItWb8LzbQuB3PGx+xGHcyKbdozov7Qt7lI=;
-        b=MF1+Eo9xbxuhOHFI+uQesr0Dyfc4nipcvbBSDiDXDcAvYzC6ipC0ABS3Ze+X1Yndeg
-         uMObCR1DxiKnlbk3+WC5kIQ0e/KWyKHziFqPhwA4Uqaiav+vPMfiAVUuy1m4d/VQzLin
-         qO+UBTY5JD30tyLWcKHkxh3E+ycrB7EJcqGG6BWtTjAx0Kq7q/ANl8Q0RZWmXKaxIi98
-         h8LI1trlVfxuGYPV653Tmu4Uaq6YRtaIDuz34QtDSQjfTlIaX8Ej1YVQHREX0k6FtPbY
-         0txwf8Bss4RLfg7XNF+k4HWnoGGjS+MS5RyhRfLXMgeUdoznePh2+eseftwDg7y4dyrg
-         GAsw==
-X-Gm-Message-State: AOAM531app/KKJYiW3hskIgHYGYN5F6ltfASXrKhDjqGbeHnv+rpxig9
-        A0NvYP4Ec/aFlRmL6gk4SP7KgswPMd/lf2jFECRs64cnsUZK
-X-Google-Smtp-Source: ABdhPJwgAEC7qF6eNYsfvsTmw4p7UvOxm9s2KQY08Zb+4hyEMst1uTKC/KKT6eRjBQ69wihPAg1MZbbH8J1+s6n6maFipQ/EyQbK
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=D2uZWoamDdnnAA1lSTQTDOMHFQAWhI+7kdRpmcN+2qY=;
+        b=SgrMaYBnAJ/uhKBPSLcbyteAQthW5VpBPwGNvOHQG2BeuS5sxPMdeHKXdv6inLGsNg
+         /H6HmjXIeoVivyRYyDmtORvIPmrnBJ0xNNLEh2RXZ4zy+OEGPDNFAxcasrrRZQxYDYe1
+         qVsVkrFaug0t/xzNS/PpxqaJhpV/d0mC8Ss55qSFqZZxfv+IFmb19takyLi8/vuiVaId
+         vdc+9ns3Otgrn5WdbbuPLcrjVeWj3R6/NN7Cub7ZmHVhb5etHqETUPQsM5JoT+tBLaTr
+         /awlgY3MI9rpzmnWOhJ3mRcES7F1CpPIzJQdTqVI6m9aqkKfzUXKwbXFI6YJMMBIuGly
+         j8RA==
+X-Gm-Message-State: AOAM533hiIkiuz6KnDXiy/25Mq85sV8tkiXjD3Nc8M3d+g02pPafxk4L
+        ZBpKKjtUR8CWD5lnjkIxn/EaGAl4peQXVqNHsoRg+jEqJ98DVslH+CNa0bf2uQFkclHOEBZpXi+
+        1SJx31CKuTvqi
+X-Received: by 2002:a05:6402:304f:: with SMTP id bu15mr6481020edb.259.1613577193539;
+        Wed, 17 Feb 2021 07:53:13 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwG/8J9dsAllu3EoI4MNq5I19e/tLcEF5K61yoHGgCGqgBMhatQKCGdsFrT3LkmXWQD9WURpQ==
+X-Received: by 2002:a05:6402:304f:: with SMTP id bu15mr6480976edb.259.1613577193081;
+        Wed, 17 Feb 2021 07:53:13 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id n15sm1342779edb.53.2021.02.17.07.53.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Feb 2021 07:53:12 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id C5A5D1805FA; Wed, 17 Feb 2021 16:53:10 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     "Brian G. Merrell" <brian.g.merrell@gmail.com>
+Cc:     xdp-newbies@vger.kernel.org,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Maciej =?utf-8?Q?=C5=BBenczykowski?= <maze@google.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Andrey Ignatov <rdna@fb.com>, bpf@vger.kernel.org
+Subject: Re: How to orchestrate multiple XDP programs
+In-Reply-To: <20210217012012.qfdhimcyniw6dlve@snout.localdomain>
+References: <20201201091203.ouqtpdmvvl2m2pga@snout.localdomain>
+ <878sah3f0n.fsf@toke.dk>
+ <20201216072920.hh42kxb5voom4aau@snout.localdomain>
+ <873605din6.fsf@toke.dk> <87tur0x874.fsf@toke.dk>
+ <20210210222710.7xl56xffdohvsko4@snout.localdomain>
+ <874kiirgx3.fsf@toke.dk>
+ <20210212065148.ajtbx2xos6yomrzc@snout.localdomain>
+ <87h7mdcxbd.fsf@toke.dk>
+ <20210217012012.qfdhimcyniw6dlve@snout.localdomain>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Wed, 17 Feb 2021 16:53:10 +0100
+Message-ID: <87ft1un121.fsf@toke.dk>
 MIME-Version: 1.0
-X-Received: by 2002:a92:8711:: with SMTP id m17mr20639780ild.48.1613576181017;
- Wed, 17 Feb 2021 07:36:21 -0800 (PST)
-Date:   Wed, 17 Feb 2021 07:36:21 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000016715505bb89fb93@google.com>
-Subject: KASAN: use-after-free Read in tcp_current_mss
-From:   syzbot <syzbot+ea948c9d0dedf6ff57b1@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, dsahern@kernel.org,
-        edumazet@google.com, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com,
-        yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+"Brian G. Merrell" <brian.g.merrell@gmail.com> writes:
 
-syzbot found the following issue on:
+> On 21/02/15 01:47PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> "Brian G. Merrell" <brian.g.merrell@gmail.com> writes:
+>>=20
+>> > On 21/02/11 12:18PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> >> "Brian G. Merrell" <brian.g.merrell@gmail.com> writes:
+>>=20
+>> >> The policy override stuff is not implemented yet, but I am planning to
+>> >> implement it by having libxdp read a config file with priority overri=
+des
+>> >> (similar to how libc will read /etc/nsswitch.conf or /etc/hosts which
+>> >> makes them work in all applications).
+>> >>=20
+>> >> And of course, if you're writing an orchestration tool, then you *are*
+>> >> the user, so having the tool override priorities is definitely in sco=
+pe
+>> >> (it'll just be an alternative way to set policy instead of a config
+>> >> file). How are you planning to specify the effective run order? I am
+>> >> also quite open to working on a compatible way that can work for both
+>> >> your tool and libxdp :)
+>> >
+>> > As part of our control plane we have a whole process for a sysadmin to
+>> > get config data to to our BPF orchestration tool, which is running on
+>> > multiple nodes. It very abstractly looks like this:
+>> >
+>> >
+>> >                                      +---- Node 1
+>> >                                      |
+>> > UI -> API -> DATABASE -> CONFIG DATA +---- Node 2
+>> >                                      |
+>> >                                      +---- Node N
+>> >
+>> > So, the sysadmin using the UI or API would dictate which xdp programs
+>> > run *and* what their priority is (plus anything else that would
+>> > otherwise go into XDP_RUN_CONFIG, plus a bunch of other config data for
+>> > various other needs). Then--and hopefully I'm getting this right--when
+>> > our (Go) orchestration tool uses (Go) libxdp, the tool needs a way to
+>> > set the run order for the XDP programs before the dispatcher loads.
+>>=20
+>> Yeah, and what I was interested in was how the orchestration tool gets
+>> this data (and the BPF programs themselves)? Is there a daemon running
+>> on the nodes that exposes an API? Are you pushing this via SSH/Ansible?
+>> Infinite monkeys with typewriters inputting data? Something else? :)
+>
+> OK, what currently happens is we have a separate, centralized Go web
+> service exposing an HTTP based API. When the sysadmin calls that API it
+> stores the config data in a database. Then, we have another service that
+> periodically queries the database and writes the config data to a
+> constant database (cdb) and stores that in blob storage. Then, there is
+> a service running on each node that periodically pulls down the latest
+> cdb. Our orchestration tool running on each node is watching for new
+> cdbs using inotify; when the tool sees a new CDB it loads the new
+> configuration data--which, for us, literally ends up just being JSON
+> data--and does anything that needs done.
+>
+> I had omitted those details for a couple of reasons: First, it's kind of a
+> lot and I didn't know it would be helpful. Second, this is the way it
+> works currently because, for expediency, we leveraged the internal
+> ecosystem that was already setup. We will likely move away from it, at
+> least partially.
+>
+> So, I think the important part is that our orchestration tool will
+> periodically get the config data in JSON format. A path to each BPF
+> program is in the config data and the orchestration tool downloads them
+> as needed. We may move to just including the BPF program binary in the
+> config data--TBD. Obviously, we aren't using libxdp yet, so our config
+> data doesn't have "run priority", instead the config data has the order
+> the BPF programs need to run, and BPF programs themselves have to do the
+> bpf_tail_call (and the orchestration tool does a bunch of complicated
+> orchestration to get the chain in the right order). The config data also
+> contains a bunch of other information to do the orchestration, e.g.,
+> interface, ingress or egress, tc or xdp, what userspace code to run and
+> any config values for that, etc.
+>
+> Hopefully that answers your question, and sorry if it was too much
+> information :)
 
-HEAD commit:    773dc50d Merge branch 'Xilinx-axienet-updates'
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=13460822d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=dbc1ca9e55dc1f9f
-dashboard link: https://syzkaller.appspot.com/bug?extid=ea948c9d0dedf6ff57b1
+No, that was very helpful, thanks! Just the kind of detail I was after
+to understand your deployment scenario :)
 
-Unfortunately, I don't have any reproducer for this issue yet.
+>> > I was planning to set the run order programatically on the XDP program
+>> > objects via libxdp calls. It looks like your libxdp implementation
+>> > already has ways to do this in the form of xdp_program__set_run_prio()
+>> > and xdp_program__chain_call_enabled().
+>> >
+>> > Does that make sense? This is still all very theoretical for me at this
+>> > point!
+>>=20
+>> Yup, totally possible to set this programmatically with libxdp as well
+>> today. However, before doing so you still need to communicate the list
+>> of BPF programs and their run configuration to each node. And I'm
+>> thinking it may be worthwhile to specify how to do this as part of the
+>> "protocol" and also teach libxdp about the format, so others won't have
+>> to reinvent the same thing later.
+>
+> It seems like I must be missing something here, but my plan was to do
+> this all programmatically by calling libxdp functions from the
+> orchestration tool by 1) calling something like xdp_program__open_file()
+> to load the XDP program, and then 2) setting the run configuration by
+> calling something like xdp_program__set_run_prio() and
+> xdp_program__chain_call_enabled(), and 3) adding the programs to the
+> dispatcher and loading it.
+>
+> Correct me if I'm wrong, but I guess you're saying that it might be
+> worth creating an abstraction in libxdp where a user can pass in the
+> necessary config data and libxdp does the work, that I just summarized
+> in the previous paragraph, on the user's behalf. I can see how that
+> could be a useful abstraction.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ea948c9d0dedf6ff57b1@syzkaller.appspotmail.com
+Yeah, so what I was thinking was whether it would be useful to, for
+instance, define a "bundle" format that contains the config data that
+libxdp will understand. Could just be a JSON schema containing keys for
+priority, chain call actions and a filename, so you can just point
+xdp_program__open_file() at that and it will do the rest.
 
-==================================================================
-BUG: KASAN: use-after-free in dst_mtu include/net/dst.h:201 [inline]
-BUG: KASAN: use-after-free in tcp_current_mss+0x358/0x360 net/ipv4/tcp_output.c:1835
-Read of size 8 at addr ffff88802943db08 by task syz-executor.2/11568
+However, I'm still not quite sure I'm convinced that this will be
+generally useful. As you say, you can just as well just set the values
+programmatically after loading the file, and I suspect that different
+deployments will end up having too much custom stuff around this that
+they'll bother using such a facility anyway. WDYT?
 
-CPU: 0 PID: 11568 Comm: syz-executor.2 Not tainted 5.11.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:230
- __kasan_report mm/kasan/report.c:396 [inline]
- kasan_report.cold+0x79/0xd5 mm/kasan/report.c:413
- dst_mtu include/net/dst.h:201 [inline]
- tcp_current_mss+0x358/0x360 net/ipv4/tcp_output.c:1835
- tcp_send_mss+0x28/0x2b0 net/ipv4/tcp.c:943
- mptcp_sendmsg_frag+0x13b/0x1220 net/mptcp/protocol.c:1266
- mptcp_push_pending+0x2cc/0x650 net/mptcp/protocol.c:1477
- mptcp_sendmsg+0x1ffb/0x2830 net/mptcp/protocol.c:1692
- inet6_sendmsg+0x99/0xe0 net/ipv6/af_inet6.c:638
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- sock_write_iter+0x289/0x3c0 net/socket.c:999
- call_write_iter include/linux/fs.h:1901 [inline]
- new_sync_write+0x426/0x650 fs/read_write.c:518
- vfs_write+0x791/0xa30 fs/read_write.c:605
- ksys_write+0x1ee/0x250 fs/read_write.c:658
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x465d99
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fc692d89188 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 000000000056c0b0 RCX: 0000000000465d99
-RDX: 0000000000000001 RSI: 0000000020000000 RDI: 0000000000000003
-RBP: 00000000004bcf27 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c0b0
-R13: 00007ffc258487df R14: 00007fc692d89300 R15: 0000000000022000
+>> The reason I went with the embedded BTF is that this gets compiled into
+>> the ELF file, and so we can be pretty sure that it doesn't get lost,
+>> without having to keep track of separate configuration files. So this
+>> makes it a good fit for BPF program authors specifying a default: they
+>> can be pretty sure that this will stay with the object code no matter
+>> how it's moved around.
+>>=20
+>> The downside of using BTF is of course the same: it's tightly coupled to
+>> the compiled binary, and it's a bit awkward to parse (and modify). So I
+>> always anticipated that a secondary format that was *decoupled* from the
+>> binary byte code format would be needed, just as you're describing. So
+>> I'm just looking for input on what such a format might reasonably look
+>> like :)
+>
+> I don't have super strong feelings about this, and there may be use
+> cases that I'm not thinking about, but my first thought would be to make
+> the format just be code in libxdp, and have the libxdp "abstraction"
+> function take an array of objects that contain the necessary data.
 
-Allocated by task 11558:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:401 [inline]
- ____kasan_kmalloc.constprop.0+0x82/0xa0 mm/kasan/common.c:429
- kasan_slab_alloc include/linux/kasan.h:209 [inline]
- slab_post_alloc_hook mm/slab.h:512 [inline]
- slab_alloc_node mm/slub.c:2892 [inline]
- slab_alloc mm/slub.c:2900 [inline]
- kmem_cache_alloc+0x1c6/0x440 mm/slub.c:2905
- dst_alloc+0x9e/0x650 net/core/dst.c:93
- rt_dst_alloc+0x73/0x430 net/ipv4/route.c:1642
- __mkroute_output net/ipv4/route.c:2457 [inline]
- ip_route_output_key_hash_rcu+0x955/0x2ce0 net/ipv4/route.c:2684
- ip_route_output_key_hash+0x1a4/0x2f0 net/ipv4/route.c:2512
- __ip_route_output_key include/net/route.h:126 [inline]
- ip_route_output_flow+0x23/0x150 net/ipv4/route.c:2773
- ip_route_newports include/net/route.h:342 [inline]
- tcp_v4_connect+0x12d7/0x1c40 net/ipv4/tcp_ipv4.c:281
- tcp_v6_connect+0x733/0x1df0 net/ipv6/tcp_ipv6.c:248
- __inet_stream_connect+0x8c5/0xee0 net/ipv4/af_inet.c:661
- inet_stream_connect+0x53/0xa0 net/ipv4/af_inet.c:725
- mptcp_stream_connect+0x156/0x800 net/mptcp/protocol.c:3200
- __sys_connect_file+0x155/0x1a0 net/socket.c:1835
- __sys_connect+0x161/0x190 net/socket.c:1852
- __do_sys_connect net/socket.c:1862 [inline]
- __se_sys_connect net/socket.c:1859 [inline]
- __x64_sys_connect+0x6f/0xb0 net/socket.c:1859
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Well that's basically what 'struct xdp_program' in libxdp is :) You can
+create an array of those (setting their properties with the setter
+methods as you mentioned above) and pass them to
+xdp_program__attach_multi() which will build a dispatcher for all of
+them and attach that (incorporating any programs that may already be
+attached by their priority).
 
-Freed by task 11559:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
- kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:356
- ____kasan_slab_free+0xe1/0x110 mm/kasan/common.c:362
- kasan_slab_free include/linux/kasan.h:192 [inline]
- slab_free_hook mm/slub.c:1547 [inline]
- slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1580
- slab_free mm/slub.c:3143 [inline]
- kmem_cache_free+0x82/0x350 mm/slub.c:3159
- dst_destroy+0x2bc/0x3c0 net/core/dst.c:129
- rcu_do_batch kernel/rcu/tree.c:2489 [inline]
- rcu_core+0x5eb/0xf00 kernel/rcu/tree.c:2723
- __do_softirq+0x29b/0x9f6 kernel/softirq.c:343
+> I know in a previous e-mail you mentioned having a config file with
+> priority overrides. That's just not a use case that our team would want
+> to use. And, my opinion would be that the program using libxdp should be
+> the one to implement that sort of policy; it keeps libxdp more simple
+> without needing to worry about parsing config files (and handling config
+> version changes in the code and the spec). For example, xdp-loader could
+> have a config file with priority overrides and people could use that
+> code if they wanted to do something similar.
 
-Last potentially related work creation:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_record_aux_stack+0xc5/0xf0 mm/kasan/generic.c:344
- __call_rcu kernel/rcu/tree.c:2965 [inline]
- call_rcu+0xbb/0x700 kernel/rcu/tree.c:3038
- dst_release net/core/dst.c:179 [inline]
- dst_release+0x79/0xe0 net/core/dst.c:169
- tcp_disconnect+0xc26/0x1ec0 net/ipv4/tcp.c:3003
- __tcp_close+0x486/0x1170 net/ipv4/tcp.c:2745
- tcp_close+0x29/0xc0 net/ipv4/tcp.c:2867
- inet_release+0x12e/0x280 net/ipv4/af_inet.c:431
- inet6_release+0x4c/0x70 net/ipv6/af_inet6.c:475
- __sock_release net/socket.c:597 [inline]
- sock_release+0x87/0x1b0 net/socket.c:625
- rds_tcp_accept_one+0x5fc/0xc10 net/rds/tcp_listen.c:220
- rds_tcp_accept_worker+0x50/0x80 net/rds/tcp.c:515
- process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+Yeah, that's totally what would make sense for your deployment case. The
+design where libxdp reads a config file comes from my distro
+perspective: We want to build a system whereby different applications
+can each incorporate XDP functionality and co-exist; and the goal is to
+make libxdp the synchronisation point between them. I.e., we can say to
+application authors "just use libxdp when writing your application and
+it'll work", while at the same time empowering sysadmins to change the
+default application ordering.
 
-Second to last potentially related work creation:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_record_aux_stack+0xc5/0xf0 mm/kasan/generic.c:344
- __call_rcu kernel/rcu/tree.c:2965 [inline]
- call_rcu+0xbb/0x700 kernel/rcu/tree.c:3038
- dst_release net/core/dst.c:179 [inline]
- dst_release+0x79/0xe0 net/core/dst.c:169
- inet_sock_destruct+0x600/0x830 net/ipv4/af_inet.c:160
- __sk_destruct+0x4b/0x900 net/core/sock.c:1795
- rcu_do_batch kernel/rcu/tree.c:2489 [inline]
- rcu_core+0x5eb/0xf00 kernel/rcu/tree.c:2723
- __do_softirq+0x29b/0x9f6 kernel/softirq.c:343
+By having that configuration be part of the library, applications can be
+free to use either the command-line loader or include the loading into
+their own user-space binary.
 
-The buggy address belongs to the object at ffff88802943db00
- which belongs to the cache ip_dst_cache of size 176
-The buggy address is located 8 bytes inside of
- 176-byte region [ffff88802943db00, ffff88802943dbb0)
-The buggy address belongs to the page:
-page:0000000019369b4d refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x2943d
-flags: 0xfff00000000200(slab)
-raw: 00fff00000000200 dead000000000100 dead000000000122 ffff888141745a00
-raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
+But since you are (notionally) both the application developer and system
+owner, that is less of a concern for you as you control the whole stack.
 
-Memory state around the buggy address:
- ffff88802943da00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88802943da80: fb fb fb fb fb fb fc fc fc fc fc fc fc fc fc fc
->ffff88802943db00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                      ^
- ffff88802943db80: fb fb fb fb fb fb fc fc fc fc fc fc fc fc fc fc
- ffff88802943dc00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-==================================================================
+> Hopefully I'm even making sense, but like I said, I don't have strong
+> feelings about the format, as long as we are able to achieve our
+> required use case of programmatically setting the run configuration
+> values from a libxdp user program.
 
+Sure, that you can certainly achieve with implementing what libxdp
+includes today. I'm just trying to make sure we explore any
+opportunities for standardising something useful so others can benefit
+from it as well; so I hope you'll forgive my probing :)
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+>> >> > Also, I do hope that the existing Go BTF libraries are good enough =
+to do
+>> >> > what's needed here, because if I'm understand correctly, that's how=
+ I'll
+>> >> > need to approach setting the XDP_RUN_CONFIG values for our use case.
+>> >>=20
+>> >> You'll need to *parse* BTF to *read* the XDP_RUN_CONFIG. Which is pre=
+tty
+>> >> basic, really, you just need to walk the BTF reference tree. Feel free
+>> >> to reuse the parsing code in libxdp; that is, in turn, adapted from t=
+he
+>> >> .maps section parsing code in libbpf :)
+>> >
+>> > OK, that makes sense. Since I want to keep our implementation purely
+>> > in Go (if possible), what I trying to say what that I hope there's an
+>> > existing Go library that can parse and read BTF (Cillium's Go eBPF
+>> > library looks promising). After thinking more about our orchestration
+>> > config data use case I was describing above, though, I don't think
+>> > reading XDP_RUN_CONFIG from BTF is strictly necessary for our use
+>> > case.
+>>=20
+>> See above re: my reasons for picking the BTF format. Not sure how you're
+>> developing the BPF programs, but it may turn out to be useful to have
+>> program authors specify defaults as well. E.g., you could have whatever
+>> process *inserts* programs into your database (assuming that's where you
+>> store the available programs) read default values from the BTF and
+>> pre-populate the admin UI with those when someone wants to load
+>> programs?
+>
+> We explicitly do not want defaults set by program authors. We want that
+> policy to be completely in the hands of the orchestration environment.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Right, OK. How does the admin configuring the orchestration system
+figure out which order to run programs in, BTW? Is this obvious from the
+nature of the programs, or do you document it out of band somewhere, or
+something like that?
+
+-Toke
+
