@@ -2,84 +2,108 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1238531DF3E
-	for <lists+bpf@lfdr.de>; Wed, 17 Feb 2021 19:52:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 696D631DF82
+	for <lists+bpf@lfdr.de>; Wed, 17 Feb 2021 20:21:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234437AbhBQSuw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Feb 2021 13:50:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48132 "EHLO
+        id S232792AbhBQTUL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Feb 2021 14:20:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232565AbhBQSuu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Feb 2021 13:50:50 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02401C061574;
-        Wed, 17 Feb 2021 10:50:11 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id t25so9066240pga.2;
-        Wed, 17 Feb 2021 10:50:10 -0800 (PST)
+        with ESMTP id S232691AbhBQTUE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Feb 2021 14:20:04 -0500
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 145D0C061574;
+        Wed, 17 Feb 2021 11:19:24 -0800 (PST)
+Received: by mail-io1-xd29.google.com with SMTP id s17so6858861ioj.4;
+        Wed, 17 Feb 2021 11:19:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7oIUj3r8BxsFmJaSw1nh70Ej/VN6R/q+ROJC0MVOM+w=;
-        b=rumPC0zb9rt43N+U3HRnoTi2SDr7KFxE+60QH4hXpdo86oQo5G//dLfTUp3B0KRelC
-         pNsptm0H72gYHBlI8NVvtZs3qkUKnz9Ogn+dhqCMbvJcpQbv4PFm/WnyUcE/CRRLQ1Qr
-         48vYyvzDZrv0Sflvaifh/RX75yxdwAP8S7maS92OATwG3osYzbMAMsDn+Ahyl5Z3msa+
-         1MzAJ4Okbi8/jR5TXWexBKjHy5vOVjTrRXvB/Rm0YR/h+NyUA0E0a+oSME/sok2bUda/
-         39hhvleTB4JVmxln9nlQECsnEcHDGQUUGLOlTb9UDbmM+2xdkEhNLIhIYKLkVoW5EYq/
-         KeIw==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=dpCrMI2t6+b/MeJZIr9UxYXodaRVsni1orGaLrBQ0yE=;
+        b=k5uLXs1EYLtBPa3OuM4WzyYITShpfI9h1Fbh8iMghoRaNt58moAUOx62i5MEVUWQ8X
+         3hHCbnZZrhm2NozS/9LKNPfLzZhFMPHzsdM/macxF9MePY3xEDjqfSJM5n4muOuWYHpC
+         wTLGMztjzrOVMp3nLUO+dptq4voDSHvRBonGYDS+Gpz6VlOSCIXJhfE5OSQHe+TC4tcz
+         2XMJiTE++qe/E3KeFEUEKwZBQ8jwiq8xz08fmUanHAceVMFnzC06X7qxhdOSoX5d5PHX
+         Kle3d9OD4SXkeuH4ZKo9HPXz4fE6vCKJc+UO+WY1R7/66IAl61uMEwiU/UL776ro1n4M
+         pyfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7oIUj3r8BxsFmJaSw1nh70Ej/VN6R/q+ROJC0MVOM+w=;
-        b=oZBRLatJeJplHNDvUvsOvmNZyrj5heyQ5CBOEt7B/zV8nVXbwvWwyNRR7p6XVpa6F+
-         SHHOb6WTYEjo03CmEMpuTsCPs7scp3qDeZmGXpBrs0G7oYJSoTP4aeJIgWBKTpqIBfpf
-         Ji8zyrjxeFx4ozqbd+oOMc3iAzWfjtb6eX2HL5ctUug97waw3NpB7PGCOHsRYBxyWc9M
-         eXscwtHFZl8A4Xq5fqZuCQmulfDHBGk7Bk/8XYZZrUgi278UFoezXNRiBP7lnwz1HdAX
-         gYMefZCTzw42C0nAzwF2ntBAQoKO2K0Djsn2kFancEHRDGtaCTmBXgFt2ZF6xpheRLdL
-         Tppg==
-X-Gm-Message-State: AOAM533yI+wTfgl3R7C3xZzysL64sV7yYmyl3uTNJ3U995Om25/PuKbQ
-        YdJOrkNEFmfOAhk1ZN/VSjkfR8xji1xkhZAAVb4=
-X-Google-Smtp-Source: ABdhPJw+bnnZVwm1tzLuk03FP9MxicqJi6bFsBFr/OUQ98PDy4p4SxfWb068DoypiBVcjNXTVIF0GLD4ZZ9lbU9Z1zE=
-X-Received: by 2002:a62:ed01:0:b029:1c8:c6c:16f0 with SMTP id
- u1-20020a62ed010000b02901c80c6c16f0mr629266pfh.80.1613587810571; Wed, 17 Feb
- 2021 10:50:10 -0800 (PST)
-MIME-Version: 1.0
-References: <20210216064250.38331-1-xiyou.wangcong@gmail.com>
- <20210216064250.38331-5-xiyou.wangcong@gmail.com> <602d631877e40_aed9208bc@john-XPS-13-9370.notmuch>
-In-Reply-To: <602d631877e40_aed9208bc@john-XPS-13-9370.notmuch>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Wed, 17 Feb 2021 10:49:59 -0800
-Message-ID: <CAM_iQpXBC49FBAf2LLANz94OFnVKoJADc9yePJBUuvMARbfq7w@mail.gmail.com>
-Subject: Re: [Patch bpf-next v4 4/5] skmsg: move sk_redir from TCP_SKB_CB to skb
-To:     John Fastabend <john.fastabend@gmail.com>
-Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, duanxiongchun@bytedance.com,
-        Dongdong Wang <wangdongdong.6@bytedance.com>,
-        Jiang Wang <jiang.wang@bytedance.com>,
-        Cong Wang <cong.wang@bytedance.com>,
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=dpCrMI2t6+b/MeJZIr9UxYXodaRVsni1orGaLrBQ0yE=;
+        b=Avo26TRKn4QU6EYKVnAFT7lygd9mBzbZ+FNGskqvv5PpJSCoMiwIkZfb4Fjv3ukDKT
+         3oLNMeD8NTWmIdzddD3zMUx0CQSzi3L4K6lCxTNzDqVG3nHoU4IwgpuDH1Gqpj03arur
+         d88CVr8LzEiK1Stxw/EdL30v9Lan7j7bGQjq9Y0WM+dKh7vMIvkuKZP9UVSOJaOUlofZ
+         2ePIBGt7+FON0nMRjFFEnUBhUrCC76AhQJ382DXSsTGG4cVHEi6wnJQ5mqx8iPySmVWU
+         94Py7OR9lKQPUod08s48CzWUjsA7JDghfY9PaadUlR6yHEdCM7z8QH7vgQ9/vfdw/wai
+         xK1g==
+X-Gm-Message-State: AOAM532oMlHlLm5yo5tusz7GEbuS4CGVfDlXjw+q2U7JmBFQ86wkQzWH
+        5EMjSR9DmSFY+M9OMLT3t/3v9B/QSDg=
+X-Google-Smtp-Source: ABdhPJzjn2Q0nlblmM4L+QowysVbyvLKDlXl4HtP+X+SEXBxHLNtlE0MwpoDTjxUX6dlnxPfhqW0ow==
+X-Received: by 2002:a02:c60c:: with SMTP id i12mr972596jan.28.1613589563141;
+        Wed, 17 Feb 2021 11:19:23 -0800 (PST)
+Received: from localhost ([172.243.146.206])
+        by smtp.gmail.com with ESMTPSA id w9sm2004289ioj.0.2021.02.17.11.19.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Feb 2021 11:19:22 -0800 (PST)
+Date:   Wed, 17 Feb 2021 11:19:16 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Lorenz Bauer <lmb@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Cong Wang <xiyou.wangcong@gmail.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        duanxiongchun@bytedance.com, wangdongdong.6@bytedance.com,
+        jiang.wang@bytedance.com, Cong Wang <cong.wang@bytedance.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Lorenz Bauer <lmb@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+        Jakub Sitnicki <jakub@cloudflare.com>
+Message-ID: <602d6c342d136_aed9208a3@john-XPS-13-9370.notmuch>
+In-Reply-To: <CACAyw99k43REGCh8cP1PioV+k-_BRAjecVHcmtOdL6fi2shxkQ@mail.gmail.com>
+References: <20210213214421.226357-1-xiyou.wangcong@gmail.com>
+ <20210213214421.226357-5-xiyou.wangcong@gmail.com>
+ <602ac96f9e30f_3ed41208b6@john-XPS-13-9370.notmuch>
+ <CACAyw99k43REGCh8cP1PioV+k-_BRAjecVHcmtOdL6fi2shxkQ@mail.gmail.com>
+Subject: Re: [Patch bpf-next v3 4/5] skmsg: use skb ext instead of TCP_SKB_CB
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 10:40 AM John Fastabend
-<john.fastabend@gmail.com> wrote:
-> > @@ -802,9 +809,10 @@ int sk_psock_tls_strp_read(struct sk_psock *psock, struct sk_buff *skb)
-> >                * TLS context.
-> >                */
-> >               skb->sk = psock->sk;
-> > -             tcp_skb_bpf_redirect_clear(skb);
-> > +             skb_dst_drop(skb);
-> > +             skb_bpf_redirect_clear(skb);
->
-> Do we really need the skb_dst_drop() I thought we would have already dropped this here
-> but I've not had time to check yet.
+Lorenz Bauer wrote:
+> On Mon, 15 Feb 2021 at 19:20, John Fastabend <john.fastabend@gmail.com> wrote:
+> >
+> > Cong Wang wrote:
+> > > From: Cong Wang <cong.wang@bytedance.com>
+> > >
+> > > Currently TCP_SKB_CB() is hard-coded in skmsg code, it certainly
+> > > does not work for any other non-TCP protocols. We can move them to
+> > > skb ext instead of playing with skb cb, which is harder to make
+> > > correct.
+> > >
+> > > Cc: John Fastabend <john.fastabend@gmail.com>
+> > > Cc: Daniel Borkmann <daniel@iogearbox.net>
+> > > Cc: Jakub Sitnicki <jakub@cloudflare.com>
+> > > Reviewed-by: Lorenz Bauer <lmb@cloudflare.com>
+> > > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> > > ---
+> >
+> > I'm not seeing the advantage of doing this at the moment. We can
+> > continue to use cb[] here, which is simpler IMO and use the ext
+> > if needed for the other use cases. This is adding a per packet
+> > alloc cost that we don't have at the moment as I understand it.
+> 
+> John, do you have a benchmark we can look at? Right now we're arguing
+> in the abstract.
 
-Yes, I got some serious complaints from dst_release() when I didn't
-add skb_dst_drop().
+Sure, but looks like Cong found some spare fields in sk_buff so
+that looks much nicer.
 
-Thanks.
+I'll mess aound a bit with our benchmarks and see where we can
+publish them. It would be good to have some repeatable tests
+here folks can use.
+
+Thanks,
+John
