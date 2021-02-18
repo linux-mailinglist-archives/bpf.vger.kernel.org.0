@@ -2,268 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D093031F161
-	for <lists+bpf@lfdr.de>; Thu, 18 Feb 2021 21:52:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 496A731F1D4
+	for <lists+bpf@lfdr.de>; Thu, 18 Feb 2021 22:54:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230481AbhBRUvs (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Feb 2021 15:51:48 -0500
-Received: from mail2.protonmail.ch ([185.70.40.22]:20619 "EHLO
-        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230386AbhBRUvh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Feb 2021 15:51:37 -0500
-Date:   Thu, 18 Feb 2021 20:50:45 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1613681453; bh=zQHj3/HKAPzvECNoTNIwcCk1EJt5vsh7hS7FKXiS/sc=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=ZaAJ7yWJwbDMTAjxsDj8pZLoYRkqBi4sWW6AeXYn8ntBUm9OQI5VlFBidbm4Vk/J9
-         ScDTN4/bAGVmPuAluGnPDBRMifCI1ymQtFsRxuYJ6G0Az22QJrTuj5oW544niOYTtS
-         v9uwIEzsYCZHI/oRdRfIvvP3jEbGnlrGTVoH1qdF2F9QzwB5BeA47PecaskfDA6JoQ
-         I8OA+wXsv7hX7om4UZLwv1iqohoTus65qybOhrGoX0Cf9JdmlahNuST4NoTNU5upx7
-         eZym8XS+4yqz5zsNMX+h7iuTfut+UtaJS/QLWYb67mXxzPzqNqnmekBPZyJdo8FAnf
-         fnEW6twX25uzg==
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Magnus Karlsson <magnus.karlsson@intel.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Dust Li <dust.li@linux.alibaba.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH v8 bpf-next 5/5] xsk: build skb by page (aka generic zerocopy xmit)
-Message-ID: <20210218204908.5455-6-alobakin@pm.me>
-In-Reply-To: <20210218204908.5455-1-alobakin@pm.me>
-References: <20210218204908.5455-1-alobakin@pm.me>
+        id S229752AbhBRVyU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Feb 2021 16:54:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229623AbhBRVyQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Feb 2021 16:54:16 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D43FC061786
+        for <bpf@vger.kernel.org>; Thu, 18 Feb 2021 13:53:36 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id p2so6144587edm.12
+        for <bpf@vger.kernel.org>; Thu, 18 Feb 2021 13:53:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cilium-io.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lJX+ZMsQFOWh/ba1+WgKu7gSDHan7w+sAnp5mRPqmFs=;
+        b=qxyeTiuy22RCnVh8B19E2C3WJe4/GAfIMEcFal09Vr1R8jkF0fcS7iuRfE12SLBhJS
+         1kM3pIULy7nR1fcTOyrXbdtaOn+gEd2dtEW2ViCVHBFv14wYkMyE5gOB5h3L2fJhJiZX
+         +UyDApjyx3GIoxWko3xfy1wK9IJ0nr2fyYYZy1Uwaf6X9AS5D0UTFiO6TRICdNvj6G1q
+         PCg0lQl2soAgeX1Ill+R846955emmLqOHz1HSDytr+Hkn2YxhVwRhzwvUxRLKum89ZPf
+         Y/aZOqp6E6n8O5BF8sy9qli56bHWzdQ1VullT3oV8XKmlEssf77LSatV3EjTji5sjZpe
+         lErw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lJX+ZMsQFOWh/ba1+WgKu7gSDHan7w+sAnp5mRPqmFs=;
+        b=Sn/5jApZoQZS6iLJGqGvWEo3gSTNC0LdA2O0FrqJQnq5gpN+yW0jViW6SXGcpSS78v
+         etEIZMbdkhULSLppXn9qZebnGaPRg1/JfTfOa1/fxVFSfJcKGJx7ljSn1v0soLm8gBu9
+         QarODVdvM+2aw5/jMfheHQLu/r2/4AlmV/tOYSzZkmc1QW8hMie0UOABbaFTN0m2zpAL
+         eqgh9/Jh/4PpDAEb3JYFhtpHYvtswJ5h2jfonlUXC/wbFp3BM7KgUNEDnSjfbz04hA9Z
+         TA5rcEiCtinbj5gE5yNjVP0WnZ6yCnFmGwWKV5A07jR5wrppUiIqABK+pQHcC0cNgC01
+         ZOxQ==
+X-Gm-Message-State: AOAM532KesNh2C9Y0hJT9pfOAQbcu3c6XhT0Z/tuGTOvyD4O5zQNMUmj
+        00gsfNjjWmYL6kokCNqFCzK/nQDBfslRhv6F1cEk6A==
+X-Google-Smtp-Source: ABdhPJx6esC1ykZG4JP73jw6Pk1PfFUrMY6GFvDJ8ibNbSS+w6Ax6Wqo4wCqt4+6thT9SEHL4Y5IFA==
+X-Received: by 2002:a05:6402:34c1:: with SMTP id w1mr6149934edc.147.1613685214256;
+        Thu, 18 Feb 2021 13:53:34 -0800 (PST)
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com. [209.85.128.54])
+        by smtp.gmail.com with ESMTPSA id da12sm877418edb.52.2021.02.18.13.53.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Feb 2021 13:53:33 -0800 (PST)
+Received: by mail-wm1-f54.google.com with SMTP id x4so5220421wmi.3;
+        Thu, 18 Feb 2021 13:53:33 -0800 (PST)
+X-Received: by 2002:a1c:e90d:: with SMTP id q13mr5313193wmc.136.1613685213123;
+ Thu, 18 Feb 2021 13:53:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+References: <20210217010821.1810741-1-joe@wand.net.nz> <871rdewqf2.fsf@meer.lwn.net>
+ <CADa=RyzDXeJeW7jAVce0zfGX2zN5ZcAv5nwYsX7EtAz=bgZYkg@mail.gmail.com> <878s7lrxcc.fsf@meer.lwn.net>
+In-Reply-To: <878s7lrxcc.fsf@meer.lwn.net>
+From:   Joe Stringer <joe@cilium.io>
+Date:   Thu, 18 Feb 2021 13:53:21 -0800
+X-Gmail-Original-Message-ID: <CAOftzPjMCpkvbTddgv_BFCLsN33m=LENMzxa-VA_18sbnch=+g@mail.gmail.com>
+Message-ID: <CAOftzPjMCpkvbTddgv_BFCLsN33m=LENMzxa-VA_18sbnch=+g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 00/17] Improve BPF syscall command documentation
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     bpf <bpf@vger.kernel.org>, linux-man@vger.kernel.org,
+        Networking <netdev@vger.kernel.org>, mtk.manpages@gmail.com,
+        Alexei Starovoitov <ast@kernel.org>,
+        Brian Vazquez <brianvv@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Daniel Mack <daniel@zonque.org>,
+        john fastabend <john.fastabend@gmail.com>,
+        Petar Penkov <ppenkov@google.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Sean Young <sean@mess.org>, Yonghong Song <yhs@fb.com>,
+        linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+On Thu, Feb 18, 2021 at 11:49 AM Jonathan Corbet <corbet@lwn.net> wrote:
+>
+> Joe Stringer <joe@cilium.io> writes:
+> > * The changes in patch 16 here extended Documentation/bpf/index.rst,
+> > but to assist in improving the overall kernel documentation
+> > organisation / hierarchy, you would prefer to instead introduce a
+> > dedicated Documentation/userspace-api/bpf/ directory where the bpf
+> > uAPI portions can be documented.
+>
+> An objective I've been working on for some years is reorienting the
+> documentation with a focus on who the readers are.  We've tended to
+> organize it by subsystem, requiring people to wade through a lot of
+> stuff that isn't useful to them.  So yes, my preference would be to
+> document the kernel's user-space API in the relevant manual.
+>
+> That said, I do tend to get pushback here at times, and the BPF API is
+> arguably a bit different that much of the rest.  So while the above
+> preference exists and is reasonably strong, the higher priority is to
+> get good, current documentation in *somewhere* so that it's available to
+> users.  I don't want to make life too difficult for people working
+> toward that goal, even if I would paint it a different color.
 
-This patch is used to construct skb based on page to save memory copy
-overhead.
+Sure, I'm all for it. Unless I hear alternative feedback I'll roll it
+under Documentation/userspace-api/bpf in the next revision.
 
-This function is implemented based on IFF_TX_SKB_NO_LINEAR. Only the
-network card priv_flags supports IFF_TX_SKB_NO_LINEAR will use page to
-directly construct skb. If this feature is not supported, it is still
-necessary to copy data to construct skb.
+> > In addition to this, today the bpf helpers documentation is built
+> > through the bpftool build process as well as the runtime bpf
+> > selftests, mostly as a way to ensure that the API documentation
+> > conforms to a particular style, which then assists with the generation
+> > of ReStructured Text and troff output. I can probably simplify the
+> > make infrastructure involved in triggering the bpf docs build for bpf
+> > subsystem developers and maintainers. I think there's likely still
+> > interest from bpf folks to keep that particular dependency in the
+> > selftests like today and even extend it to include this new
+> > Documentation, so that we don't either introduce text that fails
+> > against the parser or in some other way break the parser. Whether that
+> > validation is done by scripts/kernel-doc or scripts/bpf_helpers_doc.py
+> > doesn't make a big difference to me, other than I have zero experience
+> > with Perl. My first impressions are that the bpf_helpers_doc.py is
+> > providing stricter formatting requirements than what "DOC: " +
+> > kernel-doc would provide, so my baseline inclination would be to keep
+> > those patches to enhance that script and use that for the validation
+> > side (help developers with stronger linting feedback), then use
+> > kernel-doc for the actual html docs generation side, which would help
+> > to satisfy your concern around duplication of the documentation build
+> > systems.
+>
+> This doesn't sound entirely unreasonable.  I wonder if the BPF helper
+> could be built into an sphinx extension to make it easy to pull that
+> information into the docs build.  The advantage there is that it can be
+> done in Python :)
 
----------------- Performance Testing ------------
+Probably doable, it's already written in python. One thing at a time
+though... :)
 
-The test environment is Aliyun ECS server.
-Test cmd:
-```
-xdpsock -i eth0 -t  -S -s <msg size>
-```
-
-Test result data:
-
-size    64      512     1024    1500
-copy    1916747 1775988 1600203 1440054
-page    1974058 1953655 1945463 1904478
-percent 3.0%    10.0%   21.58%  32.3%
-
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
-[ alobakin:
- - expand subject to make it clearer;
- - improve skb->truesize calculation;
- - reserve some headroom in skb for drivers;
- - tailroom is not needed as skb is non-linear ]
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
-Acked-by: John Fastabend <john.fastabend@gmail.com>
----
- net/xdp/xsk.c | 120 ++++++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 96 insertions(+), 24 deletions(-)
-
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index 143979ea4165..a71ed664da0a 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -445,6 +445,97 @@ static void xsk_destruct_skb(struct sk_buff *skb)
- =09sock_wfree(skb);
- }
-
-+static struct sk_buff *xsk_build_skb_zerocopy(struct xdp_sock *xs,
-+=09=09=09=09=09      struct xdp_desc *desc)
-+{
-+=09struct xsk_buff_pool *pool =3D xs->pool;
-+=09u32 hr, len, ts, offset, copy, copied;
-+=09struct sk_buff *skb;
-+=09struct page *page;
-+=09void *buffer;
-+=09int err, i;
-+=09u64 addr;
-+
-+=09hr =3D max(NET_SKB_PAD, L1_CACHE_ALIGN(xs->dev->needed_headroom));
-+
-+=09skb =3D sock_alloc_send_skb(&xs->sk, hr, 1, &err);
-+=09if (unlikely(!skb))
-+=09=09return ERR_PTR(err);
-+
-+=09skb_reserve(skb, hr);
-+
-+=09addr =3D desc->addr;
-+=09len =3D desc->len;
-+=09ts =3D pool->unaligned ? len : pool->chunk_size;
-+
-+=09buffer =3D xsk_buff_raw_get_data(pool, addr);
-+=09offset =3D offset_in_page(buffer);
-+=09addr =3D buffer - pool->addrs;
-+
-+=09for (copied =3D 0, i =3D 0; copied < len; i++) {
-+=09=09page =3D pool->umem->pgs[addr >> PAGE_SHIFT];
-+=09=09get_page(page);
-+
-+=09=09copy =3D min_t(u32, PAGE_SIZE - offset, len - copied);
-+=09=09skb_fill_page_desc(skb, i, page, offset, copy);
-+
-+=09=09copied +=3D copy;
-+=09=09addr +=3D copy;
-+=09=09offset =3D 0;
-+=09}
-+
-+=09skb->len +=3D len;
-+=09skb->data_len +=3D len;
-+=09skb->truesize +=3D ts;
-+
-+=09refcount_add(ts, &xs->sk.sk_wmem_alloc);
-+
-+=09return skb;
-+}
-+
-+static struct sk_buff *xsk_build_skb(struct xdp_sock *xs,
-+=09=09=09=09     struct xdp_desc *desc)
-+{
-+=09struct net_device *dev =3D xs->dev;
-+=09struct sk_buff *skb;
-+
-+=09if (dev->priv_flags & IFF_TX_SKB_NO_LINEAR) {
-+=09=09skb =3D xsk_build_skb_zerocopy(xs, desc);
-+=09=09if (IS_ERR(skb))
-+=09=09=09return skb;
-+=09} else {
-+=09=09u32 hr, tr, len;
-+=09=09void *buffer;
-+=09=09int err;
-+
-+=09=09hr =3D max(NET_SKB_PAD, L1_CACHE_ALIGN(dev->needed_headroom));
-+=09=09tr =3D dev->needed_tailroom;
-+=09=09len =3D desc->len;
-+
-+=09=09skb =3D sock_alloc_send_skb(&xs->sk, hr + len + tr, 1, &err);
-+=09=09if (unlikely(!skb))
-+=09=09=09return ERR_PTR(err);
-+
-+=09=09skb_reserve(skb, hr);
-+=09=09skb_put(skb, len);
-+
-+=09=09buffer =3D xsk_buff_raw_get_data(xs->pool, desc->addr);
-+=09=09err =3D skb_store_bits(skb, 0, buffer, len);
-+=09=09if (unlikely(err)) {
-+=09=09=09kfree_skb(skb);
-+=09=09=09return ERR_PTR(err);
-+=09=09}
-+=09}
-+
-+=09skb->dev =3D dev;
-+=09skb->priority =3D xs->sk.sk_priority;
-+=09skb->mark =3D xs->sk.sk_mark;
-+=09skb_shinfo(skb)->destructor_arg =3D (void *)(long)desc->addr;
-+=09skb->destructor =3D xsk_destruct_skb;
-+
-+=09return skb;
-+}
-+
- static int xsk_generic_xmit(struct sock *sk)
- {
- =09struct xdp_sock *xs =3D xdp_sk(sk);
-@@ -454,56 +545,37 @@ static int xsk_generic_xmit(struct sock *sk)
- =09struct sk_buff *skb;
- =09unsigned long flags;
- =09int err =3D 0;
--=09u32 hr, tr;
-
- =09mutex_lock(&xs->mutex);
-
- =09if (xs->queue_id >=3D xs->dev->real_num_tx_queues)
- =09=09goto out;
-
--=09hr =3D max(NET_SKB_PAD, L1_CACHE_ALIGN(xs->dev->needed_headroom));
--=09tr =3D xs->dev->needed_tailroom;
--
- =09while (xskq_cons_peek_desc(xs->tx, &desc, xs->pool)) {
--=09=09char *buffer;
--=09=09u64 addr;
--=09=09u32 len;
--
- =09=09if (max_batch-- =3D=3D 0) {
- =09=09=09err =3D -EAGAIN;
- =09=09=09goto out;
- =09=09}
-
--=09=09len =3D desc.len;
--=09=09skb =3D sock_alloc_send_skb(sk, hr + len + tr, 1, &err);
--=09=09if (unlikely(!skb))
-+=09=09skb =3D xsk_build_skb(xs, &desc);
-+=09=09if (IS_ERR(skb)) {
-+=09=09=09err =3D PTR_ERR(skb);
- =09=09=09goto out;
-+=09=09}
-
--=09=09skb_reserve(skb, hr);
--=09=09skb_put(skb, len);
--
--=09=09addr =3D desc.addr;
--=09=09buffer =3D xsk_buff_raw_get_data(xs->pool, addr);
--=09=09err =3D skb_store_bits(skb, 0, buffer, len);
- =09=09/* This is the backpressure mechanism for the Tx path.
- =09=09 * Reserve space in the completion queue and only proceed
- =09=09 * if there is space in it. This avoids having to implement
- =09=09 * any buffering in the Tx path.
- =09=09 */
- =09=09spin_lock_irqsave(&xs->pool->cq_lock, flags);
--=09=09if (unlikely(err) || xskq_prod_reserve(xs->pool->cq)) {
-+=09=09if (xskq_prod_reserve(xs->pool->cq)) {
- =09=09=09spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
- =09=09=09kfree_skb(skb);
- =09=09=09goto out;
- =09=09}
- =09=09spin_unlock_irqrestore(&xs->pool->cq_lock, flags);
-
--=09=09skb->dev =3D xs->dev;
--=09=09skb->priority =3D sk->sk_priority;
--=09=09skb->mark =3D sk->sk_mark;
--=09=09skb_shinfo(skb)->destructor_arg =3D (void *)(long)desc.addr;
--=09=09skb->destructor =3D xsk_destruct_skb;
--
- =09=09err =3D __dev_direct_xmit(skb, xs->queue_id);
- =09=09if  (err =3D=3D NETDEV_TX_BUSY) {
- =09=09=09/* Tell user-space to retry the send */
---
-2.30.1
-
-
+Cheers,
+Joe
