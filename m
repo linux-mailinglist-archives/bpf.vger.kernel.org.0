@@ -2,54 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1160231EEE3
+	by mail.lfdr.de (Postfix) with ESMTP id 8190031EEE4
 	for <lists+bpf@lfdr.de>; Thu, 18 Feb 2021 19:49:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232296AbhBRSsw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Feb 2021 13:48:52 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:60200 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234349AbhBRRb7 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 18 Feb 2021 12:31:59 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11IHF4QR006572;
-        Thu, 18 Feb 2021 09:29:54 -0800
+        id S232550AbhBRStB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Feb 2021 13:49:01 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:22794 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234535AbhBRRlA (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 18 Feb 2021 12:41:00 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 11IHapuD010333;
+        Thu, 18 Feb 2021 09:39:52 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
  references : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=8aP8zPrN2c3nl+SjleBosEcLsMU0Mtr4FTfkP59ndYY=;
- b=iJVY+Kqos1GVmJ2yLMbGL8lF/zVFu9OApRhT+yuL6vNUst146k7VV6MMOpdTJD11aOPT
- s40AsY0l6Gv0c13TawaNXxR//OaUSqcN5pO298l0N+vIi4nsaZkd38cM+2XUdor8vi9i
- YWFjEs9gW+KI0sgUxm1dVYBRtrth2oxZRn4= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 36s10th545-2
+ bh=vRhQHxDotIGSYCuRhuuZkB1Hxs8KA1Pp1zuhVmhIoLQ=;
+ b=bHMPIpfbnZdD+zkLApfC9QJR43JfY5XpLgAcZxtXKS8jWoseJVlOmKWHkaHPvqrucIED
+ xg5FlSG3/gHygvZSL3U/k/eP21n7/QLy49oekjBBF4PghGqgup+KklPFA0KJ+kFVR6H6
+ zRgXlN34Pysc25KzKG+T8zHsOZM/iooIttc= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 36svm782wr-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 18 Feb 2021 09:29:53 -0800
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.229) with Microsoft SMTP Server
+        Thu, 18 Feb 2021 09:39:52 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 18 Feb 2021 09:29:52 -0800
+ 15.1.1979.3; Thu, 18 Feb 2021 09:39:51 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nCvVU2NEwPn6gfTJeDaZXiBW1eGjqmuC31NtQUdwPpgktzIr087fc0yvkoP/vo7kLRFzIYONWx8gF7xzkXI5022WdFkJ3LDDeWwwsxsuNa0taf4J1aoxnoaEboGVeCzhv9W9RiC9bhxHordo0Wf9WM0KpJQqyhxA5WbaJX8TMhh+LOit3mDhi6bXE1dcyP2Kcfbg56DiNztrIwV3uh8i4ADR5apTsBK3xlhwneg4+/g1V79ax8VBKbvrmdOm170VZejM72pr5C/h+bfndDJHweBl3aIinZvrs/c7IUBeOvAMYf35yKp4ZuRQap6jS1LUyRDqTHYOa2ismv5WgOxDLQ==
+ b=QU4FV8ld3QeIAWW8Nd4woNEnhdBUqUguW6GolPqkhqp6WxJNnvA4BTBjUZN+tWal+C1ud7n/fz3WWp/hrSlMQFPC9mayGWeRaQFoZKNyjtRk5MsW4tO1lrYUAYJZGvFz1QgEPqiS3qZJ7XkbZmz6l9MEFGt3ZSqtAsYoEZiIYWl60nrC1Qm6Nr/LPv9zjFsS+ZHhg45M7SwoYS+5Nz9H7YUp7Tpyd+xwAE/ZwdL3cqu7dzakYaVX3d2+Av1g73uYk3TH6ZEmC9DC26oApfUflG8+d3+SwQHWzwevZEs0CVotWep01oeds+HpRTphs68+RKxv1bt/Cr7HIpVZvg6XLw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8aP8zPrN2c3nl+SjleBosEcLsMU0Mtr4FTfkP59ndYY=;
- b=eY2Iu3j8yXTM1fMx47NSolPUVQ4IakOABgPAdkci0dFEMjPNTpRmQYMEquXh9v4Ac/S/OtZ/TmyJey6yxEdU2eHjZ7t4ui/Bs0J0wTRc9WdVQc2oszeBVbZp5YuzTDZGM3HFDS6JCY4nW0TThPtCgBYsZTvgIogxWbwFX08tLT1KgUH7+HKvp7vJv+74yll+Vgxn47qCzZ8k5mcD6VXzFC/LImHLdl2HPN8fdMWIxqR+7sW+1+FDhWEvzOvaWV5Rt6qaP4/t54wN0euSzxXh1YG3hCTxvsslzw+zYnCawuwU71IMGN3KuAKX/mVP6vtPER4XAeNcDq0w0/HwU/GRoQ==
+ bh=vRhQHxDotIGSYCuRhuuZkB1Hxs8KA1Pp1zuhVmhIoLQ=;
+ b=Bwv7nFKZWohZCN33YaV0Y3+l0NtEgpFy8cnAu0ufQgZYmU7cuEMpvScsPKDK0FkIEfzqu7t3NkB0pgOiUUP5gTv5r35WZ8f96LO235JBtPLhbhbCZUTy1hnqb+7MdhMT3VP8EqEUc8wPgMx9H6R4/8D8HhH2gt8T+TodCCTvIqHTWer2ctbnO6rzLSXqd4vsppxdg0DLfx07vvKSMaiOOICV7BQZr7Z+QfoErdV8x2KJJhGE5T3mzUz8YxfPaq8nBxzwuvgSzxkrT4grvr/i9G/GWbp4u04wch83t5h+3Kpc7SiiJ+tFhBzFcUfd2hOXE78/I7dFywz6YeG8QgfuwA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 Authentication-Results: linux.ibm.com; dkim=none (message not signed)
  header.d=none;linux.ibm.com; dmarc=none action=none header.from=fb.com;
 Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB2887.namprd15.prod.outlook.com (2603:10b6:a03:f9::17) with
+ by BY5PR15MB3569.namprd15.prod.outlook.com (2603:10b6:a03:1ff::32) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.29; Thu, 18 Feb
- 2021 17:29:51 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.30; Thu, 18 Feb
+ 2021 17:39:50 +0000
 Received: from BYAPR15MB4088.namprd15.prod.outlook.com
  ([fe80::61d6:781d:e0:ada5]) by BYAPR15MB4088.namprd15.prod.outlook.com
  ([fe80::61d6:781d:e0:ada5%5]) with mapi id 15.20.3846.041; Thu, 18 Feb 2021
- 17:29:51 +0000
+ 17:39:50 +0000
 Subject: Re: [PATCH bpf-next 2/6] libbpf: Add BTF_KIND_FLOAT support
 To:     Ilya Leoshkevich <iii@linux.ibm.com>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -60,83 +60,83 @@ CC:     <bpf@vger.kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>,
         Vasily Gorbik <gor@linux.ibm.com>
 References: <20210216011216.3168-1-iii@linux.ibm.com>
  <20210216011216.3168-3-iii@linux.ibm.com>
- <a9e9ed02-8791-28b1-60a8-44ea46525d17@fb.com>
- <4d581ca7743982cb4a1e5baaef2165918f4a2535.camel@linux.ibm.com>
+ <ace21632-0292-bcde-d87b-fc3b00fc612c@fb.com>
+ <8c88e095fdd48e9d71693021b3048119f45895e6.camel@linux.ibm.com>
 From:   Yonghong Song <yhs@fb.com>
-Message-ID: <d88d1796-d70c-38f8-54c8-fb08e6c54380@fb.com>
-Date:   Thu, 18 Feb 2021 09:29:46 -0800
+Message-ID: <9f03bbc4-8664-e093-d6dc-b9737309a313@fb.com>
+Date:   Thu, 18 Feb 2021 09:39:47 -0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.7.1
-In-Reply-To: <4d581ca7743982cb4a1e5baaef2165918f4a2535.camel@linux.ibm.com>
+In-Reply-To: <8c88e095fdd48e9d71693021b3048119f45895e6.camel@linux.ibm.com>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 X-Originating-IP: [2620:10d:c090:400::5:5a6d]
-X-ClientProxiedBy: MW4PR04CA0251.namprd04.prod.outlook.com
- (2603:10b6:303:88::16) To BYAPR15MB4088.namprd15.prod.outlook.com
+X-ClientProxiedBy: MW4PR03CA0389.namprd03.prod.outlook.com
+ (2603:10b6:303:114::34) To BYAPR15MB4088.namprd15.prod.outlook.com
  (2603:10b6:a02:c3::18)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21c1::1506] (2620:10d:c090:400::5:5a6d) by MW4PR04CA0251.namprd04.prod.outlook.com (2603:10b6:303:88::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.28 via Frontend Transport; Thu, 18 Feb 2021 17:29:50 +0000
+Received: from [IPv6:2620:10d:c085:21c1::1506] (2620:10d:c090:400::5:5a6d) by MW4PR03CA0389.namprd03.prod.outlook.com (2603:10b6:303:114::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.28 via Frontend Transport; Thu, 18 Feb 2021 17:39:50 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ad3dea7e-1307-4767-3b56-08d8d432cc60
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2887:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB28875803752D09B088C0CC16D3859@BYAPR15MB2887.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: f00779e6-258e-46e8-99fc-08d8d434318b
+X-MS-TrafficTypeDiagnostic: BY5PR15MB3569:
+X-Microsoft-Antispam-PRVS: <BY5PR15MB356970797115190D77621BF4D3859@BY5PR15MB3569.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Oob-TLC-OOBClassifiers: OLM:374;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: P/Lex5/LweVgV54ltIDS9z311DzgDSMmwAlbhupvIQssYv3nuRTgoFgFykZsji2b1nFh4BKSbn7SgvIB1SdjILYTu9UtopjU+RtZ+MmIKPp2wT2RBW+H7Ojpa1Ik87Ma+Ok4tQurs0qQYvRq6xQDqSl5fEDenf3OziWJrAPmwuFRXiFGczmYnr7dKKlZJUn1XWiqjDpc58LlRQZ9+HOAU0YyX/yGIW8ipWupYJD1/TDNRNBGqtdjANJw2IVnhhf4K0r3dimjicpvuKq45pmCDSwyaSdoPxuHMXoZsasx2lChfXuUrbGmROhk2s/MST0/ZFE0cVhbGiE300Repcp51TKQtO++7DyDdDlfMFjma9j0+heRPOqig0StwJKKzenBln7jMxlqB4miIldO0WLt+uQTa3cEMu2+B7o0FtxxvptXHWtOuJ4Za+9sHaXl2vCgei2PpqjwMjCLrRNuGhm804+dYkJjBCJzhEpw2+GRcr/vOolc3IuClWGfNugEYVvZ3n6WvlWqSYveEOUOwToSqt9k9TOvXUxmwFeSZ2SdGrurQFEku1dFH7fyaoxGQvbur0pm832czyD8rsyhJ7oeQZdepE9uTrc3qLWafoye95Q=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(346002)(136003)(376002)(396003)(39860400002)(2616005)(110136005)(8936002)(53546011)(8676002)(31686004)(316002)(16526019)(83380400001)(86362001)(478600001)(4326008)(54906003)(186003)(2906002)(5660300002)(31696002)(6486002)(6666004)(36756003)(66946007)(66476007)(66556008)(52116002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?Y0x0NmxCOFdmR1lwSmRhc1RBVVYvMjRDQ0o0eEw2QlNKS0ZKVnhPVVB0c1J5?=
- =?utf-8?B?UWpuWWkxeHhIeUF0NktCMm9mYkdHWk1XTnhXNVlRRHNINW1ncW9xdVpLcXV3?=
- =?utf-8?B?UjNISTJES2Q5MnpjK2p4YTA2VjAvUXoyaWQwT3JkQTdJbDJnMisyZkdnOXFl?=
- =?utf-8?B?LzM1MzhSTk1Wb2tRL0NvV1k5VStYRUxYbFVCaUFIUnBpTDJjSFJwY0gvTHJF?=
- =?utf-8?B?czAxOHJQeDV1UWxtK0lQd2I1aW5wQXE2VTRuODYzejBZeUdoR0srNFZVQ3cx?=
- =?utf-8?B?VmFQc3VVZCtYeXphRU4vNHNKeW9XMUdBamFYRU91NlVWV29XNE91UnU4Z3l6?=
- =?utf-8?B?Q25YWW5jSzVzTTA1QTVNa1I1TVREM2xuWU9hbEVaYzNmNTJtMlpjNnc4d0VF?=
- =?utf-8?B?QUlBZWVUV1M5a3grcHNwd2oydThHZEZVZGpiRklSM21icjlBOHQ0TitQRDYx?=
- =?utf-8?B?bjk5TlJPeG1yNTNGN2dyNk84NXVIVjZDZjJ6RTJtc3pqMlMwRWU4azlhT2Mx?=
- =?utf-8?B?TVhMR1BBeFo2d2hWeld3ZVkyQW41cGtwTGZiTmlBNDRIMVVaNmNFakp1Sko1?=
- =?utf-8?B?dDVjc1BtK0hJa2JicXkyRnZNMEJaTUpZWmMzTGliMUNXMkZ6cVhpakxhaTRy?=
- =?utf-8?B?U01ndVpDalJNV2J5dTQ5b1I2M1JaK3ZRbFJYaHo4S1dzQ2FBempnOHpsWTFX?=
- =?utf-8?B?Q0R6UW9keHJZS1Y0emo1ZzBISnRrTWVIc1VrT2Fjcms3SkV4YTk0cjhHcGwv?=
- =?utf-8?B?Y2dhRzhEczUrRUZuZ2VnRjlRcklHYnNuTFdMK1hmRjRVSmRxck4yTU1SQzFx?=
- =?utf-8?B?Um13QnpwZDFLd1lLU1pWYlJvNm1pdHh5QjJES2dTS3VPY1FRTGMvQ0cvcDky?=
- =?utf-8?B?cHNkWDVCdlBCREoxZ3BBN3NQYWtIdU5JZ0xvOWlwMmJmN1JvUDZyeThIOEVw?=
- =?utf-8?B?VUdmK3lSSlliVkhpcHBzeVRKekQvTFVCeksxd0RQTDJmOGJ5UVJNMGp3dXpy?=
- =?utf-8?B?NUhrRVY0Nm5SVmFIUXNEQmd4aXcvRDRaem9pODAxVDhuaitjSTNnN3UwbnBB?=
- =?utf-8?B?enVBY0cxVVhLbGcvZWgvR3VDdkd0eklGcW5wZzk4eE1yUnhaUTBNaUQvbG9S?=
- =?utf-8?B?TXMzOWhjT04xREFXcHRFOUQ5Y3RVNjBpTVBKMHJzQlhEOTF0SFRxWFZlMTRr?=
- =?utf-8?B?VXpRb0x0MUl1bGFJdUY2OXVZb3cyMzMrbnhmNWFLQ0kvRjc1ek9weXJ3TTkx?=
- =?utf-8?B?TTk2Y3d3d3UySUxEWHM5L1Z1SGw1RkJqdHFMWlRibHArQlhhV3UzUG9LZWFU?=
- =?utf-8?B?cGJSb2YxSUZYMi9nK1N2emtPRjU1alh5ZG13SUtJeGdPL3RWam9yVFdINFdN?=
- =?utf-8?B?b3J3OWcvZTRPYW5mRDBrUnpOOHgwR01SMVE0eTUwbWdsdE5VWUdudmh3VVd1?=
- =?utf-8?B?NngyTlJhN2lCcndDN25OQ3NWWVFYWFZMd3ExY0grVWtDRnF6aVhZakNpbDE0?=
- =?utf-8?B?UDBvYmJsL1JkekhUSm1rYU5FUCtxM21HSzNEVjdCRHVBQWZzODdjb1BBbG54?=
- =?utf-8?B?TXpqazhIZUROZGd4M0cxNVFwMWpoTXJxWTNFdHdiMHFwVG1jNStnSjRGeWRn?=
- =?utf-8?B?YW5raUNLdlg5NVVhR1NCNDZNZm53L2RPN3hsc2crdG5za1pWRm56ZXpzZER6?=
- =?utf-8?B?T2JhQVVqcitIZUFmZEJwMW5mWlRnUDBvUzZReFUvK1pKQkZib2kzQjdRb0Nq?=
- =?utf-8?B?TTJCNmkwOGM3RDZDTFBFbFJhN1VwVnlEMm9Ec0pEYWtmSnJ1S2hJeVVPaEp0?=
- =?utf-8?B?Tkswa1ByZ0FUUzc1cnZ3UT09?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: ad3dea7e-1307-4767-3b56-08d8d432cc60
+X-Microsoft-Antispam-Message-Info: 3mr0XwjvtNYiSg/GUpo8IlBH0x1VZKNSIHBCKu9VjISALmPHkgn/Ra180NyPLNPBKVESkNsqvm5aRRdvrLIINhyerRnU/B7/55+lc20UoW1hQunoS3YNsZSq0M3Eh2NHc2YYKcZcYX4n22ayiEvlx2unGxY5TKyjCHTNIGBu1fHhJJzoMmkXL5OY57JpBx6vClS/OwDI4qBkDXVbYFyuKilga0zev/YNHxeKm1eVV5rDeK6VtbefNe56xVQhAxfMp0hjK32qNADAX0NZMfHkMPfBHWjUXw0kGfRjZmG4CJgTKKhZRJP+r9ESeMK9tTU3QIL5sKLcMjlTvrq/VBrmYDqmbYk/Qgl8o/Q5fDznV7ky2pYtvp/d1nD5K98/uppUigXPsmTdmsSsRwx3eqbcFdnQUPVrYu+pxkLo4UyMaRhH/QTIaC6HGCCGjFOV5ldIzH0lMytprqsgFhx6g36w/7gBB9B7dj2NzZdlSoeGmKWeo+dnLnDUKt9TTdpuKHm1AdaNOzmlZDq1BwYjyfh7VxYUbCGJE/osd+zHd//2g3TDTMCa+Kjp6FlAxxGkJidkZ7pfKgfbeFsEDtbXI3LPUhkTOGKbF78TN94w4WhaCGo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(376002)(366004)(39860400002)(346002)(66556008)(66476007)(4326008)(6486002)(53546011)(66946007)(186003)(16526019)(6666004)(5660300002)(8676002)(478600001)(2906002)(8936002)(36756003)(86362001)(54906003)(31696002)(110136005)(2616005)(316002)(52116002)(31686004)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?WllVNmtONEZDYzIydXRmSkI4RGh5YnBwV2tJRnV2NnRHdlZvd3VjL3o5Z29a?=
+ =?utf-8?B?Z2EzcEcrbjJtS0s4Uy9YZ2ZLSmlLaG1XbVJDYVozWkUzZ09MWXhEbmlWbDh2?=
+ =?utf-8?B?bUlERVg5cDRjTk5wYkU2ZVNUMzFCaERIT2NGb3k1RFN3UFhVcXZIVzB5TGow?=
+ =?utf-8?B?R0RzUTlad21LTTBqcGIxMXdWazdoMHR6d3pGYy9CWHR6R2luY1QxazhvUTgx?=
+ =?utf-8?B?cjZ3ejJpWXpCMDY5U3NvMlNqZ1ZNYUI5aVA4UWNhNVYwb2d0WVJSUXA4Tkt4?=
+ =?utf-8?B?N055em9wSHlGcW9kb0NPMlJLOHZBSURzdml6MEYvUGpmTExYMjZyUWVrMmJu?=
+ =?utf-8?B?YVZieG9HRllwUERYYTUySG4xc2NlRnkrTXBab0wwd0k1WEYzekNKM0h1aUpz?=
+ =?utf-8?B?WGx0d0ZTdHZEUTNKSjBndVVHbVpUVE1ST1JQV1lPbkZMMnorc0RiWlNFUkhM?=
+ =?utf-8?B?a3VVaXk1Vy9nOGQrZnVLSzFvNlUzT0Y4VW93bDI4MkVaUnU1N01mQ1JjZDRE?=
+ =?utf-8?B?U1JIUnk0L3pSbmlyV2NEZHZGdFZNUDdaTUhLUW5zbWhpVExHTWVmUlNpY0hv?=
+ =?utf-8?B?S3hNNjFaVUhkRnlmVHJiQkt6NDZYV1lDbHFqNVFRQk5aNDF1YzNreHp3SUNu?=
+ =?utf-8?B?cXpXOFBtaGU3a3lUR2tZaTFsWTNkZ1Ntb0tkVHhjN3BTaC9EdU50M0dGUjlW?=
+ =?utf-8?B?eDZuekRVQWpab1BKTEdqNis4UzN4c01UaUZsVko4NVViVWxUbGZuaUtmODcy?=
+ =?utf-8?B?WWtQNnBjVWpjRHg4MlF1a0hKVEpwVEtiWkllNkVIQjA3aXU4dTNETmkzcS9M?=
+ =?utf-8?B?b0UyWUZzVXNnQzRMdmNTYlFhcFVXdXg2bjlmaEVwRjQ3ZXo1V2VURU5MZTYw?=
+ =?utf-8?B?eHZ1QWNtVjAxaTgyb1Z0VTU5ZmxmMk4xYXRla0VUQ0dOcUtTWXNtS1lDbGxp?=
+ =?utf-8?B?UTRQWXZpWlZtaUova1NsOGF4T0tnY0pYd0d1ZnZYYklBSloraHZ4RFdaYk1x?=
+ =?utf-8?B?WDg1U21FUmdPRi91ckxYdzB3Wm8yVEVrL1hYNktHY3VnT0lpM04zZnpZMTJI?=
+ =?utf-8?B?enFucXRkRUhERERrWnA3SGU0dXFoNkNuZnpSR2NOQ1VibWE2REwwckQ2YlM0?=
+ =?utf-8?B?bUhoNHBDdURORTZKY254NFI4bCswdSs4ZVFjWDN2TXRhNHFBalBHTmlaeHhM?=
+ =?utf-8?B?aFBXMTViQlNmUkU0OXF1d1ZKd2NwNkxuVTRxc2hEa2poZWkyaUVUa2tXQ0h6?=
+ =?utf-8?B?Q0ZMUTZndHJZRHBaTk1ka2NEY3pTY0VnYnRZeXdqWmdndXlueXIxeUtPdTV5?=
+ =?utf-8?B?L1MyRXdEekxqOXdNS3RhUVgyY2psOUl6c1lBZ0R2MmJFSWRZbUFoN1RESkJP?=
+ =?utf-8?B?TkM3d09YY2o3QjJvMlR6T2dCV2FPL1VQTTRXNVU3NE1CMWd0NVQwbUJINE92?=
+ =?utf-8?B?aXByQTJFQTVUZlA3NzlWK25UZSthWklpdGRkRkZEL05NajBaUUo5M1d1SEFL?=
+ =?utf-8?B?bkVuOGdwOWRNZTFtdXNuQko0SnlKd2pURlVaTElkdGlrdnlCY1l2T0JCV3VP?=
+ =?utf-8?B?azh4SkMvbWJYZ2RHM3ZQZDE3TWVQZ3JqNXZHcklibjYvQTJOZVlUQWdEcDE3?=
+ =?utf-8?B?YmxqdVA5UFZsMEpDNkZ4V2lEVHc3eGlXOEQwaTZtQTE5cFlGUjdHeUh5dnNO?=
+ =?utf-8?B?M0FQZ3BaZU5SY3FqUWdNN3pUeWs1UlVlMUdoUzNJWHMrc21mNnoyeGdhRnVE?=
+ =?utf-8?B?QnBMT09nRmgwcWNlVXRXRllpd3dkci9JWFBqU2NNR2hSVlJvZjBDS0lMUDZJ?=
+ =?utf-8?B?VzdWckpvZHZWckc3cTJ3dz09?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: f00779e6-258e-46e8-99fc-08d8d434318b
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Feb 2021 17:29:51.7735
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Feb 2021 17:39:50.8764
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ydCSR/DZTfphOP/jHYjwG/sO4vpkq8WQIlYyEIAUwDR9vZ/4DbUNIXOczY9IIOZb
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2887
+X-MS-Exchange-CrossTenant-UserPrincipalName: c4SalAuCd265Ey/kIz771uoI1+xI88jkyVO/KnbjXfHJ7eVNsdB7LonIVUD0Jn6D
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3569
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
  definitions=2021-02-18_09:2021-02-18,2021-02-18 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 clxscore=1015
- phishscore=0 suspectscore=0 impostorscore=0 lowpriorityscore=0
- mlxlogscore=999 bulkscore=0 malwarescore=0 spamscore=0 priorityscore=1501
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102180145
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ clxscore=1015 bulkscore=0 adultscore=0 impostorscore=0 spamscore=0
+ lowpriorityscore=0 mlxlogscore=999 suspectscore=0 mlxscore=0
+ malwarescore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2102180147
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -144,8 +144,8 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 2/18/21 5:34 AM, Ilya Leoshkevich wrote:
-> On Wed, 2021-02-17 at 23:16 -0800, Yonghong Song wrote:
+On 2/18/21 5:41 AM, Ilya Leoshkevich wrote:
+> On Wed, 2021-02-17 at 22:58 -0800, Yonghong Song wrote:
 >> On 2/15/21 5:12 PM, Ilya Leoshkevich wrote:
 >>> The logic follows that of BTF_KIND_INT most of the time.
 >>> Sanitization
@@ -170,34 +170,76 @@ On 2/18/21 5:34 AM, Ilya Leoshkevich wrote:
 > 
 > [...]
 > 
->>> @@ -2445,6 +2450,9 @@ static void bpf_object__sanitize_btf(struct
->>> bpf_object *obj, struct btf *btf)
->>>                  } else if (!has_func_global && btf_is_func(t)) {
->>>                          /* replace BTF_FUNC_GLOBAL with
->>> BTF_FUNC_STATIC */
->>>                          t->info = BTF_INFO_ENC(BTF_KIND_FUNC, 0,
->>> 0);
->>> +               } else if (!has_float && btf_is_float(t)) {
->>> +                       /* replace FLOAT with INT */
->>> +                       t->info = BTF_INFO_ENC(BTF_KIND_FLOAT, 0,
->>> 0);
+>>> @@ -2373,6 +2377,42 @@ int btf__add_datasec(struct btf *btf, const
+>>> char *name, __u32 byte_sz)
+>>>          return btf_commit_type(btf, sz);
+>>>    }
+>>>    
+>>> +/*
+>>> + * Append new BTF_KIND_FLOAT type with:
+>>> + *   - *name* - non-empty, non-NULL type name;
+>>> + *   - *sz* - size of the type, in bytes;
+>>> + * Returns:
+>>> + *   - >0, type ID of newly added BTF type;
+>>> + *   - <0, on error.
+>>> + */
+>>> +int btf__add_float(struct btf *btf, const char *name, size_t
+>>> byte_sz)
+>>> +{
+>>> +       struct btf_type *t;
+>>> +       int sz, name_off;
+>>> +
+>>> +       /* non-empty name */
+>>> +       if (!name || !name[0])
+>>> +               return -EINVAL;
 >>
->> You can replace float with a "pointer to void" type.
+>> Do we want to ensure byte_sz to be 2/4/8/16?
+>> Currently, the int type supports 1/2/4/8/16.
+>>
+>> In LLVM, the following are supported float types:
+>>
+>>     case BuiltinType::Half:
+>>     case BuiltinType::Float:
+>>     case BuiltinType::LongDouble:
+>>     case BuiltinType::Float16:
+>>     case BuiltinType::BFloat16:
+>>     case BuiltinType::Float128:
+>>     case BuiltinType::Double:
 > 
-> Wouldn't this cause problems with 32-bit floats on 64-bit machines?
+> There can be 80-bit floats on x86:
+> 
+> #include <stdio.h>
+> int main() { printf("%zu\n", sizeof(long double)); }
+> 
+> prints 12 when compiled with -m32 (not 10 due to alignment I assume).
 
-Oh, yes. You are right. I am just thinking of standalone float type, but
-obviously it could be struct/union member which makes it very important
-to keep the sanatized type having the same size.
+Wow, I do not know we have long double float size = 12 for m32.
+In this case, maybe we can enforce float size of 2 and multiple of 4?
+I still like some enforcement, arbitrary float size seems wrong to me.
 
-So replacing float with "point to void" won't work as you suggested.
-Looks like INT is the best candidate to replace, another is CHAR array.
-They do not match total size though. Maybe one of modifier type will
-be a good choice. For example, you can replace float with a
-BTF_KIND_CONST type and the base type for BTF_KIND_CONST type
-is an int type with the same size of float and you have to
-create that int type somewhere. In power-of-2 cases, it is possible
-this type already exists.
+> 
+> I guess this now completely kills the idea with sanitizing FLOATs to
+> equally-sized INTs...
+
+My previous email suggests to use "const int" for sanitization.
+In kernel, we did not enforce the "int" type size as long as it
+is equal to or greater than the one represented by bits.
+
+         if (BITS_ROUNDUP_BYTES(nr_bits) > t->size) {
+                 btf_verifier_log_type(env, t, "nr_bits exceeds type_size");
+                 return -EINVAL;
+         }
+
+But in libbpf, we do want to the int size to be power-of-2.
+
+         /* byte_sz must be power of 2 */
+         if (!byte_sz || (byte_sz & (byte_sz - 1)) || byte_sz > 16)
+                 return -EINVAL;
+
+When people dump in-kernel sanitized btf and they may see
+an int with size 12, which will be weird.
+
+So maybe "const char_array" is the best choice here.
 
 > 
 > [...]
