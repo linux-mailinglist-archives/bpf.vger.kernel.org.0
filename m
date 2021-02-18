@@ -2,45 +2,118 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A8C631EEE1
+	by mail.lfdr.de (Postfix) with ESMTP id 9557031EEE2
 	for <lists+bpf@lfdr.de>; Thu, 18 Feb 2021 19:49:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230393AbhBRSsi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Feb 2021 13:48:38 -0500
-Received: from mail.jvpinto.com ([65.49.11.60]:34040 "EHLO mail.JVPinto.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233479AbhBRQsI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 18 Feb 2021 11:48:08 -0500
-Received: from RW-EXC1.JVPinto.com (2002:ac20:10d::ac20:10d) by
- RW-EXC1.JVPinto.com (2002:ac20:10d::ac20:10d) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Thu, 18 Feb 2021 08:26:37 -0800
-Received: from User (40.74.78.211) by RW-EXC1.JVPinto.com (172.32.1.13) with
- Microsoft SMTP Server id 15.0.1497.2 via Frontend Transport; Thu, 18 Feb 2021
- 08:26:24 -0800
-Reply-To: <ms.reem@yandex.com>
-From:   "Ms. Reem" <johnpinto@jvpinto.com>
-Subject: Re:waiting on you
-Date:   Thu, 18 Feb 2021 16:26:37 +0000
+        id S230488AbhBRSsp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 18 Feb 2021 13:48:45 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:55497 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232412AbhBRRWZ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 18 Feb 2021 12:22:25 -0500
+Received: by mail-io1-f71.google.com with SMTP id e9so1806274iok.22
+        for <bpf@vger.kernel.org>; Thu, 18 Feb 2021 09:21:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=70mWA/syeYNv54oaeIaoq9XXAMB6CP00uHj11qVXy7M=;
+        b=ZcQZdubQFVmyUiVNV1tVma0fGqETYAOZ5uxTczuD/dcO6e4Km8oeEs6Cg8GQPmkJe9
+         rz8u5oYRxr/IyerhJHlNz1ZMxfeH3U1ClM8Zc7f6Afzs7Wz81QGE5mADCqW0UCP6h26a
+         GiBCqELR519LvCkqKCqtV9qpN2ylBFtDcZAdzTEWTMOEJpZRPlJ0XADYhs4UxTh8ydan
+         KryOlfPyw5Xpel8Da/gKFW2vLheS6KMJpayg9mvvdVt/VNY/dAAxpLB299p2ZfsX2aPw
+         SMuFExXMb0cuCqMT5RfbIpdz2D133QRkSKSyo4xjjO6vVbpEvS9K1YG5kvkdI0KJ7qGi
+         BBfA==
+X-Gm-Message-State: AOAM531WkQRodyrlwuHPZby8n182Cz66KIRbuQRwsm+gLSHywKuNuSrV
+        WJP0uISTQtA9mqSIzp/1nfQG5jN4Pg1vBn7p2ky5ivbXqyMn
+X-Google-Smtp-Source: ABdhPJxlnJ7bZYFsn6UaWciRai5QfxcxAnaFxuVeRtkniCIVTkrAQCl49fqOUvAWa+AoBgbmIj32udtDOaQSEPHidAs54dGew3wF
 MIME-Version: 1.0
-Content-Type: text/plain; charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-ID: <2621fea7c71340839e07b4cc95fffc72@RW-EXC1.JVPinto.com>
-To:     Undisclosed recipients:;
+X-Received: by 2002:a05:6e02:11af:: with SMTP id 15mr156835ilj.302.1613668886307;
+ Thu, 18 Feb 2021 09:21:26 -0800 (PST)
+Date:   Thu, 18 Feb 2021 09:21:26 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c0ea2805bb9f9056@google.com>
+Subject: UBSAN: shift-out-of-bounds in netlink_recvmsg
+From:   syzbot <syzbot+cdb35bcbfac5f493e2af@syzkaller.appspotmail.com>
+To:     0x7f454c46@gmail.com, andrii@kernel.org, ast@kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        fw@strlen.de, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        mathew.j.martineau@linux.intel.com, matthieu.baerts@tessares.net,
+        mkubecek@suse.cz, netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello, 
+Hello,
 
-My name is Ms. Reem Ebrahim Al-Hashimi, I am the "Minister of state and Petroleum" also "Minister of State for International Cooperation" in UAE. 
+syzbot found the following issue on:
 
-I write to you on behalf of my other "three (3) colleagues" who has approved me to solicit for your "partnership in claiming of {us$47=Million}" from a Financial Home in Cambodia on their behalf and for our "Mutual Benefits". The Fund {us$47=Million} is our share from the (over-invoiced) Oil/Gas deal with Cambodian/Vietnam Government within 2013/2014, however, we don't want our government to know about the fund. 
+HEAD commit:    b646acd5 net: re-solve some conflicts after net -> net-nex..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=129fbe04d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=dbc1ca9e55dc1f9f
+dashboard link: https://syzkaller.appspot.com/bug?extid=cdb35bcbfac5f493e2af
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12bd2e5ad00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12c388f2d00000
 
-If this proposal interests you, let me know, by sending me an email and I will send to you detailed information on how this business would be successfully transacted. Be informed that nobody knows about the secret of this fund except us, and we know how to carry out the entire transaction. So I am compelled to ask, that you will stand on our behalf and receive this fund into any account that is solely controlled by you. We will compensate you with 15% of the total amount involved as gratification for being our partner in this transaction. Reply to: ms.reem@yandex.com
+The issue was bisected to:
 
-Regards,
-Ms. Reem
+commit b911c97c7dc771633c68ea9b8f15070f8af3d323
+Author: Florian Westphal <fw@strlen.de>
+Date:   Sat Feb 13 00:00:01 2021 +0000
+
+    mptcp: add netlink event support
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=163d5724d00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=153d5724d00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=113d5724d00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+cdb35bcbfac5f493e2af@syzkaller.appspotmail.com
+Fixes: b911c97c7dc7 ("mptcp: add netlink event support")
+
+================================================================================
+UBSAN: shift-out-of-bounds in net/netlink/af_netlink.c:160:19
+shift exponent 32 is too large for 32-bit type 'int'
+CPU: 1 PID: 8437 Comm: syz-executor324 Not tainted 5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
+ netlink_group_mask net/netlink/af_netlink.c:160 [inline]
+ netlink_group_mask net/netlink/af_netlink.c:158 [inline]
+ netlink_recvmsg.cold+0x1a/0x1f net/netlink/af_netlink.c:1992
+ sock_recvmsg_nosec net/socket.c:886 [inline]
+ sock_recvmsg net/socket.c:904 [inline]
+ sock_recvmsg net/socket.c:900 [inline]
+ ____sys_recvmsg+0x2c4/0x600 net/socket.c:2571
+ ___sys_recvmsg+0x127/0x200 net/socket.c:2613
+ __sys_recvmsg+0xe2/0x1a0 net/socket.c:2649
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x444bf9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 81 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f68a1130318 EFLAGS: 00000246 ORIG_RAX: 000000000000002f
+RAX: ffffffffffffffda RBX: 00000000004ca408 RCX: 0000000000444bf9
+RDX: 0000000000000002 RSI: 0000000020000440 RDI: 0000000000000003
+RBP: 00000000004ca400 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 8001000a373e1537
+R13: 00007ffc4d11dcaf R14: 00007f68a1130400 R15: 0000000000022000
+================================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
