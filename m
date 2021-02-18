@@ -2,153 +2,134 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D05D31E2F5
-	for <lists+bpf@lfdr.de>; Thu, 18 Feb 2021 00:14:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEA0031E36E
+	for <lists+bpf@lfdr.de>; Thu, 18 Feb 2021 01:17:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbhBQXOk (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Feb 2021 18:14:40 -0500
-Received: from www62.your-server.de ([213.133.104.62]:34654 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229707AbhBQXOk (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Feb 2021 18:14:40 -0500
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lCW17-0007mH-65; Thu, 18 Feb 2021 00:13:57 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lCW16-000QzQ-VM; Thu, 18 Feb 2021 00:13:57 +0100
-Subject: Re: [Patch bpf-next] bpf: clear per_cpu pointers in
- bpf_prog_clone_create()
-To:     Cong Wang <xiyou.wangcong@gmail.com>
-Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Cong Wang <cong.wang@bytedance.com>,
+        id S229863AbhBRARl (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Feb 2021 19:17:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229708AbhBRARk (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Feb 2021 19:17:40 -0500
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A433C061574;
+        Wed, 17 Feb 2021 16:16:59 -0800 (PST)
+Received: by mail-ot1-x32f.google.com with SMTP id q4so345892otm.9;
+        Wed, 17 Feb 2021 16:16:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VmEI9bK6S+MA6iIG56tLhKiAJVbLpfqcE1mPZiBV0Dk=;
+        b=UjVV4Uxj2xDfn/Pw9giP4UOdGVOyMe0l1DhcV3wK5RGp+LeVro/jzvuNKPwROutpfk
+         wxErXWYLFm9LFmatrMQgW3PdTXFx+ItE/9SqXmhZFKa7a2XZ+Z+czHM1jz4BKt6Qbf51
+         yhKKfQROnxt28QiCZVZzdaws7l+cuEud/OZ57rzQnLDGF8q1dWLWNkv10qychI5Hwx3y
+         wlxiX5EakQX2HQXvM3xaq+tAgRlq8RlTmhfMJzzSyHcBHw3LKJ9Lbn3dVrRJvt1PNTBp
+         ayq+7tp8aU8Pap9qHycyK1N7RPdmTseDrb9DzgtNLNC3YpdbzWfk+9CQW0pRppRH8nA/
+         dqmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VmEI9bK6S+MA6iIG56tLhKiAJVbLpfqcE1mPZiBV0Dk=;
+        b=cCdCBHpbsnvnzMWMBd+WoXTG49civQBDe2MpWgzzgDS6hdRAMBVT8SCtkcQms+ZSUP
+         ooTuMwC1bp+itEc7H5//5X5tttwDeJvl15RbY7GKolQu8XCupkK87sY5XiuqMuW1M4p+
+         i9lidNXRiIe+7xfKCkbCEMbA271H5uIHoXbNtnH4iS2oo36zkEaZyRSvbmFuvVqSgXJa
+         nL5AUSHT+t3CufmjN2wI9QgRq0nSCu+yckbx16nMEnxeQESuMdU8a+IroOF8uI9SGPci
+         9ymJF5c3Jb8Yj4EKV+yFrdcwIlZfSvsevX9trx1HYS24h7EEPVj2F+OU34pbio/AGOp1
+         X+lA==
+X-Gm-Message-State: AOAM531DsSFvH5Uyye+QlM3L+CcbekQUbsVEAsM2XJyB+0YU74nj2fCd
+        7E00YI5KSHXWBx2Hdou9JOFPql4My5lW6w==
+X-Google-Smtp-Source: ABdhPJyTKfJUTD1VslGvUiET3tWsD0LDfHYPn+dV7jul5SByRxcXtAeKaVhS+vLI3x7GmYTGy2QucA==
+X-Received: by 2002:a9d:58ca:: with SMTP id s10mr1173586oth.70.1613607417934;
+        Wed, 17 Feb 2021 16:16:57 -0800 (PST)
+Received: from unknown.attlocal.net ([2600:1700:65a0:ab60:1d72:18:7c76:92e4])
+        by smtp.gmail.com with ESMTPSA id r205sm807458oib.15.2021.02.17.16.16.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Feb 2021 16:16:57 -0800 (PST)
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
         Jiang Wang <jiang.wang@bytedance.com>,
-        Alexei Starovoitov <ast@kernel.org>
-References: <20210217035844.53746-1-xiyou.wangcong@gmail.com>
- <c24360ab-f4b3-db61-4c83-9fb941520304@iogearbox.net>
- <CAM_iQpX1GLG5SW7z5GRTntXTj0-Zvh84BKaOV_5r1akx9rGEOg@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <585ce6bc-b95b-28b1-14a5-3cfdce76e1e7@iogearbox.net>
-Date:   Thu, 18 Feb 2021 00:13:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: [Patch bpf-next v2] bpf: clear percpu pointers in bpf_prog_clone_free()
+Date:   Wed, 17 Feb 2021 16:16:47 -0800
+Message-Id: <20210218001647.71631-1-xiyou.wangcong@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <CAM_iQpX1GLG5SW7z5GRTntXTj0-Zvh84BKaOV_5r1akx9rGEOg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26083/Wed Feb 17 13:11:33 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/17/21 11:46 PM, Cong Wang wrote:
-> On Wed, Feb 17, 2021 at 2:01 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->> On 2/17/21 4:58 AM, Cong Wang wrote:
->>> From: Cong Wang <cong.wang@bytedance.com>
->>>
->>> Pretty much similar to commit 1336c662474e
->>> ("bpf: Clear per_cpu pointers during bpf_prog_realloc") we also need to
->>> clear these two percpu pointers in bpf_prog_clone_create(), otherwise
->>> would get a double free:
->>>
->>>    BUG: kernel NULL pointer dereference, address: 0000000000000000
->>>    #PF: supervisor read access in kernel mode
->>>    #PF: error_code(0x0000) - not-present page
->>>    PGD 0 P4D 0
->>>    Oops: 0000 [#1] SMP PTI
->>>    CPU: 13 PID: 8140 Comm: kworker/13:247 Kdump: loaded Tainted: G         W   OE
->>>   5.11.0-rc4.bm.1-amd64+ #1
->>>    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1 04/01/2014
->>>    test_bpf: #1 TXA
->>>    Workqueue: events bpf_prog_free_deferred
->>>    RIP: 0010:percpu_ref_get_many.constprop.97+0x42/0xf0
->>>    Code: [...]
->>>    RSP: 0018:ffffa6bce1f9bda0 EFLAGS: 00010002
->>>    RAX: 0000000000000001 RBX: 0000000000000000 RCX: 00000000021dfc7b
->>>    RDX: ffffffffae2eeb90 RSI: 867f92637e338da5 RDI: 0000000000000046
->>>    RBP: ffffa6bce1f9bda8 R08: 0000000000000000 R09: 0000000000000001
->>>    R10: 0000000000000046 R11: 0000000000000000 R12: 0000000000000280
->>>    R13: 0000000000000000 R14: 0000000000000000 R15: ffff9b5f3ffdedc0
->>>    FS:   0000000000000000(0000) GS:ffff9b5f2fb40000(0000) knlGS:0000000000000000
->>>    CS:   0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>>    CR2: 0000000000000000 CR3: 000000027c36c002 CR4: 00000000003706e0
->>>    DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->>>    DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->>>    Call Trace:
->>>    refill_obj_stock+0x5e/0xd0
->>>    free_percpu+0xee/0x550
->>>    __bpf_prog_free+0x4d/0x60
->>>    process_one_work+0x26a/0x590
->>>    worker_thread+0x3c/0x390
->>>    ? process_one_work+0x590/0x590
->>>    kthread+0x130/0x150
->>>    ? kthread_park+0x80/0x80
->>>    ret_from_fork+0x1f/0x30
->>>
->>> This bug is 100% reproducible with test_kmod.sh.
->>>
->>> Reported-by: Jiang Wang <jiang.wang@bytedance.com>
->>> Fixes: 700d4796ef59 ("bpf: Optimize program stats")
->>> Fixes: ca06f55b9002 ("bpf: Add per-program recursion prevention mechanism")
->>> Cc: Alexei Starovoitov <ast@kernel.org>
->>> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
->>> ---
->>>    kernel/bpf/core.c | 2 ++
->>>    1 file changed, 2 insertions(+)
->>>
->>> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
->>> index 0ae015ad1e05..b0c11532e535 100644
->>> --- a/kernel/bpf/core.c
->>> +++ b/kernel/bpf/core.c
->>> @@ -1103,6 +1103,8 @@ static struct bpf_prog *bpf_prog_clone_create(struct bpf_prog *fp_other,
->>>                 * this still needs to be adapted.
->>>                 */
->>>                memcpy(fp, fp_other, fp_other->pages * PAGE_SIZE);
->>> +             fp_other->stats = NULL;
->>> +             fp_other->active = NULL;
->>>        }
->>>
->>>        return fp;
->>
->> This is not correct. I presume if you enable blinding and stats, then this will still
-> 
-> Well, at least I ran all BPF selftests and found no crash. (Before my patch, the
-> crash happened 100%.)
-> 
->> crash. The proper way to fix it is to NULL these pointers in bpf_prog_clone_free()
->> since the clone can be promoted as the actual prog and the prog ptr released instead.
-> 
-> Not sure if I understand your point, but what I cleared is fp_other,
-> which is the original, not the clone. And of course, the original would
-> be overriden:
-> 
->          tmp = bpf_jit_blind_constants(prog);
->          if (IS_ERR(tmp))
->                  return orig_prog;
->          if (tmp != prog) {
->                  tmp_blinded = true;
->                  prog = tmp;  // <=== HERE
->          }
-> 
-> I think this is precisely why the crash does not happen after my patch.
-> 
-> However, it does seem to me patching bpf_prog_clone_free() is better,
-> as there would be no assumption on using the original. All I want to
-> say here is that both ways could fix the crash, which one is better is
-> arguable.
+From: Cong Wang <cong.wang@bytedance.com>
 
-The problem is that at the time of bpf_prog_clone_create() we don't know whether
-the original prog or the clone will be used eventually. If the original (fp_other)
-will in-fact be used, then stats/active there is NULL. And if the bpf_stats_enabled_key
-static key is active, then __BPF_PROG_RUN() will just try to update stats and trigger
-a NULL ptr deref, but it won't if done in bpf_prog_clone_free(). So the latter really
-is necessary.
+Similar to bpf_prog_realloc(), bpf_prog_clone_create() also copies
+the percpu pointers, but the clone still shares them with the original
+prog, so we have to clear these two percpu pointers in
+bpf_prog_clone_free(). Otherwise we would get a double free:
 
-Thanks,
-Daniel
+ BUG: kernel NULL pointer dereference, address: 0000000000000000
+ #PF: supervisor read access in kernel mode
+ #PF: error_code(0x0000) - not-present page
+ PGD 0 P4D 0
+ Oops: 0000 [#1] SMP PTI
+ CPU: 13 PID: 8140 Comm: kworker/13:247 Kdump: loaded Tainted: G                W    OE
+  5.11.0-rc4.bm.1-amd64+ #1
+ Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1 04/01/2014
+ test_bpf: #1 TXA
+ Workqueue: events bpf_prog_free_deferred
+ RIP: 0010:percpu_ref_get_many.constprop.97+0x42/0xf0
+ Code: [...]
+ RSP: 0018:ffffa6bce1f9bda0 EFLAGS: 00010002
+ RAX: 0000000000000001 RBX: 0000000000000000 RCX: 00000000021dfc7b
+ RDX: ffffffffae2eeb90 RSI: 867f92637e338da5 RDI: 0000000000000046
+ RBP: ffffa6bce1f9bda8 R08: 0000000000000000 R09: 0000000000000001
+ R10: 0000000000000046 R11: 0000000000000000 R12: 0000000000000280
+ R13: 0000000000000000 R14: 0000000000000000 R15: ffff9b5f3ffdedc0
+ FS:    0000000000000000(0000) GS:ffff9b5f2fb40000(0000) knlGS:0000000000000000
+ CS:    0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 0000000000000000 CR3: 000000027c36c002 CR4: 00000000003706e0
+ DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+ DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+ Call Trace:
+    refill_obj_stock+0x5e/0xd0
+    free_percpu+0xee/0x550
+    __bpf_prog_free+0x4d/0x60
+    process_one_work+0x26a/0x590
+    worker_thread+0x3c/0x390
+    ? process_one_work+0x590/0x590
+    kthread+0x130/0x150
+    ? kthread_park+0x80/0x80
+    ret_from_fork+0x1f/0x30
+
+This bug is 100% reproducible with test_kmod.sh.
+
+Reported-by: Jiang Wang <jiang.wang@bytedance.com>
+Fixes: 700d4796ef59 ("bpf: Optimize program stats")
+Fixes: ca06f55b9002 ("bpf: Add per-program recursion prevention mechanism")
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+---
+ kernel/bpf/core.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 0ae015ad1e05..aa1e64196d8d 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -1118,6 +1118,8 @@ static void bpf_prog_clone_free(struct bpf_prog *fp)
+ 	 * clone is guaranteed to not be locked.
+ 	 */
+ 	fp->aux = NULL;
++	fp->stats = NULL;
++	fp->active = NULL;
+ 	__bpf_prog_free(fp);
+ }
+ 
+-- 
+2.25.1
+
