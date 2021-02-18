@@ -2,102 +2,171 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC9FD31E389
-	for <lists+bpf@lfdr.de>; Thu, 18 Feb 2021 01:48:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E03A231E3DB
+	for <lists+bpf@lfdr.de>; Thu, 18 Feb 2021 02:28:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230148AbhBRAsS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Feb 2021 19:48:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39958 "EHLO
+        id S229746AbhBRB1k (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Feb 2021 20:27:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230021AbhBRAsR (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Feb 2021 19:48:17 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD901C061574;
-        Wed, 17 Feb 2021 16:47:37 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id u143so121643pfc.7;
-        Wed, 17 Feb 2021 16:47:37 -0800 (PST)
+        with ESMTP id S229863AbhBRB1j (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 17 Feb 2021 20:27:39 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 443F9C0613D6
+        for <bpf@vger.kernel.org>; Wed, 17 Feb 2021 17:26:57 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id s24so390968iob.6
+        for <bpf@vger.kernel.org>; Wed, 17 Feb 2021 17:26:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9AQCchQC3RVaMv/Hcn0M+7TZdZEVJRof4WAPBKGbACg=;
-        b=lmEGx+TeyVIR9oSiK4robQdT8vT9B9D2gCCx1AKSquREKfdRrdvFjot6+1PwmkMySC
-         JGcfgQ3tzcMUP0a79XDAa8BoX9lJSTX6darSNC0HVNzhQ8ZsmcdYVVmajvpbheZqXufq
-         3LSlRjO4tRJJO8bO8PrN+Doduh6OH4ZotEhk55FQ9t0HEwmitwRg8S/x7JCAVZ4RaW4V
-         uIBIRA5zeiwI0OKpUJzS/s3FGmROLTLujN/SGTDO1Cuxf52CufpFnu3WEmOqiihYDwPr
-         /MONKVCvl+9TJxdgsSQeUPv5Tub82a0tNMPp48eut8pQCD6oOVnljXOVLe/mi0ntkUMV
-         Ae4A==
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=fRYLy3H4F9oCMNJyt44WfxY2hQG5AXt3RTaWffSy2XU=;
+        b=RSpao/8QwbLrP51weIC44yvipXuU4xaadCf4sbfh9e/IHbEJOHucUZvxnsD5eZrKtt
+         Xp1TfkfhtGvqfTr7lF4LcmqtZXUbtAZpug01KG6mD8ExiavhNkaWMqifZT4ESh4Tib0h
+         LDJjtw+g+ef0hSK06rMJEDliiPRgmlNl1obPWY7LYfxHJxobh4FBDx+urp4Omo/vNAnZ
+         z9zQuLppY3eTQibts01sdWEuFFZZcfiFmn+PsrixscArNwYNuhlMefYrn4D0Q3Zx2wag
+         shiEKA2r5Bblp/G9ec4EKWVvgCNTk2TqF5vYuUr07ZfpGHcb411rNrdWP00CjU4/HGIn
+         jjcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9AQCchQC3RVaMv/Hcn0M+7TZdZEVJRof4WAPBKGbACg=;
-        b=GNJ77woeBY7yoXJ2ZUdfZXD2v60ly3wkf0WYF3b5EQDigQEXFMqjsNT+vVzIT4Rw2Q
-         WhJgGwakJqeAJMPWd+eCrZyxF3QOjhJ3RkPwe4hMAQ343P+gET857TRKBtB1AIM+EMs6
-         ETil8SR9eHfvDnxzqV/eSfVsgDbrAZ3vMsMAmpR9Ps0D9MRx8r0SQtCDa4dAlejlmppX
-         p0oiSvdU0SIyJ/92CepWietOAuq9lFtczJQq0PQEIMHekZtKZJgzQNBLAtmbuKltTRHK
-         dnnPMJQrCehLVYty3DwI+isa5Ke6fOhuHcqxUem3d/IjcdPhsvYG3VoJCoRviakJiSAt
-         2djw==
-X-Gm-Message-State: AOAM531auC+pRZA/lA6uScREct6joacC7THi1HyHPZrZDiZgypkWVwBx
-        vLEFndUo4KPZH+omeflYZn0=
-X-Google-Smtp-Source: ABdhPJyFVk8+ypuV2LLDlViNh2a+mh0HOrRUj0ErpARIXvmeJjPbciPtcJaO663PjuaXM5qhAJ9oUg==
-X-Received: by 2002:a05:6a00:2353:b029:1ba:d824:f1dc with SMTP id j19-20020a056a002353b02901bad824f1dcmr1846175pfj.9.1613609257138;
-        Wed, 17 Feb 2021 16:47:37 -0800 (PST)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id q139sm3368597pfc.2.2021.02.17.16.47.35
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=fRYLy3H4F9oCMNJyt44WfxY2hQG5AXt3RTaWffSy2XU=;
+        b=CCw3mU1DZDqFnlOfvfTfdYseFsXDIRdDjWHw83ZJfyCx7ZOkHY1CEzk45tkS976ZDH
+         CAFE1/x4bqXch1qtzbHUqwA1GRG+Ve5dH9rkWrlJVN23xvaAo9kDRH/Ha56+sCmqRz6C
+         JlDOzJ9VhMwX+VIR94QFF+7EZZKY5LxGwndqck1EYZYaLkamVKTbd6McyNqXCwn4q2dv
+         27q4z9CXLhNQq/2GBhmGRx031svdjgfaUSAmwWInlmiLk2kU24eu0Fl4cfyx+LiAjNMY
+         t2QSgFdtloZEtInZv9/aK4npp4WuN1ezZ3KlcaFP8P2S1ehwHk8c0Wwgno01BSO8v67T
+         UC3w==
+X-Gm-Message-State: AOAM531CrADrZNSG+rC0JgKHU6ZpJfcqN+IBbqBUAdh/FpT8+ROIP4Kl
+        qx/borX1j0s73j2wAPPdHuo=
+X-Google-Smtp-Source: ABdhPJybHPIApDY+ktQczM8NTYClp4uQ+rLEGFSPs3RvPkX1rzqccDDaY22U2j4EDhQPXPBQkGLsrg==
+X-Received: by 2002:a6b:f317:: with SMTP id m23mr1627585ioh.67.1613611616771;
+        Wed, 17 Feb 2021 17:26:56 -0800 (PST)
+Received: from localhost ([172.243.146.206])
+        by smtp.gmail.com with ESMTPSA id w9sm3044830ioj.0.2021.02.17.17.26.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 16:47:36 -0800 (PST)
-Date:   Thu, 18 Feb 2021 09:47:34 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
-Cc:     linux-kernel@vger.kernel.org, pmladek@suse.com,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH] lib: vsprintf: check for NULL device_node name in
- device_node_string()
-Message-ID: <YC25JlDIPl30xPab@jagdpanzerIV.localdomain>
-References: <20210217121543.13010-1-info@metux.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210217121543.13010-1-info@metux.net>
+        Wed, 17 Feb 2021 17:26:56 -0800 (PST)
+Date:   Wed, 17 Feb 2021 17:26:47 -0800
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Ilya Leoshkevich <iii@linux.ibm.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc:     bpf@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>,
+        "Vasily Gorbik" <gor@linux.ibm.com>
+Message-ID: <602dc2574df18_182c3208c0@john-XPS-13-9370.notmuch>
+In-Reply-To: <fe6133e6e997b9eca7d9b3e0802642498812b3b5.camel@linux.ibm.com>
+References: <20210216011216.3168-1-iii@linux.ibm.com>
+ <20210216011216.3168-3-iii@linux.ibm.com>
+ <602d83616c9f1_ddd2208dd@john-XPS-13-9370.notmuch>
+ <602d86a63e754_fc54208eb@john-XPS-13-9370.notmuch>
+ <fe6133e6e997b9eca7d9b3e0802642498812b3b5.camel@linux.ibm.com>
+Subject: Re: [PATCH bpf-next 2/6] libbpf: Add BTF_KIND_FLOAT support
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On (21/02/17 13:15), Enrico Weigelt, metux IT consult wrote:
-> Under rare circumstances it may happen that a device node's name is NULL
-> (most likely kernel bug in some other place). In such situations anything
-> but helpful, if the debug printout crashes, and nobody knows what actually
-> happened here.
-> 
-> Therefore protect it by an explicit NULL check and print out an extra
-> warning.
-> 
-> Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
-> ---
->  lib/vsprintf.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-> index 3b53c73580c5..050a60b88073 100644
-> --- a/lib/vsprintf.c
-> +++ b/lib/vsprintf.c
-> @@ -2013,6 +2013,10 @@ char *device_node_string(char *buf, char *end, struct device_node *dn,
->  			break;
->  		case 'n':	/* name */
->  			p = fwnode_get_name(of_fwnode_handle(dn));
-> +			if (!p) {
-> +				pr_warn("device_node without name. Kernel bug ?\n");
-> +				p = "<NULL>";
-> +			}
->  			precision = str_spec.precision;
->  			str_spec.precision = strchrnul(p, '@') - p;
->  			buf = string(buf, end, p, str_spec);
+Ilya Leoshkevich wrote:
+> On Wed, 2021-02-17 at 13:12 -0800, John Fastabend wrote:
+> > John Fastabend wrote:
+> > > Ilya Leoshkevich wrote:
+> > > > The logic follows that of BTF_KIND_INT most of the time.
+> > > > Sanitization
+> > > > replaces BTF_KIND_FLOATs with equally-sized BTF_KIND_INTs on
+> > > > older
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> > > Does this match the code though?
+> > > =
 
-What about other fwnode_get_name() calls in vsprintf?
+> > > > kernels.
+> > > > =
 
-	-ss
+> > > > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> > > > ---
+> > > =
+
+> > > [...]
+> > > =
+
+> > > =
+
+> > > > @@ -2445,6 +2450,9 @@ static void bpf_object__sanitize_btf(struct=
+
+> > > > bpf_object *obj, struct btf *btf)
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0} else if (!has_func_global && btf_is_func(=
+t)) {
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0/* replace BTF_FUNC_GLOBAL with
+> > > > BTF_FUNC_STATIC */
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0t->info =3D BTF_INFO_ENC(BTF_KIND_FUNC, 0,
+> > > > 0);
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0} else if (!has_float && btf_is_float(t)) {
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/=
+* replace FLOAT with INT */
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0t=
+->info =3D BTF_INFO_ENC(BTF_KIND_FLOAT, 0,
+> > > > 0);
+> > > =
+
+> > > Do we also need to encode the vlen here?
+> > =
+
+> > Sorry typo on my side, 't->size =3D ?' is what I was trying to point
+> > out.
+> > Looks like its set in the other case where we replace VAR with INT.
+> =
+
+> The idea is to have the size of the INT equal to the size of the FLOAT
+> that it replaces. I guess we can't do the same for VARs, because they
+> don't have the size field, and if we don't have DATASECs, then we can't=
+
+> find the size of a VAR at all.
+> =
+
+
+Right, but KINT_INT has some extra constraints that don't appear to be in=
+
+place for KIND_FLOAT. For example meta_check includes max size check. We
+should check these when libbpf does conversion as well? Otherwise kernel
+is going to give us an error that will be a bit hard to understand.
+
+Also what I am I missing here. I use the writers to build a float,
+
+ btf__add_float(btf, "new_float", 8);
+
+This will create the btf_type struct approximately like this,
+
+ btf_type t {
+   .name =3D name_off; // points at my name
+   .info =3D btf_type_info(BTF_KIND_FLOAT, 0, 0);
+   .size =3D 8
+ };
+
+But if I create an int_type with btf__add_int(btf, "net_int", 8); I will
+get a btf_type + __u32. When we do the conversion how do we skip the =
+
+extra u32 setup?
+
+ *(__u32 *)(t + 1) =3D (encoding << 24) | (byte_sz * 8);
+
+Should we set this up on the conversion as well? Otherwise later steps
+might try to read the __u32 piece to find some arbitrary memory?
+
+.John=
