@@ -2,171 +2,226 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E03A231E3DB
-	for <lists+bpf@lfdr.de>; Thu, 18 Feb 2021 02:28:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DE9131E44C
+	for <lists+bpf@lfdr.de>; Thu, 18 Feb 2021 03:20:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbhBRB1k (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 17 Feb 2021 20:27:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229863AbhBRB1j (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 17 Feb 2021 20:27:39 -0500
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 443F9C0613D6
-        for <bpf@vger.kernel.org>; Wed, 17 Feb 2021 17:26:57 -0800 (PST)
-Received: by mail-io1-xd32.google.com with SMTP id s24so390968iob.6
-        for <bpf@vger.kernel.org>; Wed, 17 Feb 2021 17:26:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=fRYLy3H4F9oCMNJyt44WfxY2hQG5AXt3RTaWffSy2XU=;
-        b=RSpao/8QwbLrP51weIC44yvipXuU4xaadCf4sbfh9e/IHbEJOHucUZvxnsD5eZrKtt
-         Xp1TfkfhtGvqfTr7lF4LcmqtZXUbtAZpug01KG6mD8ExiavhNkaWMqifZT4ESh4Tib0h
-         LDJjtw+g+ef0hSK06rMJEDliiPRgmlNl1obPWY7LYfxHJxobh4FBDx+urp4Omo/vNAnZ
-         z9zQuLppY3eTQibts01sdWEuFFZZcfiFmn+PsrixscArNwYNuhlMefYrn4D0Q3Zx2wag
-         shiEKA2r5Bblp/G9ec4EKWVvgCNTk2TqF5vYuUr07ZfpGHcb411rNrdWP00CjU4/HGIn
-         jjcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=fRYLy3H4F9oCMNJyt44WfxY2hQG5AXt3RTaWffSy2XU=;
-        b=CCw3mU1DZDqFnlOfvfTfdYseFsXDIRdDjWHw83ZJfyCx7ZOkHY1CEzk45tkS976ZDH
-         CAFE1/x4bqXch1qtzbHUqwA1GRG+Ve5dH9rkWrlJVN23xvaAo9kDRH/Ha56+sCmqRz6C
-         JlDOzJ9VhMwX+VIR94QFF+7EZZKY5LxGwndqck1EYZYaLkamVKTbd6McyNqXCwn4q2dv
-         27q4z9CXLhNQq/2GBhmGRx031svdjgfaUSAmwWInlmiLk2kU24eu0Fl4cfyx+LiAjNMY
-         t2QSgFdtloZEtInZv9/aK4npp4WuN1ezZ3KlcaFP8P2S1ehwHk8c0Wwgno01BSO8v67T
-         UC3w==
-X-Gm-Message-State: AOAM531CrADrZNSG+rC0JgKHU6ZpJfcqN+IBbqBUAdh/FpT8+ROIP4Kl
-        qx/borX1j0s73j2wAPPdHuo=
-X-Google-Smtp-Source: ABdhPJybHPIApDY+ktQczM8NTYClp4uQ+rLEGFSPs3RvPkX1rzqccDDaY22U2j4EDhQPXPBQkGLsrg==
-X-Received: by 2002:a6b:f317:: with SMTP id m23mr1627585ioh.67.1613611616771;
-        Wed, 17 Feb 2021 17:26:56 -0800 (PST)
-Received: from localhost ([172.243.146.206])
-        by smtp.gmail.com with ESMTPSA id w9sm3044830ioj.0.2021.02.17.17.26.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 17:26:56 -0800 (PST)
-Date:   Wed, 17 Feb 2021 17:26:47 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Ilya Leoshkevich <iii@linux.ibm.com>,
-        John Fastabend <john.fastabend@gmail.com>,
+        id S229746AbhBRCUg (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 17 Feb 2021 21:20:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46095 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229720AbhBRCUg (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 17 Feb 2021 21:20:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613614749;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oEPKtTgrc4YzD3mfk0Ov5baKrhMLojrx5gD3FzHnF7c=;
+        b=DX9aF+Xm2M/qaKrVac+P3ZsP7tIYpzf1tiItJgm5w4mXa8eCptS/+I7TpA4kLHXp+QvGB6
+        wca2kFvFH8QQ64IFhDqUqoOmJYLGAfOuIXjeTaEeVrxsArBefKdiUiS+QyT0q61H/FOi7x
+        olZ4bJqYrbX8fy+tLkRENoF9qusocQc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-411-w1bAZqm7MIifojaTZnr1uQ-1; Wed, 17 Feb 2021 21:19:07 -0500
+X-MC-Unique: w1bAZqm7MIifojaTZnr1uQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 48C4318A08C0;
+        Thu, 18 Feb 2021 02:19:05 +0000 (UTC)
+Received: from wangxiaodeMacBook-Air.local (ovpn-13-162.pek2.redhat.com [10.72.13.162])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BC80F19C46;
+        Thu, 18 Feb 2021 02:18:57 +0000 (UTC)
+Subject: Re: [PATCH netdev] virtio-net: support XDP_TX when not more queues
+To:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc:     bpf@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>,
-        "Vasily Gorbik" <gor@linux.ibm.com>
-Message-ID: <602dc2574df18_182c3208c0@john-XPS-13-9370.notmuch>
-In-Reply-To: <fe6133e6e997b9eca7d9b3e0802642498812b3b5.camel@linux.ibm.com>
-References: <20210216011216.3168-1-iii@linux.ibm.com>
- <20210216011216.3168-3-iii@linux.ibm.com>
- <602d83616c9f1_ddd2208dd@john-XPS-13-9370.notmuch>
- <602d86a63e754_fc54208eb@john-XPS-13-9370.notmuch>
- <fe6133e6e997b9eca7d9b3e0802642498812b3b5.camel@linux.ibm.com>
-Subject: Re: [PATCH bpf-next 2/6] libbpf: Add BTF_KIND_FLOAT support
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org,
+        dust.li@linux.alibaba.com
+References: <81abae33fc8dbec37ef0061ff6f6fd696b484a3e.1610523188.git.xuanzhuo@linux.alibaba.com>
+ <20210210163945-mutt-send-email-mst@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <bbd43240-c677-da41-8e6f-6a1550c220a8@redhat.com>
+Date:   Thu, 18 Feb 2021 10:18:56 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <20210210163945-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Ilya Leoshkevich wrote:
-> On Wed, 2021-02-17 at 13:12 -0800, John Fastabend wrote:
-> > John Fastabend wrote:
-> > > Ilya Leoshkevich wrote:
-> > > > The logic follows that of BTF_KIND_INT most of the time.
-> > > > Sanitization
-> > > > replaces BTF_KIND_FLOATs with equally-sized BTF_KIND_INTs on
-> > > > older
-> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> > > Does this match the code though?
-> > > =
 
-> > > > kernels.
-> > > > =
-
-> > > > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> > > > ---
-> > > =
-
-> > > [...]
-> > > =
-
-> > > =
-
-> > > > @@ -2445,6 +2450,9 @@ static void bpf_object__sanitize_btf(struct=
-
-> > > > bpf_object *obj, struct btf *btf)
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0} else if (!has_func_global && btf_is_func(=
-t)) {
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0/* replace BTF_FUNC_GLOBAL with
-> > > > BTF_FUNC_STATIC */
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0t->info =3D BTF_INFO_ENC(BTF_KIND_FUNC, 0,
-> > > > 0);
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0} else if (!has_float && btf_is_float(t)) {
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/=
-* replace FLOAT with INT */
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0t=
-->info =3D BTF_INFO_ENC(BTF_KIND_FLOAT, 0,
-> > > > 0);
-> > > =
-
-> > > Do we also need to encode the vlen here?
-> > =
-
-> > Sorry typo on my side, 't->size =3D ?' is what I was trying to point
-> > out.
-> > Looks like its set in the other case where we replace VAR with INT.
-> =
-
-> The idea is to have the size of the INT equal to the size of the FLOAT
-> that it replaces. I guess we can't do the same for VARs, because they
-> don't have the size field, and if we don't have DATASECs, then we can't=
-
-> find the size of a VAR at all.
-> =
+On 2021/2/11 5:40 上午, Michael S. Tsirkin wrote:
+> On Wed, Jan 13, 2021 at 04:08:57PM +0800, Xuan Zhuo wrote:
+>> The number of queues implemented by many virtio backends is limited,
+>> especially some machines have a large number of CPUs. In this case, it
+>> is often impossible to allocate a separate queue for XDP_TX.
+>>
+>> This patch allows XDP_TX to run by reuse the existing SQ with
+>> __netif_tx_lock() hold when there are not enough queues.
+>>
+>> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+>> Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
+> I'd like to get some advice on whether this is ok from some
+> XDP experts - previously my understanding was that it is
+> preferable to disable XDP for such devices than
+> use locks on XDP fast path.
 
 
-Right, but KINT_INT has some extra constraints that don't appear to be in=
+I think this is acceptable on the device that changing the number of 
+queues is not easy. For virtio-net, it probably requires a lot of 
+changes in the management.
 
-place for KIND_FLOAT. For example meta_check includes max size check. We
-should check these when libbpf does conversion as well? Otherwise kernel
-is going to give us an error that will be a bit hard to understand.
+Another example is TUN which use TX lock for XDP.
 
-Also what I am I missing here. I use the writers to build a float,
+Thanks
 
- btf__add_float(btf, "new_float", 8);
 
-This will create the btf_type struct approximately like this,
+>
+>> ---
+>>   drivers/net/virtio_net.c | 47 +++++++++++++++++++++++++++++++++++------------
+>>   1 file changed, 35 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+>> index ba8e637..7a3b2a7 100644
+>> --- a/drivers/net/virtio_net.c
+>> +++ b/drivers/net/virtio_net.c
+>> @@ -195,6 +195,9 @@ struct virtnet_info {
+>>   	/* # of XDP queue pairs currently used by the driver */
+>>   	u16 xdp_queue_pairs;
+>>   
+>> +	/* xdp_queue_pairs may be 0, when xdp is already loaded. So add this. */
+>> +	bool xdp_enabled;
+>> +
+>>   	/* I like... big packets and I cannot lie! */
+>>   	bool big_packets;
+>>   
+>> @@ -481,14 +484,34 @@ static int __virtnet_xdp_xmit_one(struct virtnet_info *vi,
+>>   	return 0;
+>>   }
+>>   
+>> -static struct send_queue *virtnet_xdp_sq(struct virtnet_info *vi)
+>> +static struct send_queue *virtnet_get_xdp_sq(struct virtnet_info *vi)
+>>   {
+>>   	unsigned int qp;
+>> +	struct netdev_queue *txq;
+>> +
+>> +	if (vi->curr_queue_pairs > nr_cpu_ids) {
+>> +		qp = vi->curr_queue_pairs - vi->xdp_queue_pairs + smp_processor_id();
+>> +	} else {
+>> +		qp = smp_processor_id() % vi->curr_queue_pairs;
+>> +		txq = netdev_get_tx_queue(vi->dev, qp);
+>> +		__netif_tx_lock(txq, raw_smp_processor_id());
+>> +	}
+>>   
+>> -	qp = vi->curr_queue_pairs - vi->xdp_queue_pairs + smp_processor_id();
+>>   	return &vi->sq[qp];
+>>   }
+>>   
+>> +static void virtnet_put_xdp_sq(struct virtnet_info *vi)
+>> +{
+>> +	unsigned int qp;
+>> +	struct netdev_queue *txq;
+>> +
+>> +	if (vi->curr_queue_pairs <= nr_cpu_ids) {
+>> +		qp = smp_processor_id() % vi->curr_queue_pairs;
+>> +		txq = netdev_get_tx_queue(vi->dev, qp);
+>> +		__netif_tx_unlock(txq);
+>> +	}
+>> +}
+>> +
+>>   static int virtnet_xdp_xmit(struct net_device *dev,
+>>   			    int n, struct xdp_frame **frames, u32 flags)
+>>   {
+>> @@ -512,7 +535,7 @@ static int virtnet_xdp_xmit(struct net_device *dev,
+>>   	if (!xdp_prog)
+>>   		return -ENXIO;
+>>   
+>> -	sq = virtnet_xdp_sq(vi);
+>> +	sq = virtnet_get_xdp_sq(vi);
+>>   
+>>   	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK)) {
+>>   		ret = -EINVAL;
+>> @@ -560,12 +583,13 @@ static int virtnet_xdp_xmit(struct net_device *dev,
+>>   	sq->stats.kicks += kicks;
+>>   	u64_stats_update_end(&sq->stats.syncp);
+>>   
+>> +	virtnet_put_xdp_sq(vi);
+>>   	return ret;
+>>   }
+>>   
+>>   static unsigned int virtnet_get_headroom(struct virtnet_info *vi)
+>>   {
+>> -	return vi->xdp_queue_pairs ? VIRTIO_XDP_HEADROOM : 0;
+>> +	return vi->xdp_enabled ? VIRTIO_XDP_HEADROOM : 0;
+>>   }
+>>   
+>>   /* We copy the packet for XDP in the following cases:
+>> @@ -1457,12 +1481,13 @@ static int virtnet_poll(struct napi_struct *napi, int budget)
+>>   		xdp_do_flush();
+>>   
+>>   	if (xdp_xmit & VIRTIO_XDP_TX) {
+>> -		sq = virtnet_xdp_sq(vi);
+>> +		sq = virtnet_get_xdp_sq(vi);
+>>   		if (virtqueue_kick_prepare(sq->vq) && virtqueue_notify(sq->vq)) {
+>>   			u64_stats_update_begin(&sq->stats.syncp);
+>>   			sq->stats.kicks++;
+>>   			u64_stats_update_end(&sq->stats.syncp);
+>>   		}
+>> +		virtnet_put_xdp_sq(vi);
+>>   	}
+>>   
+>>   	return received;
+>> @@ -2416,12 +2441,8 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+>>   		xdp_qp = nr_cpu_ids;
+>>   
+>>   	/* XDP requires extra queues for XDP_TX */
+>> -	if (curr_qp + xdp_qp > vi->max_queue_pairs) {
+>> -		NL_SET_ERR_MSG_MOD(extack, "Too few free TX rings available");
+>> -		netdev_warn(dev, "request %i queues but max is %i\n",
+>> -			    curr_qp + xdp_qp, vi->max_queue_pairs);
+>> -		return -ENOMEM;
+>> -	}
+>> +	if (curr_qp + xdp_qp > vi->max_queue_pairs)
+>> +		xdp_qp = 0;
+>>   
+>>   	old_prog = rtnl_dereference(vi->rq[0].xdp_prog);
+>>   	if (!prog && !old_prog)
+>> @@ -2453,12 +2474,14 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+>>   	netif_set_real_num_rx_queues(dev, curr_qp + xdp_qp);
+>>   	vi->xdp_queue_pairs = xdp_qp;
+>>   
+>> +	vi->xdp_enabled = false;
+>>   	if (prog) {
+>>   		for (i = 0; i < vi->max_queue_pairs; i++) {
+>>   			rcu_assign_pointer(vi->rq[i].xdp_prog, prog);
+>>   			if (i == 0 && !old_prog)
+>>   				virtnet_clear_guest_offloads(vi);
+>>   		}
+>> +		vi->xdp_enabled = true;
+>>   	}
+>>   
+>>   	for (i = 0; i < vi->max_queue_pairs; i++) {
+>> @@ -2526,7 +2549,7 @@ static int virtnet_set_features(struct net_device *dev,
+>>   	int err;
+>>   
+>>   	if ((dev->features ^ features) & NETIF_F_LRO) {
+>> -		if (vi->xdp_queue_pairs)
+>> +		if (vi->xdp_enabled)
+>>   			return -EBUSY;
+>>   
+>>   		if (features & NETIF_F_LRO)
+>> -- 
+>> 1.8.3.1
 
- btf_type t {
-   .name =3D name_off; // points at my name
-   .info =3D btf_type_info(BTF_KIND_FLOAT, 0, 0);
-   .size =3D 8
- };
-
-But if I create an int_type with btf__add_int(btf, "net_int", 8); I will
-get a btf_type + __u32. When we do the conversion how do we skip the =
-
-extra u32 setup?
-
- *(__u32 *)(t + 1) =3D (encoding << 24) | (byte_sz * 8);
-
-Should we set this up on the conversion as well? Otherwise later steps
-might try to read the __u32 piece to find some arbitrary memory?
-
-.John=
