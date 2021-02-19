@@ -2,127 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5CFA31F9B1
-	for <lists+bpf@lfdr.de>; Fri, 19 Feb 2021 14:13:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF64D31FB86
+	for <lists+bpf@lfdr.de>; Fri, 19 Feb 2021 16:00:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229925AbhBSNNQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Feb 2021 08:13:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55108 "EHLO
+        id S229811AbhBSPAV (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Feb 2021 10:00:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbhBSNNP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Feb 2021 08:13:15 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95D7DC061574;
-        Fri, 19 Feb 2021 05:12:35 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id d2so4136382pjs.4;
-        Fri, 19 Feb 2021 05:12:35 -0800 (PST)
+        with ESMTP id S229799AbhBSPAQ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Feb 2021 10:00:16 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C778EC061756;
+        Fri, 19 Feb 2021 06:59:33 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id c8so21954239ljd.12;
+        Fri, 19 Feb 2021 06:59:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WYLPdLD/fMdkJnEXcg174O1DbhT+UlnhEq0zSK1ne6I=;
-        b=kwVEfRPB/aWLP+iPHJqV4cm++jcMngT2BTKplzaPQQ8yF31p1KaG/FY635CejKhiiG
-         8BuAXOvOjDpYaPzDxcslrBhc/VUaDN4gBoPn66/aMggA9STYGhd/meXzNr6AUfgzGQ5l
-         To44A56SDcTjvv7kYlzq2ac1Wk75Jpm5+xQmK+xJuCRvOjPvzsgGA/OQbZPKHTXk8Q3C
-         0yj25wVPj5E1dV9Cgm9kuWtgQbu4jWH+zeaJY1sdv1WxqGve0e1V5ETXB4xe6xfxA/06
-         4bUIeado3VUel1boi/DFI5EYfzkBwOwK915M2FlQ3hpBYNfI8kjYmjmXZ4KSlCs/O9cP
-         /bsQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nC9kwGOyo2cb6wG6XNQD/v+S5EsZ+WWCpphEOR6VRGw=;
+        b=a7qUEiGSLjPMFupolbfYkgOu5RIuBx4gbLDdiE0jsXGHnCCQ2bFKa8PKAYJrj0lH5V
+         gRjVeXo04t+XXQi5+GCecAfU+E2UeMK6GjeiQ77qaNk7Eo7Lob9ajlBzNlXDFOiSQLjn
+         0oeV+Fv3wiFS9B1irgiMwGC2VP5/OLgItP8EwAOH2MvkXWgRY/ECQXj93K+3e8p3pyJm
+         fd+8WmNnMZKsC6NaIc5dGlLsIXPaowxnR9FlYZUAXswoVLg1J5o2SsxITv0RcixG74ll
+         v4ICAb5WA9u1WcVoiEfDuGks3SHIkoDlBOZ3YSuPSEjiFxY5L8Uj0++zcJuHMmN2zXcs
+         A3nA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WYLPdLD/fMdkJnEXcg174O1DbhT+UlnhEq0zSK1ne6I=;
-        b=pYR7/Ff718oK8sngpCuxXv5s3FhSvrF9s9jJN/e8RNWVr5+8otoFh7OZe48SnNfFeg
-         WxJdluynBN3Au2vyx97SZ5FGoUOPbm3sjs//J493yN0trxV5b+Ktzpm8g8IDaBwtR7bK
-         gC+gC1K+sFTNDTyvRzxowiRsPEV7wmQNiUEqgQqV2pl/i1SSY+svLVosv39f64u98Tpk
-         GW53K5atTTtq0pdCEln8VHn7pq47n9EEmzmmOTdxV+TMc/QkItHZDNVkg6FTrMaHkn9Q
-         nm+jq3McNN7BVdB/egA3ohxtBFgDRKtLOoBqfShh36IxUcrCRHuGdVroeaqzkIjEQGr+
-         V7cw==
-X-Gm-Message-State: AOAM533VYNvcCiiCin3ScScQQUQ4DDRNjb/s0oPxTsTkjMk9fPyvGAU0
-        EN/GoX38TO+UhMST0ozdjJvu3D1xVgH5Mh3Ok4w=
-X-Google-Smtp-Source: ABdhPJw3MGuOU5LEQVnlPu2uNAnzBnkd1peuvaE5mlPJN468zecRYr490GgeieLfllc3CcpITAnFXzVGoB2oHHjV/uw=
-X-Received: by 2002:a17:90a:ba86:: with SMTP id t6mr8838267pjr.168.1613740354999;
- Fri, 19 Feb 2021 05:12:34 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nC9kwGOyo2cb6wG6XNQD/v+S5EsZ+WWCpphEOR6VRGw=;
+        b=WAD/ghLkaPK2037zw+P2QalmbQlxDhj2Eo1Znmv+0qIxQJhh4nJfBZhCbbjcwB88vO
+         L0Mt7iJpydISC+RUvlEfl45bs8Phgv0MToU8b8bbN3R1auYnRiFD8Sd3F9Jm3Smmicw3
+         mBFc2iWseed/thuqU5VaTIPcLeRajgobjMTIn4VxACWoYHvWXaJO0SLBjV5+yCO80RIt
+         lZv2qTDX3Xoilc7Kl8dCIzDL2cPEGnW/TXLZBgWWH7viVuPf1REuckvTteoTymM5kssh
+         ehcxRU9XMfMZRwkcS7DWe9shgL3Vr+irfwyfzNYbmokdfYq4M0+MLE5oxP8IMjgnjfDJ
+         J2qg==
+X-Gm-Message-State: AOAM533in0uzovH0zdrtfmui8YzfpjGlDSK51DMYZq/hzVRnEokLGtAl
+        d9GbtDNZ6g1Nw/IuzRRdK/o=
+X-Google-Smtp-Source: ABdhPJxO+mKy7KF8QDDdb5QJWxtMyi42Ub7zmbL2k9fsiSDkpzW0v5kqlMCRzGR6vgY8ojlGWwe7Uw==
+X-Received: by 2002:a19:2d52:: with SMTP id t18mr6025805lft.554.1613746772364;
+        Fri, 19 Feb 2021 06:59:32 -0800 (PST)
+Received: from btopel-mobl.ger.intel.com (c213-102-90-208.bredband.comhem.se. [213.102.90.208])
+        by smtp.gmail.com with ESMTPSA id d9sm974092lfl.290.2021.02.19.06.59.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Feb 2021 06:59:31 -0800 (PST)
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
+        bjorn.topel@intel.com, maciej.fijalkowski@intel.com,
+        hawk@kernel.org, toke@redhat.com, magnus.karlsson@intel.com,
+        john.fastabend@gmail.com, kuba@kernel.org, davem@davemloft.net
+Subject: [PATCH bpf-next 0/2] Optimize bpf_redirect_map()/xdp_do_redirect()
+Date:   Fri, 19 Feb 2021 15:59:20 +0100
+Message-Id: <20210219145922.63655-1-bjorn.topel@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20210217160214.7869-1-ciara.loftus@intel.com> <20210217160214.7869-3-ciara.loftus@intel.com>
-In-Reply-To: <20210217160214.7869-3-ciara.loftus@intel.com>
-From:   Magnus Karlsson <magnus.karlsson@gmail.com>
-Date:   Fri, 19 Feb 2021 14:12:23 +0100
-Message-ID: <CAJ8uoz0CnquDSRZDRAYhLu=y8m-_Dzqs-J0d+-NSJk73wxfh4Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/4] selftests/bpf: expose debug arg to shell
- script for xsk tests
-To:     Ciara Loftus <ciara.loftus@intel.com>
-Cc:     Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Weqaar Janjua <weqaar.a.janjua@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 5:36 PM Ciara Loftus <ciara.loftus@intel.com> wrote:
->
-> Launching xdpxceiver with -D enables debug mode. Make it possible
+Hi XDP-folks,
 
-Would be clearer if the option was the same both in the shell and in
-the xdpreceiver app, so please pick -d or -D and stick with it. And
-how about calling the mode "dump packets" instead of debug, because
-that is what it is doing right now?
+This two patch series contain two optimizations for the
+bpf_redirect_map() helper and the xdp_do_redirect() function.
 
-> to pass this flag to the app via the test_xsk.sh shell script like
-> so:
->
-> ./test_xsk.sh -d
->
-> Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
-> ---
->  tools/testing/selftests/bpf/test_xsk.sh    | 7 ++++++-
->  tools/testing/selftests/bpf/xsk_prereqs.sh | 3 ++-
->  2 files changed, 8 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/test_xsk.sh b/tools/testing/selftests/bpf/test_xsk.sh
-> index 91127a5be90d..a72f8ed2932d 100755
-> --- a/tools/testing/selftests/bpf/test_xsk.sh
-> +++ b/tools/testing/selftests/bpf/test_xsk.sh
-> @@ -74,11 +74,12 @@
->
->  . xsk_prereqs.sh
->
-> -while getopts "cv" flag
-> +while getopts "cvd" flag
->  do
->         case "${flag}" in
->                 c) colorconsole=1;;
->                 v) verbose=1;;
-> +               d) debug=1;;
->         esac
->  done
->
-> @@ -135,6 +136,10 @@ if [[ $verbose -eq 1 ]]; then
->         VERBOSE_ARG="-v"
->  fi
->
-> +if [[ $debug -eq 1 ]]; then
-> +       DEBUG_ARG="-D"
-> +fi
-> +
->  test_status $retval "${TEST_NAME}"
->
->  ## START TESTS
-> diff --git a/tools/testing/selftests/bpf/xsk_prereqs.sh b/tools/testing/selftests/bpf/xsk_prereqs.sh
-> index ef8c5b31f4b6..d95018051fcc 100755
-> --- a/tools/testing/selftests/bpf/xsk_prereqs.sh
-> +++ b/tools/testing/selftests/bpf/xsk_prereqs.sh
-> @@ -128,5 +128,6 @@ execxdpxceiver()
->                         copy[$index]=${!current}
->                 done
->
-> -       ./${XSKOBJ} -i ${VETH0} -i ${VETH1},${NS1} ${copy[*]} -C ${NUMPKTS} ${VERBOSE_ARG}
-> +       ./${XSKOBJ} -i ${VETH0} -i ${VETH1},${NS1} ${copy[*]} -C ${NUMPKTS} ${VERBOSE_ARG} \
-> +               ${DEBUG_ARG}
->  }
-> --
-> 2.17.1
->
+The bpf_redirect_map() optimization is about avoiding the map lookup
+dispatching. Instead of having a switch-statement and selecting the
+correct lookup function, we let the verifier patch the
+bpf_redirect_map() call to a specific lookup function. This way the
+run-time lookup is avoided.
+
+The xdp_do_redirect() patch restructures the code, so that the map
+pointer indirection can be avoided.
+
+Performance-wise I got 3% improvement for XSKMAP
+(sample:xdpsock/rx-drop), and 4% (sample:xdp_redirect_map) on my
+machine.
+
+More details in each commit. Changes since the RFC is outlined in each
+commit.
+
+
+Cheers,
+Björn
+
+
+Björn Töpel (2):
+  bpf, xdp: per-map bpf_redirect_map functions for XDP
+  bpf, xdp: restructure redirect actions
+
+ include/linux/bpf.h        |  20 ++--
+ include/linux/filter.h     |  13 ++-
+ include/net/xdp_sock.h     |   6 +-
+ include/trace/events/xdp.h |  66 ++++++-----
+ kernel/bpf/cpumap.c        |   3 +-
+ kernel/bpf/devmap.c        |   5 +-
+ kernel/bpf/verifier.c      |  28 +++--
+ net/core/filter.c          | 219 ++++++++++++++++++-------------------
+ net/xdp/xskmap.c           |   1 -
+ 9 files changed, 192 insertions(+), 169 deletions(-)
+
+
+base-commit: 7b1e385c9a488de9291eaaa412146d3972e9dec5
+-- 
+2.27.0
+
