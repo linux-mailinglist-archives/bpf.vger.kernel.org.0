@@ -2,177 +2,430 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 380BC31FC5E
-	for <lists+bpf@lfdr.de>; Fri, 19 Feb 2021 16:46:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FC9231FD8F
+	for <lists+bpf@lfdr.de>; Fri, 19 Feb 2021 18:07:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230026AbhBSPqh (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Feb 2021 10:46:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229871AbhBSPq2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Feb 2021 10:46:28 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF5F0C061797
-        for <bpf@vger.kernel.org>; Fri, 19 Feb 2021 07:44:14 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id o15so7437060wmq.5
-        for <bpf@vger.kernel.org>; Fri, 19 Feb 2021 07:44:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+r5nIbn7SC0nctyFfGqm8+YsIS188S6/wSNE2V/0k+8=;
-        b=EzTsXuQ/kssa4Z+WC9pz8o8hG3Kt5SiMRRxE7a5Uh7P7+/u/NSn4fh4lT/qDHKmqnG
-         QL6hHC7t9gstDI2sfBubtH42AQBQFFV+S6BPJBJxP6zcTxmaUKnZViyD8I8B2gNf13SE
-         5VghQ+dCaf6phYpIm/8DhpjEFkadFYsQ/01vE=
+        id S229828AbhBSRGs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Feb 2021 12:06:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55420 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229515AbhBSRGr (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 19 Feb 2021 12:06:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613754319;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=G9YmUjSdB0aEqx5Q3NW+k6kL+oQpdgPeOrPsN461J+c=;
+        b=fWNN7F9NfA2bFhKSJQn6E4SWSXHgDZYd/ddgXUmWK+91WY0WOm1qffCw/KH4lhu9GyDSgP
+        hV+RpNssBW7v79bqBH4XN9WST4/ToW0EJHDe6mx+mnjuEK8vU9SxlV85a3prq8uD+WLcN/
+        jh91P94FTvPUD264ybAfgluQfnWLyRg=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-589-I-yQJ1ALMjKS0brQKpXIVw-1; Fri, 19 Feb 2021 12:05:17 -0500
+X-MC-Unique: I-yQJ1ALMjKS0brQKpXIVw-1
+Received: by mail-ed1-f69.google.com with SMTP id w9so2867812edi.15
+        for <bpf@vger.kernel.org>; Fri, 19 Feb 2021 09:05:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+r5nIbn7SC0nctyFfGqm8+YsIS188S6/wSNE2V/0k+8=;
-        b=DnQXL/g+D4SWJS2Al11k/6zaED0OrJudVfVvP+UIcr381x3J9CKhXQ2TjVgQ+eXiOB
-         DQkZc+pdHIbZzviEQjcSgJV3bXAkJ4vozXPU0gKeQG0emE5CPoz6d0xCGqIzdaTvGcZO
-         3p5Nl+57lR2yfur8za8mZr99y1zd+uPR4NOWs9/sZMcwjzBYUQy7INePOWIWvGqANH3g
-         gx9pKewIRoQbVeI4WPv0+czLB8azCDaK5b7WeQjOXfRdzBjagc6NRRpcvQDd8EvrbpIh
-         H6108CdsDAeZlTlw+eGhtzJCQIZ58igcUBJ4lgWXem5CNmgjMpV4x30vLMzebHyTk90I
-         DNiQ==
-X-Gm-Message-State: AOAM532jzZHGfFC+8I3Y68kK+UMtWPUrHPOe7d0NTTnsXmQzhlEaO3ga
-        3H5QKxOZB5sJkRDY7kAm4dia/A==
-X-Google-Smtp-Source: ABdhPJzQ/QrN3V5Vk2Nl5jQxhyGxMg3wBwHQEh7q/65C4emdWvqhqkeQJLDlOz3/jUQUwBOFnoq2yg==
-X-Received: by 2002:a1c:2d87:: with SMTP id t129mr8720098wmt.121.1613749453431;
-        Fri, 19 Feb 2021 07:44:13 -0800 (PST)
-Received: from antares.lan (b.3.5.8.9.a.e.c.e.a.6.2.c.1.9.b.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:b91c:26ae:cea9:853b])
-        by smtp.gmail.com with ESMTPSA id v204sm12321929wmg.38.2021.02.19.07.44.12
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=G9YmUjSdB0aEqx5Q3NW+k6kL+oQpdgPeOrPsN461J+c=;
+        b=kUxX3QEuFUK/lbH3iekwN/jIXyTXScDYpWWNSBBLxrNAqyoTk33vZRJxfFTG5EZw1U
+         m0kpZ+JrFS7s5tGBucrPjBueBxADsCrNH38dcroEbynbMtegZ9CeQEElrsEBtFBpmiDT
+         KFtIgzoBjQTLNGQ+u8Kt4EDHr3zeJZIFnhRVGH2ecarnI3NAGMItAmk3M7i1vyF3f/LJ
+         cQVKUFF5R9+vBOaHDxm2acafeiX7kIEYSG/1IdaauJGs8yd5e+A+NFNm1vu5HPowLCNg
+         LvgPvMhAbxPaiWOIBaX2VOylr+ZsNccDf8HaPFRxkfuzH2xeluV2qv5UcR5HRJE/tnNp
+         snjQ==
+X-Gm-Message-State: AOAM531Dd4bglWMExzTrQRR58pDo9By9kiAgxHIar/9kttfQgW4nGTOX
+        7FrS0NI5sZSAKZKtG1hq9D+BHpsuMpqPleGtkGBizxXeNejdzmXEtDbihiXfU++TraBhd/dB6dv
+        mhSC8AAuNair3
+X-Received: by 2002:a05:6402:1398:: with SMTP id b24mr9749993edv.108.1613754316568;
+        Fri, 19 Feb 2021 09:05:16 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxIHu3B8wM1v/cjRw3TPaBUyADr4lzU23ih6RDVLwhWbfe1BLysUjjlnsQN71PV6UBEGEE8VQ==
+X-Received: by 2002:a05:6402:1398:: with SMTP id b24mr9749954edv.108.1613754316244;
+        Fri, 19 Feb 2021 09:05:16 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id x17sm4906093eju.36.2021.02.19.09.05.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Feb 2021 07:44:13 -0800 (PST)
-From:   Lorenz Bauer <lmb@cloudflare.com>
-To:     eric.dumazet@gmail.com, daniel@iogearbox.net, ast@kernel.org,
-        andrii@kernel.org
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>
-Subject: [PATCH bpf-next v3 4/4] tools/testing: add a selftest for SO_NETNS_COOKIE
-Date:   Fri, 19 Feb 2021 15:43:30 +0000
-Message-Id: <20210219154330.93615-5-lmb@cloudflare.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210219154330.93615-1-lmb@cloudflare.com>
-References: <20210219154330.93615-1-lmb@cloudflare.com>
+        Fri, 19 Feb 2021 09:05:15 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 48D36180676; Fri, 19 Feb 2021 18:05:15 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        maciej.fijalkowski@intel.com, hawk@kernel.org,
+        magnus.karlsson@intel.com, john.fastabend@gmail.com,
+        kuba@kernel.org, davem@davemloft.net
+Subject: Re: [PATCH bpf-next 1/2] bpf, xdp: per-map bpf_redirect_map
+ functions for XDP
+In-Reply-To: <20210219145922.63655-2-bjorn.topel@gmail.com>
+References: <20210219145922.63655-1-bjorn.topel@gmail.com>
+ <20210219145922.63655-2-bjorn.topel@gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 19 Feb 2021 18:05:15 +0100
+Message-ID: <87tuq8httg.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Make sure that SO_NETNS_COOKIE returns a non-zero value, and
-that sockets from different namespaces have a distinct cookie
-value.
+Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> writes:
 
-Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
----
- tools/testing/selftests/net/.gitignore        |  1 +
- tools/testing/selftests/net/Makefile          |  2 +-
- tools/testing/selftests/net/config            |  1 +
- tools/testing/selftests/net/so_netns_cookie.c | 61 +++++++++++++++++++
- 4 files changed, 64 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/net/so_netns_cookie.c
+> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
+>
+> Currently the bpf_redirect_map() implementation dispatches to the
+> correct map-lookup function via a switch-statement. To avoid the
+> dispatching, this change adds one bpf_redirect_map() implementation per
+> map. Correct function is automatically selected by the BPF verifier.
+>
+> rfc->v1: Get rid of the macro and use __always_inline. (Jesper)
+>
+> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
 
-diff --git a/tools/testing/selftests/net/.gitignore b/tools/testing/selftests/net/.gitignore
-index 61ae899cfc17..19deb9cdf72f 100644
---- a/tools/testing/selftests/net/.gitignore
-+++ b/tools/testing/selftests/net/.gitignore
-@@ -30,3 +30,4 @@ hwtstamp_config
- rxtimestamp
- timestamping
- txtimestamp
-+so_netns_cookie
-diff --git a/tools/testing/selftests/net/Makefile b/tools/testing/selftests/net/Makefile
-index 25f198bec0b2..91bb372f5ba5 100644
---- a/tools/testing/selftests/net/Makefile
-+++ b/tools/testing/selftests/net/Makefile
-@@ -28,7 +28,7 @@ TEST_GEN_FILES =  socket nettest
- TEST_GEN_FILES += psock_fanout psock_tpacket msg_zerocopy reuseport_addr_any
- TEST_GEN_FILES += tcp_mmap tcp_inq psock_snd txring_overwrite
- TEST_GEN_FILES += udpgso udpgso_bench_tx udpgso_bench_rx ip_defrag
--TEST_GEN_FILES += so_txtime ipv6_flowlabel ipv6_flowlabel_mgr
-+TEST_GEN_FILES += so_txtime ipv6_flowlabel ipv6_flowlabel_mgr so_netns_cookie
- TEST_GEN_FILES += tcp_fastopen_backup_key
- TEST_GEN_FILES += fin_ack_lat
- TEST_GEN_FILES += reuseaddr_ports_exhausted
-diff --git a/tools/testing/selftests/net/config b/tools/testing/selftests/net/config
-index 614d5477365a..6f905b53904f 100644
---- a/tools/testing/selftests/net/config
-+++ b/tools/testing/selftests/net/config
-@@ -1,4 +1,5 @@
- CONFIG_USER_NS=y
-+CONFIG_NET_NS=y
- CONFIG_BPF_SYSCALL=y
- CONFIG_TEST_BPF=m
- CONFIG_NUMA=y
-diff --git a/tools/testing/selftests/net/so_netns_cookie.c b/tools/testing/selftests/net/so_netns_cookie.c
-new file mode 100644
-index 000000000000..b39e87e967cd
---- /dev/null
-+++ b/tools/testing/selftests/net/so_netns_cookie.c
-@@ -0,0 +1,61 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#define _GNU_SOURCE
-+#include <sched.h>
-+#include <unistd.h>
-+#include <stdio.h>
-+#include <errno.h>
-+#include <string.h>
-+#include <stdlib.h>
-+#include <stdint.h>
-+#include <sys/types.h>
-+#include <sys/socket.h>
-+
-+#ifndef SO_NETNS_COOKIE
-+#define SO_NETNS_COOKIE 71
-+#endif
-+
-+#define pr_err(fmt, ...) \
-+	({ \
-+		fprintf(stderr, "%s:%d:" fmt ": %m\n", \
-+			__func__, __LINE__, ##__VA_ARGS__); \
-+		1; \
-+	})
-+
-+int main(int argc, char *argvp[])
-+{
-+	uint64_t cookie1, cookie2;
-+	socklen_t vallen;
-+	int sock1, sock2;
-+
-+	sock1 = socket(AF_INET, SOCK_STREAM, 0);
-+	if (sock1 < 0)
-+		return pr_err("Unable to create TCP socket");
-+
-+	vallen = sizeof(cookie1);
-+	if (getsockopt(sock1, SOL_SOCKET, SO_NETNS_COOKIE, &cookie1, &vallen) != 0)
-+		return pr_err("getsockopt(SOL_SOCKET, SO_NETNS_COOKIE)");
-+
-+	if (!cookie1)
-+		return pr_err("SO_NETNS_COOKIE returned zero cookie");
-+
-+	if (unshare(CLONE_NEWNET))
-+		return pr_err("unshare");
-+
-+	sock2 = socket(AF_INET, SOCK_STREAM, 0);
-+	if (sock2 < 0)
-+		return pr_err("Unable to create TCP socket");
-+
-+	vallen = sizeof(cookie2);
-+	if (getsockopt(sock2, SOL_SOCKET, SO_NETNS_COOKIE, &cookie2, &vallen) != 0)
-+		return pr_err("getsockopt(SOL_SOCKET, SO_NETNS_COOKIE)");
-+
-+	if (!cookie2)
-+		return pr_err("SO_NETNS_COOKIE returned zero cookie");
-+
-+	if (cookie1 == cookie2)
-+		return pr_err("SO_NETNS_COOKIE returned identical cookies for distinct ns");
-+
-+	close(sock1);
-+	close(sock2);
-+	return 0;
-+}
--- 
-2.27.0
+Nice! Way better with the __always_inline. One small nit below, but
+otherwise:
+
+Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+
+> ---
+>  include/linux/bpf.h    | 20 +++++++------
+>  include/linux/filter.h |  2 ++
+>  include/net/xdp_sock.h |  6 ++--
+>  kernel/bpf/cpumap.c    |  2 +-
+>  kernel/bpf/devmap.c    |  4 +--
+>  kernel/bpf/verifier.c  | 28 +++++++++++-------
+>  net/core/filter.c      | 67 ++++++++++++++++++++++++++----------------
+>  7 files changed, 76 insertions(+), 53 deletions(-)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index cccaef1088ea..3dd186eeaf98 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -314,12 +314,14 @@ enum bpf_return_type {
+>  	RET_PTR_TO_BTF_ID,		/* returns a pointer to a btf_id */
+>  };
+>=20=20
+> +typedef u64 (*bpf_func_proto_func)(u64 r1, u64 r2, u64 r3, u64 r4, u64 r=
+5);
+> +
+>  /* eBPF function prototype used by verifier to allow BPF_CALLs from eBPF=
+ programs
+>   * to in-kernel helper functions and for adjusting imm32 field in BPF_CA=
+LL
+>   * instructions after verifying
+>   */
+>  struct bpf_func_proto {
+> -	u64 (*func)(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5);
+> +	bpf_func_proto_func func;
+>  	bool gpl_only;
+>  	bool pkt_access;
+>  	enum bpf_return_type ret_type;
+> @@ -1429,9 +1431,11 @@ struct btf *bpf_get_btf_vmlinux(void);
+>  /* Map specifics */
+>  struct xdp_buff;
+>  struct sk_buff;
+> +struct bpf_dtab_netdev;
+> +struct bpf_cpu_map_entry;
+>=20=20
+> -struct bpf_dtab_netdev *__dev_map_lookup_elem(struct bpf_map *map, u32 k=
+ey);
+> -struct bpf_dtab_netdev *__dev_map_hash_lookup_elem(struct bpf_map *map, =
+u32 key);
+> +void *__dev_map_lookup_elem(struct bpf_map *map, u32 key);
+> +void *__dev_map_hash_lookup_elem(struct bpf_map *map, u32 key);
+>  void __dev_flush(void);
+>  int dev_xdp_enqueue(struct net_device *dev, struct xdp_buff *xdp,
+>  		    struct net_device *dev_rx);
+> @@ -1441,7 +1445,7 @@ int dev_map_generic_redirect(struct bpf_dtab_netdev=
+ *dst, struct sk_buff *skb,
+>  			     struct bpf_prog *xdp_prog);
+>  bool dev_map_can_have_prog(struct bpf_map *map);
+>=20=20
+> -struct bpf_cpu_map_entry *__cpu_map_lookup_elem(struct bpf_map *map, u32=
+ key);
+> +void *__cpu_map_lookup_elem(struct bpf_map *map, u32 key);
+>  void __cpu_map_flush(void);
+>  int cpu_map_enqueue(struct bpf_cpu_map_entry *rcpu, struct xdp_buff *xdp,
+>  		    struct net_device *dev_rx);
+> @@ -1568,14 +1572,12 @@ static inline int bpf_obj_get_user(const char __u=
+ser *pathname, int flags)
+>  	return -EOPNOTSUPP;
+>  }
+>=20=20
+> -static inline struct net_device  *__dev_map_lookup_elem(struct bpf_map *=
+map,
+> -						       u32 key)
+> +static inline void  *__dev_map_lookup_elem(struct bpf_map *map, u32 key)
+>  {
+>  	return NULL;
+>  }
+>=20=20
+> -static inline struct net_device  *__dev_map_hash_lookup_elem(struct bpf_=
+map *map,
+> -							     u32 key)
+> +static inline void  *__dev_map_hash_lookup_elem(struct bpf_map *map, u32=
+ key)
+>  {
+>  	return NULL;
+>  }
+> @@ -1615,7 +1617,7 @@ static inline int dev_map_generic_redirect(struct b=
+pf_dtab_netdev *dst,
+>  }
+>=20=20
+>  static inline
+> -struct bpf_cpu_map_entry *__cpu_map_lookup_elem(struct bpf_map *map, u32=
+ key)
+> +void *__cpu_map_lookup_elem(struct bpf_map *map, u32 key)
+>  {
+>  	return NULL;
+>  }
+> diff --git a/include/linux/filter.h b/include/linux/filter.h
+> index 3b00fc906ccd..1dedcf66b694 100644
+> --- a/include/linux/filter.h
+> +++ b/include/linux/filter.h
+> @@ -1472,4 +1472,6 @@ static inline bool bpf_sk_lookup_run_v6(struct net =
+*net, int protocol,
+>  }
+>  #endif /* IS_ENABLED(CONFIG_IPV6) */
+>=20=20
+> +bpf_func_proto_func get_xdp_redirect_func(enum bpf_map_type map_type);
+> +
+>  #endif /* __LINUX_FILTER_H__ */
+> diff --git a/include/net/xdp_sock.h b/include/net/xdp_sock.h
+> index cc17bc957548..da4139a58630 100644
+> --- a/include/net/xdp_sock.h
+> +++ b/include/net/xdp_sock.h
+> @@ -80,8 +80,7 @@ int xsk_generic_rcv(struct xdp_sock *xs, struct xdp_buf=
+f *xdp);
+>  int __xsk_map_redirect(struct xdp_sock *xs, struct xdp_buff *xdp);
+>  void __xsk_map_flush(void);
+>=20=20
+> -static inline struct xdp_sock *__xsk_map_lookup_elem(struct bpf_map *map,
+> -						     u32 key)
+> +static inline void *__xsk_map_lookup_elem(struct bpf_map *map, u32 key)
+>  {
+>  	struct xsk_map *m =3D container_of(map, struct xsk_map, map);
+>  	struct xdp_sock *xs;
+> @@ -109,8 +108,7 @@ static inline void __xsk_map_flush(void)
+>  {
+>  }
+>=20=20
+> -static inline struct xdp_sock *__xsk_map_lookup_elem(struct bpf_map *map,
+> -						     u32 key)
+> +static inline void *__xsk_map_lookup_elem(struct bpf_map *map, u32 key)
+>  {
+>  	return NULL;
+>  }
+> diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
+> index 5d1469de6921..a4d2cb93cd69 100644
+> --- a/kernel/bpf/cpumap.c
+> +++ b/kernel/bpf/cpumap.c
+> @@ -563,7 +563,7 @@ static void cpu_map_free(struct bpf_map *map)
+>  	kfree(cmap);
+>  }
+>=20=20
+> -struct bpf_cpu_map_entry *__cpu_map_lookup_elem(struct bpf_map *map, u32=
+ key)
+> +void *__cpu_map_lookup_elem(struct bpf_map *map, u32 key)
+>  {
+>  	struct bpf_cpu_map *cmap =3D container_of(map, struct bpf_cpu_map, map);
+>  	struct bpf_cpu_map_entry *rcpu;
+> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+> index 85d9d1b72a33..37ac4cde9713 100644
+> --- a/kernel/bpf/devmap.c
+> +++ b/kernel/bpf/devmap.c
+> @@ -258,7 +258,7 @@ static int dev_map_get_next_key(struct bpf_map *map, =
+void *key, void *next_key)
+>  	return 0;
+>  }
+>=20=20
+> -struct bpf_dtab_netdev *__dev_map_hash_lookup_elem(struct bpf_map *map, =
+u32 key)
+> +void *__dev_map_hash_lookup_elem(struct bpf_map *map, u32 key)
+>  {
+>  	struct bpf_dtab *dtab =3D container_of(map, struct bpf_dtab, map);
+>  	struct hlist_head *head =3D dev_map_index_hash(dtab, key);
+> @@ -392,7 +392,7 @@ void __dev_flush(void)
+>   * update happens in parallel here a dev_put wont happen until after rea=
+ding the
+>   * ifindex.
+>   */
+> -struct bpf_dtab_netdev *__dev_map_lookup_elem(struct bpf_map *map, u32 k=
+ey)
+> +void *__dev_map_lookup_elem(struct bpf_map *map, u32 key)
+>  {
+>  	struct bpf_dtab *dtab =3D container_of(map, struct bpf_dtab, map);
+>  	struct bpf_dtab_netdev *obj;
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 3d34ba492d46..b5fb0c4e911a 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -5409,7 +5409,8 @@ record_func_map(struct bpf_verifier_env *env, struc=
+t bpf_call_arg_meta *meta,
+>  	    func_id !=3D BPF_FUNC_map_delete_elem &&
+>  	    func_id !=3D BPF_FUNC_map_push_elem &&
+>  	    func_id !=3D BPF_FUNC_map_pop_elem &&
+> -	    func_id !=3D BPF_FUNC_map_peek_elem)
+> +	    func_id !=3D BPF_FUNC_map_peek_elem &&
+> +	    func_id !=3D BPF_FUNC_redirect_map)
+>  		return 0;
+>=20=20
+>  	if (map =3D=3D NULL) {
+> @@ -11860,17 +11861,22 @@ static int fixup_bpf_calls(struct bpf_verifier_=
+env *env)
+>  		}
+>=20=20
+>  patch_call_imm:
+> -		fn =3D env->ops->get_func_proto(insn->imm, env->prog);
+> -		/* all functions that have prototype and verifier allowed
+> -		 * programs to call them, must be real in-kernel functions
+> -		 */
+> -		if (!fn->func) {
+> -			verbose(env,
+> -				"kernel subsystem misconfigured func %s#%d\n",
+> -				func_id_name(insn->imm), insn->imm);
+> -			return -EFAULT;
+> +		if (insn->imm =3D=3D BPF_FUNC_redirect_map) {
+> +			aux =3D &env->insn_aux_data[i];
+> +			map_ptr =3D BPF_MAP_PTR(aux->map_ptr_state);
+> +			insn->imm =3D get_xdp_redirect_func(map_ptr->map_type) - __bpf_call_b=
+ase;
+> +		} else {
+> +			fn =3D env->ops->get_func_proto(insn->imm, env->prog);
+> +			/* all functions that have prototype and verifier allowed
+> +			 * programs to call them, must be real in-kernel functions
+> +			 */
+> +			if (!fn->func) {
+> +				verbose(env, "kernel subsystem misconfigured func %s#%d\n",
+> +					func_id_name(insn->imm), insn->imm);
+> +				return -EFAULT;
+> +			}
+> +			insn->imm =3D fn->func - __bpf_call_base;
+>  		}
+> -		insn->imm =3D fn->func - __bpf_call_base;
+>  	}
+>=20=20
+>  	/* Since poke tab is now finalized, publish aux to tracker. */
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index adfdad234674..fd64d768e16a 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -3944,22 +3944,6 @@ void xdp_do_flush(void)
+>  }
+>  EXPORT_SYMBOL_GPL(xdp_do_flush);
+>=20=20
+> -static inline void *__xdp_map_lookup_elem(struct bpf_map *map, u32 index)
+> -{
+> -	switch (map->map_type) {
+> -	case BPF_MAP_TYPE_DEVMAP:
+> -		return __dev_map_lookup_elem(map, index);
+> -	case BPF_MAP_TYPE_DEVMAP_HASH:
+> -		return __dev_map_hash_lookup_elem(map, index);
+> -	case BPF_MAP_TYPE_CPUMAP:
+> -		return __cpu_map_lookup_elem(map, index);
+> -	case BPF_MAP_TYPE_XSKMAP:
+> -		return __xsk_map_lookup_elem(map, index);
+> -	default:
+> -		return NULL;
+> -	}
+> -}
+> -
+>  void bpf_clear_redirect_map(struct bpf_map *map)
+>  {
+>  	struct bpf_redirect_info *ri;
+> @@ -4110,22 +4094,17 @@ static const struct bpf_func_proto bpf_xdp_redire=
+ct_proto =3D {
+>  	.arg2_type      =3D ARG_ANYTHING,
+>  };
+>=20=20
+> -BPF_CALL_3(bpf_xdp_redirect_map, struct bpf_map *, map, u32, ifindex,
+> -	   u64, flags)
+> +static __always_inline s64 __bpf_xdp_redirect_map(struct bpf_map *map, u=
+32 ifindex, u64 flags,
+> +						  void *lookup_elem(struct bpf_map *map,
+> +								    u32 key))
+>  {
+>  	struct bpf_redirect_info *ri =3D this_cpu_ptr(&bpf_redirect_info);
+>=20=20
+> -	/* Lower bits of the flags are used as return code on lookup failure */
+>  	if (unlikely(flags > XDP_TX))
+>  		return XDP_ABORTED;
+>=20=20
+> -	ri->tgt_value =3D __xdp_map_lookup_elem(map, ifindex);
+> +	ri->tgt_value =3D lookup_elem(map, ifindex);
+>  	if (unlikely(!ri->tgt_value)) {
+> -		/* If the lookup fails we want to clear out the state in the
+> -		 * redirect_info struct completely, so that if an eBPF program
+> -		 * performs multiple lookups, the last one always takes
+> -		 * precedence.
+> -		 */
+
+Why remove the comments?
+
+>  		WRITE_ONCE(ri->map, NULL);
+>  		return flags;
+>  	}
+> @@ -4137,8 +4116,44 @@ BPF_CALL_3(bpf_xdp_redirect_map, struct bpf_map *,=
+ map, u32, ifindex,
+>  	return XDP_REDIRECT;
+>  }
+>=20=20
+> +BPF_CALL_3(bpf_xdp_redirect_devmap, struct bpf_map *, map, u32, ifindex,=
+ u64, flags)
+> +{
+> +	return __bpf_xdp_redirect_map(map, ifindex, flags, __dev_map_lookup_ele=
+m);
+> +}
+> +
+> +BPF_CALL_3(bpf_xdp_redirect_devmap_hash, struct bpf_map *, map, u32, ifi=
+ndex, u64, flags)
+> +{
+> +	return __bpf_xdp_redirect_map(map, ifindex, flags, __dev_map_hash_looku=
+p_elem);
+> +}
+> +
+> +BPF_CALL_3(bpf_xdp_redirect_cpumap, struct bpf_map *, map, u32, ifindex,=
+ u64, flags)
+> +{
+> +	return __bpf_xdp_redirect_map(map, ifindex, flags, __cpu_map_lookup_ele=
+m);
+> +}
+> +
+> +BPF_CALL_3(bpf_xdp_redirect_xskmap, struct bpf_map *, map, u32, ifindex,=
+ u64, flags)
+> +{
+> +	return __bpf_xdp_redirect_map(map, ifindex, flags, __xsk_map_lookup_ele=
+m);
+> +}
+> +
+> +bpf_func_proto_func get_xdp_redirect_func(enum bpf_map_type map_type)
+> +{
+> +	switch (map_type) {
+> +	case BPF_MAP_TYPE_DEVMAP:
+> +		return bpf_xdp_redirect_devmap;
+> +	case BPF_MAP_TYPE_DEVMAP_HASH:
+> +		return bpf_xdp_redirect_devmap_hash;
+> +	case BPF_MAP_TYPE_CPUMAP:
+> +		return bpf_xdp_redirect_cpumap;
+> +	case BPF_MAP_TYPE_XSKMAP:
+> +		return bpf_xdp_redirect_xskmap;
+> +	default:
+> +		return NULL;
+> +	}
+> +}
+> +
+> +/* NB! .func is NULL! get_xdp_redirect_func() is used instead! */
+>  static const struct bpf_func_proto bpf_xdp_redirect_map_proto =3D {
+> -	.func           =3D bpf_xdp_redirect_map,
+>  	.gpl_only       =3D false,
+>  	.ret_type       =3D RET_INTEGER,
+>  	.arg1_type      =3D ARG_CONST_MAP_PTR,
+> --=20
+> 2.27.0
 
