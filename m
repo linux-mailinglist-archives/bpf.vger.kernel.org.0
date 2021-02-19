@@ -2,221 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF42C31F698
-	for <lists+bpf@lfdr.de>; Fri, 19 Feb 2021 10:36:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43E2931F6CF
+	for <lists+bpf@lfdr.de>; Fri, 19 Feb 2021 10:53:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229999AbhBSJfe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Feb 2021 04:35:34 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:35557 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229945AbhBSJfD (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 19 Feb 2021 04:35:03 -0500
-Received: by mail-io1-f69.google.com with SMTP id a1so3349762ios.2
-        for <bpf@vger.kernel.org>; Fri, 19 Feb 2021 01:34:46 -0800 (PST)
+        id S230152AbhBSJxC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Feb 2021 04:53:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229720AbhBSJw7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 19 Feb 2021 04:52:59 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7005C061574
+        for <bpf@vger.kernel.org>; Fri, 19 Feb 2021 01:52:13 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id v15so7303579wrx.4
+        for <bpf@vger.kernel.org>; Fri, 19 Feb 2021 01:52:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tFX8aTWhVTIHjfxR53xhrBobFiM0bUDGhWKmsxZ7XHw=;
+        b=ZATd1pytikLgXuZ/FsyZ2A8JTf5NObvV8YL5Z2kmrTMVkTR+TNopFPYw9AjyGbLZCB
+         WGFQQA0+cBeaZRfW7CsMVWlmILb82WvGfc4gVLKe9yQwCzimkK7AxG9qetRH5b/ppMdi
+         bmeMTgPEjcgsDl9dRjhkLP24W3vqu9Fg6YCxA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=JBkhTOlgg4bgMUFvQex3digvJ1qylRjH8RKIX1kE3zE=;
-        b=IfEWpnmhmDEETcHtg3jI4+H9lwSmBOceFJh6e3m6OgsA7ZHKPHsbmO17VT9cIR/eU/
-         cn2F9KqQ9xCGbPRFDa5vOGl5WgU2gLMPiHfQhQked6vPiYHoCDjfanYvoxnwVJ8UVN1i
-         Hbw2GPw7HEuvTbVsPEYo0IFulHG4rtAznIWvzopRGlIUAq2XOFUL62mjTbWpXM8vX5qJ
-         cvO26pebDG+qvecxoHWEQqo4cQddmZdtYjw9Sfuk3vn+iuJDbDcz7PvoeU+nAY6MRlZX
-         XItCYHe2vdGjcEXtvPcoxlplaBgEZG39AwDb9tfZ/rvEY9Qy5XOvZcz1t4LMT8Bc4g6C
-         8R8g==
-X-Gm-Message-State: AOAM532ZRhKb17Y49WxSeLoIfFErZtLccEQrihw6Qjx3JSkC5QxYS64V
-        PCzRA9JR6BXS/R/SbU9diIV4rU1wcCRDS06ZacRtQDLSra7m
-X-Google-Smtp-Source: ABdhPJzhg+gGkda6+yWcxuxaOqXS7Suxl1Hl03p1o31Q9Mq7NvAluP+hsUCKQkjT2czuYSAVE4iCL57IPYWYVWWKnXyUxC84KNDK
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tFX8aTWhVTIHjfxR53xhrBobFiM0bUDGhWKmsxZ7XHw=;
+        b=iQzfsDO7htCu+QQ64upMydVXG+vYCbQkDf5gOsDNLdUclQANsgd1L6H2EsUPCqUdfU
+         2RtHzwwMyIaX3OleyfggxKPRDWGMGl/UbkSNsOvvDKRys7nYSfqaIJFiiHGOe4P3POcL
+         92vodUNv0lo4dNNH/ioC70Sxg/uO0212b0FAN3dyR8dCLEIQMnnPXIrMmx6lMw2b0+kS
+         DvnRvD3B6AyL610g6UAD9o3HzMtRU3EQNBw1+CYexFaOxpOBzahhnCZ4CZbLonRzcUa0
+         /88Qm2nv31Rxmsj6Xp00eCIKcevZ3HtvJN1cVcRmYlMA7H60yNjbVi8W2042+qsUStsc
+         qrUw==
+X-Gm-Message-State: AOAM532k+XfPWXUDUfHvtnL9DK3C3lAy7/xCx5jhHhVUyRrLAY00QKdn
+        c4c3SdNcb/l0XBThu4h16X1HLA==
+X-Google-Smtp-Source: ABdhPJwaCsjpdUqeufz7LPA/OBZLTbXFaJC5Fz2YFIOLy+dhMtsxy52sIUvhSH6mADYDMwLyYiR/oQ==
+X-Received: by 2002:a05:6000:1379:: with SMTP id q25mr8008613wrz.89.1613728332670;
+        Fri, 19 Feb 2021 01:52:12 -0800 (PST)
+Received: from antares.lan (b.3.5.8.9.a.e.c.e.a.6.2.c.1.9.b.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:b91c:26ae:cea9:853b])
+        by smtp.gmail.com with ESMTPSA id a21sm13174910wmb.5.2021.02.19.01.52.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Feb 2021 01:52:12 -0800 (PST)
+From:   Lorenz Bauer <lmb@cloudflare.com>
+To:     daniel@iogearbox.net, ast@kernel.org, andrii@kernel.org
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>
+Subject: [PATCH bpf-next v2 0/4] Expose network namespace cookies to user space
+Date:   Fri, 19 Feb 2021 09:51:45 +0000
+Message-Id: <20210219095149.50346-1-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-Received: by 2002:a92:c54e:: with SMTP id a14mr3209750ilj.285.1613727261512;
- Fri, 19 Feb 2021 01:34:21 -0800 (PST)
-Date:   Fri, 19 Feb 2021 01:34:21 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002fdd6805bbad28bf@google.com>
-Subject: KASAN: use-after-free Read in ip6_pol_route (2)
-From:   syzbot <syzbot+eeda6c04066577b6a84c@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, dsahern@kernel.org,
-        fw@strlen.de, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        mathew.j.martineau@linux.intel.com, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com,
-        yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+We're working on a user space control plane for the BPF sk_lookup
+hook [1]. The hook attaches to a network namespace and allows
+control over which socket receives a new connection / packet.
 
-syzbot found the following issue on:
+Roughly, applications can give a socket to our user space component
+to participate in custom bind semantics. This creates an edge case
+where  an application can provide us with a socket that lives in
+a different network namespace than our BPF sk_lookup program.
+We'd like to return an error in this case.
 
-HEAD commit:    c4762993 Merge branch 'skbuff-introduce-skbuff_heads-bulki..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=151e6df4d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=dbc1ca9e55dc1f9f
-dashboard link: https://syzkaller.appspot.com/bug?extid=eeda6c04066577b6a84c
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1008eed2d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=113cb614d00000
+Additionally, we have some user space state that is tied to the
+network namespace. We currently use the inode of the nsfs entry
+in a directory name, but this is suffers from inode reuse.
 
-The issue was bisected to:
+I'm proposing to fix both of these issues by adding a new
+SO_NETNS_COOKIE socket option as well as a NS_GET_COOKIE ioctl.
+Using these we get a stable, unique identifier for a network
+namespace and check whether a socket belongs to the "correct"
+namespace.
 
-commit 40947e13997a1cba4e875893ca6e5d5e61a0689d
-Author: Florian Westphal <fw@strlen.de>
-Date:   Fri Feb 12 23:59:56 2021 +0000
+NS_GET_COOKIE could be renamed to NS_GET_NET_COOKIE. I kept the
+name generic because it seems like other namespace types could
+benefit from a cookie as well.
 
-    mptcp: schedule worker when subflow is closed
+1: https://www.kernel.org/doc/html/latest/bpf/prog_sk_lookup.html
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17d2e7d2d00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1432e7d2d00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1032e7d2d00000
+Changes in v2:
+- Rebase on top of Eric Dumazet's netns cookie simplification
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+eeda6c04066577b6a84c@syzkaller.appspotmail.com
-Fixes: 40947e13997a ("mptcp: schedule worker when subflow is closed")
+Lorenz Bauer (4):
+  net: add SO_NETNS_COOKIE socket option
+  nsfs: add an ioctl to discover the network namespace cookie
+  tools/testing: add test for NS_GET_COOKIE
+  tools/testing: add a selftest for SO_NETNS_COOKIE
 
-==================================================================
-BUG: KASAN: use-after-free in rt6_get_pcpu_route net/ipv6/route.c:1413 [inline]
-BUG: KASAN: use-after-free in ip6_pol_route+0x1087/0x11c0 net/ipv6/route.c:2265
-Read of size 4 at addr ffff8880130c3bb8 by task syz-executor292/8981
+ arch/alpha/include/uapi/asm/socket.h          |  2 +
+ arch/mips/include/uapi/asm/socket.h           |  2 +
+ arch/parisc/include/uapi/asm/socket.h         |  2 +
+ arch/sparc/include/uapi/asm/socket.h          |  2 +
+ fs/nsfs.c                                     |  8 +++
+ include/uapi/asm-generic/socket.h             |  2 +
+ include/uapi/linux/nsfs.h                     |  2 +
+ net/core/sock.c                               | 11 ++++
+ tools/testing/selftests/net/.gitignore        |  1 +
+ tools/testing/selftests/net/Makefile          |  2 +-
+ tools/testing/selftests/net/config            |  1 +
+ tools/testing/selftests/net/so_netns_cookie.c | 61 +++++++++++++++++++
+ tools/testing/selftests/nsfs/.gitignore       |  1 +
+ tools/testing/selftests/nsfs/Makefile         |  2 +-
+ tools/testing/selftests/nsfs/config           |  1 +
+ tools/testing/selftests/nsfs/netns.c          | 57 +++++++++++++++++
+ 16 files changed, 155 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/net/so_netns_cookie.c
+ create mode 100644 tools/testing/selftests/nsfs/netns.c
 
-CPU: 1 PID: 8981 Comm: syz-executor292 Not tainted 5.11.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:230
- __kasan_report mm/kasan/report.c:396 [inline]
- kasan_report.cold+0x79/0xd5 mm/kasan/report.c:413
- rt6_get_pcpu_route net/ipv6/route.c:1413 [inline]
- ip6_pol_route+0x1087/0x11c0 net/ipv6/route.c:2265
- pol_lookup_func include/net/ip6_fib.h:579 [inline]
- fib6_rule_lookup+0x52a/0x6f0 net/ipv6/fib6_rules.c:120
- ip6_route_output_flags_noref+0x2e2/0x380 net/ipv6/route.c:2512
- ip6_route_output_flags+0x8b/0x310 net/ipv6/route.c:2525
- ip6_route_output include/net/ip6_route.h:98 [inline]
- ip6_dst_lookup_tail+0xb6e/0x1740 net/ipv6/ip6_output.c:1064
- ip6_dst_lookup_flow+0x8c/0x1d0 net/ipv6/ip6_output.c:1194
- tcp_v6_connect+0xdb3/0x1df0 net/ipv6/tcp_ipv6.c:283
- __inet_stream_connect+0x8c5/0xee0 net/ipv4/af_inet.c:661
- inet_stream_connect+0x53/0xa0 net/ipv4/af_inet.c:725
- mptcp_stream_connect+0x156/0x800 net/mptcp/protocol.c:3200
- __sys_connect_file+0x155/0x1a0 net/socket.c:1835
- __sys_connect+0x161/0x190 net/socket.c:1852
- __do_sys_connect net/socket.c:1862 [inline]
- __se_sys_connect net/socket.c:1859 [inline]
- __x64_sys_connect+0x6f/0xb0 net/socket.c:1859
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x449b09
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 a1 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f791eff4318 EFLAGS: 00000246
- ORIG_RAX: 000000000000002a
-RAX: ffffffffffffffda RBX: 00000000004cf4c8 RCX: 0000000000449b09
-RDX: 000000000000001c RSI: 0000000020000040 RDI: 0000000000000003
-RBP: 00000000004cf4c0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004cf4cc
-R13: 00007ffeaa51511f R14: 00007f791eff4400 R15: 0000000000022000
+-- 
+2.27.0
 
-Allocated by task 8626:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:401 [inline]
- ____kasan_kmalloc.constprop.0+0x82/0xa0 mm/kasan/common.c:429
- kasan_slab_alloc include/linux/kasan.h:209 [inline]
- slab_post_alloc_hook mm/slab.h:512 [inline]
- slab_alloc_node mm/slub.c:2892 [inline]
- slab_alloc mm/slub.c:2900 [inline]
- kmem_cache_alloc+0x1c6/0x440 mm/slub.c:2905
- dst_alloc+0x9e/0x650 net/core/dst.c:93
- ip6_dst_alloc+0x2e/0x100 net/ipv6/route.c:358
- ip6_rt_pcpu_alloc net/ipv6/route.c:1386 [inline]
- rt6_make_pcpu_route net/ipv6/route.c:1434 [inline]
- ip6_pol_route+0x910/0x11c0 net/ipv6/route.c:2268
- pol_lookup_func include/net/ip6_fib.h:579 [inline]
- fib6_rule_lookup+0x52a/0x6f0 net/ipv6/fib6_rules.c:120
- ip6_route_output_flags_noref+0x2e2/0x380 net/ipv6/route.c:2512
- ip6_route_output_flags+0x8b/0x310 net/ipv6/route.c:2525
- ip6_route_output include/net/ip6_route.h:98 [inline]
- ip6_dst_lookup_tail+0xb6e/0x1740 net/ipv6/ip6_output.c:1064
- ip6_dst_lookup_flow+0x8c/0x1d0 net/ipv6/ip6_output.c:1194
- tcp_v6_connect+0xdb3/0x1df0 net/ipv6/tcp_ipv6.c:283
- __inet_stream_connect+0x8c5/0xee0 net/ipv4/af_inet.c:661
- inet_stream_connect+0x53/0xa0 net/ipv4/af_inet.c:725
- mptcp_stream_connect+0x156/0x800 net/mptcp/protocol.c:3200
- __sys_connect_file+0x155/0x1a0 net/socket.c:1835
- __sys_connect+0x161/0x190 net/socket.c:1852
- __do_sys_connect net/socket.c:1862 [inline]
- __se_sys_connect net/socket.c:1859 [inline]
- __x64_sys_connect+0x6f/0xb0 net/socket.c:1859
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Freed by task 18:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
- kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:356
- ____kasan_slab_free+0xe1/0x110 mm/kasan/common.c:362
- kasan_slab_free include/linux/kasan.h:192 [inline]
- slab_free_hook mm/slub.c:1547 [inline]
- slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1580
- slab_free mm/slub.c:3143 [inline]
- kmem_cache_free+0x82/0x350 mm/slub.c:3159
- dst_destroy+0x2bc/0x3c0 net/core/dst.c:129
- rcu_do_batch kernel/rcu/tree.c:2489 [inline]
- rcu_core+0x5eb/0xf00 kernel/rcu/tree.c:2723
- __do_softirq+0x29b/0x9f6 kernel/softirq.c:343
-
-Last potentially related work creation:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_record_aux_stack+0xc5/0xf0 mm/kasan/generic.c:344
- __call_rcu kernel/rcu/tree.c:2965 [inline]
- call_rcu+0xbb/0x700 kernel/rcu/tree.c:3038
- dst_release net/core/dst.c:179 [inline]
- dst_release+0x79/0xe0 net/core/dst.c:169
- sk_dst_set include/net/sock.h:1999 [inline]
- sk_dst_reset include/net/sock.h:2011 [inline]
- ipv6_update_options+0x18c/0x3e0 net/ipv6/ipv6_sockglue.c:114
- ipv6_set_opt_hdr net/ipv6/ipv6_sockglue.c:383 [inline]
- do_ipv6_setsockopt.constprop.0+0x940/0x41f0 net/ipv6/ipv6_sockglue.c:657
- ipv6_setsockopt+0xd6/0x180 net/ipv6/ipv6_sockglue.c:1003
- tcp_setsockopt+0x136/0x2440 net/ipv4/tcp.c:3636
- mptcp_setsockopt+0x612/0x780 net/mptcp/protocol.c:2862
- __sys_setsockopt+0x2db/0x610 net/socket.c:2115
- __do_sys_setsockopt net/socket.c:2126 [inline]
- __se_sys_setsockopt net/socket.c:2123 [inline]
- __x64_sys_setsockopt+0xba/0x150 net/socket.c:2123
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-The buggy address belongs to the object at ffff8880130c3b40
- which belongs to the cache ip6_dst_cache of size 232
-The buggy address is located 120 bytes inside of
- 232-byte region [ffff8880130c3b40, ffff8880130c3c28)
-The buggy address belongs to the page:
-page:000000007c3a5b1c refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x130c3
-flags: 0xfff00000000200(slab)
-raw: 00fff00000000200 dead000000000100 dead000000000122 ffff888020ff5500
-raw: 0000000000000000 00000000000c000c 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff8880130c3a80: fb fb fb fb fb fb fb fb fb fb fb fb fb fc fc fc
- ffff8880130c3b00: fc fc fc fc fc fc fc fc fa fb fb fb fb fb fb fb
->ffff8880130c3b80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                        ^
- ffff8880130c3c00: fb fb fb fb fb fc fc fc fc fc fc fc fc fc fc fc
- ffff8880130c3c80: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
