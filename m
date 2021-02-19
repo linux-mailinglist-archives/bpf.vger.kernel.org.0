@@ -2,55 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E8F531F470
-	for <lists+bpf@lfdr.de>; Fri, 19 Feb 2021 05:24:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6411B31F4E0
+	for <lists+bpf@lfdr.de>; Fri, 19 Feb 2021 06:39:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229871AbhBSEXg (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 18 Feb 2021 23:23:36 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:32860 "EHLO
+        id S229481AbhBSFjR (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 19 Feb 2021 00:39:17 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:54942 "EHLO
         mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229598AbhBSEXe (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 18 Feb 2021 23:23:34 -0500
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11J4Eqi6016613;
-        Thu, 18 Feb 2021 20:22:36 -0800
+        by vger.kernel.org with ESMTP id S229480AbhBSFjQ (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 19 Feb 2021 00:39:16 -0500
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11J5YBGR015414;
+        Thu, 18 Feb 2021 21:38:16 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
  references : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=VkG3FlZ2NXB73yKZfzEZpb0kE17Zp/jHuz3/g3lFwIQ=;
- b=lT/d1u+zrvHNwcHHdyW9fkY5OnmdWf0jisub3XLkm9hHexnkdMlmAKDPpEdBIDSMqlUx
- VoM+f9D24VuuUGz3DWlwdLLuBCqF7jWoEczDQbKB5s08BWV96vPtnhk4Wxx9ohpRdlqe
- UN9ZvQSc7PJ89cyK/FMvcp/d+l4Qn5+5l70= 
+ bh=sQo+G57pecugqGey8gFp4QpyhOn1ZhaFSgb8gNeyVcs=;
+ b=LQqDgsrI/8DIzPoeWn9XRTjpFgz6CijA2E5YcgApEj2KI5bOK5NjDOmrwOyWhOQ3W4DX
+ ojRms7ebSJOFBwkRFhoiUsSZc9z7SoK8zqoYujWU9YTUzezggaJOhbI883nE9dkcDOoh
+ khUuhVI+xLiVzAmEkPMct/ZRh4jGRxOkGUI= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 36sdpmqjcc-1
+        by mx0a-00082601.pphosted.com with ESMTP id 36rrd8q4a0-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 18 Feb 2021 20:22:35 -0800
-Received: from NAM04-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
+        Thu, 18 Feb 2021 21:38:16 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 18 Feb 2021 20:22:34 -0800
+ 15.1.1979.3; Thu, 18 Feb 2021 21:38:15 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZiiCeKQQraQ136ulcSeh4/MS5pZdoD4JS8mazyJ9FEb/N+n44eZx/pHy4zCBr22elxj+Mr+j2npY6Ty6/NWZbV1KZNy2/Zs/XvOI7I72jJL/wIs3dpDKHNexulu48mXcDWnFi/cq8RLE/mU8N689kpdSUASFsoN1OEh4JhNJCp4cT/97FnGfmWpkcL36+68KbNQDOL/hfoerJ+7/cedjTMpoVzRJt6TO6u/noEFn+rPJp4p2GLdAgjvv04XD+4j2bRDQM9qnHSi2RRjv6gQoEGNJufnQ+K0A4xT/4nAzMhmPjXV3eV59UiuZiWUVpc7P4jTIKoFU0RWGaQ8jf8VMbA==
+ b=i3Sx4uedOj7/Wac/vqb0T+ubMy5C7z4LlGam4snFACJ0Oseda5ZYVHoSEAYJ54kAxj6IX4YiRTXQBsQ5RbwVqvSlGnOlPP53dA4bCDrb7++QhMEIwgZRJaJVaxD2sK9Y+EBozAw+ywzaypxBixkmPDS8kDTakW9DKuZ8sCpYWFcqS86opvfq6fQPl2j5rd2MW/RN5uDxwuUuLlLpud6/k+UhKR/eUQGuzbI0XZC/tB8ZQNxho32s/x5x+4CJYN4HhzDh54WE2I9GV9ay6hyENhOqTegPxzkTij7wH2mEaPjSUBM0ZEKUj9E+VQZsn1Pei+DECbMt2n36Ws33F1uPTQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VkG3FlZ2NXB73yKZfzEZpb0kE17Zp/jHuz3/g3lFwIQ=;
- b=FE1BbvqnUUVBkA+Bevdc7VXNPWPYO87Y396zy2ZKJhnll6Da3megRi0/UdBpDAp0jwjER280k9pBHd27ntCAbQcjeOxOc0B9EGV2E2BYg5E90j+GkTq+FCswyZm4zJ6cNHziNNKxvKmN83RF1JFvnTzX1tqweoyUKtURHiICxxUUoG0EBwzKayMc4CluR5CnFL5VoH/8xkJG/deJj7rC9X1PUH3g2ZwFWgeL+J9l87yEKpb51i8r+OH1X6g/VRgN9hgp+6+mJpokBJVCqeE1Hxf3WaFcQ+/JM9KMODdR4PLr8FLHzEdMSupSOfCEBcheX627hSeM8ZiYfBJiZurBRw==
+ bh=sQo+G57pecugqGey8gFp4QpyhOn1ZhaFSgb8gNeyVcs=;
+ b=cemHfKdJHTuhUMx7c4P9JS7yAcVYEU4o9FIPuUPQjK9eqvU5aaDSt/CsGiwxAOnONchR67FMpjuGowY3V6G7LKjefB2vsBLW19uMpRuGA2Fg+GDTyL9ZIhezdWmwblaZP7zTFlKiu3m/NEHw4cS/Lec1akXlwuysLLnzQ8uHpEOxDk+qQS2DsKi59BBmFenEVO81lVUeLbFbLyWxVcpY5ZTgHSXLUv93UH7LG2wRgTn6xWmGtF0CQXM+hw0aUmFuuYlu3btNGNLFsiuQFibJeDZRpHpuj5GsJYKX9nWRi2o7QeO/nHZJx4EhxMdUXNamhWOfpxXd6zpoQNGJwZ3IGA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 Authentication-Results: linux.ibm.com; dkim=none (message not signed)
  header.d=none;linux.ibm.com; dmarc=none action=none header.from=fb.com;
 Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BY5PR15MB3570.namprd15.prod.outlook.com (2603:10b6:a03:1f9::25) with
+ by BYAPR15MB2455.namprd15.prod.outlook.com (2603:10b6:a02:90::19) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.29; Fri, 19 Feb
- 2021 04:22:30 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.38; Fri, 19 Feb
+ 2021 05:38:14 +0000
 Received: from BYAPR15MB4088.namprd15.prod.outlook.com
  ([fe80::61d6:781d:e0:ada5]) by BYAPR15MB4088.namprd15.prod.outlook.com
  ([fe80::61d6:781d:e0:ada5%5]) with mapi id 15.20.3846.041; Fri, 19 Feb 2021
- 04:22:30 +0000
-Subject: Re: [PATCH v2 bpf-next 2/6] libbpf: Add BTF_KIND_FLOAT support
+ 05:38:14 +0000
+Subject: Re: [PATCH v2 bpf-next 5/6] selftest/bpf: Add BTF_KIND_FLOAT tests
 To:     Ilya Leoshkevich <iii@linux.ibm.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -60,82 +60,82 @@ CC:     John Fastabend <john.fastabend@gmail.com>, <bpf@vger.kernel.org>,
         Heiko Carstens <heiko.carstens@de.ibm.com>,
         Vasily Gorbik <gor@linux.ibm.com>
 References: <20210219022543.20893-1-iii@linux.ibm.com>
- <20210219022543.20893-3-iii@linux.ibm.com>
+ <20210219022543.20893-6-iii@linux.ibm.com>
 From:   Yonghong Song <yhs@fb.com>
-Message-ID: <3503fca1-9702-97bc-5385-d36919cb50a4@fb.com>
-Date:   Thu, 18 Feb 2021 20:22:27 -0800
+Message-ID: <ccf4174e-f574-59f5-1edc-8ab8306dc269@fb.com>
+Date:   Thu, 18 Feb 2021 21:38:10 -0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.7.1
-In-Reply-To: <20210219022543.20893-3-iii@linux.ibm.com>
+In-Reply-To: <20210219022543.20893-6-iii@linux.ibm.com>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [2620:10d:c090:400::5:45c1]
-X-ClientProxiedBy: MWHPR14CA0002.namprd14.prod.outlook.com
- (2603:10b6:300:ae::12) To BYAPR15MB4088.namprd15.prod.outlook.com
+X-ClientProxiedBy: MWHPR15CA0072.namprd15.prod.outlook.com
+ (2603:10b6:301:4c::34) To BYAPR15MB4088.namprd15.prod.outlook.com
  (2603:10b6:a02:c3::18)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21d6::110e] (2620:10d:c090:400::5:45c1) by MWHPR14CA0002.namprd14.prod.outlook.com (2603:10b6:300:ae::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27 via Frontend Transport; Fri, 19 Feb 2021 04:22:29 +0000
+Received: from [IPv6:2620:10d:c085:21d6::110e] (2620:10d:c090:400::5:45c1) by MWHPR15CA0072.namprd15.prod.outlook.com (2603:10b6:301:4c::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27 via Frontend Transport; Fri, 19 Feb 2021 05:38:13 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3d4c81ff-378d-4760-ae37-08d8d48df8ed
-X-MS-TrafficTypeDiagnostic: BY5PR15MB3570:
-X-Microsoft-Antispam-PRVS: <BY5PR15MB3570FA4B8493ED41C731B7EDD3849@BY5PR15MB3570.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 5d38ecae-6806-4b86-6508-08d8d4988cf7
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2455:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB24551EB9C7F18EEAB7F7D93AD3849@BYAPR15MB2455.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Oob-TLC-OOBClassifiers: OLM:2512;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gXik6401L1f0TFg1WvaRGtqXMCJGWrkmLr2RM9um+EZZNRT1pc7loSp2GTElZ/gBuhRH+wwCSLI4I72Dmi3w4iLCJ3teovIFBkTX6qpj+t9CbbLnhSH0vASjZibv3ty81O0olgFQGw5yOIHZLSaRQAcUBMvCuT+Q7GENUCmq5fhiw1DslE74OuXbbN3RFEKEiiXpAAepw03QRYqibP/t6tAnC17DvJSUh0GBHdAvtoblLwO0V9Vc7u2Z2lGOLP8Zp01jR6yjxlYyt0eKHmEqMzwZ2bThTM8ZvHw+cCcmBcEwUHq/QL15rsR65bby6mrzPylMkpHtxpkvrzlw1XGQn74eZnVczo5DV+/XSVtq6tZQgEbCcjS/mbHW8iCHpPOeMTJMU3cjAymcuJIzCeRYZIXJzSQDCHlRxuyR5v1cCmpQxe49xVEPHPpaMMMjeWO51mxHB5djYVvKwG9+EAX0r+IG1GQmiU9ZLlDcu21Rj0zZ8UiBzZ2m4EWHSkbAusE+RnEpOu+XEt9SNvhYUwsoq/4KhMq1G4MaU6IlmZTnxfboKTnQadNqtdIt9JFwiSiBJs38WmE5zzPif7kwF+r4fCvzKz3sVcBrKoEy1KImDrU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39860400002)(366004)(396003)(376002)(136003)(8936002)(86362001)(31686004)(186003)(52116002)(36756003)(66946007)(66476007)(16526019)(2906002)(2616005)(110136005)(478600001)(8676002)(66556008)(316002)(54906003)(53546011)(5660300002)(6486002)(31696002)(4326008)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?QXRoWUkxZ2d0aTZ0VVZrclAzbko1OG1jSGMzM3A5dWt2VUpkcU95MkhlSFVH?=
- =?utf-8?B?WWR3QmVvcm9YNnBGSUl3LzBGalFVZWRUcjYzZ2xUcFhTS0Y5LzExS0daODha?=
- =?utf-8?B?anlYUVJJRUZaaC9kQjVWUWdsZUI0MGlJZVNnZjl0SkJ3UHRSOUxxeFVPSzJu?=
- =?utf-8?B?MWcwOGN4cTlwd0VUNDNIN2paUXoxRWhxbTBIRjlJMllOWnR1WXBYQ0craUM1?=
- =?utf-8?B?Z09CWHNZQlFxY0U2M216ODNwRGFWcEtFcWl3NEdGMDRDNFVIRnkxY05jR1ZG?=
- =?utf-8?B?cGRkdWR3OENzblZ4anJKMDdIZzd5YVFKRC9lTHYxSXIrcWxNK09ldFFJL0N5?=
- =?utf-8?B?SVF1aEdzWlpXb0RQbzRzRGsrRGYwUmN2Znh4VUNVWDh0NWZxcmt2bUprci9k?=
- =?utf-8?B?WWdSdjVDYXdFSkUvOVVLL0wxcXU3Y3hkaTJ2VXhlbWR5VmMwMVRZMEpmRkdD?=
- =?utf-8?B?T2xvV2d1RmloMXBZbXlMQmJkWjlJeVhiTC9WcnN0bGxwT2MvTVc2UHBUWWwr?=
- =?utf-8?B?NUhLck41VysxMUlsTXRVUlczUzlUYTVNVTNOb2k0dS9USWF4MUxkYVhPTHFR?=
- =?utf-8?B?OXpwNS92MHZ4TU9BZzNNU3F0ZXR4NzR4ei9VaW5UN0NsTmF2Snoyd1oxeW9F?=
- =?utf-8?B?eS84YXg1RWZpY09Hd1pvdkR1L0ZlbGJzNnEvSUtQME1IbXR2U0pvWmdVTTU1?=
- =?utf-8?B?NzYzUGxFWWdtWHNiVVF3c0RYd2RCdXJBd2xBWG1SMGxra0V2eHZ5YTEzbVd6?=
- =?utf-8?B?MUhTL3FLZlpJQzg5WlhmWjRyNlF1Q0tKQjB3TXJ2R2l6MkJybXVFSGNMcGFm?=
- =?utf-8?B?MGdWdTdXNTNOZTV3ZjZLZFRoTGUxR091Zkt5TkJKR1o4ampwSDVEYjN1YWRo?=
- =?utf-8?B?M2E1OWFVeDJYQ2tWYVVxb1Q0Y2ErU014enptWkcrcHhMS3pSaURkM0RPRUNT?=
- =?utf-8?B?V2J1MEJDSTFWQlJTa2NZazF0L2NuaEVFT1RWSk5pc3hlclEzbnlJTFNXZi83?=
- =?utf-8?B?VkRtT1RpQksrTHVVOC80T2F6cFJ1WjFWSDlNNzl1c0M5aGtYczRXV1c5eExP?=
- =?utf-8?B?ejFCQXBoV1QzbDUwckpvblcxZExKODhpWmdIMUtzWnY5Q0J1UFRzZ1F1R0hr?=
- =?utf-8?B?VWFqNWJqa1ppZDh2M2FmT1ZjZzNoZEJJOXJnckFFMFByQkxmUzBKU2ZCOGlL?=
- =?utf-8?B?ZW9uZ3QyakpZTlg0YVZYc0ZLTmQ1NHJjWWlPY1J1QWpvYVZibWFFdHRmY2ox?=
- =?utf-8?B?eEh6SE1Ta2FiNW1qZWVsUStXY0RhYkYvdlFsanRCdnp4MXkxTy9MMVhTR1lD?=
- =?utf-8?B?dDZXZG9nQ1VGZ3dNbjNoOHZMT1Jxb1BwVUFrRzdVcU1SYkhpOE4yRCtEeVVT?=
- =?utf-8?B?TFczRkRBSFBuZWowWEdTMXU1L0F4Y0hXMUJDZGtKdFJCM0dOMENucUttWXZn?=
- =?utf-8?B?LzlnYk9lUWR0dTdMT3ZUZTFkYnNVckJQQ1FSaFFmVC9WQUQzTnNVODdnZVor?=
- =?utf-8?B?d25pait0bkhaQ2dBcVdQcDc5dEx1TmlLSk9Zd05VcUloUEh4REdVSWV3blBC?=
- =?utf-8?B?d25KZTdYMDNybUxSc2YyNjVhWkthVnVEQ01QOWNmNWNUR2xIcE1uVTRyUmMw?=
- =?utf-8?B?ODl4bVV3RkovcWJ1bGZjMFphUGxqa0J2NWFjSExGemR5b0theG5sckd0eWVj?=
- =?utf-8?B?eWhLa3lWSXhxY0FFVitnMitVL3VLSEtxMEJyYy9MNWxITGhKWUFzVTdzVmxF?=
- =?utf-8?B?eExzSnVVSUlLSFdtZkwvVHRsbW1rYVVCTW5SZUViQVFoRkZDUzhjM3N6amow?=
- =?utf-8?Q?Knlrv9R5IWy6bw0p9icPN2tHjyJhW03JtARtc=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3d4c81ff-378d-4760-ae37-08d8d48df8ed
+X-Microsoft-Antispam-Message-Info: GKs5WgLs/Z5ZVHBsOmH9D7GKsmkZYVDEGJsyVXU5ay27chRUa6YxTQmHKQOQ8w/j4ueiGVRsugLVpdZrG0YN1GVh/MQb+2eNYFnXkUfJm/0NY0VpHxM7QRfjPbOFn4QulzoEKJKwgwg5hCkxldjaJMQ6t4ZTYhY0p/z3ccAnU6+aWpm44Bj2n44/1p5REHiah9W+Y34IYKJisDyhwyFGiEus3PkRScU7WaA8NcDlWuy9GDZvOO9PymFu5ReYepm5V6A2Wgkej2B7gKlzrOvbLkEsnp0SFd63qqx3HJtiHiYV5VOLL7isQgutsCQXLjif+WjOe3GM7LDlvAfY6alU6pIXsO+OnJbSAUFHwJSAgSm7Guynwuc6xTwrijorFsp4amqRxUdFtbn+X3nRXFWfdSTuawW64h6IriW4/sgMWBDxixxTYz43HYX1sjOomYx8vjrC32Hd9/lAuc/lQwOOJo1JPvxbFFXihsU5zndqREwIZRi7VbSH6d3pXjZCIwze/FnXMqwWlvjHqBzHr85aKXEG4joMCmt9RJPRtU2xCzDJwlshJIDfxrnVwqY/dxogJuw7Q0IOkvSk3uuFiI6PqYr8tMPa9G2WrxF4ksNBERo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(136003)(366004)(396003)(39860400002)(8936002)(86362001)(66476007)(110136005)(478600001)(6486002)(31686004)(31696002)(66946007)(83380400001)(4326008)(52116002)(186003)(8676002)(66556008)(2616005)(5660300002)(16526019)(2906002)(53546011)(54906003)(316002)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?bEppY1MvUkp3dk1Vc3VBcEZKa01CemUyUWZ5ejM2VXhpejVBdVB5aWRqZEZX?=
+ =?utf-8?B?anpFUm8xa3NKRm14S3NqQ0ZtRUV6Vnd4RjF4cy9NVHBPQmhOWUp3T2lJT3FS?=
+ =?utf-8?B?MkZJclhOWTZ1VzI4QktDQy9JMCtsbE5WSlhpOGdhYXBiU1E2UWlkM0xpT0tz?=
+ =?utf-8?B?ZHRSSmt1RlRuT1lZMEZhNW9xc2ZRTHF0WENIT0FXUDgwVlp2Z01US3p1eGxa?=
+ =?utf-8?B?dCtSbTg2b1B4dExVTmtlR3hxMnlwaVZIWjRyK2d1M29YR21aQU8xOTk0OG1P?=
+ =?utf-8?B?ekI1QVRKN3QrcUU0cytYRHMzS09yWUVIK2htTTRMWXNmM2VzbUxaOGlTTWtR?=
+ =?utf-8?B?YXJ0Ny9XcEYzaVQrRUw5RHlIbHRmSm1OQmw3U3JleHZLRXl2VmIzVEc0OFMx?=
+ =?utf-8?B?Wm9WUjRXR2dMUTRBeS9GT2YvcFhIek12eUF1RXZPUk1PbjhrNGtNTXdNK2oz?=
+ =?utf-8?B?SG96ajYxQXhaU21qZFF6VjVBdElaR1ZuQ2pQR212S1dxeTZsMldXbkM3cmdB?=
+ =?utf-8?B?VC8xSEwxektiWFN0N2JRY1d3YU9lSGdXQXBvVDVTL3hMNjZpYWVjTjdDYWhK?=
+ =?utf-8?B?LzJDeXhibGhqcmZDNDltSjJwbXFTTmlLQWRTK2ZLdTlMZFhGVEV4cnJvb1NU?=
+ =?utf-8?B?V05rcVcweDdvcHZPdDBTTE5qcUZQYTd0RUszZndNdDY0aUxyeUszditzOCtS?=
+ =?utf-8?B?RkpCT2l4ZzUyUEJsdGFBc05KZi9nOERSVHo5QnFFUlU2amtHUFJCbXVucmhN?=
+ =?utf-8?B?alNvTlBUZ2JYc08xdFRUZXdOMlQ0b1pUcFRiVkVQNXpQa2VKTkpBbEhTcGZh?=
+ =?utf-8?B?ODJ2c2hiYmhaNk5PMVdjSVp2cHJPNHIwR3I2YkNPS25qVnZYenl2eExLY044?=
+ =?utf-8?B?Z0o5R2FJdlAxZ0pDRXM3Nkw2MnpwMHlqamI5SmxRSGM1TUo5WnZ0U1hySFNq?=
+ =?utf-8?B?UGdnaWV6S0RDWDlZcG1POXEvcm1WVUovQ0tueEcwNUFxbDBiZVFPaUI1dTRt?=
+ =?utf-8?B?Mm91bDNidUNVWi9LMXkwdGJtajlHTk51cHNSa3R5dnV3QS9sOStMWXZWNlFx?=
+ =?utf-8?B?VHY2WThlSk1HSXQ5ZXFZRnFqL2Y4L3N5YXVSOHNKc1ZaSGltaHYwR2ZIMlho?=
+ =?utf-8?B?cWhQODFBSmtnbHdtNFIvN3ZaTUFQT1ZwbXB2bUNBL21zbmNjRzJEYmwreHU3?=
+ =?utf-8?B?bk5NVk1wM1lsL0JmMGVIVFI2U1FEdFl6dmM5ZklnVFlrZGlDelM3Z2RnMm9k?=
+ =?utf-8?B?YVZHTzlPaGUybStVS09KblB3QVgzMTl0OWtscVBKc3RZVHNOYWlUaUdZMG0r?=
+ =?utf-8?B?UzQyQm50RVZTSDZXdS9MRUFyOXpHbkhOQk1jRTFtMUJHYm5OaEdFSFlyUkpV?=
+ =?utf-8?B?R2hWSDZLVGpUNHlwZ2pzT0JmeTZzZkppbWx6ZytycU5Vc0NXNlpXUS9yelVU?=
+ =?utf-8?B?MFBrWEhCSGEzZnNScW5WTnpzKzIzOEEwTmV5Qy8zaUZJRDV0TkZoM3pQZHBQ?=
+ =?utf-8?B?UTBrTHZneEFXUHF5OW1FU1ZjeFZISkdpc1VOaVhOU2t4RzN6eU93SDdyOVpv?=
+ =?utf-8?B?QWdQYnRXZnpuaUtXKzUvOEs2Um5Uck1sQnUvbStzMmV1Y1BRWjMreWhwdlJN?=
+ =?utf-8?B?K09ON0ZnaEpwdlowR2s5Ky9yOC9PbFowK2JvbjRNMDN1bXNZb2lJM2hpMzJZ?=
+ =?utf-8?B?OGo4TkVkYXEyWHBwT3BCY29qQzMrSThjMjYzaGFibVFUSGlyTTlZRVIxOUdJ?=
+ =?utf-8?B?ZGdZc3JQY0lwTmhBYnpSdXBpR1M1b1ErcjQ3Mi9MUFdjcU9RVGJmM1ZHeTJv?=
+ =?utf-8?Q?iwfOOoOeDP0GYMynqcfrv0nrCZ2v1m/btVn0k=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5d38ecae-6806-4b86-6508-08d8d4988cf7
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2021 04:22:30.6807
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2021 05:38:14.0324
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2Fyb2YZ0AKAxBdJYWYDdGtc0kBI6IgfVF8JZyF/mtu/N1K3FSnEArZDx5sytktla
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3570
+X-MS-Exchange-CrossTenant-UserPrincipalName: pw1wFWdOOdC7ohGR30yLe+q8OqujnPZ2mW42cxNYABTCeXoI1eL8atM6t0M5lp8l
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2455
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
  definitions=2021-02-19_01:2021-02-18,2021-02-19 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- priorityscore=1501 clxscore=1015 phishscore=0 adultscore=0 impostorscore=0
- spamscore=0 suspectscore=0 mlxscore=0 malwarescore=0 bulkscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102190029
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ suspectscore=0 mlxscore=0 priorityscore=1501 clxscore=1015
+ lowpriorityscore=0 adultscore=0 malwarescore=0 spamscore=0 bulkscore=0
+ phishscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2102190042
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -144,128 +144,190 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 On 2/18/21 6:25 PM, Ilya Leoshkevich wrote:
-> The logic follows that of BTF_KIND_INT most of the time. Sanitization
-> replaces BTF_KIND_FLOATs with BTF_KIND_TYPEDEFs pointing to
-> equally-sized BTF_KIND_ARRAYs on older kernels.
+> Test the good variants as well as the potential malformed ones.
 > 
 > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 > ---
->   tools/lib/bpf/btf.c             | 44 ++++++++++++++++++++++++++++++++
->   tools/lib/bpf/btf.h             |  8 ++++++
->   tools/lib/bpf/btf_dump.c        |  4 +++
->   tools/lib/bpf/libbpf.c          | 45 ++++++++++++++++++++++++++++++++-
->   tools/lib/bpf/libbpf.map        |  5 ++++
->   tools/lib/bpf/libbpf_internal.h |  2 ++
->   6 files changed, 107 insertions(+), 1 deletion(-)
+>   tools/testing/selftests/bpf/btf_helpers.c    |   4 +
+>   tools/testing/selftests/bpf/prog_tests/btf.c | 122 +++++++++++++++++++
+>   tools/testing/selftests/bpf/test_btf.h       |   3 +
+>   3 files changed, 129 insertions(+)
 > 
-[...]
-> diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-> index 2f9d685bd522..5e957fcceee6 100644
-> --- a/tools/lib/bpf/btf_dump.c
-> +++ b/tools/lib/bpf/btf_dump.c
-> @@ -279,6 +279,7 @@ static int btf_dump_mark_referenced(struct btf_dump *d)
->   		case BTF_KIND_INT:
->   		case BTF_KIND_ENUM:
->   		case BTF_KIND_FWD:
-> +		case BTF_KIND_FLOAT:
->   			break;
->   
->   		case BTF_KIND_VOLATILE:
-> @@ -453,6 +454,7 @@ static int btf_dump_order_type(struct btf_dump *d, __u32 id, bool through_ptr)
->   
->   	switch (btf_kind(t)) {
->   	case BTF_KIND_INT:
-> +	case BTF_KIND_FLOAT:
->   		tstate->order_state = ORDERED;
->   		return 0;
->   
-> @@ -1133,6 +1135,7 @@ static void btf_dump_emit_type_decl(struct btf_dump *d, __u32 id,
->   		case BTF_KIND_STRUCT:
->   		case BTF_KIND_UNION:
->   		case BTF_KIND_TYPEDEF:
-> +		case BTF_KIND_FLOAT:
->   			goto done;
->   		default:
->   			pr_warn("unexpected type in decl chain, kind:%u, id:[%u]\n",
-> @@ -1247,6 +1250,7 @@ static void btf_dump_emit_type_chain(struct btf_dump *d,
->   
->   		switch (kind) {
->   		case BTF_KIND_INT:
-> +		case BTF_KIND_FLOAT:
->   			btf_dump_emit_mods(d, decls);
->   			name = btf_name_of(d, t->name_off);
->   			btf_dump_printf(d, "%s", name);
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index d43cc3f29dae..3b170066d613 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -178,6 +178,8 @@ enum kern_feature_id {
->   	FEAT_PROG_BIND_MAP,
->   	/* Kernel support for module BTFs */
->   	FEAT_MODULE_BTF,
-> +	/* BTF_KIND_FLOAT support */
-> +	FEAT_BTF_FLOAT,
->   	__FEAT_CNT,
+> diff --git a/tools/testing/selftests/bpf/btf_helpers.c b/tools/testing/selftests/bpf/btf_helpers.c
+> index 48f90490f922..b692e6ead9b5 100644
+> --- a/tools/testing/selftests/bpf/btf_helpers.c
+> +++ b/tools/testing/selftests/bpf/btf_helpers.c
+> @@ -23,6 +23,7 @@ static const char * const btf_kind_str_mapping[] = {
+>   	[BTF_KIND_FUNC_PROTO]	= "FUNC_PROTO",
+>   	[BTF_KIND_VAR]		= "VAR",
+>   	[BTF_KIND_DATASEC]	= "DATASEC",
+> +	[BTF_KIND_FLOAT]	= "FLOAT",
 >   };
 >   
-> @@ -1935,6 +1937,7 @@ static const char *btf_kind_str(const struct btf_type *t)
->   	case BTF_KIND_FUNC_PROTO: return "func_proto";
->   	case BTF_KIND_VAR: return "var";
->   	case BTF_KIND_DATASEC: return "datasec";
-> +	case BTF_KIND_FLOAT: return "float";
->   	default: return "unknown";
->   	}
->   }
-> @@ -2384,18 +2387,22 @@ static bool btf_needs_sanitization(struct bpf_object *obj)
->   {
->   	bool has_func_global = kernel_supports(FEAT_BTF_GLOBAL_FUNC);
->   	bool has_datasec = kernel_supports(FEAT_BTF_DATASEC);
-> +	bool has_float = kernel_supports(FEAT_BTF_FLOAT);
->   	bool has_func = kernel_supports(FEAT_BTF_FUNC);
->   
-> -	return !has_func || !has_datasec || !has_func_global;
-> +	return !has_func || !has_datasec || !has_func_global || !has_float;
->   }
->   
->   static void bpf_object__sanitize_btf(struct bpf_object *obj, struct btf *btf)
->   {
->   	bool has_func_global = kernel_supports(FEAT_BTF_GLOBAL_FUNC);
->   	bool has_datasec = kernel_supports(FEAT_BTF_DATASEC);
-> +	bool has_float = kernel_supports(FEAT_BTF_FLOAT);
->   	bool has_func = kernel_supports(FEAT_BTF_FUNC);
->   	struct btf_type *t;
->   	int i, j, vlen;
-> +	int t_u32 = 0;
-> +	int t_u8 = 0;
->   
->   	for (i = 1; i <= btf__get_nr_types(btf); i++) {
->   		t = (struct btf_type *)btf__type_by_id(btf, i);
-> @@ -2445,6 +2452,23 @@ static void bpf_object__sanitize_btf(struct bpf_object *obj, struct btf *btf)
->   		} else if (!has_func_global && btf_is_func(t)) {
->   			/* replace BTF_FUNC_GLOBAL with BTF_FUNC_STATIC */
->   			t->info = BTF_INFO_ENC(BTF_KIND_FUNC, 0, 0);
-> +		} else if (!has_float && btf_is_float(t)) {
-> +			/* replace FLOAT with TYPEDEF(u8[]) */
-> +			int t_array;
-> +			__u32 size;
-> +
-> +			size = t->size;
-> +			if (!t_u8)
-> +				t_u8 = btf__add_int(btf, "u8", 1, 0);
-> +			if (!t_u32)
-> +				t_u32 = btf__add_int(btf, "u32", 4, 0);
-> +			t_array = btf__add_array(btf, t_u32, t_u8, size);
-> +
-> +			/* adding new types may have invalidated t */
-> +			t = (struct btf_type *)btf__type_by_id(btf, i);
-> +
-> +			t->info = BTF_INFO_ENC(BTF_KIND_TYPEDEF, 0, 0);
-
-This won't work. The typedef must have a valid name. Otherwise, kernel 
-will reject it. A const char array should be okay here.
-
-> +			t->type = t_array;
+>   static const char *btf_kind_str(__u16 kind)
+> @@ -173,6 +174,9 @@ int fprintf_btf_type_raw(FILE *out, const struct btf *btf, __u32 id)
 >   		}
+>   		break;
 >   	}
->   }
-[...]
+> +	case BTF_KIND_FLOAT:
+> +		fprintf(out, " size=%u", t->size);
+> +		break;
+>   	default:
+>   		break;
+>   	}
+> diff --git a/tools/testing/selftests/bpf/prog_tests/btf.c b/tools/testing/selftests/bpf/prog_tests/btf.c
+> index 6a7ee7420701..4be14d853cc3 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/btf.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/btf.c
+> @@ -3531,6 +3531,127 @@ static struct btf_raw_test raw_tests[] = {
+>   	.max_entries = 1,
+>   },
+>   
+> +{
+> +	.descr = "float test #1, well-formed",
+> +	.raw_types = {
+> +		BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4),	/* [1] */
+> +		BTF_TYPE_FLOAT_ENC(1, 2),			/* [2] */
+> +		BTF_TYPE_FLOAT_ENC(10, 4),			/* [3] */
+> +		BTF_TYPE_FLOAT_ENC(16, 8),			/* [4] */
+> +		BTF_TYPE_FLOAT_ENC(23, 16),			/* [5] */
+> +		BTF_STRUCT_ENC(35, 4, 32),			/* [6] */
+> +		BTF_MEMBER_ENC(NAME_TBD, 2, 0),
+> +		BTF_MEMBER_ENC(NAME_TBD, 3, 32),
+> +		BTF_MEMBER_ENC(NAME_TBD, 4, 64),
+> +		BTF_MEMBER_ENC(NAME_TBD, 5, 128),
+> +		BTF_END_RAW,
+> +	},
+> +	BTF_STR_SEC("\0_Float16\0float\0double\0long_double\0floats"),
+> +	.map_type = BPF_MAP_TYPE_ARRAY,
+> +	.map_name = "float_type_check_btf",
+> +	.key_size = sizeof(int),
+> +	.value_size = 32,
+> +	.key_type_id = 1,
+> +	.value_type_id = 6,
+> +	.max_entries = 1,
+> +},
+> +{
+> +	.descr = "float test #2, invalid vlen",
+> +	.raw_types = {
+> +		BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4),	/* [1] */
+> +		BTF_TYPE_ENC(1, BTF_INFO_ENC(BTF_KIND_FLOAT, 0, 1), 4),
+> +								/* [2] */
+> +		BTF_END_RAW,
+> +	},
+> +	BTF_STR_SEC("\0float"),
+> +	.map_type = BPF_MAP_TYPE_ARRAY,
+> +	.map_name = "float_type_check_btf",
+> +	.key_size = sizeof(int),
+> +	.value_size = 4,
+> +	.key_type_id = 1,
+> +	.value_type_id = 2,
+> +	.max_entries = 1,
+> +	.btf_load_err = true,
+> +	.err_str = "vlen != 0",
+> +},
+> +{
+> +	.descr = "float test #3, invalid kind_flag",
+> +	.raw_types = {
+> +		BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4),	/* [1] */
+> +		BTF_TYPE_ENC(1, BTF_INFO_ENC(BTF_KIND_FLOAT, 1, 0), 4),
+> +								/* [2] */
+> +		BTF_END_RAW,
+> +	},
+> +	BTF_STR_SEC("\0float"),
+> +	.map_type = BPF_MAP_TYPE_ARRAY,
+> +	.map_name = "float_type_check_btf",
+> +	.key_size = sizeof(int),
+> +	.value_size = 4,
+> +	.key_type_id = 1,
+> +	.value_type_id = 2,
+> +	.max_entries = 1,
+> +	.btf_load_err = true,
+> +	.err_str = "Invalid btf_info kind_flag",
+> +},
+> +{
+> +	.descr = "float test #4, member does not fit",
+> +	.raw_types = {
+> +		BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4),	/* [1] */
+> +		BTF_TYPE_FLOAT_ENC(1, 4),			/* [2] */
+> +		BTF_STRUCT_ENC(7, 1, 2),			/* [3] */
+> +		BTF_MEMBER_ENC(NAME_TBD, 2, 0),
+> +		BTF_END_RAW,
+> +	},
+> +	BTF_STR_SEC("\0float\0floats"),
+> +	.map_type = BPF_MAP_TYPE_ARRAY,
+> +	.map_name = "float_type_check_btf",
+> +	.key_size = sizeof(int),
+> +	.value_size = 4,
+> +	.key_type_id = 1,
+> +	.value_type_id = 3,
+> +	.max_entries = 1,
+> +	.btf_load_err = true,
+> +	.err_str = "Member exceeds struct_size",
+> +},
+> +{
+> +	.descr = "float test #5, member is not properly aligned",
+> +	.raw_types = {
+> +		BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4),	/* [1] */
+> +		BTF_TYPE_FLOAT_ENC(1, 4),			/* [2] */
+> +		BTF_STRUCT_ENC(7, 1, 8),			/* [3] */
+> +		BTF_MEMBER_ENC(NAME_TBD, 2, 8),
+> +		BTF_END_RAW,
+> +	},
+> +	BTF_STR_SEC("\0float\0floats"),
+> +	.map_type = BPF_MAP_TYPE_ARRAY,
+> +	.map_name = "float_type_check_btf",
+> +	.key_size = sizeof(int),
+> +	.value_size = 4,
+> +	.key_type_id = 1,
+> +	.value_type_id = 3,
+> +	.max_entries = 1,
+> +	.btf_load_err = true,
+> +	.err_str = "Member is not properly aligned",
+> +},
+> +{
+> +	.descr = "float test #6, invalid size",
+> +	.raw_types = {
+> +		BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4),	/* [1] */
+> +		BTF_TYPE_FLOAT_ENC(1, 6),			/* [2] */
+> +		BTF_END_RAW,
+> +	},
+> +	BTF_STR_SEC("\0float"),
+> +	.map_type = BPF_MAP_TYPE_ARRAY,
+> +	.map_name = "float_type_check_btf",
+> +	.key_size = sizeof(int),
+> +	.value_size = 6,
+> +	.key_type_id = 1,
+> +	.value_type_id = 2,
+> +	.max_entries = 1,
+> +	.btf_load_err = true,
+> +	.err_str = "Invalid type_size",
+> +},
+> +
+>   }; /* struct btf_raw_test raw_tests[] */
+>   
+>   static const char *get_next_str(const char *start, const char *end)
+> @@ -6632,6 +6753,7 @@ static int btf_type_size(const struct btf_type *t)
+>   	case BTF_KIND_FUNC:
+>   		return base_size;
+>   	case BTF_KIND_INT:
+> +	case BTF_KIND_FLOAT:
+>   		return base_size + sizeof(__u32);
+
+This is not correct.
+
+>   	case BTF_KIND_ENUM:
+>   		return base_size + vlen * sizeof(struct btf_enum);
+> diff --git a/tools/testing/selftests/bpf/test_btf.h b/tools/testing/selftests/bpf/test_btf.h
+> index 2023725f1962..e2394eea4b7f 100644
+> --- a/tools/testing/selftests/bpf/test_btf.h
+> +++ b/tools/testing/selftests/bpf/test_btf.h
+> @@ -66,4 +66,7 @@
+>   #define BTF_FUNC_ENC(name, func_proto) \
+>   	BTF_TYPE_ENC(name, BTF_INFO_ENC(BTF_KIND_FUNC, 0, 0), func_proto)
+>   
+> +#define BTF_TYPE_FLOAT_ENC(name, sz) \
+> +	BTF_TYPE_ENC(name, BTF_INFO_ENC(BTF_KIND_FLOAT, 0, 0), sz)
+> +
+>   #endif /* _TEST_BTF_H */
+> 
