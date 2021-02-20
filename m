@@ -2,594 +2,477 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C0AB3205EE
-	for <lists+bpf@lfdr.de>; Sat, 20 Feb 2021 16:32:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95F4B320656
+	for <lists+bpf@lfdr.de>; Sat, 20 Feb 2021 18:02:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229806AbhBTPbz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 20 Feb 2021 10:31:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229811AbhBTPby (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sat, 20 Feb 2021 10:31:54 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55AA1C06178A;
-        Sat, 20 Feb 2021 07:31:11 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id k22so41525599ljg.3;
-        Sat, 20 Feb 2021 07:31:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=b8MjqxMXWUHwbdpflUzSJe1BM+h1AXajVndvZTmntn0=;
-        b=KaJOqLH02xXIlgoLu3b0aQxjdG6O1TiDpBCxN1Iw6EgVDBi3I48tZ1Rc/MMlPZJ5+N
-         2N1xxqhCbV1rm6ujW+gLJNjR4Nrz+/VbCtIDrSzVVbODEsTlIjwXDj+1CLyatcTj2a6i
-         bJf87KWfVo34N/PnBpnZGaKy+K7CJmVH2V2UQ9S8RqRgHNje9GMw5kij6ylx+KkwngVo
-         1aHI2Q4qZpy+E8DDO8c4OG7M0hDcaCb9oIEszVnynGFaJlvIvjOHLuYnUUnBllQdon4L
-         K199OCQ153LaXhwSB5NWmouEau2cyv8cTGDUHeqPsHb61pdfPBDWocSI+zL7n4F8GFP7
-         8DOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=b8MjqxMXWUHwbdpflUzSJe1BM+h1AXajVndvZTmntn0=;
-        b=VfAqKD6sydvPomG4R4xhTVOa35FvSS3oPQ3urxbhF6/pTUaYl+WzOxt0iY89nU3a4L
-         AMDvLyPSuCbuLFwaPa4xWWFIoM8xliLmCGnOLBScQGeimRiSyFEMBLMYVSEqXrQTPlpl
-         ptSVSfSdaGCIYTeE7LhrrulT7VRQKbPIPF7DSNsHJksvaBfnEbXG7UKLwkpTmBJ0HMKX
-         o4crHBpG37sHt5mCBiRrVL3+ublKXxtgH8lugLuGdPj6vK4fKbM5+nuoZJH+H6+y0oOr
-         gLEbo4wlA3mMhkDigP6eHf5Kz3QaqcAwURmGqdUQppItu7z0s8o0sOukU99OihVciuYE
-         TyRQ==
-X-Gm-Message-State: AOAM533MwsnIBzIngKglOv362HOO9e/TgRINiEcKETcxZbxqLTU/Bnfn
-        k1TEOqOavsjHsuoLB0Odn2M=
-X-Google-Smtp-Source: ABdhPJwJJwYyxxqh33MsdOIxdRJ7iGYxPdc8Fx3IeLN/j0D19DmQyQuxQXxyVJV0x8T9LTzp1nPWrA==
-X-Received: by 2002:a2e:8519:: with SMTP id j25mr8806694lji.137.1613835069837;
-        Sat, 20 Feb 2021 07:31:09 -0800 (PST)
-Received: from btopel-mobl.ger.intel.com (c213-102-90-208.bredband.comhem.se. [213.102.90.208])
-        by smtp.gmail.com with ESMTPSA id x1sm1312437ljh.62.2021.02.20.07.31.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Feb 2021 07:31:09 -0800 (PST)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        id S229824AbhBTRCI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 20 Feb 2021 12:02:08 -0500
+Received: from mga02.intel.com ([134.134.136.20]:14849 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229808AbhBTRCI (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 20 Feb 2021 12:02:08 -0500
+IronPort-SDR: Pfqjb5yNpQiRl+nn1bMLVIH5OG3TeE6GDhjggsfCpKgVGW8zxgE5SmrMx/BIdkplXagUDs5SG9
+ 5FvI4BHohjGQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9901"; a="171239322"
+X-IronPort-AV: E=Sophos;i="5.81,193,1610438400"; 
+   d="gz'50?scan'50,208,50";a="171239322"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2021 09:01:25 -0800
+IronPort-SDR: w0C36KfphoQsJy9Z2M2JGTYvJHiawifCEwH5MRPSS4pLtvPzx+bCautEsCAL6cxGoYO4yGcU6S
+ j9fUKyAMODEg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,193,1610438400"; 
+   d="gz'50?scan'50,208,50";a="365573661"
+Received: from lkp-server02.sh.intel.com (HELO cd560a204411) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 20 Feb 2021 09:01:21 -0800
+Received: from kbuild by cd560a204411 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lDVdA-000B9r-DX; Sat, 20 Feb 2021 17:01:20 +0000
+Date:   Sun, 21 Feb 2021 01:00:30 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@gmail.com>,
+        ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
+Cc:     kbuild-all@lists.01.org,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn.topel@intel.com>,
         maciej.fijalkowski@intel.com, hawk@kernel.org, toke@redhat.com,
-        magnus.karlsson@intel.com, john.fastabend@gmail.com,
-        kuba@kernel.org, davem@davemloft.net
-Subject: [PATCH bpf-next v2 2/2] bpf, xdp: restructure redirect actions
-Date:   Sat, 20 Feb 2021 16:30:56 +0100
-Message-Id: <20210220153056.111968-3-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210220153056.111968-1-bjorn.topel@gmail.com>
-References: <20210220153056.111968-1-bjorn.topel@gmail.com>
+        magnus.karlsson@intel.com, john.fastabend@gmail.com
+Subject: Re: [PATCH bpf-next v2 1/2] bpf, xdp: per-map bpf_redirect_map
+ functions for XDP
+Message-ID: <202102210003.jU1k0vMh-lkp@intel.com>
+References: <20210220153056.111968-2-bjorn.topel@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: multipart/mixed; boundary="5vNYLRcllDrimb99"
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210220153056.111968-2-bjorn.topel@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
 
-The XDP_REDIRECT implementations for maps and non-maps are fairly
-similar, but obviously need to take different code paths depending on
-if the target is using a map or not. Today, the redirect targets for
-XDP either uses a map, or is based on ifindex.
+--5vNYLRcllDrimb99
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-Here, an explicit redirect type is added to bpf_redirect_info, instead
-of the actual map. Redirect type, map item/ifindex, and the map_id (if
-any) is passed to xdp_do_redirect().
+Hi "Bj�rn,
 
-In addition to making the code easier to follow, using an explicit
-type in bpf_redirect_info has a slight positive performance impact by
-avoiding a pointer indirection for the map type lookup, and instead
-use the cacheline for bpf_redirect_info.
+I love your patch! Yet something to improve:
 
-Since the actual map is not passed via bpf_redirect_info anymore, the
-map lookup is only done in the BPF helper. This means that the
-bpf_clear_redirect_map() function can be removed. The actual map item
-is RCU protected.
+[auto build test ERROR on 7b1e385c9a488de9291eaaa412146d3972e9dec5]
 
-The bpf_redirect_info flags member is not used by XDP, and not
-read/written any more. The map member is only written to when
-required/used, and not unconditionally.
+url:    https://github.com/0day-ci/linux/commits/Bj-rn-T-pel/Optimize-bpf_redirect_map-xdp_do_redirect/20210220-233623
+base:   7b1e385c9a488de9291eaaa412146d3972e9dec5
+config: s390-randconfig-m031-20210221 (attached as .config)
+compiler: s390-linux-gcc (GCC) 9.3.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/0day-ci/linux/commit/3995bc7a37a3a7975c4a04f668408d5aa31cbe37
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Bj-rn-T-pel/Optimize-bpf_redirect_map-xdp_do_redirect/20210220-233623
+        git checkout 3995bc7a37a3a7975c4a04f668408d5aa31cbe37
+        # save the attached .config to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=s390 
 
-v1->v2 : Removed warning when CONFIG_BPF_SYSCALL was not set. (lkp)
-       : Cleaned up case-clause in xdp_do_generic_redirect_map(). (Toke)
-rfc->v1: Use map_id, and remove bpf_clear_redirect_map(). (Toke)
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-Acked-by: Toke Høiland-Jørgensen <toke@redhat.com>
-Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+All errors (new ones prefixed by >>):
+
+   s390-linux-ld: kernel/bpf/verifier.o: in function `fixup_bpf_calls':
+>> verifier.c:(.text+0xa4fc): undefined reference to `get_xdp_redirect_func'
+
 ---
- include/linux/bpf.h        |   1 +
- include/linux/filter.h     |  11 ++-
- include/trace/events/xdp.h |  66 +++++++++------
- kernel/bpf/cpumap.c        |   1 -
- kernel/bpf/devmap.c        |   1 -
- net/core/filter.c          | 165 ++++++++++++++++---------------------
- net/xdp/xskmap.c           |   1 -
- 7 files changed, 122 insertions(+), 124 deletions(-)
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 3dd186eeaf98..3e59e4c211bc 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1592,6 +1592,7 @@ static inline void __dev_flush(void)
- 
- struct xdp_buff;
- struct bpf_dtab_netdev;
-+struct bpf_cpu_map_entry;
- 
- static inline
- int dev_xdp_enqueue(struct net_device *dev, struct xdp_buff *xdp,
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 1dedcf66b694..1f3cf2a1e116 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -646,11 +646,20 @@ struct bpf_redirect_info {
- 	u32 flags;
- 	u32 tgt_index;
- 	void *tgt_value;
--	struct bpf_map *map;
-+	u32 map_id;
-+	u32 tgt_type;
- 	u32 kern_flags;
- 	struct bpf_nh_params nh;
- };
- 
-+enum xdp_redirect_type {
-+	XDP_REDIR_UNSET,
-+	XDP_REDIR_DEV_IFINDEX,
-+	XDP_REDIR_DEV_MAP,
-+	XDP_REDIR_CPU_MAP,
-+	XDP_REDIR_XSK_MAP,
-+};
-+
- DECLARE_PER_CPU(struct bpf_redirect_info, bpf_redirect_info);
- 
- /* flags for bpf_redirect_info kern_flags */
-diff --git a/include/trace/events/xdp.h b/include/trace/events/xdp.h
-index 76a97176ab81..538321735447 100644
---- a/include/trace/events/xdp.h
-+++ b/include/trace/events/xdp.h
-@@ -86,19 +86,15 @@ struct _bpf_dtab_netdev {
- };
- #endif /* __DEVMAP_OBJ_TYPE */
- 
--#define devmap_ifindex(tgt, map)				\
--	(((map->map_type == BPF_MAP_TYPE_DEVMAP ||	\
--		  map->map_type == BPF_MAP_TYPE_DEVMAP_HASH)) ? \
--	  ((struct _bpf_dtab_netdev *)tgt)->dev->ifindex : 0)
--
- DECLARE_EVENT_CLASS(xdp_redirect_template,
- 
- 	TP_PROTO(const struct net_device *dev,
- 		 const struct bpf_prog *xdp,
- 		 const void *tgt, int err,
--		 const struct bpf_map *map, u32 index),
-+		 enum xdp_redirect_type type,
-+		 const struct bpf_redirect_info *ri),
- 
--	TP_ARGS(dev, xdp, tgt, err, map, index),
-+	TP_ARGS(dev, xdp, tgt, err, type, ri),
- 
- 	TP_STRUCT__entry(
- 		__field(int, prog_id)
-@@ -111,14 +107,30 @@ DECLARE_EVENT_CLASS(xdp_redirect_template,
- 	),
- 
- 	TP_fast_assign(
-+		u32 ifindex = 0, map_id = 0, index = ri->tgt_index;
-+
-+		switch (type) {
-+		case XDP_REDIR_DEV_MAP:
-+			ifindex = ((struct _bpf_dtab_netdev *)tgt)->dev->ifindex;
-+			fallthrough;
-+		case XDP_REDIR_CPU_MAP:
-+		case XDP_REDIR_XSK_MAP:
-+			map_id = ri->map_id;
-+			break;
-+		case XDP_REDIR_DEV_IFINDEX:
-+			ifindex = (u32)(long)tgt;
-+			break;
-+		default:
-+			break;
-+		}
-+
- 		__entry->prog_id	= xdp->aux->id;
- 		__entry->act		= XDP_REDIRECT;
- 		__entry->ifindex	= dev->ifindex;
- 		__entry->err		= err;
--		__entry->to_ifindex	= map ? devmap_ifindex(tgt, map) :
--						index;
--		__entry->map_id		= map ? map->id : 0;
--		__entry->map_index	= map ? index : 0;
-+		__entry->to_ifindex	= ifindex;
-+		__entry->map_id		= map_id;
-+		__entry->map_index	= index;
- 	),
- 
- 	TP_printk("prog_id=%d action=%s ifindex=%d to_ifindex=%d err=%d"
-@@ -133,45 +145,49 @@ DEFINE_EVENT(xdp_redirect_template, xdp_redirect,
- 	TP_PROTO(const struct net_device *dev,
- 		 const struct bpf_prog *xdp,
- 		 const void *tgt, int err,
--		 const struct bpf_map *map, u32 index),
--	TP_ARGS(dev, xdp, tgt, err, map, index)
-+		 enum xdp_redirect_type type,
-+		 const struct bpf_redirect_info *ri),
-+	TP_ARGS(dev, xdp, tgt, err, type, ri)
- );
- 
- DEFINE_EVENT(xdp_redirect_template, xdp_redirect_err,
- 	TP_PROTO(const struct net_device *dev,
- 		 const struct bpf_prog *xdp,
- 		 const void *tgt, int err,
--		 const struct bpf_map *map, u32 index),
--	TP_ARGS(dev, xdp, tgt, err, map, index)
-+		 enum xdp_redirect_type type,
-+		 const struct bpf_redirect_info *ri),
-+	TP_ARGS(dev, xdp, tgt, err, type, ri)
- );
- 
- #define _trace_xdp_redirect(dev, xdp, to)				\
--	 trace_xdp_redirect(dev, xdp, NULL, 0, NULL, to)
-+	trace_xdp_redirect(dev, xdp, NULL, 0, XDP_REDIR_DEV_IFINDEX, NULL)
- 
- #define _trace_xdp_redirect_err(dev, xdp, to, err)			\
--	 trace_xdp_redirect_err(dev, xdp, NULL, err, NULL, to)
-+	trace_xdp_redirect_err(dev, xdp, NULL, err, XDP_REDIR_DEV_IFINDEX, NULL)
- 
--#define _trace_xdp_redirect_map(dev, xdp, to, map, index)		\
--	 trace_xdp_redirect(dev, xdp, to, 0, map, index)
-+#define _trace_xdp_redirect_map(dev, xdp, to, type, ri)		\
-+	trace_xdp_redirect(dev, xdp, to, 0, type, ri)
- 
--#define _trace_xdp_redirect_map_err(dev, xdp, to, map, index, err)	\
--	 trace_xdp_redirect_err(dev, xdp, to, err, map, index)
-+#define _trace_xdp_redirect_map_err(dev, xdp, to, type, ri, err)	\
-+	trace_xdp_redirect_err(dev, xdp, to, err, type, ri)
- 
- /* not used anymore, but kept around so as not to break old programs */
- DEFINE_EVENT(xdp_redirect_template, xdp_redirect_map,
- 	TP_PROTO(const struct net_device *dev,
- 		 const struct bpf_prog *xdp,
- 		 const void *tgt, int err,
--		 const struct bpf_map *map, u32 index),
--	TP_ARGS(dev, xdp, tgt, err, map, index)
-+		 enum xdp_redirect_type type,
-+		 const struct bpf_redirect_info *ri),
-+	TP_ARGS(dev, xdp, tgt, err, type, ri)
- );
- 
- DEFINE_EVENT(xdp_redirect_template, xdp_redirect_map_err,
- 	TP_PROTO(const struct net_device *dev,
- 		 const struct bpf_prog *xdp,
- 		 const void *tgt, int err,
--		 const struct bpf_map *map, u32 index),
--	TP_ARGS(dev, xdp, tgt, err, map, index)
-+		 enum xdp_redirect_type type,
-+		 const struct bpf_redirect_info *ri),
-+	TP_ARGS(dev, xdp, tgt, err, type, ri)
- );
- 
- TRACE_EVENT(xdp_cpumap_kthread,
-diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
-index a4d2cb93cd69..b7f4d22f5c8d 100644
---- a/kernel/bpf/cpumap.c
-+++ b/kernel/bpf/cpumap.c
-@@ -543,7 +543,6 @@ static void cpu_map_free(struct bpf_map *map)
- 	 * complete.
- 	 */
- 
--	bpf_clear_redirect_map(map);
- 	synchronize_rcu();
- 
- 	/* For cpu_map the remote CPUs can still be using the entries
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index 37ac4cde9713..b5681a98020d 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -197,7 +197,6 @@ static void dev_map_free(struct bpf_map *map)
- 	list_del_rcu(&dtab->list);
- 	spin_unlock(&dev_map_lock);
- 
--	bpf_clear_redirect_map(map);
- 	synchronize_rcu();
- 
- 	/* Make sure prior __dev_map_entry_free() have completed. */
-diff --git a/net/core/filter.c b/net/core/filter.c
-index eeecd95aa38f..f017262b13a7 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -3919,23 +3919,6 @@ static const struct bpf_func_proto bpf_xdp_adjust_meta_proto = {
- 	.arg2_type	= ARG_ANYTHING,
- };
- 
--static int __bpf_tx_xdp_map(struct net_device *dev_rx, void *fwd,
--			    struct bpf_map *map, struct xdp_buff *xdp)
--{
--	switch (map->map_type) {
--	case BPF_MAP_TYPE_DEVMAP:
--	case BPF_MAP_TYPE_DEVMAP_HASH:
--		return dev_map_enqueue(fwd, xdp, dev_rx);
--	case BPF_MAP_TYPE_CPUMAP:
--		return cpu_map_enqueue(fwd, xdp, dev_rx);
--	case BPF_MAP_TYPE_XSKMAP:
--		return __xsk_map_redirect(fwd, xdp);
--	default:
--		return -EBADRQC;
--	}
--	return 0;
--}
--
- void xdp_do_flush(void)
- {
- 	__dev_flush();
-@@ -3944,55 +3927,45 @@ void xdp_do_flush(void)
- }
- EXPORT_SYMBOL_GPL(xdp_do_flush);
- 
--void bpf_clear_redirect_map(struct bpf_map *map)
--{
--	struct bpf_redirect_info *ri;
--	int cpu;
--
--	for_each_possible_cpu(cpu) {
--		ri = per_cpu_ptr(&bpf_redirect_info, cpu);
--		/* Avoid polluting remote cacheline due to writes if
--		 * not needed. Once we pass this test, we need the
--		 * cmpxchg() to make sure it hasn't been changed in
--		 * the meantime by remote CPU.
--		 */
--		if (unlikely(READ_ONCE(ri->map) == map))
--			cmpxchg(&ri->map, map, NULL);
--	}
--}
--
- int xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
- 		    struct bpf_prog *xdp_prog)
- {
- 	struct bpf_redirect_info *ri = this_cpu_ptr(&bpf_redirect_info);
--	struct bpf_map *map = READ_ONCE(ri->map);
--	u32 index = ri->tgt_index;
-+	enum xdp_redirect_type type = ri->tgt_type;
- 	void *fwd = ri->tgt_value;
- 	int err;
- 
--	ri->tgt_index = 0;
--	ri->tgt_value = NULL;
--	WRITE_ONCE(ri->map, NULL);
-+	ri->tgt_type = XDP_REDIR_UNSET;
- 
--	if (unlikely(!map)) {
--		fwd = dev_get_by_index_rcu(dev_net(dev), index);
-+	switch (type) {
-+	case XDP_REDIR_DEV_IFINDEX:
-+		fwd = dev_get_by_index_rcu(dev_net(dev), (u32)(long)fwd);
- 		if (unlikely(!fwd)) {
- 			err = -EINVAL;
--			goto err;
-+			break;
- 		}
--
- 		err = dev_xdp_enqueue(fwd, xdp, dev);
--	} else {
--		err = __bpf_tx_xdp_map(dev, fwd, map, xdp);
-+		break;
-+	case XDP_REDIR_DEV_MAP:
-+		err = dev_map_enqueue(fwd, xdp, dev);
-+		break;
-+	case XDP_REDIR_CPU_MAP:
-+		err = cpu_map_enqueue(fwd, xdp, dev);
-+		break;
-+	case XDP_REDIR_XSK_MAP:
-+		err = __xsk_map_redirect(fwd, xdp);
-+		break;
-+	default:
-+		err = -EBADRQC;
- 	}
- 
- 	if (unlikely(err))
- 		goto err;
- 
--	_trace_xdp_redirect_map(dev, xdp_prog, fwd, map, index);
-+	_trace_xdp_redirect_map(dev, xdp_prog, fwd, type, ri);
- 	return 0;
- err:
--	_trace_xdp_redirect_map_err(dev, xdp_prog, fwd, map, index, err);
-+	_trace_xdp_redirect_map_err(dev, xdp_prog, fwd, type, ri, err);
- 	return err;
- }
- EXPORT_SYMBOL_GPL(xdp_do_redirect);
-@@ -4001,41 +3974,37 @@ static int xdp_do_generic_redirect_map(struct net_device *dev,
- 				       struct sk_buff *skb,
- 				       struct xdp_buff *xdp,
- 				       struct bpf_prog *xdp_prog,
--				       struct bpf_map *map)
-+				       void *fwd,
-+				       enum xdp_redirect_type type)
- {
- 	struct bpf_redirect_info *ri = this_cpu_ptr(&bpf_redirect_info);
--	u32 index = ri->tgt_index;
--	void *fwd = ri->tgt_value;
--	int err = 0;
--
--	ri->tgt_index = 0;
--	ri->tgt_value = NULL;
--	WRITE_ONCE(ri->map, NULL);
--
--	if (map->map_type == BPF_MAP_TYPE_DEVMAP ||
--	    map->map_type == BPF_MAP_TYPE_DEVMAP_HASH) {
--		struct bpf_dtab_netdev *dst = fwd;
-+	int err;
- 
--		err = dev_map_generic_redirect(dst, skb, xdp_prog);
-+	switch (type) {
-+	case XDP_REDIR_DEV_MAP:
-+		err = dev_map_generic_redirect(fwd, skb, xdp_prog);
- 		if (unlikely(err))
- 			goto err;
--	} else if (map->map_type == BPF_MAP_TYPE_XSKMAP) {
-+		break;
-+	case XDP_REDIR_XSK_MAP: {
- 		struct xdp_sock *xs = fwd;
- 
- 		err = xsk_generic_rcv(xs, xdp);
- 		if (err)
- 			goto err;
- 		consume_skb(skb);
--	} else {
-+		break;
-+	}
-+	default:
- 		/* TODO: Handle BPF_MAP_TYPE_CPUMAP */
- 		err = -EBADRQC;
- 		goto err;
- 	}
- 
--	_trace_xdp_redirect_map(dev, xdp_prog, fwd, map, index);
-+	_trace_xdp_redirect_map(dev, xdp_prog, fwd, type, ri);
- 	return 0;
- err:
--	_trace_xdp_redirect_map_err(dev, xdp_prog, fwd, map, index, err);
-+	_trace_xdp_redirect_map_err(dev, xdp_prog, fwd, type, ri, err);
- 	return err;
- }
- 
-@@ -4043,29 +4012,31 @@ int xdp_do_generic_redirect(struct net_device *dev, struct sk_buff *skb,
- 			    struct xdp_buff *xdp, struct bpf_prog *xdp_prog)
- {
- 	struct bpf_redirect_info *ri = this_cpu_ptr(&bpf_redirect_info);
--	struct bpf_map *map = READ_ONCE(ri->map);
--	u32 index = ri->tgt_index;
--	struct net_device *fwd;
-+	enum xdp_redirect_type type = ri->tgt_type;
-+	void *fwd = ri->tgt_value;
- 	int err = 0;
- 
--	if (map)
--		return xdp_do_generic_redirect_map(dev, skb, xdp, xdp_prog,
--						   map);
--	ri->tgt_index = 0;
--	fwd = dev_get_by_index_rcu(dev_net(dev), index);
--	if (unlikely(!fwd)) {
--		err = -EINVAL;
--		goto err;
--	}
-+	ri->tgt_type = XDP_REDIR_UNSET;
-+	ri->tgt_value = NULL;
- 
--	err = xdp_ok_fwd_dev(fwd, skb->len);
--	if (unlikely(err))
--		goto err;
-+	if (type == XDP_REDIR_DEV_IFINDEX) {
-+		fwd = dev_get_by_index_rcu(dev_net(dev), (u32)(long)fwd);
-+		if (unlikely(!fwd)) {
-+			err = -EINVAL;
-+			goto err;
-+		}
- 
--	skb->dev = fwd;
--	_trace_xdp_redirect(dev, xdp_prog, index);
--	generic_xdp_tx(skb, xdp_prog);
--	return 0;
-+		err = xdp_ok_fwd_dev(fwd, skb->len);
-+		if (unlikely(err))
-+			goto err;
-+
-+		skb->dev = fwd;
-+		_trace_xdp_redirect(dev, xdp_prog, index);
-+		generic_xdp_tx(skb, xdp_prog);
-+		return 0;
-+	}
-+
-+	return xdp_do_generic_redirect_map(dev, skb, xdp, xdp_prog, fwd, type);
- err:
- 	_trace_xdp_redirect_err(dev, xdp_prog, index, err);
- 	return err;
-@@ -4078,10 +4049,9 @@ BPF_CALL_2(bpf_xdp_redirect, u32, ifindex, u64, flags)
- 	if (unlikely(flags))
- 		return XDP_ABORTED;
- 
--	ri->flags = flags;
--	ri->tgt_index = ifindex;
--	ri->tgt_value = NULL;
--	WRITE_ONCE(ri->map, NULL);
-+	ri->tgt_type = XDP_REDIR_DEV_IFINDEX;
-+	ri->tgt_index = 0;
-+	ri->tgt_value = (void *)(long)ifindex;
- 
- 	return XDP_REDIRECT;
- }
-@@ -4096,7 +4066,8 @@ static const struct bpf_func_proto bpf_xdp_redirect_proto = {
- 
- static __always_inline s64 __bpf_xdp_redirect_map(struct bpf_map *map, u32 ifindex, u64 flags,
- 						  void *lookup_elem(struct bpf_map *map,
--								    u32 key))
-+								    u32 key),
-+						  enum xdp_redirect_type type)
- {
- 	struct bpf_redirect_info *ri = this_cpu_ptr(&bpf_redirect_info);
- 
-@@ -4110,35 +4081,39 @@ static __always_inline s64 __bpf_xdp_redirect_map(struct bpf_map *map, u32 ifind
- 		 * performs multiple lookups, the last one always takes
- 		 * precedence.
- 		 */
--		WRITE_ONCE(ri->map, NULL);
-+		ri->tgt_type = XDP_REDIR_UNSET;
- 		return flags;
- 	}
- 
--	ri->flags = flags;
- 	ri->tgt_index = ifindex;
--	WRITE_ONCE(ri->map, map);
-+	ri->tgt_type = type;
-+	ri->map_id = map->id;
- 
- 	return XDP_REDIRECT;
- }
- 
- BPF_CALL_3(bpf_xdp_redirect_devmap, struct bpf_map *, map, u32, ifindex, u64, flags)
- {
--	return __bpf_xdp_redirect_map(map, ifindex, flags, __dev_map_lookup_elem);
-+	return __bpf_xdp_redirect_map(map, ifindex, flags, __dev_map_lookup_elem,
-+				      XDP_REDIR_DEV_MAP);
- }
- 
- BPF_CALL_3(bpf_xdp_redirect_devmap_hash, struct bpf_map *, map, u32, ifindex, u64, flags)
- {
--	return __bpf_xdp_redirect_map(map, ifindex, flags, __dev_map_hash_lookup_elem);
-+	return __bpf_xdp_redirect_map(map, ifindex, flags, __dev_map_hash_lookup_elem,
-+				      XDP_REDIR_DEV_MAP);
- }
- 
- BPF_CALL_3(bpf_xdp_redirect_cpumap, struct bpf_map *, map, u32, ifindex, u64, flags)
- {
--	return __bpf_xdp_redirect_map(map, ifindex, flags, __cpu_map_lookup_elem);
-+	return __bpf_xdp_redirect_map(map, ifindex, flags, __cpu_map_lookup_elem,
-+				      XDP_REDIR_CPU_MAP);
- }
- 
- BPF_CALL_3(bpf_xdp_redirect_xskmap, struct bpf_map *, map, u32, ifindex, u64, flags)
- {
--	return __bpf_xdp_redirect_map(map, ifindex, flags, __xsk_map_lookup_elem);
-+	return __bpf_xdp_redirect_map(map, ifindex, flags, __xsk_map_lookup_elem,
-+				      XDP_REDIR_XSK_MAP);
- }
- 
- bpf_func_proto_func get_xdp_redirect_func(enum bpf_map_type map_type)
-diff --git a/net/xdp/xskmap.c b/net/xdp/xskmap.c
-index 113fd9017203..c285d3dd04ad 100644
---- a/net/xdp/xskmap.c
-+++ b/net/xdp/xskmap.c
-@@ -87,7 +87,6 @@ static void xsk_map_free(struct bpf_map *map)
- {
- 	struct xsk_map *m = container_of(map, struct xsk_map, map);
- 
--	bpf_clear_redirect_map(map);
- 	synchronize_net();
- 	bpf_map_area_free(m);
- }
--- 
-2.27.0
+--5vNYLRcllDrimb99
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
 
+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
+QZwLX1X9A6EgpeUOPQEA
+
+--5vNYLRcllDrimb99--
