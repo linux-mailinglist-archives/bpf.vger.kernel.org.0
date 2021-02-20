@@ -2,134 +2,127 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21EF232039B
-	for <lists+bpf@lfdr.de>; Sat, 20 Feb 2021 04:52:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A498F3203F7
+	for <lists+bpf@lfdr.de>; Sat, 20 Feb 2021 06:33:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229903AbhBTDwZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 19 Feb 2021 22:52:25 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:65166 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229725AbhBTDwY (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 19 Feb 2021 22:52:24 -0500
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11K3ftUp048914;
-        Fri, 19 Feb 2021 22:51:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=RJV/nJnNfa6lzjbk3o7xDvcS3SL0Hzv6UL9QqFGzymQ=;
- b=Uvhh/Pme/4AE/qLFBwJxKsJ4dwM949PpU9/OzU/+ndPKqRYUgIa2G3XISSUDOsUd1X8W
- AkZUi4KaxtUFQEvY8dtFF63o+qJaFVGrHCacwO4VXcWv6lclsY4FzciEcBOU99QcJNI9
- jQ0V9uJtg48yKfPM/tegSHeJ2DOl1ag+8ankf/qNarxYv+EmX1FZ3LbROqZCJtsAVfbr
- pbGNoQj+s7NPV0JQ/SsRa26pxrVw+GJY6iZBpzcIFzbn5tb+DH8guQXgzgVU+yzCrtOH
- 70pMOUKt6hH4KKDS/w981OApkXJ05qQ0gEQ6Ppx2cpzW7GWPRoXWkYx5iMdhYuuFCZp9 9w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36ttrc84pw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Feb 2021 22:51:31 -0500
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11K3g0l2048972;
-        Fri, 19 Feb 2021 22:51:31 -0500
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36ttrc84pj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Feb 2021 22:51:31 -0500
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11K3nBUO005586;
-        Sat, 20 Feb 2021 03:51:29 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 36tt2800sd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 20 Feb 2021 03:51:28 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11K3pEIW33685786
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 20 Feb 2021 03:51:14 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F35EE52051;
-        Sat, 20 Feb 2021 03:51:25 +0000 (GMT)
-Received: from vm.lan (unknown [9.145.178.56])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 71E0D5204E;
-        Sat, 20 Feb 2021 03:51:25 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     bpf@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH v3 bpf-next 6/6] bpf: Document BTF_KIND_FLOAT in btf.rst
-Date:   Sat, 20 Feb 2021 04:49:59 +0100
-Message-Id: <20210220034959.27006-7-iii@linux.ibm.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210220034959.27006-1-iii@linux.ibm.com>
-References: <20210220034959.27006-1-iii@linux.ibm.com>
+        id S229476AbhBTFaL (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 20 Feb 2021 00:30:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229462AbhBTFaK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 20 Feb 2021 00:30:10 -0500
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C133C061574;
+        Fri, 19 Feb 2021 21:29:30 -0800 (PST)
+Received: by mail-ot1-x32e.google.com with SMTP id b8so7130594oti.7;
+        Fri, 19 Feb 2021 21:29:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qfVvtGmYkqRKXOHwQvpOxY7ojIiFVMhGm6NjJuT5yzE=;
+        b=AN5lTixUfGd8/dpqc/qrFCPs4VJHO77P0GR29C+pexUspOVv47xMQUbmSONTZW9lvp
+         3F6QJi8AuDEAxDQi/DEDj7C7W8vmsTvmpEMXYqHGtrL71/uJ2xqHNCbdHFiSege8/RWt
+         fURLVR4K0jkvaKOWRij7A089CJjkCMKJ92DcTHD7j83GVMBYtSNUUew3/4Ue7aUtLCNJ
+         RvARXJAUrYFQ7ENyEqMDmnZwVZus64D2ZKE+TJ8OvGm/iWMJw8+rByvV1OgCL6MxjObk
+         HwJudH8Kj1FEvp+ja0/9OeJVBwxET6m0yl2ljb997InjlvKoBXvmQUPjsZMVeHT1kWvN
+         scdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qfVvtGmYkqRKXOHwQvpOxY7ojIiFVMhGm6NjJuT5yzE=;
+        b=BYlID8CNTj1pXoq59Dl5hIN2+MFS49ln+WMtLoJQpOZGBzdymHT/LK4fX/dhyv2Hn9
+         lYYTA2OqGmkoRvuztT3vaNu0s04kmZcjGemk5EIuzHniQ4I3Poak/gWiUSUNBY8uDHgx
+         LjNoU78B3jn6SEIplCf31OuzFKbdasDXR7go04YcwBObfWe+Ld3NsUE13DHUWK3g/WYS
+         bGfGpRD5vtXzRJQlvAik89VPsreoftwr9jH+hoDhRq9sxDO1++5SDtLJ6ymGEqbT2DK0
+         CgJsvmQdqLgHB5datxOGH26NUlILQuThIHnLR7Cvhb9dMvl7qWMlDBoHOSuNJMhtYumh
+         uMuA==
+X-Gm-Message-State: AOAM530qVqetvMqL4WqfrIMVJKVSWosawGA5d3spP4aqacQX2agbZ3lf
+        GFg7mvNBrAFJMRgq7mg7wmF3hzkQDYV63g==
+X-Google-Smtp-Source: ABdhPJwXMoW6ol08F0HFyWdfswyxqFXMXm32GKHQZ4tKWPgxyH6NeyoGpO78ivfK0Lrg0h2G2gdFiA==
+X-Received: by 2002:a9d:6283:: with SMTP id x3mr9504337otk.136.1613798969446;
+        Fri, 19 Feb 2021 21:29:29 -0800 (PST)
+Received: from unknown.attlocal.net ([2600:1700:65a0:ab60:1d72:18:7c76:92e4])
+        by smtp.gmail.com with ESMTPSA id v20sm945955oie.2.2021.02.19.21.29.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Feb 2021 21:29:29 -0800 (PST)
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     bpf@vger.kernel.org, duanxiongchun@bytedance.com,
+        wangdongdong.6@bytedance.com, jiang.wang@bytedance.com,
+        Cong Wang <cong.wang@bytedance.com>
+Subject: [Patch bpf-next v6 0/8] sock_map: clean up and refactor code for BPF_SK_SKB_VERDICT
+Date:   Fri, 19 Feb 2021 21:29:16 -0800
+Message-Id: <20210220052924.106599-1-xiyou.wangcong@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-19_08:2021-02-18,2021-02-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 clxscore=1015 mlxscore=0 lowpriorityscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 suspectscore=0 mlxlogscore=999
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102200026
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Also document the expansion of the kind bitfield.
+From: Cong Wang <cong.wang@bytedance.com>
 
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+This patchset is the first series of patches separated out from
+the original large patchset, to make reviews easier. This patchset
+does not add any new feature or change any functionality but merely
+cleans up the existing sockmap and skmsg code and refactors it, to
+prepare for the patches followed up. This passed all BPF selftests.
+
+To see the big picture, the original whole patchset is available
+on github: https://github.com/congwang/linux/tree/sockmap
+
+and this patchset is also available on github:
+https://github.com/congwang/linux/tree/sockmap1
+
 ---
- Documentation/bpf/btf.rst | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+v6: fix !CONFIG_INET case
 
-diff --git a/Documentation/bpf/btf.rst b/Documentation/bpf/btf.rst
-index 44dc789de2b4..846354cd2d69 100644
---- a/Documentation/bpf/btf.rst
-+++ b/Documentation/bpf/btf.rst
-@@ -84,6 +84,7 @@ sequentially and type id is assigned to each recognized type starting from id
-     #define BTF_KIND_FUNC_PROTO     13      /* Function Proto       */
-     #define BTF_KIND_VAR            14      /* Variable     */
-     #define BTF_KIND_DATASEC        15      /* Section      */
-+    #define BTF_KIND_FLOAT          16      /* Floating point       */
- 
- Note that the type section encodes debug info, not just pure types.
- ``BTF_KIND_FUNC`` is not a type, and it represents a defined subprogram.
-@@ -95,8 +96,8 @@ Each type contains the following common data::
-         /* "info" bits arrangement
-          * bits  0-15: vlen (e.g. # of struct's members)
-          * bits 16-23: unused
--         * bits 24-27: kind (e.g. int, ptr, array...etc)
--         * bits 28-30: unused
-+         * bits 24-28: kind (e.g. int, ptr, array...etc)
-+         * bits 29-30: unused
-          * bit     31: kind_flag, currently used by
-          *             struct, union and fwd
-          */
-@@ -452,6 +453,18 @@ map definition.
-   * ``offset``: the in-section offset of the variable
-   * ``size``: the size of the variable in bytes
- 
-+2.2.16 BTF_KIND_FLOAT
-+~~~~~~~~~~~~~~~~~~~~~
-+
-+``struct btf_type`` encoding requirement:
-+ * ``name_off``: any valid offset
-+ * ``info.kind_flag``: 0
-+ * ``info.kind``: BTF_KIND_FLOAT
-+ * ``info.vlen``: 0
-+ * ``size``: the size of the float type in bytes: 2, 4, 8, 12 or 16.
-+
-+No additional type data follow ``btf_type``.
-+
- 3. BTF Kernel API
- *****************
- 
+v5: improve CONFIG_BPF_SYSCALL dependency
+    add 3 trivial clean up patches
+
+v4: reuse skb dst instead of skb ext
+    fix another Kconfig error
+
+v3: fix a few Kconfig compile errors
+    remove an unused variable
+    add a comment for bpf_convert_data_end_access()
+
+v2: split the original patchset
+    compute data_end with bpf_convert_data_end_access()
+    get rid of psock->bpf_running
+    reduce the scope of CONFIG_BPF_STREAM_PARSER
+    do not add CONFIG_BPF_SOCK_MAP
+
+Cong Wang (8):
+  bpf: clean up sockmap related Kconfigs
+  skmsg: get rid of struct sk_psock_parser
+  bpf: compute data_end dynamically with JIT code
+  skmsg: move sk_redir from TCP_SKB_CB to skb
+  sock_map: rename skb_parser and skb_verdict
+  sock_map: make sock_map_prog_update() static
+  skmsg: make __sk_psock_purge_ingress_msg() static
+  skmsg: get rid of sk_psock_bpf_run()
+
+ include/linux/bpf.h                           |  29 +--
+ include/linux/bpf_types.h                     |   6 +-
+ include/linux/skbuff.h                        |   3 +
+ include/linux/skmsg.h                         |  82 +++++--
+ include/net/tcp.h                             |  41 +---
+ include/net/udp.h                             |   4 +-
+ init/Kconfig                                  |   1 +
+ net/Kconfig                                   |   6 +-
+ net/core/Makefile                             |   6 +-
+ net/core/filter.c                             |  48 ++--
+ net/core/skmsg.c                              | 207 ++++++++----------
+ net/core/sock_map.c                           |  77 +++----
+ net/ipv4/Makefile                             |   2 +-
+ net/ipv4/tcp_bpf.c                            |   4 +-
+ .../selftests/bpf/prog_tests/sockmap_listen.c |   8 +-
+ .../selftests/bpf/progs/test_sockmap_listen.c |   4 +-
+ 16 files changed, 270 insertions(+), 258 deletions(-)
+
 -- 
-2.29.2
+2.25.1
 
