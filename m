@@ -2,91 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 291A1320B7A
-	for <lists+bpf@lfdr.de>; Sun, 21 Feb 2021 16:38:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28700320BCF
+	for <lists+bpf@lfdr.de>; Sun, 21 Feb 2021 17:40:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229685AbhBUPhu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 21 Feb 2021 10:37:50 -0500
-Received: from mga07.intel.com ([134.134.136.100]:53136 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229663AbhBUPhu (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 21 Feb 2021 10:37:50 -0500
-IronPort-SDR: A4e/65PIbll+kOJIR9BSEfugj9kBrSrnN9fqhu+nCMsPgKa9m6JSAzK2Xib3XX4L/2ICMx7vkC
- X+62LzrmGfDw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9901"; a="248309966"
-X-IronPort-AV: E=Sophos;i="5.81,195,1610438400"; 
-   d="scan'208";a="248309966"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2021 07:37:05 -0800
-IronPort-SDR: suaj0f+En1ymZx9DVfmQGFvnmWO8FM5esTnuaJJnE7BPx0PDimxbDJw9/8UCyi6RpMR60X/T77
- tbMJE4n8+Hww==
-X-IronPort-AV: E=Sophos;i="5.81,195,1610438400"; 
-   d="scan'208";a="402040142"
-Received: from vyakovle-mobl.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.249.38.19])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2021 07:37:03 -0800
-Subject: Re: [PATCH bpf-next v2 1/2] bpf, xdp: per-map bpf_redirect_map
- functions for XDP
-To:     kernel test robot <lkp@intel.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, maciej.fijalkowski@intel.com,
-        hawk@kernel.org, toke@redhat.com, magnus.karlsson@intel.com,
-        john.fastabend@gmail.com
-References: <20210220153056.111968-2-bjorn.topel@gmail.com>
- <202102210003.jU1k0vMh-lkp@intel.com>
-From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
-Message-ID: <7abb8101-6f4b-a79e-935b-c2377680d858@intel.com>
-Date:   Sun, 21 Feb 2021 16:36:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230138AbhBUQkZ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 21 Feb 2021 11:40:25 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:57338 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230133AbhBUQkY (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 21 Feb 2021 11:40:24 -0500
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11LGYZEd081965;
+        Sun, 21 Feb 2021 11:39:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=MvFOFgdw2dHoguU2CpSRbsMdRwsTkTSibB2eAwCLzag=;
+ b=Ui4j1zVYug4kph6R698eLmtWJAjMabuhBnJp6FXBj5NCQzkRQqwD6t0Y7KB7Lq2P2EHm
+ 8jh0iQ4/mYqqlT6UVTOA37RZk01BrVmXHXRURP2ioToVT8k6m+7EyHa14EarheXWOBe1
+ J0j/1tg6m3f7U4b1QgnlI07giNvwetK2d1RjFyU3gCOhiESIr/jslPjoQKA1Ouu6bKMq
+ 0GJ+brx1iExEVYn6Y0lEPnBK0Aufm8omxqqHflPaQ0sHSxrVZ0tGaD5fFaOGNBiqYmAG
+ GsWmb4TqnfuqowoOBBAeLfAn3X5zK8Cmo2dL4xlQQhXkifHHyAsW3+/YA9VOwZ6HMHPh Ug== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36uu4f8amy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 21 Feb 2021 11:39:28 -0500
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 11LGYqBY082992;
+        Sun, 21 Feb 2021 11:38:47 -0500
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36uu4f88wp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 21 Feb 2021 11:38:47 -0500
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11LGc2e6029765;
+        Sun, 21 Feb 2021 16:38:02 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03ams.nl.ibm.com with ESMTP id 36tt280y4c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 21 Feb 2021 16:38:02 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11LGc0Ih39780710
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 21 Feb 2021 16:38:00 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0CCB8AE04D;
+        Sun, 21 Feb 2021 16:38:00 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 85411AE045;
+        Sun, 21 Feb 2021 16:37:59 +0000 (GMT)
+Received: from [9.145.178.56] (unknown [9.145.178.56])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Sun, 21 Feb 2021 16:37:59 +0000 (GMT)
+Message-ID: <77c3c64117e266c92fd43860afff858e92d07b6f.camel@linux.ibm.com>
+Subject: Re: [PATCH v3 bpf-next 4/6] bpf: Add BTF_KIND_FLOAT support
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     bpf@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Date:   Sun, 21 Feb 2021 17:37:59 +0100
+In-Reply-To: <20210220034959.27006-5-iii@linux.ibm.com>
+References: <20210220034959.27006-1-iii@linux.ibm.com>
+         <20210220034959.27006-5-iii@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3 (3.38.3-1.fc33) 
 MIME-Version: 1.0
-In-Reply-To: <202102210003.jU1k0vMh-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-21_08:2021-02-18,2021-02-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1015
+ priorityscore=1501 malwarescore=0 lowpriorityscore=0 adultscore=0
+ mlxlogscore=999 mlxscore=0 impostorscore=0 spamscore=0 phishscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102210168
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2021-02-20 18:00, kernel test robot wrote:
-> Hi "Bj�rn,
+On Sat, 2021-02-20 at 04:49 +0100, Ilya Leoshkevich wrote:
+> On the kernel side, introduce a new btf_kind_operations. It is
+> similar to that of BTF_KIND_INT, however, it does not need to
+> handle encodings and bit offsets. Do not implement printing, since
+> the kernel does not know how to format floating-point values.
 > 
-> I love your patch! Yet something to improve:
-> 
-> [auto build test ERROR on 7b1e385c9a488de9291eaaa412146d3972e9dec5]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Bj-rn-T-pel/Optimize-bpf_redirect_map-xdp_do_redirect/20210220-233623
-> base:   7b1e385c9a488de9291eaaa412146d3972e9dec5
-> config: s390-randconfig-m031-20210221 (attached as .config)
-> compiler: s390-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          # https://github.com/0day-ci/linux/commit/3995bc7a37a3a7975c4a04f668408d5aa31cbe37
->          git remote add linux-review https://github.com/0day-ci/linux
->          git fetch --no-tags linux-review Bj-rn-T-pel/Optimize-bpf_redirect_map-xdp_do_redirect/20210220-233623
->          git checkout 3995bc7a37a3a7975c4a04f668408d5aa31cbe37
->          # save the attached .config to linux build tree
->          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=s390
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->     s390-linux-ld: kernel/bpf/verifier.o: in function `fixup_bpf_calls':
->>> verifier.c:(.text+0xa4fc): undefined reference to `get_xdp_redirect_func'
->
-
-This is triggered when CONFIG_NET is not set. For some reason I thought
-that BPF implied NET, but this was wrong. I'll fix this in v3.
-
-
-Bj�rn
-
-
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 > ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>  kernel/bpf/btf.c | 77
+> ++++++++++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 75 insertions(+), 2 deletions(-)
 > 
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 2efeb5f4b343..813c2bfe284f 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+
+[...]
+
+> +static int btf_float_check_member(struct btf_verifier_env *env,
+> +                                 const struct btf_type *struct_type,
+> +                                 const struct btf_member *member,
+> +                                 const struct btf_type *member_type)
+> +{
+> +       u64 start_offset_bytes;
+> +       u64 end_offset_bytes;
+> +       u64 align_bytes;
+> +       u64 align_bits;
+> +
+> +       align_bytes = min_t(u64, sizeof(void *), member_type->size);
+> +       align_bits = align_bytes * BITS_PER_BYTE;
+> +       if (member->offset % align_bits) {
+
+The kernel test robot's link error is most likely due to this line.
+I should be using do_div here.
+
+[...]
+
+
