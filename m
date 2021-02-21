@@ -2,192 +2,184 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C21E32078A
-	for <lists+bpf@lfdr.de>; Sat, 20 Feb 2021 23:51:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B84D33207F6
+	for <lists+bpf@lfdr.de>; Sun, 21 Feb 2021 02:30:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229842AbhBTWvW (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 20 Feb 2021 17:51:22 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:62386 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229804AbhBTWvV (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 20 Feb 2021 17:51:21 -0500
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11KMhv9H022777;
-        Sat, 20 Feb 2021 14:50:25 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=wM/uAyYugoTvIBSJOJtuGIiVNAe1WZ0rb5u2w8BBki0=;
- b=A4edRVcBzZpRYYtEfjWaeIi9BMkt/66BRB3EJGel5l+ybXIeSjH3uhn+SAiY0FijNjR+
- eod7PWdo82xJULqFwlewjc36BFQ0zgZlZU+pvpbHZT9+KttXOliRnmyQCjo7FqHrkLe/
- pDnDY5l90y8uzBrtle13csk6JtDaSqHInnQ= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 36u14psw2x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sat, 20 Feb 2021 14:50:25 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Sat, 20 Feb 2021 14:50:24 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KOd3IUOlKEp+BBI6mtT6NU95Q+4JFQob39hT7dAU4czVnJg3/CCp2jHD5a/9z+HJJPnSlU8E7Wz9upn7g03m2QwYWvv3MAqxmQV6zrSLeyy9/69SnQ6DcuYgLDB76wzKCMmyPB1/sXGitcLHSLkdF4ZvuTRWEsRGT44WNEOypA8SWdR6aLxLPaFZFAcNOclKyHb6MNDuy3d+WtwNick9/38Hs7BrQB2mMKhU4t0sFyEVckNj/Q0EIJIiCqeBygHaMEam6bOm3FCX7pouj4ShSba84LmwSLDgoQfL1P5DlJUVolcl4m78HUFG3sl+KgmCOu+/zszOzp1cMj/VHTeAfQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wM/uAyYugoTvIBSJOJtuGIiVNAe1WZ0rb5u2w8BBki0=;
- b=Pg+oKQH+qMm1QSkNC29WX3rbXD1AosZtFZ3pkCPdPhdIfzoBPq28BzDb6a++ldnUjiQ4oRgh+DUz7okDckV+Jind3hsCIhZsFSiM2/PiBoU+283gbUY0yHsna4IveFUOJP9IU1HQj/gni7OML4tNsEZlX4b5KnKHRA1z1UONWEorzN/rpHOrv/rjx/NHJ1yZBL5gfSu/kjFTzvLylamSrvbUwNy6WP550r/GcKX/MQ6+JIG6zi5Rcm8+yoVYHpD66KVFPSGLOnqrL+/uNxNmi1025vIqEaTR3/gKw9zKJL7VdqGfkbtmiB927UDOqSAMxfKWeZgysP9fVAgGTsT4gQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by BYAPR15MB2773.namprd15.prod.outlook.com (2603:10b6:a03:150::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25; Sat, 20 Feb
- 2021 22:50:22 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::c585:b877:45fe:4e3f]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::c585:b877:45fe:4e3f%7]) with mapi id 15.20.3846.042; Sat, 20 Feb 2021
- 22:50:22 +0000
-Date:   Sat, 20 Feb 2021 14:50:18 -0800
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Grant Seltzer Richman <grantseltzer@gmail.com>
-CC:     <andrii@kernel.org>, <daniel@iogearbox.net>,
-        <songliubraving@fb.com>, <john.fastabend@gmail.com>,
-        <kpsingh@kernel.org>, <bpf@vger.kernel.org>
-Subject: Re: [PATCH] add CONFIG_DEBUG_INFO_BTF check to bpftool feature
- command
-Message-ID: <20210220225018.oezm23abceggcy4f@kafai-mbp>
-References: <20210219222135.62118-1-grantseltzer@gmail.com>
- <20210219223639.ml445wsp5otz5cqs@kafai-mbp.dhcp.thefacebook.com>
- <CAO658oUwgX-aVutTn+3f=gZ5ZfdTuHUakAetfpXo_LN=Va=SyA@mail.gmail.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <CAO658oUwgX-aVutTn+3f=gZ5ZfdTuHUakAetfpXo_LN=Va=SyA@mail.gmail.com>
-X-Originating-IP: [2620:10d:c090:400::5:1418]
-X-ClientProxiedBy: MW4PR04CA0313.namprd04.prod.outlook.com
- (2603:10b6:303:82::18) To BY5PR15MB3571.namprd15.prod.outlook.com
- (2603:10b6:a03:1f6::32)
+        id S229920AbhBUB3E (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 20 Feb 2021 20:29:04 -0500
+Received: from mail-io1-f70.google.com ([209.85.166.70]:41564 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229847AbhBUB3B (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 20 Feb 2021 20:29:01 -0500
+Received: by mail-io1-f70.google.com with SMTP id l16so6666200ion.8
+        for <bpf@vger.kernel.org>; Sat, 20 Feb 2021 17:28:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=ldGbwdnoWRyU8djcYy/N9OqGQb/IL1w1x4/+F3IbWx8=;
+        b=FonuHTUI66+1Yc5jXr2mw8kJVgBRcJHqnU5Wuf6NSX1JYln6rlJaVfPpuX2xKESaTO
+         AWfZk/akS5aTZrr8dPPRRNOoT00bLIepx5A5rP/uycC/i222vx4cAjIa/K7EqqbBdT/V
+         b9p4s6TL3MG1z17iwqWjuJJxdp8mrExHvdpb46O7l7Cun/yddb2nnppbCEk0ZQTkqp3r
+         zO0a8FMJd+tL4NGDXsf6QeQOpYwO96llKeU4FnLl+2p0uEJf2kSF+54mvI7h+aL54/xG
+         Lkrc99/f3jzg75gKJL9XIwS7UmH1IR88ao0HsxTz1mV8Uu5ekOdwGHJ67b7YUa7AXqGH
+         V8zg==
+X-Gm-Message-State: AOAM533Th95z0dwUjXUWjhCL2NaIiJ1OK3u0IMTO1jahyx/xehp3TaoN
+        0m7DHOwUYWfyshsbzZrh0KGXo90M2+qZ8xghdXbrET7MyEQm
+X-Google-Smtp-Source: ABdhPJxsTxKRhsAovjmY87uaBHL7dIAaW/yMqjoiphV8RllEhcZ9AGm7d3UHee5WqMV1jJWoD2gNa2WUXw1giwM2LFMzqV3o9Fmc
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp (2620:10d:c090:400::5:1418) by MW4PR04CA0313.namprd04.prod.outlook.com (2603:10b6:303:82::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27 via Frontend Transport; Sat, 20 Feb 2021 22:50:21 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1f7fe5a0-1d9a-437e-2204-08d8d5f1e771
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2773:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB277351BF73A3E90944B51A08D5839@BYAPR15MB2773.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Z7EJc518UKjvSA5Tkkxakel3iVvr6ES9n+sNej4YPBifE3sWfv1x7o3G4AeyzMKZMsnhz6q81L/ByBOPiZJAVmaemonNRoYoRtvDpbVKvuUg2NlJxq7iEU6wTZBmaIRJ4glmkFcVawgdZBZcOqMkoGeowAcr+yPuwsYAroZOKGncAAs6cTIoLJsRJ8/Lxi6qOs9J+tU94DlxkPdEIFVngI2ZE0ew3dy6LwM8+rcPKwZevq5LSKiSi1ToyuCenySBvrfXEIBZZbNMhSQMpNil9kSvRnrbh8pGKEAmBzN/oW2qXAQnRplvNZ/VO7O1046pj6Rtn1pfoEL6b2Nsp6VSku5T5rh152kTytOa1TOSo/JNc6f+Ywdsuhmy21Y03HeNZgyvkIALfH1EbqbPv2XHFP3hQSNTppZdYurYLvOCBpMOd3ANeXrHZj2Y4UDYrfuANgryqBi3tUtgvQ/8dzU9RMdMcN7bj92Yo+pVyQoUWnGPxLbaHHzOCofq7+qmG6WEBUZz0unZH4Nz9rUoSVSPDQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(376002)(346002)(396003)(366004)(136003)(1076003)(52116002)(186003)(16526019)(8936002)(4326008)(2906002)(53546011)(316002)(8676002)(6496006)(83380400001)(478600001)(6916009)(55016002)(66476007)(66556008)(86362001)(6666004)(66946007)(33716001)(9686003)(5660300002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?BTpsVQwRbVWIuyp/e0jW9kmG5WIe+sqopziPBPZua6Uc7r8tQvCr80077Rx2?=
- =?us-ascii?Q?nmHx5mQAm+BQazEdUbkxeUqEmIVtg4h76HOSSnMQXRjIPIU3Cvz7OoNP7l7k?=
- =?us-ascii?Q?bxMkZD4kH/UTmdCT9Qf/KYCr8RmEegEOIBi9QKEKZd2atz3ps+l4rZqI46pW?=
- =?us-ascii?Q?ZBu25AzGcKyDvuTOrEeDxr2ZqwmJCp6ZwRibgDbofmczhKEE3WakKaCLQ9iW?=
- =?us-ascii?Q?MT1V/u0cUIUwrQ4OiO9SZYBwmzfYlitSglTHYFebVMhwe300qq5iAtIucswG?=
- =?us-ascii?Q?Eg7+9dK/J9ze/iUoq1KkyoWJYq2+tWfVNrZAiBxtddSYv9iW1LsNCrkAgMUY?=
- =?us-ascii?Q?sEayjAX8njEkodAoGFnCfqSaJael0LZY5l0vZLhYf/jZ0Rz0vUa7tgQw6/0l?=
- =?us-ascii?Q?XxUPYi2GOP8CAEsPto168m44jT+YL6alZYSP2CVnLqzmBUrb3963eJU7k54O?=
- =?us-ascii?Q?Q2968OkW0YA0rzBqgGbkGxcCd/89ynPaYHMMjUoTO/syit0Bf7LA4BluGTRK?=
- =?us-ascii?Q?dj9Q7biZf5q15M3FkMrYekX4M8ExC/h+I7SUeACCw5WHizaUE6szS87SZduk?=
- =?us-ascii?Q?lS40dVit03X+vs1Hka9pwcI6e/nWWx+qncGxw7pxmbx1MBmijrF2k5htwuQp?=
- =?us-ascii?Q?rnrbneV1Lg91IPh4Wkn5nsGKINHYRYf6sbdDSRZqOAF1SRliwUlnjkxntrrj?=
- =?us-ascii?Q?qZxLshhH5GZsBiR5OWWGmtVf8gn4KqHhfd6uxu05Fk+vWwdYPkit8h9wSklT?=
- =?us-ascii?Q?52YqClS6/jlXNccJLtvLeQWOYUw4PYEVec4CLGJ0OBa23Nsmo4QukU0khyKC?=
- =?us-ascii?Q?i2rVOtwBNnncoA+Z/xR71ulbEGdQfsjCeKHypQM84U6BCfBCRg2UKR2huYDW?=
- =?us-ascii?Q?dCTC2Ut1/nAcfAqXWHY9sXVTkPpd0V2OtClPyPrEGWV76XdSiakGSw/9TR3j?=
- =?us-ascii?Q?jE8L7V8zmArNsRQcjEQilc8QFQatsIdFX09lS2y4DrjZfdwbRcIStF8MJ2hY?=
- =?us-ascii?Q?zsWz2izsZmKZcVErJsYZZ+miIsWyUET1gwpn3uVZ0ixXk78BnQd2RRc4pj43?=
- =?us-ascii?Q?pKhApFGiJU9yHoipa3gu0ygqK5V1KcU2l+buHkKdXb2coLjOgoMcd4yMj3oz?=
- =?us-ascii?Q?tAiLAX8CpmcspuSjA1gRPkTyoQyre/y2xg9SQZK08CgAQGnI4pOrfH/CnYBv?=
- =?us-ascii?Q?4rhPvfqV4ziH/22EcaGRNfQRZstg+2THIKUrcgGBEbI7GV8NjTw6/r1UpEFi?=
- =?us-ascii?Q?URuwajddczWfosehO9pOfeqRe7MxHuK3jcwR2bNydz1HT1OR1HSasgtyFO6y?=
- =?us-ascii?Q?nCT8d86j8LdY0s1x5zwLQuVDq2vBD2UWuwVPxFv05KcicA=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1f7fe5a0-1d9a-437e-2204-08d8d5f1e771
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2021 22:50:22.2189
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7PW7Jd+Q10XQx2dGDR+RN4/35CCe7JbyYHwJQkf9Oo6N4Qb9YeqlnIoXWR//r3EW
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2773
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-20_03:2021-02-18,2021-02-20 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 adultscore=0
- malwarescore=0 bulkscore=0 spamscore=0 suspectscore=0 priorityscore=1501
- phishscore=0 impostorscore=0 clxscore=1015 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102200210
-X-FB-Internal: deliver
+X-Received: by 2002:a6b:b24e:: with SMTP id b75mr10066746iof.108.1613870900093;
+ Sat, 20 Feb 2021 17:28:20 -0800 (PST)
+Date:   Sat, 20 Feb 2021 17:28:20 -0800
+In-Reply-To: <00000000000058dc4205b40f4dbf@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b6a82c05bbce99d1@google.com>
+Subject: Re: KASAN: use-after-free Read in blk_update_request
+From:   syzbot <syzbot+a3f809f70c0f239cda46@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, axboe@kernel.dk,
+        bpf@vger.kernel.org, daniel@iogearbox.net,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
+        kpsingh@kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 05:43:00PM -0500, Grant Seltzer Richman wrote:
-> This adds the CONFIG_DEBUG_INFO_BTF kernel compile option to output of
-> the bpftool feature command. This is relevant for developers that want
-> to use libbpf to account for data structure definition differences
-> between kernels.
-> 
-> Signed-off-by: grantseltzer <grantseltzer@gmail.com>
-> ---
->  tools/bpf/bpftool/feature.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
-> index 359960a8f..34343e7fa 100644
-> --- a/tools/bpf/bpftool/feature.c
-> +++ b/tools/bpf/bpftool/feature.c
-> @@ -336,6 +336,8 @@ static void probe_kernel_image_config(const char
-> *define_prefix)
->                 { "CONFIG_BPF_JIT", },
->                 /* Avoid compiling eBPF interpreter (use JIT only) */
->                 { "CONFIG_BPF_JIT_ALWAYS_ON", },
-> +               /* Enable using BTF debug information */
-> +               { "CONFIG_DEBUG_INFO_BTF", },
-> 
->                 /* cgroups */
->                 { "CONFIG_CGROUPS", },
-> --
-> 2.29.2
-> 
-> On Fri, Feb 19, 2021 at 5:36 PM Martin KaFai Lau <kafai@fb.com> wrote:
-> >
-> > There is no description.  Please provide a commit message.
-> >
-> > On Fri, Feb 19, 2021 at 10:21:35PM +0000, grantseltzer wrote:
-> > > Signed-off-by: grantseltzer <grantseltzer@gmail.com>
-> > > ---
-> > >  tools/bpf/bpftool/feature.c | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > >
-> > > diff --git a/tools/bpf/bpftool/feature.c b/tools/bpf/bpftool/feature.c
-> > > index 359960a8f..34343e7fa 100644
-> > > --- a/tools/bpf/bpftool/feature.c
-> > > +++ b/tools/bpf/bpftool/feature.c
-> > > @@ -336,6 +336,8 @@ static void probe_kernel_image_config(const char *define_prefix)
-> > >               { "CONFIG_BPF_JIT", },
-> > >               /* Avoid compiling eBPF interpreter (use JIT only) */
-> > >               { "CONFIG_BPF_JIT_ALWAYS_ON", },
-> > > +             /* Enable using BTF debug information */
-> > > +             { "CONFIG_DEBUG_INFO_BTF", },
-> > >
-> > >               /* cgroups */
-> > >               { "CONFIG_CGROUPS", },
-I don't think this old reference "> >" part can be applied.
-Please resubmit a clean patch instead of replying to the
-old one.  Documentation/process/submitting-patches.rst has
-details on the how-tos.
+syzbot has found a reproducer for the following issue on:
 
-It is not a bug fix, so it belongs to bpf-next
-(Documentation/bpf/bpf_devel_QA.rst).
-Please tag it with bpf-next.  The next revision will be v2,
-sample commands would be:
-git format-patch --subject-prefix='PATCH v2 bpf-next' ...
-./scripts/checkpatch.pl ...
-git send-email ...
+HEAD commit:    f40ddce8 Linux 5.11
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1156374ad00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4b919ebed7b4902
+dashboard link: https://syzkaller.appspot.com/bug?extid=a3f809f70c0f239cda46
+compiler:       Debian clang version 11.0.1-2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=143ee67ad00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1585d40cd00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a3f809f70c0f239cda46@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: use-after-free in debug_spin_unlock kernel/locking/spinlock_debug.c:97 [inline]
+BUG: KASAN: use-after-free in do_raw_spin_unlock+0x481/0x8a0 kernel/locking/spinlock_debug.c:138
+Read of size 4 at addr ffff888020c03154 by task ksoftirqd/0/12
+
+CPU: 0 PID: 12 Comm: ksoftirqd/0 Not tainted 5.11.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x137/0x1be lib/dump_stack.c:120
+ print_address_description+0x5f/0x3a0 mm/kasan/report.c:230
+ __kasan_report mm/kasan/report.c:396 [inline]
+ kasan_report+0x15e/0x200 mm/kasan/report.c:413
+ debug_spin_unlock kernel/locking/spinlock_debug.c:97 [inline]
+ do_raw_spin_unlock+0x481/0x8a0 kernel/locking/spinlock_debug.c:138
+ __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:159 [inline]
+ _raw_spin_unlock_irqrestore+0x20/0x60 kernel/locking/spinlock.c:191
+ spin_unlock_irqrestore include/linux/spinlock.h:409 [inline]
+ __wake_up_common_lock kernel/sched/wait.c:140 [inline]
+ __wake_up+0xe2/0x140 kernel/sched/wait.c:157
+ req_bio_endio block/blk-core.c:264 [inline]
+ blk_update_request+0x7f7/0x14f0 block/blk-core.c:1462
+ blk_mq_end_request+0x39/0x70 block/blk-mq.c:564
+ blk_done_softirq+0x2fd/0x380 block/blk-mq.c:588
+ __do_softirq+0x318/0x714 kernel/softirq.c:343
+ run_ksoftirqd+0x63/0xa0 kernel/softirq.c:650
+ smpboot_thread_fn+0x572/0x970 kernel/smpboot.c:165
+ kthread+0x39a/0x3c0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+Allocated by task 8906:
+ kasan_save_stack mm/kasan/common.c:38 [inline]
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:401 [inline]
+ ____kasan_kmalloc+0xbd/0xf0 mm/kasan/common.c:429
+ kasan_kmalloc include/linux/kasan.h:219 [inline]
+ kmem_cache_alloc_trace+0x200/0x300 mm/slub.c:2919
+ kmalloc include/linux/slab.h:552 [inline]
+ lbmLogInit fs/jfs/jfs_logmgr.c:1829 [inline]
+ lmLogInit+0x26e/0x1530 fs/jfs/jfs_logmgr.c:1278
+ open_inline_log fs/jfs/jfs_logmgr.c:1183 [inline]
+ lmLogOpen+0x4c6/0xeb0 fs/jfs/jfs_logmgr.c:1077
+ jfs_mount_rw+0x91/0x4a0 fs/jfs/jfs_mount.c:259
+ jfs_fill_super+0x57e/0x960 fs/jfs/super.c:571
+ mount_bdev+0x26c/0x3a0 fs/super.c:1366
+ legacy_get_tree+0xea/0x180 fs/fs_context.c:592
+ vfs_get_tree+0x86/0x270 fs/super.c:1496
+ do_new_mount fs/namespace.c:2881 [inline]
+ path_mount+0x17ad/0x2a00 fs/namespace.c:3211
+ do_mount fs/namespace.c:3224 [inline]
+ __do_sys_mount fs/namespace.c:3432 [inline]
+ __se_sys_mount+0x28c/0x320 fs/namespace.c:3409
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 8906:
+ kasan_save_stack mm/kasan/common.c:38 [inline]
+ kasan_set_track+0x3d/0x70 mm/kasan/common.c:46
+ kasan_set_free_info+0x1f/0x40 mm/kasan/generic.c:356
+ ____kasan_slab_free+0xe2/0x110 mm/kasan/common.c:362
+ kasan_slab_free include/linux/kasan.h:192 [inline]
+ slab_free_hook mm/slub.c:1547 [inline]
+ slab_free_freelist_hook+0xd6/0x1a0 mm/slub.c:1580
+ slab_free mm/slub.c:3143 [inline]
+ kfree+0xd1/0x2a0 mm/slub.c:4139
+ lbmLogShutdown fs/jfs/jfs_logmgr.c:1872 [inline]
+ lmLogInit+0xfb5/0x1530 fs/jfs/jfs_logmgr.c:1423
+ open_inline_log fs/jfs/jfs_logmgr.c:1183 [inline]
+ lmLogOpen+0x4c6/0xeb0 fs/jfs/jfs_logmgr.c:1077
+ jfs_mount_rw+0x91/0x4a0 fs/jfs/jfs_mount.c:259
+ jfs_fill_super+0x57e/0x960 fs/jfs/super.c:571
+ mount_bdev+0x26c/0x3a0 fs/super.c:1366
+ legacy_get_tree+0xea/0x180 fs/fs_context.c:592
+ vfs_get_tree+0x86/0x270 fs/super.c:1496
+ do_new_mount fs/namespace.c:2881 [inline]
+ path_mount+0x17ad/0x2a00 fs/namespace.c:3211
+ do_mount fs/namespace.c:3224 [inline]
+ __do_sys_mount fs/namespace.c:3432 [inline]
+ __se_sys_mount+0x28c/0x320 fs/namespace.c:3409
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Last potentially related work creation:
+ kasan_save_stack+0x27/0x50 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xcc/0x100 mm/kasan/generic.c:344
+ insert_work+0x54/0x400 kernel/workqueue.c:1331
+ __queue_work+0x97f/0xcc0 kernel/workqueue.c:1497
+ queue_work_on+0xc1/0x120 kernel/workqueue.c:1524
+ queue_work include/linux/workqueue.h:507 [inline]
+ call_usermodehelper_exec+0x206/0x3d0 kernel/umh.c:433
+ kobject_uevent_env+0x1349/0x1730 lib/kobject_uevent.c:617
+ kobject_synth_uevent+0x368/0x8a0 lib/kobject_uevent.c:208
+ uevent_store+0x47/0x70 drivers/base/bus.c:585
+ kernfs_fop_write_iter+0x3b6/0x510 fs/kernfs/file.c:296
+ call_write_iter include/linux/fs.h:1901 [inline]
+ new_sync_write fs/read_write.c:518 [inline]
+ vfs_write+0x896/0xab0 fs/read_write.c:605
+ ksys_write+0x11b/0x220 fs/read_write.c:658
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff888020c03100
+ which belongs to the cache kmalloc-192 of size 192
+The buggy address is located 84 bytes inside of
+ 192-byte region [ffff888020c03100, ffff888020c031c0)
+The buggy address belongs to the page:
+page:000000004af063c2 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x20c03
+flags: 0xfff00000000200(slab)
+raw: 00fff00000000200 ffffea000083b4c0 0000000300000003 ffff888011041500
+raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff888020c03000: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888020c03080: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+>ffff888020c03100: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                                 ^
+ ffff888020c03180: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+ ffff888020c03200: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
