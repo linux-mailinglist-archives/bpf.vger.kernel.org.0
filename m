@@ -2,90 +2,112 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BA99320D58
-	for <lists+bpf@lfdr.de>; Sun, 21 Feb 2021 21:00:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E0DA320D67
+	for <lists+bpf@lfdr.de>; Sun, 21 Feb 2021 21:11:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230450AbhBUT6W (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 21 Feb 2021 14:58:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47696 "EHLO
+        id S230174AbhBUUKn (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 21 Feb 2021 15:10:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230442AbhBUT6V (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 21 Feb 2021 14:58:21 -0500
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C93D9C061574
-        for <bpf@vger.kernel.org>; Sun, 21 Feb 2021 11:57:39 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id y7so50019401lji.7
-        for <bpf@vger.kernel.org>; Sun, 21 Feb 2021 11:57:39 -0800 (PST)
+        with ESMTP id S229761AbhBUUKn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 21 Feb 2021 15:10:43 -0500
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9ABFC061574;
+        Sun, 21 Feb 2021 12:10:01 -0800 (PST)
+Received: by mail-lj1-x22c.google.com with SMTP id r11so7544003ljk.9;
+        Sun, 21 Feb 2021 12:10:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ubique-spb-ru.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=4kHfuexVSmHwRWMhRHwyfy7csnqh7U6km9QFGM4V9cs=;
-        b=E+Snhg723PuSgqDWkdGOWFOXk2TAhRyG26hMa9N8WJQggvlQxMH7JJ5on1/smgmzS7
-         XrJYcdCEmrnCv3fUbF6bbN561FjHFrKxDqcrccc1UIqf3bUY5fr+hgZwsGILGwomVN9c
-         pp/rrfw/zoDyrSUQmSH1jVNvwyYtL3dGZg7bE17cghoNdNdX6qmiXKwnOQQWZn738DVh
-         kVzyFGzBHgCClzBgB2Y249Q/6MJq71ka7wo1gMYCs3TRr00GfL8m6/eJtXYgoL3bAz9M
-         wPe8Dl5RJYFIKphDZh8H0kNYNWAa/qVlKr89Y3ECj2dn6dJZ2Zg+IOJdLQvRN35k8Lez
-         NK1w==
+        bh=YFe5UFssYILqX7KV4LRHLlpTG2gIquz/MxeYOoRxNfA=;
+        b=DaavEhsONevRxSOq+SnH1vIyqBB6YwkUooJbTPlb+vGeuVjOrQM5D8mz0zq6sNM3vk
+         fyxlS1tJgfjHFUYHFT+zh+mmDWbsXldbVbkcxYgODB53p0/vBm/ktMNjHKN5lEbEkKsk
+         RBbxPh0GrrEvFYtpHuuF8qf9MihTk3hIt+Nmids+G3eZH5p5f/GLs1va4ISX+OLPCfE9
+         XxXc3SzRtMV4fpJNfGQBxOoVSGdU1zB6dhF03/ap8lUW7JUJnRR7Hoz6DbC5bbKjGuPm
+         FlXIoE7qtpCrP9S9LODaPanL0OMAoFuio8FC4tBCaU7533b2FEzFWVrnidoFK4EHKMSQ
+         Xy9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=4kHfuexVSmHwRWMhRHwyfy7csnqh7U6km9QFGM4V9cs=;
-        b=dQGzredsTqPzCA5TH2iAdN6jw03IXRGLJHUaLbZVJwieYjB9C0CVbS6lmR3qY2m+ff
-         DLEdNWN8BWmjAscnI+dbFsjh1jyywzlCqisXcyRK/Cc7IP1NYQFBFj8r/FahimdmFLJs
-         kXe3/09yX+gp0aRqoxNXieEE5mh9E2Cx0dHRSvKzp734Ca863hRvyQn4JsCQo73d/FMh
-         mcadbWzJLTnJpksiH3AluTpK8wgLQjES/kInnLgRT2grrMJl94rMO2MEMT28SiOIyBm8
-         jDi7JAG4EnTOe1iTQE8lVg7oaj2/UxrGpdAHtKBZZp+OFv3GzUvOyjOc3NNneQEk+yIR
-         +kAw==
-X-Gm-Message-State: AOAM533HULWjWKKrbwnSjsZoUJkjsRp0sLr4Z6FxaWPzsQmv1MRfopDw
-        +pGRJb8ZojhyXSaZDrqdzQjcz1nHDug4Cm43KRQ=
-X-Google-Smtp-Source: ABdhPJz4Ncrdn2qbqDAJmzHmVl5vH3cJNd5n97QIPUkl4eHp3jyUVh7SEaq/ZmNPLB3BDfXP2XAa0A==
-X-Received: by 2002:a19:cce:: with SMTP id 197mr9476990lfm.54.1613937458099;
-        Sun, 21 Feb 2021 11:57:38 -0800 (PST)
-Received: from localhost (nat-79-173-88-8.gtn.ru. [79.173.88.8])
-        by smtp.gmail.com with ESMTPSA id q7sm1658676lfm.149.2021.02.21.11.57.37
+        bh=YFe5UFssYILqX7KV4LRHLlpTG2gIquz/MxeYOoRxNfA=;
+        b=hUzb33oqtmIMXpw0h1mlGpx4SgX+Lve1opFogYaOCqRQVhPwhnAm5Spb0Bt6iYPP23
+         ZZ4nxkEuhqhSndk+arNnPWGTetQZxRTIxT4YQrfvaOyXRrs3GLhoCXUuYiankGsvQYOa
+         /FHhTtP5+8a1bXb1GxUrRJJFX4krfaRSNj5M/5aVWsFoPsUakaSqjF8eZmAZ3VOVPgWF
+         yVsP56YeKRyyicxVdeS5mRXUn0HqB6iEQ1gMiuhCPs+f57mgURwh9mj/LtsOPlooa3pz
+         evji7thK7EmKGSZOvFQn7BiRZwupN3s8c442ViUw9GzqIT4BdieT4TxGwTkCaHGVAO5P
+         GeJA==
+X-Gm-Message-State: AOAM5309l6ZvCiWkFe+Z0zFmLgz8djLCyupHweudPoyjDLzy9O/WFdUM
+        d4Kth5Vswhjv1giqpX6iNak=
+X-Google-Smtp-Source: ABdhPJyNQx65fSRsexrywPAAeOYLUhIEfIugMyqNiE9uCOZSJ9Yu89ZxrTqEgUPiI09zqDJ9RBfKaQ==
+X-Received: by 2002:a2e:858f:: with SMTP id b15mr12701464lji.316.1613938200174;
+        Sun, 21 Feb 2021 12:10:00 -0800 (PST)
+Received: from btopel-mobl.ger.intel.com (c213-102-90-208.bredband.comhem.se. [213.102.90.208])
+        by smtp.gmail.com with ESMTPSA id q26sm1657823lfb.86.2021.02.21.12.09.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Feb 2021 11:57:37 -0800 (PST)
-From:   Dmitrii Banshchikov <me@ubique.spb.ru>
-To:     bpf@vger.kernel.org
-Cc:     Dmitrii Banshchikov <me@ubique.spb.ru>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@chromium.org, rdna@fb.com
-Subject: [PATCH bpf-next] bpf: Drop imprecise log message
-Date:   Sun, 21 Feb 2021 23:57:29 +0400
-Message-Id: <20210221195729.92278-1-me@ubique.spb.ru>
-X-Mailer: git-send-email 2.25.1
+        Sun, 21 Feb 2021 12:09:59 -0800 (PST)
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
+        bjorn.topel@intel.com, maciej.fijalkowski@intel.com,
+        hawk@kernel.org, toke@redhat.com, magnus.karlsson@intel.com,
+        john.fastabend@gmail.com, kuba@kernel.org, davem@davemloft.net
+Subject: [PATCH bpf-next v3 0/2] Optimize bpf_redirect_map()/xdp_do_redirect()
+Date:   Sun, 21 Feb 2021 21:09:52 +0100
+Message-Id: <20210221200954.164125-1-bjorn.topel@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-After 4ddb74165ae5 it is possible for global function to have a pointer
-argument that points to something different than struct. Drop the
-irrelevant log message and keep the logic same.
+Hi XDP-folks,
 
-Fixes: 4ddb74165ae5 ("bpf: Extract nullable reg type conversion into a helper function")
-Signed-off-by: Dmitrii Banshchikov <me@ubique.spb.ru>
----
- kernel/bpf/btf.c | 2 --
- 1 file changed, 2 deletions(-)
+This two patch series contain two optimizations for the
+bpf_redirect_map() helper and the xdp_do_redirect() function.
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 2efeb5f4b343..b1a76fe046cb 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -4321,8 +4321,6 @@ btf_get_prog_ctx_type(struct bpf_verifier_log *log, struct btf *btf,
- 		 * is not supported yet.
- 		 * BPF_PROG_TYPE_RAW_TRACEPOINT is fine.
- 		 */
--		if (log->level & BPF_LOG_LEVEL)
--			bpf_log(log, "arg#%d type is not a struct\n", arg);
- 		return NULL;
- 	}
- 	tname = btf_name_by_offset(btf, t->name_off);
+The bpf_redirect_map() optimization is about avoiding the map lookup
+dispatching. Instead of having a switch-statement and selecting the
+correct lookup function, we let the verifier patch the
+bpf_redirect_map() call to a specific lookup function. This way the
+run-time lookup is avoided.
+
+The xdp_do_redirect() patch restructures the code, so that the map
+pointer indirection can be avoided.
+
+Performance-wise I got 3% improvement for XSKMAP
+(sample:xdpsock/rx-drop), and 4% (sample:xdp_redirect_map) on my
+machine.
+
+More details in each commit. Changes since the RFC is outlined in each
+commit.
+
+
+Cheers,
+Björn
+
+
+Björn Töpel (2):
+  bpf, xdp: per-map bpf_redirect_map functions for XDP
+  bpf, xdp: restructure redirect actions
+
+ include/linux/bpf.h        |  21 ++--
+ include/linux/filter.h     |  20 +++-
+ include/net/xdp_sock.h     |   6 +-
+ include/trace/events/xdp.h |  66 +++++++-----
+ kernel/bpf/cpumap.c        |   3 +-
+ kernel/bpf/devmap.c        |   5 +-
+ kernel/bpf/verifier.c      |  17 ++-
+ net/core/filter.c          | 216 ++++++++++++++++++-------------------
+ net/xdp/xskmap.c           |   1 -
+ 9 files changed, 195 insertions(+), 160 deletions(-)
+
+
+base-commit: 7b1e385c9a488de9291eaaa412146d3972e9dec5
 -- 
-2.25.1
+2.27.0
 
