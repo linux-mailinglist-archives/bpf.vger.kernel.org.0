@@ -2,150 +2,286 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D92F9320FE5
-	for <lists+bpf@lfdr.de>; Mon, 22 Feb 2021 04:57:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2378E321124
+	for <lists+bpf@lfdr.de>; Mon, 22 Feb 2021 08:09:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbhBVD5W (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 21 Feb 2021 22:57:22 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:53572 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229889AbhBVD5W (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 21 Feb 2021 22:57:22 -0500
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11M3s9JW012321;
-        Sun, 21 Feb 2021 19:55:24 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=FTcZi3jl1A5QaqyOKEp9oPNIux3a41vReEHNjU88zsc=;
- b=R6qQLpgRVzNPVibMISzSiw6F7CNvfm6IRfkZAMKrhyWU6EbdRvgAY9cpE6TdezAcxYQi
- vytnMG8xJOW6oRQVMx+5NMUCy1EwhdnF8TXew0Cm9dvpOhbwyzE8u/vChfnWJfiEMM45
- AHMzSVNdj8jMw7WYKOj45fXsDAFFjx/RRkg= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 36uk0mty2u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sun, 21 Feb 2021 19:55:24 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Sun, 21 Feb 2021 19:55:22 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hkx9rfCQfr8PF66rnqothGLSrQQZX9cWHEry5JI8YkitmjY+RTRtUXbFIOVOVg/eBMgITCO35xwp/uEtjV7tfIxK57Of4e/CWmdp6wAGMFfkc78QqGEpZAmUXOR2Lh54X7hi62fZb4L7MKQ765kx++DV4P8YayHrk05ngGQSP+XfWXPGzj2LKETxBMq2NMt0N8wVvJpngZB1jHchIO5bo5nZo/R7+Kn4heoMPyIAtX4vUKDUwpRDqzdsPNH4dKIbJjdnIxABjbzOQOixOEooLxWkDQCEQKWEiwoobYSzlEuxq2AmTWlxPr5hvrEJ2doTYWzXcJd+CNPTkuGJDkuIVg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FTcZi3jl1A5QaqyOKEp9oPNIux3a41vReEHNjU88zsc=;
- b=lVMFNZscZ2rgeWC5mEvVZHbGVB0QxX1lzEfVcixXxlJ88pPY52u9/VKJjdpuu4yRtKPrK+RT13cTSW9Lx7ndlPisE81RsajW0KPK8qvc8ro2t45biGm1ewSsTcj2cGjTc/T54FmBdSVuGwpqmrZESSZCSmN3JqvcLxPOtcGZ73lQLv/Iw2Dg7q9L/C7pDWmln4mdY0pgKidrNtjBav8JzBOORvr6npGUd1yE+2VwSEgzlq1nka2LLYTiD5YVnwqcTkvil1JBOgoF+2xPYKAOn7Lj1TX5Q8KwRBsB7auFOFIu3HTlS7xwWUDfnqdgIaOW5dMzrUlNR0xm5BCyGc4nZA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: linux.ibm.com; dkim=none (message not signed)
- header.d=none;linux.ibm.com; dmarc=none action=none header.from=fb.com;
-Received: from DM5PR1501MB2055.namprd15.prod.outlook.com (2603:10b6:4:a1::13)
- by DM5PR15MB1577.namprd15.prod.outlook.com (2603:10b6:3:ca::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.29; Mon, 22 Feb
- 2021 03:55:21 +0000
-Received: from DM5PR1501MB2055.namprd15.prod.outlook.com
- ([fe80::4877:32f3:c845:d6d3]) by DM5PR1501MB2055.namprd15.prod.outlook.com
- ([fe80::4877:32f3:c845:d6d3%3]) with mapi id 15.20.3846.042; Mon, 22 Feb 2021
- 03:55:21 +0000
-Subject: Re: [PATCH v3 bpf-next 6/6] bpf: Document BTF_KIND_FLOAT in btf.rst
-To:     Ilya Leoshkevich <iii@linux.ibm.com>,
+        id S229852AbhBVHIx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Feb 2021 02:08:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29207 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229518AbhBVHIw (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 22 Feb 2021 02:08:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613977644;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=7yxjabaG87TNMDB9yX/+cMFRonyop4lSGm45nCTp52s=;
+        b=MIsN3t8odV8Z0NXwCpkB7MEuj9LGHnYB9b4b9h9ecHH72nYoyRm4eamf3+4J5TV6c/wcuo
+        LD8Zt0SS/d+J5oEYpZ2e++BAB5ZYbkkXcuNH8hV7kGyGHTvoxMxPgaLheFOps2XenoMaHa
+        qrNJlQga5nKLw/EMyKAKTMB7n72bHjM=
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
+ [209.85.216.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-299-0Lh7b2raO9SzZFeeLExWhg-1; Mon, 22 Feb 2021 02:07:22 -0500
+X-MC-Unique: 0Lh7b2raO9SzZFeeLExWhg-1
+Received: by mail-pj1-f70.google.com with SMTP id e11so8664474pjj.8
+        for <bpf@vger.kernel.org>; Sun, 21 Feb 2021 23:07:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7yxjabaG87TNMDB9yX/+cMFRonyop4lSGm45nCTp52s=;
+        b=RmUTfqMRm7MWvEVofZ+7iLLHirUGprsbcVZp+OWIJqaYVq43L/RBlPLJrHPbk/rDFt
+         VQjo4Hvi4i7JHRRAz1vPJAF2yqJq8LU1q4WhoX5kEQDSmzrZ+XxAXYEBzJKSOjlVtFYT
+         ZvH6Ny+bzh5wDU/WBgRwxWdZsb940p6aHI/IGki/A0lg/xN0kXQabhcYZC37Pkquu99Z
+         tvMn5dYgD/81882WhalTpjmgN9K8Ntos4R9qpawwn59nJP8M18SW6OHKmZYoGTJWJnHn
+         ziFYckBk8yr8MQeNXWUicIF3Qbw5zDhadEArqA9QcDehHoGUHC5qlGy3oFYsoPb5k7ue
+         goVw==
+X-Gm-Message-State: AOAM531uhJEIn+HMS+lqhkF1cjb9xcbGnjOKxnjGK5DJ1sD6zYH+8+oG
+        mRcb7YJ+GfTLbu/30F3ZQUvaPaQn7irk1pNxiTVwF9WdmgoULwZ4bu/vsc/oyUFLKbF60y6/0R3
+        1m+M/P5A7TThN
+X-Received: by 2002:a62:1502:0:b029:1ed:81bf:fcce with SMTP id 2-20020a6215020000b02901ed81bffccemr7209872pfv.54.1613977641205;
+        Sun, 21 Feb 2021 23:07:21 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwL+3nsB87Uq5QRjqDtP9xx1F7ZqFj5EAjQrWSQ/oP3ylnWKPkszqnxqJPuuR+lw6cmsphiRA==
+X-Received: by 2002:a62:1502:0:b029:1ed:81bf:fcce with SMTP id 2-20020a6215020000b02901ed81bffccemr7209837pfv.54.1613977640821;
+        Sun, 21 Feb 2021 23:07:20 -0800 (PST)
+Received: from localhost ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id m18sm7131814pfd.206.2021.02.21.23.07.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Feb 2021 23:07:20 -0800 (PST)
+From:   Coiby Xu <coxu@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     kexec@lists.infradead.org, intel-wired-lan@lists.osuosl.org,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>
-CC:     <bpf@vger.kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-References: <20210220034959.27006-1-iii@linux.ibm.com>
- <20210220034959.27006-7-iii@linux.ibm.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <995c9b8e-2194-61cd-54b0-95c4f8ae0041@fb.com>
-Date:   Sun, 21 Feb 2021 19:55:18 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
-In-Reply-To: <20210220034959.27006-7-iii@linux.ibm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2620:10d:c090:400::5:4afa]
-X-ClientProxiedBy: CO2PR18CA0043.namprd18.prod.outlook.com
- (2603:10b6:104:2::11) To DM5PR1501MB2055.namprd15.prod.outlook.com
- (2603:10b6:4:a1::13)
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        bpf@vger.kernel.org (open list:BPF (Safe dynamic programs and tools))
+Subject: [RFC PATCH 0/4] Reducing memory usage of i40e for kdump
+Date:   Mon, 22 Feb 2021 15:06:57 +0800
+Message-Id: <20210222070701.16416-1-coxu@redhat.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21e1::10b9] (2620:10d:c090:400::5:4afa) by CO2PR18CA0043.namprd18.prod.outlook.com (2603:10b6:104:2::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27 via Frontend Transport; Mon, 22 Feb 2021 03:55:21 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 343205d3-ae0b-4a4f-c97e-08d8d6e5ad63
-X-MS-TrafficTypeDiagnostic: DM5PR15MB1577:
-X-Microsoft-Antispam-PRVS: <DM5PR15MB157794FC99C9C8AC56B7B722D3819@DM5PR15MB1577.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:1060;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: cewUD9GKFa73ZXQjdFTlS8mOUllCeagUllxYCzOgSE/l9DmBA5kyKLzz3SOslJtC03oKHkx1zsbKq5VKAyOrGFQnVoxOu8FBFxHw0YCy5Uh92OtY68VuwjkQn0pkdk601WHegoeMrrZ23GYdyqM81/hDvjpHX9gvE/FiLkcLJFXGfku/LtzxWk77Jrjrh+ZZXWggxRNApHXCdhIGDy4K0FZUNJaSeEgy3ze1WcHrK5H5qCy8xM7auohngFNtm9keAKvuP756LCF5tlTwEjmf3v8VYCTueOAYa7ChYuipXNM55eZGXzsbbtw0RlA7wdHx+waHAGLEQivy/FmiT9R1QjlzSdwLm9mn1ayYH32NRfMRwUH94BdbHuXY413F9SuT6AYwHGvlyVzqWJOtUC5Rs9Vd7I6oGyN3Wt+qPIe+Ii43kfv0d2PaPr04G6Kielvi4JOZaj0ZHKzg9q9xOMViFVTXYGFO3mb2UnL72h6sN5f8spMD/PUhZujWjdKem/ZpBZxcVuHV0dDwpagl+ozjYindDyl8x1w2EsUoBiSwxV+CFnp22doBERa5R7e4hG6s/RTC8+bscueAzIZlF7zV2uIM0VjX5sc6AsD63zFF0qc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR1501MB2055.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(376002)(39860400002)(366004)(346002)(316002)(36756003)(110136005)(558084003)(478600001)(5660300002)(66476007)(66556008)(66946007)(53546011)(6486002)(2616005)(31686004)(8676002)(8936002)(16526019)(52116002)(54906003)(6666004)(4326008)(186003)(2906002)(86362001)(31696002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ZnpqVlRxRnJBWmxTcHQ0NE5XVDA0ZEszZjRNYXo5ZHBqcnI4WGlPZXROUkM1?=
- =?utf-8?B?U0lHMUdWSHRUeTRxcnBUOVN6Y3N3dVlTaTZWT0xEVjVNSUROMlV6TlRaeTBT?=
- =?utf-8?B?NWNScjRmOS9XTmF6M0UzZkVacngydG9EejY5MVdDakhaUkhGMkk3dXRDOFFP?=
- =?utf-8?B?cnIvYXhrczBGZGthNi9LT0swUmsvZEZCcS9OTWF3aUVHaVFEeCtIb1Yyd0gw?=
- =?utf-8?B?SUZpSDgyZ1FHbTRQd0pQc09lSTZnRXVtc2tPTUhNUmxDYjhhdExPeFo3bnRv?=
- =?utf-8?B?dzlGT1o3aUdLVVJySENIVDZWUE5FWWhNajNtT2xYYkRnZ2QwQVlxelV0Umww?=
- =?utf-8?B?UExXQk1rNnFvTDBja2tMV3ZSaXc4dVZsaGlxM3FLZWFzeExCNHlkbmE4UjFp?=
- =?utf-8?B?K2pqVklvcnNCYmM3MG9QVys4Z1RkKzV3Y0pqSE96VVRWQWVOTzZpOURMc0Fr?=
- =?utf-8?B?dWRLa0J6cmliZDdPdHd1Z2wrTVNLNWlubHV4RUsraUMvbVpTcWtvYXY0Q21l?=
- =?utf-8?B?TkdQYzM2ZFZJK2tQRDg4NWZOeWsyOW0vWU9FMmoxWlo1TEt4MWZ5Sk5YajRV?=
- =?utf-8?B?cERjdXJjajNqcjFSbWdJUEVDTGVoMnp0SnAzeUVJL01zQ0R0aVFIQ2plOGNi?=
- =?utf-8?B?Tkg5OFBidUIwbUZpa2Njc3BTUnpvN0FyVmE2alFEN1NGQ0cvUFh3OEFjUUdF?=
- =?utf-8?B?dlZoRmI5WDVhNDh3bjAyRnNGZWsvcC9uVWZodGhBYzUwdXVKU0U4d3VSdjE4?=
- =?utf-8?B?QytyUGlMV2ZEdCs1N2lxYXM5RzZhTmNSUUljN0tVVm9GbEZ5eFh6TVRkWm8y?=
- =?utf-8?B?UTRnSWpTZUZFcW11MysrY2RIeEhldFFiK0dVa3dzUHZKalZQK3N2RiswSC9W?=
- =?utf-8?B?U0xxRTgwb3JkUWhRZkNMcVkybUduT0pRbmFpSSt1UFg2M29CQzFjcnQzZzdj?=
- =?utf-8?B?TnVkM2Y2TlJkU1JvcU1JUnVqUDlCVnNjN3pPT2Y0a1JJYkdKOVdhdnJtTzNw?=
- =?utf-8?B?aW9VQ1ZoOThxMWpjQ29SY3JXMkc2VjJub2hkMm5tWGhlbVNKQXA3K0czd3RX?=
- =?utf-8?B?UU03MXJqVDVUMDMxVkdFd0R6UDgxV1hrU1ZIcStnNTNsR0xma1ptd2gwZk1z?=
- =?utf-8?B?MVBMYU40VWlPdllkck16NkR0aThhQlBGcTNITG5MUkJEMjZQRG5rcE9UcWxl?=
- =?utf-8?B?SlIyeWg1cnF6aGpnTUh6UkZ5bDdPTmN1QjR6TkNHalM2M1pKRExlcGpKU0Vy?=
- =?utf-8?B?RWNRaUZsRmFOalU2YTJRSHg5NE1qblJtdWFFZTdUaEQ4bHVHdGxpUUcrYkFP?=
- =?utf-8?B?VWU3cXN6NFQ1VEVYOHBpaWhOUEZWZnV6RDdWN0ZTaUhkczZtN1lXTXVaUEwx?=
- =?utf-8?B?RXBrUHBFZXV6SUh0bTVsNy9KejUrRjdaZzZxZUJ1NXZPMUE5SlpNSXJpK0dq?=
- =?utf-8?B?TDUxelJTOEkzZTNTTk9RQit5WHVMamhPQVBZWlRNcU9yS1lUREJkUUlSbDc3?=
- =?utf-8?B?dnR4NnlRUGtrREVzQ2JxbS9lV2NibjNzODdqOTNFTEczd1RzOUVvSkRZNVMx?=
- =?utf-8?B?TW0rT0FvRWN0RnJxRTJGWXN3VEZBOW1rMkNUVFVXbXR4RHJMTVFzT2xFczV0?=
- =?utf-8?B?VUlZbU1VeUR0QjMydmgwZ1RmQk04cE44MVduaE8zaDlETUtRcnFhNzlvQXVB?=
- =?utf-8?B?aGRuSzdnVG1Ld0phcHo3RkpQK1E2ZkhMcytoeDYxMkZncEtVR21sN0ZpOHNO?=
- =?utf-8?B?dWJDUmhETnFaNERIWG9adVp0cDZQdnFIa0huUUd0QjdQRTJ2RW52dGV1VkY1?=
- =?utf-8?Q?803r3JUNJ82OnL6tfiYfLVSETpQvpEX7oUuKs=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 343205d3-ae0b-4a4f-c97e-08d8d6e5ad63
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR1501MB2055.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Feb 2021 03:55:21.8567
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Wjcq2R0Ibdos59IrV57XhgYWh4vo29wLLehQvscB+/EDx1PVzkr5Ja6MeglHK3/N
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR15MB1577
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-21_14:2021-02-18,2021-02-21 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 suspectscore=0
- spamscore=0 priorityscore=1501 malwarescore=0 bulkscore=0 phishscore=0
- adultscore=0 clxscore=1015 mlxlogscore=994 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102220032
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+Currently, i40e consumes lots of memory and causes the failure of kdump.
+
+After reducing the allocation of tx/rx/arg/asq ring buffers to the
+minimum, the memory consumption is significantly reduced,
+    - x86_64: 85.1MB to 1.2MB 
+    - POWER9: 15368.5MB to 20.8MB
+
+i40iw consumes even much more memory. For the above x86_64 machine, it
+alone consumes 1513.7MB. So disable registering an i40e client driver
+for a kdump kernel.
+
+After applying this patch set, we can still achieve 100MB+/s network
+speed which I think is limited by the net link (1000Mb/s) and this is 
+sufficient for kdump.
+
+memstrack report for the x86_64 machine
+=======================================
+
+After applying this patch set,
+
+    ======== Report format module_summary: ========
+    Module i40e using 20.8MB (332 pages), peak allocation 20.9MB (335 pages)
+    Module i2c_core using 19.4MB (310 pages), peak allocation 22.8MB (365 pages)
+    ======== Report format module_summary END ========
+    
+    ======== Report format module_top: ========
+    Top stack usage of module i40e:
+      (null) Pages: 332 (peak: 335)
+        system_call_common (0xc00000000000d260) Pages: 267 (peak: 268)
+          system_call_exception (0xc000000000034334) Pages: 267 (peak: 268)
+            __sys_sendmsg (0xc000000000fd727c) Pages: 267 (peak: 268)
+              ___sys_sendmsg (0xc000000000fd22ec) Pages: 267 (peak: 268)
+                sock_sendmsg (0xc000000000fd0a90) Pages: 267 (peak: 268)
+                  netlink_sendmsg (0xc0000000010dbd4c) Pages: 267 (peak: 268)
+                    netlink_unicast (0xc0000000010db948) Pages: 267 (peak: 268)
+                      rtnetlink_rcv (0xc000000001033058) Pages: 267 (peak: 268)
+                        netlink_rcv_skb (0xc0000000010dc534) Pages: 267 (peak: 268)
+                          rtnetlink_rcv_msg (0xc0000000010340fc) Pages: 267 (peak: 268)
+                            rtnl_newlink (0xc000000001038290) Pages: 267 (peak: 268)
+                              __rtnl_newlink (0xc000000001037d64) Pages: 267 (peak: 268)
+                                do_setlink (0xc00000000103626c) Pages: 267 (peak: 268)
+                                  dev_change_flags (0xc00000000101e2fc) Pages: 267 (peak: 268)
+                                    __dev_change_flags (0xc00000000101e1fc) Pages: 267 (peak: 268)
+                                      __dev_open (0xc00000000101dda8) Pages: 267 (peak: 268)
+                                        i40e_open i40e (0xc00800000851a238) Pages: 267 (peak: 268)
+                                          i40e_vsi_open i40e (0xc008000008519f54) Pages: 252 (peak: 252)
+                                            i40e_vsi_configure i40e (0xc0080000085093ac) Pages: 252 (peak: 252)
+                                              i40e_configure_rx_ring i40e (0xc0080000085055b0) Pages: 252 (peak: 252)
+                                                i40e_alloc_rx_buffers i40e (0xc008000008540d1c) Pages: 252 (peak: 252)
+                                                  __alloc_pages_nodemask (0xc0000000004d74e0) Pages: 252 (peak: 252)
+                                                    (null) Pages: 252 (peak: 252)
+                                                      __traceiter_mm_page_alloc (0xc00000000047c754) Pages: 504 (peak: 504)
+    
+
+Before applying this patch set,
+
+    ======== Report format module_summary: ========
+    Module i40iw using 1513.7MB (387507 pages), peak allocation 1513.7MB (387507 pages)
+    Module i40e using 85.8MB (21977 pages), peak allocation 87.0MB (22276 pages)
+    Module xfs using 1.2MB (299 pages), peak allocation 1.2MB (300 pages)
+    Module rdma_ucm using 0.8MB (210 pages), peak allocation 0.8MB (211 pages)
+    Module ib_uverbs using 0.5MB (131 pages), peak allocation 3.8MB (971 pages)
+    Module ib_iser using 0.4MB (109 pages), peak allocation 0.4MB (109 pages)
+    Module target_core_mod using 0.4MB (109 pages), peak allocation 0.4MB (111 pages)
+    Module rdma_cm using 0.2MB (46 pages), peak allocation 0.2MB (46 pages)
+    Module e1000e using 0.2MB (46 pages), peak allocation 0.2MB (46 pages)
+    Module ib_core using 0.2MB (45 pages), peak allocation 0.2MB (45 pages)
+    Module iw_cm using 0.2MB (44 pages), peak allocation 0.2MB (44 pages)
+    Module scsi_transport_iscsi using 0.1MB (20 pages), peak allocation 0.1MB (20 pages)
+    Module ib_isert using 0.1MB (19 pages), peak allocation 0.1MB (19 pages)
+    Module iscsi_target_mod using 0.1MB (17 pages), peak allocation 0.1MB (17 pages)
+    Module libiscsi using 0.1MB (15 pages), peak allocation 0.1MB (15 pages)
+    Module ib_cm using 0.1MB (14 pages), peak allocation 0.1MB (14 pages)
+    Module ib_srpt using 0.0MB (9 pages), peak allocation 0.0MB (9 pages)
+    Module rpcrdma using 0.0MB (0 pages), peak allocation 0.0MB (0 pages)
+    ======== Report format module_summary END ========
+    
+    ======== Report format module_top: ========
+    Top stack usage of module i40iw:
+      (null) Pages: 387507 (peak: 387507)
+        ret_from_fork (0xffffffffb5000255) Pages: 387507 (peak: 387507)
+          kthread (0xffffffffb4700696) Pages: 387507 (peak: 387507)
+            worker_thread (0xffffffffb46facf0) Pages: 387507 (peak: 387507)
+              process_one_work (0xffffffffb46fa627) Pages: 387507 (peak: 387507)
+                i40e_service_task i40e (0xffffffffc1146183) Pages: 387507 (peak: 387507)
+                  i40e_client_subtask i40e (0xffffffffc1163a34) Pages: 387507 (peak: 387507)
+                    i40iw_open.part.14 i40iw (0xffffffffc11b0ea9) Pages: 344064 (peak: 344064)
+                      i40iw_sc_create_hmc_obj i40iw (0xffffffffc11ae4c9) Pages: 344064 (peak: 344064)
+                        i40iw_add_sd_table_entry i40iw (0xffffffffc11ae079) Pages: 344064 (peak: 344064)
+                          i40iw_allocate_dma_mem i40iw (0xffffffffc11b7517) Pages: 344064 (peak: 344064)
+                            dma_direct_alloc_pages (0xffffffffb4762035) Pages: 344064 (peak: 344064)
+                              __dma_direct_alloc_pages (0xffffffffb4761f04) Pages: 344064 (peak: 344064)
+                                __alloc_pages_nodemask (0xffffffffb48b7367) Pages: 344064 (peak: 344064)
+                                  __alloc_pages_nodemask (0xffffffffb48b7367) Pages: 688128 (peak: 688128)
+                    i40iw_open.part.14 i40iw (0xffffffffc11b1278) Pages: 25883 (peak: 25883)
+                      i40iw_puda_create_rsrc i40iw (0xffffffffc11b47da) Pages: 24576 (peak: 24576)
+                        i40iw_allocate_dma_mem i40iw (0xffffffffc11b7517) Pages: 24576 (peak: 24576)
+                          dma_direct_alloc_pages (0xffffffffb4762035) Pages: 24576 (peak: 24576)
+                            __dma_direct_alloc_pages (0xffffffffb4761f04) Pages: 24576 (peak: 24576)
+                              __alloc_pages_nodemask (0xffffffffb48b7367) Pages: 24576 (peak: 24576)
+                                __alloc_pages_nodemask (0xffffffffb48b7367) Pages: 49152 (peak: 49152)
+                      i40iw_puda_create_rsrc i40iw (0xffffffffc11b485a) Pages: 731 (peak: 731)
+                        i40iw_allocate_virt_mem i40iw (0xffffffffc11b758d) Pages: 731 (peak: 731)
+    
 
 
-On 2/19/21 7:49 PM, Ilya Leoshkevich wrote:
-> Also document the expansion of the kind bitfield.
-> 
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 
-Acked-by: Yonghong Song <yhs@fb.com>
+memstrack report for the POWER9 machine
+=======================================
+
+After applying this patch set,
+
+    ======== Report format module_summary: ========
+    Module i40e using 1.2MB (316 pages), peak allocation 1.4MB (369 pages)
+    ======== Report format module_summary END ========
+    
+    ======== Report format module_top: ========
+    Top stack usage of module i40e:
+      (null) Pages: 316 (peak: 369)
+        i40e_init_interrupt_scheme i40e (0xffffffffc03f85f8) Pages: 79 (peak: 79)
+          __pci_enable_msix_range.part.0 (0xffffffff966b9878) Pages: 69 (peak: 69)
+            __msi_domain_alloc_irqs (0xffffffff9614c31b) Pages: 69 (peak: 69)
+              __irq_domain_alloc_irqs (0xffffffff96149fb5) Pages: 35 (peak: 35)
+                irq_domain_alloc_descs.part.0 (0xffffffff961489e5) Pages: 35 (peak: 35)
+                  __irq_alloc_descs (0xffffffff96bc0583) Pages: 22 (peak: 22)
+                    kobject_add (0xffffffff9666292e) Pages: 22 (peak: 22)
+                      kobject_add_internal (0xffffffff966622e2) Pages: 22 (peak: 22)
+                        internal_create_groups.part.0 (0xffffffff963d962d) Pages: 22 (peak: 22)
+                          internal_create_group (0xffffffff963d8f56) Pages: 22 (peak: 22)
+                            sysfs_add_file_mode_ns (0xffffffff963d837e) Pages: 22 (peak: 22)
+                              __kernfs_create_file (0xffffffff963d7865) Pages: 22 (peak: 22)
+                                kernfs_new_node (0xffffffff963d5ad3) Pages: 22 (peak: 22)
+                                  __kernfs_new_node (0xffffffff963d4e4e) Pages: 18 (peak: 18)
+                                    kmem_cache_alloc (0xffffffff962e8b04) Pages: 18 (peak: 18)
+                                      __slab_alloc (0xffffffff962e891c) Pages: 18 (peak: 18)
+                                        ___slab_alloc (0xffffffff962e875c) Pages: 18 (peak: 18)
+                                          allocate_slab (0xffffffff962e6223) Pages: 18 (peak: 18)
+                                            __alloc_pages_nodemask (0xffffffff962c07f5) Pages: 18 (peak: 18)
+                                              __alloc_pages_nodemask (0xffffffff962c07f5) Pages: 36 (peak: 36)
+    ======== Report format module_top END ========
+
+
+Before applying this patch set,
+
+
+    ======== Report format module_summary: ========
+    Module i40e using 15368.5MB (245896 pages), peak allocation 15368.6MB (245897 pages)
+    Module bpf using 5.8MB (92 pages), peak allocation 7.4MB (118 pages)
+    Module xfs using 0.8MB (12 pages), peak allocation 0.8MB (12 pages)
+    ======== Report format module_summary END ========
+    
+    ======== Report format module_top: ========
+    Top stack usage of module i40e:
+      (null) Pages: 245896 (peak: 245897)
+        system_call_common (0xc00000000000d260) Pages: 243801 (peak: 243801)
+          system_call_exception (0xc000000000034254) Pages: 243801 (peak: 243801)
+            __sys_sendmsg (0xc000000000fd221c) Pages: 243801 (peak: 243801)
+              ___sys_sendmsg (0xc000000000fcd28c) Pages: 243801 (peak: 243801)
+                sock_sendmsg (0xc000000000fcba30) Pages: 243801 (peak: 243801)
+                  netlink_sendmsg (0xc0000000010d69ac) Pages: 243801 (peak: 243801)
+                    netlink_unicast (0xc0000000010d65a8) Pages: 243801 (peak: 243801)
+                      rtnetlink_rcv (0xc00000000102de78) Pages: 243801 (peak: 243801)
+                        netlink_rcv_skb (0xc0000000010d7194) Pages: 243801 (peak: 243801)
+                          rtnetlink_rcv_msg (0xc00000000102ef1c) Pages: 243801 (peak: 243801)
+                            rtnl_newlink (0xc0000000010330b0) Pages: 243801 (peak: 243801)
+                              __rtnl_newlink (0xc000000001032b84) Pages: 243801 (peak: 243801)
+                                do_setlink (0xc00000000103108c) Pages: 243801 (peak: 243801)
+                                  dev_change_flags (0xc00000000101917c) Pages: 243801 (peak: 243801)
+                                    __dev_change_flags (0xc00000000101907c) Pages: 243801 (peak: 243801)
+                                      __dev_open (0xc000000001018c28) Pages: 243801 (peak: 243801)
+                                        i40e_open i40e (0xc0080000083be3c8) Pages: 243801 (peak: 243801)
+                                          i40e_vsi_open i40e (0xc0080000083be074) Pages: 242655 (peak: 242655)
+                                            i40e_vsi_configure i40e (0xc0080000083a8efc) Pages: 242647 (peak: 242647)
+                                              i40e_configure_rx_ring i40e (0xc0080000083a6a60) Pages: 242583 (peak: 242583)
+                                                i40e_alloc_rx_buffers i40e (0xc0080000083e9280) Pages: 242583 (peak: 242583)
+                                                  __alloc_pages_nodemask (0xc0000000004d66c0) Pages: 242583 (peak: 242583)
+                                                    (null) Pages: 242583 (peak: 242583)
+                                                      __traceiter_mm_page_alloc (0xc00000000047bab4) Pages: 485166 (peak: 485166)
+                                              i40e_configure_rx_ring i40e (0xc0080000083a6850) Pages: 64 (peak: 64)
+                                                i40e_alloc_rx_bi i40e (0xc0080000083e8cec) Pages: 64 (peak: 64)
+                                                  __kmalloc (0xc00000000051cc54) Pages: 64 (peak: 64)
+                                                    ___slab_alloc (0xc00000000051c4a0) Pages: 64 (peak: 64)
+                                                      allocate_slab (0xc000000000517f94) Pages: 64 (peak: 64)
+                                                        alloc_pages_current (0xc0000000005054f0) Pages: 64 (peak: 64)
+                                                          __alloc_pages_nodemask (0xc0000000004d66c0) Pages: 64 (peak: 64)
+                                                            (null) Pages: 64 (peak: 64)
+                                                              __traceiter_mm_page_alloc (0xc00000000047bab4) Pages: 128 (peak: 128)
+                                            i40e_vsi_configure i40e (0xc0080000083a8e4c) Pages: 8 (peak: 8)
+                                              i40e_configure_tx_ring i40e (0xc0080000083a8b10) Pages: 8 (peak: 8)
+                                                netif_set_xps_queue (0xc00000000100d5b4) Pages: 8 (peak: 8)
+                                                  __netif_set_xps_queue (0xc00000000100c77c) Pages: 6 (peak: 6)
+                                                    __kmalloc (0xc00000000051cc54) Pages: 6 (peak: 6)
+                                                      ___slab_alloc (0xc00000000051c4a0) Pages: 6 (peak: 6)
+                                                        allocate_slab (0xc000000000517f94) Pages: 6 (peak: 6)
+                                                          alloc_pages_current (0xc0000000005054f0) Pages: 6 (peak: 6)
+                                                            __alloc_pages_nodemask (0xc0000000004d66c0) Pages: 6 (peak: 6)
+                                                              (null) Pages: 6 (peak: 6)
+                                                                __traceiter_mm_page_alloc (0xc00000000047bab4) Pages: 12 (peak: 12)
+    ...
+    ======== Report format module_top END ========
+
+Coiby Xu (4):
+  i40e: use minimal tx and rx pairs for kdump
+  i40e: use minimal rx and tx ring buffers for kdump
+  i40e: use minimal admin queue for kdump
+  i40e: don't start i40iw client for kdump
+
+ drivers/net/ethernet/intel/i40e/i40e.h        |  2 ++
+ drivers/net/ethernet/intel/i40e/i40e_client.c |  7 ++++++
+ drivers/net/ethernet/intel/i40e/i40e_main.c   | 23 +++++++++++++++++--
+ 3 files changed, 30 insertions(+), 2 deletions(-)
+
+-- 
+2.30.0
+
