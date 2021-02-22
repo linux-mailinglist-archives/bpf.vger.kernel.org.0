@@ -2,169 +2,214 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E572C321314
-	for <lists+bpf@lfdr.de>; Mon, 22 Feb 2021 10:28:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B37E32152D
+	for <lists+bpf@lfdr.de>; Mon, 22 Feb 2021 12:35:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230209AbhBVJ1G (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Feb 2021 04:27:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230225AbhBVJ0W (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Feb 2021 04:26:22 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9E4FC061574
-        for <bpf@vger.kernel.org>; Mon, 22 Feb 2021 01:25:41 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id n10so13663331wmq.0
-        for <bpf@vger.kernel.org>; Mon, 22 Feb 2021 01:25:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ubique-spb-ru.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sMs83nr9i6WOwzE7NTSoscgbJn/dHDabycUz9PgtrgI=;
-        b=Sa6ObqDt5hYg7xZdsH0WYMoKDLXOixaA94GDY5u4HrV/uffpHNVXNGVDFtjJt0awwo
-         6nUudm6WbOL3mW7xT6JfrBpJ/u3UY8+D39B7Q5r0c+y1A0mvbKOZaRrXjX06a0UHZEPX
-         UgLRPNKYYYoZ8yysV+oQ84xt0xtR0j2JLO0+W+XIhWH2+cM/vUwn2RLddOwu96qCAfHn
-         3qRuV03llXi5hrf6Qw9riYIfWLV0ujL5xkAEQJZVyeml5daE2osmFTNSwYW7P8rfFOMu
-         t44lx+QnaYXFP7lFuu27rlvSJcjV0dJz44aoQRcxYqHNebIh/hGFxMd2Kc0BZ9xS/5Ot
-         sJSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sMs83nr9i6WOwzE7NTSoscgbJn/dHDabycUz9PgtrgI=;
-        b=P0Y7NDJqVx19t93M2mHwyBfPs7bdyzZQWanutYw49tiL2PV5gC8ANDB7yL0f/31gne
-         LVSwtJg6+fpVPiQOE5TfTfRdtBtB7rm8uvJ/dnaaEDFiiCvTaQebVsnqFccA/Ok9jKDa
-         yN58rZOLyy/g7Wwb9g7bHCz0TQb/Kw4WaQ2SrOLUnO7isyYCURvt94qKBqk6+Ai1Gitg
-         1bEwEjoC8qym/msqsU+QCKViizFTULefGIvXO/H2gORNWPlcg65Zw7u66BVXCgmRykCn
-         gsjHiTTLKKGuuCiB/TVLuxCFI9Ugygm84kY8cAd91oUu133VqD8RTsB7Scs756pZXTkz
-         koFg==
-X-Gm-Message-State: AOAM532HLgCTnSvnnsnFbMNqf6//hywSEig9lKFI2adFYcXWL2RS68Ew
-        nZmAzS3q1QEbRj0ag/aXDMQjWRMW7SDnCcvOGf0=
-X-Google-Smtp-Source: ABdhPJxciZlPWkrD51P1EA+Bu1Z2GqJ17Nor7ARB7fPuRXX1jPh0IB76xQjd8hgpgasVRAkqCI3paw==
-X-Received: by 2002:a05:600c:2113:: with SMTP id u19mr4687777wml.30.1613985940312;
-        Mon, 22 Feb 2021 01:25:40 -0800 (PST)
-Received: from localhost ([154.21.15.43])
-        by smtp.gmail.com with ESMTPSA id 7sm16014110wmi.27.2021.02.22.01.25.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 01:25:40 -0800 (PST)
-From:   Dmitrii Banshchikov <me@ubique.spb.ru>
-To:     bpf@vger.kernel.org
-Cc:     Dmitrii Banshchikov <me@ubique.spb.ru>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@chromium.org, rdna@fb.com
-Subject: [PATCH bpf-next] bpf: use MAX_BPF_FUNC_REGISTER_ARGS macro
-Date:   Mon, 22 Feb 2021 13:25:31 +0400
-Message-Id: <20210222092531.162654-1-me@ubique.spb.ru>
-X-Mailer: git-send-email 2.25.1
+        id S230256AbhBVLfE (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Feb 2021 06:35:04 -0500
+Received: from mga05.intel.com ([192.55.52.43]:17984 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230171AbhBVLfB (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Feb 2021 06:35:01 -0500
+IronPort-SDR: 2EFuaabGFwJ7eoIA5IpXVKZgokPDJ2ekCHGxeh0XJaMT9BWyXBEAryviRlLUn3Wli5J1Bw9EQr
+ lOpMuERjI5VQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9902"; a="269346011"
+X-IronPort-AV: E=Sophos;i="5.81,197,1610438400"; 
+   d="scan'208";a="269346011"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2021 03:34:20 -0800
+IronPort-SDR: mZOYLV5bKKq9fhhzLfyib1XGODD2VyqZiV3Cte4CMXkGRLxpOU0wDZeBX89DMDPRu2tvtcYAUI
+ MqoQxsVq+Bkw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,197,1610438400"; 
+   d="scan'208";a="441354279"
+Received: from ranger.igk.intel.com ([10.102.21.164])
+  by orsmga001.jf.intel.com with ESMTP; 22 Feb 2021 03:34:13 -0800
+Date:   Mon, 22 Feb 2021 12:23:34 +0100
+From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To:     Ciara Loftus <ciara.loftus@intel.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        magnus.karlsson@intel.com, bjorn@kernel.org,
+        weqaar.a.janjua@intel.com
+Subject: Re: [PATCH bpf-next 3/4] selftests/bpf: restructure xsk selftests
+Message-ID: <20210222112334.GA29106@ranger.igk.intel.com>
+References: <20210217160214.7869-1-ciara.loftus@intel.com>
+ <20210217160214.7869-4-ciara.loftus@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210217160214.7869-4-ciara.loftus@intel.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Instead of using integer literal here and there use macro name for
-better context.
+On Wed, Feb 17, 2021 at 04:02:13PM +0000, Ciara Loftus wrote:
+> Prior to this commit individual xsk tests were launched from the
+> shell script 'test_xsk.sh'. When adding a new test type, two new test
+> configurations had to be added to this file - one for each of the
+> supported XDP 'modes' (skb or drv). Should zero copy support be added to
+> the xsk selftest framework in the future, three new test configurations
+> would need to be added for each new test type. Each new test type also
+> typically requires new CLI arguments for the xdpxceiver program.
+> 
+> This commit aims to reduce the overhead of adding new tests, by launching
+> the test configurations from within the xdpxceiver program itself, using
+> simple loops. Every test is run every time the C program is executed. Many
+> of the CLI arguments can be removed as a result.
+> 
+> Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
+> ---
+>  tools/testing/selftests/bpf/test_xsk.sh    | 112 +-----------
+>  tools/testing/selftests/bpf/xdpxceiver.c   | 199 ++++++++++++---------
+>  tools/testing/selftests/bpf/xdpxceiver.h   |  27 ++-
+>  tools/testing/selftests/bpf/xsk_prereqs.sh |  24 +--
+>  4 files changed, 139 insertions(+), 223 deletions(-)
+> 
 
-Signed-off-by: Dmitrii Banshchikov <me@ubique.spb.ru>
----
- include/linux/bpf.h   |  1 +
- kernel/bpf/btf.c      | 25 ++++++++++++++-----------
- kernel/bpf/verifier.c |  2 +-
- 3 files changed, 16 insertions(+), 12 deletions(-)
+Good cleanup! I have a series of fixes/cleanups as well and I need to
+introduce a new test over here, so your work makes it easier for me.
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index cccaef1088ea..6946e8e6640a 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -505,6 +505,7 @@ enum bpf_cgroup_storage_type {
-  * See include/trace/bpf_probe.h
-  */
- #define MAX_BPF_FUNC_ARGS 12
-+#define MAX_BPF_FUNC_REGISTER_ARGS 5
- 
- struct btf_func_model {
- 	u8 ret_size;
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 2efeb5f4b343..c6474d5a9178 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -4594,8 +4594,10 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
- 	}
- 	arg = off / 8;
- 	args = (const struct btf_param *)(t + 1);
--	/* if (t == NULL) Fall back to default BPF prog with 5 u64 arguments */
--	nr_args = t ? btf_type_vlen(t) : 5;
-+	/* if (t == NULL) Fall back to default BPF prog with
-+	 * MAX_BPF_FUNC_REGISTER_ARGS u64 arguments.
-+	 */
-+	nr_args = t ? btf_type_vlen(t) : MAX_BPF_FUNC_REGISTER_ARGS;
- 	if (prog->aux->attach_btf_trace) {
- 		/* skip first 'void *__data' argument in btf_trace_##name typedef */
- 		args++;
-@@ -4651,7 +4653,7 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
- 		}
- 	} else {
- 		if (!t)
--			/* Default prog with 5 args */
-+			/* Default prog with MAX_BPF_FUNC_REGISTER_ARGS args */
- 			return true;
- 		t = btf_type_by_id(btf, args[arg].type);
- 	}
-@@ -5102,12 +5104,12 @@ int btf_distill_func_proto(struct bpf_verifier_log *log,
- 
- 	if (!func) {
- 		/* BTF function prototype doesn't match the verifier types.
--		 * Fall back to 5 u64 args.
-+		 * Fall back to MAX_BPF_FUNC_REGISTER_ARGS u64 args.
- 		 */
--		for (i = 0; i < 5; i++)
-+		for (i = 0; i < MAX_BPF_FUNC_REGISTER_ARGS; i++)
- 			m->arg_size[i] = 8;
- 		m->ret_size = 8;
--		m->nr_args = 5;
-+		m->nr_args = MAX_BPF_FUNC_REGISTER_ARGS;
- 		return 0;
- 	}
- 	args = (const struct btf_param *)(func + 1);
-@@ -5330,8 +5332,9 @@ int btf_check_func_arg_match(struct bpf_verifier_env *env, int subprog,
- 	}
- 	args = (const struct btf_param *)(t + 1);
- 	nargs = btf_type_vlen(t);
--	if (nargs > 5) {
--		bpf_log(log, "Function %s has %d > 5 args\n", tname, nargs);
-+	if (nargs > MAX_BPF_FUNC_REGISTER_ARGS) {
-+		bpf_log(log, "Function %s has %d > %d args\n", tname, nargs,
-+			MAX_BPF_FUNC_REGISTER_ARGS);
- 		goto out;
- 	}
- 
-@@ -5460,9 +5463,9 @@ int btf_prepare_func_args(struct bpf_verifier_env *env, int subprog,
- 	}
- 	args = (const struct btf_param *)(t + 1);
- 	nargs = btf_type_vlen(t);
--	if (nargs > 5) {
--		bpf_log(log, "Global function %s() with %d > 5 args. Buggy compiler.\n",
--			tname, nargs);
-+	if (nargs > MAX_BPF_FUNC_REGISTER_ARGS) {
-+		bpf_log(log, "Global function %s() with %d > %d args. Buggy compiler.\n",
-+			tname, nargs, MAX_BPF_FUNC_REGISTER_ARGS);
- 		return -EINVAL;
- 	}
- 	/* check that function returns int */
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 3d34ba492d46..e3ad5d6f42bb 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -5544,7 +5544,7 @@ static int check_helper_call(struct bpf_verifier_env *env, int func_id, int insn
- 
- 	meta.func_id = func_id;
- 	/* check args */
--	for (i = 0; i < 5; i++) {
-+	for (i = 0; i < MAX_BPF_FUNC_REGISTER_ARGS; i++) {
- 		err = check_func_arg(env, i, &meta, fn);
- 		if (err)
- 			return err;
--- 
-2.25.1
+One nit below and once you address Bjorn's request, then feel free to add
+my:
 
+Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+
+[...]
+
+> +static int configure_skb(void)
+> +{
+> +
+> +	char cmd[80];
+> +
+> +	snprintf(cmd, sizeof(cmd), "ip link set dev %s xdpdrv off", ifdict[0]->ifname);
+> +	if (system(cmd)) {
+> +		ksft_test_result_fail("Failed to configure native mode on iface %s\n",
+> +						ifdict[0]->ifname);
+> +		return -1;
+> +	}
+> +	snprintf(cmd, sizeof(cmd), "ip netns exec %s ip link set dev %s xdpdrv off",
+> +					ifdict[1]->nsname, ifdict[1]->ifname);
+> +	if (system(cmd)) {
+> +		ksft_test_result_fail("Failed to configure native mode on iface/ns %s\n",
+> +						ifdict[1]->ifname, ifdict[1]->nsname);
+> +		return -1;
+> +	}
+> +
+> +	cur_mode = TEST_MODE_SKB;
+> +
+> +	return 0;
+> +
+> +}
+> +
+> +static int configure_drv(void)
+> +{
+> +	char cmd[80];
+> +
+> +	snprintf(cmd, sizeof(cmd), "ip link set dev %s xdpgeneric off", ifdict[0]->ifname);
+> +	if (system(cmd)) {
+> +		ksft_test_result_fail("Failed to configure native mode on iface %s\n",
+> +						ifdict[0]->ifname);
+> +		return -1;
+> +	}
+> +	snprintf(cmd, sizeof(cmd), "ip netns exec %s ip link set dev %s xdpgeneric off",
+> +					ifdict[1]->nsname, ifdict[1]->ifname);
+> +	if (system(cmd)) {
+> +		ksft_test_result_fail("Failed to configure native mode on iface/ns %s\n",
+> +						ifdict[1]->ifname, ifdict[1]->nsname);
+> +		return -1;
+> +	}
+> +
+> +	cur_mode = TEST_MODE_DRV;
+> +
+> +	return 0;
+> +}
+> +
+> +static void run_pkt_test(int mode, int type)
+> +{
+> +	test_type = type;
+> +
+> +	/* reset defaults after potential previous test */
+> +	xdp_flags = XDP_FLAGS_UPDATE_IF_NOEXIST;
+> +	pkt_counter = 0;
+> +	switching_notify = 0;
+> +	bidi_pass = 0;
+> +	prev_pkt = -1;
+> +	ifdict[0]->fv.vector = tx;
+> +	ifdict[1]->fv.vector = rx;
+> +
+> +	switch (mode) {
+> +	case (TEST_MODE_SKB):
+> +		if (cur_mode != TEST_MODE_SKB)
+> +			configure_skb();
+
+Should you check a return value over here?
+
+> +		xdp_flags |= XDP_FLAGS_SKB_MODE;
+> +		uut = TEST_MODE_SKB;
+> +		break;
+> +	case (TEST_MODE_DRV):
+> +		if (cur_mode != TEST_MODE_DRV)
+> +			configure_drv();
+
+ditto
+
+> +		xdp_flags |= XDP_FLAGS_DRV_MODE;
+> +		uut = TEST_MODE_DRV;
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +
+> +	pthread_init_mutex();
+> +
+> +	if ((test_type != TEST_TYPE_TEARDOWN) && (test_type != TEST_TYPE_BIDI))
+> +		testapp_validate();
+> +	else
+> +		testapp_sockets();
+> +
+> +	pthread_destroy_mutex();
+> +}
+> +
+>  int main(int argc, char **argv)
+>  {
+>  	struct rlimit _rlim = { RLIM_INFINITY, RLIM_INFINITY };
+> @@ -1021,6 +1062,7 @@ int main(int argc, char **argv)
+>  	const char *IP2 = "192.168.100.161";
+>  	u16 UDP_DST_PORT = 2020;
+>  	u16 UDP_SRC_PORT = 2121;
+> +	int i, j;
+>  
+>  	ifaceconfig = malloc(sizeof(struct ifaceconfigobj));
+>  	memcpy(ifaceconfig->dst_mac, MAC1, ETH_ALEN);
+> @@ -1046,24 +1088,19 @@ int main(int argc, char **argv)
+>  
+>  	init_iface_config(ifaceconfig);
+>  
+> -	pthread_init_mutex();
+> +	ksft_set_plan(TEST_MODE_MAX * TEST_TYPE_MAX);
+>  
+> -	ksft_set_plan(1);
+> +	configure_skb();
+> +	cur_mode = TEST_MODE_SKB;
+>  
+> -	if (!opt_teardown && !opt_bidi) {
+> -		testapp_validate();
+> -	} else if (opt_teardown && opt_bidi) {
+> -		ksft_test_result_fail("ERROR: parameters -T and -B cannot be used together\n");
+> -		ksft_exit_xfail();
+> -	} else {
+> -		testapp_sockets();
+> +	for (i = 0; i < TEST_MODE_MAX; i++) {
+> +		for (j = 0; j < TEST_TYPE_MAX; j++)
+> +			run_pkt_test(i, j);
+>  	}
+>  
+>  	for (int i = 0; i < MAX_INTERFACES; i++)
+>  		free(ifdict[i]);
+>  
+> -	pthread_destroy_mutex();
+> -
+>  	ksft_exit_pass();
+>  
+>  	return 0;
