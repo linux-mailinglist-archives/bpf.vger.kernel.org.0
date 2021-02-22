@@ -2,87 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96F0E32226F
-	for <lists+bpf@lfdr.de>; Mon, 22 Feb 2021 23:57:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C06132229C
+	for <lists+bpf@lfdr.de>; Tue, 23 Feb 2021 00:24:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231982AbhBVW5E (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Feb 2021 17:57:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55368 "EHLO
+        id S230314AbhBVXYI (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Feb 2021 18:24:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232043AbhBVW5C (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Feb 2021 17:57:02 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11F3CC061574
-        for <bpf@vger.kernel.org>; Mon, 22 Feb 2021 14:56:22 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id 75so11165068pgf.13
-        for <bpf@vger.kernel.org>; Mon, 22 Feb 2021 14:56:22 -0800 (PST)
+        with ESMTP id S230088AbhBVXYH (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Feb 2021 18:24:07 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8973AC061574;
+        Mon, 22 Feb 2021 15:23:27 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id 201so4486658pfw.5;
+        Mon, 22 Feb 2021 15:23:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oMEyLHldf6jylYR750dmdVQVYOTW1/PXbP41XeNHHuc=;
-        b=E+m6j8jJGjKqDgwAlP4MjJcqyAVTnS8+VN/ZnWYNlTI9xSuw21rpe16S2dy5tbyiwb
-         U/VLFZ8my5anoNMqmBag6niSIiOGZFjqJwgVE6/oBUenNTEvjLXKx4YQiiJqUkq04zAe
-         fGByTVp2RqKVogZfNfCUStKevlPxkquvZ44vWsODQ/Sp8GguJE3oz75V0+izLJle+CZW
-         DCidmoo37uUrsN1Eer94V68KDZZddOmggGhDAN7lWiaXLQKKDmJgBsnMpbRTsaHmrEki
-         qvou9ZKrpHMQkaVr8XaaBkvcxW+pUy+6isNB+emOqZi9Ha5/RLcQi5C6D+T4umIAFMqp
-         LTAg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GLEz0viUzMtR/T98HSPxFfZs67/2EQnLdMbHGYx9YLw=;
+        b=o4lyH4ZjksIk+o36u4d9eywceLswRLy5VPGHsUKeDe6puCETiFSI5DN4r35OrqV9lc
+         VBF1bpIzmtvukisWOFagO/oCQxqbPSM0kscZXztWp1JD97yqTGI3ngDM9gt1jCVblRT5
+         yJvY3As4APYpvL4jj7ODp04tGm1RxSagCcRhY632ysOC6q5k8wjyje2/PreiS49dWnMV
+         UvkX5dFguNx+qLb+0WcZS6EOBqq0KpTwr5RJnKhHpaKVPSTR2NLv/d5hCnJlPwA7vHFV
+         6X/XSRy46ZaGlJ1ksSD8gi/SKwZjJC96tmgs9P/5Xh3ZZd0tXwKLFaYSS3Dvx6YA8QKZ
+         OWKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oMEyLHldf6jylYR750dmdVQVYOTW1/PXbP41XeNHHuc=;
-        b=Vt0uWKs2MJSCzEeaNB0J6uVC/Qzslbf5yaVJwM+H58nOPVrzInvEzX6jbK2JwwTefY
-         ZFzp7MV4QUoM+8FkIm2Pe0tE363T3vw1qfQPxmowloRsQ62p90IzyxSkUB4Ui15N3ycs
-         bKDGDX3ovImhn4yw/AZLyByBXUXdc0OPB8+rg+ns9kI8Indgjas6Aa06Mw7RE+1Q6mCl
-         UFKlJo3YfcuCBoEDWYgFG3gtOdrjgBP39KeLKPUk47KC4iy6cRvMYaRbBbsh4mThjR3O
-         Tzv5HAZEheiIBYBl5VG+PQGUJDXXRjOP9RYTgHiMbhJzsSXaRhTliPfeJir4rCeu9ZJ7
-         p3JA==
-X-Gm-Message-State: AOAM530AWtysiXGvwzz5uOEtLj7rZNBDf9X0YtNhJWbfZ8lUsiwkVkWp
-        OMM/xDGY+Ni0dD/sF4bygJI=
-X-Google-Smtp-Source: ABdhPJzgNfkWiOULZcz5zwcz/cHZLdbC9SmVYUVVKkkmSsqNA+B2ajFjHC8H63lf/cwG0NxtKw9fFw==
-X-Received: by 2002:a63:f648:: with SMTP id u8mr10829792pgj.270.1614034581576;
-        Mon, 22 Feb 2021 14:56:21 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:b9ca])
-        by smtp.gmail.com with ESMTPSA id 7sm20080734pfh.142.2021.02.22.14.56.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 14:56:21 -0800 (PST)
-Date:   Mon, 22 Feb 2021 14:56:19 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
-Subject: Re: [PATCH bpf-next v2 05/11] bpf: add hashtab support for
- bpf_for_each_map_elem() helper
-Message-ID: <20210222225619.iakpkks7htobsdlk@ast-mbp.dhcp.thefacebook.com>
-References: <20210217181803.3189437-1-yhs@fb.com>
- <20210217181808.3190262-1-yhs@fb.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GLEz0viUzMtR/T98HSPxFfZs67/2EQnLdMbHGYx9YLw=;
+        b=KlvQERB8cEBiwnqPQP1aCqFjIu9F+WYTWvwqEHn5JJEWlQNlfcQ4ObA5pOYGr5A3qw
+         z/Ly15Xd4DL7qMhu8in/i1d/6NTR1M/NDyYKgUECojbyhDQsXTlU76TuDvuhqTJfdaDB
+         nBFazoPrjbUxOG0xwWq66yN6HX6A9PyOMizbGtaPKzjB/55pQaLEOnj8Ll27jDdhDzt7
+         EmlbExFBaKD36Qg/W1Nd7/SzudK27jeyfSF9iDyhTNp+Hs0BFuyNGqIlQst5TfrY9i3A
+         nK6h3fI7wu0IDEsLJWG4ri8C6lZW6ZRedP7fvASG2I0Ora5JGjl0Z4DV0UktvwIa3Jx0
+         iCtg==
+X-Gm-Message-State: AOAM530xzoPPfrU04WvPorBJJMm1cA55Qcoq3fn6hrFXvJ+X9AGCnzBQ
+        eVnO1/Orqinu+SnKDlags8H1mNmrDwyEkGEbGzc=
+X-Google-Smtp-Source: ABdhPJyQXcWvaXZMu6X00fEj5A5EwH/doEFVsm/SX2NEj2GgivCtPNeGmZzwaR6A4lU1xnCJUIfXy/xllNU8DsFXc1I=
+X-Received: by 2002:aa7:92c4:0:b029:1e6:c4:c821 with SMTP id
+ k4-20020aa792c40000b02901e600c4c821mr24453113pfa.10.1614036207123; Mon, 22
+ Feb 2021 15:23:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210217181808.3190262-1-yhs@fb.com>
+References: <20210220052924.106599-1-xiyou.wangcong@gmail.com>
+ <20210220052924.106599-2-xiyou.wangcong@gmail.com> <87ft1o4h8w.fsf@cloudflare.com>
+In-Reply-To: <87ft1o4h8w.fsf@cloudflare.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Mon, 22 Feb 2021 15:23:16 -0800
+Message-ID: <CAM_iQpWuRT6miFgsDvMLoOhtROmP=f6-qo6QfEAm7xFDfqB4rA@mail.gmail.com>
+Subject: Re: [Patch bpf-next v6 1/8] bpf: clean up sockmap related Kconfigs
+To:     Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, duanxiongchun@bytedance.com,
+        Dongdong Wang <wangdongdong.6@bytedance.com>,
+        Jiang Wang <jiang.wang@bytedance.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 10:18:08AM -0800, Yonghong Song wrote:
-> +			ret = BPF_CAST_CALL(callback_fn)((u64)(long)map,
-> +					(u64)(long)key, (u64)(long)val,
-> +					(u64)(long)callback_ctx, 0);
-> +			if (ret) {
-> +				rcu_read_unlock();
-> +				ret = (ret == 1) ? 0 : -EINVAL;
-> +				goto out;
+On Mon, Feb 22, 2021 at 12:52 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
+>
+> On Sat, Feb 20, 2021 at 06:29 AM CET, Cong Wang wrote:
+> > From: Cong Wang <cong.wang@bytedance.com>
+> >
+> > As suggested by John, clean up sockmap related Kconfigs:
+> >
+> > Reduce the scope of CONFIG_BPF_STREAM_PARSER down to TCP stream
+> > parser, to reflect its name.
+> >
+> > Make the rest sockmap code simply depend on CONFIG_BPF_SYSCALL
+> > and CONFIG_INET, the latter is still needed at this point because
+> > of TCP/UDP proto update. And leave CONFIG_NET_SOCK_MSG untouched,
+> > as it is used by non-sockmap cases.
+> >
+> > Cc: Daniel Borkmann <daniel@iogearbox.net>
+> > Cc: Jakub Sitnicki <jakub@cloudflare.com>
+> > Reviewed-by: Lorenz Bauer <lmb@cloudflare.com>
+> > Acked-by: John Fastabend <john.fastabend@gmail.com>
+> > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> > ---
+>
+> Couple comments:
+>
+> 1. sk_psock_done_strp() could be static to skmsg.c, as mentioned
+>    earlier.
 
-There is a tnum(0,1) check in patch 4.
-I'm missing the purpose of this additional check.
+Oops, I thought you meant to move it to sock_map.c...
 
-> +			}
-> +		}
-> +		rcu_read_unlock();
-> +	}
-> +out:
-> +	migrate_enable();
-> +	return ret ?: num_calls;
-> +}
+>
+> 2. udp_bpf.c is built when CONFIG_BPF_SYSCALL is enabled, while its API
+>    declarations in udp.h are guarded on CONFIG_NET_SOCK_MSG.
+>
+>    This works because BPF_SYSCALL now selects NET_SOCK_MSG if INET, and
+>    INET has to be enabled when using udp, but seems confusing to me.
+>
+
+Sure.
+
+Thanks.
