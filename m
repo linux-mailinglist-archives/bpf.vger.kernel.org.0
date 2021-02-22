@@ -2,521 +2,169 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A50632130D
-	for <lists+bpf@lfdr.de>; Mon, 22 Feb 2021 10:28:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E572C321314
+	for <lists+bpf@lfdr.de>; Mon, 22 Feb 2021 10:28:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbhBVJ0I (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Feb 2021 04:26:08 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:39639 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230063AbhBVJ0C (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Feb 2021 04:26:02 -0500
-Received: by mail-il1-f199.google.com with SMTP id g14so4297040ilb.6
-        for <bpf@vger.kernel.org>; Mon, 22 Feb 2021 01:25:45 -0800 (PST)
+        id S230209AbhBVJ1G (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Feb 2021 04:27:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230225AbhBVJ0W (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Feb 2021 04:26:22 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9E4FC061574
+        for <bpf@vger.kernel.org>; Mon, 22 Feb 2021 01:25:41 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id n10so13663331wmq.0
+        for <bpf@vger.kernel.org>; Mon, 22 Feb 2021 01:25:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ubique-spb-ru.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sMs83nr9i6WOwzE7NTSoscgbJn/dHDabycUz9PgtrgI=;
+        b=Sa6ObqDt5hYg7xZdsH0WYMoKDLXOixaA94GDY5u4HrV/uffpHNVXNGVDFtjJt0awwo
+         6nUudm6WbOL3mW7xT6JfrBpJ/u3UY8+D39B7Q5r0c+y1A0mvbKOZaRrXjX06a0UHZEPX
+         UgLRPNKYYYoZ8yysV+oQ84xt0xtR0j2JLO0+W+XIhWH2+cM/vUwn2RLddOwu96qCAfHn
+         3qRuV03llXi5hrf6Qw9riYIfWLV0ujL5xkAEQJZVyeml5daE2osmFTNSwYW7P8rfFOMu
+         t44lx+QnaYXFP7lFuu27rlvSJcjV0dJz44aoQRcxYqHNebIh/hGFxMd2Kc0BZ9xS/5Ot
+         sJSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Zz2GXCbmKae7xI90H336tDtP8OczeNW1sDftu5vODDk=;
-        b=gsJFfuJY/fyQZX0NP8bMMFRX9WSoeEDzon/wjvZBDXyLihYRhzoR8Skn9ItlpOVClb
-         5Icn7HwvbaQSC7sf2jwk7JQ+96zGknJibiekUFzHpR6RWGEWM/tnAx+cRnF8+q4V7sT9
-         hbKZPOxj/6ry4yBpH+uvIg9UQilwE2bJ09i6DE1/BAmawpeD7xNLJYoxh6Efj/ToPBeJ
-         wl1c9G+23hqhAFsQboME9lusLBkpSn3S4Ahsl78X+wU/oD+HzIMsokNDgF26vAQoDis3
-         7vXdWNIr1pcTjcz+YrIGBhRnpGEcQiar5EciJXilVvo4tfsMklulWf44ZJscXejUq/IY
-         J6Vw==
-X-Gm-Message-State: AOAM532nAGGN+HAYtbbt0SLvDwYPPknJOc5CHOmtMWhrKr8WGHEVOYrf
-        +VfO9zVvcBFTQRetAQncpGN/d6qa5rYCTVhwRVyxI1+SiOlG
-X-Google-Smtp-Source: ABdhPJy/1xm26koxC+KDq53n1b8fthiDxlK3DOAR5PNh77nUGy6nSHivli3RQ1Ga0dW7+wfoDzCSth6su6DhTGq+cdCP+QQtKHvR
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sMs83nr9i6WOwzE7NTSoscgbJn/dHDabycUz9PgtrgI=;
+        b=P0Y7NDJqVx19t93M2mHwyBfPs7bdyzZQWanutYw49tiL2PV5gC8ANDB7yL0f/31gne
+         LVSwtJg6+fpVPiQOE5TfTfRdtBtB7rm8uvJ/dnaaEDFiiCvTaQebVsnqFccA/Ok9jKDa
+         yN58rZOLyy/g7Wwb9g7bHCz0TQb/Kw4WaQ2SrOLUnO7isyYCURvt94qKBqk6+Ai1Gitg
+         1bEwEjoC8qym/msqsU+QCKViizFTULefGIvXO/H2gORNWPlcg65Zw7u66BVXCgmRykCn
+         gsjHiTTLKKGuuCiB/TVLuxCFI9Ugygm84kY8cAd91oUu133VqD8RTsB7Scs756pZXTkz
+         koFg==
+X-Gm-Message-State: AOAM532HLgCTnSvnnsnFbMNqf6//hywSEig9lKFI2adFYcXWL2RS68Ew
+        nZmAzS3q1QEbRj0ag/aXDMQjWRMW7SDnCcvOGf0=
+X-Google-Smtp-Source: ABdhPJxciZlPWkrD51P1EA+Bu1Z2GqJ17Nor7ARB7fPuRXX1jPh0IB76xQjd8hgpgasVRAkqCI3paw==
+X-Received: by 2002:a05:600c:2113:: with SMTP id u19mr4687777wml.30.1613985940312;
+        Mon, 22 Feb 2021 01:25:40 -0800 (PST)
+Received: from localhost ([154.21.15.43])
+        by smtp.gmail.com with ESMTPSA id 7sm16014110wmi.27.2021.02.22.01.25.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Feb 2021 01:25:40 -0800 (PST)
+From:   Dmitrii Banshchikov <me@ubique.spb.ru>
+To:     bpf@vger.kernel.org
+Cc:     Dmitrii Banshchikov <me@ubique.spb.ru>, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@chromium.org, rdna@fb.com
+Subject: [PATCH bpf-next] bpf: use MAX_BPF_FUNC_REGISTER_ARGS macro
+Date:   Mon, 22 Feb 2021 13:25:31 +0400
+Message-Id: <20210222092531.162654-1-me@ubique.spb.ru>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:22c5:: with SMTP id j5mr21773627jat.89.1613985920017;
- Mon, 22 Feb 2021 01:25:20 -0800 (PST)
-Date:   Mon, 22 Feb 2021 01:25:20 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006f6d4205bbe96159@google.com>
-Subject: memory leak in do_seccomp (2)
-From:   syzbot <syzbot+ab17848fe269b573eb71@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
-        keescook@chromium.org, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, luto@amacapital.net,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, wad@chromium.org, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello,
+Instead of using integer literal here and there use macro name for
+better context.
 
-syzbot found the following issue on:
-
-HEAD commit:    f40ddce8 Linux 5.11
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13aa6d22d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5528e8db7fc481ae
-dashboard link: https://syzkaller.appspot.com/bug?extid=ab17848fe269b573eb71
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1255579cd00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=121a374ad00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ab17848fe269b573eb71@syzkaller.appspotmail.com
-
-BUG: memory leak
-unreferenced object 0xffff888118765f00 (size 256):
-  comm "syz-executor670", pid 10148, jiffies 4294952981 (age 25.900s)
-  hex dump (first 32 bytes):
-    01 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<0000000021396b5e>] kmalloc include/linux/slab.h:552 [inline]
-    [<0000000021396b5e>] kzalloc include/linux/slab.h:682 [inline]
-    [<0000000021396b5e>] seccomp_prepare_filter kernel/seccomp.c:656 [inline]
-    [<0000000021396b5e>] seccomp_prepare_user_filter kernel/seccomp.c:698 [inline]
-    [<0000000021396b5e>] seccomp_set_mode_filter kernel/seccomp.c:1802 [inline]
-    [<0000000021396b5e>] do_seccomp+0x3d2/0x11c0 kernel/seccomp.c:1922
-    [<000000004b7de4b6>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000003adb0cc6>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffffc90000ebf000 (size 4096):
-  comm "syz-executor670", pid 10148, jiffies 4294952981 (age 25.900s)
-  hex dump (first 32 bytes):
-    01 00 03 00 00 00 00 00 00 00 00 00 05 00 00 00  ................
-    1e 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000cbd981b5>] __vmalloc_node_range+0x3a5/0x410 mm/vmalloc.c:2587
-    [<000000003278951f>] __vmalloc_node mm/vmalloc.c:2619 [inline]
-    [<000000003278951f>] __vmalloc+0x49/0x50 mm/vmalloc.c:2633
-    [<00000000cc2e0bf4>] bpf_prog_alloc_no_stats+0x32/0x160 kernel/bpf/core.c:85
-    [<00000000b872251d>] bpf_prog_alloc+0x24/0xc0 kernel/bpf/core.c:113
-    [<00000000bf2ace46>] bpf_prog_create_from_user+0x6e/0x2b0 net/core/filter.c:1413
-    [<00000000e9cc9030>] seccomp_prepare_filter kernel/seccomp.c:661 [inline]
-    [<00000000e9cc9030>] seccomp_prepare_user_filter kernel/seccomp.c:698 [inline]
-    [<00000000e9cc9030>] seccomp_set_mode_filter kernel/seccomp.c:1802 [inline]
-    [<00000000e9cc9030>] do_seccomp+0x41c/0x11c0 kernel/seccomp.c:1922
-    [<000000004b7de4b6>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000003adb0cc6>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888117212800 (size 1024):
-  comm "syz-executor670", pid 10148, jiffies 4294952981 (age 25.900s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<000000003fd1055c>] kmalloc include/linux/slab.h:552 [inline]
-    [<000000003fd1055c>] kzalloc include/linux/slab.h:682 [inline]
-    [<000000003fd1055c>] bpf_prog_alloc_no_stats+0x7d/0x160 kernel/bpf/core.c:89
-    [<00000000b872251d>] bpf_prog_alloc+0x24/0xc0 kernel/bpf/core.c:113
-    [<00000000bf2ace46>] bpf_prog_create_from_user+0x6e/0x2b0 net/core/filter.c:1413
-    [<00000000e9cc9030>] seccomp_prepare_filter kernel/seccomp.c:661 [inline]
-    [<00000000e9cc9030>] seccomp_prepare_user_filter kernel/seccomp.c:698 [inline]
-    [<00000000e9cc9030>] seccomp_set_mode_filter kernel/seccomp.c:1802 [inline]
-    [<00000000e9cc9030>] do_seccomp+0x41c/0x11c0 kernel/seccomp.c:1922
-    [<000000004b7de4b6>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000003adb0cc6>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff8881186046e0 (size 32):
-  comm "syz-executor670", pid 10148, jiffies 4294952981 (age 25.900s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 a0 55 77 18 81 88 ff ff  .........Uw.....
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<000000002f7bb5fc>] kmalloc include/linux/slab.h:552 [inline]
-    [<000000002f7bb5fc>] bpf_prog_store_orig_filter+0x33/0xa0 net/core/filter.c:1135
-    [<00000000b2023fc7>] bpf_prog_create_from_user+0xfe/0x2b0 net/core/filter.c:1426
-    [<00000000e9cc9030>] seccomp_prepare_filter kernel/seccomp.c:661 [inline]
-    [<00000000e9cc9030>] seccomp_prepare_user_filter kernel/seccomp.c:698 [inline]
-    [<00000000e9cc9030>] seccomp_set_mode_filter kernel/seccomp.c:1802 [inline]
-    [<00000000e9cc9030>] do_seccomp+0x41c/0x11c0 kernel/seccomp.c:1922
-    [<000000004b7de4b6>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000003adb0cc6>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff8881187755a0 (size 32):
-  comm "syz-executor670", pid 10148, jiffies 4294952981 (age 25.900s)
-  hex dump (first 32 bytes):
-    06 00 00 00 ff ff ff 7f 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<000000002ba3f45d>] kmemdup+0x23/0x50 mm/util.c:128
-    [<000000001aee1a49>] kmemdup include/linux/string.h:520 [inline]
-    [<000000001aee1a49>] bpf_prog_store_orig_filter+0x5e/0xa0 net/core/filter.c:1142
-    [<00000000b2023fc7>] bpf_prog_create_from_user+0xfe/0x2b0 net/core/filter.c:1426
-    [<00000000e9cc9030>] seccomp_prepare_filter kernel/seccomp.c:661 [inline]
-    [<00000000e9cc9030>] seccomp_prepare_user_filter kernel/seccomp.c:698 [inline]
-    [<00000000e9cc9030>] seccomp_set_mode_filter kernel/seccomp.c:1802 [inline]
-    [<00000000e9cc9030>] do_seccomp+0x41c/0x11c0 kernel/seccomp.c:1922
-    [<000000004b7de4b6>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000003adb0cc6>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffffffffa0050000 (size 4096):
-  comm "syz-executor670", pid 10148, jiffies 4294952981 (age 25.900s)
-  hex dump (first 32 bytes):
-    01 00 00 00 cc cc cc cc cc cc cc cc cc cc cc cc  ................
-    cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc  ................
-  backtrace:
-    [<00000000cbd981b5>] __vmalloc_node_range+0x3a5/0x410 mm/vmalloc.c:2587
-    [<00000000c67b690b>] module_alloc+0x4f/0x60 arch/x86/kernel/module.c:75
-    [<00000000ee2a4550>] bpf_jit_binary_alloc+0xb9/0x180 kernel/bpf/core.c:868
-    [<00000000c863a6a8>] bpf_int_jit_compile+0x1bb/0x6c0 arch/x86/net/bpf_jit_comp.c:2075
-    [<00000000b342f60a>] bpf_prog_select_runtime+0x244/0x390 kernel/bpf/core.c:1809
-    [<000000005f5008b0>] bpf_migrate_filter+0x188/0x1f0 net/core/filter.c:1294
-    [<00000000fea53340>] bpf_prepare_filter net/core/filter.c:1342 [inline]
-    [<00000000fea53340>] bpf_prog_create_from_user+0x24d/0x2b0 net/core/filter.c:1436
-    [<00000000e9cc9030>] seccomp_prepare_filter kernel/seccomp.c:661 [inline]
-    [<00000000e9cc9030>] seccomp_prepare_user_filter kernel/seccomp.c:698 [inline]
-    [<00000000e9cc9030>] seccomp_set_mode_filter kernel/seccomp.c:1802 [inline]
-    [<00000000e9cc9030>] do_seccomp+0x41c/0x11c0 kernel/seccomp.c:1922
-    [<000000004b7de4b6>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000003adb0cc6>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888118765f00 (size 256):
-  comm "syz-executor670", pid 10148, jiffies 4294952981 (age 28.740s)
-  hex dump (first 32 bytes):
-    01 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<0000000021396b5e>] kmalloc include/linux/slab.h:552 [inline]
-    [<0000000021396b5e>] kzalloc include/linux/slab.h:682 [inline]
-    [<0000000021396b5e>] seccomp_prepare_filter kernel/seccomp.c:656 [inline]
-    [<0000000021396b5e>] seccomp_prepare_user_filter kernel/seccomp.c:698 [inline]
-    [<0000000021396b5e>] seccomp_set_mode_filter kernel/seccomp.c:1802 [inline]
-    [<0000000021396b5e>] do_seccomp+0x3d2/0x11c0 kernel/seccomp.c:1922
-    [<000000004b7de4b6>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000003adb0cc6>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffffc90000ebf000 (size 4096):
-  comm "syz-executor670", pid 10148, jiffies 4294952981 (age 28.740s)
-  hex dump (first 32 bytes):
-    01 00 03 00 00 00 00 00 00 00 00 00 05 00 00 00  ................
-    1e 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000cbd981b5>] __vmalloc_node_range+0x3a5/0x410 mm/vmalloc.c:2587
-    [<000000003278951f>] __vmalloc_node mm/vmalloc.c:2619 [inline]
-    [<000000003278951f>] __vmalloc+0x49/0x50 mm/vmalloc.c:2633
-    [<00000000cc2e0bf4>] bpf_prog_alloc_no_stats+0x32/0x160 kernel/bpf/core.c:85
-    [<00000000b872251d>] bpf_prog_alloc+0x24/0xc0 kernel/bpf/core.c:113
-    [<00000000bf2ace46>] bpf_prog_create_from_user+0x6e/0x2b0 net/core/filter.c:1413
-    [<00000000e9cc9030>] seccomp_prepare_filter kernel/seccomp.c:661 [inline]
-    [<00000000e9cc9030>] seccomp_prepare_user_filter kernel/seccomp.c:698 [inline]
-    [<00000000e9cc9030>] seccomp_set_mode_filter kernel/seccomp.c:1802 [inline]
-    [<00000000e9cc9030>] do_seccomp+0x41c/0x11c0 kernel/seccomp.c:1922
-    [<000000004b7de4b6>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000003adb0cc6>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888117212800 (size 1024):
-  comm "syz-executor670", pid 10148, jiffies 4294952981 (age 28.740s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<000000003fd1055c>] kmalloc include/linux/slab.h:552 [inline]
-    [<000000003fd1055c>] kzalloc include/linux/slab.h:682 [inline]
-    [<000000003fd1055c>] bpf_prog_alloc_no_stats+0x7d/0x160 kernel/bpf/core.c:89
-    [<00000000b872251d>] bpf_prog_alloc+0x24/0xc0 kernel/bpf/core.c:113
-    [<00000000bf2ace46>] bpf_prog_create_from_user+0x6e/0x2b0 net/core/filter.c:1413
-    [<00000000e9cc9030>] seccomp_prepare_filter kernel/seccomp.c:661 [inline]
-    [<00000000e9cc9030>] seccomp_prepare_user_filter kernel/seccomp.c:698 [inline]
-    [<00000000e9cc9030>] seccomp_set_mode_filter kernel/seccomp.c:1802 [inline]
-    [<00000000e9cc9030>] do_seccomp+0x41c/0x11c0 kernel/seccomp.c:1922
-    [<000000004b7de4b6>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000003adb0cc6>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff8881186046e0 (size 32):
-  comm "syz-executor670", pid 10148, jiffies 4294952981 (age 28.740s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 a0 55 77 18 81 88 ff ff  .........Uw.....
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<000000002f7bb5fc>] kmalloc include/linux/slab.h:552 [inline]
-    [<000000002f7bb5fc>] bpf_prog_store_orig_filter+0x33/0xa0 net/core/filter.c:1135
-    [<00000000b2023fc7>] bpf_prog_create_from_user+0xfe/0x2b0 net/core/filter.c:1426
-    [<00000000e9cc9030>] seccomp_prepare_filter kernel/seccomp.c:661 [inline]
-    [<00000000e9cc9030>] seccomp_prepare_user_filter kernel/seccomp.c:698 [inline]
-    [<00000000e9cc9030>] seccomp_set_mode_filter kernel/seccomp.c:1802 [inline]
-    [<00000000e9cc9030>] do_seccomp+0x41c/0x11c0 kernel/seccomp.c:1922
-    [<000000004b7de4b6>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000003adb0cc6>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff8881187755a0 (size 32):
-  comm "syz-executor670", pid 10148, jiffies 4294952981 (age 28.740s)
-  hex dump (first 32 bytes):
-    06 00 00 00 ff ff ff 7f 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<000000002ba3f45d>] kmemdup+0x23/0x50 mm/util.c:128
-    [<000000001aee1a49>] kmemdup include/linux/string.h:520 [inline]
-    [<000000001aee1a49>] bpf_prog_store_orig_filter+0x5e/0xa0 net/core/filter.c:1142
-    [<00000000b2023fc7>] bpf_prog_create_from_user+0xfe/0x2b0 net/core/filter.c:1426
-    [<00000000e9cc9030>] seccomp_prepare_filter kernel/seccomp.c:661 [inline]
-    [<00000000e9cc9030>] seccomp_prepare_user_filter kernel/seccomp.c:698 [inline]
-    [<00000000e9cc9030>] seccomp_set_mode_filter kernel/seccomp.c:1802 [inline]
-    [<00000000e9cc9030>] do_seccomp+0x41c/0x11c0 kernel/seccomp.c:1922
-    [<000000004b7de4b6>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000003adb0cc6>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffffffffa0050000 (size 4096):
-  comm "syz-executor670", pid 10148, jiffies 4294952981 (age 28.740s)
-  hex dump (first 32 bytes):
-    01 00 00 00 cc cc cc cc cc cc cc cc cc cc cc cc  ................
-    cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc  ................
-  backtrace:
-    [<00000000cbd981b5>] __vmalloc_node_range+0x3a5/0x410 mm/vmalloc.c:2587
-    [<00000000c67b690b>] module_alloc+0x4f/0x60 arch/x86/kernel/module.c:75
-    [<00000000ee2a4550>] bpf_jit_binary_alloc+0xb9/0x180 kernel/bpf/core.c:868
-    [<00000000c863a6a8>] bpf_int_jit_compile+0x1bb/0x6c0 arch/x86/net/bpf_jit_comp.c:2075
-    [<00000000b342f60a>] bpf_prog_select_runtime+0x244/0x390 kernel/bpf/core.c:1809
-    [<000000005f5008b0>] bpf_migrate_filter+0x188/0x1f0 net/core/filter.c:1294
-    [<00000000fea53340>] bpf_prepare_filter net/core/filter.c:1342 [inline]
-    [<00000000fea53340>] bpf_prog_create_from_user+0x24d/0x2b0 net/core/filter.c:1436
-    [<00000000e9cc9030>] seccomp_prepare_filter kernel/seccomp.c:661 [inline]
-    [<00000000e9cc9030>] seccomp_prepare_user_filter kernel/seccomp.c:698 [inline]
-    [<00000000e9cc9030>] seccomp_set_mode_filter kernel/seccomp.c:1802 [inline]
-    [<00000000e9cc9030>] do_seccomp+0x41c/0x11c0 kernel/seccomp.c:1922
-    [<000000004b7de4b6>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000003adb0cc6>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888118765f00 (size 256):
-  comm "syz-executor670", pid 10148, jiffies 4294952981 (age 30.180s)
-  hex dump (first 32 bytes):
-    01 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<0000000021396b5e>] kmalloc include/linux/slab.h:552 [inline]
-    [<0000000021396b5e>] kzalloc include/linux/slab.h:682 [inline]
-    [<0000000021396b5e>] seccomp_prepare_filter kernel/seccomp.c:656 [inline]
-    [<0000000021396b5e>] seccomp_prepare_user_filter kernel/seccomp.c:698 [inline]
-    [<0000000021396b5e>] seccomp_set_mode_filter kernel/seccomp.c:1802 [inline]
-    [<0000000021396b5e>] do_seccomp+0x3d2/0x11c0 kernel/seccomp.c:1922
-    [<000000004b7de4b6>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000003adb0cc6>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffffc90000ebf000 (size 4096):
-  comm "syz-executor670", pid 10148, jiffies 4294952981 (age 30.180s)
-  hex dump (first 32 bytes):
-    01 00 03 00 00 00 00 00 00 00 00 00 05 00 00 00  ................
-    1e 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000cbd981b5>] __vmalloc_node_range+0x3a5/0x410 mm/vmalloc.c:2587
-    [<000000003278951f>] __vmalloc_node mm/vmalloc.c:2619 [inline]
-    [<000000003278951f>] __vmalloc+0x49/0x50 mm/vmalloc.c:2633
-    [<00000000cc2e0bf4>] bpf_prog_alloc_no_stats+0x32/0x160 kernel/bpf/core.c:85
-    [<00000000b872251d>] bpf_prog_alloc+0x24/0xc0 kernel/bpf/core.c:113
-    [<00000000bf2ace46>] bpf_prog_create_from_user+0x6e/0x2b0 net/core/filter.c:1413
-    [<00000000e9cc9030>] seccomp_prepare_filter kernel/seccomp.c:661 [inline]
-    [<00000000e9cc9030>] seccomp_prepare_user_filter kernel/seccomp.c:698 [inline]
-    [<00000000e9cc9030>] seccomp_set_mode_filter kernel/seccomp.c:1802 [inline]
-    [<00000000e9cc9030>] do_seccomp+0x41c/0x11c0 kernel/seccomp.c:1922
-    [<000000004b7de4b6>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000003adb0cc6>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888117212800 (size 1024):
-  comm "syz-executor670", pid 10148, jiffies 4294952981 (age 30.180s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<000000003fd1055c>] kmalloc include/linux/slab.h:552 [inline]
-    [<000000003fd1055c>] kzalloc include/linux/slab.h:682 [inline]
-    [<000000003fd1055c>] bpf_prog_alloc_no_stats+0x7d/0x160 kernel/bpf/core.c:89
-    [<00000000b872251d>] bpf_prog_alloc+0x24/0xc0 kernel/bpf/core.c:113
-    [<00000000bf2ace46>] bpf_prog_create_from_user+0x6e/0x2b0 net/core/filter.c:1413
-    [<00000000e9cc9030>] seccomp_prepare_filter kernel/seccomp.c:661 [inline]
-    [<00000000e9cc9030>] seccomp_prepare_user_filter kernel/seccomp.c:698 [inline]
-    [<00000000e9cc9030>] seccomp_set_mode_filter kernel/seccomp.c:1802 [inline]
-    [<00000000e9cc9030>] do_seccomp+0x41c/0x11c0 kernel/seccomp.c:1922
-    [<000000004b7de4b6>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000003adb0cc6>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff8881186046e0 (size 32):
-  comm "syz-executor670", pid 10148, jiffies 4294952981 (age 30.180s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 a0 55 77 18 81 88 ff ff  .........Uw.....
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<000000002f7bb5fc>] kmalloc include/linux/slab.h:552 [inline]
-    [<000000002f7bb5fc>] bpf_prog_store_orig_filter+0x33/0xa0 net/core/filter.c:1135
-    [<00000000b2023fc7>] bpf_prog_create_from_user+0xfe/0x2b0 net/core/filter.c:1426
-    [<00000000e9cc9030>] seccomp_prepare_filter kernel/seccomp.c:661 [inline]
-    [<00000000e9cc9030>] seccomp_prepare_user_filter kernel/seccomp.c:698 [inline]
-    [<00000000e9cc9030>] seccomp_set_mode_filter kernel/seccomp.c:1802 [inline]
-    [<00000000e9cc9030>] do_seccomp+0x41c/0x11c0 kernel/seccomp.c:1922
-    [<000000004b7de4b6>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000003adb0cc6>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff8881187755a0 (size 32):
-  comm "syz-executor670", pid 10148, jiffies 4294952981 (age 30.180s)
-  hex dump (first 32 bytes):
-    06 00 00 00 ff ff ff 7f 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<000000002ba3f45d>] kmemdup+0x23/0x50 mm/util.c:128
-    [<000000001aee1a49>] kmemdup include/linux/string.h:520 [inline]
-    [<000000001aee1a49>] bpf_prog_store_orig_filter+0x5e/0xa0 net/core/filter.c:1142
-    [<00000000b2023fc7>] bpf_prog_create_from_user+0xfe/0x2b0 net/core/filter.c:1426
-    [<00000000e9cc9030>] seccomp_prepare_filter kernel/seccomp.c:661 [inline]
-    [<00000000e9cc9030>] seccomp_prepare_user_filter kernel/seccomp.c:698 [inline]
-    [<00000000e9cc9030>] seccomp_set_mode_filter kernel/seccomp.c:1802 [inline]
-    [<00000000e9cc9030>] do_seccomp+0x41c/0x11c0 kernel/seccomp.c:1922
-    [<000000004b7de4b6>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000003adb0cc6>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffffffffa0050000 (size 4096):
-  comm "syz-executor670", pid 10148, jiffies 4294952981 (age 30.180s)
-  hex dump (first 32 bytes):
-    01 00 00 00 cc cc cc cc cc cc cc cc cc cc cc cc  ................
-    cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc  ................
-  backtrace:
-    [<00000000cbd981b5>] __vmalloc_node_range+0x3a5/0x410 mm/vmalloc.c:2587
-    [<00000000c67b690b>] module_alloc+0x4f/0x60 arch/x86/kernel/module.c:75
-    [<00000000ee2a4550>] bpf_jit_binary_alloc+0xb9/0x180 kernel/bpf/core.c:868
-    [<00000000c863a6a8>] bpf_int_jit_compile+0x1bb/0x6c0 arch/x86/net/bpf_jit_comp.c:2075
-    [<00000000b342f60a>] bpf_prog_select_runtime+0x244/0x390 kernel/bpf/core.c:1809
-    [<000000005f5008b0>] bpf_migrate_filter+0x188/0x1f0 net/core/filter.c:1294
-    [<00000000fea53340>] bpf_prepare_filter net/core/filter.c:1342 [inline]
-    [<00000000fea53340>] bpf_prog_create_from_user+0x24d/0x2b0 net/core/filter.c:1436
-    [<00000000e9cc9030>] seccomp_prepare_filter kernel/seccomp.c:661 [inline]
-    [<00000000e9cc9030>] seccomp_prepare_user_filter kernel/seccomp.c:698 [inline]
-    [<00000000e9cc9030>] seccomp_set_mode_filter kernel/seccomp.c:1802 [inline]
-    [<00000000e9cc9030>] do_seccomp+0x41c/0x11c0 kernel/seccomp.c:1922
-    [<000000004b7de4b6>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000003adb0cc6>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888118765f00 (size 256):
-  comm "syz-executor670", pid 10148, jiffies 4294952981 (age 31.620s)
-  hex dump (first 32 bytes):
-    01 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<0000000021396b5e>] kmalloc include/linux/slab.h:552 [inline]
-    [<0000000021396b5e>] kzalloc include/linux/slab.h:682 [inline]
-    [<0000000021396b5e>] seccomp_prepare_filter kernel/seccomp.c:656 [inline]
-    [<0000000021396b5e>] seccomp_prepare_user_filter kernel/seccomp.c:698 [inline]
-    [<0000000021396b5e>] seccomp_set_mode_filter kernel/seccomp.c:1802 [inline]
-    [<0000000021396b5e>] do_seccomp+0x3d2/0x11c0 kernel/seccomp.c:1922
-    [<000000004b7de4b6>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000003adb0cc6>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffffc90000ebf000 (size 4096):
-  comm "syz-executor670", pid 10148, jiffies 4294952981 (age 31.620s)
-  hex dump (first 32 bytes):
-    01 00 03 00 00 00 00 00 00 00 00 00 05 00 00 00  ................
-    1e 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000cbd981b5>] __vmalloc_node_range+0x3a5/0x410 mm/vmalloc.c:2587
-    [<000000003278951f>] __vmalloc_node mm/vmalloc.c:2619 [inline]
-    [<000000003278951f>] __vmalloc+0x49/0x50 mm/vmalloc.c:2633
-    [<00000000cc2e0bf4>] bpf_prog_alloc_no_stats+0x32/0x160 kernel/bpf/core.c:85
-    [<00000000b872251d>] bpf_prog_alloc+0x24/0xc0 kernel/bpf/core.c:113
-    [<00000000bf2ace46>] bpf_prog_create_from_user+0x6e/0x2b0 net/core/filter.c:1413
-    [<00000000e9cc9030>] seccomp_prepare_filter kernel/seccomp.c:661 [inline]
-    [<00000000e9cc9030>] seccomp_prepare_user_filter kernel/seccomp.c:698 [inline]
-    [<00000000e9cc9030>] seccomp_set_mode_filter kernel/seccomp.c:1802 [inline]
-    [<00000000e9cc9030>] do_seccomp+0x41c/0x11c0 kernel/seccomp.c:1922
-    [<000000004b7de4b6>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000003adb0cc6>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff888117212800 (size 1024):
-  comm "syz-executor670", pid 10148, jiffies 4294952981 (age 31.620s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<000000003fd1055c>] kmalloc include/linux/slab.h:552 [inline]
-    [<000000003fd1055c>] kzalloc include/linux/slab.h:682 [inline]
-    [<000000003fd1055c>] bpf_prog_alloc_no_stats+0x7d/0x160 kernel/bpf/core.c:89
-    [<00000000b872251d>] bpf_prog_alloc+0x24/0xc0 kernel/bpf/core.c:113
-    [<00000000bf2ace46>] bpf_prog_create_from_user+0x6e/0x2b0 net/core/filter.c:1413
-    [<00000000e9cc9030>] seccomp_prepare_filter kernel/seccomp.c:661 [inline]
-    [<00000000e9cc9030>] seccomp_prepare_user_filter kernel/seccomp.c:698 [inline]
-    [<00000000e9cc9030>] seccomp_set_mode_filter kernel/seccomp.c:1802 [inline]
-    [<00000000e9cc9030>] do_seccomp+0x41c/0x11c0 kernel/seccomp.c:1922
-    [<000000004b7de4b6>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000003adb0cc6>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff8881186046e0 (size 32):
-  comm "syz-executor670", pid 10148, jiffies 4294952981 (age 31.620s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 a0 55 77 18 81 88 ff ff  .........Uw.....
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<000000002f7bb5fc>] kmalloc include/linux/slab.h:552 [inline]
-    [<000000002f7bb5fc>] bpf_prog_store_orig_filter+0x33/0xa0 net/core/filter.c:1135
-    [<00000000b2023fc7>] bpf_prog_create_from_user+0xfe/0x2b0 net/core/filter.c:1426
-    [<00000000e9cc9030>] seccomp_prepare_filter kernel/seccomp.c:661 [inline]
-    [<00000000e9cc9030>] seccomp_prepare_user_filter kernel/seccomp.c:698 [inline]
-    [<00000000e9cc9030>] seccomp_set_mode_filter kernel/seccomp.c:1802 [inline]
-    [<00000000e9cc9030>] do_seccomp+0x41c/0x11c0 kernel/seccomp.c:1922
-    [<000000004b7de4b6>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000003adb0cc6>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff8881187755a0 (size 32):
-  comm "syz-executor670", pid 10148, jiffies 4294952981 (age 31.620s)
-  hex dump (first 32 bytes):
-    06 00 00 00 ff ff ff 7f 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<000000002ba3f45d>] kmemdup+0x23/0x50 mm/util.c:128
-    [<000000001aee1a49>] kmemdup include/linux/string.h:520 [inline]
-    [<000000001aee1a49>] bpf_prog_store_orig_filter+0x5e/0xa0 net/core/filter.c:1142
-    [<00000000b2023fc7>] bpf_prog_create_from_user+0xfe/0x2b0 net/core/filter.c:1426
-    [<00000000e9cc9030>] seccomp_prepare_filter kernel/seccomp.c:661 [inline]
-    [<00000000e9cc9030>] seccomp_prepare_user_filter kernel/seccomp.c:698 [inline]
-    [<00000000e9cc9030>] seccomp_set_mode_filter kernel/seccomp.c:1802 [inline]
-    [<00000000e9cc9030>] do_seccomp+0x41c/0x11c0 kernel/seccomp.c:1922
-    [<000000004b7de4b6>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000003adb0cc6>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffffffffa0050000 (size 4096):
-  comm "syz-executor670", pid 10148, jiffies 4294952981 (age 31.620s)
-  hex dump (first 32 bytes):
-    01 00 00 00 cc cc cc cc cc cc cc cc cc cc cc cc  ................
-    cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc  ................
-  backtrace:
-    [<00000000cbd981b5>] __vmalloc_node_range+0x3a5/0x410 mm/vmalloc.c:2587
-    [<00000000c67b690b>] module_alloc+0x4f/0x60 arch/x86/kernel/module.c:75
-    [<00000000ee2a4550>] bpf_jit_binary_alloc+0xb9/0x180 kernel/bpf/core.c:868
-    [<00000000c863a6a8>] bpf_int_jit_compile+0x1bb/0x6c0 arch/x86/net/bpf_jit_comp.c:2075
-    [<00000000b342f60a>] bpf_prog_select_runtime+0x244/0x390 kernel/bpf/core.c:1809
-    [<000000005f5008b0>] bpf_migrate_filter+0x188/0x1f0 net/core/filter.c:1294
-    [<00000000fea53340>] bpf_prepare_filter net/core/filter.c:1342 [inline]
-    [<00000000fea53340>] bpf_prog_create_from_user+0x24d/0x2b0 net/core/filter.c:1436
-    [<00000000e9cc9030>] seccomp_prepare_filter kernel/seccomp.c:661 [inline]
-    [<00000000e9cc9030>] seccomp_prepare_user_filter kernel/seccomp.c:698 [inline]
-    [<00000000e9cc9030>] seccomp_set_mode_filter kernel/seccomp.c:1802 [inline]
-    [<00000000e9cc9030>] do_seccomp+0x41c/0x11c0 kernel/seccomp.c:1922
-    [<000000004b7de4b6>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<000000003adb0cc6>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-
-
+Signed-off-by: Dmitrii Banshchikov <me@ubique.spb.ru>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ include/linux/bpf.h   |  1 +
+ kernel/bpf/btf.c      | 25 ++++++++++++++-----------
+ kernel/bpf/verifier.c |  2 +-
+ 3 files changed, 16 insertions(+), 12 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index cccaef1088ea..6946e8e6640a 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -505,6 +505,7 @@ enum bpf_cgroup_storage_type {
+  * See include/trace/bpf_probe.h
+  */
+ #define MAX_BPF_FUNC_ARGS 12
++#define MAX_BPF_FUNC_REGISTER_ARGS 5
+ 
+ struct btf_func_model {
+ 	u8 ret_size;
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 2efeb5f4b343..c6474d5a9178 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -4594,8 +4594,10 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
+ 	}
+ 	arg = off / 8;
+ 	args = (const struct btf_param *)(t + 1);
+-	/* if (t == NULL) Fall back to default BPF prog with 5 u64 arguments */
+-	nr_args = t ? btf_type_vlen(t) : 5;
++	/* if (t == NULL) Fall back to default BPF prog with
++	 * MAX_BPF_FUNC_REGISTER_ARGS u64 arguments.
++	 */
++	nr_args = t ? btf_type_vlen(t) : MAX_BPF_FUNC_REGISTER_ARGS;
+ 	if (prog->aux->attach_btf_trace) {
+ 		/* skip first 'void *__data' argument in btf_trace_##name typedef */
+ 		args++;
+@@ -4651,7 +4653,7 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
+ 		}
+ 	} else {
+ 		if (!t)
+-			/* Default prog with 5 args */
++			/* Default prog with MAX_BPF_FUNC_REGISTER_ARGS args */
+ 			return true;
+ 		t = btf_type_by_id(btf, args[arg].type);
+ 	}
+@@ -5102,12 +5104,12 @@ int btf_distill_func_proto(struct bpf_verifier_log *log,
+ 
+ 	if (!func) {
+ 		/* BTF function prototype doesn't match the verifier types.
+-		 * Fall back to 5 u64 args.
++		 * Fall back to MAX_BPF_FUNC_REGISTER_ARGS u64 args.
+ 		 */
+-		for (i = 0; i < 5; i++)
++		for (i = 0; i < MAX_BPF_FUNC_REGISTER_ARGS; i++)
+ 			m->arg_size[i] = 8;
+ 		m->ret_size = 8;
+-		m->nr_args = 5;
++		m->nr_args = MAX_BPF_FUNC_REGISTER_ARGS;
+ 		return 0;
+ 	}
+ 	args = (const struct btf_param *)(func + 1);
+@@ -5330,8 +5332,9 @@ int btf_check_func_arg_match(struct bpf_verifier_env *env, int subprog,
+ 	}
+ 	args = (const struct btf_param *)(t + 1);
+ 	nargs = btf_type_vlen(t);
+-	if (nargs > 5) {
+-		bpf_log(log, "Function %s has %d > 5 args\n", tname, nargs);
++	if (nargs > MAX_BPF_FUNC_REGISTER_ARGS) {
++		bpf_log(log, "Function %s has %d > %d args\n", tname, nargs,
++			MAX_BPF_FUNC_REGISTER_ARGS);
+ 		goto out;
+ 	}
+ 
+@@ -5460,9 +5463,9 @@ int btf_prepare_func_args(struct bpf_verifier_env *env, int subprog,
+ 	}
+ 	args = (const struct btf_param *)(t + 1);
+ 	nargs = btf_type_vlen(t);
+-	if (nargs > 5) {
+-		bpf_log(log, "Global function %s() with %d > 5 args. Buggy compiler.\n",
+-			tname, nargs);
++	if (nargs > MAX_BPF_FUNC_REGISTER_ARGS) {
++		bpf_log(log, "Global function %s() with %d > %d args. Buggy compiler.\n",
++			tname, nargs, MAX_BPF_FUNC_REGISTER_ARGS);
+ 		return -EINVAL;
+ 	}
+ 	/* check that function returns int */
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 3d34ba492d46..e3ad5d6f42bb 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -5544,7 +5544,7 @@ static int check_helper_call(struct bpf_verifier_env *env, int func_id, int insn
+ 
+ 	meta.func_id = func_id;
+ 	/* check args */
+-	for (i = 0; i < 5; i++) {
++	for (i = 0; i < MAX_BPF_FUNC_REGISTER_ARGS; i++) {
+ 		err = check_func_arg(env, i, &meta, fn);
+ 		if (err)
+ 			return err;
+-- 
+2.25.1
+
