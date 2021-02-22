@@ -2,172 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F0B32224B
-	for <lists+bpf@lfdr.de>; Mon, 22 Feb 2021 23:43:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96F0E32226F
+	for <lists+bpf@lfdr.de>; Mon, 22 Feb 2021 23:57:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231783AbhBVWmo (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Feb 2021 17:42:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53286 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231864AbhBVWml (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 22 Feb 2021 17:42:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614033674;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=53OtEMVkEcCPkrIACC+vFNJAFJJ60PKUMz7mtzOX9co=;
-        b=E1BuXN3kfyEMjC0hzPK5ygF29US9IAgf2ZubOBnxwaSJxG7PwyDUF12neJ/WxyvGs3iVDu
-        iFkqBzNwV2HvCUeeK+Rf+wbTmPwEbY1ynzzsGkCv9Gp1JPqKLLYLrklh/GEYrQCl+rVmtw
-        YD4/3ouMDlc6G5kxDMH8EhZDhAcev9E=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-425-jYyiEdH-OAyEiGiQqjXDKw-1; Mon, 22 Feb 2021 17:41:13 -0500
-X-MC-Unique: jYyiEdH-OAyEiGiQqjXDKw-1
-Received: by mail-ed1-f71.google.com with SMTP id ch30so3974824edb.14
-        for <bpf@vger.kernel.org>; Mon, 22 Feb 2021 14:41:12 -0800 (PST)
+        id S231982AbhBVW5E (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Feb 2021 17:57:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232043AbhBVW5C (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Feb 2021 17:57:02 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11F3CC061574
+        for <bpf@vger.kernel.org>; Mon, 22 Feb 2021 14:56:22 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id 75so11165068pgf.13
+        for <bpf@vger.kernel.org>; Mon, 22 Feb 2021 14:56:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oMEyLHldf6jylYR750dmdVQVYOTW1/PXbP41XeNHHuc=;
+        b=E+m6j8jJGjKqDgwAlP4MjJcqyAVTnS8+VN/ZnWYNlTI9xSuw21rpe16S2dy5tbyiwb
+         U/VLFZ8my5anoNMqmBag6niSIiOGZFjqJwgVE6/oBUenNTEvjLXKx4YQiiJqUkq04zAe
+         fGByTVp2RqKVogZfNfCUStKevlPxkquvZ44vWsODQ/Sp8GguJE3oz75V0+izLJle+CZW
+         DCidmoo37uUrsN1Eer94V68KDZZddOmggGhDAN7lWiaXLQKKDmJgBsnMpbRTsaHmrEki
+         qvou9ZKrpHMQkaVr8XaaBkvcxW+pUy+6isNB+emOqZi9Ha5/RLcQi5C6D+T4umIAFMqp
+         LTAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=53OtEMVkEcCPkrIACC+vFNJAFJJ60PKUMz7mtzOX9co=;
-        b=oL6ENRhWAblYD3d9SvMTKmrbqXa/eL6I6uUAvPHuCk6xuOaYmA3R/V9syttVG4AkbL
-         YB49mJRUiiVCTjRlrhCUEYCkmbPhgpuWfdbg22YsRASeQH7Qktc6/62u9qDMOis6IYIW
-         KAphs9vGHwabkEk5LAIdZ9bifrYbQkmcNXcnm1rt+F7Qse8UWBgYcT5JJl5Flx9mFLQL
-         7GtyIkMevaZQgRqGBcqrltg6C1eHy6s501okP6gZaPhY8/qSxs4f7TQk5/ho1fWvF0x5
-         1aCbESpkx+DSAHt76CkdGtZbfpktJbwqt1hysYTPw9IDB+QRtvDHpxrj9f6QXYqrbyid
-         mCcw==
-X-Gm-Message-State: AOAM531VaB4N5LZS/82kHYhxhHkWk+evJN9L05N8Sx+U9uT4sc1+5KRT
-        nk0cGDtY8pfHgOZKyRNrvi9MJXLR7hVFAq6BS0VzCERWfhfoMkwbKWAGuO2xgx/92Z3mwYRnjvM
-        nxZkViBpvIRZv
-X-Received: by 2002:a17:906:1cc2:: with SMTP id i2mr23710559ejh.320.1614033671923;
-        Mon, 22 Feb 2021 14:41:11 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwimIiDWi1pDXEOtIz1aEL9xfyGlrobJdFJc51yPVfo0MCeKRGyhtQJwEjLCuGAMyXCaX3Lig==
-X-Received: by 2002:a17:906:1cc2:: with SMTP id i2mr23710544ejh.320.1614033671763;
-        Mon, 22 Feb 2021 14:41:11 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id p3sm2829770edu.64.2021.02.22.14.41.10
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oMEyLHldf6jylYR750dmdVQVYOTW1/PXbP41XeNHHuc=;
+        b=Vt0uWKs2MJSCzEeaNB0J6uVC/Qzslbf5yaVJwM+H58nOPVrzInvEzX6jbK2JwwTefY
+         ZFzp7MV4QUoM+8FkIm2Pe0tE363T3vw1qfQPxmowloRsQ62p90IzyxSkUB4Ui15N3ycs
+         bKDGDX3ovImhn4yw/AZLyByBXUXdc0OPB8+rg+ns9kI8Indgjas6Aa06Mw7RE+1Q6mCl
+         UFKlJo3YfcuCBoEDWYgFG3gtOdrjgBP39KeLKPUk47KC4iy6cRvMYaRbBbsh4mThjR3O
+         Tzv5HAZEheiIBYBl5VG+PQGUJDXXRjOP9RYTgHiMbhJzsSXaRhTliPfeJir4rCeu9ZJ7
+         p3JA==
+X-Gm-Message-State: AOAM530AWtysiXGvwzz5uOEtLj7rZNBDf9X0YtNhJWbfZ8lUsiwkVkWp
+        OMM/xDGY+Ni0dD/sF4bygJI=
+X-Google-Smtp-Source: ABdhPJzgNfkWiOULZcz5zwcz/cHZLdbC9SmVYUVVKkkmSsqNA+B2ajFjHC8H63lf/cwG0NxtKw9fFw==
+X-Received: by 2002:a63:f648:: with SMTP id u8mr10829792pgj.270.1614034581576;
+        Mon, 22 Feb 2021 14:56:21 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:b9ca])
+        by smtp.gmail.com with ESMTPSA id 7sm20080734pfh.142.2021.02.22.14.56.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 14:41:10 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 85DD0180676; Mon, 22 Feb 2021 23:41:10 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     "Brian G. Merrell" <brian.g.merrell@gmail.com>
-Cc:     xdp-newbies@vger.kernel.org,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Maciej =?utf-8?Q?=C5=BBenczykowski?= <maze@google.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        Andrey Ignatov <rdna@fb.com>, bpf@vger.kernel.org
-Subject: Re: How to orchestrate multiple XDP programs
-In-Reply-To: <20210222193459.hxvlcq65yyh3b6dr@snout.localdomain>
-References: <873605din6.fsf@toke.dk> <87tur0x874.fsf@toke.dk>
- <20210210222710.7xl56xffdohvsko4@snout.localdomain>
- <874kiirgx3.fsf@toke.dk>
- <20210212065148.ajtbx2xos6yomrzc@snout.localdomain>
- <87h7mdcxbd.fsf@toke.dk>
- <20210217012012.qfdhimcyniw6dlve@snout.localdomain>
- <87ft1un121.fsf@toke.dk>
- <20210217222714.evijmkyucbnlqh3d@snout.localdomain>
- <87pn0xl553.fsf@toke.dk>
- <20210222193459.hxvlcq65yyh3b6dr@snout.localdomain>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 22 Feb 2021 23:41:10 +0100
-Message-ID: <87v9ajg1yx.fsf@toke.dk>
+        Mon, 22 Feb 2021 14:56:21 -0800 (PST)
+Date:   Mon, 22 Feb 2021 14:56:19 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Yonghong Song <yhs@fb.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next v2 05/11] bpf: add hashtab support for
+ bpf_for_each_map_elem() helper
+Message-ID: <20210222225619.iakpkks7htobsdlk@ast-mbp.dhcp.thefacebook.com>
+References: <20210217181803.3189437-1-yhs@fb.com>
+ <20210217181808.3190262-1-yhs@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210217181808.3190262-1-yhs@fb.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-"Brian G. Merrell" <brian.g.merrell@gmail.com> writes:
+On Wed, Feb 17, 2021 at 10:18:08AM -0800, Yonghong Song wrote:
+> +			ret = BPF_CAST_CALL(callback_fn)((u64)(long)map,
+> +					(u64)(long)key, (u64)(long)val,
+> +					(u64)(long)callback_ctx, 0);
+> +			if (ret) {
+> +				rcu_read_unlock();
+> +				ret = (ret == 1) ? 0 : -EINVAL;
+> +				goto out;
 
-> On 21/02/18 05:20PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
->> "Brian G. Merrell" <brian.g.merrell@gmail.com> writes:
->
->> >> > We explicitly do not want defaults set by program authors. We want =
-that
->> >> > policy to be completely in the hands of the orchestration environme=
-nt.
->> >>=20
->> >> Right, OK. How does the admin configuring the orchestration system
->> >> figure out which order to run programs in, BTW? Is this obvious from =
-the
->> >> nature of the programs, or do you document it out of band somewhere, =
-or
->> >> something like that?
->> >
->> > We're a pretty huge organization... lots of DCs, public cloud, private
->> > cloud, different kernel versions, sister companies, hundreds of
->> > applications, etc. We want anyone to be able to write cool BPF
->> > programs and userspace applications without needing awareness of
->> > what's running before or after or if that order might change in the
->> > future. I'm sure the desired order will be more obvious for some
->> > programs than others, but we have administrators that can analyze the
->> > BPF programs, compose multiple BPF programs together, and order and
->> > reorder them. We have a team of people that can work with teams to
->> > resolve any interdependencies if necessary.
->> >
->> > As an example, we've done something similar for HTTP ingress and
->> > egress Lua plugins in the past. We have dozens of teams that write Lua
->> > code to do custom L7 things with HTTP requests and responses, and then
->> > we have a UI where admins/ops folks can literally drag and drog the
->> > plugins into the desired order. We wouldn't want teams making
->> > assumptions about what order plugins should run in, either.
->>=20
->>=20
->> See, so this is the part that's actually analogous to what we want to do
->> as a distro. Except the people writing the cool BPF programs are
->> different software vendors and open source projects, not different
->> divisions within the same sprawling org. But in a sense the situation is
->> quite similar.
->>=20
->> So thinking a bit more about the difference between your orchestration
->> system and the model I've been working from, I think the biggest
->> difference is not that you are assuming control of a system with an
->> orchestration system. In a sense a distro is also an orchestration
->> system bringing together different software from different sources.
->>=20
->> No, I think the main difference is that in the model you described,
->> you're assuming that your orchestration system would install the XDP
->> program on behalf of the application as well as launch the userspace
->> bits.
->
-> Yes, that's right. This is the model we are implementing.
->
->> Whereas I'm assuming that an application that uses XDP will start
->> in userspace (launched by systemd, most likely), and will then load its
->> own XDP program after possibly doing some initialisation first (e.g.,
->> pre-populating maps, that sort of thing).
->>=20
->> From what I've understood from what you explained about your setup, your
->> model could work with both models as well; so why are you assuming that
->> applications won't want to install their own XDP programs? :)
->
-> I would just say that in our organizations network and administration
-> environment, we ideally want a centralized orchestration tooling and
-> control plane that is used for all XDP (and tc) programs running on our
-> machines with our model described above.
+There is a tnum(0,1) check in patch 4.
+I'm missing the purpose of this additional check.
 
-Right, sure, I'm not disputing this model is useful as well, I'm just
-wondering about how you envision the details working. Say your
-orchestration system installs an XDP program on behalf of an application
-and then launches the userspace component (assuming one exists). How is
-that userspace program supposed to obtain a file descriptor for the
-map(s) used by the XDP program in order to communicate with it?
-
-> That said, I do see your point about the possibility of using some
-> other application that runs its own XDP programs, and then, yes, we
-> would definitely want some way to control the priority. Ideally, the
-> application would have its own configuration to set priorities, but I
-> do think the system configuration file is a good way to ensure that
-> the sysadmin does have the power to override if necessary.
->
-> I think you're right that both models should be able to be used.
-> Thanks for the good discussion.
-
-Yeah, you too! Always good to have someone to bounce ideas off of :)
-
--Toke
-
+> +			}
+> +		}
+> +		rcu_read_unlock();
+> +	}
+> +out:
+> +	migrate_enable();
+> +	return ret ?: num_calls;
+> +}
