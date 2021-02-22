@@ -2,304 +2,135 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7221E322029
-	for <lists+bpf@lfdr.de>; Mon, 22 Feb 2021 20:31:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D5D3322034
+	for <lists+bpf@lfdr.de>; Mon, 22 Feb 2021 20:34:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233193AbhBVTaH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Feb 2021 14:30:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233361AbhBVT14 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Feb 2021 14:27:56 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA65BC0617AA;
-        Mon, 22 Feb 2021 11:27:16 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id q20so7199548pfu.8;
-        Mon, 22 Feb 2021 11:27:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Tt8kKDQWH1Fezn3VWHTDtINTZKBtrHB/EcW0kFcmEAI=;
-        b=Dll0eaw37WydbTbdMvN5cUAloEt2MuzwkFu71mWn2AWuYBB1jkHwCkNWmzlzc8iy2T
-         fSLFykC0ZrysaFjg3CJD3M9RMzVsg65mlWaJISW1c2NG9z0JpYWd2/q0/WTDRC4FSuXp
-         K3oPLCgDZEWXOfGmZOVGuNp7eB+gpbZ7At+xVHsNvj3icEXFTTQwkEBHUAYBUAnW1PLU
-         H6k2lUS+NKHj2quQcZz1/AmSUbeLhUjkJJH4LTgPnLpd2DtON+1wqLO3iGh+yhfSSAwN
-         UM3A/U6460mUR8pxBK16MJFuZbv2FufqMf2Ih62ixQ3tWNVJU2xDNktsJd8fPdQSKoVM
-         iRfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Tt8kKDQWH1Fezn3VWHTDtINTZKBtrHB/EcW0kFcmEAI=;
-        b=Ynqr8KxMX8xotyryfEr2LQy48hYUMSeF6YM5ET1v/SHtmAjF9jyUmcRHlqLkoQM/p3
-         zkHmZiLvkHNuRaDEQhSgzhltX/VZanbG+1x7faQ+iEwSQBDtDSjCES+ESA3teVsCQhwJ
-         Kt7jPlVMEDjdD42kDWMNy+0sjTgF7vdjvyTpq5WtcCnH19OtLpCQgMtWYQZGwGfoKtwU
-         dSADkQn4hXK1ZqPzpDOUd4qbarCu1m8eJcsU6MCn+H/UrP1svbpFWcjGK4EZwr+BTaac
-         MgtvClmL8itJpDQ2Otl4HAFOvb/XAry6v7wcbbVn75vEIZSbqQea7gZTWja64PRN4ezA
-         OAew==
-X-Gm-Message-State: AOAM530EjyUjjHxw4F6VdG63+MP+QRT1Ryd7P4bdUVo0w2uu+Fe2AeEB
-        Z/abo+WRErKPehho48i+dnEUjGOggUnHWlw1lDU=
-X-Google-Smtp-Source: ABdhPJzaczl+9nOgeDRtZm7H9MhyjbvtsvZgSBlLOfmd6eYji+qoawTctYNI04GAG5o8lAvKFZgfOXuEtlkGhyjX66Y=
-X-Received: by 2002:a62:ed01:0:b029:1c8:c6c:16f0 with SMTP id
- u1-20020a62ed010000b02901c80c6c16f0mr15602502pfh.80.1614022036025; Mon, 22
- Feb 2021 11:27:16 -0800 (PST)
+        id S231755AbhBVTdf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Feb 2021 14:33:35 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:13430 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233305AbhBVTcN (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 22 Feb 2021 14:32:13 -0500
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 11MJJ2QR015937;
+        Mon, 22 Feb 2021 11:31:16 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=XxCuT3rbeIf7iCy9zs66Q2K8itTgXbtShXjaeAG+huc=;
+ b=IU5Qxo9Q2zt9l1W6X/s8KwlzxfTXC9oyXSzzDUcUAycJ8YU2Fme1v/zYJxG7Wl+/3PgP
+ qdqEMAV+XH7BEDtUFivdlBojpQ4f9HNr1qS68jPRa5A0uPs5BeKAU4btv1dG4fKbVrCD
+ EXn9wq/SWisjzhIOb7s7XvBirwg1dL2fBjc= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net with ESMTP id 36ukhy6rpd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 22 Feb 2021 11:31:16 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 22 Feb 2021 11:31:15 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CCpPaOOOyUTK75Jj8Xrg6IqK8ZEGpbRVqLjJqf7vcZnpR5wsIGzNwEJCvPgvwTqlJ+VkIp+iqed0wWKZTpVbOVDHJChXTjWKunCLhuYw+L6bIIPAXbxvCIKwKjXyBmb7VotMY9mVXg0HGguR0CNtC0ZLc3bBpEzauh/UDtaV3zn7hG1SNe9cG1mqr8Pro7TpvibqFFPQd3ihJvOxnTKmUGjrGNU4nArnNoKP6SlWxfByN5kOZDBawSIWDjQN1TyxoT/eJ64pXmxO+46qw7Qb02gYjTjNfP/3kt4mduc4viaGVv4xeceb73Y0/S9ONgZ3n1QLDjjBlvBwug5vf0/qdA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XxCuT3rbeIf7iCy9zs66Q2K8itTgXbtShXjaeAG+huc=;
+ b=meK8MjKmgpnbSytmRz4zINQuvX8QLcV1hxVjBpyLhtM9odAof5x7mr8D4hWX6qs//U3NE5agZKvYmUd7FeYSs4oiYJv+uW+7yI1KOoO5FGKOaoRNcH+SN1wJBxDv/PtH+xIzFO9MMmKXT9nkktk1oEzq88YoANya5+nh8RvcC+PvVanos+17Z70Vz+UYZWIuehljeTle3C7WXAzFZmodshgDR66vUFx+6ZfOothmm1z05tesM648BwZnBfi+WuOX8dUpEGhgjdGf6WNvvOmHlJC1mGprKHLFDIY9PWtjYdubw9rTzOIYO+ZzdairHQSx8nyDdnXFFFd5GomXFUvJTA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: ubique.spb.ru; dkim=none (message not signed)
+ header.d=none;ubique.spb.ru; dmarc=none action=none header.from=fb.com;
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by BYAPR15MB3464.namprd15.prod.outlook.com (2603:10b6:a03:10a::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.31; Mon, 22 Feb
+ 2021 19:31:14 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::2975:c9d8:3f7f:dbd0]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::2975:c9d8:3f7f:dbd0%5]) with mapi id 15.20.3868.032; Mon, 22 Feb 2021
+ 19:31:14 +0000
+Date:   Mon, 22 Feb 2021 11:31:11 -0800
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Dmitrii Banshchikov <me@ubique.spb.ru>
+CC:     <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andrii@kernel.org>, <songliubraving@fb.com>, <yhs@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@chromium.org>, <rdna@fb.com>
+Subject: Re: [PATCH v1 bpf-next] bpf: Drop imprecise log message
+Message-ID: <20210222193111.3koc5bo3czetwltx@kafai-mbp.dhcp.thefacebook.com>
+References: <20210221195729.92278-1-me@ubique.spb.ru>
+ <20210222091050.160161-1-me@ubique.spb.ru>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210222091050.160161-1-me@ubique.spb.ru>
+X-Originating-IP: [2620:10d:c090:400::5:daf9]
+X-ClientProxiedBy: MWHPR10CA0024.namprd10.prod.outlook.com (2603:10b6:301::34)
+ To BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
 MIME-Version: 1.0
-References: <20210220052924.106599-1-xiyou.wangcong@gmail.com>
- <20210220052924.106599-5-xiyou.wangcong@gmail.com> <87eeh847ko.fsf@cloudflare.com>
-In-Reply-To: <87eeh847ko.fsf@cloudflare.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Mon, 22 Feb 2021 11:27:04 -0800
-Message-ID: <CAM_iQpVS_sJy=sM31pHZVi6njZEAa7Hv_Bkt2sB7JcAjFw3guw@mail.gmail.com>
-Subject: Re: [Patch bpf-next v6 4/8] skmsg: move sk_redir from TCP_SKB_CB to skb
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, duanxiongchun@bytedance.com,
-        Dongdong Wang <wangdongdong.6@bytedance.com>,
-        Jiang Wang <jiang.wang@bytedance.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Lorenz Bauer <lmb@cloudflare.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:daf9) by MWHPR10CA0024.namprd10.prod.outlook.com (2603:10b6:301::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27 via Frontend Transport; Mon, 22 Feb 2021 19:31:13 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: cea4cb2f-7ba2-4a6b-26e6-08d8d7686ace
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3464:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB34641E8EB19A628ED9BAF555D5819@BYAPR15MB3464.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Zo1SQzGShdtqFVk07513KX5SMrPxeCifH8tZn8WY+TAkTREbbOLnmudZqTu5KpabpfhB/TmoaT9Ll0jzA/6ZfOVTQIRNMkfYV1e8zzv8czqWmw+wNChVq+d289T+hjaWpe0q5urhG1/1LrDoFPkvRypPhswfuof1/TprsV5Rt4Zkt+2gWO5WM6dnOuvwfuj7+6sWgYTFjd3Qa1VQlUo3biIE9eGL/FsB/kvyiC2M6AF6VFwpe37ypJC4vOF4rIDv5vejB8vg0zdWm0hitLfKkrnMnrh1VMInq92EWIWtZl0dZ3w1GGwhfeFvjEZKjf7Dv8/2Sj+zJyHEgkeD1cmdApCGjRLylhokN3TSjysommVsQ0yFQcXeBDF64Z/NbH9/rqduqFwmjoBYPl5CtIInvqd0R15IHHXOYtG7uVFkyr9Cgvoc3EP2yiNdWrjTUqD1SHamkLa0G4CAA9HeAdKETeDLWdHnFaSFwnav39BAyzJ1rVnRFgHNJR1CQ3HprKVka6Q+GqGMpIMsLpd3cFb0Dw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(366004)(376002)(396003)(39860400002)(4326008)(8936002)(316002)(6916009)(8676002)(2906002)(478600001)(86362001)(9686003)(55016002)(15650500001)(186003)(4744005)(16526019)(66556008)(66476007)(7696005)(6506007)(52116002)(1076003)(83380400001)(66946007)(5660300002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?fw0EKxGpzCUO4znYfmOz8rrdo8YQL73mJrzu8HA4foeagbTmp02qPbR408gn?=
+ =?us-ascii?Q?+YfL7rQlb1HYJmvSG5S1dn1c7B280TSTlMA7X/5v/fTp31zTy+7lrWdvzFpU?=
+ =?us-ascii?Q?Lf9qyMdAF/6nQcTbi4WaEG6QyX/fJ8i6V0lyIa7Oyd3W6xuhsId+G8fUpOCs?=
+ =?us-ascii?Q?V8H6Xua3+p/34tmS/V96MMeLYCvuy8yHA5KB4BDZds+IoSimgyri6acRJQBD?=
+ =?us-ascii?Q?PW3RwEcLQNfXVnptpV3BzTTAseEFzBQvXgShJ5xOFFvwK2PJM86wbsPhwWgH?=
+ =?us-ascii?Q?KuusiiU7c+tAYl3Z3EFby346MbNcyWFNmcmKVBoObqg7ynJC+VSX9mFMNtCY?=
+ =?us-ascii?Q?t4OK3rDG4qzUxjcZIo8pq4yglkIFHT03Q6B+4bzENG0wGBYs5op3ba8oEkzL?=
+ =?us-ascii?Q?3Ikre0/Q2wpnqp6ruDcWHliCC6klVB0/S6Tryej/BVHx9fBviuPeu7qXGp1g?=
+ =?us-ascii?Q?VP4E8mFrrssft0XeUpPB8AnF+nXHg+yJ/BU7n9MAC+Ltxn2COUa7ww167EoC?=
+ =?us-ascii?Q?9KQ08ncInGNzZL3cu2AMnbNpE4nMpwGm3xmZ9t3YzmQ68xZ9066fF5rhJZK/?=
+ =?us-ascii?Q?me6t05u5JmQTxcoD5pMtRZFGHhiCGe4B6L7n92gTtPOe7KEV3pt8HjFSxRkq?=
+ =?us-ascii?Q?ou/YmgPFF+MdJYZsxJMlVXDLVXQKqZrzN4D8dMFnIc+iwti0s6+sMtDZCkZz?=
+ =?us-ascii?Q?on+oHdkszhHugZnALWd0XnEp9Xz9ejO2IdlgYHOXv1QyfpMfgl3iiNQpNuZC?=
+ =?us-ascii?Q?iT7nV/7cOct74165+Oz+Tji8CkzK2Gw1KIjqte0tfi2RhXZPfnHgzatPwcdf?=
+ =?us-ascii?Q?IpTDdNtdcqCFjZg+kXOBV0DxuumR0+5LTw4KCnGYs8LBHN4dk4TtRHeJYw/y?=
+ =?us-ascii?Q?8YaIcZXMSfal7AnL63j/JNQ15ue6LBfddd1hH2XdYIo0qppMfxri6lxGqLpA?=
+ =?us-ascii?Q?kyZPexLs6j5y4Eii47V5bPhAbLQuFt7sFvu4XzEkhbG0ldBsR/XoTD7bX5LH?=
+ =?us-ascii?Q?pF4cH9HL+MFvZT5vfSUfq74ldN9O1M+Ctt3oJTfQlExq1xVQuMHB+FJBHcUE?=
+ =?us-ascii?Q?r9BlGRHD9XK0QvZBDrdag8w9WfMwapde25dDX/Mzu0N0ktgt5CYZv1NGBSs+?=
+ =?us-ascii?Q?bervJw81h0XIu1rncpJCsB3HonqwzO1kRX+5kCc7jrscRnRmFKPZ3qFJnMbc?=
+ =?us-ascii?Q?cnl/AuabwKtiU9zxZETWjfSit5WWN4WyogtvqEZfjg3ZhmeVoCCiysH2tZ8i?=
+ =?us-ascii?Q?d3X57kIaM0ejZVX9dkTBR8Hhx30Gv6s3hECt1g3N36dMh0qAfZTdfwA0/M6G?=
+ =?us-ascii?Q?2XGhVEQ7nBhWegjEWLPip0iDkfD93JWm+FRKOZpmdHDWwUVm9S0yolyynKL1?=
+ =?us-ascii?Q?Xyvp0/Y=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: cea4cb2f-7ba2-4a6b-26e6-08d8d7686ace
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Feb 2021 19:31:14.4799
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /uSr8rE/UNL8POl0cmKGPlVZG3DsfwldT1VsqlIRnmIrUHbADYp1i7tUgIAQaPTv
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3464
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-22_06:2021-02-22,2021-02-22 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
+ malwarescore=0 bulkscore=0 clxscore=1011 mlxlogscore=737 impostorscore=0
+ suspectscore=0 mlxscore=0 phishscore=0 adultscore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102220171
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 4:20 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->
-> On Sat, Feb 20, 2021 at 06:29 AM CET, Cong Wang wrote:
-> > From: Cong Wang <cong.wang@bytedance.com>
-> >
-> > Currently TCP_SKB_CB() is hard-coded in skmsg code, it certainly
-> > does not work for any other non-TCP protocols. We can move them to
-> > skb ext, but it introduces a memory allocation on fast path.
-> >
-> > Fortunately, we only need to a word-size to store all the information,
-> > because the flags actually only contains 1 bit so can be just packed
-> > into the lowest bit of the "pointer", which is stored as unsigned
-> > long.
-> >
-> > Inside struct sk_buff, '_skb_refdst' can be reused because skb dst is
-> > no longer needed after ->sk_data_ready() so we can just drop it.
-> >
-> > Cc: Daniel Borkmann <daniel@iogearbox.net>
-> > Cc: Jakub Sitnicki <jakub@cloudflare.com>
-> > Cc: Lorenz Bauer <lmb@cloudflare.com>
-> > Acked-by: John Fastabend <john.fastabend@gmail.com>
-> > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
-> > ---
->
-> LGTM. I have some questions (below) that would help me confirm if I
-> understand the changes, and what could be improved, if anything.
->
-> Acked-by: Jakub Sitnicki <jakub@cloudflare.com>
->
-> >  include/linux/skbuff.h |  3 +++
-> >  include/linux/skmsg.h  | 35 +++++++++++++++++++++++++++++++++++
-> >  include/net/tcp.h      | 19 -------------------
-> >  net/core/skmsg.c       | 32 ++++++++++++++++++++------------
-> >  net/core/sock_map.c    |  8 ++------
-> >  5 files changed, 60 insertions(+), 37 deletions(-)
-> >
-> > diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-> > index 6d0a33d1c0db..bd84f799c952 100644
-> > --- a/include/linux/skbuff.h
-> > +++ b/include/linux/skbuff.h
-> > @@ -755,6 +755,9 @@ struct sk_buff {
-> >                       void            (*destructor)(struct sk_buff *skb);
-> >               };
-> >               struct list_head        tcp_tsorted_anchor;
-> > +#ifdef CONFIG_NET_SOCK_MSG
-> > +             unsigned long           _sk_redir;
-> > +#endif
-> >       };
-> >
-> >  #if defined(CONFIG_NF_CONNTRACK) || defined(CONFIG_NF_CONNTRACK_MODULE)
-> > diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-> > index e3bb712af257..fc234d507fd7 100644
-> > --- a/include/linux/skmsg.h
-> > +++ b/include/linux/skmsg.h
-> > @@ -459,4 +459,39 @@ static inline bool sk_psock_strp_enabled(struct sk_psock *psock)
-> >               return false;
-> >       return !!psock->saved_data_ready;
-> >  }
-> > +
-> > +#if IS_ENABLED(CONFIG_NET_SOCK_MSG)
-> > +static inline bool skb_bpf_ingress(const struct sk_buff *skb)
-> > +{
-> > +     unsigned long sk_redir = skb->_sk_redir;
-> > +
-> > +     return sk_redir & BPF_F_INGRESS;
-> > +}
-> > +
-> > +static inline void skb_bpf_set_ingress(struct sk_buff *skb)
-> > +{
-> > +     skb->_sk_redir |= BPF_F_INGRESS;
-> > +}
-> > +
-> > +static inline void skb_bpf_set_redir(struct sk_buff *skb, struct sock *sk_redir,
-> > +                                  bool ingress)
-> > +{
-> > +     skb->_sk_redir = (unsigned long)sk_redir;
-> > +     if (ingress)
-> > +             skb->_sk_redir |= BPF_F_INGRESS;
-> > +}
-> > +
-> > +static inline struct sock *skb_bpf_redirect_fetch(const struct sk_buff *skb)
-> > +{
-> > +     unsigned long sk_redir = skb->_sk_redir;
-> > +
-> > +     sk_redir &= ~0x1UL;
->
-> We're using the enum when setting the bit flag, but a hardcoded constant
-> when masking it. ~BPF_F_INGRESS would be more consistent here.
+On Mon, Feb 22, 2021 at 01:10:50PM +0400, Dmitrii Banshchikov wrote:
+> Now it is possible for global function to have a pointer argument that
+> points to something different than struct. Drop the irrelevant log
+> message and keep the logic same.
+Acked-by: Martin KaFai Lau <kafai@fb.com>
 
-Well, here we need a mask, not a bit, but we don't have a mask yet,
-hence I just use hard-coded 0x1. Does #define BPF_F_MASK 0x1UL
-look any better?
-
-
->
-> > +     return (struct sock *)sk_redir;
-> > +}
-> > +
-> > +static inline void skb_bpf_redirect_clear(struct sk_buff *skb)
-> > +{
-> > +     skb->_sk_redir = 0;
-> > +}
-> > +#endif /* CONFIG_NET_SOCK_MSG */
-> >  #endif /* _LINUX_SKMSG_H */
-> > diff --git a/include/net/tcp.h b/include/net/tcp.h
-> > index 947ef5da6867..075de26f449d 100644
-> > --- a/include/net/tcp.h
-> > +++ b/include/net/tcp.h
-> > @@ -883,30 +883,11 @@ struct tcp_skb_cb {
-> >                       struct inet6_skb_parm   h6;
-> >  #endif
-> >               } header;       /* For incoming skbs */
-> > -             struct {
-> > -                     __u32 flags;
-> > -                     struct sock *sk_redir;
-> > -             } bpf;
-> >       };
-> >  };
-> >
-> >  #define TCP_SKB_CB(__skb)    ((struct tcp_skb_cb *)&((__skb)->cb[0]))
-> >
-> > -static inline bool tcp_skb_bpf_ingress(const struct sk_buff *skb)
-> > -{
-> > -     return TCP_SKB_CB(skb)->bpf.flags & BPF_F_INGRESS;
-> > -}
-> > -
-> > -static inline struct sock *tcp_skb_bpf_redirect_fetch(struct sk_buff *skb)
-> > -{
-> > -     return TCP_SKB_CB(skb)->bpf.sk_redir;
-> > -}
-> > -
-> > -static inline void tcp_skb_bpf_redirect_clear(struct sk_buff *skb)
-> > -{
-> > -     TCP_SKB_CB(skb)->bpf.sk_redir = NULL;
-> > -}
-> > -
-> >  extern const struct inet_connection_sock_af_ops ipv4_specific;
-> >
-> >  #if IS_ENABLED(CONFIG_IPV6)
-> > diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-> > index 2d8bbb3fd87c..05b5af09ff42 100644
-> > --- a/net/core/skmsg.c
-> > +++ b/net/core/skmsg.c
-> > @@ -494,6 +494,8 @@ static int sk_psock_skb_ingress_self(struct sk_psock *psock, struct sk_buff *skb
-> >  static int sk_psock_handle_skb(struct sk_psock *psock, struct sk_buff *skb,
-> >                              u32 off, u32 len, bool ingress)
-> >  {
-> > +     skb_bpf_redirect_clear(skb);
->
-> This is called to avoid leaking state in skb->_skb_refdst. Correct?
-
-This is to teach kfree_skb() not to consider it as a valid _skb_refdst.
-
->
-> I'm wondering why we're doing it every time sk_psock_handle_skb() gets
-> invoked from the do/while loop in sk_psock_backlog(), instead of doing
-> it once after reading ingress flag with skb_bpf_ingress()?
-
-It should also work, I don't see much difference here, as we almost
-always process a full skb, that is, ret == skb->len.
-
-
->
-> > +
-> >       if (!ingress) {
-> >               if (!sock_writeable(psock->sk))
-> >                       return -EAGAIN;
-> > @@ -525,7 +527,7 @@ static void sk_psock_backlog(struct work_struct *work)
-> >               len = skb->len;
-> >               off = 0;
-> >  start:
-> > -             ingress = tcp_skb_bpf_ingress(skb);
-> > +             ingress = skb_bpf_ingress(skb);
-> >               do {
-> >                       ret = -EIO;
-> >                       if (likely(psock->sk->sk_socket))
-> > @@ -631,7 +633,12 @@ void __sk_psock_purge_ingress_msg(struct sk_psock *psock)
-> >
-> >  static void sk_psock_zap_ingress(struct sk_psock *psock)
-> >  {
-> > -     __skb_queue_purge(&psock->ingress_skb);
-> > +     struct sk_buff *skb;
-> > +
-> > +     while ((skb = __skb_dequeue(&psock->ingress_skb)) != NULL) {
-> > +             skb_bpf_redirect_clear(skb);
->
-> I believe we clone the skb before enqueuing it psock->ingress_skb.
-> Clone happens either in sk_psock_verdict_recv() or in __strp_recv().
-> There are not other users holding a ref, so clearing the redirect seems
-> unneeded. Unless I'm missing something?
-
-Yes, skb dst is also cloned:
-
- 980 static void __copy_skb_header(struct sk_buff *new, const struct
-sk_buff *old)
- 981 {
- 982         new->tstamp             = old->tstamp;
- 983         /* We do not copy old->sk */
- 984         new->dev                = old->dev;
- 985         memcpy(new->cb, old->cb, sizeof(old->cb));
- 986         skb_dst_copy(new, old);
-
-Also, if without this, dst_release() would complain again. I was not smart
-enough to add it in the beginning, dst_release() taught me this lesson. ;)
-
->
-> > +             kfree_skb(skb);
-> > +     }
-> >       __sk_psock_purge_ingress_msg(psock);
-> >  }
-> >
-> > @@ -752,7 +759,7 @@ static void sk_psock_skb_redirect(struct sk_buff *skb)
-> >       struct sk_psock *psock_other;
-> >       struct sock *sk_other;
-> >
-> > -     sk_other = tcp_skb_bpf_redirect_fetch(skb);
-> > +     sk_other = skb_bpf_redirect_fetch(skb);
-> >       /* This error is a buggy BPF program, it returned a redirect
-> >        * return code, but then didn't set a redirect interface.
-> >        */
-> > @@ -802,9 +809,10 @@ int sk_psock_tls_strp_read(struct sk_psock *psock, struct sk_buff *skb)
-> >                * TLS context.
-> >                */
-> >               skb->sk = psock->sk;
-> > -             tcp_skb_bpf_redirect_clear(skb);
-> > +             skb_dst_drop(skb);
-> > +             skb_bpf_redirect_clear(skb);
->
-> After skb_dst_drop(), skb->_skb_refdst is clear. So it seems the
-> redirect_clear() is not needed. But I'm guessing it is being invoked
-> to communicate the intention?
-
-Technically true, but I prefer to call them explicitly, not to rely on the
-fact skb->_skb_refdst shares the same storage with skb->_sk_redir,
-which would also require some comments to explain.
-
-Thanks.
+> Fixes: 4ddb74165ae5 ("bpf: Extract nullable reg type conversion into a helper function")
+Should be this: e5069b9c23b3 ("bpf: Support pointers in global func args")?
