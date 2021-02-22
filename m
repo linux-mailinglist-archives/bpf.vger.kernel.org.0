@@ -2,594 +2,356 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 064E7320D6A
-	for <lists+bpf@lfdr.de>; Sun, 21 Feb 2021 21:11:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 612F9320FD0
+	for <lists+bpf@lfdr.de>; Mon, 22 Feb 2021 04:43:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230345AbhBUUKr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 21 Feb 2021 15:10:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230296AbhBUUKp (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Sun, 21 Feb 2021 15:10:45 -0500
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48946C06178A;
-        Sun, 21 Feb 2021 12:10:05 -0800 (PST)
-Received: by mail-lj1-x233.google.com with SMTP id y7so50072014lji.7;
-        Sun, 21 Feb 2021 12:10:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=syotRuhkpwVzNbd30k9x2OERd/Ok9ZkiN3lY4FSP1Vw=;
-        b=j3Um1e6e/JohzxMeoHDV5kWSgmY2lY8RNjMI/sa6oZiWNQt/l1tbwxUgrhJ/extkPm
-         VCl92l50akHUnrJjyzq9nGbR8lX3JNMGe/13mZg6RiDcqpUBvGCyQlFIJLRr1xpO2NjZ
-         RnJH+7tT2EjiD3KQFl9hMd3B5T2M2a7SHMRoCby41NRj0pDOX6tg642AmbkmLpfr8U7Q
-         7hLdmB2KSdDrdSkjkkVQiCNeRFuGT7XIJ7ohtJgRDarjOMvj6d4jt/LJXQYzDKt6niP5
-         HbgK0spv/P+rOKfpkOhycpkomYoJadSGQNq6SCjtBHwvlt8RO+Atw3cTpP6EEV5/U3lw
-         sNyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=syotRuhkpwVzNbd30k9x2OERd/Ok9ZkiN3lY4FSP1Vw=;
-        b=S9xsfMJWmM5+qeOOghzFTtjMdF+aIcg+8xmUh1yGSakQEv5fMqWlouzpgPsngT+etw
-         v4PjRJekBqUZiNhGG/XQYVckNYNfCEbvk8rPdmN4gKSDFsSF0a4U5A5tV/vYuPrBbVL9
-         Q4+FCjUSXEvJy8k9YIqxObFSjUBQjOTL6B6sbR5Cxk9bGmtE2D/0I3Gb9E7VohCxNcA/
-         oJ17IFG4VuiMZnxV2vBfH5SY2pqlaVgGeUPeCoTwMWMZv27CuGaZczrGsjuYO+9vfSdl
-         JjHyMUsE3Ku5dAFlVjRh2yZYI2tAIJAVdlTVVYy0LcCiBsdN9OJmcLF1NOfmO7N9W+a8
-         jHUA==
-X-Gm-Message-State: AOAM533AalbwuE4ydtntpRXDcTYZBaRs4AU94FH/HZ5hbnbdrqApcgPy
-        G4/P6rpiI8bnn7l/eBoywys=
-X-Google-Smtp-Source: ABdhPJyUk9/EHgNst4gxgjbqQZdEzmo99u+ScLDk5OKJbx2DDPdCqCe0QRHxy04gsLTeG3JStTpXtA==
-X-Received: by 2002:a2e:99ca:: with SMTP id l10mr12664640ljj.259.1613938203633;
-        Sun, 21 Feb 2021 12:10:03 -0800 (PST)
-Received: from btopel-mobl.ger.intel.com (c213-102-90-208.bredband.comhem.se. [213.102.90.208])
-        by smtp.gmail.com with ESMTPSA id q26sm1657823lfb.86.2021.02.21.12.10.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Feb 2021 12:10:02 -0800 (PST)
-From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
-To:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
-        maciej.fijalkowski@intel.com, hawk@kernel.org, toke@redhat.com,
-        magnus.karlsson@intel.com, john.fastabend@gmail.com,
-        kuba@kernel.org, davem@davemloft.net
-Subject: [PATCH bpf-next v3 2/2] bpf, xdp: restructure redirect actions
-Date:   Sun, 21 Feb 2021 21:09:54 +0100
-Message-Id: <20210221200954.164125-3-bjorn.topel@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210221200954.164125-1-bjorn.topel@gmail.com>
-References: <20210221200954.164125-1-bjorn.topel@gmail.com>
+        id S230049AbhBVDmJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 21 Feb 2021 22:42:09 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:62554 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230008AbhBVDmH (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 21 Feb 2021 22:42:07 -0500
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11M3PNJ2000916;
+        Sun, 21 Feb 2021 19:41:11 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=MVh94QC9Z7ZOba6jCe7LHiSo2A2HAISUEVsUM583lLA=;
+ b=ljrtyBTUakPjuvod7oJfYWxCGQM/ZJ6aoEe4GKefT6CqjFRMUfqZJT5Ta1U5NOp8hBfT
+ gnn/jTn5OqkV5TG3aa9L4arbTyZh0Pswx0Ek8dZnxmA7eL6NSeV/ww+2sHIzE0AdGi8F
+ C6kqAwmaVxH8Zjhi/qK/dm9XZfaDCyBDxuc= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 36ujy7awes-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Sun, 21 Feb 2021 19:41:10 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Sun, 21 Feb 2021 19:41:10 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gJ5lsMjDlOKrf9BNLm8D67sdvnYAqsEhJCTGnkOVHdsUKWQiw6TAX5dH1ci60BPmZHjgmgsfa+nRy0QjzGg/FnUpQC/v1HoZ330hy79gP73qVLyAuE28/EIGLLS9xrc67HofJep1BrHoj8O+bzqL0UjX41/nxQ4nTgkqGY+i+HhR8wsjI/Mg4j5MNEvnHbDpv99RVyExJgh6pAcOYT/w0cFr7UImXLXCWh3I+5YUeDZvh/ZXJd/qsDHj+XEKZKBk5wu6L8tarBQ1rC0x0vkr8icLo19eVBn9v0j5XzYtm5PrjHNVuR/voMYLrExgIdxJq29zUubnUS3la9HAtENTYQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MVh94QC9Z7ZOba6jCe7LHiSo2A2HAISUEVsUM583lLA=;
+ b=VGcofElpYTx/9nZ5nfHyP9r4LLWNvoeo+HO3Ivw8H/gdwQWQYKWNeh7Wg8ihKx0aPBrNDStJcj2Goa/zkZToen7ip87Lpkro+LnfC/MJLXCjF3IL6HbtN8zURWvQ16TG3/ddlplBNWwossfwguG9dOBiqfZzh1vmx1PANO+fyOHJis60dbO+QqeKWxciPHqz+SMnqx9YaMrDet1uU3FVmWI3tqE+zFfykBUZYi9os9dkwWUWjvu4bHhFrtXSnzKcpKVA329zaF/B3irlD9P/BO4zcu/YbvSYXtWl42IoVeu2VuTlWeMVhSj49ZHboTW65OD1ew0SgwsSM8vVR7ac8A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: linux.ibm.com; dkim=none (message not signed)
+ header.d=none;linux.ibm.com; dmarc=none action=none header.from=fb.com;
+Received: from DM5PR1501MB2055.namprd15.prod.outlook.com (2603:10b6:4:a1::13)
+ by DM5PR15MB1227.namprd15.prod.outlook.com (2603:10b6:3:b3::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.32; Mon, 22 Feb
+ 2021 03:41:08 +0000
+Received: from DM5PR1501MB2055.namprd15.prod.outlook.com
+ ([fe80::4877:32f3:c845:d6d3]) by DM5PR1501MB2055.namprd15.prod.outlook.com
+ ([fe80::4877:32f3:c845:d6d3%3]) with mapi id 15.20.3846.042; Mon, 22 Feb 2021
+ 03:41:08 +0000
+Subject: Re: [PATCH v3 bpf-next 2/6] libbpf: Add BTF_KIND_FLOAT support
+To:     Ilya Leoshkevich <iii@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>
+CC:     <bpf@vger.kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+References: <20210220034959.27006-1-iii@linux.ibm.com>
+ <20210220034959.27006-3-iii@linux.ibm.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <b310c684-a436-0fed-cf62-b8c5572f2939@fb.com>
+Date:   Sun, 21 Feb 2021 19:41:03 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
+In-Reply-To: <20210220034959.27006-3-iii@linux.ibm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2620:10d:c090:400::5:4afa]
+X-ClientProxiedBy: MWHPR20CA0005.namprd20.prod.outlook.com
+ (2603:10b6:300:13d::15) To DM5PR1501MB2055.namprd15.prod.outlook.com
+ (2603:10b6:4:a1::13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21e1::10b9] (2620:10d:c090:400::5:4afa) by MWHPR20CA0005.namprd20.prod.outlook.com (2603:10b6:300:13d::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27 via Frontend Transport; Mon, 22 Feb 2021 03:41:07 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f3f49e93-da2b-4373-f27a-08d8d6e3b05e
+X-MS-TrafficTypeDiagnostic: DM5PR15MB1227:
+X-Microsoft-Antispam-PRVS: <DM5PR15MB1227DA99248464B1F21BE26DD3819@DM5PR15MB1227.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:1247;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mVeosnIPyj4BO4zAoc+Uk6m0c+0Z3YQrHVKHspxzthNzGUnv80wliRz9E4hsBMK5HLj3OThtApnBX4zBE3o3aUV972d+T/E1G3xwFP5XWx9Touza2h/HtdwpZ9omra+mQDvRnAOB3SFRnvpx+2jXriOaFLK2OgB+IVCNuUMbY9sM8VJJ1vyGSW1HTQAIPo8pvxGm5HYGZEoDf75p2JAHGwRycC3t4x82J5yeE+c0NDDb3KRzdthYAAmWEc+UeWWrW3FoYkvmS0Gie6oQYFilzPQdIPakhp96LPrO6J+pzsuyB6vpqirQ6e4pVdnbfDDxW8h6CiIxQcjGBx4tuJa88RBzTIBLGwfdtvZ6NVkXY1AFu57Hc0verzSzac6bpctW00ET73NW89UVStYOvqpHyvXg621F75t8idjTgWlxHvMiQDYmU7EX1cLcqloXhY4ifwgSa4dyGWB6FMy7URoehJlPyObDTKYKv6c+eJgnTV6ljqvPLVA7DD2sBFBU3L1xfMQFIQ/zXoBvVjhoDGBxXNvxroPBXt/cYz1fo4dnLb7wsAwkFT7h8tnXwzn7+thFVu2usfBN9DsgLwfJnJ9yyop8VdSClvzqinbLrgdJvv8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR1501MB2055.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(396003)(39860400002)(346002)(376002)(4326008)(8676002)(316002)(478600001)(2906002)(54906003)(110136005)(31686004)(186003)(16526019)(31696002)(6486002)(66556008)(66476007)(83380400001)(66946007)(5660300002)(2616005)(52116002)(6666004)(36756003)(86362001)(8936002)(53546011)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?eE96VHN0Vm5vZXBhakF3Zld1b21MY3ZieTRyRVQ0YU5HS2R0dlFaSUJVaGhI?=
+ =?utf-8?B?NUVWZ1NiMk4yYklraUtna2ZqejFiRmxNT3dVZDZscXRSdUFGMW13d1A1bHdL?=
+ =?utf-8?B?Zjh1ZWtxWUhiVEVndjAzVTR1NlBMOGRFS0xSQUZNMytRZTlCTzZWM1NmTkpE?=
+ =?utf-8?B?YVBKems1T3JJY1pSOXArWXp6VzM0b2xXdmpqbkxmdTBFZU10Y1lKNzhuMElR?=
+ =?utf-8?B?ckJPa09KU25CMWNucmN5d0pzN1RwSXg0T0t5VTJGSDhsVU01d05CQW9SQTdH?=
+ =?utf-8?B?Unlnb0xGcTdLMGZvUnZOdE9ydXFKRzBsRTVvaHFsRTBtcW5peUNMYjErWGlh?=
+ =?utf-8?B?MkhlY05LcGpJWldrbjh3ZFNHYkYvZnkzVlplM1VWY3FGb3dBR01PejBhODY2?=
+ =?utf-8?B?eG5pc21scFNjU0dvODc2UEpPSHcwY29tRitTUHY4MmVvSFBzTlFhdlJLNC9x?=
+ =?utf-8?B?NFFuMHhsK09EUUovZFJQYnBreXVSSkNqc3ZlZTh0bng5NXlxdTBDVE9wY3Nx?=
+ =?utf-8?B?RERqa0E5dzArR1grYi80UmhIS1VPSEN2RzVOZWdXL2FLSEQxZWZUZkpQQm83?=
+ =?utf-8?B?UVYwTVNJekFDMGdtMDNTeHNXT240OWpxVHRWVHd4UWUyaU1zcFEvUkI4UzR0?=
+ =?utf-8?B?UlgzS2VHNCt3K3pkbThrOXpOL3pycm5IdU9vZENOT3F6aXR1Yk53MFI5QzI2?=
+ =?utf-8?B?S0NHQXFQYWQvT0xsTFNJY1pIWFkzd1QyejFuN3djRld2ZDdkaU9VUURNcFU2?=
+ =?utf-8?B?TE5vSkVXUVE4Y01SUDN5dFlOejNLQUZER0VXSDV5enFXaHBYVitwWHpuQjhI?=
+ =?utf-8?B?RWpkRUwyV0hBQXBGSWs2UFc2OTdTQWF4blJkYVhFcXM2bWVlNlBqRXk1R25i?=
+ =?utf-8?B?TUpBcWVpQTdkRzdUSGdCMVV5TitQWVNpUTlWSENOMmNhYktHejMxYnBqRzli?=
+ =?utf-8?B?aWFOU0Ixd2ZTSU5aVnVLVjRaandyMlJUU3lGNHpWQTNNSmNYWkhteVJTKzJh?=
+ =?utf-8?B?Q1JFbThyNi92b2pSS0xmOHlLOVBURDluUGRQYkRFSTRHUWlaSkNFL0t3UmhX?=
+ =?utf-8?B?b2o2MWg3WndKODRqbm5OWVE5V3RId0Y0OERraWMxdS9ERDNRM0Y3NHN0L2I2?=
+ =?utf-8?B?QXdaOGh5cHJSK1FBZTJKdUxTTndTZEYweCt1RytpSGhSRzlIUmJ4ZUsza2sx?=
+ =?utf-8?B?OUtwMWIzN1AyUjN3UlBDNmk2WmRpbXFadklrR0YvL1lpSkhFMTBNQWt4R0Rl?=
+ =?utf-8?B?ZXhMb1BEemExQVVwYUZnb0RxSHlUNExDWTZyLzg0NTFQc3ZIa1Iwd2NkSDF3?=
+ =?utf-8?B?U0E4Q3FLbk1ZNmwyTkhSanFneGlTaXJqRkI0RUFOZ0M0OTJ5akVDZXpwK1Fa?=
+ =?utf-8?B?L0hCODZEWXBDUEJ0RDdZc0I0TGRiaU0yejV2NjVXTGd0aDNaQU1oOG5Ydndw?=
+ =?utf-8?B?bHYreDVNY0FyS0xyazZpOVlLb2tFQTlsWnppemZxT01jWVhYNTJNcmpBU0dQ?=
+ =?utf-8?B?S0NZSDA0cmxXaEF5UGFoOGJ4QVNFSDdETXlmNWVCdHkyZVNHZTZtRFRlY29M?=
+ =?utf-8?B?RGNiY1g5bElsRVhmV2hSYjBEek9zN2YreHU1VmRqY1Y1WjZEdi9NVkNwdDNC?=
+ =?utf-8?B?OUg2VGxudFBqZDRKV3RGZlE5WTI0SDRIZm4xN0p3L0puUW5GZUlhN2FGSUg4?=
+ =?utf-8?B?aWRYdm9NVG10REZDRmhESTlsUnZudndjdjhSbnViTFNxSnZ0Q3ErSjJrRnFC?=
+ =?utf-8?B?RWxLV0J5aUVlZHZFQlJDWkRERitEM3FUNXhXazlzVG9FQjQxaDNWNnluemlI?=
+ =?utf-8?B?VVV2ZnRVT0pwdnptY2IrZz09?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: f3f49e93-da2b-4373-f27a-08d8d6e3b05e
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR1501MB2055.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Feb 2021 03:41:07.9007
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: KchOyYPJLUwWqYYJrDPG/eM/Jng9Rbk73Gz9FqpHV+CulXaWgd0LNsb8bQPsKU2l
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR15MB1227
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-21_14:2021-02-18,2021-02-21 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 spamscore=0
+ priorityscore=1501 phishscore=0 adultscore=0 mlxscore=0 malwarescore=0
+ lowpriorityscore=0 mlxlogscore=999 suspectscore=0 impostorscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102220029
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Björn Töpel <bjorn.topel@intel.com>
 
-The XDP_REDIRECT implementations for maps and non-maps are fairly
-similar, but obviously need to take different code paths depending on
-if the target is using a map or not. Today, the redirect targets for
-XDP either uses a map, or is based on ifindex.
 
-Here, an explicit redirect type is added to bpf_redirect_info, instead
-of the actual map. Redirect type, map item/ifindex, and the map_id (if
-any) is passed to xdp_do_redirect().
+On 2/19/21 7:49 PM, Ilya Leoshkevich wrote:
+> The logic follows that of BTF_KIND_INT most of the time. Sanitization
+> replaces BTF_KIND_FLOATs with BTF_KIND_CONSTs pointing to
+> equally-sized BTF_KIND_ARRAYs on older kernels.
+> 
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> ---
+>   tools/lib/bpf/btf.c             | 44 ++++++++++++++++++++++++++++++
+>   tools/lib/bpf/btf.h             |  8 ++++++
+>   tools/lib/bpf/btf_dump.c        |  4 +++
+>   tools/lib/bpf/libbpf.c          | 48 ++++++++++++++++++++++++++++++++-
+>   tools/lib/bpf/libbpf.map        |  5 ++++
+>   tools/lib/bpf/libbpf_internal.h |  2 ++
+>   6 files changed, 110 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> index fdfff544f59a..1ebfcc687dab 100644
+> --- a/tools/lib/bpf/btf.c
+> +++ b/tools/lib/bpf/btf.c
+> @@ -292,6 +292,7 @@ static int btf_type_size(const struct btf_type *t)
+>   	case BTF_KIND_PTR:
+>   	case BTF_KIND_TYPEDEF:
+>   	case BTF_KIND_FUNC:
+> +	case BTF_KIND_FLOAT:
+>   		return base_size;
+>   	case BTF_KIND_INT:
+>   		return base_size + sizeof(__u32);
+> @@ -339,6 +340,7 @@ static int btf_bswap_type_rest(struct btf_type *t)
+>   	case BTF_KIND_PTR:
+>   	case BTF_KIND_TYPEDEF:
+>   	case BTF_KIND_FUNC:
+> +	case BTF_KIND_FLOAT:
+>   		return 0;
+>   	case BTF_KIND_INT:
+>   		*(__u32 *)(t + 1) = bswap_32(*(__u32 *)(t + 1));
+> @@ -579,6 +581,7 @@ __s64 btf__resolve_size(const struct btf *btf, __u32 type_id)
+>   		case BTF_KIND_UNION:
+>   		case BTF_KIND_ENUM:
+>   		case BTF_KIND_DATASEC:
+> +		case BTF_KIND_FLOAT:
+>   			size = t->size;
+>   			goto done;
+>   		case BTF_KIND_PTR:
+> @@ -622,6 +625,7 @@ int btf__align_of(const struct btf *btf, __u32 id)
+>   	switch (kind) {
+>   	case BTF_KIND_INT:
+>   	case BTF_KIND_ENUM:
+> +	case BTF_KIND_FLOAT:
+>   		return min(btf_ptr_sz(btf), (size_t)t->size);
+>   	case BTF_KIND_PTR:
+>   		return btf_ptr_sz(btf);
+> @@ -2400,6 +2404,42 @@ int btf__add_datasec(struct btf *btf, const char *name, __u32 byte_sz)
+>   	return btf_commit_type(btf, sz);
+>   }
+[...]
 
-In addition to making the code easier to follow, using an explicit
-type in bpf_redirect_info has a slight positive performance impact by
-avoiding a pointer indirection for the map type lookup, and instead
-use the cacheline for bpf_redirect_info.
+I skipped deduplication part, Andrii can take a look later.
 
-Since the actual map is not passed via bpf_redirect_info anymore, the
-map lookup is only done in the BPF helper. This means that the
-bpf_clear_redirect_map() function can be removed. The actual map item
-is RCU protected.
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index d43cc3f29dae..b79a6a2e6faa 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -178,6 +178,8 @@ enum kern_feature_id {
+>   	FEAT_PROG_BIND_MAP,
+>   	/* Kernel support for module BTFs */
+>   	FEAT_MODULE_BTF,
+> +	/* BTF_KIND_FLOAT support */
+> +	FEAT_BTF_FLOAT,
+>   	__FEAT_CNT,
+>   };
+>   
+> @@ -1935,6 +1937,7 @@ static const char *btf_kind_str(const struct btf_type *t)
+>   	case BTF_KIND_FUNC_PROTO: return "func_proto";
+>   	case BTF_KIND_VAR: return "var";
+>   	case BTF_KIND_DATASEC: return "datasec";
+> +	case BTF_KIND_FLOAT: return "float";
+>   	default: return "unknown";
+>   	}
+>   }
+> @@ -2384,18 +2387,22 @@ static bool btf_needs_sanitization(struct bpf_object *obj)
+>   {
+>   	bool has_func_global = kernel_supports(FEAT_BTF_GLOBAL_FUNC);
+>   	bool has_datasec = kernel_supports(FEAT_BTF_DATASEC);
+> +	bool has_float = kernel_supports(FEAT_BTF_FLOAT);
+>   	bool has_func = kernel_supports(FEAT_BTF_FUNC);
+>   
+> -	return !has_func || !has_datasec || !has_func_global;
+> +	return !has_func || !has_datasec || !has_func_global || !has_float;
+>   }
+>   
+>   static void bpf_object__sanitize_btf(struct bpf_object *obj, struct btf *btf)
+>   {
+>   	bool has_func_global = kernel_supports(FEAT_BTF_GLOBAL_FUNC);
+>   	bool has_datasec = kernel_supports(FEAT_BTF_DATASEC);
+> +	bool has_float = kernel_supports(FEAT_BTF_FLOAT);
+>   	bool has_func = kernel_supports(FEAT_BTF_FUNC);
+>   	struct btf_type *t;
+> +	int t_uchar = 0;
+>   	int i, j, vlen;
+> +	int t_uint = 0;
+>   
+>   	for (i = 1; i <= btf__get_nr_types(btf); i++) {
+>   		t = (struct btf_type *)btf__type_by_id(btf, i);
+> @@ -2445,6 +2452,26 @@ static void bpf_object__sanitize_btf(struct bpf_object *obj, struct btf *btf)
+>   		} else if (!has_func_global && btf_is_func(t)) {
+>   			/* replace BTF_FUNC_GLOBAL with BTF_FUNC_STATIC */
+>   			t->info = BTF_INFO_ENC(BTF_KIND_FUNC, 0, 0);
+> +		} else if (!has_float && btf_is_float(t)) {
+> +			/* replace FLOAT with TYPEDEF(u8[]) */
 
-The bpf_redirect_info flags member is not used by XDP, and not
-read/written any more. The map member is only written to when
-required/used, and not unconditionally.
+replace FLOAT with CONST(u8[]).
 
-v1->v2 : Removed warning when CONFIG_BPF_SYSCALL was not set. (lkp)
-       : Cleaned up case-clause in xdp_do_generic_redirect_map(). (Toke)
-rfc->v1: Use map_id, and remove bpf_clear_redirect_map(). (Toke)
+> +			int t_array;
+> +			__u32 size;
+> +
+> +			size = t->size;
+> +			if (!t_uchar)
+> +				t_uchar = btf__add_int(btf, "unsigned char", 1,
+> +						       0);
+> +			if (!t_uint)
+> +				t_uint = btf__add_int(btf, "unsigned int", 4,
+> +						      0);
+> +			t_array = btf__add_array(btf, t_uint, t_uchar, size);
 
-Acked-by: Toke Høiland-Jørgensen <toke@redhat.com>
-Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
----
- include/linux/bpf.h        |   1 +
- include/linux/filter.h     |  11 ++-
- include/trace/events/xdp.h |  66 +++++++++------
- kernel/bpf/cpumap.c        |   1 -
- kernel/bpf/devmap.c        |   1 -
- net/core/filter.c          | 165 ++++++++++++++++---------------------
- net/xdp/xskmap.c           |   1 -
- 7 files changed, 122 insertions(+), 124 deletions(-)
+Checking whether t_array is valid here or not?
+We do not need to check t_uchar/t_uint. If they are invalid 
+btf__add_array() will return -EINVAL.
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 3dd186eeaf98..3e59e4c211bc 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1592,6 +1592,7 @@ static inline void __dev_flush(void)
- 
- struct xdp_buff;
- struct bpf_dtab_netdev;
-+struct bpf_cpu_map_entry;
- 
- static inline
- int dev_xdp_enqueue(struct net_device *dev, struct xdp_buff *xdp,
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index bc2a1ec20d0b..54406a7eef2b 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -646,11 +646,20 @@ struct bpf_redirect_info {
- 	u32 flags;
- 	u32 tgt_index;
- 	void *tgt_value;
--	struct bpf_map *map;
-+	u32 map_id;
-+	u32 tgt_type;
- 	u32 kern_flags;
- 	struct bpf_nh_params nh;
- };
- 
-+enum xdp_redirect_type {
-+	XDP_REDIR_UNSET,
-+	XDP_REDIR_DEV_IFINDEX,
-+	XDP_REDIR_DEV_MAP,
-+	XDP_REDIR_CPU_MAP,
-+	XDP_REDIR_XSK_MAP,
-+};
-+
- DECLARE_PER_CPU(struct bpf_redirect_info, bpf_redirect_info);
- 
- /* flags for bpf_redirect_info kern_flags */
-diff --git a/include/trace/events/xdp.h b/include/trace/events/xdp.h
-index 76a97176ab81..538321735447 100644
---- a/include/trace/events/xdp.h
-+++ b/include/trace/events/xdp.h
-@@ -86,19 +86,15 @@ struct _bpf_dtab_netdev {
- };
- #endif /* __DEVMAP_OBJ_TYPE */
- 
--#define devmap_ifindex(tgt, map)				\
--	(((map->map_type == BPF_MAP_TYPE_DEVMAP ||	\
--		  map->map_type == BPF_MAP_TYPE_DEVMAP_HASH)) ? \
--	  ((struct _bpf_dtab_netdev *)tgt)->dev->ifindex : 0)
--
- DECLARE_EVENT_CLASS(xdp_redirect_template,
- 
- 	TP_PROTO(const struct net_device *dev,
- 		 const struct bpf_prog *xdp,
- 		 const void *tgt, int err,
--		 const struct bpf_map *map, u32 index),
-+		 enum xdp_redirect_type type,
-+		 const struct bpf_redirect_info *ri),
- 
--	TP_ARGS(dev, xdp, tgt, err, map, index),
-+	TP_ARGS(dev, xdp, tgt, err, type, ri),
- 
- 	TP_STRUCT__entry(
- 		__field(int, prog_id)
-@@ -111,14 +107,30 @@ DECLARE_EVENT_CLASS(xdp_redirect_template,
- 	),
- 
- 	TP_fast_assign(
-+		u32 ifindex = 0, map_id = 0, index = ri->tgt_index;
-+
-+		switch (type) {
-+		case XDP_REDIR_DEV_MAP:
-+			ifindex = ((struct _bpf_dtab_netdev *)tgt)->dev->ifindex;
-+			fallthrough;
-+		case XDP_REDIR_CPU_MAP:
-+		case XDP_REDIR_XSK_MAP:
-+			map_id = ri->map_id;
-+			break;
-+		case XDP_REDIR_DEV_IFINDEX:
-+			ifindex = (u32)(long)tgt;
-+			break;
-+		default:
-+			break;
-+		}
-+
- 		__entry->prog_id	= xdp->aux->id;
- 		__entry->act		= XDP_REDIRECT;
- 		__entry->ifindex	= dev->ifindex;
- 		__entry->err		= err;
--		__entry->to_ifindex	= map ? devmap_ifindex(tgt, map) :
--						index;
--		__entry->map_id		= map ? map->id : 0;
--		__entry->map_index	= map ? index : 0;
-+		__entry->to_ifindex	= ifindex;
-+		__entry->map_id		= map_id;
-+		__entry->map_index	= index;
- 	),
- 
- 	TP_printk("prog_id=%d action=%s ifindex=%d to_ifindex=%d err=%d"
-@@ -133,45 +145,49 @@ DEFINE_EVENT(xdp_redirect_template, xdp_redirect,
- 	TP_PROTO(const struct net_device *dev,
- 		 const struct bpf_prog *xdp,
- 		 const void *tgt, int err,
--		 const struct bpf_map *map, u32 index),
--	TP_ARGS(dev, xdp, tgt, err, map, index)
-+		 enum xdp_redirect_type type,
-+		 const struct bpf_redirect_info *ri),
-+	TP_ARGS(dev, xdp, tgt, err, type, ri)
- );
- 
- DEFINE_EVENT(xdp_redirect_template, xdp_redirect_err,
- 	TP_PROTO(const struct net_device *dev,
- 		 const struct bpf_prog *xdp,
- 		 const void *tgt, int err,
--		 const struct bpf_map *map, u32 index),
--	TP_ARGS(dev, xdp, tgt, err, map, index)
-+		 enum xdp_redirect_type type,
-+		 const struct bpf_redirect_info *ri),
-+	TP_ARGS(dev, xdp, tgt, err, type, ri)
- );
- 
- #define _trace_xdp_redirect(dev, xdp, to)				\
--	 trace_xdp_redirect(dev, xdp, NULL, 0, NULL, to)
-+	trace_xdp_redirect(dev, xdp, NULL, 0, XDP_REDIR_DEV_IFINDEX, NULL)
- 
- #define _trace_xdp_redirect_err(dev, xdp, to, err)			\
--	 trace_xdp_redirect_err(dev, xdp, NULL, err, NULL, to)
-+	trace_xdp_redirect_err(dev, xdp, NULL, err, XDP_REDIR_DEV_IFINDEX, NULL)
- 
--#define _trace_xdp_redirect_map(dev, xdp, to, map, index)		\
--	 trace_xdp_redirect(dev, xdp, to, 0, map, index)
-+#define _trace_xdp_redirect_map(dev, xdp, to, type, ri)		\
-+	trace_xdp_redirect(dev, xdp, to, 0, type, ri)
- 
--#define _trace_xdp_redirect_map_err(dev, xdp, to, map, index, err)	\
--	 trace_xdp_redirect_err(dev, xdp, to, err, map, index)
-+#define _trace_xdp_redirect_map_err(dev, xdp, to, type, ri, err)	\
-+	trace_xdp_redirect_err(dev, xdp, to, err, type, ri)
- 
- /* not used anymore, but kept around so as not to break old programs */
- DEFINE_EVENT(xdp_redirect_template, xdp_redirect_map,
- 	TP_PROTO(const struct net_device *dev,
- 		 const struct bpf_prog *xdp,
- 		 const void *tgt, int err,
--		 const struct bpf_map *map, u32 index),
--	TP_ARGS(dev, xdp, tgt, err, map, index)
-+		 enum xdp_redirect_type type,
-+		 const struct bpf_redirect_info *ri),
-+	TP_ARGS(dev, xdp, tgt, err, type, ri)
- );
- 
- DEFINE_EVENT(xdp_redirect_template, xdp_redirect_map_err,
- 	TP_PROTO(const struct net_device *dev,
- 		 const struct bpf_prog *xdp,
- 		 const void *tgt, int err,
--		 const struct bpf_map *map, u32 index),
--	TP_ARGS(dev, xdp, tgt, err, map, index)
-+		 enum xdp_redirect_type type,
-+		 const struct bpf_redirect_info *ri),
-+	TP_ARGS(dev, xdp, tgt, err, type, ri)
- );
- 
- TRACE_EVENT(xdp_cpumap_kthread,
-diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
-index a4d2cb93cd69..b7f4d22f5c8d 100644
---- a/kernel/bpf/cpumap.c
-+++ b/kernel/bpf/cpumap.c
-@@ -543,7 +543,6 @@ static void cpu_map_free(struct bpf_map *map)
- 	 * complete.
- 	 */
- 
--	bpf_clear_redirect_map(map);
- 	synchronize_rcu();
- 
- 	/* For cpu_map the remote CPUs can still be using the entries
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index 37ac4cde9713..b5681a98020d 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -197,7 +197,6 @@ static void dev_map_free(struct bpf_map *map)
- 	list_del_rcu(&dtab->list);
- 	spin_unlock(&dev_map_lock);
- 
--	bpf_clear_redirect_map(map);
- 	synchronize_rcu();
- 
- 	/* Make sure prior __dev_map_entry_free() have completed. */
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 502e7856f107..5a08e49f776c 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -3919,23 +3919,6 @@ static const struct bpf_func_proto bpf_xdp_adjust_meta_proto = {
- 	.arg2_type	= ARG_ANYTHING,
- };
- 
--static int __bpf_tx_xdp_map(struct net_device *dev_rx, void *fwd,
--			    struct bpf_map *map, struct xdp_buff *xdp)
--{
--	switch (map->map_type) {
--	case BPF_MAP_TYPE_DEVMAP:
--	case BPF_MAP_TYPE_DEVMAP_HASH:
--		return dev_map_enqueue(fwd, xdp, dev_rx);
--	case BPF_MAP_TYPE_CPUMAP:
--		return cpu_map_enqueue(fwd, xdp, dev_rx);
--	case BPF_MAP_TYPE_XSKMAP:
--		return __xsk_map_redirect(fwd, xdp);
--	default:
--		return -EBADRQC;
--	}
--	return 0;
--}
--
- void xdp_do_flush(void)
- {
- 	__dev_flush();
-@@ -3944,55 +3927,45 @@ void xdp_do_flush(void)
- }
- EXPORT_SYMBOL_GPL(xdp_do_flush);
- 
--void bpf_clear_redirect_map(struct bpf_map *map)
--{
--	struct bpf_redirect_info *ri;
--	int cpu;
--
--	for_each_possible_cpu(cpu) {
--		ri = per_cpu_ptr(&bpf_redirect_info, cpu);
--		/* Avoid polluting remote cacheline due to writes if
--		 * not needed. Once we pass this test, we need the
--		 * cmpxchg() to make sure it hasn't been changed in
--		 * the meantime by remote CPU.
--		 */
--		if (unlikely(READ_ONCE(ri->map) == map))
--			cmpxchg(&ri->map, map, NULL);
--	}
--}
--
- int xdp_do_redirect(struct net_device *dev, struct xdp_buff *xdp,
- 		    struct bpf_prog *xdp_prog)
- {
- 	struct bpf_redirect_info *ri = this_cpu_ptr(&bpf_redirect_info);
--	struct bpf_map *map = READ_ONCE(ri->map);
--	u32 index = ri->tgt_index;
-+	enum xdp_redirect_type type = ri->tgt_type;
- 	void *fwd = ri->tgt_value;
- 	int err;
- 
--	ri->tgt_index = 0;
--	ri->tgt_value = NULL;
--	WRITE_ONCE(ri->map, NULL);
-+	ri->tgt_type = XDP_REDIR_UNSET;
- 
--	if (unlikely(!map)) {
--		fwd = dev_get_by_index_rcu(dev_net(dev), index);
-+	switch (type) {
-+	case XDP_REDIR_DEV_IFINDEX:
-+		fwd = dev_get_by_index_rcu(dev_net(dev), (u32)(long)fwd);
- 		if (unlikely(!fwd)) {
- 			err = -EINVAL;
--			goto err;
-+			break;
- 		}
--
- 		err = dev_xdp_enqueue(fwd, xdp, dev);
--	} else {
--		err = __bpf_tx_xdp_map(dev, fwd, map, xdp);
-+		break;
-+	case XDP_REDIR_DEV_MAP:
-+		err = dev_map_enqueue(fwd, xdp, dev);
-+		break;
-+	case XDP_REDIR_CPU_MAP:
-+		err = cpu_map_enqueue(fwd, xdp, dev);
-+		break;
-+	case XDP_REDIR_XSK_MAP:
-+		err = __xsk_map_redirect(fwd, xdp);
-+		break;
-+	default:
-+		err = -EBADRQC;
- 	}
- 
- 	if (unlikely(err))
- 		goto err;
- 
--	_trace_xdp_redirect_map(dev, xdp_prog, fwd, map, index);
-+	_trace_xdp_redirect_map(dev, xdp_prog, fwd, type, ri);
- 	return 0;
- err:
--	_trace_xdp_redirect_map_err(dev, xdp_prog, fwd, map, index, err);
-+	_trace_xdp_redirect_map_err(dev, xdp_prog, fwd, type, ri, err);
- 	return err;
- }
- EXPORT_SYMBOL_GPL(xdp_do_redirect);
-@@ -4001,41 +3974,37 @@ static int xdp_do_generic_redirect_map(struct net_device *dev,
- 				       struct sk_buff *skb,
- 				       struct xdp_buff *xdp,
- 				       struct bpf_prog *xdp_prog,
--				       struct bpf_map *map)
-+				       void *fwd,
-+				       enum xdp_redirect_type type)
- {
- 	struct bpf_redirect_info *ri = this_cpu_ptr(&bpf_redirect_info);
--	u32 index = ri->tgt_index;
--	void *fwd = ri->tgt_value;
--	int err = 0;
--
--	ri->tgt_index = 0;
--	ri->tgt_value = NULL;
--	WRITE_ONCE(ri->map, NULL);
--
--	if (map->map_type == BPF_MAP_TYPE_DEVMAP ||
--	    map->map_type == BPF_MAP_TYPE_DEVMAP_HASH) {
--		struct bpf_dtab_netdev *dst = fwd;
-+	int err;
- 
--		err = dev_map_generic_redirect(dst, skb, xdp_prog);
-+	switch (type) {
-+	case XDP_REDIR_DEV_MAP:
-+		err = dev_map_generic_redirect(fwd, skb, xdp_prog);
- 		if (unlikely(err))
- 			goto err;
--	} else if (map->map_type == BPF_MAP_TYPE_XSKMAP) {
-+		break;
-+	case XDP_REDIR_XSK_MAP: {
- 		struct xdp_sock *xs = fwd;
- 
- 		err = xsk_generic_rcv(xs, xdp);
- 		if (err)
- 			goto err;
- 		consume_skb(skb);
--	} else {
-+		break;
-+	}
-+	default:
- 		/* TODO: Handle BPF_MAP_TYPE_CPUMAP */
- 		err = -EBADRQC;
- 		goto err;
- 	}
- 
--	_trace_xdp_redirect_map(dev, xdp_prog, fwd, map, index);
-+	_trace_xdp_redirect_map(dev, xdp_prog, fwd, type, ri);
- 	return 0;
- err:
--	_trace_xdp_redirect_map_err(dev, xdp_prog, fwd, map, index, err);
-+	_trace_xdp_redirect_map_err(dev, xdp_prog, fwd, type, ri, err);
- 	return err;
- }
- 
-@@ -4043,29 +4012,31 @@ int xdp_do_generic_redirect(struct net_device *dev, struct sk_buff *skb,
- 			    struct xdp_buff *xdp, struct bpf_prog *xdp_prog)
- {
- 	struct bpf_redirect_info *ri = this_cpu_ptr(&bpf_redirect_info);
--	struct bpf_map *map = READ_ONCE(ri->map);
--	u32 index = ri->tgt_index;
--	struct net_device *fwd;
-+	enum xdp_redirect_type type = ri->tgt_type;
-+	void *fwd = ri->tgt_value;
- 	int err = 0;
- 
--	if (map)
--		return xdp_do_generic_redirect_map(dev, skb, xdp, xdp_prog,
--						   map);
--	ri->tgt_index = 0;
--	fwd = dev_get_by_index_rcu(dev_net(dev), index);
--	if (unlikely(!fwd)) {
--		err = -EINVAL;
--		goto err;
--	}
-+	ri->tgt_type = XDP_REDIR_UNSET;
-+	ri->tgt_value = NULL;
- 
--	err = xdp_ok_fwd_dev(fwd, skb->len);
--	if (unlikely(err))
--		goto err;
-+	if (type == XDP_REDIR_DEV_IFINDEX) {
-+		fwd = dev_get_by_index_rcu(dev_net(dev), (u32)(long)fwd);
-+		if (unlikely(!fwd)) {
-+			err = -EINVAL;
-+			goto err;
-+		}
- 
--	skb->dev = fwd;
--	_trace_xdp_redirect(dev, xdp_prog, index);
--	generic_xdp_tx(skb, xdp_prog);
--	return 0;
-+		err = xdp_ok_fwd_dev(fwd, skb->len);
-+		if (unlikely(err))
-+			goto err;
-+
-+		skb->dev = fwd;
-+		_trace_xdp_redirect(dev, xdp_prog, index);
-+		generic_xdp_tx(skb, xdp_prog);
-+		return 0;
-+	}
-+
-+	return xdp_do_generic_redirect_map(dev, skb, xdp, xdp_prog, fwd, type);
- err:
- 	_trace_xdp_redirect_err(dev, xdp_prog, index, err);
- 	return err;
-@@ -4078,10 +4049,9 @@ BPF_CALL_2(bpf_xdp_redirect, u32, ifindex, u64, flags)
- 	if (unlikely(flags))
- 		return XDP_ABORTED;
- 
--	ri->flags = flags;
--	ri->tgt_index = ifindex;
--	ri->tgt_value = NULL;
--	WRITE_ONCE(ri->map, NULL);
-+	ri->tgt_type = XDP_REDIR_DEV_IFINDEX;
-+	ri->tgt_index = 0;
-+	ri->tgt_value = (void *)(long)ifindex;
- 
- 	return XDP_REDIRECT;
- }
-@@ -4096,7 +4066,8 @@ static const struct bpf_func_proto bpf_xdp_redirect_proto = {
- 
- static __always_inline s64 __bpf_xdp_redirect_map(struct bpf_map *map, u32 ifindex, u64 flags,
- 						  void *lookup_elem(struct bpf_map *map,
--								    u32 key))
-+								    u32 key),
-+						  enum xdp_redirect_type type)
- {
- 	struct bpf_redirect_info *ri = this_cpu_ptr(&bpf_redirect_info);
- 
-@@ -4111,35 +4082,39 @@ static __always_inline s64 __bpf_xdp_redirect_map(struct bpf_map *map, u32 ifind
- 		 * performs multiple lookups, the last one always takes
- 		 * precedence.
- 		 */
--		WRITE_ONCE(ri->map, NULL);
-+		ri->tgt_type = XDP_REDIR_UNSET;
- 		return flags;
- 	}
- 
--	ri->flags = flags;
- 	ri->tgt_index = ifindex;
--	WRITE_ONCE(ri->map, map);
-+	ri->tgt_type = type;
-+	ri->map_id = map->id;
- 
- 	return XDP_REDIRECT;
- }
- 
- BPF_CALL_3(bpf_xdp_redirect_devmap, struct bpf_map *, map, u32, ifindex, u64, flags)
- {
--	return __bpf_xdp_redirect_map(map, ifindex, flags, __dev_map_lookup_elem);
-+	return __bpf_xdp_redirect_map(map, ifindex, flags, __dev_map_lookup_elem,
-+				      XDP_REDIR_DEV_MAP);
- }
- 
- BPF_CALL_3(bpf_xdp_redirect_devmap_hash, struct bpf_map *, map, u32, ifindex, u64, flags)
- {
--	return __bpf_xdp_redirect_map(map, ifindex, flags, __dev_map_hash_lookup_elem);
-+	return __bpf_xdp_redirect_map(map, ifindex, flags, __dev_map_hash_lookup_elem,
-+				      XDP_REDIR_DEV_MAP);
- }
- 
- BPF_CALL_3(bpf_xdp_redirect_cpumap, struct bpf_map *, map, u32, ifindex, u64, flags)
- {
--	return __bpf_xdp_redirect_map(map, ifindex, flags, __cpu_map_lookup_elem);
-+	return __bpf_xdp_redirect_map(map, ifindex, flags, __cpu_map_lookup_elem,
-+				      XDP_REDIR_CPU_MAP);
- }
- 
- BPF_CALL_3(bpf_xdp_redirect_xskmap, struct bpf_map *, map, u32, ifindex, u64, flags)
- {
--	return __bpf_xdp_redirect_map(map, ifindex, flags, __xsk_map_lookup_elem);
-+	return __bpf_xdp_redirect_map(map, ifindex, flags, __xsk_map_lookup_elem,
-+				      XDP_REDIR_XSK_MAP);
- }
- 
- bpf_func_proto_func get_xdp_redirect_func(enum bpf_map_type map_type)
-diff --git a/net/xdp/xskmap.c b/net/xdp/xskmap.c
-index 113fd9017203..c285d3dd04ad 100644
---- a/net/xdp/xskmap.c
-+++ b/net/xdp/xskmap.c
-@@ -87,7 +87,6 @@ static void xsk_map_free(struct bpf_map *map)
- {
- 	struct xsk_map *m = container_of(map, struct xsk_map, map);
- 
--	bpf_clear_redirect_map(map);
- 	synchronize_net();
- 	bpf_map_area_free(m);
- }
--- 
-2.27.0
-
+> +
+> +			/* adding new types may have invalidated t */
+> +			t = (struct btf_type *)btf__type_by_id(btf, i);
+> +
+> +			t->name_off = 0;
+> +			t->info = BTF_INFO_ENC(BTF_KIND_CONST, 0, 0);
+> +			t->type = t_array;
+>   		}
+>   	}
+>   }
+> @@ -3882,6 +3909,18 @@ static int probe_kern_btf_datasec(void)
+>   					     strs, sizeof(strs)));
+>   }
+>   
+> +static int probe_kern_btf_float(void)
+> +{
+> +	static const char strs[] = "\0float";
+> +	__u32 types[] = {
+> +		/* float */
+> +		BTF_TYPE_FLOAT_ENC(1, 4),
+> +	};
+> +
+> +	return probe_fd(libbpf__load_raw_btf((char *)types, sizeof(types),
+> +					     strs, sizeof(strs)));
+> +}
+> +
+>   static int probe_kern_array_mmap(void)
+>   {
+>   	struct bpf_create_map_attr attr = {
+> @@ -4061,6 +4100,9 @@ static struct kern_feature_desc {
+>   	[FEAT_MODULE_BTF] = {
+>   		"module BTF support", probe_module_btf,
+>   	},
+> +	[FEAT_BTF_FLOAT] = {
+> +		"BTF_KIND_FLOAT support", probe_kern_btf_float,
+> +	},
+>   };
+>   
+>   static bool kernel_supports(enum kern_feature_id feat_id)
+> @@ -4940,6 +4982,8 @@ static int bpf_core_fields_are_compat(const struct btf *local_btf,
+>   		local_id = btf_array(local_type)->type;
+>   		targ_id = btf_array(targ_type)->type;
+>   		goto recur;
+> +	case BTF_KIND_FLOAT:
+> +		return local_type->size == targ_type->size;
+>   	default:
+>   		pr_warn("unexpected kind %d relocated, local [%d], target [%d]\n",
+>   			btf_kind(local_type), local_id, targ_id);
+> @@ -5122,6 +5166,8 @@ static int bpf_core_types_are_compat(const struct btf *local_btf, __u32 local_id
+>   		skip_mods_and_typedefs(targ_btf, targ_type->type, &targ_id);
+>   		goto recur;
+>   	}
+> +	case BTF_KIND_FLOAT:
+> +		return local_type->size == targ_type->size;
+>   	default:
+>   		pr_warn("unexpected kind %s relocated, local [%d], target [%d]\n",
+>   			btf_kind_str(local_type), local_id, targ_id);
+> diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
+> index 1c0fd2dd233a..ec898f464ab9 100644
+> --- a/tools/lib/bpf/libbpf.map
+> +++ b/tools/lib/bpf/libbpf.map
+> @@ -350,3 +350,8 @@ LIBBPF_0.3.0 {
+>   		xsk_setup_xdp_prog;
+>   		xsk_socket__update_xskmap;
+>   } LIBBPF_0.2.0;
+> +
+> +LIBBPF_0.4.0 {
+> +	global:
+> +		btf__add_float;
+> +} LIBBPF_0.3.0;
+> diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
+> index 969d0ac592ba..343f6eb05637 100644
+> --- a/tools/lib/bpf/libbpf_internal.h
+> +++ b/tools/lib/bpf/libbpf_internal.h
+> @@ -31,6 +31,8 @@
+>   #define BTF_MEMBER_ENC(name, type, bits_offset) (name), (type), (bits_offset)
+>   #define BTF_PARAM_ENC(name, type) (name), (type)
+>   #define BTF_VAR_SECINFO_ENC(type, offset, size) (type), (offset), (size)
+> +#define BTF_TYPE_FLOAT_ENC(name, sz) \
+> +	BTF_TYPE_ENC(name, BTF_INFO_ENC(BTF_KIND_FLOAT, 0, 0), sz)
+>   
+>   #ifndef likely
+>   #define likely(x) __builtin_expect(!!(x), 1)
+> 
