@@ -2,83 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52D6D322037
-	for <lists+bpf@lfdr.de>; Mon, 22 Feb 2021 20:34:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C6A32203D
+	for <lists+bpf@lfdr.de>; Mon, 22 Feb 2021 20:36:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233258AbhBVTev (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Feb 2021 14:34:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39926 "EHLO
+        id S230475AbhBVTfr (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Feb 2021 14:35:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233386AbhBVTdA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Feb 2021 14:33:00 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75641C06178B;
-        Mon, 22 Feb 2021 11:32:20 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id e9so251274pjj.0;
-        Mon, 22 Feb 2021 11:32:20 -0800 (PST)
+        with ESMTP id S233312AbhBVTfn (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Feb 2021 14:35:43 -0500
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33D8FC061786;
+        Mon, 22 Feb 2021 11:35:03 -0800 (PST)
+Received: by mail-qv1-xf36.google.com with SMTP id gi9so6615334qvb.10;
+        Mon, 22 Feb 2021 11:35:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MZysaavM6RaxfqjWf6Ljab3pTPx34P66aCtFaiiiW/Y=;
-        b=WDlDUxF4DqR66L5hTrjxbIcNdkyuFlaMDFbQg+dZQOZNiL9rli5n6aBLu8x8ORpZye
-         S+KBJIuuh6Nl5I/hnrLHr2fprO9HiONShNHshdnjhA6ANXZIMcx88I86cmiMROKgajVZ
-         4h4eKJqXgl+HRIu6LZsr5GvQAa+pkiY+NbvlYaWV2KJs9VeIO3sUEED+LueV37y4P/Mv
-         lbfpDNmLDStz8eUCaeOkgqxwFjwUuI+grteW1sNpaNtPdMUuUYIC6XB4Qg0LdLmqw7/n
-         jOqIVxPNJnkVtUQTH6+IcunSP3yx0EpLogWTxb98tT4jsDJf5YNvo5+I+Ys1ojmB/eCa
-         8KTg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=i0npRPFT7npCmOqDBNbIB4dxyCx/lPT/+Nse/ehcJqQ=;
+        b=A8bedpmm3ljLxg68poK3u1RcG1bxMhXxjiibJZfLovecc25WcmnRk4VznW975lcjU9
+         k9cyHP/eP9VChcfsgE/Mf9DNsg8F9nSkNUpvSYd/V1+BYxjyfLiPrQ2XjsmoXjjWgQBv
+         De0PSHySqcOlFW5oc6NH+U83DN7gAsv+z4eHq/0ue2IZiJSEyyFUdyaw/t/z4ClNiirB
+         4d1AZGJwSCYpohNh/E/j+jzohkPd9aFYvSPBcPc9lPPYLLUNrUwtJXK8T1aJTNHHZeoQ
+         8wFZWeysCQkRPyEKo2FuT0sCk35vJQG16Vz8qlph2wfRpxEVvAStHRndANqfsNuWThvD
+         wKEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MZysaavM6RaxfqjWf6Ljab3pTPx34P66aCtFaiiiW/Y=;
-        b=GHAw3viYLgtySwZzZbNqW65HqTgTYmDaZgEdpIjVoOxhpPNTS3Dw6y30TIxuBdYujh
-         bzHSQp6MdevCsQ+LPl6TznhyzIwvDK0WFEndXKJSvIMCBzZDsXfwkDwICFB2Pcj3JVGZ
-         DHEm2CF/k/yF7ZN/oaNHb+rsMCRfZAImkReFSMz6x7hbM/Hq01g10ie2siA/GFyfC7Bh
-         2a3vlc848/h7Z6xq7TykXUR24MINGrjIAdYMm3PmilnX0TaejNGBbM/Jz006Ym6lUEFD
-         dbvtH0xcukPAVHxccJSdLZjgDHmB9f0SQRS2aOUnpHUtLex4E1dfMpjdV11+wKP+B+iJ
-         J0vw==
-X-Gm-Message-State: AOAM532yfD2OiBGiJAjufYcoh3uffPqMQXv691SCGoi35yw2Bq1lHi3U
-        rCa9VU4h7qod2hjXiZ2FgT2K0naIEljlnMgPKFEfBMaZf+0=
-X-Google-Smtp-Source: ABdhPJzqU5OTgpS0uOI3nms7/6HfolBtBUjzooFH82UffTEDoM5+T2FDnkqdXGL1kjah6lsFjkUQp78kPgIomnhh2sU=
-X-Received: by 2002:a17:90a:8594:: with SMTP id m20mr24882365pjn.215.1614022340104;
- Mon, 22 Feb 2021 11:32:20 -0800 (PST)
-MIME-Version: 1.0
-References: <20210220052924.106599-1-xiyou.wangcong@gmail.com>
- <20210220052924.106599-6-xiyou.wangcong@gmail.com> <87czws477x.fsf@cloudflare.com>
-In-Reply-To: <87czws477x.fsf@cloudflare.com>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Mon, 22 Feb 2021 11:32:09 -0800
-Message-ID: <CAM_iQpWMa61VhVk00cAwKFZ3KNUv6o8kvniNYT3EKWkNQxnExQ@mail.gmail.com>
-Subject: Re: [Patch bpf-next v6 5/8] sock_map: rename skb_parser and skb_verdict
-To:     Jakub Sitnicki <jakub@cloudflare.com>
-Cc:     Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, duanxiongchun@bytedance.com,
-        Dongdong Wang <wangdongdong.6@bytedance.com>,
-        Jiang Wang <jiang.wang@bytedance.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=i0npRPFT7npCmOqDBNbIB4dxyCx/lPT/+Nse/ehcJqQ=;
+        b=F9d0ld9g9aCF+o9l3qmDtKmBW7dgnSiNeizmaMkvOzWFU8b2yjy/g/KItFP2mp/KA+
+         Uo/nBdxb3n2prBhc0M8cJB7RiqoQ6i3qaCoaLyXmw0LwU2aERKDizvoQRRf9GlKQwENf
+         J/Z8NzXV8Gb6MuBFITybMtJmOVlRjjIJU1VmwgV4xGaYh7Q/wdx8a4KaJVsUsDLX8dwk
+         Pkycn0uSjfcfaTuLoOqT4IPfNWrnCgedkq/O1wZGmibDBxDSfgxGbR1h1KWKSJ7ekEtP
+         8jExaKTbV8DWrGNvmeecoPww+ekZ9EbAajR95aVvR05KuNFLNzMqsd2JWaFk16vZ43P5
+         Fsyw==
+X-Gm-Message-State: AOAM533dKD7Witlewm0GSdJcAfH4wP+TyjsHptVBTNyvBpu6hsavfP1j
+        3EIyYIOszT26AJRStP8nry66xbFKkH0=
+X-Google-Smtp-Source: ABdhPJx1K0m0ZOkr3c7obyw/tDOE0gDg61K/9LNjFLw/RnbELLFFPruiHwSJR5izTxQjHDVyGvt6EQ==
+X-Received: by 2002:ad4:482d:: with SMTP id h13mr22953508qvy.8.1614022502423;
+        Mon, 22 Feb 2021 11:35:02 -0800 (PST)
+Received: from localhost ([216.207.42.169])
+        by smtp.gmail.com with ESMTPSA id l137sm13308646qke.6.2021.02.22.11.35.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Feb 2021 11:35:01 -0800 (PST)
+Date:   Mon, 22 Feb 2021 12:34:59 -0700
+From:   "Brian G. Merrell" <brian.g.merrell@gmail.com>
+To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc:     xdp-newbies@vger.kernel.org,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Maciej =?utf-8?Q?=C5=BBenczykowski?= <maze@google.com>,
         Lorenz Bauer <lmb@cloudflare.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        Andrey Ignatov <rdna@fb.com>, bpf@vger.kernel.org
+Subject: Re: How to orchestrate multiple XDP programs
+Message-ID: <20210222193459.hxvlcq65yyh3b6dr@snout.localdomain>
+References: <873605din6.fsf@toke.dk>
+ <87tur0x874.fsf@toke.dk>
+ <20210210222710.7xl56xffdohvsko4@snout.localdomain>
+ <874kiirgx3.fsf@toke.dk>
+ <20210212065148.ajtbx2xos6yomrzc@snout.localdomain>
+ <87h7mdcxbd.fsf@toke.dk>
+ <20210217012012.qfdhimcyniw6dlve@snout.localdomain>
+ <87ft1un121.fsf@toke.dk>
+ <20210217222714.evijmkyucbnlqh3d@snout.localdomain>
+ <87pn0xl553.fsf@toke.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87pn0xl553.fsf@toke.dk>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 4:28 AM Jakub Sitnicki <jakub@cloudflare.com> wrote:
->
-> skb_parser also appears in:
->
-> tools/testing/selftests/bpf/test_sockmap.c:int txmsg_omit_skb_parser;
-> tools/testing/selftests/bpf/test_sockmap.c:     {"txmsg_omit_skb_parser", no_argument,      &txmsg_omit_skb_parser, 1},
-> tools/testing/selftests/bpf/test_sockmap.c:     txmsg_omit_skb_parser = 0;
-> tools/testing/selftests/bpf/test_sockmap.c:     if (!txmsg_omit_skb_parser) {
-> tools/testing/selftests/bpf/test_sockmap.c:             if (!txmsg_omit_skb_parser) {
-> tools/testing/selftests/bpf/test_sockmap.c:     /* Tests that omit skb_parser */
-> tools/testing/selftests/bpf/test_sockmap.c:     txmsg_omit_skb_parser = 1;
-> tools/testing/selftests/bpf/test_sockmap.c:     txmsg_omit_skb_parser = 0;
+On 21/02/18 05:20PM, Toke Høiland-Jørgensen wrote:
+> "Brian G. Merrell" <brian.g.merrell@gmail.com> writes:
 
-These are harmless, because they are internal variables of a self test.
-So, I prefer to just leave them as they are.
+> >> > We explicitly do not want defaults set by program authors. We want that
+> >> > policy to be completely in the hands of the orchestration environment.
+> >> 
+> >> Right, OK. How does the admin configuring the orchestration system
+> >> figure out which order to run programs in, BTW? Is this obvious from the
+> >> nature of the programs, or do you document it out of band somewhere, or
+> >> something like that?
+> >
+> > We're a pretty huge organization... lots of DCs, public cloud, private
+> > cloud, different kernel versions, sister companies, hundreds of
+> > applications, etc. We want anyone to be able to write cool BPF
+> > programs and userspace applications without needing awareness of
+> > what's running before or after or if that order might change in the
+> > future. I'm sure the desired order will be more obvious for some
+> > programs than others, but we have administrators that can analyze the
+> > BPF programs, compose multiple BPF programs together, and order and
+> > reorder them. We have a team of people that can work with teams to
+> > resolve any interdependencies if necessary.
+> >
+> > As an example, we've done something similar for HTTP ingress and
+> > egress Lua plugins in the past. We have dozens of teams that write Lua
+> > code to do custom L7 things with HTTP requests and responses, and then
+> > we have a UI where admins/ops folks can literally drag and drog the
+> > plugins into the desired order. We wouldn't want teams making
+> > assumptions about what order plugins should run in, either.
+> 
+> 
+> See, so this is the part that's actually analogous to what we want to do
+> as a distro. Except the people writing the cool BPF programs are
+> different software vendors and open source projects, not different
+> divisions within the same sprawling org. But in a sense the situation is
+> quite similar.
+> 
+> So thinking a bit more about the difference between your orchestration
+> system and the model I've been working from, I think the biggest
+> difference is not that you are assuming control of a system with an
+> orchestration system. In a sense a distro is also an orchestration
+> system bringing together different software from different sources.
+> 
+> No, I think the main difference is that in the model you described,
+> you're assuming that your orchestration system would install the XDP
+> program on behalf of the application as well as launch the userspace
+> bits.
 
-Thanks.
+Yes, that's right. This is the model we are implementing.
+
+> Whereas I'm assuming that an application that uses XDP will start
+> in userspace (launched by systemd, most likely), and will then load its
+> own XDP program after possibly doing some initialisation first (e.g.,
+> pre-populating maps, that sort of thing).
+> 
+> From what I've understood from what you explained about your setup, your
+> model could work with both models as well; so why are you assuming that
+> applications won't want to install their own XDP programs? :)
+
+I would just say that in our organizations network and administration
+environment, we ideally want a centralized orchestration tooling and
+control plane that is used for all XDP (and tc) programs running on our
+machines with our model described above.
+
+That said, I do see your point about the possibility of using some other
+application that runs its own XDP programs, and then, yes, we would
+definitely want some way to control the priority. Ideally, the
+application would have its own configuration to set priorities, but I do
+think the system configuration file is a good way to ensure that the
+sysadmin does have the power to override if necessary.
+
+I think you're right that both models should be able to be used. Thanks
+for the good discussion.
+
+Thanks,
+Brian
