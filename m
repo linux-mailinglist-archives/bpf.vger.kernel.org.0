@@ -2,214 +2,369 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B37E32152D
-	for <lists+bpf@lfdr.de>; Mon, 22 Feb 2021 12:35:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DA4E3215C9
+	for <lists+bpf@lfdr.de>; Mon, 22 Feb 2021 13:09:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230256AbhBVLfE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Feb 2021 06:35:04 -0500
-Received: from mga05.intel.com ([192.55.52.43]:17984 "EHLO mga05.intel.com"
+        id S230228AbhBVMIS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Feb 2021 07:08:18 -0500
+Received: from mga01.intel.com ([192.55.52.88]:29281 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230171AbhBVLfB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Feb 2021 06:35:01 -0500
-IronPort-SDR: 2EFuaabGFwJ7eoIA5IpXVKZgokPDJ2ekCHGxeh0XJaMT9BWyXBEAryviRlLUn3Wli5J1Bw9EQr
- lOpMuERjI5VQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9902"; a="269346011"
+        id S230211AbhBVMIP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:08:15 -0500
+IronPort-SDR: LU4d+FFqKcCTFwzQyyWzp2guL1DfzOALIOttoFA04u7e3ecTGstgcmke4xyujpW2KkYnaf6a1P
+ D4I3DlaZE6NQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9902"; a="203812544"
 X-IronPort-AV: E=Sophos;i="5.81,197,1610438400"; 
-   d="scan'208";a="269346011"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2021 03:34:20 -0800
-IronPort-SDR: mZOYLV5bKKq9fhhzLfyib1XGODD2VyqZiV3Cte4CMXkGRLxpOU0wDZeBX89DMDPRu2tvtcYAUI
- MqoQxsVq+Bkw==
+   d="scan'208";a="203812544"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2021 04:07:33 -0800
+IronPort-SDR: 64ACum+sE55XqQJRiDtpfjnw9/pBKL71ZDUaKHGwvQlTPV7Z+CkluUmv+OTyEz8yKy5LZAnkCy
+ 9lvixlksWj4g==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,197,1610438400"; 
-   d="scan'208";a="441354279"
+   d="scan'208";a="389809657"
 Received: from ranger.igk.intel.com ([10.102.21.164])
-  by orsmga001.jf.intel.com with ESMTP; 22 Feb 2021 03:34:13 -0800
-Date:   Mon, 22 Feb 2021 12:23:34 +0100
+  by fmsmga008.fm.intel.com with ESMTP; 22 Feb 2021 04:07:31 -0800
+Date:   Mon, 22 Feb 2021 12:56:53 +0100
 From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 To:     Ciara Loftus <ciara.loftus@intel.com>
 Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         magnus.karlsson@intel.com, bjorn@kernel.org,
         weqaar.a.janjua@intel.com
-Subject: Re: [PATCH bpf-next 3/4] selftests/bpf: restructure xsk selftests
-Message-ID: <20210222112334.GA29106@ranger.igk.intel.com>
+Subject: Re: [PATCH bpf-next 4/4] selftests/bpf: introduce xsk statistics
+ tests
+Message-ID: <20210222115653.GB29106@ranger.igk.intel.com>
 References: <20210217160214.7869-1-ciara.loftus@intel.com>
- <20210217160214.7869-4-ciara.loftus@intel.com>
+ <20210217160214.7869-5-ciara.loftus@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210217160214.7869-4-ciara.loftus@intel.com>
+In-Reply-To: <20210217160214.7869-5-ciara.loftus@intel.com>
 User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 04:02:13PM +0000, Ciara Loftus wrote:
-> Prior to this commit individual xsk tests were launched from the
-> shell script 'test_xsk.sh'. When adding a new test type, two new test
-> configurations had to be added to this file - one for each of the
-> supported XDP 'modes' (skb or drv). Should zero copy support be added to
-> the xsk selftest framework in the future, three new test configurations
-> would need to be added for each new test type. Each new test type also
-> typically requires new CLI arguments for the xdpxceiver program.
+On Wed, Feb 17, 2021 at 04:02:14PM +0000, Ciara Loftus wrote:
+> This commit introduces a range of tests to the xsk testsuite
+> for validating xsk statistics.
 > 
-> This commit aims to reduce the overhead of adding new tests, by launching
-> the test configurations from within the xdpxceiver program itself, using
-> simple loops. Every test is run every time the C program is executed. Many
-> of the CLI arguments can be removed as a result.
+> A new test type called 'stats' is added. Within it there are
+> four sub-tests which test the following statistics:
+> 1. rx dropped
+> 2. tx invalid
+> 3. rx ring full
+> 4. fill queue empty
+> 
+> Each test configures a scenario which should trigger the given
+> error statistic. The test passes if the statistic is successfully
+> incremented.
+
+Have you thought of adding a short description per each sub-test? This
+would be helpful if you would mention how each particular is triggered.
+
+Like, reducing the size of XSK Rx ring causes Rx drops and so on.
+
+Reason why I'm asking for that is because personally I feel like 'tx
+invalid' is a bit too generic name for a sub-test.
+
 > 
 > Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
 > ---
->  tools/testing/selftests/bpf/test_xsk.sh    | 112 +-----------
->  tools/testing/selftests/bpf/xdpxceiver.c   | 199 ++++++++++++---------
->  tools/testing/selftests/bpf/xdpxceiver.h   |  27 ++-
->  tools/testing/selftests/bpf/xsk_prereqs.sh |  24 +--
->  4 files changed, 139 insertions(+), 223 deletions(-)
+>  tools/testing/selftests/bpf/xdpxceiver.c | 130 ++++++++++++++++++++---
+>  tools/testing/selftests/bpf/xdpxceiver.h |  13 +++
+>  2 files changed, 130 insertions(+), 13 deletions(-)
 > 
-
-Good cleanup! I have a series of fixes/cleanups as well and I need to
-introduce a new test over here, so your work makes it easier for me.
-
-One nit below and once you address Bjorn's request, then feel free to add
-my:
-
-Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-
-[...]
-
-> +static int configure_skb(void)
-> +{
-> +
-> +	char cmd[80];
-> +
-> +	snprintf(cmd, sizeof(cmd), "ip link set dev %s xdpdrv off", ifdict[0]->ifname);
-> +	if (system(cmd)) {
-> +		ksft_test_result_fail("Failed to configure native mode on iface %s\n",
-> +						ifdict[0]->ifname);
-> +		return -1;
-> +	}
-> +	snprintf(cmd, sizeof(cmd), "ip netns exec %s ip link set dev %s xdpdrv off",
-> +					ifdict[1]->nsname, ifdict[1]->ifname);
-> +	if (system(cmd)) {
-> +		ksft_test_result_fail("Failed to configure native mode on iface/ns %s\n",
-> +						ifdict[1]->ifname, ifdict[1]->nsname);
-> +		return -1;
-> +	}
-> +
-> +	cur_mode = TEST_MODE_SKB;
-> +
-> +	return 0;
-> +
-> +}
-> +
-> +static int configure_drv(void)
-> +{
-> +	char cmd[80];
-> +
-> +	snprintf(cmd, sizeof(cmd), "ip link set dev %s xdpgeneric off", ifdict[0]->ifname);
-> +	if (system(cmd)) {
-> +		ksft_test_result_fail("Failed to configure native mode on iface %s\n",
-> +						ifdict[0]->ifname);
-> +		return -1;
-> +	}
-> +	snprintf(cmd, sizeof(cmd), "ip netns exec %s ip link set dev %s xdpgeneric off",
-> +					ifdict[1]->nsname, ifdict[1]->ifname);
-> +	if (system(cmd)) {
-> +		ksft_test_result_fail("Failed to configure native mode on iface/ns %s\n",
-> +						ifdict[1]->ifname, ifdict[1]->nsname);
-> +		return -1;
-> +	}
-> +
-> +	cur_mode = TEST_MODE_DRV;
-> +
-> +	return 0;
-> +}
-> +
-> +static void run_pkt_test(int mode, int type)
-> +{
-> +	test_type = type;
-> +
-> +	/* reset defaults after potential previous test */
-> +	xdp_flags = XDP_FLAGS_UPDATE_IF_NOEXIST;
-> +	pkt_counter = 0;
-> +	switching_notify = 0;
-> +	bidi_pass = 0;
-> +	prev_pkt = -1;
-> +	ifdict[0]->fv.vector = tx;
-> +	ifdict[1]->fv.vector = rx;
-> +
-> +	switch (mode) {
-> +	case (TEST_MODE_SKB):
-> +		if (cur_mode != TEST_MODE_SKB)
-> +			configure_skb();
-
-Should you check a return value over here?
-
-> +		xdp_flags |= XDP_FLAGS_SKB_MODE;
-> +		uut = TEST_MODE_SKB;
-> +		break;
-> +	case (TEST_MODE_DRV):
-> +		if (cur_mode != TEST_MODE_DRV)
-> +			configure_drv();
-
-ditto
-
-> +		xdp_flags |= XDP_FLAGS_DRV_MODE;
-> +		uut = TEST_MODE_DRV;
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +
-> +	pthread_init_mutex();
-> +
-> +	if ((test_type != TEST_TYPE_TEARDOWN) && (test_type != TEST_TYPE_BIDI))
-> +		testapp_validate();
-> +	else
-> +		testapp_sockets();
-> +
-> +	pthread_destroy_mutex();
-> +}
-> +
->  int main(int argc, char **argv)
+> diff --git a/tools/testing/selftests/bpf/xdpxceiver.c b/tools/testing/selftests/bpf/xdpxceiver.c
+> index 7cb4a13597d0..4647c89b2019 100644
+> --- a/tools/testing/selftests/bpf/xdpxceiver.c
+> +++ b/tools/testing/selftests/bpf/xdpxceiver.c
+> @@ -28,8 +28,11 @@
+>   *       Configure sockets as bi-directional tx/rx sockets, sets up fill and
+>   *       completion rings on each socket, tx/rx in both directions. Only nopoll
+>   *       mode is used
+> + *    e. Statistics
+> + *       Trigger some error conditions and ensure that the appropriate statistics
+> + *       are incremented.
+>   *
+> - * Total tests: 8
+> + * Total tests: 10
+>   *
+>   * Flow:
+>   * -----
+> @@ -90,10 +93,11 @@ static void __exit_with_error(int error, const char *file, const char *func, int
+>  #define exit_with_error(error) __exit_with_error(error, __FILE__, __func__, __LINE__)
+>  
+>  #define print_ksft_result(void)\
+> -	(ksft_test_result_pass("PASS: %s %s %s%s\n", uut ? "DRV" : "SKB",\
+> +	(ksft_test_result_pass("PASS: %s %s %s%s%s\n", uut ? "DRV" : "SKB",\
+>  			       test_type == TEST_TYPE_POLL ? "POLL" : "NOPOLL",\
+>  			       test_type == TEST_TYPE_TEARDOWN ? "Socket Teardown" : "",\
+> -			       test_type == TEST_TYPE_BIDI ? "Bi-directional Sockets" : ""))
+> +			       test_type == TEST_TYPE_BIDI ? "Bi-directional Sockets" : "",\
+> +			       test_type == TEST_TYPE_STATS ? "Stats" : ""))
+>  
+>  static void pthread_init_mutex(void)
 >  {
->  	struct rlimit _rlim = { RLIM_INFINITY, RLIM_INFINITY };
-> @@ -1021,6 +1062,7 @@ int main(int argc, char **argv)
->  	const char *IP2 = "192.168.100.161";
->  	u16 UDP_DST_PORT = 2020;
->  	u16 UDP_SRC_PORT = 2121;
-> +	int i, j;
+> @@ -255,13 +259,20 @@ static void gen_eth_frame(struct xsk_umem_info *umem, u64 addr)
+>  static void xsk_configure_umem(struct ifobject *data, void *buffer, u64 size)
+>  {
+>  	int ret;
+> +	struct xsk_umem_config cfg = {
+> +		.fill_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
+> +		.comp_size = XSK_RING_CONS__DEFAULT_NUM_DESCS,
+> +		.frame_size = XSK_UMEM__DEFAULT_FRAME_SIZE,
+> +		.frame_headroom = frame_headroom,
+> +		.flags = XSK_UMEM__DEFAULT_FLAGS
+> +	};
 >  
->  	ifaceconfig = malloc(sizeof(struct ifaceconfigobj));
->  	memcpy(ifaceconfig->dst_mac, MAC1, ETH_ALEN);
-> @@ -1046,24 +1088,19 @@ int main(int argc, char **argv)
+>  	data->umem = calloc(1, sizeof(struct xsk_umem_info));
+>  	if (!data->umem)
+>  		exit_with_error(errno);
 >  
->  	init_iface_config(ifaceconfig);
+>  	ret = xsk_umem__create(&data->umem->umem, buffer, size,
+> -			       &data->umem->fq, &data->umem->cq, NULL);
+> +			       &data->umem->fq, &data->umem->cq, &cfg);
+>  	if (ret)
+>  		exit_with_error(ret);
 >  
-> -	pthread_init_mutex();
-> +	ksft_set_plan(TEST_MODE_MAX * TEST_TYPE_MAX);
+> @@ -293,7 +304,7 @@ static int xsk_configure_socket(struct ifobject *ifobject)
+>  		exit_with_error(errno);
 >  
-> -	ksft_set_plan(1);
-> +	configure_skb();
-> +	cur_mode = TEST_MODE_SKB;
+>  	ifobject->xsk->umem = ifobject->umem;
+> -	cfg.rx_size = XSK_RING_CONS__DEFAULT_NUM_DESCS;
+> +	cfg.rx_size = rxqsize;
+>  	cfg.tx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS;
+>  	cfg.libbpf_flags = 0;
+>  	cfg.xdp_flags = xdp_flags;
+> @@ -555,6 +566,8 @@ static void tx_only(struct xsk_socket_info *xsk, u32 *frameptr, int batch_size)
+>  {
+>  	u32 idx;
+>  	unsigned int i;
+> +	bool tx_invalid_test = stat_test_type == STAT_TEST_TX_INVALID;
+> +	u32 len = tx_invalid_test ? XSK_UMEM__DEFAULT_FRAME_SIZE + 1 : PKT_SIZE;
 >  
-> -	if (!opt_teardown && !opt_bidi) {
-> -		testapp_validate();
-> -	} else if (opt_teardown && opt_bidi) {
-> -		ksft_test_result_fail("ERROR: parameters -T and -B cannot be used together\n");
-> -		ksft_exit_xfail();
-> -	} else {
-> -		testapp_sockets();
-> +	for (i = 0; i < TEST_MODE_MAX; i++) {
-> +		for (j = 0; j < TEST_TYPE_MAX; j++)
-> +			run_pkt_test(i, j);
+>  	while (xsk_ring_prod__reserve(&xsk->tx, batch_size, &idx) < batch_size)
+>  		complete_tx_only(xsk, batch_size);
+> @@ -563,11 +576,16 @@ static void tx_only(struct xsk_socket_info *xsk, u32 *frameptr, int batch_size)
+>  		struct xdp_desc *tx_desc = xsk_ring_prod__tx_desc(&xsk->tx, idx + i);
+>  
+>  		tx_desc->addr = (*frameptr + i) << XSK_UMEM__DEFAULT_FRAME_SHIFT;
+> -		tx_desc->len = PKT_SIZE;
+> +		tx_desc->len = len;
 >  	}
 >  
->  	for (int i = 0; i < MAX_INTERFACES; i++)
->  		free(ifdict[i]);
+>  	xsk_ring_prod__submit(&xsk->tx, batch_size);
+> -	xsk->outstanding_tx += batch_size;
+> +	if (!tx_invalid_test) {
+> +		xsk->outstanding_tx += batch_size;
+> +	} else {
+> +		if (!NEED_WAKEUP || xsk_ring_prod__needs_wakeup(&xsk->tx))
+> +			kick_tx(xsk);
+> +	}
+>  	*frameptr += batch_size;
+>  	*frameptr %= num_frames;
+>  	complete_tx_only(xsk, batch_size);
+> @@ -679,6 +697,48 @@ static void worker_pkt_dump(void)
+>  	}
+>  }
 >  
-> -	pthread_destroy_mutex();
-> -
->  	ksft_exit_pass();
+> +static void worker_stats_validate(struct ifobject *ifobject)
+> +{
+> +	struct xdp_statistics stats;
+> +	socklen_t optlen;
+> +	int err;
+> +	struct xsk_socket *xsk = stat_test_type == STAT_TEST_TX_INVALID ?
+> +							ifdict[!ifobject->ifdict_index]->xsk->xsk :
+> +							ifobject->xsk->xsk;
+> +	int fd = xsk_socket__fd(xsk);
+> +	unsigned long xsk_stat = 0, expected_stat = opt_pkt_count;
+> +
+> +	sigvar = 0;
+> +
+> +	optlen = sizeof(stats);
+> +	err = getsockopt(fd, SOL_XDP, XDP_STATISTICS, &stats, &optlen);
+> +	if (err)
+> +		return;
+> +
+> +	if (optlen == sizeof(struct xdp_statistics)) {
+> +		switch (stat_test_type) {
+> +		case STAT_TEST_RX_DROPPED:
+> +			xsk_stat = stats.rx_dropped;
+> +			break;
+> +		case STAT_TEST_TX_INVALID:
+> +			xsk_stat = stats.tx_invalid_descs;
+> +			break;
+> +		case STAT_TEST_RX_FULL:
+> +			xsk_stat = stats.rx_ring_full;
+> +			expected_stat -= RX_FULL_RXQSIZE;
+> +			break;
+> +		case STAT_TEST_RX_FILL_EMPTY:
+> +			xsk_stat = stats.rx_fill_ring_empty_descs;
+> +			break;
+> +		default:
+> +			break;
+> +		}
+> +
+> +		if (xsk_stat == expected_stat)
+> +			sigvar = 1;
+> +	}
+> +}
+> +
+>  static void worker_pkt_validate(void)
+>  {
+>  	u32 payloadseqnum = -2;
+> @@ -817,7 +877,8 @@ static void *worker_testapp_validate(void *arg)
+>  			thread_common_ops(ifobject, bufs, &sync_mutex_tx, &spinning_rx);
 >  
->  	return 0;
+>  		print_verbose("Interface [%s] vector [Rx]\n", ifobject->ifname);
+> -		xsk_populate_fill_ring(ifobject->umem);
+> +		if (stat_test_type != STAT_TEST_RX_FILL_EMPTY)
+> +			xsk_populate_fill_ring(ifobject->umem);
+>  
+>  		TAILQ_INIT(&head);
+>  		if (debug_pkt_dump) {
+> @@ -839,15 +900,21 @@ static void *worker_testapp_validate(void *arg)
+>  				if (ret <= 0)
+>  					continue;
+>  			}
+> -			rx_pkt(ifobject->xsk, fds);
+> -			worker_pkt_validate();
+> +
+> +			if (test_type != TEST_TYPE_STATS) {
+> +				rx_pkt(ifobject->xsk, fds);
+> +				worker_pkt_validate();
+> +			} else {
+> +				worker_stats_validate(ifobject);
+> +			}
+>  
+>  			if (sigvar)
+>  				break;
+>  		}
+>  
+> -		print_verbose("Received %d packets on interface %s\n",
+> -			       pkt_counter, ifobject->ifname);
+> +		if (test_type != TEST_TYPE_STATS)
+> +			print_verbose("Received %d packets on interface %s\n",
+> +				pkt_counter, ifobject->ifname);
+>  
+>  		if (test_type == TEST_TYPE_TEARDOWN)
+>  			print_verbose("Destroying socket\n");
+> @@ -921,7 +988,7 @@ static void testapp_validate(void)
+>  		free(pkt_buf);
+>  	}
+>  
+> -	if (!(test_type == TEST_TYPE_TEARDOWN) && !bidi)
+> +	if (!(test_type == TEST_TYPE_TEARDOWN) && !bidi && !(test_type == TEST_TYPE_STATS))
+>  		print_ksft_result();
+>  }
+>  
+> @@ -940,6 +1007,34 @@ static void testapp_sockets(void)
+>  	print_ksft_result();
+>  }
+>  
+> +static void testapp_stats(void)
+> +{
+> +	for (int i = 0; i < STAT_TEST_TYPE_MAX; i++) {
+> +		stat_test_type = i;
+> +
+> +		/* reset defaults */
+> +		rxqsize = XSK_RING_CONS__DEFAULT_NUM_DESCS;
+> +		frame_headroom = XSK_UMEM__DEFAULT_FRAME_HEADROOM;
+> +
+> +		switch (stat_test_type) {
+> +		case STAT_TEST_RX_DROPPED:
+> +			frame_headroom = XSK_UMEM__DEFAULT_FRAME_SIZE -
+> +						XDP_PACKET_HEADROOM - 1;
+> +			break;
+> +		case STAT_TEST_RX_FULL:
+> +			rxqsize = RX_FULL_RXQSIZE;
+> +			break;
+> +		default:
+> +			break;
+> +		}
+> +		pthread_init_mutex();
+
+Do you really have to init/destroy mutexes per each iteration?
+
+> +		testapp_validate();
+> +		pthread_destroy_mutex();
+> +	}
+> +
+> +	print_ksft_result();
+> +}
+> +
+>  static void init_iface_config(struct ifaceconfigobj *ifaceconfig)
+>  {
+>  	/*Init interface0 */
+> @@ -1021,6 +1116,10 @@ static void run_pkt_test(int mode, int type)
+>  	prev_pkt = -1;
+>  	ifdict[0]->fv.vector = tx;
+>  	ifdict[1]->fv.vector = rx;
+> +	sigvar = 0;
+> +	stat_test_type = -1;
+> +	rxqsize = XSK_RING_CONS__DEFAULT_NUM_DESCS;
+> +	frame_headroom = XSK_UMEM__DEFAULT_FRAME_HEADROOM;
+>  
+>  	switch (mode) {
+>  	case (TEST_MODE_SKB):
+> @@ -1039,6 +1138,11 @@ static void run_pkt_test(int mode, int type)
+>  		break;
+>  	}
+>  
+> +	if (test_type == TEST_TYPE_STATS) {
+> +		testapp_stats();
+> +		return;
+> +	}
+
+Why this can't be a part of if/else if/else branch that below is picking
+the test type?
+
+> +
+>  	pthread_init_mutex();
+>  
+>  	if ((test_type != TEST_TYPE_TEARDOWN) && (test_type != TEST_TYPE_BIDI))
+> diff --git a/tools/testing/selftests/bpf/xdpxceiver.h b/tools/testing/selftests/bpf/xdpxceiver.h
+> index 1127a396d5d0..4d0a80dbfef0 100644
+> --- a/tools/testing/selftests/bpf/xdpxceiver.h
+> +++ b/tools/testing/selftests/bpf/xdpxceiver.h
+> @@ -41,6 +41,7 @@
+>  #define BATCH_SIZE 64
+>  #define POLL_TMOUT 1000
+>  #define NEED_WAKEUP true
+> +#define RX_FULL_RXQSIZE 32
+>  
+>  #define print_verbose(x...) do { if (opt_verbose) ksft_print_msg(x); } while (0)
+>  
+> @@ -59,9 +60,18 @@ enum TEST_TYPES {
+>  	TEST_TYPE_POLL,
+>  	TEST_TYPE_TEARDOWN,
+>  	TEST_TYPE_BIDI,
+> +	TEST_TYPE_STATS,
+>  	TEST_TYPE_MAX
+>  };
+>  
+> +enum STAT_TEST_TYPES {
+> +	STAT_TEST_RX_DROPPED,
+> +	STAT_TEST_TX_INVALID,
+> +	STAT_TEST_RX_FULL,
+> +	STAT_TEST_RX_FILL_EMPTY,
+> +	STAT_TEST_TYPE_MAX
+> +};
+> +
+>  static u8 uut;
+>  static u8 debug_pkt_dump;
+>  static u32 num_frames;
+> @@ -80,6 +90,9 @@ static u8 pkt_data[XSK_UMEM__DEFAULT_FRAME_SIZE];
+>  static u32 pkt_counter;
+>  static long prev_pkt = -1;
+>  static int sigvar;
+> +static int stat_test_type;
+> +static u32 rxqsize;
+> +static u32 frame_headroom;
+>  
+>  struct xsk_umem_info {
+>  	struct xsk_ring_prod fq;
+> -- 
+> 2.17.1
+> 
