@@ -2,58 +2,58 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E882B323432
-	for <lists+bpf@lfdr.de>; Wed, 24 Feb 2021 00:27:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4745D32342E
+	for <lists+bpf@lfdr.de>; Wed, 24 Feb 2021 00:26:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233834AbhBWXZt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Feb 2021 18:25:49 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:42120 "EHLO
+        id S233738AbhBWXZP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Feb 2021 18:25:15 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:40634 "EHLO
         mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233828AbhBWXQw (ORCPT
+        by vger.kernel.org with ESMTP id S234022AbhBWXQw (ORCPT
         <rfc822;bpf@vger.kernel.org>); Tue, 23 Feb 2021 18:16:52 -0500
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11NN3P6D179234;
-        Tue, 23 Feb 2021 18:15:20 -0500
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11NN5FBn193913;
+        Tue, 23 Feb 2021 18:15:21 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pp1;
- bh=ozt/lwUKcnsTuX5mLpJbdZlcmTxAjkcDNP+uVlMHa7I=;
- b=A1IlZOje7R2908y2TeEu2i41RI2LMYBpOGRRM2HAH2nH678v9UttyULR4/HlmyHCndYH
- GOzUX2g5b8q9oDjt40pLIFppO3HHxnEyKoo8Rw2HlNsoyUKyMIBIEmVggmIU0JwTCISt
- ZvLX6PLk1oF7SyubErvaKcgYZsgrSV1dq0Dy0GnjLOj96erSGUq5cvtAY6z8Hpme4Apy
- Wg9L2k5ZxdRh1+v9hiVZDTmQEqNgIr5yPXdZM+agv7NyB4DiOiICF2FshTemFW10VwIt
- +i6RX/ig2tRH5c/w5rYZRExR+KKWH30yvWIQHPGrLaqAgNpunkRpLyCPhMI0xYQfJ2m0 2g== 
+ bh=r7oG9f7cFCsVBhJOpyPEe6H5z2YB6ZeOuQNTJP/y6Jw=;
+ b=SL9uPHZWAShBLOJkeau+2DDFRAvqXGnnpTs+5Dp2yIoJ4KsuxxtzxKQmFPqtIFmz1sqL
+ yNZ8mdiULKSGYq4aTzH+WoyEJPops0RlEmH1mGf37c5x8u4IXuj06dTBginJ9MwCDXqE
+ 77KEnBZEdrVFEsd6IVzgtESPQSI9X98UThHqjnlJ0/aVa5/ieSHmJcFaOmpsiQbuyreD
+ zU3KlNCpS78wprxuowxYR+wOKo8fLSQPiir4mTSNqmeMxlFfLSsMEI05ThcRBPAw/0U1
+ UesjuIQ9he2VRaodzWL3+a8aXO79LLSxOeEC46o/Z0zsLgylzDQ3jowUbTe9XRZSRoJH 4A== 
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36vkne4aqv-1
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36vkn1uemf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Feb 2021 18:15:21 -0500
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 11NN5r08196386;
+        Tue, 23 Feb 2021 18:15:20 -0500
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36vkn1ueks-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Tue, 23 Feb 2021 18:15:20 -0500
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 11NN5q2K192785;
-        Tue, 23 Feb 2021 18:15:19 -0500
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36vkne4aqa-1
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11NNFJd8005330;
+        Tue, 23 Feb 2021 23:15:19 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma05fra.de.ibm.com with ESMTP id 36tt289k3b-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Feb 2021 18:15:19 -0500
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11NNCCD4015292;
-        Tue, 23 Feb 2021 23:15:17 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 36tt2831j7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Feb 2021 23:15:17 +0000
+        Tue, 23 Feb 2021 23:15:18 +0000
 Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11NNFEcS42402204
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11NNFG8o45220182
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Feb 2021 23:15:15 GMT
+        Tue, 23 Feb 2021 23:15:16 GMT
 Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DB956A4040;
-        Tue, 23 Feb 2021 23:15:14 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id EB4B9A4053;
+        Tue, 23 Feb 2021 23:15:15 +0000 (GMT)
 Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4A5D1A404D;
-        Tue, 23 Feb 2021 23:15:14 +0000 (GMT)
+        by IMSVA (Postfix) with ESMTP id 65519A404D;
+        Tue, 23 Feb 2021 23:15:15 +0000 (GMT)
 Received: from vm.lan (unknown [9.145.151.190])
         by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 23 Feb 2021 23:15:14 +0000 (GMT)
+        Tue, 23 Feb 2021 23:15:15 +0000 (GMT)
 From:   Ilya Leoshkevich <iii@linux.ibm.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -64,9 +64,9 @@ To:     Alexei Starovoitov <ast@kernel.org>,
 Cc:     bpf@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>,
         Vasily Gorbik <gor@linux.ibm.com>,
         Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH v5 bpf-next 4/8] selftests/bpf: Use the 25th bit in the "invalid BTF_INFO" test
-Date:   Wed, 24 Feb 2021 00:14:55 +0100
-Message-Id: <20210223231459.99664-5-iii@linux.ibm.com>
+Subject: [PATCH v5 bpf-next 5/8] bpf: Add BTF_KIND_FLOAT support
+Date:   Wed, 24 Feb 2021 00:14:56 +0100
+Message-Id: <20210223231459.99664-6-iii@linux.ibm.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210223231459.99664-1-iii@linux.ibm.com>
 References: <20210223231459.99664-1-iii@linux.ibm.com>
@@ -75,36 +75,157 @@ Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
  definitions=2021-02-23_12:2021-02-23,2021-02-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- mlxlogscore=999 impostorscore=0 lowpriorityscore=0 clxscore=1015
- phishscore=0 adultscore=0 priorityscore=1501 malwarescore=0 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ lowpriorityscore=0 priorityscore=1501 bulkscore=0 phishscore=0 mlxscore=0
+ mlxlogscore=999 clxscore=1015 suspectscore=0 impostorscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2009150000 definitions=main-2102230190
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The bit being checked by this test is no longer reserved after
-introducing BTF_KIND_FLOAT, so use the next one instead.
+On the kernel side, introduce a new btf_kind_operations. It is
+similar to that of BTF_KIND_INT, however, it does not need to
+handle encodings and bit offsets. Do not implement printing, since
+the kernel does not know how to format floating-point values.
 
 Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 ---
- tools/testing/selftests/bpf/prog_tests/btf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/bpf/btf.c | 79 ++++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 77 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf.c b/tools/testing/selftests/bpf/prog_tests/btf.c
-index 6a7ee7420701..c29406736138 100644
---- a/tools/testing/selftests/bpf/prog_tests/btf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/btf.c
-@@ -1903,7 +1903,7 @@ static struct btf_raw_test raw_tests[] = {
- 	.raw_types = {
- 		/* int */				/* [1] */
- 		BTF_TYPE_INT_ENC(0, BTF_INT_SIGNED, 0, 32, 4),
--		BTF_TYPE_ENC(0, 0x10000000, 4),
-+		BTF_TYPE_ENC(0, 0x20000000, 4),
- 		BTF_END_RAW,
- 	},
- 	.str_sec = "",
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 2efeb5f4b343..c405edc8e615 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -173,7 +173,7 @@
+ #define BITS_ROUNDUP_BYTES(bits) \
+ 	(BITS_ROUNDDOWN_BYTES(bits) + !!BITS_PER_BYTE_MASKED(bits))
+ 
+-#define BTF_INFO_MASK 0x8f00ffff
++#define BTF_INFO_MASK 0x9f00ffff
+ #define BTF_INT_MASK 0x0fffffff
+ #define BTF_TYPE_ID_VALID(type_id) ((type_id) <= BTF_MAX_TYPE)
+ #define BTF_STR_OFFSET_VALID(name_off) ((name_off) <= BTF_MAX_NAME_OFFSET)
+@@ -280,6 +280,7 @@ static const char * const btf_kind_str[NR_BTF_KINDS] = {
+ 	[BTF_KIND_FUNC_PROTO]	= "FUNC_PROTO",
+ 	[BTF_KIND_VAR]		= "VAR",
+ 	[BTF_KIND_DATASEC]	= "DATASEC",
++	[BTF_KIND_FLOAT]	= "FLOAT",
+ };
+ 
+ static const char *btf_type_str(const struct btf_type *t)
+@@ -574,6 +575,7 @@ static bool btf_type_has_size(const struct btf_type *t)
+ 	case BTF_KIND_UNION:
+ 	case BTF_KIND_ENUM:
+ 	case BTF_KIND_DATASEC:
++	case BTF_KIND_FLOAT:
+ 		return true;
+ 	}
+ 
+@@ -1704,6 +1706,7 @@ __btf_resolve_size(const struct btf *btf, const struct btf_type *type,
+ 		case BTF_KIND_STRUCT:
+ 		case BTF_KIND_UNION:
+ 		case BTF_KIND_ENUM:
++		case BTF_KIND_FLOAT:
+ 			size = type->size;
+ 			goto resolved;
+ 
+@@ -1849,7 +1852,7 @@ static int btf_df_check_kflag_member(struct btf_verifier_env *env,
+ 	return -EINVAL;
+ }
+ 
+-/* Used for ptr, array and struct/union type members.
++/* Used for ptr, array struct/union and float type members.
+  * int, enum and modifier types have their specific callback functions.
+  */
+ static int btf_generic_check_kflag_member(struct btf_verifier_env *env,
+@@ -3675,6 +3678,77 @@ static const struct btf_kind_operations datasec_ops = {
+ 	.show			= btf_datasec_show,
+ };
+ 
++static s32 btf_float_check_meta(struct btf_verifier_env *env,
++				const struct btf_type *t,
++				u32 meta_left)
++{
++	if (btf_type_vlen(t)) {
++		btf_verifier_log_type(env, t, "vlen != 0");
++		return -EINVAL;
++	}
++
++	if (btf_type_kflag(t)) {
++		btf_verifier_log_type(env, t, "Invalid btf_info kind_flag");
++		return -EINVAL;
++	}
++
++	if (t->size != 2 && t->size != 4 && t->size != 8 && t->size != 12 &&
++	    t->size != 16) {
++		btf_verifier_log_type(env, t, "Invalid type_size");
++		return -EINVAL;
++	}
++
++	btf_verifier_log_type(env, t, NULL);
++
++	return 0;
++}
++
++static int btf_float_check_member(struct btf_verifier_env *env,
++				  const struct btf_type *struct_type,
++				  const struct btf_member *member,
++				  const struct btf_type *member_type)
++{
++	u64 start_offset_bytes;
++	u64 end_offset_bytes;
++	u64 misalign_bits;
++	u64 align_bytes;
++	u64 align_bits;
++
++	align_bytes = min_t(u64, sizeof(void *), member_type->size);
++	align_bits = align_bytes * BITS_PER_BYTE;
++	div64_u64_rem(member->offset, align_bits, &misalign_bits);
++	if (misalign_bits) {
++		btf_verifier_log_member(env, struct_type, member,
++					"Member is not properly aligned");
++		return -EINVAL;
++	}
++
++	start_offset_bytes = member->offset / BITS_PER_BYTE;
++	end_offset_bytes = start_offset_bytes + member_type->size;
++	if (end_offset_bytes > struct_type->size) {
++		btf_verifier_log_member(env, struct_type, member,
++					"Member exceeds struct_size");
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static void btf_float_log(struct btf_verifier_env *env,
++			  const struct btf_type *t)
++{
++	btf_verifier_log(env, "size=%u", t->size);
++}
++
++static const struct btf_kind_operations float_ops = {
++	.check_meta = btf_float_check_meta,
++	.resolve = btf_df_resolve,
++	.check_member = btf_float_check_member,
++	.check_kflag_member = btf_generic_check_kflag_member,
++	.log_details = btf_float_log,
++	.show = btf_df_show,
++};
++
+ static int btf_func_proto_check(struct btf_verifier_env *env,
+ 				const struct btf_type *t)
+ {
+@@ -3808,6 +3882,7 @@ static const struct btf_kind_operations * const kind_ops[NR_BTF_KINDS] = {
+ 	[BTF_KIND_FUNC_PROTO] = &func_proto_ops,
+ 	[BTF_KIND_VAR] = &var_ops,
+ 	[BTF_KIND_DATASEC] = &datasec_ops,
++	[BTF_KIND_FLOAT] = &float_ops,
+ };
+ 
+ static s32 btf_check_meta(struct btf_verifier_env *env,
 -- 
 2.29.2
 
