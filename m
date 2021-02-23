@@ -2,139 +2,140 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C5AB323188
-	for <lists+bpf@lfdr.de>; Tue, 23 Feb 2021 20:40:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 260DA323198
+	for <lists+bpf@lfdr.de>; Tue, 23 Feb 2021 20:49:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232536AbhBWTio (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Feb 2021 14:38:44 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:44586 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231335AbhBWTil (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 23 Feb 2021 14:38:41 -0500
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11NJXXJ0026744;
-        Tue, 23 Feb 2021 11:37:47 -0800
+        id S234089AbhBWTse (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Feb 2021 14:48:34 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:2322 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234082AbhBWTs3 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 23 Feb 2021 14:48:29 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11NJhnGN014653;
+        Tue, 23 Feb 2021 11:47:35 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
  references : from : message-id : date : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=facebook;
- bh=JqIahzmBZnDDH+7SMxCN4M5cPmyz3wr3Wwc27vgVTPs=;
- b=WDwKgTZytMNPMc/pgIcq1uLQ7sDZYRhsP+c82THkg1GTMm3RxmAGdgXpAFoNPSu3u+mV
- rnjrPxoSUw6k7TJeBQ9n8qLFCUXpOL5AClHIABhi0zairtw6Xxl5Vw0z8eMqX8o/Xb/J
- MMICOw7o5HJq9OrEQ7Dp8w/9+5vj8b5YUx0= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 36u14q83cm-5
+ bh=fDJAFK4DyVaSWvJOmYiKmVr5JQqhy2MTSUgYQNnlm+M=;
+ b=iOLM2NoLq7MEDP5ABTOGUyAmxSJqQGK3kr62FtOfXhKFnvNrkqW2kpykCPKuGF2I6i/E
+ lp8nqVP4blxKauqRW/iDhfdIex+mqU1fknmAh87tLNRjva1t3CdztG39BoIckZwH09Z2
+ mZJ2GyYcmXa/eSNvUnxu8RWk5pFYaeY5WF4= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 36vx7ru9s6-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 23 Feb 2021 11:37:47 -0800
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
+        Tue, 23 Feb 2021 11:47:35 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 23 Feb 2021 11:37:45 -0800
+ 15.1.1979.3; Tue, 23 Feb 2021 11:47:34 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mNeY+hw3sSMNsltxBqlYBoWevI1QAYre4YMMjhhAXT1qN1xS/MawXwj2FLt74YmBnbAx/4Jn2svVAj4NRb4lfqRrXlvZjrwG6TQpIcVf8qXLvfvt6xx7d5/J/Edx8qlfgN6F/agYSeKkos6MFnHnjgzcVYVPvBzDEoWD1GoxzQxpCIXamr80SdT9TayyX7ebTXj3vypCSrw4idTAOn8N3Kq6itb3AES8cnmiPZNEqZjMENpGDpZbmo3heC5uyjiPx6zofIS5GlknQbsd5l7GAQzUUUmzV9AR0zdFcA07QXXhlRNvJV0tTdxV5cQZ13SKUGhPZ9LVvfgCd56sybw5hw==
+ b=Y8stN/cdlMGpn2E8zO047Wta6n5dMQEAD6x2SPjQqwbHMtQSk/EDaYs85RgnqPvFY1zoZcKu6iqLSFD9WbWvqjuK4DMo9oVSlUXYnEdMHp+DKQM7r6gxXXLV6TRWtI8Ld0cpIFo1Y4oMG4tWm/cVng/SM+wjlSnxwDcVR1doxKESE5bHBgx9qnhJcE0K1mU/LaGABPVUyjakaZ9H8pvlWqAxo/VBn09cPjIhIiVUaMc3AztsDASBAST82xln8KpR8TNDr6c/8r7fYnpK6Vay1Bv1u4JezP6SXr95pE/KtsbAxvaEM+E9NTHPKQxQZLEekZaTj//3MuCVGl2FTydSZA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JqIahzmBZnDDH+7SMxCN4M5cPmyz3wr3Wwc27vgVTPs=;
- b=H1CI7Dg5h/xlF2C8/EmCXerYLxwDyZxOlWyx+58bYIBOSBaljYLgumACB86N6VXli6wGtjnK0RRJpcmjNX/a+uCKXv+P4UNMZB6o8jOGK6+xxCf0xpuPJSfJfmwip77t1ocltbzrYbLUQekXhjCdDA8N4ozw1XFjgIdDdEb1N25pQG6K+x5PlhpWTywfYErWqX805m4ui/Ji5MdnHNTecTQvXMQnKrGlxmnFKETNzUhgPOSpfUJpaO4Gh5gsQNayftZhGN64kGMOHuqOeAbXG1ut5V0yVMZ7GHh7+wD3uq8Z2SbVsGH6O/ZOEWyGVCtUf+XCKUhMnS7WRJer9JpWKA==
+ bh=fDJAFK4DyVaSWvJOmYiKmVr5JQqhy2MTSUgYQNnlm+M=;
+ b=mxwn4uqrO0gjBMwwIjxEa4pcBtbGfxgeMKCieWXjuT7dR70N20ce6dMFF2wju5QKf4GgF5jgYGTSFMh3D5N6GibbQ2urrBTs4ZQaESbp4YIDssNM8z4DdQcIljQbXHW94/6IL3nD2gvp4Q0AgPjXUruim3k/5TBwstU/MSnW+XkmT450PiNHJqtKvZ8eNwi7LTSNw3qtqbpv4yLcGe2px04PZnQAFh4AJ2NlxItOR62cD0lC8Niz+YRlwqFrpVPaUuOfF4MPDGQryG16Dx2UXrkLowaTRio5z+a3gONxgFI1BdMxZFRQN9WEpq4gYO0MWYWvO0r6YrNFaV4R3z5T0Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
- by SN6PR15MB2287.namprd15.prod.outlook.com (2603:10b6:805:23::15) with
+ by SA1PR15MB4386.namprd15.prod.outlook.com (2603:10b6:806:191::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.23; Tue, 23 Feb
- 2021 19:37:43 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.29; Tue, 23 Feb
+ 2021 19:47:32 +0000
 Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::e5af:7efb:8079:2c93]) by SN6PR1501MB2064.namprd15.prod.outlook.com
  ([fe80::e5af:7efb:8079:2c93%6]) with mapi id 15.20.3868.033; Tue, 23 Feb 2021
- 19:37:43 +0000
-Subject: Re: [PATCH bpf-next v2 04/11] bpf: add bpf_for_each_map_elem() helper
-To:     Alexei Starovoitov <ast@fb.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-CC:     <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ 19:47:32 +0000
+Subject: Re: [PATCH bpf-next v2 08/11] libbpf: support local function pointer
+ relocation
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+CC:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Cong Wang <xiyou.wangcong@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <kernel-team@fb.com>
 References: <20210217181803.3189437-1-yhs@fb.com>
- <20210217181807.3190187-1-yhs@fb.com>
- <20210222205912.hucaxodzk7csrdyj@ast-mbp.dhcp.thefacebook.com>
- <083e0c5c-71c5-a735-63e7-4c5b8b1e9149@fb.com>
- <c837ae55-2487-2f39-47f6-a18781dc6fcc@fb.com>
+ <20210217181812.3191397-1-yhs@fb.com>
+ <CAEf4BzZwEDQwMiXthy2Q32F3Qt1X4sTg92w8HZL7PbMB_FtYtg@mail.gmail.com>
+ <b20cf48f-fa7c-1397-fc47-361a9e8edecf@fb.com>
+ <CAEf4Bzav42vH8PdRYg7_vV20EV7FL6CJiciXs=zv3rqu5TR_zg@mail.gmail.com>
 From:   Yonghong Song <yhs@fb.com>
-Message-ID: <b45301e2-3c22-f12a-9e91-538363528389@fb.com>
-Date:   Tue, 23 Feb 2021 11:37:40 -0800
+Message-ID: <2a242b27-5d12-5e1b-4bed-30db68c6ed09@fb.com>
+Date:   Tue, 23 Feb 2021 11:47:28 -0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.7.1
-In-Reply-To: <c837ae55-2487-2f39-47f6-a18781dc6fcc@fb.com>
+In-Reply-To: <CAEf4Bzav42vH8PdRYg7_vV20EV7FL6CJiciXs=zv3rqu5TR_zg@mail.gmail.com>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Originating-IP: [2620:10d:c090:400::5:668b]
-X-ClientProxiedBy: MWHPR07CA0019.namprd07.prod.outlook.com
- (2603:10b6:300:116::29) To SN6PR1501MB2064.namprd15.prod.outlook.com
+X-ClientProxiedBy: MWHPR21CA0064.namprd21.prod.outlook.com
+ (2603:10b6:300:db::26) To SN6PR1501MB2064.namprd15.prod.outlook.com
  (2603:10b6:805:d::27)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21e1::10c3] (2620:10d:c090:400::5:668b) by MWHPR07CA0019.namprd07.prod.outlook.com (2603:10b6:300:116::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27 via Frontend Transport; Tue, 23 Feb 2021 19:37:42 +0000
+Received: from [IPv6:2620:10d:c085:21e1::10c3] (2620:10d:c090:400::5:668b) by MWHPR21CA0064.namprd21.prod.outlook.com (2603:10b6:300:db::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.4 via Frontend Transport; Tue, 23 Feb 2021 19:47:31 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: aa0fddb7-88a9-421e-7ec7-08d8d8327d38
-X-MS-TrafficTypeDiagnostic: SN6PR15MB2287:
+X-MS-Office365-Filtering-Correlation-Id: 8228b430-4901-45ec-e581-08d8d833dbf6
+X-MS-TrafficTypeDiagnostic: SA1PR15MB4386:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN6PR15MB2287D08F7A4961E4904BF342D3809@SN6PR15MB2287.namprd15.prod.outlook.com>
+X-Microsoft-Antispam-PRVS: <SA1PR15MB438668BC7214DC5D83099E7DD3809@SA1PR15MB4386.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: iCKaTxqLwlUBKqkO9jf6KdX7vvfb5U0eaPkDwflTo+4B/uA0pgwlVFsYcDoe4kAfdaNbThIMtskXA7Eq+uTBxDv+ZPJT7TmcmCUtFxB3m3bBbRr7hPcA9H+03h/yECeBBfWaWHgcFI3EieOBln87V6dr/OTLnlmCbLVxeoHMAvoeFWAWiE4kJN2lP+a3DpgwCcxbDaO8kbMLTU0w9I0MqBPeBYtyGlds1jSHTs3uURGowvB8qiqBKaLCefdpA5j3nosCRkW5M1k/xMZWMySK57JFieDnQhi6gHNecIIemIpjRykyupHV5KK5TAlVV2vnY/YaNn7K2hynkkaRw1ho51RY3rSivq079DCbly36LR9jkeyfn1wqF1NJRjVOZtekscJL9gWYhIB4YrrMOQMun68dwyQzjHZQnoe5RWLCbLJURCT7z+DUfLmDiyJIfZu9PIFLDOIyn9712gYRMpvOU/Zwv9flTqZKGkXxd3so/l4fF0Bkk/VnDPKJlcujpNhRwDBKyf7639tSmnTxGczaELHKB9dlUZSDY0hgL9cl+0jZar5wQ+Gg19DpQLXmepspPyGhlUfEYp/jIKHiLdj0EcJ0WfE+gAMVlcdMVGLEP0M=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(136003)(39860400002)(366004)(346002)(53546011)(4326008)(54906003)(2616005)(186003)(8676002)(83380400001)(36756003)(66476007)(52116002)(66946007)(8936002)(16526019)(66556008)(31686004)(2906002)(31696002)(86362001)(5660300002)(478600001)(6486002)(110136005)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?SERCVjZFSVovOW5GVXpZOWRzQk11Wk5TRkJ5dGJvWGVLM3dnL3E0RThjQTQv?=
- =?utf-8?B?dzNvOWh5K0pqckllRGtMQTIraE1nbmNoT2k4bUg0bVBOdWs4KzF1VVRFTDd4?=
- =?utf-8?B?U1V6UFl2RlY1V2Y0WHBXWkFYTk1hMWF2U042N2E3OUtWbDZ5SUNIV3RoTVcv?=
- =?utf-8?B?Wk42N1pVbHl1NUJkWXNjTlhUYzdKOWVUWS9VKy9pdE1NYjR0eFpoUmt0NDFW?=
- =?utf-8?B?UDlDZ2diblBRZDVMdU9hS1hNNXVlWlZFVS9WR3V2dngzMmVQUnI1TjFCYmxt?=
- =?utf-8?B?M2NSWEh3K25UN2YzaHhGMVFUaDBuNENkRHNxOUx4SnM2RUk1K2ZiUUZJYnhk?=
- =?utf-8?B?S2I0dTJtdnNtOWhYcmZldm01Vm1vM3ZYa0VpL0VtTHVzaDVkOTJWRE8zYlB0?=
- =?utf-8?B?ZTRydjJua2wvMDBIcU9pSllVMnVEUG5TOGxFcU9hdDJ2VXdPWUEzSW5rYkVP?=
- =?utf-8?B?R2hpZktpalNkemxGQlNkOTFnd0w0Rk5EMzhSZk1wbWdVSG9NOWlOMW1LWUVW?=
- =?utf-8?B?YktNb3I3b2VaU0FveFFBNjBBTW1CbmQ4emNMemdwWXVxY08reHhFbzFKUStE?=
- =?utf-8?B?VFNqUjFET1JQSy9HOHpQL0FlblVpcFlldEw1VjNEMWRQZnNPMnlIblBaKytx?=
- =?utf-8?B?MktFV1dOamZlUEoxYTlRc2x1U0cwMnBzRmJwQmltNnNPT0dyRXFDU2IwNVBw?=
- =?utf-8?B?ais3RnJHY0FHa3duaERMSW5keUJ5akJqUXJ5NXh2ZDJtcDJna0gyekxoMmha?=
- =?utf-8?B?S0ZZamY4cVJ5VWgyTzB0VUk0WnRVcHc0dzlYZllvbmhMRW03OWpXaUszRHZm?=
- =?utf-8?B?eFB2SFYxS2RqYk55QUp2MWtGZDduTUtwT1dhZzY1WnAzbXRnWnRFK1A3eHg1?=
- =?utf-8?B?bms2R0pqOXdoZVZxUGFBekhOS29ZTDZCamdQTm1pOTdKSEJuQVdEbE5TZUhI?=
- =?utf-8?B?TVU0VWRjWmlsaWt3b3hrajZMd3lxS3ZaekJzUkFkSERISlMvQ0wrUTBIekV4?=
- =?utf-8?B?VDJ1bEJ3Si9jT012UUxkYlkwbVZCMlhWbE1HTkNXTllnT05scU04N1IxdUpC?=
- =?utf-8?B?eUJ4TmlHSnJzejF4dTdTQnZjYlBId0hIYzdrZ21UTE0vS2REK25pZUpibCs5?=
- =?utf-8?B?aVFpTXlNZTBUYStPcXFDdzJ0dUsxblFKNTdHVVhvNk9aUFcvUytRYzI3c3hC?=
- =?utf-8?B?OUwvM29IaVVnWHhUZlV2MnBGL3g3bmtQMHNTd2FIKzR3ODV2bStWS05HeFdG?=
- =?utf-8?B?cm05NmY3ZXdrUi8zaW1vR3lTY2VlTnU1TEFQWEJYM0R0WDFLWE1DaWhoaVpV?=
- =?utf-8?B?UnRtTVRSRzljSXpuOEdCd0NGU2lubEdoZnpadHczejlWaGIvK0JTVUZsbGEr?=
- =?utf-8?B?NWwvb0crWlE4MHB4a054Q2tSU0w3L1YrTzN4RWxvV0lxcVV3YW1mdkZlQi81?=
- =?utf-8?B?ZXFlSml5ZHdHU1gzR081elYxQmt0cTdLMFg1VnJWVEJKdVlDaFNGSlBTd1NK?=
- =?utf-8?B?eXBVLzZSaFJZcWhRMTFwdURqVDFScmtHOThUV0NZMFQ3VGV0eEtkbGRwak9O?=
- =?utf-8?B?cEwzSmZBazg2a0s1aC90NnM2eVJJemhpR0F4RWJUOGNvMTNPZXhrTWpHWUFV?=
- =?utf-8?B?NzVJYWtabnNIQnJMOTRkV01Cd0FibThpT0hBOTZuK3JtS3RhYWZmV0lpdi9l?=
- =?utf-8?B?Q205UERVQzhNc0xueW4wK0RPTjNzNlpsRjFhc1JFdjMxZUNvdzQwdjZQMDJS?=
- =?utf-8?B?eGRVOXF4M0pRZG15VUFXeHJtYnhTQXBrNlo4bG5VWmJjT2VHMFduNURobFFO?=
- =?utf-8?Q?bxo+ld5qBhYNUwEh2FeMRDDCe8LNtA1JuWLW0=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: aa0fddb7-88a9-421e-7ec7-08d8d8327d38
+X-Microsoft-Antispam-Message-Info: wBHwuCw7+6Y8WS8/up/1EaDfone2N3YMmmWVUbhhqKQaAl4wlHYeuahXv8BMJsAcJv0+Xl/sd8ErAg9Rq27MWZQF3p1uaBNk9qv1ic4tU6qgTuRnTHU4NbHN/BnX08dpxMW5DKEhipFcaymSz7tD9l1aD7sVj9vU21tpwLvqI9ud3xNp+vKipkI0TftZLp4u/jIAsreq2KomodSEUVAV61eiIs+kPYNwrNJOEc98nMWbqOaeS4WyrTUwUvhqZdyQK4EJMgKx8vi8b9nEjUGN64j+YR0NsLQkHRS97PWTj2WT6Pb5MHVjf8ZOjhy6mGL0COBA9QJkAvuN2Jvkzv6bWtGyKFCuoyLKA6TsGfilMNOELNDJFOxp6lwFWqRw+g8lbt6sC5SbSjL3Tgi+1cOKqGb2KJtIjTfAigz84okNi5KBuPk6kWzvTht87R9Mhwx+zed9kSoB0/P+8+/ma89nmWDF8sZrSaY57GPqZ7iqelIptBauJyVRXPUPx/RrJ3konEo/Qd2URJ+zzx9XyVLUqReLfhFor9G4dteqhJOTCSKFmsKHfpJZjxE2wgQhIRc9a6gf6Qhs5+IGtre7Mby88pJA5JzMLIBHm2HZGj+RQak=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(376002)(39860400002)(346002)(396003)(5660300002)(2906002)(36756003)(4326008)(31696002)(16526019)(52116002)(54906003)(31686004)(6666004)(66946007)(66556008)(6916009)(66476007)(53546011)(83380400001)(6486002)(2616005)(186003)(8936002)(86362001)(316002)(478600001)(8676002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?NFRSYVVNNmY0N0tXOTBwVlV4SW1aY1R3OFBGMGE4N2lxaFFuaUhrQXRYKzg1?=
+ =?utf-8?B?enFHc2txa3AvVjczVGVma2hHRHBqdFdSK3NITVh0aVdEOEt6R09ZS0dMMGlH?=
+ =?utf-8?B?UDZ4SnNMTWtPelVSQWpnbGdXaTBSeGRQSFN4MitJelY3dko1QnBXZ3FkVkpU?=
+ =?utf-8?B?QTB3eVlXeW5TNjhLQWsxQzVCQzdVd2dqdlJnYzZlZlZuc3ZGd2RZN1NrZ0pM?=
+ =?utf-8?B?ZHJteWFWVlN5REp1NFByTGp4VmdjQW1BSmFyQWZESXc2VGxZS0ZoWDRWeFlW?=
+ =?utf-8?B?cnRpRHB0VTEvTytnWkRQSVd2R0NIRXNON3dlNWJxU0xKRUhkWEFjcHMzOXZN?=
+ =?utf-8?B?MEgyMGM4YU84anpnR0xlVHZZeGVxemF0WjZ2bENqNEZYME1UV2tFRmw3bWVz?=
+ =?utf-8?B?azR0NUNZN1FrZ2gzWUhCNzBMWTRiWXJYSGJFNWlIL2tscExkbXgxTUtKdU5l?=
+ =?utf-8?B?Y3Rpdm15SUpaK01IcjMremQ3WHJENVhtNDJTQkd4cHBlbWZSUVRFZ1lJMGNp?=
+ =?utf-8?B?NmF6enpjUDF6bWhtOW5SbFpnamJFeUtHOC93ZVIrVnhRc2lETmU5U2hZU3dC?=
+ =?utf-8?B?SFZieTZoUnBXNHVWc0ZUT2JNUE1mb2RHRGlqZ01QMTU0eHNodkFncVB1anpN?=
+ =?utf-8?B?YjRMYWJ5ai9QNVZ6QkNPeTFGQWd1TFdYem1oNGJWcTNLRTNFQngwY3Q0Rmxv?=
+ =?utf-8?B?UHlYcTUyNVN0dFUzT3FUSmdNS0pnV2pvVmUyTExZTHl6WE5aU25sMm5mWkc2?=
+ =?utf-8?B?RFRZckhxSWlTYVZ5bkdBQVNkMGV4b3hFc2I4UDFyQU9FdkxKUmljS1pGVDdn?=
+ =?utf-8?B?YVdlRktHS3RTcitQbDFrQ2FvK2tVQndSSkdhZWJ0cDJyaVZtZnFKRDBvNEFQ?=
+ =?utf-8?B?Tm1ZTnd1R2hPSGExVnU3bnR6MUhTOUIvaXV1M0xSQUp5SDBMd2tqVit2dW52?=
+ =?utf-8?B?ODRlUnVSbFlYdnNvTUlpRTBHdFdYTXJxSE5rZ0RiWlR5N3NPUjFtZFdSeTlG?=
+ =?utf-8?B?blNrZzloQjVEeFdVbjh3YkRyY3dCamVuRGtNZmJxWEhGMXdlU3paUUZKQTVZ?=
+ =?utf-8?B?TjAvTUNmTVBvdEQxWXpoS2JsTFc1dnNSQzNNZ0pONG9tUGlnOGJoR2tWVWx5?=
+ =?utf-8?B?ZWVKZDZpZUdlTXhRV29hYit6U1RDR0NFU01DSURJdmFGRHNMN05rdWx1V05H?=
+ =?utf-8?B?TnhQVlJScFVBUWprdFhVU0x5MXE1dVFldWF1WHdLcS9XVlpQUWJYdmxjVi9p?=
+ =?utf-8?B?V3lsTWdJYUlDdXBZeTRERXUxRjIwckVlWGVNZUptZE5XdXVVc2Jsc1dnQlNL?=
+ =?utf-8?B?cTJRa3MwR0JVWTFUNllnb2orTGZJdVR2alhOYWhNU29mYTJnU1gzV0VweEZ6?=
+ =?utf-8?B?Rm5Fb0tPU1REVGRNT2tYSnhSa0dXcmRoYTQvQmF6WVp4ekNONDdJbTA4K0tC?=
+ =?utf-8?B?SHRPVnN0aTJXTmlmdFJvaG94Mm1kTkVMaEt5U1pXMFc0Y3M5RHFHR2ZUREty?=
+ =?utf-8?B?c1dLdEVmYWg4aHFwSGR0bFdDQ1BDc1BHRGRPT0tBTjZ5M3ZJQU9SOFpmUHBK?=
+ =?utf-8?B?NWR3YnphT0FNRHdOcGVxU3RjSG13dXlka2ZkOTIybENSUnVCYjNCKzN4c21N?=
+ =?utf-8?B?SmMwbnM0MGQ4eHFZelEzeWl6TmFLcyt5V25ZY21BM3pKQmxNSklPQUxpL2dN?=
+ =?utf-8?B?bG0rNzF3bFNvR0tVVVFxUWRhcDh5cFBHWk9JcUkycFJUdStvS2QvM1ovbVZn?=
+ =?utf-8?B?YXFVbzdxV1NOVlBjVmw3bVRNMnAvSUNDTlVGd0J6OFBlMDBWcmozK21kUnFR?=
+ =?utf-8?Q?9poB39N87ZT0J+zZ1Y5Bz1jXZFqvK22rcDSdE=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8228b430-4901-45ec-e581-08d8d833dbf6
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Feb 2021 19:37:43.4783
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Feb 2021 19:47:31.9497
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0us8loTvn3Xh3G8RDGKLk6UdbJOH86JqTUeaN7lTB80lP/EB6BRh6bHfkZSNkRap
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR15MB2287
+X-MS-Exchange-CrossTenant-UserPrincipalName: CxU6CCjLzBBObrKNB2iKkPlZjGBd5CSlkQz8JdtlcG52VLIwLhCrFldVw8EMwN8f
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB4386
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
  definitions=2021-02-23_08:2021-02-23,2021-02-23 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 adultscore=0
- malwarescore=0 bulkscore=0 spamscore=0 suspectscore=0 priorityscore=1501
- phishscore=0 impostorscore=0 clxscore=1015 mlxlogscore=999
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102230164
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ spamscore=0 clxscore=1015 mlxscore=0 malwarescore=0 lowpriorityscore=0
+ bulkscore=0 phishscore=0 adultscore=0 priorityscore=1501 impostorscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102230165
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
@@ -142,43 +143,204 @@ X-Mailing-List: bpf@vger.kernel.org
 
 
 
-On 2/23/21 10:46 AM, Alexei Starovoitov wrote:
-> On 2/23/21 10:39 AM, Yonghong Song wrote:
+On 2/23/21 11:19 AM, Andrii Nakryiko wrote:
+> On Tue, Feb 23, 2021 at 10:56 AM Yonghong Song <yhs@fb.com> wrote:
 >>
 >>
->> On 2/22/21 12:59 PM, Alexei Starovoitov wrote:
->>> On Wed, Feb 17, 2021 at 10:18:07AM -0800, Yonghong Song wrote:
->>>> @@ -5893,6 +6004,14 @@ static int retrieve_ptr_limit(const struct 
->>>> bpf_reg_state *ptr_reg,
->>>>           else
->>>>               *ptr_limit = -off;
->>>>           return 0;
->>>> +    case PTR_TO_MAP_KEY:
->>>> +        if (mask_to_left) {
->>>> +            *ptr_limit = ptr_reg->umax_value + ptr_reg->off;
->>>> +        } else {
->>>> +            off = ptr_reg->smin_value + ptr_reg->off;
->>>> +            *ptr_limit = ptr_reg->map_ptr->key_size - off;
->>>> +        }
->>>> +        return 0;
+>>
+>> On 2/23/21 12:03 AM, Andrii Nakryiko wrote:
+>>> On Wed, Feb 17, 2021 at 12:56 PM Yonghong Song <yhs@fb.com> wrote:
+>>>>
+>>>> A new relocation RELO_SUBPROG_ADDR is added to capture
+>>>> local (static) function pointers loaded with ld_imm64
+>>>> insns. Such ld_imm64 insns are marked with
+>>>> BPF_PSEUDO_FUNC and will be passed to kernel so
+>>>> kernel can replace them with proper actual jited
+>>>> func addresses.
+>>>>
+>>>> Signed-off-by: Yonghong Song <yhs@fb.com>
+>>>> ---
+>>>>    tools/lib/bpf/libbpf.c | 40 +++++++++++++++++++++++++++++++++++++---
+>>>>    1 file changed, 37 insertions(+), 3 deletions(-)
+>>>>
+>>>> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+>>>> index 21a3eedf070d..772c7455f1a2 100644
+>>>> --- a/tools/lib/bpf/libbpf.c
+>>>> +++ b/tools/lib/bpf/libbpf.c
+>>>> @@ -188,6 +188,7 @@ enum reloc_type {
+>>>>           RELO_CALL,
+>>>>           RELO_DATA,
+>>>>           RELO_EXTERN,
+>>>> +       RELO_SUBPROG_ADDR,
+>>>>    };
+>>>>
+>>>>    struct reloc_desc {
+>>>> @@ -579,6 +580,11 @@ static bool is_ldimm64(struct bpf_insn *insn)
+>>>>           return insn->code == (BPF_LD | BPF_IMM | BPF_DW);
+>>>>    }
+>>>>
+>>>> +static bool insn_is_pseudo_func(struct bpf_insn *insn)
+>>>> +{
+>>>> +       return is_ldimm64(insn) && insn->src_reg == BPF_PSEUDO_FUNC;
+>>>> +}
+>>>> +
+>>>>    static int
+>>>>    bpf_object__init_prog(struct bpf_object *obj, struct bpf_program *prog,
+>>>>                         const char *name, size_t sec_idx, const char *sec_name,
+>>>> @@ -3406,6 +3412,16 @@ static int bpf_program__record_reloc(struct bpf_program *prog,
+>>>>                   return -LIBBPF_ERRNO__RELOC;
+>>>>           }
+>>>>
+>>>> +       if (GELF_ST_BIND(sym->st_info) == STB_LOCAL &&
+>>>> +           GELF_ST_TYPE(sym->st_info) == STT_SECTION &&
 >>>
->>> This part cannot be exercised because for_each will require cap_bpf.
->>> Eventually we might relax this requirement and above code will be 
->>> necessary.
->>> Could you manually test it that it's working as expected by forcing
->>> sanitize_ptr_alu() to act on it?
+>>> STB_LOCAL + STT_SECTION is a section symbol. But STT_FUNC symbol could
+>>> be referenced as well, no? So this is too strict.
 >>
->> I did some manual test and hacking the verifier to make this code 
->> executed and it looks fine and verifier succeeded.
->>
->> But since this code won't execute with current implementation
->> with bpf_capable(). It probably makes sense to remove this code
->> for now and will add it back later once bpf_pseudo_func is permitted for
->> unprivileged user.
+>> Yes, STT_FUNC symbol could be referenced but we do not have use
+>> case yet. If we encode STT_FUNC (global), the kernel will reject
+>> it. We can extend libbpf to support STT_FUNC once we got a use
+>> case.
 > 
-> I think we might forget it later.
-> I would leave the code here and maybe add the comment that it's tested
-> for future use, but not needed yet.
+> I don't really like tailoring libbpf generic SUBPROG_ADDR relocation
+> to one current specific use case, though. Taking the address of
+> SUBPROG_ADDR is not, conceptually, tied with passing it to for_each as
+> a callback. E.g., what if you just want to compare two registers
+> pointing to subprogs, without actually passing them to for_each(). I
+> don't know if it's possible right now, but I don't see why that
+> shouldn't be supported. In the latter case, adding arbitrary
+> restrictions about static vs global functions doesn't make much sense.
+> 
+> So let's teach libbpf the right logic without assuming any specific
+> use case. It pays off in the long run.
 
-okay. will keep it.
+Okay, Will support global function as well. It won't hurt.
 
+> 
+>>
+>>>
+>>>> +           (!shdr_idx || shdr_idx == obj->efile.text_shndx) &&
+>>>
+>>> this doesn't look right, shdr_idx == 0 is a bad condition and should
+>>> be rejected, not accepted.
+>>
+>> it is my fault. Will fix in the next revision.
+>>
+>>>
+>>>> +           !(sym->st_value % BPF_INSN_SZ)) {
+>>>> +               reloc_desc->type = RELO_SUBPROG_ADDR;
+>>>> +               reloc_desc->insn_idx = insn_idx;
+>>>> +               reloc_desc->sym_off = sym->st_value;
+>>>> +               return 0;
+>>>> +       }
+>>>> +
+>>>
+>>> So see code right after sym_is_extern(sym) check. It checks for valid
+>>> shrd_idx, which is good and would be good to use that. After that we
+>>> can assume shdr_idx is valid and we can make a simple
+>>> obj->efile.text_shndx check then and use that as a signal that this is
+>>> SUBPROG_ADDR relocation (instead of deducing that from STT_SECTION).
+>>>
+>>> And !(sym->st_value % BPF_INSN_SZ) should be reported as an error, not
+>>> silently skipped. Again, just how BPF_JMP | BPF_CALL does it. That way
+>>> it's more user-friendly, if something goes wrong. So it will look like
+>>> this:
+>>>
+>>> if (shdr_idx == obj->efile.text_shndx) {
+>>>       /* check sym->st_value, pr_warn(), return error */
+>>>
+>>>       reloc_desc->type = RELO_SUBPROG_ADDR;
+>>>       ...
+>>>       return 0;
+>>> }
+>>
+>> Okay. Will do similar checking to insn->code == (BPF_JMP | BPF_CALL)
+>> in the next revision.
+>>
+>>>
+>>>>           if (sym_is_extern(sym)) {
+>>>>                   int sym_idx = GELF_R_SYM(rel->r_info);
+>>>>                   int i, n = obj->nr_extern;
+>>>> @@ -6172,6 +6188,10 @@ bpf_object__relocate_data(struct bpf_object *obj, struct bpf_program *prog)
+>>>>                           }
+>>>>                           relo->processed = true;
+>>>>                           break;
+>>>> +               case RELO_SUBPROG_ADDR:
+>>>> +                       insn[0].src_reg = BPF_PSEUDO_FUNC;
+>>>
+>>> BTW, doesn't Clang emit instruction with BPF_PSEUDO_FUNC set properly
+>>> already? If not, why not?
+>>
+>> This is really a contract between libbpf and kernel, similar to
+>> BPF_PSEUDO_MAP_FD/BPF_PSEUDO_MAP_VALUE/BPF_PSEUDO_BTF_ID.
+>> Adding encoding in clang is not needed as this is simply a load
+>> of function address as far as clang concerned.
+> 
+> Yeah, not a big deal, I was under the impression we do that for other
+> BPF_PSEUDO cases, but checking other parts of libbpf, doesn't seem
+> like that's the case.
+> 
+>>
+>>>
+>>>> +                       /* will be handled as a follow up pass */
+>>>> +                       break;
+>>>>                   case RELO_CALL:
+>>>>                           /* will be handled as a follow up pass */
+>>>>                           break;
+>>>> @@ -6358,11 +6378,11 @@ bpf_object__reloc_code(struct bpf_object *obj, struct bpf_program *main_prog,
+>>>>
+>>>>           for (insn_idx = 0; insn_idx < prog->sec_insn_cnt; insn_idx++) {
+>>>>                   insn = &main_prog->insns[prog->sub_insn_off + insn_idx];
+>>>> -               if (!insn_is_subprog_call(insn))
+>>>> +               if (!insn_is_subprog_call(insn) && !insn_is_pseudo_func(insn))
+>>>>                           continue;
+>>>>
+>>>>                   relo = find_prog_insn_relo(prog, insn_idx);
+>>>> -               if (relo && relo->type != RELO_CALL) {
+>>>> +               if (relo && relo->type != RELO_CALL && relo->type != RELO_SUBPROG_ADDR) {
+>>>>                           pr_warn("prog '%s': unexpected relo for insn #%zu, type %d\n",
+>>>>                                   prog->name, insn_idx, relo->type);
+>>>>                           return -LIBBPF_ERRNO__RELOC;
+>>>> @@ -6374,8 +6394,22 @@ bpf_object__reloc_code(struct bpf_object *obj, struct bpf_program *main_prog,
+>>>>                            * call always has imm = -1, but for static functions
+>>>>                            * relocation is against STT_SECTION and insn->imm
+>>>>                            * points to a start of a static function
+>>>> +                        *
+>>>> +                        * for local func relocation, the imm field encodes
+>>>> +                        * the byte offset in the corresponding section.
+>>>> +                        */
+>>>> +                       if (relo->type == RELO_CALL)
+>>>> +                               sub_insn_idx = relo->sym_off / BPF_INSN_SZ + insn->imm + 1;
+>>>> +                       else
+>>>> +                               sub_insn_idx = relo->sym_off / BPF_INSN_SZ + insn->imm / BPF_INSN_SZ + 1;
+>>>> +               } else if (insn_is_pseudo_func(insn)) {
+>>>> +                       /*
+>>>> +                        * RELO_SUBPROG_ADDR relo is always emitted even if both
+>>>> +                        * functions are in the same section, so it shouldn't reach here.
+>>>>                            */
+>>>> -                       sub_insn_idx = relo->sym_off / BPF_INSN_SZ + insn->imm + 1;
+>>>> +                       pr_warn("prog '%s': missing relo for insn #%zu, type %d\n",
+>>>
+>>> nit: "missing subprog addr relo" to make it clearer?
+>>
+>> sure. will do.
+> 
+> given the "generic support" comment above, I think we should still
+> support this case as well. WDYT?
+
+Even for global function with ldimm64, relocations should have been 
+generated previously. I will double verify to ensure this is true
+for global function as well for different cases, in the same section or 
+different sections, etc.
+
+> 
+>>
+>>>
+>>>> +                               prog->name, insn_idx, relo->type);
+>>>> +                       return -LIBBPF_ERRNO__RELOC;
+>>>>                   } else {
+>>>>                           /* if subprogram call is to a static function within
+>>>>                            * the same ELF section, there won't be any relocation
+>>>> --
+>>>> 2.24.1
+>>>>
