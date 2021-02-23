@@ -2,87 +2,106 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 732833223BA
-	for <lists+bpf@lfdr.de>; Tue, 23 Feb 2021 02:31:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5B573223D9
+	for <lists+bpf@lfdr.de>; Tue, 23 Feb 2021 02:51:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230291AbhBWBbH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Feb 2021 20:31:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60020 "EHLO
+        id S230382AbhBWBtv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Feb 2021 20:49:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230042AbhBWBbB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Feb 2021 20:31:01 -0500
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D498EC061574
-        for <bpf@vger.kernel.org>; Mon, 22 Feb 2021 17:30:20 -0800 (PST)
-Received: by mail-yb1-xb2a.google.com with SMTP id m188so14837658yba.13
-        for <bpf@vger.kernel.org>; Mon, 22 Feb 2021 17:30:20 -0800 (PST)
+        with ESMTP id S230510AbhBWBtp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Feb 2021 20:49:45 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E6C8C06178B;
+        Mon, 22 Feb 2021 17:49:30 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id m188so14873100yba.13;
+        Mon, 22 Feb 2021 17:49:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=qWdIWeqFK3guZSlLpaKpm114wyt50M0Ovf4WmvixmJY=;
-        b=aHl6NEf1MQzR1mRUH4guny1CqlyDTSvL+6BYEso6KEvXXJGFyStUQbgadRC4b2UAdj
-         X4X8IOFg22ATfSSik/uMQ/ViEpxMZ76NIkIFKNQsrwTfMZFFuReTMOLQDoVfxI720De4
-         U6dZjpT6uH0OMVCBZ2pHMonxQ+P+Qb3INuBEzCKC3YZZRxjuzdIV1/f5I2hOay2dqze2
-         YFsgyyfkqEG+6T3y3mDkEg2q80iZYZyaaPo7bcV8bVcK61HmoyfcYpdw37b2juYoymzj
-         ocLJ7irGnUjmPu7zw0eURd+wdMkkUxBwCTt8HFN06cBImumgwxX1y0N8DVwxV+HYzMKv
-         9neA==
+        bh=19ACJ1fic9mV42uUnpDAFR0NZ9Dw4Na6mJs9CQ+BSWg=;
+        b=LypvH1qwGsVnZ8ZohpQWT3wOTzQUY3BqElmAqgaZr4BPNIaeI1kBcCx6SfsJqXnwoh
+         TcCi0mVLgVq1rgNmk4lgqzuJYTQkr4wmzjOeFxq6RWgkRV6KEpqtdeBaj+txAaILT6D4
+         7x5BAnF5r0HwLXrIjiELyGzGBhRvCtBx5Dtlt5vOzhtuNzbmixXdhjQohFtBqSnx/iFz
+         BNsloVWAXfPcFfrC1JwPuSpjNyqZ84h+7rRDmB7uqj+eai2L+KKhUGN10myNtx8U02qz
+         OBxifP1GBB50yLN84rVh/+GKeBsex07iI4Sn4tdTSyR/Eea2hcCq5B9KKnZkC7XLqIA4
+         8m0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qWdIWeqFK3guZSlLpaKpm114wyt50M0Ovf4WmvixmJY=;
-        b=gIsJqJgAtiKJaoK8/nGp7QS3qIE5GFev0XfA5YUZ+l6Y9/MHtxwEQpqqtdrdYqj0fD
-         Lk1Isk1Q4olpI1ZUx0FEu+ERX1OeklkH/qmuwVDl6gXjlSg7WLcfciV6+pe3sW1THpIV
-         fimQVDes1X/cIM5QLM1lheboRqbzbU+uEQpfe02XgTqeXOOKYWuR/JZ7XxW42927M+Ec
-         j1qw6tCM+LTzgo+FegapvNcsJkhTbTTp/CTfk1X1elojc6BnXGcgjdDqvEB7b6OQO0P+
-         NpkSwHdgPONq8g/7UsVQVVy3emFGEGisugwgJyFm56A7TZW5ZtWttGuPn5btUOChCNie
-         mOQQ==
-X-Gm-Message-State: AOAM531LSk51QBfNviaJ6rD7NvDhqIRINFM7t24i7ZntXWgCy0BdXyup
-        Vyq2tt6aQjdvBbzgO7WZcQp0w/xvgL4QUjj9RCI=
-X-Google-Smtp-Source: ABdhPJyV3doE+L68gI4+fRO00IA4VXb1LuUsOQ3QfuX4DxlJNdZPjk5FVw7HBpY2tQZXF7FYdqYKLvgU0raBHZmA38s=
-X-Received: by 2002:a25:c6cb:: with SMTP id k194mr35583915ybf.27.1614043820209;
- Mon, 22 Feb 2021 17:30:20 -0800 (PST)
+        bh=19ACJ1fic9mV42uUnpDAFR0NZ9Dw4Na6mJs9CQ+BSWg=;
+        b=R8N7IZJC8+KLEBsK2kLcySZlQaP9vGnh5ctiPTuXkRMErVcGvTiTqP0raWryhtPa5x
+         HsFCWP3TZnz5fPu/g/WJUnjbu44U0PVF6lGKyfT9YuqhodxgeAQyCxfRPg73BI+mN2C2
+         kQtG97N2RESuaW1hFn6qvmLIdkx/nQ/E35LcGF84R8D/DmMnyiUxCu0JjkoeiaSTOUfi
+         R2u/M1sChJz4BjUML+6+405SwP0LTwYFAR+4MAMMmz2/B2d0Hdo7rfAlG9VmjpEkFUGp
+         AoNMifc7qtMHnvn+0SRKyG0VfxoJhuxpE42TgslhdUMulVYom1h73TvrL6NUlwZr92d5
+         JIHA==
+X-Gm-Message-State: AOAM532Ybr1IpLmtudkwL/BPmGXwS87eujbl7IM7YtigNn7TWcwOQS0T
+        MHi/1a6+c2uy+hcfkV4Fm8QMbvnhSPSgMiVJ4QY=
+X-Google-Smtp-Source: ABdhPJxHTS4veMmCO+YwBwO5wCQlc7azPHJKmPse8N4xGOxspLGx1U3QlklOpHhoaiKCDPOmRgncCd9mQlj9wCCsuA0=
+X-Received: by 2002:a25:abb2:: with SMTP id v47mr36212197ybi.425.1614044969515;
+ Mon, 22 Feb 2021 17:49:29 -0800 (PST)
 MIME-Version: 1.0
-References: <20210211233956.em5k4vtefyfp4tiv@altlinux.org>
-In-Reply-To: <20210211233956.em5k4vtefyfp4tiv@altlinux.org>
+References: <1613812247-17924-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <1613812247-17924-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 22 Feb 2021 17:30:09 -0800
-Message-ID: <CAEf4BzZNS_BQhjRuT25YEa0ppU=4_v5kUqMxOaW_FqdXXDtVNg@mail.gmail.com>
-Subject: Re: EFI boot fails when CONFIG_DEBUG_INFO_BTF=y on arm64
-To:     Vitaly Chikunov <vt@altlinux.org>
-Cc:     bpf <bpf@vger.kernel.org>
+Date:   Mon, 22 Feb 2021 17:49:18 -0800
+Message-ID: <CAEf4BzYgLf5g3oztbA-CJR4gQ7AVKQAGrsHWCOgTtUMUM-Mxfg@mail.gmail.com>
+Subject: Re: [PATCH] libbpf: Remove unnecessary conversion to bool
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 3:44 PM Vitaly Chikunov <vt@altlinux.org> wrote:
+On Sat, Feb 20, 2021 at 1:11 AM Jiapeng Chong
+<jiapeng.chong@linux.alibaba.com> wrote:
 >
-> Hi,
+> Fix the following coccicheck warnings:
 >
-> We have boot test using OVMF/AAVMF EFI firmware on aarch64 in qemu. When
-> we try to build kernel with `CONFIG_DEBUG_INFO_BTF=y' (pahole v1.20)
-> previously successful EFI boot test fails with:
+> ./tools/lib/bpf/libbpf.c:1487:43-48: WARNING: conversion to bool not
+> needed here.
 >
->   EFI stub: ERROR: Failed to relocate kernel
->   EFI stub: ERROR: Failed to relocate kernel
->
-> Without EFI it boots normally. On other our architectures (such as
-> arm32, i586, powerpc, x86_64) it boots normally too (all without EFI
-> boot, but x86_64 is also successfully tested with OVMF EFI boot).
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
 
-So this seems like an arm64-specific issue? Is it possible to get any
-help from someone familiar with arm64 specifics to find out what
-exactly causes this problem? We use `pahole -J` to "implant" .BTF into
-vmlinux.o, but later rely on vmlinux loader scripts to have a loadable
-.BTF section. The problem might happen somewhere along those steps. I
-don't think I can be of much help here without a bit more information
-(and seems like no one else on this list came up with any suggestions
-as well).
+I think this came up before already. I did this on purpose and I'd
+like to keep it that way in the code.
 
+
+>  tools/lib/bpf/libbpf.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> This is tested on 5.4.97, but I can try 5.10.15 if needed.
->
-> Thanks,
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 6ae748f..5dfdbf3 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -1484,7 +1484,7 @@ static int set_kcfg_value_tri(struct extern_desc *ext, void *ext_val,
+>                                 ext->name, value);
+>                         return -EINVAL;
+>                 }
+> -               *(bool *)ext_val = value == 'y' ? true : false;
+> +               *(bool *)ext_val = value == 'y';
+>                 break;
+>         case KCFG_TRISTATE:
+>                 if (value == 'y')
+> --
+> 1.8.3.1
 >
