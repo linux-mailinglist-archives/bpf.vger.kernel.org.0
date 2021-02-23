@@ -2,155 +2,163 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A958322362
-	for <lists+bpf@lfdr.de>; Tue, 23 Feb 2021 02:13:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85160322368
+	for <lists+bpf@lfdr.de>; Tue, 23 Feb 2021 02:16:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230352AbhBWBMj (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Feb 2021 20:12:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56092 "EHLO
+        id S229967AbhBWBP7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Feb 2021 20:15:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230316AbhBWBMg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Feb 2021 20:12:36 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BAA7C061786;
-        Mon, 22 Feb 2021 17:11:56 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id u11so8816287plg.13;
-        Mon, 22 Feb 2021 17:11:56 -0800 (PST)
+        with ESMTP id S229863AbhBWBPz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 22 Feb 2021 20:15:55 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82AD7C061574;
+        Mon, 22 Feb 2021 17:15:15 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id m9so14850552ybk.8;
+        Mon, 22 Feb 2021 17:15:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vDeQByIi2CaH6S1ngYTrHFmX4a2/WFD9fxPTpaU+LME=;
-        b=HLPJs7m5C62nM/Rr5mzoNrunKJtB1OofP99KWHu9x2rQc/lzruMiQFbi4Q4HLnzMXE
-         ci0XObAyTufKQ96nOoYsDn1eGw3hUvb1EO2DorHGO0DGSP2KDQAD2Td9QWx75ETdP6ol
-         Cxnj/tNvzQeVyh5JSDE4kWY23tDmFKUYcuDif1SePSzpXQFVNDwMOCK+ry3c5n0chTGv
-         JP5M84RO97AoigIGqvgDvoX8H4PBC921BMXHbBmNNaIVkB++dO+NA+WcwXlM3qaE6YlG
-         xh/ePmhgBVfATBF1dbTdfCb7HKacZt8WlgwiBt9dcCEthczs1SIcIB/5Gj+5rj68wjqO
-         AUxg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Zm/OrNc3ivuCSoHbJLxz/xKZKnnzjvqT3PEqqQIt8oE=;
+        b=YHp8pMa1OCN09Z5XVL0dtUIU3mnPJ8hGpAKz7omPANuQ14tJ6NC8LM0yiEI4QcGU8c
+         SE5k8UM9VAlU4Mgqs3bE4bNoZA00ChCKL7sieGTHGzn9qUQwpZA1uakLdFKMdG8wOI5P
+         yXg10gLxdmpgaA2wwxpKkzb5UpULOrnxsp3zcQiBkG324wPuSCygCsCgzZROGlkMy0uu
+         0UUWcQTdvnjBiQHV0Tn+1208rHeLC4Xi/VlyWo5uWBRMsh4l1gzS0bBfioHlZpZ0NgEn
+         27hfpp3TBrdxUBCzEXMSwJ+M6Ly+UrKrhVBejGsWDwNK3F2vv/zUJN/yZ3AQLNgSKPES
+         Pf4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vDeQByIi2CaH6S1ngYTrHFmX4a2/WFD9fxPTpaU+LME=;
-        b=KuWkpbXQPx4rLl0JtczbMA0RTl4zA7aUbE4Iuioij8NJzKqCFWHlproFXBMj+i/2Xg
-         vaz1gmy4HlrkKbxwO1+/bld+8fcM5ZeRBVQhDWOj01zJhzreqBJnTR1kJPQTfXVRmwW0
-         Ywg+8hpO1NbqSeGnkeLwBRaAAXM1Cut9nPOniL85IplcKFeymuqZxOaWOl08JTzSBYLC
-         zLoG09q5PYSpHxHA0NFVOSlKBt1Kl4cVrvIaf9rfJ/m5g4MXsMrZ5dUtNvyIgaeuA9/g
-         iV2WOKnLiLmfKzxLbyO9Atj8qySxIhIxVpJzHssuEMzGwIJLVgT2ia2i1KJFB8pLKF6f
-         lYCA==
-X-Gm-Message-State: AOAM530h39yZACxHA/qDvf7Qz9lwakJGoiOLMRKlrqQUarTh0fVpp6Xy
-        68LtNUdMl0wCn1/Sc6so8Nk=
-X-Google-Smtp-Source: ABdhPJzv2Zd5FpkjOoTk4cRqrFAmKCkekCE9IcATGvfQK8Qeo62OxN7NBHhXN3L9tBjaG0i8Br1iSg==
-X-Received: by 2002:a17:90a:7f8d:: with SMTP id m13mr14317724pjl.203.1614042715998;
-        Mon, 22 Feb 2021 17:11:55 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:daff])
-        by smtp.gmail.com with ESMTPSA id o62sm9719981pga.43.2021.02.22.17.11.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 17:11:55 -0800 (PST)
-Date:   Mon, 22 Feb 2021 17:11:53 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        jakub@cloudflare.com, kernel-team@cloudflare.com,
-        bpf@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next 4/8] bpf: add PROG_TEST_RUN support for
- sk_lookup programs
-Message-ID: <20210223011153.4cvzpvxqn7arbcej@ast-mbp.dhcp.thefacebook.com>
-References: <20210216105713.45052-1-lmb@cloudflare.com>
- <20210216105713.45052-5-lmb@cloudflare.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Zm/OrNc3ivuCSoHbJLxz/xKZKnnzjvqT3PEqqQIt8oE=;
+        b=RyCXeT9y/yIbthzJXgqt+Nn3g3TYu6uYZAa04LVACoqM9kDjOEuHHRNYQ64+e3b0kT
+         nATCojPsdaMKpojcrry+2NSjr6dNKO6qaGRkbOBYnUJUfaZJwuquK/HN/DZKmYtMNnMP
+         8mpul5QMs0RhtVaO2Q/hmIWtv+VTYNkcCRTCsQAE0FYjJEjzA2Vzd4bmDjVLIpsjkbMU
+         hdff8yZr/Qha0AwFJJ+ebg1Dr59pl5TD6zSssgUvXhOw6AVhH9ppcobBwp+CL0txF3tF
+         yWPMeP/e4mCQy/+M3uRTEXQayAJulNnDF9obd8n2D73zvmfyZ6qWEgp8vAZebSwfDLRn
+         3j/Q==
+X-Gm-Message-State: AOAM532l/mSSnM+BWFXIOywL3ss5Sbz9DCZdmPYmhU/toP5mj3VlNqOi
+        c3r3wWaDnRTB2jX4hl1uFp7NDIgx8jq1l6CF5oQ=
+X-Google-Smtp-Source: ABdhPJwj+U+f+cwUg9MgLcmJ2vaZcyByJw1ZHCFA+XmcdzIVvmYG2KdVwONx4jb3h1grMwsprHRR6ny2nHD7Txl1/mU=
+X-Received: by 2002:a25:3d46:: with SMTP id k67mr5338403yba.510.1614042914758;
+ Mon, 22 Feb 2021 17:15:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210216105713.45052-5-lmb@cloudflare.com>
+References: <20210215154638.4627-1-maciej.fijalkowski@intel.com>
+ <20210215154638.4627-2-maciej.fijalkowski@intel.com> <87eehhcl9x.fsf@toke.dk>
+ <fe0c957e-d212-4265-a271-ba301c3c5eca@intel.com> <602ad80c566ea_3ed4120871@john-XPS-13-9370.notmuch>
+ <8735xxc8pf.fsf@toke.dk> <602b0f54c05a6_3ed41208dc@john-XPS-13-9370.notmuch> <87pn10b8om.fsf@toke.dk>
+In-Reply-To: <87pn10b8om.fsf@toke.dk>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 22 Feb 2021 17:15:03 -0800
+Message-ID: <CAEf4BzZEfzPNYcD5ZK=ipzbE4G7Obz31_t-jK-NdVbDwpgq4AA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/3] libbpf: xsk: use bpf_link
+To:     =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc:     John Fastabend <john.fastabend@gmail.com>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Magnus Karlsson <magnus.karlsson@intel.com>,
+        ciara.loftus@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 10:57:09AM +0000, Lorenz Bauer wrote:
-> +	user_ctx = bpf_ctx_init(kattr, sizeof(*user_ctx));
-> +	if (IS_ERR(user_ctx))
-> +		return PTR_ERR(user_ctx);
-> +
-> +	if (!user_ctx)
-> +		return -EINVAL;
-> +
-> +	if (user_ctx->sk)
-> +		goto out;
-> +
-> +	if (!range_is_zero(user_ctx, offsetofend(typeof(*user_ctx), local_port), sizeof(*user_ctx)))
-> +		goto out;
-> +
-> +	if (user_ctx->local_port > U16_MAX || user_ctx->remote_port > U16_MAX) {
-> +		ret = -ERANGE;
-> +		goto out;
-> +	}
-> +
-> +	ctx.family = user_ctx->family;
-> +	ctx.protocol = user_ctx->protocol;
-> +	ctx.dport = user_ctx->local_port;
-> +	ctx.sport = user_ctx->remote_port;
-> +
-> +	switch (ctx.family) {
-> +	case AF_INET:
-> +		ctx.v4.daddr = user_ctx->local_ip4;
-> +		ctx.v4.saddr = user_ctx->remote_ip4;
-> +		break;
-> +
-> +#if IS_ENABLED(CONFIG_IPV6)
-> +	case AF_INET6:
-> +		ctx.v6.daddr = (struct in6_addr *)user_ctx->local_ip6;
-> +		ctx.v6.saddr = (struct in6_addr *)user_ctx->remote_ip6;
-> +		break;
-> +#endif
-> +
-> +	default:
-> +		ret = -EAFNOSUPPORT;
-> +		goto out;
-> +	}
-> +
-> +	while (t_check(&t, repeat, &ret, &duration)) {
-> +		ctx.selected_sk = NULL;
-> +		retval = BPF_PROG_SK_LOOKUP_RUN_ARRAY(progs, ctx, BPF_PROG_RUN);
-> +	}
-> +
-> +	if (ret < 0)
-> +		goto out;
-> +
-> +	user_ctx->cookie = 0;
-> +	if (ctx.selected_sk) {
-> +		if (ctx.selected_sk->sk_reuseport && !ctx.no_reuseport) {
-> +			ret = -EOPNOTSUPP;
-> +			goto out;
-> +		}
-> +
-> +		user_ctx->cookie = sock_gen_cookie(ctx.selected_sk);
-> +	}
+On Tue, Feb 16, 2021 at 2:37 AM Toke H=C3=B8iland-J=C3=B8rgensen <toke@redh=
+at.com> wrote:
+>
+> John Fastabend <john.fastabend@gmail.com> writes:
+>
+> > Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> >> John Fastabend <john.fastabend@gmail.com> writes:
+> >>
+> >> >> > However, in libxdp we can solve the original problem in a differe=
+nt way,
+> >> >> > and in fact I already suggested to Magnus that we should do this =
+(see
+> >> >> > [1]); so one way forward could be to address it during the merge =
+in
+> >> >> > libxdp? It should be possible to address the original issue (two
+> >> >> > instances of xdpsock breaking each other when they exit), but
+> >> >> > applications will still need to do an explicit unload operation b=
+efore
+> >> >> > exiting (i.e., the automatic detach on bpf_link fd closure will t=
+ake
+> >> >> > more work, and likely require extending the bpf_link kernel suppo=
+rt)...
+> >> >> >
+> >> >>
+> >> >> I'd say it's depending on the libbpf 1.0/libxdp merge timeframe. If
+> >> >> we're months ahead, then I'd really like to see this in libbpf unti=
+l the
+> >> >> merge. However, I'll leave that for Magnus/you to decide!
+> >> >
+> >> > Did I miss some thread? What does this mean libbpf 1.0/libxdp merge?
+> >>
+> >> The idea is to keep libbpf focused on bpf, and move the AF_XDP stuff t=
+o
+> >> libxdp (so the socket stuff in xsk.h). We're adding the existing code
+> >> wholesale, and keeping API compatibility during the move, so all that'=
+s
+> >> needed is adding -lxdp when compiling. And obviously the existing libb=
+pf
+> >> code isn't going anywhere until such a time as there's a general
+> >> backwards compatibility-breaking deprecation in libbpf (which I believ=
+e
+> >> Andrii is planning to do in an upcoming and as-of-yet unannounced v1.0
+> >> release).
+> >
+> > OK, I would like to keep the basic XDP pieces in libbpf though. For exa=
+mple
+> > bpf_program__attach_xdp(). This way we don't have one lib to attach
+> > everything, but XDP.
+>
+> The details are still TDB; for now, we're just merging in the XSK code
+> to the libxdp repo. I expect Andrii to announce his plans for the rest
+> soonish. I wouldn't expect basic things like that to go away, though :)
 
-I'm struggling to come up with the case where running N sk_lookup progs
-like this cannot be done with running them one by one.
-It looks to me that this N prog_fds api is not really about running and
-testing the progs, but about testing BPF_PROG_SK_LOOKUP_RUN_ARRAY()
-SK_PASS vs SK_DROP logic.
-So it's more of the kernel infra testing than program testing.
-Are you suggesting that the sequence of sk_lookup progs are so delicate
-that they are aware of each other and _has_ to be tested together
-with gluing logic that the macro provides?
-But if it is so then testing the progs one by one would be better,
-because test_run will be able to check each individual prog return code
-instead of implicit BPF_PROG_SK_LOOKUP_RUN_ARRAY logic.
-It feels less of the unit test and more as a full stack test,
-but if so then lack of cookie on input is questionable.
-The progs can only examine port/ip/family data.
-So testing them individually would give more accurate picture on
-what progs are doing and potential bugs can be found sooner than
-testing the sequence of progs. In a sequence one prog could have
-been buggy, but the final cookie came out correct.
+Yeah, I'll probably post more details this week. Just catching up on
+stuff after vacation.
 
-Looking at patch 7 it seems the unit test framework will be comparing
-the cookies for your production tests, but then nentns argument
-in the cover letter is suprising. If the tests are run in the init_netns
-then selected sockets will be just as special as in patch 7.
-So it's not a full stack kinda test.
+As mentioned already, all the basic APIs (i.e., APIs like
+bpf_program__attach_xdp and bpf_set_link_xdp_fd, though I hope we can
+give the latter a better name) will stay intact. Stay tuned!
 
-In other words I'm struggling with in-between state of the api.
-test_run with N fds is not really a full test, but not a unit test either.
+>
+> >>
+> >> While integrating the XSK code into libxdp we're trying to make it
+> >> compatible with the rest of the library (i.e., multi-prog). Hence my
+> >> preference to avoid introducing something that makes this harder :)
+> >>
+> >> -Toke
+> >>
+> >
+> > OK that makes sense to me thanks. But, I'm missing something (maybe its
+> > obvious to everyone else?).
+> >
+> > When you load an XDP program you should get a reference to it. And then
+> > XDP program should never be unloaded until that id is removed right? It
+> > may or may not have an xsk map. Why does adding/removing programs from
+> > an associated map have any impact on the XDP program? That seems like
+> > the buggy part to me. No other map behaves this way as far as I can
+> > tell. Now if the program with the XDP reference closes without pinning
+> > the map or otherwise doing something with it, sure the map gets destroy=
+ed
+> > and any xsk sockets are lost.
+>
+> The original bug comes from the XSK code abstracting away the fact that
+> an AF_XDP socket needs an XDP program on the interface to work; so if
+> none exists, the library will just load a program that redirects into
+> the socket. Which breaks since the xdpsock example application is trying
+> to be nice and clean up after itself, by removing the XDP program when
+> it's done with the socket, thus breaking any other programs using that
+> XDP program. So this patch introduces proper synchronisation on both add
+> and remove of the XDP program...
+>
+> -Toke
+>
