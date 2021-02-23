@@ -2,98 +2,253 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6520A32270D
-	for <lists+bpf@lfdr.de>; Tue, 23 Feb 2021 09:23:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2189232270F
+	for <lists+bpf@lfdr.de>; Tue, 23 Feb 2021 09:25:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232157AbhBWIXF (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Feb 2021 03:23:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232120AbhBWIXB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Feb 2021 03:23:01 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B0FC061574
-        for <bpf@vger.kernel.org>; Tue, 23 Feb 2021 00:22:20 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id u14so21649675wri.3
-        for <bpf@vger.kernel.org>; Tue, 23 Feb 2021 00:22:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ubique-spb-ru.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=VE6cDzWl4H7fCtBOfyOCRn4CvbYpzWAZUSTzHceFnyw=;
-        b=s7n56XLZDc5hEme9rL8WaTG6qcH1j4kkfgHjkMlJ6dMwMBAAdCUbtZrytyZXEuYFmS
-         RKJzqJW4/iOrg7c1kONd6fccuNTXVukm9xmwfgt1xjYGU25eScoB8PCudKNGjFcxmgBK
-         Hn5Aq249tCI/dYI/OXm34cYBqYxio/9jVQl3npK9Gd69CNGSUumNpNJyKIvSM5LEatKk
-         iO/rPLFU20vE+pUZ9nm/eTxpm+g+1xTp8z89LvkfvIMvd4gVtT07pBYFT320iDmxej3N
-         xmNEj8UFPXDB4oIZcuU0vQp5gQtusFgI37Fjrb3pUpNI1FEQP/lIsRFi7qwjfqPZNDeF
-         Eu3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=VE6cDzWl4H7fCtBOfyOCRn4CvbYpzWAZUSTzHceFnyw=;
-        b=dEzzffRI04+qSRYgxbF9ZjHX5Iato8/donitUTqsGmGOReVCuSXBub1sMKlAUN/PEE
-         u+xsY3dCRoOQMfMfrluFgZemusKDLBpgJ7VXi0RsX50egJ8goO32YVVAyocRq2cFiUUP
-         sN6oNNBkL3V2+YSuPu7tK/C8QE51dMc1B3Mo7LjW9I3LQPCLLeoQ83OL8fYClXzIIEzo
-         6qCJWsJpFccpBnc23m1Bxkw970ZvtTKVN5duMyrfqmSMMpQX6wbPbvBq8K1kjkOJVn/a
-         1LWPAwUEHAlOyjILYZFhHAulyTnnUPNr9p7Y6C30PwIfNrdhxfXz8ss7A6sDNPG4bGUe
-         ki0A==
-X-Gm-Message-State: AOAM533Pp7J0DEPfZOwPdb4DERM7Jkza7FVmPl0KFIVDEbgNFWx91hIc
-        QGYJVOTzSYyOHtVGwrdFKMi7b0yUKR1PHMDm1Lo=
-X-Google-Smtp-Source: ABdhPJyL3X4cF/qQ6GkgATaeSJKeGdPSKf5vLi4T61AgLpvrl2WvwrAkY+j+bD7f8Z6DaTl45B7T3w==
-X-Received: by 2002:a5d:6392:: with SMTP id p18mr12311483wru.426.1614068538902;
-        Tue, 23 Feb 2021 00:22:18 -0800 (PST)
-Received: from localhost ([154.21.15.43])
-        by smtp.gmail.com with ESMTPSA id y1sm31278523wrr.41.2021.02.23.00.22.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Feb 2021 00:22:18 -0800 (PST)
-From:   Dmitrii Banshchikov <me@ubique.spb.ru>
-To:     bpf@vger.kernel.org
-Cc:     Dmitrii Banshchikov <me@ubique.spb.ru>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@chromium.org, rdna@fb.com
-Subject: [PATCH] selftests/bpf: Fix a compiler warning in global func test
-Date:   Tue, 23 Feb 2021 12:22:11 +0400
-Message-Id: <20210223082211.302596-1-me@ubique.spb.ru>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <CAEf4BzbbwTeVqP0D_UmYMamfWqp0JSO6TSr_TS-7aoxa-xW3Jg@mail.gmail.com>
-References: <CAEf4BzbbwTeVqP0D_UmYMamfWqp0JSO6TSr_TS-7aoxa-xW3Jg@mail.gmail.com>
+        id S232042AbhBWIYp convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Tue, 23 Feb 2021 03:24:45 -0500
+Received: from mga11.intel.com ([192.55.52.93]:9903 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231942AbhBWIYp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Feb 2021 03:24:45 -0500
+IronPort-SDR: magf6VNMUr9MdE7HjiXV6D6RaZXQ6daitRpzMaWRuCV27ZINu6MiF1WaFFg9AekmFKHlbeLoqa
+ yEdk43w2a4Dg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9903"; a="181292694"
+X-IronPort-AV: E=Sophos;i="5.81,199,1610438400"; 
+   d="scan'208";a="181292694"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2021 00:24:29 -0800
+IronPort-SDR: xXkId/ti6d+ZOqfLs7jHXYcK+u5oJJrjCUNxkUq4M1Zw/Z1URiy3wclm5UxsnnIH3xF69JUCm/
+ 4TGEvsa4ntrA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,199,1610438400"; 
+   d="scan'208";a="403062956"
+Received: from irsmsx603.ger.corp.intel.com ([163.33.146.9])
+  by orsmga008.jf.intel.com with ESMTP; 23 Feb 2021 00:24:26 -0800
+Received: from irsmsx604.ger.corp.intel.com (163.33.146.137) by
+ irsmsx603.ger.corp.intel.com (163.33.146.9) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 23 Feb 2021 08:24:25 +0000
+Received: from irsmsx604.ger.corp.intel.com ([163.33.146.137]) by
+ IRSMSX604.ger.corp.intel.com ([163.33.146.137]) with mapi id 15.01.2106.002;
+ Tue, 23 Feb 2021 08:24:25 +0000
+From:   "Loftus, Ciara" <ciara.loftus@intel.com>
+To:     "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+        "bjorn@kernel.org" <bjorn@kernel.org>,
+        "Janjua, Weqaar A" <weqaar.a.janjua@intel.com>
+Subject: RE: [PATCH bpf-next 3/4] selftests/bpf: restructure xsk selftests
+Thread-Topic: [PATCH bpf-next 3/4] selftests/bpf: restructure xsk selftests
+Thread-Index: AQHXBUqTVaeEgTuG802qQ/bkObXD8KpkD7oAgAFfo7A=
+Date:   Tue, 23 Feb 2021 08:24:25 +0000
+Message-ID: <746b426fd5bf408084d86c5a9a18b021@intel.com>
+References: <20210217160214.7869-1-ciara.loftus@intel.com>
+ <20210217160214.7869-4-ciara.loftus@intel.com>
+ <20210222112334.GA29106@ranger.igk.intel.com>
+In-Reply-To: <20210222112334.GA29106@ranger.igk.intel.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [163.33.253.164]
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add an explicit 'const void *' cast to pass program ctx pointer type into
-a global function that expects pointer to structure.
+> 
+> On Wed, Feb 17, 2021 at 04:02:13PM +0000, Ciara Loftus wrote:
+> > Prior to this commit individual xsk tests were launched from the
+> > shell script 'test_xsk.sh'. When adding a new test type, two new test
+> > configurations had to be added to this file - one for each of the
+> > supported XDP 'modes' (skb or drv). Should zero copy support be added to
+> > the xsk selftest framework in the future, three new test configurations
+> > would need to be added for each new test type. Each new test type also
+> > typically requires new CLI arguments for the xdpxceiver program.
+> >
+> > This commit aims to reduce the overhead of adding new tests, by launching
+> > the test configurations from within the xdpxceiver program itself, using
+> > simple loops. Every test is run every time the C program is executed. Many
+> > of the CLI arguments can be removed as a result.
+> >
+> > Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
+> > ---
+> >  tools/testing/selftests/bpf/test_xsk.sh    | 112 +-----------
+> >  tools/testing/selftests/bpf/xdpxceiver.c   | 199 ++++++++++++---------
+> >  tools/testing/selftests/bpf/xdpxceiver.h   |  27 ++-
+> >  tools/testing/selftests/bpf/xsk_prereqs.sh |  24 +--
+> >  4 files changed, 139 insertions(+), 223 deletions(-)
+> >
+> 
+> Good cleanup! I have a series of fixes/cleanups as well and I need to
+> introduce a new test over here, so your work makes it easier for me.
+> 
+> One nit below and once you address Bjorn's request, then feel free to add
+> my:
 
-warning: incompatible pointer types
-passing 'struct __sk_buff *' to parameter of type 'const struct S *'
-[-Wincompatible-pointer-types]
-        return foo(skb);
-                   ^~~
-progs/test_global_func11.c:10:36: note: passing argument to parameter 's' here
-__noinline int foo(const struct S *s)
-                                   ^
+Thanks Björn and Maciej for the feedback. Will include your suggestions in the v2.
+I discovered some extra things to tweak for the v2 but hope to have it up shortly.
 
-Fixes: 8b08807d039a ("selftests/bpf: Add unit tests for pointers in global functions")
-Signed-off-by: Dmitrii Banshchikov <me@ubique.spb.ru>
----
- tools/testing/selftests/bpf/progs/test_global_func11.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks,
+Ciara
 
-diff --git a/tools/testing/selftests/bpf/progs/test_global_func11.c b/tools/testing/selftests/bpf/progs/test_global_func11.c
-index 28488047c849..ef5277d982d9 100644
---- a/tools/testing/selftests/bpf/progs/test_global_func11.c
-+++ b/tools/testing/selftests/bpf/progs/test_global_func11.c
-@@ -15,5 +15,5 @@ __noinline int foo(const struct S *s)
- SEC("cgroup_skb/ingress")
- int test_cls(struct __sk_buff *skb)
- {
--	return foo(skb);
-+	return foo((const void *)skb);
- }
--- 
-2.25.1
-
+> 
+> Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> 
+> [...]
+> 
+> > +static int configure_skb(void)
+> > +{
+> > +
+> > +	char cmd[80];
+> > +
+> > +	snprintf(cmd, sizeof(cmd), "ip link set dev %s xdpdrv off", ifdict[0]-
+> >ifname);
+> > +	if (system(cmd)) {
+> > +		ksft_test_result_fail("Failed to configure native mode on
+> iface %s\n",
+> > +						ifdict[0]->ifname);
+> > +		return -1;
+> > +	}
+> > +	snprintf(cmd, sizeof(cmd), "ip netns exec %s ip link set dev %s
+> xdpdrv off",
+> > +					ifdict[1]->nsname, ifdict[1]->ifname);
+> > +	if (system(cmd)) {
+> > +		ksft_test_result_fail("Failed to configure native mode on
+> iface/ns %s\n",
+> > +						ifdict[1]->ifname, ifdict[1]-
+> >nsname);
+> > +		return -1;
+> > +	}
+> > +
+> > +	cur_mode = TEST_MODE_SKB;
+> > +
+> > +	return 0;
+> > +
+> > +}
+> > +
+> > +static int configure_drv(void)
+> > +{
+> > +	char cmd[80];
+> > +
+> > +	snprintf(cmd, sizeof(cmd), "ip link set dev %s xdpgeneric off",
+> ifdict[0]->ifname);
+> > +	if (system(cmd)) {
+> > +		ksft_test_result_fail("Failed to configure native mode on
+> iface %s\n",
+> > +						ifdict[0]->ifname);
+> > +		return -1;
+> > +	}
+> > +	snprintf(cmd, sizeof(cmd), "ip netns exec %s ip link set dev %s
+> xdpgeneric off",
+> > +					ifdict[1]->nsname, ifdict[1]->ifname);
+> > +	if (system(cmd)) {
+> > +		ksft_test_result_fail("Failed to configure native mode on
+> iface/ns %s\n",
+> > +						ifdict[1]->ifname, ifdict[1]-
+> >nsname);
+> > +		return -1;
+> > +	}
+> > +
+> > +	cur_mode = TEST_MODE_DRV;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static void run_pkt_test(int mode, int type)
+> > +{
+> > +	test_type = type;
+> > +
+> > +	/* reset defaults after potential previous test */
+> > +	xdp_flags = XDP_FLAGS_UPDATE_IF_NOEXIST;
+> > +	pkt_counter = 0;
+> > +	switching_notify = 0;
+> > +	bidi_pass = 0;
+> > +	prev_pkt = -1;
+> > +	ifdict[0]->fv.vector = tx;
+> > +	ifdict[1]->fv.vector = rx;
+> > +
+> > +	switch (mode) {
+> > +	case (TEST_MODE_SKB):
+> > +		if (cur_mode != TEST_MODE_SKB)
+> > +			configure_skb();
+> 
+> Should you check a return value over here?
+> 
+> > +		xdp_flags |= XDP_FLAGS_SKB_MODE;
+> > +		uut = TEST_MODE_SKB;
+> > +		break;
+> > +	case (TEST_MODE_DRV):
+> > +		if (cur_mode != TEST_MODE_DRV)
+> > +			configure_drv();
+> 
+> ditto
+> 
+> > +		xdp_flags |= XDP_FLAGS_DRV_MODE;
+> > +		uut = TEST_MODE_DRV;
+> > +		break;
+> > +	default:
+> > +		break;
+> > +	}
+> > +
+> > +	pthread_init_mutex();
+> > +
+> > +	if ((test_type != TEST_TYPE_TEARDOWN) && (test_type !=
+> TEST_TYPE_BIDI))
+> > +		testapp_validate();
+> > +	else
+> > +		testapp_sockets();
+> > +
+> > +	pthread_destroy_mutex();
+> > +}
+> > +
+> >  int main(int argc, char **argv)
+> >  {
+> >  	struct rlimit _rlim = { RLIM_INFINITY, RLIM_INFINITY };
+> > @@ -1021,6 +1062,7 @@ int main(int argc, char **argv)
+> >  	const char *IP2 = "192.168.100.161";
+> >  	u16 UDP_DST_PORT = 2020;
+> >  	u16 UDP_SRC_PORT = 2121;
+> > +	int i, j;
+> >
+> >  	ifaceconfig = malloc(sizeof(struct ifaceconfigobj));
+> >  	memcpy(ifaceconfig->dst_mac, MAC1, ETH_ALEN);
+> > @@ -1046,24 +1088,19 @@ int main(int argc, char **argv)
+> >
+> >  	init_iface_config(ifaceconfig);
+> >
+> > -	pthread_init_mutex();
+> > +	ksft_set_plan(TEST_MODE_MAX * TEST_TYPE_MAX);
+> >
+> > -	ksft_set_plan(1);
+> > +	configure_skb();
+> > +	cur_mode = TEST_MODE_SKB;
+> >
+> > -	if (!opt_teardown && !opt_bidi) {
+> > -		testapp_validate();
+> > -	} else if (opt_teardown && opt_bidi) {
+> > -		ksft_test_result_fail("ERROR: parameters -T and -B cannot
+> be used together\n");
+> > -		ksft_exit_xfail();
+> > -	} else {
+> > -		testapp_sockets();
+> > +	for (i = 0; i < TEST_MODE_MAX; i++) {
+> > +		for (j = 0; j < TEST_TYPE_MAX; j++)
+> > +			run_pkt_test(i, j);
+> >  	}
+> >
+> >  	for (int i = 0; i < MAX_INTERFACES; i++)
+> >  		free(ifdict[i]);
+> >
+> > -	pthread_destroy_mutex();
+> > -
+> >  	ksft_exit_pass();
+> >
+> >  	return 0;
