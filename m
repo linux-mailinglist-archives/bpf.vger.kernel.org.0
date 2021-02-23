@@ -2,43 +2,44 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B4F43233BD
-	for <lists+bpf@lfdr.de>; Tue, 23 Feb 2021 23:32:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC5323233C4
+	for <lists+bpf@lfdr.de>; Tue, 23 Feb 2021 23:36:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232181AbhBWWbU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Feb 2021 17:31:20 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:39068 "EHLO
+        id S232276AbhBWWcf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Feb 2021 17:32:35 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:22146 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231978AbhBWW3t (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 23 Feb 2021 17:29:49 -0500
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11NMRiWA021791
-        for <bpf@vger.kernel.org>; Tue, 23 Feb 2021 14:29:09 -0800
+        by vger.kernel.org with ESMTP id S232363AbhBWW3v (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 23 Feb 2021 17:29:51 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11NMPkjU010852
+        for <bpf@vger.kernel.org>; Tue, 23 Feb 2021 14:29:10 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=xE5jfbmD7ggvOtV/7xXWeCQmjvzq79ebUAY3GevP7YY=;
- b=rc9z4ueN9JkFpzjcs5zqoSaCXp/V3oIstZ3pSbfoifBznZAT8uL0BzI6+6DVPSfkFvRA
- YktlRm6Onkv4LIg2dI4o4T5C60V7Hpcj0Lhis45Ieg6wnqOGNXte9OaPvXvEZ3D66HXb
- O4FQZp9OVdHlhidfEV8SNO897SjUlfbKpt8= 
+ bh=+q9icw4w72ZW+9dnDuoTVCwteqypUS3djmQoNnUrw1Q=;
+ b=Uwh+FOqTkGX8pTc8Py2iB8C+PKuoUmwYoU2fppokFXv1ZuKzyTRB5lTtFEjRpoWNgQ4/
+ +tV4JOamnfX0q/Oyo8KwNO1m/9DtBymiQ7Tuf/NLLYqp20x4sqNawxUeEJG0oeLuWFi5
+ 0cwPWf5P/xzoL3UHROM0KUOXawrpSw1D3tE= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 36vx7am3y5-1
+        by mx0a-00082601.pphosted.com with ESMTP id 36ukcte1ja-7
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
         for <bpf@vger.kernel.org>; Tue, 23 Feb 2021 14:29:09 -0800
-Received: from intmgw006.03.ash8.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+Received: from intmgw002.06.ash9.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.1979.3; Tue, 23 Feb 2021 14:29:08 -0800
 Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
-        id 3DB5862E093E; Tue, 23 Feb 2021 14:29:05 -0800 (PST)
+        id B7CA962E093E; Tue, 23 Feb 2021 14:29:07 -0800 (PST)
 From:   Song Liu <songliubraving@fb.com>
 To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
 CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        <peterz@infradead.org>, Song Liu <songliubraving@fb.com>
-Subject: [PATCH v5 bpf-next 4/6] selftests/bpf: test deadlock from recursive bpf_task_storage_[get|delete]
-Date:   Tue, 23 Feb 2021 14:28:43 -0800
-Message-ID: <20210223222845.2866124-5-songliubraving@fb.com>
+        <peterz@infradead.org>, Song Liu <songliubraving@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH v5 bpf-next 5/6] bpf: runqslower: prefer using local vmlimux to generate vmlinux.h
+Date:   Tue, 23 Feb 2021 14:28:44 -0800
+Message-ID: <20210223222845.2866124-6-songliubraving@fb.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20210223222845.2866124-1-songliubraving@fb.com>
 References: <20210223222845.2866124-1-songliubraving@fb.com>
@@ -48,151 +49,45 @@ X-FB-Internal: Safe
 Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
  definitions=2021-02-23_11:2021-02-23,2021-02-23 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- spamscore=0 bulkscore=0 mlxlogscore=917 phishscore=0 impostorscore=0
- clxscore=1015 mlxscore=0 suspectscore=0 adultscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102230189
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
+ priorityscore=1501 clxscore=1015 mlxlogscore=539 malwarescore=0
+ phishscore=0 impostorscore=0 mlxscore=0 bulkscore=0 suspectscore=0
+ spamscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2102230189
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Add a test with recursive bpf_task_storage_[get|delete] from fentry
-programs on bpf_local_storage_lookup and bpf_local_storage_update. Withou=
-t
-proper deadlock prevent mechanism, this test would cause deadlock.
+Update the Makefile to prefer using $(O)/vmlinux, $(KBUILD_OUTPUT)/vmlinu=
+x
+(for selftests) or ../../../vmlinux. These two files should have latest
+definitions for vmlinux.h.
 
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Song Liu <songliubraving@fb.com>
 ---
- .../bpf/prog_tests/task_local_storage.c       | 23 ++++++
- .../selftests/bpf/progs/task_ls_recursion.c   | 70 +++++++++++++++++++
- 2 files changed, 93 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/task_ls_recursion.c
+ tools/bpf/runqslower/Makefile | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/task_local_storage.c =
-b/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
-index dbb7525cdd567..035c263aab1b1 100644
---- a/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
-+++ b/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
-@@ -8,6 +8,7 @@
- #include <test_progs.h>
- #include "task_local_storage.skel.h"
- #include "task_local_storage_exit_creds.skel.h"
-+#include "task_ls_recursion.skel.h"
+diff --git a/tools/bpf/runqslower/Makefile b/tools/bpf/runqslower/Makefil=
+e
+index 9d9fb6209be1b..c96ba90c6f018 100644
+--- a/tools/bpf/runqslower/Makefile
++++ b/tools/bpf/runqslower/Makefile
+@@ -16,7 +16,10 @@ CFLAGS :=3D -g -Wall
 =20
- static void test_sys_enter_exit(void)
- {
-@@ -60,10 +61,32 @@ static void test_exit_creds(void)
- 	task_local_storage_exit_creds__destroy(skel);
- }
+ # Try to detect best kernel BTF source
+ KERNEL_REL :=3D $(shell uname -r)
+-VMLINUX_BTF_PATHS :=3D /sys/kernel/btf/vmlinux /boot/vmlinux-$(KERNEL_RE=
+L)
++VMLINUX_BTF_PATHS :=3D $(if $(O),$(O)/vmlinux)		\
++	$(if $(KBUILD_OUTPUT),$(KBUILD_OUTPUT)/vmlinux) \
++	../../../vmlinux /sys/kernel/btf/vmlinux	\
++	/boot/vmlinux-$(KERNEL_REL)
+ VMLINUX_BTF_PATH :=3D $(or $(VMLINUX_BTF),$(firstword			       \
+ 					  $(wildcard $(VMLINUX_BTF_PATHS))))
 =20
-+static void test_recursion(void)
-+{
-+	struct task_ls_recursion *skel;
-+	int err;
-+
-+	skel =3D task_ls_recursion__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-+		return;
-+
-+	err =3D task_ls_recursion__attach(skel);
-+	if (!ASSERT_OK(err, "skel_attach"))
-+		goto out;
-+
-+	/* trigger sys_enter, make sure it does not cause deadlock */
-+	syscall(SYS_gettid);
-+
-+out:
-+	task_ls_recursion__destroy(skel);
-+}
-+
- void test_task_local_storage(void)
- {
- 	if (test__start_subtest("sys_enter_exit"))
- 		test_sys_enter_exit();
- 	if (test__start_subtest("exit_creds"))
- 		test_exit_creds();
-+	if (test__start_subtest("recursion"))
-+		test_recursion();
- }
-diff --git a/tools/testing/selftests/bpf/progs/task_ls_recursion.c b/tool=
-s/testing/selftests/bpf/progs/task_ls_recursion.c
-new file mode 100644
-index 0000000000000..564583dca7c85
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/task_ls_recursion.c
-@@ -0,0 +1,70 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, long);
-+} map_a SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__type(key, int);
-+	__type(value, long);
-+} map_b SEC(".maps");
-+
-+SEC("fentry/bpf_local_storage_lookup")
-+int BPF_PROG(on_lookup)
-+{
-+	struct task_struct *task =3D bpf_get_current_task_btf();
-+
-+	bpf_task_storage_delete(&map_a, task);
-+	bpf_task_storage_delete(&map_b, task);
-+	return 0;
-+}
-+
-+SEC("fentry/bpf_local_storage_update")
-+int BPF_PROG(on_update)
-+{
-+	struct task_struct *task =3D bpf_get_current_task_btf();
-+	long *ptr;
-+
-+	ptr =3D bpf_task_storage_get(&map_a, task, 0,
-+				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	if (ptr)
-+		*ptr +=3D 1;
-+
-+	ptr =3D bpf_task_storage_get(&map_b, task, 0,
-+				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	if (ptr)
-+		*ptr +=3D 1;
-+
-+	return 0;
-+}
-+
-+SEC("tp_btf/sys_enter")
-+int BPF_PROG(on_enter, struct pt_regs *regs, long id)
-+{
-+	struct task_struct *task;
-+	long *ptr;
-+
-+	task =3D bpf_get_current_task_btf();
-+	ptr =3D bpf_task_storage_get(&map_a, task, 0,
-+				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	if (ptr)
-+		*ptr =3D 200;
-+
-+	ptr =3D bpf_task_storage_get(&map_b, task, 0,
-+				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	if (ptr)
-+		*ptr =3D 100;
-+	return 0;
-+}
 --=20
 2.24.1
 
