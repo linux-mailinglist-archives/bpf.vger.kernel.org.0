@@ -2,113 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D401E322CAC
-	for <lists+bpf@lfdr.de>; Tue, 23 Feb 2021 15:45:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7927322CB5
+	for <lists+bpf@lfdr.de>; Tue, 23 Feb 2021 15:48:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230498AbhBWOp3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Feb 2021 09:45:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43315 "EHLO
+        id S232895AbhBWOrq (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Feb 2021 09:47:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40726 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229823AbhBWOp3 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 23 Feb 2021 09:45:29 -0500
+        by vger.kernel.org with ESMTP id S232480AbhBWOrk (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 23 Feb 2021 09:47:40 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614091442;
+        s=mimecast20190719; t=1614091574;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=LpYOhXHGVxU0xOZjyTmBsPRLytwkVqdBdOt50mvBPSs=;
-        b=YtECZbi9sXNYe/UePn9P2ZAzgcpa7Em1bSG8UeSnmzu6ix0j9HWpLwfnqdBhc6kLEDsEld
-        9DyRhQeVf4TXhdIanaCn34PKQH8GlKHb2/TlbimQ65Z4e+wEma8eGkaj7sekt3bfdt8WOv
-        8U5gLixksT3G5YBaHkIyT3EpeZoS/xE=
+        bh=kp43ReK6Bbto6WMF4BKD7QH88weYYK7A/bjDK0aUHLg=;
+        b=Ph6zf+xAa3HgZOfRKyVPDjFfZ8alhYSVBDaXdIAIktv4VsQDx+RniWZnZawfvdXMF0m5Tf
+        fwXxu+xJSLhYOG2KXWvDiyP4wwKJBRlEr/Q9PnnOTmOUsQYfn6UUSf1Is7DD0jvJiA5GIl
+        mnj35gW5qF2+do+F8eS0HHBjmKTsBYE=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-342-8S5jRRWLPqObCUaM2wahPQ-1; Tue, 23 Feb 2021 09:42:57 -0500
-X-MC-Unique: 8S5jRRWLPqObCUaM2wahPQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+ us-mta-359-APiljNKtMo6l-K6sN8vfXA-1; Tue, 23 Feb 2021 09:45:46 -0500
+X-MC-Unique: APiljNKtMo6l-K6sN8vfXA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BC7CB814304;
-        Tue, 23 Feb 2021 14:42:55 +0000 (UTC)
-Received: from krava (unknown [10.40.192.54])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 6284760CDE;
-        Tue, 23 Feb 2021 14:42:54 +0000 (UTC)
-Date:   Tue, 23 Feb 2021 15:42:53 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Kun-Chuan Hsieh <jetswayss@gmail.com>
-Cc:     ast@kernel.org, bpf@vger.kernel.org, jolsa@kernel.org,
-        andrii@kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] tools/resolve_btfids: Fix build error with older host
- toolchains
-Message-ID: <YDUUbRJ1waVyoO+f@krava>
-References: <20210223012001.1452676-1-jetswayss@gmail.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3BDB09A3CA;
+        Tue, 23 Feb 2021 14:43:58 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 16B3970476;
+        Tue, 23 Feb 2021 14:43:28 +0000 (UTC)
+Date:   Tue, 23 Feb 2021 15:43:27 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Hangbin Liu <liuhangbin@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>, brouer@redhat.com
+Subject: Re: [PATCH bpf-next] bpf: fix missing * in bpf.h
+Message-ID: <20210223154327.6011b5ee@carbon>
+In-Reply-To: <20210223124554.1375051-1-liuhangbin@gmail.com>
+References: <20210223124554.1375051-1-liuhangbin@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210223012001.1452676-1-jetswayss@gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 01:20:01AM +0000, Kun-Chuan Hsieh wrote:
-> Older versions of libelf cannot recognize the compressed section.
+On Tue, 23 Feb 2021 20:45:54 +0800
+Hangbin Liu <liuhangbin@gmail.com> wrote:
 
-so it's the SHF_COMPRESSED value the build fails on?
-
-maybe we could do just this:
-
-#ifndef SHF_COMPRESSED
- #define SHF_COMPRESSED      (1 << 11)  /* Section with compressed data. */
-#endif
-
-jirka
-
-> However, it's only required to fix the compressed section info when
-> compiling with CONFIG_DEBUG_INFO_COMPRESSED flag is set.
+> Commit 34b2021cc616 ("bpf: Add BPF-helper for MTU checking") lost a *
+> in bpf.h. This will make bpf_helpers_doc.py stop building
+> bpf_helper_defs.h immediately after bpf_check_mtu, which will affect
+> future add functions.
 > 
-> Only compile the compressed_section_fix function when necessary will make
-> it easier to enable the BTF function. Since the tool resolve_btfids is
-> compiled with host toolchain. The host toolchain might be older than the
-> cross compile toolchain.
-> 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Kun-Chuan Hsieh <jetswayss@gmail.com>
+> Fixes: 34b2021cc616 ("bpf: Add BPF-helper for MTU checking")
+> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
 > ---
->  tools/bpf/resolve_btfids/main.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
-> index 7409d7860aa6..ad40346c6631 100644
-> --- a/tools/bpf/resolve_btfids/main.c
-> +++ b/tools/bpf/resolve_btfids/main.c
-> @@ -260,6 +260,7 @@ static struct btf_id *add_symbol(struct rb_root *root, char *name, size_t size)
->  	return btf_id__add(root, id, false);
->  }
->  
-> +#ifdef CONFIG_DEBUG_INFO_COMPRESSED
->  /*
->   * The data of compressed section should be aligned to 4
->   * (for 32bit) or 8 (for 64 bit) bytes. The binutils ld
-> @@ -292,6 +293,7 @@ static int compressed_section_fix(Elf *elf, Elf_Scn *scn, GElf_Shdr *sh)
->  	}
->  	return 0;
->  }
-> +#endif
->  
->  static int elf_collect(struct object *obj)
->  {
-> @@ -370,8 +372,10 @@ static int elf_collect(struct object *obj)
->  			obj->efile.idlist_addr  = sh.sh_addr;
->  		}
->  
-> +#ifdef CONFIG_DEBUG_INFO_COMPRESSED
->  		if (compressed_section_fix(elf, scn, &sh))
->  			return -1;
-> +#endif
->  	}
->  
->  	return 0;
-> -- 
-> 2.25.1
-> 
+>  include/uapi/linux/bpf.h       | 2 +-
+>  tools/include/uapi/linux/bpf.h | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+
+Thanks for fixing that!
+
+Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+
+I though I had already fix that, but I must have missed or reintroduced
+this, when I rolling back broken ideas in V13.
+
+I usually run this command to check the man-page (before submitting):
+
+ ./scripts/bpf_helpers_doc.py | rst2man | man -l -
+
+
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 4c24daa43bac..46248f8e024b 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -3850,7 +3850,7 @@ union bpf_attr {
+>   *
+>   * long bpf_check_mtu(void *ctx, u32 ifindex, u32 *mtu_len, s32 len_diff, u64 flags)
+>   *	Description
+> -
+> + *
+>   *		Check ctx packet size against exceeding MTU of net device (based
+>   *		on *ifindex*).  This helper will likely be used in combination
+>   *		with helpers that adjust/change the packet size.
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index 4c24daa43bac..46248f8e024b 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -3850,7 +3850,7 @@ union bpf_attr {
+>   *
+>   * long bpf_check_mtu(void *ctx, u32 ifindex, u32 *mtu_len, s32 len_diff, u64 flags)
+>   *	Description
+> -
+> + *
+>   *		Check ctx packet size against exceeding MTU of net device (based
+>   *		on *ifindex*).  This helper will likely be used in combination
+>   *		with helpers that adjust/change the packet size.
+
+
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
