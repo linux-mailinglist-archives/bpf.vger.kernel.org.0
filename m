@@ -2,65 +2,220 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFCD032293F
-	for <lists+bpf@lfdr.de>; Tue, 23 Feb 2021 12:09:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2421E322947
+	for <lists+bpf@lfdr.de>; Tue, 23 Feb 2021 12:09:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230142AbhBWLHf (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Feb 2021 06:07:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232217AbhBWLH0 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Feb 2021 06:07:26 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1819C061786;
-        Tue, 23 Feb 2021 03:06:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=K2ylQVZRhghwU1ruzT40Z4+JszR4ATXnAjr+EMA5yu4=; b=NBP9tV4JPO5/VnfruO4LFjeYaJ
-        3GZA7ssSASYSXNeuC1blqtsH9J0+PR5QVfvEtsfuMt3bcKFwa6TM/ZdJeff7fa1TqlCeJ240L3Vv6
-        PPadV4Ub0Nl4PbeEZ9nt2Pkqx35oZm+7UGB3xzHj2naf991/OeM9JjNDGjvPaK0f4sMVmP9dAYqui
-        pURY68O3Lr7IQZSASDNT2rK5GgHSiOEB+dpSSqEI0jP8xQyPRmwAKD2EdIOQHU1zUtu0KkkqVw1Br
-        3ZljwcflvZ+eRCnSiVP5ZiXt13PU6gLS5qUDGQ6FmssCSKh9F45Os3+FrXg5i0iC4HVZXZq0ZqI1R
-        PVdJKD9A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lEVWJ-007rop-4d; Tue, 23 Feb 2021 11:06:30 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A7112300DB4;
-        Tue, 23 Feb 2021 12:06:22 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8759F2013B7C2; Tue, 23 Feb 2021 12:06:22 +0100 (CET)
-Date:   Tue, 23 Feb 2021 12:06:22 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kernel-team@fb.com
-Subject: Re: [PATCH v4 bpf-next 2/6] bpf: prevent deadlock from recursive
- bpf_task_storage_[get|delete]
-Message-ID: <YDThrlixVqfHP7I9@hirez.programming.kicks-ass.net>
-References: <20210223012014.2087583-1-songliubraving@fb.com>
- <20210223012014.2087583-3-songliubraving@fb.com>
+        id S232231AbhBWLJD (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Feb 2021 06:09:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40382 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232307AbhBWLIh (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 23 Feb 2021 06:08:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614078429;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=98wd0QG+v4RXUDxbb0NPp3Yzg92ldtQK4iygBZ4W0GE=;
+        b=JpM2L7sUJCypP8fRdHWr0L6DjKIDXs3UDyX0Lo/OaAgj1ysu9y1wW/P5z5DBIpCsVzIOyd
+        MwHX8CL3aRBwPWRksVpgDfOMQ7wqypKZ7MFUAAaOuMm4rRUtzJj0v9bhlO+S7JAV3xMPmQ
+        IhptHaelDjUAZGl+Z1+d5eXYfFvQF7Q=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-253-ab2W7UyBMdiR_HAZz2lliA-1; Tue, 23 Feb 2021 06:07:07 -0500
+X-MC-Unique: ab2W7UyBMdiR_HAZz2lliA-1
+Received: by mail-ed1-f71.google.com with SMTP id w9so8288452edi.15
+        for <bpf@vger.kernel.org>; Tue, 23 Feb 2021 03:07:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=98wd0QG+v4RXUDxbb0NPp3Yzg92ldtQK4iygBZ4W0GE=;
+        b=PhV8zTOw01yuOsQ4QWpTuYu0u+3TBehcobMen1dOOWdxHqSyfjskoDs1u6imFwgiWm
+         LV9phpkCLFZugmCAd30illQcKksMGlJbVUHefpmXbLDtb5+QXoYy/lMgn8aN/tXzD33u
+         2FnlfSKuSCc8XZmGhIG13id+y29RwsiSlHrshOtVy9qbcn7OQKOcJYEVs3c3vFaoszCs
+         cA3TBYUPIJvBy6u9670uGWBrvARRh4QV3wzRwNRTWUKkVXVZqIlaxB2uztsVMoZxO2Ma
+         hBuE8jtlbfzmfmpKqlsdusIwUXfDUfQHAJKIa3+0U+tc6Pp5gR0dIhB5EGCVvG5s4bE1
+         wUmw==
+X-Gm-Message-State: AOAM53155bZ0gEVo8pK/ppK7J53ttkidRSKSLtB98jvoqnGH7Jr7nK/K
+        C2s8u9A7VmYeyJeG0L6EijdkfKnC+5NKd1QieUpVvdAHTa5H7yhfKHCACm1Lo/PS1LpcgONrMAX
+        qR/GzBhS2MCam
+X-Received: by 2002:a17:906:1e50:: with SMTP id i16mr12692160ejj.466.1614078426256;
+        Tue, 23 Feb 2021 03:07:06 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxD6x5Jkk2AYH/zGWrp+LrGGLAvooZtS4tOPWUc9eayVWibZ7ZClOzhczyEjOuRuAIYc90vKg==
+X-Received: by 2002:a17:906:1e50:: with SMTP id i16mr12692138ejj.466.1614078425928;
+        Tue, 23 Feb 2021 03:07:05 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id h10sm14644100edk.45.2021.02.23.03.07.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Feb 2021 03:07:05 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id F17B8180676; Tue, 23 Feb 2021 12:07:04 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     "Brian G. Merrell" <brian.g.merrell@gmail.com>
+Cc:     xdp-newbies@vger.kernel.org,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Maciej =?utf-8?Q?=C5=BBenczykowski?= <maze@google.com>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Andrey Ignatov <rdna@fb.com>, bpf@vger.kernel.org
+Subject: Re: How to orchestrate multiple XDP programs
+In-Reply-To: <20210223085422.tv2gk6olg66zcbwe@snout.localdomain>
+References: <20210210222710.7xl56xffdohvsko4@snout.localdomain>
+ <874kiirgx3.fsf@toke.dk>
+ <20210212065148.ajtbx2xos6yomrzc@snout.localdomain>
+ <87h7mdcxbd.fsf@toke.dk>
+ <20210217012012.qfdhimcyniw6dlve@snout.localdomain>
+ <87ft1un121.fsf@toke.dk>
+ <20210217222714.evijmkyucbnlqh3d@snout.localdomain>
+ <87pn0xl553.fsf@toke.dk>
+ <20210222193459.hxvlcq65yyh3b6dr@snout.localdomain>
+ <87v9ajg1yx.fsf@toke.dk>
+ <20210223085422.tv2gk6olg66zcbwe@snout.localdomain>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 23 Feb 2021 12:07:04 +0100
+Message-ID: <87pn0rf3fr.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210223012014.2087583-3-songliubraving@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 05:20:10PM -0800, Song Liu wrote:
-> BPF helpers bpf_task_storage_[get|delete] could hold two locks:
-> bpf_local_storage_map_bucket->lock and bpf_local_storage->lock. Calling
-> these helpers from fentry/fexit programs on functions in bpf_*_storage.c
-> may cause deadlock on either locks.
-> 
-> Prevent such deadlock with a per cpu counter, bpf_task_storage_busy, which
-> is similar to bpf_prog_active. We need this counter to be global, because
+"Brian G. Merrell" <brian.g.merrell@gmail.com> writes:
 
-So bpf_prog_active is one of the biggest turds around, and now you're
-making it worse ?!
+> On 21/02/22 11:41PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> "Brian G. Merrell" <brian.g.merrell@gmail.com> writes:
+>> > On 21/02/18 05:20PM, Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>
+>> >> No, I think the main difference is that in the model you described,
+>> >> you're assuming that your orchestration system would install the XDP
+>> >> program on behalf of the application as well as launch the userspace
+>> >> bits.
+>> >
+>> > Yes, that's right. This is the model we are implementing.
+>> >
+>> >> Whereas I'm assuming that an application that uses XDP will start
+>> >> in userspace (launched by systemd, most likely), and will then load i=
+ts
+>> >> own XDP program after possibly doing some initialisation first (e.g.,
+>> >> pre-populating maps, that sort of thing).
+>> >>=20
+>> >> From what I've understood from what you explained about your setup, y=
+our
+>> >> model could work with both models as well; so why are you assuming th=
+at
+>> >> applications won't want to install their own XDP programs? :)
+>> >
+>> > I would just say that in our organizations network and administration
+>> > environment, we ideally want a centralized orchestration tooling and
+>> > control plane that is used for all XDP (and tc) programs running on our
+>> > machines with our model described above.
+>>=20
+>> Right, sure, I'm not disputing this model is useful as well, I'm just
+>> wondering about how you envision the details working. Say your
+>> orchestration system installs an XDP program on behalf of an application
+>> and then launches the userspace component (assuming one exists). How is
+>> that userspace program supposed to obtain a file descriptor for the
+>> map(s) used by the XDP program in order to communicate with it?
+>
+> OK, so this part is admittedly a little hand-wavy and a work in
+> progress. We're literally working on design and proof of concepts right
+> now, but this is basically what we're envisioning:
+>
+> 1. Orchestration tool gets all its JSON config data, which includes
+>    remote paths for BPF programs and any respective userspace
+>    programs.
+> 2. Orchestration tool downloads BPF programs and loads them (using
+>    Go libxdp when it's available). Then (and this is where I'm going to
+>    start waving my hands) the orchestrator will need to gather any
+>    necessary map names/ids/fds information to be send to the userspace
+>    program. I'm just not exactly sure how easy/hard/possible this part
+>    is.
+> 3. We start the userspace programs as separate processes and communicate
+>    with them via RPC (there's a nice Go plugin system for this[1]). Each
+>    userspace program implements an interface and we communicate the map
+>    info (among other things) over RPC to the userspace program when it
+>    starts.
+>
+> I'm going to continue researching and fleshing out the details, but are
+> there any obvious problems with this approach?
+
+I think the basic idea can work (it's similar to systemd's socket
+activation, which also passes the socket fd to the userspace process on
+launch). However, there are a couple of things that become impossible
+for the userspace process to do in this model:
+
+- Modifying the BPF object before load: Libbpf does quite a few
+  transformations on the bytecode to handle relocations, and it's also
+  going to grow a full linker at some point. This is not a problem if
+  the userspace program just lets libbpf do the default thing, but if it
+  wants to customise the operations it becomes a problem. The obvious
+  use case for this that comes to mind is dynamically omitting parts of
+  the code for features that are not enabled (like we do in xdp-filter).
+
+- Populating maps before load: This is necessary to use customised
+  'const' global variables: The map backing these are frozen on load to
+  allow the verifier to make strong assumptions about their content, so
+  you can't modify them after the map is loaded.
+
+- Atomic map population: Say you have an XDP program that reacts to
+  traffic steering rules, and you start out with the program being
+  attached to the interface and an empty map that userspace then has to
+  populate. While the map is being populated, the XDP program will
+  process some packets with an incomplete view of the final ruleset.
+  Whereas if you can populate the map completely before attaching the
+  program you can be sure that it's consistent. Depending on the nature
+  of the application, this may lead to weird effects, or it may be
+  mostly harmless.
+
+Now, all of these could in principle be performed by the orchestrator on
+behalf of the program, but that means you'll have to make the
+orchestrator more complex, and you'll have to come up with a way to
+express these operations in your configuration language.
+
+> A backup plan is to have the userspace programs do the loading of the
+> BPF program, but it's not obvious to me how that would be easier to
+> obtain the file descriptor for the map(s) vs. having the orchestrator
+> figure it out and send it to the userspace process.
+
+Both approaches carry complexities with it, and I'm not sure there
+really is a universal right answer. What tipped the scales for me were
+the issues above. However, being in a more controlled environment, the
+trade off may well be different for you.
+
+> If it works out that the orchestrator can load the BPF programs on
+> behalf of the userspace programs, then I think the primary benefit is
+> that the developer of the userspace program doesn't need to follow
+> some boilerplate to load the appropriate way--we've done all that for
+> them. It seems nice that the orchestrator could be the one interface
+> with libxdp (for the XDP case) without every userspace program needing
+> to doing it's own adding/removing (and thus dispatcher swapping),
+> though I would guess that's not really a problem at all.
+
+Yeah, I do agree that it would be nicer if there was a clean interface
+the application could talk to without having to muck about with
+dispatchers. My hope is that by encapsulating all that in a library we
+can pretend that there is :)
+
+However, I can see how this perspective may also be different in a Go
+world: With a C library in a distro we can ship the library as a
+separate package and as long as we maintain ABI compatibility, we can
+upgrade the library independently of the applications. Whereas with Go's
+vendoring approach it becomes way harder to ensure that all applications
+use the "right" version of the library. In that sense, a C library is
+more of a "system service" whereas a Go library is more of an
+"application sub-function".
+
+> I feel like I've gone out of the scope of libxdp in this e-mail, but
+> you did ask :) And I do appreciate any feedback or raising of red
+> flags.
+
+Only slightly :)
+As outlined above all of this has gone into my thinking when designing
+libxdp, so I appreciate the chance to get your perspectives on these
+very real tradeoffs. So thanks again for taking the time to explain your
+thought process!
+
+-Toke
+
