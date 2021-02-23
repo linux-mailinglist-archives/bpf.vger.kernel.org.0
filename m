@@ -2,76 +2,98 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B62B3228AE
-	for <lists+bpf@lfdr.de>; Tue, 23 Feb 2021 11:14:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C35FE322937
+	for <lists+bpf@lfdr.de>; Tue, 23 Feb 2021 12:06:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230458AbhBWKN5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Feb 2021 05:13:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231863AbhBWKNw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Feb 2021 05:13:52 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09297C06174A
-        for <bpf@vger.kernel.org>; Tue, 23 Feb 2021 02:13:02 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id m22so10344341lfg.5
-        for <bpf@vger.kernel.org>; Tue, 23 Feb 2021 02:13:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=J/LuwTXoQO6jvKbzdrCDlo4TVXiV1s6U/zT2nfH4wUo=;
-        b=FPv96nKrO3ZcNri+Ayz2U12l2pEPI/lw0/tV7tLSR3XfC/LRI7gNshjvChWIVBHTCe
-         BI5/1feI2Ws1J5Dn/U7X5l55dsH0HirpU7aDqLPE5WPdY6KMzyeLjdPTqcyLrgF4FFyS
-         VwbhoW4938AyHp0cRXnyeanZcov/zDW+aDsFY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=J/LuwTXoQO6jvKbzdrCDlo4TVXiV1s6U/zT2nfH4wUo=;
-        b=hVeoS43Qg6I24qGz726l7qpjsJGtQTX1CS1eWxbjmMFzJmHBImSs7ms23zLg88BETY
-         SdpNKzNX0YfsBeHItbaWfLPf0yAlKDGzlYjFqXHzGwfxdZfkTBP9o1MdOnEEF6hBnOKI
-         z7MiBfnJetuFoPzPuit3RQguYiI1H9UkfvhmDORBXPyWn34pkdh9n5GgZZy9Uyc4Fmz1
-         Vpn4Gxb15C0nkr4IHPYAQTrqyunfoQ+dAe+vc1S7MYFiNEOWtddTxWitpuJgTPtIzzPm
-         pSKEEeT4ab6q9PDOSoYtFepn+5C9yORoJqAdhb21Qo+6bDhGp4+MR6z96qGJaucehAFo
-         pu7A==
-X-Gm-Message-State: AOAM5325ZBr7X9UtB3gU1dCXHaauKpyTlpqpf12NKhndvml5nfSn2F21
-        hVHKL6X+aXRXI31FqLNHKMlLWp4YGuUM7KOhNKqgMA==
-X-Google-Smtp-Source: ABdhPJwp2c34zaYgmMqQNop0GDw3Dz3h2Gyz1Ym94wDGqDMGBmWfcLJvfeUOyxvf7JEqLJKTDEHFuUKJvUW0XK6MpDc=
-X-Received: by 2002:a05:6512:22c9:: with SMTP id g9mr16966939lfu.325.1614075180451;
- Tue, 23 Feb 2021 02:13:00 -0800 (PST)
+        id S232116AbhBWLG3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Feb 2021 06:06:29 -0500
+Received: from mga07.intel.com ([134.134.136.100]:63299 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231826AbhBWLG2 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Feb 2021 06:06:28 -0500
+IronPort-SDR: Ll1VMecprIu6TL9/qAjzWy6oklBM3FWayPBOgo4etTQM+5V7QiFENymRu8Itui1XH5fnE+fjI6
+ qnPkoYfzqt0w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9903"; a="248818637"
+X-IronPort-AV: E=Sophos;i="5.81,199,1610438400"; 
+   d="scan'208";a="248818637"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2021 03:05:47 -0800
+IronPort-SDR: Qi2cCw1khEjvatgi7zbpGGtkkks+H4LOrX2Q9/7Nc8y4BNEozGCk9bIz+JSdRIRORsz5fHr72M
+ DLK3MezS3AXg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,199,1610438400"; 
+   d="scan'208";a="441703434"
+Received: from silpixa00399839.ir.intel.com (HELO localhost.localdomain) ([10.237.222.142])
+  by orsmga001.jf.intel.com with ESMTP; 23 Feb 2021 03:05:14 -0800
+From:   Ciara Loftus <ciara.loftus@intel.com>
+To:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        magnus.karlsson@intel.com, bjorn@kernel.org,
+        weqaar.a.janjua@intel.com, maciej.fijalkowski@intel.com
+Cc:     Ciara Loftus <ciara.loftus@intel.com>
+Subject: [PATCH bpf-next v2 0/4] selftests/bpf: xsk improvements and new stats tests
+Date:   Tue, 23 Feb 2021 10:35:03 +0000
+Message-Id: <20210223103507.10465-1-ciara.loftus@intel.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20210216105713.45052-1-lmb@cloudflare.com> <CAEf4BzYuvE-RsT5Ee+FstZ=vuy3AMd+1j7DazFSb56+hfPKPig@mail.gmail.com>
-In-Reply-To: <CAEf4BzYuvE-RsT5Ee+FstZ=vuy3AMd+1j7DazFSb56+hfPKPig@mail.gmail.com>
-From:   Lorenz Bauer <lmb@cloudflare.com>
-Date:   Tue, 23 Feb 2021 10:12:49 +0000
-Message-ID: <CACAyw98gTrzf8+cPnBEC5A3_rg70UUrJxtV9a_w-dMpKn0Wicg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/8] PROG_TEST_RUN support for sk_lookup programs
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        kernel-team <kernel-team@cloudflare.com>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 23 Feb 2021 at 07:29, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
->
-> Curious, is there any supported architecture where this is not the
-> case? I think it's fine to be consistent, tbh, and use int. Worst
-> case, in some obscure architecture we'd need to create a copy of an
-> array. Doesn't seem like a big deal (and highly unlikely anyways).
+This series attempts to improve the xsk selftest framework by:
+1. making the default output less verbose
+2. adding an optional verbose flag to both the test_xsk.sh script and xdpxceiver app.
+3. renaming the debug option in the app to to 'dump-pkts' and add a flag to the test_xsk.sh
+script which enables the flag in the app.
+4. changing how tests are launched - now they are launched from the xdpxceiver app
+instead of the script.
 
-Ok, thanks! I'm not super familiar with C platform differences, so I wanted
-to be on the safe side. I'll take this up depending on the outcome of the
-conversation with Alexey, maybe I don't need to add this after all.
+Once the improvements are made, a new set of tests are added which test the xsk
+statistics.
+
+The output of the test script now looks like:
+
+./test_xsk.sh
+PREREQUISITES: [ PASS ]
+1..10
+ok 1 PASS: SKB NOPOLL 
+ok 2 PASS: SKB POLL 
+ok 3 PASS: SKB NOPOLL Socket Teardown
+ok 4 PASS: SKB NOPOLL Bi-directional Sockets
+ok 5 PASS: SKB NOPOLL Stats
+ok 6 PASS: DRV NOPOLL 
+ok 7 PASS: DRV POLL 
+ok 8 PASS: DRV NOPOLL Socket Teardown
+ok 9 PASS: DRV NOPOLL Bi-directional Sockets
+ok 10 PASS: DRV NOPOLL Stats
+# Totals: pass:10 fail:0 xfail:0 xpass:0 skip:0 error:0
+XSK KSELFTESTS: [ PASS ]
+
+v1->v2:
+* Changed '-d' flag in the shell script to '-D' to be consistent with the xdpxceiver app.
+* Renamed debug mode to 'dump-pkts' which better reflects the behaviour.
+* Use libpf APIs instead of calls to ss for configuring xdp on the links
+* Remove mutex init & destroy for each stats test
+* Added a description for each of the new statistics tests
+* Distinguish between exiting due to initialisation failure vs test failure
+
+This series applies on commit d310ec03a34e92a77302edb804f7d68ee4f01ba0
+
+Ciara Loftus (3):
+  selftests/bpf: expose and rename debug argument
+  selftests/bpf: restructure xsk selftests
+  selftests/bpf: introduce xsk statistics tests
+
+Magnus Karlsson (1):
+  selftest/bpf: make xsk tests less verbose
+
+ tools/testing/selftests/bpf/test_xsk.sh    | 129 ++-----
+ tools/testing/selftests/bpf/xdpxceiver.c   | 380 +++++++++++++++------
+ tools/testing/selftests/bpf/xdpxceiver.h   |  57 +++-
+ tools/testing/selftests/bpf/xsk_prereqs.sh |  30 +-
+ 4 files changed, 336 insertions(+), 260 deletions(-)
 
 -- 
-Lorenz Bauer  |  Systems Engineer
-6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+2.17.1
 
-www.cloudflare.com
