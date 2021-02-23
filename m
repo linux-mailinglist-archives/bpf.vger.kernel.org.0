@@ -2,54 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4D463226E5
-	for <lists+bpf@lfdr.de>; Tue, 23 Feb 2021 09:09:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 317E33226E6
+	for <lists+bpf@lfdr.de>; Tue, 23 Feb 2021 09:09:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231983AbhBWIIu (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Feb 2021 03:08:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60178 "EHLO
+        id S232161AbhBWIIv (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Feb 2021 03:08:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232200AbhBWIHb (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Feb 2021 03:07:31 -0500
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 688B3C061574
-        for <bpf@vger.kernel.org>; Tue, 23 Feb 2021 00:06:30 -0800 (PST)
-Received: by mail-yb1-xb29.google.com with SMTP id p186so15650635ybg.2
-        for <bpf@vger.kernel.org>; Tue, 23 Feb 2021 00:06:30 -0800 (PST)
+        with ESMTP id S232216AbhBWIHs (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Tue, 23 Feb 2021 03:07:48 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A798C06174A
+        for <bpf@vger.kernel.org>; Tue, 23 Feb 2021 00:07:08 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id x19so15639252ybe.0
+        for <bpf@vger.kernel.org>; Tue, 23 Feb 2021 00:07:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=PhERrfave73MMXElRyvvcyyNWzbnb0TAR9mcE86jVME=;
-        b=OZaJ4+gqAWyygj/3n4naAfQaRWbqC/4Y7d5WFequXMmeZooRKpoVtMiCz0gS2KwPaa
-         jKbwSt/f/QAfDzpkfLJ7Z5NCkpwG3ieuAXehJ4bHUW5vRy/5X5FZBse2xTIa0ck74uPl
-         SJrrP9Q+9lzNY9u1fcVv00iDDAFqDzbPF2uJmCf3g5GqRj4s9Wjw2p+jQwOQBs7Hyn3p
-         7NVw5n3i3+ieL+a6IdVw8XgelOMIUVnFqIVK7vIwHNrG2uf9q2irOf/LpyPNHM3qVygx
-         jf/ID/3aQfsL1XdwnbrABl2UDmw1rmuHKeU0YENFyW5YqFdHv81C9zd2vyv84IYZH/Bt
-         ZtdA==
+        bh=6X4pKBiK6Zj/Jozykzyb3rkkBiOrgkwAij95iiTmF8Y=;
+        b=rNrGqyjUdX1e+c/Z9C2G6phS/2EedFpHb1MwvwvVSl37KRYtUQLaXGMwAKF1zPqmp0
+         C8o8rOwbLRArJAZiG84jOTgavL8GBLnBhqxjlefFjNIkD/elYc0padzPtIrNLytQbtjF
+         cq6sgFjKk+Yv80qHr1acTdnSiXxBNAGrAOvqJF8hQ5JQE8XOIfSWXukNv6UiJeiWRePg
+         gS5FZ5iU5CWPdhhOywVma4pw6OI5/7cfd2l8+SCJIRrd0clzp5AVGDUzQzhn/0mKYoWa
+         uq0YAoTvZ3fVCnoHDe03ta2vUOEx/boQulX0L3Qk8q6YQG8mhOGt88HXNcyNLw3SDzMw
+         V+8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=PhERrfave73MMXElRyvvcyyNWzbnb0TAR9mcE86jVME=;
-        b=D4wuv6DagjLOr6gWqJ46ZfzAWlTPIZDgoyj5iIy4tOb3o8oDXLyq+XODNLAjtdPElS
-         16iPkWJTb3BMTsurqXNi3sEIi/QwNe2RnUyd5A4IdsgbDhPCHLZYhTAnfeL1uTRqSe4b
-         N0OTU8gOBxB0rKdcuAb8aMqpFAHjBPsaNGyBKGLusVw4pIoBajyfCJoo7tKFAQPNiqX9
-         n2Rg9mygmU+1pNszrz0WqqrGkFVtg6f0eb72wAZy9cRDufDE7mnW329fV/Jbm0UhEfp1
-         2Xs+uRjt11fuqikCVRTwVCKCyV29wqmMEMn1iD03aI6NQubQG4K7/hYWrfaOxE1SvXrN
-         Izmg==
-X-Gm-Message-State: AOAM530sUJtWvp+yhSTK1iwnUIUgw9nXw9egQZudpVXft0sZszZt6q2g
-        k1UNynnoyvnJnsmXjPtACiYWgwwcbb5QFY2qGQ0=
-X-Google-Smtp-Source: ABdhPJzaAUAHZcqtwT85WUSm/pNf0Qf5SkQAMWIztM76xavps9+8STGp7SxKf+W2s0etuXqT7jf/LKy/64wAC9M81Io=
-X-Received: by 2002:a25:abb2:: with SMTP id v47mr37819266ybi.425.1614067589775;
- Tue, 23 Feb 2021 00:06:29 -0800 (PST)
+        bh=6X4pKBiK6Zj/Jozykzyb3rkkBiOrgkwAij95iiTmF8Y=;
+        b=hEKigAkbG8/Yk4bzjKWJs4n78M+y1XzDJ+6Eq2tN7P0EoVqIiPj1z3tz+U3WeVTIRs
+         glRS5eK3LTuZW7TcP3EhoZerWq+Uqj1nkgWOPrsLBJgGqcCeGdDSOArdiqqYJMJkUCHh
+         Bcjv+LWiux4dhX8OFwUauF9FxHJkCRqgom+aJxwww3V/TeYnwuS6DrE2rUtJVslxxtwL
+         dxjQSudBJoqdWdXAHGFu+OEk0lkanqGa2dPSinOv7Q4nc0zrti6UUHnsXauZjpVjeEV5
+         s23E+pMYvef2igQ4ML56HJP6ggcNjj8doami3fOP3+6P6kzv/UaGBPp39K9O/BfST5UZ
+         hWQg==
+X-Gm-Message-State: AOAM533N7BWP0W+CNIPc13M3cIL8wBhI3X9nb/XlnqJkGAONZbhObOu5
+        dKaDDyzXINmE0kJEM2bN9o4ggH1XVz9qmGtz7Lt7uPqu37I=
+X-Google-Smtp-Source: ABdhPJxCceLN51rr7141AdmwcrTgp437dd5a+5ZQDB/HB+L0bHaiu3oFBCmflLSIjsYYLPEMNMwACJt8uhNYlTrgqyU=
+X-Received: by 2002:a25:1e89:: with SMTP id e131mr39051854ybe.459.1614067627729;
+ Tue, 23 Feb 2021 00:07:07 -0800 (PST)
 MIME-Version: 1.0
-References: <20210217181803.3189437-1-yhs@fb.com> <20210217181813.3191699-1-yhs@fb.com>
-In-Reply-To: <20210217181813.3191699-1-yhs@fb.com>
+References: <20210217181803.3189437-1-yhs@fb.com> <20210217181811.3191061-1-yhs@fb.com>
+In-Reply-To: <20210217181811.3191061-1-yhs@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 23 Feb 2021 00:06:19 -0800
-Message-ID: <CAEf4BzYgtusa_e3ULwgh4ZCsVRqpVRXi-rnmPrxWyk0WoFt_8g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 09/11] bpftool: print local function pointer properly
+Date:   Tue, 23 Feb 2021 00:06:57 -0800
+Message-ID: <CAEf4BzbsniN=dswRUSeykFkbq22A4JzR7mDnStgdfC5b9cNOxw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 07/11] libbpf: move function is_ldimm64()
+ earlier in libbpf.c
 To:     Yonghong Song <yhs@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Cong Wang <xiyou.wangcong@gmail.com>,
@@ -60,54 +61,59 @@ Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 12:56 PM Yonghong Song <yhs@fb.com> wrote:
+On Wed, Feb 17, 2021 at 12:55 PM Yonghong Song <yhs@fb.com> wrote:
 >
-> With later hashmap example, using bpftool xlated output may
-> look like:
->   int dump_task(struct bpf_iter__task * ctx):
->   ; struct task_struct *task = ctx->task;
->      0: (79) r2 = *(u64 *)(r1 +8)
->   ; if (task == (void *)0 || called > 0)
->   ...
->     19: (18) r2 = subprog[+18]
->     30: (18) r2 = subprog[+26]
->   ...
->   36: (95) exit
->   __u64 check_hash_elem(struct bpf_map * map, __u32 * key, __u64 * val,
->                         struct callback_ctx * data):
->   ; struct bpf_iter__task *ctx = data->ctx;
->     37: (79) r5 = *(u64 *)(r4 +0)
->   ...
->     55: (95) exit
->   __u64 check_percpu_elem(struct bpf_map * map, __u32 * key,
->                           __u64 * val, void * unused):
->   ; check_percpu_elem(struct bpf_map *map, __u32 *key, __u64 *val, void *unused)
->     56: (bf) r6 = r3
->   ...
->     83: (18) r2 = subprog[-46]
+> Move function is_ldimm64() close to the beginning of libbpf.c,
+> so it can be reused by later code and the next patch as well.
+> There is no functionality change.
 >
 > Signed-off-by: Yonghong Song <yhs@fb.com>
 > ---
->  tools/bpf/bpftool/xlated_dumper.c | 3 +++
->  1 file changed, 3 insertions(+)
+
+Thanks!
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+>  tools/lib/bpf/libbpf.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
 >
-> diff --git a/tools/bpf/bpftool/xlated_dumper.c b/tools/bpf/bpftool/xlated_dumper.c
-> index 8608cd68cdd0..b87caae2e7da 100644
-> --- a/tools/bpf/bpftool/xlated_dumper.c
-> +++ b/tools/bpf/bpftool/xlated_dumper.c
-> @@ -196,6 +196,9 @@ static const char *print_imm(void *private_data,
->         else if (insn->src_reg == BPF_PSEUDO_MAP_VALUE)
->                 snprintf(dd->scratch_buff, sizeof(dd->scratch_buff),
->                          "map[id:%u][0]+%u", insn->imm, (insn + 1)->imm);
-> +       else if (insn->src_reg == BPF_PSEUDO_FUNC)
-> +               snprintf(dd->scratch_buff, sizeof(dd->scratch_buff),
-> +                        "subprog[%+d]", insn->imm + 1);
-
-print_call_pcrel() doesn't do +1 adjustment, why is it needed here?
-
->         else
->                 snprintf(dd->scratch_buff, sizeof(dd->scratch_buff),
->                          "0x%llx", (unsigned long long)full_imm);
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index d43cc3f29dae..21a3eedf070d 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -574,6 +574,11 @@ static bool insn_is_subprog_call(const struct bpf_insn *insn)
+>                insn->off == 0;
+>  }
+>
+> +static bool is_ldimm64(struct bpf_insn *insn)
+> +{
+> +       return insn->code == (BPF_LD | BPF_IMM | BPF_DW);
+> +}
+> +
+>  static int
+>  bpf_object__init_prog(struct bpf_object *obj, struct bpf_program *prog,
+>                       const char *name, size_t sec_idx, const char *sec_name,
+> @@ -3395,7 +3400,7 @@ static int bpf_program__record_reloc(struct bpf_program *prog,
+>                 return 0;
+>         }
+>
+> -       if (insn->code != (BPF_LD | BPF_IMM | BPF_DW)) {
+> +       if (!is_ldimm64(insn)) {
+>                 pr_warn("prog '%s': invalid relo against '%s' for insns[%d].code 0x%x\n",
+>                         prog->name, sym_name, insn_idx, insn->code);
+>                 return -LIBBPF_ERRNO__RELOC;
+> @@ -5566,11 +5571,6 @@ static void bpf_core_poison_insn(struct bpf_program *prog, int relo_idx,
+>         insn->imm = 195896080; /* => 0xbad2310 => "bad relo" */
+>  }
+>
+> -static bool is_ldimm64(struct bpf_insn *insn)
+> -{
+> -       return insn->code == (BPF_LD | BPF_IMM | BPF_DW);
+> -}
+> -
+>  static int insn_bpf_size_to_bytes(struct bpf_insn *insn)
+>  {
+>         switch (BPF_SIZE(insn->code)) {
 > --
 > 2.24.1
 >
