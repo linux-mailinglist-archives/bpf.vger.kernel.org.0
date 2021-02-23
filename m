@@ -2,111 +2,117 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A251D322386
-	for <lists+bpf@lfdr.de>; Tue, 23 Feb 2021 02:22:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41F2A322389
+	for <lists+bpf@lfdr.de>; Tue, 23 Feb 2021 02:22:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230227AbhBWBVH (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 22 Feb 2021 20:21:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230210AbhBWBVB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 22 Feb 2021 20:21:01 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DAE2C061574;
-        Mon, 22 Feb 2021 17:20:20 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id 23so3242433pgg.4;
-        Mon, 22 Feb 2021 17:20:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=N2gSkHr7RCik5ZmoW0MEj74bKu0lmALWQ3nRrzoTAlE=;
-        b=Lq5MgyDxsfV301vPRHl4fzJ9mrAQdkODNyOnBL/A5on5HFwt9Y1vraPCjwKuSC/h7V
-         cni3IndVLUGMWILh7UbIS+5aVv0UKBEySY9rFXPxq1622WGGiyg6XfWNGvjE81kzLzUv
-         q91E8F58U2g+i1E/BjHIHxyXMu/aUQb66EW7HYPf4tXetqzYAuYmmr3GaJmStnqh5aFL
-         HW9g7qIqYgjcwYJkJn9+ZrQTIWA+CDVRXuuLkvo5yCy+8PUAW6DeWQOyoLP5UiiADiM3
-         IfUuWwKAw5iq14qaA3oqFbPGm0Si30LrJ51Zw7o7/51/hS+gp6Q6WpLIfrtMUEtGvW07
-         tDfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=N2gSkHr7RCik5ZmoW0MEj74bKu0lmALWQ3nRrzoTAlE=;
-        b=hzMEJhuFPt5PhxU7dsCuxFHq4Gjmb4ey1p8mhFYVo+H9ltNWLGAZF79w5MPIxDQjQF
-         LlpsZ5Oqm6ojy+qW2l4QNaz9Do+V/VNQhLQAqbTIcdgU+q1nYhyqm53fkvdj8dpMWgWV
-         cBwufL1Cay525RaRDRLGeGkDTKvhRgk/2SQGtpKlO8QWzOdvKJDw8dEgnz+LHDNlDKDu
-         65bvApKwI0WKriF60UQrWfbBWNAn7J7ldbK/TcVToeqdcOMwrnFjHS+CO4kgTi9zyVhs
-         csod717tgppDU3nEyqF2sk14Q8/8J2ianV/vB9JnfIy0yf+KhSv+NRnFSxHIVLXYszaH
-         3JGA==
-X-Gm-Message-State: AOAM530kwNvKrlMb57LhZCidSSlTdOSm+OKyu5c8vR7RhBBhsj98lGZB
-        myVVVvjNgf3LOuSII9DgmTbx1R5wWJf7Nw==
-X-Google-Smtp-Source: ABdhPJx6+3wuU71AnFdPArCyu4qlt1guZ5ux1hBZqrO70d7yJzFbCBlDn1OhGEWI0qoR8MalMGqf3A==
-X-Received: by 2002:a05:6a00:1e:b029:1ed:b82c:bb64 with SMTP id h30-20020a056a00001eb02901edb82cbb64mr4672502pfk.78.1614043219828;
-        Mon, 22 Feb 2021 17:20:19 -0800 (PST)
-Received: from localhost.localdomain (host-61-70-202-235.static.kbtelecom.net. [61.70.202.235])
-        by smtp.googlemail.com with ESMTPSA id f19sm21444998pgl.49.2021.02.22.17.20.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 17:20:19 -0800 (PST)
-From:   Kun-Chuan Hsieh <jetswayss@gmail.com>
-To:     ast@kernel.org
-Cc:     bpf@vger.kernel.org, jolsa@kernel.org, andrii@kernel.org,
-        Kun-Chuan Hsieh <jetswayss@gmail.com>, stable@vger.kernel.org
-Subject: [PATCH] tools/resolve_btfids: Fix build error with older host toolchains
-Date:   Tue, 23 Feb 2021 01:20:01 +0000
-Message-Id: <20210223012001.1452676-1-jetswayss@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S230270AbhBWBV7 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 22 Feb 2021 20:21:59 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:43622 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230295AbhBWBV5 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 22 Feb 2021 20:21:57 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11N14hpg007839
+        for <bpf@vger.kernel.org>; Mon, 22 Feb 2021 17:21:12 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=pEbi9RE7Rh3I3wGDeQBFrv7VjBYIcCKe7RkNvOrCedE=;
+ b=fAPLx0LhGcoLaRz0PeLG734VzQTYTmQtR0NoGW4WcxqeEyFhfk1BZatXAJglqNuIfJo3
+ NeyhrIxxSked+u473LdTUQDW42y9k5YhR42NtCU+RvpoYeiGXRsFBM1x64YtlwVKqNyf
+ 1nyfI1QHU20PSI2bokBTMKGWAd4fWQg3VeI= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 36v9gn4nhk-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Mon, 22 Feb 2021 17:21:12 -0800
+Received: from intmgw001.05.ash9.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 22 Feb 2021 17:21:11 -0800
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id C050762E0887; Mon, 22 Feb 2021 17:21:07 -0800 (PST)
+From:   Song Liu <songliubraving@fb.com>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        <peterz@infradead.org>, Song Liu <songliubraving@fb.com>
+Subject: [PATCH v4 bpf-next 0/6] bpf: enable task local storage for tracing programs
+Date:   Mon, 22 Feb 2021 17:20:08 -0800
+Message-ID: <20210223012014.2087583-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-22_08:2021-02-22,2021-02-22 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ phishscore=0 spamscore=0 clxscore=1015 adultscore=0 priorityscore=1501
+ impostorscore=0 bulkscore=0 malwarescore=0 mlxscore=0 mlxlogscore=862
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102230006
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Older versions of libelf cannot recognize the compressed section.
-However, it's only required to fix the compressed section info when
-compiling with CONFIG_DEBUG_INFO_COMPRESSED flag is set.
+This set enables task local storage for non-BPF_LSM programs.
 
-Only compile the compressed_section_fix function when necessary will make
-it easier to enable the BTF function. Since the tool resolve_btfids is
-compiled with host toolchain. The host toolchain might be older than the
-cross compile toolchain.
+It is common for tracing BPF program to access per-task data. Currently,
+these data are stored in hash tables with pid as the key. In
+bcc/libbpftools [1], 9 out of 23 tools use such hash tables. However,
+hash table is not ideal for many use case. Task local storage provides
+better usability and performance for BPF programs. Please refer to 4/4 fo=
+r
+some performance comparison of task local storage vs. hash table.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Kun-Chuan Hsieh <jetswayss@gmail.com>
----
- tools/bpf/resolve_btfids/main.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Changes v3 =3D> v4:
+1. Prevent deadlock from recursive calls of bpf_task_storage_[get|delete]=
+.
+   (2/6 checks potential deadlock and fails over, 4/6 adds a selftest).
 
-diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
-index 7409d7860aa6..ad40346c6631 100644
---- a/tools/bpf/resolve_btfids/main.c
-+++ b/tools/bpf/resolve_btfids/main.c
-@@ -260,6 +260,7 @@ static struct btf_id *add_symbol(struct rb_root *root, char *name, size_t size)
- 	return btf_id__add(root, id, false);
- }
- 
-+#ifdef CONFIG_DEBUG_INFO_COMPRESSED
- /*
-  * The data of compressed section should be aligned to 4
-  * (for 32bit) or 8 (for 64 bit) bytes. The binutils ld
-@@ -292,6 +293,7 @@ static int compressed_section_fix(Elf *elf, Elf_Scn *scn, GElf_Shdr *sh)
- 	}
- 	return 0;
- }
-+#endif
- 
- static int elf_collect(struct object *obj)
- {
-@@ -370,8 +372,10 @@ static int elf_collect(struct object *obj)
- 			obj->efile.idlist_addr  = sh.sh_addr;
- 		}
- 
-+#ifdef CONFIG_DEBUG_INFO_COMPRESSED
- 		if (compressed_section_fix(elf, scn, &sh))
- 			return -1;
-+#endif
- 	}
- 
- 	return 0;
--- 
-2.25.1
+Changes v2 =3D> v3:
+1. Make the selftest more robust. (Andrii)
+2. Small changes with runqslower. (Andrii)
+3. Shortern CC list to make it easy for vger.
 
+Changes v1 =3D> v2:
+1. Do not allocate task local storage when the task is being freed.
+2. Revise the selftest and added a new test for a task being freed.
+3. Minor changes in runqslower.
+
+Song Liu (6):
+  bpf: enable task local storage for tracing programs
+  bpf: prevent deadlock from recursive bpf_task_storage_[get|delete]
+  selftests/bpf: add non-BPF_LSM test for task local storage
+  selftests/bpf: test deadlock from recursive
+    bpf_task_storage_[get|delete]
+  bpf: runqslower: prefer using local vmlimux to generate vmlinux.h
+  bpf: runqslower: use task local storage
+
+ include/linux/bpf.h                           |  7 ++
+ include/linux/bpf_lsm.h                       | 22 -----
+ include/linux/bpf_types.h                     |  2 +-
+ include/linux/sched.h                         |  5 +
+ kernel/bpf/Makefile                           |  3 +-
+ kernel/bpf/bpf_local_storage.c                | 28 +++---
+ kernel/bpf/bpf_lsm.c                          |  4 -
+ kernel/bpf/bpf_task_storage.c                 | 89 +++++++++++-------
+ kernel/fork.c                                 |  5 +
+ kernel/trace/bpf_trace.c                      |  4 +
+ tools/bpf/runqslower/Makefile                 |  5 +-
+ tools/bpf/runqslower/runqslower.bpf.c         | 33 ++++---
+ .../bpf/prog_tests/task_local_storage.c       | 92 +++++++++++++++++++
+ .../selftests/bpf/progs/task_local_storage.c  | 64 +++++++++++++
+ .../bpf/progs/task_local_storage_exit_creds.c | 32 +++++++
+ .../selftests/bpf/progs/task_ls_recursion.c   | 70 ++++++++++++++
+ 16 files changed, 381 insertions(+), 84 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/task_local_sto=
+rage.c
+ create mode 100644 tools/testing/selftests/bpf/progs/task_local_storage.=
+c
+ create mode 100644 tools/testing/selftests/bpf/progs/task_local_storage_=
+exit_creds.c
+ create mode 100644 tools/testing/selftests/bpf/progs/task_ls_recursion.c
+
+--
+2.24.1
