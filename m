@@ -2,101 +2,92 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D5DC32325B
-	for <lists+bpf@lfdr.de>; Tue, 23 Feb 2021 21:48:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4707323266
+	for <lists+bpf@lfdr.de>; Tue, 23 Feb 2021 21:50:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233788AbhBWUq4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Feb 2021 15:46:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234449AbhBWUqY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Feb 2021 15:46:24 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1883C061574
-        for <bpf@vger.kernel.org>; Tue, 23 Feb 2021 12:45:43 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id h25so60845eds.4
-        for <bpf@vger.kernel.org>; Tue, 23 Feb 2021 12:45:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NozYZU1bAfNdIG5JtSkKa87zG+RKiElyAQ58w2uVmeo=;
-        b=agp6o9eThVt8g6uYecy/26AFJ+sZf2asJYY/D1b5z3LlpYuzgrW2ftto7UEQ4W3jcW
-         swe6+KSKtIEbbCeOCTM+hY58p7RgPUgcicOAqT+sIYt4thhrYyRXx1M6kipY+7VVZORV
-         NU+orB37SLwA3uxxg+RhC7CRpithufDilXPXC5fM832FbA3CgRgrf0JKtSdEC8abxQRZ
-         KlYsvuE/2dbOkg7E5grvp+VNDaDbvdW9ISQuxcI5kFsByazw1+xKLC4SaUAJfBzlWjAm
-         n/d0r4VP7c56SSmurZ6bdCuCYvV4AVMZRNno1za1JaV+IpM5yFMICQ3x/m9Lwe/WbzYO
-         84lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NozYZU1bAfNdIG5JtSkKa87zG+RKiElyAQ58w2uVmeo=;
-        b=V2p4ZwxwDQIUV6FhNSQUfRsgpnlh1bQQmTOuoNCw6940eijYH8mBHqXo71IxNX4c1g
-         VazJDUllDvAFNfziDCI4i4r+oCwQLMi0Ihx7iwZKBiT06GuqYpU7sCXAsCNyp0ggxxO1
-         1BCibkrSOQi6Yjler7qPb5lyBLrtx5H7dU4DT/zLPonRFWhZ0zmYN3+gaQJaG9Q8pr7m
-         xSjBuTaC9L7aOdNalwOQ3yzqSUqsCzcHPzzKMzjvGSZ6/7rVIyx4E1kwMByimpaYPDMF
-         zQU+sVFbMMLgwqhaShB45JmA7UYPvgSVoxT4oCMFqaOXPJy3wl0x4yu/R3LKlGXX7UY8
-         DEIQ==
-X-Gm-Message-State: AOAM530FmNzbnFgGzjbCHjWh6giNbZI8aCyuMT5+u5Q0ePENKIVMBNDJ
-        fl6/pDmnnU5Gb/nGrGm8BMnk6ZX86lzAo1a79Omx
-X-Google-Smtp-Source: ABdhPJyjgdQi2IP6HpUZrBMWFCYnTVpoLP8+fLj4S1n8ilxv8EoVfH867O0aR98uL7Kx7FmP8RAXtd6aoHHQeY2ga48=
-X-Received: by 2002:a50:a086:: with SMTP id 6mr29295197edo.70.1614113142343;
- Tue, 23 Feb 2021 12:45:42 -0800 (PST)
-MIME-Version: 1.0
-References: <20210212211607.2890660-1-morbo@google.com>
-In-Reply-To: <20210212211607.2890660-1-morbo@google.com>
-From:   Bill Wendling <morbo@google.com>
-Date:   Tue, 23 Feb 2021 12:44:58 -0800
-Message-ID: <CAGG=3QWuxzwKGuYhVu+EfXPFZMNsO7-=NtHbdXAyvcVjvKF3hA@mail.gmail.com>
-Subject: Re: [RFC 0/1] Combining CUs into a single hash table
-To:     dwarves@vger.kernel.org, bpf <bpf@vger.kernel.org>
-Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+        id S233764AbhBWUse (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Feb 2021 15:48:34 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:4364 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231561AbhBWUsd (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 23 Feb 2021 15:48:33 -0500
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11NKeK9E137767;
+        Tue, 23 Feb 2021 15:47:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : date : in-reply-to : references : content-type : mime-version
+ : content-transfer-encoding; s=pp1;
+ bh=4xcx1H4OA6P7X6TfQrSHyC/j7208ylKQzYvCwC2kOU0=;
+ b=V42EG6Jn27J9+1d+7CvLAXM+z1aWV+ilwpE1Cm3x9KBR8vPxtvY9gm5K4DgWqleOp464
+ 45nbL0KGwL1PeVvEbL3NUVjmfo0lqZdTpHbIbQP8+yNLQvU7BOEwKZs6wicUAPDLTM3p
+ Iyt4nMfqka0Ud5RZw0cun1STMRvJ67DX3G5egS5aOCu7IKqGMb42KDQvMqjNTMTsCqdo
+ ZOZ0AClXEKNWZIaYoXmyYcmh9AnvP9xNOipdI1dtBrdqgEOyoyynlJHY9ucP7jql/ivs
+ 8tttNEZaPDZ7yeYcAkTM2ZVljF5L7A9Ims2ivPKnygXKAA0jJlIHXu3dNDaAl/+iYp1p Lg== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36vkmyrvgu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Feb 2021 15:47:37 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11NKgg7S002145;
+        Tue, 23 Feb 2021 20:47:35 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma06ams.nl.ibm.com with ESMTP id 36tsph2xtj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Feb 2021 20:47:35 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11NKlXuP35586382
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 Feb 2021 20:47:33 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 49482A4055;
+        Tue, 23 Feb 2021 20:47:33 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F0582A4053;
+        Tue, 23 Feb 2021 20:47:32 +0000 (GMT)
+Received: from sig-9-145-151-190.de.ibm.com (unknown [9.145.151.190])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 23 Feb 2021 20:47:32 +0000 (GMT)
+Message-ID: <c964892195a6b91d20a67691448567ef528ffa6d.camel@linux.ibm.com>
+Subject: Re: More strict error checking in bpf_asm?
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Ian Denhardt <ian@zenhack.net>, ast@kernel.org,
+        daniel@iogearbox.net, bpf@vger.kernel.org, netdev@vger.kernel.org
+Date:   Tue, 23 Feb 2021 21:47:32 +0100
+In-Reply-To: <161411199784.11959.16534412799839825563@localhost.localdomain>
+References: <161411199784.11959.16534412799839825563@localhost.localdomain>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-23_08:2021-02-23,2021-02-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ priorityscore=1501 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxlogscore=999 malwarescore=0 impostorscore=0
+ mlxscore=0 phishscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2102230174
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Bump for exposure.
+On Tue, 2021-02-23 at 15:26 -0500, Ian Denhardt wrote:
+> Hi,
+> 
+> I'm using the `bpf_asm` tool to do some syscall filtering, and found
+> out
+> the hard way that its error checking isn't very strict. In particular,
+> it issues a warning (not an error) when a jump offset overflows the
+> instruction's field. It really seems like this *ought* to be a hard
+> error, but I see from the commit message in
+> 7e22077d0c73a68ff3fd8b3d2f6564fcbcf8cb23 that this was left as a
+> warning
+> due to backwards compatibility concerns.
 
-On Fri, Feb 12, 2021 at 1:16 PM Bill Wendling <morbo@google.com> wrote:
->
-> Hey gang,
->
-> I would like your feedback on this patch.
->
-> This patch creates one hash table that all CUs share. The impetus for this
-> patch is to support clang's LTO (Link-Time Optimizations). Currently, pahole
-> can't handle the DWARF data that clang produces, because the CUs may refer to
-> tags in other CUs (all of the code having been squozen together).
->
-> One solution I found is to process the CUs in two steps:
->
->   1. add the CUs into a single hash table, and
->   2. perform the recoding and finalization steps in a a separate step.
->
-> The issue I'm facing with this patch is that it balloons the runtime from
-> ~11.11s to ~14.27s. It looks like the underlying cause is that some (but not
-> all) hash buckets have thousands of entries each. I've bumped up the
-> HASHTAGS__BITS from 15 to 16, which helped a little. Bumping it up to 17 or
-> above causes a failure.
->
-> A couple of things I thought of may help. We could increase the number of
-> buckets, which would help with distribution. As I mentioned though, that seemed
-> to cause a failure. Another option is to store the bucket entries in a
-> non-list, e.g. binary search tree.
->
-> I wanted to get your opinions before I trod down one of these roads.
->
-> Share and enjoy!
-> -bw
->
-> Bill Wendling (1):
->   dwarf_loader: have all CUs use a single hash table
->
->  dwarf_loader.c | 45 +++++++++++++++++++++++++++++++++------------
->  1 file changed, 33 insertions(+), 12 deletions(-)
->
-> --
-> 2.30.0.478.g8a0d178c01-goog
->
+My 2c: when I was writing that commit, I did not have any specific
+examples of code that would break in mind - that was pure
+speculation/paranoia. So it's OK from my perspective to convert this
+fprintf to a hard error.
+
+[...]
+
