@@ -2,364 +2,167 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0098C322F30
-	for <lists+bpf@lfdr.de>; Tue, 23 Feb 2021 17:58:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F71322F01
+	for <lists+bpf@lfdr.de>; Tue, 23 Feb 2021 17:47:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233664AbhBWQ51 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Feb 2021 11:57:27 -0500
-Received: from mga03.intel.com ([134.134.136.65]:62263 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233652AbhBWQ5Z (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Feb 2021 11:57:25 -0500
-IronPort-SDR: /7epWHz9s1teRqlGz5KkmQIIqWD4V0beqsq/WnEX/xI6+I3SGlepfj/nbhWPTq1TgsY6nQC7zz
- TqbiemhFuCLg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9904"; a="184924339"
-X-IronPort-AV: E=Sophos;i="5.81,200,1610438400"; 
-   d="scan'208";a="184924339"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2021 08:56:43 -0800
-IronPort-SDR: ybH+PKlQuAdUi04e1RwRn5H3iG2lY4qejtY1zJQOlhU1lwvsuw4JChD23MddqfbWyyj/xbOA3b
- 8PzeHFw0/s6Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,200,1610438400"; 
-   d="scan'208";a="441792894"
-Received: from silpixa00399839.ir.intel.com (HELO localhost.localdomain) ([10.237.222.142])
-  by orsmga001.jf.intel.com with ESMTP; 23 Feb 2021 08:56:05 -0800
-From:   Ciara Loftus <ciara.loftus@intel.com>
-To:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        magnus.karlsson@intel.com, bjorn@kernel.org,
-        weqaar.a.janjua@intel.com, maciej.fijalkowski@intel.com
-Cc:     Ciara Loftus <ciara.loftus@intel.com>
-Subject: [PATCH bpf-next v3 4/4] selftests/bpf: introduce xsk statistics tests
-Date:   Tue, 23 Feb 2021 16:23:04 +0000
-Message-Id: <20210223162304.7450-5-ciara.loftus@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210223162304.7450-1-ciara.loftus@intel.com>
-References: <20210223162304.7450-1-ciara.loftus@intel.com>
+        id S233553AbhBWQqB (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Feb 2021 11:46:01 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:61962 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233468AbhBWQp6 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 23 Feb 2021 11:45:58 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11NGiMq3018722;
+        Tue, 23 Feb 2021 08:44:59 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=JqeeHIjGZ+nzXU62aO+50qyzRH53EjgdCL9KGWr+If0=;
+ b=CSP0N0pxOsWbw7SwIyX2A8mlyVmiZVe5HKmh+5/CwUGXdQYgSwtHpaPSWOn2sfdihhLh
+ qALmUy0z3G330WO669HZ4s5n685tL4EGwTtoRy6UfDc4+6Niu0a5SQ8DfJZnVTTv6l6/
+ 8bxIrsigMVCGfL1vJxD9bikWJlQ0ozB/Ou0= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 36v9gn8bqu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 23 Feb 2021 08:44:58 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 23 Feb 2021 08:44:58 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BqtctfpQvu/UFVlex0EGDYPz5Xycs8afQwHJET1WjOItKaFvXJPWhlMGb4jmjOCm0tMldFSLEU/VQ/Vj14it1V1eqwpREKSUOsRxLBtYMZa2T6Rzm8bR1V8g5SJiAotEmDb65TbpQq5BDm04M0O/PLlmr4suzWsQ+oFZTG4T1nzMARUmLYDPuQ2gp37e59zeCDFGEls6Q8zZQBBOR9aprcF5P8hBJRfj8WPSgoF5EcX+yCGx/ilDZvNcrjLf/T3lOC4vA1CU/+bUJlEpZ2oH+D/y/wHMqzO1c5hqPY2TH2mhWa5l5xNiKNe6mqSZ9ojJ/yZ0IURLCDHkzboUOx+Ydg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JqeeHIjGZ+nzXU62aO+50qyzRH53EjgdCL9KGWr+If0=;
+ b=SSOXhDhVw1Yy00TFoI5kO/Md/DQJ8pymFUKyPG9dglG5MfpZFDiUv/mzgZgMZukYJzkEhEsiUUzetsl+cn6z2ceoQbXK97HUt6HMaO8dt+i25p9RMBAebWbC1Zd7sxj4U0I7s2HnRqvEbA632zzViSdiAhoD8gDQi74L4POYAJZKYo+10eKXg//ZcTWXxUvGjmlNMGH2V42hYsM6dW3+FqOmpwFxdXsD/PMRuoexiiFX+bjopuvnQOCxCzACxlnb5Kt/iDTizBBlgGasoVLdnECia2Ya/aM7jklH9MNSvvQyH8ECgMhH1LgmtM63yCVcbW/JbCNpBurQvEGVpZ586w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=fb.com;
+Received: from BN8PR15MB3282.namprd15.prod.outlook.com (2603:10b6:408:a8::32)
+ by BN7PR15MB2292.namprd15.prod.outlook.com (2603:10b6:406:8b::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.33; Tue, 23 Feb
+ 2021 16:44:55 +0000
+Received: from BN8PR15MB3282.namprd15.prod.outlook.com
+ ([fe80::81bf:9924:c4f1:75cd]) by BN8PR15MB3282.namprd15.prod.outlook.com
+ ([fe80::81bf:9924:c4f1:75cd%6]) with mapi id 15.20.3763.019; Tue, 23 Feb 2021
+ 16:44:54 +0000
+Subject: Re: [PATCH v4 bpf-next 2/6] bpf: prevent deadlock from recursive
+ bpf_task_storage_[get|delete]
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Song Liu <songliubraving@fb.com>
+CC:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kernel Team <Kernel-team@fb.com>,
+        Peter Ziljstra <peterz@infradead.org>
+References: <20210223012014.2087583-1-songliubraving@fb.com>
+ <20210223012014.2087583-3-songliubraving@fb.com>
+ <CAEf4BzaZ0ATbJsLoQu_SRUYgzkak9zv61N+T=gijOQ+X=57ErA@mail.gmail.com>
+ <6A4F1927-AF73-4AC8-AE44-5878ACEDF944@fb.com>
+ <CAEf4Bzak3Ye4xoAAva2WLc=-e+xEQFbSyk9gs50ASoSn-Gn5_A@mail.gmail.com>
+From:   Alexei Starovoitov <ast@fb.com>
+Message-ID: <a3eaaeb5-f14a-ef55-10c2-884dc9365f57@fb.com>
+Date:   Tue, 23 Feb 2021 08:44:49 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.0
+In-Reply-To: <CAEf4Bzak3Ye4xoAAva2WLc=-e+xEQFbSyk9gs50ASoSn-Gn5_A@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2620:10d:c090:400::5:5e03]
+X-ClientProxiedBy: CO2PR05CA0097.namprd05.prod.outlook.com
+ (2603:10b6:104:1::23) To BN8PR15MB3282.namprd15.prod.outlook.com
+ (2603:10b6:408:a8::32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:2103:c99:e09d:8a8f:94f0] (2620:10d:c090:400::5:5e03) by CO2PR05CA0097.namprd05.prod.outlook.com (2603:10b6:104:1::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.9 via Frontend Transport; Tue, 23 Feb 2021 16:44:52 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 761d585c-168b-4514-4a06-08d8d81a58bb
+X-MS-TrafficTypeDiagnostic: BN7PR15MB2292:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BN7PR15MB22923C1D368274FFF20A7860D7809@BN7PR15MB2292.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SlB4Na/f9i9vNK4i1MIXrRPh4FWilRg09gusHy9ktGqbnQuItL376Aaez/pmJgvgI2psTt093EE5Q9KnZqSwt+j4xm/FF7PF3bGtxKpaXf7U9j9mwKLiU4vwBtYHSWxIX2JAflnZVl10vt9cT0aa6oaEidWfMT+iQC9PYUQO9VfIO9A5KfA3B047B+WFK5RlVwnCln278CY+K3PHI/VndM6cijZfvb1IeQW+Ysgk2A1L9BlnEALnwFMjOhcwR9fwUaIdp0738l0Uw+VFUTTRYXoQSDSLotSw9DfkOB+kkoGFn7Xg/FH/Ev0yXKnKOljgPa9wBitJSu0YYT3LvrKUlUUil6DlMf9oT6JzoFT/zQ5O+ByamH+jog9Lg11cl4NCafDuQplcWXvacn6MbQYkdhS5TcudnScxvcTY2MHV0mGxaqmwaCBzyb5cJMKm64U8l7bX+9tAy3pxJ5sGaZ8yAn59epOjNeQILGU1LwdFmtWWyF7rrFz4OuHYgpnSaBETJUwp33Ia3vffaeq+NnBl3/h7T3sD9D24UJFEdfhDXBt3+7AcNs2LxBAzvBl9IKCPz6+1Cb9aaI7wA+G6UwEDMACnLZd+EUDGGQhG6T7NewM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR15MB3282.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(136003)(39860400002)(366004)(396003)(86362001)(83380400001)(5660300002)(36756003)(2906002)(8676002)(31696002)(6636002)(316002)(8936002)(2616005)(110136005)(66556008)(66476007)(186003)(53546011)(478600001)(6486002)(16526019)(66946007)(4326008)(4744005)(54906003)(6666004)(52116002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?aTZKZk9uV1NZSVY2V21IRDdjK2pwOCszZFVOQmZGTVJseVYzbUt6Wk0vZlVT?=
+ =?utf-8?B?WmNCbDhjN083d3hFY0ZFa1VQdTRxT3NpbXZDZm5SL2RtNFpTV2c0aDJ0MGdQ?=
+ =?utf-8?B?RzJMVDR2bDh6Zll6aUpReGdEdGMrWTI1U1lNb2xnRmJDS3hCZFU3UFVBN2Y0?=
+ =?utf-8?B?R0ZEVVBzbENPQjQxcE9SZENzOTZzZGordUs4SFRvdllMM1B1UjRzdmtpQUxB?=
+ =?utf-8?B?Ny82bWJYSyszUVlsK0ZHVUxDbmdZc211MVZtejRzdW9uMVl5M2RDcU9sVzM0?=
+ =?utf-8?B?VEZkS3dlNjhnd25qcVFjUVdoZ2lrZWZXekg4YVJYS1BibmxsWVREdXUzNnpt?=
+ =?utf-8?B?NHZQcEd6TUFhbzdaTEpIS1FTVzgzeVN1UjZLZ3lBT0YwMUhwYlJ1a2VRcFZJ?=
+ =?utf-8?B?WDc1NHlsWllGeWlOZWF5LzlYZkdKekpDd3RIcWpjdmRaRFl3WEVaZnRYc1Nw?=
+ =?utf-8?B?enVkNzRhYjhBL1FHOGVJRjZrSHdxWndUendib2Z1c3JzSTZtT0krNExMSkp6?=
+ =?utf-8?B?R2F2c3QxYU0zbUtJczREYnp2QnErUUZCQTNMejhiZEthWVRZb2FSeGdqMURi?=
+ =?utf-8?B?M0RzQ1BoOHpOQmJBcGZqaXZqdWpwNGlxbExxd1ozTEk3UElWR3FMMmsyMGMz?=
+ =?utf-8?B?RGxLeWVIZ0pFRVdRbjNIbHY0cVNvVGNpU3RCTmxuWFRwMlhUUm1zMndwSGM3?=
+ =?utf-8?B?N0ZQU3FhZ3hPdVhWWExLczNiVDVwMDFPYm1JVTFoR1E0MnU0OS9QVGJOemNS?=
+ =?utf-8?B?UHRnRkU2OGsxa052MFByaDFHSnlCSXJuSUlHYkpHYlZwWXVYMlBGMm9RUEJF?=
+ =?utf-8?B?RWVLdEVYQ2tqaDFXV3pRb3g1MGVTN2ZYd3J0MER1NDhqdmxsbFJkSmFMbERj?=
+ =?utf-8?B?aHZITVcxdk84MlRnTVErMlpjbTBaN3h2TElSdGxiS3ZNbjNyT0tpRlhmZTQw?=
+ =?utf-8?B?THdpbVovTk85cldnYkFjVWVHSWZudDM2SDRBdE40d1ExSFRYUk4vWFhwS2JP?=
+ =?utf-8?B?dlZBMldlTnNYM2RpdXZHOVBIamgxL0pGYUJ3R29WdzFBYU1yQ2VSUFlIQ3pW?=
+ =?utf-8?B?ZnFjOTUreit4NHFuNUYwKzVNWklpVGxIY2U0L0NHR1RsZWwxV0VJZWRoa0Q5?=
+ =?utf-8?B?QldORjdvbFBKYUxHTzVpSUNDRkxON3NzN3JFbUEzUmJ1T2FESFRsbzVPWUMr?=
+ =?utf-8?B?UTlWWjZndnIxOFJENGFQU0ZqOXl1d1UwVGczcFFudGsycXN5Tk5EOEJuUjdw?=
+ =?utf-8?B?aE41NUw2ZHpnbFdsMVE4cDc4RkZZQWZydlpsWFZEMDJhOCtqRE9LNWs1bU4w?=
+ =?utf-8?B?c3lqc050cCtIU2ZteW9ZQmhVTnNwL0pEUUE4N3ZkVFVQbDVOZWhNMHZ6M09N?=
+ =?utf-8?B?ZHRhcHdJV0VOU3BkQkFRZlVTMjhZTGNKTTdhQTRlYlNQaCtGRnl1UWlVM0x6?=
+ =?utf-8?B?UkhJSzBjQ3VlcmlMS3NFV1ljS2dzRytEMFJhWmVIMlVRb3JOUnQ0V2t6Vm1Z?=
+ =?utf-8?B?bXZDZ1JiZDJ1SFRoS1VKY29hQ2ozeTUxVXdoYUdJWEtFMkZ4dFpNVnZla1cw?=
+ =?utf-8?B?TzVua1A1aENOTUxSQ3FBYTh5RnJBZ2ZSRW5yajB1dGFMckVHb3I1bnpYWUN1?=
+ =?utf-8?B?QTFPZ3FFQXc0dUJhTFF4VnlmY2RGVEsyT0FkMFJ5bnpDRHVBZHlIYmlkRlBE?=
+ =?utf-8?B?czVwRm9LQVNtY29ETEU0bTNrdCtjVFgwZnVxcnNHR3VNajYwa1hVS0cwbVVp?=
+ =?utf-8?B?aUpzL3FVczFiWDhwNTZCQzExbThCLzNoQTdUamFnK1VDZVhZWFcyOEt4MWVL?=
+ =?utf-8?B?YWVNMm9adVZPaythR1RZUT09?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 761d585c-168b-4514-4a06-08d8d81a58bb
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR15MB3282.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Feb 2021 16:44:54.8530
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: a4sh3W4ddntAWymQxsRNSdPBu8i/9WnhNpWgb3Nk7cOOOVqqD6OoUJRhnHJn+7iK
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR15MB2292
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-23_08:2021-02-23,2021-02-23 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ phishscore=0 spamscore=0 clxscore=1011 adultscore=0 priorityscore=1501
+ impostorscore=0 bulkscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102230139
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-This commit introduces a range of tests to the xsk testsuite
-for validating xsk statistics.
+On 2/22/21 11:19 PM, Andrii Nakryiko wrote:
+>>>> +       bpf_task_storage_lock();
+>>>>         sdata = bpf_local_storage_update(
+>>>>                 task, (struct bpf_local_storage_map *)map, value, map_flags);
+>>> this should probably be container_of() instead of casting
+>> bpf_task_storage.c uses casting in multiple places. How about we fix it in a
+>> separate patch?
+>>
+> Sure, let's fix all uses in a separate patch. My point is that this
+> makes an assumption (that struct bpf_map map field is always the very
+> first one) which is not enforced and not documented in struct
+> bpf_local_storage_map.
+> 
 
-A new test type called 'stats' is added. Within it there are
-four sub-tests. Each test configures a scenario which should
-trigger the given error statistic. The test passes if the statistic
-is successfully incremented.
-
-The four statistics for which tests have been created are:
-1. rx dropped
-Increase the UMEM frame headroom to a value which results in
-insufficient space in the rx buffer for both the packet and the headroom.
-2. tx invalid
-Set the 'len' field of tx descriptors to an invalid value (umem frame
-size + 1).
-3. rx ring full
-Reduce the size of the RX ring to a fraction of the fill ring size.
-4. fill queue empty
-Do not populate the fill queue and then try to receive pkts.
-
-Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
-Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
----
- tools/testing/selftests/bpf/xdpxceiver.c | 137 ++++++++++++++++++++---
- tools/testing/selftests/bpf/xdpxceiver.h |  13 +++
- 2 files changed, 136 insertions(+), 14 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/xdpxceiver.c b/tools/testing/selftests/bpf/xdpxceiver.c
-index e7913444518d..8b0f7fdd9003 100644
---- a/tools/testing/selftests/bpf/xdpxceiver.c
-+++ b/tools/testing/selftests/bpf/xdpxceiver.c
-@@ -28,8 +28,21 @@
-  *       Configure sockets as bi-directional tx/rx sockets, sets up fill and
-  *       completion rings on each socket, tx/rx in both directions. Only nopoll
-  *       mode is used
-+ *    e. Statistics
-+ *       Trigger some error conditions and ensure that the appropriate statistics
-+ *       are incremented. Within this test, the following statistics are tested:
-+ *       i.   rx dropped
-+ *            Increase the UMEM frame headroom to a value which results in
-+ *            insufficient space in the rx buffer for both the packet and the headroom.
-+ *       ii.  tx invalid
-+ *            Set the 'len' field of tx descriptors to an invalid value (umem frame
-+ *            size + 1).
-+ *       iii. rx ring full
-+ *            Reduce the size of the RX ring to a fraction of the fill ring size.
-+ *       iv.  fill queue empty
-+ *            Do not populate the fill queue and then try to receive pkts.
-  *
-- * Total tests: 8
-+ * Total tests: 10
-  *
-  * Flow:
-  * -----
-@@ -95,10 +108,11 @@ static void __exit_with_error(int error, const char *file, const char *func, int
- #define exit_with_error(error) __exit_with_error(error, __FILE__, __func__, __LINE__)
- 
- #define print_ksft_result(void)\
--	(ksft_test_result_pass("PASS: %s %s %s%s\n", configured_mode ? "DRV" : "SKB",\
-+	(ksft_test_result_pass("PASS: %s %s %s%s%s\n", configured_mode ? "DRV" : "SKB",\
- 			       test_type == TEST_TYPE_POLL ? "POLL" : "NOPOLL",\
- 			       test_type == TEST_TYPE_TEARDOWN ? "Socket Teardown" : "",\
--			       test_type == TEST_TYPE_BIDI ? "Bi-directional Sockets" : ""))
-+			       test_type == TEST_TYPE_BIDI ? "Bi-directional Sockets" : "",\
-+			       test_type == TEST_TYPE_STATS ? "Stats" : ""))
- 
- static void pthread_init_mutex(void)
- {
-@@ -260,13 +274,20 @@ static void gen_eth_frame(struct xsk_umem_info *umem, u64 addr)
- static void xsk_configure_umem(struct ifobject *data, void *buffer, u64 size)
- {
- 	int ret;
-+	struct xsk_umem_config cfg = {
-+		.fill_size = XSK_RING_PROD__DEFAULT_NUM_DESCS,
-+		.comp_size = XSK_RING_CONS__DEFAULT_NUM_DESCS,
-+		.frame_size = XSK_UMEM__DEFAULT_FRAME_SIZE,
-+		.frame_headroom = frame_headroom,
-+		.flags = XSK_UMEM__DEFAULT_FLAGS
-+	};
- 
- 	data->umem = calloc(1, sizeof(struct xsk_umem_info));
- 	if (!data->umem)
- 		exit_with_error(errno);
- 
- 	ret = xsk_umem__create(&data->umem->umem, buffer, size,
--			       &data->umem->fq, &data->umem->cq, NULL);
-+			       &data->umem->fq, &data->umem->cq, &cfg);
- 	if (ret)
- 		exit_with_error(ret);
- 
-@@ -298,7 +319,7 @@ static int xsk_configure_socket(struct ifobject *ifobject)
- 		exit_with_error(errno);
- 
- 	ifobject->xsk->umem = ifobject->umem;
--	cfg.rx_size = XSK_RING_CONS__DEFAULT_NUM_DESCS;
-+	cfg.rx_size = rxqsize;
- 	cfg.tx_size = XSK_RING_PROD__DEFAULT_NUM_DESCS;
- 	cfg.libbpf_flags = 0;
- 	cfg.xdp_flags = xdp_flags;
-@@ -565,6 +586,8 @@ static void tx_only(struct xsk_socket_info *xsk, u32 *frameptr, int batch_size)
- {
- 	u32 idx;
- 	unsigned int i;
-+	bool tx_invalid_test = stat_test_type == STAT_TEST_TX_INVALID;
-+	u32 len = tx_invalid_test ? XSK_UMEM__DEFAULT_FRAME_SIZE + 1 : PKT_SIZE;
- 
- 	while (xsk_ring_prod__reserve(&xsk->tx, batch_size, &idx) < batch_size)
- 		complete_tx_only(xsk, batch_size);
-@@ -573,11 +596,16 @@ static void tx_only(struct xsk_socket_info *xsk, u32 *frameptr, int batch_size)
- 		struct xdp_desc *tx_desc = xsk_ring_prod__tx_desc(&xsk->tx, idx + i);
- 
- 		tx_desc->addr = (*frameptr + i) << XSK_UMEM__DEFAULT_FRAME_SHIFT;
--		tx_desc->len = PKT_SIZE;
-+		tx_desc->len = len;
- 	}
- 
- 	xsk_ring_prod__submit(&xsk->tx, batch_size);
--	xsk->outstanding_tx += batch_size;
-+	if (!tx_invalid_test) {
-+		xsk->outstanding_tx += batch_size;
-+	} else {
-+		if (!NEED_WAKEUP || xsk_ring_prod__needs_wakeup(&xsk->tx))
-+			kick_tx(xsk);
-+	}
- 	*frameptr += batch_size;
- 	*frameptr %= num_frames;
- 	complete_tx_only(xsk, batch_size);
-@@ -689,6 +717,48 @@ static void worker_pkt_dump(void)
- 	}
- }
- 
-+static void worker_stats_validate(struct ifobject *ifobject)
-+{
-+	struct xdp_statistics stats;
-+	socklen_t optlen;
-+	int err;
-+	struct xsk_socket *xsk = stat_test_type == STAT_TEST_TX_INVALID ?
-+							ifdict[!ifobject->ifdict_index]->xsk->xsk :
-+							ifobject->xsk->xsk;
-+	int fd = xsk_socket__fd(xsk);
-+	unsigned long xsk_stat = 0, expected_stat = opt_pkt_count;
-+
-+	sigvar = 0;
-+
-+	optlen = sizeof(stats);
-+	err = getsockopt(fd, SOL_XDP, XDP_STATISTICS, &stats, &optlen);
-+	if (err)
-+		return;
-+
-+	if (optlen == sizeof(struct xdp_statistics)) {
-+		switch (stat_test_type) {
-+		case STAT_TEST_RX_DROPPED:
-+			xsk_stat = stats.rx_dropped;
-+			break;
-+		case STAT_TEST_TX_INVALID:
-+			xsk_stat = stats.tx_invalid_descs;
-+			break;
-+		case STAT_TEST_RX_FULL:
-+			xsk_stat = stats.rx_ring_full;
-+			expected_stat -= RX_FULL_RXQSIZE;
-+			break;
-+		case STAT_TEST_RX_FILL_EMPTY:
-+			xsk_stat = stats.rx_fill_ring_empty_descs;
-+			break;
-+		default:
-+			break;
-+		}
-+
-+		if (xsk_stat == expected_stat)
-+			sigvar = 1;
-+	}
-+}
-+
- static void worker_pkt_validate(void)
- {
- 	u32 payloadseqnum = -2;
-@@ -827,7 +897,8 @@ static void *worker_testapp_validate(void *arg)
- 			thread_common_ops(ifobject, bufs, &sync_mutex_tx, &spinning_rx);
- 
- 		print_verbose("Interface [%s] vector [Rx]\n", ifobject->ifname);
--		xsk_populate_fill_ring(ifobject->umem);
-+		if (stat_test_type != STAT_TEST_RX_FILL_EMPTY)
-+			xsk_populate_fill_ring(ifobject->umem);
- 
- 		TAILQ_INIT(&head);
- 		if (debug_pkt_dump) {
-@@ -849,15 +920,21 @@ static void *worker_testapp_validate(void *arg)
- 				if (ret <= 0)
- 					continue;
- 			}
--			rx_pkt(ifobject->xsk, fds);
--			worker_pkt_validate();
-+
-+			if (test_type != TEST_TYPE_STATS) {
-+				rx_pkt(ifobject->xsk, fds);
-+				worker_pkt_validate();
-+			} else {
-+				worker_stats_validate(ifobject);
-+			}
- 
- 			if (sigvar)
- 				break;
- 		}
- 
--		print_verbose("Received %d packets on interface %s\n",
--			       pkt_counter, ifobject->ifname);
-+		if (test_type != TEST_TYPE_STATS)
-+			print_verbose("Received %d packets on interface %s\n",
-+				pkt_counter, ifobject->ifname);
- 
- 		if (test_type == TEST_TYPE_TEARDOWN)
- 			print_verbose("Destroying socket\n");
-@@ -931,7 +1008,7 @@ static void testapp_validate(void)
- 		free(pkt_buf);
- 	}
- 
--	if (!(test_type == TEST_TYPE_TEARDOWN) && !bidi)
-+	if (!(test_type == TEST_TYPE_TEARDOWN) && !bidi && !(test_type == TEST_TYPE_STATS))
- 		print_ksft_result();
- }
- 
-@@ -950,6 +1027,32 @@ static void testapp_sockets(void)
- 	print_ksft_result();
- }
- 
-+static void testapp_stats(void)
-+{
-+	for (int i = 0; i < STAT_TEST_TYPE_MAX; i++) {
-+		stat_test_type = i;
-+
-+		/* reset defaults */
-+		rxqsize = XSK_RING_CONS__DEFAULT_NUM_DESCS;
-+		frame_headroom = XSK_UMEM__DEFAULT_FRAME_HEADROOM;
-+
-+		switch (stat_test_type) {
-+		case STAT_TEST_RX_DROPPED:
-+			frame_headroom = XSK_UMEM__DEFAULT_FRAME_SIZE -
-+						XDP_PACKET_HEADROOM - 1;
-+			break;
-+		case STAT_TEST_RX_FULL:
-+			rxqsize = RX_FULL_RXQSIZE;
-+			break;
-+		default:
-+			break;
-+		}
-+		testapp_validate();
-+	}
-+
-+	print_ksft_result();
-+}
-+
- static void init_iface_config(struct ifaceconfigobj *ifaceconfig)
- {
- 	/*Init interface0 */
-@@ -1037,6 +1140,10 @@ static void run_pkt_test(int mode, int type)
- 	prev_pkt = -1;
- 	ifdict[0]->fv.vector = tx;
- 	ifdict[1]->fv.vector = rx;
-+	sigvar = 0;
-+	stat_test_type = -1;
-+	rxqsize = XSK_RING_CONS__DEFAULT_NUM_DESCS;
-+	frame_headroom = XSK_UMEM__DEFAULT_FRAME_HEADROOM;
- 
- 	switch (mode) {
- 	case (TEST_MODE_SKB):
-@@ -1055,7 +1162,9 @@ static void run_pkt_test(int mode, int type)
- 
- 	pthread_init_mutex();
- 
--	if ((test_type != TEST_TYPE_TEARDOWN) && (test_type != TEST_TYPE_BIDI))
-+	if (test_type == TEST_TYPE_STATS)
-+		testapp_stats();
-+	else if ((test_type != TEST_TYPE_TEARDOWN) && (test_type != TEST_TYPE_BIDI))
- 		testapp_validate();
- 	else
- 		testapp_sockets();
-diff --git a/tools/testing/selftests/bpf/xdpxceiver.h b/tools/testing/selftests/bpf/xdpxceiver.h
-index e05703f661f8..30314ef305c2 100644
---- a/tools/testing/selftests/bpf/xdpxceiver.h
-+++ b/tools/testing/selftests/bpf/xdpxceiver.h
-@@ -42,6 +42,7 @@
- #define POLL_TMOUT 1000
- #define NEED_WAKEUP true
- #define DEFAULT_PKT_CNT 10000
-+#define RX_FULL_RXQSIZE 32
- 
- #define print_verbose(x...) do { if (opt_verbose) ksft_print_msg(x); } while (0)
- 
-@@ -61,9 +62,18 @@ enum TEST_TYPES {
- 	TEST_TYPE_POLL,
- 	TEST_TYPE_TEARDOWN,
- 	TEST_TYPE_BIDI,
-+	TEST_TYPE_STATS,
- 	TEST_TYPE_MAX
- };
- 
-+enum STAT_TEST_TYPES {
-+	STAT_TEST_RX_DROPPED,
-+	STAT_TEST_TX_INVALID,
-+	STAT_TEST_RX_FULL,
-+	STAT_TEST_RX_FILL_EMPTY,
-+	STAT_TEST_TYPE_MAX
-+};
-+
- static int configured_mode = TEST_MODE_UNCONFIGURED;
- static u8 debug_pkt_dump;
- static u32 num_frames;
-@@ -81,6 +91,9 @@ static u8 pkt_data[XSK_UMEM__DEFAULT_FRAME_SIZE];
- static u32 pkt_counter;
- static long prev_pkt = -1;
- static int sigvar;
-+static int stat_test_type;
-+static u32 rxqsize;
-+static u32 frame_headroom;
- 
- struct xsk_umem_info {
- 	struct xsk_ring_prod fq;
--- 
-2.17.1
-
+I'd rather document it in separate patch.
+Just doing container_of here and there will lead to wrong assumption
+that it can be in a different place, but it's much more involved.
+Consider what happens with all map_alloc callbacks... how that pointer
+is hard coded into bpf prog.. then passed back into helpers...
+then the logic that can read inner fields of bpf_map from the prog...
