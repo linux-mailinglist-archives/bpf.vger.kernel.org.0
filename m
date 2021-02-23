@@ -2,78 +2,113 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69AB2322CE5
-	for <lists+bpf@lfdr.de>; Tue, 23 Feb 2021 15:53:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D401E322CAC
+	for <lists+bpf@lfdr.de>; Tue, 23 Feb 2021 15:45:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232983AbhBWOxR (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Feb 2021 09:53:17 -0500
-Received: from mga05.intel.com ([192.55.52.43]:14553 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233147AbhBWOxI (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Tue, 23 Feb 2021 09:53:08 -0500
-IronPort-SDR: nrf8LLaFqIf+7hkxhechQeDOvcPgR7siDRZHmDk/gt+wa1/AyE7hyztcCjdwspWPMY7UqnmTHO
- n9g0f8xcGu5g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9903"; a="269778255"
-X-IronPort-AV: E=Sophos;i="5.81,200,1610438400"; 
-   d="scan'208";a="269778255"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2021 06:52:25 -0800
-IronPort-SDR: 8ACHBOpDJtpr2/T4MVdTGS+O3w4bC2vt40M9I04497fZoHqzJHO6+gtH3ui1ceaC/aYOLJYE+m
- SsLIsdwffHeQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,200,1610438400"; 
-   d="scan'208";a="366612356"
-Received: from ranger.igk.intel.com ([10.102.21.164])
-  by orsmga006.jf.intel.com with ESMTP; 23 Feb 2021 06:52:23 -0800
-Date:   Tue, 23 Feb 2021 15:41:36 +0100
-From:   Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To:     Ciara Loftus <ciara.loftus@intel.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        magnus.karlsson@intel.com, bjorn@kernel.org,
-        weqaar.a.janjua@intel.com
-Subject: Re: [PATCH bpf-next v2 4/4] selftests/bpf: introduce xsk statistics
- tests
-Message-ID: <20210223144136.GB51139@ranger.igk.intel.com>
-References: <20210223103507.10465-1-ciara.loftus@intel.com>
- <20210223103507.10465-5-ciara.loftus@intel.com>
+        id S230498AbhBWOp3 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Feb 2021 09:45:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43315 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229823AbhBWOp3 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 23 Feb 2021 09:45:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614091442;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LpYOhXHGVxU0xOZjyTmBsPRLytwkVqdBdOt50mvBPSs=;
+        b=YtECZbi9sXNYe/UePn9P2ZAzgcpa7Em1bSG8UeSnmzu6ix0j9HWpLwfnqdBhc6kLEDsEld
+        9DyRhQeVf4TXhdIanaCn34PKQH8GlKHb2/TlbimQ65Z4e+wEma8eGkaj7sekt3bfdt8WOv
+        8U5gLixksT3G5YBaHkIyT3EpeZoS/xE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-342-8S5jRRWLPqObCUaM2wahPQ-1; Tue, 23 Feb 2021 09:42:57 -0500
+X-MC-Unique: 8S5jRRWLPqObCUaM2wahPQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BC7CB814304;
+        Tue, 23 Feb 2021 14:42:55 +0000 (UTC)
+Received: from krava (unknown [10.40.192.54])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 6284760CDE;
+        Tue, 23 Feb 2021 14:42:54 +0000 (UTC)
+Date:   Tue, 23 Feb 2021 15:42:53 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Kun-Chuan Hsieh <jetswayss@gmail.com>
+Cc:     ast@kernel.org, bpf@vger.kernel.org, jolsa@kernel.org,
+        andrii@kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] tools/resolve_btfids: Fix build error with older host
+ toolchains
+Message-ID: <YDUUbRJ1waVyoO+f@krava>
+References: <20210223012001.1452676-1-jetswayss@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210223103507.10465-5-ciara.loftus@intel.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <20210223012001.1452676-1-jetswayss@gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 10:35:07AM +0000, Ciara Loftus wrote:
-> This commit introduces a range of tests to the xsk testsuite
-> for validating xsk statistics.
-> 
-> A new test type called 'stats' is added. Within it there are
-> four sub-tests. Each test configures a scenario which should
-> trigger the given error statistic. The test passes if the statistic
-> is successfully incremented.
-> 
-> The four statistics for which tests have been created are:
-> 1. rx dropped
-> Increase the UMEM frame headroom to a value which results in
-> insufficient space in the rx buffer for both the packet and the headroom.
-> 2. tx invalid
-> Set the 'len' field of tx descriptors to an invalid value (umem frame
-> size + 1).
-> 3. rx ring full
-> Reduce the size of the RX ring to a fraction of the fill ring size.
-> 4. fill queue empty
-> Do not populate the fill queue and then try to receive pkts.
+On Tue, Feb 23, 2021 at 01:20:01AM +0000, Kun-Chuan Hsieh wrote:
+> Older versions of libelf cannot recognize the compressed section.
 
-Thanks for adding descriptions!
+so it's the SHF_COMPRESSED value the build fails on?
 
-Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+maybe we could do just this:
 
+#ifndef SHF_COMPRESSED
+ #define SHF_COMPRESSED      (1 << 11)  /* Section with compressed data. */
+#endif
+
+jirka
+
+> However, it's only required to fix the compressed section info when
+> compiling with CONFIG_DEBUG_INFO_COMPRESSED flag is set.
 > 
-> Signed-off-by: Ciara Loftus <ciara.loftus@intel.com>
+> Only compile the compressed_section_fix function when necessary will make
+> it easier to enable the BTF function. Since the tool resolve_btfids is
+> compiled with host toolchain. The host toolchain might be older than the
+> cross compile toolchain.
+> 
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Kun-Chuan Hsieh <jetswayss@gmail.com>
 > ---
->  tools/testing/selftests/bpf/xdpxceiver.c | 137 ++++++++++++++++++++---
->  tools/testing/selftests/bpf/xdpxceiver.h |  13 +++
->  2 files changed, 136 insertions(+), 14 deletions(-)
+>  tools/bpf/resolve_btfids/main.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
+> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+> index 7409d7860aa6..ad40346c6631 100644
+> --- a/tools/bpf/resolve_btfids/main.c
+> +++ b/tools/bpf/resolve_btfids/main.c
+> @@ -260,6 +260,7 @@ static struct btf_id *add_symbol(struct rb_root *root, char *name, size_t size)
+>  	return btf_id__add(root, id, false);
+>  }
+>  
+> +#ifdef CONFIG_DEBUG_INFO_COMPRESSED
+>  /*
+>   * The data of compressed section should be aligned to 4
+>   * (for 32bit) or 8 (for 64 bit) bytes. The binutils ld
+> @@ -292,6 +293,7 @@ static int compressed_section_fix(Elf *elf, Elf_Scn *scn, GElf_Shdr *sh)
+>  	}
+>  	return 0;
+>  }
+> +#endif
+>  
+>  static int elf_collect(struct object *obj)
+>  {
+> @@ -370,8 +372,10 @@ static int elf_collect(struct object *obj)
+>  			obj->efile.idlist_addr  = sh.sh_addr;
+>  		}
+>  
+> +#ifdef CONFIG_DEBUG_INFO_COMPRESSED
+>  		if (compressed_section_fix(elf, scn, &sh))
+>  			return -1;
+> +#endif
+>  	}
+>  
+>  	return 0;
+> -- 
+> 2.25.1
+> 
+
