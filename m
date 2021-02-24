@@ -2,106 +2,104 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28E5A32395B
-	for <lists+bpf@lfdr.de>; Wed, 24 Feb 2021 10:23:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EABA2323982
+	for <lists+bpf@lfdr.de>; Wed, 24 Feb 2021 10:33:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234626AbhBXJVz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Feb 2021 04:21:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23741 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234614AbhBXJV0 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 24 Feb 2021 04:21:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614158400;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=izUCxT+tdv9xS2oKv6j2Eova2wbVLQ+mEJCClkNFIkg=;
-        b=e0EZICI+W+uvJOYIMPLmp7rxmbcn3AhBXKAHhbZWQpEoRf4dJKxzf8gzRQoHcbebG3WQ1H
-        Nf+0V4rMOzhcvitJ9vpjQ+pKuf5lbwwuzcYm6IhSZ35omenxb+VKKVT8otuAsbYmanoj5N
-        mcviWX8sAHPfUVs8hkBHuVAxPfh0Zq0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-31-VAJqlxg6Nx2r5RHsdg7cng-1; Wed, 24 Feb 2021 04:19:55 -0500
-X-MC-Unique: VAJqlxg6Nx2r5RHsdg7cng-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3C3B8CE642;
-        Wed, 24 Feb 2021 09:19:54 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.51])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B11D410493BD;
-        Wed, 24 Feb 2021 09:19:49 +0000 (UTC)
-Date:   Wed, 24 Feb 2021 10:19:48 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Hangbin Liu <liuhangbin@gmail.com>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Daniel Borkmann <daniel@iogearbox.net>, brouer@redhat.com
-Subject: Re: [PATCHv2 bpf-next] bpf: remove blank line in bpf helper
- description
-Message-ID: <20210224101948.1a7aa6a5@carbon>
-In-Reply-To: <20210223131457.1378978-1-liuhangbin@gmail.com>
-References: <20210223124554.1375051-1-liuhangbin@gmail.com>
-        <20210223131457.1378978-1-liuhangbin@gmail.com>
+        id S232563AbhBXJcJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Feb 2021 04:32:09 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:17014 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234296AbhBXJb6 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Wed, 24 Feb 2021 04:31:58 -0500
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11O92dUB068788;
+        Wed, 24 Feb 2021 04:31:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : date : in-reply-to : references : content-type : mime-version
+ : content-transfer-encoding; s=pp1;
+ bh=9LGToq0Nu8zzd3GiL0F1mN1L6aESnNdH9k+UG3/BMe4=;
+ b=fEilGAkrpCXk4njkF8JmqLlwoKKrOSriebr/Nt2eCrXcQRNNjjaNlr/jE+QnuN0I7/Hk
+ Wdi8cpL8Ry1EQfDQTH+aPIrmmnV3BjuRSIs4y3Co3WRfUgOBAvCe2n7NhBrKr3itkU9b
+ +z4LUfJb1yVIG39daH8E40/LVVGL0yyu3+zVfDGMGJ9rEISo1eqQwPaSV8I7B4Mq2PL5
+ uFbK0QmQSDzuE23RMVxtfFKYwfNyMSpwkzFa4LsvGQIKqXxpZBmlwUT88F7NZvCZBC9X
+ h4SP9rhdI+HGb3uf7QMYbKkE8j7ZVfK07WyFC14mIXs25Kkozck0a/Jq2asEGSDGuX2A RQ== 
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36vkn29sbf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Feb 2021 04:31:00 -0500
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11O9RB6K000475;
+        Wed, 24 Feb 2021 09:30:58 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma05fra.de.ibm.com with ESMTP id 36tt289sbg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Feb 2021 09:30:58 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11O9Uurl30474542
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 24 Feb 2021 09:30:56 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 51BC652050;
+        Wed, 24 Feb 2021 09:30:56 +0000 (GMT)
+Received: from sig-9-145-151-190.de.ibm.com (unknown [9.145.151.190])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id F105652057;
+        Wed, 24 Feb 2021 09:30:55 +0000 (GMT)
+Message-ID: <f215762a6033020e79c2b9f5ab2a410c06499a1a.camel@linux.ibm.com>
+Subject: Re: [PATCH 1/2] tools, bpf_asm: Hard error on out of range jumps.
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Ian Denhardt <ian@zenhack.net>, ast@kernel.org,
+        daniel@iogearbox.net, bpf@vger.kernel.org, netdev@vger.kernel.org
+Date:   Wed, 24 Feb 2021 10:30:55 +0100
+In-Reply-To: <af571eef0bc5d33180879c0c81a7d1b26431b915.1614134213.git.ian@zenhack.net>
+References: <cover.1614134213.git.ian@zenhack.net>
+         <af571eef0bc5d33180879c0c81a7d1b26431b915.1614134213.git.ian@zenhack.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-24_02:2021-02-23,2021-02-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ lowpriorityscore=0 priorityscore=1501 bulkscore=0 phishscore=0 mlxscore=0
+ mlxlogscore=999 clxscore=1015 suspectscore=0 impostorscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102240071
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, 23 Feb 2021 21:14:57 +0800
-Hangbin Liu <liuhangbin@gmail.com> wrote:
-
-> Commit 34b2021cc616 ("bpf: Add BPF-helper for MTU checking") added an
-> extra blank line in bpf helper description. This will make
-> bpf_helpers_doc.py stop building bpf_helper_defs.h immediately after
-> bpf_check_mtu, which will affect future add functions.
+On Tue, 2021-02-23 at 21:15 -0500, Ian Denhardt wrote:
+> Per discussion at:
 > 
-> Fixes: 34b2021cc616 ("bpf: Add BPF-helper for MTU checking")
-> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+> https://lore.kernel.org/bpf/c964892195a6b91d20a67691448567ef528ffa6d.camel@linux.ibm.com/T/#t
+> 
+> ...this was originally introduced as a warning due to concerns about
+> breaking existing code, but a hard error probably makes more sense,
+> especially given that concerns about breakage were only speculation.
 > ---
-> v2: remove the blank line directly instead of adding a *
-> ---
->  include/uapi/linux/bpf.h       | 1 -
->  tools/include/uapi/linux/bpf.h | 1 -
->  2 files changed, 2 deletions(-)
+>  tools/bpf/bpf_exp.y | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/bpf/bpf_exp.y b/tools/bpf/bpf_exp.y
+> index 8d48e896be50..8d03e5245da5 100644
+> --- a/tools/bpf/bpf_exp.y
+> +++ b/tools/bpf/bpf_exp.y
+> @@ -549,9 +549,11 @@ static uint8_t bpf_encode_jt_jf_offset(int off,
+> int i)
+>  {
+>         int delta = off - i - 1;
+>  
+> -       if (delta < 0 || delta > 255)
+> -               fprintf(stderr, "warning: insn #%d jumps to insn #%d, "
+> +       if (delta < 0 || delta > 255) {
+> +               fprintf(stderr, "error: insn #%d jumps to insn #%d, "
+>                                 "which is out of range\n", i, off);
+> +               exit(1);
+> +       }
+>         return (uint8_t) delta;
+>  }
+>  
 
-Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
-
-
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 4c24daa43bac..79c893310492 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -3850,7 +3850,6 @@ union bpf_attr {
->   *
->   * long bpf_check_mtu(void *ctx, u32 ifindex, u32 *mtu_len, s32 len_diff, u64 flags)
->   *	Description
-> -
->   *		Check ctx packet size against exceeding MTU of net device (based
->   *		on *ifindex*).  This helper will likely be used in combination
->   *		with helpers that adjust/change the packet size.
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-> index 4c24daa43bac..79c893310492 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -3850,7 +3850,6 @@ union bpf_attr {
->   *
->   * long bpf_check_mtu(void *ctx, u32 ifindex, u32 *mtu_len, s32 len_diff, u64 flags)
->   *	Description
-> -
->   *		Check ctx packet size against exceeding MTU of net device (based
->   *		on *ifindex*).  This helper will likely be used in combination
->   *		with helpers that adjust/change the packet size.
-
-
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
 
