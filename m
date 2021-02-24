@@ -2,84 +2,89 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37FF53245D2
-	for <lists+bpf@lfdr.de>; Wed, 24 Feb 2021 22:33:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 468CC3245DA
+	for <lists+bpf@lfdr.de>; Wed, 24 Feb 2021 22:38:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235972AbhBXVbM (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Feb 2021 16:31:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49364 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235969AbhBXVbL (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Feb 2021 16:31:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E56CA64F0D
-        for <bpf@vger.kernel.org>; Wed, 24 Feb 2021 21:30:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614202231;
-        bh=C2PvntBY/qjSUpa1ckjfUtSkKX/QusQfjHWxO0kX3to=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=RczwiwEiv/LPA61DlzHw2mHaUfry43iUkZhxdfVU0Y2Bi1L21rePzU00nif1ovprJ
-         Q0Indz6HtHKgVAtmYVGhH0dTvKDKqMB0mPh4DoK35lx9Wa07DbiWWszIVYWh9EWBOZ
-         on+MYWRpsV39v3WDJX4aSdnz337gigYwjocBcE+guhK8MNEl44YUuDrSXYrppG8iuX
-         ACsuuCfT5s8+tmc8Fwjn+eDrWZPkQdz2uX2Z7ll23bQq5hP5lD2ms9r88TNJeoDc6a
-         hKQOI/KKG2rYHcaFXoaw3gtTNhE8tUjrJA1W6NN8gdBXmcDvo8b0s4vSWi/ECgoLEW
-         0LasuruPQUKiA==
-Received: by mail-lj1-f180.google.com with SMTP id r25so3163131ljk.11
-        for <bpf@vger.kernel.org>; Wed, 24 Feb 2021 13:30:30 -0800 (PST)
-X-Gm-Message-State: AOAM5310g3TOYACkBo5hsy4hcnYAlcjlQ0jAy1rwDKu8slSchmvT+9sq
-        66QXfXCVVvFPw5sEb9aXOdj96hLh1B8UeYe6xRad7w==
-X-Google-Smtp-Source: ABdhPJxnSIUEXYip1uvKZf7nWoJHGvhex+Ji4T0HLEwQX6o9QsQkjq4NqpiaYiA1kvy+LK0Hy/u6frd4K2yfPUaPetA=
-X-Received: by 2002:a05:651c:387:: with SMTP id e7mr3655514ljp.425.1614202228987;
- Wed, 24 Feb 2021 13:30:28 -0800 (PST)
+        id S234498AbhBXViA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Feb 2021 16:38:00 -0500
+Received: from www62.your-server.de ([213.133.104.62]:35486 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231717AbhBXViA (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Feb 2021 16:38:00 -0500
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lF1qP-000Gov-VM; Wed, 24 Feb 2021 22:37:18 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lF1qP-000VTc-O9; Wed, 24 Feb 2021 22:37:17 +0100
+Subject: Re: [PATCH bpf-next 0/8] PROG_TEST_RUN support for sk_lookup programs
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        kernel-team <kernel-team@cloudflare.com>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>
+References: <20210216105713.45052-1-lmb@cloudflare.com>
+ <CAEf4BzYuvE-RsT5Ee+FstZ=vuy3AMd+1j7DazFSb56+hfPKPig@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <76aa7c94-939f-b370-0ff0-03af3865c5f9@iogearbox.net>
+Date:   Wed, 24 Feb 2021 22:37:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <CA+hQ2+hhDG2JprNLaUdX4xgcihvchEda1aJuQN3jtJ3hYucDcQ@mail.gmail.com>
- <6af0ab27-48f1-e389-d2f4-41b3c1db4a18@iogearbox.net>
-In-Reply-To: <6af0ab27-48f1-e389-d2f4-41b3c1db4a18@iogearbox.net>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Wed, 24 Feb 2021 22:30:18 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ52rAyOWQsKXOOej1=Wh_Fw_S0yBROK7POwbnnccqdvQA@mail.gmail.com>
-Message-ID: <CACYkzJ52rAyOWQsKXOOej1=Wh_Fw_S0yBROK7POwbnnccqdvQA@mail.gmail.com>
-Subject: Re: arch_prepare_bpf_trampoline() for arm ?
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Luigi Rizzo <rizzo@iet.unipi.it>, bpf <bpf@vger.kernel.org>,
-        will@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAEf4BzYuvE-RsT5Ee+FstZ=vuy3AMd+1j7DazFSb56+hfPKPig@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26090/Wed Feb 24 13:09:42 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-I checked with Will about it and learnt that ARM64 does support
-patching certain instructions (e.g. branch, brk, nops) using
-aarch64_insn_patch_text_nosync, it's used in ftrace:
+On 2/23/21 8:29 AM, Andrii Nakryiko wrote:
+> On Tue, Feb 16, 2021 at 2:58 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+>>
+>> We don't have PROG_TEST_RUN support for sk_lookup programs at the
+>> moment. So far this hasn't been a problem, since we can run our
+>> tests in a separate network namespace. For benchmarking it's nice
+>> to have PROG_TEST_RUN, so I've gone and implemented it.
+>>
+>> Multiple sk_lookup programs can be attached at once to the same
+>> netns. This can't be expressed with the current PROG_TEST_RUN
+>> API, so I'm proposing to extend it with an array of prog_fd.
+>>
+>> Patches 1-2 are clean ups. Patches 3-4 add the new UAPI and
+>> implement PROG_TEST_RUN for sk_lookup. Patch 5 adds a new
+>> function to libbpf to access multi prog tests. Patches 6-8 add
+>> tests.
+>>
+>> Andrii, for patch 4 I decided on the following API:
+>>
+>>      int bpf_prog_test_run_array(__u32 *prog_fds, __u32 prog_fds_cnt,
+>>                                  struct bpf_test_run_opts *opts)
+>>
+>> To be consistent with the rest of libbpf it would be better
+>> to take int *prog_fds, but I think then the function would have to
+>> convert the array to account for platforms where
+>>
+>>      sizeof(int) != sizeof(__u32)
+> 
+> Curious, is there any supported architecture where this is not the
+> case? I think it's fine to be consistent, tbh, and use int. Worst
+> case, in some obscure architecture we'd need to create a copy of an
+> array. Doesn't seem like a big deal (and highly unlikely anyways).
 
-https://elixir.bootlin.com/linux/latest/source/arch/arm64/kernel/ftrace.c#L24
+Given __u32 are kernel UAPI exported types for user space (e.g. used in
+syscall APIs), you can check where / how they are defined. Mainly here:
 
-But one has to tolerate that not all CPUs will execute these
-instructions until a context synchronization happens due to an
-exception or an ISB instruction. But I think we can start
-with the same thing that FTrace does?
+   include/uapi/asm-generic/int-l64.h:27:typedef unsigned int __u32;
+   include/uapi/asm-generic/int-ll64.h:27:typedef unsigned int __u32;
 
-- KP
-
-On Wed, Feb 24, 2021 at 10:01 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 2/24/21 8:54 PM, Luigi Rizzo wrote:
-> > I prepared a BPF version of kstats[1]
-> > https://github.com/luigirizzo/lr-cstats
-> > that uses fentry/fexit hooks to monitor the execution time
-> > of a kernel function.
-> >
-> > I hoped to have it working on ARM64 too, but it looks like
-> > arch_prepare_bpf_trampoline() only exists for x86.
-> >
-> > Is there any outstanding patch for this function on ARM64,
-> > or any similar function I could look at to implement it myself ?
->
-> Not that I'm currently aware of, arm64 support would definitely be great
-> to have. From x86 side, the underlying arch dependency was basically on
-> text_poke_bp() to patch instructions on a live kernel. Haven't checked
-> recently whether an equivalent exists on arm64 yet, but perhaps Will
-> might know.
->
-> > [1] kstats is an in-kernel also in the above repo and previously
-> > discussed at https://lwn.net/Articles/813303/
->
+Thanks,
+Daniel
