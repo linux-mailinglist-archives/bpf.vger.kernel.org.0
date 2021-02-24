@@ -2,399 +2,188 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FB74323438
-	for <lists+bpf@lfdr.de>; Wed, 24 Feb 2021 00:31:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C4CD32352A
+	for <lists+bpf@lfdr.de>; Wed, 24 Feb 2021 02:21:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233862AbhBWX0o (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Feb 2021 18:26:44 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:33196 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233927AbhBWXQw (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 23 Feb 2021 18:16:52 -0500
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11NN7GY1060425;
-        Tue, 23 Feb 2021 18:15:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=9/H9hnjl0vOewnkhyDIORvKBAdsz8Yszoi4qLrsjDMo=;
- b=MntyYnJayVzWmStYBqtm4+oukKn6/A9Cp9v2iIO2cxNi+nhwiYfLP9CrhoZ86/UBVEyb
- f70HEHXp6qrC/SWBpWkZAXyBfDDfikmX8D3+tiF3sKTDoVBAr1fdsLarOMW25o6WqiI9
- WX91cvMZLWXwRwjvwiVt7/+c85HFf4Iz2MpQuu3RpJSMm3tKOQbe0G2wInvuJnBnjhtg
- IicyqTPliA70QTPmkNnWYj5K6c9VWLZA6p97+ZEKkkGWUbWcxs5SVakrs80NPVQCxffD
- jFtJb38Gfx61CNBSYiueIgX462fVxT0ic40IU+hBthFYZZErtwToVefGBOxHMUpWn22f IA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36vkf914bs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Feb 2021 18:15:18 -0500
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 11NNBYZK076353;
-        Tue, 23 Feb 2021 18:15:18 -0500
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36vkf914as-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Feb 2021 18:15:17 -0500
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11NNDGNI020560;
-        Tue, 23 Feb 2021 23:15:15 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04fra.de.ibm.com with ESMTP id 36tt289keh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Feb 2021 23:15:15 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11NNFCwv18940398
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Feb 2021 23:15:12 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 880E6A4040;
-        Tue, 23 Feb 2021 23:15:12 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EEF66A404D;
-        Tue, 23 Feb 2021 23:15:11 +0000 (GMT)
-Received: from vm.lan (unknown [9.145.151.190])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 23 Feb 2021 23:15:11 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     bpf@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH v5 bpf-next 2/8] libbpf: Add BTF_KIND_FLOAT support
-Date:   Wed, 24 Feb 2021 00:14:53 +0100
-Message-Id: <20210223231459.99664-3-iii@linux.ibm.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210223231459.99664-1-iii@linux.ibm.com>
-References: <20210223231459.99664-1-iii@linux.ibm.com>
+        id S233412AbhBXBUx (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Feb 2021 20:20:53 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:29080 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234202AbhBXBCV (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 23 Feb 2021 20:02:21 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 11O0wPKN003128;
+        Tue, 23 Feb 2021 17:00:42 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=zEXuvjNRuzfts/sFbXCDoU2/y8w4M6rWyfZrT9g7/Y0=;
+ b=AGN6sRIB3Ioc7lvPbaCIqliNyfWzu7Yowvst3o6vTzXhygHHGr6W0ELU4360QLmu0z3X
+ RYXtvR9lDxOZOzTpJq6zUeiL/Bwi8p9STW4F+bwipLA6dmRsLMUch0UfijzN5cJo1kVz
+ shqSIJQiTeyTVqKTk+4LZY/3ZVmSBiKt9W8= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 36u0341xcw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 23 Feb 2021 17:00:42 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 23 Feb 2021 17:00:40 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MqPtGnh88dRqH/G80Rurepp9to10WnPeB5uHxKEMH0vOKlHlbhYFkTd5v5LGLopm37R+PjkdyspbhkNhP+4DiEFve7LSeDoBxZ1Drihh/04g1MZrAwnEKF+62eXcsBH2xGOrWORAlWIXB4cUcM3yxs3JtyytNeK2jeDw+pfPaZNcdE6zZd9kBl5wm0V6i87m5PzOs6vtP5tSHrC9OAHhHy9V9Cw9eda2823tE+7V7TTsqEXXDZF+pAAeayP+t0DnDzpUAwDgAMggMSB+V+KS04xepKeHM3z203mBsJy3RgIiJ/NfzW9WUyxViKay7SIP40ALwtMmXLHcBLImNDo8hw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zEXuvjNRuzfts/sFbXCDoU2/y8w4M6rWyfZrT9g7/Y0=;
+ b=WsyP110y4FOXSsjnPvdN53Mrwn8WOXjVG6/NlfeIK0ZsaWHpAeaKGj7amoxiJ2zri+F38L/f4r6DyA/wMSw1KmyuxRpmwOI20LbCqtd2finQdTcsCh3XqVAhttSLq03LWXqKAuuof4pBujgqVN/ZS0UnfvXlt4pFOXp2XQEf74jN2rBa8IKgkp6KGmfIJvQkzFoI/SAfz0+Kn0kKem4ofVqFvoc0fvLi+jibDQmyqRIpkpsz8o7B4gcm7OA7fIwDS+URFbJ1cS7Yvy2Uzh0MZca81hHhTZaZ1S4stYt6Ov1EN+21B+zTy5Htgzefoj6KCSSfTVhWs6Lm+F/MLJfRWg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SA0PR15MB3935.namprd15.prod.outlook.com (2603:10b6:806:8d::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.31; Wed, 24 Feb
+ 2021 01:00:40 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::e5af:7efb:8079:2c93]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::e5af:7efb:8079:2c93%6]) with mapi id 15.20.3868.033; Wed, 24 Feb 2021
+ 01:00:40 +0000
+Subject: Re: [PATCH v5 bpf-next 1/6] bpf: enable task local storage for
+ tracing programs
+To:     Song Liu <songliubraving@fb.com>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        <peterz@infradead.org>, kernel test robot <lkp@intel.com>,
+        KP Singh <kpsingh@kernel.org>
+References: <20210223222845.2866124-1-songliubraving@fb.com>
+ <20210223222845.2866124-2-songliubraving@fb.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <a6779ede-f077-4c15-2c31-a7610cca1ecb@fb.com>
+Date:   Tue, 23 Feb 2021 17:00:36 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
+In-Reply-To: <20210223222845.2866124-2-songliubraving@fb.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2620:10d:c090:400::5:5f4c]
+X-ClientProxiedBy: MW4PR03CA0370.namprd03.prod.outlook.com
+ (2603:10b6:303:114::15) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21d6::19ec] (2620:10d:c090:400::5:5f4c) by MW4PR03CA0370.namprd03.prod.outlook.com (2603:10b6:303:114::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27 via Frontend Transport; Wed, 24 Feb 2021 01:00:38 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5ecaa9be-e43d-4d64-0ea0-08d8d85f9a89
+X-MS-TrafficTypeDiagnostic: SA0PR15MB3935:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR15MB39358D8C53B98921E37730BCD39F9@SA0PR15MB3935.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LfjrzLbvHn1bSJGZ4zlKaSvPjag8Pp9Fur5dvpJUIDrrnnzcrnK1LcFJAt8YmS8I7HZqvAm7ZfQXYTpSqwcc94phnGVX7B+4pfpgvTLR+7XcfuMMPb29biwZiKhOfhQ+vgqsfAQhQh1l/1CDJkidQG9vTzGFqhgTmVNMCEUJnhetTnB8AmJ3w08BkFw4uCYFU10GO4lQLgpZcmIjFBAb2eHYdpYQfvi5jr0KbKy8/ZbPub8VFqHHcrgRpSWc2D9MNMZZZM9qGIToh8xYYTnxYV7IbyHdXU6K88roDFIxq4Het7ZW+gLLTUd+fcQkeoQkwdhDZ/zVnTjxUan9TWbsasgm16Mg2fPC82Zdl6HwreTlwjwsSyWtvklgM6rM9sIWxwdl908V160pwfOyizI/f3kGrXI6uyzwKwKrrWqJPbDu2OdGJbURSd4BBnn4+mH6w8Uc7HdBO39hUV80iWIUJwy0bgoEGtcI1mUZX9ET1RmYQggzhYlE1PuJTrC5IqNf7tRlcpeXMwFL76hnNRp05I3glFOHH/6tl9KRaMmTBrkUwI69FsyIVojffbx/87ParK4XYu/wdycV/S03v03pMyDNss2wElx8Xi/pUzYN9JU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(346002)(39860400002)(396003)(376002)(2906002)(316002)(53546011)(52116002)(8676002)(31696002)(8936002)(83380400001)(36756003)(31686004)(16526019)(2616005)(6486002)(66556008)(4326008)(66946007)(54906003)(86362001)(5660300002)(66476007)(186003)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?UlE2QmgvZGxCRHNtZGFTS2NmQ1pWZk5iR3dUSHNuUjhDaEZuY1pBRW84ajJu?=
+ =?utf-8?B?bWVDS0NOOUFuTUhXTGxwOGFMalg3N3kvQW9lb0N3V0FvSWgzVmhwNmZ5dytG?=
+ =?utf-8?B?K1dmRW1LZFVuQjNvYXpucG5lbWl3UXFuR1VRVkNDdGJEWndWMnBpdmlUNjZX?=
+ =?utf-8?B?Q0VvMnhyd2NCOVRxMFRTaFVGRElvcXU5K1VhKzVQWEhwWnUzdWFhSEF2RW9V?=
+ =?utf-8?B?YWd0dFUzOEtNT1BySlNZREVJYlh6QTAxY05mdHpqWVIwWjQvV2RTc3lSSWhy?=
+ =?utf-8?B?ZEdaWURJZXEzTWJEVlQ2QVpLZnNtZ3NKRE9SOTV6ZW9Wc1BVcGhjbmhsa2RI?=
+ =?utf-8?B?RldFbXB6UmtWVEJneHJrNkFQWmxBcFN4Q2lzL2VEQjY1U2o1OWdUczYzMG5D?=
+ =?utf-8?B?bmR2N0tSWTVrb2RTaVdjWWFYTjNKTlJ5VUxhU0dBTEp0N2ZMSVdyOXFGOEpw?=
+ =?utf-8?B?MFVVQldiMElheUVUd2RwbWozY1M4MVBVMTVSZ2tDZ0s5cmZ3NDM0NnpHZUpm?=
+ =?utf-8?B?ZHg1MjcrN2I1UTlhRElYUmZkOTBVQXk1L01DeklYQWZrd0NBNUI1cDh0Q0kv?=
+ =?utf-8?B?U0ltUUdiTEhId0w2VDgrNHp2dEFVelQ2ZWUrbkV0eW9vSG1XMVA0YkVsRm9T?=
+ =?utf-8?B?N2tXci9vdGdSdUw5UEdJaVpaQThkdW9YTnpFOTR3WERRWUk4NjRSb2dFbSt2?=
+ =?utf-8?B?WEpheFdLbkg4TjN1MGZYV2VVQ0N4cWhvUjFmem9neGNrVHVXbE5KZlZUUStW?=
+ =?utf-8?B?d2hUaW8zMkNtVm9iU2pjVjNkTDJsT1c2ZWp5bmpzT2poSlRFeE9hU0xYTVZs?=
+ =?utf-8?B?Q0xRRHk5TlhIUEFyWmJ6THh6MjVxUkIzN3VCVENrRGQ1YnZrS3ZCWWZaMS9t?=
+ =?utf-8?B?R3ltVkJWZGVpMUlOVW9PQjhlOGVaZUljc0J2c1FjTDFCUElFc1dzS2hycWoz?=
+ =?utf-8?B?SUNKNlhyT1B0dXM2TnN1SC85aGxFdjlHbFgyTnZIL1M1YzdBTVBBRDdQMnM1?=
+ =?utf-8?B?WmFad2NPZmgrTnVCWHVOenR3MklXTXlqV3ArSlVGSitrNW9aaXk0d0diTUcw?=
+ =?utf-8?B?dW9td3BaU3lSdlcyY2RUNHJCdGNiN3lXTXkxRjRJbW96eTR1ckxvRzc4RVBY?=
+ =?utf-8?B?WGxuZSt1TDdodkZGcmlINit2TjNGWEVrNklNRXZhYmZSQjNlcnU5M0FoS0t0?=
+ =?utf-8?B?aXdnWUhCeGRBb2I4YXEyUno1aDJDVm9ENnQ4c2NhVVExU3BkdEZZeVdneEM5?=
+ =?utf-8?B?Q1pNYnJVclV2bW02aU5BbjNRQ0dIZVBYMXBkY1JUMUxVRjJieit5bHliSjVt?=
+ =?utf-8?B?QTdzcGd1MW9mcEd1dG5KVmZEVVVIbStNS29rRVhRa2xBZWJoU3NJMzFTay9E?=
+ =?utf-8?B?bmtoMWQveDlFQ3pJUUNNQjhOZXBpWjVFWWtmNEFhYnhNQkl5MkIwYW5LMzhC?=
+ =?utf-8?B?bVBoNWM5c3Z3ZFRDT1VGektiZlpEQmVhWFdwTGpQV3Vaejd2MHBnU1ljNy9C?=
+ =?utf-8?B?bWJiOWdrQklhVDBQT2ZTY2syazdHd09vLzBVanZsWnJNc09ia3RrYXJYQjcz?=
+ =?utf-8?B?MVFRUXl6STdnSEV6eEl4Y3JqcnRFL1l5RE1TODZtM0VUbkc4RkgvaThLS2ZN?=
+ =?utf-8?B?UFN2aWRaMjBRK2plQ0tGdjZ6N3FvT0JxR09BcHI3NW5xSmYvQWFSR0FhbzZk?=
+ =?utf-8?B?MTAxZE94Yk10VW9kOW1SeFNNSkw3SStOM2FnMmVhY1F5NTJZMFd2V2ZTRXFa?=
+ =?utf-8?B?aldVc2lmY2hjYTJiU0V1Nm9ZL1BybHlCQWZYbVJXbGF5cFNPTUxxMTZuSU5z?=
+ =?utf-8?Q?2HhMvAj3pKNTmhQ10FHOJmJb76qO+QQ1HkufM=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5ecaa9be-e43d-4d64-0ea0-08d8d85f9a89
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Feb 2021 01:00:40.0030
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: i1WfxIgKppq25RtNZC/gtoJqjjEyDpZbdVn+oEEbrGnElFdnXAkY6eFy+IhM/cBG
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB3935
+X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
  definitions=2021-02-23_12:2021-02-23,2021-02-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
- phishscore=0 adultscore=0 mlxscore=0 priorityscore=1501 clxscore=1015
- spamscore=0 lowpriorityscore=0 suspectscore=0 mlxlogscore=999
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102230190
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ impostorscore=0 spamscore=0 phishscore=0 malwarescore=0 bulkscore=0
+ mlxlogscore=923 clxscore=1015 lowpriorityscore=0 suspectscore=0
+ adultscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2102240004
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The logic follows that of BTF_KIND_INT most of the time. Sanitization
-replaces BTF_KIND_FLOATs with equally-sized empty BTF_KIND_STRUCTs on
-older kernels, for example, the following:
 
-    [4] FLOAT 'float' size=4
 
-becomes the following:
+On 2/23/21 2:28 PM, Song Liu wrote:
+> To access per-task data, BPF programs usually creates a hash table with
+> pid as the key. This is not ideal because:
+>   1. The user need to estimate the proper size of the hash table, which may
+>      be inaccurate;
+>   2. Big hash tables are slow;
+>   3. To clean up the data properly during task terminations, the user need
+>      to write extra logic.
+> 
+> Task local storage overcomes these issues and offers a better option for
+> these per-task data. Task local storage is only available to BPF_LSM. Now
+> enable it for tracing programs.
+> 
+> Unlike LSM programs, tracing programs can be called in IRQ contexts.
+> Helpers that access task local storage are updated to use
+> raw_spin_lock_irqsave() instead of raw_spin_lock_bh().
+> 
+> Tracing programs can attach to functions on the task free path, e.g.
+> exit_creds(). To avoid allocating task local storage after
+> bpf_task_storage_free(). bpf_task_storage_get() is updated to not allocate
+> new storage when the task is not refcounted (task->usage == 0).
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
 
-    [4] STRUCT '(anon)' size=4 vlen=0
+For a patch like this, typically we do not put the above
+Reported-by here as it is not really reported by the
+kernel test robot. If no revision is required, maybe
+maintainer can remove it before applying.
 
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
----
- tools/lib/bpf/btf.c             | 51 ++++++++++++++++++++++++++++++++-
- tools/lib/bpf/btf.h             |  6 ++++
- tools/lib/bpf/btf_dump.c        |  4 +++
- tools/lib/bpf/libbpf.c          | 26 ++++++++++++++++-
- tools/lib/bpf/libbpf.map        |  5 ++++
- tools/lib/bpf/libbpf_internal.h |  2 ++
- 6 files changed, 92 insertions(+), 2 deletions(-)
-
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 6058fbadbee4..488464307c0f 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -292,6 +292,7 @@ static int btf_type_size(const struct btf_type *t)
- 	case BTF_KIND_PTR:
- 	case BTF_KIND_TYPEDEF:
- 	case BTF_KIND_FUNC:
-+	case BTF_KIND_FLOAT:
- 		return base_size;
- 	case BTF_KIND_INT:
- 		return base_size + sizeof(__u32);
-@@ -339,6 +340,7 @@ static int btf_bswap_type_rest(struct btf_type *t)
- 	case BTF_KIND_PTR:
- 	case BTF_KIND_TYPEDEF:
- 	case BTF_KIND_FUNC:
-+	case BTF_KIND_FLOAT:
- 		return 0;
- 	case BTF_KIND_INT:
- 		*(__u32 *)(t + 1) = bswap_32(*(__u32 *)(t + 1));
-@@ -579,6 +581,7 @@ __s64 btf__resolve_size(const struct btf *btf, __u32 type_id)
- 		case BTF_KIND_UNION:
- 		case BTF_KIND_ENUM:
- 		case BTF_KIND_DATASEC:
-+		case BTF_KIND_FLOAT:
- 			size = t->size;
- 			goto done;
- 		case BTF_KIND_PTR:
-@@ -622,6 +625,7 @@ int btf__align_of(const struct btf *btf, __u32 id)
- 	switch (kind) {
- 	case BTF_KIND_INT:
- 	case BTF_KIND_ENUM:
-+	case BTF_KIND_FLOAT:
- 		return min(btf_ptr_sz(btf), (size_t)t->size);
- 	case BTF_KIND_PTR:
- 		return btf_ptr_sz(btf);
-@@ -1783,6 +1787,47 @@ int btf__add_int(struct btf *btf, const char *name, size_t byte_sz, int encoding
- 	return btf_commit_type(btf, sz);
- }
- 
-+/*
-+ * Append new BTF_KIND_FLOAT type with:
-+ *   - *name* - non-empty, non-NULL type name;
-+ *   - *sz* - size of the type, in bytes;
-+ * Returns:
-+ *   - >0, type ID of newly added BTF type;
-+ *   - <0, on error.
-+ */
-+int btf__add_float(struct btf *btf, const char *name, size_t byte_sz)
-+{
-+	struct btf_type *t;
-+	int sz, name_off;
-+
-+	/* non-empty name */
-+	if (!name || !name[0])
-+		return -EINVAL;
-+
-+	/* byte_sz must be one of the explicitly allowed values */
-+	if (byte_sz != 2 && byte_sz != 4 && byte_sz != 8 && byte_sz != 12 &&
-+	    byte_sz != 16)
-+		return -EINVAL;
-+
-+	if (btf_ensure_modifiable(btf))
-+		return -ENOMEM;
-+
-+	sz = sizeof(struct btf_type);
-+	t = btf_add_type_mem(btf, sz);
-+	if (!t)
-+		return -ENOMEM;
-+
-+	name_off = btf__add_str(btf, name);
-+	if (name_off < 0)
-+		return name_off;
-+
-+	t->name_off = name_off;
-+	t->info = btf_type_info(BTF_KIND_FLOAT, 0, 0);
-+	t->size = byte_sz;
-+
-+	return btf_commit_type(btf, sz);
-+}
-+
- /* it's completely legal to append BTF types with type IDs pointing forward to
-  * types that haven't been appended yet, so we only make sure that id looks
-  * sane, we can't guarantee that ID will always be valid
-@@ -1910,7 +1955,7 @@ static int btf_add_composite(struct btf *btf, int kind, const char *name, __u32
-  *   - *byte_sz* - size of the struct, in bytes;
-  *
-  * Struct initially has no fields in it. Fields can be added by
-- * btf__add_field() right after btf__add_struct() succeeds. 
-+ * btf__add_field() right after btf__add_struct() succeeds.
-  *
-  * Returns:
-  *   - >0, type ID of newly added BTF type;
-@@ -3653,6 +3698,7 @@ static int btf_dedup_prep(struct btf_dedup *d)
- 		case BTF_KIND_FWD:
- 		case BTF_KIND_TYPEDEF:
- 		case BTF_KIND_FUNC:
-+		case BTF_KIND_FLOAT:
- 			h = btf_hash_common(t);
- 			break;
- 		case BTF_KIND_INT:
-@@ -3749,6 +3795,7 @@ static int btf_dedup_prim_type(struct btf_dedup *d, __u32 type_id)
- 		break;
- 
- 	case BTF_KIND_FWD:
-+	case BTF_KIND_FLOAT:
- 		h = btf_hash_common(t);
- 		for_each_dedup_cand(d, hash_entry, h) {
- 			cand_id = (__u32)(long)hash_entry->value;
-@@ -4010,6 +4057,7 @@ static int btf_dedup_is_equiv(struct btf_dedup *d, __u32 cand_id,
- 			return btf_compat_enum(cand_type, canon_type);
- 
- 	case BTF_KIND_FWD:
-+	case BTF_KIND_FLOAT:
- 		return btf_equal_common(cand_type, canon_type);
- 
- 	case BTF_KIND_CONST:
-@@ -4506,6 +4554,7 @@ static int btf_dedup_remap_type(struct btf_dedup *d, __u32 type_id)
- 	switch (btf_kind(t)) {
- 	case BTF_KIND_INT:
- 	case BTF_KIND_ENUM:
-+	case BTF_KIND_FLOAT:
- 		break;
- 
- 	case BTF_KIND_FWD:
-diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
-index 1237bcd1dd17..029a9cfc8c2d 100644
---- a/tools/lib/bpf/btf.h
-+++ b/tools/lib/bpf/btf.h
-@@ -95,6 +95,7 @@ LIBBPF_API int btf__find_str(struct btf *btf, const char *s);
- LIBBPF_API int btf__add_str(struct btf *btf, const char *s);
- 
- LIBBPF_API int btf__add_int(struct btf *btf, const char *name, size_t byte_sz, int encoding);
-+LIBBPF_API int btf__add_float(struct btf *btf, const char *name, size_t byte_sz);
- LIBBPF_API int btf__add_ptr(struct btf *btf, int ref_type_id);
- LIBBPF_API int btf__add_array(struct btf *btf,
- 			      int index_type_id, int elem_type_id, __u32 nr_elems);
-@@ -294,6 +295,11 @@ static inline bool btf_is_datasec(const struct btf_type *t)
- 	return btf_kind(t) == BTF_KIND_DATASEC;
- }
- 
-+static inline bool btf_is_float(const struct btf_type *t)
-+{
-+	return btf_kind(t) == BTF_KIND_FLOAT;
-+}
-+
- static inline __u8 btf_int_encoding(const struct btf_type *t)
- {
- 	return BTF_INT_ENCODING(*(__u32 *)(t + 1));
-diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
-index 2f9d685bd522..5e957fcceee6 100644
---- a/tools/lib/bpf/btf_dump.c
-+++ b/tools/lib/bpf/btf_dump.c
-@@ -279,6 +279,7 @@ static int btf_dump_mark_referenced(struct btf_dump *d)
- 		case BTF_KIND_INT:
- 		case BTF_KIND_ENUM:
- 		case BTF_KIND_FWD:
-+		case BTF_KIND_FLOAT:
- 			break;
- 
- 		case BTF_KIND_VOLATILE:
-@@ -453,6 +454,7 @@ static int btf_dump_order_type(struct btf_dump *d, __u32 id, bool through_ptr)
- 
- 	switch (btf_kind(t)) {
- 	case BTF_KIND_INT:
-+	case BTF_KIND_FLOAT:
- 		tstate->order_state = ORDERED;
- 		return 0;
- 
-@@ -1133,6 +1135,7 @@ static void btf_dump_emit_type_decl(struct btf_dump *d, __u32 id,
- 		case BTF_KIND_STRUCT:
- 		case BTF_KIND_UNION:
- 		case BTF_KIND_TYPEDEF:
-+		case BTF_KIND_FLOAT:
- 			goto done;
- 		default:
- 			pr_warn("unexpected type in decl chain, kind:%u, id:[%u]\n",
-@@ -1247,6 +1250,7 @@ static void btf_dump_emit_type_chain(struct btf_dump *d,
- 
- 		switch (kind) {
- 		case BTF_KIND_INT:
-+		case BTF_KIND_FLOAT:
- 			btf_dump_emit_mods(d, decls);
- 			name = btf_name_of(d, t->name_off);
- 			btf_dump_printf(d, "%s", name);
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index d43cc3f29dae..d3ccd2aec6d2 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -178,6 +178,8 @@ enum kern_feature_id {
- 	FEAT_PROG_BIND_MAP,
- 	/* Kernel support for module BTFs */
- 	FEAT_MODULE_BTF,
-+	/* BTF_KIND_FLOAT support */
-+	FEAT_BTF_FLOAT,
- 	__FEAT_CNT,
- };
- 
-@@ -1935,6 +1937,7 @@ static const char *btf_kind_str(const struct btf_type *t)
- 	case BTF_KIND_FUNC_PROTO: return "func_proto";
- 	case BTF_KIND_VAR: return "var";
- 	case BTF_KIND_DATASEC: return "datasec";
-+	case BTF_KIND_FLOAT: return "float";
- 	default: return "unknown";
- 	}
- }
-@@ -2384,15 +2387,17 @@ static bool btf_needs_sanitization(struct bpf_object *obj)
- {
- 	bool has_func_global = kernel_supports(FEAT_BTF_GLOBAL_FUNC);
- 	bool has_datasec = kernel_supports(FEAT_BTF_DATASEC);
-+	bool has_float = kernel_supports(FEAT_BTF_FLOAT);
- 	bool has_func = kernel_supports(FEAT_BTF_FUNC);
- 
--	return !has_func || !has_datasec || !has_func_global;
-+	return !has_func || !has_datasec || !has_func_global || !has_float;
- }
- 
- static void bpf_object__sanitize_btf(struct bpf_object *obj, struct btf *btf)
- {
- 	bool has_func_global = kernel_supports(FEAT_BTF_GLOBAL_FUNC);
- 	bool has_datasec = kernel_supports(FEAT_BTF_DATASEC);
-+	bool has_float = kernel_supports(FEAT_BTF_FLOAT);
- 	bool has_func = kernel_supports(FEAT_BTF_FUNC);
- 	struct btf_type *t;
- 	int i, j, vlen;
-@@ -2445,6 +2450,10 @@ static void bpf_object__sanitize_btf(struct bpf_object *obj, struct btf *btf)
- 		} else if (!has_func_global && btf_is_func(t)) {
- 			/* replace BTF_FUNC_GLOBAL with BTF_FUNC_STATIC */
- 			t->info = BTF_INFO_ENC(BTF_KIND_FUNC, 0, 0);
-+		} else if (!has_float && btf_is_float(t)) {
-+			/* replace FLOAT with an equally-sized empty STRUCT */
-+			t->name_off = 0;
-+			t->info = BTF_INFO_ENC(BTF_KIND_STRUCT, 0, 0);
- 		}
- 	}
- }
-@@ -3882,6 +3891,18 @@ static int probe_kern_btf_datasec(void)
- 					     strs, sizeof(strs)));
- }
- 
-+static int probe_kern_btf_float(void)
-+{
-+	static const char strs[] = "\0float";
-+	__u32 types[] = {
-+		/* float */
-+		BTF_TYPE_FLOAT_ENC(1, 4),
-+	};
-+
-+	return probe_fd(libbpf__load_raw_btf((char *)types, sizeof(types),
-+					     strs, sizeof(strs)));
-+}
-+
- static int probe_kern_array_mmap(void)
- {
- 	struct bpf_create_map_attr attr = {
-@@ -4061,6 +4082,9 @@ static struct kern_feature_desc {
- 	[FEAT_MODULE_BTF] = {
- 		"module BTF support", probe_module_btf,
- 	},
-+	[FEAT_BTF_FLOAT] = {
-+		"BTF_KIND_FLOAT support", probe_kern_btf_float,
-+	},
- };
- 
- static bool kernel_supports(enum kern_feature_id feat_id)
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 1c0fd2dd233a..ec898f464ab9 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -350,3 +350,8 @@ LIBBPF_0.3.0 {
- 		xsk_setup_xdp_prog;
- 		xsk_socket__update_xskmap;
- } LIBBPF_0.2.0;
-+
-+LIBBPF_0.4.0 {
-+	global:
-+		btf__add_float;
-+} LIBBPF_0.3.0;
-diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-index 969d0ac592ba..343f6eb05637 100644
---- a/tools/lib/bpf/libbpf_internal.h
-+++ b/tools/lib/bpf/libbpf_internal.h
-@@ -31,6 +31,8 @@
- #define BTF_MEMBER_ENC(name, type, bits_offset) (name), (type), (bits_offset)
- #define BTF_PARAM_ENC(name, type) (name), (type)
- #define BTF_VAR_SECINFO_ENC(type, offset, size) (type), (offset), (size)
-+#define BTF_TYPE_FLOAT_ENC(name, sz) \
-+	BTF_TYPE_ENC(name, BTF_INFO_ENC(BTF_KIND_FLOAT, 0, 0), sz)
- 
- #ifndef likely
- #define likely(x) __builtin_expect(!!(x), 1)
--- 
-2.29.2
-
+> Acked-by: KP Singh <kpsingh@kernel.org>
+> Signed-off-by: Song Liu <songliubraving@fb.com>
+> ---
+>   include/linux/bpf.h            |  7 ++++++
+>   include/linux/bpf_lsm.h        | 22 -----------------
+>   include/linux/bpf_types.h      |  2 +-
+>   include/linux/sched.h          |  5 ++++
+>   kernel/bpf/Makefile            |  3 +--
+>   kernel/bpf/bpf_local_storage.c | 28 +++++++++++++---------
+>   kernel/bpf/bpf_lsm.c           |  4 ----
+>   kernel/bpf/bpf_task_storage.c  | 43 +++++++++-------------------------
+>   kernel/fork.c                  |  5 ++++
+>   kernel/trace/bpf_trace.c       |  4 ++++
+>   10 files changed, 51 insertions(+), 72 deletions(-)
+> 
+[...]
