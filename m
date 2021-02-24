@@ -2,93 +2,116 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00FF63238B1
-	for <lists+bpf@lfdr.de>; Wed, 24 Feb 2021 09:35:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 056B8323847
+	for <lists+bpf@lfdr.de>; Wed, 24 Feb 2021 09:05:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234451AbhBXIed (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Feb 2021 03:34:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50910 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234037AbhBXIe0 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 24 Feb 2021 03:34:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614155563;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tosWfJmphilCKxBktntRSANHnNWbRuatRNtiQIJTl70=;
-        b=H7oKIaCBzEmBom/Y7/tRrYwoYzQnuE/usqXFMrEQNKsApbR84ZjqDF0jknS+uLzQ50Q3Qr
-        omBOO30ikDNND9MAyMg/JFNeFJhJqtbotyShae8xsZg8hj0/q5KY9qcnFk4k7WTz1DuIY9
-        NpYTLYftfVx0vZhkVujnyUwI86pPJ84=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-452-X-r8_EE_NweP0oEnuxO4qg-1; Wed, 24 Feb 2021 03:32:39 -0500
-X-MC-Unique: X-r8_EE_NweP0oEnuxO4qg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EE1AAEC1C3;
-        Wed, 24 Feb 2021 08:32:37 +0000 (UTC)
-Received: from krava (unknown [10.40.194.14])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 4BBBC10016DB;
-        Wed, 24 Feb 2021 08:32:36 +0000 (UTC)
-Date:   Wed, 24 Feb 2021 09:32:35 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Kun-Chuan Hsieh <jetswayss@gmail.com>
-Cc:     ast@kernel.org, bpf@vger.kernel.org, jolsa@kernel.org,
-        andrii@kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v2] tools/resolve_btfids: Fix build error with older host
- toolchains
-Message-ID: <YDYPIyk6mE+A7K7L@krava>
-References: <20210224052752.5284-1-jetswayss@gmail.com>
+        id S233844AbhBXIEc (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Feb 2021 03:04:32 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12569 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233817AbhBXIEE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Feb 2021 03:04:04 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DlpJG59S9zMdfQ;
+        Wed, 24 Feb 2021 16:00:46 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Wed, 24 Feb 2021
+ 16:02:36 +0800
+From:   wanghongzhe <wanghongzhe@huawei.com>
+To:     <keescook@chromium.org>, <luto@amacapital.net>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
+        <daniel@iogearbox.net>, <john.fastabend@gmail.com>, <kafai@fb.com>,
+        <kpsingh@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <songliubraving@fb.com>,
+        <wad@chromium.org>, <wanghongzhe@huawei.com>, <yhs@fb.com>,
+        <tongxiaomeng@huawei.com>
+Subject: [PATCH v3] seccomp: Improve performace by optimizing rmb()
+Date:   Wed, 24 Feb 2021 16:49:45 +0800
+Message-ID: <1614156585-18842-1-git-send-email-wanghongzhe@huawei.com>
+X-Mailer: git-send-email 1.7.12.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210224052752.5284-1-jetswayss@gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain
+X-Originating-IP: [10.175.124.27]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 05:27:52AM +0000, Kun-Chuan Hsieh wrote:
-> Older libelf.h and glibc elf.h might not yet define the ELF compression
-> types.
-> 
-> Checking and defining SHF_COMPRESSED fix the build error when compiling
-> with older toolchains. Also, the tool resolve_btfids is compiled with host
-> toolchain. The host toolchain is more likely to be older than the cross
-> compile toolchain.
-> 
-> Cc: stable@vger.kernel.org
-> 
-> Signed-off-by: Kun-Chuan Hsieh <jetswayss@gmail.com>
+As Kees haved accepted the v2 patch at a381b70a1 which just
+replaced rmb() with smp_rmb(), this patch will base on that and just adjust
+the smp_rmb() to the correct position.
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+As the original comment shown (and indeed it should be):
+   /*
+    * Make sure that any changes to mode from another thread have
+    * been seen after SYSCALL_WORK_SECCOMP was seen.
+    */
+the smp_rmb() should be put between reading SYSCALL_WORK_SECCOMP and reading
+seccomp.mode to make sure that any changes to mode from another thread have
+been seen after SYSCALL_WORK_SECCOMP was seen, for TSYNC situation. However,
+it is misplaced between reading seccomp.mode and seccomp->filter. This issue
+seems to be misintroduced at 13aa72f0fd0a9f98a41cefb662487269e2f1ad65 which
+aims to refactor the filter callback and the API. So let's just adjust the
+smp_rmb() to the correct position.
 
-thanks,
-jirka
+A next optimization patch will be provided if this ajustment is appropriate.
 
-> ---
->  tools/bpf/resolve_btfids/main.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
-> index 7409d7860aa6..80d966cfcaa1 100644
-> --- a/tools/bpf/resolve_btfids/main.c
-> +++ b/tools/bpf/resolve_btfids/main.c
-> @@ -260,6 +260,11 @@ static struct btf_id *add_symbol(struct rb_root *root, char *name, size_t size)
->  	return btf_id__add(root, id, false);
->  }
->  
-> +/* Older libelf.h and glibc elf.h might not yet define the ELF compression types. */
-> +#ifndef SHF_COMPRESSED
-> +#define SHF_COMPRESSED (1 << 11) /* Section with compressed data. */
-> +#endif
-> +
->  /*
->   * The data of compressed section should be aligned to 4
->   * (for 32bit) or 8 (for 64 bit) bytes. The binutils ld
-> -- 
-> 2.25.1
-> 
+v2 -> v3:
+ - move the smp_rmb() to the correct position
+
+v1 -> v2:
+ - only replace rmb() with smp_rmb()
+ - provide the performance test number
+
+RFC -> v1:
+ - replace rmb() with smp_rmb()
+ - move the smp_rmb() logic to the middle between TIF_SECCOMP and mode
+
+Signed-off-by: wanghongzhe <wanghongzhe@huawei.com>
+---
+ kernel/seccomp.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
+
+diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+index 1d60fc2c9987..64b236cb8a7f 100644
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -1160,12 +1160,6 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
+ 	int data;
+ 	struct seccomp_data sd_local;
+ 
+-	/*
+-	 * Make sure that any changes to mode from another thread have
+-	 * been seen after SYSCALL_WORK_SECCOMP was seen.
+-	 */
+-	smp_rmb();
+-
+ 	if (!sd) {
+ 		populate_seccomp_data(&sd_local);
+ 		sd = &sd_local;
+@@ -1291,7 +1285,6 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
+ 
+ int __secure_computing(const struct seccomp_data *sd)
+ {
+-	int mode = current->seccomp.mode;
+ 	int this_syscall;
+ 
+ 	if (IS_ENABLED(CONFIG_CHECKPOINT_RESTORE) &&
+@@ -1301,7 +1294,13 @@ int __secure_computing(const struct seccomp_data *sd)
+ 	this_syscall = sd ? sd->nr :
+ 		syscall_get_nr(current, current_pt_regs());
+ 
+-	switch (mode) {
++    /* 
++     * Make sure that any changes to mode from another thread have
++     * been seen after SYSCALL_WORK_SECCOMP was seen.
++     */
++    smp_rmb();
++
++	switch (current->seccomp.mode) {
+ 	case SECCOMP_MODE_STRICT:
+ 		__secure_computing_strict(this_syscall);  /* may call do_exit */
+ 		return 0;
+-- 
+2.19.1
 
