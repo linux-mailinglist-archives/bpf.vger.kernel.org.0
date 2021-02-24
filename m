@@ -2,90 +2,95 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D24BA3246D1
-	for <lists+bpf@lfdr.de>; Wed, 24 Feb 2021 23:28:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C8BD3246EA
+	for <lists+bpf@lfdr.de>; Wed, 24 Feb 2021 23:34:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231604AbhBXW2E (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Feb 2021 17:28:04 -0500
-Received: from www62.your-server.de ([213.133.104.62]:40664 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229961AbhBXW2D (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Feb 2021 17:28:03 -0500
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lF2cn-0005Cu-3w; Wed, 24 Feb 2021 23:27:17 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lF2cm-000RoQ-UQ; Wed, 24 Feb 2021 23:27:16 +0100
-Subject: Re: arch_prepare_bpf_trampoline() for arm ?
-To:     KP Singh <kpsingh@kernel.org>
-Cc:     Luigi Rizzo <rizzo@iet.unipi.it>, bpf <bpf@vger.kernel.org>,
-        will@kernel.org
-References: <CA+hQ2+hhDG2JprNLaUdX4xgcihvchEda1aJuQN3jtJ3hYucDcQ@mail.gmail.com>
- <6af0ab27-48f1-e389-d2f4-41b3c1db4a18@iogearbox.net>
- <CACYkzJ52rAyOWQsKXOOej1=Wh_Fw_S0yBROK7POwbnnccqdvQA@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <4f57cfa1-baf9-771d-b8c3-29e02b87c989@iogearbox.net>
-Date:   Wed, 24 Feb 2021 23:27:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S235066AbhBXWef (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Feb 2021 17:34:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234983AbhBXWee (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Feb 2021 17:34:34 -0500
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48704C061786;
+        Wed, 24 Feb 2021 14:33:54 -0800 (PST)
+Received: by mail-qt1-x82e.google.com with SMTP id f17so2753259qth.7;
+        Wed, 24 Feb 2021 14:33:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P2mfwpt99Qi5BsPHIn65vBU52kmUWbq+BvY+SSkyjvo=;
+        b=pLQozVRHPRwPgMQaxn01iqlRAXQv+wq/fnS8PH/nfz05ZX7yP2GNpxrJOF0zO3bJQM
+         7/KSAJIb7MwXdd/2VqkyMXyaAcLp9sexYFHtMm5aLIUC3jE7N+MO1/XNiBs2nJgLT4TH
+         x7FFmpLfQQCAFGwiXrAeH1SE2EGNB8UaXgH4i27/ehkrF1PECE7n1Fl7MxQrAFlyBs5t
+         VtGz2CSRywhzhKUMRl95TxtOQiHr0WZVgzZLcs58FX1z1LxzG27ayVpmuZsV8en9b+kc
+         rbzdxnckXMzWVDdV6wQEDHgxkNeNzmvZM+aw5M5WRjm4apy6eHjJDCGcOtdODuxm4aFu
+         r10A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P2mfwpt99Qi5BsPHIn65vBU52kmUWbq+BvY+SSkyjvo=;
+        b=ihaeVar7jDYzIygMRe8lmD4yH6A2FAVicBnYCSoexrqSC9pAp6isNr71l2s93Gd34d
+         hLRmzZpAhh4VdyWni5ntC3igzO5dPPYVs/wcvYTSF+d96Q6iRtjMJKWbeF2hJMaNC+FJ
+         oEjEoMTvok+0P8LXA7zNonSmSJC4tA7ELwjoi7k3fnax6ju8KrsCL/dVoqrJAialsAqD
+         0hnZHdSPyfZqx5UTdHKJuzqwH6RBkaSgbkiax2uE1bTnUodpxI0yjydOhQtVTTACKL76
+         PkB0ZCAaRqoI5sJZf2OLD/OqXu9s3TPiAi4MRmJJrROMWe+/AF1clumlmGkAF26ELlw6
+         Ujdg==
+X-Gm-Message-State: AOAM5335RvIT268pbaLz4pY0+j2Pw15DCEK4aFMeMOCHsSkEFc9BhizT
+        pZCIAVg/PgXtzMpjAVZ6mQo=
+X-Google-Smtp-Source: ABdhPJynMYC155XCGvq49kTFVwfQqphXiVdSmtr4uMVpskKp05E8twZHa6RKTfNUBe3nzRdlss0wew==
+X-Received: by 2002:ac8:1408:: with SMTP id k8mr26857qtj.204.1614206033498;
+        Wed, 24 Feb 2021 14:33:53 -0800 (PST)
+Received: from Slackware.localdomain ([156.146.54.87])
+        by smtp.gmail.com with ESMTPSA id w53sm2449986qtb.54.2021.02.24.14.33.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Feb 2021 14:33:52 -0800 (PST)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        natechancellor@gmail.com, ndesaulniers@google.com,
+        masahiroy@kernel.org, akpm@linux-foundation.org,
+        valentin.schneider@arm.com, terrelln@fb.com, hannes@cmpxchg.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, clang-built-linux@googlegroups.com
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH V2] init/Kconfig: Fix a typo in CC_VERSION_TEXT help text
+Date:   Thu, 25 Feb 2021 04:03:25 +0530
+Message-Id: <20210224223325.29099-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <CACYkzJ52rAyOWQsKXOOej1=Wh_Fw_S0yBROK7POwbnnccqdvQA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26090/Wed Feb 24 13:09:42 2021)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/24/21 10:30 PM, KP Singh wrote:
-> I checked with Will about it and learnt that ARM64 does support
-> patching certain instructions (e.g. branch, brk, nops) using
-> aarch64_insn_patch_text_nosync, it's used in ftrace:
-> 
-> https://elixir.bootlin.com/linux/latest/source/arch/arm64/kernel/ftrace.c#L24
-> 
-> But one has to tolerate that not all CPUs will execute these
-> instructions until a context synchronization happens due to an
-> exception or an ISB instruction. But I think we can start
-> with the same thing that FTrace does?
 
-Is there any downside or road blocker for a aarch64_insn_patch_text_sync()
-variant which would then trigger an explicit isb()? Presumably to perform
-this reliably at that point you would end up at aarch64_insn_patch_text()
-which needs the brute force stop CPU, right? I guess my noob question is
-what happens if, for example, an old JITed BPF prog got freed (RCU) and the
-JIT mem got reused for something else in meantime when patching JMP->NOP
-via aarch64_insn_patch_text_nosync() and not all CPUs did a context sync,
-is such scenario/worry realistic?
+s/compier/compiler/
 
-> On Wed, Feb 24, 2021 at 10:01 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->>
->> On 2/24/21 8:54 PM, Luigi Rizzo wrote:
->>> I prepared a BPF version of kstats[1]
->>> https://github.com/luigirizzo/lr-cstats
->>> that uses fentry/fexit hooks to monitor the execution time
->>> of a kernel function.
->>>
->>> I hoped to have it working on ARM64 too, but it looks like
->>> arch_prepare_bpf_trampoline() only exists for x86.
->>>
->>> Is there any outstanding patch for this function on ARM64,
->>> or any similar function I could look at to implement it myself ?
->>
->> Not that I'm currently aware of, arm64 support would definitely be great
->> to have. From x86 side, the underlying arch dependency was basically on
->> text_poke_bp() to patch instructions on a live kernel. Haven't checked
->> recently whether an equivalent exists on arm64 yet, but perhaps Will
->> might know.
->>
->>> [1] kstats is an in-kernel also in the above repo and previously
->>> discussed at https://lwn.net/Articles/813303/
->>
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ Changes from V1:
+ Nathan and Randy, suggested  better subject line texts,so incorporated.
+
+ init/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/init/Kconfig b/init/Kconfig
+index ba8bd5256980..2cfed79cc6ec 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -19,7 +19,7 @@ config CC_VERSION_TEXT
+ 	    CC_VERSION_TEXT so it is recorded in include/config/auto.conf.cmd.
+ 	    When the compiler is updated, Kconfig will be invoked.
+
+-	  - Ensure full rebuild when the compier is updated
++	  - Ensure full rebuild when the compiler is updated
+ 	    include/linux/kconfig.h contains this option in the comment line so
+ 	    fixdep adds include/config/cc/version/text.h into the auto-generated
+ 	    dependency. When the compiler is updated, syncconfig will touch it
+--
+2.29.2
 
