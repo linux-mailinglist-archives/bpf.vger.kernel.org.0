@@ -2,32 +2,31 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 056B8323847
-	for <lists+bpf@lfdr.de>; Wed, 24 Feb 2021 09:05:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BEC432385D
+	for <lists+bpf@lfdr.de>; Wed, 24 Feb 2021 09:13:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233844AbhBXIEc (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Feb 2021 03:04:32 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12569 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233817AbhBXIEE (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Feb 2021 03:04:04 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DlpJG59S9zMdfQ;
-        Wed, 24 Feb 2021 16:00:46 +0800 (CST)
-Received: from huawei.com (10.175.124.27) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Wed, 24 Feb 2021
- 16:02:36 +0800
+        id S234158AbhBXIL6 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Feb 2021 03:11:58 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12201 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234091AbhBXILz (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Feb 2021 03:11:55 -0500
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DlpTs0c4tzlNZ3;
+        Wed, 24 Feb 2021 16:09:05 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.498.0; Wed, 24 Feb 2021
+ 16:10:56 +0800
 From:   wanghongzhe <wanghongzhe@huawei.com>
 To:     <keescook@chromium.org>, <luto@amacapital.net>
 CC:     <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
         <daniel@iogearbox.net>, <john.fastabend@gmail.com>, <kafai@fb.com>,
         <kpsingh@kernel.org>, <linux-kernel@vger.kernel.org>,
         <netdev@vger.kernel.org>, <songliubraving@fb.com>,
-        <wad@chromium.org>, <wanghongzhe@huawei.com>, <yhs@fb.com>,
-        <tongxiaomeng@huawei.com>
+        <wad@chromium.org>, <wanghongzhe@huawei.com>, <yhs@fb.com>
 Subject: [PATCH v3] seccomp: Improve performace by optimizing rmb()
-Date:   Wed, 24 Feb 2021 16:49:45 +0800
-Message-ID: <1614156585-18842-1-git-send-email-wanghongzhe@huawei.com>
+Date:   Wed, 24 Feb 2021 16:58:05 +0800
+Message-ID: <1614157085-18952-1-git-send-email-wanghongzhe@huawei.com>
 X-Mailer: git-send-email 1.7.12.4
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -102,11 +101,11 @@ index 1d60fc2c9987..64b236cb8a7f 100644
  		syscall_get_nr(current, current_pt_regs());
  
 -	switch (mode) {
-+    /* 
-+     * Make sure that any changes to mode from another thread have
-+     * been seen after SYSCALL_WORK_SECCOMP was seen.
-+     */
-+    smp_rmb();
++	/* 
++	 * Make sure that any changes to mode from another thread have
++	 * been seen after SYSCALL_WORK_SECCOMP was seen.
++	 */
++	smp_rmb();
 +
 +	switch (current->seccomp.mode) {
  	case SECCOMP_MODE_STRICT:
