@@ -2,113 +2,86 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 122803235DC
-	for <lists+bpf@lfdr.de>; Wed, 24 Feb 2021 03:44:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E3763235D9
+	for <lists+bpf@lfdr.de>; Wed, 24 Feb 2021 03:44:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232473AbhBXCn1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Feb 2021 21:43:27 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:49033 "EHLO
+        id S232349AbhBXCnA (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Tue, 23 Feb 2021 21:43:00 -0500
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:34581 "EHLO
         out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232698AbhBXCnZ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 23 Feb 2021 21:43:25 -0500
+        by vger.kernel.org with ESMTP id S229961AbhBXCm6 (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Tue, 23 Feb 2021 21:42:58 -0500
 Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id A97B65C0113;
-        Tue, 23 Feb 2021 21:42:18 -0500 (EST)
+        by mailout.nyi.internal (Postfix) with ESMTP id 179405C0085;
+        Tue, 23 Feb 2021 21:42:10 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Tue, 23 Feb 2021 21:42:18 -0500
+  by compute6.internal (MEProxy); Tue, 23 Feb 2021 21:42:10 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zenhack.net; h=
-        message-id:in-reply-to:references:from:date:subject:to; s=fm2;
-         bh=zX7JBPLIHAV2HMYc9beglbBAlWe9br7l4Md06RPvYow=; b=efjJ6OteR33d
-        tzsN4LRW/Gl14AmksIb2CKhYpIcWlNIBPY+EVDZ4KFlXbANHmHSy5jwcTdKuxQLe
-        n1AKAdU0ZaFwzRv6GnwjwlSo9FVzcGPupf2GgY/jxqP8m0kfp/hBZPmkdoehjnIj
-        xFK+FGtDgb1KUBORjj42uCbrD9btDQgMnBG44Po9WJqGYfsHOluHitb0wAhSXgXy
-        H3/h5NO7x3mrIxZHx4wv27Y2GZ+epSRLa92YeCVCvfl4r/PwrQY+6vPdxo/hAH8J
-        IoAKvxu2TknB/vZer6tOtpxT6di7/v9hc4HZAWT2BsmZ/zDsqBEuydDBnpr/LdkJ
-        NI4wds898A==
+        message-id:from:date:subject:to; s=fm2; bh=Vtx7UlgIGFX9Sn2RG8HGj
+        RbRgEj2WGN5X1HPKlnVvXA=; b=BrV1JIhmVaRgKkDNJeX5NtbcVdpAsN5pUNczZ
+        6fRwu5YLMPBMBDwPEDpoXyDTbJr1lSbGjNokyESKJeg2uDPBv2RORWG0qTxheIs+
+        X0+qCUToSk+u9uYe1LI+pwFvm1XD1JVAam1rHAUWERLlMvHYT2yRQcDK0JIgu5Ho
+        aSTO+zB0wkzaeHAsCRRD5ohIa2ajKV93tIoagkTi+3CPd+FRAcmJrnuO9cQYY4ng
+        knlyayWz4GW91X2ZkDBz5KZ920OwNa4HhjJjdsV/Wc/+g+kMQgx5PvvBswmKJzKz
+        TyuBQJdeieoiMHgDvvdCsqqFft5sF7Vr377Gunt3crC8dOhXQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=date:from:in-reply-to:message-id
-        :references:subject:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm2; bh=zX7JBPLIHAV2HMYc9beglbBAlWe9b
-        r7l4Md06RPvYow=; b=V8OErlgmH/t6PqBteEXF7aORvUnsedYPmHyTSDUx90vHj
-        +AWzAoaV3iH1g1+ZYL1QMDE29vwQ7VBd6Bwd5Fzoe2jdchvZJX9rYfgbxj8iAvjx
-        yKsGeq7fM/RprfNudqSKhw2xo95L7GBu2L+j64nU8453xfEN6N0QOK39P5I1YyrT
-        UbFf7RuFv7D6QvL6Lpxh9iO4ARbvzX6oUvdVKNk9rdLoyzT3LuIhijCUsvRgonjL
-        bBxGbDoN9aqV1i+9YMEw+5K+NZJPFPBq6KycOebGqbu0JDUabv+6881PDk/e24Rl
-        ZJ7yFW4WPIxpV1Ei9d0Ycjvpo3IunrksuvwdMxPJw==
-X-ME-Sender: <xms:Cr01YFiqmcbwbkGPBmPnop4-V6vlnoamveYzEggASm8VHOrSqrZW5A>
-    <xme:Cr01YKCzjj-9i1h8MLUR_l5IommmDcSQhI5zReTbNixQf5wpLjmpbziS-CCI2S--d
-    miNbMEXKmT5O-Qbvjs>
+        messagingengine.com; h=date:from:message-id:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm2; bh=Vtx7UlgIGFX9Sn2RG8HGjRbRgEj2WGN5X1HPKlnVvXA=; b=ROwr3Fxn
+        cL3DPOOL2RXvyNlV43RMbfDW6xMUpjPndATIfNoii6T0Y4gtW5PIal2tbThsLtKH
+        avpkNp9Jd2dkHXO+dK82AU07e9/eqOMLBVVLVVPvDSHuowHCWvsfobe04iNqJhd3
+        zmp6gtnKEADbXotuXD724IFxmkaG7E+4u5VTAwXpZepVLXtHSJGjG7TdN1JRJHkF
+        K840qP1wVCmm9nhziyM/3fU08Bt54dE4jILQMHv7sUj4/KHM9QyNswwvxV1zlwcz
+        fMlCy1CWE9NCnPyth2+iYtbCgkqQFoH8w23AWy/YQQbwHXnkZzXVyMUSPb8+he9Q
+        JR8/5FVEwhRqxg==
+X-ME-Sender: <xms:Ab01YJ6nWmZWaRtIIbFgnMml1er2qaBf53kuwUkplSSodCVxObN-nw>
+    <xme:Ab01YG5uz9ize0Xg9mcRsZgI_wfRT2WBuzf0VmuuvLdbnovNPa8msiLPhw9dqVp38
+    wJypx4TIeajjlyh2is>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrkeeigdegiecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhepkfgjfhfhfffuvfestddtredttddttd
-    enucfhrhhomhepkfgrnhcuffgvnhhhrghrughtuceoihgrnhesiigvnhhhrggtkhdrnhgv
-    theqnecuggftrfgrthhtvghrnhepleelgefggfeuvdfgleegffeludduledttefggeeivd
-    ekgeeffeeiffduvdejjeffnecukfhppedutddtrddtrdefjedrvddvudenucevlhhushht
-    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehirghnseiivghnhhgrtg
-    hkrdhnvght
-X-ME-Proxy: <xmx:Cr01YFGTBJSvJ58Ux9ZiR4ysRWIVTRPX_OyKZmjcIb-NGDGZoYWx5g>
-    <xmx:Cr01YKTr3HN97f87HIH2VqYiwh5HTbTG_I9TEDUJUOpsWZB01kThHQ>
-    <xmx:Cr01YCxxOYCDOp7Vvw0D6r4VPs-ektURdo8Iz-vGPGTzF3pYlO3yJg>
-    <xmx:Cr01YHpH4CsoU6Ky4OPj5vppc2bhuo58MaB6qYyqPqBTpq7RJ2OhaQ>
+    uegrihhlohhuthemuceftddtnecunecujfgurhepkffhfffuvfestddtredttddttdenuc
+    fhrhhomhepkfgrnhcuffgvnhhhrghrughtuceoihgrnhesiigvnhhhrggtkhdrnhgvtheq
+    necuggftrfgrthhtvghrnhepudetgeehgfevtdffleeggfehkeekkeffffdvledvtefgge
+    ffgffgleejuddtffeunecuffhomhgrihhnpegvrhhrohhrshdrthhoohhlshenucfkphep
+    uddttddrtddrfeejrddvvddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
+    hmrghilhhfrhhomhepihgrnhesiigvnhhhrggtkhdrnhgvth
+X-ME-Proxy: <xmx:Ab01YAcxUdb04wkKBgXGL3ZlEFUjzV6wATDkC34viTo_BZsYFfnJeQ>
+    <xmx:Ab01YCKW9bul8CVQh0lQ4Y2F0zLyBgjdnf06o6vWSqYRP9Zz6SI6lw>
+    <xmx:Ab01YNI8D8xlwY7tWGfZa--04NBJsTcAzVLFVa3Aw-aSC8oDRNLFLQ>
+    <xmx:Ar01YLiDKK_gXP-h42tWqbhh7LEWVadyRwz0b5Et-z9R3kRu5loppA>
 Received: from localhost (pool-100-0-37-221.bstnma.fios.verizon.net [100.0.37.221])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 6938824005D;
-        Tue, 23 Feb 2021 21:42:18 -0500 (EST)
+        by mail.messagingengine.com (Postfix) with ESMTPA id 9184A24005B;
+        Tue, 23 Feb 2021 21:42:09 -0500 (EST)
 X-Mailbox-Line: From edb7c1985e446f6dd4ad875f39605bb2968d9920 Mon Sep 17 00:00:00 2001
-Message-Id: <edb7c1985e446f6dd4ad875f39605bb2968d9920.1614134213.git.ian@zenhack.net>
-In-Reply-To: <cover.1614134213.git.ian@zenhack.net>
-References: <cover.1614134213.git.ian@zenhack.net>
+Message-Id: <cover.1614134213.git.ian@zenhack.net>
 From:   Ian Denhardt <ian@zenhack.net>
-Date:   Tue, 23 Feb 2021 21:24:00 -0500
-Subject: [PATCH 2/2] tools, bpf_asm: exit non-zero on errors.
+Date:   Tue, 23 Feb 2021 21:36:53 -0500
+Subject: [PATCH 0/2] More strict error checking in bpf_asm.
 To:     ast@kernel.org, daniel@iogearbox.net, bpf@vger.kernel.org,
         netdev@vger.kernel.org
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-...so callers can correctly detect failure.
----
- tools/bpf/bpf_exp.y | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Hi,
 
-diff --git a/tools/bpf/bpf_exp.y b/tools/bpf/bpf_exp.y
-index 8d03e5245da5..dfb7254a24e8 100644
---- a/tools/bpf/bpf_exp.y
-+++ b/tools/bpf/bpf_exp.y
-@@ -185,13 +185,13 @@ ldx
- 	| OP_LDXB number '*' '(' '[' number ']' '&' number ')' {
- 		if ($2 != 4 || $9 != 0xf) {
- 			fprintf(stderr, "ldxb offset not supported!\n");
--			exit(0);
-+			exit(1);
- 		} else {
- 			bpf_set_curr_instr(BPF_LDX | BPF_MSH | BPF_B, 0, 0, $6); } }
- 	| OP_LDX number '*' '(' '[' number ']' '&' number ')' {
- 		if ($2 != 4 || $9 != 0xf) {
- 			fprintf(stderr, "ldxb offset not supported!\n");
--			exit(0);
-+			exit(1);
- 		} else {
- 			bpf_set_curr_instr(BPF_LDX | BPF_MSH | BPF_B, 0, 0, $6); } }
- 	;
-@@ -472,7 +472,7 @@ static void bpf_assert_max(void)
- {
- 	if (curr_instr >= BPF_MAXINSNS) {
- 		fprintf(stderr, "only max %u insns allowed!\n", BPF_MAXINSNS);
--		exit(0);
-+		exit(1);
- 	}
- }
- 
-@@ -522,7 +522,7 @@ static int bpf_find_insns_offset(const char *label)
- 
- 	if (ret == -ENOENT) {
- 		fprintf(stderr, "no such label \'%s\'!\n", label);
--		exit(0);
-+		exit(1);
- 	}
- 
- 	return ret;
--- 
+Enclosed are two patches related to my earlier message, which make the
+error checking in the bpf_asm tool more strict, the first by upgrading a
+warning to an error, the second by using non-zero exit codes when
+aborting.
+
+These could be conceptually separated, but it seemed sensible to submit
+them together.
+
+-Ian
+
+Ian Denhardt (2):
+  tools, bpf_asm: Hard error on out of range jumps.
+  tools, bpf_asm: exit non-zero on errors.
+
+ tools/bpf/bpf_exp.y | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+--
 2.30.1
 
