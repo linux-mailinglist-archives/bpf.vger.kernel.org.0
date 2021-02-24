@@ -2,164 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 541F53241FB
-	for <lists+bpf@lfdr.de>; Wed, 24 Feb 2021 17:25:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C96F9324200
+	for <lists+bpf@lfdr.de>; Wed, 24 Feb 2021 17:25:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233153AbhBXQU5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Feb 2021 11:20:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233488AbhBXQTU (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Feb 2021 11:19:20 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D4EEC06178C
-        for <bpf@vger.kernel.org>; Wed, 24 Feb 2021 08:18:39 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id v200so1649857pfc.0
-        for <bpf@vger.kernel.org>; Wed, 24 Feb 2021 08:18:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=lteuOHvfo4K4/+NJPA032TcNQF+JRBgKzkoDcHJYOeU=;
-        b=uCCBhDCiEOSzFvDq8hugaWh/4pBpmUkUgVRmolQ8lW0uFuHMzJvGIgmPL4r8kj3n2l
-         01nDGBc4uXPWXEBYFUYjKC5zR2diGc96pCYSa0TJ7bJo3Ll38Y0hEMSXhUYacQW9v9Xx
-         am3Z3d5h+oL9sffF9MC+Op2fdaEek0PJThOjiCXJf1hng3UAcrancae4fy52JJP46G5L
-         J4eofy0ONPNKGBqSVa4T8n11S/TvXgpMsVDaxDBMnt/6ykECd71r5+E+Ku4bkyvdDKyY
-         3MifsS3qqXObyJaomc97p6GiRN+AdOg1lMBqiURpgnS0szSIBhq4vkR6lu00kdBWQitB
-         Yliw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=lteuOHvfo4K4/+NJPA032TcNQF+JRBgKzkoDcHJYOeU=;
-        b=MDdlz7akmAjs+UYR0dvYxZWQz7rcDcNO/eWdHp30Ve3tnnurdQ3c2BU/4UJVKMj/pd
-         XWGGulp78Q8rZkyWVgnW7kTDTgwIdjW5C2vNxM/gvLmPic9drFTA54KxJti0b+2+roeK
-         BBXpKMm9/vtA0czQ2qLdpWlElgxzCkB/cCcOfaN5hzio4o17GGDYWMkGuIwog7AlaHiF
-         vsHk9i4Q4Nyd4oCLFjl83HMkL3CUnt6TNnaEHqIXtpyTitbpB/H+s3mvfJaCxXuh46aA
-         X1H8ZY2dXk0mV5ecKc+9U8b4X68dWgTaYQSfQQGd9EfXidskeNmRlZez+QBnSgk7HAm5
-         TKGQ==
-X-Gm-Message-State: AOAM532LqEFp8O6D92v9lT/r6a9UnMetCO78mxijOsbRQwBKVKh73sDW
-        QjVatDm4JRiDH8NG+I1u9bEpbg==
-X-Google-Smtp-Source: ABdhPJyDwLpbyvL71TWNq5m3Blk+xEoWJgoXaTBodv14KeO97PF/M4n3D1ftcLakL1bJecWKk1RjlA==
-X-Received: by 2002:a63:db08:: with SMTP id e8mr29626323pgg.261.1614183518749;
-        Wed, 24 Feb 2021 08:18:38 -0800 (PST)
-Received: from ?IPv6:2601:646:c200:1ef2:f023:34a9:302a:60b6? ([2601:646:c200:1ef2:f023:34a9:302a:60b6])
-        by smtp.gmail.com with ESMTPSA id v4sm3283538pjo.32.2021.02.24.08.18.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Feb 2021 08:18:37 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v3] seccomp: Improve performace by optimizing rmb()
-Date:   Wed, 24 Feb 2021 08:18:36 -0800
-Message-Id: <638D44BA-0ACA-4041-8213-217233656A70@amacapital.net>
-References: <1614156585-18842-1-git-send-email-wanghongzhe@huawei.com>
-Cc:     keescook@chromium.org, andrii@kernel.org, ast@kernel.org,
-        bpf@vger.kernel.org, daniel@iogearbox.net,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, wad@chromium.org, yhs@fb.com,
-        tongxiaomeng@huawei.com
-In-Reply-To: <1614156585-18842-1-git-send-email-wanghongzhe@huawei.com>
-To:     wanghongzhe <wanghongzhe@huawei.com>
-X-Mailer: iPhone Mail (18D52)
+        id S232806AbhBXQW4 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Feb 2021 11:22:56 -0500
+Received: from mail.efficios.com ([167.114.26.124]:55156 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234748AbhBXQWu (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Feb 2021 11:22:50 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id D16B5314DA7;
+        Wed, 24 Feb 2021 11:22:07 -0500 (EST)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id UaOPzPv1u88f; Wed, 24 Feb 2021 11:22:03 -0500 (EST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 75E44314E2D;
+        Wed, 24 Feb 2021 11:22:03 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 75E44314E2D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1614183723;
+        bh=RWhpJBj5X6Gn6W/WULJZl80dWN++QmdR7y6Njv4ap7g=;
+        h=To:From:Message-ID:Date:MIME-Version;
+        b=XCVVmaZUekk78Dy+xSiMLSrEzGNvWJwnF0xlJeh8WqxXo/pKOc5AXaTI1YOwx8g5y
+         Zc61OIJriMZQhwpBgCG3rQc0GXTH4Yntj0bS8zFrRAV4w8tQvPlahFHAWjsYZV4Dm9
+         uj4aAycf/3ScoLIUfos+HzeQQtgp6OcEvf4bbmCr8oaC9SFAy2SEffsp/9VqIO+49y
+         EpJj8Xd0ATykElpgX2qZx28V/ewtnheDkJz80HVUCYrcPnBq+5RbNqKdhIiM5YHX9j
+         SY3d8n9v87+DoKLLpRXkzbvIEvRrHUpXYEgYb8A0FVl3k1Oe1BSPaTT0YZ3pJ10ITY
+         FMBM6AA5agY3Q==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id i49bEFWWJC29; Wed, 24 Feb 2021 11:22:03 -0500 (EST)
+Received: from [10.10.0.241] (96-127-212-112.qc.cable.ebox.net [96.127.212.112])
+        by mail.efficios.com (Postfix) with ESMTPSA id 31B6F314D41;
+        Wed, 24 Feb 2021 11:22:03 -0500 (EST)
+Subject: Re: [RFC PATCH 0/6] [RFC] Faultable tracepoints (v2)
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>, bpf@vger.kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+References: <20210218222125.46565-1-mjeanson@efficios.com>
+ <20210223211639.670db85c@gandalf.local.home>
+From:   Michael Jeanson <mjeanson@efficios.com>
+Message-ID: <083bce0f-bd66-ab83-1211-be9838499b45@efficios.com>
+Date:   Wed, 24 Feb 2021 11:22:03 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <20210223211639.670db85c@gandalf.local.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
+[ Adding Mathieu Desnoyers in CC ]
 
-> On Feb 24, 2021, at 12:03 AM, wanghongzhe <wanghongzhe@huawei.com> wrote:
->=20
-> =EF=BB=BFAs Kees haved accepted the v2 patch at a381b70a1 which just
-> replaced rmb() with smp_rmb(), this patch will base on that and just adjus=
-t
-> the smp_rmb() to the correct position.
->=20
-> As the original comment shown (and indeed it should be):
->   /*
->    * Make sure that any changes to mode from another thread have
->    * been seen after SYSCALL_WORK_SECCOMP was seen.
->    */
-> the smp_rmb() should be put between reading SYSCALL_WORK_SECCOMP and readi=
-ng
-> seccomp.mode to make sure that any changes to mode from another thread hav=
-e
-> been seen after SYSCALL_WORK_SECCOMP was seen, for TSYNC situation. Howeve=
-r,
-> it is misplaced between reading seccomp.mode and seccomp->filter. This iss=
-ue
-> seems to be misintroduced at 13aa72f0fd0a9f98a41cefb662487269e2f1ad65 whic=
-h
-> aims to refactor the filter callback and the API. So let's just adjust the=
-
-> smp_rmb() to the correct position.
->=20
-> A next optimization patch will be provided if this ajustment is appropriat=
-e.
-
-Would it be better to make the syscall work read be smp_load_acquire()?
-
->=20
-> v2 -> v3:
-> - move the smp_rmb() to the correct position
->=20
-> v1 -> v2:
-> - only replace rmb() with smp_rmb()
-> - provide the performance test number
->=20
-> RFC -> v1:
-> - replace rmb() with smp_rmb()
-> - move the smp_rmb() logic to the middle between TIF_SECCOMP and mode
->=20
-> Signed-off-by: wanghongzhe <wanghongzhe@huawei.com>
-> ---
-> kernel/seccomp.c | 15 +++++++--------
-> 1 file changed, 7 insertions(+), 8 deletions(-)
->=20
-> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-> index 1d60fc2c9987..64b236cb8a7f 100644
-> --- a/kernel/seccomp.c
-> +++ b/kernel/seccomp.c
-> @@ -1160,12 +1160,6 @@ static int __seccomp_filter(int this_syscall, const=
- struct seccomp_data *sd,
->    int data;
->    struct seccomp_data sd_local;
->=20
-> -    /*
-> -     * Make sure that any changes to mode from another thread have
-> -     * been seen after SYSCALL_WORK_SECCOMP was seen.
-> -     */
-> -    smp_rmb();
-> -
->    if (!sd) {
->        populate_seccomp_data(&sd_local);
->        sd =3D &sd_local;
-> @@ -1291,7 +1285,6 @@ static int __seccomp_filter(int this_syscall, const s=
-truct seccomp_data *sd,
->=20
-> int __secure_computing(const struct seccomp_data *sd)
-> {
-> -    int mode =3D current->seccomp.mode;
->    int this_syscall;
->=20
->    if (IS_ENABLED(CONFIG_CHECKPOINT_RESTORE) &&
-> @@ -1301,7 +1294,13 @@ int __secure_computing(const struct seccomp_data *s=
-d)
->    this_syscall =3D sd ? sd->nr :
->        syscall_get_nr(current, current_pt_regs());
->=20
-> -    switch (mode) {
-> +    /*=20
-> +     * Make sure that any changes to mode from another thread have
-> +     * been seen after SYSCALL_WORK_SECCOMP was seen.
-> +     */
-> +    smp_rmb();
-> +
-> +    switch (current->seccomp.mode) {
->    case SECCOMP_MODE_STRICT:
->        __secure_computing_strict(this_syscall);  /* may call do_exit */
->        return 0;
-> --=20
-> 2.19.1
->=20
+On 2021-02-23 21 h 16, Steven Rostedt wrote:
+> On Thu, 18 Feb 2021 17:21:19 -0500
+> Michael Jeanson <mjeanson@efficios.com> wrote:
+> 
+>> This series only implements the tracepoint infrastructure required to
+>> allow tracers to handle page faults. Modifying each tracer to handle
+>> those page faults would be a next step after we all agree on this piece
+>> of instrumentation infrastructure.
+> 
+> I started taking a quick look at this, and came up with the question: how
+> do you allow preemption when dealing with per-cpu buffers or storage to
+> record the data?
+> 
+> That is, perf, bpf and ftrace are all using some kind of per-cpu data, and
+> this is the reason for the need to disable preemption. What's the solution
+> that LTTng is using for this? I know it has a per cpu buffers too, but does
+> it have some kind of "per task" buffer that is being used to extract the
+> data that can fault?
+> 
+> -- Steve
+> 
