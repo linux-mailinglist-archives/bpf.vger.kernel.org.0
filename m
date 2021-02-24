@@ -2,69 +2,107 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4BC03241BF
-	for <lists+bpf@lfdr.de>; Wed, 24 Feb 2021 17:19:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41B163241C0
+	for <lists+bpf@lfdr.de>; Wed, 24 Feb 2021 17:19:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234345AbhBXQIz (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Feb 2021 11:08:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235537AbhBXPuw (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Feb 2021 10:50:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 51C1B64EC4;
-        Wed, 24 Feb 2021 15:50:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614181807;
-        bh=BYToIXM71CMKSR1D7DI/0UdPyJL+YvSFifWHVgSPG5I=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=kjev7EEw4gx6f1bUHogXrfyjOfWWAyTf9cx8Zo2AK8Iej0dlYrahNWCjF8m30ilWU
-         vF+Vx7PzNpMxnt/Uje/v1xAdf4Q1jmIrhkDYK58li2bhb+blKZEyHm/KUdx3Eui180
-         k3HKEe/Ug8mI/FY/IKRTBUfGtM1cdtkFZ2cpzzDRpfAbxPquv3ZAoVmZNjfJWjo5l+
-         qc0W67ugGv7K9Hnq0OKtbjJOC/mCokzYeOO2zhGSm9d0jsqaXkCdUWW6MjGrWImVyt
-         jEQ7nQqqtf3ymZdCiR9aUt+y3UsPt6bzgidUHqZAunuUVxymBqVkp4aBYXX4koJbSu
-         /5Pxjl4hZBzEg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 41067609F5;
-        Wed, 24 Feb 2021 15:50:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231818AbhBXQJC (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Feb 2021 11:09:02 -0500
+Received: from www62.your-server.de ([213.133.104.62]:60988 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234947AbhBXP4O (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Feb 2021 10:56:14 -0500
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lEwVD-0003kV-91; Wed, 24 Feb 2021 16:55:03 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lEwVD-0001V7-2g; Wed, 24 Feb 2021 16:55:03 +0100
+Subject: Re: [PATCH bpf-next] bpf: fix missing * in bpf.h
+To:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        Hangbin Liu <liuhangbin@gmail.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        andrii.nakryiko@gmail.com
+References: <20210223124554.1375051-1-liuhangbin@gmail.com>
+ <20210223154327.6011b5ee@carbon>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <2b917326-3a63-035e-39e9-f63fe3315432@iogearbox.net>
+Date:   Wed, 24 Feb 2021 16:55:02 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2] bpf: Drop imprecise log message
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161418180726.1820.13683950814687200129.git-patchwork-notify@kernel.org>
-Date:   Wed, 24 Feb 2021 15:50:07 +0000
-References: <20210223090416.333943-1-me@ubique.spb.ru>
-In-Reply-To: <20210223090416.333943-1-me@ubique.spb.ru>
-To:     Dmitrii Banshchikov <me@ubique.spb.ru>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org, rdna@fb.com
+In-Reply-To: <20210223154327.6011b5ee@carbon>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26090/Wed Feb 24 13:09:42 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
-
-This patch was applied to bpf/bpf.git (refs/heads/master):
-
-On Tue, 23 Feb 2021 13:04:16 +0400 you wrote:
-> Now it is possible for global function to have a pointer argument that
-> points to something different than struct. Drop the irrelevant log
-> message and keep the logic same.
+On 2/23/21 3:43 PM, Jesper Dangaard Brouer wrote:
+> On Tue, 23 Feb 2021 20:45:54 +0800
+> Hangbin Liu <liuhangbin@gmail.com> wrote:
 > 
-> Fixes: e5069b9c23b3 ("bpf: Support pointers in global func args")
-> Signed-off-by: Dmitrii Banshchikov <me@ubique.spb.ru>
-> Acked-by: Martin KaFai Lau <kafai@fb.com>
+>> Commit 34b2021cc616 ("bpf: Add BPF-helper for MTU checking") lost a *
+>> in bpf.h. This will make bpf_helpers_doc.py stop building
+>> bpf_helper_defs.h immediately after bpf_check_mtu, which will affect
+>> future add functions.
+>>
+>> Fixes: 34b2021cc616 ("bpf: Add BPF-helper for MTU checking")
+>> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+>> ---
+>>   include/uapi/linux/bpf.h       | 2 +-
+>>   tools/include/uapi/linux/bpf.h | 2 +-
+>>   2 files changed, 2 insertions(+), 2 deletions(-)
 > 
-> [...]
+> Thanks for fixing that!
+> 
+> Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
 
-Here is the summary with links:
-  - [v2] bpf: Drop imprecise log message
-    https://git.kernel.org/bpf/bpf/c/f4eda8b6e4a5
+Thanks guys, applied!
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> I though I had already fix that, but I must have missed or reintroduced
+> this, when I rolling back broken ideas in V13.
+> 
+> I usually run this command to check the man-page (before submitting):
+> 
+>   ./scripts/bpf_helpers_doc.py | rst2man | man -l -
 
+[+ Andrii] maybe this could be included to run as part of CI to catch such
+things in advance?
+
+>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+>> index 4c24daa43bac..46248f8e024b 100644
+>> --- a/include/uapi/linux/bpf.h
+>> +++ b/include/uapi/linux/bpf.h
+>> @@ -3850,7 +3850,7 @@ union bpf_attr {
+>>    *
+>>    * long bpf_check_mtu(void *ctx, u32 ifindex, u32 *mtu_len, s32 len_diff, u64 flags)
+>>    *	Description
+>> -
+>> + *
+>>    *		Check ctx packet size against exceeding MTU of net device (based
+>>    *		on *ifindex*).  This helper will likely be used in combination
+>>    *		with helpers that adjust/change the packet size.
+>> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+>> index 4c24daa43bac..46248f8e024b 100644
+>> --- a/tools/include/uapi/linux/bpf.h
+>> +++ b/tools/include/uapi/linux/bpf.h
+>> @@ -3850,7 +3850,7 @@ union bpf_attr {
+>>    *
+>>    * long bpf_check_mtu(void *ctx, u32 ifindex, u32 *mtu_len, s32 len_diff, u64 flags)
+>>    *	Description
+>> -
+>> + *
+>>    *		Check ctx packet size against exceeding MTU of net device (based
+>>    *		on *ifindex*).  This helper will likely be used in combination
+>>    *		with helpers that adjust/change the packet size.
+> 
+> 
+> 
 
