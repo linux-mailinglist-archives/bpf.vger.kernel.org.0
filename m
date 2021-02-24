@@ -2,86 +2,96 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E3763235D9
-	for <lists+bpf@lfdr.de>; Wed, 24 Feb 2021 03:44:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC8B93236DB
+	for <lists+bpf@lfdr.de>; Wed, 24 Feb 2021 06:29:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232349AbhBXCnA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Tue, 23 Feb 2021 21:43:00 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:34581 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229961AbhBXCm6 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Tue, 23 Feb 2021 21:42:58 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 179405C0085;
-        Tue, 23 Feb 2021 21:42:10 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Tue, 23 Feb 2021 21:42:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zenhack.net; h=
-        message-id:from:date:subject:to; s=fm2; bh=Vtx7UlgIGFX9Sn2RG8HGj
-        RbRgEj2WGN5X1HPKlnVvXA=; b=BrV1JIhmVaRgKkDNJeX5NtbcVdpAsN5pUNczZ
-        6fRwu5YLMPBMBDwPEDpoXyDTbJr1lSbGjNokyESKJeg2uDPBv2RORWG0qTxheIs+
-        X0+qCUToSk+u9uYe1LI+pwFvm1XD1JVAam1rHAUWERLlMvHYT2yRQcDK0JIgu5Ho
-        aSTO+zB0wkzaeHAsCRRD5ohIa2ajKV93tIoagkTi+3CPd+FRAcmJrnuO9cQYY4ng
-        knlyayWz4GW91X2ZkDBz5KZ920OwNa4HhjJjdsV/Wc/+g+kMQgx5PvvBswmKJzKz
-        TyuBQJdeieoiMHgDvvdCsqqFft5sF7Vr377Gunt3crC8dOhXQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=date:from:message-id:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; bh=Vtx7UlgIGFX9Sn2RG8HGjRbRgEj2WGN5X1HPKlnVvXA=; b=ROwr3Fxn
-        cL3DPOOL2RXvyNlV43RMbfDW6xMUpjPndATIfNoii6T0Y4gtW5PIal2tbThsLtKH
-        avpkNp9Jd2dkHXO+dK82AU07e9/eqOMLBVVLVVPvDSHuowHCWvsfobe04iNqJhd3
-        zmp6gtnKEADbXotuXD724IFxmkaG7E+4u5VTAwXpZepVLXtHSJGjG7TdN1JRJHkF
-        K840qP1wVCmm9nhziyM/3fU08Bt54dE4jILQMHv7sUj4/KHM9QyNswwvxV1zlwcz
-        fMlCy1CWE9NCnPyth2+iYtbCgkqQFoH8w23AWy/YQQbwHXnkZzXVyMUSPb8+he9Q
-        JR8/5FVEwhRqxg==
-X-ME-Sender: <xms:Ab01YJ6nWmZWaRtIIbFgnMml1er2qaBf53kuwUkplSSodCVxObN-nw>
-    <xme:Ab01YG5uz9ize0Xg9mcRsZgI_wfRT2WBuzf0VmuuvLdbnovNPa8msiLPhw9dqVp38
-    wJypx4TIeajjlyh2is>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrkeeigdegiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhepkffhfffuvfestddtredttddttdenuc
-    fhrhhomhepkfgrnhcuffgvnhhhrghrughtuceoihgrnhesiigvnhhhrggtkhdrnhgvtheq
-    necuggftrfgrthhtvghrnhepudetgeehgfevtdffleeggfehkeekkeffffdvledvtefgge
-    ffgffgleejuddtffeunecuffhomhgrihhnpegvrhhrohhrshdrthhoohhlshenucfkphep
-    uddttddrtddrfeejrddvvddunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
-    hmrghilhhfrhhomhepihgrnhesiigvnhhhrggtkhdrnhgvth
-X-ME-Proxy: <xmx:Ab01YAcxUdb04wkKBgXGL3ZlEFUjzV6wATDkC34viTo_BZsYFfnJeQ>
-    <xmx:Ab01YCKW9bul8CVQh0lQ4Y2F0zLyBgjdnf06o6vWSqYRP9Zz6SI6lw>
-    <xmx:Ab01YNI8D8xlwY7tWGfZa--04NBJsTcAzVLFVa3Aw-aSC8oDRNLFLQ>
-    <xmx:Ar01YLiDKK_gXP-h42tWqbhh7LEWVadyRwz0b5Et-z9R3kRu5loppA>
-Received: from localhost (pool-100-0-37-221.bstnma.fios.verizon.net [100.0.37.221])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 9184A24005B;
-        Tue, 23 Feb 2021 21:42:09 -0500 (EST)
-X-Mailbox-Line: From edb7c1985e446f6dd4ad875f39605bb2968d9920 Mon Sep 17 00:00:00 2001
-Message-Id: <cover.1614134213.git.ian@zenhack.net>
-From:   Ian Denhardt <ian@zenhack.net>
-Date:   Tue, 23 Feb 2021 21:36:53 -0500
-Subject: [PATCH 0/2] More strict error checking in bpf_asm.
-To:     ast@kernel.org, daniel@iogearbox.net, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
+        id S233738AbhBXF3K (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Feb 2021 00:29:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52662 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233585AbhBXF3J (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Feb 2021 00:29:09 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8007C061574;
+        Tue, 23 Feb 2021 21:28:29 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id o6so560700pjf.5;
+        Tue, 23 Feb 2021 21:28:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hi+AZFYgCXbYt2WMhW/I8Ur+lvFGHwgs4K8iNAqVuQ8=;
+        b=r4yFDs1Y24MbSbSh6W9/Vbaj4iskoM7h9rnUs5fX7Ugo8eOBKrz3Uk0WmLoY8xrgrR
+         V57STqJyN8WwWEUj4KguJ0htbAqul/cPWt5Wb+kDe6aCUZQGCuq67z8m/I16mm69Cijx
+         w8lpR1Uy/TxQbSEEhmuAxBgMHfaL4XHpsHAfbkRO51kVE9vAMdoaXYO57P5acLDPU3D8
+         QkDqEdsPzj4BKZ+cRRPrnhvkLGqgSsMP5s5ZtMpg91o9nDb+Ot0laWijO0wmx7TnIfAu
+         5nPugtf+jDRAnmKSFg/tDtzugG/iqeC3gJ6WEsjMib6wxiAlWggOFLaRde2BLXi8axqP
+         O3HQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hi+AZFYgCXbYt2WMhW/I8Ur+lvFGHwgs4K8iNAqVuQ8=;
+        b=jdcclAu8RaDeSEL/Id1p25hXZMM/hvdjMgl/moOWC9YdpaC5L0q4FQPHUR3TfOAEfI
+         voCit8EAdWcLeOhYX6mu+9+ZO9uG8snxNOrvjjM2eQcLhU9kamAomf2Vdi6gghdOdVvO
+         BPoTxdZAUPZKF3hy/9Crx0j9Aw1y+oslFs4OQum1bXxykbUhuKhmXLSjfZYyluHDTOSG
+         bNm/52IGE7+L+9soTxasdz5REJSndJvbwi1YfPBEHiawsbzlMWFIbfehQH4iEb9uDJkc
+         VEvtSgoApY74sLxI32ZQbmsrL2uSIykZCToFj0RUmAV/EPOtSZYaGPGuMdPuP+eA+bU3
+         1OmA==
+X-Gm-Message-State: AOAM533M4O7+XlfO606zGqFXYt6axsEWU+6nh4wKGwgmOrdaP2vXddwh
+        ydzLdpDD8ZaZqsdkimR9b5fc9JFWrcEyUA==
+X-Google-Smtp-Source: ABdhPJwh7E55NwVg7SB/yPu5NMeSWBtHE3B+15k+Moq13uQxrVGcjp4MKHyPwRn9RPFC6j0rGiSO0w==
+X-Received: by 2002:a17:90a:517:: with SMTP id h23mr2656543pjh.108.1614144509229;
+        Tue, 23 Feb 2021 21:28:29 -0800 (PST)
+Received: from localhost.localdomain (host-61-70-202-235.static.kbtelecom.net. [61.70.202.235])
+        by smtp.googlemail.com with ESMTPSA id w13sm6631693pjg.0.2021.02.23.21.28.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Feb 2021 21:28:28 -0800 (PST)
+From:   Kun-Chuan Hsieh <jetswayss@gmail.com>
+To:     ast@kernel.org
+Cc:     bpf@vger.kernel.org, jolsa@kernel.org, andrii@kernel.org,
+        Kun-Chuan Hsieh <jetswayss@gmail.com>, stable@vger.kernel.org
+Subject: [PATCH v2] tools/resolve_btfids: Fix build error with older host toolchains
+Date:   Wed, 24 Feb 2021 05:27:52 +0000
+Message-Id: <20210224052752.5284-1-jetswayss@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi,
+Older libelf.h and glibc elf.h might not yet define the ELF compression
+types.
 
-Enclosed are two patches related to my earlier message, which make the
-error checking in the bpf_asm tool more strict, the first by upgrading a
-warning to an error, the second by using non-zero exit codes when
-aborting.
+Checking and defining SHF_COMPRESSED fix the build error when compiling
+with older toolchains. Also, the tool resolve_btfids is compiled with host
+toolchain. The host toolchain is more likely to be older than the cross
+compile toolchain.
 
-These could be conceptually separated, but it seemed sensible to submit
-them together.
+Cc: stable@vger.kernel.org
 
--Ian
+Signed-off-by: Kun-Chuan Hsieh <jetswayss@gmail.com>
+---
+ tools/bpf/resolve_btfids/main.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Ian Denhardt (2):
-  tools, bpf_asm: Hard error on out of range jumps.
-  tools, bpf_asm: exit non-zero on errors.
-
- tools/bpf/bpf_exp.y | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
-
---
-2.30.1
+diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+index 7409d7860aa6..80d966cfcaa1 100644
+--- a/tools/bpf/resolve_btfids/main.c
++++ b/tools/bpf/resolve_btfids/main.c
+@@ -260,6 +260,11 @@ static struct btf_id *add_symbol(struct rb_root *root, char *name, size_t size)
+ 	return btf_id__add(root, id, false);
+ }
+ 
++/* Older libelf.h and glibc elf.h might not yet define the ELF compression types. */
++#ifndef SHF_COMPRESSED
++#define SHF_COMPRESSED (1 << 11) /* Section with compressed data. */
++#endif
++
+ /*
+  * The data of compressed section should be aligned to 4
+  * (for 32bit) or 8 (for 64 bit) bytes. The binutils ld
+-- 
+2.25.1
 
