@@ -2,75 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76192324549
-	for <lists+bpf@lfdr.de>; Wed, 24 Feb 2021 21:35:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A28632456A
+	for <lists+bpf@lfdr.de>; Wed, 24 Feb 2021 21:41:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235278AbhBXUfU (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Feb 2021 15:35:20 -0500
-Received: from www62.your-server.de ([213.133.104.62]:43026 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229598AbhBXUfT (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Feb 2021 15:35:19 -0500
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lF0rg-000BWE-Tx; Wed, 24 Feb 2021 21:34:32 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lF0rg-0005O5-Pr; Wed, 24 Feb 2021 21:34:32 +0100
-Subject: Re: [PATCH 0/2] More strict error checking in bpf_asm.
-To:     Ian Denhardt <ian@zenhack.net>, ast@kernel.org,
-        bpf@vger.kernel.org, netdev@vger.kernel.org
-References: <cover.1614134213.git.ian@zenhack.net>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <ef747c45-a68c-2a87-202c-5fd9faf70392@iogearbox.net>
-Date:   Wed, 24 Feb 2021 21:34:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S235703AbhBXUk5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Feb 2021 15:40:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41734 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235376AbhBXUkr (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Feb 2021 15:40:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id BAA2D64E7A;
+        Wed, 24 Feb 2021 20:40:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614199206;
+        bh=CWwZ4znOtnV8IBA3BWozcdhwRARVdP24SOm1Zvenq0s=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=kVfr/sCoOV7IHWoHwfud0ENkACaMridJWcX0E8iFfrYvBXY8IbbLs8rJ/aikeUfAb
+         1zdNhCvKi0xQn0EswdxHOTTVb6msCGSv8LyDZzbhVSdDn7xfaTSb+mDtHM5h+9bJVP
+         N7p6Xp6W+Vt5cJc5UUtdhwdhcZKvjobrG7atyEQ4o4YqjhmPhtKujwZwY1kXMjlvlJ
+         kxrUaaS7DgeU4JbxrvMoco2m0TACVjO5Q6hj7ChM09i5P7nVH6uJCVHl6foeKzMU0l
+         0mNrV/k1U51iLknw3L6S1g6kH+qnid/Y0NBchkVRP7Av0fsz7WWWD4t5Q7PXPypDcq
+         78OO1Tcy5HZ3Q==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A8060609F2;
+        Wed, 24 Feb 2021 20:40:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <cover.1614134213.git.ian@zenhack.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26090/Wed Feb 24 13:09:42 2021)
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] selftest/bpf: no need to drop the packet when there is no
+ geneve opt
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161419920668.16624.1337615822618537205.git-patchwork-notify@kernel.org>
+Date:   Wed, 24 Feb 2021 20:40:06 +0000
+References: <20210224081403.1425474-1-liuhangbin@gmail.com>
+In-Reply-To: <20210224081403.1425474-1-liuhangbin@gmail.com>
+To:     Hangbin Liu <liuhangbin@gmail.com>
+Cc:     netdev@vger.kernel.org, kuba@kernel.org, daniel@iogearbox.net,
+        yihung.wei@gmail.com, davem@davemloft.net, bpf@vger.kernel.org,
+        jiong.wang@netronome.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hi Ian,
+Hello:
 
-On 2/24/21 3:36 AM, Ian Denhardt wrote:
-> Hi,
-> 
-> Enclosed are two patches related to my earlier message, which make the
-> error checking in the bpf_asm tool more strict, the first by upgrading a
-> warning to an error, the second by using non-zero exit codes when
-> aborting.
-> 
-> These could be conceptually separated, but it seemed sensible to submit
-> them together.
-> 
-> -Ian
-> 
-> Ian Denhardt (2):
->    tools, bpf_asm: Hard error on out of range jumps.
->    tools, bpf_asm: exit non-zero on errors.
+This patch was applied to bpf/bpf.git (refs/heads/master):
 
-Both of the patches need to have your Signed-off-by [0] in order to be able
-to apply them, for example see [1]. Please resubmit with them & feel free to
-carry Ilya's ACK forward for the v2. Thanks!
-
-   [0] https://www.kernel.org/doc/html/latest/process/submitting-patches.html
-   [1] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/commit/?id=557c223b643a35effec9654958d8edc62fd2603a
-
->   tools/bpf/bpf_exp.y | 14 ++++++++------
->   1 file changed, 8 insertions(+), 6 deletions(-)
+On Wed, 24 Feb 2021 16:14:03 +0800 you wrote:
+> In bpf geneve tunnel test we set geneve option on tx side. On rx side we
+> only call bpf_skb_get_tunnel_opt(). Since commit 9c2e14b48119 ("ip_tunnels:
+> Set tunnel option flag when tunnel metadata is present") geneve_rx() will
+> not add TUNNEL_GENEVE_OPT flag if there is no geneve option, which cause
+> bpf_skb_get_tunnel_opt() return ENOENT and _geneve_get_tunnel() in
+> test_tunnel_kern.c drop the packet.
 > 
-> --
-> 2.30.1
-> 
+> [...]
+
+Here is the summary with links:
+  - [net] selftest/bpf: no need to drop the packet when there is no geneve opt
+    https://git.kernel.org/bpf/bpf/c/557c223b643a
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
