@@ -2,69 +2,164 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D3723241DE
-	for <lists+bpf@lfdr.de>; Wed, 24 Feb 2021 17:19:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 541F53241FB
+	for <lists+bpf@lfdr.de>; Wed, 24 Feb 2021 17:25:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231881AbhBXQOe (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Feb 2021 11:14:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59096 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235011AbhBXQLB (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Feb 2021 11:11:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id B1BFF64EF5;
-        Wed, 24 Feb 2021 16:10:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614183008;
-        bh=zkyBJ4c4uTQ7yZ769N3yej2soXhbTbTNvhXc6eKlg5I=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Bhe+3VanUpCmRXp5fJRDpDMGSf4DsO5wTkjm60bgzQG3F/+HwTSFFUZBU42zwJoZf
-         lvJR+GRyyVUqbVUSV3ImK9xzVDGoK3a3ih5HBtbcfRxpbc0oSf0PY0LhgrZCjQ3DAy
-         5Yfsr5ctPtg6EIaTfS+hbhxc/i8iVE44o5GTmfnx6+xFRcHN1j4wamtdZjUevNQX0U
-         BpNpIc+AXO+Q0FaDPWaYZDjK1c4Gw87vcEnimiuVuU4RB/OTK5zr7pwsvKpb2FTlaP
-         LnleP4otJ0nORZ2Y23JKSbOG6f4LNcAMitpaIkx12jA6cTsQqdhVucr0kTrV786OaH
-         I/f/EDB3uGuiA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A106B609F2;
-        Wed, 24 Feb 2021 16:10:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2] tools/resolve_btfids: Fix build error with older host
- toolchains
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161418300865.10573.15838869918524003805.git-patchwork-notify@kernel.org>
-Date:   Wed, 24 Feb 2021 16:10:08 +0000
-References: <20210224052752.5284-1-jetswayss@gmail.com>
-In-Reply-To: <20210224052752.5284-1-jetswayss@gmail.com>
-To:     Kun-Chuan Hsieh <jetswayss@gmail.com>
-Cc:     ast@kernel.org, bpf@vger.kernel.org, jolsa@kernel.org,
-        andrii@kernel.org, stable@vger.kernel.org
+        id S233153AbhBXQU5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Feb 2021 11:20:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233488AbhBXQTU (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Feb 2021 11:19:20 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D4EEC06178C
+        for <bpf@vger.kernel.org>; Wed, 24 Feb 2021 08:18:39 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id v200so1649857pfc.0
+        for <bpf@vger.kernel.org>; Wed, 24 Feb 2021 08:18:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=lteuOHvfo4K4/+NJPA032TcNQF+JRBgKzkoDcHJYOeU=;
+        b=uCCBhDCiEOSzFvDq8hugaWh/4pBpmUkUgVRmolQ8lW0uFuHMzJvGIgmPL4r8kj3n2l
+         01nDGBc4uXPWXEBYFUYjKC5zR2diGc96pCYSa0TJ7bJo3Ll38Y0hEMSXhUYacQW9v9Xx
+         am3Z3d5h+oL9sffF9MC+Op2fdaEek0PJThOjiCXJf1hng3UAcrancae4fy52JJP46G5L
+         J4eofy0ONPNKGBqSVa4T8n11S/TvXgpMsVDaxDBMnt/6ykECd71r5+E+Ku4bkyvdDKyY
+         3MifsS3qqXObyJaomc97p6GiRN+AdOg1lMBqiURpgnS0szSIBhq4vkR6lu00kdBWQitB
+         Yliw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=lteuOHvfo4K4/+NJPA032TcNQF+JRBgKzkoDcHJYOeU=;
+        b=MDdlz7akmAjs+UYR0dvYxZWQz7rcDcNO/eWdHp30Ve3tnnurdQ3c2BU/4UJVKMj/pd
+         XWGGulp78Q8rZkyWVgnW7kTDTgwIdjW5C2vNxM/gvLmPic9drFTA54KxJti0b+2+roeK
+         BBXpKMm9/vtA0czQ2qLdpWlElgxzCkB/cCcOfaN5hzio4o17GGDYWMkGuIwog7AlaHiF
+         vsHk9i4Q4Nyd4oCLFjl83HMkL3CUnt6TNnaEHqIXtpyTitbpB/H+s3mvfJaCxXuh46aA
+         X1H8ZY2dXk0mV5ecKc+9U8b4X68dWgTaYQSfQQGd9EfXidskeNmRlZez+QBnSgk7HAm5
+         TKGQ==
+X-Gm-Message-State: AOAM532LqEFp8O6D92v9lT/r6a9UnMetCO78mxijOsbRQwBKVKh73sDW
+        QjVatDm4JRiDH8NG+I1u9bEpbg==
+X-Google-Smtp-Source: ABdhPJyDwLpbyvL71TWNq5m3Blk+xEoWJgoXaTBodv14KeO97PF/M4n3D1ftcLakL1bJecWKk1RjlA==
+X-Received: by 2002:a63:db08:: with SMTP id e8mr29626323pgg.261.1614183518749;
+        Wed, 24 Feb 2021 08:18:38 -0800 (PST)
+Received: from ?IPv6:2601:646:c200:1ef2:f023:34a9:302a:60b6? ([2601:646:c200:1ef2:f023:34a9:302a:60b6])
+        by smtp.gmail.com with ESMTPSA id v4sm3283538pjo.32.2021.02.24.08.18.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Feb 2021 08:18:37 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v3] seccomp: Improve performace by optimizing rmb()
+Date:   Wed, 24 Feb 2021 08:18:36 -0800
+Message-Id: <638D44BA-0ACA-4041-8213-217233656A70@amacapital.net>
+References: <1614156585-18842-1-git-send-email-wanghongzhe@huawei.com>
+Cc:     keescook@chromium.org, andrii@kernel.org, ast@kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        songliubraving@fb.com, wad@chromium.org, yhs@fb.com,
+        tongxiaomeng@huawei.com
+In-Reply-To: <1614156585-18842-1-git-send-email-wanghongzhe@huawei.com>
+To:     wanghongzhe <wanghongzhe@huawei.com>
+X-Mailer: iPhone Mail (18D52)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Hello:
 
-This patch was applied to bpf/bpf.git (refs/heads/master):
+> On Feb 24, 2021, at 12:03 AM, wanghongzhe <wanghongzhe@huawei.com> wrote:
+>=20
+> =EF=BB=BFAs Kees haved accepted the v2 patch at a381b70a1 which just
+> replaced rmb() with smp_rmb(), this patch will base on that and just adjus=
+t
+> the smp_rmb() to the correct position.
+>=20
+> As the original comment shown (and indeed it should be):
+>   /*
+>    * Make sure that any changes to mode from another thread have
+>    * been seen after SYSCALL_WORK_SECCOMP was seen.
+>    */
+> the smp_rmb() should be put between reading SYSCALL_WORK_SECCOMP and readi=
+ng
+> seccomp.mode to make sure that any changes to mode from another thread hav=
+e
+> been seen after SYSCALL_WORK_SECCOMP was seen, for TSYNC situation. Howeve=
+r,
+> it is misplaced between reading seccomp.mode and seccomp->filter. This iss=
+ue
+> seems to be misintroduced at 13aa72f0fd0a9f98a41cefb662487269e2f1ad65 whic=
+h
+> aims to refactor the filter callback and the API. So let's just adjust the=
 
-On Wed, 24 Feb 2021 05:27:52 +0000 you wrote:
-> Older libelf.h and glibc elf.h might not yet define the ELF compression
-> types.
-> 
-> Checking and defining SHF_COMPRESSED fix the build error when compiling
-> with older toolchains. Also, the tool resolve_btfids is compiled with host
-> toolchain. The host toolchain is more likely to be older than the cross
-> compile toolchain.
-> 
-> [...]
+> smp_rmb() to the correct position.
+>=20
+> A next optimization patch will be provided if this ajustment is appropriat=
+e.
 
-Here is the summary with links:
-  - [v2] tools/resolve_btfids: Fix build error with older host toolchains
-    https://git.kernel.org/bpf/bpf/c/b8592e231fb8
+Would it be better to make the syscall work read be smp_load_acquire()?
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+>=20
+> v2 -> v3:
+> - move the smp_rmb() to the correct position
+>=20
+> v1 -> v2:
+> - only replace rmb() with smp_rmb()
+> - provide the performance test number
+>=20
+> RFC -> v1:
+> - replace rmb() with smp_rmb()
+> - move the smp_rmb() logic to the middle between TIF_SECCOMP and mode
+>=20
+> Signed-off-by: wanghongzhe <wanghongzhe@huawei.com>
+> ---
+> kernel/seccomp.c | 15 +++++++--------
+> 1 file changed, 7 insertions(+), 8 deletions(-)
+>=20
+> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+> index 1d60fc2c9987..64b236cb8a7f 100644
+> --- a/kernel/seccomp.c
+> +++ b/kernel/seccomp.c
+> @@ -1160,12 +1160,6 @@ static int __seccomp_filter(int this_syscall, const=
+ struct seccomp_data *sd,
+>    int data;
+>    struct seccomp_data sd_local;
+>=20
+> -    /*
+> -     * Make sure that any changes to mode from another thread have
+> -     * been seen after SYSCALL_WORK_SECCOMP was seen.
+> -     */
+> -    smp_rmb();
+> -
+>    if (!sd) {
+>        populate_seccomp_data(&sd_local);
+>        sd =3D &sd_local;
+> @@ -1291,7 +1285,6 @@ static int __seccomp_filter(int this_syscall, const s=
+truct seccomp_data *sd,
+>=20
+> int __secure_computing(const struct seccomp_data *sd)
+> {
+> -    int mode =3D current->seccomp.mode;
+>    int this_syscall;
+>=20
+>    if (IS_ENABLED(CONFIG_CHECKPOINT_RESTORE) &&
+> @@ -1301,7 +1294,13 @@ int __secure_computing(const struct seccomp_data *s=
+d)
+>    this_syscall =3D sd ? sd->nr :
+>        syscall_get_nr(current, current_pt_regs());
+>=20
+> -    switch (mode) {
+> +    /*=20
+> +     * Make sure that any changes to mode from another thread have
+> +     * been seen after SYSCALL_WORK_SECCOMP was seen.
+> +     */
+> +    smp_rmb();
+> +
+> +    switch (current->seccomp.mode) {
+>    case SECCOMP_MODE_STRICT:
+>        __secure_computing_strict(this_syscall);  /* may call do_exit */
+>        return 0;
+> --=20
+> 2.19.1
+>=20
