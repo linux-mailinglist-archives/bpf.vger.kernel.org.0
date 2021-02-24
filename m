@@ -2,209 +2,142 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8678F3236FF
-	for <lists+bpf@lfdr.de>; Wed, 24 Feb 2021 06:49:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAC32323729
+	for <lists+bpf@lfdr.de>; Wed, 24 Feb 2021 07:12:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232589AbhBXFtA (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Feb 2021 00:49:00 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:36760 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230482AbhBXFs7 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Wed, 24 Feb 2021 00:48:59 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 11O5aQd9002762;
-        Tue, 23 Feb 2021 21:48:03 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=IllFefxTNkIn4bGPt0Xe+zleaxAu5RIKIO9swHDp6Xw=;
- b=SUBjVBl62Sp0TXkb+TQaRXjxW6ul40/LL6hZy/suGeduxjYre0oS1UxcEBA0bKFJMtLk
- QsmyMaTjGT1+yPL2HC9qK8Hv2YHwKf8t6ZgbMHbyBRphm2HfhdXkXRpPoxEJHU+wO5HV
- Hy7gGe4hquCNNtgXcpsOJBFzXL1moIKQP1M= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 36u0342wmp-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 23 Feb 2021 21:48:02 -0800
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 23 Feb 2021 21:48:01 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=koYF7nYd/EBdkw3eq045FcAercDcnqNPJiqY639mmne3VRZQuXxvlRapVFCgcj8KAdRR5unUa9hla87kHh4gxSGbBicLZF6ckXgCKi5IPGG9ccdX7cuvS+KuDBFfYfDNgsjmogoiCxmRBmj1BMyK9iscGs7Zjci/snZ9+wPqHxS6amEhzEn028PgM3B8keoZHVRAqBJTTGnsuGIxrs+XWv1Zm36yOWGKSBUwtaoiGdvuCMIYNTL12/CvupIaqIqz+G0iYt9a3aneScnJyTqJmuQFXg6tOqhjUhpLIyR33zdDabH5DaSFGN8MztMe1MTh4RliNVUyenq12GE50OgHRg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IllFefxTNkIn4bGPt0Xe+zleaxAu5RIKIO9swHDp6Xw=;
- b=AHfIu8oake9hGU+fVAjeGqERYhA71yXiJLFhHrFImgzRLb/JjbFFVHjH9V5na4mkcBqkNpPjJ4nIUXrDjoxtq7cO4Gt9O808lvZbFCUVZrhmhvSXim37FwckkcVogQyX4EpbHK/VfsusIYxirIvhtdtXy+lJR/peW5x4SYjH6MWkyDEdx00ZdvDCVNuapOVu8kgnQTCiqO7tjmiFSoanovTocYcBgupjxm8D3k7VFicHORs0CseuFXwPa1gzAPlnCTLlbLpGf9zhUmjTWP8LfZ7gewZbpUiTWqo0SPvXZWYNWqIsKAW4ofHz7ohV3xqO7GcQE9nK8vb190FQ38N9NQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by BYAPR15MB2200.namprd15.prod.outlook.com (2603:10b6:a02:89::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.30; Wed, 24 Feb
- 2021 05:48:00 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::2975:c9d8:3f7f:dbd0]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::2975:c9d8:3f7f:dbd0%5]) with mapi id 15.20.3868.032; Wed, 24 Feb 2021
- 05:48:00 +0000
-Date:   Tue, 23 Feb 2021 21:47:57 -0800
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Brendan Jackman <jackmanb@google.com>
-CC:     <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        id S230095AbhBXGMS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Feb 2021 01:12:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229539AbhBXGMR (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Feb 2021 01:12:17 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86902C061574;
+        Tue, 23 Feb 2021 22:11:37 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id q20so650045pfu.8;
+        Tue, 23 Feb 2021 22:11:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Zj6+s1mx4qT4hXPh+NVhs6pnLcrPSvpQ67tRttpHvuE=;
+        b=YVXAxRJHtvuM3L+8WKDEVsUFCtWHPk4D8PH0fZ8I0jm/nVJDg9m7sNTKMiclG+1l/d
+         rTwMefnFpSb8tXzbsB9FP2YdiTyyorEYnwGWkjI5iVlfn4nHSxmUstfbXC5YOFTrYqNy
+         6KI5fdpfStniAtWa4KGwEsubmbGiPsUNJfbI9R/4QE4PvS+G5EIAh6xfM1hIMNPCyJ/Q
+         J0vKoJEX56mp/9Lds+B+P3aNTpcddqwuc4+AanL/T1gcQSvu1U0AY/H55lJRf4tCe7kI
+         KSUlUj6cmJxHMY9oXRe+xuKNve13f4mZ1OysKLfG8MOMWQIoEru38uwutmJmXZ8/ziZi
+         GRnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Zj6+s1mx4qT4hXPh+NVhs6pnLcrPSvpQ67tRttpHvuE=;
+        b=tE/T+lK7Ddcjnw1G3SmXvn184/nPMCxrZudRS6BjznXHSpwzdXeueCzTK5p93VUdpJ
+         /Ic+8ykf0WvYnsjDq79+ljWLzxNK3AR+6Zcd+tUZhcrl+XfEZEbHXpb6p0YCtC2/2Ylp
+         eBKo2juOZwtcSJSCOKuNLBO8zw7btmcj3TjU/sU+YsK1s+xze4YWzxjWfwT7qEaFX37y
+         T7KnLM7lw6uswsc370hxYlVmHWpAbSR0UPdI+KIUv4xJ+FmKObGnftAteo017m1oPhem
+         Wnzwm/VuG78vhxiBFdKTkhwuvsASd7P6liTiZxma6acRUbtd7uvDUG6kDtS5Dij+cp19
+         TKXg==
+X-Gm-Message-State: AOAM53345kPsFsRF2Q2NUU5hofbsezOwrZhnqhH6TeA/0IsCfJIHHqHT
+        jWtoufbyGIvG3YYQOOyz/co=
+X-Google-Smtp-Source: ABdhPJy2uhG4S1YTka5Y9czANAmaTrDuIei2RSe07gQaRQOPfyi4T3I+X55oMWDMJQQW5pSq/knFEg==
+X-Received: by 2002:a62:5a45:0:b029:1e5:4c81:c59 with SMTP id o66-20020a625a450000b02901e54c810c59mr30553661pfb.51.1614147096964;
+        Tue, 23 Feb 2021 22:11:36 -0800 (PST)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:69bf])
+        by smtp.gmail.com with ESMTPSA id p8sm1180634pff.79.2021.02.23.22.11.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Feb 2021 22:11:36 -0800 (PST)
+Date:   Tue, 23 Feb 2021 22:11:33 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Lorenz Bauer <lmb@cloudflare.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: Re: [PATCH v4 bpf-next] bpf: Explicitly zero-extend R0 after 32-bit
- cmpxchg
-Message-ID: <20210224054757.3b3zfzng2pvqhbf5@kafai-mbp.dhcp.thefacebook.com>
-References: <20210223150845.1857620-1-jackmanb@google.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210223150845.1857620-1-jackmanb@google.com>
-X-Originating-IP: [2620:10d:c090:400::5:8db3]
-X-ClientProxiedBy: MW4PR04CA0017.namprd04.prod.outlook.com
- (2603:10b6:303:69::22) To BY5PR15MB3571.namprd15.prod.outlook.com
- (2603:10b6:a03:1f6::32)
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        kernel-team <kernel-team@cloudflare.com>,
+        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 4/8] bpf: add PROG_TEST_RUN support for
+ sk_lookup programs
+Message-ID: <20210224061133.t4aewwgpzlbhchux@ast-mbp.dhcp.thefacebook.com>
+References: <20210216105713.45052-1-lmb@cloudflare.com>
+ <20210216105713.45052-5-lmb@cloudflare.com>
+ <20210223011153.4cvzpvxqn7arbcej@ast-mbp.dhcp.thefacebook.com>
+ <CACAyw99hQgG+=WvUVmDU-E6nGsPvosSuSOWgw9uWDDZ-vFfsqw@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:8db3) by MW4PR04CA0017.namprd04.prod.outlook.com (2603:10b6:303:69::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.28 via Frontend Transport; Wed, 24 Feb 2021 05:47:59 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b5c47e78-976d-4630-5e07-08d8d887bead
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2200:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB220077B66F2EA6D60AF7CE29D59F9@BYAPR15MB2200.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8HxFzjcdnwnP46aIzeuGhqlwV5OkpZOSnPvPOXaWlk2CvCI9OubMAZeqiAhxCS8LXr+qhkKPUASBBdOAXCJRdRH4vxFg8S71Kpjm2kOZqK0MiM9nejEIBe20NAzHiec5TfHFU1utz6C4hHRyYYkBH+/pLIFkRsz9oQWKjvemoxHTxKBfoonWYewXb1LbicDJS6covTpUZMUCkymQ3YpscylHIIExxQzTif9tG3ZZLebyFEDw68p7iOLqMiNtNhV8QRTxxOJv05FHKKtVR43KqE7/GeWox2TjIS6AwVbC+HRIJ7xaKoER5htEVDXJbzxShx0U59CJjfk6627YkbNva3+YVnosSaW/L6J3h63q4MjekxhKazVbjsm4b9ziAipOVo8evDOOFaRePaTr8UBabjXiAzVxn/eRMHGpvB6ZYgYqTioJuUm6yJHR95Ng8Z0dyFZS69JMrlwdxLqew83Pk/71xVSXr1dzejZAJHC5uogUyINuERum/wdrgMK4D3xHau3ayWmMtDUXekwf8qgf3OV5HlVvys83CACJoPCBG0aiUNACPDxRhgugqoQs/PGF8fitKzANLgoGXpwp/Q0AsjyeXlh1D0AlnlFi1ZfspMc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(346002)(376002)(39860400002)(366004)(136003)(66476007)(66946007)(66556008)(186003)(83380400001)(5660300002)(16526019)(316002)(6506007)(1076003)(54906003)(55016002)(8936002)(2906002)(8676002)(4326008)(86362001)(52116002)(7696005)(9686003)(6916009)(478600001)(17423001)(156123004);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?UdiNx2UtpZSUE9EiXtE+0wmmSw7gbzCDwtORO89ut0ztkCKeqSqa78QpxSux?=
- =?us-ascii?Q?9vpzriqNpO6o+JU5TZEBmXN7xXRkbpvufWDOuDDDQKwvk/oXEVCbXdsLddpD?=
- =?us-ascii?Q?8biOS7VrN7mAB7C1iDqBujaM9gbHP72lLqxW2nkoTpHkMPPPAPK3fRftoJSG?=
- =?us-ascii?Q?v6wDoRRQpi32KxEB3M70upHrx+FvJ6LvgKvVHPVaiAZgUCL76lIC6GkjDFxZ?=
- =?us-ascii?Q?QCMGkydgd6XSW7YuO9Fx92RIAYIeRA0f/VRifX/humgrb0EJ6txDEGyyKu8F?=
- =?us-ascii?Q?+I2SkqEBMqtDDPjyZUrwv55zfnKNQrfijtrPqmUrf71pAgKE2lCRUydD6YGO?=
- =?us-ascii?Q?OY3y0Sam8zlgMA9CNfebRP9yWXEdDwj5ocxZVoxo6cGPP3pniJof1ypxCgK4?=
- =?us-ascii?Q?EunfUsxydPL1Hn9s0IFRi0eJfyi1xa50YVRVjTDcJIyx0EEvQbY0ZqppduRm?=
- =?us-ascii?Q?SoWmWYlKohkNgHspMUrheTIo/RWWY4UQiIzSYp2X6fP0o6QIDFgnCSV65Xj3?=
- =?us-ascii?Q?mJHu/3Q98IgvfoqSNrPsJRTGgL18m8C5K5pBLKyBQboIwpWDhOOHHonomzqj?=
- =?us-ascii?Q?ixRYrANxXJoHZewKJiLnbaUCYLI78pc7zM0cbPOcrL2GRjjUkXiHGAO1gEIk?=
- =?us-ascii?Q?DFE3iQgz1/2wl/Dd+SjuBWZi0VjzYIa2DF1qmdC1o/tKAK68lj6DDq86Wxxj?=
- =?us-ascii?Q?s2e/0pzfmSJ32Fp13BwjdQzw+omU7+b4x+p4X+3sHiISteVwMLiMGYad9UHj?=
- =?us-ascii?Q?irx9/wItiQLwOHAeSGcRr429n/WX7OTHe9LbpHgBHC1wLrN0MbSoOWl4JoPY?=
- =?us-ascii?Q?dRFlL/zhE5A3HMYwbhbTrkRmaiaTkLVpaHPPVXpDf6uliaaD396c+gocC5Hi?=
- =?us-ascii?Q?Itb4dLhgjgYn2+SpR7uZsw21mzNbiNi+key6JaRqGW8kf39UFIbiNR84jKO6?=
- =?us-ascii?Q?YF7imeixiJEaEjheKYaYJpiN6iltCwk8SZM0sUaWbr0u/WiS5mg1YScwuJv7?=
- =?us-ascii?Q?aGUJDGuVbmlgVxKprLWEeJhUQNG6YzxzLUDftFQwQ6q4SKwhSOXiS3YIjAO7?=
- =?us-ascii?Q?FJYKfEYOUUAWY+VswkJecfuvTOYRWHe2hY1owF6QqCf91nU69STlkWTb6MaF?=
- =?us-ascii?Q?bIH7i9sw/Ey4BWcr1jTIJvx+bej7BVfzEH3q9zQKXAucSwehD57d/pHp+cdd?=
- =?us-ascii?Q?L98lABwGjs5fpDy1IaJjXkOyD5EfFhVZhp266Lnzcgw4giUx0bQqQDc7SoAg?=
- =?us-ascii?Q?Gbi4PQiR9cWGsDgjJI2sjZN7BVT6eJRvBNz20/+sPCsv7fi36jWx5QKvwyOk?=
- =?us-ascii?Q?XljkiqN6IAd0BWaDMOEFTupNk53YWreX4CYKco1IjRT+Uw=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: b5c47e78-976d-4630-5e07-08d8d887bead
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Feb 2021 05:48:00.7160
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FYXBXIB+vsnVZjwj638UVCS8bi3a+uuZ+t1Fwi7lyukNLNKO5azuuml2ZaosNbWm
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2200
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-24_01:2021-02-23,2021-02-24 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
- impostorscore=0 spamscore=0 phishscore=0 malwarescore=0 bulkscore=0
- mlxlogscore=999 clxscore=1011 lowpriorityscore=0 suspectscore=0
- adultscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2102240046
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACAyw99hQgG+=WvUVmDU-E6nGsPvosSuSOWgw9uWDDZ-vFfsqw@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 03:08:45PM +0000, Brendan Jackman wrote:
-[ ... ]
-
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 0ae015ad1e05..dcf18612841b 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -2342,6 +2342,10 @@ bool __weak bpf_helper_changes_pkt_data(void *func)
->  /* Return TRUE if the JIT backend wants verifier to enable sub-register usage
->   * analysis code and wants explicit zero extension inserted by verifier.
->   * Otherwise, return FALSE.
-> + *
-> + * The verifier inserts an explicit zero extension after BPF_CMPXCHGs even if
-> + * you don't override this. JITs that don't want these extra insns can detect
-> + * them using insn_is_zext.
->   */
->  bool __weak bpf_jit_needs_zext(void)
->  {
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 3d34ba492d46..ec1cbd565140 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -11061,8 +11061,16 @@ static int opt_subreg_zext_lo32_rnd_hi32(struct bpf_verifier_env *env,
->  			 */
->  			if (WARN_ON(!(insn.imm & BPF_FETCH)))
->  				return -EINVAL;
-> -			load_reg = insn.imm == BPF_CMPXCHG ? BPF_REG_0
-> -							   : insn.src_reg;
-> +			/* There should already be a zero-extension inserted after BPF_CMPXCHG. */
-> +			if (insn.imm == BPF_CMPXCHG) {
-> +				struct bpf_insn *next = &insns[adj_idx + 1];
-> +
-> +				if (WARN_ON(!insn_is_zext(next) || next->dst_reg != insn.src_reg))
-> +					return -EINVAL;
-> +				continue;
-This is to avoid zext_patch again for the JITs with
-bpf_jit_needs_zext() == true.
-
-IIUC, at this point, aux[adj_idx].zext_dst == true which
-means that the check_atomic() has already marked the
-reg0->subreg_def properly.
-
-> +			}
-> +
-> +			load_reg = insn.src_reg;
->  		} else {
->  			load_reg = insn.dst_reg;
->  		}
-> @@ -11666,6 +11674,27 @@ static int fixup_bpf_calls(struct bpf_verifier_env *env)
->  			continue;
->  		}
+On Tue, Feb 23, 2021 at 10:10:44AM +0000, Lorenz Bauer wrote:
+> On Tue, 23 Feb 2021 at 01:11, Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > I'm struggling to come up with the case where running N sk_lookup progs
+> > like this cannot be done with running them one by one.
+> > It looks to me that this N prog_fds api is not really about running and
+> > testing the progs, but about testing BPF_PROG_SK_LOOKUP_RUN_ARRAY()
+> > SK_PASS vs SK_DROP logic.
 > 
-> +		/* BPF_CMPXCHG always loads a value into R0, therefore always
-> +		 * zero-extends. However some archs' equivalent instruction only
-> +		 * does this load when the comparison is successful. So here we
-> +		 * add a BPF_ZEXT_REG after every 32-bit CMPXCHG, so that such
-> +		 * archs' JITs don't need to deal with the issue. Archs that
-> +		 * don't face this issue may use insn_is_zext to detect and skip
-> +		 * the added instruction.
-> +		 */
-> +		if (insn->code == (BPF_STX | BPF_W | BPF_ATOMIC) && insn->imm == BPF_CMPXCHG) {
-> +			struct bpf_insn zext_patch[2] = { *insn, BPF_ZEXT_REG(BPF_REG_0) };
-Then should this zext_patch only be done for "!bpf_jit_needs_zext()"
-such that the above change in opt_subreg_zext_lo32_rnd_hi32()
-becomes unnecessary?
+> In a way that is true, yes. TBH I figured that my patch set would be
+> rejected if I just
+> implemented single program test run, since it doesn't allow exercising the full
+> sk_lookup test run semantics.
+> 
+> > So it's more of the kernel infra testing than program testing.
+> > Are you suggesting that the sequence of sk_lookup progs are so delicate
+> > that they are aware of each other and _has_ to be tested together
+> > with gluing logic that the macro provides?
+> 
+> We currently don't have a case like that.
+> 
+> > But if it is so then testing the progs one by one would be better,
+> > because test_run will be able to check each individual prog return code
+> > instead of implicit BPF_PROG_SK_LOOKUP_RUN_ARRAY logic.
+> 
+> That means emulating the kind of subtle BPF_PROG_SK_LOOKUP_RUN_ARRAY
+> in user space, which isn't trivial and a source of bugs.
 
-> +
-> +			new_prog = bpf_patch_insn_data(env, i + delta, zext_patch, 2);
-> +			if (!new_prog)
-> +				return -ENOMEM;
-> +
-> +			delta    += 1;
-> +			env->prog = prog = new_prog;
-> +			insn      = new_prog->insnsi + i + delta;
-> +			continue;
-> +		}
-> +
->  		if (insn->code != (BPF_JMP | BPF_CALL))
->  			continue;
->  		if (insn->src_reg == BPF_PSEUDO_CALL)
+I'm not at all suggesting to emulate it in user space.
+
+> For example we rely on having multiple programs attached when
+> "upgrading" from old to new BPF. Here we care mostly that we don't drop
+> lookups on the floor, and the behaviour is tightly coupled to the in-kernel
+> implementation. It's not much use to cobble up my own implementation of
+> SK_LOOKUP_RUN_ARRAY here, I would rather use multi progs to test this.
+> Of course we can also already spawn a netns and test it that way, so not
+> much is lost if there is no multi prog test run.
+
+I mean that to test the whole setup close to production the netns is
+probably needed because sockets would mess with init_netns.
+But to test each individual bpf prog there is no need for RUN_ARRAY.
+Each prog can be more accurately tested in isolation.
+RUN_ARRAY adds, as you said, subtle details of RUN_ARRAY macro.
+
+> > It feels less of the unit test and more as a full stack test,
+> > but if so then lack of cookie on input is questionable.
+> 
+> I'm not sure what you mean with "the lack of cookie on input is
+> questionable", can you rephrase?
+> 
+> > In other words I'm struggling with in-between state of the api.
+> > test_run with N fds is not really a full test, but not a unit test either.
+> 
+> If I understand you correctly, a "full" API would expose the
+> intermediate results from
+> individual programs as well as the final selection? Sounds quite
+> complicated, and as
+> you point out most of the benefits can be had from running single programs.
+
+I'm not suggesting to return intermediate results either.
+I'm looking at test_run as a facility to test one individual program
+at a time. Like in tc, cgroups, tracing we can have multiple progs
+attached to one place and the final verdict will depend on what
+each prog is returning. But there is no need to test them all together
+through BPF_PROG_CGROUP_INET_EGRESS_RUN_ARRAY.
+Each prog is more accurately validated independently.
+Hence I'm puzzled why sk_lookup's RUN_ARRAY is special.
+Its drop/pass/selected sk is more or less the same complexity
+as CGROUP_INET_EGRESS_RUN_ARRAY.
