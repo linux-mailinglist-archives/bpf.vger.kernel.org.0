@@ -2,65 +2,75 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E310C3244CF
-	for <lists+bpf@lfdr.de>; Wed, 24 Feb 2021 20:59:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76192324549
+	for <lists+bpf@lfdr.de>; Wed, 24 Feb 2021 21:35:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235437AbhBXT5g (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Feb 2021 14:57:36 -0500
-Received: from mail-vs1-f44.google.com ([209.85.217.44]:46187 "EHLO
-        mail-vs1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235325AbhBXTz3 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Feb 2021 14:55:29 -0500
-Received: by mail-vs1-f44.google.com with SMTP id i13so1677749vsr.13
-        for <bpf@vger.kernel.org>; Wed, 24 Feb 2021 11:55:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=mY7CoCJBGUAMCRKjAIU1VcPgGV8lc5bn5jKH0ISi5bE=;
-        b=qjglyFVMsjA0qSvqbxfVuD1d90K3+uCezSLKBTArgazxH6f0UKNnhSaJ10opVaQPB0
-         jmoX81rSNKVvxrTKK9ymu4FYHrydjtPZZZhfmzT0b19Bg48wskBNAQBc/0vJn8z0EK5I
-         YfgrMAGBXeBx7ynLasiu0Jl8MiPXi9rPtFawS0ZIOnS+PHEHAgZsnTgcPpUPVV/XRj1J
-         9RNYAI1He24Kj6KBUugveNMMmlHHb7xRMH0kOyYcyyg82jcyr9C/+4X3uE0BDl6rZAdb
-         i40U4/F3OYo2AF64p3MyrkaY5DU34DJ+OHOqd+9LxuIpgJAnBCl2TTi0gUgvjjMSasn6
-         3O4Q==
-X-Gm-Message-State: AOAM533/CuE1UtWHgMx7kxAEpRQehd6QuA+zS5x/caSaTPLCj971PjgN
-        VyTGwhDjpAMpqr7WPMTRZcvWshbPoNeUwmJz3hqwRoip4R8wYA==
-X-Google-Smtp-Source: ABdhPJxL18qLbn6vXRug6lV28mAVQw/nRr+4TJ9vD0o6wYiO1XtBsTsujIscyHaGPRr6Z/OrFzEUwKOsQOb8JuazhGw=
-X-Received: by 2002:a67:2283:: with SMTP id i125mr5677248vsi.21.1614196488460;
- Wed, 24 Feb 2021 11:54:48 -0800 (PST)
+        id S235278AbhBXUfU (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Feb 2021 15:35:20 -0500
+Received: from www62.your-server.de ([213.133.104.62]:43026 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229598AbhBXUfT (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Feb 2021 15:35:19 -0500
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lF0rg-000BWE-Tx; Wed, 24 Feb 2021 21:34:32 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lF0rg-0005O5-Pr; Wed, 24 Feb 2021 21:34:32 +0100
+Subject: Re: [PATCH 0/2] More strict error checking in bpf_asm.
+To:     Ian Denhardt <ian@zenhack.net>, ast@kernel.org,
+        bpf@vger.kernel.org, netdev@vger.kernel.org
+References: <cover.1614134213.git.ian@zenhack.net>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <ef747c45-a68c-2a87-202c-5fd9faf70392@iogearbox.net>
+Date:   Wed, 24 Feb 2021 21:34:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-From:   Luigi Rizzo <rizzo@iet.unipi.it>
-Date:   Wed, 24 Feb 2021 20:54:37 +0100
-Message-ID: <CA+hQ2+hhDG2JprNLaUdX4xgcihvchEda1aJuQN3jtJ3hYucDcQ@mail.gmail.com>
-Subject: arch_prepare_bpf_trampoline() for arm ?
-To:     bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <cover.1614134213.git.ian@zenhack.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26090/Wed Feb 24 13:09:42 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-I prepared a BPF version of kstats[1]
-https://github.com/luigirizzo/lr-cstats
-that uses fentry/fexit hooks to monitor the execution time
-of a kernel function.
+Hi Ian,
 
-I hoped to have it working on ARM64 too, but it looks like
-arch_prepare_bpf_trampoline() only exists for x86.
+On 2/24/21 3:36 AM, Ian Denhardt wrote:
+> Hi,
+> 
+> Enclosed are two patches related to my earlier message, which make the
+> error checking in the bpf_asm tool more strict, the first by upgrading a
+> warning to an error, the second by using non-zero exit codes when
+> aborting.
+> 
+> These could be conceptually separated, but it seemed sensible to submit
+> them together.
+> 
+> -Ian
+> 
+> Ian Denhardt (2):
+>    tools, bpf_asm: Hard error on out of range jumps.
+>    tools, bpf_asm: exit non-zero on errors.
 
-Is there any outstanding patch for this function on ARM64,
-or any similar function I could look at to implement it myself ?
+Both of the patches need to have your Signed-off-by [0] in order to be able
+to apply them, for example see [1]. Please resubmit with them & feel free to
+carry Ilya's ACK forward for the v2. Thanks!
 
-thanks
-luigi
+   [0] https://www.kernel.org/doc/html/latest/process/submitting-patches.html
+   [1] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/commit/?id=557c223b643a35effec9654958d8edc62fd2603a
 
+>   tools/bpf/bpf_exp.y | 14 ++++++++------
+>   1 file changed, 8 insertions(+), 6 deletions(-)
+> 
+> --
+> 2.30.1
+> 
 
-[1] kstats is an in-kernel also in the above repo and previously
-discussed at https://lwn.net/Articles/813303/
-
--- 
------------------------------------------+-------------------------------
- Prof. Luigi RIZZO, rizzo@iet.unipi.it  . Dip. di Ing. dell'Informazione
- http://www.iet.unipi.it/~luigi/        . Universita` di Pisa
- TEL      +39-050-2217533               . via Diotisalvi 2
- Mobile   +39-338-6809875               . 56122 PISA (Italy)
------------------------------------------+-------------------------------
