@@ -2,79 +2,74 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 831133247BB
-	for <lists+bpf@lfdr.de>; Thu, 25 Feb 2021 01:02:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07D82324805
+	for <lists+bpf@lfdr.de>; Thu, 25 Feb 2021 01:47:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234584AbhBYACi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Wed, 24 Feb 2021 19:02:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38740 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234222AbhBYACh (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Wed, 24 Feb 2021 19:02:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 545EB64F0A;
-        Thu, 25 Feb 2021 00:01:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614211317;
-        bh=RZw7aXwSowOYZ/ITqJac2+QYEPCN7r6HREQezJSZFr8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=o9yj+qpJ3hActRg6sCxeY/X+EHaBUdpyapD29YzS3wrUIbE/y2V+D3vzYPeRy5Mij
-         JQuYYO9RZnFAXgEj5vsx/DDVPn4h9c5P3EBqv7zDsWxiyW46kopjYwcAiDjqkCiFpj
-         t9UYFJc9foAHbSJiQF/yKtbqVVvzzOUWraJ5fVJpG84DP3pLmULVxtohI+oF3dDi6w
-         kCTES+n8TXjWKwyU6DeMu3aDa4BNlUQluIPtCvQgVlEHaHhDXawajnXGna+8YHiyJc
-         HBLVEvaPDl+KUwps9eFKbbpmFaOAAfxQJdRuMG+pNBDNbqeCiITY6ZRHyiOtmDSgmd
-         IpF2tUq7HdU9g==
-Date:   Wed, 24 Feb 2021 17:01:54 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        natechancellor@gmail.com, ndesaulniers@google.com,
-        masahiroy@kernel.org, akpm@linux-foundation.org,
-        valentin.schneider@arm.com, terrelln@fb.com, hannes@cmpxchg.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
-        rdunlap@infradead.org
-Subject: Re: [PATCH V2] init/Kconfig: Fix a typo in CC_VERSION_TEXT help text
-Message-ID: <20210225000154.GA7875@24bbad8f3778>
-References: <20210224223325.29099-1-unixbhaskar@gmail.com>
+        id S236056AbhBYArf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Wed, 24 Feb 2021 19:47:35 -0500
+Received: from www62.your-server.de ([213.133.104.62]:38714 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235647AbhBYAr3 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Wed, 24 Feb 2021 19:47:29 -0500
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lF4nT-0000J2-K3; Thu, 25 Feb 2021 01:46:27 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lF4nT-000Mzt-72; Thu, 25 Feb 2021 01:46:27 +0100
+Subject: Re: [PATCH v8 bpf-next 0/5] xsk: build skb by page (aka generic
+ zerocopy xmit)
+To:     Alexander Lobakin <alobakin@pm.me>,
+        Magnus Karlsson <magnus.karlsson@intel.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Dust Li <dust.li@linux.alibaba.com>,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <20210218204908.5455-1-alobakin@pm.me>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <925e70eb-3cc6-a135-decc-22167f2ecaf0@iogearbox.net>
+Date:   Thu, 25 Feb 2021 01:46:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210224223325.29099-1-unixbhaskar@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210218204908.5455-1-alobakin@pm.me>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26090/Wed Feb 24 13:09:42 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 04:03:25AM +0530, Bhaskar Chowdhury wrote:
-> 
-> s/compier/compiler/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+On 2/18/21 9:49 PM, Alexander Lobakin wrote:
+> This series introduces XSK generic zerocopy xmit by adding XSK umem
+> pages as skb frags instead of copying data to linear space.
+> The only requirement for this for drivers is to be able to xmit skbs
+> with skb_headlen(skb) == 0, i.e. all data including hard headers
+> starts from frag 0.
+> To indicate whether a particular driver supports this, a new netdev
+> priv flag, IFF_TX_SKB_NO_LINEAR, is added (and declared in virtio_net
+> as it's already capable of doing it). So consider implementing this
+> in your drivers to greatly speed-up generic XSK xmit.
+[...]
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-
-> ---
->  Changes from V1:
->  Nathan and Randy, suggested  better subject line texts,so incorporated.
-> 
->  init/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/init/Kconfig b/init/Kconfig
-> index ba8bd5256980..2cfed79cc6ec 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -19,7 +19,7 @@ config CC_VERSION_TEXT
->  	    CC_VERSION_TEXT so it is recorded in include/config/auto.conf.cmd.
->  	    When the compiler is updated, Kconfig will be invoked.
-> 
-> -	  - Ensure full rebuild when the compier is updated
-> +	  - Ensure full rebuild when the compiler is updated
->  	    include/linux/kconfig.h contains this option in the comment line so
->  	    fixdep adds include/config/cc/version/text.h into the auto-generated
->  	    dependency. When the compiler is updated, syncconfig will touch it
-> --
-> 2.29.2
-> 
+Applied, thanks!
