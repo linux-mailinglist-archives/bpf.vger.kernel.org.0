@@ -2,43 +2,43 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8606A324B4F
-	for <lists+bpf@lfdr.de>; Thu, 25 Feb 2021 08:37:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6405D324B52
+	for <lists+bpf@lfdr.de>; Thu, 25 Feb 2021 08:37:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232365AbhBYHe1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Feb 2021 02:34:27 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:35690 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234153AbhBYHeZ (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 25 Feb 2021 02:34:25 -0500
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11P7Rpws002109
-        for <bpf@vger.kernel.org>; Wed, 24 Feb 2021 23:33:44 -0800
+        id S233635AbhBYHez (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Feb 2021 02:34:55 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:15936 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232447AbhBYHei (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 25 Feb 2021 02:34:38 -0500
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11P7UWLl000501
+        for <bpf@vger.kernel.org>; Wed, 24 Feb 2021 23:33:54 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=NG1GwJFT4YID5/84GSoZXqEWeKgFgO9pZHJcGqcBJI4=;
- b=eM1ZEO4clGVZlWwxEPoPXIRzpE2ca+aFk08CfvAjIHKJLGfFhVGYhFmak3Ik5ZepVmEG
- Zzlf1pFCr4oPvVbK9Sxs4QPxtnrjnEyH7PGIwW1TgAPO1vk8crWZTCCUy1QPBevruSit
- oQJaSbqS21cq0LYRxwUbqRP+xmxBojooNsw= 
+ bh=1B1TygnyQv+DMMVCldfweJFrUNcd7UEDkggYiuJ/DpE=;
+ b=aKFAKJn6XW5rmT0AbFJZK4QZXB65RTpMycHhT0dVaCERaFk65YixQeNbJPtTfyJD30U1
+ PUUHXNxKn/jdbCMrMDRtyJ1ZhoXkX2keq7PNiejnRRkwUMzNwtw086LyicYlzKb4vHm7
+ 2wo750dpxqsS4fn51wM3F5Js1ImQVB5e9Fk= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 36vx7avuyj-20
+        by mx0a-00082601.pphosted.com with ESMTP id 36wvqdbew4-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 24 Feb 2021 23:33:44 -0800
-Received: from intmgw006.03.ash8.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+        for <bpf@vger.kernel.org>; Wed, 24 Feb 2021 23:33:54 -0800
+Received: from intmgw002.06.ash9.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 24 Feb 2021 23:33:22 -0800
+ 15.1.1979.3; Wed, 24 Feb 2021 23:33:25 -0800
 Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id B9FCC3705D0E; Wed, 24 Feb 2021 23:33:20 -0800 (PST)
+        id F3CE43705D0E; Wed, 24 Feb 2021 23:33:21 -0800 (PST)
 From:   Yonghong Song <yhs@fb.com>
 To:     <bpf@vger.kernel.org>
 CC:     Alexei Starovoitov <ast@kernel.org>,
         Cong Wang <xiyou.wangcong@gmail.com>,
         Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next v3 10/11] selftests/bpf: add hashmap test for bpf_for_each_map_elem() helper
-Date:   Wed, 24 Feb 2021 23:33:20 -0800
-Message-ID: <20210225073320.4121679-1-yhs@fb.com>
+Subject: [PATCH bpf-next v3 11/11] selftests/bpf: add arraymap test for bpf_for_each_map_elem() helper
+Date:   Wed, 24 Feb 2021 23:33:21 -0800
+Message-ID: <20210225073321.4121788-1-yhs@fb.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20210225073309.4119708-1-yhs@fb.com>
 References: <20210225073309.4119708-1-yhs@fb.com>
@@ -48,72 +48,73 @@ X-FB-Internal: Safe
 Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
  definitions=2021-02-25_04:2021-02-24,2021-02-25 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- spamscore=0 bulkscore=0 mlxlogscore=999 phishscore=0 impostorscore=0
- clxscore=1015 mlxscore=0 suspectscore=0 adultscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ priorityscore=1501 suspectscore=0 clxscore=1015 mlxscore=0 mlxlogscore=996
+ impostorscore=0 bulkscore=0 adultscore=0 lowpriorityscore=0 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2009150000 definitions=main-2102250062
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-A test case is added for hashmap and percpu hashmap. The test
-also exercises nested bpf_for_each_map_elem() calls like
-    bpf_prog:
-      bpf_for_each_map_elem(func1)
-    func1:
-      bpf_for_each_map_elem(func2)
-    func2:
-
-  $ ./test_progs -n 45
-  #45/1 hash_map:OK
-  #45 for_each:OK
-  Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
+A test is added for arraymap and percpu arraymap. The test also
+exercises the early return for the helper which does not
+traverse all elements.
+    $ ./test_progs -n 45
+    #45/1 hash_map:OK
+    #45/2 array_map:OK
+    #45 for_each:OK
+    Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
 
 Signed-off-by: Yonghong Song <yhs@fb.com>
 ---
- .../selftests/bpf/prog_tests/for_each.c       | 74 +++++++++++++++
- .../bpf/progs/for_each_hash_map_elem.c        | 95 +++++++++++++++++++
- 2 files changed, 169 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/for_each.c
- create mode 100644 tools/testing/selftests/bpf/progs/for_each_hash_map_e=
-lem.c
+ .../selftests/bpf/prog_tests/for_each.c       | 58 ++++++++++++++++++
+ .../bpf/progs/for_each_array_map_elem.c       | 61 +++++++++++++++++++
+ 2 files changed, 119 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/for_each_array_map_=
+elem.c
 
 diff --git a/tools/testing/selftests/bpf/prog_tests/for_each.c b/tools/te=
 sting/selftests/bpf/prog_tests/for_each.c
-new file mode 100644
-index 000000000000..aa0c23e83ab8
---- /dev/null
+index aa0c23e83ab8..157abc721cab 100644
+--- a/tools/testing/selftests/bpf/prog_tests/for_each.c
 +++ b/tools/testing/selftests/bpf/prog_tests/for_each.c
-@@ -0,0 +1,74 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+#include <test_progs.h>
-+#include <network_helpers.h>
-+#include "for_each_hash_map_elem.skel.h"
-+
-+static unsigned int duration;
-+
-+static void test_hash_map(void)
+@@ -3,6 +3,7 @@
+ #include <test_progs.h>
+ #include <network_helpers.h>
+ #include "for_each_hash_map_elem.skel.h"
++#include "for_each_array_map_elem.skel.h"
+=20
+ static unsigned int duration;
+=20
+@@ -67,8 +68,65 @@ static void test_hash_map(void)
+ 	for_each_hash_map_elem__destroy(skel);
+ }
+=20
++static void test_array_map(void)
 +{
-+	int i, err, hashmap_fd, max_entries, percpu_map_fd;
-+	struct for_each_hash_map_elem *skel;
++	__u32 key, num_cpus, max_entries, retval;
++	int i, arraymap_fd, percpu_map_fd, err;
++	struct for_each_array_map_elem *skel;
 +	__u64 *percpu_valbuf =3D NULL;
-+	__u32 key, num_cpus, retval;
-+	__u64 val;
++	__u64 val, expected_total;
 +
-+	skel =3D for_each_hash_map_elem__open_and_load();
-+	if (CHECK(!skel, "for_each_hash_map_elem__open_and_load",
++	skel =3D for_each_array_map_elem__open_and_load();
++	if (CHECK(!skel, "for_each_array_map_elem__open_and_load",
 +		  "skeleton open_and_load failed\n"))
 +		return;
 +
-+	hashmap_fd =3D bpf_map__fd(skel->maps.hashmap);
-+	max_entries =3D bpf_map__max_entries(skel->maps.hashmap);
++	arraymap_fd =3D bpf_map__fd(skel->maps.arraymap);
++	expected_total =3D 0;
++	max_entries =3D bpf_map__max_entries(skel->maps.arraymap);
 +	for (i =3D 0; i < max_entries; i++) {
 +		key =3D i;
 +		val =3D i + 1;
-+		err =3D bpf_map_update_elem(hashmap_fd, &key, &val, BPF_ANY);
++		/* skip the last iteration for expected total */
++		if (i !=3D max_entries - 1)
++			expected_total +=3D val;
++		err =3D bpf_map_update_elem(arraymap_fd, &key, &val, BPF_ANY);
 +		if (CHECK(err, "map_update", "map_update failed\n"))
 +			goto out;
 +	}
@@ -124,7 +125,7 @@ index 000000000000..aa0c23e83ab8
 +	if (!ASSERT_OK_PTR(percpu_valbuf, "percpu_valbuf"))
 +		goto out;
 +
-+	key =3D 1;
++	key =3D 0;
 +	for (i =3D 0; i < num_cpus; i++)
 +		percpu_valbuf[i] =3D i + 1;
 +	err =3D bpf_map_update_elem(percpu_map_fd, &key, percpu_valbuf, BPF_ANY=
@@ -139,36 +140,28 @@ index 000000000000..aa0c23e83ab8
 +		  err, errno, retval))
 +		goto out;
 +
-+	ASSERT_EQ(skel->bss->hashmap_output, 4, "hashmap_output");
-+	ASSERT_EQ(skel->bss->hashmap_elems, max_entries, "hashmap_elems");
++	ASSERT_EQ(skel->bss->arraymap_output, expected_total, "array_output");
++	ASSERT_EQ(skel->bss->cpu + 1, skel->bss->percpu_val, "percpu_val");
 +
-+	key =3D 1;
-+	err =3D bpf_map_lookup_elem(hashmap_fd, &key, &val);
-+	ASSERT_ERR(err, "hashmap_lookup");
-+
-+	ASSERT_EQ(skel->bss->percpu_called, 1, "percpu_called");
-+	ASSERT_EQ(skel->bss->cpu < num_cpus, 1, "num_cpus");
-+	ASSERT_EQ(skel->bss->percpu_map_elems, 1, "percpu_map_elems");
-+	ASSERT_EQ(skel->bss->percpu_key, 1, "percpu_key");
-+	ASSERT_EQ(skel->bss->percpu_val, skel->bss->cpu + 1, "percpu_val");
-+	ASSERT_EQ(skel->bss->percpu_output, 100, "percpu_output");
 +out:
 +	free(percpu_valbuf);
-+	for_each_hash_map_elem__destroy(skel);
++	for_each_array_map_elem__destroy(skel);
 +}
 +
-+void test_for_each(void)
-+{
-+	if (test__start_subtest("hash_map"))
-+		test_hash_map();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/for_each_hash_map_elem.c b=
-/tools/testing/selftests/bpf/progs/for_each_hash_map_elem.c
+ void test_for_each(void)
+ {
+ 	if (test__start_subtest("hash_map"))
+ 		test_hash_map();
++	if (test__start_subtest("array_map"))
++		test_array_map();
+ }
+diff --git a/tools/testing/selftests/bpf/progs/for_each_array_map_elem.c =
+b/tools/testing/selftests/bpf/progs/for_each_array_map_elem.c
 new file mode 100644
-index 000000000000..e47e68d7a769
+index 000000000000..1488bc50468f
 --- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/for_each_hash_map_elem.c
-@@ -0,0 +1,95 @@
++++ b/tools/testing/selftests/bpf/progs/for_each_array_map_elem.c
+@@ -0,0 +1,61 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/* Copyright (c) 2021 Facebook */
 +#include "vmlinux.h"
@@ -177,93 +170,57 @@ index 000000000000..e47e68d7a769
 +char _license[] SEC("license") =3D "GPL";
 +
 +struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
++	__uint(type, BPF_MAP_TYPE_ARRAY);
 +	__uint(max_entries, 3);
 +	__type(key, __u32);
 +	__type(value, __u64);
-+} hashmap SEC(".maps");
++} arraymap SEC(".maps");
 +
 +struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_HASH);
++	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
 +	__uint(max_entries, 1);
 +	__type(key, __u32);
 +	__type(value, __u64);
 +} percpu_map SEC(".maps");
 +
 +struct callback_ctx {
-+	struct __sk_buff *ctx;
-+	int input;
 +	int output;
 +};
 +
 +static __u64
-+check_hash_elem(struct bpf_map *map, __u32 *key, __u64 *val,
-+		struct callback_ctx *data)
++check_array_elem(struct bpf_map *map, __u32 *key, __u64 *val,
++		 struct callback_ctx *data)
 +{
-+	struct __sk_buff *skb =3D data->ctx;
-+	__u32 k;
-+	__u64 v;
-+
-+	if (skb) {
-+		k =3D *key;
-+		v =3D *val;
-+		if (skb->len =3D=3D 10000 && k =3D=3D 10 && v =3D=3D 10)
-+			data->output =3D 3; /* impossible path */
-+		else
-+			data->output =3D 4;
-+	} else {
-+		data->output =3D data->input;
-+		bpf_map_delete_elem(map, key);
-+	}
-+
++	data->output +=3D *val;
++	if (*key =3D=3D 1)
++		return 1; /* stop the iteration */
 +	return 0;
 +}
 +
 +__u32 cpu =3D 0;
-+__u32 percpu_called =3D 0;
-+__u32 percpu_key =3D 0;
 +__u64 percpu_val =3D 0;
-+int percpu_output =3D 0;
 +
 +static __u64
 +check_percpu_elem(struct bpf_map *map, __u32 *key, __u64 *val,
-+		  struct callback_ctx *unused)
++		  struct callback_ctx *data)
 +{
-+	struct callback_ctx data;
-+
-+	percpu_called++;
 +	cpu =3D bpf_get_smp_processor_id();
-+	percpu_key =3D *key;
 +	percpu_val =3D *val;
-+
-+	data.ctx =3D 0;
-+	data.input =3D 100;
-+	data.output =3D 0;
-+	bpf_for_each_map_elem(&hashmap, check_hash_elem, &data, 0);
-+	percpu_output =3D data.output;
-+
 +	return 0;
 +}
 +
-+int hashmap_output =3D 0;
-+int hashmap_elems =3D 0;
-+int percpu_map_elems =3D 0;
++u32 arraymap_output =3D 0;
 +
 +SEC("classifier/")
 +int test_pkt_access(struct __sk_buff *skb)
 +{
 +	struct callback_ctx data;
 +
-+	data.ctx =3D skb;
-+	data.input =3D 10;
 +	data.output =3D 0;
-+	hashmap_elems =3D bpf_for_each_map_elem(&hashmap, check_hash_elem, &dat=
-a, 0);
-+	hashmap_output =3D data.output;
++	bpf_for_each_map_elem(&arraymap, check_array_elem, &data, 0);
++	arraymap_output =3D data.output;
 +
-+	percpu_map_elems =3D bpf_for_each_map_elem(&percpu_map, check_percpu_el=
-em,
-+						 (void *)0, 0);
++	bpf_for_each_map_elem(&percpu_map, check_percpu_elem, (void *)0, 0);
 +	return 0;
 +}
 --=20
