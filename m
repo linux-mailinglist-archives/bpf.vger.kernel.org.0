@@ -2,55 +2,54 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6CC33259CF
-	for <lists+bpf@lfdr.de>; Thu, 25 Feb 2021 23:49:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5AA4325A08
+	for <lists+bpf@lfdr.de>; Fri, 26 Feb 2021 00:05:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229491AbhBYWtP (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Feb 2021 17:49:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48098 "EHLO
+        id S229561AbhBYXF1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Feb 2021 18:05:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230201AbhBYWtO (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Feb 2021 17:49:14 -0500
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD77C06174A
-        for <bpf@vger.kernel.org>; Thu, 25 Feb 2021 14:48:32 -0800 (PST)
-Received: by mail-yb1-xb2e.google.com with SMTP id x19so7091780ybe.0
-        for <bpf@vger.kernel.org>; Thu, 25 Feb 2021 14:48:32 -0800 (PST)
+        with ESMTP id S229507AbhBYXF1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Feb 2021 18:05:27 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF211C061574
+        for <bpf@vger.kernel.org>; Thu, 25 Feb 2021 15:04:46 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id c131so7086281ybf.7
+        for <bpf@vger.kernel.org>; Thu, 25 Feb 2021 15:04:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=yhnhqaoWr6h3ccPg3N1M+RLU3wfziP8GoxYqpBJN56k=;
-        b=oSnlVK6m++aL4jRIiHz2h+T9tDFjl/QTZwiKjvt47RxiTqYLEPVCRDV6aCZedT5ujD
-         jeKW6VmZlDCpfeawlIXH+c1U/Cshg2oiqZVmPWq3huuMR0cF67SqGj9tsxTEP0xN/sBR
-         6d0JqO8CK1G6AMxOSiPYAerRt4UlwMTTFbi2/WYVmUBFS1D+BN2bp6W2OJqWM3huRLwl
-         CtLa0X4ZgkdrZv/LeQBNfWm2gbJnBpmuTxt1Iv7GwXmlZEdel8cmEaNBpODeEz5qaxF8
-         lsC340dO3NNjYh/4NQrYvePbkh9jEdopJv7uud9o3rVub1LnNgpkIoeeEOgHwajGgXvJ
-         HAeQ==
+        bh=TIr/u6vRce5aqjtgKKKYMrQP5BHXoq3l+i6eRrvdIRU=;
+        b=UnWl5KVw3ra2GbeOS+tC+BBsE6jntaS/26djyVzkI9/6ceoxCeSKDTZbH/Rn4oG4M5
+         X/+XxfllVUEAw4sQV3HnYOKh/aDXqlPigPK9gg67slZktBjSXdL24g0kcoyWrmLF1eTQ
+         ZQfgZMJyJ0coGJwc+qFV4J4JWQdurSncKlNHw+spVyOEHtbuSMkool0OonmV9JQxzQ0N
+         EwzkpmGaCWc9kuTk3deDq6zJJ/thTtb9kJjqr0wkAoCfIAB5VjTNg/kGcQFIKQnVs5LU
+         gpO7BKK1e/CQo2ZEsuD5wPoVzD6aoETZK5ro/bXrcUnClXueutYUYlvEFrlwuVriwvWs
+         D4cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=yhnhqaoWr6h3ccPg3N1M+RLU3wfziP8GoxYqpBJN56k=;
-        b=h+15ep3lMLUu0KKHFe6vjxJHr3HLa8PnG3D9kkd01Yhg5V3XC849cKufAE7rBssGN2
-         9cAmH1uMY/8EGVYfUnhGCVsw7p7DcDL/LPU+7hn6XyVbNifHfE1Wz6PRYgrbdSspwC2K
-         mGMdM77A4NB7WfirAahMZ8hDX51X9MKu/82hB7/9NF983vEsoOSsSl8DFGQFKDrUlMr8
-         HHJ3i/lUHZeMqyJKvqPzjf0Yi6VoreqCaIQ6oQyjanW/6PxYSy+Ak8fe+TWQZZAtGZWC
-         pVPbPS+k8mKtlJjBJcUInk4XEXXjZ2cHSJAEaEZOIl3lHYi4qBylyB9evXH4Ymf+JvCU
-         6wKg==
-X-Gm-Message-State: AOAM533yxK8obAqUIxb84fZByhoMcG+EBk9MaE69xgbl+5UatDml29ld
-        7nD7vlzyIXl/wQGjBMrKufvtP0h2s2TUnyORX+k=
-X-Google-Smtp-Source: ABdhPJyHW0aGno5l0xIRGNt+8mn5xPHdouGmtMw+gTfT1UttvyHXlvw6ynLtlEtqgK+lqAXdNL1k+z8h1hrxXOlhhus=
-X-Received: by 2002:a25:f40e:: with SMTP id q14mr261144ybd.230.1614293312046;
- Thu, 25 Feb 2021 14:48:32 -0800 (PST)
+        bh=TIr/u6vRce5aqjtgKKKYMrQP5BHXoq3l+i6eRrvdIRU=;
+        b=fRyx8NrKoyuEzICRf+jWKkASHQhG2Rl6IEFgXyFoNSFvtG84W83ySijt6TbTToaTOy
+         75uSimpz4xAU2BG7/pUBll18D2mGMI/WnxbjTTZP8xUehT8lP1hpZpGOfXFORgJML/Oi
+         Vd6PwBmeU+Trd/wcOFeR2xqcWBQvTcbh0H7YnJUkTUIH5jQNAmYHTaiUiRz81OPfOEHj
+         L8mHfEiVglM/VdYHLcqK4xyPhpXbeFSUMffEQsUMAErXcZuvD11ZVuufQDPM4W9RWbYA
+         VQFvKaC/EoCrp0Zz/ykB3kZS7cd67Jm61jvJFaHt5YKIbl8Mv3j2worAIKwiEoHs6iHQ
+         yGGA==
+X-Gm-Message-State: AOAM533ZyBP9WS6cp4R6D3Q8nUxd9FB8/N2XKu7d9PiswYthvRUloJjJ
+        ES87VLx2g3r4U04DRYnzjCKxG/rs1u/Lrcq841OG42EMsL4=
+X-Google-Smtp-Source: ABdhPJylx3CBZciCWe7FURZ1sbcbf8eJ8oIVvdZuAY5eMUx9cAQm7hb9Fl77gV73Ilq2Io14HGtZAf8Hwa0L6S7WlYY=
+X-Received: by 2002:a25:37c4:: with SMTP id e187mr271974yba.347.1614294286279;
+ Thu, 25 Feb 2021 15:04:46 -0800 (PST)
 MIME-Version: 1.0
-References: <20210225073309.4119708-1-yhs@fb.com> <20210225073315.4121184-1-yhs@fb.com>
-In-Reply-To: <20210225073315.4121184-1-yhs@fb.com>
+References: <20210225073309.4119708-1-yhs@fb.com> <20210225073318.4121448-1-yhs@fb.com>
+In-Reply-To: <20210225073318.4121448-1-yhs@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 25 Feb 2021 14:48:21 -0800
-Message-ID: <CAEf4Bzab1_49y_qjDEYKpjQ58Qj-tucZNt6hW=hpn+1itWmVDw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 06/11] bpf: add arraymap support for
- bpf_for_each_map_elem() helper
+Date:   Thu, 25 Feb 2021 15:04:35 -0800
+Message-ID: <CAEf4BzYY2AkkRG6x5DW3s-kk_t7hUQfGBJrWDU=TtqJR+PY1SA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 08/11] libbpf: support subprog address relocation
 To:     Yonghong Song <yhs@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Cong Wang <xiyou.wangcong@gmail.com>,
@@ -63,87 +62,50 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Thu, Feb 25, 2021 at 1:35 AM Yonghong Song <yhs@fb.com> wrote:
 >
-> This patch added support for arraymap and percpu arraymap.
+> A new relocation RELO_SUBPROG_ADDR is added to capture
+> subprog addresses loaded with ld_imm64 insns. Such ld_imm64
+> insns are marked with BPF_PSEUDO_FUNC and will be passed to
+> kernel. For bpf_for_each_map_elem() case, kernel will
+> check that the to-be-used subprog address must be a static
+> function and replace it with proper actual jited func address.
 >
 > Signed-off-by: Yonghong Song <yhs@fb.com>
 > ---
+>  tools/lib/bpf/libbpf.c | 64 ++++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 61 insertions(+), 3 deletions(-)
+>
 
-index_mask is overcautious in this case, but otherwise lgtm
+LGTM. I'll still need to relax it a bit more for static functions, but
+it can come as part of static linker work.
 
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
->  kernel/bpf/arraymap.c | 40 ++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 40 insertions(+)
->
-> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-> index 1f8453343bf2..4077a8ae7089 100644
-> --- a/kernel/bpf/arraymap.c
-> +++ b/kernel/bpf/arraymap.c
-> @@ -625,6 +625,42 @@ static const struct bpf_iter_seq_info iter_seq_info = {
->         .seq_priv_size          = sizeof(struct bpf_iter_seq_array_map_info),
->  };
->
-> +static int bpf_for_each_array_elem(struct bpf_map *map, void *callback_fn,
-> +                                  void *callback_ctx, u64 flags)
+[...]
+> +static bool sym_is_subprog(const GElf_Sym *sym, int text_shndx)
 > +{
-> +       u32 i, index, num_elems = 0;
-> +       struct bpf_array *array;
-> +       bool is_percpu;
-> +       u64 ret = 0;
-> +       void *val;
+> +       int bind = GELF_ST_BIND(sym->st_info);
+> +       int type = GELF_ST_TYPE(sym->st_info);
 > +
-> +       if (flags != 0)
-> +               return -EINVAL;
+> +       /* in .text section */
+> +       if (sym->st_shndx != text_shndx)
+> +               return false;
 > +
-> +       is_percpu = map->map_type == BPF_MAP_TYPE_PERCPU_ARRAY;
-> +       array = container_of(map, struct bpf_array, map);
-> +       if (is_percpu)
-> +               migrate_disable();
-> +       for (i = 0; i < map->max_entries; i++) {
-> +               index = i & array->index_mask;
+> +       /* local function */
+> +       if (bind == STB_LOCAL && type == STT_SECTION)
+> +               return true;
+> +
+> +       /* global function */
+> +       return bind == STB_GLOBAL && type == STT_FUNC;
 
-I don't think you need to use index_mask here, given you control i and
-know that it will always be < map->max_entries.
+theoretically STT_FUNC could be STB_LOCAL here, though Clang doesn't
+emit it that way today. It will be easy to fix later, though. Just
+mentioning, because I intend to have STB_LOCAL + STT_FUNC relocations
+with BPF static linker.
 
-> +               if (is_percpu)
-> +                       val = this_cpu_ptr(array->pptrs[i]);
-> +               else
-> +                       val = array->value + array->elem_size * i;
-> +               num_elems++;
-> +               ret = BPF_CAST_CALL(callback_fn)((u64)(long)map,
-> +                                       (u64)(long)&index, (u64)(long)val,
-> +                                       (u64)(long)callback_ctx, 0);
-> +               /* return value: 0 - continue, 1 - stop and return */
-> +               if (ret)
-> +                       break;
-> +       }
-> +
-> +       if (is_percpu)
-> +               migrate_enable();
-> +       return num_elems;
 > +}
 > +
->  static int array_map_btf_id;
->  const struct bpf_map_ops array_map_ops = {
->         .map_meta_equal = array_map_meta_equal,
-> @@ -643,6 +679,8 @@ const struct bpf_map_ops array_map_ops = {
->         .map_check_btf = array_map_check_btf,
->         .map_lookup_batch = generic_map_lookup_batch,
->         .map_update_batch = generic_map_update_batch,
-> +       .map_set_for_each_callback_args = map_set_for_each_callback_args,
-> +       .map_for_each_callback = bpf_for_each_array_elem,
->         .map_btf_name = "bpf_array",
->         .map_btf_id = &array_map_btf_id,
->         .iter_seq_info = &iter_seq_info,
-> @@ -660,6 +698,8 @@ const struct bpf_map_ops percpu_array_map_ops = {
->         .map_delete_elem = array_map_delete_elem,
->         .map_seq_show_elem = percpu_array_map_seq_show_elem,
->         .map_check_btf = array_map_check_btf,
-> +       .map_set_for_each_callback_args = map_set_for_each_callback_args,
-> +       .map_for_each_callback = bpf_for_each_array_elem,
->         .map_btf_name = "bpf_array",
->         .map_btf_id = &percpu_array_map_btf_id,
->         .iter_seq_info = &iter_seq_info,
-> --
-> 2.24.1
->
+>  static int find_extern_btf_id(const struct btf *btf, const char *ext_name)
+>  {
+>         const struct btf_type *t;
+
+[...]
