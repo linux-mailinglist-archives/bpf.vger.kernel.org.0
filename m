@@ -2,178 +2,153 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7012832579B
-	for <lists+bpf@lfdr.de>; Thu, 25 Feb 2021 21:28:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DF7E3258F1
+	for <lists+bpf@lfdr.de>; Thu, 25 Feb 2021 22:47:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233242AbhBYU1g (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Feb 2021 15:27:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233578AbhBYU1a (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Feb 2021 15:27:30 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50A6CC061574
-        for <bpf@vger.kernel.org>; Thu, 25 Feb 2021 12:26:49 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id b3so6516423wrj.5
-        for <bpf@vger.kernel.org>; Thu, 25 Feb 2021 12:26:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ubique-spb-ru.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=O5VK8xryObtr9m4Ka1rMfg1RkUM659RsWN0h8LmMthU=;
-        b=Mwbmz51qe6UT2mrc54XOzfEbyPeXeh64UjKUoRBCRFZ8RuF4mNs4Ferq8IUElZsAiz
-         OCOxdYu+Dzg34s1NrJk91MRGOEAIUeZ00p+rykJGYdMjodRCWaOhGHT2bn5XSXJj2t4D
-         ApWJtWCXLSADZlhk/DguSTmC6aJON9qmNiHbOL4yS2sB26Bzp/R8bKOVKBz5pI657sWu
-         SwuFdjLlUiehuwXXGpGfBDOhdlX/8/c4hmVIX0MfvIK2DJcQU9H+qIx5hxwN0be3Eaft
-         gRS23Uda+9x5x85veAWRyzfo5QlmemnzUO7AjEgaLqQr25B/EZ6NQPVEV1aR07PdbkiX
-         FYjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=O5VK8xryObtr9m4Ka1rMfg1RkUM659RsWN0h8LmMthU=;
-        b=olR8A3T9Yl+OAlidUn09n1skALv32J+HNajRj6GzbgOEzo/at9XxJSDDfXesTWGkBn
-         je8QSknBzDNAcqRk3Rfjited7bzOxI01ALsO2RxlfASTSlLQkCYIJbEgUeRif+poEUK2
-         awn3G2nBIv6fFVdGTCjvylP6R07FtEtgjp7+zweMXcBEmlSSJ0VjH8FbwLPGFg4YiAVH
-         8j0JVbeh27sr6kschfSdwd37ENA6PwzyK6RVIPTQ9rTIxSPEeX8SjqPJEEPNqqrQQMeh
-         0rp1JF9Kgs3KryIiAe45QTBtXynkMrrdoQZAW+g9dwJMHxJcR8y0Tz0DhbaH43c7GJCj
-         QBMA==
-X-Gm-Message-State: AOAM532mzrnGRdxeoot4prY9vYniysb15N6QxwTcczEt05Lk8s02GYip
-        0vNXN/k9fa2pLEVg7bflMC9wQnaswIGp5nmH
-X-Google-Smtp-Source: ABdhPJzSO25Fa/pVVBij1kRxy/tsXwycC0iOHDXgZ2KRUs3elqEm1m8JO0qy6u+R3hOd3FMkhfjxdw==
-X-Received: by 2002:a05:6000:152:: with SMTP id r18mr5089526wrx.226.1614284807840;
-        Thu, 25 Feb 2021 12:26:47 -0800 (PST)
-Received: from localhost ([154.21.15.43])
-        by smtp.gmail.com with ESMTPSA id e12sm10230812wrv.59.2021.02.25.12.26.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 12:26:47 -0800 (PST)
-From:   Dmitrii Banshchikov <me@ubique.spb.ru>
-To:     bpf@vger.kernel.org
-Cc:     Dmitrii Banshchikov <me@ubique.spb.ru>, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@chromium.org, rdna@fb.com
-Subject: [PATCH v2 bpf-next] bpf: use MAX_BPF_FUNC_REG_ARGS macro
-Date:   Fri, 26 Feb 2021 00:26:29 +0400
-Message-Id: <20210225202629.585485-1-me@ubique.spb.ru>
-X-Mailer: git-send-email 2.25.1
+        id S233440AbhBYVrM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Feb 2021 16:47:12 -0500
+Received: from mail.efficios.com ([167.114.26.124]:40640 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233365AbhBYVrM (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Feb 2021 16:47:12 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id CD650308F50;
+        Thu, 25 Feb 2021 16:46:30 -0500 (EST)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id Kl9dAKxEcf28; Thu, 25 Feb 2021 16:46:30 -0500 (EST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 4FBA4308CE5;
+        Thu, 25 Feb 2021 16:46:30 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 4FBA4308CE5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1614289590;
+        bh=o0aCFhK6hbOYxsIx7d6kKmaUc/JroV5nWAPRFyt2WAo=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=e1yFIxBsDQ7Nu4LsQM2dVNLiYYrL++s9uYuCRAl+zegkLDJW3JsQJwlWMcTvmop8a
+         EEWjF69tjE+HdbdvpPmXNjr3W0+FkxMY95TbNzwdNPjkgqLhOaRHPBxKUC5yP5hpTN
+         U9th3mRpfnRNKM5jlADeQjyg6qCyWXJ1znf1SKUWMZQt86TF39TEGU0CFYNtIkzlmB
+         nHG+aD+F3ol3tHxWw7SLCm5EWr37j4IiCKIJMcA2b+Bynsa2Ed5usDjTsijcjVkxsN
+         QJIG99ujgD5J6Xk9gQTD6xo17FES73Il8tlSbIb7oL8cvqCuMkmPZIn+S+L6Hqblvl
+         P+Y/JiYTJofiw==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id XLjMK8LN6nAu; Thu, 25 Feb 2021 16:46:30 -0500 (EST)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 3662A308CE4;
+        Thu, 25 Feb 2021 16:46:30 -0500 (EST)
+Date:   Thu, 25 Feb 2021 16:46:30 -0500 (EST)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     rostedt <rostedt@goodmis.org>
+Cc:     Michael Jeanson <mjeanson@efficios.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>, paulmck <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, acme <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        bpf <bpf@vger.kernel.org>
+Message-ID: <1130245502.6977.1614289590089.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20210224131405.20d64b49@gandalf.local.home>
+References: <20210218222125.46565-1-mjeanson@efficios.com> <20210223211639.670db85c@gandalf.local.home> <083bce0f-bd66-ab83-1211-be9838499b45@efficios.com> <915297635.2997.1614185975415.JavaMail.zimbra@efficios.com> <20210224131405.20d64b49@gandalf.local.home>
+Subject: Re: [RFC PATCH 0/6] [RFC] Faultable tracepoints (v2)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF86 (Linux)/8.8.15_GA_4007)
+Thread-Topic: Faultable tracepoints (v2)
+Thread-Index: dAUCUbioVIglboY1pCOYm7WxMYc8kQ==
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Instead of using integer literal here and there use macro name for
-better context.
 
-Signed-off-by: Dmitrii Banshchikov <me@ubique.spb.ru>
----
- v1 -> v2:
-  * Rename MAX_BPF_FUNC_REGISTER_ARGS to
-    MAX_BPF_FUNC_REG_ARGS
-  * Clarify the macro purpose in comments
 
- include/linux/bpf.h   |  5 +++++
- kernel/bpf/btf.c      | 25 ++++++++++++++-----------
- kernel/bpf/verifier.c |  2 +-
- 3 files changed, 20 insertions(+), 12 deletions(-)
+----- On Feb 24, 2021, at 1:14 PM, rostedt rostedt@goodmis.org wrote:
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index cccaef1088ea..7088dcc3f6a0 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -506,6 +506,11 @@ enum bpf_cgroup_storage_type {
-  */
- #define MAX_BPF_FUNC_ARGS 12
- 
-+/* The maximum number of arguments passed through registers
-+ * a single function may have.
-+ */
-+#define MAX_BPF_FUNC_REG_ARGS 5
-+
- struct btf_func_model {
- 	u8 ret_size;
- 	u8 nr_args;
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 2efeb5f4b343..16e8148a28e2 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -4594,8 +4594,10 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
- 	}
- 	arg = off / 8;
- 	args = (const struct btf_param *)(t + 1);
--	/* if (t == NULL) Fall back to default BPF prog with 5 u64 arguments */
--	nr_args = t ? btf_type_vlen(t) : 5;
-+	/* if (t == NULL) Fall back to default BPF prog with
-+	 * MAX_BPF_FUNC_REG_ARGS u64 arguments.
-+	 */
-+	nr_args = t ? btf_type_vlen(t) : MAX_BPF_FUNC_REG_ARGS;
- 	if (prog->aux->attach_btf_trace) {
- 		/* skip first 'void *__data' argument in btf_trace_##name typedef */
- 		args++;
-@@ -4651,7 +4653,7 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
- 		}
- 	} else {
- 		if (!t)
--			/* Default prog with 5 args */
-+			/* Default prog with MAX_BPF_FUNC_REG_ARGS args */
- 			return true;
- 		t = btf_type_by_id(btf, args[arg].type);
- 	}
-@@ -5102,12 +5104,12 @@ int btf_distill_func_proto(struct bpf_verifier_log *log,
- 
- 	if (!func) {
- 		/* BTF function prototype doesn't match the verifier types.
--		 * Fall back to 5 u64 args.
-+		 * Fall back to MAX_BPF_FUNC_REG_ARGS u64 args.
- 		 */
--		for (i = 0; i < 5; i++)
-+		for (i = 0; i < MAX_BPF_FUNC_REG_ARGS; i++)
- 			m->arg_size[i] = 8;
- 		m->ret_size = 8;
--		m->nr_args = 5;
-+		m->nr_args = MAX_BPF_FUNC_REG_ARGS;
- 		return 0;
- 	}
- 	args = (const struct btf_param *)(func + 1);
-@@ -5330,8 +5332,9 @@ int btf_check_func_arg_match(struct bpf_verifier_env *env, int subprog,
- 	}
- 	args = (const struct btf_param *)(t + 1);
- 	nargs = btf_type_vlen(t);
--	if (nargs > 5) {
--		bpf_log(log, "Function %s has %d > 5 args\n", tname, nargs);
-+	if (nargs > MAX_BPF_FUNC_REG_ARGS) {
-+		bpf_log(log, "Function %s has %d > %d args\n", tname, nargs,
-+			MAX_BPF_FUNC_REG_ARGS);
- 		goto out;
- 	}
- 
-@@ -5460,9 +5463,9 @@ int btf_prepare_func_args(struct bpf_verifier_env *env, int subprog,
- 	}
- 	args = (const struct btf_param *)(t + 1);
- 	nargs = btf_type_vlen(t);
--	if (nargs > 5) {
--		bpf_log(log, "Global function %s() with %d > 5 args. Buggy compiler.\n",
--			tname, nargs);
-+	if (nargs > MAX_BPF_FUNC_REG_ARGS) {
-+		bpf_log(log, "Global function %s() with %d > %d args. Buggy compiler.\n",
-+			tname, nargs, MAX_BPF_FUNC_REG_ARGS);
- 		return -EINVAL;
- 	}
- 	/* check that function returns int */
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 1dda9d81f12c..9f7e35590fc6 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -5544,7 +5544,7 @@ static int check_helper_call(struct bpf_verifier_env *env, int func_id, int insn
- 
- 	meta.func_id = func_id;
- 	/* check args */
--	for (i = 0; i < 5; i++) {
-+	for (i = 0; i < MAX_BPF_FUNC_REG_ARGS; i++) {
- 		err = check_func_arg(env, i, &meta, fn);
- 		if (err)
- 			return err;
+> On Wed, 24 Feb 2021 11:59:35 -0500 (EST)
+> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+>> 
+>> As a prototype solution, what I've done currently is to copy the user-space
+>> data into a kmalloc'd buffer in a preparation step before disabling preemption
+>> and copying data over into the per-cpu buffers. It works, but I think we should
+>> be able to do it without the needless copy.
+>> 
+>> What I have in mind as an efficient solution (not implemented yet) for the LTTng
+>> kernel tracer goes as follows:
+>> 
+>> #define COMMIT_LOCAL 0
+>> #define COMMIT_REMOTE 1
+>> 
+>> - faultable probe is called from system call tracepoint [
+>> preemption/blocking/migration is allowed ]
+>>   - probe code calculate the length which needs to be reserved to store the event
+>>     (e.g. user strlen),
+>> 
+>>   - preempt disable -> [ preemption/blocking/migration is not allowed from here ]
+>>     - reserve_cpu = smp_processor_id()
+>>     - reserve space in the ring buffer for reserve_cpu
+>>       [ from that point on, we have _exclusive_ access to write into the ring buffer
+>>       "slot"
+>>         from any cpu until we commit. ]
+>>   - preempt enable -> [ preemption/blocking/migration is allowed from here ]
+>> 
+> 
+> So basically the commit position here doesn't move until this task is
+> scheduled back in and the commit (remote or local) is updated.
+
+Indeed.
+
+> To put it in terms of the ftrace ring buffer, where we have both a commit
+> page and a commit index, and it only gets moved by the first one to start a
+> commit stack (that is, interrupts that interrupted a write will not
+> increment the commit).
+
+The tricky part for ftrace is its reliance on the fact that the concurrent
+users of the per-cpu ring buffer are all nested contexts. LTTng does not
+assume that and has been designed to be used both in kernel and user-space:
+lttng-modules and lttng-ust share a lot of ring buffer code. Therefore,
+LTTng's ring buffer supports preemption/migration of concurrent contexts.
+
+The fact that LTTng uses local-atomic-ops on its kernel ring buffers is just
+an optimization on an overall ring buffer design meant to allow preemption.
+
+> Now, I'm not sure how LTTng does it, but I could see issues for ftrace to
+> try to move the commit pointer (the pointer to the new commit page), as the
+> design is currently dependent on the fact that it can't happen while
+> commits are taken place.
+
+Indeed, what makes it easy for LTTng is because the ring buffer has been
+designed to support preemption/migration from the ground up.
+
+> Are the pages of the LTTng indexed by an array of pages?
+
+Yes, they are. Handling the initial page allocation and then the tracer copy of data
+to/from the ring buffer pages is the responsibility of the LTTng lib ring buffer "backend".
+The LTTng lib ring buffer backend is somewhat similar to a page table done in software, where
+the top level of the page table can be dynamically updated when doing flight recorder tracing.
+
+It is however completely separate from the space reservation/commit scheme which is handled
+by the lib ring buffer "frontend".
+
+The algorithm I described in my prior email is specifically targeted at the frontend layer,
+leaving the "backend" unchanged.
+
+For some reasons I suspect Ftrace ring buffer combined those two layers into a single
+algorithm, which may have its advantages, but seems to strengthen its dependency on
+only having nested contexts sharing a given per-cpu ring buffer.
+
+Thanks,
+
+Mathieu
+
 -- 
-2.25.1
-
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
