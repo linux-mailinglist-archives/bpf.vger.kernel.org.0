@@ -2,227 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6405D324B52
-	for <lists+bpf@lfdr.de>; Thu, 25 Feb 2021 08:37:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5160324BA2
+	for <lists+bpf@lfdr.de>; Thu, 25 Feb 2021 09:00:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233635AbhBYHez (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Feb 2021 02:34:55 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:15936 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232447AbhBYHei (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 25 Feb 2021 02:34:38 -0500
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11P7UWLl000501
-        for <bpf@vger.kernel.org>; Wed, 24 Feb 2021 23:33:54 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=1B1TygnyQv+DMMVCldfweJFrUNcd7UEDkggYiuJ/DpE=;
- b=aKFAKJn6XW5rmT0AbFJZK4QZXB65RTpMycHhT0dVaCERaFk65YixQeNbJPtTfyJD30U1
- PUUHXNxKn/jdbCMrMDRtyJ1ZhoXkX2keq7PNiejnRRkwUMzNwtw086LyicYlzKb4vHm7
- 2wo750dpxqsS4fn51wM3F5Js1ImQVB5e9Fk= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 36wvqdbew4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Wed, 24 Feb 2021 23:33:54 -0800
-Received: from intmgw002.06.ash9.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 24 Feb 2021 23:33:25 -0800
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id F3CE43705D0E; Wed, 24 Feb 2021 23:33:21 -0800 (PST)
-From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>
-Subject: [PATCH bpf-next v3 11/11] selftests/bpf: add arraymap test for bpf_for_each_map_elem() helper
-Date:   Wed, 24 Feb 2021 23:33:21 -0800
-Message-ID: <20210225073321.4121788-1-yhs@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20210225073309.4119708-1-yhs@fb.com>
-References: <20210225073309.4119708-1-yhs@fb.com>
+        id S235322AbhBYIAQ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Feb 2021 03:00:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235048AbhBYIAP (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Feb 2021 03:00:15 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C3C0C061756
+        for <bpf@vger.kernel.org>; Wed, 24 Feb 2021 23:59:35 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id n4so4271836wrx.1
+        for <bpf@vger.kernel.org>; Wed, 24 Feb 2021 23:59:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=54N2ApRNKIaBqIzgr/oBQYIvazUz5lKpmTMmctuwycc=;
+        b=P9lZU4+htaTBLPlV2RdekSdZJX5ptI6QTR+7gNbNrD2sWah1LkMe++DDDz0gznS5Sj
+         +uxxbVLawWDsxxBQwZkh6lz93ovHncEa67Y+R40xBuIt8Ywc7SWpEzD9MWNVdcukiMbc
+         oTrqI5/cuWy/+Wh9MGvjaadh7MJk4q/KKLWQ4eYVIRYHp4gFN63+lpuRkP3PLEZ5DmEV
+         ZFnCvxJlmXX6BeRW+forKdJBhUHVTvRXTSoNUAyiU7r3pbktm5e4sAqc4SIT92Nf4Inq
+         LEShJq9bZA1tH0dRrU3u2LyWxNCTOMc9qhE7VqwtWMx1Pm32xGZKL5VE5okX81vfhbSM
+         JDxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=54N2ApRNKIaBqIzgr/oBQYIvazUz5lKpmTMmctuwycc=;
+        b=ES16PB0NnKaU75Un4gW13Xtt/WGcMaWP/E30ur+ut+husN6urc8MQevygtF0ih6AsT
+         N2hQTPA3PahiFVnq6hqChfmbo4Ilh3xA9cEwKh6RnwqwvjeQg4gow1DcFty/KvYaWfWX
+         MKEgtuJ+u7fL4yE4GZisEC1iUquUhF6Er92cDCV1Hrfe/T9fv9mHDk/IbB+TSi/amlce
+         2JN+YmaAtssHep7enzfbnd4qjxEJyrmJWct5iwuIjIwrh2AL7YOWB7WEcVQTOtCw9q4p
+         ngvqi4eT+qx42uak5F912W+pHMlwIkOfe+heBCfbrr/HVDUr6W4kq6npkdhQHEw5jQM+
+         v/Vg==
+X-Gm-Message-State: AOAM532ofZ8H6ofn8hJU5tUjHH5sZpukjrQ/E+kberVXHKzQf+Vyx6KD
+        Q+XruTirX6XZgbGDdplrXqB7RA==
+X-Google-Smtp-Source: ABdhPJwfEjondZvmscsqMJzgnOEg3UJSncsAwGjzl2aQ4afSKWRRaYIu7JJRH1lQ/wgM2m5tMLihnA==
+X-Received: by 2002:adf:f608:: with SMTP id t8mr2140400wrp.196.1614239974022;
+        Wed, 24 Feb 2021 23:59:34 -0800 (PST)
+Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
+        by smtp.gmail.com with ESMTPSA id 6sm7906542wra.63.2021.02.24.23.59.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Feb 2021 23:59:33 -0800 (PST)
+Date:   Thu, 25 Feb 2021 08:59:14 +0100
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Luigi Rizzo <rizzo@iet.unipi.it>, bpf@vger.kernel.org,
+        kpsingh@chromium.org, will@kernel.org
+Subject: Re: arch_prepare_bpf_trampoline() for arm ?
+Message-ID: <YDdY0gdKftxXZeMN@myrica>
+References: <CA+hQ2+hhDG2JprNLaUdX4xgcihvchEda1aJuQN3jtJ3hYucDcQ@mail.gmail.com>
+ <6af0ab27-48f1-e389-d2f4-41b3c1db4a18@iogearbox.net>
+ <87blc92m5p.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-25_04:2021-02-24,2021-02-25 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- priorityscore=1501 suspectscore=0 clxscore=1015 mlxscore=0 mlxlogscore=996
- impostorscore=0 bulkscore=0 adultscore=0 lowpriorityscore=0 phishscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102250062
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87blc92m5p.fsf@toke.dk>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-A test is added for arraymap and percpu arraymap. The test also
-exercises the early return for the helper which does not
-traverse all elements.
-    $ ./test_progs -n 45
-    #45/1 hash_map:OK
-    #45/2 array_map:OK
-    #45 for_each:OK
-    Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
+On Wed, Feb 24, 2021 at 10:25:38PM +0100, Toke Høiland-Jørgensen wrote:
+> Daniel Borkmann <daniel@iogearbox.net> writes:
+> 
+> > On 2/24/21 8:54 PM, Luigi Rizzo wrote:
+> >> I prepared a BPF version of kstats[1]
+> >> https://github.com/luigirizzo/lr-cstats
+> >> that uses fentry/fexit hooks to monitor the execution time
+> >> of a kernel function.
+> >> 
+> >> I hoped to have it working on ARM64 too, but it looks like
+> >> arch_prepare_bpf_trampoline() only exists for x86.
+> >> 
+> >> Is there any outstanding patch for this function on ARM64,
+> >> or any similar function I could look at to implement it myself ?
+> >
+> > Not that I'm currently aware of, arm64 support would definitely be great
+> > to have. From x86 side, the underlying arch dependency was basically on
+> > text_poke_bp() to patch instructions on a live kernel. Haven't checked
+> > recently whether an equivalent exists on arm64 yet, but perhaps Will
+> > might know.
+> 
+> Adding Jean-Philippe; I believe he is/was working on this...?
 
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- .../selftests/bpf/prog_tests/for_each.c       | 58 ++++++++++++++++++
- .../bpf/progs/for_each_array_map_elem.c       | 61 +++++++++++++++++++
- 2 files changed, 119 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/for_each_array_map_=
-elem.c
+Yes, I have a very rough prototype here:
+https://jpbrucker.net/git/linux/log/?h=bpf/devel
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/for_each.c b/tools/te=
-sting/selftests/bpf/prog_tests/for_each.c
-index aa0c23e83ab8..157abc721cab 100644
---- a/tools/testing/selftests/bpf/prog_tests/for_each.c
-+++ b/tools/testing/selftests/bpf/prog_tests/for_each.c
-@@ -3,6 +3,7 @@
- #include <test_progs.h>
- #include <network_helpers.h>
- #include "for_each_hash_map_elem.skel.h"
-+#include "for_each_array_map_elem.skel.h"
-=20
- static unsigned int duration;
-=20
-@@ -67,8 +68,65 @@ static void test_hash_map(void)
- 	for_each_hash_map_elem__destroy(skel);
- }
-=20
-+static void test_array_map(void)
-+{
-+	__u32 key, num_cpus, max_entries, retval;
-+	int i, arraymap_fd, percpu_map_fd, err;
-+	struct for_each_array_map_elem *skel;
-+	__u64 *percpu_valbuf =3D NULL;
-+	__u64 val, expected_total;
-+
-+	skel =3D for_each_array_map_elem__open_and_load();
-+	if (CHECK(!skel, "for_each_array_map_elem__open_and_load",
-+		  "skeleton open_and_load failed\n"))
-+		return;
-+
-+	arraymap_fd =3D bpf_map__fd(skel->maps.arraymap);
-+	expected_total =3D 0;
-+	max_entries =3D bpf_map__max_entries(skel->maps.arraymap);
-+	for (i =3D 0; i < max_entries; i++) {
-+		key =3D i;
-+		val =3D i + 1;
-+		/* skip the last iteration for expected total */
-+		if (i !=3D max_entries - 1)
-+			expected_total +=3D val;
-+		err =3D bpf_map_update_elem(arraymap_fd, &key, &val, BPF_ANY);
-+		if (CHECK(err, "map_update", "map_update failed\n"))
-+			goto out;
-+	}
-+
-+	num_cpus =3D bpf_num_possible_cpus();
-+	percpu_map_fd =3D bpf_map__fd(skel->maps.percpu_map);
-+	percpu_valbuf =3D malloc(sizeof(__u64) * num_cpus);
-+	if (!ASSERT_OK_PTR(percpu_valbuf, "percpu_valbuf"))
-+		goto out;
-+
-+	key =3D 0;
-+	for (i =3D 0; i < num_cpus; i++)
-+		percpu_valbuf[i] =3D i + 1;
-+	err =3D bpf_map_update_elem(percpu_map_fd, &key, percpu_valbuf, BPF_ANY=
-);
-+	if (CHECK(err, "percpu_map_update", "map_update failed\n"))
-+		goto out;
-+
-+	err =3D bpf_prog_test_run(bpf_program__fd(skel->progs.test_pkt_access),
-+				1, &pkt_v4, sizeof(pkt_v4), NULL, NULL,
-+				&retval, &duration);
-+	if (CHECK(err || retval, "ipv4", "err %d errno %d retval %d\n",
-+		  err, errno, retval))
-+		goto out;
-+
-+	ASSERT_EQ(skel->bss->arraymap_output, expected_total, "array_output");
-+	ASSERT_EQ(skel->bss->cpu + 1, skel->bss->percpu_val, "percpu_val");
-+
-+out:
-+	free(percpu_valbuf);
-+	for_each_array_map_elem__destroy(skel);
-+}
-+
- void test_for_each(void)
- {
- 	if (test__start_subtest("hash_map"))
- 		test_hash_map();
-+	if (test__start_subtest("array_map"))
-+		test_array_map();
- }
-diff --git a/tools/testing/selftests/bpf/progs/for_each_array_map_elem.c =
-b/tools/testing/selftests/bpf/progs/for_each_array_map_elem.c
-new file mode 100644
-index 000000000000..1488bc50468f
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/for_each_array_map_elem.c
-@@ -0,0 +1,61 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Facebook */
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 3);
-+	__type(key, __u32);
-+	__type(value, __u64);
-+} arraymap SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, __u64);
-+} percpu_map SEC(".maps");
-+
-+struct callback_ctx {
-+	int output;
-+};
-+
-+static __u64
-+check_array_elem(struct bpf_map *map, __u32 *key, __u64 *val,
-+		 struct callback_ctx *data)
-+{
-+	data->output +=3D *val;
-+	if (*key =3D=3D 1)
-+		return 1; /* stop the iteration */
-+	return 0;
-+}
-+
-+__u32 cpu =3D 0;
-+__u64 percpu_val =3D 0;
-+
-+static __u64
-+check_percpu_elem(struct bpf_map *map, __u32 *key, __u64 *val,
-+		  struct callback_ctx *data)
-+{
-+	cpu =3D bpf_get_smp_processor_id();
-+	percpu_val =3D *val;
-+	return 0;
-+}
-+
-+u32 arraymap_output =3D 0;
-+
-+SEC("classifier/")
-+int test_pkt_access(struct __sk_buff *skb)
-+{
-+	struct callback_ctx data;
-+
-+	data.output =3D 0;
-+	bpf_for_each_map_elem(&arraymap, check_array_elem, &data, 0);
-+	arraymap_output =3D data.output;
-+
-+	bpf_for_each_map_elem(&percpu_map, check_percpu_elem, (void *)0, 0);
-+	return 0;
-+}
---=20
-2.24.1
+But not a ton of time to work on it at the moment, I don't know when I'll
+be able to post something.
+
+Thanks,
+Jean
 
