@@ -2,54 +2,55 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CDD7325A0A
-	for <lists+bpf@lfdr.de>; Fri, 26 Feb 2021 00:06:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 674FE325A29
+	for <lists+bpf@lfdr.de>; Fri, 26 Feb 2021 00:26:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229769AbhBYXFt (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Feb 2021 18:05:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51658 "EHLO
+        id S232072AbhBYX0C (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Feb 2021 18:26:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbhBYXFt (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Feb 2021 18:05:49 -0500
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C569C061756
-        for <bpf@vger.kernel.org>; Thu, 25 Feb 2021 15:05:09 -0800 (PST)
-Received: by mail-yb1-xb2c.google.com with SMTP id u3so7096166ybk.6
-        for <bpf@vger.kernel.org>; Thu, 25 Feb 2021 15:05:09 -0800 (PST)
+        with ESMTP id S230201AbhBYX0A (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Feb 2021 18:26:00 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D7DEC061756
+        for <bpf@vger.kernel.org>; Thu, 25 Feb 2021 15:25:20 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id d9so7157591ybq.1
+        for <bpf@vger.kernel.org>; Thu, 25 Feb 2021 15:25:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=lsoPF65f0J0PRto+p8SCYWC2dYpWFvb2c2vttsjN6T0=;
-        b=RmfT2Agxr4Szllcfv/Lruhf34q8+BqLBPgZVCe/Nb78FK1oOHu0hriehRK6bgY7FpR
-         /lqn2yuOEyYH93y6z6+9dX8DTwwe8N+VFkAyJnhlIckYs/Sralk4898008iqtMwZ77gL
-         wMDy4Wk7NSIKMoCkirf08CPmf9qaQMkT41VOD2wWHMkG+IEvLTgYZL13yX6xwJ1eeQ7g
-         zaSQ+Au3l7IKFRPFFieaIeU1mBOUhEPXBC/KaDf6m8cAtCYknmmrguWbQ0CZIkWngU+E
-         bFpksD/6NIkBd3cu2hgFgDv1ndYsDuIhefH52rppddnDe+Gv+IvJY3U4EbzrqDs1Tz4D
-         ElGA==
+        bh=0k7zk/ur15JskICPOe9gb7awt3XaQD0RRyXT+UgrZ8A=;
+        b=ElIGvVQkWwHPrvnhygOcUXo+o40XG1v4wIU5kqcBqrPWaghTCUOBt7SgOixV7zf8ml
+         SURN1CgWKYrT87VDuvxYXmWrXjsWQ6cXbAsql5hFBymRBYIYxIahRiJvC7//ggyLG24G
+         Bo5dkXMhCEvMBVwsG70N83YVxbl0g9QPH5t4E2UlkDyQbbWsJzeNe18+p9AT/SF2Jltj
+         b5L2x6fGOro1jEPXfAGui9iZXH4Kn8Mehiy3BIM2qUYuUdphuZGX1jHKoaU1l/eGL9oR
+         AUbQ0R44xYCHJ+ETzZ5absp0fRVCSMc/KtWhAQQU2k1UQwvYcimXv5nXcgLZnWwyetwy
+         liew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=lsoPF65f0J0PRto+p8SCYWC2dYpWFvb2c2vttsjN6T0=;
-        b=THD1Ly1O9V6IG+3q3sk6f/gIi45WLyobB4TtWW8F4uXkvkeN88af0L/4XpusAoTfqF
-         FfO6yJHb9mgxtwY3pm3LOD/5gQcYVJl+gZFfV1NthfuVobZdSNG5RfDLjArEPhUzzlGU
-         8o0KaB2ezRdmMkrxQVpmqfAr5z1+m4D2vDrK5VhvkqLfGh30rIEr6ZqGYNSnkOaGKy7K
-         JfYW7xJyM1svRdkaOF2w1D9jIgHUKFH/OKYYdlci3nQspi85f0qeX1VMGjxJbr1/pJoR
-         WApd/oYUJl/Ui+PPpMLoW1er65WjQTpWfQqGvi1T2Hqqtfd+XXja4YHNjAM++j4ZoT7O
-         vEeA==
-X-Gm-Message-State: AOAM533XzcOb7/y1h2sycqjN9G3u2MsagNwgHcZF0TXaQsn0cV6EHzEG
-        97vdLt/QSeGtZDkECeC2wXMN0Y2cN3N5Popizj0=
-X-Google-Smtp-Source: ABdhPJwODz+1BwqxQJ0Y8Q/cEqEKouihEI13p/cA5+mKYQmao19s3PT3HTPM3rD0F9KeXSt2hWzkDtoGLWPTgoTB/T8=
-X-Received: by 2002:a25:abb2:: with SMTP id v47mr255753ybi.425.1614294308394;
- Thu, 25 Feb 2021 15:05:08 -0800 (PST)
+        bh=0k7zk/ur15JskICPOe9gb7awt3XaQD0RRyXT+UgrZ8A=;
+        b=pt5XtK2hRb7C6V1ZHhYgQnG21m3k2QCrdmte7BF8he2uzVw86xZYXZ+pTMXPt2xX5z
+         N0aNENQHYvrzezO66Zoy94WPlKLzXq2NYQhnZH19xWrlpkx91PTAOu8874+zXIXXkuR0
+         Y0O730ho/bAmthqb2hyevMhtz/xCGKfw6ycn8u7Xz04aDBPaJrhmqEAJ43RH2G2EoXDx
+         pDiQ2SziCfmHAebonZf+fiwHCuzSx12EGD6l+TEctf/+KSMa/Ms1BSF2rFtgkGbZiNSr
+         hk1ZxQOggJome3K4ywW95+ezszlWEKRrSCB9dHziChuxvUSpSjVhVlAmZpjZFEqvAJWR
+         W7+g==
+X-Gm-Message-State: AOAM531MWb1l7eCPdSIJMoIOPbVxtlvphv5tl8dtvk/cYGhltJyq5UXC
+        lVChPAWUkNsDNtzNrs/KmNtCfBMGSFc3/ukljzo=
+X-Google-Smtp-Source: ABdhPJynEk7Vt67fy/ILAUs3h+moV3nbRmlN/x63yRYYF9SuFQ/sDuJN3Yg+zCAUxiF34p7mFEhn9SEPY8EMhMGJvVQ=
+X-Received: by 2002:a25:1e89:: with SMTP id e131mr373890ybe.459.1614295519924;
+ Thu, 25 Feb 2021 15:25:19 -0800 (PST)
 MIME-Version: 1.0
-References: <20210225073309.4119708-1-yhs@fb.com> <20210225073319.4121535-1-yhs@fb.com>
-In-Reply-To: <20210225073319.4121535-1-yhs@fb.com>
+References: <20210225073309.4119708-1-yhs@fb.com> <20210225073320.4121679-1-yhs@fb.com>
+In-Reply-To: <20210225073320.4121679-1-yhs@fb.com>
 From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 25 Feb 2021 15:04:57 -0800
-Message-ID: <CAEf4BzZqA9pPjQVWcWuSV4_a0EUjxkfKMPg4qw-orTVCwSCy=w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 09/11] bpftool: print subprog address properly
+Date:   Thu, 25 Feb 2021 15:25:09 -0800
+Message-ID: <CAEf4BzY6ih+UKzjhqyTe9JtgO2wSFjt=kOFC6r1r1hYXdBTNtQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 10/11] selftests/bpf: add hashmap test for
+ bpf_for_each_map_elem() helper
 To:     Yonghong Song <yhs@fb.com>
 Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
         Cong Wang <xiyou.wangcong@gmail.com>,
@@ -62,52 +63,91 @@ X-Mailing-List: bpf@vger.kernel.org
 
 On Thu, Feb 25, 2021 at 1:35 AM Yonghong Song <yhs@fb.com> wrote:
 >
-> With later hashmap example, using bpftool xlated output may
-> look like:
->   int dump_task(struct bpf_iter__task * ctx):
->   ; struct task_struct *task = ctx->task;
->      0: (79) r2 = *(u64 *)(r1 +8)
->   ; if (task == (void *)0 || called > 0)
->   ...
->     19: (18) r2 = subprog[+17]
->     30: (18) r2 = subprog[+25]
->   ...
->   36: (95) exit
->   __u64 check_hash_elem(struct bpf_map * map, __u32 * key, __u64 * val,
->                         struct callback_ctx * data):
->   ; struct bpf_iter__task *ctx = data->ctx;
->     37: (79) r5 = *(u64 *)(r4 +0)
->   ...
->     55: (95) exit
->   __u64 check_percpu_elem(struct bpf_map * map, __u32 * key,
->                           __u64 * val, void * unused):
->   ; check_percpu_elem(struct bpf_map *map, __u32 *key, __u64 *val, void *unused)
->     56: (bf) r6 = r3
->   ...
->     83: (18) r2 = subprog[-47]
+> A test case is added for hashmap and percpu hashmap. The test
+> also exercises nested bpf_for_each_map_elem() calls like
+>     bpf_prog:
+>       bpf_for_each_map_elem(func1)
+>     func1:
+>       bpf_for_each_map_elem(func2)
+>     func2:
+>
+>   $ ./test_progs -n 45
+>   #45/1 hash_map:OK
+>   #45 for_each:OK
+>   Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
 >
 > Signed-off-by: Yonghong Song <yhs@fb.com>
 > ---
 
+I think I'll just add all the variants of ASSERT_XXX and will enforce
+their use :)
+
+For now:
+
 Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
->  tools/bpf/bpftool/xlated_dumper.c | 3 +++
->  1 file changed, 3 insertions(+)
+>  .../selftests/bpf/prog_tests/for_each.c       | 74 +++++++++++++++
+>  .../bpf/progs/for_each_hash_map_elem.c        | 95 +++++++++++++++++++
+>  2 files changed, 169 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/for_each.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/for_each_hash_map_elem.c
 >
-> diff --git a/tools/bpf/bpftool/xlated_dumper.c b/tools/bpf/bpftool/xlated_dumper.c
-> index 8608cd68cdd0..6fc3e6f7f40c 100644
-> --- a/tools/bpf/bpftool/xlated_dumper.c
-> +++ b/tools/bpf/bpftool/xlated_dumper.c
-> @@ -196,6 +196,9 @@ static const char *print_imm(void *private_data,
->         else if (insn->src_reg == BPF_PSEUDO_MAP_VALUE)
->                 snprintf(dd->scratch_buff, sizeof(dd->scratch_buff),
->                          "map[id:%u][0]+%u", insn->imm, (insn + 1)->imm);
-> +       else if (insn->src_reg == BPF_PSEUDO_FUNC)
-> +               snprintf(dd->scratch_buff, sizeof(dd->scratch_buff),
-> +                        "subprog[%+d]", insn->imm);
->         else
->                 snprintf(dd->scratch_buff, sizeof(dd->scratch_buff),
->                          "0x%llx", (unsigned long long)full_imm);
+
+[...]
+
+> +
+> +       ASSERT_EQ(skel->bss->hashmap_output, 4, "hashmap_output");
+> +       ASSERT_EQ(skel->bss->hashmap_elems, max_entries, "hashmap_elems");
+> +
+> +       key = 1;
+> +       err = bpf_map_lookup_elem(hashmap_fd, &key, &val);
+> +       ASSERT_ERR(err, "hashmap_lookup");
+> +
+> +       ASSERT_EQ(skel->bss->percpu_called, 1, "percpu_called");
+> +       ASSERT_EQ(skel->bss->cpu < num_cpus, 1, "num_cpus");
+
+well, this is cheating (it will print something like "0 != 1" on
+error) :) why didn't you just add ASSERT_LT?
+
+> +       ASSERT_EQ(skel->bss->percpu_map_elems, 1, "percpu_map_elems");
+> +       ASSERT_EQ(skel->bss->percpu_key, 1, "percpu_key");
+> +       ASSERT_EQ(skel->bss->percpu_val, skel->bss->cpu + 1, "percpu_val");
+> +       ASSERT_EQ(skel->bss->percpu_output, 100, "percpu_output");
+> +out:
+> +       free(percpu_valbuf);
+> +       for_each_hash_map_elem__destroy(skel);
+> +}
+> +
+> +void test_for_each(void)
+> +{
+> +       if (test__start_subtest("hash_map"))
+> +               test_hash_map();
+> +}
+
+[...]
+
+> +int hashmap_output = 0;
+> +int hashmap_elems = 0;
+> +int percpu_map_elems = 0;
+> +
+> +SEC("classifier/")
+
+nit: just "classifier" didn't work?
+
+> +int test_pkt_access(struct __sk_buff *skb)
+> +{
+> +       struct callback_ctx data;
+> +
+> +       data.ctx = skb;
+> +       data.input = 10;
+> +       data.output = 0;
+> +       hashmap_elems = bpf_for_each_map_elem(&hashmap, check_hash_elem, &data, 0);
+> +       hashmap_output = data.output;
+> +
+> +       percpu_map_elems = bpf_for_each_map_elem(&percpu_map, check_percpu_elem,
+> +                                                (void *)0, 0);
+> +       return 0;
+> +}
 > --
 > 2.24.1
 >
