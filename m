@@ -2,87 +2,128 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4114A325A2C
-	for <lists+bpf@lfdr.de>; Fri, 26 Feb 2021 00:28:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71373325A4E
+	for <lists+bpf@lfdr.de>; Fri, 26 Feb 2021 00:44:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229966AbhBYX1V (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Feb 2021 18:27:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229752AbhBYX1U (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Feb 2021 18:27:20 -0500
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5921C061574
-        for <bpf@vger.kernel.org>; Thu, 25 Feb 2021 15:26:40 -0800 (PST)
-Received: by mail-yb1-xb2a.google.com with SMTP id x19so7171839ybe.0
-        for <bpf@vger.kernel.org>; Thu, 25 Feb 2021 15:26:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5eiuwhc+4eGc7j1hKwgJtkTe/U+Mw7PLXZEisArUm3E=;
-        b=gOMQLWMGR+ftmtHHfKpOxNN3325C82oDSr83C5qrGYjBU8AMzeISLh9Or9sC4tM/Mh
-         u4CR+1qgX2bqREvXKbwsNMvs5Jvs/eDnh+ct5xyH8h1EPQuL9Ivh+FJN8adLlTAX9dFZ
-         DRmqOrtkKJrXGCD/Uu1RcWfVAbHLhPCHXl46WO5Kk+QFI1Fn/buGxIXhli5cDtZMV4x7
-         +4p1ZbD7DGzrVeFg34AEnKUuR5IzCx9I0TEf+Wp2JiaypmJm0vJ364Jnqv1txglen2sz
-         3AKiXCDKBzZD0O2AkqUPpigGbKgu5FB16JIj+Iq4taspr3lt6AVQVCbTHxiWroIw9Ou3
-         KIDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5eiuwhc+4eGc7j1hKwgJtkTe/U+Mw7PLXZEisArUm3E=;
-        b=tqlWAaz3l9aKk103+OdT0t8I/GwrvxlR0LTZ082KZTpjVkM3HiyoumKt2uhDaQY2ie
-         v3BhxK2a89GRxBE9g21JHhbTyOrTcBpgL14wa6k+gBfrcYu6jqj4w1x3dvmuA+xkJYqZ
-         +o7phSiOKLQtJNI65jJ7nNWvJtE9PU9lBIVLSNJQZWxDMZaY5ZUaQ2H4jjnHSa0rLNem
-         FQGw9Nv7S9gEBiW6TA+Ak7onm/LfHgPh6clGWfdlwg3nYC2Jb0uw2N74P+jmqfdwX10W
-         rPW+DKplpOflh1Opg3o6YNZD7aAlxcaup+v5C4Z5koVWJpEIXXKXHHC4MZeCW1bs4uAM
-         E1Vw==
-X-Gm-Message-State: AOAM531tPMJNfKDSX49VAspSDYEFQdtKqpl8lPc+sMHRJgbwW7ZmtTDS
-        Irm+GURv61DC27tbyffSjQUemWpcgFyRWx+V2Uuy//FZzvc=
-X-Google-Smtp-Source: ABdhPJzr7JXj0JVmnvd3yHgXiyIlFQ5ujkrRDwmz+66yKzR9iUu7Jn2X/S2ndc+zQ5rNINUDwy86bvvV9uiEnx8w7CE=
-X-Received: by 2002:a25:cc13:: with SMTP id l19mr465283ybf.260.1614295600153;
- Thu, 25 Feb 2021 15:26:40 -0800 (PST)
+        id S232375AbhBYXoS (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Feb 2021 18:44:18 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:13868 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231375AbhBYXoR (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Thu, 25 Feb 2021 18:44:17 -0500
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11PNdw1i019990
+        for <bpf@vger.kernel.org>; Thu, 25 Feb 2021 15:43:35 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=6Qrdjjm1A1iswI+6pHkdMg7F8SIWOtnhJ67L1ELQJcI=;
+ b=a5rCOHyvNQVO4Ag/SXjNc/4usYSM1E1FztoRThwWNX4K4CNtsUfu6PtUzFWcMP6CXB66
+ 4kKXezWq4fetbpASnTgvk+7MEr8C8PTZpiOTZ5ew0a++7j5bMqp98Sm5+pYBxEnePKUh
+ 1UxzrAwXSvgblWWgHmFdS7l/BYJvENt30jY= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 36x9cavfju-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <bpf@vger.kernel.org>; Thu, 25 Feb 2021 15:43:35 -0800
+Received: from intmgw006.03.ash8.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 25 Feb 2021 15:43:34 -0800
+Received: by devbig006.ftw2.facebook.com (Postfix, from userid 4523)
+        id 2043D62E1BF5; Thu, 25 Feb 2021 15:43:30 -0800 (PST)
+From:   Song Liu <songliubraving@fb.com>
+To:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <kernel-team@fb.com>,
+        <peterz@infradead.org>, Song Liu <songliubraving@fb.com>
+Subject: [PATCH v6 bpf-next 0/6] bpf: enable task local storage for tracing programs
+Date:   Thu, 25 Feb 2021 15:43:13 -0800
+Message-ID: <20210225234319.336131-1-songliubraving@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <20210225073309.4119708-1-yhs@fb.com> <20210225073321.4121788-1-yhs@fb.com>
-In-Reply-To: <20210225073321.4121788-1-yhs@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 25 Feb 2021 15:26:29 -0800
-Message-ID: <CAEf4BzYsBdCayeshQCqGShNZtbuijoPJxPeazk-7K2+trSrKOg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 11/11] selftests/bpf: add arraymap test for
- bpf_for_each_map_elem() helper
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-25_15:2021-02-24,2021-02-25 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
+ malwarescore=0 mlxscore=0 priorityscore=1501 impostorscore=0 clxscore=1015
+ adultscore=0 suspectscore=0 spamscore=0 lowpriorityscore=0 phishscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102250179
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 1:36 AM Yonghong Song <yhs@fb.com> wrote:
->
-> A test is added for arraymap and percpu arraymap. The test also
-> exercises the early return for the helper which does not
-> traverse all elements.
->     $ ./test_progs -n 45
->     #45/1 hash_map:OK
->     #45/2 array_map:OK
->     #45 for_each:OK
->     Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
->
-> Signed-off-by: Yonghong Song <yhs@fb.com>
-> ---
+This set enables task local storage for non-BPF_LSM programs.
 
-same question about "classifier/", but otherwise:
+It is common for tracing BPF program to access per-task data. Currently,
+these data are stored in hash tables with pid as the key. In
+bcc/libbpftools [1], 9 out of 23 tools use such hash tables. However,
+hash table is not ideal for many use case. Task local storage provides
+better usability and performance for BPF programs. Please refer to 6/6 fo=
+r
+some performance comparison of task local storage vs. hash table.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Changes v5 =3D> v6:
+1. Add inc/dec bpf_task_storage_busy in bpf_local_storage_map_free().
 
->  .../selftests/bpf/prog_tests/for_each.c       | 58 ++++++++++++++++++
->  .../bpf/progs/for_each_array_map_elem.c       | 61 +++++++++++++++++++
->  2 files changed, 119 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/progs/for_each_array_map_elem.c
->
+Changes v4 =3D> v5:
+1. Fix build w/o CONFIG_NET. (kernel test robot)
+2. Remove unnecessary check for !task_storage_ptr(). (Martin)
+3. Small changes in commit logs.
 
-[...]
+Changes v3 =3D> v4:
+1. Prevent deadlock from recursive calls of bpf_task_storage_[get|delete]=
+.
+   (2/6 checks potential deadlock and fails over, 4/6 adds a selftest).
+
+Changes v2 =3D> v3:
+1. Make the selftest more robust. (Andrii)
+2. Small changes with runqslower. (Andrii)
+3. Shortern CC list to make it easy for vger.
+
+Changes v1 =3D> v2:
+1. Do not allocate task local storage when the task is being freed.
+2. Revise the selftest and added a new test for a task being freed.
+3. Minor changes in runqslower.
+
+Song Liu (6):
+  bpf: enable task local storage for tracing programs
+  bpf: prevent deadlock from recursive bpf_task_storage_[get|delete]
+  selftests/bpf: add non-BPF_LSM test for task local storage
+  selftests/bpf: test deadlock from recursive
+    bpf_task_storage_[get|delete]
+  bpf: runqslower: prefer using local vmlimux to generate vmlinux.h
+  bpf: runqslower: use task local storage
+
+ include/linux/bpf.h                           |   7 ++
+ include/linux/bpf_local_storage.h             |   3 +-
+ include/linux/bpf_lsm.h                       |  22 ----
+ include/linux/bpf_types.h                     |   2 +-
+ include/linux/sched.h                         |   5 +
+ kernel/bpf/Makefile                           |   3 +-
+ kernel/bpf/bpf_inode_storage.c                |   2 +-
+ kernel/bpf/bpf_local_storage.c                |  39 ++++---
+ kernel/bpf/bpf_lsm.c                          |   4 -
+ kernel/bpf/bpf_task_storage.c                 | 100 +++++++++++-------
+ kernel/fork.c                                 |   5 +
+ kernel/trace/bpf_trace.c                      |   4 +
+ net/core/bpf_sk_storage.c                     |   2 +-
+ tools/bpf/runqslower/Makefile                 |   5 +-
+ tools/bpf/runqslower/runqslower.bpf.c         |  33 +++---
+ .../bpf/prog_tests/task_local_storage.c       |  92 ++++++++++++++++
+ .../selftests/bpf/progs/task_local_storage.c  |  64 +++++++++++
+ .../bpf/progs/task_local_storage_exit_creds.c |  32 ++++++
+ .../selftests/bpf/progs/task_ls_recursion.c   |  70 ++++++++++++
+ 19 files changed, 398 insertions(+), 96 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/task_local_sto=
+rage.c
+ create mode 100644 tools/testing/selftests/bpf/progs/task_local_storage.=
+c
+ create mode 100644 tools/testing/selftests/bpf/progs/task_local_storage_=
+exit_creds.c
+ create mode 100644 tools/testing/selftests/bpf/progs/task_ls_recursion.c
+
+--
+2.24.1
