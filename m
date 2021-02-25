@@ -2,193 +2,139 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1E8D324EAE
-	for <lists+bpf@lfdr.de>; Thu, 25 Feb 2021 12:00:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7293D324FA1
+	for <lists+bpf@lfdr.de>; Thu, 25 Feb 2021 13:05:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229561AbhBYK7Q (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Feb 2021 05:59:16 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:16660 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231845AbhBYK63 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Thu, 25 Feb 2021 05:58:29 -0500
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11PAY310068829;
-        Thu, 25 Feb 2021 05:57:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=GWB7IqQUJmiME1BbX7V4b56Sr1CCFaaNyyZPLEVhWZM=;
- b=g1FyUHsPiummaR/uqyw3sqYd33GPtIp1OlslZHoguf4ifqZTkjFvBZdxUn7IaQ8js57w
- SKpQ3wdudDy135nhpKH2mNxKO1HwbeCg/kUlz4SvzDd/PE8GqaWmq93CRQcvPC/rdmqN
- HIS10QHQ4puYp8F/L21CmzFC9lxCekCaP4jKrt6loLO5U8U5HqhxEeEJ+LIqlEz2OvRm
- d7y8z2kr5mtQqIXa2YioQZ5cQKfAsDuJ17ZQxuw1R0kPHSJgKdThNXQZ1kFri3dDOjF5
- sSNE6vv/OGm1YfSvZb27CkEmh08lNsdQjf2r2D0r1ETGBAI1DDbkD4GUJ2bSI+hVBCAx 8g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36x8dwc4ak-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Feb 2021 05:57:34 -0500
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 11PAYHdi070386;
-        Thu, 25 Feb 2021 05:57:34 -0500
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36x8dwc48d-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Feb 2021 05:57:34 -0500
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11PAWeoF004146;
-        Thu, 25 Feb 2021 10:40:51 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04ams.nl.ibm.com with ESMTP id 36tt28cbsk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Feb 2021 10:40:51 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11PAenXI42926424
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Feb 2021 10:40:49 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C23E4A4059;
-        Thu, 25 Feb 2021 10:40:48 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 370EAA4051;
-        Thu, 25 Feb 2021 10:40:48 +0000 (GMT)
-Received: from sig-9-145-151-190.de.ibm.com (unknown [9.145.151.190])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 25 Feb 2021 10:40:48 +0000 (GMT)
-Message-ID: <6962feb05a62d718e5d430f782012d71d6c73eed.camel@linux.ibm.com>
-Subject: Re: [PATCH v6 bpf-next 6/9] bpf: Add BTF_KIND_FLOAT support
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     bpf@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Date:   Thu, 25 Feb 2021 11:40:47 +0100
-In-Reply-To: <e7957fca-b938-e50d-74f5-ecc40145eb4d@fb.com>
-References: <20210224234535.106970-1-iii@linux.ibm.com>
-         <20210224234535.106970-7-iii@linux.ibm.com>
-         <e7957fca-b938-e50d-74f5-ecc40145eb4d@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S230166AbhBYMER (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Feb 2021 07:04:17 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2588 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229769AbhBYMEK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Feb 2021 07:04:10 -0500
+Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4DmWZh1bwBzW7yC;
+        Thu, 25 Feb 2021 20:00:44 +0800 (CST)
+Received: from dggemm751-chm.china.huawei.com (10.1.198.57) by
+ DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Thu, 25 Feb 2021 20:03:19 +0800
+Received: from dggeme758-chm.china.huawei.com (10.3.19.104) by
+ dggemm751-chm.china.huawei.com (10.1.198.57) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2106.2; Thu, 25 Feb 2021 20:03:19 +0800
+Received: from dggeme758-chm.china.huawei.com ([10.6.80.69]) by
+ dggeme758-chm.china.huawei.com ([10.6.80.69]) with mapi id 15.01.2106.006;
+ Thu, 25 Feb 2021 20:03:19 +0800
+From:   "Wanghongzhe (Hongzhe, EulerOS)" <wanghongzhe@huawei.com>
+To:     Andy Lutomirski <luto@amacapital.net>
+CC:     "keescook@chromium.org" <keescook@chromium.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kafai@fb.com" <kafai@fb.com>,
+        "kpsingh@kernel.org" <kpsingh@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "songliubraving@fb.com" <songliubraving@fb.com>,
+        "wad@chromium.org" <wad@chromium.org>, "yhs@fb.com" <yhs@fb.com>,
+        tongxiaomeng <tongxiaomeng@huawei.com>
+Subject: RE: [PATCH v3] seccomp: Improve performace by optimizing rmb()
+Thread-Topic: [PATCH v3] seccomp: Improve performace by optimizing rmb()
+Thread-Index: AQHXCoNzuX/zLaYh0E+0oBVdFxPnyKpm9kQAgAHQ2PA=
+Date:   Thu, 25 Feb 2021 12:03:19 +0000
+Message-ID: <ed0a760af3d3430baf6ade198ecb2eef@huawei.com>
+References: <1614156585-18842-1-git-send-email-wanghongzhe@huawei.com>
+ <638D44BA-0ACA-4041-8213-217233656A70@amacapital.net>
+In-Reply-To: <638D44BA-0ACA-4041-8213-217233656A70@amacapital.net>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.176.70]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-25_06:2021-02-24,2021-02-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 lowpriorityscore=0 spamscore=0 clxscore=1015 phishscore=0
- suspectscore=0 malwarescore=0 bulkscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102250084
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, 2021-02-24 at 23:10 -0800, Yonghong Song wrote:
-> On 2/24/21 3:45 PM, Ilya Leoshkevich wrote:
-> > On the kernel side, introduce a new btf_kind_operations. It is
-> > similar to that of BTF_KIND_INT, however, it does not need to
-> > handle encodings and bit offsets. Do not implement printing, since
-> > the kernel does not know how to format floating-point values.
-> > 
-> > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> > ---
-> >   kernel/bpf/btf.c | 79
-> > ++++++++++++++++++++++++++++++++++++++++++++++--
-> >   1 file changed, 77 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > index 2efeb5f4b343..c405edc8e615 100644
-> > --- a/kernel/bpf/btf.c
-> > +++ b/kernel/bpf/btf.c
-
-[...]
-
-> > @@ -1849,7 +1852,7 @@ static int btf_df_check_kflag_member(struct
-> > btf_verifier_env *env,
-> >         return -EINVAL;
-> >   }
-> >   
-> > -/* Used for ptr, array and struct/union type members.
-> > +/* Used for ptr, array struct/union and float type members.
-> >    * int, enum and modifier types have their specific callback
-> > functions.
-> >    */
-> >   static int btf_generic_check_kflag_member(struct btf_verifier_env
-> > *env,
-> > @@ -3675,6 +3678,77 @@ static const struct btf_kind_operations
-> > datasec_ops = {
-> >         .show                   = btf_datasec_show,
-> >   };
-> >   
-> > +static s32 btf_float_check_meta(struct btf_verifier_env *env,
-> > +                               const struct btf_type *t,
-> > +                               u32 meta_left)
-> > +{
-> > +       if (btf_type_vlen(t)) {
-> > +               btf_verifier_log_type(env, t, "vlen != 0");
-> > +               return -EINVAL;
-> > +       }
-> > +
-> > +       if (btf_type_kflag(t)) {
-> > +               btf_verifier_log_type(env, t, "Invalid btf_info
-> > kind_flag");
-> > +               return -EINVAL;
-> > +       }
-> > +
-> > +       if (t->size != 2 && t->size != 4 && t->size != 8 && t->size
-> > != 12 &&
-> > +           t->size != 16) {
-> > +               btf_verifier_log_type(env, t, "Invalid type_size");
-> > +               return -EINVAL;
-> > +       }
-> > +
-> > +       btf_verifier_log_type(env, t, NULL);
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static int btf_float_check_member(struct btf_verifier_env *env,
-> > +                                 const struct btf_type
-> > *struct_type,
-> > +                                 const struct btf_member *member,
-> > +                                 const struct btf_type
-> > *member_type)
-> > +{
-> > +       u64 start_offset_bytes;
-> > +       u64 end_offset_bytes;
-> > +       u64 misalign_bits;
-> > +       u64 align_bytes;
-> > +       u64 align_bits;
-> > +
-> > +       align_bytes = min_t(u64, sizeof(void *), member_type-
-> > >size);
-> 
-> I listed the following possible (size, align) pairs:
->      size     x86_32 align_bytes   x86_64 align bytes
->       2        2                    2
->       4        4                    4
->       8        4                    8
->       12       4                    8
->       16       4                    8
-> 
-> A few observations.
->    1. I don't know, just want to confirm, for double, the alignment 
-> could be 4 (for a member) on 32bit system, is that right?
->    2. for size 12, alignment will be 8 for x86_64 system, this is 
-> strange, not sure whether it is true or not. Or size 12 cannot be
-> on x86_64 and we should error out if sizeof(void *) is 8.
-
-1 - Yes.
-
-2 - On x86_64 long double is 16 bytes and the required alignment is 16
-bytes too. However, on other architectures all this might be different.
-For example, for us long double is 16 bytes too, but the alignment can
-be 8. So can we be somewhat lax here and just allow smaller alignments,
-instead of trying to figure out what exactly each supported
-architecture does?
-
-[...]
-> 
-
+PiA+IE9uIEZlYiAyNCwgMjAyMSwgYXQgMTI6MDMgQU0sIHdhbmdob25nemhlIDx3YW5naG9uZ3po
+ZUBodWF3ZWkuY29tPg0KPiB3cm90ZToNCj4gPg0KPiA+IO+7v0FzIEtlZXMgaGF2ZWQgYWNjZXB0
+ZWQgdGhlIHYyIHBhdGNoIGF0IGEzODFiNzBhMSB3aGljaCBqdXN0IHJlcGxhY2VkDQo+ID4gcm1i
+KCkgd2l0aCBzbXBfcm1iKCksIHRoaXMgcGF0Y2ggd2lsbCBiYXNlIG9uIHRoYXQgYW5kIGp1c3Qg
+YWRqdXN0IHRoZQ0KPiA+IHNtcF9ybWIoKSB0byB0aGUgY29ycmVjdCBwb3NpdGlvbi4NCj4gPg0K
+PiA+IEFzIHRoZSBvcmlnaW5hbCBjb21tZW50IHNob3duIChhbmQgaW5kZWVkIGl0IHNob3VsZCBi
+ZSk6DQo+ID4gICAvKg0KPiA+ICAgICogTWFrZSBzdXJlIHRoYXQgYW55IGNoYW5nZXMgdG8gbW9k
+ZSBmcm9tIGFub3RoZXIgdGhyZWFkIGhhdmUNCj4gPiAgICAqIGJlZW4gc2VlbiBhZnRlciBTWVND
+QUxMX1dPUktfU0VDQ09NUCB3YXMgc2Vlbi4NCj4gPiAgICAqLw0KPiA+IHRoZSBzbXBfcm1iKCkg
+c2hvdWxkIGJlIHB1dCBiZXR3ZWVuIHJlYWRpbmcgU1lTQ0FMTF9XT1JLX1NFQ0NPTVANCj4gYW5k
+DQo+ID4gcmVhZGluZyBzZWNjb21wLm1vZGUgdG8gbWFrZSBzdXJlIHRoYXQgYW55IGNoYW5nZXMg
+dG8gbW9kZSBmcm9tDQo+ID4gYW5vdGhlciB0aHJlYWQgaGF2ZSBiZWVuIHNlZW4gYWZ0ZXIgU1lT
+Q0FMTF9XT1JLX1NFQ0NPTVAgd2FzIHNlZW4sDQo+IGZvcg0KPiA+IFRTWU5DIHNpdHVhdGlvbi4g
+SG93ZXZlciwgaXQgaXMgbWlzcGxhY2VkIGJldHdlZW4gcmVhZGluZyBzZWNjb21wLm1vZGUNCj4g
+PiBhbmQgc2VjY29tcC0+ZmlsdGVyLiBUaGlzIGlzc3VlIHNlZW1zIHRvIGJlIG1pc2ludHJvZHVj
+ZWQgYXQNCj4gPiAxM2FhNzJmMGZkMGE5Zjk4YTQxY2VmYjY2MjQ4NzI2OWUyZjFhZDY1IHdoaWNo
+IGFpbXMgdG8gcmVmYWN0b3IgdGhlDQo+ID4gZmlsdGVyIGNhbGxiYWNrIGFuZCB0aGUgQVBJLiBT
+byBsZXQncyBqdXN0IGFkanVzdCB0aGUNCj4gPiBzbXBfcm1iKCkgdG8gdGhlIGNvcnJlY3QgcG9z
+aXRpb24uDQo+ID4NCj4gPiBBIG5leHQgb3B0aW1pemF0aW9uIHBhdGNoIHdpbGwgYmUgcHJvdmlk
+ZWQgaWYgdGhpcyBhanVzdG1lbnQgaXMgYXBwcm9wcmlhdGUuDQo+IA0KPiBXb3VsZCBpdCBiZSBi
+ZXR0ZXIgdG8gbWFrZSB0aGUgc3lzY2FsbCB3b3JrIHJlYWQgYmUgc21wX2xvYWRfYWNxdWlyZSgp
+Pw0KPiANCj4gPg0KPiA+IHYyIC0+IHYzOg0KPiA+IC0gbW92ZSB0aGUgc21wX3JtYigpIHRvIHRo
+ZSBjb3JyZWN0IHBvc2l0aW9uDQo+ID4NCj4gPiB2MSAtPiB2MjoNCj4gPiAtIG9ubHkgcmVwbGFj
+ZSBybWIoKSB3aXRoIHNtcF9ybWIoKQ0KPiA+IC0gcHJvdmlkZSB0aGUgcGVyZm9ybWFuY2UgdGVz
+dCBudW1iZXINCj4gPg0KPiA+IFJGQyAtPiB2MToNCj4gPiAtIHJlcGxhY2Ugcm1iKCkgd2l0aCBz
+bXBfcm1iKCkNCj4gPiAtIG1vdmUgdGhlIHNtcF9ybWIoKSBsb2dpYyB0byB0aGUgbWlkZGxlIGJl
+dHdlZW4gVElGX1NFQ0NPTVAgYW5kIG1vZGUNCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IHdhbmdo
+b25nemhlIDx3YW5naG9uZ3poZUBodWF3ZWkuY29tPg0KPiA+IC0tLQ0KPiA+IGtlcm5lbC9zZWNj
+b21wLmMgfCAxNSArKysrKysrLS0tLS0tLS0NCj4gPiAxIGZpbGUgY2hhbmdlZCwgNyBpbnNlcnRp
+b25zKCspLCA4IGRlbGV0aW9ucygtKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2tlcm5lbC9zZWNj
+b21wLmMgYi9rZXJuZWwvc2VjY29tcC5jIGluZGV4DQo+ID4gMWQ2MGZjMmM5OTg3Li42NGIyMzZj
+YjhhN2YgMTAwNjQ0DQo+ID4gLS0tIGEva2VybmVsL3NlY2NvbXAuYw0KPiA+ICsrKyBiL2tlcm5l
+bC9zZWNjb21wLmMNCj4gPiBAQCAtMTE2MCwxMiArMTE2MCw2IEBAIHN0YXRpYyBpbnQgX19zZWNj
+b21wX2ZpbHRlcihpbnQgdGhpc19zeXNjYWxsLCBjb25zdA0KPiBzdHJ1Y3Qgc2VjY29tcF9kYXRh
+ICpzZCwNCj4gPiAgICBpbnQgZGF0YTsNCj4gPiAgICBzdHJ1Y3Qgc2VjY29tcF9kYXRhIHNkX2xv
+Y2FsOw0KPiA+DQo+ID4gLSAgICAvKg0KPiA+IC0gICAgICogTWFrZSBzdXJlIHRoYXQgYW55IGNo
+YW5nZXMgdG8gbW9kZSBmcm9tIGFub3RoZXIgdGhyZWFkIGhhdmUNCj4gPiAtICAgICAqIGJlZW4g
+c2VlbiBhZnRlciBTWVNDQUxMX1dPUktfU0VDQ09NUCB3YXMgc2Vlbi4NCj4gPiAtICAgICAqLw0K
+PiA+IC0gICAgc21wX3JtYigpOw0KPiA+IC0NCj4gPiAgICBpZiAoIXNkKSB7DQo+ID4gICAgICAg
+IHBvcHVsYXRlX3NlY2NvbXBfZGF0YSgmc2RfbG9jYWwpOw0KPiA+ICAgICAgICBzZCA9ICZzZF9s
+b2NhbDsNCj4gPiBAQCAtMTI5MSw3ICsxMjg1LDYgQEAgc3RhdGljIGludCBfX3NlY2NvbXBfZmls
+dGVyKGludCB0aGlzX3N5c2NhbGwsDQo+ID4gY29uc3Qgc3RydWN0IHNlY2NvbXBfZGF0YSAqc2Qs
+DQo+ID4NCj4gPiBpbnQgX19zZWN1cmVfY29tcHV0aW5nKGNvbnN0IHN0cnVjdCBzZWNjb21wX2Rh
+dGEgKnNkKSB7DQo+ID4gLSAgICBpbnQgbW9kZSA9IGN1cnJlbnQtPnNlY2NvbXAubW9kZTsNCj4g
+PiAgICBpbnQgdGhpc19zeXNjYWxsOw0KPiA+DQo+ID4gICAgaWYgKElTX0VOQUJMRUQoQ09ORklH
+X0NIRUNLUE9JTlRfUkVTVE9SRSkgJiYgQEAgLTEzMDEsNw0KPiArMTI5NCwxMyBAQA0KPiA+IGlu
+dCBfX3NlY3VyZV9jb21wdXRpbmcoY29uc3Qgc3RydWN0IHNlY2NvbXBfZGF0YSAqc2QpDQo+ID4g
+ICAgdGhpc19zeXNjYWxsID0gc2QgPyBzZC0+bnIgOg0KPiA+ICAgICAgICBzeXNjYWxsX2dldF9u
+cihjdXJyZW50LCBjdXJyZW50X3B0X3JlZ3MoKSk7DQo+ID4NCj4gPiAtICAgIHN3aXRjaCAobW9k
+ZSkgew0KPiA+ICsgICAgLyoNCj4gPiArICAgICAqIE1ha2Ugc3VyZSB0aGF0IGFueSBjaGFuZ2Vz
+IHRvIG1vZGUgZnJvbSBhbm90aGVyIHRocmVhZCBoYXZlDQo+ID4gKyAgICAgKiBiZWVuIHNlZW4g
+YWZ0ZXIgU1lTQ0FMTF9XT1JLX1NFQ0NPTVAgd2FzIHNlZW4uDQo+ID4gKyAgICAgKi8NCj4gPiAr
+ICAgIHNtcF9ybWIoKTsNCj4gPiArDQo+ID4gKyAgICBzd2l0Y2ggKGN1cnJlbnQtPnNlY2NvbXAu
+bW9kZSkgew0KPiA+ICAgIGNhc2UgU0VDQ09NUF9NT0RFX1NUUklDVDoNCj4gPiAgICAgICAgX19z
+ZWN1cmVfY29tcHV0aW5nX3N0cmljdCh0aGlzX3N5c2NhbGwpOyAgLyogbWF5IGNhbGwgZG9fZXhp
+dCAqLw0KPiA+ICAgICAgICByZXR1cm4gMDsNCj4gPiAtLQ0KPiA+IDIuMTkuMQ0KPiA+DQo+IFdv
+dWxkIGl0IGJlIGJldHRlciB0byBtYWtlIHRoZSBzeXNjYWxsIHdvcmsgcmVhZCBiZSBzbXBfbG9h
+ZF9hY3F1aXJlKCk/DQpNYXliZSB3ZSBjYW4gZG8gc29tZXRoaW5nIGxpa2UgdGhpcyAodW50ZXN0
+ZWQpOiANCl9fc3lzY2FsbF9lbnRlcl9mcm9tX3VzZXJfd29yayhzdHJ1Y3QgcHRfcmVncyAqcmVn
+cywgbG9uZyBzeXNjYWxsKQ0Kew0KLSAgICAgIHVuc2lnbmVkIGxvbmcgd29yayA9IFJFQURfT05D
+RShjdXJyZW50X3RocmVhZF9pbmZvKCktPnN5c2NhbGxfd29yayk7DQorICAgICB1bnNpZ25lZCBs
+b25nIHdvcmsgPSBzbXBfbG9hZF9hY3F1aXJlICgmKGN1cnJlbnRfdGhyZWFkX2luZm8oKS0+c3lz
+Y2FsbF93b3JrKSk7DQoNCiAgICAgICBpZiAod29yayAmIFNZU0NBTExfV09SS19FTlRFUikNCiAg
+ICAgICAgICAgICAgc3lzY2FsbCA9IHN5c2NhbGxfdHJhY2VfZW50ZXIocmVncywgc3lzY2FsbCwg
+d29yayk7DQpIb3dldmVyLCB0aGlzIG1heSBpbnNlcnQgYSBtZW1vcnkgYmFycmllciBhbmQgc2xv
+dyBkb3duIGFsbCB3b3JrcyANCmJlaGluZCBpdCBpbiBTWVNDQUxMX1dPUktfRU5URVIsIG5vdCBq
+dXN0IHNlY2NvbXAsIHdoaWNoICBpcyBub3QgDQp3ZSB3YW50LiBBbmQgaW4gb3JkZXIgdG8gbWF0
+Y2ggd2l0aCB0aGUgc21wX21iX19iZWZvcmVfYXRvbWljKCkgaW4gDQpzZWNjb21wX2Fzc2lnbl9t
+b2RlKCkgd2hpY2ggY2FsbGVkIGluIHNlY2NvbXBfc3luY190aHJlYWRzKCksIGl0IGlzIA0KYmV0
+dGVyIHRvIHVzZSBzbXBfcm1iKCkgYmV0d2VlbiB0aGUgd29yayBhbmQgbW9kZSByZWFkOg0KICAg
+ICAgIHRhc2stPnNlY2NvbXAubW9kZSA9IHNlY2NvbXBfbW9kZTsNCiAgICAgICAvKg0KICAgICAg
+ICogTWFrZSBzdXJlIFNZU0NBTExfV09SS19TRUNDT01QIGNhbm5vdCBiZSBzZXQgYmVmb3JlIHRo
+ZSBtb2RlIChhbmQNCiAgICAgICAqIGZpbHRlcikgaXMgc2V0Lg0KICAgICAgICovDQoqICAgICAg
+c21wX21iX19iZWZvcmVfYXRvbWljKCk7DQogICAgICAgLyogQXNzdW1lIGRlZmF1bHQgc2VjY29t
+cCBwcm9jZXNzZXMgd2FudCBzcGVjIGZsYXcgbWl0aWdhdGlvbi4gKi8NCiAgICAgICBpZiAoKGZs
+YWdzICYgU0VDQ09NUF9GSUxURVJfRkxBR19TUEVDX0FMTE9XKSA9PSAwKQ0KICAgICAgICAgICAg
+ICBhcmNoX3NlY2NvbXBfc3BlY19taXRpZ2F0ZSh0YXNrKTsNCiAgICAgICBzZXRfdGFza19zeXNj
+YWxsX3dvcmsodGFzaywgU0VDQ09NUCk7DQoNCg==
