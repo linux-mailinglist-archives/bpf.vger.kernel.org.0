@@ -2,169 +2,296 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E8F5325D2F
-	for <lists+bpf@lfdr.de>; Fri, 26 Feb 2021 06:30:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A184A325D46
+	for <lists+bpf@lfdr.de>; Fri, 26 Feb 2021 06:45:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229537AbhBZF3X (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Feb 2021 00:29:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbhBZF3W (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Feb 2021 00:29:22 -0500
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A503AC061574;
-        Thu, 25 Feb 2021 21:28:42 -0800 (PST)
-Received: by mail-il1-x134.google.com with SMTP id i18so7029889ilq.13;
-        Thu, 25 Feb 2021 21:28:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EqDkuKsSWvX/q3kNJAK9RVd+ZVKW2vi+5spcJMq/Sc4=;
-        b=s/SewRrgpzD0TY3LBiVs61IojGLUIU9foxEGpKhool5VTcla7VgFFdaEkJB4YLP9Rm
-         XDElSuG8L9i/zJsajzOfHq65jEqjbW6pdNylhhkK28cd2L0bCPe7In9UYOihYfHk59zQ
-         j+fy4D4SEbh/m8NyJ6LfNNHONa0Zgk8n8jitgEVW3VHN3w97tXAxxz5chmGCrJ8buX4s
-         ONUjrDHezM0v1/Et0D+UJ7OnD217K4g/FqIAr7PfOnn1a+H0El2Ne7CdRIz+V+MHhyod
-         WRkYJe6fB1ccrmG+z6hKMdiXglejf66zyRmwbveR7DVnZ17v4H5MBBdS/L/qwVHrWXhR
-         Uf2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EqDkuKsSWvX/q3kNJAK9RVd+ZVKW2vi+5spcJMq/Sc4=;
-        b=RZiGq3efrBIl7Jgu6T5DGsfwM40kgNWSD3ubfkxSdzs2ayud5VxQqvLg/P+HDr1Yp2
-         TJqKMgpSwrCKzbBIjpF0LUlMkHvmHcA2nAh0bAT8/ODehckTRmiMUPaOR4m6wYuCzbho
-         7CoLiiocfzWbRmUpcW79n6ZeRlygQoN85Mwb7B5S/7arcUG82rSpN3nh5FE6wGKBnq2c
-         JoXRAtEeozZRRD6B4EvnP9mV8IU0Wig926VLFUrvlYvpNtqCrg0qkbSOjcL793ekt4GG
-         70TB/rxGpv1q0xzfr8olAlg3/2dgLXHz1FKUG9U1M02AlBy5WACI/buQsm2KAhfV89TN
-         mTew==
-X-Gm-Message-State: AOAM530IctHPJthvEulHfrdwD4vtNZVR7iKnp/lUFklvE7icq1cYxEVm
-        Mwc4CEYCGOyaHQMLpmmnsxBreD3SDFRgP1QVGjA=
-X-Google-Smtp-Source: ABdhPJwfHCK6GlloWH0sOyFYOU3LeDbo+badKWvs88UrTGzOqS9L4CInm4CWwHBQdmjqtWc3xJGWcxgwEVcZjXKGBrQ=
-X-Received: by 2002:a92:4105:: with SMTP id o5mr1052617ila.47.1614317321997;
- Thu, 25 Feb 2021 21:28:41 -0800 (PST)
-MIME-Version: 1.0
-References: <20210218222125.46565-1-mjeanson@efficios.com> <20210223211639.670db85c@gandalf.local.home>
- <083bce0f-bd66-ab83-1211-be9838499b45@efficios.com> <915297635.2997.1614185975415.JavaMail.zimbra@efficios.com>
-In-Reply-To: <915297635.2997.1614185975415.JavaMail.zimbra@efficios.com>
-From:   Lai Jiangshan <jiangshanlai+lkml@gmail.com>
-Date:   Fri, 26 Feb 2021 13:28:30 +0800
-Message-ID: <CAJhGHyBb8FOwAqD4Y=k2aVL_t-n0ks1grWcsyRT+W+5pqWNnaQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/6] [RFC] Faultable tracepoints (v2)
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Michael Jeanson <mjeanson@efficios.com>,
-        rostedt <rostedt@goodmis.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
+        id S229622AbhBZFoM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Feb 2021 00:44:12 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:19724 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229598AbhBZFoM (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 26 Feb 2021 00:44:12 -0500
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 11Q5ZZVN008308;
+        Thu, 25 Feb 2021 21:43:12 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=xYj/JXZgsNZjS1R0TAHynvBjOOlnmWrgtTwx1gUi3yM=;
+ b=O3iqQs1nAN5G82MBYZ3BIGC2hQxXluXOqxST/KYQ6tqgs4uHDhGTEW4QxbUw5PVQKxX0
+ ZrshGwOG2Kq2QtDCwsniLChy2ezVbmcMF/ho2SwvrYdixgi5ayKzCtGEhwycjFGspSjF
+ fdrikv1CMOnnG1LpHT9BXvqQmSdY4CXJVDw= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net with ESMTP id 36wncfv8fs-12
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 25 Feb 2021 21:43:12 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 25 Feb 2021 21:43:11 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RZ59vHteArM8StqJXOUMJC8zbibmhQUfrx5CRKodljPn179oA6wSQVErKLMI8T0ggW6TC0Ow46OB5BgXzTAEx8H0VEjExHNWdOtG8zQdYP4OIGZODiyeV8x4K0xNBPIkuHAoK08pZFa7xz6NDNDSVXhbz5jQwwdF5wRJSDYbINRJR9JPx8JyueOHEvpkHm6d+6jqDSU++wRKDXjDGvJSKXxSeuPX2dhjSWFvfXTiWuLv7dba6sSvaA9qOM6nmXS8P+o6ggUNdt6fto9guResHETgs3gUDkFBEqxFm8YqQOMfZkaVnB9Yb+jngWiw8Ue3FjdTg7wS1/gKsURXidAgxQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xYj/JXZgsNZjS1R0TAHynvBjOOlnmWrgtTwx1gUi3yM=;
+ b=Z7PUVFZkgqK354P/Tofa1HWSiaXCnlhEmpC/acxHXHE0cEFTx7p+U8vJF+0v69PDesxxzqWF/VCzuISELLBE69ht27YJVS4pT20sMNOcMYkhRWoeFbANMhKisyisiC/bWWJxkMOdcVRg5xrzznKKASzWOHlvCbh9uTFmmKHnh0cUOxsfiut1E2DtF3LSW/3kuODt/qUpWUJvtqcDqZlPE7XeBcoJ9OOJZhuZ+pg9CMWTQRjB7nPdJCcROctqNaB+CinvZ5ynn8teKwn8iOruWYcjWcgFMaatGbpj5ua9cv5eA7vFFh855tCPHoJXSke8q4qgOhmworh6iJO8+v97VA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: linux.ibm.com; dkim=none (message not signed)
+ header.d=none;linux.ibm.com; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SA0PR15MB4014.namprd15.prod.outlook.com (2603:10b6:806:8e::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.30; Fri, 26 Feb
+ 2021 05:43:10 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::e5af:7efb:8079:2c93]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::e5af:7efb:8079:2c93%6]) with mapi id 15.20.3868.033; Fri, 26 Feb 2021
+ 05:43:10 +0000
+Subject: Re: [PATCH v6 bpf-next 6/9] bpf: Add BTF_KIND_FLOAT support
+To:     John Fastabend <john.fastabend@gmail.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
         Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>, paulmck <paulmck@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, acme <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>,
-        bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+CC:     <bpf@vger.kernel.org>, Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+References: <20210224234535.106970-1-iii@linux.ibm.com>
+ <20210224234535.106970-7-iii@linux.ibm.com>
+ <e7957fca-b938-e50d-74f5-ecc40145eb4d@fb.com>
+ <6962feb05a62d718e5d430f782012d71d6c73eed.camel@linux.ibm.com>
+ <fbd33830-2f16-23a4-0c31-91bb4bd95ee4@fb.com>
+ <603854b45b4a7_5c312088a@john-XPS-13-9370.notmuch>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <2966c2fd-8b98-a89d-0e86-505b4cc9dd9b@fb.com>
+Date:   Thu, 25 Feb 2021 21:43:05 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
+In-Reply-To: <603854b45b4a7_5c312088a@john-XPS-13-9370.notmuch>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [2620:10d:c091:480::1:1f06]
+X-ClientProxiedBy: MN2PR17CA0003.namprd17.prod.outlook.com
+ (2603:10b6:208:15e::16) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c0a8:11d1::15dd] (2620:10d:c091:480::1:1f06) by MN2PR17CA0003.namprd17.prod.outlook.com (2603:10b6:208:15e::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.20 via Frontend Transport; Fri, 26 Feb 2021 05:43:08 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8eeeafdf-8a3d-42ab-302e-08d8da196691
+X-MS-TrafficTypeDiagnostic: SA0PR15MB4014:
+X-Microsoft-Antispam-PRVS: <SA0PR15MB401461918C55E5F2D1078171D39D9@SA0PR15MB4014.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: uppnBydEJjjljLcLDPz9HJKeA+k3sTbkCcFianSKgFrYRzJRvKPylCM5plaok6LnHrn4efRxyovQbmP/HE6TWiubV9TcWE185xyLXsHm3HnaJ+ajTAfDRJSdCR0LiTTrjiUx/R+0RDwCau6C6hr8AraqXawZhWahIcFecL+iTvAonomD51MG2UfR2TjE3q+SoiQoL7b0uxjv0K4SJH0qEy92dBFQ27RDQjTcRP1CB0IMfjrhSSv4uEvYSFdv9h9uYAVHh4eHVsF6XPxf3I+TrJBkmleWSAtgWcfiW3y6B46udbNDMfBqJirRgdTndGIHxc8H/VDc7bDV8bHfazkQIJkqiwGoRTt65TpGLaKRzX5gQPZog14FgETw4kElEOqVMfjQS3PgAFB5C4uJakcI65jv5eRhOvK9TZfL4aSwsOj/1+ySRn+ui8f0buuBNa/fPbxE1acYHp4vNJeNDPTeEjCQ0hlyvr/BtKOGw7ywlkxrnut4sMeRotSoZtSUVZZyvgQG8d/a1jw5UlZpQpz1F03NN+MNBGogCHzHMc/+iHOYJqnXhGpGOd+DOPKI4DajQjr+5hKCAMjpRRmkMbtAOimD2+OT7SLEe2hQOJKcVZA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(136003)(346002)(376002)(39860400002)(66556008)(31696002)(36756003)(52116002)(66946007)(6666004)(5660300002)(53546011)(8936002)(316002)(8676002)(478600001)(186003)(86362001)(4326008)(110136005)(6486002)(83380400001)(2616005)(16526019)(54906003)(2906002)(31686004)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?V2RrWTBZb1V2aE9jMkNBZFZWdHI0WHZFL3M1d2NFczlBVzR6bXVTOTF4aElZ?=
+ =?utf-8?B?dlBYeEpwV0duMjNtejNiTDZsbjBjUlpLU2ErOVllaGg0dE1CaEtwTkJZakxq?=
+ =?utf-8?B?U216ZVhqNm0zc2dVVUkwMS9KS3NsUWFzWXlMeUFUSVdhMlZTcFZhQUw4UzBR?=
+ =?utf-8?B?ZUdDSER1ajBDNUp6Y0xmM2NLc1BPcyt2aUU2S0lrdUk5d1pKZFVHS045STZp?=
+ =?utf-8?B?YkdFbTFVQ2NNN2h0dW9Ra0czaWY2VjZBc2Z3ZWJyWkd2VUJmenA0MkVEVUs5?=
+ =?utf-8?B?dmtrcXAzMUNWUnBFbmptcXlES292eEVVL2pPbFY1Z3ppSU5XUDdabXFQL24y?=
+ =?utf-8?B?SjVUTHNIREhMZWN0UTNhYWwzV3YxUEtOdE4xcTlYd3Mwbk0zbFFVWjZnMk55?=
+ =?utf-8?B?MGhZcm1OdWdoV2ZHeVVFZWl5Q2NUaXBFQ2VDMXJNSEluZ1ZpKzNUbEZ5bklN?=
+ =?utf-8?B?NC8ra1RIZWxObmNvMjVtQmJoSldHWko2cUl3aTFaL1kyWHlkWC91TGQvWm5L?=
+ =?utf-8?B?bmxoWU1ZeU52ZlZ5bTluK3pab1dDbExIeDJrY0U4WFh6QkhuSklVOGU3N2g1?=
+ =?utf-8?B?QU81TTVrUWJiZUxVQmRyeXY0SFNZWXZacWIxbldyMjg3ak00RWo2RVlhcVZ3?=
+ =?utf-8?B?NVJoWHBUUFBYem5DekxMQ2VaQnIyWXJoSmJ4TjlLbkFKRndMNDNaOVpSWklI?=
+ =?utf-8?B?NFFqb2VjS3F1bGFNRFNwUytFa2FDSGY3MDA1a00xZnpaenQxdGRHWHF3b3Rz?=
+ =?utf-8?B?N1lZSVBmQUZxQlduQ3pnUGRWeWkrblNtRDE1SnNwaEgwbm1icTRIMmJWVytz?=
+ =?utf-8?B?TWdSQnhuNFQ5Z1VxWjVFTngwRHlROW93eHUrZldIeUhwRTI1ZktuUkgya3BQ?=
+ =?utf-8?B?L0VTNDJmeVc5U2xxd2FSN2dJYitWcHBqc1QzbGNKY29nN05uRmZ0eTFYdWRP?=
+ =?utf-8?B?Wk5EaWphWStkMUZZdlVzSHpObzRtUmsyb0luMmF4RnZmMnp1S0h4bi9DSDZW?=
+ =?utf-8?B?TXBCMHBKYzBPQnFONkk1STdZVXNUY1FhQlZHcVlIbHZ2NG4wYkZ4TEZyS2Na?=
+ =?utf-8?B?NTJWT0VBZG9QOUFDZlFRbEUraG5nTVpYZzQybVM4S2o3NSt1V0RWVkF5NXlR?=
+ =?utf-8?B?UksyelQvVDdIdnpnMHZDR2FSbUkrWGNBVlVHc0Zpdk9OTnFVdWt0T2JSQ3c5?=
+ =?utf-8?B?UkoxSUxjRnEvRTV4MmxxSzZJaEE1MVE5NUNuM2oremJrYlBsd3RsQ09UOTRn?=
+ =?utf-8?B?V241RU4vSFVFRWdmMytNSk1oYmJjV08wWjBiYjFBTmJlcWVPOWx0TlovVnBC?=
+ =?utf-8?B?R01RSU00Wlh6M0x1dDJIY1h1VGpJV2Fhb0REM1FPZ3FmZTFVMG5nb2VBemhT?=
+ =?utf-8?B?UldWeUtEUEM1U1psbFJQTDlHSEt0eHFBQnUrZUg4QTlUSzJiNk5Jc25RTWlN?=
+ =?utf-8?B?Z04rVmtha0p3Qjk0VEpxTnBsR3lxZkxrbklWeHpKZllGbDMyR2EwNmRMSlBn?=
+ =?utf-8?B?RVZWNXZBSS9YckhHWE9PTFZZTHlqZ0VUWkNUQUZKRisxT0IyL1huQXhzTCto?=
+ =?utf-8?B?czBZeUZiUXVVV2FGTUNiNEhsK2ZFMXc4RTZyaWxzUWlZMFpqdk9kbllpeFhv?=
+ =?utf-8?B?TVFsVFoybS9aMzFnb1hBdHNobmVSbzJ1L2REbm5ESEZTZHBsYlVvcWYrL3BC?=
+ =?utf-8?B?c3dqR21icGxxYlRoc2M4ckJGZlMyWFpyRWNhVy85UDEybzJDeDE0SWdrdkVW?=
+ =?utf-8?B?akVVRXBsWlIwTTQyS1V2VWdjVXRVTmxaYVhPTXFrc25FWHMwVDRGNE51aGdo?=
+ =?utf-8?Q?TCVeteoF2+u0Z9XVuB+4VbZY/IDPjBC2T5zx4=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8eeeafdf-8a3d-42ab-302e-08d8da196691
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2021 05:43:10.4602
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: AYcWuTIgv3AeUnAVLg2AbAWWZlP+WdSSEKndIS/70CqFYHouYrRtq6c062dXITrT
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB4014
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-26_01:2021-02-24,2021-02-26 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ bulkscore=0 mlxlogscore=999 priorityscore=1501 spamscore=0 phishscore=0
+ impostorscore=0 malwarescore=0 clxscore=1015 mlxscore=0 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102260043
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 9:15 AM Mathieu Desnoyers
-<mathieu.desnoyers@efficios.com> wrote:
->
-> ----- On Feb 24, 2021, at 11:22 AM, Michael Jeanson mjeanson@efficios.com wrote:
->
-> > [ Adding Mathieu Desnoyers in CC ]
-> >
-> > On 2021-02-23 21 h 16, Steven Rostedt wrote:
-> >> On Thu, 18 Feb 2021 17:21:19 -0500
-> >> Michael Jeanson <mjeanson@efficios.com> wrote:
-> >>
-> >>> This series only implements the tracepoint infrastructure required to
-> >>> allow tracers to handle page faults. Modifying each tracer to handle
-> >>> those page faults would be a next step after we all agree on this piece
-> >>> of instrumentation infrastructure.
-> >>
-> >> I started taking a quick look at this, and came up with the question: how
-> >> do you allow preemption when dealing with per-cpu buffers or storage to
-> >> record the data?
-> >>
-> >> That is, perf, bpf and ftrace are all using some kind of per-cpu data, and
-> >> this is the reason for the need to disable preemption. What's the solution
-> >> that LTTng is using for this? I know it has a per cpu buffers too, but does
-> >> it have some kind of "per task" buffer that is being used to extract the
-> >> data that can fault?
->
-> As a prototype solution, what I've done currently is to copy the user-space
-> data into a kmalloc'd buffer in a preparation step before disabling preemption
-> and copying data over into the per-cpu buffers. It works, but I think we should
-> be able to do it without the needless copy.
->
-> What I have in mind as an efficient solution (not implemented yet) for the LTTng
-> kernel tracer goes as follows:
->
-> #define COMMIT_LOCAL 0
-> #define COMMIT_REMOTE 1
->
-> - faultable probe is called from system call tracepoint [ preemption/blocking/migration is allowed ]
 
-label:
-restart:
 
->   - probe code calculate the length which needs to be reserved to store the event
->     (e.g. user strlen),
+On 2/25/21 5:53 PM, John Fastabend wrote:
+> Yonghong Song wrote:
+>>
+>>
+>> On 2/25/21 2:40 AM, Ilya Leoshkevich wrote:
+>>> On Wed, 2021-02-24 at 23:10 -0800, Yonghong Song wrote:
+>>>> On 2/24/21 3:45 PM, Ilya Leoshkevich wrote:
+>>>>> On the kernel side, introduce a new btf_kind_operations. It is
+>>>>> similar to that of BTF_KIND_INT, however, it does not need to
+>>>>> handle encodings and bit offsets. Do not implement printing, since
+>>>>> the kernel does not know how to format floating-point values.
+>>>>>
+>>>>> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+>>>>> ---
+>>>>>     kernel/bpf/btf.c | 79
+>>>>> ++++++++++++++++++++++++++++++++++++++++++++++--
+>>>>>     1 file changed, 77 insertions(+), 2 deletions(-)
+>>>>>
+>>>>> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+>>>>> index 2efeb5f4b343..c405edc8e615 100644
+>>>>> --- a/kernel/bpf/btf.c
+>>>>> +++ b/kernel/bpf/btf.c
+>>>
+>>> [...]
+>>>
+>>>>> @@ -1849,7 +1852,7 @@ static int btf_df_check_kflag_member(struct
+>>>>> btf_verifier_env *env,
+>>>>>           return -EINVAL;
+>>>>>     }
+>>>>>     
+>>>>> -/* Used for ptr, array and struct/union type members.
+>>>>> +/* Used for ptr, array struct/union and float type members.
+>>>>>      * int, enum and modifier types have their specific callback
+>>>>> functions.
+>>>>>      */
+>>>>>     static int btf_generic_check_kflag_member(struct btf_verifier_env
+>>>>> *env,
+>>>>> @@ -3675,6 +3678,77 @@ static const struct btf_kind_operations
+>>>>> datasec_ops = {
+>>>>>           .show                   = btf_datasec_show,
+>>>>>     };
+>>>>>     
+>>>>> +static s32 btf_float_check_meta(struct btf_verifier_env *env,
+>>>>> +                               const struct btf_type *t,
+>>>>> +                               u32 meta_left)
+>>>>> +{
+>>>>> +       if (btf_type_vlen(t)) {
+>>>>> +               btf_verifier_log_type(env, t, "vlen != 0");
+>>>>> +               return -EINVAL;
+>>>>> +       }
+>>>>> +
+>>>>> +       if (btf_type_kflag(t)) {
+>>>>> +               btf_verifier_log_type(env, t, "Invalid btf_info
+>>>>> kind_flag");
+>>>>> +               return -EINVAL;
+>>>>> +       }
+>>>>> +
+>>>>> +       if (t->size != 2 && t->size != 4 && t->size != 8 && t->size
+>>>>> != 12 &&
+>>>>> +           t->size != 16) {
+>>>>> +               btf_verifier_log_type(env, t, "Invalid type_size");
+>>>>> +               return -EINVAL;
+>>>>> +       }
+>>>>> +
+>>>>> +       btf_verifier_log_type(env, t, NULL);
+>>>>> +
+>>>>> +       return 0;
+>>>>> +}
+>>>>> +
+>>>>> +static int btf_float_check_member(struct btf_verifier_env *env,
+>>>>> +                                 const struct btf_type
+>>>>> *struct_type,
+>>>>> +                                 const struct btf_member *member,
+>>>>> +                                 const struct btf_type
+>>>>> *member_type)
+>>>>> +{
+>>>>> +       u64 start_offset_bytes;
+>>>>> +       u64 end_offset_bytes;
+>>>>> +       u64 misalign_bits;
+>>>>> +       u64 align_bytes;
+>>>>> +       u64 align_bits;
+>>>>> +
+>>>>> +       align_bytes = min_t(u64, sizeof(void *), member_type-
+>>>>>> size);
+>>>>
+>>>> I listed the following possible (size, align) pairs:
+>>>>        size     x86_32 align_bytes   x86_64 align bytes
+>>>>         2        2                    2
+>>>>         4        4                    4
+>>>>         8        4                    8
+>>>>         12       4                    8
+>>>>         16       4                    8
+>>>>
+>>>> A few observations.
+>>>>      1. I don't know, just want to confirm, for double, the alignment
+>>>> could be 4 (for a member) on 32bit system, is that right?
+>>>>      2. for size 12, alignment will be 8 for x86_64 system, this is
+>>>> strange, not sure whether it is true or not. Or size 12 cannot be
+>>>> on x86_64 and we should error out if sizeof(void *) is 8.
+>>>
+>>> 1 - Yes.
+>>>
+>>> 2 - On x86_64 long double is 16 bytes and the required alignment is 16
+>>> bytes too. However, on other architectures all this might be different.
+>>> For example, for us long double is 16 bytes too, but the alignment can
+>>> be 8. So can we be somewhat lax here and just allow smaller alignments,
+>>> instead of trying to figure out what exactly each supported
+>>> architecture does?
+>>
+>> Maybe this is fine. I think, "float" is also the first BTF type whose
+>> validation may have a dependence on underlying architecture. For
+>> example, member offset 4, type size 8, will be okay on x86_32,
+>> but not okay on x84_64. That means BTF cannot be independently
+>> validated without considering underlying architecture.
+>>
+>> I am not against this patch. Maybe float is special. Maybe it is
+>> okay since float is rarely used. I would like to see other people's
+>> opinion.
+> 
+> I can't think of any specific issue here. From the program/BTF side
+> the actual offsets of any given field in a struct are going to vary
+> wildly depending on arch and configuration anyways.
 
-Does "user strlen" makes the content fault in?
+That is true.
 
-Is it possible to make the sleepable faulting only happen here between
-"restart" and the following "preempt disable"?  The code here should
-do a prefetch operation like "user strlen".
+> 
+> I assume if a BPF program really needs the size then
+> __builtin_preserve_field_info(var, BPF_FIELD_BYTE_SIZE) will do the
+> right thing?
 
-And we can keep preemption disabled when copying the data.  If there
-is a fault while copying, then we can restart from the label "restart".
+For __builtin_preserve_field_info(var, BPF_FIELD_BYTE_SIZE), libbpf
+should be able to check vmlinux to find correct field size and use
+it.
 
-Very immature thought.
+All my above opinion is for bpf program BTF. I agree that if libbpf
+CO-RE kicks in, we should be able to get proper aligned size/offset.
 
-Thanks
-Lai
+for float, if I understand correctly, we don't print data yet, so
+even print, maybe just bytes, so alignment requirement is not critical.
 
->
->   - preempt disable -> [ preemption/blocking/migration is not allowed from here ]
->     - reserve_cpu = smp_processor_id()
->     - reserve space in the ring buffer for reserve_cpu
->       [ from that point on, we have _exclusive_ access to write into the ring buffer "slot"
->         from any cpu until we commit. ]
->   - preempt enable -> [ preemption/blocking/migration is allowed from here ]
->
->   - copy data from user-space to the ring buffer "slot",
->
->   - preempt disable -> [ preemption/blocking/migration is not allowed from here ]
->     commit_cpu = smp_processor_id()
->     if (commit_cpu == reserve_cpu)
->        use local_add to increment the buf[commit_cpu].subbuffer[current].commit_count[COMMIT_LOCAL]
->     else
->        use atomic_add to increment the buf[commit_cpu].subbuffer[current].commit_count[COMMIT_REMOTE]
->   - preempt enable -> [ preemption/blocking/migration is allowed from here ]
->
-> Given that lttng uses per-buffer/per-sub-buffer commit counters as simple free-running
-> accumulators, the trick here is to use two commit counters rather than single one for each
-> sub-buffer. Whenever we need to read a commit count value, we always sum the total of the
-> LOCAL and REMOTE counter.
->
-> This allows dealing with migration between reserve and commit without requiring the overhead
-> of an atomic operation on the fast-path (LOCAL case).
->
-> I had to design this kind of dual-counter trick in the context of user-space use of restartable
-> sequences. It looks like it may have a role to play in the kernel as well. :)
->
-> Or am I missing something important that would not survive real-life ?
->
-> Thanks,
->
-> Mathieu
->
-> --
-> Mathieu Desnoyers
-> EfficiOS Inc.
-> http://www.efficios.com
+Ilya, maybe just add some comments like different arch has different
+alignment requirements so here we just ensure minimum alignment 
+requirement this way we ensure types after CO-RE can pass kernel
+btf verifier?
+
+> 
+> Thanks!
+> 
