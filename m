@@ -2,52 +2,52 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE0E0325B6A
-	for <lists+bpf@lfdr.de>; Fri, 26 Feb 2021 02:59:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A95C325B6D
+	for <lists+bpf@lfdr.de>; Fri, 26 Feb 2021 03:02:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229556AbhBZB6J (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Thu, 25 Feb 2021 20:58:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60192 "EHLO
+        id S230041AbhBZCCK (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Thu, 25 Feb 2021 21:02:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbhBZB6H (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Thu, 25 Feb 2021 20:58:07 -0500
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8CCEC061574
-        for <bpf@vger.kernel.org>; Thu, 25 Feb 2021 17:57:25 -0800 (PST)
-Received: by mail-il1-x133.google.com with SMTP id d5so6760558iln.6
-        for <bpf@vger.kernel.org>; Thu, 25 Feb 2021 17:57:25 -0800 (PST)
+        with ESMTP id S229586AbhBZCCJ (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Thu, 25 Feb 2021 21:02:09 -0500
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BE0CC06174A
+        for <bpf@vger.kernel.org>; Thu, 25 Feb 2021 18:01:29 -0800 (PST)
+Received: by mail-il1-x134.google.com with SMTP id e2so6756567ilu.0
+        for <bpf@vger.kernel.org>; Thu, 25 Feb 2021 18:01:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:message-id:in-reply-to:references:subject
          :mime-version:content-transfer-encoding;
-        bh=6Ux10ihQPCqre/Nqgm87gc5BcZSiVqaIVtbeRrA89jw=;
-        b=Z927EOOpS4Ww4athzNWk+q9otY7rcIKM5aKIzOv5IlKT36NJ9l2SE7zVaclVPTQB2M
-         W/3pE8vk+L6nfDiW5HxMQ/k3Uis97/ZBEa/uSUpWRZ5RpkW52l9rpuZdJdt6SnHIj7uH
-         /jXtCjIcTSLCdG2I+c9Sly2mLR+uXEqNwUSPtBq+MIdvAeOCX4epDs/n9SFRaIWZvjD4
-         gteHITfeobBE04KIQjMcY59uVoA369+V8Orfg8MW9GyjT3s7JwxHi7lqYvssrDdJDWTZ
-         frvHtPnrX7mMehuHydT5ufcwzccrn+gASWDqiOLqSArgoe6ywXg+nFyIENyhO0r8MGPM
-         IWRQ==
+        bh=kwQLHSZIXQqAcqJEjSNrTXTgaxP4lsit1OMX0Gg3gso=;
+        b=vQmfkr+8zvH681NHOblt/uKCEj1SiMJQSJ6JDvjlWqKr6Yvm9sbjc7GdsZmplr5Rx+
+         sSHpPTuYg/+uAQZNzvSCQT2lhzYT7DC9d+McaST54b6gz61TuDTyWPDsGNO7De4u58zL
+         ja6AeelXYcyTh7x0z5Z+0QIQ2HHPRS1J6bp+6emMG7LSaj4fwU7qD76MOcAghnw+DE9A
+         tXcWNibkVTs27ZvyC4g5I1hGsrX7KyTBKOYNpWyb2tXzHjd9mR3oe2OpIZ066zxIZXgi
+         hR3MueQKBwMMHYWyYo8nGcIBhIVmlTNg5hKaQe42iOMFWAVd4+7kXzGbgu1KhVjOfcqQ
+         8DaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
          :references:subject:mime-version:content-transfer-encoding;
-        bh=6Ux10ihQPCqre/Nqgm87gc5BcZSiVqaIVtbeRrA89jw=;
-        b=TY/ih1wVAUVBJiuFhHbAFL0+FzGxZPj7BXGJdC2xUWyyBCftbVsjkJsuTI3jZWn0FF
-         jZePk2n6OOHtOuMr+24p1U4+R+0lyi1K7rOeB57g4BeMLIf3IePctjBlZRMM1DCyyHb0
-         ul5XxT/0rVACpPR40cUJ4PiZmaqtst6LsnGieuBcl8meTbCMkaNY4SmIyfo3rm7knbE4
-         0yi5HSs2T/MXOUcMQO9VgXUoMDawA0vPFd7EaeQnVMeiz2IANKkVj74kAGtLPlyDuCsb
-         11IXRvtMyFvMY1E056zGqVrhMDsFv3hgV5j+MASpUJ+fkcHAtzU3Zr4FoPMEVpKsVBmh
-         GRxA==
-X-Gm-Message-State: AOAM531BEM7yUhEdA/PWYxCmi5E45rRyar65doQRm4lqQzu0ab9OGbpw
-        InCPl/g81ZBs5tkdRpk6gqE=
-X-Google-Smtp-Source: ABdhPJz67TCW6W6V22IQuOHssUmCWlulI2S2etAJ3pKVlSfR5BEgrYG84HoQSTm/LcB26hyRSOyx8w==
-X-Received: by 2002:a92:4a07:: with SMTP id m7mr492488ilf.51.1614304645030;
-        Thu, 25 Feb 2021 17:57:25 -0800 (PST)
+        bh=kwQLHSZIXQqAcqJEjSNrTXTgaxP4lsit1OMX0Gg3gso=;
+        b=OIC1/GgaXHHmSsOV/znVj6zKvtGsQX+sw/u0Xwq1jJdK4H+OJZ+WY2aX29j3vpwtDv
+         caMquoYynXYti7XAl2PXDWDvBqc01ORj81Piemvfiqo6T9OiGpCWl9K4lAyMRqeYRNrv
+         JZeilR+tsDr0XkazidptoXsnco8RQ+BYaKDO9q9mU3TBUzd34oYMuRqMb368oMNH2bX+
+         DxInBb71jc7feaRD0ArukquYQxtFUzdtaI22IhLEpAxy5ZypqaA2HnprgBoi6WZeaMX6
+         g1flvZ2917Ok0rTPMB7iJ3AC4y+LzTWtBxw+/O6o0wXBty0AVvwPlTYvwj3sBu12Dvjp
+         fhhw==
+X-Gm-Message-State: AOAM532Fs1oIzXJ/hB3Ac0h8jSwtwdj0wyLOraIhU41QfOB4KF9F7Xtb
+        PEUrKatonxBxXzyK3z8Q35K1C/m5vLoczA==
+X-Google-Smtp-Source: ABdhPJzail/Ne5UeEwVN2Dubm0ZFpkIn40mBmBZDyaa5BjYMBynKA1Ky7FSMqfu4593WN72drRmqwA==
+X-Received: by 2002:a92:c7c2:: with SMTP id g2mr523562ilk.209.1614304888917;
+        Thu, 25 Feb 2021 18:01:28 -0800 (PST)
 Received: from localhost ([172.243.146.206])
-        by smtp.gmail.com with ESMTPSA id g3sm3602885ile.10.2021.02.25.17.57.22
+        by smtp.gmail.com with ESMTPSA id a2sm4369093iow.43.2021.02.25.18.01.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 17:57:24 -0800 (PST)
-Date:   Thu, 25 Feb 2021 17:57:16 -0800
+        Thu, 25 Feb 2021 18:01:28 -0800 (PST)
+Date:   Thu, 25 Feb 2021 18:01:20 -0800
 From:   John Fastabend <john.fastabend@gmail.com>
 To:     Ilya Leoshkevich <iii@linux.ibm.com>,
         Alexei Starovoitov <ast@kernel.org>,
@@ -59,11 +59,11 @@ To:     Ilya Leoshkevich <iii@linux.ibm.com>,
 Cc:     bpf@vger.kernel.org, Heiko Carstens <heiko.carstens@de.ibm.com>,
         Vasily Gorbik <gor@linux.ibm.com>,
         Ilya Leoshkevich <iii@linux.ibm.com>
-Message-ID: <6038557c991ad_5c312087e@john-XPS-13-9370.notmuch>
-In-Reply-To: <20210224234535.106970-4-iii@linux.ibm.com>
+Message-ID: <603856707afdb_5c312088d@john-XPS-13-9370.notmuch>
+In-Reply-To: <20210224234535.106970-8-iii@linux.ibm.com>
 References: <20210224234535.106970-1-iii@linux.ibm.com>
- <20210224234535.106970-4-iii@linux.ibm.com>
-Subject: RE: [PATCH v6 bpf-next 3/9] libbpf: Add BTF_KIND_FLOAT support
+ <20210224234535.106970-8-iii@linux.ibm.com>
+Subject: RE: [PATCH v6 bpf-next 7/9] selftest/bpf: Add BTF_KIND_FLOAT tests
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
@@ -73,24 +73,37 @@ List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
 Ilya Leoshkevich wrote:
-> The logic follows that of BTF_KIND_INT most of the time. Sanitization
-> replaces BTF_KIND_FLOATs with equally-sized empty BTF_KIND_STRUCTs on
-> older kernels, for example, the following:
-> 
->     [4] FLOAT 'float' size=4
-> 
-> becomes the following:
-> 
->     [4] STRUCT '(anon)' size=4 vlen=0
+> Test the good variants as well as the potential malformed ones.
 > 
 > Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> Acked-by: Yonghong Song <yhs@fb.com>
 > ---
+>  tools/testing/selftests/bpf/btf_helpers.c    |   4 +
+>  tools/testing/selftests/bpf/prog_tests/btf.c | 131 +++++++++++++++++++
+>  tools/testing/selftests/bpf/test_btf.h       |   3 +
+>  3 files changed, 138 insertions(+)
+> 
 
-If you do another rev it might be nice to note that with latest
-llvm, latest libbpf, and this patch that older kernels (that were
-failing with the float errors) will now start working correctly. I
-assume for the this case the sanitize logic will just fix up the BTF
-and everything will work as expected for the most part.
+Should we also add a test in reloc_size.c to verify bpf_core_field_size()
+is working correctly with floats. Seems like a useful test to me.
 
-.John
+diff --git a/tools/testing/selftests/bpf/progs/test_core_reloc_size.c b/tools/testing/selftests/bpf/progs/test_core_reloc_size.c
+index d7fb6cfc7891..c75d135009ab 100644
+--- a/tools/testing/selftests/bpf/progs/test_core_reloc_size.c
++++ b/tools/testing/selftests/bpf/progs/test_core_reloc_size.c
+@@ -30,6 +30,7 @@ struct core_reloc_size {
+        int arr_field[4];
+        void *ptr_field;
+        enum { VALUE = 123 } enum_field;
++       float floating;
+ };
+ 
+ SEC("raw_tracepoint/sys_enter")
+@@ -45,6 +46,7 @@ int test_core_size(void *ctx)
+        out->arr_elem_sz = bpf_core_field_size(in->arr_field[0]);
+        out->ptr_sz = bpf_core_field_size(in->ptr_field);
+        out->enum_sz = bpf_core_field_size(in->enum_field);
++       out->floating_sz = bpf_core_field_size(in->floating);
+ 
+        return 0;
+ }
