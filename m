@@ -2,83 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CAC53267A5
-	for <lists+bpf@lfdr.de>; Fri, 26 Feb 2021 21:07:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 335D83267B1
+	for <lists+bpf@lfdr.de>; Fri, 26 Feb 2021 21:07:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229622AbhBZUEi (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Feb 2021 15:04:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38572 "EHLO
+        id S230079AbhBZUF1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Feb 2021 15:05:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbhBZUEg (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Feb 2021 15:04:36 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51FA8C061574;
-        Fri, 26 Feb 2021 12:03:56 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id u4so11974911ljh.6;
-        Fri, 26 Feb 2021 12:03:56 -0800 (PST)
+        with ESMTP id S230018AbhBZUFY (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Feb 2021 15:05:24 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5406DC061574
+        for <bpf@vger.kernel.org>; Fri, 26 Feb 2021 12:04:43 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id a17so15158799lfb.1
+        for <bpf@vger.kernel.org>; Fri, 26 Feb 2021 12:04:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=zx4wWUTPjkEoZMfdFukEwwHYmqNG3sfw0pU4Ec9E4uA=;
-        b=Snr+kyjMGdVKvorvrl0RwG7Nhs3MxTXrcura/wtnx1BwuxyXMo5IK1koqPR7pSOwCk
-         5pP70wsFngb2ETVZdl4VV+yzc5DdeGM9MehmDwiz3Pd5JcUnpbhkEZ948vHA51sLWIJ0
-         QIg1Pen6Y56W2bjImPYNhDC5cQtoq6aKWrD/AzO9b5aoGXMO3u7xO0TCr54qTao1oIcV
-         RAzdWDuS6X92B/P3ao2Lbc1FbuCRU5KQRsvqg8Ja8G3QnpXZ3mjoAoPGo8jp18V9gfwr
-         PWTSoqBQpgZDLBOIwnW9DaSkC9H1NJJEk6z2ijtCunw264kG+UKTW2CLHor1aXHdi0Ru
-         oxrg==
+        bh=UndmRchlSFBmynfeaJ1NFZ8egZYXo7M13mJTXaW/8kc=;
+        b=Epz8C7VwuOiSzNJK7a90x1M41lEwstfdqyRJ1yy4MiNiwzbQAmO0pzqNefkCKrkLt1
+         4Op63FK9CkBzHRF2StRhdAyX3OshF5dL+1fuzDq4tMYF/m8X7L4xojYSCSvU6zjHmzRJ
+         31cnKAdVB2LAsnfwC3UBzn20tYyrxfdB+hElP1ptC+C5hwiq3ZWyw5a3ZjllwEU3hY3m
+         hR/3QBy5JnyiYNOBNedOescqTqRpfxp6mtp69fLS/yjErv30Krine25MICTcvXdYcfOh
+         hscftzXcGuXX7pM/bCec2bADOcMi/mIXLF0vcus2OKy7yn4YKKuud3sTV1/AkrmmHTDT
+         02uQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=zx4wWUTPjkEoZMfdFukEwwHYmqNG3sfw0pU4Ec9E4uA=;
-        b=pR7Kp8V7pPv4NAFyN68Fd9xWScx7mObyXUp1EF1MwBfDhuiL/VhE6wU0XM3KJ3X2HH
-         n2AiT0QpOPVuSh6YVJ90glBBSpdn59RDF9NbYfftjEi+2VnnsMYFCUvlJI7xEcuRBrdO
-         oSpJghzlgT/pMVlHW7DeRZ8aKDI0uhxYOxCrs8UbSyBp4sAodneQvmFzPKaSahxQNCVf
-         xwUCVvAD+faOGZHpci0FLKmdGNALWsyogB0oqFjSu8e5cI3h4V7HES6zITDeP3Jsotbp
-         Hd84vaE4Z9z8XY7+5oX+PrO8n5cJ3tlX9IS14wn/F3H4HyI/k2AdWDeozrvfIFpacNyO
-         pO/g==
-X-Gm-Message-State: AOAM530pNNX2Mv/TOUpTKGisCiok/kDJz+IaAnPb5xGtvQOSbauF44/z
-        KxReKb/HA3V8uycS242qW3kPEeBcai0TNc3acAjyIoGU
-X-Google-Smtp-Source: ABdhPJwTMTg2ATqmr33jGu88YKPjfTzN5Dz5HF5o6G0ONsYfB4ZNpVAgifgx1ZOqc/qfL1bg1FZX0ugdTqMAdG3nNDA=
-X-Received: by 2002:a2e:964e:: with SMTP id z14mr2629715ljh.204.1614369834704;
- Fri, 26 Feb 2021 12:03:54 -0800 (PST)
+        bh=UndmRchlSFBmynfeaJ1NFZ8egZYXo7M13mJTXaW/8kc=;
+        b=MoLcStzSOjE0YsxIiZXM2gHxsGGacidYk2YNI1KirvVNX4JlDFnq0VwHKjR4jtv1Ed
+         IGaieZKs9SrWcJ/G45zkUUKR+F5MumhmgyPQxhNqdYumxSofrIOt9AJNnxvnu6i+YAhj
+         Yv2pXA91vhXAHIyRyUPkUbG13REzTM8ZnfWS2qH4NhKpCoQpCBjIXp0y480pXuagzy2R
+         8PgSVdIXNSPx5bLz/V1ohu8u8eVu5A4haQqM1NOANYfBDCoucJIzzq1+swzIDZv9BUjx
+         R9FYZAImNjyWPZc+7kEkbWKB5jUNGWc9j8pj+6ZnwTQpHLKddVy6qIUZQzIo7ViVUosr
+         oAyw==
+X-Gm-Message-State: AOAM533qS5bt4YWxvnCzWaaXu/ZrFr66F3NaA4nTpASSJSPGS5kxYw2l
+        5wbTf0qR2cN+phsEgj6FrnjTlXRdfn8xy/fN98l5EOg1
+X-Google-Smtp-Source: ABdhPJzByXMN39EsMhGWu6Bd09wxiGYPMlY3/E8sk6C14621uNm2JsbQKXVMhbm+vc8S0Cnh/Gce5w3Vr5vGezB4zv4=
+X-Received: by 2002:ac2:5ec2:: with SMTP id d2mr2762613lfq.214.1614369881876;
+ Fri, 26 Feb 2021 12:04:41 -0800 (PST)
 MIME-Version: 1.0
-References: <20210225234319.336131-1-songliubraving@fb.com> <20210226000344.a6aud7aaimrc6wzt@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20210226000344.a6aud7aaimrc6wzt@kafai-mbp.dhcp.thefacebook.com>
+References: <20210225202629.585485-1-me@ubique.spb.ru> <20210225215506.xktvt6kf3mpwyiii@kafai-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20210225215506.xktvt6kf3mpwyiii@kafai-mbp.dhcp.thefacebook.com>
 From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 26 Feb 2021 12:03:43 -0800
-Message-ID: <CAADnVQKofEPSABz-+WQ65XTcOEQPke08Nity2Mo7-bD2gopVpg@mail.gmail.com>
-Subject: Re: [PATCH v6 bpf-next 0/6] bpf: enable task local storage for
- tracing programs
+Date:   Fri, 26 Feb 2021 12:04:30 -0800
+Message-ID: <CAADnVQKS-qhJ+G=0SKmTe6=ZfJaeuucQvp7FEJ_EtvoEOgFHzA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next] bpf: use MAX_BPF_FUNC_REG_ARGS macro
 To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Song Liu <songliubraving@fb.com>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
+Cc:     Dmitrii Banshchikov <me@ubique.spb.ru>, bpf <bpf@vger.kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Peter Zijlstra <peterz@infradead.org>
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, Andrey Ignatov <rdna@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 4:04 PM Martin KaFai Lau <kafai@fb.com> wrote:
+On Thu, Feb 25, 2021 at 1:55 PM Martin KaFai Lau <kafai@fb.com> wrote:
 >
-> On Thu, Feb 25, 2021 at 03:43:13PM -0800, Song Liu wrote:
-> > This set enables task local storage for non-BPF_LSM programs.
-> >
-> > It is common for tracing BPF program to access per-task data. Currently,
-> > these data are stored in hash tables with pid as the key. In
-> > bcc/libbpftools [1], 9 out of 23 tools use such hash tables. However,
-> > hash table is not ideal for many use case. Task local storage provides
-> > better usability and performance for BPF programs. Please refer to 6/6 for
-> > some performance comparison of task local storage vs. hash table.
-> Thanks for the patches.
->
+> On Fri, Feb 26, 2021 at 12:26:29AM +0400, Dmitrii Banshchikov wrote:
+> > Instead of using integer literal here and there use macro name for
+> > better context.
 > Acked-by: Martin KaFai Lau <kafai@fb.com>
 
-Applied. Thanks.
-
-9 out of 23 libbpf-tools will significantly reduce the tracing overhead. Hooray!
+Applied. Thanks
