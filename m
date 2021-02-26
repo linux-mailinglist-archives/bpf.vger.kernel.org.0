@@ -2,71 +2,72 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57B9F326208
-	for <lists+bpf@lfdr.de>; Fri, 26 Feb 2021 12:36:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C954332620C
+	for <lists+bpf@lfdr.de>; Fri, 26 Feb 2021 12:39:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbhBZLgl (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Feb 2021 06:36:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40083 "EHLO
+        id S229886AbhBZLjM (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Feb 2021 06:39:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32394 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229550AbhBZLgi (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 26 Feb 2021 06:36:38 -0500
+        by vger.kernel.org with ESMTP id S229537AbhBZLjK (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 26 Feb 2021 06:39:10 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614339311;
+        s=mimecast20190719; t=1614339464;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=sDZwOEVS9t1txKosxZ6AgJPd1yK0dZxFgh8hc7RQj8E=;
-        b=T50RlOvQLYgZ5Vf56ucNvbnu1AF/2ynGvZZ/NMThttnypFuaAW/yj38a9mGMBb8j4NjygU
-        VSMT5qFoKI/9kAZip0rLyroHZGmHz30cc2owBmnketwSTkoW9ehXxqwsg7vcYhpXReyNOP
-        X92tiPNMre4WP7uGt8KaU2hVpkf2AMk=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-12-3hgFCxrrMAisbgoc9V95kQ-1; Fri, 26 Feb 2021 06:35:10 -0500
-X-MC-Unique: 3hgFCxrrMAisbgoc9V95kQ-1
-Received: by mail-ed1-f71.google.com with SMTP id z12so4340950edb.0
-        for <bpf@vger.kernel.org>; Fri, 26 Feb 2021 03:35:09 -0800 (PST)
+        bh=rikGehM9mwA1nuC9BKnS7TVn/QfaVjDSfEE0cqyBQ9A=;
+        b=BhYknFRW3FrHyzuKj0yj7aRgPoP+LaVbmgS0jVRtED2ezVqbpd2fxfobe/ZeswH1Luzem8
+        EqddT7Tb2aOQKIetQ5W1aFLCUdqkW4n28nugFVF/7lYgiaBGzp70OUT5GY7Om+2AaqLT2P
+        GV7povUKtG6Ja4eJEwyNvWZJI6tZaP4=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-406-8lwW_05fOTCWv7IoZlgWRg-1; Fri, 26 Feb 2021 06:37:42 -0500
+X-MC-Unique: 8lwW_05fOTCWv7IoZlgWRg-1
+Received: by mail-ed1-f70.google.com with SMTP id i4so4359298edt.11
+        for <bpf@vger.kernel.org>; Fri, 26 Feb 2021 03:37:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
          :message-id:mime-version:content-transfer-encoding;
-        bh=sDZwOEVS9t1txKosxZ6AgJPd1yK0dZxFgh8hc7RQj8E=;
-        b=to3gkHLWfCt9jVSMzyEwx18hwmchhBdDRuSU0/neJ+WcjEqjtMVgT5t8svnPV25oiw
-         fHF2YoV/Easux+kfvtjxvIWkWM8UvDaWIPg6pECw2DscWHmxjzqSpM1cL7Sxqab34dyA
-         fpntNtvPTqODKBPDL7hB0KSAexJKEOVSUTFQWcamuchn0UA3tvbnkLI3nkaQYFULdDu6
-         E9HluwXirx0iP6G+r8Nyt9qIGoJwLIweBYrmsZcmfiFJFMxzL9sXV/9CA77eOjVHXbZy
-         hhQVFgKK3MJpJPUHakMlnMfVJ7VmBbxmSnlEFD87MIKpi3wOw+KogTL4geTZY7LzB+RZ
-         bZXQ==
-X-Gm-Message-State: AOAM5309plhHR/NMbMVzKMj5s1+tRExkz7As6A3laEkePxi+m2SDqA+8
-        mBzv4sqmQBoCSxkIRwhAs3+bgJydlM7Pfhf7vs76jOv9APq+cQ/Z2zy56FoHijzjLK1OVj0IRkV
-        HUBJkEmaWM9Wt
-X-Received: by 2002:aa7:d58e:: with SMTP id r14mr2688553edq.332.1614339308629;
-        Fri, 26 Feb 2021 03:35:08 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwJ+RlYOjg/zeHA4woGsFSGt2uX+17bcQS6qorYsPRKXGF5hGmkznvNlqIdkgMOJB2/ffk+bQ==
-X-Received: by 2002:aa7:d58e:: with SMTP id r14mr2688523edq.332.1614339308322;
-        Fri, 26 Feb 2021 03:35:08 -0800 (PST)
+        bh=rikGehM9mwA1nuC9BKnS7TVn/QfaVjDSfEE0cqyBQ9A=;
+        b=ihfqlmhVhpBedE8qHRcuseVJxD4AtmDXQSt47c3ffLWvfrgI72ahcI5SByCKcG5GqY
+         xh4Ehz/ET2aAJAMEXOUCKkWj42or2RTERN0fbiYifLzs0NlAeWcaL9qRA2toDK04kfWs
+         9Y43W1hl2/YiAOFvhpVDr0+5RE5kQgmJ93YOIyhPRIg766pVoclk28q4Fx/qpWG7yJg2
+         63xGbDVzzQLAIFWaiL1hoL8OMPssSzxprvXLWeUYwF0He1/NJo/Io0HZTVKyeRfDX7Ye
+         w/Vf3hptNepQamc4tH4okcr6dWGLv0uN1h3F0++ynkVTsaW6ySLsGlBlp3Gdl9yY3IPg
+         4Lhw==
+X-Gm-Message-State: AOAM531T0HLDkaI+AP+xWjiCY2Djnu6iMqha2P67IIyHAyu9yQ5ehSag
+        2bqHV4axjc8Zox6cXiY3e2fJ4Yy2TnFEOeqO9f5zUekjAddMujFdQAmu03nvr8sTeDuhoz5gpRR
+        f5unrdhkO6iwc
+X-Received: by 2002:a17:906:8593:: with SMTP id v19mr2937008ejx.32.1614339461631;
+        Fri, 26 Feb 2021 03:37:41 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxXn/h5D6IkRtSIeDsQ/6ZHYlmsIQmw0U+/xrByjFJmIDx4A8bxWkPzAFulORPtyVc1cPiL0g==
+X-Received: by 2002:a17:906:8593:: with SMTP id v19mr2936976ejx.32.1614339461378;
+        Fri, 26 Feb 2021 03:37:41 -0800 (PST)
 Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id q20sm5186759ejs.17.2021.02.26.03.35.07
+        by smtp.gmail.com with ESMTPSA id lu26sm3566077ejb.33.2021.02.26.03.37.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Feb 2021 03:35:07 -0800 (PST)
+        Fri, 26 Feb 2021 03:37:41 -0800 (PST)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 9D548180094; Fri, 26 Feb 2021 12:35:07 +0100 (CET)
+        id B98B7180094; Fri, 26 Feb 2021 12:37:40 +0100 (CET)
 From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
 To:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
         ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
         bpf@vger.kernel.org
-Cc:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
-        bjorn.topel@intel.com, maciej.fijalkowski@intel.com,
-        hawk@kernel.org, magnus.karlsson@intel.com,
-        john.fastabend@gmail.com, kuba@kernel.org, davem@davemloft.net
-Subject: Re: [PATCH bpf-next v4 0/2] Optimize
- bpf_redirect_map()/xdp_do_redirect()
-In-Reply-To: <20210226112322.144927-1-bjorn.topel@gmail.com>
+Cc:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+        maciej.fijalkowski@intel.com, hawk@kernel.org,
+        magnus.karlsson@intel.com, john.fastabend@gmail.com,
+        kuba@kernel.org, davem@davemloft.net
+Subject: Re: [PATCH bpf-next v4 1/2] bpf, xdp: make bpf_redirect_map() a map
+ operation
+In-Reply-To: <20210226112322.144927-2-bjorn.topel@gmail.com>
 References: <20210226112322.144927-1-bjorn.topel@gmail.com>
+ <20210226112322.144927-2-bjorn.topel@gmail.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Fri, 26 Feb 2021 12:35:07 +0100
-Message-ID: <87v9afysd0.fsf@toke.dk>
+Date:   Fri, 26 Feb 2021 12:37:40 +0100
+Message-ID: <87sg5jys8r.fsf@toke.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
@@ -76,30 +77,25 @@ X-Mailing-List: bpf@vger.kernel.org
 
 Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> writes:
 
-> Hi XDP-folks,
+> From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
 >
-> This two patch series contain two optimizations for the
-> bpf_redirect_map() helper and the xdp_do_redirect() function.
+> Currently the bpf_redirect_map() implementation dispatches to the
+> correct map-lookup function via a switch-statement. To avoid the
+> dispatching, this change adds bpf_redirect_map() as a map
+> operation. Each map provides its bpf_redirect_map() version, and
+> correct function is automatically selected by the BPF verifier.
 >
-> The bpf_redirect_map() optimization is about avoiding the map lookup
-> dispatching. Instead of having a switch-statement and selecting the
-> correct lookup function, we let bpf_redirect_map() be a map operation,
-> where each map has its own bpf_redirect_map() implementation. This way
-> the run-time lookup is avoided.
+> A nice side-effect of the code movement is that the map lookup
+> functions are now local to the map implementation files, which removes
+> one additional function call.
 >
-> The xdp_do_redirect() patch restructures the code, so that the map
-> pointer indirection can be avoided.
->
-> Performance-wise I got 3% improvement for XSKMAP
-> (sample:xdpsock/rx-drop), and 4% (sample:xdp_redirect_map) on my
-> machine.
->
-> More details in each commit.
->
-> @Jesper/Toke I dropped your Acked-by: on the first patch, since there
-> were major restucturing. Please have another look! Thanks!
+> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
 
-Will do! Did you update the performance numbers above after that change?
+Nice! I agree that this is a much nicer approach! :)
 
--Toke
+(That last paragraph above is why I asked if you updated the performance
+numbers in the cover letter; removing an additional function call should
+affect those, right?)
+
+Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
