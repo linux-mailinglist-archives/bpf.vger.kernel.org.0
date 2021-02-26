@@ -2,72 +2,93 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 335D83267B1
-	for <lists+bpf@lfdr.de>; Fri, 26 Feb 2021 21:07:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5288E32687E
+	for <lists+bpf@lfdr.de>; Fri, 26 Feb 2021 21:22:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230079AbhBZUF1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Feb 2021 15:05:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38748 "EHLO
+        id S231259AbhBZUUi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Feb 2021 15:20:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230018AbhBZUFY (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Feb 2021 15:05:24 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5406DC061574
-        for <bpf@vger.kernel.org>; Fri, 26 Feb 2021 12:04:43 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id a17so15158799lfb.1
-        for <bpf@vger.kernel.org>; Fri, 26 Feb 2021 12:04:43 -0800 (PST)
+        with ESMTP id S230261AbhBZUSe (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Feb 2021 15:18:34 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8067C061222;
+        Fri, 26 Feb 2021 12:15:53 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id o22so7197312pjs.1;
+        Fri, 26 Feb 2021 12:15:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=UndmRchlSFBmynfeaJ1NFZ8egZYXo7M13mJTXaW/8kc=;
-        b=Epz8C7VwuOiSzNJK7a90x1M41lEwstfdqyRJ1yy4MiNiwzbQAmO0pzqNefkCKrkLt1
-         4Op63FK9CkBzHRF2StRhdAyX3OshF5dL+1fuzDq4tMYF/m8X7L4xojYSCSvU6zjHmzRJ
-         31cnKAdVB2LAsnfwC3UBzn20tYyrxfdB+hElP1ptC+C5hwiq3ZWyw5a3ZjllwEU3hY3m
-         hR/3QBy5JnyiYNOBNedOescqTqRpfxp6mtp69fLS/yjErv30Krine25MICTcvXdYcfOh
-         hscftzXcGuXX7pM/bCec2bADOcMi/mIXLF0vcus2OKy7yn4YKKuud3sTV1/AkrmmHTDT
-         02uQ==
+        bh=Mb+a+iPifUcMlypSO/2znNyZszUx5kqHHIYdplyNQKE=;
+        b=tv+erJ3fIJqxkJRhk3AyA8tVrsaRhN1kcda8ZThAF2/2aKoyGroiN9OpEDPCSduCmM
+         +qVdya9vF+GOmCjijCs5zvcEaFq5uDTbyUA6XfBImxHPUQvwC5quQobrK4BHSQLAVQK5
+         //Qr2scExcx9xzdjfYElFsQLXswfq/D+PlsSBbn3YbBy1QacalTTIDV7gqGpoJj5lnJd
+         HJ5NMEw339qlO82opPfzTuZkRZMwupUgdpLGfVcyPVuS6hjC4VDgU0OofFPCDSns9PsE
+         J+oyR+PikcSjOjfB6mDjm7v4bJXQhz3SGAMxbM0MnXJbKW7q8mQ9xpbf2UoCuJSxACmu
+         9wDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=UndmRchlSFBmynfeaJ1NFZ8egZYXo7M13mJTXaW/8kc=;
-        b=MoLcStzSOjE0YsxIiZXM2gHxsGGacidYk2YNI1KirvVNX4JlDFnq0VwHKjR4jtv1Ed
-         IGaieZKs9SrWcJ/G45zkUUKR+F5MumhmgyPQxhNqdYumxSofrIOt9AJNnxvnu6i+YAhj
-         Yv2pXA91vhXAHIyRyUPkUbG13REzTM8ZnfWS2qH4NhKpCoQpCBjIXp0y480pXuagzy2R
-         8PgSVdIXNSPx5bLz/V1ohu8u8eVu5A4haQqM1NOANYfBDCoucJIzzq1+swzIDZv9BUjx
-         R9FYZAImNjyWPZc+7kEkbWKB5jUNGWc9j8pj+6ZnwTQpHLKddVy6qIUZQzIo7ViVUosr
-         oAyw==
-X-Gm-Message-State: AOAM533qS5bt4YWxvnCzWaaXu/ZrFr66F3NaA4nTpASSJSPGS5kxYw2l
-        5wbTf0qR2cN+phsEgj6FrnjTlXRdfn8xy/fN98l5EOg1
-X-Google-Smtp-Source: ABdhPJzByXMN39EsMhGWu6Bd09wxiGYPMlY3/E8sk6C14621uNm2JsbQKXVMhbm+vc8S0Cnh/Gce5w3Vr5vGezB4zv4=
-X-Received: by 2002:ac2:5ec2:: with SMTP id d2mr2762613lfq.214.1614369881876;
- Fri, 26 Feb 2021 12:04:41 -0800 (PST)
+        bh=Mb+a+iPifUcMlypSO/2znNyZszUx5kqHHIYdplyNQKE=;
+        b=PhOQbBriq2spT1U9wkIOPoSvgUqCzBMKlDuB5vWyUI8MqDOOkFDw0RJbJcmWq3dII8
+         Vf9DT/ZNKkkwuXpn61L86RpPHct6QWMrQ/jtm+xq1o/k6m+Hl2C5DtqHap2WtX8Sa+pX
+         /WJN0o0w4ph7Jrcw2nLejkFvm6WWCDYJ7EaHcYvwgbuhv2dtj7HimcLUm2q1ciG/WhGn
+         146kt29jVIhQS1P4rKSptZD4HIRvRUKLb84gZMb2C8cGhOR4SY7oC2qAel6L7FiGEuJ5
+         29yt0e+mN3zOtGnxtp4ZfJAUZyuVJ7gbWpcKYn+R/mXT4yzQQUbz5Ggsp2yuw1JhFWXb
+         EZzg==
+X-Gm-Message-State: AOAM532OxfHKU93WLau0P6SqlERawzS8qFTRnYYJgjmuABRscNQ9QohB
+        bmmjvNODHlhK8+00K9dgxa78EVRCxZsh6QRN4cfUaGZayfHE9w==
+X-Google-Smtp-Source: ABdhPJyBhtaFW+5H3Hag4UkmWG0/rwnGcCy0YKzQCDAn1APtu1dQOnmYkbs1hMZRsKITYMf6wQB96LLiLTTHLZjgWvU=
+X-Received: by 2002:a17:902:9691:b029:e3:dd4b:f6bb with SMTP id
+ n17-20020a1709029691b02900e3dd4bf6bbmr4519309plp.77.1614370553485; Fri, 26
+ Feb 2021 12:15:53 -0800 (PST)
 MIME-Version: 1.0
-References: <20210225202629.585485-1-me@ubique.spb.ru> <20210225215506.xktvt6kf3mpwyiii@kafai-mbp.dhcp.thefacebook.com>
-In-Reply-To: <20210225215506.xktvt6kf3mpwyiii@kafai-mbp.dhcp.thefacebook.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 26 Feb 2021 12:04:30 -0800
-Message-ID: <CAADnVQKS-qhJ+G=0SKmTe6=ZfJaeuucQvp7FEJ_EtvoEOgFHzA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next] bpf: use MAX_BPF_FUNC_REG_ARGS macro
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Dmitrii Banshchikov <me@ubique.spb.ru>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, Andrey Ignatov <rdna@fb.com>
+References: <20210226035721.40054-1-hxseverything@gmail.com>
+In-Reply-To: <20210226035721.40054-1-hxseverything@gmail.com>
+From:   Cong Wang <xiyou.wangcong@gmail.com>
+Date:   Fri, 26 Feb 2021 12:15:42 -0800
+Message-ID: <CAM_iQpUAc5sB1xzqE7RvG5pQHQeCPJx5qAz_m9LaJYZ4pKfZsQ@mail.gmail.com>
+Subject: Re: [PATCH/v3] bpf: add bpf_skb_adjust_room flag BPF_F_ADJ_ROOM_ENCAP_L2_ETH
+To:     Xuesen Huang <hxseverything@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        David Miller <davem@davemloft.net>, bpf <bpf@vger.kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xuesen Huang <huangxuesen@kuaishou.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Zhiyong Cheng <chengzhiyong@kuaishou.com>,
+        Li Wang <wangli09@kuaishou.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 1:55 PM Martin KaFai Lau <kafai@fb.com> wrote:
+On Thu, Feb 25, 2021 at 7:59 PM Xuesen Huang <hxseverything@gmail.com> wrote:
+> v3:
+> - Fix the code format.
 >
-> On Fri, Feb 26, 2021 at 12:26:29AM +0400, Dmitrii Banshchikov wrote:
-> > Instead of using integer literal here and there use macro name for
-> > better context.
-> Acked-by: Martin KaFai Lau <kafai@fb.com>
+> v2:
+> Suggested-by: Willem de Bruijn <willemb@google.com>
+> - Add a new flag to specify the type of the inner packet.
 
-Applied. Thanks
+These need to be moved after '---', otherwise it would be merged
+into the final git log.
+
+>
+> Suggested-by: Willem de Bruijn <willemb@google.com>
+> Signed-off-by: Xuesen Huang <huangxuesen@kuaishou.com>
+> Signed-off-by: Zhiyong Cheng <chengzhiyong@kuaishou.com>
+> Signed-off-by: Li Wang <wangli09@kuaishou.com>
+> ---
+>  include/uapi/linux/bpf.h       |  5 +++++
+>  net/core/filter.c              | 11 ++++++++++-
+>  tools/include/uapi/linux/bpf.h |  5 +++++
+>  3 files changed, 20 insertions(+), 1 deletion(-)
+
+As a good practice, please add a test case for this in
+tools/testing/selftests/bpf/progs/test_tc_tunnel.c.
+
+Thanks.
