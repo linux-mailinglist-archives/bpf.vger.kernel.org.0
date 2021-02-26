@@ -2,282 +2,182 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E14326679
-	for <lists+bpf@lfdr.de>; Fri, 26 Feb 2021 18:49:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B3003266B7
+	for <lists+bpf@lfdr.de>; Fri, 26 Feb 2021 19:09:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229622AbhBZRsr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Feb 2021 12:48:47 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:27050 "EHLO
+        id S229550AbhBZSJT (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Feb 2021 13:09:19 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:13172 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229745AbhBZRsp (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 26 Feb 2021 12:48:45 -0500
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11QHkqpq011677
-        for <bpf@vger.kernel.org>; Fri, 26 Feb 2021 09:48:05 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=facebook; bh=tJucv9sfZwcyWXHDPPr8yijZTmgHZsmEDIMbiksHiQc=;
- b=S54FbEyQ1+dhyor4LSW5rmDDMiRNE1yCpv2v1+IK/0cfDGMGPnF3sG5lL2K5obFMEpRE
- q3DOehkJdUX1NYnAbJ4zmPU7SDDY8IM6URChhp5AZY4l37Y9vKreIaadkv10hPWL4te9
- JnjWkTC3V3o0SnZSQ2gQDqF24fMQf5c77LM= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 36xkfkd83k-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <bpf@vger.kernel.org>; Fri, 26 Feb 2021 09:48:04 -0800
-Received: from intmgw001.06.ash9.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:21d::4) with Microsoft SMTP Server
+        by vger.kernel.org with ESMTP id S229751AbhBZSJO (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 26 Feb 2021 13:09:14 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11QI4H5n030477;
+        Fri, 26 Feb 2021 10:08:32 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : references
+ : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=cbpcUwoBzSbQ6s2AWEV9M2HKJ5enTV1JjE/mFWUdqJM=;
+ b=dBMdF1oAibdIMSdlw0i1NqdyBd+Fanp4aWD8UOKuAiPcckyNPqkutPsrDD4xglLKiqEF
+ CMVLBsPScG9y46YdmmMw5m0mNEyDJq+frfV9AIdENkaiM1UYmaBjWJvEYraPDLYtVUu+
+ NomcdlhLyo+++G7bak9hSphtqpceRn/0hCI= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 36xqsw43xd-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 26 Feb 2021 10:08:32 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 26 Feb 2021 09:48:04 -0800
-Received: by devbig003.ftw2.facebook.com (Postfix, from userid 128203)
-        id 61C843704C96; Fri, 26 Feb 2021 09:48:00 -0800 (PST)
+ 15.1.1979.3; Fri, 26 Feb 2021 10:08:28 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=n0/HwkYbM1PS6pYRfvFLOMI/N6mf9CIxQhbIEn82LUJGlOCjEBiJrVCToNrAO5SaBkbjJr/cihfGnm1dG1PcLPFiy0u6hNMR2HopcKgEKcDXVjNhIQOzqg187q9tzKEQb6jqmsdU7Ka0cqWh8V9DbFepF77LdGkYNzr23v6GVXjsdsy2EdZQuuZ+va/Gn+cY/tFL4hZL4sAlZg4uCxcYYrhECc7wsDbiDoBaFcDf9qPTassdpkN2UniAjT6yobuOJ8+N3LxTpMpeE813zelsIYO2YBBdfqKKOUSp7nGy3lBf3O+V4AKts4C5RCpvz1y53nDJWCscbSlV2EfxfdLgKA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cbpcUwoBzSbQ6s2AWEV9M2HKJ5enTV1JjE/mFWUdqJM=;
+ b=Y3vemXyK7bSO/H2uRI5b0gPYjEg3RlGNa7H78FeAZ5BuUQ6Ew0hq9CR61idNUhhyq35bi4g4r+hcfJhNHZxOmjjeEfQmghkUPfSSleTgdPSHdJN3a1du1sp8I7DViv+r5J8G9L/RfAG7HyqoFXnoroY3y7LJsyKm1N/U/BqqswAkgDch12u4J3mY4dtV3p8roKWwsiIRosVkFMDD+GSXDW/4qh1+kIndW/LYa/KcMDdClctiIGuyB37jIUPs6tUZBgXvgcpHkW1RJWLwpCfHTy1SB2aFsgq1ZzIzaKr9ANt+xXbFe2ZyZsFJ9o7GEbg4rIQ1adqEUzRP5GFZoKSK1w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com (2603:10b6:805:d::27)
+ by SN6PR15MB2461.namprd15.prod.outlook.com (2603:10b6:805:24::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.20; Fri, 26 Feb
+ 2021 18:08:27 +0000
+Received: from SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::e5af:7efb:8079:2c93]) by SN6PR1501MB2064.namprd15.prod.outlook.com
+ ([fe80::e5af:7efb:8079:2c93%6]) with mapi id 15.20.3868.033; Fri, 26 Feb 2021
+ 18:08:27 +0000
+Subject: Re: Enum relocations against zero values
+To:     Lorenz Bauer <lmb@cloudflare.com>, bpf <bpf@vger.kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+References: <CACAyw9-XZ4XqNP1MZxC1i7+zntVAivopkgRgc4yXaNtD8QcADw@mail.gmail.com>
 From:   Yonghong Song <yhs@fb.com>
-To:     <bpf@vger.kernel.org>
-CC:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, <kernel-team@fb.com>,
-        zhenwei pi <pizhenwei@bytedance.com>
-Subject: [PATCH bpf-next] selftests/bpf: add a verifier scale test with unknown bounded loop
-Date:   Fri, 26 Feb 2021 09:48:00 -0800
-Message-ID: <20210226174800.2928132-1-yhs@fb.com>
-X-Mailer: git-send-email 2.24.1
-X-FB-Internal: Safe
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+Message-ID: <05c0e4ff-3d93-00c8-b81b-9758c90deca8@fb.com>
+Date:   Fri, 26 Feb 2021 10:08:23 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
+In-Reply-To: <CACAyw9-XZ4XqNP1MZxC1i7+zntVAivopkgRgc4yXaNtD8QcADw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2620:10d:c091:480::1:9651]
+X-ClientProxiedBy: BL0PR02CA0114.namprd02.prod.outlook.com
+ (2603:10b6:208:35::19) To SN6PR1501MB2064.namprd15.prod.outlook.com
+ (2603:10b6:805:d::27)
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c0a8:11d1::15dd] (2620:10d:c091:480::1:9651) by BL0PR02CA0114.namprd02.prod.outlook.com (2603:10b6:208:35::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.20 via Frontend Transport; Fri, 26 Feb 2021 18:08:26 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d61f1cce-f0fb-4449-d276-08d8da8183b7
+X-MS-TrafficTypeDiagnostic: SN6PR15MB2461:
+X-Microsoft-Antispam-PRVS: <SN6PR15MB24611E1F6A6601642D0EDBA4D39D9@SN6PR15MB2461.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: so5xoSWbreYSfg9fpOxbOe/wO1XTSA5ugaZ5z35IOfJu+Tt97x5Zp/mxuv4Mrtwly4n7Pt/fme0/KYrhDfxwSjfMx/HKLYUi2KmtiE9tW6ufGidvM7qEw+u5ufccH5SL91e8ZnB0kd2hsN5xpOcx4e/5ZVLJCLoGBBFagCenMsCXR996MCesbPf9HGBYJgCH5+3/44QUN6RFVUSa4x6u/q8rVvl/g6ilYcy0uE4xCcr75Yls97inLGUGN0mjSLYON4iZ6ZGiyUuQY7TcF55lYXzvKYOOsJ4I11W90aUKpXpbLz2jEquLTMnlki+VaDk+rLzvnVGQjYnxMsXaqvw7D/XprXBxDpMzZRcpyBO5QykzTviR7Aqg2szrkDlHodjR5kFAeQrbwe/xzErV6a/zlTNkKTi+6zQl1o00utZroPo1HAG4F+ITIMPXGLDOrw+14LMXu44pizdPJ5oqAHSXRyXJxr8NWgBWjp5tDdFEWkC4TrBIElsRTzovWCD5pUoptIgVJgjTPyKMhUcsCOM6sDy/pC4Ecgvtx3rsz7+gPEEL9eTJIMsBvk1jEmpWNiG49mFUjPuXpWXYdUeaaFDUHMTIhecupLwYkCjJQWnTpbA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB2064.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(346002)(366004)(396003)(39860400002)(52116002)(5660300002)(36756003)(53546011)(2906002)(16526019)(186003)(8936002)(8676002)(2616005)(110136005)(478600001)(6666004)(31686004)(6486002)(66556008)(86362001)(66476007)(31696002)(66946007)(316002)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?REtnUndXcGJidEcwNzJlemNIWVMzWCs2WXYwUXBPT2RsT1E2WjZIWDY3bFcw?=
+ =?utf-8?B?WVNSaU9SNTR4dnRHdUNKaFA5NlRkL2ZBUjBlTG1WeVFSelNrQ1hXTldGYklv?=
+ =?utf-8?B?TnQrbE9jQ3UwNWZzd2pmOGI1bnNYWHhvdHBubWFrK2VhSXJVM003VG0wdXhI?=
+ =?utf-8?B?S3hkc1pXR0IrbEE5OVE1ai9hT1BQS2Y0d2lnam5yMG9rb1RHZzIvcjNRYytv?=
+ =?utf-8?B?b1ZpaTk3LzRld2dOWUZvVStkdSswWTk2SmgyKzlxTHRjMU5ZTnJ1V3NzODNa?=
+ =?utf-8?B?Zlh6ZnBwaC80aXhVeDJHMTNYZXVUcytMMXhMNE9wbFRENXFDYU1aQVphMlRR?=
+ =?utf-8?B?alhVWXdCZjRQdEM0NzYvc0FCc1g3a1ZqMmVFUmNEWkR5aTZoQzN4OW9RL0Ir?=
+ =?utf-8?B?MDZSeERmeDRYcWZVWEFVU2pNekg4Q1ZpZ1Nxc1llNENEc2U4T2xuNTZjd216?=
+ =?utf-8?B?RUFNaXNockQ3Vy84azlGc0RIVVBYMm1VYkNVSkcydW5VZG5oUFk1aGNtb1R6?=
+ =?utf-8?B?SExzVUdoVEVlc2k5MnNCU0tZTlRUSWk4VDZXUlF0UnRnUkRWUFlRMVVmaHgr?=
+ =?utf-8?B?NnJ3cFE0bDVWKzV6dmVqRUVlSjN6ODhFdU5ReHVGUGFBeU4vMTZGVmduWFJ0?=
+ =?utf-8?B?aGVhQm8yWjJsVUFoeU5QcXYzMHU0Y29jdmd4V3N0SDZ0YmMxRzhRN2p4MVIr?=
+ =?utf-8?B?T3lMSDFKcnBTbGdTbVMrOGRGd2hEdEV5VmlOMSs5MDZqZ1lhaVdMS28rQXEx?=
+ =?utf-8?B?MTdtekRBVDFZQjZCUEFlM05IYVlEWk1TanZVN2JPLyt4RGtSNVBObUd6YUEy?=
+ =?utf-8?B?bGRkcjczQ3pJR052YjQrYngvSnZiU2d1REtvM0xoK2NjaVRLaDhHZCtLVTZx?=
+ =?utf-8?B?Q1pQVGpCdGxRdGNuNTFqWkhNTTBkd1o4WHNWYkM1eDNIWi9ONlJyZkZrOUlO?=
+ =?utf-8?B?c2p2a29ucEFUSG4rWEZobmdTYlJxbThwZHFvd3kxVGJ0L2FsNERuN2I5QzRr?=
+ =?utf-8?B?OEwyV0hGRk1hbUVFWTZvbFg1ODgwd0ZMa2VXR2RZUkhvYmFyZHZVbTJJbVJK?=
+ =?utf-8?B?R2VaMUhJdlRtNlZQZm1WOHZPM3EzNjdxeWlYeGRJSTdRdk16ckk2eXNHS2pV?=
+ =?utf-8?B?MjduR3hUMzRndi85SXMvdzA0QWR6c3YrSnQ4azdncm53TG9RY0wrbkxMc2xi?=
+ =?utf-8?B?aFRUL0JQOUg1elcveGROd1ZqTE9WeW00bC9mK3hCa2VtbW1Jdm9Zc1dYbmF3?=
+ =?utf-8?B?c3J0YzhZQzhYSnMyM2RlTkMvRmcwQURkMlBib2pQcldIbVBJMFNla3NBL2JK?=
+ =?utf-8?B?d05BU3J0Q0crUnY3SklvUU9hamdRN3dQQVg3V0Y5YVphbElnSk94SmZMS3pQ?=
+ =?utf-8?B?bHBPcytvcVp1M0xicFQvQTYzdllxKzhzM2RKQStmZHM5RnZYNnl4d2NvclBa?=
+ =?utf-8?B?cFVQSUlRRUZQc0JDekxHU1dVNFdMTzNndlEyVmdOd3YzelJyelRxc3FDYTI0?=
+ =?utf-8?B?NWZ1OVJhTTFEZjFmckhYM01CbFh1WHg2TndkSGoxNDhwaWdzOGpJeXR4UGtW?=
+ =?utf-8?B?N1J2WTBrWEFrMkRuNTdIOHFQTFZXZnNSV1NaWGJ6b2tiNEJVdEh4M2kwQytp?=
+ =?utf-8?B?K2lDNVlMWnNaRXFIOGlyVUNRS3A2UjhmdlNPNHF6TkZEYlJicVZYOG1MT0ZP?=
+ =?utf-8?B?S2F6ZVdidTlaSUpMeEhvVkFCcHJqOHdicFBOM3YrMU1WWWs1VHpWNU5welM2?=
+ =?utf-8?B?Qy9ady9vL0FqeUpDZHN4UGRLWHFNd29rQmMwVXJJekNsNGljaWlsU25VVlRL?=
+ =?utf-8?Q?xW68Fha4UTxf3W9XxpWRj6AgeYQ0wZqeeI4NI=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: d61f1cce-f0fb-4449-d276-08d8da8183b7
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB2064.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2021 18:08:26.9403
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: efWJOlU/+wnYLbzhLeLwVaat6xTMzN6Re6w4mrduzTvtqxCEj/168Qi1B4lUjUTR
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR15MB2461
+X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-26_05:2021-02-26,2021-02-26 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 suspectscore=0
- adultscore=0 clxscore=1015 malwarescore=0 phishscore=0 impostorscore=0
- lowpriorityscore=0 mlxlogscore=858 spamscore=0 bulkscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102260132
+ definitions=2021-02-26_07:2021-02-26,2021-02-26 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 adultscore=0
+ lowpriorityscore=0 impostorscore=0 malwarescore=0 clxscore=1011
+ phishscore=0 priorityscore=1501 mlxscore=0 suspectscore=0 mlxlogscore=999
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102260135
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The orignal bcc pull request
-  https://github.com/iovisor/bcc/pull/3270
-exposed a verifier failure with Clang 12/13 while
-Clang 4 works fine. Further investigation exposed two issues.
-  Issue 1: LLVM may generate code which uses less refined
-     value. The issue is fixed in llvm patch
-     https://reviews.llvm.org/D97479
-  Issue 2: Spills with initial value 0 are marked as precise
-     which makes later state pruning less effective.
-     This is my rough initial analysis and further investigation
-     is needed to find how to improve verifier pruning
-     in such cases.
 
-With the above llvm patch, for the new loop6.c test, which has
-smaller loop bound compared to original test, I got
-  $ test_progs -s -n 10/16
-  ...
-  stack depth 64
-  processed 405099 insns (limit 1000000) max_states_per_insn 92
-      total_states 8866 peak_states 889 mark_read 6
-  #10/16 loop6.o:OK
 
-Use the original loop bound, i.e., commenting out "#define WORKAROUND",
-I got
-  $ test_progs -s -n 10/16
-  ...
-  BPF program is too large. Processed 1000001 insn
-  stack depth 64
-  processed 1000001 insns (limit 1000000) max_states_per_insn 91
-      total_states 23176 peak_states 5069 mark_read 6
-  ...
-  #10/16 loop6.o:FAIL
+On 2/26/21 9:47 AM, Lorenz Bauer wrote:
+> Hi Andrii and Yonghong,
+> 
+> I'm playing around with enum CO-RE relocations, and hit the following snag:
+> 
+>      enum e { TWO };
+>      bpf_core_enum_value_exists(enum e, TWO);
+> 
+> Compiling this with clang-12
+> (12.0.0-++20210225092616+e0e6b1e39e7e-1~exp1~20210225083321.50) gives
+> me the following:
+> 
+> internal/btf/testdata/relocs.c:66:2: error:
+> __builtin_preserve_enum_value argument 1 invalid
+>          enum_value_exists(enum e, TWO);
+>          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> internal/btf/testdata/relocs.c:53:8: note: expanded from macro
+> 'enum_value_exists'
+>                  if (!bpf_core_enum_value_exists(t, v)) { \
+>                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> internal/btf/testdata/bpf_core_read.h:168:32: note: expanded from
+> macro 'bpf_core_enum_value_exists'
+>          __builtin_preserve_enum_value(*(typeof(enum_type)
+> *)enum_value, BPF_ENUMVAL_EXISTS)
+>                                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The purpose of this patch is to provide a regression
-test for the above llvm fix and also provide a test
-case for further analyzing the verifier pruning issue.
+Andrii can comment on MACRO failures.
 
-Cc: zhenwei pi <pizhenwei@bytedance.com>
-Signed-off-by: Yonghong Song <yhs@fb.com>
----
- tools/testing/selftests/bpf/README.rst        |  39 +++++++
- .../bpf/prog_tests/bpf_verif_scale.c          |   1 +
- tools/testing/selftests/bpf/progs/loop6.c     | 101 ++++++++++++++++++
- 3 files changed, 141 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/loop6.c
+> 
+> Changing the definition of the enum to
+> 
+>      enum e { TWO = 1 }
+> 
+> compiles successfully. I get the same result for any enum value that
+> is zero. Is this expected?
 
-diff --git a/tools/testing/selftests/bpf/README.rst b/tools/testing/selftes=
-ts/bpf/README.rst
-index fd148b8410fa..dbc8f6cc5c67 100644
---- a/tools/testing/selftests/bpf/README.rst
-+++ b/tools/testing/selftests/bpf/README.rst
-@@ -111,6 +111,45 @@ available in 10.0.1. The patch is available in llvm 11=
-.0.0 trunk.
-=20
- __  https://reviews.llvm.org/D78466
-=20
-+bpf_verif_scale/loop6.o test failure with Clang 12
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-+
-+With Clang 12, the following bpf_verif_scale test failed:
-+  * ``bpf_verif_scale/loop6.o``
-+
-+The verifier output looks like
-+
-+.. code-block:: c
-+
-+  R1 type=3Dctx expected=3Dfp
-+  The sequence of 8193 jumps is too complex.
-+
-+The reason is compiler generating the following code
-+
-+.. code-block:: c
-+
-+  ;       for (i =3D 0; (i < VIRTIO_MAX_SGS) && (i < num); i++) {
-+      14:       16 05 40 00 00 00 00 00 if w5 =3D=3D 0 goto +64 <LBB0_6>
-+      15:       bc 51 00 00 00 00 00 00 w1 =3D w5
-+      16:       04 01 00 00 ff ff ff ff w1 +=3D -1
-+      17:       67 05 00 00 20 00 00 00 r5 <<=3D 32
-+      18:       77 05 00 00 20 00 00 00 r5 >>=3D 32
-+      19:       a6 01 01 00 05 00 00 00 if w1 < 5 goto +1 <LBB0_4>
-+      20:       b7 05 00 00 06 00 00 00 r5 =3D 6
-+  00000000000000a8 <LBB0_4>:
-+      21:       b7 02 00 00 00 00 00 00 r2 =3D 0
-+      22:       b7 01 00 00 00 00 00 00 r1 =3D 0
-+  ;       for (i =3D 0; (i < VIRTIO_MAX_SGS) && (i < num); i++) {
-+      23:       7b 1a e0 ff 00 00 00 00 *(u64 *)(r10 - 32) =3D r1
-+      24:       7b 5a c0 ff 00 00 00 00 *(u64 *)(r10 - 64) =3D r5
-+
-+Note that insn #15 has w1 =3D w5 and w1 is refined later but
-+r5(w5) is eventually saved on stack at insn #24 for later use.
-+This cause later verifier failure. The bug has been `fixed`__ in
-+Clang 13.
-+
-+__  https://reviews.llvm.org/D97479
-+
- BPF CO-RE-based tests and Clang version
- =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-=20
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c b/too=
-ls/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
-index e698ee6bb6c2..3d002c245d2b 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
-@@ -76,6 +76,7 @@ void test_bpf_verif_scale(void)
- 		{ "loop2.o", BPF_PROG_TYPE_RAW_TRACEPOINT },
- 		{ "loop4.o", BPF_PROG_TYPE_SCHED_CLS },
- 		{ "loop5.o", BPF_PROG_TYPE_SCHED_CLS },
-+		{ "loop6.o", BPF_PROG_TYPE_KPROBE },
-=20
- 		/* partial unroll. 19k insn in a loop.
- 		 * Total program size 20.8k insn.
-diff --git a/tools/testing/selftests/bpf/progs/loop6.c b/tools/testing/self=
-tests/bpf/progs/loop6.c
-new file mode 100644
-index 000000000000..fe535922bed8
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/loop6.c
-@@ -0,0 +1,101 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/ptrace.h>
-+#include <stddef.h>
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+/* typically virtio scsi has max SGs of 6 */
-+#define VIRTIO_MAX_SGS	6
-+
-+/* Verifier will fail with SG_MAX =3D 128. The failure can be
-+ * workarounded with a smaller SG_MAX, e.g. 10.
-+ */
-+#define WORKAROUND
-+#ifdef WORKAROUND
-+#define SG_MAX		10
-+#else
-+/* typically virtio blk has max SEG of 128 */
-+#define SG_MAX		128
-+#endif
-+
-+#define SG_CHAIN	0x01UL
-+#define SG_END		0x02UL
-+
-+struct scatterlist {
-+	unsigned long   page_link;
-+	unsigned int    offset;
-+	unsigned int    length;
-+};
-+
-+#define sg_is_chain(sg)		((sg)->page_link & SG_CHAIN)
-+#define sg_is_last(sg)		((sg)->page_link & SG_END)
-+#define sg_chain_ptr(sg)	\
-+	((struct scatterlist *) ((sg)->page_link & ~(SG_CHAIN | SG_END)))
-+
-+static inline struct scatterlist *__sg_next(struct scatterlist *sgp)
-+{
-+	struct scatterlist sg;
-+
-+	bpf_probe_read_kernel(&sg, sizeof(sg), sgp);
-+	if (sg_is_last(&sg))
-+		return NULL;
-+
-+	sgp++;
-+
-+	bpf_probe_read_kernel(&sg, sizeof(sg), sgp);
-+	if (sg_is_chain(&sg))
-+		sgp =3D sg_chain_ptr(&sg);
-+
-+	return sgp;
-+}
-+
-+static inline struct scatterlist *get_sgp(struct scatterlist **sgs, int i)
-+{
-+	struct scatterlist *sgp;
-+
-+	bpf_probe_read_kernel(&sgp, sizeof(sgp), sgs + i);
-+	return sgp;
-+}
-+
-+int config =3D 0;
-+int result =3D 0;
-+
-+SEC("kprobe/virtqueue_add_sgs")
-+int nested_loops(volatile struct pt_regs* ctx)
-+{
-+	struct scatterlist **sgs =3D PT_REGS_PARM2(ctx);
-+	unsigned int num1 =3D PT_REGS_PARM3(ctx);
-+	unsigned int num2 =3D PT_REGS_PARM4(ctx);
-+	struct scatterlist *sgp =3D NULL;
-+	__u64 length1 =3D 0, length2 =3D 0;
-+	unsigned int i, n, len;
-+
-+	if (config !=3D 0)
-+		return 0;
-+
-+	for (i =3D 0; (i < VIRTIO_MAX_SGS) && (i < num1); i++) {
-+		for (n =3D 0, sgp =3D get_sgp(sgs, i); sgp && (n < SG_MAX);
-+		     sgp =3D __sg_next(sgp)) {
-+			bpf_probe_read_kernel(&len, sizeof(len), &sgp->length);
-+			length1 +=3D len;
-+			n++;
-+		}
-+	}
-+
-+	for (i =3D 0; (i < VIRTIO_MAX_SGS) && (i < num2); i++) {
-+		for (n =3D 0, sgp =3D get_sgp(sgs, i); sgp && (n < SG_MAX);
-+		     sgp =3D __sg_next(sgp)) {
-+			bpf_probe_read_kernel(&len, sizeof(len), &sgp->length);
-+			length2 +=3D len;
-+			n++;
-+		}
-+	}
-+
-+	config =3D 1;
-+	result =3D length2 - length1;
-+	return 0;
-+}
---=20
-2.24.1
+IIRC, libbpf will try to do relocation against vmlinux BTF.
+So here, "enum e" probably does not exist in vmlinux BTF, so
+the builtin will return 0. You can try some enum type
+existing in vmlinux BTF to see what happens.
 
+> 
+> Best
+> Lorenz
+> 
