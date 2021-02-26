@@ -2,77 +2,69 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53CB432698F
-	for <lists+bpf@lfdr.de>; Fri, 26 Feb 2021 22:31:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D0A0326993
+	for <lists+bpf@lfdr.de>; Fri, 26 Feb 2021 22:31:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbhBZVag (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Feb 2021 16:30:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbhBZVad (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Feb 2021 16:30:33 -0500
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6F23C06174A
-        for <bpf@vger.kernel.org>; Fri, 26 Feb 2021 13:29:52 -0800 (PST)
-Received: by mail-lj1-x230.google.com with SMTP id e2so5052737ljo.7
-        for <bpf@vger.kernel.org>; Fri, 26 Feb 2021 13:29:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5WySLb0xHZAtS0rVSIBns7cIKZeKtQYVj2GY7nDu7AU=;
-        b=fStmHG1O2rbmCMZELSKbQDs5qAXGkMDnYmJRfXHsFTNJ8JomNURin1HlfPC8QI9g2f
-         amt9dW70PaFLx+kfM/AdOjm8/DlJ5aq/G69tGQhu7/M7JY8A3iIi+yKxwsbLA2tOisa1
-         0xfylvPu7VFtqu1HlZrNII6iN0+mtXNMiXsNonL+tT0gs01Z6zAIbXUwxgcBm38rZmTk
-         fY5XATjzhHh8Yo9Q3B+smrjbyJCwfU1Jk6/3WLF/dCs5JNZz4z0T9KJqJSSxP8fgJSf7
-         k+ziBJIlKtgE9B5kQVE2He/DXMkVMw7YZO/Y2ERb3KdW7iMsdl6tOxNksdCuHbakEpVS
-         1kJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5WySLb0xHZAtS0rVSIBns7cIKZeKtQYVj2GY7nDu7AU=;
-        b=T6dIewpPvAnblnkX6yLRrYNK33cziHN0T9oPK3ZpT03EgBriuf7Sn7sK/eqdEtSLNs
-         wPsCzHR1ceS9mbOHij2rGDWyCh/l6dZD2+aOa2Wi13BheQbXLeO4mWGv0/AWqL7XIpC4
-         NJExjdWEbzlObjTO1opfdoksvoRHEnGxbrTE42hLK3EB/1zUIEIri+UX4e9BJSYZq3Ag
-         VG1nUtAMGrhWwn7WHvA4wdfXR+MrVzlpm8AP8BYY6Hjbt+CsZcznSyKLrKVse1bm+lzs
-         7H6Qj2REy/aJdObR6QVP7IJiTxcA+cP0w6HmeivVemNvDIxUBE1Z4uGSelw0lae+tQPi
-         EUMg==
-X-Gm-Message-State: AOAM531K346gq2l0g6fGOOADK11q2CBLtHBEdZtD0bFTV8FJp8UsI8yZ
-        WQGh5aNSpY9SW+GMN3mP+4enDZflpEa4BOQbx+I=
-X-Google-Smtp-Source: ABdhPJzTzLmdt/+bvUpU/rIZqjyUM4k3BNTYY7c6xCe58EWaHiMmXpQq9x/UFVq6r2dDAkHfFK56AiLiwefFVpFRjFM=
-X-Received: by 2002:a2e:964e:: with SMTP id z14mr2792131ljh.204.1614374991345;
- Fri, 26 Feb 2021 13:29:51 -0800 (PST)
+        id S230384AbhBZVav (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Feb 2021 16:30:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38842 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230347AbhBZVat (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Feb 2021 16:30:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id E1DAB64F13;
+        Fri, 26 Feb 2021 21:30:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614375008;
+        bh=UDDxPTz23Y3Om7u1JDJ1PlqFhnm+0H4jUKKZxz6uXY0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=mxkq4e8kQI8Bcv10oARvX6KqFnQgrWfVsitfpZSD5cjR0Zwe8n9s7JaS4mAuz1fqw
+         LTv93WSksUJ+ek2L2xGrmf/hU4tHdGkRYiSc76uFgRar55LTIMI7+IrpXM21X1eOB1
+         IWLl0b5MOxWOiCkfuiPQT592bkpQ0d7pDQkXHF6rCFRIVz8be5GOx7TQz+ZeVLJhnj
+         TMXtrgu8ccrHcg+QlpRnXbZUMgk578W7QXWB9GSA7h4E2CLUMWtMpbncHfj7ivfxIf
+         0/9B1wniOS+EJpMuesHM0AOTyGtWFP+yO3FSaH2eT3TS9zgi5Kj2WTG5t+yWO4n1zB
+         noGwilbzwjIJw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D487260A16;
+        Fri, 26 Feb 2021 21:30:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210226204920.3884074-1-yhs@fb.com> <20210226204925.3884923-1-yhs@fb.com>
-In-Reply-To: <20210226204925.3884923-1-yhs@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Fri, 26 Feb 2021 13:29:40 -0800
-Message-ID: <CAADnVQ+WuEpDBeZw48uiDbJS26hZGaaoQ9wRM-0tpNeohP6Vpw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 05/12] bpf: add bpf_for_each_map_elem() helper
-To:     Yonghong Song <yhs@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 bpf-next] selftests/bpf: Copy extras in out-of-srctree
+ builds
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161437500886.30840.1095312840725845768.git-patchwork-notify@kernel.org>
+Date:   Fri, 26 Feb 2021 21:30:08 +0000
+References: <20210224111445.102342-1-iii@linux.ibm.com>
+In-Reply-To: <20210224111445.102342-1-iii@linux.ibm.com>
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        bpf@vger.kernel.org, heiko.carstens@de.ibm.com, gor@linux.ibm.com
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, Feb 26, 2021 at 12:49 PM Yonghong Song <yhs@fb.com> wrote:
-> + *
-> + *             The following are a list of supported map types and their
-> + *             respective expected callback signatures:
-> + *
-> + *             BPF_MAP_TYPE_HASH, BPF_MAP_TYPE_PERCPU_HASH,
-> + *             BPF_MAP_TYPE_LRU_HASH, BPF_MAP_TYPE_LRU_PERCPU_HASH,
-> + *             BPF_MAP_TYPE_ARRAY, BPF_MAP_TYPE_PERCPU_ARRAY:
-> + *                 long (*callback_fn)(struct bpf_map *map, const void *key,
-> + *                                     void *value, void *ctx);
+Hello:
 
-This part was causing errors and warnings in bpf-helpers.rst.
-I fixed it up while applying.
+This patch was applied to bpf/bpf-next.git (refs/heads/master):
 
-Thanks a lot for the great work! Really exciting feature!
+On Wed, 24 Feb 2021 12:14:45 +0100 you wrote:
+> Building selftests in a separate directory like this:
+> 
+>     make O="$BUILD" -C tools/testing/selftests/bpf
+> 
+> and then running:
+> 
+>     cd "$BUILD" && ./test_progs -t btf
+> 
+> [...]
+
+Here is the summary with links:
+  - [v2,bpf-next] selftests/bpf: Copy extras in out-of-srctree builds
+    https://git.kernel.org/bpf/bpf-next/c/86fd166575c3
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
