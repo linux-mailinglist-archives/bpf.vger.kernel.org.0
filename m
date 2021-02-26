@@ -2,113 +2,87 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2EEA326414
-	for <lists+bpf@lfdr.de>; Fri, 26 Feb 2021 15:30:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD9F8326418
+	for <lists+bpf@lfdr.de>; Fri, 26 Feb 2021 15:32:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230099AbhBZOaK (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Feb 2021 09:30:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40342 "EHLO
+        id S229996AbhBZObi (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Feb 2021 09:31:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25459 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229912AbhBZOaI (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Fri, 26 Feb 2021 09:30:08 -0500
+        by vger.kernel.org with ESMTP id S229571AbhBZObf (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Fri, 26 Feb 2021 09:31:35 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614349722;
+        s=mimecast20190719; t=1614349809;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=CI99ojpt3AIcHxhJSfpmSYXWrv9pfYKDI8VwEn51Ixc=;
-        b=IhDBGn2IK/DReA3xsUzfBYAC7LMw2QBYG/gdUQ02ij08fr2jqbGEotADuTIcIkiusVJfQu
-        yhz1Nmt2rxtOhSr3adK4QHx5lV2HwxMF7XjYPiFOdMuG4EduiYO/Kh/zlNZEyNGBwhoHg7
-        9ICdRd8HHRCgNHrCHb7cupo7hDXXd74=
+        bh=CyTg0368UZeS5/GRq2/kgJVeph2AhDxVSQ3XORSmgf4=;
+        b=fG5JhXkPczmBkaqtLEuYr+u9u7HR0z7FR7klmRQtRpVHygrNKNqE5fBoK1a3/KZVPr7J81
+        yOro02lgEkOQ73rE1dKmLImufbl0mA6okVBuvw0lE+sHoOsSDMQXkJSFIfkV1IAQQx4Jj/
+        rSLIAWjGI7ZVVXvlEgxsKUWNnDhDXuw=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-601-uK4vxZIIMxSXst_JJTcN9A-1; Fri, 26 Feb 2021 09:28:39 -0500
-X-MC-Unique: uK4vxZIIMxSXst_JJTcN9A-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+ us-mta-430-KlCJkgYqN_Ksu67P4YgAUg-1; Fri, 26 Feb 2021 09:30:06 -0500
+X-MC-Unique: KlCJkgYqN_Ksu67P4YgAUg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0DEC0100CCC1;
-        Fri, 26 Feb 2021 14:28:37 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 87A931005501;
+        Fri, 26 Feb 2021 14:30:04 +0000 (UTC)
 Received: from carbon (unknown [10.36.110.51])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B187E12D7E;
-        Fri, 26 Feb 2021 14:28:30 +0000 (UTC)
-Date:   Fri, 26 Feb 2021 15:28:27 +0100
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 46BC4341E9;
+        Fri, 26 Feb 2021 14:29:55 +0000 (UTC)
+Date:   Fri, 26 Feb 2021 15:29:54 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
 To:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
-Cc:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
+Cc:     brouer@redhat.com,
         =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
         ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, maciej.fijalkowski@intel.com, hawk@kernel.org,
-        magnus.karlsson@intel.com, john.fastabend@gmail.com,
-        kuba@kernel.org, davem@davemloft.net
+        bpf@vger.kernel.org,
+        =?UTF-8?B?QmrDtnJuIFTDtnBl?= =?UTF-8?B?bA==?= 
+        <bjorn.topel@intel.com>, maciej.fijalkowski@intel.com,
+        hawk@kernel.org, magnus.karlsson@intel.com,
+        john.fastabend@gmail.com, kuba@kernel.org, davem@davemloft.net
 Subject: Re: [PATCH bpf-next v4 1/2] bpf, xdp: make bpf_redirect_map() a map
  operation
-Message-ID: <20210226152827.6458324b@carbon>
-In-Reply-To: <87h7lzypzl.fsf@toke.dk>
+Message-ID: <20210226152954.1dc8e19d@carbon>
+In-Reply-To: <87sg5jys8r.fsf@toke.dk>
 References: <20210226112322.144927-1-bjorn.topel@gmail.com>
         <20210226112322.144927-2-bjorn.topel@gmail.com>
         <87sg5jys8r.fsf@toke.dk>
-        <694101a1-c8e2-538c-fdd5-c23f8e2605bb@intel.com>
-        <d4910425-82ae-b1ce-68c3-fb5542f598a5@intel.com>
-        <87h7lzypzl.fsf@toke.dk>
-Organization: Red Hat Inc.
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 26 Feb 2021 13:26:22 +0100
+On Fri, 26 Feb 2021 12:37:40 +0100
 Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com> wrote:
 
-> Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com> writes:
+> Bj=C3=B6rn T=C3=B6pel <bjorn.topel@gmail.com> writes:
 >=20
-> > On 2021-02-26 12:40, Bj=C3=B6rn T=C3=B6pel wrote: =20
-> >> On 2021-02-26 12:37, Toke H=C3=B8iland-J=C3=B8rgensen wrote: =20
+> > From: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com>
 > >
-> > [...]
-> > =20
-> >>>
-> >>> (That last paragraph above is why I asked if you updated the performa=
-nce
-> >>> numbers in the cover letter; removing an additional function call sho=
-uld
-> >>> affect those, right?)
-> >>> =20
-> >>=20
-> >> Yeah, it should. Let me spend some more time benchmarking on the DEVMAP
-> >> scenario.
-> >> =20
+> > Currently the bpf_redirect_map() implementation dispatches to the
+> > correct map-lookup function via a switch-statement. To avoid the
+> > dispatching, this change adds bpf_redirect_map() as a map
+> > operation. Each map provides its bpf_redirect_map() version, and
+> > correct function is automatically selected by the BPF verifier.
 > >
-> > I did a re-measure using samples/xdp_redirect_map.
+> > A nice side-effect of the code movement is that the map lookup
+> > functions are now local to the map implementation files, which removes
+> > one additional function call.
 > >
-> > The setup is 64B packets blasted to an i40e. As a baseline,
-> >
-> >    # xdp_rxq_info --dev ens801f1 --action XDP_DROP
-> >
-> > gives 24.8 Mpps.
-> >
-> >
-> > Now, xdp_redirect_map. Same NIC, two ports, receive from port A,
-> > redirect to port B:
-> >
-> > baseline:    14.3 Mpps
-> > this series: 15.4 Mpps
-> >
-> > which is almost 8%! =20
+> > Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn.topel@intel.com> =20
 >=20
-> Or 5 ns difference:
->=20
-> 10**9/(14.3*10**6) - 10**9/(15.4*10**6)
-> 4.995004995005004
->=20
-> Nice :)
+> Nice! I agree that this is a much nicer approach! :)
 
-Yes, this is a very significant improvement at this zoom-in
-benchmarking level :-)
+I agree :-)
+
+Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
 
 --=20
 Best regards,
