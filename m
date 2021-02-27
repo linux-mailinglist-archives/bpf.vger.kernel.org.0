@@ -2,60 +2,90 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F9DA326A76
-	for <lists+bpf@lfdr.de>; Sat, 27 Feb 2021 00:43:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC3E5326AA8
+	for <lists+bpf@lfdr.de>; Sat, 27 Feb 2021 01:10:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229989AbhBZXnS (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Feb 2021 18:43:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52246 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229912AbhBZXnP (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Feb 2021 18:43:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19ADC64EF0;
-        Fri, 26 Feb 2021 23:42:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614382955;
-        bh=lq8IjeeX+oQjQXusTsE+shS/4EVXhE0b/A13Auf08dk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=i6W3ugoL6fJKII5hLXfLY3/9MBpeXJ1Bcg5D+aumHSp7ToL2LrjeSfLBkwG/iB4ZO
-         jPGxhXanyyOHJbYz1zWzNexn7VhdyilfBUFeqH4Y4DqWYN+waRkkATQRpbVcc7NVQ0
-         tnSkIoUy4mpeCzjhmPzBEA9sI+HSMEJCB88vUMZGfVtMPMBJmM8DW0ekHyqwIXdV0t
-         OYNbnaTVe8bFh0ynThixUvbKSz2IPf8RclA/p1Z4fc0ztdYvMEVjhzbD+LGB3gk+rK
-         NXnqvIwN48perQI8GMqzYir54yIfu57sTlBCao5nuxajR4fT6L/K8G+lE88hmmqLTJ
-         3qbnnPYJQwuKA==
-Date:   Fri, 26 Feb 2021 15:42:34 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     davem@davemloft.net, daniel@iogearbox.net, andrii@kernel.org,
-        bpf@vger.kernel.org, kernel-team@fb.com
-Subject: Re: pull-request: bpf 2021-02-26
-Message-ID: <20210226154234.47c78790@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210226193737.57004-1-alexei.starovoitov@gmail.com>
-References: <20210226193737.57004-1-alexei.starovoitov@gmail.com>
+        id S230140AbhB0AKN (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Feb 2021 19:10:13 -0500
+Received: from www62.your-server.de ([213.133.104.62]:49782 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229912AbhB0AKK (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Feb 2021 19:10:10 -0500
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lFnAl-0006nY-4Z; Sat, 27 Feb 2021 01:09:27 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lFnAk-000LzA-T4; Sat, 27 Feb 2021 01:09:26 +0100
+Subject: Re: [PATCH bpf-next] bpf: devmap: move drop error path to devmap for
+ XDP_REDIRECT
+To:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, lorenzo.bianconi@redhat.com, brouer@redhat.com,
+        toke@redhat.com, freysteinn.alfredsson@kau.se
+References: <76469732237ce6d6cc6344c9500f9e32a123a56e.1613569803.git.lorenzo@kernel.org>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <c3b56d02-e415-b6e9-2c22-9c3d341e07e9@iogearbox.net>
+Date:   Sat, 27 Feb 2021 01:09:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <76469732237ce6d6cc6344c9500f9e32a123a56e.1613569803.git.lorenzo@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26092/Fri Feb 26 13:12:59 2021)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Fri, 26 Feb 2021 11:37:37 -0800 Alexei Starovoitov wrote:
-> Hi David, hi Jakub,
-> 
-> The following pull-request contains BPF updates for your *net* tree.
-> 
-> We've added 8 non-merge commits during the last 3 day(s) which contain
-> a total of 10 files changed, 41 insertions(+), 13 deletions(-).
-> 
-> The main changes are:
-> 
-> 1) Fix for bpf atomic insns with src_reg=r0, from Brendan.
-> 
-> 2) Fix use after free due to bpf_prog_clone, from Cong.
-> 
-> 3) Drop imprecise verifier log message, from Dmitrii.
-> 
-> 4) Remove incorrect blank line in bpf helper description, from Hangbin.
+On 2/17/21 2:56 PM, Lorenzo Bianconi wrote:
+> We want to change the current ndo_xdp_xmit drop semantics because
+> it will allow us to implement better queue overflow handling.
+> This is working towards the larger goal of a XDP TX queue-hook.
+> Move XDP_REDIRECT error path handling from each XDP ethernet driver to
+> devmap code. According to the new APIs, the driver running the
+> ndo_xdp_xmit pointer, will break tx loop whenever the hw reports a tx
+> error and it will just return to devmap caller the number of successfully
+> transmitted frames. It will be devmap responsability to free dropped frames.
+> Move each XDP ndo_xdp_xmit capable driver to the new APIs:
+> - veth
+> - virtio-net
+> - mvneta
+> - mvpp2
+> - socionext
+> - amazon ena
+> - bnxt
+> - freescale (dpaa2, dpaa)
+> - xen-frontend
+> - qede
+> - ice
+> - igb
+> - ixgbe
+> - i40e
+> - mlx5
+> - ti (cpsw, cpsw-new)
+> - tun
+> - sfc
 
-Pulled, thanks! (please remember to CC netdev I was searching for the PR
-email there since the bot doesn't reply automatically to BPF PRs :S)
+I presume for a number of these drivers the refactoring changes were just compile-
+tested due to lack of HW, right? If so, please also Cc related driver maintainers
+aside from the few of us, so they have a chance to review & ACK the patch if it looks
+good to them. I presume Ed saw it by accident, but for others it might easily get
+lost in the daily mail flood.
+
+> More details about the new ndo_xdp_xmit design can be found here [0].
+> 
+> [0] https://github.com/xdp-project/xdp-project/blob/master/areas/core/redesign01_ndo_xdp_xmit.org
+
+I'd probably move this below the "---" if it's not essential to the commit itself or
+rather take relevant parts out and move it into the commit desc so it doesn't get
+lost for future ref given things could likely reschuffle inside the repo in the future,
+just a nit.
+
+> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
