@@ -2,90 +2,125 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC3E5326AA8
-	for <lists+bpf@lfdr.de>; Sat, 27 Feb 2021 01:10:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75AFB326B19
+	for <lists+bpf@lfdr.de>; Sat, 27 Feb 2021 03:01:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230140AbhB0AKN (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Fri, 26 Feb 2021 19:10:13 -0500
-Received: from www62.your-server.de ([213.133.104.62]:49782 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229912AbhB0AKK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Fri, 26 Feb 2021 19:10:10 -0500
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lFnAl-0006nY-4Z; Sat, 27 Feb 2021 01:09:27 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lFnAk-000LzA-T4; Sat, 27 Feb 2021 01:09:26 +0100
-Subject: Re: [PATCH bpf-next] bpf: devmap: move drop error path to devmap for
- XDP_REDIRECT
-To:     Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org
-Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, lorenzo.bianconi@redhat.com, brouer@redhat.com,
-        toke@redhat.com, freysteinn.alfredsson@kau.se
-References: <76469732237ce6d6cc6344c9500f9e32a123a56e.1613569803.git.lorenzo@kernel.org>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <c3b56d02-e415-b6e9-2c22-9c3d341e07e9@iogearbox.net>
-Date:   Sat, 27 Feb 2021 01:09:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S229864AbhB0CAp (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Fri, 26 Feb 2021 21:00:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229618AbhB0CAp (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Fri, 26 Feb 2021 21:00:45 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92B4DC06174A;
+        Fri, 26 Feb 2021 18:00:04 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id r23so12791862ljh.1;
+        Fri, 26 Feb 2021 18:00:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=aP1ZJOFRaX2M0sQyaI//Zc1AQIVHAc229PEVbc1yw9o=;
+        b=W/Xhm9WmLgiYp29eSCuf6ip4/cez6zU4czyJq7tPVgqb0DnqN4ELfF2f8xkv6bW/+F
+         BsOcr9kTj+oIACRNDxyXsK7zG4o7OqhVPjiDfyWVGPbuN3t1jk4VgikGZ7fR4+j5fCA5
+         ttlyCzzX/rsPwpMHYRenRLoErr30PeYA4ps/X+ldHqjia8aO5IFOtnjvPjQnInUS9Ah1
+         o9fItYo8pHodp8JGPB1Y+ScKUiKvbsOxVv6R2/jACusGwgzGBupr/h3OKd0cFIsoSEPP
+         RHU247RRqcjU/FE9bgra1WnC1ocV/CgA6OenU0SkRqU1Vx2luFiIvx3hWNu6crFjTG2v
+         ISxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=aP1ZJOFRaX2M0sQyaI//Zc1AQIVHAc229PEVbc1yw9o=;
+        b=gtKwv+P3CmqxYVTZ6bih3ClW10Gb0Z8zTp+C//vtXkJMDwllGGYkCYxdHKn5sIPZGh
+         Bj39HRoiVl6fnTpyKXVX8w1twwA6s128FoWgeX/1ZH4a+7ioJ6gVGMcRvD3K8KWGw6HR
+         9gbewcuRiW42RdJnIG4WyZTm6ngl8sf2GJPctOFkP4+PZxmo/8AwjKbwjqMqYutc7nO/
+         //GnqBmHkVjT7VhWKuMgj0xxcLE1t2RCwUAXuXhd2fodqVfc6bjawQZq9+moT9NgDIaX
+         /cWSSCTbXFtXh8zRh3SvP7SQ6NI7pZMWotIuHHInPOLDRXwI24hoYin0+SOSQ5q8vW9m
+         T8XA==
+X-Gm-Message-State: AOAM532I7yuYLfNLUeFmxvPsJY/318kRA4NWo6/VYfp9InSOfCpaeyyj
+        u8wdekKkQgC6jRNbYZVDoYJvDhhc/rT7gh9oTjo=
+X-Google-Smtp-Source: ABdhPJwc+GcS5sipYdfWnLWJlnO5Pkd1v3elzVQ3n5dnaD+LwXFsGpgLg6F8slag57QBU6g7E9xiHVjFIMAHxGHpjb8=
+X-Received: by 2002:a2e:894d:: with SMTP id b13mr3136736ljk.44.1614391202278;
+ Fri, 26 Feb 2021 18:00:02 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <76469732237ce6d6cc6344c9500f9e32a123a56e.1613569803.git.lorenzo@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26092/Fri Feb 26 13:12:59 2021)
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 26 Feb 2021 17:59:50 -0800
+Message-ID: <CAADnVQLfu8L06R96fHV9-7055yVwVQe=7vrHeHkTxN4tuqyCsw@mail.gmail.com>
+Subject: sk_lookup + test_bprm = huge delay
+To:     KP Singh <kpsingh@google.com>, Lorenz Bauer <lmb@cloudflare.com>,
+        bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Network Development <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On 2/17/21 2:56 PM, Lorenzo Bianconi wrote:
-> We want to change the current ndo_xdp_xmit drop semantics because
-> it will allow us to implement better queue overflow handling.
-> This is working towards the larger goal of a XDP TX queue-hook.
-> Move XDP_REDIRECT error path handling from each XDP ethernet driver to
-> devmap code. According to the new APIs, the driver running the
-> ndo_xdp_xmit pointer, will break tx loop whenever the hw reports a tx
-> error and it will just return to devmap caller the number of successfully
-> transmitted frames. It will be devmap responsability to free dropped frames.
-> Move each XDP ndo_xdp_xmit capable driver to the new APIs:
-> - veth
-> - virtio-net
-> - mvneta
-> - mvpp2
-> - socionext
-> - amazon ena
-> - bnxt
-> - freescale (dpaa2, dpaa)
-> - xen-frontend
-> - qede
-> - ice
-> - igb
-> - ixgbe
-> - i40e
-> - mlx5
-> - ti (cpsw, cpsw-new)
-> - tun
-> - sfc
+Hi KP, Lorenz,
 
-I presume for a number of these drivers the refactoring changes were just compile-
-tested due to lack of HW, right? If so, please also Cc related driver maintainers
-aside from the few of us, so they have a chance to review & ACK the patch if it looks
-good to them. I presume Ed saw it by accident, but for others it might easily get
-lost in the daily mail flood.
+I need your help to debug a huge delay I'm seeing while running the test_progs.
 
-> More details about the new ndo_xdp_xmit design can be found here [0].
-> 
-> [0] https://github.com/xdp-project/xdp-project/blob/master/areas/core/redesign01_ndo_xdp_xmit.org
+To debug it I've added the following printf-s:
 
-I'd probably move this below the "---" if it's not essential to the commit itself or
-rather take relevant parts out and move it into the commit desc so it doesn't get
-lost for future ref given things could likely reschuffle inside the repo in the future,
-just a nit.
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_bprm_opts.c
+b/tools/testing/selftests/bpf/prog_tests/test_bprm_opts.c
+index 2559bb775762..cdd2182c83a2 100644
+--- a/tools/testing/selftests/bpf/prog_tests/test_bprm_opts.c
++++ b/tools/testing/selftests/bpf/prog_tests/test_bprm_opts.c
+@@ -66,8 +66,10 @@ static int run_set_secureexec(int map_fd, int secureexec)
+                 * If the value of TMPDIR is set, the bash command returns 10
+                 * and if the value is unset, it returns 20.
+                 */
++               null_fd = open("/dev/console", O_WRONLY);
++               dprintf(null_fd, "before_bash\n");
+                execle("/bin/bash", "bash", "-c",
+-                      "[[ -z \"${TMPDIR}\" ]] || exit 10 && exit 20", NULL,
++                      "echo running_bash > /dev/console;[[ -z
+\"${TMPDIR}\" ]] || exit 10 && exit 20", NULL,
+                       bash_envp);
+                exit(errno);
+        } else if (child_pid > 0) {
 
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Then I do:
+./test_progs -n 127
+before_bash
+running_bash
+before_bash
+running_bash
+#127 test_bprm_opts:OK
+Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+
+and it takes a split second to execute. There is no visible delay.
+
+But when I run it as:
+./test_progs -n 98,127
+#98 sk_lookup:OK
+before_bash
+// huge delay here
+running_bash
+before_bash
+running_bash
+#127 test_bprm_opts:OK
+Summary: 2/46 PASSED, 0 SKIPPED, 0 FAILED
+
+real    0m51.414s
+user    0m0.808s
+sys    0m35.731s
+
+All 50 seconds are spent waiting after "before_bash" line is printed.
+Something is drastically delaying execle("/bin/bash").
+
+But replacing arg0 of "bash" with "sh" makes it fast !
+execle("/bin/bash", "sh"
+                               ^^ instead of "bash".
+I cannot explain all this at all.
+
+sk_lookup test doing some netns and forking "ip",
+but why would that slow down "bash" startup time?
+And why would bash start quickly if it thinks that it's name is "sh" ?
+
+For giggles I've tried:
+execle("/bin/bash", "foobar"
+and it's also slow.
+
+Crazy ideas are welcome :)
