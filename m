@@ -2,137 +2,158 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FC98326B9B
-	for <lists+bpf@lfdr.de>; Sat, 27 Feb 2021 06:18:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5418F326C72
+	for <lists+bpf@lfdr.de>; Sat, 27 Feb 2021 10:10:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229795AbhB0FS1 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 27 Feb 2021 00:18:27 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:53704 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229565AbhB0FS1 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 27 Feb 2021 00:18:27 -0500
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11R564q1084631;
-        Sat, 27 Feb 2021 00:17:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=qKW0DP58ozh4MFOvayswp6SHIjdBPjO1L3BzBOGOCrk=;
- b=tPwI5YU5d5HPoPYNW0Pn0D6OSxZzhFaH0PZgCf6CV4BxIBTYSQbsnHhG6FWxbpbnBBqx
- G1XTCTnp/tlVLiND2SCfHMN3fnwjOhM3Jh4hz88Kz+5hDyYYmPQOPg2+09QXNJ1CDaaG
- 3RwPyMXGLigI/RafvSH2MEJfrvtu5UaWGwgr8xWXZUWXH23e2Xd7PuaJYY7NiOF6mCPn
- QSk/uiy2HCaNVopTElpMZhDLi4bhQisgeM7gflQnqip75XY6DjnAb3LviP7CFNsxaXeV
- Exq3sxfQNSa/hKPcp9ctHNOk5S3uKscnipvs5uUZcbSvHBo+sGR5EX/byXSDzf8g7oQQ XQ== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36xphvg6y2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 27 Feb 2021 00:17:34 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11R5CX4T029355;
-        Sat, 27 Feb 2021 05:17:32 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma06ams.nl.ibm.com with ESMTP id 36ydbgr2j0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 27 Feb 2021 05:17:31 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11R5HFL935455244
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 27 Feb 2021 05:17:16 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2ED424C04E;
-        Sat, 27 Feb 2021 05:17:29 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BC41F4C044;
-        Sat, 27 Feb 2021 05:17:28 +0000 (GMT)
-Received: from vm.lan (unknown [9.145.151.190])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Sat, 27 Feb 2021 05:17:28 +0000 (GMT)
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>
-Cc:     bpf@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH v4 bpf-next] selftests/bpf: Use the last page in test_snprintf_btf on s390
-Date:   Sat, 27 Feb 2021 06:17:26 +0100
-Message-Id: <20210227051726.121256-1-iii@linux.ibm.com>
-X-Mailer: git-send-email 2.29.2
+        id S229991AbhB0JJ0 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 27 Feb 2021 04:09:26 -0500
+Received: from mga05.intel.com ([192.55.52.43]:28530 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230260AbhB0JF7 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 27 Feb 2021 04:05:59 -0500
+IronPort-SDR: 77LrvIsU0kOxP2IrKDZyem+1XxIo8F05cUybqin6T5RqU8H4Wr3WWf85jDwG1Walmco9fHX/CN
+ DSCZ0NRalbfQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9907"; a="271073108"
+X-IronPort-AV: E=Sophos;i="5.81,210,1610438400"; 
+   d="scan'208";a="271073108"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2021 01:04:48 -0800
+IronPort-SDR: uaVN3QrBmS6Phl3AlobsMfPSn5fnxtjZhKhMHYPxLKGgiFFpdQ9+VD9JoY4Om3m2eRCnHoGQ7x
+ wmRbQrCNfPbw==
+X-IronPort-AV: E=Sophos;i="5.81,210,1610438400"; 
+   d="scan'208";a="405339296"
+Received: from nsilvest-mobl2.ger.corp.intel.com (HELO btopel-mobl.ger.intel.com) ([10.252.60.14])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2021 01:04:44 -0800
+Subject: Re: [PATCH bpf-next v4 1/2] bpf, xdp: make bpf_redirect_map() a map
+ operation
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     maciej.fijalkowski@intel.com, hawk@kernel.org, toke@redhat.com,
+        magnus.karlsson@intel.com, john.fastabend@gmail.com,
+        kuba@kernel.org, davem@davemloft.net,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@gmail.com>,
+        bpf@vger.kernel.org, netdev@vger.kernel.org, ast@kernel.org
+References: <20210226112322.144927-1-bjorn.topel@gmail.com>
+ <20210226112322.144927-2-bjorn.topel@gmail.com>
+ <c36e681a-673d-d0d2-816a-e8f2c8ef5df7@iogearbox.net>
+From:   =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>
+Message-ID: <69b51d70-a885-d39a-cff3-92e8ef703a20@intel.com>
+Date:   Sat, 27 Feb 2021 10:04:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <c36e681a-673d-d0d2-816a-e8f2c8ef5df7@iogearbox.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-27_03:2021-02-26,2021-02-27 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=999
- malwarescore=0 suspectscore=0 priorityscore=1501 phishscore=0 spamscore=0
- bulkscore=0 mlxscore=0 impostorscore=0 clxscore=1015 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102270034
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-test_snprintf_btf fails on s390, because NULL points to a readable
-struct lowcore there. Fix by using the last page instead.
-
-Error message example:
-
-    printing fffffffffffff000 should generate error, got (361)
-
-Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
----
 
 
-v1: https://lore.kernel.org/bpf/20210226135923.114211-1-iii@linux.ibm.com/
-v1 -> v2: Yonghong suggested to add the pointer value to the error
-          message.
-          I've noticed that I've been passing BADPTR as flags, therefore
-          the fix worked only by accident. Put it into p.ptr where it
-          belongs.
+On 2021-02-26 22:48, Daniel Borkmann wrote:
+> On 2/26/21 12:23 PM, Björn Töpel wrote:
+>> From: Björn Töpel <bjorn.topel@intel.com>
+>>
+>> Currently the bpf_redirect_map() implementation dispatches to the
+>> correct map-lookup function via a switch-statement. To avoid the
+>> dispatching, this change adds bpf_redirect_map() as a map
+>> operation. Each map provides its bpf_redirect_map() version, and
+>> correct function is automatically selected by the BPF verifier.
+>>
+>> A nice side-effect of the code movement is that the map lookup
+>> functions are now local to the map implementation files, which removes
+>> one additional function call.
+>>
+>> Signed-off-by: Björn Töpel <bjorn.topel@intel.com>
+>> ---
+>>   include/linux/bpf.h    | 26 ++++++--------------------
+>>   include/linux/filter.h | 27 +++++++++++++++++++++++++++
+>>   include/net/xdp_sock.h | 19 -------------------
+>>   kernel/bpf/cpumap.c    |  8 +++++++-
+>>   kernel/bpf/devmap.c    | 16 ++++++++++++++--
+>>   kernel/bpf/verifier.c  | 11 +++++++++--
+>>   net/core/filter.c      | 39 +--------------------------------------
+>>   net/xdp/xskmap.c       | 18 ++++++++++++++++++
+>>   8 files changed, 82 insertions(+), 82 deletions(-)
+>>
+>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>> index cccaef1088ea..a44ba904ca37 100644
+>> --- a/include/linux/bpf.h
+>> +++ b/include/linux/bpf.h
+>> @@ -117,6 +117,9 @@ struct bpf_map_ops {
+>>                          void *owner, u32 size);
+>>       struct bpf_local_storage __rcu ** (*map_owner_storage_ptr)(void 
+>> *owner);
+>> +    /* XDP helpers.*/
+>> +    int (*xdp_redirect_map)(struct bpf_map *map, u32 ifindex, u64 
+>> flags);
+>> +
+>>       /* map_meta_equal must be implemented for maps that can be
+>>        * used as an inner map.  It is a runtime check to ensure
+>>        * an inner map can be inserted to an outer map.
+> [...]
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index 1dda9d81f12c..96705a49225e 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -5409,7 +5409,8 @@ record_func_map(struct bpf_verifier_env *env, 
+>> struct bpf_call_arg_meta *meta,
+>>           func_id != BPF_FUNC_map_delete_elem &&
+>>           func_id != BPF_FUNC_map_push_elem &&
+>>           func_id != BPF_FUNC_map_pop_elem &&
+>> -        func_id != BPF_FUNC_map_peek_elem)
+>> +        func_id != BPF_FUNC_map_peek_elem &&
+>> +        func_id != BPF_FUNC_redirect_map)
+>>           return 0;
+>>       if (map == NULL) {
+>> @@ -11762,7 +11763,8 @@ static int fixup_bpf_calls(struct 
+>> bpf_verifier_env *env)
+>>                insn->imm == BPF_FUNC_map_delete_elem ||
+>>                insn->imm == BPF_FUNC_map_push_elem   ||
+>>                insn->imm == BPF_FUNC_map_pop_elem    ||
+>> -             insn->imm == BPF_FUNC_map_peek_elem)) {
+>> +             insn->imm == BPF_FUNC_map_peek_elem   ||
+>> +             insn->imm == BPF_FUNC_redirect_map)) {
+>>               aux = &env->insn_aux_data[i + delta];
+>>               if (bpf_map_ptr_poisoned(aux))
+>>                   goto patch_call_imm;
+>> @@ -11804,6 +11806,8 @@ static int fixup_bpf_calls(struct 
+>> bpf_verifier_env *env)
+>>                        (int (*)(struct bpf_map *map, void *value))NULL));
+>>               BUILD_BUG_ON(!__same_type(ops->map_peek_elem,
+>>                        (int (*)(struct bpf_map *map, void *value))NULL));
+>> +            BUILD_BUG_ON(!__same_type(ops->xdp_redirect_map,
+>> +                     (int (*)(struct bpf_map *map, u32 ifindex, u64 
+>> flags))NULL));
+>>   patch_map_ops_generic:
+>>               switch (insn->imm) {
+>>               case BPF_FUNC_map_lookup_elem:
+>> @@ -11830,6 +11834,9 @@ static int fixup_bpf_calls(struct 
+>> bpf_verifier_env *env)
+>>                   insn->imm = BPF_CAST_CALL(ops->map_peek_elem) -
+>>                           __bpf_call_base;
+>>                   continue;
+>> +            case BPF_FUNC_redirect_map:
+>> +                insn->imm = BPF_CAST_CALL(ops->xdp_redirect_map) - 
+>> __bpf_call_base;
+> 
+> Small nit: I would name the generic callback ops->map_redirect so that 
+> this is in line with
+> the general naming convention for the map ops. Otherwise this looks much 
+> better, thx!
+>
 
-v2: https://lore.kernel.org/bpf/20210226182014.115347-1-iii@linux.ibm.com/
-v2 -> v3: Heiko mentioned that using _REGION1_SIZE is not future-proof.
-          We had a private discussion and came to the conclusion that
-          the the last page is good enough.
+I'll respin! Thanks for the input!
 
-v3: https://lore.kernel.org/bpf/20210226190908.115706-1-iii@linux.ibm.com/
-v3 -> v4: Yonghong suggested to print the non-hashed pointer value.
+I'll ignore the BPF_CAST_CALL W=1 warnings ([-Wcast-function-type]), or
+do you have any thoughts on that? I don't think it's a good idea to
+silence that warning for the whole verifier.c
 
- .../testing/selftests/bpf/progs/netif_receive_skb.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/netif_receive_skb.c b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
-index 6b670039ea67..1d8918dfbd3f 100644
---- a/tools/testing/selftests/bpf/progs/netif_receive_skb.c
-+++ b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
-@@ -16,6 +16,13 @@ bool skip = false;
- #define STRSIZE			2048
- #define EXPECTED_STRSIZE	256
- 
-+#if defined(bpf_target_s390)
-+/* NULL points to a readable struct lowcore on s390, so take the last page */
-+#define BADPTR			((void *)0xFFFFFFFFFFFFF000ULL)
-+#else
-+#define BADPTR			0
-+#endif
-+
- #ifndef ARRAY_SIZE
- #define ARRAY_SIZE(x)	(sizeof(x) / sizeof((x)[0]))
- #endif
-@@ -113,11 +120,11 @@ int BPF_PROG(trace_netif_receive_skb, struct sk_buff *skb)
- 	}
- 
- 	/* Check invalid ptr value */
--	p.ptr = 0;
-+	p.ptr = BADPTR;
- 	__ret = bpf_snprintf_btf(str, STRSIZE, &p, sizeof(p), 0);
- 	if (__ret >= 0) {
--		bpf_printk("printing NULL should generate error, got (%d)",
--			   __ret);
-+		bpf_printk("printing %llx should generate error, got (%d)",
-+			   (unsigned long long)BADPTR, __ret);
- 		ret = -ERANGE;
- 	}
- 
--- 
-2.29.2
+Björn
 
+
+>> +                continue;
+>>               }
+>>               goto patch_call_imm;
