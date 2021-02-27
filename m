@@ -2,236 +2,1058 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D62E326CB7
-	for <lists+bpf@lfdr.de>; Sat, 27 Feb 2021 11:39:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C981E326CDB
+	for <lists+bpf@lfdr.de>; Sat, 27 Feb 2021 12:07:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229912AbhB0Kjd (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sat, 27 Feb 2021 05:39:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56614 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229864AbhB0Kj2 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sat, 27 Feb 2021 05:39:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614422274;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NFvG+UrYytq/M1N6CHSIeGOV8T0HpA76WvsmFel1PL4=;
-        b=SBN1OAB+IRgML8IaoAiTWZxOLs2tEqu30XRg/yrNpDcuqDTcn3eUapflmsV1HlAWhmH5wE
-        DalUaBKTidLbw4OzqhDlbR4CiUSb+kDDwMIjzQKUJhQH9n9CDT1cmcXhRRmefDnZcaw/Wh
-        Sdy/iSKKhY2gEvs7tP9CcfjDfSjM2NA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-470--LAOc83COlq3dSeLty3QNA-1; Sat, 27 Feb 2021 05:37:52 -0500
-X-MC-Unique: -LAOc83COlq3dSeLty3QNA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E46221868405;
-        Sat, 27 Feb 2021 10:37:50 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.51])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 167B967CD6;
-        Sat, 27 Feb 2021 10:37:42 +0000 (UTC)
-Date:   Sat, 27 Feb 2021 11:37:41 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
-        Daniel Borkmann <borkmann@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        john.fastabend@gmail.com, brouer@redhat.com,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        Marek Majtyka <alardam@gmail.com>
-Subject: Re: [PATCH bpf-next V2 1/2] bpf: BPF-helper for MTU checking add
- length input
-Message-ID: <20210227113741.5cd5a03d@carbon>
-In-Reply-To: <e339303d-1d95-e8d4-565c-920eb1a3eca8@iogearbox.net>
-References: <161364896576.1250213.8059418482723660876.stgit@firesoul>
-        <161364899856.1250213.17435782167100828617.stgit@firesoul>
-        <e339303d-1d95-e8d4-565c-920eb1a3eca8@iogearbox.net>
+        id S230090AbhB0LFP (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sat, 27 Feb 2021 06:05:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44090 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229863AbhB0LFN (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sat, 27 Feb 2021 06:05:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 61FE564DFF;
+        Sat, 27 Feb 2021 11:04:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614423866;
+        bh=wAi9LMXPawD+Lx6BUahQB2meXQTN100YcS4DV9JRjvM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=VAEsatiN2nYUAw9HnUCh4I3Oe+JfLK09T7pqyWNUPjPEkWT2QrLsf2pcEOZX/D3gO
+         ZGhIz4Ig88JXjjrD8H01+V7THVliQ8kUI2DQc7lPDgrmIjIEprirShfn71u3GRw7Kc
+         ETvQ8WWEk4bOl9IwCjKZL33pJEjkcTUvefrujhJF/FjuTuVOY7GWk9uEnwFlSHjSvk
+         qik6t1or648jxqTLxz+UMPq+l0THM+jI2blQyo/u57zGevnwGRUbkozqMb5NeS+hcx
+         zDM1RTCll43SUN2jgMWlY6kP3mRbx6weW/Ici5AmwSc27WYmghixarg2q5C88sinp6
+         H/27GNPHzNyWw==
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     bpf@vger.kernel.org
+Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, brouer@redhat.com,
+        toke@redhat.com, freysteinn.alfredsson@kau.se,
+        lorenzo.bianconi@redhat.com, john.fastabend@gmail.com,
+        jasowang@redhat.com, mst@redhat.com, thomas.petazzoni@bootlin.com,
+        mw@semihalf.com, linux@armlinux.org.uk,
+        ilias.apalodimas@linaro.org, netanel@amazon.com,
+        akiyano@amazon.com, michael.chan@broadcom.com,
+        madalin.bucur@nxp.com, ioana.ciornei@nxp.com,
+        jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        saeedm@nvidia.com, grygorii.strashko@ti.com, ecree.xilinx@gmail.com
+Subject: [PATCH v2 bpf-next] bpf: devmap: move drop error path to devmap for XDP_REDIRECT
+Date:   Sat, 27 Feb 2021 12:04:13 +0100
+Message-Id: <d0c326f95b2d0325f63e4040c1530bf6d09dc4d4.1614422144.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, 27 Feb 2021 00:36:02 +0100
-Daniel Borkmann <daniel@iogearbox.net> wrote:
+We want to change the current ndo_xdp_xmit drop semantics because
+it will allow us to implement better queue overflow handling.
+This is working towards the larger goal of a XDP TX queue-hook.
+Move XDP_REDIRECT error path handling from each XDP ethernet driver to
+devmap code. According to the new APIs, the driver running the
+ndo_xdp_xmit pointer, will break tx loop whenever the hw reports a tx
+error and it will just return to devmap caller the number of successfully
+transmitted frames. It will be devmap responsability to free dropped
+frames.
+Move each XDP ndo_xdp_xmit capable driver to the new APIs:
+- veth
+- virtio-net
+- mvneta
+- mvpp2
+- socionext
+- amazon ena
+- bnxt
+- freescale (dpaa2, dpaa)
+- xen-frontend
+- qede
+- ice
+- igb
+- ixgbe
+- i40e
+- mlx5
+- ti (cpsw, cpsw-new)
+- tun
+- sfc
 
-> On 2/18/21 12:49 PM, Jesper Dangaard Brouer wrote:
-> > The FIB lookup example[1] show how the IP-header field tot_len
-> > (iph->tot_len) is used as input to perform the MTU check.
-> > 
-> > This patch extend the BPF-helper bpf_check_mtu() with the same ability
-> > to provide the length as user parameter input, via mtu_len parameter.
-> > 
-> > [1] samples/bpf/xdp_fwd_kern.c
-> > 
-> > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> > Acked-by: John Fastabend <john.fastabend@gmail.com>
-> > ---
-> >   include/uapi/linux/bpf.h |   17 +++++++++++------
-> >   net/core/filter.c        |   12 ++++++++++--
-> >   2 files changed, 21 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> > index 4c24daa43bac..4ba4ef0ff63a 100644
-> > --- a/include/uapi/linux/bpf.h
-> > +++ b/include/uapi/linux/bpf.h
-> > @@ -3850,8 +3850,7 @@ union bpf_attr {
-> >    *
-> >    * long bpf_check_mtu(void *ctx, u32 ifindex, u32 *mtu_len, s32 len_diff, u64 flags)
-> >    *	Description
-> > -
-> > - *		Check ctx packet size against exceeding MTU of net device (based
-> > + *		Check packet size against exceeding MTU of net device (based
-> >    *		on *ifindex*).  This helper will likely be used in combination
-> >    *		with helpers that adjust/change the packet size.
-> >    *
-> > @@ -3868,6 +3867,14 @@ union bpf_attr {
-> >    *		against the current net device.  This is practical if this isn't
-> >    *		used prior to redirect.
-> >    *
-> > + *		On input *mtu_len* must be a valid pointer, else verifier will
-> > + *		reject BPF program.  If the value *mtu_len* is initialized to
-> > + *		zero then the ctx packet size is use.  When value *mtu_len* is
-> > + *		provided as input this specify the L3 length that the MTU check
-> > + *		is done against. Remember XDP and TC length operate at L2, but
-> > + *		this value is L3 as this correlate to MTU and IP-header tot_len
-> > + *		values which are L3 (similar behavior as bpf_fib_lookup).
-> > + *
-> >    *		The Linux kernel route table can configure MTUs on a more
-> >    *		specific per route level, which is not provided by this helper.
-> >    *		For route level MTU checks use the **bpf_fib_lookup**\ ()
-> > @@ -3892,11 +3899,9 @@ union bpf_attr {
-> >    *
-> >    *		On return *mtu_len* pointer contains the MTU value of the net
-> >    *		device.  Remember the net device configured MTU is the L3 size,
-> > - *		which is returned here and XDP and TX length operate at L2.
-> > + *		which is returned here and XDP and TC length operate at L2.
-> >    *		Helper take this into account for you, but remember when using
-> > - *		MTU value in your BPF-code.  On input *mtu_len* must be a valid
-> > - *		pointer and be initialized (to zero), else verifier will reject
-> > - *		BPF program.
-> > + *		MTU value in your BPF-code.
-> >    *
-> >    *	Return
-> >    *		* 0 on success, and populate MTU value in *mtu_len* pointer.
-> > diff --git a/net/core/filter.c b/net/core/filter.c
-> > index 7059cf604d94..fcc3bda85960 100644
-> > --- a/net/core/filter.c
-> > +++ b/net/core/filter.c
-> > @@ -5660,7 +5660,7 @@ BPF_CALL_5(bpf_skb_check_mtu, struct sk_buff *, skb,
-> >   	if (unlikely(flags & ~(BPF_MTU_CHK_SEGS)))
-> >   		return -EINVAL;
-> >   
-> > -	if (unlikely(flags & BPF_MTU_CHK_SEGS && len_diff))
-> > +	if (unlikely(flags & BPF_MTU_CHK_SEGS && (len_diff || *mtu_len)))
-> >   		return -EINVAL;
-> >   
-> >   	dev = __dev_via_ifindex(dev, ifindex);
-> > @@ -5670,7 +5670,11 @@ BPF_CALL_5(bpf_skb_check_mtu, struct sk_buff *, skb,
-> >   	mtu = READ_ONCE(dev->mtu);
-> >   
-> >   	dev_len = mtu + dev->hard_header_len;
-> > -	skb_len = skb->len + len_diff; /* minus result pass check */
-> > +
-> > +	/* If set use *mtu_len as input, L3 as iph->tot_len (like fib_lookup) */
-> > +	skb_len = *mtu_len ? *mtu_len + dev->hard_header_len : skb->len;
-> > +
-> > +	skb_len += len_diff; /* minus result pass check */
-> >   	if (skb_len <= dev_len) {
-> >   		ret = BPF_MTU_CHK_RET_SUCCESS;
-> >   		goto out;
-> > @@ -5715,6 +5719,10 @@ BPF_CALL_5(bpf_xdp_check_mtu, struct xdp_buff *, xdp,
-> >   	/* Add L2-header as dev MTU is L3 size */
-> >   	dev_len = mtu + dev->hard_header_len;
-> >   
-> > +	/* Use *mtu_len as input, L3 as iph->tot_len (like fib_lookup) */
-> > +	if (*mtu_len)
-> > +		xdp_len = *mtu_len + dev->hard_header_len;
-> > +
-> >   	xdp_len += len_diff; /* minus result pass check */
-> >   	if (xdp_len > dev_len)
-> >   		ret = BPF_MTU_CHK_RET_FRAG_NEEDED;
-> >   
-> 
-> Btw, one more note on the whole bpf_*_check_mtu() helper... Last week I implemented
-> PMTU discovery support for clients for Cilium's XDP stand-alone LB in DSR mode, so I
-> was briefly considering whether to use the bpf_xdp_check_mtu() helper for retrieving
-> the device MTU, but then I thought to myself why having an unnecessary per-packet cost
-> for an extra helper call if I could just pass it in via constant instead. So I went
-> with the latter instead of the helper with the tradeoff to restart the Cilium agent
-> if someone actually changes MTU in prod which is a rare event anyway.
-> 
-> Looking at what bpf_xdp_check_mtu() for example really offers is retrieval of dev->mtu
-> as well as dev->hard_header_len and the rest can all be done inside the BPF prog itself
-> w/o the helper overhead. Why am I mentioning this.. because the above change is a similar
-> case of what could have been done /inside/ the BPF prog anyway (especially on XDP where
-> extra overhead should be cut where possible).
+Acked-by: Edward Cree <ecree.xilinx@gmail.com>
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+---
+More details about the new ndo_xdp_xmit design can be found here:
+https://github.com/xdp-project/xdp-project/blob/master/areas/core/redesign01_ndo_xdp_xmit.org
 
-The XDP case looks super simple now, but I thinking ahead.  When
-Lorenzo adds multi-buff support, then we can/must update this helper to
-use another XDP length value, based on the multi-buff jumbo-frame len.
+Changes since v1:
+- rebase on top of bpf-next
+- add driver maintainers in cc
+- add Edward's ack
+---
+ drivers/net/ethernet/amazon/ena/ena_netdev.c  | 18 ++++++-------
+ drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c | 20 ++++++--------
+ .../net/ethernet/freescale/dpaa/dpaa_eth.c    | 12 ++++-----
+ .../net/ethernet/freescale/dpaa2/dpaa2-eth.c  |  2 --
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c   | 15 +++++------
+ drivers/net/ethernet/intel/ice/ice_txrx.c     | 15 +++++------
+ drivers/net/ethernet/intel/igb/igb_main.c     | 11 ++++----
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 11 ++++----
+ drivers/net/ethernet/marvell/mvneta.c         | 13 +++++----
+ .../net/ethernet/marvell/mvpp2/mvpp2_main.c   | 13 +++++----
+ .../net/ethernet/mellanox/mlx5/core/en/xdp.c  | 15 +++++------
+ drivers/net/ethernet/qlogic/qede/qede_fp.c    | 19 +++++--------
+ drivers/net/ethernet/sfc/tx.c                 | 15 +----------
+ drivers/net/ethernet/socionext/netsec.c       | 16 +++++------
+ drivers/net/ethernet/ti/cpsw.c                | 14 +++++-----
+ drivers/net/ethernet/ti/cpsw_new.c            | 14 +++++-----
+ drivers/net/ethernet/ti/cpsw_priv.c           | 11 +++-----
+ drivers/net/tun.c                             | 15 ++++++-----
+ drivers/net/veth.c                            | 27 ++++++++++---------
+ drivers/net/virtio_net.c                      | 25 ++++++++---------
+ drivers/net/xen-netfront.c                    | 18 ++++++-------
+ kernel/bpf/devmap.c                           | 27 +++++++++----------
+ 22 files changed, 153 insertions(+), 193 deletions(-)
 
-Maybe we need another helper or what you propose below. BUT we could
-also allow this helper (via flag?) to ALSO check if dev support
-multi-buff XDP transmit (besides MTU limit with multi-buff len).  Then
-the BPF-programmer can know this packet cannot be redirected to the
-device.
-
-> I think it got lost somewhere in the many versions of the original set where it was
-> mentioned before, but allowing to retrieve the dev object into BPF context and then
-> exposing it similarly to how we handle the case of struct bpf_tcp_sock would have been
-> much cleaner approach, e.g. the prog from XDP and tc context would be able to do:
-> 
->    struct bpf_dev *dev = ctx->dev;
-> 
-> And we expose initially, for example:
-> 
->    struct bpf_dev {
->      __u32 mtu;
->      __u32 hard_header_len;
->      __u32 ifindex;
->      __u32 rx_queues;
->      __u32 tx_queues;
->    };
-> 
-> And we could also have a BPF helper for XDP and tc that would fetch a /different/ dev
-> given we're under RCU context anyway, like ...
-> 
-> BPF_CALL_2(bpf_get_dev, struct xdp_buff *, xdp, u32, ifindex)
-> {
-> 	return dev_get_by_index_rcu(dev_net(xdp->rxq->dev), index);
-> }
-> 
-> ... returning a new dev_or_null type. With this flexibility everything else can be done
-> inside the prog, and later on it easily allows to expose more from dev side. Actually,
-> I'm inclined to code it up ...
-
-I love the idea to retrieve the dev object into BPF context.  It is
-orthogonal, and doesn't replace the MTU helpers as the packet ctx
-objects (SKB and xdp_buff) are more complex, and the helper allows us
-to extend them without users have to update their BPF-code (as desc
-above).
-
-I do think it makes a lot of sense to expose/retrieve dev object into
-BPF context.  As I hinted about, when we implement XDP multi-buff, then
-the bpf_redirect BPF-helper cannot check if the remote device support
-multi-buff transmit (as it don't have packet ctx).  If we have the dev
-object, the we could expose XDP features that allow us (BPF-programmer)
-to check this prior to doing the redirect.
-
-To be clear:
- * I still think *this* patch is relevant and should be applied.
-
-I'm also on-board with retrieve the dev object into BPF context, as it
-have other use-cases.
+diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.c b/drivers/net/ethernet/amazon/ena/ena_netdev.c
+index 102f2c91fdb8..7ad0557dedbd 100644
+--- a/drivers/net/ethernet/amazon/ena/ena_netdev.c
++++ b/drivers/net/ethernet/amazon/ena/ena_netdev.c
+@@ -300,7 +300,7 @@ static int ena_xdp_xmit_frame(struct ena_ring *xdp_ring,
+ 
+ 	rc = ena_xdp_tx_map_frame(xdp_ring, tx_info, xdpf, &push_hdr, &push_len);
+ 	if (unlikely(rc))
+-		goto error_drop_packet;
++		return rc;
+ 
+ 	ena_tx_ctx.ena_bufs = tx_info->bufs;
+ 	ena_tx_ctx.push_header = push_hdr;
+@@ -330,8 +330,6 @@ static int ena_xdp_xmit_frame(struct ena_ring *xdp_ring,
+ error_unmap_dma:
+ 	ena_unmap_tx_buff(xdp_ring, tx_info);
+ 	tx_info->xdpf = NULL;
+-error_drop_packet:
+-	xdp_return_frame(xdpf);
+ 	return rc;
+ }
+ 
+@@ -339,8 +337,8 @@ static int ena_xdp_xmit(struct net_device *dev, int n,
+ 			struct xdp_frame **frames, u32 flags)
+ {
+ 	struct ena_adapter *adapter = netdev_priv(dev);
+-	int qid, i, err, drops = 0;
+ 	struct ena_ring *xdp_ring;
++	int qid, i, nxmit = 0;
+ 
+ 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
+ 		return -EINVAL;
+@@ -360,12 +358,12 @@ static int ena_xdp_xmit(struct net_device *dev, int n,
+ 	spin_lock(&xdp_ring->xdp_tx_lock);
+ 
+ 	for (i = 0; i < n; i++) {
+-		err = ena_xdp_xmit_frame(xdp_ring, dev, frames[i], 0);
+ 		/* The descriptor is freed by ena_xdp_xmit_frame in case
+ 		 * of an error.
+ 		 */
+-		if (err)
+-			drops++;
++		if (ena_xdp_xmit_frame(xdp_ring, dev, frames[i], 0))
++			break;
++		nxmit++;
+ 	}
+ 
+ 	/* Ring doorbell to make device aware of the packets */
+@@ -378,7 +376,7 @@ static int ena_xdp_xmit(struct net_device *dev, int n,
+ 	spin_unlock(&xdp_ring->xdp_tx_lock);
+ 
+ 	/* Return number of packets sent */
+-	return n - drops;
++	return nxmit;
+ }
+ 
+ static int ena_xdp_execute(struct ena_ring *rx_ring, struct xdp_buff *xdp)
+@@ -415,7 +413,9 @@ static int ena_xdp_execute(struct ena_ring *rx_ring, struct xdp_buff *xdp)
+ 		/* The XDP queues are shared between XDP_TX and XDP_REDIRECT */
+ 		spin_lock(&xdp_ring->xdp_tx_lock);
+ 
+-		ena_xdp_xmit_frame(xdp_ring, rx_ring->netdev, xdpf, XDP_XMIT_FLUSH);
++		if (ena_xdp_xmit_frame(xdp_ring, rx_ring->netdev, xdpf,
++				       XDP_XMIT_FLUSH))
++			xdp_return_frame(xdpf);
+ 
+ 		spin_unlock(&xdp_ring->xdp_tx_lock);
+ 		xdp_stat = &rx_ring->rx_stats.xdp_tx;
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
+index 641303894341..ec9564e584e0 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
+@@ -217,7 +217,7 @@ int bnxt_xdp_xmit(struct net_device *dev, int num_frames,
+ 	struct pci_dev *pdev = bp->pdev;
+ 	struct bnxt_tx_ring_info *txr;
+ 	dma_addr_t mapping;
+-	int drops = 0;
++	int nxmit = 0;
+ 	int ring;
+ 	int i;
+ 
+@@ -233,21 +233,17 @@ int bnxt_xdp_xmit(struct net_device *dev, int num_frames,
+ 		struct xdp_frame *xdp = frames[i];
+ 
+ 		if (!txr || !bnxt_tx_avail(bp, txr) ||
+-		    !(bp->bnapi[ring]->flags & BNXT_NAPI_FLAG_XDP)) {
+-			xdp_return_frame_rx_napi(xdp);
+-			drops++;
+-			continue;
+-		}
++		    !(bp->bnapi[ring]->flags & BNXT_NAPI_FLAG_XDP))
++			break;
+ 
+ 		mapping = dma_map_single(&pdev->dev, xdp->data, xdp->len,
+ 					 DMA_TO_DEVICE);
+ 
+-		if (dma_mapping_error(&pdev->dev, mapping)) {
+-			xdp_return_frame_rx_napi(xdp);
+-			drops++;
+-			continue;
+-		}
++		if (dma_mapping_error(&pdev->dev, mapping))
++			break;
++
+ 		__bnxt_xmit_xdp_redirect(bp, txr, mapping, xdp->len, xdp);
++		nxmit++;
+ 	}
+ 
+ 	if (flags & XDP_XMIT_FLUSH) {
+@@ -256,7 +252,7 @@ int bnxt_xdp_xmit(struct net_device *dev, int num_frames,
+ 		bnxt_db_write(bp, &txr->tx_db, txr->tx_prod);
+ 	}
+ 
+-	return num_frames - drops;
++	return nxmit;
+ }
+ 
+ /* Under rtnl_lock */
+diff --git a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
+index ccfe52a50a66..d5ef6cc911f3 100644
+--- a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
++++ b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
+@@ -3081,7 +3081,7 @@ static int dpaa_xdp_xmit(struct net_device *net_dev, int n,
+ 			 struct xdp_frame **frames, u32 flags)
+ {
+ 	struct xdp_frame *xdpf;
+-	int i, err, drops = 0;
++	int i, nxmit = 0;
+ 
+ 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
+ 		return -EINVAL;
+@@ -3091,14 +3091,12 @@ static int dpaa_xdp_xmit(struct net_device *net_dev, int n,
+ 
+ 	for (i = 0; i < n; i++) {
+ 		xdpf = frames[i];
+-		err = dpaa_xdp_xmit_frame(net_dev, xdpf);
+-		if (err) {
+-			xdp_return_frame_rx_napi(xdpf);
+-			drops++;
+-		}
++		if (dpaa_xdp_xmit_frame(net_dev, xdpf))
++			break;
++		nxmit++;
+ 	}
+ 
+-	return n - drops;
++	return nxmit;
+ }
+ 
+ static int dpaa_ts_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
+diff --git a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
+index 492943bb9c48..fc0eb82cdd6a 100644
+--- a/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
++++ b/drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c
+@@ -2431,8 +2431,6 @@ static int dpaa2_eth_xdp_xmit(struct net_device *net_dev, int n,
+ 	percpu_stats->tx_packets += enqueued;
+ 	for (i = 0; i < enqueued; i++)
+ 		percpu_stats->tx_bytes += dpaa2_fd_get_len(&fds[i]);
+-	for (i = enqueued; i < n; i++)
+-		xdp_return_frame_rx_napi(frames[i]);
+ 
+ 	return enqueued;
+ }
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
+index f6f1af94cca0..834b55816a62 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
+@@ -3844,8 +3844,8 @@ netdev_tx_t i40e_lan_xmit_frame(struct sk_buff *skb, struct net_device *netdev)
+  * @frames: array of XDP buffer pointers
+  * @flags: XDP extra info
+  *
+- * Returns number of frames successfully sent. Frames that fail are
+- * free'ed via XDP return API.
++ * Returns number of frames successfully sent. Failed frames
++ * will be free'ed by XDP core.
+  *
+  * For error cases, a negative errno code is returned and no-frames
+  * are transmitted (caller must handle freeing frames).
+@@ -3858,7 +3858,7 @@ int i40e_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
+ 	struct i40e_vsi *vsi = np->vsi;
+ 	struct i40e_pf *pf = vsi->back;
+ 	struct i40e_ring *xdp_ring;
+-	int drops = 0;
++	int nxmit = 0;
+ 	int i;
+ 
+ 	if (test_bit(__I40E_VSI_DOWN, vsi->state))
+@@ -3878,14 +3878,13 @@ int i40e_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
+ 		int err;
+ 
+ 		err = i40e_xmit_xdp_ring(xdpf, xdp_ring);
+-		if (err != I40E_XDP_TX) {
+-			xdp_return_frame_rx_napi(xdpf);
+-			drops++;
+-		}
++		if (err != I40E_XDP_TX)
++			break;
++		nxmit++;
+ 	}
+ 
+ 	if (unlikely(flags & XDP_XMIT_FLUSH))
+ 		i40e_xdp_ring_update_tail(xdp_ring);
+ 
+-	return n - drops;
++	return nxmit;
+ }
+diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/ethernet/intel/ice/ice_txrx.c
+index b7dc25da1202..d4bfa7905652 100644
+--- a/drivers/net/ethernet/intel/ice/ice_txrx.c
++++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
+@@ -571,8 +571,8 @@ ice_run_xdp(struct ice_ring *rx_ring, struct xdp_buff *xdp,
+  * @frames: XDP frames to be transmitted
+  * @flags: transmit flags
+  *
+- * Returns number of frames successfully sent. Frames that fail are
+- * free'ed via XDP return API.
++ * Returns number of frames successfully sent. Failed frames
++ * will be free'ed by XDP core.
+  * For error cases, a negative errno code is returned and no-frames
+  * are transmitted (caller must handle freeing frames).
+  */
+@@ -584,7 +584,7 @@ ice_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
+ 	unsigned int queue_index = smp_processor_id();
+ 	struct ice_vsi *vsi = np->vsi;
+ 	struct ice_ring *xdp_ring;
+-	int drops = 0, i;
++	int nxmit = 0, i;
+ 
+ 	if (test_bit(__ICE_DOWN, vsi->state))
+ 		return -ENETDOWN;
+@@ -601,16 +601,15 @@ ice_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
+ 		int err;
+ 
+ 		err = ice_xmit_xdp_ring(xdpf->data, xdpf->len, xdp_ring);
+-		if (err != ICE_XDP_TX) {
+-			xdp_return_frame_rx_napi(xdpf);
+-			drops++;
+-		}
++		if (err != ICE_XDP_TX)
++			break;
++		nxmit++;
+ 	}
+ 
+ 	if (unlikely(flags & XDP_XMIT_FLUSH))
+ 		ice_xdp_ring_update_tail(xdp_ring);
+ 
+-	return n - drops;
++	return nxmit;
+ }
+ 
+ /**
+diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
+index 878b31d534ec..cb0d07ff2492 100644
+--- a/drivers/net/ethernet/intel/igb/igb_main.c
++++ b/drivers/net/ethernet/intel/igb/igb_main.c
+@@ -2934,7 +2934,7 @@ static int igb_xdp_xmit(struct net_device *dev, int n,
+ 	int cpu = smp_processor_id();
+ 	struct igb_ring *tx_ring;
+ 	struct netdev_queue *nq;
+-	int drops = 0;
++	int nxmit = 0;
+ 	int i;
+ 
+ 	if (unlikely(test_bit(__IGB_DOWN, &adapter->state)))
+@@ -2961,10 +2961,9 @@ static int igb_xdp_xmit(struct net_device *dev, int n,
+ 		int err;
+ 
+ 		err = igb_xmit_xdp_ring(adapter, tx_ring, xdpf);
+-		if (err != IGB_XDP_TX) {
+-			xdp_return_frame_rx_napi(xdpf);
+-			drops++;
+-		}
++		if (err != IGB_XDP_TX)
++			break;
++		nxmit++;
+ 	}
+ 
+ 	__netif_tx_unlock(nq);
+@@ -2972,7 +2971,7 @@ static int igb_xdp_xmit(struct net_device *dev, int n,
+ 	if (unlikely(flags & XDP_XMIT_FLUSH))
+ 		igb_xdp_ring_update_tail(tx_ring);
+ 
+-	return n - drops;
++	return nxmit;
+ }
+ 
+ static const struct net_device_ops igb_netdev_ops = {
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+index fae84202d870..c54b58cfe7b3 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+@@ -10186,7 +10186,7 @@ static int ixgbe_xdp_xmit(struct net_device *dev, int n,
+ {
+ 	struct ixgbe_adapter *adapter = netdev_priv(dev);
+ 	struct ixgbe_ring *ring;
+-	int drops = 0;
++	int nxmit = 0;
+ 	int i;
+ 
+ 	if (unlikely(test_bit(__IXGBE_DOWN, &adapter->state)))
+@@ -10210,16 +10210,15 @@ static int ixgbe_xdp_xmit(struct net_device *dev, int n,
+ 		int err;
+ 
+ 		err = ixgbe_xmit_xdp_ring(adapter, xdpf);
+-		if (err != IXGBE_XDP_TX) {
+-			xdp_return_frame_rx_napi(xdpf);
+-			drops++;
+-		}
++		if (err != IXGBE_XDP_TX)
++			break;
++		nxmit++;
+ 	}
+ 
+ 	if (unlikely(flags & XDP_XMIT_FLUSH))
+ 		ixgbe_xdp_ring_update_tail(ring);
+ 
+-	return n - drops;
++	return nxmit;
+ }
+ 
+ static const struct net_device_ops ixgbe_netdev_ops = {
+diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
+index a635cf84608a..20307eec8988 100644
+--- a/drivers/net/ethernet/marvell/mvneta.c
++++ b/drivers/net/ethernet/marvell/mvneta.c
+@@ -2137,7 +2137,7 @@ mvneta_xdp_xmit(struct net_device *dev, int num_frame,
+ {
+ 	struct mvneta_port *pp = netdev_priv(dev);
+ 	struct mvneta_pcpu_stats *stats = this_cpu_ptr(pp->stats);
+-	int i, nxmit_byte = 0, nxmit = num_frame;
++	int i, nxmit_byte = 0, nxmit = 0;
+ 	int cpu = smp_processor_id();
+ 	struct mvneta_tx_queue *txq;
+ 	struct netdev_queue *nq;
+@@ -2155,12 +2155,11 @@ mvneta_xdp_xmit(struct net_device *dev, int num_frame,
+ 	__netif_tx_lock(nq, cpu);
+ 	for (i = 0; i < num_frame; i++) {
+ 		ret = mvneta_xdp_submit_frame(pp, txq, frames[i], true);
+-		if (ret == MVNETA_XDP_TX) {
+-			nxmit_byte += frames[i]->len;
+-		} else {
+-			xdp_return_frame_rx_napi(frames[i]);
+-			nxmit--;
+-		}
++		if (ret != MVNETA_XDP_TX)
++			break;
++
++		nxmit_byte += frames[i]->len;
++		nxmit++;
+ 	}
+ 
+ 	if (unlikely(flags & XDP_XMIT_FLUSH))
+diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+index 0507369bb54d..4ac6e43aab96 100644
+--- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
++++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+@@ -3744,7 +3744,7 @@ mvpp2_xdp_xmit(struct net_device *dev, int num_frame,
+ 	       struct xdp_frame **frames, u32 flags)
+ {
+ 	struct mvpp2_port *port = netdev_priv(dev);
+-	int i, nxmit_byte = 0, nxmit = num_frame;
++	int i, nxmit_byte = 0, nxmit = 0;
+ 	struct mvpp2_pcpu_stats *stats;
+ 	u16 txq_id;
+ 	u32 ret;
+@@ -3762,12 +3762,11 @@ mvpp2_xdp_xmit(struct net_device *dev, int num_frame,
+ 
+ 	for (i = 0; i < num_frame; i++) {
+ 		ret = mvpp2_xdp_submit_frame(port, txq_id, frames[i], true);
+-		if (ret == MVPP2_XDP_TX) {
+-			nxmit_byte += frames[i]->len;
+-		} else {
+-			xdp_return_frame_rx_napi(frames[i]);
+-			nxmit--;
+-		}
++		if (ret != MVPP2_XDP_TX)
++			break;
++
++		nxmit_byte += frames[i]->len;
++		nxmit++;
+ 	}
+ 
+ 	if (likely(nxmit > 0))
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+index 2e3e78b0f333..2f0df5cc1a2d 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+@@ -500,7 +500,7 @@ int mlx5e_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
+ {
+ 	struct mlx5e_priv *priv = netdev_priv(dev);
+ 	struct mlx5e_xdpsq *sq;
+-	int drops = 0;
++	int nxmit = 0;
+ 	int sq_num;
+ 	int i;
+ 
+@@ -529,11 +529,8 @@ int mlx5e_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
+ 		xdptxd.dma_addr = dma_map_single(sq->pdev, xdptxd.data,
+ 						 xdptxd.len, DMA_TO_DEVICE);
+ 
+-		if (unlikely(dma_mapping_error(sq->pdev, xdptxd.dma_addr))) {
+-			xdp_return_frame_rx_napi(xdpf);
+-			drops++;
+-			continue;
+-		}
++		if (unlikely(dma_mapping_error(sq->pdev, xdptxd.dma_addr)))
++			break;
+ 
+ 		xdpi.mode           = MLX5E_XDP_XMIT_MODE_FRAME;
+ 		xdpi.frame.xdpf     = xdpf;
+@@ -544,9 +541,9 @@ int mlx5e_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
+ 		if (unlikely(!ret)) {
+ 			dma_unmap_single(sq->pdev, xdptxd.dma_addr,
+ 					 xdptxd.len, DMA_TO_DEVICE);
+-			xdp_return_frame_rx_napi(xdpf);
+-			drops++;
++			break;
+ 		}
++		nxmit++;
+ 	}
+ 
+ 	if (flags & XDP_XMIT_FLUSH) {
+@@ -555,7 +552,7 @@ int mlx5e_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
+ 		mlx5e_xmit_xdp_doorbell(sq);
+ 	}
+ 
+-	return n - drops;
++	return nxmit;
+ }
+ 
+ void mlx5e_xdp_rx_poll_complete(struct mlx5e_rq *rq)
+diff --git a/drivers/net/ethernet/qlogic/qede/qede_fp.c b/drivers/net/ethernet/qlogic/qede/qede_fp.c
+index 8c47a9d2a965..102d0e0808d5 100644
+--- a/drivers/net/ethernet/qlogic/qede/qede_fp.c
++++ b/drivers/net/ethernet/qlogic/qede/qede_fp.c
+@@ -345,7 +345,7 @@ int qede_xdp_transmit(struct net_device *dev, int n_frames,
+ 	struct qede_tx_queue *xdp_tx;
+ 	struct xdp_frame *xdpf;
+ 	dma_addr_t mapping;
+-	int i, drops = 0;
++	int i, nxmit = 0;
+ 	u16 xdp_prod;
+ 
+ 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
+@@ -364,18 +364,13 @@ int qede_xdp_transmit(struct net_device *dev, int n_frames,
+ 
+ 		mapping = dma_map_single(dmadev, xdpf->data, xdpf->len,
+ 					 DMA_TO_DEVICE);
+-		if (unlikely(dma_mapping_error(dmadev, mapping))) {
+-			xdp_return_frame_rx_napi(xdpf);
+-			drops++;
+-
+-			continue;
+-		}
++		if (unlikely(dma_mapping_error(dmadev, mapping)))
++			break;
+ 
+ 		if (unlikely(qede_xdp_xmit(xdp_tx, mapping, 0, xdpf->len,
+-					   NULL, xdpf))) {
+-			xdp_return_frame_rx_napi(xdpf);
+-			drops++;
+-		}
++					   NULL, xdpf)))
++			break;
++		nxmit++;
+ 	}
+ 
+ 	if (flags & XDP_XMIT_FLUSH) {
+@@ -387,7 +382,7 @@ int qede_xdp_transmit(struct net_device *dev, int n_frames,
+ 
+ 	spin_unlock(&xdp_tx->xdp_tx_lock);
+ 
+-	return n_frames - drops;
++	return nxmit;
+ }
+ 
+ int qede_txq_has_work(struct qede_tx_queue *txq)
+diff --git a/drivers/net/ethernet/sfc/tx.c b/drivers/net/ethernet/sfc/tx.c
+index 1665529a7271..0c6650d2e239 100644
+--- a/drivers/net/ethernet/sfc/tx.c
++++ b/drivers/net/ethernet/sfc/tx.c
+@@ -412,14 +412,6 @@ netdev_tx_t __efx_enqueue_skb(struct efx_tx_queue *tx_queue, struct sk_buff *skb
+ 	return NETDEV_TX_OK;
+ }
+ 
+-static void efx_xdp_return_frames(int n,  struct xdp_frame **xdpfs)
+-{
+-	int i;
+-
+-	for (i = 0; i < n; i++)
+-		xdp_return_frame_rx_napi(xdpfs[i]);
+-}
+-
+ /* Transmit a packet from an XDP buffer
+  *
+  * Returns number of packets sent on success, error code otherwise.
+@@ -492,12 +484,7 @@ int efx_xdp_tx_buffers(struct efx_nic *efx, int n, struct xdp_frame **xdpfs,
+ 	if (flush && i > 0)
+ 		efx_nic_push_buffers(tx_queue);
+ 
+-	if (i == 0)
+-		return -EIO;
+-
+-	efx_xdp_return_frames(n - i, xdpfs + i);
+-
+-	return i;
++	return i == 0 ? -EIO : i;
+ }
+ 
+ /* Initiate a packet transmission.  We use one channel per CPU
+diff --git a/drivers/net/ethernet/socionext/netsec.c b/drivers/net/ethernet/socionext/netsec.c
+index 3c53051bdacf..b9449cf36e31 100644
+--- a/drivers/net/ethernet/socionext/netsec.c
++++ b/drivers/net/ethernet/socionext/netsec.c
+@@ -1757,8 +1757,7 @@ static int netsec_xdp_xmit(struct net_device *ndev, int n,
+ {
+ 	struct netsec_priv *priv = netdev_priv(ndev);
+ 	struct netsec_desc_ring *tx_ring = &priv->desc_ring[NETSEC_RING_TX];
+-	int drops = 0;
+-	int i;
++	int i, nxmit = 0;
+ 
+ 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
+ 		return -EINVAL;
+@@ -1769,12 +1768,11 @@ static int netsec_xdp_xmit(struct net_device *ndev, int n,
+ 		int err;
+ 
+ 		err = netsec_xdp_queue_one(priv, xdpf, true);
+-		if (err != NETSEC_XDP_TX) {
+-			xdp_return_frame_rx_napi(xdpf);
+-			drops++;
+-		} else {
+-			tx_ring->xdp_xmit++;
+-		}
++		if (err != NETSEC_XDP_TX)
++			break;
++
++		tx_ring->xdp_xmit++;
++		nxmit++;
+ 	}
+ 	spin_unlock(&tx_ring->lock);
+ 
+@@ -1783,7 +1781,7 @@ static int netsec_xdp_xmit(struct net_device *ndev, int n,
+ 		tx_ring->xdp_xmit = 0;
+ 	}
+ 
+-	return n - drops;
++	return nxmit;
+ }
+ 
+ static int netsec_xdp_setup(struct netsec_priv *priv, struct bpf_prog *prog,
+diff --git a/drivers/net/ethernet/ti/cpsw.c b/drivers/net/ethernet/ti/cpsw.c
+index fd966567464c..074702af3dc6 100644
+--- a/drivers/net/ethernet/ti/cpsw.c
++++ b/drivers/net/ethernet/ti/cpsw.c
+@@ -1123,25 +1123,23 @@ static int cpsw_ndo_xdp_xmit(struct net_device *ndev, int n,
+ 	struct cpsw_priv *priv = netdev_priv(ndev);
+ 	struct cpsw_common *cpsw = priv->cpsw;
+ 	struct xdp_frame *xdpf;
+-	int i, drops = 0, port;
++	int i, nxmit = 0, port;
+ 
+ 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
+ 		return -EINVAL;
+ 
+ 	for (i = 0; i < n; i++) {
+ 		xdpf = frames[i];
+-		if (xdpf->len < CPSW_MIN_PACKET_SIZE) {
+-			xdp_return_frame_rx_napi(xdpf);
+-			drops++;
+-			continue;
+-		}
++		if (xdpf->len < CPSW_MIN_PACKET_SIZE)
++			break;
+ 
+ 		port = priv->emac_port + cpsw->data.dual_emac;
+ 		if (cpsw_xdp_tx_frame(priv, xdpf, NULL, port))
+-			drops++;
++			break;
++		nxmit++;
+ 	}
+ 
+-	return n - drops;
++	return nxmit;
+ }
+ 
+ #ifdef CONFIG_NET_POLL_CONTROLLER
+diff --git a/drivers/net/ethernet/ti/cpsw_new.c b/drivers/net/ethernet/ti/cpsw_new.c
+index 58a64313ac00..0751f77de2c7 100644
+--- a/drivers/net/ethernet/ti/cpsw_new.c
++++ b/drivers/net/ethernet/ti/cpsw_new.c
+@@ -1093,24 +1093,22 @@ static int cpsw_ndo_xdp_xmit(struct net_device *ndev, int n,
+ {
+ 	struct cpsw_priv *priv = netdev_priv(ndev);
+ 	struct xdp_frame *xdpf;
+-	int i, drops = 0;
++	int i, nxmit = 0;
+ 
+ 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
+ 		return -EINVAL;
+ 
+ 	for (i = 0; i < n; i++) {
+ 		xdpf = frames[i];
+-		if (xdpf->len < CPSW_MIN_PACKET_SIZE) {
+-			xdp_return_frame_rx_napi(xdpf);
+-			drops++;
+-			continue;
+-		}
++		if (xdpf->len < CPSW_MIN_PACKET_SIZE)
++			break;
+ 
+ 		if (cpsw_xdp_tx_frame(priv, xdpf, NULL, priv->emac_port))
+-			drops++;
++			break;
++		nxmit++;
+ 	}
+ 
+-	return n - drops;
++	return nxmit;
+ }
+ 
+ static int cpsw_get_port_parent_id(struct net_device *ndev,
+diff --git a/drivers/net/ethernet/ti/cpsw_priv.c b/drivers/net/ethernet/ti/cpsw_priv.c
+index bb59e768915e..5862f0a4a975 100644
+--- a/drivers/net/ethernet/ti/cpsw_priv.c
++++ b/drivers/net/ethernet/ti/cpsw_priv.c
+@@ -1305,19 +1305,15 @@ int cpsw_xdp_tx_frame(struct cpsw_priv *priv, struct xdp_frame *xdpf,
+ 		ret = cpdma_chan_submit_mapped(txch, cpsw_xdpf_to_handle(xdpf),
+ 					       dma, xdpf->len, port);
+ 	} else {
+-		if (sizeof(*xmeta) > xdpf->headroom) {
+-			xdp_return_frame_rx_napi(xdpf);
++		if (sizeof(*xmeta) > xdpf->headroom)
+ 			return -EINVAL;
+-		}
+ 
+ 		ret = cpdma_chan_submit(txch, cpsw_xdpf_to_handle(xdpf),
+ 					xdpf->data, xdpf->len, port);
+ 	}
+ 
+-	if (ret) {
++	if (ret)
+ 		priv->ndev->stats.tx_dropped++;
+-		xdp_return_frame_rx_napi(xdpf);
+-	}
+ 
+ 	return ret;
+ }
+@@ -1353,7 +1349,8 @@ int cpsw_run_xdp(struct cpsw_priv *priv, int ch, struct xdp_buff *xdp,
+ 		if (unlikely(!xdpf))
+ 			goto drop;
+ 
+-		cpsw_xdp_tx_frame(priv, xdpf, page, port);
++		if (cpsw_xdp_tx_frame(priv, xdpf, page, port))
++			xdp_return_frame_rx_napi(xdpf);
+ 		break;
+ 	case XDP_REDIRECT:
+ 		if (xdp_do_redirect(ndev, xdp, prog))
+diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+index fc86da7f1628..6e55697315de 100644
+--- a/drivers/net/tun.c
++++ b/drivers/net/tun.c
+@@ -1181,8 +1181,7 @@ static int tun_xdp_xmit(struct net_device *dev, int n,
+ 	struct tun_struct *tun = netdev_priv(dev);
+ 	struct tun_file *tfile;
+ 	u32 numqueues;
+-	int drops = 0;
+-	int cnt = n;
++	int nxmit = 0;
+ 	int i;
+ 
+ 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
+@@ -1212,9 +1211,9 @@ static int tun_xdp_xmit(struct net_device *dev, int n,
+ 
+ 		if (__ptr_ring_produce(&tfile->tx_ring, frame)) {
+ 			atomic_long_inc(&dev->tx_dropped);
+-			xdp_return_frame_rx_napi(xdp);
+-			drops++;
++			break;
+ 		}
++		nxmit++;
+ 	}
+ 	spin_unlock(&tfile->tx_ring.producer_lock);
+ 
+@@ -1222,17 +1221,21 @@ static int tun_xdp_xmit(struct net_device *dev, int n,
+ 		__tun_xdp_flush_tfile(tfile);
+ 
+ 	rcu_read_unlock();
+-	return cnt - drops;
++	return nxmit;
+ }
+ 
+ static int tun_xdp_tx(struct net_device *dev, struct xdp_buff *xdp)
+ {
+ 	struct xdp_frame *frame = xdp_convert_buff_to_frame(xdp);
++	int nxmit;
+ 
+ 	if (unlikely(!frame))
+ 		return -EOVERFLOW;
+ 
+-	return tun_xdp_xmit(dev, 1, &frame, XDP_XMIT_FLUSH);
++	nxmit = tun_xdp_xmit(dev, 1, &frame, XDP_XMIT_FLUSH);
++	if (!nxmit)
++		xdp_return_frame_rx_napi(frame);
++	return nxmit;
+ }
+ 
+ static const struct net_device_ops tap_netdev_ops = {
+diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+index aa1a66ad2ce5..36293a2c3618 100644
+--- a/drivers/net/veth.c
++++ b/drivers/net/veth.c
+@@ -434,7 +434,7 @@ static int veth_xdp_xmit(struct net_device *dev, int n,
+ 			 u32 flags, bool ndo_xmit)
+ {
+ 	struct veth_priv *rcv_priv, *priv = netdev_priv(dev);
+-	int i, ret = -ENXIO, drops = 0;
++	int i, ret = -ENXIO, nxmit = 0;
+ 	struct net_device *rcv;
+ 	unsigned int max_len;
+ 	struct veth_rq *rq;
+@@ -464,21 +464,20 @@ static int veth_xdp_xmit(struct net_device *dev, int n,
+ 		void *ptr = veth_xdp_to_ptr(frame);
+ 
+ 		if (unlikely(frame->len > max_len ||
+-			     __ptr_ring_produce(&rq->xdp_ring, ptr))) {
+-			xdp_return_frame_rx_napi(frame);
+-			drops++;
+-		}
++			     __ptr_ring_produce(&rq->xdp_ring, ptr)))
++			break;
++		nxmit++;
+ 	}
+ 	spin_unlock(&rq->xdp_ring.producer_lock);
+ 
+ 	if (flags & XDP_XMIT_FLUSH)
+ 		__veth_xdp_flush(rq);
+ 
+-	ret = n - drops;
++	ret = nxmit;
+ 	if (ndo_xmit) {
+ 		u64_stats_update_begin(&rq->stats.syncp);
+-		rq->stats.vs.peer_tq_xdp_xmit += n - drops;
+-		rq->stats.vs.peer_tq_xdp_xmit_err += drops;
++		rq->stats.vs.peer_tq_xdp_xmit += nxmit;
++		rq->stats.vs.peer_tq_xdp_xmit_err += n - nxmit;
+ 		u64_stats_update_end(&rq->stats.syncp);
+ 	}
+ 
+@@ -505,20 +504,24 @@ static int veth_ndo_xdp_xmit(struct net_device *dev, int n,
+ 
+ static void veth_xdp_flush_bq(struct veth_rq *rq, struct veth_xdp_tx_bq *bq)
+ {
+-	int sent, i, err = 0;
++	int sent, i, err = 0, drops;
+ 
+ 	sent = veth_xdp_xmit(rq->dev, bq->count, bq->q, 0, false);
+ 	if (sent < 0) {
+ 		err = sent;
+ 		sent = 0;
+-		for (i = 0; i < bq->count; i++)
++	}
++
++	drops = bq->count - sent;
++	if (unlikely(drops > 0)) {
++		for (i = sent; i < bq->count; i++)
+ 			xdp_return_frame(bq->q[i]);
+ 	}
+-	trace_xdp_bulk_tx(rq->dev, sent, bq->count - sent, err);
++	trace_xdp_bulk_tx(rq->dev, sent, drops, err);
+ 
+ 	u64_stats_update_begin(&rq->stats.syncp);
+ 	rq->stats.vs.xdp_tx += sent;
+-	rq->stats.vs.xdp_tx_err += bq->count - sent;
++	rq->stats.vs.xdp_tx_err += drops;
+ 	u64_stats_update_end(&rq->stats.syncp);
+ 
+ 	bq->count = 0;
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index f2ff6c3906c1..991d6249236d 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -499,10 +499,10 @@ static int virtnet_xdp_xmit(struct net_device *dev,
+ 	unsigned int len;
+ 	int packets = 0;
+ 	int bytes = 0;
+-	int drops = 0;
++	int nxmit = 0;
+ 	int kicks = 0;
+-	int ret, err;
+ 	void *ptr;
++	int ret;
+ 	int i;
+ 
+ 	/* Only allow ndo_xdp_xmit if XDP is loaded on dev, as this
+@@ -516,7 +516,6 @@ static int virtnet_xdp_xmit(struct net_device *dev,
+ 
+ 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK)) {
+ 		ret = -EINVAL;
+-		drops = n;
+ 		goto out;
+ 	}
+ 
+@@ -539,13 +538,11 @@ static int virtnet_xdp_xmit(struct net_device *dev,
+ 	for (i = 0; i < n; i++) {
+ 		struct xdp_frame *xdpf = frames[i];
+ 
+-		err = __virtnet_xdp_xmit_one(vi, sq, xdpf);
+-		if (err) {
+-			xdp_return_frame_rx_napi(xdpf);
+-			drops++;
+-		}
++		if (__virtnet_xdp_xmit_one(vi, sq, xdpf))
++			break;
++		nxmit++;
+ 	}
+-	ret = n - drops;
++	ret = nxmit;
+ 
+ 	if (flags & XDP_XMIT_FLUSH) {
+ 		if (virtqueue_kick_prepare(sq->vq) && virtqueue_notify(sq->vq))
+@@ -556,7 +553,7 @@ static int virtnet_xdp_xmit(struct net_device *dev,
+ 	sq->stats.bytes += bytes;
+ 	sq->stats.packets += packets;
+ 	sq->stats.xdp_tx += n;
+-	sq->stats.xdp_tx_drops += drops;
++	sq->stats.xdp_tx_drops += n - nxmit;
+ 	sq->stats.kicks += kicks;
+ 	u64_stats_update_end(&sq->stats.syncp);
+ 
+@@ -709,7 +706,9 @@ static struct sk_buff *receive_small(struct net_device *dev,
+ 			if (unlikely(!xdpf))
+ 				goto err_xdp;
+ 			err = virtnet_xdp_xmit(dev, 1, &xdpf, 0);
+-			if (unlikely(err < 0)) {
++			if (unlikely(!err)) {
++				xdp_return_frame_rx_napi(xdpf);
++			} else if (unlikely(err < 0)) {
+ 				trace_xdp_exception(vi->dev, xdp_prog, act);
+ 				goto err_xdp;
+ 			}
+@@ -895,7 +894,9 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+ 			if (unlikely(!xdpf))
+ 				goto err_xdp;
+ 			err = virtnet_xdp_xmit(dev, 1, &xdpf, 0);
+-			if (unlikely(err < 0)) {
++			if (unlikely(!err)) {
++				xdp_return_frame_rx_napi(xdpf);
++			} else if (unlikely(err < 0)) {
+ 				trace_xdp_exception(vi->dev, xdp_prog, act);
+ 				if (unlikely(xdp_page != page))
+ 					put_page(xdp_page);
+diff --git a/drivers/net/xen-netfront.c b/drivers/net/xen-netfront.c
+index cc19cd9203da..44275908d61a 100644
+--- a/drivers/net/xen-netfront.c
++++ b/drivers/net/xen-netfront.c
+@@ -608,8 +608,8 @@ static int xennet_xdp_xmit(struct net_device *dev, int n,
+ 	struct netfront_info *np = netdev_priv(dev);
+ 	struct netfront_queue *queue = NULL;
+ 	unsigned long irq_flags;
+-	int drops = 0;
+-	int i, err;
++	int nxmit = 0;
++	int i;
+ 
+ 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
+ 		return -EINVAL;
+@@ -622,15 +622,13 @@ static int xennet_xdp_xmit(struct net_device *dev, int n,
+ 
+ 		if (!xdpf)
+ 			continue;
+-		err = xennet_xdp_xmit_one(dev, queue, xdpf);
+-		if (err) {
+-			xdp_return_frame_rx_napi(xdpf);
+-			drops++;
+-		}
++		if (xennet_xdp_xmit_one(dev, queue, xdpf))
++			break;
++		nxmit++;
+ 	}
+ 	spin_unlock_irqrestore(&queue->tx_lock, irq_flags);
+ 
+-	return n - drops;
++	return nxmit;
+ }
+ 
+ 
+@@ -875,7 +873,9 @@ static u32 xennet_run_xdp(struct netfront_queue *queue, struct page *pdata,
+ 		get_page(pdata);
+ 		xdpf = xdp_convert_buff_to_frame(xdp);
+ 		err = xennet_xdp_xmit(queue->info->netdev, 1, &xdpf, 0);
+-		if (unlikely(err < 0))
++		if (unlikely(!err))
++			xdp_return_frame_rx_napi(xdpf);
++		else if (unlikely(err < 0))
+ 			trace_xdp_exception(queue->info->netdev, prog, act);
+ 		break;
+ 	case XDP_REDIRECT:
+diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+index 85d9d1b72a33..9f158b3862df 100644
+--- a/kernel/bpf/devmap.c
++++ b/kernel/bpf/devmap.c
+@@ -344,29 +344,26 @@ static void bq_xmit_all(struct xdp_dev_bulk_queue *bq, u32 flags)
+ 
+ 	sent = dev->netdev_ops->ndo_xdp_xmit(dev, bq->count, bq->q, flags);
+ 	if (sent < 0) {
++		/* If ndo_xdp_xmit fails with an errno, no frames have
++		 * been xmit'ed.
++		 */
+ 		err = sent;
+ 		sent = 0;
+-		goto error;
+ 	}
++
+ 	drops = bq->count - sent;
+-out:
+-	bq->count = 0;
++	if (unlikely(drops > 0)) {
++		/* If not all frames have been transmitted, it is our
++		 * responsibility to free them
++		 */
++		for (i = sent; i < bq->count; i++)
++			xdp_return_frame_rx_napi(bq->q[i]);
++	}
+ 
++	bq->count = 0;
+ 	trace_xdp_devmap_xmit(bq->dev_rx, dev, sent, drops, err);
+ 	bq->dev_rx = NULL;
+ 	__list_del_clearprev(&bq->flush_node);
+-	return;
+-error:
+-	/* If ndo_xdp_xmit fails with an errno, no frames have been
+-	 * xmit'ed and it's our responsibility to them free all.
+-	 */
+-	for (i = 0; i < bq->count; i++) {
+-		struct xdp_frame *xdpf = bq->q[i];
+-
+-		xdp_return_frame_rx_napi(xdpf);
+-		drops++;
+-	}
+-	goto out;
+ }
+ 
+ /* __dev_flush is called from xdp_do_flush() which _must_ be signaled
 -- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+2.29.2
 
