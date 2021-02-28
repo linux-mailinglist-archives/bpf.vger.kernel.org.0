@@ -2,104 +2,178 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ACB2327185
-	for <lists+bpf@lfdr.de>; Sun, 28 Feb 2021 09:08:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B38B32718D
+	for <lists+bpf@lfdr.de>; Sun, 28 Feb 2021 09:23:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230419AbhB1IHr (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 28 Feb 2021 03:07:47 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59700 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230406AbhB1IHp (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 28 Feb 2021 03:07:45 -0500
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11S84Mrc180272;
-        Sun, 28 Feb 2021 03:06:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=GyrBO1FYFDiX5oS4mzwwKN19FXAb8n6KMyiIirk/kL8=;
- b=CbmzSYCD0SibgEP13yDP6DzLAe3XuFp1EWJIgXY/qs7G3sLthARXSMietVIOAHy5cDNC
- jQQh1o//75SLn3JaM8oZjq+8rbSlCWP+sXPEHA39IcKqIbUnJ2YLI0fZfNRU4YEPMyAk
- rFeoBmcIOXM7HPHp1KVEQwxbtaZIji+qooHREbBZLeVErz7GPkHH/S+uCynJHphrGzcg
- 4R3WRkJqBW8PUOFKZXcNm/4PoGSaqnCC+1fSK4kfJcym6rrDu2c6bRp4gUGE3hjkKtOs
- jNwTQfLXtRvk82icfz8q7XEcUWvF356sy19MhMPx71OTlMBzwTlCCUseNs0YpkxYWxiJ Sw== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 370410km9x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 28 Feb 2021 03:06:36 -0500
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11S7xG9w019816;
-        Sun, 28 Feb 2021 08:06:34 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma04ams.nl.ibm.com with ESMTP id 36ydq8gtth-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 28 Feb 2021 08:06:33 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11S86Voa47513880
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 28 Feb 2021 08:06:31 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F3B5B52051;
-        Sun, 28 Feb 2021 08:06:30 +0000 (GMT)
-Received: from osiris (unknown [9.171.48.61])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 97B2F5204E;
-        Sun, 28 Feb 2021 08:06:30 +0000 (GMT)
-Date:   Sun, 28 Feb 2021 09:06:29 +0100
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
+        id S230175AbhB1IXf (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 28 Feb 2021 03:23:35 -0500
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:37573 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230079AbhB1IXd (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Sun, 28 Feb 2021 03:23:33 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UPn.YjK_1614500567;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0UPn.YjK_1614500567)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sun, 28 Feb 2021 16:22:47 +0800
+From:   Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To:     netdev@vger.kernel.org
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>, bpf@vger.kernel.org,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: Re: [PATCH v4 bpf-next] selftests/bpf: Use the last page in
- test_snprintf_btf on s390
-Message-ID: <YDtPBT3+pGwNSIHs@osiris>
-References: <20210227051726.121256-1-iii@linux.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210227051726.121256-1-iii@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-28_03:2021-02-26,2021-02-28 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
- adultscore=0 priorityscore=1501 spamscore=0 impostorscore=0 mlxscore=0
- malwarescore=0 mlxlogscore=947 suspectscore=0 lowpriorityscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102280066
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+Subject: [PATCH v3 net-next] virtio-net: support XDP_TX when not more queues
+Date:   Sun, 28 Feb 2021 16:22:47 +0800
+Message-Id: <1614500567-9059-1-git-send-email-xuanzhuo@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Sat, Feb 27, 2021 at 06:17:26AM +0100, Ilya Leoshkevich wrote:
-> test_snprintf_btf fails on s390, because NULL points to a readable
-> struct lowcore there. Fix by using the last page instead.
-> 
-> Error message example:
-> 
->     printing fffffffffffff000 should generate error, got (361)
-> 
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> ---
-> 
-> 
-> v1: https://lore.kernel.org/bpf/20210226135923.114211-1-iii@linux.ibm.com/
-> v1 -> v2: Yonghong suggested to add the pointer value to the error
->           message.
->           I've noticed that I've been passing BADPTR as flags, therefore
->           the fix worked only by accident. Put it into p.ptr where it
->           belongs.
-> 
-> v2: https://lore.kernel.org/bpf/20210226182014.115347-1-iii@linux.ibm.com/
-> v2 -> v3: Heiko mentioned that using _REGION1_SIZE is not future-proof.
->           We had a private discussion and came to the conclusion that
->           the the last page is good enough.
-> 
-> v3: https://lore.kernel.org/bpf/20210226190908.115706-1-iii@linux.ibm.com/
-> v3 -> v4: Yonghong suggested to print the non-hashed pointer value.
-> 
->  .../testing/selftests/bpf/progs/netif_receive_skb.c | 13 ++++++++++---
->  1 file changed, 10 insertions(+), 3 deletions(-)
+The number of queues implemented by many virtio backends is limited,
+especially some machines have a large number of CPUs. In this case, it
+is often impossible to allocate a separate queue for XDP_TX.
 
-Just in case, also for v4:
+This patch allows XDP_TX to run by reuse the existing SQ with
+__netif_tx_lock() hold when there are not enough queues.
 
-Acked-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
+---
+ drivers/net/virtio_net.c | 45 ++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 36 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index ba8e637..a3116bc 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -195,6 +195,9 @@ struct virtnet_info {
+ 	/* # of XDP queue pairs currently used by the driver */
+ 	u16 xdp_queue_pairs;
+ 
++	/* xdp_queue_pairs may be 0, when xdp is already loaded. So add this. */
++	bool xdp_enabled;
++
+ 	/* I like... big packets and I cannot lie! */
+ 	bool big_packets;
+ 
+@@ -481,14 +484,34 @@ static int __virtnet_xdp_xmit_one(struct virtnet_info *vi,
+ 	return 0;
+ }
+ 
+-static struct send_queue *virtnet_xdp_sq(struct virtnet_info *vi)
++static struct send_queue *virtnet_get_xdp_sq(struct virtnet_info *vi)
+ {
++	struct netdev_queue *txq;
+ 	unsigned int qp;
+ 
+-	qp = vi->curr_queue_pairs - vi->xdp_queue_pairs + smp_processor_id();
++	if (vi->curr_queue_pairs > nr_cpu_ids) {
++		qp = vi->curr_queue_pairs - vi->xdp_queue_pairs + smp_processor_id();
++	} else {
++		qp = smp_processor_id() % vi->curr_queue_pairs;
++		txq = netdev_get_tx_queue(vi->dev, qp);
++		__netif_tx_lock(txq, raw_smp_processor_id());
++	}
++
+ 	return &vi->sq[qp];
+ }
+ 
++static void virtnet_put_xdp_sq(struct virtnet_info *vi, struct send_queue *sq)
++{
++	struct netdev_queue *txq;
++	unsigned int qp;
++
++	if (vi->curr_queue_pairs <= nr_cpu_ids) {
++		qp = sq - vi->sq;
++		txq = netdev_get_tx_queue(vi->dev, qp);
++		__netif_tx_unlock(txq);
++	}
++}
++
+ static int virtnet_xdp_xmit(struct net_device *dev,
+ 			    int n, struct xdp_frame **frames, u32 flags)
+ {
+@@ -512,7 +535,7 @@ static int virtnet_xdp_xmit(struct net_device *dev,
+ 	if (!xdp_prog)
+ 		return -ENXIO;
+ 
+-	sq = virtnet_xdp_sq(vi);
++	sq = virtnet_get_xdp_sq(vi);
+ 
+ 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK)) {
+ 		ret = -EINVAL;
+@@ -560,12 +583,13 @@ static int virtnet_xdp_xmit(struct net_device *dev,
+ 	sq->stats.kicks += kicks;
+ 	u64_stats_update_end(&sq->stats.syncp);
+ 
++	virtnet_put_xdp_sq(vi, sq);
+ 	return ret;
+ }
+ 
+ static unsigned int virtnet_get_headroom(struct virtnet_info *vi)
+ {
+-	return vi->xdp_queue_pairs ? VIRTIO_XDP_HEADROOM : 0;
++	return vi->xdp_enabled ? VIRTIO_XDP_HEADROOM : 0;
+ }
+ 
+ /* We copy the packet for XDP in the following cases:
+@@ -1457,12 +1481,13 @@ static int virtnet_poll(struct napi_struct *napi, int budget)
+ 		xdp_do_flush();
+ 
+ 	if (xdp_xmit & VIRTIO_XDP_TX) {
+-		sq = virtnet_xdp_sq(vi);
++		sq = virtnet_get_xdp_sq(vi);
+ 		if (virtqueue_kick_prepare(sq->vq) && virtqueue_notify(sq->vq)) {
+ 			u64_stats_update_begin(&sq->stats.syncp);
+ 			sq->stats.kicks++;
+ 			u64_stats_update_end(&sq->stats.syncp);
+ 		}
++		virtnet_put_xdp_sq(vi, sq);
+ 	}
+ 
+ 	return received;
+@@ -2417,10 +2442,9 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+ 
+ 	/* XDP requires extra queues for XDP_TX */
+ 	if (curr_qp + xdp_qp > vi->max_queue_pairs) {
+-		NL_SET_ERR_MSG_MOD(extack, "Too few free TX rings available");
+-		netdev_warn(dev, "request %i queues but max is %i\n",
++		netdev_warn(dev, "XDP request %i queues but max is %i. XDP_TX and XDP_REDIRECT will operate in a slower locked tx mode.\n",
+ 			    curr_qp + xdp_qp, vi->max_queue_pairs);
+-		return -ENOMEM;
++		xdp_qp = 0;
+ 	}
+ 
+ 	old_prog = rtnl_dereference(vi->rq[0].xdp_prog);
+@@ -2454,11 +2478,14 @@ static int virtnet_xdp_set(struct net_device *dev, struct bpf_prog *prog,
+ 	vi->xdp_queue_pairs = xdp_qp;
+ 
+ 	if (prog) {
++		vi->xdp_enabled = true;
+ 		for (i = 0; i < vi->max_queue_pairs; i++) {
+ 			rcu_assign_pointer(vi->rq[i].xdp_prog, prog);
+ 			if (i == 0 && !old_prog)
+ 				virtnet_clear_guest_offloads(vi);
+ 		}
++	} else {
++		vi->xdp_enabled = false;
+ 	}
+ 
+ 	for (i = 0; i < vi->max_queue_pairs; i++) {
+@@ -2526,7 +2553,7 @@ static int virtnet_set_features(struct net_device *dev,
+ 	int err;
+ 
+ 	if ((dev->features ^ features) & NETIF_F_LRO) {
+-		if (vi->xdp_queue_pairs)
++		if (vi->xdp_enabled)
+ 			return -EBUSY;
+ 
+ 		if (features & NETIF_F_LRO)
+-- 
+1.8.3.1
+
