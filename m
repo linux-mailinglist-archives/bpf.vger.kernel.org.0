@@ -2,97 +2,176 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3140D3271E3
-	for <lists+bpf@lfdr.de>; Sun, 28 Feb 2021 11:32:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1918327230
+	for <lists+bpf@lfdr.de>; Sun, 28 Feb 2021 13:19:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230070AbhB1Kb5 (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Sun, 28 Feb 2021 05:31:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38456 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230019AbhB1Kb4 (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Sun, 28 Feb 2021 05:31:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614508230;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=2Sx6ZZNqBEEPl4NlfeY2tbY98x3VujYLKzzEu61eOj4=;
-        b=UmUjDxhAGg+IDFZPDP+dApUJGNaj8DDtxZ8em1RWi4zPaQ8yiZKPpzj7KKd/bKT0g0l8yV
-        D3P8Zi79rPxME61kTA/2eOEtVtZf+qwSSF8nZS+M3+i2hWGGLvaj2QoADWw5DevSa/J70T
-        HTXCzZht3903Ls1/CfxWmosUzXacBnw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-204-cSHT3oMNO3m97N7XvHTs_A-1; Sun, 28 Feb 2021 05:30:27 -0500
-X-MC-Unique: cSHT3oMNO3m97N7XvHTs_A-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8477010059D3;
-        Sun, 28 Feb 2021 10:30:26 +0000 (UTC)
-Received: from astarta.redhat.com (ovpn-112-173.ams2.redhat.com [10.36.112.173])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0D908608DB;
-        Sun, 28 Feb 2021 10:30:18 +0000 (UTC)
-From:   Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-To:     bpf@vger.kernel.org
-Cc:     daniel@iogearbox.net, toke@redhat.com,
-        Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
-Subject: [PATCH] bpf: selftests: test_verifier: mask bpf_csum_diff() return value to 16 bits
-Date:   Sun, 28 Feb 2021 12:30:17 +0200
-Message-Id: <20210228103017.320240-1-yauheni.kaliuta@redhat.com>
+        id S230075AbhB1MR2 (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Sun, 28 Feb 2021 07:17:28 -0500
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:62818 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230045AbhB1MR1 (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Sun, 28 Feb 2021 07:17:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1614514646; x=1646050646;
+  h=references:from:to:cc:subject:in-reply-to:date:
+   message-id:mime-version;
+  bh=+lCsR1Cpr636yBERgHfZqF60fw5sauAUtHSBuNEDgtM=;
+  b=b3Ao1Zh86loJv1XhymgNHyRpmF6RXUbBRrLiePzvlUmp2ix6YjsKOuNY
+   g8ggX6Nuw34ylaH0bIOmQh9+bb/w9fHT4rqNfF8csQUt2Q9FkerccJ1GH
+   9tb+TpOkqij6evZrY8zA0gxlPr3VA/trXUluovy7Kn8Rnf2KwHpeXvNIF
+   o=;
+X-IronPort-AV: E=Sophos;i="5.81,213,1610409600"; 
+   d="scan'208";a="91756580"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2c-579b7f5b.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 28 Feb 2021 12:16:15 +0000
+Received: from EX13D28EUC001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2c-579b7f5b.us-west-2.amazon.com (Postfix) with ESMTPS id 8A449A2022;
+        Sun, 28 Feb 2021 12:16:13 +0000 (UTC)
+Received: from u68c7b5b1d2d758.ant.amazon.com.amazon.com (10.43.161.244) by
+ EX13D28EUC001.ant.amazon.com (10.43.164.4) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Sun, 28 Feb 2021 12:16:00 +0000
+References: <d0c326f95b2d0325f63e4040c1530bf6d09dc4d4.1614422144.git.lorenzo@kernel.org>
+User-agent: mu4e 1.4.12; emacs 27.1
+From:   Shay Agroskin <shayagr@amazon.com>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+CC:     <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <davem@davemloft.net>, <kuba@kernel.org>, <ast@kernel.org>,
+        <daniel@iogearbox.net>, <brouer@redhat.com>, <toke@redhat.com>,
+        <freysteinn.alfredsson@kau.se>, <lorenzo.bianconi@redhat.com>,
+        <john.fastabend@gmail.com>, <jasowang@redhat.com>,
+        <mst@redhat.com>, <thomas.petazzoni@bootlin.com>,
+        <mw@semihalf.com>, <linux@armlinux.org.uk>,
+        <ilias.apalodimas@linaro.org>, <netanel@amazon.com>,
+        <akiyano@amazon.com>, <michael.chan@broadcom.com>,
+        <madalin.bucur@nxp.com>, <ioana.ciornei@nxp.com>,
+        <jesse.brandeburg@intel.com>, <anthony.l.nguyen@intel.com>,
+        <saeedm@nvidia.com>, <grygorii.strashko@ti.com>,
+        <ecree.xilinx@gmail.com>
+Subject: Re: [PATCH v2 bpf-next] bpf: devmap: move drop error path to devmap
+ for XDP_REDIRECT
+In-Reply-To: <d0c326f95b2d0325f63e4040c1530bf6d09dc4d4.1614422144.git.lorenzo@kernel.org>
+Date:   Sun, 28 Feb 2021 14:15:29 +0200
+Message-ID: <pj41zly2f8wfq6.fsf@u68c7b5b1d2d758.ant.amazon.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; format=flowed
+X-Originating-IP: [10.43.161.244]
+X-ClientProxiedBy: EX13D50UWA003.ant.amazon.com (10.43.163.56) To
+ EX13D28EUC001.ant.amazon.com (10.43.164.4)
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-The verifier test labelled "valid read map access into a read-only array
-2" calls the bpf_csum_diff() helper and checks its return value.
-However, architecture implementations of csum_partial() (which is what
-the helper uses) differ in whether they fold the return value to 16 bit
-or not. For example, x86 version has:
 
-	if (unlikely(odd)) {
-		result = from32to16(result);
-		result = ((result >> 8) & 0xff) | ((result & 0xff) << 8);
-	}
+Lorenzo Bianconi <lorenzo@kernel.org> writes:
 
-while generic lib/checksum.c does:
+> ...
+> diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.c 
+> b/drivers/net/ethernet/amazon/ena/ena_netdev.c
+> index 102f2c91fdb8..7ad0557dedbd 100644
+> --- a/drivers/net/ethernet/amazon/ena/ena_netdev.c
+> +++ b/drivers/net/ethernet/amazon/ena/ena_netdev.c
+> ...
+> 
+> @@ -339,8 +337,8 @@ static int ena_xdp_xmit(struct net_device 
+> *dev, int n,
+>  			struct xdp_frame **frames, u32 flags)
+>  {
+>  	struct ena_adapter *adapter = netdev_priv(dev);
+> -	int qid, i, err, drops = 0;
+>  	struct ena_ring *xdp_ring;
+> +	int qid, i, nxmit = 0;
+>  
+>  	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
+>  		return -EINVAL;
+> @@ -360,12 +358,12 @@ static int ena_xdp_xmit(struct net_device 
+> *dev, int n,
+>  	spin_lock(&xdp_ring->xdp_tx_lock);
+>  
+>  	for (i = 0; i < n; i++) {
+> -		err = ena_xdp_xmit_frame(xdp_ring, dev, frames[i], 
+> 0);
+>  		/* The descriptor is freed by ena_xdp_xmit_frame 
+>  in case
+>  		 * of an error.
+>  		 */
 
-	result = from32to16(result);
-	if (odd)
-		result = ((result >> 8) & 0xff) | ((result & 0xff) << 8);
+Thanks a lot for the patch. It's a good idea. Do you mind removing 
+the comment here as well ? ena_xdp_xmit_frame() no longer frees 
+the frame in case of an error after this patch.
 
-This makes the helper return different values on different
-architectures, breaking the test on non-x86. To fix this, add an
-additional instruction to always mask the return value to 16 bits, and
-update the expected return value accordingly.
+> -		if (err)
+> -			drops++;
+> +		if (ena_xdp_xmit_frame(xdp_ring, dev, frames[i], 
+> 0))
+> +			break;
+> +		nxmit++;
+>  	}
+>  
+>  	/* Ring doorbell to make device aware of the packets */
+> @@ -378,7 +376,7 @@ static int ena_xdp_xmit(struct net_device 
+> *dev, int n,
+>  	spin_unlock(&xdp_ring->xdp_tx_lock);
+>  
+>  	/* Return number of packets sent */
+> -	return n - drops;
+> +	return nxmit;
+>  }
+> ...
+> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+> index 85d9d1b72a33..9f158b3862df 100644
+> --- a/kernel/bpf/devmap.c
+> +++ b/kernel/bpf/devmap.c
+> @@ -344,29 +344,26 @@ static void bq_xmit_all(struct 
+> xdp_dev_bulk_queue *bq, u32 flags)
+>  
+>  	sent = dev->netdev_ops->ndo_xdp_xmit(dev, bq->count, 
+>  bq->q, flags);
+>  	if (sent < 0) {
+> +		/* If ndo_xdp_xmit fails with an errno, no frames 
+> have
+> +		 * been xmit'ed.
+> +		 */
+>  		err = sent;
+>  		sent = 0;
+> -		goto error;
+>  	}
+> +
+>  	drops = bq->count - sent;
+> -out:
+> -	bq->count = 0;
+> +	if (unlikely(drops > 0)) {
+> +		/* If not all frames have been transmitted, it is 
+> our
+> +		 * responsibility to free them
+> +		 */
+> +		for (i = sent; i < bq->count; i++)
+> +			xdp_return_frame_rx_napi(bq->q[i]);
+> +	}
 
-Fixes: fb2abb73e575 ("bpf, selftest: test {rd, wr}only flags and direct value access")
-Signed-off-by: Yauheni Kaliuta <yauheni.kaliuta@redhat.com>
----
- tools/testing/selftests/bpf/verifier/array_access.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Wouldn't the logic above be the same even w/o the 'if' condition ?
 
-diff --git a/tools/testing/selftests/bpf/verifier/array_access.c b/tools/testing/selftests/bpf/verifier/array_access.c
-index bed53b561e04..1b138cd2b187 100644
---- a/tools/testing/selftests/bpf/verifier/array_access.c
-+++ b/tools/testing/selftests/bpf/verifier/array_access.c
-@@ -250,12 +250,13 @@
- 	BPF_MOV64_IMM(BPF_REG_5, 0),
- 	BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0,
- 		     BPF_FUNC_csum_diff),
-+	BPF_ALU64_IMM(BPF_AND, BPF_REG_0, 0xffff),
- 	BPF_EXIT_INSN(),
- 	},
- 	.prog_type = BPF_PROG_TYPE_SCHED_CLS,
- 	.fixup_map_array_ro = { 3 },
- 	.result = ACCEPT,
--	.retval = -29,
-+	.retval = 65507,
- },
- {
- 	"invalid write map access into a read-only array 1",
--- 
-2.29.2
+>  
+> +	bq->count = 0;
+>  	trace_xdp_devmap_xmit(bq->dev_rx, dev, sent, drops, err);
+>  	bq->dev_rx = NULL;
+>  	__list_del_clearprev(&bq->flush_node);
+> -	return;
+> -error:
+> -	/* If ndo_xdp_xmit fails with an errno, no frames have 
+> been
+> -	 * xmit'ed and it's our responsibility to them free all.
+> -	 */
+> -	for (i = 0; i < bq->count; i++) {
+> -		struct xdp_frame *xdpf = bq->q[i];
+> -
+> -		xdp_return_frame_rx_napi(xdpf);
+> -		drops++;
+> -	}
+> -	goto out;
+>  }
+>  
+>  /* __dev_flush is called from xdp_do_flush() which _must_ be 
+>  signaled
 
+Thanks, Shay
