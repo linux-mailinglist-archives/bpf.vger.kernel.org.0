@@ -2,111 +2,100 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86CBC327BEA
-	for <lists+bpf@lfdr.de>; Mon,  1 Mar 2021 11:24:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB9B0327C77
+	for <lists+bpf@lfdr.de>; Mon,  1 Mar 2021 11:44:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232038AbhCAKXI (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Mar 2021 05:23:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42400 "EHLO
+        id S234680AbhCAKoX (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Mar 2021 05:44:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231129AbhCAKVo (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Mar 2021 05:21:44 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E847C0617A7
-        for <bpf@vger.kernel.org>; Mon,  1 Mar 2021 02:19:30 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id d11so15482104wrj.7
-        for <bpf@vger.kernel.org>; Mon, 01 Mar 2021 02:19:30 -0800 (PST)
+        with ESMTP id S234693AbhCAKoE (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Mar 2021 05:44:04 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CBD1C061756;
+        Mon,  1 Mar 2021 02:43:24 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id b1so13898900lfb.7;
+        Mon, 01 Mar 2021 02:43:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=m7RqUGlAZKFc49U41qGqNoOsHvlpZbIedEeyhnhCTbI=;
-        b=oonpr2B3rHnYHupaHPShB/68/ySpZhsnym3v+SNUtmhwaRRl+ebfMYlGZJepX2qulG
-         9cbrc6OOaR8fnjJU0XjBJiOhQvEFKeYlDJCkCm3uSGitqaz0tsBUynXX8v3UT1Urgh8C
-         HpPB4txSmK4g50EGTw+LoucZuZaxS1O+CJBis=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5SVbUaLO6lyScQDOQdWN71umvS+bxt/giAzNcvq8axE=;
+        b=dC0D2Qul5BLKjzBn6hsZ8pz2x+qXplgxvAJpqhzLLHD3SpEtHiEqDIVd9Tydu+0pnC
+         y5M5f1dDvW3m1o5MEo2BTJfCorreBBPCPV0zJQUHQcqIMfGVxTloU66d6KXwqvLOSMYQ
+         PMKdsC0xteMVN5DPxvPWZjiH4/H+3YTBOHq8ky1/+uuvnCWzEy5FsHrYK/3VKwgvWj7k
+         UOE8GguOZ212nvXxRgQmr281OCoL6n/qh7fUv6G4FHdbNsxeqjNqf8HOCIsj8RVGCH4n
+         UusccyN2MpaspKyXqMFbNHE5DNmLLNxdM1NbBsYREfyFoQC3XnkhoXOD8jkGzYO+iOmT
+         CyEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=m7RqUGlAZKFc49U41qGqNoOsHvlpZbIedEeyhnhCTbI=;
-        b=YXN99w6k46u925nCH4ffWRAz6Pce9L4q1ZlmyGC7dZuhOoL6o9yCa8/v5CJDIykhZw
-         bqErSlu0QGm60CMQbj+BZWyDsps69GLuXuMIVXafhB6Sb7AqHLg0++zPV4qVN4GQPrHr
-         4DpTLSDAIkrjS/yhzf6R2PrZgTLe8wDRH126sEMHxvXCBiv1F5fMc9fO+Xkk+V162UMM
-         FUBi+ViphhnSb8x03E/H/uw3TkUTEjKHcswmbs0/ui5RjeRh0FEa6g7pN9d4P2Fvu+h9
-         IClgz5uRvuPFOKVQLs2apGtjk/H422v2pZOFcaQUQzm6gf7EYzls1jytdctWspSmHvQp
-         OVXw==
-X-Gm-Message-State: AOAM530MX/e2+SzgqsnLsNz8S1r5gilJ+kC8gS2HnX2NrNmnm/gpTIeD
-        5ZB36yMkL7BPP5eks9tnN92fEg==
-X-Google-Smtp-Source: ABdhPJxgNFJm+3dLBERmicTkvuFnp/OHYctVVHJxCxBBK52+5gRrGS4TXSb4/Tq6ikZiw2R9Ht38Dw==
-X-Received: by 2002:adf:d851:: with SMTP id k17mr10256340wrl.254.1614593969442;
-        Mon, 01 Mar 2021 02:19:29 -0800 (PST)
-Received: from localhost.localdomain (2.b.a.d.8.4.b.a.9.e.4.2.1.8.0.5.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:5081:24e9:ab48:dab2])
-        by smtp.gmail.com with ESMTPSA id a198sm14134600wmd.11.2021.03.01.02.19.28
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5SVbUaLO6lyScQDOQdWN71umvS+bxt/giAzNcvq8axE=;
+        b=PnBFhhuccixUM3zj6ps7lcEFrND3Mq869z8I55MFbJQ4Uo+jK89kfFHsAfu5XZ5hxb
+         H7iXlvJ+Pxgz1C88VEAJUEGvIISXddoHfOuEqa+CfjAan6fmqZej11tqn8Iw6DHWMECi
+         jwO6uBbAkYiIQk4bb0ZCBVEqf/xAld5pHx/QRywxjYBLn8SP3bDSHqbpk9q6JFSnuoBn
+         XOBNvx9worEoAENE0+j/aSW2YZ0QI44D2WhOvucrB6IGiZFoUAjD66j18cWpRlJk/6Yk
+         kLi0H9yE/9HBspepR7Y8yLM7WU1zQRZJEWH6//gjKf/0FoYOHG5dwQCn8Swpw7k4tvvd
+         lcFA==
+X-Gm-Message-State: AOAM530H5LMIGeTk0CeTFh8S50DgrSimv/u9PTTmctPtFYqaw7QOl0tE
+        Ly0FWW0IHf1O3dJVRAfewSM=
+X-Google-Smtp-Source: ABdhPJyVZmJvCtcGvLGRsZkFhYXzj9FoGR5YCrl08IEy3vI71tw3H/Z9H7X7qcATB8rEpMWLVCMnHw==
+X-Received: by 2002:a19:3f93:: with SMTP id m141mr9070158lfa.423.1614595402936;
+        Mon, 01 Mar 2021 02:43:22 -0800 (PST)
+Received: from btopel-mobl.ger.intel.com (c213-102-90-208.bredband.comhem.se. [213.102.90.208])
+        by smtp.gmail.com with ESMTPSA id w26sm2247492lfr.186.2021.03.01.02.43.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Mar 2021 02:19:29 -0800 (PST)
-From:   Lorenz Bauer <lmb@cloudflare.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
-Cc:     kernel-team@cloudflare.com, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Lorenz Bauer <lmb@cloudflare.com>
-Subject: [PATCH bpf-next v3 5/5] selftests: bpf: don't run sk_lookup in verifier tests
-Date:   Mon,  1 Mar 2021 10:18:59 +0000
-Message-Id: <20210301101859.46045-6-lmb@cloudflare.com>
+        Mon, 01 Mar 2021 02:43:22 -0800 (PST)
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>
+To:     ast@kernel.org, daniel@iogearbox.net, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@gmail.com>,
+        bjorn.topel@intel.com, magnus.karlsson@intel.com,
+        jonathan.lemon@gmail.com, maximmi@nvidia.com, andrii@kernel.org
+Subject: [PATCH bpf-next 0/2] load-acquire/store-release semantics for AF_XDP rings
+Date:   Mon,  1 Mar 2021 11:43:16 +0100
+Message-Id: <20210301104318.263262-1-bjorn.topel@gmail.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210301101859.46045-1-lmb@cloudflare.com>
-References: <20210301101859.46045-1-lmb@cloudflare.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-sk_lookup doesn't allow setting data_in for bpf_prog_run. This doesn't
-play well with the verifier tests, since they always set a 64 byte
-input buffer. Allow not running verifier tests by setting
-bpf_test.runs to a negative value and don't run the ctx access case
-for sk_lookup. We have dedicated ctx access tests so skipping here
-doesn't reduce coverage.
+This two-patch series introduces load-acquire/store-release semantics
+for the AF_XDP rings.
 
-Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
----
- tools/testing/selftests/bpf/test_verifier.c          | 4 ++--
- tools/testing/selftests/bpf/verifier/ctx_sk_lookup.c | 1 +
- 2 files changed, 3 insertions(+), 2 deletions(-)
+For most contemporary architectures, this is more effective than a
+SPSC ring based on smp_{r,w,}mb() barriers. More importantly,
+load-acquire/store-release semantics make the ring code easier to
+follow.
 
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-index 58b5a349d3ba..1512092e1e68 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -105,7 +105,7 @@ struct bpf_test {
- 	enum bpf_prog_type prog_type;
- 	uint8_t flags;
- 	void (*fill_helper)(struct bpf_test *self);
--	uint8_t runs;
-+	int runs;
- #define bpf_testdata_struct_t					\
- 	struct {						\
- 		uint32_t retval, retval_unpriv;			\
-@@ -1165,7 +1165,7 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
- 
- 	run_errs = 0;
- 	run_successes = 0;
--	if (!alignment_prevented_execution && fd_prog >= 0) {
-+	if (!alignment_prevented_execution && fd_prog >= 0 && test->runs >= 0) {
- 		uint32_t expected_val;
- 		int i;
- 
-diff --git a/tools/testing/selftests/bpf/verifier/ctx_sk_lookup.c b/tools/testing/selftests/bpf/verifier/ctx_sk_lookup.c
-index fb13ca2d5606..d78627be060f 100644
---- a/tools/testing/selftests/bpf/verifier/ctx_sk_lookup.c
-+++ b/tools/testing/selftests/bpf/verifier/ctx_sk_lookup.c
-@@ -239,6 +239,7 @@
- 	.result = ACCEPT,
- 	.prog_type = BPF_PROG_TYPE_SK_LOOKUP,
- 	.expected_attach_type = BPF_SK_LOOKUP,
-+	.runs = -1,
- },
- /* invalid 8-byte reads from a 4-byte fields in bpf_sk_lookup */
- {
+This is effectively the change done in commit 6c43c091bdc5
+("documentation: Update circular buffer for
+load-acquire/store-release"), but for the AF_XDP rings.
+
+Both libbpf and the kernel-side are updated.
+
+More details in each commit.
+
+
+Thanks,
+Björn
+
+
+Björn Töpel (2):
+  xsk: update rings for load-acquire/store-release semantics
+  libbpf, xsk: add libbpf_smp_store_release libbpf_smp_load_acquire
+
+ net/xdp/xsk_queue.h         | 27 ++++++--------
+ tools/lib/bpf/libbpf_util.h | 72 +++++++++++++++++++++++++------------
+ tools/lib/bpf/xsk.h         | 17 +++------
+ 3 files changed, 66 insertions(+), 50 deletions(-)
+
+
+base-commit: 85e142cb42a1e7b33971bf035dae432d8670c46b
 -- 
 2.27.0
 
