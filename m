@@ -2,95 +2,97 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E48327B8C
-	for <lists+bpf@lfdr.de>; Mon,  1 Mar 2021 11:08:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23FC8327BE0
+	for <lists+bpf@lfdr.de>; Mon,  1 Mar 2021 11:22:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231928AbhCAKGn (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Mar 2021 05:06:43 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:36907 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232038AbhCAKGK (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Mar 2021 05:06:10 -0500
-Received: from ip5f5af0a0.dynamic.kabel-deutschland.de ([95.90.240.160] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1lGfPZ-0003lu-Cu; Mon, 01 Mar 2021 10:04:21 +0000
-Date:   Mon, 1 Mar 2021 11:04:20 +0100
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Lorenz Bauer <lmb@cloudflare.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        kernel-team@cloudflare.com, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf 2/4] nsfs: add an ioctl to discover the network
- namespace cookie
-Message-ID: <20210301100420.slnjvzql6el4jlfj@wittgenstein>
-References: <20210210120425.53438-1-lmb@cloudflare.com>
- <20210210120425.53438-3-lmb@cloudflare.com>
+        id S233471AbhCAKVJ (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Mar 2021 05:21:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233998AbhCAKUW (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Mar 2021 05:20:22 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AD7CC061756
+        for <bpf@vger.kernel.org>; Mon,  1 Mar 2021 02:19:26 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id w7so12995012wmb.5
+        for <bpf@vger.kernel.org>; Mon, 01 Mar 2021 02:19:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=huw0E5JgfJJ5Mr24mx+mu5o+pU+1rG0sWMzXMDebmr8=;
+        b=TYElbNBuCbPG1SWGVRM5PERfDcisbcAF3dnhNm9hRzk8LPNthZ/sALbCLOdoe0Mrai
+         BuBGR4GskhW4yPRtwz/+ymE1rnIpHS7R/lSnXTaIwPZCViBQfx7FDqPG8SrAqOGin7fN
+         eyscB1Ev6N62AUbbkzSa+AHLjao0kH0lEEF3A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=huw0E5JgfJJ5Mr24mx+mu5o+pU+1rG0sWMzXMDebmr8=;
+        b=o9PJFOgmecfMGlF5Rc8XhXN8iMxvyRiEIeFktuCqEhtYuxrqcSK4M77AUEK221UAhE
+         5A8Cms8VSUdf+6x74y0UOuQmcvop1Nl0JFGOBlFhSnJ/8onkQmget6BCqyPCps48uVPA
+         e0//8zFI3CZkMMMsuE+fLgzDbBm7lFqpMx3avK3AfGrx9FqVhBdmVR+wqDDfesYHB/YM
+         InZFhukZ+pip2I0GKiuu4OsSHRa1yurt+G12GZTwCych/8ycFfzwF0lEKH3Yv4oXskWi
+         8JoHWhdzzX9MC7HDDw47O0g/vGO9GdONK5yhJSbGkyl6tY4bZ3t+onsJZXx6Fgc+ytUl
+         vsJA==
+X-Gm-Message-State: AOAM531XNTIEJ6wuXleCm4oNgQ3KbjejuvyPW6BZFZbYPc8RkRlEYvhr
+        4fjYBh8h62/wGLzi5AmSpMKR3g==
+X-Google-Smtp-Source: ABdhPJzAZ31GRbwyNt3T+djmZx2Ldu7tSKt2CNzVymzPhy2n2PfJdtBoDDPNKOw4OIvCcVn9hekX5g==
+X-Received: by 2002:a1c:7905:: with SMTP id l5mr3555456wme.181.1614593965369;
+        Mon, 01 Mar 2021 02:19:25 -0800 (PST)
+Received: from localhost.localdomain (2.b.a.d.8.4.b.a.9.e.4.2.1.8.0.5.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:5081:24e9:ab48:dab2])
+        by smtp.gmail.com with ESMTPSA id a198sm14134600wmd.11.2021.03.01.02.19.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Mar 2021 02:19:24 -0800 (PST)
+From:   Lorenz Bauer <lmb@cloudflare.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Cc:     kernel-team@cloudflare.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Lorenz Bauer <lmb@cloudflare.com>
+Subject: [PATCH bpf-next v3 0/5] PROG_TEST_RUN support for sk_lookup programs
+Date:   Mon,  1 Mar 2021 10:18:54 +0000
+Message-Id: <20210301101859.46045-1-lmb@cloudflare.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210210120425.53438-3-lmb@cloudflare.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 12:04:23PM +0000, Lorenz Bauer wrote:
-> Network namespaces have a globally unique non-zero identifier aka a
-> cookie, in line with socket cookies. Add an ioctl to retrieve the
-> cookie from user space without going via BPF.
-> 
-> Cc: linux-api@vger.kernel.org
-> Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
-> ---
->  fs/nsfs.c                   |  9 +++++++++
->  include/net/net_namespace.h | 11 +++++++++++
->  include/uapi/linux/nsfs.h   |  2 ++
->  3 files changed, 22 insertions(+)
-> 
-> diff --git a/fs/nsfs.c b/fs/nsfs.c
-> index 800c1d0eb0d0..d7865e39c049 100644
-> --- a/fs/nsfs.c
-> +++ b/fs/nsfs.c
-> @@ -11,6 +11,7 @@
->  #include <linux/user_namespace.h>
->  #include <linux/nsfs.h>
->  #include <linux/uaccess.h>
-> +#include <net/net_namespace.h>
->  
->  #include "internal.h"
->  
-> @@ -191,6 +192,8 @@ static long ns_ioctl(struct file *filp, unsigned int ioctl,
->  	struct user_namespace *user_ns;
->  	struct ns_common *ns = get_proc_ns(file_inode(filp));
->  	uid_t __user *argp;
-> +	struct net *net_ns;
-> +	u64 cookie;
->  	uid_t uid;
->  
->  	switch (ioctl) {
-> @@ -209,6 +212,12 @@ static long ns_ioctl(struct file *filp, unsigned int ioctl,
->  		argp = (uid_t __user *) arg;
->  		uid = from_kuid_munged(current_user_ns(), user_ns->owner);
->  		return put_user(uid, argp);
-> +	case NS_GET_COOKIE:
-> +		if (ns->ops->type != CLONE_NEWNET)
-> +			return -EINVAL;
-> +		net_ns = container_of(ns, struct net, ns);
-> +		cookie = net_gen_cookie(net_ns);
-> +		return put_user(cookie, (u64 __user *)arg);
+We don't have PROG_TEST_RUN support for sk_lookup programs at the
+moment. So far this hasn't been a problem, since we can run our
+tests in a separate network namespace. For benchmarking it's nice
+to have PROG_TEST_RUN, so I've gone and implemented it.
 
-Hey Lorenz,
+Based on discussion on the v1 I've dropped support for testing multiple
+programs at once.
 
-Just to make sure: is it intentional that any user can retrieve the
-cookie associated with any network namespace, i.e. you don't require any
-form of permission checking in the owning user namespace of the network
-namespace?
+Changes since v2:
+- Fix test_verifier failure (Alexei)
 
-Christian
+Changes since v1:
+- Add sparse annotations to the t_* functions
+- Add appropriate type casts in bpf_prog_test_run_sk_lookup
+- Drop running multiple programs
+
+Lorenz Bauer (5):
+  bpf: consolidate shared test timing code
+  bpf: add PROG_TEST_RUN support for sk_lookup programs
+  selftests: bpf: convert sk_lookup ctx access tests to PROG_TEST_RUN
+  selftests: bpf: check that PROG_TEST_RUN repeats as requested
+  selftests: bpf: don't run sk_lookup in verifier tests
+
+ include/linux/bpf.h                           |  10 +
+ include/uapi/linux/bpf.h                      |   5 +-
+ net/bpf/test_run.c                            | 246 +++++++++++++-----
+ net/core/filter.c                             |   1 +
+ tools/include/uapi/linux/bpf.h                |   5 +-
+ .../selftests/bpf/prog_tests/prog_run_xattr.c |  51 +++-
+ .../selftests/bpf/prog_tests/sk_lookup.c      |  83 ++++--
+ .../selftests/bpf/progs/test_sk_lookup.c      |  62 +++--
+ tools/testing/selftests/bpf/test_verifier.c   |   4 +-
+ .../selftests/bpf/verifier/ctx_sk_lookup.c    |   1 +
+ 10 files changed, 356 insertions(+), 112 deletions(-)
+
+-- 
+2.27.0
+
