@@ -2,249 +2,150 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C57A329169
-	for <lists+bpf@lfdr.de>; Mon,  1 Mar 2021 21:27:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28365329270
+	for <lists+bpf@lfdr.de>; Mon,  1 Mar 2021 21:46:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241499AbhCAUZY (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Mar 2021 15:25:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52242 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238740AbhCAUUh (ORCPT
-        <rfc822;bpf@vger.kernel.org>); Mon, 1 Mar 2021 15:20:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614629942;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tm9fKMa+OeMDf8cjUn2OSKTxJ285HlE2LNt99VSxN9w=;
-        b=VaxaXNAEKslfsChZ69FgJMB8sswHB2AsYIlIgVyoWiNp7vlUk616kbhBFc3xDSkmFC/UDf
-        hOnDy7tjmSntYlqDtqHJ/jiKMUdhHq/E0m2kGSI0GITZ9jg2Oa0g5PVwHf+iil9mhxgmRo
-        KwxETiY4MADv/C7IVl8+EwYdUxjTsC0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-58-MBh0QM-gMKGCfu9mq5AcXw-1; Mon, 01 Mar 2021 15:18:59 -0500
-X-MC-Unique: MBh0QM-gMKGCfu9mq5AcXw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4489D1005501;
-        Mon,  1 Mar 2021 20:18:56 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.49])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BA3FC6E52F;
-        Mon,  1 Mar 2021 20:18:38 +0000 (UTC)
-Date:   Mon, 1 Mar 2021 21:18:37 +0100
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Shay Agroskin <shayagr@amazon.com>
-Cc:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <davem@davemloft.net>, <kuba@kernel.org>,
-        <ast@kernel.org>, <daniel@iogearbox.net>, <toke@redhat.com>,
-        <freysteinn.alfredsson@kau.se>, <john.fastabend@gmail.com>,
-        <jasowang@redhat.com>, <mst@redhat.com>,
-        <thomas.petazzoni@bootlin.com>, <mw@semihalf.com>,
-        <linux@armlinux.org.uk>, <ilias.apalodimas@linaro.org>,
-        <netanel@amazon.com>, <akiyano@amazon.com>,
-        <michael.chan@broadcom.com>, <madalin.bucur@nxp.com>,
-        <ioana.ciornei@nxp.com>, <jesse.brandeburg@intel.com>,
-        <anthony.l.nguyen@intel.com>, <saeedm@nvidia.com>,
-        <grygorii.strashko@ti.com>, <ecree.xilinx@gmail.com>,
-        brouer@redhat.com
-Subject: Re: [PATCH v2 bpf-next] bpf: devmap: move drop error path to devmap
- for XDP_REDIRECT
-Message-ID: <20210301211837.4a755c44@carbon>
-In-Reply-To: <pj41zlpn0jcgms.fsf@u68c7b5b1d2d758.ant.amazon.com>
-References: <d0c326f95b2d0325f63e4040c1530bf6d09dc4d4.1614422144.git.lorenzo@kernel.org>
-        <pj41zly2f8wfq6.fsf@u68c7b5b1d2d758.ant.amazon.com>
-        <YDwYzYVIDQABINyy@lore-laptop-rh>
-        <20210301084847.5117a404@carbon>
-        <pj41zlpn0jcgms.fsf@u68c7b5b1d2d758.ant.amazon.com>
+        id S238883AbhCAUpa (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Mar 2021 15:45:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240317AbhCAUkg (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Mar 2021 15:40:36 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACD47C061756;
+        Mon,  1 Mar 2021 12:39:55 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id i14so357829pjz.4;
+        Mon, 01 Mar 2021 12:39:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9aJvPPQuZOpMY5U+SSFHkmCbcWziEboEri+b50pt18s=;
+        b=Foc7dKiKq0pS9eOW40ho/yQRRK//jiZs/Zh6NRRVj1pvIYOj8bmLL2yFr9XRD11k/w
+         ynM76PCezUSFZcZRyygKqLDO48Jbf9wzyXXAx4jUt1KRtrGS576qa2yqHmPgaoqVkI3+
+         ca+u8Qd44VnDsUfuvi4b/gwHM8gwUqvfoHOc5uaQ5wk0zTNyCP805Dd+jY7DkdwmBIWl
+         s0R3vuvkmrThI7iamIMiyS36grnNkE3RGzyE+qQTvJZjI04Kq/RWFZz6t6zq4qPTNtAR
+         CoSFwVNAyshx/kNHhgbyLRvmX51I0a5ZGHYlmm8w1tiOBjZazpoW1fKftzw1bVc3uNoG
+         TcRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9aJvPPQuZOpMY5U+SSFHkmCbcWziEboEri+b50pt18s=;
+        b=gxoMH/rNFnjT8raqIkwkr4sz5foCgPq5FJK5cbOCtTxp0qyc/ivWG+kuZ+vR4k6Fpx
+         9d+Pl1mUUe+tpzAvo/Fe5LLi7MmsTzn/rG57npfPVxHxABCrTR15GaXZlPUp3TclDWNL
+         N/ymLg1MLzu5JF3P6KtLbpT6szOmsdp1P46yivJlURk0Boo2E2pZhp/SpWsVrV0b09q8
+         RM4acHec1pyKFZdQIsDRHKB95yRtaGPUtfA1uC6Ya2sxTYA8e2jJhg7IwTrLbBSqNl5G
+         5MVN6W9pBDxCFTuhPuRzkiJSvPUopmxsFZct/f04diMyjny3QMQ2fUunVMAz7WKW36Fn
+         q6AQ==
+X-Gm-Message-State: AOAM532keWUE6hQNuhJOBC1nSM9CyfSCSGFi/q+WvTebAeYe5Hp9LDxE
+        hH3pCD92/jox/rmE84jHFCc=
+X-Google-Smtp-Source: ABdhPJy6VTT22G1FZFpqiWsBWNAjOQuuznlkE485OR/K6UjR7pxFhmQwQzh1JrQqX5AHxlgsqn1zsA==
+X-Received: by 2002:a17:90a:d48b:: with SMTP id s11mr696019pju.67.1614631195101;
+        Mon, 01 Mar 2021 12:39:55 -0800 (PST)
+Received: from nuc10 (104.36.148.139.aurocloud.com. [104.36.148.139])
+        by smtp.gmail.com with ESMTPSA id v123sm18661794pfc.63.2021.03.01.12.39.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Mar 2021 12:39:54 -0800 (PST)
+Date:   Mon, 1 Mar 2021 12:39:47 -0800
+From:   Rustam Kovhaev <rkovhaev@gmail.com>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+f3694595248708227d35@syzkaller.appspotmail.com>,
+        andrii@kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Yonghong Song <yhs@fb.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: memory leak in bpf
+Message-ID: <YD1RE3O4FBkKK32l@nuc10>
+References: <000000000000911d3905b459824c@google.com>
+ <000000000000e56a2605b616b2d9@google.com>
+ <YD0UjWjQmYgY4Qgh@nuc10>
+ <CACT4Y+YQzTkk=UPNH5g96e+yPYyaPBemmhqXz5oaWEvW9xb-rQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+YQzTkk=UPNH5g96e+yPYyaPBemmhqXz5oaWEvW9xb-rQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-On Mon, 1 Mar 2021 13:23:06 +0200
-Shay Agroskin <shayagr@amazon.com> wrote:
-
-> Jesper Dangaard Brouer <brouer@redhat.com> writes:
-> 
-> > On Sun, 28 Feb 2021 23:27:25 +0100
-> > Lorenzo Bianconi <lorenzo.bianconi@redhat.com> wrote:
-> >  
-> >> > >  	drops = bq->count - sent;
-> >> > > -out:
-> >> > > -	bq->count = 0;
-> >> > > +	if (unlikely(drops > 0)) {
-> >> > > +		/* If not all frames have been 
-> >> > > transmitted, it is our
-> >> > > +		 * responsibility to free them
-> >> > > +		 */
-> >> > > +		for (i = sent; i < bq->count; i++)
-> >> > > + 
-> >> > > xdp_return_frame_rx_napi(bq->q[i]);
-> >> > > +	}    
-> >> > 
-> >> > Wouldn't the logic above be the same even w/o the 'if' 
-> >> > condition ?    
-> >> 
-> >> it is just an optimization to avoid the for loop instruction if 
-> >> sent = bq->count  
+On Mon, Mar 01, 2021 at 08:05:42PM +0100, Dmitry Vyukov wrote:
+> On Mon, Mar 1, 2021 at 5:21 PM Rustam Kovhaev <rkovhaev@gmail.com> wrote:
 > >
-> > True, and I like this optimization.
-> > It will affect how the code layout is (and thereby I-cache 
-> > usage).  
+> > On Wed, Dec 09, 2020 at 10:58:10PM -0800, syzbot wrote:
+> > > syzbot has found a reproducer for the following issue on:
+> > >
+> > > HEAD commit:    a68a0262 mm/madvise: remove racy mm ownership check
+> > > git tree:       upstream
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=11facf17500000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=4305fa9ea70c7a9f
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=f3694595248708227d35
+> > > compiler:       gcc (GCC) 10.1.0-syz 20200507
+> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=159a9613500000
+> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11bf7123500000
+> > >
+> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > Reported-by: syzbot+f3694595248708227d35@syzkaller.appspotmail.com
+> > >
+> > > Debian GNU/Linux 9 syzkaller ttyS0
+> > > Warning: Permanently added '10.128.0.9' (ECDSA) to the list of known hosts.
+> > > executing program
+> > > executing program
+> > > executing program
+> > > BUG: memory leak
+> > > unreferenced object 0xffff88810efccc80 (size 64):
+> > >   comm "syz-executor334", pid 8460, jiffies 4294945724 (age 13.850s)
+> > >   hex dump (first 32 bytes):
+> > >     c0 cb 14 04 00 ea ff ff c0 c2 11 04 00 ea ff ff  ................
+> > >     c0 56 3f 04 00 ea ff ff 40 18 38 04 00 ea ff ff  .V?.....@.8.....
+> > >   backtrace:
+> > >     [<0000000036ae98a7>] kmalloc_node include/linux/slab.h:575 [inline]
+> > >     [<0000000036ae98a7>] bpf_ringbuf_area_alloc kernel/bpf/ringbuf.c:94 [inline]
+> > >     [<0000000036ae98a7>] bpf_ringbuf_alloc kernel/bpf/ringbuf.c:135 [inline]
+> > >     [<0000000036ae98a7>] ringbuf_map_alloc kernel/bpf/ringbuf.c:183 [inline]
+> > >     [<0000000036ae98a7>] ringbuf_map_alloc+0x1be/0x410 kernel/bpf/ringbuf.c:150
+> > >     [<00000000d2cb93ae>] find_and_alloc_map kernel/bpf/syscall.c:122 [inline]
+> > >     [<00000000d2cb93ae>] map_create kernel/bpf/syscall.c:825 [inline]
+> > >     [<00000000d2cb93ae>] __do_sys_bpf+0x7d0/0x30a0 kernel/bpf/syscall.c:4381
+> > >     [<000000008feaf393>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+> > >     [<00000000e1f53cfd>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > >
+> > >
+> >
+> > i am pretty sure that this one is a false positive
+> > the problem with reproducer is that it does not terminate all of the
+> > child processes that it spawns
+> >
+> > i confirmed that it is a false positive by tracing __fput() and
+> > bpf_map_release(), i ran reproducer, got kmemleak report, then i
+> > manually killed those running leftover processes from reproducer and
+> > then both functions were executed and memory was freed
+> >
+> > i am marking this one as:
+> > #syz invalid
 > 
-> I'm not sure what I-cache optimization you mean here. Compiling 
-> the following C code:
+> Hi Rustam,
 > 
-> # define unlikely(x)	__builtin_expect(!!(x), 0)
+> Thanks for looking into this.
 > 
-> extern void xdp_return_frame_rx_napi(int q);
-> 
-> struct bq_stuff {
->     int q[4];
->     int count;
-> };
-> 
-> int test(int sent, struct bq_stuff *bq) {
->     int i;
->     int drops;
-> 
->     drops = bq->count - sent;
->     if(unlikely(drops > 0))
->         for (i = sent; i < bq->count; i++)
->             xdp_return_frame_rx_napi(bq->q[i]);
-> 
->     return 2;
-> }
-> 
-> with x86_64 gcc 10.2 with -O3 flag in https://godbolt.org/ (which 
-> provides the assembly code for different compilers) yields the 
-> following assembly:
-> 
-> test:
->         mov     eax, DWORD PTR [rsi+16]
->         mov     edx, eax
->         sub     edx, edi
->         test    edx, edx
->         jg      .L10
-> .L6:
->         mov     eax, 2
->         ret
+> I wonder how/where are these objects referenced? If they are not
+> leaked and referenced somewhere, KMEMLEAK should not report them as
+> leaks.
+> So even if this is a false positive for BPF, this is a true positive
+> bug and something to fix for KMEMLEAK ;)
+> And syzbot will probably re-create this bug report soon as this still
+> happens and is not a one-off thing.
 
-This exactly shows my point.  Notice how 'ret' happens earlier in this
-function.  This is the common case, thus the CPU don't have to load the
-asm instruction below.
-
-> .L10:
->         cmp     eax, edi
->         jle     .L6
->         push    rbp
->         mov     rbp, rsi
->         push    rbx
->         movsx   rbx, edi
->         sub     rsp, 8
-> .L3:
->         mov     edi, DWORD PTR [rbp+0+rbx*4]
->         add     rbx, 1
->         call    xdp_return_frame_rx_napi
->         cmp     DWORD PTR [rbp+16], ebx
->         jg      .L3
->         add     rsp, 8
->         mov     eax, 2
->         pop     rbx
->         pop     rbp
->         ret
-> 
-> 
-> When dropping the 'if' completely I get the following assembly 
-> output
-> test:
->         cmp     edi, DWORD PTR [rsi+16]
->         jge     .L6
-
-Jump to .L6 which is the common case.  The code in between is not used
-in common case, but the CPU will likely load this into I-cache, and
-then jumps over the code in common case.
-
->         push    rbp
->         mov     rbp, rsi
->         push    rbx
->         movsx   rbx, edi
->         sub     rsp, 8
-> .L3:
->         mov     edi, DWORD PTR [rbp+0+rbx*4]
->         add     rbx, 1
->         call    xdp_return_frame_rx_napi
->         cmp     DWORD PTR [rbp+16], ebx
->         jg      .L3
->         add     rsp, 8
->         mov     eax, 2
->         pop     rbx
->         pop     rbp
->         ret
-> .L6:
->         mov     eax, 2
->         ret
-> 
-> which exits earlier from the function if 'drops > 0' compared to 
-> the original code (the 'for' loop looks a little different, but 
-> this shouldn't affect icache).
->
-> When removing the 'if' and surrounding the 'for' condition with 
-> 'unlikely' statement:
-> 
-> for (i = sent; unlikely(i < bq->count); i++)
-> 
-> I get the following assembly code:
-> 
-> test:
->         cmp     edi, DWORD PTR [rsi+16]
->         jl      .L10
->         mov     eax, 2
->         ret
-> .L10:
->         push    rbx
->         movsx   rbx, edi
->         sub     rsp, 16
-> .L3:
->         mov     edi, DWORD PTR [rsi+rbx*4]
->         mov     QWORD PTR [rsp+8], rsi
->         add     rbx, 1
->         call    xdp_return_frame_rx_napi
->         mov     rsi, QWORD PTR [rsp+8]
->         cmp     DWORD PTR [rsi+16], ebx
->         jg      .L3
->         add     rsp, 16
->         mov     eax, 2
->         pop     rbx
->         ret
-> 
-> which is shorter than the other two (one line compared to the 
-> second and 7 lines compared the original code) and seems as 
-> optimized as the second.
-
-You are also using unlikely() and get the earlier return, with less
-instructions, which is great.  Perhaps we can use this type of
-unlikely() in the for-statement?  WDYT Lorenzo?
- 
- 
-> I'm far from being an assembly expert, and I tested a code snippet 
-> I wrote myself rather than the kernel's code (for the sake of 
-> simplicity only).
-> Can you please elaborate on what makes the original 'if' essential 
-> (I took the time to do the assembly tests, please take the time on 
-> your side to prove your point, I'm not trying to be grumpy here).
-> 
-> Shay
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+hi Dmitry, i haven't thought of it this way, but i guess you are right,
+it is a kmemleak bug, ideally kmemleak should be aware that there are
+still running processes holding references to bpf fd/anonymous inodes
+which in their turn hold references to allocated bpf maps
 
