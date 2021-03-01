@@ -2,24 +2,24 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA0673288D0
-	for <lists+bpf@lfdr.de>; Mon,  1 Mar 2021 18:46:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D09603289D9
+	for <lists+bpf@lfdr.de>; Mon,  1 Mar 2021 19:09:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234712AbhCARpE (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Mar 2021 12:45:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57778 "EHLO mail.kernel.org"
+        id S233519AbhCASGs (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Mar 2021 13:06:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54150 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238120AbhCARh4 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Mar 2021 12:37:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF69164E37;
-        Mon,  1 Mar 2021 16:55:27 +0000 (UTC)
+        id S239317AbhCASDh (ORCPT <rfc822;bpf@vger.kernel.org>);
+        Mon, 1 Mar 2021 13:03:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 677A56504E;
+        Mon,  1 Mar 2021 17:18:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614617728;
-        bh=AMJNHFOU55Lr0ratCG7R4V8kA8uYLYXjAAALQ5qQZ3g=;
+        s=korg; t=1614619125;
+        bh=XQisQG7yzxJurR1d+9eIi8uRTjZpTbF8rETOjClCzp4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kfs5QSBUAD+bz4kujG2EpMasFR3Cl0YjmvAEZvr0fLqrp3u41ZBrSbRItJFfJbBxR
-         8DHbWCXOKiKoyr7seL4HnM9rNBFcykeDSB4yVEteryfsFCVIB5Bw+uSoIi/d/W/6PT
-         Zl+ZBPsDaEGTGhEfmc/UwEb0+is/JEMKUCDXeD30=
+        b=T/UynHEZq6B+8Qzg2hXN2B+LIy6ha14JsT4CrLI0QfEQoZhcQynYRbyDNcamocT0f
+         Zns4fjUuncgTsveH3LdbnkpkUnCu9pedVOE6Qdiv2HhtFR74mGRagM2hinNGYMtd92
+         nDVYQ5Mq6OO8oWnXEnzwogXFG0Rg3ogvzsAWdzIU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -43,12 +43,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Matt Mullins <mmullins@mmlx.us>,
         "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 176/340] tracepoint: Do not fail unregistering a probe due to memory failure
-Date:   Mon,  1 Mar 2021 17:12:00 +0100
-Message-Id: <20210301161056.968245888@linuxfoundation.org>
+Subject: [PATCH 5.10 341/663] tracepoint: Do not fail unregistering a probe due to memory failure
+Date:   Mon,  1 Mar 2021 17:09:49 +0100
+Message-Id: <20210301161158.724130022@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161048.294656001@linuxfoundation.org>
-References: <20210301161048.294656001@linuxfoundation.org>
+In-Reply-To: <20210301161141.760350206@linuxfoundation.org>
+References: <20210301161141.760350206@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -123,11 +123,11 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 64 insertions(+), 16 deletions(-)
 
 diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
-index 73956eaff8a9c..be51df4508cbe 100644
+index 3f659f8550741..3e261482296cf 100644
 --- a/kernel/tracepoint.c
 +++ b/kernel/tracepoint.c
 @@ -53,6 +53,12 @@ struct tp_probes {
- 	struct tracepoint_func probes[0];
+ 	struct tracepoint_func probes[];
  };
  
 +/* Called in removal of a func but failed to allocate a new tp_funcs */
@@ -238,7 +238,7 @@ index 73956eaff8a9c..be51df4508cbe 100644
  	}
  	debug_print_probes(*funcs);
  	return old;
-@@ -271,10 +317,12 @@ static int tracepoint_remove_func(struct tracepoint *tp,
+@@ -295,10 +341,12 @@ static int tracepoint_remove_func(struct tracepoint *tp,
  	tp_funcs = rcu_dereference_protected(tp->funcs,
  			lockdep_is_held(&tracepoints_mutex));
  	old = func_remove(&tp_funcs, func);
