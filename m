@@ -2,260 +2,249 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DFCF328FAB
-	for <lists+bpf@lfdr.de>; Mon,  1 Mar 2021 20:56:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C57A329169
+	for <lists+bpf@lfdr.de>; Mon,  1 Mar 2021 21:27:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236102AbhCATyw (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Mar 2021 14:54:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57754 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242121AbhCATvA (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Mar 2021 14:51:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFCFF65113;
-        Mon,  1 Mar 2021 17:52:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1614621142;
-        bh=ciGCpGMeDpO3Khdcrb4Tb6kPY5qMGGv/NSKcwd8Wo58=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YIumo/AvFSAljNYa6arrxp0zQpDyFDJmGz/fWQk8I/0zYsTarfMItQHq6au8xU+D1
-         OWIOcJULDmJ1YvxVu3kSOG06Yti1/pWbrCb3+M0hlW1XZgNE2PjmPj7pNDCo5d0Nil
-         mV78IBYifgetO2rjbEczOiq09GBB3UWVOQqID/QU=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Florian Weimer <fw@deneb.enyo.de>,
-        syzbot+83aa762ef23b6f0d1991@syzkaller.appspotmail.com,
-        syzbot+d29e58bb557324e55e5e@syzkaller.appspotmail.com,
-        Matt Mullins <mmullins@mmlx.us>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 409/775] tracepoint: Do not fail unregistering a probe due to memory failure
-Date:   Mon,  1 Mar 2021 17:09:37 +0100
-Message-Id: <20210301161221.798296729@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210301161201.679371205@linuxfoundation.org>
-References: <20210301161201.679371205@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S241499AbhCAUZY (ORCPT <rfc822;lists+bpf@lfdr.de>);
+        Mon, 1 Mar 2021 15:25:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52242 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238740AbhCAUUh (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 1 Mar 2021 15:20:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614629942;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tm9fKMa+OeMDf8cjUn2OSKTxJ285HlE2LNt99VSxN9w=;
+        b=VaxaXNAEKslfsChZ69FgJMB8sswHB2AsYIlIgVyoWiNp7vlUk616kbhBFc3xDSkmFC/UDf
+        hOnDy7tjmSntYlqDtqHJ/jiKMUdhHq/E0m2kGSI0GITZ9jg2Oa0g5PVwHf+iil9mhxgmRo
+        KwxETiY4MADv/C7IVl8+EwYdUxjTsC0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-58-MBh0QM-gMKGCfu9mq5AcXw-1; Mon, 01 Mar 2021 15:18:59 -0500
+X-MC-Unique: MBh0QM-gMKGCfu9mq5AcXw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4489D1005501;
+        Mon,  1 Mar 2021 20:18:56 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.49])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BA3FC6E52F;
+        Mon,  1 Mar 2021 20:18:38 +0000 (UTC)
+Date:   Mon, 1 Mar 2021 21:18:37 +0100
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Shay Agroskin <shayagr@amazon.com>
+Cc:     Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <davem@davemloft.net>, <kuba@kernel.org>,
+        <ast@kernel.org>, <daniel@iogearbox.net>, <toke@redhat.com>,
+        <freysteinn.alfredsson@kau.se>, <john.fastabend@gmail.com>,
+        <jasowang@redhat.com>, <mst@redhat.com>,
+        <thomas.petazzoni@bootlin.com>, <mw@semihalf.com>,
+        <linux@armlinux.org.uk>, <ilias.apalodimas@linaro.org>,
+        <netanel@amazon.com>, <akiyano@amazon.com>,
+        <michael.chan@broadcom.com>, <madalin.bucur@nxp.com>,
+        <ioana.ciornei@nxp.com>, <jesse.brandeburg@intel.com>,
+        <anthony.l.nguyen@intel.com>, <saeedm@nvidia.com>,
+        <grygorii.strashko@ti.com>, <ecree.xilinx@gmail.com>,
+        brouer@redhat.com
+Subject: Re: [PATCH v2 bpf-next] bpf: devmap: move drop error path to devmap
+ for XDP_REDIRECT
+Message-ID: <20210301211837.4a755c44@carbon>
+In-Reply-To: <pj41zlpn0jcgms.fsf@u68c7b5b1d2d758.ant.amazon.com>
+References: <d0c326f95b2d0325f63e4040c1530bf6d09dc4d4.1614422144.git.lorenzo@kernel.org>
+        <pj41zly2f8wfq6.fsf@u68c7b5b1d2d758.ant.amazon.com>
+        <YDwYzYVIDQABINyy@lore-laptop-rh>
+        <20210301084847.5117a404@carbon>
+        <pj41zlpn0jcgms.fsf@u68c7b5b1d2d758.ant.amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+On Mon, 1 Mar 2021 13:23:06 +0200
+Shay Agroskin <shayagr@amazon.com> wrote:
 
-[ Upstream commit befe6d946551d65cddbd32b9cb0170b0249fd5ed ]
+> Jesper Dangaard Brouer <brouer@redhat.com> writes:
+> 
+> > On Sun, 28 Feb 2021 23:27:25 +0100
+> > Lorenzo Bianconi <lorenzo.bianconi@redhat.com> wrote:
+> >  
+> >> > >  	drops = bq->count - sent;
+> >> > > -out:
+> >> > > -	bq->count = 0;
+> >> > > +	if (unlikely(drops > 0)) {
+> >> > > +		/* If not all frames have been 
+> >> > > transmitted, it is our
+> >> > > +		 * responsibility to free them
+> >> > > +		 */
+> >> > > +		for (i = sent; i < bq->count; i++)
+> >> > > + 
+> >> > > xdp_return_frame_rx_napi(bq->q[i]);
+> >> > > +	}    
+> >> > 
+> >> > Wouldn't the logic above be the same even w/o the 'if' 
+> >> > condition ?    
+> >> 
+> >> it is just an optimization to avoid the for loop instruction if 
+> >> sent = bq->count  
+> >
+> > True, and I like this optimization.
+> > It will affect how the code layout is (and thereby I-cache 
+> > usage).  
+> 
+> I'm not sure what I-cache optimization you mean here. Compiling 
+> the following C code:
+> 
+> # define unlikely(x)	__builtin_expect(!!(x), 0)
+> 
+> extern void xdp_return_frame_rx_napi(int q);
+> 
+> struct bq_stuff {
+>     int q[4];
+>     int count;
+> };
+> 
+> int test(int sent, struct bq_stuff *bq) {
+>     int i;
+>     int drops;
+> 
+>     drops = bq->count - sent;
+>     if(unlikely(drops > 0))
+>         for (i = sent; i < bq->count; i++)
+>             xdp_return_frame_rx_napi(bq->q[i]);
+> 
+>     return 2;
+> }
+> 
+> with x86_64 gcc 10.2 with -O3 flag in https://godbolt.org/ (which 
+> provides the assembly code for different compilers) yields the 
+> following assembly:
+> 
+> test:
+>         mov     eax, DWORD PTR [rsi+16]
+>         mov     edx, eax
+>         sub     edx, edi
+>         test    edx, edx
+>         jg      .L10
+> .L6:
+>         mov     eax, 2
+>         ret
 
-The list of tracepoint callbacks is managed by an array that is protected
-by RCU. To update this array, a new array is allocated, the updates are
-copied over to the new array, and then the list of functions for the
-tracepoint is switched over to the new array. After a completion of an RCU
-grace period, the old array is freed.
+This exactly shows my point.  Notice how 'ret' happens earlier in this
+function.  This is the common case, thus the CPU don't have to load the
+asm instruction below.
 
-This process happens for both adding a callback as well as removing one.
-But on removing a callback, if the new array fails to be allocated, the
-callback is not removed, and may be used after it is freed by the clients
-of the tracepoint.
+> .L10:
+>         cmp     eax, edi
+>         jle     .L6
+>         push    rbp
+>         mov     rbp, rsi
+>         push    rbx
+>         movsx   rbx, edi
+>         sub     rsp, 8
+> .L3:
+>         mov     edi, DWORD PTR [rbp+0+rbx*4]
+>         add     rbx, 1
+>         call    xdp_return_frame_rx_napi
+>         cmp     DWORD PTR [rbp+16], ebx
+>         jg      .L3
+>         add     rsp, 8
+>         mov     eax, 2
+>         pop     rbx
+>         pop     rbp
+>         ret
+> 
+> 
+> When dropping the 'if' completely I get the following assembly 
+> output
+> test:
+>         cmp     edi, DWORD PTR [rsi+16]
+>         jge     .L6
 
-There's really no reason to fail if the allocation for a new array fails
-when removing a function. Instead, the function can simply be replaced by a
-stub function that could be cleaned up on the next modification of the
-array. That is, instead of calling the function registered to the
-tracepoint, it would call a stub function in its place.
+Jump to .L6 which is the common case.  The code in between is not used
+in common case, but the CPU will likely load this into I-cache, and
+then jumps over the code in common case.
 
-Link: https://lore.kernel.org/r/20201115055256.65625-1-mmullins@mmlx.us
-Link: https://lore.kernel.org/r/20201116175107.02db396d@gandalf.local.home
-Link: https://lore.kernel.org/r/20201117211836.54acaef2@oasis.local.home
-Link: https://lkml.kernel.org/r/20201118093405.7a6d2290@gandalf.local.home
+>         push    rbp
+>         mov     rbp, rsi
+>         push    rbx
+>         movsx   rbx, edi
+>         sub     rsp, 8
+> .L3:
+>         mov     edi, DWORD PTR [rbp+0+rbx*4]
+>         add     rbx, 1
+>         call    xdp_return_frame_rx_napi
+>         cmp     DWORD PTR [rbp+16], ebx
+>         jg      .L3
+>         add     rsp, 8
+>         mov     eax, 2
+>         pop     rbx
+>         pop     rbp
+>         ret
+> .L6:
+>         mov     eax, 2
+>         ret
+> 
+> which exits earlier from the function if 'drops > 0' compared to 
+> the original code (the 'for' loop looks a little different, but 
+> this shouldn't affect icache).
+>
+> When removing the 'if' and surrounding the 'for' condition with 
+> 'unlikely' statement:
+> 
+> for (i = sent; unlikely(i < bq->count); i++)
+> 
+> I get the following assembly code:
+> 
+> test:
+>         cmp     edi, DWORD PTR [rsi+16]
+>         jl      .L10
+>         mov     eax, 2
+>         ret
+> .L10:
+>         push    rbx
+>         movsx   rbx, edi
+>         sub     rsp, 16
+> .L3:
+>         mov     edi, DWORD PTR [rsi+rbx*4]
+>         mov     QWORD PTR [rsp+8], rsi
+>         add     rbx, 1
+>         call    xdp_return_frame_rx_napi
+>         mov     rsi, QWORD PTR [rsp+8]
+>         cmp     DWORD PTR [rsi+16], ebx
+>         jg      .L3
+>         add     rsp, 16
+>         mov     eax, 2
+>         pop     rbx
+>         ret
+> 
+> which is shorter than the other two (one line compared to the 
+> second and 7 lines compared the original code) and seems as 
+> optimized as the second.
 
-[ Note, this version does use undefined compiler behavior (assuming that
-  a stub function with no parameters or return, can be called by a location
-  that thinks it has parameters but still no return value. Static calls
-  do the same thing, so this trick is not without precedent.
-
-  There's another solution that uses RCU tricks and is more complex, but
-  can be an alternative if this solution becomes an issue.
-
-  Link: https://lore.kernel.org/lkml/20210127170721.58bce7cc@gandalf.local.home/
-]
-
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Song Liu <songliubraving@fb.com>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: Andrii Nakryiko <andriin@fb.com>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: KP Singh <kpsingh@chromium.org>
-Cc: netdev <netdev@vger.kernel.org>
-Cc: bpf <bpf@vger.kernel.org>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Florian Weimer <fw@deneb.enyo.de>
-Fixes: 97e1c18e8d17b ("tracing: Kernel Tracepoints")
-Reported-by: syzbot+83aa762ef23b6f0d1991@syzkaller.appspotmail.com
-Reported-by: syzbot+d29e58bb557324e55e5e@syzkaller.appspotmail.com
-Reported-by: Matt Mullins <mmullins@mmlx.us>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Tested-by: Matt Mullins <mmullins@mmlx.us>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- kernel/tracepoint.c | 80 ++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 64 insertions(+), 16 deletions(-)
-
-diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
-index 7261fa0f5e3cc..e8f20ae29c18f 100644
---- a/kernel/tracepoint.c
-+++ b/kernel/tracepoint.c
-@@ -53,6 +53,12 @@ struct tp_probes {
- 	struct tracepoint_func probes[];
- };
+You are also using unlikely() and get the earlier return, with less
+instructions, which is great.  Perhaps we can use this type of
+unlikely() in the for-statement?  WDYT Lorenzo?
  
-+/* Called in removal of a func but failed to allocate a new tp_funcs */
-+static void tp_stub_func(void)
-+{
-+	return;
-+}
-+
- static inline void *allocate_probes(int count)
- {
- 	struct tp_probes *p  = kmalloc(struct_size(p, probes, count),
-@@ -131,6 +137,7 @@ func_add(struct tracepoint_func **funcs, struct tracepoint_func *tp_func,
- {
- 	struct tracepoint_func *old, *new;
- 	int nr_probes = 0;
-+	int stub_funcs = 0;
- 	int pos = -1;
  
- 	if (WARN_ON(!tp_func->func))
-@@ -147,14 +154,34 @@ func_add(struct tracepoint_func **funcs, struct tracepoint_func *tp_func,
- 			if (old[nr_probes].func == tp_func->func &&
- 			    old[nr_probes].data == tp_func->data)
- 				return ERR_PTR(-EEXIST);
-+			if (old[nr_probes].func == tp_stub_func)
-+				stub_funcs++;
- 		}
- 	}
--	/* + 2 : one for new probe, one for NULL func */
--	new = allocate_probes(nr_probes + 2);
-+	/* + 2 : one for new probe, one for NULL func - stub functions */
-+	new = allocate_probes(nr_probes + 2 - stub_funcs);
- 	if (new == NULL)
- 		return ERR_PTR(-ENOMEM);
- 	if (old) {
--		if (pos < 0) {
-+		if (stub_funcs) {
-+			/* Need to copy one at a time to remove stubs */
-+			int probes = 0;
-+
-+			pos = -1;
-+			for (nr_probes = 0; old[nr_probes].func; nr_probes++) {
-+				if (old[nr_probes].func == tp_stub_func)
-+					continue;
-+				if (pos < 0 && old[nr_probes].prio < prio)
-+					pos = probes++;
-+				new[probes++] = old[nr_probes];
-+			}
-+			nr_probes = probes;
-+			if (pos < 0)
-+				pos = probes;
-+			else
-+				nr_probes--; /* Account for insertion */
-+
-+		} else if (pos < 0) {
- 			pos = nr_probes;
- 			memcpy(new, old, nr_probes * sizeof(struct tracepoint_func));
- 		} else {
-@@ -188,8 +215,9 @@ static void *func_remove(struct tracepoint_func **funcs,
- 	/* (N -> M), (N > 1, M >= 0) probes */
- 	if (tp_func->func) {
- 		for (nr_probes = 0; old[nr_probes].func; nr_probes++) {
--			if (old[nr_probes].func == tp_func->func &&
--			     old[nr_probes].data == tp_func->data)
-+			if ((old[nr_probes].func == tp_func->func &&
-+			     old[nr_probes].data == tp_func->data) ||
-+			    old[nr_probes].func == tp_stub_func)
- 				nr_del++;
- 		}
- 	}
-@@ -208,14 +236,32 @@ static void *func_remove(struct tracepoint_func **funcs,
- 		/* N -> M, (N > 1, M > 0) */
- 		/* + 1 for NULL */
- 		new = allocate_probes(nr_probes - nr_del + 1);
--		if (new == NULL)
--			return ERR_PTR(-ENOMEM);
--		for (i = 0; old[i].func; i++)
--			if (old[i].func != tp_func->func
--					|| old[i].data != tp_func->data)
--				new[j++] = old[i];
--		new[nr_probes - nr_del].func = NULL;
--		*funcs = new;
-+		if (new) {
-+			for (i = 0; old[i].func; i++)
-+				if ((old[i].func != tp_func->func
-+				     || old[i].data != tp_func->data)
-+				    && old[i].func != tp_stub_func)
-+					new[j++] = old[i];
-+			new[nr_probes - nr_del].func = NULL;
-+			*funcs = new;
-+		} else {
-+			/*
-+			 * Failed to allocate, replace the old function
-+			 * with calls to tp_stub_func.
-+			 */
-+			for (i = 0; old[i].func; i++)
-+				if (old[i].func == tp_func->func &&
-+				    old[i].data == tp_func->data) {
-+					old[i].func = tp_stub_func;
-+					/* Set the prio to the next event. */
-+					if (old[i + 1].func)
-+						old[i].prio =
-+							old[i + 1].prio;
-+					else
-+						old[i].prio = -1;
-+				}
-+			*funcs = old;
-+		}
- 	}
- 	debug_print_probes(*funcs);
- 	return old;
-@@ -295,10 +341,12 @@ static int tracepoint_remove_func(struct tracepoint *tp,
- 	tp_funcs = rcu_dereference_protected(tp->funcs,
- 			lockdep_is_held(&tracepoints_mutex));
- 	old = func_remove(&tp_funcs, func);
--	if (IS_ERR(old)) {
--		WARN_ON_ONCE(PTR_ERR(old) != -ENOMEM);
-+	if (WARN_ON_ONCE(IS_ERR(old)))
- 		return PTR_ERR(old);
--	}
-+
-+	if (tp_funcs == old)
-+		/* Failed allocating new tp_funcs, replaced func with stub */
-+		return 0;
- 
- 	if (!tp_funcs) {
- 		/* Removed last function */
+> I'm far from being an assembly expert, and I tested a code snippet 
+> I wrote myself rather than the kernel's code (for the sake of 
+> simplicity only).
+> Can you please elaborate on what makes the original 'if' essential 
+> (I took the time to do the assembly tests, please take the time on 
+> your side to prove your point, I'm not trying to be grumpy here).
+> 
+> Shay
+
 -- 
-2.27.0
-
-
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
