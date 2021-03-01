@@ -2,102 +2,101 @@ Return-Path: <bpf-owner@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 403DE328CB9
-	for <lists+bpf@lfdr.de>; Mon,  1 Mar 2021 20:00:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5007328D6D
+	for <lists+bpf@lfdr.de>; Mon,  1 Mar 2021 20:12:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236009AbhCAS5a (ORCPT <rfc822;lists+bpf@lfdr.de>);
-        Mon, 1 Mar 2021 13:57:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240587AbhCASz2 (ORCPT <rfc822;bpf@vger.kernel.org>);
-        Mon, 1 Mar 2021 13:55:28 -0500
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25C8CC0617A7;
-        Mon,  1 Mar 2021 10:54:48 -0800 (PST)
-Received: by mail-io1-xd35.google.com with SMTP id k2so13465602ioh.5;
-        Mon, 01 Mar 2021 10:54:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=3WuD5KJwVIICV/S1qElOXfxsVldAv6ahO2BGQBm1n6g=;
-        b=MeLteGoni5CryvdK4U5PkRm00k4NUHjEDs7sdDGqcq5QQscBB3psBZIIBaqh3+NOtr
-         /snexHZoMx5OZ4EvxKRJEx97+37+gQzsKY430TdMvWwtEw44ZaduJVRtFuYgPAcvzE0n
-         DScwERBmSPxm9wc4CSUZOom57L3kibY7LfjZNbzk0A7qCESyct1UJYE1UOG2KZVxwdUh
-         IF3Dx3IsrkJTD9ZeTNzHFwFESwV4x5fhmdLozsadugftzRb5cU7XP3rgGjnNYpQbOzVW
-         MAq9SNU/hGyI+rEXRR1WNhCROQSxvv/RkqMIe68by14jzD16qt3g20q0Vq8IaNc6ZmBw
-         VAdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=3WuD5KJwVIICV/S1qElOXfxsVldAv6ahO2BGQBm1n6g=;
-        b=UFGOJsRcgZ2aHFi9ncsTL/vnplfpHhtGeWE6S39JbKY18jiZSbZiXDzVM5zrLQqCTE
-         0FDZr5Uuq26+24Gziq67rn9rZDh4tpqQGo3weAzeQxJB23OAPbT2pUuHXocoCHdzVayo
-         +k4/qHe3JlcAOOqWlayedBIpz0UYuyIS3Ywq8fnq4HrPnEvmO7Wg6kxlz6dtAR4pzaSj
-         onPkaK1kF8FStl+IvJ5EPFCfyGtombHDSJmcbzrVfY4R5WPdyf3hsOn9chXVbybk7GlO
-         a5lbwSx9+HDkJVjG3A6TzxPtQOb0CENwpYYZ7ocdYAKaZ31uzEiNmshhGku6xWiR/tRh
-         kUew==
-X-Gm-Message-State: AOAM5315J6hOuUWCuSZCwZFjE1sRJ6+Yu4J5BmdDi3qwvEGT3Negnn8t
-        PtIieTV3Re9htZN7LXEoHde5o4T+WhIedw==
-X-Google-Smtp-Source: ABdhPJwp2xHI0sax2w27zMgXDJjzBnq0PpWxJswtBwPu0Ydi/Fji91zssN54qzF5PXtqdKmQRA4wcg==
-X-Received: by 2002:a05:6602:737:: with SMTP id g23mr3164697iox.130.1614624887613;
-        Mon, 01 Mar 2021 10:54:47 -0800 (PST)
-Received: from localhost ([172.243.146.206])
-        by smtp.gmail.com with ESMTPSA id s16sm484813ioe.44.2021.03.01.10.54.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Mar 2021 10:54:47 -0800 (PST)
-Date:   Mon, 01 Mar 2021 10:54:39 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Cong Wang <xiyou.wangcong@gmail.com>, netdev@vger.kernel.org
-Cc:     bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
-        Lorenz Bauer <lmb@cloudflare.com>,
+        id S236052AbhCATLH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+bpf@lfdr.de>); Mon, 1 Mar 2021 14:11:07 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:29099 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240913AbhCATFf (ORCPT
+        <rfc822;bpf@vger.kernel.org>); Mon, 1 Mar 2021 14:05:35 -0500
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-159-edM5UA9NMeiIOf2CMADLcw-1; Mon, 01 Mar 2021 14:04:25 -0500
+X-MC-Unique: edM5UA9NMeiIOf2CMADLcw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D0C67100A8EB;
+        Mon,  1 Mar 2021 19:04:23 +0000 (UTC)
+Received: from krava.cust.in.nbox.cz (unknown [10.40.192.173])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 11C4D10013C1;
+        Mon,  1 Mar 2021 19:04:16 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>
-Message-ID: <603d386fcb3e8_20893c208c5@john-XPS-13-9370.notmuch>
-In-Reply-To: <20210301184805.8174-1-xiyou.wangcong@gmail.com>
-References: <20210301184805.8174-1-xiyou.wangcong@gmail.com>
-Subject: RE: [Patch bpf-next] skmsg: add function doc for skb->_sk_redir
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        KP Singh <kpsingh@chromium.org>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Yauheni Kaliuta <ykaliuta@redhat.com>
+Subject: [PATCH bpf-next] selftests/bpf: Fix test_attach_probe for powerpc uprobes
+Date:   Mon,  1 Mar 2021 20:04:16 +0100
+Message-Id: <20210301190416.90694-1-jolsa@kernel.org>
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <bpf.vger.kernel.org>
 X-Mailing-List: bpf@vger.kernel.org
 
-Cong Wang wrote:
-> From: Cong Wang <cong.wang@bytedance.com>
-> 
-> This should fix the following warning:
-> 
-> include/linux/skbuff.h:932: warning: Function parameter or member
-> '_sk_redir' not described in 'sk_buff'
-> 
-> Reported-by: Lorenz Bauer <lmb@cloudflare.com>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: Jakub Sitnicki <jakub@cloudflare.com>
-> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
-> ---
->  include/linux/skbuff.h | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-> index bd84f799c952..0503c917d773 100644
-> --- a/include/linux/skbuff.h
-> +++ b/include/linux/skbuff.h
-> @@ -656,6 +656,7 @@ typedef unsigned char *sk_buff_data_t;
->   *	@protocol: Packet protocol from driver
->   *	@destructor: Destruct function
->   *	@tcp_tsorted_anchor: list structure for TCP (tp->tsorted_sent_queue)
-> + *	@_sk_redir: socket redirection information for skmsg
->   *	@_nfct: Associated connection, if any (with nfctinfo bits)
->   *	@nf_bridge: Saved data about a bridged frame - see br_netfilter.c
->   *	@skb_iif: ifindex of device we arrived on
-> -- 
-> 2.25.1
-> 
+When testing uprobes we the test gets GEP (Global Entry Point)
+address from kallsyms, but then the function is called locally
+so the uprobe is not triggered.
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+Fixing this by adjusting the address to LEP (Local Entry Point)
+for powerpc arch.
+
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+ .../selftests/bpf/prog_tests/attach_probe.c    | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/attach_probe.c b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+index a0ee87c8e1ea..c3cfb48d3ed0 100644
+--- a/tools/testing/selftests/bpf/prog_tests/attach_probe.c
++++ b/tools/testing/selftests/bpf/prog_tests/attach_probe.c
+@@ -2,6 +2,22 @@
+ #include <test_progs.h>
+ #include "test_attach_probe.skel.h"
+ 
++#if defined(__powerpc64__)
++/*
++ * We get the GEP (Global Entry Point) address from kallsyms,
++ * but then the function is called locally, so we need to adjust
++ * the address to get LEP (Local Entry Point).
++ */
++#define LEP_OFFSET 8
++
++static ssize_t get_offset(ssize_t offset)
++{
++	return offset + LEP_OFFSET;
++}
++#else
++#define get_offset(offset) (offset)
++#endif
++
+ ssize_t get_base_addr() {
+ 	size_t start, offset;
+ 	char buf[256];
+@@ -36,7 +52,7 @@ void test_attach_probe(void)
+ 	if (CHECK(base_addr < 0, "get_base_addr",
+ 		  "failed to find base addr: %zd", base_addr))
+ 		return;
+-	uprobe_offset = (size_t)&get_base_addr - base_addr;
++	uprobe_offset = get_offset((size_t)&get_base_addr - base_addr);
+ 
+ 	skel = test_attach_probe__open_and_load();
+ 	if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
+-- 
+2.29.2
+
